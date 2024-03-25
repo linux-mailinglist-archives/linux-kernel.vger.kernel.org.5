@@ -1,66 +1,66 @@
-Return-Path: <linux-kernel+bounces-117384-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-117385-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1598B88AABB
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 18:06:41 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id C002F88AABD
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 18:07:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 444CA3417E4
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 17:06:37 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9C24A341ED8
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 17:06:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D3A5512EBC1;
-	Mon, 25 Mar 2024 15:36:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B7C3313048C;
+	Mon, 25 Mar 2024 15:36:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="dnWCqJKt"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="eP8b42En"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.9])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9550512EBC0
-	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 15:36:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.10
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 39C7112EBC0
+	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 15:36:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.9
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711381007; cv=none; b=rYguKcpWNTqeWdnxCBHohrmMT2JZGRUabLTXAFRwlq+p2IGlm8BLa1GCUdPoUQKISN2JgsipKr2n7FK5vhbb0FSQR/ZH7LuOcNv8q/B7ffjCwjnHoxlU+zUa12J21fzMfNTQbl1SR5uoREqaso4p/epWi4ZlkB0ZpJhaZmTVdE8=
+	t=1711381013; cv=none; b=j2DqAvKT4+KR++HequSbqpT5BhNb5kMCiLRxTetw4Xqd9laGuGH9bU+HZSC6wTC/9az3s2IMIJaggL8NiYtLasP2d76NoYtRBzly3IMt/dmlGmLN/AN1iNk5VF+hdsjvYLA88ZZj1TZTXt7awIF17Hezx/tb+aVZRiNAUC4r5jg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711381007; c=relaxed/simple;
-	bh=63ps3itBNH6CkxrvJz2SUMrLS5Lmnnh52yVxG/KH+F4=;
+	s=arc-20240116; t=1711381013; c=relaxed/simple;
+	bh=ZSTkalsFKnRIcJYK2kiX5ohZP7T+Nr/VG9RYwgkXnBw=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=U9TpMW/X1N/libevyrKYqRtl0DAqoevQhFKea/JNU82OWP1UTyoOoUpEKSHFu6DenWWS7jL7hEFAoFbJeNUJi/jG0Pwiva6eDoogOQOFCYxUJVwcBtNK1ECF9umZcrOQuh/rhrBSzYaZBjeTzxRZXiPME0lGdIrywgCLYeQkQUo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=dnWCqJKt; arc=none smtp.client-ip=198.175.65.10
+	 MIME-Version; b=rpcYFvGk9HxDwWG4W8kWcoBxjZG87cGwA0YA9m/fZBUS+/j2SrljdlHj8PSHmPy9rOwrd11hvmY3pBCHgWcpjdigZcURMOMOW2CkFGLy06/5x17h5fu0ug7I3JA/e0mJk7eavgzuhqVwGfY9bhQNMh+gTFVJ2JQU8EWJcepSDw8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=eP8b42En; arc=none smtp.client-ip=192.198.163.9
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1711381005; x=1742917005;
+  t=1711381011; x=1742917011;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=63ps3itBNH6CkxrvJz2SUMrLS5Lmnnh52yVxG/KH+F4=;
-  b=dnWCqJKtM1OLZSCXiE6Prbdqv7pcYOvvYJVN22shaS7W5WSrzVshxgt7
-   FRER/xh8nPYnfdeyQHU3K0UEuJ8MZst1aqniqvNt8vZJIzYbrcULFaWOC
-   AA0rTT+q3sy+qLDNKxjNTZbKl/MVrFrdUiKZOMWcRFP7KCwMRhDMITBha
-   /8RB1pXJ76qd0NSd5T9tex3dIHkU769ILwiKKPbf0Q6gc575kDhHKsFfq
-   EWlLx71gPGup9ldvweoTVgjd8TtbhulP729RAeDE2EK5jCl15HT87I/cM
-   u64avAFUjT58gz21hn6e6pn7+MIf11b/u0YRoMkh3QlBRcnxZY5+ewxsF
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11023"; a="23842518"
+  bh=ZSTkalsFKnRIcJYK2kiX5ohZP7T+Nr/VG9RYwgkXnBw=;
+  b=eP8b42EnSp80EcA2nXsoeNn4QBzrXVS6marpubZfw/NIMoJxMoEnEINb
+   mOxzuTJO0Kpq2Wx4i9igt/Jn/e1MN+mJ3rZDUqhc55Zo6ObaCng6ZXX1a
+   7XkIAxMEBf5oDwyf0u1bw5ItN5kViDIdz9NPinEgBBBLDUVgCGdu2Ikxr
+   Vm2Qhrf4lDKJeiGm33othjLCP0qjE8lCilkvJoYhZk+UVvNJ22K4V9sJJ
+   aKtG94XePhRGrYdrj3dwYvOioH+hT8agmRQghEqHb76KuWfJ4vgBR0kL1
+   Fmp2AQLtPCcQIB0Ytm80bQEh9AoMUf8QYVe47e9ufM9n96jMbX+huDTj1
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11023"; a="17125068"
 X-IronPort-AV: E=Sophos;i="6.07,153,1708416000"; 
-   d="scan'208";a="23842518"
-Received: from orviesa004.jf.intel.com ([10.64.159.144])
-  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Mar 2024 08:36:45 -0700
+   d="scan'208";a="17125068"
+Received: from orviesa010.jf.intel.com ([10.64.159.150])
+  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Mar 2024 08:36:51 -0700
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.07,153,1708416000"; 
-   d="scan'208";a="20337599"
+   d="scan'208";a="15523911"
 Received: from idirlea-mobl.ger.corp.intel.com (HELO localhost) ([10.252.55.171])
-  by orviesa004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Mar 2024 08:36:44 -0700
+  by orviesa010-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Mar 2024 08:36:48 -0700
 From: Jani Nikula <jani.nikula@intel.com>
 To: Andrew Morton <akpm@linux-foundation.org>,
 	Greg KH <gregkh@linuxfoundation.org>,
 	linux-kernel@vger.kernel.org
 Cc: jani.nikula@intel.com
-Subject: [RFC 1/4] kernel/panic: return early from print_tainted() when not tainted
-Date: Mon, 25 Mar 2024 17:36:32 +0200
-Message-Id: <2adfb5b76982d65d83077c8c5b269dbd8a63864a.1711380724.git.jani.nikula@intel.com>
+Subject: [RFC 2/4] kernel/panic: convert print_tainted() to use struct seq_buf internally
+Date: Mon, 25 Mar 2024 17:36:33 +0200
+Message-Id: <aeed348204d6729e95eedb0766349ec30c0f162c.1711380724.git.jani.nikula@intel.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <cover.1711380724.git.jani.nikula@intel.com>
 References: <cover.1711380724.git.jani.nikula@intel.com>
@@ -73,55 +73,85 @@ MIME-Version: 1.0
 Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Content-Transfer-Encoding: 8bit
 
-Reduce indent to make follow-up changes slightly easier on the eyes.
+Convert print_tainted() to use struct seq_buf internally in order to be
+more aware of the buffer constraints as well as make it easier to extend
+in follow-up work.
 
 Cc: Andrew Morton <akpm@linux-foundation.org>
 Cc: Greg KH <gregkh@linuxfoundation.org>
 Signed-off-by: Jani Nikula <jani.nikula@intel.com>
 ---
- kernel/panic.c | 25 +++++++++++++------------
- 1 file changed, 13 insertions(+), 12 deletions(-)
+ kernel/panic.c | 38 ++++++++++++++++++++++++--------------
+ 1 file changed, 24 insertions(+), 14 deletions(-)
 
 diff --git a/kernel/panic.c b/kernel/panic.c
-index 628673ddf1c9..b6d4d1da1eaa 100644
+index b6d4d1da1eaa..d2d5f0a4b514 100644
 --- a/kernel/panic.c
 +++ b/kernel/panic.c
-@@ -509,22 +509,23 @@ const struct taint_flag taint_flags[TAINT_FLAGS_COUNT] = {
+@@ -35,6 +35,7 @@
+ #include <linux/debugfs.h>
+ #include <linux/sysfs.h>
+ #include <linux/context_tracking.h>
++#include <linux/seq_buf.h>
+ #include <trace/events/error_report.h>
+ #include <asm/sections.h>
+ 
+@@ -498,6 +499,25 @@ const struct taint_flag taint_flags[TAINT_FLAGS_COUNT] = {
+ 	[ TAINT_TEST ]			= { 'N', ' ', true },
+ };
+ 
++static void print_tainted_seq(struct seq_buf *s)
++{
++	int i;
++
++	if (!tainted_mask) {
++		seq_buf_puts(s, "Not tainted");
++		return;
++	}
++
++	seq_buf_printf(s, "Tainted: ");
++	for (i = 0; i < TAINT_FLAGS_COUNT; i++) {
++		const struct taint_flag *t = &taint_flags[i];
++		bool is_set = test_bit(i, &tainted_mask);
++		char c = is_set ? t->c_true : t->c_false;
++
++		seq_buf_putc(s, c);
++	}
++}
++
+ /**
+  * print_tainted - return a string to represent the kernel taint state.
+  *
+@@ -509,25 +529,15 @@ const struct taint_flag taint_flags[TAINT_FLAGS_COUNT] = {
  const char *print_tainted(void)
  {
  	static char buf[TAINT_FLAGS_COUNT + sizeof("Tainted: ")];
-+	char *s;
-+	int i;
+-	char *s;
+-	int i;
++	struct seq_buf s;
  
  	BUILD_BUG_ON(ARRAY_SIZE(taint_flags) != TAINT_FLAGS_COUNT);
  
--	if (tainted_mask) {
--		char *s;
--		int i;
--
--		s = buf + sprintf(buf, "Tainted: ");
--		for (i = 0; i < TAINT_FLAGS_COUNT; i++) {
--			const struct taint_flag *t = &taint_flags[i];
--			*s++ = test_bit(i, &tainted_mask) ?
--					t->c_true : t->c_false;
--		}
--		*s = 0;
--	} else
-+	if (!tainted_mask) {
- 		snprintf(buf, sizeof(buf), "Not tainted");
-+		return buf;
-+	}
-+
-+	s = buf + sprintf(buf, "Tainted: ");
-+	for (i = 0; i < TAINT_FLAGS_COUNT; i++) {
-+		const struct taint_flag *t = &taint_flags[i];
-+		*s++ = test_bit(i, &tainted_mask) ?
-+			t->c_true : t->c_false;
-+	}
-+	*s = 0;
+-	if (!tainted_mask) {
+-		snprintf(buf, sizeof(buf), "Not tainted");
+-		return buf;
+-	}
++	seq_buf_init(&s, buf, sizeof(buf));
  
- 	return buf;
+-	s = buf + sprintf(buf, "Tainted: ");
+-	for (i = 0; i < TAINT_FLAGS_COUNT; i++) {
+-		const struct taint_flag *t = &taint_flags[i];
+-		*s++ = test_bit(i, &tainted_mask) ?
+-			t->c_true : t->c_false;
+-	}
+-	*s = 0;
++	print_tainted_seq(&s);
+ 
+-	return buf;
++	return seq_buf_str(&s);
  }
+ 
+ int test_taint(unsigned flag)
 -- 
 2.39.2
 
