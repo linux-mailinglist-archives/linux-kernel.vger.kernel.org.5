@@ -1,104 +1,89 @@
-Return-Path: <linux-kernel+bounces-117631-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-117633-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7D63888AD80
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 19:16:28 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 17C3488AD86
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 19:17:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AF7121C3EEBD
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 18:16:27 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A4AA81FA2791
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 18:17:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1648259B52;
-	Mon, 25 Mar 2024 17:44:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jOR+MgPN"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 61F5E134BD;
+	Mon, 25 Mar 2024 17:46:18 +0000 (UTC)
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5901B59B61;
-	Mon, 25 Mar 2024 17:44:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5DA578F48;
+	Mon, 25 Mar 2024 17:46:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.176.79.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711388691; cv=none; b=a4jGRqMaXTnkhioKxp5HDgGdp3FFrCp46qumzciebJTKlfDOCnETR1g5bDgAmb795w66H6aSX3zx9A5UlRvawoO+Tq0H0W8GMMbiLAtjRUgDJiyqmJORS8polwnc1E4qKsdZ5tv61moeS3IdhRkL7eVZ6cBV9pi18zaJd1MyVZw=
+	t=1711388777; cv=none; b=n7t3NFYKlUeOtk4n6EXOX6g5JCCy1/adEIPvydhiMRTdtz5ne96QYyTD0D6gBMaFv7OpErFpSz9AjrKJ5HiHacmPpGhGNa6pZLGNXwKbLZUMUiYvUflZHvac726xiJI7WYFRSm9zEvT1jB/EdsQzTe20UWdQaxOwNkzyheplFS8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711388691; c=relaxed/simple;
-	bh=vrzdapfTi0QWEvTbUNO21le5/X7ZUgL1lrdO+CKr7U8=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
-	 MIME-Version:Content-Type; b=etAvID6tX4twNbBLUsRy+tru2To6lEL4E2355gC2VRdEg0tdU/0WVa3xhodLACFExGF63oTT54e2pyFlYimHFmCSN+DbTWQS2UhjpZhPw3O47feGpV7ydx1yZ086TF8oZQycp2i1PbGlN22KJKS6obQW7ZBpU2LaUR867XNTxws=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=jOR+MgPN; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DFEC3C433C7;
-	Mon, 25 Mar 2024 17:44:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711388691;
-	bh=vrzdapfTi0QWEvTbUNO21le5/X7ZUgL1lrdO+CKr7U8=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=jOR+MgPNGs+t32Qw6dbHyuiRbL3scRwRFhXCgWzXvZrWsOnhhKFpDM+KVYSvdjzVl
-	 2llPz4kHkozIB7OFyUtpw6hHej67gAECl2+5D94uUuS4RQUP+uhGND3N6qSPZognKB
-	 DIGiDbCZI/s5LL1nQ5EdVFB7REcSDw2N9IqcsZjbsxAAZZbo0dfMkhDOfzrNGubgj6
-	 WOT2HJWJyJ8WeGDTHmzdVG+H653cYkxVKwoJ/iKy2/SF07zgqNQ8jJ9+JxuS2m6TZ9
-	 kO0Jumlo8V7uqf3ZWlPhvNkE5Nj+3ktHu4Zcd5YDneo7heYzNtFvQZJK1cCnh/964Y
-	 1t5eCo3fGKvDQ==
-From: Mark Brown <broonie@kernel.org>
-To: Matthias Brugger <matthias.bgg@gmail.com>, 
- AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>, 
- Justin Swartz <justin.swartz@risingedge.co.za>
-Cc: linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org, 
- linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org
-In-Reply-To: <20240316010302.20776-1-justin.swartz@risingedge.co.za>
-References: <71533474-eb08-438c-b7ec-5f3277c195fc@sirena.org.uk>
- <20240316010302.20776-1-justin.swartz@risingedge.co.za>
-Subject: Re: [PATCH v2] spi: mt7621: allow GPIO chip select lines
-Message-Id: <171138868965.327330.16954587667720708033.b4-ty@kernel.org>
-Date: Mon, 25 Mar 2024 17:44:49 +0000
+	s=arc-20240116; t=1711388777; c=relaxed/simple;
+	bh=ZJ8ukYnDZoEFr9eoi9abepsnBhzy11uF5svrMsTITIE=;
+	h=Date:From:To:CC:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=pYCNqqfWJMsHrBqYUi2aJj/X+sTBJRFGsUe+GMB+fT9+zx0eOPS6f2dq8cv6rguuaiS2iwjEhW6nrmjNVmhcaJp7xOm4zcnZdoB1w9WD0bxvJkoOYrab2PwTUtb+fjFodIa15I9ziR+dDOOc6Driiz3rDW/Ok7rNOdoLafegO28=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=185.176.79.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.18.186.31])
+	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4V3KxS3XGnz67mnJ;
+	Tue, 26 Mar 2024 01:41:48 +0800 (CST)
+Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
+	by mail.maildlp.com (Postfix) with ESMTPS id 0428B1400DC;
+	Tue, 26 Mar 2024 01:46:13 +0800 (CST)
+Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
+ (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.35; Mon, 25 Mar
+ 2024 17:46:12 +0000
+Date: Mon, 25 Mar 2024 17:46:11 +0000
+From: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To: Ira Weiny <ira.weiny@intel.com>
+CC: Dave Jiang <dave.jiang@intel.com>, Fan Ni <fan.ni@samsung.com>, "Navneet
+ Singh" <navneet.singh@intel.com>, Dan Williams <dan.j.williams@intel.com>,
+	Davidlohr Bueso <dave@stgolabs.net>, Alison Schofield
+	<alison.schofield@intel.com>, Vishal Verma <vishal.l.verma@intel.com>,
+	<linux-btrfs@vger.kernel.org>, <linux-cxl@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 05/26] cxl/core: Simplify cxl_dpa_set_mode()
+Message-ID: <20240325174611.00006e0c@Huawei.com>
+In-Reply-To: <20240324-dcd-type2-upstream-v1-5-b7b00d623625@intel.com>
+References: <20240324-dcd-type2-upstream-v1-0-b7b00d623625@intel.com>
+	<20240324-dcd-type2-upstream-v1-5-b7b00d623625@intel.com>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset="US-ASCII"
 Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.14-dev
+X-ClientProxiedBy: lhrpeml100002.china.huawei.com (7.191.160.241) To
+ lhrpeml500005.china.huawei.com (7.191.163.240)
 
-On Sat, 16 Mar 2024 03:03:01 +0200, Justin Swartz wrote:
-> Extract a magic number, from mt7621_spi_probe(), used to
-> declare the number of chip select lines (which co-incides
-> with the native chip select count of 2) to a macro.
+On Sun, 24 Mar 2024 16:18:08 -0700
+Ira Weiny <ira.weiny@intel.com> wrote:
+
+> cxl_dpa_set_mode() checks the mode for validity two times, once outside
+> of the DPA RW semaphore and again within.  The function is not in a
+> critical path.  Prior to Dynamic Capacity the extra check was not much
+> of an issue.  The addition of DC modes increases the complexity of
+> the check.
 > 
-> Use the newly defined MT7621_NATIVE_CS_COUNT macro to
-> instead populate both the spi_controller's max_native_cs
-> and num_chipselect members.
+> Simplify the mode check before adding the more complex DC modes.
 > 
-> [...]
+> Signed-off-by: Ira Weiny <ira.weiny@intel.com>
 
-Applied to
+Nice. Maybe drag this earlier in series so it could potentially be
+picked up as a cleanup?  Same with patch 2 potentially.
+If Dave is fine with doing that sort of precursor patches going
+earlier, it will save carrying quite so many in this series for
+future versions (and make it look less terrifying :)
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git for-next
-
-Thanks!
-
-[1/1] spi: mt7621: allow GPIO chip select lines
-      commit: 2a741cd6ec5899cec054ae27120f490ad57bc6bb
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
+Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 
 
