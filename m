@@ -1,167 +1,178 @@
-Return-Path: <linux-kernel+bounces-117922-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-117923-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C19EE88B155
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 21:27:50 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 70E0988B545
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 00:26:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7D2AE30469A
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 20:27:49 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 08C41C42421
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 20:28:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2215356770;
-	Mon, 25 Mar 2024 20:26:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C92804DA18;
+	Mon, 25 Mar 2024 20:26:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="JpOxHfFe"
-Received: from mail-oa1-f47.google.com (mail-oa1-f47.google.com [209.85.160.47])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=gmx.de header.i=scpcom@gmx.de header.b="m28Sj9V7"
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.18])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8F00453387
-	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 20:26:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8EA07487AE;
+	Mon, 25 Mar 2024 20:26:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711398399; cv=none; b=NymSmd1ndTWxW6LNivCSOeZgWXrf6tcPeklXKb6nJZYe8CDrx0x7/t68CI4413NH9keXf4yE7t7LwyVgoHkNuIDgMNmLm2FLJhH2xu6C/dXyzQ7RfRZTQ4/C8HVLH1BaShPzRJ2q+H6S5C9+l11H9QIa95jf4ifXZ5U26QHTFnA=
+	t=1711398413; cv=none; b=RPc7chL5A/rXnZi7hM/qwERnJMmbkn5YDR2UR4iMG6tTw9vbwNSgabFNx7qzoKxfsUilE/5GGhwbnSZV89pkkGARaP8KPO3BA/J9acbjA9z2sbQ0EnCwccXtOhJN9GAzgVqiwfqoWCzgZcsJPQ30tk9vHlq1vZnD7eUgn5p4MGY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711398399; c=relaxed/simple;
-	bh=skUYPMIsAwiP0vB1/M6Ts5CcVZ5JyOu98eWA+okWyzA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=frd1nyEWOf+sxrOctWWo1PxnzKso5hERYAYCWYr3GUjEtfd+v8OxLMBoVFhMBVQ1ml+RB5PrXDtKLYQ6eAKFK4lVWqJv3RuFvB1nDqVKPRUN9Rm/QJZ0dpgbG37wC6QvNNOKWUV1vD5l+iJmww2Xa9iM+xeC1fGAqVSifc1ObTs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=JpOxHfFe; arc=none smtp.client-ip=209.85.160.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-oa1-f47.google.com with SMTP id 586e51a60fabf-221816e3ab9so2050062fac.2
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 13:26:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1711398396; x=1712003196; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=XQgVc5rA568fhlJ0cVI5voz5lHmOfZopdFI9MupJvHk=;
-        b=JpOxHfFe50wwXL+FQSqBUJlNIJ8hwwzj1mOui+ge4kd2ntlZgRcuiLu12T3dK53abM
-         hvwSV9sIlngM/ukHf0y4o5dNb49y6EzWEAjcgfj81OU5EjKoDqlLv4IUcs6eRWBbz3kJ
-         csROJ1D/FH0mKE/lq8iL6dKZk44d9JodKRNko=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711398396; x=1712003196;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=XQgVc5rA568fhlJ0cVI5voz5lHmOfZopdFI9MupJvHk=;
-        b=AH/Rhdbui5G1f1yK9YC5S+lU34ClOEYD2R1xzuGiDFUHmtDMH7zVgm7deHQceqOdp0
-         5mQBQYA9p79KGmTofcQJdynSrQmf55PC8YcLWjuzB5VkT7s91G16trN5pXvN7gLgtMI4
-         C/DqIp24fagp26/1NVkuyBWmY+/XrZaq2gKUesuUgqS4KOtvDhsJKE22yEB3onBhG29E
-         1ZJK7Son3mGuxneRRzROddtVq9DMoXe8HOWymftX+sGxGOc1L3YqkANwfefFXgStXV2B
-         vFHNWbf8T+/uvYiG8fe5ab9XmdmNz0E0XwsJPD+l8Luzp9HvbDT13ZtXXdB+JoxXcSvO
-         Id2Q==
-X-Forwarded-Encrypted: i=1; AJvYcCXL1qhZMgihk8Ryhjuq8njsO/aazjXupI4+lfFvOl9Ld4xZBa9+hkKWdETFA6FC1PifFuJ06B0xtIsIrhgP7XXEe1PBJIwp15Ygo6lH
-X-Gm-Message-State: AOJu0Yxg/tUzgpCMV1RuKwz7oRTLsEXnw1+cAb35K9QHCEjMESZ62XBy
-	e8Dy5c4J+nyQwwgHQXpbWFZUsEloxI9JRlOoQpOj+oyQzqTxaZQ6ZqkPGXvT0A==
-X-Google-Smtp-Source: AGHT+IGDLy633FPE8AGgVDT1L28BA0GlpvQ5JB0Sst0Ad42s4bKNBdcs/aHPwJ6kk2CRqJ3AwFCzew==
-X-Received: by 2002:a05:6870:1652:b0:22a:4f78:5be6 with SMTP id c18-20020a056870165200b0022a4f785be6mr2334889oae.17.1711398395563;
-        Mon, 25 Mar 2024 13:26:35 -0700 (PDT)
-Received: from www.outflux.net ([198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id s66-20020a632c45000000b005d6b5934deesm6218001pgs.48.2024.03.25.13.26.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 Mar 2024 13:26:35 -0700 (PDT)
-Date: Mon, 25 Mar 2024 13:26:34 -0700
-From: Kees Cook <keescook@chromium.org>
-To: Kent Overstreet <kent.overstreet@linux.dev>
-Cc: Vlastimil Babka <vbabka@suse.cz>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Christoph Lameter <cl@linux.com>, Pekka Enberg <penberg@kernel.org>,
-	David Rientjes <rientjes@google.com>,
-	Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-	Roman Gushchin <roman.gushchin@linux.dev>,
-	Hyeonggon Yoo <42.hyeyoo@gmail.com>,
-	"GONG, Ruiqi" <gongruiqi@huaweicloud.com>,
-	Xiu Jianfeng <xiujianfeng@huawei.com>,
-	Suren Baghdasaryan <surenb@google.com>,
-	Jann Horn <jannh@google.com>, Matteo Rizzo <matteorizzo@google.com>,
-	linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-	linux-hardening@vger.kernel.org, jvoisin <julien.voisin@dustri.org>
-Subject: Re: [PATCH v2 0/9] slab: Introduce dedicated bucket allocator
-Message-ID: <202403251324.F8EADD2E@keescook>
-References: <20240305100933.it.923-kees@kernel.org>
- <5e1571de-2c5a-4be4-93f4-01582094ee96@suse.cz>
- <24vn56fs7oohqgw3rhssiwglmviruqnt44y6oeajzvskostcrr@7jzhmxjbhcha>
+	s=arc-20240116; t=1711398413; c=relaxed/simple;
+	bh=sirxy7fEgeaEeO6FTxMzd8nAXM+znP7Hzj8NSE0pTnk=;
+	h=MIME-Version:Message-ID:From:To:Cc:Subject:Content-Type:Date:
+	 In-Reply-To:References; b=A/zkKZdy7miNgdL+8xMr8Ki+qyN0dJnTmODld1OJ3bivH5gqtTxuFgm3oGlaeMJ3VEJUkyVg+ka/D7Cr38EZKDiOgosGufxqa9Kay1xobUxD1goduJPIPjaZlogzPDEEyQgZfrU6iih5/xlhOwqbjrS6jAtHYqELzaRBFRdp+4I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de; spf=pass smtp.mailfrom=gmx.de; dkim=pass (2048-bit key) header.d=gmx.de header.i=scpcom@gmx.de header.b=m28Sj9V7; arc=none smtp.client-ip=212.227.15.18
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.de;
+	s=s31663417; t=1711398394; x=1712003194; i=scpcom@gmx.de;
+	bh=TFWhVf6FAP0u+nZm5RqM5xg+6k2IVEXLXNjFBZXAJTg=;
+	h=X-UI-Sender-Class:From:To:Cc:Subject:Date:In-Reply-To:
+	 References;
+	b=m28Sj9V7bEpljZpCRxs45km+eFyhrs21Dw7c4d0opxxMRdcz4T4h1iRDDUlFBzZU
+	 RUFqUjJzWK3opSi9ZywTFw9dkm68jBFL6Or3SR4pT9zyyPL3uTEuUqtRzXeyX1jGk
+	 p+33yUUMbygHss7qsvTcLwqg0s0qrTMLkx/gHoMNoTd89IoH+vd/Bi2BOLvwyAmOh
+	 BBKkaHeu7GjRSC+GFb0Znm2roccDpzwcrxozOW34TbmfoTwOR0CjbttXfZetz25bM
+	 VIfRdWDHuN5fhkKE8lg8jG1fvUtiXdTyJAAIef2vL3jeXYAZ7M7rwKHkr5pyBa0em
+	 vofyXctujx24Vv8FLg==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [10.236.12.4] ([10.236.12.4]) by msvc-mesg-gmx001 (via HTTP);
+ Mon, 25 Mar 2024 21:26:34 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <24vn56fs7oohqgw3rhssiwglmviruqnt44y6oeajzvskostcrr@7jzhmxjbhcha>
+Message-ID: <trinity-77720d9d-4d5b-48c6-8b1f-0b7205ea3c2b-1711398394712@msvc-mesg-gmx021>
+From: Jan Schunk <scpcom@gmx.de>
+To: Chuck Lever III <chuck.lever@oracle.com>
+Cc: Jeff Layton <jlayton@kernel.org>, Neil Brown <neilb@suse.de>, Olga
+ Kornievskaia <kolga@netapp.com>, Dai Ngo <dai.ngo@oracle.com>, Tom Talpey
+ <tom@talpey.com>, Linux NFS Mailing List <linux-nfs@vger.kernel.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Aw: Re: [External] : nfsd: memory leak when client does many file
+ operations
+Content-Type: text/plain; charset=UTF-8
+Importance: normal
+Sensitivity: Normal
+Content-Transfer-Encoding: quoted-printable
+Date: Mon, 25 Mar 2024 21:26:34 +0100
+In-Reply-To: <088D9CC3-C5B0-4646-A85D-B3B9ACE8C532@oracle.com>
+References: <trinity-068f55c9-6088-418d-bf3a-c2778a871e98-1711310237802@msvc-mesg-gmx120>
+ <E3109CAA-8261-4F66-9D1B-3546E8B797DF@oracle.com>
+ <trinity-bfafb9db-d64f-4cad-8cb1-40dac0a2c600-1711313314331@msvc-mesg-gmx105>
+ <567BBF54-D104-432C-99C0-1A7EE7939090@oracle.com>
+ <trinity-66047013-4d84-4eef-b5d3-d710fe6be805-1711316386382@msvc-mesg-gmx005>
+ <6F16BCCE-3000-4BCB-A3B4-95B4767E3577@oracle.com>
+ <trinity-ad0037c0-1060-4541-a8ca-15f826a5b5a2-1711396545958@msvc-mesg-gmx024>
+ <088D9CC3-C5B0-4646-A85D-B3B9ACE8C532@oracle.com>
+X-Priority: 3
+X-Provags-ID: V03:K1:ZFw7evkSY6o6F1YQ1W5m+DbHIfZY4qKTfHzoAohk5C8L6s9QBbeYDbswgf+ea4NuJ+gSv
+ QSYKvq+1Rc25VhTi6ToUuiyOXiiyjZwHGGyHiIiAYnpTGpcYH7wYqMnqgl714kRyA2CvJTtC+Hz0
+ WcwvetN7SwmszmDnlaOk/5UUgE4K/jswrHlTI0AiQiVbeWJVfEj+CkoceK9q3kGEIWdlcTXE5xWm
+ 5p4CKpfcGAARRDsG6gKOIWhuluvJlxxHbqv4jLCi8UHY2ctR57fhPW/cJfKhh/0gi7a3CxMyeqTd
+ QM=
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:UsaWHKC/ZJI=;xg6p6NfN7pMdG8ExPZVQTWnGdDX
+ skcEndFmF3hhdOkXiE/DrFI/ZoSeM5G4TO8G0o/TBw/M+byIa6HQJDL4efSglPX3JAOLY2Jrg
+ rVIyvXnkcjIOmNdA/T9LShOvs1TassDavG8yYMZgYZoiwo6govVu7VpPvixMY7Sc4W+8fPaP0
+ Wc5aIZVRH4EuVDVzjWjeua6QzSIQkF+aU0vYbNbgvdnHtcgsAKriOka+DKQ9jtSDTvScReIBB
+ O8UM2/OIrT+ILwZU+j0bk6nOtgPCltEyFMYbzugcnJ8PrBsMN0qGliri8nRROM2Dx3O60GsQI
+ bgdeOoMcueJ+JK+akzTJ9gRyHvORX4RS4TcWHvUrhu8ErI6+1Rhc9PFu9TdPmIlYGs0nN/nU3
+ ssYvUGLUxKXUjbv7UP1uwxi4ij99aSzAzHDlgQam65yfRoQzwjYuYePO0CgfEgDXHog5MmGWh
+ PfOYo7+md8IPi7CiStOmZpGywRLQrUwZKJphTXu3s6mfnl1Xn5KTBDVsenLD1FFHHz1kWRXig
+ IJ4EYutg3kSpT5KftvaOtmwrKt89gvog4RJoyUQKaq8AEuknE/A84A7FP+jJ0u7KeSqEN04E7
+ ehidLwjuDbKKqv0cQ3ZEsK+nEgatwnHigYfguwHv42T0lUs/xAVT5l/sqYeOwy7eMSHu5C25E
+ 9zb5tlWKfI3apmyZ125GgqtJ7i1PXq37YVFj+tId++tqWFcs0Pe8ssCYx9/Vuf8=
 
-On Mon, Mar 25, 2024 at 03:32:12PM -0400, Kent Overstreet wrote:
-> On Mon, Mar 25, 2024 at 10:03:23AM +0100, Vlastimil Babka wrote:
-> > On 3/5/24 11:10 AM, Kees Cook wrote:
-> > > Hi,
-> > > 
-> > > Repeating the commit logs for patch 4 here:
-> > > 
-> > >     Dedicated caches are available For fixed size allocations via
-> > >     kmem_cache_alloc(), but for dynamically sized allocations there is only
-> > >     the global kmalloc API's set of buckets available. This means it isn't
-> > >     possible to separate specific sets of dynamically sized allocations into
-> > >     a separate collection of caches.
-> > > 
-> > >     This leads to a use-after-free exploitation weakness in the Linux
-> > >     kernel since many heap memory spraying/grooming attacks depend on using
-> > >     userspace-controllable dynamically sized allocations to collide with
-> > >     fixed size allocations that end up in same cache.
-> > > 
-> > >     While CONFIG_RANDOM_KMALLOC_CACHES provides a probabilistic defense
-> > >     against these kinds of "type confusion" attacks, including for fixed
-> > >     same-size heap objects, we can create a complementary deterministic
-> > >     defense for dynamically sized allocations.
-> > > 
-> > >     In order to isolate user-controllable sized allocations from system
-> > >     allocations, introduce kmem_buckets_create(), which behaves like
-> > >     kmem_cache_create(). (The next patch will introduce kmem_buckets_alloc(),
-> > >     which behaves like kmem_cache_alloc().)
-> > > 
-> > >     Allows for confining allocations to a dedicated set of sized caches
-> > >     (which have the same layout as the kmalloc caches).
-> > > 
-> > >     This can also be used in the future once codetag allocation annotations
-> > >     exist to implement per-caller allocation cache isolation[0] even for
-> > >     dynamic allocations.
-> > > 
-> > >     Link: https://lore.kernel.org/lkml/202402211449.401382D2AF@keescook [0]
-> > > 
-> > > After the implemetation are 2 example patches of how this could be used
-> > > for some repeat "offenders" that get used in exploits. There are more to
-> > > be isolated beyond just these. Repeating the commit log for patch 8 here:
-> > > 
-> > >     The msg subsystem is a common target for exploiting[1][2][3][4][5][6]
-> > >     use-after-free type confusion flaws in the kernel for both read and
-> > >     write primitives. Avoid having a user-controlled size cache share the
-> > >     global kmalloc allocator by using a separate set of kmalloc buckets.
-> > > 
-> > >     Link: https://blog.hacktivesecurity.com/index.php/2022/06/13/linux-kernel-exploit-development-1day-case-study/ [1]
-> > >     Link: https://hardenedvault.net/blog/2022-11-13-msg_msg-recon-mitigation-ved/ [2]
-> > >     Link: https://www.willsroot.io/2021/08/corctf-2021-fire-of-salvation-writeup.html [3]
-> > >     Link: https://a13xp0p0v.github.io/2021/02/09/CVE-2021-26708.html [4]
-> > >     Link: https://google.github.io/security-research/pocs/linux/cve-2021-22555/writeup.html [5]
-> > >     Link: https://zplin.me/papers/ELOISE.pdf [6]
-> > 
-> > Hi Kees,
-> > 
-> > after reading [1] I think the points should be addressed, mainly about the
-> > feasibility of converting users manually. On a related technical note I
-> > worry what will become of /proc/slabinfo when we convert non-trivial amounts
-> > of users.
-> 
-> There shouldn't be any need to convert users to this interface - just
-> leverage the alloc_hooks() macro.
+I am building my own kernels, but I never tried kmemleak, is this just a Kc=
+onfig option?
+What do you mean with "bisect between v6=2E3 and v6=2E4"?
+Everything including v6=2E4 is OK, the problem starts at v6=2E5=2E
 
-I expect to do both -- using the alloc_hooks() macro to do
-per-call-site-allocation caches will certainly have a non-trivial amount
-of memory usage overhead, and not all systems will want it. We can have
-a boot param to choose between per-site and normal, though normal can
-include a handful of these manually identified places.
+I also looked at some code already but there are huge changes to mm that h=
+appened in v6=2E5 and v6=2E6 so for me it is heavy to compare it with older=
+ versions to find one or more commits that may cause the issue=2E
 
--- 
-Kees Cook
+Btw=2E thanks for guiding me so far=2E
+
+> Gesendet: Montag, den 25=2E03=2E2024 um 21:11 Uhr
+> Von: "Chuck Lever III" <chuck=2Elever@oracle=2Ecom>
+> An: "Jan Schunk" <scpcom@gmx=2Ede>
+> Cc: "Jeff Layton" <jlayton@kernel=2Eorg>, "Neil Brown" <neilb@suse=2Ede>=
+, "Olga Kornievskaia" <kolga@netapp=2Ecom>, "Dai Ngo" <dai=2Engo@oracle=2Ec=
+om>, "Tom Talpey" <tom@talpey=2Ecom>, "Linux NFS Mailing List" <linux-nfs@v=
+ger=2Ekernel=2Eorg>, "linux-kernel@vger=2Ekernel=2Eorg" <linux-kernel@vger=
+=2Ekernel=2Eorg>
+> Betreff: Re: [External] : nfsd: memory leak when client does many file o=
+perations
+>=20
+>=20
+>=20
+> > On Mar 25, 2024, at 3:55=E2=80=AFPM, Jan Schunk <scpcom@gmx=2Ede> wrot=
+e:
+> >=20
+> > The VM is now running 20 hours with 512MB RAM, no desktop, without the=
+ "noatime" mount option and without the "async" export option=2E
+> >=20
+> > Currently there is no issue, but the memory usage is still contantly g=
+rowing=2E It may just take longer before something happens=2E
+> >=20
+> > top - 00:49:49 up 3 min,  1 user,  load average: 0,21, 0,19, 0,09
+> > Tasks: 111 total,   1 running, 110 sleeping,   0 stopped,   0 zombie
+> > %CPU(s):  0,2 us,  0,3 sy,  0,0 ni, 99,5 id,  0,0 wa,  0,0 hi,  0,0 si=
+,  0,0 st=20
+> > MiB Spch:    467,0 total,    302,3 free,     89,3 used,     88,1 buff/=
+cache    =20
+> > MiB Swap:    975,0 total,    975,0 free,      0,0 used=2E    377,7 ava=
+il Spch
+> >=20
+> > top - 15:05:39 up 14:19,  1 user,  load average: 1,87, 1,72, 1,65
+> > Tasks: 104 total,   1 running, 103 sleeping,   0 stopped,   0 zombie
+> > %CPU(s):  0,2 us,  4,9 sy,  0,0 ni, 53,3 id, 39,0 wa,  0,0 hi,  2,6 si=
+,  0,0 st=20
+> > MiB Spch:    467,0 total,     21,2 free,    147,1 used,    310,9 buff/=
+cache    =20
+> > MiB Swap:    975,0 total,    952,9 free,     22,1 used=2E    319,9 ava=
+il Spch
+> >=20
+> > top - 20:48:16 up 20:01,  1 user,  load average: 5,02, 2,72, 2,08
+> > Tasks: 104 total,   5 running,  99 sleeping,   0 stopped,   0 zombie
+> > %CPU(s):  0,2 us, 46,4 sy,  0,0 ni, 11,9 id,  2,3 wa,  0,0 hi, 39,2 si=
+,  0,0 st=20
+> > MiB Spch:    467,0 total,     16,9 free,    190,8 used,    271,6 buff/=
+cache    =20
+> > MiB Swap:    975,0 total,    952,9 free,     22,1 used=2E    276,2 ava=
+il Spch
+>=20
+> I don't see anything in your original memory dump that
+> might account for this=2E But I'm at a loss because I'm
+> a kernel developer, not a support guy -- I don't have
+> any tools or expertise that can troubleshoot a system
+> without rebuilding a kernel with instrumentation=2E My
+> first instinct is to tell you to bisect between v6=2E3
+> and v6=2E4, or at least enable kmemleak, but I'm guessing
+> you don't build your own kernels=2E
+>=20
+> My only recourse at this point would be to try to
+> reproduce it myself, but unfortunately I've just
+> upgraded my whole lab to Fedora 39, and there's a grub
+> bug that prevents booting any custom-built kernel
+> on my hardware=2E
+>=20
+> So I'm stuck until I can nail that down=2E Anyone else
+> care to help out?
+>=20
+>=20
+> --
+> Chuck Lever
+>=20
+>
 
