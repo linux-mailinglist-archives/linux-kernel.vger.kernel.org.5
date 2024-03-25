@@ -1,265 +1,200 @@
-Return-Path: <linux-kernel+bounces-118192-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-118195-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 13CF088B598
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 00:52:01 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E823C88B59F
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 00:52:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 798F01F3E753
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 23:52:00 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 074DB1C3CE7D
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 23:52:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7985A1292FD;
-	Mon, 25 Mar 2024 23:50:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1B5BA86634;
+	Mon, 25 Mar 2024 23:51:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="TudUSqTT"
-Received: from mail-yb1-f201.google.com (mail-yb1-f201.google.com [209.85.219.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="IeqVjgbA"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.15])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EBB07128385
-	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 23:50:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E57B584D21
+	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 23:51:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.15
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711410637; cv=none; b=oepVklFrY9RLZg7hYKU2mMWJlHYq4Dnk7H+QbDVs6VacK1r9SR7NT0i5/+LgdwOsNZ/jWIR9UZSXDqG7/6yEukOIDYdWLaifw7TLLYjyqSty+5eH3MB294Kgv3kWseDfYp3XTsVM7Id+K1FvHp9nE2ssohYD9PnfHUP4FnMpaxk=
+	t=1711410695; cv=none; b=gmpPlDXK0x+r7EsgUm5kli/HRaDCsJQJ75RqqqoJZJefDH3d3nVdNWKIuanbNAEkATrZREcVN43kdfyoa2GnjTzofj9gYLbt+w4/GsKjk8pMBvdz8df1iVzrNs5GXQ+aaVF/W5MxUS+exhmIREJhretTnZBD/7GeZwJwJ5s2RHQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711410637; c=relaxed/simple;
-	bh=HaCYxlLo5Ti9rOUslx2RmaiaM++bpDdpyJNIYANfmM8=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=iJb9ST65An1/Fe0Q5nlvcIPQNq4/SIeSpx6V3w40sTGtZuufGMuuuDjCOjKFJThR9A+7SOWnC5eBnHbTKDSHC6Y0Mag/HTwhpny72qSZoilSD4Z/MGS5evWUBbwT+/c+4N8OeZ1RB/23F25xipinCblO/sw/942QMFPkzsAGYrE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--yosryahmed.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=TudUSqTT; arc=none smtp.client-ip=209.85.219.201
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--yosryahmed.bounces.google.com
-Received: by mail-yb1-f201.google.com with SMTP id 3f1490d57ef6-dced704f17cso7910231276.1
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 16:50:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1711410635; x=1712015435; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=z6nu3U2cdQmEtB2lnDGjl91RMjz6aut26G90+PFcykM=;
-        b=TudUSqTTCYWiq6Hp4pPry0jpH57iwRaupU7wQ7+OXsX54smOoGhEoRLnVB3gsYmuZZ
-         g9Er7znFYlP8kpMuV3LU9BgsLFTQKpeFrn74y4dVnh3HyGy+5Du+LSZkPtEhvv+yuBgu
-         zuhZT9rg3iWvSLj7448OFTVjwCHV8BnH85qN8TA/XfXizFbQnjW70HgwW/icFJU4mCZn
-         j7fc6pPSCmPT/ZklBm3SHTudfqL7thT+4VqYzeEaX3yDhieXv1DsUUgkaPzGyUYOeG80
-         HRtXtDTu80mkp2jLBUhE0PxByQzBEWQKgqn/lwTSr56mJofP3v/qivjqme0zBS9AC/5Q
-         Gccw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711410635; x=1712015435;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=z6nu3U2cdQmEtB2lnDGjl91RMjz6aut26G90+PFcykM=;
-        b=TQj0a/Xj6eRWThA7JSfRDIPFHt9zqHJoR+t6n4RmO5k6+0m4thKYnvqJn9yONmLr1P
-         9LcKBOUOPB5lhrRI9m9zGDpCuf91aZsulcZRnkerr1BN0voZMHYcg1cDM36WlR2jBr2E
-         C3ftUdb84+UE0HzIpIh4idUvoxsUyFcS4RP3rTK81MXJ9qcB0uGaWWwUZGwFQRnrC5fe
-         bgYfNPYkXpWZrbvKLufLxW/5eTyaTbVYgO7d83lH2fEAUAIRO2SRKfzaHFioVHc8+fRR
-         2kHYyAs9BpfcpRGAaX1tTwgCs2MRqBcqJ4S4zdAixEUzHKM7nmqSFDV0cKSAsWu2eRON
-         +WqA==
-X-Forwarded-Encrypted: i=1; AJvYcCWigM1u17HI8Z4jbUFMRQv1jwq4dnDSy0dv18XivrZaLaA55Jk3P2+oYKDBx179dyZPjeEhejWhQBfu3wmHddwlhW/9I9PvBw0kamTl
-X-Gm-Message-State: AOJu0Yw3V9BD1huodnxgAQ+7/DpnbC/o5OGsPBZcCoQF9fwthDUcu+oV
-	B+9hZrFm+GsOqVppuYTUpIvmN3ckiIWP4Osx/WNVg29ftBWfrqCn9IiseCy/NyaR177sX1IERFh
-	0u7tkr60BfInG44VGdA==
-X-Google-Smtp-Source: AGHT+IHhwuSMeZ8KbkpdVbgoG6k+kjBoalv5THVzyluQgGq+kifTjQF/ACTCwAHFlLZp6s7t/niB6q7ZIp/Hk5oK
-X-Received: from yosry.c.googlers.com ([fda3:e722:ac3:cc00:20:ed76:c0a8:29b4])
- (user=yosryahmed job=sendgmr) by 2002:a05:6902:218d:b0:dda:c565:1025 with
- SMTP id dl13-20020a056902218d00b00ddac5651025mr317614ybb.2.1711410635103;
- Mon, 25 Mar 2024 16:50:35 -0700 (PDT)
-Date: Mon, 25 Mar 2024 23:50:17 +0000
-In-Reply-To: <20240325235018.2028408-1-yosryahmed@google.com>
+	s=arc-20240116; t=1711410695; c=relaxed/simple;
+	bh=6LBhZoYN12dplgg3YJGpTsQrJmrWi+HTqJZFug6Jfyg=;
+	h=Date:From:To:Cc:Subject:Message-ID; b=VwV/9AzTSceg0sBacolf2Sfy1Ujsw9AP96AQkWK2FH2Fci2kHYUKHK/qXNKkNb7bYhZZBo3svlLhf4TTxgl3mzpbT40wMabBoeE4F9tHCPo9iCIuN2sCmoMbG4NuPkba+Lj5pEn0sd6E0O9Wj75WgwuLoQ0gttOhKakranB1Jhk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=IeqVjgbA; arc=none smtp.client-ip=198.175.65.15
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1711410693; x=1742946693;
+  h=date:from:to:cc:subject:message-id;
+  bh=6LBhZoYN12dplgg3YJGpTsQrJmrWi+HTqJZFug6Jfyg=;
+  b=IeqVjgbA5bslg05eDUaylUhAP+rDP0oimeVByAjbDr5p4dd0BCRZxags
+   aM0xJwWFSRBVV37CIzAaj7Zdoz2QsgHpZbf6uKyTeR/FylZWXMkkGJwfV
+   IhrGGK+ltc/2Y7OnS/eYYmDRAAvKWmoxUO6ij8hagEfyNJGAXqCS/pUKn
+   9VEugCh3e4gNl9uXqPbjmeTRnPJ0IF2/vkae9/yv+EdvfLGYgvrb0unnp
+   0A+PMsVXOXw2HFSG+MimYxIWyPvbYkVSZGJxUmULlKG3jda8iFWwdVGoI
+   4DH1iFMHrl6ynFPe4jc7xf3ViRIsT0toPquHt1c83TRXkCw+xhMZGFa2O
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11024"; a="10237497"
+X-IronPort-AV: E=Sophos;i="6.07,154,1708416000"; 
+   d="scan'208";a="10237497"
+Received: from orviesa010.jf.intel.com ([10.64.159.150])
+  by orvoesa107.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Mar 2024 16:51:32 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,154,1708416000"; 
+   d="scan'208";a="15644426"
+Received: from lkp-server01.sh.intel.com (HELO b21307750695) ([10.239.97.150])
+  by orviesa010.jf.intel.com with ESMTP; 25 Mar 2024 16:51:31 -0700
+Received: from kbuild by b21307750695 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rou6C-000Mvn-2f;
+	Mon, 25 Mar 2024 23:51:28 +0000
+Date: Tue, 26 Mar 2024 07:50:35 +0800
+From: kernel test robot <lkp@intel.com>
+To: "x86-ml" <x86@kernel.org>
+Cc: linux-kernel@vger.kernel.org
+Subject: [tip:master] BUILD SUCCESS
+ 4e2b6e891aaed8a4dabf618aa8267f7fdbb5c69f
+Message-ID: <202403260731.9AwGLPxT-lkp@intel.com>
+User-Agent: s-nail v14.9.24
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20240325235018.2028408-1-yosryahmed@google.com>
-X-Mailer: git-send-email 2.44.0.396.g6e790dbe36-goog
-Message-ID: <20240325235018.2028408-10-yosryahmed@google.com>
-Subject: [RFC PATCH 9/9] mm: zswap: use zswap_entry_free() for partially
- initialized entries
-From: Yosry Ahmed <yosryahmed@google.com>
-To: Andrew Morton <akpm@linux-foundation.org>
-Cc: Johannes Weiner <hannes@cmpxchg.org>, Nhat Pham <nphamcs@gmail.com>, 
-	Chengming Zhou <chengming.zhou@linux.dev>, linux-mm@kvack.org, linux-kernel@vger.kernel.org, 
-	Yosry Ahmed <yosryahmed@google.com>
-Content-Type: text/plain; charset="UTF-8"
 
-zswap_entry_free() performs four types of cleanups before freeing a
-zswap_entry:
-- Deletes the entry from the LRU.
-- Frees compressed memory.
-- Puts the pool reference.
-- Uncharges the compressed memory and puts the objcg.
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git master
+branch HEAD: 4e2b6e891aaed8a4dabf618aa8267f7fdbb5c69f  Merge branch into tip/master: 'x86/shstk'
 
-zswap_entry_free() always expects a fully initialized entry. Allow
-zswap_entry_free() to handle partially initialized entries by making it
-possible to identify what cleanups are needed as follows:
-- Allocate entries with __GFP_ZERO and initialize zswap_entry.lru when
-  the entry is allocated. Points are NULL and length is zero upon
-  initialization.
-- Use zswap_entry.length to identify if there is compressed memory to
-  free. This is possible now that zero-filled pages are handled
-  separately, so a length of zero means we did not successfully compress
-  the page.
-- Only initialize entry->objcg after the memory is charged in
-  zswap_store().
+elapsed time: 724m
 
-With this in place, use zswap_entry_free() in the failure path of
-zswap_store() to cleanup partially initialized entries. This simplifies
-the cleanup code in zswap_store(). While we are at it, rename the
-remaining cleanup labels to more meaningful names.
+configs tested: 112
+configs skipped: 3
 
-Signed-off-by: Yosry Ahmed <yosryahmed@google.com>
----
- mm/zswap.c | 62 ++++++++++++++++++++++++++----------------------------
- 1 file changed, 30 insertions(+), 32 deletions(-)
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-diff --git a/mm/zswap.c b/mm/zswap.c
-index 9357328d940af..c50f9df230ca3 100644
---- a/mm/zswap.c
-+++ b/mm/zswap.c
-@@ -774,12 +774,13 @@ void zswap_memcg_offline_cleanup(struct mem_cgroup *memcg)
- **********************************/
- static struct kmem_cache *zswap_entry_cache;
- 
--static struct zswap_entry *zswap_entry_cache_alloc(gfp_t gfp, int nid)
-+static struct zswap_entry *zswap_entry_cache_alloc(int nid)
- {
- 	struct zswap_entry *entry;
--	entry = kmem_cache_alloc_node(zswap_entry_cache, gfp, nid);
--	if (!entry)
--		return NULL;
-+	entry = kmem_cache_alloc_node(zswap_entry_cache,
-+				      GFP_KERNEL | __GFP_ZERO, nid);
-+	if (entry)
-+		INIT_LIST_HEAD(&entry->lru);
- 	return entry;
- }
- 
-@@ -795,9 +796,12 @@ static struct zpool *zswap_find_zpool(struct zswap_entry *entry)
- 
- static void zswap_entry_free(struct zswap_entry *entry)
- {
--	zswap_lru_del(&zswap_list_lru, entry);
--	zpool_free(zswap_find_zpool(entry), entry->handle);
--	zswap_pool_put(entry->pool);
-+	if (!list_empty(&entry->lru))
-+		zswap_lru_del(&zswap_list_lru, entry);
-+	if (entry->length)
-+		zpool_free(zswap_find_zpool(entry), entry->handle);
-+	if (entry->pool)
-+		zswap_pool_put(entry->pool);
- 	if (entry->objcg) {
- 		obj_cgroup_uncharge_zswap(entry->objcg, entry->length);
- 		obj_cgroup_put(entry->objcg);
-@@ -1447,7 +1451,7 @@ bool zswap_store(struct folio *folio)
- 		return false;
- 
- 	if (!zswap_enabled)
--		goto check_old;
-+		goto erase_old;
- 
- 	/* Check cgroup limits */
- 	objcg = get_obj_cgroup_from_folio(folio);
-@@ -1455,54 +1459,52 @@ bool zswap_store(struct folio *folio)
- 		memcg = get_mem_cgroup_from_objcg(objcg);
- 		if (shrink_memcg(memcg)) {
- 			mem_cgroup_put(memcg);
--			goto reject;
-+			goto put_objcg;
- 		}
- 		mem_cgroup_put(memcg);
- 	}
- 
- 	if (zswap_is_folio_zero_filled(folio)) {
- 		if (zswap_store_zero_filled(tree, offset, objcg))
--			goto reject;
-+			goto put_objcg;
- 		goto stored;
- 	}
- 
- 	if (!zswap_non_zero_filled_pages_enabled)
--		goto reject;
-+		goto put_objcg;
- 
- 	if (!zswap_check_limit())
--		goto reject;
-+		goto put_objcg;
- 
--	entry = zswap_entry_cache_alloc(GFP_KERNEL, folio_nid(folio));
-+	entry = zswap_entry_cache_alloc(folio_nid(folio));
- 	if (!entry) {
- 		zswap_reject_kmemcache_fail++;
--		goto reject;
-+		goto put_objcg;
- 	}
- 
--	/* if entry is successfully added, it keeps the reference */
- 	entry->pool = zswap_pool_current_get();
- 	if (!entry->pool)
--		goto freepage;
-+		goto free_entry;
- 
- 	if (objcg) {
- 		memcg = get_mem_cgroup_from_objcg(objcg);
- 		if (memcg_list_lru_alloc(memcg, &zswap_list_lru, GFP_KERNEL)) {
- 			mem_cgroup_put(memcg);
--			goto put_pool;
-+			goto free_entry;
- 		}
- 		mem_cgroup_put(memcg);
- 	}
- 
- 	if (!zswap_compress(folio, entry))
--		goto put_pool;
--
--	entry->swpentry = swp;
--	entry->objcg = objcg;
-+		goto free_entry;
- 
- 	if (zswap_tree_store(tree, offset, entry))
--		goto store_failed;
-+		goto free_entry;
- 
--	if (objcg)
-+	if (objcg) {
- 		obj_cgroup_charge_zswap(objcg, entry->length);
-+		entry->objcg = objcg;
-+	}
- 
- 	/*
- 	 * We finish initializing the entry while it's already in xarray.
-@@ -1514,7 +1516,7 @@ bool zswap_store(struct folio *folio)
- 	 *    The publishing order matters to prevent writeback from seeing
- 	 *    an incoherent entry.
- 	 */
--	INIT_LIST_HEAD(&entry->lru);
-+	entry->swpentry = swp;
- 	zswap_lru_add(&zswap_list_lru, entry);
- 
- stored:
-@@ -1525,17 +1527,13 @@ bool zswap_store(struct folio *folio)
- 
- 	return true;
- 
--store_failed:
--	zpool_free(zswap_find_zpool(entry), entry->handle);
--put_pool:
--	zswap_pool_put(entry->pool);
--freepage:
--	zswap_entry_cache_free(entry);
--reject:
-+free_entry:
-+	zswap_entry_free(entry);
-+put_objcg:
- 	obj_cgroup_put(objcg);
- 	if (zswap_pool_reached_full)
- 		queue_work(shrink_wq, &zswap_shrink_work);
--check_old:
-+erase_old:
- 	/*
- 	 * If the zswap store fails or zswap is disabled, we must invalidate the
- 	 * possibly stale entry which was previously stored at this offset.
+tested configs:
+alpha                             allnoconfig   gcc  
+alpha                            allyesconfig   gcc  
+alpha                               defconfig   gcc  
+arc                              allmodconfig   gcc  
+arc                               allnoconfig   gcc  
+arc                              allyesconfig   gcc  
+arc                                 defconfig   gcc  
+arm                              allmodconfig   gcc  
+arm                               allnoconfig   clang
+arm                              allyesconfig   gcc  
+arm                                 defconfig   clang
+arm64                            allmodconfig   clang
+arm64                             allnoconfig   gcc  
+arm64                               defconfig   gcc  
+csky                             allmodconfig   gcc  
+csky                              allnoconfig   gcc  
+csky                             allyesconfig   gcc  
+csky                                defconfig   gcc  
+hexagon                          allmodconfig   clang
+hexagon                           allnoconfig   clang
+hexagon                          allyesconfig   clang
+hexagon                             defconfig   clang
+i386                             allmodconfig   gcc  
+i386                              allnoconfig   gcc  
+i386                             allyesconfig   gcc  
+i386         buildonly-randconfig-001-20240326   gcc  
+i386         buildonly-randconfig-002-20240326   clang
+i386         buildonly-randconfig-003-20240326   clang
+i386         buildonly-randconfig-004-20240326   gcc  
+i386         buildonly-randconfig-005-20240326   gcc  
+i386         buildonly-randconfig-006-20240326   gcc  
+i386                                defconfig   clang
+i386                  randconfig-001-20240326   gcc  
+i386                  randconfig-002-20240326   gcc  
+i386                  randconfig-003-20240326   gcc  
+i386                  randconfig-004-20240326   clang
+i386                  randconfig-005-20240326   gcc  
+i386                  randconfig-006-20240326   clang
+i386                  randconfig-011-20240326   clang
+i386                  randconfig-012-20240326   gcc  
+i386                  randconfig-013-20240326   clang
+i386                  randconfig-014-20240326   clang
+i386                  randconfig-015-20240326   clang
+i386                  randconfig-016-20240326   clang
+loongarch                        allmodconfig   gcc  
+loongarch                         allnoconfig   gcc  
+loongarch                           defconfig   gcc  
+m68k                             allmodconfig   gcc  
+m68k                              allnoconfig   gcc  
+m68k                             allyesconfig   gcc  
+m68k                                defconfig   gcc  
+microblaze                       allmodconfig   gcc  
+microblaze                        allnoconfig   gcc  
+microblaze                       allyesconfig   gcc  
+microblaze                          defconfig   gcc  
+mips                              allnoconfig   gcc  
+mips                             allyesconfig   gcc  
+nios2                            allmodconfig   gcc  
+nios2                             allnoconfig   gcc  
+nios2                            allyesconfig   gcc  
+nios2                               defconfig   gcc  
+openrisc                          allnoconfig   gcc  
+openrisc                         allyesconfig   gcc  
+openrisc                            defconfig   gcc  
+parisc                           allmodconfig   gcc  
+parisc                            allnoconfig   gcc  
+parisc                           allyesconfig   gcc  
+parisc                              defconfig   gcc  
+parisc64                            defconfig   gcc  
+powerpc                          allmodconfig   gcc  
+powerpc                           allnoconfig   gcc  
+powerpc                          allyesconfig   clang
+riscv                            allmodconfig   clang
+riscv                             allnoconfig   gcc  
+riscv                            allyesconfig   clang
+riscv                               defconfig   clang
+s390                             allmodconfig   clang
+s390                              allnoconfig   clang
+s390                             allyesconfig   gcc  
+s390                                defconfig   clang
+sh                               allmodconfig   gcc  
+sh                                allnoconfig   gcc  
+sh                               allyesconfig   gcc  
+sh                                  defconfig   gcc  
+sparc                            allmodconfig   gcc  
+sparc                             allnoconfig   gcc  
+sparc                               defconfig   gcc  
+sparc64                          allmodconfig   gcc  
+sparc64                          allyesconfig   gcc  
+sparc64                             defconfig   gcc  
+um                               allmodconfig   clang
+um                                allnoconfig   clang
+um                               allyesconfig   gcc  
+um                                  defconfig   clang
+um                             i386_defconfig   gcc  
+um                           x86_64_defconfig   clang
+x86_64                            allnoconfig   clang
+x86_64                           allyesconfig   clang
+x86_64       buildonly-randconfig-001-20240326   clang
+x86_64       buildonly-randconfig-002-20240326   gcc  
+x86_64       buildonly-randconfig-003-20240326   clang
+x86_64       buildonly-randconfig-004-20240326   gcc  
+x86_64       buildonly-randconfig-005-20240326   gcc  
+x86_64       buildonly-randconfig-006-20240326   gcc  
+x86_64                              defconfig   gcc  
+x86_64                randconfig-001-20240326   gcc  
+x86_64                randconfig-002-20240326   gcc  
+x86_64                randconfig-003-20240326   gcc  
+x86_64                randconfig-004-20240326   clang
+x86_64                randconfig-006-20240326   clang
+x86_64                          rhel-8.3-rust   clang
+xtensa                            allnoconfig   gcc  
+
 -- 
-2.44.0.396.g6e790dbe36-goog
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
