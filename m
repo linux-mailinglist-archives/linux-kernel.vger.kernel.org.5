@@ -1,208 +1,102 @@
-Return-Path: <linux-kernel+bounces-117192-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-117191-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3EF5C88A87E
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 17:11:24 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 20FF288A87A
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 17:11:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BFBEC1F336F6
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 16:11:23 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 529771C6230B
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 16:11:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 505B613F43C;
-	Mon, 25 Mar 2024 13:59:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 12B6513DB8D;
+	Mon, 25 Mar 2024 13:59:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=igalia.com header.i=@igalia.com header.b="IfMftF9u"
-Received: from fanzine2.igalia.com (fanzine2.igalia.com [213.97.179.56])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="own2Vihg"
+Received: from mail-ed1-f42.google.com (mail-ed1-f42.google.com [209.85.208.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7B35B12B141
-	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 13:59:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.97.179.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC0AA13D60C
+	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 13:59:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711375175; cv=none; b=rHFV2xxCJverxWMo8dLL1JRZDeoS8w+Ki59DH1lhlXvRBwZxMwKy0AqYc0w6D7vHY5GBt06b8wp66YJc5lW6IkGwpdAbFAXtXaKck/HZXlvvxOchfB5gsg9lACd3PNYejehMW3XolzcSZ5Kx5tQmOE2VOYdrQHrpBuUXTju+rNo=
+	t=1711375166; cv=none; b=Y7B5T43K8SxK8FqwzhQHaGwlkc7zbW20xfnIqMM6AizurXRLPTh0MJYLo9RWJlDoC4HY5eCbEI1ECI8Pi86AIuVSSNL0w9ATqvxqZcOd4cyJ3h+D7iIxxFJmKiU3jy2VmTS7AJz69nvI3jZs9WOzARtd+YgrsqjuRQqkqqt81aY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711375175; c=relaxed/simple;
-	bh=KjgqyNVGdRTpM+b80kBME4KupCYpHOuZwd/ATEa8mXQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=jdgVnfqLCt0h/TO2DJVH/OUdDxWyMvyfafmqaGtqJJi8TKauqxkPPxZutfZrRk4Fr19N/PS1NxhxteP/q8wSEy8wv3FYFkCmC46+iMWZ+zK1I15/u21jlHVdipc4DLDh/zoHvIRPBYkUGX7mXkioZZo/lOx876dHG++klS31eG4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=igalia.com; spf=pass smtp.mailfrom=igalia.com; dkim=pass (2048-bit key) header.d=igalia.com header.i=@igalia.com header.b=IfMftF9u; arc=none smtp.client-ip=213.97.179.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=igalia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=igalia.com
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=igalia.com;
-	s=20170329; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:From:
-	References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender:Reply-To:
-	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-	Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
-	List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=ImUkmTdcElH4c269QxHEf9Y5l2DHO+qtVviBXPkTw6Q=; b=IfMftF9uzXkjFKBgjkZWvk95uI
-	2qHzTsKT2glJckG0g5fNRuZG4zi1aUAML+indJefuH4K86aOXHQyNtt+eLKkAftoMXRSb4QetIByU
-	nx3xo9zCyot5iiQnnA9s+Zxm0H6TTvaQP4L438nTSuF9hqWu+ioLZ9Gx+iVzol675XOCAiIhCrXyz
-	1R4ETzVsAm8Q9dcA/iGBTqD2dOC4Hgm6OZtVQD0IKR0CbeGpIJ82oXE57iJg69HwFR+oB3H1/dGMY
-	zBVAAnu4+MxAsjOC5uBG5SKevlaMF8grkDgBkHGylYoFkmVKPkWZJ83GqfGRDA7JxSNZRLKjNgZtp
-	/bhD9pQQ==;
-Received: from [177.34.169.255] (helo=[192.168.0.139])
-	by fanzine2.igalia.com with esmtpsa 
-	(Cipher TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_128_GCM:128) (Exim)
-	id 1rokr7-00F5Ls-JY; Mon, 25 Mar 2024 14:59:17 +0100
-Message-ID: <d281fb73-5491-4764-b582-7790ccf7fa8d@igalia.com>
-Date: Mon, 25 Mar 2024 10:59:09 -0300
+	s=arc-20240116; t=1711375166; c=relaxed/simple;
+	bh=aiMUPmr0TYR+OTuWbEB0NdvrDsA6Hxrr0DZTK4iOQcE=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=mAHqYSmnnRudrTit17Vh7GG3GOaH+SCBQTSJ9RJmml3yn5qgqSHXdp59CErvEjew2x1KmJoT9YZm1kPxuHcoNKksg1xHwXU9wNcm6oLcVmfK5E0TtrjCBPRWCqW01G+GoJwTwlkFJzbmQ61DhGuf1QMbEItj6vZZX5CPMhnI/wE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=own2Vihg; arc=none smtp.client-ip=209.85.208.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-ed1-f42.google.com with SMTP id 4fb4d7f45d1cf-56beb6e68aeso10919a12.1
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 06:59:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1711375163; x=1711979963; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=aiMUPmr0TYR+OTuWbEB0NdvrDsA6Hxrr0DZTK4iOQcE=;
+        b=own2VihgvevU9YRCiKVFXirQxnmo8wM2siZ5eSbqmQPWPzIs3Osl1KtBc+bYtB46U9
+         o6bTZrWt3Wu8zEx7A02JB2o4iSjknT7Iwwrz4vhTuYpTx6MNZulo5zephBWPcLtI/1JO
+         6uKzNKR2f06SrYKAZc+40kibTuBgCqAFjMi6v267inrTTMf06cGlTpxbh+Pyf7b0+sPC
+         ab3zffwKi4/+i1Q7JpaxB+RdrpEU8/sgqaZHAnrR6/fw2QOr5OSygwBJua1Mwbdi44Rm
+         2sCosPAC0je3Auu4/GWuxiJ59nGD0e8+mn8vDkk+M5QNGGCAfxF7Kcopjz58v6sQpOEZ
+         g9fQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711375163; x=1711979963;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=aiMUPmr0TYR+OTuWbEB0NdvrDsA6Hxrr0DZTK4iOQcE=;
+        b=oi7BBQ1KYrp2gbQm0ixcoobdFaf0vbGAeif2NBb46pQNqj845s05Y+zdncNzymvdzy
+         m+GB88/JLd2KqghPAPPjs0UoiUWNiuCKCrYQlhQ1A33r6qipeOnQhmT9xVknjlh2Aq7l
+         qS3XXP1N65vva+QFTGZZsRG/cmDAjDvmpcqu8p+smcJXtHGTwEYvLTeotXxQCUFZPlwY
+         1vPw6YdNmFtyO9G1Vb2ft1CjOMf4L0AhTDKxx3FxefdOROiPfazpFqbNlJPcOox4IKyE
+         kI+nMWZxGZM+9cZzqN0Ap0CdsNWoO2JmaQxQWnujLWn6G2kopEsuHuFImA74by4gQRQe
+         vQmA==
+X-Forwarded-Encrypted: i=1; AJvYcCVwKhILZpf1wlYxlb/y6XGuUmA8zEOiG5B32ThfRiSwg+u/Kh1MP2Dkor7s29jbPWBhT7h7hqHU9jvkIjG3KAW44nnYtyABTi96rjiz
+X-Gm-Message-State: AOJu0Yy/2r3pyDz+nEWKssCSaQtIvclhrdUe5O1QcxJssK4xhRUuV3vK
+	keXfDxXTkVExS6M2gplmBjGePI5wzT/ibNH+NQhc3hMTEuvLXV9skpScAcKWsc7VyyIUHj/gnea
+	5cAtZHDLv94TLKxpn5pXEzNW5cQkhYfvlbRMj
+X-Google-Smtp-Source: AGHT+IEV5wDD3dHJtuQglxOC11Br3likX/HODpqsYK/HFkeJhAxfTM6CLt/xt+yEevunobYcapuEhcWHhd7Md8ZPxBU=
+X-Received: by 2002:aa7:d298:0:b0:56c:d26:5e59 with SMTP id
+ w24-20020aa7d298000000b0056c0d265e59mr130158edq.1.1711375162985; Mon, 25 Mar
+ 2024 06:59:22 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5 05/16] drm/vkms: Add dummy pixel_read/pixel_write
- callbacks to avoid NULL pointers
-To: Louis Chauvet <louis.chauvet@bootlin.com>,
- Rodrigo Siqueira <rodrigosiqueiramelo@gmail.com>,
- Melissa Wen <melissa.srw@gmail.com>,
- Haneen Mohammed <hamohammed.sa@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
- Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
- Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
- David Airlie <airlied@gmail.com>, arthurgrillo@riseup.net,
- Jonathan Corbet <corbet@lwn.net>, pekka.paalanen@haloniitty.fi
-Cc: dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
- jeremie.dautheribes@bootlin.com, miquel.raynal@bootlin.com,
- thomas.petazzoni@bootlin.com, seanpaul@google.com, marcheu@google.com,
- nicolejadeyee@google.com
-References: <20240313-yuv-v5-0-e610cbd03f52@bootlin.com>
- <20240313-yuv-v5-5-e610cbd03f52@bootlin.com>
-Content-Language: en-US
-From: =?UTF-8?Q?Ma=C3=ADra_Canal?= <mcanal@igalia.com>
-Autocrypt: addr=mcanal@igalia.com; keydata=
- xjMEZIsaeRYJKwYBBAHaRw8BAQdAGU6aY8oojw61KS5rGGMrlcilFqR6p6ID45IZ6ovX0h3N
- H01haXJhIENhbmFsIDxtY2FuYWxAaWdhbGlhLmNvbT7CjwQTFggANxYhBDMCqFtIvFKVRJZQ
- hDSPnHLaGFVuBQJkixp5BQkFo5qAAhsDBAsJCAcFFQgJCgsFFgIDAQAACgkQNI+cctoYVW5u
- GAEAwpaC5rI3wD8zqETKwGVoXd6+AbmGfZuVD40xepy7z/8BAM5w95/oyPsHUqOsg/xUTlNp
- rlbhA+WWoaOXA3XgR+wCzjgEZIsaeRIKKwYBBAGXVQEFAQEHQGoOK0jgh0IorMAacx6WUUWb
- s3RLiJYWUU6iNrk5wWUbAwEIB8J+BBgWCAAmFiEEMwKoW0i8UpVEllCENI+cctoYVW4FAmSL
- GnkFCQWjmoACGwwACgkQNI+cctoYVW6cqwD/Q9R98msvkhgRvi18fzUPFDwwogn+F+gQJJ6o
- pwpgFkAA/R2zOfla3IT6G3SBoV5ucdpdCpnIXFpQLbmfHK7dXsAC
-In-Reply-To: <20240313-yuv-v5-5-e610cbd03f52@bootlin.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+References: <tencent_5A50BC27A519EBD14E1B0A8685E89405850A@qq.com>
+In-Reply-To: <tencent_5A50BC27A519EBD14E1B0A8685E89405850A@qq.com>
+From: Eric Dumazet <edumazet@google.com>
+Date: Mon, 25 Mar 2024 14:59:09 +0100
+Message-ID: <CANn89i+gqBKX-BkY58M0vWfRLsOy2RqyFqX8cwjqo3xacYGXbA@mail.gmail.com>
+Subject: Re: [PATCH v2] net: mark racy access on sk->sk_rcvbuf
+To: linke li <lilinke99@qq.com>
+Cc: xujianhao01@gmail.com, "David S. Miller" <davem@davemloft.net>, 
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
+	Kuniyuki Iwashima <kuniyu@amazon.com>, Willem de Bruijn <willemb@google.com>, 
+	Abel Wu <wuyun.abel@bytedance.com>, Breno Leitao <leitao@debian.org>, 
+	Alexander Mikhalitsyn <alexander@mihalicyn.com>, David Howells <dhowells@redhat.com>, netdev@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 3/13/24 14:44, Louis Chauvet wrote:
-> Introduce two callbacks which does nothing. They are used in replacement
-> of NULL and it avoid kernel OOPS if this NULL is called.
-> 
-> If those callback are used, it means that there is a mismatch between
-> what formats are announced by atomic_check and what is realy supported by
-> atomic_update.
-> 
-> Signed-off-by: Louis Chauvet <louis.chauvet@bootlin.com>
+On Thu, Mar 21, 2024 at 9:44=E2=80=AFAM linke li <lilinke99@qq.com> wrote:
+>
+> sk->sk_rcvbuf in __sock_queue_rcv_skb() and __sk_receive_skb() can be
+> changed by other threads. Mark this as benign using READ_ONCE().
+>
+> This patch is aimed at reducing the number of benign races reported by
+> KCSAN in order to focus future debugging effort on harmful races.
+>
+> Signed-off-by: linke li <lilinke99@qq.com>
 > ---
->   drivers/gpu/drm/vkms/vkms_formats.c | 43 +++++++++++++++++++++++++++++++------
->   1 file changed, 37 insertions(+), 6 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/vkms/vkms_formats.c b/drivers/gpu/drm/vkms/vkms_formats.c
-> index 55a4365d21a4..b57d85b8b935 100644
-> --- a/drivers/gpu/drm/vkms/vkms_formats.c
-> +++ b/drivers/gpu/drm/vkms/vkms_formats.c
-> @@ -136,6 +136,21 @@ static void RGB565_to_argb_u16(u8 *in_pixel, struct pixel_argb_u16 *out_pixel)
->   	out_pixel->b = drm_fixp2int_round(drm_fixp_mul(fp_b, fp_rb_ratio));
->   }
->   
-> +/**
-> + * black_to_argb_u16() - pixel_read callback which always read black
-> + *
-> + * This callback is used when an invalid format is requested for plane reading.
-> + * It is used to avoid null pointer to be used as a function. In theory, this function should
-> + * never be called, except if you found a bug in the driver/DRM core.
-> + */
-> +static void black_to_argb_u16(u8 *in_pixel, struct pixel_argb_u16 *out_pixel)
-> +{
-> +	out_pixel->a = (u16)0xFFFF;
-> +	out_pixel->r = 0;
-> +	out_pixel->g = 0;
-> +	out_pixel->b = 0;
-> +}
-> +
->   /**
->    * vkms_compose_row - compose a single row of a plane
->    * @stage_buffer: output line with the composed pixels
-> @@ -238,6 +253,16 @@ static void argb_u16_to_RGB565(u8 *out_pixel, struct pixel_argb_u16 *in_pixel)
->   	*pixel = cpu_to_le16(r << 11 | g << 5 | b);
->   }
->   
-> +/**
-> + * argb_u16_to_nothing() - pixel_write callback with no effect
-> + *
-> + * This callback is used when an invalid format is requested for writeback.
-> + * It is used to avoid null pointer to be used as a function. In theory, this should never
-> + * happen, except if there is a bug in the driver
-> + */
-> +static void argb_u16_to_nothing(u8 *out_pixel, struct pixel_argb_u16 *in_pixel)
-> +{}
-> +
->   /**
->    * Generic loop for all supported writeback format. It is executed just after the blending to
->    * write a line in the writeback buffer.
-> @@ -261,8 +286,8 @@ void vkms_writeback_row(struct vkms_writeback_job *wb,
->   
->   /**
->    * Retrieve the correct read_pixel function for a specific format.
-> - * The returned pointer is NULL for unsupported pixel formats. The caller must ensure that the
-> - * pointer is valid before using it in a vkms_plane_state.
-> + * If the format is not supported by VKMS a warn is emitted and a dummy "always read black"
+> v1 -> v2: include sk->sk_rcvbuf in __sock_queue_rcv_skb()
 
-"If the format is not supported by VKMS, a warning is emitted and a 
-dummy "always read black"..."
-
-> + * function is returned.
->    *
->    * @format: DRM_FORMAT_* value for which to obtain a conversion function (see [drm_fourcc.h])
->    */
-> @@ -285,18 +310,21 @@ pixel_read_t get_pixel_read_function(u32 format)
->   		 * format must:
->   		 * - Be listed in vkms_formats in vkms_plane.c
->   		 * - Have a pixel_read callback defined here
-> +		 *
-> +		 * To avoid kernel crash, a dummy "always read black" function is used. It means
-> +		 * that during the composition, this plane will always be black.
->   		 */
->   		WARN(true,
->   		     "Pixel format %p4cc is not supported by VKMS planes. This is a kernel bug, atomic check must forbid this configuration.\n",
->   		     &format);
-> -		return (pixel_read_t)NULL;
-> +		return &black_to_argb_u16;
->   	}
->   }
->   
->   /**
->    * Retrieve the correct write_pixel function for a specific format.
-> - * The returned pointer is NULL for unsupported pixel formats. The caller must ensure that the
-> - * pointer is valid before using it in a vkms_writeback_job.
-> + * If the format is not supported by VKMS a warn is emitted and a dummy "don't do anything"
-
-"If the format is not supported by VKMS, a warning is emitted and a 
-dummy "don't do anything"..."
-
-Best Regards,
-- Maíra
-
-> + * function is returned.
->    *
->    * @format: DRM_FORMAT_* value for which to obtain a conversion function (see [drm_fourcc.h])
->    */
-> @@ -319,10 +347,13 @@ pixel_write_t get_pixel_write_function(u32 format)
->   		 * format must:
->   		 * - Be listed in vkms_wb_formats in vkms_writeback.c
->   		 * - Have a pixel_write callback defined here
-> +		 *
-> +		 * To avoid kernel crash, a dummy "don't do anything" function is used. It means
-> +		 * that the resulting writeback buffer is not composed and can contains any values.
->   		 */
->   		WARN(true,
->   		     "Pixel format %p4cc is not supported by VKMS writeback. This is a kernel bug, atomic check must forbid this configuration.\n",
->   		     &format);
-> -		return (pixel_write_t)NULL;
-> +		return &argb_u16_to_nothing;
->   	}
->   }
-> 
+Reviewed-by: Eric Dumazet <edumazet@google.com>
 
