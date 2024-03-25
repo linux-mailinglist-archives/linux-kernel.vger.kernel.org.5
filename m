@@ -1,201 +1,122 @@
-Return-Path: <linux-kernel+bounces-117866-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-117860-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 39DF888B09B
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 20:57:00 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C350488B546
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 00:26:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A23F51F23F27
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 19:56:59 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 96FC8B3DE2E
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 19:55:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B22545644F;
-	Mon, 25 Mar 2024 19:55:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9F96445026;
+	Mon, 25 Mar 2024 19:54:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Wio0193K"
-Received: from mail-pl1-f175.google.com (mail-pl1-f175.google.com [209.85.214.175])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=linux.org.uk header.i=@linux.org.uk header.b="jGiLYVk0"
+Received: from zeniv.linux.org.uk (zeniv.linux.org.uk [62.89.141.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6633954BF5;
-	Mon, 25 Mar 2024 19:55:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B226C224DB;
+	Mon, 25 Mar 2024 19:54:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=62.89.141.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711396518; cv=none; b=d+im4W9G/jnkjaKR6bfDY2E5Mg8wIKV2yGFQTkmPguqTKks9tpsOwh5tF9nl9BjqrlAGjEIVm3q9q8i39mk36IdZyblBQ4sZFf8sx/I90DtbXmzcYJUCxhUsSzpExD+TODcTfK8Yw6dJyHPaCA5PvAHsYolA0PSDx226SyfH4pQ=
+	t=1711396466; cv=none; b=IGk6lOxxqdOEmQ2770ShU/Ncbd4Msd8VrLXoztLNswHlw8G8O/1GZ8itGsVhy3RZLZ9MuIqVbFnxXXVDJvKyFZIHVEhMZv2INJc3Z5vyYvZ471zmtdQFIGQgDrCoZoQoHDQ8wsGw5Yo9w//5fRjHFjtdJNNdBpjGM+HUpIRtb2w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711396518; c=relaxed/simple;
-	bh=/QTypASE8D93iYLvREHDwsB5dHZ8V87dnuUHykxExTA=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=IbCXhFb+gJeeJcDF9C5QVDD4KnSq4Qb8+XIDlEQNmsziix3gqX6/eNTfmw8gwI+FRCVAiHpXgUloHwuSCqJADR/biAHzKxnC4PuTRBilTON05Nd0RJduGcuGgUW4kZ7km/b99iTtHHNwv8rfJiycupvjSyjLUMCyK9ymxBahY5o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Wio0193K; arc=none smtp.client-ip=209.85.214.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f175.google.com with SMTP id d9443c01a7336-1e0d82c529fso5206815ad.2;
-        Mon, 25 Mar 2024 12:55:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711396516; x=1712001316; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=21P3jOn14ZtLRVVWjd/aZah81bx8Fq/6mZQF26h4i3s=;
-        b=Wio0193KwilUmo0sOPuKthcv4ZMDfprGQnA4vWh7McVb7DOQoJxK8bPGaHaDt56Zes
-         wWKcYp5wTfxaeFf1ZW5PuBTSFJeRW+VysJ1pkIxIzpOs1zPI9mqijPnnfbSoqU/S30Gf
-         aIhmHu/vnqKIPjbi/m4GTUUTeRfWUWbus44jv9V2sJfppQsn9wrzfglum7Tt7yCjY8lI
-         ogBuAQrRGDrkn8vizuYrBwn5nhpIhjO3K367CRkgOMrxeo9pKCrujEzmFMGJscEaJJuq
-         ZGTRLPRQOwZu4gj41HsoHZ8wbhDLspV1ypraAKMgRSDUkLv7fj3gymwyOAfBTz/o5NBs
-         zrhg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711396516; x=1712001316;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=21P3jOn14ZtLRVVWjd/aZah81bx8Fq/6mZQF26h4i3s=;
-        b=Pg8+9Rb4fZzNsAay7CK4eWETg/4NkCeWEqnXrh+AjgTGLGMcdTGwxYi7TWf8yT9BC9
-         m9EFDjBFr/4yzABBUJtu5Ifsebhyykld+NS1QjVu16Tr5G9XcArtrNYpC0Hl/k03aaaL
-         qbpVvCa+0UKKa8sVli5cLkhoHFwz7uDLyi4YTPhuoZVhZ7SMExLe1Bd+L6wy6na3q+1h
-         okMhFvgmTcbAVaIT+tRu07G1r3jp7K5xhIRbPE6+U0a3ZBh7HI3Q0WmGP7hwalDlF7g6
-         DxPck5xaJLSGq/Chf/EN7hUDEPMCehuRzJ1HRDdIL4a3AHDMSNYPvijZcDZztARC4d5t
-         jSDA==
-X-Forwarded-Encrypted: i=1; AJvYcCXJYX4HXLesAh7yC5ktIkcZd6RvgxEQ2WCbpFJ2i1clrCaSa0/aPVe31Q6DG6JKY9sSkaY6v7n7Mod0H8/B80bNEg9iBRSIwYG0lpQQ
-X-Gm-Message-State: AOJu0YzyK7/5JIkWwRYXIY9aSsgPRTAY+PP1xa1XulwZu2rl8KqirqZX
-	LG1GNT5lahdAggtp+GK41uGpUySnwcY5837Bhk7qHi0Ii01dWaifoj/NV4NM
-X-Google-Smtp-Source: AGHT+IHmg5BAB14bCIyxrtOHYGqevTlr19nVDbmblsn8Et3gebqOQcJzsvDqu6//UMtqYHH+1quINQ==
-X-Received: by 2002:a17:902:e80d:b0:1e0:afa0:d515 with SMTP id u13-20020a170902e80d00b001e0afa0d515mr5664995plg.29.1711396516462;
-        Mon, 25 Mar 2024 12:55:16 -0700 (PDT)
-Received: from wedsonaf-dev.home.lan ([189.124.190.154])
-        by smtp.googlemail.com with ESMTPSA id q1-20020a170902dac100b001e06c1eee22sm5099585plx.74.2024.03.25.12.55.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 Mar 2024 12:55:16 -0700 (PDT)
-From: Wedson Almeida Filho <wedsonaf@gmail.com>
-To: rust-for-linux@vger.kernel.org
-Cc: Miguel Ojeda <ojeda@kernel.org>,
-	Alex Gaynor <alex.gaynor@gmail.com>,
-	Boqun Feng <boqun.feng@gmail.com>,
-	Gary Guo <gary@garyguo.net>,
-	=?UTF-8?q?Bj=C3=B6rn=20Roy=20Baron?= <bjorn3_gh@protonmail.com>,
-	Benno Lossin <benno.lossin@proton.me>,
-	Andreas Hindborg <a.hindborg@samsung.com>,
-	Alice Ryhl <aliceryhl@google.com>,
-	linux-kernel@vger.kernel.org,
-	Wedson Almeida Filho <walmeida@microsoft.com>
-Subject: [PATCH 05/10] rust: alloc: introduce allocation flags
-Date: Mon, 25 Mar 2024 16:54:13 -0300
-Message-Id: <20240325195418.166013-6-wedsonaf@gmail.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240325195418.166013-1-wedsonaf@gmail.com>
-References: <20240325195418.166013-1-wedsonaf@gmail.com>
+	s=arc-20240116; t=1711396466; c=relaxed/simple;
+	bh=Hy2D4JJqgBzY08cEDq6AeRjSKFZX+A9Y1A28xMMdobI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=T0KMKLpyYA9iN6zduEoj9+eSx1QCfjbm1uVPSaAvO8MnwdBvLyZ7CQ+dhzzQNi3cOT6nRXeC7n/1gqOHX/1kPDRMtN590PoahF7/eo4hd1KOH7JRGA+oZtjuPbFCvBr6v7DMexvK7gCWbileVobyVKaP8L/LHP0nFGwLoXpSzmw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zeniv.linux.org.uk; spf=none smtp.mailfrom=ftp.linux.org.uk; dkim=pass (2048-bit key) header.d=linux.org.uk header.i=@linux.org.uk header.b=jGiLYVk0; arc=none smtp.client-ip=62.89.141.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zeniv.linux.org.uk
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=ftp.linux.org.uk
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=linux.org.uk; s=zeniv-20220401; h=Sender:In-Reply-To:Content-Type:
+	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=btW7kQnjDmUmvNE23NH4vh6GdFNyilpMQ7GM8BLzUxo=; b=jGiLYVk075whzTFEz9PjZ7Cig8
+	Dvb2S2yw90zt5tTY3q69uUjfk13fVEeAeZy1pXgZMT6w+Q5JMTI1zPmBfjTg/XaofApLcyBbQWSA8
+	BVET1D7c4X+8z5pg3MGJFvycQpgEsTHkjWmAxVURxIEiLuE61OO/mGHw5mB83tIXQq6zVNLxQzY6O
+	108aP6tkrjQnM3o9HBiEWi/+76kphM7w1dxx2b2m/lyNq2iOY5/+tcIoZ4A7OORJ4iNEQVsGWuQgh
+	XmlRUNi1ntn7Rp02pLQ7n1w0SR257tR1VSpJeo9oZQwwutFSlXs7ZEetTdicVH7o0BYiSTmq15WmM
+	fdUEKH7g==;
+Received: from viro by zeniv.linux.org.uk with local (Exim 4.96 #2 (Red Hat Linux))
+	id 1roqOb-00GXMi-0K;
+	Mon, 25 Mar 2024 19:54:13 +0000
+Date: Mon, 25 Mar 2024 19:54:13 +0000
+From: Al Viro <viro@zeniv.linux.org.uk>
+To: Steve French <smfrench@gmail.com>
+Cc: Christian Brauner <brauner@kernel.org>,
+	Roberto Sassu <roberto.sassu@huawei.com>,
+	LKML <linux-kernel@vger.kernel.org>,
+	linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+	CIFS <linux-cifs@vger.kernel.org>,
+	Paulo Alcantara <pc@manguebit.com>,
+	Christian Brauner <christian@brauner.io>,
+	Mimi Zohar <zohar@linux.ibm.com>, Paul Moore <paul@paul-moore.com>,
+	"linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>,
+	"linux-security-module@vger.kernel.org" <linux-security-module@vger.kernel.org>
+Subject: Re: kernel crash in mknod
+Message-ID: <20240325195413.GW538574@ZenIV>
+References: <CAH2r5msAVzxCUHHG8VKrMPUKQHmBpE6K9_vjhgDa1uAvwx4ppw@mail.gmail.com>
+ <20240324054636.GT538574@ZenIV>
+ <3441a4a1140944f5b418b70f557bca72@huawei.com>
+ <20240325-beugen-kraftvoll-1390fd52d59c@brauner>
+ <CAH2r5muL4NEwLxq_qnPOCTHunLB_vmDA-1jJ152POwBv+aTcXg@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAH2r5muL4NEwLxq_qnPOCTHunLB_vmDA-1jJ152POwBv+aTcXg@mail.gmail.com>
+Sender: Al Viro <viro@ftp.linux.org.uk>
 
-From: Wedson Almeida Filho <walmeida@microsoft.com>
+On Mon, Mar 25, 2024 at 11:26:59AM -0500, Steve French wrote:
 
-We'll use them when allocating `Box`, `Arc`, and `UniqueArc` instances,
-as well as when allocating memory for `Vec` elements. These changes will
-come in subsequent patches.
+> A loosely related question.  Do I need to change cifs.ko to return the
+> pointer to inode on mknod now?  dentry->inode is NULL in the case of mknod
+> from cifs.ko (and presumably some other fs as Al noted), unlike mkdir and
+> create where it is filled in.   Is there a perf advantage in filling in the
+> dentry->inode in the mknod path in the fs or better to leave it as is?  Is
+> there a good example to borrow from on this?
 
-Signed-off-by: Wedson Almeida Filho <walmeida@microsoft.com>
----
- rust/bindings/bindings_helper.h |  3 ++
- rust/kernel/alloc.rs            | 56 +++++++++++++++++++++++++++++++++
- rust/kernel/prelude.rs          |  2 +-
- 3 files changed, 60 insertions(+), 1 deletion(-)
+AFAICS, that case in in CIFS is the only instance of ->mknod() that does this
+"skip lookups, just unhash and return 0" at the moment.
 
-diff --git a/rust/bindings/bindings_helper.h b/rust/bindings/bindings_helper.h
-index 65b98831b975..ddb5644d4fd9 100644
---- a/rust/bindings/bindings_helper.h
-+++ b/rust/bindings/bindings_helper.h
-@@ -20,5 +20,8 @@
- 
- /* `bindgen` gets confused at certain things. */
- const size_t RUST_CONST_HELPER_ARCH_SLAB_MINALIGN = ARCH_SLAB_MINALIGN;
-+const gfp_t RUST_CONST_HELPER_GFP_ATOMIC = GFP_ATOMIC;
- const gfp_t RUST_CONST_HELPER_GFP_KERNEL = GFP_KERNEL;
-+const gfp_t RUST_CONST_HELPER_GFP_KERNEL_ACCOUNT = GFP_KERNEL_ACCOUNT;
-+const gfp_t RUST_CONST_HELPER_GFP_NOWAIT = GFP_NOWAIT;
- const gfp_t RUST_CONST_HELPER___GFP_ZERO = __GFP_ZERO;
-diff --git a/rust/kernel/alloc.rs b/rust/kernel/alloc.rs
-index 8ad57a2e693e..ad48ac8dc13d 100644
---- a/rust/kernel/alloc.rs
-+++ b/rust/kernel/alloc.rs
-@@ -6,3 +6,59 @@
- #[cfg(not(testlib))]
- mod allocator;
- pub mod vecext;
-+
-+/// Flags to be used when allocating memory.
-+///
-+/// They can be combined with the operators `|`, `&`, and `!`.
-+///
-+/// Values can be used from the [`flags`] module.
-+#[derive(Clone, Copy)]
-+pub struct Flags(u32);
-+
-+impl core::ops::BitOr for Flags {
-+    type Output = Self;
-+    fn bitor(self, rhs: Self) -> Self::Output {
-+        Self(self.0 | rhs.0)
-+    }
-+}
-+
-+impl core::ops::BitAnd for Flags {
-+    type Output = Self;
-+    fn bitand(self, rhs: Self) -> Self::Output {
-+        Self(self.0 & rhs.0)
-+    }
-+}
-+
-+impl core::ops::Not for Flags {
-+    type Output = Self;
-+    fn not(self) -> Self::Output {
-+        Self(!self.0)
-+    }
-+}
-+
-+/// Allocation flags.
-+///
-+/// These are meant to be used in functions that can allocate memory.
-+pub mod flags {
-+    use super::Flags;
-+    use crate::bindings;
-+
-+    /// Users can not sleep and need the allocation to succeed.
-+    ///
-+    /// A lower watermark is applied to allow access to "atomic reserves". The current
-+    /// implementation doesn't support NMI and few other strict non-preemptive contexts (e.g.
-+    /// raw_spin_lock). The same applies to [`GFP_NOWAIT`].
-+    pub const GFP_ATOMIC: Flags = Flags(bindings::GFP_ATOMIC);
-+
-+    /// Typical for kernel-internal allocations. The caller requires ZONE_NORMAL or a lower zone
-+    /// for direct access but can direct reclaim.
-+    pub const GFP_KERNEL: Flags = Flags(bindings::GFP_KERNEL);
-+
-+    /// The same as [`GFP_KERNEL`], except the allocation is accounted to kmemcg.
-+    pub const GFP_KERNEL_ACCOUNT: Flags = Flags(bindings::GFP_KERNEL_ACCOUNT);
-+
-+    /// Ror kernel allocations that should not stall for direct reclaim, start physical IO or
-+    /// use any filesystem callback.  It is very likely to fail to allocate memory, even for very
-+    /// small allocations.
-+    pub const GFP_NOWAIT: Flags = Flags(bindings::GFP_NOWAIT);
-+}
-diff --git a/rust/kernel/prelude.rs b/rust/kernel/prelude.rs
-index a0177f195dec..a7b203f87aa1 100644
---- a/rust/kernel/prelude.rs
-+++ b/rust/kernel/prelude.rs
-@@ -14,7 +14,7 @@
- #[doc(no_inline)]
- pub use core::pin::Pin;
- 
--pub use crate::alloc::vecext::VecExt;
-+pub use crate::alloc::{flags::*, vecext::VecExt};
- 
- #[doc(no_inline)]
- pub use alloc::{boxed::Box, vec::Vec};
--- 
-2.34.1
+What's more, it really had been broken all along for one important case -
+AF_UNIX bind(2) with address (== socket pathname) being on the filesystem
+in question.
 
+Options:
+	1) make vfs_mknod() callers aware of the possibility, have the ones
+that care do lookup in case when return value is 0 and dentry is unhashed.
+That's similar to what we do for vfs_mkdir().  No changes needed for CIFS
+or fs/namei.c (i.e. do_mknodat()), unix_bind() definitely needs a change,
+ecryptfs can stay as-is, overlayfs just needs to stop complaining when it sees
+that situation, nfsd might or might not need a change - hadn't checked yet.
+In that case we document ->mknod() as "may unhash and return 0 if it wants
+to save a lookup".
+	2) make vfs_mknod() check for that case and have it call ->lookup()
+if it sees that.  I don't see any benefits to that, TBH - no performance
+benefits anywhere and no real simplification for ->mknod() instances.  It
+does avoid the need to change anything in CIFS, though.
+	3) require ->mknod() instances to make dentry positive on success.
+CIFS needs a fix, documentation gets updated to explicitly require that.
+AFAICS, nothing else would need to be touched, except possibly adding
+a warning in vfs_mknod() to catch violation of that rule.
+
+Note that cifs_sfu_make_node() is the only case in CIFS where that happens -
+other codepaths (both in cifs_make_node() and in smb2_make_node()) will
+instantiate.  How painful would it be for cifs_sfu_make_node()?
+AFAICS, you do open/sync_write/close there; would it be hard to do
+an eqiuvalent of fstat and set the inode up?  No need to reread the
+file contents (as cifs_sfu_type() does), and you do have full path
+anyway, so it's less work than for full ->lookup() even if you need
+a path-based protocol operations...
+
+Does that thing have an equivalent of fstat() that would return the
+metadata of opened file?
 
