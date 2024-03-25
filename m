@@ -1,68 +1,68 @@
-Return-Path: <linux-kernel+bounces-118070-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-118071-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id CCAF488B64E
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 01:45:54 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 229FA88B34A
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 22:57:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DBFDAB2F56E
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 21:57:26 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4F81C1C25D58
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 21:57:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7A11A73527;
-	Mon, 25 Mar 2024 21:57:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B5DEC7353F;
+	Mon, 25 Mar 2024 21:57:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="JAYDDz3e"
-Received: from mail-pl1-f182.google.com (mail-pl1-f182.google.com [209.85.214.182])
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="ScM2dCWW"
+Received: from mail-pl1-f177.google.com (mail-pl1-f177.google.com [209.85.214.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0A1AF71747
-	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 21:57:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 62D5073526
+	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 21:57:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711403823; cv=none; b=mRsvHwZnuJP9sj6C1fNhNdKjjbtmkyM0LaXisbBWYUf4nId9dRyuPO/SSv6FzxhGyjmd3YUCIte7fzRuj3WZRYgpTsC6StcHTwyGnV893IdNjNe0USX0/KHwGusk8zwLO2HKb8XfT09hfGruJMYOwUTywlkitPjmCzNcOL1Qa04=
+	t=1711403825; cv=none; b=SnRBmzKiYeWNP1R+Rpwbvs3UjhIdz1unP0ITnegeHkoYvTXeork+7p1WwPJL+p9pC9L0TY9OXlHz/8VG7Am8+gkgMytydQwDqelw/X+Va92r0XXjbGorz6SS/4wCPyfFW8H9lCtUa/3kFZtRMjKG97FU745IsspXaGKPOT+yRWE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711403823; c=relaxed/simple;
-	bh=QXZtCnxajIycS0ei9wcpf46OHw52iRlyjFfwysUM+vc=;
+	s=arc-20240116; t=1711403825; c=relaxed/simple;
+	bh=Bb20oI//qEvmd75QVZ+Rh3ThPw8+5KlK9UtyeUDx1xo=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=smzywLRbKB54my/8w9eKAEf8K/6iKKxVSc0PKzaaIba7GhJQihlq/OJ9C2183ByZohiScljBW5VkLvegvQy1PND0LhPpvmLAB0cAI416fPdOA59lx1ytuOZJYHhgY7wUgN9SUqKfNUvEg5IyY101cQVtXIHswSUkVtrzTJfTu54=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=JAYDDz3e; arc=none smtp.client-ip=209.85.214.182
+	 MIME-Version; b=RnBcK87wUYo/dN1/4vUr8xyDhzjhgI0ejkv4vyPxFyeB5LhfPfbUi7EoiBRWeErnHlO1a9196HJRVuHeaKhl0suB8/V3lT4V5uS5sk1KkmSenawUtc2qqdFkh+My+GTY5C3PFO7Lpy8I6YioRjjRjaNIU9tc0Qat45YE+fEQAgU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=ScM2dCWW; arc=none smtp.client-ip=209.85.214.177
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-pl1-f182.google.com with SMTP id d9443c01a7336-1e0eaf81dabso799135ad.3
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 14:57:01 -0700 (PDT)
+Received: by mail-pl1-f177.google.com with SMTP id d9443c01a7336-1e0025ef1efso29701755ad.1
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 14:57:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1711403821; x=1712008621; darn=vger.kernel.org;
+        d=chromium.org; s=google; t=1711403823; x=1712008623; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=QYCN6skM6Cit5WksDlDniZ8/1IrFMtsoAd0yueuyJuk=;
-        b=JAYDDz3eDFrsWRKGq2R6r9W0/2O/2KLZQz2ZSUAKa3Oq2qxFWXSQqHiK6915uF0pIw
-         S5Q1N1PFqvTBbNxNUmJp8foE2P6VVpzf/yrQ538SbS9lX+NO9Zfs31e6ZXFUHfPwzVIO
-         qVzbGh3bzLJNTOXLTUEt+acEAs2cEDlcy2QUE=
+        bh=NhZQWaJshhfD9wSXRNVLw92v4FQ+jJkjj3c/jVf2VJg=;
+        b=ScM2dCWWEfahm+vnXNusiYeSIY93QxxFSRCqk7nB3mWIntRVOYrsbFHhrhu+7dtHgL
+         mhAlB9QQP8wNqNyYlVQJblV92LQvJzmjZPaBQCK83+deZDVyeM1fBw35NFT56//+wgTt
+         XJBALzpmKIA1FFzfLNYUeGfkK4oVZ3qo28nRc=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711403821; x=1712008621;
+        d=1e100.net; s=20230601; t=1711403823; x=1712008623;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=QYCN6skM6Cit5WksDlDniZ8/1IrFMtsoAd0yueuyJuk=;
-        b=G3oD01vTi+3LQSz7CHVl9MzaamCHcmKmrZARfnhUHQwspvQNFfuLGKHygXdnKsaDCz
-         fPv5rY7lbpE1nWLiX6CtHbGeVJyri0obVFz/dZj5pbU2r99Iy/6SacfNfqA0EyUX4eR5
-         5SyGBGbP7uVW8NcnsaR7t3P0iSLIByBV0fBoQ1vxkE1ZTAUlvi3RPf2MrkF3Opk1i6Ph
-         zbXBEgqMlAciuRp1QqDrztEvzYumIAlh1Hieu6F0Q1DTyOSXTDjd7/V2sjC9vuzoW5r6
-         0JNAwWFZ7LaNbVNSQXDV9dv9fchfPpZ4z5LqW2M581r8iXQ77gBP9zucf4va1rl+VwFW
-         1HwA==
-X-Forwarded-Encrypted: i=1; AJvYcCXgWWnkEQEhJjWvrGfuOD7+TzOljGIp1PHyprn2b1f1VoallW7zp2Ey6a87dxnfB1P/mBoT8bzlY9N45zL6K586dKttKSWERrvSPOlj
-X-Gm-Message-State: AOJu0Yx3SOwrGGf0nPiKqnxbk4hcS2CG8hJ2W/FbZk6zVrkdXNqF92jp
-	vQuzVOC0rVtOnb1/84Pc19VsThhRK8/PnT0ODaRvJcMmtyjDpaWs9jFyjP6+2w==
-X-Google-Smtp-Source: AGHT+IEh+en9BRxmGIP3JNI1cG6+0j/qIqp4F0gaYXJA4luV0U4Ir1VjAwt2ENf87iBuWCJ8iqhbqQ==
-X-Received: by 2002:a17:903:987:b0:1e0:cd8a:58c with SMTP id mb7-20020a170903098700b001e0cd8a058cmr1285329plb.1.1711403821345;
-        Mon, 25 Mar 2024 14:57:01 -0700 (PDT)
+        bh=NhZQWaJshhfD9wSXRNVLw92v4FQ+jJkjj3c/jVf2VJg=;
+        b=H3AcUnPnoXANcW/FcPV8kyKsNN+I+GoA05LlJBuVDKsCTefkqvQrTpGHwxmIytkUHg
+         na/FQva57fz5NevyLkVwu9iJX9FvOqkPoHy8m98gjVx+6WrZisviWY2lk5/tfrAPYrmc
+         1Cbeb1dJJrANC34DvnKl05ek9NyOx+60BM3F8ohT3+jbEADPC85EFF3u26D5uzy2NOJJ
+         kfqRSXO7y5yXr45WXkt60USs43kXXIYIpPBnk5eKX/cQ3XrdksQThHRg4VTKdQzpmg4e
+         y4e9V80d4+Z8GSUzXwA3Cuh1Bs6VCzYjjRtSnH7W5QOVVRR00HdeQdI/WSBQo0Rs4lRR
+         UeDQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUOWW8W0pzbtwIlI1v0ob/np8fRRenu8xZYU47sojzKHfHUe1Uh1yjz5qEkxwOhYEhx425kW56z3QU6YvdZ83NJCx+agA58Wuf8VbmO
+X-Gm-Message-State: AOJu0YzWWsTPoe9jeHBjiH1DyXgNT6g+FP3dZ5LO47RRzMEHzZNmF+kj
+	Y3s/fZaTAhK3N/uwN0Rby60RSU8KDc5pAcjceR6dRp6osbPJZfIN7H2RgjJxQA==
+X-Google-Smtp-Source: AGHT+IG1pvV8JIModEf24NBBDg2YYgu41Tt2PrJ+H3EuIJzXqbRq4KaflfyB/AcYHVm8d9sODDNTeg==
+X-Received: by 2002:a17:902:cecb:b0:1e0:a678:5b55 with SMTP id d11-20020a170902cecb00b001e0a6785b55mr7152128plg.11.1711403823404;
+        Mon, 25 Mar 2024 14:57:03 -0700 (PDT)
 Received: from dianders.sjc.corp.google.com ([2620:15c:9d:2:f21b:7dde:93cc:b987])
-        by smtp.gmail.com with ESMTPSA id n6-20020a170902e54600b001def0897284sm5207866plf.76.2024.03.25.14.56.59
+        by smtp.gmail.com with ESMTPSA id n6-20020a170902e54600b001def0897284sm5207866plf.76.2024.03.25.14.57.01
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 Mar 2024 14:57:00 -0700 (PDT)
+        Mon, 25 Mar 2024 14:57:02 -0700 (PDT)
 From: Douglas Anderson <dianders@chromium.org>
 To: dri-devel@lists.freedesktop.org
 Cc: Pin-yen Lin <treapking@chromium.org>,
@@ -78,9 +78,9 @@ Cc: Pin-yen Lin <treapking@chromium.org>,
 	Sam Ravnborg <sam@ravnborg.org>,
 	Thomas Zimmermann <tzimmermann@suse.de>,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH 2/3] drm/panel-edp: If we fail to powerup/get EDID, use conservative timings
-Date: Mon, 25 Mar 2024 14:56:26 -0700
-Message-ID: <20240325145626.2.Ia7a55a9657b0b6aa4644fd497a0bc595a771258c@changeid>
+Subject: [PATCH 3/3] drm-panel: If drm_panel_dp_aux_backlight() fails, don't fail panel probe
+Date: Mon, 25 Mar 2024 14:56:27 -0700
+Message-ID: <20240325145626.3.I552e8af0ddb1691cc0fe5d27ea3d8020e36f7006@changeid>
 X-Mailer: git-send-email 2.44.0.396.g6e790dbe36-goog
 In-Reply-To: <20240325215631.3804796-1-dianders@chromium.org>
 References: <20240325215631.3804796-1-dianders@chromium.org>
@@ -92,91 +92,73 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-If at boot we fail to power up the eDP panel (most often happens if
-the eDP panel never asserts HPD to us) or if we are unable to read the
-EDID at bootup to figure out the panel's ID then let's use the
-conservative eDP panel powerup/powerdown timings but _not_ fail the
-probe.
+If we're using the AUX channel for eDP backlight and it fails to probe
+for some reason, let's _not_ fail the panel probe.
 
-It might seem strange to _not_ fail the probe in this case since we
-were unable to powerup the panel and confirm it's there. However,
-there is a reason to do this. Specifically, if we fail to probe the
-panel then it really throws the whole display pipeline for loop. Most
-DRM subsystems are written so that they wait until all components
-(including the panel) have probed before they set everything up. When
-the panel doesn't come up then this never happens. As a side effect of
-not setting everything up then other display adapters don't get
-initialized. As a practical example, I can see that if I open up a
-sc7180-trogdor based Chromebook that's using the generic "edp-panel"
-and unplug the eDP panel that it causes the _external_ DP monitor not
-to function. This is obviously bad because it means that a device with
-a dead eDP panel becomes e-waste when it could instead still be given
-useful life with an external display.
+At least one case where we could fail to init the backlight is because
+of a dead or physically missing panel. As talked about in detail in
+the earlier patch in this series, ("drm/panel-edp: If we fail to
+powerup/get EDID, use conservative timings"), this can cause the
+entire system's display pipeline to fail to come up and that's
+non-ideal.
 
-NOTES:
-- When we fail to probe like this, boot is a bit slow because we try
-  several times to power the panel up. This doesn't feel horrible
-  because it'll eventually work and the retries are known to help
-  bring some panels up.
-- In the case where we hit the condition of failing to power up, the
-  display will likely _never_ have a chance to work again until
-  reboot. Once the panel-edp pm_runtime resume function fails it
-  doesn't ever seem to retry. This is probably for the best given that
-  we don't have any real timing/modes. eDP isn't expected to be
-  "hotplugged" so this makes some sense.
-- It turns out that this makes panel-edp behave more similarly for
-  users of the generic "edp-panel" compatible string and the old fixed
-  panel compatible string. With the old fixed panel compatible string
-  we don't talk to the panel during probe so we'd actually behave much
-  the same way that we'll now behave for the generic "edp-panel".
+If we fail to init the backlight for some transitory reason, we should
+dig in and see if there's a way to fix this (perhaps retries?). Even
+in that case, though, having a panel whose backlight is stuck at 100%
+(the default, at least in the panel Samsung ATNA33XC20 I tested) is
+better than having no panel at all.
 
 Signed-off-by: Douglas Anderson <dianders@chromium.org>
 ---
+If needed, I could split this into two patches: one for each of the
+two panels that use drm_panel_dp_aux_backlight(). Since they both go
+through drm-misc, though, it doesn't feel worth it.
 
- drivers/gpu/drm/panel/panel-edp.c | 12 +++++++-----
- 1 file changed, 7 insertions(+), 5 deletions(-)
+ drivers/gpu/drm/panel/panel-edp.c                | 8 +++++++-
+ drivers/gpu/drm/panel/panel-samsung-atna33xc20.c | 9 +++++++--
+ 2 files changed, 14 insertions(+), 3 deletions(-)
 
 diff --git a/drivers/gpu/drm/panel/panel-edp.c b/drivers/gpu/drm/panel/panel-edp.c
-index 8a19fea90ddf..607cdd6feda9 100644
+index 607cdd6feda9..0bf66d9dd5b8 100644
 --- a/drivers/gpu/drm/panel/panel-edp.c
 +++ b/drivers/gpu/drm/panel/panel-edp.c
-@@ -808,7 +808,10 @@ static int generic_edp_panel_probe(struct device *dev, struct panel_edp *panel)
- 	/* Power the panel on so we can read the EDID */
- 	ret = pm_runtime_get_sync(dev);
- 	if (ret < 0) {
--		dev_err(dev, "Couldn't power on panel to read EDID: %d\n", ret);
-+		dev_err(dev,
-+			"Couldn't power on panel to ID it; using conservative timings: %d\n",
-+			ret);
-+		panel_edp_set_conservative_timings(panel, desc);
- 		goto exit;
+@@ -944,8 +944,14 @@ static int panel_edp_probe(struct device *dev, const struct panel_desc *desc,
+ 		err = drm_panel_dp_aux_backlight(&panel->base, panel->aux);
+ 		pm_runtime_mark_last_busy(dev);
+ 		pm_runtime_put_autosuspend(dev);
++
++		/*
++		 * Warn if we get an error, but don't consider it fatal. Having
++		 * a panel where we can't control the backlight is better than
++		 * no panel.
++		 */
+ 		if (err)
+-			goto err_finished_pm_runtime;
++			dev_warn(dev, "failed to register dp aux backlight: %d\n", err);
  	}
  
-@@ -816,8 +819,8 @@ static int generic_edp_panel_probe(struct device *dev, struct panel_edp *panel)
- 	if (base_block) {
- 		panel_id = drm_edid_get_panel_id(base_block);
- 	} else {
--		dev_err(dev, "Couldn't identify panel via EDID\n");
--		ret = -EIO;
-+		dev_err(dev, "Couldn't read EDID for ID; using conservative timings\n");
-+		panel_edp_set_conservative_timings(panel, desc);
- 		goto exit;
- 	}
- 	drm_edid_decode_panel_id(panel_id, vend, &product_id);
-@@ -844,12 +847,11 @@ static int generic_edp_panel_probe(struct device *dev, struct panel_edp *panel)
- 		desc->delay = *panel->detected_panel->delay;
- 	}
- 
--	ret = 0;
- exit:
+ 	drm_panel_add(&panel->base);
+diff --git a/drivers/gpu/drm/panel/panel-samsung-atna33xc20.c b/drivers/gpu/drm/panel/panel-samsung-atna33xc20.c
+index 9c336c71562b..6828a4f24d14 100644
+--- a/drivers/gpu/drm/panel/panel-samsung-atna33xc20.c
++++ b/drivers/gpu/drm/panel/panel-samsung-atna33xc20.c
+@@ -328,9 +328,14 @@ static int atana33xc20_probe(struct dp_aux_ep_device *aux_ep)
+ 	ret = drm_panel_dp_aux_backlight(&panel->base, aux_ep->aux);
  	pm_runtime_mark_last_busy(dev);
  	pm_runtime_put_autosuspend(dev);
++
++	/*
++	 * Warn if we get an error, but don't consider it fatal. Having
++	 * a panel where we can't control the backlight is better than
++	 * no panel.
++	 */
+ 	if (ret)
+-		return dev_err_probe(dev, ret,
+-				     "failed to register dp aux backlight\n");
++		dev_warn(dev, "failed to register dp aux backlight: %d\n", ret);
  
--	return ret;
-+	return 0;
- }
+ 	drm_panel_add(&panel->base);
  
- static int panel_edp_probe(struct device *dev, const struct panel_desc *desc,
 -- 
 2.44.0.396.g6e790dbe36-goog
 
