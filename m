@@ -1,114 +1,146 @@
-Return-Path: <linux-kernel+bounces-118142-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-118143-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B80EC88B485
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 23:50:50 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 81F0988B61B
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 01:31:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 388FC300A7F
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 22:50:49 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E6B3AB2ABA1
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 22:52:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 742D47FBC4;
-	Mon, 25 Mar 2024 22:50:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1BB4780606;
+	Mon, 25 Mar 2024 22:51:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="d/PgK3S+"
-Received: from mail-qk1-f182.google.com (mail-qk1-f182.google.com [209.85.222.182])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="KLKiB4vl"
+Received: from mail-oi1-f182.google.com (mail-oi1-f182.google.com [209.85.167.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 324B93398B
-	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 22:50:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AFD577F7DF
+	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 22:51:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711407043; cv=none; b=W1WB49CQkz/VusDaYCprZ9WMRkEG6kuNFTufwU0bOccO3LnhF5RCoHHg0O9S5Kvg4+Mqme5QjbtSP1raCL31/dWwCBpDldGjxsqVMzcHYWY4yz4cTtfGZN+mJZUw9UL5DYzbhleVxrKcrqqIrLLyHMenJhO8MkY6Y8SsO+UZgN4=
+	t=1711407115; cv=none; b=AoFjsrjOwtEh1aiei48KZ8aevFMELXaGNvT6uLA3EIhRowuX7Ye2JVOxJBZbxRTYVRIEPDBcCxqHja2fMudILfHx9dWeRIBhrOQ46mplVK0stYio6GolqKTWOUIZlxySJJ3A7q6wtT2eYj8UfzbrutX1hATZ64DHCyMeGz46i34=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711407043; c=relaxed/simple;
-	bh=fdj5WC4WczRnsrMDwrvmZ5LSi6FYFmAloHkmxhIb2Is=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=HsEvyJ6jLUw78k8mnR3omf8+f+9IY5lZSkCmbyYfcbsMybuaL5rFU3TRk66BmRnuMQzqk+7ClrK7o682XyliPGnXwhRYpnQksxrIo2364iz8olKeSW66BKaZws3uaNuutrzNLotZNGGCtLYnFr26EW71nDh8zModvZ8H7fWScGw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=d/PgK3S+; arc=none smtp.client-ip=209.85.222.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-qk1-f182.google.com with SMTP id af79cd13be357-789e2bf854dso293335885a.3
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 15:50:40 -0700 (PDT)
+	s=arc-20240116; t=1711407115; c=relaxed/simple;
+	bh=WKCyn9Jbsg8Ko9Kdx7LpUFQvg5K3h1c4KeT/q4IWC6E=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=l27FXYRmqMeBUg0W9je+IAJZAFihH6+d6TAKd5X/G8H76Pps4OK1ZK4ILWid4dJj+xY9esDYKKZhsKnz9smUBL7RuI015OeFF0jPoZJRhNQym1U6jebE8OAogBlwq2V8JwfY1YtVAcIDtPo2lL0CZfLRyVmG/92yssit4Jbqy3o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=KLKiB4vl; arc=none smtp.client-ip=209.85.167.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-oi1-f182.google.com with SMTP id 5614622812f47-3bbc649c275so2475482b6e.0
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 15:51:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1711407038; x=1712011838; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=yawrovRasVBRHceCsqRRDcxsuqGTGGt+XKEa9F3SZL8=;
-        b=d/PgK3S+LsssiW7CzMOFh7iSzpkdJilMdKCHXcH9iUTWj+TV29UKWEHncjdF4NOmPp
-         kSHX98sYCj4Sx/RKY5oVGE31Siu5jNEkpXhL3pibu3bPe/7WA02ov0JtKV13hPXjokbH
-         zFDEyN/c5AWUFWaRzdKJTlH09NyWDwi+vhnCo=
+        d=linaro.org; s=google; t=1711407113; x=1712011913; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=N2QCqoOB2K39Evzy/pSJ0AhYW51cJwfp0a+BuRvX5e0=;
+        b=KLKiB4vl2pjbKGnr4OhRTeNsbz8PzgADxTBHk7rsmfjVThFjO/U0zqwdbwzT9MRoD/
+         odolEYFckuoH87yeYhQLciAV+kOsIil8XUJGb5QxOgEyTfku1rC/hkzKhLRhkcitcF2z
+         8FH1sV+C3C3XSUD/pJDbnXbx9WmHxh+H02zjMNPmeAyXCk1BxPBCXAarqKfK6aMsco33
+         SkbTj5KeqaCakvY/CQ3eKuLikriQWGUyoBSDFWX9ZwLFT+y5jfBvHaugqFZjJKrE80at
+         0AeQaXPDI/oJG0DI6cB/koM2TfRDVl/rhlt91iEbRYUm4kEdTsu797S+K0JGpCTDXxZD
+         PQwQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711407038; x=1712011838;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=yawrovRasVBRHceCsqRRDcxsuqGTGGt+XKEa9F3SZL8=;
-        b=PL62YJnM+hAU8gyaksXU1585Y5p7NWyFb81lfiRp/8Iyc/xI7Du0Pe+fURSHTKrFVs
-         ytfM9WCho9DVkslBjwmkEeS3LG8dC6PIcof4y++SAK/rTvi/N0z5qBi4QykSalbSuiTs
-         aT6Jd43/xGEjB5BZHotJ0lwTfDNVe6wZYjLnfMFMpayu9wEhWeVaN/xomIhS/3pUGjoS
-         GOdjgvoTH6h2nrHF7HpNgRQzhawRACspRdt5qAX++q2B1copc61Bs78uB5b6VYIERJFA
-         OJtzKG0JfSRY2g7vHbYsX1az5pTPImHKYCasgLxW6iP9tpIUOueOxwtQ3qO1lVaiXdd5
-         /z2Q==
-X-Forwarded-Encrypted: i=1; AJvYcCXq7O278KRTiK1nL5wKI6f8GyiwTIIQO6g2AmURa9gU0Wt50Wk+uBHONHtsEGnvKdO/viBZBOZfost6DaDowpr4Dsny4No0CDYgHnpS
-X-Gm-Message-State: AOJu0YwQeY9f0Sd4SKGDt0r0s/RXVOtf77Xjd+D7Ov+ZplGarqAzZRCx
-	WvrgLgvU2xXVR11Kb/rHbn/ayE5AYNS12ZYWnX/BruanXuUVivpKDytWQcGTd2NqYwznv+vS4Eg
-	=
-X-Google-Smtp-Source: AGHT+IHMBAWz6bdkR+o35I5aGInvKYHGfNZlwkazLTQ3d3bXhAUZsLF1XX1fMCoYIyekN+dPYTNtrw==
-X-Received: by 2002:a05:620a:1375:b0:789:e6cc:5f7b with SMTP id d21-20020a05620a137500b00789e6cc5f7bmr8087605qkl.48.1711407038567;
-        Mon, 25 Mar 2024 15:50:38 -0700 (PDT)
-Received: from mail-qt1-f175.google.com (mail-qt1-f175.google.com. [209.85.160.175])
-        by smtp.gmail.com with ESMTPSA id bl18-20020a05620a1a9200b0078a5de83e15sm524064qkb.30.2024.03.25.15.50.37
-        for <linux-kernel@vger.kernel.org>
+        d=1e100.net; s=20230601; t=1711407113; x=1712011913;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=N2QCqoOB2K39Evzy/pSJ0AhYW51cJwfp0a+BuRvX5e0=;
+        b=su075Ecz6/TXDhr0Vqk+z/F7hIZiFl3kg8/1ouGi2qW5bjP41B35fxB93XYs3MicRE
+         Z+Bd+VtYT3mo+6aVibRs5tvR30Qms6lzMApvZuY7H+usiUNnSh176DvKAIeIGcMb5ACC
+         5TY+dcSAn3RDXcul9ORE1McBazZXkqvDoLq+bPiBEVMzFJP5kFE5DjLRlHKBoJFzWK3X
+         Vs/OwX1Awg39m3qZwLOiGBfGv0RpHFSzPqJ64yybkhaPTL1TKrq3K+2vvUTsdnLwPeGV
+         qFmZr9mbl5qAUtGFwA9h/zpVO+yHCPRAaRj0FdXKahwZSlGgAgDPlL7D/npMQPcvy2mH
+         6cEw==
+X-Forwarded-Encrypted: i=1; AJvYcCXPdNTsoVUBrd8YfwoOfvi/R4wxRzgg0n1tleDtUUWGln/coBrl/U264CF23jqi2VxmR9ijFjGp0mgL1ztRnDrtUaFipIpIqFjRpRlF
+X-Gm-Message-State: AOJu0YyjIb5ANqzZBlqmhOvEy2gtVjJd6rx1kavbmV2eovqehHu5AgD3
+	txoeMuBQphwItr1pFRfVObz3JpM2dVSZeAADwa+9t6L9JjCSJvqB0cCaZyt01yI=
+X-Google-Smtp-Source: AGHT+IHxNHOECY/eqqrOsQbWhG5lFKuwhRTSfSZF9B9SyDESEookZJmP6YG/jNPPsZ/nRRU0Bo6dFA==
+X-Received: by 2002:a05:6808:bc6:b0:3c3:d33b:181f with SMTP id o6-20020a0568080bc600b003c3d33b181fmr2718206oik.17.1711407112769;
+        Mon, 25 Mar 2024 15:51:52 -0700 (PDT)
+Received: from [192.168.17.16] ([148.222.132.226])
+        by smtp.gmail.com with ESMTPSA id l5-20020a544505000000b003c3d6e9f15fsm164956oil.24.2024.03.25.15.51.51
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 25 Mar 2024 15:50:37 -0700 (PDT)
-Received: by mail-qt1-f175.google.com with SMTP id d75a77b69052e-430d3fcc511so56771cf.1
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 15:50:37 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCUwmdOL4dDBdjbCh9k8qHM7Y1nWz4g0j2kVqe2FDl74VRHKf9kUlUQMlHzF0S66GyLVZ+YZUKsMpFWtyHP/KVILBuwM+lKW30ux7zv/
-X-Received: by 2002:a05:622a:22a5:b0:431:3887:ace6 with SMTP id
- ay37-20020a05622a22a500b004313887ace6mr57851qtb.26.1711407037327; Mon, 25 Mar
- 2024 15:50:37 -0700 (PDT)
+        Mon, 25 Mar 2024 15:51:52 -0700 (PDT)
+Message-ID: <84a54bf1-356a-443a-a463-c0e3b582cd7f@linaro.org>
+Date: Mon, 25 Mar 2024 16:51:50 -0600
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240325125901.2524752-1-treapking@chromium.org>
-In-Reply-To: <20240325125901.2524752-1-treapking@chromium.org>
-From: Doug Anderson <dianders@chromium.org>
-Date: Mon, 25 Mar 2024 15:50:21 -0700
-X-Gmail-Original-Message-ID: <CAD=FV=WcYZEpOkKL=7EsPKvo-Adfwx8kqrZWPJuwjk5TyTHGvQ@mail.gmail.com>
-Message-ID: <CAD=FV=WcYZEpOkKL=7EsPKvo-Adfwx8kqrZWPJuwjk5TyTHGvQ@mail.gmail.com>
-Subject: Re: [PATCH] drm/panel-edp: Add AUO B120XAN01.0
-To: Pin-yen Lin <treapking@chromium.org>
-Cc: Neil Armstrong <neil.armstrong@linaro.org>, Jessica Zhang <quic_jesszhan@quicinc.com>, 
-	Sam Ravnborg <sam@ravnborg.org>, linux-kernel@vger.kernel.org, 
-	Hsin-Te Yuan <yuanhsinte@chromium.org>, dri-devel@lists.freedesktop.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 5.4 000/180] 5.4.273-rc2 review
+To: Sasha Levin <sashal@kernel.org>, linux-kernel@vger.kernel.org,
+ stable@vger.kernel.org
+Cc: torvalds@linux-foundation.org, akpm@linux-foundation.org,
+ linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+ lkft-triage@lists.linaro.org, florian.fainelli@broadcom.com, pavel@denx.de,
+ abelova@astralinux.ru
+References: <20240325115908.1765126-1-sashal@kernel.org>
+Content-Language: en-US
+From: =?UTF-8?Q?Daniel_D=C3=ADaz?= <daniel.diaz@linaro.org>
+In-Reply-To: <20240325115908.1765126-1-sashal@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-Hi,
+Hello!
 
-On Mon, Mar 25, 2024 at 5:59=E2=80=AFAM Pin-yen Lin <treapking@chromium.org=
-> wrote:
->
-> Add support for the AUO B120XAN01.0 panel.
->
-> Signed-off-by: Pin-yen Lin <treapking@chromium.org>
-> ---
->
->  drivers/gpu/drm/panel/panel-edp.c | 1 +
->  1 file changed, 1 insertion(+)
+On 25/03/24 5:59 a. m., Sasha Levin wrote:
+> This is the start of the stable review cycle for the 5.4.273 release.
+> There are 180 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Wed Mar 27 11:59:07 AM UTC 2024.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+>          https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git/patch/?id=linux-5.4.y&id2=v5.4.272
+> or in the git tree and branch at:
+>          git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.4.y
+> and the diffstat can be found below.
+> 
+> Thanks,
+> Sasha
 
-Looks fine.
+There is a new warning introduced here, on Arm (64- and 32-bits) with GCC 8, GCC 12, Clang 17:
 
-Reviewed-by: Douglas Anderson <dianders@chromium.org>
+-----8<-----
+   /builds/linux/drivers/cpufreq/brcmstb-avs-cpufreq.c:462:23: warning: mixing declarations and code is a C99 extension [-Wdeclaration-after-statement]
+     462 |         struct private_data *priv = policy->driver_data;
+         |                              ^
+   1 warning generated.
+----->8-----
 
-Applied to drm-misc-next:
+Bisection points to
 
-1864c45deb77 drm/panel-edp: Add AUO B120XAN01.0
+   commit 8930178165fac14653ef502321efc3d5ca7c66c4
+   Author: Anastasia Belova <abelova@astralinux.ru>
+   Date:   Wed Jan 17 10:12:20 2024 +0300
+
+       cpufreq: brcmstb-avs-cpufreq: add check for cpufreq_cpu_get's return value
+       
+       [ Upstream commit f661017e6d326ee187db24194cabb013d81bc2a6 ]
+
+
+Reverting that commits makes the warning disappear.
+
+Reproducer:
+
+   tuxmake --runtime podman --target-arch arm64 --toolchain clang-17 --kconfig defconfig LLVM=1 LLVM_IAS=1
+
+Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
+
+
+Greetings!
+
+Daniel Díaz
+daniel.diaz@linaro.org
+
 
