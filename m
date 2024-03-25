@@ -1,145 +1,587 @@
-Return-Path: <linux-kernel+bounces-117257-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-117254-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0333A88AACC
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 18:08:04 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id A748C88A91B
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 17:26:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3EF2BB23463
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 16:29:20 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5C79738087B
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 16:26:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6545815E5AE;
-	Mon, 25 Mar 2024 14:29:22 +0000 (UTC)
-Received: from zju.edu.cn (mail.zju.edu.cn [61.164.42.155])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D19F615DBCC;
-	Mon, 25 Mar 2024 14:29:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=61.164.42.155
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BC379137911;
+	Mon, 25 Mar 2024 14:27:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=igalia.com header.i=@igalia.com header.b="QVfzEc8+"
+Received: from fanzine2.igalia.com (fanzine2.igalia.com [213.97.179.56])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 60C536E616
+	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 14:27:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.97.179.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711376961; cv=none; b=CQStE9B889lv6qUAGPB9MJFY2bZYVlFv3MGQ5l7NRGa9oLCq6loNpZlWrzk7PFDbGhKQZvm4Av7PBdjoBz4gGESYnHAX+mo9yFIe2ZUOFnF+1GfDZuDmeDUbBzvyWj64TwzpIttSAIZ6tCCOTHyp5G4AHhuC8Ovp1O43RaSDYMA=
+	t=1711376844; cv=none; b=PjVmDPHiHeU9qQgI4/8WnfBFxRoib+huvKLE/AOkgcD/X+J7iE7ZSunv/ktL7WbM5Q6I9Omt/EnDMBEjS7jDU/WqBgJvSfBoiR9NoThoS0StQ1NJ2+voElv3wa5U4kwb3JeDFJhWt9+vSa3nt1KlR4pdl2nUbx2Iq2flpQaNkcE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711376961; c=relaxed/simple;
-	bh=UclVC5TUuacQtw8LteqZT6tP4wbtrOMeCdE5sCs/DJs=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:Content-Type:
-	 MIME-Version:Message-ID; b=oaCs6gkx3RON3caV3QTo8ITlpfyzTDia8+7rhudEu+tPjof0D4o7OQaHjofxbpFxEgXaJcdIfgTUfAgb8iMHIBPvhRzfF609RlkBsZ2UZl/wQHlVH6/rrwQB5qwFvoRpkJWBaZ4YiIRnl1HsHkAfZ7v43tLJKC9MCaWBd2R5wRU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=zju.edu.cn; spf=pass smtp.mailfrom=zju.edu.cn; arc=none smtp.client-ip=61.164.42.155
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=zju.edu.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zju.edu.cn
-Received: from duoming$zju.edu.cn ( [106.117.100.135] ) by
- ajax-webmail-mail-app2 (Coremail) ; Mon, 25 Mar 2024 22:26:42 +0800
- (GMT+08:00)
-Date: Mon, 25 Mar 2024 22:26:42 +0800 (GMT+08:00)
-X-CM-HeaderCharset: UTF-8
-From: duoming@zju.edu.cn
-To: "Takashi Iwai" <tiwai@suse.de>
-Cc: linux-sound@vger.kernel.org, linux-kernel@vger.kernel.org,
-	tiwai@suse.com, perex@perex.cz
-Subject: Re: [PATCH] ALSA: sh: aica: reorder cleanup operations to avoid UAF
- bug
-X-Priority: 3
-X-Mailer: Coremail Webmail Server Version 2023.4-cmXT5 build
- 20231205(37e20f0e) Copyright (c) 2002-2024 www.mailtech.cn zju.edu.cn
-In-Reply-To: <871q7yybeb.wl-tiwai@suse.de>
-References: <20240325033946.47052-1-duoming@zju.edu.cn>
- <871q7yybeb.wl-tiwai@suse.de>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset=UTF-8
+	s=arc-20240116; t=1711376844; c=relaxed/simple;
+	bh=MBvFnn2G6ZcyJcF6QSxq+g/mCCQFbk5HGa3tTUhIl4c=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Q6atbEwDhq2NZVJDC0WRFIUQ8hZqWVfJ+uMs7JddVPbMG+b70eDyTBbnSwQ/Dk1jmY8Zda5tjA4eKXTO1q1F1GoDayJuPFzBJ22ev7iNCeCGJWiXoiGTTnIgOXxazb2ekD+T2XICx2R78YZPCG7Bbulb7ABMXN4ZYlMOJKaukbA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=igalia.com; spf=pass smtp.mailfrom=igalia.com; dkim=pass (2048-bit key) header.d=igalia.com header.i=@igalia.com header.b=QVfzEc8+; arc=none smtp.client-ip=213.97.179.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=igalia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=igalia.com
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=igalia.com;
+	s=20170329; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:From:
+	References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender:Reply-To:
+	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+	Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
+	List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=uUqMG4Rlt4GSQox3FafJY2HAmkIghLTgTx7VqlpFR0E=; b=QVfzEc8+R1o4KYn8Pd+tMNHmc2
+	OQ3npR2f0aYPhiI9rEFxyBhRzUfQpeKcDMvWwg8q9vQ/AiuV3kbu2r7S4W37eMAqJkNDT6rB6UerQ
+	U6jHyPAFbV4qkzhDMX5UiFzbfAQO6iwE6A+yuHNHsKfKJgYs6a7hlG6M+GlAJA8zdc50TaEPFLw3b
+	IJiv/G+lYyOZdkLgBbKAiycBANM8qvPcbplbM4b/VJMVsarwuhAvU0txPt0mEBR5utNGIGqhG9TXx
+	Sk3sJYyYPxuk3gv2vB9jmH+h/8xiPsjDXoO/OFOTyLQ1lqJgDKavntZmBUWZH5epB71+OYmPnntF+
+	oyym+dxg==;
+Received: from [177.34.169.255] (helo=[192.168.0.139])
+	by fanzine2.igalia.com with esmtpsa 
+	(Cipher TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_128_GCM:128) (Exim)
+	id 1rolHs-00F5qt-3M; Mon, 25 Mar 2024 15:26:56 +0100
+Message-ID: <e5d8297f-3e1f-459f-bef2-3a91f2caf94f@igalia.com>
+Date: Mon, 25 Mar 2024 11:26:48 -0300
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-ID: <43e102f3.61dc.18e7601a2f2.Coremail.duoming@zju.edu.cn>
-X-Coremail-Locale: zh_CN
-X-CM-TRANSID:by_KCgBnR5yjiQFmetpgAQ--.21222W
-X-CM-SenderInfo: qssqjiasttq6lmxovvfxof0/1tbiAwQLAWYBgRkAmQAAsr
-X-Coremail-Antispam: 1Ur529EdanIXcx71UUUUU7IcSsGvfJ3iIAIbVAYjsxI4VWxJw
-	CS07vEb4IE77IF4wCS07vE1I0E4x80FVAKz4kxMIAIbVAFxVCaYxvI4VCIwcAKzIAtYxBI
-	daVFxhVjvjDU=
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v5 11/16] drm/vkms: Add YUV support
+To: Louis Chauvet <louis.chauvet@bootlin.com>,
+ Rodrigo Siqueira <rodrigosiqueiramelo@gmail.com>,
+ Melissa Wen <melissa.srw@gmail.com>,
+ Haneen Mohammed <hamohammed.sa@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+ Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+ Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
+ David Airlie <airlied@gmail.com>, arthurgrillo@riseup.net,
+ Jonathan Corbet <corbet@lwn.net>, pekka.paalanen@haloniitty.fi
+Cc: dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+ jeremie.dautheribes@bootlin.com, miquel.raynal@bootlin.com,
+ thomas.petazzoni@bootlin.com, seanpaul@google.com, marcheu@google.com,
+ nicolejadeyee@google.com
+References: <20240313-yuv-v5-0-e610cbd03f52@bootlin.com>
+ <20240313-yuv-v5-11-e610cbd03f52@bootlin.com>
+Content-Language: en-US
+From: =?UTF-8?Q?Ma=C3=ADra_Canal?= <mcanal@igalia.com>
+Autocrypt: addr=mcanal@igalia.com; keydata=
+ xjMEZIsaeRYJKwYBBAHaRw8BAQdAGU6aY8oojw61KS5rGGMrlcilFqR6p6ID45IZ6ovX0h3N
+ H01haXJhIENhbmFsIDxtY2FuYWxAaWdhbGlhLmNvbT7CjwQTFggANxYhBDMCqFtIvFKVRJZQ
+ hDSPnHLaGFVuBQJkixp5BQkFo5qAAhsDBAsJCAcFFQgJCgsFFgIDAQAACgkQNI+cctoYVW5u
+ GAEAwpaC5rI3wD8zqETKwGVoXd6+AbmGfZuVD40xepy7z/8BAM5w95/oyPsHUqOsg/xUTlNp
+ rlbhA+WWoaOXA3XgR+wCzjgEZIsaeRIKKwYBBAGXVQEFAQEHQGoOK0jgh0IorMAacx6WUUWb
+ s3RLiJYWUU6iNrk5wWUbAwEIB8J+BBgWCAAmFiEEMwKoW0i8UpVEllCENI+cctoYVW4FAmSL
+ GnkFCQWjmoACGwwACgkQNI+cctoYVW6cqwD/Q9R98msvkhgRvi18fzUPFDwwogn+F+gQJJ6o
+ pwpgFkAA/R2zOfla3IT6G3SBoV5ucdpdCpnIXFpQLbmfHK7dXsAC
+In-Reply-To: <20240313-yuv-v5-11-e610cbd03f52@bootlin.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-T24gTW9uLCAyNSBNYXIgMjAyNCAwOToxNjoxMiArMDEwMCBUYWthc2hpIEl3YWkgd3JvdGU6Cj4g
-PiBUaGUgZHJlYW1jYXN0Y2FyZC0+dGltZXIgY291bGQgc2NoZWR1bGUgdGhlIHNwdV9kbWFfd29y
-ayBhbmQgdGhlCj4gPiBzcHVfZG1hX3dvcmsgY291bGQgYWxzbyBhcm0gdGhlIGRyZWFtY2FzdGNh
-cmQtPnRpbWVyLgo+ID4gCj4gPiBXaGVuIHRoZSBZYW1haGEgQUlDQSBjYXJkIGlzIGNsb3Npbmcs
-IHRoZSBkcmVhbWNhc3RjYXJkLT5jaGFubmVsCj4gPiB3aWxsIGJlIGRlYWxsb2NhdGVkLiBCdXQg
-aXQgY291bGQgc3RpbGwgYmUgZGVyZWZlcmVuY2VkIGluIHRoZQo+ID4gd29ya2VyIHRocmVhZC4g
-VGhlIHJlYXNvbiBpcyB0aGF0IGRlbF90aW1lcigpIHdpbGwgcmV0dXJuIGRpcmVjdGx5Cj4gPiBy
-ZWdhcmRsZXNzIG9mIHdoZXRoZXIgdGhlIHRpbWVyIGhhbmRsZXIgaXMgcnVubmluZyBvciBub3Qg
-YW5kIHRoZQo+ID4gd29ya2VyIGNvdWxkIGJlIHJlc2NoZWR1bGVkIGluIHRoZSB0aW1lciBoYW5k
-bGVyLiBBcyBhIHJlc3VsdCwgdGhlCj4gPiBVQUYgYnVnIHdpbGwgaGFwcGVuLiBUaGUgcmFjeSBz
-aXR1YXRpb24gaXMgc2hvd24gYmVsb3c6Cj4gPiAKPiA+ICAgICAgIChUaHJlYWQgMSkgICAgICAg
-ICAgICAgICAgIHwgICAgICAoVGhyZWFkIDIpCj4gPiBzbmRfYWljYXBjbV9wY21fY2xvc2UoKSAg
-ICAgICAgICB8Cj4gPiAgLi4uICAgICAgICAgICAgICAgICAgICAgICAgICAgICB8ICBydW5fc3B1
-X2RtYSgpIC8vd29ya2VyCj4gPiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB8ICAg
-IG1vZF90aW1lcigpCj4gPiAgIGZsdXNoX3dvcmsoKSAgICAgICAgICAgICAgICAgICB8Cj4gPiAg
-IGRlbF90aW1lcigpICAgICAgICAgICAgICAgICAgICB8ICBhaWNhX3BlcmlvZF9lbGFwc2VkKCkg
-Ly90aW1lcgo+ID4gICBrZnJlZShkcmVhbWNhc3RjYXJkLT5jaGFubmVsKSAgfCAgICBzY2hlZHVs
-ZV93b3JrKCkKPiA+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHwgIHJ1bl9zcHVf
-ZG1hKCkgLy93b3JrZXIKPiA+ICAgLi4uICAgICAgICAgICAgICAgICAgICAgICAgICAgIHwgICAg
-ZHJlYW1jYXN0Y2FyZC0+Y2hhbm5lbC0+IC8vVVNFCj4gPiAKPiA+IEluIG9yZGVyIHRvIG1pdGln
-YXRlIHRoaXMgYnVnLCB1c2UgdGltZXJfc2h1dGRvd25fc3luYygpIHRvIHNodXRkb3duCj4gPiB0
-aGUgdGltZXIgYW5kIHRoZW4gdXNlIGZsdXNoX3dvcmsoKSB0byBjYW5jZWwgdGhlIHdvcmtlci4K
-PiA+IAo+ID4gRml4ZXM6IDE5OGRlNDNkNzU4YyAoIltBTFNBXSBBZGQgQUxTQSBzdXBwb3J0IGZv
-ciB0aGUgU0VHQSBEcmVhbWNhc3QgUENNIGRldmljZSIpCj4gPiBTaWduZWQtb2ZmLWJ5OiBEdW9t
-aW5nIFpob3UgPGR1b21pbmdAemp1LmVkdS5jbj4KPiA+IC0tLQo+ID4gIHNvdW5kL3NoL2FpY2Eu
-YyB8IDIgKy0KPiA+ICAxIGZpbGUgY2hhbmdlZCwgMSBpbnNlcnRpb24oKyksIDEgZGVsZXRpb24o
-LSkKPiA+IAo+ID4gZGlmZiAtLWdpdCBhL3NvdW5kL3NoL2FpY2EuYyBiL3NvdW5kL3NoL2FpY2Eu
-Ywo+ID4gaW5kZXggMzIwYWM3OTJjN2YuLmJjNjhhMzkwM2YyIDEwMDY0NAo+ID4gLS0tIGEvc291
-bmQvc2gvYWljYS5jCj4gPiArKysgYi9zb3VuZC9zaC9haWNhLmMKPiA+IEBAIC0zNTQsOCArMzU0
-LDggQEAgc3RhdGljIGludCBzbmRfYWljYXBjbV9wY21fY2xvc2Uoc3RydWN0IHNuZF9wY21fc3Vi
-c3RyZWFtCj4gPiAgCQkJCSAqc3Vic3RyZWFtKQo+ID4gIHsKPiA+ICAJc3RydWN0IHNuZF9jYXJk
-X2FpY2EgKmRyZWFtY2FzdGNhcmQgPSBzdWJzdHJlYW0tPnBjbS0+cHJpdmF0ZV9kYXRhOwo+ID4g
-Kwl0aW1lcl9zaHV0ZG93bl9zeW5jKCZkcmVhbWNhc3RjYXJkLT50aW1lcik7Cj4gCj4gSSB0aG91
-Z2h0IHRoaXMgY2FsbCBpbnZhbGlkYXRlcyB0aGUgdGltZXIgb2JqZWN0LCBoZW5jZSBpdCBjYW4n
-dCBiZQo+IHVzZWQgYWdhaW47IGkuZS4gaXQgYnJlYWtzIHdoZW4gdGhlIHN0cmVhbSBpcyByZS1v
-cGVuZWQsIEkgc3VwcG9zZT8KPgo+IEluIGdlbmVyYWwgdGltZXJfc2h1dGRvd24qKCkgaXMgdXNl
-ZCBmb3IgdGhlIGNvZGUgcGF0aCB0byBjbGVhbiB1cCB0aGUKPiBkcml2ZXIgKG9yIHRoZSBvYmpl
-Y3QgdGhlIHRpbWVyIGJlbG9uZ3MgdG8pLiAgVGhlIFBDTSBjbG9zZSBpcyBvbmx5Cj4gYWJvdXQg
-dGhlIFBDTSBzdHJlYW0sIGFuZCBpdCdzIG5vdCB0aGUgcGxhY2UuCj4gCj4gQSBwcm9wZXIgZml4
-IHdvdWxkIGJlIHJhdGhlciB0byBpbXBsZW1lbnQgdHdvIHRoaW5nczoKPiAtIENhbGwgbW9kX3Rp
-bWVyKCkgY29uZGl0aW9uYWxseSBpbiBydW5fc3B1X2RtYSgpCj4gLSBJbXBsZW1lbnQgUENNIHN5
-bmNfc3RvcCBvcCB0byBjYW5jZWwvZmx1c2ggdGhlIHdvcmsKPiAKPiBUaGUgZm9ybWVyIGFsb25l
-IHNob3VsZCBzdWZmaWNlIHRvIGZpeCB0aGUgVUFGIGluIHlvdXIgc2NlbmFyaW8sCj4gdGhvdWdo
-LiAgVGhlIGxhdHRlciB3aWxsIGNvdmVyIG90aGVyIHBvc3NpYmxlIGNvcm5lciBjYXNlcy4KClRo
-YW5rIHlvdSBmb3IgeW91ciB0aW1lIGFuZCByZXBseSEgSSBrbm93IHVzaW5nIHRpbWVyX3NodXRk
-b3duX3N5bmMoKQppcyBub3QgcHJvcGVyLiBJbiBvcmRlciB0byBzb2x2ZSB0aGUgcHJvYmxlbSwg
-SSBhZGQgYSBzaHV0ZG93biBmbGFnIAppbiB0aGUgc3RydWN0IHNuZF9jYXJkX2FpY2EgYW5kIHNl
-dCB0aGUgZmxhZyB0byB0cnVlIHdoZW4gdGhlIFBDTSAKc3RyZWFtIGlzIGNsb3NpbmcuIFRoZW4g
-Y2FsbCBtb2RfdGltZXIoKSBjb25kaXRpb25hbGx5IGluIHJ1bl9zcHVfZG1hKCkuCldoYXQncyBt
-b3JlLCB1c2UgZGVsX3RpbWVyX3N5bmMoKSB0byBzdG9wIHRoZSB0aW1lciBhbmQgcHV0IGl0IGJl
-Zm9yZSAKZmx1c2hfd29yaygpLiBBcyBhIHJlc3VsdCwgYm90aCB0aW1lciBhbmQgd29ya2VyIGNv
-dWxkIGJlIHN0b3BwZWQgc2FmZWx5LiAKVGhlIGRldGFpbCBpcyBzaG93biBiZWxvdzoKCmRpZmYg
-LS1naXQgYS9zb3VuZC9zaC9haWNhLmMgYi9zb3VuZC9zaC9haWNhLmMKaW5kZXggMzIwYWM3OTJj
-N2ZlLi5kYWIwMDVlZGE3ZjAgMTAwNjQ0Ci0tLSBhL3NvdW5kL3NoL2FpY2EuYworKysgYi9zb3Vu
-ZC9zaC9haWNhLmMKQEAgLTI3OCw3ICsyNzgsOCBAQCBzdGF0aWMgdm9pZCBydW5fc3B1X2RtYShz
-dHJ1Y3Qgd29ya19zdHJ1Y3QgKndvcmspCiAgICAgICAgICAgICAgICBkcmVhbWNhc3RjYXJkLT5j
-bGlja3MrKzsKICAgICAgICAgICAgICAgIGlmICh1bmxpa2VseShkcmVhbWNhc3RjYXJkLT5jbGlj
-a3MgPj0gQUlDQV9QRVJJT0RfTlVNQkVSKSkKICAgICAgICAgICAgICAgICAgICAgICAgZHJlYW1j
-YXN0Y2FyZC0+Y2xpY2tzICU9IEFJQ0FfUEVSSU9EX05VTUJFUjsKLSAgICAgICAgICAgICAgIG1v
-ZF90aW1lcigmZHJlYW1jYXN0Y2FyZC0+dGltZXIsIGppZmZpZXMgKyAxKTsKKyAgICAgICAgICAg
-ICAgIGlmICghZHJlYW1jYXN0Y2FyZC0+c2h1dGRvd24pCisgICAgICAgICAgICAgICAgICAgICAg
-IG1vZF90aW1lcigmZHJlYW1jYXN0Y2FyZC0+dGltZXIsIGppZmZpZXMgKyAxKTsKICAgICAgICB9
-CiB9CgpAQCAtMzQ3LDYgKzM0OCw3IEBAIHN0YXRpYyBpbnQgc25kX2FpY2FwY21fcGNtX29wZW4o
-c3RydWN0IHNuZF9wY21fc3Vic3RyZWFtCiAgICAgICAgZHJlYW1jYXN0Y2FyZC0+Y2xpY2tzID0g
-MDsKICAgICAgICBkcmVhbWNhc3RjYXJkLT5jdXJyZW50X3BlcmlvZCA9IDA7CiAgICAgICAgZHJl
-YW1jYXN0Y2FyZC0+ZG1hX2NoZWNrID0gMDsKKyAgICAgICBkcmVhbWNhc3RjYXJkLT5zaHV0ZG93
-biA9IGZhbHNlOwogICAgICAgIHJldHVybiAwOwogfQoKQEAgLTM1NCw4ICszNTYsOSBAQCBzdGF0
-aWMgaW50IHNuZF9haWNhcGNtX3BjbV9jbG9zZShzdHJ1Y3Qgc25kX3BjbV9zdWJzdHJlYW0KICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgKnN1YnN0cmVhbSkKIHsKICAgICAgICBzdHJ1
-Y3Qgc25kX2NhcmRfYWljYSAqZHJlYW1jYXN0Y2FyZCA9IHN1YnN0cmVhbS0+cGNtLT5wcml2YXRl
-X2RhdGE7CisgICAgICAgZHJlYW1jYXN0Y2FyZC0+c2h1dGRvd24gPSB0cnVlOworICAgICAgIGRl
-bF90aW1lcl9zeW5jKCZkcmVhbWNhc3RjYXJkLT50aW1lcik7CiAgICAgICAgZmx1c2hfd29yaygm
-KGRyZWFtY2FzdGNhcmQtPnNwdV9kbWFfd29yaykpOwotICAgICAgIGRlbF90aW1lcigmZHJlYW1j
-YXN0Y2FyZC0+dGltZXIpOwogICAgICAgIGRyZWFtY2FzdGNhcmQtPnN1YnN0cmVhbSA9IE5VTEw7
-CiAgICAgICAga2ZyZWUoZHJlYW1jYXN0Y2FyZC0+Y2hhbm5lbCk7CiAgICAgICAgc3B1X2Rpc2Fi
-bGUoKTsKZGlmZiAtLWdpdCBhL3NvdW5kL3NoL2FpY2EuaCBiL3NvdW5kL3NoL2FpY2EuaAppbmRl
-eCAwMjFiMTMyZTA4OGUuLjU5YTlkZWFmM2RkMyAxMDA2NDQKLS0tIGEvc291bmQvc2gvYWljYS5o
-CisrKyBiL3NvdW5kL3NoL2FpY2EuaApAQCAtNjUsNCArNjUsNSBAQCBzdHJ1Y3Qgc25kX2NhcmRf
-YWljYSB7CiAgICAgICAgc3RydWN0IHRpbWVyX2xpc3QgdGltZXI7CiAgICAgICAgaW50IG1hc3Rl
-cl92b2x1bWU7CiAgICAgICAgaW50IGRtYV9jaGVjazsKKyAgICAgICBib29sIHNodXRkb3duOwog
-fTsKCkkgd291bGQgYmUgdmVyeSBhcHByZWNpYXRlLCBpZiB5b3UgY291bGQgZ2l2ZSBtZSBzb21l
-IHN1Z2dlc3Rpb25zCmFib3V0IHRoZSBhYm92ZSBzb2x1dGlvbi4KCkJlc3QgcmVnYXJkcywKRHVv
-bWluZyBaaG91
+On 3/13/24 14:45, Louis Chauvet wrote:
+> From: Arthur Grillo <arthurgrillo@riseup.net>
+> 
+> Add support to the YUV formats bellow:
+> 
+> - NV12/NV16/NV24
+> - NV21/NV61/NV42
+> - YUV420/YUV422/YUV444
+> - YVU420/YVU422/YVU444
+> 
+> The conversion from yuv to rgb is done with fixed-point arithmetic, using
+> 32.32 floats and the drm_fixed helpers.
+> 
+> To do the conversion, a specific matrix must be used for each color range
+> (DRM_COLOR_*_RANGE) and encoding (DRM_COLOR_*). This matrix is stored in
+> the `conversion_matrix` struct, along with the specific y_offset needed.
+> This matrix is queried only once, in `vkms_plane_atomic_update` and
+> stored in a `vkms_plane_state`. Those conversion matrices of each
+> encoding and range were obtained by rounding the values of the original
+> conversion matrices multiplied by 2^32. This is done to avoid the use of
+> floating point operations.
+> 
+> The same reading function is used for YUV and YVU formats. As the only
+> difference between those two category of formats is the order of field, a
+> simple swap in conversion matrix columns allows using the same function.
+> 
+> Signed-off-by: Arthur Grillo <arthurgrillo@riseup.net>
+> [Louis Chauvet:
+> - Adapted Arthur's work
+> - Implemented the read_line_t callbacks for yuv
+> - add struct conversion_matrix
+> - remove struct pixel_yuv_u8
+> - update the commit message
+> - Merge the modifications from Arthur]
+
+A Co-developed-by tag would be more appropriate.
+
+> Signed-off-by: Louis Chauvet <louis.chauvet@bootlin.com>
+> ---
+>   drivers/gpu/drm/vkms/vkms_drv.h     |  22 ++
+>   drivers/gpu/drm/vkms/vkms_formats.c | 431 ++++++++++++++++++++++++++++++++++++
+>   drivers/gpu/drm/vkms/vkms_formats.h |   4 +
+>   drivers/gpu/drm/vkms/vkms_plane.c   |  17 +-
+>   4 files changed, 473 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/gpu/drm/vkms/vkms_drv.h b/drivers/gpu/drm/vkms/vkms_drv.h
+> index 23e1d247468d..f3116084de5a 100644
+> --- a/drivers/gpu/drm/vkms/vkms_drv.h
+> +++ b/drivers/gpu/drm/vkms/vkms_drv.h
+> @@ -99,6 +99,27 @@ typedef void (*pixel_read_line_t)(const struct vkms_plane_state *plane, int x_st
+>   				  int y_start, enum pixel_read_direction direction, int count,
+>   				  struct pixel_argb_u16 out_pixel[]);
+>   
+> +/**
+> + * CONVERSION_MATRIX_FLOAT_DEPTH - Number of digits after the point for conversion matrix values
+> + */
+> +#define CONVERSION_MATRIX_FLOAT_DEPTH 32
+> +
+> +/**
+> + * struct conversion_matrix - Matrix to use for a specific encoding and range
+> + *
+> + * @matrix: Conversion matrix from yuv to rgb. The matrix is stored in a row-major manner and is
+> + * used to compute rgb values from yuv values:
+> + *     [[r],[g],[b]] = @matrix * [[y],[u],[v]]
+> + *   OR for yvu formats:
+> + *     [[r],[g],[b]] = @matrix * [[y],[v],[u]]
+> + *  The values of the matrix are fixed floats, 32.CONVERSION_MATRIX_FLOAT_DEPTH > + * @y_offest: Offset to apply on the y value.
+
+s/y_offest/y_offset
+
+> + */
+> +struct conversion_matrix {
+> +	s64 matrix[3][3];
+> +	s64 y_offset;
+> +};
+> +
+>   /**
+>    * vkms_plane_state - Driver specific plane state
+>    * @base: base plane state
+> @@ -110,6 +131,7 @@ struct vkms_plane_state {
+>   	struct drm_shadow_plane_state base;
+>   	struct vkms_frame_info *frame_info;
+>   	pixel_read_line_t pixel_read_line;
+> +	struct conversion_matrix *conversion_matrix;
+
+Add @conversion_matrix on the kernel-doc from the struct
+vkms_plane_state.
+
+>   };
+>   
+>   struct vkms_plane {
+> diff --git a/drivers/gpu/drm/vkms/vkms_formats.c b/drivers/gpu/drm/vkms/vkms_formats.c
+> index 1449a0e6c706..edbf4b321b91 100644
+> --- a/drivers/gpu/drm/vkms/vkms_formats.c
+> +++ b/drivers/gpu/drm/vkms/vkms_formats.c
+> @@ -105,6 +105,44 @@ static int get_step_next_block(struct drm_framebuffer *fb, enum pixel_read_direc
+>   	return 0;
+>   }
+>   
+> +/**
+> + * get_subsampling() - Get the subsampling divisor value on a specific direction
+
+Where are the arguments?
+
+> + */
+> +static int get_subsampling(const struct drm_format_info *format,
+> +			   enum pixel_read_direction direction)
+> +{
+> +	switch (direction) {
+> +	case READ_BOTTOM_TO_TOP:
+> +	case READ_TOP_TO_BOTTOM:
+> +		return format->vsub;
+> +	case READ_RIGHT_TO_LEFT:
+> +	case READ_LEFT_TO_RIGHT:
+> +		return format->hsub;
+> +	}
+> +	WARN_ONCE(true, "Invalid direction for pixel reading: %d\n", direction);
+> +	return 1;
+> +}
+> +
+> +/**
+> + * get_subsampling_offset() - An offset for keeping the chroma siting consistent regardless of
+> + * x_start and y_start values
+
+Same.
+
+> + */
+> +static int get_subsampling_offset(enum pixel_read_direction direction, int x_start, int y_start)
+> +{
+> +	switch (direction) {
+> +	case READ_BOTTOM_TO_TOP:
+> +		return -y_start - 1;
+> +	case READ_TOP_TO_BOTTOM:
+> +		return y_start;
+> +	case READ_RIGHT_TO_LEFT:
+> +		return -x_start - 1;
+> +	case READ_LEFT_TO_RIGHT:
+> +		return x_start;
+> +	}
+> +	WARN_ONCE(true, "Invalid direction for pixel reading: %d\n", direction);
+> +	return 0;
+> +}
+> +
+>   /*
+>    * The following  functions take pixel data (a, r, g, b, pixel, ...), convert them to the format
+>    * ARGB16161616 in out_pixel.
+> @@ -161,6 +199,42 @@ static struct pixel_argb_u16 argb_u16_from_RGB565(const u16 *pixel)
+>   	return out_pixel;
+>   }
+>   
+
+[...]
+
+>   
+> +/**
+> + * get_conversion_matrix_to_argb_u16() - Retrieve the correct yuv to rgb conversion matrix for a
+> + * given encoding and range.
+> + *
+> + * If the matrix is not found, return a null pointer. In all other cases, it return a simple
+> + * diagonal matrix, which act as a "no-op".
+> + *
+> + * @format: DRM_FORMAT_* value for which to obtain a conversion function (see [drm_fourcc.h])
+> + * @encoding: DRM_COLOR_* value for which to obtain a conversion matrix
+> + * @range: DRM_COLOR_*_RANGE value for which to obtain a conversion matrix
+
+A bit odd to see the arguments after the description.
+
+> + */
+> +struct conversion_matrix *
+> +get_conversion_matrix_to_argb_u16(u32 format, enum drm_color_encoding encoding,
+> +				  enum drm_color_range range)
+> +{
+> +	static struct conversion_matrix no_operation = {
+> +		.matrix = {
+> +			{ 4294967296, 0,          0, },
+> +			{ 0,          4294967296, 0, },
+> +			{ 0,          0,          4294967296, },
+> +		},
+> +		.y_offset = 0,
+> +	};
+> +
+> +	/*
+> +	 * Those matrixies were generated using the colour python framework
+> +	 *
+> +	 * Below are the function calls used to generate eac matrix, go to
+> +	 * https://colour.readthedocs.io/en/develop/generated/colour.matrix_YCbCr.html
+> +	 * for more info:
+> +	 *
+> +	 * numpy.around(colour.matrix_YCbCr(K=colour.WEIGHTS_YCBCR["ITU-R BT.601"],
+> +	 *                                  is_legal = False,
+> +	 *                                  bits = 8) * 2**32).astype(int)
+> +	 */
+> +	static struct conversion_matrix yuv_bt601_full = {
+> +		.matrix = {
+> +			{ 4294967296, 0,           6021544149 },
+> +			{ 4294967296, -1478054095, -3067191994 },
+> +			{ 4294967296, 7610682049,  0 },
+> +		},
+> +		.y_offset = 0,
+> +	};
+> +
+> +	/*
+> +	 * numpy.around(colour.matrix_YCbCr(K=colour.WEIGHTS_YCBCR["ITU-R BT.601"],
+> +	 *                                  is_legal = True,
+> +	 *                                  bits = 8) * 2**32).astype(int)
+> +	 */
+> +	static struct conversion_matrix yuv_bt601_limited = {
+> +		.matrix = {
+> +			{ 5020601039, 0,           6881764740 },
+> +			{ 5020601039, -1689204679, -3505362278 },
+> +			{ 5020601039, 8697922339,  0 },
+> +		},
+> +		.y_offset = 16,
+> +	};
+> +
+> +	/*
+> +	 * numpy.around(colour.matrix_YCbCr(K=colour.WEIGHTS_YCBCR["ITU-R BT.709"],
+> +	 *                                  is_legal = False,
+> +	 *                                  bits = 8) * 2**32).astype(int)
+> +	 */
+> +	static struct conversion_matrix yuv_bt709_full = {
+> +		.matrix = {
+> +			{ 4294967296, 0,          6763714498 },
+> +			{ 4294967296, -804551626, -2010578443 },
+> +			{ 4294967296, 7969741314, 0 },
+> +		},
+> +		.y_offset = 0,
+> +	};
+> +
+> +	/*
+> +	 * numpy.around(colour.matrix_YCbCr(K=colour.WEIGHTS_YCBCR["ITU-R BT.709"],
+> +	 *                                  is_legal = True,
+> +	 *                                  bits = 8) * 2**32).astype(int)
+> +	 */
+> +	static struct conversion_matrix yuv_bt709_limited = {
+> +		.matrix = {
+> +			{ 5020601039, 0,          7729959424 },
+> +			{ 5020601039, -919487572, -2297803934 },
+> +			{ 5020601039, 9108275786, 0 },
+> +		},
+> +		.y_offset = 16,
+> +	};
+> +
+> +	/*
+> +	 * numpy.around(colour.matrix_YCbCr(K=colour.WEIGHTS_YCBCR["ITU-R BT.2020"],
+> +	 *                                  is_legal = False,
+> +	 *                                  bits = 8) * 2**32).astype(int)
+> +	 */
+> +	static struct conversion_matrix yuv_bt2020_full = {
+> +		.matrix = {
+> +			{ 4294967296, 0,          6333358775 },
+> +			{ 4294967296, -706750298, -2453942994 },
+> +			{ 4294967296, 8080551471, 0 },
+> +		},
+> +		.y_offset = 0,
+> +	};
+> +
+> +	/*
+> +	 * numpy.around(colour.matrix_YCbCr(K=colour.WEIGHTS_YCBCR["ITU-R BT.2020"],
+> +	 *                                  is_legal = True,
+> +	 *                                  bits = 8) * 2**32).astype(int)
+> +	 */
+> +	static struct conversion_matrix yuv_bt2020_limited = {
+> +		.matrix = {
+> +			{ 5020601039, 0,          7238124312 },
+> +			{ 5020601039, -807714626, -2804506279 },
+> +			{ 5020601039, 9234915964, 0 },
+> +		},
+> +		.y_offset = 16,
+> +	};
+> +
+> +	/*
+> +	 * The next matrices are just the previous ones, but with the first and
+> +	 * second columns swapped
+> +	 */
+> +	static struct conversion_matrix yvu_bt601_full = {
+> +		.matrix = {
+> +			{ 4294967296, 6021544149,  0 },
+> +			{ 4294967296, -3067191994, -1478054095 },
+> +			{ 4294967296, 0,           7610682049 },
+> +		},
+> +		.y_offset = 0,
+> +	};
+> +	static struct conversion_matrix yvu_bt601_limited = {
+> +		.matrix = {
+> +			{ 5020601039, 6881764740,  0 },
+> +			{ 5020601039, -3505362278, -1689204679 },
+> +			{ 5020601039, 0,           8697922339 },
+> +		},
+> +		.y_offset = 16,
+> +	};
+> +	static struct conversion_matrix yvu_bt709_full = {
+> +		.matrix = {
+> +			{ 4294967296, 6763714498,  0 },
+> +			{ 4294967296, -2010578443, -804551626 },
+> +			{ 4294967296, 0,           7969741314 },
+> +		},
+> +		.y_offset = 0,
+> +	};
+> +	static struct conversion_matrix yvu_bt709_limited = {
+> +		.matrix = {
+> +			{ 5020601039, 7729959424,  0 },
+> +			{ 5020601039, -2297803934, -919487572 },
+> +			{ 5020601039, 0,           9108275786 },
+> +		},
+> +		.y_offset = 16,
+> +	};
+> +	static struct conversion_matrix yvu_bt2020_full = {
+> +		.matrix = {
+> +			{ 4294967296, 6333358775,  0 },
+> +			{ 4294967296, -2453942994, -706750298 },
+> +			{ 4294967296, 0,           8080551471 },
+> +		},
+> +		.y_offset = 0,
+> +	};
+> +	static struct conversion_matrix yvu_bt2020_limited = {
+> +		.matrix = {
+> +			{ 5020601039, 7238124312,  0 },
+> +			{ 5020601039, -2804506279, -807714626 },
+> +			{ 5020601039, 0,           9234915964 },
+> +		},
+> +		.y_offset = 16,
+> +	};
+> +
+> +	/* Breaking in this switch means that the color format+encoding+range is not supported */
+
+s/color format+encoding+range/color format + encoding + range
+
+> +	switch (format) {
+> +	case DRM_FORMAT_NV12:
+> +	case DRM_FORMAT_NV16:
+> +	case DRM_FORMAT_NV24:
+> +	case DRM_FORMAT_YUV420:
+> +	case DRM_FORMAT_YUV422:
+> +	case DRM_FORMAT_YUV444:
+> +		switch (encoding) {
+> +		case DRM_COLOR_YCBCR_BT601:
+> +			switch (range) {
+> +			case DRM_COLOR_YCBCR_LIMITED_RANGE:
+> +				return &yuv_bt601_limited;
+> +			case DRM_COLOR_YCBCR_FULL_RANGE:
+> +				return &yuv_bt601_full;
+> +			case DRM_COLOR_RANGE_MAX:
+> +				break;
+> +			}
+> +			break;
+> +		case DRM_COLOR_YCBCR_BT709:
+> +			switch (range) {
+> +			case DRM_COLOR_YCBCR_LIMITED_RANGE:
+> +				return &yuv_bt709_limited;
+> +			case DRM_COLOR_YCBCR_FULL_RANGE:
+> +				return &yuv_bt709_full;
+> +			case DRM_COLOR_RANGE_MAX:
+> +				break;
+> +			}
+> +			break;
+> +		case DRM_COLOR_YCBCR_BT2020:
+> +			switch (range) {
+> +			case DRM_COLOR_YCBCR_LIMITED_RANGE:
+> +				return &yuv_bt2020_limited;
+> +			case DRM_COLOR_YCBCR_FULL_RANGE:
+> +				return &yuv_bt2020_full;
+> +			case DRM_COLOR_RANGE_MAX:
+> +				break;
+> +			}
+> +			break;
+> +		case DRM_COLOR_ENCODING_MAX:
+> +			break;
+> +		}
+> +		break;
+> +	case DRM_FORMAT_YVU420:
+> +	case DRM_FORMAT_YVU422:
+> +	case DRM_FORMAT_YVU444:
+> +	case DRM_FORMAT_NV21:
+> +	case DRM_FORMAT_NV61:
+> +	case DRM_FORMAT_NV42:
+> +		switch (encoding) {
+> +		case DRM_COLOR_YCBCR_BT601:
+> +			switch (range) {
+> +			case DRM_COLOR_YCBCR_LIMITED_RANGE:
+> +				return &yvu_bt601_limited;
+> +			case DRM_COLOR_YCBCR_FULL_RANGE:
+> +				return &yvu_bt601_full;
+> +			case DRM_COLOR_RANGE_MAX:
+> +				break;
+> +			}
+> +			break;
+> +		case DRM_COLOR_YCBCR_BT709:
+> +			switch (range) {
+> +			case DRM_COLOR_YCBCR_LIMITED_RANGE:
+> +				return &yvu_bt709_limited;
+> +			case DRM_COLOR_YCBCR_FULL_RANGE:
+> +				return &yvu_bt709_full;
+> +			case DRM_COLOR_RANGE_MAX:
+> +				break;
+> +			}
+> +			break;
+> +		case DRM_COLOR_YCBCR_BT2020:
+> +			switch (range) {
+> +			case DRM_COLOR_YCBCR_LIMITED_RANGE:
+> +				return &yvu_bt2020_limited;
+> +			case DRM_COLOR_YCBCR_FULL_RANGE:
+> +				return &yvu_bt2020_full;
+> +			case DRM_COLOR_RANGE_MAX:
+> +				break;
+> +			}
+> +			break;
+> +		case DRM_COLOR_ENCODING_MAX:
+> +			break;
+> +		}
+> +		break;
+> +	case DRM_FORMAT_ARGB8888:
+> +	case DRM_FORMAT_XRGB8888:
+> +	case DRM_FORMAT_ARGB16161616:
+> +	case DRM_FORMAT_XRGB16161616:
+> +	case DRM_FORMAT_RGB565:
+> +		/*
+> +		 * Those formats are supported, but they don't need a conversion matrix. Return
+> +		 * a valid pointer to avoid kernel panic in case this matrix is used/checked
+> +		 * somewhere.
+> +		 */
+> +		return &no_operation;
+> +	default:
+> +		break;
+> +	}
+> +	WARN(true, "Unsupported encoding (%d), range (%d) and format (%p4cc) combination\n",
+> +	     encoding, range, &format);
+> +	return &no_operation;
+> +}
+> +
+>   /**
+>    * Retrieve the correct write_pixel function for a specific format.
+>    * If the format is not supported by VKMS a warn is emitted and a dummy "don't do anything"
+> diff --git a/drivers/gpu/drm/vkms/vkms_formats.h b/drivers/gpu/drm/vkms/vkms_formats.h
+> index 8d2bef95ff79..e1d324764b17 100644
+> --- a/drivers/gpu/drm/vkms/vkms_formats.h
+> +++ b/drivers/gpu/drm/vkms/vkms_formats.h
+> @@ -9,4 +9,8 @@ pixel_read_line_t get_pixel_read_line_function(u32 format);
+>   
+>   pixel_write_t get_pixel_write_function(u32 format);
+>   
+> +struct conversion_matrix *
+> +get_conversion_matrix_to_argb_u16(u32 format, enum drm_color_encoding encoding,
+> +				  enum drm_color_range range);
+> +
+>   #endif /* _VKMS_FORMATS_H_ */
+> diff --git a/drivers/gpu/drm/vkms/vkms_plane.c b/drivers/gpu/drm/vkms/vkms_plane.c
+> index 8875bed76410..987dd2b686a8 100644
+> --- a/drivers/gpu/drm/vkms/vkms_plane.c
+> +++ b/drivers/gpu/drm/vkms/vkms_plane.c
+> @@ -17,7 +17,19 @@ static const u32 vkms_formats[] = {
+>   	DRM_FORMAT_XRGB8888,
+>   	DRM_FORMAT_XRGB16161616,
+>   	DRM_FORMAT_ARGB16161616,
+> -	DRM_FORMAT_RGB565
+> +	DRM_FORMAT_RGB565,
+> +	DRM_FORMAT_NV12,
+> +	DRM_FORMAT_NV16,
+> +	DRM_FORMAT_NV24,
+> +	DRM_FORMAT_NV21,
+> +	DRM_FORMAT_NV61,
+> +	DRM_FORMAT_NV42,
+> +	DRM_FORMAT_YUV420,
+> +	DRM_FORMAT_YUV422,
+> +	DRM_FORMAT_YUV444,
+> +	DRM_FORMAT_YVU420,
+> +	DRM_FORMAT_YVU422,
+> +	DRM_FORMAT_YVU444
+
+Let's add a comma by the end of this entry, to avoid deleting this line
+when adding a new format.
+
+>   };
+>   
+>   static struct drm_plane_state *
+> @@ -117,12 +129,15 @@ static void vkms_plane_atomic_update(struct drm_plane *plane,
+>   	drm_framebuffer_get(frame_info->fb);
+>   	frame_info->rotation = drm_rotation_simplify(new_state->rotation, DRM_MODE_ROTATE_0 |
+>   									  DRM_MODE_ROTATE_90 |
+> +									  DRM_MODE_ROTATE_180 |
+
+Why do we need to add DRM_MODE_ROTATE_180 here? Isn't the same as
+reflecting both along the X and Y axis?
+
+Best Regards,
+- Maíra
+
+>   									  DRM_MODE_ROTATE_270 |
+>   									  DRM_MODE_REFLECT_X |
+>   									  DRM_MODE_REFLECT_Y);
+>   
+>   
+>   	vkms_plane_state->pixel_read_line = get_pixel_read_line_function(fmt);
+> +	vkms_plane_state->conversion_matrix = get_conversion_matrix_to_argb_u16
+> +		(fmt, new_state->color_encoding, new_state->color_range);
+>   }
+>   
+>   static int vkms_plane_atomic_check(struct drm_plane *plane,
+> 
 
