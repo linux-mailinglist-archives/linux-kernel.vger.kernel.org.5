@@ -1,126 +1,118 @@
-Return-Path: <linux-kernel+bounces-117607-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-117608-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A778B88B140
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 21:24:28 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 72BF588AD1A
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 19:10:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 29FCDC25FED
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 18:10:05 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A4DDC1C3B24B
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 18:10:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2372712FB31;
-	Mon, 25 Mar 2024 17:32:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7BDE9131189;
+	Mon, 25 Mar 2024 17:32:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="RK83dnLk"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel.com header.i=@intel.com header.b="S7tBN2cy"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.15])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A2B9484D24
-	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 17:32:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3DABD12FF71;
+	Mon, 25 Mar 2024 17:32:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.15
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711387933; cv=none; b=nhSJVJ/EeGIVdcWy7qtyKZDBzyCWltHd90xkGLWNlus9rJu2hZ0lTcnrqGuFS/hdgb1rh06B3jjXWrH0coNyp+rYLJ8gB2S09FbTz4Np4+zVnPq3owr0CGTK2MgRlMqFnwPDOPwElAcCWMqsT5l95aku+N42y+8ik/+3jwUIo6w=
+	t=1711387958; cv=none; b=NsG8IVNZJJEUoDSU2lOAn5hG8QZSOcpNu7pZVP1kt/o7Z7YJYLkDEE4O6coWDyWLwy5E1YTTpxcyOJF4nRgzugZZxC1FKB2Rd8926TYwTmBStuzpYdBYVhx/UXYOz7pNf1PA4wuIuLl4ZK03pNt5uh6QVxrcKAF/mBprA8aerO0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711387933; c=relaxed/simple;
-	bh=FXyxlmR8zNtiu+7xjerTxt2yhCla7s0tw3akNUSkR0A=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=cH91x9GshdNknoL2ownFq0r2TuRycDqcCZfZQ3Kbhjd4htKmIcrx6tWifAv5IdMbhikhVqzHqJ10z0eGs2b0SIdmAKLf3/1mH6U5uf1Hd4Vn5h12Y88uuYL/mFP/tQUoUuaOGm6LJP9zk6fms+5Gbro9buvhEDOXbpXZFpMql2k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=RK83dnLk; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1711387930;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=SoW110bKeKqtboiHE3EMW8oe9lEUvToKDhKmlYc4Cz4=;
-	b=RK83dnLkmasWOsZvcXPmlUMd0R3wtkYzT+rzlSWjXDrC/h+Bct6y/JpenpqpNq42PsA7/H
-	MvbPAoQww7N9iXI99FArx0foSF/gBSD6MNmOm6v0QrtJRv5EUeaYpfVIwiEYc4Wn0Qe9Lq
-	Qqv8q1cJCshaoIEtBNL7GsuHeNDnflw=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-454-XgOVaw1bOr-paKfqaXxd_A-1; Mon, 25 Mar 2024 13:32:06 -0400
-X-MC-Unique: XgOVaw1bOr-paKfqaXxd_A-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.rdu2.redhat.com [10.11.54.6])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 43BF0185A786;
-	Mon, 25 Mar 2024 17:32:06 +0000 (UTC)
-Received: from fedora.redhat.com (unknown [10.39.193.232])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id 976372166B31;
-	Mon, 25 Mar 2024 17:32:03 +0000 (UTC)
-From: Jose Ignacio Tornos Martinez <jtornosm@redhat.com>
-To: davem@davemloft.net,
-	edumazet@google.com,
-	kuba@kernel.org,
-	pabeni@redhat.com,
-	linux-usb@vger.kernel.org,
-	netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Cc: Jose Ignacio Tornos Martinez <jtornosm@redhat.com>,
-	stable@vger.kernel.org,
-	Dave Stevenson <dave.stevenson@raspberrypi.com>
-Subject: [PATCH] net: usb: ax88179_178a: avoid the interface always configured as random address
-Date: Mon, 25 Mar 2024 18:31:50 +0100
-Message-ID: <20240325173155.671807-1-jtornosm@redhat.com>
+	s=arc-20240116; t=1711387958; c=relaxed/simple;
+	bh=EQVMqG03KUhv5BVkLnTVMCLuTRWpG9rrEV770Zk15xI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=YW7fMFKVQ6b/c3OLqpA/w4xSa0nNaMSHUch57rpHjrhEkPkIQR9ltKZYzjTmPFZeSo9K/sZbnaGMp4aWgtxXzs+bcQrsrm37h0Ra92pMsDwAuYRJ+vUVNpF8fL9Uim0VeKjoBlT2MSOWN+hBS+vDuOEwqn+CN9Y+UcYS/JwYDt4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=S7tBN2cy; arc=none smtp.client-ip=192.198.163.15
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1711387957; x=1742923957;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=EQVMqG03KUhv5BVkLnTVMCLuTRWpG9rrEV770Zk15xI=;
+  b=S7tBN2cy4yafXJa2MiWqbtjWrNi2rQtE6kYl2BXpzzT5bMzkG7akZ82d
+   hIt6MPp6tYV7eU/bDWjwT4YBPVXHHqtULZ2IqQDiiMJuwgJFJ1S6Z3c4k
+   Ahy1pIHvkTTwVUJvJXfvxlgu9SKas91+bjqY9wYL1S+g1CTFxo4ORIQWn
+   +BDnLkBBbcF2Qrv1Cz2hnfrrQRdpY7j6vrIwRfTrWR+eOYQXohq2qh3lr
+   n5O8oVdjOu9+HduXh+EjTvQFotYdLWSgQZFfPmOT36mNp4kx+RDl8ljSf
+   rcH6LiBt9Pg+86ZEzFJhgVax5jfT8mVFTRMODM9ClTTKUe22gbFkVpdEG
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11024"; a="6587540"
+X-IronPort-AV: E=Sophos;i="6.07,153,1708416000"; 
+   d="scan'208";a="6587540"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmvoesa109.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Mar 2024 10:32:36 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,11024"; a="914849973"
+X-IronPort-AV: E=Sophos;i="6.07,153,1708416000"; 
+   d="scan'208";a="914849973"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Mar 2024 10:32:34 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.97)
+	(envelope-from <andriy.shevchenko@linux.intel.com>)
+	id 1rooBU-0000000G4B5-0C9G;
+	Mon, 25 Mar 2024 19:32:32 +0200
+Date: Mon, 25 Mar 2024 19:32:31 +0200
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: Mark Brown <broonie@kernel.org>
+Cc: linux-sound@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Liam Girdwood <lgirdwood@gmail.com>,
+	Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+Subject: Re: [PATCH v1 1/1] ASoC: soc-jack: Get rid of legacy GPIO support
+Message-ID: <ZgG1LwVAd1xxqJTg@smile.fi.intel.com>
+References: <20240318202602.182619-1-andriy.shevchenko@linux.intel.com>
+ <e6900b97-c1b7-45a5-bc3c-4a4a2745fdf3@sirena.org.uk>
+ <ZgGJE0JNAESe5xUf@smile.fi.intel.com>
+ <92f1cf44-3228-4eca-b8d3-39057c1150bb@sirena.org.uk>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <92f1cf44-3228-4eca-b8d3-39057c1150bb@sirena.org.uk>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 
-After the commit d2689b6a86b9 ("net: usb: ax88179_178a: avoid two
-consecutive device resets"), reset is not executed from bind operation and
-mac address is not read from the device registers or the devicetree at that
-moment. Since the check to configure if the assigned mac address is random
-or not for the interface, happens after the bind operation from
-usbnet_probe, the interface keeps configured as random address, although the
-address is correctly read and set during open operation (the only reset
-now).
+On Mon, Mar 25, 2024 at 05:22:55PM +0000, Mark Brown wrote:
+> On Mon, Mar 25, 2024 at 04:24:19PM +0200, Andy Shevchenko wrote:
+> > On Mon, Mar 25, 2024 at 02:16:15PM +0000, Mark Brown wrote:
+> > > On Mon, Mar 18, 2024 at 10:25:16PM +0200, Andy Shevchenko wrote:
 
-In order to keep only one reset for the device and to avoid the interface
-always configured as random address, after reset, configure correctly the
-suitable field from the driver, if the mac address is read successfully from
-the device registers or the devicetree.
+..
 
-In addition, if mac address can not be read from the driver, a random
-address is configured again, so it is not necessary to call
-eth_hw_addr_random from here. Indeed, in this situtatuon, when reset was
-also executed from bind, this was invalidating the check to configure if the
-assigned mac address for the interface was random or not.
+> > > > If I am not mistaken, after
+> > > > https://lore.kernel.org/r/20240318200804.181516-1-andriy.shevchenko@linux.intel.com
+> > > > there is no more users. Hence the above is the only dependency.
+> 
+> > > You are mistaken, please try compile tests:
 
-cc: stable@vger.kernel.org # 6.6+
-Fixes: d2689b6a86b9 ("net: usb: ax88179_178a: avoid two consecutive device resets")
-Reported-by: Dave Stevenson  <dave.stevenson@raspberrypi.com>
-Signed-off-by: Jose Ignacio Tornos Martinez <jtornosm@redhat.com>
----
- drivers/net/usb/ax88179_178a.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+..
 
-diff --git a/drivers/net/usb/ax88179_178a.c b/drivers/net/usb/ax88179_178a.c
-index 88e084534853..d2324cc02461 100644
---- a/drivers/net/usb/ax88179_178a.c
-+++ b/drivers/net/usb/ax88179_178a.c
-@@ -1273,10 +1273,9 @@ static void ax88179_get_mac_addr(struct usbnet *dev)
- 
- 	if (is_valid_ether_addr(mac)) {
- 		eth_hw_addr_set(dev->net, mac);
--	} else {
-+		dev->net->addr_assign_type = NET_ADDR_PERM;
-+	} else
- 		netdev_info(dev->net, "invalid MAC address, using random\n");
--		eth_hw_addr_random(dev->net);
--	}
- 
- 	ax88179_write_cmd(dev, AX_ACCESS_MAC, AX_NODE_ID, ETH_ALEN, ETH_ALEN,
- 			  dev->net->dev_addr);
+> > > (this is among other things in x86 allmodconfig).
+> 
+> > I usually enable the particular drivers and I have compile tested this,
+> > but indeed, I haven't enabled _all_ modules.
+> 
+> > Thank you for the pointing out.
+> 
+> Especially if you're doing this sort of "I think I got everything" type
+> change it's sensible to do at least one allmodconfig build, it won't get
+> everything but it'll catch a lot.
+
+True, as even `git grep` output can be misinterpreted and some occurrences
+may disappear from the sight.
+
 -- 
-2.44.0
+With Best Regards,
+Andy Shevchenko
+
 
 
