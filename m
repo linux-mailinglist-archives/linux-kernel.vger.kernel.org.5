@@ -1,67 +1,68 @@
-Return-Path: <linux-kernel+bounces-118068-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-118069-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 771C288B64A
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 01:44:08 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7AB7888B347
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 22:57:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B1FF3B3CD8B
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 21:57:04 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B57B81C3ECD9
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 21:57:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BF84A6FE2B;
-	Mon, 25 Mar 2024 21:57:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6C70871B48;
+	Mon, 25 Mar 2024 21:57:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="OmCdKPSK"
-Received: from mail-pg1-f178.google.com (mail-pg1-f178.google.com [209.85.215.178])
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="OL+HjDen"
+Received: from mail-pl1-f178.google.com (mail-pl1-f178.google.com [209.85.214.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7E3D86F525
-	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 21:56:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E6FC26FE1D
+	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 21:56:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711403820; cv=none; b=FX8kT1OcpkZgroiXvLdqxBsXcctE8FGRVSDqzHbDtIvCgsz/az5PTPOMNRm6R+D5lX4P9BsUxFanHET2imbhL6KYTRRwNDMqZsOHdJWaNZUSit7DNw6n7cFj3qbNlWtjd4jGR4aQ7cUVhRvRc5wpbIgEU4uQOKJg3muqAPq5PXU=
+	t=1711403821; cv=none; b=MyuQ4q5wLbUnZy81Uk6G2Mdd8gANIKOWzoXXuNV0cqNGU3tBw7KwX37+rInaNbkp6NcaW1cBxLuVWG/jD+y76N65iSyOMTCXePekCKaaOUkxrP8XOs4ZoiWZ41xomzEiwry2tWw4OJUVKJoFFfmEuJQSTpQSFOAyfDS27vSMSbQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711403820; c=relaxed/simple;
-	bh=yULUuFpaQi4mHiQRsxtWHLwt0K5+xxOrBTrFegQ3W+E=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=n9+GGqRx9dWrgugq/qpqpGUQFllAWo5zWVMGSXLhQiXwjMHOSviBeaPJV3iCqumTlqNX4yu70WjHHdDUEhLutAbSolU1jrox+DmuFX+rkRe3N+tl9kI0hvyd2TODZKC77bDX5o3mwND7TY9eZ6Ui4lLTq2j3nfEuwJX3k42u/qk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=OmCdKPSK; arc=none smtp.client-ip=209.85.215.178
+	s=arc-20240116; t=1711403821; c=relaxed/simple;
+	bh=ngVMa4Y4C6kIuuCCqhT5eZ4TiM3c8xVLXr+IwYPYqqA=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=iLOlxSL0vQWkq0ZfngwdnDaJJKWEKx/0d/5BaB0nq1580ZPlfxRQeThYROI9VyTQ1VlgmDdGF+w3SjHIMTwY/h9hYG9l8c/V5qvpB1FetzMoSRIdA6sk1xNWPX38FCEGEUm3ni5klWsg8H/lx3x9YpwiAsXPNfWzVa21W5T+Ek4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=OL+HjDen; arc=none smtp.client-ip=209.85.214.178
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-pg1-f178.google.com with SMTP id 41be03b00d2f7-5f034b4dcecso2439748a12.1
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 14:56:58 -0700 (PDT)
+Received: by mail-pl1-f178.google.com with SMTP id d9443c01a7336-1e0b213efa3so12609775ad.0
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 14:56:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1711403818; x=1712008618; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=UR7sFSEYjP8BO01JVRD78Toou7R7NTsnLZcSYy9yMLk=;
-        b=OmCdKPSK50QeT2a9kcn82Gl3bMDJ1m+IhSg8ywsH66zN+u8/XOUGmDBDhmKpqqmYFe
-         6a3JvCumtCUIL9yKAIMDT8/kO5edOZR9k0ZGvoxUo4m3AxIPUbkQmVu3dltoi+Q5gl3I
-         z8nLWvYEE3vN1YyWr1nY/f9JJ3FOezvm68CRM=
+        d=chromium.org; s=google; t=1711403819; x=1712008619; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=5bVuVcBwYjbmIMugv7i5Wq0OqJpJ+55dldjg1iRzEkE=;
+        b=OL+HjDenpMqzOvHpgRd5hgUoLRBZEhIwdR/Uyi+9hDG/+WJd4+BXoWaJBKo9gX3d2r
+         nnAsOht9p5i7BJDN1yWzTnSuO9KnGOj6PPmWhkootUMuMrgN5Hpm4JRdvzI8RgKcBHOD
+         wXlAzI2ZHQ5hj/CVT7cMTGiEpWczXMl43BI6M=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711403818; x=1712008618;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=UR7sFSEYjP8BO01JVRD78Toou7R7NTsnLZcSYy9yMLk=;
-        b=YVG7wERpJO+WxANg5hUEwLOzDKHTPW6aabsjD2GinvYQkMPq79s5VWEUudDYUqh+MK
-         fzitR0y6ieOUP3nD7VRni8rI6UopbrnJ1LblaCbT6rssKwS3aVZYARX9LmolXionBWF4
-         xev777aSQitgYEDsFXj3ea3VUr4BOqADYVABlIR0OX/JRGMBdP1L6k2u4RDB6zF1fE3G
-         bsGmcyopF+d0PU2JGxICiKfcB89PeYVfvEJqIe9vtQSxjBcFwkBXwjS/08wh01WqHp4A
-         pAdPDrFnl2zq5Z9kbYVr5qj3cfWPUn6SKapxip0g0Tn2diqHameoMyv/qlHMN5nu3yma
-         Ychw==
-X-Forwarded-Encrypted: i=1; AJvYcCXBKJzjMWUnpxk5GnfqlUG7bzhjJbufARQYu6q/RU78YBoEzYaJwlx/6P+B3nZBsHpq5RlF614L4jhp8t5JiBSwLz10UyvmJQqimgfh
-X-Gm-Message-State: AOJu0YxXt0UVDd6yy0XY3kba50PmlgHWyGQOLbb707FN11vh9/Csxc6C
-	iCADvIrkgh+yd6yrtmOXTEO1hEeh+3D1HXh34lHpUfCon/vr5pjg01bslLBRIGmA+eshAoljufk
-	=
-X-Google-Smtp-Source: AGHT+IFvvymI/+nAjVhwHLdNpVFDRLNACuh+o6MvjynK0XJWPebIEwChaIwn4LWdWp8KHSfw+SjCnQ==
-X-Received: by 2002:a17:902:ec8f:b0:1e0:73d:9172 with SMTP id x15-20020a170902ec8f00b001e0073d9172mr10772950plg.23.1711403817749;
-        Mon, 25 Mar 2024 14:56:57 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1711403819; x=1712008619;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=5bVuVcBwYjbmIMugv7i5Wq0OqJpJ+55dldjg1iRzEkE=;
+        b=Z7RaYj6ghu9szsPD/zGyaHEaeu+Dybb/XzFmkm5b1fbp1HdBt5p8lRa9otd4JH+BLj
+         GzMfJrrsmtb2YYEZAhfPhzaewn+KlsHtTcy5w4mCI8fOnzIJ8p2rhS9JKgZ7flDykNUV
+         l8zTvh1+I+0zy+ipxswNBZLxkX7TEyZHKcmYyC6fNIfEsN9YBhKPBkxr9Re69FFt8h8E
+         pNLl5zZUfQM+0kVBqJ2SYkN8DhgAZ5cu+q21zEOZdMIocCxhZHQDnE8VSoRxRiNPLqpX
+         KxPcDWyQa9+mmvzT3ydOgU/7i+pe93vJYxHMcqe9kaQxpUQJSKaeMLXbGNr0M94sIIIL
+         MT9A==
+X-Forwarded-Encrypted: i=1; AJvYcCWY4nDx0wGX8lP3kgXiPqdLwIhJWTFcBfWH6l+Y3W9iFTkoj2kPk9i0g9W+dC199StjIe2M15Y9xu0EIDwRHEggNuCOw9gpTPGalLg1
+X-Gm-Message-State: AOJu0YyQ3KV0ON8Edif0qk+KAh7EI2UuwF9zD7jbwfMeYNEF2utYLy+r
+	QWAs0l8PdiIK/W9+S5yfWFzsFdQyKR9br+rQF6R9zgce4l3ixq+nyVAH19EyIw==
+X-Google-Smtp-Source: AGHT+IFeEjtB0EjG3yoGX3VoRn27+gcFHG2pO1/kdc6fNCLKOImMjn5d9qKrY7U83VyykAGWyY6r3Q==
+X-Received: by 2002:a17:902:eb8d:b0:1e0:10c1:6288 with SMTP id q13-20020a170902eb8d00b001e010c16288mr7281408plg.51.1711403819205;
+        Mon, 25 Mar 2024 14:56:59 -0700 (PDT)
 Received: from dianders.sjc.corp.google.com ([2620:15c:9d:2:f21b:7dde:93cc:b987])
-        by smtp.gmail.com with ESMTPSA id n6-20020a170902e54600b001def0897284sm5207866plf.76.2024.03.25.14.56.56
+        by smtp.gmail.com with ESMTPSA id n6-20020a170902e54600b001def0897284sm5207866plf.76.2024.03.25.14.56.58
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 Mar 2024 14:56:57 -0700 (PDT)
+        Mon, 25 Mar 2024 14:56:58 -0700 (PDT)
 From: Douglas Anderson <dianders@chromium.org>
 To: dri-devel@lists.freedesktop.org
 Cc: Pin-yen Lin <treapking@chromium.org>,
@@ -77,10 +78,12 @@ Cc: Pin-yen Lin <treapking@chromium.org>,
 	Sam Ravnborg <sam@ravnborg.org>,
 	Thomas Zimmermann <tzimmermann@suse.de>,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH 0/3] drm-panel: Don't make failures quite so fatal
-Date: Mon, 25 Mar 2024 14:56:24 -0700
-Message-ID: <20240325215631.3804796-1-dianders@chromium.org>
+Subject: [PATCH 1/3] drm/panel-edp: Abstract out function to set conservative timings
+Date: Mon, 25 Mar 2024 14:56:25 -0700
+Message-ID: <20240325145626.1.I659b2517d9f619d09e804e071591ecab76335dfb@changeid>
 X-Mailer: git-send-email 2.44.0.396.g6e790dbe36-goog
+In-Reply-To: <20240325215631.3804796-1-dianders@chromium.org>
+References: <20240325215631.3804796-1-dianders@chromium.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -89,47 +92,77 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
+If we're using the generic "edp-panel" compatible string and we fail
+to detect an eDP panel then we fall back to conservative timings for
+powering up and powering down the panel. Abstract out the function for
+setting these timings so it can be used in future patches.
 
-This patch series is born out of the observation that after several
-Chromebooks transitioned over to the generic "edp-panel" compatible
-string that we received a number of in-the-field reports of the
-primary graphics device for the Chromebook not coming up.
+No functional change expected--just code movement.
 
-The current belief is that these Chromebooks are actually suffering
-from a true hardware failure and the panel is either fully
-disconnected or it has some type of intermittent connection. While we
-can't solve that problem, digging showed that we actually dealt with
-this situation better _before_ switching to the generic "edp-panel"
-compatible string.
+Signed-off-by: Douglas Anderson <dianders@chromium.org>
+---
 
-Before switching to "edp-panel", devices using eDP would finish their
-probe and would actually not show any failure until you tried to turn
-the panel on. That was a _good_ thing. The component model used by
-many DRM devices means that if the panel doesn't finish probing that
-the rest of the DRM device doesn't probe. In turn, that means that any
-other display adapters (like ones that would allow hooking up an
-external display) don't probe. The end result was that a device with a
-broken panel that could have continued to be a useful computer by
-hooking up an external display became e-waste.
+ drivers/gpu/drm/panel/panel-edp.c | 40 +++++++++++++++----------------
+ 1 file changed, 20 insertions(+), 20 deletions(-)
 
-I won't say that this series is the most elegant/wonderful thing in
-the world. Ideally we could fail the probe of the panel and still use
-the external display. That's a pretty serious re-design, though. DRM
-devices work like they do with the component model because of some of
-their inherent complexities.
-
-
-Douglas Anderson (3):
-  drm/panel-edp: Abstract out function to set conservative timings
-  drm/panel-edp: If we fail to powerup/get EDID, use conservative
-    timings
-  drm-panel: If drm_panel_dp_aux_backlight() fails, don't fail panel
-    probe
-
- drivers/gpu/drm/panel/panel-edp.c             | 60 +++++++++++--------
- .../gpu/drm/panel/panel-samsung-atna33xc20.c  |  9 ++-
- 2 files changed, 41 insertions(+), 28 deletions(-)
-
+diff --git a/drivers/gpu/drm/panel/panel-edp.c b/drivers/gpu/drm/panel/panel-edp.c
+index c4f851200aa2..8a19fea90ddf 100644
+--- a/drivers/gpu/drm/panel/panel-edp.c
++++ b/drivers/gpu/drm/panel/panel-edp.c
+@@ -760,6 +760,25 @@ static void panel_edp_parse_panel_timing_node(struct device *dev,
+ 
+ static const struct edp_panel_entry *find_edp_panel(u32 panel_id, const struct drm_edid *edid);
+ 
++static void panel_edp_set_conservative_timings(struct panel_edp *panel, struct panel_desc *desc)
++{
++	/*
++	 * It's highly likely that the panel will work if we use very
++	 * conservative timings, so let's do that.
++	 *
++	 * Nearly all panels have a "unprepare" delay of 500 ms though
++	 * there are a few with 1000. Let's stick 2000 in just to be
++	 * super conservative.
++	 *
++	 * An "enable" delay of 80 ms seems the most common, but we'll
++	 * throw in 200 ms to be safe.
++	 */
++	desc->delay.unprepare = 2000;
++	desc->delay.enable = 200;
++
++	panel->detected_panel = ERR_PTR(-EINVAL);
++}
++
+ static int generic_edp_panel_probe(struct device *dev, struct panel_edp *panel)
+ {
+ 	struct panel_desc *desc;
+@@ -816,26 +835,7 @@ static int generic_edp_panel_probe(struct device *dev, struct panel_edp *panel)
+ 		dev_warn(dev,
+ 			 "Unknown panel %s %#06x, using conservative timings\n",
+ 			 vend, product_id);
+-
+-		/*
+-		 * It's highly likely that the panel will work if we use very
+-		 * conservative timings, so let's do that. We already know that
+-		 * the HPD-related delays must have worked since we got this
+-		 * far, so we really just need the "unprepare" / "enable"
+-		 * delays. We don't need "prepare_to_enable" since that
+-		 * overlaps the "enable" delay anyway.
+-		 *
+-		 * Nearly all panels have a "unprepare" delay of 500 ms though
+-		 * there are a few with 1000. Let's stick 2000 in just to be
+-		 * super conservative.
+-		 *
+-		 * An "enable" delay of 80 ms seems the most common, but we'll
+-		 * throw in 200 ms to be safe.
+-		 */
+-		desc->delay.unprepare = 2000;
+-		desc->delay.enable = 200;
+-
+-		panel->detected_panel = ERR_PTR(-EINVAL);
++		panel_edp_set_conservative_timings(panel, desc);
+ 	} else {
+ 		dev_info(dev, "Detected %s %s (%#06x)\n",
+ 			 vend, panel->detected_panel->ident.name, product_id);
 -- 
 2.44.0.396.g6e790dbe36-goog
 
