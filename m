@@ -1,181 +1,224 @@
-Return-Path: <linux-kernel+bounces-116760-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-116759-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id F1ACA88A37C
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 15:02:14 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8E9D088A709
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 16:41:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1F0A41C3A485
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 14:02:14 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 14A33B22A0E
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 14:01:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 883D615920D;
-	Mon, 25 Mar 2024 10:37:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 988A276058;
+	Mon, 25 Mar 2024 10:37:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=fujitsu.com header.i=@fujitsu.com header.b="HLN6HlwQ"
-Received: from esa7.fujitsucc.c3s2.iphmx.com (esa7.fujitsucc.c3s2.iphmx.com [68.232.159.87])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="gDPgmlkW"
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 194A1145B29;
-	Mon, 25 Mar 2024 09:40:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=68.232.159.87
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711359608; cv=fail; b=TDMXYuHdebQccox2LXCsaGbknwc5TmLpSmtW1PweNbYSHIUibioT7cJIdEvSKboQZ3fucj/DTsRjLDhgllWRXXg+gO/2fLFZ9/Vzj5nhqaau77GbKLUmwQU+pp8IECfeECr1J8wyZndvqzGqR0cq8BrBUJCreesKRX/xPGM5/84=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711359608; c=relaxed/simple;
-	bh=Z/5xlqoM86PbZ6pyYYzGmk7tZBzKI7XiMVMWlvi9/5Y=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=PPXhXne5C7KhB+6EzwZoIoz3eeJY5fURie5cVvRRnIYDP1zTO+QbTCIO9r7vgRVN/lXz/WzLOCYIm2P7ZcEOz0rgRMOpIXUg0hneDn10/2+Xm7Bwr4vNf124rSR9PjxniL9SeV1fF88t5dLO0JTfubho5F1GjS2mlRbiNM71Y78=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fujitsu.com; spf=pass smtp.mailfrom=fujitsu.com; dkim=pass (2048-bit key) header.d=fujitsu.com header.i=@fujitsu.com header.b=HLN6HlwQ; arc=fail smtp.client-ip=68.232.159.87
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fujitsu.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fujitsu.com
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=fujitsu.com; i=@fujitsu.com; q=dns/txt; s=fj1;
-  t=1711359607; x=1742895607;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-id:content-transfer-encoding:
-   mime-version;
-  bh=Z/5xlqoM86PbZ6pyYYzGmk7tZBzKI7XiMVMWlvi9/5Y=;
-  b=HLN6HlwQP/vq7g6lPHsp3iFnP7RD/H3xmOnXZaHxUpDHwPapTNVxHxge
-   UEtwN2FS+/YdpXyY8nLQca3zSMaapVkVu8wmJ6MyByvSIK9VQ3UCKOocc
-   Luji8N71Jh+ks8fbzXJ2XZPMWPkezn/1ydR5qOuXHl7uEMjvuEW8IPAiX
-   LNlmIsFDc3S3Ye+e8fu+74+xdUImnhURjMWGBCLWgYnb1BJtXXSJdTRza
-   iJO0NCHr4QHCUSD5+cxS7I0QtTY94R7Z2FgEcZ+oQmyobJZuvVWiGqGwW
-   fNcjf/6Tdvyp2sXfOhw1SMGicVPcYRxXzoe14rKK1EIpRVr30FBtSSt9c
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11023"; a="114950600"
-X-IronPort-AV: E=Sophos;i="6.07,152,1708354800"; 
-   d="scan'208";a="114950600"
-Received: from mail-japaneastazlp17011004.outbound.protection.outlook.com (HELO TY3P286CU002.outbound.protection.outlook.com) ([40.93.73.4])
-  by ob1.fujitsucc.c3s2.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Mar 2024 18:39:56 +0900
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=fVdF7RFuK/AYuqggDRIcBYnOpaHt+bT6KI1noXJye1mMxtBzM0ZJq530Y5XuXrTo9PnUMDhtumvAIL3IkNEjK430XKHOI97A3JnzMo/0MalReZiBaXcHwtxh8PQJSALR3/iVePsq0MyEtgEsKlRmusih/R3vQ9eG4L8p6Vl/Ex1/g/XDJaeUarhBpa6YeeBaQVrzg0dDfW96UaPoKBVo7It6WGvvHKV9VNoptlBZy+x9G76gobxaBgHOHxi/lw8GWTgka3Cztmf4TwpsLQmtn2bV1hKY3EB2WYy9OUPdqpYFcfnxnKYF/DrikiWk3vqxmY5KNg+V8j5RDrW+J4vVow==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Z/5xlqoM86PbZ6pyYYzGmk7tZBzKI7XiMVMWlvi9/5Y=;
- b=SJEtnCgDIc4wCU19uOpS8OskHRDrLVfY0isEnPYPd7xedmEzuDUrOtNVpIS7U7+TJde059tesBAM8uYR34FBbvv1GbBBbbvyP8pzxxzx4WKvZzOIj2Vk1PpZ7uoLUvznKVfrMbrUrQGxa+SrCpam7013s6HlJP9ktMEdgT26GtaduupnmCjEAYKJEfc9eJcxtFkLpmR11TT10lk6GEwlYT0mT6RVFcnUN3GRC4S2ZKHeeA/aYdxeNAEq9zRxJOFpN1uPmKbH8rM0X1bmogfhWvbPdq4tOFCK7Ejn0g4u+pTh+vK930Yf6P/H7g0yC95KnUo8jIhw9F/+SbzutuPgmQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fujitsu.com; dmarc=pass action=none header.from=fujitsu.com;
- dkim=pass header.d=fujitsu.com; arc=none
-Received: from TYAPR01MB5818.jpnprd01.prod.outlook.com
- (2603:1096:404:8059::10) by TYYPR01MB10593.jpnprd01.prod.outlook.com
- (2603:1096:400:30d::11) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.31; Mon, 25 Mar
- 2024 09:39:52 +0000
-Received: from TYAPR01MB5818.jpnprd01.prod.outlook.com
- ([fe80::c52a:473a:a14f:7f0e]) by TYAPR01MB5818.jpnprd01.prod.outlook.com
- ([fe80::c52a:473a:a14f:7f0e%3]) with mapi id 15.20.7409.028; Mon, 25 Mar 2024
- 09:39:52 +0000
-From: "Zhijian Li (Fujitsu)" <lizhijian@fujitsu.com>
-To: Wei Liu <wei.liu@kernel.org>
-CC: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "K. Y.
- Srinivasan" <kys@microsoft.com>, Haiyang Zhang <haiyangz@microsoft.com>,
-	Dexuan Cui <decui@microsoft.com>, "linux-hyperv@vger.kernel.org"
-	<linux-hyperv@vger.kernel.org>
-Subject: Re: [PATCH] hv: vmbus: Convert sprintf() family to sysfs_emit()
- family
-Thread-Topic: [PATCH] hv: vmbus: Convert sprintf() family to sysfs_emit()
- family
-Thread-Index: AQHaea+sGRGDRSgQ6kqU8QEjVmbOQrFEcIoAgAPM24A=
-Date: Mon, 25 Mar 2024 09:39:52 +0000
-Message-ID: <5c1f6aba-bd3c-438c-8e00-548fe29d8136@fujitsu.com>
-References: <20240319034350.1574454-1-lizhijian@fujitsu.com>
- <Zf4WUMyNq38LyDLW@liuwe-devbox-debian-v2>
-In-Reply-To: <Zf4WUMyNq38LyDLW@liuwe-devbox-debian-v2>
-Accept-Language: en-US, zh-CN
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-user-agent: Mozilla Thunderbird
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=fujitsu.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: TYAPR01MB5818:EE_|TYYPR01MB10593:EE_
-x-ms-office365-filtering-correlation-id: 95affd22-0669-410d-57b5-08dc4caf85e1
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info:
- YXnNG+oEBpuLFK4OwBO2G0f71a0JAFhlym1Pz8/c1vZkjHB/DdIHeU2JKhkk/7si6uvyGItzpbNOK2mfw8nSb2tsY9AZK3OyjXzfWIGaIZpfpN60K3cY8nVKSN9EqdozAtMLqA3pf+3KgEd+6lptCxYGWJUt3Blz2GoeXnd9wk5ohdL/rhxzuF8f79yK0JRIRgxgyM/x8taQWHlKSuw1P44ubFtHE98y9KBn/rUrfoSFgzQT1J8MmCJkGg6R9Fqpu4cdlqHE9ypQu4RSm229oXU2awO3kPvk1WM88I7c0nhI3Q5oNswfpOZ8ygkPkWtCsuwiN7NLfZSG62D8vWt/FDUiJUNyFcTpxvYoGdBd4fCIWdx2f3RRK+ppvKci3Kunxe8egoFL6mq7uIdVWU01hkVvuRqRXRrYKQ5zb42oJtBLmypf89fjp4DGWDavgvY/e9wRGVCOWdF+jANIn0Q9R2Yq0z/O7Q9TVa02XXqeQ8A/rx+5zl6zjgqElLqkv9JUdHVjvvWjDrmOjclfISCbZhNJD9hSOBMlOnvLlHzsWOIsXPrj/mJJXgFV/3GLigxvnv+Wnhq5PqN2VSCL6SbJiyU6o7WlpFd52Z/aV+AXo69nrx4jfixmK5boNwuiWX3Wq3MOnd1c9r2/g0Rl5ZQ784aKMTT9T1DXgjTNHqCe2AyWFrMN4WlSaAHJkl8AnmvKxYP6AHZFlFmrZZGqORlJps+J0T9O0FHJgJ/6Emn/Y/SrG+PqH1YTuJPwjgAunLlr
-x-forefront-antispam-report:
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:TYAPR01MB5818.jpnprd01.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366007)(376005)(1800799015)(1580799018)(38070700009);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?utf-8?B?cHMwa2s2VnBuUXVkbVF0cklqbWs5K1BhMmZibFVDMzIvSzVoTW1Ddk5FMDZw?=
- =?utf-8?B?cnZMZUpSV1djYTNuNVNGVzZtVG1Tcm5RWW5nNDBQVVpxT3pSSTA5QllpK0FL?=
- =?utf-8?B?dmYrcXYyRXRyYk0xQ3NCaXZnV2sxQlQxTTNHZFBOSTBXSFdlUjZmMEpQZU1w?=
- =?utf-8?B?RlMyd0J0QTZXY2pNY1lCQkdpT25GWlRtQXlXQUhkTVNGTTlPUGtwRi9RL1NM?=
- =?utf-8?B?UjBBOFoxV0JUR2VzSGQvVnlZUEJ4bFNBT3BsaExyc0xCa0xZekZiMExuSFJr?=
- =?utf-8?B?Umo5M2hma1VmR3hnaXJsOHFKZUdrZHVqNmd0bklscUZDejQxUjRHbmM4TWlI?=
- =?utf-8?B?d0FnQXBlQldyQXR3aDF3ZDVzTTdkeFV1K0xaK2g0TjI1ajVaakszdkcvcDIv?=
- =?utf-8?B?dDNINzVrWU12Tzh3MitxRkRBZHRCckdJYkhmVk1tTER0Zm12ZXk3ZGdQeDV4?=
- =?utf-8?B?VlNhTW0xMUxmcW9hbzVXWTBaY3hGSXk3bGZWR1U2cHNOVTRaUzdqSmJDZkdq?=
- =?utf-8?B?K3dvNnl4K0o5WFVvS3NmWDNpanhiTFdzUlZUakZZT3NiVWRCYlZhVmdCUG5W?=
- =?utf-8?B?TmxXM3hKUXdsMWpKY0hkT3BPZmtwRDA5TkRpYXZqbWdjSmY5c29kRjRPSU1q?=
- =?utf-8?B?Nkt3YkJCcUg3bVdJS25RWUowOW5xenRkMjBEcnRhL0NTaFlYK3ZXQTRzK2JO?=
- =?utf-8?B?UWNmMnVUbW9yZStmUjNsaUU2UERNcjR0c0xoWGt3a3pRK0t5VG5NTG1EYk1N?=
- =?utf-8?B?SU5ydWJwNHFQbTRqZ1FENXkybTJaUFBrZVBteEdjQVJIWEdmQWVrS1JGSnoz?=
- =?utf-8?B?UFlkLzFJV3Yva1EyWjNuNkw4QllZbDVlZ2FFK2RPNWZSZWFCNHFvRTdCbHBv?=
- =?utf-8?B?RUMwWERXTHB3ZFhVVVJZekZkejIvRVduZ0ZXTUN0c1hNV2poaWhwTEI1QmRy?=
- =?utf-8?B?QTlJdjhILy83bHVmdklPUTM4SjhrKzZXeHVqYmJHVGVCQVh3VVQ3eGQybmlN?=
- =?utf-8?B?RkZ5U1RxaEhFbFc0d0hwdkFCR2ZlTCtjMERlbUt5TFU0NDZLbjZGaFJlbm5j?=
- =?utf-8?B?ZzNiUFRqYmdxaUovVzRxYkhwQjZaaGozSGx2TC9HVWM0RGI2TWhhcU9BSFAw?=
- =?utf-8?B?Y2M3VFhsb2tBWHF2bmpaQytMTFdUWFdqSlhaenVVTS9XSFVNcDREY1FCZGVZ?=
- =?utf-8?B?b3l5eS9KY2JleFlVR0hMbEV2UWZMTFoyNjdqbTdRa2N0Y09UblJDMVNzdnVj?=
- =?utf-8?B?V1krUDVXdm1Wcy80Nk5ESzRrOWd6QUxid0oxUTIrUy9mcHZlUXRCUkRZQjBQ?=
- =?utf-8?B?cjdRamgxa2FlZDFCOERldlpLZXJrdUgwWlpuZFo1dndKbFlsQWsrS3ZwRzdr?=
- =?utf-8?B?UGlqOWM3Rm5IdC9KMGVCUDlTcTVSOHFDWEl5T3RPQ0Z3bS9qVWZaWW4yTFVm?=
- =?utf-8?B?SHlLT2RReDl4aFIybm1RR21mbzlxSUR0bks4N0tpengrNG1YcWdrMFZqRG1M?=
- =?utf-8?B?Z0ZIbzlWODFWM2s2RzZSUUhBM0U5Zi8xODBZVFNaMkJDcDZhWkR1SFZrRG9V?=
- =?utf-8?B?WFpPd3BNNGQvc2VOVjNkZExPUkxDS3grcldIbk9QVUxZZlZGNThDWmJiSW5o?=
- =?utf-8?B?R0Nra1F1bUpNWGNtb1V3bXhsdlZib3k5Q2c5TWxLTmJ6ZnNvdkNZZzNvaWRp?=
- =?utf-8?B?UEtwL2VLcU4vQzAyWTRwU1pvQTY1VFE3WTNHQytXb25uYWE2US9VZy9rWmJu?=
- =?utf-8?B?Q0RLSStXaE41YkFIWXJDOVpwYVFXYjNtOXVCMytrTVpJcEZiWmd4eit0T29D?=
- =?utf-8?B?anZBMi9XdW5VSVlYL1JVN09wVm8vM29rVXRSS0hIZURIZXVyU1ZtZmZnR1Rm?=
- =?utf-8?B?MGJDZVl3S2xpZnNPQXdvUkZPRGlocm9yMzFPVjkySHE4UEd3eE5JN095ekYy?=
- =?utf-8?B?UTZXWGhGL0QyNlQwUkRpS202UVErMW1HQVBIemJiSlpDZ1RrSGVHTkFyYWNU?=
- =?utf-8?B?K1dQbGR4MTA4ejkyWXJuTURkV25uTGQrYTA4YmJ5bTV2NVRzQzdHQWFkL1I0?=
- =?utf-8?B?QU52ZHc1OFRKdExYcmhNWnhmOHUrTFZJdHFMbjlxcHRUcjE5cTRDSGtTVVRv?=
- =?utf-8?B?RzNOQkRwYWtzUGd1ZFVvZUsxVEVCNWxRWmR0L3UvQ1hOMlBPbU9xL3ZNMlJj?=
- =?utf-8?B?VXc9PQ==?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <643D9C6F1962174A8B82D5CC9597722A@jpnprd01.prod.outlook.com>
-Content-Transfer-Encoding: base64
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E7E0476045;
+	Mon, 25 Mar 2024 09:40:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1711359639; cv=none; b=X6CGTfOOCWoGZgISgGzg+G8d38DoYtWl2WtDOR3HmWZ4D9Q6xVeqwtNw3LqKKQffUkUOvlFEsQVg7MXKgoso5yHD0NXiAPTILmow/6JpvDlMuBHKtZDPmyO2NAUnWuHeDpXvBcyYKFoSt8V0/6+ktkvxHHDm5jjX+y6xwENeCLM=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1711359639; c=relaxed/simple;
+	bh=XTa/O56XTWdw5ZF7TMRdkm4wmKncpZtw2pKiTC9UVyI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=lLRssnuxrUn2ztRUW3TCQ6jt/WYsKntAzT6rXudUinU6w8UGERjXB+wRGEQ3z2tlgBVQ4e0G3MwSDo8cBZVnlPxYqH43VxpedtwGRyPnPsSdrfy5aaViolQJ5ZQ+LyB5twhJ7/uilJT7zmeA2eCLoVbAoIY4lSmSxk+e0MSvfnc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=gDPgmlkW; arc=none smtp.client-ip=148.163.158.5
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0360072.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 42P5ua6K001614;
+	Mon, 25 Mar 2024 09:40:09 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=pp1; bh=lbLk1l291cRpU9S2Tsbm27SJWoB+hUfjrtZd/Xy3feI=;
+ b=gDPgmlkWNRs6tmUokyl+eLPZ0a2jRGDPaWEEPatE9xDpYmhLwmeEuPJ1lppcoBxVhEaB
+ wPz3wtBJO2JsB0dmBs28JVcK1mPiA3DbjynMs1X0bzbVIpDxNgVGxUXcEVyI0OEJgi4E
+ YCKrGTZt/qNVKGaGZ1rC4DdOmda7pdYXQ0X9idpnSR0ECD7Tf3Ga9ct+FPlUI6EidrTM
+ cZ8By8BlnJL9udeRRtbMHX5MsaV6yEH6x+aEZOOHLAZ4eh7lQOXE4qx13hWvi2GI7AVg
+ RqI6eC0ycdgh3Cb2+ghPwJxoSggmdzmfMtOGmTT37DZ1Dofn9kNTajYm4sCkJaRuAXXU 0g== 
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3x2hh69x12-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 25 Mar 2024 09:40:08 +0000
+Received: from m0360072.ppops.net (m0360072.ppops.net [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 42P9ZRcQ008400;
+	Mon, 25 Mar 2024 09:40:08 GMT
+Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3x2hh69x0x-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 25 Mar 2024 09:40:07 +0000
+Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
+	by ppma12.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 42P7Zx2Y016410;
+	Mon, 25 Mar 2024 09:40:07 GMT
+Received: from smtprelay04.fra02v.mail.ibm.com ([9.218.2.228])
+	by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 3x29dtrhms-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 25 Mar 2024 09:40:06 +0000
+Received: from smtpav05.fra02v.mail.ibm.com (smtpav05.fra02v.mail.ibm.com [10.20.54.104])
+	by smtprelay04.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 42P9e1KP22544922
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Mon, 25 Mar 2024 09:40:03 GMT
+Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 9C6872004E;
+	Mon, 25 Mar 2024 09:40:01 +0000 (GMT)
+Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id CED8520040;
+	Mon, 25 Mar 2024 09:40:00 +0000 (GMT)
+Received: from osiris (unknown [9.171.70.91])
+	by smtpav05.fra02v.mail.ibm.com (Postfix) with ESMTPS;
+	Mon, 25 Mar 2024 09:40:00 +0000 (GMT)
+Date: Mon, 25 Mar 2024 10:39:59 +0100
+From: Heiko Carstens <hca@linux.ibm.com>
+To: Christoph Hellwig <hch@infradead.org>
+Cc: "Uladzislau Rezki (Sony)" <urezki@gmail.com>, linux-mm@kvack.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        LKML <linux-kernel@vger.kernel.org>, Baoquan He <bhe@redhat.com>,
+        Lorenzo Stoakes <lstoakes@gmail.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Dave Chinner <david@fromorbit.com>, Guenter Roeck <linux@roeck-us.net>,
+        Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@linux.ibm.com>,
+        Sven Schnelle <svens@linux.ibm.com>, linux-s390@vger.kernel.org
+Subject: Re: [PATCH 1/1] mm: vmalloc: Bail out early in find_vmap_area() if
+ vmap is not init
+Message-ID: <20240325093959.9453-B-hca@linux.ibm.com>
+References: <20240323141544.4150-1-urezki@gmail.com>
+ <ZgC38GfEZYpYGUU9@infradead.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0:
-	MY/3nN+p9kY+C2xtS/29tGneS9VcrL1ueEJIV65XA1rx+xuDZ3xVamb+Sbr0YvcaiPf74+HHimMu5yOqcAF9p0I06jXO4IRDEemaS4hqYCmx1cjtDdY4z+iFghxpGXgKOX9j4ntDJ9QjwxnGATVktcCrowrhkT5FqFRFcuXptcx0qHHMbukzegymn4WcskrJJrtOoeijzC3S9GXf+mwFuWVb81Wr+Tg34a2H+oh3uDJUJxsMnuvlmOq1vQuw65n0vYJwTUU0vzgc140qvJGq6EbkSm5jg4kS8WUlXKEVGyiXfIXPLO0t7ny7RlkZGNDTrjV8oucDMAidz8FokFS8+wiESC5yEoYL9MwDygO98nT3CQBTXkbKeISfyONTzZYfxn5Qrj7nAZ7+hyhqNx/SVVwkhDTlpSjPMy/AFgiQwjAm7Gl+XyX/Czr+gJoQ0Ux0q31D2rmtSW/8M6kNDeSStde0Ohp3gs3b7Z3ch+7l2Wd8Y1PYswDXGs/SEkxYXYgNkKKEGEYpM7hWwNluuK3p7BwaLgFSn42ST80jSiEC37YuQnJkpAWBC5G7MJ4VY6wF8aLzLVadk9TQkAxJK6haOdza3wGdol0gdoYZUY+8EBXRkZRHyOgqqkgVaQo1dABh
-X-OriginatorOrg: fujitsu.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: TYAPR01MB5818.jpnprd01.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 95affd22-0669-410d-57b5-08dc4caf85e1
-X-MS-Exchange-CrossTenant-originalarrivaltime: 25 Mar 2024 09:39:52.8631
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: a19f121d-81e1-4858-a9d8-736e267fd4c7
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 9ZHWFh2J42p/r1RclpvQL0rXWKhPM6hQFFSejz722FqTyBEo1ZLPZ9WZ3s4cHY0tiv+TYongcPDN5kLtCi4e0w==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYYPR01MB10593
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZgC38GfEZYpYGUU9@infradead.org>
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: _9711NiWy7-EsEOQcdt74z12AqRCg_ZC
+X-Proofpoint-GUID: cWCtJLwizTW0fQFZ-RczZfodSfAwtBtC
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-03-25_07,2024-03-21_02,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0
+ priorityscore=1501 lowpriorityscore=0 mlxlogscore=778 spamscore=0
+ phishscore=0 clxscore=1011 impostorscore=0 suspectscore=0 malwarescore=0
+ adultscore=0 mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2403210000 definitions=main-2403250052
 
-DQoNCk9uIDIzLzAzLzIwMjQgMDc6MzcsIFdlaSBMaXUgd3JvdGU6DQo+IEhpIFpoaWppYW4sDQo+
-IA0KPiBPbiBUdWUsIE1hciAxOSwgMjAyNCBhdCAxMTo0Mzo1MEFNICswODAwLCBMaSBaaGlqaWFu
-IHdyb3RlOg0KPj4gUGVyIGZpbGVzeXN0ZW1zL3N5c2ZzLnJzdCwgc2hvdygpIHNob3VsZCBvbmx5
-IHVzZSBzeXNmc19lbWl0KCkNCj4+IG9yIHN5c2ZzX2VtaXRfYXQoKSB3aGVuIGZvcm1hdHRpbmcg
-dGhlIHZhbHVlIHRvIGJlIHJldHVybmVkIHRvIHVzZXIgc3BhY2UuDQo+Pg0KPj4gY29jY2luZWxs
-ZSBjb21wbGFpbnMgdGhhdCB0aGVyZSBhcmUgc3RpbGwgYSBjb3VwbGUgb2YgZnVuY3Rpb25zIHRo
-YXQgdXNlDQo+PiBzbnByaW50ZigpLiBDb252ZXJ0IHRoZW0gdG8gc3lzZnNfZW1pdCgpLg0KPj4N
-Cj4+IHNwcmludGYoKSBhbmQgc2NucHJpbnRmKCkgd2lsbCBiZSBjb252ZXJ0ZWQgYXMgd2VsbCBp
-ZiB0aGV5IGhhdmUuDQo+IA0KPiBUaGlzIHNlbnRlbmNlIHNlZW1zIHRvIGhhdmUgYmVlbiBjdXQg
-b2ZmIGhhbGZ3YXkuIElmIHRoZXkgaGF2ZSB3aGF0Pw0KDQpJcyBpdCBoYXJkIHRvIHVuZGVyc3Rh
-bmQsIHdoYXQgSSB3YW50IHRvIHNheSBpczoNCg0KU3ByaW50ZigpIGFuZCBzY25wcmludGYoKSB3
-aWxsIGJlIGNvbnZlcnRlZCBpZiB0aGVzZSBmaWxlcyBoYXZlIHN1Y2ggYWJ1c2VkIGNhc2VzLg0K
-DQpTaGFsbCBJIHVwZGF0ZSBpdCBhbmQgc2VuZCBhIFYyPw0KDQpUaGFua3MNClpoaWppYW4NCg0K
-DQoNCj4gDQo+IFRoZSBjb2RlIGxvb2tzIGZpbmUuDQo+IA0KPiBUaGFua3MsDQo+IFdlaS4=
+On Sun, Mar 24, 2024 at 04:32:00PM -0700, Christoph Hellwig wrote:
+> On Sat, Mar 23, 2024 at 03:15:44PM +0100, Uladzislau Rezki (Sony) wrote:
+> > During the boot the s390 system triggers "spinlock bad magic" messages
+> > if the spinlock debugging is enabled:
+> > 
+> > [    0.465445] BUG: spinlock bad magic on CPU#0, swapper/0
+> > [    0.465490]  lock: single+0x1860/0x1958, .magic: 00000000, .owner: <none>/-1, .owner_cpu: 0
+> > [    0.466067] CPU: 0 PID: 0 Comm: swapper Not tainted 6.8.0-12955-g8e938e398669 #1
+> > [    0.466188] Hardware name: QEMU 8561 QEMU (KVM/Linux)
+> > [    0.466270] Call Trace:
+> > [    0.466470]  [<00000000011f26c8>] dump_stack_lvl+0x98/0xd8
+> > [    0.466516]  [<00000000001dcc6a>] do_raw_spin_lock+0x8a/0x108
+> > [    0.466545]  [<000000000042146c>] find_vmap_area+0x6c/0x108
+> > [    0.466572]  [<000000000042175a>] find_vm_area+0x22/0x40
+> > [    0.466597]  [<000000000012f152>] __set_memory+0x132/0x150
+> > [    0.466624]  [<0000000001cc0398>] vmem_map_init+0x40/0x118
+> > [    0.466651]  [<0000000001cc0092>] paging_init+0x22/0x68
+> > [    0.466677]  [<0000000001cbbed2>] setup_arch+0x52a/0x708
+> > [    0.466702]  [<0000000001cb6140>] start_kernel+0x80/0x5c8
+> > [    0.466727]  [<0000000000100036>] startup_continue+0x36/0x40
+..
+> > diff --git a/mm/vmalloc.c b/mm/vmalloc.c
+> > index 22aa63f4ef63..0d77d171b5d9 100644
+> > --- a/mm/vmalloc.c
+> > +++ b/mm/vmalloc.c
+> > @@ -2343,6 +2343,9 @@ struct vmap_area *find_vmap_area(unsigned long addr)
+> >  	struct vmap_area *va;
+> >  	int i, j;
+> >  
+> > +	if (unlikely(!vmap_initialized))
+> > +		return NULL;
+> > +
+>
+> I guess this is ok as an urgend bandaid to get s390 booting again,
+> but calling find_vmap_area before the vmap area is initialized
+> seems an actual issue in the s390 mm init code.
+> 
+> Adding the s390 maintainers to see if they have and idea how this could
+> get fixed in a better way.
+
+I'm going to push the patch below to the s390 git tree later. This is not a
+piece of art, but I wanted to avoid to externalize vmalloc's vmap_initialized,
+or come up with some s390 specific change_page_attr_alias_early() variant where
+sooner or later nobody remembers what "early" means.
+
+So this seems to be "good enough".
+
+From 0308cd304fa3b01904c6060e2115234101811e48 Mon Sep 17 00:00:00 2001
+From: Heiko Carstens <hca@linux.ibm.com>
+Date: Thu, 21 Mar 2024 09:41:20 +0100
+Subject: [PATCH] s390/mm,pageattr: avoid early calls into vmalloc code
+
+The vmalloc code got changed and doesn't have the global statically
+initialized vmap_area_lock spinlock anymore. This leads to the following
+lockdep splat when find_vm_area() is called before the vmalloc code is
+initialized:
+
+BUG: spinlock bad magic on CPU#0, swapper/0
+ lock: single+0x1868/0x1978, .magic: 00000000, .owner: swapper/0, .owner_cpu: 0
+
+CPU: 0 PID: 0 Comm: swapper Not tainted 6.8.0-11767-g23956900041d #1
+Hardware name: IBM 3931 A01 701 (KVM/Linux)
+Call Trace:
+ [<00000000010d840a>] dump_stack_lvl+0xba/0x148
+ [<00000000001fdf5c>] do_raw_spin_unlock+0x7c/0xd0
+ [<000000000111d848>] _raw_spin_unlock+0x38/0x68
+ [<0000000000485830>] find_vmap_area+0xb0/0x108
+ [<0000000000485ada>] find_vm_area+0x22/0x40
+ [<0000000000132bbc>] __set_memory+0xbc/0x140
+ [<0000000001a7f048>] vmem_map_init+0x40/0x158
+ [<0000000001a7edc8>] paging_init+0x28/0x80
+ [<0000000001a7a6e2>] setup_arch+0x4b2/0x6d8
+ [<0000000001a74438>] start_kernel+0x98/0x4b0
+ [<0000000000100036>] startup_continue+0x36/0x40
+INFO: lockdep is turned off.
+
+Add a slab_is_available() check to change_page_attr_alias() in order to
+avoid early calls into vmalloc code. slab_is_available() is not exactly
+what is needed, but there is currently no other way to tell if the vmalloc
+code is initialized or not, and there is no reason to expose
+e.g. vmap_initialized from vmalloc to achieve the same.
+
+The fixes tag does not mean that the referenced commit is broken, but that
+there is a dependency to this commit if the vmalloc commit should be
+backported.
+
+Fixes: d093602919ad ("mm: vmalloc: remove global vmap_area_root rb-tree")
+Signed-off-by: Heiko Carstens <hca@linux.ibm.com>
+---
+ arch/s390/mm/pageattr.c | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/arch/s390/mm/pageattr.c b/arch/s390/mm/pageattr.c
+index 01bc8fad64d6..b6c6453d66e2 100644
+--- a/arch/s390/mm/pageattr.c
++++ b/arch/s390/mm/pageattr.c
+@@ -344,6 +344,9 @@ static int change_page_attr_alias(unsigned long addr, unsigned long end,
+ 	struct vm_struct *area;
+ 	int rc = 0;
+ 
++	/* Avoid early calls into not initialized vmalloc code. */
++	if (!slab_is_available())
++		return 0;
+ 	/*
+ 	 * Changes to read-only permissions on kernel VA mappings are also
+ 	 * applied to the kernel direct mapping. Execute permissions are
+-- 
+2.40.1
+
 
