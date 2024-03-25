@@ -1,175 +1,136 @@
-Return-Path: <linux-kernel+bounces-117552-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-117554-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EA34588B1AB
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 21:37:52 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3BB2C88AC8B
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 18:54:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 86F91C225D5
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 17:54:06 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CF1811FA37C8
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 17:54:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 802925D737;
-	Mon, 25 Mar 2024 17:10:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6A8C213D27F;
+	Mon, 25 Mar 2024 17:13:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ZHE1u0cm"
-Received: from mail-lj1-f171.google.com (mail-lj1-f171.google.com [209.85.208.171])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="LF005WrV"
+Received: from mail-lf1-f45.google.com (mail-lf1-f45.google.com [209.85.167.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C5DA64691;
-	Mon, 25 Mar 2024 17:10:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 00C9813D265;
+	Mon, 25 Mar 2024 17:13:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711386629; cv=none; b=IxkkQlUiq2phVXHQvCd1/4e7rVlpCOLUGafzrMImo1OKQczHrCtqRbZvdIsxCpX/euBD1IxGlDdOrEhHJjCJcNpSoztFFHqvd2y4I6F6U251Q3HEQS4roenK/WfZ0GbXtnNBoEtyBtpwTykXFIiFNyHAZSxdoRMiu7pGSQEGaPk=
+	t=1711386786; cv=none; b=sFn/VMBYuiAX0JiWkLagkTUvqs5WS4RhSBLlapvqErBVm6NxvxToMDxIHKgruhvYjImTeJwjE5fSc8zcMQ1rT6Sewilz54s6CVekvjZbpMXDj2xBufA7o7mceClXDXbCvLiPJN9U2KEQ5OZq+G1esaUIRuuZ1W6VVuEiyrs0qZA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711386629; c=relaxed/simple;
-	bh=pFp4gPtTDKexn2npyj7o2olGRBQTvM/rJe6ltASYeT0=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=lEHptirc7LtJLgshslA6DvRXZK3K4X8m1r5QSS1keWjaM2O4EVoSzMHWKopkWU0XZUhc0je60P3EMTmTdYNT1M1PKDP0wXjgUkmKDiXuXz7KWog4/e2kfUTVfXZ2+u4z302OCycn5ITKCnxxCo0RAc6359MK0B5SsBTvxgJsGg4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ZHE1u0cm; arc=none smtp.client-ip=209.85.208.171
+	s=arc-20240116; t=1711386786; c=relaxed/simple;
+	bh=0ZhgzFV5Xt/mswqGy6lswxgldIuR6Mr25B7wtDUTbrY=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Pn/L3i4hsXEYj621Ey1ghptJToxff/voKayeDMXFrcG4ZolVq070f5Fs4Ln5fMqvQ1rfTwBa7nVu6mfAijB3I1igdjjPoX4jPvJ4nnjYW6XjMEiuBCIVA7a2SNVyQe01pAq0A/REGQYLZj+h57Cv7TdmQoDjtpoxXSPhhEuuIoc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=LF005WrV; arc=none smtp.client-ip=209.85.167.45
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f171.google.com with SMTP id 38308e7fff4ca-2d687da75c4so54141001fa.0;
-        Mon, 25 Mar 2024 10:10:27 -0700 (PDT)
+Received: by mail-lf1-f45.google.com with SMTP id 2adb3069b0e04-513e10a4083so5134022e87.1;
+        Mon, 25 Mar 2024 10:13:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711386626; x=1711991426; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=BwMLgzH6wnxYe3UAd8y0FxS7cIE9QmN5MqBKxy7JrsM=;
-        b=ZHE1u0cmtj8AcCfjJmjmqX1zSzJ9gFU1R93ERiu1LLRpBp5zNTk3nLPH2DoURHwe/T
-         B6p6T1suif3mHqEWb6Ahs0DIbgjR1epaOsHeJ0hb7T3UhKmuhEx1HPpheBESVFG45vA6
-         PgxS4sw4IsGbJ59ABFHHV3PKBtHte9zgU/9M6nsTjktSks86vkACkYX98fyQpU5W1GEf
-         6aTu5tH5ku8C5vNIVM6PK9V2989+Z2JOwLR9wUKEQ8145THOXOK63CmIlZqNo0LXpiM5
-         ItLPmXB9/C7e4iW/zIyxpRMX5ZTHnWN6BRCMDN60GED3ebl1ZFxYN1Vei3qxIGVxvDIt
-         AUTg==
+        d=gmail.com; s=20230601; t=1711386783; x=1711991583; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=6X1NNxLlcRJ0g+9m4U+W77i//Qg7iE4ilrLW92aE7CM=;
+        b=LF005WrVVtFb1+wnCyhHJR/O4Tu17HjgWqWTjNAX22BHiDn8LRrJh7U9AGR0v2UPT+
+         RNZkfcSoa9fExJAurLDaQTF9eQGdynuaYoFLIwm7BRU1CZ+CEK+s9sFN3daTLWOozAJz
+         WRUer+dAGX2mw601frqOixEB0qxFe72KeXZIbIRdR+92B81MpbtT3265wN46LGszp97L
+         ge46B76q7VvWNywk3lvZJcJdr4bqgy3r5Q47QJw0Lm6sa2fjhsrCXGmfLJKumJL5RgL/
+         S9WtPt8sb6f8wnVwN/hCJY2fwfIVQYJ+zQ/UWIyALzFsAR09xiIf+ZWl2q+koT1LYf5G
+         IVuQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711386626; x=1711991426;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=BwMLgzH6wnxYe3UAd8y0FxS7cIE9QmN5MqBKxy7JrsM=;
-        b=LhgCoA3SQdED7jAra2/QXcxVQi9pHTdr0pYI6C1UUcQ1kI4e+1jRsnHvu68JCMJLPL
-         wCWVlBXljXU0QUbAgfBHXlI3fauIk7tAOd3r+Ku9QAALx5dvDw5ZeM75lOKK147a7SXU
-         AVxv8WBnBUEUytjhJtxu2/dP45NEC7n93ayyp4U5dGI5PlYJwBjfumLi73nTYq0ZAmrM
-         Cfy5iAS2eYxI/XobV9VAmfeOoB+QMZrtvzVg87U5RzlJrd2cHLahez878tPtgKGHAN+9
-         /SCDQV41uvf2Wy3/9AUFM6K8YI3zAcJGw3Oz3qTc7g6rXsrf91/jI2UWVei9ezeFxS8G
-         /oww==
-X-Forwarded-Encrypted: i=1; AJvYcCXcXEwQ1xjnoodfHtqz0pxPkM9XqC00rfnB2PJBrXHkY1mOB9ek7SCjG905U861KqdeDNzirECb8ZR0+KZ2qTOkp7NJ6Chmw0NBJwpeMPID6twXRbEL5VpkYiSM53e2kgw0zX40q4MAQvziFtwgrAqQaGiGBHILp6cRwZrznmlDSPZAeIyC
-X-Gm-Message-State: AOJu0Yy5acxVv9rWSrxG61MJjBYM+KF/lhVuduQqsy6q68QzUvb++3i5
-	8yo5WbdIgaKo27reY7RRNPpAG/gbBjRiOS9bZqnugNuOf4DmEoeJZytP1gRYVKGf2ePXzkgdqsr
-	xT81WdydK7hbiYl+LZtzt+/FE5ZdDtIQWj4E=
-X-Google-Smtp-Source: AGHT+IH0uLBDu+CPcEXoaO/ggiaMnED1lydzcIxcbXNL3AtmSh1RdhO63bQbgK7wy1bO4NKMyxlFdYHjUYZCH/wcP3E=
-X-Received: by 2002:a2e:7804:0:b0:2d6:ab62:2eae with SMTP id
- t4-20020a2e7804000000b002d6ab622eaemr4734300ljc.17.1711386625643; Mon, 25 Mar
- 2024 10:10:25 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1711386783; x=1711991583;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=6X1NNxLlcRJ0g+9m4U+W77i//Qg7iE4ilrLW92aE7CM=;
+        b=J7aC3JGBb/KMne3gSz9uQASHi+lxTGDKMHCc/t9EI3+sWKwnyU/q2Z2frUKpWUXCk7
+         IfF/+wsvE7dssh+en17MepfPqovMNcmPatoGhA0zlm6TuPZ1CpAsGrq21CFOleT9UZ8i
+         XWmFU9c0kzoqW9Mi0XOO8JXjC5HPBvdg1QR9FK7Lj9XGOhSQVuujIPk24cno5QttK4Y2
+         Yr+v5Kib6RQScjrJ7Cn3CLKOJAJmWDoMXfe98Iq9sbgsG3kOzRir/tNGLcz0lAnp1XbI
+         sxoeIeXYrZV8Ej5FNcrJv5jhcQ/cnz8+5sAf3Ukml1neHccCC4HHZrN2OXHCBFZIL9ln
+         Bu8Q==
+X-Forwarded-Encrypted: i=1; AJvYcCVMCAtkZ0Sc4bH3p2CbebsVk8nJ0X+4wMgkQQI/z+gmbVnjag6gQQoAbI8D0AKUqMCMOlSjfU2+CpOta3w8V0bhXas5fxf+FCPRudJTtmn2weawXZMrPET6VBoZ4EYj5c1bdZjXT4Gcx78KXaGQ6cpa+oVtgTsWFyOa
+X-Gm-Message-State: AOJu0YxsfnWC9Yutq+0pim0Fdakca+3hPAsJmmadyN3ro5nfsYUZmgWV
+	aT2J99TYVyqwyHWLZne5FJ9vXWAEbeEFbU7myzj5r+6gkwqKEiyd
+X-Google-Smtp-Source: AGHT+IEMfYysiCUhsoDAJD4rwXSiQC8clzZILdXxljLw1O/gnZYMnp0fL9CFIQ87w0fRRjJ8GC4krg==
+X-Received: by 2002:a19:6406:0:b0:515:a523:d38c with SMTP id y6-20020a196406000000b00515a523d38cmr4000791lfb.63.1711386782887;
+        Mon, 25 Mar 2024 10:13:02 -0700 (PDT)
+Received: from localhost.localdomain ([82.84.234.137])
+        by smtp.gmail.com with ESMTPSA id h4-20020aa7c944000000b0056bdf694890sm3225666edt.43.2024.03.25.10.13.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 25 Mar 2024 10:13:02 -0700 (PDT)
+From: Marco Pinna <marco.pinn95@gmail.com>
+To: stefanha@redhat.com,
+	sgarzare@redhat.com
+Cc: davem@davemloft.net,
+	edumazet@google.com,
+	kuba@kernel.org,
+	pabeni@redhat.com,
+	ggarcia@deic.uab.cat,
+	jhansen@vmware.com,
+	kvm@vger.kernel.org,
+	virtualization@lists.linux.dev,
+	netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Marco Pinna <marco.pinn95@gmail.com>
+Subject: [PATCH] vsock/virtio: fix packet delivery to tap device
+Date: Mon, 25 Mar 2024 18:12:38 +0100
+Message-ID: <20240325171238.82511-1-marco.pinn95@gmail.com>
+X-Mailer: git-send-email 2.44.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240314084412.1127-1-johan+linaro@kernel.org>
- <CABBYNZJV1htg46Gyu=7_iUWdukM+rHLitsLjxmWWYFGXty3tVw@mail.gmail.com>
- <ZfMStHjwtCT1SW3z@hovoldconsulting.com> <964131ff-293d-47d1-8119-a389fa21f385@leemhuis.info>
-In-Reply-To: <964131ff-293d-47d1-8119-a389fa21f385@leemhuis.info>
-From: Luiz Augusto von Dentz <luiz.dentz@gmail.com>
-Date: Mon, 25 Mar 2024 13:10:13 -0400
-Message-ID: <CABBYNZJ0ukd_8=SFzy8CEwgP7hV5unodca0NZ2zDZh+jPJsEFQ@mail.gmail.com>
-Subject: Re: [PATCH] Revert "Bluetooth: hci_qca: Set BDA quirk bit if fwnode
- exists in DT"
-To: Linux regressions mailing list <regressions@lists.linux.dev>
-Cc: Johan Hovold <johan@kernel.org>, Johan Hovold <johan+linaro@kernel.org>, 
-	Marcel Holtmann <marcel@holtmann.org>, linux-bluetooth@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, stable@vger.kernel.org, 
-	Janaki Ramaiah Thota <quic_janathot@quicinc.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-Hi Johan,
+Commit 82dfb540aeb2 ("VSOCK: Add virtio vsock vsockmon hooks") added
+virtio_transport_deliver_tap_pkt() for handing packets to the
+vsockmon device. However, in virtio_transport_send_pkt_work(),
+the function is called before actually sending the packet (i.e.
+before placing it in the virtqueue with virtqueue_add_sgs() and checking
+whether it returned successfully). This may cause timing issues since
+the sending of the packet may fail, causing it to be re-queued
+(possibly multiple times), while the tap device would show the
+packet being sent correctly.
 
-On Mon, Mar 25, 2024 at 9:57=E2=80=AFAM Linux regression tracking (Thorsten
-Leemhuis) <regressions@leemhuis.info> wrote:
->
-> Bluetooth Maintainers, what's...
->
-> On 14.03.24 16:07, Johan Hovold wrote:
-> > On Thu, Mar 14, 2024 at 10:30:36AM -0400, Luiz Augusto von Dentz wrote:
-> >> On Thu, Mar 14, 2024 at 4:44=E2=80=AFAM Johan Hovold <johan+linaro@ker=
-nel.org> wrote:
-> >
-> >>> This reverts commit 7dcd3e014aa7faeeaf4047190b22d8a19a0db696.
-> >>>
-> >>> Qualcomm Bluetooth controllers like WCN6855 do not have persistent
-> >>> storage for the Bluetooth address and must therefore start as
-> >>> unconfigured to allow the user to set a valid address unless one has
-> >>> been provided by the boot firmware in the devicetree.
-> >>>
-> >>> A recent change snuck into v6.8-rc7 and incorrectly started marking t=
-he
-> >>> default (non-unique) address as valid. This specifically also breaks =
-the
-> >>> Bluetooth setup for some user of the Lenovo ThinkPad X13s.
-> >>>
-> >>> Note that this is the second time Qualcomm breaks the driver this way
-> >>> and that this was fixed last year by commit 6945795bc81a ("Bluetooth:
-> >>> fix use-bdaddr-property quirk"), which also has some further details.
-> >>>
-> >>> Fixes: 7dcd3e014aa7 ("Bluetooth: hci_qca: Set BDA quirk bit if fwnode=
- exists in DT")
-> >>> Cc: stable@vger.kernel.org      # 6.8
-> >>> Cc: Janaki Ramaiah Thota <quic_janathot@quicinc.com>
-> >>> Signed-off-by: Johan Hovold <johan+linaro@kernel.org>
-> >>
-> >> Well I guess I will need to start asking for evidence that this works
-> >> on regular Linux distros then, because it looks like that is not the
-> >> environment Janaki and others Qualcomm folks are testing with.
-> >>
-> >> What I probably would consider as evidence is bluetoothd logs showing
-> >> that the controller has been configured correctly or perhaps there is
-> >> a simpler way?
-> >
-> > Well, in this case we actually want the controller to remain
-> > unconfigured (e.g. to avoid having every user of the X13s unknowingly
-> > use the same default address).
-> >
-> > I'm not sure why Qualcomm insists on breaking these quirks, but I guess
-> > they just haven't understood why they exist. It's of course convenient
-> > to be able to use the default address during development without first
-> > having to provide an address, but that's not a valid reason to break th=
-e
-> > driver.
-> >
-> > From what I hear the Qualcomm developers only care about Android and I
-> > believe they have some out-of-tree hack for retrieving the device
-> > address directly from the rootfs.
-> >
-> > For the X13s, and as I think I've mentioned before, we have been trying
-> > to get Qualcomm to tell us how to access the assigned addresses that ar=
-e
-> > stored in some secure world storage so that we can set it directly from
-> > the driver. But until we figure that out, users will need to continue
-> > setting the address manually.
->
-> ...the plan forward here? This to me sounds like a case where a quick
-> revert is the right (interim?) solution, but nevertheless nothing
-> happened for ~10 days now afaics. Or am I missing something?
->
-> Ciao, Thorsten (wearing his 'the Linux kernel's regression tracker' hat)
-> --
-> Everything you wanna know about Linux kernel regression tracking:
-> https://linux-regtracking.leemhuis.info/about/#tldr
-> If I did something stupid, please tell me, as explained on that page.
->
-> #regzbot poke
+Move virtio_transport_deliver_tap_pkt() after calling virtqueue_add_sgs()
+and making sure it returned successfully.
 
-I guess the following is the latest version:
+Fixes: 82dfb540aeb2 ("VSOCK: Add virtio vsock vsockmon hooks")
+Signed-off-by: Marco Pinna <marco.pinn95@gmail.com>
+---
+ net/vmw_vsock/virtio_transport.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-https://patchwork.kernel.org/project/bluetooth/list/?series=3D836664
+diff --git a/net/vmw_vsock/virtio_transport.c b/net/vmw_vsock/virtio_transport.c
+index 1748268e0694..ee5d306a96d0 100644
+--- a/net/vmw_vsock/virtio_transport.c
++++ b/net/vmw_vsock/virtio_transport.c
+@@ -120,7 +120,6 @@ virtio_transport_send_pkt_work(struct work_struct *work)
+ 		if (!skb)
+ 			break;
+ 
+-		virtio_transport_deliver_tap_pkt(skb);
+ 		reply = virtio_vsock_skb_reply(skb);
+ 		sgs = vsock->out_sgs;
+ 		sg_init_one(sgs[out_sg], virtio_vsock_hdr(skb),
+@@ -170,6 +169,8 @@ virtio_transport_send_pkt_work(struct work_struct *work)
+ 			break;
+ 		}
+ 
++		virtio_transport_deliver_tap_pkt(skb);
++
+ 		if (reply) {
+ 			struct virtqueue *rx_vq = vsock->vqs[VSOCK_VQ_RX];
+ 			int val;
+-- 
+2.44.0
 
-Or are you working on a v5?
-
---=20
-Luiz Augusto von Dentz
 
