@@ -1,97 +1,308 @@
-Return-Path: <linux-kernel+bounces-117079-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-117080-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 26ED988A6C4
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 16:35:05 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8AEDA88A6C6
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 16:35:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D5DDE322286
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 15:35:03 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 035681F6240C
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 15:35:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 87AD012C54A;
-	Mon, 25 Mar 2024 13:01:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 71F64129E95;
+	Mon, 25 Mar 2024 13:02:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="Oiw+hr5r"
-Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="gD+0sPYU"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 88BDC5491F
-	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 13:01:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA3A445023;
+	Mon, 25 Mar 2024 13:02:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.9
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711371681; cv=none; b=dUTHxMDnjRiaewwQ3XadfvszlxPS1nVfO4s+ZGE6H5yOzgkuoJCF45gw5UzT/QjCOqUehvpoOMmMTAyRp00niahu8FUfzzgBhcPBBTFJ5Gc75/SqSYi9awqb3aOIr9En+DwdMsw8VX2i3/1w7yh7rIxJwYipHmrpP9A0LyqKzQI=
+	t=1711371735; cv=none; b=gz028qzm+Y1xqdv3udQFgkb7gM/4rT4nu+6bnSP58fPnVP5CwyBrt8xCJMH7E1qa7m6VWx0EBQN9E4bANpBQEhQifUxzbwGiEz6iz98RFb4P6ih53Xi6tjUWgn+RMiDUzX2BPI21joXpQulcbK5Y9SUvyuG64J1bRDEOsnMT20k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711371681; c=relaxed/simple;
-	bh=Jl8zeqekL23lRQDKdX9WM1om9PFZa5CLgdi+FLFFkuM=;
+	s=arc-20240116; t=1711371735; c=relaxed/simple;
+	bh=j9Ny9HDnJILYPm2d9hjYKfvirSHTkmO7Ebt7GQ5GDrA=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=bEbT4DGwxbcQNj+enZc6ak9aWcmHWmbRVY6ZseRTdv/KdFH2dtUaApbK9WQ/gT70FqxNCY6jc/C0dcyDwe/FXaCWrU6kUNkJl1VRmhGQpkvfc08bHIMw0XQTc+7cEO6rYKi1ReGUbl+oD2BgQOqWtmXjhh5qZ9KO7aOvwzSN0D8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=Oiw+hr5r; arc=none smtp.client-ip=65.109.113.108
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
-Received: from localhost (localhost.localdomain [127.0.0.1])
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id ED5CF40E016C;
-	Mon, 25 Mar 2024 13:01:16 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-	header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-	with ESMTP id ksQ5kpI5SPSF; Mon, 25 Mar 2024 13:01:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-	t=1711371672; bh=GCEB1dQnF5fIbuI6zSj2Yk/4XupLJNkzhxrMVpb3WdE=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Oiw+hr5rTkDM1tWJFX+upW8bWM4Nv/0iZ5EzxZgCNSDfSn0i/tVXZYFqICQsDZQR1
-	 YtUe8vdhkw6OLfIZyDcBaYqE6R/iu/S6QYxFkClsyjKygEoH3MEoX8Iy3hK/MsN2Tv
-	 ynR4AbCw/KWCW9bWN3mafMML292zyt9XZCNsblXODc2fkq882rUEn1YbLxj3wzZ8hw
-	 q3nZ3o2f+L7jwBMoydRqqLAkbsI6buKPcze4qCJLJ7NhWk9i0HIBfifHVCAvvdwM9z
-	 vRhF3JoUP2fzTW7m9eSdoHFLGhPCkco2nQozIb6yS4nlOLHzWRVnRPed94R8g9qmlY
-	 0vxWvCzvRZi1P6khnBZdN6xzoQ3sIv6ETR1TTqNWfpwmzIehIkVEC1XBiLnbFp6pSf
-	 nmhE7Jz48To3GWxgB5C4ivzLAols6YLpHT+jZ906htFAcsu/AcgogW3YaFCmH/kGDL
-	 iwuqF6ZfFwXidZhZ/Cs0U4xyyaHsIgmdLuVYKerUZ6P4XEl1UPJUMdcXybf7VtPlXa
-	 UogA27vkUNOTINTcszWPg+RCki0LDb6HhheYORKvA9T4/wlZMhjd4jMnqKGkl7cgkh
-	 kKSVRGYnOoUYcrRuiaWnyIRQ5xduersiZ9H9cec0gY4jur3fuVzoz1zHbQLgPUWQzZ
-	 SBK97JCu7Lb69SdyNHfg59v8=
-Received: from zn.tnic (pd953021b.dip0.t-ipconnect.de [217.83.2.27])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-	(No client certificate requested)
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id B3BE640E0174;
-	Mon, 25 Mar 2024 13:01:08 +0000 (UTC)
-Date: Mon, 25 Mar 2024 14:01:07 +0100
-From: Borislav Petkov <bp@alien8.de>
-To: "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>
-Cc: LKML <linux-kernel@vger.kernel.org>,
-	Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-	X86 ML <x86@kernel.org>
-Subject: Re: [PATCH -v2] x86/CPU/AMD: Improve the erratum 1386 workaround
-Message-ID: <20240325130107.GCZgF1k8FFzNKqyvkK@fat_crate.local>
-References: <20240321120548.22687-1-bp@alien8.de>
- <20240321120548.22687-2-bp@alien8.de>
- <79125c93-285c-43f8-ac05-87c34c99e6bb@maciej.szmigiero.name>
- <20240324200525.GBZgCHhYFsBj12PrKv@fat_crate.local>
- <cfcdae85-8ebd-4723-a15c-8010e6d20d0f@maciej.szmigiero.name>
+	 Content-Type:Content-Disposition:In-Reply-To; b=A7xXf1h0ZDUGptQGwmexuCHWjZs5FkCkTpbf+4PdpyjB+uPtB7OhXIImV9HnCWqnQvViZWYnKczeDEOTwjb6LoWPdH+/xMy4uvwoNb03fkXYmzvp+YN0T7EnGebl6MXMbTBEcVFNXfcv+MJch8+i5vNtfPJNaK4cCEfbU6eFqdE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=gD+0sPYU; arc=none smtp.client-ip=198.175.65.9
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1711371734; x=1742907734;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=j9Ny9HDnJILYPm2d9hjYKfvirSHTkmO7Ebt7GQ5GDrA=;
+  b=gD+0sPYULLWtUioObL/oobFJSjQ09w5Cz1DKFjO15XorEQyQ9KAF4o3r
+   PHquSnEePSbxafKJNk7DzPPMDM8bUJX62NxZJea+e/8F2P+Z/ixdBU5Wh
+   vQAe5jehk8BLCbFcFVJg0KITymtVzhFLiC+aZ1I+Owuw1RNDVjKk+QAJq
+   OXmMcY7soBBfIXTedqTXtj7+8V+tsZMkM13hy/2ULariEgadnhY9fsBBP
+   ArGtjib7jy6iusBdN+fLajcaM7C9YV16rceRjFVmPiVkTq2diAPWqTwC+
+   5nbMXCO4eXkK384hrfnr06DqGLvb7a84PnHLZV/eYz5yNpZbuuhxtGZPm
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11023"; a="28845931"
+X-IronPort-AV: E=Sophos;i="6.07,153,1708416000"; 
+   d="scan'208";a="28845931"
+Received: from fmviesa006.fm.intel.com ([10.60.135.146])
+  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Mar 2024 06:02:13 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,153,1708416000"; 
+   d="scan'208";a="15662363"
+Received: from turnipsi.fi.intel.com (HELO kekkonen.fi.intel.com) ([10.237.72.44])
+  by fmviesa006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Mar 2024 06:02:11 -0700
+Received: from kekkonen.localdomain (localhost [127.0.0.1])
+	by kekkonen.fi.intel.com (Postfix) with SMTP id 7993511FB81;
+	Mon, 25 Mar 2024 15:02:08 +0200 (EET)
+Date: Mon, 25 Mar 2024 13:02:08 +0000
+From: Sakari Ailus <sakari.ailus@linux.intel.com>
+To: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>,
+	Mauro Carvalho Chehab <mchehab@kernel.org>,
+	Hans Verkuil <hverkuil@xs4all.nl>,
+	Umang Jain <umang.jain@ideasonboard.com>,
+	linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] media: v4l2-subdev: Support enable/disable_streams for
+ single-pad subdevs
+Message-ID: <ZgF10EVLrfF7cl57@kekkonen.localdomain>
+References: <20240325-single-pad-enable-streams-v1-1-142e19896a72@ideasonboard.com>
+ <20240325125055.GC23988@pendragon.ideasonboard.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <cfcdae85-8ebd-4723-a15c-8010e6d20d0f@maciej.szmigiero.name>
+In-Reply-To: <20240325125055.GC23988@pendragon.ideasonboard.com>
 
-On Mon, Mar 25, 2024 at 01:45:58PM +0100, Maciej S. Szmigiero wrote:
-> I have tested the updated patch now, including negative test by
-> increasing the required microcode version by 10, and can confirm that
-> this version works properly too.
+Moi,
 
-Thanks, lemme queue it.
+Thanks for the patch.
+
+On Mon, Mar 25, 2024 at 02:50:55PM +0200, Laurent Pinchart wrote:
+> Hi Tomi,
+> 
+> On Mon, Mar 25, 2024 at 02:43:23PM +0200, Tomi Valkeinen wrote:
+> > Currently a subdevice with a single pad, e.g. a sensor subdevice, must
+> > use the v4l2_subdev_video_ops.s_stream op, instead of
+> > v4l2_subdev_pad_ops.enable/disable_streams. This is because the
+> > enable/disable_streams machinery requires a routing table which a subdev
+> > cannot have with a single pad.
+> > 
+> > Implement enable/disable_streams support for these single-pad subdevices
+> > by assuming an implicit stream 0 when the subdevice has only one pad.
+> > 
+> > Signed-off-by: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+> > ---
+> > Even though I did send this patch, I'm not sure if this is necessary.
+> > s_stream works fine for the subdevs with a single pad. With the upcoming
+> > internal pads, adding an internal pad to the subdev will create a
+> > routing table, and enable/disable_streams would get "fixed" that way.
+
+I'd like to get rid of a redundant way to control streaming.
+
+> > 
+> > So perhaps the question is, do we want to support single-pad subdevs in
+> > the future, in which case something like this patch is necessary, or
+> > will all modern source subdev drivers have internal pads, in which
+> > case this is not needed...
+> 
+> I think the latter would be best. I however can't guarantee we won't
+> have valid use cases for (enable|disable)_streams on single-pad subdevs
+> though, so you patch could still be interesting.
+
+Instead of the number of pads, could we use instead the
+V4L2_SUBDEV_FL_STREAMS flag or whether g_routing op is supported to
+determine the need for this?
+
+> 
+> > ---
+> >  drivers/media/v4l2-core/v4l2-subdev.c | 105 ++++++++++++++++++++++------------
+> >  include/media/v4l2-subdev.h           |   4 +-
+> >  2 files changed, 72 insertions(+), 37 deletions(-)
+> > 
+> > diff --git a/drivers/media/v4l2-core/v4l2-subdev.c b/drivers/media/v4l2-core/v4l2-subdev.c
+> > index 4c6198c48dd6..ddc7ed69421c 100644
+> > --- a/drivers/media/v4l2-core/v4l2-subdev.c
+> > +++ b/drivers/media/v4l2-core/v4l2-subdev.c
+> > @@ -2129,21 +2129,33 @@ int v4l2_subdev_enable_streams(struct v4l2_subdev *sd, u32 pad,
+> >  	 * Verify that the requested streams exist and that they are not
+> >  	 * already enabled.
+> >  	 */
+> > -	for (i = 0; i < state->stream_configs.num_configs; ++i) {
+> > -		struct v4l2_subdev_stream_config *cfg =
+> > -			&state->stream_configs.configs[i];
+> >  
+> > -		if (cfg->pad != pad || !(streams_mask & BIT_ULL(cfg->stream)))
+> > -			continue;
+> > -
+> > -		found_streams |= BIT_ULL(cfg->stream);
+> > -
+> > -		if (cfg->enabled) {
+> > +	if (sd->entity.num_pads == 1) {
+> > +		if (sd->enabled_streams) {
+> >  			dev_dbg(dev, "stream %u already enabled on %s:%u\n",
+> > -				cfg->stream, sd->entity.name, pad);
+> > +				0, sd->entity.name, pad);
+> >  			ret = -EALREADY;
+> >  			goto done;
+> >  		}
+> > +
+> > +		found_streams = BIT_ULL(0);
+> > +	} else {
+> > +		for (i = 0; i < state->stream_configs.num_configs; ++i) {
+> > +			struct v4l2_subdev_stream_config *cfg =
+> > +				&state->stream_configs.configs[i];
+> > +
+> > +			if (cfg->pad != pad || !(streams_mask & BIT_ULL(cfg->stream)))
+> > +				continue;
+> > +
+> > +			found_streams |= BIT_ULL(cfg->stream);
+> > +
+> > +			if (cfg->enabled) {
+> > +				dev_dbg(dev, "stream %u already enabled on %s:%u\n",
+> > +					cfg->stream, sd->entity.name, pad);
+> > +				ret = -EALREADY;
+> > +				goto done;
+> > +			}
+> > +		}
+> >  	}
+> >  
+> >  	if (found_streams != streams_mask) {
+> > @@ -2164,13 +2176,17 @@ int v4l2_subdev_enable_streams(struct v4l2_subdev *sd, u32 pad,
+> >  		goto done;
+> >  	}
+> >  
+> > -	/* Mark the streams as enabled. */
+> > -	for (i = 0; i < state->stream_configs.num_configs; ++i) {
+> > -		struct v4l2_subdev_stream_config *cfg =
+> > -			&state->stream_configs.configs[i];
+> > +	if (sd->entity.num_pads == 1) {
+> > +		sd->enabled_streams |= streams_mask;
+> > +	} else {
+> > +		/* Mark the streams as enabled. */
+> > +		for (i = 0; i < state->stream_configs.num_configs; ++i) {
+> > +			struct v4l2_subdev_stream_config *cfg =
+> > +				&state->stream_configs.configs[i];
+> >  
+> > -		if (cfg->pad == pad && (streams_mask & BIT_ULL(cfg->stream)))
+> > -			cfg->enabled = true;
+> > +			if (cfg->pad == pad && (streams_mask & BIT_ULL(cfg->stream)))
+> > +				cfg->enabled = true;
+> > +		}
+> >  	}
+> >  
+> >  done:
+> > @@ -2246,21 +2262,32 @@ int v4l2_subdev_disable_streams(struct v4l2_subdev *sd, u32 pad,
+> >  	 * Verify that the requested streams exist and that they are not
+> >  	 * already disabled.
+> >  	 */
+> > -	for (i = 0; i < state->stream_configs.num_configs; ++i) {
+> > -		struct v4l2_subdev_stream_config *cfg =
+> > -			&state->stream_configs.configs[i];
+> > -
+> > -		if (cfg->pad != pad || !(streams_mask & BIT_ULL(cfg->stream)))
+> > -			continue;
+> > -
+> > -		found_streams |= BIT_ULL(cfg->stream);
+> > -
+> > -		if (!cfg->enabled) {
+> > +	if (sd->entity.num_pads == 1) {
+> > +		if (!sd->enabled_streams) {
+> >  			dev_dbg(dev, "stream %u already disabled on %s:%u\n",
+> > -				cfg->stream, sd->entity.name, pad);
+> > +				0, sd->entity.name, pad);
+> >  			ret = -EALREADY;
+> >  			goto done;
+> >  		}
+> > +
+> > +		found_streams = BIT_ULL(0);
+> > +	} else {
+> > +		for (i = 0; i < state->stream_configs.num_configs; ++i) {
+> > +			struct v4l2_subdev_stream_config *cfg =
+> > +				&state->stream_configs.configs[i];
+> > +
+> > +			if (cfg->pad != pad || !(streams_mask & BIT_ULL(cfg->stream)))
+> > +				continue;
+> > +
+> > +			found_streams |= BIT_ULL(cfg->stream);
+> > +
+> > +			if (!cfg->enabled) {
+> > +				dev_dbg(dev, "stream %u already disabled on %s:%u\n",
+> > +					cfg->stream, sd->entity.name, pad);
+> > +				ret = -EALREADY;
+> > +				goto done;
+> > +			}
+> > +		}
+> >  	}
+> >  
+> >  	if (found_streams != streams_mask) {
+> > @@ -2281,13 +2308,17 @@ int v4l2_subdev_disable_streams(struct v4l2_subdev *sd, u32 pad,
+> >  		goto done;
+> >  	}
+> >  
+> > -	/* Mark the streams as disabled. */
+> > -	for (i = 0; i < state->stream_configs.num_configs; ++i) {
+> > -		struct v4l2_subdev_stream_config *cfg =
+> > -			&state->stream_configs.configs[i];
+> > +	if (sd->entity.num_pads == 1) {
+> > +		sd->enabled_streams &= ~streams_mask;
+> > +	} else {
+> > +		/* Mark the streams as disabled. */
+> > +		for (i = 0; i < state->stream_configs.num_configs; ++i) {
+> > +			struct v4l2_subdev_stream_config *cfg =
+> > +				&state->stream_configs.configs[i];
+> >  
+> > -		if (cfg->pad == pad && (streams_mask & BIT_ULL(cfg->stream)))
+> > -			cfg->enabled = false;
+> > +			if (cfg->pad == pad && (streams_mask & BIT_ULL(cfg->stream)))
+> > +				cfg->enabled = false;
+> > +		}
+> >  	}
+> >  
+> >  done:
+> > @@ -2325,8 +2356,12 @@ int v4l2_subdev_s_stream_helper(struct v4l2_subdev *sd, int enable)
+> >  	 */
+> >  	state = v4l2_subdev_lock_and_get_active_state(sd);
+> >  
+> > -	for_each_active_route(&state->routing, route)
+> > -		source_mask |= BIT_ULL(route->source_stream);
+> > +	if (sd->entity.num_pads == 1) {
+> > +		source_mask = BIT_ULL(0);
+> > +	} else {
+> > +		for_each_active_route(&state->routing, route)
+> > +			source_mask |= BIT_ULL(route->source_stream);
+> > +	}
+> >  
+> >  	v4l2_subdev_unlock_state(state);
+> >  
+> > diff --git a/include/media/v4l2-subdev.h b/include/media/v4l2-subdev.h
+> > index a9e6b8146279..39b230f7b3c8 100644
+> > --- a/include/media/v4l2-subdev.h
+> > +++ b/include/media/v4l2-subdev.h
+> > @@ -1041,8 +1041,8 @@ struct v4l2_subdev_platform_data {
+> >   *		  v4l2_subdev_init_finalize().
+> >   * @enabled_streams: Bitmask of enabled streams used by
+> >   *		     v4l2_subdev_enable_streams() and
+> > - *		     v4l2_subdev_disable_streams() helper functions for fallback
+> > - *		     cases.
+> > + *		     v4l2_subdev_disable_streams() helper functions. This is
+> > + *		     for fallback cases and for subdevs with single pads.
+> >   *
+> >   * Each instance of a subdev driver should create this struct, either
+> >   * stand-alone or embedded in a larger struct.
+> > 
+> > ---
+> > base-commit: e8f897f4afef0031fe618a8e94127a0934896aba
+> > change-id: 20240325-single-pad-enable-streams-32a9a746ac5b
+> 
 
 -- 
-Regards/Gruss,
-    Boris.
+Terveisin,
 
-https://people.kernel.org/tglx/notes-about-netiquette
+Sakari Ailus
 
