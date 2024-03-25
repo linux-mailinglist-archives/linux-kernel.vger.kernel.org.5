@@ -1,184 +1,186 @@
-Return-Path: <linux-kernel+bounces-117614-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-117609-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 96E4588AD3F
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 19:12:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 6EE1088AD25
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 19:10:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BAD361C219B6
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 18:12:20 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 92EA11C3C7F1
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 18:10:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C193A133420;
-	Mon, 25 Mar 2024 17:40:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C295E13247D;
+	Mon, 25 Mar 2024 17:34:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ehuk.net header.i=@ehuk.net header.b="qiN0qqHF"
-Received: from james.steelbluetech.co.uk (james.steelbluetech.co.uk [78.40.151.100])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PMMvTKAx"
+Received: from mail-yw1-f178.google.com (mail-yw1-f178.google.com [209.85.128.178])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F3E59132C0D;
-	Mon, 25 Mar 2024 17:40:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=78.40.151.100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5AC5362A02;
+	Mon, 25 Mar 2024 17:34:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711388418; cv=none; b=XPcbQtBvushym7TjgUM5rw4dNF9v0kLbOQmFxjzz7hPpCZQhELPQHnvWUg8aLO0YPfcQqJ0UNJBEmNBlWB1sVIUOp5zhGUp8EAhwsw1E/1nhnDxslLKmJ5RAu2MNuS9A+YQBiRYMkaMv+d3gkJbff+KZVQA7tPtjBCm8UilJsHg=
+	t=1711388066; cv=none; b=lbO0/IfcL2mEcKFuCCtFxKFJD23JINgI7dNpoTVIi2XSCSbIAJA8uTEdU2uxHWRTFNKhDxRUEQyJi4WpFMPDKS43OIGSOhxC3I9M4bxIlCTHlSZb+zkpEE8aru25qvniVwU8KrrkO16n2oZfL9inFlWSYzqKOnB3zFd5hxv9oAA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711388418; c=relaxed/simple;
-	bh=smFYDSH9B5YUSASHKg2uLIGlrU36nGJWynip0XRYKPI=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=dqBgecYTgyyPKNr60UnV7Tw0+sYksYTrIBEiaxVH22yJiRAHPx9E3IYoVSGesqGx6r9eEvs0vJElE2wH/AgYpG0buj3n5iupXrSr9X+3nuDfTotMdwMrD02gheH/rLySI923jH0QdcGtsoQFraaNi8m9ML7ty95yUvUiEbBblZ4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ehuk.net; spf=pass smtp.mailfrom=ehuk.net; dkim=pass (2048-bit key) header.d=ehuk.net header.i=@ehuk.net header.b=qiN0qqHF; arc=none smtp.client-ip=78.40.151.100
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ehuk.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ehuk.net
-Received: from [10.0.5.25] (tv.ehuk.net [10.0.5.25])
-	by james.steelbluetech.co.uk (Postfix) with ESMTP id BB093BFC18;
-	Mon, 25 Mar 2024 17:32:42 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.10.3 james.steelbluetech.co.uk BB093BFC18
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ehuk.net; s=default;
-	t=1711387962; bh=jEA45GxcfxPwikJuID7WzQ1xMUTGgZSJQcil0hACI9k=;
-	h=Date:Reply-To:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=qiN0qqHFeISwY8Sr7Bw5ZDZ1UzFARHSWUL9hgVxRlFXNynwWIfNaD7QCctSJPn4YA
-	 D0OlxS85ufFXs9iY3qkWzDmLJDZSUg6iRqSIjGe6y+Lf507qyIQrFSbV9qv2U2Ogm/
-	 WXy17rBbnyluHMPqm80ZmnaVcuhAepO8E+NqUDtkWgaso2wJrL0uW4etdpzyTaMDGo
-	 1LZN7QYfa3h7gxcKxvcO1ogZQajUW1ljLi6QBbS4LmyHeJGyygsMDauMTv7yqSbh5e
-	 DeLSLmXSVlAR6heJXAOfkF7w1+QUp3wkT3/OqUGPiNx30iCZJw0BW4anlaNPsIpfKd
-	 6KW1OfKSZF+pg==
-Message-ID: <30b3729c-d8ab-4254-8cc4-b5ca3bbe1a59@ehuk.net>
-Date: Mon, 25 Mar 2024 17:32:42 +0000
+	s=arc-20240116; t=1711388066; c=relaxed/simple;
+	bh=IyLfgGbcXo+iMp57mJ4Zi44P1XLcuNEIFvnCYa2iwcw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=tdH3vyu+UET7SMDFKL7cdua05NQdRg4FDP7xM6Asahee04cgxosjmWqBFrjVNYMsWFs/mFyjgx1odjWIEivUZmdYjArskBP6OLc7yyl5lREloJNxNrov4WiKQTiEuuWlzhRmx1IPR/O7xhq9nAWh3eCYxUmQpdTz92fcxPcIoJs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=PMMvTKAx; arc=none smtp.client-ip=209.85.128.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yw1-f178.google.com with SMTP id 00721157ae682-6114c9b4d83so12656987b3.3;
+        Mon, 25 Mar 2024 10:34:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1711388064; x=1711992864; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:feedback-id:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=0Z1q/4B6HZUcPPwvqc/E0mzOzgVa7O8gmXhiV8qGFNc=;
+        b=PMMvTKAxAg2MXXAqTVYOuYShIYRoZeNU9/x9z80WZ+NgknRK8abgqa0VvFLpSOfk/O
+         SO9PFVoMywOj1Px+XMoFv0fhxyLLHJy089knkBV5mm91oXMzO3jFQWsOC/P1jY9nYtrM
+         XLKO5DPVYwPpTsbTRbwSW/9GsKf4YfxNmWeB8FCdl7Sawd2j+A6IJrh/7xYI4odQWiUs
+         STdBblMX3VO59z72xeZ1NXMoptM1IRyxrnqxdk5G4nKzrcz3/vc/N3zKrxotKuZuDGKf
+         WFiUiXZSD8aWqolbljGLHW8Q/eltwN4JjdUlmrhoyOgXBmSU8I8lvluwHi70UoHdwi2P
+         3YRQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711388064; x=1711992864;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:feedback-id:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=0Z1q/4B6HZUcPPwvqc/E0mzOzgVa7O8gmXhiV8qGFNc=;
+        b=Q3ldMd5FRWhc1f3wOF8CF7vp1OxywqQmP4F7woZgyIB1Nen/VGX3Wye1bagb5gniLq
+         zaeK0jlFyZECvmpswaQzoN5C80TR6S5QQt4cAUzlP4/JLywQGwhuVPNbMiFNN+HnD3Df
+         pLtdyOZ/sNzX33dS3czAOJiU6cJkrTkfUFbbg/IB3g/H7t6xb1LlLMHGc5/bun2IYBCV
+         cKzX96V0iNZEOmANUbYhQF7U6HkwSUBvBdPS2rSkRKgyyZT53affrCr9yIK3HdVtqizx
+         +BCPIjoIPhoSmYjmUuYlZn/tcgqplvuYN93kNNAwaLabZE9Z92ANB6UNiFfa1TC+gshY
+         NHkg==
+X-Forwarded-Encrypted: i=1; AJvYcCV0By0uaF4fmgJjsnlGNExdcgPist0ESgADvdtZ7jDo2lFyY9wVPZveoLQJLAT3+NMsw3qsfflUhxrUPy8vyzXq8TVUAGXkb9lsL2h1
+X-Gm-Message-State: AOJu0Yzex0AHU+gWpxr53vDzCqw+HBWiKcilSLWeTNZKKa+44KqDelbp
+	x9CvedykaxlYs0iQmif7a8tni9Vc9lDR07sM2UIqHOSxh2ZrmZjP
+X-Google-Smtp-Source: AGHT+IHY4U5VRneiw9e3Lo2PZKlPyH54/Unwa8yFYYs0rDRBa6PVHIXRiEK18Eg7yx7kkctQhY6ASA==
+X-Received: by 2002:a05:690c:c07:b0:611:30d8:9fcf with SMTP id cl7-20020a05690c0c0700b0061130d89fcfmr6365038ywb.31.1711388064354;
+        Mon, 25 Mar 2024 10:34:24 -0700 (PDT)
+Received: from fauth2-smtp.messagingengine.com (fauth2-smtp.messagingengine.com. [103.168.172.201])
+        by smtp.gmail.com with ESMTPSA id t11-20020a05621421ab00b00696903f7d25sm1084625qvc.28.2024.03.25.10.34.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 25 Mar 2024 10:34:23 -0700 (PDT)
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+	by mailfauth.nyi.internal (Postfix) with ESMTP id 6DC831200068;
+	Mon, 25 Mar 2024 13:34:23 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute5.internal (MEProxy); Mon, 25 Mar 2024 13:34:23 -0400
+X-ME-Sender: <xms:n7UBZg97nRd4EKfw9kfmuEISlrOQbU5YSxo5D2NyVKdlY7IJ4RTvHg>
+    <xme:n7UBZov7ZkY8N6weG-JRkDGJOhWlS7OoqWwuBypXH8N6Js0zxERGYdvAA20ENSbUV
+    KK2dqDATOT3EfUnKQ>
+X-ME-Received: <xmr:n7UBZmBUXOXLDj2ifVm3ckjUTtdNAXcl4dMmIN5cNITKk9ej1lHzkrapx7ZgYQ>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrudduuddggedvucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvfevuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepuehoqhhu
+    nhcuhfgvnhhguceosghoqhhunhdrfhgvnhhgsehgmhgrihhlrdgtohhmqeenucggtffrrg
+    htthgvrhhnpeehudfgudffffetuedtvdehueevledvhfelleeivedtgeeuhfegueeviedu
+    ffeivdenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
+    gsohhquhhnodhmvghsmhhtphgruhhthhhpvghrshhonhgrlhhithihqdeiledvgeehtdei
+    gedqudejjeekheehhedvqdgsohhquhhnrdhfvghngheppehgmhgrihhlrdgtohhmsehfih
+    igmhgvrdhnrghmvg
+X-ME-Proxy: <xmx:n7UBZgeZgelMsMqlzKT4DI4KRzF_BqpUVeJ3KdXw_GP53N8ZTDPgVA>
+    <xmx:n7UBZlM2YjyNcodl534nfOIgHi-2DDHPQV66DFR1Y2wQEQkRsAccMg>
+    <xmx:n7UBZqlPCoKEVNIw-dhwm785RUvJ1a1lwNRihLBL1J76uZZXu2yvPQ>
+    <xmx:n7UBZntSXxI4vTppAcyvZo_4x_Mg6CcozjWoWWDehWSiHef98h9s9w>
+    <xmx:n7UBZooJW2FBaxaVbb7qMH3Zu0UZy_fir3dU6x1is7gqy0oZbNdLGco4_bw>
+Feedback-ID: iad51458e:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
+ 25 Mar 2024 13:34:22 -0400 (EDT)
+Date: Mon, 25 Mar 2024 10:33:52 -0700
+From: Boqun Feng <boqun.feng@gmail.com>
+To: Johannes Berg <johannes@sipsolutions.net>
+Cc: rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
+	"Paul E. McKenney" <paulmck@kernel.org>,
+	Frederic Weisbecker <frederic@kernel.org>,
+	Josh Triplett <josh@joshtriplett.org>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Dan Carpenter <dan.carpenter@linaro.org>
+Subject: Re: [PATCH] rcu: mollify sparse with RCU guard
+Message-ID: <ZgG1gO9gRJFluTFy@boqun-archlinux>
+References: <20240325101626.41584-2-johannes@sipsolutions.net>
+ <ZgGnuFJiTX5laS7c@boqun-archlinux>
+ <055111792727869a98c1fa693014e0b6f5d256ea.camel@sipsolutions.net>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Reply-To: eddie@ehuk.net
-Subject: Re: [PATCH 6.1 000/451] 6.1.83-rc1 review
-To: Sasha Levin <sashal@kernel.org>, linux-kernel@vger.kernel.org,
- stable@vger.kernel.org
-Cc: torvalds@linux-foundation.org, akpm@linux-foundation.org,
- linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
- lkft-triage@lists.linaro.org, florian.fainelli@broadcom.com, pavel@denx.de
-References: <20240324231207.1351418-1-sashal@kernel.org>
-Content-Language: en-GB
-From: Eddie Chapman <eddie@ehuk.net>
-In-Reply-To: <20240324231207.1351418-1-sashal@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <055111792727869a98c1fa693014e0b6f5d256ea.camel@sipsolutions.net>
 
-On 24/03/2024 23:04, Sasha Levin wrote:
+On Mon, Mar 25, 2024 at 05:41:22PM +0100, Johannes Berg wrote:
+> On Mon, 2024-03-25 at 09:35 -0700, Boqun Feng wrote: 
+> > > -DEFINE_LOCK_GUARD_0(rcu, rcu_read_lock(), rcu_read_unlock())
+> > > +DEFINE_LOCK_GUARD_0(rcu, do { rcu_read_lock(); __release(RCU); } while(0), rcu_read_unlock())
+> > >  
+> > 
+> > Hmm.. not a big fan of this. __release(RCU) following a rcu_read_lock()
+> > is really confusing. Maybe we can introduce a _rcu_read_lock():
+> > 
+> > 	void _rcu_read_lock(bool guard) {
+> > 		__rcu_read_lock();
+> > 		// Skip sparse annotation in "guard(rcu)()" to work
+> > 		// around sparse's lack of support of cleanup.
+> > 		if (!guard)
+> > 			__acquire(RCU);
+> > 		rcu_lock_acquire(...);
+> > 		...
+> > 	}
+> > 
+> > and normal rcu_read_lock() is just a _rcu_read_lock(false), RCU guard is
+> > a _rcu_read_lock(true)?
 > 
-> This is the start of the stable review cycle for the 6.1.83 release.
-> There are 451 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+> Not sure I see any value in that, that's pretty much equivalent but
+> seems IMHO less specific, where here we know we really want this only in
+> this case. I don't see any other case where we'd want to ever "call"
+> _rcu_read_lock(true).
 > 
-> Responses should be made by Tue Mar 26 11:11:59 PM UTC 2024.
-> Anything received after that time might be too late.
+> Also __acquire()/__release() are just empty macros without __CHECKER__.
+> So not sure the indirection really is warranted for this special case.
 > 
-> The whole patch series can be found in one patch at:
->          https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git/patch/?id=linux-6.1.y&id2=v6.1.82
-> or in the git tree and branch at:
->          git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.1.y
-> and the diffstat can be found below.
+
+Fair enough.
+
+> I can add a comment in there, I guess, something like
 > 
-> Thanks,
-> Sasha
+>  /* sparse doesn't actually "call" cleanup functions */
+> 
 
-Greg & Sasha, thanks for all your hard work.
+Yeah, that's helpful.
 
-Just to report I upgraded eight x86-64 machines from a 5.15.x kernel to 
-6.1.82 plus all patches in the stable queue as of Saturday 23rd March 
-11pm GMT. That's the vast majority of this series as Greg & Sasha have 
-dropped a dozen or so and added 68 new since I built my kernel. Ha ha 
-what fun living on the edge :-)
+> perhaps. That reminds me I forgot to CC Dan ...
+> 
+> > But before that how does it looks if we don't fix this entirely? ;-)
+> 
+> Well basically every time you write
+> 
+> void myfunc(void)
+> {
+>   guard(rcu)();
+>   ...
+> }
+> 
+> sparse will complain about mismatched locks, which is _really_ annoying
+> for e.g. networking where there's (a) a kind of "no new warnings" rule,
+> and (b) sparse is actually important for all the endian annotations etc.
+> 
+> Which right now means that we can't use all this new machinery, which is
+> a shame.
+> 
 
-All are running fine 24+ hrs later, no noticeable issues, nothing 
-untoward in dmesg.
+Indeed.
 
-They are:
-6 x custom AMD Ryzen servers
-1 x Intel IvyBridge era server
-1 x Intel Skylake era laptop
+Regards,
+Boqun
 
-All running various workloads and with a mixture of addon 
-network/sas/sata/graphics cards from a variety of manufacturers. Some 
-uefi booted, some bios booted.
-
-Also zero warnings in the build output using gcc 13.2.1.
-
-Just to be clear, the 68 patches listed below, which are in this series, 
-were NOT in the kernel I tested.
-
-Eddie
-
-arm64-dts-broadcom-bcmbca-bcm4908-drop-invalid-switc.patch
-asoc-rockchip-i2s-tdm-fix-inaccurate-sampling-rates.patch
-bpf-report-rcu-qs-in-cpumap-kthread.patch
-comedi-comedi_test-prevent-timers-rescheduling-during-deletion.patch
-dm-address-indent-space-issues.patch
-dm-integrity-align-the-outgoing-bio-in-integrity_rec.patch
-dm-integrity-fix-a-memory-leak-when-rechecking-the-d.patch
-dm-io-support-io-priority.patch
-drm-fix-drm_fixp2int_round-making-it-add-0.5.patch
-hsr-fix-uninit-value-access-in-hsr_get_node.patch
-hsr-handle-failures-in-module-init.patch
-hwtracing-hisi_ptt-move-type-check-to-the-beginning-.patch
-ipv4-raw-fix-sending-packets-from-raw-sockets-via-ip.patch
-kconfig-fix-infinite-loop-when-expanding-a-macro-at-.patch
-net-bnx2x-prevent-access-to-a-freed-page-in-page_poo.patch
-net-dsa-mt7530-fix-handling-of-all-link-local-frames.patch
-net-dsa-mt7530-fix-link-local-frames-that-ingress-vl.patch
-net-dsa-mt7530-prevent-possible-incorrect-xtal-frequ.patch
-net-ethernet-mtk_eth_soc-fix-ppe-hanging-issue.patch
-net-mediatek-mtk_eth_soc-clear-mac_mcr_force_link-on.patch
-net-octeontx2-use-alloc_ordered_workqueue-to-create-.patch
-net-phy-fix-phy_read_poll_timeout-argument-type-in-g.patch
-net-report-rcu-qs-on-threaded-napi-repolling.patch
-net-sched-taprio-proper-tca_taprio_tc_entry_index-ch.patch
-net-veth-do-not-manipulate-gro-when-using-xdp.patch
-netfilter-nf_tables-do-not-compare-internal-table-fl.patch
-netfilter-nft_set_pipapo-release-elements-in-clone-o.patch
-nouveau-reset-the-bo-resource-bus-info-after-an-evic.patch
-nvme-add-the-apple-shared-tag-workaround-to-nvme_all.patch
-nvme-fix-reconnection-fail-due-to-reserved-tag-alloc.patch
-nvme-only-set-reserved_tags-in-nvme_alloc_io_tag_set.patch
-octeontx2-af-add-mbox-for-cpt-lf-reset.patch
-octeontx2-af-add-mbox-to-return-cpt_af_flt_int-info.patch
-octeontx2-af-optimize-cpt-pf-identification.patch
-octeontx2-af-recover-cpt-engine-when-it-gets-fault.patch
-octeontx2-af-use-matching-wake_up-api-variant-in-cgx.patch
-octeontx2-af-use-separate-handlers-for-interrupts.patch
-octeontx2-detect-the-mbox-up-or-down-message-via-reg.patch
-octeontx2-pf-send-up-messages-to-vf-only-when-vf-is-.patch
-octeontx2-pf-use-default-max_active-works-instead-of.patch
-packet-annotate-data-races-around-ignore_outgoing.patch
-rcu-add-a-helper-to-report-consolidated-flavor-qs.patch
-rds-introduce-acquire-release-ordering-in-acquire-re.patch
-rds-tcp-fix-use-after-free-of-net-in-reqsk_timer_han.patch
-remoteproc-stm32-fix-incorrect-optional-pointers.patch
-remoteproc-stm32-fix-incorrect-type-assignment-retur.patch
-remoteproc-stm32-fix-incorrect-type-in-assignment-fo.patch
-remoteproc-stm32-use-correct-format-strings-on-64-bi.patch
-rtc-mt6397-select-irq_domain-instead-of-depending-on.patch
-s390-vtime-fix-average-steal-time-calculation.patch
-sched-fair-take-the-scheduling-domain-into-account-i.patch
-selftests-forwarding-fix-ping-failure-due-to-short-t.patch
-serial-8250_exar-don-t-remove-gpio-device-on-suspend.patch
-serial-max310x-fix-syntax-error-in-irq-error-message.patch
-soc-fsl-dpio-fix-kcalloc-argument-order.patch
-spi-spi-mt65xx-fix-null-pointer-access-in-interrupt-.patch
-staging-greybus-fix-get_channel_from_mode-failure-pa.patch
-tcp-fix-new_syn_recv-handling-in-inet_twsk_purge.patch
-tcp-fix-refcnt-handling-in-__inet_hash_connect.patch
-tty-serial-samsung-fix-tx_empty-to-return-tiocser_te.patch
-tty-vt-fix-20-vs-0x20-typo-in-escsiignore.patch
-usb-gadget-net2272-use-irqflags-in-the-call-to-net22.patch
-usb-phy-generic-get-the-vbus-supply.patch
-vdpa-mlx5-allow-cvq-size-changes.patch
-vdpa_sim-reset-must-not-run.patch
-wireguard-receive-annotate-data-race-around-receivin.patch
-x86-efistub-clear-decompressor-bss-in-native-efi-ent.patch
-x86-efistub-don-t-clear-bss-twice-in-mixed-mode.patch
+> johannes
 
