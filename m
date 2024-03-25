@@ -1,164 +1,152 @@
-Return-Path: <linux-kernel+bounces-117277-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-117278-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 97A2688B47B
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 23:48:47 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 793A688A98B
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 17:36:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 27EADC465D1
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 16:36:33 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1D795341870
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 16:36:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A6B0D16A996;
-	Mon, 25 Mar 2024 14:42:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C0F1116EBF7;
+	Mon, 25 Mar 2024 14:42:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="f2PqZj6f"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="DOfmjgT9";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="H7mY1Ult"
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4DB8815FCEB
-	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 14:42:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 867C916E89E
+	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 14:42:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711377751; cv=none; b=RBSYGR4S31RG75wmlpCgPi3fA64d5H4o5HRPNE529js90ne0qREmyXk8T/l+fCgjVc+pKMUoNhQxPxUL06Se9JMfTahR9pi1sbPfQlp32cD30mC0GhBh7x0ybWhEZrixJsgaDKDItJNAZ9mouu6nDQ2fOOsum2+2xCKJy3sJA98=
+	t=1711377756; cv=none; b=uxrlVZ5Wrvts81We0n9Nhr3QhDbMf+6EoOoT01RD6nVKAN0DJTClaB+FfFGQhEnqED+L4udCLbdi+vhw19cas89xNqqzdPruGg7wCr37/vDjBX/og4mit/ZqHca9WXNx7eboRPUxAluCabPk+wRrLRYgzc6AVgV/YFqFZEOmXNQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711377751; c=relaxed/simple;
-	bh=DYlADzUbU1di/2H68CYRl4rnSbo9j2jMOM39IJaayg4=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=ofzN8yV7U6TlvqeMKXOqD2LQICIwNO/zjz3z41e5DxnquzVEEnyvFPZfDJMsBuskIlWscZfyGxTgRU2x8rCf1Q4Deqwrk/oxtKpMgbeIs9xXT2r4bXZENP94OYeJHJEBDgHVFJVsh8bkLXhYBoTCE8oVtkAxO52xTaH7GDOZJME=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=f2PqZj6f; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1711377749;
+	s=arc-20240116; t=1711377756; c=relaxed/simple;
+	bh=lsAQp3ERS44ME+2Xi8BayjvKDLe8qjYX01IIerraZD8=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=d2wwEoKvQ5sVqOzx7sxtD+Tivqh0O3WiM5VQaJ2ZYQXC78E+pqxuu+lFLUhGaaTWulmHGhm8Uzsbj2DMUaV7yPiJvFvl+GHyUh20CaCM9LCG/Cj/8dp2S1/EPPhb85owmxUFi5sA+k0bkrVUCfs5t77RFeBEA3D7LXUIdC6lG10=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=DOfmjgT9; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=H7mY1Ult; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+From: Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1711377752;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=f/cLCtEJf6Rixzsx98pU0iIcSCtTUmNBzmxhoeo32yw=;
-	b=f2PqZj6fT5zyzHlcRLLM2Uc6lMISJWt6ISV6Mq2jiWNIynqRgRvjNOfV5uGBqstjK/9ReC
-	VVYb9muKEh76MjHzXwk/DsBdu9qk91id8A/T/30iLJysk19E9miHuxcNtiudqAP+Z6HOT3
-	rA8yaftuvr/U63J5ZYVrjO5dM56KxTk=
-Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
- [209.85.208.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-381-meuXbFfwMNiTtNSI6CZ_RQ-1; Mon, 25 Mar 2024 10:42:27 -0400
-X-MC-Unique: meuXbFfwMNiTtNSI6CZ_RQ-1
-Received: by mail-ed1-f70.google.com with SMTP id 4fb4d7f45d1cf-568a9f3ba97so2583467a12.1
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 07:42:27 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711377746; x=1711982546;
-        h=content-transfer-encoding:in-reply-to:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=f/cLCtEJf6Rixzsx98pU0iIcSCtTUmNBzmxhoeo32yw=;
-        b=gZxMfIbuDhLYUN3PJjmb30/Ws1k0Hca4OTh/6LEI1PCGioQVp+qXg8Ja4pFweEwqao
-         wFfHbVhGXxufTUdKTUonqTMKhKrXb/YTdZwkxtyhVjTzjLrXH8KaihCQLlGmEMb1fNF8
-         X6wH0RxToGKpoVYNUhCKOVbNcdsIgurZqpS0yfNtXl7K7OmLfGGOCfT4IOlT8ZOJoxwE
-         4TMBGEvBVZKwsLjPzmumT2VbcQg3Xn0jOrA+gHfrQ15CbjmNkxwMYbLzqHgWvuRrDP0O
-         OugVlcRy1j7tmWy9qYTSVapAyzPQiiQbbrvmUjAdWbr53g7qP10irbUGGoZ9aqEEMdTl
-         k7SQ==
-X-Forwarded-Encrypted: i=1; AJvYcCV1jaVTHkfwPd6NN4PH86cU8oLWLNLzhnJofAyQv7D2XN/VelKQsLgkph4l+zJJF8Ed01NR1J6BgPCKUKvtIBwXSCe196Kw4FM/EgKs
-X-Gm-Message-State: AOJu0YxDbBwvCyp6p97/DGWCCHw4Xg4TJ0PvG7e1FYiY/KsG0q/lC/AS
-	y602EO7ERxXNOjkEP2okDVCb/KseNVtJy+3ZrHf9WfPLgScC0fhk34p0fMdcZj1AWul41sk+WTp
-	6BIIZZCiyKIkoH3aALQmkuzok9fLuyr8xaKiTQ3i+EDWHdoIL/7HM7/MDMJjVcw==
-X-Received: by 2002:a50:cd1a:0:b0:56b:cf40:f712 with SMTP id z26-20020a50cd1a000000b0056bcf40f712mr4668253edi.19.1711377746513;
-        Mon, 25 Mar 2024 07:42:26 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IE1y2OwdHo0pZWiekVXudlRme8momwGYarO2R5s8yxbc4GL8LbOcr9Diqsfq3IHC+9vYc/fkQ==
-X-Received: by 2002:a50:cd1a:0:b0:56b:cf40:f712 with SMTP id z26-20020a50cd1a000000b0056bcf40f712mr4668245edi.19.1711377746329;
-        Mon, 25 Mar 2024 07:42:26 -0700 (PDT)
-Received: from ?IPV6:2001:1c00:c32:7800:5bfa:a036:83f0:f9ec? (2001-1c00-0c32-7800-5bfa-a036-83f0-f9ec.cable.dynamic.v6.ziggo.nl. [2001:1c00:c32:7800:5bfa:a036:83f0:f9ec])
-        by smtp.gmail.com with ESMTPSA id g7-20020a056402320700b0056c0996bf72sm1794239eda.83.2024.03.25.07.42.25
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 25 Mar 2024 07:42:25 -0700 (PDT)
-Message-ID: <407f241f-e185-4586-9f75-9beb73902870@redhat.com>
-Date: Mon, 25 Mar 2024 15:42:25 +0100
+	bh=6h6lGRc26CvpJhmCYM8Lh4xDDFxGLIelD6+6GfqS57c=;
+	b=DOfmjgT9IrlClC+WCCW+GyBQZPaJmcVRGMeZb2YIW9fD8EvznnXy4MPB8VNA5yw5aMwJM8
+	qRmBy7CFUf9oz+cJ/oCJkJafgzzwO6xfSQZZX+fzJ1Kfs5u1T2MHJLh8mn/ceedytZlC/p
+	NkUrXiqfUWRbL8N1Q2Lo4xUZgQTaNcmVqbPu2NyzG2gNEnRVS0zorovAT9zWjNsNpfsbIi
+	2JTzFO0EpNzhL3bkWSBUttOUPRvjyKZk2PGcH7hgfvdIgyX7Cd1g0igYV8cqUlC/cN7Uut
+	RVg7CK/mrqnZqxbv4LTH1aSrTz14RY31bjqwP01U/kjPvt07ZnHo9GcXHVa3uA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1711377752;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=6h6lGRc26CvpJhmCYM8Lh4xDDFxGLIelD6+6GfqS57c=;
+	b=H7mY1UltKDDHbG9M5CMnYCmPRtkGA8iktO2yS9nlhRLf3sSOwBW3QDq5q1rP+SJL5JZQCy
+	tB47ga5WQThJs6AA==
+To: Saurabh Singh Sengar <ssengar@linux.microsoft.com>
+Cc: dave.hansen@linux.intel.com, luto@kernel.org, peterz@infradead.org,
+ mingo@redhat.com, bp@alien8.de, x86@kernel.org, hpa@zytor.com,
+ linux-kernel@vger.kernel.org, ssengar@microsoft.com,
+ sgeorgejohn@microsoft.com
+Subject: Re: [PATCH] x86/numa: Map NUMA node to CPUs as per DeviceTree
+In-Reply-To: <20240324162833.GA18417@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
+References: <1710265404-23146-1-git-send-email-ssengar@linux.microsoft.com>
+ <87v85bfzg0.ffs@tglx>
+ <20240324162833.GA18417@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
+Date: Mon, 25 Mar 2024 15:42:32 +0100
+Message-ID: <87jzlqfk4n.ffs@tglx>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1] platform/x86: asus-wmi: use sysfs_emit() instead of
- sprintf()
-Content-Language: en-US, nl
-To: Ai Chao <aichao@kylinos.cn>, corentin.chary@gmail.com, luke@ljones.dev,
- ilpo.jarvinen@linux.intel.com, platform-driver-x86@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <20240319055636.150289-1-aichao@kylinos.cn>
-From: Hans de Goede <hdegoede@redhat.com>
-In-Reply-To: <20240319055636.150289-1-aichao@kylinos.cn>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 
-Hi,
+On Sun, Mar 24 2024 at 09:28, Saurabh Singh Sengar wrote:
+> I recognize that due to recent changes, each dtb platform will now need to set
+> a pointer for x86_init.mpparse.early_parse_smp_cfg to get the dtb_cpu_setup
+> executed.
 
-On 3/19/24 6:56 AM, Ai Chao wrote:
-> This changes all *_show attributes in asus-wmi.c to use sysfs_emit()
-> instead of the older method of writing to the output buffer manually.
-> 
-> Follow the advice in Documentation/filesystems/sysfs.rst:
-> show() should only use sysfs_emit() or sysfs_emit_at() when formatting
-> the value to be returned to user space.
-> 
-> Signed-off-by: Ai Chao <aichao@kylinos.cn>
+No. DT does not need the early parse call. The early parse call _cannot_
+enumerate APICs.
 
-Thank you for your patch, I've applied this patch to my review-hans 
-branch:
-https://git.kernel.org/pub/scm/linux/kernel/git/pdx86/platform-drivers-x86.git/log/?h=review-hans
+> This was not the requirement before because earlier x86_dtb_init was
+> anyway getting called.
 
-Note it will show up in my review-hans branch once I've pushed my
-local branch there, which might take a while.
+For the wrong reasons.
 
-Once I've run some tests on this branch the patches there will be
-added to the platform-drivers-x86/for-next branch and eventually
-will be included in the pdx86 pull-request to Linus for the next
-merge-window.
+> Do you think we should improve this as well by setting
+> x86_init.mpparse.early_parse_smp_cfg to x86_dtb_parse_smp_config for all the
+> dtb platforms by default.
 
-Regards,
+No.
 
-Hans
+> I see the ce4100 platform is setting the parse_smp_cfg, shouldn't the
+> early_parse_smp_cfg be more accurate there ?
 
+Again. No. Early is not the point where APICs can be enumerated.
 
+What we can do is the below.
 
-> ---
->  drivers/platform/x86/asus-wmi.c | 8 ++++----
->  1 file changed, 4 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/platform/x86/asus-wmi.c b/drivers/platform/x86/asus-wmi.c
-> index 3f07bbf809ef..df4c103459da 100644
-> --- a/drivers/platform/x86/asus-wmi.c
-> +++ b/drivers/platform/x86/asus-wmi.c
-> @@ -2326,7 +2326,7 @@ static ssize_t pwm1_show(struct device *dev,
->  
->  	/* If we already set a value then just return it */
->  	if (asus->agfn_pwm >= 0)
-> -		return sprintf(buf, "%d\n", asus->agfn_pwm);
-> +		return sysfs_emit(buf, "%d\n", asus->agfn_pwm);
->  
->  	/*
->  	 * If we haven't set already set a value through the AGFN interface,
-> @@ -2512,8 +2512,8 @@ static ssize_t asus_hwmon_temp1(struct device *dev,
->  	if (err < 0)
->  		return err;
->  
-> -	return sprintf(buf, "%ld\n",
-> -		       deci_kelvin_to_millicelsius(value & 0xFFFF));
-> +	return sysfs_emit(buf, "%ld\n",
-> +			  deci_kelvin_to_millicelsius(value & 0xFFFF));
->  }
->  
->  /* GPU fan on modern ROG laptops */
-> @@ -4061,7 +4061,7 @@ static ssize_t show_sys_wmi(struct asus_wmi *asus, int devid, char *buf)
->  	if (value < 0)
->  		return value;
->  
-> -	return sprintf(buf, "%d\n", value);
-> +	return sysfs_emit(buf, "%d\n", value);
->  }
->  
->  #define ASUS_WMI_CREATE_DEVICE_ATTR(_name, _mode, _cm)			\
+Thanks,
 
+        tglx
+---
+--- a/arch/x86/include/asm/prom.h
++++ b/arch/x86/include/asm/prom.h
+@@ -24,18 +24,15 @@ extern u64 initial_dtb;
+ extern void add_dtb(u64 data);
+ void x86_of_pci_init(void);
+ void x86_dtb_parse_smp_config(void);
++void x86_flattree_get_config(void);
+ #else
+ static inline void add_dtb(u64 data) { }
+ static inline void x86_of_pci_init(void) { }
+ static inline void x86_dtb_parse_smp_config(void) { }
++static inline void x86_flattree_get_config(void) { }
+ #define of_ioapic 0
+ #endif
+ 
+-#ifdef CONFIG_OF_EARLY_FLATTREE
+-void x86_flattree_get_config(void);
+-#else
+-static inline void x86_flattree_get_config(void) { }
+-#endif
+ extern char cmd_line[COMMAND_LINE_SIZE];
+ 
+ #endif /* __ASSEMBLY__ */
+--- a/arch/x86/kernel/devicetree.c
++++ b/arch/x86/kernel/devicetree.c
+@@ -277,9 +277,9 @@ static void __init dtb_apic_setup(void)
+ 	dtb_ioapic_setup();
+ }
+ 
+-#ifdef CONFIG_OF_EARLY_FLATTREE
+ void __init x86_flattree_get_config(void)
+ {
++#ifdef CONFIG_OF_EARLY_FLATTREE
+ 	u32 size, map_len;
+ 	void *dt;
+ 
+@@ -301,8 +301,10 @@ void __init x86_flattree_get_config(void
+ 
+ 	if (initial_dtb)
+ 		early_memunmap(dt, map_len);
+-}
+ #endif
++	if (of_have_populated_dt())
++		x86_init.mpparse.parse_smp_cfg = x86_dtb_parse_smp_config;
++}
+ 
+ void __init x86_dtb_parse_smp_config(void)
+ {
 
