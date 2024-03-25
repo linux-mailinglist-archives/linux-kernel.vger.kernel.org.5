@@ -1,71 +1,71 @@
-Return-Path: <linux-kernel+bounces-116788-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-116790-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0CE4788A3FD
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 15:15:59 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 41F0A88A3EA
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 15:15:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id ADA502E3647
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 14:15:57 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 652F91C3A6F8
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 14:15:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EA649182776;
-	Mon, 25 Mar 2024 10:47:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0463718277F;
+	Mon, 25 Mar 2024 10:47:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b="JvLtRK0D"
-Received: from mail-wr1-f52.google.com (mail-wr1-f52.google.com [209.85.221.52])
+	dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b="mX+EpAHb"
+Received: from mail-wr1-f41.google.com (mail-wr1-f41.google.com [209.85.221.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 84BA4196691
-	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 10:04:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D4575196694
+	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 10:04:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711361052; cv=none; b=NaPSHWL7L/acmGU8dhtkje0VMYIeafaxhuY1ObC5JrnVQRHaa2kgRJx/p7XqZfF8AzrdbrkTxDBeag7GzT3PHQyPT8L1J44bCqYbt3eEfsqI1Qxm86yHhT6G2TCbZJnhTKBCdj+eoI7q+sIsEJelfTNH5FsmmV02uJwRPveKmfs=
+	t=1711361053; cv=none; b=F0UwcnbgkLtN9FVrn32PdBJpayxWCirraypGD921ZyiNO8rpLQjcu5Enokp4WCGQ7Xg7xbRTrMk1bh6dYSAmwCt7af9AnXcFSMG4wryxjFo7sKGFY5fscNSlh+PD+puwwZP9iTOJ5EaGfFN2s3iWLNSfgTDfyXUEH6bpfSJGXNk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711361052; c=relaxed/simple;
-	bh=EH51HCSeo8d+4t44xNDlJL+YzfigfLghhDUCkzVJpmI=;
+	s=arc-20240116; t=1711361053; c=relaxed/simple;
+	bh=Xu1f+RPnvEjBRa3DS5LFCyEe2cJ9nWGA+wJiNMQI+rs=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=Nh3v94NSRo+ocAKEHGfY5w6iiFsIGfet9PcU5zETcouZWlIdDTGUsWtKbygl94OatvrMgct24aDml6Dbqv/iJE6uZ6l8MBBX44xR5uEkIF8IG2DyysO6iCYzSnXY0N4WFRaOPLNFpHzQ1Epu7/+FliiR5+rL7rCM0QKQXILvsAg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl; spf=none smtp.mailfrom=bgdev.pl; dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b=JvLtRK0D; arc=none smtp.client-ip=209.85.221.52
+	 MIME-Version; b=q9Mm59Dqz3v4eae/kIGd+KDMV8iWqaMaxCegrMlfDa7fjEDDP01HR8C4HPWRE31n1xuqhZsHVebQP3WqbSKaBcAMViduH9AGQkEhrt1yQp2/sR+bjOUtuaDghc1ABjB0XwLvo2p8yCsYsW2V5ZCgistKT7TXer1nOuYb5YcKba8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl; spf=none smtp.mailfrom=bgdev.pl; dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b=mX+EpAHb; arc=none smtp.client-ip=209.85.221.41
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bgdev.pl
-Received: by mail-wr1-f52.google.com with SMTP id ffacd0b85a97d-33ec7e1d542so2899463f8f.1
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 03:04:10 -0700 (PDT)
+Received: by mail-wr1-f41.google.com with SMTP id ffacd0b85a97d-341cf77b86bso355274f8f.2
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 03:04:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1711361049; x=1711965849; darn=vger.kernel.org;
+        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1711361050; x=1711965850; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=5xM9SBn4JRwG0bOMb0/BB9XkHkn86JKvqpbMlH4QUNA=;
-        b=JvLtRK0DidNr8+iKGuHu+h1Q4yqcPXaQBId3DHhltOCh8rgmh5jJQ/8I4eZ28emnIo
-         AlLRh5XEWoe6LYkDcCgp4BinLmQJ4issZoI8ZSeiOpeKPqwaoJNyIwHDCOOlacVizeB0
-         uT4KIr0pryKlKryWB8tHZqUo6xCTafQVABFQ2xKcbG82okhH5Ob6V85kKUvTyGp8YQNO
-         g2TZWlLEC5QdslZrnQ0z9YgoURzaWSvHU/wSci7E1xelI76OuSSruLXVquPd4vZ0A0pQ
-         1Ppb9TQm+GQeh7QWqMICP0Pq67n4WsuA/oJ/tL40qrFhJZ2pNwRp2c2T/TCXW7prHLcV
-         USCA==
+        bh=8fl37vGRYSy2kvf67OGkupfqZ+uqFGGpfw8NF9/514Q=;
+        b=mX+EpAHbM6wART6kFGrGyie3b+83UlT/m431IWSyrQT/ktQ/hCO9Ba1BqfJcCIqolS
+         zgZMv5hQUNLDor5Ef+QgPyRQWGwhoYdkBdYjH1ZDYDpgQQlCq+mbfO86gAhxwmUPYcDu
+         Y3z9W5rINGQAEW0biEnfQ1+g9I++8ts3ybxh42oFRs7/JWzy2cH0pdYz3GOwOMaOG9Nd
+         I0tPrwYypTQHXpTUfOwj+NsZBsb0jfv+tQ+EbDklhXUrp1qP075wSm5pnoNMHtd367e1
+         +Rt6v+eg0Q2i0j5T7mIqWhjHRIj0YouDTZHX5sfvcYTTN9g8II/SHK/XdqZcXRp/DUDR
+         PA/A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711361049; x=1711965849;
+        d=1e100.net; s=20230601; t=1711361050; x=1711965850;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=5xM9SBn4JRwG0bOMb0/BB9XkHkn86JKvqpbMlH4QUNA=;
-        b=fa2zaYzQmJluUVuTb0I0ovKGGoWfzkUW93nFoZxW6r1E7R5kcCNJ2ywu5slyGkPDJd
-         yxyu07/clmC/ch1t9ayIu98Ya56OzS2bH3XdQoJ3rOcVJlZLFlRIBEBNUdcKVrGQQF0+
-         bTucMDb8NeXxENGd+W1jRg6lGyZzl/kElaS3/Ey9x+Qx2prKxLcZIF3VipVSew2SJtv8
-         Jc8eZlpNhSAT7HfV8zHrjxA5T7oSEQZQu/2zqbVJKaUUZF+DbYRjnlOLNB9v9sZ4P43L
-         HBaJRGUpgRHQlT3AuqtmiqKYYKDpZD3api7dshBf5Nrt/JZPXBpOhzWp0Oo7783fLQDw
-         lXMw==
-X-Forwarded-Encrypted: i=1; AJvYcCXQslu65KriiCqJ8KLd4MUAuqlBTyAM84tm9oFNLLf0fBw2Vlmd2ZdHl8GEjImtger+Prj8YFOEMNFEUY63XusOvv9UH4/9aeJFFm2B
-X-Gm-Message-State: AOJu0YylRTF24Ewc4/pJY/np1RdfSZwP929Qb5cW1O7fYqm1DnXUsj1R
-	3IvYxjIBnG3MU2ZOXeCac9Liw+0IVjQCi0zzDL8v7bF4yx+t6lz+4U0pA7nvjKo=
-X-Google-Smtp-Source: AGHT+IEydXAKs/QNU0eg4C+NDFq7UNSX+j1Jp2smkQIoaNT+FPHMVEGEtr5Miuvb08MTKW4WyYZpsg==
-X-Received: by 2002:a05:6000:1ace:b0:341:cf9b:c8e with SMTP id i14-20020a0560001ace00b00341cf9b0c8emr1303987wry.50.1711361048974;
-        Mon, 25 Mar 2024 03:04:08 -0700 (PDT)
+        bh=8fl37vGRYSy2kvf67OGkupfqZ+uqFGGpfw8NF9/514Q=;
+        b=haEWhUFaXTdYualgswp1XocbemouRdyDUkt3EJzFBkSpUShJLsCTDt135Al5EjXLXj
+         fJsdGX1nyTrJ5EQNPSKNLioSTvlVP7tgotmB9xezGqbM6n2fZvGn6BfH5Ktp7j/BbSed
+         Qr8D0inyjkVAOoplvkIvKe0OaURx4fwsaZL/MgefOMdUGk+BDA9uqFTuhLGAIyd0wmG0
+         b4dRkgwl68p4kfvRNS1g14M37QLyqBGJoh1faR1P/7L0JQtiIck73Kvkk4BSi8FeEhxp
+         B/0zU3kBmWMFxo7RDpEs5F63/GpFotPnLBf982QbDbeeyeP/ZQ3ADCrWF49fKhaqIsrW
+         BQHQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUtqHAgqDcv2ZEtWxr/7HaMCUbLpqfX/6aMBXKwgVplW3WJMu4TLG/i1FiINU6Qon0oKdKQOf7TfRQR9N0JqDaUoIdNbFZKpnR9uRiU
+X-Gm-Message-State: AOJu0YwPftGl9Xwmz2OZCj0U8yRm82DxY8XY+o1A/pKj2CGgwJQ3+Twp
+	tvBV7WJTiZ8NY2dvIPW4L3FCuyIG7Q0DGxKFv5wC1R8vyglfGcHHWCKrct12PrQ=
+X-Google-Smtp-Source: AGHT+IH+hhp3hOA7UiKIPybzE1EoKjoYoyhlQKM6glQr3E4kR6w3ftf3S8vD8LlexgRD9oDYqvKJUA==
+X-Received: by 2002:a5d:4084:0:b0:33e:c924:5486 with SMTP id o4-20020a5d4084000000b0033ec9245486mr4958754wrp.46.1711361050341;
+        Mon, 25 Mar 2024 03:04:10 -0700 (PDT)
 Received: from brgl-uxlite.home ([2a01:cb1d:75a:e000:861d:8b72:a859:4ce9])
-        by smtp.gmail.com with ESMTPSA id dv13-20020a0560000d8d00b0033e25c39ac3sm9086874wrb.80.2024.03.25.03.04.08
+        by smtp.gmail.com with ESMTPSA id dv13-20020a0560000d8d00b0033e25c39ac3sm9086874wrb.80.2024.03.25.03.04.09
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 Mar 2024 03:04:08 -0700 (PDT)
+        Mon, 25 Mar 2024 03:04:09 -0700 (PDT)
 From: Bartosz Golaszewski <brgl@bgdev.pl>
 To: Andy Gross <agross@kernel.org>,
 	Bjorn Andersson <andersson@kernel.org>,
@@ -84,9 +84,9 @@ Cc: linux-arm-msm@vger.kernel.org,
 	kernel@quicinc.com,
 	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
 	Deepti Jaggi <quic_djaggi@quicinc.com>
-Subject: [PATCH v9 04/13] firmware: qcom: scm: make qcom_scm_assign_mem() use the TZ allocator
-Date: Mon, 25 Mar 2024 11:03:50 +0100
-Message-Id: <20240325100359.17001-5-brgl@bgdev.pl>
+Subject: [PATCH v9 05/13] firmware: qcom: scm: make qcom_scm_ice_set_key() use the TZ allocator
+Date: Mon, 25 Mar 2024 11:03:51 +0100
+Message-Id: <20240325100359.17001-6-brgl@bgdev.pl>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20240325100359.17001-1-brgl@bgdev.pl>
 References: <20240325100359.17001-1-brgl@bgdev.pl>
@@ -109,60 +109,51 @@ Tested-by: Andrew Halaney <ahalaney@redhat.com> # sc8280xp-lenovo-thinkpad-x13s
 Tested-by: Deepti Jaggi <quic_djaggi@quicinc.com> #sa8775p-ride
 Reviewed-by: Elliot Berman <quic_eberman@quicinc.com>
 ---
- drivers/firmware/qcom/qcom_scm.c | 10 ++++++----
- 1 file changed, 6 insertions(+), 4 deletions(-)
+ drivers/firmware/qcom/qcom_scm.c | 21 +++++----------------
+ 1 file changed, 5 insertions(+), 16 deletions(-)
 
 diff --git a/drivers/firmware/qcom/qcom_scm.c b/drivers/firmware/qcom/qcom_scm.c
-index 21c22d306aac..cd47389ac80c 100644
+index cd47389ac80c..de66319cbfb9 100644
 --- a/drivers/firmware/qcom/qcom_scm.c
 +++ b/drivers/firmware/qcom/qcom_scm.c
-@@ -4,6 +4,7 @@
-  */
- 
- #include <linux/arm-smccc.h>
-+#include <linux/cleanup.h>
- #include <linux/clk.h>
- #include <linux/completion.h>
- #include <linux/cpumask.h>
-@@ -1001,14 +1002,13 @@ int qcom_scm_assign_mem(phys_addr_t mem_addr, size_t mem_sz,
- 	struct qcom_scm_mem_map_info *mem_to_map;
- 	phys_addr_t mem_to_map_phys;
- 	phys_addr_t dest_phys;
--	dma_addr_t ptr_phys;
-+	phys_addr_t ptr_phys;
- 	size_t mem_to_map_sz;
- 	size_t dest_sz;
- 	size_t src_sz;
- 	size_t ptr_sz;
- 	int next_vm;
- 	__le32 *src;
--	void *ptr;
- 	int ret, i, b;
- 	u64 srcvm_bits = *srcvm;
- 
-@@ -1018,10 +1018,13 @@ int qcom_scm_assign_mem(phys_addr_t mem_addr, size_t mem_sz,
- 	ptr_sz = ALIGN(src_sz, SZ_64) + ALIGN(mem_to_map_sz, SZ_64) +
- 			ALIGN(dest_sz, SZ_64);
- 
--	ptr = dma_alloc_coherent(__scm->dev, ptr_sz, &ptr_phys, GFP_KERNEL);
-+	void *ptr __free(qcom_tzmem) = qcom_tzmem_alloc(__scm->mempool,
-+							ptr_sz, GFP_KERNEL);
- 	if (!ptr)
- 		return -ENOMEM;
- 
-+	ptr_phys = qcom_tzmem_to_phys(ptr);
+@@ -1200,32 +1200,21 @@ int qcom_scm_ice_set_key(u32 index, const u8 *key, u32 key_size,
+ 		.args[4] = data_unit_size,
+ 		.owner = ARM_SMCCC_OWNER_SIP,
+ 	};
+-	void *keybuf;
+-	dma_addr_t key_phys;
 +
- 	/* Fill source vmid detail */
- 	src = ptr;
- 	i = 0;
-@@ -1050,7 +1053,6 @@ int qcom_scm_assign_mem(phys_addr_t mem_addr, size_t mem_sz,
+ 	int ret;
  
- 	ret = __qcom_scm_assign_mem(__scm->dev, mem_to_map_phys, mem_to_map_sz,
- 				    ptr_phys, src_sz, dest_phys, dest_sz);
--	dma_free_coherent(__scm->dev, ptr_sz, ptr, ptr_phys);
- 	if (ret) {
- 		dev_err(__scm->dev,
- 			"Assign memory protection call failed %d\n", ret);
+-	/*
+-	 * 'key' may point to vmalloc()'ed memory, but we need to pass a
+-	 * physical address that's been properly flushed.  The sanctioned way to
+-	 * do this is by using the DMA API.  But as is best practice for crypto
+-	 * keys, we also must wipe the key after use.  This makes kmemdup() +
+-	 * dma_map_single() not clearly correct, since the DMA API can use
+-	 * bounce buffers.  Instead, just use dma_alloc_coherent().  Programming
+-	 * keys is normally rare and thus not performance-critical.
+-	 */
+-
+-	keybuf = dma_alloc_coherent(__scm->dev, key_size, &key_phys,
+-				    GFP_KERNEL);
++	void *keybuf __free(qcom_tzmem) = qcom_tzmem_alloc(__scm->mempool,
++							   key_size,
++							   GFP_KERNEL);
+ 	if (!keybuf)
+ 		return -ENOMEM;
+ 	memcpy(keybuf, key, key_size);
+-	desc.args[1] = key_phys;
++	desc.args[1] = qcom_tzmem_to_phys(keybuf);
+ 
+ 	ret = qcom_scm_call(__scm->dev, &desc, NULL);
+ 
+ 	memzero_explicit(keybuf, key_size);
+ 
+-	dma_free_coherent(__scm->dev, key_size, keybuf, key_phys);
+ 	return ret;
+ }
+ EXPORT_SYMBOL_GPL(qcom_scm_ice_set_key);
 -- 
 2.40.1
 
