@@ -1,207 +1,79 @@
-Return-Path: <linux-kernel+bounces-117588-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-117587-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 123FF88ACEC
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 19:03:29 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 79A7788ACE9
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 19:03:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3F1C61C3DD4A
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 18:03:28 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2FAF61FA030A
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 18:03:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B01BA86AD0;
-	Mon, 25 Mar 2024 17:23:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C5BBC84D25;
+	Mon, 25 Mar 2024 17:23:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="dE3Y4WZO"
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7057E495E5;
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="a88I9ZD/"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F251A535AC;
 	Mon, 25 Mar 2024 17:23:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711387415; cv=none; b=IpgaFYcr1VK7ZASiq/XVNRI2m9ZAqbadQAbKTNe9G6Y5pjeMK8m++BFpTExy4rnJMasrcsyOWjwFa1bYZ8DT9AC4OmVh9cUOWmVtc1eEv0EnwaNWgJ6yCT0UBw8ZMacB43blcKdur1uNyjPydjoeZfZrLq7J1xJXXBdx+bUPgno=
+	t=1711387414; cv=none; b=ZaJrg4ub6T08FRwCTzjEXAfRbfVMvTEv+oACVGgYfLn7yID4k/qdlVKdNBfQc1mtMnl4NKreD9laVWHNmMfnNqYSRFQx2VtlhFFOhvld1wruAKaYXZMSJRQziGok//taMBFFsZ6BGL5w2MBj3KPgdq3FXDrmtmXV2OJqduAWHTg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711387415; c=relaxed/simple;
-	bh=BYJzYT4NQKRLwLKk/EBpQuhT2Nji9CLyF0I+i+pUB7o=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=lptRjRGV9u5juEqcIdhb4V8qBRFVkpecF3WMQ18gJYCWnb6XbWqTI/LDN8XplonyND6+3ZKKvKqmWUeKAmq9MZwn+uEQL70TuYDmWLr+To+ec7mtWw50ZYjLF5y60/QXpyBVqE6HW67zpcPuFtCNIMueTg7O2/5UkG/64P6JMd4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=dE3Y4WZO; arc=none smtp.client-ip=13.77.154.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
-Received: from [100.64.32.128] (unknown [20.29.225.195])
-	by linux.microsoft.com (Postfix) with ESMTPSA id 43D0520B74C0;
-	Mon, 25 Mar 2024 10:23:27 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 43D0520B74C0
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-	s=default; t=1711387407;
-	bh=lnc4G3BBPQZGYVAtWNJgDDBSmC1uJv/ZEHMGSWBLpjk=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=dE3Y4WZOgv6povt1qfY3cw+a/AhDliTwnSRHQMNaeCoxu6qh/7r15MBRfwS0YhYbm
-	 waahp4b8Dl2p19yMph5CqLRfR/UXoPWKQX2krMHNwhrgCtcU1QSYMNu1R9OoRZap1o
-	 bhRxNI8UmB/5BSYY9l0RbQPBPWKbJsuoMaxQb63E=
-Message-ID: <eea2ddef-ba2e-4424-84d0-2af0340be899@linux.microsoft.com>
-Date: Mon, 25 Mar 2024 10:23:25 -0700
+	s=arc-20240116; t=1711387414; c=relaxed/simple;
+	bh=tYPxAtJOADxLj4QV0nuo2ems//1Fri3Ot9KeWJ93tHk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=NTEr4I/BBifq2Gc+oNsbA9sVFDuZOiv4LgqU2aWomd2SSH1vhVTwUn9eAAlsITorMYzQts5Lr7aAqfkGJBjDFZMPH0GD2C6Do/ZqY9Q6bcA2+oGIzMPF0WqXnL1JP6BfUPF25cUco5aa5MD8UTAAm0Lkox/ZCDmw9nUX5flhQcA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=a88I9ZD/; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 15323C433F1;
+	Mon, 25 Mar 2024 17:23:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+	s=korg; t=1711387413;
+	bh=tYPxAtJOADxLj4QV0nuo2ems//1Fri3Ot9KeWJ93tHk=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=a88I9ZD/UJHEUfwccZEZnly5tZYiQdBj5jooq/l3+q+QS4Tfcechmm+Vpexcw949Y
+	 t5cn7r4PRkuV5O15T2wp8LVcugyiVbVwIkbwNR+qD6sBIZxgu8GUFhBkDQt8e4qmmj
+	 kYTmPaSr1yJcAxqTIEDJzCi9LjFxwIvJrydWjsRE=
+Date: Mon, 25 Mar 2024 18:23:30 +0100
+From: Greg KH <gregkh@linuxfoundation.org>
+To: Ayush Tiwari <ayushtiw0110@gmail.com>
+Cc: Larry.Finger@lwfinger.net, florian.c.schilhabel@googlemail.com,
+	linux-kernel@vger.kernel.org, linux-staging@lists.linux.dev
+Subject: Re: [PATCH v3 0/3] Trivial code cleanup patches
+Message-ID: <2024032552-ardently-colonial-8502@gregkh>
+References: <cover.1710965653.git.ayushtiw0110@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5] hv/hv_kvp_daemon: Handle IPv4 and Ipv6 combination for
- keyfile format
-To: Shradha Gupta <shradhagupta@linux.microsoft.com>,
- linux-kernel@vger.kernel.org, linux-hyperv@vger.kernel.org
-Cc: "K. Y. Srinivasan" <kys@microsoft.com>,
- Haiyang Zhang <haiyangz@microsoft.com>, Wei Liu <wei.liu@kernel.org>,
- Dexuan Cui <decui@microsoft.com>, Long Li <longli@microsoft.com>,
- Olaf Hering <olaf@aepfle.de>, Ani Sinha <anisinha@redhat.com>,
- Shradha Gupta <shradhagupta@microsoft.com>
-References: <1711115162-11629-1-git-send-email-shradhagupta@linux.microsoft.com>
-Content-Language: en-CA
-From: Easwar Hariharan <eahariha@linux.microsoft.com>
-In-Reply-To: <1711115162-11629-1-git-send-email-shradhagupta@linux.microsoft.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cover.1710965653.git.ayushtiw0110@gmail.com>
 
-On 3/22/2024 6:46 AM, Shradha Gupta wrote:
-> If the network configuration strings are passed as a combination of IPv4
-> and IPv6 addresses, the current KVP daemon does not handle processing for
-> the keyfile configuration format.
-> With these changes, the keyfile config generation logic scans through the
-> list twice to generate IPv4 and IPv6 sections for the configuration files
-> to handle this support.
+On Thu, Mar 21, 2024 at 02:44:51AM +0530, Ayush Tiwari wrote:
+> Address different kinds of checkpatch complains for the rtl8712 module
+> to ensure adherence to coding style guidelines.
 > 
-> Testcases ran:Rhel 9, Hyper-V VMs
->               (IPv4 only, IPv6 only, IPv4 and IPv6 combination)
+> Changes in v3: Fixed issues about backupPMKIDList and verified with
+> CONFIG_WERROR set and built the kernel.
 > 
-> Co-developed-by: Ani Sinha <anisinha@redhat.com>
-> Signed-off-by: Ani Sinha <anisinha@redhat.com>
-> Signed-off-by: Shradha Gupta <shradhagupta@linux.microsoft.com>
-> Reviewed-by: Easwar Hariharan <eahariha@linux.microsoft.com>
-> ---
->  Changes in v5
->  * Included Ani's proposed patch and added him as co-author
-> ---
->  tools/hv/hv_kvp_daemon.c | 213 +++++++++++++++++++++++++++++++--------
->  1 file changed, 172 insertions(+), 41 deletions(-)
-> 
+> Changes in v2: Checked any possible reuse of backup_PMKID_list
+> manually and rebuilt, rebooted the kernel and loaded the driver
+> with modprobe.
 
-<snip>
+The subject line for this 0/3 email does not give us a hint as to what
+these changes are for.  Please resend the next version with something
+like:
+	staging: rtl8712: .....
 
->  }
->  
->  static int kvp_set_ip_info(char *if_name, struct hv_kvp_ipaddr_value *new_val)
->  {
-> -	int error = 0;
-> +	int error = 0, ip_ver;
->  	char if_filename[PATH_MAX];
->  	char nm_filename[PATH_MAX];
->  	FILE *ifcfg_file, *nmfile;
->  	char cmd[PATH_MAX];
-> -	int is_ipv6 = 0;
->  	char *mac_addr;
->  	int str_len;
->  
-> @@ -1421,52 +1510,94 @@ static int kvp_set_ip_info(char *if_name, struct hv_kvp_ipaddr_value *new_val)
->  	if (error)
->  		goto setval_error;
->  
-> -	if (new_val->addr_family & ADDR_FAMILY_IPV6) {
-> -		error = fprintf(nmfile, "\n[ipv6]\n");
-> -		if (error < 0)
-> -			goto setval_error;
-> -		is_ipv6 = 1;
-> -	} else {
-> -		error = fprintf(nmfile, "\n[ipv4]\n");
-> -		if (error < 0)
-> -			goto setval_error;
-> -	}
-> -
->  	/*
->  	 * Now we populate the keyfile format
-> +	 *
-> +	 * The keyfile format expects the IPv6 and IPv4 configuration in
-> +	 * different sections. Therefore we iterate through the list twice,
-> +	 * once to populate the IPv4 section and the next time for IPv6
->  	 */
-> +	ip_ver = IPV4;
-> +	do {
-> +		if (ip_ver == IPV4) {
-> +			error = fprintf(nmfile, "\n[ipv4]\n");
-> +			if (error < 0)
-> +				goto setval_error;
-> +		} else {
-> +			error = fprintf(nmfile, "\n[ipv6]\n");
-> +			if (error < 0)
-> +				goto setval_error;
-> +		}
->  
-> -	if (new_val->dhcp_enabled) {
-> -		error = kvp_write_file(nmfile, "method", "", "auto");
-> -		if (error < 0)
-> -			goto setval_error;
-> -	} else {
-> -		error = kvp_write_file(nmfile, "method", "", "manual");
-> +		/*
-> +		 * Write the configuration for ipaddress, netmask, gateway and
-> +		 * name services
-> +		 */
-> +		error = process_ip_string_nm(nmfile, (char *)new_val->ip_addr,
-> +					     (char *)new_val->sub_net,
-> +					     ip_ver);
->  		if (error < 0)
->  			goto setval_error;
-> -	}
->  
-> -	/*
-> -	 * Write the configuration for ipaddress, netmask, gateway and
-> -	 * name services
-> -	 */
-> -	error = process_ip_string_nm(nmfile, (char *)new_val->ip_addr,
-> -				     (char *)new_val->sub_net, is_ipv6);
-> -	if (error < 0)
-> -		goto setval_error;
-> +		/*
-> +		 * As dhcp_enabled is only valid for ipv4, we do not set dhcp
-> +		 * methods for ipv6 based on dhcp_enabled flag.
-> +		 *
-> +		 * For ipv4, set method to manual only when dhcp_enabled is
-> +		 * false and specific ipv4 addresses are configured. If neither
-> +		 * dhcp_enabled is true and no ipv4 addresses are configured,
-> +		 * set method to 'disabled'.
-> +		 *
-> +		 * For ipv6, set method to manual when we configure ipv6
-> +		 * addresses. Otherwise set method to 'auto' so that SLAAC from
-> +		 * RA may be used.
-> +		 */
-> +		if (ip_ver == IPV4) {
-> +			if (new_val->dhcp_enabled) {
-> +				error = kvp_write_file(nmfile, "method", "",
-> +						       "auto");
-> +				if (error < 0)
-> +					goto setval_error;
-> +			} else if (error) {
+so that we know what to expect.
 
-FWIW, for v5:
+thanks,
 
-Reviewed-by: Easwar Hariharan <eahariha@linux.microsoft.com>
-
-> +				error = kvp_write_file(nmfile, "method", "",
-> +						       "manual");
-> +				if (error < 0)
-> +					goto setval_error;
-> +			} else {
-> +				error = kvp_write_file(nmfile, "method", "",
-> +						       "disabled");
-> +				if (error < 0)
-> +					goto setval_error;
-> +			}
-
-
-<snip>
-
-Thanks,
-Easwar
-
+greg k-h
 
