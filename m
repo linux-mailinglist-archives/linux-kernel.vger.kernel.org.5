@@ -1,73 +1,37 @@
-Return-Path: <linux-kernel+bounces-117019-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-117020-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id B23C088A639
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 16:20:21 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 32F7288A63B
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 16:20:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E46501C3C6AC
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 15:20:20 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B84522E0A00
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 15:20:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 00DCF1292C4;
-	Mon, 25 Mar 2024 12:36:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="D2w4uE7M"
-Received: from mail-pf1-f169.google.com (mail-pf1-f169.google.com [209.85.210.169])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E224218E1A;
+	Mon, 25 Mar 2024 12:37:07 +0000 (UTC)
+Received: from relay7-d.mail.gandi.net (relay7-d.mail.gandi.net [217.70.183.200])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E9C2E143C74
-	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 12:36:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 497487F490;
+	Mon, 25 Mar 2024 12:37:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.200
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711370203; cv=none; b=tRtQJHEpc/98xEnLGk7O5IWl5BNxozNdtdrcgVJS44U+EnYfqexNe2MoJnz+M3gFxINm8FJUunCtwXcU2CvVl3Ub0ldey3QppYFH92bB+O0nwlmiHYNgSg5RB62etxWZlxBYnZNxhRftza+WU0Qrfc3lDYTJfhaZ7p39OaCFOAw=
+	t=1711370227; cv=none; b=W6egJ/OEiFlYhZgF81FulnD5ukMWIekei4KXk/BJhb2bRroLrtjJqyOgh/pJTMArqgSihTodGESExaSjJ2DFHZIYX1DaBnp5huJxocuaXe6kxSbA6S7cj+rtsRHIH2nOgtF25EHZ6MwXB3zwWrwq7t4sol/xsWxp+2J8C7qbnwg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711370203; c=relaxed/simple;
-	bh=wdSegOXRShuc9cxtvrB+AzGO2il5sOCLpifFFtVjul4=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=BudG6hJ9IitRpaoBn0crNY6ADjOkgNBE9ohIo5L3/tDx3NR4zW6gCGRCpUoB/zkXdFsxRe1SvbBfxyQn3U/lkGT0QaWJddZ4BzA4POzrJVzsnZ7/sRDDRdcvzydqJX0roAWS6mwwWYt+bJu9/kJdXt2P+Am/YlxQX+C2HA3n9Pk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=D2w4uE7M; arc=none smtp.client-ip=209.85.210.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f169.google.com with SMTP id d2e1a72fcca58-6e6f4ad4c57so3196894b3a.2
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 05:36:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711370201; x=1711975001; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=HVD6kyr2yejC7DWiFF8eaBlp4UDIjmyFCY0XmmIOv6Y=;
-        b=D2w4uE7MdkA0nnQVBEDQL8F8znqbu/3wrAgra1/+gc28u4GkPihmnRlrKDIXDgjqVi
-         cS+bwjvLp4FxlGjBY/ZGxQpoVBrxdeCQBHcxnt11I2rhckuRHbyePmSVg+o/53lgX/rs
-         5+nT+U8oG1gwhRf/bAa80FlxCx1ux16ppHUMRxUipvyHLYhA8h53fzzDIlATZrEvHdc7
-         Ito7cr2FnIHvdFRyGxat5YFl5s/eEZ4eJZ6385Wnv1aNsqiZI2U+UD3ysGT9JIzaXCIw
-         XOz5LalOfLV91tr2NlQqkEFhzYCoGFDvffmgSACR7a+NNv3fD6JbE+rGMScQgcClvUKN
-         hDcQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711370201; x=1711975001;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=HVD6kyr2yejC7DWiFF8eaBlp4UDIjmyFCY0XmmIOv6Y=;
-        b=f0UbhYXNpJ5BGsAJs2mAZOxpZVyUQhy8ubAvkiZDLZqFLD7tASO4Nyva8RUC2MOBPo
-         kcVenI3Q9yVasW6wFmemy8Np12KoN2w7ErGxql0frEqcnttOk0tshnrySAQPiHQAEZSR
-         x6Z7WAciWauH47iS+6lHDRYWJAlTT7vZIAKB6SS61Dq2Mqns4jjpIy9J0YOYa1fxsFHO
-         oOu6K7Vx3YgNnRkV9gWhcLPLLQoZFwhjvhyuvUFBYx68/cLQkQ4J/ot/ptlwzv0AJUOn
-         IxVRak7gTSjK/LYoJvjziPYHEDcBr8PXdRDBZCdJTGyf5H4pznEvvEp3Zg3Oc3iHlxhQ
-         2q4g==
-X-Forwarded-Encrypted: i=1; AJvYcCUbcs1Xy1n6egaeZsBhjO9WDVCKDR2euEOISqC0/ejFrVpzOEo+kKKTkt35EBxbZ/BfvJV5x/U7o3JGah01MKPWB4/gpKc/aLX8swwO
-X-Gm-Message-State: AOJu0YyVCYnAjTNlTYGandAnn5XptRyszspMO/PIeLRQgaP58DSrALEv
-	PQLhvpL/C8XoCOFwCequvK+kswIeNd2HG2d6EKYKiqo7agk3G+3v
-X-Google-Smtp-Source: AGHT+IFSAq6ifk8Zm6QypSlyeD9gVsuzinOO29bEJo4kN4j84rCnSW6AUJHOinRtT6jayDegwGpJyw==
-X-Received: by 2002:a17:903:32ca:b0:1e0:1bc1:478c with SMTP id i10-20020a17090332ca00b001e01bc1478cmr9186425plr.22.1711370201243;
-        Mon, 25 Mar 2024 05:36:41 -0700 (PDT)
-Received: from [192.168.255.10] ([43.132.141.20])
-        by smtp.gmail.com with ESMTPSA id h20-20020a170902f7d400b001db3361bc1dsm4575112plw.102.2024.03.25.05.36.38
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 25 Mar 2024 05:36:40 -0700 (PDT)
-Message-ID: <f67006d5-026f-407b-9926-1a60f15e6244@gmail.com>
-Date: Mon, 25 Mar 2024 20:36:37 +0800
+	s=arc-20240116; t=1711370227; c=relaxed/simple;
+	bh=jpBPYiVpZbJTeiV8zjXGNLndCjrHIfaF6Jx5nsCWsus=;
+	h=Message-ID:Date:MIME-Version:Cc:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=XLPJZOkJ2X83II1jGrCCcHpu1XAYEUtpb+LAqgQn9r3ApD0PdIKupun+sq/SVIVANoQ7KXmlPlZNDEg64kDE6K/rbuOUhmaZO3ZDTulqJscB1tZRdLycDdfZVGHMbPKD04OnxP3qu5o4lHbJXGKZC3Xvo4nXW9tRZwwl7D03K84=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ovn.org; spf=pass smtp.mailfrom=ovn.org; arc=none smtp.client-ip=217.70.183.200
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ovn.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ovn.org
+Received: by mail.gandi.net (Postfix) with ESMTPSA id D775820007;
+	Mon, 25 Mar 2024 12:36:58 +0000 (UTC)
+Message-ID: <4066cc6a-24a8-4d05-b180-99222fe792fa@ovn.org>
+Date: Mon, 25 Mar 2024 13:37:41 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -75,51 +39,102 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 05/14] mm/ksm: use folio in stable_node_dup
+Cc: dev@openvswitch.org, netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org, Eric Dumazet <edumazet@google.com>,
+ Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+ "David S. Miller" <davem@davemloft.net>, i.maximets@ovn.org
+Subject: Re: [ovs-dev] [PATCH net] openvswitch: Set the skbuff pkt_type for
+ proper pmtud support.
 Content-Language: en-US
-To: David Hildenbrand <david@redhat.com>, Matthew Wilcox
- <willy@infradead.org>, alexs@kernel.org
-Cc: Andrea Arcangeli <aarcange@redhat.com>,
- Izik Eidus <izik.eidus@ravellosystems.com>,
- Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
- linux-kernel@vger.kernel.org, Hugh Dickins <hughd@google.com>,
- Chris Wright <chrisw@sous-sol.org>
-References: <20240322083703.232364-1-alexs@kernel.org>
- <20240322083703.232364-6-alexs@kernel.org>
- <Zf2qcH-bDEgLAP7d@casper.infradead.org>
- <df87f782-185f-40f7-8745-ab09fe144189@redhat.com>
-From: Alex Shi <seakeel@gmail.com>
-In-Reply-To: <df87f782-185f-40f7-8745-ab09fe144189@redhat.com>
+To: Aaron Conole <aconole@redhat.com>, Eelco Chaudron <echaudro@redhat.com>
+References: <20240322190603.251831-1-aconole@redhat.com>
+ <7AFF5D6D-568C-449B-83CF-9436DE97CA91@redhat.com>
+ <f7t5xxawlen.fsf@redhat.com>
+From: Ilya Maximets <i.maximets@ovn.org>
+Autocrypt: addr=i.maximets@ovn.org; keydata=
+ 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
+In-Reply-To: <f7t5xxawlen.fsf@redhat.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
+X-GND-Sasl: i.maximets@ovn.org
 
-
-
-On 3/23/24 1:11 AM, David Hildenbrand wrote:
-> On 22.03.24 16:57, Matthew Wilcox wrote:
->> On Fri, Mar 22, 2024 at 04:36:52PM +0800, alexs@kernel.org wrote:
->>> -static struct page *stable_node_dup(struct ksm_stable_node **_stable_node_dup,
->>> -                    struct ksm_stable_node **_stable_node,
->>> -                    struct rb_root *root,
->>> -                    bool prune_stale_stable_nodes)
->>> +static void *stable_node_dup(struct ksm_stable_node **_stable_node_dup,
->>> +                 struct ksm_stable_node **_stable_node,
->>> +                 struct rb_root *root,
->>> +                 bool prune_stale_stable_nodes)
->>
->> Do we really have to go through this void * stage?
->>
->> Also, please stop reindenting the arguments.  I tend to just switch to
->> two tabs, but lining them up with the opening bracket leads to extra
->> churn.  Either leave them alone for the entire series or switch _once_.
+On 3/25/24 13:22, Aaron Conole wrote:
+> Eelco Chaudron <echaudro@redhat.com> writes:
 > 
-> I wish the coding style would at least recommend something -- I know, different subsystems/files have their own rules. Nowadays, I prefer 2 tabs as well.
+>> On 22 Mar 2024, at 20:06, Aaron Conole wrote:
+>>
+>>> Open vSwitch is originally intended to switch at layer 2, only dealing with
+>>> Ethernet frames.  With the introduction of l3 tunnels support, it crossed
+>>> into the realm of needing to care a bit about some routing details when
+>>> making forwarding decisions.  If an oversized packet would need to be
+>>> fragmented during this forwarding decision, there is a chance for pmtu
+>>> to get involved and generate a routing exception.  This is gated by the
+>>> skbuff->pkt_type field.
+>>>
+>>> When a flow is already loaded into the openvswitch module this field is
+>>> set up and transitioned properly as a packet moves from one port to
+>>> another.  In the case that a packet execute is invoked after a flow is
+>>> newly installed this field is not properly initialized.  This causes the
+>>> pmtud mechanism to omit sending the required exception messages across
+>>> the tunnel boundary and a second attempt needs to be made to make sure
+>>> that the routing exception is properly setup.  To fix this, we set the
+>>> outgoing packet's pkt_type to PACKET_OUTGOING, since it can only get
+>>> to the openvswitch module via a port device or packet command.
+>>
+>> Is this not a problem when the packet comes from the bridge port in the kernel?
 > 
+> It very well may be an issue there as well, but the recommendation is to
+> operate with the bridge port down as far as I know, so I don't know if
+> this issue has been observed happening from the bridge port.
 
-Hi David,
+FWIW, bridge ports are typically used as an entry point for tunneled
+traffic so it can egress from a physical port attached to OVS.  It means
+they are pretty much always UP in most common setups like OpenStack or
+ovn-kubernetes and handle a decent amount of traffic.  They are also used
+to direct some other types of traffic to the host kernel.
 
-Thanks for comments, 2 tabs looks good. But just this file keep using more tabs.
-For the style alignment, let's keep them for now?
+Unless I misunderstood which ports we're talking about here.
 
-Thanks 
+Best regards, Ilya Maximets.
 
