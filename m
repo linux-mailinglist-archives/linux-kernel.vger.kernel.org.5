@@ -1,219 +1,166 @@
-Return-Path: <linux-kernel+bounces-116806-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-116807-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1025488A424
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 15:19:33 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id B997F88A41C
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 15:18:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 33C6F1C3B3AB
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 14:19:32 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6EE392E0B0E
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 14:18:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 50FCD182EE9;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E40DC18A730;
 	Mon, 25 Mar 2024 10:47:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="GzaHL2Fq"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	dkim=pass (1024-bit key) header.d=xry111.site header.i=@xry111.site header.b="UUcDbdjZ"
+Received: from xry111.site (xry111.site [89.208.246.23])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 15C71185F2A
-	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 10:15:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 25D4E13E6C8;
+	Mon, 25 Mar 2024 10:16:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=89.208.246.23
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711361706; cv=none; b=IGuYjy0RvhE+QJXTit7qSq3BGAJyeCbf12XbTzdBydTqDROVFMcEZG+FS5sK+9MurGSFNO2M/wbkkOvfBuyL8o7/4T4jaZE7p0xPU2uIFtT/0OUtfkXPNZnn+UaHwG3TFL8h247j0+9p1Hj+oKlxqlm0oGb62tUwR64/JMKJSHg=
+	t=1711361767; cv=none; b=oNtn2J3qRERhGOR5ZAo7BrpxJTqkg2125fABrfFfS5MaM/Ijoik2NSxDGW8VDgOqLjnsnU2lSdPHuzrw8WuVcgYATCYCIjlg8CSZFEKBUuA82Wj3FNkYz6qdcQyVOCHWq4YvdrJsgk/ku0aqInqpTT+dEpMX2IJp1vh6/J60xNU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711361706; c=relaxed/simple;
-	bh=mc4Lnybpgo7YwTNAV87sNRJmVnsWEZN5R3sPvnmYmE0=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=hrbAgfPQfQt69s3/+PVLmN5rZLXJnnbBrk1jEWBkTB9bC6QXQWbUowTD7wdTfNGEg0EnKTMsXCPSz7oBy+3fOe2oRgVclT47WBX6ctghT2GuJCfW2G64d45Ma74X0H1ukKGMJoYSP9gHkVC+FH/1Sa5xld/Co5iUe8VuSh4krkI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=GzaHL2Fq; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1711361704;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=MK5Neka5+TdFvpBbcIvxKEkZ02U684q5i0+EZeGEb+k=;
-	b=GzaHL2FqauXfST/IPH5iKNmb1taVOU+VPCkjfHyebljDlMwGZYyPFEmpI3zovNOZD/B+uQ
-	Lfn5FxZsUknO3FQH58MfYtUCA1efiP2v81nFudaITFdmMF5Mka00ayFxjN5Lyc11t8M0ky
-	b2s+IG+qgzWl3CF71W/Wp6NYl9jlDR4=
-Received: from mail-lf1-f70.google.com (mail-lf1-f70.google.com
- [209.85.167.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-112-4iIBNxm4MI-B6VOLeZ9jwA-1; Mon, 25 Mar 2024 06:15:02 -0400
-X-MC-Unique: 4iIBNxm4MI-B6VOLeZ9jwA-1
-Received: by mail-lf1-f70.google.com with SMTP id 2adb3069b0e04-50e91f9d422so4032718e87.2
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 03:15:02 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711361701; x=1711966501;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt:from
-         :references:cc:to:content-language:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=MK5Neka5+TdFvpBbcIvxKEkZ02U684q5i0+EZeGEb+k=;
-        b=wS7ChOMnQJfkfp0UJCLzZyIrsA8vEwmpRRgH+xHRsjXpJ6gClq32AyNUKOr1LgqQ8j
-         klOcq+tnpEfYn/heaxS7maaGLJ96sjTv8QSowBQ0B06mw5YIVWZesznrpJuNG2ZvmuxV
-         lsB7ZeBPSpv/MxDnCjFxcaLSaINbq4BY0kFFXWXaI02YC+ACPUz1Z/0qNW43pguLwDJQ
-         l7WbHvYYDNWc0BAw2fZJCKDQ0rgkL/8wrZrexdz6gY8kgr6dk8hcgdRZEOpZDvPo+soq
-         EgR7/nYaFONq5xEKCvEsEbjV6o/JpT48i/7qy/SBoCtSDFoHiYdX2ixKgG4I9AWgGv9d
-         yq0Q==
-X-Gm-Message-State: AOJu0Yz03haXSKjRLwzabGRzPHKM6orWi0aBetpdQiekbj0G3ePSLoj4
-	mauSv4W/1LLimvmERJq4BJi2bj7pV2B6yU8ySdT5mBlNZ1H91fC6NKSOjfo9mlw5o5HnVJN3S3G
-	Hon3jBwuyMgesUl0nh/WqO0rZfy1ry6C0uBpVa5UwUD6jR0USn2D8uEipsqvvag==
-X-Received: by 2002:ac2:4421:0:b0:512:bf99:7d80 with SMTP id w1-20020ac24421000000b00512bf997d80mr4330191lfl.1.1711361701081;
-        Mon, 25 Mar 2024 03:15:01 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IGaAgvB4iFm85tc79NggwOF9MoZ55s+EirHWVzX+L5dqXAriTuWHE3bE33EsemD+AZ9GmBvRQ==
-X-Received: by 2002:ac2:4421:0:b0:512:bf99:7d80 with SMTP id w1-20020ac24421000000b00512bf997d80mr4330175lfl.1.1711361700610;
-        Mon, 25 Mar 2024 03:15:00 -0700 (PDT)
-Received: from ?IPV6:2003:cb:c738:b400:6a82:1eac:2b5:8fca? (p200300cbc738b4006a821eac02b58fca.dip0.t-ipconnect.de. [2003:cb:c738:b400:6a82:1eac:2b5:8fca])
-        by smtp.gmail.com with ESMTPSA id dw1-20020a0560000dc100b0033e3cb02cefsm9160367wrb.86.2024.03.25.03.14.59
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 25 Mar 2024 03:15:00 -0700 (PDT)
-Message-ID: <f453061e-6e01-4ad7-8fc6-a39108beacfc@redhat.com>
-Date: Mon, 25 Mar 2024 11:14:59 +0100
+	s=arc-20240116; t=1711361767; c=relaxed/simple;
+	bh=sKKRdrTurFaHKczVM5dueoW5ihUbWtXhk0VglFkeCWI=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=Vs6uxQ0PYB9LZJoV5vbGOpsjbGg+0n4xvd6UItnOlwZRzeo9nxGDTYEvkihLxh9Z2FhmYqfWzQpoIkB/xEdtFo67fA/p2leZfxrRs+rCeZi6KSLB9W4fHkFyQeNXQPMusqj4+bmBQ05qQnGQ6BKs1I/P+KioD/oNE9/Wog9SO1k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=xry111.site; spf=pass smtp.mailfrom=xry111.site; dkim=pass (1024-bit key) header.d=xry111.site header.i=@xry111.site header.b=UUcDbdjZ; arc=none smtp.client-ip=89.208.246.23
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=xry111.site
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=xry111.site
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=xry111.site;
+	s=default; t=1711361760;
+	bh=sKKRdrTurFaHKczVM5dueoW5ihUbWtXhk0VglFkeCWI=;
+	h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+	b=UUcDbdjZes5HxI4JaxjU8oNwuRs4pvOz4nITFL0SMNyQV+qc0rFFNv3NlDQDofF/l
+	 PBzKemeloUIJ+UR1KuTuJjOcvVMn/KEHzXjiYgV2ZRTTc102GUuUNcecorHw9InFuX
+	 hjQebatvwiSqyN6j+KHY7SO8D9myXjtNQjUXM4q0=
+Received: from [IPv6:240e:358:11fe:a000:dc73:854d:832e:8] (unknown [IPv6:240e:358:11fe:a000:dc73:854d:832e:8])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature ECDSA (P-384) server-digest SHA384)
+	(Client did not present a certificate)
+	(Authenticated sender: xry111@xry111.site)
+	by xry111.site (Postfix) with ESMTPSA id C812866D53;
+	Mon, 25 Mar 2024 06:15:55 -0400 (EDT)
+Message-ID: <ba78805af8b39237b22a0ff87c4ba3c614a43910.camel@xry111.site>
+Subject: Re: [PATCHv3 pci-next 1/2] PCI/AER: correctable error message as
+ KERN_INFO
+From: Xi Ruoyao <xry111@xry111.site>
+To: Ethan Zhao <haifeng.zhao@linux.intel.com>, Bjorn Helgaas
+	 <helgaas@kernel.org>
+Cc: Grant Grundler <grundler@chromium.org>, bhelgaas@google.com, 
+	linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org, 
+	linuxppc-dev@lists.ozlabs.org, mahesh@linux.ibm.com, oohall@gmail.com, 
+	rajat.khandelwal@linux.intel.com, rajatja@chromium.org
+Date: Mon, 25 Mar 2024 18:15:50 +0800
+In-Reply-To: <38601aef-b082-463f-8e41-f73a4307de21@linux.intel.com>
+References: <20230918193913.GA203601@bhelgaas>
+	 <0a44fd663e93ac5b36865b0080da52d94252791a.camel@xry111.site>
+	 <38601aef-b082-463f-8e41-f73a4307de21@linux.intel.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.52.0 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: kernel BUG at mm/usercopy.c:102 -- pc : usercopy_abort
-Content-Language: en-US
-To: Xiubo Li <xiubli@redhat.com>, linux-mm@kvack.org
-Cc: linux-kernel@vger.kernel.org,
- Ceph Development <ceph-devel@vger.kernel.org>, linux-fsdevel@vger.kernel.org
-References: <e119b3e2-09a0-47a7-945c-98a1f03633ef@redhat.com>
-From: David Hildenbrand <david@redhat.com>
-Autocrypt: addr=david@redhat.com; keydata=
- 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
- WNyWQQ==
-Organization: Red Hat
-In-Reply-To: <e119b3e2-09a0-47a7-945c-98a1f03633ef@redhat.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
 
-On 25.03.24 08:45, Xiubo Li wrote:
-> Hi guys,
-> 
-> We are hitting the same crash frequently recently with the latest kernel
-> when testing kceph, and the call trace will be something likes:
-> 
-> [ 1580.034891] usercopy: Kernel memory exposure attempt detected from
-> SLUB object 'kmalloc-192' (offset 82, size 499712)!^M
-> [ 1580.045866] ------------[ cut here ]------------^M
-> [ 1580.050551] kernel BUG at mm/usercopy.c:102!^M
-> ^M
-> Entering kdb (current=0xffff8881211f5500, pid 172901) on processor 4
-> Oops: (null)^M
-> due to oops @ 0xffffffff8138cabd^M
-> CPU: 4 PID: 172901 Comm: fsstress Tainted: G S 6.6.0-g623393c9d50c #1^M
-> Hardware name: Supermicro SYS-5018R-WR/X10SRW-F, BIOS 1.0c 09/07/2015^M
-> RIP: 0010:usercopy_abort+0x6d/0x80^M
-> Code: 4c 0f 44 d0 41 53 48 c7 c0 1c e9 13 82 48 c7 c6 71 62 13 82 48 0f
-> 45 f0 48 89 f9 48 c7 c7 f0 6b 1b 82 4c 89 d2 e8 63 2b df ff <0f> 0b 49
-> c7 c1 44 c8 14 82 4d 89 cb 4d 89 c8 eb a5 66 90 f3 0f 1e^M
-> RSP: 0018:ffffc90006dfba88 EFLAGS: 00010246^M
-> RAX: 000000000000006a RBX: 000000000007a000 RCX: 0000000000000000^M
-> RDX: 0000000000000000 RSI: ffff88885fd1d880 RDI: ffff88885fd1d880^M
-> RBP: 000000000007a000 R08: 0000000000000000 R09: c0000000ffffdfff^M
-> R10: 0000000000000001 R11: ffffc90006dfb930 R12: 0000000000000001^M
-> R13: ffff8882b7bbed12 R14: ffff88827a375830 R15: ffff8882b7b44d12^M
-> FS:  00007fb24c859500(0000) GS:ffff88885fd00000(0000)
-> knlGS:0000000000000000^M
-> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033^M
-> CR2: 000055c2bcf9eb00 CR3: 000000028956c005 CR4: 00000000001706e0^M
-> Call Trace:^M
->    <TASK>^M
->    ? kdb_main_loop+0x32c/0xa10^M
->    ? kdb_stub+0x216/0x420^M
-> more>
-> 
-> You can see more detail in ceph tracker
-> https://tracker.ceph.com/issues/64471.
+On Mon, 2024-03-25 at 16:45 +0800, Ethan Zhao wrote:
+> On 3/25/2024 1:19 AM, Xi Ruoyao wrote:
+> > On Mon, 2023-09-18 at 14:39 -0500, Bjorn Helgaas wrote:
+> > > On Mon, Sep 18, 2023 at 07:42:30PM +0800, Xi Ruoyao wrote:
+> > > > ...
+> > > > My workstation suffers from too much correctable AER reporting as w=
+ell
+> > > > (related to Intel's errata "RPL013: Incorrectly Formed PCIe Packets=
+ May
+> > > > Generate Correctable Errors" and/or the motherboard design, I guess=
+).
+> > > We should rate-limit correctable error reporting so it's not
+> > > overwhelming.
+> > >=20
+> > > At the same time, I'm *also* interested in the cause of these errors,
+> > > in case there's a Linux defect or a hardware erratum that we can work
+> > > around.=C2=A0 Do you have a bug report with any more details, e.g., a=
+ dmesg
+> > > log and "sudo lspci -vv" output?
+> > Hi Bjorn,
+> >=20
+> > Sorry for the *very* late reply (somehow I didn't see the reply at all
+> > before it was removed by my cron job, and now I just savaged it from
+> > lore.kernel.org...)
+> >=20
+> > The dmesg is like:
+> >=20
+> > [=C2=A0 882.456994] pcieport 0000:00:1c.1: AER: Multiple Correctable er=
+ror message received from 0000:00:1c.1
+> > [=C2=A0 882.457002] pcieport 0000:00:1c.1: AER: found no error details =
+for 0000:00:1c.1
+> > [=C2=A0 882.457003] pcieport 0000:00:1c.1: AER: Multiple Correctable er=
+ror message received from 0000:06:00.0
+> > [=C2=A0 883.545763] pcieport 0000:00:1c.1: AER: Multiple Correctable er=
+ror message received from 0000:00:1c.1
+> > [=C2=A0 883.545789] pcieport 0000:00:1c.1: PCIe Bus Error: severity=3DC=
+orrectable, type=3DPhysical Layer, (Receiver ID)
+> > [=C2=A0 883.545790] pcieport 0000:00:1c.1:=C2=A0=C2=A0 device [8086:7a3=
+9] error status/mask=3D00000001/00002000
+> > [=C2=A0 883.545792] pcieport 0000:00:1c.1:=C2=A0=C2=A0=C2=A0 [ 0] RxErr=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0 (First)
+> > [=C2=A0 883.545794] pcieport 0000:00:1c.1: AER:=C2=A0=C2=A0 Error of th=
+is Agent is reported first
+> > [=C2=A0 883.545798] r8169 0000:06:00.0: PCIe Bus Error: severity=3DCorr=
+ectable, type=3DPhysical Layer, (Transmitter ID)
+> > [=C2=A0 883.545799] r8169 0000:06:00.0:=C2=A0=C2=A0 device [10ec:8125] =
+error status/mask=3D00001101/0000e000
+> > [=C2=A0 883.545800] r8169 0000:06:00.0:=C2=A0=C2=A0=C2=A0 [ 0] RxErr=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0 (First)
+> > [=C2=A0 883.545801] r8169 0000:06:00.0:=C2=A0=C2=A0=C2=A0 [ 8] Rollover
+> > [=C2=A0 883.545802] r8169 0000:06:00.0:=C2=A0=C2=A0=C2=A0 [12] Timeout
+> > [=C2=A0 883.545815] pcieport 0000:00:1c.1: AER: Correctable error messa=
+ge received from 0000:00:1c.1
+> > [=C2=A0 883.545823] pcieport 0000:00:1c.1: AER: found no error details =
+for 0000:00:1c.1
+> > [=C2=A0 883.545824] pcieport 0000:00:1c.1: AER: Multiple Correctable er=
+ror message received from 0000:06:00.0
+> >=20
+> > lspci output attached.
+> >=20
+> > Intel has issued an errata "RPL013" saying:
+> >=20
+> > "Under complex microarchitectural conditions, the PCIe controller may
+> > transmit an incorrectly formed Transaction Layer Packet (TLP), which
+> > will fail CRC checks.=C2=A0When this erratum occurs, the PCIe end point=
+ may
+> > record correctable errors resulting in either a NAK or link recovery.
+> > Intel=C2=AE has not observed any functional impact due to this erratum.=
+"
+> >=20
+> > But I'm really unsure if it describes my issue.
+> >=20
+> > Do you think I have some broken hardware and I should replace the CPU
+> > and/or the motherboard (where the r8169 is soldered)?=C2=A0 I've notice=
+d that
+> > my 13900K is almost impossible to overclock (despite it's a K), but I'v=
+e
+> > not encountered any issue other than these AER reporting so far after I
+> > gave up overclocking.
+>=20
+> Seems there are two r8169 nics on your board, only 0000:06:00.0 reports
+> aer errors, how about another one the 0000:07:00.0 nic ?
 
-Where is the full backtrace? Above contains only the backtrace of kdb.
+It never happens to 0000:07:00.0, even if I plug the ethernet cable into
+it instead of 0000:06:00.0.
 
-That link also contains:
+Maybe I should just use 0000:07:00.0 and blacklist 0000:06:00.0 as I
+don't need two NICs?
 
-Entering kdb (current=0xffff9115d14fb980, pid 61925) on processor 5 
-Oops: (null)^M
-due to oops @ 0xfffffffface3a1d2^M
-CPU: 5 PID: 61925 Comm: ld Kdump: loaded Not tainted 
-5.14.0-421.el9.x86_64 #1^M
-Hardware name: Supermicro SYS-5018R-WR/X10SRW-F, BIOS 2.0 12/17/2015^M
-RIP: 0010:usercopy_abort+0x74/0x76^M
-Code: 14 74 ad 51 48 0f 44 d6 49 c7 c3 cb 9f 73 ad 4c 89 d1 57 48 c7 c6 
-60 83 75 ad 48 c7 c7 00 83 75 ad 49 0f 44 f3 e8 1b 3b ff ff <0f> 0b 0f 
-b6 d3 4d 89 e0 48 89 e9 31 f6 48 c7 c7 7f 83 75 ad e8 73^M
-RSP: 0018:ffffbb97c16af8d0 EFLAGS: 00010246^M
-RAX: 0000000000000072 RBX: 0000000000000112 RCX: 0000000000000000^M
-RDX: 0000000000000000 RSI: ffff911d1fd60840 RDI: ffff911d1fd60840^M
-RBP: 0000000000004000 R08: 80000000ffff84b4 R09: 0000000000ffff0a^M
-R10: 0000000000000004 R11: 0000000000000076 R12: ffff9115c0be8b00^M
-R13: 0000000000000001 R14: ffff911665df9f68 R15: ffff9115d16be112^M
-FS:  00007ff20442eb80(0000) GS:ffff911d1fd40000(0000) 
-knlGS:0000000000000000^M
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033^M
-CR2: 00007ff20446142d CR3: 00000001215ec003 CR4: 00000000003706e0^M
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000^M
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400^M
-Call Trace:^M
-  <TASK>^M
-  ? show_trace_log_lvl+0x1c4/0x2df^M
-more>
-
-
-Don't we have more information about the calltrace somewhere? (or a 
-reproducer?)
-
--- 
-Cheers,
-
-David / dhildenb
-
+--=20
+Xi Ruoyao <xry111@xry111.site>
+School of Aerospace Science and Technology, Xidian University
 
