@@ -1,191 +1,472 @@
-Return-Path: <linux-kernel+bounces-116455-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-116449-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9C821889F13
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 13:24:24 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 398A6889F11
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 13:23:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2954B1F38524
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 12:24:24 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E1B222C2D3A
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 12:23:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F138812A153;
-	Mon, 25 Mar 2024 07:31:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8539A131180;
+	Mon, 25 Mar 2024 07:31:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="axL0tOEJ"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
+	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="aGhicSBE"
+Received: from out203-205-251-60.mail.qq.com (out203-205-251-60.mail.qq.com [203.205.251.60])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2B03E1782F6
-	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 03:23:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.8
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A5D961741F4;
+	Mon, 25 Mar 2024 03:11:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.205.251.60
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711337002; cv=none; b=JO4zGdrv/P9DxcHd1lWzyEcSqw5y62qmbqmjp4EBY3RTqh0wrgC/wZrIGW/z0qqahofgkkpky1SUWPxEg4LEe5JUXjurxodkV8kaA0RgTzvADDtzfXbA5UGKTzIua9bKg1pDV9awvF1Z2Fc3NPyfTA9cx6cPAtPothoqkuVJ8hM=
+	t=1711336282; cv=none; b=Smnyv3CeDZsP6m3iN/dFVzRgx/qKZ5Ngpn0sWQe0DZC9wqQ2T3ggsQ7+cJCfQqHC4PeGBc7xt//NW+9sWlgwhZloZSrDegDAajU4MVA3LcN+GwacFI5Y3FexdXE34i/6VnCM9dLCI7kk+TCPFXPUKScZEyQ4HQ7TnuRIHkMe7iM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711337002; c=relaxed/simple;
-	bh=pfOJDXNeeVg0d9vmPU/3Wutw7T8t/uvx+uuhxmN2RFM=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=m1YbnS1a+3Ejabcga9BrQYEfBIwzwrE2i9JNUZfhXBnth243X0nAoRyVomecl/rzGdlV8/gP87+EFemExuf8Ici8c4VrjOY3lRAHvfFF8NrkWYONmyfz4YKSAYaa9NQhgUbR29RFll/RnpryVBnr9lVpBwBWBFJMXVIRaXWu6hE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=axL0tOEJ; arc=none smtp.client-ip=192.198.163.8
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1711337000; x=1742873000;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=pfOJDXNeeVg0d9vmPU/3Wutw7T8t/uvx+uuhxmN2RFM=;
-  b=axL0tOEJ/U2Gkdmzh1EZtUSXuON6xgiw6N8gre4sz4bWnr8C5XpA0BgN
-   fT+K//vq9BuM0r21mEjvtSaADBnRAThwpxgnzs56NBQt5cwcaoN1PHC09
-   jUHeEHuK9V6AmoffyGp/g4BrsRqFprUnxadKO7FKJUBTmciBhtZ32hsRu
-   EULDLK0OYTAqU7hfnAkiBoFGpMP77Dv2I+gxKriRNSKg1aHIKP/PsQd0C
-   0XWVF903jfGzP6i9Mlz6ajPSUT/h3SbEdiZzAvpXkDbmmbkZWEBMGJPga
-   /H4tCQGn4lQVSTI8Qwa42Xgc+E5nge1weeU4mFNhB6iBkzkhldmDqWusV
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11023"; a="23806548"
-X-IronPort-AV: E=Sophos;i="6.07,152,1708416000"; 
-   d="scan'208";a="23806548"
-Received: from fmviesa002.fm.intel.com ([10.60.135.142])
-  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Mar 2024 20:23:19 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,152,1708416000"; 
-   d="scan'208";a="38587050"
-Received: from feng-clx.sh.intel.com ([10.239.159.50])
-  by fmviesa002.fm.intel.com with ESMTP; 24 Mar 2024 20:23:16 -0700
-From: Feng Tang <feng.tang@intel.com>
-To: Thomas Gleixner <tglx@linutronix.de>,
-	Ingo Molnar <mingo@redhat.com>,
-	Borislav Petkov <bp@alien8.de>,
-	Dave Hansen <dave.hansen@intel.com>,
-	"H . Peter Anvin" <hpa@zytor.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	x86@kernel.org,
-	paulmck@kernel.org,
-	rui.zhang@intel.com,
-	Waiman Long <longman@redhat.com>,
-	linux-kernel@vger.kernel.org
-Cc: Feng Tang <feng.tang@intel.com>,
-	Dave Hansen <dave.hansen@linux.intel.com>
-Subject: [PATCH v2] x86/tsc: Use topology_max_packages() to get package number
-Date: Mon, 25 Mar 2024 11:09:28 +0800
-Message-Id: <20240325030928.4190408-1-feng.tang@intel.com>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1711336282; c=relaxed/simple;
+	bh=QyR7G2g5fKQ3VhpVolyFdNyxQKfewgfnRzTt3lpBxJk=;
+	h=Message-ID:Content-Type:Mime-Version:Subject:From:In-Reply-To:
+	 Date:Cc:References:To; b=jRLxcgqvVO2++bpSriSkjRyVLSR+M0gK4O++jYAIVc8FokKw9CYySWo4Lp2s6iwwL2iPCD3B9z/w3/txRh/TF6UBhwdKaU8fcTb82AL4V55XX/iiYHKfsRsn2Os4Ns6ML+rUpVcEYUwQ1wa7j1r49LTb5yjMwF0ng2v3ABth4I8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=cyyself.name; spf=none smtp.mailfrom=cyyself.name; dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b=aGhicSBE; arc=none smtp.client-ip=203.205.251.60
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=cyyself.name
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=cyyself.name
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
+	t=1711336265; bh=APC1Tm2pZqHjaNLBkpAYawbKau/26igAPeHOWvQ6K9k=;
+	h=Subject:From:In-Reply-To:Date:Cc:References:To;
+	b=aGhicSBEbbRvdWpAmdE69COK4YDZCcy32qE4YNLSDl0iapF2ton3exmlyIG7T+/YX
+	 HCIfugpnZxW80LFYRUY+0bZN5fzi/qi/JjGVWuef6nY5uVoBKqOB5SwHYDUf9Nd/+T
+	 nuie4gPT9QzeVsIui3o7UmWSOUFYUXrZtEFIjY+w=
+Received: from smtpclient.apple ([2409:8934:1ed6:2f4f:d8d3:a43a:ef25:fb4f])
+	by newxmesmtplogicsvrszb9-1.qq.com (NewEsmtp) with SMTP
+	id 2BB9002C; Mon, 25 Mar 2024 11:10:59 +0800
+X-QQ-mid: xmsmtpt1711336259t2zniab2n
+Message-ID: <tencent_1C21558D2A7C7B8251DA4E8E08B82E313C08@qq.com>
+X-QQ-XMAILINFO: OK7NBzdNss/RBTqjwMX7XKHxirLNSsvTfV07l/ehhcetDtvXxGNF12+pcL7cd8
+	 1TGlxtdRXYjZrxfxYPLbLdEVf54pFsf/NN+VpeuWoWXBGnhq/Biho/ER3KiAOa3k7vKTmFc26pxX
+	 Z01l+s2Vx6aX0XoLgVllVyifzJbI+hN2zGagES1HiC6AcFqthSvcroC2ACg8t9JgvGhgyjTzOBAy
+	 c3MWgLu6L8YAT1MLFuJ4kI0znKfwNJ0xGJ3oTwIW7wlxE8u9eE2l+E+dzjkzJ7wnIHjPJrd7ZXxO
+	 8xtRBJFd200WK+w92lE0ZHOVYGQJ2IjjKcaOk0X/jncjtnDht9KOd8UYtJM+2CwA6AnRrsP1Vfds
+	 3i/OkrOzzF4l5Eu8vi0lliQNaVQtPwY/d3AErlugPyL5W/Bqm03PdXhIsIKrbV/nwtHeL2+GKoNI
+	 LTh53U7TB2ATwGa5RkutiUsp/C2ID7EwXghUuaAVVtgCUsl7E3luqC9xGSooJMYexhkjksvYOpsA
+	 isNGCi0Yj4NFnV0bTKV/vH1NigS0RC+7ATeem0uhOvgls8AeDymOnlnbsWDsrIJib7FsKlBXe+Hf
+	 Z6egGeNw2CBAbNLZDCqx+gczKB++bQJAwGdKtzVFUMRox0Y9MPRtyWUxFCafmyKYgh6XKJ3zFT8U
+	 aCNdLw7/VIMcMZ8yMU0Y0+H6Rb2SKLZaVudi5z0FyCqhWaJ04H3bw1VtWuvpPtwpfALl+ybsDfXA
+	 OKc5x1FT+2eQ/TNZwyEcm3wWj68etTP3AjaeuZ5s4ZEUcY0/iaZXGfkQIC9QdCPSkOm26KiielTj
+	 elmHSUZBw7Vo60VYCRNDuD+V6rQxDwcxZKPvUrygl+JmyZFxmAFnEeqAkcg4nUWkOGXTqwhqpQjx
+	 S7MbXeukQHF6+LWCrAAr+z5zhJdqjmpPuxxhVn/Lxqz9sbLjHG8D+OyDF/mW2I8Zmgz1NeJOX6ru
+	 1Y2X9LOqQqyhJctY1pid/JtkNmBUBc4WXyV7LGRBe5rVEry3IX9vkTVjTgse+p1KA6lYJ/3ITbpt
+	 UaeXdJ1CR/LcTHnf94r6rZl4xcNXbqT5D+SSparg==
+X-QQ-XMRINFO: M/715EihBoGSf6IYSX1iLFg=
+Content-Type: text/plain;
+	charset=utf-8
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3774.500.171.1.1\))
+Subject: Re: [PATCH v6 10/11] riscv: dts: add initial canmv-k230 and k230-evb
+ dts
+From: Yangyu Chen <cyy@cyyself.name>
+In-Reply-To: <c052918c13069cfcf768d03518560c65c990b220.camel@icenowy.me>
+Date: Mon, 25 Mar 2024 11:10:49 +0800
+Cc: linux-riscv@lists.infradead.org,
+ Conor Dooley <conor@kernel.org>,
+ Damien Le Moal <dlemoal@kernel.org>,
+ Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Paul Walmsley <paul.walmsley@sifive.com>,
+ Palmer Dabbelt <palmer@dabbelt.com>,
+ Albert Ou <aou@eecs.berkeley.edu>,
+ Guo Ren <guoren@kernel.org>,
+ Michael Turquette <mturquette@baylibre.com>,
+ Stephen Boyd <sboyd@kernel.org>,
+ Linus Walleij <linus.walleij@linaro.org>,
+ Philipp Zabel <p.zabel@pengutronix.de>,
+ linux-gpio@vger.kernel.org,
+ linux-clk@vger.kernel.org,
+ devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+Content-Transfer-Encoding: quoted-printable
+X-OQ-MSGID: <BDA8DE0E-D525-4EEE-A644-54E33B2C703E@cyyself.name>
+References: <tencent_F76EB8D731C521C18D5D7C4F8229DAA58E08@qq.com>
+ <tencent_DF5D7CD182AFDA188E0FB80E314A21038D08@qq.com>
+ <c052918c13069cfcf768d03518560c65c990b220.camel@icenowy.me>
+To: Icenowy Zheng <uwu@icenowy.me>
+X-Mailer: Apple Mail (2.3774.500.171.1.1)
 
-Commit b50db7095fe0 ("x86/tsc: Disable clocksource watchdog for TSC
-on qualified platorms") was introduced to solve problem that
-sometimes TSC clocksource is wrongly judged as unstable by watchdog
-like 'jiffies', HPET, etc.
 
-In it, the hardware package number is a key factor for judging whether
-to disable the watchdog for TSC, and 'nr_online_nodes' was chosen due
-to it is available in early boot phase before registering 'tsc-early'
-clocksource, where all non-boot CPUs are not brought up yet.
 
-Dave and Rui pointed out there are many cases in which 'nr_online_nodes'
-is cheated and not accurate, like:
+> On Mar 25, 2024, at 00:23, Icenowy Zheng <uwu@icenowy.me> wrote:
+>=20
+> =E5=9C=A8 2024-03-23=E6=98=9F=E6=9C=9F=E5=85=AD=E7=9A=84 20:12 =
++0800=EF=BC=8CYangyu Chen=E5=86=99=E9=81=93=EF=BC=9A
+>> Add initial dts for CanMV-K230 and K230-EVB powered by Canaan
+>> Kendryte
+>> K230 SoC [1].
+>>=20
+>> Some key consideration:
+>>=20
+>> - Only place BigCore which is 1.6GHz RV64GCBV
+>>=20
+>> The existence of cache coherence between the two cores remains
+>> unknown
+>> since they have dedicated L2 caches. And the factory SDK uses it for
+>> other OS by default. I don't know whether the two CPUs on K230 SoC
+>> can be used in one system. So only place BigCore here.
+>>=20
+>> Meanwhile, although docs from Canaan said 1.6GHz Core with Vector is
+>> CPU1, the CSR.MHARTID of this core is 0.
+>=20
+> I assume as these two cores do not have any coherency, they are just =
+in
+> different hartid namespace.
+>=20
 
-* numa emulation (numa=fake=8 etc.)
-* numa=off
-* platforms with CPU-less HBM nodes, CPU-less Optane memory nodes.
-* SNC (sub-numa cluster) mode enabled
-* 'maxcpus=' cmdline setup, where chopped CPUs could be onlined later
-* 'nr_cpus=', 'possible_cpus=' cmdline setup, where chopped CPUs can
-  not be onlined after boot
+Thanks for this hint.
 
-Thomas' recent patchset of refactoring x86 topology code improves
-topology_max_packages(), by making it more accurate and available in
-early boot phase, which works well in most of the above cases.
+>>=20
+>> - Support for "zba" "zbb" "zbc" "zbs" are tested by hand
+>>=20
+>> The user manual of C908 from T-Head does not document it
+>> specifically.
+>> It just said it supports B extension V1.0. [2]
+>>=20
+>> I have tested it by using this [3] which attempts to execute
+>> "add.uw",
+>> "andn", "clmulr", "bclr" and they doesn't traps on K230. But on
+>> JH7110,
+>> "clmulr" and "bclr" will trap.
+>>=20
+>> - Support for "zicbom" is tested by hand
+>>=20
+>> Have tested with some out-of-tree drivers from [4] that need DMA and
+>> they
+>> do not come to the dts currently.
+>>=20
+>> - Cache parameters are inferred from T-Head docs [2] and Canaan docs
+>> [1]
+>>=20
+>> L1i: 32KB, VIPT 4-Way set-associative, 64B Cacheline
+>> L1d: 32KB, VIPT 4-Way set-associative, 64B Cacheline
+>> L2: 256KB, PIPT 16-way set-associative, 64B Cacheline
+>>=20
+>> The numbers of cache sets are calculated from these parameters.
+>>=20
+>> - MMU only supports Sv39
+>>=20
+>> The T-Head docs [2] say the C908 core can be configured to support
+>> Sv48 and
+>> Sv39 or only Sv39. On K230, I tried to write "riscv,sv48" on mmu-type
+>> in
+>> dts and boot the mainline kernel. However, it failed during the
+>> kernel
+>> probe and fell back to Sv39. I also tested it on M-Mode software,
+>> writing
+>> Sv48 to satp.mode will not trap but will leave the CSR unchanged.
+>=20
+> It's specified by the spec that writing a unsupported mode to SATP =
+will
+> leave SATP unchanged, and it's also how the kernel detects for =
+Sv48/57.
+>=20
+> If a hardware fail to implement this behavior (make SATP changes when
+> writing an unsupported mode), the kernel will fail to boot and =
+manually
+> specify MMU mode by putting noXlvl to command line is required. This
+> behavior may be observed on FSL1030M SoC of Milk-V Vega (if it ever
+> runs mainline kernel).
+>=20
 
-The only exceptions are 'nr_cpus=' and 'possible_cpus=' setup.  And
-the reason is, during topology setup, the boot CPU iterates through
-all enumerated APIC ids and either accepts or rejects the APIC id.
-For accepted ids, it figures out which bits of the id map to the
-package number.  It tracks which package numbers have been seen in a
-bitmap.  topology_max_packages() just returns the number of bits set
-in that bitmap.
+OK.
 
-'nr_cpus=' and 'possible_cpus=' can cause more APIC ids to be rejected
-and can artificially lower the number of bits in the package bitmap
-and thus topology_max_packages().  This means that, for example, a
-system with 8 physical packages might reject all the CPUs on 6 of those
-packages and be left with only 2 packages and 2 bits set in the package
-bitmap. It needs the TSC watchdog, but would disable it anyway.  This
-isn't ideal, but this only happens for debug-oriented options. This is
-fixable by tracking the package numbers for rejected CPUs.  But it's
-not worth the trouble for debugging.
+>> While
+>> writing Sv39, it will take effect. It shows that this CPU does not
+>> support
+>> Sv48.
+>>=20
+>> - Svpbmt and T-Head MAEE both supported
+>>=20
+>> T-Head C908 does support both Svpbmt and T-Head MAEE for page-based
+>> memory
+>> attributes and is controlled by BIT(21) on CSR.MXSTATUS. The Svpbmt
+>> is used
+>> here for mainline kernel support for K230. If the kernel wants to use
+>> Svpbmt, the M-Mode software should unset BIT(21) of CSR.MXSTATUS
+>> before
+>> entering the S-Mode kernel. Otherwise, the kernel will not boot, as 0
+>> on
+>> T-Head MAEE is NonCachable Memory. Once the kernel switches from bare
+>> metal
+>> to Sv39, It will lose dirty cache line modifications that haven't
+>> been
+>> written back to the memory.
+>=20
+> As MXSTATUS has a S-mode read-only mirror known as SXSTATUS, maybe the
+> kernel should detect SXSTATUS to decide whether to use Svpbmt or
+> Xtheadpbmt (BTW Svnapot conflicts with Xtheadpbmt too).
+>=20
 
-So use topology_max_packages() to replace nr_online_nodes().
+Thanks for this hint. I may need to change some code in the T-Head PBMT =
+probe.
 
-Reported-by: Dave Hansen <dave.hansen@linux.intel.com>
-Closes: https://lore.kernel.org/lkml/a4860054-0f16-6513-f121-501048431086@intel.com/
-Signed-off-by: Feng Tang <feng.tang@intel.com>
----
-
-Hi all,
-
-For warning about possible compromise due to 'nr_cpus=' and 'possible_cpus=',
-another alternative could be checking whether these has been setup in cmdline
-inside tsc.c and warn there.
-
-Changelog:
-
-  Since v1:
-
-  * Use Dave's detailed elaboration about 'nr_cpus=', 'possible_cpus='
-    possibly compromising '__max_logical_packages' in commit log
-  * Fix typos and inaccuracy pointed out by Rui and Longman
-
- arch/x86/kernel/cpu/topology.c | 5 ++++-
- arch/x86/kernel/tsc.c          | 7 ++-----
- 2 files changed, 6 insertions(+), 6 deletions(-)
-
-diff --git a/arch/x86/kernel/cpu/topology.c b/arch/x86/kernel/cpu/topology.c
-index 3259b1d4fefe..2db03b00e29b 100644
---- a/arch/x86/kernel/cpu/topology.c
-+++ b/arch/x86/kernel/cpu/topology.c
-@@ -460,8 +460,11 @@ void __init topology_init_possible_cpus(void)
- 	pr_info("Num. threads per package: %3u\n", __num_threads_per_package);
- 
- 	pr_info("Allowing %u present CPUs plus %u hotplug CPUs\n", assigned, disabled);
--	if (topo_info.nr_rejected_cpus)
-+	if (topo_info.nr_rejected_cpus) {
- 		pr_info("Rejected CPUs %u\n", topo_info.nr_rejected_cpus);
-+		if (__max_logical_packages <= 4)
-+			pr_warn("TSC might be buggered due to the rejected CPUs\n");
-+	}
- 
- 	init_cpu_present(cpumask_of(0));
- 	init_cpu_possible(cpumask_of(0));
-diff --git a/arch/x86/kernel/tsc.c b/arch/x86/kernel/tsc.c
-index 5a69a49acc96..d00f88f16eb1 100644
---- a/arch/x86/kernel/tsc.c
-+++ b/arch/x86/kernel/tsc.c
-@@ -1252,15 +1252,12 @@ static void __init check_system_tsc_reliable(void)
- 	 *  - TSC which does not stop in C-States
- 	 *  - the TSC_ADJUST register which allows to detect even minimal
- 	 *    modifications
--	 *  - not more than two sockets. As the number of sockets cannot be
--	 *    evaluated at the early boot stage where this has to be
--	 *    invoked, check the number of online memory nodes as a
--	 *    fallback solution which is an reasonable estimate.
-+	 *  - not more than four packages
- 	 */
- 	if (boot_cpu_has(X86_FEATURE_CONSTANT_TSC) &&
- 	    boot_cpu_has(X86_FEATURE_NONSTOP_TSC) &&
- 	    boot_cpu_has(X86_FEATURE_TSC_ADJUST) &&
--	    nr_online_nodes <= 4)
-+	    topology_max_packages() <= 4)
- 		tsc_disable_clocksource_watchdog();
- }
- 
--- 
-2.34.1
+>>=20
+>> [1]
+>> =
+https://developer.canaan-creative.com/k230/dev/zh/00_hardware/K230_datashe=
+et.html#chapter-1-introduction
+>> [2]
+>> =
+https://occ-intl-prod.oss-ap-southeast-1.aliyuncs.com/resource//1699268369=
+347/XuanTie-C908-UserManual.pdf
+>> [3] https://github.com/cyyself/rvb_test
+>> [4] https://github.com/cyyself/linux/tree/k230-mainline
+>>=20
+>> Signed-off-by: Yangyu Chen <cyy@cyyself.name>
+>> ---
+>>  arch/riscv/boot/dts/canaan/Makefile       |   2 +
+>>  arch/riscv/boot/dts/canaan/k230-canmv.dts |  24 ++++
+>>  arch/riscv/boot/dts/canaan/k230-evb.dts   |  24 ++++
+>>  arch/riscv/boot/dts/canaan/k230.dtsi      | 140
+>> ++++++++++++++++++++++
+>>  4 files changed, 190 insertions(+)
+>>  create mode 100644 arch/riscv/boot/dts/canaan/k230-canmv.dts
+>>  create mode 100644 arch/riscv/boot/dts/canaan/k230-evb.dts
+>>  create mode 100644 arch/riscv/boot/dts/canaan/k230.dtsi
+>>=20
+>> diff --git a/arch/riscv/boot/dts/canaan/Makefile
+>> b/arch/riscv/boot/dts/canaan/Makefile
+>> index 987d1f0c41f0..7d54ea5c6f3d 100644
+>> --- a/arch/riscv/boot/dts/canaan/Makefile
+>> +++ b/arch/riscv/boot/dts/canaan/Makefile
+>> @@ -1,6 +1,8 @@
+>>  # SPDX-License-Identifier: GPL-2.0
+>>  dtb-$(CONFIG_ARCH_CANAAN) +=3D canaan_kd233.dtb
+>>  dtb-$(CONFIG_ARCH_CANAAN) +=3D k210_generic.dtb
+>> +dtb-$(CONFIG_ARCH_CANAAN) +=3D k230-canmv.dtb
+>> +dtb-$(CONFIG_ARCH_CANAAN) +=3D k230-evb.dtb
+>>  dtb-$(CONFIG_ARCH_CANAAN) +=3D sipeed_maix_bit.dtb
+>>  dtb-$(CONFIG_ARCH_CANAAN) +=3D sipeed_maix_dock.dtb
+>>  dtb-$(CONFIG_ARCH_CANAAN) +=3D sipeed_maix_go.dtb
+>> diff --git a/arch/riscv/boot/dts/canaan/k230-canmv.dts
+>> b/arch/riscv/boot/dts/canaan/k230-canmv.dts
+>> new file mode 100644
+>> index 000000000000..9565915cead6
+>> --- /dev/null
+>> +++ b/arch/riscv/boot/dts/canaan/k230-canmv.dts
+>> @@ -0,0 +1,24 @@
+>> +// SPDX-License-Identifier: GPL-2.0 OR MIT
+>> +/*
+>> + * Copyright (C) 2024 Yangyu Chen <cyy@cyyself.name>
+>> + */
+>> +
+>> +#include "k230.dtsi"
+>> +
+>> +/ {
+>> +       model =3D "Canaan CanMV-K230";
+>> +       compatible =3D "canaan,canmv-k230", "canaan,kendryte-k230";
+>> +
+>> +       chosen {
+>> +               stdout-path =3D "serial0:115200n8";
+>> +       };
+>> +
+>> +       ddr: memory@0 {
+>> +               device_type =3D "memory";
+>> +               reg =3D <0x0 0x0 0x0 0x20000000>;
+>> +       };
+>> +};
+>> +
+>> +&uart0 {
+>> +       status =3D "okay";
+>> +};
+>> diff --git a/arch/riscv/boot/dts/canaan/k230-evb.dts
+>> b/arch/riscv/boot/dts/canaan/k230-evb.dts
+>> new file mode 100644
+>> index 000000000000..f898b8e62368
+>> --- /dev/null
+>> +++ b/arch/riscv/boot/dts/canaan/k230-evb.dts
+>> @@ -0,0 +1,24 @@
+>> +// SPDX-License-Identifier: GPL-2.0 OR MIT
+>> +/*
+>> + * Copyright (C) 2024 Yangyu Chen <cyy@cyyself.name>
+>> + */
+>> +
+>> +#include "k230.dtsi"
+>> +
+>> +/ {
+>> +       model =3D "Kendryte K230 EVB";
+>> +       compatible =3D "canaan,k230-usip-lp3-evb", "canaan,kendryte-
+>> k230";
+>> +
+>> +       chosen {
+>> +               stdout-path =3D "serial0:115200n8";
+>> +       };
+>> +
+>> +       ddr: memory@0 {
+>> +               device_type =3D "memory";
+>> +               reg =3D <0x0 0x0 0x0 0x20000000>;
+>> +       };
+>> +};
+>> +
+>> +&uart0 {
+>> +       status =3D "okay";
+>> +};
+>> diff --git a/arch/riscv/boot/dts/canaan/k230.dtsi
+>> b/arch/riscv/boot/dts/canaan/k230.dtsi
+>> new file mode 100644
+>> index 000000000000..7da49498945e
+>> --- /dev/null
+>> +++ b/arch/riscv/boot/dts/canaan/k230.dtsi
+>> @@ -0,0 +1,140 @@
+>> +// SPDX-License-Identifier: GPL-2.0 OR MIT
+>> +/*
+>> + * Copyright (C) 2024 Yangyu Chen <cyy@cyyself.name>
+>> + */
+>> +
+>> +#include <dt-bindings/interrupt-controller/irq.h>
+>> +
+>> +/dts-v1/;
+>> +/ {
+>> +       #address-cells =3D <2>;
+>> +       #size-cells =3D <2>;
+>> +       compatible =3D "canaan,kendryte-k230";
+>> +
+>> +       aliases {
+>> +               serial0 =3D &uart0;
+>> +       };
+>> +
+>> +       cpus {
+>> +               #address-cells =3D <1>;
+>> +               #size-cells =3D <0>;
+>> +               timebase-frequency =3D <27000000>;
+>> +
+>> +               cpu@0 {
+>> +                       compatible =3D "thead,c908", "riscv";
+>> +                       device_type =3D "cpu";
+>> +                       reg =3D <0>;
+>> +                       riscv,isa =3D
+>> "rv64imafdcv_zba_zbb_zbc_zbs_zicbom_svpbmt";
+>> +                       riscv,isa-base =3D "rv64i";
+>> +                       riscv,isa-extensions =3D "i", "m", "a", "f",
+>> "d", "c", "v", "zba", "zbb",
+>> +                                              "zbc", "zbs",
+>> "zicbom", "zicntr", "zicsr",
+>> +                                              "zifencei", "zihpm",
+>> "svpbmt";
+>> +                       riscv,cbom-block-size =3D <64>;
+>> +                       d-cache-block-size =3D <64>;
+>> +                       d-cache-sets =3D <128>;
+>> +                       d-cache-size =3D <32768>;
+>> +                       i-cache-block-size =3D <64>;
+>> +                       i-cache-sets =3D <128>;
+>> +                       i-cache-size =3D <32768>;
+>> +                       next-level-cache =3D <&l2_cache>;
+>> +                       mmu-type =3D "riscv,sv39";
+>> +
+>> +                       cpu0_intc: interrupt-controller {
+>> +                               compatible =3D "riscv,cpu-intc";
+>> +                               interrupt-controller;
+>> +                               #interrupt-cells =3D <1>;
+>> +                       };
+>> +               };
+>> +
+>> +               l2_cache: l2-cache {
+>> +                       compatible =3D "cache";
+>> +                       cache-block-size =3D <64>;
+>> +                       cache-level =3D <2>;
+>> +                       cache-size =3D <262144>;
+>> +                       cache-sets =3D <256>;
+>> +                       cache-unified;
+>> +               };
+>> +       };
+>> +
+>> +       apb_clk: apb-clk-clock {
+>> +               compatible =3D "fixed-clock";
+>> +               clock-frequency =3D <50000000>;
+>> +               clock-output-names =3D "apb_clk";
+>> +               #clock-cells =3D <0>;
+>> +       };
+>> +
+>> +       soc {
+>> +               compatible =3D "simple-bus";
+>> +               interrupt-parent =3D <&plic>;
+>> +               #address-cells =3D <2>;
+>> +               #size-cells =3D <2>;
+>> +               dma-noncoherent;
+>> +               ranges;
+>> +
+>> +               plic: interrupt-controller@f00000000 {
+>> +                       compatible =3D "canaan,k230-plic" =
+,"thead,c900-
+>> plic";
+>> +                       reg =3D <0xf 0x00000000 0x0 0x04000000>;
+>> +                       interrupts-extended =3D <&cpu0_intc 11>,
+>> <&cpu0_intc 9>;
+>> +                       interrupt-controller;
+>> +                       #address-cells =3D <0>;
+>> +                       #interrupt-cells =3D <2>;
+>> +                       riscv,ndev =3D <208>;
+>> +               };
+>> +
+>> +               clint: timer@f04000000 {
+>> +                       compatible =3D "canaan,k230-clint",
+>> "thead,c900-clint";
+>> +                       reg =3D <0xf 0x04000000 0x0 0x00010000>;
+>> +                       interrupts-extended =3D <&cpu0_intc 3>,
+>> <&cpu0_intc 7>;
+>> +               };
+>> +
+>> +               uart0: serial@91400000 {
+>> +                       compatible =3D "snps,dw-apb-uart";
+>> +                       reg =3D <0x0 0x91400000 0x0 0x1000>;
+>> +                       clocks =3D <&apb_clk>;
+>> +                       interrupts =3D <16 IRQ_TYPE_LEVEL_HIGH>;
+>> +                       reg-io-width =3D <4>;
+>> +                       reg-shift =3D <2>;
+>> +                       status =3D "disabled";
+>> +               };
+>> +
+>> +               uart1: serial@91401000 {
+>> +                       compatible =3D "snps,dw-apb-uart";
+>> +                       reg =3D <0x0 0x91401000 0x0 0x1000>;
+>> +                       clocks =3D <&apb_clk>;
+>> +                       interrupts =3D <17 IRQ_TYPE_LEVEL_HIGH>;
+>> +                       reg-io-width =3D <4>;
+>> +                       reg-shift =3D <2>;
+>> +                       status =3D "disabled";
+>> +               };
+>> +
+>> +               uart2: serial@91402000 {
+>> +                       compatible =3D "snps,dw-apb-uart";
+>> +                       reg =3D <0x0 0x91402000 0x0 0x1000>;
+>> +                       clocks =3D <&apb_clk>;
+>> +                       interrupts =3D <18 IRQ_TYPE_LEVEL_HIGH>;
+>> +                       reg-io-width =3D <4>;
+>> +                       reg-shift =3D <2>;
+>> +                       status =3D "disabled";
+>> +               };
+>> +
+>> +               uart3: serial@91403000 {
+>> +                       compatible =3D "snps,dw-apb-uart";
+>> +                       reg =3D <0x0 0x91403000 0x0 0x1000>;
+>> +                       clocks =3D <&apb_clk>;
+>> +                       interrupts =3D <19 IRQ_TYPE_LEVEL_HIGH>;
+>> +                       reg-io-width =3D <4>;
+>> +                       reg-shift =3D <2>;
+>> +                       status =3D "disabled";
+>> +               };
+>> +
+>> +               uart4: serial@91404000 {
+>> +                       compatible =3D "snps,dw-apb-uart";
+>> +                       reg =3D <0x0 0x91404000 0x0 0x1000>;
+>> +                       clocks =3D <&apb_clk>;
+>> +                       interrupts =3D <20 IRQ_TYPE_LEVEL_HIGH>;
+>> +                       reg-io-width =3D <4>;
+>> +                       reg-shift =3D <2>;
+>> +                       status =3D "disabled";
+>> +               };
+>> +       };
+>> +};
+>=20
 
 
