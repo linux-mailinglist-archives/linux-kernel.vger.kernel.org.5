@@ -1,70 +1,60 @@
-Return-Path: <linux-kernel+bounces-117911-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-117912-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id CD61088B129
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 21:17:59 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7357688B294
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 22:20:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 77C3229C640
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 20:17:58 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7940CB37146
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 20:18:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 79E123FE5D;
-	Mon, 25 Mar 2024 20:17:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6162943AB2;
+	Mon, 25 Mar 2024 20:18:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="O3unAYM/"
-Received: from mail-qk1-f176.google.com (mail-qk1-f176.google.com [209.85.222.176])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=salutedevices.com header.i=@salutedevices.com header.b="DJRLAW/1"
+Received: from mx1.sberdevices.ru (mx2.sberdevices.ru [45.89.224.132])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC07E1B80F
-	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 20:17:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B24C9FC01;
+	Mon, 25 Mar 2024 20:18:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.89.224.132
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711397854; cv=none; b=mC6G1z682mADCs1GCVopQdK5xT6TaemP4L/mbSYkw+vci58JR3zFul5tqv0x3+YmEmlo4jRRA+Xr2IagorT1iy4wAQNJRK7r4l7X4P5KvIhdyKREApshDCSDD0nAFkSrxUgOYfWyB/E8cgw5XaH1IdS1l+LarjLjQunZo/mjZaU=
+	t=1711397922; cv=none; b=KgMVKO6zGsv78bK+6IlzWUM5nChyoLQTcGCXLZXjafkOCUhxnMTuz1WtV4zV4do61fIKBy/Ys73ydac4AkNgd6s548kg5coIZzLL9mTXguAplE7nqk3PWF34dNvtYpFxENouwi/JrnNPUMgB5uFz0fpvzl8JX5bP4nLa06/bZ8w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711397854; c=relaxed/simple;
-	bh=TQeIs1W+H8u9CGFrYtv0dy8rcmGm+ts12+q8bxQ38fk=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=P8Ced8IaAOW6xXLIs09nhDvMIUyyXu20Suu+VN2sbdWrmYgX9mrxLArtC7xrhVmj8HDoFp4zBu0+YQQRe9QJhCE+hoNXdXUfUf8biySsPQPUQ7cz/zzVnE2zICYwyd1MVI6ejbDcnZiwhjh/BD7NCqhJzXqySAN68EbNRlA+7js=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=O3unAYM/; arc=none smtp.client-ip=209.85.222.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=broadcom.com
-Received: by mail-qk1-f176.google.com with SMTP id af79cd13be357-78a01a3012aso337001985a.2
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 13:17:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1711397851; x=1712002651; darn=vger.kernel.org;
-        h=in-reply-to:autocrypt:from:references:cc:to:subject:user-agent
-         :mime-version:date:message-id:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=AnSfroqPMJzCxbyxUYRrzNEdcII5s8b8Q/Xrxpd/CdM=;
-        b=O3unAYM/oi3MHr97jPvLoMNrrEBdP99qdP+UcnoaEGej6ymHRc1VYYsKx6hV9uBjMg
-         RNXPHmtY6ITDbxW2XXuqQbDTLTyTyQc0Sqm3Nw62Lbodj9kRhmrqA8Gs2oxpDM1PRg/K
-         aQkSz0mM6CKSzeK3zNYGPYJyjCkLxxhBa6g74=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711397851; x=1712002651;
-        h=in-reply-to:autocrypt:from:references:cc:to:subject:user-agent
-         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=AnSfroqPMJzCxbyxUYRrzNEdcII5s8b8Q/Xrxpd/CdM=;
-        b=A8a/DSRNAybkucaqB1jt+QYFpBPps/J3vn6/5l7R/PNLztCs7jSG+3q71xSnLsa3WM
-         aov1eqhiFQN1OToV0HQUDSOZIQ0qX2y7iaKTfSKW91FB4pGz2yy2sYNN/eOkg8h3prN3
-         50yncQvUYKRG8As86wbNeoA3dynOzz3/eGjej2gfhYoRNPj0AF+Lr37kyMXVsTXphtk4
-         Ez7f9eR3cDgeEy5rONU/phnB1hhK/eom2FRjgn/o18pCtNT1ERA9IhVhP9eTDbhA/S3a
-         GEhpqYFri2nxzYzuO7yPWhgJPZ57wEoUx8xB5rPhmi3+kKiG/G6ZLEIo+GW1rdpRYkhb
-         CSmg==
-X-Forwarded-Encrypted: i=1; AJvYcCVJ3oxJICOwBf/JtA82Mgd5oshMUq6Ybmi84Lfr681lhlRd5SkqrW55EvuZCuLZotEm03D/CjfhzrwWqkzFnhXfwY3b03IAYnFE9QJ0
-X-Gm-Message-State: AOJu0YxQBa6aQomE1o0V7UydZ6eK30XZt59BjpHao/171pwXjDR3EMRd
-	EgRbZMyklYydP/wXofzSSw4XWd1bWnNOWsGF6pPE4PTpdU+r1uDNDqI06BNGsw==
-X-Google-Smtp-Source: AGHT+IGrdPhCFb7/PahCnXq59jznTi/R7tHYcluCTYJ47+y+YToG7eGvvMev20XfDzWLGDjeu5eInw==
-X-Received: by 2002:a05:620a:55b2:b0:78a:5c88:9b04 with SMTP id vr18-20020a05620a55b200b0078a5c889b04mr960763qkn.73.1711397851631;
-        Mon, 25 Mar 2024 13:17:31 -0700 (PDT)
-Received: from [10.67.48.245] ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id s25-20020a05620a16b900b0078a50b9b09csm1630997qkj.115.2024.03.25.13.17.28
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 25 Mar 2024 13:17:30 -0700 (PDT)
-Message-ID: <21911e71-b10a-4e72-ac69-36bcba8d9569@broadcom.com>
-Date: Mon, 25 Mar 2024 13:17:27 -0700
+	s=arc-20240116; t=1711397922; c=relaxed/simple;
+	bh=Gmb2BaijEb4m5JgrvZZz3HH7oDI3q6QmBj33VjTQq8M=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=VOkKplpQN0nYcK/2JgYVde8iUhvA+u7zEM3cxK12X/2UGqMOEH0nfo7oaqE7ZZb6XxhV3rKbk5Xt0Kv6Tf1AaIklOaD1WRHNab4TZFKGlfUsqdfZMU/VHfcdeXv+yf6kQb+nbkx49KLvtDBIpEsaJwvxZDs5dsQg90TWru1/cZU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=salutedevices.com; spf=pass smtp.mailfrom=salutedevices.com; dkim=pass (2048-bit key) header.d=salutedevices.com header.i=@salutedevices.com header.b=DJRLAW/1; arc=none smtp.client-ip=45.89.224.132
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=salutedevices.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=salutedevices.com
+Received: from p-infra-ksmg-sc-msk02 (localhost [127.0.0.1])
+	by mx1.sberdevices.ru (Postfix) with ESMTP id D7DA512000B;
+	Mon, 25 Mar 2024 23:18:33 +0300 (MSK)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru D7DA512000B
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=salutedevices.com;
+	s=mail; t=1711397913;
+	bh=ag/Xt50izz8cSF9yG1EEgnKoOdRbmA9hyWMHr06p+jM=;
+	h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type:From;
+	b=DJRLAW/1rpTIEtDVub8hh36iuJwSL1w2ucxfIcQNn1CSyMZ7jSUZYABrf9s3VJMnV
+	 mZ7/3TEl8VmpZKYYTi9I83y8HnO0RAgAvFrWqPhpK9pfHMc18VbKkq7bDcDBv8M1fF
+	 UzERFN1AoDHTVv5oEFkP+nr3BUaKOUp8i87DloNtjYrpkZV/euvXiu5J6acq591MMl
+	 siDktPxm9Rj4j46yaft3ldmO6YXfCcoldU2v6SRM1hddPgNEHNZjx5UemA5FyjR8rd
+	 GZJsvUFufLucFHVeH+aqmPfcRGvPZ48XwwPVqy8nPqq/6PdGkPuZ9IdOV+pnPqewVl
+	 ANQQJGglgAE3g==
+Received: from smtp.sberdevices.ru (p-i-exch-sc-m02.sberdevices.ru [172.16.192.103])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by mx1.sberdevices.ru (Postfix) with ESMTPS;
+	Mon, 25 Mar 2024 23:18:33 +0300 (MSK)
+Received: from [172.28.66.90] (100.64.160.123) by
+ p-i-exch-sc-m02.sberdevices.ru (172.16.192.103) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.40; Mon, 25 Mar 2024 23:18:33 +0300
+Message-ID: <01ed720d-a990-40dd-8a59-a95ea960ecec@salutedevices.com>
+Date: Mon, 25 Mar 2024 23:18:32 +0300
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -72,162 +62,155 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 6.6 000/632] 6.6.23-rc2 review
-To: Sasha Levin <sashal@kernel.org>, linux-kernel@vger.kernel.org,
- stable@vger.kernel.org
-Cc: torvalds@linux-foundation.org, akpm@linux-foundation.org,
- linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
- lkft-triage@lists.linaro.org, pavel@denx.de
-References: <20240325115951.1766937-1-sashal@kernel.org>
-From: Florian Fainelli <florian.fainelli@broadcom.com>
-Autocrypt: addr=florian.fainelli@broadcom.com; keydata=
- xsBNBFPAG8ABCAC3EO02urEwipgbUNJ1r6oI2Vr/+uE389lSEShN2PmL3MVnzhViSAtrYxeT
- M0Txqn1tOWoIc4QUl6Ggqf5KP6FoRkCrgMMTnUAINsINYXK+3OLe7HjP10h2jDRX4Ajs4Ghs
- JrZOBru6rH0YrgAhr6O5gG7NE1jhly+EsOa2MpwOiXO4DE/YKZGuVe6Bh87WqmILs9KvnNrQ
- PcycQnYKTVpqE95d4M824M5cuRB6D1GrYovCsjA9uxo22kPdOoQRAu5gBBn3AdtALFyQj9DQ
- KQuc39/i/Kt6XLZ/RsBc6qLs+p+JnEuPJngTSfWvzGjpx0nkwCMi4yBb+xk7Hki4kEslABEB
- AAHNMEZsb3JpYW4gRmFpbmVsbGkgPGZsb3JpYW4uZmFpbmVsbGlAYnJvYWRjb20uY29tPsLB
- IQQQAQgAywUCZWl41AUJI+Jo+hcKAAG/SMv+fS3xUQWa0NryPuoRGjsA3SAUAAAAAAAWAAFr
- ZXktdXNhZ2UtbWFza0BwZ3AuY29tjDAUgAAAAAAgAAdwcmVmZXJyZWQtZW1haWwtZW5jb2Rp
- bmdAcGdwLmNvbXBncG1pbWUICwkIBwMCAQoFF4AAAAAZGGxkYXA6Ly9rZXlzLmJyb2FkY29t
- Lm5ldAUbAwAAAAMWAgEFHgEAAAAEFQgJChYhBNXZKpfnkVze1+R8aIExtcQpvGagAAoJEIEx
- tcQpvGagWPEH/2l0DNr9QkTwJUxOoP9wgHfmVhqc0ZlDsBFv91I3BbhGKI5UATbipKNqG13Z
- TsBrJHcrnCqnTRS+8n9/myOF0ng2A4YT0EJnayzHugXm+hrkO5O9UEPJ8a+0553VqyoFhHqA
- zjxj8fUu1px5cbb4R9G4UAySqyeLLeqnYLCKb4+GklGSBGsLMYvLmIDNYlkhMdnnzsSUAS61
- WJYW6jjnzMwuKJ0ZHv7xZvSHyhIsFRiYiEs44kiYjbUUMcXor/uLEuTIazGrE3MahuGdjpT2
- IOjoMiTsbMc0yfhHp6G/2E769oDXMVxCCbMVpA+LUtVIQEA+8Zr6mX0Yk4nDS7OiBlvOwE0E
- U8AbwQEIAKxr71oqe+0+MYCc7WafWEcpQHFUwvYLcdBoOnmJPxDwDRpvU5LhqSPvk/yJdh9k
- 4xUDQu3rm1qIW2I9Puk5n/Jz/lZsqGw8T13DKyu8eMcvaA/irm9lX9El27DPHy/0qsxmxVmU
- pu9y9S+BmaMb2CM9IuyxMWEl9ruWFS2jAWh/R8CrdnL6+zLk60R7XGzmSJqF09vYNlJ6Bdbs
- MWDXkYWWP5Ub1ZJGNJQ4qT7g8IN0qXxzLQsmz6tbgLMEHYBGx80bBF8AkdThd6SLhreCN7Uh
- IR/5NXGqotAZao2xlDpJLuOMQtoH9WVNuuxQQZHVd8if+yp6yRJ5DAmIUt5CCPcAEQEAAcLB
- gQQYAQIBKwUCU8AbwgUbDAAAAMBdIAQZAQgABgUCU8AbwQAKCRCTYAaomC8PVQ0VCACWk3n+
- obFABEp5Rg6Qvspi9kWXcwCcfZV41OIYWhXMoc57ssjCand5noZi8bKg0bxw4qsg+9cNgZ3P
- N/DFWcNKcAT3Z2/4fTnJqdJS//YcEhlr8uGs+ZWFcqAPbteFCM4dGDRruo69IrHfyyQGx16s
- CcFlrN8vD066RKevFepb/ml7eYEdN5SRALyEdQMKeCSf3mectdoECEqdF/MWpfWIYQ1hEfdm
- C2Kztm+h3Nkt9ZQLqc3wsPJZmbD9T0c9Rphfypgw/SfTf2/CHoYVkKqwUIzI59itl5Lze+R5
- wDByhWHx2Ud2R7SudmT9XK1e0x7W7a5z11Q6vrzuED5nQvkhAAoJEIExtcQpvGagugcIAJd5
- EYe6KM6Y6RvI6TvHp+QgbU5dxvjqSiSvam0Ms3QrLidCtantcGT2Wz/2PlbZqkoJxMQc40rb
- fXa4xQSvJYj0GWpadrDJUvUu3LEsunDCxdWrmbmwGRKqZraV2oG7YEddmDqOe0Xm/NxeSobc
- MIlnaE6V0U8f5zNHB7Y46yJjjYT/Ds1TJo3pvwevDWPvv6rdBeV07D9s43frUS6xYd1uFxHC
- 7dZYWJjZmyUf5evr1W1gCgwLXG0PEi9n3qmz1lelQ8lSocmvxBKtMbX/OKhAfuP/iIwnTsww
- 95A2SaPiQZA51NywV8OFgsN0ITl2PlZ4Tp9hHERDe6nQCsNI/Us=
-In-Reply-To: <20240325115951.1766937-1-sashal@kernel.org>
-Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-	boundary="00000000000008fbac061481dd05"
-
---00000000000008fbac061481dd05
+Subject: Re: [PATCH] iio: dht11: set debug log level for parsing error
+ messages
 Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+To: Harald Geyer <harald@ccbib.org>, <lars@metafoo.de>, <jic23@kernel.org>
+CC: <linux-iio@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+	<kernel@salutedevices.com>
+References: <20240325165406.226916-1-gnstark@salutedevices.com>
+ <c2fb93a5b2e6f437e2c92d0d797509c619cb63a8.camel@ccbib.org>
+From: George Stark <gnstark@salutedevices.com>
+In-Reply-To: <c2fb93a5b2e6f437e2c92d0d797509c619cb63a8.camel@ccbib.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) To
+ p-i-exch-sc-m02.sberdevices.ru (172.16.192.103)
+X-KSMG-Rule-ID: 10
+X-KSMG-Message-Action: clean
+X-KSMG-AntiSpam-Lua-Profiles: 184404 [Mar 25 2024]
+X-KSMG-AntiSpam-Version: 6.1.0.4
+X-KSMG-AntiSpam-Envelope-From: gnstark@salutedevices.com
+X-KSMG-AntiSpam-Rate: 0
+X-KSMG-AntiSpam-Status: not_detected
+X-KSMG-AntiSpam-Method: none
+X-KSMG-AntiSpam-Auth: dkim=none
+X-KSMG-AntiSpam-Info: LuaCore: 11 0.3.11 5ecf9895443a5066245fcb91e8430edf92b1b594, {Tracking_from_domain_doesnt_match_to}, salutedevices.com:7.1.1;smtp.sberdevices.ru:7.1.1,5.0.1;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;127.0.0.199:7.1.2;100.64.160.123:7.1.2, FromAlignment: s, ApMailHostAddress: 100.64.160.123
+X-MS-Exchange-Organization-SCL: -1
+X-KSMG-AntiSpam-Interceptor-Info: scan successful
+X-KSMG-AntiPhishing: Clean
+X-KSMG-LinksScanning: Clean
+X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2024/03/25 18:32:00 #24438765
+X-KSMG-AntiVirus-Status: Clean, skipped
 
-On 3/25/24 04:59, Sasha Levin wrote:
-> 
-> This is the start of the stable review cycle for the 6.6.23 release.
-> There are 632 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Wed Mar 27 11:59:50 AM UTC 2024.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
->          https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git/patch/?id=linux-6.6.y&id2=v6.6.22
-> or in the git tree and branch at:
->          git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.6.y
-> and the diffstat can be found below.
-> 
-> Thanks,
-> Sasha
+Hello Harald
 
-On ARCH_BRCMSTB using 32-bit and 64-bit ARM kernels, build tested on 
-BMIPS_GENERIC:
+Thanks for the review.
 
-Tested-by: Florian Fainelli <florian.fainelli@broadcom.com>
+
+On 3/25/24 21:48, Harald Geyer wrote:
+> Hi George!
+> 
+> I'm torn on this:
+> 
+> Am Montag, dem 25.03.2024 um 19:54 +0300 schrieb George Stark:
+>> Protocol parsing errors could happen due to several reasons like
+>> noise
+>> environment, heavy load on system etc. If to poll the sensor
+>> frequently
+>> and/or for a long period kernel log will become polluted with error
+>> messages if their log level is err (i.e. on by default).
+> 
+> Yes, these error are often recoverable. (As are many other HW errors,
+> that typically are logged. Eg USB bus resets due to EMI)
+> 
+> However they are still genuine errors of the HW.
+> 
+>>   Also some types
+>> of those messages already have dbg level so use unified log level for
+>> all such cases.
+> 
+> My take so far has been: Debug level messages are for debugging the
+> code (ie adding/testing support of new device variants etc). Users
+> aren't expected to know about or enable debug output. OTOH anything
+> actually going wrong is an error and should be logged as such.
+> 
+> The idea is, that these messages help users understand issues with
+> their HW (like too long cables, broken cables etc). But it is true,
+> that they will slowly accumulate in many real world scenarios without
+> anything being truly wrong.
+
+I agree with you that it's very convenient to just take a look to dmesg
+and see device connection problems at once. But unlike e.g. usb user has
+to actually start reading sensor to perform communication and read
+errors will be propagated to the userspace and could be noticed \
+handled.
+
+Anyway I believe we should use uniform approach for read errors -
+currently in the driver there're already dbg messages:
+
+"lost synchronisation at edge %d\n"
+"invalid checksum\n"
+
+I changed log level from err to dbg for the messages:
+
+"Only %d signal edges detected\n"
+"Don't know how to decode data: %d %d %d %d\n"
+
+They all are from a single callback and say the same thing -
+communication problem.
+
+If we make all those messages as errors it'd be great to have mechanism
+to disable them e.g. thru module parameter or somehow without rebuilding
+kernel. Those errors can be bypassed by increasing read rate.
+
+> 
+> I don't consider the dmesg buffer being rotated after a month or two a
+> bug. But I suppose this is a corner case. I'll happily accept whatever
+> Jonathan thinks is reasonable.
+> 
+> Best regards,
+> Harald
+> 
+> 
+>> Signed-off-by: George Stark <gnstark@salutedevices.com>
+>> ---
+>> I use DHT22 sensor with Raspberry Pi Zero W as a simple home meteo
+>> station.
+>> Even if to poll the sensor once per tens of seconds after month or
+>> two dmesg
+>> may become full of useless parsing error messages. Anyway those
+>> errors are caught
+>> in the user software thru return values.
+>>
+>>   drivers/iio/humidity/dht11.c | 4 ++--
+>>   1 file changed, 2 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/drivers/iio/humidity/dht11.c
+>> b/drivers/iio/humidity/dht11.c
+>> index c97e25448772..e2cbc442177b 100644
+>> --- a/drivers/iio/humidity/dht11.c
+>> +++ b/drivers/iio/humidity/dht11.c
+>> @@ -156,7 +156,7 @@ static int dht11_decode(struct dht11 *dht11, int
+>> offset)
+>>                  dht11->temperature = temp_int * 1000;
+>>                  dht11->humidity = hum_int * 1000;
+>>          } else {
+>> -               dev_err(dht11->dev,
+>> +               dev_dbg(dht11->dev,
+>>                          "Don't know how to decode data: %d %d %d
+>> %d\n",
+>>                          hum_int, hum_dec, temp_int, temp_dec);
+>>                  return -EIO;
+>> @@ -239,7 +239,7 @@ static int dht11_read_raw(struct iio_dev
+>> *iio_dev,
+>>   #endif
+>>
+>>                  if (ret == 0 && dht11->num_edges <
+>> DHT11_EDGES_PER_READ - 1) {
+>> -                       dev_err(dht11->dev, "Only %d signal edges
+>> detected\n",
+>> +                       dev_dbg(dht11->dev, "Only %d signal edges
+>> detected\n",
+>>                                  dht11->num_edges);
+>>                          ret = -ETIMEDOUT;
+>>                  }
+>> --
+>> 2.25.1
+>>
+> 
+
 -- 
-Florian
-
-
---00000000000008fbac061481dd05
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Description: S/MIME Cryptographic Signature
-
-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
-riBJ/K1AFUjRAjFhGV64l++td7dkmnq/X8ET75ti+w1s4FRpFqkD2m7pg5NxdsZphYIXAgMBAAGj
-QjBAMA4GA1UdDwEB/wQEAwIBBjAPBgNVHRMBAf8EBTADAQH/MB0GA1UdDgQWBBSP8Et/qC5FJK5N
-UPpjmove4t0bvDANBgkqhkiG9w0BAQsFAAOCAQEAS0DbwFCq/sgM7/eWVEVJu5YACUGssxOGhigH
-M8pr5nS5ugAtrqQK0/Xx8Q+Kv3NnSoPHRHt44K9ubG8DKY4zOUXDjuS5V2yq/BKW7FPGLeQkbLmU
-Y/vcU2hnVj6DuM81IcPJaP7O2sJTqsyQiunwXUaMld16WCgaLx3ezQA3QY/tRG3XUyiXfvNnBB4V
-14qWtNPeTCekTBtzc3b0F5nCH3oO4y0IrQocLP88q1UOD5F+NuvDV0m+4S4tfGCLw0FREyOdzvcy
-a5QBqJnnLDMfOjsl0oZAzjsshnjJYS8Uuu7bVW/fhO4FCU29KNhyztNiUGUe65KXgzHZs7XKR1g/
-XzCCBVgwggRAoAMCAQICDBP8P9hKRVySg3Qv5DANBgkqhkiG9w0BAQsFADBbMQswCQYDVQQGEwJC
-RTEZMBcGA1UEChMQR2xvYmFsU2lnbiBudi1zYTExMC8GA1UEAxMoR2xvYmFsU2lnbiBHQ0MgUjMg
-UGVyc29uYWxTaWduIDIgQ0EgMjAyMDAeFw0yMjA5MTAxMjE4MTFaFw0yNTA5MTAxMjE4MTFaMIGW
-MQswCQYDVQQGEwJJTjESMBAGA1UECBMJS2FybmF0YWthMRIwEAYDVQQHEwlCYW5nYWxvcmUxFjAU
-BgNVBAoTDUJyb2FkY29tIEluYy4xGTAXBgNVBAMTEEZsb3JpYW4gRmFpbmVsbGkxLDAqBgkqhkiG
-9w0BCQEWHWZsb3JpYW4uZmFpbmVsbGlAYnJvYWRjb20uY29tMIIBIjANBgkqhkiG9w0BAQEFAAOC
-AQ8AMIIBCgKCAQEA+oi3jMmHltY4LMUy8Up5+1zjd1iSgUBXhwCJLj1GJQF+GwP8InemBbk5rjlC
-UwbQDeIlOfb8xGqHoQFGSW8p9V1XUw+cthISLkycex0AJ09ufePshLZygRLREU0H4ecNPMejxCte
-KdtB4COST4uhBkUCo9BSy1gkl8DJ8j/BQ1KNUx6oYe0CntRag+EnHv9TM9BeXBBLfmMRnWNhvOSk
-nSmRX0J3d9/G2A3FIC6WY2XnLW7eAZCQPa1Tz3n2B5BGOxwqhwKLGLNu2SRCPHwOdD6e0drURF7/
-Vax85/EqkVnFNlfxtZhS0ugx5gn2pta7bTdBm1IG4TX+A3B1G57rVwIDAQABo4IB3jCCAdowDgYD
-VR0PAQH/BAQDAgWgMIGjBggrBgEFBQcBAQSBljCBkzBOBggrBgEFBQcwAoZCaHR0cDovL3NlY3Vy
-ZS5nbG9iYWxzaWduLmNvbS9jYWNlcnQvZ3NnY2NyM3BlcnNvbmFsc2lnbjJjYTIwMjAuY3J0MEEG
-CCsGAQUFBzABhjVodHRwOi8vb2NzcC5nbG9iYWxzaWduLmNvbS9nc2djY3IzcGVyc29uYWxzaWdu
-MmNhMjAyMDBNBgNVHSAERjBEMEIGCisGAQQBoDIBKAowNDAyBggrBgEFBQcCARYmaHR0cHM6Ly93
-d3cuZ2xvYmFsc2lnbi5jb20vcmVwb3NpdG9yeS8wCQYDVR0TBAIwADBJBgNVHR8EQjBAMD6gPKA6
-hjhodHRwOi8vY3JsLmdsb2JhbHNpZ24uY29tL2dzZ2NjcjNwZXJzb25hbHNpZ24yY2EyMDIwLmNy
-bDAoBgNVHREEITAfgR1mbG9yaWFuLmZhaW5lbGxpQGJyb2FkY29tLmNvbTATBgNVHSUEDDAKBggr
-BgEFBQcDBDAfBgNVHSMEGDAWgBSWM9HmWBdbNHWKgVZk1b5I3qGPzzAdBgNVHQ4EFgQUUwwfJ6/F
-KL0fRdVROal/Lp4lAF0wDQYJKoZIhvcNAQELBQADggEBAKBgfteDc1mChZjKBY4xAplC6uXGyBrZ
-kNGap1mHJ+JngGzZCz+dDiHRQKGpXLxkHX0BvEDZLW6LGOJ83ImrW38YMOo3ZYnCYNHA9qDOakiw
-2s1RH00JOkO5SkYdwCHj4DB9B7KEnLatJtD8MBorvt+QxTuSh4ze96Jz3kEIoHMvwGFkgObWblsc
-3/YcLBmCgaWpZ3Ksev1vJPr5n8riG3/N4on8gO5qinmmr9Y7vGeuf5dmZrYMbnb+yCBalkUmZQwY
-NxADYvcRBA0ySL6sZpj8BIIhWiXiuusuBmt2Mak2eEv0xDbovE6Z6hYyl/ZnRadbgK/ClgbY3w+O
-AfUXEZ0xggJtMIICaQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52
-LXNhMTEwLwYDVQQDEyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIwAgwT
-/D/YSkVckoN0L+QwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEINwMQVIi6tGwk+6q
-DZ9jj8Q8UWWuis1o7rbRmRXJ90v3MBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcN
-AQkFMQ8XDTI0MDMyNTIwMTczMVowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJYIZI
-AWUDBAEWMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcNAQEH
-MAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQDI0hukb1Hp83GuvXr7HOQdNU4zUhV0ej0S
-58QhKrRvitrzHAnJ2ABrbCqrCWd0kmkPyIXRDZf4+YsA33+dE0PmtXy3XjThLJOwoEIqzdSj/yRV
-BGTTK/hGpVBC3i7dVs8Qs0g4F6HJBM6MEsS2mu0fcmC5vWSrFdBsd7Gist0aXhPkomkV12n3dd7T
-U0Vv/fajp7rS5+IKLhpKHzdFar1815HDx7+Ky1vc9S9czWpBvzq/20jTMJ5py//13ctDYCQ2MFa5
-TDMG61OyLkbfs/JaPgUuY14Odh49YNbI9AtoycwXf7LHVmaTiQWfegEJHOOMOMgG4ROlx/mAEL5K
-c7DL
---00000000000008fbac061481dd05--
+Best regards
+George
 
