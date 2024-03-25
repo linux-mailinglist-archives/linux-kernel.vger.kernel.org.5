@@ -1,39 +1,78 @@
-Return-Path: <linux-kernel+bounces-116969-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-116972-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7940F88A842
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 17:06:02 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8197688A5AE
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 16:03:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A667CBC226E
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 15:01:37 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0BB712C77C3
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 15:03:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A688813C91E;
-	Mon, 25 Mar 2024 12:11:33 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 942095D731;
-	Mon, 25 Mar 2024 12:06:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 529E779F3;
+	Mon, 25 Mar 2024 12:11:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="jTCvDhhv"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 38C4715ADAA
+	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 12:06:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711368387; cv=none; b=amN3wMMKBM6R7th5n2yqIs7xKudbaP/lPS2NJ6+05zXzdRQDp2V9fISJoalpEYyA/4kRmPIlrTg5TozilRXHQnMnc2sq6kufB7h2OQ6qk1XYqjINN8CdBgVGEU5V5zoVvem5mxoSesjA2fad/h/Z/8CuNfyuHU+UKdhNRDrk0T0=
+	t=1711368395; cv=none; b=b4U+A575qN/c01rsoZRfQPJDhEQmO++Xvy9VtqOlRMZ7p/xuLSQ/b/yS0OW/q/bM1O3tG+JGpa6GnOJ3lffmID08L5gO1ETOpUONYVqIeCoBq08mM+S57gMU1kJFV3NzjW32tcR65AitmvJkRIVN0gxPp4bbL3MPdJ1Lapj+XRo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711368387; c=relaxed/simple;
-	bh=yPtmna4ptGgXfkbENYERn+NKzVLez4o/N3DCc/GmLKI=;
+	s=arc-20240116; t=1711368395; c=relaxed/simple;
+	bh=eNox4JDLxjRcdKAY6u8p7GLm+HSVRhmcVFuNTCswa5o=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=h72srGKs/T4g7uwvsBa8cWauYTkJoEsvPUqtLGVWP/voNF6jNcFcOXWb13JclTySmn/7BljPaz8umAXfbRgEM/SI+3KI/dW6hVrFDnh4JxAg9v3xo5OHDBPr4rL9iW/BFX/Ngu0MsUtbNuk+W8Kiqu8McWKbelaNkm/9SUnXTGU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 347BF1FB;
-	Mon, 25 Mar 2024 05:06:55 -0700 (PDT)
-Received: from [10.1.25.33] (e133047.arm.com [10.1.25.33])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 330623F67D;
-	Mon, 25 Mar 2024 05:06:18 -0700 (PDT)
-Message-ID: <de1eba3c-2453-4c5c-bd80-dd7d7b33f60d@arm.com>
-Date: Mon, 25 Mar 2024 12:06:16 +0000
+	 In-Reply-To:Content-Type; b=eQHQJyep5lcgGOuaHQR3q0oNRK+f7bzlSXOq8x2f2UTovzL86Cd+KJo2kjHZxYjI4cJY8P7/cRVWk9XO1YnXeAiOZ4fboi/j9vpDG5faloxaPrric9ZczRkGpcT5uPl9Xb2RFb9J8N/xFMwVLyKFpB7m+3gAjvgV8B1DTXUZYF8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=jTCvDhhv; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1711368393;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=lABgZk1lZQSYt/QBieB81J/7DIqjyOEer6Pj6qRVXso=;
+	b=jTCvDhhvEd8oz9UP2Y7eb7VdSWnkA0Sx1ohLoLpgYwOeKXppjUJod7dCD01tS+70fXJNvo
+	t+qF5Am29QKDxiRqv8f8ZQf4VoSXHpXW98QgIUajuQY8S5venvYuIdF8Zn3JGFAmvVxUlA
+	Y5sN0QBC2trrbQd9oOQgyM99ybiemsU=
+Received: from mail-pj1-f71.google.com (mail-pj1-f71.google.com
+ [209.85.216.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-82-9XQ-8CQXNKev8uCc1oGIMA-1; Mon, 25 Mar 2024 08:06:31 -0400
+X-MC-Unique: 9XQ-8CQXNKev8uCc1oGIMA-1
+Received: by mail-pj1-f71.google.com with SMTP id 98e67ed59e1d1-29de4f107b7so3403300a91.2
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 05:06:31 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711368390; x=1711973190;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=lABgZk1lZQSYt/QBieB81J/7DIqjyOEer6Pj6qRVXso=;
+        b=KN2FZ2E9LTHe0Io28tQjTi46IAZ3CGkd31I6X40Dc/rs+hL4m+gko6yU8gKlBIha2O
+         OOWbA+3KFGBWFPWSImX+vnLUCWKYEfzBBBXl8UXJlu3o37Px5klirSxK0G4wGtzYxFAv
+         zhw/zAQ5COf9eIDk8O/884Hz7SbirUwpkjVr1cYqMlHhPUIBOLTMIOOBKlQPkWordjNS
+         A/pn8TMxZZbPvrilff0YQJ6LYSTFyEQu7qs4kes5cBFUkoUwc7Tijn0vbLITPJEBm/AT
+         bdivUj6XWBm8UmOVD/nPAGeSmpf5nle3A0QA1Sc3uEYpJLmBTX/r8ZLI54ETZu6UtVGD
+         yFOA==
+X-Gm-Message-State: AOJu0YzcKoXzDPqqQ/uKmNI5GBrQsq+nnhriRmGYsxkadhzyGH1WF/Rr
+	CEfdN8HnPwgJFebmc54kydMPOLjBsIMOm3QtsGIB+sEixMdhz5hPDIOs5VN8giVT0Mq5O3UorPV
+	GRtbJ4hhbWCEAUgSH5rE9sU4YkpAk+p0+wt53WfdRYXbEel/kkaKkwapiATPl5WDFTYt/MzsH
+X-Received: by 2002:a17:90a:9c11:b0:29d:32cf:aa6c with SMTP id h17-20020a17090a9c1100b0029d32cfaa6cmr4476362pjp.39.1711368390093;
+        Mon, 25 Mar 2024 05:06:30 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IEyTnJUnpYX8fPYbpu6w+XJvMLSC+arGJrhhX/5JdOZw7aOSECjPeA/zF0c0nIEtpoOjsjD3g==
+X-Received: by 2002:a17:90a:9c11:b0:29d:32cf:aa6c with SMTP id h17-20020a17090a9c1100b0029d32cfaa6cmr4476344pjp.39.1711368389729;
+        Mon, 25 Mar 2024 05:06:29 -0700 (PDT)
+Received: from [10.72.113.22] ([43.228.180.230])
+        by smtp.gmail.com with ESMTPSA id pd4-20020a17090b1dc400b002a064133d87sm2451676pjb.12.2024.03.25.05.06.27
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 25 Mar 2024 05:06:29 -0700 (PDT)
+Message-ID: <d689e8bf-6628-499e-8a11-c74ce1b1fd8b@redhat.com>
+Date: Mon, 25 Mar 2024 20:06:25 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -41,55 +80,107 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH 0/2] Introduce per-task io utilization boost
+Subject: Re: kernel BUG at mm/usercopy.c:102 -- pc : usercopy_abort
 Content-Language: en-US
-To: Bart Van Assche <bvanassche@acm.org>, Qais Yousef <qyousef@layalina.io>
-Cc: linux-kernel@vger.kernel.org, peterz@infradead.org,
- juri.lelli@redhat.com, mingo@redhat.com, rafael@kernel.org,
- dietmar.eggemann@arm.com, vschneid@redhat.com, vincent.guittot@linaro.org,
- Johannes.Thumshirn@wdc.com, adrian.hunter@intel.com, ulf.hansson@linaro.org,
- andres@anarazel.de, asml.silence@gmail.com, linux-pm@vger.kernel.org,
- linux-block@vger.kernel.org, io-uring@vger.kernel.org,
- linux-mmc@vger.kernel.org
-References: <20240304201625.100619-1-christian.loehle@arm.com>
- <86f0af00-8765-4481-9245-1819fb2c6379@acm.org>
- <0dc6a839-2922-40ac-8854-2884196da9b9@arm.com>
- <c5b7fc1f-f233-4d25-952b-539607c2a0cc@acm.org>
- <2784c093-eea1-4b73-87da-1a45f14013c8@arm.com>
- <20240321123935.zqscwi2aom7lfhts@airbuntu>
- <1ff973fc-66a4-446e-8590-ec655c686c90@arm.com>
- <2ed2dadc-bdc4-4a21-8aca-a2aac0c6479a@acm.org>
-From: Christian Loehle <christian.loehle@arm.com>
-In-Reply-To: <2ed2dadc-bdc4-4a21-8aca-a2aac0c6479a@acm.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+To: David Hildenbrand <david@redhat.com>, linux-mm@kvack.org
+Cc: linux-kernel@vger.kernel.org,
+ Ceph Development <ceph-devel@vger.kernel.org>, linux-fsdevel@vger.kernel.org
+References: <e119b3e2-09a0-47a7-945c-98a1f03633ef@redhat.com>
+ <f453061e-6e01-4ad7-8fc6-a39108beacfc@redhat.com>
+From: Xiubo Li <xiubli@redhat.com>
+In-Reply-To: <f453061e-6e01-4ad7-8fc6-a39108beacfc@redhat.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On 21/03/2024 19:52, Bart Van Assche wrote:
-> On 3/21/24 10:57, Christian Loehle wrote:
->> In the long-term it looks like for UFS the problem will disappear as we are
->> expected to get one queue/hardirq per CPU (as Bart mentioned), on NVMe that
->> is already the case.
-> 
-> Why the focus on storage controllers with a single completion interrupt?
-> It probably won't take long (one year?) until all new high-end
-> smartphones may have support for multiple completion interrupts.
-> 
-> Thanks,
-> 
-> Bart.
-> 
 
-Apart from going to "This patch shows significant performance improvements on
-hardware that runs mainline today" to "This patch will have significant
-performance improvements on devices running mainline in a couple years"
-nothing in particular.
-I'm fine with leaving it with having acknowledged the problem.
-Maybe I would just gate the task placement on the task having been in
-UFS (with multiple completion interrupts) or NVMe submission recently to
-avoid regressions to current behavior in future versions. I did have that
-already at some point, although it was a bit hacky.
-Anyway, thank you for your input on that, it is what I wanted to hear!
+On 3/25/24 18:14, David Hildenbrand wrote:
+> On 25.03.24 08:45, Xiubo Li wrote:
+>> Hi guys,
+>>
+>> We are hitting the same crash frequently recently with the latest kernel
+>> when testing kceph, and the call trace will be something likes:
+>>
+>> [ 1580.034891] usercopy: Kernel memory exposure attempt detected from
+>> SLUB object 'kmalloc-192' (offset 82, size 499712)!^M
+>> [ 1580.045866] ------------[ cut here ]------------^M
+>> [ 1580.050551] kernel BUG at mm/usercopy.c:102!^M
+>> ^M
+>> Entering kdb (current=0xffff8881211f5500, pid 172901) on processor 4
+>> Oops: (null)^M
+>> due to oops @ 0xffffffff8138cabd^M
+>> CPU: 4 PID: 172901 Comm: fsstress Tainted: G S 6.6.0-g623393c9d50c #1^M
+>> Hardware name: Supermicro SYS-5018R-WR/X10SRW-F, BIOS 1.0c 09/07/2015^M
+>> RIP: 0010:usercopy_abort+0x6d/0x80^M
+>> Code: 4c 0f 44 d0 41 53 48 c7 c0 1c e9 13 82 48 c7 c6 71 62 13 82 48 0f
+>> 45 f0 48 89 f9 48 c7 c7 f0 6b 1b 82 4c 89 d2 e8 63 2b df ff <0f> 0b 49
+>> c7 c1 44 c8 14 82 4d 89 cb 4d 89 c8 eb a5 66 90 f3 0f 1e^M
+>> RSP: 0018:ffffc90006dfba88 EFLAGS: 00010246^M
+>> RAX: 000000000000006a RBX: 000000000007a000 RCX: 0000000000000000^M
+>> RDX: 0000000000000000 RSI: ffff88885fd1d880 RDI: ffff88885fd1d880^M
+>> RBP: 000000000007a000 R08: 0000000000000000 R09: c0000000ffffdfff^M
+>> R10: 0000000000000001 R11: ffffc90006dfb930 R12: 0000000000000001^M
+>> R13: ffff8882b7bbed12 R14: ffff88827a375830 R15: ffff8882b7b44d12^M
+>> FS:  00007fb24c859500(0000) GS:ffff88885fd00000(0000)
+>> knlGS:0000000000000000^M
+>> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033^M
+>> CR2: 000055c2bcf9eb00 CR3: 000000028956c005 CR4: 00000000001706e0^M
+>> Call Trace:^M
+>>    <TASK>^M
+>>    ? kdb_main_loop+0x32c/0xa10^M
+>>    ? kdb_stub+0x216/0x420^M
+>> more>
+>>
+>> You can see more detail in ceph tracker
+>> https://tracker.ceph.com/issues/64471.
+>
+> Where is the full backtrace? Above contains only the backtrace of kdb.
+>
+Hi David,
 
-Kind Regards,
-Christian
+The bad news is that there is no more backtrace. All the failures we hit 
+are similar with the following logs:
+
+
+> That link also contains:
+>
+> Entering kdb (current=0xffff9115d14fb980, pid 61925) on processor 5 
+> Oops: (null)^M
+> due to oops @ 0xfffffffface3a1d2^M
+> CPU: 5 PID: 61925 Comm: ld Kdump: loaded Not tainted 
+> 5.14.0-421.el9.x86_64 #1^M
+> Hardware name: Supermicro SYS-5018R-WR/X10SRW-F, BIOS 2.0 12/17/2015^M
+> RIP: 0010:usercopy_abort+0x74/0x76^M
+> Code: 14 74 ad 51 48 0f 44 d6 49 c7 c3 cb 9f 73 ad 4c 89 d1 57 48 c7 
+> c6 60 83 75 ad 48 c7 c7 00 83 75 ad 49 0f 44 f3 e8 1b 3b ff ff <0f> 0b 
+> 0f b6 d3 4d 89 e0 48 89 e9 31 f6 48 c7 c7 7f 83 75 ad e8 73^M
+> RSP: 0018:ffffbb97c16af8d0 EFLAGS: 00010246^M
+> RAX: 0000000000000072 RBX: 0000000000000112 RCX: 0000000000000000^M
+> RDX: 0000000000000000 RSI: ffff911d1fd60840 RDI: ffff911d1fd60840^M
+> RBP: 0000000000004000 R08: 80000000ffff84b4 R09: 0000000000ffff0a^M
+> R10: 0000000000000004 R11: 0000000000000076 R12: ffff9115c0be8b00^M
+> R13: 0000000000000001 R14: ffff911665df9f68 R15: ffff9115d16be112^M
+> FS:  00007ff20442eb80(0000) GS:ffff911d1fd40000(0000) 
+> knlGS:0000000000000000^M
+> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033^M
+> CR2: 00007ff20446142d CR3: 00000001215ec003 CR4: 00000000003706e0^M
+> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000^M
+> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400^M
+> Call Trace:^M
+>  <TASK>^M
+>  ? show_trace_log_lvl+0x1c4/0x2df^M
+> more>
+>
+>
+> Don't we have more information about the calltrace somewhere? (or a 
+> reproducer?)
+
+There is no reproducer and each time the failure test cases are 
+different. So it seems randomly.
+
+Thanks
+
+- Xiubo
+
+
+
 
