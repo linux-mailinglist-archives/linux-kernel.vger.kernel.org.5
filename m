@@ -1,172 +1,91 @@
-Return-Path: <linux-kernel+bounces-118155-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-118156-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 91BBD88B513
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 00:13:21 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 92E1C88B514
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 00:13:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 24A0C29186C
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 23:13:20 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 317011F3ED5D
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 23:13:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A9A8282D67;
-	Mon, 25 Mar 2024 23:13:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Nm6kcQHQ"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.14])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AEA2F82D76;
+	Mon, 25 Mar 2024 23:13:46 +0000 (UTC)
+Received: from irl.hu (irl.hu [95.85.9.111])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3C02A757E3
-	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 23:13:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.14
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0729D6F50F;
+	Mon, 25 Mar 2024 23:13:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.85.9.111
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711408396; cv=none; b=UWHLcHDCgDYdG9ibLAIG0p4Zz30FarVL51IwytPYVmFB2dhfuALF6wWPtlb+2hbntMSKxMA4PKTwePQ0Bthyz7jm4cldf7ILzhTA/MhYC12nKlNnH/5AZZFYX4ADQHurBMab2wnWkEoo/wL6a4z2CiRhCVHQxwNcV8brHM1cuQE=
+	t=1711408426; cv=none; b=D4fLj93AZzSxPktBIBTyuwGqPHQG4zZYGgIR2eZ41gdn0qzEljqpHPk0DV1KajCcXAhKq6Mwp/sxq9Uaiumz74L6JQYXkjI7VMFLLaWfCl+mOoAJXkCl7luc88qxMbxnn9Znzt42ujgAv572FfBhFGfVSfETccm76WybeLcSceM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711408396; c=relaxed/simple;
-	bh=K87pRojl2DKUVZKC1HR5H3/SinxpRbB96NPtB+8t4FY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Q0xGHNBiHMqW8/wYjfccgUR/hBFAvMr8nw3bu1quQhZHmZGUAxafTJizoiH5CIDGb408GlTWzOR+7GvMmmv/3JXoVmlsnANKiRQWm7TTBQ40rycfQMRqwT+PBlApRA9SZZkekXwLXa3GeAT0p3lMy0p8ctJoGDChSQen8YIXGF8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Nm6kcQHQ; arc=none smtp.client-ip=198.175.65.14
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1711408396; x=1742944396;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=K87pRojl2DKUVZKC1HR5H3/SinxpRbB96NPtB+8t4FY=;
-  b=Nm6kcQHQepVBDsQjCieAQkRpxmcQGfeD+di333tLjemjPMs/08TFdPq+
-   Or6QDFpKkhXQnBXaX5BMCTcISDwxyln2cMGxqVd5zkz2Og5MJOrVYBQ4Q
-   fUJTyjP0J80ZpsQau5KiYziihy+Lys0SzeGXXx5A0B+tHFccS+tJWuhzY
-   1jmLmO9MYlftgGk4hsSZSVBCKTTHzriAxxBb0tKYFJWq4lpc8ta0pyzb/
-   82TKRnIOuSGVgKKLbLXaQzrRMvcbeKEYW8IXAkSXXrLn0Tebzb1Qk4dud
-   1h69t6JTv/UEX2fZEkEEf89DPnYjen1BFn1u+wn5G0zG2oYN6ezrKma5A
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11024"; a="10231957"
-X-IronPort-AV: E=Sophos;i="6.07,154,1708416000"; 
-   d="scan'208";a="10231957"
-Received: from orviesa003.jf.intel.com ([10.64.159.143])
-  by orvoesa106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Mar 2024 16:13:15 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,154,1708416000"; 
-   d="scan'208";a="20442589"
-Received: from kyeonghy-desk1.amr.corp.intel.com (HELO desk) ([10.251.12.159])
-  by ORVIESA003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Mar 2024 16:13:14 -0700
-Date: Mon, 25 Mar 2024 16:13:00 -0700
-From: Pawan Gupta <pawan.kumar.gupta@linux.intel.com>
-To: Xi Ruoyao <xry111@xry111.site>
-Cc: Dave Hansen <dave.hansen@linux.intel.com>,
-	Andy Lutomirski <luto@kernel.org>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-	"H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] x86/mm: Don't disable INVLPG if "incomplete Global
- INVLPG flushes" is fixed by microcode
-Message-ID: <20240325231300.qrltbzf6twm43ftb@desk>
-References: <20240324190503.116160-1-xry111@xry111.site>
+	s=arc-20240116; t=1711408426; c=relaxed/simple;
+	bh=Mrh9SPT/w9jyav9m5OpYx1ZRCZOxPVd30OC7EfnHLQ4=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=mTJbm79leWAMslrBsdAbbitE5EZXRwHoaZSuPxbEWQxolb+DOuvjfDC8rJ6JNFh8Kg/00FD/9CXvBgymI7SpODSRfWakTeYTM70CZNkRhIVxgsVBvMzF/vY7GBxtpqJ+pkXSAtRCVK3Eka6OqOs7I1JnI45Zrh6/6FyFZ1umlys=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=irl.hu; spf=pass smtp.mailfrom=irl.hu; arc=none smtp.client-ip=95.85.9.111
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=irl.hu
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=irl.hu
+Received: from [192.168.2.4] (51b68717.dsl.pool.telekom.hu [::ffff:81.182.135.23])
+  (AUTH: CRAM-MD5 soyer@irl.hu, )
+  by irl.hu with ESMTPSA
+  id 0000000000077165.0000000066020525.0023AE94; Tue, 26 Mar 2024 00:13:41 +0100
+Message-ID: <e5a06991c5540219366db84ce4e820e22a939929.camel@irl.hu>
+Subject: Re: [PATCH 3/3] ALSA: hda/tas2781: add debug statements to kcontrols
+From: Gergo Koteles <soyer@irl.hu>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+  Shenghao Ding <shenghao-ding@ti.com>, Kevin Lu <kevin-lu@ti.com>,
+  Baojun Xu <baojun.xu@ti.com>, Jaroslav Kysela <perex@perex.cz>,
+  Takashi Iwai <tiwai@suse.com>,
+  Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc: alsa-devel@alsa-project.org, linux-sound@vger.kernel.org,
+  linux-kernel@vger.kernel.org
+Date: Tue, 26 Mar 2024 00:13:40 +0100
+In-Reply-To: <377e0f33-697c-4baf-ac48-baff6199dd53@linux.intel.com>
+References: <cover.1711401621.git.soyer@irl.hu>
+	 <cbdc337b911bee0f80f805b936041fd59c1db54a.1711401621.git.soyer@irl.hu>
+	 <377e0f33-697c-4baf-ac48-baff6199dd53@linux.intel.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.50.4 (3.50.4-1.fc39) 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240324190503.116160-1-xry111@xry111.site>
 
-On Mon, Mar 25, 2024 at 03:05:03AM +0800, Xi Ruoyao wrote:
-> Per the "Processor Specification Update" documentations referred by the
-> intel-microcode-20240312 release note, this microcode release has fixed
-> the issue for all affected models.
-> 
-> So don't disable INVLPG if the microcode is new enough.
-> 
-> Cc: Dave Hansen <dave.hansen@linux.intel.com>
-> Link: https://lore.kernel.org/all/168436059559.404.13934972543631851306.tip-bot2@tip-bot2/
-> Link: https://github.com/intel/Intel-Linux-Processor-Microcode-Data-Files/releases/tag/microcode-20240312
-> Link: https://cdrdv2.intel.com/v1/dl/getContent/740518 # RPL042, rev. 13
-> Link: https://cdrdv2.intel.com/v1/dl/getContent/682436 # ADL063, rev. 24
-> Signed-off-by: Xi Ruoyao <xry111@xry111.site>
-> ---
->  arch/x86/mm/init.c | 32 ++++++++++++++++++++------------
->  1 file changed, 20 insertions(+), 12 deletions(-)
-> 
-> diff --git a/arch/x86/mm/init.c b/arch/x86/mm/init.c
-> index 679893ea5e68..c52be4e66e44 100644
-> --- a/arch/x86/mm/init.c
-> +++ b/arch/x86/mm/init.c
-> @@ -261,33 +261,41 @@ static void __init probe_page_size_mask(void)
->  	}
->  }
->  
-> -#define INTEL_MATCH(_model) { .vendor  = X86_VENDOR_INTEL,	\
-> -			      .family  = 6,			\
-> -			      .model = _model,			\
-> -			    }
-> +#define INTEL_MATCH(_model, _fixed_microcode)	\
-> +    { .vendor		= X86_VENDOR_INTEL,	\
-> +      .family		= 6,			\
-> +      .model		= _model,		\
-> +      .driver_data	= _fixed_microcode,	\
-> +    }
+Hi Pierre-Louis,
 
-Checkpatch is complaining here:
+On Mon, 2024-03-25 at 17:01 -0500, Pierre-Louis Bossart wrote:
+>=20
+>=20
+> > +++ b/sound/pci/hda/tas2781_hda_i2c.c
+> > @@ -189,6 +189,9 @@ static int tasdevice_get_profile_id(struct snd_kcon=
+trol *kcontrol,
+> > =20
+> >  	ucontrol->value.integer.value[0] =3D tas_priv->rcabin.profile_cfg_id;
+> > =20
+> > +	dev_dbg(tas_priv->dev, "%s: %d\n", __func__,
+>=20
+> Nit-pick: you don't need to add __func__ to dev_dbg logs, the user can
+> add the information with the dyndbg parameter, e.g.
+>=20
+> options snd_intel_dspcfg dyndbg=3D+pmf
+>=20
+> dev_err/warn don't have this functionality though so in those cases
+> there's no replacement for __func__
+>=20
 
-WARNING: please, no spaces at the start of a line
-#33: FILE: arch/x86/mm/init.c:265:
-+    { .vendor^I^I= X86_VENDOR_INTEL,^I\$
+Thanks. I just put a #define DEBUG into the first line and rebuilt the
+module. It will be faster this way :)
 
-..
-total: 0 errors, 5 warnings, 53 lines checked
+I will send a v2.
 
-> +
->  /*
->   * INVLPG may not properly flush Global entries
-> - * on these CPUs when PCIDs are enabled.
-> + * on these CPUs when PCIDs are enabled and the
-> + * microcode is not updated to fix the issue.
->   */
->  static const struct x86_cpu_id invlpg_miss_ids[] = {
-> -	INTEL_MATCH(INTEL_FAM6_ALDERLAKE   ),
-> -	INTEL_MATCH(INTEL_FAM6_ALDERLAKE_L ),
-> -	INTEL_MATCH(INTEL_FAM6_ATOM_GRACEMONT ),
-> -	INTEL_MATCH(INTEL_FAM6_RAPTORLAKE  ),
-> -	INTEL_MATCH(INTEL_FAM6_RAPTORLAKE_P),
-> -	INTEL_MATCH(INTEL_FAM6_RAPTORLAKE_S),
-> +	INTEL_MATCH(INTEL_FAM6_ALDERLAKE,	0x34),
-> +	INTEL_MATCH(INTEL_FAM6_ALDERLAKE_L,	0x432),
-> +	INTEL_MATCH(INTEL_FAM6_ATOM_GRACEMONT,	0x15),
-> +	INTEL_MATCH(INTEL_FAM6_RAPTORLAKE,	0x122),
-> +	INTEL_MATCH(INTEL_FAM6_RAPTORLAKE_P,	0x4121),
-> +	INTEL_MATCH(INTEL_FAM6_RAPTORLAKE_S,	0x34),
 
-I have checked this internally, the minimum microcode version that fixed
-this issue are as below:
+Regards,
+Gergo
 
-diff --git a/arch/x86/mm/init.c b/arch/x86/mm/init.c
-index c52be4e66e44..d72ad330f2fc 100644
---- a/arch/x86/mm/init.c
-+++ b/arch/x86/mm/init.c
-@@ -274,12 +274,12 @@ static void __init probe_page_size_mask(void)
-  * microcode is not updated to fix the issue.
-  */
- static const struct x86_cpu_id invlpg_miss_ids[] = {
--	INTEL_MATCH(INTEL_FAM6_ALDERLAKE,	0x34),
--	INTEL_MATCH(INTEL_FAM6_ALDERLAKE_L,	0x432),
--	INTEL_MATCH(INTEL_FAM6_ATOM_GRACEMONT,	0x15),
--	INTEL_MATCH(INTEL_FAM6_RAPTORLAKE,	0x122),
--	INTEL_MATCH(INTEL_FAM6_RAPTORLAKE_P,	0x4121),
--	INTEL_MATCH(INTEL_FAM6_RAPTORLAKE_S,	0x34),
-+	INTEL_MATCH(INTEL_FAM6_ALDERLAKE,	0x2e),
-+	INTEL_MATCH(INTEL_FAM6_ALDERLAKE_L,	0x42c),
-+	INTEL_MATCH(INTEL_FAM6_ATOM_GRACEMONT,	0x11),
-+	INTEL_MATCH(INTEL_FAM6_RAPTORLAKE,	0x118),
-+	INTEL_MATCH(INTEL_FAM6_RAPTORLAKE_P,	0x4117),
-+	INTEL_MATCH(INTEL_FAM6_RAPTORLAKE_S,	0x2e),
- 	{}
- };
- 
 
