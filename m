@@ -1,232 +1,94 @@
-Return-Path: <linux-kernel+bounces-116965-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-116967-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B8D0488AFB6
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 20:21:11 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2C1F788A59D
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 16:01:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D5FE6CC1966
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 15:05:38 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C01AA1F3EE94
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 15:01:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 396EC153828;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2010C153819;
 	Mon, 25 Mar 2024 12:11:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="U+ZkKw88"
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	dkim=pass (2048-bit key) header.d=thefossguy.com header.i=@thefossguy.com header.b="dDM8bDZV"
+Received: from mail-4317.proton.ch (mail-4317.proton.ch [185.70.43.17])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E6EB013C9BF
-	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 12:04:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 72C2913C9CA;
+	Mon, 25 Mar 2024 12:04:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.70.43.17
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711368255; cv=none; b=QPwC5Zpe0LwGN+4n0ptjFuU9IjWJNKnwFJ5r6wm3UkGKaeQpf/44uMGNkIeFKlMZOT0JlWV9rkHXK1RhGfeb6kh6ynNaOoD1yls+dj3dYDNDRJJeBB6bE6clsgXX0RwDET/DNbQZXlEykFcWpimj/l/yxPgLniO7J4IBd68BQR0=
+	t=1711368274; cv=none; b=iaFB5k8blXDTzVb+WVqSlyE71Hnh3+/RLRnQQmQ454KyBYRSlv7eze2hnCjpF9de7AAXhkGaG26X1bvK5l/QyCEjt2+fqP0OOoJ2gEHKcY/VZCqu1KZjazO9SM5qdh/uJmJRoFrFepdroqndCWCEL4x+pf5f4dqUVA6KofRQ5zY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711368255; c=relaxed/simple;
-	bh=7ZDq4vMz8hEt475zSnnbMd2h1vZxeifEWmL6TiXipU0=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=uOnrLw3BUyoxbL1hDzX+1e3dCt83ovesmR0g4cPVYOV8Swuv9NOyS30TLlG0Uzf4TrFQybUXxVIRu+Ng0wEYI5lwI6WE90HeBfrg0C1LMrGZxBO1sMRl4tRN6xU5bgVQOUCgLjcfVuw/iFuEFv142q/WdtZk77yRuOIsLcDc3Tg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=U+ZkKw88; arc=none smtp.client-ip=46.235.227.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1711368252;
-	bh=7ZDq4vMz8hEt475zSnnbMd2h1vZxeifEWmL6TiXipU0=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=U+ZkKw88hWgf6e7+d+rfdeVwpxy/kRuHvDapcAJZ/r+WpJhUaXTU7K4Kp2wqd2mRD
-	 kfyABD3ud/8uSasKSARthRDIUszaPi+d4ZPlOtVMIBvCb6LnBd/ilIlhZacswtIiof
-	 acXmDrJQAKDufiptGuQpigE/jLgFJs+gKnv0pYZc5eSHC1u21O43d+w1vQ8CZn+Do1
-	 cOLnviHyS09qJ3YLKIcLxJ3xg+IlRbWkRsNfM9s6tl+O20R3HUflzIQ3dgTBhSqn5p
-	 xwUd95757v817So371NtHEYtE8v/TRFofexThKyEO42oFgb50SHHOIL4w0cLbD3Odd
-	 90aJTMWW+Rw7A==
-Received: from eldfell (cola.collaboradmins.com [195.201.22.229])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: pq)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 25C9B3780626;
-	Mon, 25 Mar 2024 12:04:11 +0000 (UTC)
-Date: Mon, 25 Mar 2024 14:04:09 +0200
-From: Pekka Paalanen <pekka.paalanen@collabora.com>
-To: Louis Chauvet <louis.chauvet@bootlin.com>
-Cc: Rodrigo Siqueira <rodrigosiqueiramelo@gmail.com>, Melissa Wen
- <melissa.srw@gmail.com>, =?UTF-8?B?TWHDrXJh?= Canal
- <mairacanal@riseup.net>, Haneen Mohammed <hamohammed.sa@gmail.com>, Daniel
- Vetter <daniel@ffwll.ch>, Maarten Lankhorst
- <maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>,
- Thomas Zimmermann <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>,
- arthurgrillo@riseup.net, Jonathan Corbet <corbet@lwn.net>,
- dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
- jeremie.dautheribes@bootlin.com, miquel.raynal@bootlin.com,
- thomas.petazzoni@bootlin.com, seanpaul@google.com, marcheu@google.com,
- nicolejadeyee@google.com
-Subject: Re: [PATCH v5 02/16] drm/vkms: Use drm_frame directly
-Message-ID: <20240325140409.654c2eb3.pekka.paalanen@collabora.com>
-In-Reply-To: <20240313-yuv-v5-2-e610cbd03f52@bootlin.com>
-References: <20240313-yuv-v5-0-e610cbd03f52@bootlin.com>
-	<20240313-yuv-v5-2-e610cbd03f52@bootlin.com>
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1711368274; c=relaxed/simple;
+	bh=0wWxnhlUgMSZvuwxbr8ru7jSnb5aI6EIzUA0B0gFuCc=;
+	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=LU21OknWzRoNGgp7GMB4Vc9iN/NLaREHFixaN6zyWcycMNWw1ey8bD+po0YIZD9PvWTx5kHZEvPs3BbrpNPLw3Fk6yFJhtJRzp1AhSUzdn5iETkm/0pJeH5wkzb9R8y6+/VIZvcAyX5vR4U39japCrQQxYAIYLVBx6hsGvS6Joc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=thefossguy.com; spf=pass smtp.mailfrom=thefossguy.com; dkim=pass (2048-bit key) header.d=thefossguy.com header.i=@thefossguy.com header.b=dDM8bDZV; arc=none smtp.client-ip=185.70.43.17
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=thefossguy.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=thefossguy.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=thefossguy.com;
+	s=protonmail; t=1711368263; x=1711627463;
+	bh=0wWxnhlUgMSZvuwxbr8ru7jSnb5aI6EIzUA0B0gFuCc=;
+	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
+	 Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
+	 Message-ID:BIMI-Selector;
+	b=dDM8bDZVN7ZutsxtsURwCCD4JOFAowowErwOUgEQBTUH1IAzGg019hSmOXdcIkQR1
+	 FI1jQLnP+CyzviPBqxLIanDf3Or2WCx4nRwCYfzRM9639Bs6TzelNSyRDoHKi8dMBM
+	 /OMgRXWKlNOdraNVDhXPQ+IHRoLP8FuFSkISgHbfyt58xEtuGgZwcZRmNe/PR74ixy
+	 nLiN9eOEGk3osD7VeehzK4svY/1MnhYXvVgk7mFiaSp7+DizTFG9qJ3Ohx85SXFzy9
+	 SfvtXTK6A9gqHjw+cYZDeIE+bADez5uClVjklmzxmZpHNs3/ziXMhyzLLxoC8S54T7
+	 Z4mdHB9dPfa5Q==
+Date: Mon, 25 Mar 2024 12:04:10 +0000
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+From: Pratham Patel <prathampatel@thefossguy.com>
+Cc: robh@kernel.org, krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, heiko@sntech.de, devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/1] arm64: dts: rockchip: disable analog audio for rock-5b
+Message-ID: <CCTOoihgxcoHsOeXW4owCGYEAdaJ7kU3vQg9o0AFJaIvzbIj0EzBYn3To3dakOKjMwmozVEl5hwPD-K_GXYzU-XNK6GvIvRcSCMkOxDDvV4=@thefossguy.com>
+In-Reply-To: <37afb6dc-28a0-46e5-ac39-3443999f3bd0@linaro.org>
+References: <20240324062816.145858-1-prathampatel@thefossguy.com> <0005257d-8022-4a66-a802-0c920d259ccd@linaro.org> <TbQeSy-AWAKVHo2Alb8hXUvplVNvohDJ2ztRM1x3Fo5PMmGLMsJxtHR-OIms9FlUshfUD9x45EghBCB9gVtcUPlxeMRUJQ_C95DVhu3AJrk=@thefossguy.com> <37afb6dc-28a0-46e5-ac39-3443999f3bd0@linaro.org>
+Feedback-ID: 104309535:user:proton
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/BdJf3z6sTnXQ19u=UnJwhMw";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-
---Sig_/BdJf3z6sTnXQ19u=UnJwhMw
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, 13 Mar 2024 18:44:56 +0100
-Louis Chauvet <louis.chauvet@bootlin.com> wrote:
+On Monday, March 25th, 2024 at 13:18, Krzysztof Kozlowski <krzysztof.kozlow=
+ski@linaro.org> wrote:
 
-> From: Arthur Grillo <arthurgrillo@riseup.net>
 >=20
-> Remove intermidiary variables and access the variables directly from
-> drm_frame. These changes should be noop.
 >=20
-> Signed-off-by: Arthur Grillo <arthurgrillo@riseup.net>
-> Signed-off-by: Louis Chauvet <louis.chauvet@bootlin.com>
-> ---
-
-Acked-by: Pekka Paalanen <pekka.paalanen@collabora.com>
-
-Thanks,
-pq
-
-
-
->  drivers/gpu/drm/vkms/vkms_drv.h       |  3 ---
->  drivers/gpu/drm/vkms/vkms_formats.c   | 12 +++++++-----
->  drivers/gpu/drm/vkms/vkms_plane.c     |  3 ---
->  drivers/gpu/drm/vkms/vkms_writeback.c |  5 -----
->  4 files changed, 7 insertions(+), 16 deletions(-)
+> On 24/03/2024 12:21, Pratham Patel wrote:
 >=20
-> diff --git a/drivers/gpu/drm/vkms/vkms_drv.h b/drivers/gpu/drm/vkms/vkms_=
-drv.h
-> index 8f5710debb1e..b4b357447292 100644
-> --- a/drivers/gpu/drm/vkms/vkms_drv.h
-> +++ b/drivers/gpu/drm/vkms/vkms_drv.h
-> @@ -31,9 +31,6 @@ struct vkms_frame_info {
->  	struct drm_rect rotated;
->  	struct iosys_map map[DRM_FORMAT_MAX_PLANES];
->  	unsigned int rotation;
-> -	unsigned int offset;
-> -	unsigned int pitch;
-> -	unsigned int cpp;
->  };
-> =20
->  struct pixel_argb_u16 {
-> diff --git a/drivers/gpu/drm/vkms/vkms_formats.c b/drivers/gpu/drm/vkms/v=
-kms_formats.c
-> index 36046b12f296..172830a3936a 100644
-> --- a/drivers/gpu/drm/vkms/vkms_formats.c
-> +++ b/drivers/gpu/drm/vkms/vkms_formats.c
-> @@ -11,8 +11,10 @@
-> =20
->  static size_t pixel_offset(const struct vkms_frame_info *frame_info, int=
- x, int y)
->  {
-> -	return frame_info->offset + (y * frame_info->pitch)
-> -				  + (x * frame_info->cpp);
-> +	struct drm_framebuffer *fb =3D frame_info->fb;
-> +
-> +	return fb->offsets[0] + (y * fb->pitches[0])
-> +			      + (x * fb->format->cpp[0]);
->  }
-> =20
->  /*
-> @@ -131,12 +133,12 @@ void vkms_compose_row(struct line_buffer *stage_buf=
-fer, struct vkms_plane_state
->  	u8 *src_pixels =3D get_packed_src_addr(frame_info, y);
->  	int limit =3D min_t(size_t, drm_rect_width(&frame_info->dst), stage_buf=
-fer->n_pixels);
-> =20
-> -	for (size_t x =3D 0; x < limit; x++, src_pixels +=3D frame_info->cpp) {
-> +	for (size_t x =3D 0; x < limit; x++, src_pixels +=3D frame_info->fb->fo=
-rmat->cpp[0]) {
->  		int x_pos =3D get_x_position(frame_info, limit, x);
-> =20
->  		if (drm_rotation_90_or_270(frame_info->rotation))
->  			src_pixels =3D get_packed_src_addr(frame_info, x + frame_info->rotate=
-d.y1)
-> -				+ frame_info->cpp * y;
-> +				+ frame_info->fb->format->cpp[0] * y;
-> =20
->  		plane->pixel_read(src_pixels, &out_pixels[x_pos]);
->  	}
-> @@ -223,7 +225,7 @@ void vkms_writeback_row(struct vkms_writeback_job *wb,
->  	struct pixel_argb_u16 *in_pixels =3D src_buffer->pixels;
->  	int x_limit =3D min_t(size_t, drm_rect_width(&frame_info->dst), src_buf=
-fer->n_pixels);
-> =20
-> -	for (size_t x =3D 0; x < x_limit; x++, dst_pixels +=3D frame_info->cpp)
-> +	for (size_t x =3D 0; x < x_limit; x++, dst_pixels +=3D frame_info->fb->=
-format->cpp[0])
->  		wb->pixel_write(dst_pixels, &in_pixels[x]);
->  }
-> =20
-> diff --git a/drivers/gpu/drm/vkms/vkms_plane.c b/drivers/gpu/drm/vkms/vkm=
-s_plane.c
-> index 5a8d295e65f2..21b5adfb44aa 100644
-> --- a/drivers/gpu/drm/vkms/vkms_plane.c
-> +++ b/drivers/gpu/drm/vkms/vkms_plane.c
-> @@ -125,9 +125,6 @@ static void vkms_plane_atomic_update(struct drm_plane=
- *plane,
->  	drm_rect_rotate(&frame_info->rotated, drm_rect_width(&frame_info->rotat=
-ed),
->  			drm_rect_height(&frame_info->rotated), frame_info->rotation);
-> =20
-> -	frame_info->offset =3D fb->offsets[0];
-> -	frame_info->pitch =3D fb->pitches[0];
-> -	frame_info->cpp =3D fb->format->cpp[0];
->  	vkms_plane_state->pixel_read =3D get_pixel_conversion_function(fmt);
->  }
-> =20
-> diff --git a/drivers/gpu/drm/vkms/vkms_writeback.c b/drivers/gpu/drm/vkms=
-/vkms_writeback.c
-> index bc724cbd5e3a..c8582df1f739 100644
-> --- a/drivers/gpu/drm/vkms/vkms_writeback.c
-> +++ b/drivers/gpu/drm/vkms/vkms_writeback.c
-> @@ -149,11 +149,6 @@ static void vkms_wb_atomic_commit(struct drm_connect=
-or *conn,
->  	crtc_state->active_writeback =3D active_wb;
->  	crtc_state->wb_pending =3D true;
->  	spin_unlock_irq(&output->composer_lock);
-> -
-> -	wb_frame_info->offset =3D fb->offsets[0];
-> -	wb_frame_info->pitch =3D fb->pitches[0];
-> -	wb_frame_info->cpp =3D fb->format->cpp[0];
-> -
->  	drm_writeback_queue_job(wb_conn, connector_state);
->  	active_wb->pixel_write =3D get_pixel_write_function(wb_format);
->  	drm_rect_init(&wb_frame_info->src, 0, 0, crtc_width, crtc_height);
+> > On Sunday, March 24th, 2024 at 16:15, Krzysztof Kozlowski krzysztof.koz=
+lowski@linaro.org wrote:
+> >=20
+> > > On 24/03/2024 07:28, Pratham Patel wrote:
+> > >=20
+> > > > The addition of `of: property: fw_devlink: Fix stupid bug in remote=
+-endpoint parsing`
+> > >=20
+> > > Please refer to commits using commit sha () syntax, as mentioned in
+> > > submitting patches.
+> >=20
+> > Noticed that in the wiki but didn't do that since the commit hash for t=
+he commit
+> > was different in each branch (of the stable tree). Maybe I should have =
+copied the SHA
+> > from Linus' tree. I will do that.
 >=20
+>=20
+> There is only one tree: master/mainline tree. Commits in stable do not
+> matter outside of stable.
 
+Ack, thank you.
 
---Sig_/BdJf3z6sTnXQ19u=UnJwhMw
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCAAdFiEEJQjwWQChkWOYOIONI1/ltBGqqqcFAmYBaDkACgkQI1/ltBGq
-qqe1Aw//Wn9n1vIBqbsxjE914w2DpwuU5EDI3PNSERhY76qxWZQd2qqyCV9+01/b
-d/0o6j8TDuTUUwLxFPrzVBez0ksJFkBDfPHQ9ZjEHzamMh2sjk271tXv5wPxMAJO
-NaVQv2DCyELFBrLEtVn2yA8i8EiUtRfxa8/T7vFZr7sxLSmd6nISi8nNkhiQqSZC
-RfXE5c0RAptCF0xGS1QdCtx6W20A5QzP/edO+93gxL/ubC7OxuWF53RdBxnqjWlf
-OxN/350Td9hljK7jnhOPkGvrLCunFuIMaygmKhJleRR7tSWyqzaYglptfXmgHPUA
-r/uHk9adHCJMHDnTCRFj4n/9Qy8W23GBYXADZs8jTJGC489efDP7LW1oZv9PgaBr
-ym9m6PYFTcx6/AgsdkO8p/1u7XAsYOOC2uziWkrBKoi7OwQy4QcOij+/VLcimm68
-NzuP3spvs5MHWX4aaDFvUSC6RcUZQ7nGC2wQyLRd+wck4aCllsH0Tora+4lB31JB
-HN3HDOC2XHNcodlgmfJJ6P2+vMBizq9LJSFDtOpfcbp/PeisqiBjEJ8i7afgM4Ir
-Kmhwvntlba2KNL+6AYhj6Zo34jVss7WztDYn04J3qSax7avozzZzTOkqZVo2XIrh
-itzLB9nPVrBkh2rFVDJ3A8QAQM/5qTlsnnNx6CDMxV9LQQ8VQGE=
-=5MUp
------END PGP SIGNATURE-----
-
---Sig_/BdJf3z6sTnXQ19u=UnJwhMw--
+ -- Pratham Patel
 
