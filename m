@@ -1,246 +1,109 @@
-Return-Path: <linux-kernel+bounces-117229-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-117230-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9890888A8E2
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 17:21:12 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 95A5A88A8E4
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 17:21:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4CD6732813E
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 16:21:11 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 366681FA16C2
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 16:21:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A1B0812E1D5;
-	Mon, 25 Mar 2024 14:17:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="X62YTIbH"
-Received: from mail-pf1-f171.google.com (mail-pf1-f171.google.com [209.85.210.171])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8385A152DFE;
+	Mon, 25 Mar 2024 14:17:38 +0000 (UTC)
+Received: from gloria.sntech.de (gloria.sntech.de [185.11.138.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ECF681BC46
-	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 14:17:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2906715253A;
+	Mon, 25 Mar 2024 14:17:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.11.138.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711376254; cv=none; b=Sdxpt/2si4fkZ2/CpKx0z/a/9+89V+u5CYCa6UnULy+1lpZrG/SeQq/dw62IGtc3Xkq60NubR+ZOpBqTrxXPOf3297nXZbglLARsp1jn33j6b2jHxqBfUXgIgaT9Ge+WeEUEdgCqMxVZLAvt9FZVJ7Cm92z8RlzUiU/OdMR8J4g=
+	t=1711376258; cv=none; b=EcuJAqrCgNGn5cID6XWEVNHlD3nrXv6BJv3nrJbg+Hn1iUEWau/4vjrjJYS97JO+9HM6Pb3l+SuCIcwxqwiZ+K+GqcEClFMxvjRAlAJG6ZtGaywd3zaqQDc2VuAUz0eO6ctgm91L23gqSQ5boFDVHwLBqFSKc76z64aQ5Qus8xQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711376254; c=relaxed/simple;
-	bh=AmZfqyfeQ8Y5M3qzBDAU3FZwTYWje8PwHZJoFRwwp+s=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=HlenZg9HLHdGsdm9ukZpL8EjgpLhF8ygIhP8dAWus4LHZjqFtHOTLNT4Luuo3wkobBi8okYc6+xLGHxs0S2dYj7tFKOqSg9zJhmNxwxUlJf/idPCuNObwofksKUjNnPJYONT/TcltgLQbwIKKUPjU6jnSG6f4CincxSS13Pt4Xw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=X62YTIbH; arc=none smtp.client-ip=209.85.210.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-pf1-f171.google.com with SMTP id d2e1a72fcca58-6e704078860so3014532b3a.0
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 07:17:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1711376251; x=1711981051; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=0j0+WJEClcsY1ZLRLTNOl6KxnRBJYlHp2TmN77gstlg=;
-        b=X62YTIbHKiAzOcSTne3x3j5N1YqE/6HsNRg8YWuBffDLP/gQ5LoJ/bvJrRI+kIOSq+
-         IU+eYKqafaRcZXStolpTt5X3+fzfi4DfSp1J6Rr+3hDKv3so7+r7XKLb4DWTYEzLxpIw
-         VxTcyEtJrKtckMzJ24dkWTuEKiFBv3RX27B62igpzFQ810r/TS55b5gssUBKbgI1JlXa
-         RfoarqF/4op/VhAE+CYgvOk9QxipajrP93jK3KHKn6urFEcvU9lXbygfrLeMpXWwGJu8
-         mPCeHCZ10YVCP/PC7MN1oAPMr9o4kmSPvNfhckvzOlCEP54et9RzXUlXsfk2dp04WyLH
-         euNg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711376251; x=1711981051;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=0j0+WJEClcsY1ZLRLTNOl6KxnRBJYlHp2TmN77gstlg=;
-        b=BWeq2GetMVdsYUoFIUEMJqPVC1TZqfnASAPnuPUuNprbhbphVQ08h9+VTPjUG54H/t
-         rWP8CMProuolR6/hA+fZSv++RUnNTviMocoxU9dmqpzf5skr9LepSgPzD0W0Uki8iZHu
-         29DIPC3i4zu2a6KkXf+vlT4nXN7le9p1xMGZp7sscSerV/v+VDo0XUKxVotCpAQ3+EYl
-         KBgBWY+EufdErgqlrUglsSNE7TvKO/BEjoTG8kZaE1unPyFpD0iMgqwNcu/wSMORkAW0
-         1FoUciYN76d2uQ0mZhdtLrh2aXjHaoT1P5GCPrvgRlzmDFqpWBu0iWkAxdZB8OKLuqr3
-         Yzpg==
-X-Forwarded-Encrypted: i=1; AJvYcCURVHu/mERwKCJ6E0hY0ByxBY33RzFjJGyU6OPV7DgdN3U/NThIRSZJeXWbSzrbqp9hwtPfq81pDaDPHSH/qxFGsqbIQrOlgHEwegRl
-X-Gm-Message-State: AOJu0YyIhEfn/3LO4nAnQqvZd2rfTBqrUrJ5Nfb6DKoAVfrz9JeVNeOL
-	WVppGYNBkyw0SXIaFQUB4MFiRrszfsVRDZht/gnKpujbN+mRFjbR6j3V8cxaTA==
-X-Google-Smtp-Source: AGHT+IGt81Wd5PNUHb9reJZgU/GFYtwbIn5716OPRltJ4cQey21mzq5YUv6LXvmRDnnlFilp9pVUoA==
-X-Received: by 2002:a05:6a00:2345:b0:6e6:bb2b:882c with SMTP id j5-20020a056a00234500b006e6bb2b882cmr7821317pfj.13.1711376251041;
-        Mon, 25 Mar 2024 07:17:31 -0700 (PDT)
-Received: from thinkpad ([117.207.29.15])
-        by smtp.gmail.com with ESMTPSA id x25-20020a056a00271900b006e24991dd5bsm4217943pfv.98.2024.03.25.07.17.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 Mar 2024 07:17:30 -0700 (PDT)
-Date: Mon, 25 Mar 2024 19:47:06 +0530
-From: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To: Niklas Cassel <cassel@kernel.org>
-Cc: Jingoo Han <jingoohan1@gmail.com>,
-	Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
-	Lorenzo Pieralisi <lpieralisi@kernel.org>,
-	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-	Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
-	Marek Vasut <marek.vasut+renesas@gmail.com>,
-	Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
-	Thierry Reding <thierry.reding@gmail.com>,
-	Jonathan Hunter <jonathanh@nvidia.com>,
-	Kishon Vijay Abraham I <kishon@ti.com>,
-	Vidya Sagar <vidyas@nvidia.com>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	Richard Zhu <hongxing.zhu@nxp.com>,
-	Lucas Stach <l.stach@pengutronix.de>,
-	Shawn Guo <shawnguo@kernel.org>,
-	Sascha Hauer <s.hauer@pengutronix.de>,
-	Pengutronix Kernel Team <kernel@pengutronix.de>,
-	Fabio Estevam <festevam@gmail.com>,
-	NXP Linux Team <linux-imx@nxp.com>,
-	Minghuan Lian <minghuan.Lian@nxp.com>,
-	Mingkai Hu <mingkai.hu@nxp.com>, Roy Zang <roy.zang@nxp.com>,
-	Kunihiko Hayashi <hayashi.kunihiko@socionext.com>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	Kishon Vijay Abraham I <kishon@kernel.org>,
-	Jesper Nilsson <jesper.nilsson@axis.com>,
-	Srikanth Thokala <srikanth.thokala@intel.com>,
-	linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-renesas-soc@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-	linux-tegra@vger.kernel.org, linux-omap@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org, linuxppc-dev@lists.ozlabs.org,
-	linux-arm-kernel@axis.com
-Subject: Re: [PATCH v10 8/8] PCI: dwc: ep: Remove "core_init_notifier" flag
-Message-ID: <20240325141706.GD2938@thinkpad>
-References: <20240314-pci-dbi-rework-v10-0-14a45c5a938e@linaro.org>
- <20240314-pci-dbi-rework-v10-8-14a45c5a938e@linaro.org>
- <Zf1xTkuK8yBZXmQ0@ryzen>
+	s=arc-20240116; t=1711376258; c=relaxed/simple;
+	bh=knRLRkcs1XeCiknEac0thERyRApGdlYT5XFrHlPxorc=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=WGNW7vSXQl2t2jonOYDhYSNHUynIUcCJ6ekMWTZrOIIi04UdrKPz7SmH61D16WjXkynONfv8ai+OyOWEi0MpNy+dg4aKEBexUMxn84YSr2dCg/EmU+rSUQNhvRkQnuSpc/Sf6/xEODCIeYQJC9puv9LVIWGxCsHk+ypAdB8Z3dg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sntech.de; spf=pass smtp.mailfrom=sntech.de; arc=none smtp.client-ip=185.11.138.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sntech.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sntech.de
+Received: from i53875aaf.versanet.de ([83.135.90.175] helo=diego.localnet)
+	by gloria.sntech.de with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <heiko@sntech.de>)
+	id 1rol8h-0008IU-3g; Mon, 25 Mar 2024 15:17:27 +0100
+From: Heiko =?ISO-8859-1?Q?St=FCbner?= <heiko@sntech.de>
+To: Vinod Koul <vkoul@kernel.org>, Kishon Vijay Abraham I <kishon@kernel.org>,
+ linux-rockchip@lists.infradead.org, linux-phy@lists.infradead.org,
+ Sebastian Reichel <sebastian.reichel@collabora.com>
+Cc: Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>, Frank Wang <frank.wang@rock-chips.com>,
+ Kever Yang <kever.yang@rock-chips.com>, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org,
+ Sebastian Reichel <sebastian.reichel@collabora.com>, kernel@collabora.com,
+ Zhang Yubing <yubing.zhang@rock-chips.com>
+Subject: Re: [PATCH v3 02/10] phy: rockchip: add usbdp combo phy driver
+Date: Mon, 25 Mar 2024 15:17:26 +0100
+Message-ID: <3274787.oiGErgHkdL@diego>
+In-Reply-To: <20240216170514.75200-3-sebastian.reichel@collabora.com>
+References:
+ <20240216170514.75200-1-sebastian.reichel@collabora.com>
+ <20240216170514.75200-3-sebastian.reichel@collabora.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <Zf1xTkuK8yBZXmQ0@ryzen>
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 
-On Fri, Mar 22, 2024 at 12:53:50PM +0100, Niklas Cassel wrote:
-> On Thu, Mar 14, 2024 at 01:18:06PM +0530, Manivannan Sadhasivam wrote:
-> > "core_init_notifier" flag is set by the glue drivers requiring refclk from
-> > the host to complete the DWC core initialization. Also, those drivers will
-> > send a notification to the EPF drivers once the initialization is fully
-> > completed using the pci_epc_init_notify() API. Only then, the EPF drivers
-> > will start functioning.
-> > 
-> > For the rest of the drivers generating refclk locally, EPF drivers will
-> > start functioning post binding with them. EPF drivers rely on the
-> > 'core_init_notifier' flag to differentiate between the drivers.
-> > Unfortunately, this creates two different flows for the EPF drivers.
-> > 
-> > So to avoid that, let's get rid of the "core_init_notifier" flag and follow
-> > a single initialization flow for the EPF drivers. This is done by calling
-> > the dw_pcie_ep_init_notify() from all glue drivers after the completion of
-> > dw_pcie_ep_init_registers() API. This will allow all the glue drivers to
-> > send the notification to the EPF drivers once the initialization is fully
-> > completed.
-> > 
-> > Only difference here is that, the drivers requiring refclk from host will
-> > send the notification once refclk is received, while others will send it
-> > during probe time itself.
-> > 
-> > But this also requires the EPC core driver to deliver the notification
-> > after EPF driver bind. Because, the glue driver can send the notification
-> > before the EPF drivers bind() and in those cases the EPF drivers will miss
-> > the event. To accommodate this, EPC core is now caching the state of the
-> > EPC initialization in 'init_complete' flag and pci-ep-cfs driver sends the
-> > notification to EPF drivers based on that after each EPF driver bind.
-> > 
-> > Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-> > ---
-> >  drivers/pci/controller/dwc/pci-dra7xx.c           |  2 ++
-> >  drivers/pci/controller/dwc/pci-imx6.c             |  2 ++
-> >  drivers/pci/controller/dwc/pci-keystone.c         |  2 ++
-> >  drivers/pci/controller/dwc/pci-layerscape-ep.c    |  2 ++
-> >  drivers/pci/controller/dwc/pcie-artpec6.c         |  2 ++
-> >  drivers/pci/controller/dwc/pcie-designware-plat.c |  2 ++
-> >  drivers/pci/controller/dwc/pcie-keembay.c         |  2 ++
-> >  drivers/pci/controller/dwc/pcie-qcom-ep.c         |  1 -
-> >  drivers/pci/controller/dwc/pcie-rcar-gen4.c       |  2 ++
-> >  drivers/pci/controller/dwc/pcie-tegra194.c        |  1 -
-> >  drivers/pci/controller/dwc/pcie-uniphier-ep.c     |  2 ++
-> >  drivers/pci/endpoint/functions/pci-epf-test.c     | 18 +++++-------------
-> >  drivers/pci/endpoint/pci-ep-cfs.c                 |  9 +++++++++
-> >  drivers/pci/endpoint/pci-epc-core.c               | 22 ++++++++++++++++++++++
-> >  include/linux/pci-epc.h                           |  7 ++++---
-> >  15 files changed, 58 insertions(+), 18 deletions(-)
+Am Freitag, 16. Februar 2024, 18:01:17 CET schrieb Sebastian Reichel:
+> This adds a new USBDP combo PHY with Samsung IP block driver.
 > 
-> FWIW:
-> Tested-by: Niklas Cassel <cassel@kernel.org>
+> The driver get lane mux and mapping info in 2 ways, supporting
+> DisplayPort alternate mode or parsing from DT. When parsing from DT,
+> the property "rockchip,dp-lane-mux" provide the DP mux and mapping
+> info. This is needed when the PHY is not used with TypeC Alt-Mode.
+> For example if the USB3 interface of the PHY is connected to a USB
+> Type A connector and the DP interface is connected to a DisplayPort
+> connector.
 > 
+> When do DP link training, need to set lane number, link rate, swing,
+> and pre-emphasis via PHY configure interface.
 > 
-> 
-> However, when looking at this, I was surprised that you never call something
-> that will set:
-> init_complete = false;
-> from e.g. dw_pcie_ep_deinit() or dw_pcie_ep_cleanup().
-> 
-> I saw that you do seem to set
-> init_complete = false;
-> in your other follow up series that is based on this one.
-> 
-> What will happen if you run with only this series merged (without your
-> follow up series), on a platform that used to have .core_init_notifier?
-> 
-> If you do remove and recreate the symlink on a platform with external
-> refclk, since you never set init_complete to false, you could trigger
-> EPF core_init callback, e.g. pci_epf_test_core_init() to be called,
-> which will do DBI writes even when there is no refclk.
-> 
-> E.g. (on a platform with external refclk):
-> 1) Create symlink to pci-epf-test in configfs.
-> 2) Start RC, your EPC driver will call ep_init_notifiy() when perst
-> deasserts.
-> 3) Run pci-epf-test.
-> 4) Remove the pci-epf-test symlink
-> 5) Shutdown RC
-> 6) Create symlink to pci-epf-test in configfs.
->    This will see that init_complete is true, and will do DBI writes
->    which will crash your system, since you don't have a refclk.
-> 
-> Perhaps you should move the patch that calls a function that sets
-> init_complete = false;
-> to this series, so that this crash is not possible?
-> 
+> Co-developed-by: Heiko Stuebner <heiko@sntech.de>
+> Signed-off-by: Heiko Stuebner <heiko@sntech.de>
+> Co-developed-by: Zhang Yubing <yubing.zhang@rock-chips.com>
+> Signed-off-by: Zhang Yubing <yubing.zhang@rock-chips.com>
+> Co-developed-by: Frank Wang <frank.wang@rock-chips.com>
+> Signed-off-by: Frank Wang <frank.wang@rock-chips.com>
+> Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
 
-Good catch! But moving that patch to this series requires moving some other
-patches as well. So in the meantime, I'll set this flag to false in
-dw_pcie_ep_cleanup().
+after 6.9-rc1 this needs a respin with
 
-[...]
+diff --git a/drivers/phy/rockchip/phy-rockchip-usbdp.c b/drivers/phy/rockchip/phy-rockchip-usbdp.c
+index 1f3b7955c9f3..38dc96cfe403 100644
+--- a/drivers/phy/rockchip/phy-rockchip-usbdp.c
++++ b/drivers/phy/rockchip/phy-rockchip-usbdp.c
+@@ -1420,7 +1420,7 @@ static const struct regmap_config rk_udphy_pma_regmap_cfg = {
+        .max_register = 0x20dc,
+ };
+ 
+-static struct phy *rk_udphy_phy_xlate(struct device *dev, struct of_phandle_args *args)
++static struct phy *rk_udphy_phy_xlate(struct device *dev, const struct of_phandle_args *args)
+ {
+        struct rk_udphy *udphy = dev_get_drvdata(dev);
+ 
 
-> > diff --git a/drivers/pci/endpoint/functions/pci-epf-test.c b/drivers/pci/endpoint/functions/pci-epf-test.c
-> > index 18c80002d3bd..fc0282b0d626 100644
-> > --- a/drivers/pci/endpoint/functions/pci-epf-test.c
-> > +++ b/drivers/pci/endpoint/functions/pci-epf-test.c
 
-[...]
+to honor the change from
+commit 00ca8a15dafa ("phy: constify of_phandle_args in xlate")
 
-> > -	if (!core_init_notifier) {
-> > -		ret = pci_epf_test_core_init(epf);
-> > -		if (ret)
-> > -			return ret;
-> > -	}
-> > -
-> 
-> While you did fix up all DWC based drivers, the non-DWC EPC drivers that
-> did not have epc_features->core_init_notifier before this patch:
-> 
-> drivers/pci/controller/cadence/pcie-cadence-ep.c:#include <linux/pci-epc.h>
-> drivers/pci/controller/pcie-rcar-ep.c:#include <linux/pci-epc.h>
-> drivers/pci/controller/pcie-rockchip-ep.c:#include <linux/pci-epc.h>
-> 
-> I don't think that they will work with pci-epf-test anymore, since AFAICT,
-> you did not add a call to: pci_epc_init_notify() or similar in these EPC drivers.
-> (Like this patch does to all the DWC-based drivers without a core_init_notifier.)
-> 
 
-Doh, yeah I completely missed these. Thanks for pointing out. Will add the
-notify_init call in next version.
+Heiko
 
-- Mani
 
--- 
-மணிவண்ணன் சதாசிவம்
 
