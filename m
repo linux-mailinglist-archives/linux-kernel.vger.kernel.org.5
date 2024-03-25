@@ -1,136 +1,215 @@
-Return-Path: <linux-kernel+bounces-117636-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-117637-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 518B488AD8C
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 19:18:10 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2A97588AD91
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 19:18:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0FD201F3EC78
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 18:18:10 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6647F1C3F092
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 18:18:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 44D4029427;
-	Mon, 25 Mar 2024 17:49:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B007448CF2;
+	Mon, 25 Mar 2024 17:49:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="iTm1X8nJ"
-Received: from mail-pl1-f178.google.com (mail-pl1-f178.google.com [209.85.214.178])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="bKfexc/+"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EE55E1F60A
-	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 17:49:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B39C03EA95;
+	Mon, 25 Mar 2024 17:49:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711388956; cv=none; b=VgWAhbYgqButzED4C5Q+sCAypd50NwECuqg7rsEL72X2SZEhr9Mu1NVl+q3KZzUnCOQtshjKf+V+2ZltHnj3snCTW4BqB7VAx9C7F+UgMkvNIj7B5BUXlJr8skpDy6aOc7EtuisOpCiXXInghWaoANF4Tc0ERCie9mzAc+z5xlI=
+	t=1711388981; cv=none; b=F44Hjy9MiIE2+6XfGrAQimhGs9USdy2cYTj9hgKc879r4BWGTAmCybvgQwjfa4CVZ6eExlMcis2Fvdl7/6hNwQiZhex18Lr64oVjbgtXmrGmPiyDGPqwtxZuxkGxVhFFH7LlpFN1YsY9fz5zLw/5kqOHHD1rtn588/nmDrOrOZM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711388956; c=relaxed/simple;
-	bh=1O2i+z9ec5worg89eWFtLCmRb7aXmuCsagcLEDtkmCc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=mPT0Nz0dsqk6JQ4TlOy3mic5XBWkDkfxbO377jLdYgHJDYqsqAwhByhCs6fcfton5vhHfqHn0pepoGMgTW/6cBVZbNcdmoWdI/ZwYnpIzkxCaLraLc6TsI76LmPQdsFc+n9Rhl7acU9Jucdie7iOEPhiB/SRvPDJFjrD0ugrkj0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=iTm1X8nJ; arc=none smtp.client-ip=209.85.214.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f178.google.com with SMTP id d9443c01a7336-1e0189323b4so34605475ad.1
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 10:49:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711388954; x=1711993754; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=3lnLG30Vz/3lGDQ/KrylGmjWUx6Db7eT1RcS7bbD5KE=;
-        b=iTm1X8nJQ96c+kvMHo8f7dIVuufqd0GPNULRBBzDV+B0p13dms7fIHMBGHen4yRGO6
-         w2+p6mb/SrUu6+L/4PUjTh6nsl8JvnPLPZJX8SgdRDOtG/RtfmDJTHp5jviOgGbU7N1U
-         Ijp9klX8bnZogfd9HTWv52V6ukmqHrsAb10UByHLXPm/ZW6ysBVYsn82Dv78O1ZFBaCP
-         lFFW//EwVczQxVrug63kmcRvI4Ba9pGIcGHkB9YnPnWEwpfouy5LtI70uC5c9muyE3yf
-         T8T7UESfqKbba/Uzmnbxqzx5dhwnmstwIhIfZv9phGNv9bQFx1aGT6J4CpVGfRQwNiyP
-         4RSA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711388954; x=1711993754;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=3lnLG30Vz/3lGDQ/KrylGmjWUx6Db7eT1RcS7bbD5KE=;
-        b=k5Y3nqb71lcKvouJ9mKPR6B4mq2TPDEh2AT3TQdfWb3OZs62C25LwXemLKiUWgpkDB
-         qsRNE3fAHJcOjPnr8q8ipFegs29XTralgqRFNnOAWsdy2EfE7+gBPyC+dexwdMwBAonC
-         nrHkmSSqnkT99mCFM2TK+quy1Ywg2fkJu63XLYPVdaiPc0Vtr8mDbVs6z/xupkBSEXwz
-         IzMmdoC73Wlz50ahhJ4DdeLLRIQkEZ0V+a5vAt/eL0kfZyLpMPMCssLmonZonhn5ZJnW
-         6Nn55l4K4HE5ytdF7IPQzSejw+rKEbma08F6a69ODt/Z0zbhfdfqiZL1cLxnBZ91gPIb
-         frfA==
-X-Forwarded-Encrypted: i=1; AJvYcCXS0GX53eTgXSQ2e/+C9sB9NFQPGi7G3JzmQJ343RfopAhM0eR64HoJYEwoQSnoSzIbwT8kSb67hAT5AXUwnvAF1o3GsGyuGARenrTN
-X-Gm-Message-State: AOJu0Yz2FelGQJQbFyAQofi1LUmnW6AVjo0qJpn/HkPK4oJG7L5HeHi4
-	14camT14jSgjRXT5D26o/PLIsjb3ZWV0DCjLWQx/sRc2GpjZhCrLBEnLRTnz+FA=
-X-Google-Smtp-Source: AGHT+IGbL0wknT1iGzMMPJyvG9LJToHnRvRU96heKUlxYnKSn6NiyZtkDnGi7d8f/HExWMsAw4aLJQ==
-X-Received: by 2002:a17:903:22cb:b0:1dd:bf6c:8973 with SMTP id y11-20020a17090322cb00b001ddbf6c8973mr9548449plg.68.1711388954182;
-        Mon, 25 Mar 2024 10:49:14 -0700 (PDT)
-Received: from ayush-HP-Pavilion-Gaming-Laptop-15-ec0xxx ([103.6.158.65])
-        by smtp.gmail.com with ESMTPSA id s8-20020a170902ea0800b001db5ca97817sm4920410plg.68.2024.03.25.10.49.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 Mar 2024 10:49:13 -0700 (PDT)
-Date: Mon, 25 Mar 2024 23:19:08 +0530
-From: Ayush Tiwari <ayushtiw0110@gmail.com>
-To: Larry.Finger@lwfinger.net, florian.c.schilhabel@googlemail.com,
-	gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
-	linux-staging@lists.linux.dev
-Cc: outreachy@lists.linux.dev
-Subject: [PATCH v4 1/3] staging: rtl8712: rename backupPMKIDList to
- backup_PMKID_list
-Message-ID: <5d3930cb847fd311afdd16c8fb947133ec49b55e.1711388443.git.ayushtiw0110@gmail.com>
-References: <cover.1711388443.git.ayushtiw0110@gmail.com>
+	s=arc-20240116; t=1711388981; c=relaxed/simple;
+	bh=kJfO/BrlPE8tCgQXkg2kSQI8OJ92v+1fHUZt71+VhVo=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=UfYtOs6L5XE1jesijKpjTlZtNRYfxtz/XdQXXQMAcDG6USpdZUGji4fhrm6NfNdi5rnFPb4wlGTOWGN6DpK3trp7XjJcrNT/uUbdGOB0N7y2HYoSGwZvhdtRpV1unHKh7M08cmmlweo85jJB6VVUmwZDmRSNJPQktXNzgHd7Lzg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=bKfexc/+; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4ADB6C433C7;
+	Mon, 25 Mar 2024 17:49:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1711388981;
+	bh=kJfO/BrlPE8tCgQXkg2kSQI8OJ92v+1fHUZt71+VhVo=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=bKfexc/+lfT4SRm62Lng7zX6lZq75sOyRRJUXmJKIlK+QAS+taJkEcsby4Kfz4xkr
+	 YALAT4dZAnKbriRzIpLLWbSbSSRnq9e6ANpPcgklTK+s/aEdiCKBbBjt2kPW6aVcuw
+	 KbBvOWooB+yiCkVCAW+EqtxXVSmIYTUhvFZNh6eEJUFUzqRwAulocVWnHSmTgpP43R
+	 QbaUcExk5jihHzQqE6B1MuhEUIF0QGFsRwuoz5n4cL/Y/omAfQchozrH1NxycImg+n
+	 2EMv+dn1NmOtYMPhp2TO1/FxfJ5bScasT+boWP5/5F6m1gskQ6ZkcnH3EnxU+Q0732
+	 SSgtXbLrUBrDQ==
+From: SeongJae Park <sj@kernel.org>
+To: Suren Baghdasaryan <surenb@google.com>
+Cc: SeongJae Park <sj@kernel.org>,
+	mhocko@suse.com,
+	vbabka@suse.cz,
+	hannes@cmpxchg.org,
+	roman.gushchin@linux.dev,
+	mgorman@suse.de,
+	dave@stgolabs.net,
+	willy@infradead.org,
+	liam.howlett@oracle.com,
+	penguin-kernel@i-love.sakura.ne.jp,
+	corbet@lwn.net,
+	void@manifault.com,
+	peterz@infradead.org,
+	juri.lelli@redhat.com,
+	catalin.marinas@arm.com,
+	will@kernel.org,
+	arnd@arndb.de,
+	tglx@linutronix.de,
+	mingo@redhat.com,
+	dave.hansen@linux.intel.com,
+	x86@kernel.org,
+	peterx@redhat.com,
+	david@redhat.com,
+	axboe@kernel.dk,
+	mcgrof@kernel.org,
+	masahiroy@kernel.org,
+	nathan@kernel.org,
+	dennis@kernel.org,
+	jhubbard@nvidia.com,
+	tj@kernel.org,
+	muchun.song@linux.dev,
+	rppt@kernel.org,
+	paulmck@kernel.org,
+	pasha.tatashin@soleen.com,
+	yosryahmed@google.com,
+	yuzhao@google.com,
+	dhowells@redhat.com,
+	hughd@google.com,
+	andreyknvl@gmail.com,
+	keescook@chromium.org,
+	ndesaulniers@google.com,
+	vvvvvv@google.com,
+	gregkh@linuxfoundation.org,
+	ebiggers@google.com,
+	ytcoode@gmail.com,
+	vincent.guittot@linaro.org,
+	dietmar.eggemann@arm.com,
+	rostedt@goodmis.org,
+	bsegall@google.com,
+	bristot@redhat.com,
+	vschneid@redhat.com,
+	cl@linux.com,
+	penberg@kernel.org,
+	iamjoonsoo.kim@lge.com,
+	42.hyeyoo@gmail.com,
+	glider@google.com,
+	elver@google.com,
+	dvyukov@google.com,
+	songmuchun@bytedance.com,
+	jbaron@akamai.com,
+	aliceryhl@google.com,
+	rientjes@google.com,
+	minchan@google.com,
+	kaleshsingh@google.com,
+	kernel-team@android.com,
+	linux-doc@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	iommu@lists.linux.dev,
+	linux-arch@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org,
+	linux-mm@kvack.org,
+	linux-modules@vger.kernel.org,
+	kasan-dev@googlegroups.com,
+	cgroups@vger.kernel.org
+Subject: Re: [PATCH v6 30/37] mm: vmalloc: Enable memory allocation profiling
+Date: Mon, 25 Mar 2024 10:49:34 -0700
+Message-Id: <20240325174934.229745-1-sj@kernel.org>
+X-Mailer: git-send-email 2.39.2
+In-Reply-To: <CAJuCfpFnGmt8Q7ZT2Z+gvz=DkRzionXFZ0i5Y1B=UKF6LLqxXA@mail.gmail.com>
+References: 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cover.1711388443.git.ayushtiw0110@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-Rename backupPMKIDList to backup_PMKID_list and remove extra spaces
-between RT_PMKID_LIST and backupPMKIDList to address checkpatch
-warnings and match the common kernel coding style.
+On Mon, 25 Mar 2024 14:56:01 +0000 Suren Baghdasaryan <surenb@google.com> wrote:
 
-Signed-off-by: Ayush Tiwari <ayushtiw0110@gmail.com>
----
+> On Sat, Mar 23, 2024 at 6:05 PM SeongJae Park <sj@kernel.org> wrote:
+> >
+> > Hi Suren and Kent,
+> >
+> > On Thu, 21 Mar 2024 09:36:52 -0700 Suren Baghdasaryan <surenb@google.com> wrote:
+> >
+> > > From: Kent Overstreet <kent.overstreet@linux.dev>
+> > >
+> > > This wrapps all external vmalloc allocation functions with the
+> > > alloc_hooks() wrapper, and switches internal allocations to _noprof
+> > > variants where appropriate, for the new memory allocation profiling
+> > > feature.
+> >
+> > I just noticed latest mm-unstable fails running kunit on my machine as below.
+> > 'git-bisect' says this is the first commit of the failure.
+> >
+> >     $ ./tools/testing/kunit/kunit.py run --build_dir ../kunit.out/
+> >     [10:59:53] Configuring KUnit Kernel ...
+> >     [10:59:53] Building KUnit Kernel ...
+> >     Populating config with:
+> >     $ make ARCH=um O=../kunit.out/ olddefconfig
+> >     Building with:
+> >     $ make ARCH=um O=../kunit.out/ --jobs=36
+> >     ERROR:root:/usr/bin/ld: arch/um/os-Linux/main.o: in function `__wrap_malloc':
+> >     main.c:(.text+0x10b): undefined reference to `vmalloc'
+> >     collect2: error: ld returned 1 exit status
+> >
+> > Haven't looked into the code yet, but reporting first.  May I ask your idea?
+> 
+> Hi SeongJae,
+> Looks like we missed adding "#include <linux/vmalloc.h>" inside
+> arch/um/os-Linux/main.c in this patch:
+> https://lore.kernel.org/all/20240321163705.3067592-2-surenb@google.com/.
+> I'll be posing fixes for all 0-day issues found over the weekend and
+> will include a fix for this. In the meantime, to work around it you
+> can add that include yourself. Please let me know if the issue still
+> persists after doing that.
 
-v4: Update the changelog to match revision history
-v3: Update memcpy() param to match new name backup_PMKID_list
-v2: No changes. Just a patch sending error.
+Thank you, Suren.  The change made the error message disappears.  However, it
+introduced another one.
 
- drivers/staging/rtl8712/mlme_linux.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+    $ git diff
+    diff --git a/arch/um/os-Linux/main.c b/arch/um/os-Linux/main.c
+    index c8a42ecbd7a2..8fe274e9f3a4 100644
+    --- a/arch/um/os-Linux/main.c
+    +++ b/arch/um/os-Linux/main.c
+    @@ -16,6 +16,7 @@
+     #include <kern_util.h>
+     #include <os.h>
+     #include <um_malloc.h>
+    +#include <linux/vmalloc.h>
+    
+     #define PGD_BOUND (4 * 1024 * 1024)
+     #define STACKSIZE (8 * 1024 * 1024)
+    $
+    $ ./tools/testing/kunit/kunit.py run --build_dir ../kunit.out/
+    [10:43:13] Configuring KUnit Kernel ...
+    [10:43:13] Building KUnit Kernel ...
+    Populating config with:
+    $ make ARCH=um O=../kunit.out/ olddefconfig
+    Building with:
+    $ make ARCH=um O=../kunit.out/ --jobs=36
+    ERROR:root:In file included from .../arch/um/kernel/asm-offsets.c:1:
+    .../arch/x86/um/shared/sysdep/kernel-offsets.h:9:6: warning: no previous prototype for ‘foo’ [-Wmissing-prototypes]
+        9 | void foo(void)
+          |      ^~~
+    In file included from .../include/linux/alloc_tag.h:8,
+                     from .../include/linux/vmalloc.h:5,
+                     from .../arch/um/os-Linux/main.c:19:
+    .../include/linux/bug.h:5:10: fatal error: asm/bug.h: No such file or directory
+        5 | #include <asm/bug.h>
+          |          ^~~~~~~~~~~
+    compilation terminated.
 
-diff --git a/drivers/staging/rtl8712/mlme_linux.c b/drivers/staging/rtl8712/mlme_linux.c
-index b9f5104f3bf7..a009ec1a5c11 100644
---- a/drivers/staging/rtl8712/mlme_linux.c
-+++ b/drivers/staging/rtl8712/mlme_linux.c
-@@ -84,7 +84,7 @@ void r8712_os_indicate_connect(struct _adapter *adapter)
- 	netif_carrier_on(adapter->pnetdev);
- }
- 
--static struct RT_PMKID_LIST   backupPMKIDList[NUM_PMKID_CACHE];
-+static struct RT_PMKID_LIST backup_PMKID_list[NUM_PMKID_CACHE];
- void r8712_os_indicate_disconnect(struct _adapter *adapter)
- {
- 	u8 backupPMKIDIndex = 0;
-@@ -99,7 +99,7 @@ void r8712_os_indicate_disconnect(struct _adapter *adapter)
- 		 * disconnect with AP for 60 seconds.
- 		 */
- 
--		memcpy(&backupPMKIDList[0],
-+		memcpy(&backup_PMKID_list[0],
- 		       &adapter->securitypriv.PMKIDList[0],
- 		       sizeof(struct RT_PMKID_LIST) * NUM_PMKID_CACHE);
- 		backupPMKIDIndex = adapter->securitypriv.PMKIDIndex;
-@@ -113,7 +113,7 @@ void r8712_os_indicate_disconnect(struct _adapter *adapter)
- 		 * for the following connection.
- 		 */
- 		memcpy(&adapter->securitypriv.PMKIDList[0],
--		       &backupPMKIDList[0],
-+		       &backup_PMKID_list[0],
- 		       sizeof(struct RT_PMKID_LIST) * NUM_PMKID_CACHE);
- 		adapter->securitypriv.PMKIDIndex = backupPMKIDIndex;
- 		adapter->securitypriv.btkip_countermeasure =
--- 
-2.40.1
 
+Thanks,
+SJ
+
+[...]
 
