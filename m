@@ -1,901 +1,213 @@
-Return-Path: <linux-kernel+bounces-117298-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-117304-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id E503888A9CD
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 17:42:43 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AA69B88A9D6
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 17:44:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 015ED342CF2
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 16:42:42 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CEAE91C21B57
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 16:44:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 27FD816AFC4;
-	Mon, 25 Mar 2024 14:56:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7D37E1703B7;
+	Mon, 25 Mar 2024 14:56:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="y+Ip7CtY"
-Received: from mail-yb1-f171.google.com (mail-yb1-f171.google.com [209.85.219.171])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="YiAxN5CO"
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 398C313CFA0
-	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 14:56:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D6ABA1703AB
+	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 14:56:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711378579; cv=none; b=qeK+XYmXRSEb58qZOCbm7I3N5+MtRrBXa5XT1iwJ3AjZ0nd4+mnEF7ESQiYWfegQonmLXQLc3P3612Mjfu3NXyr+2UYpK9O9mGUHb7RfPlpOZuTczAMKaFMYNRnVYKtin+iAp8khxWFqwCaNwtvlEBfYZmWwsrJzrn7eczeI9zQ=
+	t=1711378605; cv=none; b=h5N+K6uYAjYFFpSesn38lbMeLnbCrPW+aDiA4HZO9v4EiNg1bvnz6vhSZ6PVGW+l1L+xnXuvf4w31lvcYrmXTZQw3Yi3eYSSV8BV9Q0WUCRb9LXnPXU1mnfzfcY6Z9ci//9nGbeDL/boBxBirOVKL57JphaskeDai8ZDVePbFqg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711378579; c=relaxed/simple;
-	bh=zlhtrFbR8EQbtNaFkNYLSOd1+W7L797x6flRUbWx2vY=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=flWr0mh+hqoueNhW3AwuLPX04Y6Caqva+I7ACSrpI7ZxfaR3pM9xJVIRntg5qQTDYDBwJwjpfHCjP9R9+gHCIV5EiRawG3cAypKshu5XSJRr0zIj+PDbEw7FQng0WXDnG0srFErvikwaBwr6G26HDg/mPMvQlwMMLKWnIjkoPM0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=y+Ip7CtY; arc=none smtp.client-ip=209.85.219.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-yb1-f171.google.com with SMTP id 3f1490d57ef6-d9b9adaf291so4006566276.1
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 07:56:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1711378575; x=1711983375; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=6oPNUv7RDckMdIxGDWAZluCw/6HzmRVcSpvbmH1a/VM=;
-        b=y+Ip7CtYAXrhhM52VH9oGLuDCZ+t+EEb3ZdPBum0AjNr47JoZygoa8s1g6i3XOY+Jc
-         swzmZiO2uJrNcLlVNuF1uIKG61exE3omLdTqlVKvqIkUM4AZwth3EkSpW9IFVXJzbc8G
-         IG/OyjWJKJFnQN6L+/kdVEhfbKGdFk9pAg83BDdyPfHSTqXRgbDvKbV6CC8A+/kDJRDU
-         FxaMRH9h8p0xFj+GIerGSa9Qknw9/tWLeiHdEOrWtsvjCbDPsgtUopQXq1bpzQKtqGIQ
-         a6kyBiZMDRw7oO9vsi7A1ZOIHjRmz7wrJxYrCtPhLPY4PymHXZ0QzPqhjuBOwsbHvRqJ
-         nVoQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711378575; x=1711983375;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=6oPNUv7RDckMdIxGDWAZluCw/6HzmRVcSpvbmH1a/VM=;
-        b=C4cwvikjrDYKjmJW9GFEr8gx2VsIwOOloUJekOi7pIidloG5s3Dt0tWkMmqXmryp6p
-         KW7fTvOITkVbFQRSrAVixPDeOYJT+XN11eCy798juNPy8Uo4JHj2/zEXGqf1d5HuTN+i
-         leqcobvQccC3/EjhpViCQNKQzV0RCl3jOT6/vLANROw1DuEpWJryR4dukUD0dHFuxp0W
-         8iK1pKu+RMBVVmoQVxG4Uigkz8m30Y7uFgXzZgDu5sOPjUArenKKL4p+a6I21LpLO7Vs
-         lT7/O2j/5LopSWmlzVJviWB/DiNtEsFySTPZXUXuqTUTVqbwOiZhpQfOrcdPqxUpd0S3
-         sr9g==
-X-Forwarded-Encrypted: i=1; AJvYcCX0oVcFF4hqP961+E/aIdprBCm8wCOZ+NpcY9xR0E+aCBZ/n/oLUFhLiRPSigywl3M0UM/psng/Y20Cu4mwljyJMcre8sTASiTuXb/T
-X-Gm-Message-State: AOJu0Yy2HnOhiXVP852ZJGFi2Kwcr2jYq8f44TkE78Nsfn3JDJxvlPR7
-	WH+nCVDtWNN0Y0I4D9Pe27w4W9aNCO87XNF6WpqXnNVA5RcSn/Gx96KA0LC2JrI1s2V4fkwbsLc
-	lbTn8Sckk/IvpT93yez7Q8ISa4Rfqkzvk/w4+
-X-Google-Smtp-Source: AGHT+IGIKrOQzSK8Em8yGWkhUSlLAmHMOYI/HYD+caTfVYtTU6jeSUpW8129S0tsPQ8tfDSVOyUVIX9D6N6ysA9pTFo=
-X-Received: by 2002:a25:4a07:0:b0:dc7:4ba0:9d24 with SMTP id
- x7-20020a254a07000000b00dc74ba09d24mr3936064yba.59.1711378574543; Mon, 25 Mar
- 2024 07:56:14 -0700 (PDT)
+	s=arc-20240116; t=1711378605; c=relaxed/simple;
+	bh=W001AFt7sODG/Tc/2JlSqu3+m3IKpZoo2XTEUmOez6Y=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=P28NyoRa6DiXUmYbMEbpQUDv2wabVpDygsOSYH2NNW1zADCXiMUr3EO2MlUomDkTU4aEUiD9nJnb5E4tJh0xIfc+YlcsBiZl0lFt3GdM0szXjOsQl5XPh0SxwB4YkjxSpzd2eba3YlOyIehyZSdoPil34pc2jKcKmG0ZezCLvOo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=YiAxN5CO; arc=none smtp.client-ip=46.235.227.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1711378601;
+	bh=W001AFt7sODG/Tc/2JlSqu3+m3IKpZoo2XTEUmOez6Y=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=YiAxN5CO+jBpgG0mzyzVLDqRS+zBh/gWuaWUAdi+VKpgw+6YyH2fvVD0L6subOWwF
+	 4G457LTWuQK+TbeATvF+b0necHh/ve3PDjLZxuw4LOEKo6pbuJnvCH+YR/PWKJ0YWU
+	 H/oN7aM3AM+hQWpr6IamA1HGRn6KaF/nxLv879TNlVuGMDqsJXkK4a60QtenPHGy+A
+	 UU24POcEHE4L6uNAH7+6LDM6fGjSGpG1suvFy6qXJyrelOT+c84mW1k2hcX8MwOsjA
+	 hpSSIjkBqKtysl+rEhWbV2K84FHN66h9P9hIz89bwuWCyIp7BgvvBmhJxbdtHWWqUL
+	 JnZ6e0S2+uLgQ==
+Received: from eldfell (cola.collaboradmins.com [195.201.22.229])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: pq)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id A36F03780EC6;
+	Mon, 25 Mar 2024 14:56:40 +0000 (UTC)
+Date: Mon, 25 Mar 2024 16:56:31 +0200
+From: Pekka Paalanen <pekka.paalanen@collabora.com>
+To: =?UTF-8?B?TWHDrXJh?= Canal <mcanal@igalia.com>
+Cc: Louis Chauvet <louis.chauvet@bootlin.com>, Rodrigo Siqueira
+ <rodrigosiqueiramelo@gmail.com>, Melissa Wen <melissa.srw@gmail.com>,
+ Haneen Mohammed <hamohammed.sa@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+ Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, Maxime Ripard
+ <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>, David Airlie
+ <airlied@gmail.com>, arthurgrillo@riseup.net, Jonathan Corbet
+ <corbet@lwn.net>, dri-devel@lists.freedesktop.org,
+ linux-kernel@vger.kernel.org, jeremie.dautheribes@bootlin.com,
+ miquel.raynal@bootlin.com, thomas.petazzoni@bootlin.com,
+ seanpaul@google.com, marcheu@google.com, nicolejadeyee@google.com
+Subject: Re: [PATCH v5 10/16] drm/vkms: Re-introduce line-per-line
+ composition algorithm
+Message-ID: <20240325165631.6953ad01.pekka.paalanen@collabora.com>
+In-Reply-To: <b661b8c2-552c-4256-ad0b-b8a7b9bbed34@igalia.com>
+References: <20240313-yuv-v5-0-e610cbd03f52@bootlin.com>
+	<20240313-yuv-v5-10-e610cbd03f52@bootlin.com>
+	<b661b8c2-552c-4256-ad0b-b8a7b9bbed34@igalia.com>
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240321163705.3067592-31-surenb@google.com> <20240323180506.195396-1-sj@kernel.org>
-In-Reply-To: <20240323180506.195396-1-sj@kernel.org>
-From: Suren Baghdasaryan <surenb@google.com>
-Date: Mon, 25 Mar 2024 14:56:01 +0000
-Message-ID: <CAJuCfpFnGmt8Q7ZT2Z+gvz=DkRzionXFZ0i5Y1B=UKF6LLqxXA@mail.gmail.com>
-Subject: Re: [PATCH v6 30/37] mm: vmalloc: Enable memory allocation profiling
-To: SeongJae Park <sj@kernel.org>
-Cc: akpm@linux-foundation.org, mhocko@suse.com, vbabka@suse.cz, 
-	hannes@cmpxchg.org, roman.gushchin@linux.dev, mgorman@suse.de, 
-	dave@stgolabs.net, willy@infradead.org, liam.howlett@oracle.com, 
-	penguin-kernel@i-love.sakura.ne.jp, corbet@lwn.net, void@manifault.com, 
-	peterz@infradead.org, juri.lelli@redhat.com, catalin.marinas@arm.com, 
-	will@kernel.org, arnd@arndb.de, tglx@linutronix.de, mingo@redhat.com, 
-	dave.hansen@linux.intel.com, x86@kernel.org, peterx@redhat.com, 
-	david@redhat.com, axboe@kernel.dk, mcgrof@kernel.org, masahiroy@kernel.org, 
-	nathan@kernel.org, dennis@kernel.org, jhubbard@nvidia.com, tj@kernel.org, 
-	muchun.song@linux.dev, rppt@kernel.org, paulmck@kernel.org, 
-	pasha.tatashin@soleen.com, yosryahmed@google.com, yuzhao@google.com, 
-	dhowells@redhat.com, hughd@google.com, andreyknvl@gmail.com, 
-	keescook@chromium.org, ndesaulniers@google.com, vvvvvv@google.com, 
-	gregkh@linuxfoundation.org, ebiggers@google.com, ytcoode@gmail.com, 
-	vincent.guittot@linaro.org, dietmar.eggemann@arm.com, rostedt@goodmis.org, 
-	bsegall@google.com, bristot@redhat.com, vschneid@redhat.com, cl@linux.com, 
-	penberg@kernel.org, iamjoonsoo.kim@lge.com, 42.hyeyoo@gmail.com, 
-	glider@google.com, elver@google.com, dvyukov@google.com, 
-	songmuchun@bytedance.com, jbaron@akamai.com, aliceryhl@google.com, 
-	rientjes@google.com, minchan@google.com, kaleshsingh@google.com, 
-	kernel-team@android.com, linux-doc@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, iommu@lists.linux.dev, 
-	linux-arch@vger.kernel.org, linux-fsdevel@vger.kernel.org, linux-mm@kvack.org, 
-	linux-modules@vger.kernel.org, kasan-dev@googlegroups.com, 
-	cgroups@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; boundary="Sig_/GfCtEZXpb23dLFOhosWDRQd";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+
+--Sig_/GfCtEZXpb23dLFOhosWDRQd
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
 
-On Sat, Mar 23, 2024 at 6:05=E2=80=AFPM SeongJae Park <sj@kernel.org> wrote=
-:
->
-> Hi Suren and Kent,
->
-> On Thu, 21 Mar 2024 09:36:52 -0700 Suren Baghdasaryan <surenb@google.com>=
- wrote:
->
-> > From: Kent Overstreet <kent.overstreet@linux.dev>
-> >
-> > This wrapps all external vmalloc allocation functions with the
-> > alloc_hooks() wrapper, and switches internal allocations to _noprof
-> > variants where appropriate, for the new memory allocation profiling
-> > feature.
->
-> I just noticed latest mm-unstable fails running kunit on my machine as be=
-low.
-> 'git-bisect' says this is the first commit of the failure.
->
->     $ ./tools/testing/kunit/kunit.py run --build_dir ../kunit.out/
->     [10:59:53] Configuring KUnit Kernel ...
->     [10:59:53] Building KUnit Kernel ...
->     Populating config with:
->     $ make ARCH=3Dum O=3D../kunit.out/ olddefconfig
->     Building with:
->     $ make ARCH=3Dum O=3D../kunit.out/ --jobs=3D36
->     ERROR:root:/usr/bin/ld: arch/um/os-Linux/main.o: in function `__wrap_=
-malloc':
->     main.c:(.text+0x10b): undefined reference to `vmalloc'
->     collect2: error: ld returned 1 exit status
->
-> Haven't looked into the code yet, but reporting first.  May I ask your id=
-ea?
+On Mon, 25 Mar 2024 11:15:13 -0300
+Ma=C3=ADra Canal <mcanal@igalia.com> wrote:
 
-Hi SeongJae,
-Looks like we missed adding "#include <linux/vmalloc.h>" inside
-arch/um/os-Linux/main.c in this patch:
-https://lore.kernel.org/all/20240321163705.3067592-2-surenb@google.com/.
-I'll be posing fixes for all 0-day issues found over the weekend and
-will include a fix for this. In the meantime, to work around it you
-can add that include yourself. Please let me know if the issue still
-persists after doing that.
-Thanks,
-Suren.
-
-
-
-
-
->
->
-> Thanks,
-> SJ
->
-> >
-> > Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
-> > Signed-off-by: Suren Baghdasaryan <surenb@google.com>
+> On 3/13/24 14:45, Louis Chauvet wrote:
+> > Re-introduce a line-by-line composition algorithm for each pixel format.
+> > This allows more performance by not requiring an indirection per pixel
+> > read. This patch is focused on readability of the code.
+> >=20
+> > Line-by-line composition was introduced by [1] but rewritten back to
+> > pixel-by-pixel algorithm in [2]. At this time, nobody noticed the impact
+> > on performance, and it was merged.
+> >=20
+> > This patch is almost a revert of [2], but in addition efforts have been
+> > made to increase readability and maintainability of the rotation handli=
+ng.
+> > The blend function is now divided in two parts:
+> > - Transformation of coordinates from the output referential to the sour=
+ce
+> > referential
+> > - Line conversion and blending
+> >=20
+> > Most of the complexity of the rotation management is avoided by using
+> > drm_rect_* helpers. The remaining complexity is around the clipping, to
+> > avoid reading/writing outside source/destination buffers.
+> >=20
+> > The pixel conversion is now done line-by-line, so the read_pixel_t was
+> > replaced with read_pixel_line_t callback. This way the indirection is o=
+nly
+> > required once per line and per plane, instead of once per pixel and per
+> > plane.
+> >=20
+> > The read_line_t callbacks are very similar for most pixel format, but it
+> > is required to avoid performance impact. Some helpers for color
+> > conversion were introduced to avoid code repetition:
+> > - *_to_argb_u16: perform colors conversion. They should be inlined by t=
+he
+> >    compiler, and they are used to avoid repetition between multiple var=
+iants
+> >    of the same format (argb/xrgb and maybe in the future for formats li=
+ke
+> >    bgr formats).
+> >=20
+> > This new algorithm was tested with:
+> > - kms_plane (for color conversions)
+> > - kms_rotation_crc (for rotations of planes)
+> > - kms_cursor_crc (for translations of planes)
+> > - kms_rotation (for all rotations and formats combinations) [3]
+> > The performance gain was mesured with:
+> > - kms_fb_stress =20
+>=20
+> Could you tell us what was the performance gain?
+>=20
+> >=20
+> > [1]: commit 8ba1648567e2 ("drm: vkms: Refactor the plane composer to ac=
+cept
+> >       new formats")
+> >       https://lore.kernel.org/all/20220905190811.25024-7-igormtorrente@=
+gmail.com/
+> > [2]: commit 322d716a3e8a ("drm/vkms: isolate pixel conversion
+> >       functionality")
+> >       https://lore.kernel.org/all/20230418130525.128733-2-mcanal@igalia=
+com/
+> > [3]:
+> >=20
+> > Signed-off-by: Louis Chauvet <louis.chauvet@bootlin.com>
 > > ---
-> >  drivers/staging/media/atomisp/pci/hmm/hmm.c |  2 +-
-> >  include/linux/vmalloc.h                     | 60 ++++++++++----
-> >  kernel/kallsyms_selftest.c                  |  2 +-
-> >  mm/nommu.c                                  | 64 +++++++--------
-> >  mm/util.c                                   | 24 +++---
-> >  mm/vmalloc.c                                | 88 ++++++++++-----------
-> >  6 files changed, 135 insertions(+), 105 deletions(-)
-> >
-> > diff --git a/drivers/staging/media/atomisp/pci/hmm/hmm.c b/drivers/stag=
-ing/media/atomisp/pci/hmm/hmm.c
-> > index bb12644fd033..3e2899ad8517 100644
-> > --- a/drivers/staging/media/atomisp/pci/hmm/hmm.c
-> > +++ b/drivers/staging/media/atomisp/pci/hmm/hmm.c
-> > @@ -205,7 +205,7 @@ static ia_css_ptr __hmm_alloc(size_t bytes, enum hm=
-m_bo_type type,
-> >       }
-> >
-> >       dev_dbg(atomisp_dev, "pages: 0x%08x (%zu bytes), type: %d, vmallo=
-c %p\n",
-> > -             bo->start, bytes, type, vmalloc);
-> > +             bo->start, bytes, type, vmalloc_noprof);
-> >
-> >       return bo->start;
-> >
-> > diff --git a/include/linux/vmalloc.h b/include/linux/vmalloc.h
-> > index 98ea90e90439..e4a631ec430b 100644
-> > --- a/include/linux/vmalloc.h
-> > +++ b/include/linux/vmalloc.h
-> > @@ -2,6 +2,8 @@
-> >  #ifndef _LINUX_VMALLOC_H
-> >  #define _LINUX_VMALLOC_H
-> >
-> > +#include <linux/alloc_tag.h>
-> > +#include <linux/sched.h>
-> >  #include <linux/spinlock.h>
-> >  #include <linux/init.h>
-> >  #include <linux/list.h>
-> > @@ -138,26 +140,54 @@ extern unsigned long vmalloc_nr_pages(void);
-> >  static inline unsigned long vmalloc_nr_pages(void) { return 0; }
-> >  #endif
-> >
-> > -extern void *vmalloc(unsigned long size) __alloc_size(1);
-> > -extern void *vzalloc(unsigned long size) __alloc_size(1);
-> > -extern void *vmalloc_user(unsigned long size) __alloc_size(1);
-> > -extern void *vmalloc_node(unsigned long size, int node) __alloc_size(1=
-);
-> > -extern void *vzalloc_node(unsigned long size, int node) __alloc_size(1=
-);
-> > -extern void *vmalloc_32(unsigned long size) __alloc_size(1);
-> > -extern void *vmalloc_32_user(unsigned long size) __alloc_size(1);
-> > -extern void *__vmalloc(unsigned long size, gfp_t gfp_mask) __alloc_siz=
-e(1);
-> > -extern void *__vmalloc_node_range(unsigned long size, unsigned long al=
-ign,
-> > +extern void *vmalloc_noprof(unsigned long size) __alloc_size(1);
-> > +#define vmalloc(...)         alloc_hooks(vmalloc_noprof(__VA_ARGS__))
-> > +
-> > +extern void *vzalloc_noprof(unsigned long size) __alloc_size(1);
-> > +#define vzalloc(...)         alloc_hooks(vzalloc_noprof(__VA_ARGS__))
-> > +
-> > +extern void *vmalloc_user_noprof(unsigned long size) __alloc_size(1);
-> > +#define vmalloc_user(...)    alloc_hooks(vmalloc_user_noprof(__VA_ARGS=
-__))
-> > +
-> > +extern void *vmalloc_node_noprof(unsigned long size, int node) __alloc=
-_size(1);
-> > +#define vmalloc_node(...)    alloc_hooks(vmalloc_node_noprof(__VA_ARGS=
-__))
-> > +
-> > +extern void *vzalloc_node_noprof(unsigned long size, int node) __alloc=
-_size(1);
-> > +#define vzalloc_node(...)    alloc_hooks(vzalloc_node_noprof(__VA_ARGS=
-__))
-> > +
-> > +extern void *vmalloc_32_noprof(unsigned long size) __alloc_size(1);
-> > +#define vmalloc_32(...)              alloc_hooks(vmalloc_32_noprof(__V=
-A_ARGS__))
-> > +
-> > +extern void *vmalloc_32_user_noprof(unsigned long size) __alloc_size(1=
-);
-> > +#define vmalloc_32_user(...) alloc_hooks(vmalloc_32_user_noprof(__VA_A=
-RGS__))
-> > +
-> > +extern void *__vmalloc_noprof(unsigned long size, gfp_t gfp_mask) __al=
-loc_size(1);
-> > +#define __vmalloc(...)               alloc_hooks(__vmalloc_noprof(__VA=
-_ARGS__))
-> > +
-> > +extern void *__vmalloc_node_range_noprof(unsigned long size, unsigned =
-long align,
-> >                       unsigned long start, unsigned long end, gfp_t gfp=
-_mask,
-> >                       pgprot_t prot, unsigned long vm_flags, int node,
-> >                       const void *caller) __alloc_size(1);
-> > -void *__vmalloc_node(unsigned long size, unsigned long align, gfp_t gf=
-p_mask,
-> > +#define __vmalloc_node_range(...)    alloc_hooks(__vmalloc_node_range_=
-noprof(__VA_ARGS__))
-> > +
-> > +void *__vmalloc_node_noprof(unsigned long size, unsigned long align, g=
-fp_t gfp_mask,
-> >               int node, const void *caller) __alloc_size(1);
-> > -void *vmalloc_huge(unsigned long size, gfp_t gfp_mask) __alloc_size(1)=
-;
-> > +#define __vmalloc_node(...)  alloc_hooks(__vmalloc_node_noprof(__VA_AR=
-GS__))
-> > +
-> > +void *vmalloc_huge_noprof(unsigned long size, gfp_t gfp_mask) __alloc_=
-size(1);
-> > +#define vmalloc_huge(...)    alloc_hooks(vmalloc_huge_noprof(__VA_ARGS=
-__))
-> > +
-> > +extern void *__vmalloc_array_noprof(size_t n, size_t size, gfp_t flags=
-) __alloc_size(1, 2);
-> > +#define __vmalloc_array(...) alloc_hooks(__vmalloc_array_noprof(__VA_A=
-RGS__))
-> > +
-> > +extern void *vmalloc_array_noprof(size_t n, size_t size) __alloc_size(=
-1, 2);
-> > +#define vmalloc_array(...)   alloc_hooks(vmalloc_array_noprof(__VA_ARG=
-S__))
-> > +
-> > +extern void *__vcalloc_noprof(size_t n, size_t size, gfp_t flags) __al=
-loc_size(1, 2);
-> > +#define __vcalloc(...)               alloc_hooks(__vcalloc_noprof(__VA=
-_ARGS__))
-> >
-> > -extern void *__vmalloc_array(size_t n, size_t size, gfp_t flags) __all=
-oc_size(1, 2);
-> > -extern void *vmalloc_array(size_t n, size_t size) __alloc_size(1, 2);
-> > -extern void *__vcalloc(size_t n, size_t size, gfp_t flags) __alloc_siz=
-e(1, 2);
-> > -extern void *vcalloc(size_t n, size_t size) __alloc_size(1, 2);
-> > +extern void *vcalloc_noprof(size_t n, size_t size) __alloc_size(1, 2);
-> > +#define vcalloc(...)         alloc_hooks(vcalloc_noprof(__VA_ARGS__))
-> >
-> >  extern void vfree(const void *addr);
-> >  extern void vfree_atomic(const void *addr);
-> > diff --git a/kernel/kallsyms_selftest.c b/kernel/kallsyms_selftest.c
-> > index 8a689b4ff4f9..2f84896a7bcb 100644
-> > --- a/kernel/kallsyms_selftest.c
-> > +++ b/kernel/kallsyms_selftest.c
-> > @@ -82,7 +82,7 @@ static struct test_item test_items[] =3D {
-> >       ITEM_FUNC(kallsyms_test_func_static),
-> >       ITEM_FUNC(kallsyms_test_func),
-> >       ITEM_FUNC(kallsyms_test_func_weak),
-> > -     ITEM_FUNC(vmalloc),
-> > +     ITEM_FUNC(vmalloc_noprof),
-> >       ITEM_FUNC(vfree),
-> >  #ifdef CONFIG_KALLSYMS_ALL
-> >       ITEM_DATA(kallsyms_test_var_bss_static),
-> > diff --git a/mm/nommu.c b/mm/nommu.c
-> > index 5ec8f44e7ce9..69a6f3b4d156 100644
-> > --- a/mm/nommu.c
-> > +++ b/mm/nommu.c
-> > @@ -137,28 +137,28 @@ void vfree(const void *addr)
-> >  }
-> >  EXPORT_SYMBOL(vfree);
-> >
-> > -void *__vmalloc(unsigned long size, gfp_t gfp_mask)
-> > +void *__vmalloc_noprof(unsigned long size, gfp_t gfp_mask)
-> >  {
-> >       /*
-> >        *  You can't specify __GFP_HIGHMEM with kmalloc() since kmalloc(=
-)
-> >        * returns only a logical address.
-> >        */
-> > -     return kmalloc(size, (gfp_mask | __GFP_COMP) & ~__GFP_HIGHMEM);
-> > +     return kmalloc_noprof(size, (gfp_mask | __GFP_COMP) & ~__GFP_HIGH=
-MEM);
-> >  }
-> > -EXPORT_SYMBOL(__vmalloc);
-> > +EXPORT_SYMBOL(__vmalloc_noprof);
-> >
-> > -void *__vmalloc_node_range(unsigned long size, unsigned long align,
-> > +void *__vmalloc_node_range_noprof(unsigned long size, unsigned long al=
-ign,
-> >               unsigned long start, unsigned long end, gfp_t gfp_mask,
-> >               pgprot_t prot, unsigned long vm_flags, int node,
-> >               const void *caller)
-> >  {
-> > -     return __vmalloc(size, gfp_mask);
-> > +     return __vmalloc_noprof(size, gfp_mask);
-> >  }
-> >
-> > -void *__vmalloc_node(unsigned long size, unsigned long align, gfp_t gf=
-p_mask,
-> > +void *__vmalloc_node_noprof(unsigned long size, unsigned long align, g=
-fp_t gfp_mask,
-> >               int node, const void *caller)
-> >  {
-> > -     return __vmalloc(size, gfp_mask);
-> > +     return __vmalloc_noprof(size, gfp_mask);
-> >  }
-> >
-> >  static void *__vmalloc_user_flags(unsigned long size, gfp_t flags)
-> > @@ -179,11 +179,11 @@ static void *__vmalloc_user_flags(unsigned long s=
-ize, gfp_t flags)
-> >       return ret;
-> >  }
-> >
-> > -void *vmalloc_user(unsigned long size)
-> > +void *vmalloc_user_noprof(unsigned long size)
-> >  {
-> >       return __vmalloc_user_flags(size, GFP_KERNEL | __GFP_ZERO);
-> >  }
-> > -EXPORT_SYMBOL(vmalloc_user);
-> > +EXPORT_SYMBOL(vmalloc_user_noprof);
-> >
-> >  struct page *vmalloc_to_page(const void *addr)
-> >  {
-> > @@ -217,13 +217,13 @@ long vread_iter(struct iov_iter *iter, const char=
- *addr, size_t count)
-> >   *   For tight control over page level allocator and protection flags
-> >   *   use __vmalloc() instead.
-> >   */
-> > -void *vmalloc(unsigned long size)
-> > +void *vmalloc_noprof(unsigned long size)
-> >  {
-> > -     return __vmalloc(size, GFP_KERNEL);
-> > +     return __vmalloc_noprof(size, GFP_KERNEL);
-> >  }
-> > -EXPORT_SYMBOL(vmalloc);
-> > +EXPORT_SYMBOL(vmalloc_noprof);
-> >
-> > -void *vmalloc_huge(unsigned long size, gfp_t gfp_mask) __weak __alias(=
-__vmalloc);
-> > +void *vmalloc_huge_noprof(unsigned long size, gfp_t gfp_mask) __weak _=
-_alias(__vmalloc_noprof);
-> >
-> >  /*
-> >   *   vzalloc - allocate virtually contiguous memory with zero fill
-> > @@ -237,14 +237,14 @@ void *vmalloc_huge(unsigned long size, gfp_t gfp_=
-mask) __weak __alias(__vmalloc)
-> >   *   For tight control over page level allocator and protection flags
-> >   *   use __vmalloc() instead.
-> >   */
-> > -void *vzalloc(unsigned long size)
-> > +void *vzalloc_noprof(unsigned long size)
-> >  {
-> > -     return __vmalloc(size, GFP_KERNEL | __GFP_ZERO);
-> > +     return __vmalloc_noprof(size, GFP_KERNEL | __GFP_ZERO);
-> >  }
-> > -EXPORT_SYMBOL(vzalloc);
-> > +EXPORT_SYMBOL(vzalloc_noprof);
-> >
-> >  /**
-> > - * vmalloc_node - allocate memory on a specific node
-> > + * vmalloc_node_noprof - allocate memory on a specific node
-> >   * @size:    allocation size
-> >   * @node:    numa node
-> >   *
-> > @@ -254,14 +254,14 @@ EXPORT_SYMBOL(vzalloc);
-> >   * For tight control over page level allocator and protection flags
-> >   * use __vmalloc() instead.
-> >   */
-> > -void *vmalloc_node(unsigned long size, int node)
-> > +void *vmalloc_node_noprof(unsigned long size, int node)
-> >  {
-> > -     return vmalloc(size);
-> > +     return vmalloc_noprof(size);
-> >  }
-> > -EXPORT_SYMBOL(vmalloc_node);
-> > +EXPORT_SYMBOL(vmalloc_node_noprof);
-> >
-> >  /**
-> > - * vzalloc_node - allocate memory on a specific node with zero fill
-> > + * vzalloc_node_noprof - allocate memory on a specific node with zero =
-fill
-> >   * @size:    allocation size
-> >   * @node:    numa node
-> >   *
-> > @@ -272,27 +272,27 @@ EXPORT_SYMBOL(vmalloc_node);
-> >   * For tight control over page level allocator and protection flags
-> >   * use __vmalloc() instead.
-> >   */
-> > -void *vzalloc_node(unsigned long size, int node)
-> > +void *vzalloc_node_noprof(unsigned long size, int node)
-> >  {
-> > -     return vzalloc(size);
-> > +     return vzalloc_noprof(size);
-> >  }
-> > -EXPORT_SYMBOL(vzalloc_node);
-> > +EXPORT_SYMBOL(vzalloc_node_noprof);
-> >
-> >  /**
-> > - * vmalloc_32  -  allocate virtually contiguous memory (32bit addressa=
-ble)
-> > + * vmalloc_32_noprof  -  allocate virtually contiguous memory (32bit a=
-ddressable)
-> >   *   @size:          allocation size
-> >   *
-> >   *   Allocate enough 32bit PA addressable pages to cover @size from th=
-e
-> >   *   page level allocator and map them into contiguous kernel virtual =
-space.
-> >   */
-> > -void *vmalloc_32(unsigned long size)
-> > +void *vmalloc_32_noprof(unsigned long size)
-> >  {
-> > -     return __vmalloc(size, GFP_KERNEL);
-> > +     return __vmalloc_noprof(size, GFP_KERNEL);
-> >  }
-> > -EXPORT_SYMBOL(vmalloc_32);
-> > +EXPORT_SYMBOL(vmalloc_32_noprof);
-> >
-> >  /**
-> > - * vmalloc_32_user - allocate zeroed virtually contiguous 32bit memory
-> > + * vmalloc_32_user_noprof - allocate zeroed virtually contiguous 32bit=
- memory
-> >   *   @size:          allocation size
-> >   *
-> >   * The resulting memory area is 32bit addressable and zeroed so it can=
- be
-> > @@ -301,15 +301,15 @@ EXPORT_SYMBOL(vmalloc_32);
-> >   * VM_USERMAP is set on the corresponding VMA so that subsequent calls=
- to
-> >   * remap_vmalloc_range() are permissible.
-> >   */
-> > -void *vmalloc_32_user(unsigned long size)
-> > +void *vmalloc_32_user_noprof(unsigned long size)
-> >  {
-> >       /*
-> >        * We'll have to sort out the ZONE_DMA bits for 64-bit,
-> >        * but for now this can simply use vmalloc_user() directly.
-> >        */
-> > -     return vmalloc_user(size);
-> > +     return vmalloc_user_noprof(size);
-> >  }
-> > -EXPORT_SYMBOL(vmalloc_32_user);
-> > +EXPORT_SYMBOL(vmalloc_32_user_noprof);
-> >
-> >  void *vmap(struct page **pages, unsigned int count, unsigned long flag=
-s, pgprot_t prot)
-> >  {
-> > diff --git a/mm/util.c b/mm/util.c
-> > index a79dce7546f1..157b5edcba75 100644
-> > --- a/mm/util.c
-> > +++ b/mm/util.c
-> > @@ -656,7 +656,7 @@ void *kvmalloc_node_noprof(size_t size, gfp_t flags=
-, int node)
-> >        * about the resulting pointer, and cannot play
-> >        * protection games.
-> >        */
-> > -     return __vmalloc_node_range(size, 1, VMALLOC_START, VMALLOC_END,
-> > +     return __vmalloc_node_range_noprof(size, 1, VMALLOC_START, VMALLO=
-C_END,
-> >                       flags, PAGE_KERNEL, VM_ALLOW_HUGE_VMAP,
-> >                       node, __builtin_return_address(0));
-> >  }
-> > @@ -715,12 +715,12 @@ void *kvrealloc_noprof(const void *p, size_t olds=
-ize, size_t newsize, gfp_t flag
-> >  EXPORT_SYMBOL(kvrealloc_noprof);
-> >
-> >  /**
-> > - * __vmalloc_array - allocate memory for a virtually contiguous array.
-> > + * __vmalloc_array_noprof - allocate memory for a virtually contiguous=
- array.
-> >   * @n: number of elements.
-> >   * @size: element size.
-> >   * @flags: the type of memory to allocate (see kmalloc).
-> >   */
-> > -void *__vmalloc_array(size_t n, size_t size, gfp_t flags)
-> > +void *__vmalloc_array_noprof(size_t n, size_t size, gfp_t flags)
-> >  {
-> >       size_t bytes;
-> >
-> > @@ -728,18 +728,18 @@ void *__vmalloc_array(size_t n, size_t size, gfp_=
-t flags)
-> >               return NULL;
-> >       return __vmalloc(bytes, flags);
-> >  }
-> > -EXPORT_SYMBOL(__vmalloc_array);
-> > +EXPORT_SYMBOL(__vmalloc_array_noprof);
-> >
-> >  /**
-> > - * vmalloc_array - allocate memory for a virtually contiguous array.
-> > + * vmalloc_array_noprof - allocate memory for a virtually contiguous a=
-rray.
-> >   * @n: number of elements.
-> >   * @size: element size.
-> >   */
-> > -void *vmalloc_array(size_t n, size_t size)
-> > +void *vmalloc_array_noprof(size_t n, size_t size)
-> >  {
-> >       return __vmalloc_array(n, size, GFP_KERNEL);
-> >  }
-> > -EXPORT_SYMBOL(vmalloc_array);
-> > +EXPORT_SYMBOL(vmalloc_array_noprof);
-> >
-> >  /**
-> >   * __vcalloc - allocate and zero memory for a virtually contiguous arr=
-ay.
-> > @@ -747,22 +747,22 @@ EXPORT_SYMBOL(vmalloc_array);
-> >   * @size: element size.
-> >   * @flags: the type of memory to allocate (see kmalloc).
-> >   */
-> > -void *__vcalloc(size_t n, size_t size, gfp_t flags)
-> > +void *__vcalloc_noprof(size_t n, size_t size, gfp_t flags)
-> >  {
-> >       return __vmalloc_array(n, size, flags | __GFP_ZERO);
-> >  }
-> > -EXPORT_SYMBOL(__vcalloc);
-> > +EXPORT_SYMBOL(__vcalloc_noprof);
-> >
-> >  /**
-> > - * vcalloc - allocate and zero memory for a virtually contiguous array=
-.
-> > + * vcalloc_noprof - allocate and zero memory for a virtually contiguou=
-s array.
-> >   * @n: number of elements.
-> >   * @size: element size.
-> >   */
-> > -void *vcalloc(size_t n, size_t size)
-> > +void *vcalloc_noprof(size_t n, size_t size)
-> >  {
-> >       return __vmalloc_array(n, size, GFP_KERNEL | __GFP_ZERO);
-> >  }
-> > -EXPORT_SYMBOL(vcalloc);
-> > +EXPORT_SYMBOL(vcalloc_noprof);
-> >
-> >  struct anon_vma *folio_anon_vma(struct folio *folio)
-> >  {
-> > diff --git a/mm/vmalloc.c b/mm/vmalloc.c
-> > index 22aa63f4ef63..b2f2248d85a9 100644
-> > --- a/mm/vmalloc.c
-> > +++ b/mm/vmalloc.c
-> > @@ -3507,12 +3507,12 @@ vm_area_alloc_pages(gfp_t gfp, int nid,
-> >                        * but mempolicy wants to alloc memory by interle=
-aving.
-> >                        */
-> >                       if (IS_ENABLED(CONFIG_NUMA) && nid =3D=3D NUMA_NO=
-_NODE)
-> > -                             nr =3D alloc_pages_bulk_array_mempolicy(b=
-ulk_gfp,
-> > +                             nr =3D alloc_pages_bulk_array_mempolicy_n=
-oprof(bulk_gfp,
-> >                                                       nr_pages_request,
-> >                                                       pages + nr_alloca=
-ted);
-> >
-> >                       else
-> > -                             nr =3D alloc_pages_bulk_array_node(bulk_g=
-fp, nid,
-> > +                             nr =3D alloc_pages_bulk_array_node_noprof=
-(bulk_gfp, nid,
-> >                                                       nr_pages_request,
-> >                                                       pages + nr_alloca=
-ted);
-> >
-> > @@ -3542,9 +3542,9 @@ vm_area_alloc_pages(gfp_t gfp, int nid,
-> >                       break;
-> >
-> >               if (nid =3D=3D NUMA_NO_NODE)
-> > -                     page =3D alloc_pages(alloc_gfp, order);
-> > +                     page =3D alloc_pages_noprof(alloc_gfp, order);
-> >               else
-> > -                     page =3D alloc_pages_node(nid, alloc_gfp, order);
-> > +                     page =3D alloc_pages_node_noprof(nid, alloc_gfp, =
-order);
-> >               if (unlikely(!page)) {
-> >                       if (!nofail)
-> >                               break;
-> > @@ -3601,10 +3601,10 @@ static void *__vmalloc_area_node(struct vm_stru=
-ct *area, gfp_t gfp_mask,
-> >
-> >       /* Please note that the recursion is strictly bounded. */
-> >       if (array_size > PAGE_SIZE) {
-> > -             area->pages =3D __vmalloc_node(array_size, 1, nested_gfp,=
- node,
-> > +             area->pages =3D __vmalloc_node_noprof(array_size, 1, nest=
-ed_gfp, node,
-> >                                       area->caller);
-> >       } else {
-> > -             area->pages =3D kmalloc_node(array_size, nested_gfp, node=
-);
-> > +             area->pages =3D kmalloc_node_noprof(array_size, nested_gf=
-p, node);
-> >       }
-> >
-> >       if (!area->pages) {
-> > @@ -3687,7 +3687,7 @@ static void *__vmalloc_area_node(struct vm_struct=
- *area, gfp_t gfp_mask,
-> >  }
-> >
-> >  /**
-> > - * __vmalloc_node_range - allocate virtually contiguous memory
-> > + * __vmalloc_node_range_noprof - allocate virtually contiguous memory
-> >   * @size:              allocation size
-> >   * @align:             desired alignment
-> >   * @start:             vm area range start
-> > @@ -3714,7 +3714,7 @@ static void *__vmalloc_area_node(struct vm_struct=
- *area, gfp_t gfp_mask,
-> >   *
-> >   * Return: the address of the area or %NULL on failure
-> >   */
-> > -void *__vmalloc_node_range(unsigned long size, unsigned long align,
-> > +void *__vmalloc_node_range_noprof(unsigned long size, unsigned long al=
-ign,
-> >                       unsigned long start, unsigned long end, gfp_t gfp=
-_mask,
-> >                       pgprot_t prot, unsigned long vm_flags, int node,
-> >                       const void *caller)
-> > @@ -3843,7 +3843,7 @@ void *__vmalloc_node_range(unsigned long size, un=
-signed long align,
-> >  }
-> >
-> >  /**
-> > - * __vmalloc_node - allocate virtually contiguous memory
-> > + * __vmalloc_node_noprof - allocate virtually contiguous memory
-> >   * @size:        allocation size
-> >   * @align:       desired alignment
-> >   * @gfp_mask:            flags for the page level allocator
-> > @@ -3861,10 +3861,10 @@ void *__vmalloc_node_range(unsigned long size, =
-unsigned long align,
-> >   *
-> >   * Return: pointer to the allocated memory or %NULL on error
-> >   */
-> > -void *__vmalloc_node(unsigned long size, unsigned long align,
-> > +void *__vmalloc_node_noprof(unsigned long size, unsigned long align,
-> >                           gfp_t gfp_mask, int node, const void *caller)
-> >  {
-> > -     return __vmalloc_node_range(size, align, VMALLOC_START, VMALLOC_E=
-ND,
-> > +     return __vmalloc_node_range_noprof(size, align, VMALLOC_START, VM=
-ALLOC_END,
-> >                               gfp_mask, PAGE_KERNEL, 0, node, caller);
-> >  }
-> >  /*
-> > @@ -3873,15 +3873,15 @@ void *__vmalloc_node(unsigned long size, unsign=
-ed long align,
-> >   * than that.
-> >   */
-> >  #ifdef CONFIG_TEST_VMALLOC_MODULE
-> > -EXPORT_SYMBOL_GPL(__vmalloc_node);
-> > +EXPORT_SYMBOL_GPL(__vmalloc_node_noprof);
-> >  #endif
-> >
-> > -void *__vmalloc(unsigned long size, gfp_t gfp_mask)
-> > +void *__vmalloc_noprof(unsigned long size, gfp_t gfp_mask)
-> >  {
-> > -     return __vmalloc_node(size, 1, gfp_mask, NUMA_NO_NODE,
-> > +     return __vmalloc_node_noprof(size, 1, gfp_mask, NUMA_NO_NODE,
-> >                               __builtin_return_address(0));
-> >  }
-> > -EXPORT_SYMBOL(__vmalloc);
-> > +EXPORT_SYMBOL(__vmalloc_noprof);
-> >
-> >  /**
-> >   * vmalloc - allocate virtually contiguous memory
-> > @@ -3895,12 +3895,12 @@ EXPORT_SYMBOL(__vmalloc);
-> >   *
-> >   * Return: pointer to the allocated memory or %NULL on error
-> >   */
-> > -void *vmalloc(unsigned long size)
-> > +void *vmalloc_noprof(unsigned long size)
-> >  {
-> > -     return __vmalloc_node(size, 1, GFP_KERNEL, NUMA_NO_NODE,
-> > +     return __vmalloc_node_noprof(size, 1, GFP_KERNEL, NUMA_NO_NODE,
-> >                               __builtin_return_address(0));
-> >  }
-> > -EXPORT_SYMBOL(vmalloc);
-> > +EXPORT_SYMBOL(vmalloc_noprof);
-> >
-> >  /**
-> >   * vmalloc_huge - allocate virtually contiguous memory, allow huge pag=
-es
-> > @@ -3914,16 +3914,16 @@ EXPORT_SYMBOL(vmalloc);
-> >   *
-> >   * Return: pointer to the allocated memory or %NULL on error
-> >   */
-> > -void *vmalloc_huge(unsigned long size, gfp_t gfp_mask)
-> > +void *vmalloc_huge_noprof(unsigned long size, gfp_t gfp_mask)
-> >  {
-> > -     return __vmalloc_node_range(size, 1, VMALLOC_START, VMALLOC_END,
-> > +     return __vmalloc_node_range_noprof(size, 1, VMALLOC_START, VMALLO=
-C_END,
-> >                                   gfp_mask, PAGE_KERNEL, VM_ALLOW_HUGE_=
-VMAP,
-> >                                   NUMA_NO_NODE, __builtin_return_addres=
-s(0));
-> >  }
-> > -EXPORT_SYMBOL_GPL(vmalloc_huge);
-> > +EXPORT_SYMBOL_GPL(vmalloc_huge_noprof);
-> >
-> >  /**
-> > - * vzalloc - allocate virtually contiguous memory with zero fill
-> > + * vzalloc_noprof - allocate virtually contiguous memory with zero fil=
-l
-> >   * @size:    allocation size
-> >   *
-> >   * Allocate enough pages to cover @size from the page level
-> > @@ -3935,12 +3935,12 @@ EXPORT_SYMBOL_GPL(vmalloc_huge);
-> >   *
-> >   * Return: pointer to the allocated memory or %NULL on error
-> >   */
-> > -void *vzalloc(unsigned long size)
-> > +void *vzalloc_noprof(unsigned long size)
-> >  {
-> > -     return __vmalloc_node(size, 1, GFP_KERNEL | __GFP_ZERO, NUMA_NO_N=
-ODE,
-> > +     return __vmalloc_node_noprof(size, 1, GFP_KERNEL | __GFP_ZERO, NU=
-MA_NO_NODE,
-> >                               __builtin_return_address(0));
-> >  }
-> > -EXPORT_SYMBOL(vzalloc);
-> > +EXPORT_SYMBOL(vzalloc_noprof);
-> >
-> >  /**
-> >   * vmalloc_user - allocate zeroed virtually contiguous memory for user=
-space
-> > @@ -3951,17 +3951,17 @@ EXPORT_SYMBOL(vzalloc);
-> >   *
-> >   * Return: pointer to the allocated memory or %NULL on error
-> >   */
-> > -void *vmalloc_user(unsigned long size)
-> > +void *vmalloc_user_noprof(unsigned long size)
-> >  {
-> > -     return __vmalloc_node_range(size, SHMLBA,  VMALLOC_START, VMALLOC=
-_END,
-> > +     return __vmalloc_node_range_noprof(size, SHMLBA,  VMALLOC_START, =
-VMALLOC_END,
-> >                                   GFP_KERNEL | __GFP_ZERO, PAGE_KERNEL,
-> >                                   VM_USERMAP, NUMA_NO_NODE,
-> >                                   __builtin_return_address(0));
-> >  }
-> > -EXPORT_SYMBOL(vmalloc_user);
-> > +EXPORT_SYMBOL(vmalloc_user_noprof);
-> >
-> >  /**
-> > - * vmalloc_node - allocate memory on a specific node
-> > + * vmalloc_node_noprof - allocate memory on a specific node
-> >   * @size:      allocation size
-> >   * @node:      numa node
-> >   *
-> > @@ -3973,15 +3973,15 @@ EXPORT_SYMBOL(vmalloc_user);
-> >   *
-> >   * Return: pointer to the allocated memory or %NULL on error
-> >   */
-> > -void *vmalloc_node(unsigned long size, int node)
-> > +void *vmalloc_node_noprof(unsigned long size, int node)
-> >  {
-> > -     return __vmalloc_node(size, 1, GFP_KERNEL, node,
-> > +     return __vmalloc_node_noprof(size, 1, GFP_KERNEL, node,
-> >                       __builtin_return_address(0));
-> >  }
-> > -EXPORT_SYMBOL(vmalloc_node);
-> > +EXPORT_SYMBOL(vmalloc_node_noprof);
-> >
-> >  /**
-> > - * vzalloc_node - allocate memory on a specific node with zero fill
-> > + * vzalloc_node_noprof - allocate memory on a specific node with zero =
-fill
-> >   * @size:    allocation size
-> >   * @node:    numa node
-> >   *
-> > @@ -3991,12 +3991,12 @@ EXPORT_SYMBOL(vmalloc_node);
-> >   *
-> >   * Return: pointer to the allocated memory or %NULL on error
-> >   */
-> > -void *vzalloc_node(unsigned long size, int node)
-> > +void *vzalloc_node_noprof(unsigned long size, int node)
-> >  {
-> > -     return __vmalloc_node(size, 1, GFP_KERNEL | __GFP_ZERO, node,
-> > +     return __vmalloc_node_noprof(size, 1, GFP_KERNEL | __GFP_ZERO, no=
-de,
-> >                               __builtin_return_address(0));
-> >  }
-> > -EXPORT_SYMBOL(vzalloc_node);
-> > +EXPORT_SYMBOL(vzalloc_node_noprof);
-> >
-> >  #if defined(CONFIG_64BIT) && defined(CONFIG_ZONE_DMA32)
-> >  #define GFP_VMALLOC32 (GFP_DMA32 | GFP_KERNEL)
-> > @@ -4011,7 +4011,7 @@ EXPORT_SYMBOL(vzalloc_node);
-> >  #endif
-> >
-> >  /**
-> > - * vmalloc_32 - allocate virtually contiguous memory (32bit addressabl=
-e)
-> > + * vmalloc_32_noprof - allocate virtually contiguous memory (32bit add=
-ressable)
-> >   * @size:    allocation size
-> >   *
-> >   * Allocate enough 32bit PA addressable pages to cover @size from the
-> > @@ -4019,15 +4019,15 @@ EXPORT_SYMBOL(vzalloc_node);
-> >   *
-> >   * Return: pointer to the allocated memory or %NULL on error
-> >   */
-> > -void *vmalloc_32(unsigned long size)
-> > +void *vmalloc_32_noprof(unsigned long size)
-> >  {
-> > -     return __vmalloc_node(size, 1, GFP_VMALLOC32, NUMA_NO_NODE,
-> > +     return __vmalloc_node_noprof(size, 1, GFP_VMALLOC32, NUMA_NO_NODE=
-,
-> >                       __builtin_return_address(0));
-> >  }
-> > -EXPORT_SYMBOL(vmalloc_32);
-> > +EXPORT_SYMBOL(vmalloc_32_noprof);
-> >
-> >  /**
-> > - * vmalloc_32_user - allocate zeroed virtually contiguous 32bit memory
-> > + * vmalloc_32_user_noprof - allocate zeroed virtually contiguous 32bit=
- memory
-> >   * @size:         allocation size
-> >   *
-> >   * The resulting memory area is 32bit addressable and zeroed so it can=
- be
-> > @@ -4035,14 +4035,14 @@ EXPORT_SYMBOL(vmalloc_32);
-> >   *
-> >   * Return: pointer to the allocated memory or %NULL on error
-> >   */
-> > -void *vmalloc_32_user(unsigned long size)
-> > +void *vmalloc_32_user_noprof(unsigned long size)
-> >  {
-> > -     return __vmalloc_node_range(size, SHMLBA,  VMALLOC_START, VMALLOC=
-_END,
-> > +     return __vmalloc_node_range_noprof(size, SHMLBA,  VMALLOC_START, =
-VMALLOC_END,
-> >                                   GFP_VMALLOC32 | __GFP_ZERO, PAGE_KERN=
-EL,
-> >                                   VM_USERMAP, NUMA_NO_NODE,
-> >                                   __builtin_return_address(0));
-> >  }
-> > -EXPORT_SYMBOL(vmalloc_32_user);
-> > +EXPORT_SYMBOL(vmalloc_32_user_noprof);
-> >
-> >  /*
-> >   * Atomically zero bytes in the iterator.
-> > --
-> > 2.44.0.291.gc1ea87d7ee-goog
->
-> --
-> To unsubscribe from this group and stop receiving emails from it, send an=
- email to kernel-team+unsubscribe@android.com.
->
+> >   drivers/gpu/drm/vkms/vkms_composer.c | 167 +++++++++++++++++++------
+> >   drivers/gpu/drm/vkms/vkms_drv.h      |  27 ++--
+> >   drivers/gpu/drm/vkms/vkms_formats.c  | 236 ++++++++++++++++++++++----=
+---------
+> >   drivers/gpu/drm/vkms/vkms_formats.h  |   2 +-
+> >   drivers/gpu/drm/vkms/vkms_plane.c    |   5 +-
+> >   5 files changed, 292 insertions(+), 145 deletions(-)
+> >=20
+> > diff --git a/drivers/gpu/drm/vkms/vkms_composer.c b/drivers/gpu/drm/vkm=
+s/vkms_composer.c
+> > index 989bcf59f375..5d78c33dbf41 100644
+> > --- a/drivers/gpu/drm/vkms/vkms_composer.c
+> > +++ b/drivers/gpu/drm/vkms/vkms_composer.c
+
+..
+
+> > @@ -215,34 +188,146 @@ static void blend(struct vkms_writeback_job *wb,
+> >   {
+> >   	struct vkms_plane_state **plane =3D crtc_state->active_planes;
+> >   	u32 n_active_planes =3D crtc_state->num_active_planes;
+> > -	int y_pos, x_dst, x_limit;
+> >  =20
+> >   	const struct pixel_argb_u16 background_color =3D { .a =3D 0xffff };
+> >  =20
+> > -	size_t crtc_y_limit =3D crtc_state->base.crtc->mode.vdisplay;
+> > +	int crtc_y_limit =3D crtc_state->base.crtc->mode.vdisplay;
+> > +	int crtc_x_limit =3D crtc_state->base.crtc->mode.hdisplay; =20
+>=20
+> Shouldn't it be `unsigned int`?
+
+No. It's not good to mix signed and unsigned variables in computations.
+I for sure would not remember all the implicit promotion rules that
+apply, and you'd probably be forced to add explicit signedness casts to
+get the correct behaviour. It causes much less surprises to "normalize"
+all variables to the same signedness before computing with them. Some
+values in this function can be negative.
+
+
+Thanks,
+pq
+
+--Sig_/GfCtEZXpb23dLFOhosWDRQd
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEEJQjwWQChkWOYOIONI1/ltBGqqqcFAmYBkJ8ACgkQI1/ltBGq
+qqfVyA//S0bMVVU0lfdlKghSq2BiGWy5B4acbSUlKhLXvQZnEtF60Y0XBvF8H9Z4
+3+Kf/6fdE1NvGncaBTKHnfZ0OCgXoa07JhIIRLv4PcaDMtCTikFX/AX1e9IozB9/
+ObWvtiXBMt2k4Q6DTz7bSG8Z9HjU8cBpqV9N1tKMXhIv8RTyMOKTRk8Duya99isU
+PeIKbyvVYKvrfGu2Y7EWv8oljLsHTrOvvIRWzHTssO57EwxPjRTwkMn/JuB+QLTA
+QBNeXoiztQmDiuTnrs5UyByncSICtORx1FLM6JAHSGwe9eecnixXW5orrWXtw2PD
+fb7SfHkXQNYGUoDikdIaDeTqXZQuhsAUwcwaRuHJ1goiAENNjrnhWd8fUDpc2oNL
+VJuYZmMlzSPFz3rbCIGXUlGYpl9BdP8SxGHUddVI/LvxeL/MQ8v5KaB0PZgcboMx
+jcl6RmJLAco+1vWOBrjR0tTBxbLWBOa9gX4ncNvrC/saltohZ/FrMi1oQm9gVdeU
+m3547QUfd8hvlhmAKy32tE9zizfs8dunLbQyWxGT6gqBW6O8dr5CD5MJ/k5CMdhj
+U3G4BQ7kgN5Afc73JPHiJrGDrWCDQPiyeTMFpLPA3b4hBiRLs1RxheC37OyHdI0v
+3cxf5ja6rFNLlGI4klBMr5R92gaes2wQkyUxk3v8IGxMaFefF9s=
+=ep0Y
+-----END PGP SIGNATURE-----
+
+--Sig_/GfCtEZXpb23dLFOhosWDRQd--
 
