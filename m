@@ -1,168 +1,187 @@
-Return-Path: <linux-kernel+bounces-117358-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-117359-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7F5BB88AA6C
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 17:58:00 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9867A88B3B6
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 23:14:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 348FA1FA0986
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 16:58:00 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 82D31CE0325
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 16:58:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CF02E1BF24;
-	Mon, 25 Mar 2024 15:26:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 50C3E2B9A5;
+	Mon, 25 Mar 2024 15:26:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jDv+vRC9"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="dZcGTBEr";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="1YUMNbey";
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="dZcGTBEr";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="1YUMNbey"
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0F2B41BF3B
-	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 15:26:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DB46C3399F
+	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 15:26:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711380394; cv=none; b=ff3CEyvICKLvqR0H93Mp9rxfgPu+hW/RHayrwK85uwD1ojsco/e8A0tiO55DAwKtGelnKLNDdRs85yauRiCRjyGjt/B+0HZ7zwb2fEKWMkY9aHJ09S6hnuBRYoNQpGsbZYsdJX0YbSbc89v23YihHDKhZtyw0ZWxqSyCTj++1YQ=
+	t=1711380403; cv=none; b=Uu8iFkxBjH88ccJThJa09SoQNqsbOoKnJCI1749w6JBUm25KeT0Yx8E/KSLVLYJm+8j2R3NRA3U0cXfkkzoGmqADAQJSIM3HPgVcGVA5ctjgeP89Ne87Twsm0LE4VRUDjei5XXHMyC+/U0hah3lHOEXS9tGRx1L97fV2Y8TKPLA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711380394; c=relaxed/simple;
-	bh=rnELyLxB9RlicAGQEI132YVsh8obrSUToWBaes05A0Y=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=gKf9s1Rk9a/cEENPXZlzhB/ujQIocRdXKGbJlvlUZMqp6AtN35kbRRxwY8vQKhvBRPgo9QeXWVyiO8fNPExap+UpAmJn8sakG338XMFW/GFKJpMLz/O28mSMiFqzvxQM8xZ9zkW+aa3SYEGsmCrkDxmxUwN1R0iAbAe/n/LrET0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=jDv+vRC9; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8102DC433F1;
-	Mon, 25 Mar 2024 15:26:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711380393;
-	bh=rnELyLxB9RlicAGQEI132YVsh8obrSUToWBaes05A0Y=;
-	h=From:To:Cc:Subject:Date:From;
-	b=jDv+vRC9YcwhOjFCWXp2py+lDhFM/Ke/AzwSnBOUNGa950nwQ89BttPuUBk4qwx91
-	 xBftCng2ky+UuTElrzDa4NlDnVnxjRKqYH6ldrAmP7WPBx85AmBrtk5JGjQsYkIOtx
-	 37DaDq6KpRWHES3f7MrkSsOOW4puIlmja4b717CcXm5pEZ9zCqtMQEEVNDQuXwiQRS
-	 DeL6CfEbpNvU1wdq5oV/21WIt+EyUbDhPUURwvr+6IGw96l6mzYV3MwtlLwJg1i9tZ
-	 B4XKd5sPghcZ1laIswf2ucbBmU9Kn2NpCqy0uwyLzUig1VPr3XaCLlc/fTTt5jtBLY
-	 8K7e9L2+thMbQ==
-From: Chao Yu <chao@kernel.org>
-To: jaegeuk@kernel.org
-Cc: linux-f2fs-devel@lists.sourceforge.net,
+	s=arc-20240116; t=1711380403; c=relaxed/simple;
+	bh=qBwz/D+N7NO6TYpY0VTh9S1IAPPpgZFOm5NY3XbTLOE=;
+	h=Date:Message-ID:From:To:Cc:Subject:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=NLKLmqPJS9+aUw2eWVXLNG0zJ9766bFF6whNvNK6cCXmuTAsYc28RbXygvbYGGBuGrnLK0ONLZroCfsVDxKGWk9ye2dUk7Sq7SN/YrDtWG08oDwMCTuMuaAS78FQPEEdtgcVY8P/M/SIn6jvjcIAy53t7m1RuiULIn5yClyQ+d4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=dZcGTBEr; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=1YUMNbey; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=dZcGTBEr; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=1YUMNbey; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id C84C75C85C;
+	Mon, 25 Mar 2024 15:26:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1711380399; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=71g0L5Pz45C04Zlk45TyfpyXd4ITzbCM/wHLkRhHKmw=;
+	b=dZcGTBErsXuOJeGmiUuF4xSDl9oX49Vwwy/GeDPS/HAZQCef+kFToGR3ktQml0XPTkZUt8
+	etw8jGfMqubjziCszCTNY+eCqcH3RtBm/s+TPlA3wqJv/WL8sDQrqXizXDmSg1D8OPTWvK
+	qPMyRHdQDH7fxUIDMeeRVnXblRbsqhw=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1711380399;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=71g0L5Pz45C04Zlk45TyfpyXd4ITzbCM/wHLkRhHKmw=;
+	b=1YUMNbeyS6fyA0+ya9gfN3WEs/HoUegUzBHyHZnz7NUhD52jdbDnr62NJw5vaHkcmukzkQ
+	uccHBDeb69ya9ZCw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1711380399; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=71g0L5Pz45C04Zlk45TyfpyXd4ITzbCM/wHLkRhHKmw=;
+	b=dZcGTBErsXuOJeGmiUuF4xSDl9oX49Vwwy/GeDPS/HAZQCef+kFToGR3ktQml0XPTkZUt8
+	etw8jGfMqubjziCszCTNY+eCqcH3RtBm/s+TPlA3wqJv/WL8sDQrqXizXDmSg1D8OPTWvK
+	qPMyRHdQDH7fxUIDMeeRVnXblRbsqhw=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1711380399;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=71g0L5Pz45C04Zlk45TyfpyXd4ITzbCM/wHLkRhHKmw=;
+	b=1YUMNbeyS6fyA0+ya9gfN3WEs/HoUegUzBHyHZnz7NUhD52jdbDnr62NJw5vaHkcmukzkQ
+	uccHBDeb69ya9ZCw==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 59B7D137C4;
+	Mon, 25 Mar 2024 15:26:39 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id 9QttFK+XAWZsCAAAD6G6ig
+	(envelope-from <tiwai@suse.de>); Mon, 25 Mar 2024 15:26:39 +0000
+Date: Mon, 25 Mar 2024 16:26:40 +0100
+Message-ID: <871q7yxrgv.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: "Arnd Bergmann" <arnd@arndb.de>
+Cc: "Linus Torvalds" <torvalds@linux-foundation.org>,
+	"Brian Gerst" <brgerst@gmail.com>,
+	"Uros Bizjak" <ubizjak@gmail.com>,
 	linux-kernel@vger.kernel.org,
-	Chao Yu <chao@kernel.org>,
-	Yi Zhang <yi.zhang@redhat.com>,
-	Shin'ichiro Kawasaki <shinichiro.kawasaki@wdc.com>
-Subject: [PATCH] f2fs: multidev: fix to recognize valid zero block address
-Date: Mon, 25 Mar 2024 23:26:23 +0800
-Message-Id: <20240325152623.797099-1-chao@kernel.org>
-X-Mailer: git-send-email 2.40.1
+	x86@kernel.org,
+	"Ingo Molnar" <mingo@kernel.org>,
+	"Thomas Gleixner" <tglx@linutronix.de>,
+	"Borislav Petkov" <bp@alien8.de>,
+	"H. Peter Anvin" <hpa@zytor.com>,
+	mwilck@suse.com,
+	tiwai@suse.de,
+	vbabka@suse.cz,
+	denis.kirjanov@suse.com,
+	nmorey@suse.com
+Subject: Re: [PATCH v4 00/16] x86-64: Stack protector and percpu improvements
+In-Reply-To: <ef640185-21e2-46a8-839c-d81030fb13f8@app.fastmail.com>
+References: <20240322165233.71698-1-brgerst@gmail.com>
+	<CAFULd4bCufzKjaUyOcJ5MfsPBcVTj1zQiP3+FFCGo6SbxTpK2A@mail.gmail.com>
+	<CAMzpN2gOZEddWUgncaLutVDihcEK-oEUdSVxsgaaX9xiMWfqPw@mail.gmail.com>
+	<CAHk-=wi0arqxMFFdM+jGv1YXXhY+ehxsmcfv+iAndD_dmpYjMA@mail.gmail.com>
+	<CAHk-=wg0cMa6B6OeTtXjx4R-kqxWVHSJ=6y=stRuzk8WduJTsQ@mail.gmail.com>
+	<ef640185-21e2-46a8-839c-d81030fb13f8@app.fastmail.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+Authentication-Results: smtp-out2.suse.de;
+	none
+X-Spam-Level: 
+X-Spam-Score: -3.30
+X-Spamd-Result: default: False [-3.30 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	 NEURAL_HAM_SHORT(-0.20)[-1.000];
+	 RCPT_COUNT_TWELVE(0.00)[15];
+	 MID_CONTAINS_FROM(1.00)[];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 FREEMAIL_CC(0.00)[linux-foundation.org,gmail.com,vger.kernel.org,kernel.org,linutronix.de,alien8.de,zytor.com,suse.com,suse.de,suse.cz];
+	 RCVD_TLS_ALL(0.00)[];
+	 BAYES_HAM(-3.00)[100.00%]
+X-Spam-Flag: NO
 
-As reported by Yi Zhang in mailing list [1], kernel warning was catched
-during zbd/010 test as below:
+On Mon, 25 Mar 2024 15:51:30 +0100,
+Arnd Bergmann wrote:
+> 
+> On Sat, Mar 23, 2024, at 18:06, Linus Torvalds wrote:
+> > On Sat, 23 Mar 2024 at 09:16, Linus Torvalds <torvalds@linux-foundation.org> wrote:
+> > The SLES situation seems somewhat similar, with SLES12 being 4.8.x and
+> > SLES15 being 7.3. But again with a "Development Tools Module" setup.
+> > So that *might* argue for 7.3.
+> 
+> According to https://distrowatch.com/table.php?distribution=sle, they
+> also provide gcc-12.2.1 with the sp5 update, so we're probably fine.
+> 
+> On the other hand, I can see that OpenSUSE Leap 15.6 contains
+> a fairly modern kernel (6.4.x) built with the gcc-7.3 system
+> compiler, and I think this is the same one as in SLES.
+> 
+> Not sure if they plan to update the kernel release beyond that,
+> or how inconvenient it would be for them to require
+> using the other compiler for future updates, so I've added
+> the developers that last touched the OpenSUSE kernel RPM
+> package to Cc here.
 
-/check zbd/010
-zbd/010 (test gap zone support with F2FS)                    [failed]
-    runtime    ...  3.752s
-    something found in dmesg:
-    [ 4378.146781] run blktests zbd/010 at 2024-02-18 11:31:13
-    [ 4378.192349] null_blk: module loaded
-    [ 4378.209860] null_blk: disk nullb0 created
-    [ 4378.413285] scsi_debug:sdebug_driver_probe: scsi_debug: trim
-poll_queues to 0. poll_q/nr_hw = (0/1)
-    [ 4378.422334] scsi host15: scsi_debug: version 0191 [20210520]
-                     dev_size_mb=1024, opts=0x0, submit_queues=1, statistics=0
-    [ 4378.434922] scsi 15:0:0:0: Direct-Access-ZBC Linux
-scsi_debug       0191 PQ: 0 ANSI: 7
-    [ 4378.443343] scsi 15:0:0:0: Power-on or device reset occurred
-    [ 4378.449371] sd 15:0:0:0: Attached scsi generic sg5 type 20
-    [ 4378.449418] sd 15:0:0:0: [sdf] Host-managed zoned block device
-    ...
-    (See '/mnt/tests/gitlab.com/api/v4/projects/19168116/repository/archive.zip/storage/blktests/blk/blktests/results/nodev/zbd/010.dmesg'
+SLE15-SP6 kernel (based on 6.4.x) is still built with gcc7, currently
+gcc 7.5, indeed.  openSUSE Leap shares the very same kernel, so it's
+with gcc 7.5, too.  Even though gcc-13 is provided as additional
+compiler package, it's not used for the kernel package build.
 
-WARNING: CPU: 22 PID: 44011 at fs/iomap/iter.c:51
-CPU: 22 PID: 44011 Comm: fio Not tainted 6.8.0-rc3+ #1
-RIP: 0010:iomap_iter+0x32b/0x350
-Call Trace:
- <TASK>
- __iomap_dio_rw+0x1df/0x830
- f2fs_file_read_iter+0x156/0x3d0 [f2fs]
- aio_read+0x138/0x210
- io_submit_one+0x188/0x8c0
- __x64_sys_io_submit+0x8c/0x1a0
- do_syscall_64+0x86/0x170
- entry_SYSCALL_64_after_hwframe+0x6e/0x76
+AFAIK, it's not decided yet about SP7 kernel.  But since we take a
+conservative approach for SLE, I guess SLE15-SP7 will be likely
+sticking with the old gcc, unless forced to change by some reason.
 
-Shinichiro Kawasaki helps to analyse this issue and proposes a potential
-fixing patch in [2].
+SLE12 is built with the old gcc 4.8, and SLE12-SP5 (based on 4.12) is
+still actively maintained, but only for a few months until October
+2024.
 
-Quoted from reply of Shinichiro Kawasaki:
+The next generation of SLE is built with the latest gcc (gcc-13 for
+now).  So SLE16 will be a totally different story.
 
-"I confirmed that the trigger commit is dbf8e63f48af as Yi reported. I took a
-look in the commit, but it looks fine to me. So I thought the cause is not
-in the commit diff.
+openSUSE Tumbleweed always uses a bleeding edge compiler (gcc-13),
+too.
 
-I found the WARN is printed when the f2fs is set up with multiple devices,
-and read requests are mapped to the very first block of the second device in the
-direct read path. In this case, f2fs_map_blocks() and f2fs_map_blocks_cached()
-modify map->m_pblk as the physical block address from each block device. It
-becomes zero when it is mapped to the first block of the device. However,
-f2fs_iomap_begin() assumes that map->m_pblk is the physical block address of the
-whole f2fs, across the all block devices. It compares map->m_pblk against
-NULL_ADDR == 0, then go into the unexpected branch and sets the invalid
-iomap->length. The WARN catches the invalid iomap->length.
 
-This WARN is printed even for non-zoned block devices, by following steps.
-
- - Create two (non-zoned) null_blk devices memory backed with 128MB size each:
-   nullb0 and nullb1.
- # mkfs.f2fs /dev/nullb0 -c /dev/nullb1
- # mount -t f2fs /dev/nullb0 "${mount_dir}"
- # dd if=/dev/zero of="${mount_dir}/test.dat" bs=1M count=192
- # dd if="${mount_dir}/test.dat" of=/dev/null bs=1M count=192 iflag=direct
-
-.."
-
-So, the root cause of this issue is: when multi-devices feature is on,
-f2fs_map_blocks() may return zero blkaddr in non-primary device, which is
-a verified valid block address, however, f2fs_iomap_begin() treats it as
-an invalid block address, and then it triggers the warning in iomap
-framework code.
-
-Finally, as discussed, we decide to use a more simple and direct way that
-checking (map.m_flags & F2FS_MAP_MAPPED) condition instead of
-(map.m_pblk != NULL_ADDR) to fix this issue.
-
-Thanks a lot for the effort of Yi Zhang and Shinichiro Kawasaki on this
-issue.
-
-[1] https://lore.kernel.org/linux-f2fs-devel/CAHj4cs-kfojYC9i0G73PRkYzcxCTex=-vugRFeP40g_URGvnfQ@mail.gmail.com/
-[2] https://lore.kernel.org/linux-f2fs-devel/gngdj77k4picagsfdtiaa7gpgnup6fsgwzsltx6milmhegmjff@iax2n4wvrqye/
-
-Reported-by: Yi Zhang <yi.zhang@redhat.com>
-Closes: https://lore.kernel.org/linux-f2fs-devel/CAHj4cs-kfojYC9i0G73PRkYzcxCTex=-vugRFeP40g_URGvnfQ@mail.gmail.com/
-Tested-by: Shin'ichiro Kawasaki <shinichiro.kawasaki@wdc.com>
-Fixes: 1517c1a7a445 ("f2fs: implement iomap operations")
-Fixes: 8d3c1fa3fa5e ("f2fs: don't rely on F2FS_MAP_* in f2fs_iomap_begin")
-Signed-off-by: Chao Yu <chao@kernel.org>
----
- fs/f2fs/data.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/fs/f2fs/data.c b/fs/f2fs/data.c
-index d9494b5fc7c1..5ef1874b572a 100644
---- a/fs/f2fs/data.c
-+++ b/fs/f2fs/data.c
-@@ -4185,7 +4185,7 @@ static int f2fs_iomap_begin(struct inode *inode, loff_t offset, loff_t length,
- 	if (WARN_ON_ONCE(map.m_pblk == COMPRESS_ADDR))
- 		return -EINVAL;
- 
--	if (map.m_pblk != NULL_ADDR) {
-+	if (map.m_flags & F2FS_MAP_MAPPED) {
- 		iomap->length = blks_to_bytes(inode, map.m_len);
- 		iomap->type = IOMAP_MAPPED;
- 		iomap->flags |= IOMAP_F_MERGED;
--- 
-2.40.1
-
+Takashi
 
