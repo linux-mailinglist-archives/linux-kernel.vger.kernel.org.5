@@ -1,228 +1,150 @@
-Return-Path: <linux-kernel+bounces-117828-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-117829-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4566288B606
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 01:27:35 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8F32E88B02A
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 20:37:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D84FCB430A7
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 19:37:35 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B2E6A1C3ABCA
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 19:37:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E6D701C68A;
-	Mon, 25 Mar 2024 19:37:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 52AD01BC3C;
+	Mon, 25 Mar 2024 19:37:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="g56R/uco"
-Received: from mail-ot1-f52.google.com (mail-ot1-f52.google.com [209.85.210.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=microsoft.com header.i=@microsoft.com header.b="Gr2SJQ88"
+Received: from BYAPR05CU005.outbound.protection.outlook.com (mail-westusazon11021006.outbound.protection.outlook.com [52.101.85.6])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8502E18EA1;
-	Mon, 25 Mar 2024 19:37:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.52
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711395441; cv=none; b=ImgjGqR4y3irzNHAlm3OyAB4suM5eWTlobMdPBS3F/1dAsHknTXdS1VD/VYo6oSZeAWtpVEPhrXfgBP0qLjNmZ4mx1SD9SU7GF6Rayp8f/MHT23mbpEtlfU8YCqHDVryUw5sFwIXC5BcxwvDd9vIEB2Bl6iyRx1BC7yUheABAjs=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711395441; c=relaxed/simple;
-	bh=hsbC3daJJj5MZQZX3Vn6TiLijDDCKLP5QTkvRi3Kw14=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=bO/776tu0+IcCffJ2GVt+fnlkAQV8TqoTTqXYSFrHr6+5VEybp2KCuEmBF1WuSLHLZIbDINk9eoEeE60Uehm9NGWSrdFppfuxsQl4045zUxh6ok70loNRu344oWaNrnohINgD8/XsNpOEjdwSnuVCd7yFEHdPR3prf2DlhA19v0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=g56R/uco; arc=none smtp.client-ip=209.85.210.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ot1-f52.google.com with SMTP id 46e09a7af769-6dc8b280155so2863692a34.0;
-        Mon, 25 Mar 2024 12:37:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711395438; x=1712000238; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=90CH8AJ6hrKo9mJJq8CyynE7gOcGB4303/vwGgiZAY8=;
-        b=g56R/ucoX0ZlRy1EymV45N47Knqpo/zx/w+hgStd9ppHkzaDg8OJePeIYB48n6ULa3
-         thwPcsIZ/Yfev5nppawdgCVlSiHycaIfnn7bTKYqSd32ZYQz79F5Cjy+G3DHVJnTl8Ef
-         5scUY7LXZdJySI6pRS3iI4+/RG78qyZyVQmz4NDaFjBCYrVysprfBcwR8TQVMiRXK1zj
-         pcOQ+1fqCnIJ/dgdXUtgeNAWMlfQXYQG4lk05nj1tXw+UBhwCLpqRT2D/id/HP4SSgdN
-         mhqdmKvkTdqDm8mO0byb5/BEa9+FYRnpzNYPduYXub72IX/Nn/P7WNcQOeIgMLwxXNCl
-         rQZQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711395438; x=1712000238;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=90CH8AJ6hrKo9mJJq8CyynE7gOcGB4303/vwGgiZAY8=;
-        b=V7pJpipVxFJ4iNjhI947vEWljrTddreGWEC2LNt79AF8VLCw01qfQ0p7CMurvub6No
-         PdXta9ejGM4B0URXkB9v/LugVUCS1wpOyisdzAUmXsDCJUGsuj2aVvR4Oaz4vQoo7Ong
-         MTITaUQ5zPuigSYrKDhSVd1141bg4me/RV8ivdVuC1eETowXWv2HWCs7D2YyN6GpOAKe
-         Y9lE3s3kHOqAOXwuuhVp1vQU6mVnDkb+ZpbffoOg36rt7bmFthSso58oUIRxzQ0qSYzT
-         pN0LpmlI67nh6hHDxxcoCcAbLciAl4m5UNIPa9LwaIwuMsqiu2E9d855vAW6Tw+V9zHy
-         QY7w==
-X-Forwarded-Encrypted: i=1; AJvYcCXrL1vlrg8m32xmC/HkKjAy6Qf/kI5fNOyc9Q2DoLcL9Th1HCg53IbekWLFESglkYUvy/zDISX4AYQ16mDNG6AQmygDSs/AIGSzarBQe73EejWmj8ibdjKcQcC+nDrlQciGBm3F9R3+pfcULDLZGkyPhoAZXCGFnpfenSOMYG9AVtelCKql9kk=
-X-Gm-Message-State: AOJu0YwhRVyoEvm3t3sMLxhEzWqqw1nM8ja+WU3AJjOhb3XxlJWJHYAp
-	CSzE7gKfT14yb6XaavSI8J/EmZwkCCI9aKyUIna9RhEaP4MQzu87PxCOlO4ngbgNdcIeSqxg7H7
-	MQvX1DXJPKzrYhH5OSe3SoBAwTAg=
-X-Google-Smtp-Source: AGHT+IF3VDAGVGLUHUxQIydW0V+qUEjZ2t1sxmzA/I4vbE9BQVjOevbN/A3c+HXOFfjVcuvFf/i0ka6/7Cbn92GbWng=
-X-Received: by 2002:a05:6870:1381:b0:229:f106:492d with SMTP id
- 1-20020a056870138100b00229f106492dmr7018985oas.12.1711395438612; Mon, 25 Mar
- 2024 12:37:18 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E8E683DAC18;
+	Mon, 25 Mar 2024 19:37:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.85.6
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1711395461; cv=fail; b=PiA2/XIXqHXWqp3STB0QBQUYw/y7yYsmzWaXBGDM/dyj+ipqbwkkEnignd/Ziad6jAjS3q5cefoJuphyKyznZsNbd0WCASxRA6fOMUWZPxesLnPHwRCUY+VqF1FGiAiQmdU3brGxbH02LnRketQabVDBGHPj2J183xLipbMXolE=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1711395461; c=relaxed/simple;
+	bh=lAMxxgF+u4TJZNHH02UAXAIQ0Hts2AmZqLnvyAbC0Wg=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=V05kc03RqA+QDNZ+/jmd2hvQiWpIId95ctgUg6aDF3vuTr1k4tCeb12sU8tD5y8fXxzyA6HxJrM2pDm5IzrpMFbfJSHYq3VWom6DaqUs1rDRmvgRpE07jBNXWvcAqLzlqmauqtvUI2AdQBvjhG/E2KVX77RYzM3JvtDx16avRWI=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microsoft.com; spf=pass smtp.mailfrom=microsoft.com; dkim=pass (1024-bit key) header.d=microsoft.com header.i=@microsoft.com header.b=Gr2SJQ88; arc=fail smtp.client-ip=52.101.85.6
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microsoft.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=microsoft.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=YkWZspZjzZ7JS7Jqn5w83zqqjgj0Yns1glnaMi2DlXyasWCkj0YQIqk13oKoVK2COwX+TU3vggt+OkI6nsnZLjnibbgitiIvXFxNVxdjqzvEyS6duN347aWfjMq8hYMP4tUNdWKZ4u7ZK4zLFlgFqjJpcNhATLcxZseKxVLffEeZRCuYh++CGtsgyo7BmuS+8a29v+55HvOYr5DDGduTz8XwNywfuqlkEAmwNQvNn2sxY50hMOCWAhbJfSlxrDnN3xc/i+j9fqtycDVZ7iWWa6N0+RnbKrnwdjcRXd9CS2eq6T8j3n38+PxeZTHc4t7P3GofXrdY9GeLQSnxbG2lmA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=lAMxxgF+u4TJZNHH02UAXAIQ0Hts2AmZqLnvyAbC0Wg=;
+ b=ONq/vVi1Dxm1a1VTII0XQb6dJYIdNwQ+3Zjf67wtVKkktRZMGG4LOH4RVgQbpf8AtTDOnhsUqlsVBZfxGX+/ojiiJ0G8/VuR8yrqQ1eQUHDh5rfNeWHpn9O0QH7dg2KeRKfbvQP6AXvDavU2WNP7quBl6w61J7+IZ17+zA9guT9rQeCLrZJl+BDKqAxY7tZP16CqQ0UwqNXfzFiokG/b4m0+9cWYxoE7zc/TRW8NiT21BRkobSJC2Xo3YrSviE6ojE+7u16YHpRb0GuhhJ2AfEIkA6HxAHvgTzqpVgKgzans8Vg3xNzo0zzkXhASR9RyOVpXU/FhCk3gyXZQiTSJAA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microsoft.com; dmarc=pass action=none
+ header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=lAMxxgF+u4TJZNHH02UAXAIQ0Hts2AmZqLnvyAbC0Wg=;
+ b=Gr2SJQ88v/kkAX27Zvu75ACNS2CCjPgc77a90Zj5YxjFT1Y5/+meOyofIhHVJFh6aLr+jCoOYcdsFx+R/rqb3YS9diPSeD44x+Vn1MseSLp4hMQRZHddt9Lxtq2SRs57GY/8geOBKKwRLjGkfMR7jtXPom1nu0zjeCBXbYFq5WM=
+Received: from SJ1PR21MB3457.namprd21.prod.outlook.com (2603:10b6:a03:453::5)
+ by BYAPR21MB1319.namprd21.prod.outlook.com (2603:10b6:a03:115::9) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7430.20; Mon, 25 Mar
+ 2024 19:37:37 +0000
+Received: from SJ1PR21MB3457.namprd21.prod.outlook.com
+ ([fe80::70f:687e:92e6:45b7]) by SJ1PR21MB3457.namprd21.prod.outlook.com
+ ([fe80::70f:687e:92e6:45b7%4]) with mapi id 15.20.7430.017; Mon, 25 Mar 2024
+ 19:37:37 +0000
+From: Long Li <longli@microsoft.com>
+To: Konstantin Taranov <kotaranov@linux.microsoft.com>, Konstantin Taranov
+	<kotaranov@microsoft.com>, "sharmaajay@microsoft.com"
+	<sharmaajay@microsoft.com>, "jgg@ziepe.ca" <jgg@ziepe.ca>, "leon@kernel.org"
+	<leon@kernel.org>
+CC: "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH rdma-next v2 3/4] RDMA/mana_ib: Use struct mana_ib_queue
+ for WQs
+Thread-Topic: [PATCH rdma-next v2 3/4] RDMA/mana_ib: Use struct mana_ib_queue
+ for WQs
+Thread-Index: AQHaeh7zqLhHzozrgkqlV+gPDddvD7FI428g
+Date: Mon, 25 Mar 2024 19:37:37 +0000
+Message-ID:
+ <SJ1PR21MB345799416085338BEACCD452CE362@SJ1PR21MB3457.namprd21.prod.outlook.com>
+References: <1710867613-4798-1-git-send-email-kotaranov@linux.microsoft.com>
+ <1710867613-4798-4-git-send-email-kotaranov@linux.microsoft.com>
+In-Reply-To: <1710867613-4798-4-git-send-email-kotaranov@linux.microsoft.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+msip_labels:
+ MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=38259e53-b95f-43ce-b6be-809e3db5a8f2;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2024-03-25T19:37:14Z;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: SJ1PR21MB3457:EE_|BYAPR21MB1319:EE_
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info:
+ czpdeLucfnulSewI2PUCv1qPnpONwFIYqr+oG8xCPo4jLmNGpaqmSj2ioY0VutBKyvgySlYkDa3m2hhXz1Jy/JzdKPeu1ph2944+KhEYG5Bu27Bn7xgzU82SbNYxPG/StAGC9QmN/3QxEGsyn1Dgygl5TQj9EmeYi0No9+Fa+MwB4VhT9Z0K+5v/ef3vYSNEOAjLUGU4tzBD7AIgRE/xaXAdn4tsW9GBjjO3HjA5lK/6du2u8Jqp8jzznsddflmNRwcMwUoOxZUwb5V9r7kY8+feh7qyJ29yhoA9bJoinplNVe4n79Scbk+3m5UDw2wslcecQ41Blx/Hdj6v80yg/DDh2I83xVGn+5Gr7aI+uIzTEgFXm59Tr8xqSBb6BSMa6nxhoFRxvYZWV21T1QreXXcXb/DfybCy1sZRgnePIwCWsmiwCAJ8KkVKg5W9rZZrwZO+pbZmERbrsCg0JQ1bxIjnPj+yeHzdgByQqBbo0iiuIONbTLSvCqL4PxSLQgjg2Cn/yfMy7NmVyQvngbsFkEzcYANC4qrg3iuFHKbsIFxqNI2AVhLxvBJgutAXTSiNJO3zcyKu4Psfqyjco9SRTZ2bX2raaAOGMTAB9Y1J8oe6SFgwVU+vYVohexIHPqmqqZP4NhN2yRocUJZ4msrCukFrRi1OiCtHpfDM3dS7E5Y=
+x-forefront-antispam-report:
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ1PR21MB3457.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(1800799015)(366007);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0:
+ =?us-ascii?Q?NnqeLR94l31vhUNeoBanhEojitZLoT+/XUlI4FLe5JyXqWRbbguNKrX1g0oF?=
+ =?us-ascii?Q?O2VkZBiebvY6AgVJZ1hKwCM5lb07JblmGVzZlLNsfjN5MBwyRpEQBmvkhth9?=
+ =?us-ascii?Q?JrW6rzaecZFs28a/z0YavZj7AxMNJRCZWC2XAYZVnm9FhzdPl9b+B5LFAIYQ?=
+ =?us-ascii?Q?bk1K5Vlp1896begB+fNstQYbZF5UnFzxeSRtoVbp2dFNblYxnwn95L18KSYK?=
+ =?us-ascii?Q?HKkIPLIUB7diz2zUsPLLJYZWGPsML4amWvjQTc+bJwBAoqXguofxNm+5qKOr?=
+ =?us-ascii?Q?IIL5ejVjfcjiskL+/bQzCxuRJ4hd7IVKP61Em7P7el4eEAgttMdviNtkqtYW?=
+ =?us-ascii?Q?2f9unTabWROJZl+yTF+mJhXX3OT1yLK7DjtrQAwU+b6a1s1gg/5h9qHl8KY9?=
+ =?us-ascii?Q?/dOmceGyhoUEndgI+d9cyqtKWpkjSWx59paHZF+QYY2VJ8jcCmqJNU0fMAiZ?=
+ =?us-ascii?Q?ZdEJoZjh5AR4peiGIQPSC85R9RXiBz9/1z/CEQ5xLtvmD4ZF8HS0rk6fLPed?=
+ =?us-ascii?Q?kvPBdGxjZjzRihmgFuRJCIOfBI51nh1qTk9ViHfSLVMUu84DzZyCmMWl732C?=
+ =?us-ascii?Q?3S9Y0tgD992evEMNDJ2nxPYh2wttuhrOpKgJeDrjBCw8Qg6lSCC1HGVzX3SC?=
+ =?us-ascii?Q?CZ08aruxfeIsEXc09jjLEn+42a7ZcPNhF74X0m1unUgRbJRVcj0P/IIVyWak?=
+ =?us-ascii?Q?iQ0DPuC9cgsR84kZ32UhytEppSiQSGMDeni4cATSVbmeUW72PCyGo41N+eV3?=
+ =?us-ascii?Q?mAOELUMob32t7MrUKiZYxBjrNVgfJLdqbjxQp+S6wdlks/E/r6NFFrVcEm9O?=
+ =?us-ascii?Q?QpsmmKYLb4LerRbn5Xu3aKfGXE9+7uxKiL0D7KM3cmdHhBM92WLk6ZFefcU3?=
+ =?us-ascii?Q?fjId0skvJhmMyLqIOb/OyIdT1aqTyub9iPKINfAmWbfJDlTuoQYkuohFp8VF?=
+ =?us-ascii?Q?lvul/h34WuCDXbEMpr9XMVmLC9J6CAM2upvHpH4W6+3ImFXzqBVNOHfwoquj?=
+ =?us-ascii?Q?Twi3Y06gqyoUHDsckcDScMPQBA+ojsBzqMqDXFYgqSqwcoZaSYuo5GQCjqHH?=
+ =?us-ascii?Q?mhOF/lc6/JR60MraSxvJgZeneqg9yUihwSinhEGKzMFvJBrGBijMHK5JV2vh?=
+ =?us-ascii?Q?lcz5Ip390p9lX1iFVGknawA6GHnM5XaKGmXyeCfSJGizH2zgbdDFK9k49w6r?=
+ =?us-ascii?Q?zkSbY4MB2yavt0BF7YTZofowc4Ftuud2AdS1IejOycwGBH9/LKj9R6ys/Ohe?=
+ =?us-ascii?Q?6xXi6urzlrgUo5jaH6WulkyOy9dKHwsoO86rz1fOla0OWR97Xsy4zGZnVpa4?=
+ =?us-ascii?Q?UwZczQtfYv4PVn+a+6HYy3wYLLFvl3JT0NCJDkfeMqLxPcnz/1n9Qjpi1JPD?=
+ =?us-ascii?Q?1dxHq43KJC72OizqcEnv+u2+TGk4RtxFQvLQkirsDF4qcqDY+Nk3cUxRIyLH?=
+ =?us-ascii?Q?BDEEK7LyZsY0j3JXzpmwjGzdkF6WrI0jr/knXVj/B6BLn9ap/nN5n6hq238i?=
+ =?us-ascii?Q?uTKGXwiFtGvSQYuSRJ2M+LQVISHR3od7geutThpP0feWSEK4z8VuvNmIHN9O?=
+ =?us-ascii?Q?/NRFfEpDCTOYYJlo9rMbLP3AYKsKj/0+wkYP7iyP?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <e119b3e2-09a0-47a7-945c-98a1f03633ef@redhat.com>
- <f453061e-6e01-4ad7-8fc6-a39108beacfc@redhat.com> <d689e8bf-6628-499e-8a11-c74ce1b1fd8b@redhat.com>
- <6f5b9d18-2d04-495c-970c-eb5eada5f676@redhat.com>
-In-Reply-To: <6f5b9d18-2d04-495c-970c-eb5eada5f676@redhat.com>
-From: Ilya Dryomov <idryomov@gmail.com>
-Date: Mon, 25 Mar 2024 20:37:06 +0100
-Message-ID: <CAOi1vP-yf=VNLpcRPnd7qwxkgsxUpnZYKUx96pJr+WMQeLwyvA@mail.gmail.com>
-Subject: Re: kernel BUG at mm/usercopy.c:102 -- pc : usercopy_abort
-To: David Hildenbrand <david@redhat.com>
-Cc: Xiubo Li <xiubli@redhat.com>, linux-mm@kvack.org, linux-kernel@vger.kernel.org, 
-	Ceph Development <ceph-devel@vger.kernel.org>, linux-fsdevel@vger.kernel.org, 
-	Vlastimil Babka <vbabka@suse.cz>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-OriginatorOrg: microsoft.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SJ1PR21MB3457.namprd21.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: f172bd43-5c64-47b7-942a-08dc4d0306b9
+X-MS-Exchange-CrossTenant-originalarrivaltime: 25 Mar 2024 19:37:37.2297
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: Bfzm7IQizeZ48N+66XYUf9V8vSV8UEaKwmn6yH9PlSvFKkzo0EyG+tzvou/TRBmkTL1KsPCzrpDUfeuybmFVRg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR21MB1319
 
-On Mon, Mar 25, 2024 at 6:39=E2=80=AFPM David Hildenbrand <david@redhat.com=
-> wrote:
->
-> On 25.03.24 13:06, Xiubo Li wrote:
-> >
-> > On 3/25/24 18:14, David Hildenbrand wrote:
-> >> On 25.03.24 08:45, Xiubo Li wrote:
-> >>> Hi guys,
-> >>>
-> >>> We are hitting the same crash frequently recently with the latest ker=
-nel
-> >>> when testing kceph, and the call trace will be something likes:
-> >>>
-> >>> [ 1580.034891] usercopy: Kernel memory exposure attempt detected from
-> >>> SLUB object 'kmalloc-192' (offset 82, size 499712)!^M
-> >>> [ 1580.045866] ------------[ cut here ]------------^M
-> >>> [ 1580.050551] kernel BUG at mm/usercopy.c:102!^M
-> >>> ^M
-> >>> Entering kdb (current=3D0xffff8881211f5500, pid 172901) on processor =
-4
-> >>> Oops: (null)^M
-> >>> due to oops @ 0xffffffff8138cabd^M
-> >>> CPU: 4 PID: 172901 Comm: fsstress Tainted: G S 6.6.0-g623393c9d50c #1=
-^M
-> >>> Hardware name: Supermicro SYS-5018R-WR/X10SRW-F, BIOS 1.0c 09/07/2015=
-^M
-> >>> RIP: 0010:usercopy_abort+0x6d/0x80^M
-> >>> Code: 4c 0f 44 d0 41 53 48 c7 c0 1c e9 13 82 48 c7 c6 71 62 13 82 48 =
-0f
-> >>> 45 f0 48 89 f9 48 c7 c7 f0 6b 1b 82 4c 89 d2 e8 63 2b df ff <0f> 0b 4=
-9
-> >>> c7 c1 44 c8 14 82 4d 89 cb 4d 89 c8 eb a5 66 90 f3 0f 1e^M
-> >>> RSP: 0018:ffffc90006dfba88 EFLAGS: 00010246^M
-> >>> RAX: 000000000000006a RBX: 000000000007a000 RCX: 0000000000000000^M
-> >>> RDX: 0000000000000000 RSI: ffff88885fd1d880 RDI: ffff88885fd1d880^M
-> >>> RBP: 000000000007a000 R08: 0000000000000000 R09: c0000000ffffdfff^M
-> >>> R10: 0000000000000001 R11: ffffc90006dfb930 R12: 0000000000000001^M
-> >>> R13: ffff8882b7bbed12 R14: ffff88827a375830 R15: ffff8882b7b44d12^M
-> >>> FS:  00007fb24c859500(0000) GS:ffff88885fd00000(0000)
-> >>> knlGS:0000000000000000^M
-> >>> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033^M
-> >>> CR2: 000055c2bcf9eb00 CR3: 000000028956c005 CR4: 00000000001706e0^M
-> >>> Call Trace:^M
-> >>>     <TASK>^M
-> >>>     ? kdb_main_loop+0x32c/0xa10^M
-> >>>     ? kdb_stub+0x216/0x420^M
-> >>> more>
-> >>>
-> >>> You can see more detail in ceph tracker
-> >>> https://tracker.ceph.com/issues/64471.
-> >>
-> >> Where is the full backtrace? Above contains only the backtrace of kdb.
-> >>
-> > Hi David,
-> >
-> > The bad news is that there is no more backtrace. All the failures we hi=
-t
-> > are similar with the following logs:
-> >
->
-> That's unfortunate :/
->
-> "exposure" in the message means we are in copy_to_user().
->
-> SLUB object 'kmalloc-192' means that we come from __check_heap_object()
-> ... we have 192 bytes, but the length we want to access is 499712 ...
-> 488 KiB.
->
-> So we ended  up somehow in
->
-> __copy_to_user()->check_object_size()->__check_object_size()->
-> check_heap_object()->__check_heap_object()->usercopy_abort()
->
->
-> ... but the big question is which code tried to copy way too much memory
-> out of a slab folio to user space.
->
-> >
-> >> That link also contains:
-> >>
-> >> Entering kdb (current=3D0xffff9115d14fb980, pid 61925) on processor 5
-> >> Oops: (null)^M
-> >> due to oops @ 0xfffffffface3a1d2^M
-> >> CPU: 5 PID: 61925 Comm: ld Kdump: loaded Not tainted
-> >> 5.14.0-421.el9.x86_64 #1^M
-> >> Hardware name: Supermicro SYS-5018R-WR/X10SRW-F, BIOS 2.0 12/17/2015^M
-> >> RIP: 0010:usercopy_abort+0x74/0x76^M
-> >> Code: 14 74 ad 51 48 0f 44 d6 49 c7 c3 cb 9f 73 ad 4c 89 d1 57 48 c7
-> >> c6 60 83 75 ad 48 c7 c7 00 83 75 ad 49 0f 44 f3 e8 1b 3b ff ff <0f> 0b
-> >> 0f b6 d3 4d 89 e0 48 89 e9 31 f6 48 c7 c7 7f 83 75 ad e8 73^M
-> >> RSP: 0018:ffffbb97c16af8d0 EFLAGS: 00010246^M
-> >> RAX: 0000000000000072 RBX: 0000000000000112 RCX: 0000000000000000^M
-> >> RDX: 0000000000000000 RSI: ffff911d1fd60840 RDI: ffff911d1fd60840^M
-> >> RBP: 0000000000004000 R08: 80000000ffff84b4 R09: 0000000000ffff0a^M
-> >> R10: 0000000000000004 R11: 0000000000000076 R12: ffff9115c0be8b00^M
-> >> R13: 0000000000000001 R14: ffff911665df9f68 R15: ffff9115d16be112^M
-> >> FS:  00007ff20442eb80(0000) GS:ffff911d1fd40000(0000)
-> >> knlGS:0000000000000000^M
-> >> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033^M
-> >> CR2: 00007ff20446142d CR3: 00000001215ec003 CR4: 00000000003706e0^M
-> >> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000^M
-> >> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400^M
-> >> Call Trace:^M
-> >>   <TASK>^M
-> >>   ? show_trace_log_lvl+0x1c4/0x2df^M
->
->
-> ... are we stuck in show_trace_log_lvl(), probably deadlocked not being
-> able to print the actuall callstack? If so, that's nasty.
+> Subject: [PATCH rdma-next v2 3/4] RDMA/mana_ib: Use struct mana_ib_queue
+> for WQs
+>=20
+> From: Konstantin Taranov <kotaranov@microsoft.com>
+>=20
+> Use struct mana_ib_queue and its helpers for WQs
+>=20
+> Signed-off-by: Konstantin Taranov <kotaranov@microsoft.com>
 
-Hi David,
+Reviewed-by: Long Li <longli@microsoft.com>
 
-I don't think so.  This appears to be a cut-and-paste from what is
-essentially a non-interactive serial console.  Stack trace entries
-prefixed with ? aren't exact and kdb prompt
-
-    more>
-
-is there in all cases which is what hides the rest of the stack.
-
-There are four ways to get the entire stack trace here:
-
-a) try to attach to the serial console and interact with kdb -- this
-   is very much hit or miss due to general IPMI/BMC unreliability and
-   the fact that it would be already attached to for logging
-b) disable kdb by passing "kdb: false" in the job definition -- this
-   should result in /sys/module/kgdboc/parameters/kgdboc cleared after
-   booting into the kernel under test (or just hack teuthology to not
-   pass "kdb: true" which it does by default if "-k <kernel>" is given
-   when scheduling)
-c) if b) fails, rebuild the kernel with kdb disabled in Kconfig
-d) configure kdump and grab a vmcore -- these is no teuthology support
-   for this, so it would be challenging but would provide the most data
-   to chew on
-
-Xiubo, I'd recommend going with b), but take your pick ;)
-
-Thanks,
-
-                Ilya
 
