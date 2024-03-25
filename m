@@ -1,175 +1,219 @@
-Return-Path: <linux-kernel+bounces-116703-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-116705-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id C4DF988A2C1
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 14:44:42 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 61D9488A2B8
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 14:44:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 01C981C389CE
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 13:44:42 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CE24C1F3B617
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 13:44:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ACBDC5C90B;
-	Mon, 25 Mar 2024 10:28:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8BFF871B45;
+	Mon, 25 Mar 2024 10:28:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="AejJBxrw"
-Received: from mail-ej1-f45.google.com (mail-ej1-f45.google.com [209.85.218.45])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Y7iDHcSE"
+Received: from mail-yb1-f202.google.com (mail-yb1-f202.google.com [209.85.219.202])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0F01E15573D
-	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 08:39:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9FC31155746
+	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 08:39:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711355967; cv=none; b=IdApYwognTKZ78GBe0LuOUTKEeijBqX7Vl1rJ4iM8zroktoOGPwBdVa/Qf8iTx8D9+4o/QqCmSd4V8wU1XLEQe+OpqLf7ZQ2AfvsmH+qWerTqz3t5RcpMleXS7nGnMT2ITeEfsa4vn97eK0qw84K453/u4TpJMEinim3cXoYsC0=
+	t=1711355975; cv=none; b=B773CJNLGVzt9IRvur3CJUiz0VqwetttoPzBrKFE9XzX0M0j7eX9VlJM8HWgdcrNofbnrn69JpZv6oCl5Vqw9izqV55ptwhck/Dpt3rt0G3StB4E5r/hOhDZgVDCzfdCjxR9NZQCWFcrSJYizCv9WTR/Ell11uATFuuOLJchrxM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711355967; c=relaxed/simple;
-	bh=BAC+WVMO1tGwo33xnug+/2dC0AeTsQNT40RAmXUK4xw=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=hsYETpqs/wf3wrMnfjh6MEBCwVXn67kzIzoGc3uWgfDmBsA+izSbaFNlOlynbX+cNpKFts/OZzoRst6VyRv3CiknvHQr+lHHCwpXDnD9rktYmo+kKTIODNqQcwcwyi2sien75TSrwKKZYGbuknlWZJ3O7ZBkSgE5ULKezKiui6E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=AejJBxrw; arc=none smtp.client-ip=209.85.218.45
+	s=arc-20240116; t=1711355975; c=relaxed/simple;
+	bh=SGizC3gapS8NfbkM3XOEkDDU5UmnR2/hlqlUWsBHetQ=;
+	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=uN7+7q+TCvu8uEBOah9aqC8kjZeMgoKtJgNBOw2VCQGuua6oB54BqhNdC0FdaC3gjpyACHdjNuCW4GERit1NmJXEBK+URhVx0JPB8AQqUff4iaHlbKQlzMEXPgbGaNs3jmA9Yd7Sbo/6V8L4jjXfnRcNLKSTGanG4vt0/YW8Fbk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--ardb.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=Y7iDHcSE; arc=none smtp.client-ip=209.85.219.202
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ej1-f45.google.com with SMTP id a640c23a62f3a-a4a3a5e47baso49078366b.2
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 01:39:25 -0700 (PDT)
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--ardb.bounces.google.com
+Received: by mail-yb1-f202.google.com with SMTP id 3f1490d57ef6-dd8e82dd47eso5487724276.2
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 01:39:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1711355964; x=1711960764; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Y0kZP691y+X37CeRc5a1b81NRGe9/CqFEZLGS/IX9lU=;
-        b=AejJBxrwlY9xMNHTAWsRBde6Bh81IF2usY9qx0V3mmk8vL/V34nE6lnKoSJdXIp1T/
-         WgtWI0hemmrxb/yD/niOZYOKa9+dP+dyX+qr3830Pzm0S6PEs2MS3pHL8ivcyVEcvuEU
-         Ekt4A3LEdbHD/KDOTzwMJ6P9XxsSgx67YHb0N0SELG/hddkSaSfZPFlDevctAWRzCm5A
-         F96wL6X0Ean8jJkPGPBZrADj1KtXnt5qBV5RzbxFdlcFsWdRz1vykxw637MQFH18w1gv
-         kq/Ghm/QUfA5U7Nc1ZsSoFOQUgunIcAxhhUTjeGNq4OO6/byjloGPn9LPWkRs9VTCn6w
-         /yTg==
+        d=google.com; s=20230601; t=1711355972; x=1711960772; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=2fLR94SR79bSxw8I7/IlKTkcaE2ICrJ5mcsGwDMWWN0=;
+        b=Y7iDHcSEkSznvqhgIuCM7khE/BWLfQfbPTwlTHJ4Oew0jy5ikl38jxj2WVVJj9NqoO
+         coWA9TewSHTWA77kb1eRj3OiVnig3rg57IGBj3boElrY/GFnOs5hU7dWIM1FZpOsJXLW
+         pJTwwI3/UbeUglkig0k/1PNusybj20HX9g9bRFv6g8rx3jM2Pqm63w0nPr+zf7mOdmFj
+         dUOJAT8cbLa6uAHOTpnXWbG+aBqoZviamvWr0wNUTmZ+MK9UJ7QOWIkMfib8652vtK/T
+         TYX6MVyg2UsDuwJutKwlNw4vialDnkkpaAZetpH/b8P8uRK6CZMB6OMQA8dtWvu/KMUY
+         SGvQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711355964; x=1711960764;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Y0kZP691y+X37CeRc5a1b81NRGe9/CqFEZLGS/IX9lU=;
-        b=VvdnppPV0iHGUfWZkeplDoWaf8RIciZmJviFjAzXN5Y2JUefTfyTxJFCdsqsNGC/Qk
-         lHraQ+yFkEtlIb60UXlWtzR1ZDaTUOIhyADp2D02ssOH3+vzjYF5ypVhoPFXKn0WKnMs
-         v8On67hoTPwg8QinUEn9W1vsBjYQMKItczysPC7RX+NfRhjyvTR1J5rW7twnHYcPxDH6
-         oXayiT47nvhIp34xx7FerRw0Kxf3gEg6nF3vHPwjRlUm2Be/hf/ym0iAKqbooq861Xey
-         FJrJUC3Mndos2Qh0faq4ED2r7WaZDXc0nlbQsrAu5iFVfq+KXRTLB/uS7xibc+Evj30i
-         V7Qg==
-X-Forwarded-Encrypted: i=1; AJvYcCVvCbe8UxpBv13Ox3gPI9IhWLvcHi2pns16H3cjDtBSlmah0QJA0+rx4eyjN10iwItJPPXflIPQQXNxQOfyG8fr3xAw06bug8Ar5SD5
-X-Gm-Message-State: AOJu0YxWjVAQ63PfJc6hGWywEYBVeL0iEyrid+mlEWwO2Vk2azdDwSvU
-	aLmG6vzaBndEQGD9/G95vgaEO9e9Eko+Xkoe1WvRp0Rwp7raFNp4HuJpG8L2jakqlObadyI7MBD
-	yLpnMrINmQVFdFuZwylpf3QWUsBMlfaB9nZmX
-X-Google-Smtp-Source: AGHT+IFgl4zrYBmL1mnbXRObDbHIPSKGVSR/6CfTP061t6LzL7AucWLMmH83VFZD1AhGOhS3BZxguvOWKzC2W1yUwAk=
-X-Received: by 2002:a17:906:c109:b0:a47:6bd4:cbd9 with SMTP id
- do9-20020a170906c10900b00a476bd4cbd9mr2433483ejc.52.1711355964219; Mon, 25
- Mar 2024 01:39:24 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1711355972; x=1711960772;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=2fLR94SR79bSxw8I7/IlKTkcaE2ICrJ5mcsGwDMWWN0=;
+        b=VYLC7koyE9cov5+50T0Q5tNQqdVoCHtWvKnjNX8ALlaIUOAgymoo6tlC8uWD+e9bQn
+         CbXRVQ/JtEpKQ4y8iP1u/MDN8Gkmz1gJtA3zN1gy0BwdJ1Otli5PqWYBTLPe1b5D4GEQ
+         pXKexNK3CK2ENtYxXNUBRq7cL3qS3IjDdbQnHnstl6IHIp2wPE4yDN26AP2c10ULZMEX
+         p1sUDJ9nYuCpc11Yjn35lNQeZMD1Sma58HR5UhSgeKyJ23lNMCcPWY+pwdmjz3VlqfAc
+         FICV8fwaFqMLfFFeyGsLloyPENI8rbNSlDiCI9nqfG8QdG9eJQeVWozcNE1CkrFpO21G
+         vxaw==
+X-Gm-Message-State: AOJu0Yw8BRuG8GsM/lpOQih+ZWmHIrmg6WtK9lTj3kk98IQovVmh+U+E
+	DbIj9Komd38dH+kmr5i9uul9/bUwcYa6T3R6fCVWXKN4sq//lcqi9iNc/Rof0SfopPKNkw==
+X-Google-Smtp-Source: AGHT+IFcntcp9truao49sZOMDWg0yE7XtQx1liBUG5f8C29dSBQDwz6Xz3bnst60rixITk9c5cShOf3u
+X-Received: from palermo.c.googlers.com ([fda3:e722:ac3:cc00:28:9cb1:c0a8:118a])
+ (user=ardb job=sendgmr) by 2002:a05:6902:2488:b0:dc6:ebd4:cca2 with SMTP id
+ ds8-20020a056902248800b00dc6ebd4cca2mr251555ybb.11.1711355972614; Mon, 25 Mar
+ 2024 01:39:32 -0700 (PDT)
+Date: Mon, 25 Mar 2024 09:39:06 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <20240324210447.956973-1-hannes@cmpxchg.org> <CAJD7tkaWQAV=X1pzYG=VkWe7Ue9ZFbjt9uQ5m1NJujtLspWJTA@mail.gmail.com>
- <CAGsJ_4yeBmNsMGXEWwC+1Hs5zJUP+becq4wG+6CpU7V1=EOvhg@mail.gmail.com>
- <CAJD7tka5K69q20bxTsBk38JC7mdPr3UsxXpsnggDO_iQA=qxug@mail.gmail.com> <1e7ce417-b9dd-4d62-9f54-0adf1ccdae35@linux.dev>
-In-Reply-To: <1e7ce417-b9dd-4d62-9f54-0adf1ccdae35@linux.dev>
-From: Yosry Ahmed <yosryahmed@google.com>
-Date: Mon, 25 Mar 2024 01:38:47 -0700
-Message-ID: <CAJD7tkYc3oFho5eEkS1zmr_+CC-Ag1HucUTyAy2RJbEb4SqRoQ@mail.gmail.com>
-Subject: Re: [PATCH] mm: zswap: fix data loss on SWP_SYNCHRONOUS_IO devices
-To: Chengming Zhou <chengming.zhou@linux.dev>
-Cc: Barry Song <21cnbao@gmail.com>, Johannes Weiner <hannes@cmpxchg.org>, 
-	Andrew Morton <akpm@linux-foundation.org>, Zhongkun He <hezhongkun.hzk@bytedance.com>, 
-	Chengming Zhou <zhouchengming@bytedance.com>, Chris Li <chrisl@kernel.org>, 
-	Nhat Pham <nphamcs@gmail.com>, linux-mm@kvack.org, linux-kernel@vger.kernel.org, 
-	Kairui Song <kasong@tencent.com>
+Mime-Version: 1.0
+X-Developer-Key: i=ardb@kernel.org; a=openpgp; fpr=F43D03328115A198C90016883D200E9CA6329909
+X-Developer-Signature: v=1; a=openpgp-sha256; l=5208; i=ardb@kernel.org;
+ h=from:subject; bh=/Ny80e491PWjWXrYVfz7/g+6aluKNyVbKBDz8PcwCLA=;
+ b=owGbwMvMwCFmkMcZplerG8N4Wi2JIY3RQktleU+XR21Pb+fJyE/5S1R/z5s03fTrmQWmqTeDt
+ oiGFh7oKGVhEONgkBVTZBGY/ffdztMTpWqdZ8nCzGFlAhnCwMUpABOJ72H4zVLEViPwS+TddIHz
+ be8+fa76kTqTW7zi05Yp/1sLD2TvvcjwV6wyMDTW4G3YhD3Sv1YufnRwbX9nvsO1aeonncudY+4 c4gQA
+X-Mailer: git-send-email 2.44.0.396.g6e790dbe36-goog
+Message-ID: <20240325083905.13163-2-ardb+git@google.com>
+Subject: [PATCH] x86/efistub: Add missing boot_params for mixed mode compat entry
+From: Ard Biesheuvel <ardb+git@google.com>
+To: linux-efi@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org, Ard Biesheuvel <ardb@kernel.org>, 
+	Hans de Goede <hdegoede@redhat.com>, Clayton Craft <clayton@craftyguy.net>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Mon, Mar 25, 2024 at 12:33=E2=80=AFAM Chengming Zhou
-<chengming.zhou@linux.dev> wrote:
->
-> On 2024/3/25 15:06, Yosry Ahmed wrote:
-> > On Sun, Mar 24, 2024 at 9:54=E2=80=AFPM Barry Song <21cnbao@gmail.com> =
-wrote:
-> >>
-> >> On Mon, Mar 25, 2024 at 10:23=E2=80=AFAM Yosry Ahmed <yosryahmed@googl=
-e.com> wrote:
-> >>>
-> >>> On Sun, Mar 24, 2024 at 2:04=E2=80=AFPM Johannes Weiner <hannes@cmpxc=
-hg.org> wrote:
-> >>>>
-> >>>> Zhongkun He reports data corruption when combining zswap with zram.
-> >>>>
-> >>>> The issue is the exclusive loads we're doing in zswap. They assume
-> >>>> that all reads are going into the swapcache, which can assume
-> >>>> authoritative ownership of the data and so the zswap copy can go.
-> >>>>
-> >>>> However, zram files are marked SWP_SYNCHRONOUS_IO, and faults will t=
-ry
-> >>>> to bypass the swapcache. This results in an optimistic read of the
-> >>>> swap data into a page that will be dismissed if the fault fails due =
-to
-> >>>> races. In this case, zswap mustn't drop its authoritative copy.
-> >>>>
-> >>>> Link: https://lore.kernel.org/all/CACSyD1N+dUvsu8=3DzV9P691B9bVq33er=
-wOXNTmEaUbi9DrDeJzw@mail.gmail.com/
-> >>>> Reported-by: Zhongkun He <hezhongkun.hzk@bytedance.com>
-> >>>> Fixes: b9c91c43412f ("mm: zswap: support exclusive loads")
-> >>>> Cc: stable@vger.kernel.org      [6.5+]
-> >>>> Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
-> >>>> Tested-by: Zhongkun He <hezhongkun.hzk@bytedance.com>
-> >>
-> >> Acked-by: Barry Song <baohua@kernel.org>
-> >>
-> >>>
-> >>> Do we also want to mention somewhere (commit log or comment) that
-> >>> keeping the entry in the tree is fine because we are still protected
-> >>> from concurrent loads/invalidations/writeback by swapcache_prepare()
-> >>> setting SWAP_HAS_CACHE or so?
-> >>
-> >> It seems that Kairui's patch comprehensively addresses the issue at ha=
-nd.
-> >> Johannes's solution, on the other hand, appears to align zswap behavio=
-r
-> >> more closely with that of a traditional swap device, only releasing an=
- entry
-> >> when the corresponding swap slot is freed, particularly in the sync-io=
- case.
-> >
-> > It actually worked out quite well that Kairui's fix landed shortly
-> > before this bug was reported, as this fix wouldn't have been possible
-> > without it as far as I can tell.
-> >
-> >>
-> >> Johannes' patch has inspired me to consider whether zRAM could achieve
-> >> a comparable outcome by immediately releasing objects in swap cache
-> >> scenarios.  When I have the opportunity, I plan to experiment with zRA=
-M.
-> >
-> > That would be interesting. I am curious if it would be as
-> > straightforward in zram to just mark the folio as dirty in this case
-> > like zswap does, given its implementation as a block device.
-> >
->
-> This makes me wonder who is responsible for marking folio dirty in this s=
-wapcache
-> bypass case? Should we call folio_mark_dirty() after the swap_read_folio(=
-)?
+From: Ard Biesheuvel <ardb@kernel.org>
 
-In shrink_folio_list(), we try to add anonymous folios to the
-swapcache if they are not there before checking if they are dirty.
-add_to_swap() calls folio_mark_dirty(), so this should take care of
-it. There is an interesting comment there though. It says that PTE
-should be dirty, so unmapping the folio should have already marked it
-as dirty by the time we are adding it to the swapcache, except for the
-MADV_FREE case.
+The native EFI stub entry point does not take a struct boot_params from
+the boot loader, but creates it from scratch, and populates only the
+fields that still have meaning in this context (command line, initrd
+base and size, etc)
 
-However, I think we actually unmap the folio after we add it to the
-swapcache in shrink_folio_list(). Also, I don't immediately see why
-the PTE would be dirty. In do_swap_page(), making the PTE dirty seems
-to be conditional on the fault being a write fault, but I didn't look
-thoroughly, maybe I missed it. It is also possible that the comment is
-just outdated.
+The original mixed mode implementation used the EFI handover protocol,
+where the boot loader (i.e., GRUB) populates a struct boot_params and
+passes it to a special EFI entry point that takes the struct boot_params
+pointer as the third argument.
+
+When the new mixed mode implementation was introduced, using a special
+32-bit PE entrypoint in the 64-bit kernel, it adopted the usual
+prototype, and relied on the EFI stub to create the struct boot_params
+as usual. This is preferred because it makes the bootloader side much
+easier to implement, as it does not need any x86-specific knowledge on
+how struct boot_params and struct setup_header are put together.
+
+However, one thing was missed: EFI mixed mode goes through startup_32()
+*before* entering the 64-bit EFI stub, which is difficult to avoid given
+that 64-bit execution requires page tables, which can only be populated
+using 32-bit code, and this piece is what the mixed mode EFI stub relies
+on. startup_32() accesses a couple of struct boot_params fields to
+decide where to place the page tables.
+
+startup_32() turns out to be quite tolerant to bogus struct boot_params,
+given that ESI used to contain junk when entering via the new mixed mode
+protocol. Only when commit
+
+  e2ab9eab324c ("x86/boot/compressed: Move 32-bit entrypoint code into .text section")
+
+started to zero ESI explicitly when entering via this boot path, boot
+failures started to appear on some systems, presumably ones that unmap
+page 0x0 or map it read-only.
+
+The solution is to pass a special, temporary struct boot_params to
+startup_32() via ESI, one that is sufficient for getting it to create
+the page tables correctly and is discarded right after. This means
+setting a minimal alignment of 4k, only to get the statically allocated
+page tables line up correctly, and setting init_size to the executable
+image size (_end - startup_32). This ensures that the page tables are
+covered by the static footprint of the PE image.
+
+Given that EFI boot no longer calls the decompressor and no longer pads
+the image to permit the decompressor to execute in place, the same
+temporary struct boot_params should be used in the EFI handover protocol
+based mixed mode implementation as well, to prevent the page tables from
+being placed outside of allocated memory.
+
+Cc: Hans de Goede <hdegoede@redhat.com>
+Fixes: e2ab9eab324c ("x86/boot/compressed: Move 32-bit entrypoint code into .text section")
+Closes: https://lore.kernel.org/all/20240321150510.GI8211@craftyguy.net/
+Reported-by: Clayton Craft <clayton@craftyguy.net>
+Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
+---
+ arch/x86/boot/compressed/efi_mixed.S | 20 +++++++++++++++-----
+ 1 file changed, 15 insertions(+), 5 deletions(-)
+
+diff --git a/arch/x86/boot/compressed/efi_mixed.S b/arch/x86/boot/compressed/efi_mixed.S
+index 07873f269b7b..c7c108c0bcf0 100644
+--- a/arch/x86/boot/compressed/efi_mixed.S
++++ b/arch/x86/boot/compressed/efi_mixed.S
+@@ -15,10 +15,12 @@
+  */
+ 
+ #include <linux/linkage.h>
++#include <asm/asm-offsets.h>
+ #include <asm/msr.h>
+ #include <asm/page_types.h>
+ #include <asm/processor-flags.h>
+ #include <asm/segment.h>
++#include <asm/setup.h>
+ 
+ 	.code64
+ 	.text
+@@ -155,6 +157,7 @@ SYM_FUNC_END(__efi64_thunk)
+ SYM_FUNC_START(efi32_stub_entry)
+ 	call	1f
+ 1:	popl	%ecx
++	leal	(efi32_boot_args - 1b)(%ecx), %ebx
+ 
+ 	/* Clear BSS */
+ 	xorl	%eax, %eax
+@@ -169,6 +172,7 @@ SYM_FUNC_START(efi32_stub_entry)
+ 	popl	%ecx
+ 	popl	%edx
+ 	popl	%esi
++	movl	%esi, 8(%ebx)
+ 	jmp	efi32_entry
+ SYM_FUNC_END(efi32_stub_entry)
+ #endif
+@@ -245,8 +249,6 @@ SYM_FUNC_END(efi_enter32)
+  *
+  * Arguments:	%ecx	image handle
+  * 		%edx	EFI system table pointer
+- *		%esi	struct bootparams pointer (or NULL when not using
+- *			the EFI handover protocol)
+  *
+  * Since this is the point of no return for ordinary execution, no registers
+  * are considered live except for the function parameters. [Note that the EFI
+@@ -272,9 +274,18 @@ SYM_FUNC_START_LOCAL(efi32_entry)
+ 	leal	(efi32_boot_args - 1b)(%ebx), %ebx
+ 	movl	%ecx, 0(%ebx)
+ 	movl	%edx, 4(%ebx)
+-	movl	%esi, 8(%ebx)
+ 	movb	$0x0, 12(%ebx)          // efi_is64
+ 
++	/*
++	 * Allocate some memory for a temporary struct boot_params, which only
++	 * needs the minimal pieces that will get us through startup_32().
++	 */
++	subl	$PARAM_SIZE, %esp
++	movl	%esp, %esi
++	movl	$PAGE_SIZE, BP_kernel_alignment(%esi)
++	movl	$_end - 1b, BP_init_size(%esi)
++	subl	$startup_32 - 1b, BP_init_size(%esi)
++
+ 	/* Disable paging */
+ 	movl	%cr0, %eax
+ 	btrl	$X86_CR0_PG_BIT, %eax
+@@ -300,8 +311,7 @@ SYM_FUNC_START(efi32_pe_entry)
+ 
+ 	movl	8(%ebp), %ecx			// image_handle
+ 	movl	12(%ebp), %edx			// sys_table
+-	xorl	%esi, %esi
+-	jmp	efi32_entry			// pass %ecx, %edx, %esi
++	jmp	efi32_entry			// pass %ecx, %edx
+ 						// no other registers remain live
+ 
+ 2:	popl	%edi				// restore callee-save registers
+-- 
+2.44.0.396.g6e790dbe36-goog
+
 
