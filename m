@@ -1,120 +1,136 @@
-Return-Path: <linux-kernel+bounces-117589-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-117591-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 55F3188ACF5
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 19:04:39 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7DB7E88ACFA
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 19:05:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4A3033224F6
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 18:04:22 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AF5071C3F42D
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 18:05:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 49B8312838D;
-	Mon, 25 Mar 2024 17:24:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0C19C128384;
+	Mon, 25 Mar 2024 17:25:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fgsmoO/w"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CtYmhioa"
+Received: from mail-pl1-f176.google.com (mail-pl1-f176.google.com [209.85.214.176])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7955A1272B7;
-	Mon, 25 Mar 2024 17:24:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EBFD941A85;
+	Mon, 25 Mar 2024 17:25:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711387475; cv=none; b=aqdrAEiXVYQoQCNSm5EUmumukRjPFypUZFJcEQgUBuJZ5t59Js2s7pTdSo1LSrNEsj6sIf7S/aAmk27vyaBEDMErG55FqRlqWdffEiDgRXBawee3vgjaIP1hknxKNGot5xlHvhRZ/OmTKgx4iWWbxVuPW+2GxBlsvL313xUQo7E=
+	t=1711387549; cv=none; b=Zye1U0jJy/9HvEHL7gdfJWGKCYaWU1nXk2Mz2hPImbq72EQJCvgXPwCn8UKakjL8GGHXO82R19D1spD/e8klbDNrPl8XJ8/XtRqErLys8TujTMykv7NkseG+tFjFcg+qsrYNh4jV4vOB9iw++16371t84bAA+61VBBFfN0rY/mg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711387475; c=relaxed/simple;
-	bh=SG6EGca3m/NZMVmD+LxtzI3FPLdQj5ggvZ1olnz8HTI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=WxRjIBUPp1AmcDLfFE7xUfSr/LG5Uns+1pax0THfJrYwuspoqiFPLLtrF3Y3pKq/jw49WQZdylLCF9wxrLS2ZwuUBsI7e8J+R59J7irZUC+t4U2aKZqCl8WpELkucpj4L+ccHvL5VfEBEoSBVDs4MJ9PUzyoBCDUtsQLCK/HmfQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fgsmoO/w; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 050EAC43390;
-	Mon, 25 Mar 2024 17:24:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711387475;
-	bh=SG6EGca3m/NZMVmD+LxtzI3FPLdQj5ggvZ1olnz8HTI=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=fgsmoO/w37AzO+prEM9Ft/N4eq5n4ItZ+8EMWV1UByxm8W8USJXyj6Hj0Gm7BmrGT
-	 vyByf40ffH3tIkPP0VCbKQvkT1e58wXQVH4iPIGXVYIvNdV6FV0kEYOh+07jfU1hqD
-	 byneQL3xWLOhGcg5jSMyj+F0kthJn5y3hNKe83runpMAFVWpkRXOF0XcjVGdetYC+R
-	 Ug5GpG50+qra8r6atTzz9YlHRQTIbtnPFK41Vu6uIG67G+jYdeknOSc4sX5GsquPZe
-	 /aze01GgFpUJ+oqJtrn9bS5iAvLwIlYOY9ciTLjA0sfvfDKEr5cg426fNtaQTYsD0f
-	 cDQBdON1ilgVQ==
-Received: from johan by xi.lan with local (Exim 4.97.1)
-	(envelope-from <johan@kernel.org>)
-	id 1roo3t-0000000049f-2nVQ;
-	Mon, 25 Mar 2024 18:24:42 +0100
-Date: Mon, 25 Mar 2024 18:24:41 +0100
-From: Johan Hovold <johan@kernel.org>
-To: Luiz Augusto von Dentz <luiz.dentz@gmail.com>
-Cc: Linux regressions mailing list <regressions@lists.linux.dev>,
-	Johan Hovold <johan+linaro@kernel.org>,
-	Marcel Holtmann <marcel@holtmann.org>,
-	linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org,
-	stable@vger.kernel.org,
-	Janaki Ramaiah Thota <quic_janathot@quicinc.com>
-Subject: Re: [PATCH] Revert "Bluetooth: hci_qca: Set BDA quirk bit if fwnode
- exists in DT"
-Message-ID: <ZgGzWWV4Lh2Nal--@hovoldconsulting.com>
-References: <20240314084412.1127-1-johan+linaro@kernel.org>
- <CABBYNZJV1htg46Gyu=7_iUWdukM+rHLitsLjxmWWYFGXty3tVw@mail.gmail.com>
- <ZfMStHjwtCT1SW3z@hovoldconsulting.com>
- <964131ff-293d-47d1-8119-a389fa21f385@leemhuis.info>
- <CABBYNZJ0ukd_8=SFzy8CEwgP7hV5unodca0NZ2zDZh+jPJsEFQ@mail.gmail.com>
+	s=arc-20240116; t=1711387549; c=relaxed/simple;
+	bh=nD6YpLKIKyKX/YCgn48Bw5AnmNM9aAFjepz6Uc1FLsg=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=HCdcrE2PwoIKOXci2BGCaZzxDvsJfESYkZ6eKWJ1cFvL/G+NzoYxaFZYPTbwewTeDxNQho9oltV7sXdn6yz2zAOdNTOIonGIqHiIB9GhburUAt1RiQ4XpjKBhdiH/NSJIEVBo28ljsiyIppNYVWCgipGNSip4Hm9rFUd8yk4/Y0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=CtYmhioa; arc=none smtp.client-ip=209.85.214.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f176.google.com with SMTP id d9443c01a7336-1deffa23bb9so34413995ad.2;
+        Mon, 25 Mar 2024 10:25:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1711387547; x=1711992347; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=0oXjJdG3y0f1e4IsMhRsRfdRWQRoTf6NEQ0J4KitWFc=;
+        b=CtYmhioabJ++KhhbMIRwEZ4t6+ij9zWxVCBDvQOMvpX+VSMaSIMYmGnXwGKiOmUGlo
+         WqKkIaZLD+HUQ33m0qXJrUiFr/T5nkpaHWJNDACssGQrXEd+FQ/QAVoQhJtTWRoTmBWr
+         Z23KyPkQLGqU0snmQiUlZ4PViSHrlbORG+eyoyp6nXNs9O2UGqEDz1JL8t/0P+hSQilD
+         C9gfZcARP0mrs1k+xbH7b0YfKVpJ1EVHuMij1EuiZV+WPGbX98y6udT9FU000EUaDaIz
+         HgBkjaAfxphtAhIRS0sLFyQL1zKsfq0/RWdWpoaPiEZXExEhMGrksX6CBZ2JwD2XwCDl
+         E0pQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711387547; x=1711992347;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=0oXjJdG3y0f1e4IsMhRsRfdRWQRoTf6NEQ0J4KitWFc=;
+        b=Ch2z6NhV/KORjauTNtA34EA1/WtxckZJf/hJHnOxoJYSNnImr1ChfIjIRu8KGkD57s
+         uNKKh7+V+eyl7hnyGfKXz0ca9RVejQ5leVWla2Gm87UtXOnUI1RcWXqLqZ4yjQshJ8Hm
+         LqJM9tOY+AXbMExMoRdz+wnupfUlEnjSOEGjTWoRnS8p76oTTn7PTpYokInDjtgZtIf9
+         NaBPSipdCTpp9rHVZqWa4HiZyYOXr+13v+vhHrC41qrCduwV5hX6ACIlgRcyYd9e2Ze+
+         Nkw/FD82dzjrNSFgYbffirX1qwZgmBwrf93zM3K5raIU8858ilz/OX9hO3mkDPGFZA/R
+         9QVw==
+X-Forwarded-Encrypted: i=1; AJvYcCWWDWdGbw+Lyj2KQ8/pflMDDkyt3uaK/sv75K8IfPiOG1E8dveEcMQLEDRZ+5OkLUQDLMsuITEdaV+RjmsfS9VORwqvZi91wXaAoW7Objn938aVyOY3d3HMy9n0nJF7AvZ0
+X-Gm-Message-State: AOJu0YxrAS78xVtuWMReoEKYqD89L841wthN9bljr5FoKVlsBFImBiBk
+	mLelcCHQbaqRCCD0DknbyxThQTU1QRt2cUVALjpvWlhZpD2CBJLP4n+IF0JmRYNJyA1h5LgQLyo
+	vYjHn4Vac8ws1A/qMoePRVtm8Y78=
+X-Google-Smtp-Source: AGHT+IF8bTjfMse3lUz7pNVDa0X5Q9LzATh/o0DmJjx4kBFyMsHQQS9w9NS3df5X75Qm/+KgG8xG2BMO1d5YqAWLd3M=
+X-Received: by 2002:a17:902:c115:b0:1e0:58e:88a8 with SMTP id
+ 21-20020a170902c11500b001e0058e88a8mr9460071pli.52.1711387547251; Mon, 25 Mar
+ 2024 10:25:47 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CABBYNZJ0ukd_8=SFzy8CEwgP7hV5unodca0NZ2zDZh+jPJsEFQ@mail.gmail.com>
+References: <20240325154737.3754820-1-chen.dylane@gmail.com>
+In-Reply-To: <20240325154737.3754820-1-chen.dylane@gmail.com>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Mon, 25 Mar 2024 10:25:34 -0700
+Message-ID: <CAEf4Bzag72gYXWJ2+mPnWaysyTK0OC3NjnasxNsb+N0NxXY2fw@mail.gmail.com>
+Subject: Re: [RFC PATCH] libbpf: Add bpf_program__set_section_name api
+To: Tao Chen <chen.dylane@gmail.com>
+Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, bpf@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, Mar 25, 2024 at 01:10:13PM -0400, Luiz Augusto von Dentz wrote:
-> On Mon, Mar 25, 2024 at 9:57 AM Linux regression tracking (Thorsten
-> Leemhuis) <regressions@leemhuis.info> wrote:
-> > On 14.03.24 16:07, Johan Hovold wrote:
-> > > On Thu, Mar 14, 2024 at 10:30:36AM -0400, Luiz Augusto von Dentz wrote:
-> > >> On Thu, Mar 14, 2024 at 4:44 AM Johan Hovold <johan+linaro@kernel.org> wrote:
-> > >
-> > >>> This reverts commit 7dcd3e014aa7faeeaf4047190b22d8a19a0db696.
-> > >>>
-> > >>> Qualcomm Bluetooth controllers like WCN6855 do not have persistent
-> > >>> storage for the Bluetooth address and must therefore start as
-> > >>> unconfigured to allow the user to set a valid address unless one has
-> > >>> been provided by the boot firmware in the devicetree.
-> > >>>
-> > >>> A recent change snuck into v6.8-rc7 and incorrectly started marking the
-> > >>> default (non-unique) address as valid. This specifically also breaks the
-> > >>> Bluetooth setup for some user of the Lenovo ThinkPad X13s.
-> > >>>
-> > >>> Note that this is the second time Qualcomm breaks the driver this way
-> > >>> and that this was fixed last year by commit 6945795bc81a ("Bluetooth:
-> > >>> fix use-bdaddr-property quirk"), which also has some further details.
-> > >>>
-> > >>> Fixes: 7dcd3e014aa7 ("Bluetooth: hci_qca: Set BDA quirk bit if fwnode exists in DT")
-> > >>> Cc: stable@vger.kernel.org      # 6.8
-> > >>> Cc: Janaki Ramaiah Thota <quic_janathot@quicinc.com>
-> > >>> Signed-off-by: Johan Hovold <johan+linaro@kernel.org>
+On Mon, Mar 25, 2024 at 8:48=E2=80=AFAM Tao Chen <chen.dylane@gmail.com> wr=
+ote:
+>
+> The new api can be used to reset the function we want to trace in
+> runtime. So we need not to change the code again when we just do
+> minor changes to the trace function in kprobe or other ebpf event
+> type. We can replace the old section with new section passed in via
+> parameter. Maybe the following scenario we can use the api:
+>
+> 1. solve "*.isra.o" issue caused by compiler in new kernel
+> obj =3D offcputime_bpf__open();
+> bpf_program__set_section_name(*(obj->skeleton->obj),
+> "kprobe/finish_task_switch", "kprobe/finish_task_switch.isra.0");
+>
+> 2. dynamic adjustment for trace function offset
+> obj =3D offcputime_bpf__open();
+> bpf_program__set_section_name(*(obj->skeleton->obj),
+> "kprobe/finish_task_switch+23", "kprobe/finish_task_switch+45");
+>
+> Signed-off-by: Tao Chen <chen.dylane@gmail.com>
+> ---
+>  tools/lib/bpf/libbpf.c   | 24 ++++++++++++++++++++++++
+>  tools/lib/bpf/libbpf.h   |  2 ++
+>  tools/lib/bpf/libbpf.map |  1 +
+>  3 files changed, 27 insertions(+)
+>
 
-> > ...the plan forward here? This to me sounds like a case where a quick
-> > revert is the right (interim?) solution, but nevertheless nothing
-> > happened for ~10 days now afaics. Or am I missing something?
+This is a wrong approach. SEC() is immutable and serves as a hint to
+libbpf on program type and possibly some attach parameters. But after
+that libbpf allows to override all of them though APIs like
+bpf_program__set_type() and others. Attach APIs always allow to
+specify all the target parameters, including kprobe function name and
+so on.
 
-> I guess the following is the latest version:
-> 
-> https://patchwork.kernel.org/project/bluetooth/list/?series=836664
-> 
-> Or are you working on a v5?
+Please check all of the libbpf APIs in libbpf.h.
 
-This patch (revert) fixes a separate issue than the series you link to
-above, but it is also a prerequisite for that series.
+pw-bot: cr
 
-v4 is indeed the latest version, and it has been acked by Rob and Bjorn
-so you can take it all through the Bluetooth tree. Just remember to
-apply this patch (the revert) first.
+> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+> index 96ff1aa4bf6a..94f32e845c61 100644
+> --- a/tools/lib/bpf/libbpf.c
+> +++ b/tools/lib/bpf/libbpf.c
+> @@ -8576,6 +8576,30 @@ const char *bpf_program__section_name(const struct=
+ bpf_program *prog)
+>         return prog->sec_name;
+>  }
+>
 
-Johan
+[...]
 
