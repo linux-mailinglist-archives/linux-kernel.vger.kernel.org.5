@@ -1,306 +1,149 @@
-Return-Path: <linux-kernel+bounces-118146-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-118148-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 05E7088B5F7
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 01:23:14 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id AEB4688B4EB
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 00:02:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 886F9B2971F
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 22:57:57 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DF92B1C35B37
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 23:02:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8F4F081207;
-	Mon, 25 Mar 2024 22:57:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C348582D85;
+	Mon, 25 Mar 2024 23:02:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="BzpgxMWW"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.11])
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="BNOI6Q12"
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 13DFB6E2AB;
-	Mon, 25 Mar 2024 22:57:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 38AB45A0EA;
+	Mon, 25 Mar 2024 23:02:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711407467; cv=none; b=h5eiP/rThgO25nmrA3h7Wl47dIuxI/s1wgZDWf1h8zqwPRCw4kHpOacmEmFGquRzfRxNaHMefAo3lUhTP3SNyzSaZiAIeMG8q3wlGdlJ+ooTTcNXCp83zF8X204mYd3Pxqv6HFzUhVBnQNEBWXC+TNvRazK1Ph1qGcz7QeA6ybI=
+	t=1711407725; cv=none; b=T1FvhWoxZMKgnq5K3tSzEiR/ZNIqRFa53TEzDvGw2FfZzUwMNtf7+d1R434rU8ThEO5soLeQR1axRhkKITVuCzoF4/19tdlrzzRhyADdb0NPQrgUZTG2itk2DnUJusE/2KONlxiHA07k1MSUwFFYM7aj9I37MhXboDj/8mLGZzc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711407467; c=relaxed/simple;
-	bh=XI2t2jo9o+wsz6b5gBsR5OP8VWlf5kU9qzxkADoRJws=;
-	h=Subject:From:To:Cc:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=cDoKoSgWkYPO3Lg8L27pA6mPKeMqmbH1QOxxPUKhsdg1su3THBkMYKLKQsAqI9B5wlqO0Njh8esKkNsboPFU9s5uLsUQYuncm2c6eKQHGGqB5j8nPUHi7X0whOoJRWuSUPbItIOHm2n4Ryl6x2Iyj8EF75b6TnqpgWUQWw4gcG8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=BzpgxMWW; arc=none smtp.client-ip=198.175.65.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1711407465; x=1742943465;
-  h=subject:from:to:cc:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=XI2t2jo9o+wsz6b5gBsR5OP8VWlf5kU9qzxkADoRJws=;
-  b=BzpgxMWWU+0KxEyCWXF6/++BSd9fsiL4KyE2VKVU5v4HJiZK77n6rG4H
-   zzS7hHbKGqIhHntOMYw4Tsod81dJZ3Z/ewF1DF7ut3AjpyX6/Sq6/rUjM
-   PMc5M37rbF1abS3zdIbhGOEZ+15eO0FD2G/LAKGMXqKN6a/hC7ntFAA3c
-   JpMWtdk0ULGKtEuu5ZknDYYDoRgZDBAd2gQgHLuFA51wQUOsEYILxcY+r
-   uwq53do5p+Y5HYM3Dj11raqlxQbFPb6qDV0LQhd8ZWc2F5HniVO8rOq86
-   YuYYdUZpd4iLhh0UgYX0zhUfDDphI1bM8gjqPO3CoV1J2OlGa9xF27LiT
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11024"; a="16980397"
-X-IronPort-AV: E=Sophos;i="6.07,154,1708416000"; 
-   d="scan'208";a="16980397"
-Received: from fmviesa008.fm.intel.com ([10.60.135.148])
-  by orvoesa103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Mar 2024 15:57:45 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,154,1708416000"; 
-   d="scan'208";a="15853427"
-Received: from sbista-mobl.amr.corp.intel.com (HELO dwillia2-xfh.jf.intel.com) ([10.209.58.57])
-  by fmviesa008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Mar 2024 15:57:43 -0700
-Subject: [PATCH v2] cleanup: Add usage and style documentation
-From: Dan Williams <dan.j.williams@intel.com>
-To: peterz@infradead.org, torvalds@linux-foundation.org
-Cc: Bjorn Helgaas <bhelgaas@google.com>, Ira Weiny <ira.weiny@intel.com>,
- Jonathan Cameron <jonathan.cameron@huawei.com>,
- Jesse Brandeburg <jesse.brandeburg@intel.com>,
- Ilpo =?utf-8?b?SsOkcnZpbmVu?= <ilpo.jarvinen@linux.intel.com>,
- Lukas Wunner <lukas@wunner.de>, Jonathan Corbet <corbet@lwn.net>,
- linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
- gregkh@linuxfoundation.org, linux-doc@vger.kernel.org
-Date: Mon, 25 Mar 2024 15:57:42 -0700
-Message-ID: <171140738438.1574931.15717256954707430472.stgit@dwillia2-xfh.jf.intel.com>
-In-Reply-To: <171097196970.1011049.9726486429680041876.stgit@dwillia2-xfh.jf.intel.com>
-References: <171097196970.1011049.9726486429680041876.stgit@dwillia2-xfh.jf.intel.com>
-User-Agent: StGit/0.18-3-g996c
+	s=arc-20240116; t=1711407725; c=relaxed/simple;
+	bh=bFdl8JXJ77NvIlDmZP/5H64Hrz2n2pfJV5U3jXvdse0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=oPJgn8kVzCEq/OqOo4Kt2UCFpl68Zz0C33gTZyuHG8Bp71I3Ym5GLpHzzN37uwF84yRVYbvmH1eiWWKbmseu/BwRjDjm76DjDagCAyRodSxTucjulrbo0px7hvLoIfIpw3XgOj1xqAnVP0w8b+phzImuYGuFLpFW7rKVy4bM0es=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=BNOI6Q12; arc=none smtp.client-ip=46.235.227.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1711407720;
+	bh=bFdl8JXJ77NvIlDmZP/5H64Hrz2n2pfJV5U3jXvdse0=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=BNOI6Q12cS8Ek7mkTm+z7Ht8BFiiCxIHsmiIJTJWod2vxVbuJwWMbdQ9L0tYvaCDL
+	 rjDUbAEM5t6PqGKpTeZoDbcLJVqcDCfLKTJ4j2VNyYw0S6s7ev5GQsTisM3lLGyNuG
+	 oo8NN/Pz3Lo0LfciU62565hqu23SSTWx40Kx7o8Aw/gaO7aMPLvvnnVE3moN0tW7rt
+	 T0x55lm8PjjnltTTNeY7pW5jpmxdMBaa0AOLWwxIiYdgsQ/GAZDcNTpwF9RozJBvGa
+	 TVwFpPat4ZXXGrlb0vZbGnn7JZDI4xJxRHPw1hpSParbx8Z/0aStaeqmHmDyEzy0sK
+	 bosBxHvjPWP/A==
+Received: from notapiano (zone.collabora.co.uk [167.235.23.81])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: nfraprado)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 1A10E37820E1;
+	Mon, 25 Mar 2024 23:01:56 +0000 (UTC)
+Date: Mon, 25 Mar 2024 19:01:55 -0400
+From: =?utf-8?B?TsOtY29sYXMgRi4gUi4gQS4=?= Prado <nfraprado@collabora.com>
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc: Konrad Dybcio <konrad.dybcio@linaro.org>,
+	Bjorn Andersson <andersson@kernel.org>,
+	"Rafael J. Wysocki" <rafael@kernel.org>,
+	Daniel Lezcano <daniel.lezcano@linaro.org>,
+	Zhang Rui <rui.zhang@intel.com>, Lukasz Luba <lukasz.luba@arm.com>,
+	Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Thara Gopinath <thara.gopinath@gmail.com>,
+	Amit Kucheria <amitk@kernel.org>,
+	Marijn Suijten <marijn.suijten@somainline.org>,
+	linux-arm-msm@vger.kernel.org, linux-pm@vger.kernel.org,
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+	stable@vger.kernel.org, Loic Poulain <loic.poulain@linaro.org>
+Subject: Re: [PATCH v2 0/3] QCM2290 LMH
+Message-ID: <8e0cc005-0b3a-4475-bfe4-82ec46d918a5@notapiano>
+References: <20240308-topic-rb1_lmh-v2-0-bac3914b0fe3@linaro.org>
+ <d8ed4e6c-549f-4c04-b38a-2d788df8b707@notapiano>
+ <dbe90a1c-bac2-4176-8eba-7ad96a182313@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <dbe90a1c-bac2-4176-8eba-7ad96a182313@linaro.org>
 
-When proposing that PCI grow some new cleanup helpers for pci_dev_put()
-and pci_dev_{lock,unlock} [1], Bjorn had some fundamental questions
-about expectations and best practices. Upon reviewing an updated
-changelog with those details he recommended adding them to documentation
-in the header file itself.
+On Mon, Mar 25, 2024 at 08:59:55PM +0100, Krzysztof Kozlowski wrote:
+> On 20/03/2024 20:08, Nícolas F. R. A. Prado wrote:
+> >> Loic Poulain (1):
+> >>       arm64: dts: qcom: qcm2290: Add LMH node
+> >>
+> >>  Documentation/devicetree/bindings/thermal/qcom-lmh.yaml | 12 ++++++++----
+> >>  arch/arm64/boot/dts/qcom/qcm2290.dtsi                   | 14 +++++++++++++-
+> >>  drivers/thermal/qcom/lmh.c                              |  3 +++
+> >>  3 files changed, 24 insertions(+), 5 deletions(-)
+> > 
+> > Hi,
+> > 
+> > I've started tracking the results of 'make dtbs_check' on linux-next, and I've
+> > noticed that on today's next, next-20240320, there's a new warning coming from
+> > this. The reason is that the DT change has landed, but the binding has not,
+> > since it goes through a separate tree. I thought the binding was supposed to
+> > always land before the driver and DT that make use of it, but looking through
+> 
+> There is no such rule. Of course new binding should be documented in
+> earlier or the same kernel release cycle as users get in, but it's not a
+> requirement.
 
-Add that documentation and link it into the rendering for
-Documentation/core-api/.
+So, after giving the documentation a second look, I found this:
 
-Link: http://lore.kernel.org/r/20240104183218.GA1820872@bhelgaas [1]
-Cc: Bjorn Helgaas <bhelgaas@google.com>
-Cc: Ira Weiny <ira.weiny@intel.com>
-Cc: Jonathan Cameron <jonathan.cameron@huawei.com>
-Cc: Jesse Brandeburg <jesse.brandeburg@intel.com>
-Cc: Ilpo JÃ¤rvinen <ilpo.jarvinen@linux.intel.com>
-Cc: Lukas Wunner <lukas@wunner.de>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Jonathan Corbet <corbet@lwn.net>
-Signed-off-by: Dan Williams <dan.j.williams@intel.com>
----
-Changes since v1:
-* drop RST markup for C-syntax highlighting in examples, use the simpler
-  "::" annotation (Peter, Lukas, Jon)
-* fixup ordering of core-api sections (Matthew)
-* describe ordering as LIFO (Bjorn)
-* wait to talk about DEFINE_GUARD() until after DEFINE_FREE() section
-  (Bjorn)
-* clarify the "definition order matters" concern (Bjorn)
-* drop statistics for goto patterns in source, "TMI" (Bjorn)
-* include example of order dependent cleanups helpers (Kevin, Bjorn)
+"For new platforms, or additions to existing ones, make dtbs_check should not
+add any new warnings."
 
- Documentation/core-api/cleanup.rst |    8 ++
- Documentation/core-api/index.rst   |    1 
- include/linux/cleanup.h            |  151 ++++++++++++++++++++++++++++++++++++
- 3 files changed, 160 insertions(+)
- create mode 100644 Documentation/core-api/cleanup.rst
+Source: https://www.kernel.org/doc/html/latest/process/maintainer-soc.html#validating-devicetree-files
 
-diff --git a/Documentation/core-api/cleanup.rst b/Documentation/core-api/cleanup.rst
-new file mode 100644
-index 000000000000..527eb2f8ec6e
---- /dev/null
-+++ b/Documentation/core-api/cleanup.rst
-@@ -0,0 +1,8 @@
-+.. SPDX-License-Identifier: GPL-2.0
-+
-+===========================
-+Scope-based Cleanup Helpers
-+===========================
-+
-+.. kernel-doc:: include/linux/cleanup.h
-+   :doc: scope-based cleanup helpers
-diff --git a/Documentation/core-api/index.rst b/Documentation/core-api/index.rst
-index 7a3a08d81f11..2d2b3719567e 100644
---- a/Documentation/core-api/index.rst
-+++ b/Documentation/core-api/index.rst
-@@ -35,6 +35,7 @@ Library functionality that is used throughout the kernel.
- 
-    kobject
-    kref
-+   cleanup
-    assoc_array
-    xarray
-    maple_tree
-diff --git a/include/linux/cleanup.h b/include/linux/cleanup.h
-index c2d09bc4f976..8ef2d91c2cbf 100644
---- a/include/linux/cleanup.h
-+++ b/include/linux/cleanup.h
-@@ -4,6 +4,157 @@
- 
- #include <linux/compiler.h>
- 
-+/**
-+ * DOC: scope-based cleanup helpers
-+ *
-+ * The "goto error" pattern is notorious for introducing subtle resource
-+ * leaks. It is tedious and error prone to add new resource acquisition
-+ * constraints into code paths that already have several unwind
-+ * conditions. The "cleanup" helpers enable the compiler to help with
-+ * this tedium and can aid in maintaining FILO (first in last out)
-+ * unwind ordering to avoid unintentional leaks.
-+ *
-+ * As drivers make up the majority of the kernel code base, here is an
-+ * example of using these helpers to clean up PCI drivers. The target of
-+ * the cleanups are occasions where a goto is used to unwind a device
-+ * reference (pci_dev_put()), or unlock the device (pci_dev_unlock())
-+ * before returning.
-+ *
-+ * The DEFINE_FREE() macro can arrange for PCI device references to be
-+ * dropped when the associated variable goes out of scope:
-+ *
-+ * ::
-+ *
-+ *	DEFINE_FREE(pci_dev_put, struct pci_dev *, if (_T) pci_dev_put(_T))
-+ *	...
-+ *	struct pci_dev *dev __free(pci_dev_put) =
-+ *		pci_get_slot(parent, PCI_DEVFN(0, 0));
-+ *
-+ * The above will automatically call pci_dev_put() if @dev is non-NULL
-+ * when @dev goes out of scope (automatic variable scope). If a function
-+ * wants to invoke pci_dev_put() on error, but return @dev (i.e. without
-+ * freeing it) on success, it can do:
-+ *
-+ * ::
-+ *
-+ *	return no_free_ptr(dev);
-+ *
-+ * ...or:
-+ *
-+ * ::
-+ *
-+ *	return_ptr(dev);
-+ *
-+ * The DEFINE_GUARD() macro can arrange for the PCI device lock to be
-+ * dropped when the scope where guard() is invoked ends:
-+ *
-+ * ::
-+ *
-+ *	DEFINE_GUARD(pci_dev, struct pci_dev *, pci_dev_lock(_T), pci_dev_unlock(_T))
-+ *	...
-+ *	guard(pci_dev)(dev);
-+ *
-+ *
-+ * The lifetime of the lock obtained by the guard() helper follows the
-+ * scope of automatic variable declaration. Take the following example:
-+ *
-+ * ::
-+ *
-+ *	func(...)
-+ *	{
-+ *		if (...) {
-+ *			...
-+ *			guard(pci_dev)(dev); // pci_dev_lock() invoked here
-+ *			...
-+ *		} // <- implied pci_dev_unlock() triggered here
-+ *	}
-+ *
-+ * Observe the lock is held for the remainder of the "if ()" block not
-+ * the remainder of "func()".
-+ *
-+ * Now, when a function uses both __free() and guard(), or multiple
-+ * instances of __free(), the LIFO order of variable definition order
-+ * matters. GCC documentation says:
-+ *
-+ * "When multiple variables in the same scope have cleanup attributes,
-+ * at exit from the scope their associated cleanup functions are run in
-+ * reverse order of definition (last defined, first cleanup)."
-+ *
-+ * When the unwind order matters it requires that variables be defined
-+ * mid-function scope rather than at the top of the file.  Take the
-+ * following example and notice the bug highlighted by "!!":
-+ *
-+ * ::
-+ *
-+ *	LIST_HEAD(list);
-+ *	DEFINE_MUTEX(lock);
-+ *
-+ *	struct object {
-+ *	        struct list_head node;
-+ *	};
-+ *
-+ *	static struct object *alloc_add(void)
-+ *	{
-+ *	        struct object *obj;
-+ *
-+ *	        lockdep_assert_held(&lock);
-+ *	        obj = kfree(sizeof(*obj), GFP_KERNEL);
-+ *	        if (obj) {
-+ *	                LIST_HEAD_INIT(&obj->node);
-+ *	                list_add(obj->node, &list):
-+ *	        }
-+ *	        return obj;
-+ *	}
-+ *
-+ *	static void remove_free(struct object *obj)
-+ *	{
-+ *	        lockdep_assert_held(&lock);
-+ *	        list_del(&obj->node);
-+ *	        kfree(obj);
-+ *	}
-+ *
-+ *	DEFINE_FREE(remove_free, struct object *, if (_T) remove_free(_T))
-+ *	static int init(void)
-+ *	{
-+ *	        struct object *obj __free(remove_free) = NULL;
-+ *	        int err;
-+ *
-+ *	        guard(mutex)(&lock);
-+ *	        obj = alloc_add();
-+ *
-+ *	        if (!obj)
-+ *	                return -ENOMEM;
-+ *
-+ *	        err = other_init(obj);
-+ *	        if (err)
-+ *	                return err; // remove_free() called without the lock!!
-+ *
-+ *	        no_free_ptr(obj);
-+ *	        return 0;
-+ *	}
-+ *
-+ * That bug is fixed by changing init() to call guard() and define +
-+ * initialize @obj in this order:
-+ *
-+ * ::
-+ *
-+ *	guard(mutex)(&lock);
-+ *	struct object *obj __free(remove_free) = alloc_add();
-+ *
-+ * Given that the "__free(...) = NULL" pattern for variables defined at
-+ * the top of the function poses this potential interdependency problem
-+ * the recommendation is to always define and assign variables in one
-+ * statement and not group variable definitions at the top of the
-+ * function when __free() is used.
-+ *
-+ * Lastly, given that the benefit of cleanup helpers is removal of
-+ * "goto", and that the "goto" statement can jump between scopes, the
-+ * expectation is that usage of "goto" and cleanup helpers is never
-+ * mixed in the same function. I.e. for a given routine, convert all
-+ * resources that need a "goto" cleanup to scope-based cleanup, or
-+ * convert none of them.
-+ */
-+
- /*
-  * DEFINE_FREE(name, type, free):
-  *	simple helper macro that defines the required wrapper for a __free()
+What is not clear there is what the reference point is: is it on linux-next?
+Mainline release?
 
+As Konrad pointed out it's tricky (and maybe not worth it) to guarantee this for
+linux-next. But for mainline release it seems feasible (and IMO the target, as
+after that stability guarantees should apply).
+
+> 
+> 
+> > the dt-binding documentation pages I couldn't find anything confirming or
+> > denying that.
+> > 
+> > I expect this to happen again in the future, which is why I'm reaching out to
+> > understand better how to deal with this kind of situation.
+> 
+> Deal as what to do? Are you asking in terms of maintenance of some
+> subsystem or sending some patches? In this particular case here, I don't
+> think there is anything on your side to deal with.
+
+I'm asking what's the most helpful way to you the maintainers for me to report
+these failures in the future.
+
+Rob has already automated running dtbs_check for patches coming into the mailing
+list. And I have set up KernelCI to run dtbs_check on linux-next in order to
+catch any issues that might slip through, or happen during integration of the
+trees, etc. 
+
+Now, if we agree that dtbs_check regressions on linux-next are acceptable, at
+least ones like this, where the issue is just synchronization between
+maintainers, then I can simply not report them in the future. But we should
+have some point where dtbs_check should not regress, and mainline release seems
+the reasonable choice, because if we don't then dtbs_check warnings would just
+keep growing forever.
+
+Thanks,
+Nícolas
 
