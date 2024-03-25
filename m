@@ -1,117 +1,152 @@
-Return-Path: <linux-kernel+bounces-117767-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-117768-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6B10B88AF52
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 20:06:00 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 07F8B88AF56
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 20:06:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9CF4B1C616F3
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 19:05:59 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9B70E1F618F2
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 19:06:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AA0ABD52F;
-	Mon, 25 Mar 2024 19:05:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DF75E1B59A;
+	Mon, 25 Mar 2024 19:05:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="k/JFiSKo"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="ZmWfaYEO"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.13])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D6CFD4A33;
-	Mon, 25 Mar 2024 19:05:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D8551B80F;
+	Mon, 25 Mar 2024 19:05:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.13
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711393523; cv=none; b=Cxdg35NXqJNyjNQIf/g/UklVciOLlWQkn6y9jtYjR7Yafy+rn12XhzlFm3tgOhOMYEBQqGckx153vS1xavCl8amsacgLSiA50yymaA7xMk47+B6dIhiSQasmIOaU6ZXYP7U7RWrZ/fBSLW4ozTXh0bfXQmUfCnNxuT8CIygSe7A=
+	t=1711393529; cv=none; b=o8z40Gd8bG5byqCckKd2TErCR61ORRpz6SntK//ylS3AqU8tEkeVvWdRe+Xk0V7NavpoBg9Dht+RJFcNaufreEvv6WVO39xNhNr4CypchNFboFrKHB1XbwQiAtbyAtaCq4tGlV6djW763xIGlZrLF+OjxlT9IcS6YQKzQ3aWGbk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711393523; c=relaxed/simple;
-	bh=imG8xgxcPx30/lu9EJ3K96nuumxUx7F7pd9ZvWzDEV0=;
+	s=arc-20240116; t=1711393529; c=relaxed/simple;
+	bh=ZgYazPeTafdm9oC34JiziT0P9rS4Rvc4pczqufKqjXQ=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=AEAKLqGBauc9Zk1VdWd4yemX1PnQNPiuovxDO+GXmPgmo5iP0WCLHXZmmGSX44f6WYyKhXXCuYc0VW9xg5ymwbyUtEWpydeKSSe/hdeyl+g5D/qLQq/itGAiLpMGQRaKQVHudDyUvnynp/rARmIyEDYxudpWOFmo3kg8HZXnde4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=k/JFiSKo; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2D8B2C433C7;
-	Mon, 25 Mar 2024 19:05:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711393522;
-	bh=imG8xgxcPx30/lu9EJ3K96nuumxUx7F7pd9ZvWzDEV0=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=k/JFiSKoWsiSp0ACzCjFZpKAiiw5bw7e7o0gffKtyrp1Le6QiasdS2VMaw+dcPEyW
-	 i6CaFyzqAXBBahSk6mspmgg46bbIGM4MCYXc429wnHJsrBJf8ldSMv142nAt7LqTp2
-	 nstYltr3iAz++qCRZNwwYQ/0abtHsXWl5MiV00lbBAmXKunyLMTO8J62i57htp3gMf
-	 tcaDwv/CDNkb7B9TYayQefSi06TQqYyttqRurO2//9biidVQNxr+ESbD+4za11wlmz
-	 eKjw7bNqRm4jNM2BzfYfTdi0OLYbfQkenWiTqEzIPqaOd0YHogecZDiq+TJgT+QsB9
-	 3GGkejg4dZBgQ==
-Date: Mon, 25 Mar 2024 19:05:18 +0000
-From: Conor Dooley <conor@kernel.org>
-To: Jonathan Cameron <jic23@kernel.org>
-Cc: Javier Carrasco <javier.carrasco.cruz@gmail.com>,
-	Lars-Peter Clausen <lars@metafoo.de>, Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Matt Ranostay <matt@ranostay.sg>,
-	Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-	linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] dt-bindings: iio: health: maxim,max30102: fix compatible
- check
-Message-ID: <20240325-partake-nearby-4e129032a347@spud>
-References: <20240316-max30102_binding_fix-v1-1-e8e58f69ef8a@gmail.com>
- <20240317-bakery-numeric-a34b928efa6d@spud>
- <20240324110715.0832e6d6@jic23-huawei>
+	 Content-Type:Content-Disposition:In-Reply-To; b=aVR3x5XrQmnPxbiCL6JpYcVBWMYbk6ASoPWxJ9c1PLW5BL+NOGsHc7sjNzGJSAT77L0+sqzN9Hc53v+M+zXOymSyjIUIXLVjUn1pKN4xEZwLsUxSkZuVyMPVGRQiKKYejz1lqYBv5FujF/xskHGNaBLEt3oDaq6G6jMbGscM5L4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=ZmWfaYEO; arc=none smtp.client-ip=198.175.65.13
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1711393527; x=1742929527;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=ZgYazPeTafdm9oC34JiziT0P9rS4Rvc4pczqufKqjXQ=;
+  b=ZmWfaYEO5p2TfsSf+mCNj2VAbTP3WTgXAqVdudhG4NiiyqGZJTgpyac6
+   VUo5jPAl+r1RkOPgZZQFxn3LH9PU/MCHxuRzkvRTxtgaoPjR89JyAqxVI
+   L/MmxaOTiqqh2fdNnlQ2oeK6TEw7OQEXiiXMg99D/5RoEsfQdn27Hnz0j
+   tZv+0HX8LCE9eVRSll1mMkrh0ta+0PvkuDGSLOvcKsn8S5Iy2Cve36SX5
+   ZFvESitAfICDc+XBuuXhihSDNsBgou/VkJ4f38QTaogoYPMtZM3dCryL/
+   E5gcCLM+Up+08OF5s02+ejHN1Ipi2bhCiI77kcGZgRazr8VUPKR2n3ePF
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11024"; a="17557571"
+X-IronPort-AV: E=Sophos;i="6.07,154,1708416000"; 
+   d="scan'208";a="17557571"
+Received: from orviesa003.jf.intel.com ([10.64.159.143])
+  by orvoesa105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Mar 2024 12:05:27 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,154,1708416000"; 
+   d="scan'208";a="20388398"
+Received: from ls.sc.intel.com (HELO localhost) ([172.25.112.31])
+  by ORVIESA003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Mar 2024 12:05:26 -0700
+Date: Mon, 25 Mar 2024 12:05:25 -0700
+From: Isaku Yamahata <isaku.yamahata@intel.com>
+To: "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>
+Cc: "Yamahata, Isaku" <isaku.yamahata@intel.com>,
+	"Zhang, Tina" <tina.zhang@intel.com>,
+	"isaku.yamahata@gmail.com" <isaku.yamahata@gmail.com>,
+	"seanjc@google.com" <seanjc@google.com>,
+	"Huang, Kai" <kai.huang@intel.com>, "Chen, Bo2" <chen.bo@intel.com>,
+	"sagis@google.com" <sagis@google.com>,
+	"isaku.yamahata@linux.intel.com" <isaku.yamahata@linux.intel.com>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"Aktas, Erdem" <erdemaktas@google.com>,
+	"sean.j.christopherson@intel.com" <sean.j.christopherson@intel.com>,
+	"kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+	"Yuan, Hang" <hang.yuan@intel.com>,
+	"pbonzini@redhat.com" <pbonzini@redhat.com>
+Subject: Re: [PATCH v19 059/130] KVM: x86/tdp_mmu: Don't zap private pages
+ for unsupported cases
+Message-ID: <20240325190525.GG2357401@ls.amr.corp.intel.com>
+References: <cover.1708933498.git.isaku.yamahata@intel.com>
+ <1ed955a44cd81738b498fe52823766622d8ad57f.1708933498.git.isaku.yamahata@intel.com>
+ <618614fa6c62a232d95da55546137251e1847f48.camel@intel.com>
+ <20240319235654.GC1994522@ls.amr.corp.intel.com>
+ <1c2283aab681bd882111d14e8e71b4b35549e345.camel@intel.com>
+ <f63d19a8fe6d14186aecc8fcf777284879441ef6.camel@intel.com>
+ <20240321225910.GU1994522@ls.amr.corp.intel.com>
+ <96fcb59cd53ece2c0d269f39c424d087876b3c73.camel@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="SaQXNpdG6TnkXA9f"
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20240324110715.0832e6d6@jic23-huawei>
+In-Reply-To: <96fcb59cd53ece2c0d269f39c424d087876b3c73.camel@intel.com>
+
+On Fri, Mar 22, 2024 at 12:40:12AM +0000,
+"Edgecombe, Rick P" <rick.p.edgecombe@intel.com> wrote:
+
+> On Thu, 2024-03-21 at 15:59 -0700, Isaku Yamahata wrote:
+> > > 
+> > > Ok, I see now how this works. MTRRs and APIC zapping happen to use
+> > > the
+> > > same function: kvm_zap_gfn_range(). So restricting that function
+> > > from
+> > > zapping private pages has the desired affect. I think it's not
+> > > ideal
+> > > that kvm_zap_gfn_range() silently skips zapping some ranges. I
+> > > wonder
+> > > if we could pass something in, so it's more clear to the caller.
+> > > 
+> > > But can these code paths even get reaches in TDX? It sounded like
+> > > MTRRs
+> > > basically weren't supported.
+> > 
+> > We can make the code paths so with the (new) assumption that guest
+> > MTRR can
+> > be disabled cleanly.
+> 
+> So the situation is (please correct):
+> KVM has a no "making up architectural behavior" rule, which is an
+> important one. But TDX module doesn't support MTRRs. So TD guests can't
+> have architectural behavior for MTRRs. So this patch is trying as best
+> as possible to match what MTRR behavior it can (not crash the guest if
+> someone tries).
+>
+> First of all, if the guest unmaps the private memory, doesn't it have
+> to accept it again when gets re-added? So will the guest not crash
+> anyway?
+
+Right, the guest has to accept it on VE.  If the unmap was intentional by guest,
+that's fine.  The unmap is unintentional (with vMTRR), the guest doesn't expect
+VE with the GPA.
 
 
---SaQXNpdG6TnkXA9f
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+> But, I guess we should punt to userspace is the guest tries to use
+> MTRRs, not that userspace can handle it happening in a TD...  But it
+> seems cleaner and safer then skipping zapping some pages inside the
+> zapping code.
+> 
+> I'm still not sure if I understand the intention and constraints fully.
+> So please correct. This (the skipping the zapping for some operations)
+> is a theoretical correctness issue right? It doesn't resolve a TD
+> crash?
 
-On Sun, Mar 24, 2024 at 11:07:15AM +0000, Jonathan Cameron wrote:
-> On Sun, 17 Mar 2024 14:37:39 +0000
-> Conor Dooley <conor@kernel.org> wrote:
->=20
-> > On Sat, Mar 16, 2024 at 11:56:57PM +0100, Javier Carrasco wrote:
-> > > The "maxim,green-led-current-microamp" property is only available for
-> > > the max30105 part (it provides an extra green LED), and must be set to
-> > > false for the max30102 part.
-> > >=20
-> > > Instead, the max30100 part has been used for that, which is not
-> > > supported by this binding (it has its own binding).
-> > >=20
-> > > This error was introduced during the txt to yaml conversion.
-> > >=20
-> > > Fixes: 5a6a65b11e3a ("dt-bindings:iio:health:maxim,max30102: txt to y=
-aml conversion")
-> > > Signed-off-by: Javier Carrasco <javier.carrasco.cruz@gmail.com> =20
-> >=20
-> > Acked-by: Conor Dooley <conor.dooley@microchip.com>
-> Applied to the fixes-togreg branch of iio.git (which I'll rebase on rc1 o=
-nce available)
-> and marked for stable.  Not really a critical thing to backport, but mayb=
-e it is worth
-> doing as risk is very low
+For lapic, it's safe guard. Because TDX KVM disables APICv with
+APICV_INHIBIT_REASON_TDX, apicv won't call kvm_zap_gfn_range().
 
-Yeah, I figure stuff like this is worth just backporting in case someone
-is using a stable tree to add some new board.
-
---SaQXNpdG6TnkXA9f
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZgHK7QAKCRB4tDGHoIJi
-0sjGAP4q/vqH88hSy9HXL/nd2BnMWzzYbl8iHBLAShDeoazxqQD/c/M5csTskIJh
-JJU63H9Qfuj0zPvcDluLcbuq9eVSnQc=
-=XyhC
------END PGP SIGNATURE-----
-
---SaQXNpdG6TnkXA9f--
+For MTRR, the purpose is to make the guest boot (without the guest kernel
+command line like clearcpuid=mtrr) .
+If we can assume the guest won't touch MTRR registers somehow, KVM can return an
+error to TDG.VP.VMCALL<RDMSR, WRMSR>(MTRR registers). So it doesn't call
+kvm_zap_gfn_range(). Or we can use KVM_EXIT_X86_{RDMSR, WRMSR} as you suggested.
+-- 
+isaku Yamahata <isaku.yamahata@intel.com>
 
