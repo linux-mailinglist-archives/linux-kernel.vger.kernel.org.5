@@ -1,45 +1,45 @@
-Return-Path: <linux-kernel+bounces-117515-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-117516-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id A3C8188AD40
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 19:12:30 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3434288AC24
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 18:45:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CE462C65618
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 17:45:19 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5DCEC322530
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 17:45:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E50B8F4E2;
-	Mon, 25 Mar 2024 16:53:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DD9B95DF05;
+	Mon, 25 Mar 2024 16:53:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="D1xjklQ9"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="TqpK//uS"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 21C1E6AA1
-	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 16:53:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 29B635D497
+	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 16:53:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711385619; cv=none; b=m1hrDyhGcMtQFz3GXHSMTszL8spA7TX9st/mowAVWH6eTucd5Mu+svDaFYs18Xb3OSq1QP2cfscZ6O9hvRQhXzIAjkklawapfaGgC5xwWdyQPUeR1zr01BvE/G3fylvKhYfNMMdVuh2uZ6/K/ZL70oDgCigHOIuBoABd+BPmhHE=
+	t=1711385622; cv=none; b=CncF3Tl3aYOdb81TKN8bMOy8efmtOq0AhP1rGRx42hY8VCf1MQ3Ev52qh0M6u/cHj1dbvJEQPUqlgXR/jRO+I30IIyiyvlRexVl3LZncQBrP7igqxO9NzjMp7dtqN1j/HdqnYNSaa4Z0fR2pQVzILp/AVwDBiq+RnQiSzVIPMBc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711385619; c=relaxed/simple;
-	bh=vNJUUGgBYsqzd1U+c0XNtNNwoWAwHgq0i6v5JcQYy7Y=;
+	s=arc-20240116; t=1711385622; c=relaxed/simple;
+	bh=w6ZM0qzs2PGzaQXvUXmLy9gFSChzi3ytqtQ7RsJPkIE=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=O/WBTYpf9S3A/7GLOr8PjtmejaEurQk14s3AX4LpcLXvWBUbt/MtSWTv3cIJjizfbpTFrD5wIshEDXwoP/3z+EUOBUcASIx+RvLYlc0YWiQ9ib3CtAnbRAvaFanHJs0tbjlQ4xheFqAFmONjJhUnvBywcfuu5rfaL88YTkeP2f8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=D1xjklQ9; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1A506C43390;
-	Mon, 25 Mar 2024 16:53:36 +0000 (UTC)
+	 MIME-Version; b=Q9D+RTPOmdMilVpuh2KjX+Z6ZuJ5kQL0blHOd/TjVIFQ+8euHluhCylEuDxGQAmSTJ5KpTmHYBJYMDZ6FA4LQDt7Fl2c4kw9qGsxduNSvZf/iQQsdY7+b5U0QQlZxZ5UAMj7tssZEoHTxsoUUi5n51aV25cpPGL0kflDV9NMEdg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=TqpK//uS; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1ECE4C433F1;
+	Mon, 25 Mar 2024 16:53:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711385618;
-	bh=vNJUUGgBYsqzd1U+c0XNtNNwoWAwHgq0i6v5JcQYy7Y=;
+	s=k20201202; t=1711385620;
+	bh=w6ZM0qzs2PGzaQXvUXmLy9gFSChzi3ytqtQ7RsJPkIE=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=D1xjklQ9T3CUCWED7yfG2ZMg+v7PSjM3W4B+DkuMr25oQbcUGTDaIrKYJdh3ggagm
-	 /xhQgXW0roNkItDioF6LE49k7MEfmjwU+knmOqmuoh4VKTFM5T68nKzKidhNR1oxNK
-	 Jy340vIkQYcantibiT87kBrAZhlsSq6dI/Ch8NywMF5SUtB2Ywz8P/SliUSjpNz9TM
-	 JYuvx7BYR1UikX4XBeXLuMArHIgUOs+WzYLygvAYlpjBZz/lPo9L0efBqBHh3IFWr4
-	 WmFIC4zK/kEZ/KsIUTbtFcWrBTKU9t+/V8KG0BJ73eoKMPnAh1LqWL0nKfZtKujtxN
-	 oQUreGyV/GmxQ==
+	b=TqpK//uSQEaK2p8j5RufU/zoTdsqlJw9JaorQ6kkKPd4MTQwJgbjlLTxTI6S3nS7K
+	 BPva1d2LxjAXvyR93epam3JmVqaLdtPWjtZmwPBIZmuAL44cT/GoxvwiBj7/WCLkvT
+	 45zGIyPMbG1FaCOV0OraeQKppFqC7Ml2wQABrVv2U8eNs5iYuDmu26OWqQcPFxovTj
+	 JRly5wAASJkRRvtBGFMjoZ3EoTPYm7867mTqnJXydye4VSabI3bZGTw/OtVj5AlzAH
+	 bogv6Zx9BSin3R+FSuPeXGrDU+epew4dyKbKvQHqNQZ8kxPoePqh5NkQdFrg4OY++g
+	 lKd7Mtvm7a2TA==
 From: Jisheng Zhang <jszhang@kernel.org>
 To: Paul Walmsley <paul.walmsley@sifive.com>,
 	Palmer Dabbelt <palmer@dabbelt.com>,
@@ -48,9 +48,9 @@ To: Paul Walmsley <paul.walmsley@sifive.com>,
 	Thomas Gleixner <tglx@linutronix.de>
 Cc: linux-riscv@lists.infradead.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH 1/5] riscv: nommu: remove PAGE_OFFSET hardcoding
-Date: Tue, 26 Mar 2024 00:40:17 +0800
-Message-ID: <20240325164021.3229-2-jszhang@kernel.org>
+Subject: [PATCH 2/5] riscv: nommu: use CSR_TIME* for get_cycles* implementation
+Date: Tue, 26 Mar 2024 00:40:18 +0800
+Message-ID: <20240325164021.3229-3-jszhang@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240325164021.3229-1-jszhang@kernel.org>
 References: <20240325164021.3229-1-jszhang@kernel.org>
@@ -62,39 +62,75 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Currently, PAGE_OFFSET is hardcoded as 0x8000_0000, it works fine since
-there's only one nommu platform in the mainline. However, there are
-many cases where the (S)DRAM base address isn't 0x8000_0000, so remove
-the hardcoding value, and introduce DRAM_BASE which will be set by
-users during configuring. DRAM_BASE is 0x8000_0000 by default.
+Per riscv privileged spec, "The time CSR is a read-only shadow of the
+memory-mapped mtime register", "On RV32I the timeh CSR is a read-only
+shadow of the upper 32 bits of the memory-mapped mtime register, while
+time shadows only the lower 32 bits of mtime." Since get_cycles() only
+reads the timer, it's fine to use CSR_TIME to implement get_cycles().
 
 Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
 ---
- arch/riscv/Kconfig | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
+ arch/riscv/include/asm/timex.h | 40 ----------------------------------
+ 1 file changed, 40 deletions(-)
 
-diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
-index 7895c77545f1..afd51dbdc253 100644
---- a/arch/riscv/Kconfig
-+++ b/arch/riscv/Kconfig
-@@ -247,10 +247,16 @@ config MMU
- 	  Select if you want MMU-based virtualised addressing space
- 	  support by paged memory management. If unsure, say 'Y'.
+diff --git a/arch/riscv/include/asm/timex.h b/arch/riscv/include/asm/timex.h
+index a06697846e69..a3fb85d505d4 100644
+--- a/arch/riscv/include/asm/timex.h
++++ b/arch/riscv/include/asm/timex.h
+@@ -10,44 +10,6 @@
  
-+if !MMU
-+config DRAM_BASE
-+	hex '(S)DRAM Base Address'
-+	default 0x80000000
-+endif
-+
- config PAGE_OFFSET
- 	hex
- 	default 0xC0000000 if 32BIT && MMU
--	default 0x80000000 if !MMU
-+	default DRAM_BASE if !MMU
- 	default 0xff60000000000000 if 64BIT
+ typedef unsigned long cycles_t;
  
- config KASAN_SHADOW_OFFSET
+-#ifdef CONFIG_RISCV_M_MODE
+-
+-#include <asm/clint.h>
+-
+-#ifdef CONFIG_64BIT
+-static inline cycles_t get_cycles(void)
+-{
+-	return readq_relaxed(clint_time_val);
+-}
+-#else /* !CONFIG_64BIT */
+-static inline u32 get_cycles(void)
+-{
+-	return readl_relaxed(((u32 *)clint_time_val));
+-}
+-#define get_cycles get_cycles
+-
+-static inline u32 get_cycles_hi(void)
+-{
+-	return readl_relaxed(((u32 *)clint_time_val) + 1);
+-}
+-#define get_cycles_hi get_cycles_hi
+-#endif /* CONFIG_64BIT */
+-
+-/*
+- * Much like MIPS, we may not have a viable counter to use at an early point
+- * in the boot process. Unfortunately we don't have a fallback, so instead
+- * we just return 0.
+- */
+-static inline unsigned long random_get_entropy(void)
+-{
+-	if (unlikely(clint_time_val == NULL))
+-		return random_get_entropy_fallback();
+-	return get_cycles();
+-}
+-#define random_get_entropy()	random_get_entropy()
+-
+-#else /* CONFIG_RISCV_M_MODE */
+-
+ static inline cycles_t get_cycles(void)
+ {
+ 	return csr_read(CSR_TIME);
+@@ -60,8 +22,6 @@ static inline u32 get_cycles_hi(void)
+ }
+ #define get_cycles_hi get_cycles_hi
+ 
+-#endif /* !CONFIG_RISCV_M_MODE */
+-
+ #ifdef CONFIG_64BIT
+ static inline u64 get_cycles64(void)
+ {
 -- 
 2.43.0
 
