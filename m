@@ -1,292 +1,596 @@
-Return-Path: <linux-kernel+bounces-117090-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-117093-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7364088B476
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 23:48:14 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 11F9D88A6E3
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 16:38:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AA5EEB41BD1
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 15:38:02 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7C53E1F21B5D
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 15:38:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5144571B28;
-	Mon, 25 Mar 2024 13:11:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AF90613C9C7;
+	Mon, 25 Mar 2024 13:13:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="e0M1/4s0"
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=rjwysocki.net header.i=@rjwysocki.net header.b="gkyrb6MI"
+Received: from cloudserver094114.home.pl (cloudserver094114.home.pl [79.96.170.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9096B1803D
-	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 13:11:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4CFFF73504;
+	Mon, 25 Mar 2024 13:13:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=79.96.170.134
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711372269; cv=none; b=cSrFEnzzKN0jbMMtD7CepZGFpoOIzQ8POgUOsBiNCTF5srg7ncpgYTX9yYlNaVEA4kyl+Inj7iucDIUIdSn1YaTvELDavVUFuAmg7a1fIllSl+yEZKdXWrK0ndgP4tGk4/YjY2v1mzhoGUaZEFcagqvMKbInOmxrFKaUzssatEw=
+	t=1711372416; cv=none; b=HJxoOuQb0FgNmI5KbKuelakaGCKFK5U4q9UzfHkti+Aj/VpYu0sAveR4LPm7tQegJF82gdx3aadBcWqhH2K9dqczYy5tNr9JMV878M6zsk51FiqvXxbeVj0z2hA1L7DhW2FT4ZHXnTPdOTnqU8IvfbN7IkVT0O8TsgkSFyYnPgU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711372269; c=relaxed/simple;
-	bh=3q9cgpYnnI8lrkn+Or4lnTKjwL/UU9xOBmE7kuGVDL0=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=te1DwxNka1iikwuone37DuBOPKcKhGFNMhtXCIwlkBHhOIX+YB3ug6EVpcG1yaaTEbuhXC1O4uzhwB9mU9odQ+Gplh00op9ZUBYSopELdutFKC4IM7WDzlZb3XunXG7/f+z4p13sjWJ134sR1oHnsr8XBSYCtJywZDL1KlBJHaY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=e0M1/4s0; arc=none smtp.client-ip=46.235.227.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1711372265;
-	bh=3q9cgpYnnI8lrkn+Or4lnTKjwL/UU9xOBmE7kuGVDL0=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=e0M1/4s0w7Mymmeg+w7KYYJV8QjXFcnQ1cep1iVTNVncy4JNDq6uVx3uea9NiAB/I
-	 tqTv5keLQGQWjQ+Mnz1pXMAIg58uZzdUxoLe1MSLYnCubAFuobP5G7XbTsA4I84+4+
-	 u92qm34NmyOpZ0zFz+ZQkkuiLjAODAxqUBU4D0HB/gAqDPsyV2ycfNLThtiS2LAOSK
-	 QPvp/j9cKnZXOJE7lBuGyHD2U6QRMlE6DENGye1I5d82g4X4a6OnzKedqIiB29/TQb
-	 uvWoHy3GfANBfKiPZ2mMfyYswVOyOYaM7h80qDKFuuGZwindPI9+veclZEizpFaALZ
-	 mQtvIeBP5Nd9A==
-Received: from eldfell (cola.collaboradmins.com [195.201.22.229])
+	s=arc-20240116; t=1711372416; c=relaxed/simple;
+	bh=Ehgjquf1MebGhIKempZtPJ1lmbsOJ2Z5c5gxukc/OGM=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=dUXk5hfxLVzyhniz8pMTUHwH5WCGnsGDH3EG4nlH3CZmM2XR/6GaJKSVx9pKqk0KDc1FacPArln1CsCbj7dxuV5l05sYNRPSmXOMLp//nnwsc4+PPEgb7XWvf1KYWUx/s8JGuOKAL+88Z6VMQEvf4L3MLfXrxOvpq2bK4CZOGik=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rjwysocki.net; spf=pass smtp.mailfrom=rjwysocki.net; dkim=fail (2048-bit key) header.d=rjwysocki.net header.i=@rjwysocki.net header.b=gkyrb6MI reason="signature verification failed"; arc=none smtp.client-ip=79.96.170.134
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rjwysocki.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rjwysocki.net
+Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
+ by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 5.4.0)
+ id 3be38fa7daf82832; Mon, 25 Mar 2024 14:13:31 +0100
+Received: from kreacher.localnet (unknown [195.136.19.94])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(No client certificate requested)
-	(Authenticated sender: pq)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 98AAE37809D0;
-	Mon, 25 Mar 2024 13:11:04 +0000 (UTC)
-Date: Mon, 25 Mar 2024 15:11:03 +0200
-From: Pekka Paalanen <pekka.paalanen@collabora.com>
-To: Louis Chauvet <louis.chauvet@bootlin.com>
-Cc: Rodrigo Siqueira <rodrigosiqueiramelo@gmail.com>, Melissa Wen
- <melissa.srw@gmail.com>, =?UTF-8?B?TWHDrXJh?= Canal
- <mairacanal@riseup.net>, Haneen Mohammed <hamohammed.sa@gmail.com>, Daniel
- Vetter <daniel@ffwll.ch>, Maarten Lankhorst
- <maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>,
- Thomas Zimmermann <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>,
- arthurgrillo@riseup.net, Jonathan Corbet <corbet@lwn.net>,
- dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
- jeremie.dautheribes@bootlin.com, miquel.raynal@bootlin.com,
- thomas.petazzoni@bootlin.com, seanpaul@google.com, marcheu@google.com,
- nicolejadeyee@google.com
-Subject: Re: [PATCH v5 09/16] drm/vkms: Introduce pixel_read_direction enum
-Message-ID: <20240325151103.0a5f7112.pekka.paalanen@collabora.com>
-In-Reply-To: <20240313-yuv-v5-9-e610cbd03f52@bootlin.com>
-References: <20240313-yuv-v5-0-e610cbd03f52@bootlin.com>
-	<20240313-yuv-v5-9-e610cbd03f52@bootlin.com>
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-pc-linux-gnu)
+	by cloudserver094114.home.pl (Postfix) with ESMTPSA id A618166BCBC;
+	Mon, 25 Mar 2024 14:13:30 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=rjwysocki.net;
+	s=dkim; t=1711372411;
+	bh=Ehgjquf1MebGhIKempZtPJ1lmbsOJ2Z5c5gxukc/OGM=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References;
+	b=gkyrb6MIx+NoLxqjjy96EtPu86jOwwnugIRGRkOysQQ9S3ZLBSlhdaaRnhqDK+yp5
+	 C8U0NN9uHERttEM1bPqV1yE9+741cOU/DQdXV1qBLjRagY5QD8oq/e582YzlrMzH16
+	 Lgjo+1IvKurQX70uxoxMGbtCxS7Wp2kxE3UTBib6K+Ztoo86aYA4X8rs+5d9xWG8gg
+	 3oBa6D7jB211rKTxCVdtQUZqoIkO0YoMxyB6rk/a8AmDIPOMAerpGvyjT2TVsPBwJo
+	 vP/azYaeAOnlqCQnrElK2p7f4ZIyCEyZXKfYYN/ZdqHQ3jJmcSZjzBPp5B85mrza0d
+	 DP51aMS/Gt/ZQ==
+From: "Rafael J. Wysocki" <rjw@rjwysocki.net>
+To: Linux PM <linux-pm@vger.kernel.org>
+Cc: LKML <linux-kernel@vger.kernel.org>,
+ Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+ Stanislaw Gruszka <stanislaw.gruszka@linux.intel.com>,
+ Daniel Lezcano <daniel.lezcano@linaro.org>,
+ Lukasz Luba <lukasz.luba@arm.com>,
+ AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+Subject:
+ [PATCH v2 1/3] thermal: core: Move threshold out of struct thermal_trip
+Date: Mon, 25 Mar 2024 14:11:45 +0100
+Message-ID: <1894658.tdWV9SEqCh@kreacher>
+In-Reply-To: <2331888.ElGaqSPkdT@kreacher>
+References: <2331888.ElGaqSPkdT@kreacher>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/pOcUB5TKgO05bc1fdT4reYt";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-
---Sig_/pOcUB5TKgO05bc1fdT4reYt
-Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="UTF-8"
+X-CLIENT-IP: 195.136.19.94
+X-CLIENT-HOSTNAME: 195.136.19.94
+X-VADE-SPAMSTATE: clean
+X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvledruddutddgvdehucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecujffqoffgrffnpdggtffipffknecuuegrihhlohhuthemucduhedtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefhvfevufffkfgjfhgggfgtsehtqhertddttdejnecuhfhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqnecuggftrfgrthhtvghrnheptddvfeegledvfedvveevhedvteeffeehvdeuiedukeeiledttefgvdeihffgteetnecukfhppeduleehrddufeeirdduledrleegnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehinhgvthepudelhedrudefiedrudelrdelgedphhgvlhhopehkrhgvrggthhgvrhdrlhhotggrlhhnvghtpdhmrghilhhfrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqedpnhgspghrtghpthhtohepjedprhgtphhtthhopehlihhnuhigqdhpmhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehsrhhinhhivhgrshdrphgrnhgurhhuvhgruggrsehlihhnuhigrdhinhhtvghlrdgtohhmpdhrtghpthhtohepshhtrghnihhslhgrfidrghhruhhsiihkrgeslhhi
+ nhhugidrihhnthgvlhdrtghomhdprhgtphhtthhopegurghnihgvlhdrlhgviigtrghnoheslhhinhgrrhhordhorhhgpdhrtghpthhtoheplhhukhgrshiirdhluhgsrgesrghrmhdrtghomh
+X-DCC--Metrics: v370.home.net.pl 1024; Body=7 Fuz1=7 Fuz2=7
 
-On Wed, 13 Mar 2024 18:45:03 +0100
-Louis Chauvet <louis.chauvet@bootlin.com> wrote:
+=46rom: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
-> The pixel_read_direction enum is useful to describe the reading direction
-> in a plane. It avoids using the rotation property of DRM, which not
-> practical to know the direction of reading.
-> This patch also introduce two helpers, one to compute the
-> pixel_read_direction from the DRM rotation property, and one to compute
-> the step, in byte, between two successive pixel in a specific direction.
->=20
-> Signed-off-by: Louis Chauvet <louis.chauvet@bootlin.com>
-> ---
->  drivers/gpu/drm/vkms/vkms_composer.c | 36 ++++++++++++++++++++++++++++++=
-++++++
->  drivers/gpu/drm/vkms/vkms_drv.h      | 11 +++++++++++
->  drivers/gpu/drm/vkms/vkms_formats.c  | 30 ++++++++++++++++++++++++++++++
->  3 files changed, 77 insertions(+)
->=20
-> diff --git a/drivers/gpu/drm/vkms/vkms_composer.c b/drivers/gpu/drm/vkms/=
-vkms_composer.c
-> index 9254086f23ff..989bcf59f375 100644
-> --- a/drivers/gpu/drm/vkms/vkms_composer.c
-> +++ b/drivers/gpu/drm/vkms/vkms_composer.c
-> @@ -159,6 +159,42 @@ static void apply_lut(const struct vkms_crtc_state *=
-crtc_state, struct line_buff
->  	}
->  }
-> =20
-> +/**
-> + * direction_for_rotation() - Get the correct reading direction for a gi=
-ven rotation
-> + *
-> + * This function will use the @rotation setting of a source plane to com=
-pute the reading
-> + * direction in this plane which correspond to a "left to right writing"=
- in the CRTC.
-> + * For example, if the buffer is reflected on X axis, the pixel must be =
-read from right to left
-> + * to be written from left to right on the CRTC.
+The threshold field in struct thermal_trip is only used internally by
+the thermal core and it is better to prevent drivers from misusing it.
+It also takes some space unnecessarily in the trip tables passed by
+drivers to the core during thermal zone registration.
 
-That is a well written description.
+=46or this reason, introduce struct thermal_trip_desc as a wrapper around
+struct thermal_trip, move the threshold field directly into it and make
+the thermal core store struct thermal_trip_desc objects in the internal
+thermal zone trip tables.  Adjust all of the code using trip tables in
+the thermal core accordingly.
 
-> + *
-> + * @rotation: Rotation to analyze. It correspond the field @frame_info.r=
-otation.
-> + */
-> +static enum pixel_read_direction direction_for_rotation(unsigned int rot=
-ation)
-> +{
-> +	if (rotation & DRM_MODE_ROTATE_0) {
-> +		if (rotation & DRM_MODE_REFLECT_X)
-> +			return READ_RIGHT_TO_LEFT;
-> +		else
-> +			return READ_LEFT_TO_RIGHT;
-> +	} else if (rotation & DRM_MODE_ROTATE_90) {
-> +		if (rotation & DRM_MODE_REFLECT_Y)
-> +			return READ_BOTTOM_TO_TOP;
-> +		else
-> +			return READ_TOP_TO_BOTTOM;
-> +	} else if (rotation & DRM_MODE_ROTATE_180) {
-> +		if (rotation & DRM_MODE_REFLECT_X)
-> +			return READ_LEFT_TO_RIGHT;
-> +		else
-> +			return READ_RIGHT_TO_LEFT;
-> +	} else if (rotation & DRM_MODE_ROTATE_270) {
-> +		if (rotation & DRM_MODE_REFLECT_Y)
-> +			return READ_TOP_TO_BOTTOM;
-> +		else
-> +			return READ_BOTTOM_TO_TOP;
-> +	}
-> +	return READ_LEFT_TO_RIGHT;
+No intentional function impact.
 
-I'm a little worried seeing REFLECT_X is supported only for some
-rotations, and REFLECT_Y for other rotations. Why is an analysis of all
-combinations not necessary?
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+=2D--
 
-I hope IGT uses FB patterns instead of solid color in its tests of
-rotation to be able to detect the difference.
+v1 -> v2: No changes
 
-The return values do seem correct to me, assuming I have guessed
-correctly what "X" and "Y" refer to when combined with rotation. I did
-not find good documentation about that.
+=2D--
+ drivers/thermal/gov_fair_share.c      |    7 +++--
+ drivers/thermal/gov_power_allocator.c |    6 ++--
+ drivers/thermal/thermal_core.c        |   46 +++++++++++++++++++----------=
+=2D----
+ drivers/thermal/thermal_core.h        |    7 +++--
+ drivers/thermal/thermal_debugfs.c     |    6 ++--
+ drivers/thermal/thermal_helpers.c     |    8 +++--
+ drivers/thermal/thermal_netlink.c     |    6 ++--
+ drivers/thermal/thermal_sysfs.c       |   20 +++++++-------
+ drivers/thermal/thermal_trip.c        |   15 +++++------
+ include/linux/thermal.h               |    9 ++++--
+ 10 files changed, 78 insertions(+), 52 deletions(-)
 
-Btw. if there are already functions that are able to transform
-coordinates based on the rotation bitfield, you could alternatively use
-them. Transform CRTC point (0, 0) to A, and (1, 0) to B. Now A and B
-are in plane coordinate system, and vector B - A gives you the
-direction. The reason I'm mentioning this is that then you don't have
-to implement yet another copy of the rotation bitfield semantics from
-scratch.
+Index: linux-pm/include/linux/thermal.h
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+=2D-- linux-pm.orig/include/linux/thermal.h
++++ linux-pm/include/linux/thermal.h
+@@ -61,7 +61,6 @@ enum thermal_notify_event {
+  * struct thermal_trip - representation of a point in temperature domain
+  * @temperature: temperature value in miliCelsius
+  * @hysteresis: relative hysteresis in miliCelsius
+=2D * @threshold: trip crossing notification threshold miliCelsius
+  * @type: trip point type
+  * @priv: pointer to driver data associated with this trip
+  * @flags: flags representing binary properties of the trip
+@@ -69,12 +68,16 @@ enum thermal_notify_event {
+ struct thermal_trip {
+ 	int temperature;
+ 	int hysteresis;
+=2D	int threshold;
+ 	enum thermal_trip_type type;
+ 	u8 flags;
+ 	void *priv;
+ };
+=20
++struct thermal_trip_desc {
++	struct thermal_trip trip;
++	int threshold;
++};
++
+ #define THERMAL_TRIP_FLAG_RW_TEMP	BIT(0)
+ #define THERMAL_TRIP_FLAG_RW_HYST	BIT(1)
+=20
+@@ -203,7 +206,7 @@ struct thermal_zone_device {
+ #ifdef CONFIG_THERMAL_DEBUGFS
+ 	struct thermal_debugfs *debugfs;
+ #endif
+=2D	struct thermal_trip trips[] __counted_by(num_trips);
++	struct thermal_trip_desc trips[] __counted_by(num_trips);
+ };
+=20
+ /**
+Index: linux-pm/drivers/thermal/thermal_core.c
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+=2D-- linux-pm.orig/drivers/thermal/thermal_core.c
++++ linux-pm/drivers/thermal/thermal_core.c
+@@ -361,17 +361,19 @@ static void handle_critical_trips(struct
+ }
+=20
+ static void handle_thermal_trip(struct thermal_zone_device *tz,
+=2D				struct thermal_trip *trip)
++				struct thermal_trip_desc *td)
+ {
++	const struct thermal_trip *trip =3D &td->trip;
++
+ 	if (trip->temperature =3D=3D THERMAL_TEMP_INVALID)
+ 		return;
+=20
+ 	if (tz->last_temperature =3D=3D THERMAL_TEMP_INVALID) {
+ 		/* Initialization. */
+=2D		trip->threshold =3D trip->temperature;
+=2D		if (tz->temperature >=3D trip->threshold)
+=2D			trip->threshold -=3D trip->hysteresis;
+=2D	} else if (tz->last_temperature < trip->threshold) {
++		td->threshold =3D trip->temperature;
++		if (tz->temperature >=3D td->threshold)
++			td->threshold -=3D trip->hysteresis;
++	} else if (tz->last_temperature < td->threshold) {
+ 		/*
+ 		 * The trip threshold is equal to the trip temperature, unless
+ 		 * the latter has changed in the meantime.  In either case,
+@@ -382,9 +384,9 @@ static void handle_thermal_trip(struct t
+ 		if (tz->temperature >=3D trip->temperature) {
+ 			thermal_notify_tz_trip_up(tz, trip);
+ 			thermal_debug_tz_trip_up(tz, trip);
+=2D			trip->threshold =3D trip->temperature - trip->hysteresis;
++			td->threshold =3D trip->temperature - trip->hysteresis;
+ 		} else {
+=2D			trip->threshold =3D trip->temperature;
++			td->threshold =3D trip->temperature;
+ 		}
+ 	} else {
+ 		/*
+@@ -400,9 +402,9 @@ static void handle_thermal_trip(struct t
+ 		if (tz->temperature < trip->temperature - trip->hysteresis) {
+ 			thermal_notify_tz_trip_down(tz, trip);
+ 			thermal_debug_tz_trip_down(tz, trip);
+=2D			trip->threshold =3D trip->temperature;
++			td->threshold =3D trip->temperature;
+ 		} else {
+=2D			trip->threshold =3D trip->temperature - trip->hysteresis;
++			td->threshold =3D trip->temperature - trip->hysteresis;
+ 		}
+ 	}
+=20
+@@ -458,7 +460,7 @@ static void thermal_zone_device_init(str
+ void __thermal_zone_device_update(struct thermal_zone_device *tz,
+ 				  enum thermal_notify_event event)
+ {
+=2D	struct thermal_trip *trip;
++	struct thermal_trip_desc *td;
+=20
+ 	if (tz->suspended)
+ 		return;
+@@ -472,8 +474,8 @@ void __thermal_zone_device_update(struct
+=20
+ 	tz->notify_event =3D event;
+=20
+=2D	for_each_trip(tz, trip)
+=2D		handle_thermal_trip(tz, trip);
++	for_each_trip_desc(tz, td)
++		handle_thermal_trip(tz, td);
+=20
+ 	monitor_thermal_zone(tz);
+ }
+@@ -766,7 +768,7 @@ int thermal_zone_bind_cooling_device(str
+ 	if (trip_index < 0 || trip_index >=3D tz->num_trips)
+ 		return -EINVAL;
+=20
+=2D	return thermal_bind_cdev_to_trip(tz, &tz->trips[trip_index], cdev,
++	return thermal_bind_cdev_to_trip(tz, &tz->trips[trip_index].trip, cdev,
+ 					 upper, lower, weight);
+ }
+ EXPORT_SYMBOL_GPL(thermal_zone_bind_cooling_device);
+@@ -825,7 +827,7 @@ int thermal_zone_unbind_cooling_device(s
+ 	if (trip_index < 0 || trip_index >=3D tz->num_trips)
+ 		return -EINVAL;
+=20
+=2D	return thermal_unbind_cdev_from_trip(tz, &tz->trips[trip_index], cdev);
++	return thermal_unbind_cdev_from_trip(tz, &tz->trips[trip_index].trip, cde=
+v);
+ }
+ EXPORT_SYMBOL_GPL(thermal_zone_unbind_cooling_device);
+=20
+@@ -1221,16 +1223,19 @@ static void thermal_set_delay_jiffies(un
+=20
+ int thermal_zone_get_crit_temp(struct thermal_zone_device *tz, int *temp)
+ {
+=2D	int i, ret =3D -EINVAL;
++	const struct thermal_trip_desc *td;
++	int ret =3D -EINVAL;
+=20
+ 	if (tz->ops.get_crit_temp)
+ 		return tz->ops.get_crit_temp(tz, temp);
+=20
+ 	mutex_lock(&tz->lock);
+=20
+=2D	for (i =3D 0; i < tz->num_trips; i++) {
+=2D		if (tz->trips[i].type =3D=3D THERMAL_TRIP_CRITICAL) {
+=2D			*temp =3D tz->trips[i].temperature;
++	for_each_trip_desc(tz, td) {
++		const struct thermal_trip *trip =3D &td->trip;
++
++		if (trip->type =3D=3D THERMAL_TRIP_CRITICAL) {
++			*temp =3D trip->temperature;
+ 			ret =3D 0;
+ 			break;
+ 		}
+@@ -1274,7 +1279,9 @@ thermal_zone_device_register_with_trips(
+ 					const struct thermal_zone_params *tzp,
+ 					int passive_delay, int polling_delay)
+ {
++	const struct thermal_trip *trip =3D trips;
+ 	struct thermal_zone_device *tz;
++	struct thermal_trip_desc *td;
+ 	int id;
+ 	int result;
+ 	struct thermal_governor *governor;
+@@ -1339,7 +1346,8 @@ thermal_zone_device_register_with_trips(
+ 	tz->device.class =3D thermal_class;
+ 	tz->devdata =3D devdata;
+ 	tz->num_trips =3D num_trips;
+=2D	memcpy(tz->trips, trips, num_trips * sizeof(*trips));
++	for_each_trip_desc(tz, td)
++		td->trip =3D *trip++;
+=20
+ 	thermal_set_delay_jiffies(&tz->passive_delay_jiffies, passive_delay);
+ 	thermal_set_delay_jiffies(&tz->polling_delay_jiffies, polling_delay);
+Index: linux-pm/drivers/thermal/thermal_core.h
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+=2D-- linux-pm.orig/drivers/thermal/thermal_core.h
++++ linux-pm/drivers/thermal/thermal_core.h
+@@ -120,8 +120,11 @@ void thermal_governor_update_tz(struct t
+ 				enum thermal_notify_event reason);
+=20
+ /* Helpers */
+=2D#define for_each_trip(__tz, __trip)	\
+=2D	for (__trip =3D __tz->trips; __trip - __tz->trips < __tz->num_trips; __=
+trip++)
++#define for_each_trip_desc(__tz, __td)	\
++	for (__td =3D __tz->trips; __td - __tz->trips < __tz->num_trips; __td++)
++
++#define trip_to_trip_desc(__trip)	\
++	container_of(__trip, struct thermal_trip_desc, trip)
+=20
+ void __thermal_zone_set_trips(struct thermal_zone_device *tz);
+ int thermal_zone_trip_id(const struct thermal_zone_device *tz,
+Index: linux-pm/drivers/thermal/thermal_sysfs.c
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+=2D-- linux-pm.orig/drivers/thermal/thermal_sysfs.c
++++ linux-pm/drivers/thermal/thermal_sysfs.c
+@@ -88,7 +88,7 @@ trip_point_type_show(struct device *dev,
+ 	if (sscanf(attr->attr.name, "trip_point_%d_type", &trip_id) !=3D 1)
+ 		return -EINVAL;
+=20
+=2D	switch (tz->trips[trip_id].type) {
++	switch (tz->trips[trip_id].trip.type) {
+ 	case THERMAL_TRIP_CRITICAL:
+ 		return sprintf(buf, "critical\n");
+ 	case THERMAL_TRIP_HOT:
+@@ -120,7 +120,7 @@ trip_point_temp_store(struct device *dev
+=20
+ 	mutex_lock(&tz->lock);
+=20
+=2D	trip =3D &tz->trips[trip_id];
++	trip =3D &tz->trips[trip_id].trip;
+=20
+ 	if (temp !=3D trip->temperature) {
+ 		if (tz->ops.set_trip_temp) {
+@@ -150,7 +150,7 @@ trip_point_temp_show(struct device *dev,
+ 	if (sscanf(attr->attr.name, "trip_point_%d_temp", &trip_id) !=3D 1)
+ 		return -EINVAL;
+=20
+=2D	return sprintf(buf, "%d\n", tz->trips[trip_id].temperature);
++	return sprintf(buf, "%d\n", tz->trips[trip_id].trip.temperature);
+ }
+=20
+ static ssize_t
+@@ -171,7 +171,7 @@ trip_point_hyst_store(struct device *dev
+=20
+ 	mutex_lock(&tz->lock);
+=20
+=2D	trip =3D &tz->trips[trip_id];
++	trip =3D &tz->trips[trip_id].trip;
+=20
+ 	if (hyst !=3D trip->hysteresis) {
+ 		trip->hysteresis =3D hyst;
+@@ -194,7 +194,7 @@ trip_point_hyst_show(struct device *dev,
+ 	if (sscanf(attr->attr.name, "trip_point_%d_hyst", &trip_id) !=3D 1)
+ 		return -EINVAL;
+=20
+=2D	return sprintf(buf, "%d\n", tz->trips[trip_id].hysteresis);
++	return sprintf(buf, "%d\n", tz->trips[trip_id].trip.hysteresis);
+ }
+=20
+ static ssize_t
+@@ -393,7 +393,7 @@ static const struct attribute_group *the
+  */
+ static int create_trip_attrs(struct thermal_zone_device *tz)
+ {
+=2D	const struct thermal_trip *trip;
++	const struct thermal_trip_desc *td;
+ 	struct attribute **attrs;
+=20
+ 	/* This function works only for zones with at least one trip */
+@@ -429,8 +429,8 @@ static int create_trip_attrs(struct ther
+ 		return -ENOMEM;
+ 	}
+=20
+=2D	for_each_trip(tz, trip) {
+=2D		int indx =3D thermal_zone_trip_id(tz, trip);
++	for_each_trip_desc(tz, td) {
++		int indx =3D thermal_zone_trip_id(tz, &td->trip);
+=20
+ 		/* create trip type attribute */
+ 		snprintf(tz->trip_type_attrs[indx].name, THERMAL_NAME_LENGTH,
+@@ -452,7 +452,7 @@ static int create_trip_attrs(struct ther
+ 						tz->trip_temp_attrs[indx].name;
+ 		tz->trip_temp_attrs[indx].attr.attr.mode =3D S_IRUGO;
+ 		tz->trip_temp_attrs[indx].attr.show =3D trip_point_temp_show;
+=2D		if (trip->flags & THERMAL_TRIP_FLAG_RW_TEMP) {
++		if (td->trip.flags & THERMAL_TRIP_FLAG_RW_TEMP) {
+ 			tz->trip_temp_attrs[indx].attr.attr.mode |=3D S_IWUSR;
+ 			tz->trip_temp_attrs[indx].attr.store =3D
+ 							trip_point_temp_store;
+@@ -467,7 +467,7 @@ static int create_trip_attrs(struct ther
+ 					tz->trip_hyst_attrs[indx].name;
+ 		tz->trip_hyst_attrs[indx].attr.attr.mode =3D S_IRUGO;
+ 		tz->trip_hyst_attrs[indx].attr.show =3D trip_point_hyst_show;
+=2D		if (trip->flags & THERMAL_TRIP_FLAG_RW_HYST) {
++		if (td->trip.flags & THERMAL_TRIP_FLAG_RW_HYST) {
+ 			tz->trip_hyst_attrs[indx].attr.attr.mode |=3D S_IWUSR;
+ 			tz->trip_hyst_attrs[indx].attr.store =3D
+ 					trip_point_hyst_store;
+Index: linux-pm/drivers/thermal/thermal_debugfs.c
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+=2D-- linux-pm.orig/drivers/thermal/thermal_debugfs.c
++++ linux-pm/drivers/thermal/thermal_debugfs.c
+@@ -744,7 +744,7 @@ static void tze_seq_stop(struct seq_file
+ static int tze_seq_show(struct seq_file *s, void *v)
+ {
+ 	struct thermal_zone_device *tz =3D s->private;
+=2D	struct thermal_trip *trip;
++	struct thermal_trip_desc *td;
+ 	struct tz_episode *tze;
+ 	const char *type;
+ 	int trip_id;
+@@ -757,7 +757,9 @@ static int tze_seq_show(struct seq_file
+=20
+ 	seq_printf(s, "| trip |     type | temp(=C2=B0mC) | hyst(=C2=B0mC) |  dur=
+ation  |  avg(=C2=B0mC) |  min(=C2=B0mC) |  max(=C2=B0mC) |\n");
+=20
+=2D	for_each_trip(tz, trip) {
++	for_each_trip_desc(tz, td) {
++		const struct thermal_trip *trip =3D &td->trip;
++
+ 		/*
+ 		 * There is no possible mitigation happening at the
+ 		 * critical trip point, so the stats will be always
+Index: linux-pm/drivers/thermal/thermal_netlink.c
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+=2D-- linux-pm.orig/drivers/thermal/thermal_netlink.c
++++ linux-pm/drivers/thermal/thermal_netlink.c
+@@ -445,7 +445,7 @@ out_cancel_nest:
+ static int thermal_genl_cmd_tz_get_trip(struct param *p)
+ {
+ 	struct sk_buff *msg =3D p->msg;
+=2D	const struct thermal_trip *trip;
++	const struct thermal_trip_desc *td;
+ 	struct thermal_zone_device *tz;
+ 	struct nlattr *start_trip;
+ 	int id;
+@@ -465,7 +465,9 @@ static int thermal_genl_cmd_tz_get_trip(
+=20
+ 	mutex_lock(&tz->lock);
+=20
+=2D	for_each_trip(tz, trip) {
++	for_each_trip_desc(tz, td) {
++		const struct thermal_trip *trip =3D &td->trip;
++
+ 		if (nla_put_u32(msg, THERMAL_GENL_ATTR_TZ_TRIP_ID,
+ 				thermal_zone_trip_id(tz, trip)) ||
+ 		    nla_put_u32(msg, THERMAL_GENL_ATTR_TZ_TRIP_TYPE, trip->type) ||
+Index: linux-pm/drivers/thermal/thermal_trip.c
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+=2D-- linux-pm.orig/drivers/thermal/thermal_trip.c
++++ linux-pm/drivers/thermal/thermal_trip.c
+@@ -13,11 +13,11 @@ int for_each_thermal_trip(struct thermal
+ 			  int (*cb)(struct thermal_trip *, void *),
+ 			  void *data)
+ {
+=2D	struct thermal_trip *trip;
++	struct thermal_trip_desc *td;
+ 	int ret;
+=20
+=2D	for_each_trip(tz, trip) {
+=2D		ret =3D cb(trip, data);
++	for_each_trip_desc(tz, td) {
++		ret =3D cb(&td->trip, data);
+ 		if (ret)
+ 			return ret;
+ 	}
+@@ -63,7 +63,7 @@ EXPORT_SYMBOL_GPL(thermal_zone_get_num_t
+  */
+ void __thermal_zone_set_trips(struct thermal_zone_device *tz)
+ {
+=2D	const struct thermal_trip *trip;
++	const struct thermal_trip_desc *td;
+ 	int low =3D -INT_MAX, high =3D INT_MAX;
+ 	bool same_trip =3D false;
+ 	int ret;
+@@ -73,7 +73,8 @@ void __thermal_zone_set_trips(struct the
+ 	if (!tz->ops.set_trips)
+ 		return;
+=20
+=2D	for_each_trip(tz, trip) {
++	for_each_trip_desc(tz, td) {
++		const struct thermal_trip *trip =3D &td->trip;
+ 		bool low_set =3D false;
+ 		int trip_low;
+=20
+@@ -125,7 +126,7 @@ int __thermal_zone_get_trip(struct therm
+ 	if (!tz || trip_id < 0 || trip_id >=3D tz->num_trips || !trip)
+ 		return -EINVAL;
+=20
+=2D	*trip =3D tz->trips[trip_id];
++	*trip =3D tz->trips[trip_id].trip;
+ 	return 0;
+ }
+ EXPORT_SYMBOL_GPL(__thermal_zone_get_trip);
+@@ -150,7 +151,7 @@ int thermal_zone_trip_id(const struct th
+ 	 * Assume the trip to be located within the bounds of the thermal
+ 	 * zone's trips[] table.
+ 	 */
+=2D	return trip - tz->trips;
++	return trip_to_trip_desc(trip) - tz->trips;
+ }
+ void thermal_zone_trip_updated(struct thermal_zone_device *tz,
+ 			       const struct thermal_trip *trip)
+Index: linux-pm/drivers/thermal/gov_fair_share.c
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+=2D-- linux-pm.orig/drivers/thermal/gov_fair_share.c
++++ linux-pm/drivers/thermal/gov_fair_share.c
+@@ -17,10 +17,13 @@
+=20
+ static int get_trip_level(struct thermal_zone_device *tz)
+ {
+=2D	const struct thermal_trip *trip, *level_trip =3D NULL;
++	const struct thermal_trip *level_trip =3D NULL;
++	const struct thermal_trip_desc *td;
+ 	int trip_level =3D -1;
+=20
+=2D	for_each_trip(tz, trip) {
++	for_each_trip_desc(tz, td) {
++		const struct thermal_trip *trip =3D &td->trip;
++
+ 		if (trip->temperature >=3D tz->temperature)
+ 			continue;
+=20
+Index: linux-pm/drivers/thermal/gov_power_allocator.c
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+=2D-- linux-pm.orig/drivers/thermal/gov_power_allocator.c
++++ linux-pm/drivers/thermal/gov_power_allocator.c
+@@ -496,9 +496,11 @@ static void get_governor_trips(struct th
+ 	const struct thermal_trip *first_passive =3D NULL;
+ 	const struct thermal_trip *last_passive =3D NULL;
+ 	const struct thermal_trip *last_active =3D NULL;
+=2D	const struct thermal_trip *trip;
++	const struct thermal_trip_desc *td;
++
++	for_each_trip_desc(tz, td) {
++		const struct thermal_trip *trip =3D &td->trip;
+=20
+=2D	for_each_trip(tz, trip) {
+ 		switch (trip->type) {
+ 		case THERMAL_TRIP_PASSIVE:
+ 			if (!first_passive) {
+Index: linux-pm/drivers/thermal/thermal_helpers.c
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+=2D-- linux-pm.orig/drivers/thermal/thermal_helpers.c
++++ linux-pm/drivers/thermal/thermal_helpers.c
+@@ -50,7 +50,7 @@ get_thermal_instance(struct thermal_zone
+ 	mutex_lock(&tz->lock);
+ 	mutex_lock(&cdev->lock);
+=20
+=2D	trip =3D &tz->trips[trip_index];
++	trip =3D &tz->trips[trip_index].trip;
+=20
+ 	list_for_each_entry(pos, &tz->thermal_instances, tz_node) {
+ 		if (pos->tz =3D=3D tz && pos->trip =3D=3D trip && pos->cdev =3D=3D cdev)=
+ {
+@@ -82,7 +82,7 @@ EXPORT_SYMBOL(get_thermal_instance);
+  */
+ int __thermal_zone_get_temp(struct thermal_zone_device *tz, int *temp)
+ {
+=2D	const struct thermal_trip *trip;
++	const struct thermal_trip_desc *td;
+ 	int crit_temp =3D INT_MAX;
+ 	int ret =3D -EINVAL;
+=20
+@@ -91,7 +91,9 @@ int __thermal_zone_get_temp(struct therm
+ 	ret =3D tz->ops.get_temp(tz, temp);
+=20
+ 	if (IS_ENABLED(CONFIG_THERMAL_EMULATION) && tz->emul_temperature) {
+=2D		for_each_trip(tz, trip) {
++		for_each_trip_desc(tz, td) {
++			const struct thermal_trip *trip =3D &td->trip;
++
+ 			if (trip->type =3D=3D THERMAL_TRIP_CRITICAL) {
+ 				crit_temp =3D trip->temperature;
+ 				break;
 
 
-> +}
-> +
->  /**
->   * blend - blend the pixels from all planes and compute crc
->   * @wb: The writeback frame buffer metadata
-> diff --git a/drivers/gpu/drm/vkms/vkms_drv.h b/drivers/gpu/drm/vkms/vkms_=
-drv.h
-> index 3ead8b39af4a..985e7a92b7bc 100644
-> --- a/drivers/gpu/drm/vkms/vkms_drv.h
-> +++ b/drivers/gpu/drm/vkms/vkms_drv.h
-> @@ -69,6 +69,17 @@ struct vkms_writeback_job {
->  	pixel_write_t pixel_write;
->  };
-> =20
-> +/**
-> + * enum pixel_read_direction - Enum used internaly by VKMS to represent =
-a reading direction in a
-> + * plane.
-> + */
-> +enum pixel_read_direction {
-> +	READ_BOTTOM_TO_TOP,
-> +	READ_TOP_TO_BOTTOM,
-> +	READ_RIGHT_TO_LEFT,
-> +	READ_LEFT_TO_RIGHT
-> +};
-> +
->  /**
->   * typedef pixel_read_t - These functions are used to read a pixel in th=
-e source frame,
->   * convert it to `struct pixel_argb_u16` and write it to @out_pixel.
-> diff --git a/drivers/gpu/drm/vkms/vkms_formats.c b/drivers/gpu/drm/vkms/v=
-kms_formats.c
-> index 649d75d05b1f..743b6fd06db5 100644
-> --- a/drivers/gpu/drm/vkms/vkms_formats.c
-> +++ b/drivers/gpu/drm/vkms/vkms_formats.c
-> @@ -75,6 +75,36 @@ static void packed_pixels_addr(const struct vkms_frame=
-_info *frame_info,
->  	*addr =3D (u8 *)frame_info->map[0].vaddr + offset;
->  }
-> =20
-> +/**
-> + * get_step_next_block() - Common helper to compute the correct step val=
-ue between each pixel block
-> + * to read in a certain direction.
-> + *
-> + * As the returned offset is the number of bytes between two consecutive=
- blocks in a direction,
-> + * the caller may have to read multiple pixel before using the next one =
-(for example, to read from
-> + * left to right in a DRM_FORMAT_R1 plane, each block contains 8 pixels,=
- so the step must be used
-> + * only every 8 pixels.
-> + *
-> + * @fb: Framebuffer to iter on
-> + * @direction: Direction of the reading
-> + * @plane_index: Plane to get the step from
-> + */
-> +static int get_step_next_block(struct drm_framebuffer *fb, enum pixel_re=
-ad_direction direction,
-> +			       int plane_index)
-> +{
 
-I would have called this something like get_block_step_bytes() for
-example. That makes it clear it returns bytes (not e.g. pixels). "next"
-implies to me that I tell the function the current block, and then it
-gets me the next one. It does not do that, so I'd not use "next".
-
-> +	switch (direction) {
-> +	case READ_LEFT_TO_RIGHT:
-> +		return fb->format->char_per_block[plane_index];
-> +	case READ_RIGHT_TO_LEFT:
-> +		return -fb->format->char_per_block[plane_index];
-> +	case READ_TOP_TO_BOTTOM:
-> +		return (int)fb->pitches[plane_index];
-> +	case READ_BOTTOM_TO_TOP:
-> +		return -(int)fb->pitches[plane_index];
-> +	}
-> +
-> +	return 0;
-> +}
-
-Looks good.
-
-
-Thanks,
-pq
-
-> +
->  static void *get_packed_src_addr(const struct vkms_frame_info *frame_inf=
-o, int y,
->  				 int plane_index)
->  {
->=20
-
-
---Sig_/pOcUB5TKgO05bc1fdT4reYt
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCAAdFiEEJQjwWQChkWOYOIONI1/ltBGqqqcFAmYBd+cACgkQI1/ltBGq
-qqfarg//Q+qvT9aL8AZvOG15t7LfHydp088OlP6y0I621RTKlpMf3u9o4uV6vM+n
-8CW/h0xeXteJAt0/xBX/ZMziac8FLC1iQ9tKz4qoBd5EywoPwc69L6iANQvKsXuv
-vvoF7SN/nv0iP/VDlrXuI1TIwGquIcs0Sf+tqhPOoYyg8LTM4RihmEeS3xgzaCO6
-0fWhZbdnkTqOGXY/aPAtPC8xRvlG6rN1gLvNMaDxN/OXIJzhCSd/3Juau2+USqLL
-6KzkmSoRsu/V+Uqnji4WlsPj0fLt+5BkvQcLfXkigv8x19RXAYB65HMAWuy42kwC
-nxGsrvaDGKKxU0ltFb0uxzanEpi7mydfhGkTM75EeQFV77++SSsnYpZt48TkhM/7
-WX8E9pOLtRfLvKfZrF5Wt2CS0LZ0M8E/UUyv97zf+HgU/0a7Tr66Ee4DPm0rvGL2
-EhyPXzyhEfT/KqriaaiI54+KcQeOuOycoNikzfxj8XdyYp20b6vIGPSWVwNntKnO
-SyrO3rx2oU21TdSkWHNNlGb8YY2rVtZGz0/jF93juipKcLraUnCy3pxRiB8+IO1y
-x7BxEEMrozMz1/fvcIiU95CqbClMdraof5I96Avrx/Hh38iXfI1z4T3iFMMTtg3V
-25KIJul1oqV8d23+PD8JMQhVm2wiCnQqjIfF9ynU1P7EwCsyIvk=
-=F3pF
------END PGP SIGNATURE-----
-
---Sig_/pOcUB5TKgO05bc1fdT4reYt--
 
