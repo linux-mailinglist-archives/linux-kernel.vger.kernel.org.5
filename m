@@ -1,142 +1,220 @@
-Return-Path: <linux-kernel+bounces-116429-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-116427-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id B2DF588A078
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 13:56:29 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id A70D3889C76
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 12:20:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B03AFB3E8C7
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 11:30:20 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5DA882E40D7
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 11:20:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1626F16D9D4;
-	Mon, 25 Mar 2024 06:46:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EBD3215B569;
+	Mon, 25 Mar 2024 06:36:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="kHMBeZtu"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.18])
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="Qfe96/kj"
+Received: from out30-110.freemail.mail.aliyun.com (out30-110.freemail.mail.aliyun.com [115.124.30.110])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9BFD726424F
-	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 03:02:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E3FEE374727;
+	Mon, 25 Mar 2024 03:01:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.110
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711335746; cv=none; b=X6a//RQ6d4yM2/2AbjVJ5GQOQM156gH4hVHsVJ1JSJoR9qHk8jgt9GqTTq8cHlboqaCuj1bCExTkFD1QyuURXyXCtRoIkxk73mJu4fSoWSsIXUyHadRg+RVdyQczkm6DC8MHAZsL3JxtlRi/lDqcoqnFHZmIm/4Kj5/2IP50Qt0=
+	t=1711335674; cv=none; b=bIRXb4pHOghrs2xkxkVzf9gPRvCxocb3rSOiHNgaHTf+XTDLI28pdCC+PIgbynVt7te4+f0ALRhecj1cmBXSpwYXMZxZV3m46iZPWREZB2G32ZluIQMloRwhsIldgzHJgWIvZgFaF1a3rYh8G6zLR1vrDFBcuEv4nIBaXNvXXOA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711335746; c=relaxed/simple;
-	bh=T9lldniHRtKLEDe/H+EmLhHRUTPjZExPOnV/qvs4Qrw=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=uTCFYU9nWJydb0p/EyxTV19IAbwQLaKHr7D4UlJmdderMkI2/S3gT6TUEyDKOeqBknzLDnpU5G2y//xOVzzG+YPxMrrsykkv2zLAl4NXk6QNyFKJqy22IqJ/udue5oh9qH4CyEHpqT/is398Y2Kjzl8qzJ1EODPaOrt5XnnlCF4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=kHMBeZtu; arc=none smtp.client-ip=198.175.65.18
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1711335744; x=1742871744;
-  h=from:to:cc:subject:in-reply-to:references:date:
-   message-id:mime-version;
-  bh=T9lldniHRtKLEDe/H+EmLhHRUTPjZExPOnV/qvs4Qrw=;
-  b=kHMBeZtuqKbyBzDguQHjo/0OnqiuEJU9XdlhH8GWHZlGYBWXaJoaWonY
-   JYZRJonmf1HFT+qwX1Bpqszet5R6dZYXJ7w7tYr0APwsP33hkJqn7wRtN
-   XRNX+5c7AfyYD0ZULtZ88GKs8q5BjShjv9ER9hoylsIr/ij/JEa0MeKFG
-   /TGJxBVE4i9hGOJVklJO42cyQMN5VS2B38suwXq6tl1vOsClFHuhMPrPx
-   lJirSA0I3BD5UqMyn9+Ulhc/cHcI4AwByWAxAtJSjgruPogDG/7o+8qEO
-   qsIgU5AH5LtXcvlBXpz3ZUIqk2oHPXr1cg8s/jjtdAbaAdEWVW6nNa6/M
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11023"; a="6445250"
-X-IronPort-AV: E=Sophos;i="6.07,152,1708416000"; 
-   d="scan'208";a="6445250"
-Received: from orviesa005.jf.intel.com ([10.64.159.145])
-  by orvoesa110.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Mar 2024 20:02:23 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,152,1708416000"; 
-   d="scan'208";a="20220682"
-Received: from yhuang6-desk2.sh.intel.com (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.238.208.55])
-  by orviesa005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Mar 2024 20:02:21 -0700
-From: "Huang, Ying" <ying.huang@intel.com>
-To: Akira Yokosawa <akiyks@gmail.com>
-Cc: linux-kernel@vger.kernel.org,  linux-mm@kvack.org,  "Paul E. McKenney"
- <paulmck@kernel.org>,  ryan.roberts@arm.com,  chrisl@kernel.org
-Subject: Re: Can you help us on memory barrier usage? (was Re: [PATCH v4
- 4/6] mm: swap: Allow storage of all mTHP orders)
-In-Reply-To: <c56eae89-9559-4b1d-8249-d23281e466b4@gmail.com> (Akira
-	Yokosawa's message of "Sat, 23 Mar 2024 11:11:09 +0900")
-References: <87r0g3q9cz.fsf_-_@yhuang6-desk2.ccr.corp.intel.com>
-	<c56eae89-9559-4b1d-8249-d23281e466b4@gmail.com>
-Date: Mon, 25 Mar 2024 11:00:28 +0800
-Message-ID: <87v85bow1f.fsf@yhuang6-desk2.ccr.corp.intel.com>
-User-Agent: Gnus/5.13 (Gnus v5.13)
+	s=arc-20240116; t=1711335674; c=relaxed/simple;
+	bh=8Qfd+A8m4V1tqSb5szRlD3RAirI9yb2FDNe+L0MmL9I=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=sf18XiszyddsMCuIqCK7KQ7mpQF6aLqYHc7/TlWqCVRw1c3t/Hq2EmoxTfIFAIXQ03yeUDKznc0Mwfjt+e+mYQXYUyNH0BflqFwVX5QeGkRgUFbJDuiQOnhjwZVlnySGIgQgZT7fT6230Z4nx0lRgBsKVA3UxT6ob2pJpuX2S4Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=Qfe96/kj; arc=none smtp.client-ip=115.124.30.110
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
+DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=linux.alibaba.com; s=default;
+	t=1711335666; h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type;
+	bh=XmVeqKOAT32nVC7FjBmUhKXxG89ac3vc9NUHAgKmK0w=;
+	b=Qfe96/kjt9t6n7Fo4UD1SDcy5/CK8nyvyMHaAGKdygV5sC8P3vsC21zf9hWx7JjduTi/lJviBP7G5qa9CBobiG7p+FFiBv1S5qQBYR46dIlwKzZFzNJCv8PkwY88qbP6QZrOILYDnzSoUZIzDOmZrSNY8hcW0YN/RMHxtfv0Yc8=
+X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R861e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046056;MF=guwen@linux.alibaba.com;NM=1;PH=DS;RN=14;SR=0;TI=SMTPD_---0W38Wexa_1711335664;
+Received: from 30.221.130.215(mailfrom:guwen@linux.alibaba.com fp:SMTPD_---0W38Wexa_1711335664)
+          by smtp.aliyun-inc.com;
+          Mon, 25 Mar 2024 11:01:06 +0800
+Message-ID: <f504328f-1fd2-4c85-a657-a14b272c321e@linux.alibaba.com>
+Date: Mon, 25 Mar 2024 11:01:04 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ascii
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2][next] net/smc: Avoid -Wflex-array-member-not-at-end
+ warnings
+To: "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+ Wenjia Zhang <wenjia@linux.ibm.com>, Jan Karcher <jaka@linux.ibm.com>,
+ "D. Wythe" <alibuda@linux.alibaba.com>, Tony Lu <tonylu@linux.alibaba.com>,
+ "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
+ Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>
+Cc: linux-s390@vger.kernel.org, netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org,
+ Kees Cook <keescook@chromium.org>
+References: <ZfCXBykRw5XqBvf0@neat>
+From: Wen Gu <guwen@linux.alibaba.com>
+In-Reply-To: <ZfCXBykRw5XqBvf0@neat>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Akira Yokosawa <akiyks@gmail.com> writes:
 
-> [Use Paul's reachable address in CC;
->  trimmed CC list, keeping only those who have responded so far.]
 
-Thanks a lot!
+On 2024/3/13 01:55, Gustavo A. R. Silva wrote:
+> -Wflex-array-member-not-at-end is coming in GCC-14, and we are getting
+> ready to enable it globally.
+> 
+> There are currently a couple of objects in `struct smc_clc_msg_proposal_area`
+> that contain a couple of flexible structures:
+> 
+> struct smc_clc_msg_proposal_area {
+> 	...
+> 	struct smc_clc_v2_extension             pclc_v2_ext;
+> 	...
+> 	struct smc_clc_smcd_v2_extension        pclc_smcd_v2_ext;
+> 	...
+> };
+> 
+> So, in order to avoid ending up with a couple of flexible-array members
+> in the middle of a struct, we use the `struct_group_tagged()` helper to
+> separate the flexible array from the rest of the members in the flexible
+> structure:
+> 
+> struct smc_clc_smcd_v2_extension {
+>          struct_group_tagged(smc_clc_smcd_v2_extension_fixed, fixed,
+>                              u8 system_eid[SMC_MAX_EID_LEN];
+>                              u8 reserved[16];
+>          );
+>          struct smc_clc_smcd_gid_chid gidchid[];
+> };
+> 
+> With the change described above, we now declare objects of the type of
+> the tagged struct without embedding flexible arrays in the middle of
+> another struct:
+> 
+> struct smc_clc_msg_proposal_area {
+>          ...
+>          struct smc_clc_v2_extension_fixed	pclc_v2_ext;
+>          ...
+>          struct smc_clc_smcd_v2_extension_fixed	pclc_smcd_v2_ext;
+>          ...
+> };
+> 
+> We also use `container_of()` when we need to retrieve a pointer to the
+> flexible structures.
+> 
+> So, with these changes, fix the following warnings:
+> 
+> In file included from net/smc/af_smc.c:42:
+> net/smc/smc_clc.h:186:49: warning: structure containing a flexible array member is not at the end of another structure [-Wflex-array-member-not-at-end]
+>    186 |         struct smc_clc_v2_extension             pclc_v2_ext;
+>        |                                                 ^~~~~~~~~~~
+> net/smc/smc_clc.h:188:49: warning: structure containing a flexible array member is not at the end of another structure [-Wflex-array-member-not-at-end]
+>    188 |         struct smc_clc_smcd_v2_extension        pclc_smcd_v2_ext;
+>        |                                                 ^~~~~~~~~~~~~~~~
+> 
+> Reviewed-by: Kees Cook <keescook@chromium.org>
+> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
 
-> Hello Huang,
-> Let me chime in.
->
-> On Fri, 22 Mar 2024 06:19:52 -0700, Huang, Ying wrote:
->> Hi, Paul,
->> 
->> Can you help us on WRITE_ONCE()/READ_ONCE()/barrier() usage as follows?
->> For some example kernel code as follows,
->> 
->> "
->> unsigned char x[16];
->> 
->> void writer(void)
->> {
->>         memset(x, 1, sizeof(x));
->>         /* To make memset() take effect ASAP */
->>         barrier();
->> }
->> 
->> unsigned char reader(int n)
->> {
->>         return READ_ONCE(x[n]);
->> }
->> "
->> 
->> where, writer() and reader() may be called on 2 CPUs without any lock.
->> It's acceptable for reader() to read the written value a little later.
->> Our questions are,
->> 
->> 1. because it's impossible for accessing "unsigned char" to cause
->> tearing.  So, WRITE_ONCE()/READ_ONCE()/barrier() isn't necessary for
->> correctness, right?
->> 
->> 2. we use barrier() and READ_ONCE() in writer() and reader(), because we
->> want to make writing take effect ASAP.  Is it a good practice?  Or it's
->> a micro-optimization that should be avoided?
->
-> Why don't you consult Documentation/memory-barriers.txt, especially
-> the section titled "COMPILER BARRIER"?
->
-> TL;DR:
->
-> barrier(), WRITE_ONCE(), and READ_ONCE() are compiler barriers, not
-> memory barriers.  They just restrict compiler optimizations and don't
-> have any effect with regard to "make writing take effect ASAP".
+Hi Gustavo,
 
-Yes.  In theory, this is absolutely correct.
+Thank you for the v2. Some places may need improvement, see below.
 
-My question is, in practice, will compiler barriers make CPU runs (or
-sees) memory read/write instructions a little earlier via avoiding to
-reorder the operations after read/write (e.g., becomes before
-read/write)?
+> ---
+> Changes in v2:
+>   - Name the tagged struct *_fixed instead of *_hdr.
+>   - Add Kees' RB tag.
+> 
+>   net/smc/smc_clc.c |  5 +++--
+>   net/smc/smc_clc.h | 24 ++++++++++++++----------
+>   2 files changed, 17 insertions(+), 12 deletions(-)
+> 
+> diff --git a/net/smc/smc_clc.c b/net/smc/smc_clc.c
+> index e55026c7529c..63bb5745ab54 100644
+> --- a/net/smc/smc_clc.c
+> +++ b/net/smc/smc_clc.c
+> @@ -853,8 +853,9 @@ int smc_clc_send_proposal(struct smc_sock *smc, struct smc_init_info *ini)
+>   	pclc_smcd = &pclc->pclc_smcd;
+>   	pclc_prfx = &pclc->pclc_prfx;
+>   	ipv6_prfx = pclc->pclc_prfx_ipv6;
+> -	v2_ext = &pclc->pclc_v2_ext;
+> -	smcd_v2_ext = &pclc->pclc_smcd_v2_ext;
+> +	v2_ext = container_of(&pclc->pclc_v2_ext, struct smc_clc_v2_extension, fixed);
+checkpatch complained 'WARNING: line length of 86 exceeds 80 columns' here.
 
-> If you have further questions, please don't hesitate to ask.
+It can be reproduced by:
 
---
-Best Regards,
-Huang, Ying
+/scripts/checkpatch.pl --strict --max-line-length=80 
+--ignore=COMMIT_LOG_LONG_LINE,MACRO_ARG_REUSE,ALLOC_SIZEOF_STRUCT,NO_AUTHOR_SIGN_OFF,GIT_COMMIT_ID,CAMELCASE xxx.patch
+
+> +	smcd_v2_ext = container_of(&pclc->pclc_smcd_v2_ext,
+> +				   struct smc_clc_smcd_v2_extension, fixed);
+>   	gidchids = pclc->pclc_gidchids;
+>   	trl = &pclc->pclc_trl;
+>   
+> diff --git a/net/smc/smc_clc.h b/net/smc/smc_clc.h
+> index 7cc7070b9772..2bfb51daf468 100644
+> --- a/net/smc/smc_clc.h
+> +++ b/net/smc/smc_clc.h
+> @@ -134,12 +134,14 @@ struct smc_clc_smcd_gid_chid {
+>   			 */
+>   
+>   struct smc_clc_v2_extension {
+> -	struct smc_clnt_opts_area_hdr hdr;
+> -	u8 roce[16];		/* RoCEv2 GID */
+> -	u8 max_conns;
+> -	u8 max_links;
+> -	__be16 feature_mask;
+> -	u8 reserved[12];
+> +	struct_group_tagged(smc_clc_v2_extension_fixed, fixed,
+> +		struct smc_clnt_opts_area_hdr hdr;
+
+checkpatch: 'CHECK: Alignment should match open parenthesis'
+
+> +		u8 roce[16];		/* RoCEv2 GID */
+> +		u8 max_conns;
+> +		u8 max_links;
+> +		__be16 feature_mask;
+> +		u8 reserved[12];
+> +	);
+>   	u8 user_eids[][SMC_MAX_EID_LEN];
+>   };
+>   
+> @@ -159,8 +161,10 @@ struct smc_clc_msg_smcd {	/* SMC-D GID information */
+>   };
+>   
+>   struct smc_clc_smcd_v2_extension {
+> -	u8 system_eid[SMC_MAX_EID_LEN];
+> -	u8 reserved[16];
+> +	struct_group_tagged(smc_clc_smcd_v2_extension_fixed, fixed,
+> +		u8 system_eid[SMC_MAX_EID_LEN];
+
+checkpatch: 'CHECK: Alignment should match open parenthesis'
+
+Thanks!
+Wen Gu
+
+> +		u8 reserved[16];
+> +	);
+>   	struct smc_clc_smcd_gid_chid gidchid[];
+>   };
+>   
+> @@ -183,9 +187,9 @@ struct smc_clc_msg_proposal_area {
+>   	struct smc_clc_msg_smcd			pclc_smcd;
+>   	struct smc_clc_msg_proposal_prefix	pclc_prfx;
+>   	struct smc_clc_ipv6_prefix	pclc_prfx_ipv6[SMC_CLC_MAX_V6_PREFIX];
+> -	struct smc_clc_v2_extension		pclc_v2_ext;
+> +	struct smc_clc_v2_extension_fixed	pclc_v2_ext;
+>   	u8			user_eids[SMC_CLC_MAX_UEID][SMC_MAX_EID_LEN];
+> -	struct smc_clc_smcd_v2_extension	pclc_smcd_v2_ext;
+> +	struct smc_clc_smcd_v2_extension_fixed	pclc_smcd_v2_ext;
+>   	struct smc_clc_smcd_gid_chid
+>   				pclc_gidchids[SMCD_CLC_MAX_V2_GID_ENTRIES];
+>   	struct smc_clc_msg_trail		pclc_trl;
 
