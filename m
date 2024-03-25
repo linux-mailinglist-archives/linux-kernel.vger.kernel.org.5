@@ -1,45 +1,45 @@
-Return-Path: <linux-kernel+bounces-117985-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-117986-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C8CC788B205
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 21:51:47 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id EFAC488B206
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 21:51:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E0A0B1C35DBF
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 20:51:46 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A5E9A1F665E9
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 20:51:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BE33112838B;
-	Mon, 25 Mar 2024 20:46:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 204EE12839E;
+	Mon, 25 Mar 2024 20:46:48 +0000 (UTC)
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4DF1770CC2
-	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 20:46:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0EE6573182
+	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 20:46:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711399607; cv=none; b=A96raJJBquKGAsX5eR1gt91K+gpOtKbhFFhxpPaXEUEbELuTblJYM69xp6fXV6tmti01Kt94RA6zHlsuYfduPPK9u+vHWaLf5Am3gYZen6uLxsSiGsAcg6EZ4AJnsOd088GOBb0CGxnMX55qDp5x/Hw1BLMbMT0/VuTosyPpXmc=
+	t=1711399607; cv=none; b=IfIbpqlFX9qss4k1PabC5QU4UWN+Zmq8FtVH8pWxPjIMz8F8PyE7ew9GrQa3frMUE84C0VM5ySBBA6Yh0IfAeOIq4AefEzgx77r6dfUouPlu2hQKcrVZaWFZlT7IR8ApXFlghjYYQsdbKeKOJ99rp7OvixrV0sRQFXXKjFWF2Qo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1711399607; c=relaxed/simple;
-	bh=5N73T9GLJexFRc9xgbr743q+8aZOE0ro0e7hvr8o8gg=;
+	bh=COo9h/c3ZOoNfFclLceJbjG5YdpauNjCzeGTguBMgqo=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=gl2ZBtGia+B+o4pgT3m5abpurYXWOlQSpA7J7W6OV06ouROqx+WXSlHxBosgNBjCjRp1/qTXkjqha6HG7oF5TAUMLHfJ/9nukSkWQwTh4f6AGeXzk3rI65LnjhpR8N7PYv0GF774l/qMU2Zys1obpfcq+UyIiUY2wuz8XjA6xus=
+	 MIME-Version; b=hUh/A+y50vA3fI1fD4M8KsSwTeoXvcfUYPPCIlixxZ6g2PpGmHUfXqxIa37jZF5MLNroJ1LcpVruLr89pH1ju6fTS0qBDSgfFec0ZuRN7YvRniNsl2xyhqeZ+qzS57Q04BI4vCrwtDQdfpC8xtVwLtBOxxjh/d+hiyT2Io1nZ9A=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3F5321595;
-	Mon, 25 Mar 2024 13:47:18 -0700 (PDT)
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3A1F31596;
+	Mon, 25 Mar 2024 13:47:19 -0700 (PDT)
 Received: from pluto.fritz.box (unknown [172.31.20.19])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E5EF23F64C;
-	Mon, 25 Mar 2024 13:46:43 -0700 (PDT)
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E0F743F64C;
+	Mon, 25 Mar 2024 13:46:44 -0700 (PDT)
 From: Cristian Marussi <cristian.marussi@arm.com>
 To: linux-kernel@vger.kernel.org,
 	linux-arm-kernel@lists.infradead.org
 Cc: sudeep.holla@arm.com,
 	Cristian Marussi <cristian.marussi@arm.com>
-Subject: [PATCH v2 4/5] firmware: arm_scmi: Simplify scmi_devm_notifier_unregister
-Date: Mon, 25 Mar 2024 20:46:19 +0000
-Message-ID: <20240325204620.1437237-5-cristian.marussi@arm.com>
+Subject: [PATCH v2 5/5] firmware: arm_scmi: Use dev_err_probe to bail out
+Date: Mon, 25 Mar 2024 20:46:20 +0000
+Message-ID: <20240325204620.1437237-6-cristian.marussi@arm.com>
 X-Mailer: git-send-email 2.44.0
 In-Reply-To: <20240325204620.1437237-1-cristian.marussi@arm.com>
 References: <20240325204620.1437237-1-cristian.marussi@arm.com>
@@ -51,98 +51,103 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Unregistering SCMI notifications using the managed devres interface can be
-done providing as a reference simply the previously successfully registered
-notification block since it could have been registered only on one kernel
-notification_chain: drop any reference to SCMI protocol, events and
-sources.
-
-Devres internal helpers can search for the provided notification block
-reference and, once found, the associated devres object will already
-provide the above SCMI references for the event.
+Use dev_err_probe on the failure path of SCMI core probing.
 
 Signed-off-by: Cristian Marussi <cristian.marussi@arm.com>
 ---
- drivers/firmware/arm_scmi/notify.c | 30 ++++--------------------------
- include/linux/scmi_protocol.h      |  2 --
- 2 files changed, 4 insertions(+), 28 deletions(-)
+ drivers/firmware/arm_scmi/driver.c | 34 +++++++++++++++++++++++-------
+ 1 file changed, 26 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/firmware/arm_scmi/notify.c b/drivers/firmware/arm_scmi/notify.c
-index 27c52531194d..e160ecb22948 100644
---- a/drivers/firmware/arm_scmi/notify.c
-+++ b/drivers/firmware/arm_scmi/notify.c
-@@ -1513,17 +1513,12 @@ static int scmi_devm_notifier_register(struct scmi_device *sdev,
- static int scmi_devm_notifier_match(struct device *dev, void *res, void *data)
- {
- 	struct scmi_notifier_devres *dres = res;
--	struct scmi_notifier_devres *xres = data;
-+	struct notifier_block *nb = data;
+diff --git a/drivers/firmware/arm_scmi/driver.c b/drivers/firmware/arm_scmi/driver.c
+index 207ed1a52d69..d0091459a276 100644
+--- a/drivers/firmware/arm_scmi/driver.c
++++ b/drivers/firmware/arm_scmi/driver.c
+@@ -2540,6 +2540,10 @@ scmi_txrx_setup(struct scmi_info *info, struct device_node *of_node,
+ 			ret = 0;
+ 	}
  
--	if (WARN_ON(!dres || !xres))
-+	if (WARN_ON(!dres || !nb))
- 		return 0;
- 
--	return dres->proto_id == xres->proto_id &&
--		dres->evt_id == xres->evt_id &&
--		dres->nb == xres->nb &&
--		((!dres->src_id && !xres->src_id) ||
--		  (dres->src_id && xres->src_id &&
--		   dres->__src_id == xres->__src_id));
-+	return dres->nb == nb;
++	if (ret)
++		dev_err(info->dev,
++			"failed to setup channel for protocol:0x%X\n", prot_id);
++
+ 	return ret;
  }
  
- /**
-@@ -1531,10 +1526,6 @@ static int scmi_devm_notifier_match(struct device *dev, void *res, void *data)
-  * notifier_block for an event
-  * @sdev: A reference to an scmi_device whose embedded struct device is to
-  *	  be used for devres accounting.
-- * @proto_id: Protocol ID
-- * @evt_id: Event ID
-- * @src_id: Source ID, when NULL register for events coming form ALL possible
-- *	    sources
-  * @nb: A standard notifier block to register for the specified event
-  *
-  * Generic devres managed helper to explicitly un-register a notifier_block
-@@ -1544,25 +1535,12 @@ static int scmi_devm_notifier_match(struct device *dev, void *res, void *data)
-  * Return: 0 on Success
-  */
- static int scmi_devm_notifier_unregister(struct scmi_device *sdev,
--					 u8 proto_id, u8 evt_id,
--					 const u32 *src_id,
- 					 struct notifier_block *nb)
+@@ -2809,6 +2813,7 @@ static int scmi_debugfs_raw_mode_setup(struct scmi_info *info)
+ static int scmi_probe(struct platform_device *pdev)
  {
  	int ret;
--	struct scmi_notifier_devres dres;
--
--	dres.handle = sdev->handle;
--	dres.proto_id = proto_id;
--	dres.evt_id = evt_id;
--	if (src_id) {
--		dres.__src_id = *src_id;
--		dres.src_id = &dres.__src_id;
--	} else {
--		dres.src_id = NULL;
--	}
++	char *err_str = "probe failure\n";
+ 	struct scmi_handle *handle;
+ 	const struct scmi_desc *desc;
+ 	struct scmi_info *info;
+@@ -2859,27 +2864,37 @@ static int scmi_probe(struct platform_device *pdev)
  
- 	ret = devres_release(&sdev->dev, scmi_devm_release_notifier,
--			     scmi_devm_notifier_match, &dres);
-+			     scmi_devm_notifier_match, nb);
+ 	if (desc->ops->link_supplier) {
+ 		ret = desc->ops->link_supplier(dev);
+-		if (ret)
++		if (ret) {
++			err_str = "transport not ready\n";
+ 			goto clear_ida;
++		}
+ 	}
  
- 	WARN_ON(ret);
+ 	/* Setup all channels described in the DT at first */
+ 	ret = scmi_channels_setup(info);
+-	if (ret)
++	if (ret) {
++		err_str = "failed to setup channels\n";
+ 		goto clear_ida;
++	}
  
-diff --git a/include/linux/scmi_protocol.h b/include/linux/scmi_protocol.h
-index b807141acc14..a3addb07e00a 100644
---- a/include/linux/scmi_protocol.h
-+++ b/include/linux/scmi_protocol.h
-@@ -783,8 +783,6 @@ struct scmi_notify_ops {
- 					    const u32 *src_id,
- 					    struct notifier_block *nb);
- 	int (*devm_event_notifier_unregister)(struct scmi_device *sdev,
--					      u8 proto_id, u8 evt_id,
--					      const u32 *src_id,
- 					      struct notifier_block *nb);
- 	int (*event_notifier_register)(const struct scmi_handle *handle,
- 				       u8 proto_id, u8 evt_id,
+ 	ret = bus_register_notifier(&scmi_bus_type, &info->bus_nb);
+-	if (ret)
++	if (ret) {
++		err_str = "failed to register bus notifier\n";
+ 		goto clear_txrx_setup;
++	}
+ 
+ 	ret = blocking_notifier_chain_register(&scmi_requested_devices_nh,
+ 					       &info->dev_req_nb);
+-	if (ret)
++	if (ret) {
++		err_str = "failed to register device notifier\n";
+ 		goto clear_bus_notifier;
++	}
+ 
+ 	ret = scmi_xfer_info_init(info);
+-	if (ret)
++	if (ret) {
++		err_str = "failed to init xfers pool\n";
+ 		goto clear_dev_req_notifier;
++	}
+ 
+ 	if (scmi_top_dentry) {
+ 		info->dbg = scmi_debugfs_common_setup(info);
+@@ -2916,9 +2931,11 @@ static int scmi_probe(struct platform_device *pdev)
+ 	 */
+ 	ret = scmi_protocol_acquire(handle, SCMI_PROTOCOL_BASE);
+ 	if (ret) {
+-		dev_err(dev, "unable to communicate with SCMI\n");
+-		if (coex)
++		err_str = "unable to communicate with SCMI\n";
++		if (coex) {
++			dev_err(dev, err_str);
+ 			return 0;
++		}
+ 		goto notification_exit;
+ 	}
+ 
+@@ -2972,7 +2989,8 @@ static int scmi_probe(struct platform_device *pdev)
+ 	scmi_cleanup_txrx_channels(info);
+ clear_ida:
+ 	ida_free(&scmi_id, info->id);
+-	return ret;
++
++	return dev_err_probe(dev, ret, err_str);
+ }
+ 
+ static void scmi_remove(struct platform_device *pdev)
 -- 
 2.44.0
 
