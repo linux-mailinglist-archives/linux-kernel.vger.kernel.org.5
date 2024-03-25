@@ -1,156 +1,400 @@
-Return-Path: <linux-kernel+bounces-117612-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-117613-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3C2F188AD37
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 19:11:44 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5ABBB88AD3C
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 19:12:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5F3FE1C3B689
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 18:11:43 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0AA893009C4
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 18:12:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C3A5571B39;
-	Mon, 25 Mar 2024 17:39:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=craftyguy.net header.i=@craftyguy.net header.b="WnirDkWt"
-Received: from out-172.mta1.migadu.com (out-172.mta1.migadu.com [95.215.58.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1594113248B;
+	Mon, 25 Mar 2024 17:40:12 +0000 (UTC)
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 09E9A12CDB5
-	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 17:39:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 07F8712D1E5;
+	Mon, 25 Mar 2024 17:40:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.176.79.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711388363; cv=none; b=s5AtPHuip1c2ptDtThMWG8+4ZeWl0ja5CyDhVTydEH4dLGNtgtKQSuH0YckzW/ka1S+CEOAPPUCBsdy0GmwhLOHkllYdUJuPsVm/nFNjsGaamcPVGnvKK9/4yMZH9+ufmJmOjt6z9nerxoaI/MtGnJdZk/0ob81j/MP1TevoQ6g=
+	t=1711388411; cv=none; b=kKFNXHtC9bA5ZGPitEfpHFECGiTZ4B+jgZX/02KLQGw/75GpvE6651a7254+K5N790aA6xE+X+37xN0inSUopxNDx/EqsI4GQS/dIDscZFtV29oY9YgGcrrKnDUKyKv/43/kFm62AumHd3nznpm0jHO4Ty/qulkMuKgveBAuatk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711388363; c=relaxed/simple;
-	bh=xyk5pfus2DJXtQQaDZ62yS48Heir0FjYUjCVVNmb/AY=;
-	h=Date:Message-ID:From:To:Cc:Subject:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=EnGGL+3tP+LQ16m4AC9tXeMfYQkWLX5tpwlVIJormlh3XSrv+8Y+jlxBHb9yTXihY+vM/M87e5YlIwhNV6miJDtvd7ybRNN36S3bvKEQ4ktMM/Th8HqoirUZfgR1jZXLbKNeHPm5HJubTusRNsG/pqIXD+nlX6O9ysN1gh2t1Yc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=craftyguy.net; spf=pass smtp.mailfrom=craftyguy.net; dkim=pass (2048-bit key) header.d=craftyguy.net header.i=@craftyguy.net header.b=WnirDkWt; arc=none smtp.client-ip=95.215.58.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=craftyguy.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=craftyguy.net
-Date: Mon, 25 Mar 2024 10:39:12 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=craftyguy.net;
-	s=key1; t=1711388357;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=xyk5pfus2DJXtQQaDZ62yS48Heir0FjYUjCVVNmb/AY=;
-	b=WnirDkWtyxAnKXTya31AIdOi04lf8tGiXcqjLhdWRGnQgH33fxAAsveeX2bAt2T+SckRMl
-	YRynax8wElMvHiPE7Yl9tyGRecs3bHSEBUMmQZhh7vGQRSzg7zq3eQrfUxWGDhp9C6XrDL
-	AxmNK/9q7FXGHG1n+m5HZBoavELS9Ca982jg5QDnwAlYGerYwSr5ajbLybsG+tb/5Wl6VW
-	EbwiD7eZ29YbliXhYVqyxX1uXuCjOw5b0fVzXaXU2/hwsK7uDJ949TLqotNGsgMRcZ3Rf1
-	Fj+JO1EW/MLBRkBjJ8c7MCb2DCZPdc0aef3sY9Xn3E4FaCmR7uhqiaW0P4algQ==
-Message-ID: <20240325103912.GB6076@craftyguy.net>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Clayton Craft <clayton@craftyguy.net>
-To: Hans de Goede <hdegoede@redhat.com>
-Cc: Ard Biesheuvel <ardb+git@google.com>, linux-efi@vger.kernel.org,
- linux-kernel@vger.kernel.org, Ard Biesheuvel <ardb@kernel.org>
-Subject: Re: [PATCH] x86/efistub: Add missing boot_params for mixed mode
- compat entry
-In-Reply-To: <5b32b8c8-0a1b-44cf-aedf-cca1d6c83bd8@redhat.com>
-References: <20240325083905.13163-2-ardb+git@google.com>
- <5b32b8c8-0a1b-44cf-aedf-cca1d6c83bd8@redhat.com>
+	s=arc-20240116; t=1711388411; c=relaxed/simple;
+	bh=muWcDeeR+cvHVDewemOSirQT+6a2EHzRLYKO1kRBKWE=;
+	h=Date:From:To:CC:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=G9uVNb1R/iSKsNE3oihrceqEz2HgZRgVigGDKbcqHJJ8cqoSctz7sdTAkgSY8PuMUwXYCmyr7aoNlVuUsHoKLLQzTv8u+2u99tupUZ3hbieR/U9nYJ7FqCwBBa5SliiAW7g7FVVnUOws0dYiiSPu/CbwqiRbaDzuCGdH1jF9kyg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=185.176.79.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.18.186.31])
+	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4V3KtX0P3tz6K6Yd;
+	Tue, 26 Mar 2024 01:39:16 +0800 (CST)
+Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
+	by mail.maildlp.com (Postfix) with ESMTPS id 0E71D1400DC;
+	Tue, 26 Mar 2024 01:40:04 +0800 (CST)
+Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
+ (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.35; Mon, 25 Mar
+ 2024 17:40:03 +0000
+Date: Mon, 25 Mar 2024 17:40:02 +0000
+From: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To: <ira.weiny@intel.com>
+CC: Dave Jiang <dave.jiang@intel.com>, Fan Ni <fan.ni@samsung.com>, "Navneet
+ Singh" <navneet.singh@intel.com>, Dan Williams <dan.j.williams@intel.com>,
+	Davidlohr Bueso <dave@stgolabs.net>, Alison Schofield
+	<alison.schofield@intel.com>, Vishal Verma <vishal.l.verma@intel.com>,
+	<linux-btrfs@vger.kernel.org>, <linux-cxl@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 03/26] cxl/mem: Read dynamic capacity configuration from
+ the device
+Message-ID: <20240325174002.00005dc6@Huawei.com>
+In-Reply-To: <20240324-dcd-type2-upstream-v1-3-b7b00d623625@intel.com>
+References: <20240324-dcd-type2-upstream-v1-0-b7b00d623625@intel.com>
+	<20240324-dcd-type2-upstream-v1-3-b7b00d623625@intel.com>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="/BaAd8uW2PEt6Q7E"; micalg="pgp-sha512"; protocol="application/pgp-signature"
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain; charset="ISO-8859-1"
+Content-Transfer-Encoding: quoted-printable
+X-ClientProxiedBy: lhrpeml100002.china.huawei.com (7.191.160.241) To
+ lhrpeml500005.china.huawei.com (7.191.163.240)
+
+On Sun, 24 Mar 2024 16:18:06 -0700
+ira.weiny@intel.com wrote:
+
+> From: Navneet Singh <navneet.singh@intel.com>
+>=20
+> Devices can optionally support Dynamic Capacity (DC).  These devices are
+> known as Dynamic Capacity Devices (DCD).
+>=20
+> Implement the DC mailbox commands as specified in CXL 3.1 section
+> 8.2.9.9.9 (opcodes 48XXh).  Read the DC configuration and store the DC
+> region information in the device state.
+>=20
+> Signed-off-by: Navneet Singh <navneet.singh@intel.com>
+> Co-developed-by: Ira Weiny <ira.weiny@intel.com>
+> Signed-off-by: Ira Weiny <ira.weiny@intel.com>
+
+A few minor things inline,
+
+Jonathan
+
+>=20
+> ---
+> Changes for v1
+> [J=F8rgen: ensure CXL 2.0 device support by removing dc_event_log_size]
+> [iweiny/J=F8rgen: use get DC config command to signal DCD support]
+> [djiang: fix subject]
+> [Fan: add additional region configuration checks]
+> [Jonathan/djiang: split out region mode changes]
+> [Jonathan: fix up comments/kdoc]
+> [Jonathan: s/cxl_get_dc_id/cxl_get_dc_config/]
+> [Jonathan: use __free() in identify call]
+> [Jonathan: remove unneeded formatting changes]
+> [Jonathan: s/cxl_mbox_dynamic_capacity/cxl_mbox_get_dc_config_out/]
+> [Jonathan: s/cxl_mbox_get_dc_config/cxl_mbox_get_dc_config_in/]
+> [iweiny: remove type2 work dependancy/rebase on master]
+> [iweiny: fix 0day build issues]
+> ---
+>  drivers/cxl/core/mbox.c | 184 ++++++++++++++++++++++++++++++++++++++++++=
++++++-
+>  drivers/cxl/cxlmem.h    |  49 +++++++++++++
+>  drivers/cxl/pci.c       |   4 ++
+>  3 files changed, 236 insertions(+), 1 deletion(-)
+>=20
+> diff --git a/drivers/cxl/core/mbox.c b/drivers/cxl/core/mbox.c
+> index ed4131c6f50b..14e8a7528a8b 100644
+> --- a/drivers/cxl/core/mbox.c
+> +++ b/drivers/cxl/core/mbox.c
+> @@ -1123,7 +1123,7 @@ int cxl_dev_state_identify(struct cxl_memdev_state =
+*mds)
+>  	if (rc < 0)
+>  		return rc;
+> =20
+> -	mds->total_bytes =3D
+> +	mds->static_cap =3D
+>  		le64_to_cpu(id.total_capacity) * CXL_CAPACITY_MULTIPLIER;
+>  	mds->volatile_only_bytes =3D
+>  		le64_to_cpu(id.volatile_capacity) * CXL_CAPACITY_MULTIPLIER;
+> @@ -1230,6 +1230,175 @@ int cxl_mem_sanitize(struct cxl_memdev *cxlmd, u1=
+6 cmd)
+>  	return rc;
+>  }
+> =20
+> +static int cxl_dc_save_region_info(struct cxl_memdev_state *mds, u8 inde=
+x,
+> +				   struct cxl_dc_region_config *region_config)
+> +{
+> +	struct cxl_dc_region_info *dcr =3D &mds->dc_region[index];
+> +	struct device *dev =3D mds->cxlds.dev;
+> +
+> +	dcr->base =3D le64_to_cpu(region_config->region_base);
+> +	dcr->decode_len =3D le64_to_cpu(region_config->region_decode_length);
+> +	dcr->decode_len *=3D CXL_CAPACITY_MULTIPLIER;
+> +	dcr->len =3D le64_to_cpu(region_config->region_length);
+> +	dcr->blk_size =3D le64_to_cpu(region_config->region_block_size);
+> +	dcr->dsmad_handle =3D le32_to_cpu(region_config->region_dsmad_handle);
+> +	dcr->flags =3D region_config->flags;
+> +	snprintf(dcr->name, CXL_DC_REGION_STRLEN, "dc%d", index);
+> +
+> +	/* Check regions are in increasing DPA order */
+> +	if (index > 0) {
+> +		struct cxl_dc_region_info *prev_dcr =3D &mds->dc_region[index - 1];
+> +
+> +		if ((prev_dcr->base + prev_dcr->decode_len) > dcr->base) {
+> +			dev_err(dev,
+> +				"DPA ordering violation for DC region %d and %d\n",
+> +				index - 1, index);
+> +			return -EINVAL;
+> +		}
+> +	}
+> +
+> +	if (!IS_ALIGNED(dcr->base, SZ_256M) ||
+> +	    !IS_ALIGNED(dcr->base, dcr->blk_size)) {
+> +		dev_err(dev, "DC region %d invalid base %#llx blk size %#llx\n", index,
+
+Odd choice of line wrap.  I'd drag index onto the line below.
+
+> +			dcr->base, dcr->blk_size);
+> +		return -EINVAL;
+> +	}
+> +
+> +	if (dcr->decode_len =3D=3D 0 || dcr->len =3D=3D 0 || dcr->decode_len < =
+dcr->len ||
+> +	    !IS_ALIGNED(dcr->len, dcr->blk_size)) {
+> +		dev_err(dev, "DC region %d invalid length; decode %#llx len %#llx blk =
+size %#llx\n",
+> +			index, dcr->decode_len, dcr->len, dcr->blk_size);
+> +		return -EINVAL;
+> +	}
+> +
+> +	if (dcr->blk_size =3D=3D 0 || dcr->blk_size % 0x40 ||
+
+Hmm. I thought we had a define for CXL 'cacheline' size, but can't find it =
+now.
+If not we should add one (and find a better name than that).
+
+> +	    !is_power_of_2(dcr->blk_size)) {
+> +		dev_err(dev, "DC region %d invalid block size; %#llx\n",
+> +			index, dcr->blk_size);
+> +		return -EINVAL;
+> +	}
+> +
+> +	dev_dbg(dev,
+> +		"DC region %s DPA: %#llx LEN: %#llx BLKSZ: %#llx\n",
+> +		dcr->name, dcr->base, dcr->decode_len, dcr->blk_size);
+> +
+> +	return 0;
+> +}
+> +
+> +/* Returns the number of regions in dc_resp or -ERRNO */
+> +static int cxl_get_dc_config(struct cxl_memdev_state *mds, u8 start_regi=
+on,
+> +			     struct cxl_mbox_get_dc_config_out *dc_resp,
+> +			     size_t dc_resp_size)
+> +{
+> +	struct cxl_mbox_get_dc_config_in get_dc =3D (struct cxl_mbox_get_dc_con=
+fig_in) {
+> +		.region_count =3D CXL_MAX_DC_REGION,
+> +		.start_region_index =3D start_region,
+> +	};
+> +	struct cxl_mbox_cmd mbox_cmd =3D (struct cxl_mbox_cmd) {
+> +		.opcode =3D CXL_MBOX_OP_GET_DC_CONFIG,
+> +		.payload_in =3D &get_dc,
+> +		.size_in =3D sizeof(get_dc),
+> +		.size_out =3D dc_resp_size,
+> +		.payload_out =3D dc_resp,
+> +		.min_out =3D 1,
+> +	};
+> +	struct device *dev =3D mds->cxlds.dev;
+> +	int rc;
+> +
+> +	rc =3D cxl_internal_send_cmd(mds, &mbox_cmd);
+> +	if (rc < 0)
+> +		return rc;
+> +
+> +	rc =3D dc_resp->avail_region_count - start_region;
+> +
+> +	/*
+> +	 * The number of regions in the payload may have been truncated due to
+> +	 * payload_size limits; if so adjust the returned count to match.
+> +	 */
+> +	if (mbox_cmd.size_out < sizeof(*dc_resp))
+> +		rc =3D CXL_REGIONS_RETURNED(mbox_cmd.size_out);
+
+Why not always return this?  If there was space, doesn't it equal
+the value set above anyway?
+
+> +
+> +	dev_dbg(dev, "Read %d/%d DC regions\n", rc, dc_resp->avail_region_count=
+);
+> +
+> +	return rc;
+> +}
+
+> +/**
+> + * cxl_dev_dynamic_capacity_identify() - Reads the dynamic capacity
+> + *					 information from the device.
+> + * @mds: The memory device state
+> + *
+> + * Read Dynamic Capacity information from the device and populate the st=
+ate
+> + * structures for later use.
+> + *
+> + * Return: 0 if identify was executed successfully, -ERRNO on error.
+> + */
+> +int cxl_dev_dynamic_capacity_identify(struct cxl_memdev_state *mds)
+> +{
+> +	size_t dc_resp_size =3D mds->payload_size;
+> +	struct device *dev =3D mds->cxlds.dev;
+> +	u8 start_region, i;
+> +	int rc =3D 0;
+
+Is this used before being set?
+
+> +
+> +	for (i =3D 0; i < CXL_MAX_DC_REGION; i++)
+> +		snprintf(mds->dc_region[i].name, CXL_DC_REGION_STRLEN, "<nil>");
+> +
+> +	/* Check GET_DC_CONFIG is supported by device */
+> +	if (!cxl_dcd_supported(mds)) {
+> +		dev_dbg(dev, "DCD not supported\n");
+> +		return 0;
+> +	}
+> +
+> +	struct cxl_mbox_get_dc_config_out *dc_resp __free(kfree) =3D
+> +					kvmalloc(dc_resp_size, GFP_KERNEL);
+> +	if (!dc_resp)
+> +		return -ENOMEM;
+> +
+> +	start_region =3D 0;
+> +	do {
+> +		int j;
+> +
+> +		rc =3D cxl_get_dc_config(mds, start_region, dc_resp, dc_resp_size);
+> +		if (rc < 0) {
+> +			dev_dbg(dev, "Failed to get DC config: %d\n", rc);
+> +			return rc;
+> +		}
+> +
+> +		mds->nr_dc_region +=3D rc;
+> +
+> +		if (mds->nr_dc_region < 1 || mds->nr_dc_region > CXL_MAX_DC_REGION) {
+> +			dev_err(dev, "Invalid num of dynamic capacity regions %d\n",
+> +				mds->nr_dc_region);
+> +			return -EINVAL;
+> +		}
+> +
+> +		for (i =3D start_region, j =3D 0; i < mds->nr_dc_region; i++, j++) {
+> +			rc =3D cxl_dc_save_region_info(mds, i, &dc_resp->region[j]);
+> +			if (rc) {
+> +				dev_dbg(dev, "Failed to save region info: %d\n", rc);
+> +				return rc;
+> +			}
+> +		}
+> +
+> +		start_region =3D mds->nr_dc_region;
+> +
+> +	} while (mds->nr_dc_region < dc_resp->avail_region_count);
+> +
+> +	mds->dynamic_cap =3D
+> +		mds->dc_region[mds->nr_dc_region - 1].base +
+> +		mds->dc_region[mds->nr_dc_region - 1].decode_len -
+> +		mds->dc_region[0].base;
+> +	dev_dbg(dev, "Total dynamic capacity: %#llx\n", mds->dynamic_cap);
+> +
+> +	return 0;
+> +}
+> +EXPORT_SYMBOL_NS_GPL(cxl_dev_dynamic_capacity_identify, CXL);
 
 
---/BaAd8uW2PEt6Q7E
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: base64
 
-T24gTW9uLCAyNSBNYXIgMjAyNCAxNDoxODowMSArMDEwMCBIYW5zIGRlIEdvZWRlIDxoZGVnb2Vk
-ZUByZWRoYXQuY29tPiB3cm90ZToKPiBIaSwKPiAKPiBPbiAzLzI1LzI0IDk6MzkgQU0sIEFyZCBC
-aWVzaGV1dmVsIHdyb3RlOgo+ID4gRnJvbTogQXJkIEJpZXNoZXV2ZWwgPGFyZGJAa2VybmVsLm9y
-Zz4KPiA+IAo+ID4gVGhlIG5hdGl2ZSBFRkkgc3R1YiBlbnRyeSBwb2ludCBkb2VzIG5vdCB0YWtl
-IGEgc3RydWN0IGJvb3RfcGFyYW1zIGZyb20KPiA+IHRoZSBib290IGxvYWRlciwgYnV0IGNyZWF0
-ZXMgaXQgZnJvbSBzY3JhdGNoLCBhbmQgcG9wdWxhdGVzIG9ubHkgdGhlCj4gPiBmaWVsZHMgdGhh
-dCBzdGlsbCBoYXZlIG1lYW5pbmcgaW4gdGhpcyBjb250ZXh0IChjb21tYW5kIGxpbmUsIGluaXRy
-ZAo+ID4gYmFzZSBhbmQgc2l6ZSwgZXRjKQo+ID4gCj4gPiBUaGUgb3JpZ2luYWwgbWl4ZWQgbW9k
-ZSBpbXBsZW1lbnRhdGlvbiB1c2VkIHRoZSBFRkkgaGFuZG92ZXIgcHJvdG9jb2wsCj4gPiB3aGVy
-ZSB0aGUgYm9vdCBsb2FkZXIgKGkuZS4sIEdSVUIpIHBvcHVsYXRlcyBhIHN0cnVjdCBib290X3Bh
-cmFtcyBhbmQKPiA+IHBhc3NlcyBpdCB0byBhIHNwZWNpYWwgRUZJIGVudHJ5IHBvaW50IHRoYXQg
-dGFrZXMgdGhlIHN0cnVjdCBib290X3BhcmFtcwo+ID4gcG9pbnRlciBhcyB0aGUgdGhpcmQgYXJn
-dW1lbnQuCj4gPiAKPiA+IFdoZW4gdGhlIG5ldyBtaXhlZCBtb2RlIGltcGxlbWVudGF0aW9uIHdh
-cyBpbnRyb2R1Y2VkLCB1c2luZyBhIHNwZWNpYWwKPiA+IDMyLWJpdCBQRSBlbnRyeXBvaW50IGlu
-IHRoZSA2NC1iaXQga2VybmVsLCBpdCBhZG9wdGVkIHRoZSB1c3VhbAo+ID4gcHJvdG90eXBlLCBh
-bmQgcmVsaWVkIG9uIHRoZSBFRkkgc3R1YiB0byBjcmVhdGUgdGhlIHN0cnVjdCBib290X3BhcmFt
-cwo+ID4gYXMgdXN1YWwuIFRoaXMgaXMgcHJlZmVycmVkIGJlY2F1c2UgaXQgbWFrZXMgdGhlIGJv
-b3Rsb2FkZXIgc2lkZSBtdWNoCj4gPiBlYXNpZXIgdG8gaW1wbGVtZW50LCBhcyBpdCBkb2VzIG5v
-dCBuZWVkIGFueSB4ODYtc3BlY2lmaWMga25vd2xlZGdlIG9uCj4gPiBob3cgc3RydWN0IGJvb3Rf
-cGFyYW1zIGFuZCBzdHJ1Y3Qgc2V0dXBfaGVhZGVyIGFyZSBwdXQgdG9nZXRoZXIuCj4gPiAKPiA+
-IEhvd2V2ZXIsIG9uZSB0aGluZyB3YXMgbWlzc2VkOiBFRkkgbWl4ZWQgbW9kZSBnb2VzIHRocm91
-Z2ggc3RhcnR1cF8zMigpCj4gPiAqYmVmb3JlKiBlbnRlcmluZyB0aGUgNjQtYml0IEVGSSBzdHVi
-LCB3aGljaCBpcyBkaWZmaWN1bHQgdG8gYXZvaWQgZ2l2ZW4KPiA+IHRoYXQgNjQtYml0IGV4ZWN1
-dGlvbiByZXF1aXJlcyBwYWdlIHRhYmxlcywgd2hpY2ggY2FuIG9ubHkgYmUgcG9wdWxhdGVkCj4g
-PiB1c2luZyAzMi1iaXQgY29kZSwgYW5kIHRoaXMgcGllY2UgaXMgd2hhdCB0aGUgbWl4ZWQgbW9k
-ZSBFRkkgc3R1YiByZWxpZXMKPiA+IG9uLiBzdGFydHVwXzMyKCkgYWNjZXNzZXMgYSBjb3VwbGUg
-b2Ygc3RydWN0IGJvb3RfcGFyYW1zIGZpZWxkcyB0bwo+ID4gZGVjaWRlIHdoZXJlIHRvIHBsYWNl
-IHRoZSBwYWdlIHRhYmxlcy4KPiA+IAo+ID4gc3RhcnR1cF8zMigpIHR1cm5zIG91dCB0byBiZSBx
-dWl0ZSB0b2xlcmFudCB0byBib2d1cyBzdHJ1Y3QgYm9vdF9wYXJhbXMsCj4gPiBnaXZlbiB0aGF0
-IEVTSSB1c2VkIHRvIGNvbnRhaW4ganVuayB3aGVuIGVudGVyaW5nIHZpYSB0aGUgbmV3IG1peGVk
-IG1vZGUKPiA+IHByb3RvY29sLiBPbmx5IHdoZW4gY29tbWl0Cj4gPiAKPiA+ICAgZTJhYjllYWIz
-MjRjICgieDg2L2Jvb3QvY29tcHJlc3NlZDogTW92ZSAzMi1iaXQgZW50cnlwb2ludCBjb2RlIGlu
-dG8gLnRleHQgc2VjdGlvbiIpCj4gPiAKPiA+IHN0YXJ0ZWQgdG8gemVybyBFU0kgZXhwbGljaXRs
-eSB3aGVuIGVudGVyaW5nIHZpYSB0aGlzIGJvb3QgcGF0aCwgYm9vdAo+ID4gZmFpbHVyZXMgc3Rh
-cnRlZCB0byBhcHBlYXIgb24gc29tZSBzeXN0ZW1zLCBwcmVzdW1hYmx5IG9uZXMgdGhhdCB1bm1h
-cAo+ID4gcGFnZSAweDAgb3IgbWFwIGl0IHJlYWQtb25seS4KPiA+IAo+ID4gVGhlIHNvbHV0aW9u
-IGlzIHRvIHBhc3MgYSBzcGVjaWFsLCB0ZW1wb3Jhcnkgc3RydWN0IGJvb3RfcGFyYW1zIHRvCj4g
-PiBzdGFydHVwXzMyKCkgdmlhIEVTSSwgb25lIHRoYXQgaXMgc3VmZmljaWVudCBmb3IgZ2V0dGlu
-ZyBpdCB0byBjcmVhdGUKPiA+IHRoZSBwYWdlIHRhYmxlcyBjb3JyZWN0bHkgYW5kIGlzIGRpc2Nh
-cmRlZCByaWdodCBhZnRlci4gVGhpcyBtZWFucwo+ID4gc2V0dGluZyBhIG1pbmltYWwgYWxpZ25t
-ZW50IG9mIDRrLCBvbmx5IHRvIGdldCB0aGUgc3RhdGljYWxseSBhbGxvY2F0ZWQKPiA+IHBhZ2Ug
-dGFibGVzIGxpbmUgdXAgY29ycmVjdGx5LCBhbmQgc2V0dGluZyBpbml0X3NpemUgdG8gdGhlIGV4
-ZWN1dGFibGUKPiA+IGltYWdlIHNpemUgKF9lbmQgLSBzdGFydHVwXzMyKS4gVGhpcyBlbnN1cmVz
-IHRoYXQgdGhlIHBhZ2UgdGFibGVzIGFyZQo+ID4gY292ZXJlZCBieSB0aGUgc3RhdGljIGZvb3Rw
-cmludCBvZiB0aGUgUEUgaW1hZ2UuCj4gPiAKPiA+IEdpdmVuIHRoYXQgRUZJIGJvb3Qgbm8gbG9u
-Z2VyIGNhbGxzIHRoZSBkZWNvbXByZXNzb3IgYW5kIG5vIGxvbmdlciBwYWRzCj4gPiB0aGUgaW1h
-Z2UgdG8gcGVybWl0IHRoZSBkZWNvbXByZXNzb3IgdG8gZXhlY3V0ZSBpbiBwbGFjZSwgdGhlIHNh
-bWUKPiA+IHRlbXBvcmFyeSBzdHJ1Y3QgYm9vdF9wYXJhbXMgc2hvdWxkIGJlIHVzZWQgaW4gdGhl
-IEVGSSBoYW5kb3ZlciBwcm90b2NvbAo+ID4gYmFzZWQgbWl4ZWQgbW9kZSBpbXBsZW1lbnRhdGlv
-biBhcyB3ZWxsLCB0byBwcmV2ZW50IHRoZSBwYWdlIHRhYmxlcyBmcm9tCj4gPiBiZWluZyBwbGFj
-ZWQgb3V0c2lkZSBvZiBhbGxvY2F0ZWQgbWVtb3J5Lgo+ID4gCj4gPiBDYzogSGFucyBkZSBHb2Vk
-ZSA8aGRlZ29lZGVAcmVkaGF0LmNvbT4KPiA+IEZpeGVzOiBlMmFiOWVhYjMyNGMgKCJ4ODYvYm9v
-dC9jb21wcmVzc2VkOiBNb3ZlIDMyLWJpdCBlbnRyeXBvaW50IGNvZGUgaW50byAudGV4dCBzZWN0
-aW9uIikKPiA+IENsb3NlczogaHR0cHM6Ly9sb3JlLmtlcm5lbC5vcmcvYWxsLzIwMjQwMzIxMTUw
-NTEwLkdJODIxMUBjcmFmdHlndXkubmV0Lwo+ID4gUmVwb3J0ZWQtYnk6IENsYXl0b24gQ3JhZnQg
-PGNsYXl0b25AY3JhZnR5Z3V5Lm5ldD4KPiA+IFNpZ25lZC1vZmYtYnk6IEFyZCBCaWVzaGV1dmVs
-IDxhcmRiQGtlcm5lbC5vcmc+Cj4gCj4gSSBoYXZlIGdpdmVuIHRoaXMgYSB0ZXN0IHJ1biAob24g
-dG9wIG9mIDYuOS1yYzEpIG9uIG9uZSBvZiBteQo+IEJheSBUcmFpbCBtaXhlZCBtb2RlIHRhYmxl
-dHMgYW5kIHRoZSB0YWJsZXQgc3RpbGwgYm9vdHMgZmluZToKCkkgZGlkIHRoZSBzYW1lIHRlc3Qg
-KHdpdGggNi45LXJjMSkgb24gbXkgQmF5IFRyYWlsIHRhYmxldCAmIE5VQyB0aGF0IGZhaWxlZApw
-cmV2aW91c2x5LCBhbmQgdGhpcyBmaXhlcyBib290aW5nIHdpdGggRUZJIG1peGVkIG1vZGUgb24g
-dGhlbS4KClRlc3RlZC1ieTogQ2xheXRvbiBDcmFmdCA8Y2xheXRvbkBjcmFmdHlndXkubmV0PgoK
-LUNsYXl0b24K
+> diff --git a/drivers/cxl/cxlmem.h b/drivers/cxl/cxlmem.h
+> index 79a67cff9143..4624cf612c1e 100644
+> --- a/drivers/cxl/cxlmem.h
+> +++ b/drivers/cxl/cxlmem.h
 
---/BaAd8uW2PEt6Q7E
-Content-Type: application/pgp-signature; name="signature.asc"
+>  /**
+>   * struct cxl_memdev_state - Generic Type-3 Memory Device Class driver d=
+ata
+>   *
+> @@ -467,6 +482,8 @@ struct cxl_dev_state {
+>   * @enabled_cmds: Hardware commands found enabled in CEL.
+>   * @exclusive_cmds: Commands that are kernel-internal only
+>   * @total_bytes: sum of all possible capacities
+> + * @static_cap: Sum of static RAM and PMEM capacities
+> + * @dynamic_cap: Complete DPA range occupied by DC regions
+>   * @volatile_only_bytes: hard volatile capacity
+>   * @persistent_only_bytes: hard persistent capacity
+>   * @partition_align_bytes: alignment size for partition-able capacity
+> @@ -474,6 +491,8 @@ struct cxl_dev_state {
+>   * @active_persistent_bytes: sum of hard + soft persistent
+>   * @next_volatile_bytes: volatile capacity change pending device reset
+>   * @next_persistent_bytes: persistent capacity change pending device res=
+et
 
------BEGIN PGP SIGNATURE-----
+Looks like we have some ordering issues ram_perf and pmem_perf (at least)
+that we should fix up as a precursor. I sent a reply to the QoS patch
+that added these.
 
-iQIzBAABCgAdFiEEkdOrrjmBP3eB7DeWSkztbX7flQoFAmYBtsAACgkQSkztbX7f
-lQq/Xw/9EKAdn09mv5AaJ/QrG9BizHisMk1arvM5BiL0gHd/iZ0tqdVCanuTxAzZ
-wKkVcY6EN8x6rW5jPEzsw27QM7Hp6LH9O8q5uK0K43nQuRcI1ERPk39CCe9NxBfu
-PftrJ7iy+kg05rWFHlzex3qTRmbma31frI7UVlJ9LhF7E8ci6CJtDuk+G9YzfBfg
-zBD/+qwdcW2OdCeT612uR7p4GQ3yVAl2NjCuv+KEZ78JrSYp3jq1cIL3xPTpifzu
-xS/7xhB3BhGDF9PB06sRxTiuBp02UJ4tejyUY7JdDddgcPYMTMooeOZLsduPecEq
-UE+79iHq4gyY3r94A36MdpCw+Yse2srckk+xQ3boPuMkbQ7v9It3bDscpcx0X+ge
-BgSJbkxayZGtWy+HKHBI1TDDHsQ6haTMVqolaNLq+fcyntBAtR8qQJJadylve875
-LHlLXbU9/mTzx2SEhcrMN4yR4fSila1T+MCAaobCpJ1cgzLm/XqxSr1ka5nM3JoI
-P6UD200QCThgmuM3wpVgNjkFGA9lvrKIBsgaoU347OTpPakw1tGgPHDIGkjylHAU
-5rAhrFSVtxEQghn51/rjTPGXZWJzbOZI7YKM1bUJLWTixsLUygTZsmeRnX0w6kTN
-b45OZCQg5vyX42UFUWME4F6/70dAn9SqNzdaQNJIVqh1qGlpM4I=
-=X3E+
------END PGP SIGNATURE-----
+> + * @nr_dc_region: number of DC regions implemented in the memory device
+> + * @dc_region: array containing info about the DC regions
+>   * @event: event log driver state
+>   * @poison: poison driver state info
+>   * @security: security driver state info
+> @@ -494,7 +513,10 @@ struct cxl_memdev_state {
+>  	DECLARE_BITMAP(dcd_cmds, CXL_DCD_ENABLED_MAX);
+>  	DECLARE_BITMAP(enabled_cmds, CXL_MEM_COMMAND_ID_MAX);
+>  	DECLARE_BITMAP(exclusive_cmds, CXL_MEM_COMMAND_ID_MAX);
+> +
+Trivial but this is an unrelated change and shouldn't be in this patch.
 
---/BaAd8uW2PEt6Q7E--
+>  	u64 total_bytes;
+> +	u64 static_cap;
+> +	u64 dynamic_cap;
+>  	u64 volatile_only_bytes;
+>  	u64 persistent_only_bytes;
+>  	u64 partition_align_bytes;
+> @@ -506,6 +528,9 @@ struct cxl_memdev_state {
+>  	struct cxl_dpa_perf ram_perf;
+>  	struct cxl_dpa_perf pmem_perf;
+> =20
+> +	u8 nr_dc_region;
+> +	struct cxl_dc_region_info dc_region[CXL_MAX_DC_REGION];
+> +
+>  	struct cxl_event_state event;
+>  	struct cxl_poison_state poison;
+>  	struct cxl_security_state security;
+
+> +
+> +/* See CXL 3.0 Table 125 get dynamic capacity config Output Payload */
+> +struct cxl_mbox_get_dc_config_out {
+> +	u8 avail_region_count;
+> +	u8 rsvd[7];
+> +	struct cxl_dc_region_config {
+> +		__le64 region_base;
+> +		__le64 region_decode_length;
+> +		__le64 region_length;
+> +		__le64 region_block_size;
+> +		__le32 region_dsmad_handle;
+> +		u8 flags;
+> +		u8 rsvd[3];
+> +	} __packed region[];
+> +} __packed;
+> +#define CXL_DYNAMIC_CAPACITY_SANITIZE_ON_RELEASE_FLAG BIT(0)
+> +#define CXL_REGIONS_RETURNED(size_out) \
+> +	((size_out - 8) / sizeof(struct cxl_dc_region_config))
+
+Can we make that 8 self documenting?
+offsetof(struct cxl_dc_region_config, region) perhaps?
+
+> +
+
 
