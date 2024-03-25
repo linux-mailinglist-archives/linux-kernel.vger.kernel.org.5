@@ -1,121 +1,145 @@
-Return-Path: <linux-kernel+bounces-118135-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-118136-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 76DA888B461
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 23:42:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 2226C88B46B
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 23:46:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A88B11C3F0FA
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 22:42:11 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 31D7A1C3FE19
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 22:46:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 53BC57F48F;
-	Mon, 25 Mar 2024 22:41:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 67B837F7CB;
+	Mon, 25 Mar 2024 22:46:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="bmg79TTJ"
-Received: from mail-pl1-f173.google.com (mail-pl1-f173.google.com [209.85.214.173])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="IuBftl8O"
+Received: from mail-pf1-f180.google.com (mail-pf1-f180.google.com [209.85.210.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 015627640A
-	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 22:41:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5446D6CDD6
+	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 22:46:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711406508; cv=none; b=bc4WAU7UqOZVRxZhs4QL8GmaB8Gan4ocnkn7h83YX0dkZmo6o8Mfo2dEHAZnzwv9qqxvKrBEMQABxtjhaAGoHJ5cx9wYLf4jxB+GkVaz/4bzQcroWbcOBPlP1P0ebkZjHPfQq3gUev//jJmdIzOtDxoUnk5GeBGO+os9tsyddws=
+	t=1711406772; cv=none; b=KzCNwfqV4uHnF7AbDmUDoAoWaWs8yK33UOc4t0MR0gIqGsaFaCHe6hWlqJEmkw6BU+i45yvVQjW4jSAqBUU1R2mV9//zGJb7j0oK+PGry9eTU1iMS00Y0dpZ4ktJLxDIeTbeBIOXN2pOMbjjgTvHM8qogZNpLGdANWD9iYaaDbo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711406508; c=relaxed/simple;
-	bh=bi/Pa9rLIzlNbabzqsTfFqi4NUT70ZarCDP0zU8PLhk=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=hMqzJLmnH293XGaTZ68Xto1R/ZGRLxvwGumBTpu4NnB41to9BNJdmykNOj4hhOEPIaBHpIRr/YRK9lNzuaa6r30Kq7irjDLF107WEdzWHp+fGUe9GtKufwiqg0cbqGg4W1yCKtB7ED1hNUU/BuKZGfjlZeX0S2c1a3zyj2CZfuk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=bmg79TTJ; arc=none smtp.client-ip=209.85.214.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
+	s=arc-20240116; t=1711406772; c=relaxed/simple;
+	bh=+gqSdgfG6OZ5jN7sbuCKYrxocXikvnfjnj2qKtRv7xY=;
+	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=k1iSoc4PyehzWdtB+AibqcUseUThc+nQoWmWypvR4YlzWYzmzMcRZ1kzULQp6NMBzBfPyPNyH/RLx5VmGHyuSPpHX+YtA173zOIeBqPPvbbDJYoV9aJTSgpFEpeXBVkOSQkMX/UpxZZaEa/LRWqkWa7ecbbePj36s2nR8j3rZmk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=IuBftl8O; arc=none smtp.client-ip=209.85.210.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f173.google.com with SMTP id d9443c01a7336-1e0ae065d24so15718765ad.1
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 15:41:45 -0700 (PDT)
+Received: by mail-pf1-f180.google.com with SMTP id d2e1a72fcca58-6e6b5432439so3736304b3a.1
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 15:46:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711406505; x=1712011305; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:sender:from:to:cc:subject:date:message-id:reply-to;
-        bh=dbRRrnKX05Y5juIbion79E9tHH3iiJC0OmBLltVqrLE=;
-        b=bmg79TTJMzWQrxJD+JurLN8vi6WgcHNmCXC63qDlPIu4BHn4OKFRlKJFsis51K4oX9
-         KcNm7tWUxr8FM3s16tFjqPHFmWiVyvyZrVGTeaabASAWeAU0tFAoMha5P/uQCC1GRgf1
-         s74ECX7mSGt52HZfeexeTWFwgsPCziKe91/W4otvKeCZp8vB61psAxGDWwJpEeXoWcs2
-         yoDjMsAqymc+amyWLhJUiD7cTE8Ac+awRZVY86S3PDHx3qXCjVxu8nT6qpttnpiUL0L8
-         qiQBUFIxRmBzCZqijvfFygMK/UeQkuypJ3nxXIa4z0VQF+kwkAWFggPgN6KiDMLxn47j
-         XCWA==
+        d=gmail.com; s=20230601; t=1711406770; x=1712011570; darn=vger.kernel.org;
+        h=content-transfer-encoding:content-language:in-reply-to:mime-version
+         :user-agent:date:message-id:from:references:cc:to:subject:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=5wHcOa7VYU3+suJaQm6vgBj/tOS8swPDZAFkLwg/UUY=;
+        b=IuBftl8OWB3cvFhriGSb7E4Yhv+/RvFy6X5DgFks41SHx1N9c2t1WHrTAAYxYrRMJU
+         s+J2Js/q+B1G5nLXfIn6pV42LR8rPgoLrUwxvIZN97IfcDRn5coHuGJJh5x25ThPxFcl
+         Q5wihq4qt6k3bIBsTB6MTABV9tkZuENcBQDdSUkzwn9sXZ4DFdpjvgAISMA0Ihts2H3Z
+         4/Q10s9cNyueWmW8g3yXCH9dTcon+gBu90D+9HCClL68NxNoNYQN4RCJBfJDp+5Tx6ke
+         HG2tWLyeG8sap2BNPjqAPrs+pHeBW9e6G7LU+VFDJZDmwjbasZfrr/7hgZLqtuVEz+UH
+         ifmw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711406505; x=1712011305;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:sender:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=dbRRrnKX05Y5juIbion79E9tHH3iiJC0OmBLltVqrLE=;
-        b=nBauHBLRp+Oo3GVnyJo+cLDCZxRjkuP7qhTmg68LY5RA63lqGY/+iNcgFZKjB5I1XE
-         ByinOug7caMeRWRuiHD3EtQLOm2keheq4cXMgb34B7RaKqyCviF+xsw5Y7yeXd5lPX/t
-         Mv6YCsSp9sYhsxsGkj82bLAsdz7iXfuwIa9/9/BiRjjgLrg71j6Mf6fKXNxSzlOScfpX
-         gABIejXRN0qQZ0N9BQsvs8P1ddCpOvbY6LRNEVCKlakDOVSSlRmvFITVpPlSRKOASJK3
-         GyWdMFj4JM0sN/qvYdIv6jbh//7+Exq3Q865olCbV5jcaUzNJBdQxtmqTOF5vzcbFRMr
-         aA/g==
-X-Gm-Message-State: AOJu0YzIDkdw16xlZ1sxagBY3i6iqUDK6hAvAsacBrdFL694oQQWm0C1
-	8q6l4xDIBls2ZQXZ7q1KTYXrJz1pEmPXT5xaGln2NMac+loaDW3x
-X-Google-Smtp-Source: AGHT+IHIZF1DnUcWmwaFZN9tekowDzjvAbZvAZ9qPPMn8K6rB+J3i4PqU5su0fKXKTirTqrOwf2zNQ==
-X-Received: by 2002:a17:902:b196:b0:1e0:2335:8f77 with SMTP id s22-20020a170902b19600b001e023358f77mr6971362plr.54.1711406505216;
-        Mon, 25 Mar 2024 15:41:45 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id p6-20020a170902e74600b001e014627baasm3273321plf.79.2024.03.25.15.41.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 Mar 2024 15:41:44 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-From: Guenter Roeck <linux@roeck-us.net>
-To: Dinh Nguyen <dinguyen@kernel.org>
-Cc: linux-kernel@vger.kernel.org,
-	Guenter Roeck <linux@roeck-us.net>
-Subject: [PATCH] nios2: Call handle_mm_fault() with interrupts enabled
-Date: Mon, 25 Mar 2024 15:41:40 -0700
-Message-Id: <20240325224140.1911036-1-linux@roeck-us.net>
-X-Mailer: git-send-email 2.39.2
+        d=1e100.net; s=20230601; t=1711406770; x=1712011570;
+        h=content-transfer-encoding:content-language:in-reply-to:mime-version
+         :user-agent:date:message-id:from:references:cc:to:subject
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=5wHcOa7VYU3+suJaQm6vgBj/tOS8swPDZAFkLwg/UUY=;
+        b=OOCGq+bb4zcxCG6fT3hUkS14ldoqgd8hAEUbKWa+xz1HY54ucGTVuXu3SVc6OSwN/Q
+         SGyzYqBiZ7NJOSATvvBJh72j8EikNnO4xGtqH7ZaJfus1slpkxvfvkKCrE0Yy6L3FHxS
+         f4fYkX4Fu+pZuIpnxv9J9vfVOA5Gns0i0fIYTH55uBKZVGvHm+QFVWxn51cwZUmq1RZz
+         qaLy9my66wjS191sv5Yix6omQtuXgTF7bQ1YqTudQu5tc+3hM0Z+Q4oRk9CphcOdrQwG
+         Yaj+3U70odCLp69Tc+tOJSUdK6nrHx9A7Asw6iP1NGT44EUHSTst+ud5qYF4r8CSMr/L
+         xCvQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWi8AVAhWM4YtvkYnzCBZkZtBEzT4Gr2kvuHTN7s7/QX9i07cYAqRVAdO7V8U9P52rovrgAwcpWr0Jtqq9NRa9e6ZVAd08BKlylnT35
+X-Gm-Message-State: AOJu0YwUFPuuauOxh8ezlGt3xl6QA4YexZY/H8TXPk0FlFzTFbbDV37s
+	UUPvF2SOWaweTlf9oI16m6mRRJAOgn9RAcOdplubLfR1XRO0kjv6
+X-Google-Smtp-Source: AGHT+IGsskBw05ruPmf0/EP+uCFDCRvZkLRAuCl9THgmZS3UDX8PlyDXcfvB5JSjLJnN1c5wVEmY+A==
+X-Received: by 2002:a05:6a00:3d4e:b0:6ea:b228:912 with SMTP id lp14-20020a056a003d4e00b006eab2280912mr2556893pfb.0.1711406770502;
+        Mon, 25 Mar 2024 15:46:10 -0700 (PDT)
+Received: from [192.168.0.13] ([172.92.174.232])
+        by smtp.gmail.com with ESMTPSA id n2-20020aa79842000000b006e6c3753786sm4707302pfq.41.2024.03.25.15.46.09
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 25 Mar 2024 15:46:10 -0700 (PDT)
+Subject: Re: [PATCH 1/5] riscv: nommu: remove PAGE_OFFSET hardcoding
+To: Jisheng Zhang <jszhang@kernel.org>,
+ Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt
+ <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>,
+ Daniel Lezcano <daniel.lezcano@linaro.org>,
+ Thomas Gleixner <tglx@linutronix.de>
+Cc: linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+ Samuel Holland <samuel.holland@sifive.com>
+References: <20240325164021.3229-1-jszhang@kernel.org>
+ <20240325164021.3229-2-jszhang@kernel.org>
+From: Bo Gan <ganboing@gmail.com>
+Message-ID: <37d456c1-f0bd-1a78-2d0c-350ca25c6b8d@gmail.com>
+Date: Mon, 25 Mar 2024 15:46:01 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240325164021.3229-2-jszhang@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 
-The following log message is reported at each boot if
-CONFIG_DEBUG_ATOMIC_SLEEP is enabled.
+On 3/25/24 9:40 AM, Jisheng Zhang wrote:
+> Currently, PAGE_OFFSET is hardcoded as 0x8000_0000, it works fine since
+> there's only one nommu platform in the mainline. However, there are
+> many cases where the (S)DRAM base address isn't 0x8000_0000, so remove
+> the hardcoding value, and introduce DRAM_BASE which will be set by
+> users during configuring. DRAM_BASE is 0x8000_0000 by default.
+> 
+> Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
+> ---
+>   arch/riscv/Kconfig | 8 +++++++-
+>   1 file changed, 7 insertions(+), 1 deletion(-)
+> 
+> diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
+> index 7895c77545f1..afd51dbdc253 100644
+> --- a/arch/riscv/Kconfig
+> +++ b/arch/riscv/Kconfig
+> @@ -247,10 +247,16 @@ config MMU
+>   	  Select if you want MMU-based virtualised addressing space
+>   	  support by paged memory management. If unsure, say 'Y'.
+>   
+> +if !MMU
+> +config DRAM_BASE
+> +	hex '(S)DRAM Base Address'
+> +	default 0x80000000
+> +endif
+> +
+>   config PAGE_OFFSET
+>   	hex
+>   	default 0xC0000000 if 32BIT && MMU
+> -	default 0x80000000 if !MMU
+> +	default DRAM_BASE if !MMU
+>   	default 0xff60000000000000 if 64BIT
+>   
+>   config KASAN_SHADOW_OFFSET
+> 
 
-BUG: sleeping function called from invalid context at mm/rmap.c:194
-in_atomic(): 0, irqs_disabled(): 1, non_block: 0, pid: 23, name: modprobe
-preempt_count: 0, expected: 0
-CPU: 0 PID: 23 Comm: modprobe Not tainted 6.9.0-rc1-00033-g5afc2860dc51 #1
+Thanks for this patch. I did something similar in my local nommu
+linux-6.8 tree in order to run it on the S7 hart of JH7110. I have
+another suggestion for you. Perhaps we should also make TASK_SIZE
+configurable, and let it default to `0xffffffff if 32BIT && !MMU`
+and `DRAM_BASE + DRAM_SIZE if 64BIT && !MMU`. Currently TASK_SIZE
+is effectively `0xffffffff if !MMU`, which doesn't work if I run
+rv64 linux-nommu with DDR that spans across 4G boundary.
 
-Fix by enabling local interrupts while calling handle_mm_fault().
+I see there's another patchset that tries to define TASK_SIZE_MAX
+for __access_ok(). Looks like that only affects the MMU case, and
+NOMMU is not touched. My aforementioned change won't conflict with
+it should it get merged.
 
-Note: I don't really know what I am doing here.
-
-Signed-off-by: Guenter Roeck <linux@roeck-us.net>
----
-I don't really know what I am doing here, so this is just a wild shot.
-It _does_ fix the backtrace, and I have not seen any problems, but that is
-just with basic qemu testing.
-
- arch/nios2/mm/fault.c | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/arch/nios2/mm/fault.c b/arch/nios2/mm/fault.c
-index e3fa9c15181d..b468d5ca78a1 100644
---- a/arch/nios2/mm/fault.c
-+++ b/arch/nios2/mm/fault.c
-@@ -121,7 +121,9 @@ asmlinkage void do_page_fault(struct pt_regs *regs, unsigned long cause,
- 	 * make sure we exit gracefully rather than endlessly redo
- 	 * the fault.
- 	 */
-+	local_irq_enable();
- 	fault = handle_mm_fault(vma, address, flags, regs);
-+	local_irq_disable();
- 
- 	if (fault_signal_pending(fault, regs)) {
- 		if (!user_mode(regs))
--- 
-2.39.2
-
+Bo
 
