@@ -1,168 +1,120 @@
-Return-Path: <linux-kernel+bounces-117197-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-117198-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 67CCB88A88B
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 17:12:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 6EC6B88A88E
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 17:13:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1D11A1F3BCDE
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 16:12:53 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 23F371F3C438
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 16:13:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3731514388C;
-	Mon, 25 Mar 2024 14:02:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 89641128398;
+	Mon, 25 Mar 2024 14:02:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="X2KzY/lK"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.12])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="PInVnx/1"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0618A5C89;
-	Mon, 25 Mar 2024 14:02:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.12
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C8C9714A8B;
+	Mon, 25 Mar 2024 14:02:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711375338; cv=none; b=lMUjdnZBPA3xhLfgsITWuuDq4CUI1+YJ6SBnG8u4lh+oARXLYIvvNtajIMURFPtC9n1erDanoE0ewIPhBczEz6LKyT7Ylw218gBlEYRmGMFBv8xNW7kNVFvuTKdhi1LblAdOZOWF1YzbMyupFhYUdD9ZL+OGr/XJ9+qlUq0dXms=
+	t=1711375376; cv=none; b=XtUmuo+Madrl3nYJhBfkaNoEMuiwCd+72JMJ4rvSPL1WQV+svCt2aAxLwnlC+McWf0fr435dBkRpXdjsEBy47023CHMxcJmFGGE8nXditbR/bi2QmxeS3LY2BBJNvDwZ018ybSTrLMjV3f7L+aHDpwbYMScbJk8wIQuBEnqmTY8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711375338; c=relaxed/simple;
-	bh=eQs9r6QvBAImQCbz5fYZNfYhpIYk7o66WMO+5pFvG5A=;
-	h=From:Date:To:cc:Subject:In-Reply-To:Message-ID:References:
-	 MIME-Version:Content-Type; b=mDOYT+3DUtz8SW4ERYEHGsmk2Z8ncJ4MUlIZuy8ra3iJpolLWSGjxHEngLOuMn7gxc3YKIvYsu3/11kRAZiBDCk6JS/QikEt+Z4jX0DP+op6B7XzlDWudCwG8lZLvbhZRf11AG6tjC1S0k+L70Vvb0MtTQuG74AiMsm5iOdo214=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=X2KzY/lK; arc=none smtp.client-ip=198.175.65.12
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1711375337; x=1742911337;
-  h=from:date:to:cc:subject:in-reply-to:message-id:
-   references:mime-version;
-  bh=eQs9r6QvBAImQCbz5fYZNfYhpIYk7o66WMO+5pFvG5A=;
-  b=X2KzY/lKizxfrJgBC5a7NoiLadt0YFdywPInnn7xk/s7ajDMuIWkmaeI
-   SJMd647YlW6simFOZrUZWugmXmMgAg/A3pNhKlrBljxDG3cccyjGmTvFf
-   2+wRVS29lryy0LN2OdhRVIi9n9cYfdEzYLqfHkgevwqPLGaE2GEauUq6o
-   dzLBifEDOFZkO7N7I7r6lwI1ckUP+WM+EQKDcGqd2m0cWCbxPKjvDiqQn
-   qkW5FllqWGRg9XUIM6Inwl9UNk5xgzBK1o+glbQcOXoT1eViGuTBRvYjk
-   YuNuYwv4/x5BKTviuNCPK+NoYNo0Ldyyph+2HAwE775ubNCGZFK+E8dRz
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11023"; a="17808961"
-X-IronPort-AV: E=Sophos;i="6.07,153,1708416000"; 
-   d="scan'208";a="17808961"
-Received: from fmviesa008.fm.intel.com ([10.60.135.148])
-  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Mar 2024 07:02:14 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,153,1708416000"; 
-   d="scan'208";a="15708691"
-Received: from ijarvine-desk1.ger.corp.intel.com (HELO localhost) ([10.245.247.19])
-  by fmviesa008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Mar 2024 07:02:11 -0700
-From: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
-Date: Mon, 25 Mar 2024 16:02:04 +0200 (EET)
-To: "Luke D. Jones" <luke@ljones.dev>
-cc: Hans de Goede <hdegoede@redhat.com>, corentin.chary@gmail.com, 
-    platform-driver-x86@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 4/9] platform/x86: asus-wmi: support toggling POST
- sound
-In-Reply-To: <20240325054938.489732-5-luke@ljones.dev>
-Message-ID: <88b7d5b0-23af-37e0-6122-fc790ae57053@linux.intel.com>
-References: <20240325054938.489732-1-luke@ljones.dev> <20240325054938.489732-5-luke@ljones.dev>
+	s=arc-20240116; t=1711375376; c=relaxed/simple;
+	bh=LK9smWuFEaz05Mp9x+m54fvpRDKiNeTfa5BBHlCzGmc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=rnZ+dyz7hgrAFES0LzH6sknoG2e3Sw/AvUN28cVMEjJ1JRMK76t+m9qjdQTNHh1EFOuA+HtqtksyGZg++GpiIb7xWP93cTJ4SufW98/j6vibL3MVtl0VHv/5R3NttHf2a+5ZoOKp3QFqrdWcpe6TQ8Lg6tsP/Izmv36DdS74yMw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=PInVnx/1; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 886A0C433F1;
+	Mon, 25 Mar 2024 14:02:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1711375376;
+	bh=LK9smWuFEaz05Mp9x+m54fvpRDKiNeTfa5BBHlCzGmc=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=PInVnx/1wR5q2p6s1rAvd7TaCX+K8ktpCtuW0gLM/Kn1O1r4FnLG83UzhLEB5HclE
+	 rY+S2DUIfqXXEPGhl1g53LMhAwYz0FyqbMdFn4TtET3D4SK1/zlqtq6P48pfhMhJdi
+	 X9YWGgOYEP3r50Mf7reLFz/P14hTZlR9nKIUyTBwwELk9lwZXyw29LgyPV0BzC8Gak
+	 LzS4S9BtBisprlsuS9/XpCivHB3hGklkHQ7IqefIwAqu7G73Q0PvOi4/eEJBiOWf/M
+	 /pEuPlUGpwdjQUkQo0vni/gmlfWGMD0OMvt93XK0Sh/UdRzJCuknav2ktdLIE9YNlo
+	 CTOhy3QdaNCdA==
+Date: Mon, 25 Mar 2024 09:02:53 -0500
+From: Bjorn Andersson <andersson@kernel.org>
+To: Johan Hovold <johan+linaro@kernel.org>
+Cc: Konrad Dybcio <konrad.dybcio@linaro.org>, 
+	Michael Turquette <mturquette@baylibre.com>, Stephen Boyd <sboyd@kernel.org>, 
+	Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, 
+	Dmitry Baryshkov <dmitry.baryshkov@linaro.org>, linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] clk: qcom: gdsc: treat optional supplies as optional
+Message-ID: <jdnylcw35fofffszbtwd4pq3tltowmbzhugxeiuthjqnpnrjkw@bjfpfgrhk4p2>
+References: <20240325085835.26158-1-johan+linaro@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240325085835.26158-1-johan+linaro@kernel.org>
 
-On Mon, 25 Mar 2024, Luke D. Jones wrote:
-
-> Add support for toggling the BIOS POST sound on some ASUS laptops.
+On Mon, Mar 25, 2024 at 09:58:35AM +0100, Johan Hovold wrote:
+> Since commit deebc79b28d6 ("clk: qcom: gpucc-sc8280xp: Add external
+> supply for GX gdsc") the GDSC supply must be treated as optional to
+> avoid warnings like:
 > 
-> Signed-off-by: Luke D. Jones <luke@ljones.dev>
+> 	gpu_cc-sc8280xp 3d90000.clock-controller: supply vdd-gfx not found, using dummy regulator
+> 
+> on SC8280XP.
+> 
+> Fortunately, the driver is already prepared to handle this by checking
+> that the regulator pointer is non-NULL before use.
+> 
+> This also avoids triggering a potential deadlock on SC8280XP even if the
+> underlying issue still remains for the derivative platforms like SA8295P
+> that actually use the supply.
+> 
+> Fixes: deebc79b28d6 ("clk: qcom: gpucc-sc8280xp: Add external supply for GX gdsc")
+> Link: https://lore.kernel.org/lkml/Zf25Sv2x9WaCFuIH@hovoldconsulting.com/
+> Signed-off-by: Johan Hovold <johan+linaro@kernel.org>
+
+Thanks for fixing this, it never made it off my todo list...
+
+Reviewed-by: Bjorn Andersson <andersson@kernel.org>
+
+Regards,
+Bjorn
+
 > ---
->  .../ABI/testing/sysfs-platform-asus-wmi       |  9 ++++
->  drivers/platform/x86/asus-wmi.c               | 51 +++++++++++++++++++
->  include/linux/platform_data/x86/asus-wmi.h    |  3 ++
->  3 files changed, 63 insertions(+)
+>  drivers/clk/qcom/gdsc.c | 11 ++++++++---
+>  1 file changed, 8 insertions(+), 3 deletions(-)
 > 
-> diff --git a/Documentation/ABI/testing/sysfs-platform-asus-wmi b/Documentation/ABI/testing/sysfs-platform-asus-wmi
-> index 61a745d2476f..5645dbac4ce8 100644
-> --- a/Documentation/ABI/testing/sysfs-platform-asus-wmi
-> +++ b/Documentation/ABI/testing/sysfs-platform-asus-wmi
-> @@ -194,3 +194,12 @@ Contact:	"Luke Jones" <luke@ljones.dev>
->  Description:
->  		Set the target temperature limit of the Nvidia dGPU:
->  			* min=75, max=87
-> +
-> +What:		/sys/devices/platform/<platform>/boot_sound
-> +Date:		Jun 2023
-> +KernelVersion:	6.10
-> +Contact:	"Luke Jones" <luke@ljones.dev>
-> +Description:
-> +		Set if the BIOS POST sound is played on boot.
-> +			* 0 - False,
-> +			* 1 - True
-> \ No newline at end of file
-> diff --git a/drivers/platform/x86/asus-wmi.c b/drivers/platform/x86/asus-wmi.c
-> index 094a93f24667..6cac9c3eb8b2 100644
-> --- a/drivers/platform/x86/asus-wmi.c
-> +++ b/drivers/platform/x86/asus-wmi.c
-> @@ -2106,6 +2106,54 @@ static ssize_t panel_od_store(struct device *dev,
->  }
->  static DEVICE_ATTR_RW(panel_od);
+> diff --git a/drivers/clk/qcom/gdsc.c b/drivers/clk/qcom/gdsc.c
+> index e7a4068b9f39..df9618ab7eea 100644
+> --- a/drivers/clk/qcom/gdsc.c
+> +++ b/drivers/clk/qcom/gdsc.c
+> @@ -487,9 +487,14 @@ int gdsc_register(struct gdsc_desc *desc,
+>  		if (!scs[i] || !scs[i]->supply)
+>  			continue;
 >  
-> +/* Bootup sound ***************************************************************/
+> -		scs[i]->rsupply = devm_regulator_get(dev, scs[i]->supply);
+> -		if (IS_ERR(scs[i]->rsupply))
+> -			return PTR_ERR(scs[i]->rsupply);
+> +		scs[i]->rsupply = devm_regulator_get_optional(dev, scs[i]->supply);
+> +		if (IS_ERR(scs[i]->rsupply)) {
+> +			ret = PTR_ERR(scs[i]->rsupply);
+> +			if (ret != -ENODEV)
+> +				return ret;
 > +
-> +static ssize_t boot_sound_show(struct device *dev,
-> +			     struct device_attribute *attr, char *buf)
-> +{
-> +	struct asus_wmi *asus = dev_get_drvdata(dev);
-> +	int result;
-> +
-> +	result = asus_wmi_get_devstate_simple(asus, ASUS_WMI_DEVID_BOOT_SOUND);
-> +	if (result < 0)
-> +		return result;
-> +
-> +	return sysfs_emit(buf, "%d\n", result);
-> +}
-> +
-> +static ssize_t boot_sound_store(struct device *dev,
-> +			      struct device_attribute *attr,
-> +			      const char *buf, size_t count)
-> +{
-> +	int result, err;
-> +	u32 snd;
-> +
-> +	struct asus_wmi *asus = dev_get_drvdata(dev);
-> +
-> +	result = kstrtou32(buf, 10, &snd);
-> +	if (result)
-> +		return result;
-> +
-> +	if (snd > 1)
-> +		return -EINVAL;
-> +
-> +	err = asus_wmi_set_devstate(ASUS_WMI_DEVID_BOOT_SOUND, snd, &result);
-> +	if (err) {
-> +		pr_warn("Failed to set boot sound: %d\n", err);
-> +		return err;
-> +	}
-> +
-> +	if (result > 1) {
-> +		pr_warn("Failed to set panel boot sound (result): 0x%x\n", result);
-> +		return -EIO;
-> +	}
-> +
-> +	sysfs_notify(&asus->platform_device->dev.kobj, NULL, "boot_sound");
-> +
-> +	return count;
-> +}
-> +static DEVICE_ATTR_RW(boot_sound);
-
-I started to think that perhaps these would be a way to create helper for 
-these sysfs functions to call as they are quite similar, only the wmi id, 
-strings and the range check change (the GPU functions do a few extra 
-checks and could remain standalone functions but the rest look very 
-similar to each other).
-
--- 
- i.
-
+> +			scs[i]->rsupply = NULL;
+> +		}
+>  	}
+>  
+>  	data->num_domains = num;
+> -- 
+> 2.43.0
+> 
 
