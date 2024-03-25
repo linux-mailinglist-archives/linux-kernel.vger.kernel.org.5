@@ -1,38 +1,38 @@
-Return-Path: <linux-kernel+bounces-118057-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-118056-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 449A888B311
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 22:46:34 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 99D3988B313
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 22:46:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EF18B304208
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 21:46:32 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BE1771C3E37A
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 21:46:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CA86E71738;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EBEA571756;
 	Mon, 25 Mar 2024 21:46:11 +0000 (UTC)
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 26E066EB52;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 26D8C33995;
 	Mon, 25 Mar 2024 21:46:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711403171; cv=none; b=S6HZzqIuMgHaNQK57u6Xf8k6IL0IRRCnM295ez53pN7Eh8i900NVJ5kF3+ZZ3mezB7Rj/ZLvbIqMPq8RApq30DhkCvtnTdqPBJUjjRQ9yV8/TNiTrcUvV5KPPBoogIQ9t/Qr0zagdRmrYzA7yaKI+Fzfeaxyv5TOsF4Kn9QCWH4=
+	t=1711403171; cv=none; b=M5aWr01K/9FMGeb72IqdHKpXNXil+2lJ8qCSAWM+4nYNXEPnqBVrPRYLpYEt1jxAB9Yhf164TLvCT5aH1Zfw4mosfTeTvNl6byz3urngc+0VuwChH+JRxCZytwBVrSb0wko3iBsDFJT48XwLn+mADyEtLHdv/ENqBbvSZmXfvP0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1711403171; c=relaxed/simple;
-	bh=UNtFXPbUwr6nmT6fS/0A1tgHczoulL3R3EQ8VVhZs1c=;
+	bh=QmcrFjHsyLYA5YkEZPsztUH8CEd2ed/E9NAk9w9yOQg=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=N3uZPh89orlBborXrmSEh09Jw0D17xH3LaGIn8+wFdBU4xOKiSzZm9cgM2KAmRALxMLvo1K8ykGsIdMvaNXKXopvwOab5q/UI4VNBcyXmslC7yHTLdcwfrunkGV9tb8rg3XAy8EI8cIBE+OxpnyLsCKIDznGLWX8wQL8Bb9qzLM=
+	 In-Reply-To:To:Cc; b=n4V/0h0fbEY/MHJvT404iAWKRuZCathYUIoPlse5rLEk6l19r0R0SjK4XNz8rOPjYDVavczwLqXuldlHm/Tr3qRTsidvw2l/0ZDsctiKxgZKxeOkXDR5CpJfpSsP0ne8/f94D4w1GYFFes15gcEslXoMEqwzSYWoRzwupS82uYc=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 92C61C43390;
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8ECFCC433C7;
 	Mon, 25 Mar 2024 21:46:10 +0000 (UTC)
 Received: by mercury (Postfix, from userid 1000)
-	id A476A1060BFF; Mon, 25 Mar 2024 22:46:07 +0100 (CET)
+	id A7F0D1060C59; Mon, 25 Mar 2024 22:46:07 +0100 (CET)
 From: Sebastian Reichel <sebastian.reichel@collabora.com>
-Date: Mon, 25 Mar 2024 22:45:28 +0100
-Subject: [PATCH 2/3] dt-bindings: hsi: nokia-modem: convert to YAML
+Date: Mon, 25 Mar 2024 22:45:29 +0100
+Subject: [PATCH 3/3] dt-bindings: hsi: omap-ssi: convert to YAML
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -41,7 +41,7 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20240325-hsi-dt-binding-v1-2-88e8e97c3aae@collabora.com>
+Message-Id: <20240325-hsi-dt-binding-v1-3-88e8e97c3aae@collabora.com>
 References: <20240325-hsi-dt-binding-v1-0-88e8e97c3aae@collabora.com>
 In-Reply-To: <20240325-hsi-dt-binding-v1-0-88e8e97c3aae@collabora.com>
 To: Rob Herring <robh@kernel.org>, 
@@ -51,21 +51,21 @@ Cc: Tony Lindgren <tony@atomide.com>, devicetree@vger.kernel.org,
  linux-omap@vger.kernel.org, linux-kernel@vger.kernel.org, 
  Sebastian Reichel <sebastian.reichel@collabora.com>
 X-Mailer: b4 0.13.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=5194;
+X-Developer-Signature: v=1; a=openpgp-sha256; l=8551;
  i=sebastian.reichel@collabora.com; h=from:subject:message-id;
- bh=UNtFXPbUwr6nmT6fS/0A1tgHczoulL3R3EQ8VVhZs1c=;
- b=owEBbQKS/ZANAwAKAdju1/PIO/qaAcsmYgBmAfCeHUNBq71MARdrtLBzb4f2IpwiQwfxBVA4B
- QAmrvkuMoeJAjMEAAEKAB0WIQTvZg0HRj+Lcmp5VBPY7tfzyDv6mgUCZgHwngAKCRDY7tfzyDv6
- mubeD/9DdJ7uzTfqv6JHqDaVrIECGcN/3cvKT6h21yoy20F6RiZ4nYMH21p7G4R6PJdepW9nt1F
- ibtKsKdtpPDS4kM8999LlWj/npqAKFVO5ZVJpSYR42hvyDtHyU3Ze3bWZq3hyC26sZWBe5mYY+I
- 35fgdZ4vcDsAk9QoNB/gaeaWK4yMcVbO0tvdTIlW7kl96ykuG0tILt9C7xZML6V9Jmej848l7wz
- 2z5QXr7oH1kpERnO9KK4rN+uHVvrSa3mqjGex5gTtA8tXrJRZLRXh1nlfb9cSJHR4XGwmbzDVY0
- zfPH4jsOrf9sNV9lv3ZgzmiIpgz5Yd4Xe6nkMfqODRL6WqBkPJqx/KBbDw2I7opai9r0C/ZS0O2
- 1/IqhmHUnyWkZ/JDmvmdbBiIJS7qaSLM+E2JWzrtavmDcC8kXnrZDqZTj/vAxXb53UzsYjGfoOo
- ZcBQ5ScFjJMnpNYeqNKBL3ApH2M3B/BbEc9q3JBuV7W8dMc2vbKCJsuW2BVdP65Uw1BXyavO8GJ
- JD+L9Lr+d4nBQCfd+Ptrf0gvih1XlwiGWNElKPIa0uc0aYNudZsybB+l7AFkqzh92r2FjNFw/+P
- kT07cBMDLCw45zC8/NXYUMvZr2ZF8N+zjD62P0cuXR5Bdv+oHPhwIlYHSkwu2Yu9NYw5nhVdR4f
- HU2f8giYDlv0+Yg==
+ bh=QmcrFjHsyLYA5YkEZPsztUH8CEd2ed/E9NAk9w9yOQg=;
+ b=owEBbQKS/ZANAwAKAdju1/PIO/qaAcsmYgBmAfCeONHV0Vf/JS55qeIDQCbkyhC/+neYKfnzK
+ cbB4o6MWqqJAjMEAAEKAB0WIQTvZg0HRj+Lcmp5VBPY7tfzyDv6mgUCZgHwngAKCRDY7tfzyDv6
+ mm+ND/9+dIsmQTiua4Fn6p1l4BRJ1/bzeRI+hWKnufspaFPql152TlDuMe58Cc0xhVe+e3ckF0l
+ 1Vkq33+Qg2itF+0yPjyB1UB2zVT16RtmHp16Jf81OhRddyJTZ7afgKmDUXTWcVcVDMw6mJTAHiO
+ 2T0x9YJwRKsrlzRd36fQfLvoXdalnvyxWe3AF5yusPuBWjUD5yNa114EIz/SK6U9xsemDwXMTAf
+ WorllkXQvBD1mSPUIWZHCifDiAdOXJaGcqsZmEGGoUKlA0QhXu8i7g45rr+tE5cZT9JncrAPXxC
+ iHL0ToxxMpBQylRMUfkB7VllsqFThAlenX8vCDpEdajqHFjqHUKVtYxGW8bodiEKok61nlHJ4HZ
+ lBZBRwVKe23ckECpCpKVumWbdJxCSkehnruXI9p1gbK0WBAw9JKL1MQw9ObsShYJ+Nq39ZWl3LQ
+ DnCIoUP9XjB2x6GF+ZVHtNecHrO+BlSSZrJDCQrxvWUEyszErZc3GTk8bf7w3b1Z/GTJyJ4/eQp
+ C2vpIkD+VumhtTF+0YFtQwn8yk+QdWW+jGEowEzl+HNgieyT30jTQc8spHuWF9lewbEG6iIx70k
+ 3rtDwKbjgUi8U8SGWZiElpRLnne3Yz67XGxVvX15iFMDWEC28XBcSy/KF2lBR0cyhhkackYXeDp
+ Qy4dndvCFuCAvkA==
 X-Developer-Key: i=sebastian.reichel@collabora.com; a=openpgp;
  fpr=EF660D07463F8B726A795413D8EED7F3C83BFA9A
 
@@ -74,88 +74,137 @@ No semantic change.
 
 Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
 ---
- .../devicetree/bindings/hsi/nokia-modem.txt        |  59 ------------
- .../devicetree/bindings/hsi/nokia-modem.yaml       | 101 +++++++++++++++++++++
- 2 files changed, 101 insertions(+), 59 deletions(-)
+ Documentation/devicetree/bindings/hsi/omap-ssi.txt | 102 -----------
+ .../devicetree/bindings/hsi/ti,omap-ssi.yaml       | 196 +++++++++++++++++++++
+ 2 files changed, 196 insertions(+), 102 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/hsi/nokia-modem.txt b/Documentation/devicetree/bindings/hsi/nokia-modem.txt
+diff --git a/Documentation/devicetree/bindings/hsi/omap-ssi.txt b/Documentation/devicetree/bindings/hsi/omap-ssi.txt
 deleted file mode 100644
-index 53de1d9d0b95..000000000000
---- a/Documentation/devicetree/bindings/hsi/nokia-modem.txt
+index 77a0c3c3036e..000000000000
+--- a/Documentation/devicetree/bindings/hsi/omap-ssi.txt
 +++ /dev/null
-@@ -1,59 +0,0 @@
--Nokia modem client bindings
+@@ -1,102 +0,0 @@
+-OMAP SSI controller bindings
 -
--The Nokia modem HSI client follows the common HSI client binding
--and inherits all required properties. The following additional
--properties are needed by the Nokia modem HSI client:
+-OMAP3's Synchronous Serial Interface (SSI) controller implements a
+-legacy variant of MIPI's High Speed Synchronous Serial Interface (HSI),
+-while the controller found inside OMAP4 is supposed to be fully compliant
+-with the HSI standard.
 -
 -Required properties:
--- compatible:		Should be one of
--      "nokia,n900-modem"
--      "nokia,n950-modem"
--      "nokia,n9-modem"
--- hsi-channel-names:	Should contain the following strings
--      "mcsaab-control"
--      "speech-control"
--      "speech-data"
--      "mcsaab-data"
--- gpios:		Should provide a GPIO handler for each GPIO listed in
--                        gpio-names
--- gpio-names:		Should contain the following strings
--      "cmt_apeslpx" (for n900, n950, n9)
--      "cmt_rst_rq"  (for n900, n950, n9)
--      "cmt_en"      (for n900, n950, n9)
--      "cmt_rst"     (for n900)
--      "cmt_bsi"     (for n900)
--- interrupts:		Should be IRQ handle for modem's reset indication
+-- compatible:		Should include "ti,omap3-ssi" or "ti,omap4-hsi"
+-- reg-names:		Contains the values "sys" and "gdd" (in this order).
+-- reg:			Contains a matching register specifier for each entry
+-			in reg-names.
+-- interrupt-names:	Contains the value "gdd_mpu".
+-- interrupts: 		Contains matching interrupt information for each entry
+-			in interrupt-names.
+-- ranges:		Represents the bus address mapping between the main
+-			controller node and the child nodes below.
+-- clock-names:		Must include the following entries:
+-  "ssi_ssr_fck": The OMAP clock of that name
+-  "ssi_sst_fck": The OMAP clock of that name
+-  "ssi_ick": The OMAP clock of that name
+-- clocks:		Contains a matching clock specifier for each entry in
+-			clock-names.
+-- #address-cells:	Should be set to <1>
+-- #size-cells:		Should be set to <1>
 -
--Example:
+-Each port is represented as a sub-node of the ti,omap3-ssi device.
 -
--&ssi_port {
--	modem: hsi-client {
--		compatible = "nokia,n900-modem";
+-Required Port sub-node properties:
+-- compatible:		Should be set to the following value
+-			ti,omap3-ssi-port (applicable to OMAP34xx devices)
+-			ti,omap4-hsi-port (applicable to OMAP44xx devices)
+-- reg-names:		Contains the values "tx" and "rx" (in this order).
+-- reg:			Contains a matching register specifier for each entry
+-			in reg-names.
+-- interrupts:		Should contain interrupt specifiers for mpu interrupts
+-			0 and 1 (in this order).
+-- ti,ssi-cawake-gpio:	Defines which GPIO pin is used to signify CAWAKE
+-			events for the port. This is an optional board-specific
+-			property. If it's missing the port will not be
+-			enabled.
 -
--		pinctrl-names = "default";
--		pinctrl-0 = <&modem_pins>;
+-Optional properties:
+-- ti,hwmods:		Shall contain TI interconnect module name if needed
+-			by the SoC
 -
--		hsi-channel-ids = <0>, <1>, <2>, <3>;
--		hsi-channel-names = "mcsaab-control",
--				    "speech-control",
--				    "speech-data",
--				    "mcsaab-data";
--		hsi-speed-kbps = <55000>;
--		hsi-mode = "frame";
--		hsi-flow = "synchronized";
--		hsi-arb-mode = "round-robin";
+-Example for Nokia N900:
 -
--		interrupts-extended = <&gpio3 8 IRQ_TYPE_EDGE_FALLING>; /* 72 */
+-ssi-controller@48058000 {
+-	compatible = "ti,omap3-ssi";
 -
--		gpios = <&gpio3  6 GPIO_ACTIVE_HIGH>, /* 70 */
--			<&gpio3  9 GPIO_ACTIVE_HIGH>, /* 73 */
--			<&gpio3 10 GPIO_ACTIVE_HIGH>, /* 74 */
--			<&gpio3 11 GPIO_ACTIVE_HIGH>, /* 75 */
--			<&gpio5 29 GPIO_ACTIVE_HIGH>; /* 157 */
--		gpio-names = "cmt_apeslpx",
--			     "cmt_rst_rq",
--			     "cmt_en",
--			     "cmt_rst",
--			     "cmt_bsi";
--	};
--};
-diff --git a/Documentation/devicetree/bindings/hsi/nokia-modem.yaml b/Documentation/devicetree/bindings/hsi/nokia-modem.yaml
+-	/* needed until hwmod is updated to use the compatible string */
+-	ti,hwmods = "ssi";
+-
+-	reg = <0x48058000 0x1000>,
+-	      <0x48059000 0x1000>;
+-	reg-names = "sys",
+-		    "gdd";
+-
+-	interrupts = <55>;
+-	interrupt-names = "gdd_mpu";
+-
+-	clocks = <&ssi_ssr_fck>,
+-		 <&ssi_sst_fck>,
+-		 <&ssi_ick>;
+-	clock-names = "ssi_ssr_fck",
+-		      "ssi_sst_fck",
+-		      "ssi_ick";
+-
+-	#address-cells = <1>;
+-	#size-cells = <1>;
+-	ranges;
+-
+-	ssi-port@4805a000 {
+-		compatible = "ti,omap3-ssi-port";
+-
+-		reg = <0x4805a000 0x800>,
+-		      <0x4805a800 0x800>;
+-		reg-names = "tx",
+-			    "rx";
+-
+-		interrupt-parent = <&intc>;
+-		interrupts = <67>,
+-			     <68>;
+-
+-		ti,ssi-cawake-gpio = <&gpio5 23 GPIO_ACTIVE_HIGH>; /* 151 */
+-	}
+-
+-	ssi-port@4805a000 {
+-		compatible = "ti,omap3-ssi-port";
+-
+-		reg = <0x4805b000 0x800>,
+-		      <0x4805b800 0x800>;
+-		reg-names = "tx",
+-			    "rx";
+-
+-		interrupt-parent = <&intc>;
+-		interrupts = <69>,
+-			     <70>;
+-
+-	}
+-}
+diff --git a/Documentation/devicetree/bindings/hsi/ti,omap-ssi.yaml b/Documentation/devicetree/bindings/hsi/ti,omap-ssi.yaml
 new file mode 100644
-index 000000000000..c57cbcc7b722
+index 000000000000..eb82f85c25b6
 --- /dev/null
-+++ b/Documentation/devicetree/bindings/hsi/nokia-modem.yaml
-@@ -0,0 +1,101 @@
++++ b/Documentation/devicetree/bindings/hsi/ti,omap-ssi.yaml
+@@ -0,0 +1,196 @@
 +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
 +%YAML 1.2
 +---
-+$id: http://devicetree.org/schemas/hsi/nokia-modem.yaml#
++$id: http://devicetree.org/schemas/hsi/ti,omap-ssi.yaml#
 +$schema: http://devicetree.org/meta-schemas/core.yaml#
 +
-+title: Nokia modem
++title: SSI Controller on OMAP SoCs
++
++description:
++  OMAP3's Synchronous Serial Interface (SSI) controller implements a
++  legacy variant of MIPI's High Speed Synchronous Serial Interface (HSI),
++  while the controller found inside OMAP4 is supposed to be fully compliant
++  with the HSI standard.
 +
 +maintainers:
 +  - Sebastian Reichel <sre@kernel.org>
@@ -163,92 +212,181 @@ index 000000000000..c57cbcc7b722
 +properties:
 +  compatible:
 +    enum:
-+      - nokia,n900-modem
-+      - nokia,n950-modem
-+      - nokia,n9-modem
++      - ti,omap3-ssi
++      - ti,omap4-hsi
 +
-+  hsi-channel-names:
++  reg:
 +    items:
-+      - const: mcsaab-control
-+      - const: speech-control
-+      - const: speech-data
-+      - const: mcsaab-data
++      - description: registers for sys
++      - description: registers for gdd
++
++  reg-names:
++    items:
++      - const: sys
++      - const: gdd
++
++  ranges: true
++
++  "#address-cells":
++    const: 1
++
++  "#size-cells":
++    const: 1
++
++  clocks:
++    minItems: 1
++    maxItems: 3
++
++  clock-names:
++    minItems: 1
++    maxItems: 3
 +
 +  interrupts:
-+    items:
-+      - description: modem reset indication
++    maxItems: 1
 +
-+  gpios:
-+    minItems: 3
-+    maxItems: 5
++  interrupt-names:
++    const: gdd_mpu
 +
-+  gpio-names:
-+    items:
-+      - const: cmt_apeslpx
-+      - const: cmt_rst_rq
-+      - const: cmt_en
-+      - const: cmt_rst
-+      - const: cmt_bsi
-+    minItems: 3
++  ti,hwmods:
++    const: ssi
++    deprecated: true
++
++patternProperties:
++  "[hs]si-port@[0-9a-f]+":
++    type: object
++
++    additionalProperties: false
++
++    properties:
++      compatible:
++        enum:
++          - ti,omap3-ssi-port
++          - ti,omap4-hsi-port
++
++      reg:
++        items:
++          - description: TX registers
++          - description: RX registers
++
++      reg-names:
++        items:
++          - const: tx
++          - const: rx
++
++      interrupts:
++        items:
++          - description: MPU interrupt 0
++          - description: MPU interrupt 1
++        minItems: 1
++
++      ti,ssi-cawake-gpio:
++        description: GPIO signifying CAWAKE events
++        maxItems: 1
++
++      hsi-client:
++        type: object
++        $ref: /schemas/hsi/hsi-client.yaml#
++
++    required:
++      - compatible
++      - reg
++      - reg-names
++      - interrupts
++
++    allOf:
++      - if:
++          properties:
++            compatible:
++              contains:
++                const: ti,omap3-ssi-port
++        then:
++          properties:
++            $nodename:
++              pattern: "^ssi-port@(.*)?$"
++            interrupts:
++              minItems: 2
++        else:
++          properties:
++            $nodename:
++              pattern: "^hsi-port@(.*)?$"
++            interrupts:
++              maxItems: 1
++
++additionalProperties: false
 +
 +required:
-+  - gpios
-+  - gpio-names
++  - compatible
++  - reg
++  - reg-names
++  - ranges
++  - "#address-cells"
++  - "#size-cells"
++  - clocks
++  - clock-names
 +  - interrupts
++  - interrupt-names
 +
 +allOf:
-+  - $ref: hsi-client.yaml#
 +  - if:
 +      properties:
 +        compatible:
 +          contains:
-+            enum:
-+              - nokia,n950-modem
-+              - nokia,n9-modem
++            const: ti,omap3-ssi
 +    then:
 +      properties:
-+        gpios:
-+          maxItems: 3
-+        gpio-names:
-+          maxItems: 3
++        clocks:
++          minItems: 3
++        clock-names:
++          items:
++            - const: ssi_ssr_fck
++            - const: ssi_sst_fck
++            - const: ssi_ick
 +    else:
 +      properties:
-+        gpios:
-+          minItems: 5
-+        gpio-names:
-+          minItems: 5
-+
-+unevaluatedProperties: false
++        clocks:
++          maxItems: 1
++        clock-names:
++          items:
++            - const: hsi_fck
 +
 +examples:
 +  - |
 +    #include <dt-bindings/gpio/gpio.h>
-+    #include <dt-bindings/interrupt-controller/irq.h>
-+    hsi-client {
-+        compatible = "nokia,n900-modem";
++    ssi-controller@48058000 {
++        compatible = "ti,omap3-ssi";
++        reg = <0x48058000 0x1000>,
++              <0x48059000 0x1000>;
++        reg-names = "sys", "gdd";
++        ranges;
++        #address-cells = <1>;
++        #size-cells = <1>;
++        clocks = <&ssi_ssr_fck>,
++                 <&ssi_sst_fck>,
++                 <&ssi_ick>;
++        clock-names = "ssi_ssr_fck",
++                      "ssi_sst_fck",
++                      "ssi_ick";
++        interrupts = <55>;
++        interrupt-names = "gdd_mpu";
 +
-+        hsi-channel-ids = <0>, <1>, <2>, <3>;
-+        hsi-channel-names = "mcsaab-control",
-+                            "speech-control",
-+                            "speech-data",
-+                            "mcsaab-data";
-+        hsi-speed-kbps = <55000>;
-+        hsi-mode = "frame";
-+        hsi-flow = "synchronized";
-+        hsi-arb-mode = "round-robin";
++        ssi-port@4805a000 {
++                compatible = "ti,omap3-ssi-port";
++                reg = <0x4805a000 0x800>,
++                      <0x4805a800 0x800>;
++                reg-names = "tx", "rx";
++                interrupt-parent = <&intc>;
++                interrupts = <67>, <68>;
++                ti,ssi-cawake-gpio = <&gpio5 23 GPIO_ACTIVE_HIGH>;
++        };
 +
-+        interrupts-extended = <&gpio3 8 IRQ_TYPE_EDGE_FALLING>;
-+
-+        gpios = <&gpio3  6 GPIO_ACTIVE_HIGH>,
-+                <&gpio3  9 GPIO_ACTIVE_HIGH>,
-+                <&gpio3 10 GPIO_ACTIVE_HIGH>,
-+                <&gpio3 11 GPIO_ACTIVE_HIGH>,
-+                <&gpio5 29 GPIO_ACTIVE_HIGH>;
-+        gpio-names = "cmt_apeslpx",
-+                     "cmt_rst_rq",
-+                     "cmt_en",
-+                     "cmt_rst",
-+                     "cmt_bsi";
++        ssi-port@4805b000 {
++                compatible = "ti,omap3-ssi-port";
++                reg = <0x4805b000 0x800>,
++                      <0x4805b800 0x800>;
++                reg-names = "tx", "rx";
++                interrupt-parent = <&intc>;
++                interrupts = <69>, <70>;
++        };
 +    };
 
 -- 
