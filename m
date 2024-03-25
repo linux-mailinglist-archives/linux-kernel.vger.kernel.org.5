@@ -1,150 +1,99 @@
-Return-Path: <linux-kernel+bounces-117741-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-117742-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7A43188AEFB
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 19:51:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 237CD88AEFC
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 19:52:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 193FD1FA74BF
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 18:51:50 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B765D1F672C0
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 18:52:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B8BA785955;
-	Mon, 25 Mar 2024 18:42:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 095841BC35;
+	Mon, 25 Mar 2024 18:43:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ixlys0Fv"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=sipsolutions.net header.i=@sipsolutions.net header.b="oe+TD6tI"
+Received: from sipsolutions.net (s3.sipsolutions.net [168.119.38.16])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D4324839E1;
-	Mon, 25 Mar 2024 18:42:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7DC11DDBC;
+	Mon, 25 Mar 2024 18:43:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=168.119.38.16
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711392129; cv=none; b=bjcb0DmLIAm78cJGspaJ8Sw03C0CdrrrHLtXcS0Xh8zsgIMZgTqb55776DtHaK6Yct+C+EEHlh/glYz3szBUXzzQ8JgjBmmjYhSdEKj8loImupwBDXs5puXZwoRd0zv8Kvcu/zrxeOFQwNxoUpqiQmZZFK/iOTkWM8iRIQKTsSg=
+	t=1711392204; cv=none; b=Gow2/ENZ3lg67UwEPq+UejJMmL43FFpWkCVRqa+gfNUsNKXipVeUENmVsA209wZmrBCbDQlRbpKSqHRWS9rvo3O2bgSaHYD2J7UUzQTMd1aJKtnP99893LcbNlvoqXlueMq72haaokSR4LrGj2OS7HZHDZ2En4rueRNf4JLU1CM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711392129; c=relaxed/simple;
-	bh=0vGqEsBz6kkNYMQIbmmcvc1xkmF5mwH8qDi9HlBTkJs=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=MLIyiGu+lYz9dfaRAhDu/Ifruw774jZ/x4GdbLYA5A6voExYSzzaREebBaWPvlABtAaiQMl2SEIbyjHgG4++9AmcDOV733cvCBRwFFFx5rgKhlzkMot9eLZSLPIPurX30koUEsQHR5CPGOaMAfW66Af+Grcj7wB63Di9UAwADXw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ixlys0Fv; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 18283C433F1;
-	Mon, 25 Mar 2024 18:42:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711392128;
-	bh=0vGqEsBz6kkNYMQIbmmcvc1xkmF5mwH8qDi9HlBTkJs=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=ixlys0FvPCjjjZBr1Qs/lEGMZqYVEM+XiVzLoQ7H5oI72By/NxK2ZcTz0CU8Ch15l
-	 +K4lW0o/ay78ArqVnDSDhDh++clj3uJ2vjjcXt5SC82Y7J/m+jdXZyZuehSWA+t9ki
-	 6mRXTPJW4w1oX6ONyVYBE4xSFXKWCW+lWcvabLstDowPzZrUw1f12U0MSVGbAvIszp
-	 iALYaGNhutZ6ullydsOxkWsK13m1TAaOzsRiJdOiGXprNc/HqQOGCEX5xue3X/tyDn
-	 wCrhnpUICngyLiGIrywWLEx/Eiq4VBuYgJn2tzfmOKI3ieU1Er70wP8FwqUveBLBqE
-	 uCE3An6XRbqZA==
-From: Stephen Boyd <sboyd@kernel.org>
-To: Michael Turquette <mturquette@baylibre.com>,
-	Stephen Boyd <sboyd@kernel.org>
-Cc: linux-kernel@vger.kernel.org,
-	linux-clk@vger.kernel.org,
-	patches@lists.linux.dev,
-	linux-arm-msm@vger.kernel.org,
-	Taniya Das <quic_tdas@quicinc.com>,
-	Douglas Anderson <dianders@chromium.org>
-Subject: [PATCH v2 5/5] clk: Get runtime PM before walking tree for clk_summary
-Date: Mon, 25 Mar 2024 11:41:59 -0700
-Message-ID: <20240325184204.745706-6-sboyd@kernel.org>
-X-Mailer: git-send-email 2.44.0.396.g6e790dbe36-goog
-In-Reply-To: <20240325184204.745706-1-sboyd@kernel.org>
-References: <20240325184204.745706-1-sboyd@kernel.org>
+	s=arc-20240116; t=1711392204; c=relaxed/simple;
+	bh=qdFHRwDn5Dpo4RgBgnFNgRw+jK2dyYCqGr/cxlrDXo0=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=VmFQZHS+dussgZvcHJnKjYTrIplIpBgCzm9kXoUW8QrW/AYUyihIKpgJmQmcO5w9z/vkWJLgjOlGgVKKJFSTExa6ijlUghbB+26dgNlZ7TBDYeQwHJ/SGuDdirSz8E7495/AyIX8TatbyOvj0M0o/rxrt1LsuCYpq1OGnVPA1Jw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sipsolutions.net; spf=pass smtp.mailfrom=sipsolutions.net; dkim=pass (2048-bit key) header.d=sipsolutions.net header.i=@sipsolutions.net header.b=oe+TD6tI; arc=none smtp.client-ip=168.119.38.16
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sipsolutions.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sipsolutions.net
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=sipsolutions.net; s=mail; h=MIME-Version:Content-Transfer-Encoding:
+	Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender
+	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
+	Resent-Cc:Resent-Message-ID; bh=93+FVeoSlMuZbiAXFBL3M9hpRZZSS6lI5Qvwa5nPKIQ=;
+	t=1711392202; x=1712601802; b=oe+TD6tIU9nP97EsS2YFuILRQtCwUnjTR3f+cm78QYmkkcA
+	yMIYCnI65Szr/WICDCagpBFhlG2bJJyIJtH1p4T1qLz5AMao+5RGuHEN3FeQPQg3w/m4b0sb/klhn
+	pltwbkEjgMvB+cIfCY4U2Z3ZdkzQTXW82SdgVZrt2FaUAIuQh8fPZMWZTy9e2qiOwKQ2rpcFKBHrP
+	BasyQGH7acE1quLLK8mfPplPuSQ77VmJS6B8bwsEbaJR30XcCNDyxTG3OZQ37A6c2iKy2ADdrfFsO
+	yiEh1zycWxE8/uHN92JoHoAt433DXFMtOEnShGRRaWo8iq52N0+HrHqvXz9fX4WQ==;
+Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
+	(Exim 4.97)
+	(envelope-from <johannes@sipsolutions.net>)
+	id 1ropHz-0000000E2FA-2Tho;
+	Mon, 25 Mar 2024 19:43:19 +0100
+Message-ID: <48034addaeb6c33ca8b3e636262b6c043ddc5359.camel@sipsolutions.net>
+Subject: Re: [PATCH] rcu: mollify sparse with RCU guard
+From: Johannes Berg <johannes@sipsolutions.net>
+To: Dan Carpenter <dan.carpenter@linaro.org>
+Cc: Boqun Feng <boqun.feng@gmail.com>, rcu@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, "Paul E. McKenney" <paulmck@kernel.org>, 
+ Frederic Weisbecker <frederic@kernel.org>, Josh Triplett
+ <josh@joshtriplett.org>, Peter Zijlstra <peterz@infradead.org>
+Date: Mon, 25 Mar 2024 19:43:18 +0100
+In-Reply-To: <35355d02-3eef-4860-847b-b7bbf05f4a31@moroto.mountain>
+References: <20240325101626.41584-2-johannes@sipsolutions.net>
+	 <ZgGnuFJiTX5laS7c@boqun-archlinux>
+	 <055111792727869a98c1fa693014e0b6f5d256ea.camel@sipsolutions.net>
+	 <35355d02-3eef-4860-847b-b7bbf05f4a31@moroto.mountain>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.50.4 (3.50.4-1.fc39) 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-malware-bazaar: not-scanned
 
-Similar to the previous commit, we should make sure that all devices are
-runtime resumed before printing the clk_summary through debugfs. Failure
-to do so would result in a deadlock if the thread is resuming a device
-to print clk state and that device is also runtime resuming in another
-thread, e.g the screen is turning on and the display driver is starting
-up. We remove the calls to clk_pm_runtime_{get,put}() in this path
-because they're superfluous now that we know the devices are runtime
-resumed. This also squashes a bug where the return value of
-clk_pm_runtime_get() wasn't checked, leading to an RPM count underflow
-on error paths.
+On Mon, 2024-03-25 at 21:28 +0300, Dan Carpenter wrote:
+> On Mon, Mar 25, 2024 at 05:41:22PM +0100, Johannes Berg wrote:
+> > Also __acquire()/__release() are just empty macros without __CHECKER__.
+> > So not sure the indirection really is warranted for this special case.
+> >=20
+> > I can add a comment in there, I guess, something like
+> >=20
+> >  /* sparse doesn't actually "call" cleanup functions */
+> >=20
+> > perhaps. That reminds me I forgot to CC Dan ...
+> >=20
+>=20
+> These are Sparse warnings, not Smatch warning... Smatch doesn't use any
+> of the Sparse locking annotations.
 
-Fixes: 1bb294a7981c ("clk: Enable/Disable runtime PM for clk_summary")
-Cc: Taniya Das <quic_tdas@quicinc.com>
-Cc: Douglas Anderson <dianders@chromium.org>
-Signed-off-by: Stephen Boyd <sboyd@kernel.org>
----
- drivers/clk/clk.c | 14 ++++++++++++--
- 1 file changed, 12 insertions(+), 2 deletions(-)
+Sure, of course. I just saw that you added cleanup stuff to sparse to
+allow using it in smatch.
 
-diff --git a/drivers/clk/clk.c b/drivers/clk/clk.c
-index c69de47afaba..3539675ea846 100644
---- a/drivers/clk/clk.c
-+++ b/drivers/clk/clk.c
-@@ -3318,9 +3318,7 @@ static void clk_summary_show_subtree(struct seq_file *s, struct clk_core *c,
- {
- 	struct clk_core *child;
- 
--	clk_pm_runtime_get(c);
- 	clk_summary_show_one(s, c, level);
--	clk_pm_runtime_put(c);
- 
- 	hlist_for_each_entry(child, &c->children, child_node)
- 		clk_summary_show_subtree(s, child, level + 1);
-@@ -3330,11 +3328,15 @@ static int clk_summary_show(struct seq_file *s, void *data)
- {
- 	struct clk_core *c;
- 	struct hlist_head **lists = s->private;
-+	int ret;
- 
- 	seq_puts(s, "                                 enable  prepare  protect                                duty  hardware                            connection\n");
- 	seq_puts(s, "   clock                          count    count    count        rate   accuracy phase  cycle    enable   consumer                         id\n");
- 	seq_puts(s, "---------------------------------------------------------------------------------------------------------------------------------------------\n");
- 
-+	ret = clk_pm_runtime_get_all();
-+	if (ret)
-+		return ret;
- 
- 	clk_prepare_lock();
- 
-@@ -3343,6 +3345,7 @@ static int clk_summary_show(struct seq_file *s, void *data)
- 			clk_summary_show_subtree(s, c, 0);
- 
- 	clk_prepare_unlock();
-+	clk_pm_runtime_put_all();
- 
- 	return 0;
- }
-@@ -3390,8 +3393,14 @@ static int clk_dump_show(struct seq_file *s, void *data)
- 	struct clk_core *c;
- 	bool first_node = true;
- 	struct hlist_head **lists = s->private;
-+	int ret;
-+
-+	ret = clk_pm_runtime_get_all();
-+	if (ret)
-+		return ret;
- 
- 	seq_putc(s, '{');
-+
- 	clk_prepare_lock();
- 
- 	for (; *lists; lists++) {
-@@ -3404,6 +3413,7 @@ static int clk_dump_show(struct seq_file *s, void *data)
- 	}
- 
- 	clk_prepare_unlock();
-+	clk_pm_runtime_put_all();
- 
- 	seq_puts(s, "}\n");
- 	return 0;
--- 
-https://git.kernel.org/pub/scm/linux/kernel/git/clk/linux.git/
-https://git.kernel.org/pub/scm/linux/kernel/git/sboyd/spmi.git
+> Smatch handles cleanup basically correctly at this point.
 
+Do you "run" / "emit" the cleanup function calls there? I briefly look
+at doing that in sparse but it felt ... complicated, and then I saw the
+condition in the cleanup function which I thought sparse could probably
+not see through anyway.
+
+johannes
 
