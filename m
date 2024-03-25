@@ -1,89 +1,87 @@
-Return-Path: <linux-kernel+bounces-117065-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-117066-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7A96088A69D
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 16:31:15 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8F04188A6A1
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 16:31:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2E97C1F3F841
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 15:31:15 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E938129C045
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 15:31:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F04BB15ECC7;
-	Mon, 25 Mar 2024 12:52:25 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 578341758F;
-	Mon, 25 Mar 2024 12:52:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2DF7B433CA;
+	Mon, 25 Mar 2024 12:56:02 +0000 (UTC)
+Received: from szxga05-in.huawei.com (szxga05-in.huawei.com [45.249.212.191])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0053B38DFB;
+	Mon, 25 Mar 2024 12:55:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.191
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711371145; cv=none; b=FEMUJ+T1Ll4CmLgO4jQ6Q1LFPBny18mhgxcPgMtelfNwvxL7v7msYBKqC2y71QVvKMG4h6RnpxAZEyGZIBoVMdxbbyZU4RoN3Co8Y0EzCQ2Dl2b5F54itTpeiuHl3Zm1RFNpF9rEqR3GitDg895Pk7FXASuNfTwNPEziRBFvelc=
+	t=1711371361; cv=none; b=fm/Eaf2mIb+83nvpsMqp5Uwcc7JSajtKpKDKYoNkmKp68DXBkFlSsqLpC1FGGx26Xk/dDnTln4CsYPQ1LOTkIg7zDYuPrAiA96TkqPT50Ixn/wJj6kSpp4FVJ06w2WluQoIqYZHPIIWLHZFwdcghtnBm5ZMO2eBjTd6gM9w+V3w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711371145; c=relaxed/simple;
-	bh=ExUUsC+CqMjF+l/I8M6xKudiZbcZcqHRiPeAkaD7Bko=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Bo1u9xAAGUJD5D8rBO1LNSasLPSGd74Ns0AlppLFzPAoAk04vbJiebK/AObKrFk57YYj3O4wLhgXePX9u8+i0JdRvhJTKjZTI9S5mv7K9riNI/M5Ad9Jo6LrHqJ57feLNbw9dPXP4lrITx38pMAqpPp9cp22/094BnFCBgx5aLE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 7162F1FB;
-	Mon, 25 Mar 2024 05:52:56 -0700 (PDT)
-Received: from bogus (e103737-lin.cambridge.arm.com [10.1.197.49])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C48633F67D;
-	Mon, 25 Mar 2024 05:52:20 -0700 (PDT)
-Date: Mon, 25 Mar 2024 12:52:18 +0000
-From: Sudeep Holla <sudeep.holla@arm.com>
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc: "Rafael J. Wysocki" <rafael@kernel.org>,
-	Daniel Lezcano <daniel.lezcano@linaro.org>,
-	Zhang Rui <rui.zhang@intel.com>, Lukasz Luba <lukasz.luba@arm.com>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Liviu Dudau <liviu.dudau@arm.com>,
-	Lorenzo Pieralisi <lpieralisi@kernel.org>,
-	Amit Kucheria <amit.kucheria@linaro.org>, linux-pm@vger.kernel.org,
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org, Rob Herring <robh@kernel.org>
-Subject: Re: (subset) [PATCH 2/2] arm64: dts: juno: fix thermal zone node
- names
-Message-ID: <ZgFzgr1KtuFIeVux@bogus>
-References: <20240103142051.111717-1-krzysztof.kozlowski@linaro.org>
- <20240103142051.111717-2-krzysztof.kozlowski@linaro.org>
- <171136466536.36729.15243854495211929982.b4-ty@linaro.org>
+	s=arc-20240116; t=1711371361; c=relaxed/simple;
+	bh=c4xZArgJXXwnnTGel36776VcScv+UvXSaPw/bNb3bmc=;
+	h=Message-ID:Date:MIME-Version:CC:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=NMpJnrblZEqWIs59NPDC9rFJdZgNa7XPx81nuXYRp/8/fUDn89OTpViyHy5XX/q5hb6zqhykRP5AkgXM8XosLSousdJFDzDgI2yKnzPw3uemMET/xLNwpcV28awLIbu7WS1v7/XM+Xc/6qjs9dU/voZxFks6Ri6ylccVgTMCjtU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.191
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.163.44])
+	by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4V3Cb508ktz1GD2K;
+	Mon, 25 Mar 2024 20:55:29 +0800 (CST)
+Received: from kwepemm600007.china.huawei.com (unknown [7.193.23.208])
+	by mail.maildlp.com (Postfix) with ESMTPS id C53121400D4;
+	Mon, 25 Mar 2024 20:55:57 +0800 (CST)
+Received: from [10.67.120.192] (10.67.120.192) by
+ kwepemm600007.china.huawei.com (7.193.23.208) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Mon, 25 Mar 2024 20:55:56 +0800
+Message-ID: <fd2ff9ce-077e-4632-b515-f4b4c46b596a@huawei.com>
+Date: Mon, 25 Mar 2024 20:55:56 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <171136466536.36729.15243854495211929982.b4-ty@linaro.org>
+User-Agent: Mozilla Thunderbird
+CC: <shaojijie@huawei.com>, <yisen.zhuang@huawei.com>,
+	<salil.mehta@huawei.com>, <davem@davemloft.net>, <edumazet@google.com>,
+	<kuba@kernel.org>, <pabeni@redhat.com>, <michal.kubiak@intel.com>,
+	<rkannoth@marvell.com>, <shenjian15@huawei.com>, <wangjie125@huawei.com>,
+	<liuyonglong@huawei.com>, <netdev@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH V3 net 1/3] net: hns3: fix index limit to support all
+ queue stats
+To: Kalesh Anakkur Purayil <kalesh-anakkur.purayil@broadcom.com>
+References: <20240318132948.3624333-1-shaojijie@huawei.com>
+ <20240318132948.3624333-2-shaojijie@huawei.com>
+ <CAH-L+nPtgMUXve82iVq_q8yTpzDuwR4bHyz+Tv_xb9tYGR=83Q@mail.gmail.com>
+From: Jijie Shao <shaojijie@huawei.com>
+In-Reply-To: <CAH-L+nPtgMUXve82iVq_q8yTpzDuwR4bHyz+Tv_xb9tYGR=83Q@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ kwepemm600007.china.huawei.com (7.193.23.208)
 
-On Mon, Mar 25, 2024 at 12:05:14PM +0100, Krzysztof Kozlowski wrote:
-> 
-> On Wed, 03 Jan 2024 15:20:51 +0100, Krzysztof Kozlowski wrote:
-> > Linux kernel uses thermal zone node name during registering thermal
-> > zones and has a hard-coded limit of 20 characters, including terminating
-> > NUL byte.  Exceeding the limit will cause failure to configure thermal
-> > zone.
-> > 
-> > 
-> 
-> Applied, thanks!
-> 
-> This was waiting on the lists for some time and no one picked it up, so... let
-> me know if I should drop it from my tree.
->
 
-Sorry for that, must have slipped through when I was off. Thanks for picking
-it up. If not too late, feel free to add
+on 2024/3/18 22:36, Kalesh Anakkur Purayil wrote:
+> On Mon, Mar 18, 2024 at 7:05 PM Jijie Shao <shaojijie@huawei.com> wrote:
+>> From: Jie Wang <wangjie125@huawei.com>
+>>
+>> Currently, hns hardware supports more than 512 queues and the index limit
+>> in hclge_comm_tqps_update_stats is wrong. So this patch removes it.
+>>
+>> Fixes: 287db5c40d15 ("net: hns3: create new set of common tqp stats APIs for PF and VF reuse")
+>> Signed-off-by: Jie Wang <wangjie125@huawei.com>
+>> Signed-off-by: Jijie Shao <shaojijie@huawei.com>
+> Only question I have is whether this is a fix or an enhancement.
+> Nevertheless changes look good to me.
 
-Acked-by: Sudeep Holla <sudeep.holla@arm.com>
+Actually, it's a fix. The capability of supporting more than 512 queues 
+was not implemented by modifying this statistics. this bug prevents us 
+from querying the statistics of more than 512 queues.
 
--- 
-Regards,
-Sudeep
 
