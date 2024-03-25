@@ -1,143 +1,94 @@
-Return-Path: <linux-kernel+bounces-117888-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-117889-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1899E88B0E3
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 21:08:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 2797D88B0E4
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 21:08:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EDE0F1C62649
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 20:08:01 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 592471C62643
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 20:08:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 573634C63A;
-	Mon, 25 Mar 2024 20:07:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 73A9140BEE;
+	Mon, 25 Mar 2024 20:08:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="JRiLhEEZ"
-Received: from mail-lj1-f179.google.com (mail-lj1-f179.google.com [209.85.208.179])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Ia4WQ8lS"
+Received: from mail-wr1-f44.google.com (mail-wr1-f44.google.com [209.85.221.44])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F338743AA9;
-	Mon, 25 Mar 2024 20:07:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2B0F03C6A4
+	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 20:08:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711397239; cv=none; b=nE0EppHCS8kHDj7Lxn5A1ps1rj7ZZFV7X3qaaHc+XPm7DdvMMDOTaq9TC9UunFu1TRSmHK7BE/jOMNOduMx78fJ0dpcoSbqEnOC6DA1GDMCSh5VL8vf819/CXnj3jjX7wayV00fqUsGiGBVYJLnvt0esPyA+F6JGCqLezCj0Hlw=
+	t=1711397315; cv=none; b=FA8rUYqeyjfeCcPcsGlHLoTCItKboj8dXLga02pWA1yTc94WP64PwFXo7fpwjAD8HMs29C3/w6qsUzUtacuOunhzKi7xwpZGdU+46+wiDEHjIbJy09wZ0USqFqEhtNZ9na/WL8MabiSUjRnc76pHrBRvYsA2h7q/ZznbxAM67uQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711397239; c=relaxed/simple;
-	bh=du4SRixuDJpsGc6Pl95gu+UfcgZcN4SGXN5Fz8Z6dDU=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=mk/W9HJXe5L89Se+EwyMlCDwTETyom0ISam9fygAvUjdIK5QZWkQKu4KAOi1P7TCMGoy54+JvaAvHN7Txrv0VNGjk93nz8Pq3zPZeFMSAzLH6JfSnuJB88eN6SMyhpp8OCj7uqBT1tLbRQkBI68J5BuHU4xOJmGXUIDhsPVTRS4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=JRiLhEEZ; arc=none smtp.client-ip=209.85.208.179
+	s=arc-20240116; t=1711397315; c=relaxed/simple;
+	bh=IjuxdHFO8cTcPCYWNzoDCm86BnzP3oIfsTOJhV2smf4=;
+	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
+	 In-Reply-To:Content-Type; b=cG/9ks9UjX3bOxvyox00jkvxGWkQDqcXetytxttZerqM6rH7Myu2oocGPRTSfkHb/ATji0lLd+gBQGdW35DpaBupyDZqG23cuopyS/ezcugAyaFebYKzu5SjdoGs5j+f1/EclAfN9shQc2g5re230ZbNA7dIfQGnjMwPjdZINmg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Ia4WQ8lS; arc=none smtp.client-ip=209.85.221.44
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f179.google.com with SMTP id 38308e7fff4ca-2d228a132acso65847131fa.0;
-        Mon, 25 Mar 2024 13:07:17 -0700 (PDT)
+Received: by mail-wr1-f44.google.com with SMTP id ffacd0b85a97d-341bba83366so785274f8f.1
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 13:08:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711397236; x=1712002036; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=du4SRixuDJpsGc6Pl95gu+UfcgZcN4SGXN5Fz8Z6dDU=;
-        b=JRiLhEEZXzdzPRDUkZTALU+IpQCnSpytr5MTGKGqvROwBRLh8o3syWeHtzgp5c7R/1
-         0+GGcFblItBEHsnrk0idTwfuXWO1uTpUy7iqvPjT3NjaYWWT68RhPTzJRI/Z00Imet4x
-         wZ4GU4TBbG0De32NurtTAURmNW7oqDA6UTxXYW9D9kA3zgJKkCrxQigRG5ONJQ5e6gsl
-         DM/XvFghuF6NSPMl8JxVd5m/0cGx0d7Prjo2VsHB+smWobgeRYZ9Hggpz1J6a6dAfK6K
-         THYgqeKDN7Ef1edLZYJyQ0qD8TdFm7QOqvEog0gxHetIYsmTlUw0I+ZV//oxNJ9+yeQB
-         whHw==
+        d=gmail.com; s=20230601; t=1711397312; x=1712002112; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:references:cc:to:from
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=IjuxdHFO8cTcPCYWNzoDCm86BnzP3oIfsTOJhV2smf4=;
+        b=Ia4WQ8lS1ammLLbyOOB2UDxa0QJ/ey9Wafz+XmZnq0prpQhVb3GSkO1dfI94o336eh
+         lA2KRE9D92wzInv4+58ljLuQQTQeFI7Tfp+GKm7FnDzi9KGQNR0oCr3eOcf+0Ay/9tCn
+         ufGB1XbvMAaCgN9genF+szUhh5FgV9acs/molCbNVmRJJWT1Lm5qQK3FDHlOzAS5yvjq
+         lUtIdAxqG+GBmSj/9z0zTG3Psjvx/bmZoMr0dxRSeGUC51RRZyCnJM+xu2od4MfQ2AwL
+         24DF36sbMNOvtZKUbB1TWamuqsn9NeeXSvrLHFdFSjk+Haim7CGjV22FsZhilYZVa3Q/
+         PtqA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711397236; x=1712002036;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=du4SRixuDJpsGc6Pl95gu+UfcgZcN4SGXN5Fz8Z6dDU=;
-        b=GPaXSfrzdDwtHXE0beEilGZVR5rwfD6sYWxmlvcpvqRE9pnPzaA9C5E72HElHf0p2S
-         8NnCO0vG84QljB7ShrVwCz+HBA856Sag84Pzzr9ejdAsAz119XlXVtxutZUcFte5gRYx
-         x/nhJDunb/3TIm3o1Qig54V5vp5bKRYI32mExNIwKY9IJQP7PNfXqutzI2rIlIEpntdI
-         u4beBMjyLTzcQl3a1s6LpDxOJ2Jy76pxLpwCHO+c6MQlrQ0b6xFHmrQPkBeUmuE8TpMu
-         q/FC9/ZZsu+Qe6L7kkzldy7ZENtPIqmQ+aVJoS0SoyEe5qqgJ/Ys16c/3F3sT4FJ12Ps
-         L8XQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXVHmdGCNgjD/qUrYkn/etVB5uA3DTKzWYzz73496X3oyhCCCtwH+AwpbppHSJIaCHOc5gTl41tlR9SAiAE+L7I5lwEAYsX9nUOHd5uoBf1BETUxVyETsGEu0z8TLljsaB5w2FZhtdCivvfg2rTxBauxmKXBagsCHuCcAhfoRUNX+GOpNx1
-X-Gm-Message-State: AOJu0YwypZhC8DEflFw0creFR9zZNkrPo1lItNad5lGuOF38qcotxiEI
-	U5dmY5KUgqnUSiZIfpTkA5H3nQxhEGkNiRlQv0karnAUE93tbBM9O1T+c8mDZk4hUzNppLg7UeK
-	upVwuXIOYGb9KmOnBssjQpo8Ryv8=
-X-Google-Smtp-Source: AGHT+IHlayvaP0yY4B5G/tL55lxT++Fsn1ZkhDpnNssxYt+RRaI9Pmd8pmh3B5/obFUWOWyZNGwQqHHqCji5jwiL+Hs=
-X-Received: by 2002:a2e:8552:0:b0:2d6:b8d2:3712 with SMTP id
- u18-20020a2e8552000000b002d6b8d23712mr5740462ljj.26.1711397235773; Mon, 25
- Mar 2024 13:07:15 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1711397312; x=1712002112;
+        h=content-transfer-encoding:in-reply-to:references:cc:to:from
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=IjuxdHFO8cTcPCYWNzoDCm86BnzP3oIfsTOJhV2smf4=;
+        b=t2iS+oXR42esxwD4DRy6Ry9pF0xlzCrbkbrVnpSrwKXsP3kS8hV5DLUjKrP62HdIcI
+         TiT6wV/VJzUziNk4N850gwTqe+ROngLmrGkufTKyocv7dBXzDTsGZUZnv3pVVBmWRlaA
+         EpcY1IW46Zu7/oS66gxnzmATq0PsgRrsULaErqomrUdCThLMt2O/9fPybJFPnHbuCcBg
+         xhhvw/HSnbN2P+UKpukWkG2FFnA/5pj90sXATGAKrmjAGolKHUVmvOdvVXlvJH9Yzt+S
+         p9dffmY9vw75aIctZczq3ssAwbXBDvEiKyvLrHjy8cj/wUApgV8cSZigfc3e7THY7OtN
+         Aq2Q==
+X-Forwarded-Encrypted: i=1; AJvYcCVSQ2sGDtJZvYQruImCeudGPrSQ0SxBnbW2yspMNC04OwvcI8DXMvwILWloxP7Bv/FbiC17721FD7YX/cPdtk3VC9/ak1atuyU7rl3Z
+X-Gm-Message-State: AOJu0YywPTiBSvsSDKz22Mw71hMmfQpG7P6pAoVfKZ/UE2JDO1Fx19OQ
+	b1EubFgpldHBl6t/pS3tWoYtMjXon2lpZLnRDGYcmLEOzptnU3JJ
+X-Google-Smtp-Source: AGHT+IE8D4NxyjSGCmzVt92tVvlkAao8m/O0GYRjEuokcPLxdToDjBNIzYiecePgrlHUFTnyAssfWQ==
+X-Received: by 2002:a5d:5111:0:b0:33e:c974:129d with SMTP id s17-20020a5d5111000000b0033ec974129dmr5355058wrt.5.1711397312419;
+        Mon, 25 Mar 2024 13:08:32 -0700 (PDT)
+Received: from [192.168.0.104] (p54a07fa0.dip0.t-ipconnect.de. [84.160.127.160])
+        by smtp.gmail.com with ESMTPSA id x4-20020a5d60c4000000b00341ce1b64f0sm3055622wrt.17.2024.03.25.13.08.31
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 25 Mar 2024 13:08:32 -0700 (PDT)
+Message-ID: <15892fec-213b-4b59-860a-491d28031f74@gmail.com>
+Date: Mon, 25 Mar 2024 21:08:31 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240314084412.1127-1-johan+linaro@kernel.org>
- <CABBYNZJV1htg46Gyu=7_iUWdukM+rHLitsLjxmWWYFGXty3tVw@mail.gmail.com>
- <ZfMStHjwtCT1SW3z@hovoldconsulting.com> <964131ff-293d-47d1-8119-a389fa21f385@leemhuis.info>
- <CABBYNZJ0ukd_8=SFzy8CEwgP7hV5unodca0NZ2zDZh+jPJsEFQ@mail.gmail.com>
- <ZgGzWWV4Lh2Nal--@hovoldconsulting.com> <CABBYNZJaXUhu1A+NyVT-TAJw49zcV6TMdGeVy2F+AVKWBOVC-g@mail.gmail.com>
- <ZgHVFjAZ1uqEiUa2@hovoldconsulting.com>
-In-Reply-To: <ZgHVFjAZ1uqEiUa2@hovoldconsulting.com>
-From: Luiz Augusto von Dentz <luiz.dentz@gmail.com>
-Date: Mon, 25 Mar 2024 16:07:03 -0400
-Message-ID: <CABBYNZJUVhNKVD=s+=eYJ1q+j1W8rVSRqM4bKPbxT=TKrnZdoQ@mail.gmail.com>
-Subject: Re: [PATCH] Revert "Bluetooth: hci_qca: Set BDA quirk bit if fwnode
- exists in DT"
-To: Johan Hovold <johan@kernel.org>
-Cc: Linux regressions mailing list <regressions@lists.linux.dev>, Johan Hovold <johan+linaro@kernel.org>, 
-	Marcel Holtmann <marcel@holtmann.org>, linux-bluetooth@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, stable@vger.kernel.org, 
-	Janaki Ramaiah Thota <quic_janathot@quicinc.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] staging: wlan-ng: Remove broken driver prism2_usb
+Content-Language: en-US
+From: Philipp Hortmann <philipp.g.hortmann@gmail.com>
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Cc: Dan Carpenter <dan.carpenter@linaro.org>
+References: <20240325195112.GA17878@matrix-ESPRIMO-P710>
+In-Reply-To: <20240325195112.GA17878@matrix-ESPRIMO-P710>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Hi Johan,
+On 3/25/24 20:51, Philipp Hortmann wrote:
+> Tests on wlan-ng hardware have shown that this driver is broken since
+> April 2021. Remove broken driver. Find fix for bug in link.
 
-On Mon, Mar 25, 2024 at 3:48=E2=80=AFPM Johan Hovold <johan@kernel.org> wro=
-te:
->
-> On Mon, Mar 25, 2024 at 03:39:03PM -0400, Luiz Augusto von Dentz wrote:
-> > On Mon, Mar 25, 2024 at 1:24=E2=80=AFPM Johan Hovold <johan@kernel.org>=
- wrote:
-> > > On Mon, Mar 25, 2024 at 01:10:13PM -0400, Luiz Augusto von Dentz wrot=
-e:
->
-> > > > I guess the following is the latest version:
-> > > >
-> > > > https://patchwork.kernel.org/project/bluetooth/list/?series=3D83666=
-4
-> > > >
-> > > > Or are you working on a v5?
-> > >
-> > > This patch (revert) fixes a separate issue than the series you link t=
-o
-> > > above, but it is also a prerequisite for that series.
-> > >
-> > > v4 is indeed the latest version, and it has been acked by Rob and Bjo=
-rn
-> > > so you can take it all through the Bluetooth tree. Just remember to
-> > > apply this patch (the revert) first.
-> >
-> > Doesn't seem to apply cleanly:
-> >
-> > Applying: Bluetooth: qca: fix device-address endianness
-> > error: patch failed: drivers/bluetooth/hci_qca.c:1904
-> > error: drivers/bluetooth/hci_qca.c: patch does not apply
-> > Patch failed at 0004 Bluetooth: qca: fix device-address endianness
->
-> Did you apply this patch (the revert) before trying to apply the series?
-
-Probably needs rebasing:
-
-Applying: Revert "Bluetooth: hci_qca: Set BDA quirk bit if fwnode exists in=
- DT"
-error: drivers/bluetooth/hci_qca.c: does not match index
-Patch failed at 0001 Revert "Bluetooth: hci_qca: Set BDA quirk bit if
-fwnode exists in DT"
-
-> Johan
-
-
-
---=20
-Luiz Augusto von Dentz
+Missed to rebase.
 
