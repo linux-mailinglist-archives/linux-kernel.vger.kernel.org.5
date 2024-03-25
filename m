@@ -1,250 +1,270 @@
-Return-Path: <linux-kernel+bounces-116539-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-116540-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B419588A0D6
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 14:04:20 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6DFB988A07E
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 13:57:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0401AB3F486
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 12:56:28 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 90F8B1C33886
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 12:57:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4195312BF16;
-	Mon, 25 Mar 2024 07:41:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 85CEE12DDAE;
+	Mon, 25 Mar 2024 07:46:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="UsEneNbS"
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="NYP5UeCC"
+Received: from mail-ed1-f41.google.com (mail-ed1-f41.google.com [209.85.208.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D0A4312EBF3;
-	Mon, 25 Mar 2024 05:29:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8A55D13A87A;
+	Mon, 25 Mar 2024 05:35:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711344566; cv=none; b=Bo8cFAoIoPQ9SM0znPTWEYLJNbTnJpbMLHr3mxym27oc+Shaa/LRVfvMeW7QjdvC/aM+s3qjY+UjyEfGaPKSTXEiM5oQAfSdSNJDkQvOyq81r7b/b0MP3scTIR/PMIrkIwrxqWYcnkfhwi2v9br89+DKk0jAeI8fPtOcq/WgHUQ=
+	t=1711344914; cv=none; b=UTJQPjYDRY0UeericIzce0K7uGNf0ba6Z/ukdfs7CID/e1Ec8l2koFLV+0aUkQqOCkD7nT0enhBxFEt+oDbpbsHT/rEpJrjjURXtch5dqSIYy1OGKLJ+tifFjfjgU4YwfDrR7xyu0gZ43VBr69+VX5OAa54eedPP3W7LjBz4pv8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711344566; c=relaxed/simple;
-	bh=pCgBEvs7Ws5LrgvUvCDFyzCqqxQjqi/lbewMMwf8XhU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=GIxbD8/FVDIV3jazHDRfRax0MhF7zdGirhyLYIspUcJKZM7bPqNCRLWdJ+GRP55xQHktUrPo/bgQ/2XxHQsdEHsim+CfPfs/5SisoVsxS9PQbpDKRzEzBrF27fEwQ86CeWnVhkQ9mdAd0zQ1H1j9QAUUAbMPBUa5KTHahrOC1Vw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=UsEneNbS; arc=none smtp.client-ip=148.163.156.1
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0356517.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 42P2TKcD002120;
-	Mon, 25 Mar 2024 05:29:14 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : references : mime-version : content-type :
- in-reply-to; s=pp1; bh=+W54qSxNSJQWRx6PWgXJJfpx8+VW27a8pwZmgaNlRHg=;
- b=UsEneNbSd039lJDPga9B20LdGeQhJZizXHIGGnzDN7eTbayuUwmgvgEvSxhLZgIR4/v1
- quBEDu0guetYDKW94P7VD0Cs4yu9UEK0v5XpCm5+hVr1vEIn9wor995iSIdl3N6hbqAM
- VmsUAQ/ZcBceaOywa/b2hbWkFT0+yBiyAmKPiDJxbTRCQCGF5+llcS3UrBZTziu0HU9N
- JhNfnI/5NP+IU2Jj6TOp136sJURgrhnR3/byMUuY6A60sMyz94Z+j2l52zkLS4Q06fuk
- LybVhRvrPPtza61oA31I/aH7ufmJdRedViDjdRHs8x2EyM6ge0b8zITCH8fWmVyRsTTY Zg== 
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3x1x53bhuf-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 25 Mar 2024 05:29:13 +0000
-Received: from m0356517.ppops.net (m0356517.ppops.net [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 42P5PrcF007257;
-	Mon, 25 Mar 2024 05:29:13 GMT
-Received: from ppma22.wdc07v.mail.ibm.com (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3x1x53bhuc-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 25 Mar 2024 05:29:13 +0000
-Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
-	by ppma22.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 42P4e7ji012990;
-	Mon, 25 Mar 2024 05:29:11 GMT
-Received: from smtprelay04.fra02v.mail.ibm.com ([9.218.2.228])
-	by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3x29t076qy-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 25 Mar 2024 05:29:11 +0000
-Received: from smtpav04.fra02v.mail.ibm.com (smtpav04.fra02v.mail.ibm.com [10.20.54.103])
-	by smtprelay04.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 42P5T6iS28836400
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Mon, 25 Mar 2024 05:29:08 GMT
-Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 15E2820043;
-	Mon, 25 Mar 2024 05:29:06 +0000 (GMT)
-Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 228CB20040;
-	Mon, 25 Mar 2024 05:29:04 +0000 (GMT)
-Received: from li-c6426e4c-27cf-11b2-a85c-95d65bc0de0e.ibm.com (unknown [9.204.206.66])
-	by smtpav04.fra02v.mail.ibm.com (Postfix) with ESMTPS;
-	Mon, 25 Mar 2024 05:29:03 +0000 (GMT)
-Date: Mon, 25 Mar 2024 10:59:01 +0530
-From: Gautam Menghani <Gautam.Menghani@linux.ibm.com>
-To: Gautam Menghani <gautam@linux.ibm.com>
-Cc: mpe@ellerman.id.au, npiggin@gmail.com, christophe.leroy@csgroup.eu,
-        aneesh.kumar@kernel.org, naveen.n.rao@linux.ibm.com,
-        linuxppc-dev@lists.ozlabs.org, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Vaibhav Jain <vaibhav@linux.ibm.com>
-Subject: Re: [PATCH v3] arch/powerpc/kvm: Add support for reading VPA
- counters for pseries guests
-Message-ID: <7cfwgtfka55t4ovlbrzzqc2hamwaeoiddzo2e4wabwxy3tzc53@adwgw2asl6a5>
-References: <20240322101135.33295-1-gautam@linux.ibm.com>
+	s=arc-20240116; t=1711344914; c=relaxed/simple;
+	bh=d20QRH5X333Ju5AHBuEMTEphX1Q4Il84/pqrEPWZ1kc=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=sPzgziFiV+HnnQ8y2XdOV9mBtNPVOwkYCgGdWuvIOfuCOwURL4VLFQcsB8TpT3/J5uJWL0NcLwRg7hPiaNKWtp3RcGVaUe82+pYQvBdWayyG8CpMotqLFoOZGdkckGDPuswcwFX/P8DzYdxKdNiIxl1pANiyz2537EobSuTc2Qg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=NYP5UeCC; arc=none smtp.client-ip=209.85.208.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f41.google.com with SMTP id 4fb4d7f45d1cf-565c6cf4819so8372568a12.1;
+        Sun, 24 Mar 2024 22:35:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1711344911; x=1711949711; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=sH8vPR15P7qwD/m3ELQLf1JLZG3KOt7s+huVlKMdA8g=;
+        b=NYP5UeCCridAZs5E2G6aUszOpEOF9mqhW6+gzyD1y0xEcRNLOU+MHWBonI0OEHalRQ
+         d9iT1M4oqABvF55Gn4OnTofn3ZlGi3zdTCsr1mfFHljMpFLaC93D7syqHCfbrjTXQne6
+         NrfSsFfy7ecy0M7u2uFPB8chzLj72uC3iRV4lLuIsWGdADNciN/FswO9Gxut/XieBUjY
+         TvEQj54xRw09nRZk83zCPxirvo3Hvt2MPVW2AVijyewylKM+44dxNxOuUKgrKCPT8PXu
+         +rP/n50Qpjj0sdoaCP/uROoV1zkZWKEyRTQMxCpwzIGMNW/wSG5WVQG14kKDEd01c/Zu
+         MKrw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711344911; x=1711949711;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=sH8vPR15P7qwD/m3ELQLf1JLZG3KOt7s+huVlKMdA8g=;
+        b=Qmb2ktaf9pzfRPWcWnYdU9nRemKTxbReBhp+F3JTmQ8XabS8N/UZD1acZO1F2UfE/B
+         M49Ug7LXrurGRSE/pn6vydW7zRMFyJXUAL7pB6GEvcInx50ujpLdY15qEBxlfvx3uhXp
+         j7WLpG8IQPSpnvU3tAsSYBt4qnXggPyI4WcXKZL78F4lEEWiFOu+24jP9vz7FSM/xmxH
+         O0dEWbaeCkX0OMoktCIW5oN/AmuFRizPboM84LgkIYMqHcIqC7+xK0eFPA4kA40bzZtq
+         l45rto18ZPt8OwRKUFso1LUNqs9xRYvcKYVVLRdBP0/T+2ubkPY/Gm6zypa0Fk1kkrtU
+         0diA==
+X-Forwarded-Encrypted: i=1; AJvYcCWU1sL3fzYjMPw+/RzIMa8jLC1Pi3l5ntQTA2YdD6QpFxV83UEbw/hM1q+n9ywm46C8jZqTtarA3Lne232t0RH4lJWqZIahEXIt4UQcMqqsh5ss9VbQDXzZvQLnnJGUHr+ZhTuKXDfc2xzymHlcNLiolhZ7rs+FpuDGAWF6pNrnvqMoJgvcNnY7
+X-Gm-Message-State: AOJu0YyyVEHM1VoxsquhJul+rheTxmFXhXoRqKaT+lkYzXNlyPod+caL
+	Es5bl2P3+pcJmu+vfe4ErLag1IsjIImENETvxPrue1TlH8EMNWZggBUcQu2SwuFTUgPs3K1EAOC
+	eCxmF1ijXLaF3pfFj+YfeFR/xvW8=
+X-Google-Smtp-Source: AGHT+IH8yPUp7KEvIkr1REaPMEi0t5/gJin+soOYLrY/41sGJnFaQSeZQqkOGhAogYw1sh91jBlnACRj52naZ7LfhWs=
+X-Received: by 2002:a17:907:7e92:b0:a47:5182:557b with SMTP id
+ qb18-20020a1709077e9200b00a475182557bmr3416059ejc.7.1711344910479; Sun, 24
+ Mar 2024 22:35:10 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240322101135.33295-1-gautam@linux.ibm.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: M7nJETb3ZJKBA-1FXGDYvVntb19-h1mC
-X-Proofpoint-ORIG-GUID: rJte0QdugKEtcpP_KJfjEtHHsJvS9GfM
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-03-25_02,2024-03-21_02,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- spamscore=0 priorityscore=1501 bulkscore=0 adultscore=0 mlxscore=0
- malwarescore=0 phishscore=0 suspectscore=0 clxscore=1011 impostorscore=0
- mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2403210000 definitions=main-2403250029
+References: <CAL+tcoDT01EL7g_73Whrz753oEBuRtBrfmo2PHvTdifXKP4fhQ@mail.gmail.com>
+ <20240325040429.3776225-1-peilinhe2020@163.com>
+In-Reply-To: <20240325040429.3776225-1-peilinhe2020@163.com>
+From: Jason Xing <kerneljasonxing@gmail.com>
+Date: Mon, 25 Mar 2024 13:34:33 +0800
+Message-ID: <CAL+tcoCOywxJ9VFs6PD4Wdsq1HvQ18YVhYX3DA5MfTSXA+Htug@mail.gmail.com>
+Subject: Re: Re: [PATCH v3 resend] net/ipv4: add tracepoint for icmp_send
+To: Peilin He <peilinhe2020@163.com>
+Cc: davem@davemloft.net, dsahern@kernel.org, edumazet@google.com, 
+	he.peilin@zte.com.cn, jiang.xuexin@zte.com.cn, kuba@kernel.org, 
+	linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org, 
+	liu.chun2@zte.com.cn, mhiramat@kernel.org, netdev@vger.kernel.org, 
+	rostedt@goodmis.org, xu.xin16@zte.com.cn, yang.yang29@zte.com.cn, 
+	zhang.yunkai@zte.com.cn
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, Mar 22, 2024 at 03:41:32PM +0530, Gautam Menghani wrote:
-> PAPR hypervisor has introduced three new counters in the VPA area of
-> LPAR CPUs for KVM L2 guest (see [1] for terminology) observability - 2
-> for context switches from host to guest and vice versa, and 1 counter
-> for getting the total time spent inside the KVM guest. Add a tracepoint
-> that enables reading the counters for use by ftrace/perf. Note that this
-> tracepoint is only available for nestedv2 API (i.e, KVM on PowerVM).
-> 
-> Also maintain an aggregation of the context switch times in vcpu->arch.
-> This will be useful in getting the aggregate times with a pmu driver
-> which will be upstreamed in the near future.
-> 
-> [1] Terminology:
-> a. L1 refers to the VM (LPAR) booted on top of PAPR hypervisor
-> b. L2 refers to the KVM guest booted on top of L1.
-> 
-> Signed-off-by: Vaibhav Jain <vaibhav@linux.ibm.com>
-> Signed-off-by: Gautam Menghani <gautam@linux.ibm.com>
-> ---
-> v1 -> v2:
-> 1. Fix the build error due to invalid struct member reference.
-> 
-> v2 -> v3:
-> 1. Move the counter disabling and zeroing code to a different function.
-> 2. Move the get_lppaca() inside the tracepoint_enabled() branch.
-> 3. Add the aggregation logic to maintain total context switch time.
-> 
->  arch/powerpc/include/asm/kvm_host.h |  5 +++++
->  arch/powerpc/include/asm/lppaca.h   | 11 +++++++---
->  arch/powerpc/kvm/book3s_hv.c        | 33 +++++++++++++++++++++++++++++
->  arch/powerpc/kvm/trace_hv.h         | 25 ++++++++++++++++++++++
->  4 files changed, 71 insertions(+), 3 deletions(-)
-> 
-> diff --git a/arch/powerpc/include/asm/kvm_host.h b/arch/powerpc/include/asm/kvm_host.h
-> index 8abac5321..d953b32dd 100644
-> --- a/arch/powerpc/include/asm/kvm_host.h
-> +++ b/arch/powerpc/include/asm/kvm_host.h
-> @@ -847,6 +847,11 @@ struct kvm_vcpu_arch {
->  	gpa_t nested_io_gpr;
->  	/* For nested APIv2 guests*/
->  	struct kvmhv_nestedv2_io nestedv2_io;
-> +
-> +	/* Aggregate context switch and guest run time info (in ns) */
-> +	u64 l1_to_l2_cs_agg;
-> +	u64 l2_to_l1_cs_agg;
-> +	u64 l2_runtime_agg;
->  #endif
->  
->  #ifdef CONFIG_KVM_BOOK3S_HV_EXIT_TIMING
-> diff --git a/arch/powerpc/include/asm/lppaca.h b/arch/powerpc/include/asm/lppaca.h
-> index 61ec2447d..bda6b86b9 100644
-> --- a/arch/powerpc/include/asm/lppaca.h
-> +++ b/arch/powerpc/include/asm/lppaca.h
-> @@ -62,7 +62,8 @@ struct lppaca {
->  	u8	donate_dedicated_cpu;	/* Donate dedicated CPU cycles */
->  	u8	fpregs_in_use;
->  	u8	pmcregs_in_use;
-> -	u8	reserved8[28];
-> +	u8	l2_accumul_cntrs_enable;  /* Enable usage of counters for KVM guest */
-> +	u8	reserved8[27];
->  	__be64	wait_state_cycles;	/* Wait cycles for this proc */
->  	u8	reserved9[28];
->  	__be16	slb_count;		/* # of SLBs to maintain */
-> @@ -92,9 +93,13 @@ struct lppaca {
->  	/* cacheline 4-5 */
->  
->  	__be32	page_ins;		/* CMO Hint - # page ins by OS */
-> -	u8	reserved12[148];
-> +	u8	reserved12[28];
-> +	volatile __be64 l1_to_l2_cs_tb;
-> +	volatile __be64 l2_to_l1_cs_tb;
-> +	volatile __be64 l2_runtime_tb;
-> +	u8 reserved13[96];
->  	volatile __be64 dtl_idx;	/* Dispatch Trace Log head index */
-> -	u8	reserved13[96];
-> +	u8	reserved14[96];
->  } ____cacheline_aligned;
->  
->  #define lppaca_of(cpu)	(*paca_ptrs[cpu]->lppaca_ptr)
-> diff --git a/arch/powerpc/kvm/book3s_hv.c b/arch/powerpc/kvm/book3s_hv.c
-> index 8e86eb577..5a0bcb57e 100644
-> --- a/arch/powerpc/kvm/book3s_hv.c
-> +++ b/arch/powerpc/kvm/book3s_hv.c
-> @@ -4108,6 +4108,30 @@ static void vcpu_vpa_increment_dispatch(struct kvm_vcpu *vcpu)
->  	}
->  }
->  
-> +static void do_trace_nested_cs_time(struct kvm_vcpu *vcpu)
-> +{
-> +	struct lppaca *lp = get_lppaca();
-> +	u64 l1_to_l2_ns, l2_to_l1_ns, l2_runtime_ns;
-> +
-> +	if (!lp->l2_accumul_cntrs_enable)
-> +		return;
-> +
-> +	l1_to_l2_ns = tb_to_ns(be64_to_cpu(lp->l1_to_l2_cs_tb));
-> +	l2_to_l1_ns = tb_to_ns(be64_to_cpu(lp->l2_to_l1_cs_tb));
-> +	l2_runtime_ns = tb_to_ns(be64_to_cpu(lp->l2_runtime_tb));
-> +	trace_kvmppc_vcpu_exit_cs_time(vcpu, l1_to_l2_ns, l2_to_l1_ns,
-> +			l2_runtime_ns);
-> +	lp->l1_to_l2_cs_tb = 0;
-> +	lp->l2_to_l1_cs_tb = 0;
-> +	lp->l2_runtime_tb = 0;
-> +	lp->l2_accumul_cntrs_enable = 0;
-> +
-> +	// Maintain an aggregate of context switch times
-> +	vcpu->arch.l1_to_l2_cs_agg += l1_to_l2_ns;
-> +	vcpu->arch.l2_to_l1_cs_agg += l2_to_l1_ns;
-> +	vcpu->arch.l2_runtime_agg += l2_runtime_ns;
-> +}
-> +
->  static int kvmhv_vcpu_entry_nestedv2(struct kvm_vcpu *vcpu, u64 time_limit,
->  				     unsigned long lpcr, u64 *tb)
->  {
-> @@ -4130,6 +4154,11 @@ static int kvmhv_vcpu_entry_nestedv2(struct kvm_vcpu *vcpu, u64 time_limit,
->  	kvmppc_gse_put_u64(io->vcpu_run_input, KVMPPC_GSID_LPCR, lpcr);
->  
->  	accumulate_time(vcpu, &vcpu->arch.in_guest);
-> +
-> +	/* Enable the guest host context switch time tracking */
-> +	if (unlikely(trace_kvmppc_vcpu_exit_cs_time_enabled()))
-> +		get_lppaca()->l2_accumul_cntrs_enable = 1;
-> +
->  	rc = plpar_guest_run_vcpu(0, vcpu->kvm->arch.lpid, vcpu->vcpu_id,
->  				  &trap, &i);
->  
-> @@ -4156,6 +4185,10 @@ static int kvmhv_vcpu_entry_nestedv2(struct kvm_vcpu *vcpu, u64 time_limit,
->  
->  	timer_rearm_host_dec(*tb);
->  
-> +	/* Record context switch and guest_run_time data */
-> +	if (unlikely(trace_kvmppc_vcpu_exit_cs_time_enabled()))
-> +		do_trace_nested_cs_time(vcpu);
-> +
+On Mon, Mar 25, 2024 at 12:05=E2=80=AFPM Peilin He <peilinhe2020@163.com> w=
+rote:
+>
+> >> ---------
+> >> v2->v3:
+> >> Some fixes according to
+> >> https://lore.kernel.org/all/20240319102549.7f7f6f53@gandalf.local.home=
+/
+> >> 1. Change the tracking directory to/sys/kernel/tracking.
+> >> 2. Adjust the layout of the TP-STRUCT_entry parameter structure.
+> >>
+> >> v1->v2:
+> >> Some fixes according to
+> >> https://lore.kernel.org/all/CANn89iL-y9e_VFpdw=3D3DsZtRnKRu_tnUwqHuFQT=
+JvJsv=3D
+> >-nz1xPDw@mail.gmail.com/
+> >> 1. adjust the trace_icmp_send() to more protocols than UDP.
+> >> 2. move the calling of trace_icmp_send after sanity checks
+> >> in __icmp_send().
+> >>
+> >> Signed-off-by: Peilin He<he.peilin@zte.com.cn>
+> >> Reviewed-by: xu xin <xu.xin16@zte.com.cn>
+> >> Reviewed-by: Yunkai Zhang <zhang.yunkai@zte.com.cn>
+> >> Cc: Yang Yang <yang.yang29@zte.com.cn>
+> >> Cc: Liu Chun <liu.chun2@zte.com.cn>
+> >> Cc: Xuexin Jiang <jiang.xuexin@zte.com.cn>
+> >
+> >I think it would be better to target net-next tree since it's not a
+> >fix or something else important.
+> >
+> OK. I would target it for net-next.
+> >> ---
+> >>  include/trace/events/icmp.h | 64 ++++++++++++++++++++++++++++++++++++=
++
+> >>  net/ipv4/icmp.c             |  4 +++
+> >>  2 files changed, 68 insertions(+)
+> >>  create mode 100644 include/trace/events/icmp.h
+> >>
+> >> diff --git a/include/trace/events/icmp.h b/include/trace/events/icmp.h
+> >> new file mode 100644
+> >> index 000000000000..2098d4b1b12e
+> >> --- /dev/null
+> >> +++ b/include/trace/events/icmp.h
+> >> @@ -0,0 +1,64 @@
+> >> +/* SPDX-License-Identifier: GPL-2.0 */
+> >> +#undef TRACE_SYSTEM
+> >> +#define TRACE_SYSTEM icmp
+> >> +
+> >> +#if !defined(_TRACE_ICMP_H) || defined(TRACE_HEADER_MULTI_READ)
+> >> +#define _TRACE_ICMP_H
+> >> +
+> >> +#include <linux/icmp.h>
+> >> +#include <linux/tracepoint.h>
+> >> +
+> >> +TRACE_EVENT(icmp_send,
+> >> +
+> >> +               TP_PROTO(const struct sk_buff *skb, int type, int code=
+),
+> >> +
+> >> +               TP_ARGS(skb, type, code),
+> >> +
+> >> +               TP_STRUCT__entry(
+> >> +                       __field(const void *, skbaddr)
+> >> +                       __field(int, type)
+> >> +                       __field(int, code)
+> >> +                       __array(__u8, saddr, 4)
+> >> +                       __array(__u8, daddr, 4)
+> >> +                       __field(__u16, sport)
+> >> +                       __field(__u16, dport)
+> >> +                       __field(unsigned short, ulen)
+> >> +               ),
+> >> +
+> >> +               TP_fast_assign(
+> >> +                       struct iphdr *iph =3D3D ip_hdr(skb);
+> >> +                       int proto_4 =3D3D iph->protocol;
+> >> +                       __be32 *p32;
+> >> +
+> >> +                       __entry->skbaddr =3D3D skb;
+> >> +                       __entry->type =3D3D type;
+> >> +                       __entry->code =3D3D code;
+> >> +
+> >> +                       if (proto_4 =3D3D=3D3D IPPROTO_UDP) {
+> >> +                               struct udphdr *uh =3D3D udp_hdr(skb);
+> >> +                               __entry->sport =3D3D ntohs(uh->source)=
+;
+> >> +                               __entry->dport =3D3D ntohs(uh->dest);
+> >> +                               __entry->ulen =3D3D ntohs(uh->len);
+> >> +                       } else {
+> >> +                               __entry->sport =3D3D 0;
+> >> +                               __entry->dport =3D3D 0;
+> >> +                               __entry->ulen =3D3D 0;
+> >> +                       }
+> >
+> >What about using the TP_STORE_ADDR_PORTS_SKB macro to record the sport
+> >and dport like the patch[1] did through extending the use of header
+> >for TCP and UDP?
+> >
+> I believe patch[1] is a good idea as it moves the TCP protocol parsing
+> previously done inside the TP_STORE_ADDR_PORTS_SKB macro to TP_fast_assig=
+n,
+> and extracts the TP_STORE_ADDR_PORTS_SKB macro into a common file,
+> enabling support for both UDP and TCP protocol parsing simultaneously.
+>
+> However, patch[1] only extracts the source and destination addresses of
+> the packet, but does not extract the source port and destination port,
+> which limits the significance of my submitted patch.
 
-There is an issue with this part - when we enable the
-tracepoint, run the vcpu, but disable the tracepoint before vcpu exit,
-this condition will not be hit and we will continue accumulating the
-context switch times in the VPA. I'll send a v4 where I check for the
-VPA flag. I'll also incorporate any other changes, if required.
+No, please take a look at TP_STORE_ADDR_PORTS_SKB() macro again. It
+records 4-tuples of the flow.
 
 Thanks,
-Gautam
+Jason
+
+>
+> Perhaps the patch[1] could be referenced for integration after it is merg=
+ed.
+> >And, I wonder what the use of tracing ulen of that skb?
+> >
+> The tracking of ulen is primarily aimed at ensuring the legality of recei=
+ved
+> UDP packets and providing developers with more detailed information
+> on exceptions. See net/ipv4/udp.c:2494-2501.
+> >[1]: https://lore.kernel.org/all/1c7156a3f164eb33ef3a25b8432e359f0bb60a8=
+e.1=3D
+> >710866188.git.balazs.scheidler@axoflow.com/
+> >
+> >Thanks,
+> >Jason
+> >
+> >> +
+> >> +                       p32 =3D3D (__be32 *) __entry->saddr;
+> >> +                       *p32 =3D3D iph->saddr;
+> >> +
+> >> +                       p32 =3D3D (__be32 *) __entry->daddr;
+> >> +                       *p32 =3D3D iph->daddr;
+> >> +               ),
+> >> +
+> >> +               TP_printk("icmp_send: type=3D3D%d, code=3D3D%d. From %=
+pI4:%u =3D
+> >to %pI4:%u ulen=3D3D%d skbaddr=3D3D%p",
+> >> +                       __entry->type, __entry->code,
+> >> +                       __entry->saddr, __entry->sport, __entry->daddr=
+,
+> >> +                       __entry->dport, __entry->ulen, __entry->skbadd=
+r)
+> >> +);
+> >> +
+> >> +#endif /* _TRACE_ICMP_H */
+> >> +
+> >> +/* This part must be outside protection */
+> >> +#include <trace/define_trace.h>
+> >> \ No newline at end of file
+> >> diff --git a/net/ipv4/icmp.c b/net/ipv4/icmp.c
+> >> index e63a3bf99617..21fb41257fe9 100644
+> >> --- a/net/ipv4/icmp.c
+> >> +++ b/net/ipv4/icmp.c
+> >> @@ -92,6 +92,8 @@
+> >>  #include <net/inet_common.h>
+> >>  #include <net/ip_fib.h>
+> >>  #include <net/l3mdev.h>
+> >> +#define CREATE_TRACE_POINTS
+> >> +#include <trace/events/icmp.h>
+> >>
+> >>  /*
+> >>   *     Build xmit assembly blocks
+> >> @@ -672,6 +674,8 @@ void __icmp_send(struct sk_buff *skb_in, int type,=
+ in=3D
+> >t code, __be32 info,
+> >>                 }
+> >>         }
+> >>
+> >> +       trace_icmp_send(skb_in, type, code);
+> >> +
+> >>         /* Needed by both icmp_global_allow and icmp_xmit_lock */
+> >>         local_bh_disable();
+> >>
+> >> --
+> >> 2.44.0
+> >>
+>
 
