@@ -1,69 +1,71 @@
-Return-Path: <linux-kernel+bounces-117416-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-117417-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id C86BD88AB1A
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 18:15:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id CE6EC88AB1C
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 18:15:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 666211FA0797
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 17:15:02 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 47F0E1FA0ACF
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 17:15:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7EFD914D454;
-	Mon, 25 Mar 2024 15:54:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3727514EC49;
+	Mon, 25 Mar 2024 15:54:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="DrhuqgoA"
-Received: from mail-wm1-f52.google.com (mail-wm1-f52.google.com [209.85.128.52])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="H8CRxmT/"
+Received: from mail-wm1-f43.google.com (mail-wm1-f43.google.com [209.85.128.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2873459B7A;
-	Mon, 25 Mar 2024 15:54:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 177D814D6EA;
+	Mon, 25 Mar 2024 15:54:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711382082; cv=none; b=n+qA7qrVhwEN8JsPUzoax9Pg3sqmdcjSBwomMgcPZ/Dgnh1N7w+xxb5h/xS72Qy7XX46AJI3xwYM/CKQAFnx1ulSZBJKftDl0tx+0ynRxdRwjR3AL8WW7ytZJt16Scar3Ic+pmc/OKoe/Cj2Rf/lz072FjG03yZ2FWeWU24ixoA=
+	t=1711382087; cv=none; b=QFp/ODD6ICoJdOJND43/wx6rIePuEkR14Icalruhg9ZdjrFFDUdMCjQei6PlAFUmhjw5frwk2rqeI7ee8y0LNJa2TAQE9xYp6Dzuqw+6tIYLCttgiXg0WEbt/s0yqEGHkKiWlrhIaVg+xOzTlp3B34cNb15CjnFYz4F07ggjjDs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711382082; c=relaxed/simple;
-	bh=M/2LdgTMKAufsJ70oIyDRe3UWyNSr/he1uekNnQXBmM=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=YcHqT+hblPRGM+Xu+guv6SBoXMfYiSmlo4dyc6lzC7Tam/oxDcZklMw0QSva9Ob+KwBjs2CfIyqB5SW4isM9rLjbEduv1R9mAVDGOCehNocKXo8GKcdU1jpTdM2eW7QEf29+ekpBx/9IWbQVrRZQeBFTUwJ/8OemXUS5gW4f7EQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=DrhuqgoA; arc=none smtp.client-ip=209.85.128.52
+	s=arc-20240116; t=1711382087; c=relaxed/simple;
+	bh=T/rD2UMRwmaO+Qm50Gr1ki0c6WeZ67knwtipFzhUOvM=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=QQS8n9nz4uyake7gS9erAtv/DD7x/4x1msO5ssL6pPN085RiROusASPHtF3ZPx56FWAd1xjUn86tJQiDZdcZtN2F5v6Puxx+2Y2Vcf4wD02ksSKxH4JVyU7vHmFTBJe/N9E2Nt8L2bmMgBM9Xz9yUpPBCfhD+HYnnrerGu5Qp5g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=H8CRxmT/; arc=none smtp.client-ip=209.85.128.43
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f52.google.com with SMTP id 5b1f17b1804b1-4148c65e890so1679915e9.3;
-        Mon, 25 Mar 2024 08:54:40 -0700 (PDT)
+Received: by mail-wm1-f43.google.com with SMTP id 5b1f17b1804b1-4148a581d3fso5164025e9.3;
+        Mon, 25 Mar 2024 08:54:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711382079; x=1711986879; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=epYSjFUVIoqSYnJF4jivkOHZPoqysXSoHtzsW/w+7kg=;
-        b=DrhuqgoAAzU06qipKLrhZbqNtk4K6+PqjDpMQBupiuQ7N2GOb16XcWPjHi89y5qM4J
-         G4pOZLi0iErla6uihU8SmO0uOPNcuYEpFLUSmbyfelWxkxvAMS9rZmsq2XILYRb/rjZe
-         IBtbpWP4NLKCqybrMn41XIAPogmD3NMwO86Zh+5V8FS2Lrornjzs70NhGyeVOY38FRMw
-         B6ZLSpEK81f6hk13bpsClvReHiABETnm6bLpW2Qx4v81ciA+HpQEpc2h6EJYiB7Jwlwe
-         J5SaU8Q7ZuwK8nzaYIJe6f4GVMWZ7ynXmdS4/Oyl55SSRSPxn78uABzDCe4AKFXVWORY
-         fiqg==
+        d=gmail.com; s=20230601; t=1711382083; x=1711986883; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=6FUtYpUxOhtP4H/jzdFEV01nhdy7Ccfnq+VwWvofKAI=;
+        b=H8CRxmT/9cOOCtKTmy6HslB6WaPbxrp+0hwX4rm2SslUkcXElsQGW2PtzicLdT7ZdK
+         +VER7Y7p5uTWmBmYtuVEmiaceKBaTOfmijgFI1pJVfJE4KSvjk8KK2+WbGtTWHvhhvCs
+         YTEoGQD1d5Hu1kwK7lb8cAxGtOXqGLNMZUgqx7bLJhRmuu2qF/79fyYB5784I4Wsad5e
+         WO3HOl8yXfds2K19C4vD3dADnCedxMrxUUre9C14SkHBSFMiwW0nKZffuf3iFm2Y0Gj6
+         GRNGSTEUxGMWR3+tGBkmUcF4FLrCQn7NLsCIGPPnf1OuIkPb1cibwXC45p9d4PjAG4w9
+         BYZg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711382079; x=1711986879;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=epYSjFUVIoqSYnJF4jivkOHZPoqysXSoHtzsW/w+7kg=;
-        b=T0yZ8jQxyMhKFBUZvEDucXNQqk3a+21N+oGj1A4OoR20fX5XHYOLhf9eUTXfz8vkTZ
-         q+8SITK5JdJhEmOiznosnHcgeOSIR+3kMwYAAVkcDpKZdFo8POtVbubEc/8K4DBuKy0A
-         W5cRmma8a0cxkQGInxsjDLLree9ocBYP8kbWmR4bwDTEYtcwMCM7MdxemBuuT45vTkpQ
-         RUVOE3fUe9jCnWWF9sqS48yVe1G5T1gy4FfV00fFEhlgkYzGJaFiXt8sufNlqC7yaV8d
-         xFCU3Ex7lUwOVGa2A2gHqsUlJj6iJwBo3LuZ+O8fqr1pmWJ3NYK3V6T/xyt+o5QDa50Q
-         YctA==
-X-Forwarded-Encrypted: i=1; AJvYcCWSXBfGBCEau3J68qUac+Sdw7IPJOlP4LWItcO0mYTz6gEqnPi2PWQqBirTv8KZqHn6WJ8lfr51+humOkdeLG6zM4NEtBpXIQmgTHpwrcxMbA2gxE/3wNgaou6yo0Sxn7sD
-X-Gm-Message-State: AOJu0Yx7wS6VftpBaDC4yTCtjUl8bTZgXVzT5TumnpzCfl228B+kXjiP
-	wAXiqGXS/BNIlGc0MU9sQr43APdmz4eTcWMDMl2uaFxywZwE3F9W
-X-Google-Smtp-Source: AGHT+IFEbz9WdYcx8pprFZzZ6ugY2QPqSfQqT1rwAKa5KzId0YSU+8eOqXKCBySntr6UDCXhk7+wgg==
-X-Received: by 2002:a05:600c:12d2:b0:414:cd1:e46d with SMTP id v18-20020a05600c12d200b004140cd1e46dmr5220541wmd.23.1711382079166;
-        Mon, 25 Mar 2024 08:54:39 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1711382083; x=1711986883;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=6FUtYpUxOhtP4H/jzdFEV01nhdy7Ccfnq+VwWvofKAI=;
+        b=Pebv0wvKOx6zWTj1PAygNbKysgN+qYXBG/dmGrGipX1wHTTk+tR5mV2tlGR1552yHl
+         1ywuX2m6Xidi4KB40neh6Wg+xDvZfDUqY2N/l5D0dv55T1kAmBdv/NPQfBBtNB9k+iIh
+         8e2CHI5otQyqk3YFNHHY4CGlMFwqEFHpSzRajhkp6jvcJ9TS7UocqFD4Mq9PsU5uJh7B
+         9Vv05uEAHj1Fa6rGcTDoveeIg1V/Z26FfEms41zGKQ/EusdSkUeWIEdQwFpl92EfY1BK
+         rQYVZciyfZtrU3Kfk2Bth1RDugGL8MRQUHd03zhsw2jC9vJldypPymrIqslGBqt2K6FC
+         J7SA==
+X-Forwarded-Encrypted: i=1; AJvYcCVZF+6uvRrAJ8qcFskK34+abeRAdUrPaKyvZ+4wABJQ0py7tHlk78d6invRg+T+dksjCV0Beokja0oObWD/or3gAs7BHK+fhrgSopzcCZwfjdfb2lFs9C6xFdS35EYItxbY
+X-Gm-Message-State: AOJu0Yz8QsjZ7D8Td46FlemlTfiWea9Smv2JWT43FZuz/RP3aD1px2S2
+	t2gtQrM5RCEVVvvEwE3hr7Gmp89L1qSu3Pvlq1g9LHRkY+jqzA/K
+X-Google-Smtp-Source: AGHT+IG7y+4ODxGwWW7ShCCyZe4LCwOFMZkR6n1OOPWCh0MucONbz8B20vTCaxqqur4xeJwhk7JCNw==
+X-Received: by 2002:a05:600c:3ca7:b0:414:d95:cc47 with SMTP id bg39-20020a05600c3ca700b004140d95cc47mr5709242wmb.30.1711382083302;
+        Mon, 25 Mar 2024 08:54:43 -0700 (PDT)
 Received: from localhost (54-240-197-231.amazon.com. [54.240.197.231])
-        by smtp.gmail.com with ESMTPSA id ay19-20020a05600c1e1300b004148a667953sm2663300wmb.8.2024.03.25.08.54.38
+        by smtp.gmail.com with ESMTPSA id g4-20020a05600c310400b0041462294fe3sm8754094wmo.42.2024.03.25.08.54.42
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 25 Mar 2024 08:54:38 -0700 (PDT)
+        Mon, 25 Mar 2024 08:54:42 -0700 (PDT)
 From: Puranjay Mohan <puranjay12@gmail.com>
 To: Alexei Starovoitov <ast@kernel.org>,
 	Daniel Borkmann <daniel@iogearbox.net>,
@@ -88,10 +90,12 @@ To: Alexei Starovoitov <ast@kernel.org>,
 	linux-kernel@vger.kernel.org,
 	Pu Lehui <pulehui@huaweicloud.com>
 Cc: puranjay12@gmail.com
-Subject: [PATCH bpf-next v2 0/2] bpf,riscv: Add support for BPF Arena
-Date: Mon, 25 Mar 2024 15:54:32 +0000
-Message-Id: <20240325155434.65589-1-puranjay12@gmail.com>
+Subject: [PATCH bpf-next v2 1/2] bpf,riscv: Implement PROBE_MEM32 pseudo instructions
+Date: Mon, 25 Mar 2024 15:54:33 +0000
+Message-Id: <20240325155434.65589-2-puranjay12@gmail.com>
 X-Mailer: git-send-email 2.40.1
+In-Reply-To: <20240325155434.65589-1-puranjay12@gmail.com>
+References: <20240325155434.65589-1-puranjay12@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -100,53 +104,343 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Changes in V2
-V1: https://lore.kernel.org/bpf/20240323154652.54572-1-puranjay12@gmail.com/
-- Used S7 in place of S11 for storing the kernel_vm_start
-- Used 17 in place of 16 for DONT_CLEAR marker
-- Remove an unused variable
-- Removed some misleading information from the commit message.
+Add support for [LDX | STX | ST], PROBE_MEM32, [B | H | W | DW]
+instructions.  They are similar to PROBE_MEM instructions with the
+following differences:
+- PROBE_MEM32 supports store.
+- PROBE_MEM32 relies on the verifier to clear upper 32-bit of the
+  src/dst register
+- PROBE_MEM32 adds 64-bit kern_vm_start address (which is stored in S7
+  in the prologue). Due to bpf_arena constructions such S7 + reg +
+  off16 access is guaranteed to be within arena virtual range, so no
+  address check at run-time.
+- S7 is a free callee-saved register, so it is used to store kern_vm_start
+- PROBE_MEM32 allows STX and ST. If they fault the store is a nop. When
+  LDX faults the destination register is zeroed.
 
-This series adds the support for PROBE_MEM32 and bpf_addr_space_cast
-instructions to the RISCV BPF JIT. These two instructions allow the
-enablement of BPF Arena.
+To support these on riscv, we do tmp = S7 + src/dst reg and then use
+tmp2 as the new src/dst register. This allows us to reuse most of the
+code for normal [LDX | STX | ST].
 
-All arena related selftests are passing:
+Signed-off-by: Puranjay Mohan <puranjay12@gmail.com>
+---
+ arch/riscv/net/bpf_jit.h        |   1 +
+ arch/riscv/net/bpf_jit_comp64.c | 193 +++++++++++++++++++++++++++++++-
+ arch/riscv/net/bpf_jit_core.c   |   1 +
+ 3 files changed, 192 insertions(+), 3 deletions(-)
 
-  root@rv-tester:~/bpf# uname -p
-  riscv64
-  root@rv-tester:~/bpf# ./test_progs -a "*arena*"
-  #3/1     arena_htab/arena_htab_llvm:OK
-  #3/2     arena_htab/arena_htab_asm:OK
-  #3       arena_htab:OK
-  #4/1     arena_list/arena_list_1:OK
-  #4/2     arena_list/arena_list_1000:OK
-  #4       arena_list:OK
-  #434/1   verifier_arena/basic_alloc1:OK
-  #434/2   verifier_arena/basic_alloc2:OK
-  #434/3   verifier_arena/basic_alloc3:OK
-  #434/4   verifier_arena/iter_maps1:OK
-  #434/5   verifier_arena/iter_maps2:OK
-  #434/6   verifier_arena/iter_maps3:OK
-  #434     verifier_arena:OK
-  Summary: 3/10 PASSED, 0 SKIPPED, 0 FAILED
-
-This needs the patch[1] that adds the insn_is_cast_user() helper to build.
-It also  needs the following patches/commits [2][3] to work correctly.
-
-[1] https://lore.kernel.org/bpf/20240324183226.29674-1-puranjay12@gmail.com/
-[2] https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git/commit/?id=f7f5d1808b1b66935a24dd796dd1a0612ca9c147
-[3] https://lore.kernel.org/bpf/20240324103306.2202954-1-pulehui@huaweicloud.com/
-
-Puranjay Mohan (2):
-  bpf,riscv: Implement PROBE_MEM32 pseudo instructions
-  bpf,riscv: Implement bpf_addr_space_cast instruction
-
- arch/riscv/net/bpf_jit.h        |   2 +
- arch/riscv/net/bpf_jit_comp64.c | 207 +++++++++++++++++++++++++++++++-
- arch/riscv/net/bpf_jit_core.c   |   2 +
- 3 files changed, 208 insertions(+), 3 deletions(-)
-
+diff --git a/arch/riscv/net/bpf_jit.h b/arch/riscv/net/bpf_jit.h
+index f4b6b3b9edda..8a47da08dd9c 100644
+--- a/arch/riscv/net/bpf_jit.h
++++ b/arch/riscv/net/bpf_jit.h
+@@ -81,6 +81,7 @@ struct rv_jit_context {
+ 	int nexentries;
+ 	unsigned long flags;
+ 	int stack_size;
++	u64 arena_vm_start;
+ };
+ 
+ /* Convert from ninsns to bytes. */
+diff --git a/arch/riscv/net/bpf_jit_comp64.c b/arch/riscv/net/bpf_jit_comp64.c
+index 1adf2f39ce59..0c0588e327af 100644
+--- a/arch/riscv/net/bpf_jit_comp64.c
++++ b/arch/riscv/net/bpf_jit_comp64.c
+@@ -255,6 +255,10 @@ static void __build_epilogue(bool is_tail_call, struct rv_jit_context *ctx)
+ 		emit_ld(RV_REG_S6, store_offset, RV_REG_SP, ctx);
+ 		store_offset -= 8;
+ 	}
++	if (ctx->arena_vm_start) {
++		emit_ld(RV_REG_S7, store_offset, RV_REG_SP, ctx);
++		store_offset -= 8;
++	}
+ 
+ 	emit_addi(RV_REG_SP, RV_REG_SP, stack_adjust, ctx);
+ 	/* Set return value. */
+@@ -548,6 +552,7 @@ static void emit_atomic(u8 rd, u8 rs, s16 off, s32 imm, bool is64,
+ 
+ #define BPF_FIXUP_OFFSET_MASK   GENMASK(26, 0)
+ #define BPF_FIXUP_REG_MASK      GENMASK(31, 27)
++#define DONT_CLEAR		17	/* RV_REG_A7 unused in pt_regmap */
+ 
+ bool ex_handler_bpf(const struct exception_table_entry *ex,
+ 		    struct pt_regs *regs)
+@@ -555,7 +560,8 @@ bool ex_handler_bpf(const struct exception_table_entry *ex,
+ 	off_t offset = FIELD_GET(BPF_FIXUP_OFFSET_MASK, ex->fixup);
+ 	int regs_offset = FIELD_GET(BPF_FIXUP_REG_MASK, ex->fixup);
+ 
+-	*(unsigned long *)((void *)regs + pt_regmap[regs_offset]) = 0;
++	if (regs_offset != DONT_CLEAR)
++		*(unsigned long *)((void *)regs + pt_regmap[regs_offset]) = 0;
+ 	regs->epc = (unsigned long)&ex->fixup - offset;
+ 
+ 	return true;
+@@ -572,7 +578,8 @@ static int add_exception_handler(const struct bpf_insn *insn,
+ 	off_t fixup_offset;
+ 
+ 	if (!ctx->insns || !ctx->ro_insns || !ctx->prog->aux->extable ||
+-	    (BPF_MODE(insn->code) != BPF_PROBE_MEM && BPF_MODE(insn->code) != BPF_PROBE_MEMSX))
++	    (BPF_MODE(insn->code) != BPF_PROBE_MEM && BPF_MODE(insn->code) != BPF_PROBE_MEMSX &&
++	     BPF_MODE(insn->code) != BPF_PROBE_MEM32))
+ 		return 0;
+ 
+ 	if (WARN_ON_ONCE(ctx->nexentries >= ctx->prog->aux->num_exentries))
+@@ -622,6 +629,9 @@ static int add_exception_handler(const struct bpf_insn *insn,
+ 
+ 	ex->insn = ins_offset;
+ 
++	if (BPF_CLASS(insn->code) != BPF_LDX)
++		dst_reg = DONT_CLEAR;
++
+ 	ex->fixup = FIELD_PREP(BPF_FIXUP_OFFSET_MASK, fixup_offset) |
+ 		FIELD_PREP(BPF_FIXUP_REG_MASK, dst_reg);
+ 	ex->type = EX_TYPE_BPF;
+@@ -1063,7 +1073,7 @@ int bpf_jit_emit_insn(const struct bpf_insn *insn, struct rv_jit_context *ctx,
+ 		    BPF_CLASS(insn->code) == BPF_JMP;
+ 	int s, e, rvoff, ret, i = insn - ctx->prog->insnsi;
+ 	struct bpf_prog_aux *aux = ctx->prog->aux;
+-	u8 rd = -1, rs = -1, code = insn->code;
++	u8 rd = -1, rs = -1, code = insn->code, reg_arena_vm_start = RV_REG_S7;
+ 	s16 off = insn->off;
+ 	s32 imm = insn->imm;
+ 
+@@ -1539,6 +1549,11 @@ int bpf_jit_emit_insn(const struct bpf_insn *insn, struct rv_jit_context *ctx,
+ 	case BPF_LDX | BPF_PROBE_MEMSX | BPF_B:
+ 	case BPF_LDX | BPF_PROBE_MEMSX | BPF_H:
+ 	case BPF_LDX | BPF_PROBE_MEMSX | BPF_W:
++	/* LDX | PROBE_MEM32: dst = *(unsigned size *)(src + S7 + off)*/
++	case BPF_LDX | BPF_PROBE_MEM32 | BPF_B:
++	case BPF_LDX | BPF_PROBE_MEM32 | BPF_H:
++	case BPF_LDX | BPF_PROBE_MEM32 | BPF_W:
++	case BPF_LDX | BPF_PROBE_MEM32 | BPF_DW:
+ 	{
+ 		int insn_len, insns_start;
+ 		bool sign_ext;
+@@ -1546,6 +1561,11 @@ int bpf_jit_emit_insn(const struct bpf_insn *insn, struct rv_jit_context *ctx,
+ 		sign_ext = BPF_MODE(insn->code) == BPF_MEMSX ||
+ 			   BPF_MODE(insn->code) == BPF_PROBE_MEMSX;
+ 
++		if (BPF_MODE(insn->code) == BPF_PROBE_MEM32) {
++			emit_add(RV_REG_T2, rs, reg_arena_vm_start, ctx);
++			rs = RV_REG_T2;
++		}
++
+ 		switch (BPF_SIZE(code)) {
+ 		case BPF_B:
+ 			if (is_12b_int(off)) {
+@@ -1682,6 +1702,87 @@ int bpf_jit_emit_insn(const struct bpf_insn *insn, struct rv_jit_context *ctx,
+ 		emit_sd(RV_REG_T2, 0, RV_REG_T1, ctx);
+ 		break;
+ 
++	case BPF_ST | BPF_PROBE_MEM32 | BPF_B:
++	case BPF_ST | BPF_PROBE_MEM32 | BPF_H:
++	case BPF_ST | BPF_PROBE_MEM32 | BPF_W:
++	case BPF_ST | BPF_PROBE_MEM32 | BPF_DW:
++	{
++		int insn_len, insns_start;
++
++		emit_add(RV_REG_T3, rd, reg_arena_vm_start, ctx);
++		rd = RV_REG_T3;
++
++		/* Load imm to a register then store it */
++		emit_imm(RV_REG_T1, imm, ctx);
++
++		switch (BPF_SIZE(code)) {
++		case BPF_B:
++			if (is_12b_int(off)) {
++				insns_start = ctx->ninsns;
++				emit(rv_sb(rd, off, RV_REG_T1), ctx);
++				insn_len = ctx->ninsns - insns_start;
++				break;
++			}
++
++			emit_imm(RV_REG_T2, off, ctx);
++			emit_add(RV_REG_T2, RV_REG_T2, rd, ctx);
++			insns_start = ctx->ninsns;
++			emit(rv_sb(RV_REG_T2, 0, RV_REG_T1), ctx);
++			insn_len = ctx->ninsns - insns_start;
++
++			break;
++
++		case BPF_H:
++			if (is_12b_int(off)) {
++				insns_start = ctx->ninsns;
++				emit(rv_sh(rd, off, RV_REG_T1), ctx);
++				insn_len = ctx->ninsns - insns_start;
++				break;
++			}
++
++			emit_imm(RV_REG_T2, off, ctx);
++			emit_add(RV_REG_T2, RV_REG_T2, rd, ctx);
++			insns_start = ctx->ninsns;
++			emit(rv_sh(RV_REG_T2, 0, RV_REG_T1), ctx);
++			insn_len = ctx->ninsns - insns_start;
++			break;
++		case BPF_W:
++			if (is_12b_int(off)) {
++				insns_start = ctx->ninsns;
++				emit_sw(rd, off, RV_REG_T1, ctx);
++				insn_len = ctx->ninsns - insns_start;
++				break;
++			}
++
++			emit_imm(RV_REG_T2, off, ctx);
++			emit_add(RV_REG_T2, RV_REG_T2, rd, ctx);
++			insns_start = ctx->ninsns;
++			emit_sw(RV_REG_T2, 0, RV_REG_T1, ctx);
++			insn_len = ctx->ninsns - insns_start;
++			break;
++		case BPF_DW:
++			if (is_12b_int(off)) {
++				insns_start = ctx->ninsns;
++				emit_sd(rd, off, RV_REG_T1, ctx);
++				insn_len = ctx->ninsns - insns_start;
++				break;
++			}
++
++			emit_imm(RV_REG_T2, off, ctx);
++			emit_add(RV_REG_T2, RV_REG_T2, rd, ctx);
++			insns_start = ctx->ninsns;
++			emit_sd(RV_REG_T2, 0, RV_REG_T1, ctx);
++			insn_len = ctx->ninsns - insns_start;
++			break;
++		}
++
++		ret = add_exception_handler(insn, ctx, rd, insn_len);
++		if (ret)
++			return ret;
++
++		break;
++	}
++
+ 	/* STX: *(size *)(dst + off) = src */
+ 	case BPF_STX | BPF_MEM | BPF_B:
+ 		if (is_12b_int(off)) {
+@@ -1728,6 +1829,83 @@ int bpf_jit_emit_insn(const struct bpf_insn *insn, struct rv_jit_context *ctx,
+ 		emit_atomic(rd, rs, off, imm,
+ 			    BPF_SIZE(code) == BPF_DW, ctx);
+ 		break;
++
++	case BPF_STX | BPF_PROBE_MEM32 | BPF_B:
++	case BPF_STX | BPF_PROBE_MEM32 | BPF_H:
++	case BPF_STX | BPF_PROBE_MEM32 | BPF_W:
++	case BPF_STX | BPF_PROBE_MEM32 | BPF_DW:
++	{
++		int insn_len, insns_start;
++
++		emit_add(RV_REG_T2, rd, reg_arena_vm_start, ctx);
++		rd = RV_REG_T2;
++
++		switch (BPF_SIZE(code)) {
++		case BPF_B:
++			if (is_12b_int(off)) {
++				insns_start = ctx->ninsns;
++				emit(rv_sb(rd, off, rs), ctx);
++				insn_len = ctx->ninsns - insns_start;
++				break;
++			}
++
++			emit_imm(RV_REG_T1, off, ctx);
++			emit_add(RV_REG_T1, RV_REG_T1, rd, ctx);
++			insns_start = ctx->ninsns;
++			emit(rv_sb(RV_REG_T1, 0, rs), ctx);
++			insn_len = ctx->ninsns - insns_start;
++			break;
++		case BPF_H:
++			if (is_12b_int(off)) {
++				insns_start = ctx->ninsns;
++				emit(rv_sh(rd, off, rs), ctx);
++				insn_len = ctx->ninsns - insns_start;
++				break;
++			}
++
++			emit_imm(RV_REG_T1, off, ctx);
++			emit_add(RV_REG_T1, RV_REG_T1, rd, ctx);
++			insns_start = ctx->ninsns;
++			emit(rv_sh(RV_REG_T1, 0, rs), ctx);
++			insn_len = ctx->ninsns - insns_start;
++			break;
++		case BPF_W:
++			if (is_12b_int(off)) {
++				insns_start = ctx->ninsns;
++				emit_sw(rd, off, rs, ctx);
++				insn_len = ctx->ninsns - insns_start;
++				break;
++			}
++
++			emit_imm(RV_REG_T1, off, ctx);
++			emit_add(RV_REG_T1, RV_REG_T1, rd, ctx);
++			insns_start = ctx->ninsns;
++			emit_sw(RV_REG_T1, 0, rs, ctx);
++			insn_len = ctx->ninsns - insns_start;
++			break;
++		case BPF_DW:
++			if (is_12b_int(off)) {
++				insns_start = ctx->ninsns;
++				emit_sd(rd, off, rs, ctx);
++				insn_len = ctx->ninsns - insns_start;
++				break;
++			}
++
++			emit_imm(RV_REG_T1, off, ctx);
++			emit_add(RV_REG_T1, RV_REG_T1, rd, ctx);
++			insns_start = ctx->ninsns;
++			emit_sd(RV_REG_T1, 0, rs, ctx);
++			insn_len = ctx->ninsns - insns_start;
++			break;
++		}
++
++		ret = add_exception_handler(insn, ctx, rd, insn_len);
++		if (ret)
++			return ret;
++
++		break;
++	}
++
+ 	default:
+ 		pr_err("bpf-jit: unknown opcode %02x\n", code);
+ 		return -EINVAL;
+@@ -1759,6 +1937,8 @@ void bpf_jit_build_prologue(struct rv_jit_context *ctx, bool is_subprog)
+ 		stack_adjust += 8;
+ 	if (seen_reg(RV_REG_S6, ctx))
+ 		stack_adjust += 8;
++	if (ctx->arena_vm_start)
++		stack_adjust += 8;
+ 
+ 	stack_adjust = round_up(stack_adjust, 16);
+ 	stack_adjust += bpf_stack_adjust;
+@@ -1810,6 +1990,10 @@ void bpf_jit_build_prologue(struct rv_jit_context *ctx, bool is_subprog)
+ 		emit_sd(RV_REG_SP, store_offset, RV_REG_S6, ctx);
+ 		store_offset -= 8;
+ 	}
++	if (ctx->arena_vm_start) {
++		emit_sd(RV_REG_SP, store_offset, RV_REG_S7, ctx);
++		store_offset -= 8;
++	}
+ 
+ 	emit_addi(RV_REG_FP, RV_REG_SP, stack_adjust, ctx);
+ 
+@@ -1823,6 +2007,9 @@ void bpf_jit_build_prologue(struct rv_jit_context *ctx, bool is_subprog)
+ 		emit_mv(RV_REG_TCC_SAVED, RV_REG_TCC, ctx);
+ 
+ 	ctx->stack_size = stack_adjust;
++
++	if (ctx->arena_vm_start)
++		emit_imm(RV_REG_S7, ctx->arena_vm_start, ctx);
+ }
+ 
+ void bpf_jit_build_epilogue(struct rv_jit_context *ctx)
+diff --git a/arch/riscv/net/bpf_jit_core.c b/arch/riscv/net/bpf_jit_core.c
+index 6b3acac30c06..9ab739b9f9a2 100644
+--- a/arch/riscv/net/bpf_jit_core.c
++++ b/arch/riscv/net/bpf_jit_core.c
+@@ -80,6 +80,7 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *prog)
+ 		goto skip_init_ctx;
+ 	}
+ 
++	ctx->arena_vm_start = bpf_arena_get_kern_vm_start(prog->aux->arena);
+ 	ctx->prog = prog;
+ 	ctx->offset = kcalloc(prog->len, sizeof(int), GFP_KERNEL);
+ 	if (!ctx->offset) {
 -- 
 2.40.1
 
