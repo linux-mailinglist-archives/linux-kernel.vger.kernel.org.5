@@ -1,191 +1,314 @@
-Return-Path: <linux-kernel+bounces-118061-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-118063-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 43BA688B64D
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 01:45:08 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id D293588B32C
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 22:51:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B1C44B38AA3
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 21:50:23 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 019D11C36A6C
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 21:51:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 007166FE35;
-	Mon, 25 Mar 2024 21:50:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3C5B26F533;
+	Mon, 25 Mar 2024 21:51:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="TXKaT/UJ"
-Received: from out-175.mta0.migadu.com (out-175.mta0.migadu.com [91.218.175.175])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="WI/N6eTB"
+Received: from mail-ed1-f42.google.com (mail-ed1-f42.google.com [209.85.208.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 71FE05EE64
-	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 21:49:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 692315D723
+	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 21:51:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711403399; cv=none; b=rdVbTYnzNhR92NuMrn+8lPQUODVZiu8Y9rOt3iv+8O3zwUxCqce6lcKNi2j3fi4k/JV6zDVjxg0Td3RAUZ6/w3nq+uCI/3KtB5MFxAp7WHBSZvG2A+LhRwurz5hm7rzkBcIfMy4v+4orpf6OBpnOJMz317rTkmp2HOfQADs8cDo=
+	t=1711403491; cv=none; b=lTZhTE5jYDcLAfUxkeuQzBf+sptYworUjZv20g743PSkEFs24b+9yZz/TlQTC2qkfZ9C+L4iK6uTB/2ah2FAk6yCpc4lQ0V73t0SRpFX96bltTO1iIGKLLKXJ705bK+SuW82F2HMuL0XYuquhjdnLoXvR+zQxUVs+pnJnF+Rajo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711403399; c=relaxed/simple;
-	bh=UpqckpAk54pZmRHfWjS7HGz0GsiFSkJvYvd7uR6cPrY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=IO4nij6grgMzqbNGITXTiHxxX1Hw7A0PhbUOuzA/EfVP8YGZgtRspInMj/empj5Qz/M0/FQeu/vQaR6/vyRRHfVDj0z1uXD/CnC9frPwcizznKc/sxEnOqARIFG4zLJORYP6U7FSpInEWAqTMhPmin1lv4fC2ciLWhAcPmhbGRI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=TXKaT/UJ; arc=none smtp.client-ip=91.218.175.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Mon, 25 Mar 2024 17:49:49 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1711403394;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Jnty0Hl4Z2lmYarICJkRG5Td4HWGlYS6TikUtT7dCz0=;
-	b=TXKaT/UJgOrUg8TgyxlfyzzkC1ZYQInuPHBt5aIQsdda3H8THBSSduvIFLEFUQudD2VKRw
-	MkhcOpPdNonvHFVXaIZoG5U13nOjNSCXY4/MjZsehnaDQNS/rFoouZfgEoCrM/DKa/21Ts
-	pKauDEaTSdUdbr0XudtTw+a1rQAcRlE=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: Kees Cook <keescook@chromium.org>
-Cc: Vlastimil Babka <vbabka@suse.cz>, Christoph Lameter <cl@linux.com>, 
-	Pekka Enberg <penberg@kernel.org>, David Rientjes <rientjes@google.com>, 
-	Joonsoo Kim <iamjoonsoo.kim@lge.com>, Andrew Morton <akpm@linux-foundation.org>, 
-	Roman Gushchin <roman.gushchin@linux.dev>, Hyeonggon Yoo <42.hyeyoo@gmail.com>, linux-mm@kvack.org, 
-	"GONG, Ruiqi" <gongruiqi@huaweicloud.com>, Xiu Jianfeng <xiujianfeng@huawei.com>, 
-	Suren Baghdasaryan <surenb@google.com>, Jann Horn <jannh@google.com>, 
-	Matteo Rizzo <matteorizzo@google.com>, linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
-Subject: Re: [PATCH v2 4/9] slab: Introduce kmem_buckets_create()
-Message-ID: <67tgebii42rwneeyqekmxxqo2bzgyysdqggciuew27bc3gbrkg@5ceqjmiaxvyu>
-References: <20240305100933.it.923-kees@kernel.org>
- <20240305101026.694758-4-keescook@chromium.org>
- <eppzf5gil6izcn6nnvzgzukagdikqnfxdvziga7ipnpl5eeern@i7jfzslklsu6>
- <202403251327.C15C1E61A@keescook>
+	s=arc-20240116; t=1711403491; c=relaxed/simple;
+	bh=VPAchq+M68VV44gVTC6uMYMuUEi605N7vssefb7i2Hs=;
+	h=Message-ID:Date:MIME-Version:From:Subject:To:Cc:References:
+	 In-Reply-To:Content-Type; b=VJVqSZxGDG/egIxmQVtVWxXxJhdtyrOX4gFr+BVv7lsQTpXFhoLVqHfjCw5iAO/X1OlM8omEQFaAUvnqBtY6KZDy/eeabGh9BeX+vpdgQreDDCpLr/6ca8uPrP+UaYo7pebuhyOTh0PVsML/DsfViNo7dBa+4FhrWcX9YpoDcoQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=WI/N6eTB; arc=none smtp.client-ip=209.85.208.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ed1-f42.google.com with SMTP id 4fb4d7f45d1cf-56bdf81706aso4774660a12.2
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 14:51:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1711403488; x=1712008288; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:content-language
+         :references:cc:to:subject:from:user-agent:mime-version:date
+         :message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=Ujd4Kk9YyH7DdW2c6ufFJckPeLpYLG6n2QhNv6VOBTY=;
+        b=WI/N6eTBNSbE2KfMuRQbE32PM9kV2JM2vNj28D9M7Kimq2IbYFnoDZ7csWpNIbjFoA
+         GtSe6BPApO6622BDPEvH63/HHj6ofiZrFK18YOyY6dRMHV86mOBZtr7ns/rcR0TZAem3
+         wzvMWNp4H7Ako4KJT/77uYFtpMrkZKtgCoCf6uXCDNblfS9pwZ1XgwdfBxuomTlebPLk
+         uOwBlUq25IE8THxi6EiPCTk/TT3d/LguKfxpjsvOKQXjDRpLc5GPQjv2LGVObVWoDGpb
+         bG6yDLUiCFLob3RIcoVlMyHGSE2eXVlEnkd3ANN40jnx7PaRL16ZTlILD4x9WtUEnaC5
+         ++Ig==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711403488; x=1712008288;
+        h=content-transfer-encoding:in-reply-to:autocrypt:content-language
+         :references:cc:to:subject:from:user-agent:mime-version:date
+         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Ujd4Kk9YyH7DdW2c6ufFJckPeLpYLG6n2QhNv6VOBTY=;
+        b=dRgSzoaiCXQgzuqVeJPbRkWKh/zHBtLPQiQdV9alt9VPK9N1/FdwUHIDW1P+Jq8uMU
+         xvIiZV71UvUdmiqVzpYasx7AYIqTb1DecxkNMWy7HFl8Z1p/CHliS7Ahzevr/fgfzB49
+         aSQtHo2u8a1Isbq8Sjzr3uJ6o3gJG1huwDWd6sAiqqjDqqL3lkUvHsigoMsIaR03Hvfi
+         cDdHxINZj2fJI91weg94bXU49c6aGmZhQrxgURq+Urra+n6Ji5TWeaD4/1mwsHGU01rB
+         0XlPsAxR1I5i38kFy4OXIUHqu9sJn8JN4YIRtKg+GlhGdf7GKLJ/C7ASZcgQaHeNuDFy
+         fexQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXh24uRQnvsvB6i2aDFQdt6gImmSgT4+KUpB39BvJgysG+uIdBTUh7xkcIuhnKPldKN9lNM7WdqakPhe2QP2+3UCSRDpLaw++IskrRw
+X-Gm-Message-State: AOJu0YzeYOAQCtEe0rOiPbdrk5+vQwy2AGXJjnEZQFYxMPcjy8K/mRDB
+	j4mcqddVJjpWlpxBlY2O3n2TysLhgBoJYWXnhmOfZTMNyqGWGUNd2ef/uwkkJ94=
+X-Google-Smtp-Source: AGHT+IF7Yn+qQFw8J7OLV7RNhx43LZ/YIN5hOg5BQ15kqZK4CcfMoK0HsVlRYVinOdWv02s1gwcOwg==
+X-Received: by 2002:a50:d6c9:0:b0:56b:d153:8fe0 with SMTP id l9-20020a50d6c9000000b0056bd1538fe0mr5361973edj.2.1711403487746;
+        Mon, 25 Mar 2024 14:51:27 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.222.44])
+        by smtp.gmail.com with ESMTPSA id ij5-20020a056402158500b0056c09fda4e6sm1987791edb.54.2024.03.25.14.51.26
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 25 Mar 2024 14:51:27 -0700 (PDT)
+Message-ID: <5ca78fc8-4a53-4f09-878f-4a47875f9de5@linaro.org>
+Date: Mon, 25 Mar 2024 22:51:25 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <202403251327.C15C1E61A@keescook>
-X-Migadu-Flow: FLOW_OUT
+User-Agent: Mozilla Thunderbird
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Subject: Re: [PATCH v3 4/4] virt: vmgenid: add support for devicetree bindings
+To: Sudan Landge <sudanl@amazon.com>, tytso@mit.edu, Jason@zx2c4.com,
+ robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+ sathyanarayanan.kuppuswamy@linux.intel.com, thomas.lendacky@amd.com,
+ dan.j.williams@intel.com, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+Cc: graf@amazon.de, dwmw@amazon.co.uk, bchalios@amazon.es,
+ xmarcalx@amazon.co.uk
+References: <20240325195306.13133-1-sudanl@amazon.com>
+ <20240325195306.13133-5-sudanl@amazon.com>
+Content-Language: en-US
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <20240325195306.13133-5-sudanl@amazon.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Mon, Mar 25, 2024 at 01:40:34PM -0700, Kees Cook wrote:
-> On Mon, Mar 25, 2024 at 03:40:51PM -0400, Kent Overstreet wrote:
-> > On Tue, Mar 05, 2024 at 02:10:20AM -0800, Kees Cook wrote:
-> > > Dedicated caches are available For fixed size allocations via
-> > > kmem_cache_alloc(), but for dynamically sized allocations there is only
-> > > the global kmalloc API's set of buckets available. This means it isn't
-> > > possible to separate specific sets of dynamically sized allocations into
-> > > a separate collection of caches.
-> > > 
-> > > This leads to a use-after-free exploitation weakness in the Linux
-> > > kernel since many heap memory spraying/grooming attacks depend on using
-> > > userspace-controllable dynamically sized allocations to collide with
-> > > fixed size allocations that end up in same cache.
-> > > 
-> > > While CONFIG_RANDOM_KMALLOC_CACHES provides a probabilistic defense
-> > > against these kinds of "type confusion" attacks, including for fixed
-> > > same-size heap objects, we can create a complementary deterministic
-> > > defense for dynamically sized allocations.
-> > > 
-> > > In order to isolate user-controllable sized allocations from system
-> > > allocations, introduce kmem_buckets_create(), which behaves like
-> > > kmem_cache_create(). (The next patch will introduce kmem_buckets_alloc(),
-> > > which behaves like kmem_cache_alloc().)
-> > > 
-> > > Allows for confining allocations to a dedicated set of sized caches
-> > > (which have the same layout as the kmalloc caches).
-> > > 
-> > > This can also be used in the future once codetag allocation annotations
-> > > exist to implement per-caller allocation cache isolation[1] even for
-> > > dynamic allocations.
-> > > 
-> > > Link: https://lore.kernel.org/lkml/202402211449.401382D2AF@keescook [1]
-> > > Signed-off-by: Kees Cook <keescook@chromium.org>
-> > > ---
-> > > Cc: Vlastimil Babka <vbabka@suse.cz>
-> > > Cc: Christoph Lameter <cl@linux.com>
-> > > Cc: Pekka Enberg <penberg@kernel.org>
-> > > Cc: David Rientjes <rientjes@google.com>
-> > > Cc: Joonsoo Kim <iamjoonsoo.kim@lge.com>
-> > > Cc: Andrew Morton <akpm@linux-foundation.org>
-> > > Cc: Roman Gushchin <roman.gushchin@linux.dev>
-> > > Cc: Hyeonggon Yoo <42.hyeyoo@gmail.com>
-> > > Cc: linux-mm@kvack.org
-> > > ---
-> > >  include/linux/slab.h |  5 +++
-> > >  mm/slab_common.c     | 72 ++++++++++++++++++++++++++++++++++++++++++++
-> > >  2 files changed, 77 insertions(+)
-> > > 
-> > > diff --git a/include/linux/slab.h b/include/linux/slab.h
-> > > index f26ac9a6ef9f..058d0e3cd181 100644
-> > > --- a/include/linux/slab.h
-> > > +++ b/include/linux/slab.h
-> > > @@ -493,6 +493,11 @@ void *kmem_cache_alloc_lru(struct kmem_cache *s, struct list_lru *lru,
-> > >  			   gfp_t gfpflags) __assume_slab_alignment __malloc;
-> > >  void kmem_cache_free(struct kmem_cache *s, void *objp);
-> > >  
-> > > +kmem_buckets *kmem_buckets_create(const char *name, unsigned int align,
-> > > +				  slab_flags_t flags,
-> > > +				  unsigned int useroffset, unsigned int usersize,
-> > > +				  void (*ctor)(void *));
-> > 
-> > I'd prefer an API that initialized an object over one that allocates it
-> > - that is, prefer
-> > 
-> > kmem_buckets_init(kmem_buckets *bucekts, ...)
+On 25/03/2024 20:53, Sudan Landge wrote:
+> - Extend the vmgenid platform driver to support devicetree bindings.
+>   With this support, hypervisors can send vmgenid notifications to
+>   the virtual machine without the need to enable ACPI. The bindings
+>   are located at: Documentation/devicetree/bindings/rng/vmgenid.yaml
 > 
-> Sure, that can work. kmem_cache_init() would need to exist for the same
-> reason though.
+> - Use proper FLAGS to compile with and without ACPI and/or devicetree.
 
-That'll be a very worthwhile addition too; IPC running kernel code
-is always crap and dependent loads is a big part of that.
+I do not see any flags. You use if/ifdefs which is a NAK.
 
-I did mempool_init() and bioset_init() awhile back, so it's someone
-else's turn for this one :)
+Do not mix independent changes within one commit. Please follow
+guidelines in submitting-patches for this.
 
-> Sure, I think it'll depend on how the per-site allocations got wired up.
-> I think you're meaning to include a full copy of the kmem cache/bucket
-> struct with the codetag instead of just a pointer? I don't think that'll
-> work well to make it runtime selectable, and I don't see it using an
-> extra deref -- allocations already get the struct from somewhere and
-> deref it. The only change is where to find the struct.
-
-The codetags are in their own dedicated elf sections already, so if you
-put the kmem_buckets in the codetag the entire elf section can be
-discarded if it's not in use.
-
-Also, the issue isn't derefs - it's dependent loads and locality. Taking
-the address of the kmem_buckets to pass it is fine; the data referred to
-will still get pulled into cache when we touch the codetag. If it's
-behind a pointer we have to pull the codetag into cache, wait for that
-so we can get the kmme_buckets pointer - then start to pull in the
-kmem_buckets itself.
-
-If it's a cache miss you just slowed the entire allocation down by
-around 30 ns.
-
-> > I'm curious what all the arguments to kmem_buckets_create() are needed
-> > for, if this is supposed to be a replacement for kmalloc() users.
 > 
-> Are you confusing kmem_buckets_create() with kmem_buckets_alloc()? These
-> args are needed to initialize the per-bucket caches, just like is
-> already done for the global kmalloc per-bucket caches. This mirrors
-> kmem_cache_create(). (Or more specifically, calls kmem_cache_create()
-> for each bucket size, so the args need to be passed through.)
+> Signed-off-by: Sudan Landge <sudanl@amazon.com>
+> ---
+>  drivers/virt/Kconfig   |  1 -
+>  drivers/virt/vmgenid.c | 85 +++++++++++++++++++++++++++++++++++++++---
+>  2 files changed, 80 insertions(+), 6 deletions(-)
 > 
-> If you mean "why expose these arguments because they can just use the
-> existing defaults already used by the global kmalloc caches" then I
-> would say, it's to gain the benefit here of narrowing the scope of the
-> usercopy offsets. Right now kmalloc is forced to allow the full usercopy
-> window into an allocation, but we don't have to do this any more. For
-> example, see patch 8, where struct msg_msg doesn't need to expose the
-> header to userspace:
 
-"usercopy window"? You're now annotating which data can be copied to
-userspace?
+..
 
-I'm skeptical, this looks like defensive programming gone amuck to me.
- 
-> 	msg_buckets = kmem_buckets_create("msg_msg", 0, SLAB_ACCOUNT,
-> 					  sizeof(struct msg_msg),
-> 					  DATALEN_MSG, NULL);
+> +
+> +#if IS_ENABLED(CONFIG_OF)
+> +static irqreturn_t vmgenid_of_irq_handler(int irq, void *dev)
+> +{
+> +	(void)irq;
+> +	vmgenid_notify(dev);
+> +
+> +	return IRQ_HANDLED;
+> +}
+> +#endif
+>  
+>  static int setup_vmgenid_state(struct vmgenid_state *state, u8 *next_id)
+>  {
+> @@ -55,6 +70,7 @@ static int setup_vmgenid_state(struct vmgenid_state *state, u8 *next_id)
+>  
+>  static int vmgenid_add_acpi(struct device *dev, struct vmgenid_state *state)
+>  {
+> +#if IS_ENABLED(CONFIG_ACPI)
+
+Why do you create all this ifdeffery in the code? You already got
+comments to get rid of all this #if.
+
+>  	struct acpi_device *device = ACPI_COMPANION(dev);
+>  	struct acpi_buffer parsed = { ACPI_ALLOCATE_BUFFER };
+>  	union acpi_object *obj;
+> @@ -96,6 +112,49 @@ static int vmgenid_add_acpi(struct device *dev, struct vmgenid_state *state)
+>  out:
+>  	ACPI_FREE(parsed.pointer);
+>  	return ret;
+> +#else
+> +	(void)dev;
+> +	(void)state;
+> +	return -EINVAL;
+> +#endif
+> +}
+> +
+> +static int vmgenid_add_of(struct platform_device *pdev, struct vmgenid_state *state)
+> +{
+> +#if IS_ENABLED(CONFIG_OF)
+> +	void __iomem *remapped_ptr;
+> +	int ret = 0;
+> +
+> +	remapped_ptr = devm_platform_get_and_ioremap_resource(pdev, 0, NULL);
+> +	if (IS_ERR(remapped_ptr)) {
+> +		ret = PTR_ERR(remapped_ptr);
+> +		goto out;
+> +	}
+> +
+> +	ret = setup_vmgenid_state(state, remapped_ptr);
+> +	if (ret)
+> +		goto out;
+> +
+> +	state->irq = platform_get_irq(pdev, 0);
+> +	if (state->irq < 0) {
+> +		ret = state->irq;
+> +		goto out;
+> +	}
+> +	pdev->dev.driver_data = state;
+> +
+> +	ret =  devm_request_irq(&pdev->dev, state->irq,
+> +				vmgenid_of_irq_handler,
+> +				IRQF_SHARED, "vmgenid", &pdev->dev);
+> +	if (ret)
+> +		pdev->dev.driver_data = NULL;
+> +
+> +out:
+> +	return ret;
+> +#else
+
+
+That's neither readable code nor matching Linux coding style. Driver
+don't do such magic. Please open some recent drivers for ACPI and OF and
+look there. Old drivers had stubs for !CONFIG_XXX, but new drivers don't
+have even that.
+
+> +	(void)dev;
+> +	(void)state;
+> +	return -EINVAL;
+> +#endif
+>  }
+>  
+>  static int vmgenid_add(struct platform_device *pdev)
+> @@ -108,7 +167,10 @@ static int vmgenid_add(struct platform_device *pdev)
+>  	if (!state)
+>  		return -ENOMEM;
+>  
+> -	ret = vmgenid_add_acpi(dev, state);
+> +	if (dev->of_node)
+> +		ret = vmgenid_add_of(pdev, state);
+> +	else
+> +		ret = vmgenid_add_acpi(dev, state);
+>  
+>  	if (ret)
+>  		devm_kfree(dev, state);
+> @@ -116,18 +178,31 @@ static int vmgenid_add(struct platform_device *pdev)
+>  	return ret;
+>  }
+>  
+> -static const struct acpi_device_id vmgenid_ids[] = {
+> +#if IS_ENABLED(CONFIG_OF)
+
+No, drop.
+
+> +static const struct of_device_id vmgenid_of_ids[] = {
+> +	{ .compatible = "linux,vmgenctr", },
+> +	{},
+> +};
+> +MODULE_DEVICE_TABLE(of, vmgenid_of_ids);
+> +#endif
+> +
+> +#if IS_ENABLED(CONFIG_ACPI)
+
+
+> +static const struct acpi_device_id vmgenid_acpi_ids[] = {
+>  	{ "VMGENCTR", 0 },
+>  	{ "VM_GEN_COUNTER", 0 },
+>  	{ }
+>  };
+> -MODULE_DEVICE_TABLE(acpi, vmgenid_ids);
+> +MODULE_DEVICE_TABLE(acpi, vmgenid_acpi_ids);
+> +#endif
+>  
+>  static struct platform_driver vmgenid_plaform_driver = {
+>  	.probe      = vmgenid_add,
+>  	.driver     = {
+>  		.name   = "vmgenid",
+> -		.acpi_match_table = ACPI_PTR(vmgenid_ids),
+> +		.acpi_match_table = ACPI_PTR(vmgenid_acpi_ids),
+> +#if IS_ENABLED(CONFIG_OF)
+
+No, really, this is some ancient code.
+
+Please point me to single driver doing such ifdef.
+
+> +		.of_match_table = vmgenid_of_ids,
+> +#endif
+>  		.owner = THIS_MODULE,
+
+This is clearly some abandoned driver... sigh... I thought we get rid of
+all this owner crap. Many years ago. How could it appear back if
+automated tools report it?
+
+Considering how many failures LKP reported for your patchsets, I have
+real doubts that anyone actually tests this code.
+
+Please confirm:
+Did you build W=1, run smatch, sparse and coccinelle on the driver after
+your changes?
+
+Best regards,
+Krzysztof
+
 
