@@ -1,93 +1,93 @@
-Return-Path: <linux-kernel+bounces-117447-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-117449-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D72A788AB88
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 18:25:30 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C7D5788AB8D
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 18:26:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 87B302A74CC
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 17:25:29 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F3C941C3D77E
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 17:25:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8EC5712B16C;
-	Mon, 25 Mar 2024 16:19:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0632312EBE3;
+	Mon, 25 Mar 2024 16:19:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="W+mrT5se"
-Received: from mail-qv1-f41.google.com (mail-qv1-f41.google.com [209.85.219.41])
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="COAq4fVs"
+Received: from mail-qt1-f175.google.com (mail-qt1-f175.google.com [209.85.160.175])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 97D4B6F060
-	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 16:19:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A0E2312DDA2
+	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 16:19:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711383555; cv=none; b=WmcUfnot6qLmOYYTOlkClmhf2oEJhxdwu0Vc7wtoN7YQ1UdjoexaoxArAj/XKYj+dF8kp1/bbMTX5D1ewd8RuINXv36Qvdskaw7C0Di8B5PEHMKbhYnY/QytMAurX2jN1vEN61Z+Tj2WeCk8r9TRyeYlxSPqtHmg+umy9bxgayg=
+	t=1711383563; cv=none; b=ZYerA6YAkg5oLBATx4Bb6eioJwFUYdWllIMbw5EK6BiWpHK8IXsPqyhbCWJ0e1q5RUOn1ILd9GoTqrhd3E2RSqKPdS2s3ErRad3HVHGBB7/Q832x9XsJWUCc7cUl1VU0Gbi2kWdi8XXAaEtOE0SzoPtNXkqDm1MHsFE1A/h1Z5Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711383555; c=relaxed/simple;
-	bh=C0yANzAlSzgND8qqihTlSMXwQ/R0JMuPRLxdKZ8jvZQ=;
+	s=arc-20240116; t=1711383563; c=relaxed/simple;
+	bh=6utOFEwbdwWyQcN7SLxfqSV+M2t5uCbikbD6Z3HiO1Q=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=tcgzcqb2UKIdxL3vgBgzv+TVm7cFi32MgIeLwT2sV6/HjBbod+deacq094H3t1H9m6mpWvpWuis2dmZtn5mJFCCWc2j49DIyloMStq56Lh8+V4veao1TmzrBZ8QBmoH19AWEEblxbi6x9gNrDBdsCnfat/37szrmVmhd19/Mnug=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=W+mrT5se; arc=none smtp.client-ip=209.85.219.41
+	 To:Cc:Content-Type; b=UCB92e87wawCxfEdb3AQV6h3QxOkzreiKGfBMhsI+Etlzd8WZ4iILxco60oKxwFptNgnl7MNdT4Tf74Kv9tZHRQX6JFobJaa5V+Uc6Hq0XiWIpZRKbSA1gVzcp+V+Yf6ef+raKML1MhKCwTbUGb/h5V28XJeWOiqQ8+MISi9Hv0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=COAq4fVs; arc=none smtp.client-ip=209.85.160.175
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-qv1-f41.google.com with SMTP id 6a1803df08f44-6962a97752eso33006066d6.2
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 09:19:12 -0700 (PDT)
+Received: by mail-qt1-f175.google.com with SMTP id d75a77b69052e-430dcd64e58so30748781cf.0
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 09:19:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1711383550; x=1711988350; darn=vger.kernel.org;
+        d=chromium.org; s=google; t=1711383559; x=1711988359; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=EKP+i5jnsTv1b1X+grUsnmPFecRRLS4nYrDFL9hNpXg=;
-        b=W+mrT5se5SXV/eaQK3UVwLxVAIcOCDRowUpmtMn0lB9w2c8+LvZXRRQ2KTUFWYnjW7
-         P/eE0vaSXXbgSPvmPF8CUwFeEolCLBA8nKog6EVUn+OaYjoUBxwzCgn69bmDLLskYq9P
-         wdEnXAixjhyiz5HQ6Z0tMw6hMMhgtM/nkEW7k=
+        bh=DsgsfaYuhO9HIMjIvNDS3p/KRrPkbJlG84J7jcdFiPU=;
+        b=COAq4fVs8WLSyhzuZWdojy9732BJkeHAxZ0dB7XPbkCJ+/CVWXgKb/eI2oxfxUNwoi
+         2V4n8uuq5JhI3aE8B9SYGBBJGlu9KcmmTbJ5xkurkDXcNBFdZdqj7df0PiOvQwbKvKre
+         RnzbZx7pExxulfKCffnMEByko/GZOmini2HWk=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711383550; x=1711988350;
+        d=1e100.net; s=20230601; t=1711383559; x=1711988359;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=EKP+i5jnsTv1b1X+grUsnmPFecRRLS4nYrDFL9hNpXg=;
-        b=jkMXi8D75s9WlIbV2nrBooSAa4HFe9BNmtwbubj9EZWQkjWisOpggnVu4+g2zQWqxu
-         utXRe64L1Ih9gmsCLCny8/T2+6STsJfVL3kPM2SFTRnhu6mmU8W4lP037RaI5VOR9QMd
-         WPWV8+O2Go2JWf8WOwo9Y46XAw1o+Rz4RxmNOYAK+0cY83LrhXSdYcavApeORCKih8DR
-         0SzT9PXP2XT13s1uBfC1AFvkHPDzwU4evmxkcVI7Vzoufz/WwuXrAQsXuQCOsAK4Ndfi
-         pwlm6ju4TPhvS7IetTNdWYL3M2gy1kBZOjtVlOzRIgC9EgXVg6G39nwU7pfqqJ8Ck5oD
-         +vOg==
-X-Forwarded-Encrypted: i=1; AJvYcCWbotb0xkouaxKaPS1lO/LCp/S86QoOwvZkP/XfUpOM0yW7ZW/7b1QKzsPa9b95SuQID2EeE1aHr2qB4FQ75ixTL9FU0A8z2WZaPFVg
-X-Gm-Message-State: AOJu0YyBJ0BsMfEHCda/670nZ7wPqdgDHENoYxDSZsqUrHQt6eaeSgIt
-	KD0N1zjr4RejnvnePve4jno2yJf9AXCIAoJM1kabQ6r/YONeVIZQfMrqqjJXtyVvjeTVTLADjtI
+        bh=DsgsfaYuhO9HIMjIvNDS3p/KRrPkbJlG84J7jcdFiPU=;
+        b=mgvGJcb0bkocyuppVgS/SnbxcJGVmyPnAevEjYy/mfuIcpOmZq8L6DDP1i/rIB5Jwj
+         jqg3bKJveO2Dz7k+HkLr5bs2k7yGYLJ2piKYywP3B5DKEXqz08JGNIz6Ke7nAF4ZIOdr
+         lenD3EmGQbOJ+pwxUXdTLEyL7tlzz0d65vQwr/1KkXQWUdVkC5hkfD59ICRKH8BTmH7N
+         iZxG66eyoL54oUsgdaf2P0gEeE6nXagBiA+bEoh9sqpxd3nqcs3gmRtLUc6U8uo/1yWG
+         6z1F/lK4NiUDJuPoWDP/1xlGycCZRtQ855WkRza876yTNa8aULXUfZfcriwN3XgDz70c
+         LuCw==
+X-Forwarded-Encrypted: i=1; AJvYcCX4zw7R9JPTB1zTGlezHkODQWPGej25uoq0kJQeCPBjhMio/fwbWOINDVBcaXo4LzbnZiquIRPouvDYuNAXEYz+vlY9bytmiF+EjrpE
+X-Gm-Message-State: AOJu0YyFB3jto1nhvbMJJmvpL0zq7r0JKNLurU081Mp2Awd6sy2okQqB
+	lQU5svZ7Mn+pUGrixoRsusNarMC65noS24n561m2ivddOYtV+qIMwWd4D1x2E+3uzuwBp3lL1pI
 	=
-X-Google-Smtp-Source: AGHT+IG2pcIyOp5sSCKNK5Cx1qUwV/0NTk1E4qtUoGN32smYlwqwRzSgM+sKUhzmriDWXMs6P2iUug==
-X-Received: by 2002:a05:6214:d4a:b0:696:9756:fc44 with SMTP id 10-20020a0562140d4a00b006969756fc44mr1320479qvr.26.1711383549760;
-        Mon, 25 Mar 2024 09:19:09 -0700 (PDT)
-Received: from mail-qt1-f176.google.com (mail-qt1-f176.google.com. [209.85.160.176])
-        by smtp.gmail.com with ESMTPSA id w9-20020a0cb549000000b0069686d63c1esm1948332qvd.69.2024.03.25.09.19.08
+X-Google-Smtp-Source: AGHT+IHAL3qSq+dyzADtplpw5l8OQZoQwfpNATJ/DZTfJ8lY12DV8lHQ3iJSCAqBxxdUujQLGFqAfA==
+X-Received: by 2002:a05:622a:1115:b0:431:4983:885d with SMTP id e21-20020a05622a111500b004314983885dmr8546198qty.33.1711383559386;
+        Mon, 25 Mar 2024 09:19:19 -0700 (PDT)
+Received: from mail-qt1-f182.google.com (mail-qt1-f182.google.com. [209.85.160.182])
+        by smtp.gmail.com with ESMTPSA id k20-20020ac84754000000b0042f30e63b1fsm2729594qtp.49.2024.03.25.09.19.18
         for <linux-kernel@vger.kernel.org>
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 25 Mar 2024 09:19:08 -0700 (PDT)
-Received: by mail-qt1-f176.google.com with SMTP id d75a77b69052e-430d3fcc511so467401cf.1
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 09:19:08 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCXS3rnJycu/qOpk51Wg3FqdrpT+qSepiyngZqXRWsKI3ZN62IVSlsno9bqpax+15fqzBHJhx42onijf5L1kqofVh1h3liK8MHln20BS
-X-Received: by 2002:a05:622a:5447:b0:431:4eea:ef20 with SMTP id
- eo7-20020a05622a544700b004314eeaef20mr283279qtb.16.1711383548431; Mon, 25 Mar
- 2024 09:19:08 -0700 (PDT)
+        Mon, 25 Mar 2024 09:19:18 -0700 (PDT)
+Received: by mail-qt1-f182.google.com with SMTP id d75a77b69052e-430d3fcc511so467641cf.1
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 09:19:18 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCUqy0uP+zpYhEVFznARe4P7vbMGY/oCBX9fE1Hb7hXrvCgo3P3oGBBv1P/BsRXcnv90A7U+3JzpftM4Gel4ItV4A92Zn89GF1THVUtu
+X-Received: by 2002:a05:622a:588e:b0:431:56bb:2347 with SMTP id
+ fh14-20020a05622a588e00b0043156bb2347mr265739qtb.21.1711383558167; Mon, 25
+ Mar 2024 09:19:18 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240325054403.592298-1-sboyd@kernel.org> <20240325054403.592298-2-sboyd@kernel.org>
-In-Reply-To: <20240325054403.592298-2-sboyd@kernel.org>
+References: <20240325054403.592298-1-sboyd@kernel.org> <20240325054403.592298-3-sboyd@kernel.org>
+In-Reply-To: <20240325054403.592298-3-sboyd@kernel.org>
 From: Doug Anderson <dianders@chromium.org>
-Date: Mon, 25 Mar 2024 09:18:52 -0700
-X-Gmail-Original-Message-ID: <CAD=FV=Vo2vpemyH1ChdHtUdaeKnGckBUeqKfL11xn3WsN5+BUw@mail.gmail.com>
-Message-ID: <CAD=FV=Vo2vpemyH1ChdHtUdaeKnGckBUeqKfL11xn3WsN5+BUw@mail.gmail.com>
-Subject: Re: [PATCH 1/5] clk: Remove prepare_lock hold assertion in __clk_release()
+Date: Mon, 25 Mar 2024 09:19:02 -0700
+X-Gmail-Original-Message-ID: <CAD=FV=Wu_SuLcHYQ1bLC-zhV1FnoFor84t-=EERT9mnDdm5Q2A@mail.gmail.com>
+Message-ID: <CAD=FV=Wu_SuLcHYQ1bLC-zhV1FnoFor84t-=EERT9mnDdm5Q2A@mail.gmail.com>
+Subject: Re: [PATCH 2/5] clk: Don't hold prepare_lock when calling kref_put()
 To: Stephen Boyd <sboyd@kernel.org>
 Cc: Michael Turquette <mturquette@baylibre.com>, linux-kernel@vger.kernel.org, 
 	linux-clk@vger.kernel.org, patches@lists.linux.dev, 
-	linux-arm-msm@vger.kernel.org, Krzysztof Kozlowski <krzk@kernel.org>
+	linux-arm-msm@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
@@ -96,23 +96,19 @@ Hi,
 On Sun, Mar 24, 2024 at 10:44=E2=80=AFPM Stephen Boyd <sboyd@kernel.org> wr=
 ote:
 >
-> Removing this assertion lets us move the kref_put() call outside the
-> prepare_lock section. We don't need to hold the prepare_lock here to
-> free memory and destroy the clk_core structure. We've already unlinked
-> the clk from the clk tree and by the time the release function runs
-> nothing holds a reference to the clk_core anymore so anything with the
-> pointer can't access the memory that's being freed anyway. Way back in
-> commit 496eadf821c2 ("clk: Use lockdep asserts to find missing hold of
-> prepare_lock") we didn't need to have this assertion either.
+> We don't need to hold the prepare_lock when dropping a ref on a struct
+> clk_core. The release function is only freeing memory and any code with
+> a pointer reference has already unlinked anything pointing to the
+> clk_core. This reduces the holding area of the prepare_lock a bit.
 >
-> Fixes: 496eadf821c2 ("clk: Use lockdep asserts to find missing hold of pr=
-epare_lock")
-> Cc: Krzysztof Kozlowski <krzk@kernel.org>
+> Note that we also don't call free_clk() with the prepare_lock held.
+> There isn't any reason to do that.
+>
 > Cc: Douglas Anderson <dianders@chromium.org>
 > Signed-off-by: Stephen Boyd <sboyd@kernel.org>
 > ---
->  drivers/clk/clk.c | 2 --
->  1 file changed, 2 deletions(-)
+>  drivers/clk/clk.c | 12 +++++-------
+>  1 file changed, 5 insertions(+), 7 deletions(-)
 
 Reviewed-by: Douglas Anderson <dianders@chromium.org>
 
