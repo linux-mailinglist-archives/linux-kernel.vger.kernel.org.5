@@ -1,137 +1,96 @@
-Return-Path: <linux-kernel+bounces-117913-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-117914-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id A7C7888B12E
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 21:19:21 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 49F7488B131
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 21:19:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 47B161F2CB3B
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 20:19:21 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7B7191C61544
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 20:19:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7274941C75;
-	Mon, 25 Mar 2024 20:19:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8910245026;
+	Mon, 25 Mar 2024 20:19:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="fOqLjzvU"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Bum2rFsu"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 25BB5FC01
-	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 20:19:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CB8BEFC01;
+	Mon, 25 Mar 2024 20:19:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711397954; cv=none; b=D2PZlVtN1XWAIpA/hwJuJVKHO07Aa9yXvg+EZ5sh3QVg51j8/Hz/JLaD57DlWkuhsHBSwBDFHJMYO/ijiiLrshLfgPDqAGlItY6lFCTbycEwIfvYz0twcXCL0RKnxFwK8d5PrvM8MK+SW9yRw+SKmviwogddKMZ5ucddkO7YcNg=
+	t=1711397973; cv=none; b=pCDUpTvV/Z//bc0ku419teFgeh4YD1jNgaMLvfdOzSAFmt5+QuqSOcOJ2AnKbKeaqgq1drGxglWsYScuGucQCSr0mvSPg6GMtAqFN/hcRgwNHWGrsPnIxsqIK+ytmLXcJCq9FRYheKZficQHYUbj/9lrBdcCtAW19KjaehhFF7M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711397954; c=relaxed/simple;
-	bh=IdVCsrq7tOKkEg9iPBuyY/ynzK2AlcCUX1wvmPlnA74=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=OYUMzzwZ3RVDmpyedFebJWD7oW+jW2oucWAB69JuiQxgj06VyMRxEYpBgR43tBh89u5VllDQJhQM1NlXh0zBcfnZMwZSV7lRD1aHWKZ5prMpnLnkuiJMfK/UEj+EMqasKMvAK8PKNTn70clvVMDqgmznrSUOxoB7TIV0DzmT9c0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=fOqLjzvU; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1711397952;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=vHCr1hkVrt3zjsj8EZP+o7GfFXzd0IpEVKZBBTCHeI0=;
-	b=fOqLjzvUM/Bzv1oJVtTzSgRt7Ol6IgG2YHuiWK2/hPb1WuA4JGFHOkMQ7dBQS6No/8QePl
-	Z1v9LkjfN5ianMHtA6TMXrj80jjSrN6fsNosOKAafovBXGDrRPQdkL08TtmZLGk/+HME1o
-	WdVCJp2UMEt0TscjQ+Kxsuk5e3EuXO0=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-675-qwYNHUpaNJ6s8NxEaFpIGw-1; Mon,
- 25 Mar 2024 16:19:08 -0400
-X-MC-Unique: qwYNHUpaNJ6s8NxEaFpIGw-1
-Received: from smtp.corp.redhat.com (int-mx09.intmail.prod.int.rdu2.redhat.com [10.11.54.9])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id F3100380671B;
-	Mon, 25 Mar 2024 20:19:07 +0000 (UTC)
-Received: from swamp.redhat.com (unknown [10.45.224.78])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id 1DA6E492BD3;
-	Mon, 25 Mar 2024 20:19:06 +0000 (UTC)
-From: Petr Oros <poros@redhat.com>
-To: netdev@vger.kernel.org
-Cc: jesse.brandeburg@intel.com,
-	anthony.l.nguyen@intel.com,
-	davem@davemloft.net,
-	edumazet@google.com,
-	kuba@kernel.org,
-	pabeni@redhat.com,
-	horms@kernel.org,
-	michal.swiatkowski@linux.intel.com,
-	wojciech.drewek@intel.com,
-	intel-wired-lan@lists.osuosl.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH net] ice: fix enabling RX VLAN filtering
-Date: Mon, 25 Mar 2024 21:19:01 +0100
-Message-ID: <20240325201901.39365-1-poros@redhat.com>
+	s=arc-20240116; t=1711397973; c=relaxed/simple;
+	bh=jHzWHipH1FUjrW3QmoX2gyQBJf9dn+dr+EwQqJeJ2Gc=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=VMMdW+7n8qQRF5QoHz/Midbc1Xe/Z9FOveAJ76FEEt1Q8WjaQ6U8eu4mE7gqFL/5y3uigRAC/0XGYe43ruVhprY3MzdOd5CQMbVS2aH28kUdsxlYUCwbKbkatqmViJuNc+h2bcFPPxL/cUkPnjILMztzR6yv6o0o/YLaz4Lku8o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Bum2rFsu; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EC190C433F1;
+	Mon, 25 Mar 2024 20:19:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1711397972;
+	bh=jHzWHipH1FUjrW3QmoX2gyQBJf9dn+dr+EwQqJeJ2Gc=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+	b=Bum2rFsu+JPbqMUpVZ1X5guR1xNpEttm8Bi0nI3fr55l93tXuus0BNLJLeKq6cFCd
+	 caP7tYJXuxFtGlATVhMJ9W+JnBCc26LRFiqW8uAAJSUEmA+9jnmCwbcqaG45Y4E0/h
+	 Vw2l8X+A14Yy2ImoX1HWxBHe0aObKGkgdI9of6Ojoq7Nfi/UwJMsFbwvLPT4aWoL1Z
+	 eI26NO5jq5IGego/V4W6BppAreU9bQumYwzFBHyBd4z6RQIGRd0f/+RqOYNngXfZWz
+	 xmU/KgNGbaNCTCVMYdVBIybqSj4/QaJ6gVsqqYBxP7pbOEUlzBc2ay/67VzrEF2O8o
+	 YlSi505dIgR3Q==
+From: =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>
+To: Conor Dooley <conor@kernel.org>, Puranjay Mohan <puranjay12@gmail.com>
+Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann
+ <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, Martin KaFai
+ Lau <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>, Song Liu
+ <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>, John Fastabend
+ <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, Stanislav
+ Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa
+ <jolsa@kernel.org>, Luke Nelson <luke.r.nels@gmail.com>, Xi Wang
+ <xi.wang@gmail.com>, Paul Walmsley <paul.walmsley@sifive.com>, Palmer
+ Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>,
+ bpf@vger.kernel.org, linux-riscv@lists.infradead.org,
+ linux-kernel@vger.kernel.org, Pu Lehui <pulehui@huaweicloud.com>
+Subject: Re: [PATCH bpf-next v2 2/2] bpf,riscv: Implement
+ bpf_addr_space_cast instruction
+In-Reply-To: <20240325-creamed-unlovely-4c80082e9b8c@spud>
+References: <20240325155434.65589-1-puranjay12@gmail.com>
+ <20240325155434.65589-3-puranjay12@gmail.com>
+ <20240325-nineteen-unvaried-cb5cb5fd3a73@spud>
+ <CANk7y0gWtwN7EJ24aoY9-RB9629d5Ks-9fMc3wnAAjjERcZhFw@mail.gmail.com>
+ <20240325-perpetual-liking-25f26e485b65@spud>
+ <CANk7y0jtURUC6PWx5nSDigMpScUT+p3qd=hTtqJkCqAN+Nq32A@mail.gmail.com>
+ <20240325-creamed-unlovely-4c80082e9b8c@spud>
+Date: Mon, 25 Mar 2024 21:19:29 +0100
+Message-ID: <87edby3vzi.fsf@all.your.base.are.belong.to.us>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.9
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-ice_port_vlan_on/off() was introduced in commit 2946204b3fa8 ("ice:
-implement bridge port vlan"). But ice_port_vlan_on() incorrectly assigns
-ena_rx_filtering to inner_vlan_ops in DVM mode.
-This causes an error when rx_filtering cannot be enabled in legacy mode.
+Conor Dooley <conor@kernel.org> writes:
 
-Reproducer:
- echo 1 > /sys/class/net/$PF/device/sriov_numvfs
- ip link set $PF vf 0 spoofchk off trust on vlan 3
-dmesg:
- ice 0000:41:00.0: failed to enable Rx VLAN filtering for VF 0 VSI 9 during VF rebuild, error -95
+>> Is there a separate CI for RISCV related stuff? is it public?
+>
+> It's based outta patchwork, just like the netdev/bpf stuff:
+> https://patchwork.kernel.org/project/linux-riscv/list/
 
-Fixes: 2946204b3fa8 ("ice: implement bridge port vlan")
-Signed-off-by: Petr Oros <poros@redhat.com>
----
- .../ethernet/intel/ice/ice_vf_vsi_vlan_ops.c   | 18 ++++++++----------
- 1 file changed, 8 insertions(+), 10 deletions(-)
+*salesman mode on*
 
-diff --git a/drivers/net/ethernet/intel/ice/ice_vf_vsi_vlan_ops.c b/drivers/net/ethernet/intel/ice/ice_vf_vsi_vlan_ops.c
-index 80dc4bcdd3a41c..b3e1bdcb80f84d 100644
---- a/drivers/net/ethernet/intel/ice/ice_vf_vsi_vlan_ops.c
-+++ b/drivers/net/ethernet/intel/ice/ice_vf_vsi_vlan_ops.c
-@@ -26,24 +26,22 @@ static void ice_port_vlan_on(struct ice_vsi *vsi)
- 	struct ice_vsi_vlan_ops *vlan_ops;
- 	struct ice_pf *pf = vsi->back;
- 
--	if (ice_is_dvm_ena(&pf->hw)) {
--		vlan_ops = &vsi->outer_vlan_ops;
--
--		/* setup outer VLAN ops */
--		vlan_ops->set_port_vlan = ice_vsi_set_outer_port_vlan;
--		vlan_ops->clear_port_vlan = ice_vsi_clear_outer_port_vlan;
-+	/* setup inner VLAN ops */
-+	vlan_ops = &vsi->inner_vlan_ops;
- 
--		/* setup inner VLAN ops */
--		vlan_ops = &vsi->inner_vlan_ops;
-+	if (ice_is_dvm_ena(&pf->hw)) {
- 		vlan_ops->add_vlan = noop_vlan_arg;
- 		vlan_ops->del_vlan = noop_vlan_arg;
- 		vlan_ops->ena_stripping = ice_vsi_ena_inner_stripping;
- 		vlan_ops->dis_stripping = ice_vsi_dis_inner_stripping;
- 		vlan_ops->ena_insertion = ice_vsi_ena_inner_insertion;
- 		vlan_ops->dis_insertion = ice_vsi_dis_inner_insertion;
--	} else {
--		vlan_ops = &vsi->inner_vlan_ops;
- 
-+		/* setup outer VLAN ops */
-+		vlan_ops = &vsi->outer_vlan_ops;
-+		vlan_ops->set_port_vlan = ice_vsi_set_outer_port_vlan;
-+		vlan_ops->clear_port_vlan = ice_vsi_clear_outer_port_vlan;
-+	} else {
- 		vlan_ops->set_port_vlan = ice_vsi_set_inner_port_vlan;
- 		vlan_ops->clear_port_vlan = ice_vsi_clear_inner_port_vlan;
- 	}
--- 
-2.43.2
+..and more information on the CI (and source!) can be found here:
 
+  https://github.com/linux-riscv/github-ci/wiki
+  https://wiki.riseproject.dev/display/HOME/PoC+Github+Runners+on+GKE
+
+Improvements are very much welcome. It's pretty much only Conor and me
+doing best effort hacking on the CI.
+
+
+Bj=C3=B6rn
 
