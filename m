@@ -1,130 +1,146 @@
-Return-Path: <linux-kernel+bounces-118017-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-118018-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7375388B266
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 22:11:39 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1ECA088B26E
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 22:13:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2EAC62E694E
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 21:11:38 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9FD121F68176
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 21:13:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DC6146D1CE;
-	Mon, 25 Mar 2024 21:10:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0D9966D1A7;
+	Mon, 25 Mar 2024 21:13:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="OIBlQ7rS"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.16])
+	dkim=pass (2048-bit key) header.d=linux.org.uk header.i=@linux.org.uk header.b="fTGbqxsR"
+Received: from zeniv.linux.org.uk (zeniv.linux.org.uk [62.89.141.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E96EF5BACF;
-	Mon, 25 Mar 2024 21:10:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.16
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C040754902;
+	Mon, 25 Mar 2024 21:13:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=62.89.141.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711401037; cv=none; b=e1jU+Nh7WC3GX2VuOeB5gst+udlddH+ElegtusnbLz7MKCzGNCZqN5oas4TZGnM/3hUzokXRqxMN67E5isE6QS/tkvzvBAwGQDEQ0QXWWr73qnZtr5C7eS+3LAcnDFlf0u5I6UsETmT9jMb+7uz2o0hDv3Z4lFqOkgyOY/lOfeU=
+	t=1711401198; cv=none; b=JQNaNXJuPcDL6dixpKMUTLoSuDhF2gKizTsHruxY8jP82fRzm8bTix56DjH95MovGDePxxdGa+oK0VNrit0/HFl8QTzPvoWC+jXOAH6I+YxAhIYqQqJz5d89DU+o4DyrFP1qKUmyhvGeTsw4s8Xu0ijMeqOrY07C/Fhu1/7eCyE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711401037; c=relaxed/simple;
-	bh=bD9EHdp5oUi2hIVxQ11FjGnl4+h7/y9I/u/Wkxfttt0=;
+	s=arc-20240116; t=1711401198; c=relaxed/simple;
+	bh=6OPKxj3PY7601FbVQRX2xZAyo/li/QEIqiZMW8rxpJk=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=VZlA4gvDe8SiDvPofwuKmOgbiePNLLI2uAbOzw3qTjbqgPJebWGBf+rjSd8rdOshzO7gbEwpv8BIikYSrqnHw37FS8DAPBFXhhpMsUlM3UqvW5U1QVlrsJE2IXHpkeuj7L1Xr0h1bkb/1QnftRrj7e7XREfXwT3d8PF5ZLZsRdM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=OIBlQ7rS; arc=none smtp.client-ip=192.198.163.16
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1711401035; x=1742937035;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:content-transfer-encoding:in-reply-to;
-  bh=bD9EHdp5oUi2hIVxQ11FjGnl4+h7/y9I/u/Wkxfttt0=;
-  b=OIBlQ7rS5cozP0fkV+L4WWLXTYMuCMLnCbUMvyQpyYPcWx4/04svAuqP
-   yMI6fZwSGiZ3xgAU43RLS2E5OzyqbUo9oNRw/H8IN/2CCsE/4NRsH0duH
-   k6L1Ont5+LHn9RHIrGkQgD2qoFR7PNTT8ZYjDtxl20Et4SpbET3NrZGrB
-   Z70SLy7xL528SxHCmIIhbd4/Ffp2nvJed5BehQEjUQJS+qzDK8AaqSmhZ
-   bCfW4eHHrNIyUCRfrEXn2iIU1h1vravQHYyMIRF2A5wpk/8vbk1r4tOTm
-   GM2/IMg5QnQ2or+JfxK80IKRa9aOOfaHgbJiMt4HAC5l4hfpAxhTdzMWs
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11024"; a="7024484"
-X-IronPort-AV: E=Sophos;i="6.07,154,1708416000"; 
-   d="scan'208";a="7024484"
-Received: from fmviesa008.fm.intel.com ([10.60.135.148])
-  by fmvoesa110.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Mar 2024 14:10:34 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,154,1708416000"; 
-   d="scan'208";a="15825643"
-Received: from ls.sc.intel.com (HELO localhost) ([172.25.112.31])
-  by fmviesa008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Mar 2024 14:10:33 -0700
-Date: Mon, 25 Mar 2024 14:10:33 -0700
-From: Isaku Yamahata <isaku.yamahata@intel.com>
-To: "Huang, Kai" <kai.huang@intel.com>
-Cc: "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"Edgecombe, Rick P" <rick.p.edgecombe@intel.com>,
-	"Yamahata, Isaku" <isaku.yamahata@intel.com>,
-	"Zhang, Tina" <tina.zhang@intel.com>,
-	"Yuan, Hang" <hang.yuan@intel.com>,
-	"seanjc@google.com" <seanjc@google.com>,
-	"Chen, Bo2" <chen.bo@intel.com>,
-	"sagis@google.com" <sagis@google.com>,
-	"isaku.yamahata@gmail.com" <isaku.yamahata@gmail.com>,
-	"Aktas, Erdem" <erdemaktas@google.com>,
-	"pbonzini@redhat.com" <pbonzini@redhat.com>,
-	isaku.yamahata@linux.intel.com
-Subject: Re: [PATCH v19 130/130] RFC: KVM: x86, TDX: Add check for
- KVM_SET_CPUID2
-Message-ID: <20240325211033.GI2357401@ls.amr.corp.intel.com>
-References: <cover.1708933498.git.isaku.yamahata@intel.com>
- <d394938197044b40bbe6d9ce2402f72a66a99e80.1708933498.git.isaku.yamahata@intel.com>
- <e1eb51e258138cd145ec9a461677304cb404cc43.camel@intel.com>
- <cfe0def93375acf0459f891cc77cb68d779bd08c.camel@intel.com>
- <f019df484b2fb636b34f64b1126afa7d2b086c88.camel@intel.com>
- <bea6cb485ba67f0160c6455c77cf75e5b6f8eaf8.camel@intel.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=Fvd66WpgZVxZkVjqbJ24OXEfRjiXuXs/5C1UAaweYP3ujbToOKpJGV7noSIp1WGdK7TwLyBYkseRTT8rjc0G5jAySQ9upR6OZDWlBDhZ3/KkYpIrXCi6OxgfP0rz9V4buc7LUMqj99X7I3Azb3LM3RL7Ox+SUgQmJHvcPOtok5I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zeniv.linux.org.uk; spf=none smtp.mailfrom=ftp.linux.org.uk; dkim=pass (2048-bit key) header.d=linux.org.uk header.i=@linux.org.uk header.b=fTGbqxsR; arc=none smtp.client-ip=62.89.141.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zeniv.linux.org.uk
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=ftp.linux.org.uk
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=linux.org.uk; s=zeniv-20220401; h=Sender:In-Reply-To:Content-Type:
+	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=g3Espu9XK22gwjeY8tde1FrtIb6+Pk135nxK84EbhVQ=; b=fTGbqxsRayMH8KFCjNl/wwpDfb
+	9eca37NSbpiMm+/bhx7oopOa6crxJFVkxigNfSx3dXcazK2YtFgN2oFrubYhj9KMcLVxQRa+yqdm/
+	pTyycmwT9haWcP+EulVR2er2L6zc3AelTM9y8MFQHpY8DMv+0oc2SvqfW2uJAT41KKZ291uFztaVW
+	tv7y45Sbsd5qgrIEIx+vcQC5/MDA9anrIAvBY8te0qGMA+Xu/SYMNNSBL++TarHMhgM+59psvml9A
+	NoY3Z29UyppcZYuXRGQH8kE18++Bx66WWsdFCyC8H7dRaGJX+SCe7H3g2tUvMUrlXCM77B6IRyMFB
+	1tq/eBrg==;
+Received: from viro by zeniv.linux.org.uk with local (Exim 4.96 #2 (Red Hat Linux))
+	id 1rorcv-00GbYB-2E;
+	Mon, 25 Mar 2024 21:13:05 +0000
+Date: Mon, 25 Mar 2024 21:13:05 +0000
+From: Al Viro <viro@zeniv.linux.org.uk>
+To: Paulo Alcantara <pc@manguebit.com>
+Cc: Steve French <smfrench@gmail.com>,
+	Christian Brauner <brauner@kernel.org>,
+	Roberto Sassu <roberto.sassu@huawei.com>,
+	LKML <linux-kernel@vger.kernel.org>,
+	linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+	CIFS <linux-cifs@vger.kernel.org>,
+	Christian Brauner <christian@brauner.io>,
+	Mimi Zohar <zohar@linux.ibm.com>, Paul Moore <paul@paul-moore.com>,
+	"linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>,
+	"linux-security-module@vger.kernel.org" <linux-security-module@vger.kernel.org>
+Subject: Re: kernel crash in mknod
+Message-ID: <20240325211305.GY538574@ZenIV>
+References: <CAH2r5msAVzxCUHHG8VKrMPUKQHmBpE6K9_vjhgDa1uAvwx4ppw@mail.gmail.com>
+ <20240324054636.GT538574@ZenIV>
+ <3441a4a1140944f5b418b70f557bca72@huawei.com>
+ <20240325-beugen-kraftvoll-1390fd52d59c@brauner>
+ <CAH2r5muL4NEwLxq_qnPOCTHunLB_vmDA-1jJ152POwBv+aTcXg@mail.gmail.com>
+ <20240325195413.GW538574@ZenIV>
+ <a5d0ee8c54ec2f80cb71cd72e3b4aec3@manguebit.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <bea6cb485ba67f0160c6455c77cf75e5b6f8eaf8.camel@intel.com>
+In-Reply-To: <a5d0ee8c54ec2f80cb71cd72e3b4aec3@manguebit.com>
+Sender: Al Viro <viro@ftp.linux.org.uk>
 
-On Mon, Mar 25, 2024 at 11:14:21AM +0000,
-"Huang, Kai" <kai.huang@intel.com> wrote:
-
-> On Fri, 2024-03-22 at 16:06 +0000, Edgecombe, Rick P wrote:
-> > On Fri, 2024-03-22 at 07:10 +0000, Huang, Kai wrote:
-> > > > I see that this was suggested by Sean, but can you explain the
-> > > > problem
-> > > > that this is working around? From the linked thread, it seems like
-> > > > the
-> > > > problem is what to do when userspace also calls SET_CPUID after
-> > > > already
-> > > > configuring CPUID to the TDX module in the special way. The choices
-> > > > discussed included:
-> > > > 1. Reject the call
-> > > > 2. Check the consistency between the first CPUID configuration and
-> > > > the
-> > > > second one.
-> > > > 
-> > > > 1 is a lot simpler, but the reasoning for 2 is because "some KVM
-> > > > code
-> > > > paths rely on guest CPUID configuration" it seems. Is this a
-> > > > hypothetical or real issue? Which code paths are problematic for
-> > > > TDX/SNP?
-> > > 
-> > > There might be use case that TDX guest wants to use some CPUID which
-> > > isn't handled by the TDX module but purely by KVM.  These (PV) CPUIDs
-> > > need to be
-> > > provided via KVM_SET_CPUID2.
-> > 
-> > Right, but are there any needed today? 
-> > 
+On Mon, Mar 25, 2024 at 05:47:16PM -0300, Paulo Alcantara wrote:
+> Al Viro <viro@zeniv.linux.org.uk> writes:
 > 
-> I am not sure.  Isaku may know better?
+> > On Mon, Mar 25, 2024 at 11:26:59AM -0500, Steve French wrote:
+> >
+> >> A loosely related question.  Do I need to change cifs.ko to return the
+> >> pointer to inode on mknod now?  dentry->inode is NULL in the case of mknod
+> >> from cifs.ko (and presumably some other fs as Al noted), unlike mkdir and
+> >> create where it is filled in.   Is there a perf advantage in filling in the
+> >> dentry->inode in the mknod path in the fs or better to leave it as is?  Is
+> >> there a good example to borrow from on this?
+> >
+> > AFAICS, that case in in CIFS is the only instance of ->mknod() that does this
+> > "skip lookups, just unhash and return 0" at the moment.
+> >
+> > What's more, it really had been broken all along for one important case -
+> > AF_UNIX bind(2) with address (== socket pathname) being on the filesystem
+> > in question.
+> 
+> Yes, except that we currently return -EPERM for such cases.  I don't
+> even know if this SFU thing supports sockets.
 
-It's not needed to boot TD.  The check is safe guard.  The multiple of source of
-cpuids can be inconsistent.
--- 
-Isaku Yamahata <isaku.yamahata@intel.com>
+	Sure, but we really want the rules to be reasonably simple and
+"you may leave dentry unhashed negative and return 0, provided that you
+hadn't been asked to create a socket" is anything but ;-)
+
+> > Note that cifs_sfu_make_node() is the only case in CIFS where that happens -
+> > other codepaths (both in cifs_make_node() and in smb2_make_node()) will
+> > instantiate.  How painful would it be for cifs_sfu_make_node()?
+> > AFAICS, you do open/sync_write/close there; would it be hard to do
+> > an eqiuvalent of fstat and set the inode up?
+> 
+> This should be pretty straightforward as it would only require an extra
+> query info call and then {smb311_posix,cifs}_get_inode_info() ->
+> d_instantiate().  We could even make it a single compound request of
+> open/write/getinfo/close for SMB2+ case.
+
+	If that's the case, I believe that we should simply declare that
+->mknod() must instantiate on success and have vfs_mknod() check and
+warn if it hadn't.
+
+	Rationale:
+
+1) mknod(2) is usually followed by at least some access to created object.
+Not setting the inode up won't save much anyway.
+2) if some instance of ->mknod() skips setting the inode on success (i.e.
+unhashes the still-negative dentry and returns 0), it can easily be
+converted.  The minimal conversion would be along the lines of turning
+	d_drop(dentry);
+	return 0;
+into
+	d_drop(dentry);
+	d = foofs_lookup(dir, dentry, 0);
+	if (unlikely(d)) {
+		if (!IS_ERR(d)) {
+			dput(d);
+			return -EINVAL;	// weird shit - directory got created somehow
+		}
+		return PTR_ERR(d);
+	}
+	return 0;
+but there almost certainly are cheaper ways to get the inode metadata,
+set the inode up and instantiate the dentry.
+3) currently only on in-kernel instance is that way.
+4) it makes life simpler for the users of vfs_mknod().
+
+	Objections, anyone?
 
