@@ -1,180 +1,162 @@
-Return-Path: <linux-kernel+bounces-118086-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-118084-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0FF2D88B38D
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 23:10:15 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1B13C88B386
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 23:09:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BB1D71F63AFF
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 22:10:14 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3E24A1C2FCDD
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 22:09:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E64CC745EF;
-	Mon, 25 Mar 2024 22:09:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 949AC73183;
+	Mon, 25 Mar 2024 22:09:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OZalcUGf"
-Received: from mail-yw1-f170.google.com (mail-yw1-f170.google.com [209.85.128.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="b+sCf2Jf"
+Received: from out-174.mta1.migadu.com (out-174.mta1.migadu.com [95.215.58.174])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 805837441C;
-	Mon, 25 Mar 2024 22:09:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E92837175F
+	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 22:09:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711404593; cv=none; b=oVC/uJlEqx2VPfbZMEUzlrOgDpMzHBJeWoTc/K6ktXObuRVsdBWSxjBmrG/YmfsGOh3rQdq8plW//Ub0L3/eRWTEvfFN/I4wOUXp2p4X1kMg+ehyQkKyJ8CYAvWAhGxjLSwYai0VwX5Dhcy+/wRolLu2Dv7gbuIJNlMFB/tPcx0=
+	t=1711404570; cv=none; b=GZ9Kt/SMHbujanM19QdXBiJKYOL6PQZmJHbbxwJYCtkwtgLFj+5Fz31wHSV3DoL13L1GfETofP6xamhYstOYPX4IHUbPteeHTbZloviuXq6tsFovH85dwL2iY0NiwXmYb4TkuDBZMKh/TpmKfvuwapAnJhXDDSjxt56Ka/Q4HzU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711404593; c=relaxed/simple;
-	bh=tyNzq8sMRVHXjs1GnDWzeBNhhdt7M1nl7Y20AhpptkI=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=K7seTmM+sw0e/5SJOtt7kndZLDXiecTlHtdyf4Jebkb1pYT3H/ESzXgRre/Alz2mbEyCL1T4S1V8cpwa14QCk0+O03u/+CuWUvNsl6LlC7CgdguhNwDxEWI77Ah8I7AZ5wjxwNyu16w9Jq3vzFEh5XDFo4HRPqnQUX6qJLoo4Lo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=OZalcUGf; arc=none smtp.client-ip=209.85.128.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f170.google.com with SMTP id 00721157ae682-60a046c5262so46286937b3.2;
-        Mon, 25 Mar 2024 15:09:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711404590; x=1712009390; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=tyNzq8sMRVHXjs1GnDWzeBNhhdt7M1nl7Y20AhpptkI=;
-        b=OZalcUGfH52tAvHHFEjw0CI7IkpgycHOXbd09y1AG5K18SAoa7cqkUSyor3FGi7CtC
-         pVem2QhsS4lj4KLr76wqm0Wgky1KnnHx+kCcAXYkrFPN8UxQNbukzJBiBSXloEtR/nUK
-         32I6rYJTvTQems5k95V3oyWjE8xhDrphJNNrR20QhUfUgeuWP/KODpz06xYSs2xvVX3d
-         tssQdb54E78EWwmt9NHXskxjg0BeEoc6q5zK/Mww9jB8oPqw4b6OYb1DIilruNz5Eqim
-         CCApgm/FeWZtaZqDSqKaNuupgQnDJyE8CZF2r9+WcNTwCBJqV61KIaxbG9OE18/YzaRo
-         vxQQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711404590; x=1712009390;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=tyNzq8sMRVHXjs1GnDWzeBNhhdt7M1nl7Y20AhpptkI=;
-        b=M6YcnW4KItO/2IbfZoxxIDK32zrrhnYHL8nNThW4JxBRsvwqrdtUOujPD9Aa73ug7e
-         gOpUAH/mKnBhv8EH26J+iy0AE24JUduWGAZbooSzIMcBUkDWWpD3+cJd9PA0pLZeh/8W
-         4CjTIJYwqMciiNuvAcEwghn1/+3vHom14nHjrewH1svTRyq5r3wIaCXC+8j/Qb2Lqea9
-         XloGxvK4YrW/2HM3G6mqhks2ERhsAN8eq7fX9B2K5tWAnA1lPn79RGKKAugQLldyMSyf
-         nxIbmVo8hlK5M71HIL4xNFbdRWsGzxU+NidEOLyUKBQKuZY1CS7D90SZOfKyPz+tP7M0
-         sY7g==
-X-Forwarded-Encrypted: i=1; AJvYcCVDpsc8XxLGvDW626qh99YRBgoB/FcKHJZY5i/KEMi3vXPE8CyPZ3YT6RUKVZ/vWotCI8x/s4nn3n+G25bg1FPIBhhv7xG3KX/qzmJXVctsZZ7ICXoxZlcqFeVmFv6nx8h/VHQBfI7fx6uJVCfSDu6uJ+tzPqsYWLkDIk2y8p2PeKLoCw==
-X-Gm-Message-State: AOJu0Yz4Sy4NfUYUGc1W6O1OjLjEpLmcSuknC/us4vRc9hHCSc2HGY3K
-	ZfIZgMXJ33AGRvtjzjuRBemL9ag+9YacZIsskhH1tksYH8SOmiB9o82bFkMrWQ9Sar89uAq+8+X
-	vmVzjk0xGmf7xEvkMFvfctZ4RyLo=
-X-Google-Smtp-Source: AGHT+IEUnQ61pYOdy6iBI6EKL8f+BYQGPiPimulDGq52iO7ygQltC+cIgsF+VqiTGHc/9ZtzaODGr88cfFatzs3X4o0=
-X-Received: by 2002:a25:8a0f:0:b0:dd0:3a7a:fb70 with SMTP id
- g15-20020a258a0f000000b00dd03a7afb70mr6309495ybl.52.1711404590425; Mon, 25
- Mar 2024 15:09:50 -0700 (PDT)
+	s=arc-20240116; t=1711404570; c=relaxed/simple;
+	bh=fW2hIWHhR41/L1F+bpZzRKnNxDSzchbJIxBCkq7SfGQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=GHp+gm6xIIIRW4aCOuXIJ4vtBPP/uiOEOa5Rvr503Z+SX7Gj4hr1fXfsF49tNFitM1Lqy6Qx+2yg/q4b0fcnrjB5qJ0W8RWsClsVlMqJlfrjsET86P1d1dQhKLjaYIwn4jTvWqgS2//0X7kd6qO9x5Nyq/NdUbpstAr3paNcBng=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=b+sCf2Jf; arc=none smtp.client-ip=95.215.58.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Date: Mon, 25 Mar 2024 18:09:19 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1711404566;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=afGy8CRECdAELjgTa63PphAb8Je/7LgfWp/vpSHkqks=;
+	b=b+sCf2JfZ1bUx+SgaAuv492wBmpuur/6BjEMdbR9Z4ZCD4+uG7E/QItW3rmDr4vs7AeTLM
+	Xi1XoeDaJNa86zHWG0ZtX4cQdV1EpkxCGd1xKdkCh2oT+rvTG85ldwxSNrlBGl947PDi2s
+	eNzsKmqELeZnnjPlz9lpgr/m4xIcqSQ=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Kent Overstreet <kent.overstreet@linux.dev>
+To: Boqun Feng <boqun.feng@gmail.com>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>, 
+	Philipp Stanner <pstanner@redhat.com>, rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-arch@vger.kernel.org, llvm@lists.linux.dev, Miguel Ojeda <ojeda@kernel.org>, 
+	Alex Gaynor <alex.gaynor@gmail.com>, Wedson Almeida Filho <wedsonaf@gmail.com>, 
+	Gary Guo <gary@garyguo.net>, =?utf-8?B?QmrDtnJu?= Roy Baron <bjorn3_gh@protonmail.com>, 
+	Benno Lossin <benno.lossin@proton.me>, Andreas Hindborg <a.hindborg@samsung.com>, 
+	Alice Ryhl <aliceryhl@google.com>, Alan Stern <stern@rowland.harvard.edu>, 
+	Andrea Parri <parri.andrea@gmail.com>, Will Deacon <will@kernel.org>, 
+	Peter Zijlstra <peterz@infradead.org>, Nicholas Piggin <npiggin@gmail.com>, 
+	David Howells <dhowells@redhat.com>, Jade Alglave <j.alglave@ucl.ac.uk>, 
+	Luc Maranget <luc.maranget@inria.fr>, "Paul E. McKenney" <paulmck@kernel.org>, 
+	Akira Yokosawa <akiyks@gmail.com>, Daniel Lustig <dlustig@nvidia.com>, 
+	Joel Fernandes <joel@joelfernandes.org>, Nathan Chancellor <nathan@kernel.org>, 
+	Nick Desaulniers <ndesaulniers@google.com>, kent.overstreet@gmail.com, 
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, elver@google.com, Mark Rutland <mark.rutland@arm.com>, 
+	Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
+	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>, 
+	Catalin Marinas <catalin.marinas@arm.com>, linux-arm-kernel@lists.infradead.org, 
+	linux-fsdevel@vger.kernel.org
+Subject: Re: [WIP 0/3] Memory model and atomic API in Rust
+Message-ID: <jyijwrrzzhlsrffj37xj4sskipxqbxfewydnb3yzgybjobj6tg@cbv5y7znhm3n>
+References: <s2jeqq22n5ef5jknaps37mfdjvuqrns4w7i22qp2r7r4bzjqs2@my3eyxoa3pl3>
+ <CAHk-=whY5A=S=bLwCFL=043DoR0TTgSDUmfPDx2rXhkk3KANPQ@mail.gmail.com>
+ <u2suttqa4c423q4ojehbucaxsm6wguqtgouj7vudp55jmuivq3@okzfgryarwnv>
+ <CAHk-=whkQk=zq5XiMcaU3xj4v69+jyoP-y6Sywhq-TvxSSvfEA@mail.gmail.com>
+ <c51227c9a4103ad1de43fc3cda5396b1196c31d7.camel@redhat.com>
+ <CAHk-=wjP1i014DGPKTsAC6TpByC3xeNHDjVA4E4gsnzUgJBYBQ@mail.gmail.com>
+ <bu3seu56hfozsvgpdqjarbdkqo3lsjfc4lhluk5oj456xmrjc7@lfbbjxuf4rpv>
+ <CAHk-=wgLGWBXvNODAkzkVHEj7zrrnTq_hzMft62nKNkaL89ZGQ@mail.gmail.com>
+ <gewmacbbjxwsn4h54w2jfvbiq5iwr2zdm56pc3pv3rctxyd4lt@sqqa544ezmez>
+ <ZgHuioMM1cAWNDiX@boqun-archlinux>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240325153356.46112-1-l.rubusch@gmail.com> <20240325153356.46112-5-l.rubusch@gmail.com>
- <f74a01bd-46a3-46cd-a47a-fcfccd7e4dc6@linaro.org> <CAFXKEHbJ_5unY24aZeutvM-xrjevQ=z7ngDcgwJR=NXzXONx5A@mail.gmail.com>
- <334970e7-2edd-43c8-9f18-b7b3ec5f4d17@linaro.org>
-In-Reply-To: <334970e7-2edd-43c8-9f18-b7b3ec5f4d17@linaro.org>
-From: Lothar Rubusch <l.rubusch@gmail.com>
-Date: Mon, 25 Mar 2024 23:09:14 +0100
-Message-ID: <CAFXKEHaEVwiAW9co0+=kZ5w5a8eWg3QL0dmg38bvrmLdnBEA7w@mail.gmail.com>
-Subject: Re: [PATCH v4 4/7] dt-bindings: iio: accel: adxl345: Add spi-3wire
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc: lars@metafoo.de, Michael.Hennerich@analog.com, jic23@kernel.org, 
-	robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, 
-	linux-iio@vger.kernel.org, devicetree@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, eraretuya@gmail.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZgHuioMM1cAWNDiX@boqun-archlinux>
+X-Migadu-Flow: FLOW_OUT
 
-On Mon, Mar 25, 2024 at 10:40=E2=80=AFPM Krzysztof Kozlowski
-<krzysztof.kozlowski@linaro.org> wrote:
->
-> On 25/03/2024 22:05, Lothar Rubusch wrote:
-> > On Mon, Mar 25, 2024 at 7:32=E2=80=AFPM Krzysztof Kozlowski
-> > <krzysztof.kozlowski@linaro.org> wrote:
-> >>
-> >> On 25/03/2024 16:33, Lothar Rubusch wrote:
-> >>> Add spi-3wire because the driver optionally supports spi-3wire.
-> >>
-> >> This is a friendly reminder during the review process.
-> >>
-> >> It seems my or other reviewer's previous comments were not fully
-> >> addressed. Maybe the feedback got lost between the quotes, maybe you
-> >> just forgot to apply it. Please go back to the previous discussion and
-> >> either implement all requested changes or keep discussing them.
-> >>
-> >> Thank you.
-> >>
-> >
-> > You refer yourself to the above mentioned wording. Would replacing
-> > "driver" by "device" in the dt-bindings patch comment be sufficient?
-> > Did I miss something else?
->
-> Yes, the wording, but isn't the device require 3-wire mode? Don't just
-> replace one word with another, but write the proper rationale for your
-> hardware.
->
-It does not require 3-wire SPI. By default the device communicates
-regular SPI. It can be configured, though, to communicate 3-wire. The
-given patch offers this as option in the DT.
+On Mon, Mar 25, 2024 at 02:37:14PM -0700, Boqun Feng wrote:
+> On Mon, Mar 25, 2024 at 05:14:41PM -0400, Kent Overstreet wrote:
+> > On Mon, Mar 25, 2024 at 12:44:34PM -0700, Linus Torvalds wrote:
+> > > On Mon, 25 Mar 2024 at 11:59, Kent Overstreet <kent.overstreet@linux.dev> wrote:
+> > > >
+> > > > To be fair, "volatile" dates from an era when we didn't have the haziest
+> > > > understanding of what a working memory model for C would look like or
+> > > > why we'd even want one.
+> > > 
+> > > I don't disagree, but I find it very depressing that now that we *do*
+> > > know about memory models etc, the C++ memory model basically doubled
+> > > down on the same "object" model.
+> > > 
+> > > > The way the kernel uses volatile in e.g. READ_ONCE() is fully in line
+> > > > with modern thinking, just done with the tools available at the time. A
+> > > > more modern version would be just
+> > > >
+> > > > __atomic_load_n(ptr, __ATOMIC_RELAXED)
+> 
+> Note that Rust does have something similiar:
+> 
+> 	https://doc.rust-lang.org/std/ptr/fn.read_volatile.html
+> 
+> 	pub unsafe fn read_volatile<T>(src: *const T) -> T
+> 
+> (and also write_volatile()). So they made a good design putting the
+> volatile on the accesses rather than the type. However, per the current
+> Rust memory model these two primitives will be UB when data races happen
+> :-(
+> 
+> I mean, sure, if I use read_volatile() on an enum (whose valid values
+> are only 0, 1, 2), and I get a value 3, and the compiler says "you have
+> a logic bug and I refuse to compile the program correctly", I'm OK. But
+> if I use read_volatile() to read something like a u32, and I know it's
+> racy so my program actually handle that, I don't know any sane compiler
+> would miss-compile, so I don't know why that has to be a UB.
 
-> >
-> >>>
-> >>> Signed-off-by: Lothar Rubusch <l.rubusch@gmail.com>
-> >>> ---
-> >>
-> >> This is a friendly reminder during the review process.
-> >>
-> >> It looks like you received a tag and forgot to add it.
-> >>
-> >> If you do not know the process, here is a short explanation:
-> >> Please add Acked-by/Reviewed-by/Tested-by tags when posting new
-> >> versions, under or above your Signed-off-by tag. Tag is "received", wh=
-en
-> >> provided in a message replied to you on the mailing list. Tools like b=
-4
-> >> can help here. However, there's no need to repost patches *only* to ad=
-d
-> >
-> > Just for confirmation: when I receive a feedback, requesting a change.
-> > And, I accept the change request. This means, I received a tag
-> > "Reviewed-by" which I have to mention in the upcoming patch version
-> > where this change is implemented and in that particular patch?
->
-> Please go through the docs. Yes, you received a tag which should be
-> included with the change.
->
-> Reviewer's feedback should not be ignored.
->
->
-> >
-> >> the tags. The upstream maintainer will do that for tags received on th=
-e
-> >> version they apply.
-> >>
-> >
-> > I'm pretty sure we will still see further iterations. So, I apply the
-> > tags in the next version, already scheduled. Ok?
-> >
-> >> https://elixir.bootlin.com/linux/v6.5-rc3/source/Documentation/process=
-/submitting-patches.rst#L577
-> >>
-> >
-> > Going over the books I feel it does not make sense to still mention
-> > feedback ("Reveiewed-by") for the v1 or v2 of the patch here in a v5,
-> > does it? Your link mentiones "However if the patch has changed
->
-> I don't understand. When did you receive the tag? v3, right? So what do
-> you mean by v1 and v2?
->
+Well, if T is too big to read/write atomically then you'll get torn
+reads, including potentially a bit representation that is not a valid T.
 
-V1: The first version of the 3wire patch. I have split the single
-patch upon some feedback (yours?!) - V2... So, my current
-interpretation is, that every feedback I need to mention as
-Reviewed-by tag, no?
+Which is why the normal read_volatile<> or Volatile<> should disallow
+that.
 
->
-> Best regards,
-> Krzysztof
->
+> > where T is any type that fits in a machine word, and the only operations
+> > it supports are get(), set(), xchg() and cmpxchG().
+> > 
+> > You DO NOT want it to be possible to transparantly use Volatile<T> in
+> > place of a regular T - in exactly the same way as an atomic_t can't be
+> > used in place of a regular integer.
+> 
+> Yes, this is useful. But no it's not that useful, how could you use that
+> to read another CPU's stack during some debug functions in a way you
+> know it's racy?
+
+That's a pretty difficult thing to do, because you don't know the
+_layout_ of the other CPU's stack, and even if you do it's going to be
+changing underneath you without locking.
+
+So the races thare are equivalent to a bad mem::transmute(), and that is
+very much UB.
+
+For a more typical usage of volatile, consider a ringbuffer with one
+thread producing and another thread consuming. Then you've got head and
+tail pointers, each written by one thread and read by another.
+
+You don't need any locking, just memory barriers and
+READ_ONCE()/WRITE_ONCE() to update the head and tail pointers. If you
+were writing this in Rust today the easy way would be an atomic integer,
+but that's not really correct - you're not doing atomic operations
+(locked arithmetic), just volatile reads and writes.
+
+Volatile<T> would be Send and Sync, just like atomic integers. You don't
+need locking if you're just working with single values that are small
+enough for the machine to read/write atomically.
 
