@@ -1,219 +1,136 @@
-Return-Path: <linux-kernel+bounces-116705-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-116706-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 61D9488A2B8
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 14:44:11 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id D9CD388A2B9
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 14:44:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CE24C1F3B617
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 13:44:10 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 16E121C383AC
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 13:44:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8BFF871B45;
-	Mon, 25 Mar 2024 10:28:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 01F9613C8FC;
+	Mon, 25 Mar 2024 10:28:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Y7iDHcSE"
-Received: from mail-yb1-f202.google.com (mail-yb1-f202.google.com [209.85.219.202])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jfEEXMXP"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9FC31155746
-	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 08:39:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.202
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6FF935D480;
+	Mon, 25 Mar 2024 08:42:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711355975; cv=none; b=B773CJNLGVzt9IRvur3CJUiz0VqwetttoPzBrKFE9XzX0M0j7eX9VlJM8HWgdcrNofbnrn69JpZv6oCl5Vqw9izqV55ptwhck/Dpt3rt0G3StB4E5r/hOhDZgVDCzfdCjxR9NZQCWFcrSJYizCv9WTR/Ell11uATFuuOLJchrxM=
+	t=1711356135; cv=none; b=RrCgoxYDhlaPL6nBDR5hgvV4vv+vzZLb6cDdXaOi+0twLo4aUJS+sMjuzKVsFBubAiK+rcvh/W3Lchp6DqGpH545T2yNSe9FJql5SBF/N+T0RG3tvwievzuCfxIzmTy+c3sm76avCsTVIH/1vrCyMBQKj1yF+7E+V5Z8SaaiQDk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711355975; c=relaxed/simple;
-	bh=SGizC3gapS8NfbkM3XOEkDDU5UmnR2/hlqlUWsBHetQ=;
-	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=uN7+7q+TCvu8uEBOah9aqC8kjZeMgoKtJgNBOw2VCQGuua6oB54BqhNdC0FdaC3gjpyACHdjNuCW4GERit1NmJXEBK+URhVx0JPB8AQqUff4iaHlbKQlzMEXPgbGaNs3jmA9Yd7Sbo/6V8L4jjXfnRcNLKSTGanG4vt0/YW8Fbk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--ardb.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=Y7iDHcSE; arc=none smtp.client-ip=209.85.219.202
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--ardb.bounces.google.com
-Received: by mail-yb1-f202.google.com with SMTP id 3f1490d57ef6-dd8e82dd47eso5487724276.2
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 01:39:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1711355972; x=1711960772; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=2fLR94SR79bSxw8I7/IlKTkcaE2ICrJ5mcsGwDMWWN0=;
-        b=Y7iDHcSEkSznvqhgIuCM7khE/BWLfQfbPTwlTHJ4Oew0jy5ikl38jxj2WVVJj9NqoO
-         coWA9TewSHTWA77kb1eRj3OiVnig3rg57IGBj3boElrY/GFnOs5hU7dWIM1FZpOsJXLW
-         pJTwwI3/UbeUglkig0k/1PNusybj20HX9g9bRFv6g8rx3jM2Pqm63w0nPr+zf7mOdmFj
-         dUOJAT8cbLa6uAHOTpnXWbG+aBqoZviamvWr0wNUTmZ+MK9UJ7QOWIkMfib8652vtK/T
-         TYX6MVyg2UsDuwJutKwlNw4vialDnkkpaAZetpH/b8P8uRK6CZMB6OMQA8dtWvu/KMUY
-         SGvQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711355972; x=1711960772;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=2fLR94SR79bSxw8I7/IlKTkcaE2ICrJ5mcsGwDMWWN0=;
-        b=VYLC7koyE9cov5+50T0Q5tNQqdVoCHtWvKnjNX8ALlaIUOAgymoo6tlC8uWD+e9bQn
-         CbXRVQ/JtEpKQ4y8iP1u/MDN8Gkmz1gJtA3zN1gy0BwdJ1Otli5PqWYBTLPe1b5D4GEQ
-         pXKexNK3CK2ENtYxXNUBRq7cL3qS3IjDdbQnHnstl6IHIp2wPE4yDN26AP2c10ULZMEX
-         p1sUDJ9nYuCpc11Yjn35lNQeZMD1Sma58HR5UhSgeKyJ23lNMCcPWY+pwdmjz3VlqfAc
-         FICV8fwaFqMLfFFeyGsLloyPENI8rbNSlDiCI9nqfG8QdG9eJQeVWozcNE1CkrFpO21G
-         vxaw==
-X-Gm-Message-State: AOJu0Yw8BRuG8GsM/lpOQih+ZWmHIrmg6WtK9lTj3kk98IQovVmh+U+E
-	DbIj9Komd38dH+kmr5i9uul9/bUwcYa6T3R6fCVWXKN4sq//lcqi9iNc/Rof0SfopPKNkw==
-X-Google-Smtp-Source: AGHT+IFcntcp9truao49sZOMDWg0yE7XtQx1liBUG5f8C29dSBQDwz6Xz3bnst60rixITk9c5cShOf3u
-X-Received: from palermo.c.googlers.com ([fda3:e722:ac3:cc00:28:9cb1:c0a8:118a])
- (user=ardb job=sendgmr) by 2002:a05:6902:2488:b0:dc6:ebd4:cca2 with SMTP id
- ds8-20020a056902248800b00dc6ebd4cca2mr251555ybb.11.1711355972614; Mon, 25 Mar
- 2024 01:39:32 -0700 (PDT)
-Date: Mon, 25 Mar 2024 09:39:06 +0100
+	s=arc-20240116; t=1711356135; c=relaxed/simple;
+	bh=T7/juRgI0RYFtzJn/DyHvQa9WLQrkIas1WYOJnYYG/Q=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=PJxJw8xvcZqADK+Tlv0zLGYX3dQapeTmMuM7if//SaTrn9gJGh8Otee/Pjn5d3Q2EZYJidNQi0ZTFARsq9iQAS+QUHlk+80Szz3U+7NkpIJ5ep8oPEM7t+/B9pGZjjb8bC95PXCBTc+Agmxdy1wreYWwBIQp4knDrF+jqS6JI/0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=jfEEXMXP; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0DA01C433C7;
+	Mon, 25 Mar 2024 08:42:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1711356134;
+	bh=T7/juRgI0RYFtzJn/DyHvQa9WLQrkIas1WYOJnYYG/Q=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=jfEEXMXPQow2DoAAD+t7eJCuk4c9KnusX05DCDf/bK+Nsu9UZiyZMvIsYXE52+zFu
+	 KlHld6yGaNSlSguP2KQbDDys8fL2gpBBgI2xNpC1TKZH2vNI7ZrV6gFO3jJmUpKTVV
+	 0eybsTG8SXWefeh2wcX7GWYoJIdFp02eoCXg7vP93hRiwVrbFJ1foJ/kVfQ0zjwv0R
+	 nFKFxwkjHp/n4b1LUn9VVAa3vSKEwV8ikcInYf/MkCj83ZWEujBFarXtj5Spt/6sdN
+	 DrJ3+iAV9yQERO05dHT1MvIPtELUxVciEO46Xtp0oqfuDXzUjdM4lecGJHF+tuGL/K
+	 Whcm8N3ppdtmw==
+Date: Mon, 25 Mar 2024 09:42:08 +0100
+From: Benjamin Tissoires <bentiss@kernel.org>
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: Kumar Kartikeya Dwivedi <memxor@gmail.com>, 
+	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
+	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
+	Jiri Olsa <jolsa@kernel.org>, Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>, 
+	bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
+	"open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>
+Subject: Re: [PATCH bpf-next v5 2/6] bpf/verifier: add bpf_timer as a kfunc
+ capable type
+Message-ID: <d3qeziyeiqfdofuzj266r47g4jpno56jd4dy2wgnm4h7z6fhmu@sltzwlkwj4z5>
+References: <20240322-hid-bpf-sleepable-v5-0-179c7b59eaaa@kernel.org>
+ <20240322-hid-bpf-sleepable-v5-2-179c7b59eaaa@kernel.org>
+ <CAP01T76oYpkNdgxXo+6v53afjObvYU4LWRLfkg2S7pNivzaEvg@mail.gmail.com>
+ <CAADnVQL_mQgN8uKsNFR0FBtWoaweCkzXw03EvbnQ-iFVWvXxuw@mail.gmail.com>
+ <CAP01T753_FjFdj1CbCX5Bh1itYUWf8DUh41F7R_7Fdb=2SEL8g@mail.gmail.com>
+ <CAADnVQ+5mSEW-LJwS30hED1cJeHOhqfCTKdBzYCcRd8EiVNvtA@mail.gmail.com>
+ <CAP01T757ddmmFR+Cnj70DrTLFcEu+9uAcbscrO-uOmSVGB8eJA@mail.gmail.com>
+ <CAADnVQK=aAcNt-8BBJNnp3QGkxVWLYhZ9=9dizo-7eQosjNtow@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-X-Developer-Key: i=ardb@kernel.org; a=openpgp; fpr=F43D03328115A198C90016883D200E9CA6329909
-X-Developer-Signature: v=1; a=openpgp-sha256; l=5208; i=ardb@kernel.org;
- h=from:subject; bh=/Ny80e491PWjWXrYVfz7/g+6aluKNyVbKBDz8PcwCLA=;
- b=owGbwMvMwCFmkMcZplerG8N4Wi2JIY3RQktleU+XR21Pb+fJyE/5S1R/z5s03fTrmQWmqTeDt
- oiGFh7oKGVhEONgkBVTZBGY/ffdztMTpWqdZ8nCzGFlAhnCwMUpABOJ72H4zVLEViPwS+TddIHz
- be8+fa76kTqTW7zi05Yp/1sLD2TvvcjwV6wyMDTW4G3YhD3Sv1YufnRwbX9nvsO1aeonncudY+4 c4gQA
-X-Mailer: git-send-email 2.44.0.396.g6e790dbe36-goog
-Message-ID: <20240325083905.13163-2-ardb+git@google.com>
-Subject: [PATCH] x86/efistub: Add missing boot_params for mixed mode compat entry
-From: Ard Biesheuvel <ardb+git@google.com>
-To: linux-efi@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org, Ard Biesheuvel <ardb@kernel.org>, 
-	Hans de Goede <hdegoede@redhat.com>, Clayton Craft <clayton@craftyguy.net>
-Content-Type: text/plain; charset="UTF-8"
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAADnVQK=aAcNt-8BBJNnp3QGkxVWLYhZ9=9dizo-7eQosjNtow@mail.gmail.com>
 
-From: Ard Biesheuvel <ardb@kernel.org>
+On Mar 24 2024, Alexei Starovoitov wrote:
+> On Sat, Mar 23, 2024 at 9:57 PM Kumar Kartikeya Dwivedi
+> <memxor@gmail.com> wrote:
+> 
+> > > > >
+> > > > > Observation is correct. The patch is buggy,
+> > > > > but the suggestion to follow process_dynptr_func() will lead
+> > > > > to unnecessary complexity.
+> > > > > dynptr-s are on stack with plenty of extra checks.
+> > > >
+> > > > The suggestion was to call process_timer_func, not process_dynptr_func.
+> > > >
+> > > > > In this case bpf_timer is in map_value.
+> > > > > Much simpler is to follow KF_ARG_PTR_TO_MAP approach.
+> > > >
+> > > > What I meant by the example was that dynptr handling does the same
+> > > > thing for kfuncs and helpers (using the same function), so timer
+> > > > arguments should do the same (i.e. use process_timer_func), which will
+> > > > do all checks for constant offset (ensuring var_off is tnum_is_const)
+> > > > and match it against btf_record->timer_off.
+> > >
+> > > I don't follow. Please elaborate with a patch.
+> > > The var_off and off is a part of the bug, but it's not the biggest part of it.
+> >
+> > Not compile tested.
 
-The native EFI stub entry point does not take a struct boot_params from
-the boot loader, but creates it from scratch, and populates only the
-fields that still have meaning in this context (command line, initrd
-base and size, etc)
+Compiles just fine :)
 
-The original mixed mode implementation used the EFI handover protocol,
-where the boot loader (i.e., GRUB) populates a struct boot_params and
-passes it to a special EFI entry point that takes the struct boot_params
-pointer as the third argument.
+> 
+> I see. All makes sense to me.
+> 
+> Benjamin,
+> pls incorporate it in your set.
+> 
 
-When the new mixed mode implementation was introduced, using a special
-32-bit PE entrypoint in the 64-bit kernel, it adopted the usual
-prototype, and relied on the EFI stub to create the struct boot_params
-as usual. This is preferred because it makes the bootloader side much
-easier to implement, as it does not need any x86-specific knowledge on
-how struct boot_params and struct setup_header are put together.
+OK, done!
 
-However, one thing was missed: EFI mixed mode goes through startup_32()
-*before* entering the 64-bit EFI stub, which is difficult to avoid given
-that 64-bit execution requires page tables, which can only be populated
-using 32-bit code, and this piece is what the mixed mode EFI stub relies
-on. startup_32() accesses a couple of struct boot_params fields to
-decide where to place the page tables.
+I just had to revert to the following or KF_ARG_TIMER_ID was not
+recognized by the verifier:
 
-startup_32() turns out to be quite tolerant to bogus struct boot_params,
-given that ESI used to contain junk when entering via the new mixed mode
-protocol. Only when commit
-
-  e2ab9eab324c ("x86/boot/compressed: Move 32-bit entrypoint code into .text section")
-
-started to zero ESI explicitly when entering via this boot path, boot
-failures started to appear on some systems, presumably ones that unmap
-page 0x0 or map it read-only.
-
-The solution is to pass a special, temporary struct boot_params to
-startup_32() via ESI, one that is sufficient for getting it to create
-the page tables correctly and is discarded right after. This means
-setting a minimal alignment of 4k, only to get the statically allocated
-page tables line up correctly, and setting init_size to the executable
-image size (_end - startup_32). This ensures that the page tables are
-covered by the static footprint of the PE image.
-
-Given that EFI boot no longer calls the decompressor and no longer pads
-the image to permit the decompressor to execute in place, the same
-temporary struct boot_params should be used in the EFI handover protocol
-based mixed mode implementation as well, to prevent the page tables from
-being placed outside of allocated memory.
-
-Cc: Hans de Goede <hdegoede@redhat.com>
-Fixes: e2ab9eab324c ("x86/boot/compressed: Move 32-bit entrypoint code into .text section")
-Closes: https://lore.kernel.org/all/20240321150510.GI8211@craftyguy.net/
-Reported-by: Clayton Craft <clayton@craftyguy.net>
-Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
 ---
- arch/x86/boot/compressed/efi_mixed.S | 20 +++++++++++++++-----
- 1 file changed, 15 insertions(+), 5 deletions(-)
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index 7ee20e9d14bd..a5e147468ac8 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -10848,7 +10848,7 @@ BTF_ID(struct, bpf_list_head)
+ BTF_ID(struct, bpf_list_node)
+ BTF_ID(struct, bpf_rb_root)
+ BTF_ID(struct, bpf_rb_node)
+-BTF_ID(struct, bpf_timer)
++BTF_ID(struct, bpf_timer_kern)
+ 
+ static bool __is_kfunc_ptr_arg_type(const struct btf *btf,
+ 				    const struct btf_param *arg, int type)
+---
 
-diff --git a/arch/x86/boot/compressed/efi_mixed.S b/arch/x86/boot/compressed/efi_mixed.S
-index 07873f269b7b..c7c108c0bcf0 100644
---- a/arch/x86/boot/compressed/efi_mixed.S
-+++ b/arch/x86/boot/compressed/efi_mixed.S
-@@ -15,10 +15,12 @@
-  */
- 
- #include <linux/linkage.h>
-+#include <asm/asm-offsets.h>
- #include <asm/msr.h>
- #include <asm/page_types.h>
- #include <asm/processor-flags.h>
- #include <asm/segment.h>
-+#include <asm/setup.h>
- 
- 	.code64
- 	.text
-@@ -155,6 +157,7 @@ SYM_FUNC_END(__efi64_thunk)
- SYM_FUNC_START(efi32_stub_entry)
- 	call	1f
- 1:	popl	%ecx
-+	leal	(efi32_boot_args - 1b)(%ecx), %ebx
- 
- 	/* Clear BSS */
- 	xorl	%eax, %eax
-@@ -169,6 +172,7 @@ SYM_FUNC_START(efi32_stub_entry)
- 	popl	%ecx
- 	popl	%edx
- 	popl	%esi
-+	movl	%esi, 8(%ebx)
- 	jmp	efi32_entry
- SYM_FUNC_END(efi32_stub_entry)
- #endif
-@@ -245,8 +249,6 @@ SYM_FUNC_END(efi_enter32)
-  *
-  * Arguments:	%ecx	image handle
-  * 		%edx	EFI system table pointer
-- *		%esi	struct bootparams pointer (or NULL when not using
-- *			the EFI handover protocol)
-  *
-  * Since this is the point of no return for ordinary execution, no registers
-  * are considered live except for the function parameters. [Note that the EFI
-@@ -272,9 +274,18 @@ SYM_FUNC_START_LOCAL(efi32_entry)
- 	leal	(efi32_boot_args - 1b)(%ebx), %ebx
- 	movl	%ecx, 0(%ebx)
- 	movl	%edx, 4(%ebx)
--	movl	%esi, 8(%ebx)
- 	movb	$0x0, 12(%ebx)          // efi_is64
- 
-+	/*
-+	 * Allocate some memory for a temporary struct boot_params, which only
-+	 * needs the minimal pieces that will get us through startup_32().
-+	 */
-+	subl	$PARAM_SIZE, %esp
-+	movl	%esp, %esi
-+	movl	$PAGE_SIZE, BP_kernel_alignment(%esi)
-+	movl	$_end - 1b, BP_init_size(%esi)
-+	subl	$startup_32 - 1b, BP_init_size(%esi)
-+
- 	/* Disable paging */
- 	movl	%cr0, %eax
- 	btrl	$X86_CR0_PG_BIT, %eax
-@@ -300,8 +311,7 @@ SYM_FUNC_START(efi32_pe_entry)
- 
- 	movl	8(%ebp), %ecx			// image_handle
- 	movl	12(%ebp), %edx			// sys_table
--	xorl	%esi, %esi
--	jmp	efi32_entry			// pass %ecx, %edx, %esi
-+	jmp	efi32_entry			// pass %ecx, %edx
- 						// no other registers remain live
- 
- 2:	popl	%edi				// restore callee-save registers
--- 
-2.44.0.396.g6e790dbe36-goog
+Cheers,
+Benjamin
 
 
