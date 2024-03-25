@@ -1,99 +1,90 @@
-Return-Path: <linux-kernel+bounces-117742-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-117743-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 237CD88AEFC
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 19:52:25 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7E28788AEFF
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 19:52:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B765D1F672C0
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 18:52:24 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3504E28EF29
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 18:52:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 095841BC35;
-	Mon, 25 Mar 2024 18:43:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D0D21BC2F;
+	Mon, 25 Mar 2024 18:44:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=sipsolutions.net header.i=@sipsolutions.net header.b="oe+TD6tI"
-Received: from sipsolutions.net (s3.sipsolutions.net [168.119.38.16])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jneoR6nW"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7DC11DDBC;
-	Mon, 25 Mar 2024 18:43:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=168.119.38.16
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 57CEEA50;
+	Mon, 25 Mar 2024 18:44:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711392204; cv=none; b=Gow2/ENZ3lg67UwEPq+UejJMmL43FFpWkCVRqa+gfNUsNKXipVeUENmVsA209wZmrBCbDQlRbpKSqHRWS9rvo3O2bgSaHYD2J7UUzQTMd1aJKtnP99893LcbNlvoqXlueMq72haaokSR4LrGj2OS7HZHDZ2En4rueRNf4JLU1CM=
+	t=1711392269; cv=none; b=F6NB1cy0YVge6SLuU0z8iRX6dKQHYOV5H/Cbw6JS9LNc+1llrLTzoU7R+SItsZ6RIseFu316rUM9U/xXNWvu7YuojjlSlN/phrJEGiV1GFwT6obZy2elHA4j0Zz5SGKcU7srw8jjfcQi0VQPdWvQpoN9se193+Qmxdu+DlOIFPU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711392204; c=relaxed/simple;
-	bh=qdFHRwDn5Dpo4RgBgnFNgRw+jK2dyYCqGr/cxlrDXo0=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=VmFQZHS+dussgZvcHJnKjYTrIplIpBgCzm9kXoUW8QrW/AYUyihIKpgJmQmcO5w9z/vkWJLgjOlGgVKKJFSTExa6ijlUghbB+26dgNlZ7TBDYeQwHJ/SGuDdirSz8E7495/AyIX8TatbyOvj0M0o/rxrt1LsuCYpq1OGnVPA1Jw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sipsolutions.net; spf=pass smtp.mailfrom=sipsolutions.net; dkim=pass (2048-bit key) header.d=sipsolutions.net header.i=@sipsolutions.net header.b=oe+TD6tI; arc=none smtp.client-ip=168.119.38.16
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sipsolutions.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sipsolutions.net
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=sipsolutions.net; s=mail; h=MIME-Version:Content-Transfer-Encoding:
-	Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender
-	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
-	Resent-Cc:Resent-Message-ID; bh=93+FVeoSlMuZbiAXFBL3M9hpRZZSS6lI5Qvwa5nPKIQ=;
-	t=1711392202; x=1712601802; b=oe+TD6tIU9nP97EsS2YFuILRQtCwUnjTR3f+cm78QYmkkcA
-	yMIYCnI65Szr/WICDCagpBFhlG2bJJyIJtH1p4T1qLz5AMao+5RGuHEN3FeQPQg3w/m4b0sb/klhn
-	pltwbkEjgMvB+cIfCY4U2Z3ZdkzQTXW82SdgVZrt2FaUAIuQh8fPZMWZTy9e2qiOwKQ2rpcFKBHrP
-	BasyQGH7acE1quLLK8mfPplPuSQ77VmJS6B8bwsEbaJR30XcCNDyxTG3OZQ37A6c2iKy2ADdrfFsO
-	yiEh1zycWxE8/uHN92JoHoAt433DXFMtOEnShGRRaWo8iq52N0+HrHqvXz9fX4WQ==;
-Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
-	(Exim 4.97)
-	(envelope-from <johannes@sipsolutions.net>)
-	id 1ropHz-0000000E2FA-2Tho;
-	Mon, 25 Mar 2024 19:43:19 +0100
-Message-ID: <48034addaeb6c33ca8b3e636262b6c043ddc5359.camel@sipsolutions.net>
-Subject: Re: [PATCH] rcu: mollify sparse with RCU guard
-From: Johannes Berg <johannes@sipsolutions.net>
-To: Dan Carpenter <dan.carpenter@linaro.org>
-Cc: Boqun Feng <boqun.feng@gmail.com>, rcu@vger.kernel.org, 
- linux-kernel@vger.kernel.org, "Paul E. McKenney" <paulmck@kernel.org>, 
- Frederic Weisbecker <frederic@kernel.org>, Josh Triplett
- <josh@joshtriplett.org>, Peter Zijlstra <peterz@infradead.org>
-Date: Mon, 25 Mar 2024 19:43:18 +0100
-In-Reply-To: <35355d02-3eef-4860-847b-b7bbf05f4a31@moroto.mountain>
-References: <20240325101626.41584-2-johannes@sipsolutions.net>
-	 <ZgGnuFJiTX5laS7c@boqun-archlinux>
-	 <055111792727869a98c1fa693014e0b6f5d256ea.camel@sipsolutions.net>
-	 <35355d02-3eef-4860-847b-b7bbf05f4a31@moroto.mountain>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.50.4 (3.50.4-1.fc39) 
+	s=arc-20240116; t=1711392269; c=relaxed/simple;
+	bh=KjVbKX/1JnTQ8KZWhFzZU8Xw/T8i1qrk1vDw7Qq3Mws=;
+	h=Message-ID:Content-Type:MIME-Version:In-Reply-To:References:
+	 Subject:From:Cc:To:Date; b=fZGYjc691XA+L7fcBj3/eU/FxqsrwgEhKrpcYUMi+xV+JeKfohti5a9bo7W8ivJ3JiBtb19cvndsfG0HzArQpn8kN990fbEH9S5rMEIoE3k1Lhf/SZmpo99zAfGBemYWejhekwfO7OhIdjLyzFqp/O3bCdll2+9AFULZ6NNmksg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=jneoR6nW; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A2500C433C7;
+	Mon, 25 Mar 2024 18:44:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1711392268;
+	bh=KjVbKX/1JnTQ8KZWhFzZU8Xw/T8i1qrk1vDw7Qq3Mws=;
+	h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
+	b=jneoR6nWazV1lIQm6ihGRYD3oocADsEu2qxM9y0EsyA6kAnDvfMmppLBIJ1LUb3k7
+	 jzjSgjfPyugq476VFyifljkzRf6k+VPh2BAzjmFyspcCZpnpHbFvmSOUKTejhaihg7
+	 GVAUDewsHvnN6yK8s6HLnaC+EjMcWbj7CfQCVoSpv7IgcVp+BIASR+B0qfAzfVm1la
+	 14glH/x0UdADmnN0I5TupdRs9O8PIWh8QnsPECNkzOdwE3S9Z4PTEgIA4blbWzlTbN
+	 GDf6b1gV67xZZLAQKZFjSTh6GS93DERFuz9FdzjEW58X9FM2JNFI1PkYpO6SHSHSOR
+	 jcTuCGIDJvCLA==
+Message-ID: <6c8ed50511cbcbf07ef165d900c689e2.sboyd@kernel.org>
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-malware-bazaar: not-scanned
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20240325184204.745706-1-sboyd@kernel.org>
+References: <20240325184204.745706-1-sboyd@kernel.org>
+Subject: Re: [PATCH v2 0/5] Fix a deadlock with clk_pm_runtime_get()
+From: Stephen Boyd <sboyd@kernel.org>
+Cc: linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org, patches@lists.linux.dev, linux-arm-msm@vger.kernel.org, Douglas Anderson <dianders@chromium.org>, Krzysztof Kozlowski <krzk@kernel.org>, Marek Szyprowski <m.szyprowski@samsung.com>, Taniya Das <quic_tdas@quicinc.com>, Ulf Hansson <ulf.hansson@linaro.org>
+To: Michael Turquette <mturquette@baylibre.com>, Stephen Boyd <sboyd@kernel.org>
+Date: Mon, 25 Mar 2024 11:44:26 -0700
+User-Agent: alot/0.10
 
-On Mon, 2024-03-25 at 21:28 +0300, Dan Carpenter wrote:
-> On Mon, Mar 25, 2024 at 05:41:22PM +0100, Johannes Berg wrote:
-> > Also __acquire()/__release() are just empty macros without __CHECKER__.
-> > So not sure the indirection really is warranted for this special case.
-> >=20
-> > I can add a comment in there, I guess, something like
-> >=20
-> >  /* sparse doesn't actually "call" cleanup functions */
-> >=20
-> > perhaps. That reminds me I forgot to CC Dan ...
-> >=20
+Quoting Stephen Boyd (2024-03-25 11:41:54)
+> This patch series fixes a deadlock reported[1] on ChromeOS devices
+> (Qualcomm sc7180 Trogdor). To get there, we allow __clk_release() to run
+> without the prepare_lock held. Then we add runtime PM enabled clk_core
+> structs to a list that we iterate and enable runtime PM for each entry
+> before grabbing the prepare_lock to walk the clk tree. The details are
+> in patch #4.
 >=20
-> These are Sparse warnings, not Smatch warning... Smatch doesn't use any
-> of the Sparse locking annotations.
+> The patch after that is based on the analysis in the disable unused
+> patch. We similarly resume devices from runtime suspend when walking the
+> clk tree for the debugfs clk_summary.
+>=20
+> Unfortunately this doesn't fix all problems with the usage of runtime PM
+> in the clk framework. We still have a problem if preparing a clk happens
+> in parallel to the device providing that clk runtime resuming or
+> suspending. In that case, the task will go to sleep waiting for the
+> runtime PM state to change, and we'll deadlock. This is primarily a
+> problem with the global prepare_lock. I suspect we'll be able to fix
+> this by implementing per-clk locking, because then we will be able to
+> split up the big prepare_lock into smaller locks that don't deadlock on
+> some device runtime PM transitions.
+>=20
+> I'll start working on that problem in earnest now because I'm worried
+> we're going to run into that problem very soon.
+>=20
+> Changes from v1 (https://lore.kernel.org/r/):
 
-Sure, of course. I just saw that you added cleanup stuff to sparse to
-allow using it in smatch.
-
-> Smatch handles cleanup basically correctly at this point.
-
-Do you "run" / "emit" the cleanup function calls there? I briefly look
-at doing that in sparse but it felt ... complicated, and then I saw the
-condition in the cleanup function which I thought sparse could probably
-not see through anyway.
-
-johannes
+Oops this is https://lore.kernel.org/r/20240325054403.592298-1-sboyd@kernel=
+org
 
