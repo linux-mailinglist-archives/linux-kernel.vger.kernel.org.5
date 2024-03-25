@@ -1,120 +1,89 @@
-Return-Path: <linux-kernel+bounces-116696-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-116697-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 519E888A2A8
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 14:42:14 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id EF99888A2AB
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 14:42:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0C8362C393C
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 13:42:13 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 901D61F3C029
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 13:42:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C54D014F9FF;
-	Mon, 25 Mar 2024 10:27:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DAE83131BCA;
+	Mon, 25 Mar 2024 10:27:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="Kpay/Y8u"
-Received: from relay1-d.mail.gandi.net (relay1-d.mail.gandi.net [217.70.183.193])
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="MrBm0YvQ"
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4020A152535;
-	Mon, 25 Mar 2024 08:25:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.193
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D904113C82A;
+	Mon, 25 Mar 2024 08:30:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711355121; cv=none; b=f38fmEopWsyg6r97qPiQ7+felOw0JM9KydWBBc1AfJdCwqZB9nrQreEjb7o1N/MfkX7dL2U7qVy5EE6d5bzrl0i3tAto2nG37aWj3Somwxt5IsLNke3u7kel6zisdh2KsTRDMk18GtF0qlHae/xd0ve1a5zLJC55T0IH4zl7p5s=
+	t=1711355404; cv=none; b=aXoDLxNE0iCPGa6EH85FCUS7+foxstPohUPWbKw3XsAr/3wKSECX7q/CoI5mnyFl+ECKt1T2TDBxXws8oIG1TvGMi4wCTarPYSn0K7YFu+ptn5uK7vzTJnE3xsFzzWa91FrysfjAksDmz/TPFGPjmY7YnuZpgKAaRg/824kQyoE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711355121; c=relaxed/simple;
-	bh=vyv+HNgURDWV2scBdaWEEaxoLp1sb6KCPACv5B5MU+I=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=mhNSZi9kQzluzvhvPMdUcGfYWOWyKHhLY+FAUNM5dgPfmjxKMAZbyown/iWK09elMuNUM4cBtnJhvAT4YxHpjRb+hl97BgevFtorhfFfn2YuMTT8cb8qO7gKd0hNjYzAk93/m1uZOQeqe2n4pwuH6A6d8VG3EKmwuFjP2zLbumk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=Kpay/Y8u; arc=none smtp.client-ip=217.70.183.193
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPA id 49A12240005;
-	Mon, 25 Mar 2024 08:25:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1711355116;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=+L8FJ/DS4fPdi9sganBNWxhh3Fg+F14KfU/MgcLGU3E=;
-	b=Kpay/Y8u+j/vGmdz+GdQrFVGa4VZaXTFQX3M/5GCFdK0isycK+rtVrr2cC62f/oPlYlDdB
-	JKe4c3GQ4QQO/WqfmJRlUj913pCHzLiCOZBjyekRhrxkroF9ULzJUhNw+QPC9UUFMUqWfM
-	u5gviW7azfsvbv8aR/0kZnC49YdIGCo2685bWc87lnXw7V4wnAnIn18O/XBk9QMCoGb3hs
-	f0h8146THg3+1wD0i/2yZ20vfEovBlWxqvqX4e5CjA3gF91xOEi1FNX/y5NB1ZfKBqxuiR
-	xwuOE0mo0TQvsG23OTST549PHypDPCL5RSWyfYwt1iAYiAcAYH9kQtg3bZmEUg==
-From: Herve Codina <herve.codina@bootlin.com>
-To: "David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	Linus Walleij <linus.walleij@linaro.org>,
-	Herve Codina <herve.codina@bootlin.com>,
-	Christophe Leroy <christophe.leroy@csgroup.eu>
-Cc: netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-	kernel test robot <lkp@intel.com>,
-	stable@vger.kernel.org
-Subject: [PATCH] net: wan: framer: Add missing static inline qualifiers
-Date: Mon, 25 Mar 2024 09:25:05 +0100
-Message-ID: <20240325082505.29385-1-herve.codina@bootlin.com>
-X-Mailer: git-send-email 2.44.0
+	s=arc-20240116; t=1711355404; c=relaxed/simple;
+	bh=h//CRCGD0d2uWLlCN+oZeO5mCD2Cg8zsTxqX7sO+7k8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=FDrwkOApoChcWFl+n3iTzZC/cZMfVAkv1axzkFGojbLIbnoV7zT18FA6rK/kUIrZNBLG/0WU6ct929q+GkZVI/Vxp0guEmH6WZvQCH2Vk1OlfodCyiT9BtMQP1NO2oCdkCdRYQKHjxO85HrZiSDhQf2iMMVqprRbDk7AO9zg+04=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=MrBm0YvQ; arc=none smtp.client-ip=46.235.227.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1711355400;
+	bh=h//CRCGD0d2uWLlCN+oZeO5mCD2Cg8zsTxqX7sO+7k8=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=MrBm0YvQ2wj43Xa4m0qGLAj2InrmGYBOv7ocrTWilwNht2ogn6buEk12a49ONDu6c
+	 caUY1+gsZTPHaf/NP9z92M9tweUc69i74xaj7+fCXBL4BfVn29bA6UDTdBdFjxSiqm
+	 tBmQIffZhuypp6rrE6g22gviTCwtQ8V+3z586l0Sf57So2vgP+RXvK2/Jz+mP1+Vw7
+	 QsmlegZxTUpS/t/7ld0VlTbif6i0AeGn5u1xhfsOKXAFQMqNXmeFTJRqT9nt5XuDNg
+	 laRQEMDAVQZGIM2IW0FI+j5BiKcU9B/HuOhWM90qtowD1KGldXkTm+XyIX9BFXtLNW
+	 4kHR7MiA8PbWQ==
+Received: from [100.113.186.2] (cola.collaboradmins.com [195.201.22.229])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: kholk11)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 4E9B637813B7;
+	Mon, 25 Mar 2024 08:29:59 +0000 (UTC)
+Message-ID: <fc6f60fe-ddf5-4f18-bf04-225b4cc174fb@collabora.com>
+Date: Mon, 25 Mar 2024 09:29:58 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-GND-Sasl: herve.codina@bootlin.com
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v8 2/2] media: i2c: Add GC08A3 image sensor driver
+To: Zhi Mao <zhi.mao@mediatek.com>, mchehab@kernel.org, robh+dt@kernel.org,
+ krzysztof.kozlowski+dt@linaro.org, sakari.ailus@linux.intel.com
+Cc: laurent.pinchart@ideasonboard.com, shengnan.wang@mediatek.com,
+ yaya.chang@mediatek.com, Project_Global_Chrome_Upstream_Group@mediatek.com,
+ yunkec@chromium.org, conor+dt@kernel.org, matthias.bgg@gmail.com,
+ jacopo.mondi@ideasonboard.com, 10572168@qq.com, hverkuil-cisco@xs4all.nl,
+ heiko@sntech.de, jernej.skrabec@gmail.com, macromorgan@hotmail.com,
+ linus.walleij@linaro.org, hdegoede@redhat.com,
+ tomi.valkeinen@ideasonboard.com, gerald.loacker@wolfvision.net,
+ andy.shevchenko@gmail.com, bingbu.cao@intel.com,
+ dan.scally@ideasonboard.com, linux-media@vger.kernel.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org
+References: <20240323023851.5503-1-zhi.mao@mediatek.com>
+ <20240323023851.5503-3-zhi.mao@mediatek.com>
+From: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+Content-Language: en-US
+In-Reply-To: <20240323023851.5503-3-zhi.mao@mediatek.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Compilation with CONFIG_GENERIC_FRAMER disabled lead to the following
-warnings:
-  framer.h:184:16: warning: no previous prototype for function 'framer_get' [-Wmissing-prototypes]
-  184 | struct framer *framer_get(struct device *dev, const char *con_id)
-  framer.h:184:1: note: declare 'static' if the function is not intended to be used outside of this translation unit
-  184 | struct framer *framer_get(struct device *dev, const char *con_id)
-  framer.h:189:6: warning: no previous prototype for function 'framer_put' [-Wmissing-prototypes]
-  189 | void framer_put(struct device *dev, struct framer *framer)
-  framer.h:189:1: note: declare 'static' if the function is not intended to be used outside of this translation unit
-  189 | void framer_put(struct device *dev, struct framer *framer)
+Il 23/03/24 03:38, Zhi Mao ha scritto:
+> Add a V4L2 sub-device driver for Galaxycore GC08A3 image sensor.
+> 
+> Signed-off-by: Zhi Mao <zhi.mao@mediatek.com>
 
-Add missing 'static inline' qualifiers for these functions.
+Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
 
-Reported-by: kernel test robot <lkp@intel.com>
-Closes: https://lore.kernel.org/oe-kbuild-all/202403241110.hfJqeJRu-lkp@intel.com/
-Fixes: 82c944d05b1a ("net: wan: Add framer framework support")
-Cc: stable@vger.kernel.org
-Signed-off-by: Herve Codina <herve.codina@bootlin.com>
----
-
-The error raised by the kernel test robot is already fixed by the
-commit badc9e33c795 ("net: wan: fsl_qmc_hdlc: Fix module compilation")
-
- include/linux/framer/framer.h | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/include/linux/framer/framer.h b/include/linux/framer/framer.h
-index 9a9b88962c29..2b85fe9e7f9a 100644
---- a/include/linux/framer/framer.h
-+++ b/include/linux/framer/framer.h
-@@ -181,12 +181,12 @@ static inline int framer_notifier_unregister(struct framer *framer,
- 	return -ENOSYS;
- }
- 
--struct framer *framer_get(struct device *dev, const char *con_id)
-+static inline struct framer *framer_get(struct device *dev, const char *con_id)
- {
- 	return ERR_PTR(-ENOSYS);
- }
- 
--void framer_put(struct device *dev, struct framer *framer)
-+static inline void framer_put(struct device *dev, struct framer *framer)
- {
- }
- 
--- 
-2.44.0
 
 
