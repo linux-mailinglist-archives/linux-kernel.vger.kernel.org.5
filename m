@@ -1,120 +1,107 @@
-Return-Path: <linux-kernel+bounces-117001-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-117002-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9CEBE88A5FA
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 16:13:48 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6B90188AB40
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 18:18:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CEB3B1C350EB
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 15:13:47 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 504E4B33415
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 15:14:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D533673537;
-	Mon, 25 Mar 2024 12:30:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3F64E127B50;
+	Mon, 25 Mar 2024 12:31:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="WBUrfOtf"
-Received: from mail-pf1-f176.google.com (mail-pf1-f176.google.com [209.85.210.176])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="u4nlOKDq"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D49AD433AB
-	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 12:30:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5A23686640;
+	Mon, 25 Mar 2024 12:31:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711369855; cv=none; b=TaCnUD6Er/V25sDqk8ZabzXMxUglosv1MVLGrt7nRzTO54XcjjWSh+0lUslvYAc40xYjiNH5gi0QQtoCearpV8PdXL9IOm9c7Iw+usdSmC3mNBCdg+LRB8IiknCGdCfPkr9TUCdlXMtj7YksCj37FA9HgbZHWC2Jb1zr9OhojkA=
+	t=1711369867; cv=none; b=TmHt2Mm4fOx0anpW/XCtrt27b3hrFYvjTwlhtaLha1UKLwY0BXxZ7tPPRyGFmcUhH3XCx9qfNr7uzqoMxIx68t+fM3HwWozOnAfMvgpvxLjI6yYNjli0/A2enISVEl/KOKD060Hat3Yt5g7PCI0Aum2aN056YWBScd5EMjzrsOI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711369855; c=relaxed/simple;
-	bh=I/0ssb9qvsZJ2CesquYjFBsL5CjwMBvCD4gHJOCAmRI=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=a3xTJ4H7zFo3i6B69ne7QOm4we/LAgwAFh62Y57P9USQtNFKm9wJflkm1rMIF30/CLi0IFxdAvb/vYmX3cdP3FFvxzmRKo2PdhN4Ea6P9tLHe+DXkY2YhsWoyNERJGVtsxv9AR+V87py27rLDbq0o1aM642sUmW2AgqCY1f8RPw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=WBUrfOtf; arc=none smtp.client-ip=209.85.210.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f176.google.com with SMTP id d2e1a72fcca58-6ea9a616cc4so955546b3a.1
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 05:30:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711369853; x=1711974653; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=VAcaRqwrbRM30TKi6X9l/01RCi8ibTxboxlerqqN1jg=;
-        b=WBUrfOtfLI+2O0uxxZ2oEaeu7MHJdp0SGcSjNLHFMKsBDLfO6eBDFKxkQiXkGNQzmY
-         eD5/jchQYgvBNXpxUXrnPBOqx5yo9jd5QL9OxIsqhjWWttPgUUmWA+B+4hlBJzSFMz6U
-         IBYEqVYFmyTG9sDM3mOin+CF9/9XKZTyPt8PY9FhP3OFNQPXscllOJk4O7qpR8T8vJED
-         GufvJLcpte5UyfU8fKNxhjtjdvNVB0ji3NCAnis9vKc6DSB2mtIkYRqQWb/yHcWu8WWY
-         AsYDRR/N+JPnpHvglrVNzEAHPShiB3Wgzy3yXU6Xdfvb/YbHydIw4b8hJr6gmFrsLrjH
-         4Gmg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711369853; x=1711974653;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=VAcaRqwrbRM30TKi6X9l/01RCi8ibTxboxlerqqN1jg=;
-        b=m1TfyAfewe54zx/W38qcuToUr8NvuqG+gnUIsa9A1ZyuA64Sh+jdDi8Vr9T+ZmHrg4
-         pIkZflIpiuMlG6kx7VEENKgVcA4V1iIuIjUemoDU15OhKzPFFcKGR3CPNb7zIH0XT2/T
-         sHbOAfPJMBRJDTmP1CHu+BhDfRYwTqvgsUUoXD3akWtUT0G1pqCrViRhrVjrAh2xB5bv
-         BcwsD34DGsLsqi9bG7dpqXtgQ3dKngaq8wYjzYrCSCN9FmeMnKY6rYLlgnZAYLIP3TxP
-         HSicNuf+0SdgAlhSXJf3lADGJjbi9f2PoJwgOznM4eI5ZuX6FOxgAHz1vjBcG48v8iGV
-         sXvw==
-X-Forwarded-Encrypted: i=1; AJvYcCVvM8l4AuTw6Ubcd1j58nj/W5mYC8DFba0yrnmAAfzgdlfPhv8rcRE6S9z/5cE+tHdp1C2zefT7XIDD5UeA40T3ssNQsiddvnSLnPFa
-X-Gm-Message-State: AOJu0Yyt3djTd6Ba2Y3haaB3JIhBCG2rHhyL69iSM7Va9N6sz9Icxeqs
-	rpH9dzH891v9d8LET69IoltAkf0aCt2kX11EBbVEyK+No+M/5HEd
-X-Google-Smtp-Source: AGHT+IEat6rsjLdajx4W51QuWs+Y1lh7QaH+sRoXZSCvbdL3bJONNi7oYAq0aJavojZ/C1MnPmm07Q==
-X-Received: by 2002:a05:6a21:3949:b0:1a3:cb4d:3fd7 with SMTP id ac9-20020a056a21394900b001a3cb4d3fd7mr1854408pzc.56.1711369853059;
-        Mon, 25 Mar 2024 05:30:53 -0700 (PDT)
-Received: from [192.168.255.10] ([43.132.141.20])
-        by smtp.gmail.com with ESMTPSA id n12-20020a056a000d4c00b006e6c0895b95sm4039410pfv.7.2024.03.25.05.30.50
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 25 Mar 2024 05:30:52 -0700 (PDT)
-Message-ID: <a9a84b30-838f-41e6-8faf-b3508d1ba263@gmail.com>
-Date: Mon, 25 Mar 2024 20:30:48 +0800
+	s=arc-20240116; t=1711369867; c=relaxed/simple;
+	bh=zUJo6272FnK84jmyw4NnOmR4XYdb9pIOT23e/3uwzOc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Gt1Yt6gAoZwwqQapZYPJfFg/t02hxpFszr3fZxkco2StE1KHzkg8gDFwXV8GaDn8R0O0u1mnuhKILw+BiCSmsZXyy2xGyJP/ACHSgPMh/2nO/YdM/UlaztBTu4mgzJIxVXaftJmx9b42XE18V4m9HvbY6rgDXVlmKBBitXA3wpU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=u4nlOKDq; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D4F5EC433F1;
+	Mon, 25 Mar 2024 12:31:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1711369866;
+	bh=zUJo6272FnK84jmyw4NnOmR4XYdb9pIOT23e/3uwzOc=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=u4nlOKDquaafKy61MH0lk5iXUXr8eqGXSPQWJh9ekyP8FxbcUD1zo79mJK5m2HmUE
+	 qbktwDhqeSxwO4aO8kFWEzNsmHi31FEGZG5w8+JjZA4XpQ+c2Acnuz5rEmiw381bTt
+	 hhpJiuH+3eme/Hjt2esaB18vrXiN9zZpbnmZ0zu9iHvFS5nJyUG2OHCBYRvUZFxcKJ
+	 jgTZmJqkfyUwKnmqpGWpySkGxB+H3bun9VDqfRk3SrE+DqqU2hjG4qsXH7wveLQMl0
+	 nLOGIi6nzebFCPOVi9OdwJIHrBqW49VMik3PCom09jHK7oRVG9DX2VHxmVt2xXixWo
+	 TkDtDiPK5OVUg==
+Received: from johan by xi.lan with local (Exim 4.97.1)
+	(envelope-from <johan@kernel.org>)
+	id 1rojTt-000000001R6-39hs;
+	Mon, 25 Mar 2024 13:31:13 +0100
+Date: Mon, 25 Mar 2024 13:31:13 +0100
+From: Johan Hovold <johan@kernel.org>
+To: Krishna Kurapati <quic_kriskura@quicinc.com>
+Cc: Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Rob Herring <robh+dt@kernel.org>,
+	Bjorn Andersson <andersson@kernel.org>,
+	Wesley Cheng <quic_wcheng@quicinc.com>,
+	Konrad Dybcio <konrad.dybcio@linaro.org>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
+	Felipe Balbi <balbi@kernel.org>, devicetree@vger.kernel.org,
+	linux-arm-msm@vger.kernel.org, linux-usb@vger.kernel.org,
+	linux-kernel@vger.kernel.org, quic_ppratap@quicinc.com,
+	quic_jackp@quicinc.com
+Subject: Re: [PATCH v16 2/9] usb: dwc3: core: Access XHCI address space
+ temporarily to read port info
+Message-ID: <ZgFukaLXo4DNwfEK@hovoldconsulting.com>
+References: <20240307062052.2319851-1-quic_kriskura@quicinc.com>
+ <20240307062052.2319851-3-quic_kriskura@quicinc.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 05/14] mm/ksm: use folio in stable_node_dup
-Content-Language: en-US
-To: Matthew Wilcox <willy@infradead.org>, alexs@kernel.org
-Cc: Andrea Arcangeli <aarcange@redhat.com>,
- Izik Eidus <izik.eidus@ravellosystems.com>, david@redhat.com,
- Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
- linux-kernel@vger.kernel.org, Hugh Dickins <hughd@google.com>,
- Chris Wright <chrisw@sous-sol.org>
-References: <20240322083703.232364-1-alexs@kernel.org>
- <20240322083703.232364-6-alexs@kernel.org>
- <Zf2qcH-bDEgLAP7d@casper.infradead.org>
-From: Alex Shi <seakeel@gmail.com>
-In-Reply-To: <Zf2qcH-bDEgLAP7d@casper.infradead.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240307062052.2319851-3-quic_kriskura@quicinc.com>
 
-
-
-On 3/22/24 11:57 PM, Matthew Wilcox wrote:
-> On Fri, Mar 22, 2024 at 04:36:52PM +0800, alexs@kernel.org wrote:
->> -static struct page *stable_node_dup(struct ksm_stable_node **_stable_node_dup,
->> -				    struct ksm_stable_node **_stable_node,
->> -				    struct rb_root *root,
->> -				    bool prune_stale_stable_nodes)
->> +static void *stable_node_dup(struct ksm_stable_node **_stable_node_dup,
->> +			     struct ksm_stable_node **_stable_node,
->> +			     struct rb_root *root,
->> +			     bool prune_stale_stable_nodes)
+On Thu, Mar 07, 2024 at 11:50:45AM +0530, Krishna Kurapati wrote:
+> All DWC3 Multi Port controllers that exist today only support host mode.
+> Temporarily map XHCI address space for host-only controllers and parse
+> XHCI Extended Capabilities registers to read number of usb2 ports and
+> usb3 ports present on multiport controller. Each USB Port is at least HS
+> capable.
 > 
-> Do we really have to go through this void * stage?
-
-Hi Willy,
-Thank a lot for reminder. Yes, we could keep the 'struct page*' return value here.
-And so we don't need to change indent here.
-
-Thanks!
-
+> The port info for usb2 and usb3 phy are identified as num_usb2_ports
+> and num_usb3_ports. The intention is as follows:
 > 
-> Also, please stop reindenting the arguments.  I tend to just switch to
-> two tabs, but lining them up with the opening bracket leads to extra
-> churn.  Either leave them alone for the entire series or switch _once_.
+> Wherever we need to perform phy operations like:
 > 
+> LOOP_OVER_NUMBER_OF_AVAILABLE_PORTS()
+> {
+> 	phy_set_mode(dwc->usb2_generic_phy[i], PHY_MODE_USB_HOST);
+> 	phy_set_mode(dwc->usb3_generic_phy[i], PHY_MODE_USB_HOST);
+> }
+> 
+> If number of usb2 ports is 3, loop can go from index 0-2 for
+> usb2_generic_phy. If number of usb3-ports is 2, we don't know for sure,
+> if the first 2 ports are SS capable or some other ports like (2 and 3)
+> are SS capable. So instead, num_usb2_ports is used to loop around all
+> phy's (both hs and ss) for performing phy operations. If any
+> usb3_generic_phy turns out to be NULL, phy operation just bails out.
+> num_usb3_ports is used to modify GUSB3PIPECTL registers while setting up
+> phy's as we need to know how many SS capable ports are there for this.
+> 
+> Signed-off-by: Krishna Kurapati <quic_kriskura@quicinc.com>
+
+Reviewed-by: Johan Hovold <johan+linaro@kernel.org>
 
