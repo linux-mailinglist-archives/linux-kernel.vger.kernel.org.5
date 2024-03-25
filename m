@@ -1,75 +1,168 @@
-Return-Path: <linux-kernel+bounces-117699-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-117700-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2213D88AE95
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 19:40:05 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9299288AE97
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 19:40:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3595629F294
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 18:40:03 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 48A242C760D
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 18:40:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F412E82C69;
-	Mon, 25 Mar 2024 18:24:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 644D183A07;
+	Mon, 25 Mar 2024 18:24:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="pEhhLUwA"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="MSajJ7uA"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 40DFE82877
-	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 18:24:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0ECB682D8D
+	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 18:24:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711391064; cv=none; b=KN/pR2uifgchhiSTwwMIT2VmP0WWt78xJ5JvQlJNvokqPCllEyfxF9fpJYH/xjyjmVjUkU0EX7RvL/6nBZW6jgSyO3beJ67cRg/UZATETEZp4SoolypFRCYyYMnqK6OiIGx6yx+6Zxj7P7sjnvviNcrLbKWqAvbKS+/TrPFjAws=
+	t=1711391079; cv=none; b=bLNamXIr1WAt1gdOyYYylYAeDzcciRR178inBRrV65b6hUsknhfHYN0WuaCHjvV5jVxJYTD0AbW/4MZI89x95exEWH0vFjQU6cQ0h+wsLYyk5gwkWj9S2LfK7lbIBvetFZqX+2boRIwcBSzSEdreGv4U9w7fd0J3+ZQOZDVK67M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711391064; c=relaxed/simple;
-	bh=j80BcY2Zkn21OowuqDrofIC9hVMehNU1ENYULjuQbBE=;
-	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
-	 Mime-Version:Content-Type; b=nveavmAflZd7ybpfF7k34r3umfH1boWHLu6jqECuaxeKDKDL2xQGvo5OltuadwbPT+eLr7I1dGVrb7JYCQZWFhlnfyhEQ8sRw84jYwfdTedKvkU1sP29DV5LwXUHePh0pc1cogg0rsEILFM4ZzWO92uOdeUo3C+aBXibg8LlsK8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=pEhhLUwA; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E2B8AC433C7;
-	Mon, 25 Mar 2024 18:24:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-	s=korg; t=1711391063;
-	bh=j80BcY2Zkn21OowuqDrofIC9hVMehNU1ENYULjuQbBE=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=pEhhLUwA51PGLAAMnxNU6v6huBSqTsJBGz5Qk6lk6DT5/TmO0jylq5BevwFg2jYVB
-	 X6cUxO5d9gInKRupWdt5dFyT5y+5bRZFJpCIXTe1X8ViWfk/w4wvLGwDp/rDy8r355
-	 VHGqAXzwo/A746SZj+43kO1BZzhwsuPdUP4fwRTE=
-Date: Mon, 25 Mar 2024 11:24:22 -0700
-From: Andrew Morton <akpm@linux-foundation.org>
-To: Donet Tom <donettom@linux.ibm.com>
-Cc: linux-mm@kvack.org, linux-kernel@vger.kernel.org, Aneesh Kumar
- <aneesh.kumar@kernel.org>, Huang Ying <ying.huang@intel.com>, Michal Hocko
- <mhocko@kernel.org>, Dave Hansen <dave.hansen@linux.intel.com>, Mel Gorman
- <mgorman@suse.de>, Feng Tang <feng.tang@intel.com>, Andrea Arcangeli
- <aarcange@redhat.com>, Peter Zijlstra <peterz@infradead.org>, Ingo Molnar
- <mingo@redhat.com>, Rik van Riel <riel@surriel.com>, Johannes Weiner
- <hannes@cmpxchg.org>, Matthew Wilcox <willy@infradead.org>, Vlastimil Babka
- <vbabka@suse.cz>, Dan Williams <dan.j.williams@intel.com>, Hugh Dickins
- <hughd@google.com>, Kefeng Wang <wangkefeng.wang@huawei.com>, Suren
- Baghdasaryan <surenb@google.com>
-Subject: Re: [PATCH v4 0/2] Allow migrate on protnone reference with
- MPOL_PREFERRED_MANY policy
-Message-Id: <20240325112422.7d52c9ba4b00ac2e5a125d89@linux-foundation.org>
-In-Reply-To: <cover.1711373653.git.donettom@linux.ibm.com>
-References: <cover.1711373653.git.donettom@linux.ibm.com>
-X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1711391079; c=relaxed/simple;
+	bh=1y7PY1oTFX7Axkh8dq81egggxtYVixKQqkHsEHIH+zs=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=JjZQpHq0Lxgkk19l3YbNLU2TenrotJ0vgs9zxd9oAoXgzPG8X/zqTiSzNJOVasLpHwoq2QEt2jgxRTlIBI3EhGbqNfaN30lkso3GfL3l4bvrpOlx7VFWhvfN7dDObMSmYBn/8j9hkslH9aoik7NpCrr0slkTmM6KrXPqpZbv4bY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=MSajJ7uA; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1711391076;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=b8m7155r4ZtiZ6OJmssDUl1N2SECV45y4cCUPbb/2rA=;
+	b=MSajJ7uAIUdJRUVR3KlJffhH+KdJwwF3wdb+Qdpwqsef0WJIl//XPxvzDIM2+g3/1gH4kP
+	6lCf2zL+3qGfmjwfYnpBGH4uimhojtFR8zzUpkeUXDK3NUOI1p2oM1cFA/sL6kGNa/RG74
+	TJC3xRzgtVOU21fBRMzcISxxcX8ZNG4=
+Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
+ [209.85.221.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-190-nOhCCe1FPLGdWnWQiqfT_w-1; Mon, 25 Mar 2024 14:24:35 -0400
+X-MC-Unique: nOhCCe1FPLGdWnWQiqfT_w-1
+Received: by mail-wr1-f71.google.com with SMTP id ffacd0b85a97d-33eca7270ccso1982896f8f.1
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 11:24:35 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711391074; x=1711995874;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=b8m7155r4ZtiZ6OJmssDUl1N2SECV45y4cCUPbb/2rA=;
+        b=WXEgZ5RtD3CB2Lonr895B2vMw/zdyZnbUCJ/42/mzyXwqztgdPf3w+JlxuIOnLI021
+         7DwMSmyHVFcS8I9EXICRItyCSJt53yZpvdAOL46cjn4KpNijMl1dFtgcUfNqX6Gprg0o
+         vRb1XV9KYgmxYoUxfQJQ2ETv45WCBrA5/Z117cl4g9prqDH6lZFIHE77eh6XOz9FzR9w
+         cwi/60ndWQXGC1W7j+z6WuX4I5lMInhE+ca+llyVxW9pyjLc4tgKcU62qiz6MvzpjGNZ
+         FkTMfZlkVUuj3CApPvt0Wzw52ejEZoIsw4VKa/hwcTHO2lZWMaxthjCIiw6CuU2ObZ8Y
+         BbHQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXxeXKy6fQL3SY+U9+od+0aL2xvMEjA/oEtH5K+xm6xQMViCK2fmHAej380S+45OHiUEAbp8Fn+x5U/XAIExqGCZL1Cm9nQGd3/GRQh
+X-Gm-Message-State: AOJu0Yx6+ltpxNTN6ygG4rnsKCwNCQGL/6d7J3wfseAZDFAWILMNa0No
+	EL+K6VxK+gjixAxTdPXLn4xgrQ8sC42TWZ3pFBTZAvKFvFyp/RocubX5uG8Nol0lSghb9SISSCy
+	j6R7lqZxvUlPsnZJj2bqUSGKi0ANbCKVyusz+KVCl9PzjQyKbAxvezj8Il3+x+A==
+X-Received: by 2002:adf:c04b:0:b0:33e:bed4:c418 with SMTP id c11-20020adfc04b000000b0033ebed4c418mr5928999wrf.3.1711391074127;
+        Mon, 25 Mar 2024 11:24:34 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IH5r/lLnQrrP+FsfZkx/tzC+B0pi96TLNpWuweDBMHLcZfzhANDx6D6CScWAtrWW3d5fWN17Q==
+X-Received: by 2002:adf:c04b:0:b0:33e:bed4:c418 with SMTP id c11-20020adfc04b000000b0033ebed4c418mr5928981wrf.3.1711391073750;
+        Mon, 25 Mar 2024 11:24:33 -0700 (PDT)
+Received: from sgarzare-redhat (host-87-12-25-33.business.telecomitalia.it. [87.12.25.33])
+        by smtp.gmail.com with ESMTPSA id z17-20020a056000111100b0033ecbfc6941sm10112932wrw.110.2024.03.25.11.24.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 25 Mar 2024 11:24:33 -0700 (PDT)
+Date: Mon, 25 Mar 2024 19:24:28 +0100
+From: Stefano Garzarella <sgarzare@redhat.com>
+To: Marco Pinna <marco.pinn95@gmail.com>
+Cc: stefanha@redhat.com, davem@davemloft.net, edumazet@google.com, 
+	kuba@kernel.org, pabeni@redhat.com, ggarcia@deic.uab.cat, jhansen@vmware.com, 
+	kvm@vger.kernel.org, virtualization@lists.linux.dev, netdev@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] vsock/virtio: fix packet delivery to tap device
+Message-ID: <6vlaxnqqyhppbajmmwyco62b7gzasflgrxpgl4h3ippuk4jwme@qfne3i72eej4>
+References: <20240325171238.82511-1-marco.pinn95@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <20240325171238.82511-1-marco.pinn95@gmail.com>
 
-On Mon, 25 Mar 2024 09:24:12 -0500 Donet Tom <donettom@linux.ibm.com> wrote:
+On Mon, Mar 25, 2024 at 06:12:38PM +0100, Marco Pinna wrote:
+>Commit 82dfb540aeb2 ("VSOCK: Add virtio vsock vsockmon hooks") added
+>virtio_transport_deliver_tap_pkt() for handing packets to the
+>vsockmon device. However, in virtio_transport_send_pkt_work(),
+>the function is called before actually sending the packet (i.e.
+>before placing it in the virtqueue with virtqueue_add_sgs() and checking
+>whether it returned successfully).
 
-> V4
-> - Added an example in the "PATCH 2/2" commit message as per the discussion
->   from V3.
+ From here..
 
-Thanks, I updated the changelogs in place.
+> This may cause timing issues since
+>the sending of the packet may fail, causing it to be re-queued
+>(possibly multiple times), while the tap device would show the
+>packet being sent correctly.
+
+to here...
+
+This a bit unclear, I would rephrase with something like this:
+
+Queuing the packet in the virtqueue can fail even multiple times.
+However, in virtio_transport_deliver_tap_pkt() we deliver the packet
+to the monitoring tap interface only the first time we call it.
+This certainly avoids seeing the same packet replicated multiple
+times in the monitoring interface, but it can show the packet
+sent with the wrong timestamp or even before we succeed to queue
+it in the virtqueue.
+
+>
+>Move virtio_transport_deliver_tap_pkt() after calling virtqueue_add_sgs()
+>and making sure it returned successfully.
+>
+>Fixes: 82dfb540aeb2 ("VSOCK: Add virtio vsock vsockmon hooks")
+>Signed-off-by: Marco Pinna <marco.pinn95@gmail.com>
+>---
+> net/vmw_vsock/virtio_transport.c | 3 ++-
+> 1 file changed, 2 insertions(+), 1 deletion(-)
+>
+>diff --git a/net/vmw_vsock/virtio_transport.c b/net/vmw_vsock/virtio_transport.c
+>index 1748268e0694..ee5d306a96d0 100644
+>--- a/net/vmw_vsock/virtio_transport.c
+>+++ b/net/vmw_vsock/virtio_transport.c
+>@@ -120,7 +120,6 @@ virtio_transport_send_pkt_work(struct work_struct *work)
+> 		if (!skb)
+> 			break;
+>
+>-		virtio_transport_deliver_tap_pkt(skb);
+> 		reply = virtio_vsock_skb_reply(skb);
+> 		sgs = vsock->out_sgs;
+> 		sg_init_one(sgs[out_sg], virtio_vsock_hdr(skb),
+>@@ -170,6 +169,8 @@ virtio_transport_send_pkt_work(struct work_struct *work)
+> 			break;
+> 		}
+>
+>+		virtio_transport_deliver_tap_pkt(skb);
+>+
+
+I was just worried that consume_skb(), called in
+virtio_transport_tx_work() when the host sends an interrupt to the guest
+after it has consumed the packet, might be called before this point,
+but both run with `vsock->tx_lock` held, so we are protected from
+this case.
+
+So, the patch LGTM, I would just clarify the commit message.
+
+Thanks,
+Stefano
+
+> 		if (reply) {
+> 			struct virtqueue *rx_vq = vsock->vqs[VSOCK_VQ_RX];
+> 			int val;
+>-- 
+>2.44.0
+>
+
 
