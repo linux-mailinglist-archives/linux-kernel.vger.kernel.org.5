@@ -1,91 +1,125 @@
-Return-Path: <linux-kernel+bounces-117260-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-117261-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BB13F88B524
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 00:20:43 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 05EB888A95D
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 17:31:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 40ED0B61107
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 16:30:40 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 99ADC1F3D389
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 16:31:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3F561149DE5;
-	Mon, 25 Mar 2024 14:33:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4A09D14A4CE;
+	Mon, 25 Mar 2024 14:33:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MFUoVDmr"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qwGTfZ4S"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7ECD88664A;
-	Mon, 25 Mar 2024 14:33:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 60EA612C55D;
+	Mon, 25 Mar 2024 14:33:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711377208; cv=none; b=klTgR1RAOKqXLKqTJoosOQ/eykPzejYZbO5oXf7gXa0PihPkkxfoYoD73RECDkWeZOk1pcc/l5fu4WjxZBvi+ovVzG8sBjBS9nbfmKpK3juzF/mlanTPtxSyFu84h3GtcgxOy5RVeGPXz5420J6TW1DUA65q34k83a2kaNxHahM=
+	t=1711377233; cv=none; b=R292hLSvKxzJN6UVcsrAay7BaxOkTzO7g21MaC79QO0s7ug409dRCbepK71qXXcVeEwsJ1tQODj9gy/Cx1M8FLnMPjf2SOltLNulc7l1dmAdPCyU8DA6HG/0LVNKP7AWIKdlwnCHPZYWmJHm3bXSzr7G88rGydll64Ybek45B1Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711377208; c=relaxed/simple;
-	bh=QxiBmosJiAlkkJIjPXuxNfLHIgYXfAiySTVvVlXw9mc=;
+	s=arc-20240116; t=1711377233; c=relaxed/simple;
+	bh=I8gGjUabBFBdinEZ8w3xLeRQEfRy+mHaSAx/ueiu+40=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=PfM6aADcXWK9q6mtN4odfUMkawC7cQ7nwEO8SdyLSNtuuClHCVYoRa4T/uNuSddk9w1SS0NhygYvt4TJ3kWLHsF1YUlt/e3YGQ6vWBSbdUyf9z4zdu3Lyu7NL3JVuy//sFVtfwmLrQgzI5ryLrW9O+it2xvbQJ9/BIq+QsZLUaY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MFUoVDmr; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CFF80C433C7;
-	Mon, 25 Mar 2024 14:33:26 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=BPDnTgyZ+zD/h3SbirmDL4jk9SA4VKL3TvsKuCAcDfAvhSxCfQXTwDxGVkrKFOKv7IgpgnKc7pdaDkPR99oeJ1FVx42OQVxyiJuZtUNDLaaOU0nImgZPH3mlVt+g42uOvdFsMQBiDhLBjwyXejzy8Fg1nPYbHxydqjti1HhncaQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qwGTfZ4S; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BCA51C433C7;
+	Mon, 25 Mar 2024 14:33:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711377208;
-	bh=QxiBmosJiAlkkJIjPXuxNfLHIgYXfAiySTVvVlXw9mc=;
+	s=k20201202; t=1711377232;
+	bh=I8gGjUabBFBdinEZ8w3xLeRQEfRy+mHaSAx/ueiu+40=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=MFUoVDmrRB6lHJTifMM9A42KkJ73wQLUmnHb23TFfdlKcrWQJ4HH1biNzNSWElWuP
-	 RhFmsvzxJs5Yrh/srG0FJOu1RTH6yb45xgsfXIZt2pFdg8kxYGBu88mNcZOj91GyMi
-	 dy3ZdWfwejINfoIQU+xut0hoUbEOdPceLNHyjy4MyPfugtKiYtGxzl/0136s3jfFoY
-	 kdFS4Uovn5Ah1LkqYdydnW+XpsMxxAp2USyBa5Uxl8vUG9jbmUYuuRhamzZd7+7ioa
-	 kuccry2y95VT90//zNLLOML40RSmdeggmRuMHhzjTf5/8ah4vuCtHfcCHOaVvoMDrw
-	 G14CPuAK9S7hQ==
-Date: Mon, 25 Mar 2024 09:33:24 -0500
-From: Rob Herring <robh@kernel.org>
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc: Konrad Dybcio <konrad.dybcio@somainline.org>,
+	b=qwGTfZ4ShLOkmcP2SDowGUP24PHw40nxwQ0YvPPEMQoc9ATkG5gM8iZxzfOnu5sRD
+	 UwSN8WIBhDTUqSGcf70UElmHWw4r+uQJbXCj6GVa/HUOSTqZ8SjItI/TLZfjLKFYVb
+	 jVgHhwDEcWppwKLrXjpTUcw8+6wmFPrumLvMm0dZewht8np1+OcS0EZkB/G30kbtZi
+	 95N5Z7T58ICVBDySFjaI2c6LS4Jvr4xorat/fbqwktT0ORUOJWzGrCuKqnZhZZS7CT
+	 muoF2CaxPRzjQFv+XRluV81Q5NVeAVQYqFGBhKcsDxvfwURItxgT/oQf5PN7eSCw5l
+	 J6x8GepzXZ4bg==
+Date: Mon, 25 Mar 2024 14:33:43 +0000
+From: Mark Brown <broonie@kernel.org>
+To: Bartosz Golaszewski <brgl@bgdev.pl>
+Cc: Marcel Holtmann <marcel@holtmann.org>,
+	Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+	"David S . Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Rob Herring <robh@kernel.org>,
 	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>, Kalle Valo <kvalo@kernel.org>,
+	Bjorn Andersson <andersson@kernel.org>,
+	Konrad Dybcio <konrad.dybcio@linaro.org>,
+	Liam Girdwood <lgirdwood@gmail.com>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Will Deacon <will@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
+	Saravana Kannan <saravanak@google.com>,
+	Geert Uytterhoeven <geert+renesas@glider.be>,
+	Arnd Bergmann <arnd@arndb.de>,
 	Neil Armstrong <neil.armstrong@linaro.org>,
-	dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-	Daniel Vetter <daniel@ffwll.ch>,
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-	devicetree@vger.kernel.org, Thomas Zimmermann <tzimmermann@suse.de>,
-	Jessica Zhang <quic_jesszhan@quicinc.com>,
-	Sam Ravnborg <sam@ravnborg.org>, David Airlie <airlied@gmail.com>,
-	Maxime Ripard <mripard@kernel.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Conor Dooley <conor.dooley@microchip.com>
-Subject: Re: [RESEND PATCH] dt-bindings: display: sony,td4353-jdi: allow
- width-mm and height-mm
-Message-ID: <171137719526.3318300.16563684034350324718.robh@kernel.org>
-References: <20240325103227.27474-1-krzysztof.kozlowski@linaro.org>
+	Marek Szyprowski <m.szyprowski@samsung.com>,
+	Alex Elder <elder@linaro.org>,
+	Srini Kandagatla <srinivas.kandagatla@linaro.org>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Abel Vesa <abel.vesa@linaro.org>,
+	Manivannan Sadhasivam <mani@kernel.org>,
+	Lukas Wunner <lukas@wunner.de>,
+	Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+	linux-bluetooth@vger.kernel.org, netdev@vger.kernel.org,
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-wireless@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org, linux-pci@vger.kernel.org,
+	linux-pm@vger.kernel.org,
+	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Subject: Re: [PATCH v6 01/16] regulator: dt-bindings: describe the PMU module
+ of the QCA6390 package
+Message-ID: <4d8d55a8-fcf2-47b6-ac0e-2bbb99bb895a@sirena.org.uk>
+References: <20240325131624.26023-1-brgl@bgdev.pl>
+ <20240325131624.26023-2-brgl@bgdev.pl>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="Cru5I7A758SJZEDj"
+Content-Disposition: inline
+In-Reply-To: <20240325131624.26023-2-brgl@bgdev.pl>
+X-Cookie: Evil isn't all bad.
+
+
+--Cru5I7A758SJZEDj
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240325103227.27474-1-krzysztof.kozlowski@linaro.org>
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, 25 Mar 2024 11:32:27 +0100, Krzysztof Kozlowski wrote:
-> Allow width and height properties from panel-common.yaml, already used
-> on some boards:
-> 
->   sdm845-sony-xperia-tama-apollo.dtb: panel@0: 'height-mm', 'width-mm' do not match any of the regexes: 'pinctrl-[0-9]+'
-> 
-> Acked-by: Conor Dooley <conor.dooley@microchip.com>
-> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-> ---
-> 
-> Rob, could you pick up this one? Was on the list for almost a year.
-> 
-> 
->  .../devicetree/bindings/display/panel/sony,td4353-jdi.yaml      | 2 ++
->  1 file changed, 2 insertions(+)
-> 
+On Mon, Mar 25, 2024 at 02:16:09PM +0100, Bartosz Golaszewski wrote:
+> From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+>=20
+> The QCA6390 package contains discreet modules for WLAN and Bluetooth. They
+> are powered by the Power Management Unit (PMU) that takes inputs from the
+> host and provides LDO outputs. This document describes this module.
 
-Applied, thanks!
+Acked-by: Mark Brown <broonie@kernel.org>
 
+--Cru5I7A758SJZEDj
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmYBi0YACgkQJNaLcl1U
+h9AdIwf/SWJguM6qR3+2+NfBzS3BClbo5tKAaN7frc+HgiFkmcN+TDdydwp+qfxf
+t33nHRvZIdzfbxrYkACIlOO6o55gf1Cahrrsb9l0Lp4MzBxcC/oKnrQbqIxldiJ9
+LYcYPT+9yhvRkPTkiqIpbJG9WMJwdNVPILl1NEIQBdMA6UNmC7xbBEUh4BRD8qbi
+v8qSPzhQj/7O3MTfD+/d1JrH9fVXUY1roL37PiDSW0XkQo6oIyTa2oEKjEibyPig
+amlwRcPUhjelQwkhTc8jH/fH1DmXkkK/Uw04Y77VKP5dhUdPo4hDVUJTAoOp/rmt
+l5q8gRzt2QPqjhuQmXVXBsXA1PoApw==
+=yWUc
+-----END PGP SIGNATURE-----
+
+--Cru5I7A758SJZEDj--
 
