@@ -1,107 +1,156 @@
-Return-Path: <linux-kernel+bounces-116397-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-116395-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id E385D889A57
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 11:28:41 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5299A889A52
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 11:28:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9EB7A2A2D0C
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 10:28:40 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 757A51C33011
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 10:28:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3003E44384;
-	Mon, 25 Mar 2024 05:41:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EF59413EFF3;
+	Mon, 25 Mar 2024 05:40:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="EWcuIo6h"
-Received: from mail-pl1-f177.google.com (mail-pl1-f177.google.com [209.85.214.177])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=hpe.com header.i=@hpe.com header.b="PxbrELzz"
+Received: from mx0a-002e3701.pphosted.com (mx0a-002e3701.pphosted.com [148.163.147.86])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7B10C13F449;
-	Mon, 25 Mar 2024 02:03:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D0319141997;
+	Mon, 25 Mar 2024 02:06:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.147.86
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711332236; cv=none; b=mIEj7QF+QcLyq//D2ni7s+DzwNLU264mCgkqtTHanHYh+r9fYqIPhQMuYi7iMRCFTzK2bNs7l12HYqbeIcl9BjZwzlqOJ8RmJWgFleUPkeWwDDWa+ciFgAGu+brRreLB9Z95rimFGKpQoMiN02ZI3MSORjccDHz9y748ny2hxU4=
+	t=1711332415; cv=none; b=juNYLh7N+0r7jqn7Tx4HV0ohr44Ktx1kB0maVowF+oh+qn/v67qgrc2KFEajeM/wdNbxAqJ7A5VlUHHufnmiM/mdvcK2p3Btc/bv2ZGxAdbS1Km8JtdhTOH0MWns0ny1iqUHZKck1GeHyhsl3sHyhe8XDSLvjz/PMZAG6X0bdfw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711332236; c=relaxed/simple;
-	bh=UalUTF2iqRjxJm5BRWPYfnuu8z/bakUMFe6q3qjPta8=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=lljC7ZyG22Mpn4uwk/IRbQyDS5EvU0FHkYxKjHGG4235DsyqrrV1Foa6Ck+P9S5EYBUAGracMTriO0JW4LGlWNfr4ohfuO9pPbWMN8Xb9+E2FZa7OC9V3p7fdA+MMN81uYU8tuF5PA5Hi3wDrUzCpQNBIzSyix8yfTIXdRjgUB0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=EWcuIo6h; arc=none smtp.client-ip=209.85.214.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f177.google.com with SMTP id d9443c01a7336-1e0025ef1efso22107095ad.1;
-        Sun, 24 Mar 2024 19:03:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711332235; x=1711937035; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=UalUTF2iqRjxJm5BRWPYfnuu8z/bakUMFe6q3qjPta8=;
-        b=EWcuIo6hg0QvU7VUjXmSKkXtQPq1pOzSI8B1TbeB8YlUPK6vynd2UvlFrBpojVe5AX
-         2b0hULteCj/ooFU7awfpDnOr4syPBubix5SobxDkcVeiRwQs4e1kdDCX6WfVv8ny20jp
-         H08irRm4W8lmCujNTti3DIb8FTXH6hdDNGi6mbsfUaaDKvhlHkp67BVl6NbFDmlsySkZ
-         YOgIEsh2Qi3DzwFzpDOzOAklSNB/ZbnQsix5XkOphcVryZ1/Y8/aUVRa2WW5Nc9lBa7J
-         i+aIVSp/bT4h3VIeNukvIgiDf6uXl1+t8R/nanTVNlZ619gSrLZ2b785ZC8AdOZDKqaG
-         weZw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711332235; x=1711937035;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=UalUTF2iqRjxJm5BRWPYfnuu8z/bakUMFe6q3qjPta8=;
-        b=CZbc/+GVUI55xkZR0zutnCvjfy2vmiyWvIkC8c5c3L4r9u5lmFW8Mktv+w/LvBPto7
-         bPrTTDHbalYieuX1QgFVC/+kX1qZ2x0tdr39FvZ9NwyNGquUGbKHYqcQ5rFIHnKHUMtk
-         +i4ek2Jb5mrTgy7vv0PU8RAXqtstvNw7rCzxTgbZePLw4p6f14zDGpi2P/ZTZyAX2U9i
-         Zs7YvpfesO1idP9aDPjqNwvpQ7qIEFUjT1EJh1vKRcnIThZrW4yI/w9thOHXbDNEw5Xg
-         R0FoefItPtkojjcdPeo0qCeGJvtNHdG5LBCZeWsoF4APoQMNJmzkS1x1DrZjf0GuDrCw
-         BOPQ==
-X-Forwarded-Encrypted: i=1; AJvYcCV5Bte9S1DBfkyiByvCXa7kB2CWm1xFrpuWxgMxDeOr6IvC69Dn8rmIqpTcIRGy0ncevPSurPJZCddq0aDYvzJ555Qi991+tDbv/wsLRqSbvBzyOaxSqw39JzAsEEIahNoietTAdvqxIRRewL6W9f5kyM9rqk0vPmRzgOBVLdXdsdrOTtQmXpi7ME3o95aUZkcSn9ZA2NiI9GE3hZD39ck=
-X-Gm-Message-State: AOJu0YzW+cu8xvGuY6iiqunI4kD/eqH7rxa23XICeryMOZPt2Dl40WRI
-	8l8RR5kwmA1tDMZPuQktLg7kRk3tqQFx8RtJZaTne8KB9ZxatKMZi1wmmC2F2QGczA==
-X-Google-Smtp-Source: AGHT+IFke4+IkGE9FkicVvdk3GsuRfMPNbkgBJVDWwxCLpUbSSpb694v2kg3JJXAMyLX+BgGZPyyHQ==
-X-Received: by 2002:a17:903:1d2:b0:1e0:c74c:dfcc with SMTP id e18-20020a17090301d200b001e0c74cdfccmr354616plh.57.1711332234623;
-        Sun, 24 Mar 2024 19:03:54 -0700 (PDT)
-Received: from gmail.com ([2a09:bac5:6249:183c::26a:10])
-        by smtp.gmail.com with ESMTPSA id m6-20020a170902db0600b001e0b287c1d2sm1985284plx.215.2024.03.24.19.03.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 24 Mar 2024 19:03:54 -0700 (PDT)
-From: Qingfang Deng <dqfext@gmail.com>
-To: cyy@cyyself.name
-Cc: aou@eecs.berkeley.edu,
-	conor@kernel.org,
-	devicetree@vger.kernel.org,
-	dlemoal@kernel.org,
-	guoren@kernel.org,
-	krzysztof.kozlowski+dt@linaro.org,
-	linus.walleij@linaro.org,
-	linux-clk@vger.kernel.org,
-	linux-gpio@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-riscv@lists.infradead.org,
-	mturquette@baylibre.com,
-	p.zabel@pengutronix.de,
-	palmer@dabbelt.com,
-	paul.walmsley@sifive.com,
-	robh+dt@kernel.org,
-	sboyd@kernel.org
-Subject: Re: [PATCH v6 10/11] riscv: dts: add initial canmv-k230 and k230-evb dts
-Date: Mon, 25 Mar 2024 10:03:33 +0800
-Message-Id: <20240325020334.4033-1-dqfext@gmail.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <tencent_DF5D7CD182AFDA188E0FB80E314A21038D08@qq.com>
-References: <tencent_DF5D7CD182AFDA188E0FB80E314A21038D08@qq.com>
+	s=arc-20240116; t=1711332415; c=relaxed/simple;
+	bh=th+lOl8TaguURs7T4/qevNJns4c251FfNsGSkCJOYCI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
+	 Content-Disposition:In-Reply-To:MIME-Version; b=SKSnqvKpmd2WphB35xhJxMyfCZCBd6UBeSgfZc8OcLPAej9CROlxWH0otMnR/5oMZAmdT+GE6i6NWJ3L6VtCNJ3psO3Gt9LFUYJ4hgT1zM91iB605BsxN2Av3l7tmiyLM1QMMQ0ewXNmw2f/xkQD28P99ne379aYiVihyDJSavQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=hpe.com; spf=pass smtp.mailfrom=hpe.com; dkim=pass (2048-bit key) header.d=hpe.com header.i=@hpe.com header.b=PxbrELzz; arc=none smtp.client-ip=148.163.147.86
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=hpe.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=hpe.com
+Received: from pps.filterd (m0150242.ppops.net [127.0.0.1])
+	by mx0a-002e3701.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 42P1WPnj029411;
+	Mon, 25 Mar 2024 02:03:53 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hpe.com; h=date : from : to : cc :
+ subject : message-id : reply-to : references : content-type : in-reply-to
+ : mime-version; s=pps0720;
+ bh=dxof5wf3hIra4YnNU29jynn3K8tspUO9+ofjFnVhJ5I=;
+ b=PxbrELzzeWv6d8P8+veX1uY4xFJMBZruTXQf/CdNJVNOsrMIbwn77mIMdxNGwG9fzH1r
+ Mo/b72iMhvQuY0gx6LtqpdlZIEaxnGqUr69bqJ/Tlfhk7ZduKw5fQJtgVs0rAvFH3GZ7
+ rthx+bY8U+TNSKgBqyV8tMOhMcHW4J/ibfDiUUgQe1haXK1FGyssLoWu1tPH/KxT5Nlj
+ XxOHp6Y/dxlPGLh69TlsJsZI/maf+imlhB8zmY8eRbR756IsjXwojLt/98e9U/pJ1q65
+ wV1t326RyhyHm027t1FiYXm2468KT2PZaBLCX2YlJdcclJg0ubLO17UGA4JOaS8KgDVO dw== 
+Received: from p1lg14880.it.hpe.com ([16.230.97.201])
+	by mx0a-002e3701.pphosted.com (PPS) with ESMTPS id 3x1nrhc41k-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 25 Mar 2024 02:03:52 +0000
+Received: from p1lg14885.dc01.its.hpecorp.net (unknown [10.119.18.236])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by p1lg14880.it.hpe.com (Postfix) with ESMTPS id ADD96800349;
+	Mon, 25 Mar 2024 02:03:41 +0000 (UTC)
+Received: from hpe.com (unknown [16.231.227.36])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(Client did not present a certificate)
+	by p1lg14885.dc01.its.hpecorp.net (Postfix) with ESMTPS id BF9F2800EFE;
+	Mon, 25 Mar 2024 02:03:36 +0000 (UTC)
+Date: Sun, 24 Mar 2024 21:03:34 -0500
+From: Russ Anderson <rja@hpe.com>
+To: Ingo Molnar <mingo@kernel.org>
+Cc: Steve Wahl <steve.wahl@hpe.com>, Dave Hansen <dave.hansen@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
+        Borislav Petkov <bp@alien8.de>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org,
+        Linux regressions mailing list <regressions@lists.linux.dev>,
+        Pavin Joseph <me@pavinjoseph.com>, stable@vger.kernel.org,
+        Eric Hagberg <ehagberg@gmail.com>, Simon Horman <horms@verge.net.au>,
+        Eric Biederman <ebiederm@xmission.com>, Dave Young <dyoung@redhat.com>,
+        Sarah Brofeldt <srhb@dbc.dk>, Dimitri Sivanich <sivanich@hpe.com>
+Subject: Re: [PATCH] x86/mm/ident_map: Use full gbpages in identity maps
+ except on UV platform.
+Message-ID: <20240325020334.GA10309@hpe.com>
+Reply-To: Russ Anderson <rja@hpe.com>
+References: <20240322162135.3984233-1-steve.wahl@hpe.com>
+ <ZgABC1oQ9YJW6Bw3@gmail.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZgABC1oQ9YJW6Bw3@gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Proofpoint-GUID: cE3LkNmzgzy5T9RG2lGAzoCUF_seZTCo
+X-Proofpoint-ORIG-GUID: cE3LkNmzgzy5T9RG2lGAzoCUF_seZTCo
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-HPE-SCL: -1
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-03-24_18,2024-03-21_02,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 suspectscore=0
+ spamscore=0 malwarescore=0 phishscore=0 bulkscore=0 mlxscore=0
+ impostorscore=0 priorityscore=1501 mlxlogscore=999 lowpriorityscore=0
+ clxscore=1011 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2403210000 definitions=main-2403250010
 
-Hi Yangyu,
+On Sun, Mar 24, 2024 at 11:31:39AM +0100, Ingo Molnar wrote:
+> 
+> * Steve Wahl <steve.wahl@hpe.com> wrote:
+> 
+> > Some systems have ACPI tables that don't include everything that needs
+> > to be mapped for a successful kexec.  These systems rely on identity
+> > maps that include the full gigabyte surrounding any smaller region
+> > requested for kexec success.  Without this, they fail to kexec and end
+> > up doing a full firmware reboot.
+> > 
+> > So, reduce the use of GB pages only on systems where this is known to
+> > be necessary (specifically, UV systems).
+> > 
+> > Signed-off-by: Steve Wahl <steve.wahl@hpe.com>
+> > Fixes: d794734c9bbf ("x86/mm/ident_map: Use gbpages only where full GB page should be mapped.")
+> > Reported-by: Pavin Joseph <me@pavinjoseph.com>
+> 
+> Sigh, why was d794734c9bbf marked for a -stable backport? The commit 
+> never explains ...
 
-> - Support for "zicbom" is tested by hand
+I will try to explain, since Steve is offline.  That commit fixes a
+legitimate bug where more address range is mapped (1G) than the
+requested address range.  The fix avoids the issue of cpu speculativly
+loading beyond the requested range, which inludes specutalive loads
+from reserved memory.  That is why it was marked for -stable.
 
-C908 also supports zicbop and zicboz. You may add them as well.
+> If it's broken, it should be reverted - instead of trying to partially 
+> revert and then maybe break some other systems.
+
+Three people reported that mapping only the correct address range
+caused problems on their platforms.  https://lore.kernel.org/all/3a1b9909-45ac-4f97-ad68-d16ef1ce99db@pavinjoseph.com/
+Steve and several people helped debug the issue.  The commit itself
+looks correct but the correct behavior causes some side effect on
+a few platforms.  Some memory ends up not being mapped, but it is not
+clear if it is due to some other bug, such as bios not accurately
+providing the right memory map or some other kernel code path did
+not map what it should.  The 1G mapping covers up that type issue.
+
+Steve's second patch was to not break those platforms while leaving the
+fix on the platform detected the original mapping problem (UV platform).
+
+> When there's boot breakage with new patches, we back out the bad patch 
+> and re-try in 99.9% of the cases.
+
+Steve can certainly merge his two patches and resubmit, to replace the
+reverted original patch.  He should be on in the morning to speak for
+himself.
+
+Thanks
+-- 
+Russ Anderson,  SuperDome Flex Linux Kernel Group Manager
+HPE - Hewlett Packard Enterprise (formerly SGI)  rja@hpe.com
 
