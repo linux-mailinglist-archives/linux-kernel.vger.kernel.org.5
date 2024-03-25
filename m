@@ -1,154 +1,370 @@
-Return-Path: <linux-kernel+bounces-116359-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-116362-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2E2B6889A87
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 11:30:44 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CF3228899B0
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 11:15:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 97B35B27073
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 08:46:00 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4B2F8B30C36
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 09:12:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7D42113AD05;
-	Mon, 25 Mar 2024 04:17:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EBE191BF53F;
+	Mon, 25 Mar 2024 04:22:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=sakamocchi.jp header.i=@sakamocchi.jp header.b="KTkaaqjI";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="Qo4Q5kCd"
-Received: from out4-smtp.messagingengine.com (out4-smtp.messagingengine.com [66.111.4.28])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="NmMVSH4m"
+Received: from mail-wr1-f50.google.com (mail-wr1-f50.google.com [209.85.221.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D7B7C170EAC
-	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 00:41:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=66.111.4.28
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3409271752;
+	Mon, 25 Mar 2024 00:45:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711327302; cv=none; b=Xn6BU1t2YFXJVB7V4jtrhTG6Yo6JQvisDCWqndJ4QWjydSnw0FHDFqHZ67J+rKPMmisInXxvOMNYSmQnOC03kXg6qWMwEN1EGTHA6YqSsIJ+b9HfFIeg6Bxp94p1ThQFrEiDNR2Jek97/C1quDm54ZCcU6dDQLHCMdTL7s0A/5g=
+	t=1711327521; cv=none; b=e5A2480Mz/9HhOg/2upJcCCugXn5bK3g+JQcWfilbOHHccYpCC5RdWpsIUsvI0ngkxfiDozKjAWFdLyN9Wn3IsARFFudGbBAUSzORBNhFyYFpL2BP7jA7sSbp5cBGliLECcoMdhwYx8m+KGY74UDJB/7Vd6ogWA2aN7CXQrOpSI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711327302; c=relaxed/simple;
-	bh=1R6tsIfyD4FKqYacylId0ehCe60JV+xN2G04+gjdyeE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=WOT+isnmP5b/uwuOZZf/oj+uHzrNIVCzFCrhmLujASUWuasoDc1LH71VPXhDJTnyupIXbwaBk8EoZohnl2M1Jh+reL0/OaGkCba6C7s5EEpTnYluJewlxCtbDG1lheUqs3RJ1yJqmQ772IoNDipxkg/TlGS/QKq4Vfgcx2Fl5OM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sakamocchi.jp; spf=pass smtp.mailfrom=sakamocchi.jp; dkim=pass (2048-bit key) header.d=sakamocchi.jp header.i=@sakamocchi.jp header.b=KTkaaqjI; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=Qo4Q5kCd; arc=none smtp.client-ip=66.111.4.28
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sakamocchi.jp
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sakamocchi.jp
-Received: from compute7.internal (compute7.nyi.internal [10.202.2.48])
-	by mailout.nyi.internal (Postfix) with ESMTP id CF9C75C004D;
-	Sun, 24 Mar 2024 20:41:38 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute7.internal (MEProxy); Sun, 24 Mar 2024 20:41:38 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sakamocchi.jp;
-	 h=cc:cc:content-type:content-type:date:date:from:from
-	:in-reply-to:in-reply-to:message-id:mime-version:references
-	:reply-to:subject:subject:to:to; s=fm2; t=1711327298; x=
-	1711413698; bh=Dh+dJEY2gJkF1hs/hYpFYfuFKg28LMybI2iLz5LxJGE=; b=K
-	TkaaqjIGBzU26M4F/P0PKnLJlKxDm/gMiENw+SrBVHuPZBN9mFg3jhLt2CTGIOKx
-	dc9sZQkhgKsxzNHtQe5YvU6ry2fc4Mn/5zzCr0/weXkkIOO/aJJWLj00z7YPT83X
-	+EwygA45GHyViS0xWX/P2tfgkeKgAiMYCYkqvqkw8YQEfeTkenHnnhuhKxTphrBN
-	MqVmS8abJ/kkHYREQCMyoP7Isrc4/wox1b/1qNKRTlkd78cImzPG0snR5e2wFAVB
-	3O815ZZ90mRSYP9jMtCnSDw0jDhARufD0fYebWojU8oBv8BRFwWwCycxHSF+5nCn
-	4BPpkARPOkZf9TN0/C80Q==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-	fm2; t=1711327298; x=1711413698; bh=Dh+dJEY2gJkF1hs/hYpFYfuFKg28
-	LMybI2iLz5LxJGE=; b=Qo4Q5kCd0yAKtC5UZTJrHDhuWA001qerYR1P4tzHFoS6
-	cEKo8iwioLuRSm4Ey7hP8knfY4JXOxO36JUBiNj6o9HSYVyPApo3Em4qhlqPoaVh
-	kLhdZNgMONYAv2jwsgAyb9zChCimxdBCLSuNXrduByQO0c/bx11X7zaXiyb7Vii6
-	zsUKFiYKfIJKHUzJavUXNLSxtCo/RDRz8CrftNdX4TV8lIN14SitYK8HSfCkIQTD
-	QQp8s6BjK/q9PRSiWf8XByw6ybCT28D8xWX0Hmxz3OSvUAhFl1G6g7ufdDEmBVhq
-	oe9AgsrjjbxzWx+fJxi9z7ppYaHCwCETLFxUxeMsDA==
-X-ME-Sender: <xms:QsgAZr39FC7aElUGw604XOdu4epMAaI-kUN6qnuVl0cUk-p42JaxjA>
-    <xme:QsgAZqHzGZMLzJYvxii1seljXIuE4_kAYw0Gxc5wepDQbARUPJSZoVFYz__IeHAOE
-    ghkdreUp0QtujwmD0U>
-X-ME-Received: <xmr:QsgAZr65uyDheMdP617wkbR4r3k3VCsm1Xd0qdTSHMnEhaBLcg0uvhau8c1I7vhK80iUv4C3c0eEQQbrXSE2KMKIpfJh4-DtmuI>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledruddtkedgvdehucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvfevuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepvfgrkhgr
-    shhhihcuufgrkhgrmhhothhouceoohdqthgrkhgrshhhihesshgrkhgrmhhotggthhhird
-    hjpheqnecuggftrfgrthhtvghrnhepveeilefhudekffehkeffudduvedvfeduleelfeeg
-    ieeljeehjeeuvdeghfetvedvnecuffhomhgrihhnpehkvghrnhgvlhdrohhrghenucevlh
-    hushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehoqdhtrghkrghs
-    hhhisehsrghkrghmohgttghhihdrjhhp
-X-ME-Proxy: <xmx:QsgAZg022tybLCCK14m06uRBbMM9BVOAcuGGVnQyJuJMz7_eANd_HA>
-    <xmx:QsgAZuF1uGttxdkhcD1_f-7ypIwr11Cj3e2W3PL3QbR3f3yPHMJ7vw>
-    <xmx:QsgAZh_zxOHvJ8QVALS2GQ09REcYa4UeZXZcvwsiXWHM_oSd3OuQMQ>
-    <xmx:QsgAZrnveojPZWsAipMaoPuF0_wVr4fgj5H49tVht6e2g2PJkmcInw>
-    <xmx:QsgAZqD9hrdHY8oydnffxe4lZmn4UkcwFt73R8MhvLpHy41aIOc2pw>
-Feedback-ID: ie8e14432:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sun,
- 24 Mar 2024 20:41:37 -0400 (EDT)
-Date: Mon, 25 Mar 2024 09:41:34 +0900
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-To: Adam Goldman <adamg@pobox.com>
-Cc: linux1394-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] firewire: core: option to log bus reset initiation
-Message-ID: <20240325004134.GA21329@workstation.local>
-Mail-Followup-To: Adam Goldman <adamg@pobox.com>,
-	linux1394-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org
-References: <Zfqo43xhFluOgO01@iguana.24-8.net>
+	s=arc-20240116; t=1711327521; c=relaxed/simple;
+	bh=GQnkI34JwPVeoy/b99Bb5KkKeULjUupOcGCKtffSV2M=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=InVeaN137moOYogvp3TwzTkl0sRjGhqgVIkLms13eKOzhE+UFsCntAJ7o7TTOHpUmDYWeP9goDkzY7+rb9nuESyDayolCoAELuAOM+99W80eaw9XGhVEbre5aaQgtVkRdq329wnOJXd7uuuiy6npyiKb3bm5mJWW/tJ7AeRLjg8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=NmMVSH4m; arc=none smtp.client-ip=209.85.221.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f50.google.com with SMTP id ffacd0b85a97d-33ec7e38b84so2749039f8f.1;
+        Sun, 24 Mar 2024 17:45:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1711327517; x=1711932317; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=VFHTCkHsp3z4Z58A/RrTwNT63vqGSQmFCkPu+M5aF5c=;
+        b=NmMVSH4mG+bR8RJzRF5hKoVUzeq8QCUmn77ViL8aQXFtFV/CjuI6RHCzMjVBMCHs/n
+         2ESSKdmJQbGrFwtLXUvDKh/mC8g7dWwUJ4NzAqYAHbO42SssBfTYHq0rYgqvB5FcCOnl
+         xNSMvBJD1A3O1mxj6X1Qulp2nkpr9Cc7hh2mGMK9bqq/86wnBhgScQzTeaXsf2bAaLcd
+         c7WIs0NuVN3wW2tlYan6eXMUp+zJBO7ZNEBoQeCU6vuelrgAKWH3W1LFY5dJkmwdK+bH
+         BRKRgJn5bt4ZYpWY/TN+Nkfsbi7U7fJGYc3m3/eu3dEK+uP8EBoGEzJ3grGvwiNKjFf+
+         ODkg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711327517; x=1711932317;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=VFHTCkHsp3z4Z58A/RrTwNT63vqGSQmFCkPu+M5aF5c=;
+        b=bN9JG5A8A8QUX3metJ63hp1zaB2WzfwDNhCHZJWQ9srtmKtoW/DzickAx1iIt1udJH
+         YxB2UVCluxsP20VGnJ9KuGY5KlUEA9VjwxB/b0SctIIDcI0WvbtCU6+cmeQ1Px9rSrgE
+         EONxBHJb1h9mmHgNGsaGl/GRab5qyDs+Htqy6Jce+K8iyZAYDdiWImMGoqWe9EhdEzMy
+         oq+hKO6z+K4f81gR6fvwNfx5SV+gilK/KVFIxKg8yRsOUtiUq4jpYFREvcsQOoLkqefL
+         c+6OnLa5mTT5D8PmWR9qghQh0JYbWKmoP3b+pSoEPu0+Uv+YofYLEvvSzq4UGXzPV/oF
+         wauw==
+X-Forwarded-Encrypted: i=1; AJvYcCWnzPsDzndtkjcesJzpiZUDOWzb7ZFPwO0cliUoF1ygQNdpdnXfa3tEWe1GSgs6QotvrSdvpBwODvSd3Zrf8ITdi8FYjsaDY50NDdV1eBaVHgx9U/L3gYk+2tNHwzpGg82XB+BEahg90idq2rvJxwsCddhSq4RUPR2OiUadH8Jc4nAq
+X-Gm-Message-State: AOJu0Yx6fh/zDYSanDu8264l8MSQ/M1EUL6BF5CANf4VVxAxMtjclZwM
+	vnDX6YCwWHjUfwTuuF2RPxf9eV8CWLi2Phe+QMkIi4bgK1n60EeXL4cJDCyuIGguAoN4PRuDcS4
+	T8d0X+GP730WV+TLkojvdnarIlzE=
+X-Google-Smtp-Source: AGHT+IHoFwtbbPCEgmLxbNI8dDwg4hVtyd2nysCsbGqUOieqzWjZ9ExVaevFZsa/+n0x6wLZaTYo6vrsF8j2i6DYHxs=
+X-Received: by 2002:adf:e102:0:b0:33d:754c:70fc with SMTP id
+ t2-20020adfe102000000b0033d754c70fcmr3468297wrz.14.1711327517329; Sun, 24 Mar
+ 2024 17:45:17 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Zfqo43xhFluOgO01@iguana.24-8.net>
+References: <20240322-hid-bpf-sleepable-v5-0-179c7b59eaaa@kernel.org> <20240322-hid-bpf-sleepable-v5-1-179c7b59eaaa@kernel.org>
+In-Reply-To: <20240322-hid-bpf-sleepable-v5-1-179c7b59eaaa@kernel.org>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Sun, 24 Mar 2024 17:45:05 -0700
+Message-ID: <CAADnVQJdm7+7tbJC8yhPqDUijE0DTD9UG4LOQmNRCWchQ3uGsg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v5 1/6] bpf/helpers: introduce sleepable bpf_timers
+To: Benjamin Tissoires <bentiss@kernel.org>
+Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
+	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
+	Jiri Olsa <jolsa@kernel.org>, Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>, 
+	bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
+	"open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hi Adam,
+On Fri, Mar 22, 2024 at 7:56=E2=80=AFAM Benjamin Tissoires <bentiss@kernel.=
+org> wrote:
+>
+> They are implemented as a workqueue, which means that there are no
+> guarantees of timing nor ordering.
+>
+> Signed-off-by: Benjamin Tissoires <bentiss@kernel.org>
+>
+> ---
+>
+> no changes in v5
+>
+> changes in v4:
+> - dropped __bpf_timer_compute_key()
+> - use a spin_lock instead of a semaphore
+> - ensure bpf_timer_cancel_and_free is not complaining about
+>   non sleepable context and use cancel_work() instead of
+>   cancel_work_sync()
+> - return -EINVAL if a delay is given to bpf_timer_start() with
+>   BPF_F_TIMER_SLEEPABLE
+>
+> changes in v3:
+> - extracted the implementation in bpf_timer only, without
+>   bpf_timer_set_sleepable_cb()
+> - rely on schedule_work() only, from bpf_timer_start()
+> - add semaphore to ensure bpf_timer_work_cb() is accessing
+>   consistent data
+>
+> changes in v2 (compared to the one attaches to v1 0/9):
+> - make use of a kfunc
+> - add a (non-used) BPF_F_TIMER_SLEEPABLE
+> - the callback is *not* called, it makes the kernel crashes
+> ---
+>  include/uapi/linux/bpf.h |  4 +++
+>  kernel/bpf/helpers.c     | 86 ++++++++++++++++++++++++++++++++++++++++++=
+++++--
+>  2 files changed, 88 insertions(+), 2 deletions(-)
+>
+> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+> index 3c42b9f1bada..b90def29d796 100644
+> --- a/include/uapi/linux/bpf.h
+> +++ b/include/uapi/linux/bpf.h
+> @@ -7461,10 +7461,14 @@ struct bpf_core_relo {
+>   *     - BPF_F_TIMER_ABS: Timeout passed is absolute time, by default it=
+ is
+>   *       relative to current time.
+>   *     - BPF_F_TIMER_CPU_PIN: Timer will be pinned to the CPU of the cal=
+ler.
+> + *     - BPF_F_TIMER_SLEEPABLE: Timer will run in a sleepable context, w=
+ith
+> + *       no guarantees of ordering nor timing (consider this as being ju=
+st
+> + *       offloaded immediately).
+>   */
+>  enum {
+>         BPF_F_TIMER_ABS =3D (1ULL << 0),
+>         BPF_F_TIMER_CPU_PIN =3D (1ULL << 1),
+> +       BPF_F_TIMER_SLEEPABLE =3D (1ULL << 2),
+>  };
+>
+>  /* BPF numbers iterator state */
+> diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
+> index a89587859571..38de73a9df83 100644
+> --- a/kernel/bpf/helpers.c
+> +++ b/kernel/bpf/helpers.c
+> @@ -1094,14 +1094,20 @@ const struct bpf_func_proto bpf_snprintf_proto =
+=3D {
+>   * bpf_timer_cancel() cancels the timer and decrements prog's refcnt.
+>   * Inner maps can contain bpf timers as well. ops->map_release_uref is
+>   * freeing the timers when inner map is replaced or deleted by user spac=
+e.
+> + *
+> + * sleepable_lock protects only the setup of the workqueue, not the call=
+back
+> + * itself. This is done to ensure we don't run concurrently a free of th=
+e
+> + * callback or the associated program.
 
-On Wed, Mar 20, 2024 at 02:14:11AM -0700, Adam Goldman wrote:
-> Add a debug parameter to firewire-core, analogous to the one in 
-> firewire-ohci. When this is set to 1, log when we schedule, delay, or 
-> initiate a bus reset. Since FireWire bus resets can originate from any 
-> node on the bus, specific logging of the resets we initiate provides 
-> additional insight.
-> 
-> Signed-off-by: Adam Goldman <adamg@pobox.com>
+I recall there was a discussion about this lock earlier,
+but I don't remember what the conclusion was.
+The above comment is not enough to understand what it protects.
 
-Thanks for the patch. I applied it to for-next[1].
+In general how sleepable cb is fundamentally different
+from non-sleepable one when it comes to races ?
 
-Now we have two debug parameters per module for the slightly-similar
-purpose. In my opinion, it is a pretty cumbersome to enable them when
-checking bus-reset behaviour. I think it is time to investigate the other
-way.
+bpf_timer_set_callback() is racy for both sleepable and non-sleepable
+and the latter handles it fine.
 
-Linux Kernel Tracepoints[2] is one of options. Roughly describing, the
-tracepoints mechanism allows users to deliver structured data from kernel
-space to user space via ring-buffer when enabling it by either sysfs or
-kernel command-line parameters. Linux kernel also has a command-line
-parameter to redirect the human-readable formatted data to kernel log[3].
-I think it is suitable in the case.
+Note that struct bpf_hrtimer is rcu protected.
+See kfree_rcu(t, rcu); in bpf_timer_cancel_and_free().
 
-It requires many work to replace the existent debug parameter of
-firewire-ohci, while it is a good start to work just for bus-reset debug.
-The data structure layout should be pre-defined in each subsystem, thus we
-need to decide it. In my opinion, it would be like:
+>   */
+>  struct bpf_hrtimer {
+>         struct hrtimer timer;
+> +       struct work_struct work;
+>         struct bpf_map *map;
+>         struct bpf_prog *prog;
+>         void __rcu *callback_fn;
+>         void *value;
+>         struct rcu_head rcu;
+> +       spinlock_t sleepable_lock;
+>  };
+>
+>  /* the actual struct hidden inside uapi struct bpf_timer */
+> @@ -1114,6 +1120,49 @@ struct bpf_timer_kern {
+>         struct bpf_spin_lock lock;
+>  } __attribute__((aligned(8)));
+>
+> +static void bpf_timer_work_cb(struct work_struct *work)
+> +{
+> +       struct bpf_hrtimer *t =3D container_of(work, struct bpf_hrtimer, =
+work);
+> +       struct bpf_map *map =3D t->map;
+> +       bpf_callback_t callback_fn;
+> +       void *value =3D t->value;
+> +       unsigned long flags;
+> +       void *key;
+> +       u32 idx;
+> +
+> +       BTF_TYPE_EMIT(struct bpf_timer);
+> +
+> +       spin_lock_irqsave(&t->sleepable_lock, flags);
+> +
+> +       callback_fn =3D READ_ONCE(t->callback_fn);
+> +       if (!callback_fn) {
+> +               spin_unlock_irqrestore(&t->sleepable_lock, flags);
+> +               return;
+> +       }
+> +
+> +       if (map->map_type =3D=3D BPF_MAP_TYPE_ARRAY) {
+> +               struct bpf_array *array =3D container_of(map, struct bpf_=
+array, map);
+> +
+> +               /* compute the key */
+> +               idx =3D ((char *)value - array->value) / array->elem_size=
+;
+> +               key =3D &idx;
+> +       } else { /* hash or lru */
+> +               key =3D value - round_up(map->key_size, 8);
+> +       }
+> +
+> +       /* prevent the callback to be freed by bpf_timer_cancel() while r=
+unning
+> +        * so we can release the sleepable lock
+> +        */
+> +       bpf_prog_inc(t->prog);
+> +
+> +       spin_unlock_irqrestore(&t->sleepable_lock, flags);
 
-```
-struct bus_reset_event {
-    enum reason {
-        Initiate,
-	Schedule,
-	Postpone,
-	Detect,
-    },
-    // We can put any other data if prefering.
-}
-```
+why prog_inc ?
+The sleepable progs need rcu_read_lock_trace() + migrate_disable()
+anyway, which are missing here.
+Probably best to call __bpf_prog_enter_sleepable_recur()
+like kern_sys_bpf() does.
 
-Would I ask your opinion about my idea?
+Now with that, the bpf_timer_cancel() can drop prog refcnt to zero
+and it's ok, since rcu_read_lock_trace() will protect it.
 
+> +
+> +       callback_fn((u64)(long)map, (u64)(long)key, (u64)(long)value, 0, =
+0);
+> +       /* The verifier checked that return value is zero. */
 
-[1] https://git.kernel.org/pub/scm/linux/kernel/git/ieee1394/linux1394.git/log/?h=for-next
-[2] https://docs.kernel.org/trace/tracepoints.html
-[3] 'tp_printk' in kernel/trace/trace.c, 'trace_event' in kernel/trace/trace_event.c
+the prog will finish and will be freed after rcu_read_unlock_trace().
+Seems fine to me. No need for inc/dec refcnt.
 
-Regards
+> +
+> +       bpf_prog_put(t->prog);
+> +}
+> +
+>  static DEFINE_PER_CPU(struct bpf_hrtimer *, hrtimer_running);
+>
+>  static enum hrtimer_restart bpf_timer_cb(struct hrtimer *hrtimer)
+> @@ -1192,6 +1241,8 @@ BPF_CALL_3(bpf_timer_init, struct bpf_timer_kern *,=
+ timer, struct bpf_map *, map
+>         t->prog =3D NULL;
+>         rcu_assign_pointer(t->callback_fn, NULL);
+>         hrtimer_init(&t->timer, clockid, HRTIMER_MODE_REL_SOFT);
+> +       INIT_WORK(&t->work, bpf_timer_work_cb);
+> +       spin_lock_init(&t->sleepable_lock);
+>         t->timer.function =3D bpf_timer_cb;
+>         WRITE_ONCE(timer->timer, t);
+>         /* Guarantee the order between timer->timer and map->usercnt. So
+> @@ -1237,6 +1288,7 @@ BPF_CALL_3(bpf_timer_set_callback, struct bpf_timer=
+_kern *, timer, void *, callb
+>                 ret =3D -EINVAL;
+>                 goto out;
+>         }
+> +       spin_lock(&t->sleepable_lock);
+>         if (!atomic64_read(&t->map->usercnt)) {
+>                 /* maps with timers must be either held by user space
+>                  * or pinned in bpffs. Otherwise timer might still be
+> @@ -1263,6 +1315,8 @@ BPF_CALL_3(bpf_timer_set_callback, struct bpf_timer=
+_kern *, timer, void *, callb
+>         }
+>         rcu_assign_pointer(t->callback_fn, callback_fn);
+>  out:
+> +       if (t)
+> +               spin_unlock(&t->sleepable_lock);
+>         __bpf_spin_unlock_irqrestore(&timer->lock);
 
-Takashi Sakamoto
+If lock is really needed why timer->lock cannot be reused?
+The pattern of two locks in pretty much the same data structure
+is begging for questions about what is going on here.
+
+>         return ret;
+>  }
+> @@ -1283,8 +1337,12 @@ BPF_CALL_3(bpf_timer_start, struct bpf_timer_kern =
+*, timer, u64, nsecs, u64, fla
+>
+>         if (in_nmi())
+>                 return -EOPNOTSUPP;
+> -       if (flags & ~(BPF_F_TIMER_ABS | BPF_F_TIMER_CPU_PIN))
+> +       if (flags & ~(BPF_F_TIMER_ABS | BPF_F_TIMER_CPU_PIN | BPF_F_TIMER=
+_SLEEPABLE))
+>                 return -EINVAL;
+> +
+> +       if ((flags & BPF_F_TIMER_SLEEPABLE) && nsecs)
+> +               return -EINVAL;
+> +
+>         __bpf_spin_lock_irqsave(&timer->lock);
+>         t =3D timer->timer;
+>         if (!t || !t->prog) {
+> @@ -1300,7 +1358,10 @@ BPF_CALL_3(bpf_timer_start, struct bpf_timer_kern =
+*, timer, u64, nsecs, u64, fla
+>         if (flags & BPF_F_TIMER_CPU_PIN)
+>                 mode |=3D HRTIMER_MODE_PINNED;
+>
+> -       hrtimer_start(&t->timer, ns_to_ktime(nsecs), mode);
+> +       if (flags & BPF_F_TIMER_SLEEPABLE)
+> +               schedule_work(&t->work);
+> +       else
+> +               hrtimer_start(&t->timer, ns_to_ktime(nsecs), mode);
+>  out:
+>         __bpf_spin_unlock_irqrestore(&timer->lock);
+>         return ret;
+> @@ -1348,13 +1409,22 @@ BPF_CALL_1(bpf_timer_cancel, struct bpf_timer_ker=
+n *, timer)
+>                 ret =3D -EDEADLK;
+>                 goto out;
+>         }
+> +       spin_lock(&t->sleepable_lock);
+>         drop_prog_refcnt(t);
+> +       spin_unlock(&t->sleepable_lock);
+
+this also looks odd.
+
+>  out:
+>         __bpf_spin_unlock_irqrestore(&timer->lock);
+>         /* Cancel the timer and wait for associated callback to finish
+>          * if it was running.
+>          */
+>         ret =3D ret ?: hrtimer_cancel(&t->timer);
+> +
+> +       /* also cancel the sleepable work, but *do not* wait for
+> +        * it to finish if it was running as we might not be in a
+> +        * sleepable context
+> +        */
+> +       ret =3D ret ?: cancel_work(&t->work);
+> +
+>         rcu_read_unlock();
+>         return ret;
+>  }
+> @@ -1383,11 +1453,13 @@ void bpf_timer_cancel_and_free(void *val)
+>         t =3D timer->timer;
+>         if (!t)
+>                 goto out;
+> +       spin_lock(&t->sleepable_lock);
+>         drop_prog_refcnt(t);
+>         /* The subsequent bpf_timer_start/cancel() helpers won't be able =
+to use
+>          * this timer, since it won't be initialized.
+>          */
+>         WRITE_ONCE(timer->timer, NULL);
+> +       spin_unlock(&t->sleepable_lock);
+
+This one I don't understand either.
+
+pw-bot: cr
 
