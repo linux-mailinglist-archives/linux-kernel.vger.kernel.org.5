@@ -1,165 +1,164 @@
-Return-Path: <linux-kernel+bounces-116865-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-116872-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7D2F488A487
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 15:30:57 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E9F8288A4A2
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 15:34:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1CC4D1F626E1
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 14:30:57 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EA52F1C3BF5C
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 14:34:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2F95B1BFC2D;
-	Mon, 25 Mar 2024 11:25:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 25E9716AFA7;
+	Mon, 25 Mar 2024 11:28:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Kra8W9Pz"
-Received: from mail-ej1-f45.google.com (mail-ej1-f45.google.com [209.85.218.45])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="tSD1Xt0l"
+Received: from mail-lf1-f51.google.com (mail-lf1-f51.google.com [209.85.167.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 74BF817C6B6
-	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 10:40:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B7E0314D2A0
+	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 10:42:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711363223; cv=none; b=QNO1XC7U+brH2lNzhwJyn31loBqL/MvCH1A/RODB5zVqWcpTLlkwWWD7taf65rCYkbprGc9SLQ/oJQrVX4JAyc/zWGECQqbwUrB4Q49yWbV4muZNGLlIuuKtBOMYz7L7NhdQamnvq5RTO2+AOm3Yk08EGaqKXpdxxbWA5xkyYWQ=
+	t=1711363354; cv=none; b=ZHcu0RB3S1duGV2Om2SoIgNaPQAxoE3m1n3KIFzUZF8Az5IUKRRIoojwoAQS2DQnGAwhZ26lLh4jMMgOHQlZh/CsfxTrJNVy0ZX0Jf/qKaUVjjGx61t9lSqKb/og9GU9ulXVCtXBGlymretQaunMhiLd6LtWKMTeQGBdK90exd8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711363223; c=relaxed/simple;
-	bh=ynX9ZBYzxPzMAYr25ThDiwQecIKhEVVmHEJQoxv6r3g=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=IcnJeNVHh40WOikzOtUZQhB6LVNCK0fT0vT8ZIgnguMBTZj9YgDp6SaKirqT2lzYo/vJrHIATTlPkfMb4NVMNpN5oLR3KIjXMfr99go2JwdubGJTHFMnV0XEjxe0OpeMpU1EEpjbP63JI56hsgJyRCxe7+HLObPD9nkQrpC5pS0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=Kra8W9Pz; arc=none smtp.client-ip=209.85.218.45
+	s=arc-20240116; t=1711363354; c=relaxed/simple;
+	bh=z3CT9yWlox3/aF0VYScP5P5kdTwIOgNkytbsghE1Ofk=;
+	h=Message-ID:Date:MIME-Version:From:Subject:To:Cc:References:
+	 In-Reply-To:Content-Type; b=NtLQ/ZzqqiER+M7uIEMRMO+lAs9DjjDue84LgpN2isnPvJxrcOos8jdtsR4flar5xKUugjFrbokUtzHj9K4PY20PO951ATOswo+IwkAnZy+kFu0gNHdzV0z4VPWn9Zqp5ix30AwshvejclDyE5xTcEgr6OXcANl6O6snPEAHcMU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=tSD1Xt0l; arc=none smtp.client-ip=209.85.167.51
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ej1-f45.google.com with SMTP id a640c23a62f3a-a466a27d30aso514199666b.1
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 03:40:21 -0700 (PDT)
+Received: by mail-lf1-f51.google.com with SMTP id 2adb3069b0e04-513e89d0816so5218554e87.0
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 03:42:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1711363220; x=1711968020; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=2w9z13j4V31H459FQRJgVfq835l0rWDyktrTi95xkzU=;
-        b=Kra8W9PzasMsWdffxtGFMAucoE9RlN0thpQWTGKzi5b5ecl3koIx3/g9V9TyICNVXU
-         5UsPG/npsXguAo3hO7Czd3A5oPeI4nQuSZFjARlX+I7lCmeysAzQXskWM6Fxtozxiep5
-         TPVBExUu8E3qaylWFFL8xZtFJp/4CW8XcpiXmD3qp5ZRea+8NP/UTd7pWJEIlUNex3uj
-         E0gRxmpQiz6gIlnK5BaugSlrNimpx49bWstPotnjBlVrFVfHlFDcRJTO3/zHXHj5qUFF
-         7vjOB7nsODL9YhW+L3v5L5OrEIZl57BHYE2lzuVeHDcwnY3ML7wzQpm/N2h8UVUARVuZ
-         98ww==
+        d=linaro.org; s=google; t=1711363351; x=1711968151; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt
+         :content-language:references:cc:to:subject:reply-to:from:user-agent
+         :mime-version:date:message-id:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=iOyhJ8rAPLYOCfRnEKGEvdSoCo5896ILr4qRRRARoVc=;
+        b=tSD1Xt0l+pPeN7yN5qgM03DilrFnbkGNg0IzCkDrH3nXGC5cToh46U18fRWk4Z4UZF
+         8a249k3/0Hn1jBh/25bpM4EWwaMhoBa2QpW/pDfonMgKFRI7MrzW0jzh5t8b3zrky8nt
+         REfE2sTSGuJEIC3UF3lY394DcKM20LMA9ldplJCF/X2ZottRoT7r/PflslRyfPVOk6qI
+         j/0fKXn5HXrlcLUr1ypQ1DGljbBKfMSAwmg2KrBsuZSgojSnugzp/DUg/sJQN2HGi9s5
+         ONzSOaEhzzkC5XmSe4U+vNWulQ0svCZK5iF0+18DvwuukXQDccegSysPdtQi0w1gMrMj
+         kg0Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711363220; x=1711968020;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=2w9z13j4V31H459FQRJgVfq835l0rWDyktrTi95xkzU=;
-        b=Mq2o2N5cHdt6GtS/A7mCbveQ5rWI4dW5P/SyiCB+C0C8AHQOZ8As+g4IfiX504FMBX
-         BrU5OFUhV6H/xiGtgZUhfQ98Tc4htaxPiLzRW6AkthS5te2Cxeyg6Znogo5BpniiUQmd
-         ekFuOwV5sTgxCFqbzziTn5D+pYl0sIcKQULeoC1PFvNiXhWRz2bfNKi6ldNipsjEskjH
-         GiENHh+pQs1SVH2tKH6TcFC8pXzj093412Yit2eZawDqsDimpgabsmoI6QnVJxsM1jjz
-         CRSQLF48GNYyNJSLiZSymAje+Z9lCUv+irn17eTet+i6sPdfmPdu52yCp9QY8fjaIX5L
-         /n4w==
-X-Forwarded-Encrypted: i=1; AJvYcCX22ODeIvKvyZwLFEbnNijSylIIoh8/BeUShxEPbS5cuxjBEKCJG6mxxSzxS0PuE0y9bHXBJAf88j1l7aIVCCUtWK6K7WvOWyvOA9zM
-X-Gm-Message-State: AOJu0Yw49wVGPC17oWuQQVNt3oFi0oL/zrN9cE4MAIyifB6uYNxqX8Og
-	RGapIvNN/I/SbHuWL4CyutOuPS9kdhlYXGE+ryp/VzUnPKIthKRGAGE/RByQK5QIH0dqfeTU+n1
-	2
-X-Google-Smtp-Source: AGHT+IHVHcuVJTziRqTwQUkni4jFoHLNs1JJYOw3AeX7YO15AbpNa+dcU723xmHfJLlJiDQMTO3R+w==
-X-Received: by 2002:a17:906:2a10:b0:a46:e8c1:11ac with SMTP id j16-20020a1709062a1000b00a46e8c111acmr4102670eje.18.1711363219739;
-        Mon, 25 Mar 2024 03:40:19 -0700 (PDT)
-Received: from krzk-bin.. ([178.197.222.44])
-        by smtp.gmail.com with ESMTPSA id q2-20020a1709060e4200b00a4674ad8ab9sm2876653eji.211.2024.03.25.03.40.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 Mar 2024 03:40:19 -0700 (PDT)
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-To: Bjorn Andersson <andersson@kernel.org>,
-	Konrad Dybcio <konrad.dybcio@linaro.org>,
-	Suzuki K Poulose <suzuki.poulose@arm.com>,
-	Mike Leach <mike.leach@linaro.org>,
-	James Clark <james.clark@arm.com>,
-	Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Mao Jinlong <quic_jinlmao@quicinc.com>,
-	Tao Zhang <quic_taozha@quicinc.com>,
-	linux-arm-msm@vger.kernel.org,
-	coresight@lists.linaro.org,
-	linux-arm-kernel@lists.infradead.org,
-	devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Subject: [PATCH RESEND 2/2] dt-bindings: arm: qcom,coresight-tpda: fix indentation in the example
-Date: Mon, 25 Mar 2024 11:40:07 +0100
-Message-Id: <20240325104007.30723-2-krzysztof.kozlowski@linaro.org>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240325104007.30723-1-krzysztof.kozlowski@linaro.org>
-References: <20240325104007.30723-1-krzysztof.kozlowski@linaro.org>
+        d=1e100.net; s=20230601; t=1711363351; x=1711968151;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt
+         :content-language:references:cc:to:subject:reply-to:from:user-agent
+         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=iOyhJ8rAPLYOCfRnEKGEvdSoCo5896ILr4qRRRARoVc=;
+        b=VlxUU0XUpI+raB6Cbl+HxpHg4r+sZH9GZmIrIcFeuDR6PodHkbKGSWCPWtL2UlJMWF
+         Y7wQ5BP9+oPkfgU9qkEQS2W2GWuFgAJ6DQtk0G8h7/ZpcN2+k2gTuivCZHv0qPK6JKnw
+         zYEB7vwJ2+QYtKsKAkKclS8/QZuIhzZ4yQJT/RqOIBY1PTcEzPNT5IzEVZLtEuYVwMkZ
+         Z/CLtQdzygwgImy0aXPOrim+qiBf28QLHzAOxn3KObSwIUJZXQOe0Usk023N5fPR9+aT
+         UCkgkyBmNaPNP6YbDVBLroI9Pcg0/TQGlp2XH64gLjmw8VclFwFHh6BpEGwO3aBLatFg
+         HHIg==
+X-Forwarded-Encrypted: i=1; AJvYcCXCDFBM1v/Zcuek5hbF7B7ogf94cDBjaX3pMH0gSn7e9LRZpoTysfEgN7vItP9Pez8nFqVJDOFkcVcS5dvCfILP6QgNZ70LkUm9dYpO
+X-Gm-Message-State: AOJu0YwGPHiWavdcrmIJdE2ITMYPv53zcM8Zx5vteWrJ5DPgqU2zpOJW
+	AgTuJm+CZcUg0h7tcKTk0QF6ZxMMMLL/eT6CKdxAdLKABBcAMXtEulHBINyDx5g=
+X-Google-Smtp-Source: AGHT+IEkazFjPYmnkVqhUvfoXOqndNVNCbAA3D/6nQdgwXxrCZrD8CKfZeKA1WL1eeJ/mcYqddYPBQ==
+X-Received: by 2002:a2e:8ecb:0:b0:2d6:bf39:46d5 with SMTP id e11-20020a2e8ecb000000b002d6bf3946d5mr3938623ljl.31.1711363350503;
+        Mon, 25 Mar 2024 03:42:30 -0700 (PDT)
+Received: from ?IPV6:2a01:e0a:982:cbb0:5176:2c0a:cfc0:1ada? ([2a01:e0a:982:cbb0:5176:2c0a:cfc0:1ada])
+        by smtp.gmail.com with ESMTPSA id v6-20020a05600c470600b00414896bb1e0sm3166333wmo.36.2024.03.25.03.42.29
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 25 Mar 2024 03:42:30 -0700 (PDT)
+Message-ID: <e2d0e6cb-5dda-49d0-b14e-5e50e4184ce7@linaro.org>
+Date: Mon, 25 Mar 2024 11:42:27 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+From: Neil Armstrong <neil.armstrong@linaro.org>
+Reply-To: neil.armstrong@linaro.org
+Subject: Re: [RESEND PATCH] dt-bindings: display: sony,td4353-jdi: allow
+ width-mm and height-mm
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+ Jessica Zhang <quic_jesszhan@quicinc.com>, Sam Ravnborg <sam@ravnborg.org>,
+ David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+ Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+ Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
+ Rob Herring <robh@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>,
+ Konrad Dybcio <konrad.dybcio@somainline.org>,
+ dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+Cc: Conor Dooley <conor.dooley@microchip.com>
+References: <20240325103227.27474-1-krzysztof.kozlowski@linaro.org>
+Content-Language: en-US, fr
+Autocrypt: addr=neil.armstrong@linaro.org; keydata=
+ xsBNBE1ZBs8BCAD78xVLsXPwV/2qQx2FaO/7mhWL0Qodw8UcQJnkrWmgTFRobtTWxuRx8WWP
+ GTjuhvbleoQ5Cxjr+v+1ARGCH46MxFP5DwauzPekwJUD5QKZlaw/bURTLmS2id5wWi3lqVH4
+ BVF2WzvGyyeV1o4RTCYDnZ9VLLylJ9bneEaIs/7cjCEbipGGFlfIML3sfqnIvMAxIMZrvcl9
+ qPV2k+KQ7q+aXavU5W+yLNn7QtXUB530Zlk/d2ETgzQ5FLYYnUDAaRl+8JUTjc0CNOTpCeik
+ 80TZcE6f8M76Xa6yU8VcNko94Ck7iB4vj70q76P/J7kt98hklrr85/3NU3oti3nrIHmHABEB
+ AAHNKk5laWwgQXJtc3Ryb25nIDxuZWlsLmFybXN0cm9uZ0BsaW5hcm8ub3JnPsLAkQQTAQoA
+ OwIbIwULCQgHAwUVCgkICwUWAgMBAAIeAQIXgBYhBInsPQWERiF0UPIoSBaat7Gkz/iuBQJk
+ Q5wSAhkBAAoJEBaat7Gkz/iuyhMIANiD94qDtUTJRfEW6GwXmtKWwl/mvqQtaTtZID2dos04
+ YqBbshiJbejgVJjy+HODcNUIKBB3PSLaln4ltdsV73SBcwUNdzebfKspAQunCM22Mn6FBIxQ
+ GizsMLcP/0FX4en9NaKGfK6ZdKK6kN1GR9YffMJd2P08EO8mHowmSRe/ExAODhAs9W7XXExw
+ UNCY4pVJyRPpEhv373vvff60bHxc1k/FF9WaPscMt7hlkbFLUs85kHtQAmr8pV5Hy9ezsSRa
+ GzJmiVclkPc2BY592IGBXRDQ38urXeM4nfhhvqA50b/nAEXc6FzqgXqDkEIwR66/Gbp0t3+r
+ yQzpKRyQif3OwE0ETVkGzwEIALyKDN/OGURaHBVzwjgYq+ZtifvekdrSNl8TIDH8g1xicBYp
+ QTbPn6bbSZbdvfeQPNCcD4/EhXZuhQXMcoJsQQQnO4vwVULmPGgtGf8PVc7dxKOeta+qUh6+
+ SRh3vIcAUFHDT3f/Zdspz+e2E0hPV2hiSvICLk11qO6cyJE13zeNFoeY3ggrKY+IzbFomIZY
+ 4yG6xI99NIPEVE9lNBXBKIlewIyVlkOaYvJWSV+p5gdJXOvScNN1epm5YHmf9aE2ZjnqZGoM
+ Mtsyw18YoX9BqMFInxqYQQ3j/HpVgTSvmo5ea5qQDDUaCsaTf8UeDcwYOtgI8iL4oHcsGtUX
+ oUk33HEAEQEAAcLAXwQYAQIACQUCTVkGzwIbDAAKCRAWmrexpM/4rrXiB/sGbkQ6itMrAIfn
+ M7IbRuiSZS1unlySUVYu3SD6YBYnNi3G5EpbwfBNuT3H8//rVvtOFK4OD8cRYkxXRQmTvqa3
+ 3eDIHu/zr1HMKErm+2SD6PO9umRef8V82o2oaCLvf4WeIssFjwB0b6a12opuRP7yo3E3gTCS
+ KmbUuLv1CtxKQF+fUV1cVaTPMyT25Od+RC1K+iOR0F54oUJvJeq7fUzbn/KdlhA8XPGzwGRy
+ 4zcsPWvwnXgfe5tk680fEKZVwOZKIEuJC3v+/yZpQzDvGYJvbyix0lHnrCzq43WefRHI5XTT
+ QbM0WUIBIcGmq38+OgUsMYu4NzLu7uZFAcmp6h8g
+Organization: Linaro
+In-Reply-To: <20240325103227.27474-1-krzysztof.kozlowski@linaro.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Fix triple-space indentation to double-space in the example DTS.
+Hi,
 
-Acked-by: Rob Herring <robh@kernel.org>
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
----
- .../bindings/arm/qcom,coresight-tpda.yaml     | 32 +++++++++----------
- 1 file changed, 15 insertions(+), 17 deletions(-)
+On 25/03/2024 11:32, Krzysztof Kozlowski wrote:
+> Allow width and height properties from panel-common.yaml, already used
+> on some boards:
+> 
+>    sdm845-sony-xperia-tama-apollo.dtb: panel@0: 'height-mm', 'width-mm' do not match any of the regexes: 'pinctrl-[0-9]+'
+> 
+> Acked-by: Conor Dooley <conor.dooley@microchip.com>
+> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+> ---
+> 
+> Rob, could you pick up this one? Was on the list for almost a year.
 
-diff --git a/Documentation/devicetree/bindings/arm/qcom,coresight-tpda.yaml b/Documentation/devicetree/bindings/arm/qcom,coresight-tpda.yaml
-index 7fbd855a66a0..76163abed655 100644
---- a/Documentation/devicetree/bindings/arm/qcom,coresight-tpda.yaml
-+++ b/Documentation/devicetree/bindings/arm/qcom,coresight-tpda.yaml
-@@ -95,33 +95,31 @@ examples:
-   # minimum tpda definition.
-   - |
-     tpda@6004000 {
--       compatible = "qcom,coresight-tpda", "arm,primecell";
--       reg = <0x6004000 0x1000>;
-+      compatible = "qcom,coresight-tpda", "arm,primecell";
-+      reg = <0x6004000 0x1000>;
- 
--       clocks = <&aoss_qmp>;
--       clock-names = "apb_pclk";
-+      clocks = <&aoss_qmp>;
-+      clock-names = "apb_pclk";
- 
--       in-ports {
--         #address-cells = <1>;
--         #size-cells = <0>;
-+      in-ports {
-+        #address-cells = <1>;
-+        #size-cells = <0>;
- 
-         port@0 {
-           reg = <0>;
-           tpda_qdss_0_in_tpdm_dcc: endpoint {
--            remote-endpoint =
--              <&tpdm_dcc_out_tpda_qdss_0>;
--            };
-+            remote-endpoint = <&tpdm_dcc_out_tpda_qdss_0>;
-+          };
-         };
-       };
- 
--       out-ports {
--         port {
--                 tpda_qdss_out_funnel_in0: endpoint {
--                    remote-endpoint =
--                    <&funnel_in0_in_tpda_qdss>;
--                  };
-+      out-ports {
-+        port {
-+          tpda_qdss_out_funnel_in0: endpoint {
-+            remote-endpoint = <&funnel_in0_in_tpda_qdss>;
-           };
--       };
-+        };
-+      };
-     };
- 
- ...
--- 
-2.34.1
+I'll take it,
+
+Neil
+
+> 
+> 
+>   .../devicetree/bindings/display/panel/sony,td4353-jdi.yaml      | 2 ++
+>   1 file changed, 2 insertions(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/display/panel/sony,td4353-jdi.yaml b/Documentation/devicetree/bindings/display/panel/sony,td4353-jdi.yaml
+> index b6b885b4c22d..07bce556ad40 100644
+> --- a/Documentation/devicetree/bindings/display/panel/sony,td4353-jdi.yaml
+> +++ b/Documentation/devicetree/bindings/display/panel/sony,td4353-jdi.yaml
+> @@ -23,6 +23,8 @@ properties:
+>     reg: true
+>   
+>     backlight: true
+> +  width-mm: true
+> +  height-mm: true
+>   
+>     vddio-supply:
+>       description: VDDIO 1.8V supply
 
 
