@@ -1,157 +1,153 @@
-Return-Path: <linux-kernel+bounces-117833-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-117835-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D1F9088B03B
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 20:40:40 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4D79688B042
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 20:41:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8C45B3201BB
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 19:40:39 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CFB651FA38C3
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 19:41:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7A7004085A;
-	Mon, 25 Mar 2024 19:40:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 057FB1BDD5;
+	Mon, 25 Mar 2024 19:40:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gaOY5sQX"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b="ffR0YzS1"
+Received: from mail-oo1-f45.google.com (mail-oo1-f45.google.com [209.85.161.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B3307224DB;
-	Mon, 25 Mar 2024 19:40:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8BB531C2AC
+	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 19:40:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711395612; cv=none; b=HgSQapPtAN05a/Bx/X+iJ7EJALQXjqNLkhGsUfwvZAPVI5oRmVLcJUWJPRBpup5xsog1mOjZ7GIpQx8hcOHfjnP1x6JBAh6Y5ASfF9icV7RHCo3XDme9PyMxnGl+20WOIB16wv87uMUS4R1fnBJD6HP6tAhQ7jE7NnnAyKdX1Co=
+	t=1711395645; cv=none; b=ChpTLMzjcpW/5CMSO9VLPwgW5S03DWKhiRLOiOKkc8SOlflOzWDJ8ARN7cSaudrUBZF29yLgmRJZdal4BDKMLwJUfs60aWOYWbT9E1am6v613UBpBi3fPM3N6WxImMqbVG2FEP2LVQ/OcreoTxT1Q2r5t9jvEy/A0SvX+IEwDCE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711395612; c=relaxed/simple;
-	bh=g659JFfs5AjSVYM1zIakNFUS3zlJBueU+/TZUE+qaBs=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=j1sfTF+ZkBCFrrhmFzsOczEDiw/doJKrVyxZJpISPeUT/0+wxcQO5ke5XemVOfV/2qcKhXzUUlutmdcbCjScXJHpPEpBtG0yk5CssPgQwyH0eAgfuGKTTDXJyzy2w6HHyTtWNXigMw0nc9/k6Q6/oYFn+3oWHB6HOcsrS41wmac=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=gaOY5sQX; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F24BBC433C7;
-	Mon, 25 Mar 2024 19:40:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711395612;
-	bh=g659JFfs5AjSVYM1zIakNFUS3zlJBueU+/TZUE+qaBs=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=gaOY5sQX73xGJ1WwJdYEk9DzGrGd4x/nYC1/t4EYJ/STpKzpCksYM/pu8XPqFaHMG
-	 X9luV4z5WbBHm0t9j/jSRQlGL0oxs7b0+v0pm5pDTNdHg9AzTsco1Tc5/dKP+LoiUk
-	 nBjKbARri3NJm/sqdxCZwILmkeGpo+GKpSBmHX0LuWiF8QqnCL2rhEUenl6pdcjPt+
-	 cFbkekoZ4bwMugXMO+Ou4F/r7WEefbp5iM6+tNxGWV1DbOAtkQxJ60rbLu22Fxs7WR
-	 r69Gx4tdOEMFLGSaL6UApteTt2w0irHgqXZhX167LzUgYhysZoHonbKJkWAGRQQ/bn
-	 4DZdBXR+atfBw==
-Date: Mon, 25 Mar 2024 19:40:05 +0000
-From: Conor Dooley <conor@kernel.org>
-To: Puranjay Mohan <puranjay12@gmail.com>
-Cc: Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>,
-	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-	=?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn@kernel.org>,
-	Luke Nelson <luke.r.nels@gmail.com>, Xi Wang <xi.wang@gmail.com>,
-	Paul Walmsley <paul.walmsley@sifive.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Albert Ou <aou@eecs.berkeley.edu>, bpf@vger.kernel.org,
-	linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-	Pu Lehui <pulehui@huaweicloud.com>
-Subject: Re: [PATCH bpf-next v2 2/2] bpf,riscv: Implement bpf_addr_space_cast
- instruction
-Message-ID: <20240325-creamed-unlovely-4c80082e9b8c@spud>
-References: <20240325155434.65589-1-puranjay12@gmail.com>
- <20240325155434.65589-3-puranjay12@gmail.com>
- <20240325-nineteen-unvaried-cb5cb5fd3a73@spud>
- <CANk7y0gWtwN7EJ24aoY9-RB9629d5Ks-9fMc3wnAAjjERcZhFw@mail.gmail.com>
- <20240325-perpetual-liking-25f26e485b65@spud>
- <CANk7y0jtURUC6PWx5nSDigMpScUT+p3qd=hTtqJkCqAN+Nq32A@mail.gmail.com>
+	s=arc-20240116; t=1711395645; c=relaxed/simple;
+	bh=6zCujOYaTCPgwFb4TRVnXKAm1KvhcyIh/4UUj9uy3D4=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=I9yZU4maaN7pEYb/TA7iINbx/EmKFSj84L6zvknrbKj29k4DImH9+6yaDlOePeu5MpGfUT0i56NLoRGtbOv9FQP801T0jQJy215xj8kP//uOmCr96uLcvXlkYY8pHDEf7/GSI3BNSgEFHy4wknxxpz+cdpkYFfMQOI2d/RRP4o4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b=ffR0YzS1; arc=none smtp.client-ip=209.85.161.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baylibre.com
+Received: by mail-oo1-f45.google.com with SMTP id 006d021491bc7-5a56a5f597dso267625eaf.2
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 12:40:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1711395640; x=1712000440; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=cu4UkxchV2M53KPLFlI+CnD5WRrZCvujRJAKi+5DJjo=;
+        b=ffR0YzS1uosNzzpBcwXyiaIDDNdN5tL4pf3uzGyl1CZ0v9GjtVO6ogBcktRqwyopID
+         aNtUENOXQj+1UBsVfpRcMIx0G3cKU88GtcHHqQjjxuksUcFz0IT87ITgOvEo5TXMktcf
+         /IYJYXLPb/lt8ZoU47RSGwppitfmHDouBF03zHJGcAIOUoXm7oWdXFPtDmSyb1k77wzp
+         GvXUqZFJwjHOYUMTn4KCHAPRI7rvfisu320f2eef1hsHL0cjrSVf8UtcKEgvGtIyoBXk
+         2z78sokDpfaRn6D2sgJwIc6Kyn6nsQXfhH97CHcQ/xgVQyjKdG19ULzJZwGAuYKmicBL
+         DqIw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711395640; x=1712000440;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=cu4UkxchV2M53KPLFlI+CnD5WRrZCvujRJAKi+5DJjo=;
+        b=Vhto07R2ZHn0fHWRaC2iYQflUNtE8hJt0uyVZbA5QkJtkwNEjCHQsCIWiYUabAKhQA
+         QU6+WgNzZ7kj7ADNVqNODOFIFyJPAmK3kqSqv7mSheJrBpOg0iJbrj8dCrowBolhZCap
+         lSoacparXsazSGIdzMF16mj0ZzlnKx5bqlH8SjgyEw9UiZnh0NVnkaW4ZELtKnPAV422
+         ZQULjFkmeVOQuCaiyYUJukujP6yqRhsFTQBJ0f6desi8IpuAsk1DdcbkPFnMA2lYB2Xy
+         CfjdxQlauOWpLtU5uQUnqNVpNHvX8pnwf4TYbfRhF+Qq3oe2+G7DObc6hD4SihgEDvTt
+         kXGw==
+X-Forwarded-Encrypted: i=1; AJvYcCUUuLW2taKGT5PDrC9M3jAYKKD1JkKkvq07hwtdVVF525btHWt6cGCE4jYPJn1V7Nc//giXNZwiHRSIIwjwj1Q4+INhk56E9zyqvEOw
+X-Gm-Message-State: AOJu0Yxh2a5zOcXbPLUWD5mSA/zaky3mDUZccaJXQ6de9iIaIsMxAdOl
+	IGJfXP5RslwUPCcGnHg96i2sorZ4izYTJj+eurkCAc+2w4RZgWfx19GEou9yztU=
+X-Google-Smtp-Source: AGHT+IGw7NPFevROk+cVlQFzRhkKFe8w6rJLeHSWp9/RPJSgWlvH8NmK4IghYVHNVG1/nnOuFvYSVw==
+X-Received: by 2002:a05:6870:6125:b0:222:3792:d968 with SMTP id s37-20020a056870612500b002223792d968mr8679490oae.4.1711395640637;
+        Mon, 25 Mar 2024 12:40:40 -0700 (PDT)
+Received: from freyr.lechnology.com (ip98-183-112-25.ok.ok.cox.net. [98.183.112.25])
+        by smtp.gmail.com with ESMTPSA id bx22-20020a056830601600b006e6d4cffa31sm617068otb.51.2024.03.25.12.40.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 25 Mar 2024 12:40:40 -0700 (PDT)
+From: David Lechner <dlechner@baylibre.com>
+To: Jonathan Cameron <jic23@kernel.org>
+Cc: David Lechner <dlechner@baylibre.com>,
+	Michael Hennerich <michael.hennerich@analog.com>,
+	=?utf-8?q?Nuno_S=C3=A1?= <nuno.sa@analog.com>,
+	linux-iio@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Andy Shevchenko <andy.shevchenko@gmail.com>
+Subject: [PATCH v3] iio: adc: ad7944: simplify adi,spi-mode property parsing
+Date: Mon, 25 Mar 2024 14:40:36 -0500
+Message-ID: <20240325-ad7944-cleanups-v3-1-3a19120cdd06@baylibre.com>
+X-Mailer: git-send-email 2.43.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="f9ssCXyqoxZRmlTY"
-Content-Disposition: inline
-In-Reply-To: <CANk7y0jtURUC6PWx5nSDigMpScUT+p3qd=hTtqJkCqAN+Nq32A@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"
+X-Mailer: b4 0.12.4
+Content-Transfer-Encoding: 8bit
 
+This simplifies the adi,spi-mode property parsing by using
+device_property_match_property_string() instead of two separate
+functions. Also, the error return value is now more informative
+in cases where there was a problem parsing the property.
 
---f9ssCXyqoxZRmlTY
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Suggested-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+Signed-off-by: David Lechner <dlechner@baylibre.com>
+---
+Changes in v3:
+- Fix "a problem" in commit message.
+- Remove nested if to save a few lines.
+- Link to v2: https://lore.kernel.org/r/20240319-ad7944-cleanups-v2-1-50e77269351b@baylibre.com
 
-On Mon, Mar 25, 2024 at 08:23:18PM +0100, Puranjay Mohan wrote:
-> On Mon, Mar 25, 2024 at 8:19=E2=80=AFPM Conor Dooley <conor@kernel.org> w=
-rote:
-> >
-> > On Mon, Mar 25, 2024 at 08:13:10PM +0100, Puranjay Mohan wrote:
-> > > On Mon, Mar 25, 2024 at 8:10=E2=80=AFPM Conor Dooley <conor@kernel.or=
-g> wrote:
-> > > >
-> > > > On Mon, Mar 25, 2024 at 03:54:34PM +0000, Puranjay Mohan wrote:
-> > > > > LLVM generates bpf_addr_space_cast instruction while translating
-> > > > > pointers between native (zero) address space and
-> > > > > __attribute__((address_space(N))). The addr_space=3D0 is reserved=
- as
-> > > > > bpf_arena address space.
-> > > > >
-> > > > > rY =3D addr_space_cast(rX, 0, 1) is processed by the verifier and
-> > > > > converted to normal 32-bit move: wX =3D wY
-> > > > >
-> > > > > rY =3D addr_space_cast(rX, 1, 0) has to be converted by JIT.
-> > > > >
-> > > > > Signed-off-by: Puranjay Mohan <puranjay12@gmail.com>
-> > > >
-> > > > Doesn't compile for allmodconfig:
-> > > >   ../arch/riscv/net/bpf_jit_comp64.c:1086:7: error: call to undecla=
-red function 'insn_is_cast_user'; ISO C99 and later do not support implicit=
- function declarations [-Wimplicit-function-declaration]
-> > > >
-> > > > Cheers,
-> > > > Conor.
-> > >
-> > > Yes,
-> > > I mentioned in the cover letter that a patch is required.
-> > > It just got merged in bpf-next/master:
-> > > https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git/comm=
-it/?id=3D770546ae9f4c1ae1ebcaf0874f0dd9631d77ec97
-> > >
-> > > So, rebasing on the latest bpf-next/master should fix the issue.
-> >
-> > Ah, I see now that there was a mention in the cover letter that I did
-> > not see first time around.
-> >
-> > Bjorn, do you think there's anything we can do about these kinda
-> > misleading CI failures for bpf stuff? Some stuff that touches bpf
-> > definitely is worth us building, but should we try and build it on top
-> > of the bpf tree instead?
->=20
-> Is there a separate CI for RISCV related stuff? is it public?
+Changes in v2:
+- Reorder error path to avoid else statement
+- Link to v1: https://lore.kernel.org/r/20240318-ad7944-cleanups-v1-1-0cbb0349a14f@baylibre.com
+---
+ drivers/iio/adc/ad7944.c | 21 ++++++++++-----------
+ 1 file changed, 10 insertions(+), 11 deletions(-)
 
-It's based outta patchwork, just like the netdev/bpf stuff:
-https://patchwork.kernel.org/project/linux-riscv/list/
+diff --git a/drivers/iio/adc/ad7944.c b/drivers/iio/adc/ad7944.c
+index d5ec6b5a41c7..9aa3e98cd75c 100644
+--- a/drivers/iio/adc/ad7944.c
++++ b/drivers/iio/adc/ad7944.c
+@@ -366,7 +366,6 @@ static int ad7944_probe(struct spi_device *spi)
+ 	struct ad7944_adc *adc;
+ 	bool have_refin = false;
+ 	struct regulator *ref;
+-	const char *str_val;
+ 	int ret;
+ 
+ 	indio_dev = devm_iio_device_alloc(dev, sizeof(*adc));
+@@ -382,17 +381,17 @@ static int ad7944_probe(struct spi_device *spi)
+ 
+ 	adc->timing_spec = chip_info->timing_spec;
+ 
+-	if (device_property_read_string(dev, "adi,spi-mode", &str_val) == 0) {
+-		ret = sysfs_match_string(ad7944_spi_modes, str_val);
+-		if (ret < 0)
+-			return dev_err_probe(dev, -EINVAL,
+-					     "unsupported adi,spi-mode\n");
+-
+-		adc->spi_mode = ret;
+-	} else {
+-		/* absence of adi,spi-mode property means default mode */
++	ret = device_property_match_property_string(dev, "adi,spi-mode",
++						    ad7944_spi_modes,
++						    ARRAY_SIZE(ad7944_spi_modes));
++	/* absence of adi,spi-mode property means default mode */
++	if (ret == -EINVAL)
+ 		adc->spi_mode = AD7944_SPI_MODE_DEFAULT;
+-	}
++	else if (ret < 0)
++		return dev_err_probe(dev, ret,
++				     "getting adi,spi-mode property failed\n");
++	else
++		adc->spi_mode = ret;
+ 
+ 	if (adc->spi_mode == AD7944_SPI_MODE_CHAIN)
+ 		return dev_err_probe(dev, -EINVAL,
 
-> I would be interested in adding RISC-V support in
-> https://github.com/kernel-patches/bpf
-> Is someone already working on this?
-
-If anyone is, it is probably something Bjorn knows about!
-
---f9ssCXyqoxZRmlTY
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZgHTFQAKCRB4tDGHoIJi
-0kRtAP9o7BqT/u++er+Bnqqvg6xK9tBATuUjDpdT+rOwJ1PesgEAh1ycTqG5uqxR
-xFOf+YAsdnGI0ZmRxmxH+/5isoHdjwg=
-=shXF
------END PGP SIGNATURE-----
-
---f9ssCXyqoxZRmlTY--
+---
+base-commit: 1446d8ef48196409f811c25071b2cc510a49fc60
+change-id: 20240318-ad7944-cleanups-9f95a7c598b6
 
