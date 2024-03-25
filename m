@@ -1,115 +1,100 @@
-Return-Path: <linux-kernel+bounces-117413-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-117414-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id B9AB488AB12
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 18:14:05 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 06CBF88AB14
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 18:14:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5A13E1F67D0E
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 17:14:05 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B671C367BA0
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 17:14:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 73CDA14E2D9;
-	Mon, 25 Mar 2024 15:52:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 30E7114EC44;
+	Mon, 25 Mar 2024 15:52:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="HqANflu9"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.19])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="bTHLCfZg"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9AAE23D6B;
-	Mon, 25 Mar 2024 15:52:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.19
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5D85D13B290;
+	Mon, 25 Mar 2024 15:52:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711381936; cv=none; b=Pfm3Jx1A9b3NMMuu1EmwubFN3OQnsB+QnFF1ttFp/UtGnZn0PFJhqYHBFC72axlyzfMGsyOaLZUEgNB7Vhrr0zAubMOowFdW5HgYPswUj5lVnGm+UK7XgDtRTMHMlJUOPHuc+nqLefzf2w/lH8XBlDAa71B+wbPtPWWF+YenDXI=
+	t=1711381938; cv=none; b=isUKJ6kj3+6FNbCSzVxVmYiscgl3FEMxtJUNCGysRKIyzDO06gN8KG5wEY/8EZJ7ZKTrqAfKB8uCUWKKUKhuYNTUKfrRMATPQ9atV1JG3bpNEhQU6x6aqxsJt1KL9wHqZP4R+JIg35nPiK/OubY5Lb6clMCKQyN5DU9SHn+8sFM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711381936; c=relaxed/simple;
-	bh=fyAjDgoqd4EtYQ6Hpyn+LEaIAbDw9+d9HFYSRYIDhfg=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=scD1/oVH1XkCBUyowjmXY8v2TA1+ye2W/TBbgQeS5wRXA3NPQq6AD8gGwM4ng57iBS0VOfhOo9TxcMBAtxUVf1rKjUG90kYXGUVaChSxI/KMvgD4KWSaLyvajhCVThZ09q/XWWoPnOYanKo92sHGtbDeHmMo3wfW87PD3CIsu94=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=HqANflu9; arc=none smtp.client-ip=192.198.163.19
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1711381935; x=1742917935;
-  h=message-id:date:mime-version:subject:to:references:from:
-   in-reply-to:content-transfer-encoding;
-  bh=fyAjDgoqd4EtYQ6Hpyn+LEaIAbDw9+d9HFYSRYIDhfg=;
-  b=HqANflu90wEUJFuLOUclPd6zT6l8Asjb4rw+SdfyKizTMr+9tct7cgSq
-   ec3tEmRz01lXOKP54Exk+pPrHr7dfosg1vphOeQJNtSs7laIyGvPme8v8
-   WA/yGXjBCLZZSAC6+g5hPJH+exalQAHms39vBz7Neasy5MM5MkV6syxnP
-   Zl3m9CH1ijcU2Y274sVM84ABGvX8O/g6j9YdLH9/KGHUv0WKlmiJhCWYF
-   aBP05PgLTa76q9ee1sztB7Yo4gt4LuNugc4kuD+UDA+zZ5DiuG3c9me89
-   DMIM7wC+Ed0F+AgpwQkJlw4SDd2oNBJP0I01kpVNljAyQCbcFfGAiXoCg
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11024"; a="6254355"
-X-IronPort-AV: E=Sophos;i="6.07,153,1708416000"; 
-   d="scan'208";a="6254355"
-Received: from orviesa009.jf.intel.com ([10.64.159.149])
-  by fmvoesa113.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Mar 2024 08:52:13 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,153,1708416000"; 
-   d="scan'208";a="15636553"
-Received: from djiang5-mobl3.amr.corp.intel.com (HELO [10.212.51.103]) ([10.212.51.103])
-  by orviesa009-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Mar 2024 08:52:12 -0700
-Message-ID: <37fcc27a-7c6b-4aed-88be-92aadfaa67fe@intel.com>
-Date: Mon, 25 Mar 2024 08:52:11 -0700
+	s=arc-20240116; t=1711381938; c=relaxed/simple;
+	bh=sOLBnPszEseCrqEhABXNORHufRD3rz4P4P6IKCH46XY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=YUB+RQqAMuCUVq4Fa11PiVs/FsTDYmk2EXIodx8uHA0ZZb6AvZ+/x7SsV0FoYw+ZxEwHs8PZdepDxVbXGVPLZpk2JsKgb/myKJP6Ph8EP9GhOmY7SwK+N5H5aTozu/0q33a+ywjs7gDZdL0nNWitLAGrmDroma1eHyWyNhNmSfo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=bTHLCfZg; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A032FC32796;
+	Mon, 25 Mar 2024 15:52:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1711381937;
+	bh=sOLBnPszEseCrqEhABXNORHufRD3rz4P4P6IKCH46XY=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=bTHLCfZgVrIJw6zmFtALYr1Hi0YzXyAkj8DhdVOKD+eokDB9g9SOxbejyPJKh188z
+	 TC0ylXaFB8a/lNLwlIfVuskCYvPEF3FxtL4YJJ2EgY51q1acJnEAr6Bt7GmzvtPCP1
+	 fvVkvHITXpBMtf9aMJXkqTzqWuJGlf35bccDAsdqNSTPNJOQntvmh3g0oVvIX75NQ4
+	 5geV1tizFBnic+iRRhpTpi8QtR3goe7T3jnla9afcNe56buNgq647nvhLcA797rghe
+	 iwcH8PnzgpykApYyFVChp6KKQghsGTBsj+yOYe+eLR9eQBoiWF9+O624vWwo2GIqJy
+	 2jdbtSLrrtYgA==
+Date: Mon, 25 Mar 2024 10:52:15 -0500
+From: Rob Herring <robh@kernel.org>
+To: Frank Li <Frank.Li@nxp.com>
+Cc: linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>,
+	linux-sound@vger.kernel.org,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Shengjiu Wang <shengjiu.wang@nxp.com>, devicetree@vger.kernel.org,
+	Liam Girdwood <lgirdwood@gmail.com>, imx@lists.linux.dev,
+	Conor Dooley <conor+dt@kernel.org>
+Subject: Re: [PATCH v2 1/1] ASoC: dt-bindings: fsl-esai: Convert fsl,esai.txt
+ to yaml
+Message-ID: <171138193441.3998562.4443623988882776576.robh@kernel.org>
+References: <20240322145406.2613256-1-Frank.Li@nxp.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 08/28] ntb: Use PCI_IRQ_INTX
-Content-Language: en-US
-To: Damien Le Moal <dlemoal@kernel.org>, linux-pci@vger.kernel.org,
- Bjorn Helgaas <bhelgaas@google.com>,
- Manivannan Sadhasivami <manivannan.sadhasivam@linaro.org>,
- linux-scsi@vger.kernel.org, "Martin K . Petersen"
- <martin.petersen@oracle.com>, Jaroslav Kysela <perex@perex.cz>,
- linux-sound@vger.kernel.org, Greg Kroah-Hartman
- <gregkh@linuxfoundation.org>, linux-usb@vger.kernel.org,
- linux-serial@vger.kernel.org, Hans de Goede <hdegoede@redhat.com>,
- platform-driver-x86@vger.kernel.org, ntb@lists.linux.dev,
- Lee Jones <lee@kernel.org>, David Airlie <airlied@gmail.com>,
- amd-gfx@lists.freedesktop.org, Jason Gunthorpe <jgg@ziepe.ca>,
- linux-rdma@vger.kernel.org, "David S . Miller" <davem@davemloft.net>,
- Eric Dumazet <edumazet@google.com>, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <20240325070944.3600338-1-dlemoal@kernel.org>
- <20240325070944.3600338-9-dlemoal@kernel.org>
-From: Dave Jiang <dave.jiang@intel.com>
-In-Reply-To: <20240325070944.3600338-9-dlemoal@kernel.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240322145406.2613256-1-Frank.Li@nxp.com>
 
 
-
-On 3/25/24 12:09 AM, Damien Le Moal wrote:
-> Use the macro PCI_IRQ_INTX instead of the deprecated PCI_IRQ_LEGACY
-> macro.
+On Fri, 22 Mar 2024 10:54:05 -0400, Frank Li wrote:
+> Convert fsl,esai.txt to yaml. So DTB_CHECK tools can verify dts file about
+> esai part.
 > 
-> Signed-off-by: Damien Le Moal <dlemoal@kernel.org>
-
-Reviewed-by: Dave Jiang <dave.jiang@intel.com>
-
+> clock-names 'spba' is optional according to description. So minItems of
+> clocks and clock-names is 3.
+> 
+> Signed-off-by: Frank Li <Frank.Li@nxp.com>
 > ---
->  drivers/ntb/hw/idt/ntb_hw_idt.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> diff --git a/drivers/ntb/hw/idt/ntb_hw_idt.c b/drivers/ntb/hw/idt/ntb_hw_idt.c
-> index 48823b53ede3..48dfb1a69a77 100644
-> --- a/drivers/ntb/hw/idt/ntb_hw_idt.c
-> +++ b/drivers/ntb/hw/idt/ntb_hw_idt.c
-> @@ -2129,7 +2129,7 @@ static int idt_init_isr(struct idt_ntb_dev *ndev)
->  	int ret;
->  
->  	/* Allocate just one interrupt vector for the ISR */
-> -	ret = pci_alloc_irq_vectors(pdev, 1, 1, PCI_IRQ_MSI | PCI_IRQ_LEGACY);
-> +	ret = pci_alloc_irq_vectors(pdev, 1, 1, PCI_IRQ_MSI | PCI_IRQ_INTX);
->  	if (ret != 1) {
->  		dev_err(&pdev->dev, "Failed to allocate IRQ vector");
->  		return ret;
+> Notes:
+>     Change from v1 to v2
+>     - alphabetical order compatible string according to rob's suggestion
+>     - clock description move under 'clock' according to kryszof's suggestion
+>     - fix descritpion indent according to rob's suggestion
+> 
+>     Pass dt_binding check
+>      make ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- -j8  dt_binding_check DT_SCHEMA_FILES=fsl,esai.yaml
+>       DTEX    Documentation/devicetree/bindings/sound/fsl,esai.example.dts
+>       LINT    Documentation/devicetree/bindings
+>       CHKDT   Documentation/devicetree/bindings/processed-schema.json
+>       SCHEMA  Documentation/devicetree/bindings/processed-schema.json
+>       DTC_CHK Documentation/devicetree/bindings/sound/fsl,esai.example.dtb
+> 
+>  .../devicetree/bindings/sound/fsl,esai.txt    |  68 ----------
+>  .../devicetree/bindings/sound/fsl,esai.yaml   | 116 ++++++++++++++++++
+>  2 files changed, 116 insertions(+), 68 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/sound/fsl,esai.txt
+>  create mode 100644 Documentation/devicetree/bindings/sound/fsl,esai.yaml
+> 
+
+Reviewed-by: Rob Herring <robh@kernel.org>
+
 
