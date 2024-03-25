@@ -1,54 +1,54 @@
-Return-Path: <linux-kernel+bounces-117926-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-117927-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id B60CC88B163
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 21:30:09 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id C5E4E88B165
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 21:30:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 561E71FA3D4B
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 20:30:09 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7F03F2C4427
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 20:30:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8FA5E4AED8;
-	Mon, 25 Mar 2024 20:30:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A8FA04E1A2;
+	Mon, 25 Mar 2024 20:30:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="AecH4+Dk"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NMzq9x/B"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D236B1CA9C;
-	Mon, 25 Mar 2024 20:30:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EA2DF495FD;
+	Mon, 25 Mar 2024 20:30:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711398600; cv=none; b=pqL54PonriB5aFie8UoHMrdEfJaOYS+AKgOFAfZnTaRX9U/S6Ex8k8YWA4LL0o5VjnEyIePMqUi05k1BbhjGwSJmKZbXYuFa/isR9KknrtJ0CZGWjBu7s9zSr4X2n8Br9S6JkyjwODbCHMhZ3m5h4tHLMGIo9USK4mGmPXE7siE=
+	t=1711398602; cv=none; b=AHLpPoFNh89QOzROSdQja5eJdYJS+5aWS2OBUFAwxXePhLEpiRwRofTcKJnhH5s/AdSc7X5ycbTWOapHRv2hYG7QkpOfDb7RibqU32TcDFh2eEKr65uJPMh6ixDzhWArgHJ6+GG3y4imUIOhWCIhKgs3qfrzGI6qGNXWiG5uPSE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711398600; c=relaxed/simple;
-	bh=lrr4+ppJcp5gWUTaLbGP8lFAEnh7fXbPFaiOylMKrlI=;
+	s=arc-20240116; t=1711398602; c=relaxed/simple;
+	bh=nT5+aUKI6Dug+L78q2tWnezBjghHEOaZ8JFTxvYy/T0=;
 	h=From:To:In-Reply-To:References:Subject:Message-Id:Date:
-	 MIME-Version:Content-Type; b=XRzpyt4pg1tOfK/Q+PGTG83lTizyN4D6jRnUA83PoL3423UiwM0lXOCjAeQk28Gsn7SBKtGBNK4IY5N4QqltL1MsHRBWeUfmbHNN7l0XL27KXE7eQsEb+M5p4Qtt2ZgHmgkfhdHXgbpvpxBAMjyvg+kY1z3T38FeXsXtp24o46U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=AecH4+Dk; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B09D1C433F1;
-	Mon, 25 Mar 2024 20:29:59 +0000 (UTC)
+	 MIME-Version:Content-Type; b=KNmeV3v9EBVbfHgS6l3gbLCa8X3fm1HXqyBBHrnvIa2rbplAAMDVSXVQl5uwLI6PjzRtvFklfRt9Q9Ra4eVy8NoM7jQEHcZ/uY29+aARftgwPVg88SFhh+WlZUpMODd5NaqdfVn3ZbUlyDBYApeYgfrJAcvf8GPTUeweSvw/NGY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NMzq9x/B; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C35A7C43390;
+	Mon, 25 Mar 2024 20:30:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711398600;
-	bh=lrr4+ppJcp5gWUTaLbGP8lFAEnh7fXbPFaiOylMKrlI=;
+	s=k20201202; t=1711398601;
+	bh=nT5+aUKI6Dug+L78q2tWnezBjghHEOaZ8JFTxvYy/T0=;
 	h=From:To:In-Reply-To:References:Subject:Date:From;
-	b=AecH4+Dk5qRpVMiWIPL7WTT9lK3mgDGw9GWAVqj2K7eRPsYEz93p2xMAgCJnV26LI
-	 Vpndspc1t1Zr/ayGtVYGsvHdg3C6rIssI79gdh2dA0jgeIJtP6QMFqyC/b0yVRSYDr
-	 bkOo0sl0F7cTO4WnZl1OSoLYE7mBpmMXymsaRiECrhyOPFoFYkk2GJjMB0hbnc+dan
-	 D+7VJJYxfkfYle+Git9NqE10cG2CiAtZwdym3/MnqhsQT4ib1vrokBwkZoGCxytcs8
-	 xpp7XdOuC+vH3EqgBiKqMShCTOYHcNFf0evzUDUwk1N8opRtms/8Jo6BQ8Xm9tk/Hs
-	 3BHOuBmsPYyiw==
+	b=NMzq9x/B/TvuHFOdRkHUio44CG24lY4QODx9bUrlBxe9Y1zG2Mqc6KtURVwrqolur
+	 +p11qdewAwUV9eFFfj/8WjbauXixUg4wBAnyigd9vjrH+XPexBnLQ35PZu0JkBcZVQ
+	 EHYO6B/4j2IQrl0d9dagAdvTCBzV7hwAjSHrNnnS2tLfLCU3i6aB5ALNe1F4EuedOc
+	 G9zWg5645ijs/I+v1eci7UlMU9Otg9AcjhOs2pYfm+SUYTAsqxFqhUsyRR7P51/olX
+	 QOuqQ3ejYvz12YHXzzZSGT2KkPb8u4qdc2p4dnNyvdvkiAMw7i6t5KywL89fN51h4O
+	 5HAb3nDV1s1GA==
 From: Mark Brown <broonie@kernel.org>
 To: linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org, 
  Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-In-Reply-To: <20240307155045.3796045-1-andriy.shevchenko@linux.intel.com>
-References: <20240307155045.3796045-1-andriy.shevchenko@linux.intel.com>
-Subject: Re: [PATCH v1 1/1] spi: rspi: Get rid of unused struct
+In-Reply-To: <20240325142118.3210915-1-andriy.shevchenko@linux.intel.com>
+References: <20240325142118.3210915-1-andriy.shevchenko@linux.intel.com>
+Subject: Re: [PATCH v2 1/1] spi: rspi: Get rid of unused struct
  rspi_plat_data
-Message-Id: <171139859945.356390.17578572917727208884.b4-ty@kernel.org>
-Date: Mon, 25 Mar 2024 20:29:59 +0000
+Message-Id: <171139860053.356390.383776514283618109.b4-ty@kernel.org>
+Date: Mon, 25 Mar 2024 20:30:00 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -59,7 +59,7 @@ Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 X-Mailer: b4 0.14-dev
 
-On Thu, 07 Mar 2024 17:50:45 +0200, Andy Shevchenko wrote:
+On Mon, 25 Mar 2024 16:20:04 +0200, Andy Shevchenko wrote:
 > No in-kernel users of struct rspi_plat_data. If required,
 > the software nodes should be used for such users. For now
 > just get rid of it.
