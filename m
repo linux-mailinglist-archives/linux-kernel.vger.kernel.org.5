@@ -1,162 +1,81 @@
-Return-Path: <linux-kernel+bounces-118084-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-118085-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1B13C88B386
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 23:09:44 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D872B88B389
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 23:09:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3E24A1C2FCDD
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 22:09:43 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0FE8A1C394CB
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 22:09:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 949AC73183;
-	Mon, 25 Mar 2024 22:09:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A54FF71B52;
+	Mon, 25 Mar 2024 22:09:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="b+sCf2Jf"
-Received: from out-174.mta1.migadu.com (out-174.mta1.migadu.com [95.215.58.174])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NSnWZsxW"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E92837175F
-	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 22:09:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DF23E71732;
+	Mon, 25 Mar 2024 22:09:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711404570; cv=none; b=GZ9Kt/SMHbujanM19QdXBiJKYOL6PQZmJHbbxwJYCtkwtgLFj+5Fz31wHSV3DoL13L1GfETofP6xamhYstOYPX4IHUbPteeHTbZloviuXq6tsFovH85dwL2iY0NiwXmYb4TkuDBZMKh/TpmKfvuwapAnJhXDDSjxt56Ka/Q4HzU=
+	t=1711404587; cv=none; b=BfVNFMtYav3sKRSKstOe12zgqMFoOndTQV3GO9hlD4dZq3FvlwzAl83BNYqyZWY/zmwBzq94hiGfUp/6LRTviWImCSO9uCu7yolBByFAIRIHsomWdzWyQru+pirQ7Jhe2lv7MUux2NYHS/67k2zAsB8TpxoItve7wxYvgBciHIg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711404570; c=relaxed/simple;
-	bh=fW2hIWHhR41/L1F+bpZzRKnNxDSzchbJIxBCkq7SfGQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=GHp+gm6xIIIRW4aCOuXIJ4vtBPP/uiOEOa5Rvr503Z+SX7Gj4hr1fXfsF49tNFitM1Lqy6Qx+2yg/q4b0fcnrjB5qJ0W8RWsClsVlMqJlfrjsET86P1d1dQhKLjaYIwn4jTvWqgS2//0X7kd6qO9x5Nyq/NdUbpstAr3paNcBng=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=b+sCf2Jf; arc=none smtp.client-ip=95.215.58.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Mon, 25 Mar 2024 18:09:19 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1711404566;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=afGy8CRECdAELjgTa63PphAb8Je/7LgfWp/vpSHkqks=;
-	b=b+sCf2JfZ1bUx+SgaAuv492wBmpuur/6BjEMdbR9Z4ZCD4+uG7E/QItW3rmDr4vs7AeTLM
-	Xi1XoeDaJNa86zHWG0ZtX4cQdV1EpkxCGd1xKdkCh2oT+rvTG85ldwxSNrlBGl947PDi2s
-	eNzsKmqELeZnnjPlz9lpgr/m4xIcqSQ=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: Boqun Feng <boqun.feng@gmail.com>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>, 
-	Philipp Stanner <pstanner@redhat.com>, rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-arch@vger.kernel.org, llvm@lists.linux.dev, Miguel Ojeda <ojeda@kernel.org>, 
-	Alex Gaynor <alex.gaynor@gmail.com>, Wedson Almeida Filho <wedsonaf@gmail.com>, 
-	Gary Guo <gary@garyguo.net>, =?utf-8?B?QmrDtnJu?= Roy Baron <bjorn3_gh@protonmail.com>, 
-	Benno Lossin <benno.lossin@proton.me>, Andreas Hindborg <a.hindborg@samsung.com>, 
-	Alice Ryhl <aliceryhl@google.com>, Alan Stern <stern@rowland.harvard.edu>, 
-	Andrea Parri <parri.andrea@gmail.com>, Will Deacon <will@kernel.org>, 
-	Peter Zijlstra <peterz@infradead.org>, Nicholas Piggin <npiggin@gmail.com>, 
-	David Howells <dhowells@redhat.com>, Jade Alglave <j.alglave@ucl.ac.uk>, 
-	Luc Maranget <luc.maranget@inria.fr>, "Paul E. McKenney" <paulmck@kernel.org>, 
-	Akira Yokosawa <akiyks@gmail.com>, Daniel Lustig <dlustig@nvidia.com>, 
-	Joel Fernandes <joel@joelfernandes.org>, Nathan Chancellor <nathan@kernel.org>, 
-	Nick Desaulniers <ndesaulniers@google.com>, kent.overstreet@gmail.com, 
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, elver@google.com, Mark Rutland <mark.rutland@arm.com>, 
-	Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
-	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>, 
-	Catalin Marinas <catalin.marinas@arm.com>, linux-arm-kernel@lists.infradead.org, 
-	linux-fsdevel@vger.kernel.org
-Subject: Re: [WIP 0/3] Memory model and atomic API in Rust
-Message-ID: <jyijwrrzzhlsrffj37xj4sskipxqbxfewydnb3yzgybjobj6tg@cbv5y7znhm3n>
-References: <s2jeqq22n5ef5jknaps37mfdjvuqrns4w7i22qp2r7r4bzjqs2@my3eyxoa3pl3>
- <CAHk-=whY5A=S=bLwCFL=043DoR0TTgSDUmfPDx2rXhkk3KANPQ@mail.gmail.com>
- <u2suttqa4c423q4ojehbucaxsm6wguqtgouj7vudp55jmuivq3@okzfgryarwnv>
- <CAHk-=whkQk=zq5XiMcaU3xj4v69+jyoP-y6Sywhq-TvxSSvfEA@mail.gmail.com>
- <c51227c9a4103ad1de43fc3cda5396b1196c31d7.camel@redhat.com>
- <CAHk-=wjP1i014DGPKTsAC6TpByC3xeNHDjVA4E4gsnzUgJBYBQ@mail.gmail.com>
- <bu3seu56hfozsvgpdqjarbdkqo3lsjfc4lhluk5oj456xmrjc7@lfbbjxuf4rpv>
- <CAHk-=wgLGWBXvNODAkzkVHEj7zrrnTq_hzMft62nKNkaL89ZGQ@mail.gmail.com>
- <gewmacbbjxwsn4h54w2jfvbiq5iwr2zdm56pc3pv3rctxyd4lt@sqqa544ezmez>
- <ZgHuioMM1cAWNDiX@boqun-archlinux>
+	s=arc-20240116; t=1711404587; c=relaxed/simple;
+	bh=MHgrmDbY6yGfAgeqDr3txltVR53Kng8qLPXpLxZiglw=;
+	h=Mime-Version:Content-Type:Date:Message-Id:Subject:From:To:Cc:
+	 References:In-Reply-To; b=UZXUWe7hAm2h54yFmEOjyJfbQcV/MThirZykPyEhKfrJo+Z8fjiACHX3Idikn4AEe5IT34lvwGrtca8QNqfXUY0qbrc4sf2il2AiZlMSIsFmXuOFnJkWdHRDJddxXYvz1i9FLTWTRgfyfWMibVACzVn6bx7Lx/3051HOEJAaZFA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NSnWZsxW; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0E98FC433C7;
+	Mon, 25 Mar 2024 22:09:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1711404586;
+	bh=MHgrmDbY6yGfAgeqDr3txltVR53Kng8qLPXpLxZiglw=;
+	h=Date:Subject:From:To:Cc:References:In-Reply-To:From;
+	b=NSnWZsxWV5zih75kzQMss0dcrkir5jVOC2GifM2BBPN77g5hkoNR3oxgkh/zNR3j6
+	 S2Bq5lxz+2EPod17risV9ZyCEhMThjo9Lf1Xx/wzwwzgX3sxKDx0GrYnFB06OD76Xx
+	 0IZO8QQPVYf1VgGcq9PrcoDQ9b4vcF7kMdMIkzHiikVNpbaNYZ0YBwYno3KdjNth5R
+	 TD/rmv+qrAzCcx+Xxhb+zxSyXDPaLVHDD/3Vr5jteguD4BNhJ0qhvagGmCpj4EPwZ8
+	 L7ptgGeLIynCCC9OhLlGawsSKuX/+wbiaNAq2lBg7WzJLyLwPYt2GQJ578dFIZ9wV0
+	 9XlVUjpnhJEYw==
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZgHuioMM1cAWNDiX@boqun-archlinux>
-X-Migadu-Flow: FLOW_OUT
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Date: Tue, 26 Mar 2024 00:09:42 +0200
+Message-Id: <D036AJAEAOUF.34494O217N0RI@kernel.org>
+Subject: Re: [PATCH v5 1/2] kprobes: textmem API
+From: "Jarkko Sakkinen" <jarkko@kernel.org>
+To: "Jarkko Sakkinen" <jarkko@kernel.org>, <linux-riscv@lists.infradead.org>
+Cc: "Masami Hiramatsu" <mhiramat@kernel.org>, "Paul Walmsley"
+ <paul.walmsley@sifive.com>, "Palmer Dabbelt" <palmer@dabbelt.com>, "Albert
+ Ou" <aou@eecs.berkeley.edu>, <linux-kernel@vger.kernel.org>, "Luis
+ Chamberlain" <mcgrof@kernel.org>, <linux-modules@vger.kernel.org>, "Naveen
+ N . Rao" <naveen.n.rao@linux.ibm.com>, "Anil S Keshavamurthy"
+ <anil.s.keshavamurthy@intel.com>, "David S . Miller" <davem@davemloft.net>
+X-Mailer: aerc 0.17.0
+References: <20240325215502.660-1-jarkko@kernel.org>
+In-Reply-To: <20240325215502.660-1-jarkko@kernel.org>
 
-On Mon, Mar 25, 2024 at 02:37:14PM -0700, Boqun Feng wrote:
-> On Mon, Mar 25, 2024 at 05:14:41PM -0400, Kent Overstreet wrote:
-> > On Mon, Mar 25, 2024 at 12:44:34PM -0700, Linus Torvalds wrote:
-> > > On Mon, 25 Mar 2024 at 11:59, Kent Overstreet <kent.overstreet@linux.dev> wrote:
-> > > >
-> > > > To be fair, "volatile" dates from an era when we didn't have the haziest
-> > > > understanding of what a working memory model for C would look like or
-> > > > why we'd even want one.
-> > > 
-> > > I don't disagree, but I find it very depressing that now that we *do*
-> > > know about memory models etc, the C++ memory model basically doubled
-> > > down on the same "object" model.
-> > > 
-> > > > The way the kernel uses volatile in e.g. READ_ONCE() is fully in line
-> > > > with modern thinking, just done with the tools available at the time. A
-> > > > more modern version would be just
-> > > >
-> > > > __atomic_load_n(ptr, __ATOMIC_RELAXED)
-> 
-> Note that Rust does have something similiar:
-> 
-> 	https://doc.rust-lang.org/std/ptr/fn.read_volatile.html
-> 
-> 	pub unsafe fn read_volatile<T>(src: *const T) -> T
-> 
-> (and also write_volatile()). So they made a good design putting the
-> volatile on the accesses rather than the type. However, per the current
-> Rust memory model these two primitives will be UB when data races happen
-> :-(
-> 
-> I mean, sure, if I use read_volatile() on an enum (whose valid values
-> are only 0, 1, 2), and I get a value 3, and the compiler says "you have
-> a logic bug and I refuse to compile the program correctly", I'm OK. But
-> if I use read_volatile() to read something like a u32, and I know it's
-> racy so my program actually handle that, I don't know any sane compiler
-> would miss-compile, so I don't know why that has to be a UB.
+On Mon Mar 25, 2024 at 11:55 PM EET, Jarkko Sakkinen wrote:
+> +#ifdef CONFIG_MODULES
+>  	if (register_module_notifier(&trace_kprobe_module_nb))
+>  		return -EINVAL;
+> +#endif /* CONFIG_MODULES */
 
-Well, if T is too big to read/write atomically then you'll get torn
-reads, including potentially a bit representation that is not a valid T.
+register_module_notifier() does have "dummy" version but what
+would I pass to it. It makes more mess than it cleans to declare
+also a "dummy" version of trace_kprobe_module_nb.
 
-Which is why the normal read_volatile<> or Volatile<> should disallow
-that.
+The callback itself has too tight module subsystem bindings so
+that they could be simply flagged with IS_DEFINED() (or correct
+if I'm mistaken, this the conclusion I've ended up with).
 
-> > where T is any type that fits in a machine word, and the only operations
-> > it supports are get(), set(), xchg() and cmpxchG().
-> > 
-> > You DO NOT want it to be possible to transparantly use Volatile<T> in
-> > place of a regular T - in exactly the same way as an atomic_t can't be
-> > used in place of a regular integer.
-> 
-> Yes, this is useful. But no it's not that useful, how could you use that
-> to read another CPU's stack during some debug functions in a way you
-> know it's racy?
-
-That's a pretty difficult thing to do, because you don't know the
-_layout_ of the other CPU's stack, and even if you do it's going to be
-changing underneath you without locking.
-
-So the races thare are equivalent to a bad mem::transmute(), and that is
-very much UB.
-
-For a more typical usage of volatile, consider a ringbuffer with one
-thread producing and another thread consuming. Then you've got head and
-tail pointers, each written by one thread and read by another.
-
-You don't need any locking, just memory barriers and
-READ_ONCE()/WRITE_ONCE() to update the head and tail pointers. If you
-were writing this in Rust today the easy way would be an atomic integer,
-but that's not really correct - you're not doing atomic operations
-(locked arithmetic), just volatile reads and writes.
-
-Volatile<T> would be Send and Sync, just like atomic integers. You don't
-need locking if you're just working with single values that are small
-enough for the machine to read/write atomically.
+BR, Jarkko
 
