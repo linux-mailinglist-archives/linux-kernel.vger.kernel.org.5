@@ -1,147 +1,128 @@
-Return-Path: <linux-kernel+bounces-116879-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-116884-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AFE0688A4E3
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 15:42:46 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4002988A650
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 16:23:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 697F3C04A8A
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 14:38:57 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3C444B61AE1
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 14:40:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6D9D91C41C0;
-	Mon, 25 Mar 2024 11:29:51 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CBC0017D23D;
-	Mon, 25 Mar 2024 10:44:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 519AB14D2B8;
+	Mon, 25 Mar 2024 11:30:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=futuring-girl-com.20230601.gappssmtp.com header.i=@futuring-girl-com.20230601.gappssmtp.com header.b="cuc1QpGR"
+Received: from mail-pg1-f172.google.com (mail-pg1-f172.google.com [209.85.215.172])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 02D8615444D
+	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 10:45:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711363501; cv=none; b=lol9DxDbvPP9K2/71SQ/SYgMCxeAmgN6lujHBpZzzpSdwiXXwNxPREV6yNZqaXLWpaxWjrWy34ee5cJ8cxaqzoSffbrjP873+ruU/OyhBpfYGE01q0NWlP/dC7lq/sy6r5k+41zMhQL+tepVhUwDHztnWOakWV1cA08FQXDPFds=
+	t=1711363536; cv=none; b=RupYY/g5hZ7/HmnYZaU1TzjN6WjUuxzt8/UAMDoS5cM/1iju0sbDrVGl2pZQ8xVSSJVlW0ndVH9gjDBZELhf6uypPIe6n4qgb+uuYtztYljUQnKup7zwjOahqhV7pdtef6m/t4C+aS5h6MxGyYaa5vf+Kl0DH5dUlRJSqM1Lcy8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711363501; c=relaxed/simple;
-	bh=HVlViT7fg37ArzDR5okosyV0TQroP4C7gOqT9V4q2f0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=LJVgG1cja4QnpRC+43Tf3ug6jce0R7PXmitvWr8upEsksCGCbGoAMRLoH4HTE92+Ct0wLJ40FoMz4Nn6rTOG0AHm5FTsg9jCaOyLcPuG67SI9sr7DBzuMXUxYcgh6a3O4OmtYpjBOAGYPMXy19Z8pUNo6PYKz6RzrBhlyeJpqKc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C15E01FB;
-	Mon, 25 Mar 2024 03:45:31 -0700 (PDT)
-Received: from FVFF77S0Q05N (unknown [10.57.16.150])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id AFF8B3F67D;
-	Mon, 25 Mar 2024 03:44:51 -0700 (PDT)
-Date: Mon, 25 Mar 2024 10:44:45 +0000
-From: Mark Rutland <mark.rutland@arm.com>
-To: Boqun Feng <boqun.feng@gmail.com>
-Cc: rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-arch@vger.kernel.org, llvm@lists.linux.dev,
-	Miguel Ojeda <ojeda@kernel.org>,
-	Alex Gaynor <alex.gaynor@gmail.com>,
-	Wedson Almeida Filho <wedsonaf@gmail.com>,
-	Gary Guo <gary@garyguo.net>,
-	=?us-ascii?Q?Bj=22orn?= Roy Baron <bjorn3_gh@protonmail.com>,
-	Benno Lossin <benno.lossin@proton.me>,
-	Andreas Hindborg <a.hindborg@samsung.com>,
-	Alice Ryhl <aliceryhl@google.com>,
-	Alan Stern <stern@rowland.harvard.edu>,
-	Andrea Parri <parri.andrea@gmail.com>,
-	Will Deacon <will@kernel.org>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Nicholas Piggin <npiggin@gmail.com>,
-	David Howells <dhowells@redhat.com>,
-	Jade Alglave <j.alglave@ucl.ac.uk>,
-	Luc Maranget <luc.maranget@inria.fr>,
-	"Paul E. McKenney" <paulmck@kernel.org>,
-	Akira Yokosawa <akiyks@gmail.com>,
-	Daniel Lustig <dlustig@nvidia.com>,
-	Joel Fernandes <joel@joelfernandes.org>,
-	Nathan Chancellor <nathan@kernel.org>,
-	Nick Desaulniers <ndesaulniers@google.com>,
-	kent.overstreet@gmail.com,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, elver@google.com,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-	"H. Peter Anvin" <hpa@zytor.com>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	torvalds@linux-foundation.org, linux-arm-kernel@lists.infradead.org,
-	linux-fsdevel@vger.kernel.org
-Subject: Re: [WIP 0/3] Memory model and atomic API in Rust
-Message-ID: <ZgFVnar3nS4F8eIX@FVFF77S0Q05N>
-References: <20240322233838.868874-1-boqun.feng@gmail.com>
+	s=arc-20240116; t=1711363536; c=relaxed/simple;
+	bh=xFssiSj+B3KNV/TbO9JFeIfvLkCfQkNPPPwZSEnIQqc=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=XF70Vk7KysbFj69bLuJq1NqtucksXi8yoimFrWnXMNewkeX8rFLcHb5LkpuxPIUxqtW2eSGngb5vXuEafyyFsdxudcOE0UlJcw91chmU65jQJ679gZ/9Kig8OjbAytgIslki6PWqeRWQBHg9G8CJnTLgYCdpUZXEgbcXMx2pt3w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=futuring-girl.com; spf=pass smtp.mailfrom=futuring-girl.com; dkim=pass (2048-bit key) header.d=futuring-girl-com.20230601.gappssmtp.com header.i=@futuring-girl-com.20230601.gappssmtp.com header.b=cuc1QpGR; arc=none smtp.client-ip=209.85.215.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=futuring-girl.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=futuring-girl.com
+Received: by mail-pg1-f172.google.com with SMTP id 41be03b00d2f7-5cddfe0cb64so1662270a12.0
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 03:45:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=futuring-girl-com.20230601.gappssmtp.com; s=20230601; t=1711363534; x=1711968334; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=i5cMpRTj9+xACED6ZIv7TiLSV250W68WovhxSeO3KTs=;
+        b=cuc1QpGRC/xDtWsJ65VoyBozBo9WkqwnUt5HqH7IFGgOcZ5NhBPR9Heopyewf8TCat
+         oRUzoDTt09FQ22LKMzYwFjPLCryLLR6+0KrgkVipgSPAeDPNevdna2iZ3UC8tag+vqqt
+         xTRp2Nz1NT4E10kyd//PjTr1B7r9HKROr9Ex7p3zWQba7yh/wZIbLmDEYIrBwBocDOyG
+         E+3T+U0T/OnWAW+Oex1Vofg06I+K1jHcwnr3hzehYRAZ0vo58+uigfnURsQYNP9V4viU
+         RIIZ2wg1TxfAqwn7hFlF69AOBWKvh8Ed3r+9fqTp77kxxgOPyEZOz2R2m/lpZMcwa308
+         d09g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711363534; x=1711968334;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=i5cMpRTj9+xACED6ZIv7TiLSV250W68WovhxSeO3KTs=;
+        b=gkbLNNsWpvEp5KnmWO2unuAVV3gCbFHnq2y6ydksqiYRKfAuxyMX56Y5rdDU1w3aM7
+         hBefjDXXf/8X59gvOyiojbnMEHkDoAk+gXjdXnYeXKtMwjRbOGfi0rDmTzFFT5XkPJYa
+         G8rPpipfi+yXjX1rvr0Gyft/BzI35KNM/N7YlSo42/96IWLlbQsfomZL/zvhP73ZEdnt
+         WHlh5/ND70GJxGacpPYgf3oXiN8oppgHsbtqWmXCVkd++8D5GR+An/qIMsFZt0GNzcqq
+         69skZo9Pj9HyMu4MRnroBrDjefgVTlBOt1uo0ZAHUbJAcdso35tX5zj8FrOrp+ir7ds6
+         GI0Q==
+X-Gm-Message-State: AOJu0YwXIFzBzwVK1N+GHx6z7EvLG0Mb0B9rWZkRd4frL7j1YZHkE1i1
+	a9Ov9+rYj2bN/QWhFf+j5DEZgcN1SIsQEMkdO87kI8vFRKUSKEYBU96/lpJuF53XlTIxPfOxfYE
+	F5JFRhR45pjVRFLyG6HaEXROGANl144PXOnltfg==
+X-Google-Smtp-Source: AGHT+IGCBrbXDBwydAl/u/1jRtQ2p43hCT7EuFJ5ky+hUizJPwTTHeqXK1hV1/7I97X3IB5keFT0dPkbz8CL9C+BouU=
+X-Received: by 2002:a17:90a:e608:b0:29b:3106:7f24 with SMTP id
+ j8-20020a17090ae60800b0029b31067f24mr4321213pjy.37.1711363534117; Mon, 25 Mar
+ 2024 03:45:34 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240322233838.868874-1-boqun.feng@gmail.com>
+References: <20240324230116.1348576-1-sashal@kernel.org>
+In-Reply-To: <20240324230116.1348576-1-sashal@kernel.org>
+From: Takeshi Ogasawara <takeshi.ogasawara@futuring-girl.com>
+Date: Mon, 25 Mar 2024 19:45:23 +0900
+Message-ID: <CAKL4bV47RJMAxTMJPkfHNQm+ikWCMEYg_NBfB+e0_6_7=+3fVw@mail.gmail.com>
+Subject: Re: [PATCH 6.6 000/638] 6.6.23-rc1 review
+To: Sasha Levin <sashal@kernel.org>
+Cc: linux-kernel@vger.kernel.org, stable@vger.kernel.org, 
+	torvalds@linux-foundation.org, akpm@linux-foundation.org, linux@roeck-us.net, 
+	shuah@kernel.org, patches@kernelci.org, lkft-triage@lists.linaro.org, 
+	florian.fainelli@broadcom.com, pavel@denx.de
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, Mar 22, 2024 at 04:38:35PM -0700, Boqun Feng wrote:
-> Hi,
-> 
-> Since I see more and more Rust code is comming in, I feel like this
-> should be sent sooner rather than later, so here is a WIP to open the
-> discussion and get feedback.
-> 
-> One of the most important questions we need to answer is: which
-> memory (ordering) model we should use when developing Rust in Linux
-> kernel, given Rust has its own memory ordering model[1]. I had some
-> discussion with Rust language community to understand their position
-> on this:
-> 
-> 	https://github.com/rust-lang/unsafe-code-guidelines/issues/348#issuecomment-1218407557
-> 	https://github.com/rust-lang/unsafe-code-guidelines/issues/476#issue-2001382992
-> 
-> My takeaway from these discussions, along with other offline discussion
-> is that supporting two memory models is challenging for both correctness
-> reasoning (some one needs to provide a model) and implementation (one
-> model needs to be aware of the other model). So that's not wise to do
-> (at least at the beginning). So the most reasonable option to me is:
-> 
-> 	we only use LKMM for Rust code in kernel (i.e. avoid using
-> 	Rust's own atomic).
-> 
-> Because kernel developers are more familiar with LKMM and when Rust code
-> interacts with C code, it has to use the model that C code uses.
+Hi Sasha
 
-I think that makes sense; if nothing else it's consistent with how we handle
-the C atomics today.
+On Mon, Mar 25, 2024 at 2:34=E2=80=AFPM Sasha Levin <sashal@kernel.org> wro=
+te:
+>
+>
+> This is the start of the stable review cycle for the 6.6.23 release.
+> There are 638 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Tue Mar 26 11:01:10 PM UTC 2024.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stab=
+le-rc.git/patch/?id=3Dlinux-6.6.y&id2=3Dv6.6.22
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-6.6.y
+> and the diffstat can be found below.
+>
+> Thanks,
+> Sasha
 
-> And this patchset is the result of that option. I introduced an atomic
-> library to wrap and implement LKMM atomics (of course, given it's a WIP,
-> so it's unfinished). Things to notice:
-> 
-> * I know I could use Rust macro to generate the whole set of atomics,
->   but I choose not to in the beginning, as I want to make it easier to
->   review.
-> 
-> * Very likely, we will only have AtomicI32, AtomicI64 and AtomicUsize
->   (i.e no atomic for bool, u8, u16, etc), with limited support for
->   atomic load and store on 8/16 bits.
-> 
-> * I choose to re-implement atomics in Rust `asm` because we are still
->   figuring out how we can make it easy and maintainable for Rust to call
->   a C function _inlinely_ (Gary makes some progress [2]). Otherwise,
->   atomic primitives would be function calls, and that can be performance
->   bottleneck in a few cases.
+6.6.23-rc1 tested.
 
-I don't think we want to maintain two copies of each architecture's atomics.
-This gets painful very quickly (e.g. as arm64's atomics get patched between
-LL/SC and LSE forms).
+Build successfully completed.
+Boot successfully completed.
+No dmesg regressions.
+Video output normal.
+Sound output normal.
 
-Can we start off with out-of-line atomics, and see where the bottlenecks are?
+Lenovo ThinkPad X1 Carbon Gen10(Intel i7-1260P(x86_64) arch linux)
 
-It's relatively easy to do that today, at least for the atomic*_*() APIs:
+[    0.000000] Linux version 6.6.23-rc1rv
+(takeshi@ThinkPadX1Gen10J0764) (gcc (GCC) 13.2.1 20230801, GNU ld (GNU
+Binutils) 2.42.0) #1 SMP PREEMPT_DYNAMIC Mon Mar 25 19:23:42 JST 2024
 
-  https://git.kernel.org/pub/scm/linux/kernel/git/mark/linux.git/commit/?h=atomics/outlined&id=e0a77bfa63e7416d610769aa4ab62bc06993ce56
+Thanks
 
-.. which IIUC covers the "AtomicI32, AtomicI64 and AtomicUsize" cases you
-mention above.
-
-Mark.
+Tested-by: Takeshi Ogasawara <takeshi.ogasawara@futuring-girl.com>
 
