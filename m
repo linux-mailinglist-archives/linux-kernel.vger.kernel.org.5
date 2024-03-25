@@ -1,57 +1,88 @@
-Return-Path: <linux-kernel+bounces-116889-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-116871-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B92F088A4D6
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 15:41:36 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0810E88A497
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 15:33:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EA1621C3C12C
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 14:41:35 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9BD7A1F3F07F
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 14:33:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E40CF82D9D;
-	Mon, 25 Mar 2024 11:30:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 710991C230D;
+	Mon, 25 Mar 2024 11:25:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kc/oiVqO"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="JtYcQwPL"
+Received: from mail-lf1-f48.google.com (mail-lf1-f48.google.com [209.85.167.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DCAF917F360;
-	Mon, 25 Mar 2024 10:47:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3453118C9D2
+	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 10:48:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711363628; cv=none; b=mC0aYT5jthMyrKQtgLFWEMzo5kxq94n3PAT+wIJsupBzxbH8UfnzQ5QHJwhp9Nscn6Y/5k9DnjjxuHqJ+U9rnDLqZkawIGCeMPVr4dkUt1njJ8yk+8MdArLmXGWnp2n1TlnXoJyCAJ15mWCxjz7frFmpzu0z7grV52001f6M1Xs=
+	t=1711363721; cv=none; b=eHJL2Iis/4U+r73Vep3Ibr5OuaWBTUxRXCUUiWwtIl134YO8obxDSgf6Qi1SAZ8nRMuWcjxRUeFoI8VupuCpoz2Xew99ee0AKUBCyu/ciud8iMp5xJh1q1asFxkUjWWabM6wu7ThYnaRQGYHoJi3wyhYNw+Ug81sSSiTIa5hvFQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711363628; c=relaxed/simple;
-	bh=r31SBBkS3IQnuOXsL/OAJ6hP04pjUORZG5Mw9x9NTps=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=upYCVodHZGfsNqGQFY7OpterR1d2At4oLbmamKtF/fDKwgLiOqZ4jx/S1VgCAsBQl7V7kJfZYytlgxaTM4gKc+5zyEr2FwUy41ueD4dxFWkX1L1Efs9vIlgOt59LbFEMs2ysBFddm99RaHWugQNwZ+vmChbmNvPMuuNh9FAmRb8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kc/oiVqO; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 02BCEC433C7;
-	Mon, 25 Mar 2024 10:47:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711363626;
-	bh=r31SBBkS3IQnuOXsL/OAJ6hP04pjUORZG5Mw9x9NTps=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=kc/oiVqO1kdaPxCngGTgEuTZRx8Y+Ojs1SmR2fp3nID5XXQkoQlMVliY8frbY0Yj/
-	 GKB4+E8wU/4J3dgkVBqX6mENGL6NOrJlG9n9DAF+TqPB2RIf6ZSb41cqHdcFlgi07H
-	 vTEwvK06xi7vBRu4cGK/YtAyetBSoZPRo7dmG8RPKJoHx1yE9GZTxlagrtp4lHSzSz
-	 Wxfg7Xq+F6OHeWZ4KnHtlc4MQW2eG9YJXwwvgOFnfUS4e8sd6Am85BYwBtAuihjK85
-	 HQGSTX+yyOKfAL1jfSzXd8Juu2luHou2rDFr63/NqORZ8t1IWcQqyiCWKLDT9lnsvj
-	 vq9w/OLWiE9Rw==
-From: Miguel Ojeda <ojeda@kernel.org>
-To: sashal@kernel.org
-Cc: andrii@kernel.org,
-	ast@kernel.org,
-	linux-kernel@vger.kernel.org,
-	stable@vger.kernel.org,
-	Miguel Ojeda <ojeda@kernel.org>
-Subject: Re: [PATCH 6.8 196/715] bpf: don't infer PTR_TO_CTX for programs with unnamed context type
-Date: Mon, 25 Mar 2024 11:46:29 +0100
-Message-ID: <20240325104629.76523-1-ojeda@kernel.org>
-In-Reply-To: <20240324223455.1342824-197-sashal@kernel.org>
-References: <20240324223455.1342824-197-sashal@kernel.org>
+	s=arc-20240116; t=1711363721; c=relaxed/simple;
+	bh=tla5/GdjKrTPP+kJAYRZ8KGODm6wDmTDoyN5IPNwwlg=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=OqZ702+k8nFwOVfoPlGWmjP85mCBSz9jcxo+n2qKUa5M1p/1mCRYuLapf9on4M62wWN87GylWILuxaUbzyWDKSXnVhVU2uW0bzLf3ay2UHXcBxQ4g7r9BC+V3jpSceWd3qXEatUuN4wdtzixkdeBgIeZALUNUobshew5J7yMFSI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=JtYcQwPL; arc=none smtp.client-ip=209.85.167.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-lf1-f48.google.com with SMTP id 2adb3069b0e04-513d212f818so4702449e87.2
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 03:48:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1711363717; x=1711968517; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=GdyAlHz63fHy0CpLlEnn3btu6ypzjd0jIMH561mJYbY=;
+        b=JtYcQwPLu/QShMcY128A/xlyxrRh9nALSE1NocBrHjhQXOHkBpuOeqXqlnnLfVqs5/
+         9gDogpn7E/z4YLfKgfBP2unYjELm4o/NZEh+/a469isJ7HNN4lD7pqhD2sD/iTC0k7bM
+         GMFBhvgWAy0wNCFBz/pM4Z9UA5cnl8Fc0njyMnEpMkEDDJrbUDlz/eZO1+5V65kNlpsY
+         wQlbOO6cKzmEM2hp1nJv+Wd7uYpKm6FzdRPT6D8CNysJj3NE9c0l/Cv915FB+9AS9F8p
+         YMMJBaLGOH7gq6Rtsi5kX2Spmcun6z/LUNJawAs6KGmFzIUyjzn7gcC6yiRkVQ2SRQCq
+         QseA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711363717; x=1711968517;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=GdyAlHz63fHy0CpLlEnn3btu6ypzjd0jIMH561mJYbY=;
+        b=XMZw8UAodW78+tGPCqPXA1SYCyNZotoUU0HPNdnf1eBnZwwRhEl7MQ4i+/Ae8HKogK
+         qGknTN4umeAcpVOBAzEhpBXtaB7Xm3rJu2fZTHWbO5IdE44gyx+4AZdflG8PvANuOdu9
+         WBTHews3mrgD1yI5sBwMahYyO8bM0y7PmLF86xa6H8vebiwwl82xWSbZBm59ef1lHt1A
+         +zA8PXvghhlN8mx4pmLJgiZxxb3JUBjMg4Mu6IwTWQGFvmrHSI5nkvXig0642pnPkmft
+         9PApavkX4Ci1QVaGVfg//J1SaL9G7shPXtIQzx7mSBcghEoxNe+khgKAgW6Tp1I1d6Cz
+         0zvQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVEOWk6BukEYYku9b5azzmXuG7SLP9wkAk3MzXoyr6FM05JN4Z2Oiazyc961XzYsG3XyBWIE2mVfe1EeBlQ3qJhl0KRTrQHO22a6BZ+
+X-Gm-Message-State: AOJu0Yz2RtTJWV17X+H38ohoodf31eaJk+vZCQYtM+DSHNyKmWVoBnqe
+	q62ZUZSKCUgXmDbIzl7w5MB9Vr6teznB/NdFtHYKbUNsgssIAV/3gZTpLhMNMZ0=
+X-Google-Smtp-Source: AGHT+IEtwhIbYV6Dwdb3Hs6WgP/TgyCYhQ1U7xeEJW156UNlPksk5MnUlGzwXG2IL7SeXUvQg/yLUQ==
+X-Received: by 2002:a19:8c56:0:b0:513:c9ea:67 with SMTP id i22-20020a198c56000000b00513c9ea0067mr4160794lfj.24.1711363717293;
+        Mon, 25 Mar 2024 03:48:37 -0700 (PDT)
+Received: from krzk-bin.. ([178.197.222.44])
+        by smtp.gmail.com with ESMTPSA id df15-20020a05640230af00b00568d6a20717sm2859339edb.52.2024.03.25.03.48.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 25 Mar 2024 03:48:36 -0700 (PDT)
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+To: Li Yang <leoyang.li@nxp.com>,
+	Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Daniel Lezcano <daniel.lezcano@linaro.org>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Shawn Guo <shawnguo@kernel.org>,
+	Marc Zyngier <maz@kernel.org>,
+	Mark Rutland <mark.rutland@arm.com>,
+	linuxppc-dev@lists.ozlabs.org,
+	linux-arm-kernel@lists.infradead.org,
+	devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Subject: [PATCH v2 1/2] dt-bindings: soc: fsl: narrow regex for unit address to hex numbers
+Date: Mon, 25 Mar 2024 11:48:32 +0100
+Message-Id: <20240325104833.33372-1-krzysztof.kozlowski@linaro.org>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -60,19 +91,47 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Hi Sasha, all,
+Regular expression used to match the unit address part should not allow
+non-hex numbers.
 
-I got this one while built-testing 6.8.y for LoongArch with Rust enabled:
+Acked-by: Rob Herring <robh@kernel.org>
+Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
-    kernel/bpf/btf.c:5690:10: error: expression which evaluates to zero treated as a null pointer constant of type 'const struct btf_type *' [-Werror,-Wnon-literal-null-conversion]
-     5690 |                 return false;
-          |                        ^~~~~
+---
 
-Upstream fb5b86cfd4ef ("bpf: simplify btf_get_prog_ctx_type() into btf_is_prog_ctx_type()") changed the function into another one, including its return type to `bool`, so it seems that one is a stable dep or perhaps making it return `NULL` here.
+v2: No changes
+---
+ .../devicetree/bindings/soc/fsl/fsl,layerscape-dcfg.yaml        | 2 +-
+ .../devicetree/bindings/soc/fsl/fsl,layerscape-scfg.yaml        | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-Hope that helps!
-
-Cheers,
-Miguel
+diff --git a/Documentation/devicetree/bindings/soc/fsl/fsl,layerscape-dcfg.yaml b/Documentation/devicetree/bindings/soc/fsl/fsl,layerscape-dcfg.yaml
+index 397f75909b20..ce1a6505eb51 100644
+--- a/Documentation/devicetree/bindings/soc/fsl/fsl,layerscape-dcfg.yaml
++++ b/Documentation/devicetree/bindings/soc/fsl/fsl,layerscape-dcfg.yaml
+@@ -51,7 +51,7 @@ properties:
+   ranges: true
+ 
+ patternProperties:
+-  "^clock-controller@[0-9a-z]+$":
++  "^clock-controller@[0-9a-f]+$":
+     $ref: /schemas/clock/fsl,flexspi-clock.yaml#
+ 
+ required:
+diff --git a/Documentation/devicetree/bindings/soc/fsl/fsl,layerscape-scfg.yaml b/Documentation/devicetree/bindings/soc/fsl/fsl,layerscape-scfg.yaml
+index 8d088b5fe823..a6a511b00a12 100644
+--- a/Documentation/devicetree/bindings/soc/fsl/fsl,layerscape-scfg.yaml
++++ b/Documentation/devicetree/bindings/soc/fsl/fsl,layerscape-scfg.yaml
+@@ -41,7 +41,7 @@ properties:
+   ranges: true
+ 
+ patternProperties:
+-  "^interrupt-controller@[a-z0-9]+$":
++  "^interrupt-controller@[a-f0-9]+$":
+     $ref: /schemas/interrupt-controller/fsl,ls-extirq.yaml#
+ 
+ required:
+-- 
+2.34.1
 
 
