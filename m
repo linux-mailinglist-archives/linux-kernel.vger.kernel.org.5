@@ -1,99 +1,163 @@
-Return-Path: <linux-kernel+bounces-117897-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-117898-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id CCA7188B10E
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 21:13:55 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5167788B10F
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 21:14:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7C3E61FA5A04
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 20:13:55 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 75DAB1C62806
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 20:14:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 68E5E524D8;
-	Mon, 25 Mar 2024 20:12:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 43C105A0EF;
+	Mon, 25 Mar 2024 20:12:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="bdVen1LO"
-Received: from mail-pl1-f173.google.com (mail-pl1-f173.google.com [209.85.214.173])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="fujt8Pmp"
+Received: from mail-io1-f73.google.com (mail-io1-f73.google.com [209.85.166.73])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B62E482EB
-	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 20:12:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DD4CD52F81
+	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 20:12:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.73
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711397525; cv=none; b=tM6E6oXh4vQSNDehUkTzABQ8eTv/+u3pHWHT6j/iv1JYkIXWwLeJQYerJ/wPwvU3P3feCZNYZc5Fa6lhPVb/jjm+8a3QS05ptgxV+pCxpfmUdPu59YpWVJftgSw9Bj9HubN8zS06hHMoAk4DraNySeP2DmoZJrSVWjwB/j82cqQ=
+	t=1711397528; cv=none; b=dXTPoxm0T3Vu/DzcK6x0yz8RbnSlly2UGmzTeYQQiPi/PdQwKc+6iLPRZV/wvUzJPyqtrve4qxpC/pJL2ZWL02Am5iJvbfy1C8EcGHmsxL1hCyI66HR8moqsjgiAa78+L9x4vuYyLZC4XzWksQCSXU534R8vjKTvVZJor1y3EsM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711397525; c=relaxed/simple;
-	bh=PxI898NZIU+tG81gqoZRmwgGkW51J9UnnR1S6B1Kv/A=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=KdxssUGTABmCWYXp32yKnn5vhIwFQsSrr1eptErleEbf2sVLZdP6+0de0zI9mEFTJUd6vlFvcTQa5qVqK4DHXI9DN2RMOqvLxQ8ZdilUfxezee5cZmoWzt/sMBUuBsecBH+9fbjq44y2PUXhbUMzdBAUXZ0vTDnlsZrpq8uO3Ec=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=bdVen1LO; arc=none smtp.client-ip=209.85.214.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f173.google.com with SMTP id d9443c01a7336-1def3340682so38905975ad.1
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 13:12:04 -0700 (PDT)
+	s=arc-20240116; t=1711397528; c=relaxed/simple;
+	bh=TS58LtBep+V3y21GNNI5AUCkkhJt90huKHWlMzlnjIk=;
+	h=Date:In-Reply-To:Mime-Version:Message-ID:Subject:From:To:Cc:
+	 Content-Type; b=ffbZAq5suExqzMt5MHfftyktiFAJkXMobKTyFxcCXowFeZsFNnnzwoZerpt0hV2XIZcNgiu7kXkFzBZTf8StNhfqLph2z5Z0MvtciX1Sz0zmXhkojipXQMUIzAWjSzF9VFceNJsLKjJviFxSjyXftpLuL/AtiXJC2y21C2GJgF8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--coltonlewis.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=fujt8Pmp; arc=none smtp.client-ip=209.85.166.73
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--coltonlewis.bounces.google.com
+Received: by mail-io1-f73.google.com with SMTP id ca18e2360f4ac-7c8742bedd4so359500939f.1
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 13:12:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711397524; x=1712002324; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=gkImbuTh/gKGdcy5/eBZH+9wmZ6U6LM9kNnLUBbGZxw=;
-        b=bdVen1LObU+OPR+20eSh1yU4f5FTJPHwKahE89SjsqvxYBKkA80yLGDEWKuiFXThbx
-         5gHAmofki7rY6JEJLUCWM0I7dx8AE62xqSWmS8BgJhtahmH6m8ycWQsBe+sdyV1gQKSU
-         EWnvLhfX99HvPzeptyAC4XeLOMNYYwkZ2hKYXXpSDUEFtPNQehuxxOv3ueaE8pOfYmoh
-         DPFqrp0UKRUbSDH0REfg1T9Xsva9SyW9K7Qtuo23AH6zUu4TmjbjduyXYdlRYZ1jgUB4
-         6eEwD0bLUylhCna1gENW4YEOww5OL0cC5i+XTWvYpBud1xT2quojrvFGUfNYlcpJtN14
-         BsfA==
+        d=google.com; s=20230601; t=1711397526; x=1712002326; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:in-reply-to:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=T2hv5W0oxITVtYMp7qscmbVqdlTYLfE2MA0LIJYCuQE=;
+        b=fujt8PmpE6IgP0LADa3B76CekvZwxzqx55wd5hzGfmvVtN3ZYvCqyFIO7yZYj3279v
+         QgN1NB4y28M4HqMmYzUvqEm7TJsnzLhHavlY2lbpiQB+cAjGM5sMz7MBhJSZ2SCtAEwp
+         Ct6PQQwadFQUZZAp5Kf89PeKPGbJtNIAK2McGRzGou+qdsT8I8aiYzwWbkhmb0spp3mK
+         rIw8lnDZrP6oMpc7fkmxHRB6rNIN6SJSSFLKs1kAlHibSRKBc+wAabrhBMSyl6Usn2a5
+         vbWZmaIn4wSTG9AwZeKiiuZtw7zZVsxQyz1v7vbhdG3cdQSlnd0gd8n8uj4BLLFRqt7x
+         ySbg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711397524; x=1712002324;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=gkImbuTh/gKGdcy5/eBZH+9wmZ6U6LM9kNnLUBbGZxw=;
-        b=E21SzR6uGAwUQKtWBVUa7lgIqskjdDmI5gFdFhBnwNQsWp58pQk4wUt3JKQLgIH14U
-         djLAFwBr9TJ+B20BIhSvBtSP4EWI2af5EMVEBpOKNzjWlXslereMn5Lqc7slUsL5WkZT
-         mpD+hciLTnvY0ePwAzdyp+iDTjZH73MBPC/UjLfLnBp03rLM77R5aOIe/Isk8yKrsTlB
-         wz0dKCmYRjGUZV/4+bM34Eq5q4Tv1MDyrVZz0kcxEXBl+a6nNHBSZmBjnBMYlM/uMCdM
-         p2DuCwNpd8ro7XldZowZnpH0cTlLFRXTrxGj+dfn3NJeJpwvEgJCwaW/pN/KDRuf7g7f
-         XSYw==
-X-Forwarded-Encrypted: i=1; AJvYcCWgTSJ3lkx0TZIfNJ3cPpF9+5cKp4a2XqUq8+qBSBIIvLUI2AZvKmbBcP2JLilBn8RfRLyRXuoFZTZXdFamjcb+tdVQmxnyn67WjIyn
-X-Gm-Message-State: AOJu0Yw14FbHKqTt5XOc7KqWOZTJJx+4mH+fhSnznA08SIFbOwAA8aai
-	7V5xRH+BRQH/lNjnR8T3T0HdATlMGNZ12kuABMvO5gMa5XQ9UVI5
-X-Google-Smtp-Source: AGHT+IGcjRwV5fR2bsBI7GyCbjXqYFyCieW2x0BxZX35vtqvA+tIC23MmxdaZSMebTswxPpVP/8KrQ==
-X-Received: by 2002:a17:902:ce91:b0:1e0:b5ee:eee9 with SMTP id f17-20020a170902ce9100b001e0b5eeeee9mr5813496plg.6.1711397523605;
-        Mon, 25 Mar 2024 13:12:03 -0700 (PDT)
-Received: from localhost (dhcp-141-239-158-86.hawaiiantel.net. [141.239.158.86])
-        by smtp.gmail.com with ESMTPSA id o18-20020a170902d4d200b001e0a612ab8asm4889633plg.295.2024.03.25.13.12.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 Mar 2024 13:12:03 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date: Mon, 25 Mar 2024 10:12:01 -1000
-From: Tejun Heo <tj@kernel.org>
-To: Kemeng Shi <shikemeng@huaweicloud.com>
-Cc: peterz@infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] workqueue: remove unnecessary import and function in
- wq_monitor.py
-Message-ID: <ZgHakfp_zqelT28s@slm.duckdns.org>
-References: <20240321150420.37648-1-shikemeng@huaweicloud.com>
+        d=1e100.net; s=20230601; t=1711397526; x=1712002326;
+        h=cc:to:from:subject:message-id:mime-version:in-reply-to:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=T2hv5W0oxITVtYMp7qscmbVqdlTYLfE2MA0LIJYCuQE=;
+        b=j7vqtBs7CQujVLm3T55/YjHRAcPs7WDkG1DY+oZMiA5sKqtPdVjSvdqUOCijDSxoKg
+         C50DgIU+jxHmS3yacxD9u+7k61oJpOnPAYCRgKKCoy4bFP70HV1WkHI6PxEXG7SmuOth
+         qIB/C+4lEaKEhNyz4mkZ+Uklo5Mlwy1JdyFTwCI/D/8FLqHXH8Dks0wXwbTyWPaUzPZo
+         FfU7IyDM6m98QyNlT/X5I2wlV50w1xxLu6x2CZxHyN0eEnpWCC8vCNMMeKAG7MEJHkcE
+         LSLsiD3ekm7sgxJ6JzSNUyoFzRHJlaKB5ly0cIpGYOW5Ugg2mwksbe4iUwUpv5dlLTn/
+         y1FQ==
+X-Forwarded-Encrypted: i=1; AJvYcCX76Ggcq3f3ACy8o3u/1YugAG+JD4olfobtpUpc74mnT5hV28B1S2fET8GzMFi1Rm2zD3E+7NZAeq2H9/2K0CAa5w+kxnB0wRDaC7ke
+X-Gm-Message-State: AOJu0YyL6HpRAS+iwWo12PED10Q+Zc1TuR+RIYDwNGhk0DIJJMZhlKR4
+	uaupP55es4hleKAXs30aKjyYOD38h2VpeEX8lZRPPVcni9V6w3YFEk/h8CnqFZEKemBzSQuI74r
+	FqaTnquy7fEjhLBW9fYwGYQ==
+X-Google-Smtp-Source: AGHT+IFCjgD983eCqYT6Ydi/m/c3Lfnobnc1zjBwoflNgQEaRbyw02u5gMlW85KgYgJ6uWEVFXJUhDbaLvXhfNn8rQ==
+X-Received: from coltonlewis-kvm.c.googlers.com ([fda3:e722:ac3:cc00:2b:ff92:c0a8:14ce])
+ (user=coltonlewis job=sendgmr) by 2002:a05:6638:3724:b0:47c:125e:7f3e with
+ SMTP id k36-20020a056638372400b0047c125e7f3emr304187jav.3.1711397526087; Mon,
+ 25 Mar 2024 13:12:06 -0700 (PDT)
+Date: Mon, 25 Mar 2024 20:12:04 +0000
+In-Reply-To: <Zf2W-8duBlCk5LVm@google.com> (message from Quentin Perret on
+ Fri, 22 Mar 2024 14:34:35 +0000)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240321150420.37648-1-shikemeng@huaweicloud.com>
+Mime-Version: 1.0
+Message-ID: <gsntjzlqax63.fsf@coltonlewis-kvm.c.googlers.com>
+Subject: Re: [PATCH v2] KVM: arm64: Add KVM_CAP to control WFx trapping
+From: Colton Lewis <coltonlewis@google.com>
+To: Quentin Perret <qperret@google.com>
+Cc: kvm@vger.kernel.org, maz@kernel.org, oliver.upton@linux.dev, 
+	james.morse@arm.com, suzuki.poulose@arm.com, yuzenghui@huawei.com, 
+	catalin.marinas@arm.com, will@kernel.org, pbonzini@redhat.com, 
+	mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com, 
+	vincent.guittot@linaro.org, dietmar.eggemann@arm.com, rostedt@goodmis.org, 
+	bsegall@google.com, mgorman@suse.de, bristot@redhat.com, vschneid@redhat.com, 
+	linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
 
-On Thu, Mar 21, 2024 at 11:04:20PM +0800, Kemeng Shi wrote:
-> Remove unnecessary import and function in wq_monitor.py
-> 
-> Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
+Thanks for the feedback.
 
-Applied to wq/for-6.10.
+Quentin Perret <qperret@google.com> writes:
 
-Thanks.
+> On Friday 22 Mar 2024 at 14:24:35 (+0000), Quentin Perret wrote:
+>> On Tuesday 19 Mar 2024 at 16:43:41 (+0000), Colton Lewis wrote:
+>> > Add a KVM_CAP to control WFx (WFI or WFE) trapping based on scheduler
+>> > runqueue depth. This is so they can be passed through if the runqueue
+>> > is shallow or the CPU has support for direct interrupt injection. They
+>> > may be always trapped by setting this value to 0. Technically this
+>> > means traps will be cleared when the runqueue depth is 0, but that
+>> > implies nothing is running anyway so there is no reason to care. The
+>> > default value is 1 to preserve previous behavior before adding this
+>> > option.
 
--- 
-tejun
+>> I recently discovered that this was enabled by default, but it's not
+>> obvious to me everyone will want this enabled, so I'm in favour of
+>> figuring out a way to turn it off (in fact we might want to make this
+>> feature opt in as the status quo used to be to always trap).
+
+Setting the introduced threshold to zero will cause it to trap whenever
+something is running. Is there a problem with doing it that way?
+
+I'd also be interested to get more input before changing the current
+default behavior.
+
+
+>> There are a few potential issues I see with having this enabled:
+
+>>   - a lone vcpu thread on a CPU will completely screw up the host
+>>     scheduler's load tracking metrics if the vCPU actually spends a
+>>     significant amount of time in WFI (the PELT signal will no longer
+>>     be a good proxy for "how much CPU time does this task need");
+
+>>   - the scheduler's decision will impact massively the behaviour of the
+>>     vcpu task itself. Co-scheduling a task with a vcpu task (or not) will
+>>     impact massively the perceived behaviour of the vcpu task in a way
+>>     that is entirely unpredictable to the scheduler;
+
+>>   - while the above problems might be OK for some users, I don't think
+>>     this will always be true, e.g. when running on big.LITTLE systems the
+>>     above sounds nightmare-ish;
+
+>>   - the guest spending long periods of time in WFI prevents the host from
+>>     being able to enter deeper idle states, which will impact power very
+>>     negatively;
+
+>> And probably a whole bunch of other things.
+
+>> > Think about his option as a threshold. The instruction will be trapped
+>> > if the runqueue depth is higher than the threshold.
+
+>> So talking about the exact interface, I'm not sure exposing this to
+>> userspace is really appropriate. The current rq depth is next to
+>> impossible for userspace to control well.
+
+Using runqueue depth is going off of a suggestion from Oliver [1], who I've
+also talked to internally at Google a few times about this.
+
+But hearing your comment makes me lean more towards having some
+enumeration of behaviors like TRAP_ALWAYS, TRAP_NEVER,
+TRAP_IF_MULTIPLE_TASKS.
+
+>> My gut feeling tells me we might want to gate all of this on
+>> PREEMPT_FULL instead, since PREEMPT_FULL is pretty much a way to say
+>> "I'm willing to give up scheduler tracking accuracy to gain throughput
+>> when I've got a task running alone on a CPU". Thoughts?
+
+> And obviously I meant s/PREEMPT_FULL/NOHZ_FULL, but hopefully that was
+> clear :-)
+
+Sounds good to me but I've not touched anything scheduling related before.
+
+[1] https://lore.kernel.org/kvmarm/Zbgx8hZgWCmtzMjH@linux.dev/
 
