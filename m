@@ -1,126 +1,92 @@
-Return-Path: <linux-kernel+bounces-118053-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-118052-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id E8DD588B2FD
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 22:42:09 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7E1AD88B664
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 01:52:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8778E1F65BAE
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 21:42:09 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A52F4B2E41C
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 21:41:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 830916FE27;
-	Mon, 25 Mar 2024 21:41:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5FAC66EB69;
+	Mon, 25 Mar 2024 21:41:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="jYIp0by4"
-Received: from mail-ed1-f50.google.com (mail-ed1-f50.google.com [209.85.208.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=xry111.site header.i=@xry111.site header.b="bhO9fU9G"
+Received: from xry111.site (xry111.site [89.208.246.23])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C6E06F525
-	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 21:41:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 682F633995
+	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 21:41:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=89.208.246.23
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711402909; cv=none; b=FICbrH45W4E+xrOnrhV9V3kcyl4yypOJh/CEqkCHLHsi2Of8jwUOvvd8vBwXK37RGTKjpQmGmPSzCM2EdVtKswIl+3pdSW4xySYiWHQ/MPIaIXJEnSuYvkuoe/GPQTunKKgV8vrPB4AG8GklaAXdHburYnwIp8zyvc9T5ZEzrjA=
+	t=1711402905; cv=none; b=ID9IBaM2LcA7oC/Jw35KsLR1O7Isa21j2e+63SGdQUtx+l2941SG/wz3iWBcxYeS7wa03L+R7PilYoVppBxwQTIWNI8qnIgKuux1vTC+9Jp902h6HhViGnZHYFg5J2/GYiEbHx+j+JGRTvNl/OOgl5wbODLylxOHWhxxtp96JSM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711402909; c=relaxed/simple;
-	bh=hD9XsIBzAV/bPhZwOQmQep3NyRgaTjUJYFuVVNQO7Yw=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=UDiRcJs+nmLRZWK1Phv5YET7ryYgLRFZW4a5nj0iacE4hEUFSiWKXWmNmAQJGrRcvlawVIM+xV8WtUCCXlENUI6GtdF3NmF+D0QDpeBzKnRFJq+dOGGXMw0iJshKWhs8Ifb/9nb0OpXlFYqsnDEns8h8H+Vms4bDW3Jklu1cVbc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=jYIp0by4; arc=none smtp.client-ip=209.85.208.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ed1-f50.google.com with SMTP id 4fb4d7f45d1cf-56c1a50b004so2651a12.0
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 14:41:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1711402906; x=1712007706; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=O/KboFRJyODJZyWJydsADn20bl4YX3uVsNj1S+g1jiA=;
-        b=jYIp0by4RD9yx8iqDLdDhq7bozzs5ImXfzfVIyurahnTYqKNA8NpOkkwK5Ih7jS5WN
-         a/KKp5qwN+tfCs4eWb2XgEQpw3G4zzFwF71mEQS2++87NKl+x709eq3esV1HxbwrzFnG
-         gTWACJXfsjJ27HeH5sfcBbFt9TI37vdZqaP8bo4aIuhINPlCjxNl09va5SprMhvGBf+i
-         +gNbsv8J8p1VTXM4S9yrFjtq+VG4l2jH35/6nmk0MS/KsDdKYqKQV2o3k8tmEs1pl0bw
-         tSG6O/aQ0nzUqXkL6XD0X8O1jLtiJwypqHNfJmo+jC1BSIpCT9eLFVBI/3+YXcqkK/7I
-         9oLg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711402906; x=1712007706;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=O/KboFRJyODJZyWJydsADn20bl4YX3uVsNj1S+g1jiA=;
-        b=DW+4p9R9Irqcy0chiszMjHRnoUw8aO+q7GDKw1A5lY1YpxOq35KVq6mQGngawQZ91T
-         1pdoq8vwTmXematoHyKEmcNzbf5aMKDocrXD2XFjdOU4KGDtZQfhrlkyApHdXRfp9vym
-         BgCW0qJaDFBPu1BAg3Vmj4hoMzKDrt3ZbKgA1D+5ENNwL0wWNjbQr6gc4WAq+wbhIP61
-         ozB6+V59g6MfenDBa2O39+Xbc7Qsa1jcNbFk4UHAoZ3FgQPXeWBI8wgntTISUI/Rq7/n
-         4KTmVV3Bw62KIYQPobc/7wTZYqf750A2jf7yqL4+xJfOkw7CUp5seiQ9gbnVQk0y/nso
-         0JRw==
-X-Forwarded-Encrypted: i=1; AJvYcCUOq3wHFl9AiY/g4/abxUV1/GZgxsBOVQKoqp9FcyNvxvnk4BrS85NNmSF+kb4nZ9FYpNLlXRwElt6WzwZpdBS6CXhPAN0zDGMor/Ps
-X-Gm-Message-State: AOJu0Yy4rApSMzDDsIdkrkvYJMx5GbKFs33bIq+cWjudNQcGmWJmQ5aL
-	QNEyHxCEpHhoQkQjFo36GHgmL1SSmqk1eRJYOhyXflmVPl/4dD177MqvHyflUCI74rYwqgRfmqP
-	tR86nO4iEe3oC47sNj8+V+bu32obXYubak/6y
-X-Google-Smtp-Source: AGHT+IHgkwX8y9U03a0Hq2u9cOn7hIzoMZsLqoGAIZkeovc4m2XkeHedXDRkFuGzeQSfjLbAnvGesQj0WAvl+cOCr+U=
-X-Received: by 2002:aa7:c44d:0:b0:568:7767:14fd with SMTP id
- n13-20020aa7c44d000000b00568776714fdmr27919edr.7.1711402906313; Mon, 25 Mar
- 2024 14:41:46 -0700 (PDT)
+	s=arc-20240116; t=1711402905; c=relaxed/simple;
+	bh=Yukuaoa5zcDGAtUDFuTzHk2qar+UNWcKKdsAlD0PyVU=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=fStDeh77xvo2fn4KeW7NBeAoH0J/hTLAXINijerLxCd9vNM9dfukJ0yk0Me1In1yyAHhbJjzquLfj5GG8ITIUIujG422lAkA7v1HoKNkmQ8UzhtkzBv5VUtzq5d0I9BJEuIdROMqDEDyOnKo4B7iSSULd/QfYaF5bRBh9/9gPbY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=xry111.site; spf=pass smtp.mailfrom=xry111.site; dkim=pass (1024-bit key) header.d=xry111.site header.i=@xry111.site header.b=bhO9fU9G; arc=none smtp.client-ip=89.208.246.23
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=xry111.site
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=xry111.site
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=xry111.site;
+	s=default; t=1711402903;
+	bh=Yukuaoa5zcDGAtUDFuTzHk2qar+UNWcKKdsAlD0PyVU=;
+	h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+	b=bhO9fU9G/zTnI472vhTUUEQT51sHDeCZswpc0aNd9UhkPYV1MZb9yjvQZL6oR7P+P
+	 cnn9xjGAeW+96wBYSlEbW3su9+MqIRqXe9paDECbMd6VWo0QqMuhAzUA0JV/e2j0lj
+	 wDILSimLoDBEQgMr6F7B0GS0pDwg10t+yd7MJeBI=
+Received: from [127.0.0.1] (unknown [IPv6:2001:470:683e::1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature ECDSA (P-384))
+	(Client did not present a certificate)
+	(Authenticated sender: xry111@xry111.site)
+	by xry111.site (Postfix) with ESMTPSA id 9FEB767076;
+	Mon, 25 Mar 2024 17:41:41 -0400 (EDT)
+Message-ID: <177f14cee291788df618a22398fdb027afe0f6c6.camel@xry111.site>
+Subject: Re: [PATCH v2] x86/mm: Don't disable INVLPG if "incomplete Global
+ INVLPG flushes" is fixed by microcode
+From: Xi Ruoyao <xry111@xry111.site>
+To: Michael Kelley <mhklinux@outlook.com>, Dave Hansen
+	 <dave.hansen@linux.intel.com>
+Cc: Andy Lutomirski <luto@kernel.org>, Peter Zijlstra
+ <peterz@infradead.org>,  Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar
+ <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, "H. Peter Anvin"
+ <hpa@zytor.com>, "x86@kernel.org" <x86@kernel.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Dexuan Cui
+ <decui@microsoft.com>
+Date: Tue, 26 Mar 2024 05:41:40 +0800
+In-Reply-To: <SN6PR02MB4157E96FB6980EC52134C830D4362@SN6PR02MB4157.namprd02.prod.outlook.com>
+References: <20240324190503.116160-1-xry111@xry111.site>
+	 <SN6PR02MB41576028614CB7FE9A11EBEBD4362@SN6PR02MB4157.namprd02.prod.outlook.com>
+	 <c8dfca5f964701ce614d364ed7b18fa930aa2f61.camel@xry111.site>
+	 <SN6PR02MB4157E96FB6980EC52134C830D4362@SN6PR02MB4157.namprd02.prod.outlook.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.52.0 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240103031409.2504051-1-dapeng1.mi@linux.intel.com> <20240103031409.2504051-3-dapeng1.mi@linux.intel.com>
-In-Reply-To: <20240103031409.2504051-3-dapeng1.mi@linux.intel.com>
-From: Jim Mattson <jmattson@google.com>
-Date: Mon, 25 Mar 2024 14:41:31 -0700
-Message-ID: <CALMp9eSsF22203ZR6o+qMxySDrPpjVNYe-nBRjf1vSRq9aBLDA@mail.gmail.com>
-Subject: Re: [kvm-unit-tests Patch v3 02/11] x86: pmu: Enlarge cnt[] length to
- 64 in check_counters_many()
-To: Dapeng Mi <dapeng1.mi@linux.intel.com>
-Cc: Sean Christopherson <seanjc@google.com>, Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, Zhenyu Wang <zhenyuw@linux.intel.com>, 
-	Zhang Xiong <xiong.y.zhang@intel.com>, Mingwei Zhang <mizhang@google.com>, 
-	Like Xu <like.xu.linux@gmail.com>, Jinrong Liang <cloudliang@tencent.com>, 
-	Dapeng Mi <dapeng1.mi@intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Tue, Jan 2, 2024 at 7:09=E2=80=AFPM Dapeng Mi <dapeng1.mi@linux.intel.co=
-m> wrote:
->
-> Considering there are already 8 GP counters and 4 fixed counters on
-> latest Intel processors, like Sapphire Rapids. The original cnt[] array
-> length 10 is definitely not enough to cover all supported PMU counters on=
- these
-> new processors even through currently KVM only supports 3 fixed counters
-> at most. This would cause out of bound memory access and may trigger
-> false alarm on PMU counter validation
->
-> It's probably more and more GP and fixed counters are introduced in the
-> future and then directly extends the cnt[] array length to 64 once and
-> for all.
->
-> Signed-off-by: Dapeng Mi <dapeng1.mi@linux.intel.com>
-> ---
->  x86/pmu.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/x86/pmu.c b/x86/pmu.c
-> index 0def28695c70..a13b8a8398c6 100644
-> --- a/x86/pmu.c
-> +++ b/x86/pmu.c
-> @@ -254,7 +254,7 @@ static void check_fixed_counters(void)
->
->  static void check_counters_many(void)
->  {
-> -       pmu_counter_t cnt[10];
-> +       pmu_counter_t cnt[64];
+On Mon, 2024-03-25 at 20:06 +0000, Michael Kelley wrote:
 
-I think 48 should be sufficient, based on the layout of
-IA32_PERF_GLOBAL_CTRL and IA32_PERF_GLOBAL_STATUS.
+/* snip */
 
-In any event, let's bump this up!
+> I haven't done a complete census, but there don't seem to be
+> that many places in x86 code where the microcode version is
+> checked. Several (most?) already have some kind of "out" when
+> running on a hypervisor -- like bad_spectre_microcode(), and
+> apic_validate_deadline_timer().
 
-Reviewed-by: Jim Mattson <jmattson@google.com>
+So I've sent V3 as
+https://lore.kernel.org/all/20240325212818.125053-1-xry111@xry111.site/
+with the check added.
+
+--=20
+Xi Ruoyao <xry111@xry111.site>
+School of Aerospace Science and Technology, Xidian University
 
