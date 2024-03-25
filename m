@@ -1,45 +1,45 @@
-Return-Path: <linux-kernel+bounces-117983-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-117984-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 78BB988B24F
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 22:08:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 853B688B663
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 01:52:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DEB77BA4B5D
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 20:51:11 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id F1C5AB2CCD3
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 20:51:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C3C7371B50;
-	Mon, 25 Mar 2024 20:46:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9CF2A127B5C;
+	Mon, 25 Mar 2024 20:46:46 +0000 (UTC)
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4983C5D731
-	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 20:46:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 46FE86F51D
+	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 20:46:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711399605; cv=none; b=HmUaLUrNM0UCk3nmZgqel/aY1HfkTFwi3PN3bsfZgJTr2mYTkf+p1I/E4z+5XACA53FepFThfjGXIVKJD4PojZQJ4xG6Lhl2f6H5gNVANQotzAB3LWqYW4TehvhXce009nUZEkoadzKWVczSGzFcseN72Ot7arZzDFzHoJkVvY4=
+	t=1711399606; cv=none; b=oJQPiAXPGx7xL6VBfNnkHFTgIxwKWed67Vsofah7M3RFB7gPjXjhXldzI1bEU+vfB6b4z7jx4gTSJma5I681N2jTU0PH47AxQrCDqEAjEsWwZJNJlKA9XKsAnpuxLLVNOqoLNMuwi6GoHl0TQQ5e9G3Q79F/T9iQlxBP7qwZfUw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711399605; c=relaxed/simple;
-	bh=E9VR4uFNct4R0/K6vDVJzOhucLGN0R2nVU29cih1sI4=;
+	s=arc-20240116; t=1711399606; c=relaxed/simple;
+	bh=8T5ZwzHm+pUzIreu235bdRVnTkVVGfB0nyqODE4kLr0=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=quy0xzWJOAB/C/+m9gVIwLznmilPiyqzxCC+Ay+K2maZtc2lTWDtjxFJ40gmHSsTwcu9HZDVk3sRqKzRKnHIz05ppEkAGyiI5lbTXSKT6aOHjYHH4J6cMJmIl4uewoyL07vUDLeJBF6g54Bc6X2YhPDORO1K4BwFEHPgTbc6Kso=
+	 MIME-Version; b=WK+U6oqqNBVrP7rOyFPpjmcDQ00OjQmRNF2uD/Ci9WDp7PkKIuQ2do7Kwp1mUWJFHGLfbajMi5J4JTVB9zbGGR/3wRvc9JkJDK9mTnjXTlEHdHcGu8tdoPpzcL/9ieL/YpyyktZoEiiBTvmUX2ljKfVEfsqngLjF7w8hWAOmDpQ=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 4B81B13D5;
-	Mon, 25 Mar 2024 13:47:16 -0700 (PDT)
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 45808153B;
+	Mon, 25 Mar 2024 13:47:17 -0700 (PDT)
 Received: from pluto.fritz.box (unknown [172.31.20.19])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id EE0A83F64C;
-	Mon, 25 Mar 2024 13:46:41 -0700 (PDT)
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id EC2293F64C;
+	Mon, 25 Mar 2024 13:46:42 -0700 (PDT)
 From: Cristian Marussi <cristian.marussi@arm.com>
 To: linux-kernel@vger.kernel.org,
 	linux-arm-kernel@lists.infradead.org
 Cc: sudeep.holla@arm.com,
 	Cristian Marussi <cristian.marussi@arm.com>
-Subject: [PATCH v2 2/5] firmware: arm_scmi: Add helper to trace bad messages
-Date: Mon, 25 Mar 2024 20:46:17 +0000
-Message-ID: <20240325204620.1437237-3-cristian.marussi@arm.com>
+Subject: [PATCH v2 3/5] firmware: arm_scmi: Add message dump traces for bad and unexpected replies
+Date: Mon, 25 Mar 2024 20:46:18 +0000
+Message-ID: <20240325204620.1437237-4-cristian.marussi@arm.com>
 X-Mailer: git-send-email 2.44.0
 In-Reply-To: <20240325204620.1437237-1-cristian.marussi@arm.com>
 References: <20240325204620.1437237-1-cristian.marussi@arm.com>
@@ -51,91 +51,71 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Upon reception of malformed and unexpected timed-out SCMI messages, it is
-not possible to trace those bad messages in their entirety, because usually
-we cannot even retrieve the payload, or it is just not reliable.
-
-Add a helper to trace at least the content of the header of the received
-message while associating a meaningful tag and error code.
+Trace also late-timed-out, out-of-order and unexpected/spurious messages.
 
 Signed-off-by: Cristian Marussi <cristian.marussi@arm.com>
 ---
- drivers/firmware/arm_scmi/common.h | 11 +++++++++
- drivers/firmware/arm_scmi/driver.c | 39 ++++++++++++++++++++++++++++++
- 2 files changed, 50 insertions(+)
+ drivers/firmware/arm_scmi/driver.c  | 10 ++++++++++
+ drivers/firmware/arm_scmi/mailbox.c |  4 +++-
+ 2 files changed, 13 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/firmware/arm_scmi/common.h b/drivers/firmware/arm_scmi/common.h
-index 6affbfdd1dec..b5ac25dbc1ca 100644
---- a/drivers/firmware/arm_scmi/common.h
-+++ b/drivers/firmware/arm_scmi/common.h
-@@ -301,6 +301,17 @@ extern const struct scmi_desc scmi_optee_desc;
- 
- void scmi_rx_callback(struct scmi_chan_info *cinfo, u32 msg_hdr, void *priv);
- 
-+enum scmi_bad_msg {
-+	MSG_UNEXPECTED = -1,
-+	MSG_INVALID = -2,
-+	MSG_UNKNOWN = -3,
-+	MSG_NOMEM = -4,
-+	MSG_MBOX_SPURIOUS = -5,
-+};
-+
-+void scmi_bad_message_trace(struct scmi_chan_info *cinfo, u32 msg_hdr,
-+			    enum scmi_bad_msg err);
-+
- /* shmem related declarations */
- struct scmi_shared_mem;
- 
 diff --git a/drivers/firmware/arm_scmi/driver.c b/drivers/firmware/arm_scmi/driver.c
-index 2709598f3008..7fc1c5b1a2a4 100644
+index 7fc1c5b1a2a4..207ed1a52d69 100644
 --- a/drivers/firmware/arm_scmi/driver.c
 +++ b/drivers/firmware/arm_scmi/driver.c
-@@ -696,6 +696,45 @@ scmi_xfer_lookup_unlocked(struct scmi_xfers_info *minfo, u16 xfer_id)
- 	return xfer ?: ERR_PTR(-EINVAL);
+@@ -861,6 +861,9 @@ scmi_xfer_command_acquire(struct scmi_chan_info *cinfo, u32 msg_hdr)
+ 			"Message for %d type %d is not expected!\n",
+ 			xfer_id, msg_type);
+ 		spin_unlock_irqrestore(&minfo->xfer_lock, flags);
++
++		scmi_bad_message_trace(cinfo, msg_hdr, MSG_UNEXPECTED);
++
+ 		return xfer;
+ 	}
+ 	refcount_inc(&xfer->users);
+@@ -885,6 +888,9 @@ scmi_xfer_command_acquire(struct scmi_chan_info *cinfo, u32 msg_hdr)
+ 		dev_err(cinfo->dev,
+ 			"Invalid message type:%d for %d - HDR:0x%X  state:%d\n",
+ 			msg_type, xfer_id, msg_hdr, xfer->state);
++
++		scmi_bad_message_trace(cinfo, msg_hdr, MSG_INVALID);
++
+ 		/* On error the refcount incremented above has to be dropped */
+ 		__scmi_xfer_put(minfo, xfer);
+ 		xfer = ERR_PTR(-EINVAL);
+@@ -921,6 +927,9 @@ static void scmi_handle_notification(struct scmi_chan_info *cinfo,
+ 	if (IS_ERR(xfer)) {
+ 		dev_err(dev, "failed to get free message slot (%ld)\n",
+ 			PTR_ERR(xfer));
++
++		scmi_bad_message_trace(cinfo, msg_hdr, MSG_NOMEM);
++
+ 		scmi_clear_channel(info, cinfo);
+ 		return;
+ 	}
+@@ -1040,6 +1049,7 @@ void scmi_rx_callback(struct scmi_chan_info *cinfo, u32 msg_hdr, void *priv)
+ 		break;
+ 	default:
+ 		WARN_ONCE(1, "received unknown msg_type:%d\n", msg_type);
++		scmi_bad_message_trace(cinfo, msg_hdr, MSG_UNKNOWN);
+ 		break;
+ 	}
  }
+diff --git a/drivers/firmware/arm_scmi/mailbox.c b/drivers/firmware/arm_scmi/mailbox.c
+index b8d470417e8f..fb0824af7180 100644
+--- a/drivers/firmware/arm_scmi/mailbox.c
++++ b/drivers/firmware/arm_scmi/mailbox.c
+@@ -56,7 +56,9 @@ static void rx_callback(struct mbox_client *cl, void *m)
+ 	 */
+ 	if (cl->knows_txdone && !shmem_channel_free(smbox->shmem)) {
+ 		dev_warn(smbox->cinfo->dev, "Ignoring spurious A2P IRQ !\n");
+-		return;
++		return scmi_bad_message_trace(smbox->cinfo,
++				     shmem_read_header(smbox->shmem),
++				     MSG_MBOX_SPURIOUS);
+ 	}
  
-+/**
-+ * scmi_bad_message_trace  - A helper to trace weird messages
-+ *
-+ * @cinfo: A reference to the channel descriptor on which the message was
-+ *	   received
-+ * @msg_hdr: Message header to track
-+ * @err: A specific error code used as a status value in traces.
-+ *
-+ * This helper can be used to trace any kind of weird, incomplete, unexpected,
-+ * timed-out message that arrives and as such, can be traced only referring to
-+ * the header content, since the payload is missing/unreliable.
-+ */
-+void scmi_bad_message_trace(struct scmi_chan_info *cinfo, u32 msg_hdr,
-+			    enum scmi_bad_msg err)
-+{
-+	char *tag;
-+	struct scmi_info *info = handle_to_scmi_info(cinfo->handle);
-+
-+	switch (MSG_XTRACT_TYPE(msg_hdr)) {
-+	case MSG_TYPE_COMMAND:
-+		tag = "!RESP";
-+		break;
-+	case MSG_TYPE_DELAYED_RESP:
-+		tag = "!DLYD";
-+		break;
-+	case MSG_TYPE_NOTIFICATION:
-+		tag = "!NOTI";
-+		break;
-+	default:
-+		tag = "!UNKN";
-+		break;
-+	}
-+
-+	trace_scmi_msg_dump(info->id, cinfo->id,
-+			    MSG_XTRACT_PROT_ID(msg_hdr),
-+			    MSG_XTRACT_ID(msg_hdr), tag,
-+			    MSG_XTRACT_TOKEN(msg_hdr), err, NULL, 0);
-+}
-+
- /**
-  * scmi_msg_response_validate  - Validate message type against state of related
-  * xfer
+ 	scmi_rx_callback(smbox->cinfo, shmem_read_header(smbox->shmem), NULL);
 -- 
 2.44.0
 
