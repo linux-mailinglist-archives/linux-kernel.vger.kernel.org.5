@@ -1,154 +1,156 @@
-Return-Path: <linux-kernel+bounces-117420-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-117421-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id A1DE388AB2C
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 18:16:31 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id C2B4888AB33
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 18:17:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 187B01FA1567
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 17:16:31 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4D6611F3EA67
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 17:17:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 03256145FE0;
-	Mon, 25 Mar 2024 15:56:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DC960153509;
+	Mon, 25 Mar 2024 15:57:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qcMSEvh6"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="Ta4Jy1+l";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="u3yXqXNA";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="Ta4Jy1+l";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="u3yXqXNA"
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 350F410A39;
-	Mon, 25 Mar 2024 15:56:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6479D15250B
+	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 15:57:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711382215; cv=none; b=GEkFybPFAN7z8NzgKwc0TjknBtg1/S46b384KysaXyxgCgU7IM2TESLNFCTakrFvZYvpk0nsZt03tPoCcTHy07V3i6eBQo3w/dgrEpus0JFHPAV03paOtcwO3a1yoK1hMqDopH2dQE7pgcLqmnZMuv4yDwmGmokFd+5pWyg9dCE=
+	t=1711382222; cv=none; b=AJD3kiMAOB34KA1rl8Xf9BMt/S35X1Vq3gMQUuHWGehCUD//8GjhAEK2/rYPqTHnXnNCsiXfHi3qJYqD8pQMsbFplO9fjFcHpOy3u8jcOMQxVhoQW5+c2aAP0DIkHuoH3wpgEB4sh+87CYSBYXp42d+zbUuxborEXJ+PzTqeXg4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711382215; c=relaxed/simple;
-	bh=ENDQ/e0q9PX0Cu5M/o6hx0CVqmsSUPAKQYjWkmXdgyw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Xtgxd6rn0QqJJ1PeEZUGHhmqZhpeLJ4BFmQ/CcXdegMYu+RLKawrC/EBdl6SdEvH9+QwkZb4Os63rp9LeOcAoG+zac8gxHAY7gYYXpwaq2ZK8wyB6VugkLbqrOM/VcGbfM74lE6C0hv7ewBdbNNqEXiMKNaAwEvY5J5lsdXvLXU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qcMSEvh6; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EA093C433F1;
-	Mon, 25 Mar 2024 15:56:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711382214;
-	bh=ENDQ/e0q9PX0Cu5M/o6hx0CVqmsSUPAKQYjWkmXdgyw=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=qcMSEvh6wLv5drqay/oxDcZ+vzz+1GCw0Q3n4gWaHMwTKnsG0cUZ7/bI90q2vE/av
-	 p6cyw0zqXIV8fzMYtCHudpFRcopl/3WeDp8449JCw0LyP4DDpUy+/6dKmmzjI5e5jU
-	 Rdb3Wfo4NUf2VlmA9ciXYrRiHD+XlGaO9gLIpmV1FHo1gjva2Mz9fgF9KlyJZldN2f
-	 bSeq6FJVHYQKzuzDjpdtwb5qpAz+3zk/FhfnE3aZfGtXEhXA6IhBs0mZeaReyf9tHN
-	 6Ah7u0ksUVa+bzjSh5W6J3JO+LgU5innpV3/nBvqhIleCJjNxWroSNsMZISKuD8g//
-	 aFDT4lVjwF9BQ==
-Date: Mon, 25 Mar 2024 16:56:49 +0100
-From: Benjamin Tissoires <bentiss@kernel.org>
-To: Hans de Goede <hdegoede@redhat.com>
-Cc: Werner Sembach <wse@tuxedocomputers.com>, Lee Jones <lee@kernel.org>, 
-	jikos@kernel.org, linux-kernel@vger.kernel.org, Jelle van der Waa <jelle@vdwaa.nl>, 
-	Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>, 
-	"dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>, linux-input@vger.kernel.org, ojeda@kernel.org, 
-	linux-leds@vger.kernel.org, Pavel Machek <pavel@ucw.cz>, Gregor Riepl <onitake@gmail.com>
-Subject: Re: In kernel virtual HID devices (was Future handling of complex
- RGB devices on Linux v3)
-Message-ID: <siebkhaauocqkuox73q2e5p2mbsyc7j4gvpzfvt4c3gvncdpap@oxh5pp4gxpuo>
-References: <477d30ee-247e-47e6-bc74-515fd87fdc13@redhat.com>
- <e21a7d87-3059-4a51-af04-1062dac977d2@tuxedocomputers.com>
- <247b5dcd-fda8-45a7-9896-eabc46568281@tuxedocomputers.com>
- <ZdZ2kMASawJ9wdZj@duo.ucw.cz>
- <b6d79727-ae94-44b1-aa88-069416435c14@redhat.com>
- <a21f6c49-2c05-4496-965c-a7524ed38634@gmail.com>
- <825129ea-d389-4c6c-8a23-39f05572e4b4@redhat.com>
- <adbfdf6c-fb59-4fae-a472-17b04dd8a3f6@tuxedocomputers.com>
- <1fb08a74-62c7-4d0c-ba5d-648e23082dcb@tuxedocomputers.com>
- <aec1d22d-9e59-4dfc-b108-5ba339b0e76a@redhat.com>
+	s=arc-20240116; t=1711382222; c=relaxed/simple;
+	bh=ljfdK/CVngTKqGJljr/DtWtTghZNbfd10iwQCKtdKFY=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=llcDgkrJVq8Ldn7Nlm0hWE7G0rssONRcdef237B2PHuJl+GWGn+wpehHJNJaYwjO8pO61ReYdiIdXJOjOAICSvO7BA29qLxivq1rjth2DEGW3ZKxPVLESO+H2wGhUR4fDI9KdhkZcH8gvszmA8Ja1DhGHDDEdqJwUDX+LupyonM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=Ta4Jy1+l; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=u3yXqXNA; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=Ta4Jy1+l; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=u3yXqXNA; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 73D6F5BE09;
+	Mon, 25 Mar 2024 15:56:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1711382218; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=c6UdZw/G7kV8+imSHh6TIPRYUBq5OCd52fb0mHOJXzQ=;
+	b=Ta4Jy1+lCvNxvUYujjOdB+EaSHXgKQgKBYDBU6/ZEN0kTO5/0LhkNqixgGtIlb8biZI3mY
+	p7j3MHptwOWCLFeq8u8wplvdnzUZ8pg6JK+c14UAT3FwFjXznxOdtkjdgbHK6c4Z2c4sXr
+	G4g0X3YcrsRxeqIOc78lwTE1eZ5yNW8=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1711382218;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=c6UdZw/G7kV8+imSHh6TIPRYUBq5OCd52fb0mHOJXzQ=;
+	b=u3yXqXNAFcefQn/9NMdIUdLKLQFz+Ekx9P7zjmKRn1nl1lB3ksuVKP8O+nonl1Q8gECxHo
+	vbto++V/zu75NGAA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1711382218; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=c6UdZw/G7kV8+imSHh6TIPRYUBq5OCd52fb0mHOJXzQ=;
+	b=Ta4Jy1+lCvNxvUYujjOdB+EaSHXgKQgKBYDBU6/ZEN0kTO5/0LhkNqixgGtIlb8biZI3mY
+	p7j3MHptwOWCLFeq8u8wplvdnzUZ8pg6JK+c14UAT3FwFjXznxOdtkjdgbHK6c4Z2c4sXr
+	G4g0X3YcrsRxeqIOc78lwTE1eZ5yNW8=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1711382218;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=c6UdZw/G7kV8+imSHh6TIPRYUBq5OCd52fb0mHOJXzQ=;
+	b=u3yXqXNAFcefQn/9NMdIUdLKLQFz+Ekx9P7zjmKRn1nl1lB3ksuVKP8O+nonl1Q8gECxHo
+	vbto++V/zu75NGAA==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 61812137C4;
+	Mon, 25 Mar 2024 15:56:58 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id xhBKF8qeAWbjDwAAD6G6ig
+	(envelope-from <vbabka@suse.cz>); Mon, 25 Mar 2024 15:56:58 +0000
+Message-ID: <1ad38cac-e90d-4d9a-bf5e-afbcf6ca5bc5@suse.cz>
+Date: Mon, 25 Mar 2024 16:56:58 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <aec1d22d-9e59-4dfc-b108-5ba339b0e76a@redhat.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 02/10] mm: page_alloc: optimize free_unref_folios()
+Content-Language: en-US
+To: Johannes Weiner <hannes@cmpxchg.org>,
+ Andrew Morton <akpm@linux-foundation.org>
+Cc: Mel Gorman <mgorman@techsingularity.net>, Zi Yan <ziy@nvidia.com>,
+ "Huang, Ying" <ying.huang@intel.com>, David Hildenbrand <david@redhat.com>,
+ linux-mm@kvack.org, linux-kernel@vger.kernel.org
+References: <20240320180429.678181-1-hannes@cmpxchg.org>
+ <20240320180429.678181-3-hannes@cmpxchg.org>
+From: Vlastimil Babka <vbabka@suse.cz>
+In-Reply-To: <20240320180429.678181-3-hannes@cmpxchg.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Level: 
+Authentication-Results: smtp-out2.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=Ta4Jy1+l;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=u3yXqXNA
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Spamd-Result: default: False [-2.31 / 50.00];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 XM_UA_NO_VERSION(0.01)[];
+	 RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+	 TO_DN_SOME(0.00)[];
+	 DWL_DNSWL_BLOCKED(0.00)[suse.cz:dkim];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_TRACE(0.00)[suse.cz:+];
+	 MX_GOOD(-0.01)[];
+	 RCPT_COUNT_SEVEN(0.00)[8];
+	 NEURAL_HAM_SHORT(-0.20)[-1.000];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 MID_RHS_MATCH_FROM(0.00)[];
+	 BAYES_HAM(-0.81)[84.89%];
+	 ARC_NA(0.00)[];
+	 R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 FROM_HAS_DN(0.00)[];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 MIME_GOOD(-0.10)[text/plain];
+	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:dkim,suse.cz:email];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 RCVD_TLS_ALL(0.00)[]
+X-Spam-Score: -2.31
+X-Rspamd-Queue-Id: 73D6F5BE09
+X-Spam-Flag: NO
 
-On Mar 25 2024, Hans de Goede wrote:
-> +Cc: Bentiss, Jiri
+On 3/20/24 7:02 PM, Johannes Weiner wrote:
+> Move direct freeing of isolated pages to the lock-breaking block in
+> the second loop. This saves an unnecessary migratetype reassessment.
 > 
-> Hi Werner,
+> Minor comment and local variable scoping cleanups.
 > 
-> On 3/20/24 12:16 PM, Werner Sembach wrote:
-> > Hi Hans and the others,
-> > 
-> > Am 22.02.24 um 14:14 schrieb Werner Sembach:
-> >> Hi,
-> >>
-> >> Thanks everyone for the exhaustive feedback. And at least this thread is a good comprehesive reference for the future ^^.
-> >>
-> >> To recap the hopefully final UAPI for complex RGB lighting devices:
-> >>
-> >> - By default there is a singular /sys/class/leds/* entry that treats the device as if it was a single zone RGB keyboard backlight with no special effects.
-> >>
-> >> - There is an accompanying misc device with the sysfs attributes "name", "device_type",  "firmware_version_string", "serial_number" for device identification and "use_leds_uapi" that defaults to 1.
-> >>
-> >>     - If set to 0 the /sys/class/leds/* entry disappears. The driver should keep the last state the backlight was in active if possible.
-> >>
-> >>     - If set 1 it appears again. The driver should bring it back to a static 1 zone setting while avoiding flicker if possible.
-> >>
-> >> - If the device is not controllable by for example hidraw, the misc device might also implement additional ioctls or sysfs attributes to allow a more complex low level control for the keyboard backlight. This is will be a highly vendor specific UAPI.
-> > So in the OpenRGB issue thread https://learn.microsoft.com/en-us/windows-hardware/design/component-guidelines/dynamic-lighting-devices aka HID LampArray was mentioned. I did dismiss it because I thought that is only relevant for firmware, but I now stumbled upon the Virtual HID Framework (VHF) https://learn.microsoft.com/en-us/windows-hardware/drivers/hid/virtual-hid-framework--vhf- and now I wonder if an equivalent exists for Linux? A quick search did not yield any results for me.
-> 
-> Oh, interesting. I did not know about the HID LampArray API.
-> 
-> About your question about virtual HID devices, there is uHID,
-> but as the name suggests this allows userspace to emulate a HID
-> device.
-> 
-> In your case you want to do the emulation in kernel so that you
-> can translate the proprietary WMI calls to something HID LampArray
-> compatible.
-> 
-> I guess you could do this by defining your own HID transport driver,
-> like how e.g. the i2c-hid code defines 1 i2c-hid parent + 1 HID
-> "client" for each device which talks HID over i2c in the machine.
-> 
-> Bentiss, Jiri, do you have any input on this. Would something like
-> that be acceptable to you (just based on the concept at least) ?
+> Suggested-by: Vlastimil Babka <vbabka@suse.cz>
+> Tested-by: "Huang, Ying" <ying.huang@intel.com>
+> Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
 
-I just read the thread, and I think I now understand a little bit what
-this request is :)
+Reviewed-by: Vlastimil Babka <vbabka@suse.cz>
 
-IMO working with the HID LampArray is the way forward. So I would
-suggest to convert any non-HID RGB "LED display" that we are talking
-about as a HID LampArray device through `hid_allocate_device()` in the
-kernel. Basically what you are suggesting Hans. It's just that you don't
-need a formal transport layer, just a child device that happens to be
-HID.
-
-The next question IMO is: do we want the kernel to handle such
-machinery? Wouldn't it be simpler to just export the HID device and let
-userspace talk to it through hidraw, like what OpenRGB does?
-
-If the kernel already handles the custom protocol into generic HID, the
-work for userspace is not too hard because they can deal with a known
-protocol and can be cross-platform in their implementation.
-
-I'm mentioning that cross-platform because SDL used to rely on the
-input, LEDs, and other Linux peculiarities and eventually fell back on
-using hidraw only because it's way more easier that way.
-
-The other advantage of LampArray is that according to Microsoft's
-document, new devices are going to support it out of the box, so they'll
-be supported out of the box directly.
-
-Most of the time my stance is "do not add new kernel API, you'll regret
-it later". So in that case, given that we have a formally approved
-standard, I would suggest to use it, and consider it your API.
-
-Side note to self: I really need to resurrect the hidraw revoke series
-so we could export those hidraw node to userspace with uaccess through
-logind...
-
-Cheers,
-Benjamin
 
