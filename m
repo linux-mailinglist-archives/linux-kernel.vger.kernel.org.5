@@ -1,121 +1,86 @@
-Return-Path: <linux-kernel+bounces-116468-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-116467-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 41EAF88A202
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 14:32:23 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 72E35889F39
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 13:28:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9F5A6BA5347
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 12:28:09 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A2DCC1C36284
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 12:28:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 99A6C2F2D;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A2038F48;
 	Mon, 25 Mar 2024 07:31:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="WPOMWbjP"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.12])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-io1-f71.google.com (mail-io1-f71.google.com [209.85.166.71])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2EA06EC7
-	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 03:52:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.12
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 645B7525E
+	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 03:54:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.71
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711338781; cv=none; b=h9pi9jrYl8pvmxZXoFSCTiawl6EVl70RnR03wpp4lXc9owICvK4VJXNSMsTuDSwpODYygs05hV56WcRgA/iGT6XWJp/FjTFaXLEhiYlKAh3afvawO+5WLHiJUfDEs/IJMyrmQIKsja9nxHAnoUR5SPdOBLDDVkWqVPGME/INveY=
+	t=1711338844; cv=none; b=txeYLGEX+og5A6V7YPRxtgF5ktYXkAXcB9UMglnQMejaGzIWLu9H8OyoJ8m8uFUuuSJg7p+Z0/iiWQ+8aZe7kNGynEuXRvUDdO51j4oofYHIiGXnDRrIByz6U2Vq2ccr6Aqf/dbhnX1+Tub31ooIpluJwb00uEznJH3V5cFn9wI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711338781; c=relaxed/simple;
-	bh=fm/ErcL7W49rS5AmQMWHiVhN2nRexSlcv3UfZogZWnk=;
-	h=Message-ID:Date:MIME-Version:Cc:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=VChrBmoEAdSHTcvLy1DL8inKJwLsokyGe1R9VbGLOIrO9YQeHJrRzZPd+1D6XZrRyYBnjYiM9POC1P4x7yOumCg/egYgVAijRHxm+2yXQY6GCn+7N/0qsLZvBpm8Q0SCWBZCPUptJpvILypb4q6DQA0s5NH0ObRJhW6DLj0lAdY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=WPOMWbjP; arc=none smtp.client-ip=192.198.163.12
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1711338780; x=1742874780;
-  h=message-id:date:mime-version:cc:subject:to:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=fm/ErcL7W49rS5AmQMWHiVhN2nRexSlcv3UfZogZWnk=;
-  b=WPOMWbjPRmN/eLqR6OU8Ksj08ghAzXII61kN4QRPiNscP5IexGgAwUpv
-   1qjKZCbIlc6tuginF08hhL8VKcJZRPN9x0MuvzS7WeLQYo6nKO0Y9Nco5
-   LW9/ugcg/kwoy7WKzIz5VxVwB8qAsdOaZpuCTT8TIgnuSXtwEokFvMwB5
-   dOS5rMMPw/HY7FQHaIYm8Dyp1u/yqGYhSyTJBTroiPgOGqxVqwYh/OpXZ
-   k5gnxJmcY8/nznNWLmvHZgt6xX2n36l+lFIRrPWZZ4U2fFkDT9bQBtXVO
-   yovy7hbk3cDWMMNt4G/UbRQb3dQqUdGBtUul6MgNvGZV4yqWiBEOoICWn
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11023"; a="10093989"
-X-IronPort-AV: E=Sophos;i="6.07,152,1708416000"; 
-   d="scan'208";a="10093989"
-Received: from fmviesa003.fm.intel.com ([10.60.135.143])
-  by fmvoesa106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Mar 2024 20:52:59 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,152,1708416000"; 
-   d="scan'208";a="20033103"
-Received: from allen-box.sh.intel.com (HELO [10.239.159.127]) ([10.239.159.127])
-  by fmviesa003.fm.intel.com with ESMTP; 24 Mar 2024 20:52:55 -0700
-Message-ID: <0d12a5f4-0380-4e00-8c23-b4f63e3b93e7@linux.intel.com>
-Date: Mon, 25 Mar 2024 11:52:05 +0800
+	s=arc-20240116; t=1711338844; c=relaxed/simple;
+	bh=RAulFATBP8ENmBB14b4I535VVswM9Co/gYI+KGYvuSs=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
+	 Content-Type; b=epDHnewWHIsfZqmf9dhb58qVbW82nCD2VUfXrhz1MG1S0h/ry32uosYJzGhndzrmGbfhMbF/vshoA3wqZAnqAv8qOoZ7bxhy/n9W1GyWPSQSlfb7RfpURy6Xbq1P0/MqjGOLlGVSnZ8lyMKDrlj8KkVl2qjEOq4SKWudqpB67tU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.71
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f71.google.com with SMTP id ca18e2360f4ac-7d0330ce3d4so249482739f.1
+        for <linux-kernel@vger.kernel.org>; Sun, 24 Mar 2024 20:54:03 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711338842; x=1711943642;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=rfMJa00nqm4ZuvIYdwpoNEppIoTF/0uunyYBH1QfJQI=;
+        b=oOy7ZEo2WI+i8x/WHlYnGWPH26sstYdzp0+y6/VVl93qdLQcSeaplCDptuCPaO64Mk
+         JkFwoJ5R20OGJYzubYmBfHX5B8iXzgiWQBO8dJkE06J9DYOT4n733Sovp5rQOvBOqJWm
+         uZu1fmZ4jt4r765gsi/gH4NY1za/eOM59fSqC2765+RwACW0zfVmNSUXJUs1N7O8i1XB
+         8n+iO89wQ8AYzU7G4Pb6K+7vzSYJlA2lcrewd7mJEDFXGcQ6wQ4mOKKvR3G2YP8s1llw
+         gybqc8K3mj8c79cCCgwRLlcjePqTIvmq1tPChu9T1c82aZ+VWS7PPBkej+59naUoZAz4
+         s6nw==
+X-Forwarded-Encrypted: i=1; AJvYcCWDq4ykrcU0tyQv+/jkG56f+hSB2qhj8lmlQMWLzLbjwg5RM58/DS0M9L1Ozk/OE70gNDskwTeen2u2sIaVoeQHm3nrX/x/KVqLU4MO
+X-Gm-Message-State: AOJu0YztkhdColTYJypZD0IYPkGVdybIQUJBdB8K1p65Kja97M+DE+jY
+	FnuwPl9N/M3Xj+Kh3mHxL89JhNusP1lGrCSiHLoqQHjrwLFI0UQU4dFNyoBUVRaDtD3Iv4ntoiW
+	XsgNegZ5kW03hpsa99ilgrxCBeTUswwm53zyIJHNh6fseksU25gEYEts=
+X-Google-Smtp-Source: AGHT+IFStHcjNvvk5QRAicHW8LmXuPZ43kh9a6cZmOI7rN49wVzpRDVi15yRQFUVUg8qJukFFgCjCjf3i7XKVyK3Ny2z4FO5Wl8v
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Cc: baolu.lu@linux.intel.com, Kevin Tian <kevin.tian@intel.com>,
- Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
- Robin Murphy <robin.murphy@arm.com>,
- Jean-Philippe Brucker <jean-philippe@linaro.org>,
- Nicolin Chen <nicolinc@nvidia.com>, Yi Liu <yi.l.liu@intel.com>,
- Jacob Pan <jacob.jun.pan@linux.intel.com>,
- Joel Granados <j.granados@samsung.com>, iommu@lists.linux.dev,
- virtualization@lists.linux-foundation.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 2/8] iommu/sva: Use iopf domain attach/detach interface
-Content-Language: en-US
-To: Jason Gunthorpe <jgg@ziepe.ca>
-References: <20240122073903.24406-1-baolu.lu@linux.intel.com>
- <20240122073903.24406-3-baolu.lu@linux.intel.com>
- <20240308174605.GV9225@ziepe.ca>
- <b33bf29b-2fe5-4a2a-a2ce-9fd8d67c5f6f@linux.intel.com>
- <20240322165927.GG66976@ziepe.ca>
-From: Baolu Lu <baolu.lu@linux.intel.com>
-In-Reply-To: <20240322165927.GG66976@ziepe.ca>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+X-Received: by 2002:a05:6638:150a:b0:47c:1bac:c727 with SMTP id
+ b10-20020a056638150a00b0047c1bacc727mr128126jat.4.1711338842430; Sun, 24 Mar
+ 2024 20:54:02 -0700 (PDT)
+Date: Sun, 24 Mar 2024 20:54:02 -0700
+In-Reply-To: <20240324231006.79378-1-cam.alvarez.i@gmail.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000cb31ce0614741f84@google.com>
+Subject: Re: [syzbot] [bpf?] UBSAN: array-index-out-of-bounds in bpf_prog_select_runtime
+From: syzbot <syzbot+d2a2c639d03ac200a4f1@syzkaller.appspotmail.com>
+To: cam.alvarez.i@gmail.com, linux-kernel@vger.kernel.org, 
+	syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
+Hello,
 
+syzbot has tested the proposed patch and the reproducer did not trigger any issue:
 
-On 3/23/24 12:59 AM, Jason Gunthorpe wrote:
-> On Thu, Mar 14, 2024 at 03:41:23PM +0800, Baolu Lu wrote:
-> 
->> The whole cookie mechanism aims to address two things:
->>
->> - Extend the domain lifetime until all pending page faults are
->> resolved.
-> Like you answered, I think the flush is a simpler scheme..
+Reported-and-tested-by: syzbot+d2a2c639d03ac200a4f1@syzkaller.appspotmail.com
 
-Yeah! Let me head this direction.
+Tested on:
 
-> 
->> - Associate information about the iommu device with each attachment of
->>    the domain so that the iommufd device object ID could be quickly
->>    retrieved in the fault delivering path.
->   
->>> I see we also need to stick a pointer in the domain for iommufd to get
->>> back to the hwpt, but that doesn't seem to need such a big system to
->>> accomplish - just add a void *. It would make sense for the domain to
->>> have some optional pointer to a struct for all the fault related data
->>> that becomes allocated when a PRI domain is created..
->> It's not getting back hwpt from domain, just getting the iommufd_device
->> in the fault delivering path. The iommufd_device is not per-domain, but
->> per-domain-attachment.
-> It does make sense you'd need that, but I think something like this is
-> a more direct way to get it. Caller allocates the handle struct. The
-> iopf will provide the handle from the XA to the
-> callback. container_of() not void * is used to in the caller's API.
+commit:         9187210e Merge tag 'net-next-6.9' of git://git.kernel...
+git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+console output: https://syzkaller.appspot.com/x/log.txt?x=16a2a7b6180000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=222448ff79dba2ea
+dashboard link: https://syzkaller.appspot.com/bug?extid=d2a2c639d03ac200a4f1
+compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+patch:          https://syzkaller.appspot.com/x/patch.diff?x=1557a979180000
 
-Your code looks attractive to me. It's much simpler. Thank you!
-
-Best regards,
-baolu
+Note: testing is done by a robot and is best-effort only.
 
