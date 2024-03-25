@@ -1,79 +1,80 @@
-Return-Path: <linux-kernel+bounces-116723-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-116722-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 810B688A2DD
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 14:48:18 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id BAD1588A543
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 15:51:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0868F2E0B8E
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 13:48:17 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0B47DB22A0A
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 13:48:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DC7C26CDCB;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1B8A7144D0D;
 	Mon, 25 Mar 2024 10:31:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Pp0Lgzsr"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="WOMb5zz+"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 00128161308
-	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 08:56:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1DEF2153587
+	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 08:57:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711356996; cv=none; b=jgclOpzVGpAyCgZ9YtTRZGKcWqsmLU7ev7zd95CsDtxfwXxy93BjjHPefQ3JioHTbHiRl2Q6UOhy+OJSKUkZVJ33g/x/sKrGFQh0GJGHzhkKPro6QJ5qLhBBYSA+8AAJJUBJj3UMXmbuBSdzYDU2JH+KgpVS8mc2zSZikWZUcWU=
+	t=1711357075; cv=none; b=fZoqP7k0salBkJXpOZv44CeWc6FnC6ZJi5ba3N0RmSXN1izbiye2V9SAY55geeIrcVlhDI6b6YWE7NkwbPyAuPdwF4tVd6YoNJhWu/VBZAIl+sycYuH9Z14dswLZ+T79NhTkafx4Fb4pGSxRyr2WDbIwKskXOhA/oaFDwJPmK4Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711356996; c=relaxed/simple;
-	bh=SeAU1jrjWtZUgQVReeR6U+iS4ui9QpW84hBQGpCga0c=;
+	s=arc-20240116; t=1711357075; c=relaxed/simple;
+	bh=GziPOiRtKGtmT9kOn/TQJ2iwd6JunUdIyzWdMOCM96I=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Dbw85VAu4Ao3KevHmDUeE+WRDQK2Q9Ojc2CL439sWWKMAQ1+cmEaBAL4vsylrufBORxFLpms27gME3S1PRK/TVcYNEAXljv1vohJ+oAzHREMb1wTOh4lmDpNoB5pbM4sfd7126fZI33Y7ZvVmCb3f5sN/D+oSwOWVKKivKePDJA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Pp0Lgzsr; arc=none smtp.client-ip=170.10.129.124
+	 In-Reply-To:Content-Type; b=jzfhRiIp2DB1Vq3umBlHxuYDWYr0cWDylGNKwOH/CKmlyK1EQuuWwrqe4jyDyPnbRuguw6F3+j19D3e/dgF1GiXMarX1uT0Xu1ABMXYLecIw/Fc8Q29JEgtrpv2QntM61YjApZFrxdnEhHtPtQi+xltclsAFj92PtE/p+h/Duso=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=WOMb5zz+; arc=none smtp.client-ip=170.10.133.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1711356993;
+	s=mimecast20190719; t=1711357072;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=VTiL9YgVP/MAE1QhsPxOonqe4MNQ1qaQe56fmMWAciI=;
-	b=Pp0Lgzsruqkh9SqvWbPLB4pjDXyrZ2iMkjz3vsEthU9u3OTzoZe0VtUJG2mnCykkv5qGrg
-	uACZYrA5/PwtPdvX3teIsvtOtceivAd1aX+54dDcwkGcg4K2ge88RA2L940o4CW+t061N8
-	A7Z90kKrCbBkdeZZaUzjmkF2zDXrDk0=
-Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
- [209.85.128.72]) by relay.mimecast.com with ESMTP with STARTTLS
+	bh=pZyzpi9K7bsdk4j5yl1WxVOCYrVneu5x/R/AwPZUAn4=;
+	b=WOMb5zz+nKCI7Qe7rZwiX6kjjj8mP6d0AUa6RLk2Tvd9ZieD3ePuMU94+GVe/9cgLUJMcY
+	1BS0Ov6XYMaLsfZvK+m5T+j2xl32+Pmt+Tde5yVBtMDlwL5cs6VLOhT9Hcx1e75dvXjcp9
+	6CMunXi7MFsPd2Y3ByZrh9LIO0Ikl5o=
+Received: from mail-lj1-f198.google.com (mail-lj1-f198.google.com
+ [209.85.208.198]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-339-8BCCgwK8O6SLGNj1PT8wiw-1; Mon, 25 Mar 2024 04:56:30 -0400
-X-MC-Unique: 8BCCgwK8O6SLGNj1PT8wiw-1
-Received: by mail-wm1-f72.google.com with SMTP id 5b1f17b1804b1-4140d2917e6so22579305e9.0
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 01:56:30 -0700 (PDT)
+ us-mta-680-EIbDKphRM4eucWh7Nv758Q-1; Mon, 25 Mar 2024 04:57:51 -0400
+X-MC-Unique: EIbDKphRM4eucWh7Nv758Q-1
+Received: by mail-lj1-f198.google.com with SMTP id 38308e7fff4ca-2d486c08c6eso39973611fa.0
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 01:57:51 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711356989; x=1711961789;
+        d=1e100.net; s=20230601; t=1711357070; x=1711961870;
         h=content-transfer-encoding:in-reply-to:organization:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
+         :references:cc:to:content-language:subject:user-agent:mime-version
          :date:message-id:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=VTiL9YgVP/MAE1QhsPxOonqe4MNQ1qaQe56fmMWAciI=;
-        b=MnvPeLsYFRWNYusN1k+ZSP/Dcl4Hv5YG6bjD05ezrQT94erHxer8Cmtnon8KGO8EFM
-         WxMfYNsIcpDvmNsco9CVZTYy7nSZqmzcMyZGiMjOSryAJeqRLYhyqAIZq8KklVQFU0An
-         SfurGiirTS16QeHPQj6jCv0xkJ8wgZo7/tXcw2EsXpcVBiqat6htbe/xu59DUPDinuuj
-         nZbAeYON1UUIle5gsdK6X0ugv71O+7BsXi71ntt5szEFTr1LwsazlZOdNqriPQqcpsk2
-         DejcSezIepxfBrBw9HCot+0JGNq8LedTbWRom7jf+icHC4q95MPCupGB7Ssn5J7R0be2
-         VFxQ==
-X-Gm-Message-State: AOJu0YxEsXCiwrRYhDEp0aXx5xCJv+7DSUO5NcRAiI/ZhPZAIKEP3H0M
-	6GkIbsSsM6nsBdIcG11NKBvI9/d2WkSIPXgwuJe0GmrYtIiXak/Itte71LAxX1YUS2mm6vlgAIm
-	PajnP5dLgLymV4LHSMmH6iDWhf4N0cfecUg9xKAO+0IWkXXzrvaYlk23WOe68XSVd6eTUWw==
-X-Received: by 2002:a05:600c:524c:b0:414:8abb:a96b with SMTP id fc12-20020a05600c524c00b004148abba96bmr611222wmb.34.1711356989307;
-        Mon, 25 Mar 2024 01:56:29 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IFdx8qJrJqYTJj20nYwwryKiBqzCd80D5r5FkVUWwJopLPpsWro19Qh6ZlhaYvOH4johY6eNg==
-X-Received: by 2002:a05:600c:524c:b0:414:8abb:a96b with SMTP id fc12-20020a05600c524c00b004148abba96bmr611210wmb.34.1711356988913;
-        Mon, 25 Mar 2024 01:56:28 -0700 (PDT)
+        bh=pZyzpi9K7bsdk4j5yl1WxVOCYrVneu5x/R/AwPZUAn4=;
+        b=QegKru7cpBCwyGQC9z2HyM5OkN1ds8Bz1giCksviIKt6FKP37pQWLP/ukWptVIW9OB
+         CC0Qv3tKXffu6RGjiWwdqO8HX/oXbXxS66q2U7IMikF7VJUWblIEjzrqbFU4BSU1EHtd
+         kY5hC3ieU3L7Oo1xKulttNvJbX8RAjIcUGw60OzYyFfCW2m95ScyM5puGoggmtrNMZg4
+         rfO3gwCxaoQaeBtFcPw/x1ExbaIlDBkXywlWJV1pnWD0MxBViwAq08el1JbRjdcEsG8D
+         8F49tfUr7SZTesFLlUSc6U97U4PEN40VfbWbwdyZZ+7y7ZRTWwH6WwGC3SJ/syG+/1bz
+         OtQg==
+X-Gm-Message-State: AOJu0YweVJTQbIkzCcyH+CjF5RRS9e16a80nLv6HEfSxt2X1SBb07/Hy
+	uG4KaE0ll63luaJGAXQ+6YC5+o7v8PstHvyqTgnxjzchrKqL+qmXaz0VEsgStOmvHDbtmwsUQtI
+	WIOUHkbIlD8A5SfPeaoj/Ql5R6YB2k5N4ccJKMDhtWcFVvcuL2t3zLN0CoSVgDi0gLp7Eqwgj+H
+	VPuIyDwPUanU5a5M/IievuVh9XxY8TcEm8NNU6WEQVmQ==
+X-Received: by 2002:a2e:8014:0:b0:2d4:376f:5b44 with SMTP id j20-20020a2e8014000000b002d4376f5b44mr3965364ljg.34.1711357069954;
+        Mon, 25 Mar 2024 01:57:49 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IHNzbeNzbJTn6JFsSysiPSbuof6Lkep/SYx4bIM5mFKTaxJVI0ixjyRg+uk4F8J/Zmx6l76Fw==
+X-Received: by 2002:a2e:8014:0:b0:2d4:376f:5b44 with SMTP id j20-20020a2e8014000000b002d4376f5b44mr3965338ljg.34.1711357069413;
+        Mon, 25 Mar 2024 01:57:49 -0700 (PDT)
 Received: from ?IPV6:2003:cb:c738:b400:6a82:1eac:2b5:8fca? (p200300cbc738b4006a821eac02b58fca.dip0.t-ipconnect.de. [2003:cb:c738:b400:6a82:1eac:2b5:8fca])
-        by smtp.gmail.com with ESMTPSA id k30-20020a05600c1c9e00b0041469869d11sm7763099wms.47.2024.03.25.01.56.28
+        by smtp.gmail.com with ESMTPSA id k30-20020a05600c1c9e00b0041469869d11sm7763099wms.47.2024.03.25.01.57.48
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 25 Mar 2024 01:56:28 -0700 (PDT)
-Message-ID: <074ff62c-1533-4566-9375-24e353b53712@redhat.com>
-Date: Mon, 25 Mar 2024 09:56:27 +0100
+        Mon, 25 Mar 2024 01:57:49 -0700 (PDT)
+Message-ID: <dd0ad9f2-2d7a-45f3-9ba3-979488c7dd27@redhat.com>
+Date: Mon, 25 Mar 2024 09:57:48 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -81,13 +82,13 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: linux-next: build warning after merge of the mm tree
-To: Stephen Rothwell <sfr@canb.auug.org.au>,
- Andrew Morton <akpm@linux-foundation.org>
-Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- Linux Next Mailing List <linux-next@vger.kernel.org>
-References: <20240325122250.48128d5a@canb.auug.org.au>
+Subject: Re: [PATCH v1] mm: convert folio_estimated_sharers() to
+ folio_likely_mapped_shared()
 Content-Language: en-US
+To: linux-kernel@vger.kernel.org, akpm@linuxfoundation.org
+Cc: linux-mm@kvack.org, Barry Song <v-songbaohua@oppo.com>,
+ Vishal Moola <vishal.moola@gmail.com>, Ryan Roberts <ryan.roberts@arm.com>
+References: <20240227201548.857831-1-david@redhat.com>
 From: David Hildenbrand <david@redhat.com>
 Autocrypt: addr=david@redhat.com; keydata=
  xsFNBFXLn5EBEAC+zYvAFJxCBY9Tr1xZgcESmxVNI/0ffzE/ZQOiHJl6mGkmA1R7/uUpiCjJ
@@ -134,30 +135,38 @@ Autocrypt: addr=david@redhat.com; keydata=
  jPrnvUsUUsjRoRNJjKKA/REq+sAnhkNPPZ/NNMjaZ5b8Tovi8C0tmxiCHaQYqj7G2rgnT0kt
  WNyWQQ==
 Organization: Red Hat
-In-Reply-To: <20240325122250.48128d5a@canb.auug.org.au>
+In-Reply-To: <20240227201548.857831-1-david@redhat.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 
-On 25.03.24 02:22, Stephen Rothwell wrote:
-> Hi all,
+On 27.02.24 21:15, David Hildenbrand wrote:
+> Callers of folio_estimated_sharers() only care about "mapped shared vs.
+> mapped exclusively", not the exact estimate of sharers. Let's consolidate
+> and unify the condition users are checking. While at it clarify the
+> semantics and extend the discussion on the fuzziness.
 > 
-> After merging the mm tree, today's linux-next build (htmldocs) produced
-> this warning:
+> Use the "likely mapped shared" terminology to better express what the
+> (adjusted) function actually checks.
 > 
-> Documentation/core-api/mm-api:112: include/linux/mm.h:2187: ERROR: Unexpected indentation.
-> Documentation/core-api/mm-api:112: include/linux/mm.h:2189: WARNING: Block quote ends without a blank line; unexpected unindent.
-> Documentation/core-api/mm-api:112: include/linux/mm.h:2199: ERROR: Unexpected indentation.
-> Documentation/core-api/mm-api:112: include/linux/mm.h:2200: WARNING: Block quote ends without a blank line; unexpected unindent.
+> Whether a partially-mappable folio is more likely to not be partially
+> mapped than partially mapped is debatable. In the future, we might be able
+> to improve our estimate for partially-mappable folios, though.
 > 
-> Introduced by commit
+> Note that we will now consistently detect "mapped shared" only if the
+> first subpage is actually mapped multiple times. When the first subpage
+> is not mapped, we will consistently detect it as "mapped exclusively".
+> This change should currently only affect the usage in
+> madvise_free_pte_range() and queue_folios_pte_range() for large folios: if
+> the first page was already unmapped, we would have skipped the folio.
 > 
->    08ec651d776e ("mm: convert folio_estimated_sharers() to folio_likely_mapped_shared()")
-> 
-> from the mm-unstable branch of the mm tree.
-> 
+> Cc: Barry Song <v-songbaohua@oppo.com>
+> Cc: Vishal Moola (Oracle) <vishal.moola@gmail.com>
+> Cc: Ryan Roberts <ryan.roberts@arm.com>
+> Signed-off-by: David Hildenbrand <david@redhat.com>
+> ---
 
-Seems like kerneldoc does not appreciate my lists+indentation. The following
-should get the job done:
+The following fixup on top to make kerneldoc happy:
+
 
  From 3e472636d266e3acba3755ed5712992adbc2151d Mon Sep 17 00:00:00 2001
 From: David Hildenbrand <david@redhat.com>
