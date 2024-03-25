@@ -1,125 +1,180 @@
-Return-Path: <linux-kernel+bounces-117261-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-117269-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 05EB888A95D
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 17:31:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 836AF88A970
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 17:33:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 99ADC1F3D389
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 16:31:15 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 232621F2D54F
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 16:33:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4A09D14A4CE;
-	Mon, 25 Mar 2024 14:33:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1CB9C12E1C1;
+	Mon, 25 Mar 2024 14:37:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qwGTfZ4S"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Fvs2yDWa"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 60EA612C55D;
-	Mon, 25 Mar 2024 14:33:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C6DBE155756;
+	Mon, 25 Mar 2024 14:36:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711377233; cv=none; b=R292hLSvKxzJN6UVcsrAay7BaxOkTzO7g21MaC79QO0s7ug409dRCbepK71qXXcVeEwsJ1tQODj9gy/Cx1M8FLnMPjf2SOltLNulc7l1dmAdPCyU8DA6HG/0LVNKP7AWIKdlwnCHPZYWmJHm3bXSzr7G88rGydll64Ybek45B1Y=
+	t=1711377421; cv=none; b=sjV+mPtlYmJ0cSPZ0KmPTcFxE95Xa3bUlz2ccoOsq8UFm4czQShu3Ilzx7jkOZ+xyZOQMV8AFpXxVYmjMqqKj1AYIc+bSU6egR/VL+CnQaIS3qFjzRL5PLCfjgh2gfiX4d7vpWHfrjBK/kqjLxgWDG5g/A1n1XZKmT0piPp494Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711377233; c=relaxed/simple;
-	bh=I8gGjUabBFBdinEZ8w3xLeRQEfRy+mHaSAx/ueiu+40=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=BPDnTgyZ+zD/h3SbirmDL4jk9SA4VKL3TvsKuCAcDfAvhSxCfQXTwDxGVkrKFOKv7IgpgnKc7pdaDkPR99oeJ1FVx42OQVxyiJuZtUNDLaaOU0nImgZPH3mlVt+g42uOvdFsMQBiDhLBjwyXejzy8Fg1nPYbHxydqjti1HhncaQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qwGTfZ4S; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BCA51C433C7;
-	Mon, 25 Mar 2024 14:33:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711377232;
-	bh=I8gGjUabBFBdinEZ8w3xLeRQEfRy+mHaSAx/ueiu+40=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=qwGTfZ4ShLOkmcP2SDowGUP24PHw40nxwQ0YvPPEMQoc9ATkG5gM8iZxzfOnu5sRD
-	 UwSN8WIBhDTUqSGcf70UElmHWw4r+uQJbXCj6GVa/HUOSTqZ8SjItI/TLZfjLKFYVb
-	 jVgHhwDEcWppwKLrXjpTUcw8+6wmFPrumLvMm0dZewht8np1+OcS0EZkB/G30kbtZi
-	 95N5Z7T58ICVBDySFjaI2c6LS4Jvr4xorat/fbqwktT0ORUOJWzGrCuKqnZhZZS7CT
-	 muoF2CaxPRzjQFv+XRluV81Q5NVeAVQYqFGBhKcsDxvfwURItxgT/oQf5PN7eSCw5l
-	 J6x8GepzXZ4bg==
-Date: Mon, 25 Mar 2024 14:33:43 +0000
-From: Mark Brown <broonie@kernel.org>
-To: Bartosz Golaszewski <brgl@bgdev.pl>
-Cc: Marcel Holtmann <marcel@holtmann.org>,
-	Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
-	"David S . Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>, Kalle Valo <kvalo@kernel.org>,
-	Bjorn Andersson <andersson@kernel.org>,
-	Konrad Dybcio <konrad.dybcio@linaro.org>,
-	Liam Girdwood <lgirdwood@gmail.com>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Will Deacon <will@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
-	Saravana Kannan <saravanak@google.com>,
-	Geert Uytterhoeven <geert+renesas@glider.be>,
-	Arnd Bergmann <arnd@arndb.de>,
-	Neil Armstrong <neil.armstrong@linaro.org>,
-	Marek Szyprowski <m.szyprowski@samsung.com>,
-	Alex Elder <elder@linaro.org>,
-	Srini Kandagatla <srinivas.kandagatla@linaro.org>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Abel Vesa <abel.vesa@linaro.org>,
-	Manivannan Sadhasivam <mani@kernel.org>,
-	Lukas Wunner <lukas@wunner.de>,
-	Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-	linux-bluetooth@vger.kernel.org, netdev@vger.kernel.org,
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-wireless@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org, linux-pci@vger.kernel.org,
-	linux-pm@vger.kernel.org,
-	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Subject: Re: [PATCH v6 01/16] regulator: dt-bindings: describe the PMU module
- of the QCA6390 package
-Message-ID: <4d8d55a8-fcf2-47b6-ac0e-2bbb99bb895a@sirena.org.uk>
-References: <20240325131624.26023-1-brgl@bgdev.pl>
- <20240325131624.26023-2-brgl@bgdev.pl>
+	s=arc-20240116; t=1711377421; c=relaxed/simple;
+	bh=4aIDgEXJp9CJ/1kTSz+yIr/23FqqJgqh4VDseMLsP8o=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=h0txUEZuhA4AFqxuWlKaRJM/1pP4hOqfYYA5p84dxBYDov2PIqVsI7ooE7w6eJf8XAKmEeLQRx30wyZbiCw8y1Jz8MeLN1D7IJMDDx8/Ko4j+491Z3PnPhYkQUtfSn7OA6mdiBKUKPUzdMIlJYy3uVIRnShlHTJi0cnNix9hAVw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Fvs2yDWa; arc=none smtp.client-ip=198.175.65.18
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1711377420; x=1742913420;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=4aIDgEXJp9CJ/1kTSz+yIr/23FqqJgqh4VDseMLsP8o=;
+  b=Fvs2yDWa0rLiaWxENBoyNDIJ7OKge1DpKkUXVeJ0mRheuEXY9+OIvDei
+   z7+l7V6bALLzcqW6GGPoU5NqnfJsqTofNJ7QOYkoxj9aZs+k+PbnCM2PE
+   83tSNaeSv2ZUdvYH30dM+PvBL3m7pEIq6Bz5fQK6fekQBAbPE4uuDLIzH
+   6Bg5mof6QL//fMRWNeVH7zTV3e9DLJxHwmnDg5JuKye+c4PxBKVFKz0vk
+   3OCpRDTpvHzEFODDLS1qi+rqNwRb3z73f/bbsQxY3PETTqKKcClBg3TjC
+   dZOB5h+kTF+A5oxcgI0lbSiv5HrrPax+JSGWc84WNudRCP/2NUkE4Kai4
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11023"; a="6511058"
+X-IronPort-AV: E=Sophos;i="6.07,153,1708416000"; 
+   d="scan'208";a="6511058"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orvoesa110.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Mar 2024 07:37:00 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,11023"; a="937070504"
+X-IronPort-AV: E=Sophos;i="6.07,153,1708416000"; 
+   d="scan'208";a="937070504"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by fmsmga001.fm.intel.com with ESMTP; 25 Mar 2024 07:36:56 -0700
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+	id E42B0101; Mon, 25 Mar 2024 16:36:55 +0200 (EET)
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+	Mark Brown <broonie@kernel.org>,
+	Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+	linux-sound@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Cc: Liam Girdwood <lgirdwood@gmail.com>,
+	Jaroslav Kysela <perex@perex.cz>,
+	Takashi Iwai <tiwai@suse.com>
+Subject: [PATCH v2 1/1] ASoC: soc-jack: Get rid of legacy GPIO support
+Date: Mon, 25 Mar 2024 16:33:50 +0200
+Message-ID: <20240325143654.3305498-1-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.43.0.rc1.1.gbec44491f096
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="Cru5I7A758SJZEDj"
-Content-Disposition: inline
-In-Reply-To: <20240325131624.26023-2-brgl@bgdev.pl>
-X-Cookie: Evil isn't all bad.
+Content-Transfer-Encoding: 8bit
 
+No more users.
 
---Cru5I7A758SJZEDj
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+---
+v2: updated dependent driver as well (Mark)
+ include/sound/soc-jack.h              |  2 --
+ sound/soc/generic/simple-card-utils.c |  2 --
+ sound/soc/soc-jack.c                  | 23 ++++-------------------
+ 3 files changed, 4 insertions(+), 23 deletions(-)
 
-On Mon, Mar 25, 2024 at 02:16:09PM +0100, Bartosz Golaszewski wrote:
-> From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
->=20
-> The QCA6390 package contains discreet modules for WLAN and Bluetooth. They
-> are powered by the Power Management Unit (PMU) that takes inputs from the
-> host and provides LDO outputs. This document describes this module.
+diff --git a/include/sound/soc-jack.h b/include/sound/soc-jack.h
+index a0abb1ee5110..3a81d4b8ca8a 100644
+--- a/include/sound/soc-jack.h
++++ b/include/sound/soc-jack.h
+@@ -44,7 +44,6 @@ struct snd_soc_jack_zone {
+ /**
+  * struct snd_soc_jack_gpio - Describes a gpio pin for jack detection
+  *
+- * @gpio:         legacy gpio number
+  * @idx:          gpio descriptor index within the function of the GPIO
+  *                consumer device
+  * @gpiod_dev:    GPIO consumer device
+@@ -59,7 +58,6 @@ struct snd_soc_jack_zone {
+  *		       ADC).
+  */
+ struct snd_soc_jack_gpio {
+-	unsigned int gpio;
+ 	unsigned int idx;
+ 	struct device *gpiod_dev;
+ 	const char *name;
+diff --git a/sound/soc/generic/simple-card-utils.c b/sound/soc/generic/simple-card-utils.c
+index 81077d16d22f..b4876b4f259d 100644
+--- a/sound/soc/generic/simple-card-utils.c
++++ b/sound/soc/generic/simple-card-utils.c
+@@ -752,8 +752,6 @@ int simple_util_init_jack(struct snd_soc_card *card,
+ 	if (!prefix)
+ 		prefix = "";
+ 
+-	sjack->gpio.gpio = -ENOENT;
+-
+ 	if (is_hp) {
+ 		snprintf(prop, sizeof(prop), "%shp-det", prefix);
+ 		pin_name	= pin ? pin : "Headphones";
+diff --git a/sound/soc/soc-jack.c b/sound/soc/soc-jack.c
+index b2cc13b9c77b..63971396b708 100644
+--- a/sound/soc/soc-jack.c
++++ b/sound/soc/soc-jack.c
+@@ -8,7 +8,6 @@
+ 
+ #include <sound/jack.h>
+ #include <sound/soc.h>
+-#include <linux/gpio.h>
+ #include <linux/gpio/consumer.h>
+ #include <linux/interrupt.h>
+ #include <linux/workqueue.h>
+@@ -345,21 +344,9 @@ int snd_soc_jack_add_gpios(struct snd_soc_jack *jack, int count,
+ 				goto undo;
+ 			}
+ 		} else {
+-			/* legacy GPIO number */
+-			if (!gpio_is_valid(gpios[i].gpio)) {
+-				dev_err(jack->card->dev,
+-					"ASoC: Invalid gpio %d\n",
+-					gpios[i].gpio);
+-				ret = -EINVAL;
+-				goto undo;
+-			}
+-
+-			ret = gpio_request_one(gpios[i].gpio, GPIOF_IN,
+-					       gpios[i].name);
+-			if (ret)
+-				goto undo;
+-
+-			gpios[i].desc = gpio_to_desc(gpios[i].gpio);
++			dev_err(jack->card->dev, "ASoC: Invalid gpio at index %d\n", i);
++		        ret = -EINVAL;
++		        goto undo;
+ 		}
+ got_gpio:
+ 		INIT_DELAYED_WORK(&gpios[i].work, gpio_work);
+@@ -373,7 +360,7 @@ int snd_soc_jack_add_gpios(struct snd_soc_jack *jack, int count,
+ 					      gpios[i].name,
+ 					      &gpios[i]);
+ 		if (ret < 0)
+-			goto err;
++			goto undo;
+ 
+ 		if (gpios[i].wake) {
+ 			ret = irq_set_irq_wake(gpiod_to_irq(gpios[i].desc), 1);
+@@ -401,8 +388,6 @@ int snd_soc_jack_add_gpios(struct snd_soc_jack *jack, int count,
+ 	devres_add(jack->card->dev, tbl);
+ 	return 0;
+ 
+-err:
+-	gpio_free(gpios[i].gpio);
+ undo:
+ 	jack_free_gpios(jack, i, gpios);
+ 	devres_free(tbl);
+-- 
+2.43.0.rc1.1.gbec44491f096
 
-Acked-by: Mark Brown <broonie@kernel.org>
-
---Cru5I7A758SJZEDj
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmYBi0YACgkQJNaLcl1U
-h9AdIwf/SWJguM6qR3+2+NfBzS3BClbo5tKAaN7frc+HgiFkmcN+TDdydwp+qfxf
-t33nHRvZIdzfbxrYkACIlOO6o55gf1Cahrrsb9l0Lp4MzBxcC/oKnrQbqIxldiJ9
-LYcYPT+9yhvRkPTkiqIpbJG9WMJwdNVPILl1NEIQBdMA6UNmC7xbBEUh4BRD8qbi
-v8qSPzhQj/7O3MTfD+/d1JrH9fVXUY1roL37PiDSW0XkQo6oIyTa2oEKjEibyPig
-amlwRcPUhjelQwkhTc8jH/fH1DmXkkK/Uw04Y77VKP5dhUdPo4hDVUJTAoOp/rmt
-l5q8gRzt2QPqjhuQmXVXBsXA1PoApw==
-=yWUc
------END PGP SIGNATURE-----
-
---Cru5I7A758SJZEDj--
 
