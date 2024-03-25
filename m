@@ -1,144 +1,102 @@
-Return-Path: <linux-kernel+bounces-118198-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-118199-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9DA4788B5A8
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 00:56:33 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id E579A88B5B1
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 00:59:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 289811F64156
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 23:56:33 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A1D382E8597
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 23:59:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 33B5084D30;
-	Mon, 25 Mar 2024 23:56:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DA09186626;
+	Mon, 25 Mar 2024 23:59:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="xkJJCxeI"
-Received: from mail-oo1-f46.google.com (mail-oo1-f46.google.com [209.85.161.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="DZGH87cD"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CB11B339BF
-	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 23:56:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9AF2D339BF;
+	Mon, 25 Mar 2024 23:59:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711410987; cv=none; b=gTTsGu/JhPZ0FosX+ySU6S2dY9pEXxNb1YF+t/4yTMwMXvmCK9FlgKoZx3z5vexpU9U4mOI62HCnyRNgI1bC+SX8VqpUfd4O0+zK+jNxrcT14it7s2WvTeZGoSYzrFRg1YNbDM0dms0StSPCTLoRjDHTX9+kuabhsj5e5mzrMzo=
+	t=1711411161; cv=none; b=jFjB7cvY7MH45xdRjY2f0ejdiTNqFuw2BJ7sZkyV2ccRHW482SjbUAA6vbmPPuxrkp6aMiFpEL9j+d5YFhcZIqWqA2yVF/JqbQSHNxUow70fRAWKHstEhZkDs0hOR3nCKh5GMuN7P+GKwqnb41I7XIAJE+wVznJKIChYsT7Ogz0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711410987; c=relaxed/simple;
-	bh=6pXwMIuffqaQ5I4eK1GdGHXvrXPitbmlZRN9vaksf2E=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=dVTIWiGeKhW0sERwL/DnwsEryi4BXsTVsc/BvlvDGoHedP4sMBQQXF7v1BQYF6LJdUtzzI6Qksp3byn9n8M7q7XfsL1KD7mqOowujRg4sT5SHviitqzly++g/GL4MmMr2JQwWYi2i5Ib5WTXKxe3PZT+27AclnFM4n4X4TTt0HY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=xkJJCxeI; arc=none smtp.client-ip=209.85.161.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-oo1-f46.google.com with SMTP id 006d021491bc7-5a4859178f1so2662232eaf.0
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 16:56:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1711410985; x=1712015785; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=jKSbDmcQakq8o4ZhpWu6TmQIoc3lyqYnDAzDVmwv7q4=;
-        b=xkJJCxeIzMINoZvMHWyLNJ7IfLweFU+RuWmrdnGN8AftAjN5wjVzHhGdrUD1qe2dCM
-         GiShnGHX2qf2TWBRq93A6sjLXSXYCEMWwfneRnJUvB1VDIqt887kye8DJ3Ga9uXQwIbn
-         kP6EJljsg+mFhdkcaRWt6Yeef+PugFkPxGAgRVLM4NKZuMam3uDMjZDYF+fU+rpFfE9y
-         leSYR9zcUWJKDDficYL4y8DdjOCIPBNEoWUtQ1U0Y0/iYxqLk2n/nh/60kvtgKioyj7s
-         cEatGgKyDBfPec/FKT33GV1FfgQWPlMaL/7J8ahaCUdpzhl5lCcIjuzmycqXi61S68c4
-         p9OQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711410985; x=1712015785;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=jKSbDmcQakq8o4ZhpWu6TmQIoc3lyqYnDAzDVmwv7q4=;
-        b=KXdRW6FTF/gj97g8yNzT81A9sSi99VHmtuk4B1HwigD8rdZg4LNUVE5V77njKNpGC8
-         DbxIOaUbxii6SlR9tLWyOu7Txng2njQRogwZLE76zQqyXOakbzFfA9W6t/ZLMltrop9I
-         WSipk59UhuVuTYLqT8V1coxZVgUAPLYAFD/MYcuMU5DNslshJ/Ny2Wdns1MoUfvo0K8g
-         FJWv0QW+gT/Oo5RV+lqZYcJQPdSeYJJVLNClyCv00tbKD23PcHIcvAMrBcNEk1/jyp8a
-         qsqIyj8CeCYmG8Hb1R6PVMyBYfOcVyGfy426FjGRDgDKeXq4MPNu472qSBGCYJUyGtwf
-         H9PA==
-X-Forwarded-Encrypted: i=1; AJvYcCV6qrcu4tK0tu4+Flj3JNqV+OC5dSZvUye1p7AcxtErFuFcjAtGL6zFhnnMMiW64nvP3nm/CUcZxB2O9ZHch02zSU3Yu61MpY0tmqC6
-X-Gm-Message-State: AOJu0YzqpG/tt7E9Mc2Cuq9o+uQuamlmB9UZPzpcr1qwgJc4jD/pEZkS
-	OucM6lvkPRPVKM4qdssPsOM7SFVzFcFirtTI/65SvjdiUztRY0gzHiRHwixRKp8=
-X-Google-Smtp-Source: AGHT+IFgSX4AWOMVnLRfk+cXudEZIwp4T5WKCSqKT//AOnoks76ZyALxI9kZ8iwnNp5yT1pcu87qMg==
-X-Received: by 2002:a05:6870:b6a5:b0:222:4309:e276 with SMTP id cy37-20020a056870b6a500b002224309e276mr1537582oab.50.1711410984858;
-        Mon, 25 Mar 2024 16:56:24 -0700 (PDT)
-Received: from [192.168.17.16] ([148.222.132.226])
-        by smtp.gmail.com with ESMTPSA id ho8-20020a056870498800b0022a66146d73sm11252oab.15.2024.03.25.16.56.23
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 25 Mar 2024 16:56:24 -0700 (PDT)
-Message-ID: <83814bca-1e33-4914-b00d-4b84ff1a1a23@linaro.org>
-Date: Mon, 25 Mar 2024 17:56:22 -0600
+	s=arc-20240116; t=1711411161; c=relaxed/simple;
+	bh=weMSH2HY5gtyciUxIFxfYnwP9q0mVKBCRDJIjHcLgeE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=UaOrlEg96dlGilwzcqlEC3RKVZoZ7HQQ/4RC664teNUW25XOE2Ti9vPJYF968GwT8FiyCS/NsQLcROi9zfBu8mtEoYsszgshrJnoKzmZUUWCng2zhsPNrrWQYIRR67HUIl51xXLILbABr7TPaJq+Y9k9tVF/gUr03T9YKvkgnhc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=DZGH87cD; arc=none smtp.client-ip=192.198.163.7
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1711411159; x=1742947159;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=weMSH2HY5gtyciUxIFxfYnwP9q0mVKBCRDJIjHcLgeE=;
+  b=DZGH87cD1zkE+Xotd1TyPxAiL2lgkjFaGGP0wkJF8kQtHcJcqyM2QCmB
+   zI6ZwhBrwXKc7RilBBgXJp9rEUSB9LG1R9wVPoWQoOZPYFteMWILwJLYb
+   UD6FgY843NWPdebNtQW8nHPV6lNYayk10rPkCwUL8iW5UjAte2bb+7ILx
+   Gw52LmLA09V8MEnEqcr36KAisTYgnp82gPIQdPDpm6EBsrAV/1N/QQoQH
+   hqWXW/R8Baf/L/Rsl8W1wkzb7/Os3j3J1ne1liOtQUp1qnLYmC2mQ/vW1
+   2pdZQWs95qoZjtw2unIfNciEwFu/HYP614ebNUov2zxkkDwFXnzzVqg4E
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11024"; a="31880425"
+X-IronPort-AV: E=Sophos;i="6.07,154,1708416000"; 
+   d="scan'208";a="31880425"
+Received: from fmviesa001.fm.intel.com ([10.60.135.141])
+  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Mar 2024 16:59:18 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,154,1708416000"; 
+   d="scan'208";a="46938419"
+Received: from ls.sc.intel.com (HELO localhost) ([172.25.112.31])
+  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Mar 2024 16:59:18 -0700
+Date: Mon, 25 Mar 2024 16:59:18 -0700
+From: Isaku Yamahata <isaku.yamahata@intel.com>
+To: Paolo Bonzini <pbonzini@redhat.com>
+Cc: linux-kernel@vger.kernel.org, kvm@vger.kernel.org, michael.roth@amd.com,
+	isaku.yamahata@intel.com, seanjc@google.com,
+	isaku.yamahata@linux.intel.com, rick.p.edgecombe@intel.com,
+	xiaoyao.li@intel.com, kai.huang@intel.com
+Subject: Re: [PATCH v4 05/15] KVM: SEV: publish supported VMSA features
+Message-ID: <20240325235918.GR2357401@ls.amr.corp.intel.com>
+References: <20240318233352.2728327-1-pbonzini@redhat.com>
+ <20240318233352.2728327-6-pbonzini@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 4.19 000/147] 4.19.311-rc2 review
-To: Sasha Levin <sashal@kernel.org>, linux-kernel@vger.kernel.org,
- stable@vger.kernel.org
-Cc: torvalds@linux-foundation.org, akpm@linux-foundation.org,
- linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
- lkft-triage@lists.linaro.org, florian.fainelli@broadcom.com, pavel@denx.de,
- abelova@astralinux.ru
-References: <20240325115854.1764898-1-sashal@kernel.org>
-Content-Language: en-US
-From: =?UTF-8?Q?Daniel_D=C3=ADaz?= <daniel.diaz@linaro.org>
-In-Reply-To: <20240325115854.1764898-1-sashal@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20240318233352.2728327-6-pbonzini@redhat.com>
 
-Hello!
+On Mon, Mar 18, 2024 at 07:33:42PM -0400,
+Paolo Bonzini <pbonzini@redhat.com> wrote:
 
-On 25/03/24 5:58 a. m., Sasha Levin wrote:
-> This is the start of the stable review cycle for the 4.19.311 release.
-> There are 147 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+> Compute the set of features to be stored in the VMSA when KVM is
+> initialized; move it from there into kvm_sev_info when SEV is initialized,
+> and then into the initial VMSA.
 > 
-> Responses should be made by Wed Mar 27 11:58:33 AM UTC 2024.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
->          https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git/patch/?id=linux-4.19.y&id2=v4.19.310
-> or in the git tree and branch at:
->          git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.19.y
-> and the diffstat can be found below.
-> 
-> Thanks,
-> Sasha
+> The new variable can then be used to return the set of supported features
+> to userspace, via the KVM_GET_DEVICE_ATTR ioctl.
 
+Hi. The current TDX KVM introduces KVM_TDX_CAPABILITIES and struct
+kvm_tdx_capabilities for feature enumeration.  I'm wondering if TDX should also
+use/switch to KVM_GET_DEVICE_ATTR with its own group.  What do you think?
+Something like
 
-As with 5.4, we see a new warning on Arm (32- and 64-bits):
+#define KVM_DEVICE_ATTR_GROUP_SEV       1
+#define KVM_X86_SEV_VMSA_FEATURES       1
+#define KVM_X86_SEV_xxx                 ...
 
------8<-----
-   /builds/linux/drivers/cpufreq/brcmstb-avs-cpufreq.c: In function 'brcm_avs_cpufreq_get':
-   /builds/linux/drivers/cpufreq/brcmstb-avs-cpufreq.c:462:2: warning: ISO C90 forbids mixed declarations and code [-Wdeclaration-after-statement]
-     struct private_data *priv = policy->driver_data;
-     ^~~~~~
------>8-----
+#define KVM_DEVICE_ATTR_GROUP_TDX       2
+#define KVM_X86_TDX_xxx                 ...
 
-Bisection pointed to:
-
-   commit 2b373882d724311d7a5dadf225ed296f20abc8f9
-   Author: Anastasia Belova <abelova@astralinux.ru>
-   Date:   Wed Jan 17 10:12:20 2024 +0300
-
-       cpufreq: brcmstb-avs-cpufreq: add check for cpufreq_cpu_get's return value
-       
-       [ Upstream commit f661017e6d326ee187db24194cabb013d81bc2a6 ]
-
-Reproducer:
-
-   tuxmake --runtime podman --target-arch arm64 --toolchain gcc-8 --kconfig defconfig
-
-Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
-
-
-Greetings!
-
-Daniel Díaz
-daniel.diaz@linaro.org
-
+Thanks,
+-- 
+Isaku Yamahata <isaku.yamahata@intel.com>
 
