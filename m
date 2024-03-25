@@ -1,47 +1,47 @@
-Return-Path: <linux-kernel+bounces-116517-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-116520-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3730D88A04D
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 13:51:34 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id D84E388A7EC
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 16:58:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C98941F39E34
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 12:51:33 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 02E50BC2919
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 12:51:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3E5A913E41A;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 50ED213E6B8;
 	Mon, 25 Mar 2024 07:32:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="iZ/b0NE+"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="C5Q0lIA0"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0EF311C2576;
-	Mon, 25 Mar 2024 04:42:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 255601C257C
+	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 04:42:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711341755; cv=none; b=GcfYOtFPHZuiEN0TjCQMJWN/8wd+TPUOCtJyGCZPDZoYo/Wt/0KMmSaCrq6JT6KiQYXur+YRcZIlhOpJ/4jIXypKWAEKJnVeT0C6ZBeS4MgzWJhlbBLIkcU7cIcCG67iqXqz6ng30/0wxYZQRXY06588GHzIwgK67MczfdJz8Do=
+	t=1711341756; cv=none; b=SV6ywo9CLPrUwYazIY9HKIHmsItEcb3/kqMA2Bg8tSgnBcyloQaIj4AV4XRzLPQDyHiS1J+rhNG6qDw/bi3kvGMEKlUTFc5uuRvsL7vn8Q7LCZFfu3R3e0R0WWYxFDiwGFqy1cItZ6ovDkQ1wa2Bwf1s/IzpOVjADuq7lQtG21M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711341755; c=relaxed/simple;
-	bh=duVRPOkUwtqb9I+6o5VQiYAgtSlpWGf+X+0yQv8TjAs=;
+	s=arc-20240116; t=1711341756; c=relaxed/simple;
+	bh=bOCUeLS1C7wpm9pu8FD1Zt59GN4cTLuXNPaR2yCkUEQ=;
 	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=MWMKsXohZxFE3o8hOmpsPaH6/T+4BT8WFE0HdxtN//tN69grlx1Kwts9UlgyljFJCyAiKvFfWY4c/ho5oS67yhXvaenweWYbeuF80XOX8ELdAvLJrOp+EQfgdfgAzd3otFXyGo+npsE0MoHJWdHOSlm+cRRHLVmsoig5ErdjeMU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=iZ/b0NE+; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id B5273C43399;
+	 In-Reply-To:To:Cc; b=ADfEKQofSrtprd3VddR7lEXC/nEIAIae/yPHBXNVdQs9vLEsHHeabc45kdSXfr7ZAWM5PtHi6PGtD/GeH0DL5MVFAZcHvCau1f6cuJLvdn+vlTd8YR3caH79+oByfYgaNIdf9aIJ2/6guDFuZM3IW8PD/e3rbx+gvvjxsWNBV+Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=C5Q0lIA0; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id C1667C433B1;
 	Mon, 25 Mar 2024 04:42:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1711341754;
-	bh=duVRPOkUwtqb9I+6o5VQiYAgtSlpWGf+X+0yQv8TjAs=;
+	bh=bOCUeLS1C7wpm9pu8FD1Zt59GN4cTLuXNPaR2yCkUEQ=;
 	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=iZ/b0NE+i7+do8pgZkg46x1uBB/MQJfp/c/XhpH71z/wGKatNJQnfFVi4TsSrJUcx
-	 p9B9v3m0m2h+2n352ZneEdcJs25ZuYmCkptcEJJi14CEjUg6fZRWGQjsnzSbTTqpuQ
-	 jBLNyyJKgrClKH6Ar2Sk8/u0rVBaZT96gqSwdlSHBYKiJ8LneSrMklScm8Ww85dTEe
-	 eja5sWn2jN4CV4FDoeaf5TOJPL86Efy9rTKDI0W7hc3GLlwluHdA9GYm7yTBbMYg6F
-	 MrrxjzojsaA/BYbk4OYMb2sE8+b4REldcJ8JhTboSwFB0wiYQTm1AKpQdnuWO2wot9
-	 CNckLCoG3Oykg==
+	b=C5Q0lIA0AlWK7xzVNsghEMI2APioXYG4HH5Y+1Y2mU0nEtw3fCA5PRb0epP6MDuSP
+	 OpPj40tc1RwWtS+G3X6Fylw6q6ZgCp6RmNcRoChBtYRudEB/Sy+Z0AOXDKlBg1f3BZ
+	 BXbSseLeWfZKLCAUhSy7uiRF+/IqqMEYGB94GSmPcNv+0ambj/ibblarTxwzEptowg
+	 3PsG4sUDEMcT9BocxJz8U/NFBPOokp5twbzSEJ3JUGsZ1saomvFUZpAGLZLzX8dYSJ
+	 OWEgct6i9Cc7V4tvqAhbPaAZi9QDOcVpUP8XXmHjIfRUPBVkC2F9rjA6Q08TnOzXoM
+	 QJI+TqltJCkpA==
 Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 9F5E8D95071;
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id B30BCD2D0E0;
 	Mon, 25 Mar 2024 04:42:34 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
@@ -51,46 +51,38 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH 00/11] Bump the minimum supported version of LLVM to 13.0.1
+Subject: Re: [PATCH] irqchip/riscv-intc: Fix use of AIA IRQs 32-63 on riscv32
 From: patchwork-bot+linux-riscv@kernel.org
 Message-Id: 
- <171134175464.18749.18342004135343709281.git-patchwork-notify@kernel.org>
+ <171134175473.18749.6561888891935488179.git-patchwork-notify@kernel.org>
 Date: Mon, 25 Mar 2024 04:42:34 +0000
-References: <20240125-bump-min-llvm-ver-to-13-0-1-v1-0-f5ff9bda41c5@kernel.org>
-In-Reply-To: <20240125-bump-min-llvm-ver-to-13-0-1-v1-0-f5ff9bda41c5@kernel.org>
-To: Nathan Chancellor <nathan@kernel.org>
-Cc: linux-riscv@lists.infradead.org, akpm@linux-foundation.org,
- masahiroy@kernel.org, nicolas@fjasle.eu, linux-kbuild@vger.kernel.org,
- llvm@lists.linux.dev, patches@lists.linux.dev, linux-kernel@vger.kernel.org,
- tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
- dave.hansen@linux.intel.com, x86@kernel.org, linux@armlinux.org.uk,
- ardb@kernel.org, linux-arm-kernel@lists.infradead.org,
- catalin.marinas@arm.com, will@kernel.org, mark.rutland@arm.com,
- mpe@ellerman.id.au, npiggin@gmail.com, aneesh.kumar@kernel.org,
- naveen.n.rao@linux.ibm.com, linuxppc-dev@lists.ozlabs.org,
- paul.walmsley@sifive.com, palmer@dabbelt.com, aou@eecs.berkeley.edu,
- conor@kernel.org, keescook@chromium.org, linux-hardening@vger.kernel.org
+References: <20240312212813.2323841-1-samuel.holland@sifive.com>
+In-Reply-To: <20240312212813.2323841-1-samuel.holland@sifive.com>
+To: Samuel Holland <samuel.holland@sifive.com>
+Cc: linux-riscv@lists.infradead.org, anup@brainfault.org, tglx@linutronix.de,
+ aou@eecs.berkeley.edu, palmer@dabbelt.com, paul.walmsley@sifive.com,
+ linux-kernel@vger.kernel.org
 
 Hello:
 
-This series was applied to riscv/linux.git (fixes)
-by Andrew Morton <akpm@linux-foundation.org>:
+This patch was applied to riscv/linux.git (fixes)
+by Thomas Gleixner <tglx@linutronix.de>:
 
-On Thu, 25 Jan 2024 15:55:06 -0700 you wrote:
-> Hi all,
+On Tue, 12 Mar 2024 14:28:08 -0700 you wrote:
+> riscv_intc_custom_base is initialized to BITS_PER_LONG, so the second
+> check passes even though AIA provides 64 IRQs. Adjust the condition to
+> only check the custom IRQ range for IRQs outside the standard range, and
+> adjust the standard range when AIA is available.
 > 
-> This series bumps the minimum supported version of LLVM for building the
-> kernel to 13.0.1. The first patch does the bump and all subsequent
-> patches clean up all the various workarounds and checks for earlier
-> versions.
+> Fixes: bb7921cdea12 ("irqchip/riscv-intc: Add support for RISC-V AIA")
+> Fixes: e6bd9b966dc8 ("irqchip/riscv-intc: Fix low-level interrupt handler setup for AIA")
+> Signed-off-by: Samuel Holland <samuel.holland@sifive.com>
 > 
 > [...]
 
 Here is the summary with links:
-  - [07/11] riscv: Remove MCOUNT_NAME workaround
-    https://git.kernel.org/riscv/c/de5f3984664e
-  - [08/11] riscv: Kconfig: Remove version dependency from CONFIG_CLANG_SUPPORTS_DYNAMIC_FTRACE
-    https://git.kernel.org/riscv/c/a38d97181271
+  - irqchip/riscv-intc: Fix use of AIA IRQs 32-63 on riscv32
+    https://git.kernel.org/riscv/c/ca5b0b717b75
 
 You are awesome, thank you!
 -- 
