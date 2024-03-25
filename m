@@ -1,219 +1,429 @@
-Return-Path: <linux-kernel+bounces-116508-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-116505-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2C93288A61D
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 16:17:41 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 31BC6889FFA
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 13:45:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 00C6DBC1513
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 12:45:39 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3719E297138
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 12:45:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 36FE26E5FD;
-	Mon, 25 Mar 2024 07:32:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7631A6BB5D;
+	Mon, 25 Mar 2024 07:32:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b="Cnp4fQnZ"
-Received: from m15.mail.163.com (m15.mail.163.com [45.254.50.220])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 786FF1B81F;
-	Mon, 25 Mar 2024 03:59:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.254.50.220
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XLZ0+5fM"
+Received: from mail-pf1-f174.google.com (mail-pf1-f174.google.com [209.85.210.174])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5A18513D293;
+	Mon, 25 Mar 2024 03:58:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711339154; cv=none; b=Klb6nIkmv8xzJTlVgi+JBopevSuQ4md29nqzDRDGacREVjS2fj8+4UuGpJxObo1dQNM2NIDGyMR5uobTuPnD9yeyH5tJ9s0TwDCKFtLcRXb7fB6QISbNPdfolOJ5/JnayKPTxx9e4qhaNK/juxkaIegqmLsyCFWXPrXqsak6SZw=
+	t=1711339090; cv=none; b=RwLKJxFu7/I/MJotUcVIASb34cimukt0eeBelp7Sz2Terq6OKnWNJdPgCP63Xq/zXGiRVGWStbPVi9b/bqqNMOcrNGQ69wv4JgOqGF6avsPM0ns2vVNir7hU/WVHL7WcOC18wvdJYxHvP/xD7bKS4s0RZ6qFttu5ILLsLw8fUco=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711339154; c=relaxed/simple;
-	bh=dhSk9xYlvB9BWrRcYumZmtBULUH7LFBv69V2VOhVP2o=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=Ef/NKi5rrpl1BK/TBb6GbYIQ7UEf7J537CDrsZRBQ4Uqgji1XCIrzjbvkKgfeRTQaSPDp0tdxkzqlXbj1BVeY4HS4xMoRIXbiGJ9GbPdeZqqV0C/4CSXvcu+kOYu5Dl6LLd6GzqTnkIDcGLywZh/0wA1C5s/uL+Fq9XBt/ZPueI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com; spf=pass smtp.mailfrom=163.com; dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b=Cnp4fQnZ; arc=none smtp.client-ip=45.254.50.220
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=163.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-	s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=lPX/M
-	9qGGRnZuiwR3wscgK7y8VnR6FNWSaY4LI0hbT8=; b=Cnp4fQnZYB1ZdADCshVLN
-	WW+DHNyLyR5Y3lbyQut6Yyxfy3cadSwszv9vzrU9xkSTM/0QuVxKEojnzZMkov28
-	AQcYahqI8+hYGvFkBIsz9uyHTGcT6/OxFr3qc7WG76v/s8E7gmXBNaHRL7rF0Ieb
-	OnIwWSPZh4q9x7z5mZXsMc=
-Received: from localhost.localdomain (unknown [193.203.214.57])
-	by gzga-smtp-mta-g0-5 (Coremail) with SMTP id _____wD3_0ov9gBmL4gpBg--.1652S2;
-	Mon, 25 Mar 2024 11:57:37 +0800 (CST)
-From: Peilin He <peilinhe2020@163.com>
-To: kerneljasonxing@gmail.com
-Cc: davem@davemloft.net,
-	dsahern@kernel.org,
-	edumazet@google.com,
-	he.peilin@zte.com.cn,
-	jiang.xuexin@zte.com.cn,
-	kuba@kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-trace-kernel@vger.kernel.org,
-	liu.chun2@zte.com.cn,
-	mhiramat@kernel.org,
-	netdev@vger.kernel.org,
-	rostedt@goodmis.org,
-	xu.xin16@zte.com.cn,
-	yang.yang29@zte.com.cn,
-	zhang.yunkai@zte.com.cn
-Subject: Re: Re: [PATCH v3 resend] net/ipv4: add tracepoint for icmp_send
-Date: Mon, 25 Mar 2024 03:57:35 +0000
-Message-Id: <20240325035735.3776104-1-peilinhe2020@163.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <CAL+tcoDT01EL7g_73Whrz753oEBuRtBrfmo2PHvTdifXKP4fhQ@mail.gmail.com>
-References: <CAL+tcoDT01EL7g_73Whrz753oEBuRtBrfmo2PHvTdifXKP4fhQ@mail.gmail.com>
+	s=arc-20240116; t=1711339090; c=relaxed/simple;
+	bh=XoKAYNsC1LVnrTCTGFxIaUDAokxixDcHSSYKtvErfVw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ETAMPZWp4svOckATao/dvnLFuS76IKmFyuwPQBSvoG3uoyWfcMo4vfpg375uLTfbOeI0Pwy4BVFGh1UTnLYHvjlJ3bGbPbe9VSu86mgYYuBmf1V7mOwuoKq/FvyhabBDMn3klghtsWMsZfy5RiX8QK/nrQkhHOpbX2GR2hlvzvg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=XLZ0+5fM; arc=none smtp.client-ip=209.85.210.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f174.google.com with SMTP id d2e1a72fcca58-6e74aa08d15so2584403b3a.1;
+        Sun, 24 Mar 2024 20:58:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1711339087; x=1711943887; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=KalME2BOqp46/4QX2VDjgLSuU8wEdEBuuG4+sv8satg=;
+        b=XLZ0+5fMuIiJCNPSoFHMOriLZXkrfTJlJzSLrYinnghnIlkkFFekX19zT19kVMI9qD
+         qicTGJ41KsmAyyNEFDYz7/yA765S1Z117pLK5jPiObfYqa85beSitqYqZa5seOwkTY94
+         7WeDEgBbbJiFsjOiiI0i2rw0UV+dZzEHyxV56d5DExM2yd8zRF4QmPzaG9qKSVNLbh0q
+         swKdXkXQ1qSoszB4PICU1EFkvl1UcjhG3smW68WdJVE4X0MWvBGIKIbGHjpvXHNXlVi4
+         psHcMUaS2WEQ6Bjdhdtz1iNDUZQQqJ7yl+W38W5j1gxaPsECLr27Wd8b9IjcaEaaSY+z
+         86+A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711339087; x=1711943887;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=KalME2BOqp46/4QX2VDjgLSuU8wEdEBuuG4+sv8satg=;
+        b=kY2x/WDELsxeBE426ciHocel69WgNtsHPJw4fcz5EgelzPt364StV6FcOQN0mdJbZ+
+         y8NOLbRNJk04UNAFf3+DZVK2H8Tn3T6sViJgah4BBgKINQFZ083vY1xnEFb3kctbIZzU
+         D1DYFlbIsKS/9on5J69b7d0uPSOzjB2u/9Jd+e2c1vmqbIUXngicYQmBLC38uk24SIz/
+         JjnGy19CtF9FIkvOB50xgu3YssGIPpnijp9PpjREIrGSF5jyH4ClGGgUf1cPLvHUgNaK
+         dC/ht0Bl72KeqKr3dLEER2R/jIGJjfkchvFRoR4VYcfmwsb4XSqUSp5Q+Lb5YlgX4rOh
+         R7ug==
+X-Forwarded-Encrypted: i=1; AJvYcCUQ4j9N1FGTZGu5Dg5oskK/u5msMQ+z/wZ6kuuAqoC4ge046rlTZT4opOnA4qlkCMf7x5aALljnCmPzQOMRr4AOH1IL4ozvm/doDdkwzCfYKXly/TfbJt3lOv1rZIoAJf5zeuzNmd8YL8U8tGaqidmM
+X-Gm-Message-State: AOJu0YxnKaBdBqSpucdRVGzv11sbK4OHj72pdr+8z89J18jcUhTIyTmU
+	26L+SsGPRAOFoKF9Rf31+2izwQIDq4EZJxrOLGYDLj94ZvGXkXji
+X-Google-Smtp-Source: AGHT+IFuN3B7OZrsz6SyABbiSwEZqZ066gXiGsPmjmZNsHzxn/nrOavL6XyJXXD0z6FV0aYaeCeBow==
+X-Received: by 2002:a05:6a20:6a2a:b0:1a3:c3a9:53b8 with SMTP id p42-20020a056a206a2a00b001a3c3a953b8mr3516193pzk.46.1711339087508;
+        Sun, 24 Mar 2024 20:58:07 -0700 (PDT)
+Received: from debian-BULLSEYE-live-builder-AMD64 ([192.184.165.229])
+        by smtp.gmail.com with ESMTPSA id c21-20020a170902c1d500b001ddddc8c41fsm3805760plc.157.2024.03.24.20.58.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 24 Mar 2024 20:58:06 -0700 (PDT)
+Date: Sun, 24 Mar 2024 20:58:04 -0700
+From: Calvin Owens <jcalvinowens@gmail.com>
+To: Masami Hiramatsu <mhiramat@kernel.org>
+Cc: Jarkko Sakkinen <jarkko@kernel.org>, linux-riscv@lists.infradead.org,
+	Paul Walmsley <paul.walmsley@sifive.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Albert Ou <aou@eecs.berkeley.edu>, linux-kernel@vger.kernel.org,
+	"Naveen N . Rao" <naveen.n.rao@linux.ibm.com>,
+	Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>,
+	"David S . Miller" <davem@davemloft.net>,
+	linux-trace-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] arch/riscv: Enable kprobes when CONFIG_MODULES=n
+Message-ID: <ZgD2TD3NYl8D-Uim@debian-BULLSEYE-live-builder-AMD64>
+References: <20240323232908.13261-1-jarkko@kernel.org>
+ <20240325115632.04e37297491cadfbbf382767@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:_____wD3_0ov9gBmL4gpBg--.1652S2
-X-Coremail-Antispam: 1Uf129KBjvJXoW3WF1fAr17try7tr1rCw13CFg_yoW7Xr4rpF
-	yDAF1rKrWktrsrCw1fZw42qr15uayrGryUJr1Iqw4xCr1Dtr1Dt3y2gr1YkF95Zrs8K34a
-	v3WYk3s8Cwn8XaDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07jwkucUUUUU=
-X-CM-SenderInfo: xshlzxhqkhjiisq6il2tof0z/1tbiZRWssWXAkuWgygAAsV
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20240325115632.04e37297491cadfbbf382767@kernel.org>
 
->>
->> Introduce a tracepoint for icmp_send, which can help users to get more
->> detail information conveniently when icmp abnormal events happen.
->>
->> 1. Giving an usecase example:
->> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
->=3D=3D=3D=3D=3D
->> When an application experiences packet loss due to an unreachable UDP
->> destination port, the kernel will send an exception message through the
->> icmp_send function. By adding a trace point for icmp_send, developers or
->> system administrators can obtain detailed information about the UDP
->> packet loss, including the type, code, source address, destination addres=
->s,
->> source port, and destination port. This facilitates the trouble-shooting
->> of UDP packet loss issues especially for those network-service
->> applications.
->>
->> 2. Operation Instructions:
->> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
->=3D=3D
->> Switch to the tracing directory.
->>         cd /sys/kernel/tracing
->> Filter for destination port unreachable.
->>         echo "type=3D=3D3 && code=3D=3D3" > events/icmp/icmp_send/filter
->> Enable trace event.
->>         echo 1 > events/icmp/icmp_send/enable
->>
->> 3. Result View:
->> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
->>  udp_client_erro-11370   [002] ...s.12   124.728002:
->>  icmp_send: icmp_send: type=3D3, code=3D3.
->>  From 127.0.0.1:41895 to 127.0.0.1:6666 ulen=3D23
->>  skbaddr=3D00000000589b167a
->>
->> Changelog
->> ---------
->> v2->v3:
->> Some fixes according to
->> https://lore.kernel.org/all/20240319102549.7f7f6f53@gandalf.local.home/
->> 1. Change the tracking directory to/sys/kernel/tracking.
->> 2. Adjust the layout of the TP-STRUCT_entry parameter structure.
->>
->> v1->v2:
->> Some fixes according to
->> https://lore.kernel.org/all/CANn89iL-y9e_VFpdw=3DsZtRnKRu_tnUwqHuFQTJvJsv=
->-nz1xPDw@mail.gmail.com/
->> 1. adjust the trace_icmp_send() to more protocols than UDP.
->> 2. move the calling of trace_icmp_send after sanity checks
->> in __icmp_send().
->>
->> Signed-off-by: Peilin He<he.peilin@zte.com.cn>
->> Reviewed-by: xu xin <xu.xin16@zte.com.cn>
->> Reviewed-by: Yunkai Zhang <zhang.yunkai@zte.com.cn>
->> Cc: Yang Yang <yang.yang29@zte.com.cn>
->> Cc: Liu Chun <liu.chun2@zte.com.cn>
->> Cc: Xuexin Jiang <jiang.xuexin@zte.com.cn>
->> ---
->>  include/trace/events/icmp.h | 64 +++++++++++++++++++++++++++++++++++++
->>  net/ipv4/icmp.c             |  4 +++
->>  2 files changed, 68 insertions(+)
->>  create mode 100644 include/trace/events/icmp.h
->>
->> diff --git a/include/trace/events/icmp.h b/include/trace/events/icmp.h
->> new file mode 100644
->> index 000000000000..2098d4b1b12e
->> --- /dev/null
->> +++ b/include/trace/events/icmp.h
->> @@ -0,0 +1,64 @@
->> +/* SPDX-License-Identifier: GPL-2.0 */
->> +#undef TRACE_SYSTEM
->> +#define TRACE_SYSTEM icmp
->> +
->> +#if !defined(_TRACE_ICMP_H) || defined(TRACE_HEADER_MULTI_READ)
->> +#define _TRACE_ICMP_H
->> +
->> +#include <linux/icmp.h>
->> +#include <linux/tracepoint.h>
->> +
->> +TRACE_EVENT(icmp_send,
->> +
->> +               TP_PROTO(const struct sk_buff *skb, int type, int code),
->> +
->> +               TP_ARGS(skb, type, code),
->> +
->> +               TP_STRUCT__entry(
->> +                       __field(const void *, skbaddr)
->> +                       __field(int, type)
->> +                       __field(int, code)
->> +                       __array(__u8, saddr, 4)
->> +                       __array(__u8, daddr, 4)
->> +                       __field(__u16, sport)
->> +                       __field(__u16, dport)
->> +                       __field(unsigned short, ulen)
->> +               ),
->> +
->> +               TP_fast_assign(
->> +                       struct iphdr *iph =3D ip_hdr(skb);
->> +                       int proto_4 =3D iph->protocol;
->> +                       __be32 *p32;
->> +
->> +                       __entry->skbaddr =3D skb;
->> +                       __entry->type =3D type;
->> +                       __entry->code =3D code;
->> +
->> +                       if (proto_4 =3D=3D IPPROTO_UDP) {
->> +                               struct udphdr *uh =3D udp_hdr(skb);
->> +                               __entry->sport =3D ntohs(uh->source);
->> +                               __entry->dport =3D ntohs(uh->dest);
->> +                               __entry->ulen =3D ntohs(uh->len);
->
->This is completely bogus.
->
->Adding tracepoints is ok if there are no side effects like bugs :/
->
->At this point there is no guarantee the UDP header is complete/present
->in skb->head
->
->Look at the existing checks between lines 619 and 623
->
->Then audit all icmp_send() callers, and ask yourself if UDP packets
->can not be malicious (like with a truncated UDP header)
-Yeah, you are correct. Directly parsing udphdr through the sdk may
-conceal bugs, such as illegal skb. To handle such exceptional scenarios,
-we can determine the legitimacy of skb by checking whether the position
-of the uh pointer is out of bounds. The modifications in the patch are
-as follows:	
-	struct udphdr *uh = udp_hdr(skb);
-	
-	if (proto_4 != IPPROTO_UDP || (u8 *)uh < skb->head ||
-		(u8 *)uh + sizeof(struct udphdr) > skb_tail_pointer(skb)) {
-		__entry->sport = 0;
-		__entry->dport = 0;
-		__entry->ulen = 0;
-	} else {
-		__entry->sport = ntohs(uh->source);
-		__entry->dport = ntohs(uh->dest);
-		__entry->ulen = ntohs(uh->len);
-	}
-	
-Additionally, the validity of all parameters in the current patch has been
-confirmed without any issues. Thank you once again for your reminder.
+On Monday 03/25 at 11:56 +0900, Masami Hiramatsu wrote:
+> Hi Jarkko,
+> 
+> On Sun, 24 Mar 2024 01:29:08 +0200
+> Jarkko Sakkinen <jarkko@kernel.org> wrote:
+> 
+> > Tracing with kprobes while running a monolithic kernel is currently
+> > impossible due the kernel module allocator dependency.
+> > 
+> > Address the issue by allowing architectures to implement module_alloc()
+> > and module_memfree() independent of the module subsystem. An arch tree
+> > can signal this by setting HAVE_KPROBES_ALLOC in its Kconfig file.
+> > 
+> > Realize the feature on RISC-V by separating allocator to module_alloc.c
+> > and implementing module_memfree().
+> 
+> Even though, this involves changes in arch-independent part. So it should
+> be solved by generic way. Did you checked Calvin's thread?
+> 
+> https://lore.kernel.org/all/cover.1709676663.git.jcalvinowens@gmail.com/
 
+FYI, I should have v2 of that series out later this week.
+
+Thanks,
+Calvin
+
+> I think, we'd better to introduce `alloc_execmem()`,
+> CONFIG_HAVE_ALLOC_EXECMEM and CONFIG_ALLOC_EXECMEM at first
+> 
+>   config HAVE_ALLOC_EXECMEM
+> 	bool
+> 
+>   config ALLOC_EXECMEM
+> 	bool "Executable trampline memory allocation"
+> 	depends on MODULES || HAVE_ALLOC_EXECMEM
+> 
+> And define fallback macro to module_alloc() like this.
+> 
+> #ifndef CONFIG_HAVE_ALLOC_EXECMEM
+> #define alloc_execmem(size, gfp)	module_alloc(size)
+> #endif
+> 
+> Then, introduce a new dependency to kprobes
+> 
+>   config KPROBES
+>   	bool "Kprobes"
+> 	select ALLOC_EXECMEM
+> 
+> and update kprobes to use alloc_execmem and remove module related
+> code from it.
+> 
+> You also should consider using IS_ENABLED(CONFIG_MODULE) in the code to
+> avoid using #ifdefs.
+> 
+> Finally, you can add RISCV implementation patch of HAVE_ALLOC_EXECMEM in the
+> next patch.
+> 
+> Thank you,
+> 
+> 
+> > 
+> > Link: https://www.sochub.fi # for power on testing new SoC's with a minimal stack
+> > Link: https://lore.kernel.org/all/20220608000014.3054333-1-jarkko@profian.com/ # continuation
+> > Signed-off-by: Jarkko Sakkinen <jarkko@kernel.org>
+> > ---
+> > v2:
+> > - Better late than never right? :-)
+> > - Focus only to RISC-V for now to make the patch more digestable. This
+> >   is the arch where I use the patch on a daily basis to help with QA.
+> > - Introduce HAVE_KPROBES_ALLOC flag to help with more gradual migration.
+> > ---
+> >  arch/Kconfig                     |  8 +++++++-
+> >  arch/riscv/Kconfig               |  1 +
+> >  arch/riscv/kernel/Makefile       |  5 +++++
+> >  arch/riscv/kernel/module.c       | 11 -----------
+> >  arch/riscv/kernel/module_alloc.c | 28 ++++++++++++++++++++++++++++
+> >  kernel/kprobes.c                 | 10 ++++++++++
+> >  kernel/trace/trace_kprobe.c      | 18 ++++++++++++++++--
+> >  7 files changed, 67 insertions(+), 14 deletions(-)
+> >  create mode 100644 arch/riscv/kernel/module_alloc.c
+> > 
+> > diff --git a/arch/Kconfig b/arch/Kconfig
+> > index a5af0edd3eb8..c931f1de98a7 100644
+> > --- a/arch/Kconfig
+> > +++ b/arch/Kconfig
+> > @@ -52,7 +52,7 @@ config GENERIC_ENTRY
+> >  
+> >  config KPROBES
+> >  	bool "Kprobes"
+> > -	depends on MODULES
+> > +	depends on MODULES || HAVE_KPROBES_ALLOC
+> >  	depends on HAVE_KPROBES
+> >  	select KALLSYMS
+> >  	select TASKS_RCU if PREEMPTION
+> > @@ -215,6 +215,12 @@ config HAVE_OPTPROBES
+> >  config HAVE_KPROBES_ON_FTRACE
+> >  	bool
+> >  
+> > +config HAVE_KPROBES_ALLOC
+> > +	bool
+> > +	help
+> > +	  Architectures that select this option are capable of allocating memory
+> > +	  for kprobes withou the kernel module allocator.
+> > +
+> >  config ARCH_CORRECT_STACKTRACE_ON_KRETPROBE
+> >  	bool
+> >  	help
+> > diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
+> > index e3142ce531a0..4f1b925e83d8 100644
+> > --- a/arch/riscv/Kconfig
+> > +++ b/arch/riscv/Kconfig
+> > @@ -132,6 +132,7 @@ config RISCV
+> >  	select HAVE_KPROBES if !XIP_KERNEL
+> >  	select HAVE_KPROBES_ON_FTRACE if !XIP_KERNEL
+> >  	select HAVE_KRETPROBES if !XIP_KERNEL
+> > +	select HAVE_KPROBES_ALLOC if !XIP_KERNEL
+> >  	# https://github.com/ClangBuiltLinux/linux/issues/1881
+> >  	select HAVE_LD_DEAD_CODE_DATA_ELIMINATION if !LD_IS_LLD
+> >  	select HAVE_MOVE_PMD
+> > diff --git a/arch/riscv/kernel/Makefile b/arch/riscv/kernel/Makefile
+> > index 604d6bf7e476..46318194bce1 100644
+> > --- a/arch/riscv/kernel/Makefile
+> > +++ b/arch/riscv/kernel/Makefile
+> > @@ -73,6 +73,11 @@ obj-$(CONFIG_SMP)		+= cpu_ops.o
+> >  
+> >  obj-$(CONFIG_RISCV_BOOT_SPINWAIT) += cpu_ops_spinwait.o
+> >  obj-$(CONFIG_MODULES)		+= module.o
+> > +ifeq ($(CONFIG_MODULES),y)
+> > +obj-y				+= module_alloc.o
+> > +else
+> > +obj-$(CONFIG_KPROBES)		+= module_alloc.o
+> > +endif
+> >  obj-$(CONFIG_MODULE_SECTIONS)	+= module-sections.o
+> >  
+> >  obj-$(CONFIG_CPU_PM)		+= suspend_entry.o suspend.o
+> > diff --git a/arch/riscv/kernel/module.c b/arch/riscv/kernel/module.c
+> > index 5e5a82644451..cc324b450f2e 100644
+> > --- a/arch/riscv/kernel/module.c
+> > +++ b/arch/riscv/kernel/module.c
+> > @@ -905,17 +905,6 @@ int apply_relocate_add(Elf_Shdr *sechdrs, const char *strtab,
+> >  	return 0;
+> >  }
+> >  
+> > -#if defined(CONFIG_MMU) && defined(CONFIG_64BIT)
+> > -void *module_alloc(unsigned long size)
+> > -{
+> > -	return __vmalloc_node_range(size, 1, MODULES_VADDR,
+> > -				    MODULES_END, GFP_KERNEL,
+> > -				    PAGE_KERNEL, VM_FLUSH_RESET_PERMS,
+> > -				    NUMA_NO_NODE,
+> > -				    __builtin_return_address(0));
+> > -}
+> > -#endif
+> > -
+> >  int module_finalize(const Elf_Ehdr *hdr,
+> >  		    const Elf_Shdr *sechdrs,
+> >  		    struct module *me)
+> > diff --git a/arch/riscv/kernel/module_alloc.c b/arch/riscv/kernel/module_alloc.c
+> > new file mode 100644
+> > index 000000000000..3d9aa8dbca8a
+> > --- /dev/null
+> > +++ b/arch/riscv/kernel/module_alloc.c
+> > @@ -0,0 +1,28 @@
+> > +// SPDX-License-Identifier: GPL-2.0-or-later
+> > +/*
+> > + *  Copyright (c) 2017 Zihao Yu
+> > + *  Copyright (c) 2024 Jarkko Sakkinen
+> > + */
+> > +
+> > +#include <linux/mm.h>
+> > +#include <linux/moduleloader.h>
+> > +#include <linux/vmalloc.h>
+> > +#include <asm/sections.h>
+> > +
+> > +#if defined(CONFIG_MMU) && defined(CONFIG_64BIT)
+> > +void *module_alloc(unsigned long size)
+> > +{
+> > +	return __vmalloc_node_range(size, 1, MODULES_VADDR,
+> > +				    MODULES_END, GFP_KERNEL,
+> > +				    PAGE_KERNEL, 0, NUMA_NO_NODE,
+> > +				    __builtin_return_address(0));
+> > +}
+> > +
+> > +void module_memfree(void *module_region)
+> > +{
+> > +	if (in_interrupt())
+> > +		pr_warn("In interrupt context: vmalloc may not work.\n");
+> > +
+> > +	vfree(module_region);
+> > +}
+> > +#endif
+> > diff --git a/kernel/kprobes.c b/kernel/kprobes.c
+> > index 9d9095e81792..2c583ab6efc4 100644
+> > --- a/kernel/kprobes.c
+> > +++ b/kernel/kprobes.c
+> > @@ -1580,6 +1580,7 @@ static int check_kprobe_address_safe(struct kprobe *p,
+> >  		goto out;
+> >  	}
+> >  
+> > +#ifdef CONFIG_MODULES
+> >  	/* Check if 'p' is probing a module. */
+> >  	*probed_mod = __module_text_address((unsigned long) p->addr);
+> >  	if (*probed_mod) {
+> > @@ -1603,6 +1604,8 @@ static int check_kprobe_address_safe(struct kprobe *p,
+> >  			ret = -ENOENT;
+> >  		}
+> >  	}
+> > +#endif
+> > +
+> >  out:
+> >  	preempt_enable();
+> >  	jump_label_unlock();
+> > @@ -2482,6 +2485,7 @@ int kprobe_add_area_blacklist(unsigned long start, unsigned long end)
+> >  	return 0;
+> >  }
+> >  
+> > +#ifdef CONFIG_MODULES
+> >  /* Remove all symbols in given area from kprobe blacklist */
+> >  static void kprobe_remove_area_blacklist(unsigned long start, unsigned long end)
+> >  {
+> > @@ -2499,6 +2503,7 @@ static void kprobe_remove_ksym_blacklist(unsigned long entry)
+> >  {
+> >  	kprobe_remove_area_blacklist(entry, entry + 1);
+> >  }
+> > +#endif /* CONFIG_MODULES */
+> >  
+> >  int __weak arch_kprobe_get_kallsym(unsigned int *symnum, unsigned long *value,
+> >  				   char *type, char *sym)
+> > @@ -2564,6 +2569,7 @@ static int __init populate_kprobe_blacklist(unsigned long *start,
+> >  	return ret ? : arch_populate_kprobe_blacklist();
+> >  }
+> >  
+> > +#ifdef CONFIG_MODULES
+> >  static void add_module_kprobe_blacklist(struct module *mod)
+> >  {
+> >  	unsigned long start, end;
+> > @@ -2665,6 +2671,7 @@ static struct notifier_block kprobe_module_nb = {
+> >  	.notifier_call = kprobes_module_callback,
+> >  	.priority = 0
+> >  };
+> > +#endif /* CONFIG_MODULES */
+> >  
+> >  void kprobe_free_init_mem(void)
+> >  {
+> > @@ -2724,8 +2731,11 @@ static int __init init_kprobes(void)
+> >  	err = arch_init_kprobes();
+> >  	if (!err)
+> >  		err = register_die_notifier(&kprobe_exceptions_nb);
+> > +
+> > +#ifdef CONFIG_MODULES
+> >  	if (!err)
+> >  		err = register_module_notifier(&kprobe_module_nb);
+> > +#endif
+> >  
+> >  	kprobes_initialized = (err == 0);
+> >  	kprobe_sysctls_init();
+> > diff --git a/kernel/trace/trace_kprobe.c b/kernel/trace/trace_kprobe.c
+> > index c4c6e0e0068b..f8fbd5e76dda 100644
+> > --- a/kernel/trace/trace_kprobe.c
+> > +++ b/kernel/trace/trace_kprobe.c
+> > @@ -111,6 +111,7 @@ static nokprobe_inline bool trace_kprobe_within_module(struct trace_kprobe *tk,
+> >  	return strncmp(module_name(mod), name, len) == 0 && name[len] == ':';
+> >  }
+> >  
+> > +#ifdef CONFIG_MODULES
+> >  static nokprobe_inline bool trace_kprobe_module_exist(struct trace_kprobe *tk)
+> >  {
+> >  	char *p;
+> > @@ -129,6 +130,7 @@ static nokprobe_inline bool trace_kprobe_module_exist(struct trace_kprobe *tk)
+> >  
+> >  	return ret;
+> >  }
+> > +#endif /* CONFIG_MODULES */
+> >  
+> >  static bool trace_kprobe_is_busy(struct dyn_event *ev)
+> >  {
+> > @@ -608,7 +610,11 @@ static int append_trace_kprobe(struct trace_kprobe *tk, struct trace_kprobe *to)
+> >  
+> >  	/* Register k*probe */
+> >  	ret = __register_trace_kprobe(tk);
+> > -	if (ret == -ENOENT && !trace_kprobe_module_exist(tk)) {
+> > +#ifdef CONFIG_MODULES
+> > +	if (ret == -ENOENT && trace_kprobe_module_exist(tk))
+> > +		ret = 0;
+> > +#endif /* CONFIG_MODULES */
+> > +	if (ret == -ENOENT) {
+> >  		pr_warn("This probe might be able to register after target module is loaded. Continue.\n");
+> >  		ret = 0;
+> >  	}
+> > @@ -655,7 +661,11 @@ static int register_trace_kprobe(struct trace_kprobe *tk)
+> >  
+> >  	/* Register k*probe */
+> >  	ret = __register_trace_kprobe(tk);
+> > -	if (ret == -ENOENT && !trace_kprobe_module_exist(tk)) {
+> > +#ifdef CONFIG_MODULES
+> > +	if (ret == -ENOENT && trace_kprobe_module_exist(tk))
+> > +		ret = 0;
+> > +#endif /* CONFIG_MODULES */
+> > +	if (ret == -ENOENT) {
+> >  		pr_warn("This probe might be able to register after target module is loaded. Continue.\n");
+> >  		ret = 0;
+> >  	}
+> > @@ -670,6 +680,7 @@ static int register_trace_kprobe(struct trace_kprobe *tk)
+> >  	return ret;
+> >  }
+> >  
+> > +#ifdef CONFIG_MODULES
+> >  /* Module notifier call back, checking event on the module */
+> >  static int trace_kprobe_module_callback(struct notifier_block *nb,
+> >  				       unsigned long val, void *data)
+> > @@ -704,6 +715,7 @@ static struct notifier_block trace_kprobe_module_nb = {
+> >  	.notifier_call = trace_kprobe_module_callback,
+> >  	.priority = 1	/* Invoked after kprobe module callback */
+> >  };
+> > +#endif /* CONFIG_MODULES */
+> >  
+> >  static int count_symbols(void *data, unsigned long unused)
+> >  {
+> > @@ -1897,8 +1909,10 @@ static __init int init_kprobe_trace_early(void)
+> >  	if (ret)
+> >  		return ret;
+> >  
+> > +#ifdef CONFIG_MODULES
+> >  	if (register_module_notifier(&trace_kprobe_module_nb))
+> >  		return -EINVAL;
+> > +#endif /* CONFIG_MODULES */
+> >  
+> >  	return 0;
+> >  }
+> > -- 
+> > 2.44.0
+> > 
+> 
+> 
+> -- 
+> Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
