@@ -1,64 +1,86 @@
-Return-Path: <linux-kernel+bounces-118066-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-118068-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 057C088B33E
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 22:55:30 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 771C288B64A
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 01:44:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B3C23304E02
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 21:55:28 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B1FF3B3CD8B
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 21:57:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 108037175E;
-	Mon, 25 Mar 2024 21:55:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BF84A6FE2B;
+	Mon, 25 Mar 2024 21:57:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="pldJko+7"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="OmCdKPSK"
+Received: from mail-pg1-f178.google.com (mail-pg1-f178.google.com [209.85.215.178])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4EF1F70CB5;
-	Mon, 25 Mar 2024 21:55:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7E3D86F525
+	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 21:56:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711403713; cv=none; b=Ti8xqVdH6oJc7juNCHGj1P0GT4cOJ0W7lShnIW1XRpaiUy7Ih1IsQwUWN0w8KUIqV3i4yOCAreWvYdcspuPFAQzTIyJsVxcLL31BrhkSZUMR7JQjNozef2fWaTmMokKuA7eQi9sPSrD7JHlSYs7AOJUXEoHoLnPW2Bs5gaE5G30=
+	t=1711403820; cv=none; b=FX8kT1OcpkZgroiXvLdqxBsXcctE8FGRVSDqzHbDtIvCgsz/az5PTPOMNRm6R+D5lX4P9BsUxFanHET2imbhL6KYTRRwNDMqZsOHdJWaNZUSit7DNw6n7cFj3qbNlWtjd4jGR4aQ7cUVhRvRc5wpbIgEU4uQOKJg3muqAPq5PXU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711403713; c=relaxed/simple;
-	bh=bwhKzO7Db7ftntYaf5MwOOW5CKKybR0mc5KmEmU3sgA=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=B2RsgalCbQKH2J5FiPsqjtFBbO8p77PB6g+XiGU1TL/Pb/EnYd2ppq9DXNTn64VhXG5jqsGX8/ApV/Dge9pkdpuNXsUDpXe+s7o8y7neaMzrbrnYgXuMtHHhHdU4jbj8uMFoYcYP2a0LnRdpkFk1XNrKK/wrBwada+zn3Nwokbk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=pldJko+7; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 493FBC433F1;
-	Mon, 25 Mar 2024 21:55:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711403712;
-	bh=bwhKzO7Db7ftntYaf5MwOOW5CKKybR0mc5KmEmU3sgA=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=pldJko+7M1thiYUGHzuWMw9E9STkvm/rTGVgrZt2fOPkOIm3iovANvvPlTaflJFRj
-	 V/0mbHf+ZmzI2Lq28bwBS/dk+v0dsWmrTUb45+UnW6gFimQlJdBb5qJTpv1He2w9mP
-	 73tf3ed4oT8qMi4eHMZFIdpB2PnuH50HtgEqBNR24aUlkHSfRTqZcAdEzOyu3DFnWg
-	 3R3wlcNUPztV7k2aPhik8u1IWkbjXkvsp2lknEiVPg0SwZUUtGhPq9sn9u4UlrFWfM
-	 qv+leIOKzLnovqJ9GbKR8cF7Ivty3ySnxOtnCiqmyXkl2qQUgnYuiK56pd+XjBYYTo
-	 tGhlmAkb0YD/A==
-From: Jarkko Sakkinen <jarkko@kernel.org>
-To: linux-riscv@lists.infradead.org
-Cc: Jarkko Sakkinen <jarkko@kernel.org>,
-	Paul Walmsley <paul.walmsley@sifive.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Albert Ou <aou@eecs.berkeley.edu>,
-	linux-kernel@vger.kernel.org,
-	Luis Chamberlain <mcgrof@kernel.org>,
-	linux-modules@vger.kernel.org,
-	"Naveen N . Rao" <naveen.n.rao@linux.ibm.com>,
-	Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>,
-	"David S . Miller" <davem@davemloft.net>,
-	Masami Hiramatsu <mhiramat@kernel.org>
-Subject: [PATCH v5 2/2] arch/riscv: Enable kprobes when CONFIG_MODULES=n
-Date: Mon, 25 Mar 2024 23:55:02 +0200
-Message-ID: <20240325215502.660-2-jarkko@kernel.org>
-X-Mailer: git-send-email 2.44.0
-In-Reply-To: <20240325215502.660-1-jarkko@kernel.org>
-References: <20240325215502.660-1-jarkko@kernel.org>
+	s=arc-20240116; t=1711403820; c=relaxed/simple;
+	bh=yULUuFpaQi4mHiQRsxtWHLwt0K5+xxOrBTrFegQ3W+E=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=n9+GGqRx9dWrgugq/qpqpGUQFllAWo5zWVMGSXLhQiXwjMHOSviBeaPJV3iCqumTlqNX4yu70WjHHdDUEhLutAbSolU1jrox+DmuFX+rkRe3N+tl9kI0hvyd2TODZKC77bDX5o3mwND7TY9eZ6Ui4lLTq2j3nfEuwJX3k42u/qk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=OmCdKPSK; arc=none smtp.client-ip=209.85.215.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-pg1-f178.google.com with SMTP id 41be03b00d2f7-5f034b4dcecso2439748a12.1
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 14:56:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1711403818; x=1712008618; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=UR7sFSEYjP8BO01JVRD78Toou7R7NTsnLZcSYy9yMLk=;
+        b=OmCdKPSK50QeT2a9kcn82Gl3bMDJ1m+IhSg8ywsH66zN+u8/XOUGmDBDhmKpqqmYFe
+         6a3JvCumtCUIL9yKAIMDT8/kO5edOZR9k0ZGvoxUo4m3AxIPUbkQmVu3dltoi+Q5gl3I
+         z8nLWvYEE3vN1YyWr1nY/f9JJ3FOezvm68CRM=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711403818; x=1712008618;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=UR7sFSEYjP8BO01JVRD78Toou7R7NTsnLZcSYy9yMLk=;
+        b=YVG7wERpJO+WxANg5hUEwLOzDKHTPW6aabsjD2GinvYQkMPq79s5VWEUudDYUqh+MK
+         fzitR0y6ieOUP3nD7VRni8rI6UopbrnJ1LblaCbT6rssKwS3aVZYARX9LmolXionBWF4
+         xev777aSQitgYEDsFXj3ea3VUr4BOqADYVABlIR0OX/JRGMBdP1L6k2u4RDB6zF1fE3G
+         bsGmcyopF+d0PU2JGxICiKfcB89PeYVfvEJqIe9vtQSxjBcFwkBXwjS/08wh01WqHp4A
+         pAdPDrFnl2zq5Z9kbYVr5qj3cfWPUn6SKapxip0g0Tn2diqHameoMyv/qlHMN5nu3yma
+         Ychw==
+X-Forwarded-Encrypted: i=1; AJvYcCXBKJzjMWUnpxk5GnfqlUG7bzhjJbufARQYu6q/RU78YBoEzYaJwlx/6P+B3nZBsHpq5RlF614L4jhp8t5JiBSwLz10UyvmJQqimgfh
+X-Gm-Message-State: AOJu0YxXt0UVDd6yy0XY3kba50PmlgHWyGQOLbb707FN11vh9/Csxc6C
+	iCADvIrkgh+yd6yrtmOXTEO1hEeh+3D1HXh34lHpUfCon/vr5pjg01bslLBRIGmA+eshAoljufk
+	=
+X-Google-Smtp-Source: AGHT+IFvvymI/+nAjVhwHLdNpVFDRLNACuh+o6MvjynK0XJWPebIEwChaIwn4LWdWp8KHSfw+SjCnQ==
+X-Received: by 2002:a17:902:ec8f:b0:1e0:73d:9172 with SMTP id x15-20020a170902ec8f00b001e0073d9172mr10772950plg.23.1711403817749;
+        Mon, 25 Mar 2024 14:56:57 -0700 (PDT)
+Received: from dianders.sjc.corp.google.com ([2620:15c:9d:2:f21b:7dde:93cc:b987])
+        by smtp.gmail.com with ESMTPSA id n6-20020a170902e54600b001def0897284sm5207866plf.76.2024.03.25.14.56.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 25 Mar 2024 14:56:57 -0700 (PDT)
+From: Douglas Anderson <dianders@chromium.org>
+To: dri-devel@lists.freedesktop.org
+Cc: Pin-yen Lin <treapking@chromium.org>,
+	Prahlad Kilambi <prahladk@google.com>,
+	Hsin-Yi Wang <hsinyi@chromium.org>,
+	Douglas Anderson <dianders@chromium.org>,
+	Daniel Vetter <daniel@ffwll.ch>,
+	David Airlie <airlied@gmail.com>,
+	Jessica Zhang <quic_jesszhan@quicinc.com>,
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+	Maxime Ripard <mripard@kernel.org>,
+	Neil Armstrong <neil.armstrong@linaro.org>,
+	Sam Ravnborg <sam@ravnborg.org>,
+	Thomas Zimmermann <tzimmermann@suse.de>,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH 0/3] drm-panel: Don't make failures quite so fatal
+Date: Mon, 25 Mar 2024 14:56:24 -0700
+Message-ID: <20240325215631.3804796-1-dianders@chromium.org>
+X-Mailer: git-send-email 2.44.0.396.g6e790dbe36-goog
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -67,91 +89,48 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Tacing with kprobes while running a monolithic kernel is currently
-impossible due the kernel module allocator dependency.
 
-Address the issue by implementing textmem API for RISC-V.
+This patch series is born out of the observation that after several
+Chromebooks transitioned over to the generic "edp-panel" compatible
+string that we received a number of in-the-field reports of the
+primary graphics device for the Chromebook not coming up.
 
-Link: https://www.sochub.fi # for power on testing new SoC's with a minimal stack
-Link: https://lore.kernel.org/all/20220608000014.3054333-1-jarkko@profian.com/ # continuation
-Signed-off-by: Jarkko Sakkinen <jarkko@kernel.org>
----
-v5:
-- No changes, expect removing alloc_execmem() call which should have
-  been part of the previous patch.
-v4:
-- Include linux/execmem.h.
-v3:
-- Architecture independent parts have been split to separate patches.
-- Do not change arch/riscv/kernel/module.c as it is out of scope for
-  this patch set now.
-v2:
-- Better late than never right? :-)
-- Focus only to RISC-V for now to make the patch more digestable. This
-  is the arch where I use the patch on a daily basis to help with QA.
-- Introduce HAVE_KPROBES_ALLOC flag to help with more gradual migration.
----
- arch/riscv/Kconfig          |  1 +
- arch/riscv/kernel/Makefile  |  3 +++
- arch/riscv/kernel/execmem.c | 22 ++++++++++++++++++++++
- 3 files changed, 26 insertions(+)
- create mode 100644 arch/riscv/kernel/execmem.c
+The current belief is that these Chromebooks are actually suffering
+from a true hardware failure and the panel is either fully
+disconnected or it has some type of intermittent connection. While we
+can't solve that problem, digging showed that we actually dealt with
+this situation better _before_ switching to the generic "edp-panel"
+compatible string.
 
-diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
-index e3142ce531a0..499512fb17ff 100644
---- a/arch/riscv/Kconfig
-+++ b/arch/riscv/Kconfig
-@@ -132,6 +132,7 @@ config RISCV
- 	select HAVE_KPROBES if !XIP_KERNEL
- 	select HAVE_KPROBES_ON_FTRACE if !XIP_KERNEL
- 	select HAVE_KRETPROBES if !XIP_KERNEL
-+	select HAVE_ALLOC_EXECMEM if !XIP_KERNEL
- 	# https://github.com/ClangBuiltLinux/linux/issues/1881
- 	select HAVE_LD_DEAD_CODE_DATA_ELIMINATION if !LD_IS_LLD
- 	select HAVE_MOVE_PMD
-diff --git a/arch/riscv/kernel/Makefile b/arch/riscv/kernel/Makefile
-index 604d6bf7e476..337797f10d3e 100644
---- a/arch/riscv/kernel/Makefile
-+++ b/arch/riscv/kernel/Makefile
-@@ -73,6 +73,9 @@ obj-$(CONFIG_SMP)		+= cpu_ops.o
- 
- obj-$(CONFIG_RISCV_BOOT_SPINWAIT) += cpu_ops_spinwait.o
- obj-$(CONFIG_MODULES)		+= module.o
-+ifeq ($(CONFIG_ALLOC_EXECMEM),y)
-+obj-y				+= execmem.o
-+endif
- obj-$(CONFIG_MODULE_SECTIONS)	+= module-sections.o
- 
- obj-$(CONFIG_CPU_PM)		+= suspend_entry.o suspend.o
-diff --git a/arch/riscv/kernel/execmem.c b/arch/riscv/kernel/execmem.c
-new file mode 100644
-index 000000000000..3e52522ead32
---- /dev/null
-+++ b/arch/riscv/kernel/execmem.c
-@@ -0,0 +1,22 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+
-+#include <linux/mm.h>
-+#include <linux/execmem.h>
-+#include <linux/vmalloc.h>
-+#include <asm/sections.h>
-+
-+void *alloc_execmem(unsigned long size, gfp_t /* gfp */)
-+{
-+	return __vmalloc_node_range(size, 1, MODULES_VADDR,
-+				    MODULES_END, GFP_KERNEL,
-+				    PAGE_KERNEL, 0, NUMA_NO_NODE,
-+				    __builtin_return_address(0));
-+}
-+
-+void free_execmem(void *region)
-+{
-+	if (in_interrupt())
-+		pr_warn("In interrupt context: vmalloc may not work.\n");
-+
-+	vfree(region);
-+}
+Before switching to "edp-panel", devices using eDP would finish their
+probe and would actually not show any failure until you tried to turn
+the panel on. That was a _good_ thing. The component model used by
+many DRM devices means that if the panel doesn't finish probing that
+the rest of the DRM device doesn't probe. In turn, that means that any
+other display adapters (like ones that would allow hooking up an
+external display) don't probe. The end result was that a device with a
+broken panel that could have continued to be a useful computer by
+hooking up an external display became e-waste.
+
+I won't say that this series is the most elegant/wonderful thing in
+the world. Ideally we could fail the probe of the panel and still use
+the external display. That's a pretty serious re-design, though. DRM
+devices work like they do with the component model because of some of
+their inherent complexities.
+
+
+Douglas Anderson (3):
+  drm/panel-edp: Abstract out function to set conservative timings
+  drm/panel-edp: If we fail to powerup/get EDID, use conservative
+    timings
+  drm-panel: If drm_panel_dp_aux_backlight() fails, don't fail panel
+    probe
+
+ drivers/gpu/drm/panel/panel-edp.c             | 60 +++++++++++--------
+ .../gpu/drm/panel/panel-samsung-atna33xc20.c  |  9 ++-
+ 2 files changed, 41 insertions(+), 28 deletions(-)
+
 -- 
-2.44.0
+2.44.0.396.g6e790dbe36-goog
 
 
