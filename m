@@ -1,169 +1,212 @@
-Return-Path: <linux-kernel+bounces-118049-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-118050-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D580F88B2F4
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 22:39:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 3CC5088B2F9
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 22:40:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 056941C3B7F1
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 21:39:59 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5EBEF1C3FD92
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 21:40:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A4E9A6D1A3;
-	Mon, 25 Mar 2024 21:39:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D3E316EB74;
+	Mon, 25 Mar 2024 21:40:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="3WKlwkGC"
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10on2100.outbound.protection.outlook.com [40.107.93.100])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="zPCav6rn"
+Received: from mail-ed1-f48.google.com (mail-ed1-f48.google.com [209.85.208.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6051533995;
-	Mon, 25 Mar 2024 21:39:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.93.100
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711402791; cv=fail; b=g0Ztq4BgeDKzohiDHmNZoLPK90cIaOPJ2dkyaPQlC/jY2q1UaOwbwIs4qjSBsJ/sSbftSkLvYzRUvVZM7BSWllKFpsJ1AUTLr4xoZvZAwFeJID94kuilw0ldCiF26lvMA249yGh5mQxZgW6ZK4wrJTJLKISIg3Z6DmS13VbNuBc=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711402791; c=relaxed/simple;
-	bh=UOyN2XCphWrltgCcsw6aLVdqps9kZDNvWXjr1W295wE=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=SUGkCNDEC8uLdYka2EMpQDAlbAZP79uQDXZyLHCmrFDDfKB28FgnucR/RAAcGgsY3O6vdVuyeQduxuOwRF4P0dj3pQ0ziLQ0jdurBeZFBeumwscG+8RNBNI1ppjEtsWiS3GN2RRUo6eJ1+RbhhqdBrmpQzV7jT3/8u59UCVrwZo=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=3WKlwkGC; arc=fail smtp.client-ip=40.107.93.100
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=fy9H8ACHbLiEj9UQ8rp0OMqs2JLGxg0bWZctNsGvYKou1E213vhMHBraR1OJ6i4ghZMRYCWM1IV5v+R+7GOEvoGInImytXXAgjbXsnUtnwHN1d7P0U0KqdvrokNbRhV24/vA+zlNF0bKYs9m9n70p/pletCUQ/jTI7Y6z0ICNI5YpKnBqn00QR2ACLffCmYaLVWzPJpTJUF+Qm5Ku0O3gXrMLqZV2W3ColbdxJ0/Y4H39RQk4Trd/J8OQ+/BqB42MN9cTpqa/F4aWbQdSa8hhPZWdtxzFSlwhCHp/y0ICgYIvZR+oxp8VhUIhMCWBBdaxu+oA9ZMAHcOMF3VJcejjg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=ez3tCYahYG/cfMJVPjht51UrHX6gc07hbGEnocM1QhE=;
- b=Hjo0McWhTmujs+JQgVZTVuQmSRcpT1cByqamZTy0wDOom9F87pemTUn9YjEq90gbAHwtDGfn3s8OfTyXesHh7t7EeRUsXXfo4Tm7Az5/vd2sAsGA2n76pDWDvooWkkn2DoxKrqnEJwG91ihaRrDDR/WDvmOnGEElyDFd+D9kzjNJwSD5IbK4PIZ24wLsYi1fPINU/+hP4cbhw82reS8Bgt1RghLv7KESv5lwokyiaHN5anopYF8g8w2hrFA8zxY7E8xPovQdOjmISlbTcSAQJNEG5KlSkvxssqW3nAU0CsPwCKK2Vh8yQeB9OqLoStJ3p4FCrcfAHTZx0eTKaae2Bg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ez3tCYahYG/cfMJVPjht51UrHX6gc07hbGEnocM1QhE=;
- b=3WKlwkGCx3SrmapOystaCqENBTHUNxG8rq8qVZsexkcdBtldrgWXgGA5ep1Gbs0mZd+rXzWQRdD5bqnw80cYu8VGMAnQmfWxd71KMdBlswjC8t/DKsCUfzMhYxOk9MHCPUf0xq4vXfm75pbUReUJ1rOvX3+Wmsd5NS4p5j4+iPs=
-Received: from CH3PR12MB8403.namprd12.prod.outlook.com (2603:10b6:610:133::14)
- by BY5PR12MB4244.namprd12.prod.outlook.com (2603:10b6:a03:204::8) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.31; Mon, 25 Mar
- 2024 21:39:47 +0000
-Received: from CH3PR12MB8403.namprd12.prod.outlook.com
- ([fe80::aaa1:af99:e0e5:7f14]) by CH3PR12MB8403.namprd12.prod.outlook.com
- ([fe80::aaa1:af99:e0e5:7f14%5]) with mapi id 15.20.7409.028; Mon, 25 Mar 2024
- 21:39:47 +0000
-Message-ID: <16cfde5f-c198-4dc5-8e67-fa7f4af7e2cc@amd.com>
-Date: Mon, 25 Mar 2024 16:39:45 -0500
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 0/2] Update mce_record tracepoint
-Content-Language: en-US
-To: Borislav Petkov <bp@alien8.de>
-Cc: linux-trace-kernel@vger.kernel.org, linux-edac@vger.kernel.org,
- tony.luck@intel.com, x86@kernel.org, linux-kernel@vger.kernel.org,
- yazen.ghannam@amd.com, Steven Rostedt <rostedt@goodmis.org>,
- Avadhut Naik <avadhut.naik@amd.com>
-References: <20240126075800.1174583-1-avadhut.naik@amd.com>
- <20240208121013.1946ef7f@rorschach.local.home>
- <9e68a369-2667-4dd4-b715-ca1e13948a8f@amd.com>
- <20240325203147.GIZgHfM6yqPbK2YLOl@fat_crate.local>
-From: "Naik, Avadhut" <avadnaik@amd.com>
-In-Reply-To: <20240325203147.GIZgHfM6yqPbK2YLOl@fat_crate.local>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: SN7P220CA0022.NAMP220.PROD.OUTLOOK.COM
- (2603:10b6:806:123::27) To CH3PR12MB8403.namprd12.prod.outlook.com
- (2603:10b6:610:133::14)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F36AB6EB52
+	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 21:40:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.48
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1711402821; cv=none; b=A2JfhR8WRwNwcT8K18Va9NjVUh4Wum4PxH/ke/dL2TAEmL/xdDtIR/chdz0UtA0e6c9d5aAEYemVWNXtRJfTRHDNTxqG1BNUwECp7qQxld0THFbA7/qZxP3PT2mWpeC90fS7ujY5Bp5h4p9C+cTZJbHp7YGDeqDPco3c4HO0VAk=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1711402821; c=relaxed/simple;
+	bh=33fbIsdcLQosWi1ubicv/V4geBOu/bFkYtjafQ1Ixnk=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=gaZjEshJi59rQUbWKL1tZyJ+//G1nJankvwDkQ0UCsi8GReLL3Bpo8Puj6Im19ItlQukvLaQuySYkwpT0LLzbp63frPi7cUq+zFcX4tAcGDGzGqm/Wsnmw4byC4bOwuwVFZ0AWZQ6I4wa4C0wBMX/f29J2wzjNEs8TQiNyo+k8M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=zPCav6rn; arc=none smtp.client-ip=209.85.208.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ed1-f48.google.com with SMTP id 4fb4d7f45d1cf-56c29599e0cso54513a12.0
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 14:40:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1711402817; x=1712007617; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=seRw9WiSo73vDIqUe40efu3pj+vdrtDU2N7PEbfhGxY=;
+        b=zPCav6rnFLlZOkUWHDQG6deNsRWSieJLaog5Aaa0xS106PGdYk0Gcev6qpAK/+/TWu
+         dN3nucuMNIeq3nujv1jowJDcmj7hs6ENC3mAu2GsVIqq8yO9dxNWQKrrmGPkgLyUNBM0
+         6sB5Pr0spUIBOWMFgexfMxefKDkTqMKkByr8pwN5SnpVvhjPAyOiZDkuoU5RQsYHISUj
+         xdNs1+0ZuQCQf/Wc1tYMWW5CTygJ0c1YQbIScpr2d7z9On+x5RtWGqreePktyUxD+zs9
+         834UOrscYO46GDwmeTy0gROPLA5AItW2307BgC4IWl+HCwFJ+GGvJsSpUqPohkBJcfcq
+         uYMA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711402817; x=1712007617;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=seRw9WiSo73vDIqUe40efu3pj+vdrtDU2N7PEbfhGxY=;
+        b=Oz2ppoi24CNeyjqvDxfoUnSM6tABCDYzSF4KpY/bMbgMC3EumUtSVqV1sTqrYRzO85
+         VWUpF4jY7Fg7OVin16K6EGGPomCdLke+bQ26hzaKIb1RzSa6ZimZf0t9HM0CMwUMyQpk
+         7k/MguLLkPv/YZlZvLQypRCjmTjd8teNxLCvy2KUWdTBWov6zJYaHT7Nwr3xXfDsersG
+         VN1eb/+Bq/wuAl/11H7IwVoA4cDmVPrWM31MFmpvvvOjqT+hYyVyZg9Op3VBZUcxRnCh
+         ME5oXqupd+Zjc7GIm4WTXevQks22YtJUmsfAaLB5EJVor7dSKX0vGW3ORtgByLNfkVov
+         Iqhw==
+X-Forwarded-Encrypted: i=1; AJvYcCW2dWq1R7K4nrg4IgGkGWZKjfwbA22Ep3jYrd7SeAAPHWgYnUWA1hH6fti33XqDbBmzkEOKI2bC4/xt3iTFopCMU5nb/R28cdFDYLNG
+X-Gm-Message-State: AOJu0YzJjDHN8f7bEy+D64uorJrhHUGErA+wgvYbUMFl7rjcWTLCj3pQ
+	Dg5UN9wBZErVXMT9gL027EUHVW/KsccSsLcxrUlFcorI1VOLK4S1iyiKA4UENLM=
+X-Google-Smtp-Source: AGHT+IHwLO9w749fEByAg3+La2+o7ssyCNIapqWz1kGPyb3+zR8woUtBsPDN94mbgvo/zynwS+VvSg==
+X-Received: by 2002:a50:8e50:0:b0:56b:c210:870c with SMTP id 16-20020a508e50000000b0056bc210870cmr634013edx.15.1711402817136;
+        Mon, 25 Mar 2024 14:40:17 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.222.44])
+        by smtp.gmail.com with ESMTPSA id ck5-20020a0564021c0500b0056c1bf78a3asm752460edb.28.2024.03.25.14.40.15
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 25 Mar 2024 14:40:16 -0700 (PDT)
+Message-ID: <334970e7-2edd-43c8-9f18-b7b3ec5f4d17@linaro.org>
+Date: Mon, 25 Mar 2024 22:40:14 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CH3PR12MB8403:EE_|BY5PR12MB4244:EE_
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	ZPZX5vLkJvI9m7oV8m0ze7Eq6oY8+6ZMvlrTVNfEwvPTf5WlZ1nVibB2vSx2xhlQ2ZVvXR4OyMTLWmQ8IjWQOMu8tniG83y4A9zl3vZs+3SCHSOXBkOGgbERmgLUZge6VTBWjwGg5fINd92R7fDDdENLrM4dEgNPlfAMq2gWKcjvfmMO3X+ca8lT5sKA7LozmiMjbHwDkgUAwHQF6v0p4E8e7md5eHe7AhtypNoF71XTDKze87rYZM+PsFmUgvUEBZyjJm5D6+tnq97NWFovb0hKMvOL6DTN6/Vr6EY3Oq8EKDpmRe8XIhiM8YGGVLfSKfkhfHYxJaFXUhbhTx9eZjoLtVPcoSKvKilVBNmwuWj0kSLDmuwg0AH3wRyepGOhkaGQPkrC38jUSr6mORiA72uoMFipGouGfJoUrcJ4cDvawv7U8xnbAbWXnhKj/wIb2xGEB26U4ircbE07XV+KftBt3NA9FFzF+Bjk3rz1CRnsgCAdo7T53hFNRNiAFu284aNORTVEvweXo1ru/WaCjHn3UP3SpmOMzI5ALyv2n4H3LUPEhpuYZbUupuiMK0HJMmJmOFx6zhmCQdXKBK0mSVzV8wJyU0jRi17Y7co3+4FXWglEYNBVwf5wlSHEkUNwLm3PHYuL5Pw1fFLZksp8HXiTwTmreNJzfpHZRUV0Ef8=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CH3PR12MB8403.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366007)(376005)(1800799015);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?THpNWmFoYTdtOUVtWkxnYTBUNWNrSi92Y1pUdlMwSkhOMkF5M0R1V2dodXJk?=
- =?utf-8?B?TmV3bzFzcDlwbjd2RWd0RTRCU0s5N2xZUVluQXBLMkJGQVRETXdQWmhkQ09O?=
- =?utf-8?B?T04xTzRVRUlRK28rZkpXMWRQT3V2OGxuODhOc1c4ckJzWW1ETnZ4UkRMQnpB?=
- =?utf-8?B?ZVkyZ1N5a0Q5cGU1RWgvRG5YNGwzTWV1YXo0QnNxRzY3cGZFSWdxWWh4cG5Z?=
- =?utf-8?B?NGUrUmlwK2d1M1ZNbkNyYm5kZGxaYjV6c3BiVTl4R1B4NVBlVStFd2Y1WUZX?=
- =?utf-8?B?MEFvMU9TWVJoMkpPNCtNb0s1b0l6UzJoM0RORHp4cXBiRlNlWXZ4a0dqVTFC?=
- =?utf-8?B?c25qdzNsL210VWwxUDJIQU0xcjRhT3N3N2pJU1BVUG5neFFvUnptc3gvcS9t?=
- =?utf-8?B?ZHQ2a2NMaTN1OHRkZDVKWXlsTVEzOGU0UU84Snk5MEpSV0NBM0dVeW8yNk8z?=
- =?utf-8?B?a0V5cjd0RWdHZEhBcDRjUDVJbGNwNEtURjE2QlRSZ2tmSXgzQzQ3N1pNd0hH?=
- =?utf-8?B?UTZ4QlpGa1FCMU5sdFZPd2V4eTI5eVNvQWNscU1wS2E3M0VCR1hMMzhWaENi?=
- =?utf-8?B?NnByTzJxU3pxQXZnWkpwazAwOHE0eHVPWExlS2EvdFk2ZzhLNEZyMSt1NTdJ?=
- =?utf-8?B?OUYxRUNqa3RlM25pQ0N2M0JuM01IRHlTSitWNVE4R0JEdGp1WnhVTEFNa2Nz?=
- =?utf-8?B?Z1FKMzBkR1IrZy96YlRGbnVINDVPZ3ZDcnE5UmRJTTBvcFhXNDBzS3diVlk4?=
- =?utf-8?B?aHJYN2JMRkl6dEdhYU1ldEUyUUxNSnhlOFJhWUpwbWgybHQwdkxmTkVoWlY1?=
- =?utf-8?B?UnR1RGNrT1lWYVFLcnl1cEE5VDJvQU54bCtoK3VFQ0NJQ0x0UGZFOTlCUWFK?=
- =?utf-8?B?M3hRME1EcGREL0FCcVVTdzNiWlhpeU1ueXdRRWl6czBXRXA1MGFJZGsranl2?=
- =?utf-8?B?N25DMXVVRkkwaUJGOEUrYkR6elc4NmxTWm9xTERuci9Wd0xtb0RzMW5MQUZl?=
- =?utf-8?B?N08vbm9QeGVRb1ZPcG1JZk5sNlk3MExzcDUvcUM3RWpxdHlINXRIWkJVV2Vn?=
- =?utf-8?B?YlFUaXhxSTYvOGVqWWRIVE5ma203aUNKM0VKTnRVY2FCYm5ZWHFjRFl0a0po?=
- =?utf-8?B?bzEwSUY4RUVnNVpSTGdidncyNzYxMENXL2VpSDJ6WWpJNEVHTTRvYTYrQ1Vw?=
- =?utf-8?B?ZFAwY3hFdUEreTg2YmgzeVFVb2lHbEpaU2pKbGFzK3EvTmRUZ1FwRHBNSXJD?=
- =?utf-8?B?RUhFNERCNXdmN2lGRGorRnpzVzRMT1NKWXZMYWUwaTJwY3A0QVdPQlM2eXRZ?=
- =?utf-8?B?WkY2dlFhRDBJNXg1NVRmaExTSjdONFVGZVJreFhuT1NCN3hKOGZVY1Zhbm1k?=
- =?utf-8?B?V3NNeW93SnVGakxGZ3M5MTBUZ2EvN3JXMGNDQzliQXNYNTNDSkhNSFA5bldj?=
- =?utf-8?B?Vlh3dTZ1eXV4MkJ0bzBCOW1xbUNielpQQWoxUHVRVDdoVFk4UFVmdyt0K0lB?=
- =?utf-8?B?aXo0a0lSa0RaeGpTckxCeDNkT3BIbUZaWXJCdlFoamFZaGJxOHRtNWpPTSts?=
- =?utf-8?B?MkFXNWlvQVZrOFdjSnpuWTZhc09pTWttRXNBWGRwaEh3Z2ZUN0tjNGYxVEcv?=
- =?utf-8?B?SW1iZG9iWUdnaExTRCtXZ3JodDhHSEdHcGJEZUc5NmNzOUY0OVdXbnlRdXE0?=
- =?utf-8?B?OHJNcmZlWm13bUFsZk5CS2ZoclNhT2xQVVAxUm9pVkNDUkhqYWtNSGJHeE82?=
- =?utf-8?B?dkplMFJrNUI4aExzMkV2aDdhTkZ1MHI0YktTSzVRNk5ZMEZPa01RNE50Vyt3?=
- =?utf-8?B?dksvY0F1ZVAzc09HcngxS0ZaWjAyWld1Z0NtZjNnSFViNkhteUZzZ3R6SVJt?=
- =?utf-8?B?bkR1MGFQRy84KytGOHVPT0ZzUVhKSjJTejdhbkRXNlJYT1g3Q3doOG96TGZH?=
- =?utf-8?B?UE0wRWkwVXNGa2M3UmFOcEVZWDFNcmE0QXZONU9rWGdORHFXRTQ2Z0t4U3VI?=
- =?utf-8?B?bmxlekhuOGtyRkVXZkdYOXdMUWh2aEVKV3hZVHpndktsQ0pXQW1uNGJCTHY3?=
- =?utf-8?B?RGIxaWJLMjh2WXJSMTJYQ29uYmIrbUJyWWE4d3ROaGkxY2lSRmFLR01Da1hh?=
- =?utf-8?Q?rtfAOp5A9Zjp+AgmzEutc6qbO?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: c573af1d-fd59-4df6-8203-08dc4d1417d3
-X-MS-Exchange-CrossTenant-AuthSource: CH3PR12MB8403.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Mar 2024 21:39:47.5721
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: hH/B7k+mOzZi2KMK9TXoJoMxOtLSc0C8UWO+7DZKVDbwLBaI2Xcm2tRGCXMQS4NTug0uIITRCSBDj8im89vXfw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR12MB4244
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4 4/7] dt-bindings: iio: accel: adxl345: Add spi-3wire
+To: Lothar Rubusch <l.rubusch@gmail.com>
+Cc: lars@metafoo.de, Michael.Hennerich@analog.com, jic23@kernel.org,
+ robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+ linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, eraretuya@gmail.com
+References: <20240325153356.46112-1-l.rubusch@gmail.com>
+ <20240325153356.46112-5-l.rubusch@gmail.com>
+ <f74a01bd-46a3-46cd-a47a-fcfccd7e4dc6@linaro.org>
+ <CAFXKEHbJ_5unY24aZeutvM-xrjevQ=z7ngDcgwJR=NXzXONx5A@mail.gmail.com>
+Content-Language: en-US
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <CAFXKEHbJ_5unY24aZeutvM-xrjevQ=z7ngDcgwJR=NXzXONx5A@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-
-
-On 3/25/2024 15:31, Borislav Petkov wrote:
-> On Mon, Mar 25, 2024 at 03:12:14PM -0500, Naik, Avadhut wrote:
->> Can this patchset be merged in? Or would you prefer me sending out
->> another revision with Steven's "Reviewed-by:" tag?
+On 25/03/2024 22:05, Lothar Rubusch wrote:
+> On Mon, Mar 25, 2024 at 7:32 PM Krzysztof Kozlowski
+> <krzysztof.kozlowski@linaro.org> wrote:
+>>
+>> On 25/03/2024 16:33, Lothar Rubusch wrote:
+>>> Add spi-3wire because the driver optionally supports spi-3wire.
+>>
+>> This is a friendly reminder during the review process.
+>>
+>> It seems my or other reviewer's previous comments were not fully
+>> addressed. Maybe the feedback got lost between the quotes, maybe you
+>> just forgot to apply it. Please go back to the previous discussion and
+>> either implement all requested changes or keep discussing them.
+>>
+>> Thank you.
+>>
 > 
-> First of all, please do not top-post.
->
-Apologies for that!
- 
-> Then, you were on Cc on the previous thread. Please summarize from it
-> and put in the commit message *why* it is good to have each field added.
-> 
-> And then, above the tracepoint, I'd like you to add a rule which
-> states what information can and should be added to the tracepoint. And
-> no, "just because" is not good enough. The previous thread has hints.
-> 
+> You refer yourself to the above mentioned wording. Would replacing
+> "driver" by "device" in the dt-bindings patch comment be sufficient?
+> Did I miss something else?
 
-Thanks for the clarification! Will update accordingly.
+Yes, the wording, but isn't the device require 3-wire mode? Don't just
+replace one word with another, but write the proper rationale for your
+hardware.
 
-> Thx.
 > 
+>>>
+>>> Signed-off-by: Lothar Rubusch <l.rubusch@gmail.com>
+>>> ---
+>>
+>> This is a friendly reminder during the review process.
+>>
+>> It looks like you received a tag and forgot to add it.
+>>
+>> If you do not know the process, here is a short explanation:
+>> Please add Acked-by/Reviewed-by/Tested-by tags when posting new
+>> versions, under or above your Signed-off-by tag. Tag is "received", when
+>> provided in a message replied to you on the mailing list. Tools like b4
+>> can help here. However, there's no need to repost patches *only* to add
+> 
+> Just for confirmation: when I receive a feedback, requesting a change.
+> And, I accept the change request. This means, I received a tag
+> "Reviewed-by" which I have to mention in the upcoming patch version
+> where this change is implemented and in that particular patch?
 
--- 
-Thanks,
-Avadhut Naik
+Please go through the docs. Yes, you received a tag which should be
+included with the change.
+
+Reviewer's feedback should not be ignored.
+
+
+> 
+>> the tags. The upstream maintainer will do that for tags received on the
+>> version they apply.
+>>
+> 
+> I'm pretty sure we will still see further iterations. So, I apply the
+> tags in the next version, already scheduled. Ok?
+> 
+>> https://elixir.bootlin.com/linux/v6.5-rc3/source/Documentation/process/submitting-patches.rst#L577
+>>
+> 
+> Going over the books I feel it does not make sense to still mention
+> feedback ("Reveiewed-by") for the v1 or v2 of the patch here in a v5,
+> does it? Your link mentiones "However if the patch has changed
+
+I don't understand. When did you receive the tag? v3, right? So what do
+you mean by v1 and v2?
+
+
+Best regards,
+Krzysztof
+
 
