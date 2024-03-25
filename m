@@ -1,165 +1,163 @@
-Return-Path: <linux-kernel+bounces-117248-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-117251-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4C64C88A913
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 17:25:26 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id E4D5488A918
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 17:26:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 02D5B3807BA
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 16:25:25 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 746691F64E52
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 16:26:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3409814D428;
-	Mon, 25 Mar 2024 14:25:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E3D515886C;
+	Mon, 25 Mar 2024 14:25:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="hhxvnGY1"
-Received: from mail-lf1-f49.google.com (mail-lf1-f49.google.com [209.85.167.49])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="LKwF+omr"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 84A47128377
-	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 14:25:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 818D9158869
+	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 14:25:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711376709; cv=none; b=CVHEpJO1cXHix9pslfoFQG5Sq83WPsEezGu6EbTz+5WU1vcaqtiEmBUTe9UzhFLwEaszdM7MhKjADeWMKAgyWM2aelVPH2MyHupv6u0SrbMVVANVt7v3qmO9WoPdiVjU29r48ry9CmPoBjiPzJ79WHoNcy3BRJMaarYyoctnv3g=
+	t=1711376726; cv=none; b=KkRQgmpZtTwUqnEn9Uo9KnW35p1jO94cAisxieKbami8nPvZGkM8Khx+AEuCck/uX4mU4FtsCnAz7DaXcTKfPE0EDvLL5zrkBmUCFSGw/moPQeMiboK27mQT9sXo3igNt0M08m7K/l7U1qOdi3P6yFMFic4MX6t1Vj1dDTVmK+s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711376709; c=relaxed/simple;
-	bh=+MeltPZVNKwDT4s9LWJGLhPwYg6oTgYBzKVCn15VZsc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=HYrloQ3+SgYGIgAUcbLSprOj2NWjQ0n2QkguLlbhj5/MLdxXScR/JTSMuBM2IbkqNdDnB4RjDKFsYKzsq6bM+K9rOITrwd/4pMiyQzNfNOheGcA+aAXEA3oQmAEC6GPKoNu6mOoeaNLjS05olcCwawDgVU6VkA1Muuh5blDVMLQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=hhxvnGY1; arc=none smtp.client-ip=209.85.167.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-lf1-f49.google.com with SMTP id 2adb3069b0e04-512b3b04995so2288137e87.3
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 07:25:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1711376706; x=1711981506; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=O3PUtNY4boQ+ipy4wQYd09otPfOvXLpDaCkOQ9UXG84=;
-        b=hhxvnGY1pu+otW6Yd/0JGjmzbva5HqMncBVKvci/73gkV2z6H+efQDQXzGMIV2XISZ
-         jJF8mP3YVIpGKtbpdbfxywzfT79JbH0+hVju3cqQY7KL5cjuWiEDjnW3OzPN0cmSy1cI
-         lsH292aWVY19lCEV03oHbzl07vXKOOI2dCO39ioWj5Cxi7hbEoZZaVMqjUl4T1GI88H2
-         VmsSRjN/fBIGUF2lqdFhyUOLfoAjeI55+9ukbfX7N3OcV7WOFP5Uq/O67ffH8cig9Jxt
-         p2kXx2XX6x8WXKO8er+1/Nw2bs1Ewdg3fT8v0Zu0sAspKSInI36DCTOIPjEB7ahm/bNj
-         tq5Q==
+	s=arc-20240116; t=1711376726; c=relaxed/simple;
+	bh=rzde9nZg0OvrJTww7H+/t1tWyrqe4/ueC3Y0WR6wWm8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=NXhtJ6p7sUaQI3HutdfBwyf7lumqsAymMNvtThCWjYCn1ABJS8OolkXB2h8zSKJSaVbO/bjzuaATTzh1aL7A5cKxBjmO0WMfaVoEyV2KOWmgNj93kjnmxiIFZB9lyIZ0cfxw0/5cjhQ5d7UrAm4Nr6lKQ18Pwo1Z9Z8hFYRcL8k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=LKwF+omr; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1711376723;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=P7f00HUXp3zd1m3YJGt//Yz1Nl22MNuXdWxqtATqspc=;
+	b=LKwF+omr2KsmeTYhFiN36I0IRRDNySfflkZFeayDb1rmcGP31yiYHN726bDA4NIzwNBqGm
+	vCRBou2DaN6XVXOy/MwDp98X7TlpArUUAJw9bUwYX+8hpeTRVMVMClmItncchSvWyqeo8b
+	pUBsqhryVsfS/rf9qpYrLNMlA7ohlXQ=
+Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
+ [209.85.208.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-638-dH3SS4WaMRGt1sFlM2l-DA-1; Mon, 25 Mar 2024 10:25:22 -0400
+X-MC-Unique: dH3SS4WaMRGt1sFlM2l-DA-1
+Received: by mail-ed1-f72.google.com with SMTP id 4fb4d7f45d1cf-56c0d3517deso844799a12.0
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 07:25:22 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711376706; x=1711981506;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=O3PUtNY4boQ+ipy4wQYd09otPfOvXLpDaCkOQ9UXG84=;
-        b=KPY6ypy4+Z1xGtu4YSsNOPiMFP8tKQ5QuthwNBODnNbRsg/iuN/orEwU+v8lFYM1Oz
-         lmbz/w7Lgn60Ru4QHov3ySHgCj+WaNp+7qWsNeSWa7JlUNafZUhRpZCo49tT6gTOV/S9
-         /rjQYDD+V/PZTZByuo+8a0rl6HdxRs1L4Rv/7Z/4XP/IKMa+5eFeVvS0aOk85jFhMZbm
-         polObLqrHzJtlHjPORsIkXcY6tIQd7gJ4GhiVmrwJhstqvBuzkw5ugzR2UxAevJahx0q
-         Dnqnc69QnG++QMl6O5/NjEI2FD233R3SAdAk79M6PQD9SPRPXafnG+moSqqHzzKwI9Hp
-         tcag==
-X-Forwarded-Encrypted: i=1; AJvYcCUdOR1t7ds9o4HwmlpHFcX7myvse+avDWPKT+Ta2OiD10cRlNr8q93AcRFd78+wIP3YmYmFkWc9/Xwbehq0BdokTqSj8p+eOVkFWIgI
-X-Gm-Message-State: AOJu0YyGH6cRhVrERxIn5SwunFMy5GtupwEJl9zzWEXqei9p7PKkvmYT
-	tt8NuVqlwS3pYMAxHz+uacVDWJIWyTkXg4Ek+wVJMFFiBSgb0bVPqp96qn8TUS8=
-X-Google-Smtp-Source: AGHT+IEFidCgty+v00DMTxMPtnXdVdXzQmlAggnT/0h5fv4Uf17UIa5tj3pq//IwqDLEoDELOZO2Xw==
-X-Received: by 2002:a19:ca14:0:b0:513:23be:e924 with SMTP id a20-20020a19ca14000000b0051323bee924mr4375709lfg.59.1711376705571;
-        Mon, 25 Mar 2024 07:25:05 -0700 (PDT)
-Received: from localhost ([102.222.70.76])
-        by smtp.gmail.com with ESMTPSA id l12-20020a1709062a8c00b00a45f39b2d16sm3104885eje.200.2024.03.25.07.25.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 Mar 2024 07:25:05 -0700 (PDT)
-Date: Mon, 25 Mar 2024 17:25:00 +0300
-From: Dan Carpenter <dan.carpenter@linaro.org>
-To: Su Hui <suhui@nfschina.com>
-Cc: arnaud.pouliquen@foss.st.com, lgirdwood@gmail.com, broonie@kernel.org,
-	perex@perex.cz, tiwai@suse.com, nathan@kernel.org,
-	ndesaulniers@google.com, morbo@google.com, justinstitt@google.com,
-	alsa-devel@alsa-project.org, linux-sound@vger.kernel.org,
-	linux-kernel@vger.kernel.org, llvm@lists.linux.dev,
-	kernel-janitors@vger.kernel.org
-Subject: Re: [PATCH] ASoC: sti: uniperif: fix the undefined bitwise shift
- behavior problem
-Message-ID: <5d850276-a872-45fb-9df2-2b72479787be@moroto.mountain>
-References: <20240325034032.1031885-1-suhui@nfschina.com>
+        d=1e100.net; s=20230601; t=1711376721; x=1711981521;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=P7f00HUXp3zd1m3YJGt//Yz1Nl22MNuXdWxqtATqspc=;
+        b=Q1yEexP/aqqKyTBPc35GeKGuI9Sx5SyPDKeYl7x9LUO3c72mS2Xk95BOUitKDxrzRr
+         3IFyMlCmA9LQ5InNxLXyfLlG6PbLSEO8PnKRETHyDqvBwwJm11BgO2n8c6p3ZbrV2zAD
+         JnrG1Gy01rUBP+ArCjXinNWy+l7j/v23HXF94XExVFTCoGbSBuqwL6pVm0GbeER0tj8o
+         Zvio1TQ7w/DSELRxZAt8oEQoBUKdlM1vZgoNMMizKq6G1NY2pTv1m6bAhRN7XJybLSx+
+         YdQZ6QgnVzGE2L6QzMBG+shUu1GIO7rvOmJzmaUEPKX5pr1jB3GLeUOvzMsWL8nPji+p
+         NgUQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXjXuJ+FJqDUIoa+GodmUbdf4IRwAn5bZm/9pynccocvYZRismt3xJUJfcvWwGvXxoha7MKNdd96YP19WBScu1OMZ+CK5j0XNeXjiKD
+X-Gm-Message-State: AOJu0YzIozaHQHlm0zSoY3wCNrjz70ZTj8H1QndZOUwnzuxcLniJBi+v
+	e29wRCC97BW7mz7Njkuf5DaCwiOXJnkI/RttjgopxR1FNpUb20it/a+Jy0Gp/+DLckTcWfNCWuU
+	penz/NlEw2bDaR0tNN2tGUbC0cvKFvJ3r7abZLeqbIPNtoFKOoC0kHgSzEt8UKbCQaTTO5g==
+X-Received: by 2002:a50:9f46:0:b0:568:9f77:9c0 with SMTP id b64-20020a509f46000000b005689f7709c0mr5343898edf.4.1711376720713;
+        Mon, 25 Mar 2024 07:25:20 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IExhsFatz36wq0gHQ23Z8oZAyiiQ9qppOFaIfR20MLP2ncbc0znQUTkcsy/vu+vh23j886d9A==
+X-Received: by 2002:a50:9f46:0:b0:568:9f77:9c0 with SMTP id b64-20020a509f46000000b005689f7709c0mr5343885edf.4.1711376720363;
+        Mon, 25 Mar 2024 07:25:20 -0700 (PDT)
+Received: from ?IPV6:2001:1c00:c32:7800:5bfa:a036:83f0:f9ec? (2001-1c00-0c32-7800-5bfa-a036-83f0-f9ec.cable.dynamic.v6.ziggo.nl. [2001:1c00:c32:7800:5bfa:a036:83f0:f9ec])
+        by smtp.gmail.com with ESMTPSA id w14-20020aa7cb4e000000b0056729e902f7sm3013149edt.56.2024.03.25.07.25.19
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 25 Mar 2024 07:25:19 -0700 (PDT)
+Message-ID: <aec1d22d-9e59-4dfc-b108-5ba339b0e76a@redhat.com>
+Date: Mon, 25 Mar 2024 15:25:19 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240325034032.1031885-1-suhui@nfschina.com>
+User-Agent: Mozilla Thunderbird
+Subject: In kernel virtual HID devices (was Future handling of complex RGB
+ devices on Linux v3)
+Content-Language: en-US, nl
+To: Werner Sembach <wse@tuxedocomputers.com>
+Cc: Lee Jones <lee@kernel.org>, jikos@kernel.org,
+ linux-kernel@vger.kernel.org, Jelle van der Waa <jelle@vdwaa.nl>,
+ Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
+ "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+ linux-input@vger.kernel.org, ojeda@kernel.org, linux-leds@vger.kernel.org,
+ Pavel Machek <pavel@ucw.cz>, Gregor Riepl <onitake@gmail.com>,
+ Benjamin Tissoires <bentiss@kernel.org>, Jiri Kosina <jikos@kernel.org>
+References: <0cdb78b1-7763-4bb6-9582-d70577781e61@tuxedocomputers.com>
+ <7228f2c6-fbdd-4e19-b703-103b8535d77d@redhat.com>
+ <730bead8-6e1d-4d21-90d2-4ee73155887a@tuxedocomputers.com>
+ <952409e1-2f0e-4d7a-a7a9-3b78f2eafec7@redhat.com>
+ <9851a06d-956e-4b57-be63-e10ff1fce8b4@tuxedocomputers.com>
+ <1bc6d6f0-a13d-4148-80cb-9c13dec7ed32@redhat.com>
+ <b70b2ea8-abfd-4d41-b336-3e34e5bdb8c6@tuxedocomputers.com>
+ <477d30ee-247e-47e6-bc74-515fd87fdc13@redhat.com>
+ <e21a7d87-3059-4a51-af04-1062dac977d2@tuxedocomputers.com>
+ <247b5dcd-fda8-45a7-9896-eabc46568281@tuxedocomputers.com>
+ <ZdZ2kMASawJ9wdZj@duo.ucw.cz>
+ <b6d79727-ae94-44b1-aa88-069416435c14@redhat.com>
+ <a21f6c49-2c05-4496-965c-a7524ed38634@gmail.com>
+ <825129ea-d389-4c6c-8a23-39f05572e4b4@redhat.com>
+ <adbfdf6c-fb59-4fae-a472-17b04dd8a3f6@tuxedocomputers.com>
+ <1fb08a74-62c7-4d0c-ba5d-648e23082dcb@tuxedocomputers.com>
+From: Hans de Goede <hdegoede@redhat.com>
+In-Reply-To: <1fb08a74-62c7-4d0c-ba5d-648e23082dcb@tuxedocomputers.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On Mon, Mar 25, 2024 at 11:40:33AM +0800, Su Hui wrote:
-> Clang static checker(scan-build):
-> sound/soc/sti/uniperif_player.c:1115:12: warning:
-> The result of the left shift is undefined because the right operand is
-> negative [core.UndefinedBinaryOperatorResult]
++Cc: Bentiss, Jiri
+
+Hi Werner,
+
+On 3/20/24 12:16 PM, Werner Sembach wrote:
+> Hi Hans and the others,
 > 
-> When UNIPERIF_CONFIG_BACK_STALL_REQ_SHIFT(ip) equals to -1, the result of
-> SET_UNIPERIF_CONFIG_BACK_STALL_REQ_DISABLE(ip) is undefined.
-> 
-> Here are some results of using different compilers.
-> 		1UL >> -1	1UL << -1
-> gcc 10.2.1	0x2		0
-> gcc 11.4.0	0		0x8000000000000000
-> clang 14.0.0	0x64b8a45d72a0	0x64b8a45d72a0
-> clang 17.0.0	0x556c43b0f2a0	0x556c43b0f2a0
-> 
-> Add some macros to ensure that when right opreand is negative or other
-> invalid values, the results of bitwise shift is zero.
-> 
-> Fixes: e1ecace6a685 ("ASoC: sti: Add uniperipheral header file")
-> Signed-off-by: Su Hui <suhui@nfschina.com>
-> ---
->  sound/soc/sti/uniperif.h | 17 ++++++++++++++---
->  1 file changed, 14 insertions(+), 3 deletions(-)
-> 
-> diff --git a/sound/soc/sti/uniperif.h b/sound/soc/sti/uniperif.h
-> index 2a5de328501c..1cbff01fbff0 100644
-> --- a/sound/soc/sti/uniperif.h
-> +++ b/sound/soc/sti/uniperif.h
-> @@ -12,17 +12,28 @@
->  
->  #include <sound/dmaengine_pcm.h>
->  
-> +#define SR_SHIFT(a, b)		({unsigned long __a = (a); \
-> +				unsigned int __b = (b); \
-> +				__b < BITS_PER_LONG ? \
-> +				__a >> __b : 0; })
+> Am 22.02.24 um 14:14 schrieb Werner Sembach:
+>> Hi,
+>>
+>> Thanks everyone for the exhaustive feedback. And at least this thread is a good comprehesive reference for the future ^^.
+>>
+>> To recap the hopefully final UAPI for complex RGB lighting devices:
+>>
+>> - By default there is a singular /sys/class/leds/* entry that treats the device as if it was a single zone RGB keyboard backlight with no special effects.
+>>
+>> - There is an accompanying misc device with the sysfs attributes "name", "device_type",  "firmware_version_string", "serial_number" for device identification and "use_leds_uapi" that defaults to 1.
+>>
+>>     - If set to 0 the /sys/class/leds/* entry disappears. The driver should keep the last state the backlight was in active if possible.
+>>
+>>     - If set 1 it appears again. The driver should bring it back to a static 1 zone setting while avoiding flicker if possible.
+>>
+>> - If the device is not controllable by for example hidraw, the misc device might also implement additional ioctls or sysfs attributes to allow a more complex low level control for the keyboard backlight. This is will be a highly vendor specific UAPI.
+> So in the OpenRGB issue thread https://learn.microsoft.com/en-us/windows-hardware/design/component-guidelines/dynamic-lighting-devices aka HID LampArray was mentioned. I did dismiss it because I thought that is only relevant for firmware, but I now stumbled upon the Virtual HID Framework (VHF) https://learn.microsoft.com/en-us/windows-hardware/drivers/hid/virtual-hid-framework--vhf- and now I wonder if an equivalent exists for Linux? A quick search did not yield any results for me.
 
-The code definitely looks buggy, but how do you know your solution is
-correct without testing it?
+Oh, interesting. I did not know about the HID LampArray API.
 
-I don't like this solution at all.  This is basically a really
-complicated way of writing "if (b != -1)".  Instead of checking for -1,
-the better solution is to just stop passing -1.  If you review that
-file, every time it uses "-1" that's either dead code or a bug...
+About your question about virtual HID devices, there is uHID,
+but as the name suggests this allows userspace to emulate a HID
+device.
 
-sound/soc/sti/uniperif.h
-   132  #define UNIPERIF_ITS_UNDERFLOW_REC_DONE_SHIFT(ip) \
-   133          ((ip)->ver < SND_ST_UNIPERIF_VERSION_UNI_PLR_TOP_1_0 ? -1 : 12)
-                                                                      ^^^^
-This is dead code
+In your case you want to do the emulation in kernel so that you
+can translate the proprietary WMI calls to something HID LampArray
+compatible.
 
-   134  #define UNIPERIF_ITS_UNDERFLOW_REC_DONE_MASK(ip) \
-   135          ((ip)->ver < SND_ST_UNIPERIF_VERSION_UNI_PLR_TOP_1_0 ? \
-                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-because the version is checked here.
+I guess you could do this by defining your own HID transport driver,
+like how e.g. the i2c-hid code defines 1 i2c-hid parent + 1 HID
+"client" for each device which talks HID over i2c in the machine.
 
-   136                  0 : (BIT(UNIPERIF_ITS_UNDERFLOW_REC_DONE_SHIFT(ip))))
+Bentiss, Jiri, do you have any input on this. Would something like
+that be acceptable to you (just based on the concept at least) ?
 
-Just delete UNIPERIF_ITS_UNDERFLOW_REC_DONE_SHIFT() and use 12 directly.
+Regards,
 
-[ snip ]
+Hans
 
-   988  #define UNIPERIF_BIT_CONTROL_OFFSET(ip)  \
-   989          ((ip)->ver < SND_ST_UNIPERIF_VERSION_UNI_PLR_TOP_1_0 ? -1 : 0x004c)
-                                                                       ^^^
-Negative offsets seem like a bug.
-
-   990  #define GET_UNIPERIF_BIT_CONTROL(ip) \
-   991          readl_relaxed(ip->base + UNIPERIF_BIT_CONTROL_OFFSET(ip))
-
-regards,
-dan carpenter
 
 
