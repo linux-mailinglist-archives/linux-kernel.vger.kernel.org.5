@@ -1,242 +1,182 @@
-Return-Path: <linux-kernel+bounces-117874-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-117875-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7352988B5BE
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 01:03:48 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 77C1888B0AD
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 20:59:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B9636BE69FB
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 19:59:34 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9B6EB1C3EA05
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 19:59:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DDAD41CD10;
-	Mon, 25 Mar 2024 19:57:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 18F093EA95;
+	Mon, 25 Mar 2024 19:58:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="oePNBB8M"
-Received: from mail-ed1-f51.google.com (mail-ed1-f51.google.com [209.85.208.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="EjDJ8iFo"
+Received: from NAM04-BN8-obe.outbound.protection.outlook.com (mail-bn8nam04on2101.outbound.protection.outlook.com [40.107.100.101])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E648241C75
-	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 19:56:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.51
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711396623; cv=none; b=ABbGoiar0GPcO2auMRcnKWzkDMpA/r/hN6CKJhA9UrPoQ9S3iiaaqtAV2su3mFoS1Ed42ndShOhZ8URV2Oy56ZLuej0FG5PR7rygsNdBUoGtLuOAlOGVCrzR0fO2W+eZMI9W9lxm8+EUtm9e21USYkn086ucam1oWOahq/pAm/4=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711396623; c=relaxed/simple;
-	bh=vWN8XohjF1v16NaONsUY1Gt8ubP1b/GsLgsncu1sBW4=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=jy+Cqzs+Bh0xbbG3Xg7vypV0F5VLpGB8OoJKYugbHksh9PCulI8oviJ+8ZF8D/dIUQAgQTCA20nXM9aaSCc928Yc4viHO7l01BOINmndwSDKqiSbzsEg3/XHtmQBLDpi712Uab+ctujM3VldmOF2Cx9u2u3vXSWDMPV6l1qlqJw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=oePNBB8M; arc=none smtp.client-ip=209.85.208.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ed1-f51.google.com with SMTP id 4fb4d7f45d1cf-56c1a50b004so340a12.0
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 12:56:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1711396618; x=1712001418; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=xLJhanTyYYdfYx8SCY5kJ/vKByOFilWX6UgvBGxwVFs=;
-        b=oePNBB8MQMYPsKW/5WHuQZmLxgAa/YZOagIRucRtWK0uP8bl25Wtch3GC4Odg04guf
-         xHwSUF5HkJZWVsEYqQHoC5gl5fQLBowrtOpHCUCd56a5c2IAlxI3KW4RLn0H97S7zQEh
-         Fch3PreWQlXCon8Ff0Hh/n9iRfZEMBAYq8wONKKFjwJu21evFXzJNZ2JfkNXcrdRmAD7
-         jpuaYI98g64Ud0+Bl1qubff67uJTRnoUOhZSXX9YPQ0cQ8W8hRLS7sVrmq7gYo8p1LYp
-         AKEL4y6c7Gl0kxDKHbonRmurI6OeNy746pBWypmNCQupiQqMRV2aaB7P4blaKbtO35e+
-         VkeA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711396618; x=1712001418;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=xLJhanTyYYdfYx8SCY5kJ/vKByOFilWX6UgvBGxwVFs=;
-        b=ZOQMcIHhBAuLJrGw22VZXp7haEYH9y2CzIA57r38sUzoqg/myQRBH8HXc9pX0rfPcU
-         5lDlwXgLtueV9DeEFUnRqeWS7xfGhuIr92QLC6rU7YTzzaQG64CYd5ua/mtpz2BEjFXj
-         vmEVowB0XG5XuRw3WQqSmttwc2VBIPzeSs9XWWzuB/j0aR9q+kSVKtY/PkIs/sbub3Ux
-         kZ0I8TmCkwZjDUpr17UeB4q1sS6LE9HG4s4Va1ZYRrolx7NZFSW+ow0x2ccMYKUTr+Sb
-         DyTwILrw7TYr/o7174dZoQ9RH2m5BRBPwEflujlHzyteqQt1bcJT2cApckrsSAaMJRSW
-         uGLw==
-X-Forwarded-Encrypted: i=1; AJvYcCVCJ0fFGWJWCtAophIqnwvt1EA73bPzK1QoiyUIbUeauSxGTmmmiX7riPo68iOhcxiXmafabc0zvTN4jbHj80oED4p/p7MPUcXc0ShL
-X-Gm-Message-State: AOJu0Yyys1ytOcRLl4u24TDoM4dylcGEiS9pfYz6HSJE6AcV3CcOJgRt
-	Bw83AThxoKzTrGyu8AGJWfiIrL1ZoBGxZa7hPXP+ngfw7iT1AT11F6/lw8XAFZ3TguPfwkU04O6
-	Dbcbh6oH+46Yf+1gdqaRTcoZnHxR1eZCXRjPJ
-X-Google-Smtp-Source: AGHT+IEEovVpf0oepuwhkpM9avNZcmI74a08OoVnLRWfgzWtpVlsKJKZjmEasujTdhOur6vk4jcXRCYWXsOAyA0/og4=
-X-Received: by 2002:a05:6402:28a:b0:568:856b:f3c5 with SMTP id
- l10-20020a056402028a00b00568856bf3c5mr622edv.1.1711396617881; Mon, 25 Mar
- 2024 12:56:57 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 176053DB9B;
+	Mon, 25 Mar 2024 19:58:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.100.101
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1711396693; cv=fail; b=u5Wxzlm4WnE0qq1r34OXQR8Pe/2vvJ6O23Hta6eDFPUVchTaTLF2u5kTyGY5ZViVTZ+GOEM5/mAc2fkGNC5huo5suOCD8QX3MOJ/gN/VgEHDU+DPzGYHMOFi7tPUNaWpIe8Z+JKzkUfBsjNxvt9TGQH1cm1avyg4u0cMxWbo2hQ=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1711396693; c=relaxed/simple;
+	bh=mYq1bNSYCB9XzfuGEeSP6emcXnF8MzNlCFZUL4X0+rI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
+	 Content-Disposition:In-Reply-To:MIME-Version; b=Wb41QU1Zdj+rqcMWYLj/3+YVmPRTjO+VdbEJn+At06ZPI08UT7o7fAkDz7ZDTU22yz0kB/rHm48EJAA7biLeimdfh10tajT0DOnWMh4+uWhiHJhxlg69X4zpT7li1KzqEAvHXWEiZ07t4ddUr2yjohrHPnIHXe+e2qcxxBQ0I8g=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=EjDJ8iFo; arc=fail smtp.client-ip=40.107.100.101
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Un9zBHIVfGumc7v9ZpR1c/KkU2Smw459WjH3itr+2MoK63XUFEXcIgRO9YsiRzNHmZgtWomStAosd/qWCm+ZaF5IWo0YVYC0onngtWCKeWUNNQ5rBKvOmVtXoKU8h4MY8VK2yx0Cz3PXo5guzeaAtfjppbxCH5fCM7cAf6oYJXWHWnsdXQyR52WzhZmjS2xyDCN6/EIrA+7VfUHTrcMBbIWdxC0hrYLaANNRKBjyXcmxDQDr521gQynyeRDkp6tXh3jA5DC+KxTCR4J+xRihd2MkxIAJMQKKv1XnapIWC/DjXNlB3Mos66CU5r2fhHhWHC1xlSY2eIFB/WYe24WItw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=PKXjGYOqOU/SMbwKK/ZLNZUU+t5ST5A6lmsS6L+ZXhk=;
+ b=WR3rV8+O1AQ7tx0fJtKikCWLhmM4vAQqf6uCOISTrp7ol0HtnG0DjuISx9TTTuZOPwLfYjcFUwR2dlvku8o5kxmkOHTS+lkePumy8JPE6CKwFH84akZwQbJxXmnp6oyNW5YXGlU+ppn8XSb6Ah3IaPM6VtiIeLUZPHYAnhothgJ9uGXc7iEZWJ90lniwOk3FAJhVkbL83/0UAcOywE9FuotzRHmUzQnI94g33pvRKPxl8tSvoumEiWOYpZyC26oTXwmWyz4nt/1Eii/V7ttgk87q3+R5w9Fsi8gO0APVp9exu4oCGqQy29nhb1bmwQxikhitNThhUgPqUEWquX9REA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=PKXjGYOqOU/SMbwKK/ZLNZUU+t5ST5A6lmsS6L+ZXhk=;
+ b=EjDJ8iFoxYmuRQeEHMTWY1ZnOhZtTEC4muJZ9wH89tsxQHuyS2Za326v4XmoA/n0HnOxtqbClNFHRJ5i4bGDy/EbdFFXku6mALKASlbkqaFeR/R9gvLStMrkr6veYWNXjwfx3u41V30KHAKPIkyBQq+o7t9MKOoDd+YBCfxbThs=
+Received: from BL1PR12MB5995.namprd12.prod.outlook.com (2603:10b6:208:39b::20)
+ by DM6PR12MB4468.namprd12.prod.outlook.com (2603:10b6:5:2ac::24) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.31; Mon, 25 Mar
+ 2024 19:58:08 +0000
+Received: from BL1PR12MB5995.namprd12.prod.outlook.com
+ ([fe80::319f:fe56:89b9:4638]) by BL1PR12MB5995.namprd12.prod.outlook.com
+ ([fe80::319f:fe56:89b9:4638%6]) with mapi id 15.20.7409.028; Mon, 25 Mar 2024
+ 19:58:07 +0000
+Date: Mon, 25 Mar 2024 14:57:59 -0500
+From: John Allen <john.allen@amd.com>
+To: Yazen Ghannam <yazen.ghannam@amd.com>
+Cc: bp@alien8.de, linux-edac@vger.kernel.org, tony.luck@intel.com,
+	linux-kernel@vger.kernel.org, avadhut.naik@amd.com,
+	muralidhara.mk@amd.com
+Subject: Re: [PATCH 3/4] RAS: ATL: Add map_bits_valid to header
+Message-ID: <ZgHXR8O7CIoOmfvM@AUS-L1-JOHALLEN.amd.com>
+References: <20240314163527.63321-1-john.allen@amd.com>
+ <20240314163527.63321-4-john.allen@amd.com>
+ <893141c6-41f8-415a-a1a3-d3e4267ec333@amd.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <893141c6-41f8-415a-a1a3-d3e4267ec333@amd.com>
+X-ClientProxiedBy: PH7PR17CA0020.namprd17.prod.outlook.com
+ (2603:10b6:510:324::11) To BL1PR12MB5995.namprd12.prod.outlook.com
+ (2603:10b6:208:39b::20)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <CANn89iL_Oz58VYNLJ6eB=qgmsgY9juo9xAhaPKKaDqOxrjf+0w@mail.gmail.com>
- <20240325.183800.473265130872711273.syoshida@redhat.com> <CANn89i+VZMvm7YpvPatmQuXeBgh78iFvkFSLYR-KYub4aa6PEg@mail.gmail.com>
- <20240326.024626.67077498140213947.syoshida@redhat.com>
-In-Reply-To: <20240326.024626.67077498140213947.syoshida@redhat.com>
-From: Eric Dumazet <edumazet@google.com>
-Date: Mon, 25 Mar 2024 20:56:43 +0100
-Message-ID: <CANn89i+uOWhSmgudL+84e-2wow0mNLKe0f_bn5qCVoEUf+dJ=Q@mail.gmail.com>
-Subject: Re: [PATCH net] ipv4: Fix uninit-value access in __ip_make_skb()
-To: Shigeru Yoshida <syoshida@redhat.com>
-Cc: davem@davemloft.net, dsahern@kernel.org, kuba@kernel.org, 
-	pabeni@redhat.com, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	syzkaller@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BL1PR12MB5995:EE_|DM6PR12MB4468:EE_
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	s0PNXTi3zR2qH5xY91MwgXQiyEVxue3eOclYb3ebiIDgUFo502L9X8ACgj9UQY6ftVLJ59KVPoYAp3i7XQ0qnv2PlEFqEQhb1VUp66TKhRn647rY3O8iEFDUTFLBxHylz15rkHhnKtMDHLn/RJthmD0+YjOQb3vFyvLBxQZTR98XgPKSoRrMzbSzXi+PrdzoumQcBMwsO3ilJC/5cXY0UjO0LOKQv4Frp/ySrjZCibBMc2sX1chY0uLehVLhv5K1CPtxC4ED12bVfGWJeAdftjBkUn2XnwFKr9IWfiaAzwH5dHmBUAnd+iZbEFBDqjR8TeNiSQxQzkHAvbdWTIS+HLf765Lfr2u5f0BZfGALknMudLrAURzvwYq1uoUbNun//pAbzF66oeEp0Go6KbMe7ZsyXRlnuFV9dL2yvlMtBT3OCrR//KLHJV5a3SD01eBcotXxtPO5SV5a+7WJLN5ym89x9Ga/m+vrOTRYvZMnP5fTnb7lao5eb19uUfG3GrawU2GXTJUptvl6QOFzCIATqy5W9sicZfMcek9cVh1nGs2zS37EPUlXBMXlxRkKTvXh6MRPTwoKZRoS7hyzLVxxSHqT/qng8yo/tq3c70NffuJLlTCi25FvwjueXE3LzZeEXsTrxeycgbXoiwGJgkigLtTtih7iPONnJbKMtbEPvM4=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL1PR12MB5995.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(1800799015)(376005)(366007);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?Kx/6VafgQsGVsTrb4QdF9DjlGCtlXfoj4BHgepTTC7aGl+0Nst6BR1K8UVRn?=
+ =?us-ascii?Q?Htupwe6jg1A9LQlQCpAdEIu78R4cAXsfZUYp+xvVGlvmlo6qxdlALJ0Qxjcu?=
+ =?us-ascii?Q?B7TqsCwzX0BdxXoiGUMJ1F9Z5+yxXDPa4hjxYZITWuUYKQlsJfU4Shilum51?=
+ =?us-ascii?Q?pnessb/tovN4vm5XWTOJRxkDRRriw0goB7zsS5H0mNm63zp+c2ixUXEEytbg?=
+ =?us-ascii?Q?XeaN68wvuA++jugUj3NBBMp2f3YGXSGyojy6emULJeKFzQkXjU+7kPLUG7ii?=
+ =?us-ascii?Q?u+TjtSsehdpBCLa6AkLyGEV0Rhl4b6VoCAG6LyZrm8qFwAZmbpej7l22CIX1?=
+ =?us-ascii?Q?5OJbpKoiYGJuvO7sTYRFuzvfop3YqyP6r/ai8eUi2xqKfQiPvVk5j+bHqyaf?=
+ =?us-ascii?Q?iHGAjsGSCG1ntkQnpbrDeIjfiSQK2PqxgX7g6oqgrJa0Vsfkw8LAtdlJ3afJ?=
+ =?us-ascii?Q?n/tQdtpVBdJHU0xNnXU/RaxqtEGldeFxUiGjCuu8k3El2xeAi76/LjF7jXGe?=
+ =?us-ascii?Q?q18GZHKhIo1YZQoCaaXQzcI2QsDBoCut+/YcTvpMW4fB5Vy3J49Y9H0FjDKw?=
+ =?us-ascii?Q?ubpcZGggvCF1XpKzqV7GnZ04gmmlV+dNhN9T6QS5+PBh00NzEYI4XIPTlLt8?=
+ =?us-ascii?Q?i2pJ68hwj3BYpUacb94ll8CHXTrXZufpIZQQEKdc8wMkfdoMTPTvZvYjHqfs?=
+ =?us-ascii?Q?ol9PSFCkQ07jkFphsOtJ5qSu+AaC0W+RkPHzl+0Z5srgx3w+YUKyyZ06cvCI?=
+ =?us-ascii?Q?TtnqoZW437NlCIyIzZhnusk7d591NXnxQMiv1xbbsLNMQGlnKFKOf6wiIEoP?=
+ =?us-ascii?Q?r2dhQ8kOnibDp2hrHAU3m+pq1B3Jr5o2S2alxb7/d3YMuhlz2xsfLVA/+GUz?=
+ =?us-ascii?Q?OOH0vzhgh9XbmHi+OPL09gpcKc+hZfbm25ilw47iqdCnZL+mlS9EDCLwXo9O?=
+ =?us-ascii?Q?5xB9r0XNPmy5ou/bxbOk4OHHCEqEPHdcKP4pBPzlpUa7n69GdYNjumIYyHuX?=
+ =?us-ascii?Q?z90LY7p2J4h19JRlIxLYwNBRG0ll2K/YA+Q72LkUKpz7RAKa4n/LJ/4lPtpQ?=
+ =?us-ascii?Q?4/scG/uKcVhpIxr2H2YpG3fBQyyrL6QH/LXunYFv0A3I/CfxAWjy/MevvJbq?=
+ =?us-ascii?Q?RS3eD6bY0JGZVeo+0IA18gpGKYYl5sWlNogeLkXuF2N8iO4rdRB4VACGVeM0?=
+ =?us-ascii?Q?0d23+NYE+nd9PYG90XfEVDhKIJyCUbGJuFaFQ5Y7DQ7ShCQMYFry52UbERjc?=
+ =?us-ascii?Q?WkP4GUfUS3S16KPQtCWfuLQsDo1k91P0z5BEEhFm4TU3Zubhm4fmoe07Fv/t?=
+ =?us-ascii?Q?WR8oAXQV/LeSHLUXacGecWQsj+olJxMSeT1xG6/PUx98qUlEbFa71Vt0FrEj?=
+ =?us-ascii?Q?2pw598Ml7ceWZg6PKGxq2Nusd0JCNiQ2qmPotxgw0rjbEEBaYI9JE8YZanEZ?=
+ =?us-ascii?Q?5WDfB3aSQ4qUEZrJaOAj0emhDOuanyHnQh5uhqbVAupfzchusJfaM+XMw0nZ?=
+ =?us-ascii?Q?apVqMK0i0Hl3XWInoR/3mVZlI3GE3AKcE85LikcMSeocGbBRHQ5GZNaE0UNh?=
+ =?us-ascii?Q?kq4iF+2TxLJwqjNXvAr6C9ib2N/Z5XtCA1N5RTDu?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 6ba43286-95be-4466-40a1-08dc4d05e402
+X-MS-Exchange-CrossTenant-AuthSource: BL1PR12MB5995.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Mar 2024 19:58:07.6896
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: rCYqNsiUuJNEOgNS2G1vEWKPrroGzEW+LqNK4O2bjDID2P5pNmDuJPSO/dDgjxW6PamaAtoYftszahldRZCoig==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB4468
 
-On Mon, Mar 25, 2024 at 6:46=E2=80=AFPM Shigeru Yoshida <syoshida@redhat.co=
-m> wrote:
->
-> On Mon, 25 Mar 2024 11:05:33 +0100, Eric Dumazet wrote:
-> > On Mon, Mar 25, 2024 at 10:38=E2=80=AFAM Shigeru Yoshida <syoshida@redh=
-at.com> wrote:
-> >>
-> >> On Mon, 25 Mar 2024 10:01:25 +0100, Eric Dumazet wrote:
-> >> > On Sun, Mar 24, 2024 at 6:06=E2=80=AFAM Shigeru Yoshida <syoshida@re=
-dhat.com> wrote:
-> >> >>
-> >> >> KMSAN reported uninit-value access in __ip_make_skb() [1].  __ip_ma=
-ke_skb()
-> >> >> tests HDRINCL to know if the skb has icmphdr. However, HDRINCL can =
-cause a
-> >> >> race condition. If calling setsockopt(2) with IP_HDRINCL changes HD=
-RINCL
-> >> >> while __ip_make_skb() is running, the function will access icmphdr =
-in the
-> >> >> skb even if it is not included. This causes the issue reported by K=
-MSAN.
-> >> >>
-> >> >> Check FLOWI_FLAG_KNOWN_NH on fl4->flowi4_flags instead of testing H=
-DRINCL
-> >> >> on the socket.
-> >> >>
-> >> >> [1]
-> >> >
-> >> > What is the kernel version for this trace ?
-> >>
-> >> Sorry, I used the following version:
-> >>
-> >> CPU: 1 PID: 15709 Comm: syz-executor.7 Not tainted 6.8.0-11567-gb3603f=
-cb79b1 #25
-> >> Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.16.3-1.f=
-c39 04/01/2014
-> >>
-> >> >> BUG: KMSAN: uninit-value in __ip_make_skb+0x2b74/0x2d20 net/ipv4/ip=
-_output.c:1481
-> >> >>  __ip_make_skb+0x2b74/0x2d20 net/ipv4/ip_output.c:1481
-> >> >>  ip_finish_skb include/net/ip.h:243 [inline]
-> >> >>  ip_push_pending_frames+0x4c/0x5c0 net/ipv4/ip_output.c:1508
-> >> >>  raw_sendmsg+0x2381/0x2690 net/ipv4/raw.c:654
-> >> >>  inet_sendmsg+0x27b/0x2a0 net/ipv4/af_inet.c:851
-> >> >>  sock_sendmsg_nosec net/socket.c:730 [inline]
-> >> >>  __sock_sendmsg+0x274/0x3c0 net/socket.c:745
-> >> >>  __sys_sendto+0x62c/0x7b0 net/socket.c:2191
-> >> >>  __do_sys_sendto net/socket.c:2203 [inline]
-> >> >>  __se_sys_sendto net/socket.c:2199 [inline]
-> >> >>  __x64_sys_sendto+0x130/0x200 net/socket.c:2199
-> >> >>  do_syscall_64+0xd8/0x1f0 arch/x86/entry/common.c:83
-> >> >>  entry_SYSCALL_64_after_hwframe+0x6d/0x75
-> >> >>
-> >> >> Uninit was created at:
-> >> >>  slab_post_alloc_hook mm/slub.c:3804 [inline]
-> >> >>  slab_alloc_node mm/slub.c:3845 [inline]
-> >> >>  kmem_cache_alloc_node+0x5f6/0xc50 mm/slub.c:3888
-> >> >>  kmalloc_reserve+0x13c/0x4a0 net/core/skbuff.c:577
-> >> >>  __alloc_skb+0x35a/0x7c0 net/core/skbuff.c:668
-> >> >>  alloc_skb include/linux/skbuff.h:1318 [inline]
-> >> >>  __ip_append_data+0x49ab/0x68c0 net/ipv4/ip_output.c:1128
-> >> >>  ip_append_data+0x1e7/0x260 net/ipv4/ip_output.c:1365
-> >> >>  raw_sendmsg+0x22b1/0x2690 net/ipv4/raw.c:648
-> >> >>  inet_sendmsg+0x27b/0x2a0 net/ipv4/af_inet.c:851
-> >> >>  sock_sendmsg_nosec net/socket.c:730 [inline]
-> >> >>  __sock_sendmsg+0x274/0x3c0 net/socket.c:745
-> >> >>  __sys_sendto+0x62c/0x7b0 net/socket.c:2191
-> >> >>  __do_sys_sendto net/socket.c:2203 [inline]
-> >> >>  __se_sys_sendto net/socket.c:2199 [inline]
-> >> >>  __x64_sys_sendto+0x130/0x200 net/socket.c:2199
-> >> >>  do_syscall_64+0xd8/0x1f0 arch/x86/entry/common.c:83
-> >> >>  entry_SYSCALL_64_after_hwframe+0x6d/0x75
-> >> >>
-> >> >> Fixes: 99e5acae193e ("ipv4: Fix potential uninit variable access bu=
-g in __ip_make_skb()")
-> >> >> Reported-by: syzkaller <syzkaller@googlegroups.com>
-> >> >> Signed-off-by: Shigeru Yoshida <syoshida@redhat.com>
-> >> >> ---
-> >> >> I think IPv6 has a similar issue. If this patch is accepted, I will=
- send
-> >> >> a patch for IPv6.
-> >> >> ---
-> >> >>  net/ipv4/ip_output.c | 2 +-
-> >> >>  1 file changed, 1 insertion(+), 1 deletion(-)
-> >> >>
-> >> >> diff --git a/net/ipv4/ip_output.c b/net/ipv4/ip_output.c
-> >> >> index 1fe794967211..39229fd0601a 100644
-> >> >> --- a/net/ipv4/ip_output.c
-> >> >> +++ b/net/ipv4/ip_output.c
-> >> >> @@ -1473,7 +1473,7 @@ struct sk_buff *__ip_make_skb(struct sock *sk=
-,
-> >> >>                  * by icmp_hdr(skb)->type.
-> >> >>                  */
-> >> >>                 if (sk->sk_type =3D=3D SOCK_RAW &&
-> >> >> -                   !inet_test_bit(HDRINCL, sk))
-> >> >> +                   !(fl4->flowi4_flags & FLOWI_FLAG_KNOWN_NH))
-> >> >>                         icmp_type =3D fl4->fl4_icmp_type;
-> >> >>                 else
-> >> >>                         icmp_type =3D icmp_hdr(skb)->type;
-> >> >> --
-> >> >> 2.44.0
-> >> >>
-> >> >
-> >> > Thanks for your patch.
-> >> >
-> >> > I do not think this is enough, as far as syzkaller is concerned.
-> >> >
-> >> > raw_probe_proto_opt() can leave garbage in fl4_icmp_type (and fl4_ic=
-mp_code)
-> >>
-> >> Thank you for your comment. But I don't understand it clearly. What
-> >> exactly do you mean by "garbage"?
-> >>
-> >> raw_probe_proto_opt() immediately returns 0 if fl4->flowi4_proto is
-> >> not IPPROTO_ICMP:
-> >>
-> >> static int raw_probe_proto_opt(struct raw_frag_vec *rfv, struct flowi4=
- *fl4)
-> >> {
-> >>         int err;
-> >>
-> >>         if (fl4->flowi4_proto !=3D IPPROTO_ICMP)
-> >>                 return 0;
-> >>
-> >> In this case, the function doesn't set fl4_icmp_type. Do you mean this
-> >> case?
-> >
-> > There are multiple ways to return early from this function.
-> >
-> > In all of them, fl4->fl4_icmp_type is left uninitialized, so syzbot
-> > will find ways to trigger a related bug,
-> > if you assume later that fl4->fl4_icmp_type contains valid (initialized=
-) data.
->
-> Thank you for your reply. I see your point.
->
-> fl4->fl4_icmp_type is part of flowi_uli union in flowi4 structure, and
-> flowi4_init_output() initializes fl4_dport and fl4_sport to zero.
->
-> I thought this also initializes fl4_icmp_type and fl4_icmp_code. Do
-> you think we should initialize fl4_icmp_type and fl4_icmp_code
-> explicitly, otherwise am I misunderstanding?
+On Mon, Mar 18, 2024 at 11:46:39AM -0400, Yazen Ghannam wrote:
+> On 3/14/24 12:35, John Allen wrote:
+> > Make map_bits_valid available in the AMD ATL internal header as the
+> > function can be used in other parts of the library.
+> > 
+> > Signed-off-by: John Allen <john.allen@amd.com>
+> > ---
+> >   drivers/ras/amd/atl/dehash.c   | 2 +-
+> >   drivers/ras/amd/atl/internal.h | 3 +++
+> >   2 files changed, 4 insertions(+), 1 deletion(-)
+> > 
+> > diff --git a/drivers/ras/amd/atl/dehash.c b/drivers/ras/amd/atl/dehash.c
+> > index 4ea46262c4f5..a20cf615b83a 100644
+> > --- a/drivers/ras/amd/atl/dehash.c
+> > +++ b/drivers/ras/amd/atl/dehash.c
+> > @@ -19,7 +19,7 @@
+> >    * If @num_intlv_dies and/or @num_intlv_sockets are 1, it means the
+> >    * respective interleaving is disabled.
+> >    */
+> > -static inline bool map_bits_valid(struct addr_ctx *ctx, u8 bit1, u8 bit2,
+> > +inline bool map_bits_valid(struct addr_ctx *ctx, u8 bit1, u8 bit2,
+> >   				  u8 num_intlv_dies, u8 num_intlv_sockets)
+> >   {
+> >   	if (!(ctx->map.intlv_bit_pos == bit1 || ctx->map.intlv_bit_pos == bit2)) {
+> > diff --git a/drivers/ras/amd/atl/internal.h b/drivers/ras/amd/atl/internal.h
+> > index 05b870fcb24e..4681449321de 100644
+> > --- a/drivers/ras/amd/atl/internal.h
+> > +++ b/drivers/ras/amd/atl/internal.h
+> > @@ -239,6 +239,9 @@ unsigned long convert_umc_mca_addr_to_sys_addr(struct atl_err *err);
+> >   u64 add_base_and_hole(struct addr_ctx *ctx, u64 addr);
+> >   u64 remove_base_and_hole(struct addr_ctx *ctx, u64 addr);
+> > +inline bool map_bits_valid(struct addr_ctx *ctx, u8 bit1, u8 bit2,
+> > +			   u8 num_intlv_dies, u8 num_intlv_sockets);
+> > +
+> >   /*
+> >    * Make a gap in @data that is @num_bits long starting at @bit_num.
+> >    * e.g. data		= 11111111'b
+> 
+> Ultimately, the maps should be validated as soon as they are gathered. I
+> figured we would do that later. But that would wipe out this change.
+> And, after looking at dehash.c again, map_bits_valid() isn't used in too
+> many places right now.
+> 
+> So I think validate_address_map() from the following patch should be
+> done for all modes first. That way we don't need to add and then remove
+> this function from the header.
 
-Yes, I am precisely saying this : do not rely on some union layout,
-without mentioning it in the changelog
-or even better in a comment.
+I'm not sure I understand. Are you saying that we should just move the
+map_bits_valid function to map.c and then make the map_bits_valid calls
+that are currently in dehash.c to validate_address_map?
 
-If you want to avoid clearing these fields, please add a
-BUILD_BUG_ON() to make sure
-a unrelated future change in include/net/flow.h does not break a
-hidden assumption.
-
-(ie : clearing fl4_dport and fl4_sport also clears fl4_icmp_type and
-fl4_icmp_code.)
+Thanks,
+John
 
