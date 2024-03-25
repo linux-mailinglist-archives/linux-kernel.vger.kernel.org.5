@@ -1,215 +1,136 @@
-Return-Path: <linux-kernel+bounces-116785-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-116797-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 83CF788A3FB
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 15:15:47 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 295CF88A402
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 15:16:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0BDAA2E3295
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 14:15:46 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 94E311F3E601
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 14:16:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C5DE8181BBC;
-	Mon, 25 Mar 2024 10:47:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DF80E12D741;
+	Mon, 25 Mar 2024 10:47:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="d9LCoRgZ"
-Received: from mail-ed1-f42.google.com (mail-ed1-f42.google.com [209.85.208.42])
+	dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b="lbC9nKs2"
+Received: from mail-lf1-f52.google.com (mail-lf1-f52.google.com [209.85.167.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8B568199E8A
-	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 10:05:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D53F19F523
+	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 10:08:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711361149; cv=none; b=g9/8Zll0KTYP62/g3Z4YF5Wp+s5N5FzluxO3AzfJHxhucXDUiIWU5+4eKG8InDitT5B+MmiT2VsLBdBStG2AdbGP85ReDoEG2C6UxJ4L0TPbJeQommrFPpyxfTMGmgGr4o03hy1I4nqk9zsB57TNtQEGaNaudTlSOrS3BgpKjYE=
+	t=1711361295; cv=none; b=RgtU7qsBM1iYF3sAi+OIMwZBL66ZQjnv4TJAHEzygfOl1yXdhq8GnDDMiywYG/w3nQEVH94dKKOvafsrRzhpDMau8y5ZSoeTe8yyndr1OCybKyGtR8TFI26fg7eePVdGvJHth0TTZ9YxOX6zTTc/T7lkvvVWx2kfVDw/R/bL2SA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711361149; c=relaxed/simple;
-	bh=+jhV52bal85mD3CXpudud6EoSW66gCmXp4eqojLaj9E=;
+	s=arc-20240116; t=1711361295; c=relaxed/simple;
+	bh=aj12qcWxwHOSiW5ip0+Q6r8HCwXXVgYZqcmXwDmc6a0=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=trjPE8+kglE1vXoLExVRYEEZv3BUWWzeHzuQokGjRY/sWV4dg36sGF6eFp7PBwUoGGir8AU/SagFmIR6lu2+nPYL0OlIcsGaV7ZXQzGEmqzlJ8JgiSXt7kR8VX8Z+BEHLEL3DR8awh3Vkz48Cfez+BetO37cE7D4HbRePx7GJwc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=d9LCoRgZ; arc=none smtp.client-ip=209.85.208.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ed1-f42.google.com with SMTP id 4fb4d7f45d1cf-56c1a50b004so2551a12.0
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 03:05:46 -0700 (PDT)
+	 To:Cc:Content-Type; b=Bty2qlAd574vgi3Z5EcOmTy76fKBQ8QA72PdRZxBJBi0M1/m5gB0bsefkwMlcb7TZcNeQgT7fO/lY0flcMEJcut2DSDDofwFcEWDT6kBypUZe/xWg9BqJvOG1Z57nqVDrzELfzghq26blxc1GsX5S9Yiz9VlOt3zafAEK8XMEkQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl; spf=none smtp.mailfrom=bgdev.pl; dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b=lbC9nKs2; arc=none smtp.client-ip=209.85.167.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bgdev.pl
+Received: by mail-lf1-f52.google.com with SMTP id 2adb3069b0e04-513dc9d6938so5211919e87.2
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 03:08:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1711361145; x=1711965945; darn=vger.kernel.org;
+        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1711361292; x=1711966092; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=IoiT2n6Yi3d00YcHBvfYpjh1CDZ627EZJhhUjywg0l0=;
-        b=d9LCoRgZReFtfie4FC0lmridNgs6RYKsco5RAMuuKlGhc0KA3Lvd13h+NG8rHhPmPs
-         Gny36mXasKRYnk6P5d8+3FqmkQm3pXCrGHLZ3/ERCCaKuSaXbAigGrXjS1d3FF3LFr0c
-         uGgvosmeMlYvaLvrP180CpYXO1NfRzzuJhSiguL4oD/PYIKw36d4gpOKXzsY7hXD8x+a
-         LvJuW7R52/GQqPjriXdSd2GhXfhf6kKlVE7eH1Ym3S3de99b/2DjW5rW4/NwC2+ZabPU
-         BHAgHYzzN7CcfXY8nJhQfabATPz4zjEkZNcS364Mkl1BI7eY4mQvsvg/ktUo8g/V7Jzk
-         ebEQ==
+        bh=aj12qcWxwHOSiW5ip0+Q6r8HCwXXVgYZqcmXwDmc6a0=;
+        b=lbC9nKs27h5vbZyk2ozArc1COjHhnZCpbml9EUiMxVGntXUuzJ9C6moWhn8OTHWChN
+         ESI55WR4+mqGvfC8kJTMIhP05wx+fuXXiWnJR+mKR2SswXCdXvvF1Ndkt2WQykUsGzlv
+         wfneF1MZ3SbpRBriIKsDw9MLlI8obEquBNjTgUtCRN/6a1Y86R55GpRXhIFXKa95LdMy
+         710WP69IOOn/ryhFNhMWhR4HGL8jo8JYSo+zCsUzwaxes1zUfdVRFgSvKKMsIam06b6x
+         TbtLUlpg2l3/qLExCJjJM0ei8ilfyV12aWp7eZJr8VOQInjhVA4OqIwPVai59ZLhM1DM
+         N5Lw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711361145; x=1711965945;
+        d=1e100.net; s=20230601; t=1711361292; x=1711966092;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=IoiT2n6Yi3d00YcHBvfYpjh1CDZ627EZJhhUjywg0l0=;
-        b=O08iP4YDzw8F+3vHCeLeh2U14V5cq2soly1J8046vOoUeEriG012ePqAcmzqBuRtMP
-         lhxzGBBwt/+fTZLkbpOzN2LPacvLo8QUw5HuqFgrNDpB/qa5b55YsW6ru4RZzyPoYz+s
-         4NmEjKJuErBfHsOQBqLtMXcGmdONa0XhWkUEMCWmtN3ndNhOa0OsmkNo0+iC6cEFB2/G
-         TjG7q9Ewu6/EiaMtKx1fdRBZ0QI2NChYOvWbYhx/bmhhtzJ+5X90TXu535aKll798BkC
-         s5LFQSiHsUFzS2hE57eejYLAz+HAKSBjAhlRmFLjpCf7jZ14C90ZhVUeHiYxN8l2F/Nf
-         aHiA==
-X-Forwarded-Encrypted: i=1; AJvYcCXYn3s2gFBGHUPKfM7g8QqvBIvKinaNT545hwRXQDCzr/rFCw6IFqE+GSMxkNcnprDgFXY7D9AVu9OYQUdpr3onh0Om14KWXrCMG+Ij
-X-Gm-Message-State: AOJu0YzR/6afM/DqdRLmuAmd6gyhCQkG5pCaI+JrkLQlZ2rbHZpUsF6u
-	/mRZ0mrv7b0qF7SaRSAwQXFnjkCx1FvWka7x2GLG+zF4PMWxsedmwehzVL9Zk3041RNAAFTrqKU
-	lYoHIR3AEFSwZ6S+tQq3jeM/fxGSd9n8uddqk
-X-Google-Smtp-Source: AGHT+IH3z0zRq03nVuaQDRwAJwU6dTgc9PGIzVceNPR7LTN/Ml6pDakMuvc7evYIuEtT/XesUJ5MCranpHjm0FIgT4k=
-X-Received: by 2002:aa7:da8b:0:b0:568:7767:14fd with SMTP id
- q11-20020aa7da8b000000b00568776714fdmr659526eds.7.1711361144563; Mon, 25 Mar
- 2024 03:05:44 -0700 (PDT)
+        bh=aj12qcWxwHOSiW5ip0+Q6r8HCwXXVgYZqcmXwDmc6a0=;
+        b=KFY2ZlIelR4b/w1hdvgUnM89Zl+3WogdUGC81DjWuaXcIHgI9kh2M5YblCxoL2hrBB
+         C4NTGIWseoFsAKXGbuNtkb4w+pidvz1Und1kdmWXieJlqYfN2zaGurwEOy978C6hYWTx
+         ZEXmJc+oUablYklIqJpEvOGv82durStWabeqTFqWFAgd6vAQICMSXHTbqwwiniiHcyis
+         0WlLQ6Xq8pWi8JtNmjJGpNtomv/qwUGdEN9lBZJ/4lQm83Yo08cXgWec1PF259XBI9OS
+         sjzrTS3DBZkFzT7mnsPI5hiSZN1iKe1jq90bg4bM6byM7m4ATtimA83S0QP+fOYWaS/A
+         OEiw==
+X-Forwarded-Encrypted: i=1; AJvYcCU++PfB0jRLKQM6CaMcqq6gcl7OdWtqGSt86MgpuPlDSZYU5OUzwCW9uvCo00rD5WdcjMBxkImFgthza8Wafu9nXt+yJRcOSHjs1lOt
+X-Gm-Message-State: AOJu0Yy5yCg2649Mv9m9Vx+wSIpGbJuqB3pnydR2qquAAp4W7xBPQozw
+	HWbWLWy550ZOfd+/6mqMItq+LfoeYBk5JnmkS9sMEooBZgJFgQtuKm3iEvg7hY9kEXdGevEJPqB
+	AHeRKXb2KiUAP7YEoe7+PsXanRm85eY0Ew9Iq6A==
+X-Google-Smtp-Source: AGHT+IH9KsyrfR/oKQyP2zv2f4o4+YRFGfWSuYi0Uy5IBlHlqm5xWOl/0UOfEfiHPiDAIWTH17Eaxwh+L1AjnnpG9i8=
+X-Received: by 2002:a2e:a0c5:0:b0:2d6:87ab:2543 with SMTP id
+ f5-20020a2ea0c5000000b002d687ab2543mr3735612ljm.30.1711361291815; Mon, 25 Mar
+ 2024 03:08:11 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240324050554.1609460-1-syoshida@redhat.com> <CANn89iL_Oz58VYNLJ6eB=qgmsgY9juo9xAhaPKKaDqOxrjf+0w@mail.gmail.com>
- <20240325.183800.473265130872711273.syoshida@redhat.com>
-In-Reply-To: <20240325.183800.473265130872711273.syoshida@redhat.com>
-From: Eric Dumazet <edumazet@google.com>
-Date: Mon, 25 Mar 2024 11:05:33 +0100
-Message-ID: <CANn89i+VZMvm7YpvPatmQuXeBgh78iFvkFSLYR-KYub4aa6PEg@mail.gmail.com>
-Subject: Re: [PATCH net] ipv4: Fix uninit-value access in __ip_make_skb()
-To: Shigeru Yoshida <syoshida@redhat.com>
-Cc: davem@davemloft.net, dsahern@kernel.org, kuba@kernel.org, 
-	pabeni@redhat.com, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	syzkaller@googlegroups.com
+References: <20240325100359.17001-1-brgl@bgdev.pl>
+In-Reply-To: <20240325100359.17001-1-brgl@bgdev.pl>
+From: Bartosz Golaszewski <brgl@bgdev.pl>
+Date: Mon, 25 Mar 2024 11:08:00 +0100
+Message-ID: <CAMRc=Mce+PbCYdBOrWT=aFBUj+c=SU54z0=CJqr4HsrCgzKoEA@mail.gmail.com>
+Subject: Re: [PATCH v9 00/13] firmware: qcom: qseecom: convert to using the TZ allocator
+To: Andy Gross <agross@kernel.org>, Bjorn Andersson <andersson@kernel.org>, 
+	Konrad Dybcio <konrad.dybcio@linaro.org>, Elliot Berman <quic_eberman@quicinc.com>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, 
+	Guru Das Srinagesh <quic_gurus@quicinc.com>, Andrew Halaney <ahalaney@redhat.com>, 
+	Maximilian Luz <luzmaximilian@gmail.com>, Alex Elder <elder@linaro.org>, 
+	Srini Kandagatla <srinivas.kandagatla@linaro.org>, Arnd Bergmann <arnd@arndb.de>
+Cc: linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-arm-kernel@lists.infradead.org, kernel@quicinc.com, 
+	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, Mar 25, 2024 at 10:38=E2=80=AFAM Shigeru Yoshida <syoshida@redhat.c=
-om> wrote:
+On Mon, Mar 25, 2024 at 11:04=E2=80=AFAM Bartosz Golaszewski <brgl@bgdev.pl=
+> wrote:
 >
-> On Mon, 25 Mar 2024 10:01:25 +0100, Eric Dumazet wrote:
-> > On Sun, Mar 24, 2024 at 6:06=E2=80=AFAM Shigeru Yoshida <syoshida@redha=
-t.com> wrote:
-> >>
-> >> KMSAN reported uninit-value access in __ip_make_skb() [1].  __ip_make_=
-skb()
-> >> tests HDRINCL to know if the skb has icmphdr. However, HDRINCL can cau=
-se a
-> >> race condition. If calling setsockopt(2) with IP_HDRINCL changes HDRIN=
-CL
-> >> while __ip_make_skb() is running, the function will access icmphdr in =
-the
-> >> skb even if it is not included. This causes the issue reported by KMSA=
-N.
-> >>
-> >> Check FLOWI_FLAG_KNOWN_NH on fl4->flowi4_flags instead of testing HDRI=
-NCL
-> >> on the socket.
-> >>
-> >> [1]
-> >
-> > What is the kernel version for this trace ?
+> From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
 >
-> Sorry, I used the following version:
+> SCM calls that take memory buffers as arguments require that they be
+> page-aligned, physically continuous and non-cachable. The same
+> requirements apply to the buffer used to pass additional arguments to SCM
+> calls that take more than 4.
 >
-> CPU: 1 PID: 15709 Comm: syz-executor.7 Not tainted 6.8.0-11567-gb3603fcb7=
-9b1 #25
-> Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.16.3-1.fc39=
- 04/01/2014
+> To that end drivers typically use dma_alloc_coherent() to allocate memory
+> of suitable format which is slow and inefficient space-wise.
 >
-> >> BUG: KMSAN: uninit-value in __ip_make_skb+0x2b74/0x2d20 net/ipv4/ip_ou=
-tput.c:1481
-> >>  __ip_make_skb+0x2b74/0x2d20 net/ipv4/ip_output.c:1481
-> >>  ip_finish_skb include/net/ip.h:243 [inline]
-> >>  ip_push_pending_frames+0x4c/0x5c0 net/ipv4/ip_output.c:1508
-> >>  raw_sendmsg+0x2381/0x2690 net/ipv4/raw.c:654
-> >>  inet_sendmsg+0x27b/0x2a0 net/ipv4/af_inet.c:851
-> >>  sock_sendmsg_nosec net/socket.c:730 [inline]
-> >>  __sock_sendmsg+0x274/0x3c0 net/socket.c:745
-> >>  __sys_sendto+0x62c/0x7b0 net/socket.c:2191
-> >>  __do_sys_sendto net/socket.c:2203 [inline]
-> >>  __se_sys_sendto net/socket.c:2199 [inline]
-> >>  __x64_sys_sendto+0x130/0x200 net/socket.c:2199
-> >>  do_syscall_64+0xd8/0x1f0 arch/x86/entry/common.c:83
-> >>  entry_SYSCALL_64_after_hwframe+0x6d/0x75
-> >>
-> >> Uninit was created at:
-> >>  slab_post_alloc_hook mm/slub.c:3804 [inline]
-> >>  slab_alloc_node mm/slub.c:3845 [inline]
-> >>  kmem_cache_alloc_node+0x5f6/0xc50 mm/slub.c:3888
-> >>  kmalloc_reserve+0x13c/0x4a0 net/core/skbuff.c:577
-> >>  __alloc_skb+0x35a/0x7c0 net/core/skbuff.c:668
-> >>  alloc_skb include/linux/skbuff.h:1318 [inline]
-> >>  __ip_append_data+0x49ab/0x68c0 net/ipv4/ip_output.c:1128
-> >>  ip_append_data+0x1e7/0x260 net/ipv4/ip_output.c:1365
-> >>  raw_sendmsg+0x22b1/0x2690 net/ipv4/raw.c:648
-> >>  inet_sendmsg+0x27b/0x2a0 net/ipv4/af_inet.c:851
-> >>  sock_sendmsg_nosec net/socket.c:730 [inline]
-> >>  __sock_sendmsg+0x274/0x3c0 net/socket.c:745
-> >>  __sys_sendto+0x62c/0x7b0 net/socket.c:2191
-> >>  __do_sys_sendto net/socket.c:2203 [inline]
-> >>  __se_sys_sendto net/socket.c:2199 [inline]
-> >>  __x64_sys_sendto+0x130/0x200 net/socket.c:2199
-> >>  do_syscall_64+0xd8/0x1f0 arch/x86/entry/common.c:83
-> >>  entry_SYSCALL_64_after_hwframe+0x6d/0x75
-> >>
-> >> Fixes: 99e5acae193e ("ipv4: Fix potential uninit variable access bug i=
-n __ip_make_skb()")
-> >> Reported-by: syzkaller <syzkaller@googlegroups.com>
-> >> Signed-off-by: Shigeru Yoshida <syoshida@redhat.com>
-> >> ---
-> >> I think IPv6 has a similar issue. If this patch is accepted, I will se=
-nd
-> >> a patch for IPv6.
-> >> ---
-> >>  net/ipv4/ip_output.c | 2 +-
-> >>  1 file changed, 1 insertion(+), 1 deletion(-)
-> >>
-> >> diff --git a/net/ipv4/ip_output.c b/net/ipv4/ip_output.c
-> >> index 1fe794967211..39229fd0601a 100644
-> >> --- a/net/ipv4/ip_output.c
-> >> +++ b/net/ipv4/ip_output.c
-> >> @@ -1473,7 +1473,7 @@ struct sk_buff *__ip_make_skb(struct sock *sk,
-> >>                  * by icmp_hdr(skb)->type.
-> >>                  */
-> >>                 if (sk->sk_type =3D=3D SOCK_RAW &&
-> >> -                   !inet_test_bit(HDRINCL, sk))
-> >> +                   !(fl4->flowi4_flags & FLOWI_FLAG_KNOWN_NH))
-> >>                         icmp_type =3D fl4->fl4_icmp_type;
-> >>                 else
-> >>                         icmp_type =3D icmp_hdr(skb)->type;
-> >> --
-> >> 2.44.0
-> >>
-> >
-> > Thanks for your patch.
-> >
-> > I do not think this is enough, as far as syzkaller is concerned.
-> >
-> > raw_probe_proto_opt() can leave garbage in fl4_icmp_type (and fl4_icmp_=
-code)
+> SHM Bridge is a safety mechanism that - once enabled - will only allow
+> passing buffers to the TrustZone that have been explicitly marked as
+> shared. It improves the overall system safety with SCM calls and is
+> required by the upcoming scminvoke functionality.
 >
-> Thank you for your comment. But I don't understand it clearly. What
-> exactly do you mean by "garbage"?
+> The end goal of this series is to enable SHM bridge support for those
+> architectures that support it but to that end we first need to unify the
+> way memory for SCM calls is allocated. This in itself is beneficial as
+> the current approach of using dma_alloc_coherent() in most places is quit=
+e
+> slow.
 >
-> raw_probe_proto_opt() immediately returns 0 if fl4->flowi4_proto is
-> not IPPROTO_ICMP:
+> First let's add a new TZ Memory allocator that allows users to create
+> dynamic memory pools of format suitable for sharing with the TrustZone.
+> Make it ready for implementing multiple build-time modes.
 >
-> static int raw_probe_proto_opt(struct raw_frag_vec *rfv, struct flowi4 *f=
-l4)
-> {
->         int err;
+> Convert all relevant drivers to using it. Add separate pools for SCM core
+> and for qseecom.
 >
->         if (fl4->flowi4_proto !=3D IPPROTO_ICMP)
->                 return 0;
+> Finally add support for SHM bridge and make it the default mode of
+> operation with the generic allocator as fallback for the platforms that
+> don't support SHM bridge.
 >
-> In this case, the function doesn't set fl4_icmp_type. Do you mean this
-> case?
+> Tested on db410c, RB5, sm8550-qrd. Previous iteration tested also on
+> sa8775p-ride and lenovo X13s (please do retest on those platforms if you
+> can).
+>
 
-There are multiple ways to return early from this function.
+The Subject should have been "firmware: qcom: implement support for
+and enable SHM bridge", sorry for the mixup.
 
-In all of them, fl4->fl4_icmp_type is left uninitialized, so syzbot
-will find ways to trigger a related bug,
-if you assume later that fl4->fl4_icmp_type contains valid (initialized) da=
-ta.
+Bartosz
 
