@@ -1,59 +1,59 @@
-Return-Path: <linux-kernel+bounces-117315-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-117314-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3346F88B224
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 21:59:23 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id F0CB288A9E8
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 17:46:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 25525B31319
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 16:46:31 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9A25C2A6F66
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 16:46:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8335517109F;
-	Mon, 25 Mar 2024 14:57:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B08F0173350;
+	Mon, 25 Mar 2024 14:57:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="GVPaaVJq"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Y8TFUAdq"
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0FD00172BB3
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7D560172BAB
 	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 14:57:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711378662; cv=none; b=oIDe2p2Jz3Bl2rinGiWUG19A0de9yYs2aMZNopaVt1NbcQdR5xWRvxYu+YSB7wGS9M0jGZLAdjgbFlPdF26m1A4wNeFUhERGDcFUG16a2FgPAAFhHjbXkCpRMR7KaJ0R5QkiH5VM3rHmS8Kly1R8qIu2V68f24tURtHCG8M/jTE=
+	t=1711378662; cv=none; b=I0m3zf+FOYCqhgvITIL5I9VmiTXsRD0E1lDmXxCFtb50Gl4Df0EvKHSgZa0TLL8vYY5EChqZpqmKCf4BtJMohUI7H7sOmKBdK8jIVYT4OfmyhJGhA2ERO5kqj6p0jKnLZCnV6hj66uaCZGB1tG/cGqy89TYujoc7eD5zIquC/LQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1711378662; c=relaxed/simple;
-	bh=/T0vBiojUllP7pC9C+2rZRG/biMsPIykoiuiXxoG924=;
+	bh=u9X0CB3RPiuglgfjF076zJXtAcTpbFFY2pMKpioSodE=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-type; b=eKzPJQxNJD0aW/RGYpgNOgeUj6bDnWpphLdgMfHOTNqWKQDVWLmo3Cl+6EA12QeamtxnbeY7+1cjk5nowoKNOe5eHJApbWpbK9WlSrKXk8vZq724OPk+JNpT0WjU4YQCcSD8COoQ3KCeDiM9gwvqFDEgGEQrIPOnKZ3u4H9JBI8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=GVPaaVJq; arc=none smtp.client-ip=170.10.133.124
+	 MIME-Version:Content-type; b=ViZRFTniMh1ZXvUiXDWfdN1dRph2K47fs92/LPZu++N2nyCFlVrpZ/CzqkaDJGJ0ypkOWC1n1hxj15vQiqxb6Y4ZgzVGNz/X+Q7c/ocRypDl4CY5hxl+XjNoLc4VIgxNCOHOajd5K0JxDpUSNqkTKAPmcXsyfXFIJ5gYEdo23Wc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Y8TFUAdq; arc=none smtp.client-ip=170.10.133.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1711378660;
+	s=mimecast20190719; t=1711378659;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=5tjcWip8Jh3x6TpRu3FCVwM3jxp/f+pF40FWxJhLLRM=;
-	b=GVPaaVJqcmQSv8r2ReNTkvsmjvpuQJNb6P+zUyaMMlaI1A3uPOW5BVUwhGIWSvuvbdNZvf
-	oIJbk8HvUeN5nLhx1poE7JzySlOWAHZL6K6Ksvg2Bli4E4Pi+8fwjnUV5rpTk3Yph3B2Ys
-	btjvIlrE/eWLbW2qtrJDZdAbaMnzUVo=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-184-pzvsJf6aPruLJH2f2paQ0g-1; Mon,
- 25 Mar 2024 10:57:33 -0400
-X-MC-Unique: pzvsJf6aPruLJH2f2paQ0g-1
+	bh=MVO6euUmFTCPCHk6L2/T00GcEz6lDO4YO+24ug8h660=;
+	b=Y8TFUAdqZZaorxa6P2UtKKFHsUU/GrXczkSoFL5yX5DwqU8f4HBrs7vlV11M1yWT8Ulk7I
+	e977XArYUmZBCv4SI0XhcL/FHqKyV6/iJxPN8WGAaz+79Cz3OobQ6aPoEuQ5ess6wmANQf
+	ByxLDe+cvXI6hBvnP73wUT8jGv6DGZE=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-124-mGMwkjhzOPWXpLUha1kWiA-1; Mon, 25 Mar 2024 10:57:37 -0400
+X-MC-Unique: mGMwkjhzOPWXpLUha1kWiA-1
 Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.rdu2.redhat.com [10.11.54.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id C6BF53811F22;
-	Mon, 25 Mar 2024 14:57:32 +0000 (UTC)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 3E7FB8007A2;
+	Mon, 25 Mar 2024 14:57:37 +0000 (UTC)
 Received: from MiWiFi-R3L-srv.redhat.com (unknown [10.72.116.12])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id C39653C20;
-	Mon, 25 Mar 2024 14:57:29 +0000 (UTC)
+	by smtp.corp.redhat.com (Postfix) with ESMTP id 69A9D3C22;
+	Mon, 25 Mar 2024 14:57:33 +0000 (UTC)
 From: Baoquan He <bhe@redhat.com>
 To: linux-mm@kvack.org
 Cc: linux-kernel@vger.kernel.org,
@@ -62,9 +62,9 @@ Cc: linux-kernel@vger.kernel.org,
 	akpm@linux-foundation.org,
 	rppt@kernel.org,
 	Baoquan He <bhe@redhat.com>
-Subject: [PATCH v2 4/6] mm/mm_init.c: remove meaningless calculation of zone->managed_pages in free_area_init_core()
-Date: Mon, 25 Mar 2024 22:56:44 +0800
-Message-ID: <20240325145646.1044760-5-bhe@redhat.com>
+Subject: [PATCH v2 5/6] mm/mm_init.c: remove unneeded calc_memmap_size()
+Date: Mon, 25 Mar 2024 22:56:45 +0800
+Message-ID: <20240325145646.1044760-6-bhe@redhat.com>
 In-Reply-To: <20240325145646.1044760-1-bhe@redhat.com>
 References: <20240325145646.1044760-1-bhe@redhat.com>
 Precedence: bulk
@@ -77,120 +77,44 @@ Content-type: text/plain
 Content-Transfer-Encoding: 8bit
 X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.1
 
-Currently, in free_area_init_core(), when initialize zone's field, a
-rough value is set to zone->managed_pages. That value is calculated by
-(zone->present_pages - memmap_pages).
-
-In the meantime, add the value to nr_all_pages and nr_kernel_pages which
-represent all free pages of system (only low memory or including HIGHMEM
-memory separately). Both of them are gonna be used in
-alloc_large_system_hash().
-
-However, the rough calculation and setting of zone->managed_pages is
-meaningless because
-  a) memmap pages are allocated on units of node in sparse_init() or
-     alloc_node_mem_map(pgdat); The simple (zone->present_pages -
-     memmap_pages) is too rough to make sense for zone;
-  b) the set zone->managed_pages will be zeroed out and reset with
-     acutal value in mem_init() via memblock_free_all(). Before the
-     resetting, no buddy allocation request is issued.
-
-Here, remove the meaningless and complicated calculation of
-(zone->present_pages - memmap_pages), initialize zone->managed_pages as 0
-which reflect its actual value because no any page is added into buddy
-system right now. It will be reset in mem_init().
-
-And also remove the assignment of nr_all_pages and nr_kernel_pages in
-free_area_init_core(). Instead, call the newly added calc_nr_kernel_pages()
-to count up all free but not reserved memory in memblock and assign to
-nr_all_pages and nr_kernel_pages. The counting excludes memmap_pages,
-and other kernel used data, which is more accurate than old way and
-simpler, and can also cover the ppc required arch_reserved_kernel_pages()
-case.
-
-And also clean up the outdated code comment above free_area_init_core().
-And free_area_init_core() is easy to understand now, no need to add
-words to explain.
+Nobody calls calc_memmap_size() now.
 
 Signed-off-by: Baoquan He <bhe@redhat.com>
 ---
- mm/mm_init.c | 46 +++++-----------------------------------------
- 1 file changed, 5 insertions(+), 41 deletions(-)
+ mm/mm_init.c | 20 --------------------
+ 1 file changed, 20 deletions(-)
 
 diff --git a/mm/mm_init.c b/mm/mm_init.c
-index c57a7fc97a16..7f71e56e83f3 100644
+index 7f71e56e83f3..e269a724f70e 100644
 --- a/mm/mm_init.c
 +++ b/mm/mm_init.c
-@@ -1565,15 +1565,6 @@ void __ref free_area_init_core_hotplug(struct pglist_data *pgdat)
+@@ -1331,26 +1331,6 @@ static void __init calculate_node_totalpages(struct pglist_data *pgdat,
+ 	pr_debug("On node %d totalpages: %lu\n", pgdat->node_id, realtotalpages);
  }
- #endif
  
--/*
-- * Set up the zone data structures:
-- *   - mark all pages reserved
-- *   - mark all memory queues empty
-- *   - clear the memory bitmaps
-- *
-- * NOTE: pgdat should get zeroed by caller.
-- * NOTE: this function is only called during early init.
-- */
- static void __init free_area_init_core(struct pglist_data *pgdat)
+-static unsigned long __init calc_memmap_size(unsigned long spanned_pages,
+-						unsigned long present_pages)
+-{
+-	unsigned long pages = spanned_pages;
+-
+-	/*
+-	 * Provide a more accurate estimation if there are holes within
+-	 * the zone and SPARSEMEM is in use. If there are holes within the
+-	 * zone, each populated memory region may cost us one or two extra
+-	 * memmap pages due to alignment because memmap pages for each
+-	 * populated regions may not be naturally aligned on page boundary.
+-	 * So the (present_pages >> 4) heuristic is a tradeoff for that.
+-	 */
+-	if (spanned_pages > present_pages + (present_pages >> 4) &&
+-	    IS_ENABLED(CONFIG_SPARSEMEM))
+-		pages = present_pages;
+-
+-	return PAGE_ALIGN(pages * sizeof(struct page)) >> PAGE_SHIFT;
+-}
+-
+ #ifdef CONFIG_TRANSPARENT_HUGEPAGE
+ static void pgdat_init_split_queue(struct pglist_data *pgdat)
  {
- 	enum zone_type j;
-@@ -1584,41 +1575,13 @@ static void __init free_area_init_core(struct pglist_data *pgdat)
- 
- 	for (j = 0; j < MAX_NR_ZONES; j++) {
- 		struct zone *zone = pgdat->node_zones + j;
--		unsigned long size, freesize, memmap_pages;
--
--		size = zone->spanned_pages;
--		freesize = zone->present_pages;
--
--		/*
--		 * Adjust freesize so that it accounts for how much memory
--		 * is used by this zone for memmap. This affects the watermark
--		 * and per-cpu initialisations
--		 */
--		memmap_pages = calc_memmap_size(size, freesize);
--		if (!is_highmem_idx(j)) {
--			if (freesize >= memmap_pages) {
--				freesize -= memmap_pages;
--				if (memmap_pages)
--					pr_debug("  %s zone: %lu pages used for memmap\n",
--						 zone_names[j], memmap_pages);
--			} else
--				pr_warn("  %s zone: %lu memmap pages exceeds freesize %lu\n",
--					zone_names[j], memmap_pages, freesize);
--		}
--
--		if (!is_highmem_idx(j))
--			nr_kernel_pages += freesize;
--		/* Charge for highmem memmap if there are enough kernel pages */
--		else if (nr_kernel_pages > memmap_pages * 2)
--			nr_kernel_pages -= memmap_pages;
--		nr_all_pages += freesize;
-+		unsigned long size = zone->spanned_pages;
- 
- 		/*
--		 * Set an approximate value for lowmem here, it will be adjusted
--		 * when the bootmem allocator frees pages into the buddy system.
--		 * And all highmem pages will be managed by the buddy system.
-+		 * Initialize zone->managed_pages as 0 , it will be reset
-+		 * when memblock allocator frees pages into buddy system.
- 		 */
--		zone_init_internals(zone, j, nid, freesize);
-+		zone_init_internals(zone, j, nid, 0);
- 
- 		if (!size)
- 			continue;
-@@ -1915,6 +1878,7 @@ void __init free_area_init(unsigned long *max_zone_pfn)
- 		check_for_memory(pgdat);
- 	}
- 
-+	calc_nr_kernel_pages();
- 	memmap_init();
- 
- 	/* disable hash distribution for systems with a single node */
 -- 
 2.41.0
 
