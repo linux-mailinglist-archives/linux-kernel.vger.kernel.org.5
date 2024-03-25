@@ -1,232 +1,108 @@
-Return-Path: <linux-kernel+bounces-117945-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-117946-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 54B3988B1A5
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 21:37:23 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2B03888B1A7
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 21:37:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7750E1C21390
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 20:37:22 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DA656320141
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 20:37:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 96993535DB;
-	Mon, 25 Mar 2024 20:37:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 51D695339E;
+	Mon, 25 Mar 2024 20:37:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="E8HReAfK";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="e4Gt5Cs0";
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="E8HReAfK";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="e4Gt5Cs0"
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="eeG3wfkz"
+Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9ADA71BF31;
-	Mon, 25 Mar 2024 20:37:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 993251BF31;
+	Mon, 25 Mar 2024 20:37:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711399036; cv=none; b=qv5QkwPSqcdTqZIU2Ok8m1FphhfV6v9dmjBpIgF+sA7yA98WQx3rYUuoxrMpT7JAx4qACp1hkj0iaGqiqUx9mmnMjWDntRWEfGdcj7pXCFVPqCVkuzs/trvrXQT23PZgPZ2Msl+opPz8NgpPVrqUNVdj4tjeOqpXSwZmyBWU6dA=
+	t=1711399053; cv=none; b=HzNiHIq7/1kV3E1aG+j4pC0wtDQgUWAOJtb7ZGkjemSSreKlp69l865+MdH0tseFmoud4KVxp5zx3xqQFXE+cD2ap3yRpIqmtwpHeo6yepZlJJWhpu29OI6w3yBUmJ4C5ivrx02zYXf01iuavr09Qmq4IjvTx77dbySIWK3+Rto=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711399036; c=relaxed/simple;
-	bh=27jU2O84cSCjwqulojJe2f0Ho7XmVZpE8G2qy+kcxUQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=eMqD3w/d403iTazBQ6zYr4atK4hNneL7mnW/QHxcthEsFmSYXHh/PBAHH3HJ1MnuR1xJ3vZRiILORWaWUFs6yvLQ9m/ZmS2p73p+IavqIyo9AmqqnE37BKn08kfROEHwxJz+JbAINDozcDipI6sMk6LmO6r+uuL4PG5FeVM06L8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=E8HReAfK; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=e4Gt5Cs0; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=E8HReAfK; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=e4Gt5Cs0; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
-Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:98])
+	s=arc-20240116; t=1711399053; c=relaxed/simple;
+	bh=VVdQBIh0vlq9StzgBVjD7qCHwBE7R/5l6ZifiUQINeU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=g54eeuU8yIVryZqV8J/akWGW2Vt+YYjpIZwKjN0B0XmdTDmAD44z5CqOTW7wWb3tKQ+mp2XqDadRmOwwE6hR5fTdbnOI2V5qMN36LqQDjyZz6Qle+H1m3CmpQwGf4ujTpZfQZ8acgusJIqXUnTGDtQEB3BeuQeYn7sJJ6TQQjnE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=eeG3wfkz; arc=none smtp.client-ip=65.109.113.108
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
+Received: from localhost (localhost.localdomain [127.0.0.1])
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 6BC2140E024C;
+	Mon, 25 Mar 2024 20:37:28 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
+	header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id Vo3ELXsGEisO; Mon, 25 Mar 2024 20:37:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+	t=1711399045; bh=U0G1eMa6Cvy7/sunjtYCvGXSPvh8B0E6dDV8JnTaH1E=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=eeG3wfkzBYG+9uJzmka8Da6RCICi5rC529Bbuh1aqh0NOV11kJAVJdjpif4LY0c3m
+	 QsI9wVDEwA+c4BZ8Hvgnaplrsn0x7/lj+rXS9KSm8Wlj7uFtcY8ZL4qQNXMfkjcNDh
+	 Kxcxbo9UlIsTJ3fW2SCSg1bvqTVxzJy1y2omch5rc9BbpaAGZJQLlPw8Z+BqvncbE0
+	 XFL+RiX4/h9nzbfEFBiQn2hKdzkHKGioEXqIstzhbAN1frJDFX+taBaiEW4rMFgjMF
+	 Guh3Hfo43JA6JiLrGyiiQBDXcTbkiduG+55XX0WJGzXtO/hlYOiT0MBOtJK1hKe7a4
+	 QgdUJ56Cg/2NGZciGAte1v4dyQbjdMzBA6gKgNQZN61mAJbznaq7gu2zoo3NMXx3af
+	 9kEASC/DLRx/WIT5z5bEydvTlExyxWZjC0VjQimdWRtG4JLgqUauFMxMfPdTCaMPbm
+	 RRJOG+5F6nDDFRDYSD3TtqCYRDZ1G5oUp1aES3jchJdJSIwSUNqGgq436pc8UGtXEs
+	 xozEr20AqlbwUuYAuwomA4Z8UdGV6TeYVvhUxO8O8fUE7kmTq300UmHAa49OkLXOEX
+	 QInykCpxtvs2FS8xU7cX+pf02Mfxk7Zq6S/qVEiq0h3mgr8Rl7S68CMlsqG4wnVVva
+	 2sVlSioM75+0pPJe3x2tcqWQ=
+Received: from zn.tnic (p5de8ecf7.dip0.t-ipconnect.de [93.232.236.247])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 73CAB372A8;
-	Mon, 25 Mar 2024 20:37:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1711399032; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=Gm8orQ8RLR5m2Km4fWq1+UBY+BSTbw+xyBEHEg6pdIc=;
-	b=E8HReAfKG1Hn+52mkkZrokzDzBbNRWK49snug4SO4y3oF+8MX3JUe+Xat+Nngx9EPE/GVU
-	8mu4pbsPSfVsqK6hKCcsTNB1jJvtdSnjgRVhyRfv6UhGUu4dHO4Yc15Pe3z7ceT0mz1wM+
-	tMjMmYl3wYXqF1C56HnsptkEo20saxI=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1711399032;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=Gm8orQ8RLR5m2Km4fWq1+UBY+BSTbw+xyBEHEg6pdIc=;
-	b=e4Gt5Cs0/E3srgj2o0whLP4ZCVRUHcE0/oloORmrNtTmkUGBbRcA7miUAPBqSdy2hVsNxl
-	EucfDbKWOoB8/sDw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1711399032; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=Gm8orQ8RLR5m2Km4fWq1+UBY+BSTbw+xyBEHEg6pdIc=;
-	b=E8HReAfKG1Hn+52mkkZrokzDzBbNRWK49snug4SO4y3oF+8MX3JUe+Xat+Nngx9EPE/GVU
-	8mu4pbsPSfVsqK6hKCcsTNB1jJvtdSnjgRVhyRfv6UhGUu4dHO4Yc15Pe3z7ceT0mz1wM+
-	tMjMmYl3wYXqF1C56HnsptkEo20saxI=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1711399032;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=Gm8orQ8RLR5m2Km4fWq1+UBY+BSTbw+xyBEHEg6pdIc=;
-	b=e4Gt5Cs0/E3srgj2o0whLP4ZCVRUHcE0/oloORmrNtTmkUGBbRcA7miUAPBqSdy2hVsNxl
-	EucfDbKWOoB8/sDw==
-Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id A7D7213A2E;
-	Mon, 25 Mar 2024 20:37:10 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap2.dmz-prg2.suse.org with ESMTPSA
-	id 8nQjI3bgAWawdQAAn2gu4w
-	(envelope-from <tzimmermann@suse.de>); Mon, 25 Mar 2024 20:37:10 +0000
-Message-ID: <338bf74a-13db-4b48-ab80-ddd2d80a0840@suse.de>
-Date: Mon, 25 Mar 2024 21:37:05 +0100
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 3771840E016C;
+	Mon, 25 Mar 2024 20:37:15 +0000 (UTC)
+Date: Mon, 25 Mar 2024 21:37:14 +0100
+From: Borislav Petkov <bp@alien8.de>
+To: Andrew Morton <akpm@linux-foundation.org>
+Cc: "V, Narasimhan" <Narasimhan.V@amd.com>,
+	"linux-next@vger.kernel.org" <linux-next@vger.kernel.org>,
+	"linux-mm@kvack.org" <linux-mm@kvack.org>,
+	"Aithal, Srikanth" <Srikanth.Aithal@amd.com>,
+	Dawei Li <dawei.li@shingroup.cn>,
+	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+	Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+	Yury Norov <yury.norov@gmail.com>,
+	lkml <linux-kernel@vger.kernel.org>
+Subject: Re: Boot failure with kernel BUG at mm/usercopy.c on next-20240325
+Message-ID: <20240325203714.GJZgHgem2TR1aVAVlU@fat_crate.local>
+References: <DM4PR12MB5086E76CF24A39017DA8567189362@DM4PR12MB5086.namprd12.prod.outlook.com>
+ <20240325125017.GBZgFzCXVxeF50uGVE@fat_crate.local>
+ <20240325113433.e04c2b508ac325630cd113c8@linux-foundation.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] fbdev: Select I/O-memory framebuffer ops for SBus
-To: nbowler@draconx.ca, deller@gmx.de, javierm@redhat.com
-Cc: linux-fbdev@vger.kernel.org, dri-devel@lists.freedesktop.org,
- linux-kernel@vger.kernel.org, Daniel Vetter <daniel@ffwll.ch>,
- Sam Ravnborg <sam@ravnborg.org>, Arnd Bergmann <arnd@arndb.de>,
- Geert Uytterhoeven <geert+renesas@glider.be>, stable@vger.kernel.org
-References: <20240322083005.24269-1-tzimmermann@suse.de>
-Content-Language: en-US
-From: Thomas Zimmermann <tzimmermann@suse.de>
-Autocrypt: addr=tzimmermann@suse.de; keydata=
- xsBNBFs50uABCADEHPidWt974CaxBVbrIBwqcq/WURinJ3+2WlIrKWspiP83vfZKaXhFYsdg
- XH47fDVbPPj+d6tQrw5lPQCyqjwrCPYnq3WlIBnGPJ4/jreTL6V+qfKRDlGLWFjZcsrPJGE0
- BeB5BbqP5erN1qylK9i3gPoQjXGhpBpQYwRrEyQyjuvk+Ev0K1Jc5tVDeJAuau3TGNgah4Yc
- hdHm3bkPjz9EErV85RwvImQ1dptvx6s7xzwXTgGAsaYZsL8WCwDaTuqFa1d1jjlaxg6+tZsB
- 9GluwvIhSezPgnEmimZDkGnZRRSFiGP8yjqTjjWuf0bSj5rUnTGiyLyRZRNGcXmu6hjlABEB
- AAHNJ1Rob21hcyBaaW1tZXJtYW5uIDx0emltbWVybWFubkBzdXNlLmRlPsLAjgQTAQgAOAIb
- AwULCQgHAgYVCgkICwIEFgIDAQIeAQIXgBYhBHIX+6yM6c9jRKFo5WgNwR1TC3ojBQJftODH
- AAoJEGgNwR1TC3ojx1wH/0hKGWugiqDgLNXLRD/4TfHBEKmxIrmfu9Z5t7vwUKfwhFL6hqvo
- lXPJJKQpQ2z8+X2vZm/slsLn7J1yjrOsoJhKABDi+3QWWSGkaGwRJAdPVVyJMfJRNNNIKwVb
- U6B1BkX2XDKDGffF4TxlOpSQzdtNI/9gleOoUA8+jy8knnDYzjBNOZqLG2FuTdicBXblz0Mf
- vg41gd9kCwYXDnD91rJU8tzylXv03E75NCaTxTM+FBXPmsAVYQ4GYhhgFt8S2UWMoaaABLDe
- 7l5FdnLdDEcbmd8uLU2CaG4W2cLrUaI4jz2XbkcPQkqTQ3EB67hYkjiEE6Zy3ggOitiQGcqp
- j//OwE0EWznS4AEIAMYmP4M/V+T5RY5at/g7rUdNsLhWv1APYrh9RQefODYHrNRHUE9eosYb
- T6XMryR9hT8XlGOYRwKWwiQBoWSDiTMo/Xi29jUnn4BXfI2px2DTXwc22LKtLAgTRjP+qbU6
- 3Y0xnQN29UGDbYgyyK51DW3H0If2a3JNsheAAK+Xc9baj0LGIc8T9uiEWHBnCH+RdhgATnWW
- GKdDegUR5BkDfDg5O/FISymJBHx2Dyoklv5g4BzkgqTqwmaYzsl8UxZKvbaxq0zbehDda8lv
- hFXodNFMAgTLJlLuDYOGLK2AwbrS3Sp0AEbkpdJBb44qVlGm5bApZouHeJ/+n+7r12+lqdsA
- EQEAAcLAdgQYAQgAIAIbDBYhBHIX+6yM6c9jRKFo5WgNwR1TC3ojBQJftOH6AAoJEGgNwR1T
- C3ojVSkIALpAPkIJPQoURPb1VWjh34l0HlglmYHvZszJWTXYwavHR8+k6Baa6H7ufXNQtThR
- yIxJrQLW6rV5lm7TjhffEhxVCn37+cg0zZ3j7zIsSS0rx/aMwi6VhFJA5hfn3T0TtrijKP4A
- SAQO9xD1Zk9/61JWk8OysuIh7MXkl0fxbRKWE93XeQBhIJHQfnc+YBLprdnxR446Sh8Wn/2D
- Ya8cavuWf2zrB6cZurs048xe0UbSW5AOSo4V9M0jzYI4nZqTmPxYyXbm30Kvmz0rYVRaitYJ
- 4kyYYMhuULvrJDMjZRvaNe52tkKAvMevcGdt38H4KSVXAylqyQOW5zvPc4/sq9c=
-In-Reply-To: <20240322083005.24269-1-tzimmermann@suse.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Level: 
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.de header.s=susede2_rsa header.b=E8HReAfK;
-	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=e4Gt5Cs0
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-3.00 / 50.00];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 XM_UA_NO_VERSION(0.01)[];
-	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:98:from];
-	 TO_DN_SOME(0.00)[];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_TRACE(0.00)[suse.de:+];
-	 MX_GOOD(-0.01)[];
-	 RCPT_COUNT_SEVEN(0.00)[11];
-	 NEURAL_HAM_SHORT(-0.20)[-1.000];
-	 FREEMAIL_TO(0.00)[draconx.ca,gmx.de,redhat.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 BAYES_HAM(-3.00)[100.00%];
-	 MID_RHS_MATCH_FROM(0.00)[];
-	 ARC_NA(0.00)[];
-	 R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	 FROM_HAS_DN(0.00)[];
-	 FREEMAIL_ENVRCPT(0.00)[gmx.de];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 TAGGED_RCPT(0.00)[renesas];
-	 MIME_GOOD(-0.10)[text/plain];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[gmx.de:email];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 RCVD_TLS_ALL(0.00)[];
-	 SUSPICIOUS_RECIPS(1.50)[]
-X-Spam-Score: -3.00
-X-Rspamd-Queue-Id: 73CAB372A8
-X-Spam-Flag: NO
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20240325113433.e04c2b508ac325630cd113c8@linux-foundation.org>
 
-Merged into drm-misc-fixes.
+On Mon, Mar 25, 2024 at 11:34:33AM -0700, Andrew Morton wrote:
+> Thanks, I'll just drop the patch.  It didn't receive a very favorable
+> review reception anyway.
 
-Am 22.03.24 um 09:29 schrieb Thomas Zimmermann:
-> Framebuffer I/O on the Sparc Sbus requires read/write helpers for
-> I/O memory. Select FB_IOMEM_FOPS accordingly.
->
-> Reported-by: Nick Bowler <nbowler@draconx.ca>
-> Closes: https://lore.kernel.org/lkml/5bc21364-41da-a339-676e-5bb0f4faebfb@draconx.ca/
-> Signed-off-by: Thomas Zimmermann <tzimmermann@suse.de>
-> Fixes: 8813e86f6d82 ("fbdev: Remove default file-I/O implementations")
-> Cc: Thomas Zimmermann <tzimmermann@suse.de>
-> Cc: Javier Martinez Canillas <javierm@redhat.com>
-> Cc: Daniel Vetter <daniel@ffwll.ch>
-> Cc: Helge Deller <deller@gmx.de>
-> Cc: Sam Ravnborg <sam@ravnborg.org>
-> Cc: Arnd Bergmann <arnd@arndb.de>
-> Cc: Geert Uytterhoeven <geert+renesas@glider.be>
-> Cc: linux-fbdev@vger.kernel.org
-> Cc: dri-devel@lists.freedesktop.org
-> Cc: <stable@vger.kernel.org> # v6.8+
-> ---
->   drivers/video/fbdev/Kconfig | 3 +++
->   1 file changed, 3 insertions(+)
->
-> diff --git a/drivers/video/fbdev/Kconfig b/drivers/video/fbdev/Kconfig
-> index a61b8260b8f36..edced74f0eeaf 100644
-> --- a/drivers/video/fbdev/Kconfig
-> +++ b/drivers/video/fbdev/Kconfig
-> @@ -494,6 +494,7 @@ config FB_SBUS_HELPERS
->   	select FB_CFB_COPYAREA
->   	select FB_CFB_FILLRECT
->   	select FB_CFB_IMAGEBLIT
-> +	select FB_IOMEM_FOPS
->   
->   config FB_BW2
->   	bool "BWtwo support"
-> @@ -514,6 +515,7 @@ config FB_CG6
->   	depends on (FB = y) && (SPARC && FB_SBUS)
->   	select FB_CFB_COPYAREA
->   	select FB_CFB_IMAGEBLIT
-> +	select FB_IOMEM_FOPS
->   	help
->   	  This is the frame buffer device driver for the CGsix (GX, TurboGX)
->   	  frame buffer.
-> @@ -523,6 +525,7 @@ config FB_FFB
->   	depends on FB_SBUS && SPARC64
->   	select FB_CFB_COPYAREA
->   	select FB_CFB_IMAGEBLIT
-> +	select FB_IOMEM_FOPS
->   	help
->   	  This is the frame buffer device driver for the Creator, Creator3D,
->   	  and Elite3D graphics boards.
+See here:
+
+https://lore.kernel.org/all/DM4PR12MB5086B9BDBF32D53DF226CBF489362@DM4PR12MB5086.namprd12.prod.outlook.com/
+
+folks still need to learn email. :-)
+
+Anyway, apparently there's some fix there.
+
+Thx.
 
 -- 
---
-Thomas Zimmermann
-Graphics Driver Developer
-SUSE Software Solutions Germany GmbH
-Frankenstrasse 146, 90461 Nuernberg, Germany
-GF: Ivo Totev, Andrew Myers, Andrew McDonald, Boudien Moerman
-HRB 36809 (AG Nuernberg)
+Regards/Gruss,
+    Boris.
 
+https://people.kernel.org/tglx/notes-about-netiquette
 
