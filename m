@@ -1,118 +1,132 @@
-Return-Path: <linux-kernel+bounces-117523-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-117525-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BBDB688B234
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 22:02:21 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id A741288AC32
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 18:47:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8F2F8BA05F6
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 17:47:06 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A982F32419C
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 17:47:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 028FE12E1D2;
-	Mon, 25 Mar 2024 16:56:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EAAF31BDE1;
+	Mon, 25 Mar 2024 16:58:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="EvgVHBHB"
-Received: from mail-pf1-f171.google.com (mail-pf1-f171.google.com [209.85.210.171])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="PNXhFr/K"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D1E9F3DAC19
-	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 16:56:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EA9EB1BC44;
+	Mon, 25 Mar 2024 16:58:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711385817; cv=none; b=Eksd4Bow8tvd2jBzcaPaTDpatNVMs3aQZIzVtdmCd2hqpUk3FgOpTXyvvP1ZKzUfBaAsLZ6HaRq1v58HVCgH1VmgnyHDpF6vOd9o9/dBV70uZ+pVm4+bu3W171waadV8tvTkzOJUxlQoOkzZGbJysdPhEK9Bdm1iJCMI1j2hWWA=
+	t=1711385887; cv=none; b=NDQQCHQe9kJ+Z1xA4MFxRo/P0Gf+hEdrSDKQeveyGthmmzDd94waZWjQR6k8J96tqxgfe0X6eihCJz44ZH9UM1aRGXrYqa+aOFsDiYhparpVJt0ukrd1y4zdKpDeXZ8zrw22ccvRE+ruAHAN+z3fbyWjG+pL0gf35GJSgCAv1iA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711385817; c=relaxed/simple;
-	bh=xPp/RUzgQsiSSqM+nB7eJxXqxjfyHTpV6y11jbU95bc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=tLCH/4gXl2YcZVZbRUgBNOh+ohKZ5buF5g8AV41S+TH4XQuCcj7CkvC9mu3gPGp9p90CGthnG9yVPMEKgfFnLHS7FW5TzWH9ajyPPm11ptNeVNc5vHDv793nu00ObdvtsjMxJF55u1D+zcszg9f8EVrkbFtoMennnvrKv4+59SM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=EvgVHBHB; arc=none smtp.client-ip=209.85.210.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-pf1-f171.google.com with SMTP id d2e1a72fcca58-6ea8ee55812so2360334b3a.0
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 09:56:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1711385815; x=1711990615; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=Uv8OSr8XfO/UGe4RvS9k3B7kgKFsdVwGKtydzmzsC34=;
-        b=EvgVHBHBRwrEt62D05wEw2T7SLsjqv/45vVph0Re6SlKCA/NK8PkkFku1AF110yNYg
-         1R4XVPFDWGGnsLwAmuNM3yOurFdVevZpppoyHPTv4xaGPjTUsVg05y8+ok24MpyXg44J
-         Dvzga600PoTDSdcGaOu7QMIi4txFN1m3Q5+E0=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711385815; x=1711990615;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Uv8OSr8XfO/UGe4RvS9k3B7kgKFsdVwGKtydzmzsC34=;
-        b=tTOlND0cZzSSwTTLpAl3RrHs9xBJFTcZYdRaRNaKJpc26yjHQgsPmnMmdtCjha/y5n
-         /hN9f2HRcvRW7DMjBASnQpu9IeC78gyeszVsPeojLfZubhprphcCqLZJtx85mk5xxJ9v
-         ke3a3Bv97Hkr/n0RJubM+vinQj0A/Xap8aHPEUHxbnQJcSGjUhrMepg5+ZHhr+QZ05F5
-         BHn+Xzh2q5h5zNb1eRMiY8qQiGx/QWEWFcTMCJDQVPe6Z9nRWd4RFRRD7e8+BBTfuShs
-         2B0s1E4vrcTrn5EbJ9CmzTFc7I0Iioxh2k+MRVASjGe3ppdqQ4F1F6tpxY2wPafKjE8m
-         qpRw==
-X-Forwarded-Encrypted: i=1; AJvYcCUT7anq8Ls4nejzJsqzRUO2ZYiDf1a89tep4S6YjGimW0ZMOfxmJOFckcT9Qw82F9ArTUzchNdf68996vcfqQnxhyLrGHJauMNzrN4+
-X-Gm-Message-State: AOJu0YzJBYzTyKoF5Tizog7ncLK9UvqtbW7988UFjwblJbcKurbZ8TVY
-	ZpMW9Iqk+fDaRUgwBeu1w1YOlNk1IDwg4rYMwg8aeezoFOE+tQ06ez4Mq5Pr2Q==
-X-Google-Smtp-Source: AGHT+IFJxDTO0PPcnDj1vjtBLWF+b9VN6OetGp9OFxlLXp0FJcL16ixfPvEZpVS4aubfeA3ZUF7duQ==
-X-Received: by 2002:a05:6a00:2eaa:b0:6e7:29dd:84db with SMTP id fd42-20020a056a002eaa00b006e729dd84dbmr10135239pfb.31.1711385815206;
-        Mon, 25 Mar 2024 09:56:55 -0700 (PDT)
-Received: from www.outflux.net ([198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id b7-20020a62cf07000000b006e6aee6807dsm4500309pfg.22.2024.03.25.09.56.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 Mar 2024 09:56:54 -0700 (PDT)
-Date: Mon, 25 Mar 2024 09:56:53 -0700
-From: Kees Cook <keescook@chromium.org>
-To: Linux regressions mailing list <regressions@lists.linux.dev>
-Cc: "Eric W. Biederman" <ebiederm@xmission.com>, Jan Bujak <j@exia.io>,
-	linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-	viro@zeniv.linux.org.uk, brauner@kernel.org,
-	linux-fsdevel@vger.kernel.org
-Subject: Re: Recent-ish changes in binfmt_elf made my program segfault
-Message-ID: <202403250949.3ED2F977@keescook>
-References: <c7209e19-89c4-446a-b364-83100e30cc00@exia.io>
- <874jf5co8g.fsf@email.froward.int.ebiederm.org>
- <202401221226.DAFA58B78@keescook>
- <87v87laxrh.fsf@email.froward.int.ebiederm.org>
- <202401221339.85DBD3931@keescook>
- <95eae92a-ecad-4e0e-b381-5835f370a9e7@leemhuis.info>
- <202402041526.23118AD@keescook>
- <51f61874-0567-4b4f-ab06-ecb3b27c9e41@leemhuis.info>
+	s=arc-20240116; t=1711385887; c=relaxed/simple;
+	bh=ZAryErzyk7PMlbgaOGZnTHSqGVoOVC7abOx7wbdyHYk=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=VvMGfsSUg+uR/YD7zFVvAzz5DWp+eTSJnOuaZgmZYTPEx6i77DriE1qE35NGr2U3Jum/sWOaN0YvAViXbImWS2Vihf8V6aPtCcBiiJf+eb3QNgjid/U53ancVbdlvmLOK0ZzUXDZ3LfmjaDGfMBWgTfVQbE4fklW1CuxhvnZ9OQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=PNXhFr/K; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1C102C433C7;
+	Mon, 25 Mar 2024 16:58:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1711385886;
+	bh=ZAryErzyk7PMlbgaOGZnTHSqGVoOVC7abOx7wbdyHYk=;
+	h=From:Date:Subject:To:Cc:From;
+	b=PNXhFr/Kd9TYsTjZWDnjGcqz/ip6e2clJkyTaqaFrlcXtni1bEs1evRrE4P0LnwGN
+	 3dJDE2mEWNcUd9oosQKd9HH74qhd/Gy4dG+Ym9//3rhmHnfP/08YGhxr3XsGpVLCKi
+	 sCOPvDbFe1EqCb5YqBH9sTnQOykoP2fRfumFfevxcTfabvINyYxVmoeTx93YAJ+Ow8
+	 OyuwryJVjuM7vtkAID6XTcfQvVcWR1E7B6uHh4aE0X2xYMRAcjacnmgmRFlgVffJgk
+	 w8mIRuCaMFxCw0G3NsOSr7DNVq9h8vGobBc7zTR+YujIfUDUG0MznK5FdimspfWfwq
+	 TnWf3NKzk5ilg==
+From: Mark Brown <broonie@kernel.org>
+Date: Mon, 25 Mar 2024 16:57:59 +0000
+Subject: [PATCH v2] selftests/seccomp: Try to fit runtime of benchmark into
+ timeout
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <51f61874-0567-4b4f-ab06-ecb3b27c9e41@leemhuis.info>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20240325-b4-kselftest-seccomp-benchmark-timeout-v2-1-77292da87966@kernel.org>
+X-B4-Tracking: v=1; b=H4sIABatAWYC/5XNQQ6CMBCF4auYrh3DFAviynsYFrQM0AAt6VSiI
+ dzdyg1c/m/xvk0wBUss7qdNBFotW+9SyPNJmKFxPYFtUwuZyRwlVqCvMDJNXSSOwGSMnxfQ5Mw
+ wN2GEaGfyrwiZ0kVBZSurFkU6WwJ19n1Azzr1YDn68DncFX/r38SKgHBTqEyZZ6h09RgpOJouP
+ vSi3vf9C9xeAYndAAAA
+To: Kees Cook <keescook@chromium.org>, 
+ Andy Lutomirski <luto@amacapital.net>, Will Drewry <wad@chromium.org>, 
+ Shuah Khan <shuah@kernel.org>
+Cc: linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ Mark Brown <broonie@kernel.org>
+X-Mailer: b4 0.14-dev
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2248; i=broonie@kernel.org;
+ h=from:subject:message-id; bh=ZAryErzyk7PMlbgaOGZnTHSqGVoOVC7abOx7wbdyHYk=;
+ b=owEBbQGS/pANAwAKASTWi3JdVIfQAcsmYgBmAa0c41Us7y3vmjq+yevSugFrr+F8JGTp2NgSOMo3
+ mukgYeKJATMEAAEKAB0WIQSt5miqZ1cYtZ/in+ok1otyXVSH0AUCZgGtHAAKCRAk1otyXVSH0NelB/
+ 9ZZ+nA7IcEJiexh0qlIc9llBO+GzpQt1ko5fTu93j763r9S4tk9Bm6GwTS2L4xduEGshqmBnzV/SZ9
+ cqHvcfdkXP7hw3FPtthAlvDUX6jhxlp111GHME7nNDMTzKHjb9rsHeR3OEiAbZsQeXkYy6GlI+d8+1
+ izH9bZ7Ar3KX8ukdfe03D/1VFwlVT1+fWSto9Jq6twCCJChX4gEHDMC/LnWQJSRosjE8j2w56OuAGN
+ L4LE1AmfijtN6Ih4jsz9LkYc3lTC0UZ00S0X/ngATk6YmqbjmyY7nUk15IJlbhiLC7Z5sIigthCdG+
+ Gnln8HgXwdGBvaU5dUdXIU1R7YIGmU
+X-Developer-Key: i=broonie@kernel.org; a=openpgp;
+ fpr=3F2568AAC26998F9E813A1C5C3F436CA30F5D8EB
 
-On Mon, Mar 25, 2024 at 04:26:56PM +0100, Linux regression tracking (Thorsten Leemhuis) wrote:
-> On 05.02.24 00:27, Kees Cook wrote:
-> > On Thu, Feb 01, 2024 at 11:47:02AM +0100, Linux regression tracking (Thorsten Leemhuis) wrote:
-> >> Hi, Thorsten here, the Linux kernel's regression tracker. Top-posting
-> >> for once, to make this easily accessible to everyone.
-> >>
-> >> Eric, what's the status wrt. to this regression? Things from here look
-> >> stalled, but I might be missing something.
-> >>
-> >> Ciao, Thorsten (wearing his 'the Linux kernel's regression tracker' hat)
-> > 
-> > If Eric doesn't beat me to it, I'm hoping to look at this more this
-> > coming week.
-> 
-> Friendly reminder: that was quite a while ago by now and it seems
-> neither you nor Eric looked into this. Or was there some progress and I
-> just missed it?
+The seccomp benchmark runs five scenarios, one calibration run with no
+seccomp filters enabled then four further runs each adding a filter. The
+calibration run times itself for 15s and then each additional run executes
+for the same number of times.
 
-The original reporter hasn't responded to questions and no one else has
-mentioned this issue, so I think we can remove this from the tracker.
+Currently the seccomp tests, including the benchmark, run with an extended
+120s timeout but this is not sufficient to robustly run the tests on a lot
+of platforms. Sample timings from some recent runs:
 
-#regzbot resolve: regression is not visible without manually constructing broken ELF headers
+   Platform          Run 1  Run 2  Run 3  Run 4
+   ---------         -----  -----  -----  -----
+   PowerEdge R200    16.6s  16.6s  31.6s  37.4s
+   BBB (arm)         20.4s  20.4s  54.5s
+   Synquacer (arm64) 20.7s  23.7s  40.3s
 
+The x86 runs from the PowerEdge are quite marginal and routinely fail, for
+the successful run reported here the timed portions of the run are at
+117.2s leaving less than 3s of margin which is frequently breached. The
+added overhead of adding filters on the other platforms is such that there
+is no prospect of their runs fitting into the 120s timeout, especially
+on 32 bit arm where there is no BPF JIT.
 
+While we could lower the time we calibrate for I'm also already seeing the
+currently completing runs reporting issues with the per filter overheads
+not matching expectations:
+
+Let's instead raise the timeout to 180s which is only a 50% increase on the
+current timeout which is itself not *too* large given that there's only two
+tests in this suite.
+
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+Changes in v2:
+- Rebase onto v6.9-rc1.
+- Link to v1: https://lore.kernel.org/r/20231219-b4-kselftest-seccomp-benchmark-timeout-v1-1-8515c73015b9@kernel.org
+---
+ tools/testing/selftests/seccomp/settings | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/tools/testing/selftests/seccomp/settings b/tools/testing/selftests/seccomp/settings
+index 6091b45d226b..a953c96aa16e 100644
+--- a/tools/testing/selftests/seccomp/settings
++++ b/tools/testing/selftests/seccomp/settings
+@@ -1 +1 @@
+-timeout=120
++timeout=180
+
+---
+base-commit: 4cece764965020c22cff7665b18a012006359095
+change-id: 20231219-b4-kselftest-seccomp-benchmark-timeout-05b66e7d29d1
+
+Best regards,
 -- 
-Kees Cook
+Mark Brown <broonie@kernel.org>
+
 
