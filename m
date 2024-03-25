@@ -1,122 +1,181 @@
-Return-Path: <linux-kernel+bounces-117453-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-117454-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8F01688AB97
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 18:27:08 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9F74788B528
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 00:21:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 083EE1F3EACA
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 17:27:08 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 95170C6101E
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 17:27:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BCC5213049B;
-	Mon, 25 Mar 2024 16:20:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="n19dpSU2"
-Received: from mail-qk1-f180.google.com (mail-qk1-f180.google.com [209.85.222.180])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7DAC0130E40;
+	Mon, 25 Mar 2024 16:20:18 +0000 (UTC)
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8FAA612FB1B
-	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 16:20:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 18E56130AEB;
+	Mon, 25 Mar 2024 16:20:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.176.79.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711383613; cv=none; b=AI3pnmf03PELapJNYrR5uu/nV0qdVXc4XPYcDVZvtX1QI5y8lVdG3+hDVWzJIpKkiOZIXF5VLaMmpRaxTDiR8a7A4BWtsAzYOdIOc0YAHsiQ0W2kDDn2zL1MhXHHYGLADpDiAcDk7TvlaoH+/po2xlCRlABEAHC6Ur8ocZ7HI1I=
+	t=1711383618; cv=none; b=IynGAPiytx5VrFipAVoydKUnCIzjZOt47yto0TsOMMF3cYkc7jL68ZR9MX0i4M4Fady7NHYUGYC0Jia4329nsDKFIzSdPO/AmnCm+Tt2/QPyDjX7plzSqVgx+uBA1GNBLkrFBvKsEiSThoh7WIhyidT9jLiVkBfZFjHm6jzi2W4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711383613; c=relaxed/simple;
-	bh=A843Ssrq3Y9wYnaYppe8XjmG2PpCDGW6HiDXf0QJKws=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=YjtPJ6AZM5DsBNYRKd1N8W4jmlSQOclSrjPtl6z1j4xzjmSP1IWmLoFDwKShd2fqNVwvQQHHgNI/gCVG7AO7TM8C2BVXVHDB9m+hzyRUd8yCPDhbfxBuLC1lHMhcxHkProDesNGkPns6dJBhJSHK00zhXkRxnNKTZ3JG0ww5Rm4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=n19dpSU2; arc=none smtp.client-ip=209.85.222.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-qk1-f180.google.com with SMTP id af79cd13be357-789e6e1d96eso315691285a.3
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 09:20:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1711383609; x=1711988409; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=O9xAtZXJvpwpsev5gWghEp0MSIRB0SQuoLdXgBJreDE=;
-        b=n19dpSU249zLiPm5edX5Zp2uHEo3MCkOcxs2fSxJybq6D7AinHeGetOAXgwzGEtTAS
-         yn948OrHgMhG6D0oLEuw7ZN7//CKVGgSvEOuIF8ADc+jZly5EbkMkhfjeXUk0gLTYMWS
-         Pa5oB7+l9N+TT/8dqvJcRXibDS/KVKTYsqQ6o=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711383609; x=1711988409;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=O9xAtZXJvpwpsev5gWghEp0MSIRB0SQuoLdXgBJreDE=;
-        b=kSd8Pb8GAlyN5uJFuvbNVsvgff7BdTVYTZkoi6CQ5UFDLy3UGyoW4b6lpGzcXNCT5g
-         kE3HwS5ez8mR2lJS4qI35JClwaUmYC4an7JicAqTnClqABvtzKmdHe4a57EXwg8fQcoU
-         oZsnSRJdlwMnw/pLHzPtYqP5GqzDaGc5N76tsemv0Nxyi0XylCzzlCbuGNNJ3SxZgFSE
-         2X6R0qYMrSLRBkTMwrgUnujnNMrWSEwMAv2hOBmgBVj4dDsCvSRUD8DwJqc2FyDqSYYW
-         5NtnnLoSNn2SX1dTvv3ssKcwNpGStcriLDQxrFtfhV8oCp3yPeDUmNDDzDQqgH/pjH5Z
-         EnJQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVIGsp9I6wSyYOKlBKpeVIlpmE25gtxDyAF3ga2SHvTJFUtijXmO/MqTgXqpAIwVmO0gGsLpOds6UO49BGmpwdeOkr2bldGzdakKi/C
-X-Gm-Message-State: AOJu0YzRsvsQTdT4KTNkG+mt0TNKgGBF8xQb8cjVzidKyqraYapeb/KT
-	dRFebbfLiWTufOQLaTHJIGmR/VGimYPMkhgDf5qbeL1yY5seX979q7pvTXklYAirABZc4kx9ZrI
-	=
-X-Google-Smtp-Source: AGHT+IH7iJ5cCOgTatwvC/o45z/l/cD0Uusx8FHPcWaL86GE7THCCGNXEZgfc6ym/8URrisJmheafA==
-X-Received: by 2002:a05:620a:31d:b0:787:79c3:93e3 with SMTP id s29-20020a05620a031d00b0078779c393e3mr7378350qkm.33.1711383608760;
-        Mon, 25 Mar 2024 09:20:08 -0700 (PDT)
-Received: from mail-qt1-f180.google.com (mail-qt1-f180.google.com. [209.85.160.180])
-        by smtp.gmail.com with ESMTPSA id o30-20020a05620a0d5e00b00789f64ec397sm2251682qkl.97.2024.03.25.09.20.08
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 25 Mar 2024 09:20:08 -0700 (PDT)
-Received: by mail-qt1-f180.google.com with SMTP id d75a77b69052e-430d3fcc511so468021cf.1
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 09:20:08 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCXJGtYxFO+rZ2vMtY6/btkJ5mbMythjG9eAw8W/UzH0IwWp9F9JjJL1FvwvX78FLSvtN8WAiSo7Yui6i4UsdoPsmQCKPVxtE6KepQTm
-X-Received: by 2002:a05:622a:3c7:b0:430:a5df:a3af with SMTP id
- k7-20020a05622a03c700b00430a5dfa3afmr1093586qtx.5.1711383607574; Mon, 25 Mar
- 2024 09:20:07 -0700 (PDT)
+	s=arc-20240116; t=1711383618; c=relaxed/simple;
+	bh=+PK36ygo6YUyNEKeoKEQ3VN30F5Uqb0EdLDEHLmace8=;
+	h=Date:From:To:CC:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=XKl9YFSmcla7YFIJZmvw/XMwbJbLb85jDGwgh/h5wU6HY/p1BPZn9Fdd4DWBPYZ3MX3Wksj6/qE74rQ8hy1CA0yZy5ssrZ/GXf48wzRnocDTSfJxTVv3F0M1gPW7DPwWbJ4enclhwPdAxQzk9kLCAEuLsElZvCpgW98SxJJwZFE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=185.176.79.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.18.186.31])
+	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4V3J2D1m9Rz6K9W0;
+	Tue, 26 Mar 2024 00:15:48 +0800 (CST)
+Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
+	by mail.maildlp.com (Postfix) with ESMTPS id A8147140B2F;
+	Tue, 26 Mar 2024 00:20:12 +0800 (CST)
+Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
+ (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.35; Mon, 25 Mar
+ 2024 16:20:12 +0000
+Date: Mon, 25 Mar 2024 16:20:10 +0000
+From: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To: <ira.weiny@intel.com>
+CC: Dave Jiang <dave.jiang@intel.com>, Fan Ni <fan.ni@samsung.com>, "Navneet
+ Singh" <navneet.singh@intel.com>, Dan Williams <dan.j.williams@intel.com>,
+	Davidlohr Bueso <dave@stgolabs.net>, Alison Schofield
+	<alison.schofield@intel.com>, Vishal Verma <vishal.l.verma@intel.com>,
+	<linux-btrfs@vger.kernel.org>, <linux-cxl@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 02/26] cxl/core: Separate region mode from decoder mode
+Message-ID: <20240325162010.000036cc@Huawei.com>
+In-Reply-To: <20240324-dcd-type2-upstream-v1-2-b7b00d623625@intel.com>
+References: <20240324-dcd-type2-upstream-v1-0-b7b00d623625@intel.com>
+	<20240324-dcd-type2-upstream-v1-2-b7b00d623625@intel.com>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240325054403.592298-1-sboyd@kernel.org> <20240325054403.592298-6-sboyd@kernel.org>
-In-Reply-To: <20240325054403.592298-6-sboyd@kernel.org>
-From: Doug Anderson <dianders@chromium.org>
-Date: Mon, 25 Mar 2024 09:19:51 -0700
-X-Gmail-Original-Message-ID: <CAD=FV=X13_5Kubq3A=y8gnz==6tt2bsfc0PiFAj06HX9V7_+mg@mail.gmail.com>
-Message-ID: <CAD=FV=X13_5Kubq3A=y8gnz==6tt2bsfc0PiFAj06HX9V7_+mg@mail.gmail.com>
-Subject: Re: [PATCH 5/5] clk: Get runtime PM before walking tree for clk_summary
-To: Stephen Boyd <sboyd@kernel.org>
-Cc: Michael Turquette <mturquette@baylibre.com>, linux-kernel@vger.kernel.org, 
-	linux-clk@vger.kernel.org, patches@lists.linux.dev, 
-	linux-arm-msm@vger.kernel.org, Taniya Das <quic_tdas@quicinc.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: lhrpeml500002.china.huawei.com (7.191.160.78) To
+ lhrpeml500005.china.huawei.com (7.191.163.240)
 
-Hi,
+On Sun, 24 Mar 2024 16:18:05 -0700
+ira.weiny@intel.com wrote:
 
-On Sun, Mar 24, 2024 at 10:44=E2=80=AFPM Stephen Boyd <sboyd@kernel.org> wr=
-ote:
->
-> Similar to the previous commit, we should make sure that all devices are
-> runtime resumed before printing the clk_summary through debugfs. Failure
-> to do so would result in a deadlock if the thread is resuming a device
-> to print clk state and that device is also runtime resuming in another
-> thread, e.g the screen is turning on and the display driver is starting
-> up.
->
-> Fixes: 1bb294a7981c ("clk: Enable/Disable runtime PM for clk_summary")
-> Cc: Taniya Das <quic_tdas@quicinc.com>
-> Cc: Douglas Anderson <dianders@chromium.org>
-> Signed-off-by: Stephen Boyd <sboyd@kernel.org>
+> From: Navneet Singh <navneet.singh@intel.com>
+> 
+> Until now region modes and decoder modes were equivalent in that they
+> were either PMEM or RAM.  With the upcoming addition of Dynamic Capacity
+> regions (which will represent an array of device regions [better named
+> partitions] the index of which could be different on different
+> interleaved devices), the mode of an endpoint decoder and a region will
+> no longer be equivalent.
+> 
+> Define a new region mode enumeration and adjust the code for it.
+> 
+> Suggested-by: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+> Signed-off-by: Navneet Singh <navneet.singh@intel.com>
+> Co-developed-by: Ira Weiny <ira.weiny@intel.com>
+> Signed-off-by: Ira Weiny <ira.weiny@intel.com>
+
+I can't really remember the reasoning behind this split, but from a fresh
+read it seems reasonable. Some trivial comments inline.
+
+Jonathan
+
+> 
 > ---
->  drivers/clk/clk.c | 6 +++++-
->  1 file changed, 5 insertions(+), 1 deletion(-)
+> Changes for v1
+> <none>
+> ---
+>  drivers/cxl/core/region.c | 77 +++++++++++++++++++++++++++++++++++------------
+>  drivers/cxl/cxl.h         | 26 ++++++++++++++--
+>  2 files changed, 81 insertions(+), 22 deletions(-)
+> 
+> diff --git a/drivers/cxl/core/region.c b/drivers/cxl/core/region.c
+> index 4c7fd2d5cccb..1723d17f121e 100644
+> --- a/drivers/cxl/core/region.c
+> +++ b/drivers/cxl/core/region.c
 
-Shouldn't this also squash in a revert of commit 1bb294a7981c ("clk:
-Enable/Disable runtime PM for clk_summary")? As it is,
-clk_summary_show_subtree() is left with an extra/unnecessary
-clk_pm_runtime_get() / clk_pm_runtime_put(), right?
 
-Other than that, this looks good to me:
+> @@ -2800,6 +2814,24 @@ static int match_region_by_range(struct device *dev, void *data)
+>  	return rc;
+>  }
+>  
+> +static enum cxl_region_mode
+> +cxl_decoder_to_region_mode(enum cxl_decoder_mode mode)
+> +{
+> +	switch (mode) {
+> +	case CXL_DECODER_NONE:
+> +		return CXL_REGION_NONE;
+> +	case CXL_DECODER_RAM:
+> +		return CXL_REGION_RAM;
+> +	case CXL_DECODER_PMEM:
+> +		return CXL_REGION_PMEM;
+> +	case CXL_DECODER_MIXED:
+> +	default:
+> +		return CXL_REGION_MIXED;
+> +	}
+> +
 
-Reviewed-by: Douglas Anderson <dianders@chromium.org>
+Dead code.
+
+> +	return CXL_REGION_MIXED;
+> +}
+> +
+>  /* Establish an empty region covering the given HPA range */
+>  static struct cxl_region *construct_region(struct cxl_root_decoder *cxlrd,
+>  					   struct cxl_endpoint_decoder *cxled)
+> @@ -2808,12 +2840,17 @@ static struct cxl_region *construct_region(struct cxl_root_decoder *cxlrd,
+>  	struct cxl_port *port = cxlrd_to_port(cxlrd);
+>  	struct range *hpa = &cxled->cxld.hpa_range;
+>  	struct cxl_region_params *p;
+> +	enum cxl_region_mode mode;
+>  	struct cxl_region *cxlr;
+>  	struct resource *res;
+>  	int rc;
+>  
+> +	if (cxled->mode == CXL_DECODER_DEAD)
+> +		return ERR_PTR(-EINVAL);
+
+Not a bad thing necessarily, but why do we now need this and didn't before?
+
+> +
+> +	mode = cxl_decoder_to_region_mode(cxled->mode);
+>  	do {
+> -		cxlr = __create_region(cxlrd, cxled->mode,
+> +		cxlr = __create_region(cxlrd, mode,
+>  				       atomic_read(&cxlrd->region_id));
+>  	} while (IS_ERR(cxlr) && PTR_ERR(cxlr) == -EBUSY);
+
+
+> diff --git a/drivers/cxl/cxl.h b/drivers/cxl/cxl.h
+> index 003feebab79b..9a0cce1e6fca 100644
+> --- a/drivers/cxl/cxl.h
+> +++ b/drivers/cxl/cxl.h
+
+
+>  /*
+>   * Track whether this decoder is reserved for region autodiscovery, or
+>   * free for userspace provisioning.
+> @@ -511,7 +532,8 @@ struct cxl_region_params {
+>   * struct cxl_region - CXL region
+>   * @dev: This region's device
+>   * @id: This region's id. Id is globally unique across all regions
+> - * @mode: Endpoint decoder allocation / access mode
+> + * @mode: Region mode which defines which endpoint decoder mode the region is
+mode or potentially modes?
+
+If region is mixed, I guess that means endpoint could be pmem or ram in theory?
+Don't think anyone has implemented anything yet, but is the potential there?
+
+
+> + *        compatible with
+
 
