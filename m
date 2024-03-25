@@ -1,107 +1,123 @@
-Return-Path: <linux-kernel+bounces-118168-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-118167-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5A7ED88B560
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 00:35:55 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 70C6588B55D
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 00:35:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8BD871C3AEDB
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 23:35:54 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2AC092C4D6D
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 23:35:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DCE2384D19;
-	Mon, 25 Mar 2024 23:35:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 72E7683A10;
+	Mon, 25 Mar 2024 23:35:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="eyM0oNfO"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="HEg/B1+M"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.9])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AA01484A2B
-	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 23:35:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1C25C81207;
+	Mon, 25 Mar 2024 23:35:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.9
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711409735; cv=none; b=T/i2dmtwcLtk7n/39dTqC7tG2aiDr0mD/H+dqJIUFmO8yA4s7vtdgffoRr268uFQRvrGGRnuWGzKcjBaBG+/tMR8OsQ6k06TLZXd0SSzjZXs4YB0jtK2VTnBbFLwXazZGUxO4cKvN/q+Xmsgz7qwEHZ2vJojQnrPaqmJ/9LbsLc=
+	t=1711409731; cv=none; b=DeSvceZ4kaSmMS1JKZZ7gzfVDgxBLtf4LscEdAlzFMlDAaHc28cDSqBnMkVYk2fiHACxU1GMzm2GD8dtezHQbQwxL9Ki8MbBpKYUzxRt42qs6ycjS6EHPVaSB6tbFMFFsK/GYJz+f5uk1J01gtASCgRM00mJkabpO4GNBRfyWU0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711409735; c=relaxed/simple;
-	bh=qZ/6tl0aBSu/LLJC+++VV+D9IA3CTJ9FB4a83c72k2Q=;
+	s=arc-20240116; t=1711409731; c=relaxed/simple;
+	bh=J59xWjUPon0R/XloDWvoBmR+mCac40WYEwIramAsVkQ=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=dJI4J/deGZK3UCKS/BDiJxpvivqUFnythnw0Y0VoMTmdY4clNnpgTnsQHMZ2N/8crcSpByDI2WOp+XY2XQo6VVLTY//NF7EI5tZF4PSxBSl2RF7PueeF70+zMrVjQYrfPOxmq28/LPfAKOqdmQ2Ix0ptAxKIP/r6GKXFGzmS5U4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=eyM0oNfO; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1711409732;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=MsXpqf78rAM4i4+ZjUMsQiXhxVgsssODolYLYbs5cZ0=;
-	b=eyM0oNfOnQ6AayG5E+Um15l4yrnAavsagt/gjVBbzxU/8qJPmZ5+ZsV9bGvTqBGBUmhPuI
-	ZO1difrCS2Wn9RjDU2TjOkjUENL9btlypm0ub/JLUNzD8nsa5gfstcji5pnU2zbMSwNXkU
-	S2gvpcvM/quEMy+tgIvgVGfbQi1TwyQ=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-339-wka9NgxKOCGU0mZ99BvNrQ-1; Mon,
- 25 Mar 2024 19:35:25 -0400
-X-MC-Unique: wka9NgxKOCGU0mZ99BvNrQ-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.rdu2.redhat.com [10.11.54.8])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 2ABED3C025B8;
-	Mon, 25 Mar 2024 23:35:25 +0000 (UTC)
-Received: from localhost (unknown [10.72.116.12])
-	by smtp.corp.redhat.com (Postfix) with ESMTPS id 4D96FC3E620;
-	Mon, 25 Mar 2024 23:35:22 +0000 (UTC)
-Date: Tue, 26 Mar 2024 07:35:16 +0800
-From: Baoquan He <bhe@redhat.com>
-To: Andrew Morton <akpm@linux-foundation.org>
-Cc: kexec@lists.infradead.org, mingo@kernel.org,
-	linux-kernel@vger.kernel.org, x86@kernel.org,
-	chenhuacai@loongson.cn, dyoung@redhat.com, jbohac@suse.cz,
-	lihuafei1@huawei.com, chenhaixiang3@huawei.com
-Subject: Re: [PATCH v2] crash: use macro to add crashk_res into iomem early
- for specific arch
-Message-ID: <ZgIKNNZ8hc14FI8a@MiWiFi-R3L-srv>
-References: <20240324033513.1027427-1-bhe@redhat.com>
- <ZgDYemRQ2jxjLkq+@MiWiFi-R3L-srv>
- <20240325132909.741ae47a8a05837c175a981e@linux-foundation.org>
+	 Content-Type:Content-Disposition:In-Reply-To; b=XQL/6mTwkYHc4mPMMRrpvJdowyWQyvQFljb3Otaizz04+E2KFr+orRlPpayVO6O8NRk1bN9AqcwjJR6Ijdvg0J3HFjTzqfLnd0Civ4IPtGCFcXBuj/j09Pw6CGFy1kuuu6K7IK0sE4lihX8mL+7EJ9zdankbYyUtEaJklIUCdxc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=HEg/B1+M; arc=none smtp.client-ip=192.198.163.9
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1711409730; x=1742945730;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:content-transfer-encoding:in-reply-to;
+  bh=J59xWjUPon0R/XloDWvoBmR+mCac40WYEwIramAsVkQ=;
+  b=HEg/B1+M3TWGjUWe0k7X7AQ4qsl6+Qq3Uai8YK0onC9ZKRYzmtX3YRCO
+   PgCGbCqsg2h959ucuqPdQp4rBjMQs66/ntkHDUhIFP3pLrrdpDPvekXhn
+   zle7s9UAs+6REwPz5Qc1V/3A3wvhKbY1BnQ4+hlvYgaesIBMY+AT1tSy8
+   71ImdwW7fhS+9u+u/v96uuqIXWTKUURtaMsM+xWvLfdvzxkUj9EhHV8We
+   WtTinkIBoXJDJ5NhEx6fOREBZQlqYsws/t1lp2R62I1Gh30O4dHLMYf+J
+   y7NaZjw4Qh0664v/o5ntBkRfSKZurzFxZnLqtZz4XPioHUu8DFEFsOAB8
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11024"; a="17171693"
+X-IronPort-AV: E=Sophos;i="6.07,154,1708416000"; 
+   d="scan'208";a="17171693"
+Received: from fmviesa009.fm.intel.com ([10.60.135.149])
+  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Mar 2024 16:35:30 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,154,1708416000"; 
+   d="scan'208";a="15809290"
+Received: from ls.sc.intel.com (HELO localhost) ([172.25.112.31])
+  by fmviesa009-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Mar 2024 16:35:29 -0700
+Date: Mon, 25 Mar 2024 16:35:28 -0700
+From: Isaku Yamahata <isaku.yamahata@intel.com>
+To: "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>
+Cc: "Yamahata, Isaku" <isaku.yamahata@intel.com>,
+	"Zhang, Tina" <tina.zhang@intel.com>,
+	"seanjc@google.com" <seanjc@google.com>,
+	"Huang, Kai" <kai.huang@intel.com>,
+	"kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+	"Chen, Bo2" <chen.bo@intel.com>,
+	"sagis@google.com" <sagis@google.com>,
+	"isaku.yamahata@gmail.com" <isaku.yamahata@gmail.com>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"Aktas, Erdem" <erdemaktas@google.com>,
+	"pbonzini@redhat.com" <pbonzini@redhat.com>,
+	"sean.j.christopherson@intel.com" <sean.j.christopherson@intel.com>,
+	"Yuan, Hang" <hang.yuan@intel.com>,
+	"isaku.yamahata@linux.intel.com" <isaku.yamahata@linux.intel.com>
+Subject: Re: [PATCH v19 059/130] KVM: x86/tdp_mmu: Don't zap private pages
+ for unsupported cases
+Message-ID: <20240325233528.GQ2357401@ls.amr.corp.intel.com>
+References: <20240319235654.GC1994522@ls.amr.corp.intel.com>
+ <1c2283aab681bd882111d14e8e71b4b35549e345.camel@intel.com>
+ <f63d19a8fe6d14186aecc8fcf777284879441ef6.camel@intel.com>
+ <20240321225910.GU1994522@ls.amr.corp.intel.com>
+ <96fcb59cd53ece2c0d269f39c424d087876b3c73.camel@intel.com>
+ <20240325190525.GG2357401@ls.amr.corp.intel.com>
+ <5917c0ee26cf2bb82a4ff14d35e46c219b40a13f.camel@intel.com>
+ <20240325221836.GO2357401@ls.amr.corp.intel.com>
+ <20240325231058.GP2357401@ls.amr.corp.intel.com>
+ <edcfc04cf358e6f885f65d881ef2f2165e059d7e.camel@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20240325132909.741ae47a8a05837c175a981e@linux-foundation.org>
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.8
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <edcfc04cf358e6f885f65d881ef2f2165e059d7e.camel@intel.com>
 
-On 03/25/24 at 01:29pm, Andrew Morton wrote:
-> On Mon, 25 Mar 2024 09:50:50 +0800 Baoquan He <bhe@redhat.com> wrote:
-> 
-> > There are regression reports[1][2] that crashkernel region on x86_64 can't
-> > be added into iomem tree sometime. This causes the later failure of kdump
-> > loading.
-> 
-> So I think a cc:stable is needed.
+On Mon, Mar 25, 2024 at 11:21:17PM +0000,
+"Edgecombe, Rick P" <rick.p.edgecombe@intel.com> wrote:
 
-Yeah, I forgot this.
-
-> 
-> > This happened after commit 4a693ce65b18 ("kdump: defer the insertion of
-> > crashkernel resources") was merged.
+> On Mon, 2024-03-25 at 16:10 -0700, Isaku Yamahata wrote:
+> > > > My understanding is that Sean prefers to exit to userspace when KVM can't handle something,
+> > > > versus
+> > > > making up behavior that keeps known guests alive. So I would think we should change this patch
+> > > > to
+> > > > only be about not using the zapping roots optimization. Then a separate patch should exit to
+> > > > userspace on attempt to use MTRRs. And we ignore the APIC one.
+> > > > 
+> > > > This is trying to guess what maintainers would want here. I'm less sure what Paolo prefers.
+> > > 
+> > > When we hit KVM_MSR_FILTER, the current implementation ignores it and makes it
+> > > error to guest.  Surely we should make it KVM_EXIT_X86_{RDMSR, WRMSR}, instead.
+> > > It's aligns with the existing implementation(default VM and SW-protected) and
+> > > more flexible.
 > > 
-> > Even though, these reported issues are proved to be related to other
-> > component, they are just exposed after above commmit applied, I still
-> > would like to keep crashk_res and crashk_low_res being added into iomem
-> > early as before because the early adding has been always there on x86_64
-> > and working very well. For safety of kdump, Let's change it back.
+> > Something like this for "112/130 KVM: TDX: Handle TDX PV rdmsr/wrmsr hypercall"
+> > Compile only tested at this point.
 > 
-> I'll use 4a693ce65b18 as the Fixes: target, since there is no
-> "Exposed-by-non-buggy-patch:" tag.  To tell the -stable tree
-> maintainers how far back in history this should be backported.
+> Seems reasonable to me. Does QEMU configure a special set of MSRs to filter for TDX currently?
 
-Thanks a lot.
-
+No for TDX at the moment.  We need to add such logic.
+-- 
+Isaku Yamahata <isaku.yamahata@intel.com>
 
