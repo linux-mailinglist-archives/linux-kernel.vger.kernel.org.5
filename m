@@ -1,229 +1,80 @@
-Return-Path: <linux-kernel+bounces-116422-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-116423-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1610888966F
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 09:51:39 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 65FEF889B37
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 11:46:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 953521F31C4F
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 08:51:38 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9811C1C34381
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 10:46:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1FF6E14B07A;
-	Mon, 25 Mar 2024 05:53:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 835D414D6FE;
+	Mon, 25 Mar 2024 05:58:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=layalina-io.20230601.gappssmtp.com header.i=@layalina-io.20230601.gappssmtp.com header.b="WILBVUsc"
-Received: from mail-wr1-f42.google.com (mail-wr1-f42.google.com [209.85.221.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=codeconstruct.com.au header.i=@codeconstruct.com.au header.b="GgJfJ9is"
+Received: from codeconstruct.com.au (pi.codeconstruct.com.au [203.29.241.158])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3597614D43E
-	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 02:20:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 39149156F35;
+	Mon, 25 Mar 2024 02:29:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.29.241.158
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711333257; cv=none; b=r3ur78bbcK9bmWJWSRiWoyVKJqwIYybOEjIObROv6/eKL856juXeRRyBQ0mN+ChjJO4VvtneYgiNeRC09+W+NmidT4F8Xe5l61iktoTkG4kbNS0ZZxzJOyY3sThAKIiMd/8ZZfCxAjk3ET54Fgmk/FX2qNsvHdervgnI7Odel7A=
+	t=1711333762; cv=none; b=cQNMcut4wPiql8+G8TGeefsmNiLcKy/L9M4G4hYWRwBfyWNp1stTiRisX+BLAyF4/QZb6yGPysleiZG9Xm79jGsM0bTFaMrDtqClp30UpM7BdKIDC7XF5CqN1mZE7L1YVA2aTqa9LsiWkaFHkk5iJSnulV1MxFcYYrpdVKb2rWQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711333257; c=relaxed/simple;
-	bh=a+5IO4bzkKk2FkrhKzrSPkAfIMWaw9+PBv6OhA8Vg0Y=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=f9CM3xYnsxT6hf4VAK994GvVt1JSaYCI5YGTprcpA4CrZMEk08a4Tohx1cSXdUQbJ/xrKIDL9P0lTBv1LxaTs6e567SNmO4dF56PYOKpdS7LVx3mTMYylxsgaRW/vNmAUEm/93LwJRiZAPfboMIWeBTyPRTf7HF6uXj6SepEPgY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=layalina.io; spf=pass smtp.mailfrom=layalina.io; dkim=pass (2048-bit key) header.d=layalina-io.20230601.gappssmtp.com header.i=@layalina-io.20230601.gappssmtp.com header.b=WILBVUsc; arc=none smtp.client-ip=209.85.221.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=layalina.io
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=layalina.io
-Received: by mail-wr1-f42.google.com with SMTP id ffacd0b85a97d-33e285a33bdso2061179f8f.2
-        for <linux-kernel@vger.kernel.org>; Sun, 24 Mar 2024 19:20:54 -0700 (PDT)
+	s=arc-20240116; t=1711333762; c=relaxed/simple;
+	bh=h+6XaK7IxAXSBys2cMcf2r6FjybdgZqGRT5bDLSNFUc=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=mujZamTP5iq/lxgqtWLEcLQD348Owc6Tc3Jf3ez5Yhqxon16uN8Nh+Gcp/qiOzR2ESPzA1BtQGHuu/PNxtuAjc1RdLp6J/HpdwO+T71mIm2PvfZAnVCt6gVVN1918NNig419J411alJqwJu1zX809/hbN5bd5kDPj57ULgMdpww=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=codeconstruct.com.au; spf=pass smtp.mailfrom=codeconstruct.com.au; dkim=pass (2048-bit key) header.d=codeconstruct.com.au header.i=@codeconstruct.com.au header.b=GgJfJ9is; arc=none smtp.client-ip=203.29.241.158
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=codeconstruct.com.au
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=codeconstruct.com.au
+Received: from [192.168.68.112] (ppp118-210-177-226.adl-adc-lon-bras34.tpg.internode.on.net [118.210.177.226])
+	by mail.codeconstruct.com.au (Postfix) with ESMTPSA id 80D0620173;
+	Mon, 25 Mar 2024 10:29:05 +0800 (AWST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=layalina-io.20230601.gappssmtp.com; s=20230601; t=1711333253; x=1711938053; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=3KYX5sN4/DQ0Ca+C7M+8tiNgEQ0vWfJgF6O4xHUhDV4=;
-        b=WILBVUschp4CuVlN7IxfSSbcekKRUxY843c89N9f2TXzUAxcWfnvMLRYTeQyhll7UU
-         fCEgVNTdjGNu3DzFmMDtsctqbTWpbgMTn73fXjf0alNQEHwUD41hmK3tVxa4UYRJOUo+
-         m/jg4z0sXsuTfv4Cipozh/mGU8iH2flLHKj5ivZ7iiFqKTN9oZGGDupI7GTCaF3AsQKD
-         d/WpSTOTL8kgJDsYCm7gB8gAlVcLID3ax6mFZVt/g0/v3Os0fepbMdbVh1OWrTCwlP9T
-         2Ze4VF067ykKFmEdba6UQSixO1BJ2zZ7/f2bY11gN9fFq8DU60UYMiz1wQ98k12imiTs
-         ijYg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711333253; x=1711938053;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=3KYX5sN4/DQ0Ca+C7M+8tiNgEQ0vWfJgF6O4xHUhDV4=;
-        b=CutLYpC/Mi3+FR5LqT7MnMRCqB0LQ83UuHpQLIGdsp9XulmFL7euElPDwXpUD+LnQx
-         C1t1WWyAWfIyTMHvuBz1zbVi+4ymTsnoIVHTXuCND77A7NqPyHKggpVkjMm+/zas2pVD
-         aUBQjyLLwod/o6IVwU9g4eUeWwtYRLp+VYQlYt41bEXAKZDIcppvL/g0hWsOPQXIC3GK
-         4fGyodKBOIglxQBs56yXqaHbMNZolKyAYe2KJqSlDRJEb842aHH6lUzLe51W+rzZAHzF
-         d/dyYbCsJaprR4LswJWoj86hdO5lfl0nsLiKQgwT2dy3n2v9tVlcc3KUyvuqFKPvJJ/k
-         dXkw==
-X-Forwarded-Encrypted: i=1; AJvYcCXVa+UI7lemDqV+nCNGO2XeySG6CTtOIHe9FYfWWfKU3fpQd+m10gMntKojXpUXLwH1OaA0M1scgqaqZenF5wrJYBWgi29KapxOI3Ht
-X-Gm-Message-State: AOJu0Yw1qEqlAklw8j+SsJWPzQRdTrlezarCrCByzO6GYptzVa8abTvD
-	bmsjnCH/rM+baJeH63jBz5+oWU8CRnbCspS+U1pRwXJjun8NNTMLPXo6Cxcljss=
-X-Google-Smtp-Source: AGHT+IEGylOZLmAkTa4hEo69V3BZPeCBsFyo1QAQu5pjIFuYSIkRj6IiZDL9UF3nVTOfhI5RA3UbGw==
-X-Received: by 2002:adf:f241:0:b0:33e:78c4:3738 with SMTP id b1-20020adff241000000b0033e78c43738mr3519996wrp.54.1711333253412;
-        Sun, 24 Mar 2024 19:20:53 -0700 (PDT)
-Received: from airbuntu (host81-157-90-255.range81-157.btcentralplus.com. [81.157.90.255])
-        by smtp.gmail.com with ESMTPSA id t17-20020a0560001a5100b0033dd2c3131fsm8095566wry.65.2024.03.24.19.20.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 24 Mar 2024 19:20:52 -0700 (PDT)
-Date: Mon, 25 Mar 2024 02:20:51 +0000
-From: Qais Yousef <qyousef@layalina.io>
-To: Vincent Guittot <vincent.guittot@linaro.org>
-Cc: Christian Loehle <christian.loehle@arm.com>,
-	linux-kernel@vger.kernel.org, peterz@infradead.org,
-	juri.lelli@redhat.com, mingo@redhat.com, rafael@kernel.org,
-	dietmar.eggemann@arm.com, vschneid@redhat.com,
-	Johannes.Thumshirn@wdc.com, adrian.hunter@intel.com,
-	ulf.hansson@linaro.org, andres@anarazel.de, asml.silence@gmail.com,
-	linux-pm@vger.kernel.org, linux-block@vger.kernel.org,
-	io-uring@vger.kernel.org
-Subject: Re: [RFC PATCH 0/2] Introduce per-task io utilization boost
-Message-ID: <20240325022051.73mfzap7hlwpsydx@airbuntu>
-References: <20240304201625.100619-1-christian.loehle@arm.com>
- <CAKfTPtDcTXBosFpu6vYW_cXLGwnqJqYCUW19XyxRmAc233irqA@mail.gmail.com>
+	d=codeconstruct.com.au; s=2022a; t=1711333752;
+	bh=h+6XaK7IxAXSBys2cMcf2r6FjybdgZqGRT5bDLSNFUc=;
+	h=Subject:From:To:Cc:Date:In-Reply-To:References;
+	b=GgJfJ9isOY7k62lNBAZZElfPt55iMk6k/yyazIYqTHP/jkuu8KG5ZZZBC+eZtaFE9
+	 oVIcsY2oxJElrHqJxw3mILN0E022LooGgrmuwNSl9XI8ViH+GEo4GhLC/RDMX6h7QS
+	 3+AhjniTgf9kMViuf/bbiuo0TQmrhmWuFy12l734dZOHwVTrcTWIKvxnL+AgVYBpoI
+	 LKf3Z93yK20GOrnMpos1ZlUcSSbt9TZlOUTj12HV/LUdj5ELOkbjOp+SNaEKts5SXZ
+	 5GunjCFSNV76ZdmCJJT0Nufqg6YOmmtNfDrmgRXmdX2BJD4FclCcPqofB8HkcwTDan
+	 gU9mxszo53U9A==
+Message-ID: <93bd01d104f752d29d182249773e83c230a3ab20.camel@codeconstruct.com.au>
+Subject: Re: [PATCH 05/64] i2c: aspeed: reword according to newest
+ specification
+From: Andrew Jeffery <andrew@codeconstruct.com.au>
+To: Wolfram Sang <wsa+renesas@sang-engineering.com>, 
+	linux-i2c@vger.kernel.org
+Cc: Brendan Higgins <brendan.higgins@linux.dev>, Benjamin Herrenschmidt
+	 <benh@kernel.crashing.org>, Joel Stanley <joel@jms.id.au>, Andi Shyti
+	 <andi.shyti@kernel.org>, openbmc@lists.ozlabs.org, 
+	linux-arm-kernel@lists.infradead.org, linux-aspeed@lists.ozlabs.org, 
+	linux-kernel@vger.kernel.org
+Date: Mon, 25 Mar 2024 12:59:02 +1030
+In-Reply-To: <20240322132619.6389-6-wsa+renesas@sang-engineering.com>
+References: <20240322132619.6389-1-wsa+renesas@sang-engineering.com>
+	 <20240322132619.6389-6-wsa+renesas@sang-engineering.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.46.4-2 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <CAKfTPtDcTXBosFpu6vYW_cXLGwnqJqYCUW19XyxRmAc233irqA@mail.gmail.com>
 
-(piggy backing on this reply)
+On Fri, 2024-03-22 at 14:24 +0100, Wolfram Sang wrote:
+> Match the wording of this driver wrt. the newest I2C v7, SMBus 3.2, I3C
+> specifications and replace "master/slave" with more appropriate terms.
+> They are also more specific because we distinguish now between a remote
+> entity ("client") and a local one ("target").
+>=20
+> Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
 
-On 03/22/24 19:08, Vincent Guittot wrote:
-> Hi Christian,
-> 
-> On Mon, 4 Mar 2024 at 21:17, Christian Loehle <christian.loehle@arm.com> wrote:
-> >
-> > There is a feature inside of both schedutil and intel_pstate called
-> > iowait boosting which tries to prevent selecting a low frequency
-> > during IO workloads when it impacts throughput.
-> > The feature is implemented by checking for task wakeups that have
-> > the in_iowait flag set and boost the CPU of the rq accordingly
-> > (implemented through cpufreq_update_util(rq, SCHED_CPUFREQ_IOWAIT)).
-> >
-> > The necessity of the feature is argued with the potentially low
-> > utilization of a task being frequently in_iowait (i.e. most of the
-> > time not enqueued on any rq and cannot build up utilization).
-> >
-> > The RFC focuses on the schedutil implementation.
-> > intel_pstate frequency selection isn't touched for now, suggestions are
-> > very welcome.
-> > Current schedutil iowait boosting has several issues:
-> > 1. Boosting happens even in scenarios where it doesn't improve
-> > throughput. [1]
-> > 2. The boost is not accounted for in EAS: a) feec() will only consider
-> >  the actual utilization for task placement, but another CPU might be
-> >  more energy-efficient at that capacity than the boosted one.)
-> >  b) When placing a non-IO task while a CPU is boosted compute_energy()
-> >  will not consider the (potentially 'free') boosted capacity, but the
-> >  one it would have without the boost (since the boost is only applied
-> >  in sugov).
-> > 3. Actual IO heavy workloads are hardly distinguished from infrequent
-> > in_iowait wakeups.
-> > 4. The boost isn't associated with a task, it therefore isn't considered
-> > for task placement, potentially missing out on higher capacity CPUs on
-> > heterogeneous CPU topologies.
-> > 5. The boost isn't associated with a task, it therefore lingers on the
-> > rq even after the responsible task has migrated / stopped.
-> > 6. The boost isn't associated with a task, it therefore needs to ramp
-> > up again when migrated.
-> > 7. Since schedutil doesn't know which task is getting woken up,
-> > multiple unrelated in_iowait tasks might lead to boosting.
-
-You forgot an important problem which what was the main request from Android
-when this first came up few years back. iowait boost is a power hungry
-feature and not all tasks require iowait boost. By having it per task we want
-to be able to prevent tasks from causing frequency spikes due to iowait boost
-when it is not warranted.
-
-> >
-> > We attempt to mitigate all of the above by reworking the way the
-> > iowait boosting (io boosting from here on) works in two major ways:
-> > - Carry the boost in task_struct, so it is a per-task attribute and
-> > behaves similar to utilization of the task in some ways.
-> > - Employ a counting-based tracking strategy that only boosts as long
-> > as it sees benefits and returns to no boosting dynamically.
-> 
-> Thanks for working on improving IO boosting. I have started to read
-> your patchset and have few comments about your proposal:
-> 
-> The main one is that the io boosting decision should remain a cpufreq
-> governor decision and so the io boosting value should be applied by
-> the governor like in sugov_effective_cpu_perf() as an example instead
-> of everywhere in the scheduler code.
-
-I have similar thoughts.
-
-I think we want the scheduler to treat iowait boost like uclamp_min, but
-requested by block subsystem rather than by the user.
-
-I think we should create a new task_min/max_perf() and replace all current
-callers in scheduler to uclamp_eff_value() with task_min/max_perf() where
-task_min/max_perf()
-
-unsigned long task_min_perf(struct task_struct *p)
-{
-	return max(uclamp_eff_value(p, UCLAMP_MIN), p->iowait_boost);
-}
-
-unsigned long task_max_perf(struct task_struct *p)
-{
-	return uclamp_eff_value(p, UCLAMP_MAX);
-}
-
-then all users of uclamp_min in the scheduler will see the request for boost
-from iowait and do the correct task placement decision. Including under thermal
-pressure and ensuring that they don't accidentally escape uclamp_max which I am
-not sure if your series caters for with the open coding it. You're missing the
-load balancer paths from what I see.
-
-It will also solve the problem I mention above. The tasks that should not use
-iowait boost are likely restricted with uclamp_max already. If we treat iowait
-boost as an additional source of min_perf request, then uclamp_max will prevent
-it from going above a certain perf level and give us the desired impact without
-any additional hint. I don't think it is important to disable it completely but
-rather have a way to prevent tasks from consuming too much resources when not
-needed, which we already have from uclamp_max.
-
-I am not sure it makes sense to have a separate control where a task can run
-fast due to util but can't have iowait boost or vice versa. I think existing
-uclamp_max should be enough to restrict tasks from exceeding a performance
-limit.
-
-> 
-> Then, the algorithm to track the right interval bucket and the mapping
-> of intervals into utilization really looks like a policy which has
-> been defined with heuristics and as a result further seems to be a
-> governor decision
-
-Hmm do you think this should not be a per-task value then Vincent?
-
-Or oh, I think I see what you mean. Make effective_cpu_util() set min parameter
-correctly. I think that would work too, yes. iowait boost is just another min
-perf request and as long as it is treated as such, it is good for me. We'll
-just need to add a new parameter for the task like I did in remove uclamp max
-aggregation serires.
-
-Generally I think it's better to split the patches so that the conversion to
-iowait boost with current algorithm to being per-task as a separate patch. And
-then look at improving the algorithm logic on top. These are two different
-problems IMHO.
-
-One major problem and big difference in per-task iowait that I see Christian
-alluded to is that the CPU will no longer be boosted when the task is sleeping.
-I think there will be cases out there where some users relied on that for the
-BLOCK softirq to run faster too. We need an additional way to ensure that the
-softirq runs at a similar performance level to the task that initiated the
-request. So we need a way to hold the cpufreq policy's min perf until the
-softirq is serviced. Or just keep the CPU boosted until the task is migrated.
-I'm not sure what is better yet.
-
-> 
-> Finally adding some atomic operation in the fast path is not really desirable
-
-Yes I was thinking if we can apply the value when we set the p->in_iowait flag
-instead?
+Reviewed-by: Andrew Jeffery <andrew@codeconstruct.com.au>
 
