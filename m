@@ -1,96 +1,104 @@
-Return-Path: <linux-kernel+bounces-116890-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-116892-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CC32688A4E4
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 15:42:46 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 81D3E88AC23
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 18:45:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 85A95301906
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 14:42:45 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C3F8FB40E5B
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 14:42:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 759651774D0;
-	Mon, 25 Mar 2024 11:41:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 946C217831B;
+	Mon, 25 Mar 2024 11:41:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="iH0CeQlA"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="GF3E4fxs"
+Received: from mail-wr1-f42.google.com (mail-wr1-f42.google.com [209.85.221.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 391C818D876;
-	Mon, 25 Mar 2024 10:49:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7E09918D892
+	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 10:50:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711363800; cv=none; b=RQEBZl91nt7+4/xwh0omlYlIQk6VGeBHwllkZV7AUpboGYro+eQfC+vWuTAD5QrVnQKjL2X5mBMKqw83Yox/Dlh+bCys6phyc/t33OISws5hIMyDDZWnr74YcZd8vhg3mhbQv47SyR7sI3k52BD/7vog5J6P/scJUTcRruYJahA=
+	t=1711363821; cv=none; b=XcokmBfMxnsiTic0vupXzQcEVGv5q6UvOHtPabEinubfuoT6lcz8ZKmpWF0jemvDI/+fQENGiMg0d9W7eTg+Q17IpcNDP5PW+LsyI7zFn/+LxV4hDGsrvIejAmaEHFaWhupguiFUEtouTcQ6zkB+tiMXWZHtLADD9BtSLi2ysHA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711363800; c=relaxed/simple;
-	bh=4APY93stsQD/f+BZlZm5PfAh7Rhqxtgpj8c6AP25p3k=;
-	h=Content-Type:MIME-Version:Subject:From:In-Reply-To:References:To:
-	 Cc:Message-ID:Date; b=WlxfEnupdP0tZHf315gLYOyBp6X8eX5j/gzheXfrUj1qHf1L8nrTA7Twyo5yuFtt7Z91YnDxwzYVFEd1D4ZEIvd6AmQnbcDUzr8zVFVb66cYUmW7L46rnGgcsFKmIlGF/ncHf6l4f2dZXtrXxp/3+cnSRs/8qdR5uMEzgfCfrZw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=iH0CeQlA; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2E7EDC433F1;
-	Mon, 25 Mar 2024 10:49:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711363798;
-	bh=4APY93stsQD/f+BZlZm5PfAh7Rhqxtgpj8c6AP25p3k=;
-	h=Subject:From:In-Reply-To:References:To:Cc:Date:From;
-	b=iH0CeQlApW8aTUVFbZu1b/HMbevfcepTiv36TcCR+vHgR2RzsGJcAAXMusTOj93Sa
-	 e5tsN+k/nkCbm86QSwcKYyySqK5tbBlQi7TMejLo5C83kE3JKcaSizi8GN9341lKPH
-	 OnfZEv5C1nuKWFAt9QvTLPBlKvt6GupcrUbviHoHueVIg+DIIn+75aPn8N5WtmRgsO
-	 tnc5vln5FjMjASrvYKsaaoeJG/Z9PhuVvkP/LIROwqSd2zEFXA6z8nwhbysKad3sQ1
-	 Nbf4H2WNL417ms1KiSSpEgBOvYdsvg6i2TxnA1B1MLtugurRK313lNurYiEj8YTqJM
-	 yOzT5kZxK/Lvw==
-Content-Type: text/plain; charset="utf-8"
+	s=arc-20240116; t=1711363821; c=relaxed/simple;
+	bh=XpSiYldKH5rIkhRiCFgClqdFkLlO1k1YxneIR82EqBg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=c7MNpFTHNcSgOhe9Oo7yRI44soVun+YN4Oc5uD8qoGB6eGPJcmdOB5dqYct0dSANUuD/D3Acw+VVx4WV1pT5OmIlma5xyzjzkQvmed7FLFqeudkV9atFYyY4Y9NCFrxoShdU918ezrJlgBzLzcr+aP2+qGqxn2ekd9C/JzCRvLM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=GF3E4fxs; arc=none smtp.client-ip=209.85.221.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wr1-f42.google.com with SMTP id ffacd0b85a97d-33ed7ba1a42so2849275f8f.2
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 03:50:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1711363817; x=1711968617; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=XpSiYldKH5rIkhRiCFgClqdFkLlO1k1YxneIR82EqBg=;
+        b=GF3E4fxs7ZgQHREtg/UvCmGvUR2sMSIhAmulkcBsUYdofEVT8Jsid0iVZZzYZvqMdq
+         whsvXwQknR3OAo1ak6eI68kLYO7llUBarje3QIRXAeSfVj8wmfhI5oMqg8DE+JbVnM+I
+         NHE9jMLjaMA3s4v56WfgvRP58wl0U6xOiuS0vvVbfLnO57Vt4ZoUf3t49HFA4cgBhlnQ
+         rdm8QbnoKDxgnPvyFyCeyJ4Rm79CCjvmng+5Z2Z4nYvXGMzGUXf4CmTM+O+2AQ/WB22n
+         ljdv5rbov0rTVB8qj36mR8NmuEFDUjGN/7bVIaJP4GvNgXtlOyvio1t9lJTcH6afEa7i
+         6MgQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711363817; x=1711968617;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=XpSiYldKH5rIkhRiCFgClqdFkLlO1k1YxneIR82EqBg=;
+        b=K/YYc4jVUfnATm2xOQVstkjkRq/m5EA11kuyD11PSuh5VQEt7wGl7hfI91Cglf6TVm
+         poH/EMLjZCSfZG4wKSHza47L1ieLVPOffcYBcFS9+YUys3bD3+yzTcRIVLyiyh9ZfhD0
+         A8KAInNxDBCLRsTRvWTKdC2a50GXdt+G9tqPiLL3MY/kw6u9+CrBlhEuOyrPqLvgx3XU
+         zPyfi4gkDUcR+L6aGeKLyRvA2w/hKhd5332lAK8bhFmZsd0LmZe80djBdXEaQCkFdTDt
+         T+XXAn1/QaWFpG/veHEX4qGBhHagCXHv7+KdE+q5G7iN5IhBhSoKtKvHy++figHamAPE
+         q5KA==
+X-Forwarded-Encrypted: i=1; AJvYcCVxCYq3p7h+SQJoi4SIkqPETdPUl8h6tAF0TnIYO+mVI+sI9iqPEUnqCZyzcIm7B6N0xlAh2v24DDWEJgO1LWUfFJAICbxEUgkfmnO2
+X-Gm-Message-State: AOJu0YwFWcoFOXYUvJ+f1Yt9mVXm0P+ccHadaLmXqMSPtdNIzuN7VqE+
+	tkvRuDfXTP4/EreTA9NjV3TYbPxhq5opwaRv94AGekLr+OP4Nm7UpS9IVxHNiLo=
+X-Google-Smtp-Source: AGHT+IFuSkdlp7LEl6nvNwBzRtkkJeI8XfwfHdqVCFMNn64T6V7hkopceJ42fI6HjzHaQgPcNU0RLA==
+X-Received: by 2002:a05:6000:1b92:b0:33d:2d07:b567 with SMTP id r18-20020a0560001b9200b0033d2d07b567mr4711630wru.24.1711363816892;
+        Mon, 25 Mar 2024 03:50:16 -0700 (PDT)
+Received: from aspen.lan (aztw-34-b2-v4wan-166919-cust780.vm26.cable.virginm.net. [82.37.195.13])
+        by smtp.gmail.com with ESMTPSA id ay9-20020a5d6f09000000b0033b87c2725csm9338898wrb.104.2024.03.25.03.50.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 25 Mar 2024 03:50:15 -0700 (PDT)
+Date: Mon, 25 Mar 2024 10:50:13 +0000
+From: Daniel Thompson <daniel.thompson@linaro.org>
+To: "Ricardo B. Marliere" <ricardo@marliere.net>
+Cc: Lee Jones <lee@kernel.org>, Jingoo Han <jingoohan1@gmail.com>,
+	Helge Deller <deller@gmx.de>, dri-devel@lists.freedesktop.org,
+	linux-fbdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Re: [PATCH 1/2] video: backlight: make backlight_class constant
+Message-ID: <20240325105013.GA182091@aspen.lan>
+References: <20240305-class_cleanup-backlight-v1-0-c0e15cc25be1@marliere.net>
+ <20240305-class_cleanup-backlight-v1-1-c0e15cc25be1@marliere.net>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Subject: Re: [PATCH v2 1/3] wifi: ath: Convert sprintf/snprintf to sysfs_emit
-From: Kalle Valo <kvalo@kernel.org>
-In-Reply-To: <20240315055211.1347548-1-lizhijian@fujitsu.com>
-References: <20240315055211.1347548-1-lizhijian@fujitsu.com>
-To: Li Zhijian <lizhijian@fujitsu.com>
-Cc: linux-kernel@vger.kernel.org, Li Zhijian <lizhijian@fujitsu.com>,
- Jeff Johnson <jjohnson@kernel.org>, linux-wireless@vger.kernel.org,
- ath11k@lists.infradead.org, ath10k@lists.infradead.org
-User-Agent: pwcli/0.1.1-git (https://github.com/kvalo/pwcli/) Python/3.11.2
-Message-ID: <171136379518.1022746.15442509873111996623.kvalo@kernel.org>
-Date: Mon, 25 Mar 2024 10:49:56 +0000 (UTC)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240305-class_cleanup-backlight-v1-1-c0e15cc25be1@marliere.net>
 
-Li Zhijian <lizhijian@fujitsu.com> wrote:
+On Tue, Mar 05, 2024 at 09:21:17AM -0300, Ricardo B. Marliere wrote:
+> Since commit 43a7206b0963 ("driver core: class: make class_register() take
+> a const *"), the driver core allows for struct class to be in read-only
+> memory, so move the backlight_class structure to be declared at build time
+> placing it into read-only memory, instead of having to be dynamically
+> allocated at boot time.
+>
+> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Suggested-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Signed-off-by: Ricardo B. Marliere <ricardo@marliere.net>
 
-> Per filesystems/sysfs.rst, show() should only use sysfs_emit()
-> or sysfs_emit_at() when formatting the value to be returned to user space.
-> 
-> coccinelle complains that there are still a couple of functions that use
-> snprintf(). Convert them to sysfs_emit().
-> 
-> sprintf() will be converted as weel if they have.
-> 
-> Generally, this patch is generated by
-> make coccicheck M=<path/to/file> MODE=patch \
-> COCCI=scripts/coccinelle/api/device_attr_show.cocci
-> 
-> No functional change intended
-> 
-> CC: Kalle Valo <kvalo@kernel.org>
-> CC: Jeff Johnson <jjohnson@kernel.org>
-> CC: linux-wireless@vger.kernel.org
-> CC: ath11k@lists.infradead.org
-> CC: ath10k@lists.infradead.org
-> Signed-off-by: Li Zhijian <lizhijian@fujitsu.com>
-> Signed-off-by: Kalle Valo <quic_kvalo@quicinc.com>
+Reviewed-by: Daniel Thompson <daniel.thompson@linaro.org>
 
-Patch applied to ath-next branch of ath.git, thanks.
 
-fa1a4f15bdca wifi: ath: Convert sprintf/snprintf to sysfs_emit
-
--- 
-https://patchwork.kernel.org/project/linux-wireless/patch/20240315055211.1347548-1-lizhijian@fujitsu.com/
-
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
-
+Daniel.
 
