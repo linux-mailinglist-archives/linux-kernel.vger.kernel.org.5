@@ -1,156 +1,174 @@
-Return-Path: <linux-kernel+bounces-117421-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-117422-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id C2B4888AB33
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 18:17:10 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9BEBE88AB37
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 18:17:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4D6611F3EA67
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 17:17:10 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4FCA0369A46
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 17:17:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DC960153509;
-	Mon, 25 Mar 2024 15:57:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C7CF615356C;
+	Mon, 25 Mar 2024 15:57:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="Ta4Jy1+l";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="u3yXqXNA";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="Ta4Jy1+l";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="u3yXqXNA"
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="UTx2Wt1B"
+Received: from relay2-d.mail.gandi.net (relay2-d.mail.gandi.net [217.70.183.194])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6479D15250B
-	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 15:57:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9DA4CD272;
+	Mon, 25 Mar 2024 15:57:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711382222; cv=none; b=AJD3kiMAOB34KA1rl8Xf9BMt/S35X1Vq3gMQUuHWGehCUD//8GjhAEK2/rYPqTHnXnNCsiXfHi3qJYqD8pQMsbFplO9fjFcHpOy3u8jcOMQxVhoQW5+c2aAP0DIkHuoH3wpgEB4sh+87CYSBYXp42d+zbUuxborEXJ+PzTqeXg4=
+	t=1711382235; cv=none; b=BNJTN0vdUoJGEcQ3Or+RMCVkwyhCVPT1mwEay4FFPPfCl8aL8Ai2+i/btAv01KHG6dUaZEpus8nA1OtIsgcU3+0ibrdEbzmZ1rG3Fq/iExN2Xs2ZY5azK0qLy6Wno/LqDU+VdJeWEYpTgpkFopE+rxP3+XIbeuFmyCyGQcrxrRg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711382222; c=relaxed/simple;
-	bh=ljfdK/CVngTKqGJljr/DtWtTghZNbfd10iwQCKtdKFY=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=llcDgkrJVq8Ldn7Nlm0hWE7G0rssONRcdef237B2PHuJl+GWGn+wpehHJNJaYwjO8pO61ReYdiIdXJOjOAICSvO7BA29qLxivq1rjth2DEGW3ZKxPVLESO+H2wGhUR4fDI9KdhkZcH8gvszmA8Ja1DhGHDDEdqJwUDX+LupyonM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=Ta4Jy1+l; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=u3yXqXNA; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=Ta4Jy1+l; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=u3yXqXNA; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 73D6F5BE09;
-	Mon, 25 Mar 2024 15:56:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1711382218; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
+	s=arc-20240116; t=1711382235; c=relaxed/simple;
+	bh=rqfE9xcntcYQ93Gam/45NyhYzJafmljtmywYwC1FnIE=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=XAYcA6eZs6jmquRELwoVnGhQ8cdum0LwtTtYfC2ZxlYujqI0ZayjP65kdQ9hR67Z3bAt4J8hZfIPu0HayfPv8f4IJl7G7rIYXlO7EFPZMDhn2ZBPWj7TFeem7v0ltSPyJlUvwykHfEgF9gmNjIi0RM7K1ykHck/nyR/eblgZyTM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=UTx2Wt1B; arc=none smtp.client-ip=217.70.183.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 114FA40005;
+	Mon, 25 Mar 2024 15:57:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1711382225;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=c6UdZw/G7kV8+imSHh6TIPRYUBq5OCd52fb0mHOJXzQ=;
-	b=Ta4Jy1+lCvNxvUYujjOdB+EaSHXgKQgKBYDBU6/ZEN0kTO5/0LhkNqixgGtIlb8biZI3mY
-	p7j3MHptwOWCLFeq8u8wplvdnzUZ8pg6JK+c14UAT3FwFjXznxOdtkjdgbHK6c4Z2c4sXr
-	G4g0X3YcrsRxeqIOc78lwTE1eZ5yNW8=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1711382218;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=c6UdZw/G7kV8+imSHh6TIPRYUBq5OCd52fb0mHOJXzQ=;
-	b=u3yXqXNAFcefQn/9NMdIUdLKLQFz+Ekx9P7zjmKRn1nl1lB3ksuVKP8O+nonl1Q8gECxHo
-	vbto++V/zu75NGAA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1711382218; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=c6UdZw/G7kV8+imSHh6TIPRYUBq5OCd52fb0mHOJXzQ=;
-	b=Ta4Jy1+lCvNxvUYujjOdB+EaSHXgKQgKBYDBU6/ZEN0kTO5/0LhkNqixgGtIlb8biZI3mY
-	p7j3MHptwOWCLFeq8u8wplvdnzUZ8pg6JK+c14UAT3FwFjXznxOdtkjdgbHK6c4Z2c4sXr
-	G4g0X3YcrsRxeqIOc78lwTE1eZ5yNW8=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1711382218;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=c6UdZw/G7kV8+imSHh6TIPRYUBq5OCd52fb0mHOJXzQ=;
-	b=u3yXqXNAFcefQn/9NMdIUdLKLQFz+Ekx9P7zjmKRn1nl1lB3ksuVKP8O+nonl1Q8gECxHo
-	vbto++V/zu75NGAA==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 61812137C4;
-	Mon, 25 Mar 2024 15:56:58 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id xhBKF8qeAWbjDwAAD6G6ig
-	(envelope-from <vbabka@suse.cz>); Mon, 25 Mar 2024 15:56:58 +0000
-Message-ID: <1ad38cac-e90d-4d9a-bf5e-afbcf6ca5bc5@suse.cz>
-Date: Mon, 25 Mar 2024 16:56:58 +0100
+	bh=3m0PtOuLhnJ+6DNxPBawU6YU38hlNjYHLn/3Vg64K5g=;
+	b=UTx2Wt1BeEb+vr7yg+TJnPWeYXZqUTeHZJvTluJb9LqJ6iIHX04FLkAODJwfzlAt6nRhZc
+	wcY07IpEkA31mXG8UueekNvuWp5+nctcpVdGrokgpBRLZTN8nLgol0GWkK8QslaaDOHZwq
+	WSH8t35OG2GmOoBQ+ZNN/MFAjswFPiDNIizKNjnWZbA9ixd9TvP7UWfYooI/ErLf1c4nph
+	Jp342vvXZWfX7WPLqp5CosoXQ34fwRObVXxA0fafWG557lOpuKekBG+v9ZC3KulVfagQMI
+	pyTtjPbROpwIrKH/+jBsaeR2gp1GYRmucUXIJ1qDpHyHAFwIaYpHlEGS8H1msw==
+Date: Mon, 25 Mar 2024 16:57:03 +0100
+From: Herve Codina <herve.codina@bootlin.com>
+To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc: Vladimir Oltean <vladimir.oltean@nxp.com>, Sui Jingfeng
+ <sui.jingfeng@linux.dev>, Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+ Daniel Scally <djrscally@gmail.com>, Heikki Krogerus
+ <heikki.krogerus@linux.intel.com>, Sakari Ailus
+ <sakari.ailus@linux.intel.com>, Greg Kroah-Hartman
+ <gregkh@linuxfoundation.org>, "Rafael J. Wysocki" <rafael@kernel.org>,
+ linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org, Rob Herring
+ <robh@kernel.org>, Lizhi Hou <lizhi.hou@amd.com>, Luca Ceresoli
+ <luca.ceresoli@bootlin.com>
+Subject: Re: Implementation of fwnode_operations :: device_get_match_data()
+ for software nodes?
+Message-ID: <20240325165703.7486eac2@bootlin.com>
+In-Reply-To: <ZgGal-SJGWvn80Uk@smile.fi.intel.com>
+References: <Y/9iLBWAO37y6lZZ@smile.fi.intel.com>
+	<20230301143625.7kdnzujlv4psbhla@skbuf>
+	<Y/9qtT0vckSikOKJ@smile.fi.intel.com>
+	<20230301152527.khyzifds4w3rkebt@skbuf>
+	<Y/9wlDkuh39auAgF@smile.fi.intel.com>
+	<20230301171845.oliqbso7v2vmyqr3@skbuf>
+	<Y/+MaRO4vrCRFXE8@smile.fi.intel.com>
+	<20230301174309.5nqul7vg5uygwtpy@skbuf>
+	<ZgF-_ww5k3h9pvEm@smile.fi.intel.com>
+	<20240325161627.1c0fc955@bootlin.com>
+	<ZgGal-SJGWvn80Uk@smile.fi.intel.com>
+Organization: Bootlin
+X-Mailer: Claws Mail 4.2.0 (GTK 3.24.41; x86_64-redhat-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 02/10] mm: page_alloc: optimize free_unref_folios()
-Content-Language: en-US
-To: Johannes Weiner <hannes@cmpxchg.org>,
- Andrew Morton <akpm@linux-foundation.org>
-Cc: Mel Gorman <mgorman@techsingularity.net>, Zi Yan <ziy@nvidia.com>,
- "Huang, Ying" <ying.huang@intel.com>, David Hildenbrand <david@redhat.com>,
- linux-mm@kvack.org, linux-kernel@vger.kernel.org
-References: <20240320180429.678181-1-hannes@cmpxchg.org>
- <20240320180429.678181-3-hannes@cmpxchg.org>
-From: Vlastimil Babka <vbabka@suse.cz>
-In-Reply-To: <20240320180429.678181-3-hannes@cmpxchg.org>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Level: 
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=Ta4Jy1+l;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=u3yXqXNA
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-2.31 / 50.00];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 XM_UA_NO_VERSION(0.01)[];
-	 RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
-	 TO_DN_SOME(0.00)[];
-	 DWL_DNSWL_BLOCKED(0.00)[suse.cz:dkim];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_TRACE(0.00)[suse.cz:+];
-	 MX_GOOD(-0.01)[];
-	 RCPT_COUNT_SEVEN(0.00)[8];
-	 NEURAL_HAM_SHORT(-0.20)[-1.000];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 MID_RHS_MATCH_FROM(0.00)[];
-	 BAYES_HAM(-0.81)[84.89%];
-	 ARC_NA(0.00)[];
-	 R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 FROM_HAS_DN(0.00)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 MIME_GOOD(-0.10)[text/plain];
-	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:dkim,suse.cz:email];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 RCVD_TLS_ALL(0.00)[]
-X-Spam-Score: -2.31
-X-Rspamd-Queue-Id: 73D6F5BE09
-X-Spam-Flag: NO
+Content-Transfer-Encoding: 8bit
+X-GND-Sasl: herve.codina@bootlin.com
 
-On 3/20/24 7:02 PM, Johannes Weiner wrote:
-> Move direct freeing of isolated pages to the lock-breaking block in
-> the second loop. This saves an unnecessary migratetype reassessment.
+Hi Andy,
+
+On Mon, 25 Mar 2024 17:39:03 +0200
+Andy Shevchenko <andriy.shevchenko@linux.intel.com> wrote:
+
+> On Mon, Mar 25, 2024 at 04:16:27PM +0100, Herve Codina wrote:
+> > On Mon, 25 Mar 2024 15:41:19 +0200
+> > Andy Shevchenko <andriy.shevchenko@linux.intel.com> wrote:  
 > 
-> Minor comment and local variable scoping cleanups.
+> ...
 > 
-> Suggested-by: Vlastimil Babka <vbabka@suse.cz>
-> Tested-by: "Huang, Ying" <ying.huang@intel.com>
-> Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
+> > > > I agree we don't want to have multiple approaches of doing the same thing,
+> > > > but I debate whether I am really doing the same thing?
+> > > > 
+> > > > If software nodes are not designed to be a good fit for my kind of use
+> > > > case, then what are they designed for?    
+> > > 
+> > > I think the hardware should be described in the respective format. Yet, you
+> > > have a point that it's too verbose to the cases when we know the layout of
+> > > the attached (not-hotpluggable) devices.
+> > > 
+> > > There are discussions [1,2] on how to enable DT for the cases when
+> > > non-discoverable HW needs to be detected and enumerated.
+> > > 
+> > > I don't know which solution will eventually be accepted, but my personal
+> > > opinion here that we would like to distantiate from board files as much
+> > > as possible.
+> > > 
+> > > Btw, for the internal (board files) code we may also use property to
+> > > go with (see how spi-pxa2xx uses that) to distinguish configurations.
+> > > But it might be not that straight as with driver data.
+> > > 
+> > > So far, I haven't seen the code (am I mistaken?) which makes use of driver data
+> > > for software nodes.
+> > > 
+> > > [1]: https://lore.kernel.org/lkml/20231128084236.157152-1-wenst@chromium.org/
+> > > [2]: https://lore.kernel.org/lkml/1692120000-46900-1-git-send-email-lizhi.hou@amd.com/
+> > > 
+> > > Aux topics which might not directly be related (in order of declining relevance
+> > > from my p.o.v.):
+> > > https://lore.kernel.org/lkml/20231130165700.685764-1-herve.codina@bootlin.com/
+> > > https://lore.kernel.org/lkml/DM6PR12MB3993D5ECA50B27682AEBE19FCD67A@DM6PR12MB3993.namprd12.prod.outlook.com/
+> > > https://lore.kernel.org/lkml/20240217010557.2381548-1-sboyd@kernel.org/
+> > >   
+> > 
+> > I work on PCI DT overlay support.
+> > The idea is to have a PCI driver that loads a DT overlay to describe the
+> > hardware embedded in the related PCI device. Some features related to this
+> > topic are already upstream.
+> > 
+> > Rob did a presentation of this topic at the Linux Plumber conference last
+> > year (https://www.youtube.com/watch?v=MVGElnZW7BQ).
+> > 
+> > IMHO, your use-case is pretty much the same. Of course it is not a PCI
+> > device but a SPI device. Even if the device beyond the SPI bus cannot be
+> > memory mapped, the idea seems pretty much the same: describe the hardware
+> > embedded in a specific device.
+> > 
+> > You mentioned that you need the '-@' option when you compile your base dtb.
+> > In fact, it depends on the resources you need to reference from your overlay.
+> > On my case (DT overlay to describe a PCI device), I don't need any references
+> > to a base dtb from the overlay. I don't need to use the '-@' option.
+> > Even more, I started (not yet upstream) to use all of this feature on an ACPI
+> > base system and it works.
+> > 
+> > My PCI device is a Microchip LAN9662 PCI device.
+> > The Microchip LAN9962 can be a "traditional" SoC with CPU cores and several
+> > IPs but also a PCI device.
+> > When provided as a PCI device, the internal CPU cores are no more available
+> > and replaced by a PCI endpoint IP.
+> > All the accesses done by the SoC CPU cores are replaced by accesses done by
+> > the host PCI system through the PCI endpoint.
+> > Drivers were already present upstream (traditional SoC platform driver such
+> > as i2c mdio, clock, switch, ...) and are used without any modifications for
+> > the PCI device.
+> > All the wiring (mapping) between the PCI world and the internal device
+> > hardware is done using a DT overlay.  
+> 
+> Thank you, Herve, for looking into this. As far as I understood, slowly but
+> successfully the required changes for your use case are being landed. If so,
+> it makes driver data for software nodes approach even lower priority.
+> 
 
-Reviewed-by: Vlastimil Babka <vbabka@suse.cz>
+Yeah, some more changes are still needed to fully support my use case but
+everything is on the right track.
 
+Best regards,
+Hervé
 
