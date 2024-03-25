@@ -1,164 +1,255 @@
-Return-Path: <linux-kernel+bounces-116676-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-116677-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9105F88A272
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 14:37:45 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 48E3588A27D
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 14:38:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C229C1C38BE5
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 13:37:44 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6C20F1C2D755
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 13:38:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E518B143897;
-	Mon, 25 Mar 2024 10:23:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 585AB13BAE3;
+	Mon, 25 Mar 2024 10:24:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amarulasolutions.com header.i=@amarulasolutions.com header.b="l3uGXkjs"
-Received: from mail-ed1-f41.google.com (mail-ed1-f41.google.com [209.85.208.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8505A137C22
-	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 07:56:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.41
+	dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b="YJPR8d88"
+Received: from m15.mail.163.com (m15.mail.163.com [45.254.50.219])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AF9961552F2;
+	Mon, 25 Mar 2024 07:58:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.254.50.219
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711353408; cv=none; b=h+9ipK8t3IxPpAHBh2/ZCsaUpa53yEnhZd03WhdFLOpAWn6iPrzvLLdA7T/k/4Wxs11FYXCSSzt9udqZXFNqQXLMkEZrHYvSQE9rC/7BglCXxdVxrjWxTAqrTHlo1El8xYHF5bV18qCfXlCvMNz9vXyCyruN6GPSPzFpAZq4clU=
+	t=1711353508; cv=none; b=iHb8okMgwTXi77nQj67To8S4jzdc9TeeZh1DAZsV9wPVsID4y2OFnYMmJITW0K3+drNkx+U36BgIK4z9a4hsPwxdL3BehtNHUYtqG0Ejzozu9NgDYedmiBqAGZtQt1BSvjsKMUyBkaHkyQtp9SvqOJ2sAvF7WGUZckqBZZdX+ck=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711353408; c=relaxed/simple;
-	bh=A1g9JztB5Pywe1EJsKY+CQBGaXRMW2hC6ZpyWTRjSnE=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=F0u7Wrnaxo2bWXHduxD1CTOoXUO3BMA7T6X/8l0jlP7qJOqOgy5bIQiQPkZNdItJtvhSXldoHm0kXu9AuIHhKABnQxRxIneB+tRnGhsfY9CfAyYtbRrbxl30D9yzXR9l7bwO3avH4I3RWDhQbly83wRWEOGTyU84w9cTrRNtUzA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=amarulasolutions.com; spf=pass smtp.mailfrom=amarulasolutions.com; dkim=pass (1024-bit key) header.d=amarulasolutions.com header.i=@amarulasolutions.com header.b=l3uGXkjs; arc=none smtp.client-ip=209.85.208.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=amarulasolutions.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=amarulasolutions.com
-Received: by mail-ed1-f41.google.com with SMTP id 4fb4d7f45d1cf-56c0652d37aso1564298a12.0
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 00:56:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=amarulasolutions.com; s=google; t=1711353404; x=1711958204; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=a89LEVm7xD3V3aipTuTByCc7qaD6TInwfvfX/3rmr3k=;
-        b=l3uGXkjscBHFukOlvOmsm8G4dS35a3QXA5h9XUa6LvhZiksqPGbbNKLfVmrMmLjX8l
-         adCbtJ9weEP1OC0HqkiCtwVGXF5itcEJUREuPsQbfiXHEorfTrEZTH73K4iWwWGtHuIm
-         V2hTEAT7aZK5LcoNAltI+WDxz4oVhugnzk60g=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711353404; x=1711958204;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=a89LEVm7xD3V3aipTuTByCc7qaD6TInwfvfX/3rmr3k=;
-        b=wi+30/tJBFbkDB4nkvhZ4uUtbj8vXZDs6AZPw5XHgX2l82xRVX7q6olFQ2q71UfQnm
-         gi9SQNZnkKO8/IG1WepVYjPwRk/RyMxvPOBY/EhpmyPNvgBuKUhm9rjIi376l0NaMICS
-         rdAsVb4UaGkTJLXpC9j2X9AsdBGpziNiQWuz6GXrm0dPiOBvVI2FS+s3NugvERh8NrVo
-         H3MQervAH7Mc1O54FhJHMmfP49cKBD+/h0JDHmxG8pwEKhFgFIwBE6NgjA1ZvOwN6zDX
-         sM1yCC4QoWdv7dlTP+ewQiMSErdZCLb4Z7cAKm/et+uqZOmvKn0uHVNrB4jFVMRiJPwN
-         Iy/w==
-X-Gm-Message-State: AOJu0Ywt9tX3dvHwXcEEA2OCyzxx7E8V2yeVeEeGPuq0Qj+K+qhBzfAj
-	cSJA4TdZpa3q9JZ8RTuAJuBMMhSRGUk6pMBLU0Lo2ICSP+X4s8cubncznzX3gHsV8rv+jYXABQg
-	As2Y=
-X-Google-Smtp-Source: AGHT+IEeee43tChvxvBZH14MFQxubrof2GweXWpHdJI4TLqNPXlTq1m6/KkDZ6ZtyycHFcrYpdLjtg==
-X-Received: by 2002:a17:906:b786:b0:a47:4145:3598 with SMTP id dt6-20020a170906b78600b00a4741453598mr4172639ejb.20.1711353404443;
-        Mon, 25 Mar 2024 00:56:44 -0700 (PDT)
-Received: from dario-ThinkPad-T14s-Gen-2i.homenet.telecomitalia.it (host-87-8-99-67.retail.telecomitalia.it. [87.8.99.67])
-        by smtp.gmail.com with ESMTPSA id lb13-20020a170906adcd00b00a4750131edasm1661001ejb.206.2024.03.25.00.56.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 Mar 2024 00:56:44 -0700 (PDT)
-From: Dario Binacchi <dario.binacchi@amarulasolutions.com>
-To: linux-kernel@vger.kernel.org
-Cc: linux-amarula@amarulasolutions.com,
-	Dario Binacchi <dario.binacchi@amarulasolutions.com>,
-	Alexandre Torgue <alexandre.torgue@foss.st.com>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-	Rob Herring <robh@kernel.org>,
-	devicetree@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-stm32@st-md-mailman.stormreply.com
-Subject: [PATCH] ARM: dts: stm32: move can3 node from stm32f746 to stm32f769
-Date: Mon, 25 Mar 2024 08:56:28 +0100
-Message-ID: <20240325075635.1382911-1-dario.binacchi@amarulasolutions.com>
-X-Mailer: git-send-email 2.43.0
+	s=arc-20240116; t=1711353508; c=relaxed/simple;
+	bh=qAMdxk9ji2QCFFg8RS2v2wmwbMlv3YUwfuW6++YvFMM=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=sLEiB6FlmpWTf2bB9AV7pLwKgmOwM14yvle1Av1POxeip/PxzDe1Xp0y1zpEY7TimjtwH1QDQH6CbZdu7VEWSKZSnFAWgn0gaEGXBDT58fZ59IFgiaDvLE9VQ8K3hg9nUfReXmrEOtEVqlrnvYFiDkXd4Pmc8iZHh2Y7F3rVF2M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com; spf=pass smtp.mailfrom=163.com; dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b=YJPR8d88; arc=none smtp.client-ip=45.254.50.219
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=163.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+	s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=dGjTw
+	JPlvMOsZV0qWvG51AfogZ0hB5BsOVHV486tDN4=; b=YJPR8d88hAiP31sTpq8Le
+	/sli5Vpp4k4aUGrProrKXLKra7NRVVQFA6wp6ehYDAVrRsRpjeqEtL9ILS8Ac7Ws
+	MP/BIhpKugrZrwvOl6i7tPWXapOXVeo0xOhm+wEt70e8I/nWx+Y2iTvKU4hmaotu
+	dcF34Bu6mcWytX2CQCtCW0=
+Received: from localhost.localdomain (unknown [193.203.214.57])
+	by gzga-smtp-mta-g0-2 (Coremail) with SMTP id _____wD3X6p5LgFmwnu9Bw--.57921S2;
+	Mon, 25 Mar 2024 15:57:47 +0800 (CST)
+From: Peilin He <peilinhe2020@163.com>
+To: kerneljasonxing@gmail.com
+Cc: davem@davemloft.net,
+	dsahern@kernel.org,
+	edumazet@google.com,
+	he.peilin@zte.com.cn,
+	jiang.xuexin@zte.com.cn,
+	kuba@kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-trace-kernel@vger.kernel.org,
+	liu.chun2@zte.com.cn,
+	mhiramat@kernel.org,
+	netdev@vger.kernel.org,
+	peilinhe2020@163.com,
+	rostedt@goodmis.org,
+	xu.xin16@zte.com.cn,
+	yang.yang29@zte.com.cn,
+	zhang.yunkai@zte.com.cn
+Subject: Re: Re: Re: [PATCH v3 resend] net/ipv4: add tracepoint for icmp_send
+Date: Mon, 25 Mar 2024 07:57:45 +0000
+Message-Id: <20240325075745.3777528-1-peilinhe2020@163.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <CAL+tcoCOywxJ9VFs6PD4Wdsq1HvQ18YVhYX3DA5MfTSXA+Htug@mail.gmail.com>
+References: <CAL+tcoCOywxJ9VFs6PD4Wdsq1HvQ18YVhYX3DA5MfTSXA+Htug@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:_____wD3X6p5LgFmwnu9Bw--.57921S2
+X-Coremail-Antispam: 1Uf129KBjvJXoWxtryDJw1DuryUXw48JFy8uFg_yoW7uryrpF
+	yDAF1rKw4ktr17Cw1S9w1aqFnIq3yrCryjgr12gw1akrnFqF17tr42qrn8CFykArs8Krya
+	vF1jv343GFyYqrJanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x0zRG2NtUUUUU=
+X-CM-SenderInfo: xshlzxhqkhjiisq6il2tof0z/1tbiThyssWVOB6CFMgAAs0
 
-According to documents [1], [2] and [3], we have 2 CAN devices on the
-stm32f746 platform and 3 on the stm32f769 platform. So let's move the
-can3 node from stm32f746.dtsi to stm32f769.dtsi.
-
-[1] https://www.st.com/en/microcontrollers-microprocessors/stm32f7-series.html
-[2] RM0385: STM32F75xxx and STM32F74xxx advanced Arm®-based 32-bit MCUs
-[3] RM0410: STM32F76xxx and STM32F77xxx advanced Arm®-based 32-bit MCUs
-Fixes: df362914eead ("ARM: dts: stm32: re-add CAN support on stm32f746")
-Signed-off-by: Dario Binacchi <dario.binacchi@amarulasolutions.com>
-
----
-
- arch/arm/boot/dts/st/stm32f746.dtsi | 17 -----------------
- arch/arm/boot/dts/st/stm32f769.dtsi | 17 +++++++++++++++++
- 2 files changed, 17 insertions(+), 17 deletions(-)
-
-diff --git a/arch/arm/boot/dts/st/stm32f746.dtsi b/arch/arm/boot/dts/st/stm32f746.dtsi
-index 65c72b6fcc83..2537b3d47e6f 100644
---- a/arch/arm/boot/dts/st/stm32f746.dtsi
-+++ b/arch/arm/boot/dts/st/stm32f746.dtsi
-@@ -257,23 +257,6 @@ rtc: rtc@40002800 {
- 			status = "disabled";
- 		};
- 
--		can3: can@40003400 {
--			compatible = "st,stm32f4-bxcan";
--			reg = <0x40003400 0x200>;
--			interrupts = <104>, <105>, <106>, <107>;
--			interrupt-names = "tx", "rx0", "rx1", "sce";
--			resets = <&rcc STM32F7_APB1_RESET(CAN3)>;
--			clocks = <&rcc 0 STM32F7_APB1_CLOCK(CAN3)>;
--			st,gcan = <&gcan3>;
--			status = "disabled";
--		};
--
--		gcan3: gcan@40003600 {
--			compatible = "st,stm32f4-gcan", "syscon";
--			reg = <0x40003600 0x200>;
--			clocks = <&rcc 0 STM32F7_APB1_CLOCK(CAN3)>;
--		};
--
- 		spi2: spi@40003800 {
- 			#address-cells = <1>;
- 			#size-cells = <0>;
-diff --git a/arch/arm/boot/dts/st/stm32f769.dtsi b/arch/arm/boot/dts/st/stm32f769.dtsi
-index 4e7d9032149c..e8cbb99e81a6 100644
---- a/arch/arm/boot/dts/st/stm32f769.dtsi
-+++ b/arch/arm/boot/dts/st/stm32f769.dtsi
-@@ -7,6 +7,23 @@
- 
- / {
- 	soc {
-+		can3: can@40003400 {
-+			compatible = "st,stm32f4-bxcan";
-+			reg = <0x40003400 0x200>;
-+			interrupts = <104>, <105>, <106>, <107>;
-+			interrupt-names = "tx", "rx0", "rx1", "sce";
-+			resets = <&rcc STM32F7_APB1_RESET(CAN3)>;
-+			clocks = <&rcc 0 STM32F7_APB1_CLOCK(CAN3)>;
-+			st,gcan = <&gcan3>;
-+			status = "disabled";
-+		};
-+
-+		gcan3: gcan@40003600 {
-+			compatible = "st,stm32f4-gcan", "syscon";
-+			reg = <0x40003600 0x200>;
-+			clocks = <&rcc 0 STM32F7_APB1_CLOCK(CAN3)>;
-+		};
-+
- 		dsi: dsi@40016c00 {
- 			compatible = "st,stm32-dsi";
- 			reg = <0x40016c00 0x800>;
--- 
-2.43.0
+>> >> ---------
+>> >> v2->v3:
+>> >> Some fixes according to
+>> >> https://lore.kernel.org/all/20240319102549.7f7f6f53@gandalf.local.home=
+>/
+>> >> 1. Change the tracking directory to/sys/kernel/tracking.
+>> >> 2. Adjust the layout of the TP-STRUCT_entry parameter structure.
+>> >>
+>> >> v1->v2:
+>> >> Some fixes according to
+>> >> https://lore.kernel.org/all/CANn89iL-y9e_VFpdw=3D3DsZtRnKRu_tnUwqHuFQT=
+>JvJsv=3D
+>> >-nz1xPDw@mail.gmail.com/
+>> >> 1. adjust the trace_icmp_send() to more protocols than UDP.
+>> >> 2. move the calling of trace_icmp_send after sanity checks
+>> >> in __icmp_send().
+>> >>
+>> >> Signed-off-by: Peilin He<he.peilin@zte.com.cn>
+>> >> Reviewed-by: xu xin <xu.xin16@zte.com.cn>
+>> >> Reviewed-by: Yunkai Zhang <zhang.yunkai@zte.com.cn>
+>> >> Cc: Yang Yang <yang.yang29@zte.com.cn>
+>> >> Cc: Liu Chun <liu.chun2@zte.com.cn>
+>> >> Cc: Xuexin Jiang <jiang.xuexin@zte.com.cn>
+>> >
+>> >I think it would be better to target net-next tree since it's not a
+>> >fix or something else important.
+>> >
+>> OK. I would target it for net-next.
+>> >> ---
+>> >>  include/trace/events/icmp.h | 64 ++++++++++++++++++++++++++++++++++++=
+>+
+>> >>  net/ipv4/icmp.c             |  4 +++
+>> >>  2 files changed, 68 insertions(+)
+>> >>  create mode 100644 include/trace/events/icmp.h
+>> >>
+>> >> diff --git a/include/trace/events/icmp.h b/include/trace/events/icmp.h
+>> >> new file mode 100644
+>> >> index 000000000000..2098d4b1b12e
+>> >> --- /dev/null
+>> >> +++ b/include/trace/events/icmp.h
+>> >> @@ -0,0 +1,64 @@
+>> >> +/* SPDX-License-Identifier: GPL-2.0 */
+>> >> +#undef TRACE_SYSTEM
+>> >> +#define TRACE_SYSTEM icmp
+>> >> +
+>> >> +#if !defined(_TRACE_ICMP_H) || defined(TRACE_HEADER_MULTI_READ)
+>> >> +#define _TRACE_ICMP_H
+>> >> +
+>> >> +#include <linux/icmp.h>
+>> >> +#include <linux/tracepoint.h>
+>> >> +
+>> >> +TRACE_EVENT(icmp_send,
+>> >> +
+>> >> +               TP_PROTO(const struct sk_buff *skb, int type, int code=
+>),
+>> >> +
+>> >> +               TP_ARGS(skb, type, code),
+>> >> +
+>> >> +               TP_STRUCT__entry(
+>> >> +                       __field(const void *, skbaddr)
+>> >> +                       __field(int, type)
+>> >> +                       __field(int, code)
+>> >> +                       __array(__u8, saddr, 4)
+>> >> +                       __array(__u8, daddr, 4)
+>> >> +                       __field(__u16, sport)
+>> >> +                       __field(__u16, dport)
+>> >> +                       __field(unsigned short, ulen)
+>> >> +               ),
+>> >> +
+>> >> +               TP_fast_assign(
+>> >> +                       struct iphdr *iph =3D3D ip_hdr(skb);
+>> >> +                       int proto_4 =3D3D iph->protocol;
+>> >> +                       __be32 *p32;
+>> >> +
+>> >> +                       __entry->skbaddr =3D3D skb;
+>> >> +                       __entry->type =3D3D type;
+>> >> +                       __entry->code =3D3D code;
+>> >> +
+>> >> +                       if (proto_4 =3D3D=3D3D IPPROTO_UDP) {
+>> >> +                               struct udphdr *uh =3D3D udp_hdr(skb);
+>> >> +                               __entry->sport =3D3D ntohs(uh->source)=
+>;
+>> >> +                               __entry->dport =3D3D ntohs(uh->dest);
+>> >> +                               __entry->ulen =3D3D ntohs(uh->len);
+>> >> +                       } else {
+>> >> +                               __entry->sport =3D3D 0;
+>> >> +                               __entry->dport =3D3D 0;
+>> >> +                               __entry->ulen =3D3D 0;
+>> >> +                       }
+>> >
+>> >What about using the TP_STORE_ADDR_PORTS_SKB macro to record the sport
+>> >and dport like the patch[1] did through extending the use of header
+>> >for TCP and UDP?
+>> >
+>> I believe patch[1] is a good idea as it moves the TCP protocol parsing
+>> previously done inside the TP_STORE_ADDR_PORTS_SKB macro to TP_fast_assig=
+>n,
+>> and extracts the TP_STORE_ADDR_PORTS_SKB macro into a common file,
+>> enabling support for both UDP and TCP protocol parsing simultaneously.
+>>
+>> However, patch[1] only extracts the source and destination addresses of
+>> the packet, but does not extract the source port and destination port,
+>> which limits the significance of my submitted patch.
+>
+>No, please take a look at TP_STORE_ADDR_PORTS_SKB() macro again. It
+>records 4-tuples of the flow.
+>
+>Thanks,
+>Jason
+>
+Okay, after patch [1] is merged, we will propose an optimization patch based on it.
+>>
+>> Perhaps the patch[1] could be referenced for integration after it is merg=
+>ed.
+>> >And, I wonder what the use of tracing ulen of that skb?
+>> >
+>> The tracking of ulen is primarily aimed at ensuring the legality of recei=
+>ved
+>> UDP packets and providing developers with more detailed information
+>> on exceptions. See net/ipv4/udp.c:2494-2501.
+>> >[1]: https://lore.kernel.org/all/1c7156a3f164eb33ef3a25b8432e359f0bb60a8=
+>e.1=3D
+>> >710866188.git.balazs.scheidler@axoflow.com/
+>> >
+>> >Thanks,
+>> >Jason
+>> >
+>> >> +
+>> >> +                       p32 =3D3D (__be32 *) __entry->saddr;
+>> >> +                       *p32 =3D3D iph->saddr;
+>> >> +
+>> >> +                       p32 =3D3D (__be32 *) __entry->daddr;
+>> >> +                       *p32 =3D3D iph->daddr;
+>> >> +               ),
+>> >> +
+>> >> +               TP_printk("icmp_send: type=3D3D%d, code=3D3D%d. From %=
+>pI4:%u =3D
+>> >to %pI4:%u ulen=3D3D%d skbaddr=3D3D%p",
+>> >> +                       __entry->type, __entry->code,
+>> >> +                       __entry->saddr, __entry->sport, __entry->daddr=
+>,
+>> >> +                       __entry->dport, __entry->ulen, __entry->skbadd=
+>r)
+>> >> +);
+>> >> +
+>> >> +#endif /* _TRACE_ICMP_H */
+>> >> +
+>> >> +/* This part must be outside protection */
+>> >> +#include <trace/define_trace.h>
+>> >> \ No newline at end of file
+>> >> diff --git a/net/ipv4/icmp.c b/net/ipv4/icmp.c
+>> >> index e63a3bf99617..21fb41257fe9 100644
+>> >> --- a/net/ipv4/icmp.c
+>> >> +++ b/net/ipv4/icmp.c
+>> >> @@ -92,6 +92,8 @@
+>> >>  #include <net/inet_common.h>
+>> >>  #include <net/ip_fib.h>
+>> >>  #include <net/l3mdev.h>
+>> >> +#define CREATE_TRACE_POINTS
+>> >> +#include <trace/events/icmp.h>
+>> >>
+>> >>  /*
+>> >>   *     Build xmit assembly blocks
+>> >> @@ -672,6 +674,8 @@ void __icmp_send(struct sk_buff *skb_in, int type,=
+> in=3D
+>> >t code, __be32 info,
+>> >>                 }
+>> >>         }
+>> >>
+>> >> +       trace_icmp_send(skb_in, type, code);
+>> >> +
+>> >>         /* Needed by both icmp_global_allow and icmp_xmit_lock */
+>> >>         local_bh_disable();
+>> >>
+>> >> --
+>> >> 2.44.0
 
 
