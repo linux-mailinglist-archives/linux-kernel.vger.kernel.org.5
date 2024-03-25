@@ -1,120 +1,115 @@
-Return-Path: <linux-kernel+bounces-116471-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-116506-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 34DF7889EB9
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 13:13:35 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A333288A20D
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 14:32:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C957E1F3761A
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 12:13:34 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5F18EB66AAC
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 12:45:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3886416F0EE;
-	Mon, 25 Mar 2024 07:31:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D2F43335D3;
+	Mon, 25 Mar 2024 07:32:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="E2qN+W8S"
-Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="W+I63U7l"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.12])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 895FA18059;
-	Mon, 25 Mar 2024 03:57:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5107315ECC1
+	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 03:58:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.12
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711339034; cv=none; b=Unan8oeLmluS1AeLciIyPD6v5zs9OIsDcQYPjX7PEJrg3IYltpb/SR5jm1cFNR4iYnPY1U39bAwVabpybk5kknvs0USu5YF/hHtRwq1EH1LzlCYS2grnH8HzcjmTZeFZ7Rumlc3+WiX4f+Xh5yrns4K6G8ztjAjZINJ3pPDOoiw=
+	t=1711339091; cv=none; b=g0mjMZK1ZYCTyhs5Vb3L4rR9SchP7gV3Gy0B6DieBVfrRyY4HLBPS2SicENjuZK9ro+oAOGVVwr1GG1KNq9kHnXSfuoXrNpVig5OJ17JZgbi+1PGB2nJ2S1YvNx0olXrufCH7Y8RGeQOBvwH81xsayqaEdZVqyb1pUZRPcMeebM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711339034; c=relaxed/simple;
-	bh=l/1f1MNGF9BfhwGztXj3ec5Igc6dItWl5AjiV9qkAQ4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=isEMXOgpuE7UXZFaIFrxRabR6dtwrtKLrUGmpCyj3mbg7EaNOrYBdxZfIVS8mCmfeolwI4/VmiXyKxqLhhahO6puubJPYnVzBeA9FwMaSZ6US+NGAuRxt94XvkI98uIM1rp+9HVlKwEn1diwp2G8NtY1gOizsEHPDtqUwbjoUzw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=E2qN+W8S; arc=none smtp.client-ip=90.155.50.34
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=IU3Dlzl1rVEiTSxVgVMPzC88N9hT6GmfL1S9I/2JgO0=; b=E2qN+W8S3ZU5YGOKUUO9cBO5zJ
-	B4vbyccJGdv9eLdysd3ijpij1NV9BRohz3uOmTf4NlnOEmU9plOLo3xO0baioyQzSVdsbO4iKAN1J
-	3ctvmi7R3l4FWCQXAUEao1GPS8qQVI2oQOdPAuQNr6hXnl6I6vmm2j+3NoCxKKsDqY4qOWeiCgteg
-	8gZJivN4pdxgLg2bOOZeUKG3WvLwqaEN6B80ItvTZkmoNGUDCORSFQ1vrAakpYtWx11ik/dTS6kqw
-	sgoio6lafIToR7obrEZm5aMJU2MZ+TQZXFKI9Gm8Bv3pifGAjRp1U8Ab4CuAHnnl72Gs0h/IVT5DO
-	wg4LmchQ==;
-Received: from willy by casper.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1robSM-0000000FbhS-0cGD;
-	Mon, 25 Mar 2024 03:57:06 +0000
-Date: Mon, 25 Mar 2024 03:57:06 +0000
-From: Matthew Wilcox <willy@infradead.org>
-To: Liu Shixin <liushixin2@huawei.com>
-Cc: stable@vger.kernel.org, Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Sasha Levin <sashal@kernel.org>,
-	Dan Williams <dan.j.williams@intel.com>,
-	Naoya Horiguchi <n-horiguchi@ah.jp.nec.com>,
-	linux-kernel@vger.kernel.org, linux-mm@kvack.org
-Subject: Re: [PATCH stable-5.10] mm/memory-failure: fix an incorrect use of
- tail pages
-Message-ID: <ZgD2EvkzS1Uz5wy6@casper.infradead.org>
-References: <20240307124841.2838010-1-liushixin2@huawei.com>
- <026db58d-feea-8191-616a-3e6dca592786@huawei.com>
+	s=arc-20240116; t=1711339091; c=relaxed/simple;
+	bh=qmHtWDM22Y7Pif9OF/b0d7AyT0SLY8IGS1SO0qYxiss=;
+	h=Message-ID:Date:MIME-Version:Cc:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=O7VloOFY09XTYr/xaAgw0N/7bLxi/7Y0g7O1CrLfRECqxOTgJpHcDAzVmjKNdscrFgf3629ZX0tPmJgXEfLx/Lu+35W9QBMv9azFBaYgaUgs+fFYoDw0Fkv+KtdbPxASaADwuGjqe8RIQsKi2mGcBnjw7b+XEnOc2rsBc1Laefs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=W+I63U7l; arc=none smtp.client-ip=192.198.163.12
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1711339090; x=1742875090;
+  h=message-id:date:mime-version:cc:subject:to:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=qmHtWDM22Y7Pif9OF/b0d7AyT0SLY8IGS1SO0qYxiss=;
+  b=W+I63U7l/Xf48kqbhgMmcDLBCpOjAnZkJZldJERZZ+DjH3mRsFoNyA6F
+   G4ScFR1SrBpFv3g4GXNWB76ZjRqHmAJHrvvdJa3Q7x9ZqmdImB8qoHrIn
+   xn92vL7d6x35LVblpNWVt7lj1+sI+2e9DKHHUhgb5kH2CvnoLnXLRRbqB
+   3LQO47ib6O+J/xKHtW3TRa7CFWzEC2De8w0FLeeNh4L54WS4S1eyN5anp
+   j5pnbSS0iqPDVH7+LMrad2VosuhbbJwmNfMNPvQAe/Vp9dUl1HvFj7mwf
+   Ahjud2u0hL75pGZ2ObC19i/i1bDFFvTDdwi1J/qEsR808IHoPD6uRHRMG
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11023"; a="10094402"
+X-IronPort-AV: E=Sophos;i="6.07,152,1708416000"; 
+   d="scan'208";a="10094402"
+Received: from orviesa008.jf.intel.com ([10.64.159.148])
+  by fmvoesa106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Mar 2024 20:58:10 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,152,1708416000"; 
+   d="scan'208";a="16147457"
+Received: from allen-box.sh.intel.com (HELO [10.239.159.127]) ([10.239.159.127])
+  by orviesa008.jf.intel.com with ESMTP; 24 Mar 2024 20:58:06 -0700
+Message-ID: <2ddd01fb-ec7d-4a7e-984b-31da78211f91@linux.intel.com>
+Date: Mon, 25 Mar 2024 11:57:15 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <026db58d-feea-8191-616a-3e6dca592786@huawei.com>
+User-Agent: Mozilla Thunderbird
+Cc: baolu.lu@linux.intel.com, Kevin Tian <kevin.tian@intel.com>,
+ Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
+ Robin Murphy <robin.murphy@arm.com>,
+ Jean-Philippe Brucker <jean-philippe@linaro.org>,
+ Nicolin Chen <nicolinc@nvidia.com>, Yi Liu <yi.l.liu@intel.com>,
+ Jacob Pan <jacob.jun.pan@linux.intel.com>,
+ Joel Granados <j.granados@samsung.com>, iommu@lists.linux.dev,
+ virtualization@lists.linux-foundation.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 3/8] iommufd: Add fault and response message
+ definitions
+Content-Language: en-US
+To: Jason Gunthorpe <jgg@ziepe.ca>
+References: <20240122073903.24406-1-baolu.lu@linux.intel.com>
+ <20240122073903.24406-4-baolu.lu@linux.intel.com>
+ <20240308175007.GW9225@ziepe.ca>
+ <43ef5e3f-8a8e-4765-8025-b8207fd05f91@linux.intel.com>
+ <20240322170410.GH66976@ziepe.ca>
+From: Baolu Lu <baolu.lu@linux.intel.com>
+In-Reply-To: <20240322170410.GH66976@ziepe.ca>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Mon, Mar 25, 2024 at 11:36:49AM +0800, Liu Shixin wrote:
-> Hi,
+On 3/23/24 1:04 AM, Jason Gunthorpe wrote:
+>>>> +struct iommu_hwpt_pgfault {
+>>>> +	__u32 size;
+>>>> +	__u32 flags;
+>>>> +	__u32 dev_id;
+>>>> +	__u32 pasid;
+>>>> +	__u32 grpid;
+>>>> +	__u32 perm;
+>>>> +	__u64 addr;
+>>>> +};
+>>> Do we need an addr + size here? I've seen a few things where I wonder
+>>> if that might become an enhancment someday.
+>> I am not sure. The page size is not part of ATS/PRI. Can you please
+>> elaborate a bit about how the size could be used? Perhaps I
+>> misunderstood here?
+> size would be an advice how much data the requestor is expecting to
+> fetch. Eg of the PRI initiator knows it is going to do a 10MB transfer
+> it could fill in 10MB and the OS could pre-fault in 10MB of IOVA.
 > 
-> After backport commit c79c5a0a00a9 ("mm/memory-failure: check the mapcount of the precise page"),
-> 
-> I got an error message as written on the patch. The problem can be fixed by the patch or just revert.
-> 
-> Now I prefer to revert because I think it is related to folio and no impact in stable, or maybe I'm wrong.
+> It is not in the spec, it may never be in the spec, but it seems like
+> it would be good to consider it, at least make sure we have
+> compatability to add it later.
 
-I checked out what is going wrong here, and Liu Shixin is correct.
+Thanks for the explanation. It sounds reasonable. I will take it and add
+some comments to explain the motivation as you described above.
 
-Commit c79c5a0a00a9 was incorrectly backported to v5.10 and
-commit 70168fdc743b changees the page passed to try_to_unmap().
-It now passes the tail page, and should always have passed hpage.
-Please apply the patch below to v5.10 (and any other trees that
-c79c5a0a00a9 got backported to).
-
-> 
-> Thanks,
-> 
-> 
-> On 2024/3/7 20:48, Liu Shixin wrote:
-> > When backport commit c79c5a0a00a9 to 5.10-stable, there is a mistake change.
-> > The head page instead of tail page should be passed to try_to_unmap(),
-> > otherwise unmap will failed as follows.
-> >
-> >  Memory failure: 0x121c10: failed to unmap page (mapcount=1)
-> >  Memory failure: 0x121c10: recovery action for unmapping failed page: Ignored
-> >
-> > Fixes: 70168fdc743b ("mm/memory-failure: check the mapcount of the precise page")
-> > Signed-off-by: Liu Shixin <liushixin2@huawei.com>
-> > ---
-> >  mm/memory-failure.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> >
-> > diff --git a/mm/memory-failure.c b/mm/memory-failure.c
-> > index f320ff02cc19..dba2936292cf 100644
-> > --- a/mm/memory-failure.c
-> > +++ b/mm/memory-failure.c
-> > @@ -1075,7 +1075,7 @@ static bool hwpoison_user_mappings(struct page *p, unsigned long pfn,
-> >  				unmap_success = false;
-> >  			}
-> >  		} else {
-> > -			unmap_success = try_to_unmap(p, ttu);
-> > +			unmap_success = try_to_unmap(hpage, ttu);
-> >  		}
-> >  	}
-> >  	if (!unmap_success)
-> 
-> 
+Best regards,
+baolu
 
