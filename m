@@ -1,207 +1,130 @@
-Return-Path: <linux-kernel+bounces-118016-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-118017-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id DB15288B263
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 22:11:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 7375388B266
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 22:11:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 90BC32E6767
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 21:11:14 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2EAC62E694E
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 21:11:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 83E4A7173A;
-	Mon, 25 Mar 2024 21:10:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DC6146D1CE;
+	Mon, 25 Mar 2024 21:10:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Wk0pUGBB"
-Received: from mail-wm1-f45.google.com (mail-wm1-f45.google.com [209.85.128.45])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="OIBlQ7rS"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.16])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AA0A45BACF;
-	Mon, 25 Mar 2024 21:10:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E96EF5BACF;
+	Mon, 25 Mar 2024 21:10:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.16
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711401020; cv=none; b=bGmQDlxAkvagSaWmTz+WtpN3wODMUzz7hQfjKh9Thz0ym70L9ymXFozvlIaKkykZfqJZAxuBJiCFMdiOyXfeLYR5zcD26qp925ytaDxtU5maEUcq4mNBu9Px3MtuJEiOCf9pKAmNMQQxnEhOU+q3/xhsIbrk8Z7uPthqRoDARZM=
+	t=1711401037; cv=none; b=e1jU+Nh7WC3GX2VuOeB5gst+udlddH+ElegtusnbLz7MKCzGNCZqN5oas4TZGnM/3hUzokXRqxMN67E5isE6QS/tkvzvBAwGQDEQ0QXWWr73qnZtr5C7eS+3LAcnDFlf0u5I6UsETmT9jMb+7uz2o0hDv3Z4lFqOkgyOY/lOfeU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711401020; c=relaxed/simple;
-	bh=sCh/0SN7MH569zUkTqSnKfaRS1rQLp/YzuaMSAPp7s8=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=pszpKTXwMiBmv3oBHrRewIW1jzbD161bMzOLd+rk5PyJZ1K5iEIRzTT0bIuL0+iIM976AJ8yA3o2k19UfTAZ5uibPGxbkMgWZZz025Vx2ElnK/YlpywrhMqL38wuF8T+7U9krOkXrjNtcyurS/n3aieYGkHxGq3ALLxx0lBGyNA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Wk0pUGBB; arc=none smtp.client-ip=209.85.128.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f45.google.com with SMTP id 5b1f17b1804b1-4148c73255eso3506155e9.0;
-        Mon, 25 Mar 2024 14:10:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711401017; x=1712005817; darn=vger.kernel.org;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=VGEtC9VmIyJE7VU6ssd2fF9DrY93wiaDpfh+Fxx4nJA=;
-        b=Wk0pUGBBiki73om8ZqbRuAkq80hK5jNBSUN6AyaNAutU6KxHoaLj5bUai2HXXJjMld
-         2oyei/Bv9hcZL8FaJ1mcrwo78ACgTi0uV5c7cbiiXo514PmeFM/QKKAngKYiBNIX7JAt
-         /7ciSFWPcBdUy06MOgsAJ904YBLtHzG3HVEI0fH80jm8/aSh0u861QQMPxWuUrNsHpHw
-         DA/KeYdA4+cxNVPm+zHBwxCwU3PvwCCKVX0u4z7pR0s335VmoU9Hj+GX7NP63XwPIsew
-         OqQxVdlvZf++Od8W2NyvDDO+TI073Y+ZuFeL15Mpt66EnVNZ+kMTDA3fMXh6lb7I1qCe
-         8ZiQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711401017; x=1712005817;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=VGEtC9VmIyJE7VU6ssd2fF9DrY93wiaDpfh+Fxx4nJA=;
-        b=PVwJQEDyTGNbAUkAjJ5Y+HSta5r/ve/SSy3xFlLnf3MTNljKZ6uum3v25NL+x5/jry
-         SiHxt7tAvQz3qoR+mGL98FlqJyI42hu9PSkSTvQYvs71YogfAMKxuBwJHz5TqAoJJnbJ
-         EcsKq6xVwRu/vAEpXOyjY5tVcMkzdeF1fVNbOr8Pv/4jSOoIaqE57n1ELhCD7vfikdFV
-         3opa8O0MX2fNKn8g7d6NCKUceFnYu4HuFM8AEsEXu+2rDFG+OcTcLk5g3gkS+57qPD3S
-         gynUnTbYzKCVw9XSQUa6UZw2hjvjW+GAfX6KX9OFw+zJJU6An6kY9ifAkSttTBD1Sshi
-         bIaA==
-X-Forwarded-Encrypted: i=1; AJvYcCUeWa9IzzVyaLMuo92IAFz/JA9tdHIga8RgaDIGChxngsG+YRJsoOeOzyEMjAVXqHcg88tEbMHN/S3BypoQiBnfi6N5M6gC6DD7/igoQpID4upyxSXIyrzhf434JOv/BwRCRVuJRWXeXA==
-X-Gm-Message-State: AOJu0YxPQmQb0Oy4XiqY1qcjurH/jHDluEPIrzmQjFVZxHSoBLUSbZLd
-	HR216m089L1Ue3jI8VDjEEnK56VqMTaPoxzALSXmveGPiTd36CsH
-X-Google-Smtp-Source: AGHT+IHGroIo6ERn3UACocSiJ9WfFMGughDyjwCI0sGpKzQMBRpQryv/QV+raqs/d3JR/ZOmehBCyw==
-X-Received: by 2002:a05:600c:216:b0:413:eb74:fe46 with SMTP id 22-20020a05600c021600b00413eb74fe46mr6071381wmi.34.1711401016909;
-        Mon, 25 Mar 2024 14:10:16 -0700 (PDT)
-Received: from [127.0.1.1] (2a02-8389-41cf-e200-36af-6d49-8348-9a76.cable.dynamic.v6.surfer.at. [2a02:8389:41cf:e200:36af:6d49:8348:9a76])
-        by smtp.gmail.com with ESMTPSA id n39-20020a05600c502700b004148c3685ffsm1520768wmr.3.2024.03.25.14.10.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 Mar 2024 14:10:16 -0700 (PDT)
-From: Javier Carrasco <javier.carrasco.cruz@gmail.com>
-Date: Mon, 25 Mar 2024 22:10:11 +0100
-Subject: [PATCH v2 4/4] dt-bindings: rtc: nxp,lpc1788-rtc: convert to
- dtschema
+	s=arc-20240116; t=1711401037; c=relaxed/simple;
+	bh=bD9EHdp5oUi2hIVxQ11FjGnl4+h7/y9I/u/Wkxfttt0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=VZlA4gvDe8SiDvPofwuKmOgbiePNLLI2uAbOzw3qTjbqgPJebWGBf+rjSd8rdOshzO7gbEwpv8BIikYSrqnHw37FS8DAPBFXhhpMsUlM3UqvW5U1QVlrsJE2IXHpkeuj7L1Xr0h1bkb/1QnftRrj7e7XREfXwT3d8PF5ZLZsRdM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=OIBlQ7rS; arc=none smtp.client-ip=192.198.163.16
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1711401035; x=1742937035;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:content-transfer-encoding:in-reply-to;
+  bh=bD9EHdp5oUi2hIVxQ11FjGnl4+h7/y9I/u/Wkxfttt0=;
+  b=OIBlQ7rS5cozP0fkV+L4WWLXTYMuCMLnCbUMvyQpyYPcWx4/04svAuqP
+   yMI6fZwSGiZ3xgAU43RLS2E5OzyqbUo9oNRw/H8IN/2CCsE/4NRsH0duH
+   k6L1Ont5+LHn9RHIrGkQgD2qoFR7PNTT8ZYjDtxl20Et4SpbET3NrZGrB
+   Z70SLy7xL528SxHCmIIhbd4/Ffp2nvJed5BehQEjUQJS+qzDK8AaqSmhZ
+   bCfW4eHHrNIyUCRfrEXn2iIU1h1vravQHYyMIRF2A5wpk/8vbk1r4tOTm
+   GM2/IMg5QnQ2or+JfxK80IKRa9aOOfaHgbJiMt4HAC5l4hfpAxhTdzMWs
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11024"; a="7024484"
+X-IronPort-AV: E=Sophos;i="6.07,154,1708416000"; 
+   d="scan'208";a="7024484"
+Received: from fmviesa008.fm.intel.com ([10.60.135.148])
+  by fmvoesa110.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Mar 2024 14:10:34 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,154,1708416000"; 
+   d="scan'208";a="15825643"
+Received: from ls.sc.intel.com (HELO localhost) ([172.25.112.31])
+  by fmviesa008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Mar 2024 14:10:33 -0700
+Date: Mon, 25 Mar 2024 14:10:33 -0700
+From: Isaku Yamahata <isaku.yamahata@intel.com>
+To: "Huang, Kai" <kai.huang@intel.com>
+Cc: "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"Edgecombe, Rick P" <rick.p.edgecombe@intel.com>,
+	"Yamahata, Isaku" <isaku.yamahata@intel.com>,
+	"Zhang, Tina" <tina.zhang@intel.com>,
+	"Yuan, Hang" <hang.yuan@intel.com>,
+	"seanjc@google.com" <seanjc@google.com>,
+	"Chen, Bo2" <chen.bo@intel.com>,
+	"sagis@google.com" <sagis@google.com>,
+	"isaku.yamahata@gmail.com" <isaku.yamahata@gmail.com>,
+	"Aktas, Erdem" <erdemaktas@google.com>,
+	"pbonzini@redhat.com" <pbonzini@redhat.com>,
+	isaku.yamahata@linux.intel.com
+Subject: Re: [PATCH v19 130/130] RFC: KVM: x86, TDX: Add check for
+ KVM_SET_CPUID2
+Message-ID: <20240325211033.GI2357401@ls.amr.corp.intel.com>
+References: <cover.1708933498.git.isaku.yamahata@intel.com>
+ <d394938197044b40bbe6d9ce2402f72a66a99e80.1708933498.git.isaku.yamahata@intel.com>
+ <e1eb51e258138cd145ec9a461677304cb404cc43.camel@intel.com>
+ <cfe0def93375acf0459f891cc77cb68d779bd08c.camel@intel.com>
+ <f019df484b2fb636b34f64b1126afa7d2b086c88.camel@intel.com>
+ <bea6cb485ba67f0160c6455c77cf75e5b6f8eaf8.camel@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240325-rtc-yaml-v2-4-ff9f68f43dbc@gmail.com>
-References: <20240325-rtc-yaml-v2-0-ff9f68f43dbc@gmail.com>
-In-Reply-To: <20240325-rtc-yaml-v2-0-ff9f68f43dbc@gmail.com>
-To: Alexandre Belloni <alexandre.belloni@bootlin.com>, 
- Rob Herring <robh@kernel.org>, 
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
- Conor Dooley <conor+dt@kernel.org>, Baruch Siach <baruch@tkos.co.il>
-Cc: linux-rtc@vger.kernel.org, devicetree@vger.kernel.org, 
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
- Javier Carrasco <javier.carrasco.cruz@gmail.com>
-X-Mailer: b4 0.14-dev
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1711401010; l=2986;
- i=javier.carrasco.cruz@gmail.com; s=20240312; h=from:subject:message-id;
- bh=sCh/0SN7MH569zUkTqSnKfaRS1rQLp/YzuaMSAPp7s8=;
- b=6R9l6ygvPscEyjE4CGScDoU+15JmPTtf8S09nBgY79mYNNOW8MuR1i7FbWVW6UogNFnlzdrHB
- u3FW9fWKirvCjn3A7AywBDl3Iw0u11JeqYAspyEXKUMCgx05zKSpzc0
-X-Developer-Key: i=javier.carrasco.cruz@gmail.com; a=ed25519;
- pk=lzSIvIzMz0JhJrzLXI0HAdPwsNPSSmEn6RbS+PTS9aQ=
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <bea6cb485ba67f0160c6455c77cf75e5b6f8eaf8.camel@intel.com>
 
-Convert existing binding to dtschema to support validation.
+On Mon, Mar 25, 2024 at 11:14:21AM +0000,
+"Huang, Kai" <kai.huang@intel.com> wrote:
 
-This is a direct conversion with no additions.
+> On Fri, 2024-03-22 at 16:06 +0000, Edgecombe, Rick P wrote:
+> > On Fri, 2024-03-22 at 07:10 +0000, Huang, Kai wrote:
+> > > > I see that this was suggested by Sean, but can you explain the
+> > > > problem
+> > > > that this is working around? From the linked thread, it seems like
+> > > > the
+> > > > problem is what to do when userspace also calls SET_CPUID after
+> > > > already
+> > > > configuring CPUID to the TDX module in the special way. The choices
+> > > > discussed included:
+> > > > 1. Reject the call
+> > > > 2. Check the consistency between the first CPUID configuration and
+> > > > the
+> > > > second one.
+> > > > 
+> > > > 1 is a lot simpler, but the reasoning for 2 is because "some KVM
+> > > > code
+> > > > paths rely on guest CPUID configuration" it seems. Is this a
+> > > > hypothetical or real issue? Which code paths are problematic for
+> > > > TDX/SNP?
+> > > 
+> > > There might be use case that TDX guest wants to use some CPUID which
+> > > isn't handled by the TDX module but purely by KVM.  These (PV) CPUIDs
+> > > need to be
+> > > provided via KVM_SET_CPUID2.
+> > 
+> > Right, but are there any needed today? 
+> > 
+> 
+> I am not sure.  Isaku may know better?
 
-Signed-off-by: Javier Carrasco <javier.carrasco.cruz@gmail.com>
----
- .../devicetree/bindings/rtc/nxp,lpc1788-rtc.txt    | 21 --------
- .../devicetree/bindings/rtc/nxp,lpc1788-rtc.yaml   | 60 ++++++++++++++++++++++
- 2 files changed, 60 insertions(+), 21 deletions(-)
-
-diff --git a/Documentation/devicetree/bindings/rtc/nxp,lpc1788-rtc.txt b/Documentation/devicetree/bindings/rtc/nxp,lpc1788-rtc.txt
-deleted file mode 100644
-index 3c97bd180592..000000000000
---- a/Documentation/devicetree/bindings/rtc/nxp,lpc1788-rtc.txt
-+++ /dev/null
-@@ -1,21 +0,0 @@
--NXP LPC1788 real-time clock
--
--The LPC1788 RTC provides calendar and clock functionality
--together with periodic tick and alarm interrupt support.
--
--Required properties:
--- compatible	: must contain "nxp,lpc1788-rtc"
--- reg		: Specifies base physical address and size of the registers.
--- interrupts	: A single interrupt specifier.
--- clocks	: Must contain clock specifiers for rtc and register clock
--- clock-names	: Must contain "rtc" and "reg"
--  See ../clocks/clock-bindings.txt for details.
--
--Example:
--rtc: rtc@40046000 {
--	compatible = "nxp,lpc1788-rtc";
--	reg = <0x40046000 0x1000>;
--	interrupts = <47>;
--	clocks = <&creg_clk 0>, <&ccu1 CLK_CPU_BUS>;
--	clock-names = "rtc", "reg";
--};
-diff --git a/Documentation/devicetree/bindings/rtc/nxp,lpc1788-rtc.yaml b/Documentation/devicetree/bindings/rtc/nxp,lpc1788-rtc.yaml
-new file mode 100644
-index 000000000000..db900617f1e3
---- /dev/null
-+++ b/Documentation/devicetree/bindings/rtc/nxp,lpc1788-rtc.yaml
-@@ -0,0 +1,60 @@
-+# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/rtc/nxp,lpc1788-rtc.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: NXP LPC1788 real-time clock
-+
-+description:
-+  The LPC1788 RTC provides calendar and clock functionality
-+  together with periodic tick and alarm interrupt support.
-+
-+maintainers:
-+  - Javier Carrasco <javier.carrasco.cruz@gmail.com>
-+
-+allOf:
-+  - $ref: rtc.yaml#
-+
-+properties:
-+  compatible:
-+    const: nxp,lpc1788-rtc
-+
-+  reg:
-+    description:
-+      Base address and length of the register region.
-+    maxItems: 1
-+
-+  clocks:
-+    items:
-+      - description: RTC clock
-+      - description: Register clock
-+
-+  clock-names:
-+    items:
-+      - const: rtc
-+      - const: reg
-+
-+  interrupts:
-+    maxItems: 1
-+
-+required:
-+  - compatible
-+  - reg
-+  - clocks
-+  - clock-names
-+  - interrupts
-+
-+unevaluatedProperties: false
-+
-+examples:
-+  - |
-+    #include <dt-bindings/clock/lpc18xx-ccu.h>
-+
-+    rtc@40046000 {
-+        compatible = "nxp,lpc1788-rtc";
-+        reg = <0x40046000 0x1000>;
-+        clocks = <&creg_clk 0>, <&ccu1 CLK_CPU_BUS>;
-+        clock-names = "rtc", "reg";
-+        interrupts = <47>;
-+    };
-
+It's not needed to boot TD.  The check is safe guard.  The multiple of source of
+cpuids can be inconsistent.
 -- 
-2.40.1
-
+Isaku Yamahata <isaku.yamahata@intel.com>
 
