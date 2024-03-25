@@ -1,132 +1,166 @@
-Return-Path: <linux-kernel+bounces-117682-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-117683-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 900E888AE5D
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 19:33:06 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id EA40C88AE61
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 19:33:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C26C51C6078B
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 18:33:05 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7495F1FA2625
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 18:33:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0D991524D8;
-	Mon, 25 Mar 2024 18:11:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DAC9873163;
+	Mon, 25 Mar 2024 18:13:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b="fS660U1h";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="H+VPet54"
-Received: from wfhigh6-smtp.messagingengine.com (wfhigh6-smtp.messagingengine.com [64.147.123.157])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b="cYD3LThD"
+Received: from mail-io1-f45.google.com (mail-io1-f45.google.com [209.85.166.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A2019C136;
-	Mon, 25 Mar 2024 18:11:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=64.147.123.157
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3E8F262A02
+	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 18:13:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711390309; cv=none; b=dZTvKOorZqio3pgKC7yKrCuZW0u+keft9OpwituVcIQoAjvHs5K4mLDEbe6jnNqxeQD4dN8ODdYqAzx5Q8QAlKsApWQnNWg5ZbP6DQ4avnZx15+O5YI4OgvOsPjSCVGs11St6b53fqX7xsx3lRP8dZwIAFEEOtMWlgIrFOVUTSE=
+	t=1711390385; cv=none; b=WuMF2ZvS49CjE+s48qXLOzwdriIqOCjkS5S2V9TEN9Plqh21uD0IbIKcP4il6ur1cywtWucdAE6QGXBHSLJYFAefuyxRl1OWfB7rJt5+pGGM2ISbIAVu4feOlW1Ggt4hxfttDHx8ibztEetC+3xs/YFtFiN14f7Vb3+Iy8zWpeo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711390309; c=relaxed/simple;
-	bh=VWjCK0A0o0a/wQcdaC/U8lJXJ+TjP1sEl8eLKFH7/Bw=;
-	h=MIME-Version:Message-Id:In-Reply-To:References:Date:From:To:Cc:
-	 Subject:Content-Type; b=Gt7hvCbD3xeDtds0nRlIrX9MyAlx4RctQokne1IKA4NMk6nbdNqbYQV9jbyxb64fOMidTRycW1aEYT/zKwFGZ2thWD3prC4o6kXK1OBwWxtvo/U3lpl2leew8jKs5bT3K9BpmfuSGmMyI54thpexLnN4EprLxqOcQkfcRn/jjC4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de; spf=pass smtp.mailfrom=arndb.de; dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b=fS660U1h; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=H+VPet54; arc=none smtp.client-ip=64.147.123.157
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arndb.de
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-	by mailfhigh.west.internal (Postfix) with ESMTP id 8ED3C18000A9;
-	Mon, 25 Mar 2024 14:11:44 -0400 (EDT)
-Received: from imap51 ([10.202.2.101])
-  by compute5.internal (MEProxy); Mon, 25 Mar 2024 14:11:46 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
-	:cc:content-type:content-type:date:date:from:from:in-reply-to
-	:in-reply-to:message-id:mime-version:references:reply-to:subject
-	:subject:to:to; s=fm1; t=1711390304; x=1711476704; bh=ZOF0LllNEk
-	KwlFc4eVFPUYe1z5e6mKp1Z3VJw8CX4q0=; b=fS660U1hG06tBjiG8AmosLeM/q
-	hTeorddBxLag/Zrf1xyO/FfWBp+7Twp3Cklk/LKdRm/+lq1rQZz9dGiJIplirevn
-	g01k8hHNfbZs67tq8XfM8O8Ir7YUNrjrjvXriGv/0GYfVW2d/UJSEmPaCNtb62IR
-	Tya66B9hoJs/aNBwVkJ/6cmfuAYa0MVAzz8Yz5WWKsSvmk5lMo47gCl+b4WZGufs
-	FtWbrj3AKA12vOFmE7pO9V/dgQYsntI4tYwE+ZrWjeGTpXO39SUXavwlWoX/eXod
-	UE2RObvC29IPd5j7tndSR3+56Jy8ZSQ329r45g4ikN7lIRVEDFKyuWfRVd0w==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-	fm2; t=1711390304; x=1711476704; bh=ZOF0LllNEkKwlFc4eVFPUYe1z5e6
-	mKp1Z3VJw8CX4q0=; b=H+VPet54C3Y7QbMN4Y2/THGlKNi1RQ8lSrCen5xjBCLL
-	GvOr72eh4g45YjvUQ/5YtYLW1AOGcmWZ+AuVmPe8BCv415DHKnogCrH0veC1RzUP
-	4soLf281avDmAu6o2vVquy7wX/pPOYa/cjz2mU96CdaPk3AO5uGkRgnmO8yHdpv1
-	yfhOd+WO9EAZPencMet7UNg86WPUFuzUNsee+X8N2L8zdMT4OB8tVDolLinZT+JR
-	ElfnIjfZikTWSHvSEEPs4tpr0q8xAHqBHBJ/6jRuBNHG+IjH5X2s93lMvm/gPm6D
-	rc/3lA0lJOYRCfA/QqhioypyWr5YC9LYioXWoow66w==
-X-ME-Sender: <xms:X74BZu2tN7xekPZqMjmstbFirCYBYuIE4NS_Aipa0ZYoDcbMTLh0eA>
-    <xme:X74BZhEYak51UNjk1N611INqAXz1a3OPovAHBTVgVffZSwrII8BUVewjxfUHbB4mn
-    HjlTjcMd9bfrm2r-zE>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrudduuddggeelucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepofgfggfkjghffffhvfevufgtsehttdertderredtnecuhfhrohhmpedftehr
-    nhguuceuvghrghhmrghnnhdfuceorghrnhgusegrrhhnuggsrdguvgeqnecuggftrfgrth
-    htvghrnhepffehueegteeihfegtefhjefgtdeugfegjeelheejueethfefgeeghfektdek
-    teffnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheprg
-    hrnhgusegrrhhnuggsrdguvg
-X-ME-Proxy: <xmx:X74BZm7d15nmTR2ONKJhlv31T8duatevTAgzzxKBYSZ4iRsnImAcOA>
-    <xmx:X74BZv2HJTxGR8ksu7SGOKNh-dIO4cSyazLOK8N_zmAYHdnG-lv8Fw>
-    <xmx:X74BZhH5p1M2Y_T48GPkgY5vhVfFNwm6T-0M4q0kNJmgZs3uO-mtCA>
-    <xmx:X74BZo_u3GJhLGwX2s2jnYhlEIV3pCrVDa0qvj1RFw1lkP0FFAJnqw>
-    <xmx:YL4BZkY5RtfvxTBGVyjsSPklDjJbZKwMA_1vxkvxXLhg3P-H24-8kBVlprk>
-Feedback-ID: i56a14606:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-	id 237E3B6008D; Mon, 25 Mar 2024 14:11:43 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.11.0-alpha0-332-gdeb4194079-fm-20240319.002-gdeb41940
+	s=arc-20240116; t=1711390385; c=relaxed/simple;
+	bh=WjGma3kLFLe5YvQWuoHM/Ro3EyqnqLh5sSD/9vJovxg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=HlJj/NKrICc7ZLp0xYl1unh3qoL7VRvHcnuRtiekqMxsgP1j0ZhyUZZ4hc99+hC99BrMc7Y8vYpqbHu5BQri4cHNvD6OyNDP0iJG3pDMBLdJiq1vamfWb8qArO9qG9F1Be+lRAyU39ApTfD7acC89Jisxv79PQ2h5MmYFotgUV0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com; spf=pass smtp.mailfrom=cloudflare.com; dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b=cYD3LThD; arc=none smtp.client-ip=209.85.166.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cloudflare.com
+Received: by mail-io1-f45.google.com with SMTP id ca18e2360f4ac-7cc133f431fso196508539f.1
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 11:13:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloudflare.com; s=google09082023; t=1711390382; x=1711995182; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=wSAZR9Vt2Q5o0+5V5RZYkh5l63Ssoo3HvBsqSbE2JvY=;
+        b=cYD3LThDCY2HRZ4XaJl0qb5/m7/UuUArsxk7q6HSklIa4h77pe6mgREU3xTLq48iLm
+         n0RkZJEO8WKHvNoRK6BwbAtA1p3w/2VSTQzzCDb6k8NN3yXadttYWDOjCjbPfASV4mN/
+         xE4qsdH0N0oIpsyCbvpT4JR4fMH1I9xnDSs5RgBsFSKtLTwszfCTnKRsCFbHWnwkeKEm
+         9n6xY9YxEoFhVNldSNBjQLU7yZ47xgec2937a68Av/BeRKMYU7QudJuXMSRDO1uqZFXM
+         OQfhhvXfHomS7zLGX3XHPy/aOqI0N28+/nLIcvCIWF0UHuAz95awwW4efJUnUPvPhSeK
+         EzmQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711390382; x=1711995182;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=wSAZR9Vt2Q5o0+5V5RZYkh5l63Ssoo3HvBsqSbE2JvY=;
+        b=aMTjzE8Nye2a7tn+PikY/S3UbpNxHmQnrsULQo65I0z85t+NUZLjv7eTsZBUJAe/lG
+         JCBdQW7m4F3ipoEfMYw5eFI0LN0JGeg7nD3OguFKKK33snrXdlZjF0bb8woFNZFebfC2
+         ssi90TSst3SBxPQMoEFtbbiNDeh6iqcC2stHf8PAxcXe4AM5wXzBV2q3Ol0bRBVVAmo5
+         Sq+ubY5ZzZfVg35SfuUvIewVb6p59r0w+UURtfI9BEdDpvfg/ooP4lNTwcPYjAZ4+JJE
+         xWmuMt68RR1Z5jrxZaC/Ad7xyIC/l9536IO/TcUEWdP2htv8ycIdrstA1P8Ahy1/kggH
+         /Afw==
+X-Forwarded-Encrypted: i=1; AJvYcCVQXD2MRfoeDkigb0QO2lto+0n95iBsiwyn/FwR+zeiw5vgeO2injJ0dXfeugem3WuHsHFEURaRGPDA3/4Rmqf4KS2+57ZsbBp1Yx6w
+X-Gm-Message-State: AOJu0YxA+26zMSkVBZSwYM4EF4KXvOZ2KFB8zpLUCKlUYJtJWPfVjB80
+	ERFlyihw4NXcl1VN2WlJBDzsMysnPNErtvWaI7bqk86mE3G7nIpheSbyY1eXnlc=
+X-Google-Smtp-Source: AGHT+IG9xwHF3fNymQJbxJun7y4cLuwksrTJ9sJhMxnIaoGig5IF3zdZeyGfbkfQJnnpy4r1l1tvQQ==
+X-Received: by 2002:a6b:7b0c:0:b0:7cb:f395:47a8 with SMTP id l12-20020a6b7b0c000000b007cbf39547a8mr9179021iop.16.1711390382256;
+        Mon, 25 Mar 2024 11:13:02 -0700 (PDT)
+Received: from CMGLRV3 ([2a09:bac5:9478:4be::79:22])
+        by smtp.gmail.com with ESMTPSA id r14-20020a056638100e00b0047d69cc97d1sm173364jab.40.2024.03.25.11.13.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 25 Mar 2024 11:13:01 -0700 (PDT)
+Date: Mon, 25 Mar 2024 13:12:59 -0500
+From: Frederick Lawler <fred@cloudflare.com>
+To: Ojaswin Mujoo <ojaswin@linux.ibm.com>
+Cc: Theodore Ts'o <tytso@mit.edu>, linux-ext4@vger.kernel.org,
+	Ritesh Harjani <ritesh.list@gmail.com>,
+	linux-kernel@vger.kernel.org, Jan Kara <jack@suse.cz>,
+	glandvador@yahoo.com, bugzilla@eyal.emu.id.au,
+	kernel-team@cloudflare.com
+Subject: Re: [PATCH 0/1] Fix for recent bugzilla reports related to long
+ halts during block allocation
+Message-ID: <ZgG+q0dujYQR8/0q@CMGLRV3>
+References: <cover.1702455010.git.ojaswin@linux.ibm.com>
+ <170476879011.637731.13228432208887255974.b4-ty@mit.edu>
+ <ZfsUaicHDpOtkkVv@CMGLRV3>
+ <Zf1B1cPj/aO21pjZ@li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-Id: <64804d62-1946-4cde-aea1-e8bab0860bfc@app.fastmail.com>
-In-Reply-To: <20240325064023.2997-1-adrian.hunter@intel.com>
-References: <20240325064023.2997-1-adrian.hunter@intel.com>
-Date: Mon, 25 Mar 2024 19:11:21 +0100
-From: "Arnd Bergmann" <arnd@arndb.de>
-To: "Adrian Hunter" <adrian.hunter@intel.com>,
- "Thomas Gleixner" <tglx@linutronix.de>
-Cc: "Peter Zijlstra" <peterz@infradead.org>,
- "Dave Hansen" <dave.hansen@linux.intel.com>,
- "John Stultz" <jstultz@google.com>, "H. Peter Anvin" <hpa@zytor.com>,
- "Alexander Gordeev" <agordeev@linux.ibm.com>,
- "Vincenzo Frascino" <vincenzo.frascino@arm.com>, linux-s390@vger.kernel.org,
- x86@kernel.org, "Aneesh Kumar K.V" <aneesh.kumar@kernel.org>,
- "Ingo Molnar" <mingo@redhat.com>,
- "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
- "Christian Borntraeger" <borntraeger@linux.ibm.com>,
- "Vasily Gorbik" <gor@linux.ibm.com>, "Heiko Carstens" <hca@linux.ibm.com>,
- "Nicholas Piggin" <npiggin@gmail.com>, "Borislav Petkov" <bp@alien8.de>,
- "Andy Lutomirski" <luto@kernel.org>, "Bjorn Helgaas" <bhelgaas@google.com>,
- "Anna-Maria Gleixner" <anna-maria@linutronix.de>,
- "Stephen Boyd" <sboyd@kernel.org>, "Randy Dunlap" <rdunlap@infradead.org>,
- linux-kernel@vger.kernel.org, "Sven Schnelle" <svens@linux.ibm.com>,
- linuxppc-dev@lists.ozlabs.org
-Subject: Re: [PATCH V2 00/19] timekeeping: Handle potential multiplication overflow
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <Zf1B1cPj/aO21pjZ@li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com>
 
-On Mon, Mar 25, 2024, at 07:40, Adrian Hunter wrote:
->
-> Extend the facility also to VDSO, dependent on new config option
-> GENERIC_VDSO_OVERFLOW_PROTECT which is selected by x86 only, so other
-> architectures are not affected. The result is a calculation that has
-> similar performance as before. Most machines showed performance benefit,
-> except Skylake-based hardware such as Intel Kaby Lake which was seen <1%
-> worse.
+On Fri, Mar 22, 2024 at 02:01:17PM +0530, Ojaswin Mujoo wrote:
+> On Wed, Mar 20, 2024 at 11:52:58AM -0500, Frederick Lawler wrote:
+> > Hi Theodore and Ojaswin,
+> > 
+> > On Mon, Jan 08, 2024 at 09:53:18PM -0500, Theodore Ts'o wrote:
+> > > 
+> > > On Fri, 15 Dec 2023 16:49:49 +0530, Ojaswin Mujoo wrote:
+> > > > This patch intends to fix the recent bugzilla [1] report where the
+> > > > kworker flush thread seemed to be taking 100% CPU utilizationa and was
+> > > > slowing down the whole system. The backtrace indicated that we were
+> > > > stuck in mballoc allocation path. The issue was only seen kernel 6.5+
+> > > > and when ext4 was mounted with -o stripe (or stripe option was
+> > > > implicitly added due us mkfs flags used).
+> > > > 
+> > > > [...]
+> > > 
+> > > Applied, thanks!
+> > 
+> > I backported this patch to at least 6.6 and tested on our fleet of
+> > software RAID 0 NVME SSD nodes. This change worked very nicely
+> > for us. We're interested in backporting this to at least 6.6.
+> > 
+> > I tried looking at xfstests, and didn't really see a good match
+> > (user error?) to validate the fix via that. So I'm a little unclear what
+> > the path forward here is.
+> > 
+> > Although we experienced this issue in 6.1, I didn't backport to 6.1 and
+> > test to verify this also works there, however, setting stripe to 0 did in
+> > the 6.1 case.
+> > 
+> > Best,
+> > Fred
+> 
+> Hi Fred,
+> 
+> If I understand correctly, you are looking for a test case which you
+> could use to confirm if the issue exists and if the backport is solving
+> it, right?
 
-I've read through the series, and this pretty much all makes sense,
-nice work!
+Not quite. I made an assumption that having a test was a requirement
+for backporting the patch. I know some other file systems prefer a few
+loops of kdevops to backport patches, and was curious if that's a similar
+flow for ext4. I only backported the patch to 6.6 and ensured that our
+affected nodes perform as expected with it.
 
-There are a few patches that just rearrange the local variable
-declarations to save a few lines, and I don't see those as an
-improvement, but they also don't hurt aside from distracting
-slightly from the real changes.
+> 
+> Actually, I was never able to replicate this at my end so I had to rely
+> on people hitting the bug to confirm if it works. I did set out to write
+> a testcase that could help us reliably replicate this issue but it needs
+> a very specially crafted FS that is a bit difficult to achieve from user
+> space. I was using debugfs to create an FS that could hit it but I kept 
+> running into issues where it won't mount etc. Maybe there's a better 
+> way to craft such an FS that I'm not aware of.
+> 
+> One more option is that maybe we can have KUnit test for this in the
+> mballoc code but I'd need to read some more about the kunit
+> infrastructure to see if it's possible/feasible.
+> 
 
-     Arnd
+I think kunit is an interesting idea. One thing to keep in mind is that
+mocking is going to be the real problem with that approach. And with
+more mocking may mean more brittle tests.
+
+> Regards,
+> ojaswin
+> > 
+> > > 
+> > > [1/1] ext4: fallback to complex scan if aligned scan doesn't work
+> > >       commit: a26b6faf7f1c9c1ba6edb3fea9d1390201f2ed50
+> > > 
+> > > Best regards,
+> > > -- 
+> > > Theodore Ts'o <tytso@mit.edu>
 
