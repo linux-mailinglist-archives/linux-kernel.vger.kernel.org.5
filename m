@@ -1,104 +1,113 @@
-Return-Path: <linux-kernel+bounces-116769-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-116770-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id CAA1788A3B4
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 15:09:22 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 825E988A3B6
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 15:09:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 699D61F3BC41
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 14:09:22 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0F24C1F3DA37
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 14:09:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A904814A4E0;
-	Mon, 25 Mar 2024 10:42:28 +0000 (UTC)
-Received: from abb.hmeau.com (abb.hmeau.com [144.6.53.87])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5DDEC14A60B;
+	Mon, 25 Mar 2024 10:42:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="VOh6MWc0"
+Received: from out30-100.freemail.mail.aliyun.com (out30-100.freemail.mail.aliyun.com [115.124.30.100])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DD47816F263;
-	Mon, 25 Mar 2024 09:47:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=144.6.53.87
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 492CB1870CB;
+	Mon, 25 Mar 2024 09:48:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.100
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711360065; cv=none; b=jHDwmjN8q5z0a85UFkdhpRysQpUDmMdQ1H+Q3QzUTZbvhK0nP7hwMHlH656R6ILnM9mW2BeasEddFFryyE73SwvxFLvCA5h6tundxhctvoVKHNOmOvONNI8bbRcxcggwFITFbP/5F1hJSjlBxoKsfQb8JNLV88E99JXsyEO3bSM=
+	t=1711360090; cv=none; b=PmaUjRxVfQdb6P8NYwCiyI+mvVfScVeFfG2te0vpvaWP4RkKQZuzG6zLRG1woG6CJkUxLrAZjUgqOLJiZKzwCHmZSEaER0WdgT9XvrT5PS3mMwaL6Z1aV4PyH1l3P2HGPyZMjt7U/ifsGMoReYX7Ns+elW3h9CRGyH+iIxEkn7o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711360065; c=relaxed/simple;
-	bh=USPymelYD+iIwe8DOvv3myV5AkRbTm81BeyP5oHuoTQ=;
-	h=Date:From:To:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=hT8i/zkNwa4bI9Hu3MzgMjsqne4B9HrfKgTqBtfC4cnEzVgHLxtR34Wpp8yFTYQYSpWvJUwft9+fXxzu6EtaB9S8lgaqZN8n4L4Zg7xGcmewfgaDBegd7KS3MG38CyQ+XJWpwdlR2MD3G6fFJY3cdJ6TrV6vszMPc98NhG3/UeI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au; spf=pass smtp.mailfrom=gondor.apana.org.au; arc=none smtp.client-ip=144.6.53.87
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gondor.apana.org.au
-Received: from loth.rohan.me.apana.org.au ([192.168.167.2])
-	by formenos.hmeau.com with smtp (Exim 4.94.2 #2 (Debian))
-	id 1rogvO-00AWel-LE; Mon, 25 Mar 2024 17:47:27 +0800
-Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Mon, 25 Mar 2024 17:47:43 +0800
-Date: Mon, 25 Mar 2024 17:47:43 +0800
-From: Herbert Xu <herbert@gondor.apana.org.au>
-To: Linus Torvalds <torvalds@linux-foundation.org>,
-	"David S. Miller" <davem@davemloft.net>,
-	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-	Linux Crypto Mailing List <linux-crypto@vger.kernel.org>
-Subject: [GIT PULL] Crypto Fixes for 6.9
-Message-ID: <ZgFIP3x1w294DIxQ@gondor.apana.org.au>
-References: <Yui+kNeY+Qg4fKVl@gondor.apana.org.au>
- <Yzv0wXi4Uu2WND37@gondor.apana.org.au>
- <Y5mGGrBJaDL6mnQJ@gondor.apana.org.au>
- <Y/MDmL02XYfSz8XX@gondor.apana.org.au>
- <ZEYLC6QsKnqlEQzW@gondor.apana.org.au>
- <ZJ0RSuWLwzikFr9r@gondor.apana.org.au>
- <ZOxnTFhchkTvKpZV@gondor.apana.org.au>
- <ZUNIBcBJ0VeZRmT9@gondor.apana.org.au>
- <ZZ3F/Pp1pxkdqfiD@gondor.apana.org.au>
- <ZbstBewmaIfrFocE@gondor.apana.org.au>
+	s=arc-20240116; t=1711360090; c=relaxed/simple;
+	bh=CqL8N3jTBybuBJNQiRBKr+JMOLQvMsgRNLLqDTJ9OJ0=;
+	h=Message-ID:Date:MIME-Version:From:Subject:To:Cc:References:
+	 In-Reply-To:Content-Type; b=DLl+SozkaGbSzGlvMbeZaoMBEQF320Qp7tSPMebuYqvB8K7PkRhqHk2cBBRrZ1gjY2qAhLEg2RyiwyHXvZXt7jOrg1eGR8yFhrfPHFhhE4JVLz2tnL7pFL/7RfLkMj0+xpPWjX9dLApwqjUdizkaWXIXZKxBVk7iYNV95tES31o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=VOh6MWc0; arc=none smtp.client-ip=115.124.30.100
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
+DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=linux.alibaba.com; s=default;
+	t=1711360085; h=Message-ID:Date:MIME-Version:From:Subject:To:Content-Type;
+	bh=QmV+g4GmhsxbZGKeBGO2QlNGUE+VuS1qiEGgbu8EpKw=;
+	b=VOh6MWc0hBgULdgEa8EUijWA92CqIjYcGrrFAmC88UMqwoHbjLwAhFChIhErqVEtGuVaRdw4ZCNfH+jjQ77m0iQWTrYe1++onhtk0t8wpJ5bTANk2n1HmCVr3DjoAvTTEq0sztso/61DJtatEppxUUkdjNGZX+/al2BI+jFXQ3w=
+X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R141e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045170;MF=yaoma@linux.alibaba.com;NM=1;PH=DS;RN=16;SR=0;TI=SMTPD_---0W3EQlKh_1711360081;
+Received: from 30.178.67.255(mailfrom:yaoma@linux.alibaba.com fp:SMTPD_---0W3EQlKh_1711360081)
+          by smtp.aliyun-inc.com;
+          Mon, 25 Mar 2024 17:48:04 +0800
+Message-ID: <6109a3e3-ca88-4a4d-86c5-c4eb0d7f6f9c@linux.alibaba.com>
+Date: Mon, 25 Mar 2024 17:47:58 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZbstBewmaIfrFocE@gondor.apana.org.au>
+User-Agent: Mozilla Thunderbird
+From: Bitao Hu <yaoma@linux.alibaba.com>
+Subject: Re: [PATCHv12 4/4] watchdog/softlockup: report the most frequent
+ interrupts
+To: Thomas Gleixner <tglx@linutronix.de>, dianders@chromium.org,
+ liusong@linux.alibaba.com, akpm@linux-foundation.org, pmladek@suse.com,
+ kernelfans@gmail.com, deller@gmx.de, npiggin@gmail.com,
+ tsbogend@alpha.franken.de, James.Bottomley@HansenPartnership.com,
+ jan.kiszka@siemens.com
+Cc: linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org,
+ linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+ yaoma@linux.alibaba.com
+References: <20240306125208.71803-1-yaoma@linux.alibaba.com>
+ <20240306125208.71803-5-yaoma@linux.alibaba.com> <87zfuofzld.ffs@tglx>
+Content-Language: en-US
+In-Reply-To: <87zfuofzld.ffs@tglx>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Hi Linus:
+Hi, Thomas
 
-The following changes since commit 6a8dbd71a70620c42d4fa82509204ba18231f28d:
+On 2024/3/24 04:43, Thomas Gleixner wrote:
+> On Wed, Mar 06 2024 at 20:52, Bitao Hu wrote:
+>> +	if (__this_cpu_read(snapshot_taken)) {
+>> +		for_each_active_irq(i) {
+>> +			count = kstat_get_irq_since_snapshot(i);
+>> +			tabulate_irq_count(irq_counts_sorted, i, count, NUM_HARDIRQ_REPORT);
+>> +		}
+>> +
+>> +		/*
+>> +		 * We do not want the "watchdog: " prefix on every line,
+>> +		 * hence we use "printk" instead of "pr_crit".
+>> +		 */
+> 
+> You are not providing any justification why the prefix is not
+> wanted. Just saying 'We do not want' does not cut it and who is 'We'. I
+> certainly not.
+> 
+> I really disagree because the prefixes are very useful for searching log
+> files. So not having it makes it harder to filter out for no reason.
+> 
 
-  Revert "crypto: remove CONFIG_CRYPTO_STATS" (2024-03-13 09:49:37 +0800)
 
-are available in the Git repository at:
+Regarding the use of printk() instead of pr_crit(), I have had a
+discussion with Liu Song and Douglas in PATCHv1:
+https://lore.kernel.org/all/CAD=FV=WEEQeKX=ec3Gr-8CKs2K0MaWN3V0-0yOsuret0qcB_AA@mail.gmail.com/
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/herbert/crypto-2.6.git v6.9-p2 
+Please allow me to elaborate on my reasoning. The purpose of the
+report_cpu_status() function I implemented is similar to that of
+print_modules(), show_regs(), and dump_stack(). These functions are
+designed to assist in analyzing the causes of a soft lockup, rather
+than to report that a soft lockup has occurred. Therefore, I think
+that adding the "watchdog: " prefix to every line is redundant and
+not concise. Besides, the existing pr_emerg() in the watchdog.c file
+is already sufficient for searching useful information in the logs.
+The information I added, along with the call tree and other data, is
+located near the line with the "watchdog: " prefix.
 
-for you to fetch changes up to 5a7e89d3315d1be86aff8a8bf849023cda6547f7:
+Are the two reasons I've provided reasonable?
 
-  crypto: iaa - Fix nr_cpus < nr_iaa case (2024-03-22 19:42:20 +0800)
+Best Regards,
 
-----------------------------------------------------------------
-This push fixes a regression that broke iwd as well as a divide by
-zero in iaa.
-----------------------------------------------------------------
-
-Eric Biggers (1):
-      Revert "crypto: pkcs7 - remove sha1 support"
-
-Tom Zanussi (1):
-      crypto: iaa - Fix nr_cpus < nr_iaa case
-
- crypto/asymmetric_keys/mscode_parser.c     |  3 ++
- crypto/asymmetric_keys/pkcs7_parser.c      |  4 ++
- crypto/asymmetric_keys/public_key.c        |  3 +-
- crypto/asymmetric_keys/signature.c         |  2 +-
- crypto/asymmetric_keys/x509_cert_parser.c  |  8 +++
- crypto/testmgr.h                           | 80 ++++++++++++++++++++++++++++++
- drivers/crypto/intel/iaa/iaa_crypto_main.c | 10 ++--
- include/linux/oid_registry.h               |  4 ++
- kernel/module/Kconfig                      |  5 ++
- 9 files changed, 114 insertions(+), 5 deletions(-)
-
-Thanks,
--- 
-Email: Herbert Xu <herbert@gondor.apana.org.au>
-Home Page: http://gondor.apana.org.au/~herbert/
-PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
+	Bitao Hu
 
