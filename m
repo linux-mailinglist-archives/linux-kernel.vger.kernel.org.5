@@ -1,113 +1,292 @@
-Return-Path: <linux-kernel+bounces-117094-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-117090-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4BB9088A6E2
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 16:38:39 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7364088B476
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 23:48:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7D34C1C3C114
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 15:38:38 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AA5EEB41BD1
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 15:38:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 20F4913C699;
-	Mon, 25 Mar 2024 13:13:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5144571B28;
+	Mon, 25 Mar 2024 13:11:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=rjwysocki.net header.i=@rjwysocki.net header.b="lW/8a70L"
-Received: from cloudserver094114.home.pl (cloudserver094114.home.pl [79.96.170.134])
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="e0M1/4s0"
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 345E813AD2A;
-	Mon, 25 Mar 2024 13:13:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=79.96.170.134
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9096B1803D
+	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 13:11:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711372416; cv=none; b=Hm06sln7pI5BHW4kM9djt+65p/Y/ZTemfrYv+Lj5F1LadFJU+bfM/xyXSTFMHg60a04dfSCVIRXGgfYPXs3btIOEb6K6A0lFwXrNnHqnnsKa/Fbs2U68u/mzDV0onc4D7Il+HjPJETO/Be1HwE+vT1CSp2X3O73MIa9ENF7HwdQ=
+	t=1711372269; cv=none; b=cSrFEnzzKN0jbMMtD7CepZGFpoOIzQ8POgUOsBiNCTF5srg7ncpgYTX9yYlNaVEA4kyl+Inj7iucDIUIdSn1YaTvELDavVUFuAmg7a1fIllSl+yEZKdXWrK0ndgP4tGk4/YjY2v1mzhoGUaZEFcagqvMKbInOmxrFKaUzssatEw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711372416; c=relaxed/simple;
-	bh=iQMayPEW8MBkybLIRcF8R/io8VmXpDXSND6ZUdlpDB8=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=XHfpQbk8pf1dnP2kD33WxUfeUYmHEqWWEJc00KB1CkCXLU637FhNOf6PVhJMSkbByq60kY0GZ5HxtSO7PkVWI/IKleBL1lfKHSNW0f+eL4BfoqYX+gXjXim8LrJ+OilbHtABSA6pDQGgaq92mSkA8AybK6YC0pPh5F2QA1kFsYY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rjwysocki.net; spf=pass smtp.mailfrom=rjwysocki.net; dkim=pass (2048-bit key) header.d=rjwysocki.net header.i=@rjwysocki.net header.b=lW/8a70L; arc=none smtp.client-ip=79.96.170.134
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rjwysocki.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rjwysocki.net
-Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
- by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 5.4.0)
- id 96ad974033357c0e; Mon, 25 Mar 2024 14:13:32 +0100
-Received: from kreacher.localnet (unknown [195.136.19.94])
+	s=arc-20240116; t=1711372269; c=relaxed/simple;
+	bh=3q9cgpYnnI8lrkn+Or4lnTKjwL/UU9xOBmE7kuGVDL0=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=te1DwxNka1iikwuone37DuBOPKcKhGFNMhtXCIwlkBHhOIX+YB3ug6EVpcG1yaaTEbuhXC1O4uzhwB9mU9odQ+Gplh00op9ZUBYSopELdutFKC4IM7WDzlZb3XunXG7/f+z4p13sjWJ134sR1oHnsr8XBSYCtJywZDL1KlBJHaY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=e0M1/4s0; arc=none smtp.client-ip=46.235.227.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1711372265;
+	bh=3q9cgpYnnI8lrkn+Or4lnTKjwL/UU9xOBmE7kuGVDL0=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=e0M1/4s0w7Mymmeg+w7KYYJV8QjXFcnQ1cep1iVTNVncy4JNDq6uVx3uea9NiAB/I
+	 tqTv5keLQGQWjQ+Mnz1pXMAIg58uZzdUxoLe1MSLYnCubAFuobP5G7XbTsA4I84+4+
+	 u92qm34NmyOpZ0zFz+ZQkkuiLjAODAxqUBU4D0HB/gAqDPsyV2ycfNLThtiS2LAOSK
+	 QPvp/j9cKnZXOJE7lBuGyHD2U6QRMlE6DENGye1I5d82g4X4a6OnzKedqIiB29/TQb
+	 uvWoHy3GfANBfKiPZ2mMfyYswVOyOYaM7h80qDKFuuGZwindPI9+veclZEizpFaALZ
+	 mQtvIeBP5Nd9A==
+Received: from eldfell (cola.collaboradmins.com [195.201.22.229])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	 key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by cloudserver094114.home.pl (Postfix) with ESMTPSA id 736D566BCBC;
-	Mon, 25 Mar 2024 14:13:31 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=rjwysocki.net;
-	s=dkim; t=1711372411;
-	bh=iQMayPEW8MBkybLIRcF8R/io8VmXpDXSND6ZUdlpDB8=;
-	h=From:To:Cc:Subject:Date;
-	b=lW/8a70LWpVWb8O0S9M9/74eorT3V6uN/akKckrYJdq0gKflPZl/xo6YyS6qTgBfD
-	 yVL83kB4dt8X8h/wrgjfe/jrbagDxFBKTvzmuG9lrRXgrE74j+VkDiAsyRqVAxhRRh
-	 ayOwyV378u7nLDnc+xSrgCYiu8H1LUPoIju1m7nWqDOwMlSzEIsqXUXuOtnWeB/yGR
-	 p4cZfT2mZEJ6N392ImgbjjQQdgHlHGu1j8GnIqPcE9F+6TQgkaed7Xm9Llzabi82wc
-	 kKDxJd2PCzYURWyoWkVqe7xphpJbhXoUzJpmj/+eh8PQUjhwf/06CjnMFVuagzTjm4
-	 U+W87IAzaCLQQ==
-From: "Rafael J. Wysocki" <rjw@rjwysocki.net>
-To: Linux PM <linux-pm@vger.kernel.org>
-Cc: LKML <linux-kernel@vger.kernel.org>,
- Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
- Stanislaw Gruszka <stanislaw.gruszka@linux.intel.com>,
- Daniel Lezcano <daniel.lezcano@linaro.org>,
- Lukasz Luba <lukasz.luba@arm.com>,
- AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-Subject: [PATCH v2 0/3] thermal: More separation between the core and drivers
-Date: Mon, 25 Mar 2024 14:10:28 +0100
-Message-ID: <2331888.ElGaqSPkdT@kreacher>
+	(Authenticated sender: pq)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 98AAE37809D0;
+	Mon, 25 Mar 2024 13:11:04 +0000 (UTC)
+Date: Mon, 25 Mar 2024 15:11:03 +0200
+From: Pekka Paalanen <pekka.paalanen@collabora.com>
+To: Louis Chauvet <louis.chauvet@bootlin.com>
+Cc: Rodrigo Siqueira <rodrigosiqueiramelo@gmail.com>, Melissa Wen
+ <melissa.srw@gmail.com>, =?UTF-8?B?TWHDrXJh?= Canal
+ <mairacanal@riseup.net>, Haneen Mohammed <hamohammed.sa@gmail.com>, Daniel
+ Vetter <daniel@ffwll.ch>, Maarten Lankhorst
+ <maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>,
+ Thomas Zimmermann <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>,
+ arthurgrillo@riseup.net, Jonathan Corbet <corbet@lwn.net>,
+ dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+ jeremie.dautheribes@bootlin.com, miquel.raynal@bootlin.com,
+ thomas.petazzoni@bootlin.com, seanpaul@google.com, marcheu@google.com,
+ nicolejadeyee@google.com
+Subject: Re: [PATCH v5 09/16] drm/vkms: Introduce pixel_read_direction enum
+Message-ID: <20240325151103.0a5f7112.pekka.paalanen@collabora.com>
+In-Reply-To: <20240313-yuv-v5-9-e610cbd03f52@bootlin.com>
+References: <20240313-yuv-v5-0-e610cbd03f52@bootlin.com>
+	<20240313-yuv-v5-9-e610cbd03f52@bootlin.com>
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="UTF-8"
-X-CLIENT-IP: 195.136.19.94
-X-CLIENT-HOSTNAME: 195.136.19.94
-X-VADE-SPAMSTATE: clean
-X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvledruddutddgvdehucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecujffqoffgrffnpdggtffipffknecuuegrihhlohhuthemucduhedtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefhvfevufffkfgggfgtsehtufertddttdejnecuhfhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqnecuggftrfgrthhtvghrnhepgeffhfdujeelhfdtgeffkeetudfhtefhhfeiteethfekvefgvdfgfeeikeeigfehnecuffhomhgrihhnpehkvghrnhgvlhdrohhrghenucfkphepudelhedrudefiedrudelrdelgeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepihhnvghtpeduleehrddufeeirdduledrleegpdhhvghlohepkhhrvggrtghhvghrrdhlohgtrghlnhgvthdpmhgrihhlfhhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqpdhnsggprhgtphhtthhopeejpdhrtghpthhtoheplhhinhhugidqphhmsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtohepshhrihhnihhvrghsrdhprghnughruhhvrggurgeslhhinhhugidrihhnthgvlhdrtghomhdprhgtphhtthhopehsthgr
- nhhishhlrgifrdhgrhhushiikhgrsehlihhnuhigrdhinhhtvghlrdgtohhmpdhrtghpthhtohepuggrnhhivghlrdhlvgiitggrnhhosehlihhnrghrohdrohhrghdprhgtphhtthhopehluhhkrghsiidrlhhusggrsegrrhhmrdgtohhm
-X-DCC--Metrics: v370.home.net.pl 1024; Body=7 Fuz1=7 Fuz2=7
+Content-Type: multipart/signed; boundary="Sig_/pOcUB5TKgO05bc1fdT4reYt";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 
-Hi Everyone,
+--Sig_/pOcUB5TKgO05bc1fdT4reYt
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-This is an update of
+On Wed, 13 Mar 2024 18:45:03 +0100
+Louis Chauvet <louis.chauvet@bootlin.com> wrote:
 
-https://lore.kernel.org/linux-pm/4558384.LvFx2qVVIh@kreacher/
+> The pixel_read_direction enum is useful to describe the reading direction
+> in a plane. It avoids using the rotation property of DRM, which not
+> practical to know the direction of reading.
+> This patch also introduce two helpers, one to compute the
+> pixel_read_direction from the DRM rotation property, and one to compute
+> the step, in byte, between two successive pixel in a specific direction.
+>=20
+> Signed-off-by: Louis Chauvet <louis.chauvet@bootlin.com>
+> ---
+>  drivers/gpu/drm/vkms/vkms_composer.c | 36 ++++++++++++++++++++++++++++++=
+++++++
+>  drivers/gpu/drm/vkms/vkms_drv.h      | 11 +++++++++++
+>  drivers/gpu/drm/vkms/vkms_formats.c  | 30 ++++++++++++++++++++++++++++++
+>  3 files changed, 77 insertions(+)
+>=20
+> diff --git a/drivers/gpu/drm/vkms/vkms_composer.c b/drivers/gpu/drm/vkms/=
+vkms_composer.c
+> index 9254086f23ff..989bcf59f375 100644
+> --- a/drivers/gpu/drm/vkms/vkms_composer.c
+> +++ b/drivers/gpu/drm/vkms/vkms_composer.c
+> @@ -159,6 +159,42 @@ static void apply_lut(const struct vkms_crtc_state *=
+crtc_state, struct line_buff
+>  	}
+>  }
+> =20
+> +/**
+> + * direction_for_rotation() - Get the correct reading direction for a gi=
+ven rotation
+> + *
+> + * This function will use the @rotation setting of a source plane to com=
+pute the reading
+> + * direction in this plane which correspond to a "left to right writing"=
+ in the CRTC.
+> + * For example, if the buffer is reflected on X axis, the pixel must be =
+read from right to left
+> + * to be written from left to right on the CRTC.
 
-which is a resend of the series with one extra patch added.  That extra patch
-is related to
+That is a well written description.
 
-https://lore.kernel.org/linux-pm/20240306085428.88011-1-daniel.lezcano@linaro.org/
+> + *
+> + * @rotation: Rotation to analyze. It correspond the field @frame_info.r=
+otation.
+> + */
+> +static enum pixel_read_direction direction_for_rotation(unsigned int rot=
+ation)
+> +{
+> +	if (rotation & DRM_MODE_ROTATE_0) {
+> +		if (rotation & DRM_MODE_REFLECT_X)
+> +			return READ_RIGHT_TO_LEFT;
+> +		else
+> +			return READ_LEFT_TO_RIGHT;
+> +	} else if (rotation & DRM_MODE_ROTATE_90) {
+> +		if (rotation & DRM_MODE_REFLECT_Y)
+> +			return READ_BOTTOM_TO_TOP;
+> +		else
+> +			return READ_TOP_TO_BOTTOM;
+> +	} else if (rotation & DRM_MODE_ROTATE_180) {
+> +		if (rotation & DRM_MODE_REFLECT_X)
+> +			return READ_LEFT_TO_RIGHT;
+> +		else
+> +			return READ_RIGHT_TO_LEFT;
+> +	} else if (rotation & DRM_MODE_ROTATE_270) {
+> +		if (rotation & DRM_MODE_REFLECT_Y)
+> +			return READ_TOP_TO_BOTTOM;
+> +		else
+> +			return READ_BOTTOM_TO_TOP;
+> +	}
+> +	return READ_LEFT_TO_RIGHT;
 
-The original description of the first two patches still applies:
+I'm a little worried seeing REFLECT_X is supported only for some
+rotations, and REFLECT_Y for other rotations. Why is an analysis of all
+combinations not necessary?
 
-> Patch [1/2] is based on the observation that the threshold field in struct
-> thermal_trip really should be core-internal and to make that happen it
-> introduces a wrapper structure around struct thermal_trip for internal
-> use in the core.
-> 
-> Patch [2/2] moves the definition of the new structure and the struct
-> thermal_zone_device one to a local header file in the core to enforce
-> more separation between the core and drivers.
-> 
-> The patches are not expected to introduce any observable differences in
-> behavior, so please let me know if you see any of that.
+I hope IGT uses FB patterns instead of solid color in its tests of
+rotation to be able to detect the difference.
 
-Patch [3/3] adds a mechanism to sort notifications and debug calls taking
-place during one invocation of __thermal_zone_device_update() so they
-always go in temperature order.
+The return values do seem correct to me, assuming I have guessed
+correctly what "X" and "Y" refer to when combined with rotation. I did
+not find good documentation about that.
 
-The series applies on top of 6.9-rc1 and I'm planning to create a test
-branch containing it.
-
-Thanks!
+Btw. if there are already functions that are able to transform
+coordinates based on the rotation bitfield, you could alternatively use
+them. Transform CRTC point (0, 0) to A, and (1, 0) to B. Now A and B
+are in plane coordinate system, and vector B - A gives you the
+direction. The reason I'm mentioning this is that then you don't have
+to implement yet another copy of the rotation bitfield semantics from
+scratch.
 
 
+> +}
+> +
+>  /**
+>   * blend - blend the pixels from all planes and compute crc
+>   * @wb: The writeback frame buffer metadata
+> diff --git a/drivers/gpu/drm/vkms/vkms_drv.h b/drivers/gpu/drm/vkms/vkms_=
+drv.h
+> index 3ead8b39af4a..985e7a92b7bc 100644
+> --- a/drivers/gpu/drm/vkms/vkms_drv.h
+> +++ b/drivers/gpu/drm/vkms/vkms_drv.h
+> @@ -69,6 +69,17 @@ struct vkms_writeback_job {
+>  	pixel_write_t pixel_write;
+>  };
+> =20
+> +/**
+> + * enum pixel_read_direction - Enum used internaly by VKMS to represent =
+a reading direction in a
+> + * plane.
+> + */
+> +enum pixel_read_direction {
+> +	READ_BOTTOM_TO_TOP,
+> +	READ_TOP_TO_BOTTOM,
+> +	READ_RIGHT_TO_LEFT,
+> +	READ_LEFT_TO_RIGHT
+> +};
+> +
+>  /**
+>   * typedef pixel_read_t - These functions are used to read a pixel in th=
+e source frame,
+>   * convert it to `struct pixel_argb_u16` and write it to @out_pixel.
+> diff --git a/drivers/gpu/drm/vkms/vkms_formats.c b/drivers/gpu/drm/vkms/v=
+kms_formats.c
+> index 649d75d05b1f..743b6fd06db5 100644
+> --- a/drivers/gpu/drm/vkms/vkms_formats.c
+> +++ b/drivers/gpu/drm/vkms/vkms_formats.c
+> @@ -75,6 +75,36 @@ static void packed_pixels_addr(const struct vkms_frame=
+_info *frame_info,
+>  	*addr =3D (u8 *)frame_info->map[0].vaddr + offset;
+>  }
+> =20
+> +/**
+> + * get_step_next_block() - Common helper to compute the correct step val=
+ue between each pixel block
+> + * to read in a certain direction.
+> + *
+> + * As the returned offset is the number of bytes between two consecutive=
+ blocks in a direction,
+> + * the caller may have to read multiple pixel before using the next one =
+(for example, to read from
+> + * left to right in a DRM_FORMAT_R1 plane, each block contains 8 pixels,=
+ so the step must be used
+> + * only every 8 pixels.
+> + *
+> + * @fb: Framebuffer to iter on
+> + * @direction: Direction of the reading
+> + * @plane_index: Plane to get the step from
+> + */
+> +static int get_step_next_block(struct drm_framebuffer *fb, enum pixel_re=
+ad_direction direction,
+> +			       int plane_index)
+> +{
 
+I would have called this something like get_block_step_bytes() for
+example. That makes it clear it returns bytes (not e.g. pixels). "next"
+implies to me that I tell the function the current block, and then it
+gets me the next one. It does not do that, so I'd not use "next".
+
+> +	switch (direction) {
+> +	case READ_LEFT_TO_RIGHT:
+> +		return fb->format->char_per_block[plane_index];
+> +	case READ_RIGHT_TO_LEFT:
+> +		return -fb->format->char_per_block[plane_index];
+> +	case READ_TOP_TO_BOTTOM:
+> +		return (int)fb->pitches[plane_index];
+> +	case READ_BOTTOM_TO_TOP:
+> +		return -(int)fb->pitches[plane_index];
+> +	}
+> +
+> +	return 0;
+> +}
+
+Looks good.
+
+
+Thanks,
+pq
+
+> +
+>  static void *get_packed_src_addr(const struct vkms_frame_info *frame_inf=
+o, int y,
+>  				 int plane_index)
+>  {
+>=20
+
+
+--Sig_/pOcUB5TKgO05bc1fdT4reYt
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEEJQjwWQChkWOYOIONI1/ltBGqqqcFAmYBd+cACgkQI1/ltBGq
+qqfarg//Q+qvT9aL8AZvOG15t7LfHydp088OlP6y0I621RTKlpMf3u9o4uV6vM+n
+8CW/h0xeXteJAt0/xBX/ZMziac8FLC1iQ9tKz4qoBd5EywoPwc69L6iANQvKsXuv
+vvoF7SN/nv0iP/VDlrXuI1TIwGquIcs0Sf+tqhPOoYyg8LTM4RihmEeS3xgzaCO6
+0fWhZbdnkTqOGXY/aPAtPC8xRvlG6rN1gLvNMaDxN/OXIJzhCSd/3Juau2+USqLL
+6KzkmSoRsu/V+Uqnji4WlsPj0fLt+5BkvQcLfXkigv8x19RXAYB65HMAWuy42kwC
+nxGsrvaDGKKxU0ltFb0uxzanEpi7mydfhGkTM75EeQFV77++SSsnYpZt48TkhM/7
+WX8E9pOLtRfLvKfZrF5Wt2CS0LZ0M8E/UUyv97zf+HgU/0a7Tr66Ee4DPm0rvGL2
+EhyPXzyhEfT/KqriaaiI54+KcQeOuOycoNikzfxj8XdyYp20b6vIGPSWVwNntKnO
+SyrO3rx2oU21TdSkWHNNlGb8YY2rVtZGz0/jF93juipKcLraUnCy3pxRiB8+IO1y
+x7BxEEMrozMz1/fvcIiU95CqbClMdraof5I96Avrx/Hh38iXfI1z4T3iFMMTtg3V
+25KIJul1oqV8d23+PD8JMQhVm2wiCnQqjIfF9ynU1P7EwCsyIvk=
+=F3pF
+-----END PGP SIGNATURE-----
+
+--Sig_/pOcUB5TKgO05bc1fdT4reYt--
 
