@@ -1,201 +1,136 @@
-Return-Path: <linux-kernel+bounces-117147-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-117367-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1D8C888AF24
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 20:00:22 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0277E88AA7D
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 18:00:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 48B82C41BE6
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 15:57:11 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id ACD461F66C75
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 17:00:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C616D156875;
-	Mon, 25 Mar 2024 13:28:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B9DE713A3E0;
+	Mon, 25 Mar 2024 15:28:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="SYvtx7Pn"
-Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11on2088.outbound.protection.outlook.com [40.107.220.88])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kemnade.info header.i=@kemnade.info header.b="zn/PDYW9"
+Received: from mail2.andi.de1.cc (vmd64148.contaboserver.net [161.97.139.27])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4456D13D526
-	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 13:28:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.220.88
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711373313; cv=fail; b=Xv9vrJr47FBvTmhk+Axx6n7JyJc9ckJSqozVym0MoaJmLqd2XCt2x79R9oQMR0QnHOAHy57xTrHUq3dgKmveRvEKLIaoOSKmuZiz14JdbBxvLOvUcegsQvGkH71fQwBfNGG+hlaI3tF2/W3FuIl9C/oZx+JMumedVx3eOGFUEgg=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711373313; c=relaxed/simple;
-	bh=ogoUMXO90XIUOv2BxHxhQBwjX1ZolmiNcs7tcRdX0Co=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=nTg5aiU82vLpJwZ3fQT4hMipFeNMm3CYJeVivD5qHMG6HorqwEgHmjO/vy2Q9MbXyJvpuUfA/I+voGRQqze4Gym8AeEQ+wkUH40YEOKjajcdytDA0dr1uMXJ3tvsG8aGmv8LBdbJGOiHt0jvVuVF0qapYftxgaddAgr+6DyXW3w=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=SYvtx7Pn; arc=fail smtp.client-ip=40.107.220.88
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=kDonj8lwTO28/Abb91vCBHkcPBtkW0UTBtLHlligdEwi0s4MCvhMjO/TpWEL68XP76VfU7tUPCzqebSWRICSobdc+6srjMIxXhswArhHmOgucOsOul78v+fD1uZwsfMCbsaBwnhntacBr+LijPWDIKI8FLA09BiKfDK7FRpN6BXjgXazMeIAXFO5CWi9dGUQMTqtwsU/99BBjRRxJ4F/Rfh/wrdbKUH2tEUYsCJX7KEMUait4kQNYsV/FFO/ld3Q44QnjBcx+O66kRGwePvNYnDkUlc+1BSFYW9CHoNgMKyy/DJwTHFLCG2Fc5ZdtinYGom3DHW1JRWhXQkIRaPZHw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=M8RzvTUPE3KdTikn0a0slWcTcHZOLCNSjIWKJWWfFtM=;
- b=Honl5LGO5U5ZVMO7S3Db1wUm6/VTVrUs5/P/KwAP7776dOedm2XEUVwEUuGz5RgVlHn28UMpz7HaCd4JxOkIdY/VumhGDFnvegDn58wCD9lOQrjEDvnlLIhNesHUNehjPnJ9isgpchG8CZfGB13O0i8qe52W3P2kiPzVZredkZuNPne6+LcFeyAJyHV4fPmpoMaN60q7yYwBPSnMlHF70cEPbOHigPnuifSCgKJPUHNAQ84mCGyji9EtD8CD7ncTYzwoRebdY0keO9tMCvAg4KQU8iD3j7W36XZDhcitNMgA7o67/+YndnkOVSa/WqvDvtqYQwy/XdL3uP897VafCA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=M8RzvTUPE3KdTikn0a0slWcTcHZOLCNSjIWKJWWfFtM=;
- b=SYvtx7PnYEbAvAeD1sfPKG0/62VgXQ+iMx2rggVqy7n2nQ8zM3/oyzK8alytv4l//rOlYw0mqwoTcf/dONbP4c8piI3fAdupe2C8+J9/OC9BOrxw1IB7YWFFXyHtP3bhW9sYruB8jKICyWqpRAbGlBC8xMv/ro77gNclkrxHD66ilimh/1ynJZ4SoHR2aEyuuOFvDH9ZVGcVJ/ajRIY22nLpUD1q4lu2R0qY9KAeNdsIBcUSAjcP9tcqPkAQgckSnk9leB+YG0opEMXdSnJrRMNqL1vHyZXtLusP1kr2MkoJR3dRR5F2JFHwG4FEMIPCCwJTJlLGg9SeBMhxRsbvwQ==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from DS7PR12MB5744.namprd12.prod.outlook.com (2603:10b6:8:73::18) by
- PH0PR12MB7983.namprd12.prod.outlook.com (2603:10b6:510:28e::8) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.7409.31; Mon, 25 Mar 2024 13:28:26 +0000
-Received: from DS7PR12MB5744.namprd12.prod.outlook.com
- ([fe80::dc5c:2cf1:d5f5:9753]) by DS7PR12MB5744.namprd12.prod.outlook.com
- ([fe80::dc5c:2cf1:d5f5:9753%6]) with mapi id 15.20.7409.031; Mon, 25 Mar 2024
- 13:28:19 +0000
-From: Zi Yan <ziy@nvidia.com>
-To: John Hubbard <jhubbard@nvidia.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>,
- LKML <linux-kernel@vger.kernel.org>, linux-mm@kvack.org,
- David Hildenbrand <david@redhat.com>, Matthew Wilcox <willy@infradead.org>
-Subject: Re: [PATCH] huge_memory.c: document huge page splitting rules more
- thoroughly
-Date: Mon, 25 Mar 2024 09:28:17 -0400
-X-Mailer: MailMate (1.14r6028)
-Message-ID: <B9A3BBFA-5DE2-4C72-9CB0-38086001577F@nvidia.com>
-In-Reply-To: <20240325044452.217463-1-jhubbard@nvidia.com>
-References: <20240325044452.217463-1-jhubbard@nvidia.com>
-Content-Type: multipart/signed;
- boundary="=_MailMate_DDAFBCDB-A1D1-423F-969B-5B792FD518AB_=";
- micalg=pgp-sha512; protocol="application/pgp-signature"
-X-ClientProxiedBy: MN2PR15CA0023.namprd15.prod.outlook.com
- (2603:10b6:208:1b4::36) To DS7PR12MB5744.namprd12.prod.outlook.com
- (2603:10b6:8:73::18)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 890A2139CF7;
+	Mon, 25 Mar 2024 15:28:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=161.97.139.27
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1711380500; cv=none; b=BKkliYx2N5m5/fZNllz24h6VgGk272n2Z+PJ+CmK13lvmZkuVDGjDt5895RqB1/czz3fB5AxG/Kxtd83UK6LyCBymzZtcWyJN7ND1BnX1+VrN03PSsY+r4fdbdZDhd8lqYo2VwC5Z5ceNPtKH5C9G+DIkhyGcq3aYryT+REa3Uw=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1711380500; c=relaxed/simple;
+	bh=l7Iq42t4OAqPVcaUphs8qOzZizq2Dfx1SufCIbfsbEg=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=nO//MaZ9/zZNacMwmSCrgQi9JtRIjMZq4jfPGsiQVJHSVG5AQXablJyVC4BSH8N/c/XZdxltOAHib5aGqg1IDQbL2Jp7wkX9E2QzKWNp+j35pgo7Pt+t9+Nu+z1JIir4xZpDQ1r2CLAPoRG9gz7qZ9B1+9b1iDt4OnAL5BkEMX8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kemnade.info; spf=pass smtp.mailfrom=kemnade.info; dkim=pass (2048-bit key) header.d=kemnade.info header.i=@kemnade.info header.b=zn/PDYW9; arc=none smtp.client-ip=161.97.139.27
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kemnade.info
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kemnade.info
+Received: from mail.andi.de1.cc ([2a02:c205:3004:2154::1])
+	by mail2.andi.de1.cc with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <andreas@kemnade.info>)
+	id 1roltB-003KDz-1Q;
+	Mon, 25 Mar 2024 16:05:29 +0100
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=kemnade.info; s=20220719; h=Content-Transfer-Encoding:Content-Type:
+	MIME-Version:References:In-Reply-To:Message-ID:Subject:Cc:To:From:Date:Sender
+	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+	List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=a9zvtfL5+zzdZaDVQ7s7ROa8rd+QCuJZiFyI2UwPWgI=; b=zn/PDYW9I2AYu+Ff5oOniCVSPe
+	7awjFoLWzNrlxAU4tlQglV0nOUv2RFpWqQIk+9JP6cojXfxPXQGBpJyk7iIba8wz9Jc3xuCfHSWtl
+	5tofDJqG2ZmLwxPO4wYNt8yYAAc+w15fv5s51sTRcQsqHF8n2T2RL11VuF8NDOXXTglwgihB1WU9Q
+	RDlHXSKEyUeZ8qAJN6z9s1iO9h7mMQ6Kq6iuhATVrq7GuxZpvDGoVV5MxhEVenSMbx04t3gXBOyaM
+	DEkSrwW2PgzHBLdSkx5EkuJgAtkDgHhQYiAQUYK/cxh7FpkfYb9cb3PQUMdha3NAObVHtHodkGrGU
+	KEEVSQWA==;
+Received: from p2003010777026a001a3da2fffebfd33a.dip0.t-ipconnect.de ([2003:107:7702:6a00:1a3d:a2ff:febf:d33a] helo=aktux)
+	by mail.andi.de1.cc with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <andreas@kemnade.info>)
+	id 1rokNR-000Zp7-4z; Mon, 25 Mar 2024 14:28:36 +0100
+Date: Mon, 25 Mar 2024 14:28:33 +0100
+From: Andreas Kemnade <andreas@kemnade.info>
+To: Matti Vaittinen <mazziesaccount@gmail.com>
+Cc: lee@kernel.org, robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+ conor+dt@kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, imx@lists.linux.dev
+Subject: Re: [RFC PATCH 2/2] mfd: rohm-bd71828: Add power off functionality
+Message-ID: <20240325142833.538993c2@aktux>
+In-Reply-To: <81bf6604-9160-4bae-8da6-7034f8aa3f92@gmail.com>
+References: <20240324201210.232301-1-andreas@kemnade.info>
+	<20240324201210.232301-3-andreas@kemnade.info>
+	<472c6eaf-6cbc-484c-bc94-571d115176aa@gmail.com>
+	<20240325131605.6607b778@aktux>
+	<81bf6604-9160-4bae-8da6-7034f8aa3f92@gmail.com>
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DS7PR12MB5744:EE_|PH0PR12MB7983:EE_
-X-MS-Office365-Filtering-Correlation-Id: acdbe4ef-8203-4c4b-bb16-08dc4ccf6fcb
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	fvcizw9KfvIvGtQf0a5QV42o2CPToD0dmFrptrL9bu2Q/EUjMCOYYXC5FOol8Own6Dm6gUKT67ox511ICSVkSEtwkQM87drKq+/Pv5H0igHAeFtJLb8DRIrsbdvJ+RPSzfVDMomyP4QZ9uBkvDkqd2MyRHbiaDYAvLj+SI+mLEOX4cmBMtKKzo58y+h55KmdA0qFpeTlnrBNZJEbCBNv2fa3BH/WvVKRh0XFQEI8njR5/UHksIW4vT5j/qr9SutfgALFRjnEJ0J7qpzJQ4NuY5p/bkqOopqmnQHPPkygmRfeOT7BUxpRtq31n1cm4MGFjlxtwKh5Ai4+I4LBpcNPqoOSNtxVNRbnmEdVG3KYPIy9GFW7d9npnKxq/HHVuVL6EkO936WPjEdZsfaGq78NAKx9XpfsCA8q4NQaUG0+H6cHGDyAGY1eesgVq+xPB8Mr2U3WqVX1/my90dvTMDLMu7kE/oc8eOlujHgQW6KQIN6oZl99OTNpqm7DrGph9IPeX+U+nWZdaHtmrvKJiHBjFB/h0aY+KyGrk+FJAPjdwYy/HCxQlgPArUMHIq5pyF+lT3Dig2PrFgSeiF6wOS1W87JQO16TcNQcdb1jcR2LJ/ewBjeq+bhDhoLkevZU+7nEA+VXn8blDRZBl1um/F5FTCLKAeiLL2cNdNfr4dxsuqI=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS7PR12MB5744.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(1800799015)(376005)(366007);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?/npDiC7tFk9If5xSrZ4c7ObCOXHifMSQp5NYm1KC2L15haJrOpYngAvlFqA+?=
- =?us-ascii?Q?n7Enufc5zEbHuluOTR2EdYrPSB1TOnLNQwlUfKZYfvusYzb8cYrMgzRFkM6N?=
- =?us-ascii?Q?OorhcPUIK7hMdtYRWqPG7TpYtsWdtfQ8B9FMIaWzdwUtm9wMgc40p91Nzwt5?=
- =?us-ascii?Q?a4CsSqkpCoLRFOw5MwAic6NOJhhEwbjVz8gxb1uWpfeZw50/ab36mEXHIHX5?=
- =?us-ascii?Q?24M56IYP5sPlcFrXuB32t16FCXysFBFSVWPTLjI4ol1ukP7Bp2v7Qtq1MZ/P?=
- =?us-ascii?Q?TCgVhLs+mbpSfBrtMbe+ArUL1xjmqcGkOTczwOQdhgFVvw6yXT+78Wis8+Lo?=
- =?us-ascii?Q?p8yphSfqTF7VAqQZb/Sibv8YXqmtBxChnQ4wcK3lgY/ES3L8WAVP6YcNItuY?=
- =?us-ascii?Q?kii4OmNhWWFhbgYxh9igBKH/ikCpFRikMbjKD6tBO6THF/V3YiFupjH78jmt?=
- =?us-ascii?Q?TbSuoFc1hLaP33rIw0XnmO8ezjVLICSSj2L9SperKMBVtVolMMaMlzoOU8v0?=
- =?us-ascii?Q?PzETDVYnIMGBumwdLEXEDUKOSh4rYPYauWw54XtXsT565+7JXgW/hxe6hBXP?=
- =?us-ascii?Q?o0kfSZCrpJhUmsae7fGrOflJk3Oea4cPv7yKuaGM91Et0gJLmHk6pQb+Oqo1?=
- =?us-ascii?Q?l4eMxAX5I9wWiKc7GaKEHmq4AvD/xQkRRNh4wOa0zo5HqsZesz+7Dm+TPhC+?=
- =?us-ascii?Q?NSDXV4/UG7p15V23YFeDjl2c6F5iQ4iy0JKQp/LWdvtKEl0p9g5pyFC2qbFY?=
- =?us-ascii?Q?pfwGWDczQ/1cbNjYNUk5jqm0CM5VcjZLHpAW41ZsifVl6niC8SG8bjpJ65l0?=
- =?us-ascii?Q?XX2qwmZ3Nm2dCpSPLD/y+s/SCFdt2vFGeW4rHdVjzFUzIFu04HbqiU1lEqjT?=
- =?us-ascii?Q?EEy58X3BTnSeVY9+GbvBIfqePE0RvmjQciOezGwmKVw6c5wY9Ov4FbVHqB/j?=
- =?us-ascii?Q?dWt13hCV2QE04VKsP+ewTvOhYrCRELLCvS9JWp78CPfmYZUqCnCzxktHu6yf?=
- =?us-ascii?Q?93vi22MIAnYO1TMP1Qc/7ogNoYddGA3VyqCH8H2zu4lKg2JrlrKP3ulRA+Sk?=
- =?us-ascii?Q?FBRtsessJpI127tEFITncDKl5AgOsBlzQ2UbJf9WeT0/+f3lkeaS+fQVM1uF?=
- =?us-ascii?Q?8NZyleFUoLYH5LbU2QgXKb0pTB9y928Sq+En/+v1l06C3ckfgH9bBjBb1wBV?=
- =?us-ascii?Q?VjaEomhdMZp8WdrvvCYA1IxWicQeXJYo8RWlLG3dBdrZybKiRLnU3Fg19xzj?=
- =?us-ascii?Q?on1f9xDgRlkm9Fte2uhHIs0b/OUdYScARU/3fjeLROhWFDv+G4P9499nNGIY?=
- =?us-ascii?Q?Qrk3Y2b0/w68HsCX+MpiY/m84OLQ6I+DDWbh9jSMGcP9tv8j90xcI+oY1mP3?=
- =?us-ascii?Q?/XmBxeQfHO5Hz/C1mjflaynNoMs2Fc85qtO1RUOjnwWES1qNFwezgl2zEQB0?=
- =?us-ascii?Q?nPTjr/hiSuSrB+rZ1nhhDsxnX/X8n1sP4qC4jcohm+gioc3Mv6ZNnA3FVPV4?=
- =?us-ascii?Q?BVauc1E70aghrvCfJwhdkdno3bY2tLwpIU3NQL7jGVeI4Z2b8WV0xTJvmkWU?=
- =?us-ascii?Q?FV450HNH/Asap4eDKC8=3D?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: acdbe4ef-8203-4c4b-bb16-08dc4ccf6fcb
-X-MS-Exchange-CrossTenant-AuthSource: DS7PR12MB5744.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Mar 2024 13:28:19.8433
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: GSc8y8CGEUSCl8SYfLmD7awEWaegucs26EqBn57NJyBu/pJIwppkchJNkrxDqs9u
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR12MB7983
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
---=_MailMate_DDAFBCDB-A1D1-423F-969B-5B792FD518AB_=
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
+Hi Matti,
 
-On 25 Mar 2024, at 0:44, John Hubbard wrote:
+On Mon, 25 Mar 2024 14:44:43 +0200
+Matti Vaittinen <mazziesaccount@gmail.com> wrote:
 
-> 1. Add information about the behavior of huge page splitting, with
->    respect to page/folio refcounts, and gup/pup pins.
->
-> 2. Update and clarify the existing documentation, to compensate for the=
+> Hi Andreas,
+> 
+> On 3/25/24 14:16, Andreas Kemnade wrote:
+> > On Mon, 25 Mar 2024 13:31:15 +0200
+> > Matti Vaittinen <mazziesaccount@gmail.com> wrote:
+> >   
+> >> On 3/24/24 22:12, Andreas Kemnade wrote:  
+> >>> Since the chip can power off the system, add the corresponding
+> >>> functionality.
+> >>> Based on https://github.com/kobolabs/Kobo-Reader/raw/master/hw/imx6sll-clara2e/kernel.tar.bz2
+> >>> No information source about the magic numbers found.  
+> >>
+> >> Oh, interesting repository :) Thanks for linking to it! I didn't know
+> >> someone had reworked this driver...
+> >>  
+> > which btw: contains this interesting snippet (output from fdtdump)
+> >    bd71828-i2c@4b {
+> >                      reg = <0x0000004b>;
+> >                      compatible = "rohm,bd71828";
+> >                      gpio_int = <0x00000008 0x00000013 0x00000001>;
+> >                      gpio_wdogb = <0x00000039 0x00000018 0x00000001>;
+> >                      #address-cells = <0x00000001>;
+> >                      #size-cells = <0x00000000>;
+> >                      pmic@4b {
+> >                          compatible = "rohm,bd71828";
+> >               	        regulators {
+> >                          	BUCK1 {
+> >                              		regulator-name = "buck1";
+> > 
+> > 
+> > and to make it work since basically no regulators are registered
+> > instead just some regmap_write()s are done to configure something
+> > in probe(). It is a pitfall to think that the information below pmic@4b
+> > is used, especially since it is not that obvious in the source.  
+> 
+> Just to ensure there will be no misunderstanding - I have not authored 
+> the modifications seen in "Kobo-Reader" repository. Upstream driver does 
+> register the regulators - and it does not use the oddly named gpio_int 
+> or the gpio_wdogb:
 
->    ravages of time and code change.
->
-> Cc: David Hildenbrand <david@redhat.com>
-> Cc: Matthew Wilcox <willy@infradead.org>
-> Cc: Zi Yan <ziy@nvidia.com>
->
-> Signed-off-by: John Hubbard <jhubbard@nvidia.com>
-> ---
->
-> Hi David, Matthew, Zi,
->
-> This is a follow up from our short email thread of a week ago [1].
->
-> Zi, I've inflicted some minor violence upon your original wording, and
-> moved it into a Prerequisites section (item 4).
->
->
-> [1] https://lore.kernel.org/all/d9c06bec-805f-4d53-9f91-6b8ad29fcb6b@re=
-dhat.com/
->
-> thanks,
-> John Hubbard
-> NVIDIA
->
->  mm/huge_memory.c | 42 +++++++++++++++++++++++++++---------------
->  1 file changed, 27 insertions(+), 15 deletions(-)
->
-LGTM. Thanks. Reviewed-by: Zi Yan <ziy@nvidia.com>
+yes, I know it is not from you and I know the general quality in those repos.
+But I feel not well pointing to those repositories without issuing the warning
+that regulator information in dtb is not an authoritative source for required
+regulator settings. Not that someone enables the smoke-generator
+functionality...
 
---
-Best Regards,
-Yan, Zi
+But lets not go too much offtopic.
 
---=_MailMate_DDAFBCDB-A1D1-423F-969B-5B792FD518AB_=
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename=signature.asc
-Content-Type: application/pgp-signature; name=signature.asc
+Regards,
+Andreas
 
------BEGIN PGP SIGNATURE-----
-
-iQJDBAEBCgAtFiEE6rR4j8RuQ2XmaZol4n+egRQHKFQFAmYBe/IPHHppeUBudmlk
-aWEuY29tAAoJEOJ/noEUByhUA9AQAIVyi8yvBYVeUpP/o7g+C3moGAD8TrXR/Qyn
-s6LDdahfGD+03ev9hUh6VbyO8xSMF339WZq6+tcEoBAvLt0NFH5F43W3qgZ35kr2
-lw6CH8nYljHlk/YYTZ6Iq/sv2P2k4kYF9raIYD1uL817MHXDCIPEEzXNINzZPWtE
-G397IrfUJKyvDX8Vqi9DQhO62q5Btj5lzfnM1km1htS8kU408+D9OriSVR7L9IfK
-MJNHJUoK3HtoaeS0DCGFUaBzKYHmM+1TLFIEe7ZJPmLtGtdWEerlA20keL4RiBY9
-yHJ/MXEqgUvJvhci/lxiuD5Vhn7xP5XRVCj4jh8updQkocp7bM2XcAzhIhl7wDtc
-jWU6esVHyefrty0yE8sKf5ov+EvvwuyEB4wXaQ40c2LH5J+RtIlc0ovNAmZOOR2+
-KA4vVIxkFZlifoEB7VMy7ZMxqNsZjflk37Rf1tVtBvMozjZT1HISI7pWC202Lv/9
-5KxUy4bZQexhsbea7ZL95Lzl/0CyvBrYLQk7KdTH0CY2QIBtiBeYMzsLb9/O7Woz
-THF2LyMzT6F3TzcsxooUZuDp/ZiugHxOMQ4mCVT27KyjB1fUhnSKa9wOK084BuK7
-A2ciKx6QpQynhVRcWlQdY6waJU1uV5ZYzcpiPS5ynHlx5uHfMz6DNJy41NzrrxBP
-qZNjDLnX
-=WX2j
------END PGP SIGNATURE-----
-
---=_MailMate_DDAFBCDB-A1D1-423F-969B-5B792FD518AB_=--
 
