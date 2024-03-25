@@ -1,108 +1,115 @@
-Return-Path: <linux-kernel+bounces-117318-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-117319-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6A92888A9ED
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 17:47:20 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 268C888B012
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 20:35:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E71AC29B97E
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 16:47:18 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 28723BC5096
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 16:47:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3819F5D738;
-	Mon, 25 Mar 2024 15:01:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 38690131BA4;
+	Mon, 25 Mar 2024 15:01:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="O2rvDq33"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b="wkPdG6oJ"
+Received: from mail-lj1-f179.google.com (mail-lj1-f179.google.com [209.85.208.179])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 79A091847;
-	Mon, 25 Mar 2024 15:01:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 768501847
+	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 15:01:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711378890; cv=none; b=fOo9ebUCt//c8m9soDc6oLBRMPjE563g87GxWn8m9vWbMosg+IADVjF1BkoY8bhrdHm2Mc4c9Z/j6/yiM7g/3juc8N6QEbZjSTvJVgrc0pxLq2PWpZMAjWXnhn1++Lua7qpdErVKvQt6Y6yRE3L4x4uKHdrfC3XdQer4RVkBLr8=
+	t=1711378905; cv=none; b=nziGs73A9rdcKj44r51tDiTRPep09/x7GejUu0dIHz7H6NJFuuA+qZNuCEkYS9bplE3KqHlUeDFY1PeDGmVEAnNZOawp17ltSjrhBg5BMt4eXlFjfeF66JgUqwoME1AsrSVhKUHKGJ+phqjbxiFqhrOV/NIO5vdCpeI7e96BiRE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711378890; c=relaxed/simple;
-	bh=06mS+4kIFvRI7NL8dZUAAS2fcpHqyjEmc4cUuazwmpw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=huBzQapPF+7LAuLj4MJhs9SG9o8cpA5RBrQHtkvHBO9Xx1O6BugJBMACIX3GovtOXkbxIQypIKAQ2g5e59CsouXGkB9CT2AMOrBk5At8+MPTK78PL42UckBxxvRdscChheyNYGND8WyZ8IRD5CMRVbQJ3lY2yAhlg5jOb5mYiIw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=O2rvDq33; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E1777C433C7;
-	Mon, 25 Mar 2024 15:01:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711378890;
-	bh=06mS+4kIFvRI7NL8dZUAAS2fcpHqyjEmc4cUuazwmpw=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=O2rvDq33D2BT7MRyINXwhk511wHBPD+XXpRWOUEh88oY7KVWXwBZQN7nIuEXThHdQ
-	 EkZ+j1jJgH1IjjCQdDIc7xVS6FEtbCBvwJb6h3BnjJJNm2Ie0u+5En3Jl8tb7fHoAr
-	 jo0nHx7RvGuAXm5LsCcRob/Md4ZklTm7O4AY1+G9cEZKHt3V0k82m6BdzGHaKx573A
-	 DlRkGHaCvKZ6oW2hG66LG2PMfRK88p9VH/9pAgtTrNBZ1SUmWTWCFlDNMQEnjmPDJu
-	 flphVO97myK+Q3vh9va+zplZUvbrzUNGjilBCeLRF4DLdCEvYpS29lbjmpxWqWXtD1
-	 iJzKAci3Fo9rQ==
-Date: Mon, 25 Mar 2024 15:01:25 +0000
-From: Mark Brown <broonie@kernel.org>
-To: David Lechner <dlechner@baylibre.com>
-Cc: Ryan Wanner <ryan.wanner@microchip.com>,
-	Nicolas Ferre <nicolas.ferre@microchip.com>,
-	Alexandre Belloni <alexandre.belloni@bootlin.com>,
-	Claudiu Beznea <claudiu.beznea@tuxon.dev>,
-	Daniel Mack <daniel@zonque.org>,
-	Haojian Zhuang <haojian.zhuang@gmail.com>,
-	Robert Jarzmik <robert.jarzmik@free.fr>, linux-spi@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH] spi: remove struct spi_message::is_dma_mapped
-Message-ID: <270202d2-add3-4ad2-8233-6a993e2f3f87@sirena.org.uk>
-References: <20240315-spi-remove-is_dma_mapped-v1-1-ca876f9de1c5@baylibre.com>
+	s=arc-20240116; t=1711378905; c=relaxed/simple;
+	bh=J1GJWD2Uw75AizZkYb7+DSC6vbUI9FgQBFn59jiHELI=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=LDUsw3qTXqJ+kaGrVtCe+TCR7CZlZCDW2dM10/5huskfg1jqF64aIQYTci6mrwbpSJGauQubEHamYNYwZBhVTor7A9c5k830oMDXgmwcjmMITihrBPXM6Nauye7KGpltF9H6i+LOQaHsWS3GdXyvpJqzQrh5Sz11GAEcO24NgVI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b=wkPdG6oJ; arc=none smtp.client-ip=209.85.208.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baylibre.com
+Received: by mail-lj1-f179.google.com with SMTP id 38308e7fff4ca-2d6dda3adb9so7175791fa.1
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 08:01:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1711378901; x=1711983701; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=J1GJWD2Uw75AizZkYb7+DSC6vbUI9FgQBFn59jiHELI=;
+        b=wkPdG6oJ0VZTuqpGTI/gNdDKCqmqrJ/cx+k6nAXTANZspgyCcddCzQLje1hAiKnY+n
+         DGXHkqFnnVJQj0u7JFZh6zWCMLj+MqToUF0GN2gZpypx1zBuReKXYWj2OQ7dvSFDPx4n
+         v4MyCeJJJ8vayhngmx8kCoRQOnYTJEtEeT8tPvbTXCyVWAB0lXQIlH9+MwShTaeWzsdr
+         d6EGk+WqKcS+PtR0EscRJCj7e/AWn9BEa5G6aCEZkGB93SDYLju7iiezIPaJ878FfSFO
+         Mcl1lm0ExLpDztXySCt464O6SnfR/oMQ1uayBfSFgLS7EuUQPvRE9PSQdFfGikhOEiHR
+         5OfQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711378901; x=1711983701;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=J1GJWD2Uw75AizZkYb7+DSC6vbUI9FgQBFn59jiHELI=;
+        b=JCFYbk+7jIrAVYZqvP7G/GVJzx6ojeenJ7sa+3r7TjLNRmT6NQ/GOwUzo8CzAG81Ft
+         D73OE6BitrXn2bbZ/lgMDqJUTO4wke6RChb+Hdv4mFWQKtBdxW4zVqhBQVwPVWvzClXr
+         BLQ0pb8Wfc/OsCmwgoN0QMHm0ZQxcBGnIuqBQnmlIdHPxXwZ7JpoGMUubqcmSnK1/Je4
+         AkUORqWFjvwqWUxB4xheji/q5QLOFH8GzDEk3+x07VB+qeMuhFFGd0I8HkA+mbwFT0p4
+         xXL5jXozAuxKzpEKHhHlzi1JfFs2JqlqVfVpYjg2IglAxCZoiru5MfrPUDVt0WKl7reU
+         D96g==
+X-Forwarded-Encrypted: i=1; AJvYcCUdlA+jFGkwqMC58cjKVVp0Sub1pSEFseET2jqvH8MS+jfOAQ1yB4wBVP7l2V/IowhkZfsaR38najPMe2Q4ZZeb1bx33iGle/d2C9NY
+X-Gm-Message-State: AOJu0YxV7IMS9Ly80WEXJ3OY8JqmCXN9u0emNbm/kWqO2bKK/q6APP0q
+	jzijx8DA0eQ3eQEhzeD/i1sfG9Os/UO2uS375QkXSqYC/Pqmv9nGdGU0Mg11wNMfGRg7LvAPh1q
+	gdvlkUPV1wzufQhf22CcWecHh4hJbPbzg21Pv9w==
+X-Google-Smtp-Source: AGHT+IEXWyh8xd3VomCJthT7kJfFp+OHTh+i9uf/Ek3pq0kOY3hlzw+qYnSAMFsfi1PIn1RIyt45npMZCd1BRSd8e1M=
+X-Received: by 2002:a05:651c:232:b0:2d6:a5e0:f50 with SMTP id
+ z18-20020a05651c023200b002d6a5e00f50mr56296ljn.11.1711378901034; Mon, 25 Mar
+ 2024 08:01:41 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="ZZavzfwQuKVDzLbl"
-Content-Disposition: inline
-In-Reply-To: <20240315-spi-remove-is_dma_mapped-v1-1-ca876f9de1c5@baylibre.com>
-X-Cookie: Did I SELL OUT yet??
-
-
---ZZavzfwQuKVDzLbl
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+References: <20240319-adding-new-ad738x-driver-v5-0-ce7df004ceb3@baylibre.com>
+ <20240319-adding-new-ad738x-driver-v5-7-ce7df004ceb3@baylibre.com> <20240324131059.77fa8e68@jic23-huawei>
+In-Reply-To: <20240324131059.77fa8e68@jic23-huawei>
+From: David Lechner <dlechner@baylibre.com>
+Date: Mon, 25 Mar 2024 10:01:29 -0500
+Message-ID: <CAMknhBH0E258geq8WOKf3X0r7VngdDoSfNB5g6KTGBzEoUtMqA@mail.gmail.com>
+Subject: Re: [PATCH v5 7/7] iio: adc: ad7380: add support for ad738x-4 4
+ channels variants
+To: Jonathan Cameron <jic23@kernel.org>
+Cc: Julien Stephan <jstephan@baylibre.com>, Lars-Peter Clausen <lars@metafoo.de>, 
+	Michael Hennerich <Michael.Hennerich@analog.com>, =?UTF-8?B?TnVubyBTw6E=?= <nuno.sa@analog.com>, 
+	Rob Herring <robh+dt@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
+	Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, linux-iio@vger.kernel.org, 
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	kernel test robot <lkp@intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, Mar 15, 2024 at 05:29:43PM -0500, David Lechner wrote:
-> There are no more users of the deprecated is_dma_mapped in struct
-> spi_message so it can be removed.
+On Sun, Mar 24, 2024 at 8:11=E2=80=AFAM Jonathan Cameron <jic23@kernel.org>=
+ wrote:
+>
+> On Tue, 19 Mar 2024 11:11:28 +0100
+> Julien Stephan <jstephan@baylibre.com> wrote:
+>
+> > Add support for ad7380/1/2/3-4 parts which are 4 channels
+> > variants from ad7380/1/2/3
+> >
+> > Signed-off-by: Julien Stephan <jstephan@baylibre.com>
+> This and other patches I didn't comment on all look good to me.
+> So just those minor few bits and bobs for v6 and I'll pick this up
+> if nothing else comes in.
+>
 
-This breaks an allmodconfig build:
-
-/build/stage/linux/drivers/spi/spi-pxa2xx.c: In function =E2=80=98pxa2xx_sp=
-i_transfer_on
-e=E2=80=99:
-/build/stage/linux/drivers/spi/spi-pxa2xx.c:947:29: error: unused variable =
-=E2=80=98mess
-age=E2=80=99 [-Werror=3Dunused-variable]
-  947 |         struct spi_message *message =3D controller->cur_msg;
-      |                             ^~~~~~~
-cc1: all warnings being treated as errors
-
-
---ZZavzfwQuKVDzLbl
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmYBkcQACgkQJNaLcl1U
-h9Du0Af+KNKEIp5prd5874XsLTngYQHI3CnLC0L8MkrHq5Eq3U+sQEJPk/iJQbS3
-4iu5CNtTkUUaO+PVtiTbgqZFqcNDNc96azGMA+cowSw1vJ7StXv2u2bnmRr83+1O
-83nGwzOohlpJ0vm8rNXQc87Zloxe5bWe5E6B/LzjQ1MiQL5xWnxxd5vlP6kxZmWl
-QYjipXkNutN029UAQ0MCKZ83Oocf9l7crTUSWcr4u7CzFqD+2jCRN36h6hLgqXs4
-e/XD35aGZo7VwTE/bk5XFGvKFA0xVVImlaJGrD/hBoy3aeBLBVL3E/8SL8Ehxiwb
-m2udXr/XH8LAYuf/oXPQgGfeunTWtQ==
-=+NXl
------END PGP SIGNATURE-----
-
---ZZavzfwQuKVDzLbl--
+Hi Jonathan, as a reminder, this is the driver we dropped from the 6.9
+cycle. We still don't have a patch prepared for the resolution boost
+feature that may require us to reconsider some of our userspace
+interface choices here. Hopefully we can get that sorted out in the
+next 6 weeks, but I just wanted to make you aware ahead of time so
+that we don't end up in the same situation in case things don't go as
+planned again. Do you have "usual" way you prefer to handle a
+situation like this?
 
