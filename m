@@ -1,172 +1,232 @@
-Return-Path: <linux-kernel+bounces-117695-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-117696-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4D9EB88AE82
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 19:37:35 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 781F888AE8A
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 19:38:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7203B1C39BE5
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 18:37:34 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 27706288CD0
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 18:38:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EEFF2635;
-	Mon, 25 Mar 2024 18:19:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 06A315A119;
+	Mon, 25 Mar 2024 18:20:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="YbJg6AXg"
-Received: from mail-pl1-f178.google.com (mail-pl1-f178.google.com [209.85.214.178])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="XEkb4FbW"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D3F5118E20;
-	Mon, 25 Mar 2024 18:19:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0CE1F54279;
+	Mon, 25 Mar 2024 18:20:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711390795; cv=none; b=qNMJEygw9uX6OtBQlHy/O0mcirU52rPXTMhvfa9ptgqImhU24Wbd2uWxK6r1Av0HrhXLB43nsHWvpCDnaNvPtIET+6XBsHhKrpYnMvLxbpd95597QW6MomxoPA1H1hfgXowdAz3iibebOoEb1veyQt1k3SkaDrjt76FSnU/R3Mo=
+	t=1711390815; cv=none; b=PoTls2y7Q52HYdMmbEWPwtTM8ca3oGeM0EquyX6ikYC4EfbcctRhOOq3BlTBuRmxX8YQsmq4axsgzsTZhJJzBJtycr/5/ZcXb/jRl7x1TZ+AkmjG9zsoa4krWLfvacx3mvm+OKbBO8LivBfF6Sf+X5htp5elAOWZ+AAif4BjOH0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711390795; c=relaxed/simple;
-	bh=E81LA2THJKeDidFFeqQI4zKcNnZcZ38Rs/hVCGWis4k=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=sElSdpHIdaOlHcbe+YwguJ0inkfQGMNL7Q3a/7iW9GCZVy4QJDxloFNcguyRyxri7Ukn5rLiv8v6efaCfj+0ZZWefKNVfYs2uwyi4+wJ7qSJ49lAxVfZ8QNAVXf/r6Qec6fN1G8DyoviKviLYlPx2gxetL5PCIn4sJMvCre3qCc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=YbJg6AXg; arc=none smtp.client-ip=209.85.214.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f178.google.com with SMTP id d9443c01a7336-1dddbe47ac1so35629585ad.1;
-        Mon, 25 Mar 2024 11:19:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711390793; x=1711995593; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=rMzrRncdSfwKv7bbmYuayc7ahUnMmS+d++1NpNJY28g=;
-        b=YbJg6AXgUalcLsoo/QQVf0UOmUtewy5Z38bMZ7zTHQJHUKXF++5MG1HqsKJMnbx8n7
-         JsRacJy7SyvDeRvvcICLEaB/DTFKIc8swJ10YPsSZHUPPclguFpChbayKelq8V2/+jd8
-         gzI6kQ4iFPks2obEctwKm/BlbGZwrawL5OfNIvZJiGHv86x6cn7EbwzWJNqw4kEwT8Jf
-         9u4CaItYm7UZXuv07+KowexL2ey5CoJwUQjTozuNycU8hduzDdv/JTXofgpBWzPKOQxa
-         w02lE2nuf9y03+2VIITsHKS1n38zXSTnUdjJlambqCwe8Y2gj5zvMR4x/tVs8qw/XUsm
-         A+Yg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711390793; x=1711995593;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=rMzrRncdSfwKv7bbmYuayc7ahUnMmS+d++1NpNJY28g=;
-        b=P+FNaQOqMyCEBn58vrV2TpTgQgkZo+gbmENnalIMjngDQsaba+8oyJLOKHjNJhyQT0
-         wdxNuQwyT7cuZIcxACtLSkfiAE3Ndi4VYkWkgqrhgHKLgJhoi7gTEZYf35Nf/b0bNNX0
-         VIP7r/yxajSWdgRt87DyjZX0SOtwfr3WgJPV6XcAqI+xiKasrf5GZ1T8/axH+DW9XijN
-         T8gN5N7XWNtBGP9PdjkS/IWkWnqZcL2/UmI50Eq5Ze70jO9xeoBlPr2atzOVVNo889Jz
-         NieQhQ8aubiDOk2WL/3t5TT8tGiqtVwETHPezdxNlKDYDDy5n31jHhAvguoAdnYpD3Es
-         BTfA==
-X-Forwarded-Encrypted: i=1; AJvYcCX+twh78TSfzu7wRDwMvOLpGuoqToXwaMjh4jeIHALAv4GqKFD158DHzIp+nVev5Feig4nlkvyOcuw9mPj6lbWLN5w3BPf4sFRCEPeIthFdYxnKVUMB+Njrs5c2zlF/9c+ypHV7RFQYz8KUeq685zvN46TU1VD6f/n3l0SK5Jyo9BNO8dQm
-X-Gm-Message-State: AOJu0Yzv2ri0Islv0CKtJV84B/BZ2AnJO4NPeP8Gzlb5juanW1E56nof
-	YpHYafV/Lh523zKwdEWX9b/KEERNYmQiAm+GWprhs7a99nDnPHWnQELSQGSr/Rs=
-X-Google-Smtp-Source: AGHT+IHKUevLsdZcPN6IM1ik1xoJp2mQaYxMFZBtrEmNtYwA6oFk+gLB3eosr+OB5zj862LgKib99w==
-X-Received: by 2002:a17:902:d507:b0:1e0:bc64:a37a with SMTP id b7-20020a170902d50700b001e0bc64a37amr6034767plg.8.1711390792834;
-        Mon, 25 Mar 2024 11:19:52 -0700 (PDT)
-Received: from localhost ([103.139.191.219])
-        by smtp.gmail.com with UTF8SMTPSA id h10-20020a170902f54a00b001e02875930asm4957694plf.25.2024.03.25.11.19.49
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 25 Mar 2024 11:19:52 -0700 (PDT)
-From: Kartik Agarwala <agarwala.kartik@gmail.com>
-To: lgirdwood@gmail.com,
-	broonie@kernel.org,
-	robh@kernel.org,
-	krzysztof.kozlowski+dt@linaro.org,
-	conor+dt@kernel.org
-Cc: Kartik Agarwala <agarwala.kartik@gmail.com>,
-	patches@opensource.cirrus.com,
-	linux-sound@vger.kernel.org,
-	devicetree@vger.kernel.org,
+	s=arc-20240116; t=1711390815; c=relaxed/simple;
+	bh=Z9fYLG7lM7QRd2z1J6VDOsa2mnKl/0CwjKf7s97CFbc=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=gJ8hk3j21gfz1Ig44K/1qX+QMr+YyBJcu82q7/mh5YZgw/QNcJPRfEJHSRZYaqc+tPP3uHPdbTixIAZLFvHPJ7TgbmTslnM6+g3FHpAbJDWRJiJXoZPKiYtBlKAju7bknyeubekdb1GBvPHabzQ04eRjVpuPOi7YeUaPiP+bIKQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=XEkb4FbW; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 55A0CC433F1;
+	Mon, 25 Mar 2024 18:20:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1711390814;
+	bh=Z9fYLG7lM7QRd2z1J6VDOsa2mnKl/0CwjKf7s97CFbc=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=XEkb4FbWOn67uvoG4OVtv6eeAU5F3GTqMnsnd6vPKrCjkAKU2Fa2ZY15zDyx6e0Qt
+	 Aj5NNS8ijJOk6L1H5Iivvs3F2JB4/v5GWKD8R3RbddWydHUHUxjff5crBS4mHSIAU1
+	 7QuXHPDFEbPyddq7eScELmxnvylfgwSjlxBxWIfuYxnpBgRoyVeXaGV2sUCsWFm3F8
+	 HpNF55tk7Q3aUQHyV0NkKzspllvZsRloFZQVN2ngZVwXevH4uWn66roa2ABgA8HFKi
+	 EpkMG8QuSsPcKgcz/EWGIQIxt9sYlmspKP0eS2DCcj8W8pz8ie2DwPgILuJnVQVq8z
+	 MD1BHbcKXCaLQ==
+From: SeongJae Park <sj@kernel.org>
+To: Suren Baghdasaryan <surenb@google.com>
+Cc: SeongJae Park <sj@kernel.org>,
+	vbabka@suse.cz,
+	hannes@cmpxchg.org,
+	roman.gushchin@linux.dev,
+	mgorman@suse.de,
+	dave@stgolabs.net,
+	willy@infradead.org,
+	liam.howlett@oracle.com,
+	penguin-kernel@i-love.sakura.ne.jp,
+	corbet@lwn.net,
+	void@manifault.com,
+	peterz@infradead.org,
+	juri.lelli@redhat.com,
+	catalin.marinas@arm.com,
+	will@kernel.org,
+	arnd@arndb.de,
+	tglx@linutronix.de,
+	mingo@redhat.com,
+	dave.hansen@linux.intel.com,
+	x86@kernel.org,
+	peterx@redhat.com,
+	david@redhat.com,
+	axboe@kernel.dk,
+	mcgrof@kernel.org,
+	masahiroy@kernel.org,
+	nathan@kernel.org,
+	dennis@kernel.org,
+	jhubbard@nvidia.com,
+	tj@kernel.org,
+	muchun.song@linux.dev,
+	rppt@kernel.org,
+	paulmck@kernel.org,
+	pasha.tatashin@soleen.com,
+	yosryahmed@google.com,
+	yuzhao@google.com,
+	dhowells@redhat.com,
+	hughd@google.com,
+	andreyknvl@gmail.com,
+	keescook@chromium.org,
+	ndesaulniers@google.com,
+	vvvvvv@google.com,
+	gregkh@linuxfoundation.org,
+	ebiggers@google.com,
+	ytcoode@gmail.com,
+	vincent.guittot@linaro.org,
+	dietmar.eggemann@arm.com,
+	rostedt@goodmis.org,
+	bsegall@google.com,
+	bristot@redhat.com,
+	vschneid@redhat.com,
+	cl@linux.com,
+	penberg@kernel.org,
+	iamjoonsoo.kim@lge.com,
+	42.hyeyoo@gmail.com,
+	glider@google.com,
+	elver@google.com,
+	dvyukov@google.com,
+	songmuchun@bytedance.com,
+	jbaron@akamai.com,
+	aliceryhl@google.com,
+	rientjes@google.com,
+	minchan@google.com,
+	kaleshsingh@google.com,
+	kernel-team@android.com,
+	linux-doc@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
-	javier.carrasco.cruz@gmail.com
-Subject: [PATCH] ASoC: dt-bindings: wm8974: Convert to dtschema
-Date: Mon, 25 Mar 2024 23:49:42 +0530
-Message-Id: <20240325181943.116733-1-agarwala.kartik@gmail.com>
-X-Mailer: git-send-email 2.34.1
+	iommu@lists.linux.dev,
+	linux-arch@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org,
+	linux-mm@kvack.org,
+	linux-modules@vger.kernel.org,
+	kasan-dev@googlegroups.com,
+	cgroups@vger.kernel.org
+Subject: Re: [PATCH v6 30/37] mm: vmalloc: Enable memory allocation profiling
+Date: Mon, 25 Mar 2024 11:20:07 -0700
+Message-Id: <20240325182007.233780-1-sj@kernel.org>
+X-Mailer: git-send-email 2.39.2
+In-Reply-To: <CAJuCfpGiuCnMFtViD0xsoaLVO_gJddBQ1NpL6TpnsfN8z5P6fA@mail.gmail.com>
+References: 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-Convert WM8974 audio CODEC bindings from text to dtschema.
+On Mon, 25 Mar 2024 10:59:01 -0700 Suren Baghdasaryan <surenb@google.com> wrote:
 
-Signed-off-by: Kartik Agarwala <agarwala.kartik@gmail.com>
----
- .../devicetree/bindings/sound/wlf,wm8974.txt  | 15 -------
- .../devicetree/bindings/sound/wlf,wm8974.yaml | 41 +++++++++++++++++++
- 2 files changed, 41 insertions(+), 15 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/sound/wlf,wm8974.txt
- create mode 100644 Documentation/devicetree/bindings/sound/wlf,wm8974.yaml
+> On Mon, Mar 25, 2024 at 10:49 AM SeongJae Park <sj@kernel.org> wrote:
+> >
+> > On Mon, 25 Mar 2024 14:56:01 +0000 Suren Baghdasaryan <surenb@google.com> wrote:
+> >
+> > > On Sat, Mar 23, 2024 at 6:05 PM SeongJae Park <sj@kernel.org> wrote:
+> > > >
+> > > > Hi Suren and Kent,
+> > > >
+> > > > On Thu, 21 Mar 2024 09:36:52 -0700 Suren Baghdasaryan <surenb@google.com> wrote:
+> > > >
+> > > > > From: Kent Overstreet <kent.overstreet@linux.dev>
+> > > > >
+> > > > > This wrapps all external vmalloc allocation functions with the
+> > > > > alloc_hooks() wrapper, and switches internal allocations to _noprof
+> > > > > variants where appropriate, for the new memory allocation profiling
+> > > > > feature.
+> > > >
+> > > > I just noticed latest mm-unstable fails running kunit on my machine as below.
+> > > > 'git-bisect' says this is the first commit of the failure.
+> > > >
+> > > >     $ ./tools/testing/kunit/kunit.py run --build_dir ../kunit.out/
+> > > >     [10:59:53] Configuring KUnit Kernel ...
+> > > >     [10:59:53] Building KUnit Kernel ...
+> > > >     Populating config with:
+> > > >     $ make ARCH=um O=../kunit.out/ olddefconfig
+> > > >     Building with:
+> > > >     $ make ARCH=um O=../kunit.out/ --jobs=36
+> > > >     ERROR:root:/usr/bin/ld: arch/um/os-Linux/main.o: in function `__wrap_malloc':
+> > > >     main.c:(.text+0x10b): undefined reference to `vmalloc'
+> > > >     collect2: error: ld returned 1 exit status
+> > > >
+> > > > Haven't looked into the code yet, but reporting first.  May I ask your idea?
+> > >
+> > > Hi SeongJae,
+> > > Looks like we missed adding "#include <linux/vmalloc.h>" inside
+> > > arch/um/os-Linux/main.c in this patch:
+> > > https://lore.kernel.org/all/20240321163705.3067592-2-surenb@google.com/.
+> > > I'll be posing fixes for all 0-day issues found over the weekend and
+> > > will include a fix for this. In the meantime, to work around it you
+> > > can add that include yourself. Please let me know if the issue still
+> > > persists after doing that.
+> >
+> > Thank you, Suren.  The change made the error message disappears.  However, it
+> > introduced another one.
+> 
+> Ok, let me investigate and I'll try to get a fix for it today evening.
 
-diff --git a/Documentation/devicetree/bindings/sound/wlf,wm8974.txt b/Documentation/devicetree/bindings/sound/wlf,wm8974.txt
-deleted file mode 100644
-index 01d3a7c83..000000000
---- a/Documentation/devicetree/bindings/sound/wlf,wm8974.txt
-+++ /dev/null
-@@ -1,15 +0,0 @@
--WM8974 audio CODEC
--
--This device supports both I2C and SPI (configured with pin strapping
--on the board).
--
--Required properties:
--  - compatible: "wlf,wm8974"
--  - reg: the I2C address or SPI chip select number of the device
--
--Examples:
--
--codec: wm8974@1a {
--	compatible = "wlf,wm8974";
--	reg = <0x1a>;
--};
-diff --git a/Documentation/devicetree/bindings/sound/wlf,wm8974.yaml b/Documentation/devicetree/bindings/sound/wlf,wm8974.yaml
-new file mode 100644
-index 000000000..d27300207
---- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/wlf,wm8974.yaml
-@@ -0,0 +1,41 @@
-+# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/sound/wlf,wm8974.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: WM8974 audio CODEC
-+
-+maintainers:
-+  - patches@opensource.cirrus.com
-+
-+allOf:
-+  - $ref: dai-common.yaml#
-+
-+properties:
-+  compatible:
-+    const: wlf,wm8974
-+
-+  reg:
-+    maxItems: 1
-+
-+  "#sound-dai-cells":
-+    const: 0
-+
-+required:
-+  - compatible
-+  - reg
-+
-+unevaluatedProperties: false
-+
-+examples:
-+  - |
-+    i2c {
-+        #address-cells = <1>;
-+        #size-cells = <0>;
-+
-+        codec@1a {
-+            compatible = "wlf,wm8974";
-+            reg = <0x1a>;
-+        };
-+    };
--- 
-2.34.1
+Thank you for this kind reply.  Nonetheless, this is not blocking some real
+thing from me.  So, no rush.  Plese take your time :)
 
+
+Thanks,
+SJ
+
+> Thanks,
+> Suren.
+> 
+> >
+> >     $ git diff
+> >     diff --git a/arch/um/os-Linux/main.c b/arch/um/os-Linux/main.c
+> >     index c8a42ecbd7a2..8fe274e9f3a4 100644
+> >     --- a/arch/um/os-Linux/main.c
+> >     +++ b/arch/um/os-Linux/main.c
+> >     @@ -16,6 +16,7 @@
+> >      #include <kern_util.h>
+> >      #include <os.h>
+> >      #include <um_malloc.h>
+> >     +#include <linux/vmalloc.h>
+> >
+> >      #define PGD_BOUND (4 * 1024 * 1024)
+> >      #define STACKSIZE (8 * 1024 * 1024)
+> >     $
+> >     $ ./tools/testing/kunit/kunit.py run --build_dir ../kunit.out/
+> >     [10:43:13] Configuring KUnit Kernel ...
+> >     [10:43:13] Building KUnit Kernel ...
+> >     Populating config with:
+> >     $ make ARCH=um O=../kunit.out/ olddefconfig
+> >     Building with:
+> >     $ make ARCH=um O=../kunit.out/ --jobs=36
+> >     ERROR:root:In file included from .../arch/um/kernel/asm-offsets.c:1:
+> >     .../arch/x86/um/shared/sysdep/kernel-offsets.h:9:6: warning: no previous prototype for ‘foo’ [-Wmissing-prototypes]
+> >         9 | void foo(void)
+> >           |      ^~~
+> >     In file included from .../include/linux/alloc_tag.h:8,
+> >                      from .../include/linux/vmalloc.h:5,
+> >                      from .../arch/um/os-Linux/main.c:19:
+> >     .../include/linux/bug.h:5:10: fatal error: asm/bug.h: No such file or directory
+> >         5 | #include <asm/bug.h>
+> >           |          ^~~~~~~~~~~
+> >     compilation terminated.
+> >
+> >
+> > Thanks,
+> > SJ
+> >
+> > [...]
+> 
 
