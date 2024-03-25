@@ -1,131 +1,213 @@
-Return-Path: <linux-kernel+bounces-117282-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-117283-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CA95C88A995
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 17:37:49 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1AF3188B3F1
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 23:23:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 79EBA29D71D
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 16:37:48 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1DBFDB67C3B
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 16:38:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CADAB15253D;
-	Mon, 25 Mar 2024 14:44:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 308E216F0F4;
+	Mon, 25 Mar 2024 14:44:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="GRcNMnXS"
-Received: from relay9-d.mail.gandi.net (relay9-d.mail.gandi.net [217.70.183.199])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="DHSK08Xp";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="uXWNbUCp";
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="DHSK08Xp";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="uXWNbUCp"
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 979DC12CDA6;
-	Mon, 25 Mar 2024 14:44:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.199
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 89A0912CDA6;
+	Mon, 25 Mar 2024 14:44:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711377859; cv=none; b=ppfsWF4nm36o8fqpobiqHu90RjTAcEg6KU1M+5U8/n7Zc0CfzaAEL1Z83KjQiyWl+FFOmgdKNNO1QgCjF7AQvwHYtoHyY8yJXpdsyonohpMlAn7tCWz+KPjy4NKKmPWSQz5cHRd2IcpR7zL95x47Wuqax/ZqJgPw+sBHkgE7Jg4=
+	t=1711377869; cv=none; b=fNT4ZelxTxin8X49u0675JO/DKLeviIYclm64/GOs1Eq6X2DI8YUt8z/fdc1TUF9yUnQ52OTD8jKRMxQk7xnJaeuNCCAfNonfAhTD37V2Wd0gx1OinUPw3eC6lNOHAJPFIwUjSGf337xh/TjT8Zv+wqTa3zPGbTIrg5UEcCsVQA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711377859; c=relaxed/simple;
-	bh=QsNB623Lmca7ppvFa4bARafHWQQzNtKPQ9ez856a9rc=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=Z6tu+XifqqAxLpX+uPT0Em6cphmtEsERyQtuo5o+Nqo57xw2X2g7lDiqEXlZ1/jnfP01MjfxHaqG0Sjj/43ZRttaehA8a97UI7JUr/7Mr2hBnGmTaRuhmJTgBb7CO8nICux6ZkUMOgtX4LQY0mrUA32DqzUS6Bx0dpm+IFXbMoI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=GRcNMnXS; arc=none smtp.client-ip=217.70.183.199
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id BDF53FF811;
-	Mon, 25 Mar 2024 14:44:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1711377854;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
+	s=arc-20240116; t=1711377869; c=relaxed/simple;
+	bh=fU/W0oKSN3xGYgX5HM/CxAUkFuyJb32zow9lsYvfY4M=;
+	h=Date:Message-ID:From:To:Cc:Subject:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=C6PelP0enjBv7nDUlHFFfwVeoJOHCZjdIQTwT/1tEOvyLom4O7SIrmfXXI1kA4myOuX5Kmutby5KVLBHdp7d/tKD7aWwlwY/8+vq44AGnnZMGoACQaNoboLFzZjEYWL20Iysxmnu9n/w2uCeOD2X1Khu3jREb0E6jO5bK/GdNv8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=DHSK08Xp; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=uXWNbUCp; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=DHSK08Xp; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=uXWNbUCp; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 96FA434606;
+	Mon, 25 Mar 2024 14:44:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1711377865; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=hOoDjVcGRmFMzZwxqBiMD5JzXHNjwrfYtPzd95vutmk=;
-	b=GRcNMnXS6gTc5IgNbIo6ezfvOU6pDsL8d7x2K6AbVCNthUBG+ADjrllXftMJaZqwKXsUQY
-	ALkjwITOwvd+2MouoX4CBjpnyEEjuSGKkKLhCpGY6vIVBiHh1ubF6nJc0Fhr6Gwby8NE4e
-	fMQ7BiylwG6v909kKXdJrsm+2xEC+akcQObB704TKTCCDbuKTS3iR/zK4CMvMHF6VH97eq
-	FRuPIE3IElqrvytG24PMdfnu/wtOHGwV1SAjICB5YzLe0Ryr0yYzgWPBWeWBty55XLM0NP
-	XeE58OJHGquI0f1Amg77Pusaa7e75waAxroMfsJIONu7UZozu+EKxZuP0URE5w==
-Date: Mon, 25 Mar 2024 15:44:12 +0100
-From: Luca Ceresoli <luca.ceresoli@bootlin.com>
-To: Ricardo Ribalda <ribalda@chromium.org>
-Cc: Thierry Reding <thierry.reding@gmail.com>, Jonathan Hunter
- <jonathanh@nvidia.com>, Sowjanya Komatineni <skomatineni@nvidia.com>, Mauro
- Carvalho Chehab <mchehab@kernel.org>, Greg Kroah-Hartman
- <gregkh@linuxfoundation.org>, Hans Verkuil <hverkuil@xs4all.nl>,
- linux-media@vger.kernel.org, linux-tegra@vger.kernel.org,
- linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 3/3] media: dvbdev: Initialize sbuf
-Message-ID: <20240325154412.0b768835@booty>
-In-Reply-To: <20240325-gcc-arm-warnings-v2-3-47523cf5c8ca@chromium.org>
-References: <20240325-gcc-arm-warnings-v2-0-47523cf5c8ca@chromium.org>
-	<20240325-gcc-arm-warnings-v2-3-47523cf5c8ca@chromium.org>
-Organization: Bootlin
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
+	bh=FaAsu/bkUs1MMLvqQxw69AEv/iUAnpo7imQC4mE4YLM=;
+	b=DHSK08Xp7o4xg3JPSAWZKyCeb/25iAceNyR6EZOMXgwc2LniAOOdyhZrqNg2VnZQlUEL1m
+	NKu/GTA9jXPp6v+izBslWKbr10/+A2dVlI6l9UtVL3BXz8zO/uPOL/AUtuZOcH5FW8SBZP
+	+Vw31ME6RXv/nup/OCw7e7lcDikMer8=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1711377865;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=FaAsu/bkUs1MMLvqQxw69AEv/iUAnpo7imQC4mE4YLM=;
+	b=uXWNbUCpOm7z+XztXYLDvk5YvJnE1IzgU0D03vN8Zl2kBya/zmXm/glFEsvMtsrTHmTKoe
+	T5QvpGJhM3P1DBDg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1711377865; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=FaAsu/bkUs1MMLvqQxw69AEv/iUAnpo7imQC4mE4YLM=;
+	b=DHSK08Xp7o4xg3JPSAWZKyCeb/25iAceNyR6EZOMXgwc2LniAOOdyhZrqNg2VnZQlUEL1m
+	NKu/GTA9jXPp6v+izBslWKbr10/+A2dVlI6l9UtVL3BXz8zO/uPOL/AUtuZOcH5FW8SBZP
+	+Vw31ME6RXv/nup/OCw7e7lcDikMer8=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1711377865;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=FaAsu/bkUs1MMLvqQxw69AEv/iUAnpo7imQC4mE4YLM=;
+	b=uXWNbUCpOm7z+XztXYLDvk5YvJnE1IzgU0D03vN8Zl2kBya/zmXm/glFEsvMtsrTHmTKoe
+	T5QvpGJhM3P1DBDg==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 5FFEA13503;
+	Mon, 25 Mar 2024 14:44:25 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id NaPuFcmNAWb0ewAAD6G6ig
+	(envelope-from <tiwai@suse.de>); Mon, 25 Mar 2024 14:44:25 +0000
+Date: Mon, 25 Mar 2024 15:44:26 +0100
+Message-ID: <874jcuxtf9.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: duoming@zju.edu.cn
+Cc: "Takashi Iwai" <tiwai@suse.de>,
+	linux-sound@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	tiwai@suse.com,
+	perex@perex.cz
+Subject: Re: [PATCH] ALSA: sh: aica: reorder cleanup operations to avoid UAF bug
+In-Reply-To: <43e102f3.61dc.18e7601a2f2.Coremail.duoming@zju.edu.cn>
+References: <20240325033946.47052-1-duoming@zju.edu.cn>
+	<871q7yybeb.wl-tiwai@suse.de>
+	<43e102f3.61dc.18e7601a2f2.Coremail.duoming@zju.edu.cn>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-GND-Sasl: luca.ceresoli@bootlin.com
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-Spam-Score: -3.30
+X-Spamd-Result: default: False [-3.30 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 MIME_GOOD(-0.10)[text/plain];
+	 RCPT_COUNT_FIVE(0.00)[6];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	 NEURAL_HAM_SHORT(-0.20)[-0.995];
+	 MID_CONTAINS_FROM(1.00)[];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 RCVD_TLS_ALL(0.00)[];
+	 BAYES_HAM(-3.00)[100.00%]
+X-Spam-Level: 
+Authentication-Results: smtp-out1.suse.de;
+	none
+X-Spam-Flag: NO
 
-Hello Ricardo,
+On Mon, 25 Mar 2024 15:26:42 +0100,
+duoming@zju.edu.cn wrote:
+> 
+> On Mon, 25 Mar 2024 09:16:12 +0100 Takashi Iwai wrote:
+> > > The dreamcastcard->timer could schedule the spu_dma_work and the
+> > > spu_dma_work could also arm the dreamcastcard->timer.
+> > > 
+> > > When the Yamaha AICA card is closing, the dreamcastcard->channel
+> > > will be deallocated. But it could still be dereferenced in the
+> > > worker thread. The reason is that del_timer() will return directly
+> > > regardless of whether the timer handler is running or not and the
+> > > worker could be rescheduled in the timer handler. As a result, the
+> > > UAF bug will happen. The racy situation is shown below:
+> > > 
+> > >       (Thread 1)                 |      (Thread 2)
+> > > snd_aicapcm_pcm_close()          |
+> > >  ...                             |  run_spu_dma() //worker
+> > >                                  |    mod_timer()
+> > >   flush_work()                   |
+> > >   del_timer()                    |  aica_period_elapsed() //timer
+> > >   kfree(dreamcastcard->channel)  |    schedule_work()
+> > >                                  |  run_spu_dma() //worker
+> > >   ...                            |    dreamcastcard->channel-> //USE
+> > > 
+> > > In order to mitigate this bug, use timer_shutdown_sync() to shutdown
+> > > the timer and then use flush_work() to cancel the worker.
+> > > 
+> > > Fixes: 198de43d758c ("[ALSA] Add ALSA support for the SEGA Dreamcast PCM device")
+> > > Signed-off-by: Duoming Zhou <duoming@zju.edu.cn>
+> > > ---
+> > >  sound/sh/aica.c | 2 +-
+> > >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > > 
+> > > diff --git a/sound/sh/aica.c b/sound/sh/aica.c
+> > > index 320ac792c7f..bc68a3903f2 100644
+> > > --- a/sound/sh/aica.c
+> > > +++ b/sound/sh/aica.c
+> > > @@ -354,8 +354,8 @@ static int snd_aicapcm_pcm_close(struct snd_pcm_substream
+> > >  				 *substream)
+> > >  {
+> > >  	struct snd_card_aica *dreamcastcard = substream->pcm->private_data;
+> > > +	timer_shutdown_sync(&dreamcastcard->timer);
+> > 
+> > I thought this call invalidates the timer object, hence it can't be
+> > used again; i.e. it breaks when the stream is re-opened, I suppose?
+> >
+> > In general timer_shutdown*() is used for the code path to clean up the
+> > driver (or the object the timer belongs to).  The PCM close is only
+> > about the PCM stream, and it's not the place.
+> > 
+> > A proper fix would be rather to implement two things:
+> > - Call mod_timer() conditionally in run_spu_dma()
+> > - Implement PCM sync_stop op to cancel/flush the work
+> > 
+> > The former alone should suffice to fix the UAF in your scenario,
+> > though.  The latter will cover other possible corner cases.
+> 
+> Thank you for your time and reply! I know using timer_shutdown_sync()
+> is not proper. In order to solve the problem, I add a shutdown flag 
+> in the struct snd_card_aica and set the flag to true when the PCM 
+> stream is closing. Then call mod_timer() conditionally in run_spu_dma().
+> What's more, use del_timer_sync() to stop the timer and put it before 
+> flush_work(). As a result, both timer and worker could be stopped safely. 
+> The detail is shown below:
 
-On Mon, 25 Mar 2024 14:19:55 +0000
-Ricardo Ribalda <ribalda@chromium.org> wrote:
+You can use the existing API to check the PCM running state, e.g.
 
-> Because the size passed to copy_from_user() cannot be known beforehand,
-> it needs to be checked during runtime with check_object_size. That makes
-> gcc believe that the content of sbuf can be used before init.
->=20
-> Fix:
-> ./include/linux/thread_info.h:215:17: warning: =E2=80=98sbuf=E2=80=99 may=
- be used uninitialized [-Wmaybe-uninitialized]
->=20
-> Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
-> ---
->  drivers/media/dvb-core/dvbdev.c             | 2 +-
->  drivers/staging/media/tegra-video/tegra20.c | 2 +-
->  2 files changed, 2 insertions(+), 2 deletions(-)
->=20
-> diff --git a/drivers/media/dvb-core/dvbdev.c b/drivers/media/dvb-core/dvb=
-dev.c
-> index 733d0bc4b4cc3..b43695bc51e75 100644
-> --- a/drivers/media/dvb-core/dvbdev.c
-> +++ b/drivers/media/dvb-core/dvbdev.c
-> @@ -956,7 +956,7 @@ int dvb_usercopy(struct file *file,
->  		 int (*func)(struct file *file,
->  			     unsigned int cmd, void *arg))
->  {
-> -	char    sbuf[128];
-> +	char    sbuf[128] =3D {};
->  	void    *mbuf =3D NULL;
->  	void    *parg =3D NULL;
->  	int     err  =3D -EINVAL;
-> diff --git a/drivers/staging/media/tegra-video/tegra20.c b/drivers/stagin=
-g/media/tegra-video/tegra20.c
-> index c39b52d0e4447..630e2ff987a37 100644
-> --- a/drivers/staging/media/tegra-video/tegra20.c
-> +++ b/drivers/staging/media/tegra-video/tegra20.c
-> @@ -164,6 +164,7 @@ static void tegra20_vi_get_input_formats(struct tegra=
-_vi_channel *chan,
->  	unsigned int input_mbus_code =3D chan->fmtinfo->code;
-> =20
->  	(*main_input_format) =3D VI_INPUT_INPUT_FORMAT_YUV422;
-> +	(*yuv_input_format) =3D VI_INPUT_YUV_INPUT_FORMAT_UYVY;
+--- a/sound/sh/aica.c
++++ b/sound/sh/aica.c
+@@ -278,7 +278,8 @@ static void run_spu_dma(struct work_struct *work)
+ 		dreamcastcard->clicks++;
+ 		if (unlikely(dreamcastcard->clicks >= AICA_PERIOD_NUMBER))
+ 			dreamcastcard->clicks %= AICA_PERIOD_NUMBER;
+-		mod_timer(&dreamcastcard->timer, jiffies + 1);
++		if (snd_pcm_running(dreamcastcard->substream))
++			mod_timer(&dreamcastcard->timer, jiffies + 1);
+ 	}
+ }
+ 
 
-I agree with Thierry this seems to be the best fix, making this
-function similar to tegra20_vi_get_output_formats().
+HTH,
 
-However in this v2 your change ended up in patch 3 while it should be
-in patch 1. I'm glad to add my Reviewed-by tag on a new version with
-this fixed.
-
-Luca
-
---=20
-Luca Ceresoli, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+Takashi
 
