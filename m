@@ -1,168 +1,165 @@
-Return-Path: <linux-kernel+bounces-117700-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-117701-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9299288AE97
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 19:40:22 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2731988AE9C
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 19:40:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 48A242C760D
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 18:40:21 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 57E9832261B
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 18:40:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 644D183A07;
-	Mon, 25 Mar 2024 18:24:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9F24C73182;
+	Mon, 25 Mar 2024 18:26:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="MSajJ7uA"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Y9O+uwX7"
+Received: from mail-lj1-f169.google.com (mail-lj1-f169.google.com [209.85.208.169])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0ECB682D8D
-	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 18:24:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2BEE212E6A;
+	Mon, 25 Mar 2024 18:26:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711391079; cv=none; b=bLNamXIr1WAt1gdOyYYylYAeDzcciRR178inBRrV65b6hUsknhfHYN0WuaCHjvV5jVxJYTD0AbW/4MZI89x95exEWH0vFjQU6cQ0h+wsLYyk5gwkWj9S2LfK7lbIBvetFZqX+2boRIwcBSzSEdreGv4U9w7fd0J3+ZQOZDVK67M=
+	t=1711391207; cv=none; b=KTm/M8LlaWjX/L3qL+GCw1O1HDzACKWZgzZ6bfCUomG51a19ClVC07QqebQqNEkFa8ktqAg/TheCi+YFLhv/2dz9QANFD58Obo+8HcxuNC0ITXk8g6THlw1UkoZyK6H+VzcERS86Y0SKrFqBhhjYUXdsbMAOHyJXAttX/Xamg+Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711391079; c=relaxed/simple;
-	bh=1y7PY1oTFX7Axkh8dq81egggxtYVixKQqkHsEHIH+zs=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=JjZQpHq0Lxgkk19l3YbNLU2TenrotJ0vgs9zxd9oAoXgzPG8X/zqTiSzNJOVasLpHwoq2QEt2jgxRTlIBI3EhGbqNfaN30lkso3GfL3l4bvrpOlx7VFWhvfN7dDObMSmYBn/8j9hkslH9aoik7NpCrr0slkTmM6KrXPqpZbv4bY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=MSajJ7uA; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1711391076;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=b8m7155r4ZtiZ6OJmssDUl1N2SECV45y4cCUPbb/2rA=;
-	b=MSajJ7uAIUdJRUVR3KlJffhH+KdJwwF3wdb+Qdpwqsef0WJIl//XPxvzDIM2+g3/1gH4kP
-	6lCf2zL+3qGfmjwfYnpBGH4uimhojtFR8zzUpkeUXDK3NUOI1p2oM1cFA/sL6kGNa/RG74
-	TJC3xRzgtVOU21fBRMzcISxxcX8ZNG4=
-Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
- [209.85.221.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-190-nOhCCe1FPLGdWnWQiqfT_w-1; Mon, 25 Mar 2024 14:24:35 -0400
-X-MC-Unique: nOhCCe1FPLGdWnWQiqfT_w-1
-Received: by mail-wr1-f71.google.com with SMTP id ffacd0b85a97d-33eca7270ccso1982896f8f.1
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 11:24:35 -0700 (PDT)
+	s=arc-20240116; t=1711391207; c=relaxed/simple;
+	bh=alToMwgx8F4x0ok8bQUuFA0DjFg6nUSwo0GbUNoR+Y4=;
+	h=From:To:Subject:Date:Message-Id:MIME-Version; b=Yh0CE/i4pCHxJNo6GFYq5z+dIqJziF9JtQxDFYHSW27ZFfWT81S8P9BWm7L1ESwjfRD62wPqr86WSeD6sCycwkZoyQzB7cHZh2wrp4EHvv4cqHbFOFQdjBTyYsae5ENrzAhkBoxxRO3HG49qD1I5DPH/fNz6maysr3eFGyJu1DI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Y9O+uwX7; arc=none smtp.client-ip=209.85.208.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lj1-f169.google.com with SMTP id 38308e7fff4ca-2d52e65d4a8so62254541fa.0;
+        Mon, 25 Mar 2024 11:26:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1711391204; x=1711996004; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:to
+         :from:from:to:cc:subject:date:message-id:reply-to;
+        bh=olLxRakxTUSwwI2bXiG7lgWcNd9XDiHnHMSgPu9OGUM=;
+        b=Y9O+uwX72Qh9SYkInPsX1u6sR5p44/JwT5JVdyE7YmbewS42Bgwi4S6B5OuvoPP2MA
+         K1a/PHgbIa0f//GskYXchrYxRJhYXcVxeziyXkimMPtTuRS64AdF2sofUFoPDRvjEQ8U
+         UGivsw/xM2tY2PcqwAfzqiLZuPzEJ5Ispfx2Y5hs3cTSjJ2FcfXxOmrK/EQ3GiNWqkD3
+         EfsAQV9G2aoRx3KYbtnYJT2kQRLJBg/3GpXmr0D+JwlDExXcYlQWc8gvcXgULEIBDBCr
+         dVYxPlv7BtgzQl/iy/kV7+ygxXfwX1Urywcip+GPkf+uMgtp8Ab0Ub7PCqTQW7Og3vjb
+         esEg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711391074; x=1711995874;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=b8m7155r4ZtiZ6OJmssDUl1N2SECV45y4cCUPbb/2rA=;
-        b=WXEgZ5RtD3CB2Lonr895B2vMw/zdyZnbUCJ/42/mzyXwqztgdPf3w+JlxuIOnLI021
-         7DwMSmyHVFcS8I9EXICRItyCSJt53yZpvdAOL46cjn4KpNijMl1dFtgcUfNqX6Gprg0o
-         vRb1XV9KYgmxYoUxfQJQ2ETv45WCBrA5/Z117cl4g9prqDH6lZFIHE77eh6XOz9FzR9w
-         cwi/60ndWQXGC1W7j+z6WuX4I5lMInhE+ca+llyVxW9pyjLc4tgKcU62qiz6MvzpjGNZ
-         FkTMfZlkVUuj3CApPvt0Wzw52ejEZoIsw4VKa/hwcTHO2lZWMaxthjCIiw6CuU2ObZ8Y
-         BbHQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXxeXKy6fQL3SY+U9+od+0aL2xvMEjA/oEtH5K+xm6xQMViCK2fmHAej380S+45OHiUEAbp8Fn+x5U/XAIExqGCZL1Cm9nQGd3/GRQh
-X-Gm-Message-State: AOJu0Yx6+ltpxNTN6ygG4rnsKCwNCQGL/6d7J3wfseAZDFAWILMNa0No
-	EL+K6VxK+gjixAxTdPXLn4xgrQ8sC42TWZ3pFBTZAvKFvFyp/RocubX5uG8Nol0lSghb9SISSCy
-	j6R7lqZxvUlPsnZJj2bqUSGKi0ANbCKVyusz+KVCl9PzjQyKbAxvezj8Il3+x+A==
-X-Received: by 2002:adf:c04b:0:b0:33e:bed4:c418 with SMTP id c11-20020adfc04b000000b0033ebed4c418mr5928999wrf.3.1711391074127;
-        Mon, 25 Mar 2024 11:24:34 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IH5r/lLnQrrP+FsfZkx/tzC+B0pi96TLNpWuweDBMHLcZfzhANDx6D6CScWAtrWW3d5fWN17Q==
-X-Received: by 2002:adf:c04b:0:b0:33e:bed4:c418 with SMTP id c11-20020adfc04b000000b0033ebed4c418mr5928981wrf.3.1711391073750;
-        Mon, 25 Mar 2024 11:24:33 -0700 (PDT)
-Received: from sgarzare-redhat (host-87-12-25-33.business.telecomitalia.it. [87.12.25.33])
-        by smtp.gmail.com with ESMTPSA id z17-20020a056000111100b0033ecbfc6941sm10112932wrw.110.2024.03.25.11.24.32
+        d=1e100.net; s=20230601; t=1711391204; x=1711996004;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=olLxRakxTUSwwI2bXiG7lgWcNd9XDiHnHMSgPu9OGUM=;
+        b=YW9/Xp53iTrzowoPiAJcfjrpmXJVYLON9gUcT4uELnl56KQDEZL4vuTvpyt57GCFaO
+         kvUDFEAgF6lKpFlyNBWW0UHzrLywDoRpSERkL/LVGTL0LRd2C6BRc3ueTPIcnwu26Ahm
+         kli06fGo+QnTbYSoEySxSipXJf1gbFQljBgCA4SBrDH2YtSNVXAWXS91YAVn64tDS6NW
+         d8n/tA21ljQ79ZUG4MWDbX7W/lacsV35iDmH6IUyroFBcxqbyvfW95FxO78pkjj80osI
+         prgPjDVjtNAFnF2k/kbJKPs2R7vqIE84h3PhmTUocQvVgdncSaSd9D23utPsceNlfc1U
+         CoQw==
+X-Forwarded-Encrypted: i=1; AJvYcCU7zOgV+sScWVlds+ZApMr5Yx1jl9GuWPa0bAYVORPgAOIF29uTaG1Su+z+8XA1enYqWve2JV8AMR91DJwDSPbUBBteT9c2XkYoRLk8Jm1agS5HfnTzvN5TWOGb0NjfMsPVrlpF/3t0M2WFIfKHFMAfa+isqRkrWpK1rTIRoi5gB3AOQTRG
+X-Gm-Message-State: AOJu0Yy3T2Hvr88df2mnwwU+Hov6Tadju2EBfQtBW9dSp4zq/5YaHBr8
+	pA1r7I3DR82DdBaMsljZjnxDY8ZDTAOGGBtdPi/NQ9wz26UabG3L
+X-Google-Smtp-Source: AGHT+IGkr9xEaWrbpwvTksrMxwc7O+nLPCMPgTZT/0FSruWW9Qp8zNzF8aG5i68YvH31sBzy2fp04w==
+X-Received: by 2002:a05:651c:b06:b0:2d6:d9cd:ac8c with SMTP id b6-20020a05651c0b0600b002d6d9cdac8cmr2496722ljr.43.1711391204062;
+        Mon, 25 Mar 2024 11:26:44 -0700 (PDT)
+Received: from localhost ([146.70.204.204])
+        by smtp.gmail.com with ESMTPSA id m9-20020a5d4a09000000b00341bdecdae3sm7954758wrq.117.2024.03.25.11.26.42
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 Mar 2024 11:24:33 -0700 (PDT)
-Date: Mon, 25 Mar 2024 19:24:28 +0100
-From: Stefano Garzarella <sgarzare@redhat.com>
-To: Marco Pinna <marco.pinn95@gmail.com>
-Cc: stefanha@redhat.com, davem@davemloft.net, edumazet@google.com, 
-	kuba@kernel.org, pabeni@redhat.com, ggarcia@deic.uab.cat, jhansen@vmware.com, 
-	kvm@vger.kernel.org, virtualization@lists.linux.dev, netdev@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] vsock/virtio: fix packet delivery to tap device
-Message-ID: <6vlaxnqqyhppbajmmwyco62b7gzasflgrxpgl4h3ippuk4jwme@qfne3i72eej4>
-References: <20240325171238.82511-1-marco.pinn95@gmail.com>
+        Mon, 25 Mar 2024 11:26:43 -0700 (PDT)
+From: Richard Gobert <richardbgobert@gmail.com>
+To: davem@davemloft.net,
+	edumazet@google.com,
+	kuba@kernel.org,
+	pabeni@redhat.com,
+	willemdebruijn.kernel@gmail.com,
+	dsahern@kernel.org,
+	xeb@mail.ru,
+	shuah@kernel.org,
+	idosch@nvidia.com,
+	amcohen@nvidia.com,
+	petrm@nvidia.com,
+	jbenc@redhat.com,
+	bpoirier@nvidia.com,
+	b.galvani@gmail.com,
+	liujian56@huawei.com,
+	horms@kernel.org,
+	linyunsheng@huawei.com,
+	richardbgobert@gmail.com,
+	therbert@google.com,
+	netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-kselftest@vger.kernel.org
+Subject: [PATCH net-next v4 0/4] net: gro: encapsulation bug fix and flush checks improvements
+Date: Mon, 25 Mar 2024 19:25:39 +0100
+Message-Id: <20240325182543.87683-1-richardbgobert@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <20240325171238.82511-1-marco.pinn95@gmail.com>
+Content-Transfer-Encoding: 8bit
 
-On Mon, Mar 25, 2024 at 06:12:38PM +0100, Marco Pinna wrote:
->Commit 82dfb540aeb2 ("VSOCK: Add virtio vsock vsockmon hooks") added
->virtio_transport_deliver_tap_pkt() for handing packets to the
->vsockmon device. However, in virtio_transport_send_pkt_work(),
->the function is called before actually sending the packet (i.e.
->before placing it in the virtqueue with virtqueue_add_sgs() and checking
->whether it returned successfully).
+This series fixes a bug in the complete phase of UDP in GRO, in which
+socket lookup fails due to using network_header when parsing encapsulated
+packets. The fix is to pass p_off parameter in *_gro_complete.
 
- From here..
+Next, the fields network_offset and inner_network_offset are added to
+napi_gro_cb, and are both set during the receive phase of GRO. This is then
+leveraged in the next commit to remove flush_id state from napi_gro_cb, and
+stateful code in {ipv6,inet}_gro_receive which may be unnecessarily
+complicated due to encapsulation support in GRO.
 
-> This may cause timing issues since
->the sending of the packet may fail, causing it to be re-queued
->(possibly multiple times), while the tap device would show the
->packet being sent correctly.
+In addition, udpgro_fwd selftest is adjusted to include the socket lookup
+case for vxlan. This selftest will test its supposed functionality once
+local bind support is merged (https://lore.kernel.org/netdev/df300a49-7811-4126-a56a-a77100c8841b@gmail.com/).
 
-to here...
+v3 -> v4:
+ - Fix code comment and commit message typos
+ - v3:
+   https://lore.kernel.org/all/f939c84a-2322-4393-a5b0-9b1e0be8ed8e@gmail.com/
 
-This a bit unclear, I would rephrase with something like this:
+v2 -> v3:
+ - Use napi_gro_cb instead of skb->{offset}
+ - v2:
+   https://lore.kernel.org/netdev/2ce1600b-e733-448b-91ac-9d0ae2b866a4@gmail.com/
 
-Queuing the packet in the virtqueue can fail even multiple times.
-However, in virtio_transport_deliver_tap_pkt() we deliver the packet
-to the monitoring tap interface only the first time we call it.
-This certainly avoids seeing the same packet replicated multiple
-times in the monitoring interface, but it can show the packet
-sent with the wrong timestamp or even before we succeed to queue
-it in the virtqueue.
+v1 -> v2:
+ - Pass p_off in *_gro_complete to fix UDP bug
+ - Remove more conditionals and memory fetches from inet_gro_flush
+ - v1:
+   https://lore.kernel.org/netdev/e1d22505-c5f8-4c02-a997-64248480338b@gmail.com/
 
->
->Move virtio_transport_deliver_tap_pkt() after calling virtqueue_add_sgs()
->and making sure it returned successfully.
->
->Fixes: 82dfb540aeb2 ("VSOCK: Add virtio vsock vsockmon hooks")
->Signed-off-by: Marco Pinna <marco.pinn95@gmail.com>
->---
-> net/vmw_vsock/virtio_transport.c | 3 ++-
-> 1 file changed, 2 insertions(+), 1 deletion(-)
->
->diff --git a/net/vmw_vsock/virtio_transport.c b/net/vmw_vsock/virtio_transport.c
->index 1748268e0694..ee5d306a96d0 100644
->--- a/net/vmw_vsock/virtio_transport.c
->+++ b/net/vmw_vsock/virtio_transport.c
->@@ -120,7 +120,6 @@ virtio_transport_send_pkt_work(struct work_struct *work)
-> 		if (!skb)
-> 			break;
->
->-		virtio_transport_deliver_tap_pkt(skb);
-> 		reply = virtio_vsock_skb_reply(skb);
-> 		sgs = vsock->out_sgs;
-> 		sg_init_one(sgs[out_sg], virtio_vsock_hdr(skb),
->@@ -170,6 +169,8 @@ virtio_transport_send_pkt_work(struct work_struct *work)
-> 			break;
-> 		}
->
->+		virtio_transport_deliver_tap_pkt(skb);
->+
+Richard Gobert (4):
+  net: gro: add p_off param in *_gro_complete
+  selftests/net: add local address bind in vxlan selftest
+  net: gro: add {inner_}network_offset to napi_gro_cb
+  net: gro: move L3 flush checks to tcp_gro_receive
 
-I was just worried that consume_skb(), called in
-virtio_transport_tx_work() when the host sends an interrupt to the guest
-after it has consumed the packet, might be called before this point,
-but both run with `vsock->tx_lock` held, so we are protected from
-this case.
+ drivers/net/geneve.c                      |  7 +-
+ drivers/net/vxlan/vxlan_core.c            | 11 ++--
+ include/linux/etherdevice.h               |  2 +-
+ include/linux/netdevice.h                 |  3 +-
+ include/linux/udp.h                       |  2 +-
+ include/net/gro.h                         | 36 +++++++----
+ include/net/inet_common.h                 |  2 +-
+ include/net/tcp.h                         |  6 +-
+ include/net/udp.h                         |  8 +--
+ include/net/udp_tunnel.h                  |  2 +-
+ net/8021q/vlan_core.c                     |  6 +-
+ net/core/gro.c                            |  6 +-
+ net/ethernet/eth.c                        |  5 +-
+ net/ipv4/af_inet.c                        | 49 ++------------
+ net/ipv4/fou_core.c                       |  9 +--
+ net/ipv4/gre_offload.c                    |  6 +-
+ net/ipv4/tcp_offload.c                    | 79 ++++++++++++++++++-----
+ net/ipv4/udp.c                            |  3 +-
+ net/ipv4/udp_offload.c                    | 26 ++++----
+ net/ipv6/ip6_offload.c                    | 41 +++++-------
+ net/ipv6/tcpv6_offload.c                  |  7 +-
+ net/ipv6/udp.c                            |  3 +-
+ net/ipv6/udp_offload.c                    | 13 ++--
+ tools/testing/selftests/net/udpgro_fwd.sh | 10 ++-
+ 24 files changed, 187 insertions(+), 155 deletions(-)
 
-So, the patch LGTM, I would just clarify the commit message.
-
-Thanks,
-Stefano
-
-> 		if (reply) {
-> 			struct virtqueue *rx_vq = vsock->vqs[VSOCK_VQ_RX];
-> 			int val;
->-- 
->2.44.0
->
+-- 
+2.36.1
 
 
