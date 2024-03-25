@@ -1,165 +1,157 @@
-Return-Path: <linux-kernel+bounces-117344-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-117345-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id A447E88AA3A
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 17:53:57 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 71F1788AA3C
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 17:54:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4378B1F288B5
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 16:53:57 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 09EEB341998
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 16:54:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 14B033F9ED;
-	Mon, 25 Mar 2024 15:14:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8D8386774E;
+	Mon, 25 Mar 2024 15:15:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b="Rcg6XqTn"
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="phAxrXaO"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AEC821373;
-	Mon, 25 Mar 2024 15:14:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.167.242.64
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C8FCA3DAC19
+	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 15:15:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711379651; cv=none; b=XIX8EMh4anA/MSF4cosN//SZqDa2qGCN6oL2Vss5E/6qIAp1yLWJrS6kSjbHzovXc3G9BeIAFVp4dO4nw35oYBh1nMSKVkML99hQgqaU7FM++d3r3Iijlm0tzN9cwrzShEKROrbyMiFaeY9LXzQPCzUCNpY+jogdI+rIQszC424=
+	t=1711379708; cv=none; b=lz4TO/hwtxpHTuXZASRgzC9pw7xGbrLrhUqYYqHlqbkB5/eDpm4tKWJ4d0870YaYdLsYV0qg1qd1bf7zNY5Zisumd++ReTzF8ndxMcanNwr5hah9d9QWCgD4757fnpYXeiUaSoAtwtPhVdLjldeTTcADdDm2HKtxaz3b/ubUSzw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711379651; c=relaxed/simple;
-	bh=PzYgqO2j7ARM9Bcg4w9L6keBbuWdl2jRvP/eRb+K7mo=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=iknnA+kcOANNOkmkq/qZpe9TWAAvEEAosMBYH1YtduxZa6eaGOpKM9sqjrtYCb3svo1cvVpkh7jXxKip6UWelbEf28vzhHgqkkSo/rKKfDxNt1pDqEnHUhvCmGCV9Gy443lYBWsH0tyjuNLhOD9t4rniCxuFVyQj1uOz78t/kn8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com; spf=pass smtp.mailfrom=ideasonboard.com; dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b=Rcg6XqTn; arc=none smtp.client-ip=213.167.242.64
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ideasonboard.com
-Received: from pendragon.ideasonboard.com (81-175-209-231.bb.dnainternet.fi [81.175.209.231])
-	by perceval.ideasonboard.com (Postfix) with ESMTPSA id DE8767E4;
-	Mon, 25 Mar 2024 16:13:36 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-	s=mail; t=1711379617;
-	bh=PzYgqO2j7ARM9Bcg4w9L6keBbuWdl2jRvP/eRb+K7mo=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Rcg6XqTnYwnClxCdZ69f0XzSzvHMRyj45uCqlXW7HJuUu7+RJUBldgOByGNnNP7Nu
-	 ypsNnBWZvTy4Jxujkx/1mOi3vfocLG1ANA11nc4LLBn6/xrZ4sJM0AA9o20dT/b+aS
-	 kfNFzcRTp7d8QWbY+bINUaPJEw65BNCAESCzvEQE=
-Date: Mon, 25 Mar 2024 17:14:02 +0200
-From: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To: Adam Ford <aford173@gmail.com>
-Cc: Paul Elder <paul.elder@ideasonboard.com>, linux-media@vger.kernel.org,
-	devicetree@vger.kernel.org, kieran.bingham@ideasonboard.com,
-	tomi.valkeinen@ideasonboard.com, umang.jain@ideasonboard.com,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
-	Sascha Hauer <s.hauer@pengutronix.de>,
-	Pengutronix Kernel Team <kernel@pengutronix.de>,
-	Fabio Estevam <festevam@gmail.com>,
-	NXP Linux Team <linux-imx@nxp.com>, Marek Vasut <marex@denx.de>,
-	Alexander Stein <alexander.stein@ew.tq-group.com>,
-	Lucas Stach <l.stach@pengutronix.de>, Frank Li <Frank.Li@nxp.com>,
-	"moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" <linux-arm-kernel@lists.infradead.org>,
-	open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 1/2] arm64: dts: imx8mp: Add DT nodes for the two ISPs
-Message-ID: <20240325151402.GW18799@pendragon.ideasonboard.com>
-References: <20231129093113.255161-1-paul.elder@ideasonboard.com>
- <20231129093113.255161-2-paul.elder@ideasonboard.com>
- <CAHCN7xLOu5qfxNihEYuSXxuxxH=S_+7nDkX1H=ziDW3QvaErQA@mail.gmail.com>
+	s=arc-20240116; t=1711379708; c=relaxed/simple;
+	bh=5BLlb1WsYWJmK+oZT7FsKXb4sOeQvUD882nSbGqGyb0=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=YZSr7jS20JSIEA/E5vDpfvrAKYqEz7CGSspZaqwixbzQFPP5UW6blIs5fmgv6IdABXWWAcwG63bkC6ew965+SquJ6045KPI53L49ieChTCS0MBeth6+39zQvpxxC13jKFGKIUk62jROIS6CMykI/8yZmRKkx02Otxmk+vGd33mY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=phAxrXaO; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 46CFDC43390
+	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 15:15:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1711379708;
+	bh=5BLlb1WsYWJmK+oZT7FsKXb4sOeQvUD882nSbGqGyb0=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=phAxrXaOtEXGZoOTJbwp95NKyP9jTjuxq5k7pgxPNLKiRDsSMJ/a+cuhnqroUD+9M
+	 TL5Lpu5x8vzMFuP0uMm41yCHp0C7N6srqr0LQqpi2AAE09e3R1Qd4s9UpSRbcj4yEc
+	 787Z4kRn6MXmXSDV0YZKkNK1PLcoJuTa2qOmXRLcDt6Z9JToT8WRrJts4j+f2zJUZL
+	 FF86SUKUJyZnVGvCBedt4c0XBCyO/m6mfCUWGsspqAJvY4JGkgEj0qFMd9hU4vDAeK
+	 MScCgx2VoFFlWGOoCBKGMLiWK4IgGxehXMy4d2Ty9FSNFbYtOofao4VbNb3NXrUKGO
+	 NJnKtjkqdp6Pg==
+Received: by mail-lj1-f169.google.com with SMTP id 38308e7fff4ca-2d6c8d741e8so32042551fa.3
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 08:15:08 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCWTzXKpn//NLDgUP3bvy1HPDW01/PdcUi2XvNAJrefG2Dm10my+n754oxCuCD3sqeAjlVIc2KdCjePL07/6wM1EAgPmjFpyc2Xdasn2
+X-Gm-Message-State: AOJu0YydbJvGLfrVWUJAj4tVkHX1LmX8opzsqJ3WNj2kqSzBX/423oZ+
+	H0UZ15pMxhe+nuFZpcbhU9zeOOprAApxWk3jUnaHtFcfAeWf+NnZ7s6PVxDJtzd5BDuNusxF/jO
+	PtjOj2Z5ADrhRgHvPNl+NUiuncUU=
+X-Google-Smtp-Source: AGHT+IFpisd6LgVDCNfYPykT/hY4ChG1b93iTIxrU0E5AXZ6ZR9ugciUs8cuK/EJl4N6N5z/iZrMGEyB38F5coNt3yU=
+X-Received: by 2002:a2e:9b83:0:b0:2d2:346a:f199 with SMTP id
+ z3-20020a2e9b83000000b002d2346af199mr4662731lji.47.1711379706657; Mon, 25 Mar
+ 2024 08:15:06 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAHCN7xLOu5qfxNihEYuSXxuxxH=S_+7nDkX1H=ziDW3QvaErQA@mail.gmail.com>
+References: <20240322165233.71698-1-brgerst@gmail.com> <CAFULd4bCufzKjaUyOcJ5MfsPBcVTj1zQiP3+FFCGo6SbxTpK2A@mail.gmail.com>
+ <CAMzpN2gOZEddWUgncaLutVDihcEK-oEUdSVxsgaaX9xiMWfqPw@mail.gmail.com>
+ <CAHk-=wi0arqxMFFdM+jGv1YXXhY+ehxsmcfv+iAndD_dmpYjMA@mail.gmail.com> <d82bebfc-3eaa-406d-8ea6-22113da30ed5@app.fastmail.com>
+In-Reply-To: <d82bebfc-3eaa-406d-8ea6-22113da30ed5@app.fastmail.com>
+From: Ard Biesheuvel <ardb@kernel.org>
+Date: Mon, 25 Mar 2024 17:14:55 +0200
+X-Gmail-Original-Message-ID: <CAMj1kXFXh7xFOGKjUK=Fjc+YK=Zwni=LBVr_T2EUNUjRBBk2EA@mail.gmail.com>
+Message-ID: <CAMj1kXFXh7xFOGKjUK=Fjc+YK=Zwni=LBVr_T2EUNUjRBBk2EA@mail.gmail.com>
+Subject: Re: [PATCH v4 00/16] x86-64: Stack protector and percpu improvements
+To: Arnd Bergmann <arnd@arndb.de>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>, Brian Gerst <brgerst@gmail.com>, 
+	Uros Bizjak <ubizjak@gmail.com>, linux-kernel@vger.kernel.org, x86@kernel.org, 
+	Ingo Molnar <mingo@kernel.org>, Thomas Gleixner <tglx@linutronix.de>, Borislav Petkov <bp@alien8.de>, 
+	"H. Peter Anvin" <hpa@zytor.com>, David Laight <David.Laight@aculab.com>, 
+	Kees Cook <keescook@chromium.org>, Nathan Chancellor <nathan@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 
-Hi Adam,
+On Sun, 24 Mar 2024 at 00:55, Arnd Bergmann <arnd@arndb.de> wrote:
+>
+> On Sat, Mar 23, 2024, at 17:16, Linus Torvalds wrote:
+> >
+..
+> > So there doesn't seem to be a major reason to up the versioning, since
+> > the stack protector thing can just be disabled for older versions.
+> >
+> > But maybe even enterprise distros have upgraded anyway, and we should
+> > be proactive.
+> >
+> > Cc'ing Arnd, who has historically been one of the people pushing this.
+> > He may no longer care because we haven't had huge issues.
+>
+> I'm not aware of any major issues, but it keeps coming up and
+> a number of people have asked me about it because of smaller
+> ones. Unfortunately I didn't write down what the problems
+> were.
+>
+> I think based on what compiler versions are shipped
+> by LTS distros, gcc-8.1 is the next logical step when we
+> do it, covering Debian 10, RHEL 8 and Ubuntu 20.04, which
+> are probably the oldest we still need to support.
+>
+> RHEL 7 and SLES 12 are still technically supported distros
+> as well, but those shipped with gcc-4.8, so we dropped them
+> in 2020 with the move to gcc-4.9.
+>
+> So in short, not a lot to gain or lose from raising the
+> minimum to 8.1, but it would be nice to reduce the possible
+> test matrix from 10 gcc versions back to the 7 we had in
+> the past, as well as clean up a few version dependencies.
+> Similarly we can probably raise the oldest binutils version
+> to 2.30, as that seems to be the earliest version that was
+> paired with gcc-8 (in RHEL-8).
+>
 
-On Wed, Mar 20, 2024 at 07:35:46AM -0500, Adam Ford wrote:
-> On Wed, Nov 29, 2023 at 3:31 AM Paul Elder wrote:
-> >
-> > The ISP supports both CSI and parallel interfaces, where port 0
-> > corresponds to the former and port 1 corresponds to the latter. Since
-> > the i.MX8MP's ISPs are connected by the parallel interface to the CSI
-> > receiver, set them both to port 1.
-> >
-> > Signed-off-by: Paul Elder <paul.elder@ideasonboard.com>
-> 
-> Paul, are you able to resend this now that the driver part has been
-> merged into the main branch?
-> 
-> If you can't, I can resend it on your behalf.
+x86_64/SMP uses a pile of hacks to create a runtime relocatable
+kernel, one of which is a workaround for the offset based addressing
+of per-CPU variables. This requires RIP-relative per-CPU references,
+e.g.,
 
-I've just sent a v2, you're on CC.
+  leal %gs:foo(%rip), %reg
 
-> > ---
-> >  arch/arm64/boot/dts/freescale/imx8mp.dtsi | 50 +++++++++++++++++++++++
-> >  1 file changed, 50 insertions(+)
-> >
-> > diff --git a/arch/arm64/boot/dts/freescale/imx8mp.dtsi b/arch/arm64/boot/dts/freescale/imx8mp.dtsi
-> > index c9a610ba4836..25579d4c58f2 100644
-> > --- a/arch/arm64/boot/dts/freescale/imx8mp.dtsi
-> > +++ b/arch/arm64/boot/dts/freescale/imx8mp.dtsi
-> > @@ -1604,6 +1604,56 @@ isi_in_1: endpoint {
-> >                                 };
-> >                         };
-> >
-> > +                       isp_0: isp@32e10000 {
-> > +                               compatible = "fsl,imx8mp-isp";
-> > +                               reg = <0x32e10000 0x10000>;
-> > +                               interrupts = <GIC_SPI 74 IRQ_TYPE_LEVEL_HIGH>;
-> > +                               clocks = <&clk IMX8MP_CLK_MEDIA_ISP_ROOT>,
-> > +                                        <&clk IMX8MP_CLK_MEDIA_AXI_ROOT>,
-> > +                                        <&clk IMX8MP_CLK_MEDIA_APB_ROOT>;
-> > +                               clock-names = "isp", "aclk", "hclk";
-> > +                               assigned-clocks = <&clk IMX8MP_CLK_MEDIA_ISP>;
-> > +                               assigned-clock-parents = <&clk IMX8MP_SYS_PLL2_500M>;
-> > +                               assigned-clock-rates = <500000000>;
-> > +                               power-domains = <&media_blk_ctrl IMX8MP_MEDIABLK_PD_ISP>;
-> > +                               fsl,blk-ctrl = <&media_blk_ctrl 0>;
-> > +                               status = "disabled";
-> > +
-> > +                               ports {
-> > +                                       #address-cells = <1>;
-> > +                                       #size-cells = <0>;
-> > +
-> > +                                       port@1 {
-> > +                                               reg = <1>;
-> > +                                       };
-> > +                               };
-> > +                       };
-> > +
-> > +                       isp_1: isp@32e20000 {
-> > +                               compatible = "fsl,imx8mp-isp";
-> > +                               reg = <0x32e20000 0x10000>;
-> > +                               interrupts = <GIC_SPI 75 IRQ_TYPE_LEVEL_HIGH>;
-> > +                               clocks = <&clk IMX8MP_CLK_MEDIA_ISP_ROOT>,
-> > +                                        <&clk IMX8MP_CLK_MEDIA_AXI_ROOT>,
-> > +                                        <&clk IMX8MP_CLK_MEDIA_APB_ROOT>;
-> > +                               clock-names = "isp", "aclk", "hclk";
-> > +                               assigned-clocks = <&clk IMX8MP_CLK_MEDIA_ISP>;
-> > +                               assigned-clock-parents = <&clk IMX8MP_SYS_PLL2_500M>;
-> > +                               assigned-clock-rates = <500000000>;
-> > +                               power-domains = <&media_blk_ctrl IMX8MP_MEDIABLK_PD_ISP>;
-> > +                               fsl,blk-ctrl = <&media_blk_ctrl 1>;
-> > +                               status = "disabled";
-> > +
-> > +                               ports {
-> > +                                       #address-cells = <1>;
-> > +                                       #size-cells = <0>;
-> > +
-> > +                                       port@1 {
-> > +                                               reg = <1>;
-> > +                                       };
-> > +                               };
-> > +                       };
-> > +
-> >                         dewarp: dwe@32e30000 {
-> >                                 compatible = "nxp,imx8mp-dw100";
-> >                                 reg = <0x32e30000 0x10000>;
+to be fixed up in the opposite direction (displacement subtracted
+rather than added) in the decompressor. This scheme is used because
+older GCCs can only access the stack protector cookie via a fixed
+offset of GS+40, and so GS must carry the address of the start of the
+per-CPU region rather than an arbitrary relative offset between the
+per-CPU region in vmlinux and the one belonging to a CPU.
+
+GCC 8.1 and later allow the cookie to be specified using a symbol, and
+this would allow us to revert to the ordinary per-CPU addressing,
+where the base is the vmlinux copy of a symbol, and each CPU carries a
+different offset in GS that produces the address of its respective
+private copy. [0]
+
+With that out of the way, we could get rid of the weird relocation
+format and just use the linker to link vmlinux in PIE mode (like other
+architectures), using the condensed RELR format which only takes a
+fraction of the space. Using PIC codegen and PIE linking also brings
+us closer to what toolchains expect, and so fewer quirks/surprises
+when moving to newer versions. (Currently on x86, we do a position
+dependent link of vmlinux, and rely on the static relocations produced
+by --emit-relocs to create the metadata we need to perform the
+relocation fixups. Static relocations cannot describe all the
+transformations and relaxations that the linker might apply, and so
+static relocations might go out of sync with the actual code.)
+
+Another minor cleanup is __GCC_ASM_FLAG_OUTPUTS__, which would always
+be supported if we require 8.1 or newer.
+
+None of this is high priority, though, so not a reason in itself to
+deprecate GCC 7 and older, more of a nice bonus when we do get there.
 
 -- 
-Regards,
+Ard.
 
-Laurent Pinchart
+
+
+[0] https://git.kernel.org/pub/scm/linux/kernel/git/ardb/linux.git/log/?h=x86-remove-absolute-percpu
 
