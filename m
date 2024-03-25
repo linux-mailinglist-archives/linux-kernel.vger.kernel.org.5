@@ -1,140 +1,223 @@
-Return-Path: <linux-kernel+bounces-116848-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-116853-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id C7D2A88B13C
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 21:23:42 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7385C88A499
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 15:33:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B1F0DBA3CE3
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 14:29:19 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A7A2C1F3E156
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 14:33:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 62C0D17BB39;
-	Mon, 25 Mar 2024 11:22:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7971717C644;
+	Mon, 25 Mar 2024 11:25:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="JL5F/GnD"
-Received: from mail-ua1-f44.google.com (mail-ua1-f44.google.com [209.85.222.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="W7hiHeBS"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.14])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C9C8A1494BD
-	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 10:38:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E5140149C71
+	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 10:40:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.14
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711363131; cv=none; b=dB2Zb7BS+51w6SupLfRkJGGGITaCTCJ5jO9LaBPJwVyzPeiHq15R5xfwo2CEhY7XMfp4UKebJOgw2DSytRgORgkV1EJF9KcvM74EfDs2cDXmhY8j2cZ6BGCrTuM6iOWIpc8+fc6StB1NpTJ7Fn2/Ea2TVnI1gOgZI7mNHBIljUY=
+	t=1711363215; cv=none; b=e+lm0JPmzqhTCeTznDeB55z2B6ZNUJwJdABBWpnZ4HNVTc4M/uR0sJLkexV/TXyCwTMwcg1vOfeL5/7TsbFuRlxCi1raLXp+VwZYlBQQ7gze6sKhUzLKKHv4xRDloX956YU1HklHoaDI4eqWpfSieUDlBqP2gg2+sMe0tm2WcoY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711363131; c=relaxed/simple;
-	bh=Fh3nwgtB4/hNAKuOMOxNy2Pkpo90LJkx49Wz4JF1YMc=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=tCoXZumQQBsFKC3LKIlEr9siS5wl76C8OngBWj8UBzcrFpdoAO5XftLjXTj1Kbo0y/mTzrFfGje1JuCGKmnZ1n8CaDvqGGP1xTAKfg6Xk2OEpwwggICWe2EZnPCxZ8+b4MKdAmJldvvoOBxbv9tbBJ3Kca8ege4OJFJUZ7X54sA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=JL5F/GnD; arc=none smtp.client-ip=209.85.222.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ua1-f44.google.com with SMTP id a1e0cc1a2514c-7e057fb0b69so1276428241.0
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 03:38:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1711363128; x=1711967928; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=6g5n0zDO/k+zn99LgqTberBsE1ninTPL1fai4wdNt1g=;
-        b=JL5F/GnDAQzdejdXTwVt5UTEEl5Dx2SFXl+2iPs9A9gYx+IPij6hXyFbu/3UAJVw80
-         NNTrJWicWlrz+uMvJwM1jux/23UUG2ktUgRPLHCM2PWCWJcsz0ssDluMDVAgHwyHmnFS
-         Nz8nf9VnrarbQzviKYDZ00nZiTbNpsH2Vbx1EDQ+mHklNDy4cM6h+aC168KEReuTDXtp
-         yIvmpbhttaKxmNdv0AxxGtEonJcTeuzyg7qkeZY0xL8PaPbfqLHGifXJq6F20dHlkVfV
-         KtYTgLfY3fsoVs1WIT/NHzYvq6CgOKhcFih9mmOnN8IKYgouy+0Zrm+kBGVkLRxApRAz
-         Yo7Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711363128; x=1711967928;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=6g5n0zDO/k+zn99LgqTberBsE1ninTPL1fai4wdNt1g=;
-        b=vrvaqKHCNHPUTrhGSNvzNGktjPicHB3niLeYxdDcUTiY5y8OyXXIbdaGG9YDbu+OOn
-         7Vztb/lyP/7ZuJjg1pvlOw4aE78LJRcXp03rrX/2WUHrmvJ5Z1ySsMCr0AxcoG/QCy1b
-         UTeAZ6pMC0GilLKCpf+5++gcOPqLLf5Vbs/eNr1hSN42Yx3dQ9bRnlr2mf1oP7W4qn5a
-         A4QeC6li3fJBWOfialMDrD8HLjNl1z/xsk5U41/a55yoh3waaOZbPGIAaKHwIozodcRP
-         P2Ppnu8rGO7lNDuotdl1nJgPw88duUw1pqMGDhVod7vu7XvFPB7V8Izfla0ux0CY7afa
-         jOaA==
-X-Gm-Message-State: AOJu0YxXaKF8W90zotBiX2jVPuyXRj+Im4VgPQ+RiqQARGr9UCx8gJhe
-	WjPgTv+PqBnU7c451ZNBcQ4gcWxztuQD5hC4p2CVQmi2bt6s70ucZQI0oHnJmkZMF99cUyfJDLB
-	BmeoPEBMedwEC5YQPg6f2u4REmxTD/7bfDYGzRA==
-X-Google-Smtp-Source: AGHT+IFJxYGwWNIHi6Lbmtdb4kZhXP5ioGaL2mD6ZgHA/n4sgaK7bl1N67pI8OeJhoqvDzhTfAxKbvKvX0om/kjbOgc=
-X-Received: by 2002:a05:6102:3549:b0:472:d517:24e1 with SMTP id
- e9-20020a056102354900b00472d51724e1mr4887720vss.29.1711363128587; Mon, 25 Mar
- 2024 03:38:48 -0700 (PDT)
+	s=arc-20240116; t=1711363215; c=relaxed/simple;
+	bh=s7aZUNqRwppoTYX7ExnA6g6RaH+20n8MZhm6CbYHZRU=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=lvNZnclU2sg9ldA6ZqV9yu1b3HSwBWtgeaOl+84PqWwZ3VK2swS3USb+9lLBKBZYz/gBDz/X32a6A1vwa/inOyUiNMStmqYFiZpNXFVFusTgCzCukV24c71sLhLhHMq84M5NHnasfG0CjRE7nOX2q3CkxSJ7vXU39esAAQRQRX8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.helo=mgamail.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=W7hiHeBS; arc=none smtp.client-ip=192.198.163.14
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.helo=mgamail.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1711363214; x=1742899214;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=s7aZUNqRwppoTYX7ExnA6g6RaH+20n8MZhm6CbYHZRU=;
+  b=W7hiHeBSwZUcWHYDyjVs9cAXo1QWEpeE5tvHL/Ei2tx+4lD1MfXf3UBQ
+   ebS1sUHRdwEVyG7i/nPNCRbqO1RhLgrdhN3XSeKbyOmn7VIs+tPNJ8sNL
+   ETnpk1+bJoajP+Ae7b+UbpvxNUsF3HjAYNwouw1SUl5suN42d0sD5RlfE
+   11e6MEqjOC/vhhBYN+5RYnU5v9kKIIOF+mVBRuvXEzjgECf5fbrmf7v/y
+   M2LssxpKqdcInG+V3caLq6dIRgQmCPseV6EWFl29VBq/d+Fop/i0YwrpF
+   ItBxM7fKt2KuLHNxlAjldA0hyYVCXPsap+3CmtsqQ+kxco1Tqs6C7brOR
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11023"; a="6561340"
+X-IronPort-AV: E=Sophos;i="6.07,152,1708416000"; 
+   d="scan'208";a="6561340"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmvoesa108.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Mar 2024 03:40:11 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,11023"; a="937070137"
+X-IronPort-AV: E=Sophos;i="6.07,152,1708416000"; 
+   d="scan'208";a="937070137"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by fmsmga001.fm.intel.com with ESMTP; 25 Mar 2024 03:40:05 -0700
+Received: by black.fi.intel.com (Postfix, from userid 1000)
+	id C8A58228; Mon, 25 Mar 2024 12:40:04 +0200 (EET)
+From: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+To: Thomas Gleixner <tglx@linutronix.de>,
+	Ingo Molnar <mingo@redhat.com>,
+	Borislav Petkov <bp@alien8.de>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	x86@kernel.org
+Cc: "Rafael J. Wysocki" <rafael@kernel.org>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Adrian Hunter <adrian.hunter@intel.com>,
+	Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>,
+	Elena Reshetova <elena.reshetova@intel.com>,
+	Jun Nakajima <jun.nakajima@intel.com>,
+	Rick Edgecombe  <rick.p.edgecombe@intel.com>,
+	Tom Lendacky <thomas.lendacky@amd.com>,
+	"Kalra, Ashish" <ashish.kalra@amd.com>,
+	Sean Christopherson <seanjc@google.com>,
+	"Huang, Kai" <kai.huang@intel.com>,
+	Baoquan He <bhe@redhat.com>,
+	kexec@lists.infradead.org,
+	linux-coco@lists.linux.dev,
+	linux-kernel@vger.kernel.org,
+	"Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+Subject: [PATCHv9 00/17] x86/tdx: Add kexec support
+Date: Mon, 25 Mar 2024 12:38:54 +0200
+Message-ID: <20240325103911.2651793-1-kirill.shutemov@linux.intel.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240324224720.1345309-1-sashal@kernel.org>
-In-Reply-To: <20240324224720.1345309-1-sashal@kernel.org>
-From: Naresh Kamboju <naresh.kamboju@linaro.org>
-Date: Mon, 25 Mar 2024 16:08:37 +0530
-Message-ID: <CA+G9fYtBKCPVmRETNpo3OdQbky-XiY6RDQ+Pc2b4Yj1yLe_e0g@mail.gmail.com>
-Subject: Re: [PATCH 6.7 000/713] 6.7.11-rc1 review
-To: Sasha Levin <sashal@kernel.org>
-Cc: linux-kernel@vger.kernel.org, stable@vger.kernel.org, 
-	torvalds@linux-foundation.org, akpm@linux-foundation.org, linux@roeck-us.net, 
-	shuah@kernel.org, patches@kernelci.org, lkft-triage@lists.linaro.org, 
-	florian.fainelli@broadcom.com, pavel@denx.de, Arnd Bergmann <arnd@arndb.de>, 
-	Anders Roxell <anders.roxell@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 
-On Mon, 25 Mar 2024 at 04:17, Sasha Levin <sashal@kernel.org> wrote:
->
->
-> This is the start of the stable review cycle for the 6.7.11 release.
-> There are 713 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Tue Mar 26 10:47:13 PM UTC 2024.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git/patch/?id=linux-6.7.y&id2=v6.7.10
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.7.y
-> and the diffstat can be found below.
->
-> Thanks,
-> Sasha
+The patchset adds bits and pieces to get kexec (and crashkernel) work on
+TDX guest.
 
-The 32-bit architecture boot failed on stable rc 6.8 and 6.7 branches.
+The last patch implements CPU offlining according to the approved ACPI
+spec change poposal[1]. It unlocks kexec with all CPUs visible in the target
+kernel. It requires BIOS-side enabling. If it missing we fallback to booting
+2nd kernel with single CPU.
 
-Boot details,
- - linux-stable-rc-linux-6.8.y - arm X15, qemu-arm and qemu-i386 - Boot failed
- - linux-stable-rc-linux-6.7.y - arm X15, qemu-arm and qemu-i386 - Boot failed
+Please review. I would be glad for any feedback.
 
-Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
+[1] https://lore.kernel.org/all/13356251.uLZWGnKmhe@kreacher
 
-The bisection is in progress to investigate this problem.
-Serial console logs printing as "Starting kernel ..."  that's all.
+v9:
+  - Rebased;
+  - Keep page tables that maps E820_TYPE_ACPI (Ashish);
+  - Ack/Reviewed/Tested-bys from Sathya, Kai, Tao;
+  - Minor printk() message adjustments;
+v8:
+  - Rework serialization of around conversion memory back to private;
+  - Print ACPI_MADT_TYPE_MULTIPROC_WAKEUP in acpi_table_print_madt_entry();
+  - Drop debugfs interface to dump info on shared memory;
+  - Adjust comments and commit messages;
+  - Reviewed-bys by Baoquan, Dave and Thomas;
+v7:
+  - Call enc_kexec_stop_conversion() and enc_kexec_unshare_mem() after shutting
+    down IO-APIC, lapic and hpet. It meets AMD requirements.
+  - Minor style changes;
+  - Add Acked/Reviewed-bys;
+v6:
+  - Rebased to v6.8-rc1;
+  - Provide default noop callbacks from .enc_kexec_stop_conversion and
+    .enc_kexec_unshare_mem;
+  - Split off patch that introduces .enc_kexec_* callbacks;
+  - asm_acpi_mp_play_dead(): program CR3 directly from RSI, no MOV to RAX
+    required;
+  - Restructure how smp_ops.stop_this_cpu() hooked up in crash_nmi_callback();
+  - kvmclock patch got merged via KVM tree;
+v5:
+  - Rename smp_ops.crash_play_dead to smp_ops.stop_this_cpu and use it in
+    stop_this_cpu();
+  - Split off enc_kexec_stop_conversion() from enc_kexec_unshare_mem();
+  - Introduce kernel_ident_mapping_free();
+  - Add explicit include for alternatives and stringify.
+  - Add barrier() after setting conversion_allowed to false;
+  - Mark cpu_hotplug_offline_disabled __ro_after_init;
+  - Print error if failed to hand over CPU to BIOS;
+  - Update comments and commit messages;
+v4:
+  - Fix build for !KEXEC_CORE;
+  - Cleaner ATLERNATIVE use;
+  - Update commit messages and comments;
+  - Add Reviewed-bys;
+v3:
+  - Rework acpi_mp_crash_stop_other_cpus() to avoid invoking hotplug state
+    machine;
+  - Free page tables if reset vector setup failed;
+  - Change asm_acpi_mp_play_dead() to pass reset vector and PGD as arguments;
+  - Mark acpi_mp_* variables as static and __ro_after_init;
+  - Use u32 for apicid;
+  - Disable CPU offlining if reset vector setup failed;
+  - Rename madt.S -> madt_playdead.S;
+  - Mark tdx_kexec_unshare_mem() as static;
+  - Rebase onto up-to-date tip/master;
+  - Whitespace fixes;
+  - Reorder patches;
+  - Add Reviewed-bys;
+  - Update comments and commit messages;
+v2:
+  - Rework how unsharing hook ups into kexec codepath;
+  - Rework kvmclock_disable() fix based on Sean's;
+  - s/cpu_hotplug_not_supported()/cpu_hotplug_disable_offlining()/;
+  - use play_dead_common() to implement acpi_mp_play_dead();
+  - cond_resched() in tdx_shared_memory_show();
+  - s/target kernel/second kernel/;
+  - Update commit messages and comments;
 
+Kirill A. Shutemov (17):
+  x86/acpi: Extract ACPI MADT wakeup code into a separate file
+  x86/apic: Mark acpi_mp_wake_* variables as __ro_after_init
+  cpu/hotplug: Add support for declaring CPU offlining not supported
+  cpu/hotplug, x86/acpi: Disable CPU offlining for ACPI MADT wakeup
+  x86/kexec: Keep CR4.MCE set during kexec for TDX guest
+  x86/mm: Make x86_platform.guest.enc_status_change_*() return errno
+  x86/mm: Return correct level from lookup_address() if pte is none
+  x86/tdx: Account shared memory
+  x86/mm: Adding callbacks to prepare encrypted memory for kexec
+  x86/tdx: Convert shared memory back to private on kexec
+  x86/mm: Make e820_end_ram_pfn() cover E820_TYPE_ACPI ranges
+  x86/acpi: Rename fields in acpi_madt_multiproc_wakeup structure
+  x86/acpi: Do not attempt to bring up secondary CPUs in kexec case
+  x86/smp: Add smp_ops.stop_this_cpu() callback
+  x86/mm: Introduce kernel_ident_mapping_free()
+  x86/acpi: Add support for CPU offlining for ACPI MADT wakeup method
+  ACPI: tables: Print MULTIPROC_WAKEUP when MADT is parsed
 
-Steps to reproduce:
--------
-tuxrun --runtime podman --device qemu-armv7 --boot-args rw --kernel
-https://storage.tuxsuite.com/public/linaro/lkft/builds/2e9fapDKuhiDqLpezalPml1QIf3/zImage
---rootfs https://storage.tuxboot.com/debian/bookworm/armhf/rootfs.ext4.xz
---modules https://storage.tuxsuite.com/public/linaro/lkft/builds/2e9fapDKuhiDqLpezalPml1QIf3/modules.tar.xz
---parameters SKIPFILE=skipfile-lkft.yaml --image
-docker.io/linaro/tuxrun-dispatcher:v0.66.0 --tests rcutorture
---timeouts boot=30
+ arch/x86/Kconfig                     |   7 +
+ arch/x86/coco/core.c                 |   1 -
+ arch/x86/coco/tdx/tdx.c              |  99 ++++++++-
+ arch/x86/hyperv/ivm.c                |   9 +-
+ arch/x86/include/asm/acpi.h          |   7 +
+ arch/x86/include/asm/init.h          |   3 +
+ arch/x86/include/asm/pgtable.h       |   5 +
+ arch/x86/include/asm/pgtable_types.h |   1 +
+ arch/x86/include/asm/set_memory.h    |   3 +
+ arch/x86/include/asm/smp.h           |   1 +
+ arch/x86/include/asm/x86_init.h      |   6 +-
+ arch/x86/kernel/acpi/Makefile        |  11 +-
+ arch/x86/kernel/acpi/boot.c          |  86 +-------
+ arch/x86/kernel/acpi/madt_playdead.S |  28 +++
+ arch/x86/kernel/acpi/madt_wakeup.c   | 292 +++++++++++++++++++++++++++
+ arch/x86/kernel/crash.c              |   6 +
+ arch/x86/kernel/e820.c               |   9 +-
+ arch/x86/kernel/process.c            |   7 +
+ arch/x86/kernel/reboot.c             |  18 ++
+ arch/x86/kernel/relocate_kernel_64.S |   5 +
+ arch/x86/kernel/x86_init.c           |   8 +-
+ arch/x86/mm/ident_map.c              |  73 +++++++
+ arch/x86/mm/mem_encrypt_amd.c        |   8 +-
+ arch/x86/mm/pat/set_memory.c         |  59 ++++--
+ drivers/acpi/tables.c                |  14 ++
+ include/acpi/actbl2.h                |  19 +-
+ include/linux/cc_platform.h          |  10 -
+ include/linux/cpu.h                  |   2 +
+ kernel/cpu.c                         |  12 +-
+ 29 files changed, 663 insertions(+), 146 deletions(-)
+ create mode 100644 arch/x86/kernel/acpi/madt_playdead.S
+ create mode 100644 arch/x86/kernel/acpi/madt_wakeup.c
 
+-- 
+2.43.0
 
-Links:
- - https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-6.7.y/build/v6.7.10-713-g6f0681544906/testrun/23140347/suite/boot/test/gcc-13-lkftconfig-rcutorture/history/
- - https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-6.7.y/build/v6.7.10-713-g6f0681544906/testrun/23141457/suite/boot/test/gcc-13-lkftconfig-rcutorture/details/
- - https://tuxapi.tuxsuite.com/v1/groups/linaro/projects/lkft/tests/2e9fc0JdR6N9yOjnYWnO9druaJK
-
- - https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-6.8.y/build/v6.8.1-715-gb0f6de60d946/testrun/23138873/suite/boot/test/gcc-13-lkftconfig-rcutorture/history/
- - https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-6.8.y/build/v6.8.1-715-gb0f6de60d946/testrun/23138873/suite/boot/test/gcc-13-lkftconfig-rcutorture/details/
- - https://tuxapi.tuxsuite.com/v1/groups/linaro/projects/lkft/tests/2e9dH67vQBvX6giHu5ymUEpe2H4
-
---
-Linaro LKFT
-https://lkft.linaro.org
 
