@@ -1,58 +1,58 @@
-Return-Path: <linux-kernel+bounces-116601-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-116602-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4E35388A8D4
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 17:19:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 3906388A119
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 14:12:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 16B43B433D0
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 12:20:47 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 78668B32490
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 12:21:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4FE3A1581E7;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9BC37158D63;
 	Mon, 25 Mar 2024 08:53:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="a2v8Ujy0"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="KyfdVzKA"
 Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.9])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E1A815F417;
-	Mon, 25 Mar 2024 06:41:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D0E8E15FA6B;
+	Mon, 25 Mar 2024 06:41:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.9
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711348901; cv=none; b=mohslj15zagYyKq+a7CtKUPGPm4L/CZCu8JwrGxx7OH3PJvxECPZh1d5zTNC26o9FqGzoBiczBnDjGbdCAR1jPBxxm8As5G7h74zYH+pJTPlATnCb4ClSt/5/tpSFHMDwNUNaCKyA0SI2sCCGUaNGWyJflta6qY3cCmc87i01Qw=
+	t=1711348906; cv=none; b=VEOBm23YoE9aQp9R7hA9RYfckUd7JVdW8L5Dg11pZh0F62dgPTJAl4K5w6Q86UtkWazqd70NqbNlH7SrkimU8Srd76htn+vU9HWLjl18PWxrwT8myvQjXUSdvB7SJe0/uh+ttRWak5iKSejMBjXXEG+/lROD2oTEIirrHZe3jBs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711348901; c=relaxed/simple;
-	bh=zboSVI3HgVZXbpDBNnsTotqgGm69H9hHwUY1hZ67rA8=;
+	s=arc-20240116; t=1711348906; c=relaxed/simple;
+	bh=qTxeGZya5tNrF+OulKJd9BaTzgUsvcEDLjRYcSx3zxw=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=Xl9tQ5d4Pn+3ewuxKsayb4b5emAOWhNgvKydTwhC5KbikgEWM6rL8Huu+Is6sMgBuoPZybBP+/pHw9uW8vsqWjofrS3VSXIMRewHWVAdmqwMvWH1YcIEcLSK1JMHHvUxLiZUzP0ZcYIDlKb2Zy8YtPaDuTdJFRmgA52RXQZJ+oM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=a2v8Ujy0; arc=none smtp.client-ip=192.198.163.9
+	 MIME-Version; b=XwrAFMfeotmgKTHTwhQ+TGPckM5M8uMnUQdLRn/M53Snjdaa3ROqUmIfl6/ML0f+ajCRyVzpzoqknujpzBTiT0EQi2Vq4TQcEULEXIWkYO8SquOZ3raGA0EFlkHjAgSSg8HMzUOk1XTKJDrAEj0K/C1M8XIc8NZJLdaNMFUHGKo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=KyfdVzKA; arc=none smtp.client-ip=192.198.163.9
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1711348899; x=1742884899;
+  t=1711348904; x=1742884904;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=zboSVI3HgVZXbpDBNnsTotqgGm69H9hHwUY1hZ67rA8=;
-  b=a2v8Ujy0sQ+IDOD9pVB2CMc/Jh0i+4V3YJqsJGXnddv7kTrDgxiRVM+l
-   CnIaUQnNIoYKWi1z11gbB/+zdprGVb7j4PkZnywCdOIitt/tUz8WgbDC5
-   sh/v+jHy+IyUbD7kYeQgedV2zHCP2uT557QzVDImuQ1YM6lwbHy/i6Rxc
-   Y0cLTVn6Mq1lFxtlY4uDd3Kxc09+tmzCAmFUk4k7CkpimyNdmLJP4Qxk/
-   vQCHSBDvSLV4mbOGPjtCAWbZ0aEnyj0/56oBmw5cIWCYINWUNDTRNvARo
-   CYAYDQSstyiiHSysQuvOdGcX3JBGjPJysdyU6El041idJ0T6Txmj5D0lN
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11023"; a="17065255"
+  bh=qTxeGZya5tNrF+OulKJd9BaTzgUsvcEDLjRYcSx3zxw=;
+  b=KyfdVzKA2s5LNA6XOx/QJjp5EVFFa5tHytycZznjyGLYetPwC1yYsH5z
+   iazY84CZnioFJ/Cfj9VEnaLJ5YJu97gqPxJovMOLsZyNbHnFOrE3vaUMj
+   P0kpCcE8epnToPWEqCLVDFZK5RkrLxe7U4GEdyql/AtO1e0rVK7t39HsT
+   uSOt895YxqM0mou8zC+9yusH8MjJw9VhPI7EEfL03LlaP+R+NKVX4UPqe
+   LN0dEFEJwOeDD6ccscGrkefuF4eMmtaKuaBCNdyWNdgF+WoOUWDUPA4zU
+   75clAGEnfQ5M7uuxNhKr71Lchz50VuxeXRwRvFRJ0hP6yAXNhE3Ga4rEu
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11023"; a="17065285"
 X-IronPort-AV: E=Sophos;i="6.07,152,1708416000"; 
-   d="scan'208";a="17065255"
+   d="scan'208";a="17065285"
 Received: from fmviesa002.fm.intel.com ([10.60.135.142])
-  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Mar 2024 23:41:37 -0700
+  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Mar 2024 23:41:44 -0700
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.07,152,1708416000"; 
-   d="scan'208";a="38629609"
+   d="scan'208";a="38629624"
 Received: from ahunter6-mobl1.ger.corp.intel.com (HELO ahunter-VirtualBox.home\044ger.corp.intel.com) ([10.251.211.155])
-  by fmviesa002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Mar 2024 23:41:31 -0700
+  by fmviesa002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Mar 2024 23:41:38 -0700
 From: Adrian Hunter <adrian.hunter@intel.com>
 To: Thomas Gleixner <tglx@linutronix.de>
 Cc: Michael Ellerman <mpe@ellerman.id.au>,
@@ -82,9 +82,9 @@ Cc: Michael Ellerman <mpe@ellerman.id.au>,
 	linuxppc-dev@lists.ozlabs.org,
 	linux-kernel@vger.kernel.org,
 	linux-s390@vger.kernel.org
-Subject: [PATCH V2 09/19] timekeeping: Move timekeeping helper functions
-Date: Mon, 25 Mar 2024 08:40:13 +0200
-Message-Id: <20240325064023.2997-10-adrian.hunter@intel.com>
+Subject: [PATCH V2 10/19] timekeeping: Rename fast_tk_get_delta_ns() to __timekeeping_get_ns()
+Date: Mon, 25 Mar 2024 08:40:14 +0200
+Message-Id: <20240325064023.2997-11-adrian.hunter@intel.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240325064023.2997-1-adrian.hunter@intel.com>
 References: <20240325064023.2997-1-adrian.hunter@intel.com>
@@ -97,73 +97,46 @@ MIME-Version: 1.0
 Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki, Business Identity Code: 0357606 - 4, Domiciled in Helsinki
 Content-Transfer-Encoding: 8bit
 
-Move timekeeping helper functions to prepare for their reuse.
+Rename fast_tk_get_delta_ns() to __timekeeping_get_ns() to prepare for its
+reuse as a general timekeeping helper function.
 
 Suggested-by: Thomas Gleixner <tglx@linutronix.de>
 Signed-off-by: Adrian Hunter <adrian.hunter@intel.com>
 ---
- kernel/time/timekeeping.c | 34 +++++++++++++++++-----------------
- 1 file changed, 17 insertions(+), 17 deletions(-)
+ kernel/time/timekeeping.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
 diff --git a/kernel/time/timekeeping.c b/kernel/time/timekeeping.c
-index b58dffc58a8f..3375f0a6400f 100644
+index 3375f0a6400f..63061332a75c 100644
 --- a/kernel/time/timekeeping.c
 +++ b/kernel/time/timekeeping.c
-@@ -381,6 +381,23 @@ static inline u64 timekeeping_delta_to_ns(const struct tk_read_base *tkr, u64 de
- 	return nsec;
- }
- 
-+static inline u64 timekeeping_cycles_to_ns(const struct tk_read_base *tkr, u64 cycles)
-+{
-+	u64 delta;
-+
-+	/* calculate the delta since the last update_wall_time */
-+	delta = clocksource_delta(cycles, tkr->cycle_last, tkr->mask);
-+	return timekeeping_delta_to_ns(tkr, delta);
-+}
-+
-+static __always_inline u64 fast_tk_get_delta_ns(struct tk_read_base *tkr)
-+{
-+	u64 delta, cycles = tk_clock_read(tkr);
-+
-+	delta = clocksource_delta(cycles, tkr->cycle_last, tkr->mask);
-+	return timekeeping_delta_to_ns(tkr, delta);
-+}
-+
- static inline u64 timekeeping_get_ns(const struct tk_read_base *tkr)
- {
- 	u64 delta;
-@@ -389,15 +406,6 @@ static inline u64 timekeeping_get_ns(const struct tk_read_base *tkr)
+@@ -390,7 +390,7 @@ static inline u64 timekeeping_cycles_to_ns(const struct tk_read_base *tkr, u64 c
  	return timekeeping_delta_to_ns(tkr, delta);
  }
  
--static inline u64 timekeeping_cycles_to_ns(const struct tk_read_base *tkr, u64 cycles)
--{
--	u64 delta;
--
--	/* calculate the delta since the last update_wall_time */
--	delta = clocksource_delta(cycles, tkr->cycle_last, tkr->mask);
--	return timekeeping_delta_to_ns(tkr, delta);
--}
--
- /**
-  * update_fast_timekeeper - Update the fast and NMI safe monotonic timekeeper.
-  * @tkr: Timekeeping readout base from which we take the update
-@@ -431,14 +439,6 @@ static void update_fast_timekeeper(const struct tk_read_base *tkr,
- 	memcpy(base + 1, base, sizeof(*base));
- }
- 
 -static __always_inline u64 fast_tk_get_delta_ns(struct tk_read_base *tkr)
--{
--	u64 delta, cycles = tk_clock_read(tkr);
--
--	delta = clocksource_delta(cycles, tkr->cycle_last, tkr->mask);
--	return timekeeping_delta_to_ns(tkr, delta);
--}
--
- static __always_inline u64 __ktime_get_fast_ns(struct tk_fast *tkf)
++static __always_inline u64 __timekeeping_get_ns(const struct tk_read_base *tkr)
  {
- 	struct tk_read_base *tkr;
+ 	u64 delta, cycles = tk_clock_read(tkr);
+ 
+@@ -449,7 +449,7 @@ static __always_inline u64 __ktime_get_fast_ns(struct tk_fast *tkf)
+ 		seq = raw_read_seqcount_latch(&tkf->seq);
+ 		tkr = tkf->base + (seq & 0x01);
+ 		now = ktime_to_ns(tkr->base);
+-		now += fast_tk_get_delta_ns(tkr);
++		now += __timekeeping_get_ns(tkr);
+ 	} while (raw_read_seqcount_latch_retry(&tkf->seq, seq));
+ 
+ 	return now;
+@@ -565,7 +565,7 @@ static __always_inline u64 __ktime_get_real_fast(struct tk_fast *tkf, u64 *mono)
+ 		tkr = tkf->base + (seq & 0x01);
+ 		basem = ktime_to_ns(tkr->base);
+ 		baser = ktime_to_ns(tkr->base_real);
+-		delta = fast_tk_get_delta_ns(tkr);
++		delta = __timekeeping_get_ns(tkr);
+ 	} while (raw_read_seqcount_latch_retry(&tkf->seq, seq));
+ 
+ 	if (mono)
 -- 
 2.34.1
 
