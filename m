@@ -1,103 +1,125 @@
-Return-Path: <linux-kernel+bounces-117031-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-117035-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id C09A388A654
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 16:23:25 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9D50D88A670
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 16:27:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2770B2C50AB
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 15:23:24 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2C386CC6F8A
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 15:24:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1A179381D9;
-	Mon, 25 Mar 2024 12:45:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F03C06E617;
+	Mon, 25 Mar 2024 12:45:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="aHh6WPfN"
-Received: from mail-wm1-f46.google.com (mail-wm1-f46.google.com [209.85.128.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="gOWraMsf"
+Received: from relay4-d.mail.gandi.net (relay4-d.mail.gandi.net [217.70.183.196])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A270512B77
-	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 12:45:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC9286D1A1;
+	Mon, 25 Mar 2024 12:45:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.196
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711370742; cv=none; b=nrWHCJcSBG3+e2luF2bNvsw8TfoRtLy8ogLqBuWzcZbGw/R+QUdwI9rWJXHQTs2mmJvYrn19EU7SZaLtjeMNErYYVvK5W8ojW/CGFQzbU+GHg9xh0Knc/E7/4ILGWdIS84t8dfrHFRahWT1v+JATt206mowldc7qJ0FznKN8+Zo=
+	t=1711370751; cv=none; b=uQA71A45mlnkFNRWwzFI/1MkaMht+gOlAkLDAkx2YJuM5Bfd636QoKUYq9gJL6JvmTKv13yHbyF+kbc/K47m9pjGuHsmoSbXTYH47hc49/pR2F9fWROEv8vbheZOTAnOxocw4cbPSaftWzRTlog8B1CiD9q1UkanEZImkjpKaxQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711370742; c=relaxed/simple;
-	bh=jFAJJBZ7w2HGxEoQD4IPOO+YemTNHNOU01iTofesezQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=oFGrRBXlTrBEZA8QqkLzBNg3wD4jp4xzxGpNzb1T/ucF6QiRBysw/hCQD8cHNzz+1HN8F1UQRNrcP2dLs0kq8uRJmGA37P22jD7iZR+vDABpfcSn2Yw5VHmJzAksVLj0Ma7jQhNnkjBY9BKyubVW+4rIATrY83kx5FKErzqOc7s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=aHh6WPfN; arc=none smtp.client-ip=209.85.128.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wm1-f46.google.com with SMTP id 5b1f17b1804b1-4147e135f4dso18056855e9.2
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 05:45:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1711370739; x=1711975539; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Mr094tqbb7t0gaddbBeDzNaAJNuOic0uHzVPON5hPTo=;
-        b=aHh6WPfNuxDdhzXgqDBwQyzelK4BBytCAwJqgpIvCYL+lsl2I1In/QMrXUuaKQj+Co
-         y2TCJpWJNuXdv/cfWFD7lTL3NlvoM5l+Le8nc5G4ZCrSf1771RN/QNLixQuDLIpE0rjm
-         VIlaiXaOARzd/0KzVhkBseDsqf3vS+knGUmME1ioxy9ufu7mwns6Nlay4W4xDYvKo255
-         klI8EnqB6gVXCDePDZO/fyb9sUGck4zDAeivTKZFKlRVhHIhLaCFRZ7AS9mHTFSpx7uJ
-         SW4NAu4LTrAyOporDj/sD2m60ZI0p/fcdp26e9nvSW3BNzQGclOKTmpHOD7N7+uy9sMc
-         UTuA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711370739; x=1711975539;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Mr094tqbb7t0gaddbBeDzNaAJNuOic0uHzVPON5hPTo=;
-        b=swcsCsAsLxmWmkDEEQ6j49QyTs0bb4WP8NTJ60ET6Fi7A0lHtKrR4FH88EWNm5VdEW
-         WVxQR6wDyMx8JxSV9OAEvkusFlzI0vh67+kU0L+WEUtj+la3BPMghlYPvZsyV3L5Qxi9
-         GhYT6Idbnp5n3QeoHs7X87GSbhNZvCHfrUu8WkWy6/ZHgu7S3qrHkIOs3ny1oUlYccj4
-         BUzNkr99cJ9V54XX4t8TsEmXrwO6oAMJpvA4O+mA5Pakb6w+Qn3IFvJNZBJX+Pe7mNcJ
-         cii3MVBNbsqVKTeUVLuH4FBhYmakSS+dZ4aManUuVhvRkNbqIUiSb6hLo4IWROVAw2pj
-         DVew==
-X-Forwarded-Encrypted: i=1; AJvYcCVg9l0Ll1XPF49K4m2xCa20P29TiGCeNKH9reX/IdnL3NFn18M5XtPbrUtBW41HhsKXB3I4HMEA4tmK5hCzYYSW74qjSpTQBOVIufqq
-X-Gm-Message-State: AOJu0YzHsBE0hr6viiL1uD4vR/S1MziuVkwaRKtolemeVySmK7YSV4DE
-	4IRdo6avdqs7SNm/yjm4mK/9M36YGgHlSp5mOEWvNd/W0A7KWl2cnoF3lpFnkO0=
-X-Google-Smtp-Source: AGHT+IEdhASmhpgpMn0JRksM/eo2Hqq1dK9CQwhtcLk2Ko9opS+KAE+Y9nF5MLutxyGPWmJ/PyVnow==
-X-Received: by 2002:a05:600c:1987:b0:414:8865:bf99 with SMTP id t7-20020a05600c198700b004148865bf99mr2767476wmq.27.1711370739088;
-        Mon, 25 Mar 2024 05:45:39 -0700 (PDT)
-Received: from [192.168.2.107] ([79.115.63.252])
-        by smtp.gmail.com with ESMTPSA id u13-20020a056000038d00b00341c934ae4asm4402949wrf.75.2024.03.25.05.45.37
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 25 Mar 2024 05:45:38 -0700 (PDT)
-Message-ID: <a385246b-bcdf-4fd1-ba28-06a5d2d64e21@linaro.org>
-Date: Mon, 25 Mar 2024 12:45:36 +0000
+	s=arc-20240116; t=1711370751; c=relaxed/simple;
+	bh=ZziF1wRZF7EhrN6ygPWhxE5dY6tJWM2rg/5wYnZVgck=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=bt1v7k9RHtuz0Rc1n4piwagIBPkllwmb5+ydjrjL0b7Nfz4VoBtPXDCJziISpAczX06A63WOb0geZDIDuLJbME6T8zjQXNwUH+qUwgMz82a2m0STAA8Xa8R+kKM+5L8rvdLLrKq8lJAIwZRyAWsji94m2XHKq5cfdL0rBOpsUwU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=gOWraMsf; arc=none smtp.client-ip=217.70.183.196
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 83341E000B;
+	Mon, 25 Mar 2024 12:45:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1711370746;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=ZziF1wRZF7EhrN6ygPWhxE5dY6tJWM2rg/5wYnZVgck=;
+	b=gOWraMsfaOyNY3BvmuvwWgpgqmuqW0qlq15nInyFvgo05o8t7OSVPL5gUyKNLnvPExr/L5
+	MlA90aWdO7REc9rMhwPApqU03oBt7bMyuEa8Pg6QGvQPCbizl4Peuys4axsyd6Ve8b7f/j
+	Uajthkay40AWaJDc8b1KUTKS++S4sQzC5AYSmSoTa52q8FuN4AXhgh9asuQK+KQg6S1fnV
+	nRSqyHGF2SpiDVAHRSvedzrOO1adgmwG7zZttvB0OfOkdCxcRKVzIeL905Izs+fAcuuPmM
+	Hfdcga0inTk+xSuAT/zJP5R+UHCRV4pikPz7PxIHdoUDLIqzILiam7ok3rVIdQ==
+Date: Mon, 25 Mar 2024 13:45:37 +0100
+From: Kory Maincent <kory.maincent@bootlin.com>
+To: Andrew Lunn <andrew@lunn.ch>
+Cc: Elad Nachman <enachman@marvell.com>, Taras Chornyi
+ <taras.chornyi@plvision.eu>, "davem@davemloft.net" <davem@davemloft.net>,
+ "edumazet@google.com" <edumazet@google.com>, "kuba@kernel.org"
+ <kuba@kernel.org>, "pabeni@redhat.com" <pabeni@redhat.com>,
+ "thomas.petazzoni@bootlin.com" <thomas.petazzoni@bootlin.com>,
+ "miquel.raynal@bootlin.com" <miquel.raynal@bootlin.com>,
+ "przemyslaw.kitszel@intel.com" <przemyslaw.kitszel@intel.com>,
+ "dkirjanov@suse.de" <dkirjanov@suse.de>, "netdev@vger.kernel.org"
+ <netdev@vger.kernel.org>, "linux-kernel@vger.kernel.org"
+ <linux-kernel@vger.kernel.org>
+Subject: Re: [EXTERNAL] Re: [PATCH v2 0/5] Fix prestera driver fail to probe
+ twice
+Message-ID: <20240325134537.1cc7560e@kmaincent-XPS-13-7390>
+In-Reply-To: <6dae31dc-8c4f-4b8d-80e4-120619119326@lunn.ch>
+References: <20240320172008.2989693-1-enachman@marvell.com>
+	<4104387a-d7b5-4029-b822-060ef478c6e3@lunn.ch>
+	<BN9PR18MB42517F8E84C8C18078E45C37DB322@BN9PR18MB4251.namprd18.prod.outlook.com>
+	<89a01616-57c2-4338-b469-695bdc731dee@lunn.ch>
+	<BL1PR18MB42488523A5E05291EA57D0AEDB372@BL1PR18MB4248.namprd18.prod.outlook.com>
+	<6dae31dc-8c4f-4b8d-80e4-120619119326@lunn.ch>
+Organization: bootlin
+X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 5/7] ARM: dts: samsung: exynos5433: specify the SPI
- FIFO depth
-Content-Language: en-US
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
- krzysztof.kozlowski+dt@linaro.org, robh@kernel.org, conor+dt@kernel.org
-Cc: alim.akhtar@samsung.com, devicetree@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-samsung-soc@vger.kernel.org,
- linux-kernel@vger.kernel.org, broonie@kernel.org, andi.shyti@kernel.org,
- semen.protsenko@linaro.org, kernel-team@android.com,
- willmcvicker@google.com, andre.draszik@linaro.org, peter.griffin@linaro.org
-References: <20240216140449.2564625-1-tudor.ambarus@linaro.org>
- <20240216140449.2564625-6-tudor.ambarus@linaro.org>
- <1d9f160f-e155-4d2b-b598-d1dc76e49110@linaro.org>
-From: Tudor Ambarus <tudor.ambarus@linaro.org>
-In-Reply-To: <1d9f160f-e155-4d2b-b598-d1dc76e49110@linaro.org>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
+X-GND-Sasl: kory.maincent@bootlin.com
 
+On Sun, 24 Mar 2024 16:25:28 +0100
+Andrew Lunn <andrew@lunn.ch> wrote:
 
+> > > > Originally, the pain point for Kory was the rmmod + insmod re-probi=
+ng
+> > > > failure, Which is only fixed by the first two commits, so I see lit=
+tle
+> > > > point in submitting 3-5 alone, Without fixing Kory's problem. =20
+> > >=20
+> > > I thought Kory's problem was actually EPROBE_DEFER? The resources nee=
+ded
+> > > for the PoE are not available, so probing the switch needs to happen =
+again
+> > > later, when PoE can get the resources it needs. =20
+> >=20
+> > No, the PoE is the general high level application where he noted the
+> > problem. There is no PoE code nor special PoE resources in the Prestera
+> > driver. =20
+>=20
+> So here is K=C3=B6ry email:
+>=20
+> https://lore.kernel.org/netdev/20240208101005.29e8c7f3@kmaincent-XPS-13-7=
+390/T/#mb898bb2a4bf07776d79f1a19b6a8420716ecb4a3
+>=20
+> I don't see why the prestera needs to be involved in PoE itself. It is
+> just a MAC. PoE happens much lower down in the network stack. Same as
+> Prestera uses phylink, it does not need to know about the PHYs or the
+> SFP modules, phylink manages them, not prestera.
 
-On 3/25/24 11:13, Krzysztof Kozlowski wrote:
->>  arch/arm64/boot/dts/exynos/exynos5433.dtsi | 5 +++++
-> This and next one has wrong subject prefix. I fixed it.
+Prestera is indeed not directly involved in PoE. I wrote a hack to be able =
+to
+get the PoE ports control, for testing my PoE patch series.
 
-ah, s/arm/arm64. Thank you!
+The aim in the future will be to add RJ45 port abstraction.
+The Prestera will get the port abstraction which will get the PoE ports con=
+trol.
+The prestera driver then might receive an EPROBE_DEFER from it.
+
+Regards,
+--=20
+K=C3=B6ry Maincent, Bootlin
+Embedded Linux and kernel engineering
+https://bootlin.com
 
