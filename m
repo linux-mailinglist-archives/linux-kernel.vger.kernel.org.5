@@ -1,146 +1,139 @@
-Return-Path: <linux-kernel+bounces-117810-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-117809-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2C32188AFCA
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 20:24:10 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 17FF888AFC8
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 20:23:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D687E1F3F593
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 19:24:09 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7AAFE32467F
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 19:23:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 66B161BDD3;
-	Mon, 25 Mar 2024 19:23:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CB61A1C2AC;
+	Mon, 25 Mar 2024 19:23:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="d5+SDgIZ"
-Received: from mail-lf1-f43.google.com (mail-lf1-f43.google.com [209.85.167.43])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Zj7iGGjt"
+Received: from mail-ej1-f50.google.com (mail-ej1-f50.google.com [209.85.218.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D3B7C17579;
-	Mon, 25 Mar 2024 19:23:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 51C731B59A
+	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 19:23:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711394613; cv=none; b=n9BqnlSbeU/qhJfjH/VMui8n+fMwi2IN1R0i2Tyfx58V2PcHQA0tmykiBOksUaR0da2o7c2rrjtaK9S0zfNTRwLeKxJaYEaYWAW3+LufRQO4d2BEQ29BlgrSLfqxI83XkoFQ6bx5qbHMNIUGRJZrloFHkd2N8vXp81B3mkGEq6Q=
+	t=1711394607; cv=none; b=leiH/mwMfcO77TsH4aaEV3RxJpwyG9NGSOIloDjHtqBnU531/0d2vJUjKzJJvKZHdJo6/CAr0D9DvLhwYC1xuDD8uJIsbk4ue2fRog8rNWl+1g98H21ITez2Ov9NBqV0Hh940ciiNiiOFImyp6mabAE3LYqUtcaX5mvhpG04PwY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711394613; c=relaxed/simple;
-	bh=nAX1g5FAYeM8f4OsLvQyu5nop1FxLK7T4/S5kb/qsjk=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=JMV8vI9iH7DZ3tRc65jspdp6yGqEZLuENMxCNdvjpqcj4DWg2BnlcdsEo5nK4JEyDrC0zKpufwh4A7wA42GWG+O4zYjRYTMyhogTJL7Sz8tRjOwPH/JDLnQ7gV4rkp1j3b50Eqlcmt2px42Ym00LyALv3zk/DZKT/HtvblN7vxw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=d5+SDgIZ; arc=none smtp.client-ip=209.85.167.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f43.google.com with SMTP id 2adb3069b0e04-512e4f4e463so5100460e87.1;
-        Mon, 25 Mar 2024 12:23:31 -0700 (PDT)
+	s=arc-20240116; t=1711394607; c=relaxed/simple;
+	bh=FjY4GYVXr3k8uuStxgi4b+AOUxwzWPNNLCmKPoWQjp0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=I9X2kwffK6Cbdqe0Bi3m9w0tn+A6S9o9MY2Ucfw8TPckhmAVg52pIWreRUa4U6j0BPc4Faqo5PuynjBnfSjB03v74XzrsozU09gINP42gls4udmHoqfmKuf4pvRNcgFMZFMdkJgM1SxeCZ70V6Av1XQmO/qx5iFXEDT16VWPjxc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=Zj7iGGjt; arc=none smtp.client-ip=209.85.218.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ej1-f50.google.com with SMTP id a640c23a62f3a-a474d26fb41so219049066b.2
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 12:23:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711394610; x=1711999410; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=a8aQL/Qh+/g6MnD8suhJB3IMrCXrJXRjBKFx//tw32U=;
-        b=d5+SDgIZcJcmZW/1SQsc6plNPhxjx6yYpjsuY4IdJcy/OTwpKaQBo4yw2gXgsVB3PX
-         jlp1UhI23eW7cwGDh5TKdHg00hRhb1rJtX+9zGToAKdv0j4k/fbzi49Si1FYA7v2sCjh
-         i/yDBiefJDgOglz6gYyye9QbftShPbeEbqT/ukM8KWdxVrQZue6gttKbYtYMA/wlTgf1
-         NXeE5smvOAI4QbH/MEQ9SXUk5WcxNFTl61Y2kmBhksjW9JDiZo6vT90xlkjDm4tpDHEI
-         MdVyvcoRwtWlyhBw7nRyIfPUZFWCHPe4X9k2dN7Xhg/xEVIeMOVKh8ZKMTn/fm1I9omD
-         x4Zw==
+        d=linaro.org; s=google; t=1711394603; x=1711999403; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:to:subject:user-agent:mime-version:date
+         :message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=I2AtToWe7Efdj6aJ4/2uX4LyPVqOVDYs0OVfwHkOouk=;
+        b=Zj7iGGjtc/8+nvsIBkYm/TZ9d8oNFmH5XPCDjDecbTfiDWjdJiCkMWvHRHphhcWG35
+         LKZVMOfQZMj+I7uwDUXZ1ApH/mzBDIkyU6WJgXMT9IvOk8YiFwYfhA326i3oKoqQR6Uz
+         lCevjdSgst6xRs8c1HUZW9f/tJcnYRg7hQGPTjVb8stkHf8N5TdqnJs7xgQBpEh/Coks
+         /EYF4G/8tURAZQdOdPUz4YZrSgUukuXQDSOJ8pYCF3u9w4tdx7sB14saJ357EWt/q+Hg
+         S+YfTJNUaoQsqRtIJbk0Xi8ONNe6pboDYtk1uehsq/dfLi8KdAo1B3N4UWFTkQmVMy+d
+         wlfw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711394610; x=1711999410;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=a8aQL/Qh+/g6MnD8suhJB3IMrCXrJXRjBKFx//tw32U=;
-        b=KXcNnTNJUG31pMJZDmgIGEYu3EmA62SJ6pRek8jxweknJLVpcE4ioDhpVOVnyY8gA0
-         zRNQfYIK8vA1Sru1Fvo7XaIRdX3bHCJd0J4eqnkPS6FRxMo/XjU0XMZioQbEzNiuxN4r
-         U9FeRcAI0HeqD+EIqp2CluY/t2Mi32lTf7Bb1c4VroSFSoMqSAB7PbNSt+yR6IH9040J
-         bMBOub92yuZNw53K+7Rf7Xky1lylSEMFrFnaRlgx+EIIOps9rk7zr6VsrxyNclkcM3Zv
-         OMjOoOwf+z+LuTQtckVQb+uTNpHLoBRH14WS8gjaKK3g1CarjHpccywCHowY1DxhRwTP
-         VHZw==
-X-Forwarded-Encrypted: i=1; AJvYcCV8Zfs5/iSEOjKDSYRvAzHa6S+HgmkvsLZwEyfjS2n32FldEQlrKhPP9XUldNwG5rDQcogga9e+1yoG9wyYyRqP//sRgPiDYz23JAS2JSHdiipcpwqYJKSsN1Ht6YzowAdL
-X-Gm-Message-State: AOJu0Yxc+q5PF7/XLmsQ3gX5RwtIlHR//F+3hAjDs5SdK4mw79OhjlNk
-	L+y2auy9T2tiDTdRAZ3mBYZGq+6OuIEGDungkrtiTtrGazI2oRqfYmclIV4lt2jZ5qQ7Z8oSu9+
-	vyjLmr2C4xG81WltIvppsdccUz/0=
-X-Google-Smtp-Source: AGHT+IF1vk0UqW4liOGXjTqYiEBinsMXHGgEH6imFqIZGuouD3c8EayVtDMaf81Q2NsKzMpYNbz0b49BjVvEX9PL1hQ=
-X-Received: by 2002:ac2:5df0:0:b0:513:d5bb:3017 with SMTP id
- z16-20020ac25df0000000b00513d5bb3017mr568024lfq.36.1711394609647; Mon, 25 Mar
- 2024 12:23:29 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1711394603; x=1711999403;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:to:subject:user-agent:mime-version:date
+         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=I2AtToWe7Efdj6aJ4/2uX4LyPVqOVDYs0OVfwHkOouk=;
+        b=LDI6A4mEbVMqWx904YsPfEbcA96HhAbRN3ZMw4DrqzhljNqiLrbQBin77CyBBmzXUi
+         U5kblSkWazxaGdCx3eteOJIf0lHdDp8EX+Ewi8hONefKqi5VsJ1n/+GUOAx7ARmEt/vL
+         zXujbcVsKBZoAXtjjnJqcHDBCuz2EQNDKZGZrYJc034h+gIQpzX0J/aqL06n24PAHJfA
+         5N7cL1eBvZIV3teDSOGpq65hozP7VN/zS5vg3uZ3ERpUoKJI+RmBaNOez8S5hOHdYrMK
+         wghJWBiW0INob+l5cj0unVAc38Nk28I503kPgoE8kbKuqHnpSh4RF/Uz+dcJFlr7bCXY
+         tFyw==
+X-Forwarded-Encrypted: i=1; AJvYcCUD4wlVP2vWjyxGTDZZX1KLROX5vnUn5+qV4EMhC7bdBIfNtK0iXOzj69HPsYmD5yqBYBfzi8HreULesFpI1h6exfN+tmfidKsk1FTW
+X-Gm-Message-State: AOJu0YxylDYWO5Ar9iUMgB5Huk27iGIcKt4mlLyowc41qw+d+8RRJkgJ
+	NGMnysBndGJp2bQZD1YWU1p0nLgcH/Puq3ZGFR7Cn5LHAfXPacwERnpBpvfobAM=
+X-Google-Smtp-Source: AGHT+IFJk6SRM+6U3z7hDZmnH7BBwAQIbn/6FyxaLUpn9jAktkYp4Qj6rmfhKfQ1b+g/dKkhdtpYjw==
+X-Received: by 2002:a17:907:1184:b0:a49:fa33:a413 with SMTP id uz4-20020a170907118400b00a49fa33a413mr3016087ejb.69.1711394603570;
+        Mon, 25 Mar 2024 12:23:23 -0700 (PDT)
+Received: from [192.168.92.47] (078088045141.garwolin.vectranet.pl. [78.88.45.141])
+        by smtp.gmail.com with ESMTPSA id jo10-20020a170906f6ca00b00a457a55b814sm3357754ejb.73.2024.03.25.12.23.22
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 25 Mar 2024 12:23:23 -0700 (PDT)
+Message-ID: <531f7c92-9520-45f2-81b0-a45fa3f472fd@linaro.org>
+Date: Mon, 25 Mar 2024 20:23:22 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240325155434.65589-1-puranjay12@gmail.com> <20240325155434.65589-3-puranjay12@gmail.com>
- <20240325-nineteen-unvaried-cb5cb5fd3a73@spud> <CANk7y0gWtwN7EJ24aoY9-RB9629d5Ks-9fMc3wnAAjjERcZhFw@mail.gmail.com>
- <20240325-perpetual-liking-25f26e485b65@spud>
-In-Reply-To: <20240325-perpetual-liking-25f26e485b65@spud>
-From: Puranjay Mohan <puranjay12@gmail.com>
-Date: Mon, 25 Mar 2024 20:23:18 +0100
-Message-ID: <CANk7y0jtURUC6PWx5nSDigMpScUT+p3qd=hTtqJkCqAN+Nq32A@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 2/2] bpf,riscv: Implement bpf_addr_space_cast instruction
-To: Conor Dooley <conor@kernel.org>
-Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
-	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
-	Jiri Olsa <jolsa@kernel.org>, =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>, 
-	Luke Nelson <luke.r.nels@gmail.com>, Xi Wang <xi.wang@gmail.com>, 
-	Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, 
-	Albert Ou <aou@eecs.berkeley.edu>, bpf@vger.kernel.org, 
-	linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org, 
-	Pu Lehui <pulehui@huaweicloud.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] arm64: dts: qcom: sdx75: add unit address to soc node
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+ Bjorn Andersson <andersson@kernel.org>, Rob Herring <robh@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>, linux-arm-msm@vger.kernel.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20240325102924.26820-1-krzysztof.kozlowski@linaro.org>
+Content-Language: en-US
+From: Konrad Dybcio <konrad.dybcio@linaro.org>
+Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
+ 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
+ izWDgYvmBE8=
+In-Reply-To: <20240325102924.26820-1-krzysztof.kozlowski@linaro.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Mon, Mar 25, 2024 at 8:19=E2=80=AFPM Conor Dooley <conor@kernel.org> wro=
-te:
->
-> On Mon, Mar 25, 2024 at 08:13:10PM +0100, Puranjay Mohan wrote:
-> > On Mon, Mar 25, 2024 at 8:10=E2=80=AFPM Conor Dooley <conor@kernel.org>=
- wrote:
-> > >
-> > > On Mon, Mar 25, 2024 at 03:54:34PM +0000, Puranjay Mohan wrote:
-> > > > LLVM generates bpf_addr_space_cast instruction while translating
-> > > > pointers between native (zero) address space and
-> > > > __attribute__((address_space(N))). The addr_space=3D0 is reserved a=
-s
-> > > > bpf_arena address space.
-> > > >
-> > > > rY =3D addr_space_cast(rX, 0, 1) is processed by the verifier and
-> > > > converted to normal 32-bit move: wX =3D wY
-> > > >
-> > > > rY =3D addr_space_cast(rX, 1, 0) has to be converted by JIT.
-> > > >
-> > > > Signed-off-by: Puranjay Mohan <puranjay12@gmail.com>
-> > >
-> > > Doesn't compile for allmodconfig:
-> > >   ../arch/riscv/net/bpf_jit_comp64.c:1086:7: error: call to undeclare=
-d function 'insn_is_cast_user'; ISO C99 and later do not support implicit f=
-unction declarations [-Wimplicit-function-declaration]
-> > >
-> > > Cheers,
-> > > Conor.
-> >
-> > Yes,
-> > I mentioned in the cover letter that a patch is required.
-> > It just got merged in bpf-next/master:
-> > https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git/commit=
-/?id=3D770546ae9f4c1ae1ebcaf0874f0dd9631d77ec97
-> >
-> > So, rebasing on the latest bpf-next/master should fix the issue.
->
-> Ah, I see now that there was a mention in the cover letter that I did
-> not see first time around.
->
-> Bjorn, do you think there's anything we can do about these kinda
-> misleading CI failures for bpf stuff? Some stuff that touches bpf
-> definitely is worth us building, but should we try and build it on top
-> of the bpf tree instead?
+On 25.03.2024 11:29 AM, Krzysztof Kozlowski wrote:
+> Soc node has ranges, thus it must have an unit address. This fixes W=1
+> dtc warning:
+> 
+>   sdx75.dtsi:399.11-736.4: Warning (unit_address_vs_reg): /soc: node has a reg or ranges property, but no unit name
+> 
+> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+> ---
 
-Is there a separate CI for RISCV related stuff? is it public?
+Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
 
-I would be interested in adding RISC-V support in
-https://github.com/kernel-patches/bpf
-Is someone already working on this?
+Konrad
 
