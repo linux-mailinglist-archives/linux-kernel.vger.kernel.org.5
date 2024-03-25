@@ -1,173 +1,115 @@
-Return-Path: <linux-kernel+bounces-116838-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-116834-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C9B9188A46A
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 15:26:24 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7678888A3C1
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 15:11:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A1BB81C3923D
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 14:26:23 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 16FB01F3DBA8
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 14:11:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8DE61137740;
-	Mon, 25 Mar 2024 11:07:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6CD6815575B;
+	Mon, 25 Mar 2024 11:06:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="tPV9YT9u";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="GUv6mWS+"
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Mz7qdrOV"
+Received: from mail-ed1-f43.google.com (mail-ed1-f43.google.com [209.85.208.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AEA6F1369BA;
-	Mon, 25 Mar 2024 10:29:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8AE93136E2A
+	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 10:29:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711362566; cv=none; b=AWSIWpvIdRwtK556y87Mj5ZmCQH/E2NxXIvqbmo54MwrbKM4X752/6fSiH9a2M6HUzagOArLCIh0eoepUiCB5sVZAx6e1MbCYgWKSf55+b66mEg2Gz/QMMs0u3e3Ydors5flgQ6DxFeqEwqRy1aWujH26vvO7sxXTFHwRtmh0PA=
+	t=1711362570; cv=none; b=IXveDZRm8NLeNiswwowqVnccknUhs31XKCcnc+DXmM42DJNUkBf3i1zdiZHgV9mMWJKDg5fg6Y3OYmKb350bzvbxAY5ZP3DxOivuUgZsRws++PQ/9XxfE7rvSkoAYhyQ+XqjXPVxFRbmOpuLvTPQhdStG/FE9oWAqDg/06bbyzU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711362566; c=relaxed/simple;
-	bh=exsZ/RlFrlpl7+FM8gvJIdkjzrnMeECp/lur/esR3Yg=;
-	h=Date:From:To:Subject:Cc:In-Reply-To:References:MIME-Version:
-	 Message-ID:Content-Type; b=hWGae+NM0uUfo7+CqiNX04foStwRHWLs+/vOli5drhgma0H5i1KEtbA8X0JZkSAhWsUz94PTw9/Woby/kSEfxlsmI/9RPVxvVgtHFQT5W/gc87ZX9NnOObBbMTGIz54WTma2wF2smf5EPc+Zm2JzFfNSP6Wvd/G0+Mboi6fCTw4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=tPV9YT9u; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=GUv6mWS+; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-Date: Mon, 25 Mar 2024 10:29:22 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1711362562;
-	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-	 content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=pvU+bUjj4JAzflrn+dxjxcxBeNkheAqboGKDVwCtN9M=;
-	b=tPV9YT9u9uxDUlsOS2cFncAUqbtKxgrvfUh0zGfK2LwUMI8cbBITFYDXof0ttP0pLYPKks
-	Zjsh0joCyH5+JuFZfwbAElo6dPjeV0ZFZEcIOvnSxaIXk95YcXXOuaednUzqI4izTP80Rw
-	Jedujfgbc+psgE80iR3TSh0cse18YhlRX5Vj6Csk5SEIvhJWBJCAhH4/HOh0CJhfZrW6VX
-	qEiN++wUymJcF8SraUHUbPff2wr/1Ugqm29UfqajkjXGejl6Gcdp/gZrtjdFSkFMy/NBoe
-	IC/uG4PcZ0cp/JpOUgISQmSg6EdzsguLUPG63qyHthD4/JCTlo0uuVbfam+Z5w==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1711362562;
-	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-	 content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=pvU+bUjj4JAzflrn+dxjxcxBeNkheAqboGKDVwCtN9M=;
-	b=GUv6mWS+B6+KKmayIKK+DUsUaXZwwQAgYnne91TEBP758a5tkX9dZyFMuSsbcYEtkcL40/
-	jYVbyAjl/0al2pAg==
-From: "tip-bot2 for Sandipan Das" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To: linux-tip-commits@vger.kernel.org
-Subject:
- [tip: perf/urgent] x86/cpufeatures: Add new word for scattered features
-Cc: Sandipan Das <sandipan.das@amd.com>, Ingo Molnar <mingo@kernel.org>,
- x86@kernel.org, linux-kernel@vger.kernel.org
-In-Reply-To: =?utf-8?q?=3C8380d2a0da469a1f0ad75b8954a79fb689599ff6=2E17110?=
- =?utf-8?q?91584=2Egit=2Esandipan=2Edas=40amd=2Ecom=3E?=
-References: =?utf-8?q?=3C8380d2a0da469a1f0ad75b8954a79fb689599ff6=2E171109?=
- =?utf-8?q?1584=2Egit=2Esandipan=2Edas=40amd=2Ecom=3E?=
+	s=arc-20240116; t=1711362570; c=relaxed/simple;
+	bh=xv2J0Wx0wzB68T5mS5mCvWaPbdcarSVviDqgaUDVsLM=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=haYX5dl1qHxuK7tIohoA92THx6AemCAzSpdz7V0QaCmzPWlzDG1pFwP6f674Fb0ifSYf43+w4WBe9l1fbW+7ivSVKtzhRmYyCZj+WmbccnogTpSR+EYZhX2RcO5Cyo4tIpGXmg90nvBfGR7L0d90ttLTsbZ/flcfTre0AW/yKrg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=Mz7qdrOV; arc=none smtp.client-ip=209.85.208.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ed1-f43.google.com with SMTP id 4fb4d7f45d1cf-56c1364ff79so847338a12.1
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 03:29:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1711362567; x=1711967367; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=6TcKE6+dC1f3eAz4BNo+BlfsIlcWLTS4Ihl0QMKVXN0=;
+        b=Mz7qdrOVxHvbWYB3BfHXlrx32rBM7fhcs4qe6VM6MUW5XrZ0SDim9oKXxlo80zlii2
+         2/ZzBkHSCidX37YLhwriLttTFuIASqT6qlQUv0kurlyN0b1q/jLdHlq5zuIXeEh3ho1m
+         DUFTvj8JT1Rv1clM2HIvjp/DHCf4xYiu/uDYxFmRreCbqmYSaGxKx7xSxdmKKR47oYpy
+         LiMBbEPjTLAh5j2ehTu8ix1p+GEAb/Krtn5KTY7Oy9tH+Kr1ZAjtGLM9yjRqH/qPAHsN
+         cFv5W/7eBI0rFy5YtrdQeaWePHgKV+DbvpKevg1ijhg2QoEBjD2dq1khukwlEgyj+YhR
+         sswQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711362567; x=1711967367;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=6TcKE6+dC1f3eAz4BNo+BlfsIlcWLTS4Ihl0QMKVXN0=;
+        b=TwJrHPi4goG/EZYuXEfnoeC9G9aRBnqkmQ8FvsMbLadjrHMoSRVEZkGZVfP98WMKV7
+         h3ccTcJzE6SY0HqX+tyg3MqsSGW7vfQxoDMZv1XlwG+4ALYOcKHmxjf3PffZyg+sr4UH
+         SSafAyFVzjjdtJ5DfTqyHM8v/Pj3bVvaJwkKggYV+nCC5+jh1fBFoOW6kEBunmwGMz/x
+         /ekdFAcHWvxoJidizJkcSZxNrXRWk1pYsSF1l53bPo/Tw1/ibut/6ZjJoN9yh9bwNGMp
+         QY0CrakvytPI6MoBzmxmAJFLvoXbjbHEO97JlDuEuwSwYv4e3ylxcA0SMP8W3yRc+q/1
+         IFnw==
+X-Forwarded-Encrypted: i=1; AJvYcCWtpLMIgodmtNySJNP2tViPRed9HqnTKduUu1urODjBWXA8sVkjIoOldexLYyp2R1G43Z3phXmMHDsq5aqZ/lVwVWkLZWLRxOhPfg94
+X-Gm-Message-State: AOJu0YxdJ13GhLC5mhTc7Vd7yowKqqM4/d4y27bVRzwZJNv5m/Yx4ccp
+	YlNgBU3RKwPCBFUeY1TTdE87OwKYR4bGY12vCiA7JSu8Qutywo6qPo3AJWeKxDk=
+X-Google-Smtp-Source: AGHT+IHJwcp/nYlKZf4FVuIV3akoOxI9ayiT4CShSuqZh++R2kE6qmOBDp0F94QP8O6lMQt04Hy1NA==
+X-Received: by 2002:a17:906:a15a:b0:a47:3c9b:bd84 with SMTP id bu26-20020a170906a15a00b00a473c9bbd84mr4684802ejb.8.1711362566889;
+        Mon, 25 Mar 2024 03:29:26 -0700 (PDT)
+Received: from krzk-bin.. ([178.197.222.44])
+        by smtp.gmail.com with ESMTPSA id kv20-20020a17090778d400b00a46cc48ab07sm2902617ejc.221.2024.03.25.03.29.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 25 Mar 2024 03:29:26 -0700 (PDT)
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+To: Bjorn Andersson <andersson@kernel.org>,
+	Konrad Dybcio <konrad.dybcio@linaro.org>,
+	Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	linux-arm-msm@vger.kernel.org,
+	devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Subject: [PATCH] arm64: dts: qcom: sdx75: add unit address to soc node
+Date: Mon, 25 Mar 2024 11:29:24 +0100
+Message-Id: <20240325102924.26820-1-krzysztof.kozlowski@linaro.org>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-ID: <171136256210.10875.7016666652992736521.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe:
- Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Precedence: bulk
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-The following commit has been merged into the perf/urgent branch of tip:
+Soc node has ranges, thus it must have an unit address. This fixes W=1
+dtc warning:
 
-Commit-ID:     7f274e609f3d5f45c22b1dd59053f6764458b492
-Gitweb:        https://git.kernel.org/tip/7f274e609f3d5f45c22b1dd59053f6764458b492
-Author:        Sandipan Das <sandipan.das@amd.com>
-AuthorDate:    Mon, 25 Mar 2024 13:01:44 +05:30
-Committer:     Ingo Molnar <mingo@kernel.org>
-CommitterDate: Mon, 25 Mar 2024 11:16:54 +01:00
+  sdx75.dtsi:399.11-736.4: Warning (unit_address_vs_reg): /soc: node has a reg or ranges property, but no unit name
 
-x86/cpufeatures: Add new word for scattered features
-
-Add a new word for scattered features because all free bits among the
-existing Linux-defined auxiliary flags have been exhausted.
-
-Signed-off-by: Sandipan Das <sandipan.das@amd.com>
-Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Link: https://lore.kernel.org/r/8380d2a0da469a1f0ad75b8954a79fb689599ff6.1711091584.git.sandipan.das@amd.com
+Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 ---
- arch/x86/include/asm/cpufeature.h        | 6 ++++--
- arch/x86/include/asm/cpufeatures.h       | 2 +-
- arch/x86/include/asm/disabled-features.h | 3 ++-
- arch/x86/include/asm/required-features.h | 3 ++-
- 4 files changed, 9 insertions(+), 5 deletions(-)
+ arch/arm64/boot/dts/qcom/sdx75.dtsi | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/x86/include/asm/cpufeature.h b/arch/x86/include/asm/cpufeature.h
-index a127369..42157dd 100644
---- a/arch/x86/include/asm/cpufeature.h
-+++ b/arch/x86/include/asm/cpufeature.h
-@@ -91,8 +91,9 @@ extern const char * const x86_bug_flags[NBUGINTS*32];
- 	   CHECK_BIT_IN_MASK_WORD(REQUIRED_MASK, 18, feature_bit) ||	\
- 	   CHECK_BIT_IN_MASK_WORD(REQUIRED_MASK, 19, feature_bit) ||	\
- 	   CHECK_BIT_IN_MASK_WORD(REQUIRED_MASK, 20, feature_bit) ||	\
-+	   CHECK_BIT_IN_MASK_WORD(REQUIRED_MASK, 21, feature_bit) ||	\
- 	   REQUIRED_MASK_CHECK					  ||	\
--	   BUILD_BUG_ON_ZERO(NCAPINTS != 21))
-+	   BUILD_BUG_ON_ZERO(NCAPINTS != 22))
+diff --git a/arch/arm64/boot/dts/qcom/sdx75.dtsi b/arch/arm64/boot/dts/qcom/sdx75.dtsi
+index 7dbdf8ca6de6..f58da999a72d 100644
+--- a/arch/arm64/boot/dts/qcom/sdx75.dtsi
++++ b/arch/arm64/boot/dts/qcom/sdx75.dtsi
+@@ -411,7 +411,7 @@ smem: qcom,smem {
+ 		hwlocks = <&tcsr_mutex 3>;
+ 	};
  
- #define DISABLED_MASK_BIT_SET(feature_bit)				\
- 	 ( CHECK_BIT_IN_MASK_WORD(DISABLED_MASK,  0, feature_bit) ||	\
-@@ -116,8 +117,9 @@ extern const char * const x86_bug_flags[NBUGINTS*32];
- 	   CHECK_BIT_IN_MASK_WORD(DISABLED_MASK, 18, feature_bit) ||	\
- 	   CHECK_BIT_IN_MASK_WORD(DISABLED_MASK, 19, feature_bit) ||	\
- 	   CHECK_BIT_IN_MASK_WORD(DISABLED_MASK, 20, feature_bit) ||	\
-+	   CHECK_BIT_IN_MASK_WORD(DISABLED_MASK, 21, feature_bit) ||	\
- 	   DISABLED_MASK_CHECK					  ||	\
--	   BUILD_BUG_ON_ZERO(NCAPINTS != 21))
-+	   BUILD_BUG_ON_ZERO(NCAPINTS != 22))
- 
- #define cpu_has(c, bit)							\
- 	(__builtin_constant_p(bit) && REQUIRED_MASK_BIT_SET(bit) ? 1 :	\
-diff --git a/arch/x86/include/asm/cpufeatures.h b/arch/x86/include/asm/cpufeatures.h
-index f0337f7..4d850a7 100644
---- a/arch/x86/include/asm/cpufeatures.h
-+++ b/arch/x86/include/asm/cpufeatures.h
-@@ -13,7 +13,7 @@
- /*
-  * Defines x86 CPU feature bits
-  */
--#define NCAPINTS			21	   /* N 32-bit words worth of info */
-+#define NCAPINTS			22	   /* N 32-bit words worth of info */
- #define NBUGINTS			2	   /* N 32-bit bug flags */
- 
- /*
-diff --git a/arch/x86/include/asm/disabled-features.h b/arch/x86/include/asm/disabled-features.h
-index da4054f..c492bdc 100644
---- a/arch/x86/include/asm/disabled-features.h
-+++ b/arch/x86/include/asm/disabled-features.h
-@@ -155,6 +155,7 @@
- #define DISABLED_MASK18	(DISABLE_IBT)
- #define DISABLED_MASK19	(DISABLE_SEV_SNP)
- #define DISABLED_MASK20	0
--#define DISABLED_MASK_CHECK BUILD_BUG_ON_ZERO(NCAPINTS != 21)
-+#define DISABLED_MASK21	0
-+#define DISABLED_MASK_CHECK BUILD_BUG_ON_ZERO(NCAPINTS != 22)
- 
- #endif /* _ASM_X86_DISABLED_FEATURES_H */
-diff --git a/arch/x86/include/asm/required-features.h b/arch/x86/include/asm/required-features.h
-index 7ba1726..e9187dd 100644
---- a/arch/x86/include/asm/required-features.h
-+++ b/arch/x86/include/asm/required-features.h
-@@ -99,6 +99,7 @@
- #define REQUIRED_MASK18	0
- #define REQUIRED_MASK19	0
- #define REQUIRED_MASK20	0
--#define REQUIRED_MASK_CHECK BUILD_BUG_ON_ZERO(NCAPINTS != 21)
-+#define REQUIRED_MASK21	0
-+#define REQUIRED_MASK_CHECK BUILD_BUG_ON_ZERO(NCAPINTS != 22)
- 
- #endif /* _ASM_X86_REQUIRED_FEATURES_H */
+-	soc: soc {
++	soc: soc@0 {
+ 		compatible = "simple-bus";
+ 		#address-cells = <2>;
+ 		#size-cells = <2>;
+-- 
+2.34.1
+
 
