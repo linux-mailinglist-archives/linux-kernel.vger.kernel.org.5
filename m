@@ -1,289 +1,239 @@
-Return-Path: <linux-kernel+bounces-117214-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-117215-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1F7E688A8BD
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 17:17:32 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id DBDFD88B31C
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 22:49:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A307F1FA0776
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 16:17:31 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D97FBB33D2F
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 16:17:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 37A1F12FB32;
-	Mon, 25 Mar 2024 14:13:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A255E12B163;
+	Mon, 25 Mar 2024 14:15:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="SGYFccrp"
-Received: from mail-oa1-f46.google.com (mail-oa1-f46.google.com [209.85.160.46])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="PMydQKiD"
+Received: from mail-lf1-f52.google.com (mail-lf1-f52.google.com [209.85.167.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 95A08129E8B
-	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 14:13:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B96774C63A
+	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 14:14:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711376004; cv=none; b=gzltSgQ1/s09PfVuY4hIGzWsNZFW6FkcGGVyUTywEtcoJe2k3nYGqu3SewSkzE+5Fk9pFyU/bQXW7/FcHNSriBXZg17NQXWL6Bjn6AHidJ3Dm8wToA/hTVY3A/mP6uEHV65/HHTOKS6o9N0akn4bunKlaC85VfxHXRoM3Pp8J+I=
+	t=1711376099; cv=none; b=HWY6W9Lq7D7M+n2anm0MOxpEnlewg1JKOpVfxpcpwcE+h+nb3uenILDAbffpxpu7kkTPlHU+h35Ji8Q2KI6DkM+9Kb5pF6czR0MCV5FwTzL4MUdM4ct6PnniuI0dyPv3Y8mWATAAOIdqGoyB2q4IcEfv5OhQH4uz4G27HlfNDZ0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711376004; c=relaxed/simple;
-	bh=glAvtWW4x6uWkQgOynyaLO0XCJ5Wt8dqjtHIjr8nwUU=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=VWhmUScxAS73F3dGJMH8VgamJDai3YqDal3rBJF+g77rbEMd6BWMMTs+5sKIufLI9MyOq78pHOQfmVUQUuSZVo4X8+pc7L2aoJXOLJJAihRAav9PUMCVFoVQVrciez8+qppvOuzFjeIOMMsZFL+NYTIsaIEeY/pkwpDq3xQSLF8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=SGYFccrp; arc=none smtp.client-ip=209.85.160.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-oa1-f46.google.com with SMTP id 586e51a60fabf-22195b3a8fbso3265780fac.3
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 07:13:22 -0700 (PDT)
+	s=arc-20240116; t=1711376099; c=relaxed/simple;
+	bh=+MN35LfFWjPF5vSaIYz6fTe7dxOZ73WsvEV6oMFCNb4=;
+	h=Message-ID:Date:MIME-Version:From:Subject:To:Cc:References:
+	 In-Reply-To:Content-Type; b=nyXeMsDJ2lndJQBbaCpZRRQ3wH8ZqMAqJr4wQRBtSrwmZMOhJsRvWQQgU+J9fRm1WmYoCgQE+lHByCAkBrNmwAGwJD+deIeP1WAUZbtAuOPkeKgUQievKzFqKgeRXTjeRVYdLUM+GAbCMPUon97iKmRS0JZT8CXbIeVbUAVzxLE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=PMydQKiD; arc=none smtp.client-ip=209.85.167.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-lf1-f52.google.com with SMTP id 2adb3069b0e04-513e10a4083so4918176e87.1
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 07:14:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1711376001; x=1711980801; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=l6LSkWu1zEpya3hK2FUeUI36TyXKSztZPzjsG0MOd64=;
-        b=SGYFccrpa1o4XcN7YX4OI2XbYEX4LrdvMb6ajkUyTQ+KoWmhncGMIIUCOmarvSxP68
-         +ihM7Z5ZSbVS5BYrs957ZrYfyFimthAVnPfEFplp1nuP7vMxMJnwFPLPVv3OYxxUAC/L
-         V+v0ek1HgbzZKQGhb7mtq0EUcoUSphFRs08iY=
+        d=linaro.org; s=google; t=1711376096; x=1711980896; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt
+         :content-language:references:cc:to:subject:reply-to:from:user-agent
+         :mime-version:date:message-id:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=qt/0XGoAZ8t0mfKWvAzt9mb6uEidcJPFQo67Ml6oNt4=;
+        b=PMydQKiDaY2ewhv6E1lwEUtqOpiIi8SiJPNbb7hSL+veb1IyJqGRKXzc/mpe9KXELS
+         gx8qIluus2c6PIfiWBd0E+Ip7QQza7xESAYPQ3tEiOEgr6OFmky0R+haHYnqeZib9tN0
+         W5z2MoiaYh5fFaEVZ38oIe078zCEAgTgCh++FePAP3E5L07u1ZnWL3j8JiMEIJADUH0S
+         Of63zbdWDkavTr/ITxKalfCOgJ31/JLRdTVpF70oMvP1XHSsQ2g7slqPQiEo1bryFbqo
+         AQkIt8xoW+RkuFDMNhlTUIsQiyOFi6I1mC3q8C0tLZhIewbmMM9iCXCjfrtuRnqbtX+6
+         bLTw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711376001; x=1711980801;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=l6LSkWu1zEpya3hK2FUeUI36TyXKSztZPzjsG0MOd64=;
-        b=qRv8Y2Q+YDRsjtK/lnEhIlx3eiAmIVJBtXXDG5ReYoSIrLwWuvaSoQzr7lRr9IgN9Z
-         +ZgZNm9I1DpqhIWNtzk+O9jq+qTHvtA2o955JEnau5EKyHzAk1UrjegZL4HuTkrBeXxg
-         5BMRXrUy+kOPI1GzObCIg3AHPDsCWHDpj/+uLoegWjgvmxFxmBss7BcqLqWxSYM0E1ld
-         0HmqwSLTCuXa4UN96ViA/JOGbTn1XLDRLBf81v+A0kgkZmvBV82qPPzk+0+ZStbAtbYv
-         73gos3NXw3e70pnDUuYZ0dIjSXYFa04OpAr99m0tCP7Oc3sywkwFMRQtq0wtQsOm69GM
-         P+7w==
-X-Forwarded-Encrypted: i=1; AJvYcCUX1oAMIttNFyc9IvFL7a/rxBSXX1xQjAPHyIQce2y2Zv6ZUC88r5E6mWBzzoz/gBxZfFDKhBVreGhC9ewLEctD71bzBvrNETnQEz9C
-X-Gm-Message-State: AOJu0Yz/claKYDW5k1d8oznZBQ/vLNKl05PgWIlil7/Pc1PZq51XuElk
-	//B38G3baOl473OAZ7ZVi662GRJSyPyJEfDlY4oe1I26BevGVj1ZlX+5J6BwLENrZbd7/ZI+I1t
-	yGQ==
-X-Google-Smtp-Source: AGHT+IHUttZpIY8+WgvzfbE58lHFqCPqm/kZFMEc1YB3ibJ6GIr8LuM8hzrCeG4kyL6KAbkhQChXCg==
-X-Received: by 2002:a05:6870:7190:b0:22a:5154:b58c with SMTP id d16-20020a056870719000b0022a5154b58cmr11360oah.26.1711376001383;
-        Mon, 25 Mar 2024 07:13:21 -0700 (PDT)
-Received: from mail-ot1-f41.google.com (mail-ot1-f41.google.com. [209.85.210.41])
-        by smtp.gmail.com with ESMTPSA id mm9-20020a0568700e8900b0022a185fa4fesm1270995oab.21.2024.03.25.07.13.20
-        for <linux-kernel@vger.kernel.org>
+        d=1e100.net; s=20230601; t=1711376096; x=1711980896;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt
+         :content-language:references:cc:to:subject:reply-to:from:user-agent
+         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=qt/0XGoAZ8t0mfKWvAzt9mb6uEidcJPFQo67Ml6oNt4=;
+        b=iR8kZ3JGjaQxWlA/iS3Jf7XaYihvxiZSgd9sFGHMIuszwgQ0weDQ0EfsQwQFo9OgRO
+         sUsIYl1wu4K14kBavQZ4bMrx4OVjTF29dedWuJC6JVWEIYKJ6cmLSybscUzSQdHA5U4B
+         pnYaQF3sPnNZeTNMCseI+nPyWAz6E1MlDd7PejXNFm8qb2S9sYRnRBA2GA4CFd/NK3Zj
+         DqWrw68rKA8mNclpMBOTgB6c7mrOh+xbokn39FE0+/toGIkkHj0DtSFLOWXb4jRNYuw0
+         rahUgSLcAHVGX9oxWpBayEFtXtVjlb5Udjq16SQJEJ37ecPNAl+1XLzpkwnjc2Omz+Af
+         G9KQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWb1ZrV032W2T4k8nt3ApDagJlLlenbZYGse0XSwEpnJDnUkZjw90bfZw6rpTDIXSnfgIW7qCG8LcmUBdn2VZGqwscmxs+ZfQw4lAoG
+X-Gm-Message-State: AOJu0Yx6d5MG/rMWg/P3gBat/WCOeBbVXsMDMr7kKr3yCeOc7mcX+wf7
+	h3Jx+xUtty0HfDR2BshDh89Omvdl1KimspjjWyqFZxPAaz7ZfspCIsyfgSTMAV4=
+X-Google-Smtp-Source: AGHT+IFexrqaXNHt0cRrFp3/XbxcHYhkejQscLuwDwa5MdyepA9vGAQ5lNzK0+SYQ2n1pDcYsLfgKw==
+X-Received: by 2002:a19:6917:0:b0:513:a39e:ae45 with SMTP id e23-20020a196917000000b00513a39eae45mr4689250lfc.62.1711376095721;
+        Mon, 25 Mar 2024 07:14:55 -0700 (PDT)
+Received: from ?IPV6:2a01:e0a:982:cbb0:5176:2c0a:cfc0:1ada? ([2a01:e0a:982:cbb0:5176:2c0a:cfc0:1ada])
+        by smtp.gmail.com with ESMTPSA id k8-20020a5d66c8000000b00341ce4a3bd6sm2384247wrw.13.2024.03.25.07.14.51
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 25 Mar 2024 07:13:20 -0700 (PDT)
-Received: by mail-ot1-f41.google.com with SMTP id 46e09a7af769-6e6d089f603so911939a34.1
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 07:13:20 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCWn6LdXOZog2sjXULhy+2YmbiBlo/4gxaf5Zg3ZsrDuxh6W5PBtXFM875u4/9ESV0jHor0CRi2tr33p7ov31OSDiPGGV9JxHmiSRznP
-X-Received: by 2002:a05:6830:4426:b0:6e6:e19e:3f1 with SMTP id
- q38-20020a056830442600b006e6e19e03f1mr1089961otv.35.1711375999889; Mon, 25
- Mar 2024 07:13:19 -0700 (PDT)
+        Mon, 25 Mar 2024 07:14:55 -0700 (PDT)
+Message-ID: <ee3496ce-7c42-4074-b6d0-18fc14c6a767@linaro.org>
+Date: Mon, 25 Mar 2024 15:14:42 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240323-resend-hwtimestamp-v10-0-b08e590d97c7@chromium.org>
- <12403186.O9o76ZdvQC@natalenko.name> <CANiDSCuma7aGxq7T2uYMgn_JEW223LdR4as83UT2Aj3QmVu4ig@mail.gmail.com>
- <5764213.DvuYhMxLoT@natalenko.name>
-In-Reply-To: <5764213.DvuYhMxLoT@natalenko.name>
-From: Ricardo Ribalda <ribalda@chromium.org>
-Date: Mon, 25 Mar 2024 15:13:03 +0100
-X-Gmail-Original-Message-ID: <CANiDSCvAY8wYZi6QTrjq_ehu4qsHCrq_dTqZQV2=KUCuP+aZYg@mail.gmail.com>
-Message-ID: <CANiDSCvAY8wYZi6QTrjq_ehu4qsHCrq_dTqZQV2=KUCuP+aZYg@mail.gmail.com>
-Subject: Re: [PATCH v10 3/6] media: uvcvideo: Quirk for invalid dev_sof in
- Logitech C922
-To: Oleksandr Natalenko <oleksandr@natalenko.name>
-Cc: Laurent Pinchart <laurent.pinchart@ideasonboard.com>, 
-	Mauro Carvalho Chehab <mchehab@kernel.org>, linux-media@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, "hn.chen" <hn.chen@sunplusit.com>, 
-	Hans Verkuil <hverkuil@xs4all.nl>, Sergey Senozhatsky <senozhatsky@chromium.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+From: neil.armstrong@linaro.org
+Reply-To: neil.armstrong@linaro.org
+Subject: Re: [PATCH v2 1/1] usb: typec: ucsi: Check capabilities before cable
+ and identity discovery
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: linux-usb@vger.kernel.org, heikki.krogerus@linux.intel.com,
+ Jameson Thies <jthies@google.com>, pmalani@chromium.org, bleung@google.com,
+ abhishekpandit@chromium.org, andersson@kernel.org,
+ dmitry.baryshkov@linaro.org, fabrice.gasnier@foss.st.com,
+ hdegoede@redhat.com, rajaram.regupathy@intel.com, saranya.gopal@intel.com,
+ linux-kernel@vger.kernel.org, linux-arm-msm <linux-arm-msm@vger.kernel.org>
+References: <20240315171836.343830-1-jthies@google.com>
+ <20240315171836.343830-2-jthies@google.com>
+Content-Language: en-US, fr
+Autocrypt: addr=neil.armstrong@linaro.org; keydata=
+ xsBNBE1ZBs8BCAD78xVLsXPwV/2qQx2FaO/7mhWL0Qodw8UcQJnkrWmgTFRobtTWxuRx8WWP
+ GTjuhvbleoQ5Cxjr+v+1ARGCH46MxFP5DwauzPekwJUD5QKZlaw/bURTLmS2id5wWi3lqVH4
+ BVF2WzvGyyeV1o4RTCYDnZ9VLLylJ9bneEaIs/7cjCEbipGGFlfIML3sfqnIvMAxIMZrvcl9
+ qPV2k+KQ7q+aXavU5W+yLNn7QtXUB530Zlk/d2ETgzQ5FLYYnUDAaRl+8JUTjc0CNOTpCeik
+ 80TZcE6f8M76Xa6yU8VcNko94Ck7iB4vj70q76P/J7kt98hklrr85/3NU3oti3nrIHmHABEB
+ AAHNKk5laWwgQXJtc3Ryb25nIDxuZWlsLmFybXN0cm9uZ0BsaW5hcm8ub3JnPsLAkQQTAQoA
+ OwIbIwULCQgHAwUVCgkICwUWAgMBAAIeAQIXgBYhBInsPQWERiF0UPIoSBaat7Gkz/iuBQJk
+ Q5wSAhkBAAoJEBaat7Gkz/iuyhMIANiD94qDtUTJRfEW6GwXmtKWwl/mvqQtaTtZID2dos04
+ YqBbshiJbejgVJjy+HODcNUIKBB3PSLaln4ltdsV73SBcwUNdzebfKspAQunCM22Mn6FBIxQ
+ GizsMLcP/0FX4en9NaKGfK6ZdKK6kN1GR9YffMJd2P08EO8mHowmSRe/ExAODhAs9W7XXExw
+ UNCY4pVJyRPpEhv373vvff60bHxc1k/FF9WaPscMt7hlkbFLUs85kHtQAmr8pV5Hy9ezsSRa
+ GzJmiVclkPc2BY592IGBXRDQ38urXeM4nfhhvqA50b/nAEXc6FzqgXqDkEIwR66/Gbp0t3+r
+ yQzpKRyQif3OwE0ETVkGzwEIALyKDN/OGURaHBVzwjgYq+ZtifvekdrSNl8TIDH8g1xicBYp
+ QTbPn6bbSZbdvfeQPNCcD4/EhXZuhQXMcoJsQQQnO4vwVULmPGgtGf8PVc7dxKOeta+qUh6+
+ SRh3vIcAUFHDT3f/Zdspz+e2E0hPV2hiSvICLk11qO6cyJE13zeNFoeY3ggrKY+IzbFomIZY
+ 4yG6xI99NIPEVE9lNBXBKIlewIyVlkOaYvJWSV+p5gdJXOvScNN1epm5YHmf9aE2ZjnqZGoM
+ Mtsyw18YoX9BqMFInxqYQQ3j/HpVgTSvmo5ea5qQDDUaCsaTf8UeDcwYOtgI8iL4oHcsGtUX
+ oUk33HEAEQEAAcLAXwQYAQIACQUCTVkGzwIbDAAKCRAWmrexpM/4rrXiB/sGbkQ6itMrAIfn
+ M7IbRuiSZS1unlySUVYu3SD6YBYnNi3G5EpbwfBNuT3H8//rVvtOFK4OD8cRYkxXRQmTvqa3
+ 3eDIHu/zr1HMKErm+2SD6PO9umRef8V82o2oaCLvf4WeIssFjwB0b6a12opuRP7yo3E3gTCS
+ KmbUuLv1CtxKQF+fUV1cVaTPMyT25Od+RC1K+iOR0F54oUJvJeq7fUzbn/KdlhA8XPGzwGRy
+ 4zcsPWvwnXgfe5tk680fEKZVwOZKIEuJC3v+/yZpQzDvGYJvbyix0lHnrCzq43WefRHI5XTT
+ QbM0WUIBIcGmq38+OgUsMYu4NzLu7uZFAcmp6h8g
+Organization: Linaro
+In-Reply-To: <20240315171836.343830-2-jthies@google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Hi Oleksandr
+Hi Greg,
 
-That looks good :) !
+On 15/03/2024 18:18, Jameson Thies wrote:
+> Check the UCSI_CAP_GET_PD_MESSAGE bit before sending GET_PD_MESSAGE to
+> discover partner and cable identity, check UCSI_CAP_CABLE_DETAILS before
+> sending GET_CABLE_PROPERTY to discover the cable and check
+> UCSI_CAP_ALT_MODE_DETAILS before registering the a cable plug. Additionally,
+> move 8 bits from reserved_1 to features in the ucsi_capability struct. This
+> makes the field 16 bits, still 8 short of the 24 bits allocated for it in
+> UCSI v3.0, but it will not overflow because UCSI only defines 14 bits in
+> bmOptionalFeatures.
+> 
+> Fixes: 38ca416597b0 ("usb: typec: ucsi: Register cables based on GET_CABLE_PROPERTY")
+> Link: https://lore.kernel.org/linux-usb/44e8142f-d9b3-487b-83fe-39deadddb492@linaro.org
+> Suggested-by: Neil Armstrong <neil.armstrong@linaro.org>
+> Signed-off-by: Jameson Thies <jthies@google.com>
 
-On Mon, 25 Mar 2024 at 13:51, Oleksandr Natalenko
-<oleksandr@natalenko.name> wrote:
->
-> On pond=C4=9Bl=C3=AD 25. b=C5=99ezna 2024 10:25:51, CET Ricardo Ribalda w=
-rote:
-> > Hi Oleksandr
-> >
-> > On Mon, 25 Mar 2024 at 10:23, Oleksandr Natalenko
-> > <oleksandr@natalenko.name> wrote:
-> > >
-> > > Hello.
-> > >
-> > > On pond=C4=9Bl=C3=AD 25. b=C5=99ezna 2024 8:52:57, CET Ricardo Ribald=
-a wrote:
-> > > > Hi Oleksandr
-> > > >
-> > > > On Sat, 23 Mar 2024 at 13:16, Oleksandr Natalenko
-> > > > <oleksandr@natalenko.name> wrote:
-> > > >
-> > > > >
-> > > > > How do I check whether C920 (046d:082d) is affected too? I have g=
-ot one, I can run tests on it as long as those will not blow the webcam up.
-> > > > >
-> > > > > Thanks.
-> > > > >
-> > > >
-> > > > First of all you need to enable the hwtimestamps in the driver. You
-> > > > could do that with
-> > > >
-> > > > ```
-> > > > rmmod uvcvideo; modprobe uvcvideo hwtimestamps=3D1
-> > > > ```
-> > >
-> > > ```
-> > > $ cat /sys/module/uvcvideo/parameters/hwtimestamps
-> > > 1
-> > > ```
-> > >
-> > > > Then capture some frames with yavta
-> > > > ```
-> > > > yavta -c /dev/video0
-> > > > ```
-> > > >
-> > > > After around 5 seconds all the frames should have a stable fps, the
-> > > > fps is not stable then your camera is affected with this bug.
-> > >
-> > > ```
-> > > $ ./yavta -c /dev/video1
-> > > Device /dev/video1 opened.
-> > > Device `HD Pro Webcam C920' on `usb-0000:0f:00.3-3.4' (driver 'uvcvid=
-eo') supports video, capture, without mplanes.
-> > > Video format: MJPEG (47504a4d) 1920x1080 (stride 0) field none buffer=
- size 4147200
-> > > =E2=80=A6
-> > > 100 (4) [-] none 100 200717 B 212.919114 213.079004 33.727 fps ts mon=
-o/SoE
-> > > 101 (5) [-] none 101 200889 B 213.003703 213.114996 11.822 fps ts mon=
-o/SoE
-> > > 102 (6) [-] none 102 200926 B 213.035571 213.146999 31.379 fps ts mon=
-o/SoE
-> > > 103 (7) [-] none 103 200839 B 213.067424 213.179003 31.394 fps ts mon=
-o/SoE
-> > > 104 (0) [-] none 104 200692 B 213.293180 213.214991 4.430 fps ts mono=
-/SoE
-> > > 105 (1) [-] none 105 200937 B 213.322374 213.247001 34.254 fps ts mon=
-o/SoE
-> > > 106 (2) [-] none 106 201013 B 213.352228 213.279005 33.496 fps ts mon=
-o/SoE
-> > > =E2=80=A6
-> > > 168 (0) [-] none 168 200914 B 215.183707 215.347066 33.676 fps ts mon=
-o/SoE
-> > > 169 (1) [-] none 169 201141 B 215.271693 215.379066 11.365 fps ts mon=
-o/SoE
-> > > 170 (2) [-] none 170 201005 B 215.303449 215.415057 31.490 fps ts mon=
-o/SoE
-> > > 171 (3) [-] none 171 201195 B 215.335295 215.447062 31.401 fps ts mon=
-o/SoE
-> > > 172 (4) [-] none 172 200933 B 215.557731 215.479072 4.496 fps ts mono=
-/SoE
-> > > 173 (5) [-] none 173 200973 B 215.587033 215.515063 34.127 fps ts mon=
-o/SoE
-> > > 174 (6) [-] none 174 200698 B 215.616811 215.547063 33.582 fps ts mon=
-o/SoE
-> > > 175 (7) [-] none 175 201290 B 215.646196 215.579075 34.031 fps ts mon=
-o/SoE
-> > > 176 (0) [-] none 176 200807 B 215.675857 215.615073 33.714 fps ts mon=
-o/SoE
-> > > =E2=80=A6
-> > > ```
-> > >
-> > > Does the above mean the webcam is affected?
-> >
-> > Looks like it.... could you try applying this patch and run with
-> >
-> > rmmod uvcvideo; modprobe uvcvideo hwtimestamps=3D1 quirks=3D0x4000
-> >
-> > to see if that fixes it for you?
->
-> On top of v6.8, I've applied the whole v10, and also applied the followin=
-g change instead of providing `quirks=3D`:
+Could you queue this for v6.9-rc2 ? So far most of the recent Qualcomm boards are waiting
+this fix to be unbroken.
 
-Could you send the patch to the ML, so Laurent can apply it on top of my se=
-t?
+Thanks,
+Neil
 
-You could add the result of the experiment to the commit message
+> ---
+> Confirmed a device which supports GET_PD_MESSAGE, GET_CABLE_PROPERTY and
+> GET_ALTERNATE_MODES still requested identity and cable information.
+> 
+>   drivers/usb/typec/ucsi/ucsi.c | 34 +++++++++++++++++++++-------------
+>   drivers/usb/typec/ucsi/ucsi.h |  5 +++--
+>   2 files changed, 24 insertions(+), 15 deletions(-)
+> 
+> diff --git a/drivers/usb/typec/ucsi/ucsi.c b/drivers/usb/typec/ucsi/ucsi.c
+> index cf52cb34d2859..958dc82989b60 100644
+> --- a/drivers/usb/typec/ucsi/ucsi.c
+> +++ b/drivers/usb/typec/ucsi/ucsi.c
+> @@ -1133,17 +1133,21 @@ static int ucsi_check_cable(struct ucsi_connector *con)
+>   	if (ret < 0)
+>   		return ret;
+>   
+> -	ret = ucsi_get_cable_identity(con);
+> -	if (ret < 0)
+> -		return ret;
+> +	if (con->ucsi->cap.features & UCSI_CAP_GET_PD_MESSAGE) {
+> +		ret = ucsi_get_cable_identity(con);
+> +		if (ret < 0)
+> +			return ret;
+> +	}
+>   
+> -	ret = ucsi_register_plug(con);
+> -	if (ret < 0)
+> -		return ret;
+> +	if (con->ucsi->cap.features & UCSI_CAP_ALT_MODE_DETAILS) {
+> +		ret = ucsi_register_plug(con);
+> +		if (ret < 0)
+> +			return ret;
+>   
+> -	ret = ucsi_register_altmodes(con, UCSI_RECIPIENT_SOP_P);
+> -	if (ret < 0)
+> -		return ret;
+> +		ret = ucsi_register_altmodes(con, UCSI_RECIPIENT_SOP_P);
+> +		if (ret < 0)
+> +			return ret;
+> +	}
+>   
+>   	return 0;
+>   }
+> @@ -1189,8 +1193,10 @@ static void ucsi_handle_connector_change(struct work_struct *work)
+>   			ucsi_register_partner(con);
+>   			ucsi_partner_task(con, ucsi_check_connection, 1, HZ);
+>   			ucsi_partner_task(con, ucsi_check_connector_capability, 1, HZ);
+> -			ucsi_partner_task(con, ucsi_get_partner_identity, 1, HZ);
+> -			ucsi_partner_task(con, ucsi_check_cable, 1, HZ);
+> +			if (con->ucsi->cap.features & UCSI_CAP_GET_PD_MESSAGE)
+> +				ucsi_partner_task(con, ucsi_get_partner_identity, 1, HZ);
+> +			if (con->ucsi->cap.features & UCSI_CAP_CABLE_DETAILS)
+> +				ucsi_partner_task(con, ucsi_check_cable, 1, HZ);
+>   
+>   			if (UCSI_CONSTAT_PWR_OPMODE(con->status.flags) ==
+>   			    UCSI_CONSTAT_PWR_OPMODE_PD)
+> @@ -1589,8 +1595,10 @@ static int ucsi_register_port(struct ucsi *ucsi, struct ucsi_connector *con)
+>   		ucsi_register_partner(con);
+>   		ucsi_pwr_opmode_change(con);
+>   		ucsi_port_psy_changed(con);
+> -		ucsi_get_partner_identity(con);
+> -		ucsi_check_cable(con);
+> +		if (con->ucsi->cap.features & UCSI_CAP_GET_PD_MESSAGE)
+> +			ucsi_get_partner_identity(con);
+> +		if (con->ucsi->cap.features & UCSI_CAP_CABLE_DETAILS)
+> +			ucsi_check_cable(con);
+>   	}
+>   
+>   	/* Only notify USB controller if partner supports USB data */
+> diff --git a/drivers/usb/typec/ucsi/ucsi.h b/drivers/usb/typec/ucsi/ucsi.h
+> index 32daf5f586505..0e7c92eb1b227 100644
+> --- a/drivers/usb/typec/ucsi/ucsi.h
+> +++ b/drivers/usb/typec/ucsi/ucsi.h
+> @@ -206,7 +206,7 @@ struct ucsi_capability {
+>   #define UCSI_CAP_ATTR_POWER_OTHER		BIT(10)
+>   #define UCSI_CAP_ATTR_POWER_VBUS		BIT(14)
+>   	u8 num_connectors;
+> -	u8 features;
+> +	u16 features;
+>   #define UCSI_CAP_SET_UOM			BIT(0)
+>   #define UCSI_CAP_SET_PDM			BIT(1)
+>   #define UCSI_CAP_ALT_MODE_DETAILS		BIT(2)
+> @@ -215,7 +215,8 @@ struct ucsi_capability {
+>   #define UCSI_CAP_CABLE_DETAILS			BIT(5)
+>   #define UCSI_CAP_EXT_SUPPLY_NOTIFICATIONS	BIT(6)
+>   #define UCSI_CAP_PD_RESET			BIT(7)
+> -	u16 reserved_1;
+> +#define UCSI_CAP_GET_PD_MESSAGE		BIT(8)
+> +	u8 reserved_1;
+>   	u8 num_alt_modes;
+>   	u8 reserved_2;
+>   	u16 bc_version;
 
-With those changes
-
-Reviewed-by: Ricardo Ribalda <ribalda@chromium.org>
-
-Thanks!
-
->
-> ```
-> commit 884a61751d979ee9974c08a71c72e88e73bdd87e
-> Author: Oleksandr Natalenko <oleksandr@natalenko.name>
-> Date:   Mon Mar 25 10:28:00 2024 +0100
->
->     media: uvcvideo: Quirk for invalid dev_sof in Logitech C920
->
->     Signed-off-by: Oleksandr Natalenko <oleksandr@natalenko.name>
->
-> diff --git a/drivers/media/usb/uvc/uvc_driver.c b/drivers/media/usb/uvc/u=
-vc_driver.c
-> index 723e6d5680c2e..444d7089885ea 100644
-> --- a/drivers/media/usb/uvc/uvc_driver.c
-> +++ b/drivers/media/usb/uvc/uvc_driver.c
-> @@ -2573,7 +2573,8 @@ static const struct usb_device_id uvc_ids[] =3D {
->           .bInterfaceClass      =3D USB_CLASS_VIDEO,
->           .bInterfaceSubClass   =3D 1,
->           .bInterfaceProtocol   =3D 0,
-> -         .driver_info          =3D UVC_INFO_QUIRK(UVC_QUIRK_RESTORE_CTRL=
-S_ON_INIT) },
-> +         .driver_info          =3D UVC_INFO_QUIRK(UVC_QUIRK_RESTORE_CTRL=
-S_ON_INIT
-> +                                              | UVC_QUIRK_INVALID_DEVICE=
-_SOF) },
->         /* Logitech HD Pro Webcam C922 */
->         { .match_flags          =3D USB_DEVICE_ID_MATCH_DEVICE
->                                 | USB_DEVICE_ID_MATCH_INT_INFO,
->
-> ```
->
-> Now I see this:
->
-> ```
-> 154 (2) [-] none 154 192417 B 42.199823 42.207788 27.779 fps ts mono/SoE
-> 155 (3) [-] none 155 192040 B 42.231834 42.239791 31.239 fps ts mono/SoE
-> 156 (4) [-] none 156 192213 B 42.263823 42.271822 31.261 fps ts mono/SoE
-> 157 (5) [-] none 157 191981 B 42.299824 42.303827 27.777 fps ts mono/SoE
-> 158 (6) [-] none 158 191953 B 42.331835 42.339811 31.239 fps ts mono/SoE
-> 159 (7) [-] none 159 191904 B 42.363824 42.371813 31.261 fps ts mono/SoE
-> 160 (0) [-] none 160 192210 B 42.399834 42.407801 27.770 fps ts mono/SoE
-> 161 (1) [-] none 161 192235 B 42.431824 42.439806 31.260 fps ts mono/SoE
-> ```
->
-> without dips in FPS.
->
-> What do you think?
->
-> >
-> > Thanks!
-> >
-> > >
-> > > Thank you.
-> > >
-> > > >
-> > > >
-> > > > Thanks!
-> > > >
-> > >
-> > >
-> > > --
-> > > Oleksandr Natalenko (post-factum)
-> >
-> >
-> >
-> >
->
->
-> --
-> Oleksandr Natalenko (post-factum)
-
-
-
---=20
-Ricardo Ribalda
 
