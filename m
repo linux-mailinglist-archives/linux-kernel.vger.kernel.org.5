@@ -1,231 +1,208 @@
-Return-Path: <linux-kernel+bounces-117952-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-117953-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id EBDAF88B1BD
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 21:40:04 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9FEC288B1BF
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 21:40:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1B45F1C629E0
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 20:40:04 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 574B7323122
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 20:40:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9B396524B4;
-	Mon, 25 Mar 2024 20:39:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B6D5A59B6C;
+	Mon, 25 Mar 2024 20:40:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="YhviuZiu"
-Received: from mail-qt1-f177.google.com (mail-qt1-f177.google.com [209.85.160.177])
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="nPSoA2x1"
+Received: from mail-pf1-f178.google.com (mail-pf1-f178.google.com [209.85.210.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0AED852F9E
-	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 20:39:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2E0C659B61
+	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 20:40:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711399197; cv=none; b=Wi16wqg/ZZvlMgGYWp2O+UWftVLMMjTuZ8NaOyn7vL9z2pENMdEqXI8MEmHlFJTQqwDX/LKap/7KHb0tKFDc7d2fhWtAsaL57aguU+wTKz9wDOwxL1CRa7agjy9gc8o7KWWeKaREyPahmP6Oo+ciaDqNfCU8cosPj+bK6QelOuk=
+	t=1711399237; cv=none; b=PhKxyatVB1Twgal2kJuCfpMl9vEpoQbQd5qIkYXzYt7+c70XgtWZkB0+egCBwCfvvSKdtGoJErcqTRp0aw2F4MDG6TvHRSI5dV4ySa1E7tmQlIANvzVCxTz6I7PRPuIQzBimUM5BjWQRbsqh8sa84OHvgOZOu+UwTcsVwCYWrO8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711399197; c=relaxed/simple;
-	bh=0lKeRJM41ddDuiQBpexloV7L37ieSOsuiSMyxK4Up8s=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=R3riKZ8LyyCzlIx9VjTjWTfpsrkGkFNyTNAwQZG5wNNd5I+TE//Q2rTt5GtQwDP+79JtZ+jdPqePr/GHl/dCTb3faVggydIYhyd7jwYVLUdtJr9ITHwTHwbZerCsqD718zfpn84ir7bw4JeDQoEAQYaJs2uGZFhoaGSIEW/P+fM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=YhviuZiu; arc=none smtp.client-ip=209.85.160.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=broadcom.com
-Received: by mail-qt1-f177.google.com with SMTP id d75a77b69052e-42a029c8e76so33708081cf.2
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 13:39:55 -0700 (PDT)
+	s=arc-20240116; t=1711399237; c=relaxed/simple;
+	bh=ZfAL7t4zOUSppTGC73cNDX4tJCQR3S0Iky3Z0Kvvwik=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=sfL1b7jsDAxCvuEz8dJFNDaw24eWd9dlZPnVGPVljotGtx0mJ7FGw70WxRo55MPJbfXMq1r76l+uNTJtCpEu9YaHFnnCyWloe1LR0yMFJc5dFAVJsEtw/B5cs4udxpQqeeNNWz4cpvcH82GybmUG3CWb0Kvt54FLlc/jVuVWaq4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=nPSoA2x1; arc=none smtp.client-ip=209.85.210.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-pf1-f178.google.com with SMTP id d2e1a72fcca58-6e6f4ad4c57so3600064b3a.2
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 13:40:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1711399195; x=1712003995; darn=vger.kernel.org;
-        h=in-reply-to:autocrypt:from:references:cc:to:subject:user-agent
-         :mime-version:date:message-id:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=/ZwVt/ptxlfQQCtqHlSlXcm0B9RBlpn6gQvipX7WVMg=;
-        b=YhviuZiuF9q5ppJFJGHYoddrS6qPyS1raoFNo/w4ghV8EOUThca4KQu3UXEno+mdsL
-         +1gxbcbhhYxv1fETIiZSTLmg+7VDghqtjQ5AF6o2A/OjrClm78urj+SsxVZnrDeR17+3
-         RBKG3mrJJ93rffRNP86K7enYkIStWpY/1NKlw=
+        d=chromium.org; s=google; t=1711399235; x=1712004035; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=ej6YX3fEHGl+77MEXxCPV4obwrkrSQqnkopyC7I1h4A=;
+        b=nPSoA2x1vkO3voH1ZtPV4a90RxLLwr6fkAPBi9eMXvhMg3SXWMiQlHEsFAgqZMQP/B
+         KA2ARqjtAiOviQYZSRLscLHEc14yecaT8WmxWMzUn8KLXeOpAhcVroloZRyQuLz/UKWT
+         0u0ZwLCV1Zczob7mNH8n2QffoOkGENlMcIPn0=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711399195; x=1712003995;
-        h=in-reply-to:autocrypt:from:references:cc:to:subject:user-agent
-         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=/ZwVt/ptxlfQQCtqHlSlXcm0B9RBlpn6gQvipX7WVMg=;
-        b=xSj1mYbDTq41zGbxeDCnB8b6UB5FEhYl1EHaguPHhNTjcLZCyiPRegN24qL5qYjwsJ
-         MvMMa6cqgZnjU3Lm32HtuENZtKcq5YYb8u5EjdBfkv7zUlRYl52MTijmv6TaOmMYun1s
-         MG0xK0gkqVVCIu8ntsjdSb98SSPFIxGd4fSgP+YbellhDBJ8hMqn/TQrP+5y00+waMbA
-         Bnvk33L90Ty7UdQ/hOQMb2Fyd0KVpIGBTOebnPhbT/Ckq6jEW4xGu6XpYpmfxYxJjKTs
-         /L8dKNWPSNUlSjpfC9a5WOoJRjYTT4R4WEaj0CeCn1NEez7GN/xUAGrmJKQMNyA5C8DA
-         Ooqg==
-X-Forwarded-Encrypted: i=1; AJvYcCX8UWn7QnMtwz3JG36x5AqKbm0FTclmnVwUiyuoHS179Fl2ZoQIG4SDNqyPc4chrhYAWEMP6yCW4PWN3+Evn0iBHCdOsAlsjYgHu+aN
-X-Gm-Message-State: AOJu0Yx5iZzJE9akdOY2Vgus+VgkbxpdBigW59QBcGCMpk0VLKEXjP6V
-	4FU9IVJmTtL6zB7Oh0PLBxc1HiVZMmUC27gZET4LVZ0iLt3bglBSc+lmwQIVJw==
-X-Google-Smtp-Source: AGHT+IFuCXxMh5rUidjgsg+AXmea92849eqnu7QCokQv3+ou3jE+siStDeF6EIQzBcQfYkIvkNeX0w==
-X-Received: by 2002:a05:622a:3d1:b0:431:234f:832f with SMTP id k17-20020a05622a03d100b00431234f832fmr1171462qtx.18.1711399194932;
-        Mon, 25 Mar 2024 13:39:54 -0700 (PDT)
-Received: from [10.67.48.245] ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id ga13-20020a05622a590d00b0042f3fa77602sm2963586qtb.2.2024.03.25.13.39.52
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 25 Mar 2024 13:39:54 -0700 (PDT)
-Message-ID: <95b1ffc2-96e9-494d-a5d7-484899e3f6a3@broadcom.com>
-Date: Mon, 25 Mar 2024 13:39:50 -0700
+        d=1e100.net; s=20230601; t=1711399235; x=1712004035;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ej6YX3fEHGl+77MEXxCPV4obwrkrSQqnkopyC7I1h4A=;
+        b=EtUzAnyxZDQptHhCZCzUkdTrYjBCK9sdnV5HVnSK/DuKQwciCV0inTAkCsotblaQca
+         +SGt4yKO0GQL1hj1/PsrB2ldWsEJsenVPAmaHg/YBoRALk84WPVyyCIAavEuVONadyA5
+         6XHUkxt+yzmqkWd7f3lHcFvBH2xjBDpuQaR6fV2hpM859d8DriYR4D/wbR/OLkJZFhoS
+         lFQbMXBAmaN0KMzBMDSqYyDkFXwPsZaiWs/NGzdN58MBXPB0U3E8XOL84EItRVkYxaLd
+         4POtJGuSz5lBua9bd8k2udDXdULuEb8riuj4YtuZ88BnV7CXgk+79Ugvmbk6FlqtvkUA
+         x5vg==
+X-Forwarded-Encrypted: i=1; AJvYcCVO7PX6zJqyKc1POjREeK8ueLSHPlQ8xNHjkRnM8Zw0LYAV1OR57q9FAn/40Uuj6yObpL62+Ao9DNzdcM3M8frcNrwhcYuq1BtStOxw
+X-Gm-Message-State: AOJu0Ywbx14b4jXfaiwC6BRDAkPFUuQ7tGf6WamHmJ81MuewS5rcsNM6
+	fS9rItSpog2SB8MXXNJpfvMKcwhgdkTQEONLtraCoNqXNzf2j1mFrxlHVmRJBA==
+X-Google-Smtp-Source: AGHT+IHN6rGpnqSQi7c440LUs4dG4GTM/YjcMp1vk9CNuNpKUMJvkXuJRV/il9IOPfw/5cGqBuim/w==
+X-Received: by 2002:a05:6a21:2d88:b0:1a3:bb8b:de7a with SMTP id ty8-20020a056a212d8800b001a3bb8bde7amr9222423pzb.54.1711399235550;
+        Mon, 25 Mar 2024 13:40:35 -0700 (PDT)
+Received: from www.outflux.net ([198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id y9-20020a63de49000000b005dcc8a3b26esm6193652pgi.16.2024.03.25.13.40.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 25 Mar 2024 13:40:35 -0700 (PDT)
+Date: Mon, 25 Mar 2024 13:40:34 -0700
+From: Kees Cook <keescook@chromium.org>
+To: Kent Overstreet <kent.overstreet@linux.dev>
+Cc: Vlastimil Babka <vbabka@suse.cz>, Christoph Lameter <cl@linux.com>,
+	Pekka Enberg <penberg@kernel.org>,
+	David Rientjes <rientjes@google.com>,
+	Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Roman Gushchin <roman.gushchin@linux.dev>,
+	Hyeonggon Yoo <42.hyeyoo@gmail.com>, linux-mm@kvack.org,
+	"GONG, Ruiqi" <gongruiqi@huaweicloud.com>,
+	Xiu Jianfeng <xiujianfeng@huawei.com>,
+	Suren Baghdasaryan <surenb@google.com>,
+	Jann Horn <jannh@google.com>, Matteo Rizzo <matteorizzo@google.com>,
+	linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
+Subject: Re: [PATCH v2 4/9] slab: Introduce kmem_buckets_create()
+Message-ID: <202403251327.C15C1E61A@keescook>
+References: <20240305100933.it.923-kees@kernel.org>
+ <20240305101026.694758-4-keescook@chromium.org>
+ <eppzf5gil6izcn6nnvzgzukagdikqnfxdvziga7ipnpl5eeern@i7jfzslklsu6>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 6.7 000/707] 6.7.11-rc2 review
-To: Sasha Levin <sashal@kernel.org>, linux-kernel@vger.kernel.org,
- stable@vger.kernel.org
-Cc: torvalds@linux-foundation.org, akpm@linux-foundation.org,
- linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
- lkft-triage@lists.linaro.org, pavel@denx.de
-References: <20240325120003.1767691-1-sashal@kernel.org>
-From: Florian Fainelli <florian.fainelli@broadcom.com>
-Autocrypt: addr=florian.fainelli@broadcom.com; keydata=
- xsBNBFPAG8ABCAC3EO02urEwipgbUNJ1r6oI2Vr/+uE389lSEShN2PmL3MVnzhViSAtrYxeT
- M0Txqn1tOWoIc4QUl6Ggqf5KP6FoRkCrgMMTnUAINsINYXK+3OLe7HjP10h2jDRX4Ajs4Ghs
- JrZOBru6rH0YrgAhr6O5gG7NE1jhly+EsOa2MpwOiXO4DE/YKZGuVe6Bh87WqmILs9KvnNrQ
- PcycQnYKTVpqE95d4M824M5cuRB6D1GrYovCsjA9uxo22kPdOoQRAu5gBBn3AdtALFyQj9DQ
- KQuc39/i/Kt6XLZ/RsBc6qLs+p+JnEuPJngTSfWvzGjpx0nkwCMi4yBb+xk7Hki4kEslABEB
- AAHNMEZsb3JpYW4gRmFpbmVsbGkgPGZsb3JpYW4uZmFpbmVsbGlAYnJvYWRjb20uY29tPsLB
- IQQQAQgAywUCZWl41AUJI+Jo+hcKAAG/SMv+fS3xUQWa0NryPuoRGjsA3SAUAAAAAAAWAAFr
- ZXktdXNhZ2UtbWFza0BwZ3AuY29tjDAUgAAAAAAgAAdwcmVmZXJyZWQtZW1haWwtZW5jb2Rp
- bmdAcGdwLmNvbXBncG1pbWUICwkIBwMCAQoFF4AAAAAZGGxkYXA6Ly9rZXlzLmJyb2FkY29t
- Lm5ldAUbAwAAAAMWAgEFHgEAAAAEFQgJChYhBNXZKpfnkVze1+R8aIExtcQpvGagAAoJEIEx
- tcQpvGagWPEH/2l0DNr9QkTwJUxOoP9wgHfmVhqc0ZlDsBFv91I3BbhGKI5UATbipKNqG13Z
- TsBrJHcrnCqnTRS+8n9/myOF0ng2A4YT0EJnayzHugXm+hrkO5O9UEPJ8a+0553VqyoFhHqA
- zjxj8fUu1px5cbb4R9G4UAySqyeLLeqnYLCKb4+GklGSBGsLMYvLmIDNYlkhMdnnzsSUAS61
- WJYW6jjnzMwuKJ0ZHv7xZvSHyhIsFRiYiEs44kiYjbUUMcXor/uLEuTIazGrE3MahuGdjpT2
- IOjoMiTsbMc0yfhHp6G/2E769oDXMVxCCbMVpA+LUtVIQEA+8Zr6mX0Yk4nDS7OiBlvOwE0E
- U8AbwQEIAKxr71oqe+0+MYCc7WafWEcpQHFUwvYLcdBoOnmJPxDwDRpvU5LhqSPvk/yJdh9k
- 4xUDQu3rm1qIW2I9Puk5n/Jz/lZsqGw8T13DKyu8eMcvaA/irm9lX9El27DPHy/0qsxmxVmU
- pu9y9S+BmaMb2CM9IuyxMWEl9ruWFS2jAWh/R8CrdnL6+zLk60R7XGzmSJqF09vYNlJ6Bdbs
- MWDXkYWWP5Ub1ZJGNJQ4qT7g8IN0qXxzLQsmz6tbgLMEHYBGx80bBF8AkdThd6SLhreCN7Uh
- IR/5NXGqotAZao2xlDpJLuOMQtoH9WVNuuxQQZHVd8if+yp6yRJ5DAmIUt5CCPcAEQEAAcLB
- gQQYAQIBKwUCU8AbwgUbDAAAAMBdIAQZAQgABgUCU8AbwQAKCRCTYAaomC8PVQ0VCACWk3n+
- obFABEp5Rg6Qvspi9kWXcwCcfZV41OIYWhXMoc57ssjCand5noZi8bKg0bxw4qsg+9cNgZ3P
- N/DFWcNKcAT3Z2/4fTnJqdJS//YcEhlr8uGs+ZWFcqAPbteFCM4dGDRruo69IrHfyyQGx16s
- CcFlrN8vD066RKevFepb/ml7eYEdN5SRALyEdQMKeCSf3mectdoECEqdF/MWpfWIYQ1hEfdm
- C2Kztm+h3Nkt9ZQLqc3wsPJZmbD9T0c9Rphfypgw/SfTf2/CHoYVkKqwUIzI59itl5Lze+R5
- wDByhWHx2Ud2R7SudmT9XK1e0x7W7a5z11Q6vrzuED5nQvkhAAoJEIExtcQpvGagugcIAJd5
- EYe6KM6Y6RvI6TvHp+QgbU5dxvjqSiSvam0Ms3QrLidCtantcGT2Wz/2PlbZqkoJxMQc40rb
- fXa4xQSvJYj0GWpadrDJUvUu3LEsunDCxdWrmbmwGRKqZraV2oG7YEddmDqOe0Xm/NxeSobc
- MIlnaE6V0U8f5zNHB7Y46yJjjYT/Ds1TJo3pvwevDWPvv6rdBeV07D9s43frUS6xYd1uFxHC
- 7dZYWJjZmyUf5evr1W1gCgwLXG0PEi9n3qmz1lelQ8lSocmvxBKtMbX/OKhAfuP/iIwnTsww
- 95A2SaPiQZA51NywV8OFgsN0ITl2PlZ4Tp9hHERDe6nQCsNI/Us=
-In-Reply-To: <20240325120003.1767691-1-sashal@kernel.org>
-Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-	boundary="0000000000001a352a0614822d4c"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <eppzf5gil6izcn6nnvzgzukagdikqnfxdvziga7ipnpl5eeern@i7jfzslklsu6>
 
---0000000000001a352a0614822d4c
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+On Mon, Mar 25, 2024 at 03:40:51PM -0400, Kent Overstreet wrote:
+> On Tue, Mar 05, 2024 at 02:10:20AM -0800, Kees Cook wrote:
+> > Dedicated caches are available For fixed size allocations via
+> > kmem_cache_alloc(), but for dynamically sized allocations there is only
+> > the global kmalloc API's set of buckets available. This means it isn't
+> > possible to separate specific sets of dynamically sized allocations into
+> > a separate collection of caches.
+> > 
+> > This leads to a use-after-free exploitation weakness in the Linux
+> > kernel since many heap memory spraying/grooming attacks depend on using
+> > userspace-controllable dynamically sized allocations to collide with
+> > fixed size allocations that end up in same cache.
+> > 
+> > While CONFIG_RANDOM_KMALLOC_CACHES provides a probabilistic defense
+> > against these kinds of "type confusion" attacks, including for fixed
+> > same-size heap objects, we can create a complementary deterministic
+> > defense for dynamically sized allocations.
+> > 
+> > In order to isolate user-controllable sized allocations from system
+> > allocations, introduce kmem_buckets_create(), which behaves like
+> > kmem_cache_create(). (The next patch will introduce kmem_buckets_alloc(),
+> > which behaves like kmem_cache_alloc().)
+> > 
+> > Allows for confining allocations to a dedicated set of sized caches
+> > (which have the same layout as the kmalloc caches).
+> > 
+> > This can also be used in the future once codetag allocation annotations
+> > exist to implement per-caller allocation cache isolation[1] even for
+> > dynamic allocations.
+> > 
+> > Link: https://lore.kernel.org/lkml/202402211449.401382D2AF@keescook [1]
+> > Signed-off-by: Kees Cook <keescook@chromium.org>
+> > ---
+> > Cc: Vlastimil Babka <vbabka@suse.cz>
+> > Cc: Christoph Lameter <cl@linux.com>
+> > Cc: Pekka Enberg <penberg@kernel.org>
+> > Cc: David Rientjes <rientjes@google.com>
+> > Cc: Joonsoo Kim <iamjoonsoo.kim@lge.com>
+> > Cc: Andrew Morton <akpm@linux-foundation.org>
+> > Cc: Roman Gushchin <roman.gushchin@linux.dev>
+> > Cc: Hyeonggon Yoo <42.hyeyoo@gmail.com>
+> > Cc: linux-mm@kvack.org
+> > ---
+> >  include/linux/slab.h |  5 +++
+> >  mm/slab_common.c     | 72 ++++++++++++++++++++++++++++++++++++++++++++
+> >  2 files changed, 77 insertions(+)
+> > 
+> > diff --git a/include/linux/slab.h b/include/linux/slab.h
+> > index f26ac9a6ef9f..058d0e3cd181 100644
+> > --- a/include/linux/slab.h
+> > +++ b/include/linux/slab.h
+> > @@ -493,6 +493,11 @@ void *kmem_cache_alloc_lru(struct kmem_cache *s, struct list_lru *lru,
+> >  			   gfp_t gfpflags) __assume_slab_alignment __malloc;
+> >  void kmem_cache_free(struct kmem_cache *s, void *objp);
+> >  
+> > +kmem_buckets *kmem_buckets_create(const char *name, unsigned int align,
+> > +				  slab_flags_t flags,
+> > +				  unsigned int useroffset, unsigned int usersize,
+> > +				  void (*ctor)(void *));
+> 
+> I'd prefer an API that initialized an object over one that allocates it
+> - that is, prefer
+> 
+> kmem_buckets_init(kmem_buckets *bucekts, ...)
 
-On 3/25/24 05:00, Sasha Levin wrote:
-> 
-> This is the start of the stable review cycle for the 6.7.11 release.
-> There are 707 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Wed Mar 27 12:00:02 PM UTC 2024.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
->          https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git/patch/?id=linux-6.7.y&id2=v6.7.10
-> or in the git tree and branch at:
->          git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.7.y
-> and the diffstat can be found below.
-> 
-> Thanks,
-> Sasha
+Sure, that can work. kmem_cache_init() would need to exist for the same
+reason though.
 
-Same issue as reported by Naresh, this does not boot on 32-bit ARM 
-platforms unless we bring in the commits he identified.
+> 
+> by forcing it to be separately allocated, you're adding a pointer deref
+> to every access.
+
+I don't understand what you mean here. "every access"? I take a guess
+below...
+
+> That would also allow for kmem_buckets to be lazily initialized, which
+> would play nicely declaring the kmem_buckets in the alloc_hooks() macro.
+
+Sure, I think it'll depend on how the per-site allocations got wired up.
+I think you're meaning to include a full copy of the kmem cache/bucket
+struct with the codetag instead of just a pointer? I don't think that'll
+work well to make it runtime selectable, and I don't see it using an
+extra deref -- allocations already get the struct from somewhere and
+deref it. The only change is where to find the struct.
+
+> I'm curious what all the arguments to kmem_buckets_create() are needed
+> for, if this is supposed to be a replacement for kmalloc() users.
+
+Are you confusing kmem_buckets_create() with kmem_buckets_alloc()? These
+args are needed to initialize the per-bucket caches, just like is
+already done for the global kmalloc per-bucket caches. This mirrors
+kmem_cache_create(). (Or more specifically, calls kmem_cache_create()
+for each bucket size, so the args need to be passed through.)
+
+If you mean "why expose these arguments because they can just use the
+existing defaults already used by the global kmalloc caches" then I
+would say, it's to gain the benefit here of narrowing the scope of the
+usercopy offsets. Right now kmalloc is forced to allow the full usercopy
+window into an allocation, but we don't have to do this any more. For
+example, see patch 8, where struct msg_msg doesn't need to expose the
+header to userspace:
+
+	msg_buckets = kmem_buckets_create("msg_msg", 0, SLAB_ACCOUNT,
+					  sizeof(struct msg_msg),
+					  DATALEN_MSG, NULL);
+
+Only DATALEN_MSG many bytes, starting at sizeof(struct msg_msg), will be
+allowed to be copied in/out of userspace. Before, it was unbounded.
+
+-Kees
+
 -- 
-Florian
-
-
---0000000000001a352a0614822d4c
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Description: S/MIME Cryptographic Signature
-
-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
-riBJ/K1AFUjRAjFhGV64l++td7dkmnq/X8ET75ti+w1s4FRpFqkD2m7pg5NxdsZphYIXAgMBAAGj
-QjBAMA4GA1UdDwEB/wQEAwIBBjAPBgNVHRMBAf8EBTADAQH/MB0GA1UdDgQWBBSP8Et/qC5FJK5N
-UPpjmove4t0bvDANBgkqhkiG9w0BAQsFAAOCAQEAS0DbwFCq/sgM7/eWVEVJu5YACUGssxOGhigH
-M8pr5nS5ugAtrqQK0/Xx8Q+Kv3NnSoPHRHt44K9ubG8DKY4zOUXDjuS5V2yq/BKW7FPGLeQkbLmU
-Y/vcU2hnVj6DuM81IcPJaP7O2sJTqsyQiunwXUaMld16WCgaLx3ezQA3QY/tRG3XUyiXfvNnBB4V
-14qWtNPeTCekTBtzc3b0F5nCH3oO4y0IrQocLP88q1UOD5F+NuvDV0m+4S4tfGCLw0FREyOdzvcy
-a5QBqJnnLDMfOjsl0oZAzjsshnjJYS8Uuu7bVW/fhO4FCU29KNhyztNiUGUe65KXgzHZs7XKR1g/
-XzCCBVgwggRAoAMCAQICDBP8P9hKRVySg3Qv5DANBgkqhkiG9w0BAQsFADBbMQswCQYDVQQGEwJC
-RTEZMBcGA1UEChMQR2xvYmFsU2lnbiBudi1zYTExMC8GA1UEAxMoR2xvYmFsU2lnbiBHQ0MgUjMg
-UGVyc29uYWxTaWduIDIgQ0EgMjAyMDAeFw0yMjA5MTAxMjE4MTFaFw0yNTA5MTAxMjE4MTFaMIGW
-MQswCQYDVQQGEwJJTjESMBAGA1UECBMJS2FybmF0YWthMRIwEAYDVQQHEwlCYW5nYWxvcmUxFjAU
-BgNVBAoTDUJyb2FkY29tIEluYy4xGTAXBgNVBAMTEEZsb3JpYW4gRmFpbmVsbGkxLDAqBgkqhkiG
-9w0BCQEWHWZsb3JpYW4uZmFpbmVsbGlAYnJvYWRjb20uY29tMIIBIjANBgkqhkiG9w0BAQEFAAOC
-AQ8AMIIBCgKCAQEA+oi3jMmHltY4LMUy8Up5+1zjd1iSgUBXhwCJLj1GJQF+GwP8InemBbk5rjlC
-UwbQDeIlOfb8xGqHoQFGSW8p9V1XUw+cthISLkycex0AJ09ufePshLZygRLREU0H4ecNPMejxCte
-KdtB4COST4uhBkUCo9BSy1gkl8DJ8j/BQ1KNUx6oYe0CntRag+EnHv9TM9BeXBBLfmMRnWNhvOSk
-nSmRX0J3d9/G2A3FIC6WY2XnLW7eAZCQPa1Tz3n2B5BGOxwqhwKLGLNu2SRCPHwOdD6e0drURF7/
-Vax85/EqkVnFNlfxtZhS0ugx5gn2pta7bTdBm1IG4TX+A3B1G57rVwIDAQABo4IB3jCCAdowDgYD
-VR0PAQH/BAQDAgWgMIGjBggrBgEFBQcBAQSBljCBkzBOBggrBgEFBQcwAoZCaHR0cDovL3NlY3Vy
-ZS5nbG9iYWxzaWduLmNvbS9jYWNlcnQvZ3NnY2NyM3BlcnNvbmFsc2lnbjJjYTIwMjAuY3J0MEEG
-CCsGAQUFBzABhjVodHRwOi8vb2NzcC5nbG9iYWxzaWduLmNvbS9nc2djY3IzcGVyc29uYWxzaWdu
-MmNhMjAyMDBNBgNVHSAERjBEMEIGCisGAQQBoDIBKAowNDAyBggrBgEFBQcCARYmaHR0cHM6Ly93
-d3cuZ2xvYmFsc2lnbi5jb20vcmVwb3NpdG9yeS8wCQYDVR0TBAIwADBJBgNVHR8EQjBAMD6gPKA6
-hjhodHRwOi8vY3JsLmdsb2JhbHNpZ24uY29tL2dzZ2NjcjNwZXJzb25hbHNpZ24yY2EyMDIwLmNy
-bDAoBgNVHREEITAfgR1mbG9yaWFuLmZhaW5lbGxpQGJyb2FkY29tLmNvbTATBgNVHSUEDDAKBggr
-BgEFBQcDBDAfBgNVHSMEGDAWgBSWM9HmWBdbNHWKgVZk1b5I3qGPzzAdBgNVHQ4EFgQUUwwfJ6/F
-KL0fRdVROal/Lp4lAF0wDQYJKoZIhvcNAQELBQADggEBAKBgfteDc1mChZjKBY4xAplC6uXGyBrZ
-kNGap1mHJ+JngGzZCz+dDiHRQKGpXLxkHX0BvEDZLW6LGOJ83ImrW38YMOo3ZYnCYNHA9qDOakiw
-2s1RH00JOkO5SkYdwCHj4DB9B7KEnLatJtD8MBorvt+QxTuSh4ze96Jz3kEIoHMvwGFkgObWblsc
-3/YcLBmCgaWpZ3Ksev1vJPr5n8riG3/N4on8gO5qinmmr9Y7vGeuf5dmZrYMbnb+yCBalkUmZQwY
-NxADYvcRBA0ySL6sZpj8BIIhWiXiuusuBmt2Mak2eEv0xDbovE6Z6hYyl/ZnRadbgK/ClgbY3w+O
-AfUXEZ0xggJtMIICaQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52
-LXNhMTEwLwYDVQQDEyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIwAgwT
-/D/YSkVckoN0L+QwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIKgMmqPN9saUnrq4
-bxAEuiTOLqyG5CnH8mefk6fd4tgnMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcN
-AQkFMQ8XDTI0MDMyNTIwMzk1NVowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJYIZI
-AWUDBAEWMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcNAQEH
-MAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQBoxoP7EZFqP9k1HXBREYxFUza90mH7+wvS
-l3TMR2LkpC2jR7/aIUZXl5nIsN04HClSUZZZTOE7T10ifMLF1OFOKE+0a3yGQbPstnq2B2JAQeA0
-qe/IPrmDABpoOtsRdRCOdyQBH3D5rIQ21edMrbaWdibn2iG8kHYNIYl3YHnhMeaAuVrgCxCKk9hO
-e84BYPB927SNAou/OqoTDUzy4ZAPW15xK2TI7rzD5284MP/h3/bEJ/sMiUfcQhAYDEQRCI7TeZC5
-Uq1rYhTkU+5q+VUtpjkEg8/rjlk7K5vrnuLKbwCFqwcupLCZxML1n4BNxuLLX0F2UgEVXAwV2UuQ
-UUrl
---0000000000001a352a0614822d4c--
+Kees Cook
 
