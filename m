@@ -1,59 +1,59 @@
-Return-Path: <linux-kernel+bounces-117580-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-117581-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7965B88ACD1
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 19:01:19 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 73BC588ACD2
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 19:01:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0933A1F65563
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A613A1C603A8
 	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 18:01:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 71AFA5C900;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 93C3D12C805;
 	Mon, 25 Mar 2024 17:21:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="OWfKfH6A"
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="I1SnGiYZ"
 Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 389E712C7EE;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3899F12B15E;
 	Mon, 25 Mar 2024 17:21:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.19.142
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711387267; cv=none; b=iivsEonkOAH/wbvIQ+lWTmBg2ayD1+518Tfkt8bhLMotWEOMShFoROG2fCX0kLCU5nosaO19Zgc75pSRqoG4i+2LX8HxjQ5KaxmZeasI51FVk4N8ysAibggFXdxFm49Fv0n6umvzyassWUx0j3dQZCzgeObF5vrFcoc/HFUrygQ=
+	t=1711387267; cv=none; b=G625PXFifrpO3hK4ELqh+mcV7oaybKtCL+KOHmy87MwiYtGiG6NWLaIh3psr+amT9XztXTrYLuqxbJMLaw9oeycH0PaXTCvLbhBBz/z3ZxnZ+lXjPWpJ1ntnhDAQ76k2NGFItbn1Yd5xyCsge2/vILi5ouA89DjqrtlQ6lhl4XA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1711387267; c=relaxed/simple;
-	bh=cHzIUSsWOwL4bdxoqheqXLuQ8KqcDtisXv/t7osIT50=;
+	bh=PTegs9ykbvHC1ICQVyVsRDew1j48hO85AyiibH06nsU=;
 	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=TlwO2QvcmOvj6MLxEdG71JpuCMXutUrCr2eqnET6f16eKXeB3XHU0OaXQgKhIlfeX/B3EbWQhnYUE64Ev5Sms9/fUtMnE9jwQsOZVyXM1CQ8SBKFguYUmjEett83u9tYqgY7FGLC+k5kZAeLUSPKfM7fbn+a5Yk6T9wGoE34bpg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=OWfKfH6A; arc=none smtp.client-ip=198.47.19.142
+	 MIME-Version:Content-Type; b=AWmjJzdZIFE/c3AEW3G8pUEPMcnQPEjPBg9wpzy468QAlETdsjwv+qhqnm49MnUu3jKkYcR/Ei3xiI4hQtI7hRI1hhpq3Zy/wDrxEkxRyrlt3nQMK6EDzhkIvntvxtCpZpm95bzp/N12PpmtKNKXhTiNbHj2jH5Rnzg3W0KgMec=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=I1SnGiYZ; arc=none smtp.client-ip=198.47.19.142
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-	by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 42PHKo8X022679;
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+	by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 42PHKo9B022683;
 	Mon, 25 Mar 2024 12:20:50 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
 	s=ti-com-17Q1; t=1711387250;
-	bh=MRm7Wfdskw+FskyCTQqKVQqWK3HtEFp0jjB5j6n0QcE=;
+	bh=D2x4h79JlmRi6L/Tkiiqwzm9M9u1cUSEJdufr2dangU=;
 	h=From:To:CC:Subject:Date:In-Reply-To:References;
-	b=OWfKfH6AJoQwJeX0xCGsoVzvnXqGGjd0KxB0NXVk61HPfInJwVRAWHnoHuzL+aVcm
-	 1EORYZcdjq0th+TMc9D74HQi5zjOD3MDSpxFTeOugxlhneiJwRYpY4GaCiiKXfn3ZG
-	 47ovqdI8ldFOuglzR/YsOwXEAMsmUyzmSy+QaGZI=
-Received: from DFLE104.ent.ti.com (dfle104.ent.ti.com [10.64.6.25])
-	by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 42PHKon7043016
+	b=I1SnGiYZsAcQxDRE7NS64e8LIoQbtBHu7f/ttHpk5VqgSmJSWoRO/KBblRvwthnkr
+	 +IVXt4ZESRPC6S1Zqk+JcdC5b7dxPHB0VClN9PJtGylOkee943HZ8K30RHCMq+OkEW
+	 vZoOM245LIGBvozRnHJP4rzX3tsIvoFW7UBSKuso=
+Received: from DFLE114.ent.ti.com (dfle114.ent.ti.com [10.64.6.35])
+	by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 42PHKo3A105033
 	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
 	Mon, 25 Mar 2024 12:20:50 -0500
-Received: from DFLE115.ent.ti.com (10.64.6.36) by DFLE104.ent.ti.com
- (10.64.6.25) with Microsoft SMTP Server (version=TLS1_2,
+Received: from DFLE105.ent.ti.com (10.64.6.26) by DFLE114.ent.ti.com
+ (10.64.6.35) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Mon, 25
- Mar 2024 12:20:49 -0500
-Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DFLE115.ent.ti.com
- (10.64.6.36) with Microsoft SMTP Server (version=TLS1_2,
+ Mar 2024 12:20:50 -0500
+Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DFLE105.ent.ti.com
+ (10.64.6.26) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Mon, 25 Mar 2024 12:20:49 -0500
+ Frontend Transport; Mon, 25 Mar 2024 12:20:50 -0500
 Received: from lelvsmtp5.itg.ti.com ([10.249.42.149])
-	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 42PHKkYf075282;
+	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 42PHKkYg075282;
 	Mon, 25 Mar 2024 12:20:49 -0500
 From: Andrew Davis <afd@ti.com>
 To: Jassi Brar <jassisinghbrar@gmail.com>, Hari Nagalla <hnagalla@ti.com>,
@@ -63,9 +63,9 @@ To: Jassi Brar <jassisinghbrar@gmail.com>, Hari Nagalla <hnagalla@ti.com>,
 CC: <linux-remoteproc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
         Andrew
  Davis <afd@ti.com>
-Subject: [PATCH 09/13] mailbox: omap: Use function local struct mbox_controller
-Date: Mon, 25 Mar 2024 12:20:41 -0500
-Message-ID: <20240325172045.113047-10-afd@ti.com>
+Subject: [PATCH 10/13] mailbox: omap: Use mbox_controller channel list directly
+Date: Mon, 25 Mar 2024 12:20:42 -0500
+Message-ID: <20240325172045.113047-11-afd@ti.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20240325172045.113047-1-afd@ti.com>
 References: <20240325172045.113047-1-afd@ti.com>
@@ -79,72 +79,118 @@ Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
 X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
-The mbox_controller struct is only needed in the probe function. Make
-it a local variable instead of storing a copy in omap_mbox_device
-to simplify that struct.
+The driver stores a list of omap_mbox structs so it can later use it to
+lookup the mailbox names in of_xlate. This same information is already
+available in the mbox_controller passed into of_xlate. Simply use that
+data and remove the extra allocation and storage of the omap_mbox list.
 
 Signed-off-by: Andrew Davis <afd@ti.com>
 ---
- drivers/mailbox/omap-mailbox.c | 21 ++++++++++++---------
- 1 file changed, 12 insertions(+), 9 deletions(-)
+ drivers/mailbox/omap-mailbox.c | 42 +++++++++-------------------------
+ 1 file changed, 11 insertions(+), 31 deletions(-)
 
 diff --git a/drivers/mailbox/omap-mailbox.c b/drivers/mailbox/omap-mailbox.c
-index 17c9b9df78b1d..97f59d9f9f319 100644
+index 97f59d9f9f319..8e42266cb31a5 100644
 --- a/drivers/mailbox/omap-mailbox.c
 +++ b/drivers/mailbox/omap-mailbox.c
-@@ -86,7 +86,6 @@ struct omap_mbox_device {
+@@ -85,7 +85,6 @@ struct omap_mbox_device {
+ 	u32 num_users;
  	u32 num_fifos;
  	u32 intr_type;
- 	struct omap_mbox **mboxes;
--	struct mbox_controller controller;
+-	struct omap_mbox **mboxes;
  };
  
  struct omap_mbox {
-@@ -541,7 +540,7 @@ static struct mbox_chan *omap_mbox_of_xlate(struct mbox_controller *controller,
+@@ -356,25 +355,6 @@ static void omap_mbox_fini(struct omap_mbox *mbox)
+ 	mbox_queue_free(mbox->rxq);
+ }
+ 
+-static struct omap_mbox *omap_mbox_device_find(struct omap_mbox_device *mdev,
+-					       const char *mbox_name)
+-{
+-	struct omap_mbox *_mbox, *mbox = NULL;
+-	struct omap_mbox **mboxes = mdev->mboxes;
+-	int i;
+-
+-	if (!mboxes)
+-		return NULL;
+-
+-	for (i = 0; (_mbox = mboxes[i]); i++) {
+-		if (!strcmp(_mbox->name, mbox_name)) {
+-			mbox = _mbox;
+-			break;
+-		}
+-	}
+-	return mbox;
+-}
+-
+ static int omap_mbox_chan_startup(struct mbox_chan *chan)
+ {
+ 	struct omap_mbox *mbox = mbox_chan_to_omap_mbox(chan);
+@@ -539,6 +519,7 @@ static struct mbox_chan *omap_mbox_of_xlate(struct mbox_controller *controller,
+ 	struct device_node *node;
  	struct omap_mbox_device *mdev;
  	struct omap_mbox *mbox;
++	int i;
  
--	mdev = container_of(controller, struct omap_mbox_device, controller);
-+	mdev = dev_get_drvdata(controller->dev);
+ 	mdev = dev_get_drvdata(controller->dev);
  	if (WARN_ON(!mdev))
- 		return ERR_PTR(-EINVAL);
+@@ -551,16 +532,23 @@ static struct mbox_chan *omap_mbox_of_xlate(struct mbox_controller *controller,
+ 		return ERR_PTR(-ENODEV);
+ 	}
  
-@@ -567,6 +566,7 @@ static int omap_mbox_probe(struct platform_device *pdev)
+-	mbox = omap_mbox_device_find(mdev, node->name);
++	for (i = 0; i < controller->num_chans; i++) {
++		mbox = controller->chans[i].con_priv;
++		if (!strcmp(mbox->name, node->name)) {
++			of_node_put(node);
++			return &controller->chans[i];
++		}
++	}
++
+ 	of_node_put(node);
+-	return mbox ? mbox->chan : ERR_PTR(-ENOENT);
++	return ERR_PTR(-ENOENT);
+ }
+ 
+ static int omap_mbox_probe(struct platform_device *pdev)
+ {
+ 	int ret;
+ 	struct mbox_chan *chnls;
+-	struct omap_mbox **list, *mbox;
++	struct omap_mbox *mbox;
+ 	struct omap_mbox_device *mdev;
+ 	struct omap_mbox_fifo *fifo;
  	struct device_node *node = pdev->dev.of_node;
- 	struct device_node *child;
- 	const struct omap_mbox_match_data *match_data;
-+	struct mbox_controller *controller;
- 	u32 intr_type, info_count;
- 	u32 num_users, num_fifos;
- 	u32 tmp[3];
-@@ -685,17 +685,20 @@ static int omap_mbox_probe(struct platform_device *pdev)
+@@ -608,12 +596,6 @@ static int omap_mbox_probe(struct platform_device *pdev)
+ 	if (!mdev->irq_ctx)
+ 		return -ENOMEM;
+ 
+-	/* allocate one extra for marking end of list */
+-	list = devm_kcalloc(&pdev->dev, info_count + 1, sizeof(*list),
+-			    GFP_KERNEL);
+-	if (!list)
+-		return -ENOMEM;
+-
+ 	chnls = devm_kcalloc(&pdev->dev, info_count + 1, sizeof(*chnls),
+ 			     GFP_KERNEL);
+ 	if (!chnls)
+@@ -675,7 +657,6 @@ static int omap_mbox_probe(struct platform_device *pdev)
+ 			return mbox->irq;
+ 		mbox->chan = &chnls[i];
+ 		chnls[i].con_priv = mbox;
+-		list[i] = mbox++;
+ 	}
+ 
+ 	mutex_init(&mdev->cfg_lock);
+@@ -683,7 +664,6 @@ static int omap_mbox_probe(struct platform_device *pdev)
+ 	mdev->num_users = num_users;
+ 	mdev->num_fifos = num_fifos;
  	mdev->intr_type = intr_type;
- 	mdev->mboxes = list;
+-	mdev->mboxes = list;
  
-+	controller = devm_kzalloc(&pdev->dev, sizeof(*controller), GFP_KERNEL);
-+	if (!controller)
-+		return -ENOMEM;
- 	/*
- 	 * OMAP/K3 Mailbox IP does not have a Tx-Done IRQ, but rather a Tx-Ready
- 	 * IRQ and is needed to run the Tx state machine
- 	 */
--	mdev->controller.txdone_irq = true;
--	mdev->controller.dev = mdev->dev;
--	mdev->controller.ops = &omap_mbox_chan_ops;
--	mdev->controller.chans = chnls;
--	mdev->controller.num_chans = info_count;
--	mdev->controller.of_xlate = omap_mbox_of_xlate;
--	ret = devm_mbox_controller_register(mdev->dev, &mdev->controller);
-+	controller->txdone_irq = true;
-+	controller->dev = mdev->dev;
-+	controller->ops = &omap_mbox_chan_ops;
-+	controller->chans = chnls;
-+	controller->num_chans = info_count;
-+	controller->of_xlate = omap_mbox_of_xlate;
-+	ret = devm_mbox_controller_register(mdev->dev, controller);
- 	if (ret)
- 		return ret;
- 
+ 	controller = devm_kzalloc(&pdev->dev, sizeof(*controller), GFP_KERNEL);
+ 	if (!controller)
 -- 
 2.39.2
 
