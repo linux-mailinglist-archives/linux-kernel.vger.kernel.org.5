@@ -1,149 +1,142 @@
-Return-Path: <linux-kernel+bounces-117380-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-117381-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0EA6F88AAAD
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 18:05:16 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0DE0688AAAF
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 18:05:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 380371C3CF2C
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 17:05:15 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D5BD9340CF3
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 17:05:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4EAD912DDA4;
-	Mon, 25 Mar 2024 15:34:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AB51256B98;
+	Mon, 25 Mar 2024 15:35:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="FWJDz+yz"
-Received: from mail-lf1-f52.google.com (mail-lf1-f52.google.com [209.85.167.52])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="F7cvx1+R"
+Received: from mail-oo1-f52.google.com (mail-oo1-f52.google.com [209.85.161.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BB00A82D74;
-	Mon, 25 Mar 2024 15:34:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 423085677A;
+	Mon, 25 Mar 2024 15:35:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711380897; cv=none; b=YCkgz6AKHps+1i76WZglMLpyZGqGpM0WXIVo53s2qO4imgq/NKN1m9dxcYWuSKQxsEGeZu9ZtK10C7/sRdQZvr62UUQA8yC95MRLlx1codyon6d7JjmRoElqpBg+CVxI+nk3fNQoeA27J99V0CM+BfHKE1KYbvVhO+BP8tofE+s=
+	t=1711380932; cv=none; b=f6h6iBjLvKy9VjD1bJVh5HCtzlII7Ncfs9wm1wOXsepo6jb31+kMGENzqvs7DD3jNZPQjlfVTPqTUbbqsIcBXGiwJipdIB/iXAux4ZFP8fnDbknmACHbpb3kYsEPSmQ5Rx0ZWAnv9AyGL4AD1/Hdc6rYiKapMffg+QxFOfINCOw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711380897; c=relaxed/simple;
-	bh=VpmSCUo4LCSDAreg17AyaXZjU/kMgoCoxrBfLAVsbns=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=Kk4i5vZXgCn18DNbj4E3Puoajum0c/GzWDlPgkdMgtR08CGG6975am7501rVgwOhwXN8NXi+uXA9W3c670SxIGfCzrWxbLLoYEHn0VmVIL4v4z70mMjB6/puF+AK1SxI3caPdgL/IxKMyxUvrwE3i16UtSOkThDEuTWl4aQXqH0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=FWJDz+yz; arc=none smtp.client-ip=209.85.167.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+	s=arc-20240116; t=1711380932; c=relaxed/simple;
+	bh=MaD9/SmJ2gwBbfzRyshBjEL8kp+oAgi6WZStd/nITTA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Kp5kH65uwDEiY57snuny3NLLiCDkClRH2t3kokqZab9N7WdggWhnJ2PpGK/EbLXh8cn9ll5JJMIo3uNvbVFumjbUOTbEGIGUzXNN1nyIW8fGEVn5ndILBkonEc3M6zDSl86EKfmx6+9TXgT4eOnC2ELnSqVGtDtqiRFJdPws904=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=F7cvx1+R; arc=none smtp.client-ip=209.85.161.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f52.google.com with SMTP id 2adb3069b0e04-513dc9d6938so5617942e87.2;
-        Mon, 25 Mar 2024 08:34:55 -0700 (PDT)
+Received: by mail-oo1-f52.google.com with SMTP id 006d021491bc7-5a4817189c8so2700875eaf.1;
+        Mon, 25 Mar 2024 08:35:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711380894; x=1711985694; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=CiSHINdO4QQ9dGEkUNG8gKxPDwA7BezRYNLVvF2c4GI=;
-        b=FWJDz+yzomkrbc6FXZUNN8OTlDrCAwaVNBb9ATK7zlo3//HaVnlcy4f4DUKoW0tZS7
-         m5fzTb9JpOGNmwZBaZG3sbvv4WiXnGz+njQrett79NQ8NoeInXPYCR/Fwziex1Wa/sJ7
-         6Mu/jX7F30qdWexK8CtrpdLdhh8s+/qEx+t+oTQ5T4w2YLCi1gxnnvdp0m0tUhY9+LXn
-         GEJ177dQZpAq8jfjSN+QG3Y298VaTQmHznd2bzrTQ+xUbCSDlYkg4yEYIb1c7pbitvk/
-         NnTPA6Li01IgrJhVlFoZixjBKuPnO21qyxmIudegx7lpuP+9QIQbOPQN/Z6kg1Jbu/fp
-         BN0Q==
+        d=gmail.com; s=20230601; t=1711380929; x=1711985729; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=x5gjqpqHL6b3QiYfa4GEp8Way2nwhE496MGE+gkfK6k=;
+        b=F7cvx1+RSV8EOwJjI639gSHBtYx3+BULTDwz603Hs4LNkO/GitlfRTg6x31GJ0gx88
+         s0oeh8uHKQohsWXy7jO+Rj7NrkeeoYy2+NMJTBHWsqcoyrCjU1zoyGWyajLlysYlMf5D
+         AmYw1MBkwQoHFSZbOqNeggnN1uFbzUGK7yXiK88cUDyFdd5KMa1q5xwlYHhqDQ2pK9GJ
+         swt+Rt3RVzCl4YzsLJuVg07WKoZStYZ3xs+iVwI0A+qYCs4H8JIXaTvMhYHnwDrjeRSB
+         t4cBSNFlWOVGB7CTgzJz7ab3Xo9m9y068heOrf1kTA/bhsM/6jHj/n7bRMAeq7eIve+h
+         11VA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711380894; x=1711985694;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1711380929; x=1711985729;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=CiSHINdO4QQ9dGEkUNG8gKxPDwA7BezRYNLVvF2c4GI=;
-        b=HanqLK1OhkTA4wl96vwuJhRRFCJ8WDp569eLZbiebjHVcWJWyh/4pf54d+pkv7w+RI
-         iGmYUqXvDfBFeiupkazvIhKDKBkSlKD8XrFurz1zray68JmFfvqv1K/vz8UGpMLKYTVZ
-         EUOxrt8giwuOfg/OJm0JX76SzBsW/w+euPgonU21agmwk7GRs9mz62/8kocx9DIcDrrM
-         wCo7BcWTFP5A/Ks9zPeV3rE74unJrbuOsHP4LdUHUSD2Yu4sHTNSfWqbS9F79s2vavIU
-         uuC4IaZjyeL3VdNs0PG0wOucbLACLKsMCRXjKoanFoDROS7/tfja7qeSBdhwdHFuO2i9
-         b+2Q==
-X-Forwarded-Encrypted: i=1; AJvYcCWN83047bVa8EdEMJPROixvC7ubyd+C7SAdzNEcCsnanwOfS6KME9bhG20VVtCsuirPpq+VuP6DW5nv/I5Al5Tg5RzZZf5fme5/Gmmauw8A08ss/XD0SLCQwgM/TaBbcWpjVJzMOgsRyQ==
-X-Gm-Message-State: AOJu0Yztj+e+t0/6qzbPwI0a/DZsu/Timc3Iah2yi6nuApMsd9UznJWs
-	q3NmxTrVQpDyL+xFQwRCC+RDuEgZou8c3FiKdUkg+K8q2sJkrd4/
-X-Google-Smtp-Source: AGHT+IEwy3EYA8kKvQPY3gjgvTL1CYxxrX54THrLiN66C1zBx3z6uDkuHjcp5TU9+9lJcfYG7H660w==
-X-Received: by 2002:ac2:554c:0:b0:513:d339:8b1 with SMTP id l12-20020ac2554c000000b00513d33908b1mr4663596lfk.27.1711380893781;
-        Mon, 25 Mar 2024 08:34:53 -0700 (PDT)
-Received: from 764c7355c69b.v.cablecom.net (84-72-156-211.dclient.hispeed.ch. [84.72.156.211])
-        by smtp.gmail.com with ESMTPSA id u13-20020a17090626cd00b00a45200fe2b5sm3142382ejc.224.2024.03.25.08.34.52
+        bh=x5gjqpqHL6b3QiYfa4GEp8Way2nwhE496MGE+gkfK6k=;
+        b=WvDVl1sxNF9l1qk7UJTVbPCxoKi12AHKWlKSUrZpinNzPWuk9Bjv5cU0fM91tt6BT+
+         2BRCq8S4d30Z+LAWG+yT2M3UICMCv/AtYxAEr2fRH0oGypDM0x+FTuK3wHCH9no8UeFg
+         VD00B42er9rECKeL1NiyXc6kQMXUk2eACxYis+DKqObPUVlwOrVRtR7Pk/RpV55CmrtX
+         ZbkQQokQ7qo186vz5lakeCzxrjg6bF8yTJvZLz3lpmtCsQVynGISXJGRn8JGLkIRpqch
+         9vsrgNbfKM4Xpg4cyVaLzq7DiEAUo9lpvzATnJdtiBnUxJQNT7kFuiT1P5d1IbkM2dMk
+         YMVw==
+X-Forwarded-Encrypted: i=1; AJvYcCVmspg29cT7u0W+/zMsauGl835C2aPzkKy+sSaQ1N0ijAcnRyD0lYfeDOq14xTw54AbXVm7YAs6Umadu/9SUvDxA9BQ+j6DcJHFBP+FyzEgiaNjgAIb0CLd6U11b4+YV6b5dgM6dhM=
+X-Gm-Message-State: AOJu0Yy8cdswK8M3A8uqrHsX6gsST+9mD9gYhq0Vxw4Ea7+iwinwC73X
+	xYle/c9YIBKwcS3r6l517n2Yw89OU92ob6oIjYWoosvOqD1QdAvcgxn/voYR
+X-Google-Smtp-Source: AGHT+IHiJ2wXU9yqlX2P3hAeHZ63N300m60Nt+wjAHA9SK87kZ7s4CUMO9vVZHQHJNqyPFse83iNVw==
+X-Received: by 2002:a05:6359:4ca5:b0:17f:5f96:4ab4 with SMTP id kk37-20020a0563594ca500b0017f5f964ab4mr8916514rwc.16.1711380929288;
+        Mon, 25 Mar 2024 08:35:29 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id u19-20020a63d353000000b005dc88b232a5sm5989948pgi.26.2024.03.25.08.35.28
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 Mar 2024 08:34:53 -0700 (PDT)
-From: Lothar Rubusch <l.rubusch@gmail.com>
-To: lars@metafoo.de,
-	Michael.Hennerich@analog.com,
-	jic23@kernel.org,
-	robh+dt@kernel.org,
-	krzysztof.kozlowski+dt@linaro.org,
-	conor+dt@kernel.org
-Cc: linux-iio@vger.kernel.org,
-	devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	eraretuya@gmail.com,
-	l.rubusch@gmail.com
-Subject: [PATCH v4 7/7] iio: accel: adxl345: Add spi-3wire option
-Date: Mon, 25 Mar 2024 15:33:56 +0000
-Message-Id: <20240325153356.46112-8-l.rubusch@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20240325153356.46112-1-l.rubusch@gmail.com>
-References: <20240325153356.46112-1-l.rubusch@gmail.com>
+        Mon, 25 Mar 2024 08:35:28 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date: Mon, 25 Mar 2024 08:35:27 -0700
+From: Guenter Roeck <linux@roeck-us.net>
+To: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+Cc: Yoshinori Sato <ysato@users.sourceforge.jp>,
+	Rich Felker <dalias@libc.org>, linux-sh@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] Revert "sh: Handle calling csum_partial with misaligned
+ data"
+Message-ID: <1804882b-79bd-408b-862f-bd96e0ba9a46@roeck-us.net>
+References: <20240324231804.841099-1-linux@roeck-us.net>
+ <059d03a5da257660fa0bc188c6cc8d0152e97704.camel@physik.fu-berlin.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <059d03a5da257660fa0bc188c6cc8d0152e97704.camel@physik.fu-berlin.de>
 
-Add a setup function implementation to the spi module to enable
-spi-3wire as option when specified in the device-tree.
+On Mon, Mar 25, 2024 at 08:39:39AM +0100, John Paul Adrian Glaubitz wrote:
+> Hi Guenter,
+> 
+> On Sun, 2024-03-24 at 16:18 -0700, Guenter Roeck wrote:
+> > This reverts commit cadc4e1a2b4d20d0cc0e81f2c6ba0588775e54e5.
+> > 
+> > Commit cadc4e1a2b4d ("sh: Handle calling csum_partial with misaligned
+> > data") causes bad checksum calculations on unaligned data. Reverting
+> > it fixes the problem.
+> > 
+> >     # Subtest: checksum
+> >     # module: checksum_kunit
+> >     1..5
+> >     # test_csum_fixed_random_inputs: ASSERTION FAILED at lib/checksum_kunit.c:500
+> >     Expected ( u64)result == ( u64)expec, but
+> >         ( u64)result == 53378 (0xd082)
+> >         ( u64)expec == 33488 (0x82d0)
+> >     # test_csum_fixed_random_inputs: pass:0 fail:1 skip:0 total:1
+> >     not ok 1 test_csum_fixed_random_inputs
+> >     # test_csum_all_carry_inputs: ASSERTION FAILED at lib/checksum_kunit.c:525
+> >     Expected ( u64)result == ( u64)expec, but
+> >         ( u64)result == 65281 (0xff01)
+> >         ( u64)expec == 65280 (0xff00)
+> >     # test_csum_all_carry_inputs: pass:0 fail:1 skip:0 total:1
+> >     not ok 2 test_csum_all_carry_inputs
+> >     # test_csum_no_carry_inputs: ASSERTION FAILED at lib/checksum_kunit.c:573
+> >     Expected ( u64)result == ( u64)expec, but
+> >         ( u64)result == 65535 (0xffff)
+> >         ( u64)expec == 65534 (0xfffe)
+> >     # test_csum_no_carry_inputs: pass:0 fail:1 skip:0 total:1
+> >     not ok 3 test_csum_no_carry_inputs
+> >     # test_ip_fast_csum: pass:1 fail:0 skip:0 total:1
+> >     ok 4 test_ip_fast_csum
+> >     # test_csum_ipv6_magic: pass:1 fail:0 skip:0 total:1
+> >     ok 5 test_csum_ipv6_magic
+> >  # checksum: pass:2 fail:3 skip:0 total:5
+> >  # Totals: pass:2 fail:3 skip:0 total:5
+> > not ok 22 checksum
+> 
+> Can you tell me how the tests are run so I can try to verify this on real hardware?
+> 
 
-Signed-off-by: Lothar Rubusch <l.rubusch@gmail.com>
----
- drivers/iio/accel/adxl345.h     |  1 +
- drivers/iio/accel/adxl345_spi.c | 12 +++++++++++-
- 2 files changed, 12 insertions(+), 1 deletion(-)
+Please also see
+https://lore.kernel.org/lkml/0a0fbbd8-17dd-4f4c-9513-f3ac9749890b@roeck-us.net/t/
+where I reported the problem a while ago. I didn't see a fix, so I figured
+I'd submit a revert, following the logic that non-optimized code is better
+than buggy code. Obviously a real fix would be preferrable, but I don't
+understand sh4 assembler well enough to understand what is happening.
 
-diff --git a/drivers/iio/accel/adxl345.h b/drivers/iio/accel/adxl345.h
-index 620a2e0f0..55a72ca38 100644
---- a/drivers/iio/accel/adxl345.h
-+++ b/drivers/iio/accel/adxl345.h
-@@ -36,6 +36,7 @@
- #define ADXL345_DATA_FORMAT_8G		2
- #define ADXL345_DATA_FORMAT_16G		3
- #define ADXL345_DATA_FORMAT_MSK		~((u8) BIT(6)) /* ignore spi-3wire */
-+#define ADXL345_DATA_FORMAT_SPI_3WIRE	BIT(6)
- 
- #define ADXL345_DEVID			0xE5
- 
-diff --git a/drivers/iio/accel/adxl345_spi.c b/drivers/iio/accel/adxl345_spi.c
-index 1c0513bd3..f145d5c1d 100644
---- a/drivers/iio/accel/adxl345_spi.c
-+++ b/drivers/iio/accel/adxl345_spi.c
-@@ -20,6 +20,16 @@ static const struct regmap_config adxl345_spi_regmap_config = {
- 	.read_flag_mask = BIT(7) | BIT(6),
- };
- 
-+static int adxl345_spi_setup(struct device *dev, struct regmap *regmap)
-+{
-+	struct spi_device *spi = container_of(dev, struct spi_device, dev);
-+
-+	if (spi->mode & SPI_3WIRE)
-+		return regmap_write(regmap, ADXL345_REG_DATA_FORMAT,
-+				    ADXL345_DATA_FORMAT_SPI_3WIRE);
-+	return 0;
-+}
-+
- static int adxl345_spi_probe(struct spi_device *spi)
- {
- 	struct regmap *regmap;
-@@ -33,7 +43,7 @@ static int adxl345_spi_probe(struct spi_device *spi)
- 	if (IS_ERR(regmap))
- 		return dev_err_probe(&spi->dev, PTR_ERR(regmap), "Error initializing regmap\n");
- 
--	return adxl345_core_probe(&spi->dev, regmap, NULL);
-+	return adxl345_core_probe(&spi->dev, regmap, adxl345_spi_setup);
- }
- 
- static const struct adxl345_chip_info adxl345_spi_info = {
--- 
-2.25.1
-
+Thanks,
+Guenter
 
