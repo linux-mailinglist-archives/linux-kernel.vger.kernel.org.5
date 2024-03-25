@@ -1,208 +1,130 @@
-Return-Path: <linux-kernel+bounces-117666-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-117665-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A415C88AE35
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 19:28:57 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 51B2788AE31
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 19:28:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C67CC1C3D898
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 18:28:56 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6B0653276F0
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 18:28:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9A79980C00;
-	Mon, 25 Mar 2024 17:59:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 54F4A5810D;
+	Mon, 25 Mar 2024 17:59:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="2gl4CyQ+"
-Received: from mail-yb1-f172.google.com (mail-yb1-f172.google.com [209.85.219.172])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="AntTmyDY"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1444082D78
-	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 17:59:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 631DE10962;
+	Mon, 25 Mar 2024 17:59:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711389556; cv=none; b=UzXr6Yc+jmBSxFxH+osqLHH2IlXhzvlH0SyZCQuf2bjjw87U8zm1y7FDZ+v+VBxQCoW8QOlt2/p2Pn60ec0YfE1LamzYZ1eKvPCLh/fyOPvQDmP/QkFnkPExL21Ro7C05XulgTB+lGXyiu3aWH2CdS2NHQqQhgIdXkrL7FvxXAs=
+	t=1711389550; cv=none; b=PcdSUnoLWqDat5OUBLgpJLkjuo9Sk08UBl97e+SFw+4je3X3ge9G2cKRSWBKp8CXEd8V1Q9tOLSkkkFCvbnh+b+BLzh5DE2iRnzf7xqQcfjXVO1/NAIls/OdU2nEkyGS7ygRQYhMcykzi8qgq9P/W6SvgjlJr6SX6t9J0NR8uDU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711389556; c=relaxed/simple;
-	bh=YUkn5bDTJvtPOe4CbVEJJ+OysGCk8+HwOuI6bpiCxQQ=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=uN0rvRWGhrSB6NZiZ2LZ0tjChCVSZ0HNrSbCLadk+6N4pD7wIX/nhO63i7DwC7P14HS2bz9ySUD/dtBuZ+6a793CEpQiCGy/06LMhDgK0BOR5/f/XOSz/sJ3VKYRtYDUFKnyodZEos5Dw5gxdo2s6q+85U+z40k58PdllSMmADg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=2gl4CyQ+; arc=none smtp.client-ip=209.85.219.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-yb1-f172.google.com with SMTP id 3f1490d57ef6-dd10ebcd702so4730383276.2
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 10:59:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1711389553; x=1711994353; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=g1H2/sqpi/sh2ma0fgAVRjfY65QgsbrlBKsllNKG2ck=;
-        b=2gl4CyQ+Xvl6vMB2PNXMos2xXZYhPDH+8W1bFAYmkCRuJKlGz64+FLJnLY+nO7mmhv
-         4yXbp0XCZUoBDUViWSScVzKZwVJSPlUGmrz1GIYu6yiZOUXxz8R3vcj6t/hEXqf+Rzk5
-         ZwPOYWKGouwogs2vAb0YAbFQcXsI5JzizAjND9Xz5pYvi8KOYXq8jOjuVnXKrnBDEgmo
-         /me7luk2ASZqf/JphUm/ZFaLeWQXmQUy1LpfzrrNvofTtwWDW8XZW5acdeIEcUNJj+F/
-         urtUStjDpqISLSdRprneRNZz0QACMZzMiXWm2WhDTqNECfwxky/+a/gpNSLrZZZM+OjN
-         ArTg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711389553; x=1711994353;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=g1H2/sqpi/sh2ma0fgAVRjfY65QgsbrlBKsllNKG2ck=;
-        b=w2g3GpRVC/v+LgaFG37idJTAkFxBf4YBoA4TF1p9kj8E4EObehPnEZ7OToNrfYkTBp
-         PEYZSV1VHx/E3lXpOB3BIj6cQovDeM6SWVJzxqYpYxqCefNL/ufZH2seXhGQIOWerycm
-         vMgVNLJdEhZ/dhNATFVQRDduIYm0SGU7RoKUvsblE1mgSc+I04LG7SJKmZbrE9/LxQkn
-         XFPi91aQ9gSpZZbtwvJtipdAhzh8YfiBPVw8zzYhDFYcfe+zer3USVh3jdIkJosgiMFT
-         U5yifzUfdTf4+w5xeEmE77/WlQ89a0OkB8kfY0dObzHJYS9n/BzXPcExQd9jiiHe6QNS
-         CAIA==
-X-Forwarded-Encrypted: i=1; AJvYcCUHkTHJ5624L548XbSZ49IIKUM+XjBCbvWoUuoi3xIkfHCBqZm+iJxt97YQRXKBJl74NP9lpKzyaihEaTMyFRHZoK+jXto2xGl1yrP7
-X-Gm-Message-State: AOJu0YxarYzw/w0rkB+0aGESZuEzFid8CuXqfXNa4oQQv6oKpbJ07zYG
-	vuDWigz/Cp59pdZKPC2cD9vqN4nZP1cpD4/abgTwTgQrk0U8V/YZzqsG5cmqW4iwfr3Af1Dbzyj
-	LrMKc1b4qKedy3T4kRBIw5u0+aL1L6TT2SYd0
-X-Google-Smtp-Source: AGHT+IEgRKkwT38dzLm3NHYgLzcPYKNKFESgwIB1AubKuEz+z0q+SxXd0EUwkL4MQOex5Dj9zrOPFPjYxYadJTqh2sQ=
-X-Received: by 2002:a25:acd6:0:b0:dc7:4067:9f85 with SMTP id
- x22-20020a25acd6000000b00dc740679f85mr6265207ybd.58.1711389552854; Mon, 25
- Mar 2024 10:59:12 -0700 (PDT)
+	s=arc-20240116; t=1711389550; c=relaxed/simple;
+	bh=tpPbnqCYOEH7aNwcqwxFZjbOV42U8qkcoVvs1iaGbJg=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=Ns8vnzdT6h7US9OC4JdZir9pAuEMwdyiJr3TVND07K5mNe6AgtnzWiMvuVKsido26A+7wWulMOZ0TQg+j+gZmB97iqAOcvmjDEGAZoOhyilsWhvU8ME4CFkCjyYBOHEMvNbOcQnc43j5PlySHgzTUpC+MwDEM/04uzWYLK8bpyQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=AntTmyDY; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4FDFEC433C7;
+	Mon, 25 Mar 2024 17:59:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1711389549;
+	bh=tpPbnqCYOEH7aNwcqwxFZjbOV42U8qkcoVvs1iaGbJg=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=AntTmyDYQ6fBUZPUZ8SbmFzmBhP5JFfzbJXCPuUZ0ZfoAC0s2uF00opQgMqvsv1wW
+	 LMj1kV7xYDAIZfVaON/XGqDCrVLUaFfUYyM/Gx+co+mFatQcAmXUk/ko08ihXzbGQb
+	 nyC+e/m93XL8oeugCCrb0e6DNjdj4ci9WoglS7+cxdN5mogTqcnLNIY2+lawS8kOBk
+	 9B8Ohe3u6K4t8cw7RkVvuvPiDZ2iG3n9RzUHX0FoJaDNT3j0ss48L8ew6lqZ2V7oAj
+	 BdtNWVrC1mvFWiw0V8i27IoUEivnqIkXGo8TsC2SyGb+hnGcjTUh7ievzcn5Fardk0
+	 1k/nUWbh3MeAA==
+From: SeongJae Park <sj@kernel.org>
+To: Sasha Levin <sashal@kernel.org>
+Cc: SeongJae Park <sj@kernel.org>,
+	linux-kernel@vger.kernel.org,
+	stable@vger.kernel.org,
+	torvalds@linux-foundation.org,
+	akpm@linux-foundation.org,
+	linux@roeck-us.net,
+	shuah@kernel.org,
+	patches@kernelci.org,
+	lkft-triage@lists.linaro.org,
+	florian.fainelli@broadcom.com,
+	pavel@denx.de,
+	damon@lists.linux.dev
+Subject: Re: [PATCH 6.1 000/444] 6.1.83-rc2 review
+Date: Mon, 25 Mar 2024 10:59:06 -0700
+Message-Id: <20240325175906.233615-1-sj@kernel.org>
+X-Mailer: git-send-email 2.39.2
+In-Reply-To: <20240325115939.1766258-1-sashal@kernel.org>
+References: 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <CAJuCfpFnGmt8Q7ZT2Z+gvz=DkRzionXFZ0i5Y1B=UKF6LLqxXA@mail.gmail.com>
- <20240325174934.229745-1-sj@kernel.org>
-In-Reply-To: <20240325174934.229745-1-sj@kernel.org>
-From: Suren Baghdasaryan <surenb@google.com>
-Date: Mon, 25 Mar 2024 10:59:01 -0700
-Message-ID: <CAJuCfpGiuCnMFtViD0xsoaLVO_gJddBQ1NpL6TpnsfN8z5P6fA@mail.gmail.com>
-Subject: Re: [PATCH v6 30/37] mm: vmalloc: Enable memory allocation profiling
-To: SeongJae Park <sj@kernel.org>
-Cc: mhocko@suse.com, vbabka@suse.cz, hannes@cmpxchg.org, 
-	roman.gushchin@linux.dev, mgorman@suse.de, dave@stgolabs.net, 
-	willy@infradead.org, liam.howlett@oracle.com, 
-	penguin-kernel@i-love.sakura.ne.jp, corbet@lwn.net, void@manifault.com, 
-	peterz@infradead.org, juri.lelli@redhat.com, catalin.marinas@arm.com, 
-	will@kernel.org, arnd@arndb.de, tglx@linutronix.de, mingo@redhat.com, 
-	dave.hansen@linux.intel.com, x86@kernel.org, peterx@redhat.com, 
-	david@redhat.com, axboe@kernel.dk, mcgrof@kernel.org, masahiroy@kernel.org, 
-	nathan@kernel.org, dennis@kernel.org, jhubbard@nvidia.com, tj@kernel.org, 
-	muchun.song@linux.dev, rppt@kernel.org, paulmck@kernel.org, 
-	pasha.tatashin@soleen.com, yosryahmed@google.com, yuzhao@google.com, 
-	dhowells@redhat.com, hughd@google.com, andreyknvl@gmail.com, 
-	keescook@chromium.org, ndesaulniers@google.com, vvvvvv@google.com, 
-	gregkh@linuxfoundation.org, ebiggers@google.com, ytcoode@gmail.com, 
-	vincent.guittot@linaro.org, dietmar.eggemann@arm.com, rostedt@goodmis.org, 
-	bsegall@google.com, bristot@redhat.com, vschneid@redhat.com, cl@linux.com, 
-	penberg@kernel.org, iamjoonsoo.kim@lge.com, 42.hyeyoo@gmail.com, 
-	glider@google.com, elver@google.com, dvyukov@google.com, 
-	songmuchun@bytedance.com, jbaron@akamai.com, aliceryhl@google.com, 
-	rientjes@google.com, minchan@google.com, kaleshsingh@google.com, 
-	kernel-team@android.com, linux-doc@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, iommu@lists.linux.dev, 
-	linux-arch@vger.kernel.org, linux-fsdevel@vger.kernel.org, linux-mm@kvack.org, 
-	linux-modules@vger.kernel.org, kasan-dev@googlegroups.com, 
-	cgroups@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Mon, Mar 25, 2024 at 10:49=E2=80=AFAM SeongJae Park <sj@kernel.org> wrot=
-e:
->
-> On Mon, 25 Mar 2024 14:56:01 +0000 Suren Baghdasaryan <surenb@google.com>=
- wrote:
->
-> > On Sat, Mar 23, 2024 at 6:05=E2=80=AFPM SeongJae Park <sj@kernel.org> w=
-rote:
-> > >
-> > > Hi Suren and Kent,
-> > >
-> > > On Thu, 21 Mar 2024 09:36:52 -0700 Suren Baghdasaryan <surenb@google.=
-com> wrote:
-> > >
-> > > > From: Kent Overstreet <kent.overstreet@linux.dev>
-> > > >
-> > > > This wrapps all external vmalloc allocation functions with the
-> > > > alloc_hooks() wrapper, and switches internal allocations to _noprof
-> > > > variants where appropriate, for the new memory allocation profiling
-> > > > feature.
-> > >
-> > > I just noticed latest mm-unstable fails running kunit on my machine a=
-s below.
-> > > 'git-bisect' says this is the first commit of the failure.
-> > >
-> > >     $ ./tools/testing/kunit/kunit.py run --build_dir ../kunit.out/
-> > >     [10:59:53] Configuring KUnit Kernel ...
-> > >     [10:59:53] Building KUnit Kernel ...
-> > >     Populating config with:
-> > >     $ make ARCH=3Dum O=3D../kunit.out/ olddefconfig
-> > >     Building with:
-> > >     $ make ARCH=3Dum O=3D../kunit.out/ --jobs=3D36
-> > >     ERROR:root:/usr/bin/ld: arch/um/os-Linux/main.o: in function `__w=
-rap_malloc':
-> > >     main.c:(.text+0x10b): undefined reference to `vmalloc'
-> > >     collect2: error: ld returned 1 exit status
-> > >
-> > > Haven't looked into the code yet, but reporting first.  May I ask you=
-r idea?
-> >
-> > Hi SeongJae,
-> > Looks like we missed adding "#include <linux/vmalloc.h>" inside
-> > arch/um/os-Linux/main.c in this patch:
-> > https://lore.kernel.org/all/20240321163705.3067592-2-surenb@google.com/=
-.
-> > I'll be posing fixes for all 0-day issues found over the weekend and
-> > will include a fix for this. In the meantime, to work around it you
-> > can add that include yourself. Please let me know if the issue still
-> > persists after doing that.
->
-> Thank you, Suren.  The change made the error message disappears.  However=
-, it
-> introduced another one.
+Hello,
 
-Ok, let me investigate and I'll try to get a fix for it today evening.
+On Mon, 25 Mar 2024 07:59:39 -0400 Sasha Levin <sashal@kernel.org> wrote:
+
+> 
+> This is the start of the stable review cycle for the 6.1.83 release.
+> There are 444 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Wed Mar 27 11:59:37 AM UTC 2024.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+>         https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git/patch/?id=linux-6.1.y&id2=v6.1.82
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.1.y
+> and the diffstat can be found below.
+
+This rc kernel passes DAMON functionality test[1] on my test machine.
+Attaching the test results summary below.  Please note that I retrieved the
+kernel from linux-stable-rc tree[2].
+
+Tested-by: SeongJae Park <sj@kernel.org>
+
+[1] https://github.com/awslabs/damon-tests/tree/next/corr
+[2] cfc80383a3dc ("Linux 6.1.83-rc2")
+
 Thanks,
-Suren.
+SJ
 
->
->     $ git diff
->     diff --git a/arch/um/os-Linux/main.c b/arch/um/os-Linux/main.c
->     index c8a42ecbd7a2..8fe274e9f3a4 100644
->     --- a/arch/um/os-Linux/main.c
->     +++ b/arch/um/os-Linux/main.c
->     @@ -16,6 +16,7 @@
->      #include <kern_util.h>
->      #include <os.h>
->      #include <um_malloc.h>
->     +#include <linux/vmalloc.h>
->
->      #define PGD_BOUND (4 * 1024 * 1024)
->      #define STACKSIZE (8 * 1024 * 1024)
->     $
->     $ ./tools/testing/kunit/kunit.py run --build_dir ../kunit.out/
->     [10:43:13] Configuring KUnit Kernel ...
->     [10:43:13] Building KUnit Kernel ...
->     Populating config with:
->     $ make ARCH=3Dum O=3D../kunit.out/ olddefconfig
->     Building with:
->     $ make ARCH=3Dum O=3D../kunit.out/ --jobs=3D36
->     ERROR:root:In file included from .../arch/um/kernel/asm-offsets.c:1:
->     .../arch/x86/um/shared/sysdep/kernel-offsets.h:9:6: warning: no previ=
-ous prototype for =E2=80=98foo=E2=80=99 [-Wmissing-prototypes]
->         9 | void foo(void)
->           |      ^~~
->     In file included from .../include/linux/alloc_tag.h:8,
->                      from .../include/linux/vmalloc.h:5,
->                      from .../arch/um/os-Linux/main.c:19:
->     .../include/linux/bug.h:5:10: fatal error: asm/bug.h: No such file or=
- directory
->         5 | #include <asm/bug.h>
->           |          ^~~~~~~~~~~
->     compilation terminated.
->
->
-> Thanks,
-> SJ
->
-> [...]
+[...]
+
+---
+
+ok 1 selftests: damon: debugfs_attrs.sh
+ok 2 selftests: damon: debugfs_schemes.sh
+ok 3 selftests: damon: debugfs_target_ids.sh
+ok 4 selftests: damon: debugfs_empty_targets.sh
+ok 5 selftests: damon: debugfs_huge_count_read_write.sh
+ok 6 selftests: damon: debugfs_duplicate_context_creation.sh
+ok 7 selftests: damon: sysfs.sh
+ok 1 selftests: damon-tests: kunit.sh
+ok 2 selftests: damon-tests: huge_count_read_write.sh
+ok 3 selftests: damon-tests: buffer_overflow.sh
+ok 4 selftests: damon-tests: rm_contexts.sh
+ok 5 selftests: damon-tests: record_null_deref.sh
+ok 6 selftests: damon-tests: dbgfs_target_ids_read_before_terminate_race.sh
+ok 7 selftests: damon-tests: dbgfs_target_ids_pid_leak.sh
+ok 8 selftests: damon-tests: damo_tests.sh
+ok 9 selftests: damon-tests: masim-record.sh
+ok 10 selftests: damon-tests: build_i386.sh
+ok 11 selftests: damon-tests: build_arm64.sh
+ok 12 selftests: damon-tests: build_m68k.sh
+ok 13 selftests: damon-tests: build_i386_idle_flag.sh
+ok 14 selftests: damon-tests: build_i386_highpte.sh
+ok 15 selftests: damon-tests: build_nomemcg.sh
+ [33m
+ [92mPASS [39m
 
