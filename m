@@ -1,140 +1,260 @@
-Return-Path: <linux-kernel+bounces-117442-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-117443-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 69B9288AB79
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 18:24:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 8DD6A88AB7C
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 18:24:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 09AF01F642B5
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 17:24:00 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0784A1F66F85
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 17:24:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 70B576A005;
-	Mon, 25 Mar 2024 16:15:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 38329128374;
+	Mon, 25 Mar 2024 16:15:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=sipsolutions.net header.i=@sipsolutions.net header.b="ctE1BbDJ"
-Received: from sipsolutions.net (s3.sipsolutions.net [168.119.38.16])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="SlbSjZgz"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 03435762E4;
-	Mon, 25 Mar 2024 16:15:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=168.119.38.16
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5199F839F9
+	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 16:15:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711383324; cv=none; b=XDmwFVQSAZ8E58LnymLP9smqwEIuE4vGFCvsxActhb5vyFSdUeO9FRS3KzEN+Y7eFnQ4fP5I7HuYuA4/RykSa7DRz9Sen/tbELi4Hl+U+ZMfPS1nc4Exp73JLpWSv+1SbQ9SCsXZg8lUSpUfUrUkg6gbjvg9+RhrXGBEcRkoRUY=
+	t=1711383335; cv=none; b=etETtY25c4KS83aQ78zX21Vbdnu7dRWHwFgNtcqwcjWwlSjtr6oI39SYXDYFLtMroBZS0Yb57tmesW/88wIhAdIHyweiwuce+eGrm7UQ31ti/AvndrcygJiTrPmLwFlSDBYke1BHnHPMD9E4Mk5xqqOWA7TsgufgfJ2M9TjsvRQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711383324; c=relaxed/simple;
-	bh=rjspqZsDWKxvQxYi5AzFtoSi9F2zWzwMbG+B1uCJKOg=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=AR7eFesJxHAnFuY11ysVY+Ft+j3zR23re6ifIb7+GrKoyDhLeSWevt7EtAZGpsNNZ1QXNd8Gl0nw9Pnw4GN7Mfi51nFc0KAlmoXlVWpgrDOGNGccd1CUNYaxs0SKRcbfjrnS2rai22Gw8mqGDoKhuuIGslQq8UcdCerxbyyCvMM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sipsolutions.net; spf=pass smtp.mailfrom=sipsolutions.net; dkim=pass (2048-bit key) header.d=sipsolutions.net header.i=@sipsolutions.net header.b=ctE1BbDJ; arc=none smtp.client-ip=168.119.38.16
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sipsolutions.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sipsolutions.net
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=sipsolutions.net; s=mail; h=MIME-Version:Content-Transfer-Encoding:
-	Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender
-	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
-	Resent-Cc:Resent-Message-ID; bh=rjspqZsDWKxvQxYi5AzFtoSi9F2zWzwMbG+B1uCJKOg=;
-	t=1711383319; x=1712592919; b=ctE1BbDJfe/IZ4XW0ueCfiq0gF4JZ6OeTwB9k1n7QChuVBj
-	6x+u5is2EWyP1/wIFdHDyV3DFuiAsL6L/jR+wosHX+uOaBzRb8GUFsMo6m6em2i6LPwGyhrGc8CRi
-	FVt9ZBq5y4PXlLZtWM6YeuUUdTI+I48yDvw1lCxoCOsoLSbdtrSXArQjgHe/nDk+BkwUhsYofki3R
-	TTMLlg9Xc+QFkPu5AsrRqwdm1vCDlrXWnwWAnRSbhiQDOeeivFLQxeUlKTca9vpDIGdPkHQhKdSyj
-	k2j8zA7TNfP8ginAGDFzFnAzjBkewJqfTjjZDCugZuvqmIu1iwgUfKgJu/253gbg==;
-Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
-	(Exim 4.97)
-	(envelope-from <johannes@sipsolutions.net>)
-	id 1romye-0000000DwQZ-3Wpf;
-	Mon, 25 Mar 2024 17:15:13 +0100
-Message-ID: <4e5f3741819e457c5c79d825c6520cb9ee531b95.camel@sipsolutions.net>
-Subject: Re: [EXT] Re: [PATCH v9 0/2] wifi: mwifiex: add code to support
- host mlme
-From: Johannes Berg <johannes@sipsolutions.net>
-To: Brian Norris <briannorris@chromium.org>, David Lin <yu-hao.lin@nxp.com>
-Cc: Francesco Dolcini <francesco@dolcini.it>, "kvalo@kernel.org"
- <kvalo@kernel.org>, "linux-wireless@vger.kernel.org"
- <linux-wireless@vger.kernel.org>, "linux-kernel@vger.kernel.org"
- <linux-kernel@vger.kernel.org>, Pete Hsieh <tsung-hsien.hsieh@nxp.com>, 
- "rafael.beims" <rafael.beims@toradex.com>, Francesco Dolcini
- <francesco.dolcini@toradex.com>
-Date: Mon, 25 Mar 2024 17:15:11 +0100
-In-Reply-To: <Zf4rDifM6bLuqpX2@google.com>
-References: <20240306020053.18054-1-yu-hao.lin@nxp.com>
-	 <20240315094927.GA6624@francesco-nb> <ZfTspRKFgrO9xCTH@google.com>
-	 <969e95ccc4a1d35b45212b7fcb536ee90995e3b5.camel@sipsolutions.net>
-	 <PA4PR04MB9638D253189D6DD330B198B2D1332@PA4PR04MB9638.eurprd04.prod.outlook.com>
-	 <PA4PR04MB9638BE73DDBCE1CE8AA32BA8D1332@PA4PR04MB9638.eurprd04.prod.outlook.com>
-	 <b2d9a7ef53c5ab4212617e8edf202bbafe52e2f8.camel@sipsolutions.net>
-	 <ZftaJEIeNfV7YrVo@google.com>
-	 <PA4PR04MB9638F5037D1AB9BCF51CC9D9D1322@PA4PR04MB9638.eurprd04.prod.outlook.com>
-	 <Zf4rDifM6bLuqpX2@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.50.4 (3.50.4-1.fc39) 
+	s=arc-20240116; t=1711383335; c=relaxed/simple;
+	bh=eDgom7jRq4Xcu2vT4SgmGX5Rou29zfDZbAIVqaruxos=;
+	h=Message-ID:Date:MIME-Version:To:Cc:References:From:Subject:
+	 In-Reply-To:Content-Type; b=NWpIqrzry/zV5Pgnv83p/ffCMVHrABLhyyz+/murHbSH7tXNc1+mjEyczar4aDQQw8SrtvS49jeyQFey6rNm0Ns1W9zpferX3A69l7saZ69O37NkqZRh4zZsplV/iDtK47k1cp9afB2PUREKfeR3tLcyjTGZvE7eKvFAHw0xwtI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=SlbSjZgz; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1711383331;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=y18CNMCvDOhmdaHugtFzaqnuQV+HwgBjYyd9+FwW44Q=;
+	b=SlbSjZgzO9Ml+u31PD/n5ivdRiSWmn06Od71vYdMLpgYQqtJjeHeVkAX/3HEqRGzOEyfRt
+	Ev9OmQUESRHR/eJnOIyfubnERNexCbZzwexKk/TYIal0fzO9kUeu2Oa3aul1PjnLi1fzv3
+	jsJA4n8tP230uEMjhp/IZRgCWoDfAUs=
+Received: from mail-qk1-f199.google.com (mail-qk1-f199.google.com
+ [209.85.222.199]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-133-t3JS6VrxNv-dgf7moY7EIA-1; Mon, 25 Mar 2024 12:15:29 -0400
+X-MC-Unique: t3JS6VrxNv-dgf7moY7EIA-1
+Received: by mail-qk1-f199.google.com with SMTP id af79cd13be357-78a5ed7bebaso19109285a.2
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 09:15:29 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711383329; x=1711988129;
+        h=content-transfer-encoding:in-reply-to:subject:from:references:cc:to
+         :content-language:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=y18CNMCvDOhmdaHugtFzaqnuQV+HwgBjYyd9+FwW44Q=;
+        b=TWBdnIcnP0V7wxhwtBLNujxUZ+5kdN2O7pT4uH5IizcQssWyEbf1XkvCmmKI0q9/fQ
+         RoOBSzE/WAneFhQ7395OTa9ONiwfiD0rB13pX7kEYT55rPUJH0p6ly2+Zln2p/Aoxt8d
+         YLe6FJxBpya79tlK0VNILny0t61eL0wBJOegJBnxCiLOt6cN3ko1lqJvfbT3ktdzdUwi
+         +wOWNbq4Zt4V167MW2vZ1utgbjb7yK/ITIshJHOb4aSQlx9DDWJ/T2DS+6ZK+5lIe/Yy
+         HXG4ehZrFfZgS2PEDwyL50virfR0rf7PaST8DtrUGnlEbUgGw4mJjdR4A228E+hsrEDY
+         PfiQ==
+X-Gm-Message-State: AOJu0YwJHCtfS1u/JH2Hp5cDlIL7apEslUVEAskwZ/SookP+1HQ69Ich
+	OnBP8r6z9x/VYr4pCpWpUrZmbH3n7oo2b/y6Etz8SO0biZyF6E7R2+2vEF0dHPJwSQxllifpBvf
+	pzjCxhYuJVqYcI0m/ldMIpWhyFUjQ/B2gDu5xh2X9IziERxB1qSmOBfTu3pKtqg==
+X-Received: by 2002:ac8:594d:0:b0:430:d6f0:206e with SMTP id 13-20020ac8594d000000b00430d6f0206emr8829736qtz.30.1711383328920;
+        Mon, 25 Mar 2024 09:15:28 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IHUsb5Xdk9G1pl6Lam/czi3bThyEoglHXEf2y3LdV6Q5bGAeN6oRDpwi7biX/J1549NCVGziA==
+X-Received: by 2002:ac8:594d:0:b0:430:d6f0:206e with SMTP id 13-20020ac8594d000000b00430d6f0206emr8829712qtz.30.1711383328625;
+        Mon, 25 Mar 2024 09:15:28 -0700 (PDT)
+Received: from [192.168.1.27] (pool-68-160-135-240.bstnma.fios.verizon.net. [68.160.135.240])
+        by smtp.gmail.com with ESMTPSA id v22-20020ac87296000000b004309f67c186sm2708577qto.82.2024.03.25.09.15.27
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 25 Mar 2024 09:15:28 -0700 (PDT)
+Message-ID: <3b33196a-e0b8-d7a9-0fda-b028753a3d15@redhat.com>
+Date: Mon, 25 Mar 2024 12:15:26 -0400
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-malware-bazaar: not-scanned
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Content-Language: en-US
+To: Marcos Paulo de Souza <mpdesouza@suse.com>,
+ Josh Poimboeuf <jpoimboe@kernel.org>, Jiri Kosina <jikos@kernel.org>,
+ Miroslav Benes <mbenes@suse.cz>, Petr Mladek <pmladek@suse.com>,
+ Shuah Khan <shuah@kernel.org>
+Cc: linux-kernel@vger.kernel.org, live-patching@vger.kernel.org,
+ linux-kselftest@vger.kernel.org
+References: <20240312-lp-selftest-new-test-v1-1-9c843e25e38e@suse.com>
+ <56bf6323-9e9b-a0e3-f505-d628aac793d4@redhat.com>
+ <9d4c5c6bd5b7fd0305f9ec26038f4afbea5fc166.camel@suse.com>
+From: Joe Lawrence <joe.lawrence@redhat.com>
+Subject: Re: [PATCH] selftests: livepatch: Test atomic replace against
+ multiple modules
+In-Reply-To: <9d4c5c6bd5b7fd0305f9ec26038f4afbea5fc166.camel@suse.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On Fri, 2024-03-22 at 18:06 -0700, Brian Norris wrote:
-> We appreciate it's well tested, but testing is still orthogonal to the
-> architectural questions. Architectural questions are important because
-> they affect the future maintainability of the mainline Linux wireless
-> stack. If the assumption is that *either* a driver is a cfg80211 driver
-> (with firmware-MLME, etc.) or a mac80211 driver (with host MLME), then
-> your series is breaking those assumptions.
+On 3/22/24 16:31, Marcos Paulo de Souza wrote:
+> On Thu, 2024-03-21 at 10:08 -0400, Joe Lawrence wrote:
+>> On 3/12/24 08:12, Marcos Paulo de Souza wrote:
+>>> This new test checks if a livepatch with replace attribute set
+>>> replaces
+>>> all previously applied livepatches.
+>>>
+>>> Signed-off-by: Marcos Paulo de Souza <mpdesouza@suse.com>
+>>> ---
+>>>  tools/testing/selftests/livepatch/Makefile         |  3 +-
+>>>  .../selftests/livepatch/test-atomic-replace.sh     | 71
+>>> ++++++++++++++++++++++
+>>>  2 files changed, 73 insertions(+), 1 deletion(-)
+>>>
+>>> diff --git a/tools/testing/selftests/livepatch/Makefile
+>>> b/tools/testing/selftests/livepatch/Makefile
+>>> index 35418a4790be..e92f61208d35 100644
+>>> --- a/tools/testing/selftests/livepatch/Makefile
+>>> +++ b/tools/testing/selftests/livepatch/Makefile
+>>> @@ -10,7 +10,8 @@ TEST_PROGS := \
+>>>  	test-state.sh \
+>>>  	test-ftrace.sh \
+>>>  	test-sysfs.sh \
+>>> -	test-syscall.sh
+>>> +	test-syscall.sh \
+>>> +	test-atomic-replace.sh
+>>>  
+>>>  TEST_FILES := settings
+>>>  
+>>> diff --git a/tools/testing/selftests/livepatch/test-atomic-
+>>> replace.sh b/tools/testing/selftests/livepatch/test-atomic-
+>>> replace.sh
+>>> new file mode 100755
+>>> index 000000000000..09a3dcdcb8de
+>>> --- /dev/null
+>>> +++ b/tools/testing/selftests/livepatch/test-atomic-replace.sh
+>>> @@ -0,0 +1,71 @@
+>>> +#!/bin/bash
+>>> +# SPDX-License-Identifier: GPL-2.0
+>>> +#
+>>> +# Copyright (C) 2024 SUSE
+>>> +# Author: Marcos Paulo de Souza <mpdesouza@suse.com>
+>>> +
+>>> +. $(dirname $0)/functions.sh
+>>> +
+>>> +MOD_REPLACE=test_klp_atomic_replace
+>>> +
+>>> +setup_config
+>>> +
+>>> +# - Load three livepatch modules.
+>>> +# - Load one more livepatch with replace being set, and check that
+>>> only one
+>>> +#   livepatch module is being listed.
+>>> +
+>>> +start_test "apply one liveptach to replace multiple livepatches"
+>>> +
+>>> +for mod in test_klp_livepatch test_klp_syscall
+>>> test_klp_callbacks_demo; do
+>>> +	load_lp $mod
+>>> +done
+>>> +
+>>> +nmods=$(ls /sys/kernel/livepatch | wc -l)
+>>> +if [ $nmods -ne 3 ]; then
+>>> +	die "Expecting three modules listed, found $nmods"
+>>> +fi
+>>> +
+>>> +load_lp $MOD_REPLACE replace=1
+>>> +
+>>> +nmods=$(ls /sys/kernel/livepatch | wc -l)
+>>> +if [ $nmods -ne 1 ]; then
+>>> +	die "Expecting only one moduled listed, found $nmods"
+>>> +fi
+>>> +
+>>> +disable_lp $MOD_REPLACE
+>>> +unload_lp $MOD_REPLACE
+>>> +
+>>> +check_result "% insmod test_modules/test_klp_livepatch.ko
+>>> +livepatch: enabling patch 'test_klp_livepatch'
+>>> +livepatch: 'test_klp_livepatch': initializing patching transition
+>>> +livepatch: 'test_klp_livepatch': starting patching transition
+>>> +livepatch: 'test_klp_livepatch': completing patching transition
+>>> +livepatch: 'test_klp_livepatch': patching complete
+>>> +% insmod test_modules/test_klp_syscall.ko
+>>> +livepatch: enabling patch 'test_klp_syscall'
+>>> +livepatch: 'test_klp_syscall': initializing patching transition
+>>> +livepatch: 'test_klp_syscall': starting patching transition
+>>> +livepatch: 'test_klp_syscall': completing patching transition
+>>> +livepatch: 'test_klp_syscall': patching complete
+>>> +% insmod test_modules/test_klp_callbacks_demo.ko
+>>> +livepatch: enabling patch 'test_klp_callbacks_demo'
+>>> +livepatch: 'test_klp_callbacks_demo': initializing patching
+>>> transition
+>>> +test_klp_callbacks_demo: pre_patch_callback: vmlinux
+>>> +livepatch: 'test_klp_callbacks_demo': starting patching transition
+>>> +livepatch: 'test_klp_callbacks_demo': completing patching
+>>> transition
+>>> +test_klp_callbacks_demo: post_patch_callback: vmlinux
+>>> +livepatch: 'test_klp_callbacks_demo': patching complete
+>>> +% insmod test_modules/test_klp_atomic_replace.ko replace=1
+>>> +livepatch: enabling patch 'test_klp_atomic_replace'
+>>> +livepatch: 'test_klp_atomic_replace': initializing patching
+>>> transition
+>>> +livepatch: 'test_klp_atomic_replace': starting patching transition
+>>> +livepatch: 'test_klp_atomic_replace': completing patching
+>>> transition
+>>> +livepatch: 'test_klp_atomic_replace': patching complete
+>>> +% echo 0 > /sys/kernel/livepatch/test_klp_atomic_replace/enabled
+>>> +livepatch: 'test_klp_atomic_replace': initializing unpatching
+>>> transition
+>>> +livepatch: 'test_klp_atomic_replace': starting unpatching
+>>> transition
+>>> +livepatch: 'test_klp_atomic_replace': completing unpatching
+>>> transition
+>>> +livepatch: 'test_klp_atomic_replace': unpatching complete
+>>> +% rmmod test_klp_atomic_replace"
+>>> +
+>>> +exit 0
+>>>
+>>
+>> Hi Marcos,
+>>
+>> I'm not against adding a specific atomic replace test, but for a
+>> quick
+>> tl/dr what is the difference between this new test and
+>> test-livepatch.sh's "atomic replace livepatch" test?
+>>
+>> If this one provides better coverage, should we follow up with
+>> removing
+>> the existing one?
+> 
+> Hi Joe,
+> 
+> thanks for looking at it. To be honest I haven't checked the current
+> use of atomic replace on test-livepatch.sh =/
+> 
+> yes, that's mostly the same case, but in mine I load three modules and
+> then load the third one replacing the others, while in the test-
+> livepatch.sh we have only one module that is loaded, replaced, and then
+> we unload the replaced one.
+> 
+> Do you see value in extending the test at test-livepatch.sh to load
+> more than one LP moduled and the replace all of them with another one?
+> I believe that it adds more coverage, while keeping the number of tests
+> the same.
+> 
 
-Maybe, maybe not, actually. The auth command _is_ somewhat special in
-that it mostly hands stuff down from userspace via cfg80211, but does
-require sending frames. As long as you don't have full offload, at
-least.
+Yeah, it shouldn't be too hard to combine this test with the existing
+one by adding the 3 module load to the beginning of the test.
 
-The way I see it, the issue here isn't necessarily the fact that this
-uses the auth command (and then requires assoc, of course), but that we
-see here this is "growing" towards a more mac80211-like model, with the
-code duplication (albeit little that it is today) implied by that. To
-me, it seems like the firmware is moving into the "oh we can't do all
-_that_ in firmware" territory, and that brings it closer to mac80211.
+Verifying the livepatch count is an interesting new wrinkle.  (Do check
+out the shellcheck warning about leveraging the output of ls, though.)
+If atomic-replace was used throughout the test suite, I might say that
+load_mod should be aware and check accordingly, but it's not the default
+build mode, so counting the final livepatches in the test itself seems
+reasonable enough.
 
-At the same time, as you say, mac80211 is doing more and more offload
-capability, so it seems like apart from "today the firmware requires an
-assoc command rather than assoc frame processing in the host", it's
-actually not _that_ far apart any more!
+-- 
+Joe
 
-Now that may be an issue in the short term, but I wouldn't be surprised
-at all if desiring to implement FILS and other new features in this
-space would make the driver move to assoc frame processing in the host
-as well, because it's getting more and more complex, just like auth.
-
-At which point - yeah the APIs are still significantly different, but
-again we'd end up implementing something that exists in mac80211 today
-and taking it into mwifiex?
-
-> It may be harder to add
-> future additions to the mac80211 stack [*], if we have to add new
-> concerns of a non-mac80211 implementation in the mix.
-
-Not sure that makes a difference for mac80211 in itself, obviously
-changes in this space would then affect mwifiex, but that shouldn't be
-much of an issue.
-
-I'm less worried about this individual patch than what it says about the
-direction this driver and firmware are taking, and I fear we'll end up
-in a situation where over time this driver actually gets to a point
-where it should be using mac80211, but because it's such a piece-meal
-affair (auth frames now, etc.) and large architectural change, they'd
-never actually do that.
-
-To be fair, that might also require firmware API changes in some way. I
-used to think that was something we should never require, but I'm not so
-sure now any more - certainly we've changed our (Intel) FW API in
-support of Linux architecture many times, and overall that's for a
-better product (on Linux at least.)
-
-Also: David, I'd appreciate if you actually took this discussion
-seriously; so far you've not really contributed any technical arguments.
-
-johannes
 
