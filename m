@@ -1,82 +1,141 @@
-Return-Path: <linux-kernel+bounces-117508-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-117534-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1089488AC15
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 18:43:38 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DE4E888AC4C
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 18:49:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6E3E532150C
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 17:43:36 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0D9041C3FDAA
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 17:49:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6B8E05C8EC;
-	Mon, 25 Mar 2024 16:48:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 55BCF4B5A6;
+	Mon, 25 Mar 2024 17:03:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=sipsolutions.net header.i=@sipsolutions.net header.b="C1ida8Kw"
-Received: from sipsolutions.net (s3.sipsolutions.net [168.119.38.16])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ibllFgBo"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C65198174F
-	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 16:48:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=168.119.38.16
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D44D3DBBC
+	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 17:03:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711385295; cv=none; b=pPvpLP7LO4KSyWreHHhnYf5ZWL1bQn2UiUoUT1ti+csZYczbtuqhgPDE1EzCWBxBl+uqTkfT3dcS8fccEh/6sgqvZ9fAcMuyKrO7BjVZNSFHwiFwD9FLSlmv/cHvMLbKxt88JliyQG3YPkaWrc4RyFd5rpTW+Y2OORS9UKrlNiQ=
+	t=1711386221; cv=none; b=hOguBi/QSenRf+oP1lFsj4QWWErslRwSBzJVIT9Jfzyzpbk6FiGPMoSj5pFLDelTeCOG2PmOZ5ATnzge9NMHIv6uLRTwyIgWGkNRStEwcI3Q1rogXIni95bMBqOF6x7wu4YTH1ofoZjhc02yiiG2sxM1aFPyd98a2kQ2r3Jk0bw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711385295; c=relaxed/simple;
-	bh=iqd5OHPf33Dh5alJMaoDDA/B+/g9AZhWz6dwwQoYzH0=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=k7ujZSWXaQQVDbARljwzomZajp6zDHevgeYFPhuvAtL37OzS5H8HiNa8bgBmpYDd3SzLrHpd5aTzsp/urXeKHOJG5Hjw4jKNGVFTsLLkRBPGgGrQydiR85qJqdKXB/gaISTfVi8oh4J3wsYnnjrk2xIJvGibM6u1ZH2/HJifGHM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sipsolutions.net; spf=pass smtp.mailfrom=sipsolutions.net; dkim=pass (2048-bit key) header.d=sipsolutions.net header.i=@sipsolutions.net header.b=C1ida8Kw; arc=none smtp.client-ip=168.119.38.16
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sipsolutions.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sipsolutions.net
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=sipsolutions.net; s=mail; h=MIME-Version:Content-Transfer-Encoding:
-	Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender
-	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
-	Resent-Cc:Resent-Message-ID; bh=iqd5OHPf33Dh5alJMaoDDA/B+/g9AZhWz6dwwQoYzH0=;
-	t=1711385293; x=1712594893; b=C1ida8KwueC/hP9xiuLNV5EyVATbTgMKjQWz7O8yOpSIcmy
-	X4DJR2x55vgyTX1Ifxqn4oti/I60HvZxtI3GL+T3R2CkGGf+kUKD2nyGneXxi6N9259HfvTkwu4Rx
-	RV7FzmF4e9EDT1mITDOrqF1U2EfiHsd3E021BaCNg9HZqrXeEvwNd6HqrEJG46T99rXLakUsbvnMk
-	0TGGGeKZeT354QTTLSh8Nsd2U9leQPJHU2QM7w+najst7113yhUIWVqrIWvYW04+dOzwoHdMBmxXM
-	m+vgN6dxNZRwVIo3kZsLocUYeWERtYSxQAYS73F/VN6tIpXtSobr+lQFMVyV9VMA==;
-Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
-	(Exim 4.97)
-	(envelope-from <johannes@sipsolutions.net>)
-	id 1ronUY-0000000DxcA-1M7f;
-	Mon, 25 Mar 2024 17:48:10 +0100
-Message-ID: <4aa1f6ae3ac72a5eb3303740242d53d46a338d6b.camel@sipsolutions.net>
-Subject: Re: [PATCH v3 1/4] devcoredump: Add dev_coredump_put()
-From: Johannes Berg <johannes@sipsolutions.net>
-To: =?ISO-8859-1?Q?Jos=E9?= Roberto de Souza <jose.souza@intel.com>, 
-	linux-kernel@vger.kernel.org, intel-xe@lists.freedesktop.org
-Cc: Rodrigo Vivi <rodrigo.vivi@intel.com>, Mukesh Ojha
- <quic_mojha@quicinc.com>,  Jonathan Cavitt <jonathan.cavitt@intel.com>
-Date: Mon, 25 Mar 2024 17:48:09 +0100
-In-Reply-To: <20240304143905.52740-1-jose.souza@intel.com>
-References: <20240304143905.52740-1-jose.souza@intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.50.4 (3.50.4-1.fc39) 
+	s=arc-20240116; t=1711386221; c=relaxed/simple;
+	bh=z/jh+93zuvKqVIQ98MxaG5F4d3axg0Y13zwiWvCIOg8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=HL/xLY/4HXQeodmW8H3Bng+vM3wcmZIbIyVnhnaPfxSBPkZ7kxyG02OX5OGc0jYhOWnN4lXneBpcdUqTRL3T9fkT49azC2mGZx99odYahj7aYX4oSgU7utJIPJBuAWQ6WqERGhJIjHwzd5XWWkbXqm5XZkyWbNhnjL6hM2fhh+4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ibllFgBo; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9590AC433F1;
+	Mon, 25 Mar 2024 17:03:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1711386221;
+	bh=z/jh+93zuvKqVIQ98MxaG5F4d3axg0Y13zwiWvCIOg8=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=ibllFgBos5TkeQY0PYTM1ISTnrSacPHTnQzJ956kmpo5PD14ze3eBNhs4ozn9Rx5D
+	 rvzt+0JS0lzQyPPLsL0k/BpjypqND0jxIEr2P/fDBujybNLLGZ4H9yrstHvLwm3tfE
+	 oJaHw47t+yvIzTlg3EPJZ2Q0j2Q8Bx9Hudgm8mcRHIkT3kKn1vWP4zdIRHvnyl9PV7
+	 OMwt7BEl44CdyBkmfs7apSOHJ8WDgNIHPq+QoezOzmO1XsXaAC8LGPkCcLJvSgdK+8
+	 FxFJI+7f2GhK/KW+M+gQAw0Kr9j4a+mfHH0sB/S7A39SoCnypVlaeoAwL6dJ/YDVwd
+	 t7TZay50Xoxog==
+Date: Tue, 26 Mar 2024 00:50:14 +0800
+From: Jisheng Zhang <jszhang@kernel.org>
+To: Paul Walmsley <paul.walmsley@sifive.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Albert Ou <aou@eecs.berkeley.edu>,
+	Daniel Lezcano <daniel.lezcano@linaro.org>,
+	Thomas Gleixner <tglx@linutronix.de>
+Cc: linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 5/5] clocksource/drivers/timer-clint: Add T-Head C9xx
+ clint support
+Message-ID: <ZgGrRrH0mxoKl90n@xhacker>
+References: <20240325164021.3229-1-jszhang@kernel.org>
+ <20240325164021.3229-6-jszhang@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-malware-bazaar: not-scanned
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20240325164021.3229-6-jszhang@kernel.org>
 
-On Mon, 2024-03-04 at 06:39 -0800, Jos=C3=A9 Roberto de Souza wrote:
-> It is useful for modules that do not want to keep coredump available
-> after its unload.
+On Tue, Mar 26, 2024 at 12:40:21AM +0800, Jisheng Zhang wrote:
+> The mtimecmp in T-Head C9xx clint only supports 32bit read/write,
+> implement such support.
+> 
+> Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
+> ---
+>  drivers/clocksource/timer-clint.c | 24 ++++++++++++++++++++++++
+>  1 file changed, 24 insertions(+)
+> 
+> diff --git a/drivers/clocksource/timer-clint.c b/drivers/clocksource/timer-clint.c
+> index 4537c77e623c..71188732e8a3 100644
+> --- a/drivers/clocksource/timer-clint.c
+> +++ b/drivers/clocksource/timer-clint.c
+> @@ -34,6 +34,7 @@ static unsigned int clint_ipi_irq;
+>  static u64 __iomem *clint_timer_cmp;
+>  static unsigned long clint_timer_freq;
+>  static unsigned int clint_timer_irq;
+> +static bool is_c900_clint;
+>  
+>  #ifdef CONFIG_SMP
+>  static void clint_send_ipi(unsigned int cpu)
+> @@ -88,6 +89,19 @@ static int clint_clock_next_event(unsigned long delta,
+>  	return 0;
+>  }
+>  
+> +static int c900_clint_clock_next_event(unsigned long delta,
+> +				       struct clock_event_device *ce)
+> +{
+> +	void __iomem *r = clint_timer_cmp +
+> +			  cpuid_to_hartid_map(smp_processor_id());
+> +	u64 val = clint_get_cycles64() + delta;
+> +
+> +	csr_set(CSR_IE, IE_TIE);
+> +	writel_relaxed(val, r);
+> +	writel_relaxed(val >> 32, r + 4);
+> +	return 0;
+> +}
+> +
+>  static DEFINE_PER_CPU(struct clock_event_device, clint_clock_event) = {
+>  	.name		= "clint_clockevent",
+>  	.features	= CLOCK_EVT_FEAT_ONESHOT,
+> @@ -99,6 +113,9 @@ static int clint_timer_starting_cpu(unsigned int cpu)
+>  {
+>  	struct clock_event_device *ce = per_cpu_ptr(&clint_clock_event, cpu);
+>  
+> +	if (is_c900_clint)
+> +		ce->set_next_event = c900_clint_clock_next_event;
+> +
+>  	ce->cpumask = cpumask_of(cpu);
+>  	clockevents_config_and_register(ce, clint_timer_freq, 100, ULONG_MAX);
+>  
+> @@ -233,5 +250,12 @@ static int __init clint_timer_init_dt(struct device_node *np)
+>  	return rc;
+>  }
+>  
+> +static int __init c900_clint_timer_init_dt(struct device_node *np)
+> +{
+> +	is_c900_clint = true;
+> +	return clint_timer_init_dt(np);
+> +}
+> +
+>  TIMER_OF_DECLARE(clint_timer, "riscv,clint0", clint_timer_init_dt);
+>  TIMER_OF_DECLARE(clint_timer1, "sifive,clint0", clint_timer_init_dt);
+> +TIMER_OF_DECLARE(clint_timer2, "thead,c900-clint", clint_timer_init_dt);
 
-Why not though? Maybe if this is a common case we should have devm_...
-coredump functions? Dunno.
+oops, this should be "c900_clint_timer_init_dt", will update in v2.
 
-Anyway, I'm fine with this, even though I'd like to see a bit more
-discussion than "do not want". Code looks good.
-
-Reviewed-by: Johannes Berg <johannes@sipsolutions.net>
-
-johannes
+> -- 
+> 2.43.0
+> 
+> 
+> _______________________________________________
+> linux-riscv mailing list
+> linux-riscv@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-riscv
 
