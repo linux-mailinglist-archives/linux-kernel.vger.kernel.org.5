@@ -1,126 +1,156 @@
-Return-Path: <linux-kernel+bounces-116458-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-116451-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id F0D8A889F19
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 13:25:09 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7DE7388A2BE
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 14:44:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2E5F11C35E2F
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 12:25:09 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 980C5BA46A2
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 12:23:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD4FB159574;
-	Mon, 25 Mar 2024 07:31:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 89E781552F5;
+	Mon, 25 Mar 2024 07:31:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WMsc1e3w"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="bmAEkXFt"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.17])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A50DB178891;
-	Mon, 25 Mar 2024 03:24:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 31C9F26CC0C
+	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 03:27:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.17
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711337099; cv=none; b=rFia1D1Ii2+pYkOZkLCn3hlPc99ll0riCFBBJ/uAiJJhY2SQ/O3W7oS3tnQmH36SKDm6ilj3m9L24oMHsfjK6DD9B6L4fciwP344W0tUMJ/nZ+S7BLCm3GcmozrvYxJVznebx4MFX1tHVZF00dtLUkQhAcIytvhxueTjIQy2nPw=
+	t=1711337275; cv=none; b=nwFBtO5bBdJV56j5xrJcN0ha03BVg6VI8Z3QiZ69Accb56dApNeXUhv3wxTuLVtf+TGQdreWtZQUlUOQJ2BZWQpmK/OReTW7P2uXljcvlNMPWMMC/F37Sy0Yb+vuehjJaNh4PmyF+X8+nelRUD2J9+dtrFkN2VThaP5jmSAS3Y4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711337099; c=relaxed/simple;
-	bh=GakVguLw7Lf5f5Bnjeick8QQQVW5ZbSnjq4ik2Jrhtg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=cLnvYO6w0Cu9UtuspORNz4l8Fo98Jmhz/WsF2c7WukkF2SOfpnSSQjQuOr+kKLwA8sjr/H4qFnv/ZIluxaVPQ7bh4yruSNFgjCbyr+gy4pqPblVfIyNwJogQR/dR3hPAxRzsd82zFjVP8cwH/+U0TDF4Y30SWNECLQD3+QQfjOI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=WMsc1e3w; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 246EBC433F1;
-	Mon, 25 Mar 2024 03:24:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711337099;
-	bh=GakVguLw7Lf5f5Bnjeick8QQQVW5ZbSnjq4ik2Jrhtg=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=WMsc1e3wpuTRL3x0WYjsA3UoiisjhwQyJtQPJoqpSZnM+1GvokBtbQ20vuSLEGHlp
-	 wh5NZaQE75OEYKu+O0gro1bHzs/CRzer2IWoS9NIV2eVZyGUJHJU3fDX5KUjGVv8xL
-	 CgYBD+QQ01bsCyZSXzcETKuv8Sm4fw9wPG9TLp8V0JgA7yAnzILTk6llYbZmdRImsF
-	 ZvdOmHxCFy4gUOju0YyYsBc1qMl6f5tmUbIxswIpkfeAumFNZiXg9fVt26FvFvjfQp
-	 dvUR2SmtCrcmkt2O+Mxdp8/YoRFwA82eKqUx56+1ku+hnVojIyCKTo2v/AicAUGJu9
-	 GZj7Vx7MdZfCg==
-Date: Mon, 25 Mar 2024 11:24:56 +0800
-From: Tzung-Bi Shih <tzungbi@kernel.org>
-To: Stephen Horvath <s.horvath@outlook.com.au>
-Cc: Lee Jones <lee@kernel.org>, Benson Leung <bleung@chromium.org>,
-	Guenter Roeck <groeck@chromium.org>,
-	chrome-platform@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] platform/chrome: cros_kbd_led_backlight:
- Automatically enable keyboard backlight control if feature present in EC
-Message-ID: <ZgDuiEYcgMTuZAeA@google.com>
-References: <20240322102800.1322022-1-s.horvath@outlook.com.au>
- <SY4P282MB306333469B31348E4A25A1A5C5312@SY4P282MB3063.AUSP282.PROD.OUTLOOK.COM>
+	s=arc-20240116; t=1711337275; c=relaxed/simple;
+	bh=8GEkeuAmsQ5Ut/QQW7+jcdbWaLfMKQm0ScLz9EoS63Q=;
+	h=Message-ID:Date:MIME-Version:Cc:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=t1iy9gwbzqniU4rfGa9f/kn4WEDoEG1ZMmSEom/J8WGB0B4wwT7CrczPJaQ7PsjadcX6/CrYhxMQmhgQg9+SEN5YrMeIm+MVP5awIFWMm4noRLuDUjtV1BPUKxHa3fPXdaJyd/xJP4QAWl8xBgw5akzRnmHVyoyz29Buk2VMK2E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=bmAEkXFt; arc=none smtp.client-ip=192.198.163.17
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1711337273; x=1742873273;
+  h=message-id:date:mime-version:cc:subject:to:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=8GEkeuAmsQ5Ut/QQW7+jcdbWaLfMKQm0ScLz9EoS63Q=;
+  b=bmAEkXFtIN58LMOa6p+WPujjm33DyhfQN2IjxEbjeGsrHoAMkwGtLpOo
+   IGvGwgXSshe2ueSq4zzzIxU5iTEsf5LGppcskQ066g1+wTn+N4dxdXQRl
+   oBD3Q+VuPLWvVtrZSo8XDpxloGsow1fr8U1/0I7sN5DwbjumUp4QImbSF
+   UuVTK0qXXXb6AfAhzy7AropnA8+sbrQif0o9vPHV8dsYMXi8ec8Mt3j6u
+   oxgufrPEjaWGoVCzHkGLh98v+GclzpvbUZhSg5vloLV1DVS61ahB5Ulu0
+   dWyL2AaywnAeYr0kln+i9zsp5WgDYhRgf2smucKCXCXGY35GwalSqtB4i
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11023"; a="6177059"
+X-IronPort-AV: E=Sophos;i="6.07,152,1708416000"; 
+   d="scan'208";a="6177059"
+Received: from fmviesa005.fm.intel.com ([10.60.135.145])
+  by fmvoesa111.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Mar 2024 20:27:51 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,152,1708416000"; 
+   d="scan'208";a="19951825"
+Received: from allen-box.sh.intel.com (HELO [10.239.159.127]) ([10.239.159.127])
+  by fmviesa005.fm.intel.com with ESMTP; 24 Mar 2024 20:27:48 -0700
+Message-ID: <45fc6507-f077-4626-98cb-96cda1585718@linux.intel.com>
+Date: Mon, 25 Mar 2024 11:26:57 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <SY4P282MB306333469B31348E4A25A1A5C5312@SY4P282MB3063.AUSP282.PROD.OUTLOOK.COM>
+User-Agent: Mozilla Thunderbird
+Cc: baolu.lu@linux.intel.com, Kevin Tian <kevin.tian@intel.com>,
+ Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
+ Robin Murphy <robin.murphy@arm.com>,
+ Jean-Philippe Brucker <jean-philippe@linaro.org>,
+ Nicolin Chen <nicolinc@nvidia.com>, Yi Liu <yi.l.liu@intel.com>,
+ Jacob Pan <jacob.jun.pan@linux.intel.com>,
+ Joel Granados <j.granados@samsung.com>,
+ "iommu@lists.linux.dev" <iommu@lists.linux.dev>,
+ "virtualization@lists.linux-foundation.org"
+ <virtualization@lists.linux-foundation.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v3 4/8] iommufd: Add iommufd fault object
+Content-Language: en-US
+To: Jason Gunthorpe <jgg@ziepe.ca>,
+ Shameerali Kolothum Thodi <shameerali.kolothum.thodi@huawei.com>
+References: <20240122073903.24406-1-baolu.lu@linux.intel.com>
+ <20240122073903.24406-5-baolu.lu@linux.intel.com>
+ <ad4575588dd247fa8beae60963f36404@huawei.com>
+ <20240322172232.GK66976@ziepe.ca>
+From: Baolu Lu <baolu.lu@linux.intel.com>
+In-Reply-To: <20240322172232.GK66976@ziepe.ca>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Fri, Mar 22, 2024 at 08:27:58PM +1000, Stephen Horvath wrote:
-> I also fixed a bug that seemed like there was some confusion between
-> `cros_ec_dev` and `cros_ec_device`, so I'm not sure if this module even
-> worked until now.
+On 3/23/24 1:22 AM, Jason Gunthorpe wrote:
+> On Wed, Mar 20, 2024 at 04:18:05PM +0000, Shameerali Kolothum Thodi wrote:
+>> What I have noticed is that,
+>> -read interface works fine and I can receive struct tiommu_hwpt_pgfault data.
+>> -But once Guest handles the page faults and returns the page response,
+>>   the write to fault fd never reaches the kernel. The sequence is like below,
+>>   
+>>    sqe = io_uring_get_sqe(ring);
+>>    io_uring_prep_write(sqe, hwpt->fault_fd, resp, sizeof(*resp), 0);
+>>    io_uring_sqe_set_data(sqe, resp);
+>>    io_uring_submit(ring);
+>>    ret = io_uring_wait_cqe(ring, &cqe);
+>>    ....
+>> Please find the function here[2]
+>>
+>> The above cqe wait never returns and hardware times out without receiving
+>> page response. My understanding of io_uring default op is that it tries to
+>> issue an sqe as non-blocking first. But it looks like the above write sequence
+>> ends up in kernel poll_wait() as well.Not sure how we can avoid that for
+>> write.
+> Ah, right, it is because poll can't be choosy about read/write, it has
+> to work equally for both directions. iommufd_fault_fops_poll() never
+> returns EPOLLOUT
+> 
+> It should just always return EPOLLOUT because we don't have any queue
+> to manage.
 
-If they aren't part of commit message, please put them after "---".  Please
-separate to an independent patch if they fix different things.
+Are you suggesting the poll file operation to be like below?
 
-> diff --git a/drivers/platform/chrome/cros_kbd_led_backlight.c b/drivers/platform/chrome/cros_kbd_led_backlight.c
-> index 793fd3f1015d..06e9a57536af 100644
-> --- a/drivers/platform/chrome/cros_kbd_led_backlight.c
-> +++ b/drivers/platform/chrome/cros_kbd_led_backlight.c
-> @@ -171,12 +171,15 @@ static int keyboard_led_init_ec_pwm(struct platform_device *pdev)
->  {
->  	struct keyboard_led *keyboard_led = platform_get_drvdata(pdev);
->  
-> -	keyboard_led->ec = dev_get_drvdata(pdev->dev.parent);
-> -	if (!keyboard_led->ec) {
-> +	struct cros_ec_dev *parent_ec = dev_get_drvdata(pdev->dev.parent);
+static __poll_t iommufd_fault_fops_poll(struct file *filep,
+                                         struct poll_table_struct *wait)
+{
+         struct iommufd_fault *fault = filep->private_data;
+         __poll_t pollflags = EPOLLOUT;
 
-I'm not sure if it really fixes anything.  See [1] or [2].
+         poll_wait(filep, &fault->wait_queue, wait);
+         mutex_lock(&fault->mutex);
+         if (!list_empty(&fault->deliver))
+                 pollflags = EPOLLIN | EPOLLRDNORM;
+         mutex_unlock(&fault->mutex);
 
-[1]: https://elixir.bootlin.com/linux/v6.8/source/drivers/platform/chrome/cros_ec_lpc.c#L417
-[2]: https://elixir.bootlin.com/linux/v6.8/source/drivers/platform/chrome/cros_ec_spi.c#L759
+         return pollflags;
+}
 
-> @@ -200,8 +203,10 @@ static int keyboard_led_probe(struct platform_device *pdev)
->  	int error;
->  
->  	drvdata = device_get_match_data(&pdev->dev);
-> -	if (!drvdata)
-> -		return -EINVAL;
-> +	if (!drvdata) {
-> +		/* Assume EC if no match data is provided */
-> +		drvdata = &keyboard_led_drvdata_ec_pwm;
-> +	}
+The diff is,
 
-By current design, the `drvdata` should be provided by either ACPI or OF match.
+diff --git a/drivers/iommu/iommufd/fault.c b/drivers/iommu/iommufd/fault.c
+index ede16702d433..a33f8aa92575 100644
+--- a/drivers/iommu/iommufd/fault.c
++++ b/drivers/iommu/iommufd/fault.c
+@@ -175,7 +175,7 @@ static __poll_t iommufd_fault_fops_poll(struct file 
+*filep,
+                                         struct poll_table_struct *wait)
+  {
+         struct iommufd_fault *fault = filep->private_data;
+-       __poll_t pollflags = 0;
++       __poll_t pollflags = EPOLLOUT;
 
-> @@ -236,22 +241,10 @@ static const struct acpi_device_id keyboard_led_acpi_match[] = {
->  MODULE_DEVICE_TABLE(acpi, keyboard_led_acpi_match);
->  #endif
->  
-> -#ifdef CONFIG_OF
-> -static const struct of_device_id keyboard_led_of_match[] = {
-> -	{
-> -		.compatible = "google,cros-kbd-led-backlight",
-> -		.data = &keyboard_led_drvdata_ec_pwm,
-> -	},
-> -	{}
-> -};
-> -MODULE_DEVICE_TABLE(of, keyboard_led_of_match);
-> -#endif
-> -
->  static struct platform_driver keyboard_led_driver = {
->  	.driver		= {
->  		.name	= "chromeos-keyboard-leds",
->  		.acpi_match_table = ACPI_PTR(keyboard_led_acpi_match),
-> -		.of_match_table = of_match_ptr(keyboard_led_of_match),
+         poll_wait(filep, &fault->wait_queue, wait);
+         mutex_lock(&fault->mutex);
 
-The patch is ruining the use cases in OF world (e.g. [3]).
 
-[3]: https://elixir.bootlin.com/linux/v6.8/source/arch/arm64/boot/dts/mediatek/mt8195-cherry.dtsi#L1154
+I was originally thinking that poll file operation is specifically
+designed for polling on read events associated with IOMMU faults.
+
+Best regards,
+baolu
 
