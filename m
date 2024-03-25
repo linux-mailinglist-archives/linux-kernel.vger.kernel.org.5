@@ -1,192 +1,146 @@
-Return-Path: <linux-kernel+bounces-115263-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-115264-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id E9D40889A9B
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 11:32:16 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 164F1889B07
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 11:42:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 60E841F3402E
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 10:32:16 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C0B0A2A2147
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 10:42:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B68DE128813;
-	Mon, 25 Mar 2024 01:24:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 648FE12C7FE;
+	Mon, 25 Mar 2024 01:32:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VXvAkoRL"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="YNwn7HpM"
+Received: from out-188.mta0.migadu.com (out-188.mta0.migadu.com [91.218.175.188])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 28C162AE8D5;
-	Sun, 24 Mar 2024 23:57:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 293CF2BC60D
+	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 00:01:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.188
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711324674; cv=none; b=AwlsGYDuZ+jfU4dFK0fbA8c7x0LZhjOB1nnbSGyDoiwIfGHhgOO9xS+c+TB/Rl9Z+ag6bngNNzRQWNLz0efMR0/9KKkr41AmCHwGkVCeH6YXQgODtzN3ywiZaz2kbX4OdhV2bmyVyFl4t8THVkP3NhU17Q+WmWVH1mX+NbxOttk=
+	t=1711324908; cv=none; b=Ws4MemZXf9ryAvC2VUTax4Leqw6dSciN/i0dk7OCNZZlqDDkI7gfVclv0Wy5tZ9U0GhZqb6nllWCvHEkrFcQo8LRtERQB635YrW9yNdhxGBjQxjNs9adMhOCj3Y1OEx7F5lCYssD57lDN+eqWNNQAgIqAmxhXeJqrPg6PXyRrYw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711324674; c=relaxed/simple;
-	bh=B+hDJSEtZmTKGwjosQVzHLsZ21o1d5mgFIcyszz+X+s=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=B9pBO2gC+l9VIVzf7RkUKV4+QhLuzKlX+FjdjR7LbFwHrSYu0O93hlpZRHa1tnccGF3y5Z2U7dZaWOrSuNqBcdxADTW1hp1Zae0DF5jkMv5DW/G+2qbUD8/Wv24KmgUpJpzt8C3aS4/Gzdr5QZnHQhA3BKT1Nh3s/SZu7KyEl7s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=VXvAkoRL; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8D5BEC433F1;
-	Sun, 24 Mar 2024 23:57:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711324672;
-	bh=B+hDJSEtZmTKGwjosQVzHLsZ21o1d5mgFIcyszz+X+s=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=VXvAkoRLMY62I9KFD5orWlj59XGpDkzi5cIA2GMV6QI8b6pBSARWzoatAMQ0GvCzn
-	 vuHY/3dprYDZHORzohPbl0n+SRwQ1hgBW70KRHkwFrxA1cl8zL1DIZdwAbnHSfrzJ3
-	 e04as6W54Iug2x/500OYNiVWMrZFFHWBksdlqRRaXahroHaI/YSuPSQINYeERNE0mx
-	 03l13sbMpV0to3E710lPiFc0vzkOJ9iH4NW8XirbabzfczQSIE4/f0A9b4xg352cQc
-	 WlnbCdDs2wxSskedMajEpUB6fqmB1OfwrBktVrFzVysV+iak7KdUr8JNCScNQCONYY
-	 u5PEGmiByRpXg==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 2AD25CE11CE; Sun, 24 Mar 2024 16:57:52 -0700 (PDT)
-Date: Sun, 24 Mar 2024 16:57:52 -0700
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Zqiang <qiang.zhang1211@gmail.com>
-Cc: frederic@kernel.org, neeraj.upadhyay@kernel.org, joel@joelfernandes.org,
-	rcu@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] rcutorture: Make rcutorture support srcu double call test
-Message-ID: <fded324e-19bd-47a0-bd92-f25aaeddfc1f@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <20240324124224.615-1-qiang.zhang1211@gmail.com>
+	s=arc-20240116; t=1711324908; c=relaxed/simple;
+	bh=aCEqBcnQ1M3aL4PZqiCWwY0AYWwbtDQp1WxPKatYQ2Y=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=slrjgEE9sfR7kW2/TX1LoBAR6lAvlCsKeka34RjdfaUBVaUx9VLEiWXIfNDr5SbTess1WtIQETqzzsvO3IMwoZrzQD3ktfy4phTzmJTG2s2MHFTOUVHdUQBXkT3i6xOni58xPod/e/fwpH0oY05jakj5eZf7bxmnZqNfwX33/jU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=YNwn7HpM; arc=none smtp.client-ip=91.218.175.188
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <dc4481a6-37f9-4648-bcf7-44f54a737523@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1711324901;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=qe6xqHSlnnr+98KLEqZDrt/HGpOBcW/zRiJgat60DCo=;
+	b=YNwn7HpM3USRSh+6cv0pYoNd+E6X22pLWZxAk1qdUSCMbNjj3+ZMFHvErjXOWrCKfxhYT9
+	ds/+KKk1H6bHCdfhYMxrsvP+4B1lwIDVeJmPx0f+RxERmAoypc4cdeGAIRNxEo9hTeDUeu
+	9pp3awR/frB0uEjRnve1WQMeGHY9O7c=
+Date: Mon, 25 Mar 2024 08:01:24 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240324124224.615-1-qiang.zhang1211@gmail.com>
+Subject: Re: [PATCH] mm: zswap: fix data loss on SWP_SYNCHRONOUS_IO devices
+To: Johannes Weiner <hannes@cmpxchg.org>,
+ Andrew Morton <akpm@linux-foundation.org>
+Cc: Zhongkun He <hezhongkun.hzk@bytedance.com>,
+ Chengming Zhou <zhouchengming@bytedance.com>,
+ Yosry Ahmed <yosryahmed@google.com>, Barry Song <21cnbao@gmail.com>,
+ Chris Li <chrisl@kernel.org>, Nhat Pham <nphamcs@gmail.com>,
+ linux-mm@kvack.org, linux-kernel@vger.kernel.org
+References: <20240324210447.956973-1-hannes@cmpxchg.org>
+Content-Language: en-US
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Chengming Zhou <chengming.zhou@linux.dev>
+In-Reply-To: <20240324210447.956973-1-hannes@cmpxchg.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 
-On Sun, Mar 24, 2024 at 08:42:24PM +0800, Zqiang wrote:
-> This commit also allows rcutorture to support srcu double call test
-> with CONFIG_DEBUG_OBJECTS_RCU_HEAD option enabled. since the spinlock
-
-						   ^ Comma ","?
-
-> will be called in call_srcu(), in RT-kernel, the spinlock is sleepable,
-
-You lost me on "the spinlock will be called in call_srcu()".
-
-> therefore remove disable-irq and disable-preempt protection.
+On 2024/3/25 05:04, Johannes Weiner wrote:
+> Zhongkun He reports data corruption when combining zswap with zram.
 > 
-> Signed-off-by: Zqiang <qiang.zhang1211@gmail.com>
+> The issue is the exclusive loads we're doing in zswap. They assume
+> that all reads are going into the swapcache, which can assume
+> authoritative ownership of the data and so the zswap copy can go.
+> 
+> However, zram files are marked SWP_SYNCHRONOUS_IO, and faults will try
+> to bypass the swapcache. This results in an optimistic read of the
+> swap data into a page that will be dismissed if the fault fails due to
+> races. In this case, zswap mustn't drop its authoritative copy.
+> 
+> Link: https://lore.kernel.org/all/CACSyD1N+dUvsu8=zV9P691B9bVq33erwOXNTmEaUbi9DrDeJzw@mail.gmail.com/
+> Reported-by: Zhongkun He <hezhongkun.hzk@bytedance.com>
+> Fixes: b9c91c43412f ("mm: zswap: support exclusive loads")
+> Cc: stable@vger.kernel.org	[6.5+]
+> Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
+> Tested-by: Zhongkun He <hezhongkun.hzk@bytedance.com>
 
-Nice!  A question below.
+Very nice solution!
+
+Reviewed-by: Chengming Zhou <chengming.zhou@linux.dev>
+
+Thanks.
 
 > ---
->  kernel/rcu/rcutorture.c | 36 +++++++++++++++++++++---------------
->  1 file changed, 21 insertions(+), 15 deletions(-)
+>  mm/zswap.c | 23 +++++++++++++++++++----
+>  1 file changed, 19 insertions(+), 4 deletions(-)
 > 
-> diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
-> index 3f9c3766f52b..6571a69142f8 100644
-> --- a/kernel/rcu/rcutorture.c
-> +++ b/kernel/rcu/rcutorture.c
-> @@ -388,6 +388,7 @@ struct rcu_torture_ops {
->  	int extendables;
->  	int slow_gps;
->  	int no_pi_lock;
-> +	int debug_objects;
->  	const char *name;
->  };
->  
-> @@ -573,6 +574,7 @@ static struct rcu_torture_ops rcu_ops = {
->  	.irq_capable		= 1,
->  	.can_boost		= IS_ENABLED(CONFIG_RCU_BOOST),
->  	.extendables		= RCUTORTURE_MAX_EXTEND,
-> +	.debug_objects		= 1,
->  	.name			= "rcu"
->  };
->  
-> @@ -743,6 +745,7 @@ static struct rcu_torture_ops srcu_ops = {
->  	.cbflood_max	= 50000,
->  	.irq_capable	= 1,
->  	.no_pi_lock	= IS_ENABLED(CONFIG_TINY_SRCU),
-> +	.debug_objects	= 1,
->  	.name		= "srcu"
->  };
->  
-> @@ -782,6 +785,7 @@ static struct rcu_torture_ops srcud_ops = {
->  	.cbflood_max	= 50000,
->  	.irq_capable	= 1,
->  	.no_pi_lock	= IS_ENABLED(CONFIG_TINY_SRCU),
-> +	.debug_objects	= 1,
->  	.name		= "srcud"
->  };
->  
-> @@ -3481,35 +3485,37 @@ static void rcu_test_debug_objects(void)
->  #ifdef CONFIG_DEBUG_OBJECTS_RCU_HEAD
->  	struct rcu_head rh1;
->  	struct rcu_head rh2;
-> +	int idx;
-> +
-> +	if (!cur_ops->debug_objects || !cur_ops->call ||
-> +			!cur_ops->cb_barrier)
-
-If this is built-in, could we please WARN if there is a conflict?
-Otherwise, it looks like the test succeeded.
-
-> +		return;
-> +
->  	struct rcu_head *rhp = kmalloc(sizeof(*rhp), GFP_KERNEL);
->  
->  	init_rcu_head_on_stack(&rh1);
->  	init_rcu_head_on_stack(&rh2);
-> -	pr_alert("%s: WARN: Duplicate call_rcu() test starting.\n", KBUILD_MODNAME);
-> +	pr_alert("%s: WARN: Duplicate call_%s() test starting.\n", KBUILD_MODNAME, cur_ops->name);
->  
->  	/* Try to queue the rh2 pair of callbacks for the same grace period. */
-> -	preempt_disable(); /* Prevent preemption from interrupting test. */
-
-What makes us not need this preempt_disable() in the RCU case?
-
-> -	rcu_read_lock(); /* Make it impossible to finish a grace period. */
-> -	call_rcu_hurry(&rh1, rcu_torture_leak_cb); /* Start grace period. */
-> -	local_irq_disable(); /* Make it harder to start a new grace period. */
-
-Same question for the local_irq_disable()?
-
-> -	call_rcu_hurry(&rh2, rcu_torture_leak_cb);
-> -	call_rcu_hurry(&rh2, rcu_torture_err_cb); /* Duplicate callback. */
-> +	idx = cur_ops->readlock(); /* Make it impossible to finish a grace period. */
-> +	cur_ops->call(&rh1, rcu_torture_leak_cb); /* Start grace period. */
-> +	cur_ops->call(&rh2, rcu_torture_leak_cb);
-> +	cur_ops->call(&rh2, rcu_torture_err_cb); /* Duplicate callback. */
->  	if (rhp) {
-> -		call_rcu_hurry(rhp, rcu_torture_leak_cb);
-> -		call_rcu_hurry(rhp, rcu_torture_err_cb); /* Another duplicate callback. */
-> +		cur_ops->call(rhp, rcu_torture_leak_cb);
-> +		cur_ops->call(rhp, rcu_torture_err_cb); /* Another duplicate callback. */
+> diff --git a/mm/zswap.c b/mm/zswap.c
+> index 535c907345e0..41a1170f7cfe 100644
+> --- a/mm/zswap.c
+> +++ b/mm/zswap.c
+> @@ -1622,6 +1622,7 @@ bool zswap_load(struct folio *folio)
+>  	swp_entry_t swp = folio->swap;
+>  	pgoff_t offset = swp_offset(swp);
+>  	struct page *page = &folio->page;
+> +	bool swapcache = folio_test_swapcache(folio);
+>  	struct zswap_tree *tree = swap_zswap_tree(swp);
+>  	struct zswap_entry *entry;
+>  	u8 *dst;
+> @@ -1634,7 +1635,20 @@ bool zswap_load(struct folio *folio)
+>  		spin_unlock(&tree->lock);
+>  		return false;
 >  	}
-> -	local_irq_enable();
-> -	rcu_read_unlock();
-> -	preempt_enable();
-> +	cur_ops->readunlock(idx);
+> -	zswap_rb_erase(&tree->rbroot, entry);
+> +	/*
+> +	 * When reading into the swapcache, invalidate our entry. The
+> +	 * swapcache can be the authoritative owner of the page and
+> +	 * its mappings, and the pressure that results from having two
+> +	 * in-memory copies outweighs any benefits of caching the
+> +	 * compression work.
+> +	 *
+> +	 * (Most swapins go through the swapcache. The notable
+> +	 * exception is the singleton fault on SWP_SYNCHRONOUS_IO
+> +	 * files, which reads into a private page and may free it if
+> +	 * the fault fails. We remain the primary owner of the entry.)
+> +	 */
+> +	if (swapcache)
+> +		zswap_rb_erase(&tree->rbroot, entry);
+>  	spin_unlock(&tree->lock);
 >  
->  	/* Wait for them all to get done so we can safely return. */
-> -	rcu_barrier();
-> -	pr_alert("%s: WARN: Duplicate call_rcu() test complete.\n", KBUILD_MODNAME);
-> +	cur_ops->cb_barrier();
-> +	pr_alert("%s: WARN: Duplicate call_%s() test complete.\n", KBUILD_MODNAME, cur_ops->name);
->  	destroy_rcu_head_on_stack(&rh1);
->  	destroy_rcu_head_on_stack(&rh2);
->  	kfree(rhp);
->  #else /* #ifdef CONFIG_DEBUG_OBJECTS_RCU_HEAD */
-> -	pr_alert("%s: !CONFIG_DEBUG_OBJECTS_RCU_HEAD, not testing duplicate call_rcu()\n", KBUILD_MODNAME);
-> +	pr_alert("%s: !CONFIG_DEBUG_OBJECTS_RCU_HEAD, not testing duplicate call_%s()\n", KBUILD_MODNAME, cur_ops->name);
->  #endif /* #else #ifdef CONFIG_DEBUG_OBJECTS_RCU_HEAD */
-
-It might be possible to simplify the code by turning this #ifdef into
-IS_ENABLED().
-
-							Thanx, Paul
-
+>  	if (entry->length)
+> @@ -1649,9 +1663,10 @@ bool zswap_load(struct folio *folio)
+>  	if (entry->objcg)
+>  		count_objcg_event(entry->objcg, ZSWPIN);
+>  
+> -	zswap_entry_free(entry);
+> -
+> -	folio_mark_dirty(folio);
+> +	if (swapcache) {
+> +		zswap_entry_free(entry);
+> +		folio_mark_dirty(folio);
+> +	}
+>  
+>  	return true;
 >  }
->  
-> -- 
-> 2.17.1
-> 
+
 
