@@ -1,145 +1,143 @@
-Return-Path: <linux-kernel+bounces-117154-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-117155-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1329188A7F1
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 16:59:31 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D61E188A7F8
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 17:00:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4415E1C3E876
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 15:59:30 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2DD4F343066
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 15:59:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1038D128810;
-	Mon, 25 Mar 2024 13:35:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b="dR7AnY10"
-Received: from mail-lj1-f179.google.com (mail-lj1-f179.google.com [209.85.208.179])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 464EE12A178;
+	Mon, 25 Mar 2024 13:36:38 +0000 (UTC)
+Received: from mail-oo1-f43.google.com (mail-oo1-f43.google.com [209.85.161.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 03FB867C44
-	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 13:35:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3DAE254747;
+	Mon, 25 Mar 2024 13:36:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711373732; cv=none; b=CUP7oOev6rQicQNsHOlQhFOF4MZ7LCd+lJJVNovCcwfFD0XthAOmIW6INlKz/kF40c2/oqQcIv+x+PRlb9tMTD8H8/Y+6PxzbiXWWz8iSUKVSFaLVKez7mx1tIq4io/ZUOwaap+9Rr3qlcbWKF75Bj2NRTJlVx8BiZDAwlIoDfA=
+	t=1711373797; cv=none; b=bRCvUtENBqP8+5KXE9gJRJ12j244mMJIUG1A4JZ77IP5ZkochRQs8JCJGpopwSP3Pr8omKhqGOErAP1X4q9AeRfMJAqo8LDfbVRnSSsNIr3ACBG8weOh5Owq06hLBRS3w5cqeuDqXm0UefOWhm8WoFy1mXSgbsYnDtpV9+jG5/A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711373732; c=relaxed/simple;
-	bh=TCPyUbafQCw3a+le65i3q3p05CsQjzehRXJqoZCkz3Y=;
+	s=arc-20240116; t=1711373797; c=relaxed/simple;
+	bh=g57uFNVm1XsrkAgZ3q+epX8d4Jw3I4hrxZp2HoXRzjk=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=G1qw/R+lc0f02A2E4+dHCqdGIrmq0yj3TnLNonFYP/BiYPoP0P6Q4e7TzvGgaZ3m0ieisqshd4zOTESfkuCoDrXM9wyBYjrwaKOehMQKj9wpEXsHD0tmbQzZVoDJ6HrVYYGWW2kPOnITuaEIfBiEwQnOaSB/ie7Ap4k+RbefQHQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b=dR7AnY10; arc=none smtp.client-ip=209.85.208.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baylibre.com
-Received: by mail-lj1-f179.google.com with SMTP id 38308e7fff4ca-2d4979cd8c8so45341151fa.0
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 06:35:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1711373728; x=1711978528; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=wMCYCOAUB399ZWIzjXcdJZ2KHil8v/UMqqPWVku47Q0=;
-        b=dR7AnY10y3mjOLMoHH2w2eytqdV9Uq/BKXafcRA2zXUUwzbPFF0cps/iyRTvt969He
-         O/+3xoW+jb9bNYH6D20oSKtGgep2Ysp8EdYuY5J5GQOJ+9NDHUBzQVsg6mcmLmH/fRSg
-         s5yqOxGprnEqB5cGfH0G8hhVZRqIRJu31JZfVkMVkP09OXirZQ/WCNn3H+kfYqsF3jPa
-         I2YUyNjgQz/qlCzwVCZkLH1afrox7DHarxEFcJnghYxprBRp0957bMB/CpwKDOV2hwld
-         IQF9X7qktxL1SthMR/S538GVvz/KK6T3xI2+hFIGu2OteMb2ish6SsmwS6WPO2fYaxd/
-         C1aw==
+	 To:Cc:Content-Type; b=YcyXCVvXtRz9eKUkpdh8Yxi6hz108ZdGRhiYiFwQ7cufnFYFdECWpgUAhsUGvGL7QAo4VzTfanRDE78aPy1whLCxNTeDduogMbXPSuMlBZQRtbSfVkV5w/2DY3BHpv6ETYCutn1ueE5zxHYLXiRkCAzukeRPD77Tnf2nYln8AL0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.161.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oo1-f43.google.com with SMTP id 006d021491bc7-5a47680a806so1086903eaf.0;
+        Mon, 25 Mar 2024 06:36:36 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711373728; x=1711978528;
+        d=1e100.net; s=20230601; t=1711373795; x=1711978595;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=wMCYCOAUB399ZWIzjXcdJZ2KHil8v/UMqqPWVku47Q0=;
-        b=BeEYWYvS7qndg4BnDZWqag7K2ycLBJY23EsqoGXsWrYD0syPkQKdjPIZCZN20RbEX2
-         RXm04uh/ZTEh588PE9DpS6buPXGTp2kHlEeL6H0z90mQ1n0TFl1NOVG+jCgi+lpLuylD
-         w8xLFLvag5iq41byZCkT2/3uFiYuKosCYaAWITd6fnRcNRECh7nhRsmYPk2DL9tmXk96
-         /wM8y0R7L9Rxc/PFO5vgoOgR6bdAxqY0aoOneonzL3KaYqA33nyri4zJxGBxHY4IFDTJ
-         O/4km4AXWLfj05/b90uvLYjG8clYXYzjN1KySVnp/x+ylmlhs+d+O9fkYODseC010nBC
-         fG5g==
-X-Forwarded-Encrypted: i=1; AJvYcCV0rjdyFAz3aOubtIP4kbO38dYbAqAXQ3PtnSTQ2VBy198UdGvj6j7ZmKiEkZKG0ky6gihRXjfrhOcXWv3DZ/ag6arSJMrIY9hxyQw3
-X-Gm-Message-State: AOJu0YwpLgKddTgmPz5eGE/6hfmLzOKR1vlkyA6S1fKgCewBV1KeQvEx
-	XDtHMV53POx/Wt+X722cFwQnEKXPymDLyC3KM6R5InD+BwO5srLF2KH1iuS86NB3KR00oS8JIp6
-	+YHZcUKX5sIh/dU8CMGbb5460yJPz3fU2ev8uWw==
-X-Google-Smtp-Source: AGHT+IHaTowjHDD+wkEmqqR2T4q/qAfyUNdkL17rUe2qmjICjJ4WsEyBPGIBcsY6t/oJ7tOBkVYkWK9qUuSPYEm359Q=
-X-Received: by 2002:a05:651c:212a:b0:2d6:ce5c:de25 with SMTP id
- a42-20020a05651c212a00b002d6ce5cde25mr1524321ljq.8.1711373728029; Mon, 25 Mar
- 2024 06:35:28 -0700 (PDT)
+        bh=rNsJKMWcP5BKzAVOxwmbCiotTpuQe+ofoUlN5WR6A/Y=;
+        b=JDh5uin7Hj6oQ7T6PXqWB/TpQz/mlzgDtWi52XFYtuA8fgiCeloV4nKhoEEiyuiOGF
+         YIfJ4/rA3xcU0nzbjavs0GZuqW9Aty8mqb0rpPPoOm9f8QvDzRIWApm3ySJxyoHDNGKy
+         Sb0hGUkiF3sfZPjNhZ01XgwOpeiIGDS3NNw/ow1kJaUzwk1hzKrHERKG7wZbsynnvGuw
+         0MgoGwekUCc4XWo6nqYYywOQXbCxm3ghNPsOTIS4N/LpN7YFlni3JEOxx8yHDUp/jvlU
+         Yz6/wsZgeqJyJWaektQkP+9qtePYiMb86I7zJ8UPYVgLigTpg0THokkymocLx64P7517
+         tgTg==
+X-Forwarded-Encrypted: i=1; AJvYcCXre5D0xFsS8FSpKXbnNTLh4iUSOO9iiqgY0vwlX0eW2L0PFZVC+Hbt0HSDJdGLdF4SAyVLBXZFf8iDobbqUboZ7Z0OszFXIkBQ35ZDCLylJU8rPb/TNKa7GAXo0jq244iWADajnk6H8A==
+X-Gm-Message-State: AOJu0YyAWxIzqy1uGosYoVuPLRBuAeRdrC2eRjhBbiI9/4AOSoEhkNV1
+	1S8Hu0WM9Egpgn3Bmd6IrxUBlJIOYLTyJEDNdb6atrokvJ0GVhyBxA5spf1siAb1f+/r60SWfbp
+	b2Bz27BPxtdZgpjxPtBeLCQGoFDQ=
+X-Google-Smtp-Source: AGHT+IEffQ0IRPFNBHlwYpeLrynLljQmOAKIl5tAWRNrx36NI5VhvMxnnDrYCl44S2gDPIuEHy6QZMCdTQkZwyGFR8Y=
+X-Received: by 2002:a05:6808:1588:b0:3c3:cd59:8bca with SMTP id
+ t8-20020a056808158800b003c3cd598bcamr3555907oiw.1.1711373795280; Mon, 25 Mar
+ 2024 06:36:35 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <cover.1711131830.git.marcelo.schmitt@analog.com>
- <15a70e55d7b6f0a97c4042bdaa41c2b672eb4f2f.1711131830.git.marcelo.schmitt@analog.com>
- <CAMknhBH7umcBD0hyt=6fOKu9E8k=CSrnNE4Z+9ynn0F4B=Wk2w@mail.gmail.com>
-In-Reply-To: <CAMknhBH7umcBD0hyt=6fOKu9E8k=CSrnNE4Z+9ynn0F4B=Wk2w@mail.gmail.com>
-From: David Lechner <dlechner@baylibre.com>
-Date: Mon, 25 Mar 2024 08:35:16 -0500
-Message-ID: <CAMknhBHZT5xM5RG0cmEHvCJ5AwZnLQnV9_jW5=gP=s_45LYfcw@mail.gmail.com>
-Subject: Re: [PATCH 2/2] iio: adc: Add support for AD4000
-To: Marcelo Schmitt <marcelo.schmitt@analog.com>
-Cc: lars@metafoo.de, Michael.Hennerich@analog.com, jic23@kernel.org, 
-	robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, 
-	marcelo.schmitt1@gmail.com, linux-iio@vger.kernel.org, 
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <12417336.O9o76ZdvQC@kreacher> <CACRpkdayWiVskunN-YeYzS7dd6ZGHmqiTbCyWQKvOG91S04Dzw@mail.gmail.com>
+In-Reply-To: <CACRpkdayWiVskunN-YeYzS7dd6ZGHmqiTbCyWQKvOG91S04Dzw@mail.gmail.com>
+From: "Rafael J. Wysocki" <rafael@kernel.org>
+Date: Mon, 25 Mar 2024 14:36:23 +0100
+Message-ID: <CAJZ5v0j5qFR-8iLUh+o+k6rTF3xEAXu0iBdcRK6p-64=w2wchA@mail.gmail.com>
+Subject: Re: [PATCH v1] irq: Introduce IRQF_COND_ONESHOT and use it in pinctrl-amd
+To: Linus Walleij <linus.walleij@linaro.org>, Thomas Gleixner <tglx@linutronix.de>
+Cc: "Rafael J. Wysocki" <rjw@rjwysocki.net>, "Rafael J. Wysocki" <rafael@kernel.org>, 
+	LKML <linux-kernel@vger.kernel.org>, Hans de Goede <hdegoede@redhat.com>, 
+	Linux ACPI <linux-acpi@vger.kernel.org>, 
+	Francisco Ayala Le Brun <francisco@videowindow.eu>, Mario Limonciello <mario.limonciello@amd.com>, 
+	Adrian Hunter <adrian.hunter@intel.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Sat, Mar 23, 2024 at 4:53=E2=80=AFPM David Lechner <dlechner@baylibre.co=
-m> wrote:
+On Mon, Mar 25, 2024 at 2:32=E2=80=AFPM Linus Walleij <linus.walleij@linaro=
+org> wrote:
 >
-> On Fri, Mar 22, 2024 at 5:06=E2=80=AFPM Marcelo Schmitt
-> <marcelo.schmitt@analog.com> wrote:
+> On Mon, Mar 25, 2024 at 1:58=E2=80=AFPM Rafael J. Wysocki <rjw@rjwysocki.=
+net> wrote:
+>
+> > From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 > >
-
-..
-
-> > +
-> > +       vref_reg =3D devm_regulator_get(&spi->dev, "vref");
+> > There is a problem when a driver requests a shared IRQ line to run
+> > a threaded handler on it without IRQF_ONESHOT set if that flag has
+> > been set already for the IRQ in question by somebody else.  Namely,
+> > the request fails which usually leads to a probe failure even though
+> > the driver might have worked just fine with IRQF_ONESHOT, but it does
+> > not want to use it by default.  Currently, the only way to handle this
+> > is to try to request the IRQ without IRQF_ONESHOT, but with
+> > IRQF_PROBE_SHARED set and if this fails, try again with IRQF_ONESHOT
+> > set.  However, this is a bit cumbersome and not very clean.
+> >
+> > When commit 7a36b901a6eb ("ACPI: OSL: Use a threaded interrupt handler
+> > for SCI") switched over the ACPI subsystem to using a threaded interrup=
+t
+> > handler for the SCI, it had to use IRQF_ONESHOT for it because that's
+> > required due to the way the SCI handler works (it needs to walk all of
+> > the enabled GPEs before IRQ line can be unmasked).  The SCI IRQ line is
+> > not shared with other users very often due to the SCI handling overhead=
+,
+> > but on sone systems it is shared and when the other user of it attempts
+> > to install a threaded handler, a flags mismatch related to IRQF_ONESHOT
+> > may occur.  As it turned out, that happened to the pinctrl-amd driver
+> > and so commit 4451e8e8415e ("pinctrl: amd: Add IRQF_ONESHOT to the
+> > interrupt request") attempted to address the issue by adding
+> > IRQF_ONESHOT to the interrupt flags in that driver, but this is now
+> > causing an IRQF_ONESHOT-related mismatch to occur on another system
+> > which cannot boot as a result of it.
+> >
+> > Clearly, pinctrl-amd can work with IRQF_ONESHOT if need be, but it
+> > should not set that flag by default, so it needs a way to indicate that
+> > to the IRQ subsystem.
+> >
+> > To that end, introdcuce a new interrupt flag, IRQF_COND_ONESHOT, which
+> > will only have effect when the IRQ line is shared and IRQF_ONESHOT has
+> > been set for it already, in which case it will be promoted to the
+> > latter.
+> >
+> > This is sufficient for drivers sharing the IRQ line with the SCI as it
+> > is requested by the ACPI subsystem before any drivers are probed, so
+> > they will always see IRQF_ONESHOT set for the IRQ in question.
+> >
+> > Closes: https://lore.kernel.org/lkml/CAN-StX1HqWqi+YW=3Dt+V52-38Mfp5fAz=
+7YHx4aH-CQjgyNiKx3g@mail.gmail.com/
+> > Fixes: 4451e8e8415e ("pinctrl: amd: Add IRQF_ONESHOT to the interrupt r=
+equest")
+> > Cc: 6.8+ <stable@vger.kernel.org> # 6.8+
+> > Reported-by: Francisco Ayala Le Brun <francisco@videowindow.eu>
+> > Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 >
-> This should to be devm_regulator_get_optional(), otherwise it can
-> return a "dummy" regulator if one is missing in the devicetree which
-> will fail when getting the voltage.
+> > -#if !defined(CONFIG_GENERIC_IRQ_PROBE)
+> > +#if !defined(CONFIG_GENERIC_IRQ_PROBE)
 >
-> > +       if (IS_ERR(vref_reg))
-> > +               return dev_err_probe(&spi->dev, PTR_ERR(vref_reg),
-> > +                                    "Failed to get vref regulator\n");
-> > +
-> > +       ret =3D regulator_enable(vref_reg);
-> > +       if (ret < 0)
-> > +               return dev_err_probe(&spi->dev, ret,
-> > +                                    "Failed to enable voltage regulato=
-r\n");
-> > +
-> > +       ret =3D devm_add_action_or_reset(&spi->dev, ad4000_regulator_di=
-sable, vref_reg);
-> > +       if (ret)
-> > +               return dev_err_probe(&spi->dev, ret,
-> > +                                    "Failed to add regulator disable a=
-ction\n");
-> > +
-> > +       st->vref =3D regulator_get_voltage(vref_reg);
-> > +       if (st->vref < 0)
-> > +               return dev_err_probe(&spi->dev, st->vref, "Failed to ge=
-t vref\n");
-> > +
-> > +       if (!device_property_present(&spi->dev, "adi,spi-cs-mode")) {
-> > +               st->cnv_gpio =3D devm_gpiod_get(&spi->dev, "cnv", GPIOD=
-_OUT_HIGH);
-> > +               if (IS_ERR(st->cnv_gpio)) {
-> > +                       if (PTR_ERR(st->cnv_gpio) =3D=3D -EPROBE_DEFER)
-> > +                               return -EPROBE_DEFER;
-> > +
-> > +                       return dev_err_probe(&spi->dev, PTR_ERR(st->cnv=
-_gpio),
-> > +                                            "Failed to get CNV GPIO");
-> > +               }
-> > +       }
->
+> Is that some whitespace fix? Not that it matters to me, so:
 
-In a review for a different patch, Jonathan said he would prefer
-devm_regulator_get() and failing in regulator_get_voltage() rather
-than using devm_regulator_get_optional() so I think the same would
-apply here and my suggestion should be overruled.
+Well, incidental, but yes (trailing whitespace).  I actually forgot to
+remove this change from the patch before sending it.
+
+> Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+>
+> I expect that Thomas want to apply this one.
+
+Thank you!
 
