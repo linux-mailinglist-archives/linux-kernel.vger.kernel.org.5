@@ -1,118 +1,184 @@
-Return-Path: <linux-kernel+bounces-117608-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-117614-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 72BF588AD1A
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 19:10:24 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 96E4588AD3F
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 19:12:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A4DDC1C3B24B
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 18:10:23 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BAD361C219B6
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 18:12:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7BDE9131189;
-	Mon, 25 Mar 2024 17:32:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C193A133420;
+	Mon, 25 Mar 2024 17:40:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel.com header.i=@intel.com header.b="S7tBN2cy"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.15])
+	dkim=pass (2048-bit key) header.d=ehuk.net header.i=@ehuk.net header.b="qiN0qqHF"
+Received: from james.steelbluetech.co.uk (james.steelbluetech.co.uk [78.40.151.100])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3DABD12FF71;
-	Mon, 25 Mar 2024 17:32:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.15
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F3E59132C0D;
+	Mon, 25 Mar 2024 17:40:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=78.40.151.100
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711387958; cv=none; b=NsG8IVNZJJEUoDSU2lOAn5hG8QZSOcpNu7pZVP1kt/o7Z7YJYLkDEE4O6coWDyWLwy5E1YTTpxcyOJF4nRgzugZZxC1FKB2Rd8926TYwTmBStuzpYdBYVhx/UXYOz7pNf1PA4wuIuLl4ZK03pNt5uh6QVxrcKAF/mBprA8aerO0=
+	t=1711388418; cv=none; b=XPcbQtBvushym7TjgUM5rw4dNF9v0kLbOQmFxjzz7hPpCZQhELPQHnvWUg8aLO0YPfcQqJ0UNJBEmNBlWB1sVIUOp5zhGUp8EAhwsw1E/1nhnDxslLKmJ5RAu2MNuS9A+YQBiRYMkaMv+d3gkJbff+KZVQA7tPtjBCm8UilJsHg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711387958; c=relaxed/simple;
-	bh=EQVMqG03KUhv5BVkLnTVMCLuTRWpG9rrEV770Zk15xI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=YW7fMFKVQ6b/c3OLqpA/w4xSa0nNaMSHUch57rpHjrhEkPkIQR9ltKZYzjTmPFZeSo9K/sZbnaGMp4aWgtxXzs+bcQrsrm37h0Ra92pMsDwAuYRJ+vUVNpF8fL9Uim0VeKjoBlT2MSOWN+hBS+vDuOEwqn+CN9Y+UcYS/JwYDt4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=S7tBN2cy; arc=none smtp.client-ip=192.198.163.15
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1711387957; x=1742923957;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=EQVMqG03KUhv5BVkLnTVMCLuTRWpG9rrEV770Zk15xI=;
-  b=S7tBN2cy4yafXJa2MiWqbtjWrNi2rQtE6kYl2BXpzzT5bMzkG7akZ82d
-   hIt6MPp6tYV7eU/bDWjwT4YBPVXHHqtULZ2IqQDiiMJuwgJFJ1S6Z3c4k
-   Ahy1pIHvkTTwVUJvJXfvxlgu9SKas91+bjqY9wYL1S+g1CTFxo4ORIQWn
-   +BDnLkBBbcF2Qrv1Cz2hnfrrQRdpY7j6vrIwRfTrWR+eOYQXohq2qh3lr
-   n5O8oVdjOu9+HduXh+EjTvQFotYdLWSgQZFfPmOT36mNp4kx+RDl8ljSf
-   rcH6LiBt9Pg+86ZEzFJhgVax5jfT8mVFTRMODM9ClTTKUe22gbFkVpdEG
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11024"; a="6587540"
-X-IronPort-AV: E=Sophos;i="6.07,153,1708416000"; 
-   d="scan'208";a="6587540"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmvoesa109.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Mar 2024 10:32:36 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,11024"; a="914849973"
-X-IronPort-AV: E=Sophos;i="6.07,153,1708416000"; 
-   d="scan'208";a="914849973"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Mar 2024 10:32:34 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.97)
-	(envelope-from <andriy.shevchenko@linux.intel.com>)
-	id 1rooBU-0000000G4B5-0C9G;
-	Mon, 25 Mar 2024 19:32:32 +0200
-Date: Mon, 25 Mar 2024 19:32:31 +0200
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: Mark Brown <broonie@kernel.org>
-Cc: linux-sound@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Liam Girdwood <lgirdwood@gmail.com>,
-	Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-Subject: Re: [PATCH v1 1/1] ASoC: soc-jack: Get rid of legacy GPIO support
-Message-ID: <ZgG1LwVAd1xxqJTg@smile.fi.intel.com>
-References: <20240318202602.182619-1-andriy.shevchenko@linux.intel.com>
- <e6900b97-c1b7-45a5-bc3c-4a4a2745fdf3@sirena.org.uk>
- <ZgGJE0JNAESe5xUf@smile.fi.intel.com>
- <92f1cf44-3228-4eca-b8d3-39057c1150bb@sirena.org.uk>
+	s=arc-20240116; t=1711388418; c=relaxed/simple;
+	bh=smFYDSH9B5YUSASHKg2uLIGlrU36nGJWynip0XRYKPI=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=dqBgecYTgyyPKNr60UnV7Tw0+sYksYTrIBEiaxVH22yJiRAHPx9E3IYoVSGesqGx6r9eEvs0vJElE2wH/AgYpG0buj3n5iupXrSr9X+3nuDfTotMdwMrD02gheH/rLySI923jH0QdcGtsoQFraaNi8m9ML7ty95yUvUiEbBblZ4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ehuk.net; spf=pass smtp.mailfrom=ehuk.net; dkim=pass (2048-bit key) header.d=ehuk.net header.i=@ehuk.net header.b=qiN0qqHF; arc=none smtp.client-ip=78.40.151.100
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ehuk.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ehuk.net
+Received: from [10.0.5.25] (tv.ehuk.net [10.0.5.25])
+	by james.steelbluetech.co.uk (Postfix) with ESMTP id BB093BFC18;
+	Mon, 25 Mar 2024 17:32:42 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.10.3 james.steelbluetech.co.uk BB093BFC18
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ehuk.net; s=default;
+	t=1711387962; bh=jEA45GxcfxPwikJuID7WzQ1xMUTGgZSJQcil0hACI9k=;
+	h=Date:Reply-To:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=qiN0qqHFeISwY8Sr7Bw5ZDZ1UzFARHSWUL9hgVxRlFXNynwWIfNaD7QCctSJPn4YA
+	 D0OlxS85ufFXs9iY3qkWzDmLJDZSUg6iRqSIjGe6y+Lf507qyIQrFSbV9qv2U2Ogm/
+	 WXy17rBbnyluHMPqm80ZmnaVcuhAepO8E+NqUDtkWgaso2wJrL0uW4etdpzyTaMDGo
+	 1LZN7QYfa3h7gxcKxvcO1ogZQajUW1ljLi6QBbS4LmyHeJGyygsMDauMTv7yqSbh5e
+	 DeLSLmXSVlAR6heJXAOfkF7w1+QUp3wkT3/OqUGPiNx30iCZJw0BW4anlaNPsIpfKd
+	 6KW1OfKSZF+pg==
+Message-ID: <30b3729c-d8ab-4254-8cc4-b5ca3bbe1a59@ehuk.net>
+Date: Mon, 25 Mar 2024 17:32:42 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <92f1cf44-3228-4eca-b8d3-39057c1150bb@sirena.org.uk>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+User-Agent: Mozilla Thunderbird
+Reply-To: eddie@ehuk.net
+Subject: Re: [PATCH 6.1 000/451] 6.1.83-rc1 review
+To: Sasha Levin <sashal@kernel.org>, linux-kernel@vger.kernel.org,
+ stable@vger.kernel.org
+Cc: torvalds@linux-foundation.org, akpm@linux-foundation.org,
+ linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+ lkft-triage@lists.linaro.org, florian.fainelli@broadcom.com, pavel@denx.de
+References: <20240324231207.1351418-1-sashal@kernel.org>
+Content-Language: en-GB
+From: Eddie Chapman <eddie@ehuk.net>
+In-Reply-To: <20240324231207.1351418-1-sashal@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang
 
-On Mon, Mar 25, 2024 at 05:22:55PM +0000, Mark Brown wrote:
-> On Mon, Mar 25, 2024 at 04:24:19PM +0200, Andy Shevchenko wrote:
-> > On Mon, Mar 25, 2024 at 02:16:15PM +0000, Mark Brown wrote:
-> > > On Mon, Mar 18, 2024 at 10:25:16PM +0200, Andy Shevchenko wrote:
-
-..
-
-> > > > If I am not mistaken, after
-> > > > https://lore.kernel.org/r/20240318200804.181516-1-andriy.shevchenko@linux.intel.com
-> > > > there is no more users. Hence the above is the only dependency.
+On 24/03/2024 23:04, Sasha Levin wrote:
 > 
-> > > You are mistaken, please try compile tests:
-
-..
-
-> > > (this is among other things in x86 allmodconfig).
+> This is the start of the stable review cycle for the 6.1.83 release.
+> There are 451 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 > 
-> > I usually enable the particular drivers and I have compile tested this,
-> > but indeed, I haven't enabled _all_ modules.
+> Responses should be made by Tue Mar 26 11:11:59 PM UTC 2024.
+> Anything received after that time might be too late.
 > 
-> > Thank you for the pointing out.
+> The whole patch series can be found in one patch at:
+>          https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git/patch/?id=linux-6.1.y&id2=v6.1.82
+> or in the git tree and branch at:
+>          git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.1.y
+> and the diffstat can be found below.
 > 
-> Especially if you're doing this sort of "I think I got everything" type
-> change it's sensible to do at least one allmodconfig build, it won't get
-> everything but it'll catch a lot.
+> Thanks,
+> Sasha
 
-True, as even `git grep` output can be misinterpreted and some occurrences
-may disappear from the sight.
+Greg & Sasha, thanks for all your hard work.
 
--- 
-With Best Regards,
-Andy Shevchenko
+Just to report I upgraded eight x86-64 machines from a 5.15.x kernel to 
+6.1.82 plus all patches in the stable queue as of Saturday 23rd March 
+11pm GMT. That's the vast majority of this series as Greg & Sasha have 
+dropped a dozen or so and added 68 new since I built my kernel. Ha ha 
+what fun living on the edge :-)
 
+All are running fine 24+ hrs later, no noticeable issues, nothing 
+untoward in dmesg.
 
+They are:
+6 x custom AMD Ryzen servers
+1 x Intel IvyBridge era server
+1 x Intel Skylake era laptop
+
+All running various workloads and with a mixture of addon 
+network/sas/sata/graphics cards from a variety of manufacturers. Some 
+uefi booted, some bios booted.
+
+Also zero warnings in the build output using gcc 13.2.1.
+
+Just to be clear, the 68 patches listed below, which are in this series, 
+were NOT in the kernel I tested.
+
+Eddie
+
+arm64-dts-broadcom-bcmbca-bcm4908-drop-invalid-switc.patch
+asoc-rockchip-i2s-tdm-fix-inaccurate-sampling-rates.patch
+bpf-report-rcu-qs-in-cpumap-kthread.patch
+comedi-comedi_test-prevent-timers-rescheduling-during-deletion.patch
+dm-address-indent-space-issues.patch
+dm-integrity-align-the-outgoing-bio-in-integrity_rec.patch
+dm-integrity-fix-a-memory-leak-when-rechecking-the-d.patch
+dm-io-support-io-priority.patch
+drm-fix-drm_fixp2int_round-making-it-add-0.5.patch
+hsr-fix-uninit-value-access-in-hsr_get_node.patch
+hsr-handle-failures-in-module-init.patch
+hwtracing-hisi_ptt-move-type-check-to-the-beginning-.patch
+ipv4-raw-fix-sending-packets-from-raw-sockets-via-ip.patch
+kconfig-fix-infinite-loop-when-expanding-a-macro-at-.patch
+net-bnx2x-prevent-access-to-a-freed-page-in-page_poo.patch
+net-dsa-mt7530-fix-handling-of-all-link-local-frames.patch
+net-dsa-mt7530-fix-link-local-frames-that-ingress-vl.patch
+net-dsa-mt7530-prevent-possible-incorrect-xtal-frequ.patch
+net-ethernet-mtk_eth_soc-fix-ppe-hanging-issue.patch
+net-mediatek-mtk_eth_soc-clear-mac_mcr_force_link-on.patch
+net-octeontx2-use-alloc_ordered_workqueue-to-create-.patch
+net-phy-fix-phy_read_poll_timeout-argument-type-in-g.patch
+net-report-rcu-qs-on-threaded-napi-repolling.patch
+net-sched-taprio-proper-tca_taprio_tc_entry_index-ch.patch
+net-veth-do-not-manipulate-gro-when-using-xdp.patch
+netfilter-nf_tables-do-not-compare-internal-table-fl.patch
+netfilter-nft_set_pipapo-release-elements-in-clone-o.patch
+nouveau-reset-the-bo-resource-bus-info-after-an-evic.patch
+nvme-add-the-apple-shared-tag-workaround-to-nvme_all.patch
+nvme-fix-reconnection-fail-due-to-reserved-tag-alloc.patch
+nvme-only-set-reserved_tags-in-nvme_alloc_io_tag_set.patch
+octeontx2-af-add-mbox-for-cpt-lf-reset.patch
+octeontx2-af-add-mbox-to-return-cpt_af_flt_int-info.patch
+octeontx2-af-optimize-cpt-pf-identification.patch
+octeontx2-af-recover-cpt-engine-when-it-gets-fault.patch
+octeontx2-af-use-matching-wake_up-api-variant-in-cgx.patch
+octeontx2-af-use-separate-handlers-for-interrupts.patch
+octeontx2-detect-the-mbox-up-or-down-message-via-reg.patch
+octeontx2-pf-send-up-messages-to-vf-only-when-vf-is-.patch
+octeontx2-pf-use-default-max_active-works-instead-of.patch
+packet-annotate-data-races-around-ignore_outgoing.patch
+rcu-add-a-helper-to-report-consolidated-flavor-qs.patch
+rds-introduce-acquire-release-ordering-in-acquire-re.patch
+rds-tcp-fix-use-after-free-of-net-in-reqsk_timer_han.patch
+remoteproc-stm32-fix-incorrect-optional-pointers.patch
+remoteproc-stm32-fix-incorrect-type-assignment-retur.patch
+remoteproc-stm32-fix-incorrect-type-in-assignment-fo.patch
+remoteproc-stm32-use-correct-format-strings-on-64-bi.patch
+rtc-mt6397-select-irq_domain-instead-of-depending-on.patch
+s390-vtime-fix-average-steal-time-calculation.patch
+sched-fair-take-the-scheduling-domain-into-account-i.patch
+selftests-forwarding-fix-ping-failure-due-to-short-t.patch
+serial-8250_exar-don-t-remove-gpio-device-on-suspend.patch
+serial-max310x-fix-syntax-error-in-irq-error-message.patch
+soc-fsl-dpio-fix-kcalloc-argument-order.patch
+spi-spi-mt65xx-fix-null-pointer-access-in-interrupt-.patch
+staging-greybus-fix-get_channel_from_mode-failure-pa.patch
+tcp-fix-new_syn_recv-handling-in-inet_twsk_purge.patch
+tcp-fix-refcnt-handling-in-__inet_hash_connect.patch
+tty-serial-samsung-fix-tx_empty-to-return-tiocser_te.patch
+tty-vt-fix-20-vs-0x20-typo-in-escsiignore.patch
+usb-gadget-net2272-use-irqflags-in-the-call-to-net22.patch
+usb-phy-generic-get-the-vbus-supply.patch
+vdpa-mlx5-allow-cvq-size-changes.patch
+vdpa_sim-reset-must-not-run.patch
+wireguard-receive-annotate-data-race-around-receivin.patch
+x86-efistub-clear-decompressor-bss-in-native-efi-ent.patch
+x86-efistub-don-t-clear-bss-twice-in-mixed-mode.patch
 
