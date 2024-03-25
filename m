@@ -1,170 +1,95 @@
-Return-Path: <linux-kernel+bounces-117794-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-117795-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id F214288AFA0
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 20:17:02 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1322988AFA3
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 20:17:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 64C9E1F64B81
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 19:17:02 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 44E761C36C16
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 19:17:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 87F1D14A9D;
-	Mon, 25 Mar 2024 19:16:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 962771BC23;
+	Mon, 25 Mar 2024 19:16:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="QIudOJ9I";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="S1J3EIl0";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="Cj2ypcyX";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="x2SsD2Mn"
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="FI8o9x9n"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 133661773A;
-	Mon, 25 Mar 2024 19:16:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CE40818C08;
+	Mon, 25 Mar 2024 19:16:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711394213; cv=none; b=VOryPVqdI0WRKTUOt0gF1u7Kb+yS1sTkobctd1ufseGJyVQOB3NH8XYfDVVYHADLwpX5M2132IJMYzJ6IspWaTpCsINghGxlqs6IARM/kGAa0I9K1V614KYZ9cEgOLa4Rl/75PUe441pBRw5j3ApUmV9Nyy4XM700GzZ58HLqbs=
+	t=1711394215; cv=none; b=Hs9c70/9Old4FjGDRvYg1uNmzt88CKsfC9KQeiRC0nlRYkpS/U20QGU1RZVdnDVej1/jWRF9Yfv1jGFfYjeu/Dp1SM9FhALKXn2HKOQTMW7dRaEboMN694RSi2APn84ciHI1si8/Od3dsPgnUleo2ixHn20Rhfn7qZtOWnbgP/I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711394213; c=relaxed/simple;
-	bh=FS/JzakntYFsXIiZNXo/X5qSz+O9mZ/aKMbnCCtBXkg=;
+	s=arc-20240116; t=1711394215; c=relaxed/simple;
+	bh=xQjXWR78w6LFX6c6u9rSvz6lq+JxeI4vUXLcsqqJueo=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=E/OK8ApbVKYwveYQhHWMrRw8De4tG25vxCSlTrGBtUnhaENqhkzSJfbIG34VAAZQbLwGPeJisL/O1O2xpvG14SS26HO37LJh8q0CvcWdpE0ekb+ILlZx6dQ4spg2PZ7vxqJ9LdyGx3w4A95G0LYzjIJgvnBFOoLnzPe9mPAvxTs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=QIudOJ9I; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=S1J3EIl0; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=Cj2ypcyX; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=x2SsD2Mn; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 166015CABF;
-	Mon, 25 Mar 2024 19:16:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1711394210; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=8uEgl58apLNyzovccmMCRU9q170bGqNSFjc+5DQd8mo=;
-	b=QIudOJ9IA5Gyl9TJng1RsA5V+AH0AQVVu8gB3SmTqRzaYk4hFUzwcHOSyvOlEJmTecbiuf
-	qF23SN152RkBZ1ra7oFZlxsXEtC/0XazsSujTQwwIEH0/BkYZ4TJqWpEQIWyMUfLv+A2UZ
-	CvFqdkAfphiN2HXM85I9uR/PnDOta08=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1711394210;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=8uEgl58apLNyzovccmMCRU9q170bGqNSFjc+5DQd8mo=;
-	b=S1J3EIl0sQI9g5hv1Ggc6IfxpR+2zSp9tAB+R/iVR7jliAskC/bjd6YBU3L4PgXaaHWvel
-	DEphlMEDgNaNuUBA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1711394209; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=8uEgl58apLNyzovccmMCRU9q170bGqNSFjc+5DQd8mo=;
-	b=Cj2ypcyXMUs8QcS4hsS1TLkYl5BWPYmVxXdmS6JyA7i+8wQuTtWMybl0WvBl+zmPG3HEYe
-	3eOeUhl2hPjh96Aq9XuNZO7Do9gDcvkMar9sJH/y4aJYK4IVSMK7o+Gxt2NwoFYAeOWi1p
-	CLUqMuniDPrYHcq7/HclaTZ6rSkqvhA=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1711394209;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=8uEgl58apLNyzovccmMCRU9q170bGqNSFjc+5DQd8mo=;
-	b=x2SsD2MnxX89ObKQ/1JOjZDAPzG2bLS9N4uzex3BYpgFo0cWyIHobMhooGiD5ftA/ELs1q
-	kbww13Zq3d1DLSBA==
-Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id F1A9013A2E;
-	Mon, 25 Mar 2024 19:16:48 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap2.dmz-prg2.suse.org with ESMTPSA
-	id qVC7OqDNAWaLZwAAn2gu4w
-	(envelope-from <jack@suse.cz>); Mon, 25 Mar 2024 19:16:48 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id CE0F1A0812; Mon, 25 Mar 2024 20:16:45 +0100 (CET)
-Date: Mon, 25 Mar 2024 20:16:45 +0100
-From: Jan Kara <jack@suse.cz>
-To: Nikita Kiryushin <kiryushin@ancud.ru>
-Cc: Jan Kara <jack@suse.cz>, Amir Goldstein <amir73il@gmail.com>,
-	Matthew Bobrowski <repnop@google.com>,
-	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-	lvc-project@linuxtesting.org
-Subject: Re: [PATCH] fanotify: remove unneeded sub-zero check for unsigned
- value
-Message-ID: <20240325191645.viuo2f2zujx67ec6@quack3>
-References: <>
- <d296ff1c-dcf7-4813-994b-3c4369debb7d@ancud.ru>
+	 Content-Type:Content-Disposition:In-Reply-To; b=BOayrx05W/SPj0hBiH0Tp7vEDqnXLINW1LBQ8w8O/Pgzw1IBzTHvAIKZ5jotE76AmCNRn15VIbEsyNOsH+IVF/YQfZtXFFpiGaG21jcl3EtWjwZ6c5zE8t5kIAANQlFSSVm171Iasp/gSSWs+bSpfXi5ESixO5+oM8+2z2v9UeE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=FI8o9x9n; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7339DC433C7;
+	Mon, 25 Mar 2024 19:16:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1711394215;
+	bh=xQjXWR78w6LFX6c6u9rSvz6lq+JxeI4vUXLcsqqJueo=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=FI8o9x9nCSGsHEuYt4a6eVqrgrLtd8pqD5SKquNq05RgsxNX+cMZVqSgjam+3dQT6
+	 13nS3odq6JkqLTwkRYfvgb4ITtiwq70LKvYT+amYgB3ewFtuudAUBEBh0WGSXo5r4E
+	 5knsSkih7udFBuIgfkilrnmAtxhUdsrove0+TcyPGgRbnXAoyOAYi+YKkd5oSBzr3y
+	 r6XBKKC0qufuepLF24PTx11qHEDspQXYKBASWo4V38GVgaUAMRzPgssv+Ko4xQp2CE
+	 AEJ6qrb3kemhQELSxjbOR8T2UqIcQic+aMcHrE6Fn9NfaNvLqR2UAzBsxTK/uUuN49
+	 xypzMWQpNFhZA==
+Date: Mon, 25 Mar 2024 19:16:50 +0000
+From: Conor Dooley <conor@kernel.org>
+To: Andreas Kemnade <andreas@kemnade.info>
+Cc: dmitry.torokhov@gmail.com, robh+dt@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+	o.rempel@pengutronix.de, dario.binacchi@amarulasolutions.com,
+	u.kleine-koenig@pengutronix.de, hdegoede@redhat.com,
+	p.puschmann@pironex.com, linux-input@vger.kernel.org,
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+	caleb.connolly@linaro.org
+Subject: Re: [PATCH 0/2] Input: add ft5426
+Message-ID: <20240325-cuddle-vivacious-c0fc010bdd1a@spud>
+References: <20240324184415.206587-1-andreas@kemnade.info>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="oF12n2TDHAfViFUe"
+Content-Disposition: inline
+In-Reply-To: <20240324184415.206587-1-andreas@kemnade.info>
+
+
+--oF12n2TDHAfViFUe
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <d296ff1c-dcf7-4813-994b-3c4369debb7d@ancud.ru>
-X-Spam-Score: -0.82
-X-Spamd-Result: default: False [-0.82 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 NEURAL_HAM_SHORT(-0.20)[-1.000];
-	 RCPT_COUNT_SEVEN(0.00)[7];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[linuxtesting.org:url,suse.com:email,ancud.ru:email];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 MID_RHS_NOT_FQDN(0.50)[];
-	 FREEMAIL_CC(0.00)[suse.cz,gmail.com,google.com,vger.kernel.org,linuxtesting.org];
-	 RCVD_TLS_ALL(0.00)[];
-	 BAYES_HAM(-0.02)[54.71%]
-X-Spam-Level: 
-Authentication-Results: smtp-out2.suse.de;
-	none
-X-Spam-Flag: NO
+Content-Transfer-Encoding: quoted-printable
 
-On Thu 14-03-24 16:36:56, Nikita Kiryushin wrote:
-> 
-> Unsigned size_t len in copy_fid_info_to_user is checked
-> for negative value. This check is redundant as it is
-> always false.
-> 
-> Found by Linux Verification Center (linuxtesting.org) with SVACE.
-> 
-> Fixes: 5e469c830fdb ("fanotify: copy event fid info to user")
-> Signed-off-by: Nikita Kiryushin <kiryushin@ancud.ru>
+On Sun, Mar 24, 2024 at 07:44:13PM +0100, Andreas Kemnade wrote:
+> Add ft5426 touchscreen controller and the corresponding compatible.
+>=20
+> Andreas Kemnade (2):
+>   dt-bindings: input: touchscreen: edt-ft5x06: Add ft5426
+>   Input: edt-ft5x06 - add ft5426
 
-Looks good. Added to my tree. Thanks!
+I think something got messed up, I only got the cover and 2/2, no 1/2:
+https://lore.kernel.org/all/20240324184415.206587-1-andreas@kemnade.info/
 
-								Honza
+--oF12n2TDHAfViFUe
+Content-Type: application/pgp-signature; name="signature.asc"
 
-> ---
->  fs/notify/fanotify/fanotify_user.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/fs/notify/fanotify/fanotify_user.c b/fs/notify/fanotify/fanotify_user.c
-> index fbdc63cc10d9..4201723357cf 100644
-> --- a/fs/notify/fanotify/fanotify_user.c
-> +++ b/fs/notify/fanotify/fanotify_user.c
-> @@ -502,7 +502,7 @@ static int copy_fid_info_to_user(__kernel_fsid_t *fsid, struct fanotify_fh *fh,
->  	}
->  	/* Pad with 0's */
-> -	WARN_ON_ONCE(len < 0 || len >= FANOTIFY_EVENT_ALIGN);
-> +	WARN_ON_ONCE(len >= FANOTIFY_EVENT_ALIGN);
->  	if (len > 0 && clear_user(buf, len))
->  		return -EFAULT;
-> -- 
-> 2.34.1
-> 
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZgHNogAKCRB4tDGHoIJi
+0v9PAQDZ/28eIpsPGkkAS3vbjS6u0QFJ8N/Y0dXUis3DoZ1XYgEAxpWKQS/w0gOW
+lOGmBkEpv23ksVAZDGoWTdHS4w5W+wM=
+=uCyX
+-----END PGP SIGNATURE-----
+
+--oF12n2TDHAfViFUe--
 
