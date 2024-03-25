@@ -1,156 +1,117 @@
-Return-Path: <linux-kernel+bounces-117769-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-117767-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BB10688AF63
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 20:06:40 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6B10B88AF52
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 20:06:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E37151C34364
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 19:06:39 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9CF4B1C616F3
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 19:05:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AE6831CA9C;
-	Mon, 25 Mar 2024 19:05:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AA0ABD52F;
+	Mon, 25 Mar 2024 19:05:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=igalia.com header.i=@igalia.com header.b="KrsZ3Dg+"
-Received: from fanzine2.igalia.com (fanzine2.igalia.com [213.97.179.56])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="k/JFiSKo"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 62E221C290;
-	Mon, 25 Mar 2024 19:05:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.97.179.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D6CFD4A33;
+	Mon, 25 Mar 2024 19:05:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711393538; cv=none; b=JNG4+w0vDsHhYeqtLJGM3URRTg9lrI7ks4FwDdcxj0vEeZHMs9KK2JuOw9uq2igw8/wme/AP0s0PA1iVYxkY7GdIkE/fQbkDWAmkX887KeiZdamXhwTWSQeMNZMaRK84/SbN4s1lOpu7HbGgbofSUlsUuxRe+onWaIAWQqV5knw=
+	t=1711393523; cv=none; b=Cxdg35NXqJNyjNQIf/g/UklVciOLlWQkn6y9jtYjR7Yafy+rn12XhzlFm3tgOhOMYEBQqGckx153vS1xavCl8amsacgLSiA50yymaA7xMk47+B6dIhiSQasmIOaU6ZXYP7U7RWrZ/fBSLW4ozTXh0bfXQmUfCnNxuT8CIygSe7A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711393538; c=relaxed/simple;
-	bh=2naQ2zIwUDbAjnJ5fx8ylGGomTwmKBGC8b+4Kf4kgXw=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=ZKKwoXze11LAMBjxdcLVzxmfnYhIqJTKwRHRZTMtMLs5WArJ/m8wBv1TmosY7rRV2q5rQJ70apWVJoBkZFO5G/ZhrSkPJfdNjmMAdB7sA5OaCQnP/4pFCjYkgu1sZnn0cak1RdkTGJLw81Ezo/syNiCbRXO7Kmmc0C+YDy6LjEk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=igalia.com; spf=pass smtp.mailfrom=igalia.com; dkim=pass (2048-bit key) header.d=igalia.com header.i=@igalia.com header.b=KrsZ3Dg+; arc=none smtp.client-ip=213.97.179.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=igalia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=igalia.com
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=igalia.com;
-	s=20170329; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:From:
-	References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender:Reply-To:
-	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-	Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
-	List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=/cOCj+3wz4G6mk7yJiOWKe+zWsog28msEXqYEYYF/PM=; b=KrsZ3Dg+BwR2PxtUZN7tRdXRM/
-	hzD6VT43T4jmCbBOlQa33Sar4qRrk34fr3Gcfdp4NQWyMpNKX4DH6J6albLyamFGb2CGEiZOtE5rW
-	nfLSP5bRkADNvscY10NWmVllXMUJQDKsyuMyDODwaUtYaCGTGsGnQon7XaddORjvYOehlVXeE6sfa
-	n/bIrGl+ZGAr/bWkdry+5ZKkzUgSzgmqpPyWvxvxDDYmJrN43CkrvCrpPuNbz7XsoF5Y7Liw6IIBe
-	NgZRaSze46IWt9cBigdGv5ZmmlmhThf/TXsUVgjI26u4CbbOLSlCdcwSS/EtJiOUe4764vjuRvM+Q
-	SpYZMTlA==;
-Received: from [177.34.169.255] (helo=[192.168.0.139])
-	by fanzine2.igalia.com with esmtpsa 
-	(Cipher TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_128_GCM:128) (Exim)
-	id 1ropdK-00FBOo-Kv; Mon, 25 Mar 2024 20:05:23 +0100
-Message-ID: <0729b218-53f1-4139-b165-a324794a9abd@igalia.com>
-Date: Mon, 25 Mar 2024 16:05:06 -0300
+	s=arc-20240116; t=1711393523; c=relaxed/simple;
+	bh=imG8xgxcPx30/lu9EJ3K96nuumxUx7F7pd9ZvWzDEV0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=AEAKLqGBauc9Zk1VdWd4yemX1PnQNPiuovxDO+GXmPgmo5iP0WCLHXZmmGSX44f6WYyKhXXCuYc0VW9xg5ymwbyUtEWpydeKSSe/hdeyl+g5D/qLQq/itGAiLpMGQRaKQVHudDyUvnynp/rARmIyEDYxudpWOFmo3kg8HZXnde4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=k/JFiSKo; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2D8B2C433C7;
+	Mon, 25 Mar 2024 19:05:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1711393522;
+	bh=imG8xgxcPx30/lu9EJ3K96nuumxUx7F7pd9ZvWzDEV0=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=k/JFiSKoWsiSp0ACzCjFZpKAiiw5bw7e7o0gffKtyrp1Le6QiasdS2VMaw+dcPEyW
+	 i6CaFyzqAXBBahSk6mspmgg46bbIGM4MCYXc429wnHJsrBJf8ldSMv142nAt7LqTp2
+	 nstYltr3iAz++qCRZNwwYQ/0abtHsXWl5MiV00lbBAmXKunyLMTO8J62i57htp3gMf
+	 tcaDwv/CDNkb7B9TYayQefSi06TQqYyttqRurO2//9biidVQNxr+ESbD+4za11wlmz
+	 eKjw7bNqRm4jNM2BzfYfTdi0OLYbfQkenWiTqEzIPqaOd0YHogecZDiq+TJgT+QsB9
+	 3GGkejg4dZBgQ==
+Date: Mon, 25 Mar 2024 19:05:18 +0000
+From: Conor Dooley <conor@kernel.org>
+To: Jonathan Cameron <jic23@kernel.org>
+Cc: Javier Carrasco <javier.carrasco.cruz@gmail.com>,
+	Lars-Peter Clausen <lars@metafoo.de>, Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Matt Ranostay <matt@ranostay.sg>,
+	Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+	linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] dt-bindings: iio: health: maxim,max30102: fix compatible
+ check
+Message-ID: <20240325-partake-nearby-4e129032a347@spud>
+References: <20240316-max30102_binding_fix-v1-1-e8e58f69ef8a@gmail.com>
+ <20240317-bakery-numeric-a34b928efa6d@spud>
+ <20240324110715.0832e6d6@jic23-huawei>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 05/14] drm: Suppress intentional warning backtraces in
- scaling unit tests
-To: Guenter Roeck <linux@roeck-us.net>, linux-kselftest@vger.kernel.org
-Cc: David Airlie <airlied@gmail.com>, Arnd Bergmann <arnd@arndb.de>,
- Dan Carpenter <dan.carpenter@linaro.org>, Kees Cook <keescook@chromium.org>,
- Daniel Diaz <daniel.diaz@linaro.org>, David Gow <davidgow@google.com>,
- Arthur Grillo <arthurgrillo@riseup.net>,
- Brendan Higgins <brendan.higgins@linux.dev>,
- Naresh Kamboju <naresh.kamboju@linaro.org>,
- Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
- Andrew Morton <akpm@linux-foundation.org>, Maxime Ripard
- <mripard@kernel.org>, =?UTF-8?B?VmlsbGUgU3lyasOkbMOk?=
- <ville.syrjala@linux.intel.com>, Daniel Vetter <daniel@ffwll.ch>,
- Thomas Zimmermann <tzimmermann@suse.de>, dri-devel@lists.freedesktop.org,
- kunit-dev@googlegroups.com, linux-arch@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-doc@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org,
- linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
- linux-s390@vger.kernel.org, linux-sh@vger.kernel.org,
- loongarch@lists.linux.dev, netdev@vger.kernel.org,
- Linux Kernel Functional Testing <lkft@linaro.org>
-References: <20240325175248.1499046-1-linux@roeck-us.net>
- <20240325175248.1499046-6-linux@roeck-us.net>
-Content-Language: en-US
-From: =?UTF-8?Q?Ma=C3=ADra_Canal?= <mcanal@igalia.com>
-Autocrypt: addr=mcanal@igalia.com; keydata=
- xjMEZIsaeRYJKwYBBAHaRw8BAQdAGU6aY8oojw61KS5rGGMrlcilFqR6p6ID45IZ6ovX0h3N
- H01haXJhIENhbmFsIDxtY2FuYWxAaWdhbGlhLmNvbT7CjwQTFggANxYhBDMCqFtIvFKVRJZQ
- hDSPnHLaGFVuBQJkixp5BQkFo5qAAhsDBAsJCAcFFQgJCgsFFgIDAQAACgkQNI+cctoYVW5u
- GAEAwpaC5rI3wD8zqETKwGVoXd6+AbmGfZuVD40xepy7z/8BAM5w95/oyPsHUqOsg/xUTlNp
- rlbhA+WWoaOXA3XgR+wCzjgEZIsaeRIKKwYBBAGXVQEFAQEHQGoOK0jgh0IorMAacx6WUUWb
- s3RLiJYWUU6iNrk5wWUbAwEIB8J+BBgWCAAmFiEEMwKoW0i8UpVEllCENI+cctoYVW4FAmSL
- GnkFCQWjmoACGwwACgkQNI+cctoYVW6cqwD/Q9R98msvkhgRvi18fzUPFDwwogn+F+gQJJ6o
- pwpgFkAA/R2zOfla3IT6G3SBoV5ucdpdCpnIXFpQLbmfHK7dXsAC
-In-Reply-To: <20240325175248.1499046-6-linux@roeck-us.net>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="SaQXNpdG6TnkXA9f"
+Content-Disposition: inline
+In-Reply-To: <20240324110715.0832e6d6@jic23-huawei>
 
-Hi Guenter,
 
-On 3/25/24 14:52, Guenter Roeck wrote:
-> The drm_test_rect_calc_hscale and drm_test_rect_calc_vscale unit tests
-> intentionally trigger warning backtraces by providing bad parameters to
-> the tested functions. What is tested is the return value, not the existence
-> of a warning backtrace. Suppress the backtraces to avoid clogging the
-> kernel log.
-> 
-> Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
-> Acked-by: Dan Carpenter <dan.carpenter@linaro.org>
-> Signed-off-by: Guenter Roeck <linux@roeck-us.net>
-> ---
-> - Rebased to v6.9-rc1
-> - Added Tested-by:, Acked-by:, and Reviewed-by: tags
-> 
->   drivers/gpu/drm/tests/drm_rect_test.c | 6 ++++++
->   1 file changed, 6 insertions(+)
-> 
-> diff --git a/drivers/gpu/drm/tests/drm_rect_test.c b/drivers/gpu/drm/tests/drm_rect_test.c
-> index 76332cd2ead8..75614cb4deb5 100644
-> --- a/drivers/gpu/drm/tests/drm_rect_test.c
-> +++ b/drivers/gpu/drm/tests/drm_rect_test.c
-> @@ -406,22 +406,28 @@ KUNIT_ARRAY_PARAM(drm_rect_scale, drm_rect_scale_cases, drm_rect_scale_case_desc
->   
->   static void drm_test_rect_calc_hscale(struct kunit *test)
->   {
-> +	DEFINE_SUPPRESSED_WARNING(drm_calc_scale);
->   	const struct drm_rect_scale_case *params = test->param_value;
->   	int scaling_factor;
->   
-> +	START_SUPPRESSED_WARNING(drm_calc_scale);
+--SaQXNpdG6TnkXA9f
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-I'm not sure if it is not that obvious only to me, but it would be nice
-to have a comment here, remembering that we provide bad parameters in
-some test cases.
+On Sun, Mar 24, 2024 at 11:07:15AM +0000, Jonathan Cameron wrote:
+> On Sun, 17 Mar 2024 14:37:39 +0000
+> Conor Dooley <conor@kernel.org> wrote:
+>=20
+> > On Sat, Mar 16, 2024 at 11:56:57PM +0100, Javier Carrasco wrote:
+> > > The "maxim,green-led-current-microamp" property is only available for
+> > > the max30105 part (it provides an extra green LED), and must be set to
+> > > false for the max30102 part.
+> > >=20
+> > > Instead, the max30100 part has been used for that, which is not
+> > > supported by this binding (it has its own binding).
+> > >=20
+> > > This error was introduced during the txt to yaml conversion.
+> > >=20
+> > > Fixes: 5a6a65b11e3a ("dt-bindings:iio:health:maxim,max30102: txt to y=
+aml conversion")
+> > > Signed-off-by: Javier Carrasco <javier.carrasco.cruz@gmail.com> =20
+> >=20
+> > Acked-by: Conor Dooley <conor.dooley@microchip.com>
+> Applied to the fixes-togreg branch of iio.git (which I'll rebase on rc1 o=
+nce available)
+> and marked for stable.  Not really a critical thing to backport, but mayb=
+e it is worth
+> doing as risk is very low
 
-Best Regards,
-- Maíra
+Yeah, I figure stuff like this is worth just backporting in case someone
+is using a stable tree to add some new board.
 
->   	scaling_factor = drm_rect_calc_hscale(&params->src, &params->dst,
->   					      params->min_range, params->max_range);
-> +	END_SUPPRESSED_WARNING(drm_calc_scale);
->   
->   	KUNIT_EXPECT_EQ(test, scaling_factor, params->expected_scaling_factor);
->   }
->   
->   static void drm_test_rect_calc_vscale(struct kunit *test)
->   {
-> +	DEFINE_SUPPRESSED_WARNING(drm_calc_scale);
->   	const struct drm_rect_scale_case *params = test->param_value;
->   	int scaling_factor;
->   
-> +	START_SUPPRESSED_WARNING(drm_calc_scale);
->   	scaling_factor = drm_rect_calc_vscale(&params->src, &params->dst,
->   					      params->min_range, params->max_range);
-> +	END_SUPPRESSED_WARNING(drm_calc_scale);
->   
->   	KUNIT_EXPECT_EQ(test, scaling_factor, params->expected_scaling_factor);
->   }
+--SaQXNpdG6TnkXA9f
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZgHK7QAKCRB4tDGHoIJi
+0sjGAP4q/vqH88hSy9HXL/nd2BnMWzzYbl8iHBLAShDeoazxqQD/c/M5csTskIJh
+JJU63H9Qfuj0zPvcDluLcbuq9eVSnQc=
+=XyhC
+-----END PGP SIGNATURE-----
+
+--SaQXNpdG6TnkXA9f--
 
