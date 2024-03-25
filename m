@@ -1,114 +1,90 @@
-Return-Path: <linux-kernel+bounces-117017-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-117018-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 934F688A633
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 16:19:32 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 79C2F88AC5C
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 18:50:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4F4B02A5EBB
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 15:19:31 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 13C44B61E01
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 15:20:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B6C70157462;
-	Mon, 25 Mar 2024 12:35:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9B003157E92;
+	Mon, 25 Mar 2024 12:35:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="meT28BSM"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.12])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="bMJgBwGa"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 607C8156669;
-	Mon, 25 Mar 2024 12:35:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.12
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D5592157483;
+	Mon, 25 Mar 2024 12:35:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711370102; cv=none; b=XAglHPtgYw7zVIkczpU+mgdKekhOE8zhrhbaitr74x6hHeuou6gqJVdGkrPfonSIUFAusoO5ybOvpe5WqSLnPNjhpyZXGMLJfibcxuu5tywB4d7u9g5xmpIm17varEJDoOVa6rx9aRvg8OXJV61FJp4omOKxM2xtsJUmRzH27dY=
+	t=1711370120; cv=none; b=Y0JecdNQPhw8PlSozoXfq0cwJPSJYtd3fYJuWTne8p4Qb/r1UWrjoa54iuA+Jueg81G9zr+KbmPBZao99LucMlINHvkxY+9tzIN3X8Utf2jl5MKy6ko2UKtxzfC+tNEcfyjvurr0jN1A1vbaZQ3biMCYrlRCh+OmrWiZLCoy/lk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711370102; c=relaxed/simple;
-	bh=6jzjiwrkhrrxiOb3ouQm9/gN7kt04YtLniYwKlTluek=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:Cc:From:
-	 In-Reply-To:Content-Type; b=fNfM/HWZmJj7ltEr1HJE6UgsiNfIqo0JE6qXgrBcXcS0v0EKO7jgXt++mfs0spP8COdCuCBuaNccHgBkSCfkxYnKKP8ANu6yQ8Cxo72xVO7P7ZmgoozUzGyyo/Sg6BgBQLR0Uma+pHPD08my6ZYTgTM728SsK5WtMbMAEzAh7m0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=meT28BSM; arc=none smtp.client-ip=192.198.163.12
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1711370100; x=1742906100;
-  h=message-id:date:mime-version:subject:to:references:cc:
-   from:in-reply-to:content-transfer-encoding;
-  bh=6jzjiwrkhrrxiOb3ouQm9/gN7kt04YtLniYwKlTluek=;
-  b=meT28BSM18Q5CeqZIYtu9mWAq3MfHi6+rVVaqz1DPzkIq3liaJn3P1nk
-   lVozH64N2x/0psEQgAfOFmvF3e+zH4/DTzZa5J5YU/rVSTzLrUfNefPTe
-   dZVn1qfkyutYbO2Ki1kqY2fgWyxsSU9zzNEGyyHZAI8sMBo5yNoXu10lW
-   Sm4T7w64g6350vGEibsVq1GtaPeTfFSM8fGikouNS7VRcsyhtbewvPC+G
-   MeVcUrLnEMw2QsUeRaaFuFBxCM9x4MC/alv9yQ/Rk7DCnCEo37hTU6gJv
-   BkyY4/xA0BUjxmkaXomk7MlO2Zg/X45Laz+QtIS39Gr2C2oBYiFku/oLM
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11023"; a="10139987"
-X-IronPort-AV: E=Sophos;i="6.07,153,1708416000"; 
-   d="scan'208";a="10139987"
-Received: from orviesa008.jf.intel.com ([10.64.159.148])
-  by fmvoesa106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Mar 2024 05:34:59 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,153,1708416000"; 
-   d="scan'208";a="16268554"
-Received: from aslawinx-mobl.ger.corp.intel.com (HELO [10.94.0.53]) ([10.94.0.53])
-  by orviesa008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Mar 2024 05:34:54 -0700
-Message-ID: <3edd5823-bf54-4898-bcee-e1628c863388@linux.intel.com>
-Date: Mon, 25 Mar 2024 13:34:51 +0100
+	s=arc-20240116; t=1711370120; c=relaxed/simple;
+	bh=FKQQG0pq2Od2LfNdvRIjDxkN9xppB0XdorLSTeVtiFw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=mMk49lEzY+Brm0mzHcJG1mzafrcnvuSBA/JLaVTXtcCkySAbKbRa1J2Kd6+oUCNNlIZjPa3rCPjXSFX4W7LwmX14Mj/kyAVvaweKlyYoII295VJjIHwEL5wjrr2pkKuL5qR4rFOW/dpoB7jfzRrMzLQR6nKI+Wz2ELLHQfWw3dI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=bMJgBwGa; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6BD11C433F1;
+	Mon, 25 Mar 2024 12:35:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1711370119;
+	bh=FKQQG0pq2Od2LfNdvRIjDxkN9xppB0XdorLSTeVtiFw=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=bMJgBwGaQeaTNucLh68IaEiOJD1cK6Ynw/7O3XdJU8ZHfEvtrkPu5t5r/JDsU//6B
+	 R9yG5Fvb8pG5//d6q1SMncdrV7JVWXP1CMQq+T/7VNi3+J/uxucP6A6mExv/3J9FG1
+	 Iup9qn2HwuvckA+611A9C5ejp7RTeO+xNOgDt6zW0yOLQDFNsH3BZzZqPeZg7VAIB2
+	 akzs8n1ojhW23LfuaR6gkgVnvUwmvFW7no/kfhJCHAdMJ5cR2zYstIq0J7IplA7lYy
+	 bexLbbuBz+1x14roLfZguYNKWt8FbBYKDZ+551PwApr0pheSa9Df9jeU+Dg6IClp+P
+	 vlhSPrX+vFcvw==
+Received: from johan by xi.lan with local (Exim 4.97.1)
+	(envelope-from <johan@kernel.org>)
+	id 1rojXy-000000001SC-2JfB;
+	Mon, 25 Mar 2024 13:35:26 +0100
+Date: Mon, 25 Mar 2024 13:35:26 +0100
+From: Johan Hovold <johan@kernel.org>
+To: Krishna Kurapati <quic_kriskura@quicinc.com>
+Cc: Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Rob Herring <robh+dt@kernel.org>,
+	Bjorn Andersson <andersson@kernel.org>,
+	Wesley Cheng <quic_wcheng@quicinc.com>,
+	Konrad Dybcio <konrad.dybcio@linaro.org>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
+	Felipe Balbi <balbi@kernel.org>, devicetree@vger.kernel.org,
+	linux-arm-msm@vger.kernel.org, linux-usb@vger.kernel.org,
+	linux-kernel@vger.kernel.org, quic_ppratap@quicinc.com,
+	quic_jackp@quicinc.com
+Subject: Re: [PATCH v16 6/9] usb: dwc3: qcom: Add helper function to request
+ wakeup interrupts
+Message-ID: <ZgFvjpRRQ1fdJx0k@hovoldconsulting.com>
+References: <20240307062052.2319851-1-quic_kriskura@quicinc.com>
+ <20240307062052.2319851-7-quic_kriskura@quicinc.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 04/28] sound: intel: Use PCI_IRQ_INTX
-Content-Language: en-US
-To: Damien Le Moal <dlemoal@kernel.org>, linux-pci@vger.kernel.org,
- Bjorn Helgaas <bhelgaas@google.com>,
- Manivannan Sadhasivami <manivannan.sadhasivam@linaro.org>,
- linux-scsi@vger.kernel.org, "Martin K . Petersen"
- <martin.petersen@oracle.com>, Jaroslav Kysela <perex@perex.cz>,
- linux-sound@vger.kernel.org, Greg Kroah-Hartman
- <gregkh@linuxfoundation.org>, linux-usb@vger.kernel.org,
- linux-serial@vger.kernel.org, Hans de Goede <hdegoede@redhat.com>,
- platform-driver-x86@vger.kernel.org, ntb@lists.linux.dev,
- Lee Jones <lee@kernel.org>, David Airlie <airlied@gmail.com>,
- amd-gfx@lists.freedesktop.org, Jason Gunthorpe <jgg@ziepe.ca>,
- linux-rdma@vger.kernel.org, "David S . Miller" <davem@davemloft.net>,
- Eric Dumazet <edumazet@google.com>, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <20240325070944.3600338-1-dlemoal@kernel.org>
- <20240325070944.3600338-5-dlemoal@kernel.org>
-Cc: Cezary Rojewski <cezary.rojewski@intel.com>
-From: =?UTF-8?Q?Amadeusz_S=C5=82awi=C5=84ski?=
- <amadeuszx.slawinski@linux.intel.com>
-In-Reply-To: <20240325070944.3600338-5-dlemoal@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240307062052.2319851-7-quic_kriskura@quicinc.com>
 
-On 3/25/2024 8:09 AM, Damien Le Moal wrote:
-> Use the macro PCI_IRQ_INTX instead of the deprecated PCI_IRQ_LEGACY
-> macro.
+On Thu, Mar 07, 2024 at 11:50:49AM +0530, Krishna Kurapati wrote:
+> The logic for requesting interrupts is duplicated for each interrupt. In
+> the upcoming patches that introduces support for multiport, it would be
+> better to clean up the duplication before reading mulitport related
+> interrupts.
 > 
-> Signed-off-by: Damien Le Moal <dlemoal@kernel.org>
-> ---
->   sound/soc/intel/avs/core.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
+> Refactor interrupt setup call by adding a new helper function for
+> requesting the wakeup interrupts. To simplify implementation, make
+> the display name same as the interrupt name expected in DT.
 > 
-> diff --git a/sound/soc/intel/avs/core.c b/sound/soc/intel/avs/core.c
-> index d7f8940099ce..69818e4b43da 100644
-> --- a/sound/soc/intel/avs/core.c
-> +++ b/sound/soc/intel/avs/core.c
-> @@ -343,7 +343,7 @@ static int avs_hdac_acquire_irq(struct avs_dev *adev)
->   	int ret;
->   
->   	/* request one and check that we only got one interrupt */
-> -	ret = pci_alloc_irq_vectors(pci, 1, 1, PCI_IRQ_MSI | PCI_IRQ_LEGACY);
-> +	ret = pci_alloc_irq_vectors(pci, 1, 1, PCI_IRQ_MSI | PCI_IRQ_INTX);
->   	if (ret != 1) {
->   		dev_err(adev->dev, "Failed to allocate IRQ vector: %d\n", ret);
->   		return ret;
+> Signed-off-by: Krishna Kurapati <quic_kriskura@quicinc.com>
 
-Reviewed-by: Amadeusz Sławiński <amadeuszx.slawinski@linux.intel.com>
+Reviewed-by: Johan Hovold <johan+linaro@kernel.org>
 
