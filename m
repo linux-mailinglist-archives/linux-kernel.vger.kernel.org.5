@@ -1,167 +1,133 @@
-Return-Path: <linux-kernel+bounces-117135-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-117136-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D7A2288AD01
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 19:06:45 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id B461A88A7C6
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 16:55:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E324FBA2D95
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 15:53:18 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0233E326DF2
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 15:53:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 11DDE1741FF;
-	Mon, 25 Mar 2024 13:19:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 11FC013CAAB;
+	Mon, 25 Mar 2024 13:19:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="bQyCNJ30"
-Received: from mail-yb1-f171.google.com (mail-yb1-f171.google.com [209.85.219.171])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="EBswOZdo"
+Received: from mail-yb1-f181.google.com (mail-yb1-f181.google.com [209.85.219.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 93F571741F8
-	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 13:19:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D4D513BACC
+	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 13:19:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711372788; cv=none; b=FUMpzdxLoWQc1E8+SiXQEqL/DfZT6eSEq+S/CAMwlZFSJwG2ql9brPEUsGcB3ZGwJX7qKQ0di6P5gjcRyZhS4Jf89BGdONl5V+4bJkYRLVoF5B0cqIMChdVWKGquzJUdoyR7/5tqp3hBPBZ3/Tta6FvqZj2krOWGfSLGdqovB3I=
+	t=1711372797; cv=none; b=tJyYkWc5bKGPhuMiJWVzynZ2Bl1kIb9CwboT+vNPfyEw2ohiXAQgLDetygAcLLJyfonsesL3Ht4/BlTnzLkEjCUzf8TS6KN/IxGxiMZ79y5Cra/fc3Rdscan6MaM4qjG/n3fe04bDJ6Pl0xFk4X+wSLg41K2/tOXcHqMoPm5LR4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711372788; c=relaxed/simple;
-	bh=i/F7ZUQC2WibdKQHGCsevnCdGMSfUeGxIYrzHXFi104=;
+	s=arc-20240116; t=1711372797; c=relaxed/simple;
+	bh=T0UhGD46y7GnmjcpACpO9YkO2PsWjjjy6i5a75FohHo=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=bO1S18amo2vapF/WtGzlfpcrx/L5ao+lTtCSNnhfgjv6nArXPTmdczNCapwbZxwY3gfibuhrAZcSGm8XLKYaodP6aTijvuZWQIVFvCVi6gtaNIt8tjrOIWwn4sTRge3ZVyL+15b9OqfpxEH5dqGUyC31KAlH5heP7VRQ0zLYRA4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=bQyCNJ30; arc=none smtp.client-ip=209.85.219.171
+	 To:Cc:Content-Type; b=rZdwLiZa7HpcRmQoEK84tc7Ck7ppXLn3W7tuEhwtW4K978MuxB6USeULHuBADZuc/HQlnwJstl5o47tPbo4473kLSqKE2lVG8et0kLLkZZmYFepGpEye0Lj5kxGSOiqEWQJqO4J/pZKRYAGKtVw2RK0rqewMSkRBOH5v+bGYDGU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=EBswOZdo; arc=none smtp.client-ip=209.85.219.181
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yb1-f171.google.com with SMTP id 3f1490d57ef6-dc236729a2bso4128044276.0
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 06:19:46 -0700 (PDT)
+Received: by mail-yb1-f181.google.com with SMTP id 3f1490d57ef6-dcc73148611so4731033276.3
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 06:19:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1711372785; x=1711977585; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1711372794; x=1711977594; darn=vger.kernel.org;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=an1XrIb9VvljrFF0I+tmW7F3KNLXCqH0DCXayAqvq4U=;
-        b=bQyCNJ30DbOcHRPpFOr9+TM6deHbOpyirsnMnTG8zx8g2SzQo+LNiczsFp9PCWL54F
-         yRifp/qlG0XULwkWiLeO8FCNxwpkAyJ6dYxJWmPENqPp4poM9rYzF3Mxhp43XnU5ULkY
-         tjjyjh3nBE2wxvYDoaoBaUYAeOvSZQOusoAjXkVRUfm1QSN/VanxtOb+2vR0KDgiNA/9
-         LctGeVPCyP8Q6vLFlBGsJPcz15sAZSNhogHJqUl7+FrKI6/QuI5Ol/0f5IQX1UwHTEDx
-         7ZY6o4+96CdHvop62icyxMVPNvXvqtg7e9aSdBk6EY5xERrvyqYLiCiaqFDmdRbLoo3z
-         OdBA==
+        bh=yxBqMV2tXP1EFJC3ffAea+Nlp68o2kbIX/WBGOrDI24=;
+        b=EBswOZdoXYXiAgsTBQJ0rKDwO4neaTATSCscl4tXH23JK6Y1rcM97BjBO/vIcyz/yD
+         BjrwdtUpfzVepNKG/N4n+R2Tmn22Nw6G783FFvEzHzxJCFYyvTTnFFe9QDsJAulDqCKu
+         1bmwuk3s5Bl87G1K9QeSYouBhGUBp7XmXsuQlg1y9PuIACdYsoIjaU7a4Xn2e2s7WTga
+         5/zsGXO/8lWlovqTNT7xGFuS+vxBcoV5RZor5f63yz4J29mk1R1BDVN7EDV91V5/4NFw
+         SeLogAkHyA9fhfa+TO96j6aljBhcJeZraJmJEpExV8Yr+2dr3rrGxJFLlPJ5AttsfgD9
+         GbYg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711372785; x=1711977585;
+        d=1e100.net; s=20230601; t=1711372794; x=1711977594;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=an1XrIb9VvljrFF0I+tmW7F3KNLXCqH0DCXayAqvq4U=;
-        b=K1pOkjPURmWgYyAOVlQRZV3k77syvJNqN43jaGM/N3/FyJox065RZm5H3qg3it9osG
-         62ZZtzbxsjILxt3HTdKq68bh8KfwAnW4YEPH4iI2nlZ4M3SdN3X2JXflpTEvRmGJ6r50
-         rto/X4y5NKh/1NLEVpS+S4pJ4VJ520oh9Yc53j3fkHsBRb4dHSwgDRVCbswD4vkZQxFk
-         vHp4UsCd0mQHpGdyGnnYcuvvMMr45LcbM8ZBs3c7ueYAY1p4+4XgHUuUmhmji4REq4jM
-         JKBuPTOg2l5H0E1/hVLBv+OJOwtUQWPWNpvcAcrKQyyIShafVWcDjJbDTCChAClIoWU3
-         aFkg==
-X-Gm-Message-State: AOJu0YxF4i5f7eAY+RJ3ixoGICJ+lc+cieT6oX81XPNBe9rOFo354deo
-	I5ViBlUN0C8HgESu1kGk/2RTSz95VfvEOmywQeQLwdiq7RmLDGPzMbxlIGnv9J7nSzh/RrwVgTT
-	INa4xeLmYixj4Zd+XJaWuYIb+qZcG6LADllxvGQ==
-X-Google-Smtp-Source: AGHT+IFUMyHdn2LPn/q2Dnx5oB+SnXCwPU31SA3monsIPijGID18Z+XiqEWgW7vMhOAi9lK0th7DKjTMyHLHReWKyCk=
-X-Received: by 2002:a25:2d11:0:b0:dc6:cd76:5ddf with SMTP id
- t17-20020a252d11000000b00dc6cd765ddfmr5281307ybt.39.1711372785586; Mon, 25
- Mar 2024 06:19:45 -0700 (PDT)
+        bh=yxBqMV2tXP1EFJC3ffAea+Nlp68o2kbIX/WBGOrDI24=;
+        b=bGov/l+IdsIAtOFeDMuBicJK3SheTpGXDsTnr7BoIVTTJjPrAdMCiL/32FZGaD4l4z
+         xwhnHClausJJnADbpu6mQv8VgA8PNmHkcyenmWAXX/wUjNLP9mJ+tzcv4uttWh5hSn0e
+         GMlmERqROuqAkfZGIU5K5DES23JgUrSy3djE7HGmCMX05IUfCLYagUnJvU5oHkhWLHSI
+         1VZFm7qTzO1xNdPN0v1fQvYGuu9gpdy/WuShF1xXHIjZxJYa7wCLIsmz4QdLl2plRIuW
+         3ZnKVeurUcdHfT7Ji/jgiXxansS+tO3U4K2giP33D9ar+YBwuom56p/ifTAntC76F8FP
+         1PXA==
+X-Forwarded-Encrypted: i=1; AJvYcCWerlF7Zw7Fh/ZxgbzQL6426hIX7hbWZ3DgY8S2yF2PZvmcNH2Ydho2J+LsNnQD+o22HkWkIAc3KY0MQPbd5CrhoeZurQ44lvbJSUrL
+X-Gm-Message-State: AOJu0YzdLFVbiPvUKgu40d4B4T61ff0WpN2fXaaPoHfm1GBob1rAXcaN
+	zfeSi+gxoh7qMrWvmOfpaPX7Ky8/aog8gmE0acopDev6+Zs58N4QcBdL4mlM94wNyvWnPOA/9n+
+	RzoJ99NeGPIgbWTDakIbSEuvOpihu8hoJDvXocA==
+X-Google-Smtp-Source: AGHT+IGHYRk03A+ebdrgDqCegMS+TQhHjy1L3Fp6OrAoZ21JkL2vjd7xmwf3RER4jqhhXfsQH0CLxSd+Wsa60dSp6/U=
+X-Received: by 2002:a05:6902:3ce:b0:dce:53c9:4d9f with SMTP id
+ g14-20020a05690203ce00b00dce53c94d9fmr5372283ybs.58.1711372794518; Mon, 25
+ Mar 2024 06:19:54 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240319115932.4108904-1-serghox@gmail.com>
-In-Reply-To: <20240319115932.4108904-1-serghox@gmail.com>
+References: <20240324214329.29988-1-wafgo01@gmail.com> <20240324214329.29988-4-wafgo01@gmail.com>
+In-Reply-To: <20240324214329.29988-4-wafgo01@gmail.com>
 From: Ulf Hansson <ulf.hansson@linaro.org>
-Date: Mon, 25 Mar 2024 14:19:10 +0100
-Message-ID: <CAPDyKFokNLX8zAr=Cai58UZivt_c63aQXjaLyuPKnzAmQcQhzg@mail.gmail.com>
-Subject: Re: [PATCH v7 0/2] mmc: sdhci-of-dwcmshc: Add CQE support
-To: Sergey Khimich <serghox@gmail.com>
-Cc: linux-kernel@vger.kernel.org, linux-mmc@vger.kernel.org, 
-	Adrian Hunter <adrian.hunter@intel.com>, Shawn Lin <shawn.lin@rock-chips.com>, 
-	Jyan Chou <jyanchou@realtek.com>, Asutosh Das <quic_asutoshd@quicinc.com>, 
-	Ritesh Harjani <ritesh.list@gmail.com>
+Date: Mon, 25 Mar 2024 14:19:18 +0100
+Message-ID: <CAPDyKFoSB3+jqw+cmc7x6NMSV9tegK=c-nUjC2pXiYFUzjEM4w@mail.gmail.com>
+Subject: Re: [PATCH v4 3/4] dt-bindings: mmc: fsl-imx-esdhc: add NXP S32G3 support
+To: Wadim Mueller <wafgo01@gmail.com>
+Cc: Rob Herring <robh+dt@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
+	Shawn Guo <shawnguo@kernel.org>, Sascha Hauer <s.hauer@pengutronix.de>, 
+	Pengutronix Kernel Team <kernel@pengutronix.de>, Fabio Estevam <festevam@gmail.com>, 
+	NXP Linux Team <linux-imx@nxp.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
+	Jiri Slaby <jirislaby@kernel.org>, Chester Lin <chester62515@gmail.com>, 
+	=?UTF-8?Q?Andreas_F=C3=A4rber?= <afaerber@suse.de>, 
+	Matthias Brugger <mbrugger@suse.com>, NXP S32 Linux Team <s32@nxp.com>, Tim Harvey <tharvey@gateworks.com>, 
+	Alexander Stein <alexander.stein@ew.tq-group.com>, 
+	Gregor Herburger <gregor.herburger@ew.tq-group.com>, Marek Vasut <marex@denx.de>, 
+	Marco Felsch <m.felsch@pengutronix.de>, Hugo Villeneuve <hvilleneuve@dimonoff.com>, 
+	Markus Niebel <Markus.Niebel@ew.tq-group.com>, 
+	Matthias Schiffer <matthias.schiffer@tq-group.com>, 
+	Stefan Wahren <stefan.wahren@chargebyte.com>, Bjorn Helgaas <bhelgaas@google.com>, 
+	Yannic Moog <y.moog@phytec.de>, Li Yang <leoyang.li@nxp.com>, devicetree@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-mmc@vger.kernel.org, 
+	linux-arm-kernel@lists.infradead.org, linux-serial@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 
-On Tue, 19 Mar 2024 at 12:59, Sergey Khimich <serghox@gmail.com> wrote:
+On Sun, 24 Mar 2024 at 22:44, Wadim Mueller <wafgo01@gmail.com> wrote:
 >
-> Hello!
+> Add a compatible string for the SDHC binding of NXP S32G3 platforms. Here
+> we use "nxp,s32g2-usdhc" as fallback since the s32g2-usdhc
+> driver works also on S32G3 platforms.
 >
-> This is implementation of SDHCI CQE support for sdhci-of-dwcmshc driver.
-> For enabling CQE support just set 'supports-cqe' in your DevTree file
-> for appropriate mmc node.
->
-> Also, while implementing CQE support for the driver, I faced with a problem
-> which I will describe below.
-> According to the IP block documentation CQE works only with "AMDA-2 only"
-> mode which is activated only with v4 mode enabled. I see in dwcmshc_probe()
-> function that v4 mode gets enabled only for 'sdhci_dwcmshc_bf3_pdata'
-> platform data.
->
-> So my question is: is it correct to enable v4 mode for all platform data
-> if 'SDHCI_CAN_64BIT_V4' bit is set in hw?
->
-> Because I`m afraid that enabling v4 mode for some platforms could break
-> them down. On the other hand, if host controller says that it can do v4
-> (caps & SDHCI_CAN_64BIT_V4), lets do v4 or disable it manualy by some
-> quirk. Anyway - RFC.
->
->
-> v2:
->  - Added dwcmshc specific cqe_disable hook to prevent losing
->    in-flight cmd when an ioctl is issued and cqe_disable is called;
->
->  - Added processing 128Mb boundary for the host memory data buffer size
->    and the data buffer. For implementing this processing an extra
->    callback is added to the struct 'sdhci_ops'.
->
->  - Fixed typo.
->
-> v3:
->  - Fix warning reported by kernel test robot:
->         | Reported-by: kernel test robot <lkp@intel.com>
->         | Closes: https://lore.kernel.org/oe-kbuild-all/202309270807.VoVn81m6-lkp@intel.com/
->         | Closes: https://lore.kernel.org/oe-kbuild-all/202309300806.dcR19kcE-lkp@intel.com/
->
-> v4:
->  - Data reset moved to custom driver tuning hook.
->  - Removed unnecessary dwcmshc_sdhci_cqe_disable() func
->  - Removed unnecessary dwcmshc_cqhci_set_tran_desc. Export and use
->    cqhci_set_tran_desc() instead.
->  - Provide a hook for cqhci_set_tran_desc() instead of cqhci_prep_tran_desc().
->  - Fix typo: int_clok_disable --> int_clock_disable
->
-> v5:
->  - Fix warning reported by kernel test robot:
->         | Reported-by: kernel test robot <lkp@intel.com>
->         | Closes: https://lore.kernel.org/oe-kbuild-all/202312301130.itEZhhI5-lkp@intel.com/
->
-> v6:
->  - Rebase to master branch
->  - Fix typo;
->  - Fix double blank line;
->  - Add cqhci_suspend() and cqhci_resume() functions
->    to support mmc suspend-to-ram (s2r);
->  - Move reading DWCMSHC_P_VENDOR_AREA2 register under "supports-cqe"
->    condition as not all IPs have that register;
->  - Remove sdhci V4 mode from the list of prerequisites to init cqhci.
->
-> v7:
->  - Add disabling MMC_CAP2_CQE and MMC_CAP2_CQE_DCMD caps
->    in case of CQE init fails to prevent problems in suspend/resume
->    functions.
->
-> Sergey Khimich (2):
->   mmc: cqhci: Add cqhci set_tran_desc() callback
->   mmc: sdhci-of-dwcmshc: Implement SDHCI CQE support
->
->  drivers/mmc/host/Kconfig            |   1 +
->  drivers/mmc/host/cqhci-core.c       |  11 +-
->  drivers/mmc/host/cqhci.h            |   4 +
->  drivers/mmc/host/sdhci-of-dwcmshc.c | 191 +++++++++++++++++++++++++++-
->  4 files changed, 202 insertions(+), 5 deletions(-)
->
+> Signed-off-by: Wadim Mueller <wafgo01@gmail.com>
 
-Applied for next and by fixing a minor conflict when applying, thanks!
+Applied for next, thanks!
 
 Kind regards
 Uffe
+
+
+> ---
+>  Documentation/devicetree/bindings/mmc/fsl-imx-esdhc.yaml | 3 +++
+>  1 file changed, 3 insertions(+)
+>
+> diff --git a/Documentation/devicetree/bindings/mmc/fsl-imx-esdhc.yaml b/Documentation/devicetree/bindings/mmc/fsl-imx-esdhc.yaml
+> index 82eb7a24c857..466e7157308a 100644
+> --- a/Documentation/devicetree/bindings/mmc/fsl-imx-esdhc.yaml
+> +++ b/Documentation/devicetree/bindings/mmc/fsl-imx-esdhc.yaml
+> @@ -90,6 +90,9 @@ properties:
+>            - enum:
+>                - fsl,imxrt1170-usdhc
+>            - const: fsl,imxrt1050-usdhc
+> +      - items:
+> +          - const: nxp,s32g3-usdhc
+> +          - const: nxp,s32g2-usdhc
+>
+>    reg:
+>      maxItems: 1
+> --
+> 2.25.1
+>
 
