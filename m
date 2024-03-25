@@ -1,137 +1,130 @@
-Return-Path: <linux-kernel+bounces-117672-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-117671-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1AE0288AE4B
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 19:30:41 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 40D3088AE4A
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 19:30:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4C9271C60680
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 18:30:40 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CDC6C1F62A67
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 18:30:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 28FE33DAC01;
-	Mon, 25 Mar 2024 18:02:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 436E545C06;
+	Mon, 25 Mar 2024 18:02:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b="VEbwH/ZO";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="DuwM5x/R"
-Received: from wfhigh6-smtp.messagingengine.com (wfhigh6-smtp.messagingengine.com [64.147.123.157])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="uc23wkhs"
+Received: from mail-oa1-f51.google.com (mail-oa1-f51.google.com [209.85.160.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 21B6660ED0
-	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 18:02:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=64.147.123.157
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DF1155223
+	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 18:02:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711389760; cv=none; b=R4A1362hhS6c1WnqDoT7zkbdwZhcBoDczbOc5UAz2bsrFnwkPZZtM3u/Hp04ZE7tx7+YhM2ZJXVV8hZkOtGTlCCZoWHTG6z/mXKfq6KKk9z4oC48D7dluj7GzcQS/mYm17H1X2b1b7xmEyNW2gJpj+/399K9Dh3px4X6k6Jwzd8=
+	t=1711389746; cv=none; b=B3eE6SIPTtPOKrsWbAQMw6v1ilzh14yiC/8UpIqpsABKHhaoY5CkIF9GV7nv3QYbyrOWUqTZiD4ockx+pixIl9yss5vnSxsGkidvJY4WMi1Mj6kmvu2ym/AaBAxVrSa0nl9Vh+wCrKcDiKaBvAdR7dz7p7bblzuYcyoF7sPyTSg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711389760; c=relaxed/simple;
-	bh=9Kc4RxYAxHuTl3CFSV/d0BgxGhfm6+wZgv60jU0R42Q=;
-	h=MIME-Version:Message-Id:In-Reply-To:References:Date:From:To:Cc:
-	 Subject:Content-Type; b=qrh70x3nMvJBQCwjxSD4kV2mDQrUEcTX2jzW/3AF6f0NNClqv+DJsHgbgPY/udNVuOkgV0+5sPoFMKi8s0mfHtglBCawCx55sLeOKC37euyGx8MHVj+s4idBSAbNYl0905JZrae8B4epbpezCNIHpLttRfBU4pZ3WGu091Iwcdc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de; spf=pass smtp.mailfrom=arndb.de; dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b=VEbwH/ZO; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=DuwM5x/R; arc=none smtp.client-ip=64.147.123.157
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arndb.de
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-	by mailfhigh.west.internal (Postfix) with ESMTP id 67A5D18000B3;
-	Mon, 25 Mar 2024 14:02:36 -0400 (EDT)
-Received: from imap51 ([10.202.2.101])
-  by compute5.internal (MEProxy); Mon, 25 Mar 2024 14:02:38 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
-	:cc:content-type:content-type:date:date:from:from:in-reply-to
-	:in-reply-to:message-id:mime-version:references:reply-to:subject
-	:subject:to:to; s=fm1; t=1711389755; x=1711476155; bh=MZ8i+Gw+8U
-	GRptvTYhnegZ3s5XeZTdAEd0vXFYyBJzU=; b=VEbwH/ZOjXX+6S7+y28Yyc+vWh
-	Ca3MEk4YxNwb4JxA0pyWCeXBL3vAle5gi06OoeGki82Ie7LQdXk9n5GK2GW55mql
-	nLmqXwC4hshhdsEGA/K1nk+h6K4AODag0IvFFzhl4aQ9BJOME6U/e1fZj1tp4EBG
-	sD00QoVswMY6HvkZjafP+T8piL2yAFjVEoQBudVHuoWEMb+Lmbp0wyrN8SzDjh+P
-	BE7Bk0sAbbqrQcm8RSeVzxFzabGwYZhWMHazr3NyMddCg67R04fJNfFrnShZaI6F
-	WNoPquXpDSHD8xSYetuhQ/rc9A7Jf3nkfy9eEqnp6ZP0Cja2z9qsQxaK2VtQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-	fm2; t=1711389755; x=1711476155; bh=MZ8i+Gw+8UGRptvTYhnegZ3s5XeZ
-	TdAEd0vXFYyBJzU=; b=DuwM5x/Rn+rxyTOAQOoNhmPfZJ4KGAm63mFOUDozt+Ob
-	g9Ro3gpszcmkCZ+ZW7UQtWxZLo9gxE8dL3WyM7zDNFynjxGeURELyiI3V7oocqJ0
-	BEG59jkhks0VzPAbX2Ca9Ygb1rUsX2GGI46jVOeSV94gMw2gSyUsZA98P/NmQSvj
-	p7aWN7aO4IzJG0Lx9b35xnOL+WFgPj10LtBAmgOG6/VDxe4qZHB7mHNFpLLBFM8+
-	TWWd+Bp/V3VtiOF/6JcAtlFXboYIrhP4xGpD7Tnr4pFwWiRQVFc4xzxmrOr9PDcw
-	F7In0ielSZEvfnoysg5q9vZRv+StTODJVsCRepSAlg==
-X-ME-Sender: <xms:O7wBZmZS2Yc5u3MAUARmODwOLObuSmzHtufAokbGzOz97nuNV5Iqow>
-    <xme:O7wBZpbVjcn29EifG7tL_9vS4qWCzuKBu_aHcIt3IM9V4OhyL7MQb3gjDKg5uxVkY
-    TT1C1f67qsLXAICkZA>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrudduuddggeejucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepofgfggfkjghffffhvfevufgtsehttdertderredtnecuhfhrohhmpedftehr
-    nhguuceuvghrghhmrghnnhdfuceorghrnhgusegrrhhnuggsrdguvgeqnecuggftrfgrth
-    htvghrnhepffehueegteeihfegtefhjefgtdeugfegjeelheejueethfefgeeghfektdek
-    teffnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheprg
-    hrnhgusegrrhhnuggsrdguvg
-X-ME-Proxy: <xmx:O7wBZg8N8TBButbyzPSQbH_wtxgHkTx9XSA03qUtwlPI5rqhag8SGw>
-    <xmx:O7wBZop1FbmeL24HRxYUCdkvt6OxCVDhJ_8oTbvazQzLsIzXOZkwig>
-    <xmx:O7wBZhrMOFnF_PIpTrY9AO29f-0VAVk5ohB7n79_EVvs2ku8DKyowg>
-    <xmx:O7wBZmTfbDmy6niO6Rb-rrD3nXnSECylwgOd3MqtOFG46ZLgyycPfQ>
-    <xmx:O7wBZgclbJGPimIKrGmA7WJgBmutgU6M8zfAG5sj4OYzmbNn_ZPqMd9Xshw>
-Feedback-ID: i56a14606:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-	id 03979B6008D; Mon, 25 Mar 2024 14:02:34 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.11.0-alpha0-332-gdeb4194079-fm-20240319.002-gdeb41940
+	s=arc-20240116; t=1711389746; c=relaxed/simple;
+	bh=lxLARG/z8mUbwOnEndw/aPaZdDReWbd2fqQJESwXNYc=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=HUul82zsORng7A3wCQspAIH/cs+hSE0S4REub3owJu89XM/HLwcpMhyoIrAzWIsVMHkWgSXxdraZwzTVtpJ9rUtAfZWWBOULNFpLBBNeiOep25g4kOzXeMZbkTUfOQDYUK/nqPvvzxCMqENhag0m8TXxOOqLsUAh2vV5qYq0074=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=uc23wkhs; arc=none smtp.client-ip=209.85.160.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-oa1-f51.google.com with SMTP id 586e51a60fabf-220ee7342ddso1616963fac.3
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 11:02:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1711389743; x=1711994543; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=E52yW+sF6XzKO9Az8rZdRh6PQ7+k4mFgNJL/1sREfRE=;
+        b=uc23wkhsnqp+Ne3OI8jqqaq7oNsj6K+vn/lFDJw93VYA531FcZUpQ4IkSpRXugReIM
+         gMoGer9MmQ5gewb2044+rg4ut3+DEWQcXzE3QpqXNCBWOq6hSqSBjbmthwXgNGoQ0/Na
+         4EqQIrNpemb8khucNV13Lba2Du5EIOC96o36M+XE+bBJ0QBNmA7laZDLhDoDMZ72oT3K
+         NsNEYqKQ/9eMrfV8oeeoTPbFNiE0PrN4CcFpuOCZjCOjrdjprzJkDZwknFNiJio840mx
+         zIU+ZBNG2hIGmm1JsIvE10XdPRhpdgwcvz4ZR/k/rddZ2rBpmlB7uF0MemmX3acad3qE
+         WK8A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711389743; x=1711994543;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=E52yW+sF6XzKO9Az8rZdRh6PQ7+k4mFgNJL/1sREfRE=;
+        b=neCG+bCJtJi5ck4zinL7qcSNa74ifibgGwZ75RON5MAWJV3510goniWupHdCmY9seq
+         Lf4sQXRzKe90X52FoKTYiHuQ5DLBuck9xz5fzLcY9ZKV2pqQVzpBK1+1ipjuAFov+XVC
+         uP6vPqmRm2fLEZNscKlLsyCP85NXaW7pheKFqhyDHUXWGACFungHknm6k1nT90waxmik
+         lTfmC0QYJWPY57H4Omsi5sDw3BJCCYnfscb13TwHQb1gx8516L+hvbfOezAnP4JXXh9S
+         tlvAuHGv+YSpKcxIW8xrlNosg3HEcR5Dokuv71VxWQACm5IIHjI+CILUO9ShnQLnhoZF
+         Es1Q==
+X-Forwarded-Encrypted: i=1; AJvYcCVnZGCVf8ymqJPPfznIpDdmrla+zIASj1QWW/abmt/ZpDxJM6/C0ai2efIyn6ozcOO5uCdwFgwp5wBuLFitFO36h19xvLHSGsyUdLuv
+X-Gm-Message-State: AOJu0YzDfDe9RTX5am1j8UO+Uz1qf3KqGk7MEruE9FvDia8PZvBLyGAy
+	rh84WAxHAJ6ijJB8Xir/8Ha74vXujtA83kJw3nAKCXo0DbU7Fgix+7+8CBQvjXA=
+X-Google-Smtp-Source: AGHT+IGL7MjykGc3x6fq30Iwm4UqOlCErDW/FkZbM+UsXaKx+5/ikyFovIATmsU60pyNmfB1PDf9rQ==
+X-Received: by 2002:a05:6871:3401:b0:22a:4fea:f435 with SMTP id nh1-20020a056871340100b0022a4feaf435mr1956742oac.2.1711389743347;
+        Mon, 25 Mar 2024 11:02:23 -0700 (PDT)
+Received: from [192.168.17.16] ([148.222.132.226])
+        by smtp.gmail.com with ESMTPSA id dw23-20020a05683033b700b006e6cf0f7ba8sm827599otb.57.2024.03.25.11.02.21
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 25 Mar 2024 11:02:22 -0700 (PDT)
+Message-ID: <fb9b5df4-23fe-4299-938f-dbc36a4dc052@linaro.org>
+Date: Mon, 25 Mar 2024 12:02:20 -0600
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-Id: <eeccbc9f-7544-42c9-964f-2b4c924c2b2f@app.fastmail.com>
-In-Reply-To: <ZgGosOiW6mTeSnTL@FVFF77S0Q05N>
-References: <20240313180010.295747-1-samuel.holland@sifive.com>
- <CAHVXubjLWZkjSapnsWJzimWg_2swEy7tQ-DQ6ri8yMk8-Qsc-A@mail.gmail.com>
- <88de4a1a-047e-4be9-b5b0-3e53434dc022@sifive.com>
- <b5624bba-9917-421b-8ef0-4515d442f80b@ghiti.fr>
- <f786e02245424e02b38f55ae6b29d14a@AcuMS.aculab.com>
- <d323eb10-c79b-49cb-94db-9b135e6fd280@ghiti.fr>
- <ZgGosOiW6mTeSnTL@FVFF77S0Q05N>
-Date: Mon, 25 Mar 2024 19:02:13 +0100
-From: "Arnd Bergmann" <arnd@arndb.de>
-To: "Mark Rutland" <mark.rutland@arm.com>, "Alexandre Ghiti" <alex@ghiti.fr>
-Cc: "David Laight" <David.Laight@aculab.com>,
- "Samuel Holland" <samuel.holland@sifive.com>,
- "Alexandre Ghiti" <alexghiti@rivosinc.com>,
- "Palmer Dabbelt" <palmer@dabbelt.com>,
- "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
- "Albert Ou" <aou@eecs.berkeley.edu>,
- "Andrew Morton" <akpm@linux-foundation.org>,
- "Charlie Jenkins" <charlie@rivosinc.com>, guoren <guoren@kernel.org>,
- "Jisheng Zhang" <jszhang@kernel.org>,
- "Kemeng Shi" <shikemeng@huaweicloud.com>,
- "Matthew Wilcox" <willy@infradead.org>, "Mike Rapoport" <rppt@kernel.org>,
- "Paul Walmsley" <paul.walmsley@sifive.com>,
- "Xiao W Wang" <xiao.w.wang@intel.com>, "Yangyu Chen" <cyy@cyyself.name>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] riscv: Define TASK_SIZE_MAX for __access_ok()
-Content-Type: text/plain
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 6.6 000/632] 6.6.23-rc2 review
+To: Sasha Levin <sashal@kernel.org>, linux-kernel@vger.kernel.org,
+ stable@vger.kernel.org
+Cc: torvalds@linux-foundation.org, akpm@linux-foundation.org,
+ linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+ lkft-triage@lists.linaro.org, florian.fainelli@broadcom.com, pavel@denx.de,
+ samitolvanen@google.com
+References: <20240325115951.1766937-1-sashal@kernel.org>
+Content-Language: en-US
+From: =?UTF-8?Q?Daniel_D=C3=ADaz?= <daniel.diaz@linaro.org>
+In-Reply-To: <20240325115951.1766937-1-sashal@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Mon, Mar 25, 2024, at 17:39, Mark Rutland wrote:
+Hello!
 
-> Using a compile-time constant TASK_SIZE_MAX allows the compiler to generate
-> much better code for access_ok(), and on arm64 we use a compile-time constant
-> even when our page table depth can change at runtime (and when native/compat
-> task sizes differ). The only abosolute boundary that needs to be maintained is
-> that access_ok() fails for kernel addresses.
+On 25/03/24 5:59 a. m., Sasha Levin wrote:
+> This is the start of the stable review cycle for the 6.6.23 release.
+> There are 632 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Wed Mar 27 11:59:50 AM UTC 2024.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+>          https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git/patch/?id=linux-6.6.y&id2=v6.6.22
+> or in the git tree and branch at:
+>          git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.6.y
+> and the diffstat can be found below.
+> 
+> Thanks,
+> Sasha
 
-As I understand, this works on arm64 and x86 because the kernel
-mapping starts on negative 64-bit addresses, so the highest user
-address (TASK_SIZE = 0x000fffffffffffff) is still smaller than the
-lowest kernel address (PAGE_OFFSET = 0xfff0000000000000).
+We see the same problem with new warnings on RISC-V as with 6.7. Just like with 6.7, reverting that patch makes the warnings disappear.
 
-If an architecture ignores all the top bits of a virtual address,
-the largest TASK_SIZE would be higher than the smallest (positive,
-unsigned) PAGE_OFFSET, so you need TASK_SIZE_MAX to be dynamic.
-It doesn't look like this is the case on riscv, but I'm not sure
-about this part.
+   commit 34630ced09415d273146191778dfc5338f545db7
+   Author: Sami Tolvanen <samitolvanen@google.com>
+   Date:   Mon Mar 11 19:31:44 2024 +0000
 
-      Arnd
+       riscv: Fix syscall wrapper for >word-size arguments
+       
+       [ Upstream commit a9ad73295cc1e3af0253eee7d08943b2419444c4 ]
+
+Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
+
+
+Greetings!
+
+Daniel Díaz
+daniel.diaz@linaro.org
+
 
