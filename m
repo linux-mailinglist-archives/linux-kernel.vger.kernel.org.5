@@ -1,108 +1,184 @@
-Return-Path: <linux-kernel+bounces-116370-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-116371-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7DA77889D9D
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 12:48:48 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id E22568898CB
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 10:50:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9E673B2BC9E
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 09:50:34 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6EE2A1F2BFB9
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 09:50:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B2C2D67A15;
-	Mon, 25 Mar 2024 05:12:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7E689128374;
+	Mon, 25 Mar 2024 05:12:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="NqP+UceA"
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="jZtDyWln"
+Received: from mail-qv1-f53.google.com (mail-qv1-f53.google.com [209.85.219.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 26D97146A8C;
-	Mon, 25 Mar 2024 01:25:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BED711292EC
+	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 01:26:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711329909; cv=none; b=VK3WV6bwsviI/tJn8+fs2uJmJ9ky7QAhf6toz8KAOmqwJUmqMkwXhTwq16QXaArqmahEbcTAuTgaR37EALYxZDcledwqHRBCiCb6QkC7J3m3zcmY5QGSPEgj9Wg7jApy6tHh3PBZqbN2f6xQFjVQ+EeOWahDJaeAuFgnUQ0x7NE=
+	t=1711329971; cv=none; b=ebDM+4bM+pnXQUbYsEA22akB+od53Ch50dJJWNz4yP3tgS/pRvG5DuCylEYASnw/Y4XnZQPw/kyt/cHtl+05WH6Gi9Gm1J70ZHCefpohGeN694Bdwcv5fbnt6E0N3F6Mmrg5CCr4xnLaM+voHipofwmcLxs5uR3woLOBYJyEtbI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711329909; c=relaxed/simple;
-	bh=keIIY2IUuYnvaEopcTWmMshYievXvR6LXzeGqOWYBMc=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=O6NrScIYRG8U0Q0+dwuid+p2+v2zMIIKekTEQB6UwPA9o3Jof/3/PReOQRUgaEPFbrRFeNf/Ex5Dq1P5L8eisIOHQ3qLJVKS33DbPxEU5bgMAgryJQKcIRtTwsg51BO5sghwDtqLG8PY5p62imC5Yxk2v66/1FkwjnFWkCy4/dY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au; spf=pass smtp.mailfrom=canb.auug.org.au; dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b=NqP+UceA; arc=none smtp.client-ip=150.107.74.76
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-	s=201702; t=1711329905;
-	bh=k1+5E0R2OutmX+sLafgyTQpS5WVt45x2jbVIdUzu1LU=;
-	h=Date:From:To:Cc:Subject:From;
-	b=NqP+UceAE1jMFnGmXP5YQZt9uehCnibRLB8pYu8Ki6Zge8IVdYw/KnpNW8YlrDyHH
-	 e/n7mW2u+zP4wEQ5IOJdxsttVi3cNCsPJorudjwXm2eRWAW70SFTo1Druv/PcTv0Ne
-	 oN3dBQTUpWt5eP4sLl7Vo/3eokIwJdJsL3aYY16Mk1dvvXXiC0+xRY6WEMkDwhNFl+
-	 6tPrc5dMWQag7uCy1x2oZhqMnpOIUX7dlxSMI+FK8JjvztArXVnhMo+R1SkS5nLxp2
-	 yQRI1DE7f0g+tyjwHH9LVjYofToIfqUnvqGXJ92Pmfofi/Lk8c4sQcpk4awDYzpDEj
-	 EK7vQK1qm0IOQ==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mail.ozlabs.org (Postfix) with ESMTPSA id 4V2wGS61fRz4wcd;
-	Mon, 25 Mar 2024 12:25:04 +1100 (AEDT)
-Date: Mon, 25 Mar 2024 12:25:04 +1100
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-To: Andrew Morton <akpm@linux-foundation.org>
-Cc: Kent Overstreet <kent.overstreet@linux.dev>, Suren Baghdasaryan
- <surenb@google.com>, Linux Kernel Mailing List
- <linux-kernel@vger.kernel.org>, Linux Next Mailing List
- <linux-next@vger.kernel.org>
-Subject: linux-next: build warning after merge of the mm tree
-Message-ID: <20240325122504.6f46a5ae@canb.auug.org.au>
+	s=arc-20240116; t=1711329971; c=relaxed/simple;
+	bh=TkNgras5ZUpGkbxWjPcva7sUuxVdARVYD58kLBCBPgU=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=X6XpRJD+As1t8zjWEp6JerYmtUawxEtflf3chirV+l4so/Iiqdqh1QFNc0diQDH0ejcHXLIkTuMsnj3knj59qQ4qX7SwzQIhCpM5XUXDy0N4ZDuSsBt7u8fQt12w/6Ms/OTHdO8TzT7VPF9SIdc4RQiJsa1dWVez+K4HVfE4GZQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=jZtDyWln; arc=none smtp.client-ip=209.85.219.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-qv1-f53.google.com with SMTP id 6a1803df08f44-690bd329df2so22407906d6.2
+        for <linux-kernel@vger.kernel.org>; Sun, 24 Mar 2024 18:26:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1711329969; x=1711934769; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=Y0Dbx4/AQEaK3b87iVLlgcHWjdXiKW8/SKBtYSvJ4l8=;
+        b=jZtDyWlnLVFhljDgXn57ijKmJOY8U7jwzYweh8AoMPEAKBpiqplKxUPA4XSGABxpn2
+         wYej31r7gngsrvHP/vY2z6UWuYiWEMsyGehYMN4WC4upfMqyBrkjDIflumiV0q0dhMRQ
+         69GV4Cd+Tzyr4r0ZMPuY6W8BHOT/pngFwwU+s=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711329969; x=1711934769;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Y0Dbx4/AQEaK3b87iVLlgcHWjdXiKW8/SKBtYSvJ4l8=;
+        b=ivB43hdg4k7zplR+Y3gdb0XpuuNCJHA7P2dEMrsCx8q+T5I45Qtb/V82IUT93hO+uf
+         i+eiqXCQBmlsdzLUG/0DtmI3sXWciDoySSM0Q04PMbvD7lOCAO52g9J0tRAyNUHSFXxJ
+         JZv9N6RlQmIzrnn2pQwjE5lMP+dokZJUQP8Cg+3RrOoxWa/WC6W0AktcKD6SX2iLAcXW
+         /mToOhUURhWotiVYceSQRY9PTOYFmPA8mpJgCsYL+gKx8srb3b7WLtyleQKxMM88PeH1
+         /73L3EvYoRjZVBMO/vt/hWZxHUtdQXQ6ZpB//DFLJxmg1mjxDWN6z0nFCECA5q+1OB1X
+         Aabw==
+X-Forwarded-Encrypted: i=1; AJvYcCWbykStVz/FcOjkkNc2nnrREhikkT+sEppRQpAXg32bO8339why9GVP8au8wnwofmhJLPcsslz2upguhcc6wmF6DpI9jgIDuGScqnA1
+X-Gm-Message-State: AOJu0YxUMOohegSiLGb3DlyymdQ7yTpak7ZOanAjr2YM3ewAbLv4KSbK
+	erkbD4BTayYK9K9dRZHiAx/MMDg/PHFgba5e3UKTmQqS2m3pBfXX8S2qCAeDnh+9BfTnb9eaSNm
+	/bL0MyOlRL6dE9RBYEcL1Fh8dGtQ7f74IAQnq
+X-Google-Smtp-Source: AGHT+IF8k6IEgNL4Ml3wABhG3s1RLLEjzUk0aITApXvBMpCMHfkjVmDSrsKoCpsIrVx5U2+VbKSHOEy12MRmxPAYxkg=
+X-Received: by 2002:a05:6214:410:b0:690:a576:2a2c with SMTP id
+ z16-20020a056214041000b00690a5762a2cmr6745531qvx.32.1711329968724; Sun, 24
+ Mar 2024 18:26:08 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/+1N7hoIm+V=s3ZXe=KBerLT";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+References: <20240320052449.175786-1-sjg@chromium.org> <20240320052449.175786-2-sjg@chromium.org>
+ <20240321134917.GA1625959-robh@kernel.org>
+In-Reply-To: <20240321134917.GA1625959-robh@kernel.org>
+From: Simon Glass <sjg@chromium.org>
+Date: Mon, 25 Mar 2024 14:25:57 +1300
+Message-ID: <CAFLszThbC7PDnJk8pXS2bNN9ebntoOJ-7xxkFU_LCm4Jg-km4w@mail.gmail.com>
+Subject: Re: [PATCH v9 2/2] dt-bindings: mtd: fixed-partition: Add binman compatibles
+To: Rob Herring <robh@kernel.org>
+Cc: devicetree@vger.kernel.org, linux-mtd@lists.infradead.org, 
+	Michael Walle <mwalle@kernel.org>, Miquel Raynal <miquel.raynal@bootlin.com>, 
+	Conor Dooley <conor+dt@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>, 
+	Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
---Sig_/+1N7hoIm+V=s3ZXe=KBerLT
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Hi Rob,
 
-Hi all,
+On Fri, 22 Mar 2024 at 02:49, Rob Herring <robh@kernel.org> wrote:
+>
+> On Wed, Mar 20, 2024 at 06:24:49PM +1300, Simon Glass wrote:
+> > Add two compatibles for binman entries, as a starting point for the
+> > schema.
+> >
+> > Note that, after discussion on v2, we decided to keep the existing
+> > meaning of label so as not to require changes to existing userspace
+> > software when moving to use binman nodes to specify the firmware
+> > layout.
+> >
+> > Note also that, after discussion on v6, we decided to use the same
+> > 'fixed-partition' schema for the binman features, so this version
+> > adds a new 'binman.yaml' file providing the new compatibles to the
+> > existing partition.yaml binding.
+> >
+> > Signed-off-by: Simon Glass <sjg@chromium.org>
+> > ---
+> >
+> > (no changes since v8)
+> >
+> > Changes in v8:
+> > - Switch the patch ordering so the partition change comes first
+> >
+> > Changes in v7:
+> > - Adjust MAINTAINERS entry
+> > - Put compatible strings into the 'fixed-partition' binding
+> >
+> > Changes in v5:
+> > - Add mention of why 'binman' is the vendor
+> > - Drop  'select: false'
+> > - Tidy up the compatible setings
+> > - Use 'tfa-bl31' instead of 'atf-bl31'
+> >
+> > Changes in v4:
+> > - Correct selection of multiple compatible strings
+> >
+> > Changes in v3:
+> > - Drop fixed-partitions from the example
+> > - Use compatible instead of label
+> >
+> > Changes in v2:
+> > - Use plain partition@xxx for the node name
+> >
+> >  .../bindings/mtd/partitions/binman.yaml       | 49 +++++++++++++++++++
+> >  .../bindings/mtd/partitions/partition.yaml    | 21 ++++++++
+> >  MAINTAINERS                                   |  5 ++
+> >  3 files changed, 75 insertions(+)
+> >  create mode 100644 Documentation/devicetree/bindings/mtd/partitions/binman.yaml
+> >
+> > diff --git a/Documentation/devicetree/bindings/mtd/partitions/binman.yaml b/Documentation/devicetree/bindings/mtd/partitions/binman.yaml
+> > new file mode 100644
+> > index 000000000000..83417ad5cee9
+> > --- /dev/null
+> > +++ b/Documentation/devicetree/bindings/mtd/partitions/binman.yaml
+> > @@ -0,0 +1,49 @@
+> > +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
+> > +%YAML 1.2
+> > +---
+> > +$id: http://devicetree.org/schemas/mtd/partitions/binman.yaml#
+> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > +
+> > +title: Binman entries
+> > +
+> > +description: |
+> > +  TBD
+>
+> ?
 
-After merging the mm tree, today's linux-next build (htmldocs) produced
-this warning:
+Oh yes, I forgot to put that back when I reworked all these again.
 
-Documentation/filesystems/proc.rst:958: WARNING: Title underline too short.
+>
+> > +
+> > +maintainers:
+> > +  - Simon Glass <sjg@chromium.org>
+> > +
+> > +allOf:
+> > +  - $ref: /schemas/mtd/partitions/partition.yaml#
+> > +
+> > +properties:
+> > +  compatible:
+> > +    enum:
+> > +      - binman,entry # generic binman entry
+>
+> As-is, 'binman' would need to be added to vendor-prefixes.yaml.
+>
+> However, I think just 'binman' would provide just as much information.
+> But really, does it provide anything? What would be the difference
+> between this and no compatible?
 
-allocinfo
-~~~~~~~
+In Binman this is the base class ('entry') for all entry types that it
+understands. I don't expect we would actually use this since it does
+not define what the contents are.
 
-Introduced by commit
+So I can remove this line.
 
-  d08b311b6d49 ("lib: add allocation tagging support for memory allocation =
-profiling")
-
-from the mm-unstable branch of the mm tree.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/+1N7hoIm+V=s3ZXe=KBerLT
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmYA0nAACgkQAVBC80lX
-0Gw7cAf8D8PvqlbGsW2ablwJbapHqjqYZHYd+9AuCdIE404IHkOjlFcXZ/4bEbIJ
-7j5KuT2/BlawIFlGWFPXRSOQuj+lxl0RS2RTvhoZfmO6EomSMEOxClhq3w31FuwO
-w0QOGySuWTFOc3cA2ABmM60aId6U9RZ6boRxwHHtuHCW7JJENVTgDJg1EnoX3J5j
-SQpgm3tVO+4O9qIDFsKKLMC1LHeslJ7OGCAdY/DyhF9YKm75mVImOllsZPYVjuaY
-5SAKB2n2ThTIahvIMss4j1jBNqwZD/GyNDo5MYw2qxi3TIhZTpsmaizJjBvBWPUB
-1dP85YnY4a/Pz5zkilMlKjzBLTghBQ==
-=NU8c
------END PGP SIGNATURE-----
-
---Sig_/+1N7hoIm+V=s3ZXe=KBerLT--
+Regards,
+Simon
 
