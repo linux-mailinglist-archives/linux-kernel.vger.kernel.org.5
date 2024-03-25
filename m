@@ -1,150 +1,131 @@
-Return-Path: <linux-kernel+bounces-117175-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-117238-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 79DB688ACC4
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 18:59:43 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 547DA88A8FB
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 17:23:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0B0F8B26FA9
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 16:06:17 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F3F1C3672D7
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 16:23:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CB1FF137776;
-	Mon, 25 Mar 2024 13:47:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2D6A512FB39;
+	Mon, 25 Mar 2024 14:20:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="DlThblYv"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.13])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b="niS8Okqv"
+Received: from mail-qk1-f175.google.com (mail-qk1-f175.google.com [209.85.222.175])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 933806CDD6;
-	Mon, 25 Mar 2024 13:47:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.13
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 03FD17F7C1
+	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 14:20:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711374478; cv=none; b=grLHoQf6a/Ja/b1uR4UeCOnRH2ICKX3S8jLyj7p4O8RKcy+px7bY8EnjvzecrWV44KQWiZygK5a2K/qRMK9kMwCKTzeFZW9ykPkkyHnjJ+nIol5fD8nelAAuxnpE6sJC1piMiTXh6x9/8DrTQQs71W2LYx0xWzLcQZKbCw5AZM8=
+	t=1711376443; cv=none; b=QSrcQhMJvnbUsXenmRfpbEOgR2zWH6NohpJj+SOCR7Dmf43ZmQRBdxgY2fFyJ9uLWgFq7Mb9iiW7Ixus9hsyOAQvAEQhkD5O1tB3UUaXDu0RwQSjFQhHOHkEcVmcU5QvqX6sLwrx9Z00fpUKEB8fru+Ull9UMP2zsiY0RZwoYn0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711374478; c=relaxed/simple;
-	bh=iEruMJvxq+UmERlCZDaxB9mRHsXEMs+fp+GFQUEczU0=;
-	h=From:Date:To:cc:Subject:In-Reply-To:Message-ID:References:
-	 MIME-Version:Content-Type; b=bKS4zWaQIeGviPTmA5L6mjypdaMKkuq9rzXnHH4Pg8BAofJcy3jvoF4Z79vGHRzneB0wdhtkjdJ6sss/A5BuY5kYpcaLQHfss0bURu9a3zcp28uzR5BcfIimjT0rWhewi2tU6222lPZzOMO5uGY7goOv8MwHINkEHct8AesgX2M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=DlThblYv; arc=none smtp.client-ip=192.198.163.13
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1711374477; x=1742910477;
-  h=from:date:to:cc:subject:in-reply-to:message-id:
-   references:mime-version;
-  bh=iEruMJvxq+UmERlCZDaxB9mRHsXEMs+fp+GFQUEczU0=;
-  b=DlThblYv4r268x8gRgZwUYtag3bRum+uYhwH7rdnEdx6H/NnLtsCUrkO
-   dtOBrKTiuQ/hTV0Mvc2BwKE6PRGT/1xvhuzcEFzpPKUznTFMFCTobivf+
-   n7edIXokKpDxxJpXhcqkElCLrPU2CcHL+mvYxaWS8WxkeBK+7xptNCN20
-   /BCFMUs9N84rbMWSwWQSZH8KGE2i0asMiJAwGjIpxznuZLCBU9OBnoQEW
-   FrdzaKPkWR5jsMDUtZHpbCGdBh6O9VBilkXcWJduLQGQnT4QavVbtlTBt
-   ENdE7z5pDIkEaWpEpVXtN0ylnWYOH+dcqBDY4urodeXgsBgktetyJXkW5
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11023"; a="9339611"
-X-IronPort-AV: E=Sophos;i="6.07,153,1708416000"; 
-   d="scan'208";a="9339611"
-Received: from fmviesa010.fm.intel.com ([10.60.135.150])
-  by fmvoesa107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Mar 2024 06:47:55 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,153,1708416000"; 
-   d="scan'208";a="15529267"
-Received: from ijarvine-desk1.ger.corp.intel.com (HELO localhost) ([10.245.247.19])
-  by fmviesa010-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Mar 2024 06:47:53 -0700
-From: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
-Date: Mon, 25 Mar 2024 15:47:46 +0200 (EET)
-To: "Luke D. Jones" <luke@ljones.dev>
-cc: Hans de Goede <hdegoede@redhat.com>, corentin.chary@gmail.com, 
-    platform-driver-x86@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 1/9] platform/x86: asus-wmi: add support for 2024 ROG
- Mini-LED
-In-Reply-To: <20240325054938.489732-2-luke@ljones.dev>
-Message-ID: <2cadcf26-7b99-3b32-8441-1b3939cf93b4@linux.intel.com>
-References: <20240325054938.489732-1-luke@ljones.dev> <20240325054938.489732-2-luke@ljones.dev>
+	s=arc-20240116; t=1711376443; c=relaxed/simple;
+	bh=63TCN/grSYA1rWAH+qH7a+lfvhQsFmLttF5pjeCdXLk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=VW3hfbdaIRAjycQlUADPT7YClohD5QJ0WD8W0mtw+/920Ldz/VPGdq3BrHah4HwQik+/1oA/gqHKyZnBKly5sOl/aDQ3yMccDzm8x87B3ql3VzogWbKtRDp/Ohtjz/E893SyQzLsBVX9WAR10MnvuQayXJAFIP+L/EUQh9A+Oc0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca; spf=pass smtp.mailfrom=ziepe.ca; dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b=niS8Okqv; arc=none smtp.client-ip=209.85.222.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ziepe.ca
+Received: by mail-qk1-f175.google.com with SMTP id af79cd13be357-78a3bccc420so209021285a.1
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 07:20:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google; t=1711376441; x=1711981241; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=o4khMi8YsL4x6qQRj8U1+7HQEKktCZ8TqyaiPDmkbrE=;
+        b=niS8OkqvREAy5sfkqblXb7DquNydE4CioXOa7hGbfZQF1yxQ4qltJ+ByyKehTHMvPC
+         8efjoZk/dQ3NrIbSJM6+TNMXxQiE2IcgKLuFwckAwk9eoJ/7X1cfVHwbCVcXy4C4RH1k
+         Fd6kETk7w19wS0Mlv+PdT2qSsWyZGfoMUyeS1baiVjVIKgMDf7cgU/Fkgf8MNlhzTPc4
+         Y8CgLv1oxcXBw/olWk0d480abcrQZtVx7XA0TDZMTJx4DZYEkpSX7Bjps46UlaCwRk3Y
+         VXQ6sLZKy9kPdBIEAR/YITwBDpgqTOUUmVOYKfPqjxSuzwvaguOPCaOuKMDzMJZYBjrP
+         YbAA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711376441; x=1711981241;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=o4khMi8YsL4x6qQRj8U1+7HQEKktCZ8TqyaiPDmkbrE=;
+        b=uZqMwcVLuEJDR2d6f9zbcZLYEUAQxIHmx4LjYP3p50X43cd4gx4JQ+xnqyxYnGoSji
+         tbiK/p2L3TIPSFg0umONu6oieNN+mdW53a/YAGLGdQ88aMMj7X3UJjKHSSKNSMC5wU+P
+         cpJHf+Wx463S5QC7b2oAal3KSqI6adJGl4JNE6tw2NRYcGKQWmX9R1T2fOpy2bZdDdEt
+         XY+IJ7Cc7OObIANbC7+SRgFa5Ljg0rL3HwNmwI8LzvlrCM0nnsht20loCnFva13rojVs
+         cFHXoN2ORacR91D5I784eOkn0H+4tUk75c1TVrE3OhD+YM24NX8gK+Q9WJwnRaNJEkrE
+         xYMA==
+X-Forwarded-Encrypted: i=1; AJvYcCVxzRfwqMRCVyCCDcRlFMtcfjn/U9CWRpdQ67plk/FfX45P6kTmvov9fh0ud/1hzFeyjvkZ9YHaDG2L1XrzQYngQef+Z9otKQYtIsnk
+X-Gm-Message-State: AOJu0YyKy2Udj87gyP6bIg7ZFOIfIK1httAWCzJd1wwZhDLng2r8D0ZU
+	FaId6l2FKw+oBZC8PkABwI+Gt6s4cd8puhK9MTsQKzR3LTN6Z4RcnWu450VQqFY=
+X-Google-Smtp-Source: AGHT+IEIDvH4aJX0QxV4yhRacQicWFP/ioH96fdSaZc4HTl73ipKGoKLrbARimpUoqXo7Z7Mj3Cjjg==
+X-Received: by 2002:ae9:e64a:0:b0:789:e917:ac8d with SMTP id x10-20020ae9e64a000000b00789e917ac8dmr12632qkl.71.1711376440895;
+        Mon, 25 Mar 2024 07:20:40 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-142-68-80-239.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.80.239])
+        by smtp.gmail.com with ESMTPSA id ou8-20020a05620a620800b007882e204d45sm2170804qkn.37.2024.03.25.07.20.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 25 Mar 2024 07:20:40 -0700 (PDT)
+Received: from jgg by wakko with local (Exim 4.95)
+	(envelope-from <jgg@ziepe.ca>)
+	id 1rokgy-000ME6-0a;
+	Mon, 25 Mar 2024 10:48:48 -0300
+Date: Mon, 25 Mar 2024 10:48:48 -0300
+From: Jason Gunthorpe <jgg@ziepe.ca>
+To: "Peng Fan (OSS)" <peng.fan@oss.nxp.com>
+Cc: Will Deacon <will@kernel.org>, Robin Murphy <robin.murphy@arm.com>,
+	Joerg Roedel <joro@8bytes.org>,
+	Thomas Gleixner <tglx@linutronix.de>, Marc Zyngier <maz@kernel.org>,
+	Bixuan Cui <cuibixuan@huawei.com>,
+	linux-arm-kernel@lists.infradead.org, iommu@lists.linux.dev,
+	linux-kernel@vger.kernel.org, Peng Fan <peng.fan@nxp.com>
+Subject: Re: [PATCH 3/3] iommu/arm-smmu-v3: support suspend/resume
+Message-ID: <20240325134848.GA8419@ziepe.ca>
+References: <20240324-smmu-v3-v1-0-11bc96e156a5@nxp.com>
+ <20240324-smmu-v3-v1-3-11bc96e156a5@nxp.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240324-smmu-v3-v1-3-11bc96e156a5@nxp.com>
 
-On Mon, 25 Mar 2024, Luke D. Jones wrote:
+On Sun, Mar 24, 2024 at 08:29:00PM +0800, Peng Fan (OSS) wrote:
 
-> Support the 2024 mini-led backlight and adjust the related functions
-> to select the relevant dev-id. Also add `available_mini_led_mode` to the
-> platform sysfs since the available mini-led levels can be different.
-> 
-> Signed-off-by: Luke D. Jones <luke@ljones.dev>
-> ---
->  .../ABI/testing/sysfs-platform-asus-wmi       |  8 ++
->  drivers/platform/x86/asus-wmi.c               | 74 +++++++++++++++++--
->  include/linux/platform_data/x86/asus-wmi.h    |  1 +
->  3 files changed, 76 insertions(+), 7 deletions(-)
-> 
-> diff --git a/Documentation/ABI/testing/sysfs-platform-asus-wmi b/Documentation/ABI/testing/sysfs-platform-asus-wmi
-> index 8a7e25bde085..61a745d2476f 100644
-> --- a/Documentation/ABI/testing/sysfs-platform-asus-wmi
-> +++ b/Documentation/ABI/testing/sysfs-platform-asus-wmi
-> @@ -126,6 +126,14 @@ Description:
->  		Change the mini-LED mode:
->  			* 0 - Single-zone,
->  			* 1 - Multi-zone
-> +			* 2 - Multi-zone strong (available on newer generation mini-led)
+> +static void arm_smmu_resume_unique_irqs(struct arm_smmu_device *smmu)
+> +{
+> +	struct device *dev = smmu->dev;
+> +	struct msi_desc *desc;
+> +	struct msi_msg msg;
 > +
-> +What:		/sys/devices/platform/<platform>/available_mini_led_mode
-> +Date:		Jun 2023
-> +KernelVersion:	6.10
-> +Contact:	"Luke Jones" <luke@ljones.dev>
-> +Description:
-> +		List the available mini-led modes.
->  
->  What:		/sys/devices/platform/<platform>/ppt_pl1_spl
->  Date:		Jun 2023
-> diff --git a/drivers/platform/x86/asus-wmi.c b/drivers/platform/x86/asus-wmi.c
-> index 18be35fdb381..54ce0fb26f42 100644
-> --- a/drivers/platform/x86/asus-wmi.c
-> +++ b/drivers/platform/x86/asus-wmi.c
-> @@ -297,6 +297,7 @@ struct asus_wmi {
->  
->  	bool panel_overdrive_available;
->  	bool mini_led_mode_available;
-> +	u32 mini_led_dev_id;
->  
->  	struct hotplug_slot hotplug_slot;
->  	struct mutex hotplug_lock;
-> @@ -2109,10 +2110,27 @@ static ssize_t mini_led_mode_show(struct device *dev,
->  	struct asus_wmi *asus = dev_get_drvdata(dev);
->  	int result;
->  
-> -	result = asus_wmi_get_devstate_simple(asus, ASUS_WMI_DEVID_MINI_LED_MODE);
-> -	if (result < 0)
-> -		return result;
-> +	result = asus_wmi_get_devstate_simple(asus, asus->mini_led_dev_id);
->  
-> +	/* Remap the mode values to match previous generation mini-led.
-> +	 * Some BIOSes return -19 instead of 2, which is "mini-LED off", this
-> +	 * appears to be a  BIOS bug.
-> +	 */
-> +	if (asus->mini_led_dev_id == ASUS_WMI_DEVID_MINI_LED_MODE2) {
-> +		switch (result) {
-> +		case 0:
-> +			result = 1;
-> +			break;
-> +		case 1:
-> +			result = 2;
-> +			break;
-> +		case 2:
-> +		case -19:
+> +	if (!dev->msi.domain)
+> +		return;
+> +
+> +	desc = irq_get_msi_desc(smmu->evtq.q.irq);
+> +	if (desc) {
+> +		get_cached_msi_msg(smmu->evtq.q.irq, &msg);
+> +		arm_smmu_write_msi_msg(desc, &msg);
+> +	}
+> +
+> +	desc = irq_get_msi_desc(smmu->gerr_irq);
+> +	if (desc) {
+> +		get_cached_msi_msg(smmu->gerr_irq, &msg);
+> +		arm_smmu_write_msi_msg(desc, &msg);
+> +	}
+> +
+> +	if (smmu->features & ARM_SMMU_FEAT_PRI) {
+> +		desc = irq_get_msi_desc(smmu->priq.q.irq);
+> +		if (desc) {
+> +			get_cached_msi_msg(smmu->priq.q.irq, &msg);
+> +			arm_smmu_write_msi_msg(desc, &msg);
+> +		}
+> +	}
+> +}
 
-Can you confirm this -19 really does come from BIOS? Because I suspect 
-it's -ENODEV error code from from one of the functions on the driver side
-(which is why I asked you to change it into -ENODEV).
+I wonder if this should be done instead by converting the driver away
+from platform MSI to the new MSI mechanism?
 
-
--- 
- i.
-
+Jason
 
