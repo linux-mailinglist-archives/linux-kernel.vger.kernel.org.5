@@ -1,103 +1,159 @@
-Return-Path: <linux-kernel+bounces-117423-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-117424-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 28B3388AB3C
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 18:17:46 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3813888AB3E
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 18:18:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 59AE81C2613C
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 17:17:45 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F0BA728E55A
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 17:18:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED6DF5102B;
-	Mon, 25 Mar 2024 15:58:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4F6FA7FBD2;
+	Mon, 25 Mar 2024 15:59:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=sipsolutions.net header.i=@sipsolutions.net header.b="O7jgELFi"
-Received: from sipsolutions.net (s3.sipsolutions.net [168.119.38.16])
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="d2JaH/4t"
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6AF4412B79;
-	Mon, 25 Mar 2024 15:58:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=168.119.38.16
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F32407F7DC;
+	Mon, 25 Mar 2024 15:59:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711382324; cv=none; b=ROAuRKHzTF2JPn14CqCuwOTO8Qrh2oToK/7l7Oe7kAM6GJxsmZDvWdwqRiorl5dHzI0ACUJ4/oHdzXsC3B3KNFc4BM/dsiUlEEP87mLP/1vM2hZjO0ek2b8+0ct+6tbWf2kQYbWvcpJn33FxPmVs5ouaKT69+yZRFGJJHzQZaZY=
+	t=1711382350; cv=none; b=NjB0Bp9guVACBtFJ+z0FlzyQJC8LJTqpOfHLOwK8bPPgVXM/P6qtEQCxwFnCKMumRZLdemscbAADCkTNJxdMfXzziY2ymPhCLN9O5oOaUt878ZYkUlWDe4dp+qifc17j1ZMwGHsXcEzZCiTdKnzp0vAaMjevc1tjitOURisF6Cw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711382324; c=relaxed/simple;
-	bh=yCNGsEK58w4zTJGaxQNMT90lxquB4Gp/F+iGwvH7dqk=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=dfupiYTvWRQbJfr0ik1n9iNLusKArOWtZAb0gtfQHfNAoLvfQ9ivBR02OM61UB/IT8EXYwstgNWliC3QrYoy3Lc6FxBZUvUGQ2qKJ8Ac5We0Z43nkoULxeKZ7XX7S1/Ca+oRqJKzK695uu0wYAjplLlPVxmFA6IXYYiACGa5dSU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sipsolutions.net; spf=pass smtp.mailfrom=sipsolutions.net; dkim=pass (2048-bit key) header.d=sipsolutions.net header.i=@sipsolutions.net header.b=O7jgELFi; arc=none smtp.client-ip=168.119.38.16
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sipsolutions.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sipsolutions.net
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=sipsolutions.net; s=mail; h=MIME-Version:Content-Transfer-Encoding:
-	Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender
-	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
-	Resent-Cc:Resent-Message-ID; bh=yCNGsEK58w4zTJGaxQNMT90lxquB4Gp/F+iGwvH7dqk=;
-	t=1711382321; x=1712591921; b=O7jgELFiCu5Bs3LWvdfcGED2x2DBZz2rrxMw09Dx8R+hUsS
-	RUaT891yfw73/w0tZ3KpcTLGuJFlIt/Jr2nineajOrFFyqR3WVtvxYeTKxx8Dzaihld2T08D3Mmdy
-	lEJXoeksgVdotK384ZrZAsUDCx5KuD6+VdYOdfOL4py1S0yACQiA7sosPDusASEFQO6SLjYQmeI5b
-	sQTEecRyB8vV8fChGGCQr33V2uj9uFoVxs5DgYQzANLdX89gLY/bEuTOuoPO9Hm2PXUfwsBdrrlDZ
-	igohNPuR2AIZ9J/AhPvm+shIz22tPAD8GZDR3CRguD0s7LOf21SYfMgiP7qHQljA==;
-Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
-	(Exim 4.97)
-	(envelope-from <johannes@sipsolutions.net>)
-	id 1romic-0000000Dvhd-3poE;
-	Mon, 25 Mar 2024 16:58:39 +0100
-Message-ID: <283623e0b227d843a83f8fcd6e9302b1f9f6995a.camel@sipsolutions.net>
-Subject: Re: [EXT] Re: [PATCH v9 0/2] wifi: mwifiex: add code to support
- host mlme
-From: Johannes Berg <johannes@sipsolutions.net>
-To: Brian Norris <briannorris@chromium.org>
-Cc: David Lin <yu-hao.lin@nxp.com>, Francesco Dolcini
- <francesco@dolcini.it>,  "kvalo@kernel.org" <kvalo@kernel.org>,
- "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Pete Hsieh
- <tsung-hsien.hsieh@nxp.com>,  "rafael.beims" <rafael.beims@toradex.com>,
- Francesco Dolcini <francesco.dolcini@toradex.com>
-Date: Mon, 25 Mar 2024 16:58:37 +0100
-In-Reply-To: <ZftaJEIeNfV7YrVo@google.com>
-References: <20240306020053.18054-1-yu-hao.lin@nxp.com>
-	 <20240315094927.GA6624@francesco-nb> <ZfTspRKFgrO9xCTH@google.com>
-	 <969e95ccc4a1d35b45212b7fcb536ee90995e3b5.camel@sipsolutions.net>
-	 <PA4PR04MB9638D253189D6DD330B198B2D1332@PA4PR04MB9638.eurprd04.prod.outlook.com>
-	 <PA4PR04MB9638BE73DDBCE1CE8AA32BA8D1332@PA4PR04MB9638.eurprd04.prod.outlook.com>
-	 <b2d9a7ef53c5ab4212617e8edf202bbafe52e2f8.camel@sipsolutions.net>
-	 <ZftaJEIeNfV7YrVo@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.50.4 (3.50.4-1.fc39) 
+	s=arc-20240116; t=1711382350; c=relaxed/simple;
+	bh=z6TktM9oeZYfD2iw3BnLyXq0E5TG0XoAbr6D5qI8LfY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=VcNc6RwO3LgL3wGRqZyyGGY/5gB1Hj3JBFJUDESWNxEMIuV3RsAx9kVTLHfP6HDrV3VZCoeq9nlkIQTEqhsfVK4TEIzROFXS/vB51QSeOJGKpU7aiqxZDBjU/VoeEljlDFRwk6GuQQMRlwwrDx87ckAxM6SBYFyBigD8+ZdzE2w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=d2JaH/4t; arc=none smtp.client-ip=46.235.227.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1711382347;
+	bh=z6TktM9oeZYfD2iw3BnLyXq0E5TG0XoAbr6D5qI8LfY=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=d2JaH/4tV0LyVi0uyRz3byEOEifMu162pRb26KxjcEUxZ5VvtYxVsHk/rmSVV57bD
+	 7byKasfozdy+2czFVurHQ7KjR4IltkaPUvLq6P3evAaYL6i4pG5bXSAHBlY2/0O6hP
+	 q26QHHeeOTN3SPezNEI90RM8dn3ZGJiVYxyodSkuv2Myr+nAcMkx+GY0E4/Fwyrpnr
+	 w+DkvDV/oof3kyfGe/O+rCGFKivV6YNPkSXUqsxx9W4nnXrL91mI3/eO1fBG0L5CTH
+	 HdLeM6/ZS4PgqjBuBxFSIgNAx6p/qJK4IRUedivCsRs7V+aTWYjWASZWvpAem//4ff
+	 OXQRIwFVCUHYw==
+Received: from mercury (cola.collaboradmins.com [195.201.22.229])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: sre)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 3D48337813B7;
+	Mon, 25 Mar 2024 15:59:07 +0000 (UTC)
+Received: by mercury (Postfix, from userid 1000)
+	id 769C3106074E; Mon, 25 Mar 2024 16:58:47 +0100 (CET)
+Date: Mon, 25 Mar 2024 16:58:47 +0100
+From: Sebastian Reichel <sebastian.reichel@collabora.com>
+To: Boris Brezillon <boris.brezillon@collabora.com>
+Cc: Heiko Stuebner <heiko@sntech.de>, linux-rockchip@lists.infradead.org, 
+	Rob Herring <robh+dt@kernel.org>, Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+	Conor Dooley <conor+dt@kernel.org>, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	kernel@collabora.com
+Subject: Re: [PATCH v1 3/4] arm64: dts: rockchip: rk3588-rock5b: Enable GPU
+Message-ID: <a6uu7b3y7d4nirxbplc5cj4oeuyblx2grpvvldeovofhx3tnqc@dlse3vixhpws>
+References: <20240325153850.189128-1-sebastian.reichel@collabora.com>
+ <20240325153850.189128-4-sebastian.reichel@collabora.com>
+ <20240325164441.1dab4018@collabora.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-malware-bazaar: not-scanned
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="rdf73uqhcgedopzb"
+Content-Disposition: inline
+In-Reply-To: <20240325164441.1dab4018@collabora.com>
 
-On Wed, 2024-03-20 at 14:50 -0700, Brian Norris wrote:
+
+--rdf73uqhcgedopzb
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+Hi,
+
+On Mon, Mar 25, 2024 at 04:44:41PM +0100, Boris Brezillon wrote:
+> On Mon, 25 Mar 2024 16:37:20 +0100
+> Sebastian Reichel <sebastian.reichel@collabora.com> wrote:
 >=20
-> AFAICT, mwifiex firmware still isn't allowing "parsing and generation of
-> 802.11 wireless frames" in any general form -- everything I see is still
-> wrapped in custom firmware command protocols. I do see that the AUTH
-> frame looks like it's essentially duplicating the standard mgmt format,
-> and uses the driver's TX path for it, but there isn't a corresponding
-> ASSOC management frame that I can see...
+> > From: Boris Brezillon <boris.brezillon@collabora.com>
+> >=20
+> > Enable the Mali GPU in the Rock 5B.
+> >=20
+> > Signed-off-by: Boris Brezillon <boris.brezillon@collabora.com>
+>=20
+> I don't remember writing this patch ;-), maybe I screwed authorship at
+> some point, dunno.
 
-Fair point, I didn't really look beyond "auth creates auth frames and
-sends them normally like any other frame" ...
+mh, I cherry-picked the DT patches from your branch before
+cleaning them up.
 
-> ...so I really can't tell how much control this firmware *does* give the
-> host regarding arbitrary 802.11 frame management.
+> > Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
+> > ---
+> >  arch/arm64/boot/dts/rockchip/rk3588-rock-5b.dts | 6 ++++++
+> >  1 file changed, 6 insertions(+)
+> >=20
+> > diff --git a/arch/arm64/boot/dts/rockchip/rk3588-rock-5b.dts b/arch/arm=
+64/boot/dts/rockchip/rk3588-rock-5b.dts
+> > index 1fe8b2a0ed75..096ee7a98b89 100644
+> > --- a/arch/arm64/boot/dts/rockchip/rk3588-rock-5b.dts
+> > +++ b/arch/arm64/boot/dts/rockchip/rk3588-rock-5b.dts
+> > @@ -180,6 +180,11 @@ &cpu_l3 {
+> >  	cpu-supply =3D <&vdd_cpu_lit_s0>;
+> >  };
+> > =20
+> > +&gpu {
+> > +	mali-supply =3D <&vdd_gpu_s0>;
+> > +	status =3D "okay";
+> > +};
+> > +
+> >  &i2c0 {
+> >  	pinctrl-names =3D "default";
+> >  	pinctrl-0 =3D <&i2c0m2_xfer>;
+> > @@ -470,6 +475,7 @@ rk806_dvs3_null: dvs3-null-pins {
+> > =20
+> >  		regulators {
+> >  			vdd_gpu_s0: vdd_gpu_mem_s0: dcdc-reg1 {
+> > +				regulator-always-on;
+>=20
+> Hm, should we mention why the regulator is always on here?
 
-Perhaps indeed FW does require the assoc to be done with that command.
+In case of the EVB1 it's needed because the generic coupler driver
+cannot handle regulators that are not always on. I'm not sure why
+it was added for the Rock 5B. I will check if it works without that
+flag.
 
-> But that's pretty much business as usual for anybody but the vendor in
-> priorietary firmware land; I can't answer pretty much any question,
-> other than what I can glean from a driver.
+Greetings,
 
-:)
+-- Sebastian
 
-johannes
+--rdf73uqhcgedopzb
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAmYBny4ACgkQ2O7X88g7
++poZyQ/9G9QEr+2KbYk/fyuDkbFekDi5Glgsc2BnOzUb7Fc/xRgFCjcxrHlYKwgO
+PiNmoQd3mtYg5dV9LXrAk6CCSwMulGLpYvPbeb2CWrSRz2GdzKFuSbSz1Cu8QcUi
+taJwzSCCIkKA6yp6KJU8zasTVOhfOMuuWymfKomL6nE/4UqoLCMWNurt5IAuyWQw
+ygipqVELxmkDFoS2yx3s2wDi/MrvG5jWVTeX8d4WWyfAyl4SIeiHlpwFNZ1QjFBr
+39RxnW7Z/OxyASUHg6YV5ysoxd4Mo07XBxEEzjsMCvUxoc6PvQxsQjZYJ330Qa7c
+vbGsrlG3359jmybiFZyJnAcXgwyA9Ly5AtRP+XcO20gCDBe55pTuAr5zMQe2943c
+6jApERBuQTbMSsQHoUXFi6zDKhfs2I8GM4vKmk1zOk5slDCWnYHfrG7qMtkzAKN6
+R7hPsj7DuBdNP0i6kiepHUqhU3G+LzsyqxD0Jh4VxiRiNiRUcOAyQT0JY29AkXhT
+hYyF5n8Q5Y7DvtqH2NKGRoXsLhI/jo6FXU9aBeuTVxYCdCNe4gkDkCWtHLSmMIu3
+wdPwJy2lq9GLaNd0Z9IHc06ymM5Uy9RyzhhHcrWJvPKDeAKfl264bcqJbwySjmug
+jvvGSbwi1CX+a+6iKqfXAvYwxUBJ1pLI/Jxqeyz0Ml/zMeREsAY=
+=Gono
+-----END PGP SIGNATURE-----
+
+--rdf73uqhcgedopzb--
 
