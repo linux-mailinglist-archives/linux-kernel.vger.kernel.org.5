@@ -1,136 +1,323 @@
-Return-Path: <linux-kernel+bounces-117023-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-117024-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EA7BC88A641
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 16:21:19 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id A717188A643
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 16:21:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 252FE1C3C87A
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 15:21:19 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1EB3C1F619D3
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 15:21:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 74AF47D09F;
-	Mon, 25 Mar 2024 12:40:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A878D13A41B;
+	Mon, 25 Mar 2024 12:40:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RJuj/tSl"
-Received: from mail-pf1-f171.google.com (mail-pf1-f171.google.com [209.85.210.171])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="iC/FFX1z"
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB5AB6FE05
-	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 12:40:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D0A03136E34
+	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 12:40:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711370410; cv=none; b=rymA8vWkp4Rx13PBKqkUfRVLuDZkcoognKUx4pc2jkwABwyM3/Vt+JaobWeCc3+iomFcf3+Fv3kPAgYZi2zUXxE0voPp7xfLwGfh3OPG4ZYBg2zax2wsFI+qDEvW/q1Q6T8REJ00HE9fpfXvW0UIaGGm68jh359E44FLwugDANk=
+	t=1711370449; cv=none; b=uGFM4bAgrCTsXbFuISZ48XpHd5YuBw80YP8zD569SK1+PQ1skpvjObNC5Asog5P5ip6lqgaeRig6WAyYK+NXKwIidVrnEI+nyaJOj9a4unR6sCAa1jJ61djI2JkRwagnTb1qB2sdi+fkcEJlkQGQZ66vyA+rzd27UKnczqGwLG0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711370410; c=relaxed/simple;
-	bh=QW4LBjhW0uNwP+1PboSbSNzA0wriLnh+S83+CUURTbI=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Mh15KYoJg1VgttDtLziKiRAMZibj2jmgsSoxt++VJ/e6RpA2l9GfDSW1Gi9UHW5hjPVDUt+N+P1Hz4goGky6Au7G6a4TNTUCxyFGRttACrz0/2tRXvUkx+AZqcLPFy17z5ppu8zwH0ITYt1uxIicasjeq5mtCtpz7bzTW0dzz+s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=RJuj/tSl; arc=none smtp.client-ip=209.85.210.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f171.google.com with SMTP id d2e1a72fcca58-6ea9a605ca7so853972b3a.0
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 05:40:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711370408; x=1711975208; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=XB45BiVabHfmUkxlJuWWQAmoKjnTiH/0tlm2fLhu3cg=;
-        b=RJuj/tSlBqGHPZU1/WoEdjNHXIt6OfNY+xx4bcyefptG8TuufMDeH7KvtkKMBHC2fd
-         4XbL0E+g9N93f8UuVTN6BTNyvtbLApafuRWIfrvX25PH4wIacqLwnswZTLYAGSdisdLV
-         6X5wY1MfRwnAoLENlEL96yVsaVH27QoOyjy/oBulnzAFPqGW32t1k/zNmxEmqeyDn81F
-         OU6TuO6zvkCnENCmt+4SwThuqkrnQhnBU1Uxt/6XRmrgzq48Gt+/NHoZc+795DjpwHLq
-         AEO6drOYAVARw/MHmSaa4pJUV7tYZFPjN0wCooMN8OKgFnvh7ZiWR2m0l1UVx8WdlLA8
-         T4rA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711370408; x=1711975208;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=XB45BiVabHfmUkxlJuWWQAmoKjnTiH/0tlm2fLhu3cg=;
-        b=shscN0guRbYTwHv+HYKor/wzDkOIMsMc+UitwQWs4XcRFsTvUt4uZyt9L4vh4rqM4/
-         cGjpDVFgtydlfc64+H6BhxJV3oHE+F+653WvpS3OdY2jGiQlFRTGgffgp/rNPkKZWfy5
-         NyrOHc61VTO41cz3CbvkXnJxvKYbn1mh+UM8sWtXQINuOZISVa5tTHR1eKFxpAYk13mZ
-         5Pcqcy2L7rfZw4cXg9Ryq+u9kEObJAUTOn/oKpHeZvqevQWkG8T3L/SJKwihOQrsJfXa
-         ym06Gw3nmtiOraVSwvlTR1rSzrtQkpl++y4p1vrNK26NE9H8dPbdu1wJKDB/dRh6UM6L
-         fklg==
-X-Forwarded-Encrypted: i=1; AJvYcCWdXzsJkCdxYWGWBGDNdu0Fmw+9f2eZ5FxyIDfhwgGR/Jq6lxkcn1/O7+7JqTbf882SuOduCIskHJp//6VAbCi43VFPLBXPnBVMopD4
-X-Gm-Message-State: AOJu0YyhCeFH32/wSU2Kai/mr+9OHseB07a1TTRlFsr9Hr/Cb401CqAj
-	nfI73zhAuVH/0KvIBZuO6lQrFn+uF9VZen5F/pLI02WYDz8F3s7y
-X-Google-Smtp-Source: AGHT+IFHWYllbJcf/ZdUOUZMtQeFd025rrAYdRDS/0Bn7CQz5YVRd3TYearEEFInBA4aieBgpoF+rQ==
-X-Received: by 2002:a05:6a00:1ad3:b0:6ea:ad5e:54fa with SMTP id f19-20020a056a001ad300b006eaad5e54famr3073383pfv.13.1711370407804;
-        Mon, 25 Mar 2024 05:40:07 -0700 (PDT)
-Received: from [192.168.255.10] ([43.132.141.20])
-        by smtp.gmail.com with ESMTPSA id v65-20020a626144000000b006ea944bb4a8sm4194274pfb.59.2024.03.25.05.40.05
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 25 Mar 2024 05:40:07 -0700 (PDT)
-Message-ID: <efd4c141-8c09-4787-b820-aecf2ad02ef5@gmail.com>
-Date: Mon, 25 Mar 2024 20:40:03 +0800
+	s=arc-20240116; t=1711370449; c=relaxed/simple;
+	bh=WxTNIhNLjDRo1heayNla3pAiG49aljhTjEn0KCy534U=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=LdE9YnbJnz7ILUxFjLoGp/yRp2RRjPWoeEMSUKEULkR5TiUyj+jQn7Pg3VIDVexirEbdkyK8QOAUd7I6flgLeoLlkCyL+LnCUUg7Y10CzgSaB4Y+opFMohoa5NQt7eapSyBNG3LZ54uUD2h59MoObfDkBShxgILxXVhRhrLFvN8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=iC/FFX1z; arc=none smtp.client-ip=46.235.227.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1711370445;
+	bh=WxTNIhNLjDRo1heayNla3pAiG49aljhTjEn0KCy534U=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=iC/FFX1zp6cgiJXJwHQRQfzil4l4TbxzZiSXUL4xc/AS2fE5AaE74lkQ8pZQ5t6XA
+	 q3yzzcCPQVyWFrdZNpPc1cgZPSmxUShWCTKjmAGJM4RNMzH5ta27ldckJyTjGJ4yBo
+	 wJvhFIg6dLCHqO5VNY0ImBnkVN4L89zme7XdUywkAS/dB2R1KBvRfPSqUT5D1KIw4F
+	 MLRLBl1drDnLwJXGIDca27LuKLoPcI6nrBt/KdkZRvChbiFaGofo80jZnALBfdsjD9
+	 uM2KIO4E/1JSrbA/mdqaK0EmEmqe/du1dm96hqhFx1oJdFFlrEW+ugsFKKz0CHt12W
+	 H25rskVfWhFTg==
+Received: from eldfell (cola.collaboradmins.com [195.201.22.229])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: pq)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 8E36E3782046;
+	Mon, 25 Mar 2024 12:40:44 +0000 (UTC)
+Date: Mon, 25 Mar 2024 14:40:43 +0200
+From: Pekka Paalanen <pekka.paalanen@collabora.com>
+To: Louis Chauvet <louis.chauvet@bootlin.com>
+Cc: Rodrigo Siqueira <rodrigosiqueiramelo@gmail.com>, Melissa Wen
+ <melissa.srw@gmail.com>, =?UTF-8?B?TWHDrXJh?= Canal
+ <mairacanal@riseup.net>, Haneen Mohammed <hamohammed.sa@gmail.com>, Daniel
+ Vetter <daniel@ffwll.ch>, Maarten Lankhorst
+ <maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>,
+ Thomas Zimmermann <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>,
+ arthurgrillo@riseup.net, Jonathan Corbet <corbet@lwn.net>,
+ dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+ jeremie.dautheribes@bootlin.com, miquel.raynal@bootlin.com,
+ thomas.petazzoni@bootlin.com, seanpaul@google.com, marcheu@google.com,
+ nicolejadeyee@google.com
+Subject: Re: [PATCH v5 07/16] drm/vkms: Update pixels accessor to support
+ packed and multi-plane formats.
+Message-ID: <20240325144043.77a42acb.pekka.paalanen@collabora.com>
+In-Reply-To: <20240313-yuv-v5-7-e610cbd03f52@bootlin.com>
+References: <20240313-yuv-v5-0-e610cbd03f52@bootlin.com>
+	<20240313-yuv-v5-7-e610cbd03f52@bootlin.com>
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 13/14] mm/ksm: use folio_set_stable_node in
- try_to_merge_one_page
-Content-Language: en-US
-To: Matthew Wilcox <willy@infradead.org>, alexs@kernel.org
-Cc: Andrea Arcangeli <aarcange@redhat.com>,
- Izik Eidus <izik.eidus@ravellosystems.com>, david@redhat.com,
- Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
- linux-kernel@vger.kernel.org, Hugh Dickins <hughd@google.com>,
- Chris Wright <chrisw@sous-sol.org>
-References: <20240322083703.232364-1-alexs@kernel.org>
- <20240322083703.232364-14-alexs@kernel.org>
- <Zf5OvWFiYjs_ZCF2@casper.infradead.org>
-From: Alex Shi <seakeel@gmail.com>
-In-Reply-To: <Zf5OvWFiYjs_ZCF2@casper.infradead.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; boundary="Sig_/GWLkZPlmZ5gvPRNihFHLUD/";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+
+--Sig_/GWLkZPlmZ5gvPRNihFHLUD/
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
+
+On Wed, 13 Mar 2024 18:45:01 +0100
+Louis Chauvet <louis.chauvet@bootlin.com> wrote:
+
+> Introduce the usage of block_h/block_w to compute the offset and the
+> pointer of a pixel. The previous implementation was specialized for
+> planes with block_h =3D=3D block_w =3D=3D 1. To avoid confusion and allow=
+ easier
+> implementation of tiled formats. It also remove the usage of the
+> deprecated format field `cpp`.
+>=20
+> Introduce the plane_index parameter to get an offset/pointer on a
+> different plane.
+>=20
+> Signed-off-by: Louis Chauvet <louis.chauvet@bootlin.com>
+> ---
+>  drivers/gpu/drm/vkms/vkms_formats.c | 76 +++++++++++++++++++++++++------=
+------
+>  1 file changed, 52 insertions(+), 24 deletions(-)
+>=20
+> diff --git a/drivers/gpu/drm/vkms/vkms_formats.c b/drivers/gpu/drm/vkms/v=
+kms_formats.c
+> index b2f8dfc26c35..649d75d05b1f 100644
+> --- a/drivers/gpu/drm/vkms/vkms_formats.c
+> +++ b/drivers/gpu/drm/vkms/vkms_formats.c
+> @@ -10,23 +10,43 @@
+>  #include "vkms_formats.h"
+> =20
+>  /**
+> - * pixel_offset() - Get the offset of the pixel at coordinates x/y in th=
+e first plane
+> + * packed_pixels_offset() - Get the offset of the block containing the p=
+ixel at coordinates x/y
+>   *
+>   * @frame_info: Buffer metadata
+>   * @x: The x coordinate of the wanted pixel in the buffer
+>   * @y: The y coordinate of the wanted pixel in the buffer
+> + * @plane_index: The index of the plane to use
+> + * @offset: The returned offset inside the buffer of the block
+> + * @rem_x,@rem_y: The returned coordinate of the requested pixel in the =
+block
+>   *
+> - * The caller must ensure that the framebuffer associated with this requ=
+est uses a pixel format
+> - * where block_h =3D=3D block_w =3D=3D 1.
+> - * If this requirement is not fulfilled, the resulting offset can point =
+to an other pixel or
+> - * outside of the buffer.
+> + * As some pixel formats store multiple pixels in a block (DRM_FORMAT_R*=
+ for example), some
+> + * pixels are not individually addressable. This function return 3 value=
+s: the offset of the
+> + * whole block, and the coordinate of the requested pixel inside this bl=
+ock.
+> + * For example, if the format is DRM_FORMAT_R1 and the requested coordin=
+ate is 13,5, the offset
+> + * will point to the byte 5*pitches + 13/8 (second byte of the 5th line)=
+, and the rem_x/rem_y
+> + * coordinates will be (13 % 8, 5 % 1) =3D (5, 0)
+> + *
+> + * With this function, the caller just have to extract the correct pixel=
+ from the block.
+>   */
+> -static size_t pixel_offset(const struct vkms_frame_info *frame_info, int=
+ x, int y)
+> +static void packed_pixels_offset(const struct vkms_frame_info *frame_inf=
+o, int x, int y,
+> +				 int plane_index, int *offset, int *rem_x, int *rem_y)
+>  {
+>  	struct drm_framebuffer *fb =3D frame_info->fb;
+> +	const struct drm_format_info *format =3D frame_info->fb->format;
+> +	/* Directly using x and y to multiply pitches and format->ccp is not su=
+fficient because
+> +	 * in some formats a block can represent multiple pixels.
+> +	 *
+> +	 * Dividing x and y by the block size allows to extract the correct off=
+set of the block
+> +	 * containing the pixel.
+> +	 */
+> =20
+> -	return fb->offsets[0] + (y * fb->pitches[0])
+> -			      + (x * fb->format->cpp[0]);
+> +	int block_x =3D x / drm_format_info_block_width(format, plane_index);
+> +	int block_y =3D y / drm_format_info_block_height(format, plane_index);
+> +	*rem_x =3D x % drm_format_info_block_width(format, plane_index);
+> +	*rem_y =3D x % drm_format_info_block_height(format, plane_index);
+
+typo: x should be y
 
 
+> +	*offset =3D fb->offsets[plane_index] +
+> +		  block_y * fb->pitches[plane_index] +
+> +		  block_x * format->char_per_block[plane_index];
+>  }
 
-On 3/23/24 11:38 AM, Matthew Wilcox wrote:
-> On Fri, Mar 22, 2024 at 04:37:00PM +0800, alexs@kernel.org wrote:
->> From: "Alex Shi (tencent)" <alexs@kernel.org>
->>
->> Only single page could be reached where we set stable node after write
->> protect, so use folio converted func to replace page's.
->>
->> Signed-off-by: Alex Shi (tencent) <alexs@kernel.org>
->> Cc: Izik Eidus <izik.eidus@ravellosystems.com>
->> Cc: Matthew Wilcox <willy@infradead.org>
->> Cc: Andrea Arcangeli <aarcange@redhat.com>
->> Cc: Hugh Dickins <hughd@google.com>
->> Cc: Chris Wright <chrisw@sous-sol.org>
->> ---
->>  mm/ksm.c | 2 +-
->>  1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/mm/ksm.c b/mm/ksm.c
->> index 15a78a9bab59..d7c4cc4a0cc1 100644
->> --- a/mm/ksm.c
->> +++ b/mm/ksm.c
->> @@ -1518,7 +1518,7 @@ static int try_to_merge_one_page(struct vm_area_struct *vma,
->>  			 * PageAnon+anon_vma to PageKsm+NULL stable_node:
->>  			 * stable_tree_insert() will update stable_node.
->>  			 */
->> -			set_page_stable_node(page, NULL);
->> +			folio_set_stable_node(page_folio(page), NULL);
->>  			mark_page_accessed(page);
-> 
-> I'd rather you did a conversion of try_to_merge_one_page() instead of
-> just this.  It'll be a fun one because you'll have to recalculate the
-> folio after calling split_huge_page().
+Ok, this function looks very much plausible for handling blocky
+formats. Good.
 
-Hi Willy,
+> =20
+>  /**
+> @@ -36,30 +56,35 @@ static size_t pixel_offset(const struct vkms_frame_in=
+fo *frame_info, int x, int
+>   * @frame_info: Buffer metadata
+>   * @x: The x(width) coordinate inside the plane
+>   * @y: The y(height) coordinate inside the plane
+> + * @plane_index: The index of the plane
+> + * @addr: The returned pointer
+> + * @rem_x,@rem_y: The returned coordinate of the requested pixel in the =
+block
+>   *
+> - * Takes the information stored in the frame_info, a pair of coordinates=
+, and
+> - * returns the address of the first color channel.
+> - * This function assumes the channels are packed together, i.e. a color =
+channel
+> - * comes immediately after another in the memory. And therefore, this fu=
+nction
+> - * doesn't work for YUV with chroma subsampling (e.g. YUV420 and NV21).
+> + * Takes the information stored in the frame_info, a pair of coordinates=
+, and returns the address
+> + * of the block containing this pixel and the pixel position inside this=
+ block.
+>   *
+> - * The caller must ensure that the framebuffer associated with this requ=
+est uses a pixel format
+> - * where block_h =3D=3D block_w =3D=3D 1, otherwise the returned pointer=
+ can be outside the buffer.
+> + * See @packed_pixel_offset for details about rem_x/rem_y behavior.
+>   */
+> -static void *packed_pixels_addr(const struct vkms_frame_info *frame_info,
+> -				int x, int y)
+> +static void packed_pixels_addr(const struct vkms_frame_info *frame_info,
+> +			       int x, int y, int plane_index, u8 **addr, int *rem_x,
+> +			       int *rem_y)
+>  {
+> -	size_t offset =3D pixel_offset(frame_info, x, y);
+> +	int offset;
+> =20
+> -	return (u8 *)frame_info->map[0].vaddr + offset;
+> +	packed_pixels_offset(frame_info, x, y, plane_index, &offset, rem_x, rem=
+_y);
+> +	*addr =3D (u8 *)frame_info->map[0].vaddr + offset;
+>  }
+> =20
+> -static void *get_packed_src_addr(const struct vkms_frame_info *frame_inf=
+o, int y)
+> +static void *get_packed_src_addr(const struct vkms_frame_info *frame_inf=
+o, int y,
+> +				 int plane_index)
+>  {
+>  	int x_src =3D frame_info->src.x1 >> 16;
+>  	int y_src =3D y - frame_info->rotated.y1 + (frame_info->src.y1 >> 16);
+> +	u8 *addr;
+> +	int rem_x, rem_y;
+> =20
+> -	return packed_pixels_addr(frame_info, x_src, y_src);
+> +	packed_pixels_addr(frame_info, x_src, y_src, plane_index, &addr, &rem_x=
+, &rem_y);
 
-Definitely right, the merge series funcs need more careful changes. :)
-I'd like to left them for late changes.
+How can the caller be not interested in rem_x, rem_y?
 
-Thanks
+Maybe there is no IGT test that uses DRM_FORMAT_R1 FB on a plane and
+has a source rectangle whose x is not divisible by 8 pixels?
+Or maybe the FB is filled with a solid color instead of a pattern that
+would show source rectangle positioning problems?
+
+Maybe at this point of the series, this should assert that rem_x and
+rem_y are zero? That's what vkms_compose_row() assumes, right?
+
+
+Thanks,
+pq
+
+> +	return addr;
+>  }
+> =20
+>  static int get_x_position(const struct vkms_frame_info *frame_info, int =
+limit, int x)
+> @@ -168,14 +193,14 @@ void vkms_compose_row(struct line_buffer *stage_buf=
+fer, struct vkms_plane_state
+>  {
+>  	struct pixel_argb_u16 *out_pixels =3D stage_buffer->pixels;
+>  	struct vkms_frame_info *frame_info =3D plane->frame_info;
+> -	u8 *src_pixels =3D get_packed_src_addr(frame_info, y);
+> +	u8 *src_pixels =3D get_packed_src_addr(frame_info, y, 0);
+>  	int limit =3D min_t(size_t, drm_rect_width(&frame_info->dst), stage_buf=
+fer->n_pixels);
+> =20
+>  	for (size_t x =3D 0; x < limit; x++, src_pixels +=3D frame_info->fb->fo=
+rmat->cpp[0]) {
+>  		int x_pos =3D get_x_position(frame_info, limit, x);
+> =20
+>  		if (drm_rotation_90_or_270(frame_info->rotation))
+> -			src_pixels =3D get_packed_src_addr(frame_info, x + frame_info->rotate=
+d.y1)
+> +			src_pixels =3D get_packed_src_addr(frame_info, x + frame_info->rotate=
+d.y1, 0)
+>  				+ frame_info->fb->format->cpp[0] * y;
+> =20
+>  		plane->pixel_read(src_pixels, &out_pixels[x_pos]);
+> @@ -276,7 +301,10 @@ void vkms_writeback_row(struct vkms_writeback_job *w=
+b,
+>  {
+>  	struct vkms_frame_info *frame_info =3D &wb->wb_frame_info;
+>  	int x_dst =3D frame_info->dst.x1;
+> -	u8 *dst_pixels =3D packed_pixels_addr(frame_info, x_dst, y);
+> +	u8 *dst_pixels;
+> +	int rem_x, rem_y;
+> +
+> +	packed_pixels_addr(frame_info, x_dst, y, 0, &dst_pixels, &rem_x, &rem_y=
+);
+>  	struct pixel_argb_u16 *in_pixels =3D src_buffer->pixels;
+>  	int x_limit =3D min_t(size_t, drm_rect_width(&frame_info->dst), src_buf=
+fer->n_pixels);
+> =20
+>=20
+
+
+--Sig_/GWLkZPlmZ5gvPRNihFHLUD/
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEEJQjwWQChkWOYOIONI1/ltBGqqqcFAmYBcMsACgkQI1/ltBGq
+qqdQuw//e9FgvoYRovO+ena1Rcqwa+AKzu0+DqZHPlkInlZ+Qpbl09FiSTleotVb
+tSSkj0aNhatqDFcpNPzYR2mrE/NLbnsH9XdjQSFKQVnpUTFYd1KYPKorvZxknmUs
++HHrNwhomeNwfoLY+80ZfU9ck1FI4DBYtftnad/t0FpOOIrTtBTU1tF5nE9/MXk4
+vrwwZ743Jpizu7Edv7FxO4g+3mYgVhgCHCp0d5FCBXJiXDaqM6surxFgqZidUMQW
+B3W1afkR0hDu00/mxCI3EbT+vZCquu1qOiUbGHm6c6KGpFyas0FXvC5BkA7NWlT0
+V9Tdlq6yat792ci+Vck5EQAeFm+P7xKoLxvYWpVfF+EJMvCP6+UfI4oM7qBcRA30
+sT/VbYiJO4oUx/Z+JCcCAMXzDLohIusGmNH6ArUwLiq9zzJe3IVcurGN1LykbXlr
+wA5jQzYmUPqotJi+2pyD3iUgFGGXhIO2NxKAiEJGQ1Iu1DjcERB6IIxgAMRGU30q
+avfoMtMX4Yn2YQOfmKkS3kdcSR6IC8ttDwcVJKldCIG2jm+kqqtQvMxD9EyNbTUI
+BXCWs5AGiODBme62Bvs+lBI0S5N20nKXpUNBwuUXxzv2ZyMd4wpsbX6AoMSLw16M
+lLcOJj8jhLaJibsq2Kre4+9Rdr4Z/nB+PIdj4avw79WEIieQsts=
+=wgBZ
+-----END PGP SIGNATURE-----
+
+--Sig_/GWLkZPlmZ5gvPRNihFHLUD/--
 
