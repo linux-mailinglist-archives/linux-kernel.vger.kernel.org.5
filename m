@@ -1,153 +1,213 @@
-Return-Path: <linux-kernel+bounces-117825-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-117826-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5784988B00B
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 20:34:39 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 93A3F88B00F
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 20:35:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7AE671C3819F
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 19:34:38 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 497312E1457
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 19:35:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6164D1B96B;
-	Mon, 25 Mar 2024 19:34:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C9A471B977;
+	Mon, 25 Mar 2024 19:34:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=microsoft.com header.i=@microsoft.com header.b="WFsJ+B1R"
-Received: from BN1PR04CU002.outbound.protection.outlook.com (mail-eastus2azon11022010.outbound.protection.outlook.com [52.101.56.10])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="P0/U3Mde"
+Received: from mail-lf1-f47.google.com (mail-lf1-f47.google.com [209.85.167.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0982B14AB8;
-	Mon, 25 Mar 2024 19:34:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.56.10
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711395269; cv=fail; b=WFGXEAc+aFk3cdZPZtIOsBJpiOK8psxfBGXrrOPpMf7EgZIG3MEPUuxWwDoz0QEz6OeNXqdNCtyHq2gPT78UCZLWfPqAjvmpsncL7cvGTDvGOTUUZzYM5E6eL9KRO30QoU64HnxaQoE8TPH8hzvD7ZnPQqzj1/3Of0uiqDLxJKE=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711395269; c=relaxed/simple;
-	bh=NaYjyiCONTzDIHstYXGXBeLkWzTDg2NZhaLGx4RjRss=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=r8cfgj8lI/6Fus4pOZ8yL2D/Z9S2HQXsYa8hXrHr1o62DjnawovZ8HqI3rRyP16GxTZALUY7deK9+4PtLlrQcJwUKBOVbnK57fZq2e50A5jUQ4ByszGCYyUwK3SC17tEUMWKhTeGgfP9PNp4LSfuknZIRmTkaOa6RFcwnZ8Mpp0=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microsoft.com; spf=pass smtp.mailfrom=microsoft.com; dkim=pass (1024-bit key) header.d=microsoft.com header.i=@microsoft.com header.b=WFsJ+B1R; arc=fail smtp.client-ip=52.101.56.10
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microsoft.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=microsoft.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=kEYiGoJzW2q3NbQ21BkH+dd1YSKpRdV7rlQS9AkXHQ6Mf/1wknYR9kI2IXgmvVCHc8oWsaL7WBDA1id7w/ZzFudaQiIkPF6NUz0hrIagDpvnITNpWeiGKD9cCV/Kf0xZk+tHXZ/VATD6XIsm8xdWNdLPZEPRh1WFK4IuFrlrnudWd/a115vnTVC/0/rcI4R+5pG3B+3urM2pOpKU0L7Wa0/AizXICAn9RaE1A61nX+QScmndMgJfSIRPrguVdvOGYedHpN9lrO3cKatpFN9y5RJxeLMPdMTYR13OiOIhH/azfLNcwJX9Jn2MdftsYqkCqMY5bV3thdNmw2O/jOhwFg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=NaYjyiCONTzDIHstYXGXBeLkWzTDg2NZhaLGx4RjRss=;
- b=gU/N/axfPwqUDOjYNuAnBRw9FYPi39a6ewi0dKGOLi/LQY5i7wxWT5FCMACwXmt3zduGZ/aQHHU3hBg31ErdzYWT0LklCxCiEIpop7KtTBWHU+Q9zfP4IvHjOMyyx7z5Tc8Pdp3g/MxlaUIg6fElOYzutEhDJawCsL19jcyz7gRyi0Wrrw5UHHzM0GnIDk1e7llXW5eU2AiEMTIcJJlBLtsC5vGibZV/LaRWCqfrbj7an+lt+xBrE9GokueKGNpO2aIViSniUZl8AwrS9/bLf4wxp6K/pBq+JPl3me06aYgS2n6SvslLft5tTuqs7OmRhd4+ikEtw0R5Maqkxaa1MQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=microsoft.com; dmarc=pass action=none
- header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=NaYjyiCONTzDIHstYXGXBeLkWzTDg2NZhaLGx4RjRss=;
- b=WFsJ+B1R09EIZTaCqKw0qLGjN6FqsFtfkO2RCozFDQ5H/m5NLEizFBbhTHldpTV3JodB0jZPXnrVfFw7VLeyV3gWBtXxOE33qNXbnacCvNzU9zeRCIlQ2FVwqAmgcLefLZw3ouuX0k8FOOAd+PRc6bqTHi2G8Se5OeOT5COjNdU=
-Received: from SJ1PR21MB3457.namprd21.prod.outlook.com (2603:10b6:a03:453::5)
- by MN0PR21MB3363.namprd21.prod.outlook.com (2603:10b6:208:383::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7430.18; Mon, 25 Mar
- 2024 19:34:24 +0000
-Received: from SJ1PR21MB3457.namprd21.prod.outlook.com
- ([fe80::70f:687e:92e6:45b7]) by SJ1PR21MB3457.namprd21.prod.outlook.com
- ([fe80::70f:687e:92e6:45b7%4]) with mapi id 15.20.7430.017; Mon, 25 Mar 2024
- 19:34:24 +0000
-From: Long Li <longli@microsoft.com>
-To: Konstantin Taranov <kotaranov@linux.microsoft.com>, Konstantin Taranov
-	<kotaranov@microsoft.com>, "sharmaajay@microsoft.com"
-	<sharmaajay@microsoft.com>, "jgg@ziepe.ca" <jgg@ziepe.ca>, "leon@kernel.org"
-	<leon@kernel.org>
-CC: "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH rdma-next v2 1/4] RDMA/mana_ib: Introduce helpers to
- create and destroy mana queues
-Thread-Topic: [PATCH rdma-next v2 1/4] RDMA/mana_ib: Introduce helpers to
- create and destroy mana queues
-Thread-Index: AQHaeh7yCoDHua5tr0OcwydT6xn2i7FI4o6Q
-Date: Mon, 25 Mar 2024 19:34:24 +0000
-Message-ID:
- <SJ1PR21MB345774E6B3687F5FEE2A6F72CE362@SJ1PR21MB3457.namprd21.prod.outlook.com>
-References: <1710867613-4798-1-git-send-email-kotaranov@linux.microsoft.com>
- <1710867613-4798-2-git-send-email-kotaranov@linux.microsoft.com>
-In-Reply-To: <1710867613-4798-2-git-send-email-kotaranov@linux.microsoft.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-msip_labels:
- MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=dff51812-d9f1-4b40-aa9b-425143517523;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2024-03-25T19:34:05Z;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: SJ1PR21MB3457:EE_|MN0PR21MB3363:EE_
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info:
- X9i6nHAE2OjtaosesZOfhF5ML7d7ps4E78gvFPgW+NUGPC1DbQqm+bJMGiC0rowt8AxKi1MiZYDq1mF80b/56fiR0IJ9sV4LyevUsQ8sprtVGgZukR5GcXji0nzn5BW3JgWo+WTf83giF/uvAaQ2ja3tNxYgvdRXHdSHpJsU9k4S9dfBcWmh5DBV18TejtPIPIPO7u73ZmMZIP8oy+8ovyoMaIuhJsnWrCH64XTjd+Muno0jDwX4IWPdpGqBGx0hjQ0sWi7u8jtwWTKPzz0vMTHKzXHF1BaHH6h5zLZqWfUGf/Iu10n8ooHJ3zrWX12KQvBT09vqOoz/7kguCfQgwmgkPm5E7O9MtbAWBa5Tnf6xbWWAgfVCIIbYFO7xXuhtV663fkeUr/LFyt5SkZmFTrbiI8bfX7tZ+lt7CiMONQmZ60NxprCWmXVSssB1t2sDsZ/OlWK0/EICVNNaRvCFkgoRT9lMBIIXg9Qnb7ToukWPLVfTDMR5MNEbkOKtBwI/D1lXI+6DlXM2E4VHczfItskKtzYFv3evC9M0Ms/lcRh6RrjrjvWSGT2Fe7jcTRtf0eJ6a4MQdjeQWgsske1bi4R6D3ej4QMjfalzloWm6wvzQ2fxz5Wtfw27G44NITioVXwjJRUjGfmPcZLQPKdSHMuZSBM6Vrx2daGMTJVn+Ks=
-x-forefront-antispam-report:
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ1PR21MB3457.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366007)(1800799015)(376005);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?us-ascii?Q?i3HqG8umVIiA9iEvv5s78kfzSm2rGP+X8Ld1nWS8ZbEneDR/wk0qUNvhr0e/?=
- =?us-ascii?Q?KiKZZvUBdmsvvC86l+9DjcjhW0bXx8yzfdpzc0Pr40Gi3H0fak3ub0az4ouE?=
- =?us-ascii?Q?u+3MiMRdwXCUwB3IRKX4zrd8w9/a17ggTBvT6U01WQB+QqEWL4Xd83bTc7Mb?=
- =?us-ascii?Q?Ub8IplGOlw4QE4Sb/OLB7QHpZOhg49TscsbadmYckztZsPLUE35S0XlYMV5R?=
- =?us-ascii?Q?C8BJrlHzXDPDVJp3i82eVdRZEPgzvdWbcFZaU5U14cTF8s4e/4LJX0Vz8+Tl?=
- =?us-ascii?Q?nKWbhlaGuG/ZV2PvhTCFlXppdRsykwV0Sgmn3WD8p802vW2VXOYwJNPjokvu?=
- =?us-ascii?Q?1IXHwXwNct7rgyjFeRcZI/ee6RuZT8pf5O2X2GFIwgwXR2KgYzRE3L+SNKjC?=
- =?us-ascii?Q?yIMI7GOg1AV/SzShcmdCfz3Dn8BKwryVNlWQYfdBJcCYPeeD5dRTcQCX6P+c?=
- =?us-ascii?Q?QtKb5yC1rx0Wb0IaMK+CtYLEH3pQtjzQrjZ0tEp0XG8eSqpP+3mjuAsHbSez?=
- =?us-ascii?Q?vVWBAkw6qUt3fV7LgE+7NqTfrq1sBK1SUw0gaB/Otd+Ta3N3iTMNP0VHs3Tg?=
- =?us-ascii?Q?0Xf5C6CblwD2FYzfMFLYQAxXgMaXnAtzFMPYM3v/RXYPuRvHhtVMqFQmp2T0?=
- =?us-ascii?Q?p6VhyZmJUtYtK0NWUcAqhqBUz2STkDlet4W6V1TBM+mBGvFon2c6lvTRlPpj?=
- =?us-ascii?Q?/1S412uN/yD5IDb8eqceLzkDX06TuBrKN1BzBDRNsDSnfjkSvTG/OdcdO+PX?=
- =?us-ascii?Q?Tvoyi+pQrVIPVDnBNF62x9h9Ax+aXFQ0U2N/asOhDftqC+NNwR2tENixtcno?=
- =?us-ascii?Q?cnQDZth2Mot+oDd3tGEorLiaj7I5zgtCyVbKytwx1FprhPEKKTBJExzqtW5u?=
- =?us-ascii?Q?Ihh1lrJgvRgB/8zyI+sz/n4agakRzJ5GQXIiKO+xF9OU+FasGK9xP3KCVGR8?=
- =?us-ascii?Q?tWEVrb65NtMxvmqi35TjQoOoua6Cli02NYZQoHIVBDC44ttjmL0/9EGXS1iV?=
- =?us-ascii?Q?qWj4sSmlceE3QS7C/cJrlclayaR1SDLPFA8QVbapYMGUPsjLp8Ac3MJEavBP?=
- =?us-ascii?Q?2wQv2GXsO5kkVMPGzAZoM9BNA8j+iu4Qmto1pqU5VBP8S91o/1YQdQi0Mf+D?=
- =?us-ascii?Q?WtPoXCOMT9iXLtl91IBima+KVWjAFuYT90D95ErdeVK/Ad4yGAUra7dZj5nL?=
- =?us-ascii?Q?QIqh+r9K47i4DJTOV7uBW/FV9FHQ9cUjlzLbBBjBSzarGPicHvDfllK5+xF4?=
- =?us-ascii?Q?FmZeZThO+GNfBUQ5PCQ7+ExjIiuDmkUS7nYzL1wQ6euzhZiPIPKtbu89docx?=
- =?us-ascii?Q?fkZHzGBnq7B5isEtm5RDkHnDw44PmhCLrkP1GE8TUFaPv0rXPGVSKvAA0LJK?=
- =?us-ascii?Q?aLpH2y3tgS1cZHdxhrGyRLCZs+gQSnNYMUecP/BwtIthj6cfs8LQLQEyZqbP?=
- =?us-ascii?Q?PlkgvYHdHp/JXMlQsypQ0KqcGQG4lkIGIK41xtkM6bhp6fx1xM+q3eDdVtF2?=
- =?us-ascii?Q?iEVqBeM6fJhdjsflak+Wj750NSYdfO3/jqHX4x/ACT7sHrn7+ebLNllqcW71?=
- =?us-ascii?Q?ct5SefONXZkL9NRsIbEM9JiQL7JQCJMJixjfK1O9?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1DD721773A
+	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 19:34:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.47
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1711395295; cv=none; b=CEdgH4fErWlNwiaOYoOyRL72FJK+KMbn/eP2JHJcELmHJEYh2JK/syiqIUpBGotIBkvZqqv/L5sS7OEU1dDVu96OHodFZ2YeQBt46VNFksXC8S2lzSM6nGSFLXCSRw6P2l78nmhxKSk1U+DzNx3wjOo6thfHVjyabtzrb2hzgF8=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1711395295; c=relaxed/simple;
+	bh=TcaoZfkFDJ0SW2sazAPugT6iTiRkzmVSQnVaA2oU4AA=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=fJgBz6JAzN9knafH/yjXQnNm0iICGSx6fxXMbRnuuSD1AZecw55GN+/Yua9JAG6XvxeZhcafPn4eZ6F0stbFhvoRjA8uz4eGD80J9Y9BFXqh5Xfm9M+UsfQdFECOMEART2yknZMrtUZLWgCAbuvtieu495WpzVhbg73s71F3eVE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=P0/U3Mde; arc=none smtp.client-ip=209.85.167.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-lf1-f47.google.com with SMTP id 2adb3069b0e04-5159f9de7fbso2937643e87.1
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 12:34:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1711395292; x=1712000092; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=x+gDb2N6PTSkcMItP5di4fY0wfhSgyZf/tI28W/p5zg=;
+        b=P0/U3Mdea8BzRqcNVk64KVdpjTOdoekXqST34vArEjdbwDs9pGJgmLrDc1SxvJtG4S
+         krWXwvz8QvNXgDjFm2FdmB40OD6fHAPjgZjU2MrYwS10HXM72+9mSaPQiu4bURdQYnDQ
+         MLaPK6iMuObhA1EVCM/UwwUmbs25PwJNy4i2dOn5XryK/FYuIVP4ivGVdB8b3liKeWF8
+         QjHxhzARWv8IIGLa+Tp9UPPuccmQ2OxKrnq6GMnTRokp+fzBL+yBw5XcBse81+0enAZO
+         06+rLw99+9Dbvj+WT5VVEb1M8hGReqlTgD2napSleWEU4obs0H5FV99IimBx02iAq0s9
+         zWTA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711395292; x=1712000092;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=x+gDb2N6PTSkcMItP5di4fY0wfhSgyZf/tI28W/p5zg=;
+        b=NSxsMDd2tVwBYc6RvLF0TsOJUa/bkqbzcEJb0SwUsfWFLRJMXiZdOp2pPdg6dvfJp3
+         O129w1poNDdI62tDMkEotpEf/9VPRIaXryf6mybPnfnuBj0/CWeau0wxmihHwSTthl6x
+         +5PCzHocc2CyvK78l6Q8SzWaOzKXCZnvha9jlc4BmfMg8y4io5uPxiPutcp4Cmo0o344
+         Rj3luPoBro77hxOOhfy4AsPqv7yXhNb9Pmq1yy3uijy2BmJWuRbR5Qbq3bNbnp3sNeNP
+         ENd5g6HMlA/Rxt7fEctVt7b2SovncR6nBXJ5XKaUIqQfrPLbYPIHzA64FhRKTWYwmMMY
+         8MZA==
+X-Forwarded-Encrypted: i=1; AJvYcCWZQKmLuRnFpMl3fxXOch7w3QWg5SUC6HkJCLEh9MeQxW4rkRHkFmh+O2HX1B7MIA3GtjzxGDb+QtimYBCLXmuxOG+qsMSZzNVXpN6w
+X-Gm-Message-State: AOJu0YxO1Zmp3OWQQpoZdhAnUBBgmdAlx5ofV6LFKhBoXf1c54+KONiZ
+	Q3zdI2YdDSXmF+QccfDWhePDgHmEXA9MbrPUGW3fKjgpRiRPqI5Pk/Wk3DzM6xU=
+X-Google-Smtp-Source: AGHT+IHbytwcxVQX8sINOS5f/VeuNB1cnyMyAow8UBiZjk6VQPWInASHXbA2UbZdykG4zG2sOY7wtg==
+X-Received: by 2002:ac2:538c:0:b0:513:93dd:9ecd with SMTP id g12-20020ac2538c000000b0051393dd9ecdmr5427715lfh.21.1711395292242;
+        Mon, 25 Mar 2024 12:34:52 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.222.44])
+        by smtp.gmail.com with ESMTPSA id g14-20020a1709063b0e00b00a473774b027sm3359364ejf.207.2024.03.25.12.34.50
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 25 Mar 2024 12:34:51 -0700 (PDT)
+Message-ID: <e1836cb6-64cd-4866-9c0a-f0dda096aa18@linaro.org>
+Date: Mon, 25 Mar 2024 20:34:49 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-OriginatorOrg: microsoft.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SJ1PR21MB3457.namprd21.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: cd3fa3bf-d923-4ec9-594b-08dc4d0293e4
-X-MS-Exchange-CrossTenant-originalarrivaltime: 25 Mar 2024 19:34:24.5848
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: rQCNcZqD8aTtY2kHjuID4BzgoITMZcAgkmZt+D2KmEaeqRcuCP8TYtJJeAnESE6X24yzlcHY2idGNTVmUo9xww==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN0PR21MB3363
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/2] dt-bindings: arm64: marvell: add solidrun cn9130
+ clearfog boards
+To: Josua Mayer <josua@solid-run.com>, Andrew Lunn <andrew@lunn.ch>,
+ Gregory Clement <gregory.clement@bootlin.com>,
+ Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
+ Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>
+Cc: Yazan Shhady <yazan.shhady@solid-run.com>,
+ "linux-arm-kernel@lists.infradead.org"
+ <linux-arm-kernel@lists.infradead.org>,
+ "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20240321-cn9130-som-v1-0-711127a409ae@solid-run.com>
+ <20240321-cn9130-som-v1-1-711127a409ae@solid-run.com>
+ <0f7ca0ed-a1c1-41d2-a1fa-27431d14c056@solid-run.com>
+Content-Language: en-US
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <0f7ca0ed-a1c1-41d2-a1fa-27431d14c056@solid-run.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-> Subject: [PATCH rdma-next v2 1/4] RDMA/mana_ib: Introduce helpers to crea=
-te
-> and destroy mana queues
->=20
-> From: Konstantin Taranov <kotaranov@microsoft.com>
->=20
-> Intoduce helpers to work with mana ib queues (struct mana_ib_queue).
-> A queue always consists of umem, gdma_region, and id.
-> A queue can become a WQ or a CQ.
->=20
-> Signed-off-by: Konstantin Taranov <kotaranov@microsoft.com>
+On 22/03/2024 11:08, Josua Mayer wrote:
+> Am 21.03.24 um 22:47 schrieb Josua Mayer:
+>> Add bindings for SolidRun Clearfog boards, using a new SoM based on
+>> CN9130 SoC.
+>> The carrier boards are identical to the older Armada 388 based Clearfog
+>> boards. For consistency the carrier part of compatible strings are
+>> copied, including the established "-a1" suffix.
+>>
+>> Signed-off-by: Josua Mayer <josua@solid-run.com>
+>> ---
+>>  .../devicetree/bindings/arm/marvell/armada-7k-8k.yaml        | 12 ++++++++++++
+>>  1 file changed, 12 insertions(+)
+>>
+>> diff --git a/Documentation/devicetree/bindings/arm/marvell/armada-7k-8k.yaml b/Documentation/devicetree/bindings/arm/marvell/armada-7k-8k.yaml
+>> index 16d2e132d3d1..36bdfd1bedd9 100644
+>> --- a/Documentation/devicetree/bindings/arm/marvell/armada-7k-8k.yaml
+>> +++ b/Documentation/devicetree/bindings/arm/marvell/armada-7k-8k.yaml
+>> @@ -82,4 +82,16 @@ properties:
+>>            - const: marvell,armada-ap807-quad
+>>            - const: marvell,armada-ap807
+>>  
+>> +      - description:
+>> +          SolidRun CN9130 clearfog family single-board computers
+>> +        items:
+>> +          - enum:
+>> +              - solidrun,clearfog-base-a1
+>> +              - solidrun,clearfog-pro-a1
+>> +          - const: solidrun,clearfog-a1
+>> +          - const: solidrun,cn9130-sr-som
+>> +          - const: marvell,cn9130
+>> +          - const: marvell,armada-ap807-quad
+>> +          - const: marvell,armada-ap807
+>> +
+>>  additionalProperties: true
+> 
+> Before merging I would like some feedback about adding
+> another product later, to ensure the compatibles above
+> are adequate? In particular:
+> - sequence of soc, cp, carrier compatibles
+> - name of som compatible
+> 
+> Draft for future bindings:
+>       - description:
+>           SolidRun CN9130 SoM based single-board computers
+>           with 1 external CP on the Carrier.
+>         items:
+>           - enum:
+>               - solidrun,cn9131-solidwan
+>           - const: marvell,cn9131
+>           - const: solidrun,cn9130-sr-som
 
-Reviewed-by: Long Li <longli@microsoft.com>
+This does not look correct. cn9131 is not compatible with your som.
+
+>           - const: marvell,cn9130
+
+SoCs are compatible only in some cases, e.g. one is a subset of another
+like stripped out of modem. Are you sure this is your case?
+
+
+>           - const: marvell,armada-ap807-quad
+>           - const: marvell,armada-ap807
+
+Anyway, 6 compatibles is beyond useful amount. What are you expressing
+here? Why is this even armada ap807?
+
+Best regards,
+Krzysztof
 
 
