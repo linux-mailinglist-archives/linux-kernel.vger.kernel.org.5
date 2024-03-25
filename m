@@ -1,185 +1,129 @@
-Return-Path: <linux-kernel+bounces-117469-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-117470-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id AD9FE88ABC1
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 18:32:26 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 17C8A88B13A
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 21:22:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DEB251C2406F
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 17:32:25 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0DB8BC61E67
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 17:32:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8FE9613A3ED;
-	Mon, 25 Mar 2024 16:29:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C944213BC23;
+	Mon, 25 Mar 2024 16:30:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel.com header.i=@intel.com header.b="IA59lr5u"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.16])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b="nXnScmPP"
+Received: from mail-qk1-f175.google.com (mail-qk1-f175.google.com [209.85.222.175])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 92B445473D;
-	Mon, 25 Mar 2024 16:29:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.16
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ECCA713B2BF
+	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 16:30:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711384196; cv=none; b=TqkzfKWM4x3UvobAtA2/mt2pv4nu6S6u8UE99KfGU5kO2JC5yu2mrwYBDUBujbI87w8IBynfZ+EheBQMkzlSYK25g3wbcSetA7VvRbhDFLJp6Ic9xxdSEzjACAqktCV3ffq7bF4MQM6qds11gD/sGtT20coq66kv+uoSe/lPVng=
+	t=1711384213; cv=none; b=lgI4/66iWSF7sgIRemIbA/h97Q9LhdCSb8vOinoJPIRQslsLiWsfQl01KvsN9jpkENlzWb/vKYCFDtcKCSqT9FOLB47mXeHmhPgLouDKe+J9PX0xkEMU+Tojtl8F9NSwpqQFiXqm5tOuuh2ZQcv01vC7hcuZyu9OJquaIM0CF6A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711384196; c=relaxed/simple;
-	bh=qOr94dkjdQAFRjI3x/SoL7AT1gteENtLlwbLMaL3eiI=;
+	s=arc-20240116; t=1711384213; c=relaxed/simple;
+	bh=pzIDEvDYn0DvQqlQatHFYLs+SqVIi4LsjW0ZnR/fbxQ=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=dLRXzwDPu6PTc8r+fHiMJePQ8Z7zirwYClyDRIXqa2aqOtgKwGEmzJlit0qCKdVvftIXnRMagWCOTHpuQLVIk+YA7yiGb3L/6iOIe+T8F4Ecmz/Pk/TsHSwHrhRsVvf//CN1TejkmkDkhQqeIuafz3gcNizIBQYoad3nZ9ChveI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=IA59lr5u; arc=none smtp.client-ip=192.198.163.16
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1711384194; x=1742920194;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=qOr94dkjdQAFRjI3x/SoL7AT1gteENtLlwbLMaL3eiI=;
-  b=IA59lr5u+dQxyDkiVIfrU6ZcAyzm/0wuTd556BNCdo25ToPCQw9maAMD
-   Ii/ggt0xHG+Hs/o+zdZILb1y7+rH68KhF3At9tZgPlZ85u5JweCzRJYjU
-   mNICMUUQeEouAbB1xhB5ksdsTU5t/V11VssylLTZBEtHzC3PlH6dHbgph
-   VsBrbDsUel30geBa48borLV0iKFKhY6GFs4m8c5c6DHjNzgtuOaLl5lto
-   7NRF2EpkotQNIqMi7pYBg9TdtQL/vmrIidUuUCOpD/OgeTwu5zsduN1LG
-   iT2cTJFq7k2NBtT04wCQru65vYlU5Kv23WXXXQGUJCWyyA08wAa6UvcNI
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11024"; a="6994791"
-X-IronPort-AV: E=Sophos;i="6.07,153,1708416000"; 
-   d="scan'208";a="6994791"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmvoesa110.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Mar 2024 09:29:53 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,11024"; a="914848465"
-X-IronPort-AV: E=Sophos;i="6.07,153,1708416000"; 
-   d="scan'208";a="914848465"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Mar 2024 09:29:52 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.97)
-	(envelope-from <andriy.shevchenko@intel.com>)
-	id 1ronCn-0000000G2uH-367U;
-	Mon, 25 Mar 2024 18:29:49 +0200
-Date: Mon, 25 Mar 2024 18:29:49 +0200
-From: Andy Shevchenko <andriy.shevchenko@intel.com>
-To: Ai Chao <aichao@kylinos.cn>
-Cc: hdegoede@redhat.com, ilpo.jarvinen@linux.intel.com,
-	linux-kernel@vger.kernel.org, platform-driver-x86@vger.kernel.org
-Subject: Re: [PATCH v11] platform/x86: add lenovo wmi camera button driver
-Message-ID: <ZgGmfV9ciPdtbGO1@smile.fi.intel.com>
-References: <20240322064750.267422-1-aichao@kylinos.cn>
+	 Content-Type:Content-Disposition:In-Reply-To; b=ryf9lK3VpgpnwZqXf+/YHZ7yuTqikK+HGRhWu0ewAUyfZE0bo9jeZXp+BgXWLnB8/FJ/llBvI/EZXwjlBUhtGvO013poRb/ho/J251T0G3VBi/Az+qGWJ+kLBHbx/t2Deoof+veXxaYXa9zbQux2tI5Q+kv9TC/1TtOX3BdBFzw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org; spf=pass smtp.mailfrom=cmpxchg.org; dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b=nXnScmPP; arc=none smtp.client-ip=209.85.222.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cmpxchg.org
+Received: by mail-qk1-f175.google.com with SMTP id af79cd13be357-78a3bccc420so217692585a.1
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 09:30:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cmpxchg-org.20230601.gappssmtp.com; s=20230601; t=1711384209; x=1711989009; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=iWU1iomNitCz7xhvZ+axr2VvsxukZq2xkRMym6uJF3U=;
+        b=nXnScmPPXZE+wQv+bek0TJAUjFT6UXFGtT2qkom/nbxMYPOpuv9KkA+pPe4riCzy/s
+         Shu2BG6CzVundU5g6rKH8d2dx5pblroLRFLUfnYfIiOwfKUdbft0ShG71lmr0Z/4inhN
+         bAnj6NpFJpHqD29l303leyT3L/2BHNFf3q3M+qKk05DUlJQd7HCfANuZ7IJWUkkNszZG
+         /DFW7g5WNcMWlvJ28sJ2T5QH+mMlOTuVyPkxJhPpJJuMmukr1dTSikZk5ot/o/F9lqdT
+         V8Xlc7Gspksan3sNwH2eSLMD08mOjjFiucdDOFWs6gOnBVS5EfkZYbUVqhQW6hkXj79U
+         xyFA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711384209; x=1711989009;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=iWU1iomNitCz7xhvZ+axr2VvsxukZq2xkRMym6uJF3U=;
+        b=w6E3ga7l/tRYsbMNirl9XOsS8v8UisQnElK2LDeoyOogflYqMkLf118cCvDoKcD9aV
+         GPNHU2gosO5OErfh8Tya4kDcTLtA4KnWh/F6yU8G0SV0BvIrMziNw+gBJOv5pdLAeeEU
+         WaM2rQGVR7krbjCftonyRHS2d2G/EkU/BwT89zbGhnYcROi2Ksnq1fZ/dHlfEfyMIMLp
+         5ux5iEFbvwz0niKZ3KoFPwMFrDkIYCwaAJMEGm8VHtqVbE2ihRxjsjiz9TJX2Has+fK+
+         2TTyABVnIA0nd7JPFRYr2UeNiADmaloOj7m1MzukBhDUVbd2sGZ/sQR2QmzZDOkKR//G
+         x49g==
+X-Forwarded-Encrypted: i=1; AJvYcCWs6BKoQQ2hqu/sh+BiOIFDH54qsnamLh2P9LZGKDVt4wo1EyrxHkY90ozFRFIHaEiehlHTeENtclGt3x2ffaq+ivPkm/ZVoyDb5afT
+X-Gm-Message-State: AOJu0YwsfulAJatHU9CcqvT3vu7CovCeuRBZvPu9zA/fPq6uYLUCeqQU
+	M07dxXEcBj5cwA+ffTRmEImG81hvm4ue07iMFOSk+CqehVrplwlvbxXwDr9lkX8=
+X-Google-Smtp-Source: AGHT+IGfXdktUARTW/DIGirjPlGgHS1vx0o8seoKe5LBSCoLW8vOBkpB6lCZU2LWre+0twxZLn25MA==
+X-Received: by 2002:a05:620a:564f:b0:78a:29e1:6255 with SMTP id vw15-20020a05620a564f00b0078a29e16255mr397584qkn.20.1711384208711;
+        Mon, 25 Mar 2024 09:30:08 -0700 (PDT)
+Received: from localhost (2603-7000-0c01-2716-da5e-d3ff-fee7-26e7.res6.spectrum.com. [2603:7000:c01:2716:da5e:d3ff:fee7:26e7])
+        by smtp.gmail.com with ESMTPSA id t1-20020a05620a0b0100b00788402160besm2232411qkg.128.2024.03.25.09.30.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 25 Mar 2024 09:30:08 -0700 (PDT)
+Date: Mon, 25 Mar 2024 12:30:03 -0400
+From: Johannes Weiner <hannes@cmpxchg.org>
+To: Yosry Ahmed <yosryahmed@google.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>,
+	Zhongkun He <hezhongkun.hzk@bytedance.com>,
+	Chengming Zhou <zhouchengming@bytedance.com>,
+	Barry Song <21cnbao@gmail.com>, Chris Li <chrisl@kernel.org>,
+	Nhat Pham <nphamcs@gmail.com>, linux-mm@kvack.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mm: zswap: fix data loss on SWP_SYNCHRONOUS_IO devices
+Message-ID: <20240325163003.GA42450@cmpxchg.org>
+References: <20240324210447.956973-1-hannes@cmpxchg.org>
+ <CAJD7tkaWQAV=X1pzYG=VkWe7Ue9ZFbjt9uQ5m1NJujtLspWJTA@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20240322064750.267422-1-aichao@kylinos.cn>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAJD7tkaWQAV=X1pzYG=VkWe7Ue9ZFbjt9uQ5m1NJujtLspWJTA@mail.gmail.com>
 
-On Fri, Mar 22, 2024 at 02:47:50PM +0800, Ai Chao wrote:
-> Add lenovo generic wmi driver to support camera button.
+On Sun, Mar 24, 2024 at 02:22:46PM -0700, Yosry Ahmed wrote:
+> On Sun, Mar 24, 2024 at 2:04 PM Johannes Weiner <hannes@cmpxchg.org> wrote:
+> >
+> > Zhongkun He reports data corruption when combining zswap with zram.
+> >
+> > The issue is the exclusive loads we're doing in zswap. They assume
+> > that all reads are going into the swapcache, which can assume
+> > authoritative ownership of the data and so the zswap copy can go.
+> >
+> > However, zram files are marked SWP_SYNCHRONOUS_IO, and faults will try
+> > to bypass the swapcache. This results in an optimistic read of the
+> > swap data into a page that will be dismissed if the fault fails due to
+> > races. In this case, zswap mustn't drop its authoritative copy.
+> >
+> > Link: https://lore.kernel.org/all/CACSyD1N+dUvsu8=zV9P691B9bVq33erwOXNTmEaUbi9DrDeJzw@mail.gmail.com/
+> > Reported-by: Zhongkun He <hezhongkun.hzk@bytedance.com>
+> > Fixes: b9c91c43412f ("mm: zswap: support exclusive loads")
+> > Cc: stable@vger.kernel.org      [6.5+]
+> > Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
+> > Tested-by: Zhongkun He <hezhongkun.hzk@bytedance.com>
+> 
+> Do we also want to mention somewhere (commit log or comment) that
+> keeping the entry in the tree is fine because we are still protected
+> from concurrent loads/invalidations/writeback by swapcache_prepare()
+> setting SWAP_HAS_CACHE or so?
 
-WMI
+I don't think it's necessary, as zswap isn't doing anything special
+here. It's up to the caller to follow the generic swap exclusion
+protocol that zswap also adheres to. So IMO the relevant comment
+should be, and is, above that swapcache_prepare() in do_swap_page().
 
-> The Camera button is a GPIO device. This driver receives ACPI notifyi
-> when the camera button is switched on/off. This driver is used in
-> Lenovo A70, it is a Computer integrated machine.
+> Anyway, this LGTM.
+> 
+> Acked-by: Yosry Ahmed <yosryahmed@google.com>
 
-> +config LENOVO_WMI_CAMERA
-> +	tristate "Lenovo WMI Camera Button driver"
-> +	depends on ACPI_WMI
-> +	depends on INPUT
-
-No COMPILE_TEST?
-
-> +	help
-> +	  This driver provides support for Lenovo camera button. The Camera
-> +	  button is a GPIO device. This driver receives ACPI notify when the
-> +	  camera button is switched on/off.
-> +
-> +	  To compile this driver as a module, choose M here: the module
-> +	  will be called lenovo-wmi-camera.
-
-..
-
-> +#include <linux/acpi.h>
-> +#include <linux/device.h>
-> +#include <linux/input.h>
-> +#include <linux/module.h>
-> +#include <linux/mutex.h>
-
-+ types.h
-
-> +#include <linux/wmi.h>
-
-..
-
-> +struct lenovo_wmi_priv {
-> +	struct input_dev *idev;
-> +	struct mutex notify_lock;	/* lenovo wmi camera button notify lock */
-
-WMI
-
-> +};
-
-..
-
-> +	/* obj->buffer.pointer[0] is camera mode:
-> +	 *      0 camera close
-> +	 *      1 camera open
-> +	 */
-
-/*
- * The correct multi-line comment style
- * is depicted here.
- */
-
-..
-
-> +	keycode = (camera_mode == SW_CAMERA_ON ?
-> +		   KEY_CAMERA_ACCESS_ENABLE : KEY_CAMERA_ACCESS_DISABLE);
-
-Useless parentheses.
-
-..
-
-> +	ret = input_register_device(priv->idev);
-> +	if (ret)
-> +		return ret;
-
-> +	mutex_init(&priv->notify_lock);
-
-Your mutex should be initialized before use. Have you tested that?
-
-..
-
-> +static struct wmi_driver lenovo_wmi_driver = {
-> +	.driver = {
-> +		.name = "lenovo-wmi-camera",
-> +		.probe_type = PROBE_PREFER_ASYNCHRONOUS,
-> +	},
-> +	.id_table = lenovo_wmi_id_table,
-> +	.no_singleton = true,
-> +	.probe = lenovo_wmi_probe,
-> +	.notify = lenovo_wmi_notify,
-> +	.remove = lenovo_wmi_remove,
-> +};
-> +
-
-Unneeded blank line.
-
-> +module_wmi_driver(lenovo_wmi_driver);
-
-..
-
-> +MODULE_DEVICE_TABLE(wmi, lenovo_wmi_id_table);
-
-Please, move it closer to the respective table.
-
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+Thanks!
 
