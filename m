@@ -1,103 +1,114 @@
-Return-Path: <linux-kernel+bounces-116515-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-116516-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9A70388A048
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 13:50:46 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 365B288A054
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 13:52:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4444E2A5BE6
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 12:50:40 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 57D5C1C36D9D
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 12:51:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8416A17C6B;
-	Mon, 25 Mar 2024 07:32:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A8FEE13E6C3;
+	Mon, 25 Mar 2024 07:32:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="IlUnwc22"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.15])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="ijK01UGN"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4391B1C09C6
-	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 04:31:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=198.175.65.15
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A88E31C1BE5;
+	Mon, 25 Mar 2024 04:39:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=192.198.163.7
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711341087; cv=fail; b=gh6WkGfbZlQKLafh6vS+s53rIyjEHtSG14pTrWt8fL6zoE+jqC3WdT57LS02NIAIDsiXYwltbwW/PDummSo0NtMb/41QK+CPQ1LUuN1MpLXdoQftAc59XNKGPXvIaCLxSINHOSitXDBFtebJZvwEnDS/DzjVTnGlp03oVuCmc/k=
+	t=1711341584; cv=fail; b=JeSkcICAGs2384AaJW2vX/bTLMLAHbzcU1cSAcsLFwVB7Jv8jLbMKAUPIeKCsqk1lQo/Yv6dtvwDUcQOEs99oR1uQqBY56usiIKv8K8bduQgac3oNLhTGWv0kLGWwVAFS41Z0SHTZcu5hQ53zJXIK07VNxSGghlUACU+vyYAYcY=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711341087; c=relaxed/simple;
-	bh=sR7fSGILa+BQrHpjOXoM80koYNy9wa0B3U3bcnT1WdM=;
+	s=arc-20240116; t=1711341584; c=relaxed/simple;
+	bh=JMimwhBtI1CVkjvE58gD6q7KEUU8eD5hfTLSc9ohZbg=;
 	h=Date:From:To:CC:Subject:Message-ID:Content-Type:
-	 Content-Disposition:MIME-Version; b=QC6/+r23nqh8Kz0DJmVBjB5vGtII62eXkDcDn9eXdIfE1ZFGBvSfQC4yFzBoMPFcnhFSGTyl3+y1M4kskHOP62YckwqmmJPbwpkJBHtXbdb2wCzmQeINxGumsV/wFtiYGK+N+lriOLqO2zGGb3EsXIX94n0aWSBqfRPdu1v27S4=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=IlUnwc22; arc=fail smtp.client-ip=198.175.65.15
+	 Content-Disposition:In-Reply-To:MIME-Version; b=OOgUcu888KRbmOcE4j32IaKKdTVm+di4MgzZ5/W46ffsr7k6J6V8sFWpxHUcrVNvFqVfLfngKmR9Q4PBq796Z7IPmcBp/HFKHRGIC031Jw5pIzIvg2bcITpZmIJ2SiQZSHdcBCe/zTzw1H5t1xBJnmGYvxag9I3hcKdzggZ6pX4=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=ijK01UGN; arc=fail smtp.client-ip=192.198.163.7
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1711341086; x=1742877086;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=sR7fSGILa+BQrHpjOXoM80koYNy9wa0B3U3bcnT1WdM=;
-  b=IlUnwc229yUpJvVLh3/V4Mlem0HXBts137W6fCD8hNSXE8USJhBgKevV
-   G5sipbhJTXSO34WcUwQGUMMxrE9Bwd7Sh4z6ygIyz2uAQCKdqROGp3fch
-   /m30gjL2VDEUeW8eaKvRRxdYarpIyz3ayQcRT7lLCEbdULplqrkzvd+l3
-   cynkzRaAmqNvg9pE2ApPOz9Fbto66fDDycNsqm/ROVx7PedBrH5EW1dbC
-   F4y7QF5Bbxlv+oqYfNOMflcfbgumExGIj1tr/9LHVdTbkuWv42mLGUOXr
-   OcetBfs96xKSF68A3NcCj+hOPKgyVwPGT4V8m7UvMtO4+QqrtwQCjhqa8
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11023"; a="10119822"
+  t=1711341583; x=1742877583;
+  h=date:from:to:cc:subject:message-id:in-reply-to:
+   mime-version;
+  bh=JMimwhBtI1CVkjvE58gD6q7KEUU8eD5hfTLSc9ohZbg=;
+  b=ijK01UGNCIEG13qoSLHU+rsQ3K9rogj9WxQf7INRSIv1gRmwuSbOO2u4
+   NeqGpQNB1NcWt9W4qJZr3NRIdz2yLbG3q7XoN6z9Tpv7w11ohiZ5OSZNj
+   0XxNkXIAmpV77VOj0q3URcn39o+YtvnhoMAx63v41wwWzs7QLj5fewePJ
+   xFNXOqZc/GukR/PqGthhTMJPmhopaiZbdLr5IRBsahaQL1LuHF8me20W6
+   R2AjHIuLssinLzgg8z2BvyszuSj9ulHh8tNaOxE5IXlula2IXnqeLnIL3
+   ptOqd8JJb3Iu3IMADzrd/Db/CxR9sHCFRVcGugIIzVSGdPUQ+ZPsSVixW
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11023"; a="31762813"
 X-IronPort-AV: E=Sophos;i="6.07,152,1708416000"; 
-   d="scan'208";a="10119822"
-Received: from orviesa008.jf.intel.com ([10.64.159.148])
-  by orvoesa107.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Mar 2024 21:31:25 -0700
+   d="scan'208";a="31762813"
+Received: from orviesa006.jf.intel.com ([10.64.159.146])
+  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Mar 2024 21:39:42 -0700
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.07,152,1708416000"; 
-   d="scan'208";a="16152285"
-Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
-  by orviesa008.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 24 Mar 2024 21:31:24 -0700
-Received: from fmsmsx611.amr.corp.intel.com (10.18.126.91) by
- fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
+   d="scan'208";a="15930504"
+Received: from fmsmsx602.amr.corp.intel.com ([10.18.126.82])
+  by orviesa006.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 24 Mar 2024 21:39:42 -0700
+Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
+ fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Sun, 24 Mar 2024 21:31:23 -0700
-Received: from fmsedg602.ED.cps.intel.com (10.1.192.136) by
- fmsmsx611.amr.corp.intel.com (10.18.126.91) with Microsoft SMTP Server
+ 15.1.2507.35; Sun, 24 Mar 2024 21:39:40 -0700
+Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
+ fmsmsx612.amr.corp.intel.com (10.18.126.92) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35 via Frontend Transport; Sun, 24 Mar 2024 21:31:23 -0700
-Received: from NAM11-BN8-obe.outbound.protection.outlook.com (104.47.58.168)
- by edgegateway.intel.com (192.55.55.71) with Microsoft SMTP Server
+ 15.1.2507.35; Sun, 24 Mar 2024 21:39:40 -0700
+Received: from FMSEDG603.ED.cps.intel.com (10.1.192.133) by
+ fmsmsx612.amr.corp.intel.com (10.18.126.92) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35 via Frontend Transport; Sun, 24 Mar 2024 21:39:40 -0700
+Received: from NAM02-DM3-obe.outbound.protection.outlook.com (104.47.56.41) by
+ edgegateway.intel.com (192.55.55.68) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Sun, 24 Mar 2024 21:31:23 -0700
+ 15.1.2507.35; Sun, 24 Mar 2024 21:39:38 -0700
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=d9r9p3q4c5CIieoTi64DcOmi9Ni+BCCwUTDBVal/dbATPSHNpNJZTeFi+Ae2HwoYDIhZ3Q7uc1f4pKWzlEZ1X91pAFpTP521pcM237OSYlOCKD3KUFpN0OiyyUdVfXPK4C5X+jvqw4OiRAS6riUkjmtzBTnZE8hoPCbBjjJ3/ZcsicrkPSjVJ1sppvp6Y2gl5DjVt8+6JU0X/DdC/7GNrif1lZh8y9VI4GogvkEM0UZurOQyN3rx44jUz5joQVuQbZ88I7hzY45fRwNMQxabEEhpabrvjaSBWYcEt19ofqEnAzoT2AKqJagfSzCdC7LcleZqKCZP3Cc1hMUgP2dZww==
+ b=G7CGKB1OGlDg2hDzuK/3aNe6QehjSK7/2CpWKL4kZ/PMBkbssp7cBqhxYL3gGMsFPes3MxaEA+SpuAJx8KXEZDUaJvw2jJj1sKCJwARGqzLGkmLahcfCop26JNjYs2cAK0u2V9InSWPieK682Y205XiPsilz10MshrvQ4/lPQNkK4yNaH9L2ObhMMVCDEiVxdD6cdYPhTNiOKDwW/N8QfPAxCx9oYhhBrOo9SgIehyepPbO1zi24oQ67Qz7GM57di+RjAV4fy8ac2biWtQvrZu5+/R/iWDNybf76nsm6Lj+RaMjUtAso82OYq5XpGly0Hns3TvK2BojJ/Xk8IrtDxA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=IO4RYVsdCydfnxkuY65fvmvNWbtsrDLiGQsa5fXb6d8=;
- b=SwJyAsVCVJnv8RzcENyNGiqknZ8V1xU6BizgVhV6/tobpDjRhOfng8chbWNS/jTy6n2UA2S4K3O9BPEvOs9OOu+MC/rfKxOwqarPuJicoZwfEKIB/NDY4Hsor9x1dnXiGCC1oYRDVc/3MkH4wXTtYYUAgzzofO9vVdYCdPp5jYTroAvDw1+nRRBTeZBt2IOFhyREMjbUXwV2XnUK68l3sakBktlnXGm3zgAbaMLZZI9hTfWZsjanfx99rCj77HtrOZeSIibIHNd3kQ9AAjK/jvi48CM8mV4V+09okYX04eDhwCvXX1Yjyi63cavOu3yxqNKERf4lGuHmElakexOS8w==
+ bh=SfPIitLhuALSKW0NIvjNqk3murQ+BbkiwLcuwClEf14=;
+ b=YR/ieKuNkEt5ERKU89YwJNd0DOs9IwPRphdXj61Akf494S2LCTdBVQyMedl1poEG10e3y7fHAjK0EuDSWa4jamFD1lhTtvQQYcNTEau+68ci7z0r809sGPPaOTeUIZIwNHFalhuRGafCxwRWTjaISar+f3pYuhZQA0L95FovsV/80QlmaX4zyPgUzksxo60Pm52SCiiVejQbTm3xiVXuXGP/b8xNHhowZ5PFtk568GmqNBM/wUOEc2Ca7qhFRUPZHpT9kFzlP6yDD5pvrD1GqGkJvkKnU8fZwFmdIMTTtMGEm0DNDf95VqvlR9UL4XdlOF1uvtXJwchHx2BLmdZnLQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
  dkim=pass header.d=intel.com; arc=none
 Authentication-Results: dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=intel.com;
 Received: from LV3PR11MB8603.namprd11.prod.outlook.com (2603:10b6:408:1b6::9)
- by DS0PR11MB7649.namprd11.prod.outlook.com (2603:10b6:8:146::16) with
+ by SJ2PR11MB7426.namprd11.prod.outlook.com (2603:10b6:a03:4c4::8) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.31; Mon, 25 Mar
- 2024 04:31:20 +0000
+ 2024 04:39:36 +0000
 Received: from LV3PR11MB8603.namprd11.prod.outlook.com
  ([fe80::58dd:99ca:74a6:2e3e]) by LV3PR11MB8603.namprd11.prod.outlook.com
  ([fe80::58dd:99ca:74a6:2e3e%3]) with mapi id 15.20.7409.028; Mon, 25 Mar 2024
- 04:31:20 +0000
-Date: Mon, 25 Mar 2024 12:31:12 +0800
+ 04:39:35 +0000
+Date: Mon, 25 Mar 2024 12:39:24 +0800
 From: kernel test robot <oliver.sang@intel.com>
-To: Vishal Moola <vishal.moola@gmail.com>
-CC: <oe-lkp@lists.linux.dev>, <lkp@intel.com>, <linux-kernel@vger.kernel.org>,
-	Andrew Morton <akpm@linux-foundation.org>, Matthew Wilcox
-	<willy@infradead.org>, Muchun Song <muchun.song@linux.dev>,
-	<linux-mm@kvack.org>, <ltp@lists.linux.it>, <oliver.sang@intel.com>
-Subject: [linus:master] [hugetlb]  7c43a55379: ltp.hugemmap10.fail
-Message-ID: <202403251148.ecf856b-oliver.sang@intel.com>
+To: Luis Henriques <lhenriques@suse.de>
+CC: <oe-lkp@lists.linux.dev>, <lkp@intel.com>, Christian Brauner
+	<brauner@kernel.org>, <linux-ext4@vger.kernel.org>, Theodore Ts'o
+	<tytso@mit.edu>, Andreas Dilger <adilger.kernel@dilger.ca>, Alexander Viro
+	<viro@zeniv.linux.org.uk>, Jan Kara <jack@suse.cz>, Miklos Szeredi
+	<miklos@szeredi.hu>, Amir Goldstein <amir73il@gmail.com>,
+	<linux-fsdevel@vger.kernel.org>, <linux-unionfs@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>, Luis Henriques <lhenriques@suse.de>,
+	<oliver.sang@intel.com>
+Subject: Re: [PATCH v2 2/3] ext4: fix the parsing of empty string mount
+ parameters
+Message-ID: <202403251019.50cab6c8-oliver.sang@intel.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-X-ClientProxiedBy: SI2PR01CA0029.apcprd01.prod.exchangelabs.com
- (2603:1096:4:192::8) To LV3PR11MB8603.namprd11.prod.outlook.com
+In-Reply-To: <20240307160225.23841-3-lhenriques@suse.de>
+X-ClientProxiedBy: SG2PR01CA0138.apcprd01.prod.exchangelabs.com
+ (2603:1096:4:8f::18) To LV3PR11MB8603.namprd11.prod.outlook.com
  (2603:10b6:408:1b6::9)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -106,92 +117,99 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: LV3PR11MB8603:EE_|DS0PR11MB7649:EE_
-X-MS-Office365-Filtering-Correlation-Id: 96048115-68ec-4da1-fe93-08dc4c846bc2
+X-MS-TrafficTypeDiagnostic: LV3PR11MB8603:EE_|SJ2PR11MB7426:EE_
+X-MS-Office365-Filtering-Correlation-Id: c0248016-8551-4f49-f979-08dc4c85928e
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: AEe3k97pwpmDjELSBcrhFDod8RAIxFGIftsvYMdrUorkJICzBmivLyEP/WvfQ/sghHclRluRX84ldWydtaORTPD2sg7AewpqJ4vzRjFgjKzzMTNr5KnEIF9Ff3mrmArNXeknE+pVk653bbq0qzhc96/nu1hh0+M38yX1rhPUb5fEzCY/Ns0+nZMp3jgbFxdOx9JxI80P+oaogiA8ghJxa9nsqkbNMouArEpcg1wzmArJk5hsMEzasqp0hpl0+LAVt9s1zawJEr2uW7XmZj4xpjrNeJuQT72qHtxlI05phg3eyZITNdLWBVkaAm8uDHxzNdPGRr0bXNJE1bmLwJT4HP3nwFTu5LcI0gecf1xfMJIym/pCa4mEhn6PHqmvkpSCEfi/uwDEfHmvq2oeII6iiT+WhArc8gORka+HBM59qcD6+scXm5MSHDIQ4xopEHFVZ8v+uIHLhDPyT1WeVVN6e6ULc6jsTnUl08dsD3+zXvZXPuN5IT24bCC8/6Dp7WmbxAsMR61IQYfGo/+We3gjEI5V8+1nYV9uR3wcTJEH3x9CMtwRX+vhDzkEwL1N/IpS9loNXZpILJLeDuCQJ6RVPYyDZmicx3mfdaeVfgHL807g8zQ/sdxd5Xq7WnkZnxnJ
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV3PR11MB8603.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(1800799015)(366007);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam-Message-Info: jdVEdKvRDP0prX1xgRoObAluNbe5wgZK6hSaCderRxghZRkF0nZ2Iyv9qwPw0c69sOmL3mfSA8KSIsRCrM10Jp6uGuaWyHbd4yzSM33DF0GrizLE8xRW8XxpFY2Cu3965AjhQE9EORmYwC0tvgQ5l11AY6JsRCR4ERIlBP99dckH9pg00MZGGiVpPqa+Jxeu6ckXYdx5r11adIBsi0WimldzRxbbjHJFWe0j85EuwENrA8ZWSvjYT2rFEXWe5GKVswdBveE+cvp7/hNR8tMYxUMWc4PokRTMz2dA1+m7Q7wB2zSGiZb+8n3DB8SrhoaOh7eoAIZpyT7s33dbkVADh7LBwiRFvWqivrZlHnAJFBj05ZlXVdJd9eZzoKd0cC5fODioZ0nE/D6S2xiJNzOIPUcS6kYOzapM4MCs6gOkC5m2rniIuwabnSe31N2s63nGgsYHCfD1FSe0l3jHRqPS7QJ4nYXaHXhsQ0bi9z3+PTWbQUQGuXdGcG6XDbKQxz8RBeQnJT2ghYTuV26yR5j441BTLL3Oys65Xfk67DmhLUIrEGitfbf3GdoLWzIypqIjdRgHbGqM3z7VHI+Q8EaBUO6j3E9ezk2ZfguUhbyjqolNvUUpwK0F8MgyNcshNNFh
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV3PR11MB8603.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7416005)(1800799015)(376005)(366007);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?yBGzJXIOlmUg31AL40/gimrAFTStxfMN6h8HffEuVBhB7meerObYwX6a26gD?=
- =?us-ascii?Q?NISMZ3whI45YiM5lc+Az4DQqYfQh/BSfF7pLRHpJ4xPZ/ScC8W5GMVwtiT78?=
- =?us-ascii?Q?HRE6xrBZiSTVx8g5UY4bFWGWLpbJtRH9XeQRJu/Zr350CvT+1BPfRTnA/6Fk?=
- =?us-ascii?Q?q0QhwQKHaIxPXp2oHcU4B/DLzrYg1rPg0r+vm7qX+2tbhzFX3RkhGmQoFets?=
- =?us-ascii?Q?s4Gdbqu8zsRxlkl6STl/Q7kwGYxlIJtgn4jxmvKrrjYPKu2d8gKcu2atSJg+?=
- =?us-ascii?Q?fPCKB+rC6i8zVK1/PtGIxSkafF0ubluO1eFh8FSUP4Be0E3tjNX1TOfTfufj?=
- =?us-ascii?Q?PrjsoaQu0iy/KdYMf4gH/zmuLAT1Lgtkfp1h0pRVaBIrlUTsvwZQW8kuUniC?=
- =?us-ascii?Q?I3m4urbL9kY+0EaNfGn+K/8KHr/sb+22wMN040DybEQ/qVb9CjCtn0+i58mM?=
- =?us-ascii?Q?KA2Epn1dBbKusmNOqsJVGxEMskr5JvzLW8RUQPY4dhrytmsU3Ac3Dd25nF6g?=
- =?us-ascii?Q?8ZH1XBYGU3czNMO88kODGG/SXjhw6Po10WLZaQ7CywNGtJAQiarMeyKT7LtV?=
- =?us-ascii?Q?4tuZLseysa4yVN+QMu6FXTcOsRFsk6QJnC9wxRUFLwljNXiPHl7kVuAyXFmi?=
- =?us-ascii?Q?rw7srFklAMyn5uHDQfY1f9Nqmn4/7rRYPUYL6ZeP6bEwQE5hrku24Erb6J6N?=
- =?us-ascii?Q?sTFs3rk9TkiVSD1D2KCUNSMD0VhrV1gTTe+v1JS61DxcHQoTjkcdQ4thMZR6?=
- =?us-ascii?Q?DCsIBSDNX1Eh1NNeDACRspA78CP9G34rlInu71MWSghL9bUVd4bzeNRhn/EC?=
- =?us-ascii?Q?R0xHcHA49WWUDulTr7FcZuhJD0rPs4MXOzU9bnfHCFNd4smiNhZ32oUr4KyO?=
- =?us-ascii?Q?RB0xjPg1AhIECqre8Ra0THdyOcjliaS/yuidtGyX5WnPMYkLsN2DPE+3Bmz8?=
- =?us-ascii?Q?A5qRfjb5HKbH6aZgOMbUP/UphAn3a1yOFSx2MaM6cfOH3EHMnX32IcyLJk9I?=
- =?us-ascii?Q?YaDJLTmGLyX1Uh+UqSTFyUVhToSzWKxypDeqeSJfLFZmHTWpatW4qfjHna9u?=
- =?us-ascii?Q?rHSwyeQfK2BHdZ5tn3XqBKjmmpJm5ydZf20IFFeAJrEOKmdb7A0L+wBmy9CD?=
- =?us-ascii?Q?rzm0pZc6COkggqdSkZiRSQIcLUL7CuA5Wuwa7GBzw7e4YKQCS8fSSkLucQDa?=
- =?us-ascii?Q?+EpJYi8ljsfhuxGVTdLc4I4Utru4XV92X8fqZbB3CSPb5VyevYgPvjuCfGFE?=
- =?us-ascii?Q?zGHqw65ixaZehWVXumVv74zeqXaraBCRutCzqOf0y0mwjJ6vlNC4KBF1FHwo?=
- =?us-ascii?Q?+2kszCu5MiTP9qlhzPzjxG1lOH0LwdlTilFmVTqhnxBMWvpyNNfnubGXQy7d?=
- =?us-ascii?Q?r1QyOeCwg9QvK9P3WUHdJJCZ7wrydaYJVKHSjQE6k34VeQadYSE2SLlNx5d8?=
- =?us-ascii?Q?cnhDRXb9yT2zyGrKMd0dTRPdVC9trVsdQrGIiI6a6KjTor3W3nlDY7v3Qj6b?=
- =?us-ascii?Q?KOmyKvX8XvC5jurLeA21OjVxyvu5eHHIIbQA177IFqNfStOo+h5kBrTikYx/?=
- =?us-ascii?Q?ngzamoI8I4UXJwls2rC+fLHczNPkbefkxvFpgNzBS48UvDysMnArBLFHLiQH?=
- =?us-ascii?Q?ng=3D=3D?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 96048115-68ec-4da1-fe93-08dc4c846bc2
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?lL1vAZto1Jku2mils8JlkNCc+P0EaFYPmcAUGhgBnGgBHUwEC6Mo491lQANt?=
+ =?us-ascii?Q?l9go9k2ErrR7juHWfw8r9oj6Dv8aEEWs977/65RfvwKY89zWeZdHlK5go3I+?=
+ =?us-ascii?Q?0us79jZPwHqg7XkmEK3lN7yJ+58ShmywAkhfqDgav75NtzWnJYLUxlZiiscj?=
+ =?us-ascii?Q?OvU+3koiPKfGsvD4sy8xwJyCXzvRWLThwDfVPHt+9mb6sBA1FyaxXm1Z+uqj?=
+ =?us-ascii?Q?BpSqSJv569XM9QbTdZEsa28tZVgZOt4v9ogSph5j+7xLh67WXUYX9EftmBLD?=
+ =?us-ascii?Q?a5LSQXd8VxeRIUWF8+1kXF0LC3I3CNaKBNOUXb4i8gL8LQoFAuSr/yckAjqv?=
+ =?us-ascii?Q?mMrEpZrPnIjm4OOWG2YAR3UkQMI+nRBzPTwIHZjjHL9IsbmFAVzBr1jMMv3H?=
+ =?us-ascii?Q?k3c5ZFuWW5cYlKzVNPPWmqFTSuT2vr5Nhkcnus9ph6y4z8ufBcaeTMTnVg57?=
+ =?us-ascii?Q?IvnqLbv72Z9jRa/nknU92h3FbjJt3nO+9bOv4sCQk7VndfhXCk22+4goX36y?=
+ =?us-ascii?Q?oOH9o16DN/187bHMw3XfkKm3ZNaNkoHfzM+P+AQU4qC7CBNrh0/+b3Uwuhd3?=
+ =?us-ascii?Q?tPdz1UIh93xUIkbFF7zv7zucSAeEi0TD6h1JlXIqCHjb+rgGSmmdbgTV7Vzq?=
+ =?us-ascii?Q?44p1fKkK70Kckd/wpTLs+J1MXp2aBepOL7ZC2Zt8VTM3txTiBNWTsy2E+zlr?=
+ =?us-ascii?Q?Iv5Q4ePPG1ehp+qz7rVYiirX7nCWxChvDntfe3ZR9PzQjGW9zHtAHWpRUDP0?=
+ =?us-ascii?Q?21DRxe+y4DL/nyCP0ktBZjMEmJuo7WXjK9XV6OsKZTDlOtr1lz8LjbqwZT/m?=
+ =?us-ascii?Q?/XRq/Rm9ARKr0zxSxg440j3I2N2zu9GcnWGGG7QaaB26f76zIbidG9EfYrXd?=
+ =?us-ascii?Q?azKEKAP39b3KsrXGTELpLRA0PG2vPI2q/8xfHpPoW0tg251QfTZfJpzbMrmn?=
+ =?us-ascii?Q?pQNFRx664Q3InAjMxTN/OftccKJ2piXVSsmv4XyghXEVg/OHd6AHd/92LdZ4?=
+ =?us-ascii?Q?tctv1FsTMTnHJl8BQ1EtscEt9/BYh1SiR+HRsAspx6eFav03Mao3PGTlOw//?=
+ =?us-ascii?Q?FVzb9nyOdwMyx8jUUmLREAbQQmPaIQJt3RZHsE3ReBEN+9qt71E9IxM4K8hM?=
+ =?us-ascii?Q?o21RsnAHwnFZTMYCGwQMSWTVohdaiOTV00hp2wFdMF9X1Tgit65jvhAOqSBf?=
+ =?us-ascii?Q?iXtT3ICIYg8Mnqv3l+qyiTy02k+6BseJ6PjIU0qGg5qDVRLBatI5SCJhZM/C?=
+ =?us-ascii?Q?VmSsDZDUHi07HnWjx/8Ok3kcU3dbBad0PDp+WX9U5DKhoQULoUkuyHuqP35q?=
+ =?us-ascii?Q?73qhD7A8kxRzlPDS5VdWyRbKJWDxMISQLV9rcrAGgyjt7vjljX7FRffh20N0?=
+ =?us-ascii?Q?DlpwCaUZf/sdtRtMJT0TMqJ7ZswvWf8cs0UOFG8gHzNJe1qC1CzhwAGkrccT?=
+ =?us-ascii?Q?4I/aa7B7b8lJ7O+LxSwkc2CNd3yRQ7TVYHtzlLPH2eg+VoM2+0uO/8ZPDMor?=
+ =?us-ascii?Q?g+O3nJt03lizO10qrsCw9XQxY2Z2JuABtJivrTiN7cN2CaLszOLJH0Qz6IBU?=
+ =?us-ascii?Q?q1fYxzsDHFFimJv3dTTwZypThBuSRuZnV6t9xJ2Z0Ob4kAdNADcUCqGHiZ7a?=
+ =?us-ascii?Q?bA=3D=3D?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: c0248016-8551-4f49-f979-08dc4c85928e
 X-MS-Exchange-CrossTenant-AuthSource: LV3PR11MB8603.namprd11.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Mar 2024 04:31:20.7891
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Mar 2024 04:39:35.3737
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: zQMoqLlNP/1+PA6hkA2DWe41UrNoO/CR1j9vu4J1Ec1dfH03LuuZrsvScv1bYGsLdxicXrgDybBI+hVsPeaHow==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR11MB7649
+X-MS-Exchange-CrossTenant-UserPrincipalName: YRoxbRkO4/zbLLLhRH4ohZer2JduXuYdNHwLi4XioIgLmEBxdNYAzOlwrydG6M/KeL6LsMQrV/yUKw8S+JI4gg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ2PR11MB7426
 X-OriginatorOrg: intel.com
 
 
-hi, Vishal Moola,
+hi, Luis Henriques,
 
-we noticed you mentioned in commit message:
-    This patch may cause ltp hugemmap10 to "fail".
+we noticed in
+https://lore.kernel.org/all/20240307160225.23841-1-lhenriques@suse.de/
+it was mentioned this patch is for "ext4/053 fstest failure",
+however, in our tests, 053 can pass on parent but fail on this commit.
 
-this report is just FYI what we observed in our tests confirmed it. and the
-failure is persistent:
 
-9acad7ba3e25d11f 7c43a553792a1701affeef20959
+12dbddcebcb8e fs_parser: add helper to define parameters with string and flag types
+2de45c422fe6a ext4: fix the parsing of empty string mount parameters
+
+12dbddcebcb8e3e1 2de45c422fe6ae4f64d35df99cd
 ---------------- ---------------------------
        fail:runs  %reproduction    fail:runs
            |             |             |
-           :6          100%           6:6     ltp.hugemmap10.fail
+           :6          100%           6:6     xfstests.ext4.053.fail
 
+not sure if there is a xfstests patch works with this patch? Thanks!
 
-below full report is just FYI.
-
+below report just FYI.
 
 
 Hello,
 
-kernel test robot noticed "ltp.hugemmap10.fail" on:
+kernel test robot noticed "xfstests.ext4.053.fail" on:
 
-commit: 7c43a553792a1701affeef20959dfb2ccb26dcee ("hugetlb: allow faults to be handled under the VMA lock")
-https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git master
+commit: 2de45c422fe6ae4f64d35df99cdaf2c6fee2a5ac ("[PATCH v2 2/3] ext4: fix the parsing of empty string mount parameters")
+url: https://github.com/intel-lab-lkp/linux/commits/Luis-Henriques/fs_parser-add-helper-to-define-parameters-with-string-and-flag-types/20240308-104759
+base: https://git.kernel.org/cgit/linux/kernel/git/tytso/ext4.git dev
+patch link: https://lore.kernel.org/all/20240307160225.23841-3-lhenriques@suse.de/
+patch subject: [PATCH v2 2/3] ext4: fix the parsing of empty string mount parameters
 
-
-in testcase: ltp
-version: ltp-x86_64-14c1f76-1_20240316
+in testcase: xfstests
+version: xfstests-x86_64-9b6df9a0-1_20240318
 with following parameters:
 
-	test: hugetlb/hugemmap10
+	disk: 4HDD
+	fs: ext4
+	test: ext4-053
 
 
 
 compiler: gcc-12
-test machine: 8 threads 1 sockets Intel(R) Core(TM) i7-3770K CPU @ 3.50GHz (Ivy Bridge) with 16G memory
+test machine: 4 threads Intel(R) Core(TM) i5-6500 CPU @ 3.20GHz (Skylake) with 32G memory
 
 (please refer to attached dmesg/kmsg for entire log/backtrace)
 
@@ -201,55 +219,39 @@ test machine: 8 threads 1 sockets Intel(R) Core(TM) i7-3770K CPU @ 3.50GHz (Ivy 
 If you fix the issue in a separate patch/commit (i.e. not just a new version of
 the same patch/commit), kindly add following tags
 | Reported-by: kernel test robot <oliver.sang@intel.com>
-| Closes: https://lore.kernel.org/oe-lkp/202403251148.ecf856b-oliver.sang@intel.com
+| Closes: https://lore.kernel.org/oe-lkp/202403251019.50cab6c8-oliver.sang@intel.com
 
+2024-03-22 09:38:10 export TEST_DIR=/fs/sdb1
+2024-03-22 09:38:10 export TEST_DEV=/dev/sdb1
+2024-03-22 09:38:10 export FSTYP=ext4
+2024-03-22 09:38:10 export SCRATCH_MNT=/fs/scratch
+2024-03-22 09:38:10 mkdir /fs/scratch -p
+2024-03-22 09:38:10 export SCRATCH_DEV=/dev/sdb4
+2024-03-22 09:38:10 echo ext4/053
+2024-03-22 09:38:10 ./check -E tests/exclude/ext4 ext4/053
+FSTYP         -- ext4
+PLATFORM      -- Linux/x86_64 lkp-skl-d05 6.8.0-rc3-00019-g2de45c422fe6 #1 SMP PREEMPT_DYNAMIC Sat Mar 16 03:20:13 CST 2024
+MKFS_OPTIONS  -- -F /dev/sdb4
+MOUNT_OPTIONS -- -o acl,user_xattr /dev/sdb4 /fs/scratch
 
-
-Running tests.......
-<<<test_start>>>
-tag=hugemmap10 stime=1710711668
-cmdline="hugemmap10"
-contacts=""
-analysis=exit
-<<<test_output>>>
-tst_hugepage.c:84: TINFO: 3 hugepage(s) reserved
-tst_test.c:1049: TINFO: Mounting none to /tmp/ltp-IEy6i3InfS/LTP_hughDiU47/hugetlbfs fstyp=hugetlbfs flags=0
-tst_test.c:1741: TINFO: LTP version: 20240129-104-g14c710cae
-tst_test.c:1625: TINFO: Timeout per run is 0h 00m 30s
-hugemmap10.c:388: TINFO: Base pool size: 0
-hugemmap10.c:315: TINFO: Clean...
-hugemmap10.c:366: TINFO: OK
-hugemmap10.c:315: TINFO: Untouched, shared...
-hugemmap10.c:338: TFAIL: While touching the addr after mmap private: Bad HugePages_Total: expected 2, actual 1
-hugemmap10.c:338: TFAIL: While touching the addr after mmap private: Bad HugePages_Free: expected 1, actual 0
-hugemmap10.c:338: TFAIL: While touching the addr after mmap private: Bad HugePages_Surp: expected 2, actual 1
-
-Summary:
-passed   0
-failed   3
-broken   0
-skipped  0
-warnings 0
-incrementing stop
-<<<execution_status>>>
-initiation_status="ok"
-duration=3 termination_type=exited termination_id=1 corefile=no
-cutime=0 cstime=277
-<<<test_end>>>
-INFO: ltp-pan reported some tests FAIL
-LTP Version: 20240129-104-g14c710cae
-
-       ###############################################################
-
-            Done executing testcases.
-            LTP Version:  20240129-104-g14c710cae
-       ###############################################################
+ext4/053       [failed, exit status 1]- output mismatch (see /lkp/benchmarks/xfstests/results//ext4/053.out.bad)
+    --- tests/ext4/053.out	2024-03-18 16:30:59.000000000 +0000
+    +++ /lkp/benchmarks/xfstests/results//ext4/053.out.bad	2024-03-22 09:44:06.379217460 +0000
+    @@ -1,2 +1,3 @@
+     QA output created by 053
+     Silence is golden.
+    +SHOULD FAIL mounting ext4 "test_dummy_encryption=" (mount unexpectedly succeeded) FAILED
+    ...
+    (Run 'diff -u /lkp/benchmarks/xfstests/tests/ext4/053.out /lkp/benchmarks/xfstests/results//ext4/053.out.bad'  to see the entire diff)
+Ran: ext4/053
+Failures: ext4/053
+Failed 1 of 1 tests
 
 
 
 
 The kernel config and materials to reproduce are available at:
-https://download.01.org/0day-ci/archive/20240325/202403251148.ecf856b-oliver.sang@intel.com
+https://download.01.org/0day-ci/archive/20240325/202403251019.50cab6c8-oliver.sang@intel.com
 
 
 
