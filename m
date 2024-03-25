@@ -1,211 +1,175 @@
-Return-Path: <linux-kernel+bounces-116704-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-116703-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8867E88A2C2
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 14:44:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id C4DF988A2C1
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 14:44:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A8F721C36058
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 13:44:48 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 01C981C389CE
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 13:44:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E34BC136E12;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ACBDC5C90B;
 	Mon, 25 Mar 2024 10:28:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="miKh7Uc9";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="vyi52dy2";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="miKh7Uc9";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="vyi52dy2"
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="AejJBxrw"
+Received: from mail-ej1-f45.google.com (mail-ej1-f45.google.com [209.85.218.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7D4A367A1A
-	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 08:37:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0F01E15573D
+	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 08:39:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711355845; cv=none; b=KWcPiSie2zusjPRXOPuc1bkkXEd/bNFKxTXL4MMPaHpliHJ7yZEDG/B3w9COXX1a/zt7B5FJhaDixKsT3+qXWJ8uIcbPPE9fH9CSmit8m73JJLG0v9vFv+F7tgRKhFF8eG9L7wuxrf4GDwu2KMTJQ6GwjA0jOSID/0TbL6nMeiM=
+	t=1711355967; cv=none; b=IdApYwognTKZ78GBe0LuOUTKEeijBqX7Vl1rJ4iM8zroktoOGPwBdVa/Qf8iTx8D9+4o/QqCmSd4V8wU1XLEQe+OpqLf7ZQ2AfvsmH+qWerTqz3t5RcpMleXS7nGnMT2ITeEfsa4vn97eK0qw84K453/u4TpJMEinim3cXoYsC0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711355845; c=relaxed/simple;
-	bh=DZEY33ELCrX3XxyJob4OURhuX65fNk8+JowzAS0zJ0s=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=V950C/Mb+Vi42m0U26HWeY0NbDu3DDSMPrIUS/r8PvDEHjRR7yere6QuVqr5T/qT4rpJBqq7JojidmH2qdgX4CnGHlk0N6G/tPnsZbAYtvO56kt2ZpKbB4MHfUOlNk8wVSlN53BebQoQgFEFk0StH2nNuFYARfPU1A3iy3YsI9A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=miKh7Uc9; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=vyi52dy2; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=miKh7Uc9; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=vyi52dy2; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id D09CF20ACD;
-	Mon, 25 Mar 2024 08:37:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1711355841; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=WFQLPMdnm6Vb5R5hL3AhD23eFZIrDhtHvEGc7c8NawQ=;
-	b=miKh7Uc9Go2lsd+lz6z5odw8nBqRC9SMVAgYW7Mm9Ie6Wjli4cWp8XYQzuoXfPu3T5eErF
-	T7B/igWffe6Xj1iy4g8tuL+m9lM6wzTqPa954PvDjOEDuW7cCi+TEuWQCNhHKUP7fUjh2E
-	+smQQzbC96K7v0LlFXFbkw9U5mwXynA=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1711355841;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=WFQLPMdnm6Vb5R5hL3AhD23eFZIrDhtHvEGc7c8NawQ=;
-	b=vyi52dy2jR9n1ZjsDFypwWY5JKlHtTsfDXNVZaTGvO/5mJ3r4DUAcOxb7CgCNSeeVxNoKp
-	/sWqbPTAoJRPPRAQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1711355841; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=WFQLPMdnm6Vb5R5hL3AhD23eFZIrDhtHvEGc7c8NawQ=;
-	b=miKh7Uc9Go2lsd+lz6z5odw8nBqRC9SMVAgYW7Mm9Ie6Wjli4cWp8XYQzuoXfPu3T5eErF
-	T7B/igWffe6Xj1iy4g8tuL+m9lM6wzTqPa954PvDjOEDuW7cCi+TEuWQCNhHKUP7fUjh2E
-	+smQQzbC96K7v0LlFXFbkw9U5mwXynA=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1711355841;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=WFQLPMdnm6Vb5R5hL3AhD23eFZIrDhtHvEGc7c8NawQ=;
-	b=vyi52dy2jR9n1ZjsDFypwWY5JKlHtTsfDXNVZaTGvO/5mJ3r4DUAcOxb7CgCNSeeVxNoKp
-	/sWqbPTAoJRPPRAQ==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 9DFA013503;
-	Mon, 25 Mar 2024 08:37:21 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id pK42JsE3AWaxIgAAD6G6ig
-	(envelope-from <vbabka@suse.cz>); Mon, 25 Mar 2024 08:37:21 +0000
-Message-ID: <a3413438-ca3a-4248-8b00-c59ce3808474@suse.cz>
-Date: Mon, 25 Mar 2024 09:37:21 +0100
+	s=arc-20240116; t=1711355967; c=relaxed/simple;
+	bh=BAC+WVMO1tGwo33xnug+/2dC0AeTsQNT40RAmXUK4xw=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=hsYETpqs/wf3wrMnfjh6MEBCwVXn67kzIzoGc3uWgfDmBsA+izSbaFNlOlynbX+cNpKFts/OZzoRst6VyRv3CiknvHQr+lHHCwpXDnD9rktYmo+kKTIODNqQcwcwyi2sien75TSrwKKZYGbuknlWZJ3O7ZBkSgE5ULKezKiui6E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=AejJBxrw; arc=none smtp.client-ip=209.85.218.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-ej1-f45.google.com with SMTP id a640c23a62f3a-a4a3a5e47baso49078366b.2
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 01:39:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1711355964; x=1711960764; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Y0kZP691y+X37CeRc5a1b81NRGe9/CqFEZLGS/IX9lU=;
+        b=AejJBxrwlY9xMNHTAWsRBde6Bh81IF2usY9qx0V3mmk8vL/V34nE6lnKoSJdXIp1T/
+         WgtWI0hemmrxb/yD/niOZYOKa9+dP+dyX+qr3830Pzm0S6PEs2MS3pHL8ivcyVEcvuEU
+         Ekt4A3LEdbHD/KDOTzwMJ6P9XxsSgx67YHb0N0SELG/hddkSaSfZPFlDevctAWRzCm5A
+         F96wL6X0Ean8jJkPGPBZrADj1KtXnt5qBV5RzbxFdlcFsWdRz1vykxw637MQFH18w1gv
+         kq/Ghm/QUfA5U7Nc1ZsSoFOQUgunIcAxhhUTjeGNq4OO6/byjloGPn9LPWkRs9VTCn6w
+         /yTg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711355964; x=1711960764;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Y0kZP691y+X37CeRc5a1b81NRGe9/CqFEZLGS/IX9lU=;
+        b=VvdnppPV0iHGUfWZkeplDoWaf8RIciZmJviFjAzXN5Y2JUefTfyTxJFCdsqsNGC/Qk
+         lHraQ+yFkEtlIb60UXlWtzR1ZDaTUOIhyADp2D02ssOH3+vzjYF5ypVhoPFXKn0WKnMs
+         v8On67hoTPwg8QinUEn9W1vsBjYQMKItczysPC7RX+NfRhjyvTR1J5rW7twnHYcPxDH6
+         oXayiT47nvhIp34xx7FerRw0Kxf3gEg6nF3vHPwjRlUm2Be/hf/ym0iAKqbooq861Xey
+         FJrJUC3Mndos2Qh0faq4ED2r7WaZDXc0nlbQsrAu5iFVfq+KXRTLB/uS7xibc+Evj30i
+         V7Qg==
+X-Forwarded-Encrypted: i=1; AJvYcCVvCbe8UxpBv13Ox3gPI9IhWLvcHi2pns16H3cjDtBSlmah0QJA0+rx4eyjN10iwItJPPXflIPQQXNxQOfyG8fr3xAw06bug8Ar5SD5
+X-Gm-Message-State: AOJu0YxWjVAQ63PfJc6hGWywEYBVeL0iEyrid+mlEWwO2Vk2azdDwSvU
+	aLmG6vzaBndEQGD9/G95vgaEO9e9Eko+Xkoe1WvRp0Rwp7raFNp4HuJpG8L2jakqlObadyI7MBD
+	yLpnMrINmQVFdFuZwylpf3QWUsBMlfaB9nZmX
+X-Google-Smtp-Source: AGHT+IFgl4zrYBmL1mnbXRObDbHIPSKGVSR/6CfTP061t6LzL7AucWLMmH83VFZD1AhGOhS3BZxguvOWKzC2W1yUwAk=
+X-Received: by 2002:a17:906:c109:b0:a47:6bd4:cbd9 with SMTP id
+ do9-20020a170906c10900b00a476bd4cbd9mr2433483ejc.52.1711355964219; Mon, 25
+ Mar 2024 01:39:24 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 -next] mm/slub: remove dummy slabinfo functions
-To: Xiu Jianfeng <xiujianfeng@huaweicloud.com>, cl@linux.com,
- penberg@kernel.org, rientjes@google.com, iamjoonsoo.kim@lge.com,
- akpm@linux-foundation.org, roman.gushchin@linux.dev, 42.hyeyoo@gmail.com
-Cc: linux-mm@kvack.org, linux-kernel@vger.kernel.org, xiujianfeng@huawei.com
-References: <20240321131733.268615-1-xiujianfeng@huaweicloud.com>
-Content-Language: en-US
-From: Vlastimil Babka <vbabka@suse.cz>
-In-Reply-To: <20240321131733.268615-1-xiujianfeng@huaweicloud.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-Authentication-Results: smtp-out2.suse.de;
-	none
-X-Spam-Level: 
-X-Spam-Score: -2.79
-X-Spamd-Result: default: False [-2.79 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 XM_UA_NO_VERSION(0.01)[];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 TAGGED_RCPT(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 MID_RHS_MATCH_FROM(0.00)[];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 NEURAL_HAM_SHORT(-0.20)[-0.990];
-	 BAYES_HAM(-3.00)[100.00%];
-	 RCPT_COUNT_SEVEN(0.00)[11];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[huawei.com:email];
-	 FREEMAIL_TO(0.00)[huaweicloud.com,linux.com,kernel.org,google.com,lge.com,linux-foundation.org,linux.dev,gmail.com];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 RCVD_TLS_ALL(0.00)[];
-	 SUSPICIOUS_RECIPS(1.50)[]
-X-Spam-Flag: NO
+References: <20240324210447.956973-1-hannes@cmpxchg.org> <CAJD7tkaWQAV=X1pzYG=VkWe7Ue9ZFbjt9uQ5m1NJujtLspWJTA@mail.gmail.com>
+ <CAGsJ_4yeBmNsMGXEWwC+1Hs5zJUP+becq4wG+6CpU7V1=EOvhg@mail.gmail.com>
+ <CAJD7tka5K69q20bxTsBk38JC7mdPr3UsxXpsnggDO_iQA=qxug@mail.gmail.com> <1e7ce417-b9dd-4d62-9f54-0adf1ccdae35@linux.dev>
+In-Reply-To: <1e7ce417-b9dd-4d62-9f54-0adf1ccdae35@linux.dev>
+From: Yosry Ahmed <yosryahmed@google.com>
+Date: Mon, 25 Mar 2024 01:38:47 -0700
+Message-ID: <CAJD7tkYc3oFho5eEkS1zmr_+CC-Ag1HucUTyAy2RJbEb4SqRoQ@mail.gmail.com>
+Subject: Re: [PATCH] mm: zswap: fix data loss on SWP_SYNCHRONOUS_IO devices
+To: Chengming Zhou <chengming.zhou@linux.dev>
+Cc: Barry Song <21cnbao@gmail.com>, Johannes Weiner <hannes@cmpxchg.org>, 
+	Andrew Morton <akpm@linux-foundation.org>, Zhongkun He <hezhongkun.hzk@bytedance.com>, 
+	Chengming Zhou <zhouchengming@bytedance.com>, Chris Li <chrisl@kernel.org>, 
+	Nhat Pham <nphamcs@gmail.com>, linux-mm@kvack.org, linux-kernel@vger.kernel.org, 
+	Kairui Song <kasong@tencent.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 3/21/24 2:17 PM, Xiu Jianfeng wrote:
-> From: Xiu Jianfeng <xiujianfeng@huawei.com>
-> 
-> The SLAB implementation has been removed since 6.8, so there is no
-> other version of slabinfo_show_stats() and slabinfo_write(), then we
-> can remove these two dummy functions.
-> 
-> Signed-off-by: Xiu Jianfeng <xiujianfeng@huawei.com>
+On Mon, Mar 25, 2024 at 12:33=E2=80=AFAM Chengming Zhou
+<chengming.zhou@linux.dev> wrote:
+>
+> On 2024/3/25 15:06, Yosry Ahmed wrote:
+> > On Sun, Mar 24, 2024 at 9:54=E2=80=AFPM Barry Song <21cnbao@gmail.com> =
+wrote:
+> >>
+> >> On Mon, Mar 25, 2024 at 10:23=E2=80=AFAM Yosry Ahmed <yosryahmed@googl=
+e.com> wrote:
+> >>>
+> >>> On Sun, Mar 24, 2024 at 2:04=E2=80=AFPM Johannes Weiner <hannes@cmpxc=
+hg.org> wrote:
+> >>>>
+> >>>> Zhongkun He reports data corruption when combining zswap with zram.
+> >>>>
+> >>>> The issue is the exclusive loads we're doing in zswap. They assume
+> >>>> that all reads are going into the swapcache, which can assume
+> >>>> authoritative ownership of the data and so the zswap copy can go.
+> >>>>
+> >>>> However, zram files are marked SWP_SYNCHRONOUS_IO, and faults will t=
+ry
+> >>>> to bypass the swapcache. This results in an optimistic read of the
+> >>>> swap data into a page that will be dismissed if the fault fails due =
+to
+> >>>> races. In this case, zswap mustn't drop its authoritative copy.
+> >>>>
+> >>>> Link: https://lore.kernel.org/all/CACSyD1N+dUvsu8=3DzV9P691B9bVq33er=
+wOXNTmEaUbi9DrDeJzw@mail.gmail.com/
+> >>>> Reported-by: Zhongkun He <hezhongkun.hzk@bytedance.com>
+> >>>> Fixes: b9c91c43412f ("mm: zswap: support exclusive loads")
+> >>>> Cc: stable@vger.kernel.org      [6.5+]
+> >>>> Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
+> >>>> Tested-by: Zhongkun He <hezhongkun.hzk@bytedance.com>
+> >>
+> >> Acked-by: Barry Song <baohua@kernel.org>
+> >>
+> >>>
+> >>> Do we also want to mention somewhere (commit log or comment) that
+> >>> keeping the entry in the tree is fine because we are still protected
+> >>> from concurrent loads/invalidations/writeback by swapcache_prepare()
+> >>> setting SWAP_HAS_CACHE or so?
+> >>
+> >> It seems that Kairui's patch comprehensively addresses the issue at ha=
+nd.
+> >> Johannes's solution, on the other hand, appears to align zswap behavio=
+r
+> >> more closely with that of a traditional swap device, only releasing an=
+ entry
+> >> when the corresponding swap slot is freed, particularly in the sync-io=
+ case.
+> >
+> > It actually worked out quite well that Kairui's fix landed shortly
+> > before this bug was reported, as this fix wouldn't have been possible
+> > without it as far as I can tell.
+> >
+> >>
+> >> Johannes' patch has inspired me to consider whether zRAM could achieve
+> >> a comparable outcome by immediately releasing objects in swap cache
+> >> scenarios.  When I have the opportunity, I plan to experiment with zRA=
+M.
+> >
+> > That would be interesting. I am curious if it would be as
+> > straightforward in zram to just mark the folio as dirty in this case
+> > like zswap does, given its implementation as a block device.
+> >
+>
+> This makes me wonder who is responsible for marking folio dirty in this s=
+wapcache
+> bypass case? Should we call folio_mark_dirty() after the swap_read_folio(=
+)?
 
-Thanks, added to slab/for-6.10/cleanup
+In shrink_folio_list(), we try to add anonymous folios to the
+swapcache if they are not there before checking if they are dirty.
+add_to_swap() calls folio_mark_dirty(), so this should take care of
+it. There is an interesting comment there though. It says that PTE
+should be dirty, so unmapping the folio should have already marked it
+as dirty by the time we are adding it to the swapcache, except for the
+MADV_FREE case.
 
-> ---
-> v2: correct removed version
-> ---
->  mm/slab.h        |  3 ---
->  mm/slab_common.c |  2 --
->  mm/slub.c        | 10 ----------
->  3 files changed, 15 deletions(-)
-> 
-> diff --git a/mm/slab.h b/mm/slab.h
-> index d2bc9b191222..78e205b46e19 100644
-> --- a/mm/slab.h
-> +++ b/mm/slab.h
-> @@ -496,9 +496,6 @@ struct slabinfo {
->  };
->  
->  void get_slabinfo(struct kmem_cache *s, struct slabinfo *sinfo);
-> -void slabinfo_show_stats(struct seq_file *m, struct kmem_cache *s);
-> -ssize_t slabinfo_write(struct file *file, const char __user *buffer,
-> -		       size_t count, loff_t *ppos);
->  
->  #ifdef CONFIG_SLUB_DEBUG
->  #ifdef CONFIG_SLUB_DEBUG_ON
-> diff --git a/mm/slab_common.c b/mm/slab_common.c
-> index f5234672f03c..67c03d6bd26c 100644
-> --- a/mm/slab_common.c
-> +++ b/mm/slab_common.c
-> @@ -1078,7 +1078,6 @@ static void cache_show(struct kmem_cache *s, struct seq_file *m)
->  		   sinfo.limit, sinfo.batchcount, sinfo.shared);
->  	seq_printf(m, " : slabdata %6lu %6lu %6lu",
->  		   sinfo.active_slabs, sinfo.num_slabs, sinfo.shared_avail);
-> -	slabinfo_show_stats(m, s);
->  	seq_putc(m, '\n');
->  }
->  
-> @@ -1155,7 +1154,6 @@ static const struct proc_ops slabinfo_proc_ops = {
->  	.proc_flags	= PROC_ENTRY_PERMANENT,
->  	.proc_open	= slabinfo_open,
->  	.proc_read	= seq_read,
-> -	.proc_write	= slabinfo_write,
->  	.proc_lseek	= seq_lseek,
->  	.proc_release	= seq_release,
->  };
-> diff --git a/mm/slub.c b/mm/slub.c
-> index 1bb2a93cf7b6..cc7e68fbdbba 100644
-> --- a/mm/slub.c
-> +++ b/mm/slub.c
-> @@ -7099,14 +7099,4 @@ void get_slabinfo(struct kmem_cache *s, struct slabinfo *sinfo)
->  	sinfo->objects_per_slab = oo_objects(s->oo);
->  	sinfo->cache_order = oo_order(s->oo);
->  }
-> -
-> -void slabinfo_show_stats(struct seq_file *m, struct kmem_cache *s)
-> -{
-> -}
-> -
-> -ssize_t slabinfo_write(struct file *file, const char __user *buffer,
-> -		       size_t count, loff_t *ppos)
-> -{
-> -	return -EIO;
-> -}
->  #endif /* CONFIG_SLUB_DEBUG */
-
+However, I think we actually unmap the folio after we add it to the
+swapcache in shrink_folio_list(). Also, I don't immediately see why
+the PTE would be dirty. In do_swap_page(), making the PTE dirty seems
+to be conditional on the fault being a write fault, but I didn't look
+thoroughly, maybe I missed it. It is also possible that the comment is
+just outdated.
 
