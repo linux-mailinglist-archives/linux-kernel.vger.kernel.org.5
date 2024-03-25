@@ -1,253 +1,127 @@
-Return-Path: <linux-kernel+bounces-117566-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-117567-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0B9D488ACAC
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 18:57:54 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3760D88B362
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 23:05:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 147BB1C3D370
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 17:57:53 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8254FC2338E
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 17:58:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8814513E8B7;
-	Mon, 25 Mar 2024 17:18:18 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BDC4813D525;
-	Mon, 25 Mar 2024 17:18:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 58F9113FD87;
+	Mon, 25 Mar 2024 17:18:23 +0000 (UTC)
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9AAD713E8AF;
+	Mon, 25 Mar 2024 17:18:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.176.79.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711387097; cv=none; b=QlnN7aGjta32a/56fFQaVEgeAkR/I6Vjp+8sQU7ysYprxEzSCzgUx8E9BOMZ/ZLn/QIRZsKuRoNkDyfjpCsAv4aaSBthnXcD1k5QhTGXk1pEVkV8jQgAiDCp3ckfhqt/2uSXLkl2mqDPSnCt0GPe0EHuTJ8+6lUzI9JD1k1mIw4=
+	t=1711387102; cv=none; b=XY8ihBW1ConnV1OyZWOo0+hFXz6n8FYYW8VvsI1lq/mp8OC6GIlfOBpFVZuLv4RGocrRDutLO7ulsxUiv7WQu8jK0u47JVvRXYdEzCxoBHkC1b3vxd3liudQ9XIypemKYP00fXYufodDjMOZdVtk47GONfncEZgonhX796B3bLY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711387097; c=relaxed/simple;
-	bh=VOpyvpV3DKqwMNhujsBF5C0FDMEl+NlChzbkHcasLYM=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=oq0683WRtn2miCLP0kuLLslI3dONVf3RLMw1ABrB64Wkjs/x8aJuj4zQAZ6e6swxHWxFo4oZyDgB+8gBIscOGEhrm+fl+YXfoWUGrBKW28OOiIeDlxiFgVuRGaAGMupMlwepPuy9S/WM8FYxdfJFrXXYwwi4h2a39Ge5tCTUyeU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D53CD2F4;
-	Mon, 25 Mar 2024 10:18:48 -0700 (PDT)
-Received: from [10.1.25.33] (e133047.arm.com [10.1.25.33])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 669303F64C;
-	Mon, 25 Mar 2024 10:18:11 -0700 (PDT)
-Message-ID: <8ff1841c-ab1c-4a89-9855-c99729c78f48@arm.com>
-Date: Mon, 25 Mar 2024 17:18:09 +0000
+	s=arc-20240116; t=1711387102; c=relaxed/simple;
+	bh=7Plp+Vb3OYVdjH+L6Wf/KDH9AYjXaHPGBZf5tgminbs=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=NkheQ3/e3/haj+jDnk0Leu2dtjh4Ma58ZoDWOZK30F/yVhY6SgIAdfcKD4OGv4EpKL5YVu8B6JK9e91vfRrrRVrwulqhTzqRJQYNvO+W25TGgVR9Fbt/Ebh5Z1TYFRx+4n5dQE/Yl9PWL1XlIsgOM8gNJipLd8K2pspiGAVIC2I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=185.176.79.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.18.186.216])
+	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4V3KPG62YZz6J9xf;
+	Tue, 26 Mar 2024 01:17:22 +0800 (CST)
+Received: from frapeml100006.china.huawei.com (unknown [7.182.85.201])
+	by mail.maildlp.com (Postfix) with ESMTPS id 075D4140DAF;
+	Tue, 26 Mar 2024 01:18:17 +0800 (CST)
+Received: from frapeml500005.china.huawei.com (7.182.85.13) by
+ frapeml100006.china.huawei.com (7.182.85.201) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Mon, 25 Mar 2024 18:18:16 +0100
+Received: from frapeml500005.china.huawei.com ([7.182.85.13]) by
+ frapeml500005.china.huawei.com ([7.182.85.13]) with mapi id 15.01.2507.035;
+ Mon, 25 Mar 2024 18:18:16 +0100
+From: Roberto Sassu <roberto.sassu@huawei.com>
+To: Christian Brauner <brauner@kernel.org>
+CC: Al Viro <viro@zeniv.linux.org.uk>, Steve French <smfrench@gmail.com>, LKML
+	<linux-kernel@vger.kernel.org>, linux-fsdevel
+	<linux-fsdevel@vger.kernel.org>, CIFS <linux-cifs@vger.kernel.org>, "Paulo
+ Alcantara" <pc@manguebit.com>, Christian Brauner <christian@brauner.io>,
+	"Mimi Zohar" <zohar@linux.ibm.com>, Paul Moore <paul@paul-moore.com>,
+	"linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>,
+	"linux-security-module@vger.kernel.org"
+	<linux-security-module@vger.kernel.org>
+Subject: RE: kernel crash in mknod
+Thread-Topic: kernel crash in mknod
+Thread-Index: AQHafag2XY/u/k17xEe65QyoT7TnEbFGUTAAgADHHcCAAXhhAIAAIPoA
+Date: Mon, 25 Mar 2024 17:18:16 +0000
+Message-ID: <cb267d1c7988460094dbe19d1e7bcece@huawei.com>
+References: <CAH2r5msAVzxCUHHG8VKrMPUKQHmBpE6K9_vjhgDa1uAvwx4ppw@mail.gmail.com>
+ <20240324054636.GT538574@ZenIV> <3441a4a1140944f5b418b70f557bca72@huawei.com>
+ <20240325-beugen-kraftvoll-1390fd52d59c@brauner>
+In-Reply-To: <20240325-beugen-kraftvoll-1390fd52d59c@brauner>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH 0/2] Introduce per-task io utilization boost
-Content-Language: en-US
-To: Qais Yousef <qyousef@layalina.io>,
- Vincent Guittot <vincent.guittot@linaro.org>
-Cc: linux-kernel@vger.kernel.org, peterz@infradead.org,
- juri.lelli@redhat.com, mingo@redhat.com, rafael@kernel.org,
- dietmar.eggemann@arm.com, vschneid@redhat.com, Johannes.Thumshirn@wdc.com,
- adrian.hunter@intel.com, ulf.hansson@linaro.org, andres@anarazel.de,
- asml.silence@gmail.com, linux-pm@vger.kernel.org,
- linux-block@vger.kernel.org, io-uring@vger.kernel.org
-References: <20240304201625.100619-1-christian.loehle@arm.com>
- <CAKfTPtDcTXBosFpu6vYW_cXLGwnqJqYCUW19XyxRmAc233irqA@mail.gmail.com>
- <20240325022051.73mfzap7hlwpsydx@airbuntu>
-From: Christian Loehle <christian.loehle@arm.com>
-In-Reply-To: <20240325022051.73mfzap7hlwpsydx@airbuntu>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
 
-On 25/03/2024 02:20, Qais Yousef wrote:
-> (piggy backing on this reply)
-> 
-> On 03/22/24 19:08, Vincent Guittot wrote:
->> Hi Christian,
->>
->> On Mon, 4 Mar 2024 at 21:17, Christian Loehle <christian.loehle@arm.com> wrote:
->>>
->>> There is a feature inside of both schedutil and intel_pstate called
->>> iowait boosting which tries to prevent selecting a low frequency
->>> during IO workloads when it impacts throughput.
->>> The feature is implemented by checking for task wakeups that have
->>> the in_iowait flag set and boost the CPU of the rq accordingly
->>> (implemented through cpufreq_update_util(rq, SCHED_CPUFREQ_IOWAIT)).
->>>
->>> The necessity of the feature is argued with the potentially low
->>> utilization of a task being frequently in_iowait (i.e. most of the
->>> time not enqueued on any rq and cannot build up utilization).
->>>
->>> The RFC focuses on the schedutil implementation.
->>> intel_pstate frequency selection isn't touched for now, suggestions are
->>> very welcome.
->>> Current schedutil iowait boosting has several issues:
->>> 1. Boosting happens even in scenarios where it doesn't improve
->>> throughput. [1]
->>> 2. The boost is not accounted for in EAS: a) feec() will only consider
->>>  the actual utilization for task placement, but another CPU might be
->>>  more energy-efficient at that capacity than the boosted one.)
->>>  b) When placing a non-IO task while a CPU is boosted compute_energy()
->>>  will not consider the (potentially 'free') boosted capacity, but the
->>>  one it would have without the boost (since the boost is only applied
->>>  in sugov).
->>> 3. Actual IO heavy workloads are hardly distinguished from infrequent
->>> in_iowait wakeups.
->>> 4. The boost isn't associated with a task, it therefore isn't considered
->>> for task placement, potentially missing out on higher capacity CPUs on
->>> heterogeneous CPU topologies.
->>> 5. The boost isn't associated with a task, it therefore lingers on the
->>> rq even after the responsible task has migrated / stopped.
->>> 6. The boost isn't associated with a task, it therefore needs to ramp
->>> up again when migrated.
->>> 7. Since schedutil doesn't know which task is getting woken up,
->>> multiple unrelated in_iowait tasks might lead to boosting.
-> 
-> You forgot an important problem which what was the main request from Android
-> when this first came up few years back. iowait boost is a power hungry
-> feature and not all tasks require iowait boost. By having it per task we want
-> to be able to prevent tasks from causing frequency spikes due to iowait boost
-> when it is not warranted.
-
-It is and most of the time I see it triggering (in day-to-day workloads) it
-doesn't help in any measurable way.
-Being able to toggle this per-task is the logical next step, although I would
-expect very little over-boosting overall compared to the current sugov
-implementation. If you observe otherwise please do tell me for which workloads!
-
->>>
->>> We attempt to mitigate all of the above by reworking the way the
->>> iowait boosting (io boosting from here on) works in two major ways:
->>> - Carry the boost in task_struct, so it is a per-task attribute and
->>> behaves similar to utilization of the task in some ways.
->>> - Employ a counting-based tracking strategy that only boosts as long
->>> as it sees benefits and returns to no boosting dynamically.
->>
->> Thanks for working on improving IO boosting. I have started to read
->> your patchset and have few comments about your proposal:
->>
->> The main one is that the io boosting decision should remain a cpufreq
->> governor decision and so the io boosting value should be applied by
->> the governor like in sugov_effective_cpu_perf() as an example instead
->> of everywhere in the scheduler code.
-> 
-> I have similar thoughts.
-> 
-> I think we want the scheduler to treat iowait boost like uclamp_min, but
-> requested by block subsystem rather than by the user.
-> 
-> I think we should create a new task_min/max_perf() and replace all current
-> callers in scheduler to uclamp_eff_value() with task_min/max_perf() where
-> task_min/max_perf()
-> 
-> unsigned long task_min_perf(struct task_struct *p)
-> {
-> 	return max(uclamp_eff_value(p, UCLAMP_MIN), p->iowait_boost);
-> }
-> 
-> unsigned long task_max_perf(struct task_struct *p)
-> {
-> 	return uclamp_eff_value(p, UCLAMP_MAX);
-> }
-> 
-> then all users of uclamp_min in the scheduler will see the request for boost
-> from iowait and do the correct task placement decision. Including under thermal
-> pressure and ensuring that they don't accidentally escape uclamp_max which I am
-> not sure if your series caters for with the open coding it. You're missing the
-> load balancer paths from what I see.
-
-io_boost doesn't have to be clamped at the load balancer path because it isn't
-included there (unless I messed up).
-Essentially io_boost should never trigger a load balance, we are talking about
-tasks that get constantly enqueued and only spend very little time on the CPU
-until sleeping again, so any load balancing should be overkill.
-For the rest I'm open to anything, it's all a 'minor' implementation detail for
-me :)
-
-> 
-> It will also solve the problem I mention above. The tasks that should not use
-> iowait boost are likely restricted with uclamp_max already. If we treat iowait
-> boost as an additional source of min_perf request, then uclamp_max will prevent
-> it from going above a certain perf level and give us the desired impact without
-> any additional hint. I don't think it is important to disable it completely but
-> rather have a way to prevent tasks from consuming too much resources when not
-> needed, which we already have from uclamp_max.
-> 
-> I am not sure it makes sense to have a separate control where a task can run
-> fast due to util but can't have iowait boost or vice versa. I think existing
-> uclamp_max should be enough to restrict tasks from exceeding a performance
-> limit.
-> 
->>
->> Then, the algorithm to track the right interval bucket and the mapping
->> of intervals into utilization really looks like a policy which has
->> been defined with heuristics and as a result further seems to be a
->> governor decision
-> 
-> Hmm do you think this should not be a per-task value then Vincent?
-
-That's how I understood Vincent anyway.
-See my other reply.
-
-> 
-> Or oh, I think I see what you mean. Make effective_cpu_util() set min parameter
-> correctly. I think that would work too, yes. iowait boost is just another min
-> perf request and as long as it is treated as such, it is good for me. We'll
-> just need to add a new parameter for the task like I did in remove uclamp max
-> aggregation serires.
-
-I did have that at some point, too, although before Vincent's rework.
-Should be fine from what I can see now.
-
-> 
-> Generally I think it's better to split the patches so that the conversion to
-> iowait boost with current algorithm to being per-task as a separate patch. And
-> then look at improving the algorithm logic on top. These are two different
-> problems IMHO.
-
-That's possible, although the current iowait boosting is based on consecutiveness
-of the iowait wakeups on the rq (oversimplifying away all that rate_limit_us
-stuff), which doesn't really translate well into a per-task property, but
-I can come up with something that works just well enough here.
-As I said in my other reply this entire piggybacking ontop of iowait wakeups
-is such an unfortunate beast, see all the different occurrences of io_schedule*()
-and mutex_lock_io(). The entire interval-based tracking strategy attempts to
-mitigate that somewhat without going to the entire tree.
-
-> One major problem and big difference in per-task iowait that I see Christian
-> alluded to is that the CPU will no longer be boosted when the task is sleeping.
-> I think there will be cases out there where some users relied on that for the
-> BLOCK softirq to run faster too. We need an additional way to ensure that the
-> softirq runs at a similar performance level to the task that initiated the
-> request. So we need a way to hold the cpufreq policy's min perf until the
-> softirq is serviced. Or just keep the CPU boosted until the task is migrated.
-> I'm not sure what is better yet.
-
-Yes, right now rate_limit_us (which is usually at least TICK_NSEC currently)
-'protects' this. Almost all of the cpufreq updates will come from the iowait
-task(s) enqueue anyway (in cases we apply some io boost).
-Having the per-task boost 'linger' around at the runqueue more explicitly is
-a bit awkward though, as you would have to remove if the scheduler picks a
-different CPU once the task is being re-enqueued.
-Not impossible to do but lots of awkwardness there.
-
->>
->> Finally adding some atomic operation in the fast path is not really desirable
-> 
-> Yes I was thinking if we can apply the value when we set the p->in_iowait flag
-> instead?
-
-Yeah thought about it, too, again the awkwardness is that you don't know on which
-rq the task will be enqueued on after the wake up.
-(Boost current CPU and then remove if we switched CPUs can be done, but then we
-also need to arm a timer for tasks that go into iowait for a long time (and thus
-don't deserve boosting anymore)).
-Might be worse than the current atomic.
-But I'll come up with something, should be the least critical part of this series ;)
-
-Thanks for taking a look, I'll gather some additional numbers for the other replies
-and get back to you.
-
-Kind Regards,
-Christian
+PiBGcm9tOiBDaHJpc3RpYW4gQnJhdW5lciBbbWFpbHRvOmJyYXVuZXJAa2VybmVsLm9yZ10NCj4g
+U2VudDogTW9uZGF5LCBNYXJjaCAyNSwgMjAyNCA1OjA2IFBNDQo+IE9uIFN1biwgTWFyIDI0LCAy
+MDI0IGF0IDA0OjUwOjI0UE0gKzAwMDAsIFJvYmVydG8gU2Fzc3Ugd3JvdGU6DQo+ID4gPiBGcm9t
+OiBBbCBWaXJvIFttYWlsdG86dmlyb0BmdHAubGludXgub3JnLnVrXSBPbiBCZWhhbGYgT2YgQWwg
+Vmlybw0KPiA+ID4gU2VudDogU3VuZGF5LCBNYXJjaCAyNCwgMjAyNCA2OjQ3IEFNDQo+ID4gPiBP
+biBTdW4sIE1hciAyNCwgMjAyNCBhdCAxMjowMDoxNUFNIC0wNTAwLCBTdGV2ZSBGcmVuY2ggd3Jv
+dGU6DQo+ID4gPiA+IEFueW9uZSBlbHNlIHNlZWluZyB0aGlzIGtlcm5lbCBjcmFzaCBpbiBkb19t
+a25vZGF0IChJIHNlZSBpdCB3aXRoIGENCj4gPiA+ID4gc2ltcGxlICJta2ZpZm8iIG9uIHNtYjMg
+bW91bnQpLiAgSSBzdGFydGVkIHNlZWluZyB0aGlzIGluIDYuOS1yYyAoZGlkDQo+ID4gPiA+IG5v
+dCBzZWUgaXQgaW4gNi44KS4gICBJIGRpZCBub3Qgc2VlIGl0IHdpdGggdGhlIDMvMTIvMjMgbWFp
+bmxpbmUNCj4gPiA+ID4gKGVhcmx5IGluIHRoZSA2LjktcmMgbWVyZ2UgV2luZG93KSBidXQgSSBk
+byBzZWUgaXQgaW4gdGhlIDMvMjIgYnVpbGQNCj4gPiA+ID4gc28gaXQgbG9va3MgbGlrZSB0aGUg
+cmVncmVzc2lvbiB3YXMgaW50cm9kdWNlZCBieToNCj4gPiA+DQo+ID4gPiAJRldJVywgc3VjY2Vz
+c2Z1bCAtPm1rbm9kKCkgaXMgYWxsb3dlZCB0byByZXR1cm4gMCBhbmQgdW5oYXNoDQo+ID4gPiBk
+ZW50cnksIHJhdGhlciB0aGFuIGJvdGhlcmluZyB3aXRoIGxvb2t1cHMuICBTbyBjb21taXQgaW4g
+cXVlc3Rpb24NCj4gPiA+IGlzIGJvZ3VzIC0gbGFjayBvZiBlcnJvciBkb2VzICpOT1QqIG1lYW4g
+dGhhdCB5b3UgaGF2ZSBzdHJ1Y3QgaW5vZGUNCj4gPiA+IGV4aXN0aW5nLCBsZXQgYWxvbmUgYXR0
+YWNoZWQgdG8gZGVudHJ5LiAgVGhhdCBraW5kIG9mIGJlaGF2aW91cg0KPiA+ID4gdXNlZCB0byBi
+ZSBjb21tb24gZm9yIG5ldHdvcmsgZmlsZXN5c3RlbXMgbW9yZSB0aGFuIGp1c3QgZm9yIC0+bWtu
+b2QoKSwNCj4gPiA+IHRoZSB0aGVvcnkgYmVpbmcgImlmIHNvbWVib2R5IHdhbnRzIHRvIGxvb2sg
+YXQgaXQsIHRoZXkgY2FuIGJsb29keQ0KPiA+ID4gd2VsbCBwYXkgdGhlIGNvc3Qgb2YgbG9va3Vw
+IGFmdGVyIGRjYWNoZSBtaXNzIi4NCj4gPiA+DQo+ID4gPiBTYWlkIHRoYXQsIHRoZSBsYW5ndWFn
+ZSBpbiBEL2YvdmZzLnJzdCBpcyB2YWd1ZSBhcyBoZWxsIGFuZCBpcyB2ZXJ5IGVhc3kNCj4gPiA+
+IHRvIG1pc3JlYWQgaW4gZGlyZWN0aW9uIG9mICJ5b3UgbXVzdCBpbnN0YW50aWF0ZSIuDQo+ID4g
+Pg0KPiA+ID4gVGhhbmtmdWxseSwgdGhlcmUncyBubyBjb3VudGVycGFydCB3aXRoIG1rZGlyIC0g
+KnRoZXJlKiBpdCdzIG5vdCBqdXN0DQo+ID4gPiBwb3NzaWJsZSwgaXQncyBpbmV2aXRhYmxlIGlu
+IHNvbWUgY2FzZXMgZm9yIGUuZy4gbmZzLg0KPiA+ID4NCj4gPiA+IFdoYXQgdGhlIGhlbGwgaXMg
+dGhhdCBob29rIGRvaW5nIGluIG5vbi1TX0lGUkVHIGNhc2VzLCBhbnl3YXk/ICBNb3ZlIGl0DQo+
+ID4gPiB1cCBhbmQgYmUgZG9uZSB3aXRoIGl0Li4uDQo+ID4NCj4gPiBIaSBBbA0KPiA+DQo+ID4g
+dGhhbmtzIGZvciB0aGUgcGF0Y2guIEluZGVlZCwgaXQgd2FzIGxpa2UgdGhhdCBiZWZvcmUsIHdo
+ZW4gaW5zdGVhZCBvZg0KPiA+IGFuIExTTSBob29rIHRoZXJlIHdhcyBhbiBJTUEgY2FsbC4NCj4g
+DQo+IENvdWxkIHlvdSBwbGVhc2Ugc3RhcnQgYWRkaW5nIGxvcmUgbGlua3MgaW50byB5b3VyIGNv
+bW1pdCBtZXNzYWdlcyBmb3INCj4gYWxsIG1lc3NhZ2VzIHRoYXQgYXJlIHNlbnQgdG8gYSBtYWls
+aW5nIGxpc3Q/IEl0IHJlYWxseSBtYWtlcyB0cmFja2luZw0KPiBkb3duIHRoZSBvcmlnaW5hbCB0
+aHJlYWQgYSBsb3QgZWFzaWVyLg0KDQpTdXJlLCB3aWxsIGRvIG5leHQgdGltZS4NCg0KPiA+IEhv
+d2V2ZXIsIEkgdGhvdWdodCwgc2luY2Ugd2Ugd2VyZSBwcm9tb3RpbmcgaXQgYXMgYW4gTFNNIGhv
+b2ssDQo+ID4gd2Ugc2hvdWxkIGJlIGFzIGdlbmVyaWMgcG9zc2libGUsIGFuZCBzdXBwb3J0IG1v
+cmUgdXNhZ2VzIHRoYW4NCj4gPiB3aGF0IHdhcyBuZWVkZWQgZm9yIElNQS4NCj4gDQo+IEknbSBh
+IGJpdCBjb25mdXNlZCBub3cgd2h5IHRoaXMgaXMgdGFraW5nIGEgZGVudHJ5LiBOb3RoaW5nIGlu
+IElNQSBvcg0KPiBFVk0gY2FyZXMgYWJvdXQgdGhlIGRlbnRyeSBmb3IgdGhlc2UgaG9va3Mgc28g
+aXQgcmVhbGx5IHNob3VsZCBoYXZlIHRha2UNCj4gYW4gaW5vZGUgaW4gdGhlIGZpcnN0IHBsYWNl
+Pw0KDQpVaG0sIHlvdSBhcmUgcmlnaHQuIERvZXMgdGhhdCBtZWFuIHRoYXQgaW5zdGVhZCBvZiB3
+aGF0IEFsIHByb3Bvc2VkLA0Kd2UgY2FuIGNoYW5nZSB0aGUgcGFyYW1ldGVyIG9mIHNlY3VyaXR5
+X3BhdGhfcG9zdF9ta25vZCgpIGZyb20NCmRlbnRyeSB0byBpbm9kZT8NCg0KPiBBbmQgb25lIG1p
+bm9yIG90aGVyIHF1ZXN0aW9uIEkganVzdCByZWFsaXplZC4gV2h5IGFyZSBzb21lIG9mIHRoZSBu
+ZXcNCj4gaG9va3MgY2FsbGVkIHNlY3VyaXR5X3BhdGhfcG9zdF9ta25vZCgpIHdoZW4gdGhleSBh
+cmVuJ3QgYWN0dWFsbHkgdGFraW5nDQo+IGEgcGF0aCBpbiBjb250cmFzdCB0byBzYXkNCj4gc2Vj
+dXJpdHlfcGF0aF97Y2hvd24sY2htb2QsbWtub2QsY2hyb290LHRydW5jYXRlfSgpIHRoYXQgZG8u
+DQoNCkkgd291bGQgYWdyZWUgdG8gYW55IGNoYW5nZSB0aGF0IG1ha2VzIHRoaXMgbW9yZSBjb25z
+aXN0ZW50LCBhcyBsb25nIGFzDQpJTUEgaGFzIGFjY2VzcyB0byB0aGUgbmV3IGlub2RlLg0KDQpS
+b2JlcnRvDQo=
 
