@@ -1,98 +1,115 @@
-Return-Path: <linux-kernel+bounces-117674-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-117676-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id C96D288AE4E
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 19:31:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id D949088AE53
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 19:31:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6B0001F60F8A
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 18:31:07 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 750C81F32E15
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 18:31:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C0E3D6F068;
-	Mon, 25 Mar 2024 18:03:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CA4C984D1E;
+	Mon, 25 Mar 2024 18:03:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="UwihusL6"
-Received: from mail-oo1-f53.google.com (mail-oo1-f53.google.com [209.85.161.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="ZUGf+Spw"
+Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B7D586CDCB
-	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 18:03:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 278F370CA7;
+	Mon, 25 Mar 2024 18:03:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711389793; cv=none; b=mOeZY7Xf1F1vEvk1xS+W/FwTeAQCBZUmxOFrgt4+/EoYptZFZVY6v9boNY2Kvs021oz2JST0tf4X8OUKbZhJ/e25+SSd4b+hcOwygo+6Y4/IjFFsjYO0ViTYgRJD08n4AHLgzJG2KceR2IPQ7ReZKtY4fiWR1r2riYLcC2JQKoQ=
+	t=1711389810; cv=none; b=pUE0t25EBPGd0KabtF2wHAjJqK5kAcstpJT9BasCBHrrqmTE9CZZjH1ZI6AdTLfqQeNEfBQA49beQY6vCRoI4H94dfwOZhNQ3id9e067Y2kE+wgM0Znak+e1QOOq4nxS+M0pFQX9mWqr3qXfhGAZxa88fFFWM0QyhPy+cO561zk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711389793; c=relaxed/simple;
-	bh=VqJAK9LMf19BLXaKwjLTQamBgAZ8wVxbTGeY7jkLLj4=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=YovGKEJ6cFihI1/uHjYvAbifmfD876gPRytgCprc1ONHGt3g4B4tZX+C+30Ck5j48RAIOC0RLMyCfjTL02fjoC7/NJ4GgiudHZrwu5Jr00qSocd5cKrEX1ekxflh3SUbIIwQwYSPSaMZUUIHlGp1VKuQKX2kera6OV13TGDB7qc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=UwihusL6; arc=none smtp.client-ip=209.85.161.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oo1-f53.google.com with SMTP id 006d021491bc7-5a46abf093cso2958497eaf.2
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 11:03:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711389790; x=1711994590; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=fLUiUk1Q+DQhrsVzmksa6nwMomZ8debQ8tnp6AHgtVs=;
-        b=UwihusL6xWZtfEs1Xe40tUessHq8S91lQ76lX/P3zEyMQBu/Uqr+6F0RtspcoFX8FN
-         oRbluUKzCnybTcDcuqOL/4LZW9+Fl5VmnqBXeR9FzaDQfqsxzPtKozdi4IKUVtiw1JUu
-         RoI0Y3KFoGPefNsBvr0t/YJPgxp6ZTJseuNefPNZuhxj8WxtzIE3YExVSYFYCqERlLXC
-         3sisQGeoX+JJz8cEtVm4Y35VmxP0/6y4YZiQpHKh47tcSUxWcVhGB7WOIBWsIVbpTfn/
-         59IRFEpJ4e6N8XYT85EL22gQiXylCnXcIYL6ZAHFD+nC5OASFZrFulAOaA6oEOzhC+cu
-         wlEA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711389790; x=1711994590;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=fLUiUk1Q+DQhrsVzmksa6nwMomZ8debQ8tnp6AHgtVs=;
-        b=X6U5SsCTU02DRVIbUWqW5wJ1n54635lVIP85H0iMoX0Tb76HQ5Mf+VtvrpYMCwuVJd
-         XjMdArjtFa5PVGRfVqzoBaPBpo11JrPRHCSqFoHYdNL7mhlRz2VeqQJNi9Z2TXQhLmmi
-         2LA6B2qyoxRuOFoxK1WX/oLHxof0TFFKOKBBjhlKfDMkrfo8Y/jbbgIUFKwIkPBk6FUw
-         wi/ZkCWH5rTM15SzKqL3dOY551WY9aF+3ILZOV7xAHgioUmelcxHzrjgtiCf93Bm3hX1
-         TFa/YAU4dXhhlYz4RoSP4lEH/imb/ddjJCFbrk9B/qcxR+abwc+ywtQT66K8JIsAF7IT
-         +kig==
-X-Forwarded-Encrypted: i=1; AJvYcCXpOqDOlpfRqfxI6E7kD47FK7uHj0zb+tMMva72lbyQBUi3SUZtlRb33LKVEI6dlAtcnhl5Sp3CV0kyIy+KT9HK6ke9K1xeRwM990ew
-X-Gm-Message-State: AOJu0YxksN3ZV9rQ2F47g23YxViy8K0E552cU7t7VUPP3to4mFHwCUwY
-	h0liFT6zATxVGi1D2dPIfyoyQcBNZ+9+9GKkWFIBZWCeMlWxjvx4RjfUM1IYfcNSXs5rmWQDZTv
-	vpMnTDYMZafSOHjmCdO/3U6xIy3I=
-X-Google-Smtp-Source: AGHT+IFmpJtRfFjPuhiADJlAxpMJSsW/XgyalzqXN7JIrg0wgfhBiSSdcnA4Mpj6OHKa6ZMz54b0Vq1OI8W1OdcAajM=
-X-Received: by 2002:a05:6808:90f:b0:3c3:b10c:efad with SMTP id
- w15-20020a056808090f00b003c3b10cefadmr450826oih.27.1711389789916; Mon, 25 Mar
- 2024 11:03:09 -0700 (PDT)
+	s=arc-20240116; t=1711389810; c=relaxed/simple;
+	bh=LuBX/hwxrNqsaHF8GMs2eI9t/d/qRYLH80vZIH7ILXc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=NwuEmysJq8fTLMT0i3n+RCajcS2Y6lIR3p8iAOqDATGnC17urPR1JSsae1oUJFKE+jxR1G5XUWUh16BEZAxJNjZYj2sS9w+sAIYHulu0bdkySEjyf6FDzv9fxrA6cVKSzExQuoGS7vDMMyVdJ/XsFczcpVkwlxJYEs0Xspbnx+s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=ZUGf+Spw; arc=none smtp.client-ip=65.109.113.108
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
+Received: from localhost (localhost.localdomain [127.0.0.1])
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id E1C2F40E02A6;
+	Mon, 25 Mar 2024 18:03:25 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
+	header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id Wlcl9MQjtol4; Mon, 25 Mar 2024 18:03:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+	t=1711389802; bh=9Pg6rGDcXIBzldK9Xr90ie8sezD4Qwc8cPFnAvknNgI=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=ZUGf+SpwjUc/glkd12A8HONzOUpkLlGCU4RnbT7T3v1/PXgaldgYvNXo1CEDPMEA4
+	 SspenGIJu9yszJqDijo6wGz/BQfVgexPy3jbXFcQUegoDJpDDMe5iMSV9c6SgmHDXQ
+	 wp7aFDLNX7IwmkLTvuktDlmy18iMDJKdQ+QM4YSa2YuuQiBBE4R5H2M+yRFUd/FaOa
+	 OHTFAvqdbDNL1VxTO+CuymAaNdKhQ1s9QwKyOxF8zK4qZMZ9GOl6pMSv3lX6h6SilT
+	 SDQ2qfN7XivCIaxqC2GlIsp75p+v9j4+MKG8DHYev5ZHyu3wTN+zRCuouUmpxHhEvF
+	 e5vFEdx68SwIpf2jXgQTGwswj9bVtxqdkDEF8stj/iwTlx65Ze3bSwuRMEuZH6FIuJ
+	 +weDaZU7Bhe7luxv3Izlnkvf29Yf6Z0DFvbaGWkQQLGV8rXpTZKEpPSRFevIJPrInT
+	 RGkS7DKsPhVad45C3QRMVqMjjLxdCSpmY0o8Vo8GXFWcxKFnWBLfuhlZu+namo18qV
+	 69xpNvHlD9JuX57KwRWKj4UnxTw+aKwGRfsmaGo6t77S0dRtFt713Mm0RUVe7wutdh
+	 IFTgHVPgq5IqL8CanmqmmxOIekO4pMkPsg97vCX3UEWWzFjrrbFxXRcmzm1Tj1uVol
+	 WlZQTfdatcY7EYXNn7YAFDt8=
+Received: from zn.tnic (p5de8ecf7.dip0.t-ipconnect.de [93.232.236.247])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+	(No client certificate requested)
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id AD88A40E024C;
+	Mon, 25 Mar 2024 18:03:14 +0000 (UTC)
+Date: Mon, 25 Mar 2024 19:03:09 +0100
+From: Borislav Petkov <bp@alien8.de>
+To: Yazen Ghannam <yazen.ghannam@amd.com>
+Cc: tony.luck@intel.com, linux-edac@vger.kernel.org,
+	linux-kernel@vger.kernel.org, avadhut.naik@amd.com,
+	john.allen@amd.com, naveenkrishna.chatradhi@amd.com,
+	muralidhara.mk@amd.com
+Subject: Re: [PATCH 0/2] FMPM Fixes
+Message-ID: <20240325180309.GEZgG8XTmYUQZaJ4wP@fat_crate.local>
+References: <20240319113322.280096-1-yazen.ghannam@amd.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240228181850.5895-1-apais@linux.microsoft.com>
- <Zd96XzRHI_jMOCip@slm.duckdns.org> <CAOMdWSK9_1LMA-ULLa-iZ26P75UCOrO4gScAqmYvqbrvJi7wSQ@mail.gmail.com>
- <ZfIIUyip4U-hGZ4l@slm.duckdns.org> <ZgG12HiYSowiTtTy@slm.duckdns.org>
-In-Reply-To: <ZgG12HiYSowiTtTy@slm.duckdns.org>
-From: Allen <allen.lkml@gmail.com>
-Date: Mon, 25 Mar 2024 11:02:58 -0700
-Message-ID: <CAOMdWSJYKBRzjdgwTnigO566uv8HqcFdS7DTFAMVNjyjaNMSUQ@mail.gmail.com>
-Subject: Re: [PATCH] kernel: Introduce enable_and_queue_work() convenience function
-To: Tejun Heo <tj@kernel.org>
-Cc: Allen Pais <apais@linux.microsoft.com>, jiangshanlai@gmail.com, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20240319113322.280096-1-yazen.ghannam@amd.com>
 
-> > >
-> > >  Could you please let me know once this is applied or point me to the branch.
-> > > I have all the conversion based on this.
->
-> The enable/disable patchset is applied to wq/for-6.10. I was going to apply
-> the enable_and_queue_work() patch but you wrote that you were gonna update
-> the documentation but I can't find the updated version. Can you please send
-> the updated one?
->
+On Tue, Mar 19, 2024 at 06:33:20AM -0500, Yazen Ghannam wrote:
+> Hi all,
+> 
+> This set includes two fixes for issues found during further testing of
+> the FMPM module.
+> 
+> Patch 1 fixes a NULL pointer dereference. This is a resend.
+> 
+> Link:
+> https://lore.kernel.org/r/20240312154937.1102727-1-yazen.ghannam@amd.com
+> 
+> Patch 2 fixes a record restoration issue affecting a couple of
+> scenarios.
+> 
+> Both include Murali's Tested-by tag.
+> 
+> Thanks,
+> Yazen
+> 
+> Yazen Ghannam (2):
+>   RAS/AMD/FMPM: Avoid NULL ptr deref in get_saved_records()
+>   RAS/AMD/FMPM: Safely handle saved records of various sizes
+> 
+>  drivers/ras/amd/fmpm.c | 57 +++++++++++++++++++++++++++++-------------
+>  1 file changed, 39 insertions(+), 18 deletions(-)
 
- Sure, I will send out v2 right away.
+Queued, thanks.
 
-Thanks.
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
 
