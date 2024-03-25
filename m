@@ -1,222 +1,146 @@
-Return-Path: <linux-kernel+bounces-118011-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-118012-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 251AF88B256
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 22:10:04 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2F1D488B259
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 22:10:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8064E2E0AE9
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 21:10:02 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 990891F652D4
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 21:10:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0C1D46CDA6;
-	Mon, 25 Mar 2024 21:09:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B7C566CDA7;
+	Mon, 25 Mar 2024 21:10:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="G8yG7T6E"
-Received: from NAM11-BN8-obe.outbound.protection.outlook.com (mail-bn8nam11on2041.outbound.protection.outlook.com [40.107.236.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hWHERGah"
+Received: from mail-wm1-f49.google.com (mail-wm1-f49.google.com [209.85.128.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3501E33995;
-	Mon, 25 Mar 2024 21:09:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.236.41
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711400992; cv=fail; b=nBe8MD0kzjDMobHEs2bhVp3R7Wma4LE+ZFzLRLoDK3B1Ts3fseb2QjN4sK8yczdPg0X0FZN0H1djV/gzsHdqA85Ci1ks/AM8pNZgNhuAU2ZsjF7pFFLuZFz0s9rTQ8syI3eGB7V6ZhCwoHrMaf6VT7+8xid9N85sTbBGudPahi4=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711400992; c=relaxed/simple;
-	bh=W67yBa2jUitWtha1TmKuINUqWQ1xRYIVAZPRjcMNC30=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=YnqKz7ncOpktKOSER/7Oas1AXb6oSHr9Imodn1Fd/jQWuwCZlAi09RX+2q21kxq8Ah0kk214o/G4nYnHLwncATJZywuVcLXk97p5VJtzzarcb2v75by3NL+kr1HxMsZUFIDqGo9EIM4g9UsZBeQxDtkr3o7lSO/M7FqRM87qkBM=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=G8yG7T6E; arc=fail smtp.client-ip=40.107.236.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=eeZSA9GofO+uIHmpMRB7FhF/4Ya271Y2P74q5sM0C08lRQcqZv/5uVRwAhYo7vZ/pNqSa7i79qSpnVmSyY20iMYwjB/++mGIBOmMkA7xCacFOyr/XJHJiUHPM7UFkx3CBkG45MggAkzmjyLCe+x7A0Gx7ZLddQwOrUsvL5zk1BRTNHLaO2ymO36Arfm/PT8m7tUtGgJTtIZzwTOhNBYqKgMiDPY+sqBwUZPAoDmpNLZkYJqCsTfiTBBFlR76jjbxuSZqXq+oKcvIhdFOtKxenVl2EJJm7NJGF5OMShym4yXoWMSGzUuYPXtR+Lbt+qrx97FrDQtrLjAepw9kdcoAYA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=dWFXUT7GHxQAG1E1a6e7OezUYAmdd9HY8P/mnqwPAV8=;
- b=OV1BuYXe0ebHnxyDYHdVzZbWh0KK3tFPCwSR7HAFmvrs8wIm2fI2AJaN16o6C0Mx7mGK4BVhx8A2SWIGhC/VuDN1dpSc0fxNavbfNbI534GHTJduMcQ7RSfBhUUtIOvx8LS4v5XC29XQhiUtEuQdyOrsZak+nzVvOkVw/nKpm1+HdxnVp54QJ8s3uRvC5xztkh9m+X2N4HIJFIjqYkMkU0mQjkKmV1uv4FqeJb+WDBzVgKC7LtzIsYsEM0dkVSYiRjtZcecKPmZnUuf9+CESsblg/dHeSXH/Ec5/Z0r/RWOPopzVG7H5SKO+9ayEPzSF6QSRM+WLnqC2LTQTDED5Rw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.117.161) smtp.rcpttodomain=davemloft.net smtp.mailfrom=nvidia.com;
- dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=dWFXUT7GHxQAG1E1a6e7OezUYAmdd9HY8P/mnqwPAV8=;
- b=G8yG7T6EtHRdhjfiNImnYWbDUw8hr6EfCxPhTPgHzB67fHqQaDmCETrkteofi556/yn/AZvLpAGovtJD+85TlYu7wAlEWdyDUtxAWOQklYfIc/nnzZYiMirEEEizsdx4jSe5EfdEPQC+htEBjHj71iHT7pxYHaNs4tbfSAAac7mxDbbzE8cWpl1z+VALp27mz/S/PU84w8+zZWDclTQ2/Il67bj2HC6e8jCa3i5O+j7SSTxhp2/A35lz3syvEBo0Mz68peQ212O4gMvauvjmajLJIxDrCkazfYWj/oiogTdAy0NMw5M0944xR5QIwl/17OmxpRIrMR7eRr1Gmk6sCQ==
-Received: from BYAPR08CA0057.namprd08.prod.outlook.com (2603:10b6:a03:117::34)
- by LV3PR12MB9233.namprd12.prod.outlook.com (2603:10b6:408:194::15) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.32; Mon, 25 Mar
- 2024 21:09:46 +0000
-Received: from CY4PEPF0000FCBE.namprd03.prod.outlook.com
- (2603:10b6:a03:117:cafe::6) by BYAPR08CA0057.outlook.office365.com
- (2603:10b6:a03:117::34) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.13 via Frontend
- Transport; Mon, 25 Mar 2024 21:09:46 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.161)
- smtp.mailfrom=nvidia.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.117.161 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.117.161; helo=mail.nvidia.com; pr=C
-Received: from mail.nvidia.com (216.228.117.161) by
- CY4PEPF0000FCBE.mail.protection.outlook.com (10.167.242.100) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.7409.10 via Frontend Transport; Mon, 25 Mar 2024 21:09:45 +0000
-Received: from rnnvmail205.nvidia.com (10.129.68.10) by mail.nvidia.com
- (10.129.200.67) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41; Mon, 25 Mar
- 2024 14:09:32 -0700
-Received: from rnnvmail203.nvidia.com (10.129.68.9) by rnnvmail205.nvidia.com
- (10.129.68.10) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1258.12; Mon, 25 Mar
- 2024 14:09:32 -0700
-Received: from vdi.nvidia.com (10.127.8.9) by mail.nvidia.com (10.129.68.9)
- with Microsoft SMTP Server id 15.2.1258.12 via Frontend Transport; Mon, 25
- Mar 2024 14:09:31 -0700
-From: David Thompson <davthompson@nvidia.com>
-To: <davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
-	<pabeni@redhat.com>, <u.kleine-koenig@pengutronix.de>, <leon@kernel.org>
-CC: <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>, David Thompson
-	<davthompson@nvidia.com>
-Subject: [PATCH net v1] mlxbf_gige: stop interface during shutdown
-Date: Mon, 25 Mar 2024 17:09:29 -0400
-Message-ID: <20240325210929.25362-1-davthompson@nvidia.com>
-X-Mailer: git-send-email 2.30.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 65EF05BACF;
+	Mon, 25 Mar 2024 21:10:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.49
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1711401015; cv=none; b=PQ/IOijfdanNZ/bWL4VFhL7QEwKbx+Y5JOCey7mUJHOWuqUsuOkiEX0QpCAQu0oX2pGy2KInMDGKoRtcnX3t8FXKwyPR78j9Sdx4dZQWZLutXoC+L7OgvYfWqckWRHBk0Z906SeSCHGE82jLk//xx8idZTVwy91xvwHpAEaxXGw=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1711401015; c=relaxed/simple;
+	bh=/f0dIsYOIRygaHco+WcWhZhJ3bqBRJRwcRAfUOCK4II=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=FkWwcQBR65cfVVM0aCHsAkyX7J24oOrVZ5SSFz9Xab2qTORgtVaNq4gN/3+r+7WWsyQYpQNJI/Zq4cmEawq3szEE2kKvQEX/CsiKo9rQnTxdEiJhjojkNBI13yM1bAgkieqXz5Rj9c7fBwLB6KI1et1+eoNRl/So8/+fUaB3Cso=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=hWHERGah; arc=none smtp.client-ip=209.85.128.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f49.google.com with SMTP id 5b1f17b1804b1-4148ca200a7so2537495e9.0;
+        Mon, 25 Mar 2024 14:10:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1711401012; x=1712005812; darn=vger.kernel.org;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=lHa+Fg4zMxP1YPvjmvv6HY8P99iXL0G+bBAReTO6ezs=;
+        b=hWHERGahnbFIFas0yP7SZs+QG2sAtuX+g07TbKH6HxM+xewLH3UzrzUbkezYGErWO0
+         QKU9JnPkuSIEYi4SBUAr0fVS3lqg5lGgovlZdAsyRVGgog4ZFuRks7F3W+6rGlcrgPfZ
+         JZTsR2kuRmZG9ndlweNXZMR0DZAjV3n1RtNBQooDg6pNRAR5jyINLxrIrhWIzPTO7YKo
+         qYhD7WreU7j9ViTu9vQjJl+C6y51aMdGGRZrRsIG+h/GEFrodkcrDweI62z2zMo+Vgig
+         kfxQT6JSPnM7J/Yg+WBVcDUjdgnCX1wratO0Oe3fCZFu8OuoTpN4rs7TigbBMADrdfLC
+         QwpA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711401012; x=1712005812;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=lHa+Fg4zMxP1YPvjmvv6HY8P99iXL0G+bBAReTO6ezs=;
+        b=rM9dD7a840YifinzjJzsAlGJzv6ivXC7DggLcB78RVqcUHdC/KP8Sha4YcR80lpv8D
+         DBv+hOhQK+8EBUkdn54DJqzXDP5spCGRbREzP5wAwnv/qi8+3+ACxUN0eCYBnadrPQn/
+         tO9DSqsdEM+sz+xU9qKzqmuuE4xBxBBJwwhhSF09KCNHl9maVVt3WHCo45NdarlAnqPI
+         bmj2UGZiJto9aFIPzuwkNlOoyVbmqODptoS/A3JL68nV3U1WN7tqUWihjv+sCngM3p1W
+         FoV8EO+2Nbm4eLdhAJ7Yy/Aukn6Myy6DI1TBVGumXNYMYDWrLBw9y2tl9YEsBbD3J4ZV
+         9ZJA==
+X-Forwarded-Encrypted: i=1; AJvYcCWgnKHEi0f6aljxo2Fcs7o5nWUqad0hb0cnqsGAdR2zIOmdUNuofeFGWmM7ZSWWpey4EhFEOAzw1sodXaeca4P4bDkCTnrfOEsih4He1/UQFfQGF3Yhsz3NgaCZsoQBWuh5bXvurHb34A==
+X-Gm-Message-State: AOJu0YxGj48lq3Avfq8rZJzwer8JCOUxiRSEpGOWPDToDqzuzOrXoWva
+	C4x6DeZfUSG8yd/SxMcUihCG+aoHZDzioQJZ8AQYRk/1QeNfsV35
+X-Google-Smtp-Source: AGHT+IHwUG7lgiTgUhsX/xhrE1HHTwnNVcfKrWgfERSPAClH1BUhRRnO4HZLVlOl0/D04HoX4cjcAw==
+X-Received: by 2002:a05:600c:3509:b0:414:28d2:912 with SMTP id h9-20020a05600c350900b0041428d20912mr5460831wmq.28.1711401011598;
+        Mon, 25 Mar 2024 14:10:11 -0700 (PDT)
+Received: from [127.0.1.1] (2a02-8389-41cf-e200-36af-6d49-8348-9a76.cable.dynamic.v6.surfer.at. [2a02:8389:41cf:e200:36af:6d49:8348:9a76])
+        by smtp.gmail.com with ESMTPSA id n39-20020a05600c502700b004148c3685ffsm1520768wmr.3.2024.03.25.14.10.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 25 Mar 2024 14:10:11 -0700 (PDT)
+From: Javier Carrasco <javier.carrasco.cruz@gmail.com>
+Subject: [PATCH v2 0/4] dt-bindings: rtc: convert multiple devices to
+ dtschema
+Date: Mon, 25 Mar 2024 22:10:07 +0100
+Message-Id: <20240325-rtc-yaml-v2-0-ff9f68f43dbc@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-NV-OnPremToCloud: ExternallySecured
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CY4PEPF0000FCBE:EE_|LV3PR12MB9233:EE_
-X-MS-Office365-Filtering-Correlation-Id: 2f80d393-41f7-43b3-102e-08dc4d0fe5dc
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	KNXwWE9NYl2YwbXhN9nQukWlCqST3BuTi/9pZO9hKmNDHwBd6DA4yYRQ7odKYiILXN0DNrr0TaW17D0SscWP5KPnOivBQRu+AhUId87B8Psw5SxfkRl0eTTKMDXiyB1zJFRGKunRlftLnjGFFZnOcO5gdHoRUsrkdSuRkyPZK/PbQhQ1SKBYkG9Vj33+H9PrdzKwB3EVF6ZFDVZNtFoRp6RVW+jIdLcsW6ZlC2tqBVE9r7DiWjmi0N8JPAyCNPMMeGHH+ahUaR1+ogYdf4GF0yGHJb/IEEXiFeImTyYsjQAeoFDsPtyl9jiZjHSu8W/yyCSrMFLaqbtzHdlb/Dj/71213kcKpaQBIdoUVz8NHlxUjfNEJlQaB/ZHTJo8Lc7T7EDG78FlTStp1RBibZfuqfNSRPMNUU9TqdcUctrRpFQ/7HcXayhJ958q4IxI1cju3Z/UBmdgi6Dta3V8AW7EmcDox1GsmrZWwrvSh4dJhchRiouVpfBZC4Ud9qlzqzEv2HtqGGwC8Lz6OAnlmdT4J8JDDO0ICFPKlIU+RUnkbDfwfG2dXp3hxUZ0enGgvISQr8S3yMz/slYGq8vY/+QBnh9VTwkTvIC3yQqP7XEt3XH2KjzhjAXxEzSdIybn3/5KeDnwxs8bFLY9UKa0LH69CWV8SQBgJTRz6/lllgNOtw80ac7NRsYH8e5f75aI5e34PqkSnDohYSf6A+p88Z72QSSPX4xxZgxXjGAGOMpMpau0/9nEE5XNP4+FKBo7psX7
-X-Forefront-Antispam-Report:
-	CIP:216.228.117.161;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge2.nvidia.com;CAT:NONE;SFS:(13230031)(1800799015)(36860700004)(376005)(82310400014);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Mar 2024 21:09:45.4458
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 2f80d393-41f7-43b3-102e-08dc4d0fe5dc
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.161];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource:
-	CY4PEPF0000FCBE.namprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: LV3PR12MB9233
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAC/oAWYC/0XM0QqDIBTG8VeJcz2HHoutXe09RhdqVgcyQ0MW4
+ bvPBWOX/4+P3wHRBrIRHtUBwSaK5JcSeKnATGoZLaO+NCDHmktEFjbDduVmVt+klI3RQysElPs
+ a7EDvk3p1pSeKmw/7KSfxXX+I/CNJMM64aXqBWuh72z9Hp2i+Gu+gyzl/AIfbDeqgAAAA
+To: Alexandre Belloni <alexandre.belloni@bootlin.com>, 
+ Rob Herring <robh@kernel.org>, 
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+ Conor Dooley <conor+dt@kernel.org>, Baruch Siach <baruch@tkos.co.il>
+Cc: linux-rtc@vger.kernel.org, devicetree@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
+ Javier Carrasco <javier.carrasco.cruz@gmail.com>
+X-Mailer: b4 0.14-dev
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1711401010; l=1935;
+ i=javier.carrasco.cruz@gmail.com; s=20240312; h=from:subject:message-id;
+ bh=/f0dIsYOIRygaHco+WcWhZhJ3bqBRJRwcRAfUOCK4II=;
+ b=cDjz8ri6PBDinOTDCbRQo44LTn7RFqHKHWWLBPfIsaJYomfEEp1xnA1Z9t62UWucOtGveZjMT
+ fSDdkCqeradADagHkMAMzPkyWs5EjZieCmEqsGJnXW+RnZiVey2219a
+X-Developer-Key: i=javier.carrasco.cruz@gmail.com; a=ed25519;
+ pk=lzSIvIzMz0JhJrzLXI0HAdPwsNPSSmEn6RbS+PTS9aQ=
 
-The mlxbf_gige driver intermittantly encounters a NULL pointer
-exception while the system is shutting down via "reboot" command.
-The mlxbf_driver will experience an exception right after executing
-its shutdown() method.  One example of this exception is:
+This series converts the following existing bindings to dtschema:
 
-Unable to handle kernel NULL pointer dereference at virtual address 0000000000000070
-Mem abort info:
-  ESR = 0x0000000096000004
-  EC = 0x25: DABT (current EL), IL = 32 bits
-  SET = 0, FnV = 0
-  EA = 0, S1PTW = 0
-  FSC = 0x04: level 0 translation fault
-Data abort info:
-  ISV = 0, ISS = 0x00000004
-  CM = 0, WnR = 0
-user pgtable: 4k pages, 48-bit VAs, pgdp=000000011d373000
-[0000000000000070] pgd=0000000000000000, p4d=0000000000000000
-Internal error: Oops: 96000004 [#1] SMP
-CPU: 0 PID: 13 Comm: ksoftirqd/0 Tainted: G S         OE     5.15.0-bf.6.gef6992a #1
-Hardware name: https://www.mellanox.com BlueField SoC/BlueField SoC, BIOS 4.0.2.12669 Apr 21 2023
-pstate: 20400009 (nzCv daif +PAN -UAO -TCO -DIT -SSBS BTYPE=--)
-pc : mlxbf_gige_handle_tx_complete+0xc8/0x170 [mlxbf_gige]
-lr : mlxbf_gige_poll+0x54/0x160 [mlxbf_gige]
-sp : ffff8000080d3c10
-x29: ffff8000080d3c10 x28: ffffcce72cbb7000 x27: ffff8000080d3d58
-x26: ffff0000814e7340 x25: ffff331cd1a05000 x24: ffffcce72c4ea008
-x23: ffff0000814e4b40 x22: ffff0000814e4d10 x21: ffff0000814e4128
-x20: 0000000000000000 x19: ffff0000814e4a80 x18: ffffffffffffffff
-x17: 000000000000001c x16: ffffcce72b4553f4 x15: ffff80008805b8a7
-x14: 0000000000000000 x13: 0000000000000030 x12: 0101010101010101
-x11: 7f7f7f7f7f7f7f7f x10: c2ac898b17576267 x9 : ffffcce720fa5404
-x8 : ffff000080812138 x7 : 0000000000002e9a x6 : 0000000000000080
-x5 : ffff00008de3b000 x4 : 0000000000000000 x3 : 0000000000000001
-x2 : 0000000000000000 x1 : 0000000000000000 x0 : 0000000000000000
-Call trace:
- mlxbf_gige_handle_tx_complete+0xc8/0x170 [mlxbf_gige]
- mlxbf_gige_poll+0x54/0x160 [mlxbf_gige]
- __napi_poll+0x40/0x1c8
- net_rx_action+0x314/0x3a0
- __do_softirq+0x128/0x334
- run_ksoftirqd+0x54/0x6c
- smpboot_thread_fn+0x14c/0x190
- kthread+0x10c/0x110
- ret_from_fork+0x10/0x20
-Code: 8b070000 f9000ea0 f95056c0 f86178a1 (b9407002)
----[ end trace 7cc3941aa0d8e6a4 ]---
-Kernel panic - not syncing: Oops: Fatal exception in interrupt
-Kernel Offset: 0x4ce722520000 from 0xffff800008000000
-PHYS_OFFSET: 0x80000000
-CPU features: 0x000005c1,a3330e5a
-Memory Limit: none
----[ end Kernel panic - not syncing: Oops: Fatal exception in interrupt ]---
+- armada-380-rtc
+- alphascale,asm9260
+- digicolor-rtc (moved to trivial-rtc)
+- nxp,lpc1788-rtc
 
-During system shutdown, the mlxbf_gige driver's shutdown() is always executed.
-However, the driver's stop() method will only execute if networking interface
-configuration logic within the Linux distribution has been setup to do so.
+All bindings include at least one compatible that is referenced in the
+existing dts (arch/arm). Those dts could be tested against the new
+bindings.
 
-If shutdown() executes but stop() does not execute, NAPI remains enabled
-and this can lead to an exception if NAPI is scheduled while the hardware
-interface has only been partially deinitialized.
+It might be worth mentioning that the reference to nxp,lpc1788-rtc in
+arch/arm/boot/dts/nxp/lpc/lpc18xx.dtsi also includes another compatible
+called nxp,lpc1850-rtc, which is not documented or supported by existing
+drivers. That generates a warning when testing against nxp,lpc1788-rtc.
 
-The networking interface managed by the mlxbf_gige driver must be properly
-stopped during system shutdown so that IFF_UP is cleared, the hardware
-interface is put into a clean state, and NAPI is fully deinitialized.
-
-Fixes: f92e1869d74e ("Add Mellanox BlueField Gigabit Ethernet driver")
-Signed-off-by: David Thompson <davthompson@nvidia.com>
+Signed-off-by: Javier Carrasco <javier.carrasco.cruz@gmail.com>
 ---
- .../net/ethernet/mellanox/mlxbf_gige/mlxbf_gige_main.c | 10 ++++++++--
- 1 file changed, 8 insertions(+), 2 deletions(-)
+Changes in v2:
+- General: reference to rtc.yaml
+- digicolor-rtc: move to trivial-rtc
+- Link to v1: https://lore.kernel.org/r/20240323-rtc-yaml-v1-0-0c5d12b1b89d@gmail.com
 
-diff --git a/drivers/net/ethernet/mellanox/mlxbf_gige/mlxbf_gige_main.c b/drivers/net/ethernet/mellanox/mlxbf_gige/mlxbf_gige_main.c
-index cef0e2d3f1a7..455237f3b3a8 100644
---- a/drivers/net/ethernet/mellanox/mlxbf_gige/mlxbf_gige_main.c
-+++ b/drivers/net/ethernet/mellanox/mlxbf_gige/mlxbf_gige_main.c
-@@ -14,6 +14,7 @@
- #include <linux/module.h>
- #include <linux/phy.h>
- #include <linux/platform_device.h>
-+#include <linux/rtnetlink.h>
- #include <linux/skbuff.h>
- 
- #include "mlxbf_gige.h"
-@@ -488,8 +489,13 @@ static void mlxbf_gige_shutdown(struct platform_device *pdev)
- {
- 	struct mlxbf_gige *priv = platform_get_drvdata(pdev);
- 
--	writeq(0, priv->base + MLXBF_GIGE_INT_EN);
--	mlxbf_gige_clean_port(priv);
-+	rtnl_lock();
-+	netif_device_detach(priv->netdev);
-+
-+	if (netif_running(priv->netdev))
-+		dev_close(priv->netdev);
-+
-+	rtnl_unlock();
- }
- 
- static const struct acpi_device_id __maybe_unused mlxbf_gige_acpi_match[] = {
+---
+Javier Carrasco (4):
+      dt-bindings: rtc: armada-380-rtc: convert to dtschema
+      dt-bindings: rtc: alphascale,asm9260-rtc: convert to dtschema
+      dt-bindings: rtc: digicolor-rtc: move to trivial-rtc
+      dt-bindings: rtc: nxp,lpc1788-rtc: convert to dtschema
+
+ .../bindings/rtc/alphascale,asm9260-rtc.txt        | 19 -------
+ .../bindings/rtc/alphascale,asm9260-rtc.yaml       | 52 +++++++++++++++++++
+ .../devicetree/bindings/rtc/armada-380-rtc.txt     | 24 ---------
+ .../devicetree/bindings/rtc/digicolor-rtc.txt      | 17 ------
+ .../bindings/rtc/marvell,armada-380-rtc.yaml       | 51 ++++++++++++++++++
+ .../devicetree/bindings/rtc/nxp,lpc1788-rtc.txt    | 21 --------
+ .../devicetree/bindings/rtc/nxp,lpc1788-rtc.yaml   | 60 ++++++++++++++++++++++
+ .../devicetree/bindings/rtc/trivial-rtc.yaml       |  2 +
+ 8 files changed, 165 insertions(+), 81 deletions(-)
+---
+base-commit: 4cece764965020c22cff7665b18a012006359095
+change-id: 20240322-rtc-yaml-473335cbf911
+
+Best regards,
 -- 
-2.30.1
+Javier Carrasco <javier.carrasco.cruz@gmail.com>
 
 
