@@ -1,154 +1,122 @@
-Return-Path: <linux-kernel+bounces-116875-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-116874-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id D794588A4B5
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 15:36:50 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1FC3C88A4B9
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 15:37:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B683F1C35B3B
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 14:36:49 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 503471C3B2B1
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 14:37:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D19CF1B7CE7;
-	Mon, 25 Mar 2024 11:29:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 56856130ACA;
+	Mon, 25 Mar 2024 11:29:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="utTqlRIX";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="PU+dUrX3"
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="by7GZVNL"
+Received: from mail-wm1-f49.google.com (mail-wm1-f49.google.com [209.85.128.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 612321B7CD9;
-	Mon, 25 Mar 2024 11:03:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C05DB1B7F45
+	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 11:05:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711364617; cv=none; b=uiv4qjvwQTgUF5viGmF8et2W6b8RV/zUHZ+cTbcnEnApQdSvk7qvKaoGoZ7W5t9bo/qSkdwXIG9Lzp6J8v2SxYTzGkt8nszJoeHyu9VnV69gh8LmK+TjLbTLFY7/ZH1AD9jdCcikRnm4d1Ju6VZ/NRz7Ry3ropPN6DLr6CYp0zk=
+	t=1711364723; cv=none; b=dtZF1UkwJuU7jaxynnEJ396SGEPvyr3vBtp7gJAOml3NaqaxG9Nd2q3znwAbUIQ6fwSvN7h4HJdeHI1ossWuBR6ZDPWxWAWlxAxegGHqgCqwjyswT9XCKA8xIlkBPrOo+y0b3XRtPmMP/UMHgmRYZDUdndvyyLYXw2ODNQpWMdg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711364617; c=relaxed/simple;
-	bh=Eska4gaH7kO1mPbE3Fmc4Y9tclS/elERBgLO1sr4MYA=;
-	h=Date:From:To:Subject:Cc:MIME-Version:Message-ID:Content-Type; b=nU8/rYk6jNeyTyyhjuZJc/rXo+RcFZE8Kq0o+7RvU7XCCo0jTxJbv7yBS7B/PlbVlzN4ufe4BlAMNVwFPsfG+DlN3FoGGNHvCs1sEvkecKh2YWK1K49p3sGQhjELvDGD+4vKfgp8uc2V7TZuL6bXz1JkcC+t++1txDqCLl9wr/0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=utTqlRIX; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=PU+dUrX3; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-Date: Mon, 25 Mar 2024 11:03:33 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1711364614;
-	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-	 content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-	bh=avsc0Gio3l+bltvTrTbtMSukfJximpMb/2ZTG9DBt70=;
-	b=utTqlRIXEPHZxjkZ3YpURtaytf0cTNdBSa2MmTIUAciUKYcoTrxZRaflVZ1y4O1mzaYT9P
-	3Ns6vF4THDq9drshQuSE583YeQMqmowfde/XHqEWq3tR81SB+CdLeAm0ierDCPS9AnWIGE
-	hY/whtm3Hpw1NKkNrYOWQEhjIC9BjnPKD9BFPVQyFoEzV2LKruGfjgmkpoov5EMR30TC8P
-	73GoFzQ3An708wsUD9VmVyT/BJzjT7n+R3Yibj0Sj9fjZaZD1XUSuKYhW8RIqLd75gwLTd
-	eqb24gk0dvpobqTUUeyTi6h1t3m6mK+Dj6NieqR9XcZnO4HZNZbnO4lv1PnDKg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1711364614;
-	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-	 content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-	bh=avsc0Gio3l+bltvTrTbtMSukfJximpMb/2ZTG9DBt70=;
-	b=PU+dUrX3N2SOgNmOZAr28PIRULIT34Sn1R1sl7QguwroulxykUDCaYPsF690/bNQhQ2cRo
-	d5KuwwBoaFbAk3BQ==
-From: "tip-bot2 for Ingo Molnar" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To: linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/urgent] Revert "x86/mm/ident_map: Use gbpages only where
- full GB page should be mapped."
-Cc: Ingo Molnar <mingo@kernel.org>,  <stable@vger.kernel.org>,
- Russ Anderson <rja@hpe.com>, Steve Wahl <steve.wahl@hpe.com>,
- Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
- linux-kernel@vger.kernel.org
+	s=arc-20240116; t=1711364723; c=relaxed/simple;
+	bh=m5eDO3RTQID9P7x/shA6GSlFY/Rni5J52DORUXdGJoM=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=blpERacvC9Ij9te9NZZtmdg7Nihog1ZbbOUgjI9aJPf4gHVB9QFx808ztYT8dJbIyOJFzphA7fRphD0mYu+V2k7EpIA+yWLW/hGpCNu8MMajxYgjszrfHNSTB7KR1q/FUNCTh6NZ1tvMWsMWnfgyDZ1PO3V7NVIps2xUEV7IWq4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=by7GZVNL; arc=none smtp.client-ip=209.85.128.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wm1-f49.google.com with SMTP id 5b1f17b1804b1-4141156f245so29060345e9.2
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 04:05:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1711364719; x=1711969519; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=jko3WDvWD5U/PNEoxKKHrnCytqZxWBTaXJmWmL6opzE=;
+        b=by7GZVNLKZMflN3PDFKxiy7r7R6Q5iFUUgBW7sLF3eviL2TOYmhT8iqL2Gh7e0KVE4
+         fDh5ANcMVO3rc4W9v9WVrIzuVQEe4QtKcW1izUDsIAclbYv/V1nL99j17uDgVXX+2j7D
+         phAPzVoNzwLbao6Vvt9wvfzO1vsHu2if8udbfVRCPBNuoCfPHn4y13uJdXTBmUT0zAQ6
+         8PfYkQtQq0fkcLqq8FkayW31j4iBlArBexWFiiO85LQ4WrMDpBjSs9ilWiNYyzfwPUn1
+         D+n08jdDItF8t3jUvca+4P8a+w214VxhkUEqhP2ADgtoePeEkF/hKieQhUEndKUHovZW
+         nkmA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711364719; x=1711969519;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=jko3WDvWD5U/PNEoxKKHrnCytqZxWBTaXJmWmL6opzE=;
+        b=Gsyl5zqQ3waxC/HDFpthkEEpHx3BNcM+aJ9lE/FA2uOOjMVTGFDHIEm1agiMU50yBf
+         74q11YP3Wu1fF+v+x4GOYXPkka9LaruoS+YxarK2i88uiIOHlSI+sG879izT4F3yphYz
+         EI37hKahgo9PXPpRD10UAeF1hF9BRa895Yi3QGx5TmEkcczJ4BK11z7hWOe8tMwGm2KY
+         T1Yq2MZGzpojtkI5bGsXVI3CrP37o3SyYGOsr2orDSWbcnDoWhu15sAH2RnQ7Q51bEjF
+         zS+G9teWQkWmaHUOluk1B/s0f4bOXlrh6taE9gnopkXvUqlnNhoRtnWxuK+gXl9v6HRU
+         kPpw==
+X-Forwarded-Encrypted: i=1; AJvYcCU927OYYrdwEF/wmNZUW4KqgRm2SGZLKvFkd5DkZ8vhvnmUIvsvMIA6NiDOlBufiCVD0v4t30YtZrVPKR0zgk2jPvLzNa4v9ZceAIEi
+X-Gm-Message-State: AOJu0Yw13ma7/4zxbIvrq16SvhuLmMiDTz7lfi9JwvQ0GZCPo3DHMrLP
+	9n+srs9/IYL0liLGv4qhZxoAuzmi6Z57ABR8KYdvMAqy04izSFGJcRtCQcFDVIs=
+X-Google-Smtp-Source: AGHT+IFi3xoZ4AXsfZMpFCg9vhaUKU1DkrVQrRUxsz4AMdPOoRSTctHJuof39IppTsaoifcXLWdc0g==
+X-Received: by 2002:a05:600c:1393:b0:414:d8f:4399 with SMTP id u19-20020a05600c139300b004140d8f4399mr4522559wmf.18.1711364719145;
+        Mon, 25 Mar 2024 04:05:19 -0700 (PDT)
+Received: from krzk-bin.. ([178.197.222.44])
+        by smtp.gmail.com with ESMTPSA id gw8-20020a05600c850800b004146dd6bfe2sm8053538wmb.47.2024.03.25.04.05.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 25 Mar 2024 04:05:18 -0700 (PDT)
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+To: "Rafael J. Wysocki" <rafael@kernel.org>,
+	Daniel Lezcano <daniel.lezcano@linaro.org>,
+	Zhang Rui <rui.zhang@intel.com>,
+	Lukasz Luba <lukasz.luba@arm.com>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Liviu Dudau <liviu.dudau@arm.com>,
+	Sudeep Holla <sudeep.holla@arm.com>,
+	Lorenzo Pieralisi <lpieralisi@kernel.org>,
+	Amit Kucheria <amit.kucheria@linaro.org>,
+	linux-pm@vger.kernel.org,
+	devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc: Rob Herring <robh@kernel.org>
+Subject: Re: (subset) [PATCH 2/2] arm64: dts: juno: fix thermal zone node names
+Date: Mon, 25 Mar 2024 12:05:14 +0100
+Message-Id: <171136466536.36729.15243854495211929982.b4-ty@linaro.org>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20240103142051.111717-2-krzysztof.kozlowski@linaro.org>
+References: <20240103142051.111717-1-krzysztof.kozlowski@linaro.org> <20240103142051.111717-2-krzysztof.kozlowski@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-ID: <171136461366.10875.14490329545340375710.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe:
- Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Precedence: bulk
 Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-The following commit has been merged into the x86/urgent branch of tip:
 
-Commit-ID:     c567f2948f57bdc03ed03403ae0234085f376b7d
-Gitweb:        https://git.kernel.org/tip/c567f2948f57bdc03ed03403ae0234085f376b7d
-Author:        Ingo Molnar <mingo@kernel.org>
-AuthorDate:    Mon, 25 Mar 2024 11:47:51 +01:00
-Committer:     Ingo Molnar <mingo@kernel.org>
-CommitterDate: Mon, 25 Mar 2024 11:54:35 +01:00
+On Wed, 03 Jan 2024 15:20:51 +0100, Krzysztof Kozlowski wrote:
+> Linux kernel uses thermal zone node name during registering thermal
+> zones and has a hard-coded limit of 20 characters, including terminating
+> NUL byte.  Exceeding the limit will cause failure to configure thermal
+> zone.
+> 
+> 
 
-Revert "x86/mm/ident_map: Use gbpages only where full GB page should be mapped."
+Applied, thanks!
 
-This reverts commit d794734c9bbfe22f86686dc2909c25f5ffe1a572.
+This was waiting on the lists for some time and no one picked it up, so... let
+me know if I should drop it from my tree.
 
-While the original change tries to fix a bug, it also unintentionally broke
-existing systems, see the regressions reported at:
+[2/2] arm64: dts: juno: fix thermal zone node names
+      https://git.kernel.org/krzk/linux-dt/c/85170635525758828dc22be83f6b17a86ccec312
 
-  https://lore.kernel.org/all/3a1b9909-45ac-4f97-ad68-d16ef1ce99db@pavinjoseph.com/
-
-Since d794734c9bbf was also marked for -stable, let's back it out before
-causing more damage.
-
-Note that due to another upstream change the revert was not 100% automatic:
-
-  0a845e0f6348 mm/treewide: replace pud_large() with pud_leaf()
-
-Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Cc: <stable@vger.kernel.org>
-Cc: Russ Anderson <rja@hpe.com>
-Cc: Steve Wahl <steve.wahl@hpe.com>
-Cc: Dave Hansen <dave.hansen@linux.intel.com>
-Link: https://lore.kernel.org/all/3a1b9909-45ac-4f97-ad68-d16ef1ce99db@pavinjoseph.com/
-Fixes: d794734c9bbf ("x86/mm/ident_map: Use gbpages only where full GB page should be mapped.")
----
- arch/x86/mm/ident_map.c | 23 +++++------------------
- 1 file changed, 5 insertions(+), 18 deletions(-)
-
-diff --git a/arch/x86/mm/ident_map.c b/arch/x86/mm/ident_map.c
-index a204a33..968d700 100644
---- a/arch/x86/mm/ident_map.c
-+++ b/arch/x86/mm/ident_map.c
-@@ -26,31 +26,18 @@ static int ident_pud_init(struct x86_mapping_info *info, pud_t *pud_page,
- 	for (; addr < end; addr = next) {
- 		pud_t *pud = pud_page + pud_index(addr);
- 		pmd_t *pmd;
--		bool use_gbpage;
- 
- 		next = (addr & PUD_MASK) + PUD_SIZE;
- 		if (next > end)
- 			next = end;
- 
--		/* if this is already a gbpage, this portion is already mapped */
--		if (pud_leaf(*pud))
--			continue;
--
--		/* Is using a gbpage allowed? */
--		use_gbpage = info->direct_gbpages;
--
--		/* Don't use gbpage if it maps more than the requested region. */
--		/* at the begining: */
--		use_gbpage &= ((addr & ~PUD_MASK) == 0);
--		/* ... or at the end: */
--		use_gbpage &= ((next & ~PUD_MASK) == 0);
--
--		/* Never overwrite existing mappings */
--		use_gbpage &= !pud_present(*pud);
--
--		if (use_gbpage) {
-+		if (info->direct_gbpages) {
- 			pud_t pudval;
- 
-+			if (pud_present(*pud))
-+				continue;
-+
-+			addr &= PUD_MASK;
- 			pudval = __pud((addr - info->offset) | info->page_flag);
- 			set_pud(pud, pudval);
- 			continue;
+Best regards,
+-- 
+Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
