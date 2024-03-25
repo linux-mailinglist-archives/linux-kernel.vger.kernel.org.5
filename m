@@ -1,123 +1,145 @@
-Return-Path: <linux-kernel+bounces-117253-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-117257-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id F047E88B0B0
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 21:00:12 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0333A88AACC
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 18:08:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 03F9AB2FD4E
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 16:26:32 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3EF2BB23463
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 16:29:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8FE05158A1D;
-	Mon, 25 Mar 2024 14:26:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=natalenko.name header.i=@natalenko.name header.b="Ah0jZfdW"
-Received: from prime.voidband.net (prime.voidband.net [199.247.17.104])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B7E1D136E26;
-	Mon, 25 Mar 2024 14:26:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=199.247.17.104
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6545815E5AE;
+	Mon, 25 Mar 2024 14:29:22 +0000 (UTC)
+Received: from zju.edu.cn (mail.zju.edu.cn [61.164.42.155])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D19F615DBCC;
+	Mon, 25 Mar 2024 14:29:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=61.164.42.155
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711376788; cv=none; b=k0B3tnZpVSP8H5i4hidU8xwRoPvUGWyB1VPIgFJ2wYhkjhHyrjQ+W9ydGnSImepDVYfudR/2fUW7J+OqEpX+b/lVY787BlQWyfAqOfyo3UN56pQGvwwK7rpO7w6dtxlKy/11NHH+qtumAjqYUlO3gXtLAINDNmgcECn6PCRidOM=
+	t=1711376961; cv=none; b=CQStE9B889lv6qUAGPB9MJFY2bZYVlFv3MGQ5l7NRGa9oLCq6loNpZlWrzk7PFDbGhKQZvm4Av7PBdjoBz4gGESYnHAX+mo9yFIe2ZUOFnF+1GfDZuDmeDUbBzvyWj64TwzpIttSAIZ6tCCOTHyp5G4AHhuC8Ovp1O43RaSDYMA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711376788; c=relaxed/simple;
-	bh=lTMJavNIWrnUZ0bbbF3Rx8TEQ/VmlXUb1B8yQuTFSDQ=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=kZmQJNUKGoLyGhPciKl8MiBTfT19+vzEiu/+za4Ls3OabPKJZHKYYKJEx2OMg18COYKlWDQFp7hpGlzbGcG7TIlx/qhMDoLAAIfy7VDLY+cZn1kd/M2DbIk2CcKC42WqWGnWNlEN6/XOxaFWd0IoT/UrHYx86YRfta/F3DTap+s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=natalenko.name; spf=pass smtp.mailfrom=natalenko.name; dkim=pass (1024-bit key) header.d=natalenko.name header.i=@natalenko.name header.b=Ah0jZfdW; arc=none smtp.client-ip=199.247.17.104
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=natalenko.name
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=natalenko.name
-Received: from localhost (unknown [94.142.239.106])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (prime256v1) server-signature ECDSA (prime256v1) server-digest SHA256)
-	(No client certificate requested)
-	by prime.voidband.net (Postfix) with ESMTPSA id 670026346550;
-	Mon, 25 Mar 2024 15:26:21 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=natalenko.name;
-	s=dkim-20170712; t=1711376781;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=EWL9RPJbotHTugKp2e3hpY0GlUbdFdPRzf1HTQgWuFQ=;
-	b=Ah0jZfdWa3W1ky5rNcCskxmzk4SobiXprUKDrzvMyuHY1U0ZERN+4Ht1vhB9+5Opp6t7ix
-	sHo3HlM9x29jte6t/h9P4jGfW6vt1a57BNEUSduf8BHuWYzbOTAbfSFyIJmbX6mi+7JTuG
-	kho2CwCuYCKFCHaEUzxIoLjGgBqLIHs=
-From: Oleksandr Natalenko <oleksandr@natalenko.name>
-To: linux-kernel@vger.kernel.org
-Cc: linux-media@vger.kernel.org,
-	Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-	Ricardo Ribalda <ribalda@chromium.org>,
-	Mauro Carvalho Chehab <mchehab@kernel.org>,
-	"hn.chen" <hn.chen@sunplusit.com>,
-	Hans Verkuil <hverkuil@xs4all.nl>,
-	Sergey Senozhatsky <senozhatsky@chromium.org>
-Subject: [PATCH] media/uvcvideo: add quirk for invalid dev_sof in Logitech C920
-Date: Mon, 25 Mar 2024 15:26:11 +0100
-Message-ID: <20240325142611.15550-1-oleksandr@natalenko.name>
-X-Mailer: git-send-email 2.44.0
+	s=arc-20240116; t=1711376961; c=relaxed/simple;
+	bh=UclVC5TUuacQtw8LteqZT6tP4wbtrOMeCdE5sCs/DJs=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:Content-Type:
+	 MIME-Version:Message-ID; b=oaCs6gkx3RON3caV3QTo8ITlpfyzTDia8+7rhudEu+tPjof0D4o7OQaHjofxbpFxEgXaJcdIfgTUfAgb8iMHIBPvhRzfF609RlkBsZ2UZl/wQHlVH6/rrwQB5qwFvoRpkJWBaZ4YiIRnl1HsHkAfZ7v43tLJKC9MCaWBd2R5wRU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=zju.edu.cn; spf=pass smtp.mailfrom=zju.edu.cn; arc=none smtp.client-ip=61.164.42.155
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=zju.edu.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zju.edu.cn
+Received: from duoming$zju.edu.cn ( [106.117.100.135] ) by
+ ajax-webmail-mail-app2 (Coremail) ; Mon, 25 Mar 2024 22:26:42 +0800
+ (GMT+08:00)
+Date: Mon, 25 Mar 2024 22:26:42 +0800 (GMT+08:00)
+X-CM-HeaderCharset: UTF-8
+From: duoming@zju.edu.cn
+To: "Takashi Iwai" <tiwai@suse.de>
+Cc: linux-sound@vger.kernel.org, linux-kernel@vger.kernel.org,
+	tiwai@suse.com, perex@perex.cz
+Subject: Re: [PATCH] ALSA: sh: aica: reorder cleanup operations to avoid UAF
+ bug
+X-Priority: 3
+X-Mailer: Coremail Webmail Server Version 2023.4-cmXT5 build
+ 20231205(37e20f0e) Copyright (c) 2002-2024 www.mailtech.cn zju.edu.cn
+In-Reply-To: <871q7yybeb.wl-tiwai@suse.de>
+References: <20240325033946.47052-1-duoming@zju.edu.cn>
+ <871q7yybeb.wl-tiwai@suse.de>
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=UTF-8
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Message-ID: <43e102f3.61dc.18e7601a2f2.Coremail.duoming@zju.edu.cn>
+X-Coremail-Locale: zh_CN
+X-CM-TRANSID:by_KCgBnR5yjiQFmetpgAQ--.21222W
+X-CM-SenderInfo: qssqjiasttq6lmxovvfxof0/1tbiAwQLAWYBgRkAmQAAsr
+X-Coremail-Antispam: 1Ur529EdanIXcx71UUUUU7IcSsGvfJ3iIAIbVAYjsxI4VWxJw
+	CS07vEb4IE77IF4wCS07vE1I0E4x80FVAKz4kxMIAIbVAFxVCaYxvI4VCIwcAKzIAtYxBI
+	daVFxhVjvjDU=
 
-Similarly to Logitech C922, C920 seems to also suffer from a firmware
-bug that breaks hardware timestamping.
-
-Add a quirk for this camera model too.
-
-Before applying the quirk:
-
-```
-100 (4) [-] none 100 200717 B 212.919114 213.079004 33.727 fps ts mono/SoE
-101 (5) [-] none 101 200889 B 213.003703 213.114996 11.822 fps ts mono/SoE
-102 (6) [-] none 102 200926 B 213.035571 213.146999 31.379 fps ts mono/SoE
-103 (7) [-] none 103 200839 B 213.067424 213.179003 31.394 fps ts mono/SoE
-104 (0) [-] none 104 200692 B 213.293180 213.214991 4.430 fps ts mono/SoE
-105 (1) [-] none 105 200937 B 213.322374 213.247001 34.254 fps ts mono/SoE
-106 (2) [-] none 106 201013 B 213.352228 213.279005 33.496 fps ts mono/SoE
-…
-```
-
-After applying the quirk:
-
-```
-154 (2) [-] none 154 192417 B 42.199823 42.207788 27.779 fps ts mono/SoE
-155 (3) [-] none 155 192040 B 42.231834 42.239791 31.239 fps ts mono/SoE
-156 (4) [-] none 156 192213 B 42.263823 42.271822 31.261 fps ts mono/SoE
-157 (5) [-] none 157 191981 B 42.299824 42.303827 27.777 fps ts mono/SoE
-158 (6) [-] none 158 191953 B 42.331835 42.339811 31.239 fps ts mono/SoE
-159 (7) [-] none 159 191904 B 42.363824 42.371813 31.261 fps ts mono/SoE
-160 (0) [-] none 160 192210 B 42.399834 42.407801 27.770 fps ts mono/SoE
-```
-
-Link: https://lore.kernel.org/lkml/5764213.DvuYhMxLoT@natalenko.name/
-Reviewed-by: Ricardo Ribalda <ribalda@chromium.org>
-Signed-off-by: Oleksandr Natalenko <oleksandr@natalenko.name>
----
- drivers/media/usb/uvc/uvc_driver.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/media/usb/uvc/uvc_driver.c b/drivers/media/usb/uvc/uvc_driver.c
-index 723e6d5680c2e..444d7089885ea 100644
---- a/drivers/media/usb/uvc/uvc_driver.c
-+++ b/drivers/media/usb/uvc/uvc_driver.c
-@@ -2573,7 +2573,8 @@ static const struct usb_device_id uvc_ids[] = {
- 	  .bInterfaceClass	= USB_CLASS_VIDEO,
- 	  .bInterfaceSubClass	= 1,
- 	  .bInterfaceProtocol	= 0,
--	  .driver_info		= UVC_INFO_QUIRK(UVC_QUIRK_RESTORE_CTRLS_ON_INIT) },
-+	  .driver_info		= UVC_INFO_QUIRK(UVC_QUIRK_RESTORE_CTRLS_ON_INIT
-+					       | UVC_QUIRK_INVALID_DEVICE_SOF) },
- 	/* Logitech HD Pro Webcam C922 */
- 	{ .match_flags		= USB_DEVICE_ID_MATCH_DEVICE
- 				| USB_DEVICE_ID_MATCH_INT_INFO,
--- 
-2.44.0
-
+T24gTW9uLCAyNSBNYXIgMjAyNCAwOToxNjoxMiArMDEwMCBUYWthc2hpIEl3YWkgd3JvdGU6Cj4g
+PiBUaGUgZHJlYW1jYXN0Y2FyZC0+dGltZXIgY291bGQgc2NoZWR1bGUgdGhlIHNwdV9kbWFfd29y
+ayBhbmQgdGhlCj4gPiBzcHVfZG1hX3dvcmsgY291bGQgYWxzbyBhcm0gdGhlIGRyZWFtY2FzdGNh
+cmQtPnRpbWVyLgo+ID4gCj4gPiBXaGVuIHRoZSBZYW1haGEgQUlDQSBjYXJkIGlzIGNsb3Npbmcs
+IHRoZSBkcmVhbWNhc3RjYXJkLT5jaGFubmVsCj4gPiB3aWxsIGJlIGRlYWxsb2NhdGVkLiBCdXQg
+aXQgY291bGQgc3RpbGwgYmUgZGVyZWZlcmVuY2VkIGluIHRoZQo+ID4gd29ya2VyIHRocmVhZC4g
+VGhlIHJlYXNvbiBpcyB0aGF0IGRlbF90aW1lcigpIHdpbGwgcmV0dXJuIGRpcmVjdGx5Cj4gPiBy
+ZWdhcmRsZXNzIG9mIHdoZXRoZXIgdGhlIHRpbWVyIGhhbmRsZXIgaXMgcnVubmluZyBvciBub3Qg
+YW5kIHRoZQo+ID4gd29ya2VyIGNvdWxkIGJlIHJlc2NoZWR1bGVkIGluIHRoZSB0aW1lciBoYW5k
+bGVyLiBBcyBhIHJlc3VsdCwgdGhlCj4gPiBVQUYgYnVnIHdpbGwgaGFwcGVuLiBUaGUgcmFjeSBz
+aXR1YXRpb24gaXMgc2hvd24gYmVsb3c6Cj4gPiAKPiA+ICAgICAgIChUaHJlYWQgMSkgICAgICAg
+ICAgICAgICAgIHwgICAgICAoVGhyZWFkIDIpCj4gPiBzbmRfYWljYXBjbV9wY21fY2xvc2UoKSAg
+ICAgICAgICB8Cj4gPiAgLi4uICAgICAgICAgICAgICAgICAgICAgICAgICAgICB8ICBydW5fc3B1
+X2RtYSgpIC8vd29ya2VyCj4gPiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB8ICAg
+IG1vZF90aW1lcigpCj4gPiAgIGZsdXNoX3dvcmsoKSAgICAgICAgICAgICAgICAgICB8Cj4gPiAg
+IGRlbF90aW1lcigpICAgICAgICAgICAgICAgICAgICB8ICBhaWNhX3BlcmlvZF9lbGFwc2VkKCkg
+Ly90aW1lcgo+ID4gICBrZnJlZShkcmVhbWNhc3RjYXJkLT5jaGFubmVsKSAgfCAgICBzY2hlZHVs
+ZV93b3JrKCkKPiA+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHwgIHJ1bl9zcHVf
+ZG1hKCkgLy93b3JrZXIKPiA+ICAgLi4uICAgICAgICAgICAgICAgICAgICAgICAgICAgIHwgICAg
+ZHJlYW1jYXN0Y2FyZC0+Y2hhbm5lbC0+IC8vVVNFCj4gPiAKPiA+IEluIG9yZGVyIHRvIG1pdGln
+YXRlIHRoaXMgYnVnLCB1c2UgdGltZXJfc2h1dGRvd25fc3luYygpIHRvIHNodXRkb3duCj4gPiB0
+aGUgdGltZXIgYW5kIHRoZW4gdXNlIGZsdXNoX3dvcmsoKSB0byBjYW5jZWwgdGhlIHdvcmtlci4K
+PiA+IAo+ID4gRml4ZXM6IDE5OGRlNDNkNzU4YyAoIltBTFNBXSBBZGQgQUxTQSBzdXBwb3J0IGZv
+ciB0aGUgU0VHQSBEcmVhbWNhc3QgUENNIGRldmljZSIpCj4gPiBTaWduZWQtb2ZmLWJ5OiBEdW9t
+aW5nIFpob3UgPGR1b21pbmdAemp1LmVkdS5jbj4KPiA+IC0tLQo+ID4gIHNvdW5kL3NoL2FpY2Eu
+YyB8IDIgKy0KPiA+ICAxIGZpbGUgY2hhbmdlZCwgMSBpbnNlcnRpb24oKyksIDEgZGVsZXRpb24o
+LSkKPiA+IAo+ID4gZGlmZiAtLWdpdCBhL3NvdW5kL3NoL2FpY2EuYyBiL3NvdW5kL3NoL2FpY2Eu
+Ywo+ID4gaW5kZXggMzIwYWM3OTJjN2YuLmJjNjhhMzkwM2YyIDEwMDY0NAo+ID4gLS0tIGEvc291
+bmQvc2gvYWljYS5jCj4gPiArKysgYi9zb3VuZC9zaC9haWNhLmMKPiA+IEBAIC0zNTQsOCArMzU0
+LDggQEAgc3RhdGljIGludCBzbmRfYWljYXBjbV9wY21fY2xvc2Uoc3RydWN0IHNuZF9wY21fc3Vi
+c3RyZWFtCj4gPiAgCQkJCSAqc3Vic3RyZWFtKQo+ID4gIHsKPiA+ICAJc3RydWN0IHNuZF9jYXJk
+X2FpY2EgKmRyZWFtY2FzdGNhcmQgPSBzdWJzdHJlYW0tPnBjbS0+cHJpdmF0ZV9kYXRhOwo+ID4g
+Kwl0aW1lcl9zaHV0ZG93bl9zeW5jKCZkcmVhbWNhc3RjYXJkLT50aW1lcik7Cj4gCj4gSSB0aG91
+Z2h0IHRoaXMgY2FsbCBpbnZhbGlkYXRlcyB0aGUgdGltZXIgb2JqZWN0LCBoZW5jZSBpdCBjYW4n
+dCBiZQo+IHVzZWQgYWdhaW47IGkuZS4gaXQgYnJlYWtzIHdoZW4gdGhlIHN0cmVhbSBpcyByZS1v
+cGVuZWQsIEkgc3VwcG9zZT8KPgo+IEluIGdlbmVyYWwgdGltZXJfc2h1dGRvd24qKCkgaXMgdXNl
+ZCBmb3IgdGhlIGNvZGUgcGF0aCB0byBjbGVhbiB1cCB0aGUKPiBkcml2ZXIgKG9yIHRoZSBvYmpl
+Y3QgdGhlIHRpbWVyIGJlbG9uZ3MgdG8pLiAgVGhlIFBDTSBjbG9zZSBpcyBvbmx5Cj4gYWJvdXQg
+dGhlIFBDTSBzdHJlYW0sIGFuZCBpdCdzIG5vdCB0aGUgcGxhY2UuCj4gCj4gQSBwcm9wZXIgZml4
+IHdvdWxkIGJlIHJhdGhlciB0byBpbXBsZW1lbnQgdHdvIHRoaW5nczoKPiAtIENhbGwgbW9kX3Rp
+bWVyKCkgY29uZGl0aW9uYWxseSBpbiBydW5fc3B1X2RtYSgpCj4gLSBJbXBsZW1lbnQgUENNIHN5
+bmNfc3RvcCBvcCB0byBjYW5jZWwvZmx1c2ggdGhlIHdvcmsKPiAKPiBUaGUgZm9ybWVyIGFsb25l
+IHNob3VsZCBzdWZmaWNlIHRvIGZpeCB0aGUgVUFGIGluIHlvdXIgc2NlbmFyaW8sCj4gdGhvdWdo
+LiAgVGhlIGxhdHRlciB3aWxsIGNvdmVyIG90aGVyIHBvc3NpYmxlIGNvcm5lciBjYXNlcy4KClRo
+YW5rIHlvdSBmb3IgeW91ciB0aW1lIGFuZCByZXBseSEgSSBrbm93IHVzaW5nIHRpbWVyX3NodXRk
+b3duX3N5bmMoKQppcyBub3QgcHJvcGVyLiBJbiBvcmRlciB0byBzb2x2ZSB0aGUgcHJvYmxlbSwg
+SSBhZGQgYSBzaHV0ZG93biBmbGFnIAppbiB0aGUgc3RydWN0IHNuZF9jYXJkX2FpY2EgYW5kIHNl
+dCB0aGUgZmxhZyB0byB0cnVlIHdoZW4gdGhlIFBDTSAKc3RyZWFtIGlzIGNsb3NpbmcuIFRoZW4g
+Y2FsbCBtb2RfdGltZXIoKSBjb25kaXRpb25hbGx5IGluIHJ1bl9zcHVfZG1hKCkuCldoYXQncyBt
+b3JlLCB1c2UgZGVsX3RpbWVyX3N5bmMoKSB0byBzdG9wIHRoZSB0aW1lciBhbmQgcHV0IGl0IGJl
+Zm9yZSAKZmx1c2hfd29yaygpLiBBcyBhIHJlc3VsdCwgYm90aCB0aW1lciBhbmQgd29ya2VyIGNv
+dWxkIGJlIHN0b3BwZWQgc2FmZWx5LiAKVGhlIGRldGFpbCBpcyBzaG93biBiZWxvdzoKCmRpZmYg
+LS1naXQgYS9zb3VuZC9zaC9haWNhLmMgYi9zb3VuZC9zaC9haWNhLmMKaW5kZXggMzIwYWM3OTJj
+N2ZlLi5kYWIwMDVlZGE3ZjAgMTAwNjQ0Ci0tLSBhL3NvdW5kL3NoL2FpY2EuYworKysgYi9zb3Vu
+ZC9zaC9haWNhLmMKQEAgLTI3OCw3ICsyNzgsOCBAQCBzdGF0aWMgdm9pZCBydW5fc3B1X2RtYShz
+dHJ1Y3Qgd29ya19zdHJ1Y3QgKndvcmspCiAgICAgICAgICAgICAgICBkcmVhbWNhc3RjYXJkLT5j
+bGlja3MrKzsKICAgICAgICAgICAgICAgIGlmICh1bmxpa2VseShkcmVhbWNhc3RjYXJkLT5jbGlj
+a3MgPj0gQUlDQV9QRVJJT0RfTlVNQkVSKSkKICAgICAgICAgICAgICAgICAgICAgICAgZHJlYW1j
+YXN0Y2FyZC0+Y2xpY2tzICU9IEFJQ0FfUEVSSU9EX05VTUJFUjsKLSAgICAgICAgICAgICAgIG1v
+ZF90aW1lcigmZHJlYW1jYXN0Y2FyZC0+dGltZXIsIGppZmZpZXMgKyAxKTsKKyAgICAgICAgICAg
+ICAgIGlmICghZHJlYW1jYXN0Y2FyZC0+c2h1dGRvd24pCisgICAgICAgICAgICAgICAgICAgICAg
+IG1vZF90aW1lcigmZHJlYW1jYXN0Y2FyZC0+dGltZXIsIGppZmZpZXMgKyAxKTsKICAgICAgICB9
+CiB9CgpAQCAtMzQ3LDYgKzM0OCw3IEBAIHN0YXRpYyBpbnQgc25kX2FpY2FwY21fcGNtX29wZW4o
+c3RydWN0IHNuZF9wY21fc3Vic3RyZWFtCiAgICAgICAgZHJlYW1jYXN0Y2FyZC0+Y2xpY2tzID0g
+MDsKICAgICAgICBkcmVhbWNhc3RjYXJkLT5jdXJyZW50X3BlcmlvZCA9IDA7CiAgICAgICAgZHJl
+YW1jYXN0Y2FyZC0+ZG1hX2NoZWNrID0gMDsKKyAgICAgICBkcmVhbWNhc3RjYXJkLT5zaHV0ZG93
+biA9IGZhbHNlOwogICAgICAgIHJldHVybiAwOwogfQoKQEAgLTM1NCw4ICszNTYsOSBAQCBzdGF0
+aWMgaW50IHNuZF9haWNhcGNtX3BjbV9jbG9zZShzdHJ1Y3Qgc25kX3BjbV9zdWJzdHJlYW0KICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgKnN1YnN0cmVhbSkKIHsKICAgICAgICBzdHJ1
+Y3Qgc25kX2NhcmRfYWljYSAqZHJlYW1jYXN0Y2FyZCA9IHN1YnN0cmVhbS0+cGNtLT5wcml2YXRl
+X2RhdGE7CisgICAgICAgZHJlYW1jYXN0Y2FyZC0+c2h1dGRvd24gPSB0cnVlOworICAgICAgIGRl
+bF90aW1lcl9zeW5jKCZkcmVhbWNhc3RjYXJkLT50aW1lcik7CiAgICAgICAgZmx1c2hfd29yaygm
+KGRyZWFtY2FzdGNhcmQtPnNwdV9kbWFfd29yaykpOwotICAgICAgIGRlbF90aW1lcigmZHJlYW1j
+YXN0Y2FyZC0+dGltZXIpOwogICAgICAgIGRyZWFtY2FzdGNhcmQtPnN1YnN0cmVhbSA9IE5VTEw7
+CiAgICAgICAga2ZyZWUoZHJlYW1jYXN0Y2FyZC0+Y2hhbm5lbCk7CiAgICAgICAgc3B1X2Rpc2Fi
+bGUoKTsKZGlmZiAtLWdpdCBhL3NvdW5kL3NoL2FpY2EuaCBiL3NvdW5kL3NoL2FpY2EuaAppbmRl
+eCAwMjFiMTMyZTA4OGUuLjU5YTlkZWFmM2RkMyAxMDA2NDQKLS0tIGEvc291bmQvc2gvYWljYS5o
+CisrKyBiL3NvdW5kL3NoL2FpY2EuaApAQCAtNjUsNCArNjUsNSBAQCBzdHJ1Y3Qgc25kX2NhcmRf
+YWljYSB7CiAgICAgICAgc3RydWN0IHRpbWVyX2xpc3QgdGltZXI7CiAgICAgICAgaW50IG1hc3Rl
+cl92b2x1bWU7CiAgICAgICAgaW50IGRtYV9jaGVjazsKKyAgICAgICBib29sIHNodXRkb3duOwog
+fTsKCkkgd291bGQgYmUgdmVyeSBhcHByZWNpYXRlLCBpZiB5b3UgY291bGQgZ2l2ZSBtZSBzb21l
+IHN1Z2dlc3Rpb25zCmFib3V0IHRoZSBhYm92ZSBzb2x1dGlvbi4KCkJlc3QgcmVnYXJkcywKRHVv
+bWluZyBaaG91
 
