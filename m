@@ -1,82 +1,84 @@
-Return-Path: <linux-kernel+bounces-116554-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-116557-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 55DA588A0B2
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 14:00:45 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 69BC488A0AC
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 14:00:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 873D61C37B4C
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 13:00:44 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1D26E2947B6
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 13:00:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BDEE01487E2;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 003B715FD11;
 	Mon, 25 Mar 2024 08:04:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ljones.dev header.i=@ljones.dev header.b="ImHP03Du";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="oC4RHPrN"
+	dkim=pass (2048-bit key) header.d=ljones.dev header.i=@ljones.dev header.b="BKJyUdA9";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="Cx3bKixn"
 Received: from fout7-smtp.messagingengine.com (fout7-smtp.messagingengine.com [103.168.172.150])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BEE691487F7;
-	Mon, 25 Mar 2024 05:50:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B2441487F4;
+	Mon, 25 Mar 2024 05:50:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.150
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711345810; cv=none; b=BmN0V7Ds3ZpcuCj+ofMNw2709GR6+3ww5XoXOddt11gMZoQ6/HAu3O+atgOZR1eXMQkXRb3+Vj6MH6b2vV9zX+xget066yI4hhWsXY1TkPDIgHYl6VEI2+4DDe+yXyzl772fMkBqKH0Dw8w1esRKOS6M6gCUV2zauREYSE1O+ZA=
+	t=1711345813; cv=none; b=q8DpVZd5mgIISx9CtE7ZlzO3rd+R41ecXFldbVYJzwui8A61IkDuv6I4FiYIXSixrqfuY82PiX/Z0obvtLorRjWYEVFm6gAEy6936Kz3JmMcBrQc4EFmy6g3xG3L6C+AgcfKtjHm7pj9Pq/KX5EhW1KhGdPuRA2W3dc0mrJrG+g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711345810; c=relaxed/simple;
-	bh=R5F1sCuv07c2gXHxPP4bDuP4gk0uzrinmcQ9DxKvGNk=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=LfaLZtvwO1tzgNj/hIv/gFymJ8XMYGTr0L3X7rn0NIovfYtrl0cxMbtO8iF1hnch2zrA6ogfgkao2qgXHNExlNsYnLaSqFvnwvbMC+YdWrk/B48Fhe9EOAWedgEb//94x2ToIPcAWJmfgrZXTB/L4YBOvlGeyuq7J8FToGsBjNs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ljones.dev; spf=none smtp.mailfrom=ljones.dev; dkim=pass (2048-bit key) header.d=ljones.dev header.i=@ljones.dev header.b=ImHP03Du; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=oC4RHPrN; arc=none smtp.client-ip=103.168.172.150
+	s=arc-20240116; t=1711345813; c=relaxed/simple;
+	bh=4jL1KWXjYiXny0h+Nb8iTu6zptXy96mU9So4SIu2+78=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=AJBmcbc4KAe37fQU26ZGj4xDwqMn8Pm0mSVe7QZjR0TGbVk7z8JnTurk4w4CYWsCm4fRLiedncIp3gkU0LPLQNoh4xkRaplwrllRJQsSwNj1cxffftZmf8t+v/dwNGXMXFJS5CJb+YwJW+SX7IODo+jxsHaeZH4AFWm39SjWpgk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ljones.dev; spf=none smtp.mailfrom=ljones.dev; dkim=pass (2048-bit key) header.d=ljones.dev header.i=@ljones.dev header.b=BKJyUdA9; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=Cx3bKixn; arc=none smtp.client-ip=103.168.172.150
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ljones.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=ljones.dev
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
-	by mailfout.nyi.internal (Postfix) with ESMTP id C80EC13800F9;
-	Mon, 25 Mar 2024 01:50:06 -0400 (EDT)
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
+	by mailfout.nyi.internal (Postfix) with ESMTP id 9C7C313800F3;
+	Mon, 25 Mar 2024 01:50:10 -0400 (EDT)
 Received: from mailfrontend2 ([10.202.2.163])
-  by compute6.internal (MEProxy); Mon, 25 Mar 2024 01:50:06 -0400
+  by compute2.internal (MEProxy); Mon, 25 Mar 2024 01:50:10 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ljones.dev; h=cc
 	:cc:content-transfer-encoding:content-type:date:date:from:from
-	:in-reply-to:message-id:mime-version:reply-to:subject:subject:to
-	:to; s=fm3; t=1711345806; x=1711432206; bh=iqvDbzDeTvgQwXec4P1M7
-	lVLZPAxb2s+KgS8gBIeABc=; b=ImHP03DubdtYIeGCrCPZkAVY4Mr+XkuPs8Lnh
-	mTU1kYuPpb6aGGVp+E39cnhO5Yf2QznU0I4FEhHdzkvO6hoUhvcBmagAICsYqhYx
-	lvr4VR6fE0IxUqb0C8utpeVcBw5ki5VNKaiRhHG32GwtUOBawSbBNReu13BJU2g1
-	QZGDM1wtSgQYf+kDYPx0DFLaNEnCZLEw0JCpg2yxxs01TvPcsQLDCciGfqygG//o
-	+gxoXVRu6DH6sFOrCshnS2gqzNa2n8qCmVTh/xOdTir718pzCiPYfcnSk/dV5d4d
-	g9li3WskGMTSfIn2qcHTxfOGazsx431GLXzOdhq/pzImTZRmQ==
+	:in-reply-to:in-reply-to:message-id:mime-version:references
+	:reply-to:subject:subject:to:to; s=fm3; t=1711345810; x=
+	1711432210; bh=0Bh+6YXJNCLRuMqGyD0SersId0d+g+aFk1/fEt3iF3I=; b=B
+	KJyUdA9Fky93RqSejG38eS4pz5NRQhjJcZYszN4RHsU5/Elns7iedbvCuNH49hxu
+	mL9+nEedahi3EBZbLXaplV2JVok6zF5fehCZPjGfSjnmyygIPfsem2hCMlc1Ots0
+	ZwmY5ZmdE5qOUGYD3phDsLF3WuGeCkoj46hEls7aH3Ve/pDmo86vfOJeXgrPFifZ
+	owB+noqh6R57SksWACHGnEPnDJU5cYzIPOgPPOMS/kbxzTDZqTNk9t57E0L/Z4q8
+	qZ1W++rzpzvr4KZCMaYNjag6v/Loo0SRxeZT8Yhuz2FtTqUK7tRfCkBNssnPtj83
+	chBvMA6pq2q2C1uNczEQQ==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
 	messagingengine.com; h=cc:cc:content-transfer-encoding
 	:content-type:date:date:feedback-id:feedback-id:from:from
-	:in-reply-to:message-id:mime-version:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-	fm2; t=1711345806; x=1711432206; bh=iqvDbzDeTvgQwXec4P1M7lVLZPAx
-	b2s+KgS8gBIeABc=; b=oC4RHPrN4UqJWmTW/tKTba05axeDJAw+ClP4xMukE+Bl
-	0No2d4qtZy0OfmQul7maTQUunJtQqhvGZ/EuoFhh48blcSkBcDI1VnpFnxeiYOsb
-	UiMXZMsx12LOwYV1ge1577nRJP8UUT6Ia7QImb9GTkpKgEBphXs1RhiCoktOJNy4
-	czLKXJYwUtnipE7fdic5+WkGZaWv03HSD9Ow5WkuT+znsavrP4HHfMEZjeTOq5tG
-	C2IwLOT8xaXB5C0NXmFn3WDdXfdfxmjLnC7fuhLvvcyHX6bDD8/N5mI393guGZ/Y
-	DTLsFPtcjOCzw1M/2c6xw3ifhCWgjW9YoMgkAKMkYg==
-X-ME-Sender: <xms:jhABZt_pcXa9c5dECfKx8hTDwaWGs_4CRyEn1SrNcCCDYx_0_VnENA>
-    <xme:jhABZhsKKQoDKMiUBAT7OSMcDdepTaLfN_nWROCv_mXInpH3JGXBxhOY2796o1Vjn
-    jjp0kMWSv31yxbE-8c>
-X-ME-Received: <xmr:jhABZrDn0eStiDCoqKfYbQMfL1Q-XOKy6VqL9gFbi4H5Db6Od7OnwNQYpxze>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledruddtkedgkeelucetufdoteggodetrfdotf
+	:in-reply-to:in-reply-to:message-id:mime-version:references
+	:reply-to:subject:subject:to:to:x-me-proxy:x-me-proxy
+	:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=1711345810; x=
+	1711432210; bh=0Bh+6YXJNCLRuMqGyD0SersId0d+g+aFk1/fEt3iF3I=; b=C
+	x3bKixnkaveIUB0fbqzayQ+IS5r93S+ef1c2L1TG70xFXj5hWYgep6qtHwWmj0d9
+	KlV3p8GG3Ww2IARz0lRL4kVSweCm9Cy144DVSi6z90Qo1TYrbcpaiIwPBikJMyVt
+	pheXay9ouw+Io8afRSotLzuZ445ruB4Le0lqDEGjQcEMI2SAVnHMDBfxvcH4b2Mu
+	Fw+DOmZFx7wAn4oweT0aHu5ONSfkcE8KtNIDKnBGp5MMvZghhMVhvhkiNRZAEDOg
+	lf39KyGGPYw6IJMtxgwPYKdr3lrSDruq72Yoq8oj3WNzyZqyVmXEqsQbiKo7cNS5
+	bmOXOKnJDLtE96d43J3CA==
+X-ME-Sender: <xms:khABZrFKdmIfRH_g7zpFsKq92QS6xNU1av-6J6l4HY3mJ0BMA0qefA>
+    <xme:khABZoXvmtS71jh6EASDTgJn3rE8blrXe9PJWZEyGNU54JqnAq1aPzsaQ_fv-vCRB
+    qa2zi1QMeFOs4u08WY>
+X-ME-Received: <xmr:khABZtLRJdUFH1KrNvwCtvbXPFDTIzPO_OOfqrvWLms-d5QRWPmKRKkUS2pB>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledruddtkedgledtucetufdoteggodetrfdotf
     fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucenucfjughrpefhvfevufffkffoggfgsedtkeertd
-    ertddtnecuhfhrohhmpedfnfhukhgvucffrdculfhonhgvshdfuceolhhukhgvsehljhho
-    nhgvshdruggvvheqnecuggftrfgrthhtvghrnheptdehkeeigeeggfelkeeufeefjeduvd
-    ejveduvdehtdegveeftdeugeetvdeltdejnecuffhomhgrihhnpehkvghrnhgvlhdrohhr
-    ghenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehluh
-    hkvgeslhhjohhnvghsrdguvghv
-X-ME-Proxy: <xmx:jhABZhcyq35CdZyPnj3t_XI8TowIcntipUEjEw6NpgqgL_Vl3y36Cw>
-    <xmx:jhABZiPCXBkzKBZTKMEeDD0l-qH9Eg9Y414_zWmHQlIPw-tYAHVgzw>
-    <xmx:jhABZjm3FPZGzppNB7V5H4o_fV0iytDATzJCNkXO_mcdVEl3z0lUyg>
-    <xmx:jhABZsvKmCzEdT5updNru2mYPu3qQQ2wTg6GtlV-0DoPTqwDGu9IXw>
-    <xmx:jhABZuCEOTupMXq62_Tj2htzFFPKjyHKtVHiRT8eGO7Yux-LJIFsrg>
+    uceurghilhhouhhtmecufedttdenucenucfjughrpefhvfevufffkffojghfggfgsedtke
+    ertdertddtnecuhfhrohhmpedfnfhukhgvucffrdculfhonhgvshdfuceolhhukhgvsehl
+    jhhonhgvshdruggvvheqnecuggftrfgrthhtvghrnhepgfetfedugfetudeuheetjefhue
+    fggfelleetvdevtefhueeujeefvdegleevhefgnecuvehluhhsthgvrhfuihiivgeptden
+    ucfrrghrrghmpehmrghilhhfrhhomheplhhukhgvsehljhhonhgvshdruggvvh
+X-ME-Proxy: <xmx:khABZpFuGIq4Esq02oIi2apuvDnz4IGDBKa3UnD75cqoybBQCk8vWg>
+    <xmx:khABZhUerafxdBKMHYrV8O5tL4nhhPh-4ep4RCWMWcx-6mY_0xtXrA>
+    <xmx:khABZkNJ_1-6Eu7vlh_qAnXuq4h-vJy52oL5X-OmAL1hKqSQ_QwElg>
+    <xmx:khABZg315VGtzopLvYGOm7w5MQKqKrzEiFzEkYR6DuzVkjefBXaQsQ>
+    <xmx:khABZjK-P9BagwWHK0FEx1uHAQ2vcBIKLQgKw281Si7R6mYCnFIvmg>
 Feedback-ID: i5ec1447f:Fastmail
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
- 25 Mar 2024 01:50:03 -0400 (EDT)
+ 25 Mar 2024 01:50:07 -0400 (EDT)
 From: "Luke D. Jones" <luke@ljones.dev>
 To: hdegoede@redhat.com
 Cc: corentin.chary@gmail.com,
@@ -84,10 +86,12 @@ Cc: corentin.chary@gmail.com,
 	platform-driver-x86@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	"Luke D. Jones" <luke@ljones.dev>
-Subject: [PATCH 0/9] asus-wmi: add new features, clean up, fixes
-Date: Mon, 25 Mar 2024 18:49:29 +1300
-Message-ID: <20240325054938.489732-1-luke@ljones.dev>
+Subject: [PATCH 1/9] platform/x86: asus-wmi: add support for 2024 ROG Mini-LED
+Date: Mon, 25 Mar 2024 18:49:30 +1300
+Message-ID: <20240325054938.489732-2-luke@ljones.dev>
 X-Mailer: git-send-email 2.44.0
+In-Reply-To: <20240325054938.489732-1-luke@ljones.dev>
+References: <20240325054938.489732-1-luke@ljones.dev>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -96,41 +100,174 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-This patch series touches quite a few things along with adding support for some
-new features.
+Support the 2024 mini-led backlight and adjust the related functions
+to select the relevant dev-id. Also add `available_mini_led_mode` to the
+platform sysfs since the available mini-led levels can be different.
 
-- Add support for mini-LED on 2024 ROG lpatops
-- Add support for the gpu MUX WMI call on Vivobook laptops
-- Add support for the POST boot sound on ROG laptops
-- Add support for MCU power-save (ROG Ally only, saves more power on suspend)
-- Store written values for ppt_* features
-- Small formatting cleanup
-- Small fixes to cleanup struct holes found with pahole
+Signed-off-by: Luke D. Jones <luke@ljones.dev>
+---
+ .../ABI/testing/sysfs-platform-asus-wmi       |  8 ++
+ drivers/platform/x86/asus-wmi.c               | 74 +++++++++++++++++--
+ include/linux/platform_data/x86/asus-wmi.h    |  1 +
+ 3 files changed, 76 insertions(+), 7 deletions(-)
 
-Obsoletes:
-- https://lore.kernel.org/all/20240320011442.11608-1-luke@ljones.dev/
-- https://lore.kernel.org/all/20240310065408.63703-1-luke@ljones.dev/
-- https://lore.kernel.org/all/20240310061715.16531-1-luke@ljones.dev/
-- https://lore.kernel.org/all/20240310055312.11293-1-luke@ljones.dev/
-- https://lore.kernel.org/all/20240310233722.30884-1-luke@ljones.dev/
-
-Luke D. Jones (9):
-  platform/x86: asus-wmi: add support for 2024 ROG Mini-LED
-  platform/x86: asus-wmi: add support for Vivobook GPU MUX
-  platform/x86: asus-wmi: add support variant of TUF RGB
-  platform/x86: asus-wmi: support toggling POST sound
-  platform/x86: asus-wmi: store a min default for ppt options
-  platform/x86: asus-wmi: adjust formatting of ppt-<name>() functions
-  platform/x86: asus-wmi: ROG Ally increase wait time, allow MCU
-    powersave
-  platform/x86: asus-wmi: Add support for MCU powersave
-  platform/x86: asus-wmi: cleanup main struct to avoid some holes
-
- .../ABI/testing/sysfs-platform-asus-wmi       |  26 ++
- drivers/platform/x86/asus-wmi.c               | 386 ++++++++++++++----
- include/linux/platform_data/x86/asus-wmi.h    |   6 +
- 3 files changed, 339 insertions(+), 79 deletions(-)
-
+diff --git a/Documentation/ABI/testing/sysfs-platform-asus-wmi b/Documentation/ABI/testing/sysfs-platform-asus-wmi
+index 8a7e25bde085..61a745d2476f 100644
+--- a/Documentation/ABI/testing/sysfs-platform-asus-wmi
++++ b/Documentation/ABI/testing/sysfs-platform-asus-wmi
+@@ -126,6 +126,14 @@ Description:
+ 		Change the mini-LED mode:
+ 			* 0 - Single-zone,
+ 			* 1 - Multi-zone
++			* 2 - Multi-zone strong (available on newer generation mini-led)
++
++What:		/sys/devices/platform/<platform>/available_mini_led_mode
++Date:		Jun 2023
++KernelVersion:	6.10
++Contact:	"Luke Jones" <luke@ljones.dev>
++Description:
++		List the available mini-led modes.
+ 
+ What:		/sys/devices/platform/<platform>/ppt_pl1_spl
+ Date:		Jun 2023
+diff --git a/drivers/platform/x86/asus-wmi.c b/drivers/platform/x86/asus-wmi.c
+index 18be35fdb381..54ce0fb26f42 100644
+--- a/drivers/platform/x86/asus-wmi.c
++++ b/drivers/platform/x86/asus-wmi.c
+@@ -297,6 +297,7 @@ struct asus_wmi {
+ 
+ 	bool panel_overdrive_available;
+ 	bool mini_led_mode_available;
++	u32 mini_led_dev_id;
+ 
+ 	struct hotplug_slot hotplug_slot;
+ 	struct mutex hotplug_lock;
+@@ -2109,10 +2110,27 @@ static ssize_t mini_led_mode_show(struct device *dev,
+ 	struct asus_wmi *asus = dev_get_drvdata(dev);
+ 	int result;
+ 
+-	result = asus_wmi_get_devstate_simple(asus, ASUS_WMI_DEVID_MINI_LED_MODE);
+-	if (result < 0)
+-		return result;
++	result = asus_wmi_get_devstate_simple(asus, asus->mini_led_dev_id);
+ 
++	/* Remap the mode values to match previous generation mini-led.
++	 * Some BIOSes return -19 instead of 2, which is "mini-LED off", this
++	 * appears to be a  BIOS bug.
++	 */
++	if (asus->mini_led_dev_id == ASUS_WMI_DEVID_MINI_LED_MODE2) {
++		switch (result) {
++		case 0:
++			result = 1;
++			break;
++		case 1:
++			result = 2;
++			break;
++		case 2:
++		case -19:
++			result = 0;
++		}
++	} else if (result < 0) {
++		return result;
++	}
+ 	return sysfs_emit(buf, "%d\n", result);
+ }
+ 
+@@ -2129,11 +2147,28 @@ static ssize_t mini_led_mode_store(struct device *dev,
+ 	if (result)
+ 		return result;
+ 
+-	if (mode > 1)
++	if (mode > 1 && asus->mini_led_dev_id == ASUS_WMI_DEVID_MINI_LED_MODE)
+ 		return -EINVAL;
++	if (mode > 2 && asus->mini_led_dev_id == ASUS_WMI_DEVID_MINI_LED_MODE2)
++		return -EINVAL;
++	/*
++	 * Remap the mode values so expected behaviour is the same as the last
++	 * generation of mini-LED
++	 */
++	if (asus->mini_led_dev_id == ASUS_WMI_DEVID_MINI_LED_MODE2) {
++		switch (mode) {
++		case 0:
++			mode = 2;
++			break;
++		case 1:
++			mode = 0;
++			break;
++		case 2:
++			mode = 1;
++		}
++	}
+ 
+-	err = asus_wmi_set_devstate(ASUS_WMI_DEVID_MINI_LED_MODE, mode, &result);
+-
++	err = asus_wmi_set_devstate(asus->mini_led_dev_id, mode, &result);
+ 	if (err) {
+ 		pr_warn("Failed to set mini-LED: %d\n", err);
+ 		return err;
+@@ -2150,6 +2185,23 @@ static ssize_t mini_led_mode_store(struct device *dev,
+ }
+ static DEVICE_ATTR_RW(mini_led_mode);
+ 
++static ssize_t available_mini_led_mode_show(struct device *dev,
++				  struct device_attribute *attr, char *buf)
++{
++	struct asus_wmi *asus = dev_get_drvdata(dev);
++
++	switch (asus->mini_led_dev_id) {
++	case ASUS_WMI_DEVID_MINI_LED_MODE:
++		return sysfs_emit(buf, "0 1\n");
++	case ASUS_WMI_DEVID_MINI_LED_MODE2:
++		return sysfs_emit(buf, "0 1 2\n");
++	}
++
++	return sysfs_emit(buf, "0\n");
++}
++
++static DEVICE_ATTR_RO(available_mini_led_mode);
++
+ /* Quirks *********************************************************************/
+ 
+ static void asus_wmi_set_xusb2pr(struct asus_wmi *asus)
+@@ -4174,6 +4226,7 @@ static struct attribute *platform_attributes[] = {
+ 	&dev_attr_nv_temp_target.attr,
+ 	&dev_attr_panel_od.attr,
+ 	&dev_attr_mini_led_mode.attr,
++	&dev_attr_available_mini_led_mode.attr,
+ 	NULL
+ };
+ 
+@@ -4496,10 +4549,17 @@ static int asus_wmi_add(struct platform_device *pdev)
+ 	asus->nv_dyn_boost_available = asus_wmi_dev_is_present(asus, ASUS_WMI_DEVID_NV_DYN_BOOST);
+ 	asus->nv_temp_tgt_available = asus_wmi_dev_is_present(asus, ASUS_WMI_DEVID_NV_THERM_TARGET);
+ 	asus->panel_overdrive_available = asus_wmi_dev_is_present(asus, ASUS_WMI_DEVID_PANEL_OD);
+-	asus->mini_led_mode_available = asus_wmi_dev_is_present(asus, ASUS_WMI_DEVID_MINI_LED_MODE);
+ 	asus->ally_mcu_usb_switch = acpi_has_method(NULL, ASUS_USB0_PWR_EC0_CSEE)
+ 						&& dmi_match(DMI_BOARD_NAME, "RC71L");
+ 
++	if (asus_wmi_dev_is_present(asus, ASUS_WMI_DEVID_MINI_LED_MODE)) {
++		asus->mini_led_mode_available = true;
++		asus->mini_led_dev_id = ASUS_WMI_DEVID_MINI_LED_MODE;
++	} else if (asus_wmi_dev_is_present(asus, ASUS_WMI_DEVID_MINI_LED_MODE2)) {
++		asus->mini_led_mode_available = true;
++		asus->mini_led_dev_id = ASUS_WMI_DEVID_MINI_LED_MODE2;
++	}
++
+ 	err = fan_boost_mode_check_present(asus);
+ 	if (err)
+ 		goto fail_fan_boost_mode;
+diff --git a/include/linux/platform_data/x86/asus-wmi.h b/include/linux/platform_data/x86/asus-wmi.h
+index ab1c7deff118..9cadce10ad9a 100644
+--- a/include/linux/platform_data/x86/asus-wmi.h
++++ b/include/linux/platform_data/x86/asus-wmi.h
+@@ -71,6 +71,7 @@
+ #define ASUS_WMI_DEVID_LID_FLIP		0x00060062
+ #define ASUS_WMI_DEVID_LID_FLIP_ROG	0x00060077
+ #define ASUS_WMI_DEVID_MINI_LED_MODE	0x0005001E
++#define ASUS_WMI_DEVID_MINI_LED_MODE2	0x0005002E
+ 
+ /* Storage */
+ #define ASUS_WMI_DEVID_CARDREADER	0x00080013
 -- 
 2.44.0
 
