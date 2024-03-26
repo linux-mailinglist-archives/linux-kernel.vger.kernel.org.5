@@ -1,110 +1,176 @@
-Return-Path: <linux-kernel+bounces-118965-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-118966-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 271B688C202
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 13:23:23 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1C18488C205
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 13:24:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CE7A22C20B2
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 12:23:21 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 402151C251CD
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 12:24:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EB6A57F7E0;
-	Tue, 26 Mar 2024 12:22:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E4A4470CDA;
+	Tue, 26 Mar 2024 12:24:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=marvell.com header.i=@marvell.com header.b="Dmr45xrb"
-Received: from mx0b-0016f401.pphosted.com (mx0a-0016f401.pphosted.com [67.231.148.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="ERuFtmQQ";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="9LI5XNpv";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="ce56UmHG";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="DBH4hFPy"
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BBFE171B24;
-	Tue, 26 Mar 2024 12:22:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=67.231.148.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 42E2B12B6C;
+	Tue, 26 Mar 2024 12:24:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711455729; cv=none; b=qLR2KAgqWokqkuulK11vtqaR1TM9VwimFON6pYTF3j5z43lbPDZMsSRgbDU0AoOu/Xug4zeFjSF5HLqybZIlB7NZryZ8rF5TEBXbY3nZ6cll/ObjOIOHbGkPJ0Dn9JeKfB/OCiSE6M89wBgSzs7GnIanjdhxrqj/YZufkoZhkVE=
+	t=1711455872; cv=none; b=i2y537571gWA4TC57UAAzeXr4w0sFR7xLiljrUuhtFQYlVOcDc+ta4jjycnsXMs3Hsf+GzCGWUklXKICnTqTBl7IXZcJ2FFMy4dKs+e59qqEA0xKFQ0eMkozSxZ6+Z29X4i5Y0z0Iq0nIwGxmkFOxg2CqUt02ia2c4h3ETVGnxY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711455729; c=relaxed/simple;
-	bh=deFxA3Wuj8SlRNBvbVPEKsNDOYmV5l4G649FOt1wOrE=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=qI11m4rvSz5ENhqDEaknuQPXaSzGrcd1xwtvd6KkSs/08DSWj27gS9nih+8ARnnPgutesE89t2gbJ9Rw697g4Q55BVUOQ7+3xyStW9dsvL2HKSOolNTh3R2ZfSKZ6pEcy6Xe+RvNqSabe62A0aJ5BOpky7KW7R/LVbCYtbgHp2A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=marvell.com; spf=pass smtp.mailfrom=marvell.com; dkim=pass (2048-bit key) header.d=marvell.com header.i=@marvell.com header.b=Dmr45xrb; arc=none smtp.client-ip=67.231.148.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=marvell.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=marvell.com
-Received: from pps.filterd (m0045849.ppops.net [127.0.0.1])
-	by mx0a-0016f401.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 42QB9sYD015440;
-	Tue, 26 Mar 2024 05:21:55 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=
-	from:to:cc:subject:date:message-id:mime-version:content-type; s=
-	pfpt0220; bh=c4Jux4wLKHVwolXHnHDW2QYhlDWWrBk745gJOqZmmLY=; b=Dmr
-	45xrb0p2MR1BqGdosh9N53NdZZIYK9Q55ckUkw/wDw+vUsyn2zMbsOctNxt/4lDc
-	lR5lAlztPziHHhQQtWKZZbf8D0WHK7o5ncfyDl1W6PDTwL3woygcIUiXNeGhXXkJ
-	J2FLpXmtWOU+B4TULk+5Sw6fTVF+Gxcs688inDlJKweeS2oZbkhJocyqBSfgxCfk
-	+kEBQ6GIsDGo54OcsyXFTvYdjU14se6OpcC727MQh/A4pcG8NMVuCzI5ymQmGReH
-	1mtGh7TTxCYyCli5RfHLqJ+qrqOFxQpOTbMU7p8qOQROneZ8GImCUyxCkd6EhOpG
-	LVXETxEsGtloOJlDGZg==
-Received: from dc5-exch05.marvell.com ([199.233.59.128])
-	by mx0a-0016f401.pphosted.com (PPS) with ESMTPS id 3x3twtgqma-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 26 Mar 2024 05:21:55 -0700 (PDT)
-Received: from DC5-EXCH05.marvell.com (10.69.176.209) by
- DC5-EXCH05.marvell.com (10.69.176.209) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.4; Tue, 26 Mar 2024 05:21:54 -0700
-Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH05.marvell.com
- (10.69.176.209) with Microsoft SMTP Server id 15.2.1544.4 via Frontend
- Transport; Tue, 26 Mar 2024 05:21:54 -0700
-Received: from hyd1soter3.marvell.com (unknown [10.29.37.12])
-	by maili.marvell.com (Postfix) with ESMTP id B07863F706D;
-	Tue, 26 Mar 2024 05:21:50 -0700 (PDT)
-From: Hariprasad Kelam <hkelam@marvell.com>
-To: <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-CC: <kuba@kernel.org>, <davem@davemloft.net>, <sgoutham@marvell.com>,
-        <gakula@marvell.com>, <jerinj@marvell.com>, <lcherian@marvell.com>,
-        <sbhatta@marvell.com>, <hkelam@marvell.com>, <naveenm@marvell.com>,
-        <edumazet@google.com>, <pabeni@redhat.com>
-Subject: [net Patch] octeontx2-af: Fix issue with loading coalesced KPU profiles
-Date: Tue, 26 Mar 2024 17:51:49 +0530
-Message-ID: <20240326122149.4377-1-hkelam@marvell.com>
-X-Mailer: git-send-email 2.17.1
+	s=arc-20240116; t=1711455872; c=relaxed/simple;
+	bh=I1ZiL/hInL+ghSma0LT89xOBCTtxfBLfKBSp53FTii0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=BWVXnkNm+f2L2xFIi1VPnhxZhWGxqxFqby/nXjcKUzZmwqzlQfCVmIvcWEiJkvHP5oDg2u0tmucgMlKF5d0KC5GMrBHPxs+n7NqCRdJ3nkYGL00wlZ9aA01CQaCfzIEl5ak78SSI4+zJcQBvnBpwuKKrCVklhH/6Gpvil0kj7QI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=ERuFtmQQ; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=9LI5XNpv; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=ce56UmHG; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=DBH4hFPy; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:98])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id ECA415D588;
+	Tue, 26 Mar 2024 12:24:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1711455866; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=klBdcsaCF0MeM1RozflWzamTx/k4KEI7GZvYP/2DRRU=;
+	b=ERuFtmQQZvi6FYnPRp+1QGAias/5wPP5CGDZbCJZYjIqhllnVXtIaPzbEldhME9fUMA2Fz
+	F0GDuZioRQX079tlQ1I9Q+FlRtW//cXDwNekp+BcdtjJWs9bSRAzOhyilKD681xo+eu9yg
+	QBsqfeVlc1i4Fje/3yI7TPYkWWi/8Kk=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1711455866;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=klBdcsaCF0MeM1RozflWzamTx/k4KEI7GZvYP/2DRRU=;
+	b=9LI5XNpv3YexlfZZb2Oi5AkiKETAIQBWlqa3l6QmHJQ5xTQnbl3frmLMIYme5aGCyUYdAZ
+	Ao7ikofaO2oV8yBQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1711455865; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=klBdcsaCF0MeM1RozflWzamTx/k4KEI7GZvYP/2DRRU=;
+	b=ce56UmHGTJ8B91Z86yv1n9IVbL/izh3/GacrHy+GKIHsNJ3JHEF/poLw81VH6ZBRrZ9MS6
+	Stli8MRGdTyrK8h0WbHJdeWVfdBo4VQGRepfbeNAxM1Mg6k4BkxN+ed0CrK7PlOWENvjvG
+	GalrnONrvEGo5yNhItZFbsqmq0TMxXU=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1711455865;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=klBdcsaCF0MeM1RozflWzamTx/k4KEI7GZvYP/2DRRU=;
+	b=DBH4hFPyCiRqgG/D7x7eopyTIwjkszYl8XO7pygIkgJKuJh0CcOg/tVQxmhtT8mpg3eY8l
+	ILpVhuaWuXzSvoCA==
+Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id D63BB13215;
+	Tue, 26 Mar 2024 12:24:25 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+	by imap2.dmz-prg2.suse.org with ESMTPSA
+	id MhYLNHm+AmY/KgAAn2gu4w
+	(envelope-from <jack@suse.cz>); Tue, 26 Mar 2024 12:24:25 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+	id 6EAE4A0812; Tue, 26 Mar 2024 13:24:21 +0100 (CET)
+Date: Tue, 26 Mar 2024 13:24:21 +0100
+From: Jan Kara <jack@suse.cz>
+To: Kemeng Shi <shikemeng@huaweicloud.com>
+Cc: akpm@linux-foundation.org, tj@kernel.org, linux-mm@kvack.org,
+	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+	willy@infradead.org, bfoster@redhat.com, jack@suse.cz,
+	dsterba@suse.com, mjguzik@gmail.com, dhowells@redhat.com,
+	peterz@infradead.org
+Subject: Re: [PATCH 2/6] writeback: support retrieving per group debug
+ writeback stats of bdi
+Message-ID: <20240326122421.dofl35cdtgaojt26@quack3>
+References: <20240320110222.6564-1-shikemeng@huaweicloud.com>
+ <20240320110222.6564-3-shikemeng@huaweicloud.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Proofpoint-GUID: GNGMqGgfdrzuNBFSYnn2bGr-vpVeevsZ
-X-Proofpoint-ORIG-GUID: GNGMqGgfdrzuNBFSYnn2bGr-vpVeevsZ
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-03-26_06,2024-03-21_02,2023-05-22_02
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240320110222.6564-3-shikemeng@huaweicloud.com>
+X-Spam-Score: -1.01
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Spam-Flag: NO
+X-Spamd-Result: default: False [-1.01 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 NEURAL_HAM_SHORT(-0.20)[-1.000];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 DKIM_TRACE(0.00)[suse.cz:+];
+	 MX_GOOD(-0.01)[];
+	 RCPT_COUNT_TWELVE(0.00)[13];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:dkim,suse.com:email];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 MID_RHS_NOT_FQDN(0.50)[];
+	 FREEMAIL_CC(0.00)[linux-foundation.org,kernel.org,kvack.org,vger.kernel.org,infradead.org,redhat.com,suse.cz,suse.com,gmail.com];
+	 RCVD_TLS_ALL(0.00)[];
+	 RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:98:from]
+X-Spam-Level: 
+Authentication-Results: smtp-out2.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=ce56UmHG;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=DBH4hFPy
+X-Rspamd-Queue-Id: ECA415D588
 
-The current implementation for loading coalesced KPU profiles has
-a limitation.  The "offset" field, which is used to locate profiles
-within the profile is restricted to a u16.
+On Wed 20-03-24 19:02:18, Kemeng Shi wrote:
+> Add /sys/kernel/debug/bdi/xxx/wb_stats to show per group writeback stats
+> of bdi.
+> 
+> Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
 
-This restricts the number of profiles that can be loaded. This patch
-addresses this limitation by increasing the size of the "offset" field.
+..
 
-Fixes: 11c730bfbf5b ("octeontx2-af: support for coalescing KPU profiles")
-Signed-off-by: Hariprasad Kelam <hkelam@marvell.com>
----
- drivers/net/ethernet/marvell/octeontx2/af/rvu_npc.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> +unsigned long wb_calc_cg_thresh(struct bdi_writeback *wb)
+> +{
+> +	struct dirty_throttle_control gdtc = { GDTC_INIT_NO_WB };
+> +	struct dirty_throttle_control mdtc = { MDTC_INIT(wb, &gdtc) };
+> +	unsigned long filepages, headroom, writeback;
+> +
+> +	gdtc.avail = global_dirtyable_memory();
+> +	gdtc.dirty = global_node_page_state(NR_FILE_DIRTY) +
+> +		     global_node_page_state(NR_WRITEBACK);
+> +
+> +	mem_cgroup_wb_stats(wb, &filepages, &headroom,
+> +			    &mdtc.dirty, &writeback);
+> +	mdtc.dirty += writeback;
+> +	mdtc_calc_avail(&mdtc, filepages, headroom);
+> +	domain_dirty_limits(&mdtc);
+> +
+> +	return __wb_calc_thresh(&mdtc, mdtc.thresh);
+> +}
 
-diff --git a/drivers/net/ethernet/marvell/octeontx2/af/rvu_npc.c b/drivers/net/ethernet/marvell/octeontx2/af/rvu_npc.c
-index e350242bbafb..be709f83f331 100644
---- a/drivers/net/ethernet/marvell/octeontx2/af/rvu_npc.c
-+++ b/drivers/net/ethernet/marvell/octeontx2/af/rvu_npc.c
-@@ -1657,7 +1657,7 @@ static int npc_fwdb_detect_load_prfl_img(struct rvu *rvu, uint64_t prfl_sz,
- 	struct npc_coalesced_kpu_prfl *img_data = NULL;
- 	int i = 0, rc = -EINVAL;
- 	void __iomem *kpu_prfl_addr;
--	u16 offset;
-+	u32 offset;
- 
- 	img_data = (struct npc_coalesced_kpu_prfl __force *)rvu->kpu_prfl_addr;
- 	if (le64_to_cpu(img_data->signature) == KPU_SIGN &&
+I kind of wish we didn't replicate this logic from balance_dirty_pages()
+and wb_over_bg_thresh() into yet another place. But the refactoring would
+be kind of difficult. So OK.
+
+								Honza
 -- 
-2.17.1
-
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
 
