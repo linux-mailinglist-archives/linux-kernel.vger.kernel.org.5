@@ -1,118 +1,110 @@
-Return-Path: <linux-kernel+bounces-119832-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-119833-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0174588CD79
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 20:48:24 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5C2C788CD7C
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 20:49:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id AB1701F63889
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 19:48:23 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id F00D61F653F0
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 19:49:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CA49613D264;
-	Tue, 26 Mar 2024 19:48:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 987CE13D252;
+	Tue, 26 Mar 2024 19:49:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Tr9ln9mE"
-Received: from mail-pl1-f180.google.com (mail-pl1-f180.google.com [209.85.214.180])
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="WXaoxIQq"
+Received: from mail-io1-f54.google.com (mail-io1-f54.google.com [209.85.166.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C958B380;
-	Tue, 26 Mar 2024 19:48:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1DFBC13C804
+	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 19:49:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711482494; cv=none; b=M1a2boz7eJMafDyFhW5KGqkC2kuou0tWLDR9X8XCObgujgDWB69vT/HZoEG+MVWv0vnyj2/+oZiYdzG0aPyzJwWuUwiL5WeN86nKXsmyEup7CPpb/Qkfc+1TcqFNp+rM+QYnVMniA22n1lgJDxmJvicaA+lFJbo1tZ9LBHmfBeU=
+	t=1711482554; cv=none; b=UzhTlmrg2gNgylaLvKdcWrgxdJkh/rzHSp04DdRgEWIAx/J85KkBCYgyb8FpKLTrWAeDBim2bENmY1y1ft2quQJugJKQMuDe/3ZSDsxqsyH8TkHnjgvEboiXJN+EciuB0aReCuJsNLH0AuB0lh8gJF53ijWA1F1zWQOvZftjJUM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711482494; c=relaxed/simple;
-	bh=9cmXfVQI/nC9ykIDRPwIkUayK3sJamHkua2d6Tcdjzo=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=UfsE28Uh/pE1DpK3G8HGBJvKbx0k+yTfiOihuL7kWorjyDw3H+ZsbcpZFioXT4/ADfHoJy4oMP/Choloq6/ekTXGaNyF/4o9wfxxhr3U7gDAz1J0xjSgYf8wb+2D9TdiQwSzCVR0rQP1kwsaSwqudQuWNlMNwqvOZhSt3hHbHSE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Tr9ln9mE; arc=none smtp.client-ip=209.85.214.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f180.google.com with SMTP id d9443c01a7336-1e0fa980d55so7828225ad.3;
-        Tue, 26 Mar 2024 12:48:12 -0700 (PDT)
+	s=arc-20240116; t=1711482554; c=relaxed/simple;
+	bh=ckIAyLQl5mq51v12U33D/Ha/ZKgjrWdTuDjM1X+ZMIQ=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=jXEUoyUCpJPS34PCeAbFkHkksvJeEW9siW8XQew5/psLbU8X6pBpXxDap48JZsZ9TOUhVAnu926yLPYAs5VgaF0aD85v1ySBJ+S4qk35W3/j0OUcOxPR8/YSP/w/cRuhqzyrPnKqXakiK+aYHHmUFZcwY4Bg/b8GdVyEl9iNlfA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linuxfoundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=WXaoxIQq; arc=none smtp.client-ip=209.85.166.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linuxfoundation.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
+Received: by mail-io1-f54.google.com with SMTP id ca18e2360f4ac-7c86e6f649aso45285939f.0
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 12:49:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711482492; x=1712087292; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=MxBAPr9eXOadeecJbaBW+PIKQfHxWzuOy7OIoDoAlhI=;
-        b=Tr9ln9mEwIHpI19N0/C0EJpHKXphn2mtuT1W4AriiX3AMp+IC90mvOmZY0EkBc6hni
-         7xtayoWudk30MUKKbxSebe4a3w35kCJelhjlEDtWrKTdDOdYjHGnSBPTaMEKz54ACylt
-         US9Ba4RepM5uko/vevEd5MCFCJWrBHE0tF2FOQRcr+mz4ftZNhjnDy/XqKeORp+mUQ6Q
-         PngtZ2G5uG6rRIWrmqZo5JgXHIQ7uxp7WydV0al2qtBVVoM/txNvSubMQFNFMXA2OdMS
-         vuK4mKagjZLvNTPGeHC/54EfGPT3sQkb1CC7vS5dmKwdpeB1ox3B0jHtndpOJQF9CQD9
-         BSVA==
+        d=linuxfoundation.org; s=google; t=1711482552; x=1712087352; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=CiANCJrg/wRMLPS+Tm1vUgemn4LO4mSL7aK+8H//EqY=;
+        b=WXaoxIQqaM98i2aCaKG1CXVdG9T66N85m1rd1MIC+bgH4UtyblpZOLcuoRLU5fs2S6
+         gErkcytQbU7zfdmIQpomF3Cr4WYps6zspV9u6+QaPwVpeUQkrEk4a5Xi4VOeRHR2XiE5
+         Xd5gG8fCYdeNpJl6bKwrwR4sLswTH65TYFKNE=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711482492; x=1712087292;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=MxBAPr9eXOadeecJbaBW+PIKQfHxWzuOy7OIoDoAlhI=;
-        b=dPFb6IAKBHEHlFkv933l1+rLflMyTDbckn8ppF9CCRte3maIvSunw7vJJ+faOY0nlG
-         hJQ3u16mcWL3kub4Zo1oAb1DbQY3MTk6dH3MCjOv66RSugdu9YuM45wlA5iI5UN7fcwv
-         xhoUv20bg3k3IO6be9VyWjfUSH0x23Wv3BXfbNjj8aOwiRMhyvfut6DtpzZiX5Meif6H
-         8J5QVNQC6m5eYqBnISyYIa3hKtK8F72KXzEdLDXTmokRCb4zOH352EK9gFW3cSbhS2eH
-         uphluOVbvHj4gD8rvMzkkRrDgam12hyZj/dy8KigcpF8RjMDAbFrS198oT69/reO1xrY
-         PdKA==
-X-Forwarded-Encrypted: i=1; AJvYcCUzqbbZPzVoT2I+hKrK/6ljfnOU5pz+A7BojdrrzPOyJTi9/DFhYrNYbT6a88SBhFnus5FYBQnW6fjjkRbJC3EL1UKBb+AspdT76T6JZb8l11CJWEbbBCVixhXjM0NmkGLykwrb+jfI3eDUhIXejZnzAceoW8/icGzySq5Tig==
-X-Gm-Message-State: AOJu0YzckDkl2GLga01cdSgXWykF2RUM3hvm4q6/2o+jE5xnEcHRQ5pG
-	8Qfyq32Ssov0EndUAG2AkG4hcOsvpKWbRYKj1+4rDRVwdkevvRzY
-X-Google-Smtp-Source: AGHT+IHgG6MA5Lsu+aw0wxyCe4+UncFf8kJs1/g6C00v9EoIyHznZ9wyUpauWmcrhILSNtqUOtgwbw==
-X-Received: by 2002:a17:902:ea11:b0:1e0:a731:ea4d with SMTP id s17-20020a170902ea1100b001e0a731ea4dmr2248814plg.62.1711482492054;
-        Tue, 26 Mar 2024 12:48:12 -0700 (PDT)
-Received: from fedora (c-73-170-51-167.hsd1.ca.comcast.net. [73.170.51.167])
-        by smtp.gmail.com with ESMTPSA id p7-20020a170902e74700b001e0b5d4a2a8sm5279877plf.149.2024.03.26.12.48.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Mar 2024 12:48:11 -0700 (PDT)
-Date: Tue, 26 Mar 2024 12:48:09 -0700
-From: Vishal Moola <vishal.moola@gmail.com>
-To: Qi Zheng <zhengqi.arch@bytedance.com>
-Cc: akpm@linux-foundation.org, hughd@google.com, david@redhat.com,
-	rppt@kernel.org, willy@infradead.org, muchun.song@linux.dev,
-	linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-	Christian Borntraeger <borntraeger@linux.ibm.com>,
-	Janosch Frank <frankja@linux.ibm.com>,
-	Claudio Imbrenda <imbrenda@linux.ibm.com>, kvm@vger.kernel.org,
-	linux-s390@vger.kernel.org
-Subject: Re: [PATCH 3/3] s390: supplement for ptdesc conversion
-Message-ID: <ZgMmec2paNA0GFwY@fedora>
-References: <cover.1709541697.git.zhengqi.arch@bytedance.com>
- <04beaf3255056ffe131a5ea595736066c1e84756.1709541697.git.zhengqi.arch@bytedance.com>
+        d=1e100.net; s=20230601; t=1711482552; x=1712087352;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=CiANCJrg/wRMLPS+Tm1vUgemn4LO4mSL7aK+8H//EqY=;
+        b=o3y9bZj0EVDNeVJtCpL/F0fj87pAVCNO5xtap/LChGz437tfDpFBSE8LnyoBVEoT92
+         g6pNE5hzVP81IhtCdCIR/7+tuuAVUbUG0UpmD+8tTIDphsD74tCr0MBv/Sut7aRY/rtW
+         4yOp2jarI0bcZp1oUNt702HgG0rU1DKUYbyle+/ZQp+q17DpSs0CyWC4duNms5uTvyZB
+         D13ja/fXprGmEBHPERdd1ZE5xdsHW0zw/ZDnWBR5M9MA3PD9gIlu9IBEUCoQ7yYxWMHD
+         BtDBysauEztyXF7nK0MVP0ySEiHvGT/0qCF9hn8TXW9GKas/zrOgWoRK9C78lwsyRNhT
+         pM1A==
+X-Forwarded-Encrypted: i=1; AJvYcCXj9XWTyGZRqPCQ8S0wIbwDFVvEtqgn0dmmnKfa+15p5Mu5xmggD5PgjkoDQLckP7T6ni1Cd028Ct4koPuFsU6aTNG3EbbIzOSdhAnM
+X-Gm-Message-State: AOJu0YyxEAEV6HvE2CPaye/OrnESYvZeAu6Gp7P60LZFXJtFc3O7bIiy
+	X0ECJijWySPIIY1YhTplQyaCcrDzRe9BAorr/EHOurxTXZUt2bwpGvaanQTqBCc=
+X-Google-Smtp-Source: AGHT+IGa8PwsF4Gc4Jfzc/5pVDeCx6+YWmIQj5bTrUxyJHndqjf4XpTOeOLeEaqgdiSKQz2W7xIYeA==
+X-Received: by 2002:a5e:834c:0:b0:7d0:6728:66eb with SMTP id y12-20020a5e834c000000b007d0672866ebmr3473863iom.1.1711482552185;
+        Tue, 26 Mar 2024 12:49:12 -0700 (PDT)
+Received: from [192.168.1.128] ([38.175.170.29])
+        by smtp.gmail.com with ESMTPSA id eq27-20020a0566384e3b00b004772b93a134sm2824161jab.3.2024.03.26.12.49.11
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 26 Mar 2024 12:49:11 -0700 (PDT)
+Message-ID: <6b0e9e08-62c3-4fed-95d8-185ceb4ce67f@linuxfoundation.org>
+Date: Tue, 26 Mar 2024 13:49:11 -0600
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <04beaf3255056ffe131a5ea595736066c1e84756.1709541697.git.zhengqi.arch@bytedance.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 0/2] kselftest/tty: Improve integration with automated
+ systems
+Content-Language: en-US
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Mark Brown <broonie@kernel.org>
+Cc: Shuah Khan <shuah@kernel.org>, Jiri Slaby <jirislaby@kernel.org>,
+ Michal Sekletar <msekleta@redhat.com>, linux-serial@vger.kernel.org,
+ linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+ Shuah Khan <skhan@linuxfoundation.org>
+References: <20240306-kselftest-tty-tname-v1-0-33505b31629e@kernel.org>
+ <2024030633-managing-identical-9b92@gregkh>
+From: Shuah Khan <skhan@linuxfoundation.org>
+In-Reply-To: <2024030633-managing-identical-9b92@gregkh>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Mon, Mar 04, 2024 at 07:07:20PM +0800, Qi Zheng wrote:
-> --- a/arch/s390/mm/gmap.c
-> +++ b/arch/s390/mm/gmap.c
-> @@ -206,9 +206,11 @@ static void gmap_free(struct gmap *gmap)
->  
->  	/* Free additional data for a shadow gmap */
->  	if (gmap_is_shadow(gmap)) {
-> +		struct ptdesc *ptdesc;
-> +
->  		/* Free all page tables. */
-> -		list_for_each_entry_safe(page, next, &gmap->pt_list, lru)
-> -			page_table_free_pgste(page);
-> +		list_for_each_entry_safe(ptdesc, next, &gmap->pt_list, pt_list)
-> +			page_table_free_pgste(ptdesc);
+On 3/6/24 15:51, Greg Kroah-Hartman wrote:
+> On Wed, Mar 06, 2024 at 07:21:24PM +0000, Mark Brown wrote:
+>> This cleans up the output of the tty_tstamp_update selftest to play a
+>> bit more nicely with automated systems parsing the test output.
+>>
+>> To do this I've also added a new helper ksft_test_result() which takes a
+>> KSFT_ code as a report, this is something I've wanted on other occasions
+>> but restructured things to avoid needing it.  This time I figured I'd
+>> just add it since it keeps coming up.
+>>
+>> Signed-off-by: Mark Brown <broonie@kernel.org>
+> 
+> Acked-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-An important note: ptdesc allocation/freeing is different than the
-standard alloc_pages()/free_pages() routines architectures are used to.
-Are we sure we don't have memory leaks here?
 
-We always allocate and free ptdescs as compound pages; for page table
-struct pages, most archictectures do not. s390 has CRST_ALLOC_ORDER
-pagetables, meaning if we free anything using the ptdesc api, we better
-be sure it was allocated using the ptdesc api as well.
+Thank you. Applied to linux-kselftest next for 6.10-rc1.
 
-Like you, I don't have a s390 to test on, so hopefully some s390 expert
-can chime in to let us know if we need a fix for this.
+thanks,
+-- Shuah
 
