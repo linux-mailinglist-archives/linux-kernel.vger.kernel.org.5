@@ -1,240 +1,112 @@
-Return-Path: <linux-kernel+bounces-119649-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-119651-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BE11E88CB89
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 19:06:50 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id A8E8488CB8C
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 19:07:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DEEDC1C2A216
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 18:06:49 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5F3741F33C24
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 18:07:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2464C823B8;
-	Tue, 26 Mar 2024 18:06:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9EBCE8664A;
+	Tue, 26 Mar 2024 18:06:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="iM8JsJWJ"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.10])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kNIeew0y"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 68A0D127B43;
-	Tue, 26 Mar 2024 18:06:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.10
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D37FC8627B;
+	Tue, 26 Mar 2024 18:06:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711476370; cv=none; b=uV59Ijr8NjZEamNi4Ehs7S/xPU7gOLV5XEewxgf+4tpdOUXkHHX8fcS2Os7fPoV4v5TtSO/YZQjWKiUujM12W9nluhR+TCUTA13If+3/etjqOHvKg/nTTBaOlvHkzOSuAxA/Td5pOq+YvU54AUIU6lhZ89P4y1XlPxJphAsrQD4=
+	t=1711476383; cv=none; b=c9QR4VRRmvqZffs64gxqMzccKZtZE5T7nJWPtlfFULI+cqjZrmrratfuB7+coPUACW4hHEfxzIddTIvjKJ+3wZi0phpRV86nOZoahF5zZsELmAtbl4Ra55mdagcyaNEYLoi3y2UUKJQpP22n+aPLgU4yMmBqs+byauK8IXEe26w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711476370; c=relaxed/simple;
-	bh=Gk8fI9iUrOUGQ34gEWUgllLORmfKWRcrBsMtW1W/wiw=;
+	s=arc-20240116; t=1711476383; c=relaxed/simple;
+	bh=R+ckB3TYv6IwSf20f1+w+thE5azs2bxJD7LoIcuqpXs=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=jgiuXpCNjHEuPLhHGsKloN8h//qhlvtNjCByohoN/wRMV3DB//lio/1i9ixfyWSdP6ZONhYcWzUfn4vq12tJ3HWuJJdHtrkJcH/ChIzqkD6TwF3GWo9vXBdtQ/UzKSQAwMbnuiCQsGyMraJaQ2mn/j7bZ6s6k193RAlQgFGOGEc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=iM8JsJWJ; arc=none smtp.client-ip=192.198.163.10
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1711476367; x=1743012367;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:content-transfer-encoding:in-reply-to;
-  bh=Gk8fI9iUrOUGQ34gEWUgllLORmfKWRcrBsMtW1W/wiw=;
-  b=iM8JsJWJ3SEBhFsdOL6NMy/FWO9TGj3g/UxqPa++BjABa6K22HBgWR31
-   ym05mROOBBmFFMd841C+nifesnZoRr87N5u/W+B/HAk/42SkD/0OZwDHQ
-   yfpsOD/89vVBh1Uxk4u/X/iBVtf8km4jIK63+CAFXzLp4/CAP6TbWhWf7
-   nowa4CWMxDl2x0kYe88tdzhAFyXAj3QZmT7LglHYQPYe++YyIJs1WvSlk
-   Oz3ingKaGHzAqiARmLvChKLYrar+r8coXb6uM/e8sbyouDpLyPOCA1qJn
-   kDiDqNZ8UatvsWMfWTA6lacXdU3ylwAaOk3YXPNWnLZHMxI0qcLDXLQ2e
-   g==;
-X-CSE-ConnectionGUID: +OdF6dRDTv652QICOYGp5A==
-X-CSE-MsgGUID: x5iLw7TrRFi2qzaQkm7aYQ==
-X-IronPort-AV: E=McAfee;i="6600,9927,11025"; a="17931530"
-X-IronPort-AV: E=Sophos;i="6.07,156,1708416000"; 
-   d="scan'208";a="17931530"
-Received: from orviesa004.jf.intel.com ([10.64.159.144])
-  by fmvoesa104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Mar 2024 11:06:07 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,156,1708416000"; 
-   d="scan'208";a="20744583"
-Received: from ls.sc.intel.com (HELO localhost) ([172.25.112.31])
-  by orviesa004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Mar 2024 11:06:06 -0700
-Date: Tue, 26 Mar 2024 11:06:05 -0700
-From: Isaku Yamahata <isaku.yamahata@intel.com>
-To: "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>
-Cc: "Yamahata, Isaku" <isaku.yamahata@intel.com>,
-	"Zhang, Tina" <tina.zhang@intel.com>,
-	"isaku.yamahata@linux.intel.com" <isaku.yamahata@linux.intel.com>,
-	"seanjc@google.com" <seanjc@google.com>,
-	"Huang, Kai" <kai.huang@intel.com>, "Chen, Bo2" <chen.bo@intel.com>,
-	"sagis@google.com" <sagis@google.com>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"Yuan, Hang" <hang.yuan@intel.com>,
-	"Aktas, Erdem" <erdemaktas@google.com>,
-	"kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-	"pbonzini@redhat.com" <pbonzini@redhat.com>,
-	"isaku.yamahata@gmail.com" <isaku.yamahata@gmail.com>
-Subject: Re: [PATCH v19 062/130] KVM: x86/tdp_mmu: Support TDX private
- mapping for TDP MMU
-Message-ID: <20240326180605.GC2444378@ls.amr.corp.intel.com>
-References: <cover.1708933498.git.isaku.yamahata@intel.com>
- <fc97847d04f2b469d8f4cfceee84c7ef055ab1ac.1708933498.git.isaku.yamahata@intel.com>
- <7b76900a42b4044cbbcb0c42922c935562993d1e.camel@intel.com>
- <20240325200122.GH2357401@ls.amr.corp.intel.com>
- <ad203761cf0f93e9feb4ea7037c9b9c1f39714ae.camel@intel.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=kK50oVYtPfUD32ggzQVnr5jom9F8HrsI6IkM+YAImGh4P1v2lSXELHQmE7Z4A4vDdXm0nlCm1qf0ZNQvqz5yrusmAUBPISmiY6NXEAg8Ss5pMWiY0PhAZCexxwEDfvLMj8ONlXOER4pVDw4vWN66dOlbkuTk8Ic4UWaMB8BW7uE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kNIeew0y; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 46F1DC433F1;
+	Tue, 26 Mar 2024 18:06:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1711476383;
+	bh=R+ckB3TYv6IwSf20f1+w+thE5azs2bxJD7LoIcuqpXs=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+	b=kNIeew0yhEd9NtCJTXqE5tv9mSD+gUCgCjmGZT6wPwtlUecV9zJPATOOjwkFd7FW9
+	 BBUNZMYoMtM5vbiaxqdBc5GHqIk0Jc1ZaHM30U37r0eDAcJwkP6roONUmq2ODCDhJk
+	 3l4AaBpRC7jSQ953fc/vDqJ5yJrUG813hNeKm8Sikx1+qbiL/KK4iNC/Z0R3uoDdzL
+	 1Qpy2pSx+KzjgS5aQPdbgAudcBejKTbDp0yt75O3eBzujZbuq7aiQdB2iA7rnPvk+z
+	 yNH2H4ca566y+6riRawOsPelRLv6NfMGAGasePf9pIRkI15oPeHGAD5+Z8NFXNmxas
+	 Km9TBNW00Mm5Q==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+	id C1D2CCE129B; Tue, 26 Mar 2024 11:06:22 -0700 (PDT)
+Date: Tue, 26 Mar 2024 11:06:22 -0700
+From: "Paul E. McKenney" <paulmck@kernel.org>
+To: Nikita Kiryushin <kiryushin@ancud.ru>
+Cc: Frederic Weisbecker <frederic@kernel.org>,
+	Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+	Joel Fernandes <joel@joelfernandes.org>,
+	Josh Triplett <josh@joshtriplett.org>,
+	Boqun Feng <boqun.feng@gmail.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Lai Jiangshan <jiangshanlai@gmail.com>,
+	Zqiang <qiang.zhang1211@gmail.com>, rcu@vger.kernel.org,
+	linux-kernel@vger.kernel.org, lvc-project@linuxtesting.org
+Subject: Re: [PATCH] rcu-tasks: Update show_rcu_tasks_trace_gp_kthread buffer
+ size
+Message-ID: <a6ad8ae1-40bf-41d0-a31c-30f4a5155b24@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <20240326174839.487582-1-kiryushin@ancud.ru>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <ad203761cf0f93e9feb4ea7037c9b9c1f39714ae.camel@intel.com>
+In-Reply-To: <20240326174839.487582-1-kiryushin@ancud.ru>
 
-On Mon, Mar 25, 2024 at 10:31:49PM +0000,
-"Edgecombe, Rick P" <rick.p.edgecombe@intel.com> wrote:
-
-> On Mon, 2024-03-25 at 13:01 -0700, Isaku Yamahata wrote:
-> >  Also, kvm_tdp_mmu_alloc_root() never returns non-zero, even though mmu_alloc_direct_roots() does.
-> > > Probably today when there is one caller it makes mmu_alloc_direct_roots() cleaner to just have
-> > > it
-> > > return the always zero value from kvm_tdp_mmu_alloc_root(). Now that there are two calls, I
-> > > think we
-> > > should refactor kvm_tdp_mmu_alloc_root() to return void, and have kvm_tdp_mmu_alloc_root()
-> > > return 0
-> > > manually in this case.
-> > > 
-> > > Or maybe instead change it back to returning an hpa_t and then kvm_tdp_mmu_alloc_root() can lose
-> > > the
-> > > "if (private)" logic at the end too.
-> > 
-> > Probably we can make void kvm_tdp_mmu_alloc_root() instead of returning always
-> > zero as clean up.
+On Tue, Mar 26, 2024 at 08:48:39PM +0300, Nikita Kiryushin wrote:
+> There is a possibility of buffer overflow in
+> show_rcu_tasks_trace_gp_kthread() if counters, passed
+> to sprintf() are huge. Counter numbers, needed for this
+> are unrealistically high, but buffer overflow is still
+> possible.
 > 
-> Why is it better than returning an hpa_t once we are calling it twice for mirror and shared roots.
-
-You mean split out "if (private)" from the core part? Makes sense.
-
-
-> > > >         } else if (shadow_root_level >= PT64_ROOT_4LEVEL) {
-> > > >                 root = mmu_alloc_root(vcpu, 0, 0, shadow_root_level);
-> > > > @@ -4627,7 +4632,7 @@ int kvm_tdp_page_fault(struct kvm_vcpu *vcpu, struct kvm_page_fault
-> > > > *fault)
-> > > >         if (kvm_mmu_honors_guest_mtrrs(vcpu->kvm)) {
-> > > >                 for ( ; fault->max_level > PG_LEVEL_4K; --fault->max_level) {
-> > > >                         int page_num = KVM_PAGES_PER_HPAGE(fault->max_level);
-> > > > -                       gfn_t base = gfn_round_for_level(fault->gfn,
-> > > > +                       gfn_t base = gfn_round_for_level(gpa_to_gfn(fault->addr),
-> > > >                                                          fault->max_level);
-> > > >  
-> > > >                         if (kvm_mtrr_check_gfn_range_consistency(vcpu, base, page_num))
-> > > > @@ -4662,6 +4667,7 @@ int kvm_mmu_map_tdp_page(struct kvm_vcpu *vcpu, gpa_t gpa, u64
-> > > > error_code,
-> > > >         };
-> > > >  
-> > > >         WARN_ON_ONCE(!vcpu->arch.mmu->root_role.direct);
-> > > > +       fault.gfn = gpa_to_gfn(fault.addr) & ~kvm_gfn_shared_mask(vcpu->kvm);
-> > > >         fault.slot = kvm_vcpu_gfn_to_memslot(vcpu, fault.gfn);
-> > > >  
-> > > >         r = mmu_topup_memory_caches(vcpu, false);
-> > > > @@ -6166,6 +6172,7 @@ static int __kvm_mmu_create(struct kvm_vcpu *vcpu, struct kvm_mmu *mmu)
-> > > >  
-> > > >         mmu->root.hpa = INVALID_PAGE;
-> > > >         mmu->root.pgd = 0;
-> > > > +       mmu->private_root_hpa = INVALID_PAGE;
-> > > >         for (i = 0; i < KVM_MMU_NUM_PREV_ROOTS; i++)
-> > > >                 mmu->prev_roots[i] = KVM_MMU_ROOT_INFO_INVALID;
-> > > >  
-> > > > @@ -7211,6 +7218,12 @@ int kvm_mmu_vendor_module_init(void)
-> > > >  void kvm_mmu_destroy(struct kvm_vcpu *vcpu)
-> > > >  {
-> > > >         kvm_mmu_unload(vcpu);
-> > > > +       if (tdp_mmu_enabled) {
-> > > > +               write_lock(&vcpu->kvm->mmu_lock);
-> > > > +               mmu_free_root_page(vcpu->kvm, &vcpu->arch.mmu->private_root_hpa,
-> > > > +                               NULL);
-> > > > +               write_unlock(&vcpu->kvm->mmu_lock);
-> > > 
-> > > What is the reason for the special treatment of private_root_hpa here? The rest of the roots are
-> > > freed in kvm_mmu_unload(). I think it is because we don't want the mirror to get freed during
-> > > kvm_mmu_reset_context()?
-> > 
-> > It reflects that we don't free Secure-EPT pages during runtime, and free them
-> > when destroying the guest.
+> Update used buffer size for maximum needed size for
+> current format string.
 > 
-> Right. If would be great if we could do something like warn on freeing role.private = 1 sp's during
-> runtime. It could cover several cases that get worried about in other patches.
-
-Ok, let me move it to kvm_mmu_unload() and try to sprinkle warn-on.
-
-
-> While looking at how we could do this, I noticed that kvm_arch_vcpu_create() calls kvm_mmu_destroy()
-> in an error path. So this could end up zapping/freeing a private root. It should be bad userspace
-> behavior too I guess. But the number of edge cases makes me think the case of zapping private sp
-> while a guest is running is something that deserves a VM_BUG_ON().
-
-Let me clean the code.  I think we can clean them up.
-
-
-> > > Oof. For the sake of trying to justify the code, I'm trying to keep track of the pros and cons
-> > > of
-> > > treating the mirror/private root like a normal one with just a different role bit.
-> > > 
-> > > The whole “list of roots” thing seems to date from the shadow paging, where there is is critical
-> > > to
-> > > keep multiple cached shared roots of different CPU modes of the same shadowed page tables. Today
-> > > with non-nested TDP, AFAICT, the only different root is for SMM. I guess since the machinery for
-> > > managing multiple roots in a list already exists it makes sense to use it for both.
-> > > 
-> > > For TDX there are also only two, but the difference is, things need to be done in special ways
-> > > for
-> > > the two roots. You end up with a bunch of loops (for_each_*tdp_mmu_root(), etc) that essentially
-> > > process a list of two different roots, but with inner logic tortured to work for the
-> > > peculiarities
-> > > of both private and shared. An easier to read alternative could be to open code both cases.
-> > > 
-> > > I guess the major benefit is to keep one set of logic for shadow paging, normal TDP and TDX, but
-> > > it
-> > > makes the logic a bit difficult to follow for TDX compared to looking at it from the normal
-> > > guest
-> > > perspective. So I wonder if making special versions of the TDX root traversing operations might
-> > > make
-> > > the code a little easier to follow. I’m not advocating for it at this point, just still working
-> > > on
-> > > an opinion. Is there any history around this design point?
-> > 
-> > The original desire to keep the modification contained, and not introduce a
-> > function for population and zap.  With the open coding, do you want something
-> > like the followings?  We can try it and compare the outcome.
-> > 
-> > For zapping
-> >   if (private) {
-> >      __for_each_tdp_mmu_root_yield_safe_private()
-> >        private case
-> >   } else {
-> >      __for_each_tdp_mmu_root_yield_safe()
-> >         shared case
-> >   }
-> > 
-> > For fault,
-> > kvm_tdp_mmu_map()
-> >   if (private) {
-> >     tdp_mmu_for_each_pte_private(iter, mmu, raw_gfn, raw_gfn + 1)
-> >       private case
-> >   } else {
-> >     tdp_mmu_for_each_pte_private(iter, mmu, raw_gfn, raw_gfn + 1)
-> >       shared case
-> >   }
+> Found by Linux Verification Center (linuxtesting.org) with SVACE.
 > 
-> I was wondering about something limited to the operations that iterate over the roots. So not
-> keeping private_root_hpa in the list of roots where it has to be carefully protected from getting
-> zapped or get its gfn adjusted, and instead open coding the private case in the higher level zapping
-> operations. For normal VM's the private case would be a NOP.
-> 
-> Since kvm_tdp_mmu_map() already grabs private_root_hpa manually, it wouldn't change in this idea. I
-> don't know how much better it would be though. I think you are right we would have to create them
-> and compare. 
+> Fixes: edf3775f0ad6 ("rcu-tasks: Add count for idle tasks on offline CPUs")
+> Signed-off-by: Nikita Kiryushin <kiryushin@ancud.ru>
 
-Given the large page support gets complicated, it would be worthwhile to try,
-I think.
--- 
-Isaku Yamahata <isaku.yamahata@intel.com>
+Good catch!  Applied for testing and further review.
+
+							Thanx, Paul
+
+> ---
+>  kernel/rcu/tasks.h | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
+> index 147b5945d67a..13ac514489c0 100644
+> --- a/kernel/rcu/tasks.h
+> +++ b/kernel/rcu/tasks.h
+> @@ -1992,7 +1992,7 @@ static int __init rcu_spawn_tasks_trace_kthread(void)
+>  #if !defined(CONFIG_TINY_RCU)
+>  void show_rcu_tasks_trace_gp_kthread(void)
+>  {
+> -	char buf[64];
+> +	char buf[87];
+>  
+>  	sprintf(buf, "N%lu h:%lu/%lu/%lu",
+>  		data_race(n_trc_holdouts),
+> -- 
+> 2.34.1
+> 
 
