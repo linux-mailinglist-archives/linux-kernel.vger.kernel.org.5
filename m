@@ -1,55 +1,68 @@
-Return-Path: <linux-kernel+bounces-119505-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-119506-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6FCB988C9BF
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 17:49:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 4A99F88C9C2
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 17:49:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2A3C1321434
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 16:49:13 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 04BCD323194
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 16:49:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CC0AC1C6BB;
-	Tue, 26 Mar 2024 16:47:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0C06E1CFBE;
+	Tue, 26 Mar 2024 16:48:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GsBNkVxy"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="sjbBzDRz"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 19FE517C6C;
-	Tue, 26 Mar 2024 16:47:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2FAF81CF8B;
+	Tue, 26 Mar 2024 16:48:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711471678; cv=none; b=ljekaWX7mwl3+6wqU5h/osNLBQWuk2A6xnu3K9J6bvjEWwKxtEK2hG7Yiot3/dEnm88hX9gnv6nAY26nBwxq3+ku8XlOGXJ7gaSvGH9IWIxWbu9Oj0S9UrYpPIkOa/4tbx4JzOgikjmnswXPtmY81fO09ag3gVve3HoDkjKDrV8=
+	t=1711471707; cv=none; b=UzT1aASCCd8ngyab4y9HgOTbhkrdJWJFfeP8Vae3CvwapcjuHQN3GJgRiUC7OV0g4s2dfPdcUR5/UQcE3VC+VpFq2r2JyOeroQY9BNQgdexkfcr4d7rqVvxm3eWBkEFPlFObdWmwbinpvwgUynZplwAfOWUJzJ5HIip+/JNMGaU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711471678; c=relaxed/simple;
-	bh=YEWSItngtZtSn6YzsyAmXAncFmLGbQet0N0nNxxkTbw=;
+	s=arc-20240116; t=1711471707; c=relaxed/simple;
+	bh=AipqUP+M7Jnwp/SDpZmvtbFJFIMal7zQuQnaopnS11Q=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=N+Ta46iQiNweHMaakmhhheg33FeJi4lKk7Dp/fuSWaLbO2m+YacZytk9S2/wq2w0stf2F0bmZfYWmHiHsV9CLq0Y9V6Urxn+87pgiqeWeAEXMYVsVVTT+XcSxg+gae8tP/dWFRqm5BSwhKWYizyFmbeuvHuCF4XlZ3xrbzaYrAM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=GsBNkVxy; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 72050C433C7;
-	Tue, 26 Mar 2024 16:47:57 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=bYBou/lNnm9bpK3tHvBEeqQVwqFUiEsF4/7cdhmuu+Et9Lnwq+SKegeknecPLWoD/cJlPGACirBDxcZq/sJQBL3hj6TD8WhfowaG2hj+W0enGyGZFzwu/DlaVLcqQ51peXW3ipGhOu9sIRoOkyceJuUM9nFDQ5MxANOu7ML0ZFw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=sjbBzDRz; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 930D6C43399;
+	Tue, 26 Mar 2024 16:48:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711471677;
-	bh=YEWSItngtZtSn6YzsyAmXAncFmLGbQet0N0nNxxkTbw=;
+	s=k20201202; t=1711471705;
+	bh=AipqUP+M7Jnwp/SDpZmvtbFJFIMal7zQuQnaopnS11Q=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=GsBNkVxyCJewwHQBer/ntQVvTwAoLpDeWXg8Nm6vLTXD7gIp9Ko2YpDW9hv/UlVlo
-	 kUx5S2xAS9jrdS707aVXb3iSK84iDoMHKS05+xNcTN3Rc4GgFH0Owu2YYLSF3quON2
-	 4s6I3oEAbnad0R1j56paUY49WPO7xdtcJBHHGZk9M1WLZR+c6N3T89KTYqr8fw0qGi
-	 O/vlqEkSZH2X6059V7LO/1G+ftUMNL5152km04iSYaQgPpJbmdoGq9AfV4qMg/XEHx
-	 GhJOMADaVg/T2uEAVHdV6vCde/43cFgqdf4HGuiVY2Umc9g3JsQAH/WK5yCX5ac2Am
-	 sM56/1IPTWJ6Q==
-Date: Tue, 26 Mar 2024 09:47:55 -0700
-From: Eric Biggers <ebiggers@kernel.org>
-To: Ard Biesheuvel <ardb@kernel.org>
-Cc: linux-crypto@vger.kernel.org, x86@kernel.org,
-	linux-kernel@vger.kernel.org, Andy Lutomirski <luto@kernel.org>,
-	"Chang S . Bae" <chang.seok.bae@intel.com>
-Subject: Re: [PATCH 0/6] Faster AES-XTS on modern x86_64 CPUs
-Message-ID: <20240326164755.GB1524@sol.localdomain>
-References: <20240326080305.402382-1-ebiggers@kernel.org>
- <CAMj1kXH4fNevFzrbazJptadxh_spEY3W91FZni5eMqD+UKrSUQ@mail.gmail.com>
+	b=sjbBzDRzMkrc7jIyMo6ZXxhi0Pwi0Yzei7P3Ps+hJ8/LEK0nxJJ9qDfkKfsD95/U7
+	 JPfhqGzZxNk74NoC+nefc9MsXe2Pwhh2MXbOStO9ZSCxCWFFOwEsVWAVbeYE3h4lvt
+	 6TqvFn8yNaPv0oVy7mVO48vMyVbcjCjbH9fAjXXZOU1I/TLm362cCZmkDc9iu4v+GR
+	 pzFjGjg++fc8G25DBOmreUpSDlsMEDYq0kDUB7PMLNhaHElz5Rz/E68pYcuBzcBuBl
+	 HTiB3zHw7d/D9Hpd1EUEe0lwtZivw4gFON2LjlR58Iu2Szlq5R8uVmV1LFwwnkznJ1
+	 UWLCQ5N9MrjmQ==
+Received: from johan by xi.lan with local (Exim 4.97.1)
+	(envelope-from <johan@kernel.org>)
+	id 1rp9yU-000000006ed-0dnM;
+	Tue, 26 Mar 2024 17:48:34 +0100
+Date: Tue, 26 Mar 2024 17:48:34 +0100
+From: Johan Hovold <johan@kernel.org>
+To: Krzysztof Kozlowski <krzk@kernel.org>
+Cc: Johan Hovold <johan+linaro@kernel.org>,
+	Bjorn Andersson <andersson@kernel.org>,
+	Konrad Dybcio <konrad.dybcio@linaro.org>,
+	Michael Turquette <mturquette@baylibre.com>,
+	Stephen Boyd <sboyd@kernel.org>, Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>, Mark Brown <broonie@kernel.org>,
+	Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+	linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/5] arm64: dts: qcom: sa8540p: use sa8540p gpucc
+ compatible
+Message-ID: <ZgL8YnTEKjf83WdO@hovoldconsulting.com>
+References: <20240326140108.21307-1-johan+linaro@kernel.org>
+ <20240326140108.21307-3-johan+linaro@kernel.org>
+ <af7ef0d4-031d-42ac-aad5-c8ce86deff96@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -58,68 +71,54 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAMj1kXH4fNevFzrbazJptadxh_spEY3W91FZni5eMqD+UKrSUQ@mail.gmail.com>
+In-Reply-To: <af7ef0d4-031d-42ac-aad5-c8ce86deff96@kernel.org>
 
-On Tue, Mar 26, 2024 at 10:51:48AM +0200, Ard Biesheuvel wrote:
-> > Open questions:
-> >
-> > - Is the policy that I implemented for preferring ymm registers to zmm
-> >   registers the right one?  arch/x86/crypto/poly1305_glue.c thinks that
-> >   only Skylake has the bad downclocking.  My current proposal is a bit
-> >   more conservative; it also excludes Ice Lake and Tiger Lake.  Those
-> >   CPUs supposedly still have some downclocking, though not as much.
-> >
-> > - Should the policy on the use of zmm registers be in a centralized
-> >   place?  It probably doesn't make sense to have random different
-> >   policies for different crypto algorithms (AES, Poly1305, ARIA, etc.).
-> >
-> > - Are there any other known issues with using AVX512 in kernel mode?  It
-> >   seems to work, and technically it's not new because Poly1305 and ARIA
-> >   already use AVX512, including the mask registers and zmm registers up
-> >   to 31.  So if there was a major issue, like the new registers not
-> >   being properly saved and restored, it probably would have already been
-> >   found.  But AES-XTS support would introduce a wider use of it.
-> >
+On Tue, Mar 26, 2024 at 05:02:43PM +0100, Krzysztof Kozlowski wrote:
+> On 26/03/2024 15:01, Johan Hovold wrote:
+> > The SA8540P platform is closely related to SC8280XP but differs in that
+> > it uses an external supply for the GX power domain.
+> > 
+> > Use the new SA8540P compatible string for the GPU clock controller so
+> > that the OS can determine which resources to look for.
+> > 
+> > Note that a fallback SC8280XP compatible is added temporarily to avoid
+> > any temporary regressions for sa8295p-adp.
+> > 
+> > Fixes: fd5821a1a83c ("arm64: dts: qcom: sa8540p: Drop gfx.lvl as power-domain for gpucc")
+> > Signed-off-by: Johan Hovold <johan+linaro@kernel.org>
+> > ---
+> >  arch/arm64/boot/dts/qcom/sa8540p.dtsi | 2 ++
+> >  1 file changed, 2 insertions(+)
+> > 
+> > diff --git a/arch/arm64/boot/dts/qcom/sa8540p.dtsi b/arch/arm64/boot/dts/qcom/sa8540p.dtsi
+> > index 23888029cc11..3b31a9ea3492 100644
+> > --- a/arch/arm64/boot/dts/qcom/sa8540p.dtsi
+> > +++ b/arch/arm64/boot/dts/qcom/sa8540p.dtsi
+> > @@ -168,6 +168,8 @@ opp-2592000000 {
+> >  };
+> >  
+> >  &gpucc {
+> > +	compatible = "qcom,sa8540p-gpucc", "qcom,sc8280xp-gpucc";
 > 
-> I don't have much input here, except that I think we should just
-> disable AVX512 kernel-wide on systems where there is no benefit in
-> terms of throughput. I suspect this might change with algorithms that
-> rely more heavily on the masking, but so far, we have been making
-> quite effective use of simple permute vectors and overlapping loads
-> and stores to do the same. And as Eric points out, the only relevant
-> use case in the kernel is blocks of size 2^n where n is at least 9.
+> This introduces new dtbs_check failures. Please fix the binding and drop
+> the last patch in the series.
 
-There are several benefits to AVX512 besides the 512-bit zmm registers.  Besides
-masking, there are also twice as many SIMD registers which make it possible to
-cache all the AES round keys.  There are also other new instructions such as
-vpternlogd which I've used in AES-XTS to XOR values together more efficiently.
+I know, and this is done on purpose.
 
-That's why this patchset adds both xts-aes-vaes-avx10_256 and
-xts-aes-vaes-avx10_512.  And I've adopted the new "AVX10" naming, maybe a bit
-early, to emphasize that it's not just about 512-bit...
+I doubt anyone cares if the sa8295p GPU breaks for one commit in case
+this series goes in through the same tree or even for a couple of RCs in
+case they go in through separate trees.
 
-Consider Intel Ice Lake for example, these are the AES-256-XTS encryption speeds
-on 4096-byte messages in MB/s I'm seeing:
+But we recently had a similar discussion about a bluetooth fix and
+whatever course of action I would have chosen here, someone is bound to
+whine.
 
-    xts-aes-aesni                  5136
-    xts-aes-aesni-avx              5366
-    xts-aes-vaes-avx2              9337
-    xts-aes-vaes-avx10_256         9876
-    xts-aes-vaes-avx10_512         10215
+In this case I figured it was worth doing the extra work. But this is
+just a temporary workaround as "qcom,sa8540p-gpucc" is not truly
+compatible with "qcom,sc8280xp-gpucc" as only the former depends on the
+external supply.
 
-So yes, on that CPU the biggest boost comes just from VAES, staying on AVX2.
-But taking advantage of AVX512 does help a bit more, first from the parts other
-than 512-bit registers, then a bit more from 512-bit registers.
+Heck, I even spelled it out in the commit message...
 
-I do have Ice Lake on the exclusion list from xts-aes-vaes-avx10_512 anyway,
-since the concern with downclocking is not really about the performance of the
-code itself but rather the impact on unrelated code running on the CPU.
-
-And I *think* the right policy is to just disable the use of the zmm registers,
-as opposed to AVX512 entirely.  As AVX512 was originally presented it did tie
-these together, but they don't have to be.  AVX10 (which supposedly future
-x86_64 CPUs will have) explicitly moves away from that by repackaging the
-existing AVX512 features and making the zmm registers optional.
-
-- Eric
+Johan
 
