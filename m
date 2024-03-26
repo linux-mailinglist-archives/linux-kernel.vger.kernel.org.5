@@ -1,180 +1,127 @@
-Return-Path: <linux-kernel+bounces-119577-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-119572-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D284A88CAA0
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 18:22:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 016CB88CA91
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 18:18:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1045DB265B2
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 17:22:12 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 720FCB23F55
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 17:18:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 96B161CF8F;
-	Tue, 26 Mar 2024 17:22:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C2FF61C6B5;
+	Tue, 26 Mar 2024 17:18:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BhtthlM9"
-Received: from mail-qk1-f176.google.com (mail-qk1-f176.google.com [209.85.222.176])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="iUEVgwaR"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5BA671C6B0;
-	Tue, 26 Mar 2024 17:22:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1382E1C2AF;
+	Tue, 26 Mar 2024 17:18:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711473721; cv=none; b=pZWhtrWJS6mNechfSM7/672boc9CAdKClMxU61Z6DiqFDFwZwQ3DmiZRER8RqHl2slzZ+ANusPtjZ+T3XdkJa3ZWOXkO25v+UmBKeuy1ZCRnFf4o3QGcrCuXUyTm8ywwb1tPaABQN2vpGtklb/bwAo9jTLpWQg45BwzYirepzd0=
+	t=1711473524; cv=none; b=X4iT7aTpVlgiOIpMMC7GxGpaIKhOefAQYZyYEWbX4bbBPBSLSmn7OPlhbAhWx7YD1StRoLlvN7+G2m73EdOQrHY+VaklcWKkjJ2xRORzIWldUFemuRSLA2SuTr3KbZXzDE8RXOdGHvfz1yzFoY30ywFpOc48/mFucT7t5dfsm6s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711473721; c=relaxed/simple;
-	bh=jZd3DMYTrkPjgcF+GXb0XDthojSFtmH0ibUcyxTWHgU=;
+	s=arc-20240116; t=1711473524; c=relaxed/simple;
+	bh=OELWXVXqN2pN+dBq4GD1HVskjaEZn6Buw4ZbYGID18o=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=snF8vsuxekFQR7TjUodmvzzJMWrhiNYJVzJI+SW6NUEktP5g8cn8Fjiyl+cdZDxe9i41H9EFzSE3MtAx8F1pr3V1Ic94xb2LvgYUZ70IyoaSkPW1sitzThJLdWlSbFt4qQHWH3LRPpVc3rZ4IMl78uGmjuVrVkn34VhEhZu0z3g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=BhtthlM9; arc=none smtp.client-ip=209.85.222.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qk1-f176.google.com with SMTP id af79cd13be357-789db917876so351186285a.1;
-        Tue, 26 Mar 2024 10:22:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711473719; x=1712078519; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:feedback-id:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=7T5hEhkUDazJ47kggL6Q/TiVuUfZy8/rH8kDSRQfdQM=;
-        b=BhtthlM9bFY0vBOiLrF4eyxTrmb8l8V0AnhjaCENBIkCfmjQ1lxZvhkc8yaZXPauHA
-         JhIzfG48RqvECKlNPG94CXXU8BAi0IqhGTlWd8n9LlrW6f+cDmX4jq4f4z+WTy5tJ8DW
-         TYkBlfKMGdkvDLTFr2Eq/coBguHA+Ojez0VJuthMz8IgU1RuJgMdQtETQD0amaA4+Hd0
-         jhXFLLh/ymKCUGLKc7vsawOLLAzQ/E4lGWl6UOx3rccqN48aNfag2t3anSm6FZed2A9o
-         ZFigZ+Im+/BrG20iO8Ug47vgj770XEFRs+cUEFzsL4m8zF8y/hJ9R5jzg2WtkSgJPmwp
-         Qo3w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711473719; x=1712078519;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:feedback-id:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=7T5hEhkUDazJ47kggL6Q/TiVuUfZy8/rH8kDSRQfdQM=;
-        b=U5avNB5vmvQLsccnF6ZJ+F6dR5nT8cbj/a6MKlNo7mO7FUu1/oYIBWXK6/pXEWbP8s
-         cc6DUYkAnwWcMM9aUXofe7xCysI1brSxD2e2DpRZ6GZH7IH+W9Aut+55OB46aRZHxeuf
-         MBVRFp2+9iMu5OXWOpw9kAMWEkIIaD1SjcN62ABpv6R0omeKu2NL6rVIsIsBUeF/A3GG
-         7U8iR8yyzXVwMAsXtQbUlqSoVHuZ8n6RfBZYFGuWhy3ZBQrpSQgiwJHisXpl05P8HUNo
-         tAX5x7fhMNTG6K9yGsI6lMOrkXsXOH+pyaefedpc9E5VeCMvGssbTnnynzJChhEl00cs
-         Nchw==
-X-Forwarded-Encrypted: i=1; AJvYcCX+KpG1HlkdsYPmGeJit/5WsM+e9Jnq1OFC2xxtsLE/XEYp4e4Zy0UUuZ/cYs6Eu1CGQsvnpxOlMhlcKDZikj6fIzWgfhItdgUxQdwr
-X-Gm-Message-State: AOJu0YzFeq4J/bu3vbp6OX5vP1mLzl+SFZdC5kRd2xweuOh410BbFQsG
-	L0vpDBScOYIxj2VCd62QhRt8Mpw0dXT9h43/AKKh9cnJ5prP2aRc
-X-Google-Smtp-Source: AGHT+IHCXG3xzMmTxa1DKywKi/TlD+cjAa+sCSpdtV87oMnu6QfzR/ctvgMOWc4Gnxx9Tm2lFypRmQ==
-X-Received: by 2002:ae9:f714:0:b0:78a:2900:418e with SMTP id s20-20020ae9f714000000b0078a2900418emr1875997qkg.60.1711473718776;
-        Tue, 26 Mar 2024 10:21:58 -0700 (PDT)
-Received: from fauth2-smtp.messagingengine.com (fauth2-smtp.messagingengine.com. [103.168.172.201])
-        by smtp.gmail.com with ESMTPSA id z22-20020ae9c116000000b0078a68410731sm415879qki.25.2024.03.26.10.21.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Mar 2024 10:21:58 -0700 (PDT)
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-	by mailfauth.nyi.internal (Postfix) with ESMTP id 82FE71200074;
-	Tue, 26 Mar 2024 13:17:47 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute5.internal (MEProxy); Tue, 26 Mar 2024 13:17:47 -0400
-X-ME-Sender: <xms:OwMDZhf4NHW2bPRgdqYgkYnpi9VUXwdo3aonn5pXf16BIqGgiLkWew>
-    <xme:OwMDZvNnnG3QsB03Z1_5315VZz2dXn4xqrKy81PCULIbMnr20BmIvczZQUOYHXhaa
-    4dZMFlCHMditpspDQ>
-X-ME-Received: <xmr:OwMDZqjsYLYXwNwBAglwBsyW-y4ZYALaEvbOYlQvvJbNNAMg1uvEY3hycTqv9Q>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledruddufedgleelucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvfevuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepuehoqhhu
-    nhcuhfgvnhhguceosghoqhhunhdrfhgvnhhgsehgmhgrihhlrdgtohhmqeenucggtffrrg
-    htthgvrhhnpeehudfgudffffetuedtvdehueevledvhfelleeivedtgeeuhfegueeviedu
-    ffeivdenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
-    gsohhquhhnodhmvghsmhhtphgruhhthhhpvghrshhonhgrlhhithihqdeiledvgeehtdei
-    gedqudejjeekheehhedvqdgsohhquhhnrdhfvghngheppehgmhgrihhlrdgtohhmsehfih
-    igmhgvrdhnrghmvg
-X-ME-Proxy: <xmx:OwMDZq8fp9u8t8n2pUdXNVvl0DFquFdAT7-UtY7LtZyPZPKyWDCl3w>
-    <xmx:OwMDZtt7N-D2WskEQ2GtlkJO80VYP_f5W_QHK1hPFNciwsnnucjS2g>
-    <xmx:OwMDZpEasenjjFejRwZKKT3HsNk8f146m-6Ks22DCYvZ1Tqzoec0bQ>
-    <xmx:OwMDZkMnkEzL7nLxu322eP9bmJpOi9FdUGVtpyZaJag6x4NRBiBQxw>
-    <xmx:OwMDZtPvLxTyr19lAIPRkHuMbDMCFNe3XXl_t0DDSfeMRTcWXq1gbDvSpRc>
-Feedback-ID: iad51458e:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
- 26 Mar 2024 13:17:46 -0400 (EDT)
-Date: Tue, 26 Mar 2024 10:17:13 -0700
-From: Boqun Feng <boqun.feng@gmail.com>
-To: Benno Lossin <benno.lossin@proton.me>
-Cc: rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org,
+	 Content-Type:Content-Disposition:In-Reply-To; b=ecXK5D599gnJxmHXxpHSGPzLz0ecBoONOt+ctHL9x8pnO354cp2GJlhw+DrsVqurAp4guw0rN1dIAZBcurZfJuKtreK0KtFUKLt4kmS9xp0F8yU+jb83Xom9WCWjF2KPnq6GbtJaBvYqs2n3LbN+/r1fNdBpZA4CSr8JXNU6V5c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=iUEVgwaR; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 34370C433F1;
+	Tue, 26 Mar 2024 17:18:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1711473523;
+	bh=OELWXVXqN2pN+dBq4GD1HVskjaEZn6Buw4ZbYGID18o=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=iUEVgwaRX6aZT96UVqp/fsF/1hcY/RgzUvzjtwC5cX1+hGXneR17p20DLXj0hIRXg
+	 v8K42vdYEcJFrPhrvT/0JqQW14LJn43VfImA/3ZCK2r4vGCxporMdRwsik+G0BL58Z
+	 iOQT+Od3cOvcfCS2sh8ciYDevDXN74aV/3iCSu8tcRcsFDg/Ixrxp+1EmpSVSnpgHb
+	 KCCYBndtAMg4d6OV6dJI2ZyxCyBW269zKSgNY0KEAAFDHerUHeB2/t9WuwNn3tcKeg
+	 8GMeJdJj+41O5Y/16Za6KQ7TLfqj35YX2B1NwWkueaDev+Qp+FJ2dlOz9ZlGVHxLb/
+	 Z2c32NPbyiKuw==
+Date: Tue, 26 Mar 2024 18:18:40 +0100
+From: Frederic Weisbecker <frederic@kernel.org>
+To: Anna-Maria Behnsen <anna-maria@linutronix.de>
+Cc: Boqun Feng <boqun.feng@gmail.com>,
+	Florian Fainelli <f.fainelli@gmail.com>,
 	Thomas Gleixner <tglx@linutronix.de>,
-	Alice Ryhl <aliceryhl@google.com>, Miguel Ojeda <ojeda@kernel.org>,
-	Alex Gaynor <alex.gaynor@gmail.com>,
-	Wedson Almeida Filho <wedsonaf@gmail.com>,
-	Gary Guo <gary@garyguo.net>,
-	=?iso-8859-1?Q?Bj=F6rn?= Roy Baron <bjorn3_gh@protonmail.com>,
-	Andreas Hindborg <a.hindborg@samsung.com>,
-	John Stultz <jstultz@google.com>, Stephen Boyd <sboyd@kernel.org>,
-	Valentin Obst <kernel@valentinobst.de>
-Subject: Re: [PATCH 2/5] rust: time: Introduce Duration type
-Message-ID: <ZgMDGYMj7V50PZbP@boqun-archlinux>
-References: <20240324223339.971934-1-boqun.feng@gmail.com>
- <20240324223339.971934-3-boqun.feng@gmail.com>
- <4hYJbftgOk1JOPbJ6CfKZell6ngp8GljwIUIB1vOQvIf-7jiogG5xDtCvcMlF7cIJAdy9fO5HLQh_8ohnWNB3MAaj0xjAGeyyDowemgunOU=@proton.me>
- <ZgMBqzv0r98_EGGR@boqun-archlinux>
+	"Russell King (Oracle)" <linux@armlinux.org.uk>,
+	Joel Fernandes <joel@joelfernandes.org>,
+	Linus Torvalds <torvalds@linux-foundation.org>,
+	linux-kernel@vger.kernel.org, kernel-team@meta.com,
+	paulmck@kernel.org, mingo@kernel.org, rcu@vger.kernel.org,
+	neeraj.upadhyay@amd.com, urezki@gmail.com,
+	qiang.zhang1211@gmail.com, bigeasy@linutronix.de,
+	chenzhongjin@huawei.com, yangjihong1@huawei.com,
+	rostedt@goodmis.org, Justin Chen <justin.chen@broadcom.com>
+Subject: Re: [PATCH] timer/migration: Remove buggy early return on
+ deactivation [was Re: Unexplained long boot delays [Was Re: [GIT PULL] RCU
+ changes for v6.9]]
+Message-ID: <ZgMDcGOagCjfIB3i@localhost.localdomain>
+References: <f4a2a18c-1c81-4857-a3a0-d049ec5c79b3@gmail.com>
+ <ZfLUU+XuQC7W79tf@lothringen>
+ <d6c8e4fe-17bf-443d-a6f5-54470390e1fd@gmail.com>
+ <ZfNHNvzpqf8DOZd8@boqun-archlinux>
+ <de038bee-cecd-4e76-b0f4-5822b68e439d@gmail.com>
+ <87v85olez3.ffs@tglx>
+ <87sf0sldbi.ffs@tglx>
+ <ZfN0wY41pU5UjP8T@boqun-archlinux>
+ <ZfOhB9ZByTZcBy4u@lothringen>
+ <87zfulrlnn.fsf@somnus>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <ZgMBqzv0r98_EGGR@boqun-archlinux>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <87zfulrlnn.fsf@somnus>
 
-On Tue, Mar 26, 2024 at 10:11:07AM -0700, Boqun Feng wrote:
-[...]
-> > > +impl Duration {
-> > > +    /// Creates a new duration of `ns` nanoseconds.
-> > > +    pub const fn new(ns: i64) -> Self {
-> > > +        Self { inner: ns }
-> > > +    }
-> > > +
-> > > +    /// Divides the number of nanoseconds by a compile-time constant.
-> > > +    #[inline]
-> > > +    fn divns_constant<const DIV: i64>(self) -> i64 {
-> > > +        self.to_ns() / DIV
-> > > +    }
-> > 
-> > I am a bit confused, why is this better than writing
-> > `self.to_ns() / DIV` at the callsite?
-> > 
+Le Tue, Mar 26, 2024 at 05:41:00PM +0100, Anna-Maria Behnsen a écrit :
+> Frederic Weisbecker <frederic@kernel.org> writes:
+> Now propagation goes on as GRP0:0 is completely idle. When executing
+> tmigr_update_events() in the next step of walking the hierarchy via
+> tmigr_inactive_up(), the arguments for tmigr_update_events() are set in
+> the following way:
 > 
-> Hmm.. you're right, there should be no difference I think. If there is
-> nothing I'm missing from Alice, I will drop this function in the next
-> version.
+>   group = GRP1:0
+>   child = GRP0:0
 > 
-
-On a second thought, I think this prevents accidentally divide a
-non-const value, in other words, if you use this function, you're
-guaranteed the divisor is a constant, and you have the compiler checking
-that for you. So in that sense, I think it makes sense to remain it
-here. Thoughts?
-
-Regards,
-Boqun
-
-> Regards,
-> Boqun
+> Then at the begin of tmigr_update_events() the group event of child is
+> updated - so all ignored events are removed (T0i), and the
+> child->groupevt and child->next_expiry is updated with T1. This
+> reevaluated child->groupevt is then queued/updated in the GRP1:0
+> timerqueue.
 > 
-> > -- 
-> > Cheers,
-> > Benno
-> > 
-> > > +
-> > > +    /// Returns the number of milliseconds.
-> > > +    #[inline]
-> > > +    pub fn to_ms(self) -> i64 {
-> > > +        self.divns_constant::<NSEC_PER_MSEC>()
-> > > +    }
-> > > +
-> > > +    /// Returns the number of nanoseconds.
-> > > +    #[inline]
-> > > +    pub fn to_ns(self) -> i64 {
-> > > +        self.inner
-> > > +    }
-> > > +}
-> > > --
-> > > 2.44.0
-> > >
+> So T1 will be handled!
+> 
+> As there is no parent, the top level group event is updated (see goto
+> label "check_toplvl") and T1 will be still the first event.
+
+Bah! Good point, I got confused there...
+
+> 
+> > Fix those issues with removing the buggy related early return. Ignored
+> > child events must not prevent from evaluating the other events within
+> > the same group.
+> 
+> I would prefere to keep this early return but skip it, when there is
+> !group->parent (only a single level in hierarchy).
+> 
+> Then it would prevent taking the group lock and making some random
+> event updates which are done nevertheless on the next iteration of the
+> hierarchy walk.
+
+Ok sounds like a good plan!
+
+Thanks.
+
+> 
+> Thanks,
+> 
+> 	Anna-Maria
+> 
 
