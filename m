@@ -1,95 +1,149 @@
-Return-Path: <linux-kernel+bounces-119836-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-119837-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 35FE388CD89
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 20:51:49 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 33DF888CD8D
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 20:52:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C8A3C1F656D0
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 19:51:48 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 82F7EB26DCB
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 19:52:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD0F013D264;
-	Tue, 26 Mar 2024 19:51:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C050813D267;
+	Tue, 26 Mar 2024 19:52:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="sKhd/i7w"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="WFHEfosP"
+Received: from mail-wr1-f52.google.com (mail-wr1-f52.google.com [209.85.221.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 09EFC13D257;
-	Tue, 26 Mar 2024 19:51:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6887913D258;
+	Tue, 26 Mar 2024 19:52:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711482702; cv=none; b=lP7Qh4FKMZ9+a/YWuXahlt+zufJzhlYbdrlKw39t91t8/s+WOuA5kYBWo+bDrAmVe9kUfw+GGbByxbUorog0UwiTUmS+wSXZJwM0nj4ag2eEQIfxmmrlPFUtUDSz4wIA9Sk2wLhEj2XK1VuycaH41vmS0A2TSieFrThownkiko4=
+	t=1711482728; cv=none; b=DE+A42wSIlxUN6c9hhAy0m3RWadROXlaMve7Q7/xHizTwzoXH4RMF9YM3mSiQdTlB+xNj+z+on17l1Q2+oYX17VghBwg6+9nCrnOFZI3hlcmvB0z9ruvp37mM2YZa086t1Ahpn7S6hmJTHzZeQbAg87LaogoMjJoNDejZNoMels=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711482702; c=relaxed/simple;
-	bh=ycn7m5+Y1yqT01wW1VBhckmXFIg2FrPiycGxeCyYLwE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=fW1arREOQYQyc0He3sIekctjJWt3TsdZjRQs4aULulxHnoHvB9rr68JHTqDRRqraY8bYwWxtV+tJDobKZaB3PBznlo5WXiV7aK15U9xr46UT8E5KF96d4imKBcJpwAfTBVghfegMh65zsZQzj9rNWVcva4mw0yptRVBjaK6mVSo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=sKhd/i7w; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A7C90C433F1;
-	Tue, 26 Mar 2024 19:51:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711482701;
-	bh=ycn7m5+Y1yqT01wW1VBhckmXFIg2FrPiycGxeCyYLwE=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=sKhd/i7w+8O5jpsyi05lySsnIG1OdJZkk4WTlVGUf8iDkQD6O5ygMdWW/8NBm9zgD
-	 juZwdzTieRSjFjdeAELk55dV4sae6hAFO1GJ+3AQPF3BWhy6G3EukMybwiIHYNl+67
-	 SvdrFt1jYkM96YhDN4v7pyZaFCtyE6nBzygMadhareDR9ooady4wvRoYmcMxIVf6pv
-	 sfNgr/vj5WgtB4VLZzdXLrXXvXdr/n/8/41Qrp0abAKjKMFOSTqwCmw93ISFnzDpIU
-	 4E9RnC8GbjmMmDxDbMq6bv4tSz1e2inyqiraieEAULkFofMGq1M2zmXZOvSqaT3FtW
-	 mYAhRDVgzdhTQ==
-Date: Tue, 26 Mar 2024 19:51:37 +0000
-From: Conor Dooley <conor@kernel.org>
-To: Sasha Levin <sashal@kernel.org>
-Cc: linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-	torvalds@linux-foundation.org, akpm@linux-foundation.org,
-	linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-	lkft-triage@lists.linaro.org, florian.fainelli@broadcom.com,
-	pavel@denx.de
-Subject: Re: [PATCH 6.6 000/632] 6.6.23-rc2 review
-Message-ID: <20240326-footman-earful-a8b76b84956d@spud>
-References: <20240325115951.1766937-1-sashal@kernel.org>
+	s=arc-20240116; t=1711482728; c=relaxed/simple;
+	bh=xw5Af1WArsxfJQD3EHAiOmg03E5rcDaK8qUkbAkOVyk=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=K/Uq786FecQB4cen77efVXBadmtQP7Z3y94bzthrvcVNKaJXF2tEBUi7rUnZzUqY7BuiXIHW6J9+Ph2vZWiZaQOuhg9hw356w7Yl4fTPt5iFSDsu2Z0kawXcB029aPkY7BJPP7Pb9UVQMqVA1+KieaHpq6g+lf3oDb4snr4/szo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=WFHEfosP; arc=none smtp.client-ip=209.85.221.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f52.google.com with SMTP id ffacd0b85a97d-33ff53528ceso3911755f8f.0;
+        Tue, 26 Mar 2024 12:52:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1711482724; x=1712087524; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=VoJ7Xgxb57e+lLV6U4E0sAWdkd/64u+XAVmAgLbMPw0=;
+        b=WFHEfosPhrbIgpN7rbTTnF3k3ERg7SUUzr2nOZj9QVPy8/ro5RgFcX0w7SbBu8iaSP
+         DiEoXOveK+twBQtAICUbENHEycMU03G0HMuF2QVq9bA1V+e2PQNitbv3qNzNqKlVB7jl
+         pFs/q51X85LzyKeKLOAb+zmPlr4ufWPrB3sRIbaZgzsPqIKpD5y+6tsGxFIfkVsR4oI0
+         uUOVW50Udv57Z2PubSX3FJPiY78VzsaEVF80YVt/1fG6p2fg7mnrlmqVhoAMr+6HlvU4
+         /J5DSuefDwUaYIffUanSQ2h4ZX6/To9Dh6j+P9dXAUaJW0h98+/oEtCaEO+NbESNDurM
+         hrEQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711482724; x=1712087524;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=VoJ7Xgxb57e+lLV6U4E0sAWdkd/64u+XAVmAgLbMPw0=;
+        b=Jg/HcpP/RoitU/Gg6dOed5RqtY+Y8KJ/b/wUeRloycyj4CJUs0Pgqdmel0AeInRc97
+         JKu1WlZ2SVy19KyQODbUGjW/MEReTAVA8oi/Asi0ffm6PPCg7xuyQfOa3ibhoy6ALGQ2
+         UJW63s2/iW0Xkewy9MXl6xX+GUZ3SAEoQQNoi756QVpw/T8Ltv6qBP2v0Dun1bxiv2KJ
+         uCnetQMf+pVu04NUnab5Yo9uJ803MOWuYT8HvxILzZWqf1AcKTOQWi76y4iyczJqu5KO
+         f1dPcXaKY/1gts4e2rJoa//0049WaBquC+oArXRczo6haIm54XKYXVYPGKi8szMVgPZp
+         OI3A==
+X-Forwarded-Encrypted: i=1; AJvYcCXaAWv0wI47gXerQak4y19S4URJgWBBHnD19IhKw2LTjQD0MzW3JjsLAZm1r1PRrMTlsvwQ9QzWGnvOUxJslrxVnolSp6PXwgOHILHtV0eS5hVfp30eFZ41N2MFoDdxZGbqhqcnUF9LIUWx7A==
+X-Gm-Message-State: AOJu0YwGhxojIu+wjIEdKqlASV8q5+UqwYzX7b/Jp4z17yac28zNi9zW
+	fiGGCYe6CSePmbriPbbgF3KlEZ/DWA0RaKc86SLi7gDI6JTdIeJeZtINSXEpufdtsNH7EGkExPs
+	48SLjy52wetQj/SNhL5ivDnfo0yo=
+X-Google-Smtp-Source: AGHT+IFdWjE4WHoVtPjuQcx0WsU75NBlLUIGPA+pXpYqfXBQ6kNVdedZPLpDt+1PDG/+8EGDVjm0fb4X9eM/yrOADWQ=
+X-Received: by 2002:a5d:640c:0:b0:341:bfe2:da36 with SMTP id
+ z12-20020a5d640c000000b00341bfe2da36mr1745593wru.6.1711482724438; Tue, 26 Mar
+ 2024 12:52:04 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="Jcu+ph7jwzAjgWic"
-Content-Disposition: inline
-In-Reply-To: <20240325115951.1766937-1-sashal@kernel.org>
-
-
---Jcu+ph7jwzAjgWic
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+References: <CANiq72mjc5t4n25SQvYSrOEhxxpXYPZ4pPzneSJHEnc3qApu2Q@mail.gmail.com>
+ <CAA8EJprTNFgKJ_3cdZz4f_LCkYFghi-cfaj3bZmYh3oA63my6A@mail.gmail.com>
+ <85204b78-7b24-61cd-4bae-3e7abc6e4fd3@quicinc.com> <CAA8EJppqrF10J1qExM=gopiF4GPDt7v4TB6LrQxx5OGyAL9hSg@mail.gmail.com>
+ <671d2662-df4e-4350-0084-476eb1671cc1@quicinc.com> <CAA8EJpppre8ibYqN7gZObyvzR08yVbTevC6hDEDCKQVf8gRVRg@mail.gmail.com>
+In-Reply-To: <CAA8EJpppre8ibYqN7gZObyvzR08yVbTevC6hDEDCKQVf8gRVRg@mail.gmail.com>
+From: Connor Abbott <cwabbott0@gmail.com>
+Date: Tue, 26 Mar 2024 19:51:53 +0000
+Message-ID: <CACu1E7HhCKMJd6fixZSPiNAz6ekoZnkMTHTcLFVmbZ-9VoLxKg@mail.gmail.com>
+Subject: Re: drivers/gpu/drm/msm/adreno/a6xx_gpu_state.c:843:6: error:
+ variable 'out' set but not used
+To: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Cc: Abhinav Kumar <quic_abhinavk@quicinc.com>, 
+	Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>, Rob Clark <robdclark@gmail.com>, 
+	Sean Paul <sean@poorly.run>, Marijn Suijten <marijn.suijten@somainline.org>, 
+	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, 
+	linux-arm-msm <linux-arm-msm@vger.kernel.org>, dri-devel <dri-devel@lists.freedesktop.org>, 
+	freedreno@lists.freedesktop.org, linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, Mar 25, 2024 at 07:59:51AM -0400, Sasha Levin wrote:
->=20
-> This is the start of the stable review cycle for the 6.6.23 release.
-> There are 632 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+On Tue, Mar 26, 2024 at 7:47=E2=80=AFPM Dmitry Baryshkov
+<dmitry.baryshkov@linaro.org> wrote:
+>
+> On Tue, 26 Mar 2024 at 21:32, Abhinav Kumar <quic_abhinavk@quicinc.com> w=
+rote:
+> >
+> >
+> >
+> > On 3/26/2024 12:10 PM, Dmitry Baryshkov wrote:
+> > > On Tue, 26 Mar 2024 at 20:31, Abhinav Kumar <quic_abhinavk@quicinc.co=
+m> wrote:
+> > >>
+> > >>
+> > >>
+> > >> On 3/26/2024 11:19 AM, Dmitry Baryshkov wrote:
+> > >>> On Tue, 26 Mar 2024 at 20:05, Miguel Ojeda
+> > >>> <miguel.ojeda.sandonis@gmail.com> wrote:
+> > >>>>
+> > >>>> Hi,
+> > >>>>
+> > >>>> In today's next, I got:
+> > >>>>
+> > >>>>       drivers/gpu/drm/msm/adreno/a6xx_gpu_state.c:843:6: error: va=
+riable
+> > >>>> 'out' set but not used [-Werror,-Wunused-but-set-variable]
+> > >>>>
+> > >>>> `out` seems to be there since commit 64d6255650d4 ("drm/msm: More
+> > >>>> fully implement devcoredump for a7xx").
+> > >>>>
+> > >>>> Untested diff below assuming `dumper->iova` is constant -- if you =
+want
+> > >>>> a formal patch, please let me know.
+> > >>>
+> > >>> Please send a proper patch that we can pick up.
+> > >>>
+> > >>
+> > >> This should be fixed with https://patchwork.freedesktop.org/patch/58=
+1853/.
+> > >
+> > > Is that a correct fix? If you check other usage locations for
+> > > CRASHDUMP_READ, you'll see that `out` is the last parameter and it is
+> > > being incremented.
+> > >
+> >
+> > Right but in this function out is not the last parameter of CRASHDUMP_R=
+EAD.
+>
+> Yes. I think in this case the patch from this email is more correct.
 
-Tested-by: Conor Dooley <conor.dooley@microchip.com>
+Yes, this patch is more correct than the other one. I tried to fix a
+bug with a6xx that I noticed while adding support for a7xx, which I
+forgot to split out from "drm/msm: More fully implement devcoredump
+for a7xx" into a separate commit, and this hunk was missing. Sorry
+about that.
 
-Thanks,
-Conor.
-
---Jcu+ph7jwzAjgWic
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZgMnSQAKCRB4tDGHoIJi
-0n6JAQC+qZc3iXmWE++YW15+Ckq1nG6Rhr49sRH7IRf6jeFadwD/arsgFAoi8MsK
-V+9QcRjV6RVuVZZNjtCwP2IuPjbbNAQ=
-=lEqu
------END PGP SIGNATURE-----
-
---Jcu+ph7jwzAjgWic--
+Connor
 
