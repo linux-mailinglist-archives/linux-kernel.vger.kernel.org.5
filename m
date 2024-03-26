@@ -1,151 +1,254 @@
-Return-Path: <linux-kernel+bounces-119058-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-119059-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 52FF588C364
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 14:30:41 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D888788C365
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 14:30:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0F1F52E3DC2
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 13:30:40 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 072DD1C36D5A
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 13:30:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 31B3174433;
-	Tue, 26 Mar 2024 13:30:33 +0000 (UTC)
-Received: from dggsgout12.his.huawei.com (unknown [45.249.212.56])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BDEAC745DC;
+	Tue, 26 Mar 2024 13:30:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=proton.me header.i=@proton.me header.b="WKhKWrvY"
+Received: from mail-4316.protonmail.ch (mail-4316.protonmail.ch [185.70.43.16])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 441FB70CC2;
-	Tue, 26 Mar 2024 13:30:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1E36774411
+	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 13:30:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.70.43.16
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711459832; cv=none; b=neSN9XbzZ33b615wj6Q3Wh8GUfttVKIQL+lOf2KtI914V5Im/AVS5XyKvPGFbCH7IJkucap3ZPhwH7UbT2+R9ucrNZ6n5vanSNwGhnT11+FHOz/b3fr8DPXUcM+3npCqW+JBpouHQA8+hQlN4njF0hajVBy/le4vXu2aiXoTy8E=
+	t=1711459846; cv=none; b=F+apjVwnoUAA6ZGg3LYLAip+MdVPBx1/MoIub0pRtKjOHFLjfExAqYQaR+eNzSpf1ItO+UybbG+qH/a/yRujIeN+UtmjaY/BViNiAr0XC9nwI7JawqYB6r4b+ci/fPAap+/0sTtVhsA2/f5W7JE/w2RljTj57X7s4NId0u4IeGE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711459832; c=relaxed/simple;
-	bh=4lRRYxCm99C7bS5GE8+hJil4QP2rifr8KGGpETgr1Cc=;
-	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=UEIdnwxCmxuPDSuFEhkVQr1SIf9q4+9+TqNUTBX1OK6SUPtXW+ziteQQqrRRXfOlgL46jGZI7bA9pH6DuUHwDri9Cbm48+tW50gNcWwtt88mMwMsBDz1nu/2N8tQ1IKfx+QUIZOAv77yYgY27fQBkuU/wR45myL7B6+0m33zbQU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.216])
-	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4V3rJk2brhz4f3jXb;
-	Tue, 26 Mar 2024 21:30:14 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.75])
-	by mail.maildlp.com (Postfix) with ESMTP id 8B44E1A0199;
-	Tue, 26 Mar 2024 21:30:20 +0800 (CST)
-Received: from [10.174.178.129] (unknown [10.174.178.129])
-	by APP2 (Coremail) with SMTP id Syh0CgAnlQjpzQJmxEQ+IQ--.31963S2;
-	Tue, 26 Mar 2024 21:30:18 +0800 (CST)
-Subject: Re: [PATCH 6/6] writeback: remove unneeded GDTC_INIT_NO_WB
-To: Jan Kara <jack@suse.cz>
-Cc: akpm@linux-foundation.org, tj@kernel.org, linux-mm@kvack.org,
- linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
- willy@infradead.org, bfoster@redhat.com, dsterba@suse.com,
- mjguzik@gmail.com, dhowells@redhat.com, peterz@infradead.org
-References: <20240320110222.6564-1-shikemeng@huaweicloud.com>
- <20240320110222.6564-7-shikemeng@huaweicloud.com>
- <20240326123503.kxyxg75xr7wk3ux3@quack3>
-From: Kemeng Shi <shikemeng@huaweicloud.com>
-Message-ID: <2e1ac568-1883-700c-ba41-575f5db339c2@huaweicloud.com>
-Date: Tue, 26 Mar 2024 21:30:17 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.5.0
+	s=arc-20240116; t=1711459846; c=relaxed/simple;
+	bh=70AG2YjbJYgkjFfQ8mU0frlGAVmRzwphrZANyFalLkE=;
+	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=APmZ7JYb2UShkgTlmDd4oPym5dFZwhaZgK9puMonhLHobU/HhMhIAhMkaomftdd2V2loapr3lRacRZ47Mvvz9XrGc5qBqyj79u68GN5R51qeUUbhf2Tz+Dm24IfMAlkqaJhp1nSR96zspLsD0XNqPkiukYjonFr6anau/cmoAos=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=proton.me; spf=pass smtp.mailfrom=proton.me; dkim=pass (2048-bit key) header.d=proton.me header.i=@proton.me header.b=WKhKWrvY; arc=none smtp.client-ip=185.70.43.16
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=proton.me
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=proton.me
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=proton.me;
+	s=protonmail; t=1711459841; x=1711719041;
+	bh=3zjQ7eC3k+N5mljsGCsXBKGxRRF33muyXP+mt9iMhxc=;
+	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
+	 Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
+	 Message-ID:BIMI-Selector;
+	b=WKhKWrvYk/VWRvJ/ue+hTCzftOtGCmLJRnUdtviNEV10TKZGlO0z3TWpmkFY65vk2
+	 NvyroSufVio5X1UWlAXTfM/2oWyyBIyPANLtbEuzTFXAGtV0lMnNTGEkT3vqPb8JvX
+	 VFx/1/aamSD/wwd2ilFs0V6MSbAJ4ZzT4AHlYrbDGts5Fxq2V89wyYjwzUJM6LfDOZ
+	 wvkFBy7+6gqK62K007tkgw29R9CwZNtU57+tfMXBrFl6K3uzYuy9YcdthzK5Vxe64F
+	 qIoqJVqPky3eXcHfOFSpWuYtvRlBVwWvv5uI4SO93qblLS4wuu3pRpdmnH4WfsmUbi
+	 JGmEQ3o+gavzA==
+Date: Tue, 26 Mar 2024 13:30:23 +0000
+To: Wedson Almeida Filho <wedsonaf@gmail.com>
+From: Benno Lossin <benno.lossin@proton.me>
+Cc: rust-for-linux@vger.kernel.org, Miguel Ojeda <ojeda@kernel.org>, Alex Gaynor <alex.gaynor@gmail.com>, Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>, =?utf-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, Andreas Hindborg <a.hindborg@samsung.com>, Alice Ryhl <aliceryhl@google.com>, linux-kernel@vger.kernel.org, Wedson Almeida Filho <walmeida@microsoft.com>
+Subject: Re: [PATCH 06/10] rust: alloc: introduce the `BoxExt` trait
+Message-ID: <4HXcIXSpP2nHdpuTb2aAIwspZ8Az9XYU3KUp18oUlsi3yIqXNPvbe80x57P0hLIYHrlf67DUCxD96blhqCsGmR3oecopCnaZA6kRlvKCl5g=@proton.me>
+In-Reply-To: <CANeycqrbuzDwDhUjz+rZv2Q_peK54L1yPG6A1L6-PwjyLKiSAw@mail.gmail.com>
+References: <20240325195418.166013-1-wedsonaf@gmail.com> <20240325195418.166013-7-wedsonaf@gmail.com> <9AmQ4moOGHvMXp-MH65qG1fS7v14hypIjEwsPlYLdLJD2NMVOQFwFvzpETrxHSSMt-Y6Gz_TZfwXgROJys72ZIpB-Je4obAuZ2knpT9R3yo=@proton.me> <CANeycqrbuzDwDhUjz+rZv2Q_peK54L1yPG6A1L6-PwjyLKiSAw@mail.gmail.com>
+Feedback-ID: 71780778:user:proton
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20240326123503.kxyxg75xr7wk3ux3@quack3>
-Content-Type: text/plain; charset=gbk
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID:Syh0CgAnlQjpzQJmxEQ+IQ--.31963S2
-X-Coremail-Antispam: 1UD129KBjvJXoW7Aw4rKr1xCw45Kr4xWr15Arb_yoW8KF4kpF
-	sxGa1UKF45Ars29rnxCas7WrnIqrZ7tFZrKwsrCw4ayF4xGF1rGFyj9w1Iyr1UAr93Kry7
-	Arsrta4fZayjyrJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUvFb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
-	0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
-	x7xfMcIj6xIIjxv20xvE14v26r1Y6r17McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
-	0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1lc7I2V7IY0VAS
-	07AlzVAYIcxG8wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c
-	02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_
-	GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7
-	CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6Fyj6rWUJwCI42IY6I8E87Iv67AK
-	xVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvj
-	xUrcTmDUUUU
-X-CM-SenderInfo: 5vklyvpphqwq5kxd4v5lfo033gof0z/
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-
-
-on 3/26/2024 8:35 PM, Jan Kara wrote:
-> On Wed 20-03-24 19:02:22, Kemeng Shi wrote:
->> We never use gdtc->dom set with GDTC_INIT_NO_WB, just remove unneeded
->> GDTC_INIT_NO_WB
+On 26.03.24 01:17, Wedson Almeida Filho wrote:
+> On Mon, 25 Mar 2024 at 19:37, Benno Lossin <benno.lossin@proton.me> wrote=
+:
 >>
->> Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
-> 
-> Please no, this leaves a trap for the future. If anything, I'd teach
-> GDTC_INIT() that 'wb' can be NULL and replace GDTC_INIT_NO_WB with
-> GDTC_INIT(NULL).
-Would it be acceptable to define GDTC_INIT_NO_WB to null for now as
-discussed in [1].
+>> On 25.03.24 20:54, Wedson Almeida Filho wrote:
+>>> From: Wedson Almeida Filho <walmeida@microsoft.com>
+>>>
+>>> Make fallible versions of `new` and `new_uninit` methods available in
+>>> `Box` even though it doesn't implement them because we build `alloc`
+>>> with the `no_global_oom_handling` config.
+>>>
+>>> They also have an extra `flags` parameter that allows callers to pass
+>>> flags to the allocator.
+>>>
+>>> Signed-off-by: Wedson Almeida Filho <walmeida@microsoft.com>
+>>> ---
+>>>    rust/kernel/alloc.rs           |  1 +
+>>>    rust/kernel/alloc/allocator.rs |  6 +++-
+>>>    rust/kernel/alloc/boxext.rs    | 61 ++++++++++++++++++++++++++++++++=
+++
+>>>    rust/kernel/init.rs            | 13 ++++----
+>>>    rust/kernel/prelude.rs         |  2 +-
+>>>    rust/kernel/sync/arc.rs        |  3 +-
+>>>    6 files changed, 77 insertions(+), 9 deletions(-)
+>>>    create mode 100644 rust/kernel/alloc/boxext.rs
+>>>
+>>> diff --git a/rust/kernel/alloc.rs b/rust/kernel/alloc.rs
+>>> index ad48ac8dc13d..5712c81b1308 100644
+>>> --- a/rust/kernel/alloc.rs
+>>> +++ b/rust/kernel/alloc.rs
+>>> @@ -5,6 +5,7 @@
+>>>    #[cfg(not(test))]
+>>>    #[cfg(not(testlib))]
+>>>    mod allocator;
+>>> +pub mod boxext;
+>>>    pub mod vecext;
 
-[1] https://lore.kernel.org/lkml/becdb16b-a318-ec05-61d2-d190541ae997@huaweicloud.com/
+One thing I forgot to say: I think these modules should be named
+`box_ext` and `vec_ext`. It fits better with the usual style.
 
-Thanks,
-Kemeng
-> 
-> 								Honza
-> 
->> ---
->>  mm/page-writeback.c | 7 ++-----
->>  1 file changed, 2 insertions(+), 5 deletions(-)
+>>>
+>>>    /// Flags to be used when allocating memory.
+>>> diff --git a/rust/kernel/alloc/allocator.rs b/rust/kernel/alloc/allocat=
+or.rs
+>>> index 01ad139e19bc..fc0439455faa 100644
+>>> --- a/rust/kernel/alloc/allocator.rs
+>>> +++ b/rust/kernel/alloc/allocator.rs
+>>> @@ -15,7 +15,11 @@
+>>>    ///
+>>>    /// - `ptr` can be either null or a pointer which has been allocated=
+ by this allocator.
+>>>    /// - `new_layout` must have a non-zero size.
+>>> -unsafe fn krealloc_aligned(ptr: *mut u8, new_layout: Layout, flags: bi=
+ndings::gfp_t) -> *mut u8 {
+>>> +pub(crate) unsafe fn krealloc_aligned(
+>>> +    ptr: *mut u8,
+>>> +    new_layout: Layout,
+>>> +    flags: bindings::gfp_t,
+>>> +) -> *mut u8 {
+>>>        // Customized layouts from `Layout::from_size_align()` can have =
+size < align, so pad first.
+>>>        let layout =3D new_layout.pad_to_align();
+>>>
+>>> diff --git a/rust/kernel/alloc/boxext.rs b/rust/kernel/alloc/boxext.rs
+>>> new file mode 100644
+>>> index 000000000000..26a918df7acf
+>>> --- /dev/null
+>>> +++ b/rust/kernel/alloc/boxext.rs
+>>> @@ -0,0 +1,61 @@
+>>> +// SPDX-License-Identifier: GPL-2.0
+>>> +
+>>> +//! Extensions to [`Box`] for fallible allocations.
+>>> +
+>>> +use super::Flags;
+>>> +use alloc::boxed::Box;
+>>> +use core::alloc::AllocError;
+>>> +use core::mem::MaybeUninit;
+>>> +use core::result::Result;
+>>> +
+>>> +/// Extensions to [`Box`].
+>>> +pub trait BoxExt<T>: Sized {
+>>> +    /// Allocates a new box.
+>>> +    ///
+>>> +    /// The allocation may fail, in which case an error is returned.
+>>> +    fn new(x: T, flags: Flags) -> Result<Self, AllocError>;
+>>> +
+>>> +    /// Allocates a new uninitialised box.
+>>> +    ///
+>>> +    /// The allocation may fail, in which case an error is returned.
+>>> +    fn new_uninit(flags: Flags) -> Result<Box<MaybeUninit<T>>, AllocEr=
+ror>;
+>>> +}
+>>> +
+>>> +impl<T> BoxExt<T> for Box<T> {
+>>> +    #[cfg(any(test, testlib))]
+>>> +    fn new(x: T, _flags: Flags) -> Result<Self, AllocError> {
+>>> +        Ok(Box::new(x))
+>>> +    }
 >>
->> diff --git a/mm/page-writeback.c b/mm/page-writeback.c
->> index 481b6bf34c21..09b2b0754cc5 100644
->> --- a/mm/page-writeback.c
->> +++ b/mm/page-writeback.c
->> @@ -154,8 +154,6 @@ struct dirty_throttle_control {
->>  				.dom = &global_wb_domain,		\
->>  				.wb_completions = &(__wb)->completions
->>  
->> -#define GDTC_INIT_NO_WB		.dom = &global_wb_domain
->> -
->>  #define MDTC_INIT(__wb, __gdtc)	.wb = (__wb),				\
->>  				.dom = mem_cgroup_wb_domain(__wb),	\
->>  				.wb_completions = &(__wb)->memcg_completions, \
->> @@ -210,7 +208,6 @@ static void wb_min_max_ratio(struct bdi_writeback *wb,
->>  
->>  #define GDTC_INIT(__wb)		.wb = (__wb),                           \
->>  				.wb_completions = &(__wb)->completions
->> -#define GDTC_INIT_NO_WB
->>  #define MDTC_INIT(__wb, __gdtc)
->>  
->>  static bool mdtc_valid(struct dirty_throttle_control *dtc)
->> @@ -438,7 +435,7 @@ static void domain_dirty_limits(struct dirty_throttle_control *dtc)
->>   */
->>  void global_dirty_limits(unsigned long *pbackground, unsigned long *pdirty)
->>  {
->> -	struct dirty_throttle_control gdtc = { GDTC_INIT_NO_WB };
->> +	struct dirty_throttle_control gdtc = { };
->>  
->>  	gdtc.avail = global_dirtyable_memory();
->>  	domain_dirty_limits(&gdtc);
->> @@ -895,7 +892,7 @@ unsigned long wb_calc_thresh(struct bdi_writeback *wb, unsigned long thresh)
->>  
->>  unsigned long wb_calc_cg_thresh(struct bdi_writeback *wb)
->>  {
->> -	struct dirty_throttle_control gdtc = { GDTC_INIT_NO_WB };
->> +	struct dirty_throttle_control gdtc = { };
->>  	struct dirty_throttle_control mdtc = { MDTC_INIT(wb, &gdtc) };
->>  	unsigned long filepages, headroom, writeback;
->>  
->> -- 
->> 2.30.0
+>> When running under `cfg(test)`, are we using the normal standard
+>> library? Or why is this needed?
+>=20
+> Because it uses 34 other crates that rely on `Box::new` and friends.
+>=20
+> I discussed this with Miguel recently and once he's done with the
+> build system changes, he will think about what to do with tests. It
+> may be that we abandon the current method of running standalone tests
+> and run everything in kunit, or perhaps we'll find a way to exclude
+> code that won't run in standalone tests anyway...
+
+Ah I see, I think it would be nice to not need this. Let's see what the
+new build system can do here.
+
+>=20
+>>> +
+>>> +    #[cfg(not(any(test, testlib)))]
+>>> +    fn new(x: T, flags: Flags) -> Result<Self, AllocError> {
+>>> +        let ptr =3D if core::mem::size_of::<T>() =3D=3D 0 {
+>>> +            core::ptr::NonNull::<T>::dangling().as_ptr()
+>>> +        } else {
+>>> +            let layout =3D core::alloc::Layout::new::<T>();
+>>> +
+>>> +            // SAFETY: Memory is being allocated (first arg is null). =
+The only other source of
+>>> +            // safety issues is sleeping on atomic context, which is a=
+ddressed by klint.
 >>
+>> The `krealloc_aligned` function states:
+>>
+>> /// # Safety
+>> ///
+>> /// - `ptr` can be either null or a pointer which has been allocated by =
+this allocator.
+>> /// - `new_layout` must have a non-zero size.
+>>
+>> So it should also mention that you checked for `layout.size() > 0`
+>> above.
+>=20
+> Good point. I mentioned this in the VecExt version but not here. I
+> will update this for v2.
+>=20
+>>> +            let ptr =3D unsafe {
+>>> +                super::allocator::krealloc_aligned(core::ptr::null_mut=
+(), layout, flags.0)
+>>> +            };
+>>> +            if ptr.is_null() {
+>>> +                return Err(AllocError);
+>>> +            }
+>>> +
+>>> +            let ptr =3D ptr.cast::<T>();
+>>> +
+>>> +            // SAFETY: We just allocated the memory above, it is valid=
+ for write.
+>>> +            unsafe { ptr.write(x) };
+>>> +            ptr
+>>> +        };
+>>> +
+>>> +        // SAFETY: For non-zero-sized types, we allocate above using t=
+he global allocator. For
+>>> +        // zero-sized types, we use `NonNull::dangling`.
+>>> +        Ok(unsafe { Box::from_raw(ptr) })
+>>> +    }
+>>> +
+>>> +    fn new_uninit(flags: Flags) -> Result<Box<MaybeUninit<T>>, AllocEr=
+ror> {
+>>> +        <Box<_> as BoxExt<_>>::new(MaybeUninit::<T>::uninit(), flags)
+>>
+>> Why do you use the extended syntax? I tried to use `Box::new` and it
+>> compiled.
+>=20
+> It works when compiling the kernel but fails when compiling for
+> userspace with regular (no_global_oom_handling disabled) `alloc` when
+> running `make rusttest`. In the latter case, it chooses the inherent
+> version of `Box::new` which is infallible and doesn't take flags so it
+> fails to compile.
+>=20
+> Using the extended syntax allows it always pick the right version,
+> regardless of how `alloc` is compiled.
+>=20
+> There are 5 places in existing code that required this change and this
+> is limited to the kernel crate (e.g., drivers, samples and
+> documentation examples can continue to use `Box::new`). So we thought
+> it was ok until Miguel figures out what we want to do with tests.
+
+Thanks for the explanation, again it would be nice to be able to just
+write `Box::new`.
+
+--=20
+Cheers,
+Benno
 
 
