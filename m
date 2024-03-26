@@ -1,132 +1,105 @@
-Return-Path: <linux-kernel+bounces-120138-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-120139-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2B39D88D2D9
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 00:35:10 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8FE1B88D2DC
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 00:36:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 90643B21E51
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 23:35:07 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 468711F3EF90
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 23:36:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1CEAD13E051;
-	Tue, 26 Mar 2024 23:34:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C180613E047;
+	Tue, 26 Mar 2024 23:35:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="LCt7wlNS"
-Received: from mail-ua1-f48.google.com (mail-ua1-f48.google.com [209.85.222.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="NZ6262Kj"
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DB78913D8AA
-	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 23:34:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D01931C288;
+	Tue, 26 Mar 2024 23:35:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711496097; cv=none; b=KRlHlKOdjmpeYt1eMReIJmkjaFCFc1YBQMMuf0AhEJHRbOLLMgVpsU0jasyFMS/69hcm/Hrho5sEiBBZX86Hmeav+ahJ8uVnfCw/wejoDnsMQZHRQvXpvfkZz7X0J/tk6E66K2w5wA8uAogRu4YedGIPEfp9ZyfNQ3cKFCVkOmE=
+	t=1711496158; cv=none; b=iNlfVKfN080ZsB2SXwtIAdDM0XchHcXkSK1WXdkldhIObeCCg+KLMTlRaVnBAPPPZCUeKGGiwKmQsOdGWXDdYiCBaKf1CRsYKt0J3q4WyxBnZJmBBrKZiJPB0YVL7Jxc+9B8XS6lCyCDV8HXdAYSZeQyKJgO19Z24iUtRdH1xy8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711496097; c=relaxed/simple;
-	bh=EwMlcl8PIzr8RhdfN5ZZNNfvQw7deC+B3FnxlLEVjfA=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=I/Wap0kgBbslv59M2tt2YOereHfMzgfVMV3YgdAaPz4BLgro8sTgWwRpwb6eXjOpASdDMcS8g3+IzQcIFh+8JYIbjBoflKxPLL92DjGYzviBMgauH/e8iQpTbmlCzckk9FG+mWSjWcf1plE683wh+AF/GXAAyMREbiTd2oFmaqw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=LCt7wlNS; arc=none smtp.client-ip=209.85.222.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-ua1-f48.google.com with SMTP id a1e0cc1a2514c-7e101b8fed9so1115516241.0
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 16:34:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1711496095; x=1712100895; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=eYmdJQpGAyKoO561dC+ojA6XOTgi5Uts09PCMGhkelE=;
-        b=LCt7wlNSOzFOXmkyYZmXHFTn4zUtiQyDgCI0wHIF/7tiHLja0NtA4n3bib2Aqv6Dbt
-         9Sg0ziXuGxWgjpYIjzgT965+2rbjLPeHDcA9scB+WtXg3H1DyeTKd4njse7UNMgjUYFy
-         M06DALQ141QmnxHetfMalV2kBcv+FCZen3Jdk=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711496095; x=1712100895;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=eYmdJQpGAyKoO561dC+ojA6XOTgi5Uts09PCMGhkelE=;
-        b=M8yK/1Bnpc4wrqO8f5fXyaBbz8zGgekv4bQpNT/Ghn9H4wZsxgcczgv1VlkMptQY3L
-         NqE04AHpkKGY/L4cFsHF50Ydbe2Y8PQ/Z9KhCN6wNTGq/Q25svGPIWeU/09mzqYvGuj1
-         EbBLp/fZHuloGzUXCGFmYY2e2enfm8Li9w5FJYgvpEJBamRYhbwVdWWafA6lH3eI5qK8
-         RYkpuAOhjYOGEhvxLWFoqdiuM3BGiq7TGMjnTrXTWcBXVDQzsGg+Tj0Xyzk4bB4bR5w/
-         zRv1E6e/yZd2YNrpcGJ1QmhIsBLqOQ7rZl12tCwzBegMvlpmXwNpgP8/C4qvyGZrnLRH
-         b0nA==
-X-Forwarded-Encrypted: i=1; AJvYcCXAAABKwM0eoMUIrHiaQdiqGFziumPhQCgf9jErSiYar7oPM/zl9Y/8dKVzmtL1Yz5xIpcvi+tznBmzO3AXRGRX676je10Ak8Pal6yH
-X-Gm-Message-State: AOJu0Ywuyyc4BVlcJ4OZpzF9IpD6J+ZPUkp+xC37uKDojMBLhJut/A1X
-	RvIDkbl5+2RW2oGyvDWnbVUUf970mNwCLKgZG1MFgri6OcyXSI2/xr4kxCKtceqXY7VT8wUN5z7
-	rYv3njEJbEOLatz2G/wMAeJj2vGt8Vb9Ah0in
-X-Google-Smtp-Source: AGHT+IGYjBc3zq6N8dmZwkyInQNpMvNhTO0c5xOyM/NeGeB0s1vCmPFyPTk3a/bFYwoBzpSUv1XpLGY9L5izz4Bk1kk=
-X-Received: by 2002:a67:e246:0:b0:476:cf52:e1b7 with SMTP id
- w6-20020a67e246000000b00476cf52e1b7mr2432676vse.28.1711496094788; Tue, 26 Mar
- 2024 16:34:54 -0700 (PDT)
+	s=arc-20240116; t=1711496158; c=relaxed/simple;
+	bh=2kYHyEHjL8vZZ93MqEh/vWakgojswPv+9v7lJxFVHFs=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=Taf1MOYc/dIfb5s3UUDbr6F3IseugtFySoLdgjtT6cIXrzpqm5FXqPl3s7YqociQLlqWF/09+K87DSIdHfDiaOXkNOxiMzemj69Qks8AXKlttcOT44kSMKW9znzkXJnGA97CmuwloeBjjUh3y6gb61wLi0UAmf6S0KIRvOmc4s0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au; spf=pass smtp.mailfrom=canb.auug.org.au; dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b=NZ6262Kj; arc=none smtp.client-ip=150.107.74.76
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+	s=201702; t=1711496152;
+	bh=2kYHyEHjL8vZZ93MqEh/vWakgojswPv+9v7lJxFVHFs=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=NZ6262Kj5XXUhR0E3X2YWJpmaC9m1zUbGtxoimTNTmPrbX88qALXmj45xalMwF+iH
+	 /g2juhHtjGA4sG1fUm+MwrpoOAAA8+jYsZBabHSLWWbUcMjDKVQ2vqfR6t9LbGOIAO
+	 kCGTKIAh0/z1lalNi9Ue55Jk2RZnXQ3Sxtil/mWZFOpX9nZwmxf/mMRPn8FmWfCu/o
+	 8PSQnEG89gu898KXVzbasvCPKmeFMthQ4yATx8XYrK93FqyT7qK+EeIY0FIV8R3Ust
+	 Pd0o9ABAsXIQzsCjJvZc/8DLZIH6B309o7mDuUdkLYZKuT+plMcVo27Gk3nv4sHznP
+	 VEBWvJuGMF4MQ==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mail.ozlabs.org (Postfix) with ESMTPSA id 4V45lX53hFz4wcQ;
+	Wed, 27 Mar 2024 10:35:52 +1100 (AEDT)
+Date: Wed, 27 Mar 2024 10:35:51 +1100
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+To: Daniel Lezcano <daniel.lezcano@linaro.org>
+Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Linux Next
+ Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: error fetching the clockevents tree
+Message-ID: <20240327103551.392a1b87@canb.auug.org.au>
+In-Reply-To: <20240319093614.16d6eb11@canb.auug.org.au>
+References: <20240319093614.16d6eb11@canb.auug.org.au>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240325-ucsi-reset-delay-v1-1-d9e183e0f1e6@chromium.org> <2024032624-subtitle-crisped-f4f1@gregkh>
-In-Reply-To: <2024032624-subtitle-crisped-f4f1@gregkh>
-From: Pavan Holla <pholla@chromium.org>
-Date: Tue, 26 Mar 2024 16:34:44 -0700
-Message-ID: <CAB2FV=4Z1W1HSba50KaB3rR4=Ussb5RWPwUArr0_=3pFwxpAhA@mail.gmail.com>
-Subject: Re: [PATCH] usb: typec: ucsi: Wait 20ms before retrying reset
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
-	Heikki Krogerus <heikki.krogerus@linux.intel.com>
-Cc: linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Abhishek Pandit-Subedi <abhishekpandit@chromium.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; boundary="Sig_/isLxSh+W9DLDD4TM98S8OuM";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+
+--Sig_/isLxSh+W9DLDD4TM98S8OuM
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Mar 26, 2024 at 1:29=E2=80=AFAM Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
+Hi all,
+
+On Tue, 19 Mar 2024 09:36:14 +1100 Stephen Rothwell <sfr@canb.auug.org.au> =
+wrote:
 >
-> On Mon, Mar 25, 2024 at 09:19:43PM +0000, Pavan Holla wrote:
-> > The PPM might take time to process reset. Allow 20ms for the reset to
-> > complete before issuing another reset.
-> What commit id does this fix?  Does it need to go to older kernels?
+> Fetching the clockevents tree produces this error:
+>=20
+> fatal: unable to connect to git.linaro.org:
+> git.linaro.org[0: 54.152.253.35]: errno=3DConnection refused
 
-This does not fix any commit. However, the time taken by a CCI read is
-insufficient for a ChromeOS EC and PDC to perform a reset.
+OK, it looks like someone turned off the git daemon on git.linaro.org.
+I will switch to fetching over https.
 
-> > There is a 20ms delay for a reset retry to complete. However, the first
-> > reset attempt is expected to complete immediately after an async write
-> > of the reset command. This patch adds 20ms between the async write and
-> > the CCI read that expects the reset to be complete. The additional dela=
-y
-> > also allows the PPM to settle after the first reset, which seems to be
-> > the intention behind the original 20ms delay ( kernel v4.14 has a comme=
-nt
-> > regarding the same )
->
-> Why was the comment removed in newer kernels?
+--=20
+Cheers,
+Stephen Rothwell
 
-The comment was removed when the old UCSI API was removed in
-2ede55468ca8cc236da66579359c2c406d4c1cba
+--Sig_/isLxSh+W9DLDD4TM98S8OuM
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
-> Where does the magic 20ms number come from?  What about systems that do
-> not need that time delay, did things just slow down for them?
+-----BEGIN PGP SIGNATURE-----
 
-I am not sure how 20ms was decided upon. However, UCSI v1.2 has
-MIN_TIME_TO_RESPOND_WITH_BUSY=3D10ms. So, we need to provide at least
-10ms for the PPM to respond with CCI busy. Indeed, this patch slows down ot=
-her
-implementations by 20ms. UCSIv3 also defines a 200ms timeout for PPM_RESET.
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmYDW9cACgkQAVBC80lX
+0GxlGQf/ZkBNqsFh6gdlH8EdYCDnggO5SvJQoVzc65vOTqbwtYJBbkbX/GFjyvcq
+zVzOjaU1w5mXpmXuwBLULj5+1iwCmcFcpYQz0fKaZz584UE965PpiouGWDSFgKhi
+96ztjhOEqqCAJ1prXsBbqvyeMWW8kw5/bt6bzlTDD6l+DEp7umZXiIhyOZWJghDT
+MRYq9GUJYG1R/AaOR+Kawz8H4TcG0l7IMdozs0vjSHdOivwNiRunxR9tskWd6T3B
+h5tDBw5NnVaz52HiguDfrAK1nbJ5hYVPH2AGVSSWNmBvMrceYNirn/5b++78ttuQ
+YfdIt/qSt9eHSLN9rL9KrbGi9dl2mQ==
+=GArU
+-----END PGP SIGNATURE-----
 
-Hi Heikki,
-
-Do you think the right thing to do here is:
-1) poll CCI ( poll duration TBD) for 20ms until busy is set or reset
-is complete.
-2) poll CCI ( poll duration TBD) for 180ms until reset is complete if
-busy was set.
-3) If either 1) or 2) timeout, retry the reset.
-
-If you agree with the approach, please advise a poll duration as well ( 20m=
-s? )
-
-Thanks,
-Pavan
+--Sig_/isLxSh+W9DLDD4TM98S8OuM--
 
