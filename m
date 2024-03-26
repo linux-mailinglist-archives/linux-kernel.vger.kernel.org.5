@@ -1,66 +1,86 @@
-Return-Path: <linux-kernel+bounces-119855-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-119856-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id A778B88CDCD
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 21:04:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 2684488CDD0
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 21:04:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 31CA11F34004
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 20:04:03 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D0CA71F65CAD
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 20:04:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C316F13D28E;
-	Tue, 26 Mar 2024 20:03:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3B0BE13D290;
+	Tue, 26 Mar 2024 20:04:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="QfrgKkzL"
-Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Wi9j+7bl"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.14])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F8C13DABE1
-	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 20:03:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0569D3DABE1;
+	Tue, 26 Mar 2024 20:04:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.14
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711483435; cv=none; b=Fc4pc6iT78MOsWW2yJbxQ5P9lb6pCCD0CLDKtCyUTOKrpFpNh/IKU4qDVfhc6jHusf2+AwJHYRRl/i8vitqjZk/uh59g6nHo21fKNYTKd6qadsoGKdnnBBHW/bbGeDeVdTSPOC5hmQ01BmyUlGip7405MCJnidBYQYkZxQFZdOk=
+	t=1711483490; cv=none; b=q7sTZ58jLOGe+KuDy5aTRkCjk4VOiByE3ETFpj2uhkCwAlsT7iUZRKbPyOrMyQquXOaN75yOR9nHRxvxZlG/0+r88icS9/pwP1fRX61NdHMRAo5268kGyLVHnRnbi7zBHlbwjPUL9dty9sV7cGYJaxfV+N7hdH5bzQbWQPx2jyk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711483435; c=relaxed/simple;
-	bh=MIiSoZ6mE0+FnxHUuLlWTFtl/Q3Ex3AKZHQH68vHLtE=;
+	s=arc-20240116; t=1711483490; c=relaxed/simple;
+	bh=BmIFG4WcPLJlFIuPlSfB+NIT8dikrnWScED+BVvdLYE=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=YftM3Pe0YGDGgSSbDavohiOtwc9k6s0GB+9qwiZrluQzWaR4yUND/Q92TP9IfF3/pfvfFZGRUMN0k685XthuG4NFfyYuvua7K29HE1NuRn02SPqmZ9bxTnZ6rOGIqP/Wtcs2cjUji82Souc4hHuzXP3MPKYNXDPqjQ0IR9u8AbU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=QfrgKkzL; arc=none smtp.client-ip=90.155.50.34
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=YLa4HUex8/bG4yUSqFwJp3NxJNy5ji4AjU0vaS24NpE=; b=QfrgKkzLR29gB3iOewPE4iYJxs
-	QtWtpERfgh33KhuP9fM4CvxU2ztdMs0g96ZTmklXK2ZqKLyb3CA8IczExZaTt8kHHTgP88bMzLb9H
-	47y5gQx1FN0Pb04ji0qDxAbgQ135enJ9X6AuqtmTiRCrj4p6rV5wQxVz5utRq9d9w3uiyuEPgAOR0
-	t52gkiur8X0rG2Xdcx1cKyNJMMm7iAFiCZxjyCllHEBPuAtzXv4F3N8KVPohv76VDvCmspM0eaW2e
-	QOHsIjP69leW80Ur+Tn/W0BGhdB/k4o5wN0xS1GEw2YHn4Sy4QfQPgFC7oZLOU1LSCd60j0FBySXE
-	WUVwbMiQ==;
-Received: from willy by casper.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rpD13-000000029i7-42DQ;
-	Tue, 26 Mar 2024 20:03:26 +0000
-Date: Tue, 26 Mar 2024 20:03:25 +0000
-From: Matthew Wilcox <willy@infradead.org>
-To: Kairui Song <kasong@tencent.com>
-Cc: linux-mm@kvack.org, "Huang, Ying" <ying.huang@intel.com>,
-	Chris Li <chrisl@kernel.org>, Minchan Kim <minchan@kernel.org>,
-	Barry Song <v-songbaohua@oppo.com>,
-	Ryan Roberts <ryan.roberts@arm.com>, Yu Zhao <yuzhao@google.com>,
-	SeongJae Park <sj@kernel.org>, David Hildenbrand <david@redhat.com>,
-	Yosry Ahmed <yosryahmed@google.com>,
-	Johannes Weiner <hannes@cmpxchg.org>, Nhat Pham <nphamcs@gmail.com>,
-	Chengming Zhou <zhouchengming@bytedance.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH 03/10] mm/swap: convert swapin_readahead to return a
- folio
-Message-ID: <ZgMqDWc7NrR5SIlP@casper.infradead.org>
-References: <20240326185032.72159-1-ryncsn@gmail.com>
- <20240326185032.72159-4-ryncsn@gmail.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=cZ4APihdGkvBoPUgYopJBbPFRn/02kuia3f0VhAQ8ClobCsZLaSBgKqfnJPnG3TYK1ehzpga7tLVny8k4mwb76oKBjxRR5G2ZEKrfFvuY2twk4KB9J6IzXQRTu+L4SS5oqz4w+esw8ZiiLqTc0sJ4Xa3Fq4+bdHAFQdR/K5P6vg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Wi9j+7bl; arc=none smtp.client-ip=192.198.163.14
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1711483489; x=1743019489;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=BmIFG4WcPLJlFIuPlSfB+NIT8dikrnWScED+BVvdLYE=;
+  b=Wi9j+7blGePKrM6gV2UjtKM3HtT+pFcocDd/3mu8bGlpEbz7DSgqwDvZ
+   GRF/YAIzGe5YRVHL3a42TYSt7lJcisNUJPMO0m7g8czSi3SaI2P5XYgwg
+   OzvRcEuqu6KMmH+jos/b3uWUFrs6pDtCKN/3pPu2MoemETYelQY0wvBL1
+   +NexTs9yF6dfEejQJgdLu609livZV5DE4cJ77xRx3L7OTv3NhtJtlkTG/
+   xf3L9vuGeEWldwj4xGPj+8bq5tIEFU50nuEhKpAlAfbzUnDqUf5nycIIJ
+   8+YlABwCO/NrpMHKCmZWhDHJ5e2QBHeGc4wLNne7/pRijApaOulNSJIvK
+   A==;
+X-CSE-ConnectionGUID: 0HgJAdDnQHifcn8kxfADJA==
+X-CSE-MsgGUID: BdYPXVWLRfmy+QYu94OUFA==
+X-IronPort-AV: E=McAfee;i="6600,9927,11025"; a="6768768"
+X-IronPort-AV: E=Sophos;i="6.07,156,1708416000"; 
+   d="scan'208";a="6768768"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmvoesa108.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Mar 2024 13:04:48 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,11025"; a="914889497"
+X-IronPort-AV: E=Sophos;i="6.07,156,1708416000"; 
+   d="scan'208";a="914889497"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Mar 2024 13:04:46 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.97)
+	(envelope-from <andriy.shevchenko@linux.intel.com>)
+	id 1rpD2J-0000000GRSv-1dJS;
+	Tue, 26 Mar 2024 22:04:43 +0200
+Date: Tue, 26 Mar 2024 22:04:43 +0200
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: Mark Brown <broonie@kernel.org>
+Cc: linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	Daniel Mack <daniel@zonque.org>,
+	Haojian Zhuang <haojian.zhuang@gmail.com>,
+	Robert Jarzmik <robert.jarzmik@free.fr>,
+	Russell King <linux@armlinux.org.uk>
+Subject: Re: [PATCH v1 01/10] spi: pxa2xx: Drop ACPI_PTR() and of_match_ptr()
+Message-ID: <ZgMqW6TSHYJ2NOPq@smile.fi.intel.com>
+References: <20240326181027.1418989-2-andriy.shevchenko@linux.intel.com>
+ <14f08a50-edef-4b36-891e-2b4b2283f40c@sirena.org.uk>
+ <ZgMSg5Tr97mWgPW4@smile.fi.intel.com>
+ <424de3ed-f0ea-4fc1-80f5-3ab1d23cf1e1@sirena.org.uk>
+ <ZgMXe4EMbJ44W1tr@smile.fi.intel.com>
+ <c3066481-bac6-48fd-8b38-6797975d83c2@sirena.org.uk>
+ <ZgMZhdsDc-bzWa6P@smile.fi.intel.com>
+ <4241ecb8-07e4-4613-a289-4699c39d0d08@sirena.org.uk>
+ <ZgMf5eISwE2P_1tN@smile.fi.intel.com>
+ <a30da48d-f801-4d0a-9db7-9c9bb159ca6b@sirena.org.uk>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -69,256 +89,54 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240326185032.72159-4-ryncsn@gmail.com>
+In-Reply-To: <a30da48d-f801-4d0a-9db7-9c9bb159ca6b@sirena.org.uk>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 
-On Wed, Mar 27, 2024 at 02:50:25AM +0800, Kairui Song wrote:
-> From: Kairui Song <kasong@tencent.com>
+On Tue, Mar 26, 2024 at 07:32:47PM +0000, Mark Brown wrote:
+> On Tue, Mar 26, 2024 at 09:20:05PM +0200, Andy Shevchenko wrote:
 > 
-> Simplify the caller code logic.
+> > For my knowledge there is none of the ACPI-based platform where CONFIG_ACPI
+> > needs to be 'n' while having the real device (as per ACPI ID table) to be on.
+> > That's why I answered purely from the compilation point of view.
 > 
-> Signed-off-by: Kairui Song <kasong@tencent.com>
+> I don't understand the relevance of that, and frankly can't make much
+> sense of it.
 
-I have this patch in my tree which is basically identical, but I think
-has a slightly better commit message.  Feel free to merge the two.
+It's relevant to the ID table presence at run-time. But it seems I wrongly got
+your point (see below).
 
-From 0c17eefb4c1ca7733ca765ab2f28ee09c9110ec0 Mon Sep 17 00:00:00 2001
-From: "Matthew Wilcox (Oracle)" <willy@infradead.org>
-Date: Fri, 22 Mar 2024 13:28:33 -0400
-Subject: [PATCH] mm: Return the folio from swapin_readahead
+> > Personally I see that dependency more confusing than hinting about anything.
+> 
+> When you don't have a dependency in Kconfig then people get offered the
+> device even if it is impossible for it to be useful on their platform.
 
-The unuse_pte_range() caller only wants the folio while do_swap_page()
-wants both the page and the folio.  Since do_swap_page() already has
-logic for handling both the folio and the page, move the folio-to-page
-logic there.  This also lets us allocate larger folios in the
-SWP_SYNCHRONOUS_IO path in future.
+There is currently a dependency among others PCI || ACPI || COMPILE_TEST
 
-Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
----
- mm/memory.c     | 6 ++----
- mm/swap.h       | 6 +++---
- mm/swap_state.c | 8 +++-----
- mm/swapfile.c   | 5 +----
- 4 files changed, 9 insertions(+), 16 deletions(-)
+From the point of view of the real platforms it means that if there is
+a PCI compiled we support PCI devices that use this "platform" driver.
+Similar with ACPI.
 
-diff --git a/mm/memory.c b/mm/memory.c
-index 40070ef01867..aedf0ee554d1 100644
---- a/mm/memory.c
-+++ b/mm/memory.c
-@@ -4020,7 +4020,6 @@ vm_fault_t do_swap_page(struct vm_fault *vmf)
- 			/* skip swapcache */
- 			folio = vma_alloc_folio(GFP_HIGHUSER_MOVABLE, 0,
- 						vma, vmf->address, false);
--			page = &folio->page;
- 			if (folio) {
- 				__folio_set_locked(folio);
- 				__folio_set_swapbacked(folio);
-@@ -4045,10 +4044,8 @@ vm_fault_t do_swap_page(struct vm_fault *vmf)
- 				folio->private = NULL;
- 			}
- 		} else {
--			page = swapin_readahead(entry, GFP_HIGHUSER_MOVABLE,
-+			folio = swapin_readahead(entry, GFP_HIGHUSER_MOVABLE,
- 						vmf);
--			if (page)
--				folio = page_folio(page);
- 			swapcache = folio;
- 		}
- 
-@@ -4069,6 +4066,7 @@ vm_fault_t do_swap_page(struct vm_fault *vmf)
- 		ret = VM_FAULT_MAJOR;
- 		count_vm_event(PGMAJFAULT);
- 		count_memcg_event_mm(vma->vm_mm, PGMAJFAULT);
-+		page = folio_file_page(folio, swp_offset(entry));
- 	} else if (PageHWPoison(page)) {
- 		/*
- 		 * hwpoisoned dirty swapcache pages are kept for killing
-diff --git a/mm/swap.h b/mm/swap.h
-index fc2f6ade7f80..6661b55b2c75 100644
---- a/mm/swap.h
-+++ b/mm/swap.h
-@@ -55,8 +55,8 @@ struct folio *__read_swap_cache_async(swp_entry_t entry, gfp_t gfp_flags,
- 		bool skip_if_exists);
- struct folio *swap_cluster_readahead(swp_entry_t entry, gfp_t flag,
- 		struct mempolicy *mpol, pgoff_t ilx);
--struct page *swapin_readahead(swp_entry_t entry, gfp_t flag,
--			      struct vm_fault *vmf);
-+struct folio *swapin_readahead(swp_entry_t entry, gfp_t flag,
-+		struct vm_fault *vmf);
- 
- static inline unsigned int folio_swap_flags(struct folio *folio)
- {
-@@ -87,7 +87,7 @@ static inline struct folio *swap_cluster_readahead(swp_entry_t entry,
- 	return NULL;
- }
- 
--static inline struct page *swapin_readahead(swp_entry_t swp, gfp_t gfp_mask,
-+static inline struct folio *swapin_readahead(swp_entry_t swp, gfp_t gfp_mask,
- 			struct vm_fault *vmf)
- {
- 	return NULL;
-diff --git a/mm/swap_state.c b/mm/swap_state.c
-index 2deac23633cd..f3c379e93bc6 100644
---- a/mm/swap_state.c
-+++ b/mm/swap_state.c
-@@ -885,13 +885,13 @@ static struct folio *swap_vma_readahead(swp_entry_t targ_entry, gfp_t gfp_mask,
-  * @gfp_mask: memory allocation flags
-  * @vmf: fault information
-  *
-- * Returns the struct page for entry and addr, after queueing swapin.
-+ * Returns the struct folio for entry and addr, after queueing swapin.
-  *
-  * It's a main entry function for swap readahead. By the configuration,
-  * it will read ahead blocks by cluster-based(ie, physical disk based)
-  * or vma-based(ie, virtual address based on faulty address) readahead.
-  */
--struct page *swapin_readahead(swp_entry_t entry, gfp_t gfp_mask,
-+struct folio *swapin_readahead(swp_entry_t entry, gfp_t gfp_mask,
- 				struct vm_fault *vmf)
- {
- 	struct mempolicy *mpol;
-@@ -904,9 +904,7 @@ struct page *swapin_readahead(swp_entry_t entry, gfp_t gfp_mask,
- 		swap_cluster_readahead(entry, gfp_mask, mpol, ilx);
- 	mpol_cond_put(mpol);
- 
--	if (!folio)
--		return NULL;
--	return folio_file_page(folio, swp_offset(entry));
-+	return folio;
- }
- 
- #ifdef CONFIG_SYSFS
-diff --git a/mm/swapfile.c b/mm/swapfile.c
-index 5e6d2304a2a4..c9d041ad8df6 100644
---- a/mm/swapfile.c
-+++ b/mm/swapfile.c
-@@ -1883,7 +1883,6 @@ static int unuse_pte_range(struct vm_area_struct *vma, pmd_t *pmd,
- 
- 		folio = swap_cache_get_folio(entry, vma, addr);
- 		if (!folio) {
--			struct page *page;
- 			struct vm_fault vmf = {
- 				.vma = vma,
- 				.address = addr,
-@@ -1891,10 +1890,8 @@ static int unuse_pte_range(struct vm_area_struct *vma, pmd_t *pmd,
- 				.pmd = pmd,
- 			};
- 
--			page = swapin_readahead(entry, GFP_HIGHUSER_MOVABLE,
-+			folio = swapin_readahead(entry, GFP_HIGHUSER_MOVABLE,
- 						&vmf);
--			if (page)
--				folio = page_folio(page);
- 		}
- 		if (!folio) {
- 			swp_count = READ_ONCE(si->swap_map[offset]);
+What you want is to hide this in the menuconfig for the irrelevant platforms
+which have PCI _or_ ACPI enabled, correct?
+
+But if we add x86 dependency to that, it will drop the support for non-x86
+ACPI-based platforms with this device. I have no clue what are those.
+
+Yes, we may try to have ((PCI || ACPI) && X86) at the end, but I believe
+this will have a good regression effect.
+
+
+> The purpose of any || COMPILE_TEST dependency is to improve the
+> usability of Kconfig.
+
+Right, when I see FOO || COMPILE_TEST I interpret FOO as *functional*
+dependency, meaning that without FOO the certain driver makes no sense
+from functional point of view.
+
+
 -- 
-2.43.0
+With Best Regards,
+Andy Shevchenko
 
 
->  mm/memory.c     | 8 +++-----
->  mm/swap.h       | 4 ++--
->  mm/swap_state.c | 6 ++----
->  mm/swapfile.c   | 5 +----
->  4 files changed, 8 insertions(+), 15 deletions(-)
-> 
-> diff --git a/mm/memory.c b/mm/memory.c
-> index e42fadc25268..dfdb620a9123 100644
-> --- a/mm/memory.c
-> +++ b/mm/memory.c
-> @@ -4005,12 +4005,8 @@ vm_fault_t do_swap_page(struct vm_fault *vmf)
->  			if (PTR_ERR(folio) == -EBUSY)
->  				goto out;
->  			need_clear_cache = true;
-> -			page = &folio->page;
->  		} else {
-> -			page = swapin_readahead(entry, GFP_HIGHUSER_MOVABLE,
-> -						vmf);
-> -			if (page)
-> -				folio = page_folio(page);
-> +			folio = swapin_readahead(entry, GFP_HIGHUSER_MOVABLE, vmf);
->  			swapcache = folio;
->  		}
->  
-> @@ -4027,6 +4023,8 @@ vm_fault_t do_swap_page(struct vm_fault *vmf)
->  			goto unlock;
->  		}
->  
-> +		page = folio_file_page(folio, swp_offset(entry));
-> +
->  		/* Had to read the page from swap area: Major fault */
->  		ret = VM_FAULT_MAJOR;
->  		count_vm_event(PGMAJFAULT);
-> diff --git a/mm/swap.h b/mm/swap.h
-> index 40e902812cc5..aee134907a70 100644
-> --- a/mm/swap.h
-> +++ b/mm/swap.h
-> @@ -57,7 +57,7 @@ struct folio *swap_cluster_readahead(swp_entry_t entry, gfp_t flag,
->  		struct mempolicy *mpol, pgoff_t ilx);
->  struct folio *swapin_direct(swp_entry_t entry, gfp_t flag,
->  			    struct vm_fault *vmf);
-> -struct page *swapin_readahead(swp_entry_t entry, gfp_t flag,
-> +struct folio *swapin_readahead(swp_entry_t entry, gfp_t flag,
->  			      struct vm_fault *vmf);
->  
->  static inline unsigned int folio_swap_flags(struct folio *folio)
-> @@ -95,7 +95,7 @@ static inline struct folio *swapin_direct(swp_entry_t entry, gfp_t flag,
->  	return NULL;
->  }
->  
-> -static inline struct page *swapin_readahead(swp_entry_t swp, gfp_t gfp_mask,
-> +static inline struct folio *swapin_readahead(swp_entry_t swp, gfp_t gfp_mask,
->  			struct vm_fault *vmf)
->  {
->  	return NULL;
-> diff --git a/mm/swap_state.c b/mm/swap_state.c
-> index 0a3fa48b3893..2a9c6bdff5ea 100644
-> --- a/mm/swap_state.c
-> +++ b/mm/swap_state.c
-> @@ -951,7 +951,7 @@ struct folio *swapin_direct(swp_entry_t entry, gfp_t gfp_mask,
->   * it will read ahead blocks by cluster-based(ie, physical disk based)
->   * or vma-based(ie, virtual address based on faulty address) readahead.
->   */
-> -struct page *swapin_readahead(swp_entry_t entry, gfp_t gfp_mask,
-> +struct folio *swapin_readahead(swp_entry_t entry, gfp_t gfp_mask,
->  				struct vm_fault *vmf)
->  {
->  	struct mempolicy *mpol;
-> @@ -964,9 +964,7 @@ struct page *swapin_readahead(swp_entry_t entry, gfp_t gfp_mask,
->  		swap_cluster_readahead(entry, gfp_mask, mpol, ilx);
->  	mpol_cond_put(mpol);
->  
-> -	if (!folio)
-> -		return NULL;
-> -	return folio_file_page(folio, swp_offset(entry));
-> +	return folio;
->  }
->  
->  #ifdef CONFIG_SYSFS
-> diff --git a/mm/swapfile.c b/mm/swapfile.c
-> index 4919423cce76..4dd894395a0f 100644
-> --- a/mm/swapfile.c
-> +++ b/mm/swapfile.c
-> @@ -1883,7 +1883,6 @@ static int unuse_pte_range(struct vm_area_struct *vma, pmd_t *pmd,
->  
->  		folio = swap_cache_get_folio(entry, vma, addr);
->  		if (!folio) {
-> -			struct page *page;
->  			struct vm_fault vmf = {
->  				.vma = vma,
->  				.address = addr,
-> @@ -1891,10 +1890,8 @@ static int unuse_pte_range(struct vm_area_struct *vma, pmd_t *pmd,
->  				.pmd = pmd,
->  			};
->  
-> -			page = swapin_readahead(entry, GFP_HIGHUSER_MOVABLE,
-> +			folio = swapin_readahead(entry, GFP_HIGHUSER_MOVABLE,
->  						&vmf);
-> -			if (page)
-> -				folio = page_folio(page);
->  		}
->  		if (!folio) {
->  			swp_count = READ_ONCE(si->swap_map[offset]);
-> -- 
-> 2.43.0
-> 
 
