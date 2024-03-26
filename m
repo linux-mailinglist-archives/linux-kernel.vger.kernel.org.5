@@ -1,137 +1,133 @@
-Return-Path: <linux-kernel+bounces-120035-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-120036-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8633088D098
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 23:16:55 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id ACF6688D09E
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 23:17:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3F3BE2E7715
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 22:16:54 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 660092E77A3
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 22:17:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 676C013DBA2;
-	Tue, 26 Mar 2024 22:16:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 25EB213D8B7;
+	Tue, 26 Mar 2024 22:16:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ir/DPfmq"
-Received: from mail-ed1-f51.google.com (mail-ed1-f51.google.com [209.85.208.51])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="VND7f/sE"
+Received: from mail-ej1-f53.google.com (mail-ej1-f53.google.com [209.85.218.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 38FF313D8B7;
-	Tue, 26 Mar 2024 22:16:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D266D13DBA8;
+	Tue, 26 Mar 2024 22:16:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711491407; cv=none; b=kn5rLEh+Wf7YoBidkwGCTycJY5TDAEg1kye72n3e1KsjpDg0s3n3C+fAq1SI1dwxlxaJ92cFf91/hV5NTY+97ZBIa8Z8yvOZkDos9Etq50boaarjMq+Fapz8pFTIjpLWgqonzSR9xfGncLcbRgmtuZfiMtXGQbDlsB3gIIrpvZA=
+	t=1711491410; cv=none; b=SczkwVPEGxyr4eJ1+AhOCHj0jcjUZy/cHj0TxfMoWd0dHOHUDnl5tyV5QXor8k/rasblS/rEi0RM7lZeH/7EM2pHmAamPNOrIyBMKD3rFskODm+jXG9+S4kedMIELOlIUY3jxZkzx84pQLaYK5aWpLLU6B7qZFM9raPuJGGKfhQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711491407; c=relaxed/simple;
-	bh=1dSSE8o/7fxaic7JQ5aKoMmd7jjmFoEpVi/s2r32H28=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=QOM+TPS+5mHatQsmko90TtWcBD7HqSNJLXCJlo8QfZVLCqu+AFxSFJci2rui1k/6ZgbJzpAnD5pliUmG2d16gtz+9eP2pn3qw5tIxQxdJkZ2B6k7TzlOwe3kOhl9ulFYxGYpnGMHNtJSCyQFUQORFr/5GOUC4Dhgut8Zh1Z8hcs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ir/DPfmq; arc=none smtp.client-ip=209.85.208.51
+	s=arc-20240116; t=1711491410; c=relaxed/simple;
+	bh=J0RnoOCSqOqlajOtrlqrGQ/DJiRxB7k7ItoWaD5DBwA=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=QyZ6rc9rgTvoQw+V1AXuvItmg0xVkjHUwuy6X8d3K9ORZpPWgmE+MYfnQfNGK5v+xRzj4idlIPNSQxd9TjpUjODWkI/mYr0PYkKbKMRtFDgh/0aXsdV1Xt+6wqula42fDdL9f1l4IBHm0qzBKxDhpBPqHNrpAW8nVtqB0+ISMGQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=VND7f/sE; arc=none smtp.client-ip=209.85.218.53
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f51.google.com with SMTP id 4fb4d7f45d1cf-565c6cf4819so410332a12.1;
-        Tue, 26 Mar 2024 15:16:46 -0700 (PDT)
+Received: by mail-ej1-f53.google.com with SMTP id a640c23a62f3a-a2f22bfb4e6so798076366b.0;
+        Tue, 26 Mar 2024 15:16:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711491404; x=1712096204; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Frayo+csvFud+6F8lmDKVzF8ivbvgaqjKrnjbYcfWB0=;
-        b=ir/DPfmqLpSZCmLynfogKmtQivGlQWP5/7BVEXPjRNQnWp/346+/MNTzyMvEbGTM4I
-         ii4XbtI90GxblQAVpflP6/CazvqOYoE6SOTJ5qu4OiLHLC1M6TQC9OQHEHlqkukE0be8
-         Ic6Wnf/xDGIDSFC4xbD1G84mRkzwEcNo8J7obMMC/YBAUK44syL4c4svKqYD7gffVkr+
-         cXa0FWN+ICYDEi7CdUJAecctK+VczDoxjKr/dR7X1qQ2eym2ZLSpdIFVI0KVndko19i9
-         ygTMwPX8HEWeCngLyVUJxccoUkYyl0W6roCLDpD5toZFnE4mOdCrQLXYVX/eVDunQO8e
-         iOHA==
+        d=gmail.com; s=20230601; t=1711491407; x=1712096207; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=YplBHOu9LgYYYqj2137kfj3IsGRSUTd9LNfjx3vcjjg=;
+        b=VND7f/sEDAFF7XvR5ueTwdplEJHudc8dVOmZi6EYUgqSK7gS77Mi2Ea4zFM9tQ5LrE
+         MvswvLp0qDXwnX31C+iC1dFIyH3vsEypr676SWSHv2ecasn/6eo3iY9+F1nr3uyLAlUD
+         sClPUKTi604GXEcfq97XKTYuWPhtyNkG3Kvom7D9KerN587y3BLuEiu2SoxDQPuB1ndq
+         /tGxWxGQ2hnNiF27xJ6Qhk1xLUlMq2uHhWW4R9h8cJec0AqkWZ7Y+JPewmcZNUrDvkl0
+         kDKySvZN+xe227lemoKG9XzemJdMEngaYQRnagQe64xLCzs/kbRnFloJvB5N20u5CduK
+         GQpw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711491404; x=1712096204;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Frayo+csvFud+6F8lmDKVzF8ivbvgaqjKrnjbYcfWB0=;
-        b=me2XwETKZeQKQ5zcSs2bImg8fjokG7cZpFx3qVyqbrcU7oZk6WkRMfFiU99kp4rNcJ
-         4zkUf/z7Y5ihaieYzSiJ02RSVKTLl6I8ZiBme/WGd0mx51Wu6i2z77B8e3O8wmypM/VD
-         wJgTG4+n8Tb+6FKg5n0t1s9tU4xqa886gSxyZYcRHeJp5OMseBbGbVSlGmvepK5uNM/H
-         q/nbv8p8m2xoEBRb1YIppQibTCSo+thonepvaLO+vXRVpWffVk3v0yqXab+S/+5SiNXC
-         HXyjhIiHby8G2YD5nrKrfjvExuKDLZGjFMVODKlXRh1ymnyf7F5nNvmZyAGvVwLVTXns
-         VkzQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVxUXu7PY9Szy3BuBJb7Eo1Y/pZgz49ktJ6YApWpr7Tg7Y9i+OqSLsm1EihBARin6fRkAD02mliDA9IcSeIpB2fcfZBRywSmD8mh3klfTzMomWHuluVNYvxpdwS7pTHMMxtCOXvZyb+hA==
-X-Gm-Message-State: AOJu0Yy3VuMExXodOq67fXKWAqtnUDty2RELOU7gPYYJ7RROSPfulmRD
-	uGaZoyqdaLQqK/Jd7e8FbrMklk11vEunzZ/RuYqTQpc1qcBdaFbN
-X-Google-Smtp-Source: AGHT+IFT2nNhb6UgfQJfTCphu5HmlZV4ZvD9Mjgcz5Z++uTHWQbnlhi2t1X6P7AdnDcf85HK3UtIjg==
-X-Received: by 2002:a17:906:e24d:b0:a4a:39f3:b195 with SMTP id gq13-20020a170906e24d00b00a4a39f3b195mr2314395ejb.4.1711491404403;
-        Tue, 26 Mar 2024 15:16:44 -0700 (PDT)
-Received: from jernej-laptop.localnet (86-58-6-171.dynamic.telemach.net. [86.58.6.171])
-        by smtp.gmail.com with ESMTPSA id q5-20020a170906388500b00a473362062fsm4672367ejd.220.2024.03.26.15.16.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Mar 2024 15:16:43 -0700 (PDT)
-From: Jernej =?utf-8?B?xaBrcmFiZWM=?= <jernej.skrabec@gmail.com>
-To: Rob Herring <robh@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
- Samuel Holland <samuel@sholland.org>, Corentin Labbe <clabbe@baylibre.com>,
- Maxime Ripard <mripard@kernel.org>, devicetree@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
- linux-kernel@vger.kernel.org,
- Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Subject:
- Re: [PATCH 1/4] arm64: dts: allwinner: Pine H64: correctly remove
- reg_gmac_3v3
-Date: Tue, 26 Mar 2024 23:16:42 +0100
-Message-ID: <2722214.mvXUDI8C0e@jernej-laptop>
-In-Reply-To: <20240317184130.157695-1-krzysztof.kozlowski@linaro.org>
-References: <20240317184130.157695-1-krzysztof.kozlowski@linaro.org>
+        d=1e100.net; s=20230601; t=1711491407; x=1712096207;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=YplBHOu9LgYYYqj2137kfj3IsGRSUTd9LNfjx3vcjjg=;
+        b=ai1QlrJhfbvLuRb7bT2bdNmMqpve2rW+TKWLktycLGXZCJX2mht3dXuMXf1pfo2AAU
+         qvESzLu8OD+CuMGmjVl1sYM32bb26inX22HDHiLBazxud1XJu1hRXfeOcSEbp0D4bHIx
+         l3QU/GGeaepMmsE8kRtNSk6mwJY+c8ph1TDdQwZ66njGP8ZgpmYBub9zexLORzcCNFaV
+         X5OODMU91F5wcDAMsKXmiK7z8qSW2GT6EODK0WK1xRyk34q0ggCjwNrKRpY3x3ZpGvKY
+         +4teTQ7qGBTlUK7/wAQbGJeaSebRr4uYPHNik50A0tV+x7jIuadpTbIxwvKmk+IejxSN
+         ja2A==
+X-Forwarded-Encrypted: i=1; AJvYcCVI57Qu80ONvA0+kNtaXYj3qbKCvTkh4JaHUlwQlROveIPTGHAGy2n6eobxxpWiU2etUjoJlLVdZ8xIWbao6M+JMoAGSAwxm8ERaTAH508SEbLuxH+ZDwlboaUCqRC4ZabDJI3WjZWKXrGoQ7KoGL/HbhrqQSFvKdE5FDx+xSTd
+X-Gm-Message-State: AOJu0YwtAupbVw55DBuC5CnABHQ/vMTJVlwumXgkAY8UyLjGMz6Y0uy3
+	qVWqTAMM78ALNH/IBtiKkizKLYg+YUKyKy3Dw8Arv6H95K85JNrnlUgwfzY50YQ=
+X-Google-Smtp-Source: AGHT+IEMQ/FGGPjdWPwfIps8GVz+mdG3Mk7kmNLcwzNisJ9N/wYV9naSZ1NmkPkEuqFh+dHus6mQbA==
+X-Received: by 2002:a17:906:c111:b0:a47:4b76:6258 with SMTP id do17-20020a170906c11100b00a474b766258mr7482552ejc.25.1711491407123;
+        Tue, 26 Mar 2024 15:16:47 -0700 (PDT)
+Received: from [192.168.20.170] (57657817.catv.pool.telekom.hu. [87.101.120.23])
+        by smtp.gmail.com with ESMTPSA id l11-20020a170906414b00b00a46c39e6a47sm4724191ejk.148.2024.03.26.15.16.45
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 26 Mar 2024 15:16:46 -0700 (PDT)
+Message-ID: <d81eb0dd-f1ee-4a54-aa04-9ebe8b8eff88@gmail.com>
+Date: Tue, 26 Mar 2024 23:16:47 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="utf-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2] clk: qcom: clk-alpha-pll: fix rate setting for Stromer
+ PLLs
+To: Konrad Dybcio <konrad.dybcio@linaro.org>,
+ Bjorn Andersson <andersson@kernel.org>,
+ Michael Turquette <mturquette@baylibre.com>, Stephen Boyd
+ <sboyd@kernel.org>, Varadarajan Narayanan <quic_varada@quicinc.com>,
+ Sricharan R <quic_srichara@quicinc.com>,
+ Kathiravan T <quic_kathirav@quicinc.com>
+Cc: linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
+ linux-kernel@vger.kernel.org, stable@vger.kernel.org
+References: <20240326-alpha-pll-fix-stromer-set-rate-v2-1-48ae83af71c8@gmail.com>
+ <87af7b7e-9c2f-41e1-af97-01d3f29f5970@linaro.org>
+Content-Language: hu
+From: Gabor Juhos <j4g8y7@gmail.com>
+In-Reply-To: <87af7b7e-9c2f-41e1-af97-01d3f29f5970@linaro.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-Dne nedelja, 17. marec 2024 ob 19:41:27 CET je Krzysztof Kozlowski napisal(a):
-> There is no "reg_gmac_3v3" device node in sun50i-h6-pine-h64.dts,
-> although there is "gmac-3v3" with "reg_gmac_3v3" label, so let's assume
-> author wanted to remove that node.  Delete node via phandle, not via
-> full node path, to fix this.
+2024. 03. 26. 21:51 keltezéssel, Konrad Dybcio írta:
+
+..
+>> diff --git a/drivers/clk/qcom/clk-alpha-pll.c b/drivers/clk/qcom/clk-alpha-pll.c
+>> index 8a412ef47e163..8e98198d4b4b6 100644
+>> --- a/drivers/clk/qcom/clk-alpha-pll.c
+>> +++ b/drivers/clk/qcom/clk-alpha-pll.c
+>> @@ -2490,6 +2490,10 @@ static int clk_alpha_pll_stromer_set_rate(struct clk_hw *hw, unsigned long rate,
+>>  	rate = alpha_pll_round_rate(rate, prate, &l, &a, ALPHA_REG_BITWIDTH);
+>>  
+>>  	regmap_write(pll->clkr.regmap, PLL_L_VAL(pll), l);
+>> +
+>> +	if (ALPHA_REG_BITWIDTH > ALPHA_BITWIDTH)
+>> +		a <<= ALPHA_REG_BITWIDTH - ALPHA_BITWIDTH;
 > 
-> Fixes: f33a91175029 ("arm64: dts: allwinner: add pineh64 model B")
-> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-
-Reviewed-by: Jernej Skrabec <jernej.skrabec@gmail.com>
-
-Best regards,
-Jernej
-
-> ---
->  arch/arm64/boot/dts/allwinner/sun50i-h6-pine-h64-model-b.dts | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
+> Uh.. that's not right, this is comparing two constants
 > 
-> diff --git a/arch/arm64/boot/dts/allwinner/sun50i-h6-pine-h64-model-b.dts b/arch/arm64/boot/dts/allwinner/sun50i-h6-pine-h64-model-b.dts
-> index b710f1a0f53a..1b6e5595ac6e 100644
-> --- a/arch/arm64/boot/dts/allwinner/sun50i-h6-pine-h64-model-b.dts
-> +++ b/arch/arm64/boot/dts/allwinner/sun50i-h6-pine-h64-model-b.dts
-> @@ -5,12 +5,12 @@
->  
->  #include "sun50i-h6-pine-h64.dts"
->  
-> +/delete-node/ &reg_gmac_3v3;
-> +
->  / {
->  	model = "Pine H64 model B";
->  	compatible = "pine64,pine-h64-model-b", "allwinner,sun50i-h6";
->  
-> -	/delete-node/ reg_gmac_3v3;
-> -
->  	wifi_pwrseq: wifi_pwrseq {
->  		compatible = "mmc-pwrseq-simple";
->  		reset-gpios = <&r_pio 1 3 GPIO_ACTIVE_LOW>; /* PM3 */
-> 
+> Did you mean to use pll_alpha_width()?
 
+No, not in this patch at least.
 
+The clk_alpha_pll_stromer_set_rate() function assumes that the alpha register is
+40 bits wide, and currently it does not use pll_alpha_width() at all.
+Originally, I have converted the function to use it, but that made the change
+unnecessarily complex since it was a mix of a fix and of a rework.
 
+The current patch is a simplified version of that, but i forgot to drop the
+comparison at the end of the process.
+
+In order to keep this fix as simple as possible and backportable to stable
+kernels, I would rather remove the comparison to reduce the change to a
+single-line addition. Then modifying the code to use pll_alpha_width() can be
+done in a separate change.
+
+Regards,
+Gabor
 
 
