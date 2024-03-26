@@ -1,210 +1,107 @@
-Return-Path: <linux-kernel+bounces-118365-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-118366-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 860C488B995
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 05:59:44 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id F101188B99A
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 06:01:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id F124A1F37017
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 04:59:43 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6D9A0B2288B
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 05:01:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D574082D72;
-	Tue, 26 Mar 2024 04:59:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C9CA1823C7;
+	Tue, 26 Mar 2024 05:01:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="aVi8fu7m"
-Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
+	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="pofAQ7wg"
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 320C35D905;
-	Tue, 26 Mar 2024 04:59:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.23.248
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B6AAB2E62D;
+	Tue, 26 Mar 2024 05:01:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711429174; cv=none; b=Q/k5IS+UlYvdmQEahuKgKU5r7mXRUGp4mOonkcMnpJ7gqhnSEAWMDR81dnldtgKytekmyKt6bLF1TzmP2HLYyomHeHy0PX5wkSddui7DXytaRo6+YQuIl7V+G1FwPevYuT9yQnCLkAsimLlwf+5Fjz7kOZH833RMUraytWc/wis=
+	t=1711429285; cv=none; b=CPoOvQrIHuTAhCWoHQD9ij6nVzYMLPXXMBHg1fUAqugzwsUed6idyJli5+oJihD8NuKb2nb4snKdH8xs5Tp84v4eviT1UOiIClvIZAeQN1wuBE38rmmO0wD834ZU0GMbtHrqYuXlpWkWuOW2t1zNIkvHJ4Uy8iXSBVJltcqdtJ4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711429174; c=relaxed/simple;
-	bh=Kk//ja//OckJbGLtdF+s+VPF2oDr7OlrPekj8ig0JWY=;
-	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=lgEwF36G2pK2T3O59sLMe7ebYK1ybA6kBhMikGFWrvnWIx3ggMYQULGt2BYM/DjSfiGJfnasNmyHV+NZLqoEU2ZYWJ/xn5Rxuj26U4VYr6LdpW1IOrdRqZSPqvs8PjW4fndZlnKIDpd9Li2JVyvkdDRnlgYxk6UTKFIDtnBiebM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=aVi8fu7m; arc=none smtp.client-ip=198.47.23.248
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-	by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 42Q4xCWg102011;
-	Mon, 25 Mar 2024 23:59:12 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1711429152;
-	bh=cUjb4FFIv54rr7MmbTYuEQBtNz+9FaFMStjEdNaoD9U=;
-	h=Date:From:To:CC:Subject:References:In-Reply-To;
-	b=aVi8fu7mnEddy0Tfz30Xi/MNV2qTnyIW/245IyarM3FUwzwYb6s9CGVR1lclYL6QD
-	 nj0DECU66JTcSvJsxhxSnhAXjQ4wfBv3wNkbFYSgKDJnNbJKJSdAh2KXq7QO68bG18
-	 Vx2ZxgCQyzNrYYHyFPg0mSQv73PRXuZjlX3aoOtI=
-Received: from DFLE111.ent.ti.com (dfle111.ent.ti.com [10.64.6.32])
-	by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 42Q4xCTI037922
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Mon, 25 Mar 2024 23:59:12 -0500
-Received: from DFLE103.ent.ti.com (10.64.6.24) by DFLE111.ent.ti.com
- (10.64.6.32) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Mon, 25
- Mar 2024 23:59:12 -0500
-Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DFLE103.ent.ti.com
- (10.64.6.24) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Mon, 25 Mar 2024 23:59:12 -0500
-Received: from localhost (uda0492258.dhcp.ti.com [172.24.227.9])
-	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 42Q4xBbt061615;
-	Mon, 25 Mar 2024 23:59:11 -0500
-Date: Tue, 26 Mar 2024 10:29:10 +0530
-From: Siddharth Vadapalli <s-vadapalli@ti.com>
-To: Niklas Cassel <cassel@kernel.org>
-CC: Siddharth Vadapalli <s-vadapalli@ti.com>, <lpieralisi@kernel.org>,
-        <kw@linux.com>, <robh@kernel.org>, <bhelgaas@google.com>,
-        <manivannan.sadhasivam@linaro.org>, <fancer.lancer@gmail.com>,
-        <u.kleine-koenig@pengutronix.de>, <dlemoal@kernel.org>,
-        <yoshihiro.shimoda.uh@renesas.com>, <linux-pci@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
-        <srk@ti.com>
-Subject: Re: [PATCH v4] PCI: keystone: Fix pci_ops for AM654x SoC
-Message-ID: <750df13b-ee2f-4067-a9e0-7fd1ace384cf@ti.com>
-References: <20240325053722.1955433-1-s-vadapalli@ti.com>
- <ZgFemQ8gHpB8yMef@ryzen>
- <ea0294d4-85d1-4784-acd7-dd247165f69b@ti.com>
- <ZgF_5fYsI5lOFjOv@ryzen>
+	s=arc-20240116; t=1711429285; c=relaxed/simple;
+	bh=NuH2yXjmlzjCLZrukY4ylilmRicRHDoEO3Iofl74e48=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=mbWtqyo0VCvTcPUZ5OTOm0uYRYZ/O4gxMVcwA9DhLH9cyjCWKYlNcvtF0wa/88MwDeaoFGd+tHIlvn0dcEP94BXCFbM1+Yc2msfZcah588VP786GCLSLIbZsmlR3EACjuch1hRBE5UDxDje3IgixnrF/y/jZa7ihRlUe8W8G1UI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au; spf=pass smtp.mailfrom=canb.auug.org.au; dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b=pofAQ7wg; arc=none smtp.client-ip=150.107.74.76
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+	s=201702; t=1711429275;
+	bh=BZS8B38UoxEfsrQsv+4f+CeflI2wtNmGcp7UflMWLiY=;
+	h=Date:From:To:Cc:Subject:From;
+	b=pofAQ7wgNwf+39TQ4cr7h/IUZSZ4abkEwYZqJ2ZL6xDuH7bTa2REz0Ll7ZTUpwYEl
+	 OBTq+CMad/d1AeFJ0AIoEzKbkXX9zNpOkcCLVtI+7ydog6UpdJPxrzm/MgruPWEfM3
+	 RnX087soBHbHIxldlkVgyQ2XqGxxsmVTJTvV0gVtV4SYOaUYSzy1QAPyTasgQcmrHc
+	 gFTx+LElI3vreWbEXcjazK9gZYUhGriNCys5G7AnED217ZRMzXNsVf2Nq8mq9gqH7T
+	 BeL2L8/d1TlcMRKuWMqpstpNjLq0A9GH+YNgOHRbSP2vCMCQCOPNSTzHPT2UdTIGQE
+	 vsXuz9Vyp1l7Q==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mail.ozlabs.org (Postfix) with ESMTPSA id 4V3d1Q0sMGz4wqN;
+	Tue, 26 Mar 2024 16:01:13 +1100 (AEDT)
+Date: Tue, 26 Mar 2024 16:01:10 +1100
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+To: Daniel Vetter <daniel.vetter@ffwll.ch>
+Cc: =?UTF-8?B?QWRyacOhbg==?= Larumbe <adrian.larumbe@collabora.com>, Boris
+ Brezillon <boris.brezillon@collabora.com>, Intel Graphics
+ <intel-gfx@lists.freedesktop.org>, DRI <dri-devel@lists.freedesktop.org>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Linux Next
+ Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: build warning after merge of the drm-misc tree
+Message-ID: <20240326160110.4c00e1e5@canb.auug.org.au>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <ZgF_5fYsI5lOFjOv@ryzen>
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: multipart/signed; boundary="Sig_/NHVutHcftGYyKXZT7QaPzsB";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 
-On Mon, Mar 25, 2024 at 02:45:09PM +0100, Niklas Cassel wrote:
-> Hello Siddharth,
-> 
-> On Mon, Mar 25, 2024 at 05:52:28PM +0530, Siddharth Vadapalli wrote:
-> > On Mon, Mar 25, 2024 at 12:23:05PM +0100, Niklas Cassel wrote:
-> > > On Mon, Mar 25, 2024 at 11:07:22AM +0530, Siddharth Vadapalli wrote:
-> > > > @@ -822,6 +788,23 @@ static int __init ks_pcie_host_init(struct dw_pcie_rp *pp)
-> > > >  	if (ret < 0)
-> > > >  		return ret;
-> > > >
-> > > 
-> > > > +	if (!ks_pcie->is_am6) {
-> > > 
-> > > Perhaps add a comment here stating WHY this is needed for v3.65a (!is_am6).
-> > > 
-> > > From reading the old threads, it appears that v3.65a:
-> > > -Has no support for iATUs. iATU-specific resource handling code is to be
-> > >  bypassed for v3.65 h/w. Thus v3.65a has it's own .child_ops implementation,
-> > >  so that pcie-designware-host.c does not configure the iATUs.
-> > > -v3.65a has it's own .msi_init implementation, so that pcie-designware-host.c
-> > >  does not call dw_pcie_msi_host_init() to configure the MSI controller.
-> > > 
-> > > While 4.90a:
-> > > -Does have iATU support.
-> > > -Does use the generic dw_pcie_msi_host_init().
-> > > 
-> > > Considering the major differences (with v3.65a being the outlier) here,
-> > > I think it would have been a much wiser idea to have two different glue
-> > > drivers for these two compatibles (ti,keystone-pcie and ti,am654-pcie-rc).
-> > > 
-> > > Right now the driver is quite hard to read, most of the functions in this
-> > > driver exist because v3.65a does not have an iATU and does not use the
-> > > generic DWC way to handle MSIs. Additionally, you have "if (!ks_pcie->is_am6)"
-> > > spread out all over the driver, to control quite major things, like if you
-> > > should overload .child_ops, or if you should set up inbound translation without
-> > > an iATU. This makes is even harder to see which code is actually used for
-> > > am654... like the fact that it actually uses the generic way to handle MSIs...
-> > > 
-> > > The driver for am654 would be much nicer since many of the functions in
-> > > this driver would not be needed (and the fact that you have only implemented
-> > > EP support for am654 and not for v3.65a). All EP related stuff would be in
-> > > the am654 file/driver.
-> > > You could keep the quirky stuff for v3.65a in the existing pci-keystone.c
-> > > driver.
-> > > 
-> > > (I guess if there is a function that is identical between the twos, you could
-> > > have a pci-keystone-common.{c,h}  that can be used by both drivers, but from
-> > > the looks of it, they seem to share very little code.
-> > 
-> > Thank you for reviewing the patch. I agree that two drivers will be
-> > better considering the !ks_pcie->is_am6 present throughout the driver.
-> > However, I hope you notice the fact that commit:
-> > 6ab15b5e7057 PCI: dwc: keystone: Convert .scan_bus() callback to use add_bus
-> > introduced a regression in a driver which was working prior to that
-> > commit for AM654. While there are flaws in the driver and it needs to be
-> > split to handle v3.65a and other versions in a cleaner manner, I am
-> > unable to understand why that is a precursor to fixing the regression.
-> > 
-> > If splitting the driver is the only way to fix this regression, please
-> > let me know and I will work on that instead, though it will take up more
-> > time.
-> 
-> I think you are misunderstanding me.
-> 
-> I think this patch is fine, except for the comment that I gave:
-> "Perhaps add a comment here stating WHY this is needed for v3.65a (!is_am6)."
-> 
-> Like:
-> 
-> /*
->  * This is only needed for !am654 since it has its own msi_irq_chip
->  * implementation. (am654 uses the generic msi_irq_chip implementation.)
->  */
-> if (!ks_pcie->is_am6) {
-> 	...
-> }
-> 
-> 
-> In fact, if you move this code to ks_pcie_msi_host_init(), instead of
-> ks_pcie_host_init(), you would not need a comment (or a if (!ks_pcie->is_am6)),
-> since ks_pcie_msi_host_init() is only executed by !am654.
+--Sig_/NHVutHcftGYyKXZT7QaPzsB
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-This seems much better :)
+Hi all,
 
-In the current code, the execution is as follows:
+After merging the drm-misc tree, today's linux-next build (htmldocs)
+produced this warning:
 
-	ks_pcie_probe()
-	    dw_pcie_host_init()
-	        pci_host_probe()
-	            ks_pcie_v3_65_add_bus()
+Documentation/ABI/testing/sysfs-driver-panfrost-profiling:2: ERROR: Unexpec=
+ted indentation.
 
-Moving the contents of ks_pcie_v3_65_add_bus() to ks_pcie_msi_host_init()
-will result in:
+Introduced by commit
 
-	ks_pcie_probe()
-	    dw_pcie_host_init()
-	    	if (pci_msi_enabled())
-			if (pp->ops->msi_init) {
-				ret = pp->ops->msi_init(pp);
-					ks_pcie_msi_host_init()
-	        pci_host_probe()
+  b12f3ea7c188 ("drm/panfrost: Replace fdinfo's profiling debugfs knob with=
+ sysfs")
 
-I will update this patch based on your suggestion. If it's alright, may I
-also add your "Suggested-by" tag for the v5 patch? Please let me know.
+Also, that file does not have a newline at the end of its last line.
 
-> 
-> 
-> 
-> 
-> My suggestion to split this driver to two different drivers is just because
-> I noticed how different they are (am654 has iATUs, uses generic msi_irq_chip
-> implementation and has EP-mode support. !am654 has no iATUs, its own MSI
-> implementation and no EP-mode support.)
-> 
-> So the am654 driver would look like most other DWC glue drivers.
-> The non-am654 driver would look mostly like it looks today, except you would
-> remove the EP-mode support.
-> 
-> However, this suggestion can of course be implemented sometime in the future
-> and should not be a blocker for the patch in $subject.
+--=20
+Cheers,
+Stephen Rothwell
 
-Thank you for clarifying.
+--Sig_/NHVutHcftGYyKXZT7QaPzsB
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
-Regards,
-Siddharth.
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmYCVpYACgkQAVBC80lX
+0GyfEgf/eRSy/oMHGhm+gbLCZD/n8bfQbAGEGhaHDa83QS4uJWVjamtrjKtI444Y
+qZn6cfJ7J9dAOBTiht/rgBoAhDKxhiPNeFJj0zsryAytLsfEWRnkjTG5CUvbP9bM
+lC4Fi/+ciYmdwnSY/uq2kzryO//bZc9o2EYJiVBz6NTlc3jHNqy0DyNkdgq7+AE2
+7kdB0bbanRuxzdNA0aD6JAKpKeQr8UoI7OAnltMwRuKRucYwknYye+V94nzZV673
+NDEI8IX9/A/FJMk860TUhGyzGIEcJ67+8mThCgGxKypVqNNbZdX6xBSy9K/A5cDS
+KU/qHS6ENO8vaagIBidJf9ORyzd/4g==
+=zB0h
+-----END PGP SIGNATURE-----
+
+--Sig_/NHVutHcftGYyKXZT7QaPzsB--
 
