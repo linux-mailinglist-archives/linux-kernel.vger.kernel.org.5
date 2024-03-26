@@ -1,140 +1,213 @@
-Return-Path: <linux-kernel+bounces-119736-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-119739-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 67B3188CC90
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 20:00:50 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1E78788CC98
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 20:02:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 23455341E53
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 19:00:49 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id ACE8CB2B760
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 19:01:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CBE6813CC6C;
-	Tue, 26 Mar 2024 19:00:35 +0000 (UTC)
-Received: from mail-il1-f200.google.com (mail-il1-f200.google.com [209.85.166.200])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DF6DE13CC6B;
+	Tue, 26 Mar 2024 19:01:28 +0000 (UTC)
+Received: from mail-io1-f72.google.com (mail-io1-f72.google.com [209.85.166.72])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2417913C9D1
-	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 19:00:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.200
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A66F3A8D0
+	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 19:01:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.72
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711479635; cv=none; b=nu/gvbEdzpUh4EkbzNJYTwlCHozqLqhoaq9q0NCynnBpkkPKCqwNArhs2UWs3lbvnIf4VpFtJIhdjOhk/SQdweoPrK1ensIdZ3QUIex9tdRzXeHP8yUuUR2Ps4vzgWPX039fGpQ4xGGhxn4LEfz5x3mWosCW3ezTarbE7dve2Gs=
+	t=1711479688; cv=none; b=JUvnArDC1bBKVQ2s6V0ZhF8wnvMX2EoujNIhUeHJKn6m0sYMjuBPxHDhPAH5FLWl2rV83UIo6is84qPyLV21QfS4tp2uqS9R8Bx/VlMK6gghsQjp6TquEPJ6iwW9ggqV8Q12C0Cvxabi65+U3ZGXwnoIS/lpaG2XebApbyV2Lhc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711479635; c=relaxed/simple;
-	bh=R/mMGKjzQTaooyIF3PJX6TqpXnfMhdRKraYq9NmqNsk=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=qNh6MkmI0Ga6LESNZa63wsnbjyBeX8/Yf44h6acqs+2nNZRNse+vROvSAVU5f5k77zQJpxO9f0a7F+m8TBCWIZuoyT94QuZxuK+7SVt1eTCQ11lMqxb7m4eXGimVp7vnwS5xJfG0OGk1BdnoAfWFbXRr5mAjkbsKARHZO/tLUd0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.200
+	s=arc-20240116; t=1711479688; c=relaxed/simple;
+	bh=uDnkpd/E/ZhmQfliHxZR4eUNWh0TyWgHVUFDClOx2JU=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=b3IMtnCWkYbrRjF6630CEwEohOv/8Ek6xB7zlYDnj6/4yOyc2ifUb+zMYp0yg6VggNCpVq6Yp73LzInFBGMYHS9CougfvxjuYF61pnEGySjirIc+mgJgkYbbR8X501vsoRLhwJBwzXtrLVu/Mi2ll0uf3tMgksYOMnyajJTWcw0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.72
 Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f200.google.com with SMTP id e9e14a558f8ab-368593f281bso57671525ab.1
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 12:00:23 -0700 (PDT)
+Received: by mail-io1-f72.google.com with SMTP id ca18e2360f4ac-7cb806fc9f7so683127439f.2
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 12:01:24 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711479623; x=1712084423;
+        d=1e100.net; s=20230601; t=1711479684; x=1712084484;
         h=to:from:subject:message-id:date:mime-version:x-gm-message-state
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=KwBoSkAexwwZT22uv2xlJaKJZLAqlwLtukfnnb8tOGI=;
-        b=iAqPPvxoxoRGnpmMFCcIgq6dqhE1zM/dZ9jxlj96W2hsBDsNrWtELvjoDaGrQYJD7t
-         5yj4YR9WmwX1rRu7K+JUhqXXV4vMUuJkxcRtoybD+ElZl91gUC+QECFrWHL0FFXBXUsy
-         agM+SyavKmSOs3ptdfEdmIjkHq7A7bSQhdFOUCt+NY0vTcMEegC7NEGqN2BxSzfWHgZ+
-         CR/fQR3LzB1mtDJPq4EwoKjvF4hbpHZJMVFpLiHtA2tcwwpZ9Fs/it9LVIS964KMx5K9
-         Y1X3lUhEIrsK95di3tMXRNwbtjDQU6KHfUkyCBVtgdUnVZdudJ+iOjMoG1v7fbEknx+O
-         k7HA==
-X-Forwarded-Encrypted: i=1; AJvYcCUQ69CcwkUAdgukvMKcs0hqYVqAQMUH3V/E4gqcJKgmcfWOO2AYY6tCnnflwlibtWYCDLqikH6BnH8qG2Ls3XnKSoPLmM6erRf9uS8l
-X-Gm-Message-State: AOJu0YwvauDoqe6d8xuUQd1gAukcNmOXWk9Ucl/T0S71QB+qlsnhGRCu
-	5r3NxigYFHdonAGvzD6SWdWBVxOmAjSQVY7Yl8RO/+JuY9YOMrQT2m4g5O+oVtyW9FQ+I5lWxxE
-	LCoXcMJO6YyF8jDCYXpGonvVDUJrgHbyJU92CMuvaAVbuMywGegsVTEs=
-X-Google-Smtp-Source: AGHT+IEbt0OOJBHB47eYY914zC+CUvv42tj6QW2+e3un017KnOgzAtQXZ/0HgDwYsXQB2nGGcI770tpDfvPN15BZj9JBlXtu+2k9
+        bh=uBk5YLO78C1e6LbeCVC01y3eo+IPlOg2beyEL4ZeIME=;
+        b=FkIbaca8K5sFRuD0veaGj3ZUBh4ozRLUbfVER0ebNVaKzmsb0dTRjcUNcLzY4B29+9
+         6zgVVByDuuZkh8/OVJzSOiv2/7UhD9ILeapKGer34/rfUDf/oBj/Sx8lghvHqrAs03c5
+         FsUxqK6+e80h5ptfgyprCBJrOnllDDm8rLAyUgE3Clehp0tsXcDh5A8uomOSMivXqpwc
+         be5HdLWUPcHW9cflrK+w8EspgK+CNYhGSGBRkZnIbAYeaPaaKVdkQH/CTEZ+hYu/Ei2c
+         oCxgzk85ZlooEB5tUevHeAqnJTVqk0TzEz8h0tynUfaVLBkOYDtIdiXXijs5zzNXX+SB
+         vb5w==
+X-Forwarded-Encrypted: i=1; AJvYcCUUPNiw5+sYfnulQ4s4ahsqWROaRAcyGp/W+JxESRnFJaoYh5YQQD54E+yyGadwLpfzRErK2mdioUbZV2cqY3ece0Ac0xPysm5LtVDH
+X-Gm-Message-State: AOJu0YyuPEK1rN1QCv/+3U6KgUE+qLNtsSTK/9OW6h9aU6jnehsNhHUP
+	sDvb9BRYzMoonkfNuwxyc5dH8Y2UzruyCm3ilx1U2d1h3chg1W3DWmz0hhZRd5LROcPl5V2oWW5
+	EwaJj3kBh+JrLt3NqkU8p115tiDOL7n2wsOoKiM6oTlXJrB9UedUkWNU=
+X-Google-Smtp-Source: AGHT+IEA7+UbnRTVERv929IpFZrxKhJAXUoAMW6jMh7SWxzc6Ouqkc9645DBkDDpwh22vhZ94UGSZi9rV/JfdjW5wmWbqUh5iH1X
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1548:b0:368:8224:d1db with SMTP id
- j8-20020a056e02154800b003688224d1dbmr168555ilu.4.1711479623105; Tue, 26 Mar
- 2024 12:00:23 -0700 (PDT)
-Date: Tue, 26 Mar 2024 12:00:23 -0700
+X-Received: by 2002:a05:6638:13d0:b0:47c:16cc:5780 with SMTP id
+ i16-20020a05663813d000b0047c16cc5780mr622804jaj.5.1711479684342; Tue, 26 Mar
+ 2024 12:01:24 -0700 (PDT)
+Date: Tue, 26 Mar 2024 12:01:24 -0700
 X-Google-Appengine-App-Id: s~syzkaller
 X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000f9ce6d061494e694@google.com>
-Subject: [syzbot] [bpf?] KMSAN: uninit-value in trie_delete_elem
-From: syzbot <syzbot+603bcd9b0bf1d94dbb9b@syzkaller.appspotmail.com>
+Message-ID: <000000000000a042d7061494ea83@google.com>
+Subject: [syzbot] [bpf?] [net?] possible deadlock in sk_psock_drop
+From: syzbot <syzbot+59286e53e6c7d1921164@syzkaller.appspotmail.com>
 To: andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org, 
-	daniel@iogearbox.net, eddyz87@gmail.com, haoluo@google.com, 
-	john.fastabend@gmail.com, jolsa@kernel.org, kpsingh@kernel.org, 
-	linux-kernel@vger.kernel.org, martin.lau@linux.dev, sdf@google.com, 
-	song@kernel.org, syzkaller-bugs@googlegroups.com, yonghong.song@linux.dev
+	daniel@iogearbox.net, davem@davemloft.net, edumazet@google.com, 
+	jakub@cloudflare.com, john.fastabend@gmail.com, kuba@kernel.org, 
+	linux-kernel@vger.kernel.org, netdev@vger.kernel.org, pabeni@redhat.com, 
+	syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
 
 Hello,
 
 syzbot found the following issue on:
 
-HEAD commit:    4f55aa85a874 Merge tag 'fbdev-for-6.9-rc1' of git://git.ke..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=11a8dc6e180000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=e6bd769cb793b98a
-dashboard link: https://syzkaller.appspot.com/bug?extid=603bcd9b0bf1d94dbb9b
+HEAD commit:    f99c5f563c17 Merge tag 'nf-24-03-21' of git://git.kernel.o..
+git tree:       net
+console output: https://syzkaller.appspot.com/x/log.txt?x=15a444b1180000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=6fb1be60a193d440
+dashboard link: https://syzkaller.appspot.com/bug?extid=59286e53e6c7d1921164
 compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-userspace arch: i386
 
 Unfortunately, I don't have any reproducer for this issue yet.
 
 Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/991fcbce770a/disk-4f55aa85.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/bd716e5d2c3c/vmlinux-4f55aa85.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/bf1151dbf5fc/bzImage-4f55aa85.xz
+disk image: https://storage.googleapis.com/syzbot-assets/65d3f3eb786e/disk-f99c5f56.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/799cf7f28ff8/vmlinux-f99c5f56.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/ab26c60c3845/bzImage-f99c5f56.xz
 
 IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+603bcd9b0bf1d94dbb9b@syzkaller.appspotmail.com
+Reported-by: syzbot+59286e53e6c7d1921164@syzkaller.appspotmail.com
 
-=====================================================
-BUG: KMSAN: uninit-value in trie_delete_elem+0xc0/0xbe0 kernel/bpf/lpm_trie.c:448
- trie_delete_elem+0xc0/0xbe0 kernel/bpf/lpm_trie.c:448
- ____bpf_map_delete_elem kernel/bpf/helpers.c:77 [inline]
- bpf_map_delete_elem+0x5c/0x80 kernel/bpf/helpers.c:73
- ___bpf_prog_run+0x13fe/0xe0f0 kernel/bpf/core.c:1997
- __bpf_prog_run128+0xb5/0xe0 kernel/bpf/core.c:2236
- bpf_dispatcher_nop_func include/linux/bpf.h:1234 [inline]
- __bpf_prog_run include/linux/filter.h:657 [inline]
- bpf_prog_run include/linux/filter.h:664 [inline]
- __bpf_trace_run kernel/trace/bpf_trace.c:2381 [inline]
- bpf_trace_run3+0x132/0x320 kernel/trace/bpf_trace.c:2421
- __bpf_trace_kmem_cache_free+0x31/0x40 include/trace/events/kmem.h:114
- trace_kmem_cache_free include/trace/events/kmem.h:114 [inline]
- kmem_cache_free+0x6da/0xa80 mm/slub.c:4343
- mt_free_one lib/maple_tree.c:172 [inline]
- mas_destroy+0x56c9/0x5cd0 lib/maple_tree.c:5612
- mas_store_prealloc+0x39c/0x550 lib/maple_tree.c:5487
- vma_iter_store mm/internal.h:1290 [inline]
- vma_complete+0x9b0/0x14e0 mm/mmap.c:535
- __split_vma+0x1037/0x1200 mm/mmap.c:2385
- split_vma mm/mmap.c:2411 [inline]
- vma_modify+0x37c/0x4c0 mm/mmap.c:2452
- vma_modify_flags include/linux/mm.h:3303 [inline]
- mprotect_fixup+0x790/0x1170 mm/mprotect.c:635
- do_mprotect_pkey+0x1159/0x1850 mm/mprotect.c:809
- __do_sys_mprotect mm/mprotect.c:830 [inline]
- __se_sys_mprotect mm/mprotect.c:827 [inline]
- __ia32_sys_mprotect+0x98/0xf0 mm/mprotect.c:827
- do_syscall_32_irqs_on arch/x86/entry/common.c:165 [inline]
- __do_fast_syscall_32+0xba/0x120 arch/x86/entry/common.c:321
- do_fast_syscall_32+0x38/0x80 arch/x86/entry/common.c:346
- do_SYSENTER_32+0x1f/0x30 arch/x86/entry/common.c:384
- entry_SYSENTER_compat_after_hwframe+0x7a/0x84
+======================================================
+WARNING: possible circular locking dependency detected
+6.8.0-syzkaller-05271-gf99c5f563c17 #0 Not tainted
+------------------------------------------------------
+syz-executor.4/21268 is trying to acquire lock:
+ffff88802248b238 (&psock->ingress_lock){+...}-{2:2}, at: spin_lock_bh include/linux/spinlock.h:356 [inline]
+ffff88802248b238 (&psock->ingress_lock){+...}-{2:2}, at: sk_psock_stop net/core/skmsg.c:802 [inline]
+ffff88802248b238 (&psock->ingress_lock){+...}-{2:2}, at: sk_psock_drop+0x2fb/0x500 net/core/skmsg.c:846
 
-Local variable stack created at:
- __bpf_prog_run128+0x45/0xe0 kernel/bpf/core.c:2236
- bpf_dispatcher_nop_func include/linux/bpf.h:1234 [inline]
- __bpf_prog_run include/linux/filter.h:657 [inline]
- bpf_prog_run include/linux/filter.h:664 [inline]
- __bpf_trace_run kernel/trace/bpf_trace.c:2381 [inline]
- bpf_trace_run3+0x132/0x320 kernel/trace/bpf_trace.c:2421
+but task is already holding lock:
+ffff88802c949620 (&htab->buckets[i].lock){+.-.}-{2:2}, at: spin_lock_bh include/linux/spinlock.h:356 [inline]
+ffff88802c949620 (&htab->buckets[i].lock){+.-.}-{2:2}, at: sock_hash_delete_elem+0xb0/0x300 net/core/sock_map.c:939
 
-CPU: 0 PID: 14388 Comm: syz-executor.4 Not tainted 6.8.0-syzkaller-13006-g4f55aa85a874 #0
+which lock already depends on the new lock.
+
+
+the existing dependency chain (in reverse order) is:
+
+-> #1 (&htab->buckets[i].lock){+.-.}-{2:2}:
+       lock_acquire+0x1e4/0x530 kernel/locking/lockdep.c:5754
+       __raw_spin_lock_bh include/linux/spinlock_api_smp.h:126 [inline]
+       _raw_spin_lock_bh+0x35/0x50 kernel/locking/spinlock.c:178
+       spin_lock_bh include/linux/spinlock.h:356 [inline]
+       sock_hash_delete_elem+0xb0/0x300 net/core/sock_map.c:939
+       0xffffffffa000095f
+       bpf_dispatcher_nop_func include/linux/bpf.h:1234 [inline]
+       __bpf_prog_run include/linux/filter.h:657 [inline]
+       bpf_prog_run include/linux/filter.h:664 [inline]
+       __bpf_trace_run kernel/trace/bpf_trace.c:2381 [inline]
+       bpf_trace_run2+0x204/0x420 kernel/trace/bpf_trace.c:2420
+       trace_kfree include/trace/events/kmem.h:94 [inline]
+       kfree+0x291/0x380 mm/slub.c:4396
+       sk_psock_cork_free include/linux/skmsg.h:430 [inline]
+       sk_psock_stop+0xc5/0x110 net/core/skmsg.c:804
+       sock_map_close+0x1b2/0x2d0 net/core/sock_map.c:1645
+       inet_release+0x17d/0x200 net/ipv4/af_inet.c:437
+       __sock_release net/socket.c:659 [inline]
+       sock_close+0xbc/0x240 net/socket.c:1421
+       __fput+0x429/0x8a0 fs/file_table.c:423
+       __do_sys_close fs/open.c:1557 [inline]
+       __se_sys_close fs/open.c:1542 [inline]
+       __x64_sys_close+0x7f/0x110 fs/open.c:1542
+       do_syscall_64+0xfb/0x240
+       entry_SYSCALL_64_after_hwframe+0x6d/0x75
+
+-> #0 (&psock->ingress_lock){+...}-{2:2}:
+       check_prev_add kernel/locking/lockdep.c:3134 [inline]
+       check_prevs_add kernel/locking/lockdep.c:3253 [inline]
+       validate_chain+0x18cb/0x58e0 kernel/locking/lockdep.c:3869
+       __lock_acquire+0x1346/0x1fd0 kernel/locking/lockdep.c:5137
+       lock_acquire+0x1e4/0x530 kernel/locking/lockdep.c:5754
+       __raw_spin_lock_bh include/linux/spinlock_api_smp.h:126 [inline]
+       _raw_spin_lock_bh+0x35/0x50 kernel/locking/spinlock.c:178
+       spin_lock_bh include/linux/spinlock.h:356 [inline]
+       sk_psock_stop net/core/skmsg.c:802 [inline]
+       sk_psock_drop+0x2fb/0x500 net/core/skmsg.c:846
+       sock_hash_delete_elem+0x27e/0x300 net/core/sock_map.c:943
+       map_delete_elem+0x464/0x5e0 kernel/bpf/syscall.c:1696
+       __sys_bpf+0x598/0x810 kernel/bpf/syscall.c:5622
+       __do_sys_bpf kernel/bpf/syscall.c:5738 [inline]
+       __se_sys_bpf kernel/bpf/syscall.c:5736 [inline]
+       __x64_sys_bpf+0x7c/0x90 kernel/bpf/syscall.c:5736
+       do_syscall_64+0xfb/0x240
+       entry_SYSCALL_64_after_hwframe+0x6d/0x75
+
+other info that might help us debug this:
+
+ Possible unsafe locking scenario:
+
+       CPU0                    CPU1
+       ----                    ----
+  lock(&htab->buckets[i].lock);
+                               lock(&psock->ingress_lock);
+                               lock(&htab->buckets[i].lock);
+  lock(&psock->ingress_lock);
+
+ *** DEADLOCK ***
+
+2 locks held by syz-executor.4/21268:
+ #0: ffffffff8e131920 (rcu_read_lock){....}-{1:2}, at: rcu_lock_acquire include/linux/rcupdate.h:329 [inline]
+ #0: ffffffff8e131920 (rcu_read_lock){....}-{1:2}, at: rcu_read_lock include/linux/rcupdate.h:781 [inline]
+ #0: ffffffff8e131920 (rcu_read_lock){....}-{1:2}, at: map_delete_elem+0x388/0x5e0 kernel/bpf/syscall.c:1695
+ #1: ffff88802c949620 (&htab->buckets[i].lock){+.-.}-{2:2}, at: spin_lock_bh include/linux/spinlock.h:356 [inline]
+ #1: ffff88802c949620 (&htab->buckets[i].lock){+.-.}-{2:2}, at: sock_hash_delete_elem+0xb0/0x300 net/core/sock_map.c:939
+
+stack backtrace:
+CPU: 1 PID: 21268 Comm: syz-executor.4 Not tainted 6.8.0-syzkaller-05271-gf99c5f563c17 #0
 Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 02/29/2024
-=====================================================
+Call Trace:
+ <TASK>
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0x1e7/0x2e0 lib/dump_stack.c:106
+ check_noncircular+0x36a/0x4a0 kernel/locking/lockdep.c:2187
+ check_prev_add kernel/locking/lockdep.c:3134 [inline]
+ check_prevs_add kernel/locking/lockdep.c:3253 [inline]
+ validate_chain+0x18cb/0x58e0 kernel/locking/lockdep.c:3869
+ __lock_acquire+0x1346/0x1fd0 kernel/locking/lockdep.c:5137
+ lock_acquire+0x1e4/0x530 kernel/locking/lockdep.c:5754
+ __raw_spin_lock_bh include/linux/spinlock_api_smp.h:126 [inline]
+ _raw_spin_lock_bh+0x35/0x50 kernel/locking/spinlock.c:178
+ spin_lock_bh include/linux/spinlock.h:356 [inline]
+ sk_psock_stop net/core/skmsg.c:802 [inline]
+ sk_psock_drop+0x2fb/0x500 net/core/skmsg.c:846
+ sock_hash_delete_elem+0x27e/0x300 net/core/sock_map.c:943
+ map_delete_elem+0x464/0x5e0 kernel/bpf/syscall.c:1696
+ __sys_bpf+0x598/0x810 kernel/bpf/syscall.c:5622
+ __do_sys_bpf kernel/bpf/syscall.c:5738 [inline]
+ __se_sys_bpf kernel/bpf/syscall.c:5736 [inline]
+ __x64_sys_bpf+0x7c/0x90 kernel/bpf/syscall.c:5736
+ do_syscall_64+0xfb/0x240
+ entry_SYSCALL_64_after_hwframe+0x6d/0x75
+RIP: 0033:0x7f008787dda9
+Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 e1 20 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f00885cd0c8 EFLAGS: 00000246 ORIG_RAX: 0000000000000141
+RAX: ffffffffffffffda RBX: 00007f00879abf80 RCX: 00007f008787dda9
+RDX: 0000000000000020 RSI: 00000000200000c0 RDI: 0000000000000003
+RBP: 00007f00878ca47a R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 000000000000000b R14: 00007f00879abf80 R15: 00007fff30ed4838
+ </TASK>
 
 
 ---
