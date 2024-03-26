@@ -1,155 +1,141 @@
-Return-Path: <linux-kernel+bounces-119565-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-119566-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 29A3688CA81
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 18:13:56 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id D085F88CA82
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 18:14:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4D5541C65F49
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 17:13:55 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 32FE3322F92
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 17:14:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7EF2B1CD30;
-	Tue, 26 Mar 2024 17:13:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8016E1CA8C;
+	Tue, 26 Mar 2024 17:13:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="S27HFSzi"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	dkim=pass (2048-bit key) header.d=proton.me header.i=@proton.me header.b="AY/oPqhF"
+Received: from mail-4316.protonmail.ch (mail-4316.protonmail.ch [185.70.43.16])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2694D1C6A0
-	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 17:13:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5BC8C1C69C
+	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 17:13:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.70.43.16
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711473208; cv=none; b=WkmSsQc4yQBd2tVxvXop3Q8+JJL6gfmBIB2ji9L8BOrSO2BA9LkBYGdydnGIhlufyqtozkTC+DT077+ezkh9wnVfxDYHVfPQzgjvVgplmUy799/45QGi8EAu5az5q1K/5cQ+oXVhfnTkSiL7xmlnJpnHbw0HS4t2vKiGHaXTS9I=
+	t=1711473231; cv=none; b=LlT3fSxKOuaIcbf8Jts7dhWLU8d7UXTIO5aSKtq4qKKh2cHkSgOChl1a2BoU6QUMxvYlt6njFZhuONL5aKybnPIFsRuiOHHBSgDkUbfmri1DKC4ZJxRJDOYdJUQHknsW71GP0rZdNTIrps89zyLMzeJIX/6sNHhbd/Ay1TIDlRE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711473208; c=relaxed/simple;
-	bh=cXmuMVK+zgDb+uN88yBgRNdCQhWi2wyEuwV11UXLIKA=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=VvZ6usGD95JGEOUkofI9+TbB+BiG10Cio0Z4rhkylGr7RFz+RWqXe8kia9M/sEYmmtd/LW9JugucO9fTZgViVIwYRVBmJOpQSOz0BxNxDmiRPb4I0rfa5Ue4bI8RqcKWgaqYPskwdM11m7rt8ZiH/az9ZuMXTxEfak9gEQrywDc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=S27HFSzi; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1711473206;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=6O6YSe5hs2dY1yeZMq21PoppQsCAtDRDCET6kUs7n+U=;
-	b=S27HFSzifxjx1+nKrYh2/JodDWC/aPFvYdS/yHimwLZYFZalu/CKyVUOC/1vD5IuuQD6cL
-	0K6vBO9+wZHh7JiHvM4Jorb6NRwe8pXJlnrXtLNjGy0s3DlnEddEfhzUYQzylQLcMNDD71
-	4havEMX0nfduimQmQfB4iH40B9ia3R0=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-651-H0IpCBMFNMCDzOpdlJTBjw-1; Tue,
- 26 Mar 2024 13:13:23 -0400
-X-MC-Unique: H0IpCBMFNMCDzOpdlJTBjw-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.rdu2.redhat.com [10.11.54.3])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 20DEE3C367E7;
-	Tue, 26 Mar 2024 17:13:23 +0000 (UTC)
-Received: from [100.115.132.116] (unknown [10.22.50.19])
-	by smtp.corp.redhat.com (Postfix) with ESMTPS id 8CA7B1121306;
-	Tue, 26 Mar 2024 17:13:21 +0000 (UTC)
-From: Benjamin Coddington <bcodding@redhat.com>
-To: Jan Schunk <scpcom@gmx.de>
-Cc: Chuck Lever III <chuck.lever@oracle.com>,
- Jeff Layton <jlayton@kernel.org>, Neil Brown <neilb@suse.de>,
- Olga Kornievskaia <kolga@netapp.com>, Dai Ngo <dai.ngo@oracle.com>,
- Tom Talpey <tom@talpey.com>,
- Linux NFS Mailing List <linux-nfs@vger.kernel.org>,
- linux-kernel@vger.kernel.org
-Subject: Re: [External] : nfsd: memory leak when client does many file
- operations
-Date: Tue, 26 Mar 2024 13:13:16 -0400
-Message-ID: <1AE35F72-77CF-4F5A-9B65-72AB6A53A621@redhat.com>
-In-Reply-To: <trinity-0ed602bd-15d4-4110-b3f4-668c2051904a-1711472684521@msvc-mesg-gmx122>
-References: <trinity-068f55c9-6088-418d-bf3a-c2778a871e98-1711310237802@msvc-mesg-gmx120>
- <E3109CAA-8261-4F66-9D1B-3546E8B797DF@oracle.com>
- <trinity-bfafb9db-d64f-4cad-8cb1-40dac0a2c600-1711313314331@msvc-mesg-gmx105>
- <567BBF54-D104-432C-99C0-1A7EE7939090@oracle.com>
- <trinity-66047013-4d84-4eef-b5d3-d710fe6be805-1711316386382@msvc-mesg-gmx005>
- <6F16BCCE-3000-4BCB-A3B4-95B4767E3577@oracle.com>
- <trinity-ad0037c0-1060-4541-a8ca-15f826a5b5a2-1711396545958@msvc-mesg-gmx024>
- <088D9CC3-C5B0-4646-A85D-B3B9ACE8C532@oracle.com>
- <F594EBB2-5F92-40A9-86FB-CFD58E9CE516@redhat.com>
- <trinity-0ed602bd-15d4-4110-b3f4-668c2051904a-1711472684521@msvc-mesg-gmx122>
+	s=arc-20240116; t=1711473231; c=relaxed/simple;
+	bh=FrW4urb3kaGNnmCDOoJ/pJREbGJJEOcKrsesprEishU=;
+	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=lLzCMJWu+l2U63EBcs32gnMWVG8YFufiKz75jlEdN+vEtqBHTBEATnBlYZ/l3YpCm2Z2xlBjgKOXGAVbOlJ/DJMvFnJawYWuSRsgrnhZ9KN+jxFnJxWxS2gSAT0VINeQL6aL7nPtfSJxqhjok2Oabuj+Wxo6FJSCJZENyRXxK40=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=proton.me; spf=pass smtp.mailfrom=proton.me; dkim=pass (2048-bit key) header.d=proton.me header.i=@proton.me header.b=AY/oPqhF; arc=none smtp.client-ip=185.70.43.16
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=proton.me
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=proton.me
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=proton.me;
+	s=protonmail; t=1711473227; x=1711732427;
+	bh=2SMAljw4XINFd821G0mOj/hS2BbJyOq2IwtofbwqjYM=;
+	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
+	 Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
+	 Message-ID:BIMI-Selector;
+	b=AY/oPqhFT+U/f9Jb34/v0EuZ9Y6G7v5QpAIgG/qKhmEwTwMQUg7LVx9edtm/wvfAL
+	 BuqY0+sQf8DmK2UUU+uVyDSyq6pLg3e4KJuKvcBXjqUxc8aNbyRr+QiWOX08grkAhX
+	 JyNDw4gxpYj+SRlWsyCK7i3yWoQG8Z5KEVqCGEQzKASxoubipZoicMK4lWlv5acRub
+	 6ynza26Kypc8FdmGPTTI+sSkCYSV+/5bUSaHEDV9wW2nbhgnvAR6z8qNcyENN+CtG7
+	 9d4zQNfcpM15EZtUJgE2ww478Un+/QI3FVMe0jIcdqskzR9Wuzc2Z1zoP3cwxX05N1
+	 AS2FY5L160fug==
+Date: Tue, 26 Mar 2024 17:13:38 +0000
+To: Boqun Feng <boqun.feng@gmail.com>
+From: Benno Lossin <benno.lossin@proton.me>
+Cc: rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>, Alice Ryhl <aliceryhl@google.com>, Miguel Ojeda <ojeda@kernel.org>, Alex Gaynor <alex.gaynor@gmail.com>, Wedson Almeida Filho <wedsonaf@gmail.com>, Gary Guo <gary@garyguo.net>, =?utf-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, Andreas Hindborg <a.hindborg@samsung.com>, John Stultz <jstultz@google.com>, Stephen Boyd <sboyd@kernel.org>, Valentin Obst <kernel@valentinobst.de>, Heghedus Razvan <heghedus.razvan@protonmail.com>, Asahi Lina <lina@asahilina.net>
+Subject: Re: [PATCH 5/5] rust: time: Add Instant::elapsed() for monotonic clocks
+Message-ID: <kZmwObXVcyEJFVR3I05Nab0WdjcccDVARoOm6U9EmXhd89fxYRjvNmEAUZsueWTUlBlHp8jpU3i2YfgN9aWCLZameta0tPT_OgQdBOWUIko=@proton.me>
+In-Reply-To: <20240324223339.971934-6-boqun.feng@gmail.com>
+References: <20240324223339.971934-1-boqun.feng@gmail.com> <20240324223339.971934-6-boqun.feng@gmail.com>
+Feedback-ID: 71780778:user:proton
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.3
 
-On 26 Mar 2024, at 13:04, Jan Schunk wrote:
+On 24.03.24 23:33, Boqun Feng wrote:
+> This is a convenient way to do:
+>=20
+> =09t1 =3D Clock::now();
+> =09...
+> =09delta =3D  Clock::now() - t1;
+>=20
+> Hence add it.
+>=20
+> Co-developed-by: Heghedus Razvan <heghedus.razvan@protonmail.com>
+> Signed-off-by: Heghedus Razvan <heghedus.razvan@protonmail.com>
+> Co-developed-by: Asahi Lina <lina@asahilina.net>
+> Signed-off-by: Asahi Lina <lina@asahilina.net>
+> Signed-off-by: Boqun Feng <boqun.feng@gmail.com>
+> ---
+>  rust/kernel/time.rs | 25 +++++++++++++++++++++++++
+>  1 file changed, 25 insertions(+)
+>=20
+> diff --git a/rust/kernel/time.rs b/rust/kernel/time.rs
+> index 5cd669cbea01..cd1e45169517 100644
+> --- a/rust/kernel/time.rs
+> +++ b/rust/kernel/time.rs
+> @@ -114,6 +114,31 @@ fn sub(self, other: Self) -> Self::Output {
+>      }
+>  }
+>=20
+> +impl<T: Clock + Monotonic> Instant<T> {
+> +    /// Returns the time elapsed since this [`Instant`].
+> +    ///
+> +    /// This provides a convenient way to calculate time elapsed since a=
+ previous [`Clock::now`].
+> +    /// Note even though the function only exists for monotonic clocks, =
+it could still return
+> +    /// negative [`Duration`] if the current time is earlier than the ti=
+me of `&self`, and this
+> +    /// could happen if `&self` is a timestamp generated by a [`Instant`=
+] + [`Duration`].
 
-> Before I start doing this on my own build I tried it with unmodified li=
-nux-image-6.6.13+bpo-amd64 from Debian 12.
-> I installed systemtap, linux-headers-6.6.13+bpo-amd64 and linux-image-6=
-=2E6.13+bpo-amd64-dbg and tried to run stap:
->
-> user@deb:~$ sudo stap -v --all-modules kmem_alloc.stp nfsd_file
-> WARNING: Kernel function symbol table missing [man warning::symbols]
-> Pass 1: parsed user script and 484 library scripts using 110120virt/968=
-96res/7168shr/89800data kb, in 1360usr/1080sys/4963real ms.
-> WARNING: cannot find module kernel debuginfo: No DWARF information foun=
-d [man warning::debuginfo]
-> semantic error: resolution failed in DWARF builder
->
-> semantic error: while resolving probe point: identifier 'kernel' at kme=
-m_alloc.stp:5:7
->         source: probe kernel.function("kmem_cache_alloc") {
->                       ^
->
-> semantic error: no match
->
-> Pass 2: analyzed script: 1 probe, 5 functions, 1 embed, 3 globals using=
- 112132virt/100352res/8704shr/91792data kb, in 30usr/30sys/167real ms.
-> Pass 2: analysis failed.  [man error::pass2]
-> Tip: /usr/share/doc/systemtap/README.Debian should help you get started=
-=2E
-> user@deb:~$
->
-> user@deb:~$ grep -E 'CONFIG_DEBUG_INFO|CONFIG_KPROBES|CONFIG_DEBUG_FS|C=
-ONFIG_RELAY' /boot/config-6.6.13+bpo-amd64
-> CONFIG_RELAY=3Dy
-> CONFIG_KPROBES=3Dy
-> CONFIG_KPROBES_ON_FTRACE=3Dy
-> CONFIG_DEBUG_INFO=3Dy
-> # CONFIG_DEBUG_INFO_NONE is not set
-> CONFIG_DEBUG_INFO_DWARF_TOOLCHAIN_DEFAULT=3Dy
-> # CONFIG_DEBUG_INFO_DWARF4 is not set
-> # CONFIG_DEBUG_INFO_DWARF5 is not set
-> # CONFIG_DEBUG_INFO_REDUCED is not set
-> CONFIG_DEBUG_INFO_COMPRESSED_NONE=3Dy
-> # CONFIG_DEBUG_INFO_COMPRESSED_ZLIB is not set
-> # CONFIG_DEBUG_INFO_SPLIT is not set
-> CONFIG_DEBUG_INFO_BTF=3Dy
-> CONFIG_DEBUG_INFO_BTF_MODULES=3Dy
-> CONFIG_DEBUG_FS=3Dy
-> CONFIG_DEBUG_FS_ALLOW_ALL=3Dy
-> # CONFIG_DEBUG_FS_DISALLOW_MOUNT is not set
-> # CONFIG_DEBUG_FS_ALLOW_NONE is not set
-> user@deb:~$
->
-> Do I need to enable other options?
+But there currently is no way to add an `Instant<T>` to a `Duration`.
 
-You should just need DEBUG_INFO.. maybe stap can't find it?  You can try =
-to add: -r /path/to/the/kernel/build
+> +    ///
+> +    /// But for typical usages, it should always return non-negative [`D=
+uration`]:
+> +    ///
+> +    /// # Examples
+> +    ///
+> +    /// ```
+> +    /// use kernel::time::{Clock, clock::KernelTime};
+> +    ///
+> +    /// let ts =3D KernelTime::now();
+> +    ///
+> +    /// // `KernelTime` is monotonic.
+> +    /// assert!(ts.elapsed().to_ns() >=3D 0);
 
-=2E. but usually I use this option for a cross-compile.  Usually I don't =
-have to muck around without the debuginfo packages either.  If I don't ha=
-ve them then I'm annotating the kernel directly.
+Now that I thought a bit more about the design, I think allowing
+negative durations is a bad idea.
+Do you disagree?
 
-Maybe just a view of what's happening in /proc/slabinfo would be enough..=
+If there is a case where you have a non-monotonic clock, or you are not
+sure if two timestamps are in the correct relation, we could have a
+function that returns a `Option<Duration>` or `Result<Duration>`.
 
+--=20
+Cheers,
+Benno
 
-Ben
-
+> +    /// ```
+> +    pub fn elapsed(&self) -> Duration {
+> +        T::now() - *self
+> +    }
+> +}
+> +
+>  /// Contains the various clock source types available to the kernel.
+>  pub mod clock {
+>      use super::*;
+> --
+> 2.44.0
+> 
 
