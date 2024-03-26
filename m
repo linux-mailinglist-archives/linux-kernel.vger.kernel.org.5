@@ -1,75 +1,75 @@
-Return-Path: <linux-kernel+bounces-119031-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-119032-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id D2B1788C2EB
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 14:03:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id EB25088C2EE
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 14:04:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C72391C2FDAA
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 13:03:49 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 18B771C343EE
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 13:04:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1A5B274BE5;
-	Tue, 26 Mar 2024 13:03:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9CD06757F3;
+	Tue, 26 Mar 2024 13:03:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="TFDJRRb/"
-Received: from mail-lj1-f176.google.com (mail-lj1-f176.google.com [209.85.208.176])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jINqp24Y"
+Received: from mail-ej1-f43.google.com (mail-ej1-f43.google.com [209.85.218.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 91E2D70CBA;
-	Tue, 26 Mar 2024 13:03:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2E7817440B;
+	Tue, 26 Mar 2024 13:03:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711458211; cv=none; b=jq30E/Z2wcFeODSIyfk7d09D0hlPbTcGpGmE4nxX6h7ZPDVo1Js2PXiFbJdq026BRbwO7GR52/H8vNjeZa7ATHcwYsrvmamkD/vjkBcbSlR6VURpIqzV8xr5vmUsTiF904lho8Ryho9/96jTdsIw+atezs08MhIrtN+vTBROUlg=
+	t=1711458212; cv=none; b=DgFFZ4EfhtJMdRAC6ameGXpHDVESLjDskbCmH3cSo+d6ND/2Ww+j9+gmN3enYn0M1Ah2jqNDS0Xeuarod87S9XTjyF8D2f5MHH0WQp2WJD4wekNnwIV+fWgoxh14vr3DC2IcVnH62fj4P9bdYIxQ1v8l44XvQgV3YoPHVmG9yTQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711458211; c=relaxed/simple;
-	bh=y/h9r7NFUTzcI7Q+8rrEH8zrSjp8JvhTnSX645n/aXk=;
+	s=arc-20240116; t=1711458212; c=relaxed/simple;
+	bh=wVGtBpqnSQ0yWKHruGIYnQQwxcD42XGvFVl6U3Cj6UA=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=KKwlMeJYMVDzC4rUQFZ5vPQgMAZyXn2Fee9pO/Qqxnmwf481nUeA9oKOfVMyyg++WCJ/PLxEylgKwI7yGloUSd2Cuhk2+6DIIeHGoCrWKGCJMVkShSi8iz171lnvzW3CL0ArbHQRwC1Bj7wIPvghjMh6qMds273FVHn1oPRrgnA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=TFDJRRb/; arc=none smtp.client-ip=209.85.208.176
+	 In-Reply-To:To:Cc; b=sSVibJzAhLI8//PF0TfWVJVlfBW1TEVQLPyILt/S+ylecZV85w9HXjdm7ReT++kTi3aifYHWhfp5IN8Lx8tZjOwOi7vNOmveLrfeW0h+t1hed2dc/MhzgWevBLaDFa7iHKtHcVfilmS36XePxTn82QZMJwCMkWdGg0PkyVx4ozE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=jINqp24Y; arc=none smtp.client-ip=209.85.218.43
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f176.google.com with SMTP id 38308e7fff4ca-2d485886545so95703781fa.2;
-        Tue, 26 Mar 2024 06:03:29 -0700 (PDT)
+Received: by mail-ej1-f43.google.com with SMTP id a640c23a62f3a-a468004667aso743596066b.2;
+        Tue, 26 Mar 2024 06:03:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711458208; x=1712063008; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1711458209; x=1712063009; darn=vger.kernel.org;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=6N43O76PWF7Rd134qi3Sj/Jiz8Q3AnOJJYGd71yv1U4=;
-        b=TFDJRRb/WNXJkjCanfLPdbPInh1/4W+xruGHpnGUDoCP+H+oCe2sXduXtrK34Bw6OW
-         bg9yBJjcp1UN6QRkmAEXsmUOMyOkUs5eeSUTyitVODYgqBlz51giZs9KiVQdvvXKJQoa
-         JHKaY95EkGTpz0XNsRTqE42z84iF0pV0Q2apPAirkDHCWKnQFwy0xOWlQqIFKr5p8zs3
-         LEMphDayOYaqozkR72tyVymMrxLa9vymmY0Tw5iRdSy7mPZeMcvgwBUqskGl304ys1yy
-         el5iR+GjLMhG4ymygXSD+Fg4Quwiln6AZ9r84Ti86fguIDrFXG8oau2uS75P7nwQ++De
-         ZyDw==
+        bh=UV2sux2QncSK7xl+qajqlbNGu4rD6PD8uK/Z947iCf8=;
+        b=jINqp24YZMUDVblGyMD301ONRLyoSbqVtirA/yHe91GGlEexy4z8BSMmU/JxwFOBY+
+         IAp6MYAtUPFP57ZnUNul1JLYD6e97oUKsrTjlihz9peZZ2tWDulIcLWv/UMxOGfJh8lM
+         9w1b5b56unBPFA7j9EL48FMSAINbFKKk48ZGD/RehEy9GOpQWQM4U6pjzkekqR+REcTA
+         pafb4YM0w4XQitmwvgwknvU9wfm+IeyJaJtaCcHKeZuJCukPE6obvY9UvRlQfGOtWtUO
+         K54iAG5CSPZs8EBcuRbzFuMSSJucbzmDF+hFAjX3G0kvJ/+CSBDvs5TdAbPV9YwO0Z9n
+         GgAA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711458208; x=1712063008;
+        d=1e100.net; s=20230601; t=1711458209; x=1712063009;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=6N43O76PWF7Rd134qi3Sj/Jiz8Q3AnOJJYGd71yv1U4=;
-        b=qlVFcoIUews5lvfJdbGmHm8Kb1F0OGWlm3/xHD9k0LkvGEcMd0ci49ZGYrGtTlB5HY
-         4cTrApL6MH7hHeQkNwPa1rGGtg+ftSW2oeuH70vYI/FrnLnSKezCiBaP1CKl/jcxnnM3
-         9kWASd6kh0uiiCYAGbpN30LWI+EteQlNW6w5oLsyoaVf1JClcj1AoOUaJCDxtRi9RnYo
-         kREqf/XwHUlenWspU2d3bVJuLnPZLmn1z4qCakuOU6bKBqsvZmAmUQoR/I8E3/ouudIJ
-         jaAIAuy8z/Nr539r8A4P2yxTmz0NAN6F1hIfwgyCDVmcskqIRfMRTcks46cQHc1QDs0W
-         yyXA==
-X-Forwarded-Encrypted: i=1; AJvYcCUH8mAnzCnlhhGvSgr6px/P9DYkeheU4/BSNU3pIHDcoaY/chAUVdkVCTMijWQiRHOtM4kttUVbuykdZ4AgBqU96E7JIHVSNwc7w53DSLpln7cD022NazKs0UigNx4mELzskugi/2BALQ==
-X-Gm-Message-State: AOJu0YyaG2KFRheN+2Yyj6jX7BK4itOEHkuQL2mYdvdHyp8b1qiZZmmy
-	eNGnwNJGOq74ucP+hOlaaZS1y49JoVAPn7NIm2MNbAEzTkOQuhx7
-X-Google-Smtp-Source: AGHT+IFA9vWoLm7GaLGN/blnkCuoP3Gnm6r4UiczI7LSP99sIDL9oD4NiJAXjH1QCnl4uBOFXmBWzQ==
-X-Received: by 2002:a2e:918c:0:b0:2d2:ea18:bcc7 with SMTP id f12-20020a2e918c000000b002d2ea18bcc7mr7988521ljg.23.1711458207396;
-        Tue, 26 Mar 2024 06:03:27 -0700 (PDT)
+        bh=UV2sux2QncSK7xl+qajqlbNGu4rD6PD8uK/Z947iCf8=;
+        b=ExpFizjsjItKL445ukKRZAxVSYytfLGxK/99kEprk0K6SM+nvrRful7cuL3Kppet/J
+         Hhuh8yUZjwps64c8fMyAsS7sGmFTst1IAfcCSGEFPBBmIuHu4H2uLz87BD7jSqdKz6xz
+         B0yTivCK/7hF1IqiIhbbR0zb2d0qqpUjVdEWdj2uMVCbyxeQMSvcQPeTGDGbH4M6Pk21
+         HOr+qiPZaNxZpV/Rq6rij/lCOXppHXrOARfBDQ1ezccFUXsPjl/c+p0/UpxlHfZYq9ox
+         vA6pE5OapeRlNBWtrWay2PAbcGUyoXJhWpUDdMAbACnv6Jqo2/vF4JgD7YCS09l/YFHq
+         KYsw==
+X-Forwarded-Encrypted: i=1; AJvYcCV86N6vClKRKlAr6OqRiNsRpYJgxXqcw6E6Wid+f5yuvew3DKJ+SdlpKGlVz7dxoFpMQb0LgWy1yUAr5O6yJDSoL8xy30RHgWhOlALQPxQf4GmcvfcMyVKKs3VzC4USfE8jjuIaYv2tYA==
+X-Gm-Message-State: AOJu0YxfAfSg4tMq5hetKdnbaYb2gIJ/JQHrPC/AiRRYxptUekCJjrX6
+	Epk0xkM7ndBBVxrS5ngVaykGalpUmVvEGfau+aQjnwYqXRSELxnS
+X-Google-Smtp-Source: AGHT+IFsjRc+wtrjl+11pRe8c+r1CXSWx4dA/uNr9SqwGTke9OyXHyQhGUZdoE22Ql/NYY9C20jx1A==
+X-Received: by 2002:a17:906:1c06:b0:a4d:b0e9:efb8 with SMTP id k6-20020a1709061c0600b00a4db0e9efb8mr873984ejg.24.1711458208980;
+        Tue, 26 Mar 2024 06:03:28 -0700 (PDT)
 Received: from [127.0.1.1] (2a02-8389-41cf-e200-b4b2-cd0d-1ebc-3c05.cable.dynamic.v6.surfer.at. [2a02:8389:41cf:e200:b4b2:cd0d:1ebc:3c05])
-        by smtp.gmail.com with ESMTPSA id wg6-20020a17090705c600b00a4a3580b215sm2206279ejb.80.2024.03.26.06.03.25
+        by smtp.gmail.com with ESMTPSA id wg6-20020a17090705c600b00a4a3580b215sm2206279ejb.80.2024.03.26.06.03.27
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Mar 2024 06:03:26 -0700 (PDT)
+        Tue, 26 Mar 2024 06:03:28 -0700 (PDT)
 From: Javier Carrasco <javier.carrasco.cruz@gmail.com>
-Date: Tue, 26 Mar 2024 14:03:23 +0100
-Subject: [PATCH v3 1/4] dt-bindings: rtc: armada-380-rtc: convert to
- dtschema
+Date: Tue, 26 Mar 2024 14:03:24 +0100
+Subject: [PATCH v3 2/4] dt-bindings: rtc: alphascale,asm9260-rtc: convert
+ to dtschema
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -78,7 +78,7 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20240326-rtc-yaml-v3-1-caa430ecace7@gmail.com>
+Message-Id: <20240326-rtc-yaml-v3-2-caa430ecace7@gmail.com>
 References: <20240326-rtc-yaml-v3-0-caa430ecace7@gmail.com>
 In-Reply-To: <20240326-rtc-yaml-v3-0-caa430ecace7@gmail.com>
 To: Alexandre Belloni <alexandre.belloni@bootlin.com>, 
@@ -90,11 +90,11 @@ Cc: linux-rtc@vger.kernel.org, devicetree@vger.kernel.org,
  Javier Carrasco <javier.carrasco.cruz@gmail.com>, 
  Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 X-Mailer: b4 0.14-dev
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1711458204; l=2981;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1711458204; l=2627;
  i=javier.carrasco.cruz@gmail.com; s=20240312; h=from:subject:message-id;
- bh=y/h9r7NFUTzcI7Q+8rrEH8zrSjp8JvhTnSX645n/aXk=;
- b=liAKRWfW3jeVzCOA2UFnpAb5x+6Rm2hplEM/BFOBYRJWl3AaUoAMFMqt2tkrVeDlMExbCln88
- pTQxdy45mePCfVX289c2MI/5esMAyy12aksy7+DttZFkvLr2hXenXh2
+ bh=wVGtBpqnSQ0yWKHruGIYnQQwxcD42XGvFVl6U3Cj6UA=;
+ b=qE/PmTQuVtj4lqNnoWbhqicVrL6kl1Df3i0zjtM5SsJAT/sg7xjsJ0Z0ZH9WRP3dlJcj2sXoK
+ /kPD+ulHH0rDd7SlovfWzqpKZLU3X1fvjUl19E4mOkCW8jXfYmlU3lW
 X-Developer-Key: i=javier.carrasco.cruz@gmail.com; a=ed25519;
  pk=lzSIvIzMz0JhJrzLXI0HAdPwsNPSSmEn6RbS+PTS9aQ=
 
@@ -105,53 +105,48 @@ This is a direct conversion with no additions.
 Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Signed-off-by: Javier Carrasco <javier.carrasco.cruz@gmail.com>
 ---
- .../devicetree/bindings/rtc/armada-380-rtc.txt     | 24 ----------
- .../bindings/rtc/marvell,armada-380-rtc.yaml       | 51 ++++++++++++++++++++++
- 2 files changed, 51 insertions(+), 24 deletions(-)
+ .../bindings/rtc/alphascale,asm9260-rtc.txt        | 19 --------
+ .../bindings/rtc/alphascale,asm9260-rtc.yaml       | 50 ++++++++++++++++++++++
+ 2 files changed, 50 insertions(+), 19 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/rtc/armada-380-rtc.txt b/Documentation/devicetree/bindings/rtc/armada-380-rtc.txt
+diff --git a/Documentation/devicetree/bindings/rtc/alphascale,asm9260-rtc.txt b/Documentation/devicetree/bindings/rtc/alphascale,asm9260-rtc.txt
 deleted file mode 100644
-index c3c9a1226f9a..000000000000
---- a/Documentation/devicetree/bindings/rtc/armada-380-rtc.txt
+index 76ebca568db9..000000000000
+--- a/Documentation/devicetree/bindings/rtc/alphascale,asm9260-rtc.txt
 +++ /dev/null
-@@ -1,24 +0,0 @@
--* Real Time Clock of the Armada 38x/7K/8K SoCs
--
--RTC controller for the Armada 38x, 7K and 8K SoCs
+@@ -1,19 +0,0 @@
+-* Alphascale asm9260 SoC Real Time Clock
 -
 -Required properties:
--- compatible : Should be one of the following:
--	"marvell,armada-380-rtc" for Armada 38x SoC
--	"marvell,armada-8k-rtc" for Aramda 7K/8K SoCs
--- reg: a list of base address and size pairs, one for each entry in
--  reg-names
--- reg names: should contain:
--  * "rtc" for the RTC registers
--  * "rtc-soc" for the SoC related registers and among them the one
--    related to the interrupt.
+-- compatible: Should be "alphascale,asm9260-rtc"
+-- reg: Physical base address of the controller and length
+-       of memory mapped region.
 -- interrupts: IRQ line for the RTC.
+-- clocks: Reference to the clock entry.
+-- clock-names: should contain:
+-  * "ahb" for the SoC RTC clock
 -
 -Example:
--
--rtc@a3800 {
--	compatible = "marvell,armada-380-rtc";
--	reg = <0xa3800 0x20>, <0x184a0 0x0c>;
--	reg-names = "rtc", "rtc-soc";
--	interrupts = <GIC_SPI 21 IRQ_TYPE_LEVEL_HIGH>;
+-rtc0: rtc@800a0000 {
+-	compatible = "alphascale,asm9260-rtc";
+-	reg = <0x800a0000 0x100>;
+-	clocks = <&acc CLKID_AHB_RTC>;
+-	clock-names = "ahb";
+-	interrupts = <2>;
 -};
-diff --git a/Documentation/devicetree/bindings/rtc/marvell,armada-380-rtc.yaml b/Documentation/devicetree/bindings/rtc/marvell,armada-380-rtc.yaml
+diff --git a/Documentation/devicetree/bindings/rtc/alphascale,asm9260-rtc.yaml b/Documentation/devicetree/bindings/rtc/alphascale,asm9260-rtc.yaml
 new file mode 100644
-index 000000000000..adf3ba0cd09f
+index 000000000000..f955a7f638ad
 --- /dev/null
-+++ b/Documentation/devicetree/bindings/rtc/marvell,armada-380-rtc.yaml
-@@ -0,0 +1,51 @@
++++ b/Documentation/devicetree/bindings/rtc/alphascale,asm9260-rtc.yaml
+@@ -0,0 +1,50 @@
 +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
 +%YAML 1.2
 +---
-+$id: http://devicetree.org/schemas/rtc/marvell,armada-380-rtc.yaml#
++$id: http://devicetree.org/schemas/rtc/alphascale,asm9260-rtc.yaml#
 +$schema: http://devicetree.org/meta-schemas/core.yaml#
 +
-+title: RTC controller for the Armada 38x, 7K and 8K SoCs
++title: Alphascale asm9260 SoC Real Time Clock
 +
 +maintainers:
 +  - Javier Carrasco <javier.carrasco.cruz@gmail.com>
@@ -161,19 +156,16 @@ index 000000000000..adf3ba0cd09f
 +
 +properties:
 +  compatible:
-+    enum:
-+      - marvell,armada-380-rtc
-+      - marvell,armada-8k-rtc
++    const: alphascale,asm9260-rtc
 +
 +  reg:
-+    items:
-+      - description: RTC base address size
-+      - description: Base address and size of SoC related registers
++    maxItems: 1
 +
-+  reg-names:
-+    items:
-+      - const: rtc
-+      - const: rtc-soc
++  clocks:
++    maxItems: 1
++
++  clock-names:
++    const: ahb
 +
 +  interrupts:
 +    maxItems: 1
@@ -181,20 +173,22 @@ index 000000000000..adf3ba0cd09f
 +required:
 +  - compatible
 +  - reg
-+  - reg-names
++  - clocks
++  - clock-names
 +  - interrupts
 +
 +unevaluatedProperties: false
 +
 +examples:
 +  - |
-+    #include <dt-bindings/interrupt-controller/arm-gic.h>
++    #include <dt-bindings/clock/alphascale,asm9260.h>
 +
-+    rtc@a3800 {
-+        compatible = "marvell,armada-380-rtc";
-+        reg = <0xa3800 0x20>, <0x184a0 0x0c>;
-+        reg-names = "rtc", "rtc-soc";
-+        interrupts = <GIC_SPI 21 IRQ_TYPE_LEVEL_HIGH>;
++    rtc@800a0000 {
++        compatible = "alphascale,asm9260-rtc";
++        reg = <0x800a0000 0x100>;
++        clocks = <&acc CLKID_AHB_RTC>;
++        clock-names = "ahb";
++        interrupts = <2>;
 +    };
 
 -- 
