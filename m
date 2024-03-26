@@ -1,115 +1,150 @@
-Return-Path: <linux-kernel+bounces-119582-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-119583-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 198BA88CAAF
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 18:25:08 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6F87B88CAB2
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 18:25:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id ADB311F837A0
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 17:25:07 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BDC01B2916B
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 17:25:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 751201CD35;
-	Tue, 26 Mar 2024 17:25:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B9F821CF9B;
+	Tue, 26 Mar 2024 17:25:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="A8A2gPTq"
-Received: from mail-io1-f41.google.com (mail-io1-f41.google.com [209.85.166.41])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="UkuZqFgt"
+Received: from mail-wm1-f46.google.com (mail-wm1-f46.google.com [209.85.128.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 425531CD11
-	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 17:25:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 47A1B1F941;
+	Tue, 26 Mar 2024 17:25:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711473901; cv=none; b=F0c55QlISI3GFmryBDV/8lcr3uFTSoo2APqaL7KhA1qb92gmfgymDM0RG/jlGBq3jAKLanJYSAZtiLmZlnfvX0MO5QdBF82VvgiI40wtj7DEfq0mELUEdPl0HjnZjSbdrAv0c0Lx/wdUQclRYGzUh72dLnBThr62FZi2pZfPXkE=
+	t=1711473916; cv=none; b=ppb5IPyCoILx5YLMRfnFBaVIrB9+IhRrOxlrxlqDnzUJP4P48GhlxRKK3XZaoRpuU8DDEV4U5rMCUT1dFalNUv7HeTuK5dNmVairmKN5oduOaXWE+2JK5upvlXqiu7C5sJQzBqbBiEV22n3oj7pvXZAA9VyH4yZ20C/tHo8deyE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711473901; c=relaxed/simple;
-	bh=pTRSIDC/KA3phaqH7soVU09XNC0+BCvPg1utlTY8gxA=;
+	s=arc-20240116; t=1711473916; c=relaxed/simple;
+	bh=ouExxAnjMIsGwW4T+Gq7Ao5GRlfTuNgYV0PeftFLR90=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=dWTk4SofM1qOLw6BDfghrWrg3xrOfTopEP7Z9ccHkGbFFKZjqprFcV8zTB9pCVuLQZyPZ8TlbbpfABdiXvN5XxRJLyTiyzCuWJzsz+8xZvv2xCumSkwif5EQYi5E/EJFqA3UpyUA+88dJWm3Q1nj8rtC0zO8CFkdA3QAh72oYOo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linuxfoundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=A8A2gPTq; arc=none smtp.client-ip=209.85.166.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linuxfoundation.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
-Received: by mail-io1-f41.google.com with SMTP id ca18e2360f4ac-7d0772bb5ffso131239f.0
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 10:25:00 -0700 (PDT)
+	 In-Reply-To:Content-Type; b=GWsC1OiinkByOWTX0714XIrdgSsxR6Yjtxl6O6vvjxS6bHImKzAJTnY6rWJaltcA9llcs8exliXSWHift31A7HhUP1WGSirI/SgNBC6FrMHFwvc6s0a11tecuIkO2hnLGuWROgPuvY9f1kI6X7TYIeiInOwIy24g9jCW/zwoi/0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=UkuZqFgt; arc=none smtp.client-ip=209.85.128.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f46.google.com with SMTP id 5b1f17b1804b1-414866f92beso16806445e9.3;
+        Tue, 26 Mar 2024 10:25:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google; t=1711473899; x=1712078699; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=r0fnUPNSHODh3//ksumlK/ktfhggOKBHEL5RMOBDJnw=;
-        b=A8A2gPTqq8Sz9xbvbKx4RhvGT1s4wdod1JGXZcuR9+g3YcHG8gIAOEZA4PysWnAuKd
-         RV/iHzHoVZ9O/ZFlx/6GbmIoNeO6uZWxxO6UEMNNf85Nxa/iyfDkpU5UC0kMZn8ncaa9
-         A2JSawl3SGiJWulttIDM9O1XIsYKvrbFOziQk=
+        d=gmail.com; s=20230601; t=1711473913; x=1712078713; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
+         :mime-version:date:message-id:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=gIUgf1B9/y9K/vRu24Pisue7YbENj34ko6OOe/V8jiE=;
+        b=UkuZqFgtdTI/F7xmhgzjDC/VZi4iw7qJBNutXRTMfDAde9m0GnIuIunITpjdgfW2SJ
+         2r1W9mJl4U8Qcwn/dWSqv91QbZnF+sUgh6E8U0WGsi6CiXunWW49GjEnBIddMymG9Nw0
+         2SQUT6I973VNaH/deaBnwgd3e6tpBxNWCt91GTVflYUE9CtSy9iNJERL23u4Uzjh3gMf
+         JaSj1gp/GOmrQpeaE/YtWYz+zIy2plIZae37FtfiKJsbq5UTRnQuVSmSrqlda9EO3hkh
+         qfOo4J+UezKw9kqd+toy9gMxkk10YyIneF72/36o3oOJwp3ODQS9Ey3X2oskAxoci8sv
+         3i1A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711473899; x=1712078699;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=r0fnUPNSHODh3//ksumlK/ktfhggOKBHEL5RMOBDJnw=;
-        b=qvN1e2wqzxV2ln1M1zMi6Kki78b1yCrATDYpKYUqblsi/EqlKH9YgFM6wdCzBY416k
-         w+T4is9xou637BaDvOVsDf2UJLCmhnPxOiwZdiGUNw53VN+2o60KXn2kRqVlLp620iCT
-         RB8A7/S581jKkZJfkyRzJKbsvU8yy77TWVeQoqKSmgjAiYPzy27KA3w2NKI1y3Ub3I7W
-         /b08G4SZQ5K1e1jef/T02vULzzfQUW8XQGu9z+XyIVs8yyMpwmhpF4n0oQJYNVPJIVNK
-         knCbhwBmjxAipw6W7o0ipWn4G8nigXLJbODUbcVcAni8XmAgovFVX8+EtNRqCo+vY3io
-         eUAw==
-X-Forwarded-Encrypted: i=1; AJvYcCWLyPuh6RF2v6Gf8GbaAiSe/jP2g7+mLNmDfQcj2zVw03wmfpE8USLUhCI2d6Y3iPb1WRqWrDPmckB1TV4HGuF4TZ6OxYqKW5StZt+w
-X-Gm-Message-State: AOJu0Yza30j935pjiXAqxYDsOEo3p3rWXXKsT4UVz4U22zJqJP0KG32q
-	LPG+6zbuDtA5QqR1c5apaG+xpLPZkUsVa0YfxFCj1MR5X59p933tmRZqNyMkxxM=
-X-Google-Smtp-Source: AGHT+IHWKEzcKaaOUZum8ea8j9NQGZMvaLf33hOIuTOAABsizWeIhvWwZU1+m/1KGq54/Le9+eCvAQ==
-X-Received: by 2002:a05:6602:14ce:b0:7d0:5b47:8f57 with SMTP id b14-20020a05660214ce00b007d05b478f57mr6062639iow.1.1711473899406;
-        Tue, 26 Mar 2024 10:24:59 -0700 (PDT)
-Received: from [192.168.1.128] ([38.175.170.29])
-        by smtp.gmail.com with ESMTPSA id k13-20020a02a70d000000b0047c0c7b6c6esm1912654jam.175.2024.03.26.10.24.58
+        d=1e100.net; s=20230601; t=1711473913; x=1712078713;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
+         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=gIUgf1B9/y9K/vRu24Pisue7YbENj34ko6OOe/V8jiE=;
+        b=A83FEZylQDiV/t0RaazOsIjyL1i8fCeetSv/Mk+BU2X2hjqPkhW5WBbJhDiwtTZhym
+         c96jggGGah3mzM/DgUJ0O4Rx/9BjG/G8AnQPJ4VKgOuFru96soRPheOtA4cLqbQ8DBd7
+         KUCZX851T0JoyoOOTr0reGuQy/7Ea1Q44gzW5V+Mk6EKHzLUUGCSKrAQdteu4b/Ki0Yk
+         KOtpC+79qGqP9Yp8Ea4SZeqz5r4kssRZWVL0EdNARR0YVPth2px1SNSssDRK0LJ2oM2y
+         FFMrgMdNcnAnMl5FsfbX52bmecvbUC7dfJBXC3CKpFTFRXA4mGL2ckmAJJlidgj+O6OG
+         olXQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWcWem35aVIse9BRlQFDjS6V602DQ3UGiuhQqK1pdbQqxw1UKw/eI5fRPnuCvZqInBvJsYgXYD3mQ0XBDCCD3TD9M/fd8qJ6RG/dI957X13yBhuiG8PtO3l6fC0BBL6AMFmttLt47cCB7+GJzx66Ojz3zuc46B2zelvYgbkjAOMkCCqLwJf
+X-Gm-Message-State: AOJu0YzPFEQXYcl6Og8rAlre1IuhUBoxJjOOk8uKppabqyQga+DM1KfR
+	Ac0xI8ksRrtkkYWvqDZGNz4Dh4dzJ2RH6kCD+7apziY/i3LxFHz2
+X-Google-Smtp-Source: AGHT+IHVNFIGMzS2dZ3xveJrlDb2FBXMasemMuwXPYWdG6f6UVM+/kEQadi8UvLXh+w/YXKt7GjYSA==
+X-Received: by 2002:a05:600c:4f51:b0:414:9141:1461 with SMTP id m17-20020a05600c4f5100b0041491411461mr157359wmq.29.1711473913398;
+        Tue, 26 Mar 2024 10:25:13 -0700 (PDT)
+Received: from debian ([146.70.204.204])
+        by smtp.gmail.com with ESMTPSA id t12-20020a05600c450c00b004148619f5d0sm9341052wmo.35.2024.03.26.10.25.07
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 26 Mar 2024 10:24:59 -0700 (PDT)
-Message-ID: <cd4aed58-4552-48c9-baa8-53b9d28682fb@linuxfoundation.org>
-Date: Tue, 26 Mar 2024 11:24:58 -0600
+        Tue, 26 Mar 2024 10:25:13 -0700 (PDT)
+Message-ID: <57bf675d-c2f0-4022-845c-166891e336be@gmail.com>
+Date: Tue, 26 Mar 2024 18:25:02 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 4.19 000/147] 4.19.311-rc2 review
-Content-Language: en-US
-To: Sasha Levin <sashal@kernel.org>, linux-kernel@vger.kernel.org,
- stable@vger.kernel.org
-Cc: torvalds@linux-foundation.org, akpm@linux-foundation.org,
- linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
- lkft-triage@lists.linaro.org, florian.fainelli@broadcom.com, pavel@denx.de,
- Shuah Khan <skhan@linuxfoundation.org>
-References: <20240325115854.1764898-1-sashal@kernel.org>
-From: Shuah Khan <skhan@linuxfoundation.org>
-In-Reply-To: <20240325115854.1764898-1-sashal@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Subject: Re: [PATCH net-next v4 4/4] net: gro: move L3 flush checks to
+ tcp_gro_receive
+To: Paolo Abeni <pabeni@redhat.com>, Eric Dumazet <edumazet@google.com>
+Cc: davem@davemloft.net, kuba@kernel.org, willemdebruijn.kernel@gmail.com,
+ netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-kselftest@vger.kernel.org
+References: <20240325182543.87683-1-richardbgobert@gmail.com>
+ <20240325182543.87683-5-richardbgobert@gmail.com>
+ <CANn89iKzeTKuBA3NL0DQUmUHmmc0QzZ0X62DUarZ2Q7cKRZvSA@mail.gmail.com>
+ <46e0c775-91e7-4bf6-88f3-53ab5e00414f@gmail.com>
+ <CANn89iJkDbzLKmUGRHNFpfiaO8z19i44qgqkBA9Updt4QsRkyg@mail.gmail.com>
+ <6566fd5f-fcdf-4dc7-b8a2-5e8a182f8c49@gmail.com>
+ <d60c6185b8394da02479100981fa3f1306d9c81f.camel@redhat.com>
+From: Richard Gobert <richardbgobert@gmail.com>
+In-Reply-To: <d60c6185b8394da02479100981fa3f1306d9c81f.camel@redhat.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
-On 3/25/24 05:58, Sasha Levin wrote:
+Paolo Abeni wrote:
+> Hi,
 > 
-> This is the start of the stable review cycle for the 4.19.311 release.
-> There are 147 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+> On Tue, 2024-03-26 at 16:02 +0100, Richard Gobert wrote:
+>> This patch is meaningful by itself - removing checks against non-relevant
+>> packets and making the flush/flush_id checks in a single place.
 > 
-> Responses should be made by Wed Mar 27 11:58:33 AM UTC 2024.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
->          https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git/patch/?id=linux-4.19.y&id2=v4.19.310
-> or in the git tree and branch at:
->          git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.19.y
-> and the diffstat can be found below.
-> 
-> Thanks,
-> Sasha
+> I'm personally not sure this patch is a win. The code churn is
+> significant. I understand this is for performance's sake, but I don't
+> see the benefit??? 
 > 
 
-Compiled and booted on my test system. No dmesg regressions.
+Could you clarify what do you mean by code churn?
 
-Tested-by: Shuah Khan <skhan@linuxfoundation.org>
+This patch removes all use of p->flush and flush_id from the
+CB. The entire logic for L3 flush_id is scattered in tcp_gro_receive
+and {inet,ipv6}_gro_receive with conditionals rewriting ->flush,
+->flush_id and ->is_atomic. Moving it to one place (gro_network_flush)
+should be more readable. (Personally, it took me a lot of time to
+understand the current logic of flush + flush_id + is_atomic)
 
-thanks,
--- Shuah
+> The changelog shows that perf reports slightly lower figures for
+> inet_gro_receive(). That is expected, as this patch move code out of
+> such functio. What about inet_gro_flush()/tcp_gro_receive() where such
+> code is moved?
+> 
+
+Please consider the following 2 common scenarios:
+
+1) Multiple packets in the GRO bucket - the common case with multiple
+   packets in the bucket (i.e. running super_netperf TCP_STREAM) - each layer
+   executes a for loop - going over each packet in the bucket. Specifically,
+   L3 gro_receive loops over the bucket making flush,flush_id,is_atomic
+   checks. For most packets in the bucket, these checks are not
+   relevant. (possibly also dirtying cache lines with non-relevant p
+   packets). Removing code in the for loop for this case is significant.
+
+2) UDP/TCP streams which do not coalesce in GRO. This is the common case
+   for regular UDP connections (i.e. running netperf UDP_STREAM). In this
+   case, GRO is just overhead. Removing any code from these layers
+   is good (shown in the first measurement of the commit message).
+
+In the case of a single TCP connection - the amount of checks should be
+the same overall not causing any noticeable difference.
+
+> Additionally the reported deltas is within noise level according to my
+> personal experience with similar tests.
+> 
+
+I've tested the difference between net-next and this patch repetitively,
+which showed stable results each time. Is there any specific test you
+think would be helpful to show the result?
+
+Thanks
+
 
