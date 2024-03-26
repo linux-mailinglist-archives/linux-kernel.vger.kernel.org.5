@@ -1,111 +1,140 @@
-Return-Path: <linux-kernel+bounces-120039-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-120041-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B7DEB88D0B5
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 23:22:08 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3F9F188D0BB
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 23:25:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1BF6BB21626
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 22:22:06 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A1669320C35
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 22:25:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0F97D13DDCA;
-	Tue, 26 Mar 2024 22:21:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DAC5913DBBB;
+	Tue, 26 Mar 2024 22:25:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="WyDg57Uh"
-Received: from mail-ej1-f47.google.com (mail-ej1-f47.google.com [209.85.218.47])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel.com header.i=@intel.com header.b="O7L47YIn"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.13])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A9E0013D8B8;
-	Tue, 26 Mar 2024 22:21:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 90E671CAAE
+	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 22:25:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.13
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711491703; cv=none; b=mEKmD6m8Qmy4Y3Sw9ROOSsDxawG9acvvM53+sdoAQ556SA1DqaBRMa1OZZbQuQUgO5RcQCWdzr/l3Y3or6rvnFYLWGz5GaTTkxnJOC4j9RMcDMCR8fEBZoy1z1sDUUUIBwJ0zSYTb6DNyWSoekViw+dXkmajk1BDsvTyr5E35QY=
+	t=1711491918; cv=none; b=H+p4GSbg2NJ9WbMmUcwmjMEgOwNZPNkujMbxKD+BEFLA2yqbg+RCZqB27sXzfrRURGTp8Ix1WDlHzuOe5AJYRTubIHRpQpsxbAaMpKz+QJh0tg+G2BEHtjWJHsL1jxKexvzOuzbQcgOFWedO9d9K9KIsr40iaoyzhsFEudpK1sk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711491703; c=relaxed/simple;
-	bh=mg5CHL67zV3tQUE3yPMMGIP9AiC9A0NRiTrNYg3lphU=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=IMES3jaJrlRgITCNQ0P8jXJZjmnS7QW1eIoFq07nYGTF8p+jpB1xETIt35DGuzaiu1+Xe90NOzuGoEvQmpjvbQsrQouJDWwdcuE3UwUIIX1vnWD8ZyjEEBlvYJHrpTZ3XMrffNndsnBuH7U8Mg26OmGfvAMs7Zr+cBEBVoGYM8M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=WyDg57Uh; arc=none smtp.client-ip=209.85.218.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f47.google.com with SMTP id a640c23a62f3a-a44665605f3so715117666b.2;
-        Tue, 26 Mar 2024 15:21:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711491700; x=1712096500; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=EVLloZQohcM2K6KQJQyVlxzxH6NCVFHwUxv2R8Egdf4=;
-        b=WyDg57UhA/iUzbcr/XQ0EwybNap2MO3JGObfhYCwvOZrzE9J3TEx5L4MPpvuVq+Bbd
-         lPb0nts6scmVlyH41g97F7g4HrJcYdsKPpyg+XR7O+mkEEnlhUlB1jKpKY40765S7G5q
-         0NQbM0zFw4qzdBOwBTZHFW5pSYWAVW2+b50U6bGQhaR3VE30vi8QB12Eq4FnEmRRdE/4
-         Cft7KPXwMwEeqyBSZUUWZqqO+OEthMxtlle6zRnYhGMWK+RvF5vc0ZskTnLCxqWuFDX6
-         fJtSeaMtcJGzlLJGyoQljQ4RjEasvzavbfJ5KUf5Z8OnA6Cz/jgQ1pqdZczY/qttbNtf
-         v63A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711491700; x=1712096500;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=EVLloZQohcM2K6KQJQyVlxzxH6NCVFHwUxv2R8Egdf4=;
-        b=AklKPNUQ/U/+dNBRc4GsOc+LmDV8Fx73z8JSOD7LGgOWcQGdcCFSsZQzMZYzOOakai
-         nFFQHEwX723Txpi3Fyfxq9p2162NygkKt8Wod7L4hFFFqbhOdWgrFXH4o3A+zFUKZxXW
-         wT9asQhZY50WdEv95VeIxfT/GCzPvQeBdMyIgOg5a7tX7oin4ycm0TIpDMjTbfR9bY+L
-         njwLorUfIrutXm101Krmi5+HcmdyL3iW3gFqtqt4+wvQ3+M/XZ15AhXgprLcDfq37htP
-         +K4lHDDh6arkiWh2xNpamcZoIeU4i5JXPxB0a2/swhFYZE8UaxFj39j2BwPNuJFqYhPP
-         a6dA==
-X-Forwarded-Encrypted: i=1; AJvYcCWHCo0+MpOy4/eY7sdRT6VqO/LP6szzghhRle7XVzVmIEgTghB92r6h8G01OCNVGVli4eFgcCaknmpB85EnBFF/JDtzOEXVbp1SFtSYITeIkvb+f4eRXX0gG9LeJZl62Gy9mFBVupdQUQ==
-X-Gm-Message-State: AOJu0YwW7D9kbYOR1qwIZwyfL5BiSoTf58vE8k8CKZiqXWA/7liO473J
-	b9aQKkjjXAqSrker0OF8WcvxDREpvU5aZK7d6/flMYXroX+nULCS
-X-Google-Smtp-Source: AGHT+IFbfOTWjdmcyMkuurrgXcsz3zLRqlN2HZmiCb9ThEJsejRWtXx04BXPLsIev7aMaw9frXjdaw==
-X-Received: by 2002:a17:906:53c9:b0:a47:20e0:d618 with SMTP id p9-20020a17090653c900b00a4720e0d618mr763288ejo.60.1711491699853;
-        Tue, 26 Mar 2024 15:21:39 -0700 (PDT)
-Received: from jernej-laptop.localnet (86-58-6-171.dynamic.telemach.net. [86.58.6.171])
-        by smtp.gmail.com with ESMTPSA id y4-20020a1709060a8400b00a46bec6da9fsm4640433ejf.203.2024.03.26.15.21.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Mar 2024 15:21:39 -0700 (PDT)
-From: Jernej =?utf-8?B?xaBrcmFiZWM=?= <jernej.skrabec@gmail.com>
-To: Rob Herring <robh@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
- Samuel Holland <samuel@sholland.org>, Corentin Labbe <clabbe@baylibre.com>,
- Maxime Ripard <mripard@kernel.org>, devicetree@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
- linux-kernel@vger.kernel.org,
- Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Subject: Re: [PATCH 4/4] arm: dts: allwinner: drop underscore in node names
-Date: Tue, 26 Mar 2024 23:21:38 +0100
-Message-ID: <2317198.ElGaqSPkdT@jernej-laptop>
-In-Reply-To: <20240317184130.157695-4-krzysztof.kozlowski@linaro.org>
-References:
- <20240317184130.157695-1-krzysztof.kozlowski@linaro.org>
- <20240317184130.157695-4-krzysztof.kozlowski@linaro.org>
+	s=arc-20240116; t=1711491918; c=relaxed/simple;
+	bh=g/XFiAjpJDcqX2pvn3G29NxVuZNTNPhMT9fmGzwmC7U=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Zh5WO8Qp10DJhHtbl8a5qwzWKNAVAwARp/YEQFBMEv7loE84OtC2G/Di1HFjrbuWbly7QNQK8/4I4lgUYuhafJrTfj8VIAytWg4i+gdjQMHstY3zBL9vKSjMghFJbTq3rgL2Fy6vra8lYGtfGKFOnWo3KDStSC7QDGIw1xb8ZGE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=O7L47YIn; arc=none smtp.client-ip=192.198.163.13
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1711491917; x=1743027917;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=g/XFiAjpJDcqX2pvn3G29NxVuZNTNPhMT9fmGzwmC7U=;
+  b=O7L47YInZuugX6v2a28d9PAkdP0Q++x3rGZqO8YhSrlkDzE0pP6cGIsb
+   yOVGHhl7Mn1kucxkxVznPLPie4lIHG2i/YWQuhV8gYxjM/TdlHOt9+sPa
+   gmZZMF+NNJ98mHmBHnDvbYR1obVU7a/ZFYiHDZRzDZEzgQ1r8kd5WFL8V
+   0GDOqAgmCgKrhgCrzxIJfEJAYNTQXAjNdFNkoMMRLo/+JLwPZZy7aCGT0
+   FHAPQMCDExzXcV2WmjwADrZenXq2lcn1fDAmWRZ05/e2Z5BFONL46r9Ws
+   ZhwnKp5nm+x5ojgZVZegXJSCDSFWm3zgfS6j9COSs96xw+XQk7DoK1wGN
+   A==;
+X-CSE-ConnectionGUID: M/bZNXQdR/um8TYH0HOBoA==
+X-CSE-MsgGUID: O3dOXhcWRO2elBRgmD0KTQ==
+X-IronPort-AV: E=McAfee;i="6600,9927,11025"; a="9534553"
+X-IronPort-AV: E=Sophos;i="6.07,157,1708416000"; 
+   d="scan'208";a="9534553"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmvoesa107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Mar 2024 15:25:16 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,11025"; a="914892709"
+X-IronPort-AV: E=Sophos;i="6.07,157,1708416000"; 
+   d="scan'208";a="914892709"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Mar 2024 15:25:14 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.97)
+	(envelope-from <andriy.shevchenko@linux.intel.com>)
+	id 1rpFEG-0000000GU7u-3r9h;
+	Wed, 27 Mar 2024 00:25:12 +0200
+Date: Wed, 27 Mar 2024 00:25:12 +0200
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: Bjorn Helgaas <helgaas@kernel.org>
+Cc: Lee Jones <lee@kernel.org>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1 1/1] mfd: intel-lpss: Switch over to MSI interrupts
+Message-ID: <ZgNLSFqgZOvwDrUQ@smile.fi.intel.com>
+References: <ZgM8iExkz5S6reeq@smile.fi.intel.com>
+ <20240326220953.GA1498942@bhelgaas>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240326220953.GA1498942@bhelgaas>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 
-Dne nedelja, 17. marec 2024 ob 19:41:30 CET je Krzysztof Kozlowski napisal(a):
-> Underscores should not be used in node names (dtc with W=2 warns about
-> them), so replace them with hyphens.  Use also generic name for pwrseq
-> node, because generic naming is favored by Devicetree spec.  All the
-> clocks affected by this change use clock-output-names, so resulting
-> clock name should not change.  Functional impact checked with comparing
-> before/after DTBs with dtx_diff and fdtdump.
+On Tue, Mar 26, 2024 at 05:09:53PM -0500, Bjorn Helgaas wrote:
+> On Tue, Mar 26, 2024 at 11:22:16PM +0200, Andy Shevchenko wrote:
+> > On Tue, Mar 26, 2024 at 04:01:07PM -0500, Bjorn Helgaas wrote:
+> > > On Tue, Mar 26, 2024 at 06:21:47PM +0200, Andy Shevchenko wrote:
+> > > > On Mon, Mar 25, 2024 at 04:19:15PM -0500, Bjorn Helgaas wrote:
+> > > > > On Tue, Mar 12, 2024 at 06:59:05PM +0200, Andy Shevchenko wrote:
+
+..
+
+> > > > > > -	ret = pci_alloc_irq_vectors(pdev, 1, 1, PCI_IRQ_LEGACY);
+> > > > > > +	ret = pci_alloc_irq_vectors(pdev, 1, 1, PCI_IRQ_ALL_TYPES);
+> > > > > >  	if (ret < 0)
+> > > > > >  		return ret;
+> > > > > 
+> > > > > I guess at least some of these devices do support INTx, since we
+> > > > > always used INTx previously, right?
+> > > > > 
+> > > > > There are a bunch of bug reports complaining about a lack of _PRT
+> > > > > entries for them, e.g., these from
+> > > > > https://bugzilla.kernel.org/show_bug.cgi?id=212261#c24:
+> > > > 
+> > > > But this is not related to my patch, and the mentioned bug report seems about
+> > > > all AMD and Intel platforms.
+> > > > 
+> > > > Can you, please, elaborate what the relation to my patch?
+> > > 
+> > > Right, sorry I didn't make that clear; I didn't mean that it was
+> > > related to your patch.  I was just looking at this old bug report
+> > > about not being able to figure out INTx routing.
+> > > 
+> > > Your patch had to do with interrupts, so I just wondered whether you
+> > > had insight into whether these devices actually used INTx.  My guess
+> > > is that at least some of them *do* use INTx, because prior to your
+> > > patch, the driver *only* tried to use INTx.
+> > > 
+> > > If it happend that they never use INTx, but advertise INTA via
+> > > Interrupt Pin, I think that would be a device defect that we might
+> > > consider a quirk for.
+> > > 
+> > > If they *do* use INTx, and the _PRT doesn't tell us how it's routed, I
+> > > think that would be a firmware defect, and ... I dunno what we would
+> > > do.  I guess just avoid using INTx because we don't know where the
+> > > interupt goes.
+> > 
+> > Okay, so the revert after all is not required, do you agree?
 > 
-> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+> Yes, I agree!  No indication of problems with your patch, AFAICS.
+> 
+> If you have any opinions or ideas on the "can't derive routing for PCI
+> INT A" stuff, I'd still be interested, because it really annoys users.
 
-Reviewed-by: Jernej Skrabec <jernej.skrabec@gmail.com>
+Got it, thank you for clarification!
 
-Best regards,
-Jernej
+-- 
+With Best Regards,
+Andy Shevchenko
 
 
 
