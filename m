@@ -1,69 +1,71 @@
-Return-Path: <linux-kernel+bounces-118811-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-118812-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 89EB088BF9E
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 11:36:09 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id EFE0C88BFA0
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 11:36:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 447B72E5A30
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 10:36:08 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 139A51C3E5D3
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 10:36:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 48B1429A0;
-	Tue, 26 Mar 2024 10:36:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1D106DF60;
+	Tue, 26 Mar 2024 10:36:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="MgFGEDUI"
-Received: from mail-oa1-f46.google.com (mail-oa1-f46.google.com [209.85.160.46])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="bE+BOn4b"
+Received: from mail-pf1-f176.google.com (mail-pf1-f176.google.com [209.85.210.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 46F954689;
-	Tue, 26 Mar 2024 10:36:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0E3A66AA1;
+	Tue, 26 Mar 2024 10:36:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711449361; cv=none; b=AVYXTw9T6FWI0EwXBNPH6LNv7imi4iQa7pqjVfexkkFfAU7KWPxzaYJOX5S+PzJ+tVFHqIADT+gC3Bdbo7RX4lfp1jck4eMnLRyKGXn6R0WBa2pXjkxxVhSb56j9Tzc4RbSjEnv+eE1JieDshyRPVIO4JVXMlcNXvfpjYhxUnzE=
+	t=1711449365; cv=none; b=Y1Zqtv0bNGX9+MMOWr1Y0ALsnTBkOmeH5BPvFW5N9sKJ8BJZBnK8tfUUiA77iCw+JIk9HF2Vr378D9RoyGAYdNKFk+F9iSQKrXE7+D5my+sZVY+ERNvOHoy/FKsXZb6jLrT2S03orcQfJ4Q6nmSl98edZVw20XSD89wYMHG8G3I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711449361; c=relaxed/simple;
-	bh=1SwHJQZ5aSVj5ZoQuGLDpQfrCYhnferKKbFhXT0gWYQ=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=knRPHelQe2gp9n2UdZtpCo9sMR/lpDllxIoDu6CW+k1mmpPAhqBs5rhVIgmgEo2KZ5+vFx7qRHslEHb14i8SesDg1/Ec7wPHhlSsq5UJI1PWO1FEqN+Ikj1df4nyOD8XJ7r+tADwZbS5qwKn84fWUUIq+ZRo6zKaX6uAxkEcVDs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=MgFGEDUI; arc=none smtp.client-ip=209.85.160.46
+	s=arc-20240116; t=1711449365; c=relaxed/simple;
+	bh=nA3HGlEzg4wipPMaSJZpoxch5/KlpndwCHv73DJVBq8=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=GhAYZBqbu3+zUAPK1Gb8k/58vlLbG9Y3fZWa5cupVqGmRYXJA2D8ufwHO+hhizQATnaU5XEAHgEMqhlvA/kV6F0MGepuFXaMu48qjcwOaeOWv+hTR9g4AleTXdtVV9JXJCWMixFr3+iTeUCLTR5obYgR+OT1raAnJSjri8SGAzk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=bE+BOn4b; arc=none smtp.client-ip=209.85.210.176
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oa1-f46.google.com with SMTP id 586e51a60fabf-221e6bf537dso3294946fac.1;
-        Tue, 26 Mar 2024 03:36:00 -0700 (PDT)
+Received: by mail-pf1-f176.google.com with SMTP id d2e1a72fcca58-6e6afb754fcso4697267b3a.3;
+        Tue, 26 Mar 2024 03:36:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711449359; x=1712054159; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=KUoPhAxP6OeKuxAApMMPObFZdH2Lwn2Oh9PCqeapu+Q=;
-        b=MgFGEDUIS93POoqzEuh5Ui/LXuY83QHA2Fwoy1APbuFOvJhkhfIsgjZIUEu2XdlgXr
-         H5AWBsOLMkLuSSTWZGoCistWyCE9MEsdr/kszHfkdMoQsQTwiJVKONeoR6iMhioYrBIz
-         koPzKxsDzHUHDoR+kd+kwqklSSTnomz8MquVfeJuDDbXY2o57xLZde6BVKD8DXVfTsWl
-         md+b+cGq35cZirhisBEQqX911Hqzi9JSdhO3hbJRhfRlysqACaFh/yOiSg0ppbvUPQux
-         wv6lZ7mEoNHCtTM2upX/H8X7JJB8zsmITk0RcOVI7UQXXWiIyQ/cM5vwvtUbGLxj4O6F
-         7NSQ==
+        d=gmail.com; s=20230601; t=1711449363; x=1712054163; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=IzA+4JI3wFiXDrwUJkR8zhNrvSRJ9geuAiqpr+wQJso=;
+        b=bE+BOn4b3WkWIe2QZ19VxtVPjuXYHjmveFPJ3xzW2vijM+hH2TH2EzYOG+hgTFK+bQ
+         c+VrVQLC6YybQs4cgeWIsXBA02HVU2YBb/7Gr6jL83Qw7pF0Vmd1xTBdQqOX+oHxNYgn
+         eqxLFeymNPqwjVivslVG/DYbAZpCtt/WgkmYr56VNKKzgAnvkiE62RPKC8r+rX5jRaXm
+         B3Rwy8NkCiKLrPzlQJDDOI9mfNJKgOW92sAHx0rXPawPrBZrT/7KY6Vy6HQKYG4pPWiG
+         oxx0gUu/0vgKzUmSaoMKMA+6rnMvs7AUNZxTvINxmaMwsepxAaCMGiX8bZVa7FBsTyv2
+         kPGg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711449359; x=1712054159;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=KUoPhAxP6OeKuxAApMMPObFZdH2Lwn2Oh9PCqeapu+Q=;
-        b=MlO8AXMi2rdKyEIuiTVaj8lDxNzquGFxx1ASnCKJd1WeTr+1ztTjeK2IpA0CzTk4cp
-         z+kUbyuj/f0OG+vZk6I5aUsmnuKHidIFBP3yQG+1j7pXdA7voPtVVk4yJfMVPw9Sm3QT
-         r0WqJ7i6jB+YhDK4veFP+IuXABRQaGx/lPm1M2Q7gVUjwSkN5UeMK/1IN9WtW6uzA9ow
-         WpIWSxGTkaFgYD1T+GbB3DSAKwOa9HYkA4TaArxKbLjXorYAU0R251b0sT+KlkEl3SJW
-         5IhO5BminsInaSbMUSRNygfnwf+LulObz1eVTdngHE8mfeJP8a1bKsCxe6pVOuUTaqoi
-         a07A==
-X-Forwarded-Encrypted: i=1; AJvYcCUc/1qP3LL34UoTP9e4SR+6bZ/kmmJtzkTRAc7XpMU4oGgS1zE2pTWU3o3EkCEPC3ptEn4QvBg5izxStjhM6db+F8RHwKLjUYzutfHyRP85J3hhJGil0Sbo15qpR/4J2Vu2fniGNzq+Sw==
-X-Gm-Message-State: AOJu0YwEr6wI1Pf1R4oEKXSe2MEHrdu2vznvAFCwpHCHfD/ikUaNPWRx
-	ubnEeI6H0VB2nHocq2CSpHNvbzkHW/NETQpCcMTpXDdONIfG4gXp
-X-Google-Smtp-Source: AGHT+IF+/TyU7QvcPL8z/7aJOBNyEi3udPsi6Rr+EqdIy/sG3yo5Md4hoQBCnmPbzBoKuu7bDmTNUQ==
-X-Received: by 2002:a05:6870:2252:b0:222:4bde:fede with SMTP id j18-20020a056870225200b002224bdefedemr976511oaf.13.1711449359138;
-        Tue, 26 Mar 2024 03:35:59 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1711449363; x=1712054163;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=IzA+4JI3wFiXDrwUJkR8zhNrvSRJ9geuAiqpr+wQJso=;
+        b=H8yYeFy1taWG7XvhZX3UmBISnW6FFRKrFQrfcfF9N2vSpgldGtePkY+G70y2J5Bt32
+         x8XH2lcpkHZ19HMFAnyhzTPet1xtUsoDFTPQhSE5zGyTCmXpm8rd2Lq4q0jJau95nxGN
+         C521w6HcCaLGcXBS9a451NplZReaCNXWodURQLMpD+iWSMpD5VdCrSPXl66B1UTMHB6R
+         qvoDDp4boIjxwa4+RN+9miis7YO5yWqbcR2PQSnd6YTWzqj5sK3/iTkxufXGbYXaeBp3
+         MzC2lyH7xoM4Ny05//FNo4Muynd91JUdZb79jccqxowvOasVX/MmiQhkuZuvz9vJn0z2
+         bWow==
+X-Forwarded-Encrypted: i=1; AJvYcCU82xerbvrM0qgS7JyAfGpa2EUMpypKmBU+LpoPRFg0DXpE652TYbnTfSvyNVGrEVubXLFiGsypKxB3g+9tbRgP1Q2DbCTmH98HnI3DvUKJrp0keoFTcm6jdatW5slcqXXx2E3aq/M1UA==
+X-Gm-Message-State: AOJu0YwqE96tGGE0n9JN42NYsu2+V7JmeKbr9Go8hCs8LVZtY8bf/p6X
+	21xdBPsiz4nJtnEuqCl8APZJi3aKY+2q8/M3bUHvdFPogedjI+Mg
+X-Google-Smtp-Source: AGHT+IHHOYzTj+IB7VjPayZebgf3uaGpX6yP65/tC4hSUtY5RbYDAX6ZhBtjhEVyZzYDQrPbpPPv+g==
+X-Received: by 2002:a05:6a00:b42:b0:6ea:bdbc:963 with SMTP id p2-20020a056a000b4200b006eabdbc0963mr802295pfo.0.1711449363221;
+        Tue, 26 Mar 2024 03:36:03 -0700 (PDT)
 Received: from localhost.localdomain (125-229-150-10.hinet-ip.hinet.net. [125.229.150.10])
-        by smtp.gmail.com with ESMTPSA id g14-20020a62f94e000000b006ea90941b22sm5554215pfm.40.2024.03.26.03.35.56
+        by smtp.gmail.com with ESMTPSA id g14-20020a62f94e000000b006ea90941b22sm5554215pfm.40.2024.03.26.03.36.00
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Mar 2024 03:35:58 -0700 (PDT)
+        Tue, 26 Mar 2024 03:36:02 -0700 (PDT)
 From: Kelly Hung <ppighouse@gmail.com>
 X-Google-Original-From: Kelly Hung <Kelly_Hung@asus.com>
 To: robh+dt@kernel.org
@@ -78,11 +80,17 @@ Cc: krzysztof.kozlowski+dt@linaro.org,
 	openbmc@lists.ozlabs.org,
 	kelly_hung@asus.com,
 	Allenyy_Hsu@asus.com,
-	Kelly Hung <Kelly_Hung@asus.com>
-Subject: [PATCH v6 0/2] Add Reviewed-by and Acked-by tags
-Date: Tue, 26 Mar 2024 18:35:47 +0800
-Message-Id: <20240326103549.2413515-1-Kelly_Hung@asus.com>
+	Kelly Hung <Kelly_Hung@asus.com>,
+	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+	Rob Herring <robh@kernel.org>,
+	Zev Weiss <zweiss@equinix.com>,
+	Conor Dooley <conor.dooley@microchip.com>
+Subject: [PATCH v6 1/2] dt-bindings: arm: aspeed: add ASUS X4TF board
+Date: Tue, 26 Mar 2024 18:35:48 +0800
+Message-Id: <20240326103549.2413515-2-Kelly_Hung@asus.com>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20240326103549.2413515-1-Kelly_Hung@asus.com>
+References: <20240326103549.2413515-1-Kelly_Hung@asus.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -91,19 +99,40 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-There are no changes to the Patch file, just the reviewed and acked tags are added.
-PATCH v5 has been merged into the next branch.
+Document the new compatibles used on ASUS X4TF.
 
-Kelly Hung (2):
-  dt-bindings: arm: aspeed: add ASUS X4TF board
-  ARM: dts: aspeed: x4tf: Add dts for asus x4tf project
+Signed-off-by: Kelly Hung <Kelly_Hung@asus.com>
+Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Reviewed-by: Rob Herring <robh@kernel.org>
+Reviewed-by: Zev Weiss <zweiss@equinix.com>
+Acked-by: Conor Dooley <conor.dooley@microchip.com>
+---
+v5 -> v6:
+- Add Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+- Add Reviewed-by: Rob Herring <robh@kernel.org>
+- Add Reviewed-by: Zev Weiss <zweiss@equinix.com>
+- Add Acked-by: Conor Dooley <conor.dooley@microchip.com>
+V4 -> V5: Update all changelog from v1 to v5.
+V3 -> V4: The new compatible is a BMC for a ASUS X4TF server which use 
+a ast2600-a3 chip, so correct string to asus,x4tf-bmc.
+V2 -> V3: Add a label to indicate it is new compatible for bmc.
+V1 -> V2: Remove blank in front of the string x4tf.
+---
+ Documentation/devicetree/bindings/arm/aspeed/aspeed.yaml | 1 +
+ 1 file changed, 1 insertion(+)
 
- .../bindings/arm/aspeed/aspeed.yaml           |   1 +
- arch/arm/boot/dts/aspeed/Makefile             |   1 +
- .../boot/dts/aspeed/aspeed-bmc-asus-x4tf.dts  | 581 ++++++++++++++++++
- 3 files changed, 583 insertions(+)
- create mode 100644 arch/arm/boot/dts/aspeed/aspeed-bmc-asus-x4tf.dts
-
+diff --git a/Documentation/devicetree/bindings/arm/aspeed/aspeed.yaml b/Documentation/devicetree/bindings/arm/aspeed/aspeed.yaml
+index 749ee54a3..0047eb4ab 100644
+--- a/Documentation/devicetree/bindings/arm/aspeed/aspeed.yaml
++++ b/Documentation/devicetree/bindings/arm/aspeed/aspeed.yaml
+@@ -74,6 +74,7 @@ properties:
+               - ampere,mtmitchell-bmc
+               - aspeed,ast2600-evb
+               - aspeed,ast2600-evb-a1
++              - asus,x4tf-bmc
+               - facebook,bletchley-bmc
+               - facebook,cloudripper-bmc
+               - facebook,elbert-bmc
 -- 
 2.25.1
 
