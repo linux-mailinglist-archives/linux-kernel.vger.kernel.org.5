@@ -1,135 +1,118 @@
-Return-Path: <linux-kernel+bounces-118989-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-118986-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0786988C256
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 13:38:42 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id B2F9F88C24A
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 13:37:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 39B531C3F919
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 12:38:41 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6C73E301D49
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 12:37:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 492AF6AFB6;
-	Tue, 26 Mar 2024 12:38:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4C4E35C61F;
+	Tue, 26 Mar 2024 12:37:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=tq-group.com header.i=@tq-group.com header.b="dY81StrC";
-	dkim=fail reason="key not found in DNS" (0-bit key) header.d=ew.tq-group.com header.i=@ew.tq-group.com header.b="HgTQ8uDg"
-Received: from mx1.tq-group.com (mx1.tq-group.com [93.104.207.81])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="YgxS9mQo"
+Received: from mail-vk1-f170.google.com (mail-vk1-f170.google.com [209.85.221.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B332656B6D;
-	Tue, 26 Mar 2024 12:38:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=93.104.207.81
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0E9FE50A98
+	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 12:37:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711456711; cv=none; b=M+24DIbGI7FOMPkEPFWWg+VTkqVSOAmqdvgzWrgx/zTjenr4pANM4VMvb4M14WoxeEsfSh6OrCek6YEgTgVuV3N7tSgGvY8VYRi5jyWsKrsl4+nwclKrhh7lVdgfCShcIwjDWnNZGowunlTMlIk2109FvQZPCU+rGnWqJ/ki/io=
+	t=1711456648; cv=none; b=SspVrtmq71oZAvZ2C+9QMAyokWeOFbFvB/ssdeesFhUVl+XznM+6S4YtQbBXeESnw/9L2fzDsmBdS/fOq3fVYsqRJdMC+SV3ArN+u6atmFyda6YgtYGrNQInl0lmSovI3JPbRUgSw3/BndXoPxGKEMkVlu/dZgVFBmspGPiuH0o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711456711; c=relaxed/simple;
-	bh=jFKUb40DZC4SPayHqkoEEjo/AYuxKlE3F6/vEvGczt8=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=ZhRyU0iCYZFX7aqeVsVwGPiFZQqKsbk28Q0FqTzs+/bARmXK9/+45KKC2HPWIrKGnooZglCIq0+FKMvlsklUHehpOs9WzO7M8ZDQFxWo+eBSVwjPfcXdXsyF7S4NeN/nH3kXqmiUhi2RET613Vp2wZ35EGl3mLxoCDsOamj8lvU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ew.tq-group.com; spf=pass smtp.mailfrom=ew.tq-group.com; dkim=pass (2048-bit key) header.d=tq-group.com header.i=@tq-group.com header.b=dY81StrC; dkim=fail (0-bit key) header.d=ew.tq-group.com header.i=@ew.tq-group.com header.b=HgTQ8uDg reason="key not found in DNS"; arc=none smtp.client-ip=93.104.207.81
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ew.tq-group.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ew.tq-group.com
+	s=arc-20240116; t=1711456648; c=relaxed/simple;
+	bh=qOgEt04Cktj3ZOzRSsKojbUHmC+nS7AdLE93qncD5hk=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=ckhaqGbYsi9WzBoXEXqOgF8Vb3kEoBnCtdL5MABrO5tAwN6ejGB1ly7hjz0cS90bdXZfAQF+ZSfGddcPibt57HR9MPwLm0VjVfrYPweDIEgJwsqV1Gl1bOlplrmGvtgl9SdFtUWUfqxOhdgwoMJLXYJZ9zT8jS3np9kaGhj+dZY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=YgxS9mQo; arc=none smtp.client-ip=209.85.221.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-vk1-f170.google.com with SMTP id 71dfb90a1353d-4d44e2e9f13so1580711e0c.0
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 05:37:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=tq-group.com; i=@tq-group.com; q=dns/txt; s=key1;
-  t=1711456707; x=1742992707;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=cIgfPJMO3kcEzxeMu7u2y81h8x78l/MyhCWjISx7zGw=;
-  b=dY81StrCE0xfQL9+ls/4admVqW74OXI36xf0X3Ip1gmR1ef6X6G1RQrM
-   RcuY6L3WXILt5eaQo6A6z4tHvUequ6MmkrmW2CZKrbRf2kqzB1oBFRr7t
-   qqi8IMkeYizmSWiUh3aJLIRLGCPbd0HnF70D+X88dfeuf9N73tYgj2AXf
-   qVzBA1bFDhvinCiFOFH0ILcaUuoNR0agpEVA1Fj69JK7F1iUI0j7EaIJ/
-   IkWwdxlTW4wg1Li3FrZntM515hXvcDUu03TyH99C29XbfLj6GsqelaZ60
-   VKBYZAh3vrRHdrcOpPj5Byjk72SclXB70vzO8HDuk0GHXfL41Cy4PTUCp
-   A==;
-X-IronPort-AV: E=Sophos;i="6.07,156,1708383600"; 
-   d="scan'208";a="36105106"
-Received: from vmailcow01.tq-net.de ([10.150.86.48])
-  by mx1.tq-group.com with ESMTP; 26 Mar 2024 13:38:23 +0100
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 98A67171151;
-	Tue, 26 Mar 2024 13:38:17 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ew.tq-group.com;
-	s=dkim; t=1711456699;
-	h=from:subject:date:message-id:to:cc:mime-version:content-type:
-	 content-transfer-encoding; bh=cIgfPJMO3kcEzxeMu7u2y81h8x78l/MyhCWjISx7zGw=;
-	b=HgTQ8uDgi3Z5nlRuwWttnUIPGKz6QOcUDy0hOVm4OfCYDRPYCnQwE3TXqpiQNnghLmz+Ms
-	Hov4GG8MInLm/0kmrdS97TAmwuycSyTQMpD7hD8vrYWYjEZdY1uBDMi81NMttuQkKPD3Nk
-	GHp8YoxgpTZiCLcNob2M1UTvG41FbDOMeUn8NgYhqDd8WZyNDxCVhWI4Ed3ZJoh4cl5glE
-	6OrX7UReElz0TBHG3Qa0nXJFqUYWu/sA0pQvo/zMnXkMgQNVvmsYqV6qkgt0ymxz3TrxzW
-	DcIYMTUjXjcjC+8LufmmImZfLF9aoojbeitfk6TnC+6XlS5+vOvb/2p0eKsmug==
-From: Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
-To: Andrew Lunn <andrew@lunn.ch>,
-	Florian Fainelli <f.fainelli@gmail.com>,
-	Vladimir Oltean <olteanv@gmail.com>
-Cc: "David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	Lukasz Majewski <lukma@denx.de>,
-	netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux@ew.tq-group.com,
-	Michael Krummsdorf <michael.krummsdorf@tq-group.com>,
-	Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
-Subject: [PATCH] net: dsa: mv88e6xxx: fix usable ports on 88e6020
-Date: Tue, 26 Mar 2024 13:36:54 +0100
-Message-ID: <20240326123655.40666-1-matthias.schiffer@ew.tq-group.com>
-X-Mailer: git-send-email 2.43.2
+        d=linaro.org; s=google; t=1711456646; x=1712061446; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=qckAaAQvDawa2rOtERY8cmOyLEyi0qkEFSxxXb4vMwg=;
+        b=YgxS9mQoa6ZQoQd++4TwJUBOHuR5SuUeWE7bouimw+fui7HdZhkFwU4cpW8R2r7iP9
+         4x2uncp7dwAIpBK2n7MjATmEEE1ONqK6Y7a4TuAdBiUNEYvymCxEwW9H8MdK0100TjKO
+         fzc7811pRUQpq3Tp7SxMa2BBMKRQ2j3vlCrOoA1fK/a9dSSEFe9w+XnJIQ27hda106mX
+         tE7+puW5b0RdRSkooQmd2CWlBIJP1AmklI66GVoOqIM0x/GKo+0YDjh6QdHKsvC6Pr4E
+         E44RkCQRcDUlyoAIV3GtDyBq0FuTOQ0/2g1JuBHLKOwxdSunjDegFPy8FpKKUclWVb1G
+         Le1g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711456646; x=1712061446;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=qckAaAQvDawa2rOtERY8cmOyLEyi0qkEFSxxXb4vMwg=;
+        b=pC9PRv/G5mWusYMtuzBlv6WK6dwHQjTSs9f63PwBVpW6LljPA9UxQRTQhilFhJJ9SY
+         hhZHaIBgss3g8mNoAZ1MPG48Z/x4urgvu0n41SJ5V3iEXejZRRbP/kVVdXA+MFh7TpdZ
+         KgrMCGU0k0D1ouM/eJRpoNaMD4yWARnSD9pCBGOMlHHNCrRrDb7oHA5TedvSW0l7Iif3
+         wV3bDN7brC2ci4P9y5ux3GVUt9ZtpvRv8Kqgf7LbCCm2NUh8FsQtKUFM+0RHFLRJB2qs
+         ywdQx8DPEAyUbun9m1WZze5hFCzvDfNLwLIKzf73aC7XaojiiBXtYBs8y/AKdVhb1pZ+
+         qdnw==
+X-Gm-Message-State: AOJu0YxbifKtnPrX/YqQXZyeBbpJLZCZsYbt8Hce5EFZ7x3pqWRsDFsK
+	rqQVlbqmP4usWIbufBMK1uXY1UQr7y0sluHudBdS8wEy76IuUdmC+szJDR3laoaKRJqK9mlZZhp
+	Nk5ewqBfizJ01o0NfqZo2MYXpGh0GO0DJEroRog==
+X-Google-Smtp-Source: AGHT+IEm2t0vuIygi1Dm4Yr7MU2IhJVp8dkz6GzE7gg/+xkeSUaT1bDZQ97tXChOMdP4g0wsuvJ8Sb+rHHAMC8LYm4I=
+X-Received: by 2002:a05:6102:a54:b0:478:224b:5aae with SMTP id
+ i20-20020a0561020a5400b00478224b5aaemr4344749vss.11.1711456645714; Tue, 26
+ Mar 2024 05:37:25 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Last-TLS-Session-Version: TLSv1.3
+References: <20240325115854.1764898-1-sashal@kernel.org>
+In-Reply-To: <20240325115854.1764898-1-sashal@kernel.org>
+From: Naresh Kamboju <naresh.kamboju@linaro.org>
+Date: Tue, 26 Mar 2024 18:07:14 +0530
+Message-ID: <CA+G9fYttAJcRBq2F-TfOvfsWJQuCKW9SAo_3C1nv5ok43j4Aeg@mail.gmail.com>
+Subject: Re: [PATCH 4.19 000/147] 4.19.311-rc2 review
+To: Sasha Levin <sashal@kernel.org>
+Cc: linux-kernel@vger.kernel.org, stable@vger.kernel.org, 
+	torvalds@linux-foundation.org, akpm@linux-foundation.org, linux@roeck-us.net, 
+	shuah@kernel.org, patches@kernelci.org, lkft-triage@lists.linaro.org, 
+	florian.fainelli@broadcom.com, pavel@denx.de
+Content-Type: text/plain; charset="UTF-8"
 
-From: Michael Krummsdorf <michael.krummsdorf@tq-group.com>
+On Mon, 25 Mar 2024 at 17:29, Sasha Levin <sashal@kernel.org> wrote:
+>
+>
+> This is the start of the stable review cycle for the 4.19.311 release.
+> There are 147 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Wed Mar 27 11:58:33 AM UTC 2024.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git/patch/?id=linux-4.19.y&id2=v4.19.310
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.19.y
+> and the diffstat can be found below.
+>
+> Thanks,
+> Sasha
 
-The switch has 4 ports with 2 internal PHYs, but ports are numbered up
-to 6, with ports 0, 1, 5 and 6 being usable.
+One more important update from Linaro LKFT testing,
 
-Fixes: 71d94a432a15 ("net: dsa: mv88e6xxx: add support for MV88E6020 switch")
-Signed-off-by: Michael Krummsdorf <michael.krummsdorf@tq-group.com>
-Signed-off-by: Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
----
+LTP syscalls fallocate06 fails on qemu-arm64 and juno-r2 devices.
 
-I was unfortunately too busy to notice the issue when the patch this
-Fixes was resubmitted in my name. It would have been better to change
-my From into a Based-on-patch-by or similar when modifying it - and the
-final version obviously wasn't even tested on an 88E6020...
+fallocate06.c:155: TFAIL: fallocate(FALLOC_FL_PUNCH_HOLE |
+FALLOC_FL_KEEP_SIZE) failed unexpectedly: ENOSPC (28)
 
-Best regards,
-Matthias
+Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
 
+We are running bisections on this issue and get back to you.
 
- drivers/net/dsa/mv88e6xxx/chip.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/net/dsa/mv88e6xxx/chip.c b/drivers/net/dsa/mv88e6xxx/chip.c
-index 9ed1821184ece..c95787cb90867 100644
---- a/drivers/net/dsa/mv88e6xxx/chip.c
-+++ b/drivers/net/dsa/mv88e6xxx/chip.c
-@@ -5503,8 +5503,12 @@ static const struct mv88e6xxx_info mv88e6xxx_table[] = {
- 		.family = MV88E6XXX_FAMILY_6250,
- 		.name = "Marvell 88E6020",
- 		.num_databases = 64,
--		.num_ports = 4,
-+		/* Ports 2-4 are not routed to pins
-+		 * => usable ports 0, 1, 5, 6
-+		 */
-+		.num_ports = 7,
- 		.num_internal_phys = 2,
-+		.invalid_port_mask = BIT(2) | BIT(3) | BIT(4),
- 		.max_vid = 4095,
- 		.port_base_addr = 0x8,
- 		.phy_base_addr = 0x0,
--- 
-TQ-Systems GmbH | Mühlstraße 2, Gut Delling | 82229 Seefeld, Germany
-Amtsgericht München, HRB 105018
-Geschäftsführer: Detlef Schneider, Rüdiger Stahl, Stefan Schneider
-https://www.tq-group.com/
-
+--
+Linaro LKFT
+https://lkft.linaro.org
 
