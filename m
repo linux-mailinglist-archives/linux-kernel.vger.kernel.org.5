@@ -1,136 +1,152 @@
-Return-Path: <linux-kernel+bounces-119686-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-119688-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id ADAEC88CC06
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 19:31:10 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5A58488CC0F
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 19:32:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DF1061C6577D
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 18:31:09 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 14B76307B5B
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 18:32:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 01924129A99;
-	Tue, 26 Mar 2024 18:30:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3668513C9B6;
+	Tue, 26 Mar 2024 18:31:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kdvVyUnw"
-Received: from mail-pl1-f174.google.com (mail-pl1-f174.google.com [209.85.214.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="MaHdzFbT"
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE3E0126F1E;
-	Tue, 26 Mar 2024 18:30:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 161CC129A6B;
+	Tue, 26 Mar 2024 18:31:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711477844; cv=none; b=YeWKXdoVCMc8l07WBO2mV03AK0M0SETDNoYEkUAtEBU5imquXnnlBkEuhuAXF/DeFejx8rGrotJ1iMLMM7q6atuHc47bTtgN0YMryDXWV4SQAPBqRuZfojon3YWQd2vCSvueo5I4yCnFVIsDeNtvJneH7SSsiKaE2DUQTXaWBlc=
+	t=1711477913; cv=none; b=QXUK0/d/rW2fov4COfLAoB5ilmjiY/o00faWPK2X2LdP/jqoh9I8jpyAyd13RV/zioBhDJUqcaVH82qU46n+x0q5ivz+jSwyuuB7A0G4huL0tExjBmhY0TZ5kfKEmTvUEnLazTFoez1SziXhWpa9xrS1WYTDrcyyxtbFK0CdiuY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711477844; c=relaxed/simple;
-	bh=sAyOUEKczk4vCaBI7fCgM6yZpeBEglMUpPYimbD3Wuk=;
-	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=KbCqMNDzkTV3vlv/bpARPKNj/RfxUO+XmQR/dgmVFbjT4yvI4ZYNeUuILT4y2F/yFNJzwdSB/KUV/tnatDUtpYkNQb24rn9P6dfVX5YsmyXgwOkp5Fd8tIbXpRDzuAM85ffy6Ezu0OjIzfHIqrn+Wl2MuSsY+Odi72X5W4y7wxQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=kdvVyUnw; arc=none smtp.client-ip=209.85.214.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f174.google.com with SMTP id d9443c01a7336-1e0411c0a52so43850265ad.0;
-        Tue, 26 Mar 2024 11:30:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711477842; x=1712082642; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=iUdKOd7rx0WMRV6Jyf1lEVlg1MEyH9tPtK2n/H0R3Jk=;
-        b=kdvVyUnwuw/NoXtocv9KZPkO6Q0B00DUWa3qUrgcUIB+nZxDOiGb76T5hk3T/0Fxs1
-         meuoUDt6m1Tj1UYAAzyfzNvWkb6KJU/lqgMpfq/HEke3RIPM2gEtfeoTXdV4QME4ZASL
-         UyFrB6v7Ft5rapQ7Tz6au2wI43/Y+NaTdeBMN8gZjiKe4pLI32ijmsDj6qC7BisvS3+Y
-         yvmAkdVTeSmM6gglnd8rvVhzdvL6quf2RKTty2clFP/yfVT08ziQcCGqHU4pk+JQ6vDt
-         LpdJ2jKqI07wmijtDwBEATzhx7ux/YKm72qGCxMuBpaotz5qy/8SaWMhFDWTpAx0s6Vq
-         jz5A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711477842; x=1712082642;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=iUdKOd7rx0WMRV6Jyf1lEVlg1MEyH9tPtK2n/H0R3Jk=;
-        b=RsYjdf+kWbt+yMrqQyTDwBp/u+Mbyw5gJPxIN6+3JVwMseo/WO9GydJnhLsFiOVdcj
-         xK1L/kKoklMp8hMty9f/wkfhYFO5Ej9GINSyRTZfWq/RUi+Q9dHzWiOI41RM8WH6J7v8
-         VLGxf6rXI+G+AZKCtSzFXANjzo74ejw2uV1WvshIuQcaWsKPEgkgQCWdDpnli8bRXnhf
-         jchcp+CCwWBODsn7ccDMkrBYfT+hUPcaXJe08CaZlpbzogJ3NMFroBcsHdCY2z+U0ETQ
-         rssSyb9WTSxUV56MQKpeHeBB51+n9eyeZUMT7mEK2tzMTRLonypzdjuUcKo9Lm9vY+hO
-         MXOw==
-X-Forwarded-Encrypted: i=1; AJvYcCW/EIxbmPZg9RY8R5tB1JFn7XQlcgR4HCPdBTXq8O3xsnxTjD+nIp4JEs8CTz04lxFEmRjrP/BM9j9yocNNn4CQhJ+1ZNWM++6/6mnh6DuGS1GlC4t2ML1HFJw7nlVrrJXpci3L7LU81ytxcBFewNKblE7/o1tfYdeV9A7R7M1taz+/PUw=
-X-Gm-Message-State: AOJu0Yza8mOB9A8V4627snxwLKjRalbdEm/owkMgSKlooYnWoO0uUAUH
-	Nd8/REnGVoYHrhvC221Z5JuhiiKNu5rqwum3OgAZXkNZI+5oLjh7
-X-Google-Smtp-Source: AGHT+IHh6JX3lwXrIJoiJWTgBiw0gt3RVc2+M2dHJ2GjDbmxIo2EmZBN6zLFVtqAVrcjEF8ZgUfndA==
-X-Received: by 2002:a17:902:da8c:b0:1e0:b60e:1a1f with SMTP id j12-20020a170902da8c00b001e0b60e1a1fmr7673040plx.8.1711477841957;
-        Tue, 26 Mar 2024 11:30:41 -0700 (PDT)
-Received: from debian ([2601:641:300:14de:69a2:b1ff:1efd:f4a9])
-        by smtp.gmail.com with ESMTPSA id x3-20020a170902ec8300b001e035cecd27sm7185044plg.129.2024.03.26.11.30.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Mar 2024 11:30:41 -0700 (PDT)
-From: fan <nifan.cxl@gmail.com>
-X-Google-Original-From: fan <fan@debian>
-Date: Tue, 26 Mar 2024 11:30:38 -0700
-To: Davidlohr Bueso <dave@stgolabs.net>
-Cc: ira.weiny@intel.com, Dave Jiang <dave.jiang@intel.com>,
-	Fan Ni <fan.ni@samsung.com>,
-	Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-	Navneet Singh <navneet.singh@intel.com>,
-	Dan Williams <dan.j.williams@intel.com>,
-	Alison Schofield <alison.schofield@intel.com>,
-	Vishal Verma <vishal.l.verma@intel.com>,
-	linux-btrfs@vger.kernel.org, linux-cxl@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 08/26] cxl/mem: Expose device dynamic capacity
- capabilities
-Message-ID: <ZgMUTq6HasHOiR15@debian>
-References: <20240324-dcd-type2-upstream-v1-0-b7b00d623625@intel.com>
- <20240324-dcd-type2-upstream-v1-8-b7b00d623625@intel.com>
- <w4jkueqpvh7hzbywk42m7gxclg56nbgzhaqcgeb3q2b6dt3w6n@5vwicganqpsu>
+	s=arc-20240116; t=1711477913; c=relaxed/simple;
+	bh=VVjLnoHtX11k4peMT3Slbcl09nUBcsgl29+K07jw/UQ=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=m1e/Nay6EwzQewmKTQcKUmRwaqBoTLcpnx+uB73VZ33ljld9qxSTxnSM8+hwGMMJGK3TIlrD8qRKE5FtuIAJVXIcv9ic/lFc3M9ImS1PI4tCAm8152aSsV/tRK+SQPLI9COk/M+U+e6gvKIFWFCdprvRG1qMfhDlxNLt/L1gTQY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=MaHdzFbT; arc=none smtp.client-ip=205.220.168.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 42QIOYRB029149;
+	Tue, 26 Mar 2024 18:31:43 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=GiHiaL1bOe/EXbSYTdniLPpYaBRiQap8rwEvH/06QSs=; b=Ma
+	HdzFbTlivB4jJEP8Yaxuhh63DFVObMMzYKWyOOUkUI6zyYt9U1TEnSnEaFNC6/K7
+	kroit2tPzZz5b6ZERQ4HiD+UZhw+3cfvSsqo7rLKfspAGt0E4LUDTucpziQMX+A8
+	FqfQzNNmohRLZW4zJ6sLnS4TgsXpVgeolNmSxRWhswUKVfnoL0o/CubiMUsuMWfS
+	eE+w2swZRDxSvg8qrexnkrLONY0iJUKudknNSVkchXjJlI6kX9XhlzxG/5wg30gw
+	de/wFB7rMDy8+H8/sPTAiEmQXFq16EPBwriWGTBlIrm5RUntPNZ+RKGkE+PAVrJS
+	gE9wkpeDjzXP0JgxuLcQ==
+Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3x41k68d5h-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 26 Mar 2024 18:31:43 +0000 (GMT)
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+	by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 42QIVgov023006
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 26 Mar 2024 18:31:42 GMT
+Received: from [10.71.109.81] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Tue, 26 Mar
+ 2024 11:31:40 -0700
+Message-ID: <85204b78-7b24-61cd-4bae-3e7abc6e4fd3@quicinc.com>
+Date: Tue, 26 Mar 2024 11:31:38 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <w4jkueqpvh7hzbywk42m7gxclg56nbgzhaqcgeb3q2b6dt3w6n@5vwicganqpsu>
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.0
+Subject: Re: drivers/gpu/drm/msm/adreno/a6xx_gpu_state.c:843:6: error:
+ variable 'out' set but not used
+Content-Language: en-US
+To: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Miguel Ojeda
+	<miguel.ojeda.sandonis@gmail.com>
+CC: Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
+        Marijn
+ Suijten <marijn.suijten@somainline.org>,
+        David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+        linux-arm-msm
+	<linux-arm-msm@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        <freedreno@lists.freedesktop.org>,
+        linux-kernel
+	<linux-kernel@vger.kernel.org>
+References: <CANiq72mjc5t4n25SQvYSrOEhxxpXYPZ4pPzneSJHEnc3qApu2Q@mail.gmail.com>
+ <CAA8EJprTNFgKJ_3cdZz4f_LCkYFghi-cfaj3bZmYh3oA63my6A@mail.gmail.com>
+From: Abhinav Kumar <quic_abhinavk@quicinc.com>
+In-Reply-To: <CAA8EJprTNFgKJ_3cdZz4f_LCkYFghi-cfaj3bZmYh3oA63my6A@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: 8ye9dJjpHj1CMyW79gz2c4cjYopMDVqy
+X-Proofpoint-GUID: 8ye9dJjpHj1CMyW79gz2c4cjYopMDVqy
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-03-26_08,2024-03-21_02,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 bulkscore=0
+ lowpriorityscore=0 clxscore=1011 mlxlogscore=999 priorityscore=1501
+ malwarescore=0 phishscore=0 spamscore=0 adultscore=0 suspectscore=0
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2403210001 definitions=main-2403260133
 
-On Mon, Mar 25, 2024 at 04:40:16PM -0700, Davidlohr Bueso wrote:
-> On Sun, 24 Mar 2024, ira.weiny@intel.com wrote:
+
+
+On 3/26/2024 11:19 AM, Dmitry Baryshkov wrote:
+> On Tue, 26 Mar 2024 at 20:05, Miguel Ojeda
+> <miguel.ojeda.sandonis@gmail.com> wrote:
+>>
+>> Hi,
+>>
+>> In today's next, I got:
+>>
+>>      drivers/gpu/drm/msm/adreno/a6xx_gpu_state.c:843:6: error: variable
+>> 'out' set but not used [-Werror,-Wunused-but-set-variable]
+>>
+>> `out` seems to be there since commit 64d6255650d4 ("drm/msm: More
+>> fully implement devcoredump for a7xx").
+>>
+>> Untested diff below assuming `dumper->iova` is constant -- if you want
+>> a formal patch, please let me know.
 > 
-> > +What:		/sys/bus/cxl/devices/memX/dc/region_count
-> > +Date:		June, 2024
-> > +KernelVersion:	v6.10
-> > +Contact:	linux-cxl@vger.kernel.org
-> > +Description:
-> > +		(RO) Number of Dynamic Capacity (DC) regions supported on the
-> > +		device.  May be 0 if the device does not support Dynamic
-> > +		Capacity.
+> Please send a proper patch that we can pick up.
 > 
-> If dcd is not supported then we should not have the dc/ directory
-> altogether.
+
+This should be fixed with https://patchwork.freedesktop.org/patch/581853/.
+
+We can pickup that one with a Fixes tag applied.
+
+>>
+>> Cheers,
+>> Miguel
+>>
+>> diff --git a/drivers/gpu/drm/msm/adreno/a6xx_gpu_state.c
+>> b/drivers/gpu/drm/msm/adreno/a6xx_gpu_state.c
+>> index 1f5245fc2cdc..a847a0f7a73c 100644
+>> --- a/drivers/gpu/drm/msm/adreno/a6xx_gpu_state.c
+>> +++ b/drivers/gpu/drm/msm/adreno/a6xx_gpu_state.c
+>> @@ -852,7 +852,7 @@ static void a6xx_get_shader_block(struct msm_gpu *gpu,
+>>               (block->type << 8) | i);
+>>
+>>           in += CRASHDUMP_READ(in, REG_A6XX_HLSQ_DBG_AHB_READ_APERTURE,
+>> -            block->size, dumper->iova + A6XX_CD_DATA_OFFSET);
+>> +            block->size, out);
+>>
+>>           out += block->size * sizeof(u32);
+>>       }
 > 
-> Thanks,
-> Davidlohr 
-
-I also think so. However, I also noticed one thing (not DCD related).
-Even for a PMEM device, for example, we have a ram directory under the
-device directory.
-
-===================
-root@DT:~# cxl list
-[
-  {
-    "memdev":"mem0",
-    "pmem_size":536870912,
-    "serial":0,
-    "host":"0000:0d:00.0"
-  }
-]
-root@DT:~# ls /sys/bus/cxl/devices/mem0/
-dc  dev  driver  firmware  firmware_version  label_storage_size  numa_node  payload_max  pmem  pmem0  ram  security  serial  subsystem	trigger_poison_list  uevent
-root@DT:~#
-===================
-
-Fan
-
+> 
+> 
 
