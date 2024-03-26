@@ -1,70 +1,56 @@
-Return-Path: <linux-kernel+bounces-119079-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-119080-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id BB21E88C3F7
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 14:45:26 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 70E3988C3F9
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 14:45:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5AB2A1F61859
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 13:45:26 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 87D471C3E64A
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 13:45:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 91E0486650;
-	Tue, 26 Mar 2024 13:42:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 802E18626B;
+	Tue, 26 Mar 2024 13:42:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=pankajraghav.com header.i=@pankajraghav.com header.b="CNJVI1FR"
-Received: from mout-p-101.mailbox.org (mout-p-101.mailbox.org [80.241.56.151])
+	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="jI+XzbRe"
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6C82C86625;
-	Tue, 26 Mar 2024 13:41:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.241.56.151
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0060E8625E;
+	Tue, 26 Mar 2024 13:42:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=156.67.10.101
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711460520; cv=none; b=T/10yF08M5+sy8cn41M8p0Yg9VF36xmZ2PLooplZHzKRdRVt0YoYOCHpl4H9ysLGqmtwui+BpLj3grxkk8Eqy/SUFpeB7pJo67Zzx8q8YuoZWMKu/sJeKrvu+MlydDk/9J3jEV04bfVqtS5DWJTpqPOVDz5v2P7NfRxWxD1CtSU=
+	t=1711460535; cv=none; b=gjDFrERoW8jrcqtTGeajdZuC7jCG6iqw16++RMl7HPEZjRowUyNWeqgH8QJEPdDr9xgvqxmJzDbud08PwVfF2PnSYUwv2fo2gmJIBv732l6sm9JOrtMtlFpSllyJfQ1k2fge+W1YtuxCR8QZhNbJgHSv8EFQHJeUUUHMU9MSWoY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711460520; c=relaxed/simple;
-	bh=EbeIxQZAx+QKyEupTV/ELB885czWCJXv1k2kXD26okk=;
+	s=arc-20240116; t=1711460535; c=relaxed/simple;
+	bh=GE384zJ2zl0wxnEset36cttK55sE59MZHr6t9/cvvFU=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=lTpizPhp+xx4eU9EQO8zj+9OpQhmYyFFXIvKDrNMKi7p1BLBE5aRb1aE6kYzISkhmuok7ll2HiJP6Pq5CvjUKK/GzesanG9B2sRE0OdeOPXsRuW9PCwAuKBpwA7gkOvSL0d9U6bxGsFP7BxTwURxnCSFz2dOSXWu1jxcEj/O0pY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=pankajraghav.com; spf=pass smtp.mailfrom=pankajraghav.com; dkim=pass (2048-bit key) header.d=pankajraghav.com header.i=@pankajraghav.com header.b=CNJVI1FR; arc=none smtp.client-ip=80.241.56.151
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=pankajraghav.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pankajraghav.com
-Received: from smtp2.mailbox.org (smtp2.mailbox.org [IPv6:2001:67c:2050:b231:465::2])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mout-p-101.mailbox.org (Postfix) with ESMTPS id 4V3rZ94mGwz9sVy;
-	Tue, 26 Mar 2024 14:41:53 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pankajraghav.com;
-	s=MBO0001; t=1711460513;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=mkLVdxNBsIuMF+BkrOfqIhXREY5OUiqOSXmyiAReOck=;
-	b=CNJVI1FROQGHF4ufS62L/Zp20lMd2A0dHsT6RA1hi03L8KSj0jsbBPjPhF14tboZdw3y2e
-	QQPfe650Uz4vUzE8fL/DiQE5j8nbuNrF1o/a9vQE1Nxghm7X0nJq40hS/t2DguaK+5Hv32
-	XPlZoxo1OLN8b9gPkVeJ9EW6PyZrmxepC3FfUVJISPnWB1M6aBSsvSHnJexcV4256oWFCg
-	PfTp6NMk6rPcGhq9eTzJIg8uZZh9txPOv6wIfDJhZmQmjqQ2uz/bR2K6+WURPz4Rm0mHoS
-	KwLJS5VCWKVqomvwSrNGXwu8t5pB8Z38aDQncFyX+mU0ubf/O1gHE78ZYZv4Jg==
-Date: Tue, 26 Mar 2024 14:41:49 +0100
-From: "Pankaj Raghav (Samsung)" <kernel@pankajraghav.com>
-To: Hannes Reinecke <hare@suse.de>
-Cc: Matthew Wilcox <willy@infradead.org>, linux-xfs@vger.kernel.org, 
-	linux-fsdevel@vger.kernel.org, gost.dev@samsung.com, chandan.babu@oracle.com, mcgrof@kernel.org, 
-	djwong@kernel.org, linux-mm@kvack.org, linux-kernel@vger.kernel.org, 
-	david@fromorbit.com, akpm@linux-foundation.org, Pankaj Raghav <p.raghav@samsung.com>
-Subject: Re: [PATCH v3 04/11] readahead: rework loop in
- page_cache_ra_unbounded()
-Message-ID: <ppd5woer5dglazfladgrfepzjgpqr4oh7jkcnrk4ydwy6itntr@3djaoueadcm5>
-References: <20240313170253.2324812-1-kernel@pankajraghav.com>
- <20240313170253.2324812-5-kernel@pankajraghav.com>
- <ZgHFPZ9tNLLjKZpz@casper.infradead.org>
- <7217df4e-470b-46ab-a4fc-1d4681256885@suse.de>
- <5e5523b1-0766-43b2-abb1-f18ea63906d6@pankajraghav.com>
- <3aa8bdf1-24f6-4e1f-a5c4-8dc2d11ca292@suse.de>
- <1a4a6ad3-6b88-47ea-a6c4-144a1485f614@pankajraghav.com>
- <2b1a2ded-d26f-4c9e-bd48-2384b5a7c2c9@suse.de>
+	 Content-Type:Content-Disposition:In-Reply-To; b=uJD69VgJUPl4UMl66B/Tl6Z3AM93lJLBcNDy9TERGfy5f5gAa7+9AhCaEYAfhKo9cEfYlhCH9eP9/aZhODEIJgQ7/3RsG4Hn5iYvTvo8D2rh+M0cyqB/ZJopLJpAI+HMvom3KyVLdoencNOVlHIJvaMf6ACZYss7Lt5GScae4iw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch; spf=pass smtp.mailfrom=lunn.ch; dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b=jI+XzbRe; arc=none smtp.client-ip=156.67.10.101
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lunn.ch
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+	s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+	Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+	Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+	bh=0H0SVVafNEIHPuTghJFK0QlcgLMitktxgy/wCbUNVnk=; b=jI+XzbRe3qobLyb6lupSjHudZo
+	aXoopCP6oLAOqjRZeEWIpOv5wKAbu0Pui5EbWnOuxDN0TUQKnN6xVnLVttK50Vi/knvYDAMNr2HOY
+	kzNU7wiCFigHmXgKw7OMJV/om0qEa8IZdtwKXbE3nMNaGPEuYNg2glwoKHGNKc7C+69o=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+	(envelope-from <andrew@lunn.ch>)
+	id 1rp73z-00BHWB-Ri; Tue, 26 Mar 2024 14:42:03 +0100
+Date: Tue, 26 Mar 2024 14:42:03 +0100
+From: Andrew Lunn <andrew@lunn.ch>
+To: Suraj Gupta <suraj.gupta2@amd.com>
+Cc: radhey.shyam.pandey@amd.com, davem@davemloft.net, edumazet@google.com,
+	kuba@kernel.org, pabeni@redhat.com, michal.simek@amd.com,
+	netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org, git@amd.com, harini.katakam@amd.com
+Subject: Re: [PATCH net-next RESEND] net: axienet: Fix kernel doc warnings
+Message-ID: <70fdb9ac-f532-49fc-9966-a0dab0ced56b@lunn.ch>
+References: <20240326055347.8919-1-suraj.gupta2@amd.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -73,75 +59,47 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <2b1a2ded-d26f-4c9e-bd48-2384b5a7c2c9@suse.de>
-X-Rspamd-Queue-Id: 4V3rZ94mGwz9sVy
+In-Reply-To: <20240326055347.8919-1-suraj.gupta2@amd.com>
 
-On Tue, Mar 26, 2024 at 11:55:06AM +0100, Hannes Reinecke wrote:
-> > > Bah. That really is overly complicated. When we attempt a conversion that conversion should be
-> > > stand-alone, not rely on some other patch modifications later on.
-> > > We definitely need to work on that to make it easier to review, even
-> > > without having to read the mail thread.
-> > > 
-> > 
-> > I don't know understand what you mean by overly complicated. This conversion is standalone and it is
-> > wrong to use folio_nr_pages after we `put` the folio. This patch just reworks the loop and in the
-> > next patch I add min order support to readahead.
-> > 
-> > This patch doesn't depend on the next patch.
-> > 
+On Tue, Mar 26, 2024 at 11:23:47AM +0530, Suraj Gupta wrote:
+> Add description of mdio enable, mdio disable and mdio wait functions.
+> Add description of skb pointer in axidma_bd data structure.
+> Remove 'phy_node' description in axienet local data structure since
+> it is not a valid struct member.
+> Correct description of struct axienet_option.
 > 
-> Let me rephrase: what does 'ractl->_index' signify?
-> From my understanding it should be the index of the
-> first folio/page in ractl, right?
+> Fix below kernel-doc warnings in drivers/net/ethernet/xilinx/:
+> 1) xilinx_axienet_mdio.c:1: warning: no structured comments found
+> 2) xilinx_axienet.h:379: warning: Function parameter or struct member
+> 'skb' not described in 'axidma_bd'
+> 3) xilinx_axienet.h:538: warning: Excess struct member 'phy_node'
+> description in 'axienet_local'
+> 4) xilinx_axienet.h:1002: warning: expecting prototype for struct
+> axiethernet_option. Prototype was for struct axienet_option instead
 > 
-> If so I find it hard to understand how we _could_ increase it by one; _index
-> should _always_ in units of the minimal pagemap size.
-
-I still have not introduced the minimal pagemap size concept here. That
-comes in the next patch. This patch only reworks the loop and should not
-have any functional changes. So the minimal pagemap size unit here is 1.
-
-And to your next question how could we increase it only by one here:
-
-// We come here if we didn't find any folio at index + i
-..
-folio = filemap_alloc_folio(gfp_mask, 0); // order 0 => 1 page
-if (!folio)
-	break;
-if (filemap_add_folio(mapping, folio, index + i,
-			gfp_mask) < 0) {
-	folio_put(folio);
-	read_pages(ractl);
-	ractl->_index++;
-	...
-
-If we failed to add a folio of order 0 at (index + i), we put the folio
-and start a read_pages() on whatever pages we added so far (ractl->index to
-ractl->index + ractl->nr_pages).
-
-read_pages() updates the ractl->index to ractl->index + ractl->nr_pages.
-ractl->index after read_pages() should point to (index + i). As we had
-issue adding a folio of order 0, we skip that index by incrementing the
-ractl->index by 1.
-
-Does this clarify? In your original patch, you used folio_nr_pages()
-here. As I said before, we already know the size of the folio we tried
-to add was 1, so we could just increment by 1, and we should not use the
-folio to deduce the size after folio_put() as it is use after free.
-
-> And if we don't have it here (as you suggested in the mailthread)
-> I'd rather move this patch _after_ the minimal pagesize is introduced
-> to ensure that _index is always incremented by the right amount.
+> Signed-off-by: Suraj Gupta <suraj.gupta2@amd.com>
+> Reviewed-by: Radhey Shyam Pandey <radhey.shyam.pandey@amd.com>
 > 
+> ---
+> Note: Earlier version didn't reached to mainline due to my email
+> configuration issues. So again sending out with resend tag.
+> 
+> 
+>  drivers/net/ethernet/xilinx/xilinx_axienet.h  |  4 ++--
+>  .../net/ethernet/xilinx/xilinx_axienet_mdio.c | 23 ++++++++++++++++---
+>  2 files changed, 22 insertions(+), 5 deletions(-)
+> 
+> diff --git a/drivers/net/ethernet/xilinx/xilinx_axienet.h b/drivers/net/ethernet/xilinx/xilinx_axienet.h
+> index 807ead678551..d0d1ae3b4e2c 100644
+> --- a/drivers/net/ethernet/xilinx/xilinx_axienet.h
+> +++ b/drivers/net/ethernet/xilinx/xilinx_axienet.h
+> @@ -359,6 +359,7 @@
+>   * @app2:         MM2S/S2MM User Application Field 2.
+>   * @app3:         MM2S/S2MM User Application Field 3.
+>   * @app4:         MM2S/S2MM User Application Field 4.
+> + * @skb:	  Pointer to SKB transferred using DMA
 
-I intended to have it as two atomic changes where there is
-non-functional change that helps with the functional change that comes
-later. If it is confusing, I could also combine this with the next
-patch?
+There looks to be some sort of tab vs spaces issue here?
 
-Or, I could have it as the first patch before I start adding the concept
-of folio_min_order. Then it makes it clear that it is intended to be a
-non-function change?
---
-Pankaj
+      Andrew
 
