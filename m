@@ -1,61 +1,51 @@
-Return-Path: <linux-kernel+bounces-118687-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-118689-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id C260B88BE07
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 10:39:47 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3CFEA88BE12
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 10:40:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 044D02E2C86
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 09:39:46 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E76631F62A8E
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 09:40:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C9E186BB54;
-	Tue, 26 Mar 2024 09:30:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 79973811E5;
+	Tue, 26 Mar 2024 09:32:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ckZ/8nmR"
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="EKvQr6eO"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0E67645975;
-	Tue, 26 Mar 2024 09:30:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB31080BE1;
+	Tue, 26 Mar 2024 09:32:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711445452; cv=none; b=dN18+GTUKeOWJ8s0OlpeEDIDXjUehtc0Xw/NLUdzFbfejnaWk9FBM10gRywgh116aCPElahE389+MmczEMMtny+ITcwDp0vf+Vx644Nn0vSdy4iCNkiVoZ0CKRn6ZmK8apELRSfU+6e6R1lvNDMjZh89wy+r7uMN3CUu7GfiTjw=
+	t=1711445571; cv=none; b=JPP2HfkIy8ByyLA822gtpLhIhyD1S0E10M7Va0jRrYGtEMQ7UNMMiqJo4a1wqMQ6GwEGy2EXB3NvNO2w/vKyOAy5QdJdYwurduEdhTStTkaQrJ9/N5YDIe0hmeHCcSb85z73zigI+8ZwjLbLHnX/AdcpSOCDFxQMEgd+wD8N9Dc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711445452; c=relaxed/simple;
-	bh=DoVOcfg8BNPIadgIe/CtkKmdfNsnh7VR8WXrrgF7eFk=;
+	s=arc-20240116; t=1711445571; c=relaxed/simple;
+	bh=BXgCcV55X0n3ZpVCB4As3BKU3w5I/j7vrww/TR0BRCE=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=o2tVRPUfB/CB0W/VAhrzD7CFU9vQTxpAgb6gXCTuLwxmT51CLfVAgh66UH5him9AIb0wuYs9/6A2xSRl2ZRdWDt8b9dasHmBDyfXY1+YlXqBcE5L1DUfBc5ImLFh6rMQDmAzQGC5hHOwNyFUPp2l7Vk6rBr1nuilDBcmGV+j/qo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ckZ/8nmR; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 89B43C43390;
-	Tue, 26 Mar 2024 09:30:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711445451;
-	bh=DoVOcfg8BNPIadgIe/CtkKmdfNsnh7VR8WXrrgF7eFk=;
+	 Content-Type:Content-Disposition:In-Reply-To; b=QijkC69+UGslkVG/wBYFy3LdGJ1WvjWAVizLEIwLlWpf3/5K0iGpTjJz5hdP2NM/4Tx/NUpS7i55oFCyVX6fTnZtTpxMj/R559v+Oq8VEbeJwkbVp1O3GV47fSjZIZrx9XgCHO3tct7gSWUH4g3ShMmGPPuR+zYe4+oxef6n1XQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=EKvQr6eO; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C69D6C433F1;
+	Tue, 26 Mar 2024 09:32:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+	s=korg; t=1711445571;
+	bh=BXgCcV55X0n3ZpVCB4As3BKU3w5I/j7vrww/TR0BRCE=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=ckZ/8nmRjgO9b8oZdnGFefWgEDnp+WlNYTKAwvk3UJmBT3xiLMbI+jek+vY33nU3x
-	 JLbDMY9gFiXBZdmLLSQEUnSy5zw3ssECnZ+GJztXoFfJ1K/0/UFVE6VpUhMkpnyQ18
-	 +6T5G8cOWpRiBoTbMPyeRBDA3yoXGp6X7Z7uy6HLUj+LZqIU8CLIzlgMB7D/SuKNow
-	 6Jx3F9LBb1fbsUrcQ+nUzEB/1ZN+AzVIkUhkBwhFm8MRTJ4TzoThXQ9pIrvNCkuYiE
-	 Td1EOLr2TXxny0r6aFuwxMnvjeid+/mRinvTX+RdZ4e3xJtngu3lGe2TIAAtImuCH1
-	 Hainz5Ca1BYrw==
-Date: Tue, 26 Mar 2024 09:30:47 +0000
-From: Simon Horman <horms@kernel.org>
-To: Thomas Perrot <thomas.perrot@bootlin.com>
-Cc: Jakub Kicinski <kuba@kernel.org>,
-	Nicolas Ferre <nicolas.ferre@microchip.com>,
-	Claudiu Beznea <claudiu.beznea@tuxon.dev>,
-	"David S . Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>,
-	netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next] net: macb: allow MTU change when the interface
- is up
-Message-ID: <20240326093047.GH403975@kernel.org>
-References: <20240325152735.1708636-1-thomas.perrot@bootlin.com>
- <20240325205401.GF403975@kernel.org>
- <20240325185647.0ad674e9@kernel.org>
- <277c78a696e27e77e34820ebf2f7a0d0ce5d0633.camel@bootlin.com>
+	b=EKvQr6eOEz6kOjWKWIZzNGejo0Ht9k9cR+FA0vuMBUackYozo3oLApXfoZUgjcj33
+	 APNjIamrXhAJtVvSMiA+FZLQWGmtDjpXd6ZtiK7Y7Us6rY45UCgChs4GSr/hWIiHS2
+	 QOxmEPH8tiMyTw2HMOVqESm/EPGaDfDkWczlpeMg=
+Date: Tue, 26 Mar 2024 10:32:48 +0100
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To: Michael Grzeschik <m.grzeschik@pengutronix.de>
+Cc: Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+	Daniel Scally <dan.scally@ideasonboard.com>,
+	linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] usb: gadget: uvc: Improve error checking and tagging
+Message-ID: <2024032622-canine-fragility-39db@gregkh>
+References: <20240324-uvc-gadget-errorcheck-v1-1-5538c57bbeba@pengutronix.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -64,50 +54,66 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <277c78a696e27e77e34820ebf2f7a0d0ce5d0633.camel@bootlin.com>
+In-Reply-To: <20240324-uvc-gadget-errorcheck-v1-1-5538c57bbeba@pengutronix.de>
 
-On Tue, Mar 26, 2024 at 09:49:19AM +0100, Thomas Perrot wrote:
-> Hello,
+On Mon, Mar 25, 2024 at 12:32:30AM +0100, Michael Grzeschik wrote:
+> Right now after one transfer was completed with EXDEV the currently
+> encoded frame will get the UVC_STREAM_ERR tag attached. Since the
+> complete and encode path are handling separate requests from different
+> threads, there is no direct correspondence between the missed transfer
+> of one request and the currently encoded request which might already
+> belong to an completely different frame.
 > 
-> On Mon, 2024-03-25 at 18:56 -0700, Jakub Kicinski wrote:
-> > On Mon, 25 Mar 2024 20:54:01 +0000 Simon Horman wrote:
-> > > I'm not sure that it is expected behaviour for an interface
-> > > to reset like this when a change of MTU is requested.
-> > > While conversely I think it is common (if not entirely desirable)
-> > > to prohibit changing the MTU when an interface is up.
-> > > What is the problem being addressed here?
-> > 
+> When queueing requests into the hardware by calling ep_queue the
+> underlying ringbuffer of the usb driver will be filled. However when
+> one of these requests will have some issue while transfer the hardware
+> will trigger an interrupt but will continue transferring the pending
+> requests in the ringbuffer. This interrupt-latency will make it
+> impossible to react in time to tag the fully enqueued frame with the
+> UVC_STREAM_ERR in the header.
 > 
-> The problem being addressed here, is that NetworkManager isn't able to
-> apply the MTU value set in the connection configuration file because
-> the link is already up, then the change_mtu callback returns an error:
+> This patch is also addressing this particular issue by delaying the
+> transmit of the EOF/ERR tagged header by waiting for the last enqueued
+> buffer of the frame to be completed. This way it is possible to react to
+> send the EOF/ERR tag depending on the whole frame transfer status.
 > 
-> "NetworkManager[412]: <debug> [1709629970.1735] platform: (eth0) link:
-> setting mtu 1400                                                      
-> NetworkManager[412]: <trace> [1709629970.1737] platform-linux: delayed-
-> action: schedule wait-for-response-rtnl (seq 41, timeout in
-> 0.199992796, response-type 0)                                         
-> NetworkManager[412]: <trace> [1709629970.1737] platform-linux: delayed-
-> action: schedule refresh-link (ifindex 2)                             
-> NetworkManager[412]: <trace> [1709629970.1738] platform-linux: delayed-
-> action: handle refresh-link (ifindex 2)                               
-> NetworkManager[412]: <debug> [1709629970.1738] platform-linux: do-
-> request-link: 2                                                       
-> NetworkManager[412]: <trace> [1709629970.1739] platform-linux: rtnl:
-> recvmsg: new message NLMSG_ERROR, flags 0, seq 41                     
-> NetworkManager[412]: <debug> [1709629970.1740] platform-linux: rtnl:
-> recvmsg: error message from kernel: Device or resource busy (-16) for
-> request 41"
+> As this is patch is adding latency to the enqueuing path of the frames
+> we make this errorcheck optional by adding an extra module parameter.
+> 
+> Signed-off-by: Michael Grzeschik <m.grzeschik@pengutronix.de>
+> ---
+>  drivers/usb/gadget/function/f_uvc.c     |  4 ++
+>  drivers/usb/gadget/function/uvc.h       |  3 ++
+>  drivers/usb/gadget/function/uvc_video.c | 69 +++++++++++++++++++++++++++++----
+>  3 files changed, 68 insertions(+), 8 deletions(-)
+> 
+> diff --git a/drivers/usb/gadget/function/f_uvc.c b/drivers/usb/gadget/function/f_uvc.c
+> index 929666805bd23..6a7ca8ccaf360 100644
+> --- a/drivers/usb/gadget/function/f_uvc.c
+> +++ b/drivers/usb/gadget/function/f_uvc.c
+> @@ -33,6 +33,10 @@ unsigned int uvc_gadget_trace_param;
+>  module_param_named(trace, uvc_gadget_trace_param, uint, 0644);
+>  MODULE_PARM_DESC(trace, "Trace level bitmask");
+>  
+> +bool uvc_gadget_errorcheck_param = true;
+> +module_param_named(errorcheck, uvc_gadget_errorcheck_param, bool, 0644);
+> +MODULE_PARM_DESC(errorcheck, "Check and mark errors in the transfer of a frame");
 
-Hi Thomas,
+I really really really really hate adding new module parameters as they
+do not scale nor work properly for multiple devices and really, it's not
+the 1990's anymore.
 
-I understand this is not ideal. But from a driver level perspective, if the
-HW doesn't support changing the MTU while the device is up, rejecting the
-change MTU operation is actually the best practice (or least worst
-depending on your perspective).
+Any way to make this debugging thing part of a debugfs interface or
+worst case, a sysfs entry instead?
 
-As Jakub pointed out elsewhere in this thread, with your proposed change,
-there is a real chance the NIC could drop of the network entirely and not
-come back. Whereas the expected outcome is for the NIC to remain on the
-network with either the new or old MTU.
+Or why not just make it a tracing thing instead?
+
+But wait, you are fixing a real issue here, why is it an option at all?
+Shouldn't this always be the case and the driver should always recover
+in this way?  Why would you not want this to be the default and only way
+it operates?
+
+thanks,
+
+greg k-h
 
