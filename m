@@ -1,46 +1,46 @@
-Return-Path: <linux-kernel+bounces-119767-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-119768-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D3E8288CCCA
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 20:12:04 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E5EB188CCCC
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 20:12:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8FCF3327BE3
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 19:12:03 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D7329B21B5F
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 19:12:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5AF1813CC4C;
-	Tue, 26 Mar 2024 19:11:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 85A1D13CF80;
+	Tue, 26 Mar 2024 19:12:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="TnettQcM"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="F9CY6W7v"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9A2AA1272D1;
-	Tue, 26 Mar 2024 19:11:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC96713CC69;
+	Tue, 26 Mar 2024 19:11:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711480317; cv=none; b=WOyuk2Nq55VlEevZS3YiTOLTJtAQR6RjIbVIHUo1OBwcIyWcFGuNr/RDtwNtwYod2gAwLLU7tGUkI5hZRCDRj0+IoZGokkYgZ+M/5vjHeiFeBdiKBxQl9jIbAY5YRRAaQwDKVb7qmcfOnZM2PlBWAvn9Lt5R7P0WLD0+KoSHCdo=
+	t=1711480319; cv=none; b=Y4Y2uDWokcSsc6koBGU/JwPlgI522bqrApITV01dn5D1rJNo+uUc0q9IdQshBZM+wli2i1ydgmH7lT77y/qsE35mxKotWRiqIz02OqkIH77pJ9fA6Q5qsgxBge3QcHS401aZIUuwDb460Z9DQtF4fVG2R4YeX9MZHk5JIU67fHE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711480317; c=relaxed/simple;
-	bh=EZrkA8k/lLE5hJHBsQBbRLVO8mmgDFjXv/SnhYX5MnY=;
+	s=arc-20240116; t=1711480319; c=relaxed/simple;
+	bh=LvKhXJn8EIr5UGVEKeNBvYJUx5NfV4+q0X4F7qJluac=;
 	h=Date:Content-Type:MIME-Version:From:To:Cc:In-Reply-To:References:
-	 Message-Id:Subject; b=KZzOY+cr0M2OrcwpvefdwhI7k1F4RvCvY7BLxZfNRN0cAo1tW3VXJUlma+rYRrMiM9+q0xnkWJmZzV/S4OHwLHN3Bepbh7Igp+mpMJV+fkwXhCe8pDB6Mv1hZH64b1O+Cxg6oEz9geR43JoQjRvKNY20Ir+84i3T3kwwiXWzkBE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=TnettQcM; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D68D7C433F1;
-	Tue, 26 Mar 2024 19:11:56 +0000 (UTC)
+	 Message-Id:Subject; b=M8/gaQQUxPdTpYoUf4ROoe921KHKg05oa6p8qGOEREkT4+SEAsuKSOSNXAwVAUCc6n6m58NhFSUVFZjFYCFpTxPOKtZpLvfIUt9mP13LcXWE76+cGHUOknvmfe7XfhQdCcshvcUoURajBg47JcaHyHxh0QqOzoO7BWiTWoeOv9g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=F9CY6W7v; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3DD05C433C7;
+	Tue, 26 Mar 2024 19:11:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711480317;
-	bh=EZrkA8k/lLE5hJHBsQBbRLVO8mmgDFjXv/SnhYX5MnY=;
+	s=k20201202; t=1711480319;
+	bh=LvKhXJn8EIr5UGVEKeNBvYJUx5NfV4+q0X4F7qJluac=;
 	h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
-	b=TnettQcMgC+GPeIX6M3vDm6KlVguwfzIDMU59TcyqH4VvFiJPA4WA/zlnLxZpsbzX
-	 wa13BGPb7IeI73saRTF5+HFwqyZKIKJLr6EROqM+ZneqCGmJ/3DMSMiYGhvEdv4M7O
-	 Sk2CxKResm+1raMxyym/kXTs55CzshgXG0YnJFIFKiBfqF8MRDztPCLPQukATnJy/o
-	 yrDsddROheOso8oiui8DRH0SUPCf/C75nkTo0OAQQVus4Du45HODXQ+BaMXAlnlGpL
-	 1pu4V935oeEAdrhhTqrBkWLMD3f/PFtq1KAp3E6d9nTtSEJuT0rckFZEAMadIBMYzs
-	 vBV86TmCwEGbA==
-Date: Tue, 26 Mar 2024 14:11:55 -0500
+	b=F9CY6W7vwuaBw6n/k3jXgLRRU6zg87VuJJj4rHj94X/+YXtg0cU3xuoS8Tn9gZoJf
+	 +KYew4/UAMwqEZQ4Ust/1AycXvF2Wg9cSM0DQdx6QHvqyf3r8S4S0t0jmzkr47eyGw
+	 XfVfa4mRCEeGJXE6JErktD+X0I15wVflHnGbj8xEhH/w5EKnKInP+PHDb2EPznJWkH
+	 9B+1LzRvXvX2laLjHyp+btFUtlb/sgNY1kWeQIm1GlhhRlEyaa1I1KZeo7d/v8qREw
+	 wJfsFIVrZ1pv9ZWCssCOsvAkkHDC1YtVX160VJGCGRuCXkXy+4thhZnB0ffwi9t8Ct
+	 kSKlDl6tveVgQ==
+Date: Tue, 26 Mar 2024 14:11:58 -0500
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
@@ -50,35 +50,55 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 From: Rob Herring <robh@kernel.org>
-To: Dragan Simic <dsimic@manjaro.org>
-Cc: conor+dt@kernel.org, kernel@collabora.com, devicetree@vger.kernel.org, 
- sebastian.reichel@collabora.com, heiko@sntech.de, 
- linux-arm-kernel@lists.infradead.org, boris.brezillon@collabora.com, 
- linux-kernel@vger.kernel.org, linux-rockchip@lists.infradead.org, 
- robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org
-In-Reply-To: <0f3759ee390f245dac447bbee038445ddfecbec0.1711383286.git.dsimic@manjaro.org>
-References: <0f3759ee390f245dac447bbee038445ddfecbec0.1711383286.git.dsimic@manjaro.org>
-Message-Id: <171148006524.3222394.1157008244152468379.robh@kernel.org>
-Subject: Re: [PATCH] arm64: dts: rockchip: quartzpro64: Enable the GPU
+To: Michael Riesch <michael.riesch@wolfvision.net>
+Cc: linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
+ linux-rockchip@lists.infradead.org, 
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+ devicetree@vger.kernel.org, Heiko Stuebner <heiko@sntech.de>, 
+ Conor Dooley <conor+dt@kernel.org>
+In-Reply-To: <20240325-feature-wolfvision-pf5-v1-0-5725445f792a@wolfvision.net>
+References: <20240325-feature-wolfvision-pf5-v1-0-5725445f792a@wolfvision.net>
+Message-Id: <171148006579.3222626.4177463381080253015.robh@kernel.org>
+Subject: Re: [PATCH 0/4] arm64: dts: rockchip: add wolfvision pf5 mainboard
 
 
-On Mon, 25 Mar 2024 17:19:04 +0100, Dragan Simic wrote:
-> Following the approach used to enable the Mali GPU on the rk3588-evb1, [1]
-> do the same for the Pine64 QuartzPro64, which uses nearly identical hardware
-> design as the RK3588 EVB1.
+On Mon, 25 Mar 2024 15:22:30 +0100, Michael Riesch wrote:
+> Habidere,
 > 
-> The slight disadvantage is that the regulator coupling logic requires the
-> regulators to be always on, which is also noted in the comments.  This is
-> obviously something to be improved at some point in the future, but should
-> be fine for now, especially because the QuartzPro64 isn't a battery-powered
-> board, so low power consumption isn't paramount.
+> This series adds the device tree for the WolfVision PF5 mainboard, which
+> serves as base for recent WolfVision products. It features the Rockchip
+> RK3568 and can be extended with several different extension boards.
 > 
-> [1] https://lore.kernel.org/linux-rockchip/20240325153850.189128-5-sebastian.reichel@collabora.com/
+> The WolfVision PF5 IO Expander is one example of such an extension board.
+> The corresponding device tree overlay is also included in this series.
 > 
-> Signed-off-by: Dragan Simic <dsimic@manjaro.org>
+> May this be the beginning of a beautiful friendship :-)
+> 
+> Looking forward to your comments!
+> 
+> Signed-off-by: Michael Riesch <michael.riesch@wolfvision.net>
 > ---
->  .../arm64/boot/dts/rockchip/rk3588-quartzpro64.dts | 14 ++++++++++++++
->  1 file changed, 14 insertions(+)
+> Michael Riesch (4):
+>       dt-bindings: add wolfvision vendor prefix
+>       dt-bindings: arm: rockchip: add wolfvision pf5 mainboard
+>       arm64: dts: rockchip: add wolfvision pf5 mainboard
+>       arm64: dts: rockchip: add wolfvision pf5 io expander board
+> 
+>  .../devicetree/bindings/arm/rockchip.yaml          |   5 +
+>  .../devicetree/bindings/vendor-prefixes.yaml       |   2 +
+>  arch/arm64/boot/dts/rockchip/Makefile              |   2 +
+>  .../rk3568-wolfvision-pf5-io-expander.dtso         | 137 ++++++
+>  .../boot/dts/rockchip/rk3568-wolfvision-pf5.dts    | 528 +++++++++++++++++++++
+>  5 files changed, 674 insertions(+)
+> ---
+> base-commit: 4cece764965020c22cff7665b18a012006359095
+> change-id: 20240325-feature-wolfvision-pf5-5c1924c0389c
+> 
+> Best regards,
+> --
+> Michael Riesch <michael.riesch@wolfvision.net>
+> 
+> 
 > 
 
 
@@ -96,16 +116,10 @@ make sure dt-schema is up to date:
   pip3 install dtschema --upgrade
 
 
-New warnings running 'make CHECK_DTBS=y rockchip/rk3588-quartzpro64.dtb' for 0f3759ee390f245dac447bbee038445ddfecbec0.1711383286.git.dsimic@manjaro.org:
+New warnings running 'make CHECK_DTBS=y rockchip/rk3568-wolfvision-pf5.dtb' for 20240325-feature-wolfvision-pf5-v1-0-5725445f792a@wolfvision.net:
 
-Error: arch/arm64/boot/dts/rockchip/rk3588-quartzpro64.dts:288.1-5 Label or path gpu not found
-FATAL ERROR: Syntax error parsing input tree
-make[3]: *** [scripts/Makefile.lib:427: arch/arm64/boot/dts/rockchip/rk3588-quartzpro64.dtb] Error 1
-make[2]: *** [scripts/Makefile.build:485: arch/arm64/boot/dts/rockchip] Error 2
-make[2]: Target 'arch/arm64/boot/dts/rockchip/rk3588-quartzpro64.dtb' not remade because of errors.
-make[1]: *** [/home/rob/proj/linux-dt-testing/Makefile:1387: rockchip/rk3588-quartzpro64.dtb] Error 2
-make: *** [Makefile:240: __sub-make] Error 2
-make: Target 'rockchip/rk3588-quartzpro64.dtb' not remade because of errors.
+arch/arm64/boot/dts/rockchip/rk3568-wolfvision-pf5.dtb: hdmi@fe0a0000: Unevaluated properties are not allowed ('#sound-dai-cells' was unexpected)
+	from schema $id: http://devicetree.org/schemas/display/rockchip/rockchip,dw-hdmi.yaml#
 
 
 
