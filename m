@@ -1,143 +1,173 @@
-Return-Path: <linux-kernel+bounces-119806-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-119807-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 93CCC88CD2E
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 20:28:09 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9789688CD31
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 20:28:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D7B9AB2280E
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 19:27:46 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 339E21F8459D
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 19:28:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D5C0613D244;
-	Tue, 26 Mar 2024 19:27:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F0A8113D24C;
+	Tue, 26 Mar 2024 19:28:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=manjaro.org header.i=@manjaro.org header.b="Miw8WXY/"
-Received: from mail.manjaro.org (mail.manjaro.org [116.203.91.91])
-	(using TLSv1.2 with cipher DHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="X+k8M8wq"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CB4BD13CAA0;
-	Tue, 26 Mar 2024 19:27:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=116.203.91.91
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3140B3DABF5;
+	Tue, 26 Mar 2024 19:28:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711481261; cv=none; b=tcIvdjWIM0PE16dImfY9gvQuDThmItkoDAhfCAT6iQUftLFdt8AVAPnrqcl13N9ah0OGK3591KI1ql8ApddT7FTywjlqskZVhwXjAtGk1TIVFADFvz2ls1q0zUn2lW+vcOQERg8D+CiiaFcPeacMACU4XPb5DB6H+s13XxdMpd4=
+	t=1711481302; cv=none; b=TrGf1lBqZOdFP5uRwA5QHYCtcJd8F5n3SmGHsBAGrnkx4GPsqyNqtJM5M/jJ1p3TqH0AXeRLGQRfBseUHrYQwnfRYdg/TxbcgsGp0qQioVMl1LWA7QIRh+IgTn80Xmx6zf0d0miUiAJltGORdsAtHoBRlkdR52WsaUdPh2vDqsY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711481261; c=relaxed/simple;
-	bh=J3Cb4quAeleMzCXbZCqtDGBBj9mxmmUw5l05OAG8eEA=;
-	h=MIME-Version:Date:From:To:Cc:Subject:In-Reply-To:References:
-	 Message-ID:Content-Type; b=nEZONm4ehNt9VczPIv5aI5dATzjr55wxPAeGS7pb3tiF//GvetPvcJRcoyS5uBT6hnDvJIb/f5FosZQ6MZRE0h/J+x17yvcsnK0gPxO1AtPYy/5RqTp9FvWnRXhwg+GM19+QrC5JCYdLlz51DytB9cWhaBHzsbLSJwPSHIK62sY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=manjaro.org; spf=pass smtp.mailfrom=manjaro.org; dkim=pass (2048-bit key) header.d=manjaro.org header.i=@manjaro.org header.b=Miw8WXY/; arc=none smtp.client-ip=116.203.91.91
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=manjaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=manjaro.org
+	s=arc-20240116; t=1711481302; c=relaxed/simple;
+	bh=3BPGWwIna+PlmdaQwyYchSKSB4VVqlEn7xOBcReIEk0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=gDDDfIfMtnUV/Y4vtuKOl6ujLSAm8t0vXBkLfH8Ovx7tIH1W+oV34Dn1ezaTHTxFCls/0mh3U7zfCwe5oY9uk7SllG9hNXI6KCR3WQ1PooasgBZzkl+uuhe2kEpe0fQR414780VOfq/BiXZ4pnUmwvH+a/duZK8Lde7eoT719tA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=X+k8M8wq; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C3B02C433F1;
+	Tue, 26 Mar 2024 19:28:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1711481302;
+	bh=3BPGWwIna+PlmdaQwyYchSKSB4VVqlEn7xOBcReIEk0=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=X+k8M8wqxMBut3LauEdUG0xukYr83EBokAuxtqpvW2YyNpjPk9m5NkiDSEAgLtWrw
+	 8CZX4Ucy+x9ySV85wrivEQPCbpVNiZv9OKE/HlNXRraB8xKAoS4HPHKLxfWFmweTQy
+	 OmL9VnAwcIU9PrCFHMYi0Xp52ppeIo8QtSktFtclg1yo3qNvX1boDaqxZayGoco5MF
+	 7k+akY7TEL45oQP11XmT5BHGtHCUG1UY+VrIcvLkwKmDn7uymIN03xmXJ3QO23pmuh
+	 m03imalgiZzrxlMHVW0SZvFMD4WqFVDC4LdvjLDQAEQICVqQ3+oaP5cfb3NUxfW6Xg
+	 Gx/d09cyxCFAQ==
+Date: Tue, 26 Mar 2024 19:28:17 +0000
+From: Conor Dooley <conor@kernel.org>
+To: Allen Lin <allencl_lin@hotmail.com>
+Cc: Conor Dooley <conor.dooley@microchip.com>,
+	Rob Herring <robh@kernel.org>, dmitry.torokhov@gmail.com,
+	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+	jikos@kernel.org, benjamin.tissoires@redhat.com,
+	linux-input@vger.kernel.org, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1 1/4] dt-bindings: input: Add Himax HX83102J touchscreen
+Message-ID: <20240326-granite-snipping-7c8b04480b2e@spud>
+References: <20240322085606.993896-1-allencl_lin@hotmail.com>
+ <TY0PR06MB56116F0902017225C78EDDDD9E312@TY0PR06MB5611.apcprd06.prod.outlook.com>
+ <20240322-mammary-boil-f9a4c347fba1@spud>
+ <20240322183009.GA1227164-robh@kernel.org>
+ <20240322-rectified-udder-fef9102f58da@spud>
+ <TY0PR06MB56110ADEA805B68BE2B887069E352@TY0PR06MB5611.apcprd06.prod.outlook.com>
+ <20240326-whoever-spotter-1fe7ace35428@wendy>
+ <TY0PR06MB561197578717990F4BEA93D29E352@TY0PR06MB5611.apcprd06.prod.outlook.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=manjaro.org; s=2021;
-	t=1711481249;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=DRfn67uuUy3m2b7tbUxgtfNJ5qaXNBwO1gHJs31ZlpQ=;
-	b=Miw8WXY/QkEWb0N8TybloxXcFTXnGju0WBqcaYBGnwNloBil+GABYU49LGx83oep2QXAcG
-	Eu/CXEt5zwWf9xzXktAF8+tBuB/W1CZZDbZi2tuR3oHdeTGrMCbbuYfl2ewKyY4T9D8jew
-	HPIhwLMkUpQmbpMRlCfoA3QoFSFfc2CEw3yBwouwygXICFRMz2YE3ob5lN4UmrNOHRqF0H
-	dmarNJbIgNDOwKMIG6bt8NiefneSGAfpcnnjqKiuzlDFgx6vOXjwE6sKr6tqFOI6hjCrz3
-	dvryb2FltYOw3lhwAJX9wF5W1eAOAs4Q04n4tqwmFg7/3FWJZeEZ9wdAXQqArQ==
-Date: Tue, 26 Mar 2024 20:27:29 +0100
-From: Dragan Simic <dsimic@manjaro.org>
-To: Rob Herring <robh@kernel.org>
-Cc: conor+dt@kernel.org, kernel@collabora.com, devicetree@vger.kernel.org,
- sebastian.reichel@collabora.com, heiko@sntech.de,
- linux-arm-kernel@lists.infradead.org, boris.brezillon@collabora.com,
- linux-kernel@vger.kernel.org, linux-rockchip@lists.infradead.org,
- robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org
-Subject: Re: [PATCH] arm64: dts: rockchip: quartzpro64: Enable the GPU
-In-Reply-To: <171148006524.3222394.1157008244152468379.robh@kernel.org>
-References: <0f3759ee390f245dac447bbee038445ddfecbec0.1711383286.git.dsimic@manjaro.org>
- <171148006524.3222394.1157008244152468379.robh@kernel.org>
-Message-ID: <13ed1665e2e3ef4107cb96fcbcd0c3c7@manjaro.org>
-X-Sender: dsimic@manjaro.org
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Authentication-Results: ORIGINATING;
-	auth=pass smtp.auth=dsimic@manjaro.org smtp.mailfrom=dsimic@manjaro.org
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="QOWsNeEgtwZqG7Eu"
+Content-Disposition: inline
+In-Reply-To: <TY0PR06MB561197578717990F4BEA93D29E352@TY0PR06MB5611.apcprd06.prod.outlook.com>
 
-On 2024-03-26 20:11, Rob Herring wrote:
-> On Mon, 25 Mar 2024 17:19:04 +0100, Dragan Simic wrote:
->> Following the approach used to enable the Mali GPU on the rk3588-evb1, 
->> [1]
->> do the same for the Pine64 QuartzPro64, which uses nearly identical 
->> hardware
->> design as the RK3588 EVB1.
->> 
->> The slight disadvantage is that the regulator coupling logic requires 
->> the
->> regulators to be always on, which is also noted in the comments.  This 
->> is
->> obviously something to be improved at some point in the future, but 
->> should
->> be fine for now, especially because the QuartzPro64 isn't a 
->> battery-powered
->> board, so low power consumption isn't paramount.
->> 
->> [1] 
->> https://lore.kernel.org/linux-rockchip/20240325153850.189128-5-sebastian.reichel@collabora.com/
->> 
->> Signed-off-by: Dragan Simic <dsimic@manjaro.org>
->> ---
->>  .../arm64/boot/dts/rockchip/rk3588-quartzpro64.dts | 14 
->> ++++++++++++++
->>  1 file changed, 14 insertions(+)
-> 
-> My bot found new DTB warnings on the .dts files added or changed in 
-> this
-> series.
-> 
-> Some warnings may be from an existing SoC .dtsi. Or perhaps the 
-> warnings
-> are fixed by another series. Ultimately, it is up to the platform
-> maintainer whether these warnings are acceptable or not. No need to 
-> reply
-> unless the platform maintainer has comments.
-> 
-> If you already ran DT checks and didn't see these error(s), then
-> make sure dt-schema is up to date:
-> 
->   pip3 install dtschema --upgrade
-> 
-> 
-> New warnings running 'make CHECK_DTBS=y
-> rockchip/rk3588-quartzpro64.dtb' for
-> 0f3759ee390f245dac447bbee038445ddfecbec0.1711383286.git.dsimic@manjaro.org:
-> 
-> Error: arch/arm64/boot/dts/rockchip/rk3588-quartzpro64.dts:288.1-5
-> Label or path gpu not found
-> FATAL ERROR: Syntax error parsing input tree
-> make[3]: *** [scripts/Makefile.lib:427:
-> arch/arm64/boot/dts/rockchip/rk3588-quartzpro64.dtb] Error 1
-> make[2]: *** [scripts/Makefile.build:485: arch/arm64/boot/dts/rockchip] 
-> Error 2
-> make[2]: Target 'arch/arm64/boot/dts/rockchip/rk3588-quartzpro64.dtb'
-> not remade because of errors.
-> make[1]: *** [/home/rob/proj/linux-dt-testing/Makefile:1387:
-> rockchip/rk3588-quartzpro64.dtb] Error 2
-> make: *** [Makefile:240: __sub-make] Error 2
-> make: Target 'rockchip/rk3588-quartzpro64.dtb' not remade because of 
-> errors.
 
-This error can be safely ignored, because this patch is supposed
-to be applied together with a recent patch series, [1] or in more
-detail, after one of the patches in that series [2] that adds the
-missing "gpu" node.
+--QOWsNeEgtwZqG7Eu
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-[1] 
-https://lore.kernel.org/linux-rockchip/20240326165232.73585-1-sebastian.reichel@collabora.com/T/#u
-[2] 
-https://lore.kernel.org/linux-rockchip/20240326165232.73585-3-sebastian.reichel@collabora.com/
+On Tue, Mar 26, 2024 at 06:40:28PM +0800, Allen Lin wrote:
+> Conor Dooley <conor.dooley@microchip.com> =E6=96=BC 2024=E5=B9=B43=E6=9C=
+=8826=E6=97=A5 =E9=80=B1=E4=BA=8C =E4=B8=8B=E5=8D=884:48=E5=AF=AB=E9=81=93=
+=EF=BC=9A
+> >
+> > On Tue, Mar 26, 2024 at 01:46:56PM +0800, Allen Lin wrote:
+> > > Conor Dooley <conor@kernel.org> =E6=96=BC 2024=E5=B9=B43=E6=9C=8823=
+=E6=97=A5 =E9=80=B1=E5=85=AD =E4=B8=8A=E5=8D=882:34=E5=AF=AB=E9=81=93=EF=BC=
+=9A
+> > > >
+> > > > On Fri, Mar 22, 2024 at 01:30:09PM -0500, Rob Herring wrote:
+> > > > > On Fri, Mar 22, 2024 at 05:54:08PM +0000, Conor Dooley wrote:
+> > > > > > On Fri, Mar 22, 2024 at 04:56:03PM +0800, Allen_Lin wrote:
+> > > > > > > Add the HX83102j touchscreen device tree bindings documents.
+> > > > > > > HX83102j is a Himax TDDI touchscreen controller.
+> > > > > > > It's power sequence should be bound with a lcm driver, thus it
+> > > > > > > needs to be a panel follower. Others are the same as normal S=
+PI
+> > > > > > > touchscreen controller.
+> > > > > > >
+> > > > > > > Signed-off-by: Allen_Lin <allencl_lin@hotmail.com>
+> > > > > >
+> > > > > > note to self/Krzysztof/Rob:
+> > > > > > There was a previous attempt at this kind of device. This versi=
+on looks
+> > > > > > better but might be incomplete given there's a bunch more prope=
+rties in
+> > > > > > that patchset:
+> > > > > > https://lore.kernel.org/all/20231017091900.801989-1-tylor_yang@=
+himax.corp-partner.google.com/
+> > > > >
+> > > > > Those don't look like properties we want coming back.
+> > > >
+> > > > Oh, I don't want most of them coming back either. There are some
+> > > > supplies in there though that I think we would like to come back, n=
+o?
+> > > > Maybe this particular device doesn't have any supplies, but that do=
+esn't
+> > > > really seem credible.
+> > >
+> > > We will use Firmware-name in Device Tree.
+> >
+> > > For power supply settings, because there may be other device using
+> > > same regulator.
+> >
+> > If there are other devices using the same regulator is it more
+> > important that you document it so that it doesn't get disabled by the
+> > other users.
+> >
+> > > We plan to define it as an optional property for user to control in
+> > > next release.
+> >
+> > I don't see how the regulator would not be required, the device doesn't
+> > function without power.
+> >
+> > Thanks,
+> > Conor.
+>=20
+> I will set power supply as required.
+> The description of power supply as below,
+>=20
+> properties:
+>   vccd-supply:
+>     description: A phandle for the regualtor supplying IO power. Should b=
+e own
+>                  by TPIC only.
+
+What does "owned by TPIC" only mean? Why would the vccd supply not be
+allowed to be shared with another device?
+
+> This works for TP digital IO only, main power is
+>                  given by display part VSP/VSN power source which is cont=
+rolled
+>                  by lcm driver.
+
+What drivers control things doesn't really matter here, we're just
+describing the hardware. If there's another supply to the controller,
+then document it too please.
+
+Thanks,
+Conor.
+
+--QOWsNeEgtwZqG7Eu
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZgMh0QAKCRB4tDGHoIJi
+0jm2AQDqZi3IUK1W3lug8eP0PWqGYJU03AzaJOdr4IGEhVqmwAD/d70su3wSxoC+
+lPOhb6kHzKGkTxQDDuoSzuf/3aPJbgU=
+=dcsY
+-----END PGP SIGNATURE-----
+
+--QOWsNeEgtwZqG7Eu--
 
