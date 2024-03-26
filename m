@@ -1,68 +1,62 @@
-Return-Path: <linux-kernel+bounces-120079-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-120080-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id EB45B88D14C
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 23:41:43 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4A5AA88D14F
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 23:42:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 213F11C3B968
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 22:41:43 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AFC01B23656
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 22:42:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CAC1213E6D9;
-	Tue, 26 Mar 2024 22:40:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E0DD13E6AB;
+	Tue, 26 Mar 2024 22:40:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="niUVsVHK"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="p5j6UdWx"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C67A813E021;
-	Tue, 26 Mar 2024 22:40:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 381B713DDAA;
+	Tue, 26 Mar 2024 22:40:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711492800; cv=none; b=IyaCnX9AkTqakZF12f4/QEArm1V2DnqShkP2km+dS33QG7LEyuzUxWN9yq646Km8Z0Yhvr7sp5a+oNWD79iHDn9iXBZKvJE6z6OGQBTTMRX7RpKn3Wm8sjicQyV1LiretduXldE4JvPDQ1ATNkyz09N6l9zg7bCx/ssyOmkb5pk=
+	t=1711492838; cv=none; b=h00sRcB+x1aOEqwFhPyEqnKnjZG8Ygs6JFGUkyrSs5JiQlb65KyXQWZ/e8jiGmZHLl+rBw1xMpkZBGqM9d8nm434ZMcseA1aWKtDrg4qHFAfbMnDtBt3e3vsWBjZjRKLWfc6m0J64c5XGzcS6bKG4RyYNh15FCYJYOo9S6tFbUs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711492800; c=relaxed/simple;
-	bh=lulGfl/VARvXl3v+IQINE9T8HFeaXr5b7miTjpnKPBo=;
+	s=arc-20240116; t=1711492838; c=relaxed/simple;
+	bh=DvdOaxXySSb88hE1tdZLq/K7+rtZJ/+uDHjNaQDuU0M=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=aYRPBKlR55ue5TLUGjnBVE1jxa7Xv+6WEU0CLEF+ZGlOhYtE72gnzoDt9gD8LxRJ2H0iiUNi4roFk1zDEjknDyfOLUOKPKS11KXimBwiRg6lcQkx2Vk7B7iWXYtFLvlzs67ktYLIUsVUiW9gGLYEpXljbvrLPj2bG8m6sl+SLac=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=niUVsVHK; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 71FEBC433C7;
-	Tue, 26 Mar 2024 22:39:56 +0000 (UTC)
+	 MIME-Version; b=Jvr5W81AGEkxwkYEVdxJOP8MbhmPr2qJLTcrDNn9BXwKlrPGEcxQEuDtTw73c1Z+6eEtQMng1kU7Dn55gyhN2PAX/XQQMTP8pRofRr3jl5/z6tWtYCa4o1mH5EVuGcGKTuk+BqcfTATlsKhRkMMdLu15JwI0mitO2vxEZJNLbhg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=p5j6UdWx; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 08F56C433C7;
+	Tue, 26 Mar 2024 22:40:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711492800;
-	bh=lulGfl/VARvXl3v+IQINE9T8HFeaXr5b7miTjpnKPBo=;
+	s=k20201202; t=1711492837;
+	bh=DvdOaxXySSb88hE1tdZLq/K7+rtZJ/+uDHjNaQDuU0M=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=niUVsVHKc3NZHc+8bduQh4f+aNkZPxgGbbD/cp6isZmq1TLeongbEUIco/kjnVt4w
-	 vrcNPIFu1AXIefydV9FNMA85yIawUajQw4k+GVHqaRrM7sLk34fxC8PhMqn8zjPjon
-	 Rvl0Yo4kcCNjUZ9dH+6oF++f+v39DMtxPzVXQfgmjT045TQ9zYUPXioxybMsAynosm
-	 NrWCVpBujF9x8mXOInpLI1ROZ3A+ALXRjiJE0QikPWDETejt3OrZ5Xl6+UGQ3Dy6GX
-	 Juc0uFFkx6qC3xK5BAjJBHy5fiq2zDKL3B6YNW+SF514M+hngUaYRuaQ1LmV9WSQdK
-	 E6vkxMGcrXDBg==
+	b=p5j6UdWxGLPCw8MD1MG7G52pz4jf9eUDs/fFAPZ0nSxoBq4yXx+Or5Lgn1xXUeElp
+	 +cj8i69kiAsbFcByaE6X3MwtRtceTT9Edu4WzpCWxVfQyKIQliXEXJ9jaPuhdPt1EO
+	 hPTTraFVvOo4PuszlnUsVbUVQUggXvzt/b36cPf3IquLaD83kojbUDODfNp+wT8Qnk
+	 rI2SfYkMFrUIaTNggJBf3zCEFOjGEO3szpfqF7F/VaaNyAUHWaDczx4OxbnERjzweR
+	 DJEEn+vReYcCj0bTRNiF21fVJnOstGn5xp5kbalE8IMqei4+oKEuSso3nQa0xJ0jNL
+	 NVn1p1MByEg6w==
 From: Arnd Bergmann <arnd@kernel.org>
 To: llvm@lists.linux.dev,
-	Saeed Mahameed <saeedm@nvidia.com>,
-	Leon Romanovsky <leon@kernel.org>
+	Hans de Goede <hdegoede@redhat.com>,
+	=?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
+	Maximilian Luz <luzmaximilian@gmail.com>,
+	Nathan Chancellor <nathan@kernel.org>
 Cc: Arnd Bergmann <arnd@arndb.de>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	Nathan Chancellor <nathan@kernel.org>,
 	Nick Desaulniers <ndesaulniers@google.com>,
 	Bill Wendling <morbo@google.com>,
 	Justin Stitt <justinstitt@google.com>,
-	Vlad Buslov <vladbu@nvidia.com>,
-	Roi Dayan <roid@nvidia.com>,
-	Maor Dickman <maord@nvidia.com>,
-	Gal Pressman <gal@nvidia.com>,
-	netdev@vger.kernel.org,
-	linux-rdma@vger.kernel.org,
+	=?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
+	Andy Shevchenko <andy.shevchenko@gmail.com>,
+	platform-driver-x86@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH 4/9] mlx5: avoid truncating error message
-Date: Tue, 26 Mar 2024 23:38:03 +0100
-Message-Id: <20240326223825.4084412-5-arnd@kernel.org>
+Subject: [PATCH 5/9] surface3_power: avoid format string truncation warning
+Date: Tue, 26 Mar 2024 23:38:04 +0100
+Message-Id: <20240326223825.4084412-6-arnd@kernel.org>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20240326223825.4084412-1-arnd@kernel.org>
 References: <20240326223825.4084412-1-arnd@kernel.org>
@@ -76,31 +70,40 @@ Content-Transfer-Encoding: 8bit
 
 From: Arnd Bergmann <arnd@arndb.de>
 
-clang warns that one error message is too long for its destination buffer:
+clang warns about printing a pair of escaped strings into a buffer that is
+too short:
 
-drivers/net/ethernet/mellanox/mlx5/core/esw/bridge.c:1876:4: error: 'snprintf' will always be truncated; specified size is 80, but format string expands to at least 94 [-Werror,-Wformat-truncation-non-kprintf]
+drivers/platform/surface/surface3_power.c:248:3: error: 'snprintf' will always be truncated; specified size is 10, but format string expands to at least 12 [-Werror,-Wformat-truncation-non-kprintf]
+  248 |                 snprintf(bix->serial, ARRAY_SIZE(bix->serial), "%3pE%6pE", buf + 7, buf);
+      |                 ^
 
-Reword it to be a bit shorter so it always fits.
+Change the format string two print two less bytes so it always fits. The string
+is still truncated, so there is no change in behavior, but the compiler no
+longer warns about it.
 
-Fixes: 70f0302b3f20 ("net/mlx5: Bridge, implement mdb offload")
+Fixes: 85f7582cd484 ("platform/surface: Move Surface 3 Power OpRegion driver to platform/surface")
 Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- drivers/net/ethernet/mellanox/mlx5/core/esw/bridge.c | 2 +-
+Not entirely sure about this one, as I've never used escaped strings, and
+don't know if gcc is correct to warn here, or if the kernel defines it
+differently from the standard.
+---
+ drivers/platform/surface/surface3_power.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/esw/bridge.c b/drivers/net/ethernet/mellanox/mlx5/core/esw/bridge.c
-index 1b9bc32efd6f..c5ea1d1d2b03 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/esw/bridge.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/esw/bridge.c
-@@ -1874,7 +1874,7 @@ int mlx5_esw_bridge_port_mdb_add(struct net_device *dev, u16 vport_num, u16 esw_
- 				 "Failed to lookup bridge port vlan metadata to create MDB (MAC=%pM,vid=%u,vport=%u)\n",
- 				 addr, vid, vport_num);
- 			NL_SET_ERR_MSG_FMT_MOD(extack,
--					       "Failed to lookup bridge port vlan metadata to create MDB (MAC=%pM,vid=%u,vport=%u)\n",
-+					       "Failed to lookup vlan metadata for MDB (MAC=%pM,vid=%u,vport=%u)\n",
- 					       addr, vid, vport_num);
- 			return -EINVAL;
- 		}
+diff --git a/drivers/platform/surface/surface3_power.c b/drivers/platform/surface/surface3_power.c
+index 4c0f92562a79..72f904761fde 100644
+--- a/drivers/platform/surface/surface3_power.c
++++ b/drivers/platform/surface/surface3_power.c
+@@ -245,7 +245,7 @@ static int mshw0011_bix(struct mshw0011_data *cdata, struct bix *bix)
+ 		dev_err(&client->dev, "Error reading serial no: %d\n", ret);
+ 		return ret;
+ 	} else {
+-		snprintf(bix->serial, ARRAY_SIZE(bix->serial), "%3pE%6pE", buf + 7, buf);
++		snprintf(bix->serial, ARRAY_SIZE(bix->serial), "%3pE%4pE", buf + 7, buf);
+ 	}
+ 
+ 	/* get cycle count */
 -- 
 2.39.2
 
