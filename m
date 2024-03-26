@@ -1,139 +1,115 @@
-Return-Path: <linux-kernel+bounces-119996-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-119997-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2180088CFE3
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 22:20:49 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 10F3688CFE5
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 22:21:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A48C31F64453
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 21:20:48 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A43AB1F80E28
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 21:21:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A215013D624;
-	Tue, 26 Mar 2024 21:20:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E66313D607;
+	Tue, 26 Mar 2024 21:21:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="SQI0sbTY"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.15])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NttaDzCH"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7BBFC13C9CD;
-	Tue, 26 Mar 2024 21:20:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.15
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5608512C7FF
+	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 21:21:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711488034; cv=none; b=DjU/Fnskp2Upzdz75BJLKEp4ChENK7P8b/q7lg94PE0CA+VH2F0uDInsE03LaxuMUd9LUwd3eMeIC9vV4q05iCX/2LraAEpZeBCQcK+JhfsNZK0zxXTHVdU6qAb6UK2b4HstZmwNELqi5qrKtBMPuTOHutqHm5W+KUONUH9NTYk=
+	t=1711488071; cv=none; b=eSmhWB09bbzgw8q3JjNxBdRFr9TEIsNJ5yx3LGJZI51hMZtRcRXmlmLoD/HeqDeRB/wHmY79zlKFPinsMAqJad5vylSa4trwmivwZex37oDi5cZPtQPQ8aEpUHmhgb1H6hOuxtbvEYLQVFqTLjy4mviQQCUECTW9wSwMdRXYiL0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711488034; c=relaxed/simple;
-	bh=bfaen3V+dqtoJw9rubpHqAQUMPxS69aDZd7fo+2v9nY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=lPkRKOxreHNxNiO8mVKE3nGSzm4X9S+T1cQQyTv7JJ8+0+sKjwESBa9zhrH96bwawbxwa+WEE0Xl3/6jfXW78PD3YOI1JcEfVarjVQ6TC2YviB4OJf/5oWRs0dU1WrabAkm1BxN8VWFmGTHNUZ1D4IoHOLl9r4IXnUxXzgxCfdA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=SQI0sbTY; arc=none smtp.client-ip=198.175.65.15
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1711488032; x=1743024032;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=bfaen3V+dqtoJw9rubpHqAQUMPxS69aDZd7fo+2v9nY=;
-  b=SQI0sbTYfCe7mlsAqu0OYYcOQaRGblJELQY5dTnsPzt7imVFOnm7SsyV
-   ZBgjJjhcfP7OsxAnaxlIh0/Onf4bJR2FFNCGmtStNQxAiPjwXhW58XF0K
-   +lsEkjfj7Fu7p48bm3GlwbbbfA0dbOTFPAjeZWn0ffMBSVKbAgR6lp7fm
-   wC9YchO2m1rEIDGg/VbnrWhuX0kydKRuDHQ0s6BmEqkjQD2ssLjAlWzf7
-   MHVtlAgDjsOApcNxzh1HtS3TLKDmRtw20uly5DY83DnzF45AuU0gfJtX7
-   AP3QABJPlBzFqzcRDNZg1xzYEEg4r7sjKEciue/J5SSjI2WFBPdooTymc
-   w==;
-X-CSE-ConnectionGUID: IK9XDmifQRmbSe7wwTIIxA==
-X-CSE-MsgGUID: DdA6STCFS/uoqGiwFx/CGg==
-X-IronPort-AV: E=McAfee;i="6600,9927,11025"; a="10366007"
-X-IronPort-AV: E=Sophos;i="6.07,157,1708416000"; 
-   d="scan'208";a="10366007"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orvoesa107.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Mar 2024 14:20:32 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,11025"; a="914891004"
-X-IronPort-AV: E=Sophos;i="6.07,157,1708416000"; 
-   d="scan'208";a="914891004"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Mar 2024 14:20:29 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.97)
-	(envelope-from <andriy.shevchenko@linux.intel.com>)
-	id 1rpEDa-0000000GSyA-3BT8;
-	Tue, 26 Mar 2024 23:20:26 +0200
-Date: Tue, 26 Mar 2024 23:20:26 +0200
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: Mark Brown <broonie@kernel.org>
-Cc: linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	Daniel Mack <daniel@zonque.org>,
-	Haojian Zhuang <haojian.zhuang@gmail.com>,
-	Robert Jarzmik <robert.jarzmik@free.fr>,
-	Russell King <linux@armlinux.org.uk>
-Subject: Re: [PATCH v1 07/10] spi: pxa2xx: Provide num-cs for Sharp PDAs via
- device properties
-Message-ID: <ZgM8GrsaqQb-EjC2@smile.fi.intel.com>
-References: <20240326181027.1418989-1-andriy.shevchenko@linux.intel.com>
- <20240326181027.1418989-8-andriy.shevchenko@linux.intel.com>
- <dcdf8c46-acdc-466d-afc6-caf0e0fa39e8@sirena.org.uk>
- <ZgMY3AeC1Jnh1Oru@smile.fi.intel.com>
- <c18186c0-63d8-4406-add0-980f723e3528@sirena.org.uk>
- <ZgMsHFJObZ48Erzt@smile.fi.intel.com>
- <6f6c96d3-051a-4437-9c95-6b8be7847705@sirena.org.uk>
+	s=arc-20240116; t=1711488071; c=relaxed/simple;
+	bh=ktBOuN/l0Oqul05K8wPsro6WSmUcfgpQoRmRKkgldYg=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=jTAmsGDg1CGm6i7MgI+BBcYnr0wpbaNvqHHXWwPUvJYwbDQzQe2AujgrZJUnB2py0f5K+4UIi8gQbMZY72xzVf4dzwIJzDaADUyn5fHPgf03espnzMFsFWqmphl0YwfJVo7+LrS1sLfZVkgqSR+aVfcf3DFPWckbZIqGM7sKT2w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NttaDzCH; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CFA05C43390
+	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 21:21:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1711488070;
+	bh=ktBOuN/l0Oqul05K8wPsro6WSmUcfgpQoRmRKkgldYg=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=NttaDzCH0nFE8/OnuI3TFzJPM4f4n0RToHYl7crqDD6iDXABdcYvfaOrbHX8oxOgm
+	 7ETBZr7GlUtIPTnxjXf7ldSCdPDFvT+aFQbKOTQst3cnqp28o36NrwF8l6GXzHnk8+
+	 sWYIdYdWJYvlJFCTMKWXIFtbb6/RYrzFV13Y4tY2Htog4iqsq9PMuSXI6DM4lgABe2
+	 CRm8y2XhLxUekNT1n2F6sg53tsBBY68weqyYJd3Fy8oJ34C74S6i8560gtdhQxprqD
+	 GTxfkw/9CQC157sOTMqtdXEgsgVHth0xRzq26SbnOVAUI3gbqfQSVssOb1UX7P0xnz
+	 l5jTa8LVFbc3A==
+Received: by mail-lf1-f47.google.com with SMTP id 2adb3069b0e04-5159f9de7fbso4503532e87.1
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 14:21:10 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCUnWd75udiJlESd2vXNVJ12dUP3XBmKuVvvJTUZav/hrOhH2eLEM8XvDhMvqrgPtGwV9XrdggOkVKYIB8bKNJ6gl9Xqyj1+tigX2wMa
+X-Gm-Message-State: AOJu0YzL01LP0j4TMBhdXE8qRMDGSEKlA01F7hFrwnQM2VH6BZzGmy4i
+	eMsfwgTAb9Q0pvaiY6I7ijm0PUbLYCU7PVxjO2qJh00xCrkh9dqRoWTv5wKY7kRUoGM8TMcmT63
+	ioK2jdEGtIV/mnDFcALzJa2ikvw==
+X-Google-Smtp-Source: AGHT+IG3wPYvGie/m4nkqFnR7BNbZ+T1nPhZdmhz95gFdDCYjSNPOfiAniuep2UkhdyYu4tSSvF/Ll1U2Y302My7IiE=
+X-Received: by 2002:a19:5e58:0:b0:513:ccbe:d79f with SMTP id
+ z24-20020a195e58000000b00513ccbed79fmr519276lfi.8.1711488069574; Tue, 26 Mar
+ 2024 14:21:09 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <6f6c96d3-051a-4437-9c95-6b8be7847705@sirena.org.uk>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <20240326-zswap-xarray-v9-1-d2891a65dfc7@kernel.org>
+ <CANeU7Q=8p4whMu+H9GXqQc4Ehjt0_kCtNdg34TiW4bWFw03dbw@mail.gmail.com> <CAKEwX=MLFaA-1kYbKT0bMuTsJDqK9ZfoJ+WUyxM4tBu_owyPYA@mail.gmail.com>
+In-Reply-To: <CAKEwX=MLFaA-1kYbKT0bMuTsJDqK9ZfoJ+WUyxM4tBu_owyPYA@mail.gmail.com>
+From: Chris Li <chrisl@kernel.org>
+Date: Tue, 26 Mar 2024 14:20:58 -0700
+X-Gmail-Original-Message-ID: <CANeU7Qmr-cirRJxm7JyfoFH+d782tHCvuC6wtEBzF4bpd5aeyg@mail.gmail.com>
+Message-ID: <CANeU7Qmr-cirRJxm7JyfoFH+d782tHCvuC6wtEBzF4bpd5aeyg@mail.gmail.com>
+Subject: Re: [PATCH v9] zswap: replace RB tree with xarray
+To: Nhat Pham <nphamcs@gmail.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>, linux-kernel@vger.kernel.org, 
+	linux-mm@kvack.org, Yosry Ahmed <yosryahmed@google.com>, 
+	Johannes Weiner <hannes@cmpxchg.org>, "Matthew Wilcox (Oracle)" <willy@infradead.org>, 
+	Chengming Zhou <zhouchengming@bytedance.com>, Barry Song <v-songbaohua@oppo.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, Mar 26, 2024 at 08:26:11PM +0000, Mark Brown wrote:
-> On Tue, Mar 26, 2024 at 10:12:12PM +0200, Andy Shevchenko wrote:
-> > On Tue, Mar 26, 2024 at 08:02:57PM +0000, Mark Brown wrote:
-> 
-> > > It is not clear to me that this makes the kernel side better, it just
-> > > seems to be rewriting the platform data for the sake of it.  If it was
-> > > converting to DT there'd be some stuff from it being DT but this keeps
-> > > everything as in kernel as board files, just in a more complex form.
-> 
-> > Not really. The benefits with swnode conversion are the following:
-> 
-> > - reducing custom APIs / data types between _shared_ (in a sense of
-> >   supporting zillion different platforms) driver and a certain board
-> >   file
-> 
-> > - as an effect of the above, reducing kernel code base, and as the result
-> >   make maintenance easier and bug-free for that parts
-> 
-> I'm more worried about the possibility of breaking things with swnode
-> support than I am for board files - with board files you've got a good
-> chance of failing to compile if things get messed up, with swnode you
-> can typo a property or whatever and silently fail.
+Hi Yosry, Johannes and Nhat,
 
-I understand that, but here it's consolidated in a single series
-and not supposed to be modified in the future, only dropping or
-properly converting.
+Thank you for your review. I have sent out V10 to revert the comment.
 
-Btw, you may say the same about the all patches that converts to
-GPIO lookup tables (one typo in the not-so-often used GPIO line
-device ID name), but I don't remember that kind of conversions
-got much of objection.
+Chris
 
-> > - preparing a driver to be ready for any old board file conversion to DT
-> >   as it reduces that churn (you won't need to touch the driver code)
-> 
-> The driver appears to already have DT support (there's a compatible for
-> MMP2 in there)?
-
-The MMP2 is using default number of chip select pins.
-Also note that my reply is generic (I used 'a driver' form).
-
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+On Tue, Mar 26, 2024 at 2:04=E2=80=AFPM Nhat Pham <nphamcs@gmail.com> wrote=
+:
+>
+> On Tue, Mar 26, 2024 at 11:42=E2=80=AFAM Chris Li <chrisl@kernel.org> wro=
+te:
+> >
+> > > -        * When reading into the swapcache, invalidate our entry. The
+> > > +        * When reading into the swapcache, erase our entry. The
+> > >          * swapcache can be the authoritative owner of the page and
+> > >          * its mappings, and the pressure that results from having tw=
+o
+> > >          * in-memory copies outweighs any benefits of caching the
+> > > @@ -1649,8 +1581,12 @@ bool zswap_load(struct folio *folio)
+> > >          * the fault fails. We remain the primary owner of the entry.=
+)
+> > >          */
+> > >         if (swapcache)
+> > > -               zswap_rb_erase(&tree->rbroot, entry);
+> > > -       spin_unlock(&tree->lock);
+> > > +               entry =3D xa_erase(tree, offset);
+> > > +       else
+> > > +               entry =3D xa_load(tree, offset);
+> >
+> > This is the place I make the modification for the conflict resolution.
+> > It depends on the swapcache to execute xa_erase() or xa_load().
+> > Obviously, the xa_load() will not delete the entry from the tree.
+> >
+>
+> The conflict resolution itself LGTM. I'll let you and Johannes decide
+> on the comment (but FWIW, the original meaning still holds, so I don't
+> see why we need to fix it).
+>
+> Reviewed-by: Nhat Pham <nphamcs@gmail.com>
+>
 
