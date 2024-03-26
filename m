@@ -1,131 +1,153 @@
-Return-Path: <linux-kernel+bounces-118201-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-118202-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3068588B5C1
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 01:04:21 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2089488B67C
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 02:03:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D0C8E1F642FD
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 00:04:20 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B25F8B2B192
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 00:05:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B06237F6;
-	Tue, 26 Mar 2024 00:04:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED16F7F6;
+	Tue, 26 Mar 2024 00:05:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="E2Ns4XTH"
-Received: from mail-yb1-f169.google.com (mail-yb1-f169.google.com [209.85.219.169])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="MqOXG6N2"
+Received: from mail-yw1-f176.google.com (mail-yw1-f176.google.com [209.85.128.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 99177163;
-	Tue, 26 Mar 2024 00:04:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A8B55179;
+	Tue, 26 Mar 2024 00:05:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711411452; cv=none; b=W+qeVryFp01o1hWH7J3Nv+YZMIi7o3Vl7NxEbheQ5/ETtj7mvz+1YKR7b5FrTxEptvT0HTjpVnjtT2X6SuoPGfwYAu0NgJmQWEBgGc/Bf5i1lux7Jf8LEPPNdcAd+C1uCzAq5fpxOpOEoLKVHcVmtw+CGt89mZnpx91bTnr/fD0=
+	t=1711411510; cv=none; b=f8JBONhyrkyyZbJeBdlhEKzEI1ax9eIciwAGxqbVehnGCuYLlFArNlFpLU53guzTCwqh5qfMuYPJH2rnd95ASWdzuIOyfvpy7vra8oMyGyIj+0ocdVLBg3bc/T5ebRpb8B3MSqFXGtpv9R3qa97P6nvJTRc1EIeZQuAY/9983Rc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711411452; c=relaxed/simple;
-	bh=vRMHBVN0gMv3VsHuufDcHA+TPI3uV4HjOZ0NHWkp1Xk=;
+	s=arc-20240116; t=1711411510; c=relaxed/simple;
+	bh=Bh9rhEHh+i+R9OCvZo236WB4vh/unExdet3tkRvNCkc=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=JdPxL78qWGKe6+D4EqA3BmKNVRu6CthMEWymqk06LBlfM9Ng1I1QRcfDH7PzNSE/LOwC+eViU7V5PSO7N8tWyIvG1KOTUM/vIFEb7OxMl+HPSBeI+HhyLS4gqbWktzNKDmyMDkyVSJZySDKT0GuhU1V1b4iAZpjrZhiiGDOdkCE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=E2Ns4XTH; arc=none smtp.client-ip=209.85.219.169
+	 To:Cc:Content-Type; b=slSj5hPH6KohOwEPK4YOukR1QhKMM4MIQP1zB+q8D2i3uA7naOSbBzi1TPVVpTJWLnqvTn/RfFkIXw05WKKCfQtVybtH9RN8foQQi0umXqRITVKWExleA9+gDn5OkRGBtddT7mfH5KHoKMSamsXzg+9QyF3Qm36fhO+gsPYurKY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=MqOXG6N2; arc=none smtp.client-ip=209.85.128.176
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yb1-f169.google.com with SMTP id 3f1490d57ef6-dcc4de7d901so4205409276.0;
-        Mon, 25 Mar 2024 17:04:10 -0700 (PDT)
+Received: by mail-yw1-f176.google.com with SMTP id 00721157ae682-60a3c48e70fso51213517b3.1;
+        Mon, 25 Mar 2024 17:05:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711411449; x=1712016249; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1711411507; x=1712016307; darn=vger.kernel.org;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=8tmSr/y14lH7hu0JGGH5W+AymJvwytlT1M2HaCSQgHE=;
-        b=E2Ns4XTHhh5ffEc6YZyQGCQIvMEUEkwUVAgoZ9wQJ4myP2ixUwZbx5smDJsTer/piW
-         HXLJVOmLwh+6nWs8XuiKNQTvsjlaEI+MkuI6y5jujNTxXDSO+X6vvdtqkJ9lql0sN9iE
-         /bRfTVyohKeihhpA35kni/T6wze9NLZNfAWL9XXOLae8GqM6sJ35JRBBeq/mkIQtFUob
-         ySTkECPjSadsHv/5jUPb3KMIMvki2ox4a3AI0+EOiGrrCQkpq8qx5BNPezzsNIG9LrJA
-         Sd564WTVi66z+MBgqRZ8DYT2JGeqYgCNWUKOL7UdfQYUqOIkhBjgMVBmi0qa+KBW3rRf
-         UNQA==
+        bh=N14+Wldzr0J09GVr7zg7jWLb5e4Mzxk52YZUPWcSUiI=;
+        b=MqOXG6N2eFsdFv7O56/fOG0wx+HjCaH2hUoJ5trYyT+00iVjIoeKT3imV5aR7OaZwA
+         BC6YMZflLixqDlO4O/s8HzuUt0wNwn2RX4S9v7NLtv+lWS1J2JUEa8ru+vjjr9sjqwRn
+         eQVa28INMsPka7hHKAmPhm7g3TJgFrkleEHjzVEcAf6sojc6UEhDutOTwlRQ42XzhFHV
+         1Ljh2Hhqq3AuiLPngoqfl0o/cAayaNaUO2oMiGKPr948Tfe+AEptOJO2CiUQ8Zph20Py
+         wZ+dld3JiVix/kqcU4eMXu0rk/dp42hwZ0PSEkI7CWFzOD0/rWKEZA7st/JF/ticGraQ
+         ySLw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711411449; x=1712016249;
+        d=1e100.net; s=20230601; t=1711411507; x=1712016307;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=8tmSr/y14lH7hu0JGGH5W+AymJvwytlT1M2HaCSQgHE=;
-        b=Hi2HCPLH0LT6JHmEyBmQdxJVou1O0owZ69XIz4X2pdRiLTXnTrHCdTCwKLVShrJpSY
-         wyGJLMWVQ2zlZTbZ4/+2AOYaJoS4g0E081t0O92F19bTYAD8QklzCMvkcJa6D+m2mKY8
-         k361W4sMhjTtYG6FPyrqGlcOcOZitXO77/0O0zNxIF6iTSpnFg+SI2aLlrf1dz1XaKTv
-         iJM6Ix8gY9HLtY4fIgVjkNLxwuqc2oFzyOaA9MBBfqUevSOZgtgrTbzZBZ6K29gXUnOJ
-         zF4PlqOeMpEsMmvh2sJlwq41Xk3+BTGGv9ArmINgAoZipIi2ygOPKcv5cQvJmxaMtvOG
-         p3JQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXDAf/wOeEeWla8xlE5Y4XfjsYnfpgFIMLF0dOx/qp5kfe6Zz4Aygs1JbJ9mEpZuO39p7jCtI18/dF8mnMb9hGiiWx9s83amWmOvrPo
-X-Gm-Message-State: AOJu0YxnmaWf/ZF5MthaQJOJJzWxZUZpqjqccdSslx1Xh8zcYMAdNUWi
-	fMGP6bTrWNY8ZfhWB/+0qrJ54AHIP5KuEzUVo3Ae6lVqGF4d169eK4+lnGBE89+3tQNC7A/L+Kc
-	91H0HnPfi+OvRK5UsVDX6AQ6UXWI=
-X-Google-Smtp-Source: AGHT+IHj/fEFbfGoOPdKrEl+n+Nz+uSBm2n8rE0tjzz9I83f7zIeDdcNGUxuOJMgPdJUItDaZngpF19eyGAuiIa/ueo=
-X-Received: by 2002:a25:8682:0:b0:dcf:3f11:633a with SMTP id
- z2-20020a258682000000b00dcf3f11633amr5875276ybk.35.1711411449526; Mon, 25 Mar
- 2024 17:04:09 -0700 (PDT)
+        bh=N14+Wldzr0J09GVr7zg7jWLb5e4Mzxk52YZUPWcSUiI=;
+        b=tl2A0vbpUt+FC0eKx0Rm1WJ68B111FGaE/5jaNyhFjb/phu1/Al+QOCpWZoBk8ZYfL
+         fG/sScZ8bGYycUOOy1yGk3TJNoxEYoYJqSOTtr3MBn+CmjQdI4DaFF8nbJjhdSh824gL
+         JtAQvg2ofe70p1q7WfLVR/VpvxJ+8zd44NBDraVX6CRTKBp4NLh8+QfGb6+UoaRWh5Gd
+         ODVPgunxpXOOxSt3COZAm8Rw3vao5ZJC/ChTA0FRx/wLYA0X6jc+jMBFsVwaaAAClyus
+         ZQEGNMtij2emuXXlP5rUa9s5lEf3qVI/cV1f66GnAGnuGx3IrnpyLRazOL0idIF/aiQq
+         Pc8Q==
+X-Forwarded-Encrypted: i=1; AJvYcCV7BbaiHljjNdAMZfyBYxnqCMZxX2X/elLa2j7X5vCLgLV8w9Tjlff8MXkwTdmkRAwTllpV9maC1RrsP/6qozsIVMdPFfo/NyEvQ+VX
+X-Gm-Message-State: AOJu0YznaZQ3LDcBlgdk4QpPyldzpjvWOYI0yNbFhnwby8eYbPd0OjXw
+	YNMV3qdDSWHn0tNKzXaC7neHMgwn99jFCeVh6ftJGp5cDpqFEq/fpwrXCy9P4MhVaDErbyws+00
+	rT9VZEp4PoQZrlgkeAvluruWGtMM=
+X-Google-Smtp-Source: AGHT+IHTuQiiI2AbYGJJ5fjELVtFfzWxoxqy+odEkOPQdv5dmS5K7Uu83poll4g1wHvNrD2kF162NDFcdz7cnZYYMcA=
+X-Received: by 2002:a81:c242:0:b0:610:e242:2f6e with SMTP id
+ t2-20020a81c242000000b00610e2422f6emr6955811ywg.20.1711411507520; Mon, 25 Mar
+ 2024 17:05:07 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240325195418.166013-1-wedsonaf@gmail.com> <20240325195418.166013-8-wedsonaf@gmail.com>
- <ZgHiJ23TdOmnSGe9@boqun-archlinux>
-In-Reply-To: <ZgHiJ23TdOmnSGe9@boqun-archlinux>
+References: <20240325195418.166013-1-wedsonaf@gmail.com> <20240325195418.166013-2-wedsonaf@gmail.com>
+ <-uzW9xCfocYgSqqwoHB8D6k5CKhc5Rxnrmjq9N8XmTTNVZI3CYHIK9uigpGprs7EDYHWkALopDuv7e9w_FVfZW-9iGh3VlV9WpuSAKAWhFc=@proton.me>
+In-Reply-To: <-uzW9xCfocYgSqqwoHB8D6k5CKhc5Rxnrmjq9N8XmTTNVZI3CYHIK9uigpGprs7EDYHWkALopDuv7e9w_FVfZW-9iGh3VlV9WpuSAKAWhFc=@proton.me>
 From: Wedson Almeida Filho <wedsonaf@gmail.com>
-Date: Mon, 25 Mar 2024 21:03:58 -0300
-Message-ID: <CANeycqpRfgTof1QeX4NnTV5NidEHxYCan7rvEw+T5nRyMDD9oQ@mail.gmail.com>
-Subject: Re: [PATCH 07/10] rust: alloc: update `VecExt` to take allocation flags
-To: Boqun Feng <boqun.feng@gmail.com>
+Date: Mon, 25 Mar 2024 21:04:56 -0300
+Message-ID: <CANeycqpdV5d21g_GZHOjJs09Wm9c+WPHrkEngBgmR2_sCY2k6w@mail.gmail.com>
+Subject: Re: [PATCH 01/10] rust: kernel: move `allocator` module under `alloc`
+To: Benno Lossin <benno.lossin@proton.me>
 Cc: rust-for-linux@vger.kernel.org, Miguel Ojeda <ojeda@kernel.org>, 
-	Alex Gaynor <alex.gaynor@gmail.com>, Gary Guo <gary@garyguo.net>, 
-	=?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, 
-	Benno Lossin <benno.lossin@proton.me>, Andreas Hindborg <a.hindborg@samsung.com>, 
-	Alice Ryhl <aliceryhl@google.com>, linux-kernel@vger.kernel.org, 
-	Wedson Almeida Filho <walmeida@microsoft.com>
+	Alex Gaynor <alex.gaynor@gmail.com>, Boqun Feng <boqun.feng@gmail.com>, 
+	Gary Guo <gary@garyguo.net>, =?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, 
+	Andreas Hindborg <a.hindborg@samsung.com>, Alice Ryhl <aliceryhl@google.com>, 
+	linux-kernel@vger.kernel.org, Wedson Almeida Filho <walmeida@microsoft.com>
 Content-Type: text/plain; charset="UTF-8"
 
-On Mon, 25 Mar 2024 at 17:44, Boqun Feng <boqun.feng@gmail.com> wrote:
+On Mon, 25 Mar 2024 at 18:56, Benno Lossin <benno.lossin@proton.me> wrote:
 >
-> On Mon, Mar 25, 2024 at 04:54:15PM -0300, Wedson Almeida Filho wrote:
-> [...]
-> > +    fn push(&mut self, v: T, flags: Flags) -> Result<(), AllocError> {
-> > +        <Self as VecExt<_>>::reserve(self, 1, flags)?;
-> > +        let (ptr, len, cap) = destructure(self);
-> > +        // SAFETY: ptr is valid for `cap` elements. And `cap` is greater (by at least 1) than
-> > +        // `len` because of the call to `reserve` above. So the pointer after offsetting by `len`
-> > +        // elements is valid for write.
-> > +        unsafe { ptr.wrapping_add(len).write(v) };
-> > +
-> > +        // SAFETY: The only difference from the values returned by `destructure` is that `length`
-> > +        // is incremented by 1, which is fine because we have just initialised the element at
-> > +        // offset `length`.
-> > +        unsafe { rebuild(self, ptr, len + 1, cap) };
->
-> probably use spare_capacity_mut() here to avoid `destructure` and
-> `rebuild`?
-
-Ah, yes, this sounds like a better approach. I will use this in v2.
-
->
->         https://doc.rust-lang.org/std/vec/struct.Vec.html#method.spare_capacity_mut
->
->         // .. after reserve succeed.
->         // there must be room for adding one more.
->         self.spare_capacity_mut()[0].write(v);
->         // or unsafe { self.spare_capacity_mut().as_mut_ptr().cast().write(v); }
->
->         unsafe {
->                 self.set_len(self.len() + 1);
->         }
->
-> Thoughts?
->
-> Regards,
-> Boqun
->
-> >          Ok(())
-> >      }
+> On 25.03.24 20:54, Wedson Almeida Filho wrote:> From: Wedson Almeida Filho <walmeida@microsoft.com>
 > >
-> [...]
+> > We will add more to the `alloc` module in subsequent patches (e.g.,
+> > allocation flags and extension traits).
+> >
+> > Signed-off-by: Wedson Almeida Filho <walmeida@microsoft.com>
+>
+> One nit below, but feel free to add:
+>
+> Reviewed-by: Benno Lossin <benno.lossin@proton.me>
+>
+> > ---
+> >   rust/kernel/alloc.rs                 | 7 +++++++
+> >   rust/kernel/{ => alloc}/allocator.rs | 0
+> >   rust/kernel/lib.rs                   | 4 +---
+> >   3 files changed, 8 insertions(+), 3 deletions(-)
+> >   create mode 100644 rust/kernel/alloc.rs
+> >   rename rust/kernel/{ => alloc}/allocator.rs (100%)
+> >
+> > diff --git a/rust/kernel/alloc.rs b/rust/kernel/alloc.rs
+> > new file mode 100644
+> > index 000000000000..ccd4149932c3
+> > --- /dev/null
+> > +++ b/rust/kernel/alloc.rs
+> > @@ -0,0 +1,7 @@
+> > +// SPDX-License-Identifier: GPL-2.0
+> > +
+> > +//! Allocation support.
+>
+> I think 'Extensions to the `alloc` crate.' fits better.
+
+SGTM. I will update for v2.
+
+>
+> --
+> Cheers,
+> Benno
+>
+> > +
+> > +#[cfg(not(test))]
+> > +#[cfg(not(testlib))]
+> > +mod allocator;
+> > diff --git a/rust/kernel/allocator.rs b/rust/kernel/alloc/allocator.rs
+> > similarity index 100%
+> > rename from rust/kernel/allocator.rs
+> > rename to rust/kernel/alloc/allocator.rs
+> > diff --git a/rust/kernel/lib.rs b/rust/kernel/lib.rs
+> > index be68d5e567b1..51f30e55bd00 100644
+> > --- a/rust/kernel/lib.rs
+> > +++ b/rust/kernel/lib.rs
+> > @@ -28,9 +28,7 @@
+> >   // Allow proc-macros to refer to `::kernel` inside the `kernel` crate (this crate).
+> >   extern crate self as kernel;
+> >
+> > -#[cfg(not(test))]
+> > -#[cfg(not(testlib))]
+> > -mod allocator;
+> > +pub mod alloc;
+> >   mod build_assert;
+> >   pub mod error;
+> >   pub mod init;
+> > --
+> > 2.34.1
+> >
 
