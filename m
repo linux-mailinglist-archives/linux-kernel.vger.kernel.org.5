@@ -1,191 +1,106 @@
-Return-Path: <linux-kernel+bounces-118850-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-118851-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AA56E88C03F
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 12:10:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 0B51388C040
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 12:10:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CEB9E1C381D2
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 11:10:40 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3CB2B1C38982
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 11:10:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 91FC33A8F0;
-	Tue, 26 Mar 2024 11:10:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AE19A548F5;
+	Tue, 26 Mar 2024 11:10:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="zZPDLU58"
-Received: from mail-pf1-f177.google.com (mail-pf1-f177.google.com [209.85.210.177])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b="DVQR3/2g"
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2918214AB8
-	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 11:10:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5150D50A98
+	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 11:10:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.167.242.64
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711451431; cv=none; b=oZV6DnUiqqKOt4924mdEmDeeHEFBtLgaVAoXeeweOogUqExF+6r9eiOZQcVbm50EcOLGjpAetP2ahAcvP+cLqu242vL9jg9Ba0byRnrJXrLvq2NaqZ+mLpa0sI8c/5OyRWqayuuolpAbkas2wuty8wUXz7+lLRSaKos4MBLyK5o=
+	t=1711451435; cv=none; b=YpmTLPdTi+yBEqa1nY8IoT3yVWkcX3hT4co1w2FCVDzUk1OLCGKa44Dd8rHxX3FtrbjZmZywAbiJAtCeRdU1+2KOQK/Dlf48ARCdYjBUE4fDUeMlCmNg1+ZALlL9ozlt73Om4EVTW7M/blkuwx6OLR3QC51mqqNT9+oEfHAtLCY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711451431; c=relaxed/simple;
-	bh=lNqffwHbF4+DgPye64vC4bdBKO4etn+DRoKyxkJB4dU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=HpnOwxBfPwHIAkpj3LXZSifKmx72ictaFpErWQBtpc9k0sbiNpWHpRa6P9Y7XlqmneiEtTJBEMU/+/WRZUe6zzdx3ivfh8cm0GAgJmCgUNXJNGzE1ujW5jm1zCj8lVp3Ee6N3Rw6FB8ahaKZY1ZK1MyFlLIVjhkVG9ESnnaL8Pk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=zZPDLU58; arc=none smtp.client-ip=209.85.210.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-pf1-f177.google.com with SMTP id d2e1a72fcca58-6e46dcd8feaso2178702b3a.2
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 04:10:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1711451429; x=1712056229; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=eGBD00Nb+rvDCVS5Fn3z09PsE5MBX3NmOYcBRrgB0Ak=;
-        b=zZPDLU580HPKiXYVVXk2P7n4QQ0HTnufmR9KkrA8VrQWaSSsWQYeHXj+31bQyiOVbq
-         nkEC7knCDBUc3aQEZRCQX6uipN9Ffmk45NXw7wXts8xAshONBqxJhZE8T30fXsxqKsyw
-         GByGYcf9dDbDh8BwYOO0P1MCAwcdldg7kdINXoY7mBOzBbRDp2JLrunGIvpJtyQdznVs
-         HWXCptyBcoCyEduhch5qY7OocUee6+ZQeaxMiPPZPlCsbpKxyqqzYSljO0GNqD0B+KV9
-         G5gMlyT7gyNBvBdB9l3NiAsxgEYHsyw4OJGBfmqr0D3p1wCIUNAZH8n4B2gozkbH7Yan
-         acYA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711451429; x=1712056229;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=eGBD00Nb+rvDCVS5Fn3z09PsE5MBX3NmOYcBRrgB0Ak=;
-        b=Do1hVdhxMbQ1r5M2dQJ1yU+vLiotG4cm7YPIEPe4LDYhOopgAporqVls0XqnM2Tjma
-         K8CX4VPe47eqMuqZC5H6R3kRaQnPukpLZ3kyI/W4y1yLyRVZihXHlvPiWXWT3JOD/g5h
-         7PkQEJo+sMgixdrfrRblTgnV3NN6nWiMlPKq9E+Su7X8qKdnGr4TfP1H1DAxub+Uesgb
-         LJHiF/6M6aOXlTdYlSusrkZn/mWm4+4zyppmv5Px4iET9YmQMRl3arFiIrJgkSC9zrXD
-         A9vw2A+KmLeXeU6YCvuBqoRuEXSqVIiZvH/35q38HqFVrDNNnwqgTtQ7wAp19vPho9kQ
-         XurA==
-X-Forwarded-Encrypted: i=1; AJvYcCW68gYOHVjROqQ/CzM/dye1Q1qoHABiRnGBhAg+udAUkEh1UWRY78P/u6a+9yb1r/6Pk8DS5qOuMWKYucHQBVmHGHvGJbD387wf3K7K
-X-Gm-Message-State: AOJu0YzXMieU1zjs4eG8UdFWsMlODN9UkqV6FBZtIuyr5vsA3cucF1II
-	elYncihl/iMpVi800dQcvkuKVOi/lpVafLYfRSr3s/brbHR6mm9vt4ghxZd97A==
-X-Google-Smtp-Source: AGHT+IGbSEcld3RliKzvUERGTeqYSFE/Rs+8oSpqppqSDIVaVGzMOSy8p0g1ooCyZlGfvgyHtpzkLQ==
-X-Received: by 2002:a05:6a20:d81b:b0:1a3:bb75:17ab with SMTP id iv27-20020a056a20d81b00b001a3bb7517abmr8219769pzb.59.1711451429355;
-        Tue, 26 Mar 2024 04:10:29 -0700 (PDT)
-Received: from thinkpad ([117.207.28.168])
-        by smtp.gmail.com with ESMTPSA id r18-20020aa78b92000000b006e647716b6esm5943393pfd.149.2024.03.26.04.10.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Mar 2024 04:10:29 -0700 (PDT)
-Date: Tue, 26 Mar 2024 16:40:21 +0530
-From: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To: Niklas Cassel <cassel@kernel.org>
-Cc: Lorenzo Pieralisi <lpieralisi@kernel.org>,
-	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-	Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
-	Kishon Vijay Abraham I <kishon@kernel.org>,
-	Thierry Reding <thierry.reding@gmail.com>,
-	Jonathan Hunter <jonathanh@nvidia.com>,
-	Jingoo Han <jingoohan1@gmail.com>,
-	Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
-	linux-pci@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-	linux-kernel@vger.kernel.org, mhi@lists.linux.dev,
-	linux-tegra@vger.kernel.org
-Subject: Re: [PATCH 01/11] PCI: qcom-ep: Disable resources unconditionally
- during PERST# assert
-Message-ID: <20240326111021.GA13849@thinkpad>
-References: <20240314-pci-epf-rework-v1-0-6134e6c1d491@linaro.org>
- <20240314-pci-epf-rework-v1-1-6134e6c1d491@linaro.org>
- <Zf2s9kTMlZncldWx@ryzen>
- <20240326074429.GC9565@thinkpad>
- <ZgKiUogkgrMwV1uD@x1-carbon>
+	s=arc-20240116; t=1711451435; c=relaxed/simple;
+	bh=xsEx6ikjhrfddChpCiaRIQ8pNztjK3Yv2zPNz89fQtU=;
+	h=Content-Type:MIME-Version:In-Reply-To:References:Subject:From:Cc:
+	 To:Date:Message-ID; b=AlKLWaff79lRXFYoxeiPublNBXN1vAznaIQLMDmARVl4PO8oaTzIHIPDqWhuphQ4qC1Tb9w6bsHKy8N1J+Tp7B95Ordj1KH2dJLfMlHAVDc6/yZ0aZG7Mw5HGdMDXxvlGZoAr2O6lDJkEP3xlZTo1aCi4KqEPdfOkU9az5SP8p4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com; spf=pass smtp.mailfrom=ideasonboard.com; dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b=DVQR3/2g; arc=none smtp.client-ip=213.167.242.64
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ideasonboard.com
+Received: from pendragon.ideasonboard.com (aztw-30-b2-v4wan-166917-cust845.vm26.cable.virginm.net [82.37.23.78])
+	by perceval.ideasonboard.com (Postfix) with ESMTPSA id B630E497;
+	Tue, 26 Mar 2024 12:09:57 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+	s=mail; t=1711451397;
+	bh=xsEx6ikjhrfddChpCiaRIQ8pNztjK3Yv2zPNz89fQtU=;
+	h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
+	b=DVQR3/2gdPXSKNUuDWQPNl2NUd3QsQZUMCNz4KkDvEGOrQ/pyf9mVLlK4bqbsgsl3
+	 cFMGY9u5jeWDegGfjY5637nl+odgUMmc7IEGRxpoCI95JhJgLnWXTdE2RwosB/vRiH
+	 LONp6B6elPpu4IqNvgTVn08tDLM/q7MY5BtcsZjU=
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <ZgKiUogkgrMwV1uD@x1-carbon>
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20240319072712.133449-5-umang.jain@ideasonboard.com>
+References: <20240319072712.133449-1-umang.jain@ideasonboard.com> <20240319072712.133449-5-umang.jain@ideasonboard.com>
+Subject: Re: [PATCH v3 4/6] media: imx335: Use integer values for size registers
+From: Kieran Bingham <kieran.bingham@ideasonboard.com>
+Cc: Umang Jain <umang.jain@ideasonboard.com>, Tommaso Merciai <tomm.merciai@gmail.com>
+To: Alexander Shiyan <eagle.alexander923@gmail.com>, Dave Stevenson <dave.stevenson@raspberrypi.com>, Sakari Ailus <sakari.ailus@linux.intel.com>, Umang Jain <umang.jain@ideasonboard.com>, open list <linux-kernel@vger.kernel.org>
+Date: Tue, 26 Mar 2024 11:10:26 +0000
+Message-ID: <171145142670.1011926.13962568934811871543@ping.linuxembedded.co.uk>
+User-Agent: alot/0.10
 
-On Tue, Mar 26, 2024 at 11:24:18AM +0100, Niklas Cassel wrote:
-> On Tue, Mar 26, 2024 at 01:14:29PM +0530, Manivannan Sadhasivam wrote:
-> > On Fri, Mar 22, 2024 at 05:08:22PM +0100, Niklas Cassel wrote:
-> > > On Thu, Mar 14, 2024 at 08:53:40PM +0530, Manivannan Sadhasivam wrote:
-> > > > All EP specific resources are enabled during PERST# deassert. As a counter
-> > > > operation, all resources should be disabled during PERST# assert. There is
-> > > > no point in skipping that if the link was not enabled.
-> > > > 
-> > > > This will also result in enablement of the resources twice if PERST# got
-> > > > deasserted again. So remove the check from qcom_pcie_perst_assert() and
-> > > > disable all the resources unconditionally.
-> > > > 
-> > > > Fixes: f55fee56a631 ("PCI: qcom-ep: Add Qualcomm PCIe Endpoint controller driver")
-> > > > Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-> > > > ---
-> > > >  drivers/pci/controller/dwc/pcie-qcom-ep.c | 6 ------
-> > > >  1 file changed, 6 deletions(-)
-> > > > 
-> > > > diff --git a/drivers/pci/controller/dwc/pcie-qcom-ep.c b/drivers/pci/controller/dwc/pcie-qcom-ep.c
-> > > > index 2fb8c15e7a91..50b1635e3cbb 100644
-> > > > --- a/drivers/pci/controller/dwc/pcie-qcom-ep.c
-> > > > +++ b/drivers/pci/controller/dwc/pcie-qcom-ep.c
-> > > > @@ -500,12 +500,6 @@ static int qcom_pcie_perst_deassert(struct dw_pcie *pci)
-> > > >  static void qcom_pcie_perst_assert(struct dw_pcie *pci)
-> > > >  {
-> > > >  	struct qcom_pcie_ep *pcie_ep = to_pcie_ep(pci);
-> > > > -	struct device *dev = pci->dev;
-> > > > -
-> > > > -	if (pcie_ep->link_status == QCOM_PCIE_EP_LINK_DISABLED) {
-> > > > -		dev_dbg(dev, "Link is already disabled\n");
-> > > > -		return;
-> > > > -	}
-> > > >  
-> > > >  	dw_pcie_ep_cleanup(&pci->ep);
-> > > >  	qcom_pcie_disable_resources(pcie_ep);
-> > > 
-> > > Are you really sure that this is safe?
-> > > 
-> > > I think I remember seeing some splat in dmesg if some clks, or maybe it
-> > > was regulators, got disabled while already being disabled.
-> > > 
-> > > Perhaps you could test it by simply calling:
-> > > qcom_pcie_disable_resources();
-> > > twice here, and see if you see and splat in dmesg.
-> > > 
-> > 
-> > Calling the disable_resources() function twice will definitely result in the
-> > splat. But here PERST# is level triggered, so I don't see how the EP can see
-> > assert twice.
-> > 
-> > Am I missing something?
-> 
-> I think I remember now, I was developing a driver using a .core_init_notifier,
-> but I followed the pcie-tegra model, which does not enable any resources in
-> probe() (it only gets them), so I got the splat because when PERST got
-> asserted, resources would get disabled even though they were already disabled.
-> 
-> pcie-qcom:
-> -gets resources in .probe()
-> -enables resources in .probe()
-> -sets no default state in .probe()
-> 
-> pcie-tegra:
-> -gets resources in .probe()
-> -enables resources in perst_deassert()
-> -sets default state to EP_STATE_DISABLED in probe()
-> 
-> So pcie-qcom does not seem to be following the same pattern like pcie-tegra,
-> because pcie-qcom actually does enable resources for the first time in
-> probe(), while tegra will enable resources for the first time in
-> perst_deassert().
-> 
-> Sorry for the noise.
-> 
+Quoting Umang Jain (2024-03-19 07:27:10)
+> Consider integer values for registers that are related to various
+> sizes in the register map. This helps in improving the overall
+> readability.
+>=20
+> No functional changes intended in this patch.
 
-I was planning to drop enable_resources() from Qcom driver once the DBI rework
-series gets merged. Because, the resource enablement during probe is currently
-done to avoid the crash that is bound to happen if registers are accessed during
-probe.
+Thanks, I think this definitely helps readability here for these units.
 
-But what your observation reveals is that it is possible to get PERST# assert
-during the EP boot up itself which I was not accounting for. I always assumed
-that the EP will receive PERST# deassert first. If that is not the case, then
-this patch needs to be dropped.
+Reviewed-by: Kieran Bingham <kieran.bingham@ideasonboard.com>
 
-- Mani
-
--- 
-மணிவண்ணன் சதாசிவம்
+>=20
+> Signed-off-by: Umang Jain <umang.jain@ideasonboard.com>
+> Reviewed-by: Tommaso Merciai <tomm.merciai@gmail.com>
+> ---
+>  drivers/media/i2c/imx335.c | 12 ++++++------
+>  1 file changed, 6 insertions(+), 6 deletions(-)
+>=20
+> diff --git a/drivers/media/i2c/imx335.c b/drivers/media/i2c/imx335.c
+> index ae4341644a84..7609dbc537b1 100644
+> --- a/drivers/media/i2c/imx335.c
+> +++ b/drivers/media/i2c/imx335.c
+> @@ -251,12 +251,12 @@ static const struct cci_reg_sequence mode_2592x1940=
+_regs[] =3D {
+>         {IMX335_REG_MODE_SELECT, 0x01},
+>         {IMX335_REG_MASTER_MODE, 0x00},
+>         {IMX335_REG_WINMODE, 0x04},
+> -       {IMX335_REG_HTRIMMING_START, 0x0180},
+> -       {IMX335_REG_HNUM, 0x0a20},
+> -       {IMX335_REG_Y_OUT_SIZE, 0x0794},
+> -       {IMX335_REG_AREA3_ST_ADR_1, 0x00b0},
+> -       {IMX335_REG_AREA3_WIDTH_1, 0x0f58},
+> -       {IMX335_REG_OPB_SIZE_V, 0x00},
+> +       {IMX335_REG_HTRIMMING_START, 384},
+> +       {IMX335_REG_HNUM, 2592},
+> +       {IMX335_REG_Y_OUT_SIZE, 1940},
+> +       {IMX335_REG_AREA3_ST_ADR_1, 176},
+> +       {IMX335_REG_AREA3_WIDTH_1, 3928},
+> +       {IMX335_REG_OPB_SIZE_V, 0},
+>         {IMX335_REG_XVS_XHS_DRV, 0x00},
+>         {CCI_REG8(0x3288), 0x21}, /* undocumented */
+>         {CCI_REG8(0x328a), 0x02}, /* undocumented */
+> --=20
+> 2.43.0
+>
 
