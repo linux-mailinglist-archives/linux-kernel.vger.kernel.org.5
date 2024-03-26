@@ -1,106 +1,93 @@
-Return-Path: <linux-kernel+bounces-118482-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-118483-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id AA5D888BB9A
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 08:46:24 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6F7DD88BB9C
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 08:47:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 34A671F3854F
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 07:46:24 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 235FC2E3075
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 07:47:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DEFE813281A;
-	Tue, 26 Mar 2024 07:46:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 32F3E13281A;
+	Tue, 26 Mar 2024 07:47:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gsLpowMR"
-Received: from mail-ed1-f44.google.com (mail-ed1-f44.google.com [209.85.208.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="INdaDbHP"
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 476781804F;
-	Tue, 26 Mar 2024 07:46:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 926C24CB2E;
+	Tue, 26 Mar 2024 07:47:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711439175; cv=none; b=IxMcUCKqk+QIFovUlSeYdIKMscA/dIgsKmO2BmsQYGmVTveUpNayy6sGG4AbHLVl2PCMQH5+5CPOPf5pTqBNwe8w0HqbDnxzAdgX+e4AqEDdpyvvuxbqVcHFQydMltD5tA47hxxAsAyLmYH+yhRnXeZccalRRqO1Kd1xcy/1REs=
+	t=1711439247; cv=none; b=jxbaKsbbDSwTIcRfEQhp2iR6DomWiNZvjkeG1v7n/5x+E+TtYUFnbvBeOLEQ93m9UBbNvP1gxgOL1IIFM2nY9ZKyOhdkiDW0LwkkqeSYnUB5JLxhkC08KUg5zD3faZbnc+KXLX7aTLAff3wkH9bH2i3Ki8gK8ln1SxCl+f7QgYc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711439175; c=relaxed/simple;
-	bh=9nbuupSTwnqhgE67/6uv0FOLeTMTUSay5mBf80zherM=;
+	s=arc-20240116; t=1711439247; c=relaxed/simple;
+	bh=d5uVWB5omXFzH/9lQAppLxcXO8IDXnKpI8b31IMNmVY=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=e3UlDHyMj6Kj3uHDmTNW+a3UP5Wm6bJxjQQjZO2CdE+Fim7u5MNfG37GdGii/UgkiUdh6BfKkmd/NPTDtJs84tk3NEmrCqyZ+Fpl+aEBiJ79MI8eEgz4HCn4ygMwB+bIJZ9VMh2T6nICgXqmbtYSPIdk7PbfVcW1wLisUAsX6E8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=gsLpowMR; arc=none smtp.client-ip=209.85.208.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f44.google.com with SMTP id 4fb4d7f45d1cf-563cb3ba9daso5360323a12.3;
-        Tue, 26 Mar 2024 00:46:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711439171; x=1712043971; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=Cs2IwigS62lW2NUemYpoxv0KHk0e1rYE/O58ogrWzrM=;
-        b=gsLpowMRH3b18jXTudj2fu78Gwju8x4FREaOkDHP82qoXt3IKM8DaRk8k7j0qwJ4wP
-         lw/7bT+n2BkoFmjzOrqYroUS2R7XGVI1FxE67spJUv9Wm11h8Iql6Zuslu92vFLAXnSf
-         ngnb74DcHVb7jsHHR8HqJfLDkZ9ZwCqIhFAvHcKMt1uZZ4Cz6XW4hrggATrNR8bmWFh+
-         9iXVv1GKOwOxgXTDeNosufmRtdT0H7S9HDj6/Oo9SINX2zYOEjr+EaSuqdF5bi35lrWC
-         YhrtXCSRz+vXNQyyYyEr+rs2r+vrg8D8McfG6csRdBLoZZUxc2emmK1oieTndPj6nk9i
-         aR8w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711439171; x=1712043971;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Cs2IwigS62lW2NUemYpoxv0KHk0e1rYE/O58ogrWzrM=;
-        b=l+uJ9JeR0+AkQt+xZ716scprp23L4/nBr25vSvGFmIYLWx/F5tfMEP/XlS0U50eVYw
-         HHmo10POf+ief2eEiHi13L+QaAsMrD+IIZ2XjP96iEXND+K8uiMcqsdFSmq79jZBBxP5
-         EYkT+FmaS0VCG7biKySnBRYy5F/sI1mQbkwvdgRHJ1N51fYhycJ1nI2+JmMTMdQ/d64G
-         6/R6ZWdYE8QUDvG2CxJcgX9+Fjn9oaAQB95WdmPe93vBiVQvTC2nYA3VIUuoHty6HKZO
-         hne3NuWDZRPT0O+6WiZ7bumlGveZyO40cnAqlO1VlHZtwtdZLAvxiCvIKs8I6ahYg4e3
-         nm8Q==
-X-Forwarded-Encrypted: i=1; AJvYcCXl0idTZjMbD2xWEVUcl98V7Kbc8XMNzRXmXoH/SaTOjpjjxlabiyYpaPLywLRWLaIj3pUzNQzfu9f/PyscCw+dvN3FjVS9dzjJua+DtLiRKzHgrcyMVv2KPwx22/M3bp3R8XjRz2IL0VQUDmzWuNgTJ6UTD2Gtd6wrwfzffTFG1hCm
-X-Gm-Message-State: AOJu0YwFcAGLIKILlxrejxvCYJ95NA1vGZ1z1fU7lIA8Id8SyiuMQfJe
-	FI/uIj5nmqx7pVKhPXzIJI9+NgDeFEfAxUlMph4KQtIBUjRIeVRR
-X-Google-Smtp-Source: AGHT+IGrIlCSSn2r2+Hg+P0/A4xj4OXP7apyF3284aGBI7zxVjMxD5nzUTRKGklIY7bvBEYmSkW8Iw==
-X-Received: by 2002:a50:8ac9:0:b0:568:a420:7d80 with SMTP id k9-20020a508ac9000000b00568a4207d80mr6923066edk.27.1711439171189;
-        Tue, 26 Mar 2024 00:46:11 -0700 (PDT)
-Received: from tom-HP-ZBook-Fury-15-G7-Mobile-Workstation (net-188-217-49-82.cust.vodafonedsl.it. [188.217.49.82])
-        by smtp.gmail.com with ESMTPSA id dh16-20020a0564021d3000b0056c1c4b870asm1167067edb.16.2024.03.26.00.46.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Mar 2024 00:46:10 -0700 (PDT)
-Date: Tue, 26 Mar 2024 08:46:07 +0100
-From: Tommaso Merciai <tomm.merciai@gmail.com>
-To: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Cc: Adam Ford <aford173@gmail.com>, linux-arm-kernel@lists.infradead.org,
-	marex@denx.de, alexander.stein@ew.tq-group.com,
-	frieder.schrempf@kontron.de,
-	Andrzej Hajda <andrzej.hajda@intel.com>,
-	Neil Armstrong <neil.armstrong@linaro.org>,
-	Robert Foss <rfoss@kernel.org>, Jonas Karlman <jonas@kwiboo.se>,
-	Jernej Skrabec <jernej.skrabec@gmail.com>,
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-	Maxime Ripard <mripard@kernel.org>,
-	Thomas Zimmermann <tzimmermann@suse.de>,
-	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
-	Sascha Hauer <s.hauer@pengutronix.de>,
-	Pengutronix Kernel Team <kernel@pengutronix.de>,
-	Fabio Estevam <festevam@gmail.com>,
-	NXP Linux Team <linux-imx@nxp.com>,
-	Philipp Zabel <p.zabel@pengutronix.de>,
-	Vinod Koul <vkoul@kernel.org>,
-	Kishon Vijay Abraham I <kishon@kernel.org>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Will Deacon <will@kernel.org>, Liu Ying <victor.liu@nxp.com>,
-	Ulf Hansson <ulf.hansson@linaro.org>,
-	Lucas Stach <l.stach@pengutronix.de>,
-	dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-phy@lists.infradead.org,
-	linux-pm@vger.kernel.org
-Subject: Re: [PATCH V8 00/12] soc: imx8mp: Add support for HDMI
-Message-ID: <ZgJ9P3Wx2A2n9Gt+@tom-HP-ZBook-Fury-15-G7-Mobile-Workstation>
-References: <20240203165307.7806-1-aford173@gmail.com>
- <ZgHxSHDAt7ytqDC1@tom-HP-ZBook-Fury-15-G7-Mobile-Workstation>
- <20240325220338.GE23988@pendragon.ideasonboard.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=AsB7hOVEjkWfTYLWSrkvTGWfZ/wQvMQ5BLaADC5h00KE1AChTnwBe38Zwy3IcQKJbzSsNLx6LWpaZsJqBnwmgqghwnFZx4/cxsa8WTzNsaIdfyhyvsP1IwJhC4z0lL/3bJiQp4Z5Hhy04BvFnuCRpyiH6wyHl59NCbxTf6jBSh4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=INdaDbHP; arc=none smtp.client-ip=148.163.156.1
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0356517.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 42Q5CR5f028966;
+	Tue, 26 Mar 2024 07:47:05 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=pp1; bh=eh6YWin4ixIRlQKZhkJaK+gt1fOR8Sruq8BTre+DvX4=;
+ b=INdaDbHPtQmyBuX1tZ1m1DYNfH2BxAXTDyvYkZfi8dJywOagtoEhhMkvPV1PvyRVn1hL
+ Wqyow3rpDF/kDRel7qV1BQprSuXOTJg3hO7hhR9f7K5vYAsYlIEumyIVvvldX4E6QbXm
+ Jwe/yZG/ysPYV54qp8MWPEKg69KxHVDsUxa6MN+jn8mowsc35QftvpCkJzi3qzwGOaSd
+ wivFdkI18icHFlE6zXRUCqvne2mSw0EAwgAW/9ILbwCgiROirB1C6GP398jp4X7ScHgi
+ 5t9rTUuoazqaj4wJdnCZz0SfDIowbnzCcldHnrWj/1h0cLkHV8YjI99P6rx7UoRGYN7S Qw== 
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3x3r0nrcr9-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 26 Mar 2024 07:47:05 +0000
+Received: from m0356517.ppops.net (m0356517.ppops.net [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 42Q7l4nS012588;
+	Tue, 26 Mar 2024 07:47:05 GMT
+Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3x3r0nrcr4-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 26 Mar 2024 07:47:04 +0000
+Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
+	by ppma11.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 42Q54JOd003767;
+	Tue, 26 Mar 2024 07:47:03 GMT
+Received: from smtprelay07.fra02v.mail.ibm.com ([9.218.2.229])
+	by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 3x2c42nve8-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 26 Mar 2024 07:47:03 +0000
+Received: from smtpav03.fra02v.mail.ibm.com (smtpav03.fra02v.mail.ibm.com [10.20.54.102])
+	by smtprelay07.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 42Q7kwd253019068
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Tue, 26 Mar 2024 07:47:00 GMT
+Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 820542004D;
+	Tue, 26 Mar 2024 07:46:58 +0000 (GMT)
+Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 3F3B82004B;
+	Tue, 26 Mar 2024 07:46:58 +0000 (GMT)
+Received: from osiris (unknown [9.152.212.60])
+	by smtpav03.fra02v.mail.ibm.com (Postfix) with ESMTPS;
+	Tue, 26 Mar 2024 07:46:58 +0000 (GMT)
+Date: Tue, 26 Mar 2024 08:46:56 +0100
+From: Heiko Carstens <hca@linux.ibm.com>
+To: Qi Zheng <zhengqi.arch@bytedance.com>
+Cc: akpm@linux-foundation.org, vishal.moola@gmail.com, hughd@google.com,
+        david@redhat.com, rppt@kernel.org, willy@infradead.org,
+        muchun.song@linux.dev, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org,
+        Christian Borntraeger <borntraeger@linux.ibm.com>,
+        Janosch Frank <frankja@linux.ibm.com>,
+        Claudio Imbrenda <imbrenda@linux.ibm.com>, kvm@vger.kernel.org,
+        linux-s390@vger.kernel.org, Alexander Gordeev <agordeev@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>
+Subject: Re: [PATCH v2 3/3] s390: supplement for ptdesc conversion
+Message-ID: <20240326074656.6078-C-hca@linux.ibm.com>
+References: <04beaf3255056ffe131a5ea595736066c1e84756.1709541697.git.zhengqi.arch@bytedance.com>
+ <20240305072154.26168-1-zhengqi.arch@bytedance.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -109,106 +96,41 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240325220338.GE23988@pendragon.ideasonboard.com>
+In-Reply-To: <20240305072154.26168-1-zhengqi.arch@bytedance.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: ju8ifvxWc2aeJahBllXnpXcsnT2z65ij
+X-Proofpoint-GUID: IArssar9KmfzzvMUCAa5e8JZkKunr0L3
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-03-26_04,2024-03-21_02,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 impostorscore=0
+ malwarescore=0 spamscore=0 clxscore=1011 lowpriorityscore=0 suspectscore=0
+ mlxscore=0 mlxlogscore=292 phishscore=0 bulkscore=0 priorityscore=1501
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2403210000
+ definitions=main-2403260052
 
-Hi Laurent,
-
-On Tue, Mar 26, 2024 at 12:03:38AM +0200, Laurent Pinchart wrote:
-> Hi Tommaso,
+On Tue, Mar 05, 2024 at 03:21:54PM +0800, Qi Zheng wrote:
+> After commit 6326c26c1514 ("s390: convert various pgalloc functions to use
+> ptdescs"), there are still some positions that use page->{lru, index}
+> instead of ptdesc->{pt_list, pt_index}. In order to make the use of
+> ptdesc->{pt_list, pt_index} clearer, it would be better to convert them
+> as well.
 > 
-> On Mon, Mar 25, 2024 at 10:48:56PM +0100, Tommaso Merciai wrote:
-> > Hi Adam, Lucas,
-> > Thanks for this series.
-> > 
-> > This series make HDMI work on evk.
-> > All is working properly on my side.
-> > 
-> > Tested on: Linux imx8mp-lpddr4-evk 6.9.0-rc1.
-> > Hope this help.
-> > 
-> > Tested-by: Tommaso Merciai <tomm.merciai@gmail.com>
+> Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
+> Cc: Christian Borntraeger <borntraeger@linux.ibm.com>
+> Cc: Janosch Frank <frankja@linux.ibm.com>
+> Cc: Claudio Imbrenda <imbrenda@linux.ibm.com>
+> Cc: David Hildenbrand <david@redhat.com>
+> Cc: kvm@vger.kernel.org
+> Cc: linux-s390@vger.kernel.org
+> ---
+> v1 -> v2: fix build failure (cross compilation successful)
 > 
-> The DRM side has been merged already. The only missing patches are for
-> the PHY, and the latest version can be found in
-> https://lore.kernel.org/linux-phy/20240227220444.77566-1-aford173@gmail.com/.
-> You can test that series and send a Tested-by tag. I'm crossing my
-> fingers and hoping it will be merged in v6.10.
-(same here :) )
+>  arch/s390/include/asm/pgalloc.h |  4 ++--
+>  arch/s390/mm/gmap.c             | 38 +++++++++++++++++----------------
+>  arch/s390/mm/pgalloc.c          |  8 +++----
+>  3 files changed, 26 insertions(+), 24 deletions(-)
 
-Thanks for sharing! :)
-
-To be honest I test all this series rebasing my alvium next branch on top of media_stage/master (6.9.0-rc1)
-All is working properly on my side.
-I found v8 into the commit msg here: https://patches.linaro.org/project/linux-pm/patch/20240203165307.7806-9-aford173@gmail.com/
-then I'm thinking this is the latest.
-
-I'm going to switch to your suggestion that looks more recent :)
-
-Thanks again,
-Tommaso
-
-> 
-> > On Sat, Feb 03, 2024 at 10:52:40AM -0600, Adam Ford wrote:
-> > > The i.MX8M Plus has an HDMI controller, but it depends on two
-> > > other systems, the Parallel Video Interface (PVI) and the
-> > > HDMI PHY from Samsung. The LCDIF controller generates the display
-> > > and routes it to the PVI which converts passes the parallel video
-> > > to the HDMI bridge.  The HDMI system has a corresponding power
-> > > domain controller whose driver was partially written, but the
-> > > device tree for it was never applied, so some changes to the
-> > > power domain should be harmless because they've not really been
-> > > used yet.
-> > > 
-> > > This series is adapted from multiple series from Lucas Stach with
-> > > edits and suggestions from feedback from various series, but it
-> > > since it's difficult to use and test them independently,
-> > > I merged them into on unified series.  The version history is a
-> > > bit ambiguous since different components were submitted at different
-> > > times and had different amount of retries.  In an effort to merge them
-> > > I used the highest version attempt.
-> > > 
-> > > Adam Ford (3):
-> > >   dt-bindings: soc: imx: add missing clock and power-domains to
-> > >     imx8mp-hdmi-blk-ctrl
-> > >   pmdomain: imx8mp-blk-ctrl: imx8mp_blk: Add fdcc clock to hdmimix
-> > >     domain
-> > >   arm64: defconfig: Enable DRM_IMX8MP_DW_HDMI_BRIDGE as module
-> > > 
-> > > Lucas Stach (9):
-> > >   dt-bindings: phy: add binding for the i.MX8MP HDMI PHY
-> > >   phy: freescale: add Samsung HDMI PHY
-> > >   arm64: dts: imx8mp: add HDMI power-domains
-> > >   arm64: dts: imx8mp: add HDMI irqsteer
-> > >   dt-bindings: display: imx: add binding for i.MX8MP HDMI PVI
-> > >   drm/bridge: imx: add driver for HDMI TX Parallel Video Interface
-> > >   dt-bindings: display: imx: add binding for i.MX8MP HDMI TX
-> > >   drm/bridge: imx: add bridge wrapper driver for i.MX8MP DWC HDMI
-> > >   arm64: dts: imx8mp: add HDMI display pipeline
-> > > 
-> > >  .../display/bridge/fsl,imx8mp-hdmi-tx.yaml    |  102 ++
-> > >  .../display/imx/fsl,imx8mp-hdmi-pvi.yaml      |   84 ++
-> > >  .../bindings/phy/fsl,imx8mp-hdmi-phy.yaml     |   62 +
-> > >  .../soc/imx/fsl,imx8mp-hdmi-blk-ctrl.yaml     |   22 +-
-> > >  arch/arm64/boot/dts/freescale/imx8mp.dtsi     |  145 +++
-> > >  arch/arm64/configs/defconfig                  |    1 +
-> > >  drivers/gpu/drm/bridge/imx/Kconfig            |   18 +
-> > >  drivers/gpu/drm/bridge/imx/Makefile           |    2 +
-> > >  drivers/gpu/drm/bridge/imx/imx8mp-hdmi-pvi.c  |  207 ++++
-> > >  drivers/gpu/drm/bridge/imx/imx8mp-hdmi-tx.c   |  154 +++
-> > >  drivers/phy/freescale/Kconfig                 |    6 +
-> > >  drivers/phy/freescale/Makefile                |    1 +
-> > >  drivers/phy/freescale/phy-fsl-samsung-hdmi.c  | 1075 +++++++++++++++++
-> > >  drivers/pmdomain/imx/imx8mp-blk-ctrl.c        |   10 +-
-> > >  14 files changed, 1876 insertions(+), 13 deletions(-)
-> > >  create mode 100644 Documentation/devicetree/bindings/display/bridge/fsl,imx8mp-hdmi-tx.yaml
-> > >  create mode 100644 Documentation/devicetree/bindings/display/imx/fsl,imx8mp-hdmi-pvi.yaml
-> > >  create mode 100644 Documentation/devicetree/bindings/phy/fsl,imx8mp-hdmi-phy.yaml
-> > >  create mode 100644 drivers/gpu/drm/bridge/imx/imx8mp-hdmi-pvi.c
-> > >  create mode 100644 drivers/gpu/drm/bridge/imx/imx8mp-hdmi-tx.c
-> > >  create mode 100644 drivers/phy/freescale/phy-fsl-samsung-hdmi.c
-> 
-> -- 
-> Regards,
-> 
-> Laurent Pinchart
+Same here: Christian, Janosch, or Claudio, please have a look and
+provide an ACK if this is ok with you.
 
