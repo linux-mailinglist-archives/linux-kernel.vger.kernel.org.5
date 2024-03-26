@@ -1,127 +1,115 @@
-Return-Path: <linux-kernel+bounces-119572-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-119573-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 016CB88CA91
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 18:18:53 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2346E88CA95
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 18:20:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 720FCB23F55
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 17:18:51 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D296932020F
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 17:20:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C2FF61C6B5;
-	Tue, 26 Mar 2024 17:18:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 56E071CD11;
+	Tue, 26 Mar 2024 17:20:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="iUEVgwaR"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="YmrncCLB"
+Received: from mail-il1-f169.google.com (mail-il1-f169.google.com [209.85.166.169])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1382E1C2AF;
-	Tue, 26 Mar 2024 17:18:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 244071C6A0
+	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 17:20:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711473524; cv=none; b=X4iT7aTpVlgiOIpMMC7GxGpaIKhOefAQYZyYEWbX4bbBPBSLSmn7OPlhbAhWx7YD1StRoLlvN7+G2m73EdOQrHY+VaklcWKkjJ2xRORzIWldUFemuRSLA2SuTr3KbZXzDE8RXOdGHvfz1yzFoY30ywFpOc48/mFucT7t5dfsm6s=
+	t=1711473608; cv=none; b=O+M/ArnmMzv2mqaab0ajoURn2BvnFAkeHVOUZTXZ55GIBmeHPKmAvv9ESTSHY7/Nf4+/xnqbc+62LaLg0GdvwEiy8osrX5Grp6k3fxb71AfrX9EU4un4eg27glKrWlpPZPCSOMFUg9gUkv8tP7xMnZwjUgU6CKSDcrVw40hVZGs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711473524; c=relaxed/simple;
-	bh=OELWXVXqN2pN+dBq4GD1HVskjaEZn6Buw4ZbYGID18o=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ecXK5D599gnJxmHXxpHSGPzLz0ecBoONOt+ctHL9x8pnO354cp2GJlhw+DrsVqurAp4guw0rN1dIAZBcurZfJuKtreK0KtFUKLt4kmS9xp0F8yU+jb83Xom9WCWjF2KPnq6GbtJaBvYqs2n3LbN+/r1fNdBpZA4CSr8JXNU6V5c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=iUEVgwaR; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 34370C433F1;
-	Tue, 26 Mar 2024 17:18:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711473523;
-	bh=OELWXVXqN2pN+dBq4GD1HVskjaEZn6Buw4ZbYGID18o=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=iUEVgwaRX6aZT96UVqp/fsF/1hcY/RgzUvzjtwC5cX1+hGXneR17p20DLXj0hIRXg
-	 v8K42vdYEcJFrPhrvT/0JqQW14LJn43VfImA/3ZCK2r4vGCxporMdRwsik+G0BL58Z
-	 iOQT+Od3cOvcfCS2sh8ciYDevDXN74aV/3iCSu8tcRcsFDg/Ixrxp+1EmpSVSnpgHb
-	 KCCYBndtAMg4d6OV6dJI2ZyxCyBW269zKSgNY0KEAAFDHerUHeB2/t9WuwNn3tcKeg
-	 8GMeJdJj+41O5Y/16Za6KQ7TLfqj35YX2B1NwWkueaDev+Qp+FJ2dlOz9ZlGVHxLb/
-	 Z2c32NPbyiKuw==
-Date: Tue, 26 Mar 2024 18:18:40 +0100
-From: Frederic Weisbecker <frederic@kernel.org>
-To: Anna-Maria Behnsen <anna-maria@linutronix.de>
-Cc: Boqun Feng <boqun.feng@gmail.com>,
-	Florian Fainelli <f.fainelli@gmail.com>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	"Russell King (Oracle)" <linux@armlinux.org.uk>,
-	Joel Fernandes <joel@joelfernandes.org>,
-	Linus Torvalds <torvalds@linux-foundation.org>,
-	linux-kernel@vger.kernel.org, kernel-team@meta.com,
-	paulmck@kernel.org, mingo@kernel.org, rcu@vger.kernel.org,
-	neeraj.upadhyay@amd.com, urezki@gmail.com,
-	qiang.zhang1211@gmail.com, bigeasy@linutronix.de,
-	chenzhongjin@huawei.com, yangjihong1@huawei.com,
-	rostedt@goodmis.org, Justin Chen <justin.chen@broadcom.com>
-Subject: Re: [PATCH] timer/migration: Remove buggy early return on
- deactivation [was Re: Unexplained long boot delays [Was Re: [GIT PULL] RCU
- changes for v6.9]]
-Message-ID: <ZgMDcGOagCjfIB3i@localhost.localdomain>
-References: <f4a2a18c-1c81-4857-a3a0-d049ec5c79b3@gmail.com>
- <ZfLUU+XuQC7W79tf@lothringen>
- <d6c8e4fe-17bf-443d-a6f5-54470390e1fd@gmail.com>
- <ZfNHNvzpqf8DOZd8@boqun-archlinux>
- <de038bee-cecd-4e76-b0f4-5822b68e439d@gmail.com>
- <87v85olez3.ffs@tglx>
- <87sf0sldbi.ffs@tglx>
- <ZfN0wY41pU5UjP8T@boqun-archlinux>
- <ZfOhB9ZByTZcBy4u@lothringen>
- <87zfulrlnn.fsf@somnus>
+	s=arc-20240116; t=1711473608; c=relaxed/simple;
+	bh=E5DQ34rF9IgTtL6HHwAIlPQLC6Jftcvulgt50sKhzMo=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=rGHDN0/Fc6YYKlty6Mr0041tQv4+zmXcmKXfKcR94QhRuqfmSw/uD3uEbUAN2u9/m+d7Skj+6onOddEi6ox3LFPJSmCt7eagJceSF0ZLfXdhQW3MYi7RwsBbUC+Y8KwZkBdsOKDF/0Q3wGhOrBQjTurhQ2TCgMu6w+D4LFPnntc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linuxfoundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=YmrncCLB; arc=none smtp.client-ip=209.85.166.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linuxfoundation.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
+Received: by mail-il1-f169.google.com with SMTP id e9e14a558f8ab-366b8b0717cso8316575ab.1
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 10:20:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxfoundation.org; s=google; t=1711473606; x=1712078406; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=g/JfzjcSIf6AcXRpAIfnlPrKIYRo4lNR989orexK8J0=;
+        b=YmrncCLB5eMLMXm9KITbP0Dp6yUiuppVz5iiwC/iyF1fCGtWFPjhtxosuTftw0S3tl
+         sMrDu5txJC+lrCYbc1VPflA4tP/9CxGvZFf5Qyu/wMfIXvvhD2ZvxExm3c06ljDZ2/Kk
+         LFEmvBdbMZymMmOxuRoXp+tqJFCGYPWAV/cqc=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711473606; x=1712078406;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=g/JfzjcSIf6AcXRpAIfnlPrKIYRo4lNR989orexK8J0=;
+        b=Kob/E4AR6D0W/8Ozlh5HWLKG+18nyQk6TTh/qobMlNTxXGUkTqktqx3qpzUibgDKfY
+         +LepSrTBI+IEnrjchQkZBfMvm3nJIwRmFJtd0cdLoV/zxpluZOzQspbE0QpObqWCJ/VX
+         TFq7z5a2WhD0vnXIxYzsj4ZuMWAH2u6j1BsISISJOpr6Q58ZheKoXM8HHDexbBNPi2sP
+         DLNCM1otath1l9werNI1297AYZi0zreB/ehdq9v/Vx4Wy5b0ZLBs0KUcq86j+t89vsxR
+         +zZE+3ixOHEN2wsIYrhwW1nJIxvwZefOOaCo1PWysrPIwg0qdQSutF69b/BJSZ58y8ey
+         BdOQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXPJWNVPFJlkpNJrUB20swKou5heY/PZe9/KuUTdv9V1NuU71jigabcE6sfO4ihlvOkOiXdmmPwao/atHC21QHCuNSVVinK5I/X3BY/
+X-Gm-Message-State: AOJu0Yzt2e+6nQA0cVMkx0KRKocvZH8uEUXxRicSvfjzmpToAAAd4QAm
+	KJImv4kxU77tHoD2nYg0RgPXnTg16opnslsF0Q3v4Kks9j4EKuC3AB9j+k1DLVk=
+X-Google-Smtp-Source: AGHT+IE15wMU2iSnf56HwEhVmMoLmXJyEZ50a71C9JL9A2kJbtymsHuiPJBRedggDClrCyFDEPfScw==
+X-Received: by 2002:a6b:e618:0:b0:7cf:24de:c5f with SMTP id g24-20020a6be618000000b007cf24de0c5fmr10377772ioh.1.1711473606140;
+        Tue, 26 Mar 2024 10:20:06 -0700 (PDT)
+Received: from [192.168.1.128] ([38.175.170.29])
+        by smtp.gmail.com with ESMTPSA id t18-20020a05663801f200b00477dae75331sm2826852jaq.51.2024.03.26.10.20.05
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 26 Mar 2024 10:20:05 -0700 (PDT)
+Message-ID: <1ce59258-f76f-4796-bf72-e27bb078c5dc@linuxfoundation.org>
+Date: Tue, 26 Mar 2024 11:20:05 -0600
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <87zfulrlnn.fsf@somnus>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 5.15 000/309] 5.15.153-rc2 review
+Content-Language: en-US
+To: Sasha Levin <sashal@kernel.org>, linux-kernel@vger.kernel.org,
+ stable@vger.kernel.org
+Cc: torvalds@linux-foundation.org, akpm@linux-foundation.org,
+ linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+ lkft-triage@lists.linaro.org, florian.fainelli@broadcom.com, pavel@denx.de,
+ Shuah Khan <skhan@linuxfoundation.org>
+References: <20240325115928.1765766-1-sashal@kernel.org>
+From: Shuah Khan <skhan@linuxfoundation.org>
+In-Reply-To: <20240325115928.1765766-1-sashal@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Le Tue, Mar 26, 2024 at 05:41:00PM +0100, Anna-Maria Behnsen a écrit :
-> Frederic Weisbecker <frederic@kernel.org> writes:
-> Now propagation goes on as GRP0:0 is completely idle. When executing
-> tmigr_update_events() in the next step of walking the hierarchy via
-> tmigr_inactive_up(), the arguments for tmigr_update_events() are set in
-> the following way:
+On 3/25/24 05:59, Sasha Levin wrote:
 > 
->   group = GRP1:0
->   child = GRP0:0
+> This is the start of the stable review cycle for the 5.15.153 release.
+> There are 309 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 > 
-> Then at the begin of tmigr_update_events() the group event of child is
-> updated - so all ignored events are removed (T0i), and the
-> child->groupevt and child->next_expiry is updated with T1. This
-> reevaluated child->groupevt is then queued/updated in the GRP1:0
-> timerqueue.
+> Responses should be made by Wed Mar 27 11:59:27 AM UTC 2024.
+> Anything received after that time might be too late.
 > 
-> So T1 will be handled!
-> 
-> As there is no parent, the top level group event is updated (see goto
-> label "check_toplvl") and T1 will be still the first event.
-
-Bah! Good point, I got confused there...
-
-> 
-> > Fix those issues with removing the buggy related early return. Ignored
-> > child events must not prevent from evaluating the other events within
-> > the same group.
-> 
-> I would prefere to keep this early return but skip it, when there is
-> !group->parent (only a single level in hierarchy).
-> 
-> Then it would prevent taking the group lock and making some random
-> event updates which are done nevertheless on the next iteration of the
-> hierarchy walk.
-
-Ok sounds like a good plan!
-
-Thanks.
-
+> The whole patch series can be found in one patch at:
+>          https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git/patch/?id=linux-5.15.y&id2=v5.15.152
+> or in the git tree and branch at:
+>          git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.15.y
+> and the diffstat can be found below.
 > 
 > Thanks,
+> Sasha
 > 
-> 	Anna-Maria
-> 
+
+Compiled and booted on my test system. No dmesg regressions.
+
+Tested-by: Shuah Khan <skhan@linuxfoundation.org>
+
+thanks,
+-- Shuah
 
