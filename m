@@ -1,244 +1,164 @@
-Return-Path: <linux-kernel+bounces-118212-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-118213-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7F6A988B612
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 01:28:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 8357288B618
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 01:30:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 32EDA2C6247
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 00:28:44 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3803F2C7EE1
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 00:30:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2181DED9;
-	Tue, 26 Mar 2024 00:28:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 354E7F510;
+	Tue, 26 Mar 2024 00:30:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="jwc72MJc"
-Received: from mail-lf1-f43.google.com (mail-lf1-f43.google.com [209.85.167.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=OUTLOOK.COM.AU header.i=@OUTLOOK.COM.AU header.b="hUrV3hIt"
+Received: from AUS01-SY4-obe.outbound.protection.outlook.com (mail-sy4aus01olkn2184.outbound.protection.outlook.com [40.92.62.184])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B47137F6
-	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 00:28:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.43
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711412910; cv=none; b=dskJNaTX+UKWTfi+2qp/oojQ9KX+t+U2gZHiUfxEWVa3sqhjpqueNgb0okcD7cFolraTOOSxMjr0hRZT/wbK9IvSo084uHEBeAdsi361HqJPSQPkrW5o0Jmo4FF0DRMOBz5dl1mUO4ZC2hfseB0CZ9gt9wGCf63SameMh/wWZeE=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711412910; c=relaxed/simple;
-	bh=q9rJFj0LGRVbIR7Im5V+4jATTEQF0xUdYxt97RfhsCY=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=GzGoyV5/DaCDkrm0GGn1IvRReRZXsrk56w0mH9i4hMugu6i4dO/Qhfp51fIikKxxMpz2S+9qoO2+6dXYBqfXV1deYVMst+1DqpbxJGCciRjf73Hr3XvWuTbxk/PapWieN1WJJI0sSs7kCZ6Q/jNk37Gylgw9gmWJduseLm+DAFE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=jwc72MJc; arc=none smtp.client-ip=209.85.167.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-lf1-f43.google.com with SMTP id 2adb3069b0e04-513e89d0816so6184549e87.0
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 17:28:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1711412906; x=1712017706; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=6AS6qRiVlQsc1+zZ8NlPzKQQkZa8BexCVQalpdaPfxc=;
-        b=jwc72MJcbOv3kNXMWOzcqkprlIA0kzQenPVePAM+2MCIOWNpyQlr6Bod5r9PGyvAtH
-         W6MB0rm6nc8gi1c90MEweCLFgqrpGJGagH8d9WJ+/WPLaNmtIo9qwAX7olhxp7p1+eyd
-         DcyyHKRIsnQpuHfXC265pgCXIuHYOQ18/yzNq9b12LEYr0kPYRM0GpIGdh8sOyaD9+kR
-         qvdPyYoNIACwyhXeSLQae4+A4idpRdC3nULounqP9EtnB1V1RPwCNZ4w4UvOv+JUb4FC
-         0pIfwgms3iFSJGJuud3CMLeDpCdI+yUp2mJeizZI7bwQ90Mb/sYG+eprzKPZ3MZUedo+
-         6zIg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711412906; x=1712017706;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=6AS6qRiVlQsc1+zZ8NlPzKQQkZa8BexCVQalpdaPfxc=;
-        b=Mmb9D9h2KUbebDnXAL+3R86lCNFVBDXSAYfSSxiaPEUGS3hVeAErjVyKhKOHZscFgO
-         J4h0d8v3RTNb9yqU99D/niFA1i8lsEgHgLrehtNLXFw2ZJGqD4PEvZO2ESvldv7GfgRJ
-         xs13H4e0VLfn8hlBW70Gr3O//e8lIsSru29o5igKyGAxm9FogIr5Y1klmuMsKDkZECYW
-         caJkzkatg8rmPZQdqFfhpq//OpDBbsmX+Qp2NFzQ7OgWabAzdKWo18Hlo53Vx/6vGQza
-         vVaFosgyjQ7tFesSVt7b3qzPkxjvb0lAxUOcwo0oTdnq9PGcnxp/Z5ihgTxAPmLWbHKo
-         dgCA==
-X-Forwarded-Encrypted: i=1; AJvYcCXg3tvXVsQskveDaVMqS4CwyJbSPVhZuxj3ZifK2MHsxePrQlzMjg1RuDhg4gjub5USGtteIO3AgiH7YYmN2vyZ6WQHpIzMGLPAxANe
-X-Gm-Message-State: AOJu0YwTzibE0FUvAVhNFf3CBgFIHOj52nE0cH3OszePPFxoweGrtGce
-	0xrL0F0D/vN/YvIsG1fUT6xtS8QTRfNU0DrmHqrSQ0Vd938aF8/MZ51ao7v8EUl90JQuZ+oSll8
-	xVRpYN6wvD7nfB2TmyyBlaMaht+0DYFS/gTfv
-X-Google-Smtp-Source: AGHT+IF9aQZZlm3m7qhQmoIyJ6RkPwr/Dop+uoHu7fO/1Q5QVzyOPH34BhQ7Hc1bMJCfX+wA5X9L6ZhSH1TjcEziOMA=
-X-Received: by 2002:a05:6512:456:b0:513:2b35:2520 with SMTP id
- y22-20020a056512045600b005132b352520mr5371798lfk.58.1711412905481; Mon, 25
- Mar 2024 17:28:25 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F0696CA7D
+	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 00:30:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.92.62.184
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1711413016; cv=fail; b=eAgYt2d0axWFZhZGuFNxIYjeivaxfOwYE4q2c9f12PXCXTdn1rKJbB3zNKacpUQIxV62kJLPnkcp9yhKpApuaHC0kRTXM6mi+liwb3dEhtxzJxoSGjpwxYskU+tSGAhZC/ONfuqqnZo5HTzHYDxw6aIwdR/p8AoeLarfFXGmf3Y=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1711413016; c=relaxed/simple;
+	bh=o7FQV+RnrjM3F/HZO4VnNMi1++/tPSZwE6tePYiTE8E=;
+	h=Message-ID:Date:From:Subject:To:Cc:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=NrVNKXQpqyu8cWmTRoJ3/5HJvKl8cxEPsy+Ki6q1vu0Dnu92LmR1N5VjSpJt7LjFPhrW97Tcf1YvLBF8AcVbHjiRxYMPdXXlqUOCXGp1AFShrgYBi+/clN8xTQ3mqxidoRb45Yf3XAPAkfvbxFhcBH8qkg7yN7K8zht/qiFHl3g=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com.au; spf=pass smtp.mailfrom=outlook.com.au; dkim=pass (2048-bit key) header.d=OUTLOOK.COM.AU header.i=@OUTLOOK.COM.AU header.b=hUrV3hIt; arc=fail smtp.client-ip=40.92.62.184
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com.au
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=outlook.com.au
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=RVm0UpghFf0WVVOHZGq0BD2Tjc+jmJuYk9PI/l77IRlg4Wl79IbA4q4r5gfu7UFi8wleFt6YbAuK+ewxYKP2pxl6R8uxo7p7GQGTGSQJGFlMvz52r8EYPuhJ/4R5uvQU2mA03eoCxi+1Nzbyc3tpC/H7l2cwErCuicNIUw3nFAW0/oYjsCqPEXRrbP86ZBwy1HhK5vjOxP7yevEZKdtzW1/EoXaF8vf5S5F5kRCEY22Yrn4bUSXfq69zdPVW5YahXxpIeSGqqZyWkGEyhBGemTjB+8fdRt1rNqr7rv2VbyYBsGNBOq5d/dOEpto5VFxl13Qvb4Ostp8KJ5QsmqBoww==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=48hJERZAS4KvyY3aqkQoeNhhz653d+DqStmtzrW8pRE=;
+ b=ki6VUtruYeqTHf47uEi1VmlnvoixCgk59bVicwprSupNUW0RhFBJq5orZbXt/RgQ1gpwVIR5Erc1pWiPES+KHR9dlmVNxzRrh9a9hSMqzkCC6I9MbaAIW/gfNEz1zyXnaCYL3sFDbDqPLARSkmBABn7ll+RFI2snWOxW0j0BdmGl8fv/JytVEAGfhbmy8Jv8n9vwulDzJ7Kt/oqjmuzCFJZOuiIK0c5UIR/aH+HE55EZHch3rb+61Ov3tljTQY0awY6vzQfSVGnmLwb41o77n7JMu3W3r6amwUJWZf2GD+JWEfiuIr8yo1vSUA2rwBy5QybwmvP5XP0FdOy61Gznxg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
+ dkim=none; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=OUTLOOK.COM.AU;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=48hJERZAS4KvyY3aqkQoeNhhz653d+DqStmtzrW8pRE=;
+ b=hUrV3hItxa7rOW3IXlJ4t+zpIzsYHA0oJwzEMj8KqM5kZHhVpigkb7fUyWdytqyXXMXHxxQ48etOETtO0SXIhsf/yr5ZpDipMq2DnJ/pK+jCKxX8XOKHuH/9UwZkqGYh8N6G6EalxrY2pfRCbGBiDdY/lsq22MKGCVtMbPIS25/KKpSi1N4GuuIb7zdrwkgDqZyeIP84/Mcz0FSRH6JHejkq8yWblDuC5ORm+FvQGVLpOAx7pZ/qIFAj6MG9EbcAzfFesMsg9pYwBfzxb1AXp0wyvEd9p6Xnxf540IO1GGS3CNgVRofVz4BklDkd0XFsNH5TgRY2lOXE7lChsq9YDQ==
+Received: from SY4P282MB3063.AUSP282.PROD.OUTLOOK.COM (2603:10c6:10:159::9) by
+ SY8P282MB5035.AUSP282.PROD.OUTLOOK.COM (2603:10c6:10:2b9::19) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.7409.32; Tue, 26 Mar 2024 00:30:10 +0000
+Received: from SY4P282MB3063.AUSP282.PROD.OUTLOOK.COM
+ ([fe80::22c8:76c8:58ad:f00d]) by SY4P282MB3063.AUSP282.PROD.OUTLOOK.COM
+ ([fe80::22c8:76c8:58ad:f00d%3]) with mapi id 15.20.7409.031; Tue, 26 Mar 2024
+ 00:30:10 +0000
+Message-ID:
+ <SY4P282MB3063048C537120C8D3477774C5352@SY4P282MB3063.AUSP282.PROD.OUTLOOK.COM>
+Date: Tue, 26 Mar 2024 10:30:07 +1000
+User-Agent: Mozilla Thunderbird
+From: Stephen Horvath <s.horvath@outlook.com.au>
+Subject: Re: [PATCH 2/2] platform/chrome: cros_kbd_led_backlight: Remove
+ obsolete commands (EC_CMD_PWM_*_KEYBOARD_BACKLIGHT)
+To: Brian Norris <briannorris@chromium.org>
+Cc: Lee Jones <lee@kernel.org>, Benson Leung <bleung@chromium.org>,
+ Guenter Roeck <groeck@chromium.org>, Tzung-Bi Shih <tzungbi@kernel.org>,
+ chrome-platform@lists.linux.dev, linux-kernel@vger.kernel.org
+References: <20240322102800.1322022-1-s.horvath@outlook.com.au>
+ <SY4P282MB3063D447DA09D35F5FBD4721C5312@SY4P282MB3063.AUSP282.PROD.OUTLOOK.COM>
+ <CA+ASDXM9=0jQA=MWpBOttUT7k67wmEDFGoOObQfYm=ca_HL8GQ@mail.gmail.com>
+Content-Language: en-US, en-AU, en-GB
+In-Reply-To: <CA+ASDXM9=0jQA=MWpBOttUT7k67wmEDFGoOObQfYm=ca_HL8GQ@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-TMN: [ZIad9W2c41W9p2SajHtWw1DF0sYq/HmQ]
+X-ClientProxiedBy: SYBPR01CA0094.ausprd01.prod.outlook.com
+ (2603:10c6:10:3::34) To SY4P282MB3063.AUSP282.PROD.OUTLOOK.COM
+ (2603:10c6:10:159::9)
+X-Microsoft-Original-Message-ID:
+ <33b036d7-542c-4f5a-8ce8-d1a1035a758d@outlook.com.au>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240305020153.2787423-1-almasrymina@google.com>
- <6208950d-6453-e797-7fc3-1dcf15b49dbe@huawei.com> <CAHS8izMwTRyqUS0iRtErfAqDVsXRia5Ajx9PRK3vcfo8utJoUA@mail.gmail.com>
-In-Reply-To: <CAHS8izMwTRyqUS0iRtErfAqDVsXRia5Ajx9PRK3vcfo8utJoUA@mail.gmail.com>
-From: Mina Almasry <almasrymina@google.com>
-Date: Mon, 25 Mar 2024 17:28:12 -0700
-Message-ID: <CAHS8izPR+SioMKNv3=2ajK=GGOE26BTaxOMykHJfjttqYjx1wQ@mail.gmail.com>
-Subject: Re: [RFC PATCH net-next v6 00/15] Device Memory TCP
-To: Yunsheng Lin <linyunsheng@huawei.com>, YiFei Zhu <zhuyifei@google.com>
-Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-doc@vger.kernel.org, linux-alpha@vger.kernel.org, 
-	linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org, 
-	sparclinux@vger.kernel.org, linux-trace-kernel@vger.kernel.org, 
-	linux-arch@vger.kernel.org, bpf@vger.kernel.org, 
-	linux-kselftest@vger.kernel.org, linux-media@vger.kernel.org, 
-	dri-devel@lists.freedesktop.org, "David S. Miller" <davem@davemloft.net>, 
-	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
-	Jonathan Corbet <corbet@lwn.net>, Richard Henderson <richard.henderson@linaro.org>, 
-	Ivan Kokshaysky <ink@jurassic.park.msu.ru>, Matt Turner <mattst88@gmail.com>, 
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
-	"James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>, Helge Deller <deller@gmx.de>, 
-	Andreas Larsson <andreas@gaisler.com>, Jesper Dangaard Brouer <hawk@kernel.org>, 
-	Ilias Apalodimas <ilias.apalodimas@linaro.org>, Steven Rostedt <rostedt@goodmis.org>, 
-	Masami Hiramatsu <mhiramat@kernel.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, 
-	Arnd Bergmann <arnd@arndb.de>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
-	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
-	Jiri Olsa <jolsa@kernel.org>, David Ahern <dsahern@kernel.org>, 
-	Willem de Bruijn <willemdebruijn.kernel@gmail.com>, Shuah Khan <shuah@kernel.org>, 
-	Sumit Semwal <sumit.semwal@linaro.org>, =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>, 
-	Pavel Begunkov <asml.silence@gmail.com>, David Wei <dw@davidwei.uk>, Jason Gunthorpe <jgg@ziepe.ca>, 
-	Shailend Chand <shailend@google.com>, Harshitha Ramamurthy <hramamurthy@google.com>, 
-	Shakeel Butt <shakeelb@google.com>, Jeroen de Borst <jeroendb@google.com>, 
-	Praveen Kaligineedi <pkaligineedi@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-MS-Exchange-MessageSentRepresentingType: 1
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SY4P282MB3063:EE_|SY8P282MB5035:EE_
+X-MS-Office365-Filtering-Correlation-Id: 36b583d5-d24c-49cb-b710-08dc4d2be4e6
+X-MS-Exchange-SLBlob-MailProps:
+	AlkLxVwsndlo1+lFrDZI3pEF+l+HiLrLZstFIgrv3fimowAJMhy+41S1UlNDYOI2KcWZNqgzZxL6VrkxNBtvUEz3z9MI55XwRQU29wKmECsL59KEvIbDjPYVts/f3BF23B0HBFnEFvhVFz4vEpLyu/dhDtlV6m79/BOLcwkl26K/M/XtkwwUlFIs7Wj3SEBe2cPxwe3IyAjcIFIzITIsZYOqyyVlF5cVR+Z/EVNVy+vVi7bx3ic2tlwWW+gMIBKc/roZXcqyCc7LkpnXNbezm+vWqpMOjvMW9h1jB4a2slzPsDp7TY4XuqD5yH6h16RGmPdowA/PDGrjR0ilSMWk1SzCsD5v8F9QbZwSGiIVom+QqZYQAXy1Up0TaOIJ1uIm4ioin+edpBu3zaC06EeZrEBdF7YizweUz85dNcKylyZha2Z55AFQqUEszFAyxb4gRSimFBOcWZgpajsd6he9CzoH8UD7pv4hhIGmL5qcLdIyG5qJ+zlnjI82CB2hIyoHyIDU7lw/9vPyfKSLyDzepu189eTJ1A+3EyU6mLJ9kiKx3++tv0NbYN0bXJzO47QIc8N4Y6bwuyV8eBJQJeliFePgzHW3ROovEMBZn6Ds8hOQ1bmhMLPkyIZuwK8SMD6HX6+kz49+dMRVfQ2Ysr/EpZUV6D9ABpy1glDD6kASiHu976zBaeWU3SczsPkiBrRPuS7ky+EB6BacgqspSNE8KVLUtguhtjjsUdXAQ6ZVsY2o8fIxoUuFZJNOsU4zK2JLEF5We89fxqwZGNuUb35isrtOyMLnPdbx
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	s1ccXyS6SzdQeZglRqzhx/2p4iCvG3xjswftys3OZX8liCr/Z5oGGNeLzdXm/pVid8fXHkugEuks8ik4ZH94bjg4jjjv68TuPYunSGzcEYu7FrQqm41dgOS7Lffjrc4l+OvMtxj8bg6olfoGmAXL1GJ/LeWD5R5RLZbDeIwMNRZD0/VUDSBnbeT5qc6nTNwkGi2r/yjy4KGCYJWnDk2IKsx/iHdmZMPzIpEmRwdyLnTSkbOYCstd3keIs1MROwbRpdtZXt2aR1D51ZbCQ3ni7WZiCE/rDw4AKcQiu1TwqOzluDVDktNvBo01CsQECtej0+zOqlI8VdJww132SX3ht339afTAEJmY4Abi9CjR624W52ReKh5STWbR447EPAIwUtmhcAS0VdScI6yQYWQBz12Jm23pWYBvPT9aig9MV2K7YWlXL+hYgia9LtGO/D7an8d2U4Gk9oIVyufhwicxAH2eQDuQqS7PvJSzWNeFbzcs0dJsCc7XOW+UfFbThxihUdGgJx4yYaoSAHqO1vXKNdfvf1rUEHoi/xpdwcPg90SDdYDGzoYSsQBV/SGjjifx
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?RjRrSHBsdXo2S3NNN2ZES0MyU2I4a0VyZzF3aUJYZ0laK3NUWld5NXFDT3hy?=
+ =?utf-8?B?WVNMR01MWGFTUkRCeVl0WHFOdHFWVkd3VVJvQjRLdFZrVVVjSXBLYjMwWFRE?=
+ =?utf-8?B?NTNPekJKNzFWMC9EajZVbmh6Z01JVkpweVNUUGZDRjQ2N1NkZ2JuTXhDblN4?=
+ =?utf-8?B?Z1Y3TVB1RmFEVHRmak5UdDdXMHhCUWRhbGxHYTh5TVo1TkFzVjIvOTJ0bllY?=
+ =?utf-8?B?TWJBc1VDQWFDRFBzR2ZGLzZrOTBwb2JBSDEyM2k2RU9LUUJKQ3J6Vmk1L1BJ?=
+ =?utf-8?B?ZTQ2bVpKdDJGZnJGc0ZQY1BNQlpDKzZpRXl0NVpTd3BuQTJQWXlmVHR6elJP?=
+ =?utf-8?B?Q3ZjazdxcTJPRFBTU215bzVrMDVIQnd5Rmp6M3FKaUlFQlY4anJ5SVoxcjFD?=
+ =?utf-8?B?ZVJzYkNTNU92cmdZQjcyc1pXYmVVVVk4dS9oOEUzUkVoTWh4aFJ3czVzempD?=
+ =?utf-8?B?SU9mb2tpZk0vdm5YM25xTEJMYnNFQUt0YitwOEpSNjUwK1V3SUFJeHlNSERT?=
+ =?utf-8?B?MW1GdnQvWmlJZVVpR0h5YytNVnJZSk1idzNjQ0JxVlBwOTN1VW1WMVRreXlO?=
+ =?utf-8?B?RXVNNnNGSU56K3Z2VlNSbFp0anBZQ01sK2xBdlNQcE9wUEJWTmgxRjlpajlo?=
+ =?utf-8?B?UndmTUlLRloyNXdSS3BNK1FPSlJxaFFieCtFeFdlS255SVB2a3lPR0FJZkxO?=
+ =?utf-8?B?SjRwZ013OUZZOEFYWDc1dk1rVDFPdEt1VkpSTWxUaWZaSXQvVjhIcDcvQm1i?=
+ =?utf-8?B?aTFYZGRpRHJtMFg2QlJ5QzFITURRek5oSUxySUtyM1VQZU5sSTJLaFlHWkRo?=
+ =?utf-8?B?eFhpSE82VjRtUlhJbGtKUEI4MlUyL212MitYMHNrVWNlZnVBVnhTc2IveFJM?=
+ =?utf-8?B?OVJ1blE0M2lkeHAwN0xQYkxRVElzblJGQUNzRHZRQVgwbGNoV2tadmVXaG5s?=
+ =?utf-8?B?eTJvNVVzZ1Urb1hQSHZuRHJhMzQ3dWZDdVpqN1A0eXU0dm02OU5KaVFkYWdK?=
+ =?utf-8?B?dDJMd1FTSEt3WHg3MThHYWVEbVdyQkUva1pHazZoMHhld2h0TGVnS3RDdEI5?=
+ =?utf-8?B?NHM3aU9HeG5obmd0NnFZTlFTMDRZWS9WckQxUExEL3VROVhWdjY5OThCZFlk?=
+ =?utf-8?B?cU5lM3laWkNyTUVydDRQd0VPUDFpN3lTNXhjUVk1cGloakJwWFhrZDR4akNI?=
+ =?utf-8?B?bWdWemtkQ1daRjhub210amY0OFJJdnZ5TlZreStqcExMbGxZVHdOZXdjUTFh?=
+ =?utf-8?B?Wm5JV2JZREVOTC9PMW8vTGRIc2FSeFUzTHl0bjNFYmpTeUxnSUlWSWR2QXJk?=
+ =?utf-8?B?eFhGdm1OTU1pUVpiVEJjV3ltanZmeDU1VU96Mm9uL0oxVDN6T05ReHMxZkl0?=
+ =?utf-8?B?b0hBNlpad29PWThzL3BWaWdnUk1Cd3F3SzJsQWcrUW5LczNEWk5xQkFVMC9R?=
+ =?utf-8?B?My9UdDA1aHVPbzAzWmtsMkU5bjgyUVZQNGQzY0tndGJmOUtPNzRWWDIwdGFO?=
+ =?utf-8?B?anlmbU4yNFRSMzBKa2tRQzhhbVdsKzZGd2VmbSt2cFlnMElkUjdCWFJRa1k2?=
+ =?utf-8?B?bkhhdzZoTndFMHhmeUNxREZZakM0QXRZNDVZK2lQYS9HVElZMzNOVlFIcmkr?=
+ =?utf-8?B?WGpwNnd4RkxSRlFNSFRFRGhhWDlEWVNoYVYyQTB3SHlVYUNpUlJWWktzcGZp?=
+ =?utf-8?Q?Q2fua/nqhKv/flthSqsM?=
+X-OriginatorOrg: sct-15-20-4755-11-msonline-outlook-746f3.templateTenant
+X-MS-Exchange-CrossTenant-Network-Message-Id: 36b583d5-d24c-49cb-b710-08dc4d2be4e6
+X-MS-Exchange-CrossTenant-AuthSource: SY4P282MB3063.AUSP282.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Mar 2024 00:30:10.1237
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
+X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg:
+	00000000-0000-0000-0000-000000000000
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SY8P282MB5035
 
-On Tue, Mar 5, 2024 at 11:38=E2=80=AFAM Mina Almasry <almasrymina@google.co=
-m> wrote:
->
-> On Tue, Mar 5, 2024 at 4:54=E2=80=AFAM Yunsheng Lin <linyunsheng@huawei.c=
-om> wrote:
-> >
-> > On 2024/3/5 10:01, Mina Almasry wrote:
-> >
-> > ...
-> >
-> > >
-> > > Perf - page-pool benchmark:
-> > > ---------------------------
-> > >
-> > > bench_page_pool_simple.ko tests with and without these changes:
-> > > https://pastebin.com/raw/ncHDwAbn
-> > >
-> > > AFAIK the number that really matters in the perf tests is the
-> > > 'tasklet_page_pool01_fast_path Per elem'. This one measures at about =
-8
-> > > cycles without the changes but there is some 1 cycle noise in some
-> > > results.
-> > >
-> > > With the patches this regresses to 9 cycles with the changes but ther=
-e
-> > > is 1 cycle noise occasionally running this test repeatedly.
-> > >
-> > > Lastly I tried disable the static_branch_unlikely() in
-> > > netmem_is_net_iov() check. To my surprise disabling the
-> > > static_branch_unlikely() check reduces the fast path back to 8 cycles=
-,
-> > > but the 1 cycle noise remains.
-> > >
-> >
-> > The last sentence seems to be suggesting the above 1 ns regresses is ca=
-used
-> > by the static_branch_unlikely() checking?
->
-> Note it's not a 1ns regression, it's looks like maybe a 1 cycle
-> regression (slightly less than 1ns if I'm reading the output of the
-> test correctly):
->
-> # clean net-next
-> time_bench: Type:tasklet_page_pool01_fast_path Per elem: 8 cycles(tsc)
-> 2.993 ns (step:0)
->
-> # with patches
-> time_bench: Type:tasklet_page_pool01_fast_path Per elem: 9 cycles(tsc)
-> 3.679 ns (step:0)
->
-> # with patches and with diff that disables static branching:
-> time_bench: Type:tasklet_page_pool01_fast_path Per elem: 8 cycles(tsc)
-> 3.248 ns (step:0)
->
-> I do see noise in the test results between run and run, and any
-> regression (if any) is slightly obfuscated by the noise, so it's a bit
-> hard to make confident statements. So far it looks like a ~0.25ns
-> regression without static branch and about ~0.65ns with static branch.
->
-> Honestly when I saw all 3 results were within some noise I did not
-> investigate more, but if this looks concerning to you I can dig
-> further. I likely need to gather a few test runs to filter out the
-> noise and maybe investigate the assembly my compiler is generating to
-> maybe narrow down what changes there.
->
 
-I did some more investigation here to gather more data to filter out
-the noise, and recorded the summary here:
+On 26/3/24 04:45, Brian Norris wrote:
+> Just because the EC firmware repository marks these as obsolete (and
+> yes, we copy that header mostly as-is into the kernel repository ...
+> but it's still a firmware header) doesn't mean it's truly ready to be
+> removed. I believe the intention is to direct *firmware* developers
+> not to use them -- any new developments should be using the new
+> commands.
+> 
+> From a kernel perspective, we could still be supporting old firmware
+> on old devices, and so we may want/need to continue to support these
+> commands.
 
-https://pastebin.com/raw/v5dYRg8L
+Alright that makes sense.
 
-Long story short, the page_pool benchmark results are consistent with
-some outlier noise results that I'm discounting here. Currently
-page_pool fast path is at 8 cycles
+> I don't know off the top of my head which firmware branches support
+> which commands, on devices that have such keyboard backlights. (The
+> Chromium EC repository is open source though, with various firmware-*
+> branches still around, so this information is available.) But without
+> a better explanation as to why these are truly ready to be removed,
+> I'll say "NAK."
 
-[ 2115.724510] time_bench: Type:tasklet_page_pool01_fast_path Per
-elem: 8 cycles(tsc) 3.187 ns (step:0) - (measurement period
-time:0.031870585 sec time_interval:31870585) - (invoke count:10000000
-tsc_interval:86043192)
+Yeah that's fair enough, my laptop seems to support both so I'll agree 
+the older commands are probably the safer option.
 
-and with this patch series it degrades to 10 cycles, or about a 0.7ns
-degradation or so:
-
-[  498.226127] time_bench: Type:tasklet_page_pool01_fast_path Per
-elem: 10 cycles(tsc) 3.944 ns (step:0) - (measurement period
-time:0.039442539 sec time_interval:39442539) - (invoke count:10000000
-tsc_interval:106485268)
-
-I took the time to dig into where the degradation comes from, and to
-my surprise we can shave off 1 cycle in perf by removing the
-static_branch_unlikely check in netmem_is_net_iov() like so:
-
-diff --git a/include/net/netmem.h b/include/net/netmem.h
-index fe354d11a421..2b4310ac1115 100644
---- a/include/net/netmem.h
-+++ b/include/net/netmem.h
-@@ -122,8 +122,7 @@ typedef unsigned long __bitwise netmem_ref;
- static inline bool netmem_is_net_iov(const netmem_ref netmem)
- {
- #ifdef CONFIG_PAGE_POOL
--       return static_branch_unlikely(&page_pool_mem_providers) &&
--              (__force unsigned long)netmem & NET_IOV;
-+       return (__force unsigned long)netmem & NET_IOV;
- #else
-        return false;
- #endif
-
-With this change, the fast path is 9 cycles, only  a 1 cycle (~0.35ns)
-regression:
-
-[  199.184429] time_bench: Type:tasklet_page_pool01_fast_path Per
-elem: 9 cycles(tsc) 3.552 ns (step:0) - (measurement period
-time:0.035524013 sec time_interval:35524013) - (invoke count:10000000
-tsc_interval:95907775)
-
-I did some digging with YiFei on why the static_branch_unlikely
-appears to be causing a 1 cycle regression, but could not get an
-answer that makes sense. The # of instructions in
-page_pool_return_page() with the static_branch_unlikely and without is
-about the same in the compiled .o file, and my understanding is that
-static_branch will cause code re-writing anyway so looking at the
-compiled code may not be representative.
-
-Worthy of note is that I get ~95% line rate of devmem TCP regardless
-of the static_branch_unlikely() or not, so impact of the static_branch
-is not large enough to be measurable end-to-end. I'm thinking I want
-to drop the static_branch_unlikely() in the next RFC since it doesn't
-improve the end-to-end throughput number and is resulting in a
-measurable improvement in the page pool benchmark.
-
---=20
-Thanks,
-Mina
+Thanks a lot for your feedback!
+Steve
 
