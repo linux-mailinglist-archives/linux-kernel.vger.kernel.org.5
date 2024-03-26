@@ -1,188 +1,176 @@
-Return-Path: <linux-kernel+bounces-118744-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-118745-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0348288BEC6
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 11:07:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id D52D388BECB
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 11:07:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4F707B2219C
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 10:07:30 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 49AFCB22827
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 10:07:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 53BC26CDCC;
-	Tue, 26 Mar 2024 10:06:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 14C625CDD9;
+	Tue, 26 Mar 2024 10:07:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ScqLdAF1"
-Received: from mail-pg1-f170.google.com (mail-pg1-f170.google.com [209.85.215.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="r7ooJuTx"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F0A0867C53
-	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 10:06:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B31670CCC;
+	Tue, 26 Mar 2024 10:07:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711447613; cv=none; b=Y/eB53DcCgAcLK5ENzwROnPiiMvbG4BpdJxyZDwO+mfowvMGbqkvUvn0Amn/gkenjcO3F9plvvj0Q3isimzT5X8B2kzzGJ9dtYQhw6TjMj7SpwDScXlOr433LiC0vzWoVA2moenA8PySW7aw/qMSDd34NS8Yq+7CeV1R8KPSbuk=
+	t=1711447622; cv=none; b=bgC40Q18K6ycYfa1BMDBJPmjjgUzC9AHb65gS+0HD7kF5td/lzM4iWMUcpJI/yhR/uPZi0cSWcUkGBQmqYEtcUD5t2hNzUiiuHDuMnd9RBaciZAPJeh+iw3YsKPTgStC7gHq1d05ou6FGkCsAZdtdzgaAooVnGdstNwhNE96f+8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711447613; c=relaxed/simple;
-	bh=GxmzQZ+iXFCICcVBTe8C5yEiXMFe0+1sortxqlulsbI=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=HjisgF55PGT/4wU0/tcUKmL9DebUaVy2uPb3ed+V+t8yl6qvGAOAqHWRgdxyhL27SXPgb1bIGEH2SgUzY6M2P8EDrYsQ+rMVLssc4k6C/lAItk2zwEGSBxWV7gb62bCuKdB8UH7+dv243jSzIfij3NaHD7l/23tqMSGJJqd7iZQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ScqLdAF1; arc=none smtp.client-ip=209.85.215.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f170.google.com with SMTP id 41be03b00d2f7-5d8b519e438so3147334a12.1
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 03:06:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711447611; x=1712052411; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=204vu/M5oh04X0pmvVV6HqCYUaLzHjxreWPTSk3PyFA=;
-        b=ScqLdAF1yBF5jIaIVA0pHKDIichucx5u+h3xkP5ssXqGK5d4sBNrjJOhswtTK3Gbtr
-         nTP3Yte9RDPLQ0EcWZ6jfpQ2X59D2vUlqio+GaHiyGJHMKFUmwgv6PlXpDz8AKh9ltD6
-         ev79+e3g0l5UJQgQHtbDEC0RWyoFqF+H7ViHs21lJ4E9rFB+KooQDzn4DxEKdrnyBEDx
-         HVINSrL/C1TqV6KMD8F50XOSvzCCbPQYz+ViOyS35CKF+8shYCgz4Dbibu3xhT1NkNTL
-         t+fbp3v118t+B6DnjPFWA8E/0nOu92dLrcQiKuxEvxtRJCIWSzOQRfbcMf+ic7kQ+nce
-         uWYA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711447611; x=1712052411;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=204vu/M5oh04X0pmvVV6HqCYUaLzHjxreWPTSk3PyFA=;
-        b=a7F79Z8agcTe8B4gkhwLvWTe26wpHeEjKqkiX+yTJA9DW95zRslcaH/U914xH1Wsku
-         VpZubKsSiRbjEJVYJlKK8zwz/XM9g0JSKmJmtHAeRCHs562/g4sSpQpMBmDbb5G3aD/2
-         q9+W2d1R2mlV22sWc1Wks7EEpK1gZU5Z8DKVTYq0sBiNOff+Jqu7P//177zMTAxvYnvL
-         l7xFtQ9EdZlr9Ewgtwe1LeSCeyPzE25xcy0a+ZXROdHpaQnn7XFvt6V0RcGgcI1G1uvN
-         DF/SUBgiX7sPthpiK5kYC8qskV8t7uvZVvpLa01kR3v/JkipdWaefObWEI/Jb0x3sI+l
-         w3tg==
-X-Forwarded-Encrypted: i=1; AJvYcCULdzKSIVPlZARON3bc+7hG3TmKtLWRbnX2z+6WTulNUskgMunXm4dxfYtfyWZUb7NSyXO7LIZqpG6UXtDJ4c82sjp4z2fx0K2dCXfS
-X-Gm-Message-State: AOJu0YypizmniemqeUGDw80w4ncAw9jRWO8WoVcpnOKIZvzWUMLwAA4H
-	xd5WYQyh/jo2kAk/mQ7FpOo8Xn8AElr/FuQ+L9BDY47RizEs9qyn/65FFtez18kcnTMOh+ku7S2
-	fgsJWHJYhF/dtEZeHZAWAuXpuGsZWwa/FXyw=
-X-Google-Smtp-Source: AGHT+IFW5gYacn89VMrKYuKxqzen1ILNsrP5HSh0oE5rx87Y168xlcJnykaZnE9g5gcGEeKfsFeqCr36OAXLSRwwfKo=
-X-Received: by 2002:a05:6a21:3a83:b0:19f:f059:c190 with SMTP id
- zv3-20020a056a213a8300b0019ff059c190mr683938pzb.24.1711447611079; Tue, 26 Mar
- 2024 03:06:51 -0700 (PDT)
+	s=arc-20240116; t=1711447622; c=relaxed/simple;
+	bh=U4EdSS4ABUOTzZjhVULdw5aeTTxo/JKgfI7ODcfDDtg=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=rmMY19+pTgKPqqc6flfobbCXyI06vHpWa5/2g+nkQ79R6UjrxHeV4Dc5TZPyBLEX7l6Pk3NM7ZInUwHlL2NFJV5nVwMgvxHcwiGYSY2SqmPi9xmQxKpSM3CfLe2e2utfmtyETjLayCZvLE+57LB+aNEh1+kLVCl657zjAGGPGJE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=r7ooJuTx; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 81130C433C7;
+	Tue, 26 Mar 2024 10:06:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1711447621;
+	bh=U4EdSS4ABUOTzZjhVULdw5aeTTxo/JKgfI7ODcfDDtg=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=r7ooJuTxZN+PNiPnccb67g34KjJFZGCbDEgFec7vlUu1ajdengm+9RmR5ora7u1Bv
+	 jbfwicklE0lImv+7AHkT8Ep/VdsKhRmeMG6UxrolnJ/ZzqEFl7pNfUgvwonKbip4hX
+	 r+/Yg367izpOMHHu3oKVpwsGFPu0chGtDgmxAVKs6sKAqMYx2dJagTcKGVYHwXhHhZ
+	 wml/UNgn2xqfhxKlSbephOrUcJLtFgoqjvZk8BSEuDYtEkpx8L8cCrnExrP/1wb9Lk
+	 ODqAwMdItZqnS/Pzh8wYphLB67vqAqvbENX/0iLnGHLNYv8ydBq+ejsL+ZWZy2j2K+
+	 kY2BYUifmV2gQ==
+Message-ID: <66ad274d-9890-411d-9fba-90fed2eb33f5@kernel.org>
+Date: Tue, 26 Mar 2024 19:06:59 +0900
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240312165905.1764507-1-andriy.shevchenko@linux.intel.com> <20240325211915.GA1449994@bhelgaas>
-In-Reply-To: <20240325211915.GA1449994@bhelgaas>
-From: Mateusz K <mateusz.kaduk@gmail.com>
-Date: Tue, 26 Mar 2024 11:06:38 +0100
-Message-ID: <CAPf=4Rc2vQrWqcs=-ND3iOZFJyKE7FdPoqU9w6DKjoSaJo6KaQ@mail.gmail.com>
-Subject: Re: [PATCH v1 1/1] mfd: intel-lpss: Switch over to MSI interrupts
-To: Bjorn Helgaas <helgaas@kernel.org>
-Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>, Lee Jones <lee@kernel.org>, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v8 2/7] scsi: libsas: Define NCQ Priority sysfs attributes
+ for SATA devices
+Content-Language: en-US
+To: Geert Uytterhoeven <geert@linux-m68k.org>,
+ Igor Pylypiv <ipylypiv@google.com>
+Cc: Niklas Cassel <cassel@kernel.org>, John Garry <john.g.garry@oracle.com>,
+ Jason Yan <yanaijie@huawei.com>, "James E.J. Bottomley"
+ <jejb@linux.ibm.com>, "Martin K. Petersen" <martin.petersen@oracle.com>,
+ Jack Wang <jinpu.wang@cloud.ionos.com>, Hannes Reinecke <hare@suse.de>,
+ Xiang Chen <chenxiang66@hisilicon.com>,
+ Artur Paszkiewicz <artur.paszkiewicz@intel.com>,
+ Bart Van Assche <bvanassche@acm.org>, TJ Adams <tadamsjr@google.com>,
+ linux-ide@vger.kernel.org, linux-scsi@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <20240307214418.3812290-1-ipylypiv@google.com>
+ <20240307214418.3812290-3-ipylypiv@google.com>
+ <CAMuHMdWxVbT=f+kZ58urwGhYD9RfBnu7u8oLAyrx_riU8OGt0w@mail.gmail.com>
+From: Damien Le Moal <dlemoal@kernel.org>
+Organization: Western Digital Research
+In-Reply-To: <CAMuHMdWxVbT=f+kZ58urwGhYD9RfBnu7u8oLAyrx_riU8OGt0w@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-I tried the patch that changes PCI_IRQ_LEGACY into PCI_IRQ_ALL_TYPES
-and it seems I get some other error now
+On 3/26/24 18:53, Geert Uytterhoeven wrote:
+> Hi Igor,
+> 
+> On Thu, Mar 7, 2024 at 10:55 PM Igor Pylypiv <ipylypiv@google.com> wrote:
+>> Libata sysfs attributes cannot be used for libsas managed SATA devices
+>> because the ata_port location is different for libsas.
+>>
+>> Defined sysfs attributes (visible for SATA devices only):
+>> - /sys/block/sda/device/ncq_prio_enable
+>> - /sys/block/sda/device/ncq_prio_supported
+>>
+>> The newly defined attributes will pass the correct ata_port to libata
+>> helper functions.
+>>
+>> Reviewed-by: John Garry <john.g.garry@oracle.com>
+>> Reviewed-by: Damien Le Moal <dlemoal@kernel.org>
+>> Reviewed-by: Jason Yan <yanaijie@huawei.com>
+>> Signed-off-by: Igor Pylypiv <ipylypiv@google.com>
+> 
+> Thanks for your patch, which is now commit b4d3ddd2df7531e3 ("scsi:
+> libsas: Define NCQ Priority sysfs attributes for SATA devices")
+> in scsi-mkp/for-next
+> 
+>> --- a/drivers/scsi/libsas/sas_ata.c
+>> +++ b/drivers/scsi/libsas/sas_ata.c
+> 
+>> +
+>> +DEVICE_ATTR(ncq_prio_supported, S_IRUGO, sas_ncq_prio_supported_show, NULL);
+>> +
+> 
+> [...]
+> 
+>> +
+>> +DEVICE_ATTR(ncq_prio_enable, S_IRUGO | S_IWUSR,
+>> +           sas_ncq_prio_enable_show, sas_ncq_prio_enable_store);
+>> +
+> 
+> When both CONFIG_SCSI_SAS_ATA and CONFIG_SATA_HOST are enabled:
 
-[    1.477341] intel-lpss 0000:00:15.0: enabling device (0004 -> 0006)
-[    1.477466] intel-lpss 0000:00:15.0: can't derive routing for PCI INT A
-[    1.477468] intel-lpss 0000:00:15.0: PCI INT A: not connected
-[    1.477488] intel-lpss 0000:00:15.0: probe with driver intel-lpss
-failed with error -2147483648
-[    1.489572] intel-lpss 0000:00:15.2: enabling device (0004 -> 0006)
-[    1.489688] intel-lpss 0000:00:15.2: can't derive routing for PCI INT C
-[    1.489689] intel-lpss 0000:00:15.2: PCI INT C: not connected
-[    1.489715] intel-lpss 0000:00:15.2: probe with driver intel-lpss
-failed with error -2147483648
-[    1.501886] intel-lpss 0000:00:19.0: enabling device (0004 -> 0006)
-[    1.502034] intel-lpss 0000:00:19.0: can't derive routing for PCI INT A
-[    1.502036] intel-lpss 0000:00:19.0: PCI INT A: not connected
-[    1.502067] intel-lpss 0000:00:19.0: probe with driver intel-lpss
-failed with error -2147483648
-[    1.514288] intel-lpss 0000:00:19.1: enabling device (0004 -> 0006)
-[    1.514535] intel-lpss 0000:00:19.1: can't derive routing for PCI INT B
-[    1.514538] intel-lpss 0000:00:19.1: PCI INT B: not connected
-[    1.514570] intel-lpss 0000:00:19.1: probe with driver intel-lpss
-failed with error -2147483648
-[    1.526291] intel-lpss 0000:00:1e.0: enabling device (0004 -> 0006)
-[    1.526555] intel-lpss 0000:00:1e.0: can't derive routing for PCI INT A
-[    1.526557] intel-lpss 0000:00:1e.0: PCI INT A: not connected
-[    1.526604] intel-lpss 0000:00:1e.0: probe with driver intel-lpss
-failed with error -2147483648
-[    1.538130] intel-lpss 0000:00:1e.3: enabling device (0004 -> 0006)
-[    1.538233] intel-lpss 0000:00:1e.3: can't derive routing for PCI INT D
-[    1.538235] intel-lpss 0000:00:1e.3: PCI INT D: not connected
-[    1.538253] intel-lpss 0000:00:1e.3: probe with driver intel-lpss
-failed with error -2147483648
+I have both enabled in my config and I do not see any issue. What is special
+with these on ARM ?
 
-Mateusz
+> 
+> aarch64-linux-gnu-ld: drivers/ata/libata-sata.o:(.data+0x110):
+> multiple definition of `dev_attr_ncq_prio_supported';
+> drivers/scsi/libsas/sas_ata.o:(.data+0x260): first defined here
+> aarch64-linux-gnu-ld: drivers/ata/libata-sata.o:(.data+0xd8): multiple
+> definition of `dev_attr_ncq_prio_enable';
+> drivers/scsi/libsas/sas_ata.o:(.data+0x228): first defined here
+> 
+> Making both new DEVICE_ATTR() declarations static doesn't work,
+> as <linux/libata.h> contains a forward declaration for the existing global
+> dev_attr_ncq_prio_supported in libata:
+> 
+> In file included from include/linux/async.h:14,
+>                  from drivers/scsi/libsas/sas_ata.c:12:
+> include/linux/device.h:156:33: error: static declaration of
+> ‘dev_attr_ncq_prio_supported’ follows non-static declaration
+>   156 |         struct device_attribute dev_attr_##_name =
+> __ATTR(_name, _mode, _show, _store)
+>       |                                 ^~~~~~~~~
+> drivers/scsi/libsas/sas_ata.c:984:8: note: in expansion of macro ‘DEVICE_ATTR’
+>   984 | static DEVICE_ATTR(ncq_prio_supported, S_IRUGO,
+> sas_ncq_prio_supported_show,
+>       |        ^~~~~~~~~~~
+> In file included from include/scsi/sas_ata.h:13,
+>                  from drivers/scsi/libsas/sas_ata.c:15:
+> include/linux/libata.h:508:32: note: previous declaration of
+> ‘dev_attr_ncq_prio_supported’ with type ‘struct device_attribute’
+>   508 | extern struct device_attribute dev_attr_ncq_prio_supported;
+>       |                                ^~~~~~~~~~~~~~~~~~~~~~~~~~~
+> In file included from include/linux/async.h:14,
+>                  from drivers/scsi/libsas/sas_ata.c:12:
+> include/linux/device.h:156:33: error: static declaration of
+> ‘dev_attr_ncq_prio_enable’ follows non-static declaration
+>   156 |         struct device_attribute dev_attr_##_name =
+> __ATTR(_name, _mode, _show, _store)
+>       |                                 ^~~~~~~~~
+> drivers/scsi/libsas/sas_ata.c:1023:8: note: in expansion of macro ‘DEVICE_ATTR’
+>  1023 | static DEVICE_ATTR(ncq_prio_enable, S_IRUGO | S_IWUSR,
+>       |        ^~~~~~~~~~~
+> In file included from include/scsi/sas_ata.h:13,
+>                  from drivers/scsi/libsas/sas_ata.c:15:
+> include/linux/libata.h:509:32: note: previous declaration of
+> ‘dev_attr_ncq_prio_enable’ with type ‘struct device_attribute’
+>   509 | extern struct device_attribute dev_attr_ncq_prio_enable;
+>       |                                ^~~~~~~~~~~~~~~~~~~~~~~~
+> 
+> Perhaps the new attributes can be renamed?
+> Alternatively, the DEVICE_ATTR() can be open-coded, so the actual
+> device_attribute structures are named differently.
+> 
+> Gr{oetje,eeting}s,
+> 
+>                         Geert
+> 
 
-On Mon, Mar 25, 2024 at 10:19=E2=80=AFPM Bjorn Helgaas <helgaas@kernel.org>=
- wrote:
->
-> [+bcc Mateusz]
->
-> On Tue, Mar 12, 2024 at 06:59:05PM +0200, Andy Shevchenko wrote:
-> > Some devices support MSI interrupts. Let's at least try to use them in
-> > platforms that provide MSI capability.
-> >
-> > Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> > ---
-> >  drivers/mfd/intel-lpss-pci.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> >
-> > diff --git a/drivers/mfd/intel-lpss-pci.c b/drivers/mfd/intel-lpss-pci.=
-c
-> > index 8c00e0c695c5..c36a101df7be 100644
-> > --- a/drivers/mfd/intel-lpss-pci.c
-> > +++ b/drivers/mfd/intel-lpss-pci.c
-> > @@ -54,7 +54,7 @@ static int intel_lpss_pci_probe(struct pci_dev *pdev,
-> >       if (ret)
-> >               return ret;
-> >
-> > -     ret =3D pci_alloc_irq_vectors(pdev, 1, 1, PCI_IRQ_LEGACY);
-> > +     ret =3D pci_alloc_irq_vectors(pdev, 1, 1, PCI_IRQ_ALL_TYPES);
-> >       if (ret < 0)
-> >               return ret;
->
-> I guess at least some of these devices do support INTx, since we
-> always used INTx previously, right?
->
-> There are a bunch of bug reports complaining about a lack of _PRT
-> entries for them, e.g., these from
-> https://bugzilla.kernel.org/show_bug.cgi?id=3D212261#c24:
->
->   intel-lpss 0000:00:15.0: enabling device (0004 -> 0006)
->   intel-lpss 0000:00:15.0: can't derive routing for PCI INT A
->   intel-lpss 0000:00:15.0: PCI INT A: not connected
->   intel-lpss: probe of 0000:00:15.0 failed with error -22
->   intel-lpss 0000:00:15.2: enabling device (0004 -> 0006)
->   intel-lpss 0000:00:15.2: can't derive routing for PCI INT C
->   intel-lpss 0000:00:15.2: PCI INT C: not connected
->   intel-lpss: probe of 0000:00:15.2 failed with error -22
->   intel-lpss 0000:00:19.0: enabling device (0004 -> 0006)
->   intel-lpss 0000:00:19.0: can't derive routing for PCI INT A
->   intel-lpss 0000:00:19.0: PCI INT A: not connected
->   intel-lpss: probe of 0000:00:19.0 failed with error -22
->   intel-lpss 0000:00:19.1: enabling device (0004 -> 0006)
->   intel-lpss 0000:00:19.1: can't derive routing for PCI INT B
->   intel-lpss 0000:00:19.1: PCI INT B: not connected
->   intel-lpss: probe of 0000:00:19.1 failed with error -22
->   intel-lpss 0000:00:1e.0: enabling device (0004 -> 0006)
->   intel-lpss 0000:00:1e.0: can't derive routing for PCI INT A
->   intel-lpss 0000:00:1e.0: PCI INT A: not connected
->   intel-lpss: probe of 0000:00:1e.0 failed with error -22
->   intel-lpss 0000:00:1e.3: enabling device (0004 -> 0006)
->   intel-lpss 0000:00:1e.3: can't derive routing for PCI INT D
->   intel-lpss 0000:00:1e.3: PCI INT D: not connected
->   intel-lpss: probe of 0000:00:1e.3 failed with error -22
->
-> I don't know if these are a _PRT bug (I think if a device advertises a
-> non-zero Interrupt Pin, the _PRT should tell us how it is routed), or
-> possibly a device bug (advertises Interrupt Pin =3D=3D INTA when it shoul=
-d
-> advertise "no INTx used"), or something else.
->
-> Bjorn
+-- 
+Damien Le Moal
+Western Digital Research
+
 
