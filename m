@@ -1,285 +1,157 @@
-Return-Path: <linux-kernel+bounces-118558-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-118514-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 14BB588BC97
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 09:36:08 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3123088BBF7
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 09:08:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BE8802E3CD5
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 08:36:06 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D982D2E3AF6
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 08:08:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8C8573FB1D;
-	Tue, 26 Mar 2024 08:35:34 +0000 (UTC)
-Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 680BA18EB1;
-	Tue, 26 Mar 2024 08:35:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=114.242.206.163
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 78419133420;
+	Tue, 26 Mar 2024 08:07:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="KA2F9VCI"
+Received: from mail-ed1-f43.google.com (mail-ed1-f43.google.com [209.85.208.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D1250132811
+	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 08:07:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711442134; cv=none; b=PcRlUnxE1SBzLKib052/g/schZsIY9NxSKeouemeTISY/LkYrVNyeIi3Z7VPC5s0Em9GNugvBj8ga1dVjhdR6kguG4M1VqWQJiO4cGq2qUFj1lHSyafQtRGB4qHD6SQ2iWmahnM8T/QyKsjxRUkqVYOtcwawQY2BPg71/W5UYxU=
+	t=1711440477; cv=none; b=KBpn+1gY4OMCjQu5s00MDVHLZ98GkWsXjeDDFcjtKIdFMJhs8ihclZ2nFTO8z0TiYT1fvY2r0TZZe7Ql2L7OFWht0+nKRIvZ1LAzuRMk8c1U1/N0VzS3j08opod6f6zCOXrwOyh1yE51w15/DOjGKkeCZTOGATtd8OEdtYdLUfs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711442134; c=relaxed/simple;
-	bh=h9EeJQUPGscodmSjnmp0D/vEOTmiEFfN3yvTqvtFhuk=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=pxOwuA+f8aUkSAQWlAXcT1eQbEVXYfdZdn/HBbx8nx0BIv+CppaMLEQTRLMRZZILSOHVR6/hjNonnQYMt0WoTOzQpWnE7YUZVB9UuCPCX1IM1N6np+ifsanBUGFd7IR4SmbQkVDec1lnwaZYZUDMULeMt214XklPfVtYWiRlTtQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn; spf=pass smtp.mailfrom=loongson.cn; arc=none smtp.client-ip=114.242.206.163
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=loongson.cn
-Received: from loongson.cn (unknown [10.2.5.213])
-	by gateway (Coremail) with SMTP id _____8DxbOkGggJmE0oeAA--.60907S3;
-	Tue, 26 Mar 2024 16:06:30 +0800 (CST)
-Received: from localhost.localdomain (unknown [10.2.5.213])
-	by localhost.localdomain (Coremail) with SMTP id AQAAf8CxbRMBggJmhaRoAA--.9600S4;
-	Tue, 26 Mar 2024 16:06:29 +0800 (CST)
-From: Bibo Mao <maobibo@loongson.cn>
-To: Tianrui Zhao <zhaotianrui@loongson.cn>,
-	Huacai Chen <chenhuacai@kernel.org>
-Cc: Juergen Gross <jgross@suse.com>,
-	kvm@vger.kernel.org,
-	loongarch@lists.linux.dev,
-	linux-kernel@vger.kernel.org,
-	virtualization@lists.linux.dev,
-	x86@kernel.org
-Subject: [PATCH 2/2] LoongArch: Add steal time support in guest side
-Date: Tue, 26 Mar 2024 16:06:25 +0800
-Message-Id: <20240326080625.898051-3-maobibo@loongson.cn>
-X-Mailer: git-send-email 2.39.3
-In-Reply-To: <20240326080625.898051-1-maobibo@loongson.cn>
-References: <20240326080625.898051-1-maobibo@loongson.cn>
+	s=arc-20240116; t=1711440477; c=relaxed/simple;
+	bh=t5BeQK3czFNvrHAWYqBZRmkHu/JxdynbrnMYkSBRzeA=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=SX8SaJvOvpXuefPR1z+u3isK/j5KjpqtTNIlPa44tEZBXdwWl/h+jCalJFJ4Kd+FQHK92EVUyOQu9cFSVTWOdpa+tOAnxkru0MN+UwnRo4JPoAIiyzAQ6o3pqiP1zh15MkztG7I8rfejcNwv8jCOsQu3hrgg9VO6ty2Zj3yjIH4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=KA2F9VCI; arc=none smtp.client-ip=209.85.208.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ed1-f43.google.com with SMTP id 4fb4d7f45d1cf-565c6cf4819so10416336a12.1
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 01:07:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1711440474; x=1712045274; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:to:subject:user-agent:mime-version:date
+         :message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=7TS6OxALLsfHvGB/rBwhY7IdmTwAHEVypcQoah0/XJY=;
+        b=KA2F9VCItqP2jdi4HbE8UaMLk3U+ceXJqCiNmiKTfzjkd60yOrcOsz6BPF1+sNZHW4
+         DKoqfCH4Lb/wXsfjsljV4UROwiIQnu7olTuQVSILWTVJu18RU03Aw/lTg3rBq46jtBBz
+         SKM8BNaH4wIc6Mt25Dx0YGBF06qbLbLAq0dur14YOiJpHCctfuwO5Z0ikqywigff+Nlc
+         sZua/CNTEYhV3weFMpmofKzMnJSMl4GnLF0dt5aLkIwdm9JHGjjme/a6XV9BggYG3FSK
+         pNgeToMlh9cLXyhU2TWdtJL5bXKXQ7ZxpSQozo4OPolOWcbzCZR1rX24+YNqupWGcRlX
+         1XPA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711440474; x=1712045274;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:to:subject:user-agent:mime-version:date
+         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=7TS6OxALLsfHvGB/rBwhY7IdmTwAHEVypcQoah0/XJY=;
+        b=TNSDzTLUm0LGD1Bg9JCX1jySlGwa6QamxZIKQuXeaYzKN4IerBVOLw9wJ8FFtYbtQJ
+         SQKndzOqexsQRa0vBXJIIxlJ06tbHV2qG2DMba+AEWfh32tf1iXUrYMcHwulyiciZIuS
+         9Ql/CibaJ6g1ffoZnzzpqPyU+gp2XMr0/pQMuuFt0PmIlM9xM+Du1fNYSrAF1BQ8P1vy
+         RPWrMSnGtee7LGZSJKOjh523AzJcCgvuS/ZNduHa+CEkF4WUhNGqRU+B0og69xDcTmLf
+         aSPhnpNxs6ryrjcj68BUQ2VqCU7O4CmSkczgYfbChsCOl8m3VeXNg3EStwCysz6K/ncs
+         ncsw==
+X-Forwarded-Encrypted: i=1; AJvYcCU/Zwm9LXvLXP/Y2/15/MASgfuq6KRV9ql6ZJdWC7ffH9YsxvE8118dtjFGZCHcN1hGkI8rbpcZRajuIkDjJ4Ptw8QSWTHA+i2eAzdM
+X-Gm-Message-State: AOJu0Ywpqkne0CrUadcFrhA05gWJHRaYUZtmuV3JovUPKkENwZTAAkw1
+	ZBZp1TV/D4/tptd5eJd0+sNmvl6UfmOL8C20VXTeFP4M93EwwYz3w8H/oU1OqEc=
+X-Google-Smtp-Source: AGHT+IE7u8DAN8lAbhcT9gouEWdrspKY2DojCy8527/C9FLkNsBbKkK6Bab3017xD7ZHewW7wfVIxg==
+X-Received: by 2002:a17:906:139a:b0:a46:fb47:7752 with SMTP id f26-20020a170906139a00b00a46fb477752mr598291ejc.23.1711440474195;
+        Tue, 26 Mar 2024 01:07:54 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.222.44])
+        by smtp.gmail.com with ESMTPSA id bu24-20020a170906a15800b00a46a2779475sm3946095ejb.101.2024.03.26.01.07.53
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 26 Mar 2024 01:07:53 -0700 (PDT)
+Message-ID: <461a8c3d-460b-4ca4-aa90-b70685958f6f@linaro.org>
+Date: Tue, 26 Mar 2024 09:07:52 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:AQAAf8CxbRMBggJmhaRoAA--.9600S4
-X-CM-SenderInfo: xpdruxter6z05rqj20fqof0/
-X-Coremail-Antispam: 1Uk129KBjDUn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7KY7
-	ZEXasCq-sGcSsGvfJ3UbIjqfuFe4nvWSU5nxnvy29KBjDU0xBIdaVrnUUvcSsGvfC2Kfnx
-	nUUI43ZEXa7xR_UUUUUUUUU==
-X-Gw-Check: e5acd0b5fd9bcff5
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] virt: vmgenid: drop redundant .owner
+To: Theodore Ts'o <tytso@mit.edu>, "Jason A. Donenfeld" <Jason@zx2c4.com>,
+ linux-kernel@vger.kernel.org
+References: <20240326075337.55377-1-krzysztof.kozlowski@linaro.org>
+Content-Language: en-US
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <20240326075337.55377-1-krzysztof.kozlowski@linaro.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Percpu struct kvm_steal_time is added here, its size is 64 bytes and
-also defined as 64 bytes, so that the whole structure is in one physical
-page.
+On 26/03/2024 08:53, Krzysztof Kozlowski wrote:
+> Core already sets .owner in acpi_bus_register_driver().
+> 
+> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+> ---
+>  drivers/virt/vmgenid.c | 1 -
+>  1 file changed, 1 deletion(-)
+> 
+> diff --git a/drivers/virt/vmgenid.c b/drivers/virt/vmgenid.c
+> index b67a28da4702..8f6880c3a87f 100644
+> --- a/drivers/virt/vmgenid.c
+> +++ b/drivers/virt/vmgenid.c
+> @@ -88,7 +88,6 @@ static const struct acpi_device_id vmgenid_ids[] = {
+>  static struct acpi_driver vmgenid_driver = {
+>  	.name = "vmgenid",
+>  	.ids = vmgenid_ids,
+> -	.owner = THIS_MODULE,
 
-When vcpu is onlined, function pv_register_steal_time() is called. This
-function will pass physical address of struct kvm_steal_time and tells
-hypervisor to enable steal time. When vcpu is offline, physical address
-is set as 0 and tells hypervisor to disable steal time.
+This does not make sense and is not correct.  I need to fix
+acpi_bus_register_driver first(). Please ignore.
 
-Signed-off-by: Bibo Mao <maobibo@loongson.cn>
----
- arch/loongarch/include/asm/paravirt.h |   5 +
- arch/loongarch/kernel/paravirt.c      | 130 ++++++++++++++++++++++++++
- arch/loongarch/kernel/time.c          |   2 +
- 3 files changed, 137 insertions(+)
-
-diff --git a/arch/loongarch/include/asm/paravirt.h b/arch/loongarch/include/asm/paravirt.h
-index 58f7b7b89f2c..fe27fb5e82b8 100644
---- a/arch/loongarch/include/asm/paravirt.h
-+++ b/arch/loongarch/include/asm/paravirt.h
-@@ -17,11 +17,16 @@ static inline u64 paravirt_steal_clock(int cpu)
- }
- 
- int pv_ipi_init(void);
-+int __init pv_time_init(void);
- #else
- static inline int pv_ipi_init(void)
- {
- 	return 0;
- }
- 
-+static inline int pv_time_init(void)
-+{
-+	return 0;
-+}
- #endif // CONFIG_PARAVIRT
- #endif
-diff --git a/arch/loongarch/kernel/paravirt.c b/arch/loongarch/kernel/paravirt.c
-index 9044ed62045c..56182c64ab38 100644
---- a/arch/loongarch/kernel/paravirt.c
-+++ b/arch/loongarch/kernel/paravirt.c
-@@ -5,10 +5,13 @@
- #include <linux/jump_label.h>
- #include <linux/kvm_para.h>
- #include <asm/paravirt.h>
-+#include <linux/reboot.h>
- #include <linux/static_call.h>
- 
- struct static_key paravirt_steal_enabled;
- struct static_key paravirt_steal_rq_enabled;
-+static DEFINE_PER_CPU(struct kvm_steal_time, steal_time) __aligned(64);
-+static int has_steal_clock;
- 
- static u64 native_steal_clock(int cpu)
- {
-@@ -17,6 +20,57 @@ static u64 native_steal_clock(int cpu)
- 
- DEFINE_STATIC_CALL(pv_steal_clock, native_steal_clock);
- 
-+static bool steal_acc = true;
-+static int __init parse_no_stealacc(char *arg)
-+{
-+	steal_acc = false;
-+	return 0;
-+}
-+early_param("no-steal-acc", parse_no_stealacc);
-+
-+static u64 para_steal_clock(int cpu)
-+{
-+	u64 steal;
-+	struct kvm_steal_time *src;
-+	int version;
-+
-+	src = &per_cpu(steal_time, cpu);
-+	do {
-+
-+		version = src->version;
-+		/* Make sure that the version is read before the steal */
-+		virt_rmb();
-+		steal = src->steal;
-+		/* Make sure that the steal is read before the next version */
-+		virt_rmb();
-+
-+	} while ((version & 1) || (version != src->version));
-+	return steal;
-+}
-+
-+static int pv_register_steal_time(void)
-+{
-+	int cpu = smp_processor_id();
-+	struct kvm_steal_time *st;
-+	unsigned long addr;
-+
-+	if (!has_steal_clock)
-+		return -EPERM;
-+
-+	st = &per_cpu(steal_time, cpu);
-+	addr = per_cpu_ptr_to_phys(st);
-+
-+	/* The whole structure kvm_steal_time should be one page */
-+	if (PFN_DOWN(addr) != PFN_DOWN(addr + sizeof(*st))) {
-+		pr_warn("Illegal PV steal time addr %lx\n", addr);
-+		return -EFAULT;
-+	}
-+
-+	addr |= KVM_STEAL_PHYS_VALID;
-+	kvm_hypercall2(KVM_HCALL_FUNC_NOTIFY, KVM_FEATURE_STEAL_TIME, addr);
-+	return 0;
-+}
-+
- #ifdef CONFIG_SMP
- static void pv_send_ipi_single(int cpu, unsigned int action)
- {
-@@ -110,6 +164,32 @@ static void pv_init_ipi(void)
- 	if (r < 0)
- 		panic("SWI0 IRQ request failed\n");
- }
-+
-+static void pv_disable_steal_time(void)
-+{
-+	if (has_steal_clock)
-+		kvm_hypercall2(KVM_HCALL_FUNC_NOTIFY, KVM_FEATURE_STEAL_TIME, 0);
-+}
-+
-+static int pv_cpu_online(unsigned int cpu)
-+{
-+	unsigned long flags;
-+
-+	local_irq_save(flags);
-+	pv_register_steal_time();
-+	local_irq_restore(flags);
-+	return 0;
-+}
-+
-+static int pv_cpu_down_prepare(unsigned int cpu)
-+{
-+	unsigned long flags;
-+
-+	local_irq_save(flags);
-+	pv_disable_steal_time();
-+	local_irq_restore(flags);
-+	return 0;
-+}
- #endif
- 
- static bool kvm_para_available(void)
-@@ -149,3 +229,53 @@ int __init pv_ipi_init(void)
- 
- 	return 1;
- }
-+
-+static void pv_cpu_reboot(void *unused)
-+{
-+	pv_disable_steal_time();
-+}
-+
-+static int pv_reboot_notify(struct notifier_block *nb, unsigned long code,
-+		void *unused)
-+{
-+	on_each_cpu(pv_cpu_reboot, NULL, 1);
-+	return NOTIFY_DONE;
-+}
-+
-+static struct notifier_block pv_reboot_nb = {
-+	.notifier_call  = pv_reboot_notify,
-+};
-+
-+int __init pv_time_init(void)
-+{
-+	int feature;
-+
-+	if (!cpu_has_hypervisor)
-+		return 0;
-+	if (!kvm_para_available())
-+		return 0;
-+
-+	feature = read_cpucfg(CPUCFG_KVM_FEATURE);
-+	if (!(feature & KVM_FEATURE_STEAL_TIME))
-+		return 0;
-+
-+	has_steal_clock = 1;
-+	if (pv_register_steal_time()) {
-+		has_steal_clock = 0;
-+		return 0;
-+	}
-+
-+	register_reboot_notifier(&pv_reboot_nb);
-+	static_call_update(pv_steal_clock, para_steal_clock);
-+	static_key_slow_inc(&paravirt_steal_enabled);
-+	if (steal_acc)
-+		static_key_slow_inc(&paravirt_steal_rq_enabled);
-+
-+#ifdef CONFIG_SMP
-+	if (cpuhp_setup_state_nocalls(CPUHP_AP_ONLINE_DYN, "loongarch/pv:online",
-+				pv_cpu_online, pv_cpu_down_prepare) < 0)
-+		pr_err("Failed to install cpu hotplug callbacks\n");
-+#endif
-+	pr_info("Using stolen time PV\n");
-+	return 0;
-+}
-diff --git a/arch/loongarch/kernel/time.c b/arch/loongarch/kernel/time.c
-index fd5354f9be7c..46d7d40c87e3 100644
---- a/arch/loongarch/kernel/time.c
-+++ b/arch/loongarch/kernel/time.c
-@@ -15,6 +15,7 @@
- 
- #include <asm/cpu-features.h>
- #include <asm/loongarch.h>
-+#include <asm/paravirt.h>
- #include <asm/time.h>
- 
- u64 cpu_clock_freq;
-@@ -214,4 +215,5 @@ void __init time_init(void)
- 
- 	constant_clockevent_init();
- 	constant_clocksource_init();
-+	pv_time_init();
- }
--- 
-2.39.3
+Best regards,
+Krzysztof
 
 
