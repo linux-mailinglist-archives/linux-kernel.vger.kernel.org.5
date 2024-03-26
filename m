@@ -1,112 +1,124 @@
-Return-Path: <linux-kernel+bounces-119631-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-119632-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 67D5888CB5A
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 18:51:41 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4F98488CB5E
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 18:52:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 230122E9565
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 17:51:40 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A4299B22CEE
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 17:51:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 403741F947;
-	Tue, 26 Mar 2024 17:51:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="TLRXkW16"
-Received: from mail-yb1-f179.google.com (mail-yb1-f179.google.com [209.85.219.179])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 160BC482EE
-	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 17:51:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 60E1280050;
+	Tue, 26 Mar 2024 17:51:27 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 62D624C63A
+	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 17:51:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711475462; cv=none; b=pu4V4JzXsgdnSoBCybnUx/r4fXuXnBOVQkGRHOPWQxJsErSkygWl5eO3gTORvoLjx6PbqcqyEV7z7vEs7phwwt5td5oYhtpQcFgWMacZWMsXjY6SPqpNYvHjtAHEmFqupXa5IHaUx4JL+PUF2xxB5yiFMANSGzo4nrvgW6uKVF8=
+	t=1711475486; cv=none; b=jKnYwD6/a+PIutBO06LscbZpVz97QdqDnj4MnsVjzrNU1bax3l4RE4eszlJpLGqLb3/jSvCdNxKXLlGjlSwNWrWAH//5jZFzjL2idgKXaAzI9ptkpl/RzV1O/S427iMGxY9I7gM7H4QszYmdXkH0foThXRIJ5LvhW+9tAEYKPJI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711475462; c=relaxed/simple;
-	bh=DS+ZVIzfQvfy1mAXlWWMX/Uf1EBmJvBo9ZR6tzEUzmw=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=EP9/NUCd4Rr8mbRi9AkNi+ICPdayqy2rZwGiimu5m12mow+RJRLxM+E81IVH8f5D5Y9HV1KDG4A0iFjIUWDgIyIEBLqhOPPS80ZnG8Gky4WoEGUvDqTKf82cOwoGO0CAgAOss+9rIcYwGyTc2POdVWKqaBPBi3m/pWg9D35MyRQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=TLRXkW16; arc=none smtp.client-ip=209.85.219.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yb1-f179.google.com with SMTP id 3f1490d57ef6-db3a09e96daso5427438276.3
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 10:51:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1711475460; x=1712080260; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=PQt9uE/ppvfkTcIqGMfIYXRibl7GWLCliTRuigVWPgI=;
-        b=TLRXkW16NBLpqOjOFbMpxP6i0yXNfkCKMz9rlgSkfmThbsxGS4bQHcdmPGTTHgUNSt
-         8UAaZyTIE6dQibKtu3cDk9ANkJxfPiHn5NYlQ8HdqbGzk2Divili8ViBkbrX+oqz35Mu
-         IoMsLKwQK+yUNBpOMBHvuaofzjBi0Uz8jEV1rzxSU5zg6yao0ywZjBkVij3CsT9DrgUB
-         XiMnIbO4Ju+k15VcudtdnIcA3PHMdgDCv/E73Rmsi9qXTG4ScUx9JeYISDjKx1ZpRJrp
-         JGYF6huxr+kG2qlPeUud9/xzrUxIzhkN4lsyhUdSc0Hy15Hx9tpzOUB01fBkfvgwRQzM
-         bAxQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711475460; x=1712080260;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=PQt9uE/ppvfkTcIqGMfIYXRibl7GWLCliTRuigVWPgI=;
-        b=Xc/1K3514wh16MJ7fZJYWCGZYPSzMan7TKfVG/9eVauECadPuRtbrjfzZvZxj+taZX
-         O7hnViU84pO4o3dPbtJ8PVuZxVuiJsn12sAdmuHmOuHmtmsSRL3ouXtHZDxNK7ccyYJ4
-         2R/eDnDJQoN486bypf/WhfVTFDHRZOKiioSQ1MVA2ql5rm9fra7itKBExsbHIwXJ/vFl
-         qZ1chLNU56VoX4zBYEIZo64mTXfMGr2ipPLR1/76mZ8GJYdHaMcGdXyQqHC4/nYXIJlv
-         9ReceLq1t3365KNaU88ifqWoBwrl8AOzKDTHfYTcXkg6GWL4arC35AxOA333qaty42fd
-         rz9w==
-X-Forwarded-Encrypted: i=1; AJvYcCVpfHf/ZwelkQf9AHy4YzNjVQiE44lSPknC3aQiWP+dKoFcC88I2nxbSYhVWCj/AERBRq3GjJwMLryiDLxAgBQuEZ8gLieJioqMsDXv
-X-Gm-Message-State: AOJu0YwkKK6yBecYAIvKY0K6EGDhyV7sEZzPfYk+3n3uQmq5V77P/7S+
-	F1nm8Ghp+FH4R0yq2A4JJFiE6+Gto60cPpTF1kFr8nd0ac9BAeZoz8kqewpXvCZqdC760tiLBpA
-	zYCWBHWg9HzDI0htUHOY6eQenee5+fNNjrl+dKQ==
-X-Google-Smtp-Source: AGHT+IHgaKfWmnWc7zIsttUGrVkvAZrzsd0nsGPCX83cPi+b3E0jY3GMekdJomBN/FEgwvmEt+1EzeQQuU9eKhkIlew=
-X-Received: by 2002:a5b:590:0:b0:dcc:7b05:4cbb with SMTP id
- l16-20020a5b0590000000b00dcc7b054cbbmr8591652ybp.31.1711475459884; Tue, 26
- Mar 2024 10:50:59 -0700 (PDT)
+	s=arc-20240116; t=1711475486; c=relaxed/simple;
+	bh=YrPfWSL4xn801DAkCxDSBoiiI04n2EnnxgVLYlrdwqE=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=BQMBl0DDnZpDcaMNNPMBHoeAqecp9sH+VlgMwC2T/mWk0aZBtM8zOEvNMGGRyAzDqn58O6LGaNx5cm/nlXxepFN9ztgPoWiKMCaltTaDSg9nPC4X9t7ziLXFoNlsDaU++MYwOCGiHvm6tnzvyMmcQwcOt6hbBH726aCGUOtxW6s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 732322F4;
+	Tue, 26 Mar 2024 10:51:58 -0700 (PDT)
+Received: from [10.1.29.179] (XHFQ2J9959.cambridge.arm.com [10.1.29.179])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id DF1E43F64C;
+	Tue, 26 Mar 2024 10:51:22 -0700 (PDT)
+Message-ID: <86680856-2532-495b-951a-ea7b2b93872f@arm.com>
+Date: Tue, 26 Mar 2024 17:51:21 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240326-msm-dp-cleanup-v1-0-e775556ecec0@quicinc.com> <20240326-msm-dp-cleanup-v1-6-e775556ecec0@quicinc.com>
-In-Reply-To: <20240326-msm-dp-cleanup-v1-6-e775556ecec0@quicinc.com>
-From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date: Tue, 26 Mar 2024 19:50:49 +0200
-Message-ID: <CAA8EJpqce45f1Q+speRQo6NbtEtMq9BZWx36pbTAQGjjTyWCoA@mail.gmail.com>
-Subject: Re: [PATCH 6/6] drm/msm/dp: Use function arguments for audio operations
-To: Bjorn Andersson <andersson@kernel.org>
-Cc: Rob Clark <robdclark@gmail.com>, Abhinav Kumar <quic_abhinavk@quicinc.com>, 
-	Sean Paul <sean@poorly.run>, Marijn Suijten <marijn.suijten@somainline.org>, 
-	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, linux-arm-msm@vger.kernel.org, 
-	dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org, 
-	linux-kernel@vger.kernel.org, Bjorn Andersson <quic_bjorande@quicinc.com>
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC PATCH v1 0/4] Reduce cost of ptep_get_lockless on arm64
+Content-Language: en-GB
+To: David Hildenbrand <david@redhat.com>, Mark Rutland
+ <mark.rutland@arm.com>, Catalin Marinas <catalin.marinas@arm.com>,
+ Will Deacon <will@kernel.org>,
+ Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+ Jiri Olsa <jolsa@kernel.org>, Ian Rogers <irogers@google.com>,
+ Adrian Hunter <adrian.hunter@intel.com>,
+ Andrew Morton <akpm@linux-foundation.org>,
+ Muchun Song <muchun.song@linux.dev>
+Cc: linux-arm-kernel@lists.infradead.org, linux-mm@kvack.org,
+ linux-kernel@vger.kernel.org
+References: <20240215121756.2734131-1-ryan.roberts@arm.com>
+ <0ae22147-e1a1-4bcb-8a4c-f900f3f8c39e@redhat.com>
+ <d8b3bcf2-495f-42bd-b114-6e3a010644d8@arm.com>
+ <de143212-49ce-4c30-8bfa-4c0ff613f107@redhat.com>
+ <374d8500-4625-4bff-a934-77b5f34cf2ec@arm.com>
+ <c1218cdb-905b-4896-8e17-109700577cec@redhat.com>
+ <a41b0534-b841-42c2-8c06-41337c35347d@arm.com>
+ <8bd9e136-8575-4c40-bae2-9b015d823916@redhat.com>
+From: Ryan Roberts <ryan.roberts@arm.com>
+In-Reply-To: <8bd9e136-8575-4c40-bae2-9b015d823916@redhat.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Tue, 26 Mar 2024 at 17:06, Bjorn Andersson <andersson@kernel.org> wrote:
->
-> From: Bjorn Andersson <quic_bjorande@quicinc.com>
->
-> The dp_audio read and write operations uses members in struct dp_catalog
-> for passing arguments and return values. This adds unnecessary
-> complexity to the implementation, as it turns out after detangling the
-> logic that no state is actually held in these variables.
->
-> Clean this up by using function arguments and return values for passing
-> the data.
->
-> Signed-off-by: Bjorn Andersson <quic_bjorande@quicinc.com>
-> ---
->  drivers/gpu/drm/msm/dp/dp_audio.c   | 20 +++++--------------
->  drivers/gpu/drm/msm/dp/dp_catalog.c | 39 +++++++++++++------------------------
->  drivers/gpu/drm/msm/dp/dp_catalog.h | 18 +++++++++--------
->  3 files changed, 28 insertions(+), 49 deletions(-)
+On 26/03/2024 17:39, David Hildenbrand wrote:
+> On 26.03.24 18:32, Ryan Roberts wrote:
+>> On 26/03/2024 17:04, David Hildenbrand wrote:
+>>>>>>>
+>>>>>>> Likely, we just want to read "the real deal" on both sides of the pte_same()
+>>>>>>> handling.
+>>>>>>
+>>>>>> Sorry I'm not sure I understand? You mean read the full pte including
+>>>>>> access/dirty? That's the same as dropping the patch, right? Of course if
+>>>>>> we do
+>>>>>> that, we still have to keep pte_get_lockless() around for this case. In an
+>>>>>> ideal
+>>>>>> world we would convert everything over to ptep_get_lockless_norecency() and
+>>>>>> delete ptep_get_lockless() to remove the ugliness from arm64.
+>>>>>
+>>>>> Yes, agreed. Patch #3 does not look too crazy and it wouldn't really affect
+>>>>> any
+>>>>> architecture.
+>>>>>
+>>>>> I do wonder if pte_same_norecency() should be defined per architecture and the
+>>>>> default would be pte_same(). So we could avoid the mkold etc on all other
+>>>>> architectures.
+>>>>
+>>>> Wouldn't that break it's semantics? The "norecency" of
+>>>> ptep_get_lockless_norecency() means "recency information in the returned pte
+>>>> may
+>>>> be incorrect". But the "norecency" of pte_same_norecency() means "ignore the
+>>>> access and dirty bits when you do the comparison".
+>>>
+>>> My idea was that ptep_get_lockless_norecency() would return the actual result on
+>>> these architectures. So e.g., on x86, there would be no actual change in
+>>> generated code.
+>>
+>> I think this is a bad plan... You'll end up with subtle differences between
+>> architectures.
+>>
+>>>
+>>> But yes, the documentation of these functions would have to be improved.
+>>>
+>>> Now I wonder if ptep_get_lockless_norecency() should actively clear
+>>> dirty/accessed bits to more easily find any actual issues where the bits still
+>>> matter ...
+>>
+>> I did a version that took that approach. Decided it was not as good as this way
+>> though. Now for the life of me, I can't remember my reasoning.
+> 
+> Maybe because there are some code paths that check accessed/dirty without
+> "correctness" implications? For example, if the PTE is already dirty, no need to
+> set it dirty etc?
 
-Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+I think I decided I was penalizing the architectures that don't care because all
+their ptep_get_norecency() and ptep_get_lockless_norecency() need to explicitly
+clear access/dirty. And I would have needed ptep_get_norecency() from day 1 so
+that I could feed its result into pte_same().
 
-Thanks a lot for the cleanup!
-
---
-With best wishes
-Dmitry
 
