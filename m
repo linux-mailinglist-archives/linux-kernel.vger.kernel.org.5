@@ -1,90 +1,113 @@
-Return-Path: <linux-kernel+bounces-118911-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-118913-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BCFB688C10D
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 12:44:07 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id E1D5488C118
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 12:45:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EF5EF1C3DAEB
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 11:44:06 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 82AFD1F3A226
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 11:45:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A0D505A10E;
-	Tue, 26 Mar 2024 11:44:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 673985810C;
+	Tue, 26 Mar 2024 11:45:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=iwanders.net header.i=@iwanders.net header.b="XpcSX6ST"
-Received: from mail-yw1-f169.google.com (mail-yw1-f169.google.com [209.85.128.169])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="Xtmal4w9"
+Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 563785810C
-	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 11:44:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0A1956BB39;
+	Tue, 26 Mar 2024 11:45:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.23.248
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711453441; cv=none; b=il2CmTcqguOyZx1z6tPd7I/U3+Xr7IDwK7UqDHM55cy7b8mUXNGjDYkr7GKLMYJa2SEv1XEpNGWetO9kasEMltvOH1c9EoeLjJYnEz+eavXdVrUnACihmHgmr6JiSZzW6aLNdNMkB6GJmurjQgbm6O5n7oKG/uym6l9UYlFEay4=
+	t=1711453536; cv=none; b=EivnGhLowGfWdWE1MdBQ0hj3io9wf3wjHLDr8vPboaCo4+uXJy5Lby4koE9hhEsW8uHVtvwuQhT9G/i2+OtQU9diDmLreb8l850wmmyvVcKsffadyR90uy0fDBqyeoMfWJAhnohyrmxxtLc57XSIQoKSLr4ytVevmu7O6KwQsbY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711453441; c=relaxed/simple;
-	bh=qmQ3LlhXY3QFRm9L41Yx5MepVpD7ltyOzolfuuDgGaI=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References; b=fZl/bA1yJ98xgDqpnieiQT+DEEN8rgSFityc2NUF5wxUDGimdv03I6XuKRU6P/y9tCL/bYCJOuVjYcsRAmw2Fbmp+9M9oA9S/usqmoaQEDI5kyY5fGuWA7pGUzB/po1pFELRpdDNKOJV63kEGTrV6lJCZZLAZgux8AiEzBxznt4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=iwanders.net; spf=pass smtp.mailfrom=iwanders.net; dkim=pass (1024-bit key) header.d=iwanders.net header.i=@iwanders.net header.b=XpcSX6ST; arc=none smtp.client-ip=209.85.128.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=iwanders.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iwanders.net
-Received: by mail-yw1-f169.google.com with SMTP id 00721157ae682-612f318d421so4082187b3.3
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 04:44:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=iwanders.net; s=google; t=1711453439; x=1712058239; darn=vger.kernel.org;
-        h=references:in-reply-to:message-id:date:subject:cc:to:from:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=qmQ3LlhXY3QFRm9L41Yx5MepVpD7ltyOzolfuuDgGaI=;
-        b=XpcSX6STeKmKsij3Ow8JWbz5LKK67NkPOmptzCexmVMaJiVkAUuMpgbKE1jjiQWiXX
-         qf4PnWbrzge7zMpN92Kxh40uHH5+XUE1gmIY/hefS7EDLJ2wWikROhPnozZfc+sIvkZl
-         S30rb7DfD8CLyAezwjReqAwawuFYIB1I9HEsI=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711453439; x=1712058239;
-        h=references:in-reply-to:message-id:date:subject:cc:to:from
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=qmQ3LlhXY3QFRm9L41Yx5MepVpD7ltyOzolfuuDgGaI=;
-        b=GdUiGUgnQ8o5mYv650ysWqAy6HuromBx7hOnF8r+y8T4Jkd64wqgYTfUvHiU405F3U
-         0EI4aTIWF2aoMXcihCRFv11OjuSNhQj9lVRF3MmvS4snM4j+Ei0C+o7k8T65ZgTuG0Fv
-         zpnf424ciuTe2aY5GopKBuoLdkhzscjJzeefCbo4pRglD9S3EjQltBskaGw3VmWgpY0s
-         G7L8ilbNNrBA0YH0o7c/wBl26IzKxTl61TC8f1iyRyDP+Cf+Dpp/rMVut+udRjaZmpUp
-         ftU8+uEFk26//jiMRQfv0ztPdZU0n4HySWEP7DHPLTCe853JgnRVy/thISR+9n6OeRKl
-         ANBQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWWfwCkkTbaUOKFR8Z5PK7o2A9xdkJk1yWFA0Wj3inJAKxSJJI0rCuJymWBPjlYCXS7VCzlSX3Wy3qr6HbNC/oQ1PF+9H+mCe9BnN+Z
-X-Gm-Message-State: AOJu0YxL4PzVb1iRyBGeqsxYTik3PJdEKKex/uNnyipoBGoi9nCBE8gs
-	3Ey4TftGo+EuECRZJojmll2nalBueJ9cmN1o+Wp7rs/uOf7RzvATHvpi4rXBcV8=
-X-Google-Smtp-Source: AGHT+IF2Cs0FGB3Z/PMvHAv5nLPWR4QtgOjqxm1/pnuQbMl02laaQ/7QbkJIkoTRm+6XIUt+SciZbg==
-X-Received: by 2002:a0d:e28a:0:b0:60f:ddae:8236 with SMTP id l132-20020a0de28a000000b0060fddae8236mr2553848ywe.20.1711453439239;
-        Tue, 26 Mar 2024 04:43:59 -0700 (PDT)
-Received: from eagle.lan (24-246-30-234.cable.teksavvy.com. [24.246.30.234])
-        by smtp.gmail.com with ESMTPSA id cx7-20020a05620a51c700b007884a54ffb1sm2918486qkb.135.2024.03.26.04.43.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Mar 2024 04:43:58 -0700 (PDT)
-From: Ivor Wanders <ivor@iwanders.net>
-To: hdegoede@redhat.com
-Cc: ilpo.jarvinen@linux.intel.com,
-	ivor@iwanders.net,
-	linux-kernel@vger.kernel.org,
-	luzmaximilian@gmail.com,
-	platform-driver-x86@vger.kernel.org
-Subject: Re: [PATCH v2 1/1] platform/surface: platform_profile: add fan profile switching
-Date: Tue, 26 Mar 2024 07:43:55 -0400
-Message-Id: <20240326114355.3245-1-ivor@iwanders.net>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <aff161d5-cf6e-421b-8250-35e724397dcf@redhat.com>
-References: <aff161d5-cf6e-421b-8250-35e724397dcf@redhat.com>
+	s=arc-20240116; t=1711453536; c=relaxed/simple;
+	bh=HlNlH0D6rEhsgNqoAFKCIqa0DgA4RkOgomD4hxEXSF0=;
+	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Li+VoPzkAaRifJlqytZEGzsFUUE+z2e0nzNokncGfTiV6suiL3F/oEtOhQg2jHOBuM1a2dAWzM+Nwrys0ik1vOycIeNrmTLEz9TFb0gv8ttgG4Si+YQQ+Ml+q1jyNMPODTAXZbJ8M63ev3qkiPDHWvPQGbDJdCz1hCy6Y4H93t0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=Xtmal4w9; arc=none smtp.client-ip=198.47.23.248
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+	by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 42QBj0PP084354;
+	Tue, 26 Mar 2024 06:45:00 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+	s=ti-com-17Q1; t=1711453500;
+	bh=8ZZ+yXIpR+DpKAp94YWkD4hzM6wEtAwz6qiljaPQzLk=;
+	h=Date:From:To:CC:Subject:References:In-Reply-To;
+	b=Xtmal4w9ngjiPLDraY0Ol5a9OjksXRTI4jUeVpLnXIJWtQzp5MUEOnaFPyP9JMsuH
+	 KIPbH48Alj4mFYtw1/Bhg1AMlkDXC8T2pH83HYFTtJhw3Yfc/WWrgbP2AraSh10vug
+	 aGGynT8kau7iyOXGB7WcwifzRZW2qjm5vry341fA=
+Received: from DFLE102.ent.ti.com (dfle102.ent.ti.com [10.64.6.23])
+	by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 42QBj08Y001858
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+	Tue, 26 Mar 2024 06:45:00 -0500
+Received: from DFLE102.ent.ti.com (10.64.6.23) by DFLE102.ent.ti.com
+ (10.64.6.23) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Tue, 26
+ Mar 2024 06:45:00 -0500
+Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DFLE102.ent.ti.com
+ (10.64.6.23) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Tue, 26 Mar 2024 06:45:00 -0500
+Received: from localhost (dhruva.dhcp.ti.com [172.24.227.68])
+	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 42QBixZd053809;
+	Tue, 26 Mar 2024 06:44:59 -0500
+Date: Tue, 26 Mar 2024 17:14:58 +0530
+From: Dhruva Gole <d-gole@ti.com>
+To: Vincent Guittot <vincent.guittot@linaro.org>
+CC: <linux@armlinux.org.uk>, <catalin.marinas@arm.com>, <will@kernel.org>,
+        <sudeep.holla@arm.com>, <rafael@kernel.org>, <viresh.kumar@linaro.org>,
+        <agross@kernel.org>, <andersson@kernel.org>,
+        <konrad.dybcio@linaro.org>, <mingo@redhat.com>, <peterz@infradead.org>,
+        <juri.lelli@redhat.com>, <dietmar.eggemann@arm.com>,
+        <rostedt@goodmis.org>, <bsegall@google.com>, <mgorman@suse.de>,
+        <bristot@redhat.com>, <vschneid@redhat.com>, <lukasz.luba@arm.com>,
+        <rui.zhang@intel.com>, <mhiramat@kernel.org>,
+        <daniel.lezcano@linaro.org>, <amit.kachhap@gmail.com>,
+        <corbet@lwn.net>, <gregkh@linuxfoundation.org>,
+        <linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+        <linux-pm@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>,
+        <linux-trace-kernel@vger.kernel.org>, <linux-doc@vger.kernel.org>,
+        Qais Yousef <qyousef@layalina.io>
+Subject: Re: [PATCH v6 1/5] cpufreq: Add a cpufreq pressure feedback for the
+ scheduler
+Message-ID: <20240326114458.dfcvpodoihk5tlmz@dhruva>
+References: <20240326091616.3696851-1-vincent.guittot@linaro.org>
+ <20240326091616.3696851-2-vincent.guittot@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20240326091616.3696851-2-vincent.guittot@linaro.org>
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
-> Once I've run some tests on this branch the patches there will be
-> added to the platform-drivers-x86/for-next branch and eventually
-> will be included in the pdx86 pull-request to Linus for the next
-> merge-window.
+Hi,
 
-Sounds good, thank you for describing the process.
+On Mar 26, 2024 at 10:16:12 +0100, Vincent Guittot wrote:
+> Provide to the scheduler a feedback about the temporary max available
+> capacity. Unlike arch_update_thermal_pressure, this doesn't need to be
+> filtered as the pressure will happen for dozens ms or more.
+> 
+> Signed-off-by: Vincent Guittot <vincent.guittot@linaro.org>
+> Acked-by: Rafael J. Wysocki <rafael@kernel.org>
+> Acked-by: Viresh Kumar <viresh.kumar@linaro.org>
+> Reviewed-by: Qais Yousef <qyousef@layalina.io>
+> Reviewed-by: Lukasz Luba <lukasz.luba@arm.com>
+> Tested-by: Lukasz Luba <lukasz.luba@arm.com>
+> ---
 
-~Ivor
+LGTM,
+
+Reviewed-by: Dhruva Gole <d-gole@ti.com>
+
+-- 
+Best regards,
+Dhruva
 
