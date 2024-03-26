@@ -1,362 +1,150 @@
-Return-Path: <linux-kernel+bounces-120064-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-120069-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2B09988D119
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 23:37:44 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 726C988D125
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 23:38:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D5B2332201B
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 22:37:42 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E8B20B25365
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 22:38:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A4A7913D8B2;
-	Tue, 26 Mar 2024 22:37:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5BF5913E419;
+	Tue, 26 Mar 2024 22:37:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="D2JoGDaR"
-Received: from mail-io1-f50.google.com (mail-io1-f50.google.com [209.85.166.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="HOrp+wOs"
+Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5EFBA13DDA4;
-	Tue, 26 Mar 2024 22:37:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 78F8C13E021;
+	Tue, 26 Mar 2024 22:37:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.19.142
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711492653; cv=none; b=PV1Ho6xL6GXwqzc3ngwgtUI+UIg3o6rWWsESuao98JVGI4AqLJNo11VeAJ31/C13a1zsyjRcGLgf5WfcpdqM/FXXm2e2V+ZtRKpAHpTJC0mpH0PO/sGxU/eoRLHo8hYUQ3v1lzryEzlVtp1Qd9wl5TlkYox9zLgHJb4+E9DL64E=
+	t=1711492664; cv=none; b=bNjOxtmxYGpjGVERCWhXQjlXAS315wmReyi8YlzQNzWVm6Fap8c53MhDgOrBscVPmgB65fvZEnnc9SyxJvf53EzIP3uFGF22CY2umaG7vKSXL7pEXyVR6mUUwur6OYee6FV2DqRlKw+RJm0St74PnFsRRfnHLbKiz5MBKYaLYQs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711492653; c=relaxed/simple;
-	bh=4yoVptj1UWplyDzAq7Tjl/TVNzbjsEvuyOqlRXRE7k4=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=pcgPTtS8dTRWE6y0MspN425bFPq/mOzD12i/ewTbdb/1YFnRb1ydV4shYjoXRAh6EUfttLDnOXxLaLqraIoZdhQRRvx2ru/NMq3fTIUdgEGJfqKd6gqmE6bvoZSouT6F61MpEINxOJU2k0U944quyUM3Iv93/wN9Y+Fihhexksk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=D2JoGDaR; arc=none smtp.client-ip=209.85.166.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-io1-f50.google.com with SMTP id ca18e2360f4ac-7d0486cf91aso131633739f.1;
-        Tue, 26 Mar 2024 15:37:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711492650; x=1712097450; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=SA/GLZl3h7HpI8vEB/ZyUsu3mvxu5V+a+bI3pQOrjds=;
-        b=D2JoGDaRQ5wUcLKWRnFPl2dwLRcr2zEfR7jf+c67L12ldw3OVKEscIjM3AP5zryz47
-         +yoCd++nJSVmv9eaoxVE6dm9tYk7pwNK04Un28Nene33Z/eaJT5N/di00+ohKGRuDk92
-         ZOGIWAfAK//kt1zXdJ1bVApGrYsW1MbGA8VY0jt1kc+WzrEtMLeWQbLFjRnaIIkydubo
-         fBh2IoqzmD8tpxHC5iTujRS2cz2A6vLEmP/bd8RSd06LYLg8olfRl1aKlDrwYKFl5kJS
-         uXP109P/eneanuBzpkxbDnHFNDKRpuVI2vPD2ePJUpNPws0G+7Epk4luVcEM/e9vvA8P
-         /XNg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711492650; x=1712097450;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=SA/GLZl3h7HpI8vEB/ZyUsu3mvxu5V+a+bI3pQOrjds=;
-        b=c50WwUz8t/cPGeSdF1Ltlsll8dIcdCM+9yMRxkY/zbWvPJngJ01hU5yxOj1YQDBQ8Q
-         v5I1ymBf7DdoDisgwKr0xY/ivmzWTmyJHTtIHwIU4ugTksM072IjaOJPw63xrLlkDoLN
-         DZDBIr8Jj7kmfdPTjHQndBYvg6tJj1s0/bmBX67spfLw6P20JXa9a8eBYszOoEGdlxU3
-         IQA2vU9c1t26l3NmKnG+waXHExqkxE9MuIJ9P6UresN6ZhtVq0OKaCOT9+kVdJ1imN+Z
-         kNiFl14LPAE9SLa/eBDgL1XrEqWdws8SJnoFr3uG5XlIt6jStR70vEX9ek3Suhq0hkjo
-         t0mw==
-X-Forwarded-Encrypted: i=1; AJvYcCW8XyhZhzH8WCzdlRXI00s7B5KVpSCCgFhRC4R4xMI+Otd2i+Cd96FllmRT63lLxdmUXkogYm9QP3b+AoKnNC0mBd5jlVyo4C3tepxnFGx2WYPMDAhxMlSyYw61KVoCfy2+thP2xerhAw==
-X-Gm-Message-State: AOJu0YzStrzeItEVs9LPeN4i66FTG6S11blLpKbP750qWd5NQanW7TQx
-	UFocLahCLnS6olHBGLox0tJ4sPz8v+7Nx8Yov5kfpNTkd6CvWnoI
-X-Google-Smtp-Source: AGHT+IEsZu1f6Tc3oBDcbNx9nMtrh3Lz5apUbtKBHtrG7Zi1dBfQ06ge4SOqm91WZkV/knfGjfY5oQ==
-X-Received: by 2002:a05:6602:1d54:b0:7d0:5735:c460 with SMTP id hi20-20020a0566021d5400b007d05735c460mr7502224iob.3.1711492650493;
-        Tue, 26 Mar 2024 15:37:30 -0700 (PDT)
-Received: from jernej-laptop.localnet (86-58-6-171.dynamic.telemach.net. [86.58.6.171])
-        by smtp.gmail.com with ESMTPSA id it21-20020a056638859500b0047436275c32sm2950406jab.1.2024.03.26.15.37.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Mar 2024 15:37:30 -0700 (PDT)
-From: Jernej =?utf-8?B?xaBrcmFiZWM=?= <jernej.skrabec@gmail.com>
+	s=arc-20240116; t=1711492664; c=relaxed/simple;
+	bh=KfCKmYHywoKaCHHGNRiQeIrXMDQOxpWG74uFDT0bwKI=;
+	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=NaL0cZSVMJs+eXfEj1DmF/pIv2yf0BCG2cP7Wi9Whvojv/9r8ivPNzYl2AAVLOSeXB8FBhk0kEbrkSELX4e5NJXubP+VU7f1xrWwp/CCgL1kosow9RAk+nm0CeqpLokmIoLQ3Zlc58r6LGpdKAjSrqwynPdBiPj3aXZKVHas3d8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=HOrp+wOs; arc=none smtp.client-ip=198.47.19.142
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+	by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 42QMbWGd122550;
+	Tue, 26 Mar 2024 17:37:32 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+	s=ti-com-17Q1; t=1711492652;
+	bh=Lgm+zMk+iBG2wv4BvI+8VRJEkQ6t3xqJUb4WT18clKA=;
+	h=From:To:CC:Subject:Date:In-Reply-To:References;
+	b=HOrp+wOsLao8NEe7IbHVfN5R8WnWUCQsZsgd3hFkv1JFOgKqx0z+MxdTmkIItXluo
+	 0U8XqFSbkjhfVBXkqUtZ0aH7XoejlWrUDJUZTM7EQbq2FNn59jdf72ELB4CJhx46Id
+	 0t38enLoiVxe7UNlbyAu8/zIKk+Vm9feTij/2XHU=
+Received: from DFLE109.ent.ti.com (dfle109.ent.ti.com [10.64.6.30])
+	by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 42QMbWiL106451
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+	Tue, 26 Mar 2024 17:37:32 -0500
+Received: from DFLE104.ent.ti.com (10.64.6.25) by DFLE109.ent.ti.com
+ (10.64.6.30) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Tue, 26
+ Mar 2024 17:37:31 -0500
+Received: from fllvsmtp8.itg.ti.com (10.64.41.158) by DFLE104.ent.ti.com
+ (10.64.6.25) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Tue, 26 Mar 2024 17:37:31 -0500
+Received: from fllvsmtp8.itg.ti.com ([10.249.42.149])
+	by fllvsmtp8.itg.ti.com (8.15.2/8.15.2) with ESMTP id 42QMbVmY109669;
+	Tue, 26 Mar 2024 17:37:31 -0500
+From: Andrew Davis <afd@ti.com>
 To: Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
- Samuel Holland <samuel@sholland.org>, Maxime Ripard <mripard@kernel.org>,
- devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org,
- Denis Burkov <hitechshell@mail.ru>
-Cc: Denis Burkov <hitechshell@mail.ru>
-Subject: Re: [PATCH v2 2/2] ARM: dts: sun5i: Add PocketBook 614 Plus support
-Date: Tue, 26 Mar 2024 23:37:26 +0100
-Message-ID: <1959471.PYKUYFuaPT@jernej-laptop>
-In-Reply-To: <20240317083445.4668-2-hitechshell@mail.ru>
-References:
- <20240317083445.4668-1-hitechshell@mail.ru>
- <20240317083445.4668-2-hitechshell@mail.ru>
+        Krzysztof Kozlowski
+	<krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Santosh Shilimkar <ssantosh@kernel.org>, Nishanth Menon <nm@ti.com>,
+        Vignesh
+ Raghavendra <vigneshr@ti.com>
+CC: <devicetree@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, Andrew Davis <afd@ti.com>
+Subject: [PATCH 1/4] firmware: ti_sci: Use devm_register_restart_handler()
+Date: Tue, 26 Mar 2024 17:37:27 -0500
+Message-ID: <20240326223730.54639-2-afd@ti.com>
+X-Mailer: git-send-email 2.39.2
+In-Reply-To: <20240326223730.54639-1-afd@ti.com>
+References: <20240326223730.54639-1-afd@ti.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
-Dne nedelja, 17. marec 2024 ob 09:34:45 CET je Denis Burkov napisal(a):
-> What works:
-> 
-> - Serial console
-> - mmc0, mmc2 (both microSD card slots on the board)
-> - All buttons (gpio and lradc based)
-> - Power LED
-> - PMIC
-> - RTC
-> - USB OTG/gadgets mode
-> 
-> Signed-off-by: Denis Burkov <hitechshell@mail.ru>
-> ---
->  arch/arm/boot/dts/allwinner/Makefile          |   1 +
->  .../sun5i-a13-pocketbook-614-plus.dts         | 215 ++++++++++++++++++
->  2 files changed, 216 insertions(+)
->  create mode 100644 arch/arm/boot/dts/allwinner/sun5i-a13-pocketbook-614-plus.dts
-> 
-> diff --git a/arch/arm/boot/dts/allwinner/Makefile b/arch/arm/boot/dts/allwinner/Makefile
-> index 5fbb44ddacd0..6209243ad975 100644
-> --- a/arch/arm/boot/dts/allwinner/Makefile
-> +++ b/arch/arm/boot/dts/allwinner/Makefile
-> @@ -61,6 +61,7 @@ dtb-$(CONFIG_MACH_SUN5I) += \
->  	sun5i-a13-olinuxino.dtb \
->  	sun5i-a13-olinuxino-micro.dtb \
->  	sun5i-a13-pocketbook-touch-lux-3.dtb \
-> +	sun5i-a13-pocketbook-614-plus.dtb \
->  	sun5i-a13-q8-tablet.dtb \
->  	sun5i-a13-utoo-p66.dtb \
->  	sun5i-gr8-chip-pro.dtb \
-> diff --git a/arch/arm/boot/dts/allwinner/sun5i-a13-pocketbook-614-plus.dts b/arch/arm/boot/dts/allwinner/sun5i-a13-pocketbook-614-plus.dts
-> new file mode 100644
-> index 000000000000..b5449301789a
-> --- /dev/null
-> +++ b/arch/arm/boot/dts/allwinner/sun5i-a13-pocketbook-614-plus.dts
-> @@ -0,0 +1,215 @@
-> +// SPDX-License-Identifier: GPL-2.0+
-> +/*
-> + * Copyright 2024 Denis Burkov <hitechshell@mail.ru>
-> + */
-> +
-> +/dts-v1/;
-> +#include "sun5i-a13.dtsi"
-> +#include "sunxi-common-regulators.dtsi"
-> +
-> +#include <dt-bindings/gpio/gpio.h>
-> +#include <dt-bindings/input/input.h>
-> +#include <dt-bindings/interrupt-controller/irq.h>
-> +
-> +/ {
-> +	model = "PocketBook 614 Plus";
-> +	compatible = "pocketbook,614-plus", "allwinner,sun5i-a13";
-> +
-> +	aliases {
-> +		serial0 = &uart1;
-> +	};
-> +
-> +	chosen {
-> +		stdout-path = "serial0:115200n8";
-> +	};
-> +
-> +	leds {
-> +		compatible = "gpio-leds";
-> +
-> +		led {
+Use device life-cycle managed register function to simplify probe.
 
-led-0 is preferred by the DT binding. Please also add function and color
-properties.
+Signed-off-by: Andrew Davis <afd@ti.com>
+Reviewed-by: Gabriel Somlo <gsomlo@gmail.com>
+---
+ drivers/firmware/ti_sci.c | 15 +++++----------
+ 1 file changed, 5 insertions(+), 10 deletions(-)
 
-Please run DT check with W=2 to catch andy other potential issues.
-
-Best regards,
-Jernej
-
-> +			gpios = <&pio 4 8 GPIO_ACTIVE_LOW>; /* PE8 */
-> +			default-state = "on";
-> +		};
-> +	};
-> +
-> +	gpio-keys {
-> +		compatible = "gpio-keys";
-> +
-> +		key-right {
-
-Key node names should contain key-[number], starting with 0.
-
-> +			label = "Right";
-> +			linux,code = <KEY_NEXT>;
-> +			gpios = <&pio 6 9 GPIO_ACTIVE_LOW>; /* PG9 */
-> +		};
-> +
-> +		key-left {
-> +			label = "Left";
-> +			linux,code = <KEY_PREVIOUS>;
-> +			gpios = <&pio 6 10 GPIO_ACTIVE_LOW>; /* PG10 */
-> +		};
-> +	};
-> +
-> +	reg_3v3_mmc0: regulator-mmc0 {
-> +		compatible = "regulator-fixed";
-> +		regulator-name = "vdd-mmc0";
-> +		regulator-min-microvolt = <3300000>;
-> +		regulator-max-microvolt = <3300000>;
-> +		gpio = <&pio 4 4 GPIO_ACTIVE_LOW>; /* PE4 */
-> +		vin-supply = <&reg_vcc3v3>;
-> +	};
-> +};
-> +
-> +&cpu0 {
-> +	cpu-supply = <&reg_dcdc2>;
-> +};
-> +
-> +&ehci0 {
-> +	status = "okay";
-> +};
-> +
-> +&i2c0 {
-> +	status = "okay";
-> +
-> +	axp209: pmic@34 {
-> +		compatible = "x-powers,axp209";
-> +		reg = <0x34>;
-> +		interrupts = <0>;
-> +	};
-> +};
-> +
-> +#include "axp209.dtsi"
-> +
-> +&i2c1 {
-> +	status = "okay";
-> +
-> +	pcf8563: rtc@51 {
-> +		compatible = "nxp,pcf8563";
-> +		reg = <0x51>;
-> +		#clock-cells = <0>;
-> +	};
-> +};
-> +
-> +&lradc {
-> +	vref-supply = <&reg_ldo2>;
-> +	status = "okay";
-> +
-> +	button-300 {
-> +		label = "Down";
-> +		linux,code = <KEY_DOWN>;
-> +		channel = <0>;
-> +		voltage = <300000>;
-> +	};
-> +
-> +	button-700 {
-> +		label = "Up";
-> +		linux,code = <KEY_UP>;
-> +		channel = <0>;
-> +		voltage = <700000>;
-> +	};
-> +
-> +	button-1000 {
-> +		label = "Left";
-> +		linux,code = <KEY_LEFT>;
-> +		channel = <0>;
-> +		voltage = <1000000>;
-> +	};
-> +
-> +	button-1200 {
-> +		label = "Menu";
-> +		linux,code = <KEY_MENU>;
-> +		channel = <0>;
-> +		voltage = <1200000>;
-> +	};
-> +
-> +	button-1500 {
-> +		label = "Right";
-> +		linux,code = <KEY_RIGHT>;
-> +		channel = <0>;
-> +		voltage = <1500000>;
-> +	};
-> +};
-> +
-> +&mmc0 {
-> +	vmmc-supply = <&reg_3v3_mmc0>;
-> +	bus-width = <4>;
-> +	cd-gpios = <&pio 6 0 GPIO_ACTIVE_LOW>; /* PG0 */
-> +	status = "okay";
-> +};
-> +
-> +&mmc2 {
-> +	pinctrl-names = "default";
-> +	pinctrl-0 = <&mmc2_4bit_pc_pins>;
-> +	vmmc-supply = <&reg_vcc3v3>;
-> +	bus-width = <4>;
-> +	non-removable;
-> +	status = "okay";
-> +};
-> +
-> +&ohci0 {
-> +	status = "okay";
-> +};
-> +
-> +&otg_sram {
-> +	status = "okay";
-> +};
-> +
-> +&reg_dcdc2 {
-> +	regulator-always-on;
-> +	regulator-min-microvolt = <1000000>;
-> +	regulator-max-microvolt = <1500000>;
-> +	regulator-name = "vdd-cpu";
-> +};
-> +
-> +&reg_dcdc3 {
-> +	regulator-always-on;
-> +	regulator-min-microvolt = <1000000>;
-> +	regulator-max-microvolt = <1400000>;
-> +	regulator-name = "vdd-int-dll";
-> +};
-> +
-> +&reg_ldo1 {
-> +	regulator-name = "vdd-rtc";
-> +};
-> +
-> +&reg_ldo2 {
-> +	regulator-always-on;
-> +	regulator-min-microvolt = <3000000>;
-> +	regulator-max-microvolt = <3000000>;
-> +	regulator-name = "avcc";
-> +};
-> +
-> +&reg_usb0_vbus {
-> +	status = "okay";
-> +	gpio = <&pio 6 12 GPIO_ACTIVE_HIGH>; /* PG12 */
-> +};
-> +
-> +&reg_usb1_vbus {
-> +	gpio = <&pio 6 11 GPIO_ACTIVE_HIGH>; /* PG11 */
-> +	status = "okay";
-> +};
-> +
-> +&uart1 {
-> +	pinctrl-names = "default";
-> +	pinctrl-0 = <&uart1_pg_pins>;
-> +	status = "okay";
-> +};
-> +
-> +&usb_otg {
-> +	dr_mode = "otg";
-> +	status = "okay";
-> +};
-> +
-> +&usb_power_supply {
-> +	status = "okay";
-> +};
-> +
-> +&battery_power_supply {
-> +	status = "okay";
-> +};
-> +
-> +&usbphy {
-> +	usb0_id_det-gpios = <&pio 6 2 GPIO_ACTIVE_HIGH>; /* PG2 */
-> +	usb0_vbus_det-gpios = <&axp_gpio 1 GPIO_ACTIVE_HIGH>;
-> +	usb0_vbus-supply = <&reg_usb0_vbus>;
-> +	usb1_vbus-supply = <&reg_usb1_vbus>;
-> +	status = "okay";
-> +};
-> 
-
-
-
+diff --git a/drivers/firmware/ti_sci.c b/drivers/firmware/ti_sci.c
+index 8b9a2556de16d..9885e1763591b 100644
+--- a/drivers/firmware/ti_sci.c
++++ b/drivers/firmware/ti_sci.c
+@@ -87,7 +87,6 @@ struct ti_sci_desc {
+  * struct ti_sci_info - Structure representing a TI SCI instance
+  * @dev:	Device pointer
+  * @desc:	SoC description for this instance
+- * @nb:	Reboot Notifier block
+  * @d:		Debugfs file entry
+  * @debug_region: Memory region where the debug message are available
+  * @debug_region_size: Debug region size
+@@ -103,7 +102,6 @@ struct ti_sci_desc {
+  */
+ struct ti_sci_info {
+ 	struct device *dev;
+-	struct notifier_block nb;
+ 	const struct ti_sci_desc *desc;
+ 	struct dentry *d;
+ 	void __iomem *debug_region;
+@@ -122,7 +120,6 @@ struct ti_sci_info {
+ 
+ #define cl_to_ti_sci_info(c)	container_of(c, struct ti_sci_info, cl)
+ #define handle_to_ti_sci_info(h) container_of(h, struct ti_sci_info, handle)
+-#define reboot_to_ti_sci_info(n) container_of(n, struct ti_sci_info, nb)
+ 
+ #ifdef CONFIG_DEBUG_FS
+ 
+@@ -3254,10 +3251,9 @@ devm_ti_sci_get_resource(const struct ti_sci_handle *handle, struct device *dev,
+ }
+ EXPORT_SYMBOL_GPL(devm_ti_sci_get_resource);
+ 
+-static int tisci_reboot_handler(struct notifier_block *nb, unsigned long mode,
+-				void *cmd)
++static int tisci_reboot_handler(struct sys_off_data *data)
+ {
+-	struct ti_sci_info *info = reboot_to_ti_sci_info(nb);
++	struct ti_sci_info *info = data->cb_data;
+ 	const struct ti_sci_handle *handle = &info->handle;
+ 
+ 	ti_sci_cmd_core_reboot(handle);
+@@ -3400,10 +3396,9 @@ static int ti_sci_probe(struct platform_device *pdev)
+ 	ti_sci_setup_ops(info);
+ 
+ 	if (reboot) {
+-		info->nb.notifier_call = tisci_reboot_handler;
+-		info->nb.priority = 128;
+-
+-		ret = register_restart_handler(&info->nb);
++		ret = devm_register_restart_handler(dev,
++						    tisci_reboot_handler,
++						    info);
+ 		if (ret) {
+ 			dev_err(dev, "reboot registration fail(%d)\n", ret);
+ 			goto out;
+-- 
+2.39.2
 
 
