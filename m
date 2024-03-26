@@ -1,208 +1,285 @@
-Return-Path: <linux-kernel+bounces-118348-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-118347-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5458D88B8FF
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 04:49:40 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9D45788B8FB
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 04:49:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BB5791F35090
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 03:49:39 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 519402C2D2C
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 03:49:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 91B4B129E80;
-	Tue, 26 Mar 2024 03:49:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 43479129E62;
+	Tue, 26 Mar 2024 03:49:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="FE8d599P"
-Received: from mail-ej1-f43.google.com (mail-ej1-f43.google.com [209.85.218.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b="EDcQYzEt"
+Received: from NAM04-MW2-obe.outbound.protection.outlook.com (mail-mw2nam04olkn2037.outbound.protection.outlook.com [40.92.46.37])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B824E128823
-	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 03:49:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.43
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711424973; cv=none; b=I+5fA56xZPn9+CjZeC1ALuup7zkgqSz32rJpbOQaGkdMDeihvY3wH/syZ7PuZhlwMkPxVBoW7NaWa+OjcxKKFI6l9Zkd3C25l2I6uS09f0tOBf0SnCtTgBM1J6ap2ecZRw4I/QGYsSjaXWH9ThZr31j4eeRttPhLNaP9xZnXAgM=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711424973; c=relaxed/simple;
-	bh=WOA0jjSHA8PSWAbj27+clOuIsbbUO3Vmsfst/KpUulY=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=TpZON6Bx3v/AE8GpfycUBpOXGMlGUcEaAlOuyOCpYfDZOOf+7E7KEt/LaKQtI2EaZrZmJvuUNWFSmBluZUB4PJ/AezZhZnDFFSSlAElOU2tUZOdR/UnBaRPs7zz5IDD1Hz/H8Tp03C1FSMrjESXdD2ZKzRgV2xD813aTWhX794s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=FE8d599P; arc=none smtp.client-ip=209.85.218.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
-Received: by mail-ej1-f43.google.com with SMTP id a640c23a62f3a-a46cd9e7fcaso596296066b.1
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 20:49:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1711424970; x=1712029770; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=VIHIysdOPquKQ4BdUP2bPIlHtyK3i5gWkh5V6JlSRrw=;
-        b=FE8d599PqO0mz5TCcNqoIgT5rWumW+8LqUSdbgCz3ZRWsd6mohEgWV4g5rauZKVVEW
-         spAMeRFPzXqZl0+WPUIjFzjPqdyMOcKxdu1Kk+mxa2EXHLZwSL9w9mPNneW6pnRPUjEe
-         NH53LL5tBqVf4Tkzp0XFZPqC/jg4fTq0Du7cc=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711424970; x=1712029770;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=VIHIysdOPquKQ4BdUP2bPIlHtyK3i5gWkh5V6JlSRrw=;
-        b=RJEkqYOZx6d9xTPImxsJ/t5WVnukdpz9azHFrOwh8Z6tZu368i3lmXqIwUQmJfA2/2
-         Fwoc6PUAIwiTvTgjBaMNKd3nOQpKbfpYTfOXE97czT028SZPjvVQRaNVLdeYnK0HrCLh
-         sRaKW9N7+dxjEkrd20yNBx1yojbPu7pZI7kvPJzKbWOIbvFEXpvgVaCWFBzj5m1VeAc4
-         DvxVawXYvnhcfgCWdn9erdqnLOPbZo9Dp66OTWxKScsbOlEnhaKVQm9aox5hGopdPORj
-         2Hd73MRqsLwfDhe0Hz0nOGQs6DJ4iXxktCOOaqzN5Che1TP77MCepiH6qKeD1exYxt0o
-         hvdA==
-X-Forwarded-Encrypted: i=1; AJvYcCV7YNDrEtl+BjQD4FPSXWHQk8MB8O+DWx2C7D426djYxNEmEOu17WM3/bmrjWUYh70iFOo2t3lbvsOMYWAwEe+N4EwvpiXuZNK4QB2M
-X-Gm-Message-State: AOJu0Yz/Wv3k0Rkxn/q2OKpAPilKBo11xQOlaCbaEQhjQC2uajbQ/NWa
-	3l3TUNIbQudaddtVG7PwrjUVFNu8KGwGZD3WTxxIog2nB8/fX+x/FcuCXG7alHWKGnM+G6UDKIv
-	W+kF12Q==
-X-Google-Smtp-Source: AGHT+IHLOJB0MM3rwZ/9Gt6I5zOitf6sfbNZrIm7yZkaF4eSBfywSkk9KLFP8y32NDGOTLpAxhtI7Q==
-X-Received: by 2002:a17:906:4541:b0:a46:cf63:d96b with SMTP id s1-20020a170906454100b00a46cf63d96bmr6381007ejq.51.1711424969644;
-        Mon, 25 Mar 2024 20:49:29 -0700 (PDT)
-Received: from mail-ej1-f48.google.com (mail-ej1-f48.google.com. [209.85.218.48])
-        by smtp.gmail.com with ESMTPSA id bl1-20020a170906c24100b00a46bed423a0sm3720251ejb.23.2024.03.25.20.49.28
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 25 Mar 2024 20:49:28 -0700 (PDT)
-Received: by mail-ej1-f48.google.com with SMTP id a640c23a62f3a-a45f257b81fso584715166b.0
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 20:49:28 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCVlMfzUGznYOsf9Snfg5qkGUrAZJEBZUDcybdHJg//H0+MODQBHfotqIfJgheVNfzZDn8vWK1UrKWuuIW/pIBJOc8VYYTUD7BYwrTZ/
-X-Received: by 2002:a17:907:9722:b0:a47:48b0:922e with SMTP id
- jg34-20020a170907972200b00a4748b0922emr6654391ejc.23.1711424968017; Mon, 25
- Mar 2024 20:49:28 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D4C57128823;
+	Tue, 26 Mar 2024 03:49:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.92.46.37
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1711424955; cv=fail; b=A3MjRDvgzj2V7ND3as/NiHqpaNyLeEyC5I1IknDmNnVRDV5yoJxf9xbO5PQT/8P0S6tOXowA6xs25ZPxoinYNgRP6LY6XrB/4xb102WMHbOgB4v61O9i/es++TMxPXknFIDGdbjhztKdH2tiFXlzrBGYGvLIT60Dg5DpC/kIGPE=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1711424955; c=relaxed/simple;
+	bh=PzrvRShpMTXcWrwCB0dXqsinyj1PZ0cFCYuW2RmhQO0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
+	 Content-Disposition:In-Reply-To:MIME-Version; b=iyzrB9P6WopGfjebLGIaefN/ZWPS0W6ePeqQkrK6d6VXXubLar4FOFyfXuaoKy13upv61f2vkYfgIGzxHoOvKwklbapBCaxH3liDXKU0bfhCJ2glswFPwrh9w0AlvXNxPbzuQx1Mag08X85tLea9DVT1RHKIuVyf5i0KNKmwACs=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com; spf=pass smtp.mailfrom=outlook.com; dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b=EDcQYzEt; arc=fail smtp.client-ip=40.92.46.37
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=outlook.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=RB0ulqcQZTT4mfmWEMhOwT0i6uBIiLN6rDdbiyxqBQchTCZnYrzBEdLpyat+8g/JIqchcfSpThj9zE/i4yOGx+7k95C5y4nH8DxE8lPg4RfBzYNiVV2GdqoOEE78/iexItQslICE5+lTuKpcTRwI/NnCFZ2hpEfNCKxyHhzMGzRuw+sDlOByrDd6ic7G7QhWLMimzgaaYkdKUnB8eoCTwMkCxRmjZG3vviy4UZ0LCos6nh6u3GKo8bfpllR7Lxu3GBwKDYZ3+TcOuVFyr17i7CQhM/dI2HUeD5XHNODWqxNpCh0kTliyY4m8+FAZiECyFTP/+X6uC8ErALd5wQBYrg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=p5YfOcxJCSWRwShjx3CXCGHIkjc/FH8KTY5PHD74Wjs=;
+ b=dLiCM0bTe1rb9F7vpRjXpJXi1DuuPSsB0wKotfJzUdbEsucLsJfoJG03NI2oycRVwQ6xnVgJZbm0WXyyhaNldJwXn/KTmDR0SdoyjL+HNppmTKz2z1iYRbp5uRu1Ypz0c8IP5PzNZfkPHn0CsJL9KRtsOoh+uSUorZclEKjnUokC3gb9xuNGZDfd9OJD/yT2M1/1y7hSDuu0MrPCAYo6AtUf6Gu4xIjSKmD/BKlJKs6Th+sOfoy06Q+nW9MWMyvIJxzhQeEEcB5n2JehZQYINOoZBbg8tm5ot0EDUQFqfUUTcwKv7cF+wXs3pcRNPJP05QIdrI/Oi26xssPTAeA4Lw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
+ dkim=none; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=p5YfOcxJCSWRwShjx3CXCGHIkjc/FH8KTY5PHD74Wjs=;
+ b=EDcQYzEtE1P8W81vLU6JqRocCZMbk01FJc3F3OLzL1872oUS7nCtftgJlxEBrZcuKsKEGTPwjr7g7P2GdzfYrO2ptAcXJ9K0KcBAi5ona5z2ujMDSaVCUhXDgLFiR0muVjkO9kpFpchcfYmfe5xeOTfBRQ/hTlwQgr6Sc4e6QjV8aegEfZsCPGGqqaufAbiSrt9JtSvr58eV2+jPYAaEAPJx4eWDc+CYGpJ1XBCsB9sqhagTBEob+KbyCJsH5I0bVe+vSuty6BMau9s32s2u4uTdi+DKNeTPQ1GDRRURLEh6kAINhgEHzTgwq3ssLzPvpn5MlF4PXw2sV3dnv5vbbw==
+Received: from IA1PR20MB4953.namprd20.prod.outlook.com (2603:10b6:208:3af::19)
+ by SJ1PR20MB4883.namprd20.prod.outlook.com (2603:10b6:a03:456::7) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.24; Tue, 26 Mar
+ 2024 03:49:10 +0000
+Received: from IA1PR20MB4953.namprd20.prod.outlook.com
+ ([fe80::182f:841b:6e76:b819]) by IA1PR20MB4953.namprd20.prod.outlook.com
+ ([fe80::182f:841b:6e76:b819%2]) with mapi id 15.20.7409.026; Tue, 26 Mar 2024
+ 03:49:10 +0000
+Date: Tue, 26 Mar 2024 11:49:15 +0800
+From: Inochi Amaoto <inochiama@outlook.com>
+To: Frank Li <Frank.li@nxp.com>, Inochi Amaoto <inochiama@outlook.com>
+Cc: Vinod Koul <vkoul@kernel.org>, Rob Herring <robh@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
+	Chen Wang <unicorn_wang@outlook.com>, Paul Walmsley <paul.walmsley@sifive.com>, 
+	Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>, 
+	Jisheng Zhang <jszhang@kernel.org>, Liu Gui <kenneth.liu@sophgo.com>, 
+	Jingbao Qiu <qiujingbao.dlmu@gmail.com>, dlan@gentoo.org, dmaengine@vger.kernel.org, 
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org
+Subject: Re: [PATCH v5 1/3] dt-bindings: dmaengine: Add dmamux for
+ CV18XX/SG200X series SoC
+Message-ID:
+ <IA1PR20MB495309ACE73C4308F1329375BB352@IA1PR20MB4953.namprd20.prod.outlook.com>
+References: <IA1PR20MB4953B500D7451964EE37DA4CBB352@IA1PR20MB4953.namprd20.prod.outlook.com>
+ <IA1PR20MB4953E2937788D9D92C91ABBBBB352@IA1PR20MB4953.namprd20.prod.outlook.com>
+ <ZgJDCL+aq3ZTE6/1@lizhi-Precision-Tower-5810>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZgJDCL+aq3ZTE6/1@lizhi-Precision-Tower-5810>
+X-TMN: [mw9wSZjSZKgP+XZvTYYzxcyMX0qfkNAftMfEIDQXQmM=]
+X-ClientProxiedBy: TYCP286CA0151.JPNP286.PROD.OUTLOOK.COM
+ (2603:1096:400:383::8) To IA1PR20MB4953.namprd20.prod.outlook.com
+ (2603:10b6:208:3af::19)
+X-Microsoft-Original-Message-ID:
+ <vyzqj6ykjjeb37bh3enxngsevrovixxsqgi22jezbk7pjniqii@x2i6p36zxfyr>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240322233838.868874-1-boqun.feng@gmail.com> <s2jeqq22n5ef5jknaps37mfdjvuqrns4w7i22qp2r7r4bzjqs2@my3eyxoa3pl3>
- <CAHk-=whY5A=S=bLwCFL=043DoR0TTgSDUmfPDx2rXhkk3KANPQ@mail.gmail.com>
- <u2suttqa4c423q4ojehbucaxsm6wguqtgouj7vudp55jmuivq3@okzfgryarwnv>
- <CAHk-=whkQk=zq5XiMcaU3xj4v69+jyoP-y6Sywhq-TvxSSvfEA@mail.gmail.com>
- <c51227c9a4103ad1de43fc3cda5396b1196c31d7.camel@redhat.com>
- <CAHk-=wjP1i014DGPKTsAC6TpByC3xeNHDjVA4E4gsnzUgJBYBQ@mail.gmail.com>
- <bu3seu56hfozsvgpdqjarbdkqo3lsjfc4lhluk5oj456xmrjc7@lfbbjxuf4rpv>
- <CAHk-=wgLGWBXvNODAkzkVHEj7zrrnTq_hzMft62nKNkaL89ZGQ@mail.gmail.com> <ZgIRXL5YM2AwBD0Y@gallifrey>
-In-Reply-To: <ZgIRXL5YM2AwBD0Y@gallifrey>
-From: Linus Torvalds <torvalds@linux-foundation.org>
-Date: Mon, 25 Mar 2024 20:49:11 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wjwxKD9CxYsf5x+K5fJbJa_JYZh1eKB4PT5cZJq1+foGw@mail.gmail.com>
-Message-ID: <CAHk-=wjwxKD9CxYsf5x+K5fJbJa_JYZh1eKB4PT5cZJq1+foGw@mail.gmail.com>
-Subject: Re: [WIP 0/3] Memory model and atomic API in Rust
-To: "Dr. David Alan Gilbert" <dave@treblig.org>
-Cc: Kent Overstreet <kent.overstreet@linux.dev>, Philipp Stanner <pstanner@redhat.com>, 
-	Boqun Feng <boqun.feng@gmail.com>, rust-for-linux@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org, 
-	llvm@lists.linux.dev, Miguel Ojeda <ojeda@kernel.org>, 
-	Alex Gaynor <alex.gaynor@gmail.com>, Wedson Almeida Filho <wedsonaf@gmail.com>, Gary Guo <gary@garyguo.net>, 
-	=?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, 
-	Benno Lossin <benno.lossin@proton.me>, Andreas Hindborg <a.hindborg@samsung.com>, 
-	Alice Ryhl <aliceryhl@google.com>, Alan Stern <stern@rowland.harvard.edu>, 
-	Andrea Parri <parri.andrea@gmail.com>, Will Deacon <will@kernel.org>, 
-	Peter Zijlstra <peterz@infradead.org>, Nicholas Piggin <npiggin@gmail.com>, 
-	David Howells <dhowells@redhat.com>, Jade Alglave <j.alglave@ucl.ac.uk>, 
-	Luc Maranget <luc.maranget@inria.fr>, "Paul E. McKenney" <paulmck@kernel.org>, 
-	Akira Yokosawa <akiyks@gmail.com>, Daniel Lustig <dlustig@nvidia.com>, 
-	Joel Fernandes <joel@joelfernandes.org>, Nathan Chancellor <nathan@kernel.org>, 
-	Nick Desaulniers <ndesaulniers@google.com>, kent.overstreet@gmail.com, 
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, elver@google.com, 
-	Mark Rutland <mark.rutland@arm.com>, Thomas Gleixner <tglx@linutronix.de>, 
-	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
-	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org, 
-	"H. Peter Anvin" <hpa@zytor.com>, Catalin Marinas <catalin.marinas@arm.com>, 
-	linux-arm-kernel@lists.infradead.org, linux-fsdevel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+X-MS-Exchange-MessageSentRepresentingType: 1
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: IA1PR20MB4953:EE_|SJ1PR20MB4883:EE_
+X-MS-Office365-Filtering-Correlation-Id: 4da90dbf-aedd-4658-3caa-08dc4d47b179
+X-MS-Exchange-SLBlob-MailProps:
+	RlF2DIMZ1qXOkXGJ+Mozsa5bhT5ExeELhvMJURViLdTEECx7fx12iLB70y/l+lS7/0sRFhXvDucEYu/IphHy0Ac/eGgCywhG9zCrq9jg7L+B7foBdii8eKkdzkrFIfSzEa4kaCWGrULbs40V2JS0Wp3WXWC0xPZgvYCFe1ZB+6P3MBO64iFP43Qv7h9JqLA1Vx6+DuQtEJTFyOppM/GocyRiJYVk92Jyy5H2WyFyO61Ym+1FkGRrahpziSWMREcvs6mGzKOqAd41MkhDC1xJ1CViIH9CFbD35yv8Hw3gHH+kud3VfPpzVZ5mKH1OVGjPfBeToJXpZt+zCwPglxWU/zgEIo+CgIyXEBXatR2EbLgcxGU7OXtQyX5yQeF4nZ0rwf/Fh9JoZOksMws6+57FZmjeJCcUgz3w+KAgIYablQzthaAabKmUTGvANCec4+oK7jQvJpP/5ESIg5+Zhk4jvSLYUJ7quweCYgSwna6iSoZBKR92QLPpI1JDDkKRKLSfpfhtV5/da5d2iL82tJMwTds8l5pUkHVkJQ+hZWxP5F6bf71VMrLFsXNL2KDpjuV8py5mYm3+JKl4aNwECVQN9ecOewXJoQQOeo5yR52hEwENfhiCMQ0J1wxDo5Jrq3bBffxvvVEHaFeEliDZnqieDw45Eg8OgqSWc8KLDF3IwRp0lUfizR9INOOYLg0lVlUvubYV6iPrUAnGzjSSxHBe/dyPTiVkY4Vd/qWxqMha2ZDSnEbPZ6EbGxHERtqMyv7PzEhx9R8ok1spMfstl2YHHi2r4Cfrz92seP/czUTRaOI7/S8k74zFxgNxbT4ly3Jbra+uyzT2znXgq3IWPVJ82Ld3PdQ/ibq1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	YOWzGq5yFGa9ikoUj3UlZJzqzfPPQStT4VWyN9CKab107sKEzM7c/0WezGNKPHBg9IxAPFkoPFVczmISfc+o0Oi2d7c9KJ6Z+3lBAyjOXcWuR769RnEVHYTpXgvUqhPcHnZBaU5BpNrToHwd86T4F4GMRDEINsEnFGO/1CU7L0v7FWeUcdjyPhwIV5Tkrfoeob+RypfkBRdkKZ8BXIkTWTpf17oFKzhitCtT7L2xe/ygRytqOppjFdZgVq06ptD4scQrKIKWwRVAyZl9Z6YZCKH2LIPvzl5CAohovKykROLV2Ti8KqXk0RzQ/kgMwLqfBWAGBbtQgF37s3KRH9AKMx/gtpdSckOOporwztdIoXSPEG+JIT++SzKuTS8F6oM7vt73B6I/c4UosNXJ2Gw5CBT41fq61jYxXYj1JYH/ngFPTbiV8emMBNmYQBjbHZUPiETTgTVnM0NkYuGUsYjoMmfzvRLyOcfgFQdOUITxqmcXG91C35l4rwDj0vEpTvWF+aBnSW95XyrL5Od5GkBXrq1IdtCCY8qgFSsCnrpMtNlQ7NK4aFUZOm2InzTvHJ1QWRgWRIdfUl/tnRTPewgGK/e5CupmZZyuIPNbG5X7AwVXw1HIfUDjGrL5XLCaPD5ljnwHlqoKP3WnxyePYlu7ti2v7Vror198684xYD8issJPZCoAIEnUvqe5RkQ9nZqeicVAdSDYqd/Vc7pZB5wrzQ==
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?JaWjRDIdofz+dsFB2KIOHCFWI5AACD54Tv5K29nndB87m/HvZsDzSpIVZhF+?=
+ =?us-ascii?Q?RtLBAjpAy2HOcs31g/oaKv1RULFeFxvuUImfQYNOZHTvuDsGqUrp77T6f87/?=
+ =?us-ascii?Q?ZNWW4BWfirm18AUvVdBCWIjby5RB2c0E/lbdXS79seHhszhaNygHHazLCJMA?=
+ =?us-ascii?Q?b+2omgOPJa61eabPGGl7K+z4sbGnD7T+oRyd8sa/PiVyma8smvd7wg14N4Cm?=
+ =?us-ascii?Q?w8RfnQ7r2iaQVJRUnJmj0Qoa2YozJ5yD5bY9DpAGREyZN7PkbWNe9Ejywxrf?=
+ =?us-ascii?Q?2zhSoasBHxReBvvA4PMBry8ima70Sw5Jj1muhvGQlm5MSaVjDZcSS4kNncwF?=
+ =?us-ascii?Q?151PbJ9LgHbgnBBWjirsZfogoQvvBROv3bI5kkFAZc9G88EOnYAlI2ZuIt5N?=
+ =?us-ascii?Q?qcX/FtKb+56YprdEb5hUEmuMQ4fHjlsct5WxcLgXTsIFuf+XUfLnYIgkioEp?=
+ =?us-ascii?Q?c16q3GtjWIhKcWJyXgmc4/mQPZs498of3T6i5LHwDSBf3a3fScL+t8swDgmP?=
+ =?us-ascii?Q?7EdJRVByqG2l1tMEAmcwXVagsDN+Vsmc1h/v8F/E3ZvpZDraP/9wdXjYdh5x?=
+ =?us-ascii?Q?Jrn7guaXcUN0oRia+ssS3wH4d4TnPg3fJtaAWu5YLQ+3L777icwiWIjWAErs?=
+ =?us-ascii?Q?tUwQpAPSdhV3AnkJd9aUnMcKwH35FBDYu5gSfpd/nc97Z6cDtIJ3Z8c18gur?=
+ =?us-ascii?Q?rn9S+fK38OstoRqPfoPmlfixghu0/voVNFiMtZW7N1KCOUFMjLko+KzQ0aZK?=
+ =?us-ascii?Q?AgMUMG1QI50EEPlmlZE8Mmd+TUb/2Gb0n7NnYQTNZRDGHnI7SIiQfMM/xyOM?=
+ =?us-ascii?Q?rebRBoNtn/qVfJNZ0rjxfqQV846tXx9dPltn8M2nrGdu9NsFhOw3ShjF1Psz?=
+ =?us-ascii?Q?l3xTaAfqko78B4cjxXlRw6g4P0rUrDstjO01IsvLnuQUO7qCn9pczWhyLqsW?=
+ =?us-ascii?Q?lnrJns+dYbd9p8RqJ+WWo4R7sMBmqBNrwyZQ2O0crqQSCJxYDbcpiW2yLdhF?=
+ =?us-ascii?Q?PSfwri7vlDI1P/bBMId4tV/linCfAdNl+BG7nt5+o9JxlMjD8L3oWcODKsDk?=
+ =?us-ascii?Q?FHNL2/nXhy+ciBssze0QcCIZkG0fhjE7u6NI9ICyfhNmE/QWahuJ88W8/FGy?=
+ =?us-ascii?Q?EExjoQJvvIDdq+dz1XX+6ACpbJ1qAynLdfE62cUsu45GxkMSbirRHgMYsdcC?=
+ =?us-ascii?Q?pnP9qgf8GUyC2aa3NxHVky77joC4bQNERsdLtq7bfc8PdEFbnYJNW9OXgKX/?=
+ =?us-ascii?Q?FZnoh17+GfY/xQF9ffkz?=
+X-OriginatorOrg: outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4da90dbf-aedd-4658-3caa-08dc4d47b179
+X-MS-Exchange-CrossTenant-AuthSource: IA1PR20MB4953.namprd20.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Mar 2024 03:49:09.8013
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
+X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg:
+	00000000-0000-0000-0000-000000000000
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ1PR20MB4883
 
-On Mon, 25 Mar 2024 at 17:05, Dr. David Alan Gilbert <dave@treblig.org> wrote:
->
-> Isn't one of the aims of the Rust/C++ idea that you can't forget to access
-> a shared piece of data atomically?
+On Mon, Mar 25, 2024 at 11:37:44PM -0400, Frank Li wrote:
+> On Tue, Mar 26, 2024 at 09:47:03AM +0800, Inochi Amaoto wrote:
+> > The DMA IP of Sophgo CV18XX/SG200X is based on a DW AXI CORE, with
+> > an additional channel remap register located in the top system control
+> > area. The DMA channel is exclusive to each core.
+> > 
+> > Add the dmamux binding for CV18XX/SG200X series SoC
+> > 
+> > Signed-off-by: Inochi Amaoto <inochiama@outlook.com>
+> > ---
+> >  .../bindings/dma/sophgo,cv1800-dmamux.yaml    | 48 ++++++++++++++++
+> >  include/dt-bindings/dma/cv1800-dma.h          | 55 +++++++++++++++++++
+> 
+> I remember checkpatch.pl require .h have seperate patch.
+> 
+> Frank
 
-If that is an aim, it's a really *bad* one.
+checkpatch.pl does not give warning like this.
 
-Really.
+> 
+> >  2 files changed, 103 insertions(+)
+> >  create mode 100644 Documentation/devicetree/bindings/dma/sophgo,cv1800-dmamux.yaml
+> >  create mode 100644 include/dt-bindings/dma/cv1800-dma.h
+> > 
+> > diff --git a/Documentation/devicetree/bindings/dma/sophgo,cv1800-dmamux.yaml b/Documentation/devicetree/bindings/dma/sophgo,cv1800-dmamux.yaml
+> > new file mode 100644
+> > index 000000000000..d7256646ea26
+> > --- /dev/null
+> > +++ b/Documentation/devicetree/bindings/dma/sophgo,cv1800-dmamux.yaml
+> > @@ -0,0 +1,48 @@
+> > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> > +%YAML 1.2
+> > +---
+> > +$id: http://devicetree.org/schemas/dma/sophgo,cv1800-dmamux.yaml#
+> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > +
+> > +title: Sophgo CV1800/SG200 Series DMA mux
+> > +
+> > +maintainers:
+> > +  - Inochi Amaoto <inochiama@outlook.com>
+> > +
+> > +allOf:
+> > +  - $ref: dma-router.yaml#
+> > +
+> > +properties:
+> > +  compatible:
+> > +    const: sophgo,cv1800-dmamux
+> > +
+> > +  reg:
+> > +    items:
+> > +      - description: DMA channal remapping register
+> > +      - description: DMA channel interrupt mapping register
+> > +
+> 
+> Look like driver have not use it.
+> 
 
-It very much should never have been an aim, and I hope it wasn't. I
-think, and hope, that the source of the C++ and Rust bad decisions is
-cluelessness, not active malice.
+The driver uses syscon offset to access the registers. This dmamux is
+a subdevice of syscon.
+And this properity, suggested by Rob, is just used to keep DT complete.
 
-Take Rust - one big point of Rust is the whole "safe" thing, but it's
-very much not a straightjacket like Pascal was. There's a "safe" part
-to Rust, but equally importantly, there's also the "unsafe" part to
-Rust.
-
-The safe part is the one that most programmers are supposed to use.
-It's the one that allows you to not have to worry too much about
-things. It's the part that makes it much harder to screw up.
-
-But the *unsafe* part is what makes Rust powerful. It's the part that
-works behind the curtain. It's the part that may be needed to make the
-safe parts *work*.
-
-And yes, an application programmer might never actually need to use
-it, and in fact in many projects the rule might be that unsafe Rust is
-simply never even an option - but that doesn't mean that the unsafe
-parts don't exist.
-
-Because those unsafe parts are needed to make it all work in reality.
-
-And you should never EVER base your whole design around the "safe"
-part. Then you get a language that is a straight-jacket.
-
-So I'd very strongly argue that the core atomics should be done the
-"unsafe" way - allow people to specify exactly when they want exactly
-what access. Allow people to mix and match and have overlapping
-partial aliases, because if you implement things like locking, you
-*need* those partially aliasing accesses, and you need to make
-overlapping atomics where sometimes you access only one part of the
-field.
-
-And yes, that will be unsafe, and it might even be unportable, but
-it's exactly the kind of thing you need in order to avoid having to
-use assembly language to do your locking.
-
-And by all means, you should relegate that to the "unsafe corner" of
-the language. And maybe don't talk about the unsafe sharp edges in the
-first chapter of the book about the language.
-
-But you should _start_ the design of your language memory model around
-the unsafe "raw atomic access operations" model.
-
-Then you can use those strictly more powerful operations, and you
-create an object model *around* it.
-
-So you create safe objects like just an atomic counter. In *that*
-corner of the language, you have the "safe atomics" - they aren't the
-fundamental implementation, but they are the safe wrappers *around*
-the more powerful (but unsafe) core.
-
-With that "atomic counter" you cannot forget to do atomic accesses,
-because that safe corner of the world doesn't _have_ anything but the
-safe atomic accesses for every time you use the object.
-
-See? Having the capability to do powerful and maybe unsafe things does
-not force people to expose and use all that power. You can - and
-should - wrap the powerful model with safer and simpler interfaces.
-
-This isn't something specific to atomics. Not even remotely. This is
-quite fundamental. You often literally _cannot_ do interesting things
-using only safe interfaces. You want safe memory allocations - but to
-actually write the allocator itself, you want to have all those unsafe
-escape methods - all those raw pointers with arbitrary arithmetic etc.
-
-And if you don't have unsafe escapes, you end up doing what so many
-languages did: the libraries are written in something more powerful
-like C, because C literally can do things that other languages
-*cannot* do.
-
-Don't let people fool you with talk about Turing machines and similar
-smoke-and-mirror garbage. It's a bedtime story for first-year CS
-students. It's not true.
-
-Not all languages are created equal. Not all languages can do the same
-things. If your language doesn't have those unsafe escapes, your
-language is inherently weaker, and inherently worse for it.
-
-           Linus
+> Frank
+> 
+> > +  '#dma-cells':
+> > +    const: 2
+> > +    description:
+> > +      The first cells is device id. The second one is the cpu id.
+> > +
+> > +  dma-masters:
+> > +    maxItems: 1
+> > +
+> > +  dma-requests:
+> > +    const: 8
+> > +
+> > +required:
+> > +  - '#dma-cells'
+> > +  - dma-masters
+> > +
+> > +additionalProperties: false
+> > +
+> > +examples:
+> > +  - |
+> > +    dma-router {
+> > +      compatible = "sophgo,cv1800-dmamux";
+> > +      #dma-cells = <2>;
+> > +      dma-masters = <&dmac>;
+> > +      dma-requests = <8>;
+> > +    };
+> > diff --git a/include/dt-bindings/dma/cv1800-dma.h b/include/dt-bindings/dma/cv1800-dma.h
+> > new file mode 100644
+> > index 000000000000..3ce9dac25259
+> > --- /dev/null
+> > +++ b/include/dt-bindings/dma/cv1800-dma.h
+> > @@ -0,0 +1,55 @@
+> > +/* SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause */
+> > +
+> > +#ifndef __DT_BINDINGS_DMA_CV1800_H__
+> > +#define __DT_BINDINGS_DMA_CV1800_H__
+> > +
+> > +#define DMA_I2S0_RX		0
+> > +#define DMA_I2S0_TX		1
+> > +#define DMA_I2S1_RX		2
+> > +#define DMA_I2S1_TX		3
+> > +#define DMA_I2S2_RX		4
+> > +#define DMA_I2S2_TX		5
+> > +#define DMA_I2S3_RX		6
+> > +#define DMA_I2S3_TX		7
+> > +#define DMA_UART0_RX		8
+> > +#define DMA_UART0_TX		9
+> > +#define DMA_UART1_RX		10
+> > +#define DMA_UART1_TX		11
+> > +#define DMA_UART2_RX		12
+> > +#define DMA_UART2_TX		13
+> > +#define DMA_UART3_RX		14
+> > +#define DMA_UART3_TX		15
+> > +#define DMA_SPI0_RX		16
+> > +#define DMA_SPI0_TX		17
+> > +#define DMA_SPI1_RX		18
+> > +#define DMA_SPI1_TX		19
+> > +#define DMA_SPI2_RX		20
+> > +#define DMA_SPI2_TX		21
+> > +#define DMA_SPI3_RX		22
+> > +#define DMA_SPI3_TX		23
+> > +#define DMA_I2C0_RX		24
+> > +#define DMA_I2C0_TX		25
+> > +#define DMA_I2C1_RX		26
+> > +#define DMA_I2C1_TX		27
+> > +#define DMA_I2C2_RX		28
+> > +#define DMA_I2C2_TX		29
+> > +#define DMA_I2C3_RX		30
+> > +#define DMA_I2C3_TX		31
+> > +#define DMA_I2C4_RX		32
+> > +#define DMA_I2C4_TX		33
+> > +#define DMA_TDM0_RX		34
+> > +#define DMA_TDM0_TX		35
+> > +#define DMA_TDM1_RX		36
+> > +#define DMA_AUDSRC		37
+> > +#define DMA_SPI_NAND		38
+> > +#define DMA_SPI_NOR		39
+> > +#define DMA_UART4_RX		40
+> > +#define DMA_UART4_TX		41
+> > +#define DMA_SPI_NOR1		42
+> > +
+> > +#define DMA_CPU_A53		0
+> > +#define DMA_CPU_C906_0		1
+> > +#define DMA_CPU_C906_1		2
+> > +
+> > +
+> > +#endif // __DT_BINDINGS_DMA_CV1800_H__
+> > --
+> > 2.44.0
+> > 
 
