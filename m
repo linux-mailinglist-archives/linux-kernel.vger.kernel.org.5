@@ -1,202 +1,323 @@
-Return-Path: <linux-kernel+bounces-118247-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-118248-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 20D7488B6B3
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 02:18:09 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id B006B88B6B9
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 02:21:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A3D431F3C1C0
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 01:18:08 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0B5241F609CE
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 01:21:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 848291CF89;
-	Tue, 26 Mar 2024 01:17:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 693A91CD11;
+	Tue, 26 Mar 2024 01:21:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="iqfGfU1i"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jOl0HhZU"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E3EBF1CAAF
-	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 01:17:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 77ADD1BF58;
+	Tue, 26 Mar 2024 01:21:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711415871; cv=none; b=HnkRAkLnUAmzukD5Gr8mxa4xsw8X7jLbx42kt9WrxQguDvFhLFh2R8Dic/vt6XGRvvury+uEla98VL5Rf2KYUk90r9CTMR2b4saQkg68+OMMt7nKb5BRTiWNLVSoq1m7f7SB1NB6oJnJXIvZGc8UBa7tLI6RZDwiWDcvuSrdD3Q=
+	t=1711416068; cv=none; b=MtuJG4ERSykqir/WoevYDBN/F5BnKW6o3kWQsCQ7UnZhKo427Tb49ytJJXewM64qn7xk4qFUrtwIuIxv1kd3bfJDOrrZh96UivTb8Xe+LO8Hk21Kn/O90Ebu9JbVUCIJkvxQgRZUeSVjFgAbRLYfK5Bp2ZNhDwYj21n6oRooFfk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711415871; c=relaxed/simple;
-	bh=gA5yZbkqUdc3eAzx/wVpwAOROTPjqhokKFfo3xeE9GA=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=fuIT5wNfb6dcRVwWyKZfHFFjTsRnFyUldttcqUBp0ojwzpbcxCBh8wj8WpscLha7RofAl2uBXVmSB45XCrKTlDKlz7J3vaQ5L4MyDJstbhgxVcn/W2dmHHmFrQkB6wbGyK9TUEHfcAjzN/OhIdeYA3jZUSXKmlBDAq1KC6JkrTc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=iqfGfU1i; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1711415868;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=1ihdeyyuX83KD2VUbOoojf9kfe3WXiq1LhN8YyZ0YjQ=;
-	b=iqfGfU1iAoGor7BTLXtN4vvZDzj+6EcvvOu3zWIieJKRpZ8+8OspM5CxtX9fngzphlKI9J
-	zhKxzkrh3kw057ACCw5MIIltSB8/5HYZDWNQB1B+tnXal13QCV80Lurbq5aIcwji6XgPA2
-	qUQqkaSkwsPJ7/BUj0RvTG/6T0lBMAw=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-286-pFfo5QEVN5CNgYNKy1u-mQ-1; Mon, 25 Mar 2024 21:17:44 -0400
-X-MC-Unique: pFfo5QEVN5CNgYNKy1u-mQ-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.rdu2.redhat.com [10.11.54.8])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 33971802DCA;
-	Tue, 26 Mar 2024 01:17:44 +0000 (UTC)
-Received: from [10.22.32.23] (unknown [10.22.32.23])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id 33CFFC041EF;
-	Tue, 26 Mar 2024 01:17:43 +0000 (UTC)
-Message-ID: <ae9eafa0-3c6a-4130-9890-a7463c8286a9@redhat.com>
-Date: Mon, 25 Mar 2024 21:17:38 -0400
+	s=arc-20240116; t=1711416068; c=relaxed/simple;
+	bh=7b1vl46sDmGnCQuMlZMcbfRMULcOrVeHrbz4hUVNxeE=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=m68VCc5Dbeyso6GaxtQH/BccVrxmcfzCTJixJieLNvZnsgaigf8rNTvXMiNjNxhY1sqSKjbmRKy/i98IGx6DABM4b4yEcuEfrsXPm2RXGPzm1s437VP2JT37z5etpi77cvbt1EnNrLZTRKXPKQMPdTzR+z/aCT+EVUPau9/+Ioc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=jOl0HhZU; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 52DA3C433F1;
+	Tue, 26 Mar 2024 01:21:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1711416067;
+	bh=7b1vl46sDmGnCQuMlZMcbfRMULcOrVeHrbz4hUVNxeE=;
+	h=From:To:Cc:Subject:Date:From;
+	b=jOl0HhZU55WYhJxOL1ddNpj/1ZU7V0lLRLX9nWFC16Dcw4WiOA0rkqWBEzkJUJDMG
+	 MureUOks+NcIrGURJmL5xH4A6L8je9Bvxe3bqY7GVAipvaEzutChIkGk3hlxtd/Vnj
+	 hxtlaNYkX2uqcyLMKorz7uBSE+kyL9jZlBvlqO5fyx5MptmNtqyiSAhmgXp5V5RKUC
+	 kL8Kl6shrb6x7NpbmGkLmiYwhcUc6JT7Z24flC5mes8jk+eepavoBU/MX9r0So394E
+	 CuaIMK4ih6k5MXPiIZZIcC9Squ4LwR+gliew90/py7rxGhGPvGzDhHpD6PrjoDwGma
+	 e5mXC1TB0U6tw==
+From: Jarkko Sakkinen <jarkko@kernel.org>
+To: linux-riscv@lists.infradead.org
+Cc: Jarkko Sakkinen <jarkko@kernel.org>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	Paul Walmsley <paul.walmsley@sifive.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Albert Ou <aou@eecs.berkeley.edu>,
+	linux-kernel@vger.kernel.org,
+	Luis Chamberlain <mcgrof@kernel.org>,
+	linux-modules@vger.kernel.org,
+	"Naveen N . Rao" <naveen.n.rao@linux.ibm.com>,
+	Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>,
+	"David S . Miller" <davem@davemloft.net>
+Subject: [PATCH v6 1/2] kprobes: implemente trampoline memory allocator
+Date: Tue, 26 Mar 2024 03:21:01 +0200
+Message-ID: <20240326012102.27438-1-jarkko@kernel.org>
+X-Mailer: git-send-email 2.44.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] x86/tsc: Use topology_max_packages() to get package
- number
-Content-Language: en-US
-To: Feng Tang <feng.tang@intel.com>, Thomas Gleixner <tglx@linutronix.de>,
- Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
- Dave Hansen <dave.hansen@intel.com>, "H . Peter Anvin" <hpa@zytor.com>,
- Peter Zijlstra <peterz@infradead.org>, x86@kernel.org, paulmck@kernel.org,
- rui.zhang@intel.com, linux-kernel@vger.kernel.org
-Cc: Dave Hansen <dave.hansen@linux.intel.com>
-References: <20240325030928.4190408-1-feng.tang@intel.com>
-From: Waiman Long <longman@redhat.com>
-In-Reply-To: <20240325030928.4190408-1-feng.tang@intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.8
+Content-Transfer-Encoding: 8bit
 
-On 3/24/24 23:09, Feng Tang wrote:
-> Commit b50db7095fe0 ("x86/tsc: Disable clocksource watchdog for TSC
-> on qualified platorms") was introduced to solve problem that
-> sometimes TSC clocksource is wrongly judged as unstable by watchdog
-> like 'jiffies', HPET, etc.
->
-> In it, the hardware package number is a key factor for judging whether
-> to disable the watchdog for TSC, and 'nr_online_nodes' was chosen due
-> to it is available in early boot phase before registering 'tsc-early'
-> clocksource, where all non-boot CPUs are not brought up yet.
->
-> Dave and Rui pointed out there are many cases in which 'nr_online_nodes'
-> is cheated and not accurate, like:
->
-> * numa emulation (numa=fake=8 etc.)
-> * numa=off
-> * platforms with CPU-less HBM nodes, CPU-less Optane memory nodes.
-> * SNC (sub-numa cluster) mode enabled
-> * 'maxcpus=' cmdline setup, where chopped CPUs could be onlined later
-> * 'nr_cpus=', 'possible_cpus=' cmdline setup, where chopped CPUs can
->    not be onlined after boot
->
-> Thomas' recent patchset of refactoring x86 topology code improves
-> topology_max_packages(), by making it more accurate and available in
-> early boot phase, which works well in most of the above cases.
->
-> The only exceptions are 'nr_cpus=' and 'possible_cpus=' setup.  And
-> the reason is, during topology setup, the boot CPU iterates through
-> all enumerated APIC ids and either accepts or rejects the APIC id.
-> For accepted ids, it figures out which bits of the id map to the
-> package number.  It tracks which package numbers have been seen in a
-> bitmap.  topology_max_packages() just returns the number of bits set
-> in that bitmap.
->
-> 'nr_cpus=' and 'possible_cpus=' can cause more APIC ids to be rejected
-> and can artificially lower the number of bits in the package bitmap
-> and thus topology_max_packages().  This means that, for example, a
-> system with 8 physical packages might reject all the CPUs on 6 of those
-> packages and be left with only 2 packages and 2 bits set in the package
-> bitmap. It needs the TSC watchdog, but would disable it anyway.  This
-> isn't ideal, but this only happens for debug-oriented options. This is
-> fixable by tracking the package numbers for rejected CPUs.  But it's
-> not worth the trouble for debugging.
->
-> So use topology_max_packages() to replace nr_online_nodes().
->
-> Reported-by: Dave Hansen <dave.hansen@linux.intel.com>
-> Closes: https://lore.kernel.org/lkml/a4860054-0f16-6513-f121-501048431086@intel.com/
-> Signed-off-by: Feng Tang <feng.tang@intel.com>
-> ---
->
-> Hi all,
->
-> For warning about possible compromise due to 'nr_cpus=' and 'possible_cpus=',
-> another alternative could be checking whether these has been setup in cmdline
-> inside tsc.c and warn there.
->
-> Changelog:
->
->    Since v1:
->
->    * Use Dave's detailed elaboration about 'nr_cpus=', 'possible_cpus='
->      possibly compromising '__max_logical_packages' in commit log
->    * Fix typos and inaccuracy pointed out by Rui and Longman
->
->   arch/x86/kernel/cpu/topology.c | 5 ++++-
->   arch/x86/kernel/tsc.c          | 7 ++-----
->   2 files changed, 6 insertions(+), 6 deletions(-)
->
-> diff --git a/arch/x86/kernel/cpu/topology.c b/arch/x86/kernel/cpu/topology.c
-> index 3259b1d4fefe..2db03b00e29b 100644
-> --- a/arch/x86/kernel/cpu/topology.c
-> +++ b/arch/x86/kernel/cpu/topology.c
-> @@ -460,8 +460,11 @@ void __init topology_init_possible_cpus(void)
->   	pr_info("Num. threads per package: %3u\n", __num_threads_per_package);
->   
->   	pr_info("Allowing %u present CPUs plus %u hotplug CPUs\n", assigned, disabled);
-> -	if (topo_info.nr_rejected_cpus)
-> +	if (topo_info.nr_rejected_cpus) {
->   		pr_info("Rejected CPUs %u\n", topo_info.nr_rejected_cpus);
-> +		if (__max_logical_packages <= 4)
-> +			pr_warn("TSC might be buggered due to the rejected CPUs\n");
-> +	}
+Tracing with kprobes while running a monolithic kernel is currently
+impossible because CONFIG_KPROBES depends on CONFIG_MODULES.
 
-People may sometimes use kernel option like "panic_on_warn=1" to cause a 
-crash dump on warning. Maybe we should just use pr_info() as the 
-presence of rejected CPUs are unlikely to be a real problem from the TSC 
-stability point of view. To emphasize it a bit more, we could add a 
-"WARNING: " prefix, for example.
+Introduce alloc_execmem() and free_execmem() for allocating executable
+memory. If an arch implements these functions, it can mark this up with
+the HAVE_ALLOC_EXECMEM kconfig flag.
 
-Cheers,
-Longman
+The second new kconfig flag is ALLOC_EXECMEM, which can be selected if
+either MODULES is selected or HAVE_ALLOC_EXECMEM is support by the arch. If
+HAVE_ALLOC_EXECMEM is not supported by an arch, module_alloc() and
+module_memfree() are used as a fallback, thus retaining backwards
+compatibility to earlier kernel versions.
 
+This will allow architecture to enable kprobes traces without requiring
+to enable module.
 
->   
->   	init_cpu_present(cpumask_of(0));
->   	init_cpu_possible(cpumask_of(0));
-> diff --git a/arch/x86/kernel/tsc.c b/arch/x86/kernel/tsc.c
-> index 5a69a49acc96..d00f88f16eb1 100644
-> --- a/arch/x86/kernel/tsc.c
-> +++ b/arch/x86/kernel/tsc.c
-> @@ -1252,15 +1252,12 @@ static void __init check_system_tsc_reliable(void)
->   	 *  - TSC which does not stop in C-States
->   	 *  - the TSC_ADJUST register which allows to detect even minimal
->   	 *    modifications
-> -	 *  - not more than two sockets. As the number of sockets cannot be
-> -	 *    evaluated at the early boot stage where this has to be
-> -	 *    invoked, check the number of online memory nodes as a
-> -	 *    fallback solution which is an reasonable estimate.
-> +	 *  - not more than four packages
->   	 */
->   	if (boot_cpu_has(X86_FEATURE_CONSTANT_TSC) &&
->   	    boot_cpu_has(X86_FEATURE_NONSTOP_TSC) &&
->   	    boot_cpu_has(X86_FEATURE_TSC_ADJUST) &&
-> -	    nr_online_nodes <= 4)
-> +	    topology_max_packages() <= 4)
->   		tsc_disable_clocksource_watchdog();
->   }
->   
+The support can be implemented with four easy steps:
+
+1. Implement alloc_execmem().
+2. Implement free_execmem().
+3. Edit arch/<arch>/Makefile.
+4. Set HAVE_ALLOC_EXECMEM in arch/<arch>/Kconfig.
+
+Link: https://lore.kernel.org/all/20240325115632.04e37297491cadfbbf382767@kernel.org/
+Suggested-by: Masami Hiramatsu <mhiramat@kernel.org>
+Signed-off-by: Jarkko Sakkinen <jarkko@kernel.org>
+---
+v6:
+- Use null pointer for notifiers and register the module notifier only if
+  IS_ENABLED(CONFIG_MODULES) is set.
+- Fixed typo in the commit message and wrote more verbose description
+  of the feature.
+v5:
+- alloc_execmem() was missing GFP_KERNEL parameter. The patch set did
+  compile because 2/2 had the fixup (leaked there when rebasing the
+  patch set).
+v4:
+- Squashed a couple of unrequired CONFIG_MODULES checks.
+- See https://lore.kernel.org/all/D034M18D63EC.2Y11D954YSZYK@kernel.org/
+v3:
+- A new patch added.
+- For IS_DEFINED() I need advice as I could not really find that many
+  locations where it would be applicable.
+---
+ arch/Kconfig                | 16 +++++++++++++++-
+ include/linux/execmem.h     | 13 +++++++++++++
+ kernel/kprobes.c            | 19 +++++++++++++++----
+ kernel/trace/trace_kprobe.c | 15 +++++++++++++--
+ 4 files changed, 56 insertions(+), 7 deletions(-)
+ create mode 100644 include/linux/execmem.h
+
+diff --git a/arch/Kconfig b/arch/Kconfig
+index a5af0edd3eb8..33ba68b7168f 100644
+--- a/arch/Kconfig
++++ b/arch/Kconfig
+@@ -52,8 +52,8 @@ config GENERIC_ENTRY
+ 
+ config KPROBES
+ 	bool "Kprobes"
+-	depends on MODULES
+ 	depends on HAVE_KPROBES
++	select ALLOC_EXECMEM
+ 	select KALLSYMS
+ 	select TASKS_RCU if PREEMPTION
+ 	help
+@@ -215,6 +215,20 @@ config HAVE_OPTPROBES
+ config HAVE_KPROBES_ON_FTRACE
+ 	bool
+ 
++config HAVE_ALLOC_EXECMEM
++	bool
++	help
++	  Architectures that select this option are capable of allocating executable
++	  memory, which can be used by subsystems but is not dependent of any of its
++	  clients.
++
++config ALLOC_EXECMEM
++	bool "Executable (trampoline) memory allocation"
++	depends on MODULES || HAVE_ALLOC_EXECMEM
++	help
++	  Select this for executable (trampoline) memory. Can be enabled when either
++	  module allocator or arch-specific allocator is available.
++
+ config ARCH_CORRECT_STACKTRACE_ON_KRETPROBE
+ 	bool
+ 	help
+diff --git a/include/linux/execmem.h b/include/linux/execmem.h
+new file mode 100644
+index 000000000000..ae2ff151523a
+--- /dev/null
++++ b/include/linux/execmem.h
+@@ -0,0 +1,13 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++#ifndef _LINUX_EXECMEM_H
++#define _LINUX_EXECMEM_H
++
++#ifdef CONFIG_HAVE_ALLOC_EXECMEM
++void *alloc_execmem(unsigned long size, gfp_t gfp);
++void free_execmem(void *region);
++#else
++#define alloc_execmem(size, gfp)	module_alloc(size)
++#define free_execmem(region)		module_memfree(region)
++#endif
++
++#endif /* _LINUX_EXECMEM_H */
+diff --git a/kernel/kprobes.c b/kernel/kprobes.c
+index 9d9095e81792..9ed07a4bf9e3 100644
+--- a/kernel/kprobes.c
++++ b/kernel/kprobes.c
+@@ -44,6 +44,7 @@
+ #include <asm/cacheflush.h>
+ #include <asm/errno.h>
+ #include <linux/uaccess.h>
++#include <linux/execmem.h>
+ 
+ #define KPROBE_HASH_BITS 6
+ #define KPROBE_TABLE_SIZE (1 << KPROBE_HASH_BITS)
+@@ -113,17 +114,17 @@ enum kprobe_slot_state {
+ void __weak *alloc_insn_page(void)
+ {
+ 	/*
+-	 * Use module_alloc() so this page is within +/- 2GB of where the
++	 * Use alloc_execmem() so this page is within +/- 2GB of where the
+ 	 * kernel image and loaded module images reside. This is required
+ 	 * for most of the architectures.
+ 	 * (e.g. x86-64 needs this to handle the %rip-relative fixups.)
+ 	 */
+-	return module_alloc(PAGE_SIZE);
++	return alloc_execmem(PAGE_SIZE, GFP_KERNEL);
+ }
+ 
+ static void free_insn_page(void *page)
+ {
+-	module_memfree(page);
++	free_execmem(page);
+ }
+ 
+ struct kprobe_insn_cache kprobe_insn_slots = {
+@@ -1580,6 +1581,7 @@ static int check_kprobe_address_safe(struct kprobe *p,
+ 		goto out;
+ 	}
+ 
++#ifdef CONFIG_MODULES
+ 	/* Check if 'p' is probing a module. */
+ 	*probed_mod = __module_text_address((unsigned long) p->addr);
+ 	if (*probed_mod) {
+@@ -1603,6 +1605,8 @@ static int check_kprobe_address_safe(struct kprobe *p,
+ 			ret = -ENOENT;
+ 		}
+ 	}
++#endif
++
+ out:
+ 	preempt_enable();
+ 	jump_label_unlock();
+@@ -2482,6 +2486,7 @@ int kprobe_add_area_blacklist(unsigned long start, unsigned long end)
+ 	return 0;
+ }
+ 
++#ifdef CONFIG_MODULES
+ /* Remove all symbols in given area from kprobe blacklist */
+ static void kprobe_remove_area_blacklist(unsigned long start, unsigned long end)
+ {
+@@ -2499,6 +2504,7 @@ static void kprobe_remove_ksym_blacklist(unsigned long entry)
+ {
+ 	kprobe_remove_area_blacklist(entry, entry + 1);
+ }
++#endif /* CONFIG_MODULES */
+ 
+ int __weak arch_kprobe_get_kallsym(unsigned int *symnum, unsigned long *value,
+ 				   char *type, char *sym)
+@@ -2564,6 +2570,7 @@ static int __init populate_kprobe_blacklist(unsigned long *start,
+ 	return ret ? : arch_populate_kprobe_blacklist();
+ }
+ 
++#ifdef CONFIG_MODULES
+ static void add_module_kprobe_blacklist(struct module *mod)
+ {
+ 	unsigned long start, end;
+@@ -2660,6 +2667,9 @@ static int kprobes_module_callback(struct notifier_block *nb,
+ 	mutex_unlock(&kprobe_mutex);
+ 	return NOTIFY_DONE;
+ }
++#else
++#define kprobes_module_callback	(NULL)
++#endif /* CONFIG_MODULES */
+ 
+ static struct notifier_block kprobe_module_nb = {
+ 	.notifier_call = kprobes_module_callback,
+@@ -2724,7 +2734,8 @@ static int __init init_kprobes(void)
+ 	err = arch_init_kprobes();
+ 	if (!err)
+ 		err = register_die_notifier(&kprobe_exceptions_nb);
+-	if (!err)
++
++	if (!err && IS_ENABLED(CONFIG_MODULES))
+ 		err = register_module_notifier(&kprobe_module_nb);
+ 
+ 	kprobes_initialized = (err == 0);
+diff --git a/kernel/trace/trace_kprobe.c b/kernel/trace/trace_kprobe.c
+index c4c6e0e0068b..13ea0d0994d5 100644
+--- a/kernel/trace/trace_kprobe.c
++++ b/kernel/trace/trace_kprobe.c
+@@ -111,6 +111,7 @@ static nokprobe_inline bool trace_kprobe_within_module(struct trace_kprobe *tk,
+ 	return strncmp(module_name(mod), name, len) == 0 && name[len] == ':';
+ }
+ 
++#ifdef CONFIG_MODULES
+ static nokprobe_inline bool trace_kprobe_module_exist(struct trace_kprobe *tk)
+ {
+ 	char *p;
+@@ -129,6 +130,9 @@ static nokprobe_inline bool trace_kprobe_module_exist(struct trace_kprobe *tk)
+ 
+ 	return ret;
+ }
++#else
++#define trace_kprobe_module_exist(tk) false /* aka a module never exists */
++#endif /* CONFIG_MODULES */
+ 
+ static bool trace_kprobe_is_busy(struct dyn_event *ev)
+ {
+@@ -670,6 +674,7 @@ static int register_trace_kprobe(struct trace_kprobe *tk)
+ 	return ret;
+ }
+ 
++#ifdef CONFIG_MODULES
+ /* Module notifier call back, checking event on the module */
+ static int trace_kprobe_module_callback(struct notifier_block *nb,
+ 				       unsigned long val, void *data)
+@@ -699,6 +704,9 @@ static int trace_kprobe_module_callback(struct notifier_block *nb,
+ 
+ 	return NOTIFY_DONE;
+ }
++#else
++#define trace_kprobe_module_callback (NULL)
++#endif /* CONFIG_MODULES */
+ 
+ static struct notifier_block trace_kprobe_module_nb = {
+ 	.notifier_call = trace_kprobe_module_callback,
+@@ -1897,8 +1905,11 @@ static __init int init_kprobe_trace_early(void)
+ 	if (ret)
+ 		return ret;
+ 
+-	if (register_module_notifier(&trace_kprobe_module_nb))
+-		return -EINVAL;
++	if (IS_ENABLED(CONFIG_MODULES)) {
++		ret = register_module_notifier(&trace_kprobe_module_nb);
++		if (ret)
++			return -EINVAL;
++	}
+ 
+ 	return 0;
+ }
+-- 
+2.44.0
 
 
