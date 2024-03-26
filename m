@@ -1,199 +1,153 @@
-Return-Path: <linux-kernel+bounces-118293-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-118295-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DCD9B88B756
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 03:20:15 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2C66088B758
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 03:20:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 336C0B22CC8
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 02:20:13 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3C3561C3655E
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 02:20:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C0D9912B165;
-	Tue, 26 Mar 2024 02:17:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4BFA35A110;
+	Tue, 26 Mar 2024 02:19:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="LYYZyUFr"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.16])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="gMV4OzaU"
+Received: from mail-yb1-f182.google.com (mail-yb1-f182.google.com [209.85.219.182])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6F6DB12AAEA
-	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 02:17:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.16
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9D0F943AC5
+	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 02:19:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711419450; cv=none; b=pgVp4duOHYAZgv+r+v7kDS7rxXReSUT3/lNfDrXCumgQ4V/rS0ZXEVn1zL7t7lYuZfCw7oBSGnNWAlpLNyZjnI/5T3lqgSkJUS7eFIvlO3Py1DVmo5aVlgPVPJtR5W4PMo6F6tVBcMy40BJIlnNOHuZK6h3djkFD5KS8tBH7B0M=
+	t=1711419590; cv=none; b=DE8kz7D37Lc6eJITT+/vrpgmFqOoBYH+huJpdnkAk861Hxc5IPa3GmatwjNmqpf5g4ZmwLiv0+L6659JaAaYuddLT5yihRy37g1akkgGErpwobk4KWMhp1Px9rW0Xls32i/0fvXl5PZZk30zSseLnG/OgMBZIvbdsn57GWFkaP0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711419450; c=relaxed/simple;
-	bh=9Kz1B1g9YBWVQVBA7u5n8sBfRhBddgPHEWEy/INdrdY=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=j08hyYHb7aK3NxWz/o+qGEu3FgcQcWowi4482K5dRoL5ApHnEg8z6nce4TmNpWSNXNIV8Y0AzGUkIMBxiYuS6weeEP7JhBGicKcFDCkFjRGZIVY2E8RWq98tKscOaDajTlf2zphHfuiT0jVlWckTIkRZk1L+j9aos4a9i2lONwc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=LYYZyUFr; arc=none smtp.client-ip=198.175.65.16
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1711419448; x=1742955448;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=9Kz1B1g9YBWVQVBA7u5n8sBfRhBddgPHEWEy/INdrdY=;
-  b=LYYZyUFrtDZkQhAOhqtCiGspppwQiSNYt0J9ZxHDi60absIqwAZ2EZR5
-   pCBEajXfa3H9NHI68e+NyPUj8PnASFZxA7ZJOwBETuF7CFwpMR/90+46y
-   A6IbGfBr23dXDkyOGz2AqMcy2MQ2Fk8PV4bqx3sVW+AZZLaCWCk+gNB3Z
-   I5LHhzdXjHFuCcQgfUOshc21whlZ31lCYNvcN+Xdq5l/ehIokD/MXOseh
-   NqBdTP1YCJcqqkoTj5+p8WnFCDnRuCU2GGuvewkDPhToZNgPK45DM6tCF
-   FBS7wbeJxDJpwDGHzrua9+HoUysX5gl/gvAKWVAGeuNr3SoOduI90ztvv
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11024"; a="6564393"
-X-IronPort-AV: E=Sophos;i="6.07,154,1708416000"; 
-   d="scan'208";a="6564393"
-Received: from orviesa004.jf.intel.com ([10.64.159.144])
-  by orvoesa108.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Mar 2024 19:17:18 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,154,1708416000"; 
-   d="scan'208";a="20489921"
-Received: from rpwilson-mobl.amr.corp.intel.com (HELO rpedgeco-desk4.intel.com) ([10.251.11.187])
-  by orviesa004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Mar 2024 19:17:18 -0700
-From: Rick Edgecombe <rick.p.edgecombe@intel.com>
-To: Liam.Howlett@oracle.com,
-	akpm@linux-foundation.org,
-	bp@alien8.de,
-	broonie@kernel.org,
-	christophe.leroy@csgroup.eu,
-	dave.hansen@linux.intel.com,
-	debug@rivosinc.com,
-	hpa@zytor.com,
-	keescook@chromium.org,
-	kirill.shutemov@linux.intel.com,
-	luto@kernel.org,
-	mingo@redhat.com,
-	peterz@infradead.org,
-	tglx@linutronix.de,
-	x86@kernel.org
-Cc: rick.p.edgecombe@intel.com,
-	linux-kernel@vger.kernel.org,
-	linux-mm@kvack.org
-Subject: [PATCH v4 14/14] selftests/x86: Add placement guard gap test for shstk
-Date: Mon, 25 Mar 2024 19:16:56 -0700
-Message-Id: <20240326021656.202649-15-rick.p.edgecombe@intel.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240326021656.202649-1-rick.p.edgecombe@intel.com>
-References: <20240326021656.202649-1-rick.p.edgecombe@intel.com>
+	s=arc-20240116; t=1711419590; c=relaxed/simple;
+	bh=DzA4iTSRfcMkSiWx40hDp/d0kxPk4iivjd05tRZ0Ytw=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Fyq6EkIdDPCfLGOA8/Iy9FnwY3CeuBgtAPj5XYBq+gW7Fveqfhxy/eipV5buwTZU6LmPlZSnN1naFv2fPSY/EfGy/it6Bgu95qQQhIYX4Y5EspwBpCcVoJAGjvm6cGITmMF7l2VdKrPtdYuAYVW0kpL6R48d98dfSpqyWbZNWZc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=gMV4OzaU; arc=none smtp.client-ip=209.85.219.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-yb1-f182.google.com with SMTP id 3f1490d57ef6-dc74e33fe1bso4968860276.0
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 19:19:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1711419587; x=1712024387; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=IwUWm3j1zJRZURenFwbWO1vD1+nvI5/zaM6L0hDa+ys=;
+        b=gMV4OzaUqXj6cWO3esWsRB1q8K3Hdz6UBF+wi1xjKJIpS9UtlI2XVh4hp2HXrhCWt5
+         b7e6GOEJ6kAvwLapWAKeTDjZu9qg7fQcKuC+U0K8ubAM85hqRrQAGhi6f3Ed6/6Hcsq9
+         7urN32pU48lnVOIld8V5E4OCsgDXW10JSBzi/bUEKO9ant+kGzjnwe5a51AVaYyOFp5y
+         edwdiTTzwAjCUwJV00D92hvRYC5X69XHARfFFwkynkfSc37s5ASLbJOOJD3kYYFFtjCf
+         yboAhkuGxY5Om+XWEO/hc4fzPsOKvfHwU8KkNan+glbHOo12IS9JGqNeJcHhMgFFETgS
+         wPLQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711419587; x=1712024387;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=IwUWm3j1zJRZURenFwbWO1vD1+nvI5/zaM6L0hDa+ys=;
+        b=gCNQDh6Rrik9eMEOyduNfxRpLYbXXIBw4iM+Y84lUtLK6od3913lpEsRClM+eI9Ys3
+         MMZNGgJZydVa9Ug9qpUq5fTCN/wVtzXCkMSiC18VyKf9AW3YH5ZkCDPn8sn7ZtFe0oWb
+         Q2WY2a34LoWzgW+WmZAfsjy/+cv+g3mOUGvW0siI5Z6U6dJ3SgH7qFvgP4n6rxWhTWKT
+         c4re+y37BbgwtFN5+nuLQScQEaL98sH5sC9arAnKZ1kTOEGOtAUaZ1XGLHSVkcGebJEl
+         FNbLZPjAjQGJsxbvBrsKTTStGdcCeBHabew8gPritwZMgq9Q3wm0tB/aSv6fCLdZD2uZ
+         UQqw==
+X-Forwarded-Encrypted: i=1; AJvYcCXEH1ryyL6s5vDWC5wcxW1jKn84qTli0gG4gH1K8ghztNOSyitcKX6meAJSPs/R8N79lmjaxj0SYx2L9QwmKQyB7Pl7moqMwQp2Vs+6
+X-Gm-Message-State: AOJu0Yz7SK5LHrSUCl/Dut6LZu5mnG61NJRyJq7zCSu0mgFpF2ULJHsH
+	5nJTmSdmxDVqsnr109ziPXh3UxpZ/QtmPr8/odq9Cw/mC9zUe4aaKrMxga3c4BqHXmx1rsqMIP+
+	09pnzBEsf0Fx2K5RTkfkv7JI4uRCQe/QMEOiA
+X-Google-Smtp-Source: AGHT+IHWoTDaFrz39cq3SgBRPBnsFN2RcJxYtTh8fpxz5aBnMNl+4i7QiRhfchmCfv6bEuPFbggLy/iD0MsC0nuzuM4=
+X-Received: by 2002:a05:6902:4d2:b0:dc2:1f53:3a4f with SMTP id
+ v18-20020a05690204d200b00dc21f533a4fmr7114306ybs.5.1711419587211; Mon, 25 Mar
+ 2024 19:19:47 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20240325123603.1bdd6588@canb.auug.org.au>
+In-Reply-To: <20240325123603.1bdd6588@canb.auug.org.au>
+From: Suren Baghdasaryan <surenb@google.com>
+Date: Mon, 25 Mar 2024 19:19:33 -0700
+Message-ID: <CAJuCfpH4Ee00hM9+B7=mi5Dwjrhov8vUK-KwPuoO3wsD7iJSAQ@mail.gmail.com>
+Subject: Re: linux-next: build warnings after merge of the mm tree
+To: Stephen Rothwell <sfr@canb.auug.org.au>
+Cc: Andrew Morton <akpm@linux-foundation.org>, Kent Overstreet <kent.overstreet@linux.dev>, 
+	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, 
+	Linux Next Mailing List <linux-next@vger.kernel.org>, Randy Dunlap <rdunlap@infradead.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-The existing shadow stack test for guard gaps just checks that new
-mappings are not placed in an existing mapping's guard gap. Add one that
-checks that new mappings are not placed such that preexisting mappings are
-in the new mappings guard gap.
+On Sun, Mar 24, 2024 at 6:36=E2=80=AFPM Stephen Rothwell <sfr@canb.auug.org=
+au> wrote:
+>
+> Hi all,
+>
+> After merging the mm tree, today's linux-next build (htmldocs) produced
+> these warnings:
+>
+> include/linux/slab.h:545: warning: expecting prototype for kmem_cache_all=
+oc(). Prototype was for kmem_cache_alloc_noprof() instead
+> include/linux/slab.h:652: warning: expecting prototype for kmalloc(). Pro=
+totype was for kmalloc_noprof() instead
+> include/linux/slab.h:692: warning: expecting prototype for kmalloc_array(=
+). Prototype was for kmalloc_array_noprof() instead
+> include/linux/slab.h:714: warning: expecting prototype for krealloc_array=
+(). Prototype was for krealloc_array_noprof() instead
+> include/linux/slab.h:730: warning: Function parameter or struct member '_=
+n' not described in 'kcalloc'
+> include/linux/slab.h:730: warning: Function parameter or struct member '_=
+size' not described in 'kcalloc'
+> include/linux/slab.h:730: warning: Function parameter or struct member '_=
+flags' not described in 'kcalloc'
+> include/linux/slab.h:730: warning: Excess function parameter 'n' descript=
+ion in 'kcalloc'
+> include/linux/slab.h:730: warning: Excess function parameter 'size' descr=
+iption in 'kcalloc'
+> include/linux/slab.h:730: warning: Excess function parameter 'flags' desc=
+ription in 'kcalloc'
+> include/linux/slab.h:774: warning: expecting prototype for kzalloc(). Pro=
+totype was for kzalloc_noprof() instead
+> mm/slab_common.c:1217: warning: expecting prototype for krealloc(). Proto=
+type was for krealloc_noprof() instead
+> mm/util.c:751: warning: expecting prototype for __vcalloc(). Prototype wa=
+s for __vcalloc_noprof() instead
+> mm/vmalloc.c:3897: warning: expecting prototype for vmalloc(). Prototype =
+was for vmalloc_noprof() instead
+> mm/vmalloc.c:3916: warning: expecting prototype for vmalloc_huge(). Proto=
+type was for vmalloc_huge_noprof() instead
+> mm/vmalloc.c:3953: warning: expecting prototype for vmalloc_user(). Proto=
+type was for vmalloc_user_noprof() instead
+> mm/mempool.c:245: warning: expecting prototype for mempool_init(). Protot=
+ype was for mempool_init_noprof() instead
+> mm/mempool.c:271: warning: Function parameter or struct member 'gfp_mask'=
+ not described in 'mempool_create_node_noprof'
+> mm/mempool.c:271: warning: Function parameter or struct member 'node_id' =
+not described in 'mempool_create_node_noprof'
+> mm/mempool.c:271: warning: expecting prototype for mempool_create_node().=
+ Prototype was for mempool_create_node_noprof() instead
+>
+> Introduced by commits
+>
+>   c64e38ed88d1 ("mm/slab: enable slab allocation tagging for kmalloc and =
+friends")
+>   ea7b8933f21b ("mempool: hook up to memory allocation profiling")
+>   576477564ede ("mm: vmalloc: enable memory allocation profiling")
+>
+> from the mm-unstable branch of the mm tree.
 
-Signed-off-by: Rick Edgecombe <rick.p.edgecombe@intel.com>
----
- .../testing/selftests/x86/test_shadow_stack.c | 67 +++++++++++++++++--
- 1 file changed, 63 insertions(+), 4 deletions(-)
+Thanks for the report, Stephen!
+Let us check with Randy Dunlap how we should handle these. I assume we
+still want documentation to document kmalloc(), not kmalloc_noprof().
+Maybe there is a way to mute these warnings.
 
-diff --git a/tools/testing/selftests/x86/test_shadow_stack.c b/tools/testing/selftests/x86/test_shadow_stack.c
-index 757e6527f67e..ee909a7927f9 100644
---- a/tools/testing/selftests/x86/test_shadow_stack.c
-+++ b/tools/testing/selftests/x86/test_shadow_stack.c
-@@ -556,7 +556,7 @@ struct node {
-  *      looked at the shadow stack gaps.
-  *   5. See if it landed in the gap.
-  */
--int test_guard_gap(void)
-+int test_guard_gap_other_gaps(void)
- {
- 	void *free_area, *shstk, *test_map = (void *)0xFFFFFFFFFFFFFFFF;
- 	struct node *head = NULL, *cur;
-@@ -593,11 +593,64 @@ int test_guard_gap(void)
- 	if (shstk - test_map - PAGE_SIZE != PAGE_SIZE)
- 		return 1;
- 
--	printf("[OK]\tGuard gap test\n");
-+	printf("[OK]\tGuard gap test, other mapping's gaps\n");
- 
- 	return 0;
- }
- 
-+/* Tests respecting the guard gap of the mapping getting placed */
-+int test_guard_gap_new_mappings_gaps(void)
-+{
-+	void *free_area, *shstk_start, *test_map = (void *)0xFFFFFFFFFFFFFFFF;
-+	struct node *head = NULL, *cur;
-+	int ret = 0;
-+
-+	free_area = mmap(0, PAGE_SIZE * 4, PROT_READ | PROT_WRITE,
-+			 MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
-+	munmap(free_area, PAGE_SIZE * 4);
-+
-+	/* Test letting map_shadow_stack find a free space */
-+	shstk_start = mmap(free_area, PAGE_SIZE, PROT_READ | PROT_WRITE,
-+			   MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
-+	if (shstk_start == MAP_FAILED || shstk_start != free_area)
-+		return 1;
-+
-+	while (test_map > shstk_start) {
-+		test_map = (void *)syscall(__NR_map_shadow_stack, 0, PAGE_SIZE, 0);
-+		if (test_map == MAP_FAILED) {
-+			printf("[INFO]\tmap_shadow_stack MAP_FAILED\n");
-+			ret = 1;
-+			break;
-+		}
-+
-+		cur = malloc(sizeof(*cur));
-+		cur->mapping = test_map;
-+
-+		cur->next = head;
-+		head = cur;
-+
-+		if (test_map == free_area + PAGE_SIZE) {
-+			printf("[INFO]\tNew mapping has other mapping in guard gap!\n");
-+			ret = 1;
-+			break;
-+		}
-+	}
-+
-+	while (head) {
-+		cur = head;
-+		head = cur->next;
-+		munmap(cur->mapping, PAGE_SIZE);
-+		free(cur);
-+	}
-+
-+	munmap(shstk_start, PAGE_SIZE);
-+
-+	if (!ret)
-+		printf("[OK]\tGuard gap test, placement mapping's gaps\n");
-+
-+	return ret;
-+}
-+
- /*
-  * Too complicated to pull it out of the 32 bit header, but also get the
-  * 64 bit one needed above. Just define a copy here.
-@@ -850,9 +903,15 @@ int main(int argc, char *argv[])
- 		goto out;
- 	}
- 
--	if (test_guard_gap()) {
-+	if (test_guard_gap_other_gaps()) {
- 		ret = 1;
--		printf("[FAIL]\tGuard gap test\n");
-+		printf("[FAIL]\tGuard gap test, other mappings' gaps\n");
-+		goto out;
-+	}
-+
-+	if (test_guard_gap_new_mappings_gaps()) {
-+		ret = 1;
-+		printf("[FAIL]\tGuard gap test, placement mapping's gaps\n");
- 		goto out;
- 	}
- 
--- 
-2.34.1
-
+>
+> --
+> Cheers,
+> Stephen Rothwell
 
