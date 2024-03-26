@@ -1,89 +1,84 @@
-Return-Path: <linux-kernel+bounces-118273-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-118274-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id C435E88B723
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 02:56:20 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C5E7888B725
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 02:56:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 01A291C38476
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 01:56:20 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 03C811C35302
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 01:56:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BE0A048CDC;
-	Tue, 26 Mar 2024 01:56:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED00C4CB23;
+	Tue, 26 Mar 2024 01:56:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="PNLTQWJF"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="sMGh5IKl"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0DDED18AF4;
-	Tue, 26 Mar 2024 01:56:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A6744E1A8;
+	Tue, 26 Mar 2024 01:56:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711418174; cv=none; b=S7PMdFh2lSsXRo7b69xWM1rSJgoVYnBYdJkR4ublDnP/4QDStB/L5A+9/OteaDGlzJrkc5fXQICyiFr1eilrHD6ki2qEuGisLSkyOo0zU58FyKMdJHLmxJ/BIUVwnGMSTBy8knvN+iCJwnlF17YnV0AfYFacU+EFI69Thh/pdGw=
+	t=1711418209; cv=none; b=A3VCmLvAhUfpXPc0PvbRCMz9M8VSoNaMgARUMGXx8OUe8vYBRjVsZ8RmHsmppn5lHABfCokuXaOrNRLb2bzCUtZjADZZzdh8PDPxMTYJV/+KM71grON7y1mXRotbWETphEQNK+RGxXRkpKP91QfV5PUrauHU0GnQ/rJpkQTh0Gs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711418174; c=relaxed/simple;
-	bh=iGZ1sN109f31IxTk+YNzxIwHJqGr0BjZR34QePejfYI=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=M3/W1col7fKsBzfJ0ZVxmwV7PYPDgFkaIeYPZXAQ7s0rYAzqDLb6nseAoPggV7nwy+ohhydSM5sZ7WPOHnxtqoVU+3FGVS7lh2p40Wty89tanffGNUGn1wv2dBgAPWeo3JhE4NGKcCvvUsh4Hooub4N9XQTy0ikyXXZO6FjBd84=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=PNLTQWJF; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 02612C433F1;
-	Tue, 26 Mar 2024 01:56:12 +0000 (UTC)
+	s=arc-20240116; t=1711418209; c=relaxed/simple;
+	bh=lgp0ZYnoQLa2C4vtORXukYuZX/EsNsKnTcsgP/pcSlk=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=KNiP1zOhfXYGWXe4RtlWn9gRTX6QU2uHvufxu1OFsPPbN6nOWCb+F1Q5qErbB1bX0Uiw4WZYy/LmfDDwL7XTVP3JiDg6sNWqQpi57y4Jqid3/cfo53IeBBc9EnvHfmRJX7c9x3XnZu9nNZWg26QDR/7IMDYkwlT9t7aLBd9EHHs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=sMGh5IKl; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 52712C433F1;
+	Tue, 26 Mar 2024 01:56:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711418173;
-	bh=iGZ1sN109f31IxTk+YNzxIwHJqGr0BjZR34QePejfYI=;
-	h=Date:From:To:Cc:Subject:From;
-	b=PNLTQWJFFiL35/jUE6Mm1/bDwDU6OR7LrVQE2t/Hi7I92DvPikyN+iJsGsy4E1Mhd
-	 c/hX7mfu0Mh3EBfrZwyXzrq/lgLdJNeZTOL1sxG9Rxf9oK8RiQi/6OkOeTdjMN3CB+
-	 6Gk+osvGd2hPffDRh4LiLccPhNLFBvcpQLbZuTldKBruYwqkoPDiBuLP0Wq/SUAw2m
-	 1uiOIzT5p8akhHOCMUH82Xcmt2DvjadGZ/DzZnQ8Z47eoef3JWrD/J+nGw9UAcsNzn
-	 BdGUuBbDQnGetxNCMQBRhh1oApOoVUPw6OcJHZIlEJt+Gy66A50Fk0oxeHxN7NnJIB
-	 lor67tPc7FREg==
-Date: Mon, 25 Mar 2024 19:56:10 -0600
-From: "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Cc: linux1394-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org,
-	"Gustavo A. R. Silva" <gustavoars@kernel.org>,
-	linux-hardening@vger.kernel.org
-Subject: [PATCH][next] firewire: Annotate struct fw_iso_packet with
- __counted_by()
-Message-ID: <ZgIrOuR3JI/jzqoH@neat>
+	s=k20201202; t=1711418208;
+	bh=lgp0ZYnoQLa2C4vtORXukYuZX/EsNsKnTcsgP/pcSlk=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=sMGh5IKltb/la3sUkwTjVZYV+zf51F4xzgVmxOYLxYmCUQNTFPc6QDILoS+CBzWnR
+	 6dPhHnL4lIOD3/MDPg+1cgF3EBvTM0B1OUd9RxAdXu6Rr+Sb4wHuKvN843Emr/k8b0
+	 1bnwQVx66Z9WcsW+UEb7qPu8IfV/e+5pwaDDjZuv68X231PGXXHZnszMV3jn0Wl6Vz
+	 4Y4oNsvjQ+vCijK2ErpDGCbF/QL/YBdd216qlZdfevlZb5n1SUQKOE0Zj5Em4EuDFl
+	 6eJEv+Ow74rbbhcvFLqTXUKMSb3B0PcX2xEWWLsOwpJmHvjeeWNFYz8uG5a9mFnvU+
+	 uVv1Z5md45nOw==
+Date: Mon, 25 Mar 2024 18:56:47 -0700
+From: Jakub Kicinski <kuba@kernel.org>
+To: Simon Horman <horms@kernel.org>, thomas.perrot@bootlin.com
+Cc: Nicolas Ferre <nicolas.ferre@microchip.com>, Claudiu Beznea
+ <claudiu.beznea@tuxon.dev>, "David S . Miller" <davem@davemloft.net>, Eric
+ Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>,
+ netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next] net: macb: allow MTU change when the interface
+ is up
+Message-ID: <20240325185647.0ad674e9@kernel.org>
+In-Reply-To: <20240325205401.GF403975@kernel.org>
+References: <20240325152735.1708636-1-thomas.perrot@bootlin.com>
+	<20240325205401.GF403975@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-Prepare for the coming implementation by GCC and Clang of the __counted_by
-attribute. Flexible array members annotated with __counted_by can have
-their accesses bounds-checked at run-time via CONFIG_UBSAN_BOUNDS (for
-array indexing) and CONFIG_FORTIFY_SOURCE (for strcpy/memcpy-family
-functions).
+On Mon, 25 Mar 2024 20:54:01 +0000 Simon Horman wrote:
+> I'm not sure that it is expected behaviour for an interface
+> to reset like this when a change of MTU is requested.
+> While conversely I think it is common (if not entirely desirable)
+> to prohibit changing the MTU when an interface is up.
+> What is the problem being addressed here?
 
-Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
----
- include/linux/firewire.h | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+Right..
 
-diff --git a/include/linux/firewire.h b/include/linux/firewire.h
-index dd9f2d765e68..00abe0e5d602 100644
---- a/include/linux/firewire.h
-+++ b/include/linux/firewire.h
-@@ -463,7 +463,8 @@ struct fw_iso_packet {
- 	u32 tag:2;		/* tx: Tag in packet header		*/
- 	u32 sy:4;		/* tx: Sy in packet header		*/
- 	u32 header_length:8;	/* Length of immediate header		*/
--	u32 header[];		/* tx: Top of 1394 isoch. data_block	*/
-+				/* tx: Top of 1394 isoch. data_block    */
-+	u32 header[] __counted_by(header_length);
- };
- 
- #define FW_ISO_CONTEXT_TRANSMIT			0
--- 
-2.34.1
+> >  	dev->mtu = new_mtu;
+> >  
+> > +	if (reset)
+> > +		macb_open(dev);
 
+. imagine admin does this over SSH on a remote box and system 
+is under memory pressure. Even ignoring the fact you're not checking
+the return value, the result of changing MTU should be either having 
+the requested MTU (success) or having the old MTU (failure).
+Not "machine drops off the network" :(
 
