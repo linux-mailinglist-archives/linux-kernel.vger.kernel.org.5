@@ -1,207 +1,136 @@
-Return-Path: <linux-kernel+bounces-119945-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-119947-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 61DC188CF31
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 21:42:54 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id ABF6988CF3C
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 21:43:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id ECEC3341092
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 20:42:52 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DD33B1C32BD1
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 20:43:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A3A1771B47;
-	Tue, 26 Mar 2024 20:42:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B1D0712B156;
+	Tue, 26 Mar 2024 20:43:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="AQ9F7CAy"
-Received: from mail-vk1-f172.google.com (mail-vk1-f172.google.com [209.85.221.172])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="J7SvCAom"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 37C082CA8
-	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 20:42:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 685F7745E4
+	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 20:43:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711485751; cv=none; b=ORqXkRZqb6ZfWnQyPtj2prZ78K/o9XWyV/E2IdXPN52MDZhQGu+2HQiv+OuCx6wWYqh5sfaXbnoJSGu81IeLEgX8C26jXj2P1k8a7UAMkoydgMtSQxTLkX+OdJSx5FO1ZIo+A88WGiZqmeMd4cjIYVsx/LXBO26MiUdtBTSMiho=
+	t=1711485807; cv=none; b=oOUaAzGimI4zWHrXi3VC5ik6bGneqkg8BdTlEoiG47gcuXcGMzwwxMN2anTjnhiF2/Q2NTZgxPhW4uKUKM+O3FGlBw/ut1JHUmD8e0Qc+0EixUbxB1CfmGgnkUdoL2cNh2KDGOi1aHiWwhtlTGd5AAZNT6uvQtz8psxHXVX5whY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711485751; c=relaxed/simple;
-	bh=pLHWzs987kbANZLhWn+OVDYNz1mbnSNZ0ZnNwiv7Qs4=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=A2pSRc1Gp6oDoBBXw4LSFTws5fb3wFFmBbR8hvXsaYp5jn8xGKs10OoxhyQ3sA1kgiaYfMiXnE4igLpXkXo4wcGQQ+KyeWN1brFPNk+o3vM8bWa7M2y3nZ1CYSa39jXoCxyGdFlYwwpn6kYWfkdNHk+dIzg1ftfJ4n61KOWjp9Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=AQ9F7CAy; arc=none smtp.client-ip=209.85.221.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-vk1-f172.google.com with SMTP id 71dfb90a1353d-4d438e141d5so111917e0c.0
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 13:42:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1711485749; x=1712090549; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=WXbMV//iCVDcmmeY0RArWtkZ2QeUzFh9TWNfWy7C9Pk=;
-        b=AQ9F7CAyYu031wbKs1aGnu9bXs392xQBUMzvA2w60O7IGoAQyjJ0PUzN6j8QKyNi8L
-         3mE2HQSCx7+icQ/359I52RxjMKy4cgxedF+WZeyTpD1ZaUjM3gJQ1On75CNUl5xJ8Nnl
-         EeCFTfFICgcPD3tngZicsaJZLhYfOEnygZeWJFQZkl8u3h53ZKvWdi12Kzs7AuKY1w66
-         OCOJHsIUaBZZod3TCCEoFrnuZ8po0nZaW9NjiRzdrXWWvj6EZaSU/e9HzKzsnjGdWTf5
-         f2hwY6UZz8zwzBFhGHSyRpcM/YuDfGNCfiABAz4idshPyq+z4zN/dkoBXjImak3o3Ws3
-         2lpQ==
+	s=arc-20240116; t=1711485807; c=relaxed/simple;
+	bh=xpgv3sgDQ7rpy8eSB8hXWoT4c/rHDCJv082+mAKX/Fc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Ol6WAPFFYJ/DMhodfCjrTZaMEJt3NdqRP6RqoPLSheHftbFmv5mLL0dc4KPbju22GzfeXc31BytBYwpF8GEkGgLvb54Cyb/qFeTzbswmbw+dn1V1erIGlHRBsXrvSYfg0zZg5CHDdflBN07qKFGiyc55XuNbeSS1jUEvBjWYfO4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=J7SvCAom; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1711485805;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=+7bjw/hteF8djmOoWPYQb6GfOlzxEGXIn8a6dn1jJ20=;
+	b=J7SvCAomlKsBUl3Oo8vPw7pRWDU2+PH628xnmqz0k70HQgJzAVAymdmeZun/0cmi42qvyL
+	wemvIRuM7mX7aCb0U1RvH2WZjZSYPWI947ilCNB4J27FAzptzn03MVFOT+n8q4LpodjQEy
+	sW7/kBxhwZd/5D4iO/lVkjDSoqMW9MQ=
+Received: from mail-qt1-f200.google.com (mail-qt1-f200.google.com
+ [209.85.160.200]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-481-HH0yrNPKOZmYaVsvd4hiJQ-1; Tue, 26 Mar 2024 16:43:23 -0400
+X-MC-Unique: HH0yrNPKOZmYaVsvd4hiJQ-1
+Received: by mail-qt1-f200.google.com with SMTP id d75a77b69052e-430c9bbe925so10267951cf.0
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 13:43:23 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711485749; x=1712090549;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=WXbMV//iCVDcmmeY0RArWtkZ2QeUzFh9TWNfWy7C9Pk=;
-        b=O8buDPMycYbYceD45bqnHhX9d4mUN5XVNFzlJC2L8mTpf/F6MjNJjXYTpwCfWzmEzZ
-         IHZHv4uoRFUWyJNWSSJMy+h2ICqH15p10Jj4A99xBVSGLC6icWVABarOarda5vtIZWzI
-         q/8BogYFGGZoAAy31XpIDs9zxdbF/nm/k146BOsDa/wrR4lxx5KXMmUyn9U5N57UpJPS
-         mJ1sMIVE+QeFqHgNNLaCTz7eQzM6YbQAYQlQKqn1shYsLONBkpdTOreNO56oaq1dyEm5
-         /3ICRnQw2RzAYPF/CHh8XdLOs4UBl0fIaBsNtTbGdNvhOtm2Zu3YQACx1Y6fyG/yWM/i
-         VnqA==
-X-Forwarded-Encrypted: i=1; AJvYcCWaIwtYC5GZqpGW/PvsAmoXLARna9QbZ8uN5GXkbIl7gQ1rI7KfT8P+0bhbgVnk4up6xSnetfLQDxLoWIvMfFK1ppWJ2UlzfiJN75ag
-X-Gm-Message-State: AOJu0Yxm4sO2vgGZj6EI6Tmre+5pExmtMVf7lUQx1B4IS1wDQb8q9r/c
-	ACS6sH1c/TXq/uS/KZa4hXIyytjVmUWED67KQIFxvUPloTyoCWVOnWPuKfd8j1ZMj7+wbBHYArz
-	xgM43O3O7ws2Rl6/oRCsopu7+tnw8xHiwa+mv
-X-Google-Smtp-Source: AGHT+IEEPd7cbBYNSs6jDBcU4yy5IaPB7/HfMZQ44tBZJVln+87cjP8JeA/iYHT88HbKfAHsVw8BjLKn2q9CrpQ8eQg=
-X-Received: by 2002:a05:6122:181c:b0:4d4:4ff8:c367 with SMTP id
- ay28-20020a056122181c00b004d44ff8c367mr2307752vkb.6.1711485748894; Tue, 26
- Mar 2024 13:42:28 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1711485803; x=1712090603;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=+7bjw/hteF8djmOoWPYQb6GfOlzxEGXIn8a6dn1jJ20=;
+        b=NLb5DqGHJBNEpZi0KVWfGEFKsKoUwn1zHDTnBdoj1Lc2h3CPr27I68oJl6id5q5ZWQ
+         fwJdJKuKQR1KGzcyHzseQbeUJ/c919O5xj82dXVnFMMKt8LWE5CSo45GemdT5Qzih8b7
+         YO5ryB6xz7NVwNbchcQ6SVGq+dt+zUQadRakwpNT4r3ktuqtIrTW08U7R6cLLsFh6Fbl
+         Q9+UU1OPWwDd0J2ecll89X/Iwpm+9XlHtJt26F4JtJR6bu1XYw1YZDbNoDT1AZjVgFKc
+         KuGl2awgTUUX9FvA7rnQ9XxKHVNbu66vSWWIRuzwM9hlm8TMgKGCEjwL1aUoJOP8NtOL
+         uzaA==
+X-Gm-Message-State: AOJu0YzQrsRclH2bBA+MzVO9K4cNMMbWcV+K4fdf0F7wpi+PwC/MAozy
+	kZvSwEHnrYtGOXJlQMDm2Zef5X5ItjneBkm/kEb8ZLtDzO5e1Y5Qi/7amkHGzQX0X+e6QGS+zu2
+	pZVyv1SNJgkqhErp992nJbyC1Hnj0clqZ+msOEwUf8FM5l0AY6g1YsJbIob2fmA==
+X-Received: by 2002:a05:6214:3d8c:b0:696:6f95:4421 with SMTP id om12-20020a0562143d8c00b006966f954421mr12036053qvb.1.1711485803023;
+        Tue, 26 Mar 2024 13:43:23 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IE9o8Lvkh94OFhBwTYfrdCOZFUwRaCCOcIoegLN8mEEkmbFgDRGFirXEVx9siaWwZdIpqlZMA==
+X-Received: by 2002:a05:6214:3d8c:b0:696:6f95:4421 with SMTP id om12-20020a0562143d8c00b006966f954421mr12036034qvb.1.1711485802644;
+        Tue, 26 Mar 2024 13:43:22 -0700 (PDT)
+Received: from x1n ([99.254.121.117])
+        by smtp.gmail.com with ESMTPSA id fw11-20020a056214238b00b0069693e10869sm1875364qvb.143.2024.03.26.13.43.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 26 Mar 2024 13:43:22 -0700 (PDT)
+Date: Tue, 26 Mar 2024 16:43:20 -0400
+From: Peter Xu <peterx@redhat.com>
+To: Andrew Morton <akpm@linux-foundation.org>
+Cc: linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+	SeongJae Park <sj@kernel.org>, Jason Gunthorpe <jgg@nvidia.com>,
+	Mike Rapoport <rppt@kernel.org>,
+	Matthew Wilcox <willy@infradead.org>,
+	kernel test robot <lkp@intel.com>
+Subject: Re: [PATCH] mm/arch: Provide pud_pfn() fallback
+Message-ID: <ZgMzaMu7oILiNLcG@x1n>
+References: <20240323151643.1047281-1-peterx@redhat.com>
+ <20240326132726.67e82559a928ac1636c8050c@linux-foundation.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <0851a207-7143-417e-be31-8bf2b3afb57d@molgen.mpg.de>
- <47e032a0-c9a0-4639-867b-cb3d67076eaf@suse.com> <20240326155247.GJZgLvT_AZi3XPPpBM@fat_crate.local>
- <80582244-8c1c-4eb4-8881-db68a1428817@suse.com> <20240326191211.GKZgMeC21uxi7H16o_@fat_crate.local>
- <CANpmjNOcKzEvLHoGGeL-boWDHJobwfwyVxUqMq2kWeka3N4tXA@mail.gmail.com> <20240326202548.GLZgMvTGpPfQcs2cQ_@fat_crate.local>
-In-Reply-To: <20240326202548.GLZgMvTGpPfQcs2cQ_@fat_crate.local>
-From: Marco Elver <elver@google.com>
-Date: Tue, 26 Mar 2024 21:41:50 +0100
-Message-ID: <CANpmjNM0fnqDJHZYxvy6dfTHE3jeCv-rXmaJiD5XXx+bodF1-A@mail.gmail.com>
-Subject: Re: [PATCH] kbuild: Disable KCSAN for autogenerated *.mod.c intermediaries
-To: Borislav Petkov <bp@alien8.de>
-Cc: Masahiro Yamada <masahiroy@kernel.org>, Nathan Chancellor <nathan@kernel.org>, 
-	Nicolas Schier <nicolas@fjasle.eu>, linux-kbuild@vger.kernel.org, 
-	Nikolay Borisov <nik.borisov@suse.com>, Josh Poimboeuf <jpoimboe@kernel.org>, 
-	Paul Menzel <pmenzel@molgen.mpg.de>, Thomas Gleixner <tglx@linutronix.de>, 
-	Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
-	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org, 
-	LKML <linux-kernel@vger.kernel.org>, kasan-dev@googlegroups.com, 
-	David Kaplan <David.Kaplan@amd.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20240326132726.67e82559a928ac1636c8050c@linux-foundation.org>
 
-On Tue, 26 Mar 2024 at 21:26, Borislav Petkov <bp@alien8.de> wrote:
->
-> On Tue, Mar 26, 2024 at 08:33:31PM +0100, Marco Elver wrote:
-> > I think just removing instrumentation from the mod.c files is very reasonable.
->
-> Thanks!
->
-> @Masahiro: pls send this to Linus now as the commit which adds the
-> warning is in 6.9 so we should make sure we release it with all issues
-> fixed.
->
-> Thx.
->
-> ---
-> From: "Borislav Petkov (AMD)" <bp@alien8.de>
-> Date: Tue, 26 Mar 2024 21:11:01 +0100
->
-> When KCSAN and CONSTRUCTORS are enabled, one can trigger the
->
->   "Unpatched return thunk in use. This should not happen!"
->
-> catch-all warning.
->
-> Usually, when objtool runs on the .o objects, it does generate a section
-> .return_sites which contains all offsets in the objects to the return
-> thunks of the functions present there. Those return thunks then get
-> patched at runtime by the alternatives.
->
-> KCSAN and CONSTRUCTORS add this to the the object file's .text.startup
-> section:
->
->   -------------------
->   Disassembly of section .text.startup:
->
->   ...
->
->   0000000000000010 <_sub_I_00099_0>:
->     10:   f3 0f 1e fa             endbr64
->     14:   e8 00 00 00 00          call   19 <_sub_I_00099_0+0x9>
->                           15: R_X86_64_PLT32      __tsan_init-0x4
->     19:   e9 00 00 00 00          jmp    1e <__UNIQUE_ID___addressable_cryptd_alloc_aead349+0x6>
->                           1a: R_X86_64_PLT32      __x86_return_thunk-0x4
->   -------------------
->
-> which, if it is built as a module goes through the intermediary stage of
-> creating a <module>.mod.c file which, when translated, receives a second
-> constructor:
->
->   -------------------
->   Disassembly of section .text.startup:
->
->   0000000000000010 <_sub_I_00099_0>:
->     10:   f3 0f 1e fa             endbr64
->     14:   e8 00 00 00 00          call   19 <_sub_I_00099_0+0x9>
->                           15: R_X86_64_PLT32      __tsan_init-0x4
->     19:   e9 00 00 00 00          jmp    1e <_sub_I_00099_0+0xe>
->                           1a: R_X86_64_PLT32      __x86_return_thunk-0x4
->
->   ...
->
->   0000000000000030 <_sub_I_00099_0>:
->     30:   f3 0f 1e fa             endbr64
->     34:   e8 00 00 00 00          call   39 <_sub_I_00099_0+0x9>
->                           35: R_X86_64_PLT32      __tsan_init-0x4
->     39:   e9 00 00 00 00          jmp    3e <__ksymtab_cryptd_alloc_ahash+0x2>
->                           3a: R_X86_64_PLT32      __x86_return_thunk-0x4
->   -------------------
->
-> in the .ko file.
->
-> Objtool has run already so that second constructor's return thunk cannot
-> be added to the .return_sites section and thus the return thunk remains
-> unpatched and the warning rightfully fires.
->
-> Drop KCSAN flags from the mod.c generation stage as those constructors
-> do not contain data races one would be interested about.
->
-> Debugged together with David Kaplan <David.Kaplan@amd.com> and Nikolay
-> Borisov <nik.borisov@suse.com>.
->
-> Reported-by: Paul Menzel <pmenzel@molgen.mpg.de>
-> Signed-off-by: Borislav Petkov (AMD) <bp@alien8.de>
-> Link: https://lore.kernel.org/r/0851a207-7143-417e-be31-8bf2b3afb57d@molgen.mpg.de
+On Tue, Mar 26, 2024 at 01:27:26PM -0700, Andrew Morton wrote:
+> On Sat, 23 Mar 2024 11:16:43 -0400 peterx@redhat.com wrote:
+> 
+> > From: Peter Xu <peterx@redhat.com>
+> > 
+> > The comment in the code explains the reasons.  We took a different approach
+> > comparing to pmd_pfn() by providing a fallback function.
+> > 
+> > Another option is to provide some lower level config options (compare to
+> > HUGETLB_PAGE or THP) to identify which layer an arch can support for such
+> > huge mappings.  However that can be an overkill.
+> > 
+> > ...
+> >
+> > If we care about per-commit build errors (and if it is ever feasible to
+> > reorder), we can move this patch to be before the patch "mm/gup: handle
+> > huge pud for follow_pud_mask()" in mm-unstable to unbreak build on that
+> > commit.
+> 
+> I temporarily disabled that whole series a few days ago.  Because of
+> multiple build issues, iirc.
+> 
+> Let's make that permanent.  Please redo the whole series against
+> mm-unstable and resend?
 
-Reviewed-by: Marco Elver <elver@google.com>
+Yes, that's the plan.  Feel free to ignore this as this is not used until
+that GUP rework series, I'll include it in the whole set to be reposted.
 
-Thanks!
+I'm currently doing the build tests; just finished writting the harness for
+testing the matrix.  It'll take a bit time to run through the tests I
+specified (I tried to cover a few more archs/configs), and I'll repost with
+all patches included (fixups squashed) when test finished.
 
-> ---
->  scripts/Makefile.modfinal | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/scripts/Makefile.modfinal b/scripts/Makefile.modfinal
-> index 8568d256d6fb..79fcf2731686 100644
-> --- a/scripts/Makefile.modfinal
-> +++ b/scripts/Makefile.modfinal
-> @@ -23,7 +23,7 @@ modname = $(notdir $(@:.mod.o=))
->  part-of-module = y
->
->  quiet_cmd_cc_o_c = CC [M]  $@
-> -      cmd_cc_o_c = $(CC) $(filter-out $(CC_FLAGS_CFI) $(CFLAGS_GCOV), $(c_flags)) -c -o $@ $<
-> +      cmd_cc_o_c = $(CC) $(filter-out $(CC_FLAGS_CFI) $(CFLAGS_GCOV) $(CFLAGS_KCSAN), $(c_flags)) -c -o $@ $<
->
->  %.mod.o: %.mod.c FORCE
->         $(call if_changed_dep,cc_o_c)
-> --
-> 2.43.0
->
->
->
-> --
-> Regards/Gruss,
->     Boris.
->
-> https://people.kernel.org/tglx/notes-about-netiquette
+[side note: I think I can reproduce the other not-reported issue, on
+ arm+alldefconfig; that'll get covered too]
+
+Thanks,
+
+-- 
+Peter Xu
+
 
