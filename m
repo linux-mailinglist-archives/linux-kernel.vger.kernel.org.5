@@ -1,137 +1,141 @@
-Return-Path: <linux-kernel+bounces-119535-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-119415-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 55DE688C9FE
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 18:02:06 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A974188C861
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 17:02:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 12014301151
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 17:02:05 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DBA401C62C9A
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 16:02:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 494BC13D511;
-	Tue, 26 Mar 2024 17:01:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9371513C8F7;
+	Tue, 26 Mar 2024 16:02:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XvuxaomW"
-Received: from mail-lj1-f175.google.com (mail-lj1-f175.google.com [209.85.208.175])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b="mjCT9fo6";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="R8Az+nHD"
+Received: from fhigh8-smtp.messagingengine.com (fhigh8-smtp.messagingengine.com [103.168.172.159])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C3A8813D51F;
-	Tue, 26 Mar 2024 17:01:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DD9EC13C83A;
+	Tue, 26 Mar 2024 16:02:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.159
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711472465; cv=none; b=QzS6Pj/LmdGVebFcTYC58oRUrYej1ukYF3upsZBh+70Qw/hAfRjXyPmlQYQJ6rZIHELMX7TU7bNtD1U0uXdux+EG0YLcqlj2X5SfgUyO0o2/q8+AdJDd/z5XKOfN7svKV9A8sTRcbzRWhSC0GjHUi6dfoHC0iOrlln05PLzxGyg=
+	t=1711468955; cv=none; b=jN8usJTrs5fHo9xrnrODADltz3eJ3Qko2i5ELqwDBnoihZjtqNXkcme/MgDJ4xP5LUgWmYrNeOWanJjaAYaKbDMp2hw5i5d3zoiAjdUGlI3Pc30DrWafD5VriafPYPxhQIsViHbREl8vZLLlZx0QYJ+2GuMmj1vB2L2ZikHxQ/I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711472465; c=relaxed/simple;
-	bh=uZMNYEaSYzRLyOQcLYp01OkMILTIpdBUfnshhKAM9tA=;
-	h=From:To:Cc:Subject:In-Reply-To:Date:Message-ID:References:
-	 MIME-Version:Content-Type; b=ov+xOQYXNHgZaoh4fO+cfZlv9tOosncJKOKRpiF3ANt96R8mY+YqpDulzUm7aNqc0ERb8J0CaWfv+6zqRomL9KUYecC9kruVzdbwT5CtYSNl+ZFjMiRv33u9RLYijP6c/+67E/TpcZWJUMTJ9YI/mbIzmU3Nye3+imAXVGvcJU4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=XvuxaomW; arc=none smtp.client-ip=209.85.208.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f175.google.com with SMTP id 38308e7fff4ca-2d48d75ab70so82938511fa.0;
-        Tue, 26 Mar 2024 10:01:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711472462; x=1712077262; darn=vger.kernel.org;
-        h=mime-version:user-agent:references:message-id:date:in-reply-to
-         :subject:cc:to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=gzfexKZPZkf85+a0gllV0ajlzNUH9m6yIuTzuBccjB8=;
-        b=XvuxaomW8SPhNyOAA4FaRDcKPHDGCJQ5+0uAuxJg6A+jsKFJf2uVuq3X/JwALggGMP
-         +XR47bNhNeq5izEM2c5Tqr7J5Gzg4nVfOUTXuaILEYOUS/4snqWnhlaanaOwpA49StVN
-         aODxJdZwAIxgtZ4bz9njmBI3yv2irnNK+b7m8yEidwD5QJ0IC5rDvrgJ+XmSXv2ypywk
-         b5rR+Tu/mROykUVgQ1bhGjSkfUSTkAXNDGywpEuj3ujvamyMqKs+Ut54jJwCI3up4dGS
-         /Y3kELlXmmwrTtMUCsagndMKSM8SkB/fo3rPi0VlXEGhxQTuRolnMNbSUgxxh0DZQXUj
-         JiNA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711472462; x=1712077262;
-        h=mime-version:user-agent:references:message-id:date:in-reply-to
-         :subject:cc:to:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=gzfexKZPZkf85+a0gllV0ajlzNUH9m6yIuTzuBccjB8=;
-        b=Z49TLX+Bkur8hUPRCfkXMnKWiiGwJt5071J7K0FIjysE/Wtt2jbjfMGK4//ykFNnka
-         q3WhcWzzDao4fel7Gq0O2g+2BjSB5gOKkoUXOkDZGPcLQoPmoZb9xlbG2Nk/ylb1BZRe
-         Eg07oXyD/v1Gal0MylH9mkPFAUXWDzzwIXiHA+72MeZDS5Ht5iH8M5EQYGGtpYg0dnpg
-         8nr+8PEPBSuq5gcWQMmKr88ckBXa6ZNl0gFuhwefokntxVnUnB4FUz1cVuzuVrS3Z9Nl
-         ZeqdH7+1l60n/8Is2x+Aurw35ayVZSIrHUju6/O1Y4spJTQm3IBPGEHwVYw2Kcv7P0T0
-         gxSg==
-X-Forwarded-Encrypted: i=1; AJvYcCVECPJ7e3jZ19M9vv7Rd4gszyJKKTxlLcuKH8YIGxzQRJ3DOkcml/3jYSTOlNjSOob4EeEZN2rGKjvq8SZl4FNiqJkNk96wHj9LUuxMm21QDlQYS4I68aeYg+k9P1A/fuh1vr/Q0aua
-X-Gm-Message-State: AOJu0YwoDBD7U5QwiEsqEIIBvTzDiqBgCTBo/oKNjBqMK3G/asobOAfA
-	POOh1tlwp5l6c9NUBKCpT8emjGPGqHyR/9anpsiqSRSgDQuORWa+
-X-Google-Smtp-Source: AGHT+IH8ru9poxTyHOPjWkzoiAaXgaGlMH2HCJf8Y/pvDqqw8XN1YAg1gTzHA8UnbhEqJC3qSt7zJw==
-X-Received: by 2002:a2e:9b01:0:b0:2d6:c535:bf3e with SMTP id u1-20020a2e9b01000000b002d6c535bf3emr1250510lji.14.1711472461652;
-        Tue, 26 Mar 2024 10:01:01 -0700 (PDT)
-Received: from imac ([2a02:8010:60a0:0:e486:aac9:8397:25ce])
-        by smtp.gmail.com with ESMTPSA id o33-20020a05600c512100b004131310a29fsm12116647wms.15.2024.03.26.10.01.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Mar 2024 10:01:01 -0700 (PDT)
-From: Donald Hunter <donald.hunter@gmail.com>
-To: Akira Yokosawa <akiyks@gmail.com>
-Cc: amogh.linux.kernel.dev@gmail.com,  airlied@gmail.com,  corbet@lwn.net,
-  daniel@ffwll.ch,  dri-devel@lists.freedesktop.org,
-  javier.carrasco.cruz@gmail.com,  linux-doc@vger.kernel.org,
-  linux-kernel@vger.kernel.org,  maarten.lankhorst@linux.intel.com,
-  mripard@kernel.org,  skhan@linuxfoundation.org,  tzimmermann@suse.de,
-  willy@infradead.org,  Mauro Carvalho Chehab <mchehab@kernel.org>
-Subject: Re: [PATCH v2] Fix duplicate C declaration warnings
-In-Reply-To: <f735ce0b-db1e-49bc-86ac-b5ab8e4aec31@gmail.com> (Akira
-	Yokosawa's message of "Tue, 26 Mar 2024 13:05:39 +0900")
-Date: Tue, 26 Mar 2024 16:01:50 +0000
-Message-ID: <m2bk710yoh.fsf@gmail.com>
-References: <287eb3f74e4c31adb065668ff49c8e1577388227.camel@gmail.com>
-	<f735ce0b-db1e-49bc-86ac-b5ab8e4aec31@gmail.com>
-User-Agent: Gnus/5.13 (Gnus v5.13)
+	s=arc-20240116; t=1711468955; c=relaxed/simple;
+	bh=WEETTdtmXnNUUxdJnrKz4FTNJRHDYO+nDraQbw59R0o=;
+	h=MIME-Version:Message-Id:In-Reply-To:References:Date:From:To:Cc:
+	 Subject:Content-Type; b=Ayu50rvq4WbvWG7QiytbZiE6SjmFlwK3ni9nJGhatI4WILECUUbksLhke6S+hcp0jcio1JWe6KXCUTi8bEA9A9wjb4oUQZGHpfUZE8ZIyxPEu+r/vZa0VxWL50V4iLJVQO/8OY4IBAv3dOfwn70yvYTOq/S2YndVWlMbEQzcUPc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de; spf=pass smtp.mailfrom=arndb.de; dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b=mjCT9fo6; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=R8Az+nHD; arc=none smtp.client-ip=103.168.172.159
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arndb.de
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+	by mailfhigh.nyi.internal (Postfix) with ESMTP id E88BB114008C;
+	Tue, 26 Mar 2024 12:02:32 -0400 (EDT)
+Received: from imap51 ([10.202.2.101])
+  by compute5.internal (MEProxy); Tue, 26 Mar 2024 12:02:32 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
+	:cc:content-transfer-encoding:content-type:content-type:date
+	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to; s=fm1; t=1711468952;
+	 x=1711555352; bh=uZQNPynhKPF46EB/VI6vYwBBa1dqaara1pLLBIisxc8=; b=
+	mjCT9fo6BpB7CSjlxicGaG/bS9hBLKCK3w6UShjKUvJktIIjba0cHRBKQAimrc5Q
+	Emv6TmTcP0KOyBxUFeKu7CE83/rb1jMarfYe0oIwxsWa65ehQ8LTpZFtTFQDVOuo
+	wDBcHV1cN4ZnimtBxcgqh0RhCjGYsF9Sg7tKIvkfjgc7IZqiG3+oiX4kjl3YqZt9
+	ORsRs+LHyp48c1UEPbHS/AnyUCJHWBWmNbxtsAZU3yrh917L6a7wt6A2JfqnKE5w
+	MnJ3d9DHRmb2vQE3TEOK9phybyGejur466HXU1Ve6Tylxan1k7JO4XG+f+63cVut
+	Zsmng4dpx0203Bo+/PR1Kw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-transfer-encoding
+	:content-type:content-type:date:date:feedback-id:feedback-id
+	:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to:x-me-proxy:x-me-proxy
+	:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=1711468952; x=
+	1711555352; bh=uZQNPynhKPF46EB/VI6vYwBBa1dqaara1pLLBIisxc8=; b=R
+	8Az+nHDQmgC0yNbisHXJ3de+Z7rjacbhC5d6IM8Pa/bXUI0Sd3iTpgvvmFOrS0XU
+	4gp2B6BhmcXpSUScqla22drDVDBJr5u4AMhja1b/rJqrH8uSG13hPOlwPt734Oaq
+	1XWClBMuivbPZ3QXR0XzJJOoTtjwk9co108Jbaw8+MmyDuhT27H5bCmwCTCvz3BI
+	zGV8mMLxna7ZeEakS/YOIZlGq8uaP9w7g4X/+kc+WLgzXsz7Az25CW8GngrZ6roY
+	tC4sy+dQ2y4+Zy3CqE0dr/pgKcc5/+UFr424G3twWiW+OTXI10K0dYngGx3w5Rlg
+	6RzWNHNFxT8Ms9gzRhQLw==
+X-ME-Sender: <xms:mPECZmlxNndyoYvxX8n8aZ8p-SODnrkhPolr7FnGtnOaDXgFEmFSsA>
+    <xme:mPECZt271I6AHIkNXTxfSLwq6bbyzElUmhfR_acKZVgknUhqzx8HjaNoVUFTfyUrM
+    Os5coHg9CEiyXGBIxU>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledruddufedgkeefucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepofgfggfkjghffffhvfevufgtgfesthhqredtreerjeenucfhrhhomhepfdet
+    rhhnugcuuegvrhhgmhgrnhhnfdcuoegrrhhnugesrghrnhgusgdruggvqeenucggtffrrg
+    htthgvrhhnpeegfeejhedvledvffeijeeijeeivddvhfeliedvleevheejleetgedukedt
+    gfejveenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
+    grrhhnugesrghrnhgusgdruggv
+X-ME-Proxy: <xmx:mPECZkrjeL7nPoJNmijVdb-ahSvhcg_bE8hgRozi4GcjyMeD6uj5KQ>
+    <xmx:mPECZqmuyK4ZJG0f6NfE0gTIEWVqFYcNmZ6yW5uATjejt6Zt_qvF-Q>
+    <xmx:mPECZk34bYanMNteHxGz8LdvyuGNWD--R_2OSUu9BfTL_8dTOR_-gQ>
+    <xmx:mPECZhuDyjdOTdo5KtUM54qOIaombyJlL0JbTmzdK79dXiL-pAqLCg>
+    <xmx:mPECZl78g8uWX-GHxDXztR0_nDoF-pERrigkFb2Ez_-UbX0ZndJ7MQ>
+Feedback-ID: i56a14606:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+	id E4F75B6008D; Tue, 26 Mar 2024 12:02:31 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.11.0-alpha0-328-gc998c829b7-fm-20240325.002-gc998c829
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Message-Id: <e1ec2f8c-c1e9-4459-a6d4-c14ca57404fe@app.fastmail.com>
+In-Reply-To: <ddd9519fa51f95eb14a6dd3f2a4b7d67ae7e47a9.camel@nvidia.com>
+References: <20240326144741.3094687-1-arnd@kernel.org>
+ <20240326145140.3257163-5-arnd@kernel.org>
+ <ddd9519fa51f95eb14a6dd3f2a4b7d67ae7e47a9.camel@nvidia.com>
+Date: Tue, 26 Mar 2024 17:02:11 +0100
+From: "Arnd Bergmann" <arnd@arndb.de>
+To: "Timur Tabi" <ttabi@nvidia.com>, "Masahiro Yamada" <masahiroy@kernel.org>,
+ "kherbst@redhat.com" <kherbst@redhat.com>,
+ "linux-kbuild@vger.kernel.org" <linux-kbuild@vger.kernel.org>,
+ "Arnd Bergmann" <arnd@kernel.org>, "Lyude Paul" <lyude@redhat.com>,
+ "bskeggs@redhat.com" <bskeggs@redhat.com>, "Dave Airlie" <airlied@gmail.com>,
+ "Danilo Krummrich" <dakr@redhat.com>,
+ "Nathan Chancellor" <nathan@kernel.org>, "Daniel Vetter" <daniel@ffwll.ch>
+Cc: "Justin Stitt" <justinstitt@google.com>,
+ "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+ "Bill Wendling" <morbo@google.com>,
+ "nouveau@lists.freedesktop.org" <nouveau@lists.freedesktop.org>,
+ "Nicolas Schier" <nicolas@fjasle.eu>,
+ "Nick Desaulniers" <ndesaulniers@google.com>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "llvm@lists.linux.dev" <llvm@lists.linux.dev>
+Subject: Re: [PATCH 06/12] nouveau: fix function cast warning
+Content-Type: text/plain;charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-Akira Yokosawa <akiyks@gmail.com> writes:
+On Tue, Mar 26, 2024, at 16:20, Timur Tabi wrote:
+> On Tue, 2024-03-26 at 15:51 +0100, Arnd Bergmann wrote:
+>> Calling a function through an incompatible pointer type causes breaks
+>> kcfi, so clang warns about the assignment:
+>>=20
 >
-> That message of mine just pointed out that the Sphinx bug of false
-> duplicate C declaration warning first reported by Mauro (+CC'd) at:
-> https://github.com/sphinx-doc/sphinx/issues/8241 --
-> "C domain issues when building the Linux Kernel documentation".
-> It had not been resolved despite Mauro's recognition of the issue at the
-> time.
+> ...
 >
-> It was closed without fixing the bug but delegate the issue to an earlier
-> one of the same nature at: https://github.com/sphinx-doc/sphinx/issues/7819 --
-> "C, distinguish between ordinary identifiers and tag names", which was
-> opened on Jun 12, 2020 and has not been resolved.  (almost 4 years ago!)
+>> +static void of_fini(void *p)
+>> +{
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0return kfree(p);
+>> +}
+>> +
 >
-> There is two pull requests attempting to resolve the issue at:
-> https://github.com/sphinx-doc/sphinx/pull/8313 --
-> "C, distinguish between tag names and ordinary names" and
-> https://github.com/sphinx-doc/sphinx/pull/8929 --
-> "Intersphinx delegation to domains".
-> PR #8313 needs #8929 as its prerequisite.
->
-> Unfortunately, both PRs are still open as well as the issue #7819.
-> Honestly speaking, I don't have any idea what prevents those pulls,
-> give or take the need of rebasing with conflict resolution.
->
->>                                                  So by changing the
->> function name to something like "query_drm_format_info(u32 format)" is
->> a possible fix. Question is what should I rename this function to, that
->> aligns with the coding standards? Also suggest a new function name for
->> "drm_modeset_lock" that causes the second warning.
->
-> So, I would rather not rename valid identifiers for the sake of working
-> around a bug of Sphinx.  Rather, I'd appreciate if you'd send a message
-> encouraging Sphinx devs to resolve the issue sooner rather than later.
->
->         Thanks, Akira
+> I don't know anything about kfci, but shouldn't this just be "kfree(p)=
+",
+> without the "return"?
 
-Agreed, we should try and get the bug resolved in Sphinx. This same
-issue came up in relation to this PR that I am working on so hopefully
-we can work together to get fixes merged upstream:
+You are right, fixed this up locally now, waiting for more
+comments before I resend patches from my series.
 
-https://github.com/sphinx-doc/sphinx/pull/12162
+I think it works because of a gcc extension, but isn't
+valid C otherwise, and I did not mean to rely on this.
 
-Thanks,
-Donald.
+     Arnd
 
