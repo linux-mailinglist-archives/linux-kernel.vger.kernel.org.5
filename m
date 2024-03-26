@@ -1,141 +1,106 @@
-Return-Path: <linux-kernel+bounces-119548-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-119549-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7127D88CA45
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 18:07:59 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9C74F88CA58
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 18:09:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E7A5FB27DB8
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 17:07:56 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 579512E7255
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 17:09:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AA96A8526B;
-	Tue, 26 Mar 2024 17:05:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 750E420B04;
+	Tue, 26 Mar 2024 17:06:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="f8Z0eTCE"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="nZIaAvtO"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C90111C694;
-	Tue, 26 Mar 2024 17:05:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9DF1D17BA0;
+	Tue, 26 Mar 2024 17:06:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.8
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711472752; cv=none; b=GyTTmL/ZwEL3V8OzRpBT4PaRsxKJKthSslR01kpBQDSQnNVSsdbzGV/jNvD8wf4rTPHKLnYx5pF0451uE9DM3O6aNBkQCLB5zqdiatXrtYzCdM6u59QXx8SRdCSwGbxibjo9tYuJx6wU7l6FFjPWDKV517wLl+xmT7l0MJRGZRo=
+	t=1711472814; cv=none; b=N4LvMJmawVNlMMiVxwGB+G2fOr7TXkdNcv2lxVkqYzuljCjKy4TJAUVj25qZSqSNfRNAW1iOntxnVj/pgj2MvT2VhUD33meEYFU8SE5GOyZbIuPilhq9iC0n3q5mX48FY19Agj0RQ6PYbPVfbTqYIS9IAqJ/UUu/tagZLeAQYwM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711472752; c=relaxed/simple;
-	bh=71bc6Icg2W+tsc/KrncHz55w8fQK/AdKxcY+zxw842I=;
+	s=arc-20240116; t=1711472814; c=relaxed/simple;
+	bh=tEGEBe98n5yV7Nin67LqiSt90t6EYdkW6aOGPf8PFJQ=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=DYQgTcG3yMFa4SlGZnU3TJJPpf5FSc9rarbIcpWhdtGk8+sEjQaqQrTRLZCpaFA6pVkZcuiaY3s1eIAT+/hqufIua+Oe6bPll1tWgeHEmGTljbehsLmpTdSI3p/H6esehtMYkwLQSHRb5/Ml7envCt/2rjcmnow9KgmL33oZDqw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=f8Z0eTCE; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 378A0C433F1;
-	Tue, 26 Mar 2024 17:05:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711472751;
-	bh=71bc6Icg2W+tsc/KrncHz55w8fQK/AdKxcY+zxw842I=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=f8Z0eTCE91cnVLMjLsMZ5XnbXj46lolCBrEa2MuMCeOGKl2oNVv8YsfvE+OcWzfiR
-	 2zZEvqlWd85/5mlWV+X3+eev3YcTeIbNtOytfIp97MmTfdvIP4a8oe/9oP5jsqhEih
-	 KrEshn1lL9OneLTXy5A3ktgc7q0v/8hHhC+hUFQCQe22on3BOwFw+XtA/vv/IvGayB
-	 hftb7+vs2AaKRqiZXmwNOIiE5v8kPXZX7paNsjz/IcH0HAfnNg+xjjp2EiWvbaYZEf
-	 Myua/CeRUH2RRkxwg1P1O6ahhk60xu6EUI2aj/SxXWACo5VfjhGitiA4EGDc9nzM2I
-	 xLIGc7N/yvZgQ==
-Received: from johan by xi.lan with local (Exim 4.97.1)
-	(envelope-from <johan@kernel.org>)
-	id 1rpAFK-000000006pW-44Tm;
-	Tue, 26 Mar 2024 18:05:59 +0100
-Date: Tue, 26 Mar 2024 18:05:58 +0100
-From: Johan Hovold <johan@kernel.org>
-To: Bartosz Golaszewski <brgl@bgdev.pl>
-Cc: Kalle Valo <kvalo@kernel.org>, Marcel Holtmann <marcel@holtmann.org>,
-	Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
-	"David S . Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Bjorn Andersson <andersson@kernel.org>,
-	Konrad Dybcio <konrad.dybcio@linaro.org>,
-	Liam Girdwood <lgirdwood@gmail.com>,
-	Mark Brown <broonie@kernel.org>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Will Deacon <will@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
-	Saravana Kannan <saravanak@google.com>,
-	Geert Uytterhoeven <geert+renesas@glider.be>,
-	Arnd Bergmann <arnd@arndb.de>,
-	Neil Armstrong <neil.armstrong@linaro.org>,
-	Marek Szyprowski <m.szyprowski@samsung.com>,
-	Alex Elder <elder@linaro.org>,
-	Srini Kandagatla <srinivas.kandagatla@linaro.org>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Abel Vesa <abel.vesa@linaro.org>,
-	Manivannan Sadhasivam <mani@kernel.org>,
-	Lukas Wunner <lukas@wunner.de>,
-	Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-	linux-bluetooth@vger.kernel.org, netdev@vger.kernel.org,
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-wireless@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org, linux-pci@vger.kernel.org,
-	linux-pm@vger.kernel.org,
-	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
-	ath11k@lists.infradead.org
-Subject: Re: [PATCH v6 04/16] dt-bindings: net: wireless: qcom,ath11k:
- describe the ath11k on QCA6390
-Message-ID: <ZgMAdvEADhJ8TXa9@hovoldconsulting.com>
-References: <20240325131624.26023-1-brgl@bgdev.pl>
- <20240325131624.26023-5-brgl@bgdev.pl>
- <87r0fy8lde.fsf@kernel.org>
- <CAMRc=Mc2Tc8oHr5NVo=aHAADkJtGCDAVvJs+7V-19m2zGi-vbw@mail.gmail.com>
- <87frwe8jiu.fsf@kernel.org>
- <CAMRc=MdCv+vTMZML-wzRQqZZavquV3DABYM4KYw-HwqS47sTyw@mail.gmail.com>
- <874jct10yf.fsf@kernel.org>
- <CAMRc=Me5ef_kFDz0SyGZb4S+2Ma4i=Fek_tzwj+bYD4DGSV4mA@mail.gmail.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=JLPgGqJ6kHrSROGksaI3B+rCYnalh2Mc0N9t9A/yh7AevsDQAmweMSnZHUycd+z6XafdXa9SspmLDI5NrIAFDAejI+s+v8+1FBgqKAA7b91YC7qLd9y/vhdLOu3rrtBZpuM7Uck6e5XIUTXtjwknfhmeOhAJV/dBwGhpo9SD+k0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=nZIaAvtO; arc=none smtp.client-ip=192.198.163.8
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1711472813; x=1743008813;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=tEGEBe98n5yV7Nin67LqiSt90t6EYdkW6aOGPf8PFJQ=;
+  b=nZIaAvtOP52f5VsDnQxIwftJylLniK/cEZj2XjBOt7bctkfPhJ2Ik5Wn
+   LvAHEz6P7YFLMOT0nU2KsyNKYui1mEWXah3bzckVqAw3cBnevY+ePBq7J
+   9N0O7aDfpfiGFPS6WljI1L8sK73D5tBIZLwWG64+qf/vV4Mu0OuU0VSxA
+   gRLK0T1njRhMqOArbcVjQq2Udq/PdYwzI9w2Y6wd7pvRnC8oLhqMFVxmb
+   15SFjHZtS2AuPukWKcW7XW1HIeic1z7JfJ8/v6aCKcVPtusf51mcEtuwC
+   94UgFuycXGzQ4yXvmx7LKZuqh0ggo7PqIu+/5/0h6hTuBh9I07cRojMtM
+   w==;
+X-CSE-ConnectionGUID: 4SRYtynuQx6uP0dV9+0glw==
+X-CSE-MsgGUID: LSH6xxiDTKaTWF5/IWnQoA==
+X-IronPort-AV: E=McAfee;i="6600,9927,11025"; a="24026924"
+X-IronPort-AV: E=Sophos;i="6.07,156,1708416000"; 
+   d="scan'208";a="24026924"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Mar 2024 10:06:52 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,11025"; a="914885445"
+X-IronPort-AV: E=Sophos;i="6.07,156,1708416000"; 
+   d="scan'208";a="914885445"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Mar 2024 10:06:49 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.97)
+	(envelope-from <andriy.shevchenko@intel.com>)
+	id 1rpAG6-0000000GOc7-0Hn7;
+	Tue, 26 Mar 2024 19:06:46 +0200
+Date: Tue, 26 Mar 2024 19:06:45 +0200
+From: Andy Shevchenko <andriy.shevchenko@intel.com>
+To: David Lechner <dlechner@baylibre.com>
+Cc: Mark Brown <broonie@kernel.org>,
+	Ryan Wanner <ryan.wanner@microchip.com>,
+	Nicolas Ferre <nicolas.ferre@microchip.com>,
+	Alexandre Belloni <alexandre.belloni@bootlin.com>,
+	Claudiu Beznea <claudiu.beznea@tuxon.dev>,
+	Daniel Mack <daniel@zonque.org>,
+	Haojian Zhuang <haojian.zhuang@gmail.com>,
+	Robert Jarzmik <robert.jarzmik@free.fr>, linux-spi@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v2] spi: remove struct spi_message::is_dma_mapped
+Message-ID: <ZgMApTO6nuDNzNs_@smile.fi.intel.com>
+References: <20240325-spi-remove-is_dma_mapped-v2-1-d08d62b61f1c@baylibre.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAMRc=Me5ef_kFDz0SyGZb4S+2Ma4i=Fek_tzwj+bYD4DGSV4mA@mail.gmail.com>
+In-Reply-To: <20240325-spi-remove-is_dma_mapped-v2-1-d08d62b61f1c@baylibre.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 
-On Tue, Mar 26, 2024 at 05:32:55PM +0100, Bartosz Golaszewski wrote:
-> On Tue, Mar 26, 2024 at 4:12 PM Kalle Valo <kvalo@kernel.org> wrote:
-
-> > >> Adding also Johan and ath11k list. For example, I don't know what's the
-> > >> plan with Lenovo X13s, will it use this framework? I guess in theory we
-> > >> could have devices which use qcom,ath11k-calibration-variant from DT but
-> > >> not any of these supply properties?
-> > >
-> > > Good point. I will receive the X13s in a month from now. I do plan on
-> > > upstreaming correct support for WLAN and BT for it as well.
-> > >
-> > > I guess we can always relax the requirements once a valid use-case appears?
-> >
-> > I think we have such cases already now:
-> >
-> > $ git grep ath11k-calibration-variant -- arch
-> > arch/arm64/boot/dts/qcom/qcm6490-fairphone-fp5.dts:     qcom,ath11k-calibration-variant = "Fairphone_5";
-> > arch/arm64/boot/dts/qcom/sc8280xp-lenovo-thinkpad-x13s.dts:                     qcom,ath11k-calibration-variant = "LE_X13S";
-> >
-> > But please do check that. I'm no DT expert :)
+On Mon, Mar 25, 2024 at 02:22:53PM -0500, David Lechner wrote:
+> There are no more users of the deprecated is_dma_mapped in struct
+> spi_message so it can be removed.
 > 
-> You're thinking about making the required: field depend on the value
-> of qcom,ath11k-calibration-variant? Am I getting this right?
+> References in documentation and comments are also removed.
+> 
+> A few similar checks if xfer->tx_dma or xfer->rx_dma are not NULL are
+> also removed since these are now guaranteed to be NULL because they
+> were previously set only if is_dma_mapped was true.
 
-No, I think Kalle is worried about requiring the supply properties for
-certain PCI device ids, in case we have existing or future devicetrees
-with those ids that did not specify them or that need not specify them
-(e.g. any PC modules).
+Nice cleanup, thank you!
 
-Currently we only have the X13s controller in mainline being described
-by a PCIe endpoint node in DT, but it has a different id ("pci17cb,1103"
-instead of "pci17cb,1101" which you are adding here).
+-- 
+With Best Regards,
+Andy Shevchenko
 
-The Fairphone controller is apparently not a PCI device at all.
 
-Johan
 
