@@ -1,189 +1,106 @@
-Return-Path: <linux-kernel+bounces-120007-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-120009-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6930088D00D
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 22:30:22 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 611C688D017
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 22:31:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9A62EB230E0
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 21:30:19 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 122641F80DBD
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 21:31:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F0FC013D893;
-	Tue, 26 Mar 2024 21:30:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2C90C13D889;
+	Tue, 26 Mar 2024 21:31:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="nXG9sw/R"
-Received: from mail-ed1-f52.google.com (mail-ed1-f52.google.com [209.85.208.52])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HXct5rwb"
+Received: from mail-pj1-f54.google.com (mail-pj1-f54.google.com [209.85.216.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5231D13D62B
-	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 21:30:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3F77F13D61C;
+	Tue, 26 Mar 2024 21:31:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711488607; cv=none; b=YTarTj52VhKFqblDi5V6Glg2nxch9RavygojpHIrLgn7kCLDGLkWCcDOFpf1IYwtFGmvlBvJaUEonSEelrUJgkpfAaM4GOx4MjljIAPTkSHn3PeCJfE4s2C0LiWd+LVrXvSy4KHP/Ub526U84ZmDxSvf/ppoYN5XY5aKgABPw9w=
+	t=1711488686; cv=none; b=JrOXXgS/ctDuDe+h4f6es7D3iMVhzb42jtnzO4akxfXhW59lmDo1qk3YaR+kCBgCfA1PoCaKMpWEvcWerQr8QobMMLfw8S/1xG/lFVbL6hVVZ7KyQK6i80ctT1rsmpxmOkNNs4VftsJTaJupUnvFTkBGUsKoLxA+F79kgqMAiSg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711488607; c=relaxed/simple;
-	bh=LycH+44Xb+JTPpqfbC5uU7Mi8HxjQOstj+fuX27aKXA=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=ED1qWqNHC/pwbS4376j7qLeaSn/DCsntWjocIls6mJomPuCV/YM/+DtYoEbkc+zvjjXmiSFJeVciAqd3/Sh/jBO00vR2CiplDNUbFb+hzTUdvk8QSvL+uKPnH4hpdYZo1vzM63CDkhHR7M7bNapXLPAPBDJRhkrPjQApa8RyLdI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=nXG9sw/R; arc=none smtp.client-ip=209.85.208.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ed1-f52.google.com with SMTP id 4fb4d7f45d1cf-56c0a249bacso3588796a12.1
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 14:30:05 -0700 (PDT)
+	s=arc-20240116; t=1711488686; c=relaxed/simple;
+	bh=PiGUvrXT9lLzrsrKPCPoTMei8/8USegfYO7EBaP7sv0=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=jjnOk97P21ysncpwHRZNd/GX7Z8zb45fHQxuTRd09cpxgegnMcdy8jC303SiwDyaTgD3o/Lj46RGKG217QIDuGi+GS424kZSh0Ts+sTXfhNnlYhEoA8J9Oc1CemhpTNf4hf60EOCd+XM6M99OTWoX5s3NtRTt/hfIA1/ecQ7v+o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=HXct5rwb; arc=none smtp.client-ip=209.85.216.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f54.google.com with SMTP id 98e67ed59e1d1-29dd91f3aaeso4283575a91.3;
+        Tue, 26 Mar 2024 14:31:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1711488603; x=1712093403; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=nHaB+0+fYJxUTdtRETIH4SSyklGWxCbQzRPTcFdYBVU=;
-        b=nXG9sw/RTSlq+63VzxN2XlSP6BOs0fJlr3f+mvnOdT4RZzqlC/ExQP0htg3BY7BVno
-         EOvLM+RtH105PzVHVceHAcV0RxV3+IYhsjh66S762VD40/Lz1wLdzW65GdBS2Y8++t8s
-         PYcGi4k14W2LNPNxLo2kXVDjTEbKyZsZntmm4zY7RE5d1qIgxFNeA41UMTi9XuiK3voo
-         dy5nBvMsH2S1nzq8lp0M6nM+azOYwuhvt3XHVJk5CAlQcowufRRVJIXbjvnEX/pR9eYG
-         7hUeykp1TcLyvGEZSTf3urbkwYgPzzscU/W24yaNMh9vbGpopCuWRe/r4kGXQWfJePp6
-         Umjw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711488603; x=1712093403;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1711488684; x=1712093484; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=nHaB+0+fYJxUTdtRETIH4SSyklGWxCbQzRPTcFdYBVU=;
-        b=jbDobQdu2v0Uxh7AwwN2qk4kbEcAnuNrt+kFlX7z6AKmOTbVUntd5xuGqXj9tmaiJM
-         jj9Xwa8o6ARp9e8saJmeYsNTtNQT8bBLeS/1N5iKujXUzPAailTMNtimJ3k7Tfq3WHi9
-         6ab7A8V2vI1e+dr0l8KMF2Ux7hBmXFhF0w/89FnSRedGenUC98df9X9oUNvusiyyT1Av
-         aJ6BS79inqAi73GZ6/zlox1kQFkbxPhDeRJ7olgZqx8xwl1e+B4QwgaJ5qnRSYeX+vXA
-         mkYglr90E93aI6HERNgl8O85rc9vtySaHiJligdKs1L5X1mHI8FQ+4cpGdRkni8/B7sX
-         LEXw==
-X-Forwarded-Encrypted: i=1; AJvYcCVn+kcQrzLKInRv74vs2dYC+9gb6tV9M2wtLsHPJNcbDJ7E0K6M+4HJsC6VPgVP27G6D90NRwbRAQHn4lggR+OlnhlHdNz2I+k+uWWW
-X-Gm-Message-State: AOJu0YxqLfHrZz9sEyJCAuB0Y1V9/nM8vx4CbM8eUS/oJxWPbWoYuoB1
-	EIehlwWFB07NkHCdBXdWvE3IBILDrSaYHFKagmRckDWsGwB0ul9A6lJEc7tCL2Y=
-X-Google-Smtp-Source: AGHT+IHtZooY87fwyO2JOQ1AM8+SDn818Zi8Q+x+f8c4tjasX1FVJo5IofS+iWf+FvzACgpmDfGmnQ==
-X-Received: by 2002:a17:906:c2c4:b0:a46:f9c2:f059 with SMTP id ch4-20020a170906c2c400b00a46f9c2f059mr7044312ejb.22.1711488603466;
-        Tue, 26 Mar 2024 14:30:03 -0700 (PDT)
-Received: from [192.168.92.47] (078088045141.garwolin.vectranet.pl. [78.88.45.141])
-        by smtp.gmail.com with ESMTPSA id i20-20020a17090671d400b00a46e92e583bsm4688081ejk.149.2024.03.26.14.30.01
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 26 Mar 2024 14:30:03 -0700 (PDT)
-Message-ID: <f50de786-837d-4c51-9c29-1a8711adc7d2@linaro.org>
-Date: Tue, 26 Mar 2024 22:30:00 +0100
+        bh=PiGUvrXT9lLzrsrKPCPoTMei8/8USegfYO7EBaP7sv0=;
+        b=HXct5rwbMYDUBy6NwzLthEFDDM9ZILac+5NfjwkuYVKrBbdgXtDVVW0uC77gIqf7FG
+         T84+MwnMzelForKDbneVjAPGHtY5s52JN+kqWx0oqbqhdAxL52zU5FGmUVQA5BisfyUt
+         jEjnOSlU7BqRdqmk+VeHgQFQv03FXqmhWfle6wzZJMp0KUytUX0vGEEOQKqyzjGcWwKB
+         CDkx5T3FzndsDQNwrgY7EyFdeXMYnzFdXPMdXP5UBBROSc9ggmL7ie5GFxLaPVlPaf2r
+         sXOQg9ots3m/sYgPm83awHmOOcO32HQ6eejWLaHU0nZfCmqE0uyycIGlRa08OEvWK96K
+         h9sg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711488684; x=1712093484;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=PiGUvrXT9lLzrsrKPCPoTMei8/8USegfYO7EBaP7sv0=;
+        b=uEiYXEewdPC4E0ai1trHcQCVNkzKmpCeW7iD/pH5BfRO7sNxet98bM/PUiiTrHq3K5
+         NvuCzODR5ebv2myTFLkaMG9PPBgPa4I2mietUK+S4Ssx83oWdJrtYAQdpIJDIUOFJ8rF
+         A5nwC6WM2NZ1x5rhQG4Y79U8+v0TecKb3X61gV/VoDw9F0gCGXNrz3bUbJXwWDhg/AQz
+         lbLl9smFUtrase2HQml8C6MGq0GCa2YZaPu3bmpAfsjsJOXvp77L1pH3LxLL6/LYolxU
+         2GM+5ToLLCVYhfPxjx9pjLhu9wmn8mCAPfckIjpGN12Vwef6z1maXzsLYivim747TBCf
+         msjg==
+X-Forwarded-Encrypted: i=1; AJvYcCWy59YbgFLNmOW0seuolHxgI14UOCcTYw6bulRN7FkVQVhZAWcZt8xMAT2262q09rvL2hkfb/mGSohgfiqUR5MbH0gPaomrPLU18bfFx8roxZOQU0zyY7VMsd5esGikGgxIzdL8BNuVHcmvvQ==
+X-Gm-Message-State: AOJu0YwHJKP+3KbPd3Y5HpCJch0Xf82nEvd3eEs2G9Ek/55E4IA+cAaJ
+	cUr7YiVMAGpGcQj+dlKHG5mYcC0UYwB8XXI5PXYzwwLGRZnmJtdKaF7+U2kY+gY5Yl9Dnqv4ETr
+	1AEjQW2wYdFENwYxa9LfM2993aq8=
+X-Google-Smtp-Source: AGHT+IENOACbX5Muhn3hNLP+uwrnNmzoaIn5nRqBxQrlvY5RyvzULA69EFRihpg6ANmhZEBWdyMhfxe4vy25DunBJIU=
+X-Received: by 2002:a17:90b:4017:b0:2a0:3fe1:2e1 with SMTP id
+ ie23-20020a17090b401700b002a03fe102e1mr8867114pjb.6.1711488684568; Tue, 26
+ Mar 2024 14:31:24 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 05/20] media: venus: pm_helpers: Kill dead code
-To: Dikshita Agarwal <quic_dikshita@quicinc.com>,
- Stanimir Varbanov <stanimir.k.varbanov@gmail.com>,
- Vikash Garodia <quic_vgarodia@quicinc.com>,
- Bryan O'Donoghue <bryan.odonoghue@linaro.org>, Andy Gross
- <agross@kernel.org>, Bjorn Andersson <andersson@kernel.org>,
- Mauro Carvalho Chehab <mchehab@kernel.org>,
- Philipp Zabel <p.zabel@pengutronix.de>
-Cc: Marijn Suijten <marijn.suijten@somainline.org>,
- Stanimir Varbanov <stanimir.varbanov@linaro.org>,
- Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
- linux-media@vger.kernel.org, linux-arm-msm@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <20230911-topic-mars-v2-0-3dac84b88c4b@linaro.org>
- <20230911-topic-mars-v2-5-3dac84b88c4b@linaro.org>
- <5e0656ac-badf-dd37-b598-8e4a6f23d2c2@quicinc.com>
-Content-Language: en-US
-From: Konrad Dybcio <konrad.dybcio@linaro.org>
-Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
- xsFNBF9ALYUBEADWAhxdTBWrwAgDQQzc1O/bJ5O7b6cXYxwbBd9xKP7MICh5YA0DcCjJSOum
- BB/OmIWU6X+LZW6P88ZmHe+KeyABLMP5s1tJNK1j4ntT7mECcWZDzafPWF4F6m4WJOG27kTJ
- HGWdmtO+RvadOVi6CoUDqALsmfS3MUG5Pj2Ne9+0jRg4hEnB92AyF9rW2G3qisFcwPgvatt7
- TXD5E38mLyOPOUyXNj9XpDbt1hNwKQfiidmPh5e7VNAWRnW1iCMMoKqzM1Anzq7e5Afyeifz
- zRcQPLaqrPjnKqZGL2BKQSZDh6NkI5ZLRhhHQf61fkWcUpTp1oDC6jWVfT7hwRVIQLrrNj9G
- MpPzrlN4YuAqKeIer1FMt8cq64ifgTzxHzXsMcUdclzq2LTk2RXaPl6Jg/IXWqUClJHbamSk
- t1bfif3SnmhA6TiNvEpDKPiT3IDs42THU6ygslrBxyROQPWLI9IL1y8S6RtEh8H+NZQWZNzm
- UQ3imZirlPjxZtvz1BtnnBWS06e7x/UEAguj7VHCuymVgpl2Za17d1jj81YN5Rp5L9GXxkV1
- aUEwONM3eCI3qcYm5JNc5X+JthZOWsbIPSC1Rhxz3JmWIwP1udr5E3oNRe9u2LIEq+wH/toH
- kpPDhTeMkvt4KfE5m5ercid9+ZXAqoaYLUL4HCEw+HW0DXcKDwARAQABzShLb25yYWQgRHli
- Y2lvIDxrb25yYWQuZHliY2lvQGxpbmFyby5vcmc+wsGOBBMBCAA4FiEEU24if9oCL2zdAAQV
- R4cBcg5dfFgFAmQ5bqwCGwMFCwkIBwIGFQoJCAsCBBYCAwECHgECF4AACgkQR4cBcg5dfFjO
- BQ//YQV6fkbqQCceYebGg6TiisWCy8LG77zV7DB0VMIWJv7Km7Sz0QQrHQVzhEr3trNenZrf
- yy+o2tQOF2biICzbLM8oyQPY8B///KJTWI2khoB8IJSJq3kNG68NjPg2vkP6CMltC/X3ohAo
- xL2UgwN5vj74QnlNneOjc0vGbtA7zURNhTz5P/YuTudCqcAbxJkbqZM4WymjQhe0XgwHLkiH
- 5LHSZ31MRKp/+4Kqs4DTXMctc7vFhtUdmatAExDKw8oEz5NbskKbW+qHjW1XUcUIrxRr667V
- GWH6MkVceT9ZBrtLoSzMLYaQXvi3sSAup0qiJiBYszc/VOu3RbIpNLRcXN3KYuxdQAptacTE
- mA+5+4Y4DfC3rUSun+hWLDeac9z9jjHm5rE998OqZnOU9aztbd6zQG5VL6EKgsVXAZD4D3RP
- x1NaAjdA3MD06eyvbOWiA5NSzIcC8UIQvgx09xm7dThCuQYJR4Yxjd+9JPJHI6apzNZpDGvQ
- BBZzvwxV6L1CojUEpnilmMG1ZOTstktWpNzw3G2Gis0XihDUef0MWVsQYJAl0wfiv/0By+XK
- mm2zRR+l/dnzxnlbgJ5pO0imC2w0TVxLkAp0eo0LHw619finad2u6UPQAkZ4oj++iIGrJkt5
- Lkn2XgB+IW8ESflz6nDY3b5KQRF8Z6XLP0+IEdLOOARkOW7yEgorBgEEAZdVAQUBAQdAwmUx
- xrbSCx2ksDxz7rFFGX1KmTkdRtcgC6F3NfuNYkYDAQgHwsF2BBgBCAAgFiEEU24if9oCL2zd
- AAQVR4cBcg5dfFgFAmQ5bvICGwwACgkQR4cBcg5dfFju1Q//Xta1ShwL0MLSC1KL1lXGXeRM
- 8arzfyiB5wJ9tb9U/nZvhhdfilEDLe0jKJY0RJErbdRHsalwQCrtq/1ewQpMpsRxXzAjgfRN
- jc4tgxRWmI+aVTzSRpywNahzZBT695hMz81cVZJoZzaV0KaMTlSnBkrviPz1nIGHYCHJxF9r
- cIu0GSIyUjZ/7xslxdvjpLth16H27JCWDzDqIQMtg61063gNyEyWgt1qRSaK14JIH/DoYRfn
- jfFQSC8bffFjat7BQGFz4ZpRavkMUFuDirn5Tf28oc5ebe2cIHp4/kajTx/7JOxWZ80U70mA
- cBgEeYSrYYnX+UJsSxpzLc/0sT1eRJDEhI4XIQM4ClIzpsCIN5HnVF76UQXh3a9zpwh3dk8i
- bhN/URmCOTH+LHNJYN/MxY8wuukq877DWB7k86pBs5IDLAXmW8v3gIDWyIcgYqb2v8QO2Mqx
- YMqL7UZxVLul4/JbllsQB8F/fNI8AfttmAQL9cwo6C8yDTXKdho920W4WUR9k8NT/OBqWSyk
- bGqMHex48FVZhexNPYOd58EY9/7mL5u0sJmo+jTeb4JBgIbFPJCFyng4HwbniWgQJZ1WqaUC
- nas9J77uICis2WH7N8Bs9jy0wQYezNzqS+FxoNXmDQg2jetX8en4bO2Di7Pmx0jXA4TOb9TM
- izWDgYvmBE8=
-In-Reply-To: <5e0656ac-badf-dd37-b598-8e4a6f23d2c2@quicinc.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <CANiq72mjc5t4n25SQvYSrOEhxxpXYPZ4pPzneSJHEnc3qApu2Q@mail.gmail.com>
+ <CAA8EJprTNFgKJ_3cdZz4f_LCkYFghi-cfaj3bZmYh3oA63my6A@mail.gmail.com>
+ <85204b78-7b24-61cd-4bae-3e7abc6e4fd3@quicinc.com> <CAA8EJppqrF10J1qExM=gopiF4GPDt7v4TB6LrQxx5OGyAL9hSg@mail.gmail.com>
+ <671d2662-df4e-4350-0084-476eb1671cc1@quicinc.com> <CAA8EJpppre8ibYqN7gZObyvzR08yVbTevC6hDEDCKQVf8gRVRg@mail.gmail.com>
+ <0280fa9a-cdb0-5bf7-7940-3c2cda1da829@quicinc.com>
+In-Reply-To: <0280fa9a-cdb0-5bf7-7940-3c2cda1da829@quicinc.com>
+From: Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Date: Tue, 26 Mar 2024 22:30:56 +0100
+Message-ID: <CANiq72m05v8iYtkHOzmZSmyBx2OvEOzS09Fu7F8N1a2SeboBeA@mail.gmail.com>
+Subject: Re: drivers/gpu/drm/msm/adreno/a6xx_gpu_state.c:843:6: error:
+ variable 'out' set but not used
+To: Abhinav Kumar <quic_abhinavk@quicinc.com>
+Cc: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>, Rob Clark <robdclark@gmail.com>, 
+	Sean Paul <sean@poorly.run>, Marijn Suijten <marijn.suijten@somainline.org>, 
+	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, 
+	linux-arm-msm <linux-arm-msm@vger.kernel.org>, dri-devel <dri-devel@lists.freedesktop.org>, 
+	freedreno@lists.freedesktop.org, linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 4.03.2024 6:40 AM, Dikshita Agarwal wrote:
-> 
-> 
-> On 2/10/2024 2:39 AM, Konrad Dybcio wrote:
->> A situation like:
->>
->> if (!foo)
->> 	goto bar;
->>
->> for (i = 0; i < foo; i++)
->> 	...1...
->>
->> bar:
->> 	...2...
->>
->> is totally identical to:
->>
->> for (i = 0; i < 0; i++) // === if (0)
->> 	...1...
->>
->> ...2...
->>
->> Get rid of such boilerplate.
->>
->> Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
->> ---
->>  drivers/media/platform/qcom/venus/pm_helpers.c | 10 ----------
->>  1 file changed, 10 deletions(-)
->>
->> diff --git a/drivers/media/platform/qcom/venus/pm_helpers.c b/drivers/media/platform/qcom/venus/pm_helpers.c
->> index 1ba65345a5e2..7193075e8c04 100644
->> --- a/drivers/media/platform/qcom/venus/pm_helpers.c
->> +++ b/drivers/media/platform/qcom/venus/pm_helpers.c
->> @@ -878,14 +878,10 @@ static int vcodec_domains_get(struct venus_core *core)
->>  		.pd_flags = PD_FLAG_NO_DEV_LINK,
->>  	};
->>  
->> -	if (!res->vcodec_pmdomains_num)
->> -		goto skip_pmdomains;
->> -
-> Removing the if check and relying only on for loop is good.
-> but I don't see the for loop here.
->>  	ret = dev_pm_domain_attach_list(dev, &vcodec_data, &core->pmdomains);
->>  	if (ret < 0)
->>  		return ret;
->>  
-> Also, what's the base of this change? I don't see above API in the code
-> anywhere.
+On Tue, Mar 26, 2024 at 8:56=E2=80=AFPM Abhinav Kumar <quic_abhinavk@quicin=
+c.com> wrote:
+>
+> Alright, in that case, Miguel can you please repost this with the Fixes
+> tags and in a patch form.
 
-It's inside the dev_pm_domain_attach_list helper.. It was there explicitly
-when I first submitted the patch.
+Done at https://lore.kernel.org/lkml/20240326212324.185832-1-ojeda@kernel.o=
+rg/
 
-Konrad
+Thanks all!
+
+Cheers,
+Miguel
 
