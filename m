@@ -1,78 +1,78 @@
-Return-Path: <linux-kernel+bounces-119701-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-119703-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3924E88CC35
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 19:46:02 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0B59588CC39
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 19:46:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B8B821F81303
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 18:46:01 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3CA341C65A78
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 18:46:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2463E13C3D8;
-	Tue, 26 Mar 2024 18:45:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D858613CA98;
+	Tue, 26 Mar 2024 18:46:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fbFPNoPB"
-Received: from mail-lf1-f45.google.com (mail-lf1-f45.google.com [209.85.167.45])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="TYMAHjHt"
+Received: from mail-lj1-f169.google.com (mail-lj1-f169.google.com [209.85.208.169])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D33D129A6B
-	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 18:45:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8433913C9D6
+	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 18:46:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711478757; cv=none; b=UchqZrJ07vg6xMzynjFVOTB3PC+Vtr4KTd1bzcDEL3ouI72UES0wA3f+BN2S4q2DDGEHt6jlHyPJHdfz8+UNlpD12MBQovS0pNtXaiIV4ryoNh1XmaCqbjptzx8oYi100PGRilg5I5apZQBJHPx7Ea5p5kF+SEIlwvbfL053AqE=
+	t=1711478767; cv=none; b=h8rTmCx/2/8lUh+UEJhyKXTYK1EmPl2Mc5PDl6LGpFBhOKxDGNJqCSCpK68A9ZD0w6QXPRgT7vGWwT70cNa2zmhnwIqE3+aR2+yIcaIdHCYMaN8isdcLfRHbJTnBPOZ3z3PKnJtJjqSkFBFZqbQjDnDkyUbUqf8+o0QaYhX96J0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711478757; c=relaxed/simple;
-	bh=3NbIzqycd8xlypIi2qwc6u8vg1yB79by9UZm2rl/1PQ=;
+	s=arc-20240116; t=1711478767; c=relaxed/simple;
+	bh=kCyQ979AVJ0xdrSEgkcxGjUENL4xlQ2T9QgRwAx/dLw=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=M0XG/LVMuMDcA2ASnn/L6E1SVlAbMdtkdv2MZD45IEpll1Z2GTDkJRhab+NHfYNsu3WnutOZBo3Gy/dn5CuQ8A+4j85cxLD55oDxX3/WbNz/wbClrQjx5EfIz+hq1EBVoI7fuibIOPY7xD0AsapQKrCpskoPKOS/prp2m6/Cjpc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=fbFPNoPB; arc=none smtp.client-ip=209.85.167.45
+	 MIME-Version; b=lEOrkSXgijd4UMJkeb1BqWIMgSiyIgp7SsBs6weOqW6D0BnWJ1OIOTANtd4wbQ4ky3VKNm/cUqIINyZr7Y+pNxnkrsmnEr58l3NG3t8MKlWhVikVcql4UDeDjfWdDCg8+i5SfTADS41pVlZSoX898CJDuXCG9vdBkhWCJyOBiIU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=TYMAHjHt; arc=none smtp.client-ip=209.85.208.169
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f45.google.com with SMTP id 2adb3069b0e04-513d23be0b6so6991377e87.0
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 11:45:55 -0700 (PDT)
+Received: by mail-lj1-f169.google.com with SMTP id 38308e7fff4ca-2d4a8bddc21so78612901fa.0
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 11:46:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711478753; x=1712083553; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1711478763; x=1712083563; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=FaewesxWwXF9SrBXj45sOscWiVNowam2VIxNVohVdmE=;
-        b=fbFPNoPB4PIUvpH+af6m0udg8aZcKMR3Eo+tTbeFhDxqg1+DL9TMytTgUVp9Rr12PV
-         wnDduDDsXP2nre7jfPJtTn0VQEFSKECzBQpPkfnyzoPWMHqgYO6bSG1NAWfbH9QdpPQI
-         406ZW5G7KtfF319akZiTpP81ihYSBv/7G8bgYn3MGvLk3KbllSQXYhbAfkYI+Iv8MkNZ
-         PEuSOvMiF/jJF5Drlf4DZs9sA3KfSC9z01GUaumLVahC9yUML3gJSv/IbjfUMaNerKt7
-         MEhAaGLSyp5Gng95fBpvGK8m4VISzINcS3xHurzaDAOAMqBTOkjPrFPcEb+92FQMhzHh
-         LUGQ==
+        bh=8ldBOgjbepYPciYaLHBtp2xoQsBifAEwo23Ufds/fgw=;
+        b=TYMAHjHtxdFicsSC76judKvGehkf5KyjfNY7CLHkTC8ylsBWJ7vBh2j/aF/N7E/QIa
+         oOVWF6HWLXGs8E1ZKyQ9OZCvoncn8HZrQ7uvozUJ6PFkb+8YZ8ABI8Bv5zIPoKkqMf+I
+         k0hbA/BJTNsPIO2Tr2J+7iMGp+nhdxGZZhwmMJuMbfKVZYQlLcRZhMM1psc7SF9UyOdK
+         +fKESwrY2mGCOaGw9cbRCycj6JcC/BEFIr5eKF+0DhSngAYVU54w4Xz8L/25fHy+acxs
+         C95NputAVBBwEui9Cnd4Q/6JtJ4FplSKXEGUSlMT0f0Pw2m05zQpyzp0sAM7O+OFLn+w
+         4Ncg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711478753; x=1712083553;
+        d=1e100.net; s=20230601; t=1711478763; x=1712083563;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=FaewesxWwXF9SrBXj45sOscWiVNowam2VIxNVohVdmE=;
-        b=rYyKN+87IcyfgyalDtkxF4ykTg1XvFcfAKFWqz/W+hcmx3M4yjG1axp83D0igM7QY1
-         roug9H/yDGb0jQFqEcYg/SARVasOaOTH0Gyw8kFiBmqncXbatRAOowSjZXSeNO/k41Me
-         siBFV+QgfPDVzGm6+o0/X+pzUNOL2ib3trJwlRksKP5hz3qsKe34Fquy5YFGPpej8qbd
-         GG3w/+RrL9w/aC/0iY1sAjm50Q7bIiZQFm9A+n40W1n3ox2lJ4960OGm3MXKs3/i9SrZ
-         uBXmit8RJjZFKfBt3ulHewgWKhvIvUFgprJsrH2mWuLaZQSBgmkrR8Udsk3/kHM4bok3
-         cQ1A==
-X-Gm-Message-State: AOJu0Yy/AncV6arqUe02OOTnIFhcdSaNNevTq5NcbYGMZzYr5WWVC60i
-	Ig1dG6D4CipHXaTgu4Xo0AyBiOHWHmCPt51DG53aeO7WEpw1JZ5bt6nNjMP1
-X-Google-Smtp-Source: AGHT+IEKaji2mkFAStyPQyPTfeOptFG+b5kG0FSe/18W2hU9ZFdWuxTEUoduwNOhrBUXf485wO4w4A==
-X-Received: by 2002:ac2:5b87:0:b0:515:9313:572f with SMTP id o7-20020ac25b87000000b005159313572fmr8981273lfn.8.1711478753187;
-        Tue, 26 Mar 2024 11:45:53 -0700 (PDT)
+        bh=8ldBOgjbepYPciYaLHBtp2xoQsBifAEwo23Ufds/fgw=;
+        b=OM0eL7dLwhdgIM/Yqnzoyv1Nqx2fxIH+N4cROOjgQmPcVKk0QZb4QDwN7VHXSdqlHr
+         /4l6MMUsabsGRX2oZcILw01hm4GwkLE38CJzp4nLWkXXIUlgqtgr179zVAjh/Rme0By7
+         IWu5IaXatlLlWW4s35x9WIYruFmi/8mQp403lmgw86u1oYVsmPf0rKPvfMzoU2Kq0j3Z
+         YUxHQowSdJcaOkWOr6inIwzcuua+obsOGaGAWsQTopJLeNizRRfGguC/BYGCyizTl55M
+         3HOGsZbt5IHSP8W1vliqT5N1JYAp3OhlqnJKH4ImMUwpDCYNabWwHV8JzWgOGVyiLkxe
+         IYPA==
+X-Gm-Message-State: AOJu0YzP6VQWCQTuac0I2culs/8DqPGlW8EJb2ju7mHvYJZkPdJKh+6G
+	3bwOl+wFkFdoti202WHZVkoV3q7ZgmRNa/nIgUAQdigvZXfORaXEyLNUiWad
+X-Google-Smtp-Source: AGHT+IHistzYneoiKIftyZzW4I3+XZL2PkZbDqJAVmOmB2N8m6xuD2IiTNtdXa2at08zOw5IndFWpA==
+X-Received: by 2002:a2e:a309:0:b0:2d4:9936:a45c with SMTP id l9-20020a2ea309000000b002d49936a45cmr337861lje.41.1711478763187;
+        Tue, 26 Mar 2024 11:46:03 -0700 (PDT)
 Received: from localhost.localdomain (109-252-14-191.nat.spd-mgts.ru. [109.252.14.191])
-        by smtp.gmail.com with ESMTPSA id v20-20020ac25594000000b00513e6c170cdsm1580523lfg.254.2024.03.26.11.45.52
+        by smtp.gmail.com with ESMTPSA id u2-20020a2e2e02000000b002d69b9a6513sm1855621lju.48.2024.03.26.11.46.02
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Mar 2024 11:45:52 -0700 (PDT)
+        Tue, 26 Mar 2024 11:46:02 -0700 (PDT)
 From: Maxim Moskalets <maximmosk4@gmail.com>
 X-Google-Original-From: Maxim Moskalets <Maxim.Moskalets@kaspersky.com>
 To: linux-kernel@vger.kernel.org
 Cc: maximmosk4@gmail.com,
 	Maxim Moskalets <Maxim.Moskalets@kaspersky.com>
-Subject: [PATCH 1/8] bpf: replace seq_puts by seq_putc
-Date: Tue, 26 Mar 2024 21:45:49 +0300
-Message-Id: <20240326184549.8555-1-Maxim.Moskalets@kaspersky.com>
+Subject: [PATCH 2/8] cgroup: replace seq_puts by seq_putc
+Date: Tue, 26 Mar 2024 21:45:58 +0300
+Message-Id: <20240326184558.8583-1-Maxim.Moskalets@kaspersky.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20240326184514.8478-1-Maxim.Moskalets@kaspersky.com>
 References: <20240326184514.8478-1-Maxim.Moskalets@kaspersky.com>
@@ -90,100 +90,54 @@ to use a more powerful and less fast function.
 
 Signed-off-by: Maxim Moskalets <Maxim.Moskalets@kaspersky.com>
 ---
- kernel/bpf/arraymap.c       | 6 +++---
- kernel/bpf/bpf_struct_ops.c | 2 +-
- kernel/bpf/hashtab.c        | 4 ++--
- kernel/bpf/local_storage.c  | 4 ++--
- 4 files changed, 8 insertions(+), 8 deletions(-)
+ kernel/cgroup/cgroup.c | 2 +-
+ kernel/cgroup/debug.c  | 6 +++---
+ 2 files changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/kernel/bpf/arraymap.c b/kernel/bpf/arraymap.c
-index 13358675ff2e..d45bffe49dea 100644
---- a/kernel/bpf/arraymap.c
-+++ b/kernel/bpf/arraymap.c
-@@ -457,7 +457,7 @@ static void array_map_seq_show_elem(struct bpf_map *map, void *key,
- 	if (map->btf_key_type_id)
- 		seq_printf(m, "%u: ", *(u32 *)key);
- 	btf_type_seq_show(map->btf, map->btf_value_type_id, value, m);
--	seq_puts(m, "\n");
-+	seq_putc(m, '\n');
+diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
+index a66c088c851c..011db8474d69 100644
+--- a/kernel/cgroup/cgroup.c
++++ b/kernel/cgroup/cgroup.c
+@@ -6300,7 +6300,7 @@ int proc_cgroup_show(struct seq_file *m, struct pid_namespace *ns,
  
- 	rcu_read_unlock();
- }
-@@ -478,7 +478,7 @@ static void percpu_array_map_seq_show_elem(struct bpf_map *map, void *key,
- 		seq_printf(m, "\tcpu%d: ", cpu);
- 		btf_type_seq_show(map->btf, map->btf_value_type_id,
- 				  per_cpu_ptr(pptr, cpu), m);
--		seq_puts(m, "\n");
-+		seq_putc(m, '\n');
- 	}
- 	seq_puts(m, "}\n");
- 
-@@ -955,7 +955,7 @@ static void prog_array_map_seq_show_elem(struct bpf_map *map, void *key,
- 			prog_id = prog_fd_array_sys_lookup_elem(ptr);
- 			btf_type_seq_show(map->btf, map->btf_value_type_id,
- 					  &prog_id, m);
--			seq_puts(m, "\n");
-+			seq_putc(m, '\n');
+ 			seq_puts(m, buf);
+ 		} else {
+-			seq_puts(m, "/");
++			seq_putc(m, '/');
  		}
- 	}
  
-diff --git a/kernel/bpf/bpf_struct_ops.c b/kernel/bpf/bpf_struct_ops.c
-index 43356faaa057..bf94043f0975 100644
---- a/kernel/bpf/bpf_struct_ops.c
-+++ b/kernel/bpf/bpf_struct_ops.c
-@@ -833,7 +833,7 @@ static void bpf_struct_ops_map_seq_show_elem(struct bpf_map *map, void *key,
- 		btf_type_seq_show(st_map->btf,
- 				  map->btf_vmlinux_value_type_id,
- 				  value, m);
--		seq_puts(m, "\n");
-+		seq_putc(m, '\n');
- 	}
+ 		if (cgroup_on_dfl(cgrp) && cgroup_is_dead(cgrp))
+diff --git a/kernel/cgroup/debug.c b/kernel/cgroup/debug.c
+index 80aa3f027ac3..d18f7dcb4def 100644
+--- a/kernel/cgroup/debug.c
++++ b/kernel/cgroup/debug.c
+@@ -55,7 +55,7 @@ static int current_css_set_read(struct seq_file *seq, void *v)
+ 	seq_printf(seq, "css_set %pK %d", cset, refcnt);
+ 	if (refcnt > cset->nr_tasks)
+ 		seq_printf(seq, " +%d", refcnt - cset->nr_tasks);
+-	seq_puts(seq, "\n");
++	seq_putc(seq, '\n');
  
- 	kfree(value);
-diff --git a/kernel/bpf/hashtab.c b/kernel/bpf/hashtab.c
-index 3a088a5349bc..db5105275545 100644
---- a/kernel/bpf/hashtab.c
-+++ b/kernel/bpf/hashtab.c
-@@ -1577,7 +1577,7 @@ static void htab_map_seq_show_elem(struct bpf_map *map, void *key,
- 	btf_type_seq_show(map->btf, map->btf_key_type_id, key, m);
- 	seq_puts(m, ": ");
- 	btf_type_seq_show(map->btf, map->btf_value_type_id, value, m);
--	seq_puts(m, "\n");
-+	seq_putc(m, '\n');
- 
- 	rcu_read_unlock();
- }
-@@ -2421,7 +2421,7 @@ static void htab_percpu_map_seq_show_elem(struct bpf_map *map, void *key,
- 		seq_printf(m, "\tcpu%d: ", cpu);
- 		btf_type_seq_show(map->btf, map->btf_value_type_id,
- 				  per_cpu_ptr(pptr, cpu), m);
--		seq_puts(m, "\n");
-+		seq_putc(m, '\n');
- 	}
- 	seq_puts(m, "}\n");
- 
-diff --git a/kernel/bpf/local_storage.c b/kernel/bpf/local_storage.c
-index a04f505aefe9..3969eb0382af 100644
---- a/kernel/bpf/local_storage.c
-+++ b/kernel/bpf/local_storage.c
-@@ -431,7 +431,7 @@ static void cgroup_storage_seq_show_elem(struct bpf_map *map, void *key,
- 		seq_puts(m, ": ");
- 		btf_type_seq_show(map->btf, map->btf_value_type_id,
- 				  &READ_ONCE(storage->buf)->data[0], m);
--		seq_puts(m, "\n");
-+		seq_putc(m, '\n');
- 	} else {
- 		seq_puts(m, ": {\n");
- 		for_each_possible_cpu(cpu) {
-@@ -439,7 +439,7 @@ static void cgroup_storage_seq_show_elem(struct bpf_map *map, void *key,
- 			btf_type_seq_show(map->btf, map->btf_value_type_id,
- 					  per_cpu_ptr(storage->percpu_buf, cpu),
- 					  m);
--			seq_puts(m, "\n");
-+			seq_putc(m, '\n');
+ 	/*
+ 	 * Print the css'es stored in the current css_set.
+@@ -159,7 +159,7 @@ static int cgroup_css_links_read(struct seq_file *seq, void *v)
+ 				extra_refs += extra;
+ 			}
  		}
- 		seq_puts(m, "}\n");
- 	}
+-		seq_puts(seq, "\n");
++		seq_putc(seq, '\n');
+ 
+ 		list_for_each_entry(task, &cset->tasks, cg_list) {
+ 			if (count++ <= MAX_TASKS_SHOWN_PER_CSS)
+@@ -189,7 +189,7 @@ static int cgroup_css_links_read(struct seq_file *seq, void *v)
+ 	if (!dead_cnt && !extra_refs && !threaded_csets)
+ 		return 0;
+ 
+-	seq_puts(seq, "\n");
++	seq_putc(seq, '\n');
+ 	if (threaded_csets)
+ 		seq_printf(seq, "threaded css_sets = %d\n", threaded_csets);
+ 	if (extra_refs)
 -- 
 2.39.2
 
