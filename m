@@ -1,143 +1,116 @@
-Return-Path: <linux-kernel+bounces-119308-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-119309-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id C7F3788C6DE
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 16:28:23 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7D33B88C6E1
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 16:28:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E13351C63984
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 15:28:22 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 32216320840
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 15:28:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 24CDE13C9CE;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E9B1613C9DE;
 	Tue, 26 Mar 2024 15:27:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="UrKDxUkf"
-Received: from mail-oi1-f172.google.com (mail-oi1-f172.google.com [209.85.167.172])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="cneiOIVU"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD3C113C9A9
-	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 15:27:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 377BB13C9CF;
+	Tue, 26 Mar 2024 15:27:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711466861; cv=none; b=Oc/NVCNFiBkuDvB60zHX7VoQhgDMVi76fnxIGP5Vn0WhN3AN9L93RM7ie//8yFYNCOaU4gJeWWo/RopKMBKqCJCkvefHsUChoXIKibcA+RQMMc6DxGZMm2ffhS1CO7CeZJ6hWm1kSURfPPxAE+b/uAQIViVXPXF5zw0FO222wUE=
+	t=1711466862; cv=none; b=dHsFxF6r8uxxoDBMVPzxNtw00X5KK5HaNTvpFdslHsOXpI5NjZBIVk0kjgquXKqX1Drc06H4RkDvQOMqBVx9kmM7jJGomHEq5cOoQVVPJZX5xbcB++czh37+cUporM1f7J1fpgYdRIYfqdLBvOlhccO305hMlemFhAOx+fCpm9I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711466861; c=relaxed/simple;
-	bh=YkNsaWX2HTUQq5kOihY1X0/mzkBWN0ikvGkfabNwlk8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=CSvyPE2pC5K5DQSpLhxTDjWI0T83UmHjPNaSS1xZvfsPl7g9qapI57jDRGvTBcsaLyYYn6OYdZJiAosISSJ/pXGvfblVYkrEujdBhj7dM5Ycd3on8wqDDBlUia2JTSBkaNCm1eudjfIxeYpNxSHEc0qWDLIwZ+ohzKYfodJm3EE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=UrKDxUkf; arc=none smtp.client-ip=209.85.167.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-oi1-f172.google.com with SMTP id 5614622812f47-3c3d70191c7so657267b6e.2
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 08:27:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1711466859; x=1712071659; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=8KCoF05qOGvpLyJx0EzRCDdY9uRWyKEulxXUNrQvqig=;
-        b=UrKDxUkfXY8mcimw0XtLNnPa/d8nW1PV7r9KN2MlBqttbjVtjYhNZ7a2a3m3DcOFeO
-         xv/AV+NIM/g8v606uODXX9JD9Blu3vER7cgiUNSouA0KGCm4x/sIltwyVELLaACPo66w
-         nFN5ldMT5B4o9bAxJP78iIHvDOkCUYk1JcbxMvD3Zlm1E/WR9VOQYAUPelwDrj8lGcHc
-         FQSzXncd/2icmB/HyHFGS18/8mqkFf+rryeLM5zSJ5Ond+ZjsfNn0xSrqslIxbK5rL17
-         2+acdTulR9ukWgYuafzRtVp8ZYIJYPE5bmantaJ9L1PKkxemV1Kh9d/2aVocVNZwwIPI
-         vXwA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711466859; x=1712071659;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=8KCoF05qOGvpLyJx0EzRCDdY9uRWyKEulxXUNrQvqig=;
-        b=totAC+HEQtN+RgQZfd9gtueSzDU8PeEPBYOqQt8xtMXFxfHebrkelpuERyTp1UMfO7
-         M6b4qYBJFsq5Ypr7R8CSc3V1ECt9bN2nMkhWHzGLdP6gwBks2S27Z5wiXC7g733yplXo
-         nK1BzmfXSd2vryLXMTluxznOEYttmR3ibQoP9M7qvlww1Hw/6Pm5TBI0eh7DC8j/8JFi
-         A92WoZEEBrpooOmtzGCJ6HSy7kkDW78S1woptEG/ORO3aDQnWTuApewlIP1L3nrIv6Du
-         TlL2PodHCjFUrUuVN897X4XaCEmfXJrpV8dc3cI7gXYVPi+0SjuUVxZZLttmWR5YDEon
-         UO+Q==
-X-Forwarded-Encrypted: i=1; AJvYcCXy1biIZ8Jms3ypYziqe4UYQnbLNOT+HiZOK/gCwgRUQ/eGGT3LKz92H+D6zwkuhFkBbSoxrNH1+DWLU1zkGQL/GnHF9d2qDffU+zbq
-X-Gm-Message-State: AOJu0Yxxv76jVfNc1QlSs2E4DQoN278MvdXwJFz5J0J2pcNn/38s2zF9
-	jSqOIv9oRV4USVBlqIUrCLx8Oe9K5CHq3RLTrPpiUTfHvLd4d8qfzRKuwJrhOso=
-X-Google-Smtp-Source: AGHT+IHCzN7eJO+5hXvWc55JPs/oPukABxTnS097+/tb36OwFitfostX+2P9Eu9V3oTVzEPHVe8jpg==
-X-Received: by 2002:a05:6808:19a7:b0:3c3:a000:50e3 with SMTP id bj39-20020a05680819a700b003c3a00050e3mr3672752oib.37.1711466858871;
-        Tue, 26 Mar 2024 08:27:38 -0700 (PDT)
-Received: from [192.168.17.16] ([148.222.132.226])
-        by smtp.gmail.com with ESMTPSA id es21-20020a056808279500b003c3865ae05dsm1519261oib.4.2024.03.26.08.27.37
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 26 Mar 2024 08:27:38 -0700 (PDT)
-Message-ID: <289f01fa-a323-4021-8a1d-a12b474d055b@linaro.org>
-Date: Tue, 26 Mar 2024 09:27:36 -0600
+	s=arc-20240116; t=1711466862; c=relaxed/simple;
+	bh=jnDKCBGZ3mEKwOzhDtE+4+tTWxXMCbPw9/Yta9NdMSU=;
+	h=From:To:In-Reply-To:References:Subject:Message-Id:Date:
+	 MIME-Version:Content-Type; b=uFSUDuyVgqify3KC1E1eGRfFrFAbl4DCtYCoGSEbTMNss47V1zoMu/5ODaN4BVI8urAJrESyBjD3yOSuRIU4Q2uP4XttOn7iIFJAhso6O9G1AuyLnay8Zrmc6/4RfnMeVPzFp7TSISjClbg5mz2IVWQUVhjNanW11pJA65sGxLg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=cneiOIVU; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 91A6BC43390;
+	Tue, 26 Mar 2024 15:27:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1711466861;
+	bh=jnDKCBGZ3mEKwOzhDtE+4+tTWxXMCbPw9/Yta9NdMSU=;
+	h=From:To:In-Reply-To:References:Subject:Date:From;
+	b=cneiOIVUSw3BIhivAzv7EQjXpMfXoxj46GIJw2UWv9LBhSZcI+8Yi55Oq07LD7G51
+	 NqsrY++g921HTWD9o0mTh/l5wcYPQuNFK8W7f4UPFUz1cdWAD0J3LTxQ4aQV6bz2U9
+	 blo7r8Er+d4IQtdlVHo+81d6QdYQ+smDe0FPSeMCYJNVw1TawIaKYZ2+k1qk+eud84
+	 +La8Lh/eKF7BHyTnRK6feuaUcj0Mg9IWNzTNR8A6HUfn+KhhcCY3vqz3RYVXEUwFsy
+	 VpzqEaUxk+KXWSHbvM/ZV5wO2OGTSvn+7+lO2jz8ptIQXJaan1vdB2oYGk7SAR2KZk
+	 lGNXQMXuvvO7Q==
+From: Mark Brown <broonie@kernel.org>
+To: shengjiu.wang@gmail.com, Xiubo.Lee@gmail.com, festevam@gmail.com, 
+ nicoleotsuka@gmail.com, lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.com, 
+ shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de, 
+ linux-imx@nxp.com, alsa-devel@alsa-project.org, 
+ linuxppc-dev@lists.ozlabs.org, linux-sound@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
+ Chancel Liu <chancel.liu@nxp.com>
+In-Reply-To: <20240311111349.723256-1-chancel.liu@nxp.com>
+References: <20240311111349.723256-1-chancel.liu@nxp.com>
+Subject: Re: [PATCH v3 0/5] ASoC: fsl: Support register and unregister
+ rpmsg sound card through remoteproc
+Message-Id: <171146685832.132239.2142300799841463466.b4-ty@kernel.org>
+Date: Tue, 26 Mar 2024 15:27:38 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 6.8 000/710] 6.8.2-rc2 review
-To: Sasha Levin <sashal@kernel.org>, linux-kernel@vger.kernel.org,
- stable@vger.kernel.org
-Cc: torvalds@linux-foundation.org, akpm@linux-foundation.org,
- linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
- lkft-triage@lists.linaro.org, florian.fainelli@broadcom.com, pavel@denx.de,
- sam@ravnborg.org
-References: <20240325120018.1768449-1-sashal@kernel.org>
-Content-Language: en-US
-From: =?UTF-8?Q?Daniel_D=C3=ADaz?= <daniel.diaz@linaro.org>
-In-Reply-To: <20240325120018.1768449-1-sashal@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.14-dev
 
-Hello!
-
-On 25/03/24 6:00 a. m., Sasha Levin wrote:
-> This is the start of the stable review cycle for the 6.8.2 release.
-> There are 710 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+On Mon, 11 Mar 2024 20:13:44 +0900, Chancel Liu wrote:
+> 	echo /lib/firmware/fw.elf > /sys/class/remoteproc/remoteproc0/firmware
+> (A)	echo start > /sys/class/remoteproc/remoteproc0/state
+> (B)	echo stop > /sys/class/remoteproc/remoteproc0/state
 > 
-> Responses should be made by Wed Mar 27 12:00:13 PM UTC 2024.
-> Anything received after that time might be too late.
+> The rpmsg sound card is registered in (A) and unregistered in (B).
+> After "start", imx-audio-rpmsg registers devices for ASoC platform driver
+> and machine driver. Then sound card is registered. After "stop",
+> imx-audio-rpmsg unregisters devices for ASoC platform driver and machine
+> driver. Then sound card is unregistered.
 > 
-> The whole patch series can be found in one patch at:
->          https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git/patch/?id=linux-6.8.y&id2=v6.8.1
-> or in the git tree and branch at:
->          git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.8.y
-> and the diffstat can be found below.
-> 
-> Thanks,
-> Sasha
+> [...]
 
-There is a build regression on SPARC with allmodconfig, with GCC 8 and GCC 11. These are the first error messages:
+Applied to
 
------8<-----
-   /builds/linux/arch/sparc/kernel/traps_64.c:253:6: error: no previous prototype for 'is_no_fault_exception' [-Werror=missing-prototypes]
-     253 | bool is_no_fault_exception(struct pt_regs *regs)
-         |      ^~~~~~~~~~~~~~~~~~~~~
-   /builds/linux/arch/sparc/kernel/traps_64.c:2035:6: error: no previous prototype for 'do_mcd_err' [-Werror=missing-prototypes]
-    2035 | void do_mcd_err(struct pt_regs *regs, struct sun4v_error_entry ent)
-         |      ^~~~~~~~~~
-   /builds/linux/arch/sparc/kernel/traps_64.c:2153:6: error: no previous prototype for 'sun4v_nonresum_error_user_handled' [-Werror=missing-prototypes]
-    2153 | bool sun4v_nonresum_error_user_handled(struct pt_regs *regs,
-         |      ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   cc1: all warnings being treated as errors
------>8-----
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
-More information (complete logs, binaries, kernel config, etc.) here:
+Thanks!
 
-   https://tuxapi.tuxsuite.com/v1/groups/linaro/projects/lkft/builds/2eDAKInwlwcpYzt67s8SukhrZEZ
+[1/5] ASoC: fsl: imx-pcm-rpmsg: Register component with rpmsg channel name
+      commit: 41f96cd53f2838ac4894491ac5eadb06f1e5b858
+[2/5] ASoC: fsl: imx-audio-rpmsg: Register device with rpmsg channel name
+      commit: dacc7459745df168152b5cceba34efade9b5e063
+[3/5] ASoC: fsl: Let imx-audio-rpmsg register platform device for card
+      commit: c73524768e9e1a7ac9eb3a4d36a1ac0d34f22644
+[4/5] ASoC: fsl: fsl_rpmsg: Register CPU DAI with name of rpmsg channel
+      commit: 0aa7f5406afa828a93d84d75c9b9ac991cd75367
+[5/5] ASoC: fsl: imx-rpmsg: Update to correct DT node
+      commit: c14445bdcb98feddf9afaeb05e6193cc1f8eec1a
 
-Reproducer:
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
 
-   tuxmake --runtime podman --target-arch sparc --toolchain gcc-11 --kconfig allmodconfig
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
-Greetings!
-
-Daniel Díaz
-daniel.diaz@linaro.org
+Thanks,
+Mark
 
 
