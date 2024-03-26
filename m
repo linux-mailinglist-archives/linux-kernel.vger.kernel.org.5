@@ -1,101 +1,121 @@
-Return-Path: <linux-kernel+bounces-119908-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-119916-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 40ADC88CEE1
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 21:33:13 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6CF1E88CEF1
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 21:35:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EFCAA32811C
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 20:33:11 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id EE43A1FA0374
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 20:35:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8BCC313D534;
-	Tue, 26 Mar 2024 20:26:01 +0000 (UTC)
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4CFB413E89E;
+	Tue, 26 Mar 2024 20:29:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="JbkNdxqa"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1374F13D50C;
-	Tue, 26 Mar 2024 20:26:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F92013D60B;
+	Tue, 26 Mar 2024 20:29:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.8
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711484761; cv=none; b=AoijNudTy9rZsP0zbATLSPzXzVnCvPL5rp99TK8EsAaiFux7Fq9AGWZKpdjIOdxFc18N6hEquTfhlwyWsbdEOgxvpHFy5H7Nq0acIRFuG0NElp5Ba+Dglnw3MqJgJmCn1RTqzBo+g2rxJrw3RXAW2fT1jX1hqBQaCCf471h0Zpc=
+	t=1711484974; cv=none; b=pYgq/dd0WZdJtk3It3qNsPGaKW9Fumg5cWfSLIhpQEHefEmFUtY0sFBA32PzavFBaLhGBMdL2qbIsEcgeVFDJLgfFw+WsqJ0y2K0fhccWnCq2vhXSIIFDJHoIUYHAepQslRAU4IXG97/MCBbnLGx08q/GF7jX0zsyVeHyUJhDE4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711484761; c=relaxed/simple;
-	bh=igWGdcldAz0/c8YIfnVQ/TAEd2nFNJDirYyjzqHgGRc=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=oPqmV6J0yUqzhTM/zCbgVgRDjDw6Ur/kDROTx+0rsf4fmLVAvsmMuty4urcOHk1HOrS1+or9hFp+4YTpXAdkvXEYQLqKi5mi98ohgFRZJ6LZTIblzWzpU/Wn2tZsZGyXe1kvHs8L2imcfgz1sS8eNQH+YwwTO1QyRGAyObrLsnY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 49A2CC433F1;
-	Tue, 26 Mar 2024 20:25:59 +0000 (UTC)
-Date: Tue, 26 Mar 2024 16:28:38 -0400
-From: Steven Rostedt <rostedt@goodmis.org>
-To: Nikita Kiryushin <kiryushin@ancud.ru>
-Cc: "Paul E. McKenney" <paulmck@kernel.org>, Frederic Weisbecker
- <frederic@kernel.org>, Neeraj Upadhyay <quic_neeraju@quicinc.com>, Joel
- Fernandes <joel@joelfernandes.org>, Josh Triplett <josh@joshtriplett.org>,
- Boqun Feng <boqun.feng@gmail.com>, Mathieu Desnoyers
- <mathieu.desnoyers@efficios.com>, Lai Jiangshan <jiangshanlai@gmail.com>,
- Zqiang <qiang.zhang1211@gmail.com>, rcu@vger.kernel.org,
- linux-kernel@vger.kernel.org, lvc-project@linuxtesting.org
-Subject: Re: [PATCH] rcu-tasks: Update show_rcu_tasks_trace_gp_kthread
- buffer size
-Message-ID: <20240326162838.14da4a7c@gandalf.local.home>
-In-Reply-To: <4b3e239d-ab87-4a37-ac1d-af49e1f8f3ee@ancud.ru>
-References: <20240326174839.487582-1-kiryushin@ancud.ru>
-	<20240326152230.3e692d83@gandalf.local.home>
-	<4b3e239d-ab87-4a37-ac1d-af49e1f8f3ee@ancud.ru>
-X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1711484974; c=relaxed/simple;
+	bh=4hlpqAQd5tKpB941Bi5b5enQ2JvIR959aRQ4GT535tA=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=DPytmeoGTupailKPcVyru09mvjhIKMfE1osa+9+HaolP6oLnMtV1EJQ+qqOy8f5655r0Ma3fKa4X616Lqx5JDTY7Q9H9WJBDUG3Puvb4yO/zzLLHAPd7wDQ3a0DcFoEpL9qCQTze/C6Kkq7hv7Txz9EwiXGHJ8yaos4XHGIjUjo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=JbkNdxqa; arc=none smtp.client-ip=192.198.163.8
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1711484972; x=1743020972;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=4hlpqAQd5tKpB941Bi5b5enQ2JvIR959aRQ4GT535tA=;
+  b=JbkNdxqaJXDHKXB2RlsqG/Sl19a6xawHf0eveWEHRQvGG2/VjkvH+ll+
+   sATfcsAN9pWBPXUd5eCNMhIJMEf8NCHvCcJ5+Y1gBkjvOF68/u0lMb6SR
+   IVZ5/2rDRo6N1ywfMb5iZ/IFw3TZR4T2gmAOJp4ZFqA3PvCR7JoKuRVp/
+   1peD9TwJ19yD+KUOHg6UiMlVnVJouwjwZlK6qCSlIlnpSUTnhiTUcUzNf
+   b03R/3TfMyCsB0gFCyj5Zyp2aM49ZRKZKON10X8nYeVSfj/5xb/XFTULe
+   /nMgac8Snv5KL0emBVhwcZFgt1ek1bTnlgv55lj1s4wNxZMrmik+mVjV7
+   A==;
+X-CSE-ConnectionGUID: R1d/17SyRReLnepekwL51g==
+X-CSE-MsgGUID: 6gZCgWe9RuKhutePbKSbEw==
+X-IronPort-AV: E=McAfee;i="6600,9927,11025"; a="24049071"
+X-IronPort-AV: E=Sophos;i="6.07,157,1708416000"; 
+   d="scan'208";a="24049071"
+Received: from fmviesa008.fm.intel.com ([10.60.135.148])
+  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Mar 2024 13:29:31 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,157,1708416000"; 
+   d="scan'208";a="16162994"
+Received: from fl31ca102ks0602.deacluster.intel.com (HELO gnr-bkc.deacluster.intel.com) ([10.75.133.163])
+  by fmviesa008.fm.intel.com with ESMTP; 26 Mar 2024 13:29:31 -0700
+From: weilin.wang@intel.com
+To: weilin.wang@intel.com,
+	Namhyung Kim <namhyung@kernel.org>,
+	Ian Rogers <irogers@google.com>,
+	Arnaldo Carvalho de Melo <acme@kernel.org>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Ingo Molnar <mingo@redhat.com>,
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+	Jiri Olsa <jolsa@kernel.org>,
+	Adrian Hunter <adrian.hunter@intel.com>,
+	Kan Liang <kan.liang@linux.intel.com>
+Cc: linux-perf-users@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Perry Taylor <perry.taylor@intel.com>,
+	Samantha Alt <samantha.alt@intel.com>,
+	Caleb Biggers <caleb.biggers@intel.com>
+Subject: [RFC PATCH v5 0/6] TPEBS counting mode support
+Date: Tue, 26 Mar 2024 16:28:53 -0400
+Message-ID: <20240326202859.960577-1-weilin.wang@intel.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Tue, 26 Mar 2024 22:55:29 +0300
-Nikita Kiryushin <kiryushin@ancud.ru> wrote:
+From: Weilin Wang <weilin.wang@intel.com>
 
-> On 3/26/24 22:22, Steven Rostedt wrote:
-> > Why 87? as it's not even word size, and this is on the stack.
-> > =20
-> Got 87 as maximal used buffer length (result of
-> sprintf(buf, "N%lu h:%lu/%lu/%lu",
->  =C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0=C2=A0 (unsigned long int) -1,
->  =C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0=C2=A0 (unsigned long int) -1,
->  =C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0=C2=A0 (unsigned long int) -1,
->  =C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0=C2=A0 (unsigned long int) -1);
-> +1 for terminator.
->=20
-> Is word-size alignment a thing in this case? I thought that char buffers
-> are ok to be aligned by 1?
+Changes in v5:
+- Update code and add comments for better code quality [Ian]
 
-Because it's on the stack, which will likely reserve data in word size.
+v4: https://lore.kernel.org/all/20240312234921.812685-1-weilin.wang@intel.com/
 
-Thus, buf[87] reserves as much data on the stack as buf[88].
+Weilin Wang (6):
+  perf stat: Parse and find tpebs events when parsing metrics to prepare
+    for perf record sampling
+  perf stat: Fork and launch perf record when perf stat needs to get
+    retire latency value for a metric.
+  perf stat: Add retire latency values into the expr_parse_ctx to
+    prepare for final metric calculation
+  perf stat: Create another thread for sample data processing
+  perf stat: Add retire latency print functions to print out at the very
+    end of print out
+  perf vendor events intel: Add MTL metric json files
 
+ tools/perf/builtin-stat.c                     |  211 +-
+ .../arch/x86/meteorlake/metricgroups.json     |  127 +
+ .../arch/x86/meteorlake/mtl-metrics.json      | 2551 +++++++++++++++++
+ tools/perf/util/data.c                        |    3 +
+ tools/perf/util/data.h                        |    5 +
+ tools/perf/util/metricgroup.c                 |   88 +-
+ tools/perf/util/metricgroup.h                 |   22 +-
+ tools/perf/util/stat-display.c                |   65 +
+ tools/perf/util/stat-shadow.c                 |   19 +
+ tools/perf/util/stat.h                        |    4 +
+ 10 files changed, 3076 insertions(+), 19 deletions(-)
+ create mode 100644 tools/perf/pmu-events/arch/x86/meteorlake/metricgroups.json
+ create mode 100644 tools/perf/pmu-events/arch/x86/meteorlake/mtl-metrics.json
 
-> > Better yet, why not just use snprintf()?
-> > =20
-> Seems like a better idea indeed, as if fixes overflows for unpractical ca=
-ses,
-> without added overhead to common cases. The only concern is possible trun=
-cation
-> of data, that may break some automation (if output is parsed by someone,
-> without accounting on it being cut, who knows). But again, it is for pret=
-ty unpractical
-> values.
->=20
-> Will make a v2 patch with snprintf() with buffer length.
->=20
-> Genuinely look forward to being educated about aspects of aligning array =
-sizes, as
-> I do not really understand the limitations.
+--
+2.43.0
 
-It's because it's on the stack, but it's always good to align. For
-instance, kmalloc() will allocate things in 32 byte chunks.
-
--- Steve
 
