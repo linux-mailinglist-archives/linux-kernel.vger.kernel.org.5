@@ -1,148 +1,218 @@
-Return-Path: <linux-kernel+bounces-118590-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-118588-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id A24C688BCF4
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 09:58:45 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id AC4EA88BCF2
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 09:58:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4AF651F3BEAB
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 08:58:45 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 619F228D037
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 08:58:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C05B4171AD;
-	Tue, 26 Mar 2024 08:58:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 185AB1C2BE;
+	Tue, 26 Mar 2024 08:58:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=siemens.com header.i=florian.bezdeka@siemens.com header.b="ZnoEPez1"
-Received: from mta-65-225.siemens.flowmailer.net (mta-65-225.siemens.flowmailer.net [185.136.65.225])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="MGNb0moR";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="Jg9rN1Go";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="DxHO4eZX";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="j1QiegTh"
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1742E18AEA
-	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 08:57:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.136.65.225
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 558C418B04;
+	Tue, 26 Mar 2024 08:58:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711443487; cv=none; b=Z9C4GOaOPRrWg1tTxPhvipP9FFz/f7xP/y/eiCF0S+bD069YUH5vgsFQaxxOdDAJiv0o8EVFT4KBqNzV1nlsWsarQX/etqmhqtkUGfPqc6aoSLi+dq7W66LBeKFN5xlA/zr3mqYxEiPgPvHPyTdFHm9B6Ug5OhlrvLx5pqvMjiU=
+	t=1711443483; cv=none; b=bFo5bMHs4zQ3NzZo2lVcgHkEwdiDuBizbtwIUW0XdMKWlnnq/Uc80GLz2YGWu0XFuJiWT3izlb7/kki0lNiwc34h4ZuwmLHzduWPEZAUVwbv27cIZNm9q2ixBw9fkPRX/QYLBECtkgGva/lQzNeRzZ1rQUOb+ZXIWhW8E4sI+LE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711443487; c=relaxed/simple;
-	bh=2NnN3yr0wpdVoxDzh4ChyQUmMIKdzLGg6sxkzDgAI3o=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=XBuBcvCUf/fdro6uOGYd8YkGP624E04DO8mJFFNDv0wdER0cshlFDog7ep73UvvzwzD90lN6NDK9cXQ/uBldHSEhZB+yU3dU/qqbeqDph1rkkNZ1yHwrgeWWGWswAzx6V+t68r3jKWrXxEUC3MjApvjyX6ZxpGfGdIPmOrImpKY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=siemens.com; spf=pass smtp.mailfrom=rts-flowmailer.siemens.com; dkim=pass (1024-bit key) header.d=siemens.com header.i=florian.bezdeka@siemens.com header.b=ZnoEPez1; arc=none smtp.client-ip=185.136.65.225
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=siemens.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rts-flowmailer.siemens.com
-Received: by mta-65-225.siemens.flowmailer.net with ESMTPSA id 2024032608565660d22323bb46d4a510
-        for <linux-kernel@vger.kernel.org>;
-        Tue, 26 Mar 2024 09:57:45 +0100
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; s=fm1;
- d=siemens.com; i=florian.bezdeka@siemens.com;
- h=Date:From:Subject:To:Message-ID:MIME-Version:Content-Type:Content-Transfer-Encoding:Cc:References:In-Reply-To;
- bh=2NnN3yr0wpdVoxDzh4ChyQUmMIKdzLGg6sxkzDgAI3o=;
- b=ZnoEPez1s9mkret+84aiVoBbI7kPnBo2K4g9LdoGjJ6Vk+54YX25G3Z0y+4eJYiwYj9198
- nShsv9+TKBXTbNRidg9c/ePK/1HTATRNvXrX5F8nP9DbiWexkWFe2E3jYfd0oSnZt4QonXdX
- PS7EotffJHiFxuv+AOwqR675HZ0WQ=;
-Message-ID: <d2623ac0f1cb07a23976416cdcf9eee1986747b0.camel@siemens.com>
-Subject: Re: [PATCH iwl-next,v4 1/1] igc: Add Tx hardware timestamp request
- for AF_XDP zero-copy packet
-From: Florian Bezdeka <florian.bezdeka@siemens.com>
-To: Song Yoong Siang <yoong.siang.song@intel.com>, Jesse Brandeburg
- <jesse.brandeburg@intel.com>, Tony Nguyen <anthony.l.nguyen@intel.com>, 
- "David S . Miller" <davem@davemloft.net>, Eric Dumazet
- <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni
- <pabeni@redhat.com>, Richard Cochran <richardcochran@gmail.com>, Alexei
- Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend
- <john.fastabend@gmail.com>, Stanislav Fomichev <sdf@google.com>, Vinicius
- Costa Gomes <vinicius.gomes@intel.com>, Kurt Kanzenbach
- <kurt@linutronix.de>, Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-Cc: intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org, 
- linux-kernel@vger.kernel.org, bpf@vger.kernel.org, xdp-hints@xdp-project.net
-Date: Tue, 26 Mar 2024 09:56:54 +0100
-In-Reply-To: <20240325020928.1987947-1-yoong.siang.song@intel.com>
-References: <20240325020928.1987947-1-yoong.siang.song@intel.com>
-Autocrypt: =?US-ASCII?Q?addr=3Dflorian.bezdeka@siemen?=
- =?US-ASCII?Q?s.com;_prefer-encrypt=3Dmutual?=
- =?US-ASCII?Q?;_keydata=3DmQENBFwsf8QBCAC2f4AQWu92LZC4bKyUYRxWIpWqGz790s?=
- =?US-ASCII?Q?pcYkXO7M8kfea4iC8qMxv2hT4HT0LTncRP6WiovVN2PeoOBfN5BSa5z?=
- =?US-ASCII?Q?LIrZGVXh7KmbdKhwhVU+ynoTq9G5uaO2Kos7Vv7nNCuatIq8tSNILuoB?=
- =?US-ASCII?Q?DFTAZnJW3y1V7YOwhDCPl5gbLSYqUY3OE0yksbtCcVI5istT4ED6mjQ?=
- =?US-ASCII?Q?9W+3uH1LrgFeEF0oxTjrEPxO5ZYATz0f/TYC8WiM0sMrV+n0eMDntlzA?=
- =?US-ASCII?Q?63D6lcRi5mNp2jPsJkq3tbWqyCrAe1sKPVJB44ekFwCk0kDIuhR13Q3R?=
- =?US-ASCII?Q?HE4Or/9sznhMUQjYueWXvTZfzH/VsQJHABEBAAG0LUZsb3JpYW4gQmV6?=
- =?US-ASCII?Q?ZGVrYSA8Zmxvcmlhbi5iZXpkZWthQHNpZW1lbnMuY29tPokBVAQTAQg?=
- =?US-ASCII?Q?APhYhBAzL4P3jiTHdthsq4cj0O1fnOEBVBQJcLH/FAhsDBQkB4TOABQs?=
- =?US-ASCII?Q?JCAcCBhUKCQgLAgQWAgMBAh4BAheAAAoJEMj0O1fnOEBVc6YIAJ8oO4x?=
- =?US-ASCII?Q?TjOCpjxaS8XQE6VW50HE9I6ShbQVWUEGhF4qzJaACTQDjdg/aio7qNRa?=
- =?US-ASCII?Q?mnAy83Hy9sAxKVhXs+1R1fstN+JO8zgD3tJspucUkCiXlYu+Qcv2d6C?=
- =?US-ASCII?Q?ostv+h4nv8fkSoeLfsQu3GJt6W0RN7t+8H/9fUMXyuB8GWo4bhaZcti6?=
- =?US-ASCII?Q?78CotGLs6UGZpYEGiAMto8+9zVO/tdY1BkREM6bCVeQ9FnnpTRQy/tU5?=
- =?US-ASCII?Q?xemMWJI64UUP92TUIbQ3TZKAz4iG/Mle+YjiHBGrJM7TxjE3sDg5J2Fa?=
- =?US-ASCII?Q?HX4wmZPKGdB6wANKupf6HMMt2y7gduVmMKzgb8PDMLPZwWBSvjELQqz?=
- =?US-ASCII?Q?hiZAQ0EYLSqZwEIAIR4HMTQC4F4YxatIl6MIDY03zD4M3ZQpgyQ6QFL9?=
- =?US-ASCII?Q?Dq0I+PGc7A6z5rsGl76+D8pDFSN2BBJiLLlQadxKc3ZyTTlRp4bc=09bf?=
- =?US-ASCII?Q?FZRmsAXwVfLtBauXxGo9pkyhk8Vcjb2EJm6XR8PH99buGOXlFfTLsmeA?=
- =?US-ASCII?Q?ji/F4jU3qlUnwZMBvHZwRSFqOGdwKPMvW3FppfmREQ0o4xJ4b/bxGXx?=
- =?US-ASCII?Q?ko21uyR/S5rEJx6X8Ukw95h3JinXHx/g2cjbKHrWBDKoqtX9IZCamDny?=
- =?US-ASCII?Q?R+sfLWQbOKOrLNYLwLAQwOTVlZWTgue10G1q6Zi0r8RQ2T1Uy+ZLYagv?=
- =?US-ASCII?Q?Cbzp/lT7p3mv3ba68llX896c0AEQEAAbQ/QmV6ZGVrYSwgRmxvcmlhbj?=
- =?US-ASCII?Q?sgQmV6ZGVrYSBGbG9yaWFuIDxmbG9yaWFuLmJlemRla2FAc2llbWVuc?=
- =?US-ASCII?Q?y5jb20+iQEcBBABCAAGBQJgtKpnAAoJEEoHyE9rG1dPpJYH+gPnqpu7h?=
- =?US-ASCII?Q?4fsWOxco38e74MsazoUdfndTYP5tgaYTVE51ZhOZBl+4jYaywsmmFm9g?=
- =?US-ASCII?Q?6N4Tw3GiMEDB4YU1X7gQZ60fDKpYL5SnCu5qZirJ4RCV4LDA0789ir+6?=
- =?US-ASCII?Q?8/zfwXBTV5QoMH0+MkXB4BL+Km3f7X/GdN5oRoItAyKDBcEfGJo6afT?=
- =?US-ASCII?Q?PtcUdI9n7ExCSfJwb0SBvvkvUsdNppFDGOOHSioINbEHBs2VUvE43toM?=
- =?US-ASCII?Q?4mPLfhFIAtDcn5Byt80/kotU8v3Iyf86NYCa+0h77xTsKHcCUqe8Rvow?=
- =?US-ASCII?Q?bCIbig9GGbbd54TasfqQQOiAkn/WeGl33+UIVX1Q8zo7eyMJHzLJQ3I=3D?=
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+	s=arc-20240116; t=1711443483; c=relaxed/simple;
+	bh=XFozoUL6QcyIGXvMLCIL84POaBLp8oklHsXjyBmeZK8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=bxL/vtJw0s4ePWUzJb2cQ1HoTEeJje65p1imx4/xojo/Gjyn6WluZ/Mbi1HQg23yND2i+E7ScKZ9w4zkFwxioMK3DdN9+DnIi39DqQe+2kGN2vwrn3qALSEBNr44uh8LAklZ1ITAjzp5WAmZJaz6qjviq7VzVOtwYICgrqNkc3Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=MGNb0moR; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=Jg9rN1Go; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=DxHO4eZX; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=j1QiegTh; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 00A565D373;
+	Tue, 26 Mar 2024 08:57:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1711443479; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=HJ4vh1O7+H5UDwAkTuEQsybcFx3tg2uZhEm9JonLz3Y=;
+	b=MGNb0moRA53dW6wUQ2O20+FMhlKGOX7mELBApC3UVSwNaErXcil5mNl/xl32/tj+CaRGpc
+	Xvfer1Kn5C5CXVdM+Fattj5d2hDohzEeav/NyK3NbNd18z2cCMYCh7Ff805uHKj6pXJVhf
+	zfilAsLDhY0t73mc6xERs+7CGCJ1hGA=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1711443479;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=HJ4vh1O7+H5UDwAkTuEQsybcFx3tg2uZhEm9JonLz3Y=;
+	b=Jg9rN1GovWLt8oQk0a6YrNgWJUPm+WBZTHAayYnosZ+EtU8vMJa6kiVtbNPXyXkPU+gzju
+	AaqJ0p3nY4AwQNCQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1711443478; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=HJ4vh1O7+H5UDwAkTuEQsybcFx3tg2uZhEm9JonLz3Y=;
+	b=DxHO4eZXm8E/qPp37cl0l0IzKSgS7IeKCI105UsLFseKxOF/b80Vs7eDMaZfvEXN6FLRC2
+	0QZJsEsYCJILQi2FZC7J1ILXeWNYyenmyG12+J7MbbuYt6JPgJOAbBdU2GfDl3IILO5LG3
+	xdkaXXTyujLwVkAIDH2u+Q6ABSa+xrE=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1711443478;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=HJ4vh1O7+H5UDwAkTuEQsybcFx3tg2uZhEm9JonLz3Y=;
+	b=j1QiegTh9G0rmPZx3qgi/w9TVuCocHvuAmMl99dKQnhVrzwQAPHTdqhdi3x8JDecAChNq8
+	RYy2S4d0oBwJ/qBw==
+Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id EA83613215;
+	Tue, 26 Mar 2024 08:57:57 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+	by imap2.dmz-prg2.suse.org with ESMTPSA
+	id SxQ5ORWOAmZCfQAAn2gu4w
+	(envelope-from <jack@suse.cz>); Tue, 26 Mar 2024 08:57:57 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+	id 94944A0812; Tue, 26 Mar 2024 09:57:53 +0100 (CET)
+Date: Tue, 26 Mar 2024 09:57:53 +0100
+From: Jan Kara <jack@suse.cz>
+To: "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc: Alexander Viro <viro@zeniv.linux.org.uk>,
+	Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>,
+	Chuck Lever <chuck.lever@oracle.com>,
+	Jeff Layton <jlayton@kernel.org>,
+	Amir Goldstein <amir73il@gmail.com>, linux-fsdevel@vger.kernel.org,
+	linux-nfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-hardening@vger.kernel.org
+Subject: Re: [PATCH][next] fs: Annotate struct file_handle with
+ __counted_by() and use struct_size()
+Message-ID: <20240326085753.dh6fj7skdzddkdva@quack3>
+References: <ZgImCXTdGDTeBvSS@neat>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Flowmailer-Platform: Siemens
-Feedback-ID: 519:519-68982:519-21489:flowmailer
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZgImCXTdGDTeBvSS@neat>
+X-Spam-Score: -3.80
+X-Spamd-Result: default: False [-3.80 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 NEURAL_HAM_SHORT(-0.20)[-1.000];
+	 RCPT_COUNT_SEVEN(0.00)[11];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,suse.cz:email];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 MID_RHS_NOT_FQDN(0.50)[];
+	 FREEMAIL_CC(0.00)[zeniv.linux.org.uk,kernel.org,suse.cz,oracle.com,gmail.com,vger.kernel.org];
+	 RCVD_TLS_ALL(0.00)[];
+	 BAYES_HAM(-3.00)[100.00%]
+X-Spam-Level: 
+Authentication-Results: smtp-out2.suse.de;
+	none
+X-Spam-Flag: NO
 
-On Mon, 2024-03-25 at 10:09 +0800, Song Yoong Siang wrote:
-> This patch adds support to per-packet Tx hardware timestamp request to
-> AF_XDP zero-copy packet via XDP Tx metadata framework. Please note that
-> user needs to enable Tx HW timestamp capability via igc_ioctl() with
-> SIOCSHWTSTAMP cmd before sending xsk Tx hardware timestamp request.
->=20
-> Same as implementation in RX timestamp XDP hints kfunc metadata, Timer 0
-> (adjustable clock) is used in xsk Tx hardware timestamp. i225/i226 have
-> four sets of timestamping registers. *skb and *xsk_tx_buffer pointers
-> are used to indicate whether the timestamping register is already occupie=
-d.
+On Mon 25-03-24 19:34:01, Gustavo A. R. Silva wrote:
+> Prepare for the coming implementation by GCC and Clang of the __counted_by
+> attribute. Flexible array members annotated with __counted_by can have
+> their accesses bounds-checked at run-time via CONFIG_UBSAN_BOUNDS (for
+> array indexing) and CONFIG_FORTIFY_SOURCE (for strcpy/memcpy-family
+> functions).
+> 
+> While there, use struct_size() helper, instead of the open-coded
+> version.
+> 
+> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
 
-Let me make sure that I fully understand that: In my own words:
+Looks good. Feel free to add:
 
-With that applied I'm able to get the point in time from the device
-when a specific frame made it to the wire. I have to enable that
-functionality using the mentioned ioctl() call first, and then check
-the meta area (located in the umem right before the frame payload)
-while consuming the completion queue/ring. Correct?
+Reviewed-by: Jan Kara <jack@suse.cz>
 
-If so, we now have a feedback channel for meta information for/from TX.
-Are there any plans - or would it be possible - to support Earliest
-TxTime First (NET_SCHED_ETF) QDisc based on that channel? In the past
-we had the problem that we we're missing a feedback channel to
-communicate back invalid lunch times.
-=20
->=20
-> Furthermore, a boolean variable named xsk_pending_ts is used to hold the
-> transmit completion until the tx hardware timestamp is ready. This is
-> because, for i225/i226, the timestamp notification event comes some time
-> after the transmit completion event. The driver will retrigger hardware i=
-rq
-> to clean the packet after retrieve the tx hardware timestamp.
->=20
-> Besides, xsk_meta is added into struct igc_tx_timestamp_request as a hook
-> to the metadata location of the transmit packet. When the Tx timestamp
-> interrupt is fired, the interrupt handler will copy the value of Tx hwts
-> into metadata location via xsk_tx_metadata_complete().
->=20
-> This patch is tested with tools/testing/selftests/bpf/xdp_hw_metadata
-> on Intel ADL-S platform. Below are the test steps and results.
+								Honza
 
+> ---
+>  fs/fhandle.c       | 8 ++++----
+>  include/linux/fs.h | 2 +-
+>  2 files changed, 5 insertions(+), 5 deletions(-)
+> 
+> diff --git a/fs/fhandle.c b/fs/fhandle.c
+> index 57a12614addf..53ed54711cd2 100644
+> --- a/fs/fhandle.c
+> +++ b/fs/fhandle.c
+> @@ -36,7 +36,7 @@ static long do_sys_name_to_handle(const struct path *path,
+>  	if (f_handle.handle_bytes > MAX_HANDLE_SZ)
+>  		return -EINVAL;
+>  
+> -	handle = kzalloc(sizeof(struct file_handle) + f_handle.handle_bytes,
+> +	handle = kzalloc(struct_size(handle, f_handle, f_handle.handle_bytes),
+>  			 GFP_KERNEL);
+>  	if (!handle)
+>  		return -ENOMEM;
+> @@ -71,7 +71,7 @@ static long do_sys_name_to_handle(const struct path *path,
+>  	/* copy the mount id */
+>  	if (put_user(real_mount(path->mnt)->mnt_id, mnt_id) ||
+>  	    copy_to_user(ufh, handle,
+> -			 sizeof(struct file_handle) + handle_bytes))
+> +			 struct_size(handle, f_handle, handle_bytes)))
+>  		retval = -EFAULT;
+>  	kfree(handle);
+>  	return retval;
+> @@ -192,7 +192,7 @@ static int handle_to_path(int mountdirfd, struct file_handle __user *ufh,
+>  		retval = -EINVAL;
+>  		goto out_err;
+>  	}
+> -	handle = kmalloc(sizeof(struct file_handle) + f_handle.handle_bytes,
+> +	handle = kmalloc(struct_size(handle, f_handle, f_handle.handle_bytes),
+>  			 GFP_KERNEL);
+>  	if (!handle) {
+>  		retval = -ENOMEM;
+> @@ -202,7 +202,7 @@ static int handle_to_path(int mountdirfd, struct file_handle __user *ufh,
+>  	*handle = f_handle;
+>  	if (copy_from_user(&handle->f_handle,
+>  			   &ufh->f_handle,
+> -			   f_handle.handle_bytes)) {
+> +			   struct_size(ufh, f_handle, f_handle.handle_bytes))) {
+>  		retval = -EFAULT;
+>  		goto out_handle;
+>  	}
+> diff --git a/include/linux/fs.h b/include/linux/fs.h
+> index 034f0c918eea..1540e28d10d7 100644
+> --- a/include/linux/fs.h
+> +++ b/include/linux/fs.h
+> @@ -1033,7 +1033,7 @@ struct file_handle {
+>  	__u32 handle_bytes;
+>  	int handle_type;
+>  	/* file identifier */
+> -	unsigned char f_handle[];
+> +	unsigned char f_handle[] __counted_by(handle_bytes);
+>  };
+>  
+>  static inline struct file *get_file(struct file *f)
+> -- 
+> 2.34.1
+> 
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
 
