@@ -1,257 +1,266 @@
-Return-Path: <linux-kernel+bounces-118271-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-118272-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5B4FF88B71C
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 02:52:55 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 94D1688B71D
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 02:53:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 321A32A051A
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 01:52:53 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 240521F3E4A4
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 01:53:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1953B48CDC;
-	Tue, 26 Mar 2024 01:52:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 96EC645036;
+	Tue, 26 Mar 2024 01:53:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=canonical.com header.i=@canonical.com header.b="KKr8ENhg"
-Received: from smtp-relay-internal-1.canonical.com (smtp-relay-internal-1.canonical.com [185.125.188.123])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Cbi8kKe8"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.15])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 47316282EB
-	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 01:52:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.125.188.123
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8B8171804F
+	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 01:53:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.15
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711417967; cv=none; b=oocClNtTaRDk4H9VgHHBxdbWjtmm6ACi/4+XTr+GwMO7djJ4vfLaAFMWRXd4/KKI4v/UyNGgPoXESBrrybDbXTC2VwQhAKsaqaLAl6Slvoozcg5zWfIYDHBIR0qdVN328uz2PWwoYG1bZHosRY8UaOS4BdCG9yKu3D91dDclCnE=
+	t=1711418026; cv=none; b=UT2ii3o/+5U8WjIQVWtQCHfrHduB29CvV1LeGZPA7b1y2A5XPtanO70R06UWF8vv/09WJzWXUpvN0vT8Nyou/VBWSNSrXznS2qoARLAlyqL4HQ9B3XAgyXpVsKMfkGj6e8yiNwPHiQHRi+t9QtCcuxQbDvbUjrkaDvc4Nu2MKIg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711417967; c=relaxed/simple;
-	bh=kmqIs/1ejhI545XuyVEW9ob4jQH3Rbj5287IN7mw75Q=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=OS310vd/FvH01yDubgm1yPWe8nW6wAVF/0ggu/wqhaPMjFQ9faf//NsrflZO5ckwkfOPnBMMnrpQHRsxz76qWE+m/aecRfGKDKOuEulciLi4JGC1w9tm2I9MPRwgroF4Np3s5Rp26Tk9Y37pvR4aTq9eMbZpE7+IIPnFKAZRmlw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canonical.com; spf=pass smtp.mailfrom=canonical.com; dkim=pass (2048-bit key) header.d=canonical.com header.i=@canonical.com header.b=KKr8ENhg; arc=none smtp.client-ip=185.125.188.123
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canonical.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canonical.com
-Received: from mail-pg1-f199.google.com (mail-pg1-f199.google.com [209.85.215.199])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id A2ABC3F628
-	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 01:52:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-	s=20210705; t=1711417962;
-	bh=H9EHOHwcEXwOlCQEucQXSsYUJ0eKIs5GJypjqxwPz7E=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type;
-	b=KKr8ENhg5929QrUqEa1i8CL5nEc2g+KagCre8J5lKT0e8Rl2PNf8qLmBVQH8P3Kz1
-	 ixdpRS2Oh3fcjf/wbrroBy2HGMsPwlpM0mpOsDawcfNMF9c3Szu4vpKkc3j1diiqAW
-	 NYKsR+Z4YX7PgY3ebmr52dwz//1SvKfYNWlbC6NRZO2g72xhSV+XxX95G7Anu16ZUB
-	 y3lEAjpHVz2jxX5aKARuR1c17u7k8YPDNE29or0U6RAWZbTEFQoMsu/gCnE+mgpAHC
-	 pE7hZlQKXUMdm4dRzlW7db45qgaZVNTIi1YaGzm95wYBnBwFHJCRNtm7Hv/dgHdn/2
-	 nviHcavLF9b/A==
-Received: by mail-pg1-f199.google.com with SMTP id 41be03b00d2f7-5ce67a3f275so2982650a12.0
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 18:52:42 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711417961; x=1712022761;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=H9EHOHwcEXwOlCQEucQXSsYUJ0eKIs5GJypjqxwPz7E=;
-        b=R1gYL6TCdX5SNkoeKBMsU06qeI+IxatvfLAr7zf6ehFm8xVGx5PQCzj7kT1ZpkLCUH
-         qeiLcfg6Bcvkw/tRTLcbBCglrODfhmgpNHVOZJkUwYhsyNNkGu3MdYmYVMjmTXA/wp7a
-         H7ubPaXDhl+nLt+swRsMGtj1+LS5ngaQx3OsGvSW7nhcC/AVSu4BYWY+qYWmivrwOs4M
-         A8Eki3h/HnWi0pk3eYedtZRicswNfUfYFw/nGPuTlXz0XClfG+Z1D0yYfDRr41WO7Sow
-         s+txJg7fTo5UyVBRrdJ+Vs6lGOhUMGSs/Z2UX+hBDG+LTObjlHWaM8DJ3rhHxs4ef7HF
-         E70w==
-X-Forwarded-Encrypted: i=1; AJvYcCV7oAwLMiq6iT7g/kho1WVePLRRLbTqs35/JNWOVaA2qNitDzaSktql03+KZZco4DPAjHqiUQCKxlSv9gQpMMRT6jjTQuQsTdr2xGOn
-X-Gm-Message-State: AOJu0YxoA+WmXQpoMuVdzUNcXD9lIhlw/gh85aX7cLkDqSxx+ePTlEsW
-	6oG3SEsvHI+3J7IpVyBGW1s28kMQAkLSBwFwHsIny2r+zMm3aDuDoCu4i4uuwYBGoKjyisKmOUO
-	Ocp3iGYmcI7IRMc7Wc/1K+QEyHHNbDDKeLAGuOwgqB65BU61NmeOckq18bzbzNlRqBCG+BqiZrm
-	IVeJIZgwz4z9QKIsmhQl6FXKDxGQgKAbkqAgbQwsdKOEbh4sPqqV7X
-X-Received: by 2002:a05:6a20:c220:b0:1a3:463d:e6f1 with SMTP id bt32-20020a056a20c22000b001a3463de6f1mr6586290pzb.22.1711417961306;
-        Mon, 25 Mar 2024 18:52:41 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IHcaXeQRtlSZfuuNtMri5G5mrnSGH9yi/jYrCARIdvPrsTrrJ72nS+E4iFfcCGLMQcH+cYnP/TyL084NPvtufA=
-X-Received: by 2002:a05:6a20:c220:b0:1a3:463d:e6f1 with SMTP id
- bt32-20020a056a20c22000b001a3463de6f1mr6586277pzb.22.1711417960981; Mon, 25
- Mar 2024 18:52:40 -0700 (PDT)
+	s=arc-20240116; t=1711418026; c=relaxed/simple;
+	bh=HbLAfCxaWgu0Hxq+8QXbicAfQDbOp5yH1Lim8Q9LZ5k=;
+	h=Date:From:To:Cc:Subject:Message-ID; b=QXv+ieXrQ4b6BaQ1X7XhISiHrrErZ+h/b+5WlJ+9t8qP22GGloBQjxGVonylO9gxf/P8nXrENP5+0Y8ylXlq1Gzi++88UpmW4rF+drHqY3LHJja0Atb1+Nu5PRWTaM3d11G0H0ZQ0RxLIOokCBSg3XAcK4YNL9j9N+zbBEcNKZ4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Cbi8kKe8; arc=none smtp.client-ip=192.198.163.15
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1711418024; x=1742954024;
+  h=date:from:to:cc:subject:message-id;
+  bh=HbLAfCxaWgu0Hxq+8QXbicAfQDbOp5yH1Lim8Q9LZ5k=;
+  b=Cbi8kKe80Ky6t8+uRuGaxaByuCSO0zVwuJYR2F/4lgfQic8g7p75Wi3Z
+   fKWmXPHwLYXgtj3xOIF5IR71kFKon/pEPgDLnBS+HpVHUHnppv14gzAhd
+   0LkEV76zEaeb/XTyVc3xWBwK4G58ysTtAdrp3rgr7+KtLCOHAzCAyM/XC
+   0mWb9cc2QpW8fPDZG8DmnBp0c4MLTz9cF9jJQOKlEO9IMGNZcnzL+RK1w
+   XzfpOyDzFCkpeGBy228julFnbX+bHyuFThcGNMeCz28413nxGDvuypDil
+   WpDgrUhWgAwqY7EZUCUrm4ahUPFiaxB5ya7Gsxt3hIVWWJXoXw2EeB1yE
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11024"; a="6637484"
+X-IronPort-AV: E=Sophos;i="6.07,154,1708416000"; 
+   d="scan'208";a="6637484"
+Received: from fmviesa006.fm.intel.com ([10.60.135.146])
+  by fmvoesa109.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Mar 2024 18:53:44 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,154,1708416000"; 
+   d="scan'208";a="15867485"
+Received: from lkp-server01.sh.intel.com (HELO b21307750695) ([10.239.97.150])
+  by fmviesa006.fm.intel.com with ESMTP; 25 Mar 2024 18:53:42 -0700
+Received: from kbuild by b21307750695 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1row0S-000Mzi-1C;
+	Tue, 26 Mar 2024 01:53:40 +0000
+Date: Tue, 26 Mar 2024 09:53:30 +0800
+From: kernel test robot <lkp@intel.com>
+To: "x86-ml" <x86@kernel.org>
+Cc: linux-kernel@vger.kernel.org
+Subject: [tip:x86/urgent] BUILD SUCCESS
+ b6540de9b5c867b4c8bc31225db181cc017d8cc7
+Message-ID: <202403260926.LUUS4ypz-lkp@intel.com>
+User-Agent: s-nail v14.9.24
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <CAAd53p53NjYsYctrb6oknXVTMEq919nfVvrK17EBXwsGCxvtbA@mail.gmail.com>
- <20240325190216.GA1445191@bhelgaas>
-In-Reply-To: <20240325190216.GA1445191@bhelgaas>
-From: Kai-Heng Feng <kai.heng.feng@canonical.com>
-Date: Tue, 26 Mar 2024 09:52:28 +0800
-Message-ID: <CAAd53p5p=JJ9OOQd=XPzJgW7yib+hMJxZqj7PZFsd2uFtK94xg@mail.gmail.com>
-Subject: Re: [PATCH v2] mmc: sdhci-pci-gli: GL975x: Mask rootport's replay
- timer timeout during suspend
-To: Bjorn Helgaas <helgaas@kernel.org>
-Cc: adrian.hunter@intel.com, ulf.hansson@linaro.org, 
-	Victor Shih <victor.shih@genesyslogic.com.tw>, Ben Chuang <benchuanggli@gmail.com>, 
-	linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Tue, Mar 26, 2024 at 3:02=E2=80=AFAM Bjorn Helgaas <helgaas@kernel.org> =
-wrote:
->
-> On Mon, Mar 25, 2024 at 10:02:27AM +0800, Kai-Heng Feng wrote:
-> > On Sat, Mar 23, 2024 at 12:43=E2=80=AFAM Bjorn Helgaas <helgaas@kernel.=
-org> wrote:
-> > > On Thu, Mar 21, 2024 at 06:05:33PM +0800, Kai-Heng Feng wrote:
-> > > > On Sat, Jan 20, 2024 at 6:41=E2=80=AFAM Bjorn Helgaas <helgaas@kern=
-el.org> wrote:
-> > > > > On Thu, Jan 18, 2024 at 02:40:50PM +0800, Kai-Heng Feng wrote:
-> > > > > > On Sat, Jan 13, 2024 at 1:37=E2=80=AFAM Bjorn Helgaas <helgaas@=
-kernel.org> wrote:
-> > > > > > > On Fri, Jan 12, 2024 at 01:14:42PM +0800, Kai-Heng Feng wrote=
-:
-> > > > > > > > On Sat, Jan 6, 2024 at 5:19=E2=80=AFAM Bjorn Helgaas <helga=
-as@kernel.org> wrote:
-> > > > > > > > > On Thu, Dec 21, 2023 at 11:21:47AM +0800, Kai-Heng Feng w=
-rote:
-> > > > > > > > > > Spamming `lspci -vv` can still observe the replay timer=
- timeout error
-> > > > > > > > > > even after commit 015c9cbcf0ad ("mmc: sdhci-pci-gli: GL=
-9750: Mask the
-> > > > > > > > > > replay timer timeout of AER"), albeit with a lower repr=
-oduce rate.
-> > > > > > > > >
-> > > > > > > > > I'm not sure what this is telling me.  By "spamming `lspc=
-i -vv`, do
-> > > > > > > > > you mean that if you run lspci continually, you still see=
- Replay Timer
-> > > > > > > > > Timeout logged, e.g.,
-> > > > > > > > >
-> > > > > > > > >   CESta:        ... Timeout+
-> > > > > > > >
-> > > > > > > > Yes it's logged and the AER IRQ is raised.
-> > > > > > >
-> > > > > > > IIUC the AER IRQ is the important thing.
-> > > > > > >
-> > > > > > > Neither 015c9cbcf0ad nor this patch affects logging in
-> > > > > > > PCI_ERR_COR_STATUS, so the lspci output won't change and ment=
-ioning it
-> > > > > > > here doesn't add useful information.
-> > > > > >
-> > > > > > You are right. That's just a way to access config space to repr=
-oduce
-> > > > > > the issue.
-> > > > >
-> > > > > Oh, I think I completely misunderstood you!  I thought you were s=
-aying
-> > > > > that suspending the device caused the PCI_ERR_COR_REP_TIMER error=
-, and
-> > > > > you happened to see that it was logged when you ran lspci.
-> > > >
-> > > > Both running lspci and suspending the device can observe the error,
-> > > > because both are accessing the config space.
-> > > >
-> > > > > But I guess you mean that running lspci actually *causes* the err=
-or?
-> > > > > I.e., lspci does a config access while we're suspending the devic=
-e
-> > > > > causes the error, and the config access itself causes the error, =
-which
-> > > > > causes the ERR_COR message and ultimately the AER interrupt, and =
-that
-> > > > > interrupt prevents the system suspend.
-> > > >
-> > > > My point was that any kind of PCI config access can cause the error=
-.
-> > > > Using lspci is just make the error more easier to reproduce.
-> > > >
-> > > > > If that's the case, I wonder if this is a generic problem that co=
-uld
-> > > > > happen with *any* device, not just GL975x.
-> > > >
-> > > > For now, it's just GL975x.
-> > > >
-> > > > > What power state do we put the GL975x in during system suspend?
-> > > > > D3hot?  D3cold?  Is there anything that prevents config access wh=
-ile
-> > > > > we suspend it?
-> > > >
-> > > > The target device state is D3hot.
-> > > > However, the issue happens when the devices is in D0, when the PCI
-> > > > core is saving the device's config space.
-> > > >
-> > > > So I think the issue isn't related to the device state.
-> > > >
-> > > > > We do have dev->block_cfg_access, and there's a comment that says
-> > > > > "we're required to prevent config accesses during D-state
-> > > > > transitions," but I don't see it being used during D-state
-> > > > > transitions.
-> > > >
-> > > > Yes, there isn't any D-state change happens here.
-> > >
-> > > So the timeout happens sometimes on any config accesses to the device=
-,
-> > > no matter what the power state is?
-> >
-> > Yes.
-> >
-> > > If that's the case, why do the
-> > > masking in the suspend/resume callbacks?
-> >
-> > Because there's no functional impact when the error happens, other
-> > than suspend/resume.
->
-> Oh, I think I see.  Is this accurate?
->
->   Due to a hardware defect in GL975x, config accesses when ASPM is
->   enabled frequently cause Replay Timer Timeouts in the Port leading
->   to the device.
->
->   These are Correctable Errors, so the Downstream Port logs it in its
->   PCI_ERR_COR_STATUS and, when the error is not masked, sends an
->   ERR_COR message upstream.  The message terminates at a Root Port,
->   which may generate an AER interrupt so the OS can log it.
->
->   The Correctable Error logging is an annoyance but normally not a
->   major issue.  But when the AER interrupt happens during suspend, it
->   can prevent the system from suspending.
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86/urgent
+branch HEAD: b6540de9b5c867b4c8bc31225db181cc017d8cc7  x86/percpu: Disable named address spaces for KCSAN
 
-That's totally the case here.
+elapsed time: 847m
 
-This brings up another different but related topic  - should the port
-driver disable AER/DPC IRQ during suspend?
-We've discussed this many times, I still think that's the right
-approach to "quiesce" many unexpected errors during system state
-transition.
+configs tested: 178
+configs skipped: 3
 
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
->
-> > > If it's not related to a power state change, it sounds like something
-> > > that should be a quirk or done at probe time.
-> >
-> > Sure, I'll change that to be done at probe time.
->
-> In general, we want to log Correctable Errors because they give an
-> indication of link integrity.  But I'm guessing that since this is
-> related to a GL975x defect, the errors occur pretty frequently and on
-> all systems, so they aren't an indication of poor link quality and
-> they only break suspend, annoy users, and cause problem reports.
->
-> Masking them at suspend time would avoid the suspend/resume problem,
-> but we would still have the annoying logging and get the problem
-> reports.
->
-> If this is all true, I think masking via a quirk is probably the right
-> thing.  That way we won't get reports that "lspci causes errors" even
-> when the sdhci driver is not loaded.
->
-> I think we should log a hint in dmesg that we're masking
-> PCI_ERR_COR_REP_TIMER because the error will still be logged in the
-> PCI_ERR_COR_STATUS register, and that will be visible via lspci, and a
-> dmesg hint will save debugging time when people report that.
+tested configs:
+alpha                             allnoconfig   gcc  
+alpha                            allyesconfig   gcc  
+alpha                               defconfig   gcc  
+arc                              allmodconfig   gcc  
+arc                               allnoconfig   gcc  
+arc                              allyesconfig   gcc  
+arc                                 defconfig   gcc  
+arc                   randconfig-001-20240326   gcc  
+arc                   randconfig-002-20240326   gcc  
+arm                              allmodconfig   gcc  
+arm                               allnoconfig   clang
+arm                              allyesconfig   gcc  
+arm                                 defconfig   clang
+arm                   randconfig-001-20240326   gcc  
+arm                   randconfig-002-20240326   gcc  
+arm                   randconfig-003-20240326   gcc  
+arm                   randconfig-004-20240326   gcc  
+arm                         s3c6400_defconfig   gcc  
+arm                         s5pv210_defconfig   gcc  
+arm                        shmobile_defconfig   gcc  
+arm                       spear13xx_defconfig   gcc  
+arm                           spitz_defconfig   gcc  
+arm64                            allmodconfig   clang
+arm64                             allnoconfig   gcc  
+arm64                               defconfig   gcc  
+arm64                 randconfig-003-20240326   gcc  
+csky                             allmodconfig   gcc  
+csky                              allnoconfig   gcc  
+csky                             allyesconfig   gcc  
+csky                                defconfig   gcc  
+csky                  randconfig-001-20240326   gcc  
+csky                  randconfig-002-20240326   gcc  
+hexagon                          allmodconfig   clang
+hexagon                           allnoconfig   clang
+hexagon                          allyesconfig   clang
+hexagon                             defconfig   clang
+i386                             allmodconfig   gcc  
+i386                              allnoconfig   gcc  
+i386                             allyesconfig   gcc  
+i386         buildonly-randconfig-001-20240326   gcc  
+i386         buildonly-randconfig-002-20240326   clang
+i386         buildonly-randconfig-003-20240326   clang
+i386         buildonly-randconfig-004-20240326   gcc  
+i386         buildonly-randconfig-005-20240326   gcc  
+i386         buildonly-randconfig-006-20240326   gcc  
+i386                                defconfig   clang
+i386                  randconfig-001-20240326   gcc  
+i386                  randconfig-002-20240326   gcc  
+i386                  randconfig-003-20240326   gcc  
+i386                  randconfig-004-20240326   clang
+i386                  randconfig-005-20240326   gcc  
+i386                  randconfig-006-20240326   clang
+i386                  randconfig-011-20240326   clang
+i386                  randconfig-012-20240326   gcc  
+i386                  randconfig-013-20240326   clang
+i386                  randconfig-014-20240326   clang
+i386                  randconfig-015-20240326   clang
+i386                  randconfig-016-20240326   clang
+loongarch                        allmodconfig   gcc  
+loongarch                         allnoconfig   gcc  
+loongarch                        allyesconfig   gcc  
+loongarch                           defconfig   gcc  
+loongarch             randconfig-001-20240326   gcc  
+loongarch             randconfig-002-20240326   gcc  
+m68k                             allmodconfig   gcc  
+m68k                              allnoconfig   gcc  
+m68k                             allyesconfig   gcc  
+m68k                                defconfig   gcc  
+m68k                        mvme147_defconfig   gcc  
+m68k                           sun3_defconfig   gcc  
+microblaze                       allmodconfig   gcc  
+microblaze                        allnoconfig   gcc  
+microblaze                       allyesconfig   gcc  
+microblaze                          defconfig   gcc  
+mips                             allmodconfig   gcc  
+mips                              allnoconfig   gcc  
+mips                             allyesconfig   gcc  
+mips                 decstation_r4k_defconfig   gcc  
+mips                      fuloong2e_defconfig   gcc  
+mips                          malta_defconfig   gcc  
+mips                malta_qemu_32r6_defconfig   gcc  
+mips                  maltasmvp_eva_defconfig   gcc  
+nios2                            allmodconfig   gcc  
+nios2                             allnoconfig   gcc  
+nios2                            allyesconfig   gcc  
+nios2                               defconfig   gcc  
+nios2                 randconfig-001-20240326   gcc  
+nios2                 randconfig-002-20240326   gcc  
+openrisc                         allmodconfig   gcc  
+openrisc                          allnoconfig   gcc  
+openrisc                         allyesconfig   gcc  
+openrisc                            defconfig   gcc  
+openrisc                    or1ksim_defconfig   gcc  
+parisc                           alldefconfig   gcc  
+parisc                           allmodconfig   gcc  
+parisc                            allnoconfig   gcc  
+parisc                           allyesconfig   gcc  
+parisc                              defconfig   gcc  
+parisc                randconfig-001-20240326   gcc  
+parisc                randconfig-002-20240326   gcc  
+parisc64                         alldefconfig   gcc  
+parisc64                            defconfig   gcc  
+powerpc                          allmodconfig   gcc  
+powerpc                           allnoconfig   gcc  
+powerpc                          allyesconfig   clang
+powerpc                   microwatt_defconfig   gcc  
+powerpc                     rainier_defconfig   gcc  
+powerpc               randconfig-002-20240326   gcc  
+powerpc                    socrates_defconfig   gcc  
+powerpc                      walnut_defconfig   gcc  
+powerpc64             randconfig-001-20240326   gcc  
+powerpc64             randconfig-002-20240326   gcc  
+powerpc64             randconfig-003-20240326   gcc  
+riscv                            allmodconfig   clang
+riscv                             allnoconfig   gcc  
+riscv                            allyesconfig   clang
+riscv                               defconfig   clang
+riscv             nommu_k210_sdcard_defconfig   gcc  
+riscv                 randconfig-001-20240326   gcc  
+s390                             allmodconfig   clang
+s390                              allnoconfig   clang
+s390                             allyesconfig   gcc  
+s390                                defconfig   clang
+sh                               allmodconfig   gcc  
+sh                                allnoconfig   gcc  
+sh                               allyesconfig   gcc  
+sh                        apsh4ad0a_defconfig   gcc  
+sh                                  defconfig   gcc  
+sh                          lboxre2_defconfig   gcc  
+sh                          polaris_defconfig   gcc  
+sh                    randconfig-001-20240326   gcc  
+sh                    randconfig-002-20240326   gcc  
+sh                          rsk7269_defconfig   gcc  
+sh                           se7343_defconfig   gcc  
+sh                           se7724_defconfig   gcc  
+sh                             shx3_defconfig   gcc  
+sparc                            allmodconfig   gcc  
+sparc                             allnoconfig   gcc  
+sparc                            allyesconfig   gcc  
+sparc                               defconfig   gcc  
+sparc64                          allmodconfig   gcc  
+sparc64                          allyesconfig   gcc  
+sparc64                             defconfig   gcc  
+sparc64               randconfig-001-20240326   gcc  
+sparc64               randconfig-002-20240326   gcc  
+um                               allmodconfig   clang
+um                                allnoconfig   clang
+um                               allyesconfig   gcc  
+um                                  defconfig   clang
+um                             i386_defconfig   gcc  
+um                    randconfig-001-20240326   gcc  
+um                    randconfig-002-20240326   gcc  
+um                           x86_64_defconfig   clang
+x86_64                            allnoconfig   clang
+x86_64                           allyesconfig   clang
+x86_64       buildonly-randconfig-002-20240326   gcc  
+x86_64       buildonly-randconfig-004-20240326   gcc  
+x86_64       buildonly-randconfig-005-20240326   gcc  
+x86_64       buildonly-randconfig-006-20240326   gcc  
+x86_64                              defconfig   gcc  
+x86_64                randconfig-001-20240326   gcc  
+x86_64                randconfig-002-20240326   gcc  
+x86_64                randconfig-003-20240326   gcc  
+x86_64                randconfig-005-20240326   gcc  
+x86_64                randconfig-011-20240326   gcc  
+x86_64                randconfig-013-20240326   gcc  
+x86_64                randconfig-014-20240326   gcc  
+x86_64                randconfig-072-20240326   gcc  
+x86_64                randconfig-073-20240326   gcc  
+x86_64                randconfig-074-20240326   gcc  
+x86_64                randconfig-075-20240326   gcc  
+x86_64                randconfig-076-20240326   gcc  
+x86_64                          rhel-8.3-rust   clang
+x86_64                               rhel-8.3   gcc  
+xtensa                            allnoconfig   gcc  
+xtensa                           allyesconfig   gcc  
+xtensa                randconfig-001-20240326   gcc  
+xtensa                randconfig-002-20240326   gcc  
 
-Sure. Where do you think it's a better place to implement the quirk? I
-Assume PCI quirk is a better place than driver's probe routine?
-
-Kai-Heng
-
->
-> Bjorn
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
