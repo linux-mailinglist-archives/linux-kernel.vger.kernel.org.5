@@ -1,139 +1,114 @@
-Return-Path: <linux-kernel+bounces-119444-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-119445-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id D567A88C8E0
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 17:20:30 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 03EBF88C907
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 17:24:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8BF1F1F8119E
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 16:20:30 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5017EB27D6F
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 16:20:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 91E6F13C9D5;
-	Tue, 26 Mar 2024 16:20:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 11E3913CAB2;
+	Tue, 26 Mar 2024 16:20:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="aytQV14L"
-Received: from mail-qt1-f169.google.com (mail-qt1-f169.google.com [209.85.160.169])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="e6C92dz6"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C98DB13C8E8;
-	Tue, 26 Mar 2024 16:20:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3E73B13CA98;
+	Tue, 26 Mar 2024 16:20:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711470023; cv=none; b=XkWwM8HwW4xpmdSKCWzxx7o609KDvhtHde6csSJjbyFotLVVFbn40mxDww4QWdFwyw+ZG+E6o1IhfcSVh3n118QgdB4K6R9gfS3i16HVZh8u4Kj8TiI+mVPjNrT/JvimJqR2xCu0tkTJ2RKdbyY0Job6hcPd0moDjVmTQfHTpaY=
+	t=1711470027; cv=none; b=Fw4GL4TrfuRDdq7Gpqb6IDhhkJ4Mr6nXSTj5g5tjPHpKviFSvVwNqdAXVa7qbDwdMqt7ZXcQu+zeNFL2g8mbismeGw0d38j/6BDO1lOdCvD+1okBB/7ZccwyTkHUuh4XdfNqHtPSGGzgcg2RhwXMDGjmlsG1KVRcP+rlTaO63wA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711470023; c=relaxed/simple;
-	bh=D95Kc3TjFggL8YT1WZrh/h3Li8LRC6IjIGC7ruEV3OY=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=n554DMjz+++GtCGYUAP2fLUzVoLCtDG7PVnNcoYQy5FjVsHExo0O/rtcXXdpauYULzeVEzDf6NQIMINV7kARybtxMF/FGE1g4JS8PjQC8cAmrsI0VbBybGgR9DGNDn52kTX2x1X8elac8+p18/eHTj6tWPquR6YDlUazWycArAg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=aytQV14L; arc=none smtp.client-ip=209.85.160.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qt1-f169.google.com with SMTP id d75a77b69052e-4316101ed5eso7256521cf.2;
-        Tue, 26 Mar 2024 09:20:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711470021; x=1712074821; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=5IKaEl4faDXOubqbj8s61EhSq4y0/fdmoF1112F2KMY=;
-        b=aytQV14Lb0JXxOR/0GKE5r9n6/HJAIh1VUm602RPHu0BNI9aHvfH8VTo700YAIgovD
-         646hgjjNsrbRjjotLw7xj/ljoPTcMCudGQBL4dB9JT2PDcfkCUfy98Cyf8L1eT0vyPI2
-         LL8SScNK1alV1IFrTl8hHHT5fXdGYPYRtLfuqxDpW9+MjgHdyOw3h4UrtpGgiOMkaOnK
-         jjRMJUomDot8AiwDNV8Dhk/KU2tjouH99SfEoOTmXvOCib8mC+LK6fdT9CNSaSich44U
-         2HxTRZPPGjH+a8rT/DxSFRuWnLLfhbQTjb1r+VHb8Ffb5sd0IwXg6c5QRIszwtBV1b1z
-         N6yg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711470021; x=1712074821;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=5IKaEl4faDXOubqbj8s61EhSq4y0/fdmoF1112F2KMY=;
-        b=BIAk2jtx74ruxmxXQOu+N03p1CI/iWeuO8kis3v6jvxA1cWFeL0ssefoRu7fqvB0l+
-         QBjwBQpMFSq5d+T4FL/es7XkrsZq6vc4SrWNlBepzjsGwirq7QPQer0BrPdI4IlRmTv1
-         IETKsBwZGq5LqQ+vmUAXpwqH9xd5aJsg+K0BvUUJNG8JhIKmozSws7jc3zLNemYfs1jz
-         HdcWIKK/pyPMu16CERcuW2tdrnizpiiN/XlL4rYjpJ1ElrDMxcJl8S4xjc3y0VQYWQNs
-         2iGvHHYjXXVZFG5gRWuRmCxhCgBalcv0SID10+GiDQbx9t293g/ZJkzJJ/u+w0CIBTrZ
-         m6ZQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUCvvJGk59+iyI7izuKYPO3nURAw1+TNtd1X44mvAiePsOiDDI9B8fVUuELkK3OFsBXjDxLIT/Vk/KM4V5GUIntWcJxxOnI2tMUK/hnjW2sgDT11c96yUJXiJhi6KJe0ouDAwGAvYAa+w==
-X-Gm-Message-State: AOJu0YyBxaaKqgfyvAM0xCMDJBjhqwcIPpQ3/PtrF6OQxPyXp4QZgxVn
-	dfbUJ0l7qUqMd9FAVkrVvuJG9m/xiTsMqLulywmUiEl2q82jP/OUwiHn3vJk3ctymHIcNeMxNbL
-	aWzjWjkP5Txgh4qrwkY4DpF/wjPQ=
-X-Google-Smtp-Source: AGHT+IEgWiPWgP4UoqnhIOVp4j2Q6nGMB+4QzZqu9/AG9F+lszMXGkP5HHgXQTkrdrHALrwK/Ui+sOPR4x6Vn1lt4qs=
-X-Received: by 2002:a05:6214:2a46:b0:696:71fb:c66f with SMTP id
- jf6-20020a0562142a4600b0069671fbc66fmr80542qvb.58.1711470020667; Tue, 26 Mar
- 2024 09:20:20 -0700 (PDT)
+	s=arc-20240116; t=1711470027; c=relaxed/simple;
+	bh=tH7ShG5e19q5dk8DGs/7rFZaClfulgISrGFPuWcP0mg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=CWAkjnaQ1RMfxJ58iRTpgBFDJVYthH8VLGqhuMzy8ShmMWfbB0sREts2gNmmNku0lYma4XhaWgAmoud6U135rXq1jjTPvZhHJn1Vneiqj5Rz+tl3i3Rtc+C0/CYv9aaa3IRjD07a2R0IF3vhoe9mEfnitb08LSet+FGkD++e8lY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=e6C92dz6; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C3EE8C43394;
+	Tue, 26 Mar 2024 16:20:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1711470026;
+	bh=tH7ShG5e19q5dk8DGs/7rFZaClfulgISrGFPuWcP0mg=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=e6C92dz6raZp0WrjtLHCxqpCcVWV3awH3jwOkT/LShocw+towYCYzHIpMxVqVR6ci
+	 S4vUVgmYGNay0dotswGf42xd6YmI7FN3UtHnq6i4yoeLo+CYBvI39oh+zvkPu/nwP6
+	 ze88G0lKQJKrmGrEVoi348mOb39+eZjNn3WGMk9Elebb301GZ8pneFWt9kNFD/0BoR
+	 C2ADW6obNGlsFyXcw3F6Z0qvBucbUllRtd/Dd06q/8Xx85VfeplO6YXdN3Kd3Ia0RI
+	 O4dyir2E/RrcwhToChH4LNMoUI3HwPM4CWyWULbzkCZysMCLqQdXDQiswmdtYCXJOZ
+	 munyLNIT7r7zQ==
+Received: from johan by xi.lan with local (Exim 4.97.1)
+	(envelope-from <johan@kernel.org>)
+	id 1rp9XO-000000006Yi-1ZUs;
+	Tue, 26 Mar 2024 17:20:35 +0100
+Date: Tue, 26 Mar 2024 17:20:34 +0100
+From: Johan Hovold <johan@kernel.org>
+To: Luiz Augusto von Dentz <luiz.dentz@gmail.com>
+Cc: Linux regressions mailing list <regressions@lists.linux.dev>,
+	Johan Hovold <johan+linaro@kernel.org>,
+	Marcel Holtmann <marcel@holtmann.org>,
+	linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org,
+	stable@vger.kernel.org,
+	Janaki Ramaiah Thota <quic_janathot@quicinc.com>
+Subject: Re: [PATCH] Revert "Bluetooth: hci_qca: Set BDA quirk bit if fwnode
+ exists in DT"
+Message-ID: <ZgL10ur0825LgWVK@hovoldconsulting.com>
+References: <CABBYNZJ0ukd_8=SFzy8CEwgP7hV5unodca0NZ2zDZh+jPJsEFQ@mail.gmail.com>
+ <ZgGzWWV4Lh2Nal--@hovoldconsulting.com>
+ <CABBYNZJaXUhu1A+NyVT-TAJw49zcV6TMdGeVy2F+AVKWBOVC-g@mail.gmail.com>
+ <ZgHVFjAZ1uqEiUa2@hovoldconsulting.com>
+ <CABBYNZJUVhNKVD=s+=eYJ1q+j1W8rVSRqM4bKPbxT=TKrnZdoQ@mail.gmail.com>
+ <ZgHbPo57UKUxK7G8@hovoldconsulting.com>
+ <CABBYNZJFzDaLdXsdNEP1384JaJEN5E78cgmWfOus_LGOREGsWA@mail.gmail.com>
+ <ZgJ0okobGv5nPreG@hovoldconsulting.com>
+ <CABBYNZKJJuPHEwyXFRi8Z=P0GyaY-HdamsxmV8sR+R97ETTmEg@mail.gmail.com>
+ <ZgLnOHiCzo5AQzra@hovoldconsulting.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240325210045.153827-1-afd@ti.com> <2024032631-excursion-opposing-be36@gregkh>
-In-Reply-To: <2024032631-excursion-opposing-be36@gregkh>
-From: Robert Nelson <robertcnelson@gmail.com>
-Date: Tue, 26 Mar 2024 11:19:54 -0500
-Message-ID: <CAOCHtYjauA+BAxZJBMTaxxaMGcvipP9=ZPeWe4FiNFs_jpq6dg@mail.gmail.com>
-Subject: Re: [PATCH] uio: pruss: Deprecate use of this driver
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Jason Kridner <jkridner@beagleboard.org>, 
-	Matthijs van Duin <matthijsvanduin@gmail.com>, Drew Fustini <drew@beagleboard.org>
-Cc: Andrew Davis <afd@ti.com>, Tony Lindgren <tony@atomide.com>, linux-omap@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <ZgLnOHiCzo5AQzra@hovoldconsulting.com>
 
-On Tue, Mar 26, 2024 at 12:41=E2=80=AFAM Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> On Mon, Mar 25, 2024 at 04:00:45PM -0500, Andrew Davis wrote:
-> > This UIO driver was used to control the PRU processors found on various
-> > TI SoCs. It was created before the Remoteproc framework, but now with
-> > that we have a standard way to program and manage the PRU processors.
-> > The proper PRU Remoteproc driver should be used instead of this driver.
-> > Mark this driver deprecated.
-> >
-> > The userspace tools to use this are no longer available, so also remove
-> > those dead links from the Kconfig description.
-> >
-> > Signed-off-by: Andrew Davis <afd@ti.com>
-> > ---
-> >  drivers/uio/Kconfig | 10 ++--------
-> >  1 file changed, 2 insertions(+), 8 deletions(-)
-> >
-> > diff --git a/drivers/uio/Kconfig b/drivers/uio/Kconfig
-> > index 2e16c5338e5b1..358dc2d19b885 100644
-> > --- a/drivers/uio/Kconfig
-> > +++ b/drivers/uio/Kconfig
-> > @@ -126,19 +126,13 @@ config UIO_FSL_ELBC_GPCM_NETX5152
-> >         http://www.hilscher.com/netx
-> >
-> >  config UIO_PRUSS
-> > -     tristate "Texas Instruments PRUSS driver"
-> > +     tristate "Texas Instruments PRUSS driver (DEPRECATED)"
->
-> This isn't going to do much, why not just delete the driver entirely if
-> no one uses it?
+Hi Luiz,
 
-CC'ing Matthijs one of our BeagleBoard community members who utilizes
-and supports UIO on a number of community projects.
+On Tue, Mar 26, 2024 at 04:18:16PM +0100, Johan Hovold wrote:
+> On Tue, Mar 26, 2024 at 10:17:13AM -0400, Luiz Augusto von Dentz wrote:
+> > On Tue, Mar 26, 2024 at 3:09 AM Johan Hovold <johan@kernel.org> wrote:
+> > > On Mon, Mar 25, 2024 at 04:31:53PM -0400, Luiz Augusto von Dentz wrote:
 
-We know TI and Mainline in general do not like this UIO driver as it's
-very open-ended.
+> > > > All the
+> > > > CI automation is done on bluetooth-next and if you are asking to be
+> > > > done via bluetooth tree which is based on the latest rc that is not
+> > > > how things works here, we usually first apply to bluetooth-next and in
+> > > > case it needs to be backported then it later done via pull-request.
+> > >
+> > > The revert fixes a regression in 6.7-rc7 and should get to Linus as soon
+> > > as possible and I assume you have some way to get fixes into mainline
+> > > for the current development cycle.
+> > 
+> > Yeah I will send it later today to be included in the next rc release
+> > and since it is marked for stable that shall trigger the process of
+> > backporting it.
+> > 
+> > > The series fixes a critical bug in the Qualcomm driver and should
+> > > similarly get into mainline as soon as possible to avoid having people
+> > > unknowingly start relying on the broken behaviour (reversed address).
+> > > The bug in this case is older, but since the bug is severe and we're
+> > > only at rc1, I don't think this one should wait for 6.10 either.
 
-While the remoteproc_pruss driver is now mainline (it has taken a long
-time, since 3.14.x i I think TI first started this..)
+I just double checked the bluetooth-next branch and everything looks
+good now (revert + endianness fix series). Thanks!
 
-There is a large user base of UIO examples that have been running
-since 3.8.x and as a community we have made sure ( mostly Matthijs )
-that these continue to operate on this driver in
-v5.x/v6.x/lts/mainline branches.
-
-We can always revert/etc..  But I'm hoping Matthijs will chime-in..
-
-Regards,
-
---=20
-Robert Nelson
-https://rcn-ee.com/
+Did I understand you correctly that you'll be able to get all five
+commits into 6.9 during this development cycle (e.g. 6.9-rc2)?
+ 
+Johan
 
