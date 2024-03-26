@@ -1,62 +1,39 @@
-Return-Path: <linux-kernel+bounces-119280-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-119294-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2084D88C68B
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 16:15:02 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 41F3088C6BD
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 16:21:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B51151F649C9
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 15:15:01 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 73E0E1C38BB0
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 15:21:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2223613C907;
-	Tue, 26 Mar 2024 15:13:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="fW6P99nA"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.13])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DF8C613C829;
+	Tue, 26 Mar 2024 15:21:44 +0000 (UTC)
+Received: from out187-3.us.a.mail.aliyun.com (out187-3.us.a.mail.aliyun.com [47.90.187.3])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 067EC13C813
-	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 15:13:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.13
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7569F13C80C
+	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 15:21:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=47.90.187.3
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711466014; cv=none; b=r08ZS+gAOPQmvSFPlkjdlhdaqI+xmK9jhk6582GmnxPByet5ffgKbvBD6VOWmaqEETawZQwyxD8KVgzP2/y1wu6ZuiHUZNWfAv/ILN/gnADcNCPsDrCVPGGGaRnlVDHBW9N9eE0dfsVQajM2Yw/WPqxtGHawr+63o+D4ieh6EYA=
+	t=1711466504; cv=none; b=W63h6Omw3ybjnU106+BbSasghG1V5IBfd5QYF6O8ncolGLT1d04uVPfNwGgM50BKSEaRXNGiDPxsHpm6EQaPMmDcr1IaLiYUM/ObXWsU3iOB/6scLAizx/UfmhmLAPvp47Pabb4Obts8NSP46DHjKaFho6t70aVYwlZhquCoc/Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711466014; c=relaxed/simple;
-	bh=14LLqfHRDImCwD3vmt3ns5M9+uGf0q9+6XiG8CQ/IWQ=;
+	s=arc-20240116; t=1711466504; c=relaxed/simple;
+	bh=RBJWy2SJKU6/GADnLFnZWtTcwgKY+B+hJ0glm2ITsLI=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Bl9w2Ppv8zCwiq0MVKFHVB0Y1JOPWaPhcDjuPPs+/ryP77OOc8JxwxpDbTkZsk0vSuqMMQOtavKqdW6ubKcoSXahr4S7b5fwJJLpLXxY1oREPawiFGw8BVfAvhUCPzQZMcRHF6YQ5bUpPOPgqT4vVkXT2J19U/KFxA+iguXUuDI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=fW6P99nA; arc=none smtp.client-ip=192.198.163.13
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1711466013; x=1743002013;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=14LLqfHRDImCwD3vmt3ns5M9+uGf0q9+6XiG8CQ/IWQ=;
-  b=fW6P99nAWg6XXZFu9gPCurbu1C5kOySWqcoqMjk5eacvXrpTIfWwsboJ
-   x1OFOV746OUppWEhNAPWox7yn0DIlSdGjM/Z7engrKof30JVIPWEAEPNG
-   6oH3ORvYh7dvKoQFlTeeVQoG4OS5RC74PwTzuQu3DgnZbxAyf25TZ6a5M
-   WXkFHw7wq8QDTq7D6qmV/Zqbemhmra7psHJ/8VzyuTuWCreNdUF6L5MqR
-   Hn2RMDWGR39SvM5t3tuhUbIc2eJoNiL0NrAjbmTRTkSJQTw1t075Q8MMN
-   Fz6yses6iXOTVltCsln1xq6pmrEUk0mbuP2XQxbySoMzS6ydekpTOOFK/
-   Q==;
-X-CSE-ConnectionGUID: tk5rF5R3Sc6sjII9s+RmCg==
-X-CSE-MsgGUID: GjpRcpKhQ0SBH5dzNZ/N4A==
-X-IronPort-AV: E=McAfee;i="6600,9927,11025"; a="9489037"
-X-IronPort-AV: E=Sophos;i="6.07,156,1708416000"; 
-   d="scan'208";a="9489037"
-Received: from orviesa010.jf.intel.com ([10.64.159.150])
-  by fmvoesa107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Mar 2024 08:13:32 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,156,1708416000"; 
-   d="scan'208";a="15862594"
-Received: from bhubbert-mobl.amr.corp.intel.com (HELO [10.212.65.108]) ([10.212.65.108])
-  by orviesa010-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Mar 2024 08:13:30 -0700
-Message-ID: <b4c5fb89-a43c-4c40-b729-a49a537f6179@linux.intel.com>
-Date: Tue, 26 Mar 2024 10:05:20 -0500
+	 In-Reply-To:Content-Type; b=lKG5+4yevQ5GZd6yVjhU5EWOn9OadRqdsS3Y/B2wTVKcj/577gQVIRhjYaOWQZLEKv3jMATxYK+iGXGzW4iVykBZdQHg2wcz4DVWyn3WkpLi21ATND0d17/KAqIN5ED8PMvWVjHOGJDZWgiaSBUeIetftPr8ccS21F7FtyfjZ90=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=antgroup.com; spf=pass smtp.mailfrom=antgroup.com; arc=none smtp.client-ip=47.90.187.3
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=antgroup.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=antgroup.com
+X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R181e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018047212;MF=tiwei.btw@antgroup.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---.WwaCo0e_1711465550;
+Received: from 30.39.128.129(mailfrom:tiwei.btw@antgroup.com fp:SMTPD_---.WwaCo0e_1711465550)
+          by smtp.aliyun-inc.com;
+          Tue, 26 Mar 2024 23:05:51 +0800
+Message-ID: <28a3e497-87b7-42ab-8724-2c49594bb4a5@antgroup.com>
+Date: Tue, 26 Mar 2024 23:05:48 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -64,31 +41,82 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1 6/8] ALSA: hda/tas2781: Add tas2781 SPI-based driver
+Subject: Re: [PATCH v3 8/9] um: Fix -Wmissing-prototypes warnings for
+ text_poke*
 Content-Language: en-US
-To: Baojun Xu <baojun.xu@ti.com>, tiwai@suse.de
-Cc: robh+dt@kernel.org, andriy.shevchenko@linux.intel.com,
- lgirdwood@gmail.com, perex@perex.cz, kevin-lu@ti.com, 13916275206@139.com,
- alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
- liam.r.girdwood@intel.com, yung-chuan.liao@linux.intel.com,
- broonie@kernel.org, soyer@irl.hu
-References: <20240326010905.2147-1-baojun.xu@ti.com>
- <20240326010905.2147-6-baojun.xu@ti.com>
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-In-Reply-To: <20240326010905.2147-6-baojun.xu@ti.com>
+To: Lucas De Marchi <lucas.demarchi@intel.com>
+Cc: richard@nod.at, anton.ivanov@cambridgegreys.com,
+ johannes@sipsolutions.net, jani.nikula@intel.com,
+ linux-um@lists.infradead.org, linux-kernel@vger.kernel.org,
+ intel-xe@lists.freedesktop.org
+References: <20240306101925.1088870-1-tiwei.btw@antgroup.com>
+ <20240306101925.1088870-9-tiwei.btw@antgroup.com>
+ <tvkjne4liqm3xx64jtkvqhlvvkwmiwlavif7gdh47xlzeltyp5@ymlqsvkdbppr>
+From: "Tiwei Bie" <tiwei.btw@antgroup.com>
+In-Reply-To: <tvkjne4liqm3xx64jtkvqhlvvkwmiwlavif7gdh47xlzeltyp5@ymlqsvkdbppr>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
+On 3/26/24 10:13 PM, Lucas De Marchi wrote:
+> On Wed, Mar 06, 2024 at 06:19:24PM +0800, Tiwei Bie wrote:
+>> The prototypes for text_poke* are declared in asm/text-patching.h
+>> under arch/x86/include/. It's safe to include this header, as it's
+>> UML-aware (by checking CONFIG_UML_X86).
+> 
+> but would it work when building on something other than x86? Or is that
+> not a thing?
 
-> +enum device_catlog_id {
+I think it doesn't matter, because uml is x86 only (i.e. uml only supports
+x86 currently). And that's how uml works currently. I described the specific
+header file to be included in the commit log just to make the changes easier
+to review.
 
-catalog?
+PS. The header is included via below search path set in arch/um/Makefile:
 
-> +	HP = 0,
-> +	OTHERS
-> +};
+HEADER_ARCH     := $(SUBARCH)
 
-Is there not a better way to identify solutions?
-You have ACPI IDs, no?
+ifneq ($(filter $(SUBARCH),x86 x86_64 i386),)
+        HEADER_ARCH := x86 
+endif
+.....
+HOST_DIR := arch/$(HEADER_ARCH)
+.....
+KBUILD_CPPFLAGS += -I$(srctree)/$(HOST_DIR)/include \
+                   -I$(srctree)/$(HOST_DIR)/include/uapi \
+                   -I$(objtree)/$(HOST_DIR)/include/generated \
+                   -I$(objtree)/$(HOST_DIR)/include/generated/uapi
+
+Regards,
+Tiwei
+
+> 
+> Lucas De Marchi
+> 
+>>
+>> This will address below -Wmissing-prototypes warnings:
+>>
+>> arch/um/kernel/um_arch.c:461:7: warning: no previous prototype for ‘text_poke’ [-Wmissing-prototypes]
+>> arch/um/kernel/um_arch.c:473:6: warning: no previous prototype for ‘text_poke_sync’ [-Wmissing-prototypes]
+>>
+>> Signed-off-by: Tiwei Bie <tiwei.btw@antgroup.com>
+>> ---
+>> arch/um/kernel/um_arch.c | 1 +
+>> 1 file changed, 1 insertion(+)
+>>
+>> diff --git a/arch/um/kernel/um_arch.c b/arch/um/kernel/um_arch.c
+>> index 7a9820797eae..e95f805e5004 100644
+>> --- a/arch/um/kernel/um_arch.c
+>> +++ b/arch/um/kernel/um_arch.c
+>> @@ -23,6 +23,7 @@
+>> #include <asm/cpufeature.h>
+>> #include <asm/sections.h>
+>> #include <asm/setup.h>
+>> +#include <asm/text-patching.h>
+>> #include <as-layout.h>
+>> #include <arch.h>
+>> #include <init.h>
+>> -- 
+>> 2.34.1
+>>
 
 
