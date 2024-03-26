@@ -1,142 +1,127 @@
-Return-Path: <linux-kernel+bounces-119696-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-119697-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0E01A88CC2C
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 19:43:07 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C7B9188CC2D
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 19:43:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A2D171F8100B
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 18:43:06 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B449FB28028
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 18:43:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 621C813C68E;
-	Tue, 26 Mar 2024 18:43:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="IyialCPC"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8141912DD9C;
+	Tue, 26 Mar 2024 18:43:45 +0000 (UTC)
+Received: from relay5-d.mail.gandi.net (relay5-d.mail.gandi.net [217.70.183.197])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C891129E88;
-	Tue, 26 Mar 2024 18:42:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 21D44127B6A
+	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 18:43:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.197
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711478579; cv=none; b=Ua5fCnBnbaHcOCFG5mv1sfLXYJPCtWHo2SHb+wTaGFBRhcpLCrMKE4pZsvWwKvsRUW1elze2xjzhVYiFjtUBIhNgZzROw8k2JtExqv41fOkUFT5OgLI26NmMYGCYc+nZJo37MZtlSn3O+EdPVlZ9Tg80ECu2PKVjjDIL19tjY9c=
+	t=1711478625; cv=none; b=gTMei/gLUzPOkQKEauo4XYfogJqBaSoPOCvVtgI5XJAEamV9bg92BAiMRnk/74mw9QUk1TIUQv6q/M2L/XK6ML3H1aakv0HwVHvvKcX57It5wRKrO8JGDYzpKrh9gRoCyDcwrMlpuGRvAIfFyUdNdEuzq8l06eWyCibBzuhp9cU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711478579; c=relaxed/simple;
-	bh=4jVrfD/KvnLbhutEiKxJwcAulEU3J50vmATSDtq9sqw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ZWB6A6M2awg0XwcV2uW/pRNDig4wpQSbezMT3mObcuAHAKXp9ZCP1AYx3TeQCqBPV0xdz+w7M9YZEU4HGjRo0qqsiE/9TFzQDKFIHOGE4qjVPPsBysx9vtGyoedDqzjCQU5NOX6d10r8OBpLpaS/9QYICj7hFJTonu2rCMVWul0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=IyialCPC; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BF51BC433C7;
-	Tue, 26 Mar 2024 18:42:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711478579;
-	bh=4jVrfD/KvnLbhutEiKxJwcAulEU3J50vmATSDtq9sqw=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=IyialCPC3XtDBNWscY3/R0P7oEJ2BjULmLF15MUdpQ/pvuLKfcck53g46epTk9R58
-	 GcoQoHy7q0tyoVKC4r2PeOMLJETm3V64gaZ6n0cpw2/irlliNf5Bz6Ix7/Jk6iiIvv
-	 Uq8GFF1QvQUAQYnGCOhzMEDLT49PuPraYC/Xt0eH3RSMJwYnwuVLwWunZJ0YXiJGlF
-	 T8d4fgIvrUCpB3xwMLXnx/t4UzEU/u8Bwc3L1mFyD90OxoXAJqCuDmclN+R0yWiD1L
-	 PpBZCgmPohc/Oiom6oxYypolD90iiUaNY+Lr04O+HJ3/BolKbCj5SYbKxcLzJ81HLM
-	 FE1yx4O0ZhDcw==
-Date: Tue, 26 Mar 2024 18:42:54 +0000
-From: Conor Dooley <conor@kernel.org>
-To: Jarkko Sakkinen <jarkko@kernel.org>
-Cc: linux-riscv@lists.infradead.org,
-	Paul Walmsley <paul.walmsley@sifive.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Albert Ou <aou@eecs.berkeley.edu>, linux-kernel@vger.kernel.org,
-	Luis Chamberlain <mcgrof@kernel.org>, linux-modules@vger.kernel.org,
-	"Naveen N . Rao" <naveen.n.rao@linux.ibm.com>,
-	Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>,
-	"David S . Miller" <davem@davemloft.net>,
-	Masami Hiramatsu <mhiramat@kernel.org>
-Subject: Re: [PATCH v7 2/2] arch/riscv: Enable kprobes when CONFIG_MODULES=n
-Message-ID: <20240326-cape-compacted-e76df066752f@spud>
-References: <20240326134616.7691-1-jarkko@kernel.org>
- <20240326134616.7691-2-jarkko@kernel.org>
+	s=arc-20240116; t=1711478625; c=relaxed/simple;
+	bh=gnJurj1Z7nnKBazwQ+DpwwKiZ9LcAzlxixav3jk144Q=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=qFBj/ZH6ph/l+BGAfvPVLZ9PKlxtwlSH6vzBGVx5d2LxK51VCyqgQiPNE9/SfKu1s3kImID6Kmck4GS8Cynd8tNRSwoIDQLMnp2FzTK90EUCwVZyxAH37Wwk5X407DfWzerr3fY+uLLgCAw+SK6uqJM4WNV6BNgdw9xk6qS+29Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ghiti.fr; spf=pass smtp.mailfrom=ghiti.fr; arc=none smtp.client-ip=217.70.183.197
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ghiti.fr
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ghiti.fr
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 8811B1C0006;
+	Tue, 26 Mar 2024 18:43:36 +0000 (UTC)
+Message-ID: <a083fe56-19ba-4c12-8364-944d8bbcc043@ghiti.fr>
+Date: Tue, 26 Mar 2024 19:43:35 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="ZY3M3zfLOpMoFKjK"
-Content-Disposition: inline
-In-Reply-To: <20240326134616.7691-2-jarkko@kernel.org>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] riscv: Mark __se_sys_* functions __used
+Content-Language: en-US
+To: Sami Tolvanen <samitolvanen@google.com>,
+ Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt
+ <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>
+Cc: Kees Cook <keescook@chromium.org>, linux-riscv@lists.infradead.org,
+ llvm@lists.linux.dev, linux-kernel@vger.kernel.org,
+ Linux Kernel Functional Testing <lkft@linaro.org>
+References: <20240326153712.1839482-2-samitolvanen@google.com>
+From: Alexandre Ghiti <alex@ghiti.fr>
+In-Reply-To: <20240326153712.1839482-2-samitolvanen@google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-GND-Sasl: alex@ghiti.fr
+
+Hi Sami,
+
+On 26/03/2024 16:37, Sami Tolvanen wrote:
+> Clang doesn't think ___se_sys_* functions used even though they are
+> aliased to __se_sys_*, resulting in -Wunused-function warnings when
+> building rv32. For example:
+>
+>     mm/oom_kill.c:1195:1: warning: unused function '___se_sys_process_mrelease' [-Wunused-function]
+>      1195 | SYSCALL_DEFINE2(process_mrelease, int, pidfd, unsigned int, flags)
+>           | ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>     include/linux/syscalls.h:221:36: note: expanded from macro 'SYSCALL_DEFINE2'
+>       221 | #define SYSCALL_DEFINE2(name, ...) SYSCALL_DEFINEx(2, _##name, __VA_ARGS__)
+>           |                                    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>     include/linux/syscalls.h:231:2: note: expanded from macro 'SYSCALL_DEFINEx'
+>       231 |         __SYSCALL_DEFINEx(x, sname, __VA_ARGS__)
+>           |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>     arch/riscv/include/asm/syscall_wrapper.h:81:2: note: expanded from macro '__SYSCALL_DEFINEx'
+>        81 |         __SYSCALL_SE_DEFINEx(x, sys, name, __VA_ARGS__)                         \
+>           |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>     arch/riscv/include/asm/syscall_wrapper.h:40:14: note: expanded from macro '__SYSCALL_SE_DEFINEx'
+>        40 |         static long ___se_##prefix##name(__MAP(x,__SC_LONG,__VA_ARGS__))
+>           |                     ^~~~~~~~~~~~~~~~~~~~
+>     <scratch space>:30:1: note: expanded from here
+>        30 | ___se_sys_process_mrelease
+>           | ^~~~~~~~~~~~~~~~~~~~~~~~~~
+>     1 warning generated.
+>
+> Mark the functions __used explicitly to fix the Clang warnings.
+>
+> Fixes: a9ad73295cc1 ("riscv: Fix syscall wrapper for >word-size arguments")
+> Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
 
 
---ZY3M3zfLOpMoFKjK
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Do you have the link of the report? So we can add a Closes tag.
 
-On Tue, Mar 26, 2024 at 03:46:16PM +0200, Jarkko Sakkinen wrote:
-> Tacing with kprobes while running a monolithic kernel is currently
-> impossible due the kernel module allocator dependency.
->=20
-> Address the issue by implementing textmem API for RISC-V.
 
-This doesn't compile for nommu:
-  /build/tmp.3xucsBhqDV/arch/riscv/kernel/execmem.c:10:46: error: 'MODULES_=
-VADDR' undeclared (first use in this function)
-  /build/tmp.3xucsBhqDV/arch/riscv/kernel/execmem.c:11:37: error: 'MODULES_=
-END' undeclared (first use in this function)
-  /build/tmp.3xucsBhqDV/arch/riscv/kernel/execmem.c:14:1: error: control re=
-aches end of non-void function [-Werror=3Dreturn-type]
-Clang builds also report:
-=2E./arch/riscv/kernel/execmem.c:8:56: warning: omitting the parameter name=
- in a function definition is a C2x extension [-Wc2x-extensions]
-
->=20
-> Link: https://www.sochub.fi # for power on testing new SoC's with a minim=
-al stack
-> Link: https://lore.kernel.org/all/20220608000014.3054333-1-jarkko@profian=
-=2Ecom/ # continuation
-> Signed-off-by: Jarkko Sakkinen <jarkko@kernel.org>
+> Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
+> Signed-off-by: Sami Tolvanen <samitolvanen@google.com>
 > ---
-> v5-v7:
-> - No changes.
-> v4:
-> - Include linux/execmem.h.
-> v3:
-> - Architecture independent parts have been split to separate patches.
-> - Do not change arch/riscv/kernel/module.c as it is out of scope for
->   this patch set now.
+>   arch/riscv/include/asm/syscall_wrapper.h | 3 ++-
+>   1 file changed, 2 insertions(+), 1 deletion(-)
+>
+> diff --git a/arch/riscv/include/asm/syscall_wrapper.h b/arch/riscv/include/asm/syscall_wrapper.h
+> index 980094c2e976..ac80216549ff 100644
+> --- a/arch/riscv/include/asm/syscall_wrapper.h
+> +++ b/arch/riscv/include/asm/syscall_wrapper.h
+> @@ -36,7 +36,8 @@ asmlinkage long __riscv_sys_ni_syscall(const struct pt_regs *);
+>   					ulong)						\
+>   			__attribute__((alias(__stringify(___se_##prefix##name))));	\
+>   	__diag_pop();									\
+> -	static long noinline ___se_##prefix##name(__MAP(x,__SC_LONG,__VA_ARGS__));	\
+> +	static long noinline ___se_##prefix##name(__MAP(x,__SC_LONG,__VA_ARGS__))	\
+> +			__used;								\
+>   	static long ___se_##prefix##name(__MAP(x,__SC_LONG,__VA_ARGS__))
+>   
+>   #define SC_RISCV_REGS_TO_ARGS(x, ...) \
+>
+> base-commit: 4cece764965020c22cff7665b18a012006359095
 
-Meta comment. I dunno when v1 was sent, but versions can you please
-relax with submitting new versions of your patches? There's conversations
-ongoing on v5 at the moment, while this is a more recent version. v2
-seems to have been sent on the 23rd and there's been 5 versions in the
-last day:
-https://patchwork.kernel.org/project/linux-riscv/list/?submitter=3D195059&s=
-tate=3D*
 
-Could you please also try and use a cover letter for patchsets, ideally
-with a consistent subject? Otherwise I have to manually mark stuff as
-superseded.
+You can add:
+
+Reviewed-by: Alexandre Ghiti <alexghiti@rivosinc.com>
+
+As the commit fixed here was merged in 6.9, this should go into fixes.
 
 Thanks,
-Conor.
 
-> v2:
-> - Better late than never right? :-)
-> - Focus only to RISC-V for now to make the patch more digestable. This
->   is the arch where I use the patch on a daily basis to help with QA.
-> - Introduce HAVE_KPROBES_ALLOC flag to help with more gradual migration.
+Alex
 
---ZY3M3zfLOpMoFKjK
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZgMXLgAKCRB4tDGHoIJi
-0kr6APoC8w1hFwYBq68SvRiP5k+lnvxzYoTYGxCdhojX1wA0lAD6AyvaCzZnOAGK
-ej3FsxMvaVpbalYkFzvk6xtCRrliwQk=
-=Qyv3
------END PGP SIGNATURE-----
-
---ZY3M3zfLOpMoFKjK--
 
