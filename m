@@ -1,50 +1,57 @@
-Return-Path: <linux-kernel+bounces-119190-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-119191-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 43B9988C54C
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 15:38:26 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id B19B088C550
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 15:39:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6DF37B252BB
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 14:38:23 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 482801F34808
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 14:39:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5A89413C3D9;
-	Tue, 26 Mar 2024 14:38:17 +0000 (UTC)
-Received: from rtg-sunil-navi33.amd.com (unknown [165.204.156.251])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CCC2A13C3E1;
+	Tue, 26 Mar 2024 14:38:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Dm3l7G6E"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2200F13C3D0
-	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 14:38:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=165.204.156.251
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1AAEC763E6;
+	Tue, 26 Mar 2024 14:38:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711463896; cv=none; b=na9pDGSrsJiPJ1dYgRXSMxFE78H9w4zwu7q4UYN+Ug+nEfK4rRv9ah5A+LWGmh5TU272oRNkdYyRDX5OqGHN6mO6ClpC4Bx56lp3AWi0mpEY4N461I4eVaTqe2k9nZt69awyOi6h8goc8q8DzQLq2p+IuDKyoxL8XVvy6YUPRZI=
+	t=1711463934; cv=none; b=hrr+sKA6Dv5etX2McQZQ4EC21VMPpVZDBLWQ6poydK0Wm+WEA0aB/ZAvH882rgD2AU9rtHZ+cn77Nlz0qysXAG4Ort65oTT78wrSH5XuPh5viwHjYkooDapOsosvbyeWKNA1OmTpQG9a/Pr4jfabHGSP0ho3gSBOHHtui8VHZgU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711463896; c=relaxed/simple;
-	bh=43omAjlq2ZrWI3KlUvCu83WnZVKo8Vnn4E/RJ2eoZkc=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=hOojiOJWV3jmiftEGCn9QGVrt6AwsNyjaQ/YQVmN5M1n2WmIqzeWvKTMpao/CVwZIysVjxVVAihjmBmoa3nKCN9wqdhiSBs45zLBkyrQwWqbGBYBve9ryMBVAMgAp6CHM3KZNn1pfgGk+t+DysAUYhMsFZNHlDOGEUq2NymzqG4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=amd.com; spf=none smtp.mailfrom=rtg-sunil-navi33.amd.com; arc=none smtp.client-ip=165.204.156.251
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=rtg-sunil-navi33.amd.com
-Received: from rtg-sunil-navi33.amd.com (localhost [127.0.0.1])
-	by rtg-sunil-navi33.amd.com (8.15.2/8.15.2/Debian-22ubuntu3) with ESMTP id 42QEbt622292989;
-	Tue, 26 Mar 2024 20:07:55 +0530
-Received: (from sunil@localhost)
-	by rtg-sunil-navi33.amd.com (8.15.2/8.15.2/Submit) id 42QEbshY2292982;
-	Tue, 26 Mar 2024 20:07:54 +0530
-From: Sunil Khatri <sunil.khatri@amd.com>
-To: Alex Deucher <alexander.deucher@amd.com>,
-        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
-        Shashank Sharma <shashank.sharma@amd.com>
-Cc: amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, Hawking Zhang <Hawking.Zhang@amd.com>,
-        Felix Kuehling <Felix.Kuehling@amd.com>,
-        Lijo Lazar <lijo.lazar@amd.com>, Sunil Khatri <sunil.khatri@amd.com>
-Subject: [PATCH] drm/amdgpu: add support of bios dump in devcoredump
-Date: Tue, 26 Mar 2024 20:07:50 +0530
-Message-Id: <20240326143750.2292945-1-sunil.khatri@amd.com>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1711463934; c=relaxed/simple;
+	bh=gHroWCuJnf1md1YwPUVsD4d9qdV4yVBD8yNFmcL2YKQ=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=mdcpqOgEXjG4ZzlFtBJPkymQIYGR+u5KzdO9nYnkCBALx/Dk+IrF0BUZ672v9HGhVaxS/7IBJULwq0StN3Ko2wO4ddBIjCD1+Hn3ihQPEK8f29sx4AS8sPAdUk+is16pXIs2omv9SchYE8Rfb+r0KaCihnXy23baNjT3Yn6dwl0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Dm3l7G6E; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1919EC433C7;
+	Tue, 26 Mar 2024 14:38:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1711463933;
+	bh=gHroWCuJnf1md1YwPUVsD4d9qdV4yVBD8yNFmcL2YKQ=;
+	h=From:To:Cc:Subject:Date:From;
+	b=Dm3l7G6E8mDC6tvoPT/wB+izw+2N3ZOY2F9KPUAfngDhcSdUtxSCb572pfdHBv0LX
+	 2i7NzljIDb57F4M5WXuq4431cCRc9c7eNkwMmp8x/EtafbI59vkm5O4YJlJnQ9CpT9
+	 QXIs0usjGPWNJvn/eYrrxp69+/Nd2jRRXZZ1CyvVJkBWdIZRcPEep51pBRgBYxVcBL
+	 02x80CUtU5E4RcI/oAmAkwg7FVlN3B7/2CkZccVhZAVPvefirqjHbAm2yqY6BQZ2Jw
+	 /strzW7gCnt02yjIgE8P4fzhRIdfmLkqI9zsKLt5xRCKQjvegX3ygs5MGPXmmYfRQv
+	 SysaWSi1f540g==
+From: Jarkko Sakkinen <jarkko@kernel.org>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Jarkko Sakkinen <jarkko@kernel.org>,
+	Peter Huewe <peterhuewe@gmx.de>,
+	Jason Gunthorpe <jgg@ziepe.ca>,
+	David Howells <dhowells@redhat.com>,
+	linux-integrity@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	keyrings@vger.kernel.org
+Subject: [GIT PULL] tpmdd changes for v6.9-rc2
+Date: Tue, 26 Mar 2024 16:38:38 +0200
+Message-ID: <20240326143838.15076-1-jarkko@kernel.org>
+X-Mailer: git-send-email 2.44.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -53,45 +60,40 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-dump the bios binary in the devcoredump.
+  Merge tag 'gfs2-v6.8-fix' of git://git.kernel.org/pub/scm/linux/kernel/git/gfs2/linux-gfs2 (2024-03-25 10:53:39 -0700)
 
-Signed-off-by: Sunil Khatri <sunil.khatri@amd.com>
----
- .../gpu/drm/amd/amdgpu/amdgpu_dev_coredump.c  | 20 +++++++++++++++++++
- 1 file changed, 20 insertions(+)
+are available in the Git repository at:
 
-diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_dev_coredump.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_dev_coredump.c
-index 44c5da8aa9ce..f33963d777eb 100644
---- a/drivers/gpu/drm/amd/amdgpu/amdgpu_dev_coredump.c
-+++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_dev_coredump.c
-@@ -132,6 +132,26 @@ amdgpu_devcoredump_read(char *buffer, loff_t offset, size_t count,
- 	drm_printf(&p, "Faulty page starting at address: 0x%016llx\n", fault_info->addr);
- 	drm_printf(&p, "Protection fault status register: 0x%x\n\n", fault_info->status);
- 
-+	/* Dump BIOS */
-+	if (coredump->adev->bios && coredump->adev->bios_size) {
-+		int i = 0;
-+
-+		drm_printf(&p, "BIOS Binary dump\n");
-+		drm_printf(&p, "Valid BIOS  Size:%d bytes type:%s\n",
-+			   coredump->adev->bios_size,
-+			   coredump->adev->is_atom_fw ?
-+			   "Atom bios":"Non Atom Bios");
-+
-+		while (i < coredump->adev->bios_size) {
-+			/* Printing 15 bytes in a line */
-+			if (i % 15 == 0)
-+				drm_printf(&p, "\n");
-+			drm_printf(&p, "0x%x \t", coredump->adev->bios[i]);
-+			i++;
-+		}
-+		drm_printf(&p, "\n");
-+	}
-+
- 	/* Add ring buffer information */
- 	drm_printf(&p, "Ring buffer information\n");
- 	for (int i = 0; i < coredump->adev->num_rings; i++) {
--- 
-2.34.1
+  git://git.kernel.org/pub/scm/linux/kernel/git/jarkko/linux-tpmdd.git tags/tpmdd-v6.9-rc2
 
+for you to fetch changes up to 6999f8229e5998e8286e6a960779b6c202d878da:
+
+  keys: Fix overwrite of key expiration on instantiation (2024-03-26 16:24:53 +0200)
+
+----------------------------------------------------------------
+Hi,
+
+This pull request contains just a couple of unintrusive changes for
+v6.9.
+
+Note that "keys: update key quotas in key_put()" makes quotas less racy
+by updating qnkeys and qnbytes already in key_put(). It is not exactly a
+bug fix but does make overall kerrnel behaviour more stable and
+consistent. Just adding this because I try to keep follow-up PR's for
+kernel releases bug fix only but I think here it makes sense to make an
+exception.
+
+BR, Jarkko
+
+----------------------------------------------------------------
+Luis Henriques (1):
+      keys: update key quotas in key_put()
+
+Silvio Gissi (1):
+      keys: Fix overwrite of key expiration on instantiation
+
+ security/keys/gc.c     |  8 --------
+ security/keys/key.c    | 35 ++++++++++++++++++++++++-----------
+ security/keys/keyctl.c | 11 ++++++-----
+ 3 files changed, 30 insertions(+), 24 deletions(-)
 
