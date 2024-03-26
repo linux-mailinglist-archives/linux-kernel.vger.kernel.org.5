@@ -1,158 +1,104 @@
-Return-Path: <linux-kernel+bounces-119007-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-119008-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 19E9788C28F
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 13:48:59 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E0FD388C293
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 13:50:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 33BC91C6061A
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 12:48:58 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9B23D2A5330
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 12:50:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C34596D1AB;
-	Tue, 26 Mar 2024 12:48:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E95E86D1CC;
+	Tue, 26 Mar 2024 12:50:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="cKGIHkal"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.15])
+	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="Qr888QUD"
+Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 747816CDA1;
-	Tue, 26 Mar 2024 12:48:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.15
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ED6F05C8EE
+	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 12:50:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711457333; cv=none; b=Oxzn42t1ey3HipQC2zPxC1nJmGRP2AA3wF8p1nOzc+95Chz9EJ2PV6/hsq/kDGoqxJmvQssA9XBOEfb6K0fmUhW6NVwoVkl+um04of5fTENhNKJBgKZ/NP/KyFVJ0nSDavN3tosqJ/g8l2c4jQaU1D/bbdkZCHhFmwg31n9WO3U=
+	t=1711457420; cv=none; b=LG/0EVxzDyFMM+ZWGD+zK6jIbny3xX215m8aWFhBzFjls6Jmpt1vlkuymP8568jhD87VLNrNicJ18Y2EaWqx7aRfOAAUGuf6Fda2sWo/NPPOnT/5ZrN/XdzoMKVxkvpFaI9CEilsTHV/K3XHlkx6/C7BrRnGgZdfQHoEooEY1uk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711457333; c=relaxed/simple;
-	bh=UcNHx2WpgXj9N9ccfcFVrmItxhEccigipIMojc/QEfk=;
+	s=arc-20240116; t=1711457420; c=relaxed/simple;
+	bh=0Ipuu3Xh11QyPs5qekBAM/D0XYpq/ZELDefmxQ/1S3c=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=HRETYHN6aW1rVxHgnwTnSXm8zb3Vh3F57imYmQDfWLSAjP/KujNKwN2gm3QdkQuPkomyre96EzvnwdASzOSer5wtxlT2KysQBQK4MnZSIajmuy3QtgnoYTZ6+b2dKcggriHoaoMBF5Fy2zBc8gO0V4iNBbsPBQBUdJfCAqZejGw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=cKGIHkal; arc=none smtp.client-ip=192.198.163.15
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1711457332; x=1742993332;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=UcNHx2WpgXj9N9ccfcFVrmItxhEccigipIMojc/QEfk=;
-  b=cKGIHkalbfV/IDJrIesJY4nkl8BFOl3FoLzMUUlvOk6+m4ebwLuB2oC0
-   vop99iiy4ENkovEyYix+cf7wsoLJWQSDARdXyj4AxatTu90ka7omfJqHq
-   /TcyB9E6T/vuteQu52FTkPkNKRkZMuzWNIbUR8UoCRmC0cM83KD/MGJgz
-   fSA8Fio7CQignold6v5D6z5C6GR3oDpA3CcJJ1VIKXALYlHZeeaPZy9Ya
-   zOtYctGwR+aXWZlHG/QItLZhNJq1nFmm33H45lo8iBbUvc3R6CeVJE68R
-   Dk80O8S0YN1oK4sDgKpetl4rFCWUn11vpV+ihsTzfuDGIEPhUXKpKuGUm
-   Q==;
-X-CSE-ConnectionGUID: maOtwHYjTm6pzKcWwbzJ5A==
-X-CSE-MsgGUID: QMgyXjsRQXeNwYQTqbbxoA==
-X-IronPort-AV: E=McAfee;i="6600,9927,11024"; a="6693744"
-X-IronPort-AV: E=Sophos;i="6.07,156,1708416000"; 
-   d="scan'208";a="6693744"
-Received: from orviesa004.jf.intel.com ([10.64.159.144])
-  by fmvoesa109.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Mar 2024 05:48:51 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,156,1708416000"; 
-   d="scan'208";a="20651460"
-Received: from lkp-server01.sh.intel.com (HELO be39aa325d23) ([10.239.97.150])
-  by orviesa004.jf.intel.com with ESMTP; 26 Mar 2024 05:48:47 -0700
-Received: from kbuild by be39aa325d23 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rp6EO-000030-1J;
-	Tue, 26 Mar 2024 12:48:44 +0000
-Date: Tue, 26 Mar 2024 20:48:04 +0800
-From: kernel test robot <lkp@intel.com>
-To: Sudan Landge <sudanl@amazon.com>, tytso@mit.edu, Jason@zx2c4.com,
-	robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-	conor+dt@kernel.org, sathyanarayanan.kuppuswamy@linux.intel.com,
-	thomas.lendacky@amd.com, dan.j.williams@intel.com,
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc: oe-kbuild-all@lists.linux.dev, graf@amazon.de, dwmw@amazon.co.uk,
-	bchalios@amazon.es, xmarcalx@amazon.co.uk
-Subject: Re: [PATCH v3 4/4] virt: vmgenid: add support for devicetree bindings
-Message-ID: <202403262047.aZVjmDY5-lkp@intel.com>
-References: <20240325195306.13133-5-sudanl@amazon.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=owsT/yOu38QcTW0/4JaNfvHjLrlSwtLPQD57bnc2j0SaoJYoKuKWyi8Zqg5qf1CNj2/L5kF5lfBbg6vU4ZjVgX5hD6GIzknb6vKa6K4sVhf2lWGFbXXEH5G39++GGMN6KD+7MrSk+sh4ecLj+aeH5c9MoMqAHNYYHcJBJ9XIHwU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=Qr888QUD; arc=none smtp.client-ip=65.109.113.108
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
+Received: from localhost (localhost.localdomain [127.0.0.1])
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id B7CAD40E016C;
+	Tue, 26 Mar 2024 12:50:15 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
+	header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id v-owZCfkRxVJ; Tue, 26 Mar 2024 12:50:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+	t=1711457412; bh=06BKn4JRYDCymbCW3aUPHk5b/bEgAy9YHyinGcr1ris=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=Qr888QUDFpSGYa+5F9wIQJHEMyKgGhYOlrq8agRp4Li/geLGAMxWo/pxCodEJSbvB
+	 HajweXL2M9oCOJHukJgfDpC2mOsLOAaWXlSPfmq4zvhw0CSQB4BX9149ip+zCmBLDr
+	 TcWVzROu1MQ8kCb5OeT7Ud0F0QVYofuydCz69E1KVzu83cu1KbEMRz5061fuuKWm6+
+	 Pj/o28ZEGalBrKHkVHARVAO3ENbNyVX3pS3Wx3SEOZr1iVX5S+U3uwYUGzVvvJtyCQ
+	 lfG4HiVYqKjrNdcS1yjhdKp1MXpxDLuao031hhnDOaVlYW799KyslpYjPySxhV+8j3
+	 JCBXwTClxKi5fqJc3L3MwHnQO8TCDEGtoSf2JPsYG6SF8FB68DVmo0RUeRs6NtTaKT
+	 HLePVsyhkg8+xxD8JRVh9PKzdsqudXz7JDXN+cgpXiSgWI71jsLdBiQNiNcVTCMW+Z
+	 U6nfNV+a5dqag5rINoLs/tlsgdLOP9ybJL4Xk7q9f5yrYVuIJZ3HFgsEirqBYXeSS6
+	 okbd7HM/m2wRx5o8D5OwpCdT3EG9AjSm9ToM7eRDY8DSD2Qe09J3rWARyMeiM8PPzm
+	 fQp5T/euowVfgfYW7YxfLQs7AQFaNLaz41bFOkKQcPX5sK5mqLaBdPo/TTPgIrDsjW
+	 EdC4JIKE0IGOR9FozvyuLwdM=
+Received: from zn.tnic (p5de8ecf7.dip0.t-ipconnect.de [93.232.236.247])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+	(No client certificate requested)
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 77FE240E00B2;
+	Tue, 26 Mar 2024 12:50:02 +0000 (UTC)
+Date: Tue, 26 Mar 2024 13:49:56 +0100
+From: Borislav Petkov <bp@alien8.de>
+To: Paul Menzel <pmenzel@molgen.mpg.de>
+Cc: Thomas Gleixner <tglx@linutronix.de>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Josh Poimboeuf <jpoimboe@kernel.org>,
+	Ingo Molnar <mingo@redhat.com>,
+	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+	LKML <linux-kernel@vger.kernel.org>, Marco Elver <elver@google.com>,
+	kasan-dev@googlegroups.com
+Subject: Re: Unpatched return thunk in use. This should not happen!
+Message-ID: <20240326124956.GFZgLEdFNDZSnQSuWx@fat_crate.local>
+References: <0851a207-7143-417e-be31-8bf2b3afb57d@molgen.mpg.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20240325195306.13133-5-sudanl@amazon.com>
+In-Reply-To: <0851a207-7143-417e-be31-8bf2b3afb57d@molgen.mpg.de>
 
-Hi Sudan,
+On Tue, Mar 26, 2024 at 01:40:57PM +0100, Paul Menzel wrote:
+> On a Dell XPS 13 9360/0596KF, BIOS 2.21.0 06/02/2022, Linux 6.9-rc1+ built
+> with
+> 
+>      CONFIG_KCSAN=y
 
-kernel test robot noticed the following build errors:
+Are you saying that with KCSAN=n, it doesn't happen?
 
-[auto build test ERROR on 8e938e39866920ddc266898e6ae1fffc5c8f51aa]
+From the splat lt looks like it complains when loading that cryptd
+module. But that thing looks like a normal module to me so it should
+be fine actually.
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Sudan-Landge/virt-vmgenid-rearrange-code-to-make-review-easier/20240326-035657
-base:   8e938e39866920ddc266898e6ae1fffc5c8f51aa
-patch link:    https://lore.kernel.org/r/20240325195306.13133-5-sudanl%40amazon.com
-patch subject: [PATCH v3 4/4] virt: vmgenid: add support for devicetree bindings
-config: x86_64-rhel-8.3-bpf (https://download.01.org/0day-ci/archive/20240326/202403262047.aZVjmDY5-lkp@intel.com/config)
-compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240326/202403262047.aZVjmDY5-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202403262047.aZVjmDY5-lkp@intel.com/
-
-All errors (new ones prefixed by >>):
-
-   drivers/virt/vmgenid.c: In function 'vmgenid_add_of':
->> drivers/virt/vmgenid.c:154:15: error: 'dev' undeclared (first use in this function); did you mean 'pdev'?
-     154 |         (void)dev;
-         |               ^~~
-         |               pdev
-   drivers/virt/vmgenid.c:154:15: note: each undeclared identifier is reported only once for each function it appears in
-
-
-vim +154 drivers/virt/vmgenid.c
-
-   121	
-   122	static int vmgenid_add_of(struct platform_device *pdev, struct vmgenid_state *state)
-   123	{
-   124	#if IS_ENABLED(CONFIG_OF)
-   125		void __iomem *remapped_ptr;
-   126		int ret = 0;
-   127	
-   128		remapped_ptr = devm_platform_get_and_ioremap_resource(pdev, 0, NULL);
-   129		if (IS_ERR(remapped_ptr)) {
-   130			ret = PTR_ERR(remapped_ptr);
-   131			goto out;
-   132		}
-   133	
-   134		ret = setup_vmgenid_state(state, remapped_ptr);
-   135		if (ret)
-   136			goto out;
-   137	
-   138		state->irq = platform_get_irq(pdev, 0);
-   139		if (state->irq < 0) {
-   140			ret = state->irq;
-   141			goto out;
-   142		}
-   143		pdev->dev.driver_data = state;
-   144	
-   145		ret =  devm_request_irq(&pdev->dev, state->irq,
-   146					vmgenid_of_irq_handler,
-   147					IRQF_SHARED, "vmgenid", &pdev->dev);
-   148		if (ret)
-   149			pdev->dev.driver_data = NULL;
-   150	
-   151	out:
-   152		return ret;
-   153	#else
- > 154		(void)dev;
-   155		(void)state;
-   156		return -EINVAL;
-   157	#endif
-   158	}
-   159	
+Hmm.
 
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
 
