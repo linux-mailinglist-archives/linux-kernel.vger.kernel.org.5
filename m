@@ -1,122 +1,142 @@
-Return-Path: <linux-kernel+bounces-120124-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-120126-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id B2EEA88D2AF
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 00:15:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 6386388D2B4
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 00:15:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4C41D1F3D0DA
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 23:15:05 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id F31531F3CD0D
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 23:15:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2EF2913DDB5;
-	Tue, 26 Mar 2024 23:14:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 73DB713E416;
+	Tue, 26 Mar 2024 23:15:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="eBx4wSrt"
-Received: from mail-yb1-f201.google.com (mail-yb1-f201.google.com [209.85.219.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="SezgEI9o"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E5B9C129E88
-	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 23:14:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DA7B313E031
+	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 23:15:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711494898; cv=none; b=bdijtRDNPwrbQU3qWLQ2Q/jFiVJE3C+E/wA9tENrzlmFnuoYxaQtRslBXvbNEwN+2VRZUwx7LvWmxBr0XGKSPmeOPxLWeB+h/bSQOelPP1XstSmqAws4F2gqLs4dpLBqvbgQOD7bCNinpDaesD3cndL3jexgdU89AFCYQGYqv4o=
+	t=1711494902; cv=none; b=uRay6kQUBB20FFQ6u+lrW7Q1Mjj2Y4trdAlTNJwLD9qbQBV9QWxnwn+kkegHWGZCHXoJZeLKWx7ZAgit9JYdajkDkQUMrj6S18emiy1FpeDLU7DVNv2Qvcv4Xw/W5rH5W8zcTl5M2+jf6/pT90l+BZduZMQCV+aMp4OKNV0S2QI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711494898; c=relaxed/simple;
-	bh=c7GiS2lL1M6QFhZBCgKPDkYwl2twMziOMb01Dd53dkk=;
-	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=WsmptBha/C7ZiTYRMy0eZ4Bqu+I733oaf9RPjmtgffZ3pKLwtljmbCxHs42WN1yljvNJ8uty31vXbPrBM/TYtuuR/53jrICmwfZ1rYFMI7rJNqIXBDVd93NzzGs08MRxfDO1grVxppdBZuErwVvWS945Ug/GBKFvADJ3PKjasvA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--surenb.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=eBx4wSrt; arc=none smtp.client-ip=209.85.219.201
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--surenb.bounces.google.com
-Received: by mail-yb1-f201.google.com with SMTP id 3f1490d57ef6-dccc49ef73eso9039152276.2
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 16:14:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1711494896; x=1712099696; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=O6H8BXdvAo3aUwOcUfRSL8bD/l3C7xPsH52O9f2s29Y=;
-        b=eBx4wSrtmZq68VqgK8HyyJINFZALDy69C80/CJATLFHUNY2nS9thte8N/CIHm8PRa5
-         LmFiSlacbny/sYOmKOswRouqbjQGA0/w1EY1nBFku2EF8tx02mlq7+jZGjVinz+jqoP/
-         5qkPVzWcwyyqyc5+kK/B48HXYXmGiAISgDoU8/uK/JcjD/1cqzXg29ktKgkg8I2Pp1Li
-         7xqLWrCsT2vphOlhwTveMSkShziEixj4nSkt8EgQUkESkBTcoZUl0+dVW7k1N01te6sJ
-         bmAClPCBBpRr2ZTJ9ddTWhWc647oL6pB2Yk7LkRwl8jHRFrm8GBu9kFXtX1wlKGcvn/q
-         t/iA==
+	s=arc-20240116; t=1711494902; c=relaxed/simple;
+	bh=gSKaYFfv4cMNoB/Xn0Tfp61c93C2qN7CcfMYY8i+xOU=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=SEdjkPpxXvK7/h+PNpRsy4VfTkhQvOEXR1NO3zfTF19Kk35I1oGdpQDcPbmxnIMWeNMhGTjFUJgrp3OlqefZMXzIclblBO37P88FZWeu5e9NaeFYqt3wLHIx5OCb1sfvO91BUn/QTHFlXmFjiqde3YoquzMXO5rF0T1Egc4Y/3A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=SezgEI9o; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1711494899;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=0mQCN5HobjN2Q/dtCo4+7FNCVXz9DGDP5AkWFtGzZjc=;
+	b=SezgEI9otM7MOqkq3QMijSGK9QdaTG3NiqSUoaudrF8U3o2/tea33GLGONoM4ugfqsbZ8K
+	YNoaZJBfhf9CNEOXH7IwCQ3iFJnEfdxdTzjsAyTusGky49HRnkVQfGMgVWYuELffgeW6oA
+	70rVd1fYPPtA1WlFBHk6b9j+Ut+7DgM=
+Received: from mail-pj1-f71.google.com (mail-pj1-f71.google.com
+ [209.85.216.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-665-5wObMGolNqmixMftohw8jw-1; Tue, 26 Mar 2024 19:14:58 -0400
+X-MC-Unique: 5wObMGolNqmixMftohw8jw-1
+Received: by mail-pj1-f71.google.com with SMTP id 98e67ed59e1d1-29de3646c56so4536598a91.2
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 16:14:58 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711494896; x=1712099696;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=O6H8BXdvAo3aUwOcUfRSL8bD/l3C7xPsH52O9f2s29Y=;
-        b=IDzjHYn4r6DlYMQEZwHkgwvDG0eHYgas0OE2n6b/O56MSgEydHsjbr/ji0b9lzBhTA
-         el1gVeGZIYdeTOD//ju5TVE0GRZJzKibHpD+FMH+nuwHooIgH8DX6Nw8tCuxPZzLgOu5
-         bqJP9uBRI5FqbbiYvn7vo+Q66siGw/XOWwO9A9lUaKFtv6DO7lcL6W4i+5R+UQ7X+3sC
-         cJhMm8V9IOcuNe5wFglgHLpi/ABltM+LPmwAUPSiHPZXw5C+YnmdpJM6B1JtOXlDhl1X
-         v+/0zghUcZCJWYzbjA4StApPVcHmFQpVgnNKOr+L/dYfHC8gWWTT4Xp1OBGgP2gBAbyA
-         QiiA==
-X-Forwarded-Encrypted: i=1; AJvYcCVJYdKkI/LnR0hCpX+g34kvlzw5+rlbptba0ODabkubDruMLS7Y60iFQmzZ+NguM3p3Rw8XNB6zrpuTQo9LFWTtFGQghfzcUq0Qt8sf
-X-Gm-Message-State: AOJu0Yz7z+7jRPM1QCKOXJIKtrUKvKGMUGrGiE2xbhaarVVkkESSxyOU
-	BsxTV6MnaVLp8qIpFnHstM62QJqiCQ2EXJNTQRZogai7hix2QplYhIfONNDZsyqUoZrZLH7ACNE
-	HMQ==
-X-Google-Smtp-Source: AGHT+IFNY6tAa+1ToJYyIL+cjp3MvXkNdG2j3VGFzAX5ixmO94loHzofu+cawroQnC+Pi4dXgwNBVtjCIDI=
-X-Received: from surenb-desktop.mtv.corp.google.com ([2620:15c:211:201:cef2:761:ad8:ed9a])
- (user=surenb job=sendgmr) by 2002:a05:6902:2587:b0:dc6:44d4:bee0 with SMTP id
- du7-20020a056902258700b00dc644d4bee0mr752686ybb.7.1711494895995; Tue, 26 Mar
- 2024 16:14:55 -0700 (PDT)
-Date: Tue, 26 Mar 2024 16:14:46 -0700
+        d=1e100.net; s=20230601; t=1711494897; x=1712099697;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=0mQCN5HobjN2Q/dtCo4+7FNCVXz9DGDP5AkWFtGzZjc=;
+        b=FyfDmBwBmZjZgisqXPVGjuiwPUMJevv7TZoMhCkBYU7uwD3bt0I928225y7LaNj/N7
+         18Rl2Kwvsv8Y3ZoL+gMb9W5e9QKI5U2gzkHcFbhLIuIYyTh7QZpLqaZvECL2mkot4qRv
+         P9VN/Dk6eekzAzt+4vgksAx1eKJgaUVaIRJEi5xV4Oz/HjDc/G+iOzA4YoLHj9XVf9GL
+         8IZtJYVrsndIjNUtXMYqrE1Z9F/AXkDULicQGU+cLFd7EPq+BwdyiIIhMQmCNnX83ZYT
+         HXn63zJ+15lZAVE4b8ln/cLAnoWb7qbYUMX9eqGu1qqsya3xl9bSusGg8A9zKch+OPO2
+         PpDA==
+X-Forwarded-Encrypted: i=1; AJvYcCUT4V1bCnl+JCeA7yZQ1KIDAexLGSjbuhKXImYE660ogCIAOFCC89LUZcyjz31yb4SKmCD3xA/rZsAJbmYTeKysXHBSa0cE1qFoQorf
+X-Gm-Message-State: AOJu0Yyt17PC4i9Q7bo5yuYPmrmNugdjKklK9sEpLpVHZE20E9CAbRRb
+	kkTBelA2pvljIbuzNbguBOmqSnnC6jvevKQLXGB+7LyToKqlHMyfOM8/5MefNbVS9DE63FOFsuL
+	z3HQ/1ZDsE3CA1BpksGJ50Rf8CaJ2Bx5de/l6b4EwNqGeaCCFfKC/kN/jp6cpHQ==
+X-Received: by 2002:a17:90a:9606:b0:2a0:50ce:aa95 with SMTP id v6-20020a17090a960600b002a050ceaa95mr8314401pjo.21.1711494897373;
+        Tue, 26 Mar 2024 16:14:57 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IFaigOMr/7CiLFK70hJIs+MvOMb27KbuLh6qIXIIew+T0XDmdil0bNWD2Rq0OI35ubw/SLB0g==
+X-Received: by 2002:a17:90a:9606:b0:2a0:50ce:aa95 with SMTP id v6-20020a17090a960600b002a050ceaa95mr8314380pjo.21.1711494897036;
+        Tue, 26 Mar 2024 16:14:57 -0700 (PDT)
+Received: from [192.168.68.51] ([43.252.115.31])
+        by smtp.gmail.com with ESMTPSA id u14-20020a17090abb0e00b0029c49ed3974sm154556pjr.37.2024.03.26.16.14.50
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 26 Mar 2024 16:14:54 -0700 (PDT)
+Message-ID: <6bdf2884-852e-42d3-9e67-c9d5aa7d932a@redhat.com>
+Date: Wed, 27 Mar 2024 09:14:47 +1000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.44.0.396.g6e790dbe36-goog
-Message-ID: <20240326231453.1206227-1-surenb@google.com>
-Subject: [PATCH 0/6] Documentation fixes for memory allocation profiling
-From: Suren Baghdasaryan <surenb@google.com>
-To: akpm@linux-foundation.org
-Cc: rdunlap@infradead.org, sfr@canb.auug.org.au, kent.overstreet@linux.dev, 
-	surenb@google.com, linux-mm@kvack.org, linux-doc@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-
-With the introduction of [1] kernel-doc can handle _noprof function names. 
-This patchset changes back _noprof documentation changes introduced in
-memory allocation profiling patchset [2].
-Changes are split into several patches, each undoing changes in a specific
-patch from the original patchset so that it's easy to squash the fix into
-the initial patch if Andrew wants to do that.
-Changes apply cleanly over mm-unstable and are tested with [1] applied.
-
-[1] https://lore.kernel.org/all/20240326054149.2121-1-rdunlap@infradead.org/
-[2] https://lore.kernel.org/all/20240321163705.3067592-1-surenb@google.com/
-
-Suren Baghdasaryan (6):
-  Documentation: rhashtable: undo _noprof additions in the documentation
-  Documentation: mm: undo _noprof additions in the documentation
-  Documentation: mempool: undo _noprof additions in the documentation
-  Documentation: mm: vmalloc: undo _noprof additions in the
-    documentation
-  Documentation: mm: percpu: undo _noprof additions in the documentation
-  Documentation: mm/slab: undo _noprof additions in the documentation
-
- lib/rhashtable.c |  6 +++---
- mm/mempolicy.c   |  6 +++---
- mm/mempool.c     |  2 +-
- mm/nommu.c       |  8 ++++----
- mm/page_alloc.c  |  8 ++++----
- mm/percpu.c      |  2 +-
- mm/slub.c        |  2 +-
- mm/util.c        | 10 +++++-----
- mm/vmalloc.c     | 14 +++++++-------
- 9 files changed, 29 insertions(+), 29 deletions(-)
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] virtio_ring: Fix the stale index in available ring
+Content-Language: en-US
+To: Will Deacon <will@kernel.org>, Keir Fraser <keirf@google.com>
+Cc: "Michael S. Tsirkin" <mst@redhat.com>, virtualization@lists.linux.dev,
+ linux-kernel@vger.kernel.org, jasowang@redhat.com,
+ xuanzhuo@linux.alibaba.com, yihyu@redhat.com, shan.gavin@gmail.com,
+ linux-arm-kernel@lists.infradead.org,
+ Catalin Marinas <catalin.marinas@arm.com>, mochs@nvidia.com
+References: <35a6bcef-27cf-4626-a41d-9ec0a338fe28@redhat.com>
+ <20240319182251.GB3121@willie-the-truck>
+ <9500adaf-0075-4ae9-92db-7e310b6598b0@redhat.com>
+ <20240319203540-mutt-send-email-mst@kernel.org>
+ <3a6c8b23-af9c-47a7-8c22-8e0a78154bd3@redhat.com>
+ <20240320030215-mutt-send-email-mst@kernel.org>
+ <1dcec730-ec26-46f4-ba4c-06101fcc599e@redhat.com>
+ <20240326033809-mutt-send-email-mst@kernel.org> <ZgKXr8IQ51xBECuP@google.com>
+ <20240326114313.GA9482@willie-the-truck>
+ <20240326154628.GA9613@willie-the-truck>
+From: Gavin Shan <gshan@redhat.com>
+In-Reply-To: <20240326154628.GA9613@willie-the-truck>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
 
-base-commit: 4aaccadb5c04dd4d4519c8762a38010a32d904a3
-prerequisite-patch-id: 1c2be401fcd818b167ef7d506a2fb87fea230835
-prerequisite-patch-id: d3c1b90bc5ee32295962c5d30bd79dfb6eb774c3
-prerequisite-patch-id: 25e37766c40250d564a0c198e2af01a9aae33c92
-prerequisite-patch-id: ed3859d70637371a854c212aa08db8f28edbede4
--- 
-2.44.0.396.g6e790dbe36-goog
+On 3/27/24 01:46, Will Deacon wrote:
+> On Tue, Mar 26, 2024 at 11:43:13AM +0000, Will Deacon wrote:
+> 
+> Ok, long shot after eyeballing the vhost code, but does the diff below
+> help at all? It looks like vhost_vq_avail_empty() can advance the value
+> saved in 'vq->avail_idx' but without the read barrier, possibly confusing
+> vhost_get_vq_desc() in polling mode.
+> 
+> diff --git a/drivers/vhost/vhost.c b/drivers/vhost/vhost.c
+> index 045f666b4f12..87bff710331a 100644
+> --- a/drivers/vhost/vhost.c
+> +++ b/drivers/vhost/vhost.c
+> @@ -2801,6 +2801,7 @@ bool vhost_vq_avail_empty(struct vhost_dev *dev, struct vhost_virtqueue *vq)
+>                  return false;
+>          vq->avail_idx = vhost16_to_cpu(vq, avail_idx);
+>   
+> +       smp_rmb();
+>          return vq->avail_idx == vq->last_avail_idx;
+>   }
+>   EXPORT_SYMBOL_GPL(vhost_vq_avail_empty);
+> 
+
+Thanks, Will. I already noticed smp_rmb() has been missed in vhost_vq_avail_empty().
+The issue still exists after smp_rmb() is added here. However, I'm inspired by your
+suggestion and recheck the code again. It seems another smp_rmb() has been missed
+in vhost_enable_notify().
+
+With smp_rmb() added to vhost_vq_avail_empty() and vhost_enable_notify(), I'm unable
+to hit the issue. I will try for more times to make sure the issue is really resolved.
+After that, I will post formal patches for review.
+
+Thanks,
+Gavin
 
 
