@@ -1,118 +1,154 @@
-Return-Path: <linux-kernel+bounces-119733-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-119724-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3ABCE88CC82
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 19:57:51 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6E3CD88CC6F
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 19:56:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CA2031F2CF76
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 18:57:50 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C97FCB2A5BC
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 18:56:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0F44A13CC6B;
-	Tue, 26 Mar 2024 18:57:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 187A513C69D;
+	Tue, 26 Mar 2024 18:55:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lxQWBkHE"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="dWVsMKnw"
+Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4BFC513C813;
-	Tue, 26 Mar 2024 18:57:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB74C13CF91;
+	Tue, 26 Mar 2024 18:55:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.19.142
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711479444; cv=none; b=sWkhk8HdTnt9JRFp6f+eIa7Xpf1pZHiW5+2CIPfdoNTN8TV1+jn2w90THOh+JMk9qzplCTJ4A2hqFgkaYaiceq6qB9qj9hI36H7gN8xt/Lm+4zeOLDSX86xtkvx6WQvyLovXRlsWdbINX6NEAfDCuSsbO6ox35nX1LCfL6/oiWM=
+	t=1711479305; cv=none; b=hMq/uy/R38pmGIg3Tq3TWOTrDNaAXs6pCjO/2+YgMEnxkX817YPsqTehcycxQA/qXG1BqxmM6xBkEhtNZ2mB1ZuJzN9ZtmmvZ6oKfKo8fxY/qrOKVFJ4Hb0tL6cUtvmSzqSnC+2KALKYxKroUFWFxsXICE7zPkJmWijuCFmCL3Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711479444; c=relaxed/simple;
-	bh=t92rMDfisU2O183WicZRvvThqnLcj0E2zhg0sRyx/uA=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=rzbKuejXHPFvZ/mVpEKIH1mPuvskx8C3XHlVhmErXiONivCxJcFg6DsswGtE/cREDH+90/rAwvVzR8/He/84Bv6Z9GqERaK6tnrHHPPoD6TAIAJFSGX5QRiIIl1n9O51ZyUJtJZUgVMWfGDtS1cGdXajhXbNWyJy11NyWCmBosA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lxQWBkHE; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id E9F70C43330;
-	Tue, 26 Mar 2024 18:57:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711479444;
-	bh=t92rMDfisU2O183WicZRvvThqnLcj0E2zhg0sRyx/uA=;
-	h=From:Date:Subject:References:In-Reply-To:To:Cc:Reply-To:From;
-	b=lxQWBkHE48NtOCNCYUMMn4GNtDMNqVx0YIxT9+GwVFAmFk2Jy32/hlFbq96lBba9b
-	 vuqJjKTu5OHyzHGWwylh05mfq+xheI8sSFEo0XpOG96PiYoMI6UnMvHidBtTMYj5ym
-	 ao1oMynsE/KpI4e78dA8NK0lWqep3aqTPbY6JxDouNhLSOvDB9/LfAPTnod7kCSRxX
-	 Nm5N4MYJYjnEZPWzsLHPddIE6dUnnydCU98EQ07dH3lpd1nXw4DhVey5JoVCpK9piB
-	 ZXrKBmVZRk5I4CrcDPkwQt9hcfu4CXpbND5w9/vvWTOohNr5X+8N3FWcDaOQf2+ehD
-	 XF7l6Q4b7gTnQ==
-Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DEF2ECD1284;
-	Tue, 26 Mar 2024 18:57:23 +0000 (UTC)
-From: Folker Schwesinger via B4 Relay <devnull+dev.folker-schwesinger.de@kernel.org>
-Date: Tue, 26 Mar 2024 19:54:37 +0100
-Subject: [PATCH 3/3] arm64: dts: rockchip: Remove enable-strobe-pulldown
- for NanoPi4 boards
+	s=arc-20240116; t=1711479305; c=relaxed/simple;
+	bh=pNYI8YQgstn889cVRcIctmS24PZPkhrJ8sD3rgCZP0c=;
+	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=f3XF8squ18jTmqWWgKdeqHyaGYyr/gvXtqzTXLXlRzoNGNuVkiRlIiDEqqinrwl3+mARuUbYg3lyUa9b2XiGWEaPQtCt6kOgxwFNytmsRgueGc6V1nWskVHEI3YYvjp02QFnodhXIo98bk0KLOilSIk1t6euS8hPZb74Jf6kzFk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=dWVsMKnw; arc=none smtp.client-ip=198.47.19.142
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+	by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 42QIshYY064682;
+	Tue, 26 Mar 2024 13:54:43 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+	s=ti-com-17Q1; t=1711479283;
+	bh=6Ub4VurtOilZ4czDv3ZHH4QtqrNNYmdGyZQ4VtFsJqg=;
+	h=From:To:CC:Subject:Date:In-Reply-To:References;
+	b=dWVsMKnwzhlWewHyAT4CtncyuKr3YURWC05JNNxfslWXw8f6beVLQAjAaS6zM4Omh
+	 fQJGYzWqBUOmanCCIFlbqhMmhqXIkyTC86eoDbnareWoeECvV/JOZETL/ZoT97xgkY
+	 nyvBQTrVjFSthPQNy9yLTqiyTMMc7wrFH7WVlehM=
+Received: from DFLE111.ent.ti.com (dfle111.ent.ti.com [10.64.6.32])
+	by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 42QIshIl051104
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+	Tue, 26 Mar 2024 13:54:43 -0500
+Received: from DFLE103.ent.ti.com (10.64.6.24) by DFLE111.ent.ti.com
+ (10.64.6.32) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Tue, 26
+ Mar 2024 13:54:42 -0500
+Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DFLE103.ent.ti.com
+ (10.64.6.24) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Tue, 26 Mar 2024 13:54:42 -0500
+Received: from lelvsmtp5.itg.ti.com ([10.249.42.149])
+	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 42QIsfIk091446;
+	Tue, 26 Mar 2024 13:54:42 -0500
+From: Andrew Davis <afd@ti.com>
+To: Nishanth Menon <nm@ti.com>, Vignesh Raghavendra <vigneshr@ti.com>,
+        Tero
+ Kristo <kristo@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        Krzysztof
+ Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley
+	<conor+dt@kernel.org>
+CC: <linux-arm-kernel@lists.infradead.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, Andrew Davis <afd@ti.com>
+Subject: [PATCH 2/6] arm64: dts: ti: k3-am64: Remove UART baud rate selection
+Date: Tue, 26 Mar 2024 13:54:37 -0500
+Message-ID: <20240326185441.29656-2-afd@ti.com>
+X-Mailer: git-send-email 2.39.2
+In-Reply-To: <20240326185441.29656-1-afd@ti.com>
+References: <20240326185441.29656-1-afd@ti.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240326-rk-default-enable-strobe-pulldown-v1-3-f410c71605c0@folker-schwesinger.de>
-References: <20240326-rk-default-enable-strobe-pulldown-v1-0-f410c71605c0@folker-schwesinger.de>
-In-Reply-To: <20240326-rk-default-enable-strobe-pulldown-v1-0-f410c71605c0@folker-schwesinger.de>
-To: Vinod Koul <vkoul@kernel.org>, 
- Kishon Vijay Abraham I <kishon@kernel.org>, 
- Heiko Stuebner <heiko@sntech.de>, Chris Ruehl <chris.ruehl@gtsys.com.hk>, 
- Rob Herring <robh@kernel.org>, 
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
- Conor Dooley <conor+dt@kernel.org>
-Cc: Christopher Obbard <chris.obbard@collabora.com>, 
- Alban Browaeys <alban.browaeys@gmail.com>, 
- Doug Anderson <dianders@chromium.org>, 
- Brian Norris <briannorris@chromium.org>, 
- Jensen Huang <jensenhuang@friendlyarm.com>, linux-phy@lists.infradead.org, 
- linux-arm-kernel@lists.infradead.org, linux-rockchip@lists.infradead.org, 
- linux-kernel@vger.kernel.org, devicetree@vger.kernel.org, 
- Folker Schwesinger <dev@folker-schwesinger.de>
-X-Mailer: b4 0.13.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=724;
- i=dev@folker-schwesinger.de; h=from:subject:message-id;
- bh=fmO1sP9nAwWwIfDKXcaV6YI0IH/hcl1UfJExvs0KGtI=;
- b=owGbwMvMwCXG5FBoZNu1u5bxtFoSQxqz1KSLdfclJe/cdDUz+/2kl+1vlNncrZtWMwXdsI2zz
- Obt51PvKGVhEONikBVTZGHNy9jCnFm+1Lrr52uYOaxMIEMYuDgFYCJlxowMUxteL/2zjlHg1162
- 50fY9v/3D+Q+G9j4zG9K5kYTttqjXowMV2buML48c6NI60+fT5tf/Q9o/dhVHZW/LE7hbpPWpuD
- v7AA=
-X-Developer-Key: i=dev@folker-schwesinger.de; a=openpgp;
- fpr=056E68B4036977A53B8AF9EB024071323D8ABB7D
-X-Endpoint-Received: by B4 Relay for dev@folker-schwesinger.de/default with
- auth_id=144
-X-Original-From: Folker Schwesinger <dev@folker-schwesinger.de>
-Reply-To: dev@folker-schwesinger.de
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
-From: Folker Schwesinger <dev@folker-schwesinger.de>
+As described in the binding document for the "current-speed" property:
 
-The Rockchip eMMC PHY driver enables the internal strobe pulldown by
-default. So, remove the enable-strobe-pulldown property from the
-NanoPi4 series boards DTS.
+"This should only be present in case a driver has no chance to know the
+baud rate of the slave device."
 
-Signed-off-by: Folker Schwesinger <dev@folker-schwesinger.de>
+This is not the case for the UART used in K3 devices, the current
+baud-rate can be calculated from the registers. Having this property
+has the effect of actually skipping the baud-rate setup in some drivers
+as it assumes it will already be set to this rate, which may not always
+be the case.
+
+It seems this property's purpose was mistaken as selecting the desired
+baud-rate, which it does not. It would have been wrong to select that
+here anyway as DT is not the place for configuration, especially when
+there are already more standard ways to set serial baud-rates.
+
+Signed-off-by: Andrew Davis <afd@ti.com>
 ---
- arch/arm64/boot/dts/rockchip/rk3399-nanopi4.dtsi | 1 -
- 1 file changed, 1 deletion(-)
+ arch/arm64/boot/dts/ti/k3-am642-evm.dts                  | 1 -
+ arch/arm64/boot/dts/ti/k3-am642-phyboard-electra-rdk.dts | 2 --
+ arch/arm64/boot/dts/ti/k3-am642-sk.dts                   | 1 -
+ 3 files changed, 4 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/rockchip/rk3399-nanopi4.dtsi b/arch/arm64/boot/dts/rockchip/rk3399-nanopi4.dtsi
-index b7f1e47978a6..38af91b9e756 100644
---- a/arch/arm64/boot/dts/rockchip/rk3399-nanopi4.dtsi
-+++ b/arch/arm64/boot/dts/rockchip/rk3399-nanopi4.dtsi
-@@ -168,7 +168,6 @@ &cpu_l3 {
- };
- 
- &emmc_phy {
--	rockchip,enable-strobe-pulldown;
+diff --git a/arch/arm64/boot/dts/ti/k3-am642-evm.dts b/arch/arm64/boot/dts/ti/k3-am642-evm.dts
+index 53fe1d065ddbb..e20e4ffd0f1fa 100644
+--- a/arch/arm64/boot/dts/ti/k3-am642-evm.dts
++++ b/arch/arm64/boot/dts/ti/k3-am642-evm.dts
+@@ -473,7 +473,6 @@ &main_uart0 {
  	status = "okay";
+ 	pinctrl-names = "default";
+ 	pinctrl-0 = <&main_uart0_pins_default>;
+-	current-speed = <115200>;
  };
  
-
+ /* main_uart1 is reserved for firmware usage */
+diff --git a/arch/arm64/boot/dts/ti/k3-am642-phyboard-electra-rdk.dts b/arch/arm64/boot/dts/ti/k3-am642-phyboard-electra-rdk.dts
+index 8237b8c815b84..dc774f9c75417 100644
+--- a/arch/arm64/boot/dts/ti/k3-am642-phyboard-electra-rdk.dts
++++ b/arch/arm64/boot/dts/ti/k3-am642-phyboard-electra-rdk.dts
+@@ -275,7 +275,6 @@ &main_uart0 {
+ 	status = "okay";
+ 	pinctrl-names = "default";
+ 	pinctrl-0 = <&main_uart0_pins_default>;
+-	current-speed = <115200>;
+ };
+ 
+ &main_uart1 {
+@@ -283,7 +282,6 @@ &main_uart1 {
+ 	pinctrl-names = "default";
+ 	pinctrl-0 = <&main_uart1_pins_default>;
+ 	uart-has-rtscts;
+-	current-speed = <115200>;
+ };
+ 
+ &sdhci1 {
+diff --git a/arch/arm64/boot/dts/ti/k3-am642-sk.dts b/arch/arm64/boot/dts/ti/k3-am642-sk.dts
+index 67cd41bf806ea..5b028b3a3192f 100644
+--- a/arch/arm64/boot/dts/ti/k3-am642-sk.dts
++++ b/arch/arm64/boot/dts/ti/k3-am642-sk.dts
+@@ -381,7 +381,6 @@ &main_uart0 {
+ 	status = "okay";
+ 	pinctrl-names = "default";
+ 	pinctrl-0 = <&main_uart0_pins_default>;
+-	current-speed = <115200>;
+ };
+ 
+ &main_uart1 {
 -- 
-2.44.0
-
+2.39.2
 
 
