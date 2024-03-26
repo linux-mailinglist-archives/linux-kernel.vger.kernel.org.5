@@ -1,462 +1,257 @@
-Return-Path: <linux-kernel+bounces-118270-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-118271-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id A387D88B714
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 02:47:52 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5B4FF88B71C
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 02:52:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 311361F3E8E3
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 01:47:52 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 321A32A051A
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 01:52:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5E89145036;
-	Tue, 26 Mar 2024 01:47:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1953B48CDC;
+	Tue, 26 Mar 2024 01:52:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b="MfLkbSEM"
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12olkn2096.outbound.protection.outlook.com [40.92.22.96])
+	dkim=pass (2048-bit key) header.d=canonical.com header.i=@canonical.com header.b="KKr8ENhg"
+Received: from smtp-relay-internal-1.canonical.com (smtp-relay-internal-1.canonical.com [185.125.188.123])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F14EC80C1F;
-	Tue, 26 Mar 2024 01:47:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.92.22.96
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711417642; cv=fail; b=uYiUVZkIxw2ZGb5CGu1QuXN2j2raveXdHAhNSO2XzgRzqR4uCV3/6w1ksQcct4l63/N4E1g7rx/SGsGvMbJUfEPQhM4UdO8pXQNzT0/zp8T8OKE4//H4VObBSpkOp9MKpOFBBTEkeC5eaCjeMSkS/f3474vB6+AqOLMA5G+I0AY=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711417642; c=relaxed/simple;
-	bh=G402pF/C1xwkO3ddF4EGPf1HmaICEsd4RzlLSuDQAzU=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=JsgqFPFG/IR1lhuPXN8N2u+5+lFjQUl0u6wJguwOodzVwX0s1Rha+HVnvY5xxa1jomOMWF+OxTOOimq3k5dvsuIy3KUhFUh2GBaWg3wSzbueiVcn0jVsw9wWfhuUlqX7lZ79wpW8KZh4ksiqnHaeIP5EjoNycg8ziRasmRp8EtI=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com; spf=pass smtp.mailfrom=outlook.com; dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b=MfLkbSEM; arc=fail smtp.client-ip=40.92.22.96
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=outlook.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Qv5uCfF5kmbgWR3xddYYDeOmV3jX3PcODDhGW4WCwUJL/wUuUOrLEZv1+TRKa2P2wR9eEToch4teZzW+dxO1X+XNJ5YHtAWT1kachp3r/giBI2RylTcYTEwIJtF/Fe7g0ZK16Pc8LGbDsVYdtqVS5f3WsgN3UiPFQRxM7igo5Nq/gOEzfOA7ZKtk9j6zkBUIMuvwBp5helJi9DQEpmW8gi/LFBDTxMRXpxmC9E7D+LHHYBCpcvlO6M6A4GZclRJbzckvhteQHRC9buC2aH+rJ4x0i7BhBrbXX/LUrp5cJFQ+ytDl1eZN5H1r3JSJOJaIxi+NGRqQkg+Y5hIyMpjVRQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=jLMOdrQygst76bvt6bKGJPcelvUQigBt2RtAuf8GQwA=;
- b=ZqMob0bqXzFCfatRJ0nHIzCozpAlSQ9P+Cji024c1dQa0iI0FI3PmOge83EZU2SG/sgyBtpN3c+8SUPHQa0i+geihq/Bt0/JjwTEwHeJLtOd9v7jzmehqjNTQhSU17zFywTS9twD+2/Rc9GRKFIn0t5EiTNK9aAKDRN3NgfzZ7723TjNdxwrzfRAL7R1tXbP7vVt4Fr0TMU1EPplbKoDUHV6ki8iCRmLJnWUADSUNNQXA9xWYn+JLB9Gpof7spUVmbUl/111uKbE7+gtyZ7KQd61H22ASQilJMv2uZ/7x8hS5gb+e4RAIGdIUN74WQGIWFxIKBrdkUovrzoKJqYkQg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
- dkim=none; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=jLMOdrQygst76bvt6bKGJPcelvUQigBt2RtAuf8GQwA=;
- b=MfLkbSEM0yiaz8Hs9/CfvqZd+kE/6T0cJY0jGf53FcFNJKPIh0FaC85qaknzVitFWEsot2Q2CN0K6NqNZxN3LnbTFkLNi6pWOOVfobCKMq9xSvJrpMXRJM8Ka1pn9e1ryFg7ri8D+vANCWG9IrJ7B1xVbkmKneeJr/t2VZSbLs1RWTGItDGkc0NhNj65vaThAKECBRBkwF8D33YcNCFJ9TxodQHuHOtxZZdBoAnTeDknATNrABQjxM5PfIKYa79V/OFIhFLYNUYUeoRFbEvgPMzrCLYLA1D3t2CxCeRRC+mRxTs3GjBrKnbg0kW3YDKP9O+CWqQqFhf3Bvu3zsDn1g==
-Received: from IA1PR20MB4953.namprd20.prod.outlook.com (2603:10b6:208:3af::19)
- by CH3PR20MB6537.namprd20.prod.outlook.com (2603:10b6:610:154::6) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.31; Tue, 26 Mar
- 2024 01:47:17 +0000
-Received: from IA1PR20MB4953.namprd20.prod.outlook.com
- ([fe80::182f:841b:6e76:b819]) by IA1PR20MB4953.namprd20.prod.outlook.com
- ([fe80::182f:841b:6e76:b819%2]) with mapi id 15.20.7409.026; Tue, 26 Mar 2024
- 01:47:17 +0000
-From: Inochi Amaoto <inochiama@outlook.com>
-To: Vinod Koul <vkoul@kernel.org>,
-	Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Chen Wang <unicorn_wang@outlook.com>,
-	Inochi Amaoto <inochiama@outlook.com>,
-	Paul Walmsley <paul.walmsley@sifive.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Albert Ou <aou@eecs.berkeley.edu>
-Cc: Jisheng Zhang <jszhang@kernel.org>,
-	Liu Gui <kenneth.liu@sophgo.com>,
-	Jingbao Qiu <qiujingbao.dlmu@gmail.com>,
-	dlan@gentoo.org,
-	dmaengine@vger.kernel.org,
-	devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-riscv@lists.infradead.org
-Subject: [PATCH v5 3/3] dmaengine: add driver for Sophgo CV18XX/SG200X dmamux
-Date: Tue, 26 Mar 2024 09:47:05 +0800
-Message-ID:
- <IA1PR20MB49534FCC5AC11EDB3D74CE0CBB352@IA1PR20MB4953.namprd20.prod.outlook.com>
-X-Mailer: git-send-email 2.44.0
-In-Reply-To: <IA1PR20MB4953B500D7451964EE37DA4CBB352@IA1PR20MB4953.namprd20.prod.outlook.com>
-References: <IA1PR20MB4953B500D7451964EE37DA4CBB352@IA1PR20MB4953.namprd20.prod.outlook.com>
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-TMN: [RmjrvbuV6JDAmctJ7cGRxemzpheBgOQKG8AHgNpq6Ng=]
-X-ClientProxiedBy: SI2PR01CA0034.apcprd01.prod.exchangelabs.com
- (2603:1096:4:192::9) To IA1PR20MB4953.namprd20.prod.outlook.com
- (2603:10b6:208:3af::19)
-X-Microsoft-Original-Message-ID:
- <20240326014707.327110-3-inochiama@outlook.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 47316282EB
+	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 01:52:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.125.188.123
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1711417967; cv=none; b=oocClNtTaRDk4H9VgHHBxdbWjtmm6ACi/4+XTr+GwMO7djJ4vfLaAFMWRXd4/KKI4v/UyNGgPoXESBrrybDbXTC2VwQhAKsaqaLAl6Slvoozcg5zWfIYDHBIR0qdVN328uz2PWwoYG1bZHosRY8UaOS4BdCG9yKu3D91dDclCnE=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1711417967; c=relaxed/simple;
+	bh=kmqIs/1ejhI545XuyVEW9ob4jQH3Rbj5287IN7mw75Q=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=OS310vd/FvH01yDubgm1yPWe8nW6wAVF/0ggu/wqhaPMjFQ9faf//NsrflZO5ckwkfOPnBMMnrpQHRsxz76qWE+m/aecRfGKDKOuEulciLi4JGC1w9tm2I9MPRwgroF4Np3s5Rp26Tk9Y37pvR4aTq9eMbZpE7+IIPnFKAZRmlw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canonical.com; spf=pass smtp.mailfrom=canonical.com; dkim=pass (2048-bit key) header.d=canonical.com header.i=@canonical.com header.b=KKr8ENhg; arc=none smtp.client-ip=185.125.188.123
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canonical.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canonical.com
+Received: from mail-pg1-f199.google.com (mail-pg1-f199.google.com [209.85.215.199])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id A2ABC3F628
+	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 01:52:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+	s=20210705; t=1711417962;
+	bh=H9EHOHwcEXwOlCQEucQXSsYUJ0eKIs5GJypjqxwPz7E=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type;
+	b=KKr8ENhg5929QrUqEa1i8CL5nEc2g+KagCre8J5lKT0e8Rl2PNf8qLmBVQH8P3Kz1
+	 ixdpRS2Oh3fcjf/wbrroBy2HGMsPwlpM0mpOsDawcfNMF9c3Szu4vpKkc3j1diiqAW
+	 NYKsR+Z4YX7PgY3ebmr52dwz//1SvKfYNWlbC6NRZO2g72xhSV+XxX95G7Anu16ZUB
+	 y3lEAjpHVz2jxX5aKARuR1c17u7k8YPDNE29or0U6RAWZbTEFQoMsu/gCnE+mgpAHC
+	 pE7hZlQKXUMdm4dRzlW7db45qgaZVNTIi1YaGzm95wYBnBwFHJCRNtm7Hv/dgHdn/2
+	 nviHcavLF9b/A==
+Received: by mail-pg1-f199.google.com with SMTP id 41be03b00d2f7-5ce67a3f275so2982650a12.0
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 18:52:42 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711417961; x=1712022761;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=H9EHOHwcEXwOlCQEucQXSsYUJ0eKIs5GJypjqxwPz7E=;
+        b=R1gYL6TCdX5SNkoeKBMsU06qeI+IxatvfLAr7zf6ehFm8xVGx5PQCzj7kT1ZpkLCUH
+         qeiLcfg6Bcvkw/tRTLcbBCglrODfhmgpNHVOZJkUwYhsyNNkGu3MdYmYVMjmTXA/wp7a
+         H7ubPaXDhl+nLt+swRsMGtj1+LS5ngaQx3OsGvSW7nhcC/AVSu4BYWY+qYWmivrwOs4M
+         A8Eki3h/HnWi0pk3eYedtZRicswNfUfYFw/nGPuTlXz0XClfG+Z1D0yYfDRr41WO7Sow
+         s+txJg7fTo5UyVBRrdJ+Vs6lGOhUMGSs/Z2UX+hBDG+LTObjlHWaM8DJ3rhHxs4ef7HF
+         E70w==
+X-Forwarded-Encrypted: i=1; AJvYcCV7oAwLMiq6iT7g/kho1WVePLRRLbTqs35/JNWOVaA2qNitDzaSktql03+KZZco4DPAjHqiUQCKxlSv9gQpMMRT6jjTQuQsTdr2xGOn
+X-Gm-Message-State: AOJu0YxoA+WmXQpoMuVdzUNcXD9lIhlw/gh85aX7cLkDqSxx+ePTlEsW
+	6oG3SEsvHI+3J7IpVyBGW1s28kMQAkLSBwFwHsIny2r+zMm3aDuDoCu4i4uuwYBGoKjyisKmOUO
+	Ocp3iGYmcI7IRMc7Wc/1K+QEyHHNbDDKeLAGuOwgqB65BU61NmeOckq18bzbzNlRqBCG+BqiZrm
+	IVeJIZgwz4z9QKIsmhQl6FXKDxGQgKAbkqAgbQwsdKOEbh4sPqqV7X
+X-Received: by 2002:a05:6a20:c220:b0:1a3:463d:e6f1 with SMTP id bt32-20020a056a20c22000b001a3463de6f1mr6586290pzb.22.1711417961306;
+        Mon, 25 Mar 2024 18:52:41 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IHcaXeQRtlSZfuuNtMri5G5mrnSGH9yi/jYrCARIdvPrsTrrJ72nS+E4iFfcCGLMQcH+cYnP/TyL084NPvtufA=
+X-Received: by 2002:a05:6a20:c220:b0:1a3:463d:e6f1 with SMTP id
+ bt32-20020a056a20c22000b001a3463de6f1mr6586277pzb.22.1711417960981; Mon, 25
+ Mar 2024 18:52:40 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: IA1PR20MB4953:EE_|CH3PR20MB6537:EE_
-X-MS-Office365-Filtering-Correlation-Id: 5f5a4511-93b1-4382-48dd-08dc4d36ab3e
-X-MS-Exchange-SLBlob-MailProps:
-	7J/vb0KDx3ghsXKwRy/t5h7NdWkXmzB0T5mqelZfSxrF8iYJzzinjnwdw+qKFn1FtVvTbo7Mu1KGBXbm1di+NQPYimvy/8RVu8TpSt9CfR7H6Sp6KauTysJgYFiKSJiWtJh4MekW6HAi6ZuT5+nToJ1TVi4JKB4j1AKLpUbqQlsUzQr4wkABoBjtJxmdYZqrCKsU4Rk6EWqbohfYCbvhXQlrASFXSPUpEec8L0aoHFbdkt1KUOnjLDfpjH31RJ5AN+MHz4fcUEw+jAR97r5s4lAf8B1Z9xxTxWY1XyeuW46PXVT6DN+gPiEfb5wLdkIR+CKF7vhRPtImYm4d6MT998s/hYSpmCWt5Wym+wrhnYcbmLVxjZLqIOYOd6gjEwTTsFzfY+mr6EQAes6ED9Org0EJ5gHIxcNDxyfweZQk5bVW6j512FBERMRUIhQrIvyBH51l22srak3xEhfqqxT2L3zM8bcYnAcIPH5tlfigolT0HvaL4lknAtpV3TU+q5kzToBrTxr2S2ya6VJ+6WDarLxDwo3+NyOfoatCgzXoZNAo0mg6SQ3GWtKcBiq8R1IxpLbofzXl3CnqC64xcQ9y2R25eWFCc1UEYmPh8yKmm/BE9W7ND7Kn7FFXoY91cSMQ75BwdVpak3ydmM35eM3t+wPoourGcYr7OqgynlZRsazreYrptw9FN0qNNuoG37D4d+JcUMgEEQgY7+m4Xl+oLEO08JJ8qwjKKWvYLBic4cT2hOeFeSP5Ra2UhubjULBfiQsiFi0YZQUyaf5WM1BnhddjIK0C3kjPVGWGE1wgaZA=
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	j49TfSXAtpdRffossYF8OwA8JzAL8XaWpYTikigArRjPr59rXYAtwm4GrJblxOnOEVqx34pFYYoYwDtr1Hyubx7aUAIxs7nYT9ow0FCfNYcdahzWhYOasDEEy9PB4w+y3wBDtWDL+1IpBKrXQ7uHCBXEKtPt+4RLv91ICd+9Atd55Y9v7uhs5PRGq7lAj7xHPRqgYkm4Vo7yqTUpDwJoHexwIUtzT9O/sOihnw8YRq8tzYM3KJKt7tcb3i/C8eRXxckRLDkyd92DKFSxQFqDPpcQM0c6KqEBrw6xjl6Mnocdb0kRmb3qS3l7ncuGLsRrxH+1Y/rBebbc2AGA7SeJVvV+B3zPX7+sTpZrI8erSxVP9MAdppAjkwWTa8TE2p+JJVv8kBJUT4bqM2N9XD8v3S2JZ9eTZ2WJ7clL681JCx0JWYMmMBx81/ScSugNAi99hEUwUa6n1MWqaRITFMMsj8sb38TifGPIdATm9ZIAPWgimO2048tU8Zk7dcy106whmoRn65pxiSx36hhIbW3BYg1pZWMboJra7z/BFDanYlnbQxevqYN44RyjwiClNTFt57HMSALfGN+ZYk1RzuLFBf3BgJDmKd3ArsHZIewzuXBKlVDIYLKrSmkBBN0ObDg2
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?bLzwx5Z3memmyawh5yOxVl7bI25oA51hjsdg30q3bqLa3fU6jED22HzNh5ZL?=
- =?us-ascii?Q?jjektEYuixZtukaZB1f194LuDy3K+39UkFFNxCJj9t5Eohz4h1GBhoF80A4i?=
- =?us-ascii?Q?v8u1mD7Aa9el56d97nLjWzsgwyNoBue6L3AW52EY/XlpyiBFRjggGKT8Rk60?=
- =?us-ascii?Q?S0wHgPgTJJG2xH8rVpHoLPQHOmwtEOIUZ5vBcCyvf/ymJ6dDmWKLtIbjvlBL?=
- =?us-ascii?Q?qxe0uCcvMTjTaAmldW1l8mAIIm4V3u8Rn6h8I1MtuKt1O0nyYiwaW49bXFmb?=
- =?us-ascii?Q?4MF4bIwA/QMa8fZhHft+KigJgJyFiPeZmnLD0Wc+B8vkTX3JztH+/nB7Q222?=
- =?us-ascii?Q?IyMXgizX5vMweaQag/un9gWb5OmhtpgadYFCx9hT7UGl/aKv977BXhAVtWSM?=
- =?us-ascii?Q?lLX+6jYezX6EK48d9fS4LJgc+GE04GMT2hICXC8jGvrFCiqYy5nu8YhphVaN?=
- =?us-ascii?Q?pydyXWD4R7gVS9hGG8MTPuP7kfuNKUKDzOKjXrzz4ufMU9UNOh9ktD/UxVkv?=
- =?us-ascii?Q?RNcdzQSkySgVJoXkW2/QdvczN1ika0oYj4UF9OOrFH/owh/VT+VpSJkzYVhf?=
- =?us-ascii?Q?o56QJ2SJg7jrKewhNRDXEULD6qiGjjqqJNtBU/p2RFH0zpGavWdLQIOU8rxq?=
- =?us-ascii?Q?YtW0yWZOJo5itwM1DJItTFNyufB90QgpD+gvFNRlU99RCSeaO1viuth+Ef2e?=
- =?us-ascii?Q?epHLqgOTn2uKuQn+VMGCKJp95M5hanud0Q6j3qSHZ3+pHZuE+2eNkUPItbNX?=
- =?us-ascii?Q?QYI+I1+CfjowxxemWqp8VmILAThEEilLBp7LIQB58VccZMFQm0/yQEs8exYo?=
- =?us-ascii?Q?GF+dFjXF5hK3GsILKYJnC30Xws3jQPwH/JWX0eSe2NRQTPIMB0S6R6oJzEu1?=
- =?us-ascii?Q?w5nd8IWNZytC27KLTzSEZ90nYfMZA1CKUOh2miu0B77sSAigd2BTnjWpc0ne?=
- =?us-ascii?Q?YjB+lMVtOtpiDoQ2y1VlKEUS8vcEapX1DGh3wJJpQNh6ROA7evS8yyakO252?=
- =?us-ascii?Q?jNb6JYz07WdUu7E0f4LZ7uNU56YHIkpUKXsh5unN429x9d6WPj+EYhm527s2?=
- =?us-ascii?Q?vob2Oxeg+1uXXTDL/mU5G55Riu3aaLL7XhPdxQMi4gMGZyN71GfQ8c643Gt5?=
- =?us-ascii?Q?tqfLqqkb146Izn4X/8P6VDrwfH2l4xd8ve1I66UEMhvb0Y7wUN6L+laxNFmj?=
- =?us-ascii?Q?NbUcFfVBiBleEyb8Hsc8ZtMWKnn+Y/HXa38LV2bInXZiqkeoOZ5n7a9t8Y/E?=
- =?us-ascii?Q?Gor/hd1FH4rQA5XlMFb7?=
-X-OriginatorOrg: outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 5f5a4511-93b1-4382-48dd-08dc4d36ab3e
-X-MS-Exchange-CrossTenant-AuthSource: IA1PR20MB4953.namprd20.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Mar 2024 01:47:17.8738
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
-X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg:
-	00000000-0000-0000-0000-000000000000
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH3PR20MB6537
+References: <CAAd53p53NjYsYctrb6oknXVTMEq919nfVvrK17EBXwsGCxvtbA@mail.gmail.com>
+ <20240325190216.GA1445191@bhelgaas>
+In-Reply-To: <20240325190216.GA1445191@bhelgaas>
+From: Kai-Heng Feng <kai.heng.feng@canonical.com>
+Date: Tue, 26 Mar 2024 09:52:28 +0800
+Message-ID: <CAAd53p5p=JJ9OOQd=XPzJgW7yib+hMJxZqj7PZFsd2uFtK94xg@mail.gmail.com>
+Subject: Re: [PATCH v2] mmc: sdhci-pci-gli: GL975x: Mask rootport's replay
+ timer timeout during suspend
+To: Bjorn Helgaas <helgaas@kernel.org>
+Cc: adrian.hunter@intel.com, ulf.hansson@linaro.org, 
+	Victor Shih <victor.shih@genesyslogic.com.tw>, Ben Chuang <benchuanggli@gmail.com>, 
+	linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Sophgo CV18XX/SG200X use DW AXI CORE with a multiplexer for remapping
-its request lines. The multiplexer supports at most 8 request lines.
+On Tue, Mar 26, 2024 at 3:02=E2=80=AFAM Bjorn Helgaas <helgaas@kernel.org> =
+wrote:
+>
+> On Mon, Mar 25, 2024 at 10:02:27AM +0800, Kai-Heng Feng wrote:
+> > On Sat, Mar 23, 2024 at 12:43=E2=80=AFAM Bjorn Helgaas <helgaas@kernel.=
+org> wrote:
+> > > On Thu, Mar 21, 2024 at 06:05:33PM +0800, Kai-Heng Feng wrote:
+> > > > On Sat, Jan 20, 2024 at 6:41=E2=80=AFAM Bjorn Helgaas <helgaas@kern=
+el.org> wrote:
+> > > > > On Thu, Jan 18, 2024 at 02:40:50PM +0800, Kai-Heng Feng wrote:
+> > > > > > On Sat, Jan 13, 2024 at 1:37=E2=80=AFAM Bjorn Helgaas <helgaas@=
+kernel.org> wrote:
+> > > > > > > On Fri, Jan 12, 2024 at 01:14:42PM +0800, Kai-Heng Feng wrote=
+:
+> > > > > > > > On Sat, Jan 6, 2024 at 5:19=E2=80=AFAM Bjorn Helgaas <helga=
+as@kernel.org> wrote:
+> > > > > > > > > On Thu, Dec 21, 2023 at 11:21:47AM +0800, Kai-Heng Feng w=
+rote:
+> > > > > > > > > > Spamming `lspci -vv` can still observe the replay timer=
+ timeout error
+> > > > > > > > > > even after commit 015c9cbcf0ad ("mmc: sdhci-pci-gli: GL=
+9750: Mask the
+> > > > > > > > > > replay timer timeout of AER"), albeit with a lower repr=
+oduce rate.
+> > > > > > > > >
+> > > > > > > > > I'm not sure what this is telling me.  By "spamming `lspc=
+i -vv`, do
+> > > > > > > > > you mean that if you run lspci continually, you still see=
+ Replay Timer
+> > > > > > > > > Timeout logged, e.g.,
+> > > > > > > > >
+> > > > > > > > >   CESta:        ... Timeout+
+> > > > > > > >
+> > > > > > > > Yes it's logged and the AER IRQ is raised.
+> > > > > > >
+> > > > > > > IIUC the AER IRQ is the important thing.
+> > > > > > >
+> > > > > > > Neither 015c9cbcf0ad nor this patch affects logging in
+> > > > > > > PCI_ERR_COR_STATUS, so the lspci output won't change and ment=
+ioning it
+> > > > > > > here doesn't add useful information.
+> > > > > >
+> > > > > > You are right. That's just a way to access config space to repr=
+oduce
+> > > > > > the issue.
+> > > > >
+> > > > > Oh, I think I completely misunderstood you!  I thought you were s=
+aying
+> > > > > that suspending the device caused the PCI_ERR_COR_REP_TIMER error=
+, and
+> > > > > you happened to see that it was logged when you ran lspci.
+> > > >
+> > > > Both running lspci and suspending the device can observe the error,
+> > > > because both are accessing the config space.
+> > > >
+> > > > > But I guess you mean that running lspci actually *causes* the err=
+or?
+> > > > > I.e., lspci does a config access while we're suspending the devic=
+e
+> > > > > causes the error, and the config access itself causes the error, =
+which
+> > > > > causes the ERR_COR message and ultimately the AER interrupt, and =
+that
+> > > > > interrupt prevents the system suspend.
+> > > >
+> > > > My point was that any kind of PCI config access can cause the error=
+.
+> > > > Using lspci is just make the error more easier to reproduce.
+> > > >
+> > > > > If that's the case, I wonder if this is a generic problem that co=
+uld
+> > > > > happen with *any* device, not just GL975x.
+> > > >
+> > > > For now, it's just GL975x.
+> > > >
+> > > > > What power state do we put the GL975x in during system suspend?
+> > > > > D3hot?  D3cold?  Is there anything that prevents config access wh=
+ile
+> > > > > we suspend it?
+> > > >
+> > > > The target device state is D3hot.
+> > > > However, the issue happens when the devices is in D0, when the PCI
+> > > > core is saving the device's config space.
+> > > >
+> > > > So I think the issue isn't related to the device state.
+> > > >
+> > > > > We do have dev->block_cfg_access, and there's a comment that says
+> > > > > "we're required to prevent config accesses during D-state
+> > > > > transitions," but I don't see it being used during D-state
+> > > > > transitions.
+> > > >
+> > > > Yes, there isn't any D-state change happens here.
+> > >
+> > > So the timeout happens sometimes on any config accesses to the device=
+,
+> > > no matter what the power state is?
+> >
+> > Yes.
+> >
+> > > If that's the case, why do the
+> > > masking in the suspend/resume callbacks?
+> >
+> > Because there's no functional impact when the error happens, other
+> > than suspend/resume.
+>
+> Oh, I think I see.  Is this accurate?
+>
+>   Due to a hardware defect in GL975x, config accesses when ASPM is
+>   enabled frequently cause Replay Timer Timeouts in the Port leading
+>   to the device.
+>
+>   These are Correctable Errors, so the Downstream Port logs it in its
+>   PCI_ERR_COR_STATUS and, when the error is not masked, sends an
+>   ERR_COR message upstream.  The message terminates at a Root Port,
+>   which may generate an AER interrupt so the OS can log it.
+>
+>   The Correctable Error logging is an annoyance but normally not a
+>   major issue.  But when the AER interrupt happens during suspend, it
+>   can prevent the system from suspending.
 
-Add driver for Sophgo CV18XX/SG200X DMA multiplexer.
+That's totally the case here.
 
-Signed-off-by: Inochi Amaoto <inochiama@outlook.com>
----
- drivers/dma/Kconfig         |   9 ++
- drivers/dma/Makefile        |   1 +
- drivers/dma/cv1800-dmamux.c | 268 ++++++++++++++++++++++++++++++++++++
- 3 files changed, 278 insertions(+)
- create mode 100644 drivers/dma/cv1800-dmamux.c
+This brings up another different but related topic  - should the port
+driver disable AER/DPC IRQ during suspend?
+We've discussed this many times, I still think that's the right
+approach to "quiesce" many unexpected errors during system state
+transition.
 
-diff --git a/drivers/dma/Kconfig b/drivers/dma/Kconfig
-index 002a5ec80620..cb31520b9f86 100644
---- a/drivers/dma/Kconfig
-+++ b/drivers/dma/Kconfig
-@@ -546,6 +546,15 @@ config PLX_DMA
- 	  These are exposed via extra functions on the switch's
- 	  upstream port. Each function exposes one DMA channel.
 
-+config SOPHGO_CV1800_DMAMUX
-+	tristate "Sophgo CV1800/SG2000 series SoC DMA multiplexer support"
-+	depends on MFD_SYSCON
-+	depends on ARCH_SOPHGO
-+	help
-+	  Support for the DMA multiplexer on Sophgo CV1800/SG2000
-+	  series SoCs.
-+	  Say Y here if your board have this soc.
-+
- config STE_DMA40
- 	bool "ST-Ericsson DMA40 support"
- 	depends on ARCH_U8500
-diff --git a/drivers/dma/Makefile b/drivers/dma/Makefile
-index dfd40d14e408..7465f249ee47 100644
---- a/drivers/dma/Makefile
-+++ b/drivers/dma/Makefile
-@@ -67,6 +67,7 @@ obj-$(CONFIG_PPC_BESTCOMM) += bestcomm/
- obj-$(CONFIG_PXA_DMA) += pxa_dma.o
- obj-$(CONFIG_RENESAS_DMA) += sh/
- obj-$(CONFIG_SF_PDMA) += sf-pdma/
-+obj-$(CONFIG_SOPHGO_CV1800_DMAMUX) += cv1800-dmamux.o
- obj-$(CONFIG_STE_DMA40) += ste_dma40.o ste_dma40_ll.o
- obj-$(CONFIG_STM32_DMA) += stm32-dma.o
- obj-$(CONFIG_STM32_DMAMUX) += stm32-dmamux.o
-diff --git a/drivers/dma/cv1800-dmamux.c b/drivers/dma/cv1800-dmamux.c
-new file mode 100644
-index 000000000000..9c01f157ab97
---- /dev/null
-+++ b/drivers/dma/cv1800-dmamux.c
-@@ -0,0 +1,268 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Copyright (C) 2023 Inochi Amaoto <inochiama@outlook.com>
-+ */
-+
-+#include <linux/bitops.h>
-+#include <linux/module.h>
-+#include <linux/of_dma.h>
-+#include <linux/of_address.h>
-+#include <linux/of_platform.h>
-+#include <linux/platform_device.h>
-+#include <linux/llist.h>
-+#include <linux/regmap.h>
-+#include <linux/spinlock.h>
-+#include <linux/mfd/syscon.h>
-+
-+#include <soc/sophgo/cv1800-sysctl.h>
-+#include <dt-bindings/dma/cv1800-dma.h>
-+
-+#define DMAMUX_NCELLS			2
-+#define MAX_DMA_MAPPING_ID		DMA_SPI_NOR1
-+#define MAX_DMA_CPU_ID			DMA_CPU_C906_1
-+#define MAX_DMA_CH_ID			7
-+
-+#define DMAMUX_INTMUX_REGISTER_LEN	4
-+#define DMAMUX_NR_CH_PER_REGISTER	4
-+#define DMAMUX_BIT_PER_CH		8
-+#define DMAMUX_CH_MASk			GENMASK(5, 0)
-+#define DMAMUX_INT_BIT_PER_CPU		10
-+#define DMAMUX_CH_UPDATE_BIT		BIT(31)
-+
-+#define DMAMUX_CH_REGPOS(chid) \
-+	((chid) / DMAMUX_NR_CH_PER_REGISTER)
-+#define DMAMUX_CH_REGOFF(chid) \
-+	((chid) % DMAMUX_NR_CH_PER_REGISTER)
-+#define DMAMUX_CH_REG(chid) \
-+	((DMAMUX_CH_REGPOS(chid) * sizeof(u32)) + \
-+	 CV1800_SDMA_DMA_CHANNEL_REMAP0)
-+#define DMAMUX_CH_SET(chid, val) \
-+	(((val) << (DMAMUX_CH_REGOFF(chid) * DMAMUX_BIT_PER_CH)) | \
-+	 DMAMUX_CH_UPDATE_BIT)
-+#define DMAMUX_CH_MASK(chid) \
-+	DMAMUX_CH_SET(chid, DMAMUX_CH_MASk)
-+
-+#define DMAMUX_INT_BIT(chid, cpuid) \
-+	BIT((cpuid) * DMAMUX_INT_BIT_PER_CPU + (chid))
-+#define DMAMUX_INTEN_BIT(cpuid) \
-+	DMAMUX_INT_BIT(8, cpuid)
-+#define DMAMUX_INT_CH_BIT(chid, cpuid) \
-+	(DMAMUX_INT_BIT(chid, cpuid) | DMAMUX_INTEN_BIT(cpuid))
-+#define DMAMUX_INT_MASK(chid) \
-+	(DMAMUX_INT_BIT(chid, DMA_CPU_A53) | \
-+	 DMAMUX_INT_BIT(chid, DMA_CPU_C906_0) | \
-+	 DMAMUX_INT_BIT(chid, DMA_CPU_C906_1))
-+#define DMAMUX_INT_CH_MASK(chid, cpuid) \
-+	(DMAMUX_INT_MASK(chid) | DMAMUX_INTEN_BIT(cpuid))
-+
-+struct cv1800_dmamux_data {
-+	struct dma_router	dmarouter;
-+	struct regmap		*regmap;
-+	spinlock_t		lock;
-+	struct llist_head	free_maps;
-+	struct llist_head	reserve_maps;
-+	DECLARE_BITMAP(mapped_peripherals, MAX_DMA_MAPPING_ID);
-+};
-+
-+struct cv1800_dmamux_map {
-+	struct llist_node node;
-+	unsigned int channel;
-+	unsigned int peripheral;
-+	unsigned int cpu;
-+};
-+
-+static void cv1800_dmamux_free(struct device *dev, void *route_data)
-+{
-+	struct cv1800_dmamux_data *dmamux = dev_get_drvdata(dev);
-+	struct cv1800_dmamux_map *map = route_data;
-+	unsigned long flags;
-+
-+	spin_lock_irqsave(&dmamux->lock, flags);
-+
-+	regmap_update_bits(dmamux->regmap,
-+			   DMAMUX_CH_REG(map->channel),
-+			   DMAMUX_CH_MASK(map->channel),
-+			   DMAMUX_CH_UPDATE_BIT);
-+
-+	regmap_update_bits(dmamux->regmap, CV1800_SDMA_DMA_INT_MUX,
-+			   DMAMUX_INT_CH_MASK(map->channel, map->cpu),
-+			   DMAMUX_INTEN_BIT(map->cpu));
-+
-+	spin_unlock_irqrestore(&dmamux->lock, flags);
-+
-+	dev_info(dev, "free channel %u for req %u (cpu %u)\n",
-+		 map->channel, map->peripheral, map->cpu);
-+}
-+
-+static void *cv1800_dmamux_route_allocate(struct of_phandle_args *dma_spec,
-+					  struct of_dma *ofdma)
-+{
-+	struct platform_device *pdev = of_find_device_by_node(ofdma->of_node);
-+	struct cv1800_dmamux_data *dmamux = platform_get_drvdata(pdev);
-+	struct cv1800_dmamux_map *map;
-+	struct llist_node *node;
-+	unsigned long flags;
-+	unsigned int chid, devid, cpuid;
-+	int ret;
-+
-+	if (dma_spec->args_count != DMAMUX_NCELLS) {
-+		dev_err(&pdev->dev, "invalid number of dma mux args\n");
-+		return ERR_PTR(-EINVAL);
-+	}
-+
-+	devid = dma_spec->args[0];
-+	cpuid = dma_spec->args[1];
-+	dma_spec->args_count = 1;
-+
-+	if (devid > MAX_DMA_MAPPING_ID) {
-+		dev_err(&pdev->dev, "invalid device id: %u\n", devid);
-+		return ERR_PTR(-EINVAL);
-+	}
-+
-+	if (cpuid > MAX_DMA_CPU_ID) {
-+		dev_err(&pdev->dev, "invalid cpu id: %u\n", cpuid);
-+		return ERR_PTR(-EINVAL);
-+	}
-+
-+	dma_spec->np = of_parse_phandle(ofdma->of_node, "dma-masters", 0);
-+	if (!dma_spec->np) {
-+		dev_err(&pdev->dev, "can't get dma master\n");
-+		return ERR_PTR(-EINVAL);
-+	}
-+
-+	spin_lock_irqsave(&dmamux->lock, flags);
-+
-+	if (test_bit(devid, dmamux->mapped_peripherals)) {
-+		llist_for_each_entry(map, dmamux->reserve_maps.first, node) {
-+			if (map->peripheral == devid && map->cpu == cpuid)
-+				goto found;
-+		}
-+
-+		ret = -EINVAL;
-+		goto failed;
-+	} else {
-+		node = llist_del_first(&dmamux->free_maps);
-+		if (!node) {
-+			ret = -ENODEV;
-+			goto failed;
-+		}
-+
-+		map = llist_entry(node, struct cv1800_dmamux_map, node);
-+		llist_add(&map->node, &dmamux->reserve_maps);
-+		set_bit(devid, dmamux->mapped_peripherals);
-+	}
-+
-+found:
-+	chid = map->channel;
-+	map->peripheral = devid;
-+	map->cpu = cpuid;
-+
-+	regmap_set_bits(dmamux->regmap,
-+			DMAMUX_CH_REG(chid),
-+			DMAMUX_CH_SET(chid, devid));
-+
-+	regmap_update_bits(dmamux->regmap, CV1800_SDMA_DMA_INT_MUX,
-+			   DMAMUX_INT_CH_MASK(chid, cpuid),
-+			   DMAMUX_INT_CH_BIT(chid, cpuid));
-+
-+	spin_unlock_irqrestore(&dmamux->lock, flags);
-+
-+	dma_spec->args[0] = chid;
-+
-+	dev_info(&pdev->dev, "register channel %u for req %u (cpu %u)\n",
-+		 chid, devid, cpuid);
-+
-+	return map;
-+
-+failed:
-+	spin_unlock_irqrestore(&dmamux->lock, flags);
-+	of_node_put(dma_spec->np);
-+	dev_err(&pdev->dev, "errno %d\n", ret);
-+	return ERR_PTR(ret);
-+
-+}
-+
-+static int cv1800_dmamux_probe(struct platform_device *pdev)
-+{
-+	struct device *dev = &pdev->dev;
-+	struct device_node *mux_node = dev->of_node;
-+	struct cv1800_dmamux_data *data;
-+	struct cv1800_dmamux_map *tmp;
-+	struct device *parent = dev->parent;
-+	struct device_node *dma_master;
-+	struct regmap *regmap = NULL;
-+	unsigned int i;
-+
-+	if (!parent)
-+		return -ENODEV;
-+
-+	regmap = device_node_to_regmap(parent->of_node);
-+	if (IS_ERR(regmap))
-+		return PTR_ERR(regmap);
-+
-+	dma_master = of_parse_phandle(mux_node, "dma-masters", 0);
-+	if (!dma_master) {
-+		dev_err(dev, "invalid dma-requests property\n");
-+		return -ENODEV;
-+	}
-+	of_node_put(dma_master);
-+
-+	data = devm_kmalloc(dev, sizeof(*data), GFP_KERNEL);
-+	if (!data)
-+		return -ENOMEM;
-+
-+	spin_lock_init(&data->lock);
-+	init_llist_head(&data->free_maps);
-+
-+	for (i = 0; i <= MAX_DMA_CH_ID; i++) {
-+		tmp = devm_kmalloc(dev, sizeof(*tmp), GFP_KERNEL);
-+		if (!tmp) {
-+			/* It is OK for not allocating all channel */
-+			dev_warn(dev, "can not allocate channel %u\n", i);
-+			continue;
-+		}
-+
-+		init_llist_node(&tmp->node);
-+		tmp->channel = i;
-+		llist_add(&tmp->node, &data->free_maps);
-+	}
-+
-+	/* if no channel is allocated, the probe must fail */
-+	if (llist_empty(&data->free_maps))
-+		return -ENOMEM;
-+
-+	data->regmap = regmap;
-+	data->dmarouter.dev = dev;
-+	data->dmarouter.route_free = cv1800_dmamux_free;
-+
-+	platform_set_drvdata(pdev, data);
-+
-+	return of_dma_router_register(mux_node,
-+				      cv1800_dmamux_route_allocate,
-+				      &data->dmarouter);
-+}
-+
-+static void cv1800_dmamux_remove(struct platform_device *pdev)
-+{
-+	of_dma_controller_free(pdev->dev.of_node);
-+}
-+
-+static const struct of_device_id cv1800_dmamux_ids[] = {
-+	{ .compatible = "sophgo,cv1800-dmamux", },
-+	{ }
-+};
-+MODULE_DEVICE_TABLE(of, cv1800_dmamux_ids);
-+
-+static struct platform_driver cv1800_dmamux_driver = {
-+	.driver = {
-+		.name = "cv1800-dmamux",
-+		.of_match_table = cv1800_dmamux_ids,
-+	},
-+	.probe = cv1800_dmamux_probe,
-+	.remove_new = cv1800_dmamux_remove,
-+};
-+module_platform_driver(cv1800_dmamux_driver);
-+
-+MODULE_AUTHOR("Inochi Amaoto <inochiama@outlook.com>");
-+MODULE_DESCRIPTION("Sophgo CV1800/SG2000 Series Soc DMAMUX driver");
-+MODULE_LICENSE("GPL");
---
-2.44.0
+>
+> > > If it's not related to a power state change, it sounds like something
+> > > that should be a quirk or done at probe time.
+> >
+> > Sure, I'll change that to be done at probe time.
+>
+> In general, we want to log Correctable Errors because they give an
+> indication of link integrity.  But I'm guessing that since this is
+> related to a GL975x defect, the errors occur pretty frequently and on
+> all systems, so they aren't an indication of poor link quality and
+> they only break suspend, annoy users, and cause problem reports.
+>
+> Masking them at suspend time would avoid the suspend/resume problem,
+> but we would still have the annoying logging and get the problem
+> reports.
+>
+> If this is all true, I think masking via a quirk is probably the right
+> thing.  That way we won't get reports that "lspci causes errors" even
+> when the sdhci driver is not loaded.
+>
+> I think we should log a hint in dmesg that we're masking
+> PCI_ERR_COR_REP_TIMER because the error will still be logged in the
+> PCI_ERR_COR_STATUS register, and that will be visible via lspci, and a
+> dmesg hint will save debugging time when people report that.
 
+Sure. Where do you think it's a better place to implement the quirk? I
+Assume PCI quirk is a better place than driver's probe routine?
+
+Kai-Heng
+
+>
+> Bjorn
 
