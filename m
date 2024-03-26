@@ -1,140 +1,149 @@
-Return-Path: <linux-kernel+bounces-119815-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-119817-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1886C88CD4A
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 20:34:01 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EC83188CD4F
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 20:35:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4A3AB1C6211C
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 19:34:00 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A7CEC283BB6
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 19:35:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8046713D24E;
-	Tue, 26 Mar 2024 19:33:54 +0000 (UTC)
-Received: from gloria.sntech.de (gloria.sntech.de [185.11.138.130])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 11B3213D252;
+	Tue, 26 Mar 2024 19:35:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="d4yxmGjC"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3C894380;
-	Tue, 26 Mar 2024 19:33:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.11.138.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 52F73380;
+	Tue, 26 Mar 2024 19:35:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711481634; cv=none; b=BLM0wj9iTfiWNvDhBDgtOYXS8+LcbejldK3l3k8HzoDWNcLM8Jm6lOu24MU8agYmeynCegeo0rsxxDJ9Fg/KptTgLOBU9FLs0cRoyr8/5Zh0BEF1gP7/c+r4SvlXoPL28XBiv9RqAfiMxIqqy7hEfn6o2SoduPDO5LXxRqqIhwo=
+	t=1711481700; cv=none; b=WMXeFEIqqEAi+FTyZtMnQ0Tr638yub8R6NGYBP6jRmbK09ki2duHwNFinPkWAscJ5G/oTv/94FvLnA2Thc3r+GHn2TjkoF7jFrEudkftd3mwomz9syt3S/wOgWCPl8C6YhXwdd8YGYN7qaJ1TgBTMxZHxLXgMtxnymAzWmOqDMo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711481634; c=relaxed/simple;
-	bh=r8LUNgZ43DVe/TijpV7enqwPpranuYoML63Rx2D6B9w=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=felkTXoGM/xeJ9jyd4UUePEm52M67CaF3YM5jdJHR7EKXVh+kxN3vRGjQcwFzyShe7UeyGK/Ze6pA/hbisEsd6YiRT4kJXjRn5xHrDnaVtdmSTT2Bnsj1ooBzg23WmLmJEMcVlQ6/rOaWMA1jKMI3T7GTdz4UtQMoLN57Z1uSXU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sntech.de; spf=pass smtp.mailfrom=sntech.de; arc=none smtp.client-ip=185.11.138.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sntech.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sntech.de
-Received: from i53875aaf.versanet.de ([83.135.90.175] helo=diego.localnet)
-	by gloria.sntech.de with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <heiko@sntech.de>)
-	id 1rpCYM-00076I-Oh; Tue, 26 Mar 2024 20:33:46 +0100
-From: Heiko =?ISO-8859-1?Q?St=FCbner?= <heiko@sntech.de>
-To: Michael Riesch <michael.riesch@wolfvision.net>,
- Rob Herring <robh@kernel.org>
-Cc: linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-rockchip@lists.infradead.org,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- devicetree@vger.kernel.org, Conor Dooley <conor+dt@kernel.org>
-Subject: Re: [PATCH 0/4] arm64: dts: rockchip: add wolfvision pf5 mainboard
-Date: Tue, 26 Mar 2024 20:33:45 +0100
-Message-ID: <2672576.Isy0gbHreE@diego>
-In-Reply-To: <171148006579.3222626.4177463381080253015.robh@kernel.org>
-References:
- <20240325-feature-wolfvision-pf5-v1-0-5725445f792a@wolfvision.net>
- <171148006579.3222626.4177463381080253015.robh@kernel.org>
+	s=arc-20240116; t=1711481700; c=relaxed/simple;
+	bh=dd88q1ZEU6vWFMFdtX0JYBknro/QldP57SoW9UmINfU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=BJZKu/26J/6NGhCOWy06bQ2um4NQ+lIOM/4v5VPPA0E0oGsrAAKtj7N6Q+raEMV2g5xKa1y7FA2pDm1iDS19DdT/gF/NcMVTQwsn+qze3hsItOMor9jtnIHHbfuJXc+kVjVm8qexc9MWEj8ZTdOMi9zDwhpGsaT8S0kigea4AHU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=d4yxmGjC; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6C90AC433F1;
+	Tue, 26 Mar 2024 19:34:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1711481699;
+	bh=dd88q1ZEU6vWFMFdtX0JYBknro/QldP57SoW9UmINfU=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=d4yxmGjC0N+zEn19fH/1bM+s9IgFIlwD+J2ali8Up/WQDOgW2t8N6shOD8Dr2B2W0
+	 JoDYxTsIEhUlST2ScUZ1Gn7FDik/5JaR+YLrAwSIkmGDb4sfL6xXf6nj7NkAm/igc6
+	 TtxtqWpfUeiJsgTTGid0GDvzTxNBqWsjcRUW1to55B0RNTMzCM+4v18rR2BWivsiOX
+	 x1WcmLakDJOZiLSrqQPUG2QQBv8/+wLw5OvKfl1QjzzPBO5rg2vW8leX4b/77EwWQa
+	 IA1XOQ+7kIkeMy1hOpKn5lU9Fx07ky5ntFqTwYVfPdJyGGFFzlC3Prnimvhl4nAGrf
+	 MVaYQjC2SHQzQ==
+Date: Tue, 26 Mar 2024 19:34:54 +0000
+From: Conor Dooley <conor@kernel.org>
+To: dev@folker-schwesinger.de
+Cc: Vinod Koul <vkoul@kernel.org>,
+	Kishon Vijay Abraham I <kishon@kernel.org>,
+	Heiko Stuebner <heiko@sntech.de>,
+	Chris Ruehl <chris.ruehl@gtsys.com.hk>,
+	Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Christopher Obbard <chris.obbard@collabora.com>,
+	Alban Browaeys <alban.browaeys@gmail.com>,
+	Doug Anderson <dianders@chromium.org>,
+	Brian Norris <briannorris@chromium.org>,
+	Jensen Huang <jensenhuang@friendlyarm.com>,
+	linux-phy@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
+	linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
+	devicetree@vger.kernel.org
+Subject: Re: [PATCH 2/3] devicetree: phy: rockchip-emmc: Document changed
+ strobe-pulldown property
+Message-ID: <20240326-shortage-portly-a3ae475b2f78@spud>
+References: <20240326-rk-default-enable-strobe-pulldown-v1-0-f410c71605c0@folker-schwesinger.de>
+ <20240326-rk-default-enable-strobe-pulldown-v1-2-f410c71605c0@folker-schwesinger.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="rZWP/rtpsRtp/vzL"
+Content-Disposition: inline
+In-Reply-To: <20240326-rk-default-enable-strobe-pulldown-v1-2-f410c71605c0@folker-schwesinger.de>
+
+
+--rZWP/rtpsRtp/vzL
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="iso-8859-1"
 
-Am Dienstag, 26. M=E4rz 2024, 20:11:58 CET schrieb Rob Herring:
+On Tue, Mar 26, 2024 at 07:54:36PM +0100, Folker Schwesinger via B4 Relay w=
+rote:
+> From: Folker Schwesinger <dev@folker-schwesinger.de>
+
+The prefix is "dt-bindings" not "devicetree" FYI.
+
 >=20
-> On Mon, 25 Mar 2024 15:22:30 +0100, Michael Riesch wrote:
-> > Habidere,
-> >=20
-> > This series adds the device tree for the WolfVision PF5 mainboard, which
-> > serves as base for recent WolfVision products. It features the Rockchip
-> > RK3568 and can be extended with several different extension boards.
-> >=20
-> > The WolfVision PF5 IO Expander is one example of such an extension boar=
+> Document the changes regarding the optional strobe-pulldown property.
+> These changes are necessary as the default behavior of the driver was
+> restored to the Rockchip kernel behavior of enabling the internal
+> pulldown by default.
+
+I don't think this is a valid justification, but it'll be easier for me
+to explain this on the driver patch.
+
+Thanks,
+Conor.
+
+>=20
+> Fixes: f34e43f12382 ("devicetree: phy: rockchip-emmc: pulldown property")
+> Signed-off-by: Folker Schwesinger <dev@folker-schwesinger.de>
+> ---
+>  Documentation/devicetree/bindings/phy/rockchip-emmc-phy.txt | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+>=20
+> diff --git a/Documentation/devicetree/bindings/phy/rockchip-emmc-phy.txt =
+b/Documentation/devicetree/bindings/phy/rockchip-emmc-phy.txt
+> index 57d28c0d5696..10c05437f7ab 100644
+> --- a/Documentation/devicetree/bindings/phy/rockchip-emmc-phy.txt
+> +++ b/Documentation/devicetree/bindings/phy/rockchip-emmc-phy.txt
+> @@ -16,8 +16,8 @@ Optional properties:
+>   - drive-impedance-ohm: Specifies the drive impedance in Ohm.
+>                          Possible values are 33, 40, 50, 66 and 100.
+>                          If not set, the default value of 50 will be appl=
+ied.
+> - - rockchip,enable-strobe-pulldown: Enable internal pull-down for the st=
+robe
+> -                                    line.  If not set, pull-down is not =
+used.
+> + - rockchip,disable-strobe-pulldown: Disable internal pull-down for the =
+strobe
+> +                                     line.  If not set, pull-down is use=
 d.
-> > The corresponding device tree overlay is also included in this series.
-> >=20
-> > May this be the beginning of a beautiful friendship :-)
-> >=20
-> > Looking forward to your comments!
-> >=20
-> > Signed-off-by: Michael Riesch <michael.riesch@wolfvision.net>
-> > ---
-> > Michael Riesch (4):
-> >       dt-bindings: add wolfvision vendor prefix
-> >       dt-bindings: arm: rockchip: add wolfvision pf5 mainboard
-> >       arm64: dts: rockchip: add wolfvision pf5 mainboard
-> >       arm64: dts: rockchip: add wolfvision pf5 io expander board
-> >=20
-> >  .../devicetree/bindings/arm/rockchip.yaml          |   5 +
-> >  .../devicetree/bindings/vendor-prefixes.yaml       |   2 +
-> >  arch/arm64/boot/dts/rockchip/Makefile              |   2 +
-> >  .../rk3568-wolfvision-pf5-io-expander.dtso         | 137 ++++++
-> >  .../boot/dts/rockchip/rk3568-wolfvision-pf5.dts    | 528 +++++++++++++=
-++++++++
-> >  5 files changed, 674 insertions(+)
-> > ---
-> > base-commit: 4cece764965020c22cff7665b18a012006359095
-> > change-id: 20240325-feature-wolfvision-pf5-5c1924c0389c
-> >=20
-> > Best regards,
-> > --
-> > Michael Riesch <michael.riesch@wolfvision.net>
-> >=20
-> >=20
-> >=20
+>   - rockchip,output-tapdelay-select: Specifies the phyctrl_otapdlysec reg=
+ister.
+>                                      If not set, the register defaults to=
+ 0x4.
+>                                      Maximum value 0xf.
+>=20
+> --=20
+> 2.44.0
 >=20
 >=20
-> My bot found new DTB warnings on the .dts files added or changed in this
-> series.
->=20
-> Some warnings may be from an existing SoC .dtsi. Or perhaps the warnings
-> are fixed by another series. Ultimately, it is up to the platform
-> maintainer whether these warnings are acceptable or not. No need to reply
-> unless the platform maintainer has comments.
->=20
-> If you already ran DT checks and didn't see these error(s), then
-> make sure dt-schema is up to date:
->=20
->   pip3 install dtschema --upgrade
->=20
->=20
-> New warnings running 'make CHECK_DTBS=3Dy rockchip/rk3568-wolfvision-pf5.=
-dtb' for 20240325-feature-wolfvision-pf5-v1-0-5725445f792a@wolfvision.net:
->=20
-> arch/arm64/boot/dts/rockchip/rk3568-wolfvision-pf5.dtb: hdmi@fe0a0000: Un=
-evaluated properties are not allowed ('#sound-dai-cells' was unexpected)
-> 	from schema $id: http://devicetree.org/schemas/display/rockchip/rockchip=
-,dw-hdmi.yaml#
 
-just for the record, this is not the fault of the Wolfvision board,
-but caused by an undocumented property in the core hdmi node.
+--rZWP/rtpsRtp/vzL
+Content-Type: application/pgp-signature; name="signature.asc"
 
-I've prepared a fix for the binding in [0], but as Krzysztof noted,
-this patch needs a v2 with a change.
+-----BEGIN PGP SIGNATURE-----
 
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZgMjXgAKCRB4tDGHoIJi
+0gDXAQDsnJ2l1e9/GqPRLAJofwCMnAL+WPP/kMag/2lxXFb3sgD8DaHfe8Mk5FsS
+FcEt/njhjF1n6zYpqFuyWccUhJQdUwc=
+=f9q9
+-----END PGP SIGNATURE-----
 
-Heiko
-
-
-
-[0] https://lore.kernel.org/dri-devel/20240326172801.1163200-1-heiko@sntech=
-=2Ede/
-
-
+--rZWP/rtpsRtp/vzL--
 
