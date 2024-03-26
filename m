@@ -1,173 +1,158 @@
-Return-Path: <linux-kernel+bounces-118843-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-118844-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E37E388C01B
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 12:04:11 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0DABE88C01D
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 12:05:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6532BB216AA
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 11:04:09 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BE43D2E4042
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 11:05:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1DFB9219EA;
-	Tue, 26 Mar 2024 11:04:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2CD19321B4;
+	Tue, 26 Mar 2024 11:05:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lz8AQyCT"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lXONSIlQ"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6115D803;
-	Tue, 26 Mar 2024 11:04:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 71CBA3C30
+	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 11:05:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711451041; cv=none; b=FZh4ziZBu+9lxS2qOXk2m5Ib1g3RQTaj59LeLfrxOc4ZQbQ48yqxFZd0uyofs6F95wMa7Vk+FP0WknaErw4MrO8S4rGlIPm3BA3hXePtYgfq5i7+8CVZ+jWVvOQXuXa4x+OU2+4c/cyAmTWnfg8H8tg/E2KMmoGWVlbDnRJjTFs=
+	t=1711451128; cv=none; b=CDKr+7H1NLx7FvTOfqyxME8mn1EiexVljUcr/qm0Vh+VGmj6gzz1FN4hVHbI3AuCZof+E4IAiiqKk0oYQO1K2+y7bWKWg/WRrqJvS0usM85L2boOe0bOi5B2F4xjp7yS4Dwlgpoh6hxm9QuIm50m72RBvJ5J9jJc7FeF3MyJAkY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711451041; c=relaxed/simple;
-	bh=F9slUs/Z49ylzomu+AHpY3mR0XJBNgjudTQ/JGzdJ94=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ChCqCY6N9oFLpeDzXvR6mlEc51aly/VGpRR6fIJH9jUzIEZM59H5S0RT+IcbN2i0lU+ifzgHNpYpgQbHTbAWm9WPykQQ2fk3+thhFMEG5zIf8WkT+bXfOj96uzSzibEvekmrXEPdGpSpyUjK6Ozeo/BwMCHY/a/7F8TdtWPxJ+4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lz8AQyCT; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EAFD8C433F1;
-	Tue, 26 Mar 2024 11:03:57 +0000 (UTC)
+	s=arc-20240116; t=1711451128; c=relaxed/simple;
+	bh=Tu8LJ1+CQi0lJJMWJK5Tv7gRGqoNUunnGIQubTe3NW4=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=DJZp6n1NVaCyRaQoI0I4Z07YSSBOfP1FK9C853Gri/ijv58t36YxqBS2FpM7O7nstQ9GAbC7fYMy+l2c39O8Rn5Znrfb//Cbrp3ZKqNlSnjOUJIZkrKWjkwyFZeS8wtbNWClhuGS+aLK5dEWSnlO1HVEilqov2vo3JqsMk0jEhg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lXONSIlQ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E0941C433C7
+	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 11:05:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711451040;
-	bh=F9slUs/Z49ylzomu+AHpY3mR0XJBNgjudTQ/JGzdJ94=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=lz8AQyCTjgK7kYzZ/M7hDWasyGcgEI6QYOVA/HXmUrnoBbjIlyHokVOF4qfmPrpIn
-	 q052rfQo1GJsHUkS6gcSBseMVHRqnlBOTQKnTkWWAk7jrEkejz6AsPvKDyeEMraYqk
-	 UPBkTB31PWobwvf/io28jy4fDGdOwymg0yOPk0TlSnDtneU3Mx0th/hnFwU6h7Tbaf
-	 FNe/Jg7SS6D3HK5wRuXyf1VL7pBSCYmK9orLrvdVNFWbpTsoSzQtieHbs4tVliQ7je
-	 fjGCtBteWOzaA/hSfQ8Vzc493/9UUSEsAxzxjLVNzRRs1xUKplBHOHiyatlQ/1LU47
-	 cijow3Bsvy6qQ==
-Date: Tue, 26 Mar 2024 11:03:55 +0000
-From: Simon Horman <horms@kernel.org>
-To: Pawel Dembicki <paweldembicki@gmail.com>
-Cc: netdev@vger.kernel.org, Linus Walleij <linus.walleij@linaro.org>,
-	Andrew Lunn <andrew@lunn.ch>,
-	Florian Fainelli <f.fainelli@gmail.com>,
-	Vladimir Oltean <olteanv@gmail.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Claudiu Manoil <claudiu.manoil@nxp.com>,
-	Alexandre Belloni <alexandre.belloni@bootlin.com>,
-	UNGLinuxDriver@microchip.com, Russell King <linux@armlinux.org.uk>,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next v7 07/16] net: dsa: vsc73xx: Add vlan filtering
-Message-ID: <20240326110355.GI403975@kernel.org>
-References: <20240325204344.2298241-1-paweldembicki@gmail.com>
- <20240325204344.2298241-8-paweldembicki@gmail.com>
+	s=k20201202; t=1711451127;
+	bh=Tu8LJ1+CQi0lJJMWJK5Tv7gRGqoNUunnGIQubTe3NW4=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=lXONSIlQRtjuiiZN/kBSZB7hD0uXPwtjFf0PDxrGx/ADtNUsVYkdgybVxBiLR2UGU
+	 bL5ZiBjz8KHTRYawKYWLcQ2q0YTadL4QG+3jAviSbIG9NQ4Z+B8w2rVKBxaZ1c2yHI
+	 k0vpeMppFoN50PWh2+Rz+qm044gbmq1Mq/lsrzphVezTIdUiZogDjvm51zFUi4cslA
+	 R7H2HX+Q9o3fIW1RWhv/s/UrWH2Cgi8wKJhbyI2SXQGc9NySPTMme9APP+BXdVwKpA
+	 6JERI2dRkx7I8Fjbr1Uy5/KemP93tvsziZ20o1f8Mh1cC4kH11B8hkIGYqLexjmlz3
+	 e+ZcFg1N0RvjQ==
+Received: by mail-oo1-f47.google.com with SMTP id 006d021491bc7-5a46ad0d981so1255607eaf.1
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 04:05:27 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCXmaYeqSoZuLQxJ10Hnm5EiZx32cNzz1bxh1yh/pr7AdNybUxgJ7S8fHTzYlCN/PXoTY8O9hC7+tZ7PnsTIGmAGQAF2u0Bf6GXXRrJ9
+X-Gm-Message-State: AOJu0Yz5Lk468D8wsQsWO6C5CZLUHG1cgoijc0hs+zjFciJDZq9jIxoB
+	bxjoeeo1mJXMjfSwkj4zh3mmUB8klz9vqYOtETNsFL8/guXJxxaXCXCc4WpKfHpOHyMtHPejiin
+	VPr31Yj08yjHJgtnWgRx8730kMhA=
+X-Google-Smtp-Source: AGHT+IFfsBnh1dnEs5fHJzLKuCcQMoXcD2qU+zZNrwyD9E0zwoKMsFJYX/wg/Qi/qUpIca7wezahHw8MbVu8BVvWb4Y=
+X-Received: by 2002:a05:6820:b91:b0:5a5:5ed9:b246 with SMTP id
+ eg17-20020a0568200b9100b005a55ed9b246mr3885758oob.0.1711451127200; Tue, 26
+ Mar 2024 04:05:27 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240325204344.2298241-8-paweldembicki@gmail.com>
+References: <20240325221409.1457036-1-helgaas@kernel.org>
+In-Reply-To: <20240325221409.1457036-1-helgaas@kernel.org>
+From: "Rafael J. Wysocki" <rafael@kernel.org>
+Date: Tue, 26 Mar 2024 12:05:15 +0100
+X-Gmail-Original-Message-ID: <CAJZ5v0hEAWQf+SXjsYt92xrF-8M2PUVGod2b97gBBFTKiv+UFg@mail.gmail.com>
+Message-ID: <CAJZ5v0hEAWQf+SXjsYt92xrF-8M2PUVGod2b97gBBFTKiv+UFg@mail.gmail.com>
+Subject: Re: [PATCH] driver core: Remove unused platform_notify, platform_notify_remove
+To: Bjorn Helgaas <helgaas@kernel.org>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, "Rafael J . Wysocki" <rafael@kernel.org>, 
+	linux-kernel@vger.kernel.org, Bjorn Helgaas <bhelgaas@google.com>, 
+	Heikki Krogerus <heikki.krogerus@linux.intel.com>, 
+	Andy Shevchenko <andriy.shevchenko@linux.intel.com>, 
+	Linus Walleij <linus.walleij@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, Mar 25, 2024 at 09:43:32PM +0100, Pawel Dembicki wrote:
-> This patch implements VLAN filtering for the vsc73xx driver.
-> 
-> After starting VLAN filtering, the switch is reconfigured from QinQ to
-> a simple VLAN aware mode. This is required because VSC73XX chips do not
-> support inner VLAN tag filtering.
-> 
-> Signed-off-by: Pawel Dembicki <paweldembicki@gmail.com>
+On Mon, Mar 25, 2024 at 11:14=E2=80=AFPM Bjorn Helgaas <helgaas@kernel.org>=
+ wrote:
+>
+> From: Bjorn Helgaas <bhelgaas@google.com>
+>
+> The "platform_notify" and "platform_notify_remove" hooks have been unused
+> since 00ba9357d189 ("ARM: ixp4xx: Drop custom DMA coherency and bouncing"=
+).
+>
+> Remove "platform_notify" and "platform_notify_remove".  No functional
+> change intended.
+>
+> Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
+> Cc: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+> Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> Cc: Linus Walleij <linus.walleij@linaro.org>
 
-..
+Acked-by: Rafael J. Wysocki <rafael@kernel.org>
 
-> +static int vsc73xx_port_vlan_add(struct dsa_switch *ds, int port,
-> +				 const struct switchdev_obj_port_vlan *vlan,
-> +				 struct netlink_ext_ack *extack)
-> +{
-> +	bool untagged = vlan->flags & BRIDGE_VLAN_INFO_UNTAGGED;
-> +	bool pvid = vlan->flags & BRIDGE_VLAN_INFO_PVID;
-> +	struct dsa_port *dp = dsa_to_port(ds, port);
-> +	enum vsc73xx_port_vlan_conf port_vlan_conf;
-> +	struct vsc73xx_bridge_vlan *vsc73xx_vlan;
-> +	struct vsc73xx_vlan_summary summary;
-> +	struct vsc73xx *vsc = ds->priv;
-> +	bool operate_on_storage;
-> +	int ret;
-> +	u16 vid;
-> +
-> +	/* Be sure to deny alterations to the configuration done by tag_8021q.
-> +	 */
-> +	if (vid_is_dsa_8021q(vlan->vid)) {
-> +		NL_SET_ERR_MSG_MOD(extack,
-> +				   "Range 3072-4095 reserved for dsa_8021q operation");
-> +		return -EBUSY;
-> +	}
-> +
-> +	/* The processed vlan->vid is excluded from the search because the VLAN
-> +	 * can be re-added with a different set of flags, so it's easiest to
-> +	 * ignore its old flags from the VLAN database software copy.
-> +	 */
-> +	vsc73xx_bridge_vlan_summary(vsc, port, &summary, vlan->vid);
-> +
-> +	/* VSC73XX allow only three untagged states: none, one or all */
-> +	if ((untagged && summary.num_tagged > 0 && summary.num_untagged > 0) ||
-> +	    (!untagged && summary.num_untagged > 1)) {
-> +		NL_SET_ERR_MSG_MOD(extack,
-> +				   "Port can have only none, one or all untagged vlan");
-> +		return -EBUSY;
-> +	}
-> +
-> +	vsc73xx_vlan = vsc73xx_bridge_vlan_find(vsc, vlan->vid);
-> +
-> +	if (!vsc73xx_vlan) {
-> +		vsc73xx_vlan = kzalloc(sizeof(*vsc73xx_vlan), GFP_KERNEL);
-> +		if (!vsc73xx_vlan)
-> +			return -ENOMEM;
-> +
-> +		vsc73xx_vlan->vid = vlan->vid;
-> +		vsc73xx_vlan->portmask = 0;
-> +		vsc73xx_vlan->untagged = 0;
-> +
-> +		INIT_LIST_HEAD(&vsc73xx_vlan->list);
-> +		list_add_tail(&vsc73xx_vlan->list, &vsc->vlans);
-> +	}
-> +
-> +	vsc73xx_vlan->portmask |= BIT(port);
-> +
-> +	if (untagged)
-> +		vsc73xx_vlan->untagged |= BIT(port);
-> +	else
-> +		vsc73xx_vlan->untagged &= ~BIT(port);
-> +
-> +	/* CPU port must be always tagged because port separation is based on
-> +	 * tag_8021q.
-> +	 */
-> +	if (port == CPU_PORT)
-> +		goto update_vlan_table;
-> +
-> +	operate_on_storage = vsc73xx_tag_8021q_active(dp);
-> +
-> +	if (pvid)
-> +		ret = vsc73xx_vlan_set_pvid(vsc, port, vlan->vid,
-> +					    operate_on_storage, false);
-> +	else if (vsc73xx_port_get_pvid(vsc, port, &vid, false) &&
-> +		 vid == vlan->vid)
-> +		ret = vsc73xx_vlan_clear_pvid(vsc, port, operate_on_storage,
-> +					      false);
-
-Hi Pawel,
-
-some minor feedback from my side.
-
-If neither of the above conditions immediately above is met,
-then ret will be used ininitialised on the line below.
-
-Flagged by clang-17 W=1 build, and Smatch.
-
-> +	if (ret)
-> +		goto err;
-
-..
-
--- 
-pw-bot: changes-requested
+> ---
+>  drivers/base/core.c    |  8 --------
+>  include/linux/device.h | 11 -----------
+>  2 files changed, 19 deletions(-)
+>
+> diff --git a/drivers/base/core.c b/drivers/base/core.c
+> index b93f3c5716ae..78dfa74ee18b 100644
+> --- a/drivers/base/core.c
+> +++ b/drivers/base/core.c
+> @@ -2331,8 +2331,6 @@ static void fw_devlink_link_device(struct device *d=
+ev)
+>
+>  /* Device links support end. */
+>
+> -int (*platform_notify)(struct device *dev) =3D NULL;
+> -int (*platform_notify_remove)(struct device *dev) =3D NULL;
+>  static struct kobject *dev_kobj;
+>
+>  /* /sys/dev/char */
+> @@ -2380,16 +2378,10 @@ static void device_platform_notify(struct device =
+*dev)
+>         acpi_device_notify(dev);
+>
+>         software_node_notify(dev);
+> -
+> -       if (platform_notify)
+> -               platform_notify(dev);
+>  }
+>
+>  static void device_platform_notify_remove(struct device *dev)
+>  {
+> -       if (platform_notify_remove)
+> -               platform_notify_remove(dev);
+> -
+>         software_node_notify_remove(dev);
+>
+>         acpi_device_notify_remove(dev);
+> diff --git a/include/linux/device.h b/include/linux/device.h
+> index 97c4b046c09d..c515ba5756e4 100644
+> --- a/include/linux/device.h
+> +++ b/include/linux/device.h
+> @@ -1206,17 +1206,6 @@ int __must_check devm_device_add_groups(struct dev=
+ice *dev,
+>  int __must_check devm_device_add_group(struct device *dev,
+>                                        const struct attribute_group *grp)=
+;
+>
+> -/*
+> - * Platform "fixup" functions - allow the platform to have their say
+> - * about devices and actions that the general device layer doesn't
+> - * know about.
+> - */
+> -/* Notify platform of device discovery */
+> -extern int (*platform_notify)(struct device *dev);
+> -
+> -extern int (*platform_notify_remove)(struct device *dev);
+> -
+> -
+>  /*
+>   * get_device - atomically increment the reference count for the device.
+>   *
+> --
+> 2.34.1
+>
 
