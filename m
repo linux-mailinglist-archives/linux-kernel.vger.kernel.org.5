@@ -1,137 +1,191 @@
-Return-Path: <linux-kernel+bounces-120008-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-120010-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6E3AF88D013
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 22:31:05 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 085DC88D01A
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 22:31:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E5C2EB23AB6
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 21:31:02 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 28D011C2F1D2
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 21:31:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E11A713D88F;
-	Tue, 26 Mar 2024 21:30:58 +0000 (UTC)
-Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8097213D62E
-	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 21:30:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=114.242.206.163
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 380F013D896;
+	Tue, 26 Mar 2024 21:31:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="XqdNI4Uv"
+Received: from mail-lf1-f43.google.com (mail-lf1-f43.google.com [209.85.167.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4BB5713D61F
+	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 21:31:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711488658; cv=none; b=RLLfmkKk0Zoir3c5S+y9bauooinY6eGPsLE1gphQKjExeYFCugYYFAi3SrcPN/E92PDkWOsZ/+Ft5GeBHCayHYyzV3ADwbJeN0fmvCNnbxe+v25V57Ip5PmEiOyAILfRGvJICH0H5Ev9JkdHhw38k9KLXOg1b70CSLnv0vC/LWA=
+	t=1711488697; cv=none; b=oqO8/orJwMVseT4Ye4eZkWZY6wh9Vrf/qpmJqJMu5c34oIk6sW+qgTNSyc35tHvli1BXF+TUdIQm1JyqFfijvP8h5eRnN8np3xpVw33cwnU3VsJbF6khnpQHb4OaULSuvTNQG0AtuGX9MlgOpYoW2KRMO1qOsd9llnQJnvY3AKQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711488658; c=relaxed/simple;
-	bh=GQsOFn3z/ltzMiSqHOLQ6WIb6HGqbMhSL9srQPYMWSQ=;
+	s=arc-20240116; t=1711488697; c=relaxed/simple;
+	bh=2b2iswpmhzrhhGsFbXhQA2SK05/fhLqjPLFxGalyfWM=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=ffxVO7IsY+PaukwN6q+U8MIykET22hrsJSu/d2LYThxD/7XxdVGx4cyA4hamo5F93l2NCyN9KHCrIOTwFiLE5MGazx8hW8mFAh21UvFF6Sfep+CERssckYEVyo+0W7Fv/efmbowLJNUStzXjNZ7b1jt3/0OD2l5yrk7rFulSycc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn; spf=pass smtp.mailfrom=loongson.cn; arc=none smtp.client-ip=114.242.206.163
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=loongson.cn
-Received: from loongson.cn (unknown [117.22.85.11])
-	by gateway (Coremail) with SMTP id _____8DxdfGNPgNm74oeAA--.6526S3;
-	Wed, 27 Mar 2024 05:30:53 +0800 (CST)
-Received: from [192.168.0.105] (unknown [117.22.85.11])
-	by localhost.localdomain (Coremail) with SMTP id AQAAf8CxrhOLPgNmX3RpAA--.21721S3;
-	Wed, 27 Mar 2024 05:30:52 +0800 (CST)
-Message-ID: <9d557c37-d376-40c3-0630-4e904db27528@loongson.cn>
-Date: Wed, 27 Mar 2024 05:30:58 +0800
+	 In-Reply-To:Content-Type; b=C5isCLvpLLuBS15KdPSRKxrwrVG7o6JXLo7cLfiEBpvs3a8VWX/QR9a/oHl7YApTgDzeJ4gmYsA+wH/dK2SABbxbZ83phwrDy7UKAMEx6xE8zu0xXMuszGGxesV4KWeG9PNVQOjE4q0c6rYhcs2/+jQnNwYHVtH1lfSlCMnA6Iw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=XqdNI4Uv; arc=none smtp.client-ip=209.85.167.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-lf1-f43.google.com with SMTP id 2adb3069b0e04-515a86daf09so4205356e87.3
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 14:31:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1711488692; x=1712093492; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=bgSJDrIUVsXQMfKvel9wfZ0njlDv710JAdsSE3N3rYY=;
+        b=XqdNI4UvMbQO7xpZSKO/D1W6KJ9pD3/WosTSq488oPvcvVIElK6M+v7VkUvoKpmhlF
+         tcjUBd25a33KN3MrgQqY3Lclt48HKNqYN7TzTZyfsmePG8CAQ+T8U253WRXlCHmQXQ7d
+         yLQZW+d0rBBu8g1roIsnEPjR0yeQL5DZfvKCAiPRDvJWlmR1IExxVqmuI3LHkzamD4Nk
+         2LUr/dxu0kF+IpT2Umgn8e8tY053Ui4M/2f8eoqq5LGVADzrXnBK1o2AxdKUcHSztrl/
+         djQhedSm2+kb9pO3X3hfjbn0zjSy5iZjA9dD/kG1M23PFxS9HjxLCzp5DQmerXMFOGdC
+         WNeQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711488692; x=1712093492;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=bgSJDrIUVsXQMfKvel9wfZ0njlDv710JAdsSE3N3rYY=;
+        b=g0aLyZqIBhBeTFhJikG7Vj0xmwkuY99ExRDazxFDwfPa1Ozb3Zr7fichG81+Gg4e0H
+         C5mi2OGoXIC1E9aCN1zIhFohKB30AzJYgy+AceSwzJxSgytIETZSoK1F4S/h/TmsMNNz
+         uDcORDPxS4ncnPYFN/M/RHjf0Ho43vXtNR0ScEIy1Vxt1VVBABUlxCOY0V4NixLXfgeG
+         7CCg9dUXqq6oQ2SmLNuZmeu9qt0g1+FqUJXr4RQFYhReXhK83ML7XPFoLyAr2adPG/cU
+         +yUnXx1wUpziXwiUoVCpL5wZT6iZ3Bp6D1WyhIBfrlIu/MZ6YQt4S95eoCAvggMdxpHg
+         JXoA==
+X-Forwarded-Encrypted: i=1; AJvYcCVraSrMLb29Mv4JMsy2h2nDAdrxSDuc8ZWXZNvLtH4pTvRFTLsCsgh6c7AuP+OxVrRoCahXY+A5wyKu0cngMpuv9UvsAC1kEBIqvhec
+X-Gm-Message-State: AOJu0Yy0/SjvopdP7gYhGd1OLe3omi+Aq/MhZiXb5AcY9uNo+TuSK5fU
+	U9kaqJ+263wwE8Tv07p6MssXQt6EapWs+zlewI/q1LP35mnd8CjAw+UUxiQ3Owk=
+X-Google-Smtp-Source: AGHT+IHtaLjv0C/ep18lwpotFW/QbQbObmn3/uTfEpJP432ZOWn4425i2gRettQqwUoVlJn7Zhs5mg==
+X-Received: by 2002:a05:6512:3a8b:b0:513:ca96:dbdf with SMTP id q11-20020a0565123a8b00b00513ca96dbdfmr11956446lfu.12.1711488692267;
+        Tue, 26 Mar 2024 14:31:32 -0700 (PDT)
+Received: from [192.168.92.47] (078088045141.garwolin.vectranet.pl. [78.88.45.141])
+        by smtp.gmail.com with ESMTPSA id qs25-20020a170906459900b00a4663450fa9sm4659206ejc.188.2024.03.26.14.31.30
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 26 Mar 2024 14:31:31 -0700 (PDT)
+Message-ID: <06df4365-7e9e-4ed2-bdbd-b12f6a304c37@linaro.org>
+Date: Tue, 26 Mar 2024 22:31:29 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.4.0
-Subject: Re: [PATCH] LoongArch: Give chance to build under !CONFIG_SMP
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 17/20] media: venus: pm_helpers: Commonize getting
+ clocks and GenPDs
+To: Dikshita Agarwal <quic_dikshita@quicinc.com>,
+ Stanimir Varbanov <stanimir.k.varbanov@gmail.com>,
+ Vikash Garodia <quic_vgarodia@quicinc.com>,
+ Bryan O'Donoghue <bryan.odonoghue@linaro.org>, Andy Gross
+ <agross@kernel.org>, Bjorn Andersson <andersson@kernel.org>,
+ Mauro Carvalho Chehab <mchehab@kernel.org>,
+ Philipp Zabel <p.zabel@pengutronix.de>
+Cc: Marijn Suijten <marijn.suijten@somainline.org>,
+ Stanimir Varbanov <stanimir.varbanov@linaro.org>,
+ Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+ linux-media@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <20230911-topic-mars-v2-0-3dac84b88c4b@linaro.org>
+ <20230911-topic-mars-v2-17-3dac84b88c4b@linaro.org>
+ <11164c40-492c-60a0-72a8-1176e017ffb1@quicinc.com>
 Content-Language: en-US
-To: maobibo <maobibo@loongson.cn>, Huacai Chen <chenhuacai@kernel.org>,
- Thomas Gleixner <tglx@linutronix.de>, Arnd Bergmann <arnd@arndb.de>,
- Marc Zyngier <maz@kernel.org>
-Cc: loongarch@lists.linux.dev, linux-kernel@vger.kernel.org,
- loongson-kernel@lists.loongnix.cn
-References: <20240326062101.9822-1-yangtiezhu@loongson.cn>
- <55494710-ddaa-c35a-f6cd-5baf98b13931@loongson.cn>
-From: Tiezhu Yang <yangtiezhu@loongson.cn>
-In-Reply-To: <55494710-ddaa-c35a-f6cd-5baf98b13931@loongson.cn>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:AQAAf8CxrhOLPgNmX3RpAA--.21721S3
-X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
-X-Coremail-Antispam: 1Uk129KBj93XoW7WF43Xw17ZF47GF4UGFWUZFc_yoW8CFyfpF
-	WvyF4UtF409r1vkr97Jan5uFyrZrn3Ja9rGry3Ca4DJasxXrnaqr4vgwn0vFyDurWSq3W0
-	vFZrWa1fuF1Yq3gCm3ZEXasCq-sJn29KB7ZKAUJUUUUr529EdanIXcx71UUUUU7KY7ZEXa
-	sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
-	0xBIdaVrnRJUUUBjb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
-	IYs7xG6rWj6s0DM7CIcVAFz4kK6r106r15M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
-	e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
-	0_Jr0_Gr1l84ACjcxK6I8E87Iv67AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_
-	Gr0_Gr1UM2kKe7AKxVWUXVWUAwAS0I0E0xvYzxvE52x082IY62kv0487Mc804VCY07AIYI
-	kI8VC2zVCFFI0UMc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUXVWU
-	AwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcVAKI48JMx
-	k0xIA0c2IEe2xFo4CEbIxvr21l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_
-	Gr1l4IxYO2xFxVAFwI0_Jrv_JF1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67
-	AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8I
-	cVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK8VAvwI
-	8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v2
-	6r1j6r4UYxBIdaVFxhVjvjDU0xZFpf9x07je0PfUUUUU=
+From: Konrad Dybcio <konrad.dybcio@linaro.org>
+Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
+ 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
+ izWDgYvmBE8=
+In-Reply-To: <11164c40-492c-60a0-72a8-1176e017ffb1@quicinc.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Hi Bibo,
-
-On 3/26/24 20:58, maobibo wrote:
+On 4.03.2024 8:13 AM, Dikshita Agarwal wrote:
 > 
 > 
-> On 2024/3/26 下午2:21, Tiezhu Yang wrote:
->> In the current code, SMP is selected in Kconfig for LoongArch, the users
->> can not unset it, this is reasonable for a multiprocessor machine. But as
->> the help info of config SMP said, if you have a system with only one CPU,
->> say N. On a uniprocessor machine, the kernel will run faster if you say N
->> here.
+> On 2/10/2024 2:40 AM, Konrad Dybcio wrote:
+>> As has been the story with the past few commits, much of the resource
+>> acquisition logic is totally identical between different generations
+>> and there's no good reason to invent a new function for each one.
 >>
->> The Loongson-2K0500 is a single-core CPU for applications like industrial
->> control, printing terminals, and BMC (Baseboard Management Controller),
->> there are many development boards, products and solutions on the market,
->> so it is better and necessary to give a chance to build under !CONFIG_SMP
->> for a uniprocessor machine.
+>> Commonize core_get() and rename it to venus_get_resources() to be more
+>> meaningful.
+>>
+>> Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+>> ---
+>>  drivers/media/platform/qcom/venus/core.c       | 8 +++-----
+>>  drivers/media/platform/qcom/venus/pm_helpers.c | 5 +----
+>>  drivers/media/platform/qcom/venus/pm_helpers.h | 3 +--
+>>  3 files changed, 5 insertions(+), 11 deletions(-)
+>>
+>> diff --git a/drivers/media/platform/qcom/venus/core.c b/drivers/media/platform/qcom/venus/core.c
+>> index 680674dd0d68..873affe17537 100644
+>> --- a/drivers/media/platform/qcom/venus/core.c
+>> +++ b/drivers/media/platform/qcom/venus/core.c
+>> @@ -334,11 +334,9 @@ static int venus_probe(struct platform_device *pdev)
+>>  			return PTR_ERR(core->resets[i]);
+>>  	}
+>>  
+>> -	if (core->pm_ops->core_get) {
+>> -		ret = core->pm_ops->core_get(core);
+>> -		if (ret)
+>> -			return ret;
+>> -	}
+>> +	ret = venus_get_resources(core);
+>> +	if (ret)
+>> +		return ret;
+>>  
+>>  	ret = dma_set_mask_and_coherent(dev, res->dma_mask);
+>>  	if (ret)
+>> diff --git a/drivers/media/platform/qcom/venus/pm_helpers.c b/drivers/media/platform/qcom/venus/pm_helpers.c
+>> index a292c788ffba..1cbcffbc29af 100644
+>> --- a/drivers/media/platform/qcom/venus/pm_helpers.c
+>> +++ b/drivers/media/platform/qcom/venus/pm_helpers.c
+>> @@ -326,7 +326,6 @@ static int load_scale_v1(struct venus_inst *inst)
+>>  }
+>>  
+>>  static const struct venus_pm_ops pm_ops_v1 = {
+>> -	.core_get = venus_clks_get,
+> core_get is initialized with venus_clks_get in patch 4 and then being
+> removed here. It would be better to combine both patches.
 
-..
+Generally I'd agree, but this series is rather big and both patch 4 and
+this one are logically separated well enough, so I'd rather not waste time
+moving things around and fighting merge conflicts for no functional change
 
->> +++ b/arch/loongarch/include/asm/smp.h
->> @@ -6,6 +6,7 @@
->>   #ifndef __ASM_SMP_H
->>   #define __ASM_SMP_H
->> +#ifdef CONFIG_SMP
->>   #include <linux/atomic.h>
->>   #include <linux/bitops.h>
->>   #include <linux/linkage.h>
->> @@ -101,4 +102,8 @@ static inline void __cpu_die(unsigned int cpu)
->>   }
->>   #endif
->> +#else /* !CONFIG_SMP */
->> +#define cpu_logical_map(cpu)    0
-> It is unsafe here though physical cpuid of BSP is 0 always.
-> It is better to use __cpu_logical_map[cpu] or read_csr_cpuid()
-> 
->> +#endif
-
-..
-
->> +++ b/arch/loongarch/power/suspend.c
->> @@ -44,7 +44,9 @@ void loongarch_common_resume(void)
->>   {
->>       sync_counter();
->>       local_flush_tlb_all();
->> +#ifdef CONFIG_HAVE_SETUP_PER_CPU_AREA
->>       csr_write64(per_cpu_offset(0), PERCPU_BASE_KS);
->> +#endif
-> It is another issue, CONFIG_HAVE_SETUP_PER_CPU_AREA should not depend on 
-> NUMA. PERCPU_BASE_KS should be set even for UP.
-
-Thanks for your review and suggestions.
-
-Let me wait for some days, if no more comments, I will address in v3 
-since the v2 has been sent.
-
-Thanks,
-Tiezhu
-
+Konrad
 
