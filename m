@@ -1,93 +1,103 @@
-Return-Path: <linux-kernel+bounces-119943-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-119944-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0B20A88CF27
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 21:42:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id A18AB88CF2C
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 21:42:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B2D511F65AE4
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 20:42:11 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 56C2C1F359C8
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 20:42:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 537BE74E11;
-	Tue, 26 Mar 2024 20:37:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CE54413D605;
+	Tue, 26 Mar 2024 20:40:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="RyE0IEcN"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b="EDF0sf5Y"
+Received: from mail-yw1-f172.google.com (mail-yw1-f172.google.com [209.85.128.172])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 772B81BDE2;
-	Tue, 26 Mar 2024 20:37:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 92C8E13D510
+	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 20:40:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711485466; cv=none; b=gngEvpEG/KatebIo5TBohyi6y5DsXF9C1iY/VBJsFngom1oMP1sEr5C4wR52Y2Jmgxil7wX6pENBZynnLRNtyrJr387ANyNJaBuTM26IzCaA+ue8l/WenDq4FX47t8fHobVoB2VihKfiZ98hrxjAkAhhGoeF827dnpQKtYdl/x8=
+	t=1711485605; cv=none; b=bJZ86uq1AYJKnNHos9CBtSD9VBhgCzsULStfKwyEMxzK3f2L9YBBGrM5m90f6rfFr8rMc4p9JcS93lTHCuzou26Scg5Sh8sHW+bZu3fGiA3n38kLDFXThydqndmbutMJZciXwKWsmC+VkjwvKmbmjcxuKvNIrNwLyBAydT4oqvw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711485466; c=relaxed/simple;
-	bh=Q+0/ltytHVNVe17dw4a66rMcIkTyRhhWaQELFnVBTFI=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=gW3jdXuac645l4R8+ukLYEq5bPwc6tSt5N+pnDYTho1e8StlneWHlb0SorcLfKtUeZViM5thiVpwmfdIV+MQmMhv4q893cZlTCws5sJXx7j11crQ0vCskveGz2DKnh2K2wJYe4PHvz+TeSg+6YfdYpIBLf77dn/V/jHfvcwH45Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=RyE0IEcN; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 18FEEC433C7;
-	Tue, 26 Mar 2024 20:37:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711485466;
-	bh=Q+0/ltytHVNVe17dw4a66rMcIkTyRhhWaQELFnVBTFI=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=RyE0IEcNh+PkrmksKPNXCL4zEUBaje+Mc9e8mt4+jSbTMuejZkiWj66j3zNt2kobC
-	 E3cCcMm/QNxYAiwJ96ylGhIbqIKiqOpyqe7+RjfRHHCdDI3Eersk/0GMMzBKA4a15N
-	 7b1+ZZ/xkGc0Ixof4ibRUzrDJxpPO9fKa6DsgQntRZzsWj/50BS+lrj6YVmTAcSDG3
-	 b3BeAQCQYeKPvr923WN0rYDoe+nCeYpwFYtE5h3zf0oTTHZYQr/zC7DnKgyP7d6K0B
-	 Ud3/ffrT9kkR8RS75EhgMz1HGzsMbgC8mdEGHf7s91wPH/X3z1bX9mcO/t6rqPjenf
-	 14Eco3vyLQVYQ==
-From: Conor Dooley <conor@kernel.org>
-To: ganboing@gmail.com,
-	kernel@esmil.dk,
-	robh@kernel.org,
-	krzysztof.kozlowski+dt@linaro.org,
-	conor+dt@kernel.org,
-	paul.walmsley@sifive.com,
-	palmer@dabbelt.com,
-	aou@eecs.berkeley.edu,
-	devicetree@vger.kernel.org,
-	linux-riscv@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	Shengyu Qu <wiagn233@outlook.com>
-Cc: conor@kernel.org,
-	Conor Dooley <conor.dooley@microchip.com>,
-	stable@vger.kernel.org
-Subject: Re: [PATCH v2] riscv: dts: starfive: Remove PMIC interrupt info for Visionfive 2 board
-Date: Tue, 26 Mar 2024 20:37:10 +0000
-Message-ID: <20240326-create-motivate-2792be1692c5@spud>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To:  <TY3P286MB26116B828A34D614C09F4E8898202@TY3P286MB2611.JPNP286.PROD.OUTLOOK.COM>
-References:  <TY3P286MB26116B828A34D614C09F4E8898202@TY3P286MB2611.JPNP286.PROD.OUTLOOK.COM>
+	s=arc-20240116; t=1711485605; c=relaxed/simple;
+	bh=WruQOz9RaEv3HVSegh36YJN7OSGfDHYA1SUjz10NO3U=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=cNxaI2709RyiKeDai6McewZ8pE0Wr/m05ToT824CiaErNPuMJiTnIfh6ILmK2JGjaD9/uJ0zxGXtAsjO3/PS3tKfj1z3c7n6W6C1B2yaWBffTZbCre3QQzTH7kd7RplNVP+GcGXaBLLcyz9ADPKqjdSESMkHXrPPJv4MQJSW7AI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com; spf=pass smtp.mailfrom=paul-moore.com; dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b=EDF0sf5Y; arc=none smtp.client-ip=209.85.128.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=paul-moore.com
+Received: by mail-yw1-f172.google.com with SMTP id 00721157ae682-61149e50602so1970877b3.0
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 13:40:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=paul-moore.com; s=google; t=1711485602; x=1712090402; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=MfA6Bw+OqHDFIH02i3SdSOQOzi8KrIdytQiZZA87Vsk=;
+        b=EDF0sf5YQ0IellJZEMR50G7XA1/CyYTEIdVXam2F7o4cdYEV8eIsSeV/J6As+iBxvh
+         2yQa0UF/6oxk1g3Zpv/4F4nqu0j+iLG7H06h5kkA26vtF3QW8QiMIIpb+Oq9jX9ltiah
+         K8aRRMYtKumV/UgWqBzNFJR8WguMxzqSuFtNHU1I0dX9jKIyjAMYh1WM0r0nPfybnfFe
+         mHcs85loQkHFlzAO1fkjgBkSF5d5cHJ4NqmR9zIuyDuh+eEoImAexZfICL5hjnf47Nv+
+         oBpOxqTblKi+wSj5FrnG2xEUnQPYKJVV9nOYcRPKPOnggolhiqdZ8NU0MCLGg7Sof/au
+         jpCg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711485602; x=1712090402;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=MfA6Bw+OqHDFIH02i3SdSOQOzi8KrIdytQiZZA87Vsk=;
+        b=WYg/dC0U3nkFYjLz7Z9t8lXFAwGMVT+4DQapztiiSssgw/uapHd73AXxbsGxsb4XPM
+         CFINA2ORa72+RmHKqPx6rYmw2Wr2cNaudxralQSITQ1DJIKOjCaKaBL3ZO6obKbRHs8d
+         KPBUR7ZstV6IyLMEUnwBko54YzCslOepE6V4fO7wtXktFRj/UFVAWSEyGpcQ+MmWmIz2
+         pKHyqKVAUfNSTwPdu5o/Q13Ug4UbXIWBB7sxFDgw8YYvtuDemFZvvr/YOyEhQ2UJfXC0
+         VEtFuOo0Y49ZGzcv/2gH8T736+ih/GZY89PeBy/Waz0uH4sDcN0Hk4S11InXCrgOoNiD
+         XfLQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVK2e2a0YH8sGHwWizWRtjuctOh5CZfzHEJRa2z87o8za6FTEYIM5NXUW8Ch+qefauWsPPxDJvEBi/J7dWTdfl3JsMLWh76oeftyg0N
+X-Gm-Message-State: AOJu0YzC4IOgp65yyNHVPWIz2J3gdsD4y7C2I4xZgi8PIrrzrrdeHTUD
+	/s3pz93nKW2ccSR2/LNWuxyXsSRg9bC4yMkTFadK+BS9nyPR9jRC7YDzbB4J/pRUFH7rOyb2uk+
+	PLGheTQhAwT5MCCXbtID4XnIb8HceWQGTPgsD
+X-Google-Smtp-Source: AGHT+IGojsm7tQ5IjgAZja3ZCicVNmkHB0OiNPAhpMRvWu2bsnClyYgJZH/nGSm005+lB31cavBaGPAdYzYaSe2kNak=
+X-Received: by 2002:a0d:eb45:0:b0:611:71b0:4ee2 with SMTP id
+ u66-20020a0deb45000000b0061171b04ee2mr1807908ywe.23.1711485602560; Tue, 26
+ Mar 2024 13:40:02 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-X-Developer-Signature: v=1; a=openpgp-sha256; l=472; i=conor.dooley@microchip.com; h=from:subject:message-id; bh=flQK06d61XVdV/qN2kQBXCsv/i+05oATJwu6J3J8ZbQ=; b=owGbwMvMwCFWscWwfUFT0iXG02pJDGnMht8sb+xIW/FtLUdJRcUiFc0f05m+3Gx+w/aw7q7jx DgD16Y3HaUsDGIcDLJiiiyJt/tapNb/cdnh3PMWZg4rE8gQBi5OAZjIggZGhlPNnIZTlUtfSGmv OneJ52C0zdprSuJrdGt7s1Mn5xwOdWT4yXg2e9+nlZ7VXpOFXZcts+D98fPRZXaOSXZHpnis5Tt kwgcA
-X-Developer-Key: i=conor.dooley@microchip.com; a=openpgp; fpr=F9ECA03CF54F12CD01F1655722E2C55B37CF380C
-Content-Transfer-Encoding: 8bit
+References: <20240315173105.636749-1-cgzones@googlemail.com> <20240315173105.636749-2-cgzones@googlemail.com>
+In-Reply-To: <20240315173105.636749-2-cgzones@googlemail.com>
+From: Paul Moore <paul@paul-moore.com>
+Date: Tue, 26 Mar 2024 16:39:51 -0400
+Message-ID: <CAHC9VhS-nTktDCbdrb2Zos_GtbN1C87VijJUqB88sZWpn+6m=w@mail.gmail.com>
+Subject: Re: [PATCH 1/2] selinux: avoid identifier using reserved name
+To: =?UTF-8?Q?Christian_G=C3=B6ttsche?= <cgzones@googlemail.com>
+Cc: selinux@vger.kernel.org, Stephen Smalley <stephen.smalley.work@gmail.com>, 
+	Ondrej Mosnacek <omosnace@redhat.com>, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-From: Conor Dooley <conor.dooley@microchip.com>
+On Fri, Mar 15, 2024 at 1:31=E2=80=AFPM Christian G=C3=B6ttsche
+<cgzones@googlemail.com> wrote:
+>
+> Avoid using an identifier starting with double underscores, which
+> signals a reserved identifier.
+>
+> Signed-off-by: Christian G=C3=B6ttsche <cgzones@googlemail.com>
+> ---
+>  security/selinux/hooks.c | 18 +++++++++---------
+>  1 file changed, 9 insertions(+), 9 deletions(-)
 
-On Thu, 07 Mar 2024 20:21:12 +0800, Shengyu Qu wrote:
-> Interrupt line number of the AXP15060 PMIC is not a necessary part of
-> its device tree. And this would cause kernel to try to enable interrupt
-> line 0, which is not expected. So delete this part from device tree.
-> 
-> 
+Thank you for the patch, but this was addressed by the patch below
+which was posted on February 23rd.
 
-Applied to riscv-dt-fixes, thanks! And I didn't forget, so I re-wrote
-the commit message to add some more information as promised.
+https://lore.kernel.org/selinux/20240223212640.305789-2-paul@paul-moore.com
 
-[1/1] riscv: dts: starfive: Remove PMIC interrupt info for Visionfive 2 board
-      https://git.kernel.org/conor/c/0b163f43920d
-
-Thanks,
-Conor.
+--=20
+paul-moore.com
 
