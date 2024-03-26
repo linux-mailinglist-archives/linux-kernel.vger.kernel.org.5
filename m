@@ -1,56 +1,56 @@
-Return-Path: <linux-kernel+bounces-118287-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-118288-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DEE7088B749
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 03:18:28 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 875C388B74B
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 03:18:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 94AF72E49FF
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 02:18:27 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B96021C342B6
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 02:18:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1C070524D8;
-	Tue, 26 Mar 2024 02:17:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 75B5D1292D9;
+	Tue, 26 Mar 2024 02:17:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="mI1YHUW9"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="n2fEt/wz"
 Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.16])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7DCD18526B;
-	Tue, 26 Mar 2024 02:17:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D9859127B77;
+	Tue, 26 Mar 2024 02:17:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.16
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711419442; cv=none; b=hry8/MFVTts/urGtPg0wE4+baOw3OsKb/3Q/ubYDOTBZWemJG+EptCQczLv+2kAcJConcNZd/R0VaRFPfWy+5LnhRNKZnF2/qPylcmfPCTkjJpOeB+vsBXZpRjFEflyOyeFEShbI1f7ZzzsqZAne5tTEw6Cad+xRnsSDlpi8J7g=
+	t=1711419444; cv=none; b=RrbF4oFjobdZXXoDYUWtAcIS0J/5fsGmdZicZfkdlfe1/VuJS2rpdQtvBygwcau1yAlYJ+ehPIkrjlcKBbeQf/NMr/GhoFDn9gxBmsG6Ffke7MVQE1YE0m6drbZ5uZ3nu/EKFKcI0ho20dvmFaDpZWl7/LjWp1ZzFwDLO77XePg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711419442; c=relaxed/simple;
-	bh=whLNPBFJ+q2+vc2R8+bRAmAZKOkjtqN6kDoBWWZgKCE=;
+	s=arc-20240116; t=1711419444; c=relaxed/simple;
+	bh=1Q2Y9vtgXw1JXW1FsaqsQyB2Shfhn7MnIwpk2ZhDn1g=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=bZ6GsP1l8JkYSQbOXJZhO0AXaUHO5+rTxzyYhABTj7PGZGZi+c/6IuCN6PH4QByyKsC6t+htnXoDJCyux7GjJg/HTbqxKfue0U5csp6BiuzZLk4ad2X8woQYOCo8uDnbm3aFuRaakQmOwpGs27ng6FJ9IbbpxW9psX6B8BcgfCs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=mI1YHUW9; arc=none smtp.client-ip=198.175.65.16
+	 MIME-Version; b=DBz14C6fbKb+uAy5rvX1X9NREPese1af9anVzJIlLFoFCDVlsG7JJMxnj4/UG0MpfZCrQAVysVhZaL7AzLe6wLzPnNSj6d7Hx2vRzRSe/1v75WnAFYCCqxT8TwXEqM3v2gWtUnJJ1jmj4s9RhwVay2qQgfD/mdLPpIq4cw1pAPg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=n2fEt/wz; arc=none smtp.client-ip=198.175.65.16
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1711419440; x=1742955440;
+  t=1711419443; x=1742955443;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=whLNPBFJ+q2+vc2R8+bRAmAZKOkjtqN6kDoBWWZgKCE=;
-  b=mI1YHUW9dZ1FKkX9i2CnJ8jbOOW0d8SI8FCjwEW1FycXl4/kQxqPiHQ+
-   C6eLYDBVVaqSfpH3E2mWtvi031zt18yserZfj4SlxqNs8I2p6OgR7cCdq
-   9u6DiHYT7g2/TVFthgLioP4BdhVrW4SFWRC4RZLgx/87SpWJi1l7AmXsa
-   Pr++gJW9+H0DgidWyJwsKcoZKG7XAyrX2Y35KnzYZhkD7QAlpRjgRiSFW
-   B1hVjb2pGS23QyHOvHl8CblzfrwSh72O4B5dYFIHT9HdKtYBB7X2ZS+TX
-   DTFWEznjswhIfltL5KSZDuZagYBlZ6Vbmq+i5N73w/SKki7QtNTJndEg5
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11024"; a="6564286"
+  bh=1Q2Y9vtgXw1JXW1FsaqsQyB2Shfhn7MnIwpk2ZhDn1g=;
+  b=n2fEt/wzxx8/Tsb3M4/J3VYrfVYF0JNfxNM+NztaxCO4wP5OdQjq1TrW
+   j4crDcXGMkWNvIQzKxfIFbyBOu1lXJvttDtrb/GFcUkRIMuMkgjfIKF4j
+   0FlmvEEJJen+NnN2GotfRxXesaIzRXC0ApgcD8Nmbms3LafwQyqQfGqgi
+   JeykckMGfRj6jCyWuHo4q2eRsFTWbUnW5tOq5EWJ8lZ/tv7xx8RN8k0s7
+   l23wqI6J3PtTWx3/mQ+dsHJFqnIqPnjHg08QGAouoXoEqiiLo0xOE6pPz
+   mlTFFf6z/yDwJ/tMdlqoaekKp1As0j7e3OKMZWecnwccpEQAFldP1t6XH
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11024"; a="6564300"
 X-IronPort-AV: E=Sophos;i="6.07,154,1708416000"; 
-   d="scan'208";a="6564286"
+   d="scan'208";a="6564300"
 Received: from orviesa004.jf.intel.com ([10.64.159.144])
   by orvoesa108.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Mar 2024 19:17:16 -0700
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.07,154,1708416000"; 
-   d="scan'208";a="20489892"
+   d="scan'208";a="20489897"
 Received: from rpwilson-mobl.amr.corp.intel.com (HELO rpedgeco-desk4.intel.com) ([10.251.11.187])
   by orviesa004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Mar 2024 19:17:16 -0700
 From: Rick Edgecombe <rick.p.edgecombe@intel.com>
@@ -72,11 +72,12 @@ To: Liam.Howlett@oracle.com,
 Cc: rick.p.edgecombe@intel.com,
 	linux-kernel@vger.kernel.org,
 	linux-mm@kvack.org,
-	Guo Ren <guoren@kernel.org>,
-	linux-csky@vger.kernel.org
-Subject: [PATCH v4 07/14] csky: Use initializer for struct vm_unmapped_area_info
-Date: Mon, 25 Mar 2024 19:16:49 -0700
-Message-Id: <20240326021656.202649-8-rick.p.edgecombe@intel.com>
+	Helge Deller <deller@gmx.de>,
+	"James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+	linux-parisc@vger.kernel.org
+Subject: [PATCH v4 08/14] parisc: Use initializer for struct vm_unmapped_area_info
+Date: Mon, 25 Mar 2024 19:16:50 -0700
+Message-Id: <20240326021656.202649-9-rick.p.edgecombe@intel.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240326021656.202649-1-rick.p.edgecombe@intel.com>
 References: <20240326021656.202649-1-rick.p.edgecombe@intel.com>
@@ -120,10 +121,11 @@ that were manually initialized to zero, as this would be redundant for
 designated initializers.
 
 Signed-off-by: Rick Edgecombe <rick.p.edgecombe@intel.com>
-Reviewed-by: Guo Ren <guoren@kernel.org>
 Reviewed-by: Christophe Leroy <christophe.leroy@csgroup.eu>
-Cc: Guo Ren <guoren@kernel.org>
-Cc: linux-csky@vger.kernel.org
+Acked-by: Helge Deller <deller@gmx.de>
+Cc: "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>
+Cc: Helge Deller <deller@gmx.de>
+Cc: linux-parisc@vger.kernel.org
 Link: https://lore.kernel.org/lkml/202402280912.33AEE7A9CF@keescook/#t
 Link: https://lore.kernel.org/lkml/j7bfvig3gew3qruouxrh7z7ehjjafrgkbcmg6tcghhfh3rhmzi@wzlcoecgy5rs/
 ---
@@ -150,39 +152,40 @@ Rick
 
 [0] https://lore.kernel.org/lkml/20240226190951.3240433-6-rick.p.edgecombe@intel.com/
 ---
- arch/csky/abiv1/mmap.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+ arch/parisc/kernel/sys_parisc.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/arch/csky/abiv1/mmap.c b/arch/csky/abiv1/mmap.c
-index 6792aca49999..7f826331d409 100644
---- a/arch/csky/abiv1/mmap.c
-+++ b/arch/csky/abiv1/mmap.c
-@@ -28,7 +28,12 @@ arch_get_unmapped_area(struct file *filp, unsigned long addr,
- 	struct mm_struct *mm = current->mm;
- 	struct vm_area_struct *vma;
- 	int do_align = 0;
+diff --git a/arch/parisc/kernel/sys_parisc.c b/arch/parisc/kernel/sys_parisc.c
+index 98af719d5f85..f7722451276e 100644
+--- a/arch/parisc/kernel/sys_parisc.c
++++ b/arch/parisc/kernel/sys_parisc.c
+@@ -104,7 +104,9 @@ static unsigned long arch_get_unmapped_area_common(struct file *filp,
+ 	struct vm_area_struct *vma, *prev;
+ 	unsigned long filp_pgoff;
+ 	int do_color_align;
 -	struct vm_unmapped_area_info info;
 +	struct vm_unmapped_area_info info = {
-+		.length = len,
-+		.low_limit = mm->mmap_base,
-+		.high_limit = TASK_SIZE,
-+		.align_offset = pgoff << PAGE_SHIFT
++		.length = len
 +	};
  
- 	/*
- 	 * We only need to do colour alignment if either the I or D
-@@ -61,11 +66,6 @@ arch_get_unmapped_area(struct file *filp, unsigned long addr,
+ 	if (unlikely(len > TASK_SIZE))
+ 		return -ENOMEM;
+@@ -139,7 +141,6 @@ static unsigned long arch_get_unmapped_area_common(struct file *filp,
  			return addr;
  	}
  
--	info.flags = 0;
 -	info.length = len;
--	info.low_limit = mm->mmap_base;
--	info.high_limit = TASK_SIZE;
- 	info.align_mask = do_align ? (PAGE_MASK & (SHMLBA - 1)) : 0;
--	info.align_offset = pgoff << PAGE_SHIFT;
+ 	info.align_mask = do_color_align ? (PAGE_MASK & (SHM_COLOUR - 1)) : 0;
+ 	info.align_offset = shared_align_offset(filp_pgoff, pgoff);
+ 
+@@ -160,7 +161,6 @@ static unsigned long arch_get_unmapped_area_common(struct file *filp,
+ 		 */
+ 	}
+ 
+-	info.flags = 0;
+ 	info.low_limit = mm->mmap_base;
+ 	info.high_limit = mmap_upper_limit(NULL);
  	return vm_unmapped_area(&info);
- }
 -- 
 2.34.1
 
