@@ -1,167 +1,122 @@
-Return-Path: <linux-kernel+bounces-120016-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-120017-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 76CED88D03F
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 22:42:02 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0A3AC88D04D
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 22:49:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A91991C329F7
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 21:42:01 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 830512E6B0D
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 21:49:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 15FAA13D8AB;
-	Tue, 26 Mar 2024 21:41:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CB79D13D894;
+	Tue, 26 Mar 2024 21:49:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NAPOQrsf"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="cVA+APJA"
+Received: from mail-qv1-f46.google.com (mail-qv1-f46.google.com [209.85.219.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4FC073FD4;
-	Tue, 26 Mar 2024 21:41:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A38C53C26
+	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 21:49:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711489311; cv=none; b=HSlPd/ssiBAa9dmK3vRLAJhnyHyXiY4yzL4cfU5j6CF75bguPOHFWxvUJcLV/RGfWgfTVsR4ezM5qgd1nt7PQV4NZ8lURsTpv+loptYml5NtlYhNPTsAMR5LCaV/NrGA81G0L1RzEUmGy5oT7lHKbIJTlnStNeKHqhcDMoa6VKs=
+	t=1711489784; cv=none; b=RPEFv2njXV2y511ZTKcLSNgxH5LvJS3lzHXWNEpcb/hHzS1+0cu3wojAccafXmnyEgslagdLkw2Q3g5sVTAQHne+el1LNfeFoP1NoQM4pgZEuoNDDtEF+cSi6ADyLnYoh/B/Y5cfObt87TghwYGQ8pmwbgsQZ8dLZMTZiZMAGoM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711489311; c=relaxed/simple;
-	bh=BzpgpbWcoTc7ijZRETE4B+xMagDt/ZzZpxxIA4FcHFA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=dCqOpAr5QqpBZnzlEBsKpUS6wDzNSDSfxGTXHPQi+Hdj7rnsE41sK03/xqEFVuYbD99k0m2UCcv2tn0LDRJDCNB7+sqpkHVPIxXM0FGNbp6n85/p25M/V6ffWDYdR6MaTnj+bxFTRhQEvFjDxbIYmMfAUJ6JyRDSon9xB2FxyLc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NAPOQrsf; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9564FC43390;
-	Tue, 26 Mar 2024 21:41:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711489310;
-	bh=BzpgpbWcoTc7ijZRETE4B+xMagDt/ZzZpxxIA4FcHFA=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=NAPOQrsf9xO+R4J++979fPR1mikCnDwT2YSA3eK5h6kFH5ZvtO+EH4mROmh3jCTkb
-	 NdGVwPhQ9N7LaJlSmZJLUD00Wg1nn7pSzRprRip0XlPX3BVGf/+WIJ8gbGBsXJTjOk
-	 ThYy/tIUsivm9/O47z73Y2hFxdek6ao2HiQIEzaTo5RxUJVx5+6KeKKedtsnb/15rT
-	 rU9ZczreTQJq/5f+QievxNgsRhIn4jrmxJ0fYCh9yP+Qi8VSE2J/kzUc/IlqxqVIGi
-	 HM+bdbs2HbhqJcZHe7PuQraZmQrI2a+rJBHMhI5NFCcDHUcHVpVWGiM2CgcMFDYzKP
-	 1XknHlt85fr/w==
-Date: Tue, 26 Mar 2024 16:41:48 -0500
-From: Rob Herring <robh@kernel.org>
-To: Conor Dooley <conor@kernel.org>
-Cc: Animesh Agarwal <animeshagarwal28@gmail.com>,
-	Herbert Xu <herbert@gondor.apana.org.au>,
-	"David S. Miller" <davem@davemloft.net>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>, linux-crypto@vger.kernel.org,
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] dt-bindings: crypto: ti,omap-sham: Convert to dtschema
-Message-ID: <20240326214148.GA3709211-robh@kernel.org>
-References: <20240326120107.13442-1-animeshagarwal28@gmail.com>
- <20240326-spectrum-talon-0fc977c32c5c@spud>
+	s=arc-20240116; t=1711489784; c=relaxed/simple;
+	bh=lwSWDCf6521pCIK2wxRX5q6L/z8P0K8KTFLPzlgmrQw=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Zt4mNvjx8Dd7a8BFLF1ONjovADMG66JIhvhqmJx0qkoOonAOu6gQked/9IrrXxpml9vQY3S3U8xz3ewpQxAkL0ShOqojhg9b5wSNUfAAbzcrAUxjp/t7uGVEyatZMeBJ+PBqjR8GQiK+Q/Cup5Z7YaTaUlDJq8SxhLVuTr2N5+s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=cVA+APJA; arc=none smtp.client-ip=209.85.219.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-qv1-f46.google.com with SMTP id 6a1803df08f44-69682bdf1d5so18342196d6.2
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 14:49:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1711489781; x=1712094581; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ZEGnANGCVnpDGUZcTQwIUkqQ/IKd//G8yebAW3mMqzk=;
+        b=cVA+APJAN6GNQkJ5f0+0p9fsifpKsqeExpSQAIfr6Cx4aJXcz6Ei+iXoyRY/je81e9
+         ID3jGRlhoLWpmTIQMCybbiIvuUAExmVF6TiCKo3XJYXrQqdpUHRegwG4mn4BHlOP1Ttb
+         aqxpZBwdmwRlU4Ze36LVmCddeR6DdnylXkJiVQZKesWj7zoj/yt8+bOOiRUEPuhnp7kI
+         hwBZrZDkMbvC0bK6g+u8qeDtll2FWHYuNV5H3CmM53aE/BtuoX9jf2vrdtoPE4zsdI/o
+         fUHqzJYbyilvvM3GsyqU+x9M9PN0OznXteC4zkIUSM0aEyy7ibFmHMUG+KgTbPoCirN1
+         msCA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711489781; x=1712094581;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ZEGnANGCVnpDGUZcTQwIUkqQ/IKd//G8yebAW3mMqzk=;
+        b=r7fLA5+EsDr003kp+olPWRoZicHHwZ07JInT733cVg3ImRfnjKTfISNJ7B5DO9JosF
+         kOhHQJOsWgi5ypuOLi6A4d6KO12oX1AvQOlrPd0WTMsCiXSv/oSL5DbjUhWLlK/L9LXr
+         jSoJbdgyphQ8ummjO8rcSmHtLc3z7sJQCT42Zm0IXTamq65hy1fqzc6Z3xOg4BiXS4P0
+         s2KaOgj1DcmEg2Exy0g0Fe1vv+W9QIbU1iayxwi7bDmqre+ehMEh74+Rhmcc6O8dsc3o
+         QtnndwjLJ5HRY0O6NyXjvo0M54hoNFJ8RfsOAwHB/FDuGFD7/XCigS44ybqYTEE9unaW
+         //5w==
+X-Forwarded-Encrypted: i=1; AJvYcCVCKbkrGXKQO24Cniz4patYR65TGHa2nqP39Hq6pMRJNKucB3wXnbGdo07Af+RJhsDdTCz+YFHWmQpRcu4eCxbi6c/CobyOOTiUmm5e
+X-Gm-Message-State: AOJu0YwDy8jOk103tV2NKuZ4psFPDUP0wgONxMPkhwzrnHFbAwMU6yOj
+	pKMjGRHZEPSSs1o1/brkTcNmsjL7BdZW3YIJfHJVbQTUj+CF9BKjf7+jOQPMTtHkUpsCHUsr6BC
+	s7mVInIXmGpHF7rfeUJjuykoLZaA=
+X-Google-Smtp-Source: AGHT+IGZRfsZKvzxxmjKHJcU8npENvv6KZIBvRhpv0stws6LsEWKrN5MKxFXWH/RhYDtrr/SPkvIL9YRckODznyn6Us=
+X-Received: by 2002:a05:6214:1cc1:b0:695:f40f:d7e6 with SMTP id
+ g1-20020a0562141cc100b00695f40fd7e6mr728029qvd.28.1711489781475; Tue, 26 Mar
+ 2024 14:49:41 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240326-spectrum-talon-0fc977c32c5c@spud>
+References: <20240325235018.2028408-1-yosryahmed@google.com> <20240325235018.2028408-2-yosryahmed@google.com>
+In-Reply-To: <20240325235018.2028408-2-yosryahmed@google.com>
+From: Nhat Pham <nphamcs@gmail.com>
+Date: Tue, 26 Mar 2024 14:49:30 -0700
+Message-ID: <CAKEwX=PXUCnubYJEzF0wKU3B1aVGm3oS4EFmtMXUj4LsPyLK8A@mail.gmail.com>
+Subject: Re: [RFC PATCH 1/9] mm: zswap: always shrink in zswap_store() if zswap_pool_reached_full
+To: Yosry Ahmed <yosryahmed@google.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>, Johannes Weiner <hannes@cmpxchg.org>, 
+	Chengming Zhou <chengming.zhou@linux.dev>, linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, Mar 26, 2024 at 06:20:05PM +0000, Conor Dooley wrote:
-> On Tue, Mar 26, 2024 at 05:31:00PM +0530, Animesh Agarwal wrote:
-> > Convert the OMAP SoC SHA crypto Module bindings to DT Schema.
-> > 
-> > Signed-off-by: Animesh Agarwal <animeshagarwal28@gmail.com>
-> > ---
-> >  .../devicetree/bindings/crypto/omap-sham.txt  | 28 ----------
-> >  .../bindings/crypto/ti,omap-sham.yaml         | 56 +++++++++++++++++++
-> >  2 files changed, 56 insertions(+), 28 deletions(-)
-> >  delete mode 100644 Documentation/devicetree/bindings/crypto/omap-sham.txt
-> >  create mode 100644 Documentation/devicetree/bindings/crypto/ti,omap-sham.yaml
-> > 
-> > diff --git a/Documentation/devicetree/bindings/crypto/omap-sham.txt b/Documentation/devicetree/bindings/crypto/omap-sham.txt
-> > deleted file mode 100644
-> > index ad9115569611..000000000000
-> > --- a/Documentation/devicetree/bindings/crypto/omap-sham.txt
-> > +++ /dev/null
-> > @@ -1,28 +0,0 @@
-> > -OMAP SoC SHA crypto Module
-> > -
-> > -Required properties:
-> > -
-> > -- compatible : Should contain entries for this and backward compatible
-> > -  SHAM versions:
-> > -  - "ti,omap2-sham" for OMAP2 & OMAP3.
-> > -  - "ti,omap4-sham" for OMAP4 and AM33XX.
-> > -  - "ti,omap5-sham" for OMAP5, DRA7 and AM43XX.
-> > -- ti,hwmods: Name of the hwmod associated with the SHAM module
-> > -- reg : Offset and length of the register set for the module
-> > -- interrupts : the interrupt-specifier for the SHAM module.
-> > -
-> > -Optional properties:
-> > -- dmas: DMA specifiers for the rx dma. See the DMA client binding,
-> > -	Documentation/devicetree/bindings/dma/dma.txt
-> > -- dma-names: DMA request name. Should be "rx" if a dma is present.
-> > -
-> > -Example:
-> > -	/* AM335x */
-> > -	sham: sham@53100000 {
-> > -		compatible = "ti,omap4-sham";
-> > -		ti,hwmods = "sham";
-> > -		reg = <0x53100000 0x200>;
-> > -		interrupts = <109>;
-> > -		dmas = <&edma 36>;
-> > -		dma-names = "rx";
-> > -	};
-> > diff --git a/Documentation/devicetree/bindings/crypto/ti,omap-sham.yaml b/Documentation/devicetree/bindings/crypto/ti,omap-sham.yaml
-> > new file mode 100644
-> > index 000000000000..7a2529cc4cae
-> > --- /dev/null
-> > +++ b/Documentation/devicetree/bindings/crypto/ti,omap-sham.yaml
-> > @@ -0,0 +1,56 @@
-> > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> > +%YAML 1.2
-> > +---
-> > +$id: http://devicetree.org/schemas/crypto/ti,omap-sham.yaml#
-> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> > +
-> > +title: OMAP SoC SHA crypto Module
-> > +
-> > +maintainers:
-> > +  - Animesh Agarwal <animeshagarwal28@gmail.com>
-> > +
-> > +properties:
-> > +  compatible:
-> > +    enum:
-> > +      - ti,omap2-sham
-> > +      - ti,omap4-sham
-> > +      - ti,omap5-sham
-> > +
-> > +  ti,hwmods:
-> > +    description: Name of the hwmod associated with the SHAM module
-> > +    $ref: /schemas/types.yaml#/definitions/string
-> > +    enum: [sham]
-> 
-> Is there really only one value possible here?
-> Also, the convention is to put vendor properties like this after more
-> common properties like reg, interrupts etc.
-> 
-> > +
-> > +  reg:
-> > +    maxItems: 1
-> > +
-> > +  interrupts:
-> > +    maxItems: 1
-> > +
-> > +  dmas:
-> > +    maxItems: 1
-> > +
-> > +  dma-names:
-> > +    const: rx
-> > +
-> > +dependencies:
-> > +  dmas: [dma-names]
-> 
-> Is this needed? Unless I'm sorely mistaken dt-schema enforces this itself
-> (and same for any $foo-names).
+On Mon, Mar 25, 2024 at 4:50=E2=80=AFPM Yosry Ahmed <yosryahmed@google.com>=
+ wrote:
+>
+> The cleanup code in zswap_store() is not pretty, particularly the
+> 'shrink' label at the bottom that ends up jumping between cleanup
+> labels.
+>
+> Instead of having a dedicated label to shrink the pool, just use
+> zswap_pool_reached_full directly to figure out if the pool needs
+> shrinking. zswap_pool_reached_full should be true if and only if the
+> pool needs shrinking.
+>
+> The only caveat is that the value of zswap_pool_reached_full may be
+> changed by concurrent zswap_store() calls between checking the limit and
+> testing zswap_pool_reached_full in the cleanup code. This is fine
+> because:
+> - If zswap_pool_reached_full was true during limit checking then became
+>   false during the cleanup code, then someone else already took care of
+>   shrinking the pool and there is no need to queue the worker. That
+>   would be a good change.
 
-dtschema does not. It does do the other way around. This seems fine.
+Yup.
 
-Rob
+> - If zswap_pool_reached_full was false during limit checking then became
+>   true during the cleanup code, then someone else hit the limit
+>   meanwhile. In this case, both threads will try to queue the worker,
+>   but it never gets queued more than once anyway. Also, calling
+>   queue_work() multiple times when the limit is hit could already happen
+>   today, so this isn't a significant change in any way.
+
+Agree.
+
+>
+> Signed-off-by: Yosry Ahmed <yosryahmed@google.com>
+
+This change by itself seems fine to me.
+Reviewed-by: Nhat Pham <nphamcs@gmail.com>
 
