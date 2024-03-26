@@ -1,103 +1,113 @@
-Return-Path: <linux-kernel+bounces-119642-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-119644-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id A073988CB76
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 19:03:14 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id C2AA588CB7F
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 19:05:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3EFC71F827E2
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 18:03:14 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7CFD93056B8
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 18:05:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6424C4C63A;
-	Tue, 26 Mar 2024 18:03:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 44D1953803;
+	Tue, 26 Mar 2024 18:05:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fS3m6FJy"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="R3vsMRQ3"
+Received: from mail-pg1-f178.google.com (mail-pg1-f178.google.com [209.85.215.178])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B1C51B28D;
-	Tue, 26 Mar 2024 18:03:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4344D1CAA6;
+	Tue, 26 Mar 2024 18:05:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711476186; cv=none; b=EyBMCxb1h800IHvA7vNcnSEw3gC05ouKvuE6HASKSadhmA3yzwNPFGeaNpgzJYSB260uWwEvtyf1KfVD/W1bMqd2BmtyyVmAkB38NKwT70o8TYhRBDj/wo0zX3RUuwxAvI3rmTqWwxYYxm82d57PdEr34P4qQLKD1ycKwcbydJ4=
+	t=1711476302; cv=none; b=tgLP3wvcaApkMoLzoqsbyGYZzIYh51XB8Jhp5cKXJqkLanjd7lABjdt7c5qOoSRUt7tTpM6d/NYI7t/3tY8Zist7rIpAwSU6SeEMmFYdi7GHeGY/tmdjftq9raf4ER5D9SQCL44vuQHObYqR+WgBPStLLvYMsCQTnEpaM7pEzEA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711476186; c=relaxed/simple;
-	bh=ECUAAK2Nxs/H86gKiGl0W7txBlcNCaLixR40Qr44fhw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=dmJycO8c0psMX4DloXSm20+Q7kdsfKv9Ejf2qE1eN+qVabKPrCP0HMN8j6+zd3zgk4m2Opx9J5puGjwtHIn22dFOYi2zKQQJId5HXkrWEHLW2ouT2f3zf643kGsL+yOk9d6LKDzVptmHZYuJBrvXDsMxl2sumoh9DRkB7aKJQ5A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fS3m6FJy; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0809AC433F1;
-	Tue, 26 Mar 2024 18:03:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711476186;
-	bh=ECUAAK2Nxs/H86gKiGl0W7txBlcNCaLixR40Qr44fhw=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=fS3m6FJyJInIyCiPC6QB1VIvgS6KX+/WPWDbPUOcKZXnmBogEmK1ve+rdUv4vSDR+
-	 OB34KGOHPcZHA9ZtwUKytXgL8JueBGM0UCMj9M/LtR2gANZS4kMJyB0x+ejQUVjE2W
-	 lTR18/+tR8TF1YCb0qp8ArWu4rQHgpcFlR6+xoI6z1nqWz955cvJQMG1CaI3Y3we5P
-	 Gx6MX2z1DET9n9ahwbYHZGDb0AQxpqQfgUZv7ObzDlNGUoKjqYs3pMzZWYcWmkxmIB
-	 ebK9jPjLy+kepfmgAmHHq/e8Oa9j1UtySl7x6xtnx9hf2lDek0rZTg0EQ5BbTJNwLA
-	 NJ+hnc3Rx2jWw==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 60DF4CE129B; Tue, 26 Mar 2024 11:03:05 -0700 (PDT)
-Date: Tue, 26 Mar 2024 11:03:05 -0700
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Zqiang <qiang.zhang1211@gmail.com>
-Cc: frederic@kernel.org, neeraj.upadhyay@kernel.org, joel@joelfernandes.org,
-	rcu@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] rcutorture: Make stall-tasks directly exit when
- rcutorture tests end
-Message-ID: <ed5b00dd-77f8-4b51-b24c-d5bf2d335cc6@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <20240321082850.1756-1-qiang.zhang1211@gmail.com>
+	s=arc-20240116; t=1711476302; c=relaxed/simple;
+	bh=FaCP1X4xsv77SJjjy+RF+r5fjTpHS6ox04MrkiMrTpQ=;
+	h=MIME-Version:From:Date:Message-ID:Subject:To:Cc:Content-Type; b=NTfnsf3mVkxMNfbLMeWlG+IkimXYLvQvOBIpbGuetQy1S8hciphXBTFqgcWxrwEQouyaamr0ztSODc9Ml+ho4vvlJ2SI5lLSRhYFGSxOLLWvhYYo5R/002y7d8LygJpPjQGFVTejPAWjiWVCfauI0gkkkWPtw6jynRq4qkIjsGw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=R3vsMRQ3; arc=none smtp.client-ip=209.85.215.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pg1-f178.google.com with SMTP id 41be03b00d2f7-5dbcfa0eb5dso4457001a12.3;
+        Tue, 26 Mar 2024 11:05:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1711476300; x=1712081100; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=7eMWpGiB38YJtVZd9B9lRA2TBkHD9tD0FrImJN6Sv8A=;
+        b=R3vsMRQ3aR8mPwsTVnJRZdkErSTe+F/1saWkGykRCWbofOK1DF+6XkZY/8dpn/INYS
+         y8U60d+o+6lGTP6wg1wCmiyNAIz41iju/mvY1jacQYiBilxYn5lXXVbgmnqHFJYcNUi5
+         Motf1F0wlDj8MPCZkTZMx1ZZkXgsmbPH0A/jSnzQ/RcnS+OWVCPOC6fkdc9OeWpBv4gJ
+         6mfbh9hqyHuyBF786OXO0ZQNzDGFTydrn/4jwCEaFROxkO3QZ1GFtpgySBTlDHsXu33U
+         OYlu/QxLB5NTP2yfYzLCutT05/SDOs2nKvvPXg93r23vOcZkT2hHhJBesLqSwcOWLszw
+         IFxw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711476300; x=1712081100;
+        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=7eMWpGiB38YJtVZd9B9lRA2TBkHD9tD0FrImJN6Sv8A=;
+        b=jKo5B5e7eayHhB/4MfdBIR0fMfXsD21qdtQ80zojsds6Z4kXBTnaDYsFR/2z3z1ucm
+         xTt4qqSJ1BYFy8jfi5p0ffN8VR7+lT/n5rk9C4VB4xb2c9R50N9/IzPf+VbSjM5lTH8G
+         kc84XOTaXnrYbRrKkpw5A//JI50k85lX2dSzRhbGhGHCh750Wdxk53uxOLDwOk7a1b7x
+         tQiB1UGCKSIbitkaMPKO8z2DVj4LYTg7PlZIZaEd3TcLxYo9F88vG8KngAmmglOtkqyo
+         7oAHe0/lO7qLcxIvHmHa60bHidg7WGHzpa3dMw/LSFc96qbT7n9CrYCuz++tTQbsaaHC
+         yaxQ==
+X-Forwarded-Encrypted: i=1; AJvYcCW7rrggmjIphTU7NJtYnP0g/Y33GwvQjVxoYXFSG3YK8Jz1X1NepM/oyjz7uofWlWCHRaCHvZiaNynZMmnieoPVHZn8jZUmqo2RV7t7fDvPbadpw6UQG9ComCz/qzfKfyL97d004j+LreVuqw==
+X-Gm-Message-State: AOJu0Yy5r1xCORtTM7Mb15HTqfH8PcDt5I+T1rUe4y+GGHLVDjBDHVjd
+	cgplbICegFxuvB1UZbZVlcNQCJAGIvNE3EVyBbAei90lqV+MFGgGF4XXiqd0BY/bJRllqJGspxr
+	PKC7CZbgNIOUkD5ztMBuYpZyq2Dw=
+X-Google-Smtp-Source: AGHT+IGvvgt2+h25XM0X3VAXSRyRgKXJ48v9Kzeutnr3W8gcWQwcEQKbgUgAeAh3qw6Qfjc+OoTfXR99bSWeh+7bAwo=
+X-Received: by 2002:a17:90a:d150:b0:2a0:4a33:c3a6 with SMTP id
+ t16-20020a17090ad15000b002a04a33c3a6mr3012373pjw.44.1711476300538; Tue, 26
+ Mar 2024 11:05:00 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240321082850.1756-1-qiang.zhang1211@gmail.com>
+From: Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Date: Tue, 26 Mar 2024 19:04:33 +0100
+Message-ID: <CANiq72mjc5t4n25SQvYSrOEhxxpXYPZ4pPzneSJHEnc3qApu2Q@mail.gmail.com>
+Subject: drivers/gpu/drm/msm/adreno/a6xx_gpu_state.c:843:6: error: variable
+ 'out' set but not used
+To: Rob Clark <robdclark@gmail.com>, Abhinav Kumar <quic_abhinavk@quicinc.com>, 
+	Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Cc: Sean Paul <sean@poorly.run>, Marijn Suijten <marijn.suijten@somainline.org>, 
+	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, 
+	linux-arm-msm <linux-arm-msm@vger.kernel.org>, dri-devel <dri-devel@lists.freedesktop.org>, 
+	freedreno@lists.freedesktop.org, linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 
-On Thu, Mar 21, 2024 at 04:28:50PM +0800, Zqiang wrote:
-> When the rcutorture tests start to exit, the rcu_torture_cleanup() is
-> invoked to stop kthreads and release resources, if the stall-task
-> kthreads exist, cpu-stall has started and the rcutorture.stall_cpu
-> is set to a larger value, the rcu_torture_cleanup() will be blocked
-> for a long time and the hung-task may occur, this commit therefore
-> add kthread_should_stop() to the loop of cpu-stall operation, when
-> rcutorture tests ends, no need to wait for cpu-stall to end, exit
-> directly.
-> 
-> Signed-off-by: Zqiang <qiang.zhang1211@gmail.com>
+Hi,
 
-Good eyes!
+In today's next, I got:
 
-Queued for testing and further review, thank you!
+    drivers/gpu/drm/msm/adreno/a6xx_gpu_state.c:843:6: error: variable
+'out' set but not used [-Werror,-Wunused-but-set-variable]
 
-							Thanx, Paul
+`out` seems to be there since commit 64d6255650d4 ("drm/msm: More
+fully implement devcoredump for a7xx").
 
-> ---
->  kernel/rcu/rcutorture.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
-> index 3f9c3766f52b..6a3cd6ed8b25 100644
-> --- a/kernel/rcu/rcutorture.c
-> +++ b/kernel/rcu/rcutorture.c
-> @@ -2490,7 +2490,7 @@ static int rcu_torture_stall(void *args)
->  		pr_alert("%s start on CPU %d.\n",
->  			  __func__, raw_smp_processor_id());
->  		while (ULONG_CMP_LT((unsigned long)ktime_get_seconds(),
-> -				    stop_at))
-> +				    stop_at) && !kthread_should_stop())
->  			if (stall_cpu_block) {
->  #ifdef CONFIG_PREEMPTION
->  				preempt_schedule();
-> -- 
-> 2.17.1
-> 
+Untested diff below assuming `dumper->iova` is constant -- if you want
+a formal patch, please let me know.
+
+Cheers,
+Miguel
+
+diff --git a/drivers/gpu/drm/msm/adreno/a6xx_gpu_state.c
+b/drivers/gpu/drm/msm/adreno/a6xx_gpu_state.c
+index 1f5245fc2cdc..a847a0f7a73c 100644
+--- a/drivers/gpu/drm/msm/adreno/a6xx_gpu_state.c
++++ b/drivers/gpu/drm/msm/adreno/a6xx_gpu_state.c
+@@ -852,7 +852,7 @@ static void a6xx_get_shader_block(struct msm_gpu *gpu,
+             (block->type << 8) | i);
+
+         in += CRASHDUMP_READ(in, REG_A6XX_HLSQ_DBG_AHB_READ_APERTURE,
+-            block->size, dumper->iova + A6XX_CD_DATA_OFFSET);
++            block->size, out);
+
+         out += block->size * sizeof(u32);
+     }
 
