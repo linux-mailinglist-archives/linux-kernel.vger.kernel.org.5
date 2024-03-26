@@ -1,37 +1,37 @@
-Return-Path: <linux-kernel+bounces-119478-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-119479-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 70AC988C97F
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 17:36:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 90E4788C980
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 17:37:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 266001F81F08
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 16:36:53 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1C7B31F645F5
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 16:37:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A09E81BC57;
-	Tue, 26 Mar 2024 16:36:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0093B12E75;
+	Tue, 26 Mar 2024 16:36:44 +0000 (UTC)
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6DEF918EB0
-	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 16:36:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A70B01C694
+	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 16:36:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711471000; cv=none; b=bH5Jb4LOHWeiSl6I48Ct9+cThkcy6IpG9ZlS4cWub5PcNe3lgH840u1aggTECUYvOJT+RPBq5nbmrg/+w5gy5yjp2iE0dA6qErqRrChnTo98zCi26suczlqUomGldSg+nllSSvttSK/IMFDgy4L7FetA0wpyVBpQ3DCExnGoQHo=
+	t=1711471003; cv=none; b=GEgkNyIlnsTX3qYMWo8fPCAdq0+T0jZE1zPLH8JEQVsMQpfuCTGX5CX4Y5CzuSxAPsQOAYaS3etORDHBvm9a3U9R6TD6PqfTExdaPxWx6xUxqN0UfCZ16FCF8evMwdhrmMNEQEgxYcgiP7pGpxOmupd3aD9NzwLYZuqXf2wivKE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711471000; c=relaxed/simple;
-	bh=QUwI2RCMWuIgtyxjD85G7dzGZd5QakpCU9SqOUS/EmI=;
+	s=arc-20240116; t=1711471003; c=relaxed/simple;
+	bh=6l3ztR+na6fIJOI07vhVnE8PPwhW1EVFzqZBqt5/uwk=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=o3nBTNY1VhGZOnLjcwjDVx3LWnjGGh1WZO6wtqckKMYAYumFELEmoMIGyRHuZ2NJoGcZQuk1iklD88rpo2oGf8Hzj3rN4ZO0ylgU7iHswbhx0p+bDmKBoP3HKegE9xRD9QDl6QYYVauNWuj73FEyt6nWASYaYahLqKPJZbAVtEc=
+	 MIME-Version; b=E1cYZUzVVF43S4Uk2vGZLej/Y/NmPSmO5UXXpJFrAuOgoF2ksbVUwjHjSEtIhTBYjt50dY3kNxUOIM8125rSi4YzjcNEfm05/4ZIUPnjcX7FGQlskKFQasNHw5FMQtVz32di0bUfn93aAInhA89idGNU4DgBiT4J5sZfzqlfq6k=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 6CD22339;
-	Tue, 26 Mar 2024 09:37:10 -0700 (PDT)
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D1C52113E;
+	Tue, 26 Mar 2024 09:37:13 -0700 (PDT)
 Received: from lakrids.cambridge.arm.com (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 2AAD73F694;
-	Tue, 26 Mar 2024 09:36:34 -0700 (PDT)
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 9002F3F694;
+	Tue, 26 Mar 2024 09:36:37 -0700 (PDT)
 From: Mark Rutland <mark.rutland@arm.com>
 To: linux-kernel@vger.kernel.org
 Cc: agordeev@linux.ibm.com,
@@ -55,9 +55,9 @@ Cc: agordeev@linux.ibm.com,
 	paul.walmsley@sifive.com,
 	tglx@linutronix.de,
 	will@kernel.org
-Subject: [PATCH 1/4] arm64: patching: always use fixmap
-Date: Tue, 26 Mar 2024 16:36:21 +0000
-Message-Id: <20240326163624.3253157-2-mark.rutland@arm.com>
+Subject: [PATCH 2/4] kprobes/treewide: Add kprobes_ prefix to insn alloc/free functions
+Date: Tue, 26 Mar 2024 16:36:22 +0000
+Message-Id: <20240326163624.3253157-3-mark.rutland@arm.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20240326163624.3253157-1-mark.rutland@arm.com>
 References: <20240326163624.3253157-1-mark.rutland@arm.com>
@@ -69,71 +69,204 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-For historical reasons, patch_map() won't bother to fixmap non-image
-addresses when CONFIG_STRICT_MODULE_RWX=n, matching the behaviour prior
-to the introduction of CONFIG_STRICT_MODULE_RWX. However, as arm64
-doesn't select CONFIG_ARCH_OPTIONAL_KERNEL_RWX, CONFIG_MODULES implies
-CONFIG_STRICT_MODULE_RWX, so any kernel built with module support will
-use the fixmap for any non-image address.
+The alloc_(opt)insn_page() and free_(opt)insn_page() functions are
+specific to KPROBES, but their name makes them sound more generic than
+they are.
 
-Historically we only used patch_map() for the kernel image and modules,
-but these days its also used by BPF and KPROBES to write to read-only
-pages of executable text. Currently these both depend on CONFIG_MODULES,
-but we'd like to change that in subsequent patches, which will require
-using the fixmap regardless of CONFIG_STRICT_MODULE_RWX.
+Given them a 'kprobes_' prefix to make it clear that they're part of
+kprobes.
 
-This patch changes patch_map() to always use the fixmap, and simplifies
-the logic.
+This was generated automatically with:
 
-* Use is_image_text() directly in the if-else, rather than using a
-  temporary boolean variable.
+  sed -i 's/alloc_insn_page/kprobes_alloc_insn_page/' $(git grep -l 'alloc_insn_page')
+  sed -i 's/free_insn_page/kprobes_free_insn_page/' $(git grep -l 'free_insn_page')
+  sed -i 's/alloc_optinsn_page/kprobes_alloc_optinsn_page/' $(git grep -l 'alloc_optinsn_page')
+  sed -i 's/free_optinsn_page/kprobes_free_optinsn_page/' $(git grep -l 'free_optinsn_page')
 
-* Use offset_in_page() to get the offset within the mapping.
-
-* Remove uintaddr and cast the address directly when using
-  is_image_text().
-
-For kernels built with CONFIG_MODULES=y, there should be no functional
-change as a result of this patch. For kernels built with
-CONFIG_MODULES=n, patch_map() will use the fixmap for non-image
-addresses, but there are no extant users with non-image addresses when
-CONFIG_MODULES=n.
+There should be no functional change as a result of this patch.
 
 Signed-off-by: Mark Rutland <mark.rutland@arm.com>
-Cc: Catalin Marinas <catalin.marinas@arm.com>
-Cc: Will Deacon <will@kernel.org>
+Cc: Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>
+Cc: David S. Miller <davem@davemloft.net>
+Cc: Jarkko Sakkinen <jarkko@kernel.org>
+Cc: Masami Hiramatsu <mhiramat@kernel.org>
+Cc: Naveen N. Rao <naveen.n.rao@linux.ibm.com>
 ---
- arch/arm64/kernel/patching.c | 10 +++-------
- 1 file changed, 3 insertions(+), 7 deletions(-)
+ arch/arm64/kernel/probes/kprobes.c |  2 +-
+ arch/powerpc/kernel/kprobes.c      |  2 +-
+ arch/powerpc/kernel/optprobes.c    |  4 ++--
+ arch/riscv/kernel/probes/kprobes.c |  2 +-
+ arch/s390/kernel/kprobes.c         |  2 +-
+ arch/x86/kernel/kprobes/core.c     |  2 +-
+ include/linux/kprobes.h            |  6 +++---
+ kernel/kprobes.c                   | 20 ++++++++++----------
+ 8 files changed, 20 insertions(+), 20 deletions(-)
 
-diff --git a/arch/arm64/kernel/patching.c b/arch/arm64/kernel/patching.c
-index 2555349303684..f0f3a2a82ca5a 100644
---- a/arch/arm64/kernel/patching.c
-+++ b/arch/arm64/kernel/patching.c
-@@ -30,20 +30,16 @@ static bool is_image_text(unsigned long addr)
- 
- static void __kprobes *patch_map(void *addr, int fixmap)
- {
--	unsigned long uintaddr = (uintptr_t) addr;
--	bool image = is_image_text(uintaddr);
- 	struct page *page;
- 
--	if (image)
-+	if (is_image_text((unsigned long)addr))
- 		page = phys_to_page(__pa_symbol(addr));
--	else if (IS_ENABLED(CONFIG_STRICT_MODULE_RWX))
--		page = vmalloc_to_page(addr);
- 	else
--		return addr;
-+		page = vmalloc_to_page(addr);
- 
- 	BUG_ON(!page);
- 	return (void *)set_fixmap_offset(fixmap, page_to_phys(page) +
--			(uintaddr & ~PAGE_MASK));
-+					 offset_in_page(addr));
+diff --git a/arch/arm64/kernel/probes/kprobes.c b/arch/arm64/kernel/probes/kprobes.c
+index 327855a11df2f..4b6ab7b1fa211 100644
+--- a/arch/arm64/kernel/probes/kprobes.c
++++ b/arch/arm64/kernel/probes/kprobes.c
+@@ -129,7 +129,7 @@ int __kprobes arch_prepare_kprobe(struct kprobe *p)
+ 	return 0;
  }
  
- static void __kprobes patch_unmap(int fixmap)
+-void *alloc_insn_page(void)
++void *kprobes_alloc_insn_page(void)
+ {
+ 	return __vmalloc_node_range(PAGE_SIZE, 1, VMALLOC_START, VMALLOC_END,
+ 			GFP_KERNEL, PAGE_KERNEL_ROX, VM_FLUSH_RESET_PERMS,
+diff --git a/arch/powerpc/kernel/kprobes.c b/arch/powerpc/kernel/kprobes.c
+index bbca90a5e2ec0..0b297718d5de6 100644
+--- a/arch/powerpc/kernel/kprobes.c
++++ b/arch/powerpc/kernel/kprobes.c
+@@ -126,7 +126,7 @@ kprobe_opcode_t *arch_adjust_kprobe_addr(unsigned long addr, unsigned long offse
+ 	return (kprobe_opcode_t *)(addr + offset);
+ }
+ 
+-void *alloc_insn_page(void)
++void *kprobes_alloc_insn_page(void)
+ {
+ 	void *page;
+ 
+diff --git a/arch/powerpc/kernel/optprobes.c b/arch/powerpc/kernel/optprobes.c
+index 004fae2044a3e..0ddbda217073f 100644
+--- a/arch/powerpc/kernel/optprobes.c
++++ b/arch/powerpc/kernel/optprobes.c
+@@ -27,7 +27,7 @@
+ 
+ static bool insn_page_in_use;
+ 
+-void *alloc_optinsn_page(void)
++void *kprobes_alloc_optinsn_page(void)
+ {
+ 	if (insn_page_in_use)
+ 		return NULL;
+@@ -35,7 +35,7 @@ void *alloc_optinsn_page(void)
+ 	return &optinsn_slot;
+ }
+ 
+-void free_optinsn_page(void *page)
++void kprobes_free_optinsn_page(void *page)
+ {
+ 	insn_page_in_use = false;
+ }
+diff --git a/arch/riscv/kernel/probes/kprobes.c b/arch/riscv/kernel/probes/kprobes.c
+index 2f08c14a933d0..75201ce721057 100644
+--- a/arch/riscv/kernel/probes/kprobes.c
++++ b/arch/riscv/kernel/probes/kprobes.c
+@@ -105,7 +105,7 @@ int __kprobes arch_prepare_kprobe(struct kprobe *p)
+ }
+ 
+ #ifdef CONFIG_MMU
+-void *alloc_insn_page(void)
++void *kprobes_alloc_insn_page(void)
+ {
+ 	return  __vmalloc_node_range(PAGE_SIZE, 1, VMALLOC_START, VMALLOC_END,
+ 				     GFP_KERNEL, PAGE_KERNEL_READ_EXEC,
+diff --git a/arch/s390/kernel/kprobes.c b/arch/s390/kernel/kprobes.c
+index f0cf20d4b3c58..91ca4d501d4ef 100644
+--- a/arch/s390/kernel/kprobes.c
++++ b/arch/s390/kernel/kprobes.c
+@@ -34,7 +34,7 @@ struct kretprobe_blackpoint kretprobe_blacklist[] = { };
+ 
+ static int insn_page_in_use;
+ 
+-void *alloc_insn_page(void)
++void *kprobes_alloc_insn_page(void)
+ {
+ 	void *page;
+ 
+diff --git a/arch/x86/kernel/kprobes/core.c b/arch/x86/kernel/kprobes/core.c
+index d0e49bd7c6f3f..7f01bbbfa9e2a 100644
+--- a/arch/x86/kernel/kprobes/core.c
++++ b/arch/x86/kernel/kprobes/core.c
+@@ -491,7 +491,7 @@ static int prepare_singlestep(kprobe_opcode_t *buf, struct kprobe *p,
+ }
+ 
+ /* Make page to RO mode when allocate it */
+-void *alloc_insn_page(void)
++void *kprobes_alloc_insn_page(void)
+ {
+ 	void *page;
+ 
+diff --git a/include/linux/kprobes.h b/include/linux/kprobes.h
+index 0ff44d6633e33..ad4b561100f9e 100644
+--- a/include/linux/kprobes.h
++++ b/include/linux/kprobes.h
+@@ -430,10 +430,10 @@ int enable_kprobe(struct kprobe *kp);
+ 
+ void dump_kprobe(struct kprobe *kp);
+ 
+-void *alloc_insn_page(void);
++void *kprobes_alloc_insn_page(void);
+ 
+-void *alloc_optinsn_page(void);
+-void free_optinsn_page(void *page);
++void *kprobes_alloc_optinsn_page(void);
++void kprobes_free_optinsn_page(void *page);
+ 
+ int kprobe_get_kallsym(unsigned int symnum, unsigned long *value, char *type,
+ 		       char *sym);
+diff --git a/kernel/kprobes.c b/kernel/kprobes.c
+index 9d9095e817928..35adf56430c9b 100644
+--- a/kernel/kprobes.c
++++ b/kernel/kprobes.c
+@@ -110,7 +110,7 @@ enum kprobe_slot_state {
+ 	SLOT_USED = 2,
+ };
+ 
+-void __weak *alloc_insn_page(void)
++void __weak *kprobes_alloc_insn_page(void)
+ {
+ 	/*
+ 	 * Use module_alloc() so this page is within +/- 2GB of where the
+@@ -121,15 +121,15 @@ void __weak *alloc_insn_page(void)
+ 	return module_alloc(PAGE_SIZE);
+ }
+ 
+-static void free_insn_page(void *page)
++static void kprobes_free_insn_page(void *page)
+ {
+ 	module_memfree(page);
+ }
+ 
+ struct kprobe_insn_cache kprobe_insn_slots = {
+ 	.mutex = __MUTEX_INITIALIZER(kprobe_insn_slots.mutex),
+-	.alloc = alloc_insn_page,
+-	.free = free_insn_page,
++	.alloc = kprobes_alloc_insn_page,
++	.free = kprobes_free_insn_page,
+ 	.sym = KPROBE_INSN_PAGE_SYM,
+ 	.pages = LIST_HEAD_INIT(kprobe_insn_slots.pages),
+ 	.insn_size = MAX_INSN_SIZE,
+@@ -333,21 +333,21 @@ int kprobe_cache_get_kallsym(struct kprobe_insn_cache *c, unsigned int *symnum,
+ }
+ 
+ #ifdef CONFIG_OPTPROBES
+-void __weak *alloc_optinsn_page(void)
++void __weak *kprobes_alloc_optinsn_page(void)
+ {
+-	return alloc_insn_page();
++	return kprobes_alloc_insn_page();
+ }
+ 
+-void __weak free_optinsn_page(void *page)
++void __weak kprobes_free_optinsn_page(void *page)
+ {
+-	free_insn_page(page);
++	kprobes_free_insn_page(page);
+ }
+ 
+ /* For optimized_kprobe buffer */
+ struct kprobe_insn_cache kprobe_optinsn_slots = {
+ 	.mutex = __MUTEX_INITIALIZER(kprobe_optinsn_slots.mutex),
+-	.alloc = alloc_optinsn_page,
+-	.free = free_optinsn_page,
++	.alloc = kprobes_alloc_optinsn_page,
++	.free = kprobes_free_optinsn_page,
+ 	.sym = KPROBE_OPTINSN_PAGE_SYM,
+ 	.pages = LIST_HEAD_INIT(kprobe_optinsn_slots.pages),
+ 	/* .insn_size is initialized later */
 -- 
 2.30.2
 
