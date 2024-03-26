@@ -1,87 +1,84 @@
-Return-Path: <linux-kernel+bounces-118542-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-118543-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7A69088BC6B
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 09:30:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 12AF588BC6C
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 09:30:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 35EE12E3ACA
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 08:30:27 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C21852E3A2C
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 08:30:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8F6AE136E20;
-	Tue, 26 Mar 2024 08:29:11 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7A47B135401;
-	Tue, 26 Mar 2024 08:29:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2592D137751;
+	Tue, 26 Mar 2024 08:29:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="Yiw52Iex"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 644F1128392;
+	Tue, 26 Mar 2024 08:29:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711441751; cv=none; b=spW/+3chbHB69IzLg5DN8wlATB2CijLKd4g1904Sjugy+1lrKTggK2Rav6ADOXMSnueqqhHZMSvHGwioUTpzeRZEtTwIWy1HKg8m15P3g+KS6tw+EzqskkgVMIEAYQqdIMFMwQRvUvYeywV/slBzNiKYu9zuwqqOl3oTvz8KSJU=
+	t=1711441771; cv=none; b=s3P4zlvPPx2u/LPHy9pdJjYOUseANqWxxRTx+Y1+zhzIa0/Om7kRNl706myqYvwVibUNEy1Uer7rCuZj9wcY53SPq2Lh7aYI69PtPmq8xlxA6uHwXwYSR3TQXWcYbgBwH4hXcMOhQsslYc54Y4UYW11cFdVM1DJ7+Tvr+QVPFUQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711441751; c=relaxed/simple;
-	bh=WUhpHqX2IrIGD84daaOQvytai30nFNpig4YSNQtipjs=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=DbNIqjtjqIoUGEBeh2jZZHdMZZvjkP8iuKnXe+ZYRps+5V75f57NcssUp2bZDnktIn2y0KnEmHZ1ENgLtU1W/rf9UjLbRkc+UBP4+DNantPm/ftpfhEbb9GZ50LIzYbx5I5NmVtcIrQEEJmF6Yxe1rCCxh83SIZ50qI8/9u4VmE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 744242F4;
-	Tue, 26 Mar 2024 01:29:42 -0700 (PDT)
-Received: from [10.57.71.219] (unknown [10.57.71.219])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id BEA993F7C5;
-	Tue, 26 Mar 2024 01:29:06 -0700 (PDT)
-Message-ID: <20074374-ae90-49c5-9e8d-67ce290b13ae@arm.com>
-Date: Tue, 26 Mar 2024 08:29:06 +0000
+	s=arc-20240116; t=1711441771; c=relaxed/simple;
+	bh=vc6aHwbmE8151ViOOvewkuy6wUpc4nRDbj3fGQOqXjk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ahUvdsOSKa2qhj5WCHasdHN4JUQ87qGUU40A8x2ujYqGWUHKK7LjMEdSf+9mJsWG8YktDQceq3YEnmzfvLCzYm+Y199D2a6KIRMXSKqJ2HSCV+KbDJDmTQ0/BWdH47DZKKgq56MRD7fqysfTUc80J4RtTLgDcxx2JEksng40LBI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=Yiw52Iex; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D4A20C43390;
+	Tue, 26 Mar 2024 08:29:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+	s=korg; t=1711441770;
+	bh=vc6aHwbmE8151ViOOvewkuy6wUpc4nRDbj3fGQOqXjk=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=Yiw52Iex+DY8QVYZBLDZNupvVNNxIO8UwjXZQSs5aUlErpuObEkNzjng5zswV2+0N
+	 HBQLQxLmby2tKrf0aNryUXGbUwGTj48gMTaW5ZLytaYvBFUb7g1gQdZaPphm5wVjNo
+	 cxx5K/JTyUAAGb59Yeam7+lKOxMLqgio6xM92pus=
+Date: Tue, 26 Mar 2024 09:29:27 +0100
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To: Pavan Holla <pholla@chromium.org>
+Cc: Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+	linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Abhishek Pandit-Subedi <abhishekpandit@chromium.org>
+Subject: Re: [PATCH] usb: typec: ucsi: Wait 20ms before retrying reset
+Message-ID: <2024032624-subtitle-crisped-f4f1@gregkh>
+References: <20240325-ucsi-reset-delay-v1-1-d9e183e0f1e6@chromium.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RESEND][PATCH v2 1/4] OPP: OF: Export dev_opp_pm_calc_power()
- for usage from EM
-Content-Language: en-US
-To: Viresh Kumar <viresh.kumar@linaro.org>
-Cc: linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
- dietmar.eggemann@arm.com, linux-arm-kernel@lists.infradead.org,
- sboyd@kernel.org, nm@ti.com, linux-samsung-soc@vger.kernel.org,
- daniel.lezcano@linaro.org, rafael@kernel.org,
- krzysztof.kozlowski@linaro.org, alim.akhtar@samsung.com,
- m.szyprowski@samsung.com, mhiramat@kernel.org
-References: <20240322110850.77086-1-lukasz.luba@arm.com>
- <20240322110850.77086-2-lukasz.luba@arm.com>
- <20240326025147.qgfl5buiobfqfghj@vireshk-i7>
-From: Lukasz Luba <lukasz.luba@arm.com>
-In-Reply-To: <20240326025147.qgfl5buiobfqfghj@vireshk-i7>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240325-ucsi-reset-delay-v1-1-d9e183e0f1e6@chromium.org>
 
-
-
-On 3/26/24 02:51, Viresh Kumar wrote:
-> On 22-03-24, 11:08, Lukasz Luba wrote:
->> There are device drivers which can modify voltage values for OPPs. It
->> could be due to the chip binning and those drivers have specific chip
->> knowledge about it. This adjustment can happen after Energy Model is
->> registered, thus EM can have stale data about power.
->>
->> Export dev_opp_pm_calc_power() which can be used by Energy Model to
->> calculate new power with the new voltage for OPPs.
->>
->> Signed-off-by: Lukasz Luba <lukasz.luba@arm.com>
->> ---
->>   drivers/opp/of.c       | 17 ++++++++++++-----
->>   include/linux/pm_opp.h |  8 ++++++++
->>   2 files changed, 20 insertions(+), 5 deletions(-)
+On Mon, Mar 25, 2024 at 09:19:43PM +0000, Pavan Holla wrote:
+> The PPM might take time to process reset. Allow 20ms for the reset to
+> complete before issuing another reset.
 > 
-> Acked-by: Viresh Kumar <viresh.kumar@linaro.org>
-> 
+> Signed-off-by: Pavan Holla <pholla@chromium.org>
 
-Thanks Viresh for the ACK!
+What commit id does this fix?  Does it need to go to older kernels?
 
-Regards,
-Lukasz
+> ---
+> There is a 20ms delay for a reset retry to complete. However, the first
+> reset attempt is expected to complete immediately after an async write
+> of the reset command. This patch adds 20ms between the async write and
+> the CCI read that expects the reset to be complete. The additional delay
+> also allows the PPM to settle after the first reset, which seems to be
+> the intention behind the original 20ms delay ( kernel v4.14 has a comment
+> regarding the same )
+
+Why was the comment removed in newer kernels?
+
+Where does the magic 20ms number come from?  What about systems that do
+not need that time delay, did things just slow down for them?
+
+thanks,
+
+greg k-h
 
