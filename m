@@ -1,136 +1,95 @@
-Return-Path: <linux-kernel+bounces-120131-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-120132-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id F354188D2BE
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 00:16:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 52FA888D2C4
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 00:20:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id ADDB932199B
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 23:16:29 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 179013244D7
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 23:20:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A792913F43C;
-	Tue, 26 Mar 2024 23:15:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8C33513DDDE;
+	Tue, 26 Mar 2024 23:19:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="KRI8ogtn"
-Received: from mail-yb1-f201.google.com (mail-yb1-f201.google.com [209.85.219.201])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="nHi+9s4f"
+Received: from mail-ed1-f49.google.com (mail-ed1-f49.google.com [209.85.208.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 63D0813DDCD
-	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 23:15:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3FD2F13DDB5
+	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 23:19:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711494911; cv=none; b=D0LAiYxp9qmMR70f5o4AScunhNTFWISYzwtQK4WdRDDhDj7c8PA89Zm172c8crPPUcomzhsVqhI8qhSN6CZAyLWeA+uXDIIh4YS1SAgp8tUqtU4j2wZMsKukmhoTbXcyrRw/v4+eg9K7Z10rMDDJa9KCi8gZ8LgEgMmO4LsGMsA=
+	t=1711495194; cv=none; b=JBTdUAjPHtFwZSS6KWXCfQ7Bh4iKgjzMyh4+vdFoi1jcpzYUfcpajYolI6gTsAy9G6qhqcGBjL+PTdtZjxD1IqW018pq0gAa1BXaCf5ivf1LCoTgxDgT/CJwQQuRz+I3AKFMMqBOqvctPi1GTZuDypgtSZnVVMlTiPbg9vlxUlg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711494911; c=relaxed/simple;
-	bh=fyMrFp8V3YaU0ogcm5yJYQgEMev0swdNBsiWfJ44G44=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=nlPmijc1Yc6Her1fYDnoRViBfwSP18YzaGjLS4L+w/EsV34h/dUlsYMdEuT0Vg4GzjOXgAHIqA3qOH5wfSn/SG0GB5O5dV1UA5p4x+5JBY2odjeIYZJiVbe5AyfMpLbzZmg5auJG1YUpLLEsPyAmNUSK3tSPTE4vuG3H7ExFC08=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--surenb.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=KRI8ogtn; arc=none smtp.client-ip=209.85.219.201
+	s=arc-20240116; t=1711495194; c=relaxed/simple;
+	bh=UvWP6b18kN8mm8jE4MtS1uYsAsJWVUOJQTXrlWh4/Ww=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=NytfoNdYdPgLg1Ew01hg522y1H4ZbE7lS1CfBqb0VCQCDuI/ip6BImHVO7LmJ6138Z4C6ZTnZwqcukaD/BpF3+4KH9yw/QX+R9GCtVJzjT9i6tH24KJ7vDDqIIUxmOV1XBWsXItLCP7Wasv1GNW8s3HL2GiujPdxb10b4NJDS3A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=nHi+9s4f; arc=none smtp.client-ip=209.85.208.49
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--surenb.bounces.google.com
-Received: by mail-yb1-f201.google.com with SMTP id 3f1490d57ef6-dc647f65573so10977174276.2
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 16:15:09 -0700 (PDT)
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-ed1-f49.google.com with SMTP id 4fb4d7f45d1cf-56beb6e68aeso1966a12.1
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 16:19:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1711494908; x=1712099708; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=iJNXXwIfWIOilmf511swDZU8Qk74qgWKC4xKQmksutQ=;
-        b=KRI8ogtn7KiJBPhEXU/8qhTVR6Op3jeVF2+IBE9NmkesjFelaF3rP7hdRULyol54YA
-         COmktwp4tF+INmC52WDsJdnArmMEPutOWzjJRxGjstmWpAjHU3/MdeeATRLZh1xBLhuH
-         Yiyf/rMYFWh35LuCvqOuaGjLnzeQJqo2wBjx7K1Ic0GbWc3vCqk5puo2OBWRrnYE4XoM
-         72Rte15IS1Ddot9Dbl/c8dt5UmWvhuWC0JQ5g4gUkUYhgXOMcKz4IJk/Gvfu/RNp4435
-         vQSA878pAfu7m1FJe9yO8zVteoM8zBK6MSI4SWdV/V0szafI/0y9igVb0vEuzENM3VPg
-         LUQg==
+        d=google.com; s=20230601; t=1711495191; x=1712099991; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=UvWP6b18kN8mm8jE4MtS1uYsAsJWVUOJQTXrlWh4/Ww=;
+        b=nHi+9s4fjgUhzmzjL5pNYUo/1/mqTXL1Zx12yzAM/khDBJJXHuqhi3LyLkkIAeWo0a
+         z+koTPXaIg1U/sBBPhBJKs1mzopqlbOaFWYd9pDo10eGFdPEHyL/BazF1OAJWzvu3m6H
+         jd0t6lmlQrvz7IEqn9S73gypbDeJmUNOZwxqvNZy1Z3wHjtfP/KWc0l/OtV3o08VSflt
+         Q4cYMttsixEqx6cLlVhviFbzPBYLbuHL3COzt/LpX5Gss0DWUWTkntTu6nNXSnVX/AFF
+         nf9UABeE3/LYij3wpLe6EPSAKzhuI0t7RrpMl7qG1IVjyyjiP7FvhUBZO1zTnoqbW0KX
+         lLNA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711494908; x=1712099708;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=iJNXXwIfWIOilmf511swDZU8Qk74qgWKC4xKQmksutQ=;
-        b=r9SM1bPnYK+FodUNv/2Aw/JJTjUMqQEQHrowMlU5I/+xy/4M6Gl9pGYIVxsORSuQKT
-         DY7MT5GMOn5w1EsdMJhaMGbiPjyx8agDDuN2A0GBbA/o0ng4hsJ43zG3uFYrHBHECZ5P
-         gI1PyyVQaTndsh/+/NL7kw9jfN1qGpt5ddL/OvmCZjqKMedaZEigsQ/jAzcHFdK2lkcL
-         gokJXUf6wjSh6N43tonTRPob1zgxaNvDTHEcV4vEaHuvzhpBVny7EC/TW0Zj+M46D8C3
-         m6S6pwDDCdx1lCIdHJ3QWwbPJjZ/azV/7FlvYNlCh+KOXkEcTIaNklinLZKi71C2fDms
-         lNvw==
-X-Forwarded-Encrypted: i=1; AJvYcCXR3AwZzWTIssPKfNp+3UewZeRhOKr8ULbIxdJ/+Zzcxdb/Q7q77YXLU+KV/ntBxq4LELyOSttxRHFQLhfCl0xTmd3JC5d7wYBvCQkt
-X-Gm-Message-State: AOJu0Yy5VAgEKvGK/L02/7//NIEy8fXcSROa6A8huORPXXLAi8xHygug
-	qo6IpTGcl3LeP0i3mvnuJ7HHOKs+V9knYcM8GL1mbAgftP+M5aulvH9HSZjLel8KDdRcoCQBfPP
-	gHQ==
-X-Google-Smtp-Source: AGHT+IHEoaKEBsWwxbO1jgiLciNOYILWX/kr3OXU7eYFR8oe2h78U8w1/qkNR8huCRpwnRfRtdoPQg5B9JI=
-X-Received: from surenb-desktop.mtv.corp.google.com ([2620:15c:211:201:cef2:761:ad8:ed9a])
- (user=surenb job=sendgmr) by 2002:a05:6902:1141:b0:dd9:3a6b:11f8 with SMTP id
- p1-20020a056902114100b00dd93a6b11f8mr3483289ybu.5.1711494908452; Tue, 26 Mar
- 2024 16:15:08 -0700 (PDT)
-Date: Tue, 26 Mar 2024 16:14:52 -0700
-In-Reply-To: <20240326231453.1206227-1-surenb@google.com>
+        d=1e100.net; s=20230601; t=1711495191; x=1712099991;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=UvWP6b18kN8mm8jE4MtS1uYsAsJWVUOJQTXrlWh4/Ww=;
+        b=nQgpq0LWEtZDpH8SJH1tsobVqhVdqFmkXalMgJE8EPycuS6TEZoD11RAJbw/eMFIkH
+         /YfzvFS8ZIVFs1tNy+zm+obPH7mEy8JLSv3yenvcdlbm3A3U/jZjhDiw65XZG9241VHT
+         K8jVnt0W0RY+uiw+41Ke2URZP074dIKRkDgxA/hx4NKK0OknFQx07vM4ZCxrC8UZaKek
+         kp+dpcbuu3Qu7ABSomkGaKfIaQjW2TMb5zPST2KcYQlqZXjo97T8AvajNcnFI4RL3lO9
+         NVp51Rv9xOLyyxWb+0EzgD3akYpyHmSRcHBA4gpuGDgTblEjmIF+zJuBkp6zTvpTAHIC
+         ZE9w==
+X-Forwarded-Encrypted: i=1; AJvYcCUz5C2zVea+T7f0Uj/KFjRoLW/KAirbphwQ6l59jW4HneBsSMmp0PuruUZ2TxaL3C7a4fC9Hq8FDHdO0MkYaDYgvFfMJD3/5ZlS3ikF
+X-Gm-Message-State: AOJu0Yy25A/JuLaMOZQnK3rf+qT6ZPnz1wJ4H/e6YXWFM5FY0Xd4J5+3
+	EJSnGpP2Ozp1/EwNjlCC/s/xl8X61+yAUWGpKnXJTAMQ1nv8keN1g24V1d8M6vUGb0nRbw6PZVF
+	EupTOqkmFdIvzqkkKVF5PVs5ZO0TY7zlOoLOP
+X-Google-Smtp-Source: AGHT+IGZWut7iYxsRXsNc34sf0qz5fmBiwVI3r+NknfdcTh9appFJDXacDvZoJGMK/rXWQcZT5jiuuBFscfiEQScH5M=
+X-Received: by 2002:aa7:d910:0:b0:56c:c20:6b40 with SMTP id
+ a16-20020aa7d910000000b0056c0c206b40mr19214edr.0.1711495191346; Tue, 26 Mar
+ 2024 16:19:51 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20240326231453.1206227-1-surenb@google.com>
-X-Mailer: git-send-email 2.44.0.396.g6e790dbe36-goog
-Message-ID: <20240326231453.1206227-7-surenb@google.com>
-Subject: [PATCH 6/6] Documentation: mm/slab: undo _noprof additions in the documentation
-From: Suren Baghdasaryan <surenb@google.com>
-To: akpm@linux-foundation.org
-Cc: rdunlap@infradead.org, sfr@canb.auug.org.au, kent.overstreet@linux.dev, 
-	surenb@google.com, linux-mm@kvack.org, linux-doc@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
+MIME-Version: 1.0
+References: <20240305025804.1290919-1-jthies@google.com> <20240305025804.1290919-3-jthies@google.com>
+ <44e8142f-d9b3-487b-83fe-39deadddb492@linaro.org> <20240326220919.GA2136359@hu-bjorande-lv.qualcomm.com>
+In-Reply-To: <20240326220919.GA2136359@hu-bjorande-lv.qualcomm.com>
+From: Jameson Thies <jthies@google.com>
+Date: Tue, 26 Mar 2024 16:19:38 -0700
+Message-ID: <CAMFSAReKmon7xAXWq4kJvN4Ge-tKkhUaaDZFP5EZA-=WU5oL1g@mail.gmail.com>
+Subject: Re: [PATCH v4 2/4] usb: typec: ucsi: Register cables based on GET_CABLE_PROPERTY
+To: Bjorn Andersson <quic_bjorande@quicinc.com>
+Cc: neil.armstrong@linaro.org, heikki.krogerus@linux.intel.com, 
+	linux-usb@vger.kernel.org, pmalani@chromium.org, bleung@google.com, 
+	abhishekpandit@chromium.org, andersson@kernel.org, 
+	dmitry.baryshkov@linaro.org, fabrice.gasnier@foss.st.com, 
+	gregkh@linuxfoundation.org, hdegoede@redhat.com, rajaram.regupathy@intel.com, 
+	saranya.gopal@intel.com, linux-kernel@vger.kernel.org, 
+	Benson Leung <bleung@chromium.org>, 
+	Linux regressions mailing list <regressions@lists.linux.dev>
 Content-Type: text/plain; charset="UTF-8"
 
-With kernel-doc script change to handle xyz_noprof() names, the previous
-documentation changes and not needed anymore.
+Hi Bjorn,
+posted at https://lore.kernel.org/lkml/20240315171836.343830-2-jthies@google.com/
 
-Fixes: bc7b83f5e4bf ("mm/slab: enable slab allocation tagging for kmalloc and friends")
-Signed-off-by: Suren Baghdasaryan <surenb@google.com>
-Cc: linux-doc@vger.kernel.org
-Cc: Randy Dunlap <rdunlap@infradead.org>
-Cc: Kent Overstreet <kent.overstreet@linux.dev>
----
- mm/slub.c | 2 +-
- mm/util.c | 4 ++--
- 2 files changed, 3 insertions(+), 3 deletions(-)
-
-diff --git a/mm/slub.c b/mm/slub.c
-index 7b68a3451eb9..be047279c9e9 100644
---- a/mm/slub.c
-+++ b/mm/slub.c
-@@ -4091,7 +4091,7 @@ void *kmem_cache_alloc_lru_noprof(struct kmem_cache *s, struct list_lru *lru,
- EXPORT_SYMBOL(kmem_cache_alloc_lru_noprof);
- 
- /**
-- * kmem_cache_alloc_node_noprof - Allocate an object on the specified node
-+ * kmem_cache_alloc_node - Allocate an object on the specified node
-  * @s: The cache to allocate from.
-  * @gfpflags: See kmalloc().
-  * @node: node number of the target node.
-diff --git a/mm/util.c b/mm/util.c
-index 73703d6cd3dc..a9e911b22b99 100644
---- a/mm/util.c
-+++ b/mm/util.c
-@@ -115,7 +115,7 @@ char *kstrndup(const char *s, size_t max, gfp_t gfp)
- EXPORT_SYMBOL(kstrndup);
- 
- /**
-- * kmemdup_noprof - duplicate region of memory
-+ * kmemdup - duplicate region of memory
-  *
-  * @src: memory region to duplicate
-  * @len: memory region length
-@@ -594,7 +594,7 @@ unsigned long vm_mmap(struct file *file, unsigned long addr,
- EXPORT_SYMBOL(vm_mmap);
- 
- /**
-- * kvmalloc_node_noprof - attempt to allocate physically contiguous memory, but upon
-+ * kvmalloc_node - attempt to allocate physically contiguous memory, but upon
-  * failure, fall back to non-contiguous (vmalloc) allocation.
-  * @size: size of the request.
-  * @flags: gfp mask for the allocation - must be compatible (superset) with GFP_KERNEL.
--- 
-2.44.0.396.g6e790dbe36-goog
-
+Thanks,
+Jameson
 
