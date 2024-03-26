@@ -1,146 +1,172 @@
-Return-Path: <linux-kernel+bounces-118331-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-118334-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5EDFE88B863
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 04:24:10 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3504788B87E
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 04:29:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id F226C1F3A86B
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 03:24:09 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 90A2C2E3346
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 03:29:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 480171292F2;
-	Tue, 26 Mar 2024 03:24:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0C92A129A71;
+	Tue, 26 Mar 2024 03:28:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b="bW0lpK74"
-Received: from mailout1.samsung.com (mailout1.samsung.com [203.254.224.24])
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="iPRgLzgy"
+Received: from out-182.mta1.migadu.com (out-182.mta1.migadu.com [95.215.58.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 34EFB1292DD
-	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 03:24:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.254.224.24
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 517461292D0
+	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 03:28:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711423444; cv=none; b=oob6UQHbIFGcyd74LSY1Yssc9ivCwM2KYXn+6X5JX3UutWUZae+ajik2s7AiY/rewJfS/phZgUFzOFGgwJiHJm0As4Dn9FOrvVQITjvmP88QACmlcsHxgO7H2037XWeU0JvLxW3D05iyq+DZvLJbN7qv685iok9ioFp6bzzwjLs=
+	t=1711423730; cv=none; b=oBeQZ7ai7gnIzDsBdFqgVkHK4iDWbtNuz2CDUvH2zmf37+E0Ftl7sz1YzyzjvBCZAwR7MsD37XVRdTDBW1ZrRX8FE+gQhbIRtWXZIELfXOkHytoNGaXie05DjbKrP0mqRTnDrzmGD2UBVuouZ+hiQOch9FQAfdzCYm4cW4GeFJg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711423444; c=relaxed/simple;
-	bh=t2hCITEJ6wxpOWXwYTCuSE28aMfvwSP99iXFbW9bDq0=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:MIME-Version:
-	 Content-Type:References; b=qypwAiR1sVkJPlw1bHNDbdZP0tDtnWisqiHue2DpbF3VRtEeVJ5KbFSfU2jF3UGuk4u40jOlHpvqM3uMPoS5T4jbG1KcylmzT7O/sDeMpL1yKyQGa6IBILOqUgT0P6znWbvccIOg5OAzeaIXHAIE3LNg6TLKM6UjyLAsJuCLLAs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com; spf=pass smtp.mailfrom=samsung.com; dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b=bW0lpK74; arc=none smtp.client-ip=203.254.224.24
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=samsung.com
-Received: from epcas5p1.samsung.com (unknown [182.195.41.39])
-	by mailout1.samsung.com (KnoxPortal) with ESMTP id 20240326032353epoutp013ab2d41c7199ff8cb88f86ede36b016c~AMoukqna71014810148epoutp01S
-	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 03:23:53 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com 20240326032353epoutp013ab2d41c7199ff8cb88f86ede36b016c~AMoukqna71014810148epoutp01S
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-	s=mail20170921; t=1711423433;
-	bh=t2hCITEJ6wxpOWXwYTCuSE28aMfvwSP99iXFbW9bDq0=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=bW0lpK74HfPlw3VSoaSVEz9l2VPBfBZM0gUUgjbZ4CRE3NaGgueiX79igkAa49f9t
-	 f1IA4KMW+JKZFfUseWvwFIWVDceH21m3nRcsGlKE4p8vUMrP+dviO6Zismatb5Nlvv
-	 B59Uf8J6xCvK8Yo15ZLAhpzvHkiAoheDwDdwkSaE=
-Received: from epsnrtp2.localdomain (unknown [182.195.42.163]) by
-	epcas5p2.samsung.com (KnoxPortal) with ESMTP id
-	20240326032352epcas5p2b86b7aea4214f4ebe795b515f00ac272~AMotq4yUf0799607996epcas5p2P;
-	Tue, 26 Mar 2024 03:23:52 +0000 (GMT)
-Received: from epsmges5p1new.samsung.com (unknown [182.195.38.180]) by
-	epsnrtp2.localdomain (Postfix) with ESMTP id 4V3Zs343nWz4x9Q3; Tue, 26 Mar
-	2024 03:23:51 +0000 (GMT)
-Received: from epcas5p2.samsung.com ( [182.195.41.40]) by
-	epsmges5p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
-	0E.01.09666.7CF32066; Tue, 26 Mar 2024 12:23:51 +0900 (KST)
-Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
-	epcas5p4.samsung.com (KnoxPortal) with ESMTPA id
-	20240326032337epcas5p4d4725729834e3fdb006293d1aab4053d~AMofbxyNC0935509355epcas5p4U;
-	Tue, 26 Mar 2024 03:23:37 +0000 (GMT)
-Received: from epsmgmc1p1new.samsung.com (unknown [182.195.42.40]) by
-	epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
-	20240326032337epsmtrp2e886086276c45637755e04674d36af91~AMofa9xQz1617016170epsmtrp2J;
-	Tue, 26 Mar 2024 03:23:37 +0000 (GMT)
-X-AuditID: b6c32a49-cefff700000025c2-6c-66023fc7ce78
-Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
-	epsmgmc1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
-	04.30.07541.9BF32066; Tue, 26 Mar 2024 12:23:37 +0900 (KST)
-Received: from testpc118124.samsungds.net (unknown [109.105.118.124]) by
-	epsmtip2.samsung.com (KnoxPortal) with ESMTPA id
-	20240326032335epsmtip2a5844b54d3515f434b559cdd286485c0~AMod6dI-R3072530725epsmtip2c;
-	Tue, 26 Mar 2024 03:23:35 +0000 (GMT)
-From: Xue <xue01.he@samsung.com>
-To: axboe@kernel.dk
-Cc: asml.silence@gmail.com, linux-kernel@vger.kernel.org,
-	io-uring@vger.kernel.org, peiwei.li@samsung.com, joshi.k@samsung.com,
-	kundan.kumar@samsung.com, anuj20.g@samsung.com, wenwen.chen@samsung.com,
-	ruyi.zhang@samsung.com, xiaobing.li@samsung.com, cliang01.li@samsung.com,
-	xue01.he@samsung.com
-Subject: Re:io_uring: releasing CPU resources when polling
-Date: Tue, 26 Mar 2024 11:23:31 +0800
-Message-Id: <20240326032331.1003213-1-xue01.he@samsung.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240318090017.3959252-1-xue01.he@samsung.com>
+	s=arc-20240116; t=1711423730; c=relaxed/simple;
+	bh=zbz8JSdX4HImrXyDSvkZNWHjmt/U+lnpC2qNDFF4hDk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=d22Necv/EMbCiC2O78+/kDp2kos5IQJpAAnVe9JrkCDlb7wRm2fP3RWkruaObTB/pETgCuvDGsQ/5cmHuvVqSzfGw6LPubQe0tYcc7XGF+xcBRlry0p4pQ5moonuN7C+H93juMnyPsjKfUGUMndYdnJr5dhl4Tw3/N+c//Aq3gE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=iPRgLzgy; arc=none smtp.client-ip=95.215.58.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Date: Mon, 25 Mar 2024 23:28:38 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1711423726;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=zbz8JSdX4HImrXyDSvkZNWHjmt/U+lnpC2qNDFF4hDk=;
+	b=iPRgLzgyqe8KY1dSoWPYlt/aLh26NUBnBpny3uA+K8hQM6biRkS8YxVymU+AB0tgmAfTHH
+	VbEu5miz1s3JErGsWakBsX2Unnpvso/q0bxFyUZTzY70FSuse4dOSVWy2xyabsWKBeP95k
+	xdeHD23g82UYYfGhnWk/GMILpw/WhTE=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Kent Overstreet <kent.overstreet@linux.dev>
+To: "Dr. David Alan Gilbert" <dave@treblig.org>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>, 
+	Philipp Stanner <pstanner@redhat.com>, Boqun Feng <boqun.feng@gmail.com>, 
+	rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org, 
+	llvm@lists.linux.dev, Miguel Ojeda <ojeda@kernel.org>, 
+	Alex Gaynor <alex.gaynor@gmail.com>, Wedson Almeida Filho <wedsonaf@gmail.com>, 
+	Gary Guo <gary@garyguo.net>, =?utf-8?B?QmrDtnJu?= Roy Baron <bjorn3_gh@protonmail.com>, 
+	Benno Lossin <benno.lossin@proton.me>, Andreas Hindborg <a.hindborg@samsung.com>, 
+	Alice Ryhl <aliceryhl@google.com>, Alan Stern <stern@rowland.harvard.edu>, 
+	Andrea Parri <parri.andrea@gmail.com>, Will Deacon <will@kernel.org>, 
+	Peter Zijlstra <peterz@infradead.org>, Nicholas Piggin <npiggin@gmail.com>, 
+	David Howells <dhowells@redhat.com>, Jade Alglave <j.alglave@ucl.ac.uk>, 
+	Luc Maranget <luc.maranget@inria.fr>, "Paul E. McKenney" <paulmck@kernel.org>, 
+	Akira Yokosawa <akiyks@gmail.com>, Daniel Lustig <dlustig@nvidia.com>, 
+	Joel Fernandes <joel@joelfernandes.org>, Nathan Chancellor <nathan@kernel.org>, 
+	Nick Desaulniers <ndesaulniers@google.com>, kent.overstreet@gmail.com, 
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, elver@google.com, Mark Rutland <mark.rutland@arm.com>, 
+	Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
+	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>, 
+	Catalin Marinas <catalin.marinas@arm.com>, linux-arm-kernel@lists.infradead.org, 
+	linux-fsdevel@vger.kernel.org
+Subject: Re: [WIP 0/3] Memory model and atomic API in Rust
+Message-ID: <iobxouxkp3yf5vna7fy2bfvwknhghmzevty645xpbdjwefxxrj@3ac4ewjezv3l>
+References: <CAHk-=whY5A=S=bLwCFL=043DoR0TTgSDUmfPDx2rXhkk3KANPQ@mail.gmail.com>
+ <u2suttqa4c423q4ojehbucaxsm6wguqtgouj7vudp55jmuivq3@okzfgryarwnv>
+ <CAHk-=whkQk=zq5XiMcaU3xj4v69+jyoP-y6Sywhq-TvxSSvfEA@mail.gmail.com>
+ <c51227c9a4103ad1de43fc3cda5396b1196c31d7.camel@redhat.com>
+ <CAHk-=wjP1i014DGPKTsAC6TpByC3xeNHDjVA4E4gsnzUgJBYBQ@mail.gmail.com>
+ <bu3seu56hfozsvgpdqjarbdkqo3lsjfc4lhluk5oj456xmrjc7@lfbbjxuf4rpv>
+ <CAHk-=wgLGWBXvNODAkzkVHEj7zrrnTq_hzMft62nKNkaL89ZGQ@mail.gmail.com>
+ <ZgIRXL5YM2AwBD0Y@gallifrey>
+ <vevxfv67ureybf7sjwfxzdvl4tt62khyn2gfzn7o74ke2m554s@xxddzz6nurbn>
+ <ZgImcq2vRcDZtF6z@gallifrey>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrIJsWRmVeSWpSXmKPExsWy7bCmhu5xe6Y0g6YlkhZNE/4yW8xZtY3R
-	YvXdfjaL038fs1i8az3HYnH0/1s2i1/ddxkttn75ympxedccNotnezktvhz+zm5xdsIHVoup
-	W3YwWXS0XGa06Lpwis2B32PnrLvsHpfPlnr0bVnF6PF5k1wAS1S2TUZqYkpqkUJqXnJ+SmZe
-	uq2Sd3C8c7ypmYGhrqGlhbmSQl5ibqqtkotPgK5bZg7QnUoKZYk5pUChgMTiYiV9O5ui/NKS
-	VIWM/OISW6XUgpScApMCveLE3OLSvHS9vNQSK0MDAyNToMKE7IznR34wFdxkqvhwnLuBsZ+p
-	i5GTQ0LAROLT3gYgm4tDSGA3o8SD+UdYIZxPjBIfP55nhnC+MUosm9gL5HCAtTRuUYGI72WU
-	uHrsCFT7L0aJC5P/M4PMZRNQkDh/+DPYDhEBYYn9Ha0sIEXMAuuZJJqO3mMDSQgLWEl0TfvH
-	CmKzCKhKTJ25kR3E5hWwlrgx6yg7xIHyEvsPngUbyilgI7Hw12xWiBpBiZMzn7CA2MxANc1b
-	Z4OdKiEwk0Pi6909UN+5SJyYOgtqkLDEq+NboGwpic/v9rJB2PkSk7+vZ4SwayTWbX7HAmFb
-	S/y7socF5GVmAU2J9bv0IcKyElNPrWOC2Msn0fv7CdQqXokd82BsJYklR1ZAjZSQ+D1hESuE
-	7SHxre0ZOyS0+hkl9s5YxzKBUWEWkn9mIflnFsLqBYzMqxglUwuKc9NTi00LDPNSy+GxnJyf
-	u4kRnHa1PHcw3n3wQe8QIxMH4yFGCQ5mJRHeli8MaUK8KYmVValF+fFFpTmpxYcYTYEBPpFZ
-	SjQ5H5j480riDU0sDUzMzMxMLI3NDJXEeV+3zk0REkhPLEnNTk0tSC2C6WPi4JRqYIpbt2TB
-	zePzKi/fYDwlecNs2ycXC58FTl/uaJxPZzzplrQyV0x7dUPc7u9NU7eU59rvtQjNcRNTzH3t
-	z7j23nL3E1qZ336o2DEyHTowUYVnd/SWijnbWATSFh0W1m2SX7G35pzyw4b1HS7x6xbVzdUS
-	D/tySDh45mMfQf+pImrS/5aXxlg0llqldaV+uXvi1F32kqLnXx/f4kiLZPV4cKKs5cf/11YR
-	/H94DsT1JtvKqN2UP7Ja5sDeR70Tol+df7uqQX1xSeVCuZJzRjv+B//mXszEpSv1LFNNwdk6
-	VvD5W741stF/ffbp//vpu1dtFU/e7m+T5v45v7B/znEN1blbTTbMLz/kd2PnF+HJFSuUWIoz
-	Eg21mIuKEwGNXh8zRAQAAA==
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrOLMWRmVeSWpSXmKPExsWy7bCSvO5Oe6Y0g2uPxSyaJvxltpizahuj
-	xeq7/WwWp/8+ZrF413qOxeLo/7dsFr+67zJabP3yldXi8q45bBbP9nJafDn8nd3i7IQPrBZT
-	t+xgsuhoucxo0XXhFJsDv8fOWXfZPS6fLfXo27KK0ePzJrkAligum5TUnMyy1CJ9uwSujOdH
-	fjAV3GSq+HCcu4Gxn6mLkYNDQsBEonGLShcjF4eQwG5GiTVf2oHinEBxCYkdj/6wQtjCEiv/
-	PWeHKPrBKNH6ZCkjSIJNQEHi/OHPYA0iQEX7O1pZQIqYBfYySdze+oYZJCEsYCXRNe0f2CQW
-	AVWJqTM3soPYvALWEjdmHWWH2CAvsf/gWbB6TgEbiYW/ZoPVCwHVNEz7wQhRLyhxcuYTFhCb
-	Gai+eets5gmMArOQpGYhSS1gZFrFKJlaUJybnptsWGCYl1quV5yYW1yal66XnJ+7iREcF1oa
-	Oxjvzf+nd4iRiYPxEKMEB7OSCG/LF4Y0Id6UxMqq1KL8+KLSnNTiQ4zSHCxK4ryGM2anCAmk
-	J5akZqemFqQWwWSZODilGpjKNAst1R057977u8hM9WRc3s28BXmr09f9/6vjcGfJlzkzNjnb
-	G70oy1t1c7rin4JV1icueZx3WZqUsjM58eveunfLyqr8mUr+MO36rJeqrlRUdk90cpz91jev
-	t3zUWstmfWs5k12LqugkgTNbNjAttGbd0yUrLlthWfO/2tyzTVqyXmmOXkRK5QmHFPEDl7qV
-	eV5elUkLtToZbFIkt2ZGedynwpWTugIqGiy+PPM5yVd+pTT0wW7xwy9MV//3mKkm3HshwuN9
-	T+LBuPIZ/7+zGefxb6qb2Cq9+c2sLWtn/Jv6PGd/p+mlw2Vzre484Di89r2N+237O1HTl/oZ
-	s85uiV/woKg2SqPhpNqtugQlluKMREMt5qLiRACU8MSq+gIAAA==
-X-CMS-MailID: 20240326032337epcas5p4d4725729834e3fdb006293d1aab4053d
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: REQ_APPROVE
-CMS-TYPE: 105P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20240326032337epcas5p4d4725729834e3fdb006293d1aab4053d
-References: <20240318090017.3959252-1-xue01.he@samsung.com>
-	<CGME20240326032337epcas5p4d4725729834e3fdb006293d1aab4053d@epcas5p4.samsung.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZgImcq2vRcDZtF6z@gallifrey>
+X-Migadu-Flow: FLOW_OUT
 
-Hi,
+On Tue, Mar 26, 2024 at 01:35:46AM +0000, Dr. David Alan Gilbert wrote:
+> OK, so that's essentially the opposite worry of what I was saying; I was
+> worrying about people forgetting to use an atomic access to a shared
+> variable; I think you're worrying about people forgetting to mark
+> a variable shared and since the accesses are the same nothing shouts?
 
-I hope this message finds you well.
+In biological evolution, novel useful traits are generally not
+accessible via a single mutation; many neutral mutations are required
+first.
 
-I'm waiting to follow up on the patch I submitted on 3.18,
-titled "io_uring: releasing CPU resources when polling".
+Evolution is able to proceed quickly because there are a great many
+neutral mutations (that is, evolution quickly searches all possible
+paths to find accessible positive mutations), and because negative
+mutations are culled quickly - often before the first cell division.
 
-I haven't received feedback yet and wondering if you had
-a chance to look at it. Any guidance or suggestions you could
-provide would be greatly appreciated.
+(The most common mutation being the addition or deletion of a base pair;
+but amino acids are coded for by groups of three base pairs, so that
+shifts everything on the chromosone after the mutation so that it codes
+for completely different amino acids. That cell won't live to divide
+again).
 
-Thanks,
-Xue He
+Actual genetic diseases that significantly impair fitness are quite
+rare, and if they weren't we'd have a major problem.
+
+Programming at scale is million monkeys stuff - we're all hammering on
+our keyboards at random, the good programs survive and the bad programs
+are forgotten.
+
+Similarly to biological evolution, we want most edits to a program to
+result in a program that either still works, or fails immediately -
+fails to compile, or is caught immediately by basic testing.
+
+If edits can result in latent undefined behaviour or programs that
+_mostly_ work, and then explode in unpredictable ways weeks/months/years
+later - that's a huge problem. In the worst case, those bugs/negative
+mutations accumulate faster than they can be culled.
+
+Thank god we have source control.
+
+Places where we're working with extremely loose synchronization - no
+locking, raw memory barriers - are the worst kind of hand grenade, they
+result in bugs that are impossible to cull quickly.
+
+In kernel programming, we're always walking around with live hand
+grenades.
+
+So what do we do?
+
+We slow down, we take every step slowly and intentionally while telling
+everyone not to bump us because we're holding a live hand grenade - raw
+atomics, raw unlocked variables, memory barriers, they all get special
+care and extra comments.
+
+And we all have fuck-tons of code we need to be able to understand,
+review, debug and maintain, so we always try to write our code in a
+style where the if it's wrong, we'll see that _locally_, without having
+to go through and remember how _everything_ out of the possibly
+thousands of relevant lines work.
+
+I'm personally responsible for over 100k LOC of highly intricate code
+with high consequences for failure, and regularly have to debug issues
+arising somewhere in north of a million LOC - and when something goes
+wrong I have to be able to fully debug it _quickly_.
+
+What C++ does is like taking those hand grenades, with the pin already
+out - and leaving one under the couch cushions, another in the
+silverware drawer, another in the laundry basket - and expecting you to
+remember where you put them.
+
+Going back to the C++ example, the really fatal thing with how they do
+it is how a change in one line of code can completely change the
+semantics of a bunch of different code, and no human reviewer can be
+expected to catch bugs that might introduce and the compiler certainly
+won't.
+
+Now imagine multiple people working on the same code, at different
+times.
+
+Now imagine patches getting mixed up, reordered, one of them getting
+lost, merge conflicts - i.e. shit that happens all the time, and what
+happens if you're using C++ style atomics.
+
+Terrifying stuff.
 
