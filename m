@@ -1,239 +1,323 @@
-Return-Path: <linux-kernel+bounces-119734-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-119735-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4513788CC89
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 19:59:12 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9964888CC8C
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 20:00:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BEFB41F331F7
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 18:59:11 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DC124B23E58
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 18:59:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 545D513C9D6;
-	Tue, 26 Mar 2024 18:59:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="D6FCbg14"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA6D413C91F
-	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 18:59:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 87A4813CA93;
+	Tue, 26 Mar 2024 18:59:48 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 97F3A14265;
+	Tue, 26 Mar 2024 18:59:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711479545; cv=none; b=D2y7b3eL6YwmmMglVnaRHR86NFmjuQmj5JThkAzVORx08xGnyUm/UfUPDBsWblT5nel2dYZ8oGwdWMOyen1rynUmlSk+JuD5sXy1pr2eq8Rs1zpFT2GiQAIpZ/NymOebkzwUkZiheCZ0gHd4KXgA4bqioQkBVACndDzeR2QLTAI=
+	t=1711479587; cv=none; b=DKLWpVzPr7vEFbVg5f4C0UzWzRXVb7+3bG4lLBem0bk0QHsLbNg30/jE7OYq05wW2w3GS1gcQ1iwDdlATWHxWPy3roazxOpiCzIP6c/8lEYwvIkl9PZtQmFKkrv7fnzndJi/QcjG6OqA1YVST3WCz6tlSYEv6HJHhi+iqlraEMc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711479545; c=relaxed/simple;
-	bh=nzlWsc/uDBEtSoEPDmhVs0OiVWzdIGK9LtPb8FUS+30=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=DX8ZZfZrTWaWh8ZE5hnLua/CBN7wN+4sYS6IFq6BsV77dmjlbrxVI53yn5k1gSvPlOZBBBF2JpIOsmTWJ4XwYVR2e6k+V153F3vHpjYd2fRQnGTP26Rh4wlwUiTZ3p3+sGWrYszpL2iapMC18R0E6gQk183ysM0gR3prljz/Wes=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=D6FCbg14; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1711479542;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=uQIrddOl3QUoZaT2l/FFu3ki6nhY9Dj9MjNzIjnSbds=;
-	b=D6FCbg14QN9Z1LJTrpy0O9jAbqOiMonO3nxLDCCPGF/0E1XYjawQl0cUq7/mEagVybOJwu
-	1U4VybEhxKiJMFT0rJv3rlR37q1pHuMJARK8xaiZY9cQHQxNjWJehHfNkjVPGwvYfUjbuU
-	UqibWzDrrPxnq1JTwWZS6Fvt7q/cut0=
-Received: from mail-oi1-f197.google.com (mail-oi1-f197.google.com
- [209.85.167.197]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-303-oR1XN4hvNhG2TWSB6hCfVw-1; Tue, 26 Mar 2024 14:58:59 -0400
-X-MC-Unique: oR1XN4hvNhG2TWSB6hCfVw-1
-Received: by mail-oi1-f197.google.com with SMTP id 5614622812f47-3c3cef6224dso1427921b6e.3
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 11:58:59 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711479538; x=1712084338;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=uQIrddOl3QUoZaT2l/FFu3ki6nhY9Dj9MjNzIjnSbds=;
-        b=Mhgq4U1ytuERihLMezmKaTt9QmsdqMSbOZKzmh6vt0B9LhmFK3wmzEwnoHd9P9PEPP
-         LYtnqCmU1CJneNF5qAzaAu0C+/T8YXqhVwaNs8g/Pk028UFvxKhIkHVE1aT7aIJg/V5x
-         IzdSUfDXTzwJ44CWGGFgdDt2wCu74CFd3mnlSF3X1S61PtF+BicN0K3J6JM9ycpiTpcF
-         ZbL4schypVZfPMjbW2hevNI5MG83g44rqo4RYdOi/zBY/TfwXHRgcNhSXdQ5ZVzz3mjs
-         rLpHIoXZOWhuGHhK+4IhRgumQq4suCNPx3jgSe3nELBWHXB8jYAPlE8bjp041xowWScr
-         to4g==
-X-Forwarded-Encrypted: i=1; AJvYcCW1AQMDMbHduSLwj1ply8B92+xFqfWtvbiWuh6jT70kTc9gu5tZ2nW7/q9bM5xmToZ+NUU3uf1degFHXRwV7AEdNJUmEUIKoulqeV7c
-X-Gm-Message-State: AOJu0YwN8EDNaYAMIgZa56leNbLJRdamlyfjhG+mRulXw7zgr5BByCi/
-	nD6g1XJV4cbr6w3hqL2aAQnCHCmDM7JD4oPVH7vhTAGnsoNCH6tRclhEQ95dzpVg6jTjUiuOphk
-	+yCgVL20UUnFFdXoWSb/fuCFJtHCfC5t/0OdIYVuybO4hzwMS2LQobcE++bfH
-X-Received: by 2002:a05:6808:201a:b0:3c3:8822:dc36 with SMTP id q26-20020a056808201a00b003c38822dc36mr477652oiw.28.1711479538556;
-        Tue, 26 Mar 2024 11:58:58 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IGrik+AkTkIE9LjyOL97tsR5AKnWXtxMce6KS0OU3DQAjEkRYoZ9yMnGkVi5vEp8AiJwCmJyw==
-X-Received: by 2002:a05:6808:201a:b0:3c3:8822:dc36 with SMTP id q26-20020a056808201a00b003c38822dc36mr477630oiw.28.1711479538296;
-        Tue, 26 Mar 2024 11:58:58 -0700 (PDT)
-Received: from [192.168.9.34] (net-2-34-30-89.cust.vodafonedsl.it. [2.34.30.89])
-        by smtp.gmail.com with ESMTPSA id eo7-20020a05622a544700b00431532ced95sm2620960qtb.27.2024.03.26.11.58.56
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 26 Mar 2024 11:58:58 -0700 (PDT)
-Message-ID: <befc8ccf-0661-4c6f-b262-3dab3c34e0be@redhat.com>
-Date: Tue, 26 Mar 2024 19:58:53 +0100
+	s=arc-20240116; t=1711479587; c=relaxed/simple;
+	bh=2HjFY0yw0cSUnGd0uidraidATyozNzx0CSvEuLWgRbA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=upDuR1LCvA8noQLYVmhiYOIHky69JBJhoTbyZEyKZJUoMEka3mAZbLT5E0BLA7Qc/vA3QMe8RhMj9tJU+6Px6/RyJE3r7g16CwPerfdnQH1qi1TC4Qa7wsrBT76qKJ7gYXzYBns9CPgL+w3oMudL34KuegYdFLOg418BWN9pJ2I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 342FE2F4;
+	Tue, 26 Mar 2024 12:00:17 -0700 (PDT)
+Received: from FVFF77S0Q05N.cambridge.arm.com (FVFF77S0Q05N.cambridge.arm.com [10.1.35.184])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id AD7703F64C;
+	Tue, 26 Mar 2024 11:59:40 -0700 (PDT)
+Date: Tue, 26 Mar 2024 18:59:34 +0000
+From: Mark Rutland <mark.rutland@arm.com>
+To: Puranjay Mohan <puranjay12@gmail.com>
+Cc: Catalin Marinas <catalin.marinas@arm.com>,
+	Will Deacon <will@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>,
+	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+	Zi Shen Lim <zlim.lnx@gmail.com>,
+	Suzuki K Poulose <suzuki.poulose@arm.com>,
+	Mark Brown <broonie@kernel.org>,
+	linux-arm-kernel@lists.infradead.org,
+	open list <linux-kernel@vger.kernel.org>,
+	"open list:BPF [GENERAL] (Safe Dynamic Programs and Tools)" <bpf@vger.kernel.org>,
+	Josh Poimboeuf <jpoimboe@kernel.org>
+Subject: Re: [PATCH bpf-next v2 1/1] arm64/cfi,bpf: Support kCFI + BPF on
+ arm64
+Message-ID: <ZgMbFqWpmZgahiV6@FVFF77S0Q05N.cambridge.arm.com>
+References: <20240324211518.93892-1-puranjay12@gmail.com>
+ <20240324211518.93892-2-puranjay12@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] fpga: region: add owner module and take its refcount
-To: Russ Weight <russ.weight@linux.dev>
-Cc: Moritz Fischer <mdf@kernel.org>, Wu Hao <hao.wu@intel.com>,
- Xu Yilun <yilun.xu@intel.com>, Tom Rix <trix@redhat.com>,
- Jonathan Corbet <corbet@lwn.net>, Alan Tull <atull@opensource.altera.com>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>, linux-fpga@vger.kernel.org,
- linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20240322171931.233925-1-marpagan@redhat.com>
- <20240326172854.h6gww3mqlq63kxbp@4VRSMR2-DT.corp.robot.car>
-Content-Language: en-US
-From: Marco Pagani <marpagan@redhat.com>
-In-Reply-To: <20240326172854.h6gww3mqlq63kxbp@4VRSMR2-DT.corp.robot.car>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240324211518.93892-2-puranjay12@gmail.com>
 
+Hi Puranjay,
 
-
-On 2024-03-26 18:28, Russ Weight wrote:
+On Sun, Mar 24, 2024 at 09:15:18PM +0000, Puranjay Mohan wrote:
+> Currently, bpf_dispatcher_*_func() is marked with `__nocfi` therefore
+> calling BPF programs from this interface doesn't cause CFI warnings.
 > 
-> On Fri, Mar 22, 2024 at 06:19:30PM +0100, Marco Pagani wrote:
->> The current implementation of the fpga region assumes that the low-level
->> module registers a driver for the parent device and uses its owner pointer
->> to take the module's refcount. This approach is problematic since it can
->> lead to a null pointer dereference while attempting to get the region
->> during programming if the parent device does not have a driver.
->>
->> To address this problem, add a module owner pointer to the fpga_region
->> struct and use it to take the module's refcount. Modify the functions for
->> registering a region to take an additional owner module parameter and
->> rename them to avoid conflicts. Use the old function names for helper
->> macros that automatically set the module that registers the region as the
->> owner. This ensures compatibility with existing low-level control modules
->> and reduces the chances of registering a region without setting the owner.
->>
->> Also, update the documentation to keep it consistent with the new interface
->> for registering an fpga region.
->>
->> Other changes: unlock the mutex before calling put_device() in
->> fpga_region_put() to avoid potential use after release issues.
->>
->> Fixes: 0fa20cdfcc1f ("fpga: fpga-region: device tree control for FPGA")
->> Suggested-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
->> Suggested-by: Xu Yilun <yilun.xu@intel.com>
->> Signed-off-by: Marco Pagani <marpagan@redhat.com>
->> ---
->>  Documentation/driver-api/fpga/fpga-region.rst | 13 ++++++----
->>  drivers/fpga/fpga-region.c                    | 26 +++++++++++--------
->>  include/linux/fpga/fpga-region.h              | 13 +++++++---
->>  3 files changed, 33 insertions(+), 19 deletions(-)
->>
->> diff --git a/Documentation/driver-api/fpga/fpga-region.rst b/Documentation/driver-api/fpga/fpga-region.rst
->> index dc55d60a0b4a..3aff5199b6d8 100644
->> --- a/Documentation/driver-api/fpga/fpga-region.rst
->> +++ b/Documentation/driver-api/fpga/fpga-region.rst
->> @@ -46,13 +46,16 @@ API to add a new FPGA region
->>  ----------------------------
->>  
->>  * struct fpga_region - The FPGA region struct
->> -* struct fpga_region_info - Parameter structure for fpga_region_register_full()
->> -* fpga_region_register_full() -  Create and register an FPGA region using the
->> +* struct fpga_region_info - Parameter structure for __fpga_region_register_full()
->> +* __fpga_region_register_full() -  Create and register an FPGA region using the
->>    fpga_region_info structure to provide the full flexibility of options
->> -* fpga_region_register() -  Create and register an FPGA region using standard
->> +* __fpga_region_register() -  Create and register an FPGA region using standard
->>    arguments
->>  * fpga_region_unregister() -  Unregister an FPGA region
->>  
->> +Helper macros ``fpga_region_register()`` and ``fpga_region_register_full()``
->> +automatically sets the module that registers the FPGA region as the owner.
+> When BPF programs are called directly from C: from BPF helpers or
+> struct_ops, CFI warnings are generated.
 > 
-> s/sets/set/
-
-Nice catch.
-
+> Implement proper CFI prologues for the BPF programs and callbacks and
+> drop __nocfi for arm64. Fix the trampoline generation code to emit kCFI
+> prologue when a struct_ops trampoline is being prepared.
 > 
->> +
->>  The FPGA region's probe function will need to get a reference to the FPGA
->>  Manager it will be using to do the programming.  This usually would happen
->>  during the region's probe function.
->> @@ -82,10 +85,10 @@ following APIs to handle building or tearing down that list.
->>     :functions: fpga_region_info
->>  
->>  .. kernel-doc:: drivers/fpga/fpga-region.c
->> -   :functions: fpga_region_register_full
->> +   :functions: __fpga_region_register
->>  
->>  .. kernel-doc:: drivers/fpga/fpga-region.c
->> -   :functions: fpga_region_register
->> +   :functions: __fpga_region_register_full
->>  
->>  .. kernel-doc:: drivers/fpga/fpga-region.c
->>     :functions: fpga_region_unregister
->> diff --git a/drivers/fpga/fpga-region.c b/drivers/fpga/fpga-region.c
->> index b364a929425c..f8bbda024d59 100644
->> --- a/drivers/fpga/fpga-region.c
->> +++ b/drivers/fpga/fpga-region.c
->> @@ -53,7 +53,7 @@ static struct fpga_region *fpga_region_get(struct fpga_region *region)
->>  	}
->>  
->>  	get_device(dev);
->> -	if (!try_module_get(dev->parent->driver->owner)) {
->> +	if (!try_module_get(region->get_br_owner)) {
->>  		put_device(dev);
->>  		mutex_unlock(&region->mutex);
->>  		return ERR_PTR(-ENODEV);
->> @@ -75,9 +75,9 @@ static void fpga_region_put(struct fpga_region *region)
->>  
->>  	dev_dbg(dev, "put\n");
->>  
->> -	module_put(dev->parent->driver->owner);
->> -	put_device(dev);
->> +	module_put(region->get_br_owner);
->>  	mutex_unlock(&region->mutex);
->> +	put_device(dev);
->>  }
->>  
->>  /**
->> @@ -181,14 +181,16 @@ static struct attribute *fpga_region_attrs[] = {
->>  ATTRIBUTE_GROUPS(fpga_region);
->>  
->>  /**
->> - * fpga_region_register_full - create and register an FPGA Region device
->> + * __fpga_region_register_full - create and register an FPGA Region device
->>   * @parent: device parent
->>   * @info: parameters for FPGA Region
->> + * @owner: owner module containing the get_bridges function
->>   *
->>   * Return: struct fpga_region or ERR_PTR()
->>   */
->>  struct fpga_region *
->> -fpga_region_register_full(struct device *parent, const struct fpga_region_info *info)
->> +__fpga_region_register_full(struct device *parent, const struct fpga_region_info *info,
->> +			    struct module *owner)
->>  {
->>  	struct fpga_region *region;
->>  	int id, ret = 0;
->> @@ -213,6 +215,7 @@ fpga_region_register_full(struct device *parent, const struct fpga_region_info *
->>  	region->compat_id = info->compat_id;
->>  	region->priv = info->priv;
->>  	region->get_bridges = info->get_bridges;
->> +	region->get_br_owner = owner;
-> 
-> get_* implies a function. Maybe this would be better called br_owner?
+> Signed-off-by: Puranjay Mohan <puranjay12@gmail.com>
 
-You are right. I will change it to br_owner in v2.
+Presumably this'll need a Cc stable and a Fixes tag?
 
+> ---
+>  arch/arm64/include/asm/cfi.h    | 23 ++++++++++++++
+>  arch/arm64/kernel/alternative.c | 54 +++++++++++++++++++++++++++++++++
+>  arch/arm64/net/bpf_jit_comp.c   | 28 +++++++++++++----
+>  3 files changed, 99 insertions(+), 6 deletions(-)
+>  create mode 100644 arch/arm64/include/asm/cfi.h
 > 
-> - Russ
-> 
+> diff --git a/arch/arm64/include/asm/cfi.h b/arch/arm64/include/asm/cfi.h
+> new file mode 100644
+> index 000000000000..670e191f8628
+> --- /dev/null
+> +++ b/arch/arm64/include/asm/cfi.h
+> @@ -0,0 +1,23 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +#ifndef _ASM_ARM64_CFI_H
+> +#define _ASM_ARM64_CFI_H
+> +
+> +#ifdef CONFIG_CFI_CLANG
+> +#define __bpfcall
+> +static inline int cfi_get_offset(void)
+> +{
+> +	return 4;
+> +}
+> +#define cfi_get_offset cfi_get_offset
+> +extern u32 cfi_bpf_hash;
+> +extern u32 cfi_bpf_subprog_hash;
+> +extern u32 cfi_get_func_hash(void *func);
+> +#else
+> +#define cfi_bpf_hash 0U
+> +#define cfi_bpf_subprog_hash 0U
+> +static inline u32 cfi_get_func_hash(void *func)
+> +{
+> +	return 0;
+> +}
+> +#endif /* CONFIG_CFI_CLANG */
+> +#endif /* _ASM_ARM64_CFI_H */
+> diff --git a/arch/arm64/kernel/alternative.c b/arch/arm64/kernel/alternative.c
+> index 8ff6610af496..1715da7df137 100644
+> --- a/arch/arm64/kernel/alternative.c
+> +++ b/arch/arm64/kernel/alternative.c
+> @@ -13,6 +13,7 @@
+>  #include <linux/elf.h>
+>  #include <asm/cacheflush.h>
+>  #include <asm/alternative.h>
+> +#include <asm/cfi.h>
+>  #include <asm/cpufeature.h>
+>  #include <asm/insn.h>
+>  #include <asm/module.h>
+> @@ -298,3 +299,56 @@ noinstr void alt_cb_patch_nops(struct alt_instr *alt, __le32 *origptr,
+>  		updptr[i] = cpu_to_le32(aarch64_insn_gen_nop());
+>  }
+>  EXPORT_SYMBOL(alt_cb_patch_nops);
+> +
+> +#ifdef CONFIG_CFI_CLANG
+> +struct bpf_insn;
+> +
+> +/* Must match bpf_func_t / DEFINE_BPF_PROG_RUN() */
+> +extern unsigned int __bpf_prog_runX(const void *ctx,
+> +				    const struct bpf_insn *insn);
+> +
+> +/*
+> + * Force a reference to the external symbol so the compiler generates
+> + * __kcfi_typid.
+> + */
+> +__ADDRESSABLE(__bpf_prog_runX);
+> +
+> +/* u32 __ro_after_init cfi_bpf_hash = __kcfi_typeid___bpf_prog_runX; */
+> +asm (
+> +"	.pushsection	.data..ro_after_init,\"aw\",@progbits	\n"
+> +"	.type	cfi_bpf_hash,@object				\n"
+> +"	.globl	cfi_bpf_hash					\n"
+> +"	.p2align	2, 0x0					\n"
+> +"cfi_bpf_hash:							\n"
+> +"	.word	__kcfi_typeid___bpf_prog_runX			\n"
+> +"	.size	cfi_bpf_hash, 4					\n"
+> +"	.popsection						\n"
+> +);
+> +
+> +/* Must match bpf_callback_t */
+> +extern u64 __bpf_callback_fn(u64, u64, u64, u64, u64);
+> +
+> +__ADDRESSABLE(__bpf_callback_fn);
+> +
+> +/* u32 __ro_after_init cfi_bpf_subprog_hash = __kcfi_typeid___bpf_callback_fn; */
+> +asm (
+> +"	.pushsection	.data..ro_after_init,\"aw\",@progbits	\n"
+> +"	.type	cfi_bpf_subprog_hash,@object			\n"
+> +"	.globl	cfi_bpf_subprog_hash				\n"
+> +"	.p2align	2, 0x0					\n"
+> +"cfi_bpf_subprog_hash:						\n"
+> +"	.word	__kcfi_typeid___bpf_callback_fn			\n"
+> +"	.size	cfi_bpf_subprog_hash, 4				\n"
+> +"	.popsection						\n"
+> +);
+> +
+> +u32 cfi_get_func_hash(void *func)
+> +{
+> +	u32 hash;
+> +
+> +	if (get_kernel_nofault(hash, func - cfi_get_offset()))
+> +		return 0;
+> +
+> +	return hash;
+> +}
+> +#endif
 
-[ ... ]
+I realise this is following the example of x86, but this has nothing to do with
+alternatives, so could we please place it elsewhere? e.g. add a new
+arch/arm64/net/bpf_cfi.c?
+
+Which functions is cfi_get_func_hash() used against? The comment in the code
+below says:
+
+	if (flags & BPF_TRAMP_F_INDIRECT) {
+		/*
+		 * Indirect call for bpf_struct_ops
+		 */
+		emit_kcfi(cfi_get_func_hash(func_addr), ctx);
+	}
+
+.. but it's not clear to me which functions specifically would be in that
+'func_addr', not why returning 0 is fine -- surely we should fail compilation
+if the provided function pointer causes a fault and we don't have a valid
+typeid?
+
+> diff --git a/arch/arm64/net/bpf_jit_comp.c b/arch/arm64/net/bpf_jit_comp.c
+> index bc16eb694657..2372812bb47c 100644
+> --- a/arch/arm64/net/bpf_jit_comp.c
+> +++ b/arch/arm64/net/bpf_jit_comp.c
+> @@ -17,6 +17,7 @@
+>  #include <asm/asm-extable.h>
+>  #include <asm/byteorder.h>
+>  #include <asm/cacheflush.h>
+> +#include <asm/cfi.h>
+>  #include <asm/debug-monitors.h>
+>  #include <asm/insn.h>
+>  #include <asm/patching.h>
+> @@ -158,6 +159,12 @@ static inline void emit_bti(u32 insn, struct jit_ctx *ctx)
+>  		emit(insn, ctx);
+>  }
+>  
+> +static inline void emit_kcfi(u32 hash, struct jit_ctx *ctx)
+> +{
+> +	if (IS_ENABLED(CONFIG_CFI_CLANG))
+> +		emit(hash, ctx);
+> +}
+> +
+>  /*
+>   * Kernel addresses in the vmalloc space use at most 48 bits, and the
+>   * remaining bits are guaranteed to be 0x1. So we can compose the address
+> @@ -295,7 +302,7 @@ static bool is_lsi_offset(int offset, int scale)
+>  #define PROLOGUE_OFFSET (BTI_INSNS + 2 + PAC_INSNS + 8)
+>  
+>  static int build_prologue(struct jit_ctx *ctx, bool ebpf_from_cbpf,
+> -			  bool is_exception_cb)
+> +			  bool is_exception_cb, bool is_subprog)
+>  {
+>  	const struct bpf_prog *prog = ctx->prog;
+>  	const bool is_main_prog = !bpf_is_subprog(prog);
+> @@ -306,7 +313,6 @@ static int build_prologue(struct jit_ctx *ctx, bool ebpf_from_cbpf,
+>  	const u8 fp = bpf2a64[BPF_REG_FP];
+>  	const u8 tcc = bpf2a64[TCALL_CNT];
+>  	const u8 fpb = bpf2a64[FP_BOTTOM];
+> -	const int idx0 = ctx->idx;
+>  	int cur_offset;
+>  
+>  	/*
+> @@ -332,6 +338,8 @@ static int build_prologue(struct jit_ctx *ctx, bool ebpf_from_cbpf,
+>  	 *
+>  	 */
+>  
+> +	emit_kcfi(is_subprog ? cfi_bpf_subprog_hash : cfi_bpf_hash, ctx);
+> +	const int idx0 = ctx->idx;
+>  	/* bpf function may be invoked by 3 instruction types:
+>  	 * 1. bl, attached via freplace to bpf prog via short jump
+>  	 * 2. br, attached via freplace to bpf prog via long jump
+> @@ -1648,7 +1656,8 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *prog)
+>  	 * BPF line info needs ctx->offset[i] to be the offset of
+>  	 * instruction[i] in jited image, so build prologue first.
+>  	 */
+> -	if (build_prologue(&ctx, was_classic, prog->aux->exception_cb)) {
+> +	if (build_prologue(&ctx, was_classic, prog->aux->exception_cb,
+> +			   bpf_is_subprog(prog))) {
+>  		prog = orig_prog;
+>  		goto out_off;
+>  	}
+> @@ -1696,7 +1705,8 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *prog)
+>  	ctx.idx = 0;
+>  	ctx.exentry_idx = 0;
+>  
+> -	build_prologue(&ctx, was_classic, prog->aux->exception_cb);
+> +	build_prologue(&ctx, was_classic, prog->aux->exception_cb,
+> +		       bpf_is_subprog(prog));
+>  
+>  	if (build_body(&ctx, extra_pass)) {
+>  		prog = orig_prog;
+> @@ -1745,9 +1755,9 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *prog)
+>  		jit_data->ro_header = ro_header;
+>  	}
+>  
+> -	prog->bpf_func = (void *)ctx.ro_image;
+> +	prog->bpf_func = (void *)ctx.ro_image + cfi_get_offset();
+>  	prog->jited = 1;
+> -	prog->jited_len = prog_size;
+> +	prog->jited_len = prog_size - cfi_get_offset();
+>  
+>  	if (!prog->is_func || extra_pass) {
+>  		int i;
+> @@ -2011,6 +2021,12 @@ static int prepare_trampoline(struct jit_ctx *ctx, struct bpf_tramp_image *im,
+>  	/* return address locates above FP */
+>  	retaddr_off = stack_size + 8;
+>  
+> +	if (flags & BPF_TRAMP_F_INDIRECT) {
+> +		/*
+> +		 * Indirect call for bpf_struct_ops
+> +		 */
+> +		emit_kcfi(cfi_get_func_hash(func_addr), ctx);
+> +	}
+
+I'm confused; why does the trampoline need this?
+
+The code that branches to the trampoline doesn't check the type hash: either
+the callsite branches directly (hence no check), or the common ftrace
+trampoline does so indirectly, and the latter doesn't know the expected typeid,
+so it cannot check.
+
+If we wanted a tpyeid here, that should probably be distinct from the original
+function tpyeid, since the trampoline calling convention is different.
+
+IIUC this isn't reachable today regardless since CALL_OPS and KCFI are
+currently mutually exclusive.
+
+Either I've misunderstood what's going on here, or this can be removed.
+
 Thanks,
-Marco
-
+Mark.
 
