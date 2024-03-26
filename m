@@ -1,75 +1,123 @@
-Return-Path: <linux-kernel+bounces-119778-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-119779-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 71D4088CCE4
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 20:16:57 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 16D2388CCE6
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 20:17:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A37491C3BBC2
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 19:16:56 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id BD86B1F83305
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 19:17:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E939313CF8A;
-	Tue, 26 Mar 2024 19:16:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9998713CC67;
+	Tue, 26 Mar 2024 19:17:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="rw71i3CC"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="SFKwvYbt"
+Received: from mail-il1-f176.google.com (mail-il1-f176.google.com [209.85.166.176])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 341BF1AAD3;
-	Tue, 26 Mar 2024 19:16:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 65AEE13CC65
+	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 19:17:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711480609; cv=none; b=BJ4G2HUYew+7dUNtq9Q3HCwqMBjLqerBy+6G7O/0ZgoIdGGjeISi9V0/tLAHQscS/tIHJbyuch+0X3RYnLURL/6nKfHpm+HSy2PMiqAQxSOQo+/LCtdFTS1v6jbpvWGRDMwh+CfOPM1w4P/6S6lrn3N1TalpLZ8iRI6VQMO+Mh8=
+	t=1711480630; cv=none; b=rIYIeK91h83+wV2WpkHmQrg1Gpg22ojH/FjP5bDsoB15/vkfEvMfY58/j6q7ilBHpD8SOiuwhcxtTT2pWj1/W76YIvzaf4Nt9hS1u4/EMwFaqkkbDxdiXszyjoiedsytagT7ucEL0U07mbblh1Lw1Bk7C+vVFHoSF3D2wF87Rp8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711480609; c=relaxed/simple;
-	bh=WwVSE7IIIlwy/au28BxbBj4dP3195qNKkQcUeZ9/YQQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=RTsW9XVKLiPzeQUBn+kCc3qUtPaZ+9BCQR/SXuDmvS+XjBo8Nke1AaFXpuLkjyg4L0FcFiwazezmwdEMBFpBz7tBTR/2IA6DA2c0nwylyVBaVvnZfnerTz0pBu2JCtHdiJXOSKbwH3XYQrw4HLHcPLnw+/07/3uallOSGTsYk40=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=rw71i3CC; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 038E4C433F1;
-	Tue, 26 Mar 2024 19:16:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711480608;
-	bh=WwVSE7IIIlwy/au28BxbBj4dP3195qNKkQcUeZ9/YQQ=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=rw71i3CC2G8MBX8x0c8JIUiTMN5DgVuX1nbu/2CEgwo4XmIJBHp2v2PRcV18iHDes
-	 WYxxAIk+N1/NXr64Lkd4mvSnLAqtRiocWJf46NNv+LDlakDouKeugHs+DkK3TCr6zZ
-	 FxFHQ5HloBvaTX8GevU6YEv8fi5F16levjlxJrxrvl/IT8xpnIUSFDsS7sKHuRZ+Rh
-	 eUhXMfTfJBBq/52zEOBNx89bdXKRPNg503K7Jf1Ml6nrxArsuFyHSTnl5Cwq+QXOtP
-	 SGAG4J5DajjQtJSMtESwnJCVtDU742D9eaCov4ry/jnokpZ2CP/2rMj2+BiZQKHlKE
-	 DKVtqWTXJ9YZw==
-Date: Tue, 26 Mar 2024 20:16:44 +0100
-From: Andi Shyti <andi.shyti@kernel.org>
-To: Wolfram Sang <wsa+renesas@sang-engineering.com>
-Cc: linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 17/64] i2c: dln2: reword according to newest specification
-Message-ID: <lssnuybdb3hseqomfs4qk6ocoiencoau5aomzwj4nwzbryr4bx@fe6ylfhmabev>
-References: <20240322132619.6389-1-wsa+renesas@sang-engineering.com>
- <20240322132619.6389-18-wsa+renesas@sang-engineering.com>
+	s=arc-20240116; t=1711480630; c=relaxed/simple;
+	bh=d5oiFHuXdlxBu9o91T6TmgxwTU7ItEYzvBVBFxokMdc=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=D1+MVxhvhehu9xHt5+e7vacRDs94/eqB+L9tpH+gEvgpAfheDROOlKDhVZ4fe4M2z8x/tCiLOZPzyhshvpG226c4Gh2XlEU8g2ohF24PCB76wupa9R7khsAEAgCPqtkAgw+Fzavkya++GzGh9NBrdVoJUzpo+8ycgIWe+Ou4M4o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linuxfoundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=SFKwvYbt; arc=none smtp.client-ip=209.85.166.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linuxfoundation.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
+Received: by mail-il1-f176.google.com with SMTP id e9e14a558f8ab-3688dcc5055so419975ab.1
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 12:17:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxfoundation.org; s=google; t=1711480627; x=1712085427; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=aAgAdxoAWBggRCLmNhHzURpQUXyex1VS2og6I0eJHg4=;
+        b=SFKwvYbtiHIg9dmQJc36AJa97p5dNiJUIsXe5/J5phY0QkI7AJnz8O3z5wd+tvllSi
+         N32lGwd03I0cGdX+rcHl5v8303HpKd3q6eNfB8cYd9S5FMEesU9Gz//SnBjj8fGgsn+g
+         5gkU+fqUlbk2BUeZ1kqbkW1AfNjWyqIqfUFno=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711480627; x=1712085427;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=aAgAdxoAWBggRCLmNhHzURpQUXyex1VS2og6I0eJHg4=;
+        b=e1L0oncVbazWEh0y5YZEo2KiZnZRr6RL5YBddEz9ak5Mz1tukTmq8WoWTYFOObHH7o
+         T/4b3xj5zIlF9V4iytqScCcZJ9JJnvtDZJXaO8eM3EId1oOTgCWXA85efq1P0R+P4MSw
+         4/367CxDsDVLkrlH5jC6s1sR624eZ1L+gDwa+Nd7oHg0KbO/K3Q5Q8z5CFnyAwexDoVt
+         4iXM8nscXydNy2jIetmgS8vmF3ZIm2r+yFyXVjlB19FKjdAJ/LFpZJJLG6R2Cofxnw5M
+         tUoP3zVlBhzR2FAktnP2XEsSZmFlUO20WsaENZuNSitsHHfuKDZIT1tRGqiZ+T+cC0yU
+         Draw==
+X-Gm-Message-State: AOJu0Yx8yHDIwIJ/GJAyHBVQQaEqMWZ7lT6zrGiihJa+RWRhjEyj5g9L
+	vK5SNHNS3TdagrLcLK7p4nvRFAVBqmGCUXxA/dn3jt/2ccJijgWyUo0txMcKsgo=
+X-Google-Smtp-Source: AGHT+IERj3hrIyDnCZJ5UcMAXz2os4t+ojmXAKvLHG/6knoGZCHVaoWkXymnVBqCdt4RsIW8XSrQPw==
+X-Received: by 2002:a92:c9c6:0:b0:368:80b8:36fa with SMTP id k6-20020a92c9c6000000b0036880b836famr8573443ilq.2.1711480627401;
+        Tue, 26 Mar 2024 12:17:07 -0700 (PDT)
+Received: from [192.168.1.128] ([38.175.170.29])
+        by smtp.gmail.com with ESMTPSA id m18-20020a92c532000000b00368984422e1sm927267ili.23.2024.03.26.12.17.06
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 26 Mar 2024 12:17:07 -0700 (PDT)
+Message-ID: <0cee99af-f058-47a0-9119-94cc9a37e88b@linuxfoundation.org>
+Date: Tue, 26 Mar 2024 13:17:06 -0600
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240322132619.6389-18-wsa+renesas@sang-engineering.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3] kselftest/clone3: Make test names for set_tid test
+ stable
+Content-Language: en-US
+To: Mark Brown <broonie@kernel.org>, Christian Brauner <brauner@kernel.org>,
+ Shuah Khan <shuah@kernel.org>
+Cc: linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+ Shuah Khan <skhan@linuxfoundation.org>
+References: <20240325-kselftest-clone3-set-tid-v3-1-6fdd91506e53@kernel.org>
+From: Shuah Khan <skhan@linuxfoundation.org>
+In-Reply-To: <20240325-kselftest-clone3-set-tid-v3-1-6fdd91506e53@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Hi Wolfram,
-
-On Fri, Mar 22, 2024 at 02:25:10PM +0100, Wolfram Sang wrote:
-> Match the wording of this driver wrt. the newest I2C v7, SMBus 3.2, I3C
-> specifications and replace "master/slave" with more appropriate terms.
-> They are also more specific because we distinguish now between a remote
-> entity ("client") and a local one ("target").
+On 3/25/24 08:29, Mark Brown wrote:
+> The test results reported for the clone3_set_tid tests interact poorly with
+> automation for running kselftest since the reported test names include TIDs
+> dynamically allocated at runtime. A lot of automation for running kselftest
+> will compare runs by looking at the test name to identify if the same test
+> is being run so changing names make it look like the testsuite has been
+> updated to include new tests. This makes the results display less clearly
+> and breaks cases like bisection.
 > 
-> Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
+> Address this by providing a brief description of the tests and logging that
+> along with the stable parameters for the test currently logged. The TIDs
+> are already logged separately in existing logging except for the final test
+> which has a new log message added. We also tweak the formatting of the
+> logging of expected/actual values for clarity.
+> 
+> There are still issues with the logging of skipped tests (many are simply
+> not logged at all when skipped and all are logged with different names) but
+> these are less disruptive since the skips are all based on not being run as
+> root, a condition likely to be stable for a given test system.
+> 
+> Acked-by: Christian Brauner <brauner@kernel.org>
+> Signed-off-by: Mark Brown <broonie@kernel.org>
+> ---
+> Changes in v3:
+> - Rebase onto v6.9-rc1.
+> - This is the second release I've posted this for with no changes or
+>    review comments.
+> - Link to v2: https://lore.kernel.org/r/20240122-kselftest-clone3-set-tid-v2-1-72af5d7dbae8@kernel.org
+> 
 
-Reviewed-by: Andi Shyti <andi.shyti@kernel.org>
+Thank you for patience. Applied now to linux-kselftest fixes for
+next rc.
 
-Thanks,
-Andi
+thanks,
+-- Shuah
+
 
