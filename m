@@ -1,265 +1,329 @@
-Return-Path: <linux-kernel+bounces-118437-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-118373-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id EF06188BADB
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 07:59:39 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id B318D88B9CD
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 06:26:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1ED921C2A93B
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 06:59:39 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id ED647B224CA
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 05:26:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5AA4E12DDAE;
-	Tue, 26 Mar 2024 06:59:26 +0000 (UTC)
-Received: from CHN02-BJS-obe.outbound.protection.partner.outlook.cn (mail-bjschn02on2108.outbound.protection.partner.outlook.cn [139.219.17.108])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D0F79129A7A;
+	Tue, 26 Mar 2024 05:26:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="HSp5EfT1"
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E74041862F;
-	Tue, 26 Mar 2024 06:59:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=139.219.17.108
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711436365; cv=fail; b=HJ2iV2KLYg9kddHsbn2eB5yYRSVr9AG8SKcjF2Qt4LP2OvUu9ykBvlx/jzjo5aWXTc63nKakUzb0oD8v6R8b6FyRutywJfIGsyrgTd8U/i+WJrJZyggYb2sl0kD2lM++kVGxLwICggyTe/yPS3wSwsfXOP36qmUBfxo6O69VLbk=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711436365; c=relaxed/simple;
-	bh=mqC2mpW70pffSGuor3ZdEj2Z66AItOQoBrHOrmtcYSE=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=YUYAsJnL1B/0Dw5gg3ClNWQ2kok7AYnsLPRcwJOP6R58j5mMVmh+jRF4APNL2zhefm4x3ISGu/qc7UWpvSaLz/0KMQFp+sZ3pf3kI2EGZVTbHRaz39Sv/VNbBQmmjGPeCxjkwmhxEAdJgsA135DWChPhJ6Y9awjxzflCDGD2zd4=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=starfivetech.com; spf=pass smtp.mailfrom=starfivetech.com; arc=fail smtp.client-ip=139.219.17.108
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=starfivetech.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=starfivetech.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=jwRzjKSYOaALOS3IkNMyNHK7HA/Bhho2C4Dkyqz3YPu8vm8Yxuu1KUXycEbBLHLMUUwmNNAqbNgfjYh4j8qeKsPZVnaCr3A3QCCHLDRE5E6DMyU/QIh+lqBF/TAU7NMbZ3++4vrEQQgVoOMusATqJEZaROSjQXp2zcplDrSXVZV5b0cgO9EZ2pjw/JcfTiOeOcd7+wPqTLM3s630uWK2yoFNf4yUL9wFHYVvvwEURsEQ2cx2i+zu4/3Q1Za6NL1/zUQnkQLbHq0UZkJXwCuvR1uNnm0clY39ymPGvxY+lvNBSzCcZJTtAsXnHmYSKTtkrnCUkvYN50pYF8s9fOOiFg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=P6mZgOjnFzZVrdG0UtJT/K3Amj51WZRg/lhQXzjrVI8=;
- b=FQfosByYNeXkeFekeK6z4XGN2gj/gFc2Bz+HObVoKHKl8zr0SPg7DB/9kfNKrVLEkZk6soff9SuC/nv3lX4mRpyVFgl4JRWJzxx1oOxkl3ByA6SV4Qb5xDW5RNwAbo8ytOHWoAa4RV5TrOJQiRR7VbaTTlBjaWvQI18i+KCsAWSG1TmQWpVoVBSZ1UvMJlUBuYuu/zuYc1sDcfU+6WX4LQQCT4QqmougAivGkg9ORTAOA35BH0dq1aqF18tLmvyr97xkxK+jtZPU1BKI14XYzrsOuMCG1i/4mWBp8kQmhfYKCPRnvdj+zqz4Zwe5z+mPbcOQYssG7KLaFyHPq7sWhQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=starfivetech.com; dmarc=pass action=none
- header.from=starfivetech.com; dkim=pass header.d=starfivetech.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=starfivetech.com;
-Received: from BJSPR01MB0595.CHNPR01.prod.partner.outlook.cn
- (2406:e500:c211:e::20) by BJSPR01MB0883.CHNPR01.prod.partner.outlook.cn
- (2406:e500:c211:e::21) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.32; Tue, 26 Mar
- 2024 05:25:24 +0000
-Received: from BJSPR01MB0595.CHNPR01.prod.partner.outlook.cn
- ([fe80::d0cf:5e2e:fd40:4aef]) by
- BJSPR01MB0595.CHNPR01.prod.partner.outlook.cn ([fe80::d0cf:5e2e:fd40:4aef%4])
- with mapi id 15.20.7409.031; Tue, 26 Mar 2024 05:25:24 +0000
-From: Tan Chun Hau <chunhau.tan@starfivetech.com>
-To: "David S . Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	Rob Herring <robh+dt@kernel.org>,
-	Emil Renner Berthing <kernel@esmil.dk>,
-	Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-	Alexandre Torgue <alexandre.torgue@foss.st.com>,
-	Simon Horman <horms@kernel.org>,
-	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
-	Andrew Halaney <ahalaney@redhat.com>,
-	Jisheng Zhang <jszhang@kernel.org>,
-	=?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
-	Russell King <rmk+kernel@armlinux.org.uk>
-Cc: Ley Foon Tan <leyfoon.tan@starfivetech.com>,
-	Jee Heng Sia <jeeheng.sia@starfivetech.com>,
-	netdev@vger.kernel.org,
-	devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-stm32@st-md-mailman.stormreply.com,
-	linux-arm-kernel@lists.infradead.org,
-	linux-riscv@lists.infradead.org
-Subject: [PATCH v4 1/1] dt-bindings: net: starfive,jh7110-dwmac: Add StarFive JH8100 support
-Date: Mon, 25 Mar 2024 22:25:05 -0700
-Message-Id: <20240326052505.197408-2-chunhau.tan@starfivetech.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20240326052505.197408-1-chunhau.tan@starfivetech.com>
-References: <20240326052505.197408-1-chunhau.tan@starfivetech.com>
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: ZQ0PR01CA0019.CHNPR01.prod.partner.outlook.cn
- (2406:e500:c550:2::7) To BJSPR01MB0595.CHNPR01.prod.partner.outlook.cn
- (2406:e500:c211:e::20)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 217D874BEB;
+	Tue, 26 Mar 2024 05:26:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1711430776; cv=none; b=uDhl1BrVIbMlQxhYyF5Jp6hMGSfS4hAmDj81m+GAxjKtOZNW/hgN4Swldp5hP4YwlumXg5zkp6h7UpKqArHY+rTIL6sY4J5eiX5bFrdqAlTQQe8Hz52DtpCWo/S0bi82LLr+tSuczsamUpVv1aY0+/GxVfE09hUhpb958hU8CvU=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1711430776; c=relaxed/simple;
+	bh=L+L9VRh5qtEdGp7ZtYuNEvXJUZUZjBEENaQAIJWo2tc=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=mxZ7U1D8hrv4PFxbV053+lDWl+wytOvV1CM0Q1teXCF9QAy6zH39zsHMj/bwz8cHMxxMEsdY81TI29crwnae64Jfcn0cVM4yFF3SJWuNgnMKKwxbcQytqxcApGObroBVyUeOmN+j/tvrUoO8XvgaEszffBui0Vs+OO4sJubd0I8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=HSp5EfT1; arc=none smtp.client-ip=205.220.168.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279866.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 42PNvJHq026281;
+	Tue, 26 Mar 2024 05:26:04 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=0yygey1rH/sTgcnafUAiQGFwIArwPDmg51U950nlkgU=; b=HS
+	p5EfT1uar28v/Yryvtqvc+KP7Tc9JvrZnx01axaNekVgRqaIiXwj97y2yhb/8mqX
+	JUW62p4KcCKIDlTpzGb76S1lNe9ohvlewfpxLn3ck3q6hAz5N5XFTIQvYLTJppR3
+	AvCX269QSGyibD5EH0XX2GtRKxyDeK8TsIlEO5t7yFS/qQ3oHDbfyVX2z5D1CmOg
+	lbpHVF2mhrSfBKnwzIDi5avhfxIEXMd7k+Bu0VG3hnDobel5uzm+3BUCB/MreL4v
+	yGssanIPJQVdKnfrkwXejKrvbDLS2PpZ2b5z4tI7ESPfSFYuGAgnfWMICtsD7k4f
+	LVRXz/BD6Q3aNrXzH2aA==
+Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3x38ama6m7-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 26 Mar 2024 05:26:03 +0000 (GMT)
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+	by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 42Q5Q2A9026590
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 26 Mar 2024 05:26:02 GMT
+Received: from [10.131.33.37] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Mon, 25 Mar
+ 2024 22:25:58 -0700
+Message-ID: <058ab02e-5d49-8637-f995-b7d7458f8b44@quicinc.com>
+Date: Tue, 26 Mar 2024 10:55:55 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BJSPR01MB0595:EE_|BJSPR01MB0883:EE_
-X-MS-Office365-Filtering-Correlation-Id: c6dacbda-229e-4087-830d-08dc4d552391
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	/BlYOt+2GCyEB8SU3pG0ZtSOFOuhCajAoa+ij2qqpU9IQqm0V9FK3BsVvlIae2D57JxqsnE5bORKM49joI0psvE7xDxjgE6kSyTwK0CcAqnMu/8U44e58AIDdCn4Ph83a0znre6jGB3VWFMq2KAHLsTG9zRuU2evpW4r7yTUCJ9Lmp9XSJWDiZKfjwoK+WWf7diGujTmBXblHHbExrlRBxbDW4k8VN1+9UdQayJzq1IqfQtRJZVxJFY927dTTJzuSGI+6UEZ7f5cbVU2M5uJiaDgxQl35XVRUZe1TOtZWJQwPxFj2OCS6dHiFs2V8N6BT6BY6F+uVZOvXSyM7AP+FBqdAareFEcYkv8jYhMX+ioTrVIkAyHS3eTVDyzUInt+QTV9YyIH0TvCDdrJvR+AwybzCrY0QI5k4M/fsQN85ew4ZFVlu3SsS/hoS804DnVyUXlOc61sZZVkFlXE9/m8hJGvTbMIekjhYKoO/9dczsJiZ22izrL8ej2EU1g+OfiZv/Kn9ufeCHGTbqKVvlMH/DGE0MNozTnBEmPJqQMQANPpikJ7MgehiVG6gIQk23rBqPw32Ijn50e3PDAxdYH/7iTnVtVFQzJZrxH6zQ62fW6A0S8VOjPjlGl4adUWAc46PwI5efBuDq1sbIHt5/2Now==
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BJSPR01MB0595.CHNPR01.prod.partner.outlook.cn;PTR:;CAT:NONE;SFS:(13230031)(41320700004)(7416005)(1800799015)(52116005)(366007)(38350700005)(921011);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?f+iR05w0GIludgpUEz1GsH1+/HncBFXNpLGyJm8t0fWS1UwjNb19K7KyuDRa?=
- =?us-ascii?Q?uIMTp1CMl4onzkN1yu7faDzSseAqbfInaBKYiL8nZ0wMEgfz01347AAizRi6?=
- =?us-ascii?Q?qZdlsMISbOcrDGjq/W221MBWTRAormuUNs3D5efXqijcqIWNkVZ702glruS4?=
- =?us-ascii?Q?CiRbYrIaVs1f2361x7XnNOHkwHbHrp3XnAXDP5/F2faY9eHkvpzeFwZAgCYc?=
- =?us-ascii?Q?B49fPZlYNWbKfgToiTcCOan1XqIqKE15rmvQUZhCziXBUxBc8SyZq/cxlobp?=
- =?us-ascii?Q?hHA+5PJ4Gmwpszi+nLBM3LjHcXgikrHlr826CE6w99dz8EGGdgk11ho7bqS9?=
- =?us-ascii?Q?oFw9q8A1GffNS0jEDHeIv/mMDULCcsFC/NtPkEWKuAdf9b2fAfK+vd3D+dGD?=
- =?us-ascii?Q?8NlzQvdleHS7WXNyh9nVmoLaLwjSvytXOWHnl5ICc6xD66edsZA/0ClLbL+1?=
- =?us-ascii?Q?YxNlIIkaxvmpb03Pj/uB68s3P/W0yDBZrHmuqqewzLrkUt7dzLmfkjqExTgY?=
- =?us-ascii?Q?7P5iU2tqJUNSM3/ArqfazIv0gtM2veCFchs0hixUA5sr56pTmOYK9/gQ+VMp?=
- =?us-ascii?Q?py+//bRQQPB1H//OiUzU8WygMFwdgPfW2GeI4gxegJ+8fV6L7jFXE/k/f3wq?=
- =?us-ascii?Q?PC7kxRcx+puS8XTbgqLKiDPEAMN/6sCY1xBM+yRR0nwxkmPW1FkA5r8f8HG9?=
- =?us-ascii?Q?GBEeVa1mv3uVodABplnLjFVvbOZpWTz3oDas1ZgnCFeHHVrQx4U6tVeakGyi?=
- =?us-ascii?Q?IpI+U09jojaj260szqACjRbc+4FwGJCN+0BMHRn+242fQeIl6CtJaSwqMucU?=
- =?us-ascii?Q?Y0iVArcaVdODWZ82X6J7aXeiNdhlJmAiTL7mfz45XKtJ7XnFB7AWWMrv3BwY?=
- =?us-ascii?Q?nCCuLjg6mGURab52rTbB2/I0SvV2Dh0yWH5Jmg6ia8bVYdEa1mRXgLe+LTDj?=
- =?us-ascii?Q?t8zATxZzadRHWi3Nlho5AJqKoG30EtvsN7MpHKMtad8ejtuu5N593y/oK8uF?=
- =?us-ascii?Q?a3K32kB5votMdp7nC7dBQxnrkefDDKk3KnA2erj/jLNn0KhSVGR3h4nghGi9?=
- =?us-ascii?Q?4c1qWL7/KQEJGkMczhpRf8bx+qbgKW5wZzA7KF+cmClsSD0r1oOmsM0CPHtM?=
- =?us-ascii?Q?FgjoMoB5+7InOyP5AbdJ4Ptr/56tp8C4DIlnIK+kqUD0UIfLOv3+cOF98PPS?=
- =?us-ascii?Q?zPHKZICVMlRajgfssM+OgdAz1/DtsCYDkkqufH8C2DdpoUjONoqGuj6xIapG?=
- =?us-ascii?Q?b088LrMTkRaLSogtTrQQfhSCrKxSzL869oB1wRZX5WrOdbIKSf/sD7oS+zk3?=
- =?us-ascii?Q?tIzdzI4bA4CyOwbZxghOU5uhrminsOHjbJ3EcIrhRBTvJUi1owFZEOKEv6KC?=
- =?us-ascii?Q?HlYrOHX+vjA2hTb1uEClEuNkdYDgtO/BypNi1a9qHeJgD3wLdem4j0S8liPx?=
- =?us-ascii?Q?4YNz2Ql27WNkFmsJeMfoEDyoWT11xyCK+Cn6vZ6Fkh7uHT3g7yBzRP9ynAJ5?=
- =?us-ascii?Q?0b88XTQCHtlGOtgAOIeWz0txeG5w69ZRLWPNmOkNCmgQi0wzTIEMmWEbrxaK?=
- =?us-ascii?Q?2oibgZbN7p4ZFiNT9ibcxT+jyO+JmPcT1GJmpFP0xGTrgAVj/2RL6kmS8cFJ?=
- =?us-ascii?Q?4g=3D=3D?=
-X-OriginatorOrg: starfivetech.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: c6dacbda-229e-4087-830d-08dc4d552391
-X-MS-Exchange-CrossTenant-AuthSource: BJSPR01MB0595.CHNPR01.prod.partner.outlook.cn
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Mar 2024 05:25:24.6275
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 06fe3fa3-1221-43d3-861b-5a4ee687a85c
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: e1iUsN5DgbggrYtBqbZ3nj7wgalL8FXKkQ/+Jo/kMGdQyGjXWrmmD7M+7ZLjZ0OQ4luBDsQNIgGyB5y2DTE8OA+bxztpbfad3kc8Gf4B0F4=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BJSPR01MB0883
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.0
+Subject: Re: [PATCH V3 2/2] cpufreq: scmi: Register for limit change
+ notifications
+To: Lukasz Luba <lukasz.luba@arm.com>
+CC: <sudeep.holla@arm.com>, Cristian Marussi <cristian.marussi@arm.com>,
+        <linux-arm-kernel@lists.infradead.org>, <pierre.gondois@arm.com>,
+        <dietmar.eggemann@arm.com>, <morten.rasmussen@arm.com>,
+        <viresh.kumar@linaro.org>, <rafael@kernel.org>,
+        <linux-pm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <quic_mdtipton@quicinc.com>, <linux-arm-msm@vger.kernel.org>
+References: <20240227181632.659133-1-quic_sibis@quicinc.com>
+ <20240227181632.659133-3-quic_sibis@quicinc.com>
+ <f8bfc666-c216-44d5-a63b-99f04ff3b8ef@arm.com>
+ <2608b2d8-f3b0-b4f5-f8e4-1f2242043ded@quicinc.com>
+ <64c6a1bc-92f2-4f44-ab10-cbd2473746f3@arm.com>
+ <18c249b2-ce8c-435b-8d65-a1770a1f294e@arm.com> <ZeBqW04f8V4dHphn@pluto>
+ <7c82b316-89d9-470d-b46d-f86e81e2add3@arm.com> <ZeB0iCr9GpfUiOEg@pluto>
+ <66ca73cc-8bdd-453a-951c-5e0166340edd@arm.com>
+ <08018d07-79cf-cebd-aba5-214afbc5001d@quicinc.com>
+ <a576209f-ffda-4891-82e9-21f153b57a26@arm.com>
+Content-Language: en-US
+From: Sibi Sankar <quic_sibis@quicinc.com>
+In-Reply-To: <a576209f-ffda-4891-82e9-21f153b57a26@arm.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: iS3g_phQvBljSVhzQt35gWQNEJsCYSke
+X-Proofpoint-GUID: iS3g_phQvBljSVhzQt35gWQNEJsCYSke
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-03-26_02,2024-03-21_02,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 malwarescore=0
+ suspectscore=0 adultscore=0 bulkscore=0 priorityscore=1501 mlxscore=0
+ clxscore=1011 mlxlogscore=999 lowpriorityscore=0 impostorscore=0
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2403210001 definitions=main-2403260033
 
-Add StarFive JH8100 dwmac support.
-The JH8100 dwmac shares the same driver code as the JH7110 dwmac
-and has only one reset signal.
 
-Please refer to below:
 
-  JH8100: reset-names = "stmmaceth";
-  JH7110: reset-names = "stmmaceth", "ahb";
-  JH7100: reset-names = "ahb";
+On 3/22/24 16:15, Lukasz Luba wrote:
+> Hi Sibi,
+> 
+> On 3/1/24 05:31, Sibi Sankar wrote:
+>>
+>>
+>> On 2/29/24 19:45, Lukasz Luba wrote:
+>>>
+>>>
+>>> On 2/29/24 12:11, Cristian Marussi wrote:
+>>>> On Thu, Feb 29, 2024 at 11:45:41AM +0000, Lukasz Luba wrote:
+>>>>>
+>>>>>
+>>>>> On 2/29/24 11:28, Cristian Marussi wrote:
+>>>>>> On Thu, Feb 29, 2024 at 10:22:39AM +0000, Lukasz Luba wrote:
+>>>>>>>
+>>>>>>>
+>>>>>>> On 2/29/24 09:59, Lukasz Luba wrote:
+>>>>>>>>
+>>>>>>>>
+>>>>>>>> On 2/28/24 17:00, Sibi Sankar wrote:
+>>>>>>>>>
+>>>>>>>>>
+>>>>>>>>> On 2/28/24 18:54, Lukasz Luba wrote:
+>>>>>>>>>>
+>>>>>>>>>>
+>>>>>>>>>> On 2/27/24 18:16, Sibi Sankar wrote:
+>>>>>>>>>>> Register for limit change notifications if supported and use
+>>>>>>>>>>> the throttled
+>>>>>>>>>>> frequency from the notification to apply HW pressure.
+>>>>>>>>>
+>>>>>>>>> Lukasz,
+>>>>>>>>>
+>>>>>>>>> Thanks for taking time to review the series!
+>>>>>>>>>
+>>>>>>>>>>>
+>>>>>>>>>>> Signed-off-by: Sibi Sankar <quic_sibis@quicinc.com>
+>>>>>>>>>>> ---
+>>>>>>>>>>>
+>>>>>>>>>>> v3:
+>>>>>>>>>>> * Sanitize range_max received from the notifier. [Pierre]
+>>>>>>>>>>> * Update commit message.
+>>>>>>>>>>>
+>>>>>>>>>>> ï¿½ drivers/cpufreq/scmi-cpufreq.c | 29 
+>>>>>>>>>>> ++++++++++++++++++++++++++++-
+>>>>>>>>>>> ï¿½ 1 file changed, 28 insertions(+), 1 deletion(-)
+>>>>>>>>>>>
+>>>>>>>>>>> diff --git a/drivers/cpufreq/scmi-cpufreq.c
+>>>>>>>>>>> b/drivers/cpufreq/scmi-cpufreq.c
+>>>>>>>>>>> index 76a0ddbd9d24..78b87b72962d 100644
+>>>>>>>>>>> --- a/drivers/cpufreq/scmi-cpufreq.c
+>>>>>>>>>>> +++ b/drivers/cpufreq/scmi-cpufreq.c
+>>>>>>>>>>> @@ -25,9 +25,13 @@ struct scmi_data {
+>>>>>>>>>>> ï¿½ï¿½ï¿½ï¿½ï¿½ int domain_id;
+>>>>>>>>>>> ï¿½ï¿½ï¿½ï¿½ï¿½ int nr_opp;
+>>>>>>>>>>> ï¿½ï¿½ï¿½ï¿½ï¿½ struct device *cpu_dev;
+>>>>>>>>>>> +ï¿½ï¿½ï¿½ struct cpufreq_policy *policy;
+>>>>>>>>>>> ï¿½ï¿½ï¿½ï¿½ï¿½ cpumask_var_t opp_shared_cpus;
+>>>>>>>>>>> +ï¿½ï¿½ï¿½ struct notifier_block limit_notify_nb;
+>>>>>>>>>>> ï¿½ };
+>>>>>>>>>>> +const struct scmi_handle *handle;
+>>>>>>>>
+>>>>>>>> I've missed this bit here.
+>>>>>>>
+>>>>>>> So for this change we actually have to ask Cristian or Sudeep
+>>>>>>> because I'm not sure if we have only one 'handle' instance
+>>>>>>> for all cpufreq devices.
+>>>>>>>
+>>>>>>> If we have different 'handle' we cannot move it to the
+>>>>>>> global single pointer.
+>>>>>>>
+>>>>>>> Sudeep, Cristian what do you think?
+>>>>>>
+>>>>>> I was just replying noticing this :D .... since SCMI drivers can be
+>>>>>> probed multiple times IF you defined multiple scmi top nodes in 
+>>>>>> your DT
+>>>>>> containing the same protocol nodes, they receive a distinct 
+>>>>>> sdev/handle/ph
+>>>>>> for each probe...so any attempt to globalize these wont work...BUT...
+>>>>>>
+>>>>>> ...this is a bit of a weird setup BUT it is not against the spec 
+>>>>>> and it can
+>>>>>> be used to parallelize more the SCMI accesses to disjont set of 
+>>>>>> resources
+>>>>>> within the same protocol (a long story here...) AND this type of 
+>>>>>> setup is
+>>>>>> something that it is already used by some other colleagues of Sibi 
+>>>>>> working
+>>>>>> on a different line of products (AFAIK)...
+>>>>>>
+>>>>>> So, for these reasons, usually, all the other SCMI drivers have 
+>>>>>> per-instance
+>>>>>> non-global references to handle/sdev/ph....
+>>>>>>
+>>>>>> ...having said that, thought, looking at the structure of CPUFReq
+>>>>>> drivers, I am not sure that they can stand such a similar setup
+>>>>>> where multiple instances of this same driver are probed
+>>>>>>
+>>>>>> .... indeed the existent *ph refs above is already global....so it 
+>>>>>> wont already
+>>>>>> work anyway in case of multiple instances now...
+>>>>>>
+>>>>>> ...and if I look at how CPUFreq expects the signature of 
+>>>>>> scmi_cpufreq_get_rate()
+>>>>>> to be annd how it is implemented now using the global *ph 
+>>>>>> reference, it is
+>>>>>> clearly already not working cleanly on a multi-instance setup...
+>>>>>>
+>>>>>> ...now...I can imagine how to (maybe) fix the above removing the 
+>>>>>> globals and
+>>>>>> fixing this, BUT the question, more generally, is CPUFreq supposed 
+>>>>>> to work at all in
+>>>>>> this multi-probed mode of operation ?
+>>>>>> Does it even make sense to be able to support this in CPUFREQ ?
+>>>>>>
+>>>>>> (as an example in cpufreq,c there is static global cpufreq_driver
+>>>>>>    pointing to the arch-specific configured driver BUT that also 
+>>>>>> holds
+>>>>>>    some .driver_data AND that cleraly wont be instance specific if 
+>>>>>> you
+>>>>>>    probe multiple times and register with CPUFreq multiple times...)
+>>>>>>
+>>>>>>    More questions than answers here :D
+>>>>>>
+>>>>>
+>>>>> Thanks Cristian for instant response. Yes, indeed now we have more
+>>>>> questions :) (which is good). But that's good description of the
+>>>>> situation.
+>>>>>
+>>>>> So lets consider a few option what we could do now:
+>>>>> 1. Let Sibi add another global state the 'handle' but add
+>>>>>     a BUG_ON() or WARN_ON() in the probe path if the next
+>>>>>     'handle' instance is different than already set in global.
+>>>>>     This would simply mean that we don't support (yet)
+>>>>>     such configuration in a platform. As you said, we
+>>>>>     already have the *ph global, so maybe such platforms
+>>>>>     with multiple instances for this particular cpufreq and
+>>>>>     performance protocol don't exist yet.
+>>>>
+>>>> Yes this is the quickst way (and a WARN_ON() is better I'd say) but 
+>>>> there
+>>>> are similar issues of "unicity" currently already with another 
+>>>> vendor SCMI
+>>>> drivers and custom protocol currently under review, so I was 
+>>>> thinking to
+>>>> add a new common mechanism in SCMI to handle this ... not thought about
+>>>> this really in depth and I want to chat with Sudeep about this...
+>>>>
+>>>>> 2. Ask Sibi to wait with this change, till we refactor the
+>>>>>     exiting driver such that it could support easily those
+>>>>>     multiple instances. Then pick up this patch set.
+>>>>>     Although, we would also like to have those notifications from our
+>>>>>     Juno SCP reference FW, so the feature is useful.
+>>>>> 3. Ask Sibi to refactor his patch to somehow get the 'handle'
+>>>>>     in different way, using exiting code and not introduce this 
+>>>>> global.
+>>>>>
+>>>>
+>>>>> IHMO we could do this in steps: 1. and then 2. When
+>>>>> we create some mock platform to test this refactoring we can
+>>>>> start cleaning it.
+>>
+>> I should be able to volunteer a platform to test against when
+>> we have things ready.
+>>
+>>>>>
+>>>>
+>>>> Both of these options really beg an answer to my original previous q
+>>>> question...if we somehow enable this multi-probe support in the
+>>>> scmi-cpufreq.c driver by avoiding glbals refs, does this work at all in
+>>>> the context of CPUFreq ?
+>>>
+>>> I don't know yet.
+>>>
+>>>>
+>>>> ...or it is just that CPUFreq cannot handle such a configuration (and
+>>>> maybe dont want to) and so the only solution here is just 1. at 
+>>>> first and
+>>>> then a common refined mechanism (as mentioned above) to ensure this 
+>>>> "unicity"
+>>>> of the probes for some drivers ?
+>>>
+>>> This sounds reasonable.
+>>>
+>>>>
+>>>> I'm not familiar enough to grasp if this "multi-probed" mode of 
+>>>> operation is
+>>>> allowed/supported by CPUFreq and, more important, if it makes any sense
+>>>> at all to be a supported mode...
+>>>>
+>>>
+>>> OK, let me check some stuff in the code and think for a while on that.
+>>> Thanks Cristian!
+>>>
+>>> Sibi, please give me a few days. In the meantime you can continue
+>>> on the 'boost' patch set probably.
+>>
+>> sure, thanks. I've plenty things to send out so no hurry ;)
+>>
+>> -Sibi
+>>
+> 
+> I've went through the cpufreq. It's quite complicated how those
+> policies, cpus, drivers are setup. Although, IHMO we should be
+> safe with you current proposal in this patch.
+> 
+> As we discussed with Cristian, we can take that approach further.
+> 
+> Therefore, you can add:
+> 
+> Reviewed-by: Lukasz Luba <lukasz.luba@arm.com>
 
-Example usage of JH8100 in the device tree:
+Thanks, I'll re-spin the series with a WARN_ON() in the
+interim.
 
-gmac0: ethernet@16030000 {
-        compatible = "starfive,jh8100-dwmac",
-                     "starfive,jh7110-dwmac",
-                     "snps,dwmac-5.20";
-        ...
-};
+-Sibi
 
-Signed-off-by: Tan Chun Hau <chunhau.tan@starfivetech.com>
----
- .../devicetree/bindings/net/snps,dwmac.yaml   |  1 +
- .../bindings/net/starfive,jh7110-dwmac.yaml   | 54 ++++++++++++++-----
- 2 files changed, 41 insertions(+), 14 deletions(-)
-
-diff --git a/Documentation/devicetree/bindings/net/snps,dwmac.yaml b/Documentation/devicetree/bindings/net/snps,dwmac.yaml
-index 6b0341a8e0ea..a6d596b7dcf4 100644
---- a/Documentation/devicetree/bindings/net/snps,dwmac.yaml
-+++ b/Documentation/devicetree/bindings/net/snps,dwmac.yaml
-@@ -97,6 +97,7 @@ properties:
-         - snps,dwxgmac-2.10
-         - starfive,jh7100-dwmac
-         - starfive,jh7110-dwmac
-+        - starfive,jh8100-dwmac
- 
-   reg:
-     minItems: 1
-diff --git a/Documentation/devicetree/bindings/net/starfive,jh7110-dwmac.yaml b/Documentation/devicetree/bindings/net/starfive,jh7110-dwmac.yaml
-index 0d1962980f57..ce018e9768d2 100644
---- a/Documentation/devicetree/bindings/net/starfive,jh7110-dwmac.yaml
-+++ b/Documentation/devicetree/bindings/net/starfive,jh7110-dwmac.yaml
-@@ -18,6 +18,7 @@ select:
-         enum:
-           - starfive,jh7100-dwmac
-           - starfive,jh7110-dwmac
-+          - starfive,jh8100-dwmac
-   required:
-     - compatible
- 
-@@ -30,6 +31,10 @@ properties:
-       - items:
-           - const: starfive,jh7110-dwmac
-           - const: snps,dwmac-5.20
-+      - items:
-+          - const: starfive,jh8100-dwmac
-+          - const: starfive,jh7110-dwmac
-+          - const: snps,dwmac-5.20
- 
-   reg:
-     maxItems: 1
-@@ -107,20 +112,41 @@ allOf:
-           contains:
-             const: starfive,jh7110-dwmac
-     then:
--      properties:
--        interrupts:
--          minItems: 3
--          maxItems: 3
--
--        interrupt-names:
--          minItems: 3
--          maxItems: 3
--
--        resets:
--          minItems: 2
--
--        reset-names:
--          minItems: 2
-+      if:
-+        properties:
-+          compatible:
-+            contains:
-+              const: starfive,jh8100-dwmac
-+      then:
-+        properties:
-+          interrupts:
-+            minItems: 3
-+            maxItems: 3
-+
-+          interrupt-names:
-+            minItems: 3
-+            maxItems: 3
-+
-+          resets:
-+            maxItems: 1
-+
-+          reset-names:
-+            const: stmmaceth
-+      else:
-+        properties:
-+          interrupts:
-+            minItems: 3
-+            maxItems: 3
-+
-+          interrupt-names:
-+            minItems: 3
-+            maxItems: 3
-+
-+          resets:
-+            minItems: 2
-+
-+          reset-names:
-+            minItems: 2
- 
- unevaluatedProperties: false
- 
--- 
-2.25.1
-
+> 
+> Regards,
+> Lukasz
 
