@@ -1,262 +1,198 @@
-Return-Path: <linux-kernel+bounces-119609-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-119611-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6B4AF88CB0D
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 18:35:20 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 73CF788CB10
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 18:36:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9D22F1C66536
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 17:35:19 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 00FE2B29F4C
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 17:35:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5631B21344;
-	Tue, 26 Mar 2024 17:34:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5ECEB1D545;
+	Tue, 26 Mar 2024 17:35:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="LoQ/MSOZ"
-Received: from mail-vk1-f177.google.com (mail-vk1-f177.google.com [209.85.221.177])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="OvmnAe+v"
+Received: from NAM10-BN7-obe.outbound.protection.outlook.com (mail-bn7nam10on2109.outbound.protection.outlook.com [40.107.92.109])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B75B420DFC
-	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 17:34:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.177
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711474497; cv=none; b=Yw2KDPaTqtHZzJcd+KX1lCGln94sL3zeiTENEXqaHU+Ozky5aoff6ZN/ECXzjHD0IlvJfjA/Tpyno9fb8lnIjibvkJwqvC6JYPJp7zrCK4QkyF/avpIPjabAF3sirO2KzXcB9hh15qsnolYIeDDC3QPnRSHw2K0dULbtmnMpIBQ=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711474497; c=relaxed/simple;
-	bh=m2w3ra/vLTtdfASbbEeXbAqU4LoxnYVueub8n5/zmtc=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=IvVgem/HoI5fSlrzG2lSXcAz98+HgOeq4Y94GFqB3sM0xIIEQJCxTEzra1+lOWILEkgnxL9S9ZvpCwanWRRNOWlFb89Y8tYhn0cl/9zjX1+CQFilvL21KmUigyzgUZIbduHAtYxjv33khyhS+j9GNVU5Jyfw9G87Jxvb2PLQR28=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=LoQ/MSOZ; arc=none smtp.client-ip=209.85.221.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-vk1-f177.google.com with SMTP id 71dfb90a1353d-4d436ab8a36so2068359e0c.0
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 10:34:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711474494; x=1712079294; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=bQ35C+kL3axh6L7EwSqgU9ptD4Ff3HJAuCiRN7ziw38=;
-        b=LoQ/MSOZV0+LRQAoK1Ah643sZ5C5gz6dB7RmxkZ9YRY6L2PThiGpcevvK0cX1W0ZR9
-         Lc7604IjV3nvTt+ozYrngOFT+hLQt2yh5/CdULsz3FLyH9Tm9j9mn9IcvuOv3Mjw1zl9
-         1XGyKGIPbGthLYRqGjZ8fg0CVVX11AKppQuztf34h1Ubt3wTckK+Js0aRyZdxqkM0pg8
-         HwA9JxNxCH7yfunPe162JkqQqgczpdzWY17tYcdzF3VgtW10A5yqIPDcYqoXc/49UISL
-         N/wr8v0D7patIbU0y/YkmG3HgKsP/3aE4cR0NgaiBAH2BOfA9dr5AYmBBQJLFSw84WNp
-         tk2Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711474494; x=1712079294;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=bQ35C+kL3axh6L7EwSqgU9ptD4Ff3HJAuCiRN7ziw38=;
-        b=HzhWvI/DXRJSmKpRv42U8rtgTtJOv8BNBP46cAr/VNgMzpL9Yzy2jbIaCUh3L72HFn
-         7J03tnLKdVKZhYqNUI9syC5vVSxmI8hJTTNnqF64wCZbqi7kSDiPvrwKGabLeTBRimn0
-         YDiju3sIf1H806VYQZVQOEQymYjTfJV0P4V1LXRorBO1ze/cfkF9Pj4qMWIx62qrQa8B
-         894raADGXaFY7ByjpUSus5ifBR9dDEOQf6LX+JtJtOppQOsCrwTjNkDR5pdA1r2Ubrf+
-         tTQT9xiV1XueEQqCjSsmUsS1a/Dub84TXn0e7yhXs+S8ucw/hoU6wkIJ5DQKaP1ex3uw
-         5Qrg==
-X-Gm-Message-State: AOJu0YwHLtdbH8zIcEIy3ODEKwA6MXPQD6kvVjRphtEUV8nOip/svYXd
-	ks1jDNJJ6tS0IDZXOmfdYFsdKP5kydnILuRLgvuh1tGa/EkEyyqYZGCRB4pHeAClxNvhOoPodJW
-	TPxMSXxQDWb5EMShf7hfLkypxEBU=
-X-Google-Smtp-Source: AGHT+IExCzWf5fCgMlqv7sQc5JEBTKzoCjYEl5Gxdi9K/wPbqPt23T5REnExk5HjeMHU/LH+WDUj5Nf+IsYJ9YV2qvo=
-X-Received: by 2002:a05:6122:1d02:b0:4d8:79c1:2a21 with SMTP id
- gc2-20020a0561221d0200b004d879c12a21mr9063727vkb.7.1711474494503; Tue, 26 Mar
- 2024 10:34:54 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D089A126F14
+	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 17:35:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.92.109
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1711474509; cv=fail; b=AXcTJOhSiTFStnVUBuKhbdbKWwbMWSI4zKYvlKpDeMGum9JGVXp0tphh1WjbQp6VXZxb/+xEYMzNYU8qWoXE4ZKyX9dnoNuGKR9LsjhbZkECguU3LUdkrFoB0K95rlW0ayCJR+imXs286K+1nESW1woQJZTMNqZAShKKkVQDSL0=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1711474509; c=relaxed/simple;
+	bh=8Um+XwbT1cqum10ubBidlabONwePiNA62lBmzTsJZbE=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=peU5IG+k4+rYq2GNMiTdVaNjIXcPJSuv1mcuOtBuDbFuoudgCzlgaBOPQDGuDYg9Sdj8PzdNxvwSfc+u979d4eLNNCJ+PEiTY2SBgZPH9FHacBl01drfQIqH9auKtIzE3XPToG6CL6IFvWLcrTH3kfogXOXe3/VtTcPFyf2O2GU=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=OvmnAe+v; arc=fail smtp.client-ip=40.107.92.109
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=MD/C8rU0uBgZZbmtezILU1ZT2VfK4oo5d4/lMt1XDWIwmHFXNOC2nBgpNmPP+popcXZZar5TAtmG+kMd4pLkHuStUrlpJdyd/oLvz6pUkAogut74psVmcTOy65yjHq8DO1K52ieh3pqvYS6pMw0QfoDYsk+Ej9Mg/RCu/f6F4CmUzaJKB5Ew0JfIEn6drHlar8FLF+0BtQP9uiTuGwnq6cUtoLLcASHtIIPGwDuOgHboKj4q9MFFHPafez/HfsA3DmI81lAq7ogg1ON2nnnvZDcR/x3d6eJ5NuixFkgGQ8wUoYPns8+fEIFLrDfcIGWUZSWs76pQDSwEH6zUunNFJg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=cC+izhkvvzHKBFPPUzhF3IxB3IyPJrSM8Eqo03l/P1o=;
+ b=AfMBL+aS97tb7Uv3Cg5Wa6jl2cqbDyn5jIhKq74Ewlrr/C3J6FrUq1BM5Uq1EjZ63VaqZ9G23vQ03bivb1rsZ7vSeysBX29GvGnBZe8WamcaQyjCG+EuJsenHT13hfCB7m/C11trsgy42/VFlAGNEYLWyKkisUWcF6sNyNEDIl5gj5Nzmqgukf8jymak1E+in9nSGp7bRiIp76ELxr7LThIOTkVU/fZNgryd1ugDFfgIO6C6EOsmyaS/Gb+6ypcGYEN6810WISXIOKV7Y0CcidvvbAdFs5evCWBq5eeSQ68/9O+N3V0zb8Ao5htcTd0mYmOLOpV6lEwzP3YDtJ5saQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=cC+izhkvvzHKBFPPUzhF3IxB3IyPJrSM8Eqo03l/P1o=;
+ b=OvmnAe+vRbTs1EWi5bJjhu7zb9NiMntp5IuQFCJvdFVsDEpF4p4fhIMTO1LkSzsrQb5QptLMjbBQT4OWrwBIi8dvK7BzYl2AZg1UMnbTstZeig4dGy1nJ4pRG8Uhp8QdkKbv1NzL/Rbvr+fGfzxszhR554F5cj/ebqCzqiyZTyM=
+Received: from PH7PR12MB5596.namprd12.prod.outlook.com (2603:10b6:510:136::13)
+ by MN0PR12MB6247.namprd12.prod.outlook.com (2603:10b6:208:3c1::15) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.32; Tue, 26 Mar
+ 2024 17:35:04 +0000
+Received: from PH7PR12MB5596.namprd12.prod.outlook.com
+ ([fe80::6974:3875:ed0:7033]) by PH7PR12MB5596.namprd12.prod.outlook.com
+ ([fe80::6974:3875:ed0:7033%3]) with mapi id 15.20.7409.028; Tue, 26 Mar 2024
+ 17:35:03 +0000
+Message-ID: <0033d14d-f1ad-4e18-8b9d-42aa255391c5@amd.com>
+Date: Tue, 26 Mar 2024 23:04:54 +0530
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] drm/amdgpu: add support of bios dump in devcoredump
+To: Alex Deucher <alexdeucher@gmail.com>, Sunil Khatri <sunil.khatri@amd.com>
+Cc: Alex Deucher <alexander.deucher@amd.com>,
+ =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+ Shashank Sharma <shashank.sharma@amd.com>, amd-gfx@lists.freedesktop.org,
+ dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+ Hawking Zhang <Hawking.Zhang@amd.com>,
+ Felix Kuehling <Felix.Kuehling@amd.com>, Lijo Lazar <lijo.lazar@amd.com>
+References: <20240326143750.2292945-1-sunil.khatri@amd.com>
+ <CADnq5_Nm6gyMf1mhGiyVDe6n69yabdf8EN5t=OmzJ7oBVZmEtQ@mail.gmail.com>
+Content-Language: en-US
+From: "Khatri, Sunil" <sukhatri@amd.com>
+In-Reply-To: <CADnq5_Nm6gyMf1mhGiyVDe6n69yabdf8EN5t=OmzJ7oBVZmEtQ@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: PN3PR01CA0128.INDPRD01.PROD.OUTLOOK.COM
+ (2603:1096:c01:bf::13) To PH7PR12MB5596.namprd12.prod.outlook.com
+ (2603:10b6:510:136::13)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240319212316.4193790-1-daeho43@gmail.com> <712f380c-68ef-4743-bd9b-7342e838ced7@kernel.org>
- <CACOAw_yAWGbx2Bx2or1OyVUUw6HSgTd=fo3e151d1JHU+Op5qQ@mail.gmail.com>
- <c1fd6c09-0083-439b-a81d-0d2f39cb10d4@kernel.org> <CACOAw_xejyoA9f2x9J0Z-MgbmrHAPYeAmpz8Lf1GfLDs-yHh5w@mail.gmail.com>
- <30419139-6fdd-48df-b32a-9db7575cebb8@kernel.org>
-In-Reply-To: <30419139-6fdd-48df-b32a-9db7575cebb8@kernel.org>
-From: Daeho Jeong <daeho43@gmail.com>
-Date: Tue, 26 Mar 2024 10:34:43 -0700
-Message-ID: <CACOAw_ypTqWMPac=5vr+LFamYmS4uegiJfeNvRG_h_yBnfJCLQ@mail.gmail.com>
-Subject: Re: [f2fs-dev] [PATCH v3] f2fs: prevent writing without fallocate()
- for pinned files
-To: Chao Yu <chao@kernel.org>
-Cc: linux-kernel@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net, 
-	kernel-team@android.com, Daeho Jeong <daehojeong@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PH7PR12MB5596:EE_|MN0PR12MB6247:EE_
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	SzBtQMw+FqB1XaTMd6OKwohdc8Wki5fJp8rYXhxxbGg+37pNGlLBq7vel+QSns4bdEAHSHo/YN1mZUw+F7vCUlt6ND/ZCkyrzEM1dCVkrs6OcvdsV/0JIKC/1NsICWUBGsjTNJnwbFrzTBkCCNsRvLO+sTRIBtpKlw8HdMwC+jLkHaiF961w19+2RlSUzeeD6IutmG7AJ912HRbBabAe6eRh4kNwWa9FvCmtfzdc727adFa/2FL3nL9e9OvkgMavDdgTK/eFia1TFSJZJvnv7JuEiv8HgwWUTTlORB8GOyu7GTb1gTHm6p4ZlSClsGn7GfxKuv84g22wUyPK4PxU8N/e4wvKI2iHsGH7958MA0Zk8D9N5ftcyXQl/pCUDZ5FQZyazE82WnvvolNe+9uv3lfLg5rY+UEO9115cHL/lA2C7QXb10lUt/vsB5yrwwgNRBNrtfCKdM3jX8QWosHwV+wh97KvqxX3xr2LZ+Lvu+bA5RCdXfd2hJO0WLSARNvdzPQzXIDTB3KEJ5D7knzsl9XQBz+1JNUKrL0YsPpkelKdJphu36MRmDsNgm41w38YwM22b0n8oSnCs0nLWn/IFE1yt5P/gqev+Aa1BEW7eNTnj8CSSSYrKxTY5TZGqFxHbFn3GL8lVXWzXvL5OlzF0BFw75SUK2w4Z00RCyltxIA=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH7PR12MB5596.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(1800799015)(376005)(366007);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?ZnFqUkM2eEVOblhLMGhrSkV4elR0eGdxNU1sN0dNTkJESWVObS9LUmpPOFBX?=
+ =?utf-8?B?WjhKT3ZVTXpubzQ1cHFRUWRibzBXVFB4KzVmVzg4ZTNhcGpoQWtpOEdlR2FW?=
+ =?utf-8?B?VUJ6OVBHMmJGblo5MlRMOUhuOFNLd0p2QmYwT25SSUJTU014SUJ6TkpnVDJu?=
+ =?utf-8?B?bGNqTlo4aEJMSmpYRXA5UlR4ZHdtYWtuUUtaNlBjWDBlcCtXUm5vc0pPTnVW?=
+ =?utf-8?B?WE45bEx6Q3c3WkJFZnRVRGg1RFZ1R2t5Y3B2ZlVYWUJQaXJtUVg2MDgrbUl2?=
+ =?utf-8?B?eWpmQmt4MmcwOUpraFFmckc4S0RXZnVRbWRoSXBSV3FxL2Jhd28wemplVVl0?=
+ =?utf-8?B?SFptY3ZheUg2eFkzdHFENlhXUVBjU2lZR1RFazUzYmFCRnpTL011VnZTZFdH?=
+ =?utf-8?B?OFNKem5idUlhRTc3Q0hjSXFGZlA4aS9zOEV0K3JVN1ZzcDJVdi9wVWY0VkZr?=
+ =?utf-8?B?eWgrV1I5c2FqcTkybjZTMlk1M0h1SktGU2hrK25zRFZodzBXMnU4NXNkTEJX?=
+ =?utf-8?B?YUUyMXdxUFFpMHJMeEp5WkRBSDZiejFQUngrN2VwR2RvOFpVTWo1U1cyUDd1?=
+ =?utf-8?B?VTd2YUU2K0xzUUNRWFF0SlBxeGNqZFhIdGVOaFNVMkIvUmdZdHU4UWZXUmRX?=
+ =?utf-8?B?UzJTSjd5QVNhb3RnSjhpQndWTlVSZWM2MzlEeTNYQzVjdldlL29OWmxiR2tz?=
+ =?utf-8?B?UVhFdmFPZGMzTU9rRDVhM3h3VHE5RTJYWHhPSGdtZVE2RkhLVkhrb3NCYWZY?=
+ =?utf-8?B?c3dtUE1TaFA0TzEreDhVenVFUk5tZ0NrVUdqZGp2NDR0ZS9qL0E4RGZhdUk4?=
+ =?utf-8?B?QlRXVXIraU5DWU1WOEZiY3F1Q3M1MHFTWWt2elJyNElsa3hJdU53enVGK0pM?=
+ =?utf-8?B?TGFodWRaVFRzblhXRlk0Qm01RndXM0hUUnUydkhveG9yQ3o2VXhGRktxbDVs?=
+ =?utf-8?B?UUpHaXcrbk5PTU8rR2xNaTZqWXN1V1JmZzdvb1Z1VGtGOUYreXBWUE5PODZM?=
+ =?utf-8?B?REpCeHdCelRFSFZSSy91aFFjR2V6RzJicFN4NEI4WGFtR1NEU0hlZmVWMEdG?=
+ =?utf-8?B?eUFVdlVIdTRaQVNTM1UrYks5OFZKcXJCOTlSNlA0SnB5dmZ2VHVnVjU4UkI4?=
+ =?utf-8?B?NDdsYUtiTXQ0M1NFZytmOC9xNkFIQjdYUko5WFM1am96MlIvaUVnZm5qc240?=
+ =?utf-8?B?NTB0TkJQaDJDWGVYRGJzZzFWZTVDalE5aUJZSE9LT0FmOWVSMktBMGNZZ2Fx?=
+ =?utf-8?B?SU1OT0NjYURkWXRjZHJKcktLZU9IMDdIKzkvMm9ZWUcwdVFDTE9WVXpsRnJu?=
+ =?utf-8?B?Y2tnYWZtVmo2YzJQa3dnWlZlWm9kTmpLV28ySXJ2SVNRTisrOCtKVWZkNmlD?=
+ =?utf-8?B?SW1JdkM4L0FEMHBVbDhlTWltN3dLbEIxL051Qi9oOVFFOXBjck9oRGNlUVJj?=
+ =?utf-8?B?Y2R6TGx0MW1kNVN0Uk9ZL1BFSHZDUGtnSW16Tnl6SHkyOE5lb0Y1V3dMSEN4?=
+ =?utf-8?B?RUpVaXkxUi9FVDdvMWJDWHdPamg0N3E4Zjg4QlA1TVdhSjFtZ2ZzeG9EV1ND?=
+ =?utf-8?B?ald4NHdXeURGcWhaUndDTEVxWVBtK0dzS1hsQUp0aDkrQUR5UUVDVWc1d1ZZ?=
+ =?utf-8?B?T1U3SjVlRU5oUG1zTmsvVHpWUjdjR2hPVkVzdTdYSUtQY25VQ3VKMlNFWVZv?=
+ =?utf-8?B?b1E5RmVVcm91QTM3U2dDNXRQRlZZVk1Tc2llRTY1UGphd2pyUnAxV2cvcndP?=
+ =?utf-8?B?WlljRFMwNkJBZkgrQXNtS3lnbDVuSjhsRU5lODFVUGpSakszcnEzdUVRWkFk?=
+ =?utf-8?B?K1RwcXA1Nll2cy93R2Vld0JNTFhNQW5ieC9RcHRHZTRIWkV3YWZ2Y0FJOGZI?=
+ =?utf-8?B?eDExb2Q0WGtKU2RjVEhVdC91aXFac29XbHVUQ3BPY21ncm5sUVUvRlljUTM3?=
+ =?utf-8?B?MWRJbXlGNEVYSzQzVmNOdWxTdFkrUFFiMUZ1VkU2cmpEUHZhL0h0dTV3ZG04?=
+ =?utf-8?B?SXZ5V1JzMW9tcmhuaTRxUUcvSzVpVlZPdnFrS1pYQUNEanAyc1JKUWE4bXJn?=
+ =?utf-8?B?bW5oMlRBWFNhaHpjZ0dRRllCTXlWZUErV3VvaGZLKzdtSDFrSmY5RDN6Q2lH?=
+ =?utf-8?Q?cwG1Gjf5fwVu9V/MuOUriwvvs?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: dd8514fa-93b4-4748-7eee-08dc4dbb11f1
+X-MS-Exchange-CrossTenant-AuthSource: PH7PR12MB5596.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Mar 2024 17:35:03.8486
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: qArqkOm09c4BxPpYjZzoSS21QcrwCukG71xhZPTv0aXuYid7Ct1nsaRybfimAyWE6MbWNT+BG08m62iQdKVzOg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN0PR12MB6247
 
-On Mon, Mar 25, 2024 at 8:39=E2=80=AFPM Chao Yu <chao@kernel.org> wrote:
->
-> On 2024/3/25 23:02, Daeho Jeong wrote:
-> > On Fri, Mar 22, 2024 at 9:26=E2=80=AFPM Chao Yu <chao@kernel.org> wrote=
-:
-> >>
-> >> On 2024/3/21 1:42, Daeho Jeong wrote:
-> >>> On Wed, Mar 20, 2024 at 2:38=E2=80=AFAM Chao Yu <chao@kernel.org> wro=
-te:
-> >>>>
-> >>>> On 2024/3/20 5:23, Daeho Jeong wrote:
-> >>>>> From: Daeho Jeong <daehojeong@google.com>
-> >>>>>
-> >>>>> In a case writing without fallocate(), we can't guarantee it's allo=
-cated
-> >>>>> in the conventional area for zoned stroage.
-> >>>>>
-> >>>>> Signed-off-by: Daeho Jeong <daehojeong@google.com>
-> >>>>> ---
-> >>>>> v2: covered the direct io case
-> >>>>> v3: covered the mkwrite case
-> >>>>> ---
-> >>>>>     fs/f2fs/data.c | 14 ++++++++++++--
-> >>>>>     fs/f2fs/file.c | 16 ++++++++--------
-> >>>>>     2 files changed, 20 insertions(+), 10 deletions(-)
-> >>>>>
-> >>>>> diff --git a/fs/f2fs/data.c b/fs/f2fs/data.c
-> >>>>> index c21b92f18463..d3e5ab2736a6 100644
-> >>>>> --- a/fs/f2fs/data.c
-> >>>>> +++ b/fs/f2fs/data.c
-> >>>>> @@ -1584,8 +1584,11 @@ int f2fs_map_blocks(struct inode *inode, str=
-uct f2fs_map_blocks *map, int flag)
-> >>>>>
-> >>>>>         /* use out-place-update for direct IO under LFS mode */
-> >>>>>         if (map->m_may_create &&
-> >>>>> -         (is_hole || (f2fs_lfs_mode(sbi) && flag =3D=3D F2FS_GET_B=
-LOCK_DIO))) {
-> >>>>> -             if (unlikely(f2fs_cp_error(sbi))) {
-> >>>>> +         (is_hole || (f2fs_lfs_mode(sbi) && flag =3D=3D F2FS_GET_B=
-LOCK_DIO &&
-> >>>>> +                      !f2fs_is_pinned_file(inode)))) {
-> >>>>> +             if (unlikely(f2fs_cp_error(sbi)) ||
-> >>>>> +                 (f2fs_is_pinned_file(inode) && is_hole &&
-> >>>>> +                  flag !=3D F2FS_GET_BLOCK_PRE_DIO)) {
-> >>>>>                         err =3D -EIO;
-> >>>>>                         goto sync_out;
-> >>>>>                 }
-> >>>>> @@ -3378,6 +3381,8 @@ static int prepare_write_begin(struct f2fs_sb=
-_info *sbi,
-> >>>>>                 f2fs_map_lock(sbi, flag);
-> >>>>>                 locked =3D true;
-> >>>>>         } else if ((pos & PAGE_MASK) >=3D i_size_read(inode)) {
-> >>>>> +             if (f2fs_is_pinned_file(inode))
-> >>>>> +                     return -EIO;
-> >>>>>                 f2fs_map_lock(sbi, flag);
-> >>>>>                 locked =3D true;
-> >>>>>         }
-> >>>>> @@ -3407,6 +3412,11 @@ static int prepare_write_begin(struct f2fs_s=
-b_info *sbi,
-> >>>>>
-> >>>>>         if (!f2fs_lookup_read_extent_cache_block(inode, index,
-> >>>>>                                                  &dn.data_blkaddr))=
- {
-> >>>>> +             if (f2fs_is_pinned_file(inode)) {
-> >>>>> +                     err =3D -EIO;
-> >>>>> +                     goto out;
-> >>>>> +             }
-> >>>>> +
-> >>>>>                 if (locked) {
-> >>>>>                         err =3D f2fs_reserve_block(&dn, index);
-> >>>>>                         goto out;
-> >>>>> diff --git a/fs/f2fs/file.c b/fs/f2fs/file.c
-> >>>>> index 82277e95c88f..4db3b21c804b 100644
-> >>>>> --- a/fs/f2fs/file.c
-> >>>>> +++ b/fs/f2fs/file.c
-> >>>>> @@ -57,7 +57,7 @@ static vm_fault_t f2fs_vm_page_mkwrite(struct vm_=
-fault *vmf)
-> >>>>>         struct inode *inode =3D file_inode(vmf->vma->vm_file);
-> >>>>>         struct f2fs_sb_info *sbi =3D F2FS_I_SB(inode);
-> >>>>>         struct dnode_of_data dn;
-> >>>>> -     bool need_alloc =3D true;
-> >>>>> +     bool need_alloc =3D !f2fs_is_pinned_file(inode);
-> >>>>
-> >>>> Will this check races w/ pinfile get|set?
-> >>>
-> >>> Do you mean "set/clear" case? I believe "set" case is okay, since we
-> >>
-> >> Yup,
-> >>
-> >>> can't set if the inode already has a data block. For "clear" case, I
-> >>
-> >> However, we can set pinfile on written inode in regular block device:
-> >
-> > You're right. I missed it. Maybe I think we should keep the concept
-> > consistent across devices regardless of zoned storage support. How
-> > about preventing file pinning for already written inodes across all
-> > device types? I am changing the pinfile concept by allowing the users
->
-> I'm okay with that, or we can tries to migrate data block of target file
-> from seq-zone to conv-zone or regular-device before setting it w/ pin fla=
-g...
 
-I can't see lots of benefits by supporting file pinning for
-pre-written inodes, while the design can become complicated. Since we
-consolidate the way to support file pinning as fallocate() before
-using it, we might as well not support pre-written inodes.
+On 3/26/2024 10:23 PM, Alex Deucher wrote:
+> On Tue, Mar 26, 2024 at 10:38 AM Sunil Khatri <sunil.khatri@amd.com> wrote:
+>> dump the bios binary in the devcoredump.
+>>
+>> Signed-off-by: Sunil Khatri <sunil.khatri@amd.com>
+>> ---
+>>   .../gpu/drm/amd/amdgpu/amdgpu_dev_coredump.c  | 20 +++++++++++++++++++
+>>   1 file changed, 20 insertions(+)
+>>
+>> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_dev_coredump.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_dev_coredump.c
+>> index 44c5da8aa9ce..f33963d777eb 100644
+>> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_dev_coredump.c
+>> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_dev_coredump.c
+>> @@ -132,6 +132,26 @@ amdgpu_devcoredump_read(char *buffer, loff_t offset, size_t count,
+>>          drm_printf(&p, "Faulty page starting at address: 0x%016llx\n", fault_info->addr);
+>>          drm_printf(&p, "Protection fault status register: 0x%x\n\n", fault_info->status);
+>>
+>> +       /* Dump BIOS */
+>> +       if (coredump->adev->bios && coredump->adev->bios_size) {
+>> +               int i = 0;
+>> +
+>> +               drm_printf(&p, "BIOS Binary dump\n");
+>> +               drm_printf(&p, "Valid BIOS  Size:%d bytes type:%s\n",
+>> +                          coredump->adev->bios_size,
+>> +                          coredump->adev->is_atom_fw ?
+>> +                          "Atom bios":"Non Atom Bios");
+>> +
+>> +               while (i < coredump->adev->bios_size) {
+>> +                       /* Printing 15 bytes in a line */
+>> +                       if (i % 15 == 0)
+>> +                               drm_printf(&p, "\n");
+>> +                       drm_printf(&p, "0x%x \t", coredump->adev->bios[i]);
+>> +                       i++;
+>> +               }
+>> +               drm_printf(&p, "\n");
+>> +       }
+> I don't think it's too useful to dump this as text.  I was hoping it
+> could be a binary.  I guess, we can just get this from debugfs if we
+> need it if a binary is not possible.
+
+
+Yes , this dumps in text format only and the binary is already available 
+in debugfs. So discarding the patch.
 
 >
-> Thanks,
+> Alex
 >
-> > to write on only fallocate()-ed space.
-> >
-> >>
-> >>          if (f2fs_sb_has_blkzoned(sbi) && F2FS_HAS_BLOCKS(inode)) {
-> >>                  ret =3D -EFBIG;
-> >>                  goto out;
-> >>          }
-> >>
-> >> Should we add the logic only if blkzoned feture is enabled?
-> >>
-> >>> believe mkwrite failure is okay in racy conditions caused by clearing
-> >>> the pin flag. What do you think?
-> >>
-> >> Or we can use filemap_invalidate_lock() in f2fs_ioc_set_pin_file() to
-> >> avoid the race condition?
-> >>
-> >> Thanks,
-> >>
-> >>>
-> >>>>
-> >>>> Thanks,
-> >>>>
-> >>>>>         int err =3D 0;
-> >>>>>         vm_fault_t ret;
-> >>>>>
-> >>>>> @@ -114,19 +114,15 @@ static vm_fault_t f2fs_vm_page_mkwrite(struct=
- vm_fault *vmf)
-> >>>>>                 goto out_sem;
-> >>>>>         }
-> >>>>>
-> >>>>> +     set_new_dnode(&dn, inode, NULL, NULL, 0);
-> >>>>>         if (need_alloc) {
-> >>>>>                 /* block allocation */
-> >>>>> -             set_new_dnode(&dn, inode, NULL, NULL, 0);
-> >>>>>                 err =3D f2fs_get_block_locked(&dn, page->index);
-> >>>>> -     }
-> >>>>> -
-> >>>>> -#ifdef CONFIG_F2FS_FS_COMPRESSION
-> >>>>> -     if (!need_alloc) {
-> >>>>> -             set_new_dnode(&dn, inode, NULL, NULL, 0);
-> >>>>> +     } else {
-> >>>>>                 err =3D f2fs_get_dnode_of_data(&dn, page->index, LO=
-OKUP_NODE);
-> >>>>>                 f2fs_put_dnode(&dn);
-> >>>>>         }
-> >>>>> -#endif
-> >>>>> +
-> >>>>>         if (err) {
-> >>>>>                 unlock_page(page);
-> >>>>>                 goto out_sem;
-> >>>>> @@ -4611,6 +4607,10 @@ static int f2fs_preallocate_blocks(struct ki=
-ocb *iocb, struct iov_iter *iter,
-> >>>>>                         return ret;
-> >>>>>         }
-> >>>>>
-> >>>>> +     /* For pinned files, it should be fallocate()-ed in advance. =
-*/
-> >>>>> +     if (f2fs_is_pinned_file(inode))
-> >>>>> +             return 0;
-> >>>>> +
-> >>>>>         /* Do not preallocate blocks that will be written partially=
- in 4KB. */
-> >>>>>         map.m_lblk =3D F2FS_BLK_ALIGN(pos);
-> >>>>>         map.m_len =3D F2FS_BYTES_TO_BLK(pos + count);
+>
+>> +
+>>          /* Add ring buffer information */
+>>          drm_printf(&p, "Ring buffer information\n");
+>>          for (int i = 0; i < coredump->adev->num_rings; i++) {
+>> --
+>> 2.34.1
+>>
 
