@@ -1,114 +1,125 @@
-Return-Path: <linux-kernel+bounces-118585-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-118584-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0366388BCEA
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 09:56:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 6329288BCE7
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 09:56:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id ACD7B1F37420
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 08:56:31 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 18C8E1F3BB95
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 08:56:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D89D24D9FE;
-	Tue, 26 Mar 2024 08:56:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0EFFE433C9;
+	Tue, 26 Mar 2024 08:56:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=pankajraghav.com header.i=@pankajraghav.com header.b="S9FEMClW"
-Received: from mout-p-103.mailbox.org (mout-p-103.mailbox.org [80.241.56.161])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="T+8foGwJ";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="eycbu2vf"
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 75A22495E5;
-	Tue, 26 Mar 2024 08:56:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.241.56.161
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E79B43FB9B;
+	Tue, 26 Mar 2024 08:56:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711443373; cv=none; b=umDl86JLQMtlGyz1nG8282DVZsL2bcMVTi6VUnHrF/mMhsABCdaL7gTBvnhltZC+G/y1w6NIK1C4cAzk5biPJ4OSYvTdWneXMCPmbh6GqMDZ+Gr58X63HCfNlClLRMmoglBNF/G8MYmARF0xA95XiZBS8BclCNb5jqVkQqY39M4=
+	t=1711443368; cv=none; b=aooom3RSjNfSB6VP0hTQRbOppHz4/GQeF3tkaWRF3tOCJjJa+h04iu4JEsUZlQbpDSJ8ZOb7M5vfjlgt61WDV6yASm8yeHAsTk0KIOHZjkLKIVA/d9+4WOuF/U2Ft1zhkZGnwhbN50uVL+BbzuOMztgv/d4CqTmC7JkHpp8Yx74=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711443373; c=relaxed/simple;
-	bh=nagYxxDbJgL0+8mtzKa/n0XbQhGhLQBTIa31bE0Psjs=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=RUod455J7OLuX7dKOgk7f1xMJOUi+N34/g9iIAFClJlKf5Q98AL4AjQgoVDsk/xtcFjT5kTH9jUTB2PejsKDfVmJ+o8GFC6/j9ekPYd81xFgKbTxMqGPrz2bYMKd4hBmBH8JB5kRvTmi/nge6qmubiWbh5V9cjkzPKyjQfNweWk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=pankajraghav.com; spf=pass smtp.mailfrom=pankajraghav.com; dkim=pass (2048-bit key) header.d=pankajraghav.com header.i=@pankajraghav.com header.b=S9FEMClW; arc=none smtp.client-ip=80.241.56.161
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=pankajraghav.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pankajraghav.com
-Received: from smtp102.mailbox.org (smtp102.mailbox.org [IPv6:2001:67c:2050:b231:465::102])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mout-p-103.mailbox.org (Postfix) with ESMTPS id 4V3kDR6xxLz9sTd;
-	Tue, 26 Mar 2024 09:56:07 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pankajraghav.com;
-	s=MBO0001; t=1711443368;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	s=arc-20240116; t=1711443368; c=relaxed/simple;
+	bh=OOuwkb/GnfWXmUreRzzoRubqTHVJY1oBNP8Lkd5iLO4=;
+	h=Date:From:To:Subject:Cc:In-Reply-To:References:MIME-Version:
+	 Message-ID:Content-Type; b=c3CmSP2Ot4n71VN7sWWJ5HevHs/Hu3YZF0tnd3hTybu6N4pDEXZrFlOIoX6hW9pAOY/WG1IKHxqb2Ixiyvcy5MhQG8hWAI1xOXwbFNwnvnNlmabPRj1OStJC9oX8vh8BXFqGrmlSMoYE1Mo6hZTHfdBLYbFQ8yaplzXsDzUr8zk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=T+8foGwJ; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=eycbu2vf; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+Date: Tue, 26 Mar 2024 08:56:04 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1711443365;
+	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+	 content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=XpgxVlBKjKrVn9MhWjJ6FRn4nkr5mAP1dQnGjR12Avg=;
-	b=S9FEMClWMRg7xZPklOmpzcCTtZL6hs5IPFqYBeDYTHgvVoG9iP+ig0BwtYQ24gWWU2WVCS
-	3uSyUcJDu/feCaAGss7hbXuMV1f0RrERROceks+RyRpxyerWfUppHtZrGWbJSjaHHYznXv
-	+eBATqmcyV4lMfTtIDODQTaZIjlygvXZWFQoL8bsOcd0LLkhrPGNgD7LX3Xl/9eiqRYQ2n
-	3iEMMo/TZU4Y34gywx+YT1J1F24P0n3drx4HOzz70jetX96Gde9+CweznN9KLk2ohW5yxu
-	Mmcofwg52MFgM7Ut9N5KR2S766fXlDWgpZnRfbcl+kcz2AORsZYnqAEwDx/b2A==
-Date: Tue, 26 Mar 2024 09:56:03 +0100
-From: "Pankaj Raghav (Samsung)" <kernel@pankajraghav.com>
-To: Matthew Wilcox <willy@infradead.org>
-Cc: linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
-	gost.dev@samsung.com, chandan.babu@oracle.com, hare@suse.de, mcgrof@kernel.org, 
-	djwong@kernel.org, linux-mm@kvack.org, linux-kernel@vger.kernel.org, 
-	david@fromorbit.com, akpm@linux-foundation.org, Pankaj Raghav <p.raghav@samsung.com>
-Subject: Re: [PATCH v3 04/11] readahead: rework loop in
- page_cache_ra_unbounded()
-Message-ID: <s4jn4t4betknd3y4ltfccqxyfktzdljiz7klgbqsrccmv3rwrd@orlwjz77oyxo>
-References: <20240313170253.2324812-1-kernel@pankajraghav.com>
- <20240313170253.2324812-5-kernel@pankajraghav.com>
- <ZgHFPZ9tNLLjKZpz@casper.infradead.org>
+	bh=d/9oO4IBpErftDrrfF8M+qoYDPeSaTc65GGVjFBmBts=;
+	b=T+8foGwJV//5eu55WHpnCQpyudW13T/NP9RS+6uSWAgpmFvxwmPAtlKPuQpwo7R4gs8JI8
+	6FTj2se8ZRgfO+H1BU9xuO+sZNXHc/uY2tjqYfEtQ5+uh6jmhrm0+paddaC+5nXwtv2oiQ
+	23F9Oq+qBhyskwra6QEaoto5ruCsTNUz/mZk6EF1dw8Yde3hbHSMcrz9C9Ol1X4TPfp2uO
+	T6YdO5rIJKigjVMVWQHAIij6fQMVF7dO0D/narzP3C2KWIHRUfY0VwT2Dt+f6yRP+X8Vui
+	fEIrPk7j/IdaN+CiiqZNRwTaW07IQH42EBd2/zoC7HVYA1UzU4WT24sfd/vDrQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1711443365;
+	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+	 content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=d/9oO4IBpErftDrrfF8M+qoYDPeSaTc65GGVjFBmBts=;
+	b=eycbu2vfekssjfL43wdz6n6Ehq41m1zyW7Ad4lp1eYzkCc8eeLPSnCtgK8X1GjIvK7KO60
+	uTeMWXp+VIZXbgCQ==
+From: "tip-bot2 for Bingsong Si" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To: linux-tip-commits@vger.kernel.org
+Subject:
+ [tip: x86/cpu] x86/cpu: Clear TME feature flag if TME is not enabled by BIOS
+Cc: Bingsong Si <sibs@chinatelecom.cn>, Ingo Molnar <mingo@kernel.org>,
+ "Huang, Kai" <kai.huang@intel.com>, x86@kernel.org,
+ linux-kernel@vger.kernel.org
+In-Reply-To: <20240311071938.13247-1-sibs@chinatelecom.cn>
+References: <20240311071938.13247-1-sibs@chinatelecom.cn>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZgHFPZ9tNLLjKZpz@casper.infradead.org>
-X-Rspamd-Queue-Id: 4V3kDR6xxLz9sTd
+Message-ID: <171144336418.10875.2002917635921003194.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe:
+ Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Precedence: bulk
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 
-On Mon, Mar 25, 2024 at 06:41:01PM +0000, Matthew Wilcox wrote:
-> On Wed, Mar 13, 2024 at 06:02:46PM +0100, Pankaj Raghav (Samsung) wrote:
-> > @@ -239,8 +239,8 @@ void page_cache_ra_unbounded(struct readahead_control *ractl,
-> >  			 * not worth getting one just for that.
-> >  			 */
-> >  			read_pages(ractl);
-> > -			ractl->_index++;
-> > -			i = ractl->_index + ractl->_nr_pages - index - 1;
-> > +			ractl->_index += folio_nr_pages(folio);
-> > +			i = ractl->_index + ractl->_nr_pages - index;
-> >  			continue;
-> >  		}
-> >  
-> > @@ -252,13 +252,14 @@ void page_cache_ra_unbounded(struct readahead_control *ractl,
-> >  			folio_put(folio);
-> >  			read_pages(ractl);
-> >  			ractl->_index++;
-> > -			i = ractl->_index + ractl->_nr_pages - index - 1;
-> > +			i = ractl->_index + ractl->_nr_pages - index;
-> >  			continue;
-> >  		}
-> 
-> You changed index++ in the first hunk, but not the second hunk.  Is that
-> intentional?
+The following commit has been merged into the x86/cpu branch of tip:
 
-The reason I didn't use folio_nr_pages(folio) in the second hunk is
-because we have already `put` the folio and it is not valid anymore to
-use folio_nr_pages right? Because we increase the ref count in
-filemap_alloc() and we put if add fails. 
+Commit-ID:     cd2236c2f49eb46443fd7573d0ddad5373577b11
+Gitweb:        https://git.kernel.org/tip/cd2236c2f49eb46443fd7573d0ddad5373577b11
+Author:        Bingsong Si <sibs@chinatelecom.cn>
+AuthorDate:    Mon, 11 Mar 2024 15:19:37 +08:00
+Committer:     Ingo Molnar <mingo@kernel.org>
+CommitterDate: Tue, 26 Mar 2024 09:49:32 +01:00
 
-Plus in the second hunk, adding the 0 order folio failed in that index,
-so we just move on to the next index. Once we have the min order
-support, if adding min order folio failed, we move by min_order.
+x86/cpu: Clear TME feature flag if TME is not enabled by BIOS
 
-And your comment on the next patch:
+When TME is disabled by BIOS, the dmesg output is:
 
-> Hah, you changed this here.  Please move into previous patch.
+  x86/tme: not enabled by BIOS
 
-We can't do that either because I am introducing the concept of min
-order in the next patch.
+.. and TME functionality is not enabled by the kernel, but the TME feature
+is still shown in /proc/cpuinfo.
+
+Clear it.
+
+[ mingo: Clarified changelog ]
+
+Signed-off-by: Bingsong Si <sibs@chinatelecom.cn>
+Signed-off-by: Ingo Molnar <mingo@kernel.org>
+Cc: "Huang, Kai" <kai.huang@intel.com>
+Link: https://lore.kernel.org/r/20240311071938.13247-1-sibs@chinatelecom.cn
+---
+ arch/x86/kernel/cpu/intel.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/arch/x86/kernel/cpu/intel.c b/arch/x86/kernel/cpu/intel.c
+index be30d7f..3c3e7e5 100644
+--- a/arch/x86/kernel/cpu/intel.c
++++ b/arch/x86/kernel/cpu/intel.c
+@@ -228,6 +228,7 @@ static void detect_tme_early(struct cpuinfo_x86 *c)
+ 	if (!TME_ACTIVATE_LOCKED(tme_activate) || !TME_ACTIVATE_ENABLED(tme_activate)) {
+ 		pr_info_once("x86/tme: not enabled by BIOS\n");
+ 		mktme_status = MKTME_DISABLED;
++		clear_cpu_cap(c, X86_FEATURE_TME);
+ 		return;
+ 	}
+ 
 
