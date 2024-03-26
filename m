@@ -1,153 +1,150 @@
-Return-Path: <linux-kernel+bounces-118592-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-118594-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 31F8688BCF9
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 09:59:24 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 36E5488BD01
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 10:00:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C65F11F3BFFD
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 08:59:23 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 82BAAB21C12
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 09:00:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E772E18B04;
-	Tue, 26 Mar 2024 08:59:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E1B91C2BE;
+	Tue, 26 Mar 2024 08:59:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Fefla831"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="ctcqXrim"
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 35C3F1C2BE
-	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 08:59:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E5AC547A52;
+	Tue, 26 Mar 2024 08:59:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711443557; cv=none; b=Vai/lBU8cB+JBmsWwkaxRcNcagBX0JR0r/UkFWu0pU5J4Yy8ukFimIusXiIOW+xeRfiDgNxrb9fnh6NfSIsHmmm1W4AIzzH/i4rvBdhwQUrkFHBynAXCdw72kCBTJuJCbZz+IduBxJDi6VvhdG7LIQxUYj07XljR240jgvKBtu0=
+	t=1711443595; cv=none; b=An+i8LctJFUe7ZK++N5YsCatETY/p0JBtOCyKNlNv6X8ShIKAA0c9fdZCCa5VBjiaZeezQ/yC41/PN6g3fKYoaItaZY6k4rdWMaEVFtv/Ww/VAHQgrgK7/08qj2wllSI79vJWqCPYqR82zXqEZ8K9D6KEqPosgTr+vxzHyyTVGA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711443557; c=relaxed/simple;
-	bh=JQUcYa55YWe6URT24FF22nspI3258qVvV/c52rDJNis=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=pyX4cgF37Z9mkfEGWcR2An5mo5nMaC2eMNufPGoPwUPnE3KutsWovwsM1XqA0yG25Co6ZQ2NkfhwrrcUzZG2FoRIzr4gOr/8YlWuFrZTLdseMtnPOnp8tSe9fEWBXuNV8iGgI784s2sIQ0ARWoT4AlFd7Ltd7khfWHUD0DRqw2M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Fefla831; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BE27DC43390
-	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 08:59:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711443556;
-	bh=JQUcYa55YWe6URT24FF22nspI3258qVvV/c52rDJNis=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=Fefla831+rH2LP7Fj8sBTWvyx0vjtgi7ZwYGDZL6vf7YoqJpKocOZ+6SkddpRF1kP
-	 yLldb0mNEfpytdW/bFV8IO3PN/JzNxw3gjB5xXNJj9FzT9e2XuZBhIlb0NgLEDvJGY
-	 92JiBh0bJ1oEBK/WTpvIXO5QdCQ0oAYB59nlW5e/8B4sCm0dKPKzv7HxnndVa2dbEi
-	 nvEjSPJMwBGYFUUv2pTnRkyW+9DakDKMVNx0J+5folVtlik9byo/UQwncyOkvLDzqy
-	 c95cdNiKp4n8evmoc8PYubJgbfZCNL5z/H6k2LQMfzfIbska6MsFMEkPgFz0lEcSwY
-	 WlxPosPBgGnsg==
-Received: by mail-lj1-f169.google.com with SMTP id 38308e7fff4ca-2d6ee6c9945so1079421fa.3
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 01:59:16 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCV52S+jy292qcjcMS+DPZgJJJk6vwkf5viAd65qcNSzmsA68zu31+hND5Z8NTKuPVGPOq8jr1WFNSanvPESkUUKJ4HRIE5ziLmp9coB
-X-Gm-Message-State: AOJu0YybCHAuY2+PQ0WrN9S15ef9ItMzqvCcqg5DAdk0Pm4wjL55NrUr
-	/lXhCCRYsFybvdGeO8aPszHrevCQruUtZXa1N0uLc0kkNWjMBaJYc/rz+LRYdaEmXb0YLSKfEzk
-	2EsnW+bVj0u2hE1X4hoGe2V0ib34=
-X-Google-Smtp-Source: AGHT+IFfi/2Q8jfll0xvVyaGQD54qbE3f5lDe2sICSST5KdE28QD92QVbSCVl1hvUSwYKBa5Je9BNmg+9az1X4LLAg0=
-X-Received: by 2002:a2e:998b:0:b0:2d4:973e:247f with SMTP id
- w11-20020a2e998b000000b002d4973e247fmr428618lji.23.1711443555065; Tue, 26 Mar
- 2024 01:59:15 -0700 (PDT)
+	s=arc-20240116; t=1711443595; c=relaxed/simple;
+	bh=4uDjqygHv4DTuZmqzarwUnS5AROPK4sqXpSLqkeaM10=;
+	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=YdJrXeYyMka5Cjg7/QoaUKWcnRNH4l8J0EsUAJlWibzAGgTVVmKpebg5adC0zuW3zkuPtCnVsHZIFmdRFCQd04QMJJge9Jnm4k6AaFNzRttcciroXsS0cAvZve4rKS+6ydv/1Olm3rFd0KIgIUmoIW7LuBZPDMHsnadSYm250jg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=ctcqXrim; arc=none smtp.client-ip=205.220.180.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279873.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 42Q66XbV004610;
+	Tue, 26 Mar 2024 08:59:49 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	date:from:to:cc:subject:message-id:references:mime-version
+	:content-type:in-reply-to; s=qcppdkim1; bh=SbrMPaH2oADH1vwWJwZWD
+	SkzPzttEAqCuqJGgMzYDn4=; b=ctcqXrimT+81u4eT0KvX2YDhZ1BF6guYm1Z00
+	g/VjpSfog8sJRHOr+tDqlPHinBO/0H6/q5H7szlP0GfDqWVhWRsA78xr36hlkfUj
+	RfiDEnLIxFaxw622DuaOKHOtor5w7damxpnV5QyF11YbKPGCgNrc1CK/RpDOL/Cg
+	M9zoGygykXpnuTQuVKvo1BHTBJjPm7OV/3Y9InNCFUhOCJlDC+5YpH4Oi97QSpNq
+	mMBf90rWyeOCIhLI6VgFJ7blb6aSL4hqDyOgYiU1V1CrkSqWuHmHaTwvnbTxudzH
+	wIi5A++bT0IdMcGDJy+qtRM28m7OeuCk1yP5ky2gRNuH4kMqw==
+Received: from nasanppmta03.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3x3rt80fm5-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 26 Mar 2024 08:59:49 +0000 (GMT)
+Received: from nasanex01b.na.qualcomm.com (nasanex01b.na.qualcomm.com [10.46.141.250])
+	by NASANPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 42Q8xOTf009240
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 26 Mar 2024 08:59:24 GMT
+Received: from hu-varada-blr.qualcomm.com (10.80.80.8) by
+ nasanex01b.na.qualcomm.com (10.46.141.250) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.40; Tue, 26 Mar 2024 01:59:19 -0700
+Date: Tue, 26 Mar 2024 14:29:16 +0530
+From: Varadarajan Narayanan <quic_varada@quicinc.com>
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+CC: <andersson@kernel.org>, <konrad.dybcio@linaro.org>,
+        <mturquette@baylibre.com>, <sboyd@kernel.org>, <robh@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
+        <djakov@kernel.org>, <quic_anusha@quicinc.com>,
+        <linux-arm-msm@vger.kernel.org>, <linux-clk@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-pm@vger.kernel.org>
+Subject: Re: [PATCH v2 2/4] dt-bindings: interconnect: Add Qualcomm IPQ9574
+ support
+Message-ID: <ZgKOZGDxqGD8dmAn@hu-varada-blr.qualcomm.com>
+References: <20240325102036.95484-1-quic_varada@quicinc.com>
+ <20240325102036.95484-3-quic_varada@quicinc.com>
+ <4e7ff99f-f362-4d58-b2f0-ca2dc1fe4b55@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <202403221630.2692c998-oliver.sang@intel.com> <20240324142532.GAZgA33M_u1lW_E_1n@fat_crate.local>
- <CAMj1kXE97o_T61AJ6wRAOpUvzon-45fnsT2dGB0GBP1x7bfGaw@mail.gmail.com> <ZgKH0LbdN0aDyvRe@xsang-OptiPlex-9020>
-In-Reply-To: <ZgKH0LbdN0aDyvRe@xsang-OptiPlex-9020>
-From: Ard Biesheuvel <ardb@kernel.org>
-Date: Tue, 26 Mar 2024 10:59:04 +0200
-X-Gmail-Original-Message-ID: <CAMj1kXG2D8cwtXTqjepm30B9X9KQD_q2XMDAA522mv9z-5_-ug@mail.gmail.com>
-Message-ID: <CAMj1kXG2D8cwtXTqjepm30B9X9KQD_q2XMDAA522mv9z-5_-ug@mail.gmail.com>
-Subject: Re: [linus:master] [x86/sme] 48204aba80: BUG:kernel_failed_in_early-boot_stage,last_printk:Booting_the_kernel(entry_offset:#)
-To: Oliver Sang <oliver.sang@intel.com>
-Cc: Borislav Petkov <bp@alien8.de>, oe-lkp@lists.linux.dev, lkp@intel.com, 
-	linux-kernel@vger.kernel.org, Tom Lendacky <thomas.lendacky@amd.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <4e7ff99f-f362-4d58-b2f0-ca2dc1fe4b55@linaro.org>
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nasanex01b.na.qualcomm.com (10.46.141.250)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: JNx53uo_Xs9A_D8dPCMbJA1vWSMfwqlj
+X-Proofpoint-ORIG-GUID: JNx53uo_Xs9A_D8dPCMbJA1vWSMfwqlj
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-03-26_04,2024-03-21_02,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 impostorscore=0
+ priorityscore=1501 suspectscore=0 malwarescore=0 mlxscore=0 clxscore=1015
+ spamscore=0 mlxlogscore=942 phishscore=0 lowpriorityscore=0 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2403210001
+ definitions=main-2403260061
 
-On Tue, 26 Mar 2024 at 10:31, Oliver Sang <oliver.sang@intel.com> wrote:
->
-> hi, Ard Biesheuvel,
->
-> On Mon, Mar 25, 2024 at 04:39:26PM +0200, Ard Biesheuvel wrote:
-> > On Sun, 24 Mar 2024 at 16:26, Borislav Petkov <bp@alien8.de> wrote:
-> > >
-> > > On Fri, Mar 22, 2024 at 05:03:18PM +0800, kernel test robot wrote:
-> > > >
-> > > >
-> > > > Hello,
-> > > >
-> > > > kernel test robot noticed "BUG:kernel_failed_in_early-boot_stage,last_printk:Booting_the_kernel(entry_offset:#)" on:
-> > > >
-> > > > commit: 48204aba801f1b512b3abed10b8e1a63e03f3dd1 ("x86/sme: Move early SME kernel encryption handling into .head.text")
-> > > > https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git master
-> > > >
-> > > > [test failed on linus/master 741e9d668aa50c91e4f681511ce0e408d55dd7ce]
-> > > > [test failed on linux-next/master a1e7655b77e3391b58ac28256789ea45b1685abb]
-> > > >
-> > > > in testcase: boot
-> > > >
-> > > > compiler: gcc-12
-> > > > test machine: qemu-system-x86_64 -enable-kvm -cpu SandyBridge -smp 2 -m 16G
-> > >
-> > > My guest boots with your .config and SNB as CPU model:
-> > >
-> > > ...
-> > > [    0.373770][    T1] smpboot: CPU0: Intel Xeon E312xx (Sandy Bridge) (family: 0x6, model: 0x2a, stepping: 0x1)
-> > >
-> > > Artefacts like:
-> > >
-> > > -initrd initrd-vm-meta-180.cgz
-> > >
-> > > or
-> > >
-> > > RESULT_ROOT=/result/boot/1/vm-snb/quantal-x86_64-core-20190426.cgz/x86_64-rhel-8.3-bpf/gcc-12/48204aba801f1b512b3abed10b8e1a63e03f3dd1/3
-> > >
-> > > I don't have and don't know how to generate here so I can't run your
-> > > exact reproducer.
-> > >
+On Tue, Mar 26, 2024 at 07:49:00AM +0100, Krzysztof Kozlowski wrote:
+> On 25/03/2024 11:20, Varadarajan Narayanan wrote:
+> > Add master/slave ids for Qualcomm IPQ9574 Network-On-Chip
+> > interfaces. This will be used by the gcc-ipq9574 driver
+> > that will for providing interconnect services using the
+> > icc-clk framework.
 > >
-> > I ran the reproducer using the instructions, and things seem to work fine.
+> > Signed-off-by: Varadarajan Narayanan <quic_varada@quicinc.com>
+> > ---
+> > v2: Rename master slave macros
+> >     Fix license identifier
+>
+> Both patches should be squashed. Header is parts of bindings and your
+> previous patch adds the interconnects, doesn't it?
+>
+>
+> > ---
+> >  .../dt-bindings/interconnect/qcom,ipq9574.h   | 62 +++++++++++++++++++
+> >  1 file changed, 62 insertions(+)
+> >  create mode 100644 include/dt-bindings/interconnect/qcom,ipq9574.h
 > >
-> > https://paste.debian.net/1311951/
-> >
-> > Could you provide any information regarding the QEMU version and its
-> > BIOS implementation?
+> > diff --git a/include/dt-bindings/interconnect/qcom,ipq9574.h b/include/dt-bindings/interconnect/qcom,ipq9574.h
+> > new file mode 100644
+> > index 000000000000..b7b32aa6bbb1
+> > --- /dev/null
+> > +++ b/include/dt-bindings/interconnect/qcom,ipq9574.h
+> > @@ -0,0 +1,62 @@
+> > +/* SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause) */
+> > +#ifndef INTERCONNECT_QCOM_IPQ9574_H
+> > +#define INTERCONNECT_QCOM_IPQ9574_H
+> > +
+> > +#define IPQ_APPS_ID			9574	/* some unique value */
 >
-> for QEMU version:
+> Why random unique values are bindings? Why this cannot be 0? Please
+> explain how this is used by DTS and driver.
+
+This 'id' is not used by the driver or DTS. It is a unique id that
+is initialized for the node by the interconnect driver framework.
+A random value was chosen such that it does not conflict with an
+already existing node id. Chose 9574 based on this comment from
+clk-cbf-msm8996.c
+
+	/* Random ID that doesn't clash with main qnoc and OSM */
+	#define CBF_MASTER_NODE 2000
+
+> > +#define IPQ_NSS_ID			(IPQ_APPS_ID * 2)
 >
-> $ qemu-system-x86_64 --version
-> QEMU emulator version 7.2.9 (Debian 1:7.2+dfsg-7+deb12u5)
-> Copyright (c) 2003-2022 Fabrice Bellard and the QEMU Project developers
->
+> This does not seem right.
 
-I tested the exact same version.
+Doubled the NSS id so that APPS node ids dont clash.
 
-Does it reproduce with -cpu host instead of -cpu SandyBridge? When
-running under KVM, I suspect emulating the actual host uarch rather
-than setting a different one is a more reliable strategy. What CPU
-type does the host have?
-
->
-> for BIOS:
->
-> We don't specify bios option for qemu, my understanding is we just run with
-> default bios for qemu (the seabios). Extra info of seabios
->
-
-Today, legacy BIOS boot is only used by a minority of x86 systems in
-the field, so for better coverage, it would make sense to at least
-start testing UEFI as well.
-
-On debian, just install the ovmf package, and pass -bios
-/usr/share/ovmf/OVMF.fd on the QEMU command line.
-
-And given that you are doing virt based boot testing, another very
-important use case is TDX boot (as well as SEV-SNP, but that may be
-more difficult for you to organize). But please explore internally at
-Intel whether TDX can be added to your test matrix as well.
+Thanks
+Varada
 
