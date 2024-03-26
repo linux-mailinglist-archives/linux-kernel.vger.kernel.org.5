@@ -1,164 +1,168 @@
-Return-Path: <linux-kernel+bounces-118954-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-118955-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9C75E88C1DC
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 13:16:15 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 23A5688C1E1
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 13:18:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 11E0C1F3C404
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 12:16:15 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 561C41C384BC
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 12:18:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D017A71B42;
-	Tue, 26 Mar 2024 12:16:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2F92271B2D;
+	Tue, 26 Mar 2024 12:18:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="N590jXAm"
-Received: from mail-lf1-f42.google.com (mail-lf1-f42.google.com [209.85.167.42])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kd71Eoxp"
+Received: from mail-pj1-f41.google.com (mail-pj1-f41.google.com [209.85.216.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3F8E56BFD4;
-	Tue, 26 Mar 2024 12:16:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1833812B6C;
+	Tue, 26 Mar 2024 12:17:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711455367; cv=none; b=adrSxmzd3lCYNnynkYg9Af3kiPKrXD5YoXZZx+9zozs/OdBtWGSbAjXyRYkkwvDvQxMQZ481GfS7RJP8DSdRKn8nxHyJ2NYuCXXTdg2IpRCWbPuoqOfYfCkJS3tQ+LGZY8SlpqtqYI0uSfkaQJmbRfBRgJExKqQIGg7pOZycsRY=
+	t=1711455480; cv=none; b=rzM/wHkbadLdHtVfGJ+QNEnDrJwFLfeWxnVNq86NbP0eA2dVN3hMIybiu8JzBQV4wUePT5rUY4VQ1xIMvi3J9Fo6Ev7Dc6Q99mI4bVLSOlzwpE5Hpj/CH2tnnH35U+Xfggc61EAenPmDpT/20DAkQu2c3w3Zrn3fLamp0hjA23Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711455367; c=relaxed/simple;
-	bh=XcYTGNUP0d/t/YLHu//d62nSyNh2driN4jDgcinv76U=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=PSEnMzAv0MfLWUG18j5TW44K8bWEhGfHnjeMNliqTnTjOrVzgbCkjZkNNZ1b01H2Jpvb7zszZrQIokp5t0EzsA1cTiXOKJD9gmxQ7OE/Pk37qAJDnhhndxQaBTSn2o4rXv9bjUXU/90KosM0usyUBl67fsYbxX+BX4L3Yjkmifg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=N590jXAm; arc=none smtp.client-ip=209.85.167.42
+	s=arc-20240116; t=1711455480; c=relaxed/simple;
+	bh=SZpe6jdHkKyQfyGM2FX+SQHSwwtIaufimKkdrPF/nWc=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=d56rHefKy56tqRxXeG12UNWtihlvQEUxz5Q/fS07Q/dkSHIHAS0faO37YZ1e7QyA7tCKbjup3pmJGDkMR2Vl7cXTugkLdoLfKmGStU96J8rDel7b30pivfvXwMLiiC1Hg9rAyKL9dIDj0ybFpFRtOPS1m9mP5vaepY+FuvlCUyA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=kd71Eoxp; arc=none smtp.client-ip=209.85.216.41
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f42.google.com with SMTP id 2adb3069b0e04-513d599dbabso7106272e87.1;
-        Tue, 26 Mar 2024 05:16:04 -0700 (PDT)
+Received: by mail-pj1-f41.google.com with SMTP id 98e67ed59e1d1-29a8911d11cso2929658a91.1;
+        Tue, 26 Mar 2024 05:17:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711455363; x=1712060163; darn=vger.kernel.org;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=JDPy0oZRU/yyYmSQH7wJjbHAam1AVRGf91TfaaWf3iM=;
-        b=N590jXAmZUzpHhWCgaawb5SA82m97+4hvJJ8aTQb0eNs1Mj2wP3i9vkDKNw4jQQ5u5
-         mb3G8W77wt9Lu/V5O9sMP1yNMnrEdGOqKcTDW0jj7aaIMFFyy/ILlXYOsud8hOcQemfT
-         5HyLCdAPUBUEyhwbXw3VjD1atWtvsGzbPka9GEWk+ISQ656GUQNXTR2d0nfA964Dl2yG
-         3HM6+FGEONRInOJWoKZtzFPR+ZWupIzXCwtZvNxGjTrChicNuG8bJ6nl/ydhibZTVmI/
-         9dvRy6Bnm+M+AmfzmFCxHOw+XwN31ows3KiQbBTY1GOePHX3TBdRFNHdlsJEjb0NCL8U
-         KyQA==
+        d=gmail.com; s=20230601; t=1711455478; x=1712060278; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=oaT5m0Iyd7jZvLkszdxr7iHrfKjSWwXKGCm7ndW3Vt4=;
+        b=kd71Eoxpdca+bGq3W/DzBrddG+2cH+3qPHWBIfXb3zEW3yorrT6/L9SB0hLluE3I4Q
+         BAe07HCvb0EmWH695YHS2x2obemSIbrpUyAVndP3cYRxc7h7otuS4bO96/QUw8c1mjzj
+         CP+OZCw6v9EjPalXBzeVW3szJel9RqzWVEz/pJPR4Ekcs7iZn4oIoznk0wNgNxn7UZX8
+         gyJFVwpVNetckIKw2NtE3ZMJ7TgbwPdHQ/zNreERaNbo6vJMRPWrWB9iQUjIWfiMLmD5
+         5/iABOlQFb00uZRSltOJmIAdLYT6ttdZVZWDOONquCkTeplop5fJbtrFROKXdgPmM2LK
+         LC0w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711455363; x=1712060163;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:from:x-gm-message-state:from:to:cc:subject:date:message-id
+        d=1e100.net; s=20230601; t=1711455478; x=1712060278;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=JDPy0oZRU/yyYmSQH7wJjbHAam1AVRGf91TfaaWf3iM=;
-        b=QRIjaaBvUjDQRitcUcEBtzS7HUsoWBVmRIjBBw6Vk2mx+zvOO8llwUos5lmSp5Kq7U
-         u4wJJ8koOC9Vh4KyTmqVT29VTFYOlDwzBKvMJX50Ush0hWa2LeaVSMDBCsyHzQkrMtrn
-         MLCNNkoWjbpWNGAmoBQf1IsP24d1VI0cVYiW7V4tzeXSXWXXbg7f/qG2OgTOj2upBahh
-         oIpaGrlwlMHaAKKtndm2ydda70K94BgK+n0BDjzEXwvB53rpKyFVMGC+Wp6zWbzqXHiH
-         US8Wralv+zl6jdPWONL5+H0g6/7twOhRKTwNmAztlpHJ+W41mzb6Kx4EXBSsd/sDpEiN
-         eM6A==
-X-Forwarded-Encrypted: i=1; AJvYcCXwD4juMiwRGwS3iNhnk1c4Hmtv/WepoZrEnLkU7V2r5E/7KXFOIUtKjr7f/WIA05BMXGzqMaYxtSoALJmqkVCRLTul6J+JI75HuagdWtp4oeASWoxW709/BwSXaiaIhqb34pak2wsQesk8F0cl18P/4YjUf5eBKMLYK9ymcfSS
-X-Gm-Message-State: AOJu0YzC7PaTNWQogtbxTguzeDLaZ8vZ0LyoL6o5355WOjCd0OUrJiin
-	2CtENmJ63FC5wdJTIetcxfIPgzn3ciTqaRqjhp04J2+1OErUd5qK
-X-Google-Smtp-Source: AGHT+IGm30vxu7t2G0cwSlNM3BcJUW4wMMIUuxjWdKbyljp5HFXxsVAW9BFsAWEaPWqZKYTzvO2nvQ==
-X-Received: by 2002:a19:430c:0:b0:515:9ee7:ce45 with SMTP id q12-20020a19430c000000b005159ee7ce45mr6522025lfa.49.1711455362846;
-        Tue, 26 Mar 2024 05:16:02 -0700 (PDT)
-Received: from [192.168.1.253] (57657817.catv.pool.telekom.hu. [87.101.120.23])
-        by smtp.googlemail.com with ESMTPSA id x18-20020adfffd2000000b0034181bea3b0sm12096616wrs.3.2024.03.26.05.16.01
+        bh=oaT5m0Iyd7jZvLkszdxr7iHrfKjSWwXKGCm7ndW3Vt4=;
+        b=IPDzESRgM0CFWm1iacaaaoGWW+MmzqtsrrFbCAHtitba/0GOD77SbyWyk6f8/CroPV
+         jNEERWmDUy3WeAA/tXet77ljEV3T/TZoPgueQKB51qNdKlSrN9+p934nq8BD/KnAtL4A
+         GIFS/NQl0pB8Nsm2L/owVIjlrSmdjaegbleb6IbQ7c3XXV5CyXGHv4moK00QGnd+Iq+T
+         tvSPO5PG0xqk4U7CMHjRZ4aEo09IYuF/s1Z4Nywd/iJPOl75sV/I+WtFiK4CUG2Klf4k
+         e2MkI2oC3ggU+nXNR4/5JxOVrEXe8bSSaBkQOxK7zrCh/faS7GRAeEXYijF4IwcMDysm
+         N5Mg==
+X-Forwarded-Encrypted: i=1; AJvYcCVG8d7JVtBzAgKsHNwQV+GrPv21VxJNL6e+3rWbgFdosv/OKUXtNGrhjHF5oBfld1x4wHOBkcMQcSt07T7+4j82x5lh83esE71NkN08PP86UCguFJJ+URR5tAGuUCTeJ27siVvgJssVXV7yHOhvZKm8OzKM/AcHUyUrLmgzWrwcNlTzwg==
+X-Gm-Message-State: AOJu0Yzb7mrq8Qxh2K2xTGOIypEwBeC7T2Vw0amLKx7X8pDLmX4erAAP
+	N+FrRQTIak0AxMeh5ix+bYn0f22q0+u4+Ayq1+Fvl9x7oxao3tjc
+X-Google-Smtp-Source: AGHT+IE5JFg/XWOvPTK11xWkHEHl2w/Tu+A9xRm6qkMWdNt1u5Zw6ejbvsYMXP4A8Ks3uNz9qggv6g==
+X-Received: by 2002:a17:90a:5994:b0:2a0:8bba:f997 with SMTP id l20-20020a17090a599400b002a08bbaf997mr833325pji.32.1711455478320;
+        Tue, 26 Mar 2024 05:17:58 -0700 (PDT)
+Received: from localhost.localdomain ([122.187.117.179])
+        by smtp.gmail.com with ESMTPSA id t22-20020a17090ae51600b002a000f06db4sm11765779pjy.5.2024.03.26.05.17.55
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Mar 2024 05:16:02 -0700 (PDT)
-From: Gabor Juhos <j4g8y7@gmail.com>
-Date: Tue, 26 Mar 2024 13:15:51 +0100
-Subject: [PATCH v2] clk: qcom: clk-alpha-pll: fix rate setting for Stromer
- PLLs
+        Tue, 26 Mar 2024 05:17:58 -0700 (PDT)
+From: Animesh Agarwal <animeshagarwal28@gmail.com>
+To: 
+Cc: animeshagarwal28@gmail.com,
+	Damien Le Moal <dlemoal@kernel.org>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	linux-ide@vger.kernel.org,
+	devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] dt-bindings: ata: ahci-da850: Convert to dtschema
+Date: Tue, 26 Mar 2024 17:47:28 +0530
+Message-ID: <20240326121735.11994-1-animeshagarwal28@gmail.com>
+X-Mailer: git-send-email 2.44.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240326-alpha-pll-fix-stromer-set-rate-v2-1-48ae83af71c8@gmail.com>
-X-B4-Tracking: v=1; b=H4sIAHa8AmYC/42NTQqDMBBGryKz7pT8qbSr3qO4iHbUQDRhEqRFv
- HtTT9Dl+/h4b4dE7CjBvdqBaXPJhbWAulQwzHadCN2rMCihjNDKoPVxthi9x9G9MWUOCzEmysg
- 2E5pW6bahRplRQJFEpvI7A8+u8OxSDvw5e5v8rX+rN4kSta570cu6VfL2mBbr/HUIC3THcXwBD
- JLSg8wAAAA=
-To: Bjorn Andersson <andersson@kernel.org>, 
- Konrad Dybcio <konrad.dybcio@linaro.org>, 
- Michael Turquette <mturquette@baylibre.com>, 
- Stephen Boyd <sboyd@kernel.org>, 
- Varadarajan Narayanan <quic_varada@quicinc.com>, 
- Sricharan R <quic_srichara@quicinc.com>, 
- Kathiravan T <quic_kathirav@quicinc.com>
-Cc: linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org, 
- linux-kernel@vger.kernel.org, stable@vger.kernel.org, 
- Gabor Juhos <j4g8y7@gmail.com>
-X-Mailer: b4 0.13.0
+Content-Transfer-Encoding: 8bit
 
-The clk_alpha_pll_stromer_set_rate() function writes inproper
-values into the ALPHA_VAL{,_U} registers which results in wrong
-clock rates when the alpha value is used.
+Convert the ahci-da850 bindings to DT schema
 
-The broken behaviour can be seen on IPQ5018 for example, when
-dynamic scaling sets the CPU frequency to 800000 KHz. In this
-case the CPU cores are running only at 792031 KHz:
-
-  # cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_cur_freq
-  800000
-  # cat /sys/devices/system/cpu/cpu0/cpufreq/cpuinfo_cur_freq
-  792031
-
-This happens because the function ignores the fact that the alpha
-value calculated by the alpha_pll_round_rate() function is only
-32 bits wide which must be extended to 40 bits if it is used on
-a hardware which supports 40 bits wide values.
-
-Extend the clk_alpha_pll_stromer_set_rate() function to convert
-the alpha value to 40 bits before wrinting that into the registers
-in order to ensure that the hardware really uses the requested rate.
-
-After the change the CPU frequency is correct:
-
-  # cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_cur_freq
-  800000
-  # cat /sys/devices/system/cpu/cpu0/cpufreq/cpuinfo_cur_freq
-  800000
-
-Cc: stable@vger.kernel.org
-Fixes: e47a4f55f240 ("clk: qcom: clk-alpha-pll: Add support for Stromer PLLs")
-Signed-off-by: Gabor Juhos <j4g8y7@gmail.com>
+Signed-off-by: Animesh Agarwal <animeshagarwal28@gmail.com>
 ---
-Changes in v2:
-  - fix subject prefix
-  - rebase on v6.9-rc1
-  - Link to v1: https://lore.kernel.org/r/20240324-alpha-pll-fix-stromer-set-rate-v1-1-335b0b157219@gmail.com
+ .../devicetree/bindings/ata/ahci-da850.txt    | 18 ----------
+ .../bindings/ata/ti,da850-ahci.yaml           | 36 +++++++++++++++++++
+ 2 files changed, 36 insertions(+), 18 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/ata/ahci-da850.txt
+ create mode 100644 Documentation/devicetree/bindings/ata/ti,da850-ahci.yaml
 
-Depends on the following patch:
-  https://lore.kernel.org/r/20240315-apss-ipq-pll-ipq5018-hang-v2-1-6fe30ada2009@gmail.com
----
- drivers/clk/qcom/clk-alpha-pll.c | 4 ++++
- 1 file changed, 4 insertions(+)
-
-diff --git a/drivers/clk/qcom/clk-alpha-pll.c b/drivers/clk/qcom/clk-alpha-pll.c
-index 8a412ef47e163..8e98198d4b4b6 100644
---- a/drivers/clk/qcom/clk-alpha-pll.c
-+++ b/drivers/clk/qcom/clk-alpha-pll.c
-@@ -2490,6 +2490,10 @@ static int clk_alpha_pll_stromer_set_rate(struct clk_hw *hw, unsigned long rate,
- 	rate = alpha_pll_round_rate(rate, prate, &l, &a, ALPHA_REG_BITWIDTH);
- 
- 	regmap_write(pll->clkr.regmap, PLL_L_VAL(pll), l);
+diff --git a/Documentation/devicetree/bindings/ata/ahci-da850.txt b/Documentation/devicetree/bindings/ata/ahci-da850.txt
+deleted file mode 100644
+index 5f8193417725..000000000000
+--- a/Documentation/devicetree/bindings/ata/ahci-da850.txt
++++ /dev/null
+@@ -1,18 +0,0 @@
+-Device tree binding for the TI DA850 AHCI SATA Controller
+----------------------------------------------------------
+-
+-Required properties:
+-  - compatible: must be "ti,da850-ahci"
+-  - reg: physical base addresses and sizes of the two register regions
+-         used by the controller: the register map as defined by the
+-         AHCI 1.1 standard and the Power Down Control Register (PWRDN)
+-         for enabling/disabling the SATA clock receiver
+-  - interrupts: interrupt specifier (refer to the interrupt binding)
+-
+-Example:
+-
+-	sata: sata@218000 {
+-		compatible = "ti,da850-ahci";
+-		reg = <0x218000 0x2000>, <0x22c018 0x4>;
+-		interrupts = <67>;
+-	};
+diff --git a/Documentation/devicetree/bindings/ata/ti,da850-ahci.yaml b/Documentation/devicetree/bindings/ata/ti,da850-ahci.yaml
+new file mode 100644
+index 000000000000..d54f58c12e78
+--- /dev/null
++++ b/Documentation/devicetree/bindings/ata/ti,da850-ahci.yaml
+@@ -0,0 +1,36 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/ata/ti,da850-ahci.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
 +
-+	if (ALPHA_REG_BITWIDTH > ALPHA_BITWIDTH)
-+		a <<= ALPHA_REG_BITWIDTH - ALPHA_BITWIDTH;
++title: TI DA850 AHCI SATA Controller
 +
- 	regmap_write(pll->clkr.regmap, PLL_ALPHA_VAL(pll), a);
- 	regmap_write(pll->clkr.regmap, PLL_ALPHA_VAL_U(pll),
- 		     a >> ALPHA_BITWIDTH);
-
----
-base-commit: 5eab983c5e31e5f0bf2d583731e320e21814d1b7
-change-id: 20240324-alpha-pll-fix-stromer-set-rate-472376e624f0
-
-Best regards,
++maintainers:
++  - Animesh Agarwal <animeshagarwal28@gmail.com>
++
++properties:
++  compatible:
++    const: ti,da850-ahci
++
++  reg:
++    minItems: 2
++    maxItems: 2
++
++  interrupts:
++    maxItems: 1
++
++required:
++  - compatible
++  - reg
++  - interrupts
++
++additionalProperties: false
++
++examples:
++  - |
++    sata@218000 {
++        compatible = "ti,da850-ahci";
++        reg = <0x218000 0x2000>, <0x22c018 0x4>;
++        interrupts = <67>;
++    };
 -- 
-Gabor Juhos <j4g8y7@gmail.com>
+2.44.0
 
 
