@@ -1,168 +1,236 @@
-Return-Path: <linux-kernel+bounces-119413-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-119414-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 774E688C85B
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 17:00:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id F062788C85F
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 17:02:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3245E322C53
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 16:00:42 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A5F9032229B
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 16:02:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CDEE613C9DD;
-	Tue, 26 Mar 2024 15:59:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 351C313C909;
+	Tue, 26 Mar 2024 16:02:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jxJAfeHA"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="I+AVg4pM"
+Received: from mail-pl1-f175.google.com (mail-pl1-f175.google.com [209.85.214.175])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F268013C9C9;
-	Tue, 26 Mar 2024 15:59:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 784D22574B;
+	Tue, 26 Mar 2024 16:02:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711468790; cv=none; b=MUqJA7f+cqbsv4CdfqPCRiLtgVb7nCV8ReNiuoTqVOsZkp2bxWuLREEecB/q0ivTkFSBpOxiF0gltcIQsTfdQJ5TGxMX0kXDjQn41PJJ3LmKUvtS2zlyaH7BaDAOq1/oUQa6BYfh86c7PgN341Zq4kQ/b0VdWcC9LQMT5KNOup0=
+	t=1711468923; cv=none; b=kcpIp+7zWp/Mv55on3hZsV9BTNCOgMvCjpuNoUUGWZYmGTCKWvU9VMXUuhnOXGBLnMyK/T6zWFiRXZxcR6aQj0a1DOjBI1CF4ZSZfKPJTsET6FR5IbYvQ2qrXlLVHntK5cPCuMhdmgN6JVQVXCSeZ+UH/y2afyd1wcLdyHIYjgI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711468790; c=relaxed/simple;
-	bh=TJNBS3lfeWVqLqK+0GJDBRxc46WmxEu8kjT1yWM00fM=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=jVCuKAHCsvZCFTrUvYvapgP1xDpH/wo+yEPrcbmsBuKj8AD/o39Rw0dHIGeI2KW+o3bMGIKUimwhmrJRBuxcp8iVKxWlTKE3l+iooiXpZruSlcrl7hcAQc/GDktZzsv5j/bEqP7I3mE3+J2wYJl4jjdEukDCYWZQc1z+Q7WYCdE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=jxJAfeHA; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8B27AC433C7;
-	Tue, 26 Mar 2024 15:59:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711468789;
-	bh=TJNBS3lfeWVqLqK+0GJDBRxc46WmxEu8kjT1yWM00fM=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=jxJAfeHA20urkXwf1TGJH4ESHxB30OzTdUrgDvLY/7ID6TGbt7xytqHzTKgbTM03p
-	 n5uCb1hVpzmOWnk4oJ3i0znecLWgx3X1x6VHsQgE2X/z/vb/55UWs2PEhZavKJns0p
-	 laePbJ9xdjBv2cstxwY8rQBR5V4MN8MWQbcg5POlM1HgK1K/ux7VEf0SHBhMrbrwbj
-	 U3xgPLnI/dRas9t49/MIUGovUtD9bZTxuByjrO2XrzT5/QTyyotRV6l4xTZidoXxaF
-	 6524QBoxr3qXO0e5F9tuMhIp7YvUDw/w793uPFqi5akCXV5yprE8SEaFqEDL/XV6fb
-	 GnfFNVwdA50AA==
-Message-ID: <a6fbbfd3-516b-4269-b4b2-611979b62fd7@kernel.org>
-Date: Tue, 26 Mar 2024 16:59:43 +0100
+	s=arc-20240116; t=1711468923; c=relaxed/simple;
+	bh=IjbfE8tFOdfjNx4MkilscMXL9i5JKvzYqCkq93qx1DI=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Zf5WFUFs7oZtBkbymupksJMDJybJRaTyr9w2hwOcqYhdjSwITBs52Kb3mRkThvz07TDrWen+eerCvo6NG5Glqx4BEIyyiwEtN/lmt+4RLCQudPzKUp5akd5lb+XRGCC+1kgga6bAubw5LBpvRTuKlw/DU8TU9TZoK0tJZrKBdyo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=I+AVg4pM; arc=none smtp.client-ip=209.85.214.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f175.google.com with SMTP id d9443c01a7336-1e0f2798b47so5211775ad.1;
+        Tue, 26 Mar 2024 09:02:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1711468920; x=1712073720; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=aQJPy88vBYo4nQyyX6JO+jPm5JtOURILAq3nriLwYbQ=;
+        b=I+AVg4pMGd1gzfEoz6Uq8v/9YC+YvYSeTaAiyRhtTnNeYvxqaxCXtahDtSH0Yzxl0b
+         dPokTHz6GZQWZ6JqdpOrNc8I7LabJejcpMu8vuxFYRiZLuXgtt8bU6ZIKP3hmgB02A20
+         8QrbargXJ2GlhYvGsxEespqzME3YB4IorZq46woaCh5JVeRiZTqcQ0JbTwU1w+VFi//2
+         Max75S5+Ya+pdOpTe67owOLHLSlM6IMdvG7CG2+1ONmjT8BpM0Wttev6gV8GnFC0KbSB
+         64ztF3PZTfkkJ3LzW6ieamFi1X+wHyVdPlA+VXzR3nK+tglXrmzZsj2UEVVB2BFdzTwu
+         ZJHA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711468920; x=1712073720;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=aQJPy88vBYo4nQyyX6JO+jPm5JtOURILAq3nriLwYbQ=;
+        b=wTWmj+E0pMc+2kBqXP/5Sh6+hjiM0ob1QgOaOEujSgKmgt/5iwRTpesSGUOY4kg/kU
+         2/nfjGdq0wMqqxF8p88iayWs1IijDFrdtVM2IReM61NvUkCJceMdH7F/gze1HiVcetWg
+         K+zdF2cWIgpJaDXCAxi5TvGG4OivweCiHV7c13KO/mCvbGryQbXeH7ekRo9sGrnjOTVd
+         S/83Gl33d9VbnUqgelQS3R8Wzg3tqBYeqVtj3xP92XBEN17Q69gTOuxbo6oJunck9lCE
+         jWr1KVyFlFDAs0fHIy3F7h8jZ52jcOuBJYcU6jn/iEn95l8VXnxt23C8M3UaHDm/yXoU
+         JM2Q==
+X-Forwarded-Encrypted: i=1; AJvYcCVuGvkc4rfpLe5NHyZtl36fj8QLiRmT0XBcj9YV3vBf6iW5YG7XOUoMu+VpTLMLZ+qlaCRC/eDY8pmQDMpm0U6/Hl5XFAG0rNDjpx8K6BUFf/phLszpVpK7E5KVZd6yQfTmGdvRVhZ7PVwQURSPhx6NJak5xElLK/E7W8zRfJZzb32B7IB8UZLgnI2uTcKmn2RUpTik/tju2qYjT6aLs1toZNzIs+B2mA==
+X-Gm-Message-State: AOJu0YxI2Ua17tn5tN/pxuvLnoKanWJFlgh70WAFA18jE6OjwksuHhwX
+	NJIEvI5zHk7dx4kdB+uAS5W24qDC/hg7cEE8y9ByFEmQx7F1JiOuum2Kpt2Bkx+TtuzfwUW9lqZ
+	+Ho+VwnvMcbxATsqZ3C8tsWwpk+w=
+X-Google-Smtp-Source: AGHT+IHtfConeE4djnAj96ZFcg6gNNv5l9VculGG8dY053dAspbyKZxpxh/zkIuAVWRiJAqk6iJIDniUnCwGli8dbQg=
+X-Received: by 2002:a17:902:e748:b0:1e0:e011:e3cb with SMTP id
+ p8-20020a170902e74800b001e0e011e3cbmr3326261plf.15.1711468919504; Tue, 26 Mar
+ 2024 09:01:59 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/5] dt-bindings: clock: qcom: add SA8540P gpucc
-To: Johan Hovold <johan+linaro@kernel.org>,
- Bjorn Andersson <andersson@kernel.org>
-Cc: Konrad Dybcio <konrad.dybcio@linaro.org>,
- Michael Turquette <mturquette@baylibre.com>, Stephen Boyd
- <sboyd@kernel.org>, Rob Herring <robh@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, Mark Brown <broonie@kernel.org>,
- Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
- linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <20240326140108.21307-1-johan+linaro@kernel.org>
- <20240326140108.21307-2-johan+linaro@kernel.org>
-Content-Language: en-US
-From: Krzysztof Kozlowski <krzk@kernel.org>
-Autocrypt: addr=krzk@kernel.org; keydata=
- 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 fv0=
-In-Reply-To: <20240326140108.21307-2-johan+linaro@kernel.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <20240321145736.2373846-1-jonathan.haslam@gmail.com> <20240325120323.ec3248d330b2755e73a6571e@kernel.org>
+In-Reply-To: <20240325120323.ec3248d330b2755e73a6571e@kernel.org>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Tue, 26 Mar 2024 09:01:47 -0700
+Message-ID: <CAEf4BzZS_QCsSY0oGY_3pGveGfXKK_TkVURyNq=UQXVXSqi2Fw@mail.gmail.com>
+Subject: Re: [PATCH] uprobes: reduce contention on uprobes_tree access
+To: Masami Hiramatsu <mhiramat@kernel.org>
+Cc: Jonathan Haslam <jonathan.haslam@gmail.com>, linux-trace-kernel@vger.kernel.org, 
+	andrii@kernel.org, bpf@vger.kernel.org, rostedt@goodmis.org, 
+	Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
+	Arnaldo Carvalho de Melo <acme@kernel.org>, Namhyung Kim <namhyung@kernel.org>, 
+	Mark Rutland <mark.rutland@arm.com>, 
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Ian Rogers <irogers@google.com>, Adrian Hunter <adrian.hunter@intel.com>, 
+	linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 26/03/2024 15:01, Johan Hovold wrote:
-> The SA8540P platform is closely related to SC8280XP but differs in that
-> it uses an external supply for the GX power domain.
-> 
-> Add a new compatible string for the SA8540P GPU clock controller so that
-> the OS can determine which resources to look for.
-> 
-> Fixes: e60b95d2b687 ("dt-bindings: clock: qcom: Allow VDD_GFX supply to GX")
+On Sun, Mar 24, 2024 at 8:03=E2=80=AFPM Masami Hiramatsu <mhiramat@kernel.o=
+rg> wrote:
+>
+> On Thu, 21 Mar 2024 07:57:35 -0700
+> Jonathan Haslam <jonathan.haslam@gmail.com> wrote:
+>
+> > Active uprobes are stored in an RB tree and accesses to this tree are
+> > dominated by read operations. Currently these accesses are serialized b=
+y
+> > a spinlock but this leads to enormous contention when large numbers of
+> > threads are executing active probes.
+> >
+> > This patch converts the spinlock used to serialize access to the
+> > uprobes_tree RB tree into a reader-writer spinlock. This lock type
+> > aligns naturally with the overwhelmingly read-only nature of the tree
+> > usage here. Although the addition of reader-writer spinlocks are
+> > discouraged [0], this fix is proposed as an interim solution while an
+> > RCU based approach is implemented (that work is in a nascent form). Thi=
+s
+> > fix also has the benefit of being trivial, self contained and therefore
+> > simple to backport.
+> >
+> > This change has been tested against production workloads that exhibit
+> > significant contention on the spinlock and an almost order of magnitude
+> > reduction for mean uprobe execution time is observed (28 -> 3.5 microse=
+cs).
+>
+> Looks good to me.
+>
+> Acked-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
-I don't get why adding new device support is a fix. Commit msg did not
-help me to understand it.
+Masami,
 
+Given the discussion around per-cpu rw semaphore and need for
+(internal) batched attachment API for uprobes, do you think you can
+apply this patch as is for now? We can then gain initial improvements
+in scalability that are also easy to backport, and Jonathan will work
+on a more complete solution based on per-cpu RW semaphore, as
+suggested by Ingo.
 
-> Signed-off-by: Johan Hovold <johan+linaro@kernel.org>
-> ---
->  Documentation/devicetree/bindings/clock/qcom,gpucc.yaml | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/Documentation/devicetree/bindings/clock/qcom,gpucc.yaml b/Documentation/devicetree/bindings/clock/qcom,gpucc.yaml
-> index f57aceddac6b..5b385e4976b6 100644
-> --- a/Documentation/devicetree/bindings/clock/qcom,gpucc.yaml
-> +++ b/Documentation/devicetree/bindings/clock/qcom,gpucc.yaml
-> @@ -28,6 +28,7 @@ properties:
->    compatible:
->      enum:
->        - qcom,sdm845-gpucc
-> +      - qcom,sa8540p-gpucc
-
-This looks fine and pretty trivial, but I really do not understand why
-skipping our list for automated testing.
-
-<standard letter>
-Please use scripts/get_maintainers.pl to get a list of necessary people
-and lists to CC. It might happen, that command when run on an older
-kernel, gives you outdated entries. Therefore please be sure you base
-your patches on recent Linux kernel.
-
-Tools like b4 or scripts/get_maintainer.pl provide you proper list of
-people, so fix your workflow. Tools might also fail if you work on some
-ancient tree (don't, instead use mainline), work on fork of kernel
-(don't, instead use mainline) or you ignore some maintainers (really
-don't). Just use b4 and everything should be fine, although remember
-about `b4 prep --auto-to-cc` if you added new patches to the patchset.
-
-You missed at least devicetree list (maybe more), so this won't be
-tested by automated tooling. Performing review on untested code might be
-a waste of time.
-
-Please kindly resend and include all necessary To/Cc entries.
-</standard letter>
-
-Best regards,
-Krzysztof
-
+>
+> BTW, how did you measure the overhead? I think spinlock overhead
+> will depend on how much lock contention happens.
+>
+> Thank you,
+>
+> >
+> > [0] https://docs.kernel.org/locking/spinlocks.html
+> >
+> > Signed-off-by: Jonathan Haslam <jonathan.haslam@gmail.com>
+> > ---
+> >  kernel/events/uprobes.c | 22 +++++++++++-----------
+> >  1 file changed, 11 insertions(+), 11 deletions(-)
+> >
+> > diff --git a/kernel/events/uprobes.c b/kernel/events/uprobes.c
+> > index 929e98c62965..42bf9b6e8bc0 100644
+> > --- a/kernel/events/uprobes.c
+> > +++ b/kernel/events/uprobes.c
+> > @@ -39,7 +39,7 @@ static struct rb_root uprobes_tree =3D RB_ROOT;
+> >   */
+> >  #define no_uprobe_events()   RB_EMPTY_ROOT(&uprobes_tree)
+> >
+> > -static DEFINE_SPINLOCK(uprobes_treelock);    /* serialize rbtree acces=
+s */
+> > +static DEFINE_RWLOCK(uprobes_treelock);      /* serialize rbtree acces=
+s */
+> >
+> >  #define UPROBES_HASH_SZ      13
+> >  /* serialize uprobe->pending_list */
+> > @@ -669,9 +669,9 @@ static struct uprobe *find_uprobe(struct inode *ino=
+de, loff_t offset)
+> >  {
+> >       struct uprobe *uprobe;
+> >
+> > -     spin_lock(&uprobes_treelock);
+> > +     read_lock(&uprobes_treelock);
+> >       uprobe =3D __find_uprobe(inode, offset);
+> > -     spin_unlock(&uprobes_treelock);
+> > +     read_unlock(&uprobes_treelock);
+> >
+> >       return uprobe;
+> >  }
+> > @@ -701,9 +701,9 @@ static struct uprobe *insert_uprobe(struct uprobe *=
+uprobe)
+> >  {
+> >       struct uprobe *u;
+> >
+> > -     spin_lock(&uprobes_treelock);
+> > +     write_lock(&uprobes_treelock);
+> >       u =3D __insert_uprobe(uprobe);
+> > -     spin_unlock(&uprobes_treelock);
+> > +     write_unlock(&uprobes_treelock);
+> >
+> >       return u;
+> >  }
+> > @@ -935,9 +935,9 @@ static void delete_uprobe(struct uprobe *uprobe)
+> >       if (WARN_ON(!uprobe_is_active(uprobe)))
+> >               return;
+> >
+> > -     spin_lock(&uprobes_treelock);
+> > +     write_lock(&uprobes_treelock);
+> >       rb_erase(&uprobe->rb_node, &uprobes_tree);
+> > -     spin_unlock(&uprobes_treelock);
+> > +     write_unlock(&uprobes_treelock);
+> >       RB_CLEAR_NODE(&uprobe->rb_node); /* for uprobe_is_active() */
+> >       put_uprobe(uprobe);
+> >  }
+> > @@ -1298,7 +1298,7 @@ static void build_probe_list(struct inode *inode,
+> >       min =3D vaddr_to_offset(vma, start);
+> >       max =3D min + (end - start) - 1;
+> >
+> > -     spin_lock(&uprobes_treelock);
+> > +     read_lock(&uprobes_treelock);
+> >       n =3D find_node_in_range(inode, min, max);
+> >       if (n) {
+> >               for (t =3D n; t; t =3D rb_prev(t)) {
+> > @@ -1316,7 +1316,7 @@ static void build_probe_list(struct inode *inode,
+> >                       get_uprobe(u);
+> >               }
+> >       }
+> > -     spin_unlock(&uprobes_treelock);
+> > +     read_unlock(&uprobes_treelock);
+> >  }
+> >
+> >  /* @vma contains reference counter, not the probed instruction. */
+> > @@ -1407,9 +1407,9 @@ vma_has_uprobes(struct vm_area_struct *vma, unsig=
+ned long start, unsigned long e
+> >       min =3D vaddr_to_offset(vma, start);
+> >       max =3D min + (end - start) - 1;
+> >
+> > -     spin_lock(&uprobes_treelock);
+> > +     read_lock(&uprobes_treelock);
+> >       n =3D find_node_in_range(inode, min, max);
+> > -     spin_unlock(&uprobes_treelock);
+> > +     read_unlock(&uprobes_treelock);
+> >
+> >       return !!n;
+> >  }
+> > --
+> > 2.43.0
+> >
+>
+>
+> --
+> Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
