@@ -1,337 +1,119 @@
-Return-Path: <linux-kernel+bounces-120122-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-120123-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0A4E388D2A9
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 00:12:53 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id C5A0388D2AD
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 00:13:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8D4CF1F3C3D1
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 23:12:52 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 496CCB22403
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 23:13:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5664813DDCB;
-	Tue, 26 Mar 2024 23:12:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0568E13DDC5;
+	Tue, 26 Mar 2024 23:13:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gkYlf3as"
-Received: from mail-oa1-f41.google.com (mail-oa1-f41.google.com [209.85.160.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="IFofPOxm"
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AC3051E494;
-	Tue, 26 Mar 2024 23:12:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7052313DDAD;
+	Tue, 26 Mar 2024 23:13:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711494759; cv=none; b=BfPhWerhSsqL+7iovCNLZ/e/x1X8FZNIExYFxOqwOANUi2KhbmF6cZYckahv13ycbIHV6K+UGCQbE1Wpvp6I6Hk04XiTpCWVO1EYnC5MCJNf5XWgewbLgy4tWxSPCtCd0IHBUVylPmuj0eAtmRDSP3LtGBSpc98ODh8vG7nRg0A=
+	t=1711494803; cv=none; b=prfy0m5nGvhzbpTANPF2uDoXkZI/zDuxpBc1siVT86rFk77j7hD01sRKg5OI7PqoBi8ua+JZ0MWZLzpsq28O29gQSV+UO6EPhjtykS6PiT3MwD0ZGeZE7LIPLKGao42yxKCAVVXvAOvYl30RMRfurbgPzVuiV2wyf2tQxY+8h6s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711494759; c=relaxed/simple;
-	bh=S+UbtKE+7VXAYTZQsGDhMQnPwtMIGNxuhlcF9CQES3A=;
-	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=gKhqjffqCLlRwKwkfM8kxuex9djpr0owKn8nS1cuLvhGEEQqF/HzQqch+bMSjPuEDTD2pZHb6hQA/5FtAjmD5ePer9GhTL3nnNdnTNJ6hz6sxtIqocn7oXkD1mBfoVmsws9vq+5yufQ0OU0jnb0tmtxqa1s/4KBURTAmh7K2Vic=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=gkYlf3as; arc=none smtp.client-ip=209.85.160.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oa1-f41.google.com with SMTP id 586e51a60fabf-221816e3ab9so2625795fac.2;
-        Tue, 26 Mar 2024 16:12:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711494756; x=1712099556; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=hKsQFAenGXxntkcve064jSRHibSWpm0z83IjTBW7B5Y=;
-        b=gkYlf3asfJc8SU6aJ5PzdhUuMFR3l/n2RX8UxFxV2LGbO65iGMkMAjhmiSg6XtxUUZ
-         rZMbJgECnPNnwKv2IOTklRdHSEa6Nu22UvSK8S61Xv3uFFzLTdNIduz29sWT4AiQhCce
-         cZ8iUA0UgmcmaR1KN6vbmc3FSa39v1AeKeNm5JXGk3X4+vD5dJVcgQPnC8VjZ6Wq/rnv
-         dGuqZx8Y/d4I2yvTAaI/ViainddxD5odeGW5nQ9OvaLtfnXZ4xgvcoMz7Ad07AFxLyt9
-         /6OwvDHK+hbtEU4qxTENFWANduyukzpqOVkLcfYT0zoDflQ47R4zeINt/P7c0A8kChTZ
-         jaEg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711494756; x=1712099556;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=hKsQFAenGXxntkcve064jSRHibSWpm0z83IjTBW7B5Y=;
-        b=cCmjhx6GP6tSRenXNsK5zmZEQSJiLQtcOtu4oWrLdjTy4z3Pj/urEItPIHFyAweO71
-         FpO43BulwOR3Jf5/iVuJG7KXFqgPxhxy8NKXlgIRjzPJws+wU61571V8jIbl0txIW4Jh
-         KwnhuRlAfrW7as+y4l1ZS+NYOiLuldh4kcQnTdNFt3jvliAuuxu++cjAGlWRLQYS7IH5
-         9Mqveelhpvh7MoRzUABx4O+bCrTQsWORmZsS782czUi+tJ2W76+tvW81TEPFVKEvSDjP
-         o0D9Scsc0HlVmduG2cEKQ+MNTy3Kl3mpuc/gHVCaKYTvpjRaMkBItPoCPsprbeBLFm1w
-         X/rw==
-X-Forwarded-Encrypted: i=1; AJvYcCUc/tFi9h6a1E7IA/eku0H9Y9sm3SRpWwkF9+hFo1rUoVgMAL634sCO/xuIIVtzPjmE0/UA7IC4WrNpIV7K1pFTBBcxMaOo7o0fb0ggyRoNqPaSPkuQ9mM2QbZDYBRk+vRaDf2f+A/6ILjCnqexx4rXm1op/rBjyQHNgyuDbUNyRlQDDT8=
-X-Gm-Message-State: AOJu0YyDWLj47P5htByfdT9QYELLW6u0AK/UCQaJokApl0B/klnU3WKS
-	jeZGlWRqDQ0zHYBG1fzPdEn+kIzgmRaHBH6rQG6wUfCRe1/VL+IHbcAxFCPb
-X-Google-Smtp-Source: AGHT+IFul8KcODyrEGVw35D6g687woVOKiYbVNnkRjo2bWb/y72GUCCfHiik4OiJH71z2Ul22wHmpw==
-X-Received: by 2002:a05:6870:818a:b0:22a:6b82:d11 with SMTP id k10-20020a056870818a00b0022a6b820d11mr2909061oae.53.1711494756631;
-        Tue, 26 Mar 2024 16:12:36 -0700 (PDT)
-Received: from debian ([2601:641:300:14de:dab1:15ff:5381:7f21])
-        by smtp.gmail.com with ESMTPSA id z189-20020a6265c6000000b006e71e3d1172sm6811212pfb.101.2024.03.26.16.12.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Mar 2024 16:12:36 -0700 (PDT)
-From: fan <nifan.cxl@gmail.com>
-X-Google-Original-From: fan <fan@debian>
-Date: Tue, 26 Mar 2024 16:12:33 -0700
-To: ira.weiny@intel.com
-Cc: Dave Jiang <dave.jiang@intel.com>, Fan Ni <fan.ni@samsung.com>,
-	Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-	Navneet Singh <navneet.singh@intel.com>,
-	Dan Williams <dan.j.williams@intel.com>,
-	Davidlohr Bueso <dave@stgolabs.net>,
-	Alison Schofield <alison.schofield@intel.com>,
-	Vishal Verma <vishal.l.verma@intel.com>,
-	linux-btrfs@vger.kernel.org, linux-cxl@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 13/26] cxl/mem: Configure dynamic capacity interrupts
-Message-ID: <ZgNWYdTMv8gjiKj9@debian>
-References: <20240324-dcd-type2-upstream-v1-0-b7b00d623625@intel.com>
- <20240324-dcd-type2-upstream-v1-13-b7b00d623625@intel.com>
+	s=arc-20240116; t=1711494803; c=relaxed/simple;
+	bh=UcvNeQayEhF72OWsw7JIXY3e7jKFPUq+mQ67sLPafTk=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=Q/SPMqnGqBP1yL6gtarTmcgFLxPnyQ3EHqQbNd6GhPJb8UlzYOJw9vhq9+cZK5eBYA75bmPiii0Hzt+EFknf4URICWVlHmRjOtWLylS6tl/Oqvlqrh6DkpWMAUT3dxRoQKLvK+iNgQubVSAKjgzruuGAQXh5+viBijxolrF7XEU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au; spf=pass smtp.mailfrom=canb.auug.org.au; dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b=IFofPOxm; arc=none smtp.client-ip=150.107.74.76
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+	s=201702; t=1711494793;
+	bh=iUsdc7cAw1OVLTLm6TB9hiPQC9EG3D2Ph/qXCcXdnNQ=;
+	h=Date:From:To:Cc:Subject:From;
+	b=IFofPOxm7IPqJMS1DkpQWAc8psnTQFGR2RtPCiIcvHrwU9y5h3pmoqD3XywHRxGfV
+	 zRKJ2/NVra0ImOAK6ho2SJbND9mnMhTjE8lgQM9zyXf/fFuRMpnfyb9kTEQpj+PVnS
+	 sGve4C9cNFP/cyuAruGvcMOUbV+nNbHkOGusDhbdqtaVmzUo3WeBiFY1OQaHxOkO/8
+	 wfDdTNG3XwUwj+LFQcvkDkS52XdQ/woLikyvzPEdMBa8tNzzAQfjTX5Rt02acdijXW
+	 ExWB3CdF164EU4jQwrco2Kv3TMkm+XaafBqmmebimM28m24IewYDyZWidT9aaryh10
+	 kazxTCg9q6kUQ==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mail.ozlabs.org (Postfix) with ESMTPSA id 4V45FN2Dk5z4wcQ;
+	Wed, 27 Mar 2024 10:13:12 +1100 (AEDT)
+Date: Wed, 27 Mar 2024 10:13:09 +1100
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+To: Linux Next Mailing List <linux-next@vger.kernel.org>
+Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Alexandre
+ Belloni <alexandre.belloni@bootlin.com>, Eric Biggers
+ <ebiggers@kernel.org>, Jaegeuk Kim <jaegeuk@kernel.org>, Jens Wiklander
+ <jens.wiklander@linaro.org>, Luis Chamberlain <mcgrof@kernel.org>, Richard
+ Weinberger <richard@nod.at>, Theodore Ts'o <tytso@mit.edu>, Tyler Hicks
+ <code@tyhicks.com>
+Subject: linux-next: trees being removed
+Message-ID: <20240327101309.4e7d04f3@canb.auug.org.au>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240324-dcd-type2-upstream-v1-13-b7b00d623625@intel.com>
+Content-Type: multipart/signed; boundary="Sig_/nYu57v3tWCtg6/tEBlLc1Kq";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 
-On Sun, Mar 24, 2024 at 04:18:16PM -0700, ira.weiny@intel.com wrote:
-> From: Navneet Singh <navneet.singh@intel.com>
-> 
-> Dynamic Capacity Devices (DCD) support extent change notifications
-> through the event log mechanism.  The interrupt mailbox commands were
-> extended in CXL 3.1 to support these notifications.
-> 
-> Firmware can't configure DCD events to be FW controlled but can retain
-> control of memory events.  Split irq configuration of memory events and
-> DCD events to allow for FW control of memory events while DCD is host
-> controlled.
-> 
-> Configure DCD event log interrupts on devices supporting dynamic
-> capacity.  Disable DCD if interrupts are not supported.
-> 
-> Signed-off-by: Navneet Singh <navneet.singh@intel.com>
-> Co-developed-by: Ira Weiny <ira.weiny@intel.com>
-> Signed-off-by: Ira Weiny <ira.weiny@intel.com>
-> 
-> ---
-> Changes for v1
-> [iweiny: rebase to upstream irq code]
-> [iweiny: disable DCD if irqs not supported]
-> ---
->  drivers/cxl/core/mbox.c |  9 ++++++-
->  drivers/cxl/cxl.h       |  4 ++-
->  drivers/cxl/cxlmem.h    |  4 +++
->  drivers/cxl/pci.c       | 71 ++++++++++++++++++++++++++++++++++++++++---------
->  4 files changed, 74 insertions(+), 14 deletions(-)
-> 
-> diff --git a/drivers/cxl/core/mbox.c b/drivers/cxl/core/mbox.c
-> index 14e8a7528a8b..58b31fa47b93 100644
-> --- a/drivers/cxl/core/mbox.c
-> +++ b/drivers/cxl/core/mbox.c
-> @@ -1323,10 +1323,17 @@ static int cxl_get_dc_config(struct cxl_memdev_state *mds, u8 start_region,
->  	return rc;
->  }
->  
-> -static bool cxl_dcd_supported(struct cxl_memdev_state *mds)
-> +bool cxl_dcd_supported(struct cxl_memdev_state *mds)
->  {
->  	return test_bit(CXL_DCD_ENABLED_GET_CONFIG, mds->dcd_cmds);
->  }
-> +EXPORT_SYMBOL_NS_GPL(cxl_dcd_supported, CXL);
-> +
-> +void cxl_disable_dcd(struct cxl_memdev_state *mds)
-> +{
-> +	clear_bit(CXL_DCD_ENABLED_GET_CONFIG, mds->dcd_cmds);
-> +}
-> +EXPORT_SYMBOL_NS_GPL(cxl_disable_dcd, CXL);
->  
->  /**
->   * cxl_dev_dynamic_capacity_identify() - Reads the dynamic capacity
-> diff --git a/drivers/cxl/cxl.h b/drivers/cxl/cxl.h
-> index 15d418b3bc9b..d585f5fdd3ae 100644
-> --- a/drivers/cxl/cxl.h
-> +++ b/drivers/cxl/cxl.h
-> @@ -164,11 +164,13 @@ static inline int ways_to_eiw(unsigned int ways, u8 *eiw)
->  #define CXLDEV_EVENT_STATUS_WARN		BIT(1)
->  #define CXLDEV_EVENT_STATUS_FAIL		BIT(2)
->  #define CXLDEV_EVENT_STATUS_FATAL		BIT(3)
-> +#define CXLDEV_EVENT_STATUS_DCD			BIT(4)
->  
->  #define CXLDEV_EVENT_STATUS_ALL (CXLDEV_EVENT_STATUS_INFO |	\
->  				 CXLDEV_EVENT_STATUS_WARN |	\
->  				 CXLDEV_EVENT_STATUS_FAIL |	\
-> -				 CXLDEV_EVENT_STATUS_FATAL)
-> +				 CXLDEV_EVENT_STATUS_FATAL|	\
-> +				 CXLDEV_EVENT_STATUS_DCD)
->  
->  /* CXL rev 3.0 section 8.2.9.2.4; Table 8-52 */
->  #define CXLDEV_EVENT_INT_MODE_MASK	GENMASK(1, 0)
-> diff --git a/drivers/cxl/cxlmem.h b/drivers/cxl/cxlmem.h
-> index 4624cf612c1e..01bee6eedff3 100644
-> --- a/drivers/cxl/cxlmem.h
-> +++ b/drivers/cxl/cxlmem.h
-> @@ -225,7 +225,9 @@ struct cxl_event_interrupt_policy {
->  	u8 warn_settings;
->  	u8 failure_settings;
->  	u8 fatal_settings;
-> +	u8 dcd_settings;
->  } __packed;
-> +#define CXL_EVENT_INT_POLICY_BASE_SIZE 4 /* info, warn, failure, fatal */
->  
->  /**
->   * struct cxl_event_state - Event log driver state
-> @@ -890,6 +892,8 @@ void cxl_event_trace_record(const struct cxl_memdev *cxlmd,
->  			    enum cxl_event_log_type type,
->  			    enum cxl_event_type event_type,
->  			    const uuid_t *uuid, union cxl_event *evt);
-> +bool cxl_dcd_supported(struct cxl_memdev_state *mds);
-> +void cxl_disable_dcd(struct cxl_memdev_state *mds);
->  int cxl_set_timestamp(struct cxl_memdev_state *mds);
->  int cxl_poison_state_init(struct cxl_memdev_state *mds);
->  int cxl_mem_get_poison(struct cxl_memdev *cxlmd, u64 offset, u64 len,
-> diff --git a/drivers/cxl/pci.c b/drivers/cxl/pci.c
-> index 12cd5d399230..ef482eae09e9 100644
-> --- a/drivers/cxl/pci.c
-> +++ b/drivers/cxl/pci.c
-> @@ -669,22 +669,33 @@ static int cxl_event_get_int_policy(struct cxl_memdev_state *mds,
->  }
->  
->  static int cxl_event_config_msgnums(struct cxl_memdev_state *mds,
-> -				    struct cxl_event_interrupt_policy *policy)
-> +				    struct cxl_event_interrupt_policy *policy,
-> +				    bool native_cxl)
->  {
->  	struct cxl_mbox_cmd mbox_cmd;
-> +	size_t size_in;
->  	int rc;
->  
-> -	*policy = (struct cxl_event_interrupt_policy) {
-> -		.info_settings = CXL_INT_MSI_MSIX,
-> -		.warn_settings = CXL_INT_MSI_MSIX,
-> -		.failure_settings = CXL_INT_MSI_MSIX,
-> -		.fatal_settings = CXL_INT_MSI_MSIX,
-> -	};
-> +	if (native_cxl) {
-> +		*policy = (struct cxl_event_interrupt_policy) {
-> +			.info_settings = CXL_INT_MSI_MSIX,
-> +			.warn_settings = CXL_INT_MSI_MSIX,
-> +			.failure_settings = CXL_INT_MSI_MSIX,
-> +			.fatal_settings = CXL_INT_MSI_MSIX,
-> +			.dcd_settings = 0,
-> +		};
-> +	}
-> +	size_in = CXL_EVENT_INT_POLICY_BASE_SIZE;
-> +
-> +	if (cxl_dcd_supported(mds)) {
-> +		policy->dcd_settings = CXL_INT_MSI_MSIX;
-> +		size_in += sizeof(policy->dcd_settings);
-> +	}
->  
->  	mbox_cmd = (struct cxl_mbox_cmd) {
->  		.opcode = CXL_MBOX_OP_SET_EVT_INT_POLICY,
->  		.payload_in = policy,
-> -		.size_in = sizeof(*policy),
-> +		.size_in = size_in,
->  	};
->  
->  	rc = cxl_internal_send_cmd(mds, &mbox_cmd);
-> @@ -731,6 +742,31 @@ static int cxl_event_irqsetup(struct cxl_memdev_state *mds,
->  	return 0;
->  }
->  
-> +static int cxl_irqsetup(struct cxl_memdev_state *mds,
-> +			struct cxl_event_interrupt_policy *policy,
-> +			bool native_cxl)
-> +{
-> +	struct cxl_dev_state *cxlds = &mds->cxlds;
-> +	int rc;
-> +
-> +	if (native_cxl) {
-> +		rc = cxl_event_irqsetup(mds, policy);
-> +		if (rc)
-> +			return rc;
-> +	}
-> +
-> +	if (cxl_dcd_supported(mds)) {
-> +		rc = cxl_event_req_irq(cxlds, policy->dcd_settings);
-> +		if (rc) {
-> +			dev_err(cxlds->dev, "Failed to get interrupt for DCD event log\n");
-> +			cxl_disable_dcd(mds);
-> +			return rc;
-> +		}
-> +	}
-> +
-> +	return 0;
-> +}
-> +
->  static bool cxl_event_int_is_fw(u8 setting)
->  {
->  	u8 mode = FIELD_GET(CXLDEV_EVENT_INT_MODE_MASK, setting);
-> @@ -757,17 +793,25 @@ static int cxl_event_config(struct pci_host_bridge *host_bridge,
->  			    struct cxl_memdev_state *mds, bool irq_avail)
->  {
->  	struct cxl_event_interrupt_policy policy = { 0 };
-> +	bool native_cxl = host_bridge->native_cxl_error;
->  	int rc;
->  
->  	/*
->  	 * When BIOS maintains CXL error reporting control, it will process
->  	 * event records.  Only one agent can do so.
-> +	 *
-> +	 * If BIOS has control of events and DCD is not supported skip event
-> +	 * configuration.
->  	 */
-> -	if (!host_bridge->native_cxl_error)
-> +	if (!native_cxl && !cxl_dcd_supported(mds))
->  		return 0;
->  
->  	if (!irq_avail) {
->  		dev_info(mds->cxlds.dev, "No interrupt support, disable event processing.\n");
-> +		if (cxl_dcd_supported(mds)) {
-> +			dev_info(mds->cxlds.dev, "DCD requires interrupts, disable DCD\n");
-> +			cxl_disable_dcd(mds);
-> +		}
->  		return 0;
->  	}
->  
-> @@ -775,10 +819,10 @@ static int cxl_event_config(struct pci_host_bridge *host_bridge,
->  	if (rc)
->  		return rc;
->  
-> -	if (!cxl_event_validate_mem_policy(mds, &policy))
-> +	if (native_cxl && !cxl_event_validate_mem_policy(mds, &policy))
->  		return -EBUSY;
->  
-> -	rc = cxl_event_config_msgnums(mds, &policy);
-> +	rc = cxl_event_config_msgnums(mds, &policy, native_cxl);
->  	if (rc)
->  		return rc;
->  
-> @@ -786,12 +830,15 @@ static int cxl_event_config(struct pci_host_bridge *host_bridge,
->  	if (rc)
->  		return rc;
->  
-> -	rc = cxl_event_irqsetup(mds, &policy);
-> +	rc = cxl_irqsetup(mds, &policy, native_cxl);
->  	if (rc)
->  		return rc;
->  
->  	cxl_mem_get_event_records(mds, CXLDEV_EVENT_STATUS_ALL);
->  
-> +	dev_dbg(mds->cxlds.dev, "Event config : %d %d\n",
-> +		native_cxl, cxl_dcd_supported(mds));
+--Sig_/nYu57v3tWCtg6/tEBlLc1Kq
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-The message will print out two numbers, seems not very clear. Should we
-translate to more straightforward message, like
-native_cxl? "OS...":""
-cxl_dcd_supported(msd)? "DCD supported": "DCD not supported"?
+The following trees are going to be removed from linux-next because they
+have not been updated in more than a year.  If you want a tree restored,
+just let me know (and update its branch).
 
-Fan
+Tree			Last commit date
+  URL
+  comits (if any)
+----			----------------
+ecryptfs		2023-03-24 17:26:44 -0500
+  git://git.kernel.org/pub/scm/linux/kernel/git/tyhicks/ecryptfs.git#next
+  c1cc2db21607 ("ecryptfs: keystore: Fix typo 'the the' in comment")
+  a3d78fe3e1ae ("fs: ecryptfs: comment typo fix")
+fscrypt-current		2023-03-18 21:08:03 -0700
+  git://git.kernel.org/pub/scm/fs/fscrypt/linux.git#for-current
+fsverity-current	2023-03-15 22:50:41 -0700
+  git://git.kernel.org/pub/scm/fs/fsverity/linux.git#for-current
+modules-fixes		2023-02-06 08:45:55 -0800
+  git://git.kernel.org/pub/scm/linux/kernel/git/mcgrof/linux.git#modules-li=
+nus
+rtc-fixes		2023-01-23 23:33:47 +0100
+  git://git.kernel.org/pub/scm/linux/kernel/git/abelloni/linux.git#rtc-fixes
+tee-fixes		2023-02-12 14:10:17 -0800
+  https://git.linaro.org/people/jens.wiklander/linux-tee.git#fixes
+ubifs-fixes		2023-01-21 16:27:01 -0800
+  git://git.kernel.org/pub/scm/linux/kernel/git/rw/ubifs.git#fixes
 
-> +
->  	return 0;
->  }
->  
-> 
-> -- 
-> 2.44.0
-> 
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/nYu57v3tWCtg6/tEBlLc1Kq
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmYDVoUACgkQAVBC80lX
+0Gw3kggAi+iGqCFfky/jPBw/e39ExzJTHr14StnfY7OrDqWXyhk14wPXDHJhDKqO
+DPfXrS4ysmNu29HlF6fBc1KXtMCgIdad7oLIUagWkZXTsEmCvmygd9x8kVUqmpfN
+AygUFt3/9OiQ+FVaLjW1Qav5XPAJkXHCvymDJaRNH+FBBEHR7TtYsRYsh7rEBNmb
+v+LxQKIY2DZZQrjqGQe6gVCsziJXrpIzICAe3UR8ZG3lwxzow3zqr+xG9P1czAV7
+s2AM0JfNF5A6TO1diQ7a25np8J2GXywU7ITW6/q/Fy7KmKuDFU07BWdkO2fGuW4c
+3cGwcbt0amgqNobPi1nECl9pXmUYoA==
+=O/ba
+-----END PGP SIGNATURE-----
+
+--Sig_/nYu57v3tWCtg6/tEBlLc1Kq--
 
