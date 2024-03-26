@@ -1,201 +1,78 @@
-Return-Path: <linux-kernel+bounces-119490-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-119492-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8578988C99B
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 17:42:58 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E94CF88C9A3
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 17:45:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A3E0A1C63865
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 16:42:57 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A54023274BB
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 16:45:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8CC9D1F60A;
-	Tue, 26 Mar 2024 16:42:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6161310A2A;
+	Tue, 26 Mar 2024 16:44:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="HyO9laU7"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
+	dkim=pass (2048-bit key) header.d=proton.me header.i=@proton.me header.b="gHBDUKqh"
+Received: from mail-4322.protonmail.ch (mail-4322.protonmail.ch [185.70.43.22])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0815A1C2A8;
-	Tue, 26 Mar 2024 16:42:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.8
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 164764A0A
+	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 16:44:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.70.43.22
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711471323; cv=none; b=VM6j+rRrqrFXUkARYNX4GvaFaS0itOzKLu0ed6PEZ/R0pgSDYVTSZ+6FY174ORzJsXfPJP/Tl9roWQcjagS+wEStZd5aFPe1mYcfbFOS3OyT3+JEs0gA12B6CR54I03zUMG1UOuB7gTuWlrh8TgKOllJw1O1BUJBlATDw1aBMGw=
+	t=1711471498; cv=none; b=dqjZxaxQbZD98W3k+csZ85fFkhaHw+dKmbBU2S7xV7ivN+qn1PLVt2Es7ndy9YonCwoRbRa7Ovpwob5flMKCC3fssURj2j336u1t4DfLOktsjJ6oEkEP/Sqf5CdZ+nPLW7dWCVyTXQyjS9BzHpal+zX1QSwwuKdUPPlkS4TDAZ0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711471323; c=relaxed/simple;
-	bh=0M19hZnqA3jl1JLaoqiVosY36hhwzDxnFIUtxgxHlNI=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=KjKWBs8XQ0E3xOWn2gOP9UqTfd9HN3hv+iMrzZwhPhglY1wHxuthV99c0rcPLfuf8tFj+8g3SeFlGfy3+NI3ofVvKDtIJR8UbPn9GsHwhvsR0Do8gR4xHOninsoEqx4TdGHvCXSgxBdqI1/3oxcYXdtAnNaGyWhRa2tlyDmGKJ4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=HyO9laU7; arc=none smtp.client-ip=192.198.163.8
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1711471322; x=1743007322;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=0M19hZnqA3jl1JLaoqiVosY36hhwzDxnFIUtxgxHlNI=;
-  b=HyO9laU7MQOkEIIZO7QyrMoPVYlM30CnFTaQ5EH6oFftNFBI/9LKqAyD
-   NwFfyQ4ox/YtyJEVPtM0uBTIoEu1UXvz4e8uExv0CmixQVqFypYaulhia
-   0BoD13sE+zJwSxNZ1Tq/O9SdEBpUEm8DidEbKxo97UQgeTGwtGFRTsf8m
-   JSUu+nvmhxQl2u8T8QBRo0H7J+nFNdPo+sWKe8nEfxQi58t44Oemk/596
-   noiN7ZDo28MgkXQPme4fqfmTiIGC7No6X5xA1pYNIRCpoMnK50t22f46w
-   HPQzhPj6wHjJSvLvWuzrIrp/UvBIFm/fZ2Z8l/ZHTeqAmceNznCqclHRc
-   Q==;
-X-CSE-ConnectionGUID: rcc7u+tHRsOFeEzdb4LhXA==
-X-CSE-MsgGUID: 1FwQ0fM6TzetRP2AypL+ew==
-X-IronPort-AV: E=McAfee;i="6600,9927,11025"; a="24023341"
-X-IronPort-AV: E=Sophos;i="6.07,156,1708416000"; 
-   d="scan'208";a="24023341"
-Received: from orviesa003.jf.intel.com ([10.64.159.143])
-  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Mar 2024 09:41:55 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,156,1708416000"; 
-   d="scan'208";a="20667408"
-Received: from newjersey.igk.intel.com ([10.102.20.203])
-  by orviesa003.jf.intel.com with ESMTP; 26 Mar 2024 09:41:52 -0700
-From: Alexander Lobakin <aleksander.lobakin@intel.com>
-To: "David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>
-Cc: Alexander Lobakin <aleksander.lobakin@intel.com>,
-	Kees Cook <keescook@chromium.org>,
-	"Gustavo A. R. Silva" <gustavoars@kernel.org>,
-	Nathan Chancellor <nathan@kernel.org>,
-	Simon Horman <horms@kernel.org>,
-	nex.sw.ncis.osdt.itp.upstreaming@intel.com,
-	intel-wired-lan@lists.osuosl.org,
-	linux-hardening@vger.kernel.org,
-	netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH net-next 3/3] idpf: sprinkle __counted_by{,_le}() in the virtchnl2 header
-Date: Tue, 26 Mar 2024 17:41:16 +0100
-Message-ID: <20240326164116.645718-4-aleksander.lobakin@intel.com>
-X-Mailer: git-send-email 2.44.0
-In-Reply-To: <20240326164116.645718-1-aleksander.lobakin@intel.com>
-References: <20240326164116.645718-1-aleksander.lobakin@intel.com>
+	s=arc-20240116; t=1711471498; c=relaxed/simple;
+	bh=1gQH+2tZI8zwQ2qZlk46RPoabx1vjeQhTZKr99UHtyQ=;
+	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=VAvXkfdzMQFQOMZqOSbKh2KF1hUnNd3B6vWDh4G/ZddTZOm5bD5+im/P2sXbEbu0wCCyaJJtg+OZjmKagfFjSVaJqwtbCFEdlhdQjg3orqIZtW8HJTh0yH5ff1McHeO9CvqaaQlwlYOQ8t5LMYR610K4Mmgq/8aD12HlcGiQfzg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=proton.me; spf=pass smtp.mailfrom=proton.me; dkim=pass (2048-bit key) header.d=proton.me header.i=@proton.me header.b=gHBDUKqh; arc=none smtp.client-ip=185.70.43.22
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=proton.me
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=proton.me
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=proton.me;
+	s=protonmail; t=1711471489; x=1711730689;
+	bh=eb4Uog2nSYqmvOmyV3gi+b3HfJY/4XsgBHX4glybeyU=;
+	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
+	 Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
+	 Message-ID:BIMI-Selector;
+	b=gHBDUKqhfXSah1+a6Em72Wqhfn+3I0hV3j37Y5byKFz60Ojn/V3xTLQZBgTRgom8y
+	 LEg3YAmzpiut9WAgJpOrlET9jouisBVDSiWdaxNM1YJx7LOJFaFYT0vs7+sRDiK0c0
+	 WSiEl/ToA57R6eSCeATVvwsWe0DkTo+3Sj11uo+0rdWM+ogcaMZdj+RCVo8DdUVBE2
+	 TS/GTrble6IjCqAVp+9rvZKayGV35LfbEPX6MihxBtkPNZB9HXLg5moqxEdqKt7SIo
+	 QLdmgEgbHvKWJyDk/xK+st6XcJeQ6SjmcPtUmd1sM1T6TOsGQJr4yUSt0HH+j2B9Bm
+	 C7DJnD0nkyIWg==
+Date: Tue, 26 Mar 2024 16:44:39 +0000
+To: Boqun Feng <boqun.feng@gmail.com>
+From: Benno Lossin <benno.lossin@proton.me>
+Cc: rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>, Alice Ryhl <aliceryhl@google.com>, Miguel Ojeda <ojeda@kernel.org>, Alex Gaynor <alex.gaynor@gmail.com>, Wedson Almeida Filho <wedsonaf@gmail.com>, Gary Guo <gary@garyguo.net>, =?utf-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, Andreas Hindborg <a.hindborg@samsung.com>, John Stultz <jstultz@google.com>, Stephen Boyd <sboyd@kernel.org>, Valentin Obst <kernel@valentinobst.de>
+Subject: Re: [PATCH 1/5] rust: time: doc: Add missing C header link to jiffies
+Message-ID: <u80hyBY_r8f0yDIURNlC7D0gy9PPC7AsAaHKJICX4JK-rZGaU3g0hSmn1ok9wh9KZxeYbcnbuB9A9cSRcy_ubr5tkeesMYuTw_UuXoIZgF0=@proton.me>
+In-Reply-To: <20240324223339.971934-2-boqun.feng@gmail.com>
+References: <20240324223339.971934-1-boqun.feng@gmail.com> <20240324223339.971934-2-boqun.feng@gmail.com>
+Feedback-ID: 71780778:user:proton
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-Both virtchnl2.h and its consumer idpf_virtchnl.c are very error-prone.
-There are 10 structures with flexible arrays at the end, but 9 of them
-has flex member counter in Little Endian.
-Make the code a bit more robust by applying __counted_by_le() to those
-9. LE platforms is the main target for this driver, so they would
-receive additional protection.
-While we're here, add __counted_by() to virtchnl2_ptype::proto_id, as
-its counter is `u8` regardless of the Endianness.
-Compile test on x86_64 (LE) didn't reveal any new issues after applying
-the attributes.
+On 24.03.24 23:33, Boqun Feng wrote:> The definitions related to jiffies ar=
+e at linux/jiffies.h, and since
+> `kernel::time` provides the functionality dealing with jiffies, it makes
+> sense to add a link to it from Rust's time module.
+>=20
+> Signed-off-by: Boqun Feng <boqun.feng@gmail.com>
+> ---
+>   rust/kernel/time.rs | 2 ++
+>   1 file changed, 2 insertions(+)
 
-Acked-by: Kees Cook <keescook@chromium.org>
-Signed-off-by: Alexander Lobakin <aleksander.lobakin@intel.com>
----
- drivers/net/ethernet/intel/idpf/virtchnl2.h | 20 ++++++++++----------
- 1 file changed, 10 insertions(+), 10 deletions(-)
+Reviewed-by: Benno Lossin <benno.lossin@proton.me>
 
-diff --git a/drivers/net/ethernet/intel/idpf/virtchnl2.h b/drivers/net/ethernet/intel/idpf/virtchnl2.h
-index 29419211b3d9..63deb120359c 100644
---- a/drivers/net/ethernet/intel/idpf/virtchnl2.h
-+++ b/drivers/net/ethernet/intel/idpf/virtchnl2.h
-@@ -555,7 +555,7 @@ VIRTCHNL2_CHECK_STRUCT_LEN(32, virtchnl2_queue_reg_chunk);
- struct virtchnl2_queue_reg_chunks {
- 	__le16 num_chunks;
- 	u8 pad[6];
--	struct virtchnl2_queue_reg_chunk chunks[];
-+	struct virtchnl2_queue_reg_chunk chunks[] __counted_by_le(num_chunks);
- };
- VIRTCHNL2_CHECK_STRUCT_LEN(8, virtchnl2_queue_reg_chunks);
- 
-@@ -703,7 +703,7 @@ struct virtchnl2_config_tx_queues {
- 	__le32 vport_id;
- 	__le16 num_qinfo;
- 	u8 pad[10];
--	struct virtchnl2_txq_info qinfo[];
-+	struct virtchnl2_txq_info qinfo[] __counted_by_le(num_qinfo);
- };
- VIRTCHNL2_CHECK_STRUCT_LEN(16, virtchnl2_config_tx_queues);
- 
-@@ -782,7 +782,7 @@ struct virtchnl2_config_rx_queues {
- 	__le32 vport_id;
- 	__le16 num_qinfo;
- 	u8 pad[18];
--	struct virtchnl2_rxq_info qinfo[];
-+	struct virtchnl2_rxq_info qinfo[] __counted_by_le(num_qinfo);
- };
- VIRTCHNL2_CHECK_STRUCT_LEN(24, virtchnl2_config_rx_queues);
- 
-@@ -868,7 +868,7 @@ VIRTCHNL2_CHECK_STRUCT_LEN(32, virtchnl2_vector_chunk);
- struct virtchnl2_vector_chunks {
- 	__le16 num_vchunks;
- 	u8 pad[14];
--	struct virtchnl2_vector_chunk vchunks[];
-+	struct virtchnl2_vector_chunk vchunks[] __counted_by_le(num_vchunks);
- };
- VIRTCHNL2_CHECK_STRUCT_LEN(16, virtchnl2_vector_chunks);
- 
-@@ -912,7 +912,7 @@ struct virtchnl2_rss_lut {
- 	__le16 lut_entries_start;
- 	__le16 lut_entries;
- 	u8 pad[4];
--	__le32 lut[];
-+	__le32 lut[] __counted_by_le(lut_entries);
- };
- VIRTCHNL2_CHECK_STRUCT_LEN(12, virtchnl2_rss_lut);
- 
-@@ -977,7 +977,7 @@ struct virtchnl2_ptype {
- 	u8 ptype_id_8;
- 	u8 proto_id_count;
- 	__le16 pad;
--	__le16 proto_id[];
-+	__le16 proto_id[] __counted_by(proto_id_count);
- } __packed __aligned(2);
- VIRTCHNL2_CHECK_STRUCT_LEN(6, virtchnl2_ptype);
- 
-@@ -1104,7 +1104,7 @@ struct virtchnl2_rss_key {
- 	__le32 vport_id;
- 	__le16 key_len;
- 	u8 pad;
--	u8 key_flex[];
-+	u8 key_flex[] __counted_by_le(key_len);
- } __packed;
- VIRTCHNL2_CHECK_STRUCT_LEN(7, virtchnl2_rss_key);
- 
-@@ -1131,7 +1131,7 @@ VIRTCHNL2_CHECK_STRUCT_LEN(16, virtchnl2_queue_chunk);
- struct virtchnl2_queue_chunks {
- 	__le16 num_chunks;
- 	u8 pad[6];
--	struct virtchnl2_queue_chunk chunks[];
-+	struct virtchnl2_queue_chunk chunks[] __counted_by_le(num_chunks);
- };
- VIRTCHNL2_CHECK_STRUCT_LEN(8, virtchnl2_queue_chunks);
- 
-@@ -1195,7 +1195,7 @@ struct virtchnl2_queue_vector_maps {
- 	__le32 vport_id;
- 	__le16 num_qv_maps;
- 	u8 pad[10];
--	struct virtchnl2_queue_vector qv_maps[];
-+	struct virtchnl2_queue_vector qv_maps[] __counted_by_le(num_qv_maps);
- };
- VIRTCHNL2_CHECK_STRUCT_LEN(16, virtchnl2_queue_vector_maps);
- 
-@@ -1247,7 +1247,7 @@ struct virtchnl2_mac_addr_list {
- 	__le32 vport_id;
- 	__le16 num_mac_addr;
- 	u8 pad[2];
--	struct virtchnl2_mac_addr mac_addr_list[];
-+	struct virtchnl2_mac_addr mac_addr_list[] __counted_by_le(num_mac_addr);
- };
- VIRTCHNL2_CHECK_STRUCT_LEN(8, virtchnl2_mac_addr_list);
- 
--- 
-2.44.0
-
+--=20
+Cheers,
+Benno
 
