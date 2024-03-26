@@ -1,131 +1,148 @@
-Return-Path: <linux-kernel+bounces-119196-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-119198-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2A8C188C56A
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 15:41:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 3843F88C575
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 15:42:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9BE8A1C62A77
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 14:41:11 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 694CA1C32ED3
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 14:42:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AFB9513C3E8;
-	Tue, 26 Mar 2024 14:41:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 343CD763E6;
+	Tue, 26 Mar 2024 14:42:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="fGyhhm8U"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
+	dkim=pass (2048-bit key) header.d=foss.st.com header.i=@foss.st.com header.b="N7QBY2ec"
+Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com [185.132.182.106])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 92183763E6
-	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 14:41:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.9
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 106B813C3E8;
+	Tue, 26 Mar 2024 14:42:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.132.182.106
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711464067; cv=none; b=JW+gtgwFNedf/55EPScj5bdh0wZMVmLGejLEB0dz4UCLRf7jOh5j1uKU7oi4ObPOU5cPwAclr2RW2EQx9XGb8Lfd8rePz5EInMdN6SsP10jog5PlORh+HG8V7t4xjZYQQGmSXBH5W2moHJEcORKVnYhg9ird1MokTM2aWzBoH5k=
+	t=1711464168; cv=none; b=f00aFacUguG0IicA+HeThz/Co8u3qPdl9FxPF2/ZNvmAEr3oqy21ZwdoXnkz+zBkU1MIzWTKiJ+8qVz6ClYUeX2ar8sAgGzVAkTkhhNFDoyrjIYUiTbdwYjwLFUTrWvSoROn4BvwZfhIiikkpQLu7E47yDj0ydDKT7Da+CfMmjk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711464067; c=relaxed/simple;
-	bh=Xppa6CV0HLfckPVMV8bTEk6yGO0xhJtUZzkAo69EJjs=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=QF8vPlXQzlyoBfInA5udGSBrgfh/lnUj9rQsSeteEElYGvQUaZTUe9VSI1gaDsSEqLOXVfiAEywNNuPg5rcTR3rOETJFp6IWTfWrDfRfdMHNaLD2x+o81rbdmZnz4L0cvAnft9bMjUq9ltIT5+hWUk35G7JVclgcNoKaLhofyRc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=fGyhhm8U; arc=none smtp.client-ip=198.175.65.9
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1711464065; x=1743000065;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=Xppa6CV0HLfckPVMV8bTEk6yGO0xhJtUZzkAo69EJjs=;
-  b=fGyhhm8UAQ2Wd3Za4W1bg1q6DCikL94IXroCI+NFg2FHF29doGr6ZhMP
-   2/CJFR6gZZsrJQ6ogyfm7vzANb0vIeNUutUPQuPnAflq8nq8wSgvYk8BE
-   i2q6Z8A9+9HUluxLMnYlyY7Yd1ErAqLL0NMp1n0un8iv1zKDMZPWfJSwR
-   zjpJeDmVyQNWLh4dhklJSwat4I0naEBYp4slaVSAURM5dXfQeefzibqE5
-   3hAl9VgIAmt/c3zaOhO7P7jequC/KZXYlwzVmBfU1v77/a+wa9uuBfxC4
-   xxNZtbq/BQOr3m1SZznZp2tmaMsWPzB93OoEER1N7FKLcFeWFcyj9bATu
-   g==;
-X-CSE-ConnectionGUID: 7PnIYszMRKmIFt4Jjms30g==
-X-CSE-MsgGUID: LWSDPzLFSdeoh/0pLz67uA==
-X-IronPort-AV: E=McAfee;i="6600,9927,11025"; a="28997581"
-X-IronPort-AV: E=Sophos;i="6.07,156,1708416000"; 
-   d="scan'208";a="28997581"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Mar 2024 07:41:05 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,11025"; a="914882242"
-X-IronPort-AV: E=Sophos;i="6.07,156,1708416000"; 
-   d="scan'208";a="914882242"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Mar 2024 07:41:03 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.97)
-	(envelope-from <andriy.shevchenko@linux.intel.com>)
-	id 1rp7z3-0000000GKQw-0bLz;
-	Tue, 26 Mar 2024 16:41:01 +0200
-Date: Tue, 26 Mar 2024 16:41:00 +0200
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: Mateusz K <mateusz.kaduk@gmail.com>
-Cc: Bjorn Helgaas <helgaas@kernel.org>, Lee Jones <lee@kernel.org>,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1 1/1] mfd: intel-lpss: Switch over to MSI interrupts
-Message-ID: <ZgLefFQanbq-ozKM@smile.fi.intel.com>
-References: <20240312165905.1764507-1-andriy.shevchenko@linux.intel.com>
- <20240325211915.GA1449994@bhelgaas>
- <CAPf=4Rc2vQrWqcs=-ND3iOZFJyKE7FdPoqU9w6DKjoSaJo6KaQ@mail.gmail.com>
+	s=arc-20240116; t=1711464168; c=relaxed/simple;
+	bh=+KV3AdzDzpYqpS+EbXnPmHttAO5r/1XNhRRlBBa+ycs=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=TR3HaRpp87LtYxMGwsKaZ07YiX7W3RRZMmnLEBYbUTmuFDglIJqCCj8mN+GTb0KYRaAWn1AOfVtb0lQXPDCKh/fuf01M3/vEDoBl1/ED95Muh6mn/Kv/LimRhWoThznHCOPxnxUUGnuERUOEeMKPagrH8esDtAJIdC7VlhBWAB4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foss.st.com; spf=pass smtp.mailfrom=foss.st.com; dkim=pass (2048-bit key) header.d=foss.st.com header.i=@foss.st.com header.b=N7QBY2ec; arc=none smtp.client-ip=185.132.182.106
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foss.st.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=foss.st.com
+Received: from pps.filterd (m0369458.ppops.net [127.0.0.1])
+	by mx07-00178001.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 42QCBklK007694;
+	Tue, 26 Mar 2024 15:42:16 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	selector1; bh=9pRVmSnmGKK7LB7PnddfDWHBQ6XSXKYj11IRLNtwqSQ=; b=N7
+	QBY2ec7CNT8qV5bVJxFwCDKNtHCHQLL1A2stjMn/y2a4mdDZEu0nBAlJV+jMjui2
+	LYszZwLbZByRXeHRFaejhU3MjTETCjwfNjUV4Njk6S49C7OFaHuZE0vstFESInfg
+	aFKxKYfkE0yQr0qm0EIQkqonrNGxlKa7j1DR0xai5h+k1qWGd0XjS0ljqbziXDH9
+	IXA0/FVPB/FuzD1YgnAEdDcCXk82T1afpRWlcIyoxY10xDZz/x3b7U5N05QolwH1
+	E5JdYkwfgD8f4fw3SFTHtD1z/PVr8jNDN3aCM2bf/IcLIN9I+tesoV12ZYhQlA0L
+	lxrGKJQnhPk5G8mFWXdw==
+Received: from beta.dmz-ap.st.com (beta.dmz-ap.st.com [138.198.100.35])
+	by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3x29h5ueb8-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 26 Mar 2024 15:42:16 +0100 (CET)
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+	by beta.dmz-ap.st.com (STMicroelectronics) with ESMTP id 119E840044;
+	Tue, 26 Mar 2024 15:42:11 +0100 (CET)
+Received: from Webmail-eu.st.com (shfdag1node2.st.com [10.75.129.70])
+	by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 5347A220B61;
+	Tue, 26 Mar 2024 15:41:15 +0100 (CET)
+Received: from [10.201.21.128] (10.201.21.128) by SHFDAG1NODE2.st.com
+ (10.75.129.70) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Tue, 26 Mar
+ 2024 15:41:13 +0100
+Message-ID: <a19b20ae-d12a-47c8-9d1f-482a84924e6c@foss.st.com>
+Date: Tue, 26 Mar 2024 15:41:13 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAPf=4Rc2vQrWqcs=-ND3iOZFJyKE7FdPoqU9w6DKjoSaJo6KaQ@mail.gmail.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4 1/2] dt-bindings: net: add phy-supply property for
+ stm32
+Content-Language: en-US
+To: Andrew Lunn <andrew@lunn.ch>
+CC: "David S . Miller" <davem@davemloft.net>,
+        Eric Dumazet
+	<edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni
+	<pabeni@redhat.com>, Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski
+	<krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue
+	<alexandre.torgue@foss.st.com>,
+        Richard Cochran <richardcochran@gmail.com>,
+        Jose Abreu <joabreu@synopsys.com>, Liam Girdwood <lgirdwood@gmail.com>,
+        Mark
+ Brown <broonie@kernel.org>, Marek Vasut <marex@denx.de>,
+        <netdev@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>
+References: <20240326125849.226765-1-christophe.roullier@foss.st.com>
+ <20240326125849.226765-2-christophe.roullier@foss.st.com>
+ <0e14ad5d-3c25-40ab-981a-fbc4e245fc94@lunn.ch>
+From: Christophe ROULLIER <christophe.roullier@foss.st.com>
+In-Reply-To: <0e14ad5d-3c25-40ab-981a-fbc4e245fc94@lunn.ch>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: SHFCAS1NODE2.st.com (10.75.129.73) To SHFDAG1NODE2.st.com
+ (10.75.129.70)
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-03-26_06,2024-03-21_02,2023-05-22_02
 
-On Tue, Mar 26, 2024 at 11:06:38AM +0100, Mateusz K wrote:
-> I tried the patch that changes PCI_IRQ_LEGACY into PCI_IRQ_ALL_TYPES
-> and it seems I get some other error now
-> 
-> [    1.477341] intel-lpss 0000:00:15.0: enabling device (0004 -> 0006)
-> [    1.477466] intel-lpss 0000:00:15.0: can't derive routing for PCI INT A
-> [    1.477468] intel-lpss 0000:00:15.0: PCI INT A: not connected
-> [    1.477488] intel-lpss 0000:00:15.0: probe with driver intel-lpss
-> failed with error -2147483648
-> [    1.489572] intel-lpss 0000:00:15.2: enabling device (0004 -> 0006)
-> [    1.489688] intel-lpss 0000:00:15.2: can't derive routing for PCI INT C
-> [    1.489689] intel-lpss 0000:00:15.2: PCI INT C: not connected
-> [    1.489715] intel-lpss 0000:00:15.2: probe with driver intel-lpss
-> failed with error -2147483648
-> [    1.501886] intel-lpss 0000:00:19.0: enabling device (0004 -> 0006)
-> [    1.502034] intel-lpss 0000:00:19.0: can't derive routing for PCI INT A
-> [    1.502036] intel-lpss 0000:00:19.0: PCI INT A: not connected
-> [    1.502067] intel-lpss 0000:00:19.0: probe with driver intel-lpss
-> failed with error -2147483648
-> [    1.514288] intel-lpss 0000:00:19.1: enabling device (0004 -> 0006)
-> [    1.514535] intel-lpss 0000:00:19.1: can't derive routing for PCI INT B
-> [    1.514538] intel-lpss 0000:00:19.1: PCI INT B: not connected
-> [    1.514570] intel-lpss 0000:00:19.1: probe with driver intel-lpss
-> failed with error -2147483648
-> [    1.526291] intel-lpss 0000:00:1e.0: enabling device (0004 -> 0006)
-> [    1.526555] intel-lpss 0000:00:1e.0: can't derive routing for PCI INT A
-> [    1.526557] intel-lpss 0000:00:1e.0: PCI INT A: not connected
-> [    1.526604] intel-lpss 0000:00:1e.0: probe with driver intel-lpss
-> failed with error -2147483648
-> [    1.538130] intel-lpss 0000:00:1e.3: enabling device (0004 -> 0006)
-> [    1.538233] intel-lpss 0000:00:1e.3: can't derive routing for PCI INT D
-> [    1.538235] intel-lpss 0000:00:1e.3: PCI INT D: not connected
-> [    1.538253] intel-lpss 0000:00:1e.3: probe with driver intel-lpss
-> failed with error -2147483648
 
-Hmm... I have a unique board to test :-)
-Let's revert it then.
+On 3/26/24 14:58, Andrew Lunn wrote:
+> On Tue, Mar 26, 2024 at 01:58:48PM +0100, Christophe Roullier wrote:
+>> Phandle to a regulator that provides power to the PHY. This
+>> regulator will be managed during the PHY power on/off sequence.
+>>
+>> Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+>> Signed-off-by: Christophe Roullier <christophe.roullier@foss.st.com>
+>> ---
+>>   Documentation/devicetree/bindings/net/stm32-dwmac.yaml | 3 +++
+>>   1 file changed, 3 insertions(+)
+>>
+>> diff --git a/Documentation/devicetree/bindings/net/stm32-dwmac.yaml b/Documentation/devicetree/bindings/net/stm32-dwmac.yaml
+>> index fc8c96b08d7dc..80937b28fa046 100644
+>> --- a/Documentation/devicetree/bindings/net/stm32-dwmac.yaml
+>> +++ b/Documentation/devicetree/bindings/net/stm32-dwmac.yaml
+>> @@ -82,6 +82,9 @@ properties:
+>>         Should be phandle/offset pair. The phandle to the syscon node which
+>>         encompases the glue register, and the offset of the control register
+>>   
+>> +  phy-supply:
+>> +    description: PHY regulator
+> ~/linux/drivers/net/ethernet/stmicro/stmmac$ grep regulator_get *
+> dwmac-rk.c:	bsp_priv->regulator = devm_regulator_get(dev, "phy");
+> dwmac-sun8i.c:	gmac->regulator = devm_regulator_get_optional(dev, "phy");
+> dwmac-sunxi.c:	gmac->regulator = devm_regulator_get_optional(dev, "phy");
+>
+> Maybe i'm missing something, but i don't see an actual implementation
+> of this binding?
+>
+> 	Andrew
 
-Bjorn, in such case your tree should keep conversion one.
+Hi Andrew,
 
-Lee, do you prefer a revert or can you simply drop this from the queue?
+You are right, my next step is to upstream support of Ethernet MP13 glue 
+and some update like Phy regulator support
 
--- 
-With Best Regards,
-Andy Shevchenko
+(it is look like 
+https://lore.kernel.org/linux-arm-kernel/20230928122427.313271-9-christophe.roullier@foss.st.com/)
 
+Regards,
+
+Christophe
 
 
