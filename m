@@ -1,168 +1,121 @@
-Return-Path: <linux-kernel+bounces-118955-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-118956-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 23A5688C1E1
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 13:18:10 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8F64488C1E5
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 13:19:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 561C41C384BC
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 12:18:09 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B1A3C1C39F9D
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 12:19:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2F92271B2D;
-	Tue, 26 Mar 2024 12:18:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A9A1C7175A;
+	Tue, 26 Mar 2024 12:18:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kd71Eoxp"
-Received: from mail-pj1-f41.google.com (mail-pj1-f41.google.com [209.85.216.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=pobox.com header.i=@pobox.com header.b="NXOHwlrM"
+Received: from pb-smtp21.pobox.com (pb-smtp21.pobox.com [173.228.157.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1833812B6C;
-	Tue, 26 Mar 2024 12:17:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8A7526BB5D
+	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 12:18:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=173.228.157.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711455480; cv=none; b=rzM/wHkbadLdHtVfGJ+QNEnDrJwFLfeWxnVNq86NbP0eA2dVN3hMIybiu8JzBQV4wUePT5rUY4VQ1xIMvi3J9Fo6Ev7Dc6Q99mI4bVLSOlzwpE5Hpj/CH2tnnH35U+Xfggc61EAenPmDpT/20DAkQu2c3w3Zrn3fLamp0hjA23Q=
+	t=1711455536; cv=none; b=KgRLCVCTc3axJ+WrU87gKdmj97iR5/AqGDJm0E7MUiSkgpRYbAVtfiVdjUozna3i3Y9u4003NIhzuDzyrfMQdW4xNNTCberACjrVwTpBHdcJKDByHDkarvnGcgm3/XqEumzf6M7sFqsstwIodnbiye1PFCmnCo7XzEs1S4nMZk8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711455480; c=relaxed/simple;
-	bh=SZpe6jdHkKyQfyGM2FX+SQHSwwtIaufimKkdrPF/nWc=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=d56rHefKy56tqRxXeG12UNWtihlvQEUxz5Q/fS07Q/dkSHIHAS0faO37YZ1e7QyA7tCKbjup3pmJGDkMR2Vl7cXTugkLdoLfKmGStU96J8rDel7b30pivfvXwMLiiC1Hg9rAyKL9dIDj0ybFpFRtOPS1m9mP5vaepY+FuvlCUyA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=kd71Eoxp; arc=none smtp.client-ip=209.85.216.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f41.google.com with SMTP id 98e67ed59e1d1-29a8911d11cso2929658a91.1;
-        Tue, 26 Mar 2024 05:17:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711455478; x=1712060278; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=oaT5m0Iyd7jZvLkszdxr7iHrfKjSWwXKGCm7ndW3Vt4=;
-        b=kd71Eoxpdca+bGq3W/DzBrddG+2cH+3qPHWBIfXb3zEW3yorrT6/L9SB0hLluE3I4Q
-         BAe07HCvb0EmWH695YHS2x2obemSIbrpUyAVndP3cYRxc7h7otuS4bO96/QUw8c1mjzj
-         CP+OZCw6v9EjPalXBzeVW3szJel9RqzWVEz/pJPR4Ekcs7iZn4oIoznk0wNgNxn7UZX8
-         gyJFVwpVNetckIKw2NtE3ZMJ7TgbwPdHQ/zNreERaNbo6vJMRPWrWB9iQUjIWfiMLmD5
-         5/iABOlQFb00uZRSltOJmIAdLYT6ttdZVZWDOONquCkTeplop5fJbtrFROKXdgPmM2LK
-         LC0w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711455478; x=1712060278;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=oaT5m0Iyd7jZvLkszdxr7iHrfKjSWwXKGCm7ndW3Vt4=;
-        b=IPDzESRgM0CFWm1iacaaaoGWW+MmzqtsrrFbCAHtitba/0GOD77SbyWyk6f8/CroPV
-         jNEERWmDUy3WeAA/tXet77ljEV3T/TZoPgueQKB51qNdKlSrN9+p934nq8BD/KnAtL4A
-         GIFS/NQl0pB8Nsm2L/owVIjlrSmdjaegbleb6IbQ7c3XXV5CyXGHv4moK00QGnd+Iq+T
-         tvSPO5PG0xqk4U7CMHjRZ4aEo09IYuF/s1Z4Nywd/iJPOl75sV/I+WtFiK4CUG2Klf4k
-         e2MkI2oC3ggU+nXNR4/5JxOVrEXe8bSSaBkQOxK7zrCh/faS7GRAeEXYijF4IwcMDysm
-         N5Mg==
-X-Forwarded-Encrypted: i=1; AJvYcCVG8d7JVtBzAgKsHNwQV+GrPv21VxJNL6e+3rWbgFdosv/OKUXtNGrhjHF5oBfld1x4wHOBkcMQcSt07T7+4j82x5lh83esE71NkN08PP86UCguFJJ+URR5tAGuUCTeJ27siVvgJssVXV7yHOhvZKm8OzKM/AcHUyUrLmgzWrwcNlTzwg==
-X-Gm-Message-State: AOJu0Yzb7mrq8Qxh2K2xTGOIypEwBeC7T2Vw0amLKx7X8pDLmX4erAAP
-	N+FrRQTIak0AxMeh5ix+bYn0f22q0+u4+Ayq1+Fvl9x7oxao3tjc
-X-Google-Smtp-Source: AGHT+IE5JFg/XWOvPTK11xWkHEHl2w/Tu+A9xRm6qkMWdNt1u5Zw6ejbvsYMXP4A8Ks3uNz9qggv6g==
-X-Received: by 2002:a17:90a:5994:b0:2a0:8bba:f997 with SMTP id l20-20020a17090a599400b002a08bbaf997mr833325pji.32.1711455478320;
-        Tue, 26 Mar 2024 05:17:58 -0700 (PDT)
-Received: from localhost.localdomain ([122.187.117.179])
-        by smtp.gmail.com with ESMTPSA id t22-20020a17090ae51600b002a000f06db4sm11765779pjy.5.2024.03.26.05.17.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Mar 2024 05:17:58 -0700 (PDT)
-From: Animesh Agarwal <animeshagarwal28@gmail.com>
-To: 
-Cc: animeshagarwal28@gmail.com,
-	Damien Le Moal <dlemoal@kernel.org>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	linux-ide@vger.kernel.org,
-	devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] dt-bindings: ata: ahci-da850: Convert to dtschema
-Date: Tue, 26 Mar 2024 17:47:28 +0530
-Message-ID: <20240326121735.11994-1-animeshagarwal28@gmail.com>
-X-Mailer: git-send-email 2.44.0
+	s=arc-20240116; t=1711455536; c=relaxed/simple;
+	bh=9rVUUhguyKYMjkeTWxNxhL0yTS4z2tHrtGbc79u6mko=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=rnsmZWrmTgKaPV0ERcTmCcjjMg3LsK3e7NsqxlkfCHJAaRpwPYppo/jhz353smTRYxEmiwcOhlqXpMAk0fHfJgGdSHg0Te3IvRvsGN1qX+nMwJjRgwjIvnRZLs6mr38ioQZd5IKrNt5bTZnnEuT4CjJZY8e7B8tFA5iDeW3sgus=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=pobox.com; spf=pass smtp.mailfrom=pobox.com; dkim=pass (1024-bit key) header.d=pobox.com header.i=@pobox.com header.b=NXOHwlrM; arc=none smtp.client-ip=173.228.157.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=pobox.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pobox.com
+Received: from pb-smtp21.pobox.com (unknown [127.0.0.1])
+	by pb-smtp21.pobox.com (Postfix) with ESMTP id 880F02C922;
+	Tue, 26 Mar 2024 08:18:49 -0400 (EDT)
+	(envelope-from adamg@pobox.com)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed; d=pobox.com; h=date:from
+	:to:cc:subject:message-id:references:mime-version:content-type
+	:in-reply-to; s=sasl; bh=9rVUUhguyKYMjkeTWxNxhL0yTS4z2tHrtGbc79u
+	6mko=; b=NXOHwlrMWUP7qjUopdi3LnPUUiyMrHbjOrHxw9nV7K+9jYBWy8YFJp6
+	32GlGuJiiDLm0er1k20roY0S0N9i9QoI7DTK2IWm34F+IiEYbDTdOB9sKvQ027aL
+	CuMLraUvew8rGNaRmLtGKlbbWCEt6lw0qsbqWOJf0OMNgWHnEu3g=
+Received: from pb-smtp21.sea.icgroup.com (unknown [127.0.0.1])
+	by pb-smtp21.pobox.com (Postfix) with ESMTP id 72CA82C921;
+	Tue, 26 Mar 2024 08:18:49 -0400 (EDT)
+	(envelope-from adamg@pobox.com)
+Received: from pogo.deviceside.com (unknown [71.19.144.253])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by pb-smtp21.pobox.com (Postfix) with ESMTPSA id 1503D2C91F;
+	Tue, 26 Mar 2024 08:18:46 -0400 (EDT)
+	(envelope-from adamg@pobox.com)
+Received: from iguana.24-8.net (99-122-168-208.lightspeed.irvnca.sbcglobal.net [99.122.168.208])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (prime256v1) server-signature ECDSA (prime256v1) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: iguana@pogo.deviceside.com)
+	by pogo.deviceside.com (Postfix) with ESMTPSA id 89215C01CE;
+	Tue, 26 Mar 2024 05:18:44 -0700 (PDT)
+Date: Tue, 26 Mar 2024 05:18:32 -0700
+From: Adam Goldman <adamg@pobox.com>
+To: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Cc: linux1394-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] firewire: core: option to log bus reset initiation
+Message-ID: <ZgK9GNLURNg63zRU@iguana.24-8.net>
+References: <Zfqo43xhFluOgO01@iguana.24-8.net>
+ <20240325004134.GA21329@workstation.local>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240325004134.GA21329@workstation.local>
+X-Pobox-Relay-ID:
+ FE53D1C2-EB6A-11EE-82F6-A19503B9AAD1-07713566!pb-smtp21.pobox.com
 
-Convert the ahci-da850 bindings to DT schema
+Hi Takashi,
 
-Signed-off-by: Animesh Agarwal <animeshagarwal28@gmail.com>
----
- .../devicetree/bindings/ata/ahci-da850.txt    | 18 ----------
- .../bindings/ata/ti,da850-ahci.yaml           | 36 +++++++++++++++++++
- 2 files changed, 36 insertions(+), 18 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/ata/ahci-da850.txt
- create mode 100644 Documentation/devicetree/bindings/ata/ti,da850-ahci.yaml
+On Mon, Mar 25, 2024 at 09:41:34AM +0900, Takashi Sakamoto wrote:
+> Now we have two debug parameters per module for the slightly-similar
+> purpose. In my opinion, it is a pretty cumbersome to enable them when
+> checking bus-reset behaviour. I think it is time to investigate the other
+> way.
+> 
+> Linux Kernel Tracepoints[2] is one of options. Roughly describing, the
+> tracepoints mechanism allows users to deliver structured data from kernel
+> space to user space via ring-buffer when enabling it by either sysfs or
+> kernel command-line parameters. Linux kernel also has a command-line
+> parameter to redirect the human-readable formatted data to kernel log[3].
+> I think it is suitable in the case.
+> 
+> It requires many work to replace the existent debug parameter of
+> firewire-ohci, while it is a good start to work just for bus-reset debug.
+> The data structure layout should be pre-defined in each subsystem, thus we
+> need to decide it. In my opinion, it would be like:
+> 
+> ```
+> struct bus_reset_event {
+>     enum reason {
+>         Initiate,
+> 	Schedule,
+> 	Postpone,
+> 	Detect,
+>     },
+>     // We can put any other data if prefering.
+> }
+> ```
 
-diff --git a/Documentation/devicetree/bindings/ata/ahci-da850.txt b/Documentation/devicetree/bindings/ata/ahci-da850.txt
-deleted file mode 100644
-index 5f8193417725..000000000000
---- a/Documentation/devicetree/bindings/ata/ahci-da850.txt
-+++ /dev/null
-@@ -1,18 +0,0 @@
--Device tree binding for the TI DA850 AHCI SATA Controller
-----------------------------------------------------------
--
--Required properties:
--  - compatible: must be "ti,da850-ahci"
--  - reg: physical base addresses and sizes of the two register regions
--         used by the controller: the register map as defined by the
--         AHCI 1.1 standard and the Power Down Control Register (PWRDN)
--         for enabling/disabling the SATA clock receiver
--  - interrupts: interrupt specifier (refer to the interrupt binding)
--
--Example:
--
--	sata: sata@218000 {
--		compatible = "ti,da850-ahci";
--		reg = <0x218000 0x2000>, <0x22c018 0x4>;
--		interrupts = <67>;
--	};
-diff --git a/Documentation/devicetree/bindings/ata/ti,da850-ahci.yaml b/Documentation/devicetree/bindings/ata/ti,da850-ahci.yaml
-new file mode 100644
-index 000000000000..d54f58c12e78
---- /dev/null
-+++ b/Documentation/devicetree/bindings/ata/ti,da850-ahci.yaml
-@@ -0,0 +1,36 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/ata/ti,da850-ahci.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: TI DA850 AHCI SATA Controller
-+
-+maintainers:
-+  - Animesh Agarwal <animeshagarwal28@gmail.com>
-+
-+properties:
-+  compatible:
-+    const: ti,da850-ahci
-+
-+  reg:
-+    minItems: 2
-+    maxItems: 2
-+
-+  interrupts:
-+    maxItems: 1
-+
-+required:
-+  - compatible
-+  - reg
-+  - interrupts
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    sata@218000 {
-+        compatible = "ti,da850-ahci";
-+        reg = <0x218000 0x2000>, <0x22c018 0x4>;
-+        interrupts = <67>;
-+    };
--- 
-2.44.0
+Maybe these should be four separate trace events?
 
+> Would I ask your opinion about my idea?
+
+It seems that tracepoints are the modern way to make debugging logs, so 
+if we want to modernize the FireWire driver, we should replace the 
+existent logging with tracepoints.
+
+-- Adam
 
