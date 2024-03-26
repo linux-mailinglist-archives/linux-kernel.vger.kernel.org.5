@@ -1,184 +1,209 @@
-Return-Path: <linux-kernel+bounces-120001-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-120002-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1062988CFF1
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 22:24:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 5867688CFF4
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 22:26:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 33F571C67228
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 21:24:44 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7C0E81C667B7
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 21:26:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0CB4913D2B6;
-	Tue, 26 Mar 2024 21:24:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B663B13D624;
+	Tue, 26 Mar 2024 21:25:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="VlOs0o7Q"
-Received: from mail-ej1-f48.google.com (mail-ej1-f48.google.com [209.85.218.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=seco.com header.i=@seco.com header.b="2aziLsek";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=seco.com header.i=@seco.com header.b="Ik475x32"
+Received: from EUR04-HE1-obe.outbound.protection.outlook.com (mail-he1eur04on2127.outbound.protection.outlook.com [40.107.7.127])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6090413D528
-	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 21:24:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.48
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711488270; cv=none; b=RrhbkAfiBKj+izbNuYyYvAiIJqaAZTZ7AEM+Z0TTs4O59xyHPWs1krxM5VrgoPGb1iJjCXZ9pFsuh7PGZrVh7GykFh8Ej7s1FCHYs2z9yEBMg2MqREOUw/wutlSTf+twX2FaTVwLWoFQJjZApijMwB+/18sNdQ7tTzYLZ61uYD4=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711488270; c=relaxed/simple;
-	bh=gOajk2iNWyP+O2AHmKvHxVTPbsYOBpiVOI2qazoxc28=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=nyGUjY5QJR9YLGu5lz+TO9woR1eKRvK7szv8cgVoGYB8CrrpfsHiXUwFgDoiskAFaUtV075WkcZPcgcn/2zcWt3nQWhikwKRF+Pp5bAXY8Z8caQ5KScgEajTHjtAamJC5P4XtyFvbOk6WShMyxJlDwbhn+lPfD22t/aKKh+ijtk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=VlOs0o7Q; arc=none smtp.client-ip=209.85.218.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ej1-f48.google.com with SMTP id a640c23a62f3a-a474c4faf5eso358027566b.2
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 14:24:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1711488266; x=1712093066; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=GoDGazPiRgb9L75Xk/2NTAz5erShDCuLjlFhO/Pzeh4=;
-        b=VlOs0o7Qs7Lkz9J4R11fWFstXVFvhwpGuuoSwux0FFeqvhOSrcGvfTBI8OvCvkNJnY
-         kHz4HI6o8mBphiWl13cpKiKLjr6dHMaR5tLxnrT0pICOPCyByrV3gh+XRZHUrCLuakqD
-         0UGWvwRx0Fpgyqh1AMGHSiivni+LVfN+M5F35PTp/xID8t2D2JveIN1Z2IneiQWf3PIm
-         wNNcnX7Ikha8ON3lnJgkwBYoNhMEppUtWBTul2jf/i/VaMm81yu8xrcjZij19cfYT5so
-         8wwJYbcaCqy3ejv7Blb5hfgADw9pc4MPRl6FnW2h8iC1DgkVShVhr/6wPOX6hQ8rhxQO
-         i3nw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711488266; x=1712093066;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=GoDGazPiRgb9L75Xk/2NTAz5erShDCuLjlFhO/Pzeh4=;
-        b=LZYcar8raURs0+/UUDYdc9XRKolSMhWRfkWUczTY9MG2Fr7Chsbpm7cZoWUY/0/Nah
-         9FeUQKeomQdqU6ShMS36/aV9uvQssf+3ZHXDawEV0IinZ+tjNsvD0MMzUDtKdvQEfKXN
-         jmE1We4JO6j5h+6P5eT9DXU78N1ndZVwUksPdjc3EWMrDI7Ztpe7LCdhMcwaw0I1ADmH
-         FsERiDWElE3gilpT3D9gzhRs3uGDa/02khk4KfSZj6Ns1MD2FejAG3CWeVtWVRPHMwdF
-         0NWeCUHj7mb0/8baJrz8/Y0JovTsywVfqvybJ6F7+qzcLWl5JNWfJOb09xD3X3bC1rmi
-         KsmQ==
-X-Forwarded-Encrypted: i=1; AJvYcCX+Y0n+lCxrZi8L7oIczFScKbVUlgJeoCrjnRJd04hF7ijXfOy0W4phGlAA6XhY3SEEekkr/119lgDMiiZ9nQsNWLNpDPjZvo3sUgm8
-X-Gm-Message-State: AOJu0Yz0mivNk8itmDvlpOxzUvjg0t2cK+nDLszSrV5UZNjTWznyU2Ts
-	jobpqBX4NUjVT9ifFWjkxN/32Dr8ZydQLrihYcZGfEqdFGIZEVEROb9F8K+0ftA=
-X-Google-Smtp-Source: AGHT+IGQmWXLuKqe5r0N2xqKwjaLvSyI4OspMR18XZhZsSs97TfxFzQ3jiTy4XasT9UTRKm8rarCdg==
-X-Received: by 2002:a17:907:2d9f:b0:a4a:20df:e032 with SMTP id gt31-20020a1709072d9f00b00a4a20dfe032mr6132998ejc.66.1711488266550;
-        Tue, 26 Mar 2024 14:24:26 -0700 (PDT)
-Received: from [192.168.92.47] (078088045141.garwolin.vectranet.pl. [78.88.45.141])
-        by smtp.gmail.com with ESMTPSA id a5-20020a1709065f8500b00a46478fbbbesm4608980eju.153.2024.03.26.14.24.25
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 26 Mar 2024 14:24:25 -0700 (PDT)
-Message-ID: <a5c7004e-c938-45b3-9cb5-cdd89eb52293@linaro.org>
-Date: Tue, 26 Mar 2024 22:24:24 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A620313D2B6;
+	Tue, 26 Mar 2024 21:25:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.7.127
+ARC-Seal:i=3; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1711488352; cv=fail; b=unGoPuVcxCCIAfyanKIm/j0EHOcU8hv302ulaKkfLZOz4M2f4EtSijkO4Uaetu3Q4ZZ9WU8vaq0ANEtYccrH1z/5dgsPPNln53UulTuyYPXfNXNrZtwtqFpjrKtVyhfVDWA20nwDThvo9z53lzIxfeTDU4oh2lLDP5GPIs/C2Fc=
+ARC-Message-Signature:i=3; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1711488352; c=relaxed/simple;
+	bh=nkRAFhKipobv3juPAQj/coHwguwVLtjG6lQGGdwg+10=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=fDPYvSOmbUIP9muLJ8/wa42Lk7Zhb1nakii1v2a9/heOPP2xySP35+jUW6xIdxg0Zd+cDj4hyyzZxTq2S8B7E2dHlLxdlCitaBwlDCfhZUBzR5VkaVWwWE1XNqDewhx+DVzeh7T/0EV56O7iTEpNadbTzBsqRZ9OVdiMGA379Bw=
+ARC-Authentication-Results:i=3; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=seco.com; spf=pass smtp.mailfrom=seco.com; dkim=pass (2048-bit key) header.d=seco.com header.i=@seco.com header.b=2aziLsek; dkim=fail (2048-bit key) header.d=seco.com header.i=@seco.com header.b=Ik475x32 reason="signature verification failed"; arc=fail smtp.client-ip=40.107.7.127
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=seco.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=seco.com
+ARC-Seal: i=2; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=pass;
+ b=diWYDNj8y8s8ogErN3/Zhhyk6pW3m04z9uDPE1knDFtifYEDFUsraoxrVDbhr6beNosHta9FPkX8vsIrqjtBkdw12FpWIT4SFnwwwM/n5JuX/aXp9b4Ar+4EMVtn/6HM3UMgVuGh891BI2QsZcxkC+cAsiJ/NIk/YiqJXQK7Un/AYjlAmJNBMMR3T06b7jH3EYzUYmP3Nn9JYOjue1ZkIt5ZqMCCK/eSTWs6BmRCKGqS2nq+bqo1C3mgrimw6DlmA4w+lWR8mI2secWD2sawPWbgkHDUeSaVHfZaoOpzUDP4lFhIsay9De0iKAX9MABfP+wJGAkCs6/IRINupHexaw==
+ARC-Message-Signature: i=2; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=VJKMOL6RASuwUV3tjcuqe9Dfor5BbUnn+CFsnYNKstA=;
+ b=aISTMDfbxkvkaq4chdj4Rr2gWDdAhIZhYWQAIVJjddRD6/Jn0/PiHSNznD86taS0/K2vh8RSNxI1wttHnN1N81d/pdG6rS2GjJoGfrjtykFwGqWxep4bYdarptf0IAhg6NbiMbGU/9fwDTwOf2BSGvgW8o++aiARbPpgAAfPjuRJGe1GUL1wEEc0O2Iw1w4lzDSeWVbidolD0mSUhrT21E23icxmgHNR1jkm9BT8bqyfxbLiACS22+/tF/bRRr38crAJdxwc8MCdIazlyl4nMsCwouxaowzEF4yYE3sRL6JmVCpw7g/jwbOxxnzJJn6tTpQL4KHBv1UqNBN5GXdSZw==
+ARC-Authentication-Results: i=2; mx.microsoft.com 1; spf=pass (sender ip is
+ 20.160.56.87) smtp.rcpttodomain=kernel.org smtp.mailfrom=seco.com; dmarc=pass
+ (p=reject sp=reject pct=100) action=none header.from=seco.com; dkim=pass
+ (signature was verified) header.d=seco.com; arc=pass (0 oda=1 ltdi=1
+ spf=[1,1,smtp.mailfrom=seco.com] dkim=[1,1,header.d=seco.com]
+ dmarc=[1,1,header.from=seco.com])
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=seco.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=VJKMOL6RASuwUV3tjcuqe9Dfor5BbUnn+CFsnYNKstA=;
+ b=2aziLsekMuSZHvpKr1wYh4jG1FxZxtpFADvJBpMsRbVaUyQIkCgV/KWXecBjCvPujNZliwpVs1vp8EI0PP11/4/bbrIdptuGazQM9J7hu9979WR4QqNHYBQs7ucphQgKLrCAaRLoQZvd1XWryudoxSthyyFLqVA1em65jv9O0mvyubh9JrV3NkvHv0NmP7yBYRnJ4YoweTrJjVXeS4SN6CKYmFRVD1se0OMOVcml+rL2Y0m6n5Lo/xFmUE3tWDUY5e1O1JXtAQeLdd9hAb7GGTHh5ziqndiwqwZztG0DFmh4LSFRkUFp8UIF19+7d1DTix14Y50B2PEln4gSLPGDjQ==
+Received: from DB7PR03CA0108.eurprd03.prod.outlook.com (2603:10a6:10:72::49)
+ by AM7PR03MB6531.eurprd03.prod.outlook.com (2603:10a6:20b:1c2::6) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.31; Tue, 26 Mar
+ 2024 21:25:44 +0000
+Received: from DU6PEPF0000A7DF.eurprd02.prod.outlook.com
+ (2603:10a6:10:72:cafe::aa) by DB7PR03CA0108.outlook.office365.com
+ (2603:10a6:10:72::49) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.13 via Frontend
+ Transport; Tue, 26 Mar 2024 21:25:44 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 20.160.56.87)
+ smtp.mailfrom=seco.com; dkim=pass (signature was verified)
+ header.d=seco.com;dmarc=pass action=none header.from=seco.com;
+Received-SPF: Pass (protection.outlook.com: domain of seco.com designates
+ 20.160.56.87 as permitted sender) receiver=protection.outlook.com;
+ client-ip=20.160.56.87; helo=repost-eu.tmcas.trendmicro.com; pr=C
+Received: from repost-eu.tmcas.trendmicro.com (20.160.56.87) by
+ DU6PEPF0000A7DF.mail.protection.outlook.com (10.167.8.36) with Microsoft SMTP
+ Server (version=TLS1_3, cipher=TLS_AES_256_GCM_SHA384) id 15.20.7409.10 via
+ Frontend Transport; Tue, 26 Mar 2024 21:25:44 +0000
+Received: from outmta (unknown [192.168.82.140])
+	by repost-eu.tmcas.trendmicro.com (Trend Micro CAS) with ESMTP id C963520080096;
+	Tue, 26 Mar 2024 21:25:43 +0000 (UTC)
+Received: from EUR05-AM6-obe.outbound.protection.outlook.com (unknown [104.47.18.105])
+	by repre.tmcas.trendmicro.com (Trend Micro CAS) with ESMTPS id E0E032008006E;
+	Tue, 26 Mar 2024 21:25:37 +0000 (UTC)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=VIbJgMEFAGplDPT8NLpPjpciDgxrZKA6DnHE9GnR3MebqVsFjoBk5pu24xdRhCI97iItK8xNjT4S1Sg9FgsiLVwQZkxJcaS3DZBGfuHWmrG6gzmcaO5aYcgmsn9vC1+rQbf9dZr66iVxodtgxvYmQbB36L9qqDo9Pgk9divemOTi3UlOUy+/+tBdSAg5xC2aPKHnRatXYFYxTJOfn9tm6Q/vS7Vu285q++ttXGriKMDGNL8q7aZFPe5l//LvUXLMDgtdQJqmTSMZJKMJqjt+4h7KCeu5vTl37SwKmrJ33rAsOffW5xli0wfz5Gr6HedEbZ3hRJHz1fdMWwHNp58zGQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=zMXnY6OKsKk/6Kfa9wOaSMHeZcPerqKWjrnbcBVCCj4=;
+ b=S6Sk/a8wORM2yHjrPeSfkZR2qUfYo/gzf3+vGaGbRmzj8zCQIl2TpbiN/OnPdyapCmEcIO5FMwHu6A9bdsKdA9JyQjvWGatkR1o6vLW8Goiy4mxmkWRtAgbkyNqUOJg4ZUiXfp+TliHijH5ewAEvQxhbYrd/C/7zl9s0O4OYl/TbxrVQCbUc9kBcKgHaTamQE8xNFyC8sA7b8kJ5b3YShGHntviYuGaR2DsLITmoe+yueIIR6JqG3UZkWDAnP/HlbX8C6Mu8p0jsihdOWen8Sja6T1N8vs6tbKMxjjwU7F5vTvdpIbJQayTUq5iVJlA/tTuEfSbjKZ58wlqlKFgqsw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=seco.com; dmarc=pass action=none header.from=seco.com;
+ dkim=pass header.d=seco.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=seco.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=zMXnY6OKsKk/6Kfa9wOaSMHeZcPerqKWjrnbcBVCCj4=;
+ b=Ik475x32ojZmX53jFjJXBFWhhAF1XeP4dgb0ZQAvh9WdjHlTrvWF05hBW6mbsLhKEVHpsG0DEQspWJYpUax1ONoBuS1kaGc0JVBRfhf2/VORFQMDGEkDH2Uhj3DygG2sgv+6oJfaVlR3jozT8+sfiWYwonh06KZ++Pvs/8UllE0ARTJ7to+CyeAqL/w3bnYTH6Qo/2GslHSq6SC6dWZfaUFytfqMb5N8AuiaksSeuPYF/yr1ck3ab1lwfW5B++Io2WHpmOVSAoW2BTq81jS/FIW8zuDSqNsSRTK04H/S3MGcBgOsfN2xs8P7mQj0P2WVVPL+RTcGq1h7bXRCQV+arA==
+Received: from DB9PR03MB8847.eurprd03.prod.outlook.com (2603:10a6:10:3dd::13)
+ by AS8PR03MB7637.eurprd03.prod.outlook.com (2603:10a6:20b:345::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.31; Tue, 26 Mar
+ 2024 21:25:36 +0000
+Received: from DB9PR03MB8847.eurprd03.prod.outlook.com
+ ([fe80::84d0:c817:1e20:5554]) by DB9PR03MB8847.eurprd03.prod.outlook.com
+ ([fe80::84d0:c817:1e20:5554%7]) with mapi id 15.20.7409.028; Tue, 26 Mar 2024
+ 21:25:36 +0000
+Message-ID: <df50fd2e-bac4-4e58-98ba-4a7c3de538d5@seco.com>
+Date: Tue, 26 Mar 2024 17:25:30 -0400
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 4.19 134/148] usb: phy: generic: Get the vbus supply
+Content-Language: en-US
+To: Sasha Levin <sashal@kernel.org>, linux-kernel@vger.kernel.org,
+ stable@vger.kernel.org
+Cc: stable <stable@kernel.org>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+References: <20240324235012.1356413-1-sashal@kernel.org>
+ <20240324235012.1356413-135-sashal@kernel.org>
+From: Sean Anderson <sean.anderson@seco.com>
+In-Reply-To: <20240324235012.1356413-135-sashal@kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-ClientProxiedBy: BY5PR17CA0020.namprd17.prod.outlook.com
+ (2603:10b6:a03:1b8::33) To DB9PR03MB8847.eurprd03.prod.outlook.com
+ (2603:10a6:10:3dd::13)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 02/20] media: venus: pm_helpers: Rename core_clks_get
- to venus_clks_get
-To: Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
- Stanimir Varbanov <stanimir.k.varbanov@gmail.com>,
- Vikash Garodia <quic_vgarodia@quicinc.com>, Andy Gross <agross@kernel.org>,
- Bjorn Andersson <andersson@kernel.org>,
- Mauro Carvalho Chehab <mchehab@kernel.org>,
- Dikshita Agarwal <quic_dikshita@quicinc.com>,
- Philipp Zabel <p.zabel@pengutronix.de>
-Cc: Marijn Suijten <marijn.suijten@somainline.org>,
- Stanimir Varbanov <stanimir.varbanov@linaro.org>,
- Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
- linux-media@vger.kernel.org, linux-arm-msm@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <20230911-topic-mars-v2-0-3dac84b88c4b@linaro.org>
- <20230911-topic-mars-v2-2-3dac84b88c4b@linaro.org>
- <ebe234db-73e0-46db-b377-6b9f960597c8@linaro.org>
-Content-Language: en-US
-From: Konrad Dybcio <konrad.dybcio@linaro.org>
-Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
- 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
- izWDgYvmBE8=
-In-Reply-To: <ebe234db-73e0-46db-b377-6b9f960597c8@linaro.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+X-MS-TrafficTypeDiagnostic:
+	DB9PR03MB8847:EE_|AS8PR03MB7637:EE_|DU6PEPF0000A7DF:EE_|AM7PR03MB6531:EE_
+X-TrendMicro-CAS-OUT-LOOP-IDENTIFIER: 656f966764b7fb185830381c646b41a1
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam-Untrusted: BCL:0;
+X-Microsoft-Antispam-Message-Info-Original:
+ CCDzocujdAogocGXrNF70+e0vCw3+oo0MjkJL2Anhv+DXp/BBOMbk+QbiRw7f/F1PUcmeqIG+7RSkO2khHg9/CvZyZl6QbWmYiPsXxg/5PKrmm+jt30ATGxYLUu8g4oSM5rMJ/vM1NOvYZGETPv+0QcpqyFK4UICkguDVZ85Lh1I/xHqZ8EeRTiocHCFm73C7UvyAeduEJUdev4gl2xn//4hhkYCwn/IlPRYCIOo1GlTa7tSjW1y0pR3YEiktgDEGQdA4Wk74KR1npx9k9i6y6giS0WxrC3d0/lacjs46giE1DFktw3OYSPW3eJlGf4/2hsz2jraby/bOih7HAdyNZ22K60131WK+nrXbcEqgWDRnXFSav0ztdgqLbU+E3NkHcGjPwv+Tr1JoIfGA1FP8zGmE5KpB4CA7tHoolykU6opI1agUQoYPXuW5QjJFDjqmsdeol7/Gl4SjNQ09qaFW5iFJqKZYreUCycnxRHi9BvWMbcDb7k6dX50at+dErw6SzJ2NZBbAn2cO5SUjf3OK/V0HYXjisnGpJCbzqmY+p0KNfBZxPsU/L97Blqwg7B62bEHdFhag04RkV8xj/J9SQv/+cd1+9pzwPMht9s9HtOtw+jGRACFtZi42Ph8kV+CkLgaMbwYbV0FNFh5w7Deint93sqyFNJEPlIM6ilb4B4=
+X-Forefront-Antispam-Report-Untrusted:
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB9PR03MB8847.eurprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366007)(376005)(52116005)(1800799015)(38350700005);DIR:OUT;SFP:1102;
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS8PR03MB7637
+X-EOPAttributedMessage: 0
+X-MS-Exchange-Transport-CrossTenantHeadersStripped:
+ DU6PEPF0000A7DF.eurprd02.prod.outlook.com
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: f17d371a-599f-41b8-3e40-08dc4ddb4bad
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	wOpClJtWAYmCOWRNUHmmjih3mDT5hEc4qfqFxl0KrcTZ2HbVs1GeFhyQzJ6G7nywtQB5Yei2fmE0TIhmO7guXGYA213BVDuluv5yO5bacOpbcwcIYGvuCxvt9qrb1Azr8hlsoi64Jg53ENnJNDCmtLczKMmjsU99hhI0FJ2227B9zxM+KyQmDgBrnrCpkMiCn3Ri5Alx3RDYRMiPqnRv5X31xrwt9ChhAmMgKO0kyUL5e74e9iPXPzBLxaGje+7TOpX+BhtSM/6bmjGFsFsXgkBUIz8XxBeEeBGXT/rZOata9GcpoIlHNmkfXBubhILlzahc2scEobhU4szPSflSNkpagIAOGI/dG0WLDpjyVb7/e14oCPweN9DaAA1h0J/8VQkWGJcyRk6onLpi01sCFOtnvCzETs9KJ2PtshkaP4f8Utg0GugULg3q8MnxNCMWdEgcc6NjJbXVwjMDBchrPj9LM0Cc31zXW6o+FFxwHFtL0fxlLc4YZfPycCUIvxHrRLhi98xK9/n/BkHLh8EJdPza/gDPwqz4HEPadjlGGZlbaD8DCnmhvSSsxnpfOuGT53pTpV7nYXB2dRy4qkMuRaIKD6y6v1tWEiESfRvY8Ju0V/OVcewyY0MnCz86zrZE5cUKEgyLvD4NQpoq6rkjM9KuSYxeYJFMwdTANTm+EVHHwXWMwAub8DxPNFXxa7mGfTkAiKUpNcb7IrHMDD4SFA==
+X-Forefront-Antispam-Report:
+	CIP:20.160.56.87;CTRY:NL;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:repost-eu.tmcas.trendmicro.com;PTR:repost-eu.tmcas.trendmicro.com;CAT:NONE;SFS:(13230031)(82310400014)(36860700004)(1800799015)(376005);DIR:OUT;SFP:1102;
+X-OriginatorOrg: seco.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Mar 2024 21:25:44.1807
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: f17d371a-599f-41b8-3e40-08dc4ddb4bad
+X-MS-Exchange-CrossTenant-Id: bebe97c3-6438-442e-ade3-ff17aa50e733
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=bebe97c3-6438-442e-ade3-ff17aa50e733;Ip=[20.160.56.87];Helo=[repost-eu.tmcas.trendmicro.com]
+X-MS-Exchange-CrossTenant-AuthSource:
+	DU6PEPF0000A7DF.eurprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM7PR03MB6531
 
-On 6.03.2024 12:48 PM, Bryan O'Donoghue wrote:
-> On 09/02/2024 21:09, Konrad Dybcio wrote:
->> "core" is used in multiple contexts when talking about Venus, rename
->> the function to save on confusion.
->>
->> Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
->> ---
->>   drivers/media/platform/qcom/venus/pm_helpers.c | 6 +++---
->>   1 file changed, 3 insertions(+), 3 deletions(-)
->>
->> diff --git a/drivers/media/platform/qcom/venus/pm_helpers.c b/drivers/media/platform/qcom/venus/pm_helpers.c
->> index 8bd0ce4ce69d..ac7c83404c6e 100644
->> --- a/drivers/media/platform/qcom/venus/pm_helpers.c
->> +++ b/drivers/media/platform/qcom/venus/pm_helpers.c
->> @@ -23,7 +23,7 @@
->>     static bool legacy_binding;
->>   -static int core_clks_get(struct venus_core *core)
->> +static int venus_clks_get(struct venus_core *core)
->>   {
->>       const struct venus_resources *res = core->res;
->>       struct device *dev = core->dev;
->> @@ -294,7 +294,7 @@ static int core_get_v1(struct venus_core *core)
->>   {
->>       int ret;
->>   -    ret = core_clks_get(core);
->> +    ret = venus_clks_get(core);
->>       if (ret)
->>           return ret;
->>   @@ -961,7 +961,7 @@ static int core_get_v4(struct venus_core *core)
->>       const struct venus_resources *res = core->res;
->>       int ret;
->>   -    ret = core_clks_get(core);
->> +    ret = venus_clks_get(core);
->>       if (ret)
->>           return ret;
->>  
-> 
-> We have vcodec_clks_get(). It seems a bit nit-picky but if you are tidying up the namepsace, then I'd suggest venus_core_clks_get() or vcore_clks_get().
-> 
-> Seems more consistent.
+On 3/24/24 19:49, Sasha Levin wrote:
+> From: Sean Anderson <sean.anderson@seco.com>
+>
+> [ Upstream commit 03e607cbb2931374db1825f371e9c7f28526d3f4 ]
+>
+> While support for working with a vbus was added, the regulator was never
+> actually gotten (despite what was documented). Fix this by actually
+> getting the supply from the device tree.
+>
+> Fixes: 7acc9973e3c4 ("usb: phy: generic: add vbus support")
+> Cc: stable <stable@kernel.org>
+> Signed-off-by: Sean Anderson <sean.anderson@seco.com>
+> Link: https://cas5-0-urlprotect.trendmicro.com:443/wis/clicktime/v1/query=
+?url=3Dhttps%3a%2f%2flore.kernel.org%2fr%2f20220425171412.1188485%2d3%2dsea=
+n.anderson%40seco.com&umid=3Dd6ce00f6-eb02-4c45-a2bb-d42fb98e3d79&auth=3Dd8=
+07158c60b7d2502abde8a2fc01f40662980862-664a4cc6c56716c0ff040724728033a1bce8=
+7ec7
+> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Signed-off-by: Sasha Levin <sashal@kernel.org>
+> ---
+>  drivers/usb/phy/phy-generic.c | 7 +++++++
+>  1 file changed, 7 insertions(+)
+>
+> diff --git a/drivers/usb/phy/phy-generic.c b/drivers/usb/phy/phy-generic.=
+c
+> index a53b89be53248..8a04b157f19f3 100644
+> --- a/drivers/usb/phy/phy-generic.c
+> +++ b/drivers/usb/phy/phy-generic.c
+> @@ -283,6 +283,13 @@ int usb_phy_gen_create_phy(struct device *dev, struc=
+t usb_phy_generic *nop,
+>                       return -EPROBE_DEFER;
+>       }
+>
+> +     nop->vbus_draw =3D devm_regulator_get_exclusive(dev, "vbus");
+> +     if (PTR_ERR(nop->vbus_draw) =3D=3D -ENODEV)
+> +             nop->vbus_draw =3D NULL;
+> +     if (IS_ERR(nop->vbus_draw))
+> +             return dev_err_probe(dev, PTR_ERR(nop->vbus_draw),
+> +                                  "could not get vbus regulator\n");
+> +
+>       nop->dev                =3D dev;
+>       nop->phy.dev            =3D nop->dev;
+>       nop->phy.label          =3D "nop-xceiv";
 
-No, that's not the point, you got confused by the inconsistent namespace :/
+TBH I would rather not backport this if possible. This will increase the
+chance of someone using this behavior which is going to change in
+562898808cb1 ("usb: phy: generic: Implement otg->set_vbus").
 
-These are not any "core clocks", they're either "all clocks except vcodec" or
-"all clocks", depending on the binding type used
+--Sean
 
-Konrad
+[Embedded World 2024, SECO SpA]<https://www.messe-ticket.de/Nuernberg/embed=
+dedworld2024/Register/ew24517689>
 
