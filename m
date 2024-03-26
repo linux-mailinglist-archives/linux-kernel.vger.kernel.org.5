@@ -1,163 +1,186 @@
-Return-Path: <linux-kernel+bounces-119968-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-119969-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0FE8F88CF87
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 22:00:48 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7A81688CF8B
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 22:01:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A5AA11F67619
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 21:00:47 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2F64E1F67B75
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 21:01:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3DE4713D614;
-	Tue, 26 Mar 2024 21:00:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A8E1213D893;
+	Tue, 26 Mar 2024 21:00:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="bJ4ybbDM"
-Received: from mail-yb1-f172.google.com (mail-yb1-f172.google.com [209.85.219.172])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=gmx.de header.i=w_armin@gmx.de header.b="dZldq+m4"
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.19])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DD60D12B157;
-	Tue, 26 Mar 2024 21:00:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 353E712B157;
+	Tue, 26 Mar 2024 21:00:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.19
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711486814; cv=none; b=ZETfweHHrpBaDZqNL2k9qaL1KIDjjWLMjTk16bkZmRfwctjI6VVPWCK8sIYiWMxUVN/VJXcEKGER2L2BxePf2XPiT4Os3Vo+csr22z6vDQeYTpqKy6YQaVWILgY4SlxS+uG0vm9tavSKrrMGZKDZap2l9GKEZcGSORnFBaeHFr0=
+	t=1711486831; cv=none; b=gtgRKVtZv/8qWAXgTtyyot9QQXU5fUEZ9CNuFVa6WocJW7ruz684xCIrEb3T1oFzRWr2dzIPJBJ2q2DVibrgG2FpdznlOh7YYJeQsSyQerSBZNOYrdtcMZQI7qXUkByIpin6lSg7PxnYeUZ0gY1630ciOJo1BjSdOrnxWxpCYeE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711486814; c=relaxed/simple;
-	bh=BMDy0xEWSqRLIBS7dqDM7r65pTCpIKpqHbzXnYc8qSg=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=FtV1nu8x5u4hEJLotwJnaNrnXHHX3BfcImGci7gg8c8lwSg6ETPWYGpkYO+IHDdWafGTcflQWBsHnnXn1ueZfuLd1kS83nMHulVQEJU5Z2eoGMN/DPDmm/x3SxmrG8iIOpcnqzlqJgH8/Zx6pmo4DTRaBqxuQQMCbgoC58GYMds=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=bJ4ybbDM; arc=none smtp.client-ip=209.85.219.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yb1-f172.google.com with SMTP id 3f1490d57ef6-dcc73148611so6699741276.3;
-        Tue, 26 Mar 2024 14:00:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711486812; x=1712091612; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=FGCp3Hdv4uExC/POBDKFeOwya+tu2FDjTleJp+1lj24=;
-        b=bJ4ybbDMbnyN0AY01ONxvhRhwHZETgbrYY7ZqPMGCGMlHLOsGnkvKB9Wpk8itcGZ00
-         nSV2xLbOXgR1h3+nJOYAAMtt85gq1gmD19hAH2JYtWXExbkN/gLSacD9uLPrYJ4QcEet
-         kKPVpHBStk3xGxDmaWchmGxbknJ+agLajtkmeqQzndEnclVFGulNcJAKYbX7xekZWMHh
-         Pa8P3qgt0QqbyVnqVDYubYQEqIFmbhSmv7LI3mA+UT5UqhP6rl4x7Ef+BZalI08cB4DI
-         MtUKnq/adVAEvwwOidmDwKkjzChte7RrxcCqaSicObwNiTXxVfqL2gzbS0JOzQlDsPQy
-         2Cqg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711486812; x=1712091612;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=FGCp3Hdv4uExC/POBDKFeOwya+tu2FDjTleJp+1lj24=;
-        b=kqqtcOQc2R0YJeHLK6X+e55TcbCWHvZwR1KpU0KIXV7dp2gnix4OVD8KDxRCkILxt+
-         n3HIdYHTfDzqQixyylnHq5Va9byU06uKZYo3mrGkedhjXNZ5V7PmFMwIcxaG8mMqYaTj
-         igd6zQEaKLM/3UHxKx6c+obRSM/w9frPPr9HpyuRGyWuy7qmLN4LtcSylborhlMf9lsA
-         +JIlLex4NqkQ2vaHkazbIwg1nV+AUHxsDVXdg+O5FHgcAtpkC+qcNHKbm3bVVAEW81jA
-         HeBCXdx3ouvIp1+xi7zp6TlHNgI3Mywua2rqK0o5Ek+pkm3xIrOpMeSqvV6/fwksvNEs
-         nthw==
-X-Forwarded-Encrypted: i=1; AJvYcCU8O4KBhm9QEe+7qMMqqR4Qev44LAXWw63sdtCXrzf8z5HFuGFLDiIQKmfwiCTgG3h/zZ8DWTvnYJCwxtNsN6EoXMhWcFtMBoaZdAcgNqofrn7q9VWU6A5+RDkxQsf8ciPuRu+/Zu0Hu8St8WCpkGWA5PA+Xlj3O5fV+f/8OE/HM5xQOw==
-X-Gm-Message-State: AOJu0YxGLrNT1EYwihqpP3qPqQnTtVXPct1hFOGGQAGbb8kyiXb0Pa+a
-	qfCzRpPtckfWH9eZ0qqmWGhsKU0XEfuDkN53mRk7Mzps4W9SdHORjkCo9V2aMrC6J6UgoQwDN7w
-	Ybs3mBJ0Ds4p1xTZxjQ/Wb0NtM8Q=
-X-Google-Smtp-Source: AGHT+IGnBS3uYEPzzhWdmO60nBwmDa62VvwywhNlYBEtbXjLv1cMyRZvHokMWD6A29XZ3J9dV656THZwPA8V+zsZvj4=
-X-Received: by 2002:a25:dccd:0:b0:dcc:8d09:c7c4 with SMTP id
- y196-20020a25dccd000000b00dcc8d09c7c4mr2182951ybe.7.1711486810191; Tue, 26
- Mar 2024 14:00:10 -0700 (PDT)
+	s=arc-20240116; t=1711486831; c=relaxed/simple;
+	bh=TACiQ+xeZGqKNmYVboNXIyaA6O8fjKoa8PCXLZZyb0M=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=bdcRCZilHqRGWWkS2y2r6kAPP3l+q8lp/0dfTFSfKtyMPotCl+UcTVbp4WHUvYT2mH5gSLIAbpf37+NgBWjWvzO1B/XYiRteXQzixV7NtNdi7BTKDFpsoaSxPR0dLYFki6/mnnU4krSF98laBWifsPU93wMnAhS4ntwjd9KinFE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de; spf=pass smtp.mailfrom=gmx.de; dkim=pass (2048-bit key) header.d=gmx.de header.i=w_armin@gmx.de header.b=dZldq+m4; arc=none smtp.client-ip=212.227.15.19
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.de;
+	s=s31663417; t=1711486805; x=1712091605; i=w_armin@gmx.de;
+	bh=oovH05l1sLDvE4OHaXaGFv4SRMSBo6EJ3rcguRC/AfU=;
+	h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:
+	 In-Reply-To;
+	b=dZldq+m4Kq7kIFeVzmxRgb1x7V9xohxFoqOF6mk1C4WZNyzkD8mX37rv1n72uxqx
+	 TBJxXj4FvW9Zzk3C/lz60hImRz79OfEY+zK9pKZcaXJNvpmF90+p+DElqErnwmpMy
+	 FLqhRFijCDE0g/WrnOCoX6rpMulFQY3fzIeatjLBlZwC7HPxbdmeZuH8/1rI2bkGk
+	 Rf77DMPMVaNgzajCNLQ2uXK4liQkT05RCLiJMAaZmjJkIhimEC5DqeZCQUPbOWX7n
+	 DlflnNdBIq+WOxvBvtwH4szIjReJmuLCTnpSjY2rIs9AQUz+95qaz9IZxbES30lXU
+	 x34/OU96JERsOD7IPg==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [141.30.226.129] ([141.30.226.129]) by mail.gmx.net (mrgmx004
+ [212.227.17.190]) with ESMTPSA (Nemesis) id 1MowGa-1seSUt15B8-00qVsV; Tue, 26
+ Mar 2024 22:00:05 +0100
+Message-ID: <31bc6c0a-c0e7-4055-82ec-33da51368e0f@gmx.de>
+Date: Tue, 26 Mar 2024 21:59:58 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240325153356.46112-1-l.rubusch@gmail.com> <20240325153356.46112-2-l.rubusch@gmail.com>
- <20240325203155.23ddfe3d@jic23-huawei>
-In-Reply-To: <20240325203155.23ddfe3d@jic23-huawei>
-From: Lothar Rubusch <l.rubusch@gmail.com>
-Date: Tue, 26 Mar 2024 21:59:34 +0100
-Message-ID: <CAFXKEHaQLu9WFJe4r4+QaWO-wjM0hpYkWF_s8NOSh2Hoo5w8FQ@mail.gmail.com>
-Subject: Re: [PATCH v4 1/7] iio: accel: adxl345: Make data_range obsolete
-To: Jonathan Cameron <jic23@kernel.org>
-Cc: lars@metafoo.de, Michael.Hennerich@analog.com, robh+dt@kernel.org, 
-	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, 
-	linux-iio@vger.kernel.org, devicetree@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, eraretuya@gmail.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v11] platform/x86: add lenovo wmi camera button driver
+To: Andy Shevchenko <andriy.shevchenko@intel.com>, Ai Chao <aichao@kylinos.cn>
+Cc: hdegoede@redhat.com, ilpo.jarvinen@linux.intel.com,
+ linux-kernel@vger.kernel.org, platform-driver-x86@vger.kernel.org
+References: <20240322064750.267422-1-aichao@kylinos.cn>
+ <ZgGmfV9ciPdtbGO1@smile.fi.intel.com>
+Content-Language: en-US
+From: Armin Wolf <W_Armin@gmx.de>
+In-Reply-To: <ZgGmfV9ciPdtbGO1@smile.fi.intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Provags-ID: V03:K1:R2mVWzkgRZQf922lzF28ziewK/4/O88EndJrffowiB7qy1QldDT
+ 2UddGvoOLxIwGd5YhkEwa6Cj73O9iaoV29zZSYwJYYD7V2R45DnXdY9RLg3ankulgJYpeFI
+ oadxp3L5KfzUb95mo2VoMBEQUx1mfwuN4gXb7/Wcvnh+Kqtmk3pRucdQen7o+L4VAAFyMyc
+ h1RTiD7pCrNuNlz4ncZ3g==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:6whmCGcjBL4=;WQUegEFlWSWKLFd1WnF7kbFQd5h
+ k/IQesRrup/X+zbEcmwoZPUNAMpl1EWvCiODx7HXYgE5xfF6/lNWiUbTMkLNkcwIQovCzHHbM
+ p2irvQnpMdDSl0AXntwih23Oic/pzZvjg4ev5Ir/2J4DER/tuRNJnkZ6gs5n/3/H1ZhJaX2XR
+ 7UB1AvWhSbhqncDtBY5tVLT16calfxU32z6jhV62eaMwodLBL5Ytl0UUz3V4XM13oROJznAPe
+ d1s+m9Dj1vtDI+O6pHRF1NazzF9e29Z+t/+ix6fXrG2LkE8h8XUGpdhfrpzRc1SGYrAwwUpAB
+ PnDgwcMp8B+StSZ1siGFclMCqNljCpbfQCvyOPiiZrWatukkjgJuNymJs/Lzx+FX8fKloeVaX
+ Rs6PlAddgcq2m2b6AoLy1g+TAQ/YSH6O30b0wVG+GWGICKdQPr0kW/ly0KimOl/p9LMnJAEjA
+ BLPc8VDTckR7noF+SNj/L++Kfn9cIWo7rpkF8ZWPE/0UYQb5jRS0xGQeDIM3P0SBLVpbm/rVz
+ OYKbNsy+E7ZiX604uIfSsscZ/vibD8QM57wKg/oJTbYUyLMHtCleVtBtOmsd2WaBZqF+Dr1ym
+ fzGHoHapqWtRX02F/POcQCpBO/MqJTgQ581ZDOeps2b9/cRT7zu25Od7UM1gfqC5OtKjvP9C/
+ iHeVGJCeENEfPLGNIA1EaNIpYTWwiIdr3Zx3ZpVFmxTDJM0ZUuzTNrnjtqjxg6Caeeiy8z900
+ Af4GK2YAzQtkPCIsO0Ta6ONm+K82CspNckbrhM8mm0x8uW7J4WhxyGJMNcdtBM+GHARbsictj
+ ZEJlH/a/UOR471or5JPq2CWVlr8BIBR/6S6jwAxyI0np4=
 
-On Mon, Mar 25, 2024 at 9:32=E2=80=AFPM Jonathan Cameron <jic23@kernel.org>=
- wrote:
->
-> On Mon, 25 Mar 2024 15:33:50 +0000
-> Lothar Rubusch <l.rubusch@gmail.com> wrote:
->
-> > Replace write() data_format by regmap_update_bits(), because
-> > bus specific pre-configuration may have happened before on
-> > the same register. Changes then need to be masked.
-> >
-> > Remove the data_range field from the struct adxl345_data,
-> > because it is not used anymore.
-> >
-> > Signed-off-by: Lothar Rubusch <l.rubusch@gmail.com>
-> > ---
-> >  drivers/iio/accel/adxl345_core.c | 9 ++++-----
-> >  1 file changed, 4 insertions(+), 5 deletions(-)
-> >
-> > diff --git a/drivers/iio/accel/adxl345_core.c b/drivers/iio/accel/adxl3=
-45_core.c
-> > index 8bd30a23e..be6758015 100644
-> > --- a/drivers/iio/accel/adxl345_core.c
-> > +++ b/drivers/iio/accel/adxl345_core.c
-> > @@ -42,13 +42,13 @@
-> >  #define ADXL345_DATA_FORMAT_4G               1
-> >  #define ADXL345_DATA_FORMAT_8G               2
-> >  #define ADXL345_DATA_FORMAT_16G              3
-> > +#define ADXL345_DATA_FORMAT_MSK              ~((u8) BIT(6)) /* ignore =
-spi-3wire */
->
-> I'm not keen on seeing masking of a bit we don't yet
-> handle done by value.  Can we instead build this up by what we 'want' to
-> write rather than don't. Will need a few more defines perhaps to cover
-> the masks of SELF_TEST, INT_INVERT, FULL_RES, Justify and Range.
->
+Am 25.03.24 um 17:29 schrieb Andy Shevchenko:
 
-Good point. Anyway, there is also an input driver implementation for
-the adxl345, mainly dealing with the interrupt feature as input
-device. Thus, for the iio implementation I would suggest to reduce the
-mask just to cover SELF_TEST and FULL_RES and leave INT_INVERT out. Is
-this ok?
+> On Fri, Mar 22, 2024 at 02:47:50PM +0800, Ai Chao wrote:
+>> Add lenovo generic wmi driver to support camera button.
+> WMI
+>
+>> The Camera button is a GPIO device. This driver receives ACPI notifyi
+>> when the camera button is switched on/off. This driver is used in
+>> Lenovo A70, it is a Computer integrated machine.
+>> +config LENOVO_WMI_CAMERA
+>> +	tristate "Lenovo WMI Camera Button driver"
+>> +	depends on ACPI_WMI
+>> +	depends on INPUT
+> No COMPILE_TEST?
+>
+>> +	help
+>> +	  This driver provides support for Lenovo camera button. The Camera
+>> +	  button is a GPIO device. This driver receives ACPI notify when the
+>> +	  camera button is switched on/off.
+>> +
+>> +	  To compile this driver as a module, choose M here: the module
+>> +	  will be called lenovo-wmi-camera.
+> ...
+>
+>> +#include <linux/acpi.h>
+>> +#include <linux/device.h>
+>> +#include <linux/input.h>
+>> +#include <linux/module.h>
+>> +#include <linux/mutex.h>
+> + types.h
+>
+>> +#include <linux/wmi.h>
+> ...
+>
+>> +struct lenovo_wmi_priv {
+>> +	struct input_dev *idev;
+>> +	struct mutex notify_lock;	/* lenovo wmi camera button notify lock */
+> WMI
+>
+>> +};
+> ...
+>
+>> +	/* obj->buffer.pointer[0] is camera mode:
+>> +	 *      0 camera close
+>> +	 *      1 camera open
+>> +	 */
+> /*
+>   * The correct multi-line comment style
+>   * is depicted here.
+>   */
+>
+> ...
+>
+>> +	keycode = (camera_mode == SW_CAMERA_ON ?
+>> +		   KEY_CAMERA_ACCESS_ENABLE : KEY_CAMERA_ACCESS_DISABLE);
+> Useless parentheses.
+>
+> ...
+>
+>> +	ret = input_register_device(priv->idev);
+>> +	if (ret)
+>> +		return ret;
+>> +	mutex_init(&priv->notify_lock);
+> Your mutex should be initialized before use. Have you tested that?
 
-> >
-> >  #define ADXL345_DEVID                        0xE5
-> >
-> >  struct adxl345_data {
-> >       const struct adxl345_chip_info *info;
-> >       struct regmap *regmap;
-> > -     u8 data_range;
-> >  };
-> >
-> >  #define ADXL345_CHANNEL(index, axis) {                                =
-       \
-> > @@ -219,14 +219,13 @@ int adxl345_core_probe(struct device *dev, struct=
- regmap *regmap)
-> >       data =3D iio_priv(indio_dev);
-> >       data->regmap =3D regmap;
-> >       /* Enable full-resolution mode */
-> > -     data->data_range =3D ADXL345_DATA_FORMAT_FULL_RES;
-> >       data->info =3D device_get_match_data(dev);
-> >       if (!data->info)
-> >               return -ENODEV;
-> >
-> > -     ret =3D regmap_write(data->regmap, ADXL345_REG_DATA_FORMAT,
-> > -                        data->data_range);
-> > -     if (ret < 0)
-> > +     ret =3D regmap_update_bits(regmap, ADXL345_REG_DATA_FORMAT,
-> > +                              ADXL345_DATA_FORMAT_MSK, ADXL345_DATA_FO=
-RMAT_FULL_RES);
-> > +     if (ret)
-> >               return dev_err_probe(dev, ret, "Failed to set data range\=
-n");
-> >
-> >       indio_dev->name =3D data->info->name;
+Hi,
+
+i suggested that the mutex be initialized after calling input_register_device().
+The reason for this is that the mutex is only used inside the WMI notify callback,
+and the WMI driver core will only call it after probe() has returned.
+
+So imho it should be safe.
+
+Thanks,
+Armin Wolf
+
+>
+> ...
+>
+>> +static struct wmi_driver lenovo_wmi_driver = {
+>> +	.driver = {
+>> +		.name = "lenovo-wmi-camera",
+>> +		.probe_type = PROBE_PREFER_ASYNCHRONOUS,
+>> +	},
+>> +	.id_table = lenovo_wmi_id_table,
+>> +	.no_singleton = true,
+>> +	.probe = lenovo_wmi_probe,
+>> +	.notify = lenovo_wmi_notify,
+>> +	.remove = lenovo_wmi_remove,
+>> +};
+>> +
+> Unneeded blank line.
+>
+>> +module_wmi_driver(lenovo_wmi_driver);
+> ...
+>
+>> +MODULE_DEVICE_TABLE(wmi, lenovo_wmi_id_table);
+> Please, move it closer to the respective table.
 >
 
