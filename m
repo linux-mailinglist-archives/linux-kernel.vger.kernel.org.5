@@ -1,110 +1,232 @@
-Return-Path: <linux-kernel+bounces-119523-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-119524-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 496AB88CA0D
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 18:03:21 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 95DAB88CA0A
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 18:02:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C2DCBB21F94
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 17:03:18 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 09FDE1F6750D
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 17:02:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 119481F95A;
-	Tue, 26 Mar 2024 16:54:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C9CFA84FD8;
+	Tue, 26 Mar 2024 16:54:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="dD2PjWvS"
-Received: from mail-lf1-f49.google.com (mail-lf1-f49.google.com [209.85.167.49])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ft27l9pE"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB6731F93E
-	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 16:54:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F074E41238;
+	Tue, 26 Mar 2024 16:54:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711472058; cv=none; b=Re8d7bdHRbl/ULWIc3egjO2AkZIEkpHse2bRVldHqZTt78xKGODTmg20x8Lxh3GG5NHyVGD2DuoJrKeRduiWv24qVXpCcI/qrCzWVcLMIacujuUMvFkQHTqa2vDWSh88ed3B/vJVmh6CvgU/CG/SktXqiMi8P56LorzmqcTXsjI=
+	t=1711472091; cv=none; b=IGWpTsXebLgiMStpJ0OvUXFLrs8xtCE9P4MV+zqkc13lzD9hEUMM4vPsLi8GxMuKqoEKIhg456tbJf7PIAt4does63EicKHPUI9Sj9T5MBL+nNxlwoAPRfCuvBeFf/8cUychGhdprnMe6SQE+v5DrR3wJknQ5wkVmPB19vbS9a4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711472058; c=relaxed/simple;
-	bh=dAPiRo6EKZ0GJbRem2h3QKmGNumGT58ATjERpW1nkZw=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
-	 MIME-Version:Content-Type; b=DQ+hwCwAEYOyl1W6+ImoJW1JGrwpvnJtWuhIGRj1z+itEHgx8jqGL80CWTppU+FRwwW5b3XpoWi+V8lDZ5uwHGoflEPouRvvn+DE1M9hWDEcsfZrHmNi5xtqZyoiVVH5HwizzK+ZSVIl0EtsQw2eeltoQNjB3pnGnA6xI77fljE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=dD2PjWvS; arc=none smtp.client-ip=209.85.167.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-lf1-f49.google.com with SMTP id 2adb3069b0e04-513ccc70a6dso10049038e87.1
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 09:54:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1711472055; x=1712076855; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:date:message-id:subject
-         :references:in-reply-to:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Wv2qyZiJW3rhsfMocz5xAdPhBZSACPMqswxeiiKx6rM=;
-        b=dD2PjWvSPo7Yenb3tAYRAhr9g4GsNbRgtVLccLqP3u+V6Z+hI634rzM+N6IAOlYApo
-         w7GtOzgZrL/ajDd08T/175rxurKMHMAwozQz94FYTdkDeAJI1vv9UKhvPWT1FpCaYqW1
-         kE0jvmudzBtBaiAzkjVzDRWmW9dcP72kBukD/LMQjT1YlsyK3L29iGw9aWHnDqeXJRkV
-         UnfxXt6hLdyo8gtOw+Pwjb80C+I8DYgg3TJraLA7fFF4tI0nl9Mwsh7BCcuHjJh3+8qZ
-         eqd68OblB0f0bD8qRhXv2t3BdXqe37IYt01bO1xMO7aKJ3xbv8xgeFsPTOGu6cymxEo5
-         mx1A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711472055; x=1712076855;
-        h=content-transfer-encoding:mime-version:date:message-id:subject
-         :references:in-reply-to:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Wv2qyZiJW3rhsfMocz5xAdPhBZSACPMqswxeiiKx6rM=;
-        b=EOiGyTTfvzNFXJ/r6ohMVFjENS1wYHLm5Tis9RpWR79O/bjcwBJeSYG1K5qUoxDzOB
-         X1x3u5a4xdvQicTRtp3V8rCTWdPFTYdcdKmBGyEN1RSGL4OlEWJG0DUXtbAeGAyfLjiY
-         DdJJm7kB9ZGBf8QUTkx6X6KK+AQBGlaPloU7pv+r2j1ehUMNYdd6X9LWrTnL12DGRDSj
-         Pj8L8nfbM5axTfjpYn6UHS/jeweFU4ZKormIpWe964RVnphcV+QToTW+tsFojqqpCq8U
-         +E5vImpa6GOcn3SdY4xyHISfRHk15SrZQsrTVsdzHcTIBLDkC7lAFbb5nS4KP0Wo6kqz
-         zyVw==
-X-Forwarded-Encrypted: i=1; AJvYcCXY4GjR4Zdtd50LZII3/IdX96x8lId3ed8mqiO4GE7h0NViKpdPu4DkUWK7JvYwYyqifyAQ97jooxxMCzZkiYm3pZbzXLjhId6S2rPv
-X-Gm-Message-State: AOJu0YxjaE6uz4EGJXwWN2CJFUdLmGaDbYfIPakwGl0BMutpOWgFjO0B
-	rQiI/1ey370uYk5lmU4RTo8ECP8JWob66clMnM+ctvc1TnjLyxU555i/ng4JGg0=
-X-Google-Smtp-Source: AGHT+IFjDDsVihyBu7OYkASnulfwdX39S0/WKKAK4kHDTgGoAo5D0BhXUAFl1ZDrAcfKm6wlGhFt9w==
-X-Received: by 2002:ac2:4d92:0:b0:515:ad80:c227 with SMTP id g18-20020ac24d92000000b00515ad80c227mr108290lfe.56.1711472054791;
-        Tue, 26 Mar 2024 09:54:14 -0700 (PDT)
-Received: from [127.0.1.1] ([178.197.222.44])
-        by smtp.gmail.com with ESMTPSA id le13-20020a170906ae0d00b00a47464a6ee4sm4043708ejb.173.2024.03.26.09.54.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Mar 2024 09:54:14 -0700 (PDT)
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-To: Rob Herring <robh+dt@kernel.org>, 
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
- Conor Dooley <conor+dt@kernel.org>, Alim Akhtar <alim.akhtar@samsung.com>, 
- Artur Weber <aweber.kernel@gmail.com>
-Cc: devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
- linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org, 
- ~postmarketos/upstreaming@lists.sr.ht
-In-Reply-To: <20240217-tab3-limit-usable-memory-range-v1-1-49cc9c86a5cc@gmail.com>
-References: <20240217-tab3-limit-usable-memory-range-v1-1-49cc9c86a5cc@gmail.com>
-Subject: Re: [PATCH] ARM: dts: exynos4212-tab3: limit usable memory range
-Message-Id: <171147205364.149174.1041854841396715933.b4-ty@linaro.org>
-Date: Tue, 26 Mar 2024 17:54:13 +0100
+	s=arc-20240116; t=1711472091; c=relaxed/simple;
+	bh=kfvUE/tPrPQaCp2NEJWZn+NkD/GzFr+HXyYsWmXWBms=;
+	h=Mime-Version:Content-Type:Date:Message-Id:Cc:Subject:From:To:
+	 References:In-Reply-To; b=vF1wIFG45wUI63KmXahlkIvzri4ZcgbKwb7mvIpXIz3o5qHLf4Taw6Yry9peFfdHJyAQyYSxFsQYszsH1vu9cEblFkek836/gs4aYJ5AZOy2L/SMqksE5ahhHmDZOQS2gctauQl8GE/89CjZu66uHY5trBwL9ogEmA1KYTX3kHs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ft27l9pE; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C4B28C433F1;
+	Tue, 26 Mar 2024 16:54:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1711472090;
+	bh=kfvUE/tPrPQaCp2NEJWZn+NkD/GzFr+HXyYsWmXWBms=;
+	h=Date:Cc:Subject:From:To:References:In-Reply-To:From;
+	b=ft27l9pEEf4nP9p1LalDYbwgGlKP0QZMe2l/7Zy7s/yBZOZ/6AuibNn0ERZqdIWJY
+	 7ROkwF/gi+ZOsOZNzcc5Pm0lgeBUUyaFisU2ZWpnIVR9OgGnUea9K+tq3tJpL/M9KF
+	 Rveg6dZD2TyuiwQ8uRrd+CUa/hYrmGkzsFjpmVSjpfB/nwoHYzB1yWtRFIS+MUBXgE
+	 B8cLjcZRQZxFm06+Bq523kTiY5VxDq/3HPZkldm9n4TMS8XUfuWXY3DCzL/lhAHrV7
+	 TJzcNm1VDfyeiy9dg6JSnpQ2cvIzpt2vsBbQElU+oz00709fzcJW6KAn+lh9ughGkA
+	 csNLdbHlWvQVg==
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.13.0
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Date: Tue, 26 Mar 2024 18:54:45 +0200
+Message-Id: <D03U7Y29RXR8.374E0V78LPHFF@kernel.org>
+Cc: "Paul Walmsley" <paul.walmsley@sifive.com>, "Palmer Dabbelt"
+ <palmer@dabbelt.com>, "Albert Ou" <aou@eecs.berkeley.edu>,
+ <linux-kernel@vger.kernel.org>, "Luis Chamberlain" <mcgrof@kernel.org>,
+ <linux-modules@vger.kernel.org>, "Naveen N . Rao"
+ <naveen.n.rao@linux.ibm.com>, "Anil S Keshavamurthy"
+ <anil.s.keshavamurthy@intel.com>, "David S . Miller" <davem@davemloft.net>,
+ "Masami Hiramatsu" <mhiramat@kernel.org>
+Subject: Re: [PATCH v5 2/2] arch/riscv: Enable kprobes when CONFIG_MODULES=n
+From: "Jarkko Sakkinen" <jarkko@kernel.org>
+To: "Jarkko Sakkinen" <jarkko@kernel.org>, "Alexandre Ghiti"
+ <alex@ghiti.fr>, <linux-riscv@lists.infradead.org>
+X-Mailer: aerc 0.17.0
+References: <20240325215502.660-1-jarkko@kernel.org>
+ <20240325215502.660-2-jarkko@kernel.org>
+ <474ed846-672a-4ff0-9d53-cbf8192fee5f@ghiti.fr>
+ <D03U3UZ4XBOW.66TLKVR1PKPH@kernel.org>
+In-Reply-To: <D03U3UZ4XBOW.66TLKVR1PKPH@kernel.org>
 
+On Tue Mar 26, 2024 at 6:49 PM EET, Jarkko Sakkinen wrote:
+> On Tue Mar 26, 2024 at 3:57 PM EET, Alexandre Ghiti wrote:
+> > Hi Jarkko,
+> >
+> > On 25/03/2024 22:55, Jarkko Sakkinen wrote:
+> > > Tacing with kprobes while running a monolithic kernel is currently
+> > > impossible due the kernel module allocator dependency.
+> > >
+> > > Address the issue by implementing textmem API for RISC-V.
+> > >
+> > > Link: https://www.sochub.fi # for power on testing new SoC's with a m=
+inimal stack
+> > > Link: https://lore.kernel.org/all/20220608000014.3054333-1-jarkko@pro=
+fian.com/ # continuation
+> > > Signed-off-by: Jarkko Sakkinen <jarkko@kernel.org>
+> > > ---
+> > > v5:
+> > > - No changes, expect removing alloc_execmem() call which should have
+> > >    been part of the previous patch.
+> > > v4:
+> > > - Include linux/execmem.h.
+> > > v3:
+> > > - Architecture independent parts have been split to separate patches.
+> > > - Do not change arch/riscv/kernel/module.c as it is out of scope for
+> > >    this patch set now.
+> > > v2:
+> > > - Better late than never right? :-)
+> > > - Focus only to RISC-V for now to make the patch more digestable. Thi=
+s
+> > >    is the arch where I use the patch on a daily basis to help with QA=
+.
+> > > - Introduce HAVE_KPROBES_ALLOC flag to help with more gradual migrati=
+on.
+> > > ---
+> > >   arch/riscv/Kconfig          |  1 +
+> > >   arch/riscv/kernel/Makefile  |  3 +++
+> > >   arch/riscv/kernel/execmem.c | 22 ++++++++++++++++++++++
+> > >   3 files changed, 26 insertions(+)
+> > >   create mode 100644 arch/riscv/kernel/execmem.c
+> > >
+> > > diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
+> > > index e3142ce531a0..499512fb17ff 100644
+> > > --- a/arch/riscv/Kconfig
+> > > +++ b/arch/riscv/Kconfig
+> > > @@ -132,6 +132,7 @@ config RISCV
+> > >   	select HAVE_KPROBES if !XIP_KERNEL
+> > >   	select HAVE_KPROBES_ON_FTRACE if !XIP_KERNEL
+> > >   	select HAVE_KRETPROBES if !XIP_KERNEL
+> > > +	select HAVE_ALLOC_EXECMEM if !XIP_KERNEL
+> > >   	# https://github.com/ClangBuiltLinux/linux/issues/1881
+> > >   	select HAVE_LD_DEAD_CODE_DATA_ELIMINATION if !LD_IS_LLD
+> > >   	select HAVE_MOVE_PMD
+> > > diff --git a/arch/riscv/kernel/Makefile b/arch/riscv/kernel/Makefile
+> > > index 604d6bf7e476..337797f10d3e 100644
+> > > --- a/arch/riscv/kernel/Makefile
+> > > +++ b/arch/riscv/kernel/Makefile
+> > > @@ -73,6 +73,9 @@ obj-$(CONFIG_SMP)		+=3D cpu_ops.o
+> > >  =20
+> > >   obj-$(CONFIG_RISCV_BOOT_SPINWAIT) +=3D cpu_ops_spinwait.o
+> > >   obj-$(CONFIG_MODULES)		+=3D module.o
+> > > +ifeq ($(CONFIG_ALLOC_EXECMEM),y)
+> > > +obj-y				+=3D execmem.o
+> > > +endif
+> > >   obj-$(CONFIG_MODULE_SECTIONS)	+=3D module-sections.o
+> > >  =20
+> > >   obj-$(CONFIG_CPU_PM)		+=3D suspend_entry.o suspend.o
+> > > diff --git a/arch/riscv/kernel/execmem.c b/arch/riscv/kernel/execmem.=
+c
+> > > new file mode 100644
+> > > index 000000000000..3e52522ead32
+> > > --- /dev/null
+> > > +++ b/arch/riscv/kernel/execmem.c
+> > > @@ -0,0 +1,22 @@
+> > > +// SPDX-License-Identifier: GPL-2.0-or-later
+> > > +
+> > > +#include <linux/mm.h>
+> > > +#include <linux/execmem.h>
+> > > +#include <linux/vmalloc.h>
+> > > +#include <asm/sections.h>
+> > > +
+> > > +void *alloc_execmem(unsigned long size, gfp_t /* gfp */)
+>
+> Need to have the parameter name here. I guess this could just as well
+> pass through gfp to vmalloc from the caller as kprobes does call
+> module_alloc() with GFP_KERNEL set in RISC-V.
+>
+> > > +{
+> > > +	return __vmalloc_node_range(size, 1, MODULES_VADDR,
+> > > +				    MODULES_END, GFP_KERNEL,
+> > > +				    PAGE_KERNEL, 0, NUMA_NO_NODE,
+> > > +				    __builtin_return_address(0));
+> > > +}
+> >
+> >
+> > The __vmalloc_node_range() line ^^ must be from an old kernel since we=
+=20
+> > added VM_FLUSH_RESET_PERMS in 6.8, see 749b94b08005 ("riscv: Fix=20
+> > module_alloc() that did not reset the linear mapping permissions").
+> >
+> > In addition, I guess module_alloc() should now use alloc_execmem() righ=
+t?
+>
+> Ack for the first comment. For the 2nd it is up to arch/<arch> to choose
+> whether to have shared or separate allocators.
+>
+> So if you want I can change it that way but did not want to make the
+> call myself.
+>
+> >
+> >
+> > > +
+> > > +void free_execmem(void *region)
+> > > +{
+> > > +	if (in_interrupt())
+> > > +		pr_warn("In interrupt context: vmalloc may not work.\n");
+> > > +
+> > > +	vfree(region);
+> > > +}
+> >
+> >
+> > I remember Mike Rapoport sent a patchset to introduce an API for=20
+> > executable memory allocation=20
+> > (https://lore.kernel.org/linux-mm/20230918072955.2507221-1-rppt@kernel.=
+org/),=20
+> > how does this intersect with your work? I don't know the status of his=
+=20
+> > patchset though.
+> >
+> > Thanks,
+> >
+> > Alex
+>
+> I have also made a patch set for kprobes in the 2022:
+>
+> https://lore.kernel.org/all/20220608000014.3054333-1-jarkko@profian.com/
+>
+> I think this Calvin's, Mike's and my early patch set have the same
+> problem: they try to choke all architectures at once. And further,
+> Calvin's and Mike's work also try to cover also tracing subsystems
+> at once.
+>
+> I feel that my relatively small patch set which deals only with
+> trivial kprobe (which is more in the leaf than e.g. bpf which
+> is more like orchestrator tool) and implements one arch of which
+> dog food I actually eat is a better starting point.
+>
+> Arch code is always something where you need to have genuine
+> understanding so full architecture coverage from day one is
+> just too risky for stability. Linux is better off if people who
+> work on a  specific arch proactively will "fill the holes".
+>
+> So the way I see my patch set is "lowest common denominator"
+> in both architecture axis and tracing subsystem axist. It should
+> not interfere that much with the other work (like bpf).
 
-On Sat, 17 Feb 2024 20:02:47 +0100, Artur Weber wrote:
-> The stock bootloader on the Samsung Galaxy Tab 3 8.0 provides an
-> incorrect available memory range over ATAG_MEM. Limit the usable
-> memory in the DTS to prevent it from doing so, without having to
-> disable ATAG support.
-> 
-> 
+Here also there is a lot of kconfig flag logic changes. I've verified
+them but still I think we are better off if this stuff is put in the
+wild first in small scale rather than spraying kernel with code changes
+in the first run.
 
-Applied, thanks!
-
-[1/1] ARM: dts: exynos4212-tab3: limit usable memory range
-      https://git.kernel.org/krzk/linux/c/7bff1d35c1294c011b0269b8eaeb8f930df386fe
-
-Best regards,
--- 
-Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-
+BR, Jarkko
 
