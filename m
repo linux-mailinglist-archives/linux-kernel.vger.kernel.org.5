@@ -1,158 +1,114 @@
-Return-Path: <linux-kernel+bounces-119466-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-119467-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 51C9288C95B
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 17:32:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 9217888C95C
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 17:32:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7B4B11C634D4
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 16:32:04 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C25081C2969F
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 16:32:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BB18C1BDE6;
-	Tue, 26 Mar 2024 16:30:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=xry111.site header.i=@xry111.site header.b="jEPq4Tol"
-Received: from xry111.site (xry111.site [89.208.246.23])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6C4A0641
-	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 16:30:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=89.208.246.23
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5B11B1CAA0;
+	Tue, 26 Mar 2024 16:31:14 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DD4A71BF50
+	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 16:31:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711470644; cv=none; b=eiBgDRkfN8WqnpPKZYmORga+c/FPymUUGHI+s1xTdUEs9UMhB0DF7YU97sqVHCb23r0McAULtLd2D7BpjjQp8WC+u8XCg5FhQBtjtuD0jghr/EtSfeXmA3V0SE0xxREFoLeSRBNk6ndbU6gqqXuhu59wNG0O+66OB0YDXT0+ydw=
+	t=1711470673; cv=none; b=C3jqsQYDiiWt3fiNyMnH5/dYVqRewpOT+BAa+sYKjX4GYQmZPjH87mPPPbhFtJtHw3z7G6EAV09x2FA87sRPgcNlxE9QqYRyr5TPeglVv1pwOa0gyxjxhzJi7ktMYr8L5ZZhYObAQPfmvM9DyUEuDq71ZZLPVzkvqOi/n7dmdxg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711470644; c=relaxed/simple;
-	bh=zSKC4GHTI0sii/KWS6qMFiGNmweeFzJI8GJyuu01y2o=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=c1c+deYjoOzNNxxY82bo73nTRY93MmwJybDqk+rLAD4Piw+qtP8r8awIwAc6lq/fUpMEIRPda4ot3+HGaCIm1xtzx+lX37kQ+qtPt66wL9toB09gWhch/zHa59j2//cFCspgJStzw3sOkE5GusNpdCimYivk0nMHlvxBHCJ3KWU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=xry111.site; spf=pass smtp.mailfrom=xry111.site; dkim=pass (1024-bit key) header.d=xry111.site header.i=@xry111.site header.b=jEPq4Tol; arc=none smtp.client-ip=89.208.246.23
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=xry111.site
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=xry111.site
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=xry111.site;
-	s=default; t=1711470638;
-	bh=zSKC4GHTI0sii/KWS6qMFiGNmweeFzJI8GJyuu01y2o=;
-	h=From:To:Cc:Subject:Date:From;
-	b=jEPq4TolAtPcXb0lndYSGgmn9E3AfMQrJVb5hZunOZfgPLR6cel/PNw+3RL430RkD
-	 VDMNYKU4QeNWvQD3L50a1fP1dhQpe20gKhvnjnR9yaUXPh75mOWGRmeeBrH0Am6gbw
-	 0EOgw6xtjiRWdGjx4lYz1DB/irAAmuyOMJ2Jq8+0=
-Received: from stargazer.. (unknown [IPv6:240e:358:1190:6500:dc73:854d:832e:8])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
-	(Client did not present a certificate)
-	(Authenticated sender: xry111@xry111.site)
-	by xry111.site (Postfix) with ESMTPSA id 194B767050;
-	Tue, 26 Mar 2024 12:30:33 -0400 (EDT)
-From: Xi Ruoyao <xry111@xry111.site>
-To: Dave Hansen <dave.hansen@linux.intel.com>,
-	Michael Kelley <mhklinux@outlook.com>
-Cc: Andy Lutomirski <luto@kernel.org>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Ingo Molnar <mingo@redhat.com>,
-	Borislav Petkov <bp@alien8.de>,
-	"H. Peter Anvin" <hpa@zytor.com>,
-	x86@kernel.org,
-	linux-kernel@vger.kernel.org,
-	Xi Ruoyao <xry111@xry111.site>
-Subject: [PATCH v4] x86/mm: Don't disable INVLPG if "incomplete Global INVLPG flushes" is fixed by microcode
-Date: Wed, 27 Mar 2024 00:30:27 +0800
-Message-ID: <20240326163027.16591-1-xry111@xry111.site>
-X-Mailer: git-send-email 2.44.0
+	s=arc-20240116; t=1711470673; c=relaxed/simple;
+	bh=2f5C4tkfzTlJ21a42KuXQI/22TYKmp8GXHmBCycaH2o=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=tQr/ddU8yfQ5ea5GLMHkgwZo64FcisHMx0GusYUT+lhKOBmHMI90hfTJnrsQZCi/AY8Zvo0Cdp5Zp/QrDKYSk8xJuDk2uD80JTlTIaFlwxt64tPnX36kgXEUV2SXxYgTBPM1XDUuOiFtdr0tR4+qVW8Lop6P5b9q1ARBm1Ydplo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id DFD242F4;
+	Tue, 26 Mar 2024 09:31:44 -0700 (PDT)
+Received: from [10.1.29.179] (XHFQ2J9959.cambridge.arm.com [10.1.29.179])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 683FA3F694;
+	Tue, 26 Mar 2024 09:31:09 -0700 (PDT)
+Message-ID: <d8b3bcf2-495f-42bd-b114-6e3a010644d8@arm.com>
+Date: Tue, 26 Mar 2024 16:31:07 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC PATCH v1 0/4] Reduce cost of ptep_get_lockless on arm64
+Content-Language: en-GB
+To: David Hildenbrand <david@redhat.com>, Mark Rutland
+ <mark.rutland@arm.com>, Catalin Marinas <catalin.marinas@arm.com>,
+ Will Deacon <will@kernel.org>,
+ Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+ Jiri Olsa <jolsa@kernel.org>, Ian Rogers <irogers@google.com>,
+ Adrian Hunter <adrian.hunter@intel.com>,
+ Andrew Morton <akpm@linux-foundation.org>,
+ Muchun Song <muchun.song@linux.dev>
+Cc: linux-arm-kernel@lists.infradead.org, linux-mm@kvack.org,
+ linux-kernel@vger.kernel.org
+References: <20240215121756.2734131-1-ryan.roberts@arm.com>
+ <0ae22147-e1a1-4bcb-8a4c-f900f3f8c39e@redhat.com>
+From: Ryan Roberts <ryan.roberts@arm.com>
+In-Reply-To: <0ae22147-e1a1-4bcb-8a4c-f900f3f8c39e@redhat.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Per the "Processor Specification Update" documentations referred by the
-intel-microcode-20240312 release note, this microcode release has fixed
-the issue for all affected models.
+On 26/03/2024 16:17, David Hildenbrand wrote:
+> On 15.02.24 13:17, Ryan Roberts wrote:
+>> This is an RFC for a series that aims to reduce the cost and complexity of
+>> ptep_get_lockless() for arm64 when supporting transparent contpte mappings [1].
+>> The approach came from discussion with Mark and David [2].
+>>
+>> It introduces a new helper, ptep_get_lockless_norecency(), which allows the
+>> access and dirty bits in the returned pte to be incorrect. This relaxation
+>> permits arm64's implementation to just read the single target pte, and avoids
+>> having to iterate over the full contpte block to gather the access and dirty
+>> bits, for the contpte case.
+>>
+>> It turns out that none of the call sites using ptep_get_lockless() require
+>> accurate access and dirty bit information, so we can also convert those sites.
+>> Although a couple of places need care (see patches 2 and 3).
+>>
+>> Arguably patch 3 is a bit fragile, given the wide accessibility of
+>> vmf->orig_pte. So it might make sense to drop this patch and stick to using
+>> ptep_get_lockless() in the page fault path. I'm keen to hear opinions.
+> 
+> Yes. Especially as we have these pte_same() checks that might just fail now
+> because of wrong accessed/dirty bits?
 
-So don't disable INVLPG if the microcode is new enough.  The precise
-minimum microcode revision fixing the issue is provided by engineer from
-Intel.
+Which pte_same() checks are you referring to? I've changed them all to
+pte_same_norecency() which ignores the access/dirty bits when doing the comparison.
 
-Cc: Dave Hansen <dave.hansen@linux.intel.com>
-Link: https://lore.kernel.org/all/168436059559.404.13934972543631851306.tip-bot2@tip-bot2/
-Link: https://github.com/intel/Intel-Linux-Processor-Microcode-Data-Files/releases/tag/microcode-20240312
-Link: https://cdrdv2.intel.com/v1/dl/getContent/740518 # RPL042, rev. 13
-Link: https://cdrdv2.intel.com/v1/dl/getContent/682436 # ADL063, rev. 24
-Link: https://lore.kernel.org/all/20240325231300.qrltbzf6twm43ftb@desk/
-Reviewed-by: Michael Kelley <mhklinux@outlook.com>
-Signed-off-by: Xi Ruoyao <xry111@xry111.site>
----
- arch/x86/mm/init.c | 39 +++++++++++++++++++++++++++------------
- 1 file changed, 27 insertions(+), 12 deletions(-)
+> 
+> Likely, we just want to read "the real deal" on both sides of the pte_same()
+> handling.
 
-diff --git a/arch/x86/mm/init.c b/arch/x86/mm/init.c
-index 679893ea5e68..475b2d728acc 100644
---- a/arch/x86/mm/init.c
-+++ b/arch/x86/mm/init.c
-@@ -261,33 +261,48 @@ static void __init probe_page_size_mask(void)
- 	}
- }
- 
--#define INTEL_MATCH(_model) { .vendor  = X86_VENDOR_INTEL,	\
--			      .family  = 6,			\
--			      .model = _model,			\
--			    }
-+#define INTEL_MATCH(_model, _fixed_microcode)	\
-+	{					\
-+	  .vendor	= X86_VENDOR_INTEL,	\
-+	  .family	= 6,			\
-+	  .model	= _model,		\
-+	  .driver_data	= _fixed_microcode,	\
-+	}
-+
- /*
-  * INVLPG may not properly flush Global entries
-- * on these CPUs when PCIDs are enabled.
-+ * on these CPUs when PCIDs are enabled and the
-+ * microcode is not updated to fix the issue.
-  */
- static const struct x86_cpu_id invlpg_miss_ids[] = {
--	INTEL_MATCH(INTEL_FAM6_ALDERLAKE   ),
--	INTEL_MATCH(INTEL_FAM6_ALDERLAKE_L ),
--	INTEL_MATCH(INTEL_FAM6_ATOM_GRACEMONT ),
--	INTEL_MATCH(INTEL_FAM6_RAPTORLAKE  ),
--	INTEL_MATCH(INTEL_FAM6_RAPTORLAKE_P),
--	INTEL_MATCH(INTEL_FAM6_RAPTORLAKE_S),
-+	INTEL_MATCH(INTEL_FAM6_ALDERLAKE,	0x2e),
-+	INTEL_MATCH(INTEL_FAM6_ALDERLAKE_L,	0x42c),
-+	INTEL_MATCH(INTEL_FAM6_ATOM_GRACEMONT,	0x11),
-+	INTEL_MATCH(INTEL_FAM6_RAPTORLAKE,	0x118),
-+	INTEL_MATCH(INTEL_FAM6_RAPTORLAKE_P,	0x4117),
-+	INTEL_MATCH(INTEL_FAM6_RAPTORLAKE_S,	0x2e),
- 	{}
- };
- 
- static void setup_pcid(void)
- {
-+	const struct x86_cpu_id *invlpg_miss_match;
-+
- 	if (!IS_ENABLED(CONFIG_X86_64))
- 		return;
- 
- 	if (!boot_cpu_has(X86_FEATURE_PCID))
- 		return;
- 
--	if (x86_match_cpu(invlpg_miss_ids)) {
-+	invlpg_miss_match = x86_match_cpu(invlpg_miss_ids);
-+
-+	/*
-+	 * The hypervisor may lie about the microcode revision, conservatively
-+	 * consider the microcode not updated.
-+	 */
-+	if (invlpg_miss_match &&
-+	    (boot_cpu_has(X86_FEATURE_HYPERVISOR) ||
-+	     invlpg_miss_match->driver_data > boot_cpu_data.microcode)) {
- 		pr_info("Incomplete global flushes, disabling PCID");
- 		setup_clear_cpu_cap(X86_FEATURE_PCID);
- 		return;
--- 
-2.44.0
+Sorry I'm not sure I understand? You mean read the full pte including
+access/dirty? That's the same as dropping the patch, right? Of course if we do
+that, we still have to keep pte_get_lockless() around for this case. In an ideal
+world we would convert everything over to ptep_get_lockless_norecency() and
+delete ptep_get_lockless() to remove the ugliness from arm64.
+
+> 
+>>
+>> I've chosen the name "recency" because it's shortish and somewhat descriptive,
+>> and is alredy used in a couple of places to mean similar things (see mglru and
+>> damon). I'm open to other names if anyone has better ideas.
+> 
+> Not a native speaker; works for me.
+> 
+>>
+>> If concensus is that this approach is generally acceptable, I intend to create a
+>> series in future to do a similar thing with ptep_get() -> ptep_get_norecency().
+> 
+> Yes, sounds good to me.
+> 
 
 
