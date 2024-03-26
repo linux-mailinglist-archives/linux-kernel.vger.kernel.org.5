@@ -1,167 +1,258 @@
-Return-Path: <linux-kernel+bounces-118318-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-118321-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6C48E88B7CC
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 03:57:59 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id E5A4488B7FD
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 04:08:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DAFC1B22FE7
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 02:57:56 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5DB3D1F3DD0D
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 03:08:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7A9FE128811;
-	Tue, 26 Mar 2024 02:57:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DE20D12881E;
+	Tue, 26 Mar 2024 03:08:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=embeddedor.com header.i=@embeddedor.com header.b="dlh+DXZ0"
-Received: from omta38.uswest2.a.cloudfilter.net (omta38.uswest2.a.cloudfilter.net [35.89.44.37])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="ZQONzuRy"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8899112838B
-	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 02:57:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=35.89.44.37
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1F8A128EA;
+	Tue, 26 Mar 2024 03:08:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711421868; cv=none; b=Sgd9R8j9YX26EZbKg/5JAGfFMHdlfvz71LS+MOISizzF1heb7oQGTB08QH3/bW2xMMUUWkjGuRBePT+bgJnUxXOPZWv6VUJDWswK1PVA2xRRlcjGThlTNMMMOvb2yvcgi6U+Lv+5LhO+fuEwRNaGnUlFZXP3LcArZQBe62UD8qQ=
+	t=1711422496; cv=none; b=R82XBRwHlsAtHgp+8kJ+X5K2262qEm7zrwVBkF0azupJLxQRJ+UwrKC6/tABer3WkF35wgchYyILACF1PRC7y71IEhzeP0tpoDzzyaaSCc8cj284+8sd6XT4tNxUne0Vm5aFdsVuVI/SK6jqhYW4Ggu03YyD8fP245zaRb4hgIE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711421868; c=relaxed/simple;
-	bh=vX3bVL1HMc4EDAaj7B3gjYlT0mkkt+c/itIyWdTv+VI=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=fG/u0xXUACj5uyVmExMXJimRlymhKc0eAl+BFibDlynFw5jenm5TT9QExv6l54dwGS8OUwUhCzvpgQTyp+kONH81cOJbSZEUB14YZuw29NCvnXghFQxXZDLXUZgu7afIJiOmtwqDrtF8wfC3EzlOYj+1qylu9o72PPziycyGGIg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=embeddedor.com; spf=pass smtp.mailfrom=embeddedor.com; dkim=pass (2048-bit key) header.d=embeddedor.com header.i=@embeddedor.com header.b=dlh+DXZ0; arc=none smtp.client-ip=35.89.44.37
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=embeddedor.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=embeddedor.com
-Received: from eig-obgw-5003a.ext.cloudfilter.net ([10.0.29.159])
-	by cmsmtp with ESMTPS
-	id omu8rUS5kDI6fox0TrsGGJ; Tue, 26 Mar 2024 02:57:46 +0000
-Received: from gator4166.hostgator.com ([108.167.133.22])
-	by cmsmtp with ESMTPS
-	id ox0SrACoTsT9Box0SrGpPg; Tue, 26 Mar 2024 02:57:45 +0000
-X-Authority-Analysis: v=2.4 cv=LIutQ4W9 c=1 sm=1 tr=0 ts=660239a9
- a=1YbLdUo/zbTtOZ3uB5T3HA==:117 a=UtBFqMlDG83dypD0sxEoAQ==:17
- a=IkcTkHD0fZMA:10 a=K6JAEmCyrfEA:10 a=wYkD_t78qR0A:10 a=VwQbUJbxAAAA:8
- a=yCkJhreVFDLjqfpo9JAA:9 a=QEXdDO2ut3YA:10 a=AjGcO6oz07-iQ99wixmX:22
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
-	In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
-	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-	List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=o90u6YTpwASH2e8B6jU5tsJiGz540jLK6rTJxZ74n1E=; b=dlh+DXZ0+HwO8YHOI59tzajiU7
-	qmQUEJvuedN+ivIXiM+FfIAcXWLstqvZG56435B6bnHtPH5bqkuJ30xQCzNyxhe/qIwjSIIJo5gAb
-	74tfMHvhcn5K+NTqhs5jPpm7P3AExBIrcQ+mR6q56+/Win8S2npzBx8uELGUPlCRcpKJsPePQFnAB
-	8uyrn8iUYbR742Q6aWCJNeDen3PvwnqLGKWY111yZWIiwASKIMAwOpUYuDcpNrJLsXrcsi3Lm3669
-	KoJPufJI4vyGkljBC2rV6wZDaFT0nw3KRh+kVgTJnuMGX6zdeWkKySinxXTUkOqJkvfxafStVBPXm
-	FoboauPg==;
-Received: from [201.172.174.229] (port=52604 helo=[192.168.15.10])
-	by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-	(Exim 4.96.2)
-	(envelope-from <gustavo@embeddedor.com>)
-	id 1rox0R-001mui-1e;
-	Mon, 25 Mar 2024 21:57:44 -0500
-Message-ID: <5c0bb827-e5f3-4178-ad46-8ac9b99d7726@embeddedor.com>
-Date: Mon, 25 Mar 2024 20:57:08 -0600
+	s=arc-20240116; t=1711422496; c=relaxed/simple;
+	bh=tshkDg+57nZGbKKTGrPpvXEl1QS5OIzpwMeGxbRpWlQ=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=dSaNaRXzTIO9GA7u9PPF07wYkpGZpLCw4ErpPNFK7ZXDM3E09J8jVGi2jDnrPCQeQmwSwOnhQpjPk4VFtDP28Qyh0HvW+aiUS5K0XWSypEP+wP+0KV2jAmh/Owpa/w4mrObr08pwqSIHRmEYaEwVLaKCnmFMTGMPTInv8SMhKKQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=ZQONzuRy; arc=none smtp.client-ip=192.198.163.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1711422493; x=1742958493;
+  h=from:to:cc:subject:in-reply-to:references:date:
+   message-id:mime-version:content-transfer-encoding;
+  bh=tshkDg+57nZGbKKTGrPpvXEl1QS5OIzpwMeGxbRpWlQ=;
+  b=ZQONzuRygu9KpbYA18dmUGH7Ct+LTjGOt43aSXSlih2yu76mWxu8L4/0
+   /w0go44ozg4t/2NJEOy2U97caS4mwegHhLP0j6v3ddfu7xw1noFV3uccv
+   8wgyjq9PV4QeevaPOJo3vGtvbNcYus/ysa1DNjHMN28iZv/FCudylwp9X
+   Tbjy5eMH7DezKD+jLLpg21nwjOjuhmrNSVOakuzz7MFg0Dz6fMrGDEjzf
+   LhyVeRTpo11yQlaLcBtGRyxrEkMJpfuU0f9tOkn/m3+zbs3f3ifKeQX7e
+   y+xmNTtwJ0FSJqKNuhbQYEKZJ+KG6KkSZAyyp4BJgTYUrW2TYszCpceLl
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11024"; a="17089224"
+X-IronPort-AV: E=Sophos;i="6.07,155,1708416000"; 
+   d="scan'208";a="17089224"
+Received: from orviesa010.jf.intel.com ([10.64.159.150])
+  by fmvoesa105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Mar 2024 20:08:12 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,155,1708416000"; 
+   d="scan'208";a="15695641"
+Received: from yhuang6-desk2.sh.intel.com (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.238.208.55])
+  by orviesa010-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Mar 2024 20:08:07 -0700
+From: "Huang, Ying" <ying.huang@intel.com>
+To: "Ho-Ren (Jack) Chuang" <horenchuang@bytedance.com>
+Cc: Gregory Price <gourry.memverge@gmail.com>,  aneesh.kumar@linux.ibm.com,
+  mhocko@suse.com,  tj@kernel.org,  john@jagalactic.com,  Eishan Mirakhur
+ <emirakhur@micron.com>,  Vinicius Tavares Petrucci
+ <vtavarespetr@micron.com>,  Ravis OpenSrc <Ravis.OpenSrc@micron.com>,
+  Alistair Popple <apopple@nvidia.com>,  Srinivasulu Thanneeru
+ <sthanneeru@micron.com>,  Dan Williams <dan.j.williams@intel.com>,  Vishal
+ Verma <vishal.l.verma@intel.com>,  Dave Jiang <dave.jiang@intel.com>,
+  Andrew Morton <akpm@linux-foundation.org>,  nvdimm@lists.linux.dev,
+  linux-cxl@vger.kernel.org,  linux-kernel@vger.kernel.org,
+  linux-mm@kvack.org,  "Ho-Ren (Jack) Chuang" <horenc@vt.edu>,  "Ho-Ren
+ (Jack) Chuang" <horenchuang@gmail.com>,  qemu-devel@nongnu.org,  Hao Xiang
+ <hao.xiang@bytedance.com>
+Subject: Re: [External] Re: [PATCH v4 2/2] memory tier: create CPUless
+ memory tiers after obtaining HMAT info
+In-Reply-To: <CAKPbEqptUKhDdH0ke7PuFShTBFm-Y=NWDtMOWCXBQBe-mac88w@mail.gmail.com>
+	(Ho-Ren Chuang's message of "Fri, 22 Mar 2024 11:26:33 -0700")
+References: <20240322070356.315922-1-horenchuang@bytedance.com>
+	<20240322070356.315922-3-horenchuang@bytedance.com>
+	<87cyrmr773.fsf@yhuang6-desk2.ccr.corp.intel.com>
+	<CAKPbEqptUKhDdH0ke7PuFShTBFm-Y=NWDtMOWCXBQBe-mac88w@mail.gmail.com>
+Date: Tue, 26 Mar 2024 11:06:13 +0800
+Message-ID: <87ttktofoa.fsf@yhuang6-desk2.ccr.corp.intel.com>
+User-Agent: Gnus/5.13 (Gnus v5.13)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH][next] RDMA/cm: Avoid -Wflex-array-member-not-at-end
- warning
-Content-Language: en-US
-To: Jason Gunthorpe <jgg@ziepe.ca>,
- "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Cc: Leon Romanovsky <leon@kernel.org>, linux-rdma@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
-References: <ZgHdZ15cQ7MIHsGL@neat> <20240325224706.GB8419@ziepe.ca>
-From: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-In-Reply-To: <20240325224706.GB8419@ziepe.ca>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - embeddedor.com
-X-BWhitelist: no
-X-Source-IP: 201.172.174.229
-X-Source-L: No
-X-Exim-ID: 1rox0R-001mui-1e
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: ([192.168.15.10]) [201.172.174.229]:52604
-X-Source-Auth: gustavo@embeddedor.com
-X-Email-Count: 2
-X-Org: HG=hgshared;ORG=hostgator;
-X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
-X-Local-Domain: yes
-X-CMAE-Envelope: MS4xfKqU1kXB0nY1oeZY4B2ss7IOXZ3Xq01NZDsPNGVcHFAKoDbHBjXLKSyTBCW9YMuaQyqc4H9UoP3htH39hpBVKlZnWVF+uImUNH4kr6tJLL1Fp89qCcHw
- 8au/2nlz7oBuudabPaJBptD1sMe/hxp5b5T+D7HzGVj6EV032mWHwp/nbDLKu0TQTIgJfgO5gzZ+G1hrl1e6FGJ9THkank639Tl34XdDkdM8YjjlcI9c4jiM
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
+"Ho-Ren (Jack) Chuang" <horenchuang@bytedance.com> writes:
 
+> On Fri, Mar 22, 2024 at 1:41=E2=80=AFAM Huang, Ying <ying.huang@intel.com=
+> wrote:
+>>
+>> "Ho-Ren (Jack) Chuang" <horenchuang@bytedance.com> writes:
+>>
+>> > The current implementation treats emulated memory devices, such as
+>> > CXL1.1 type3 memory, as normal DRAM when they are emulated as normal m=
+emory
+>> > (E820_TYPE_RAM). However, these emulated devices have different
+>> > characteristics than traditional DRAM, making it important to
+>> > distinguish them. Thus, we modify the tiered memory initialization pro=
+cess
+>> > to introduce a delay specifically for CPUless NUMA nodes. This delay
+>> > ensures that the memory tier initialization for these nodes is deferred
+>> > until HMAT information is obtained during the boot process. Finally,
+>> > demotion tables are recalculated at the end.
+>> >
+>> > * late_initcall(memory_tier_late_init);
+>> > Some device drivers may have initialized memory tiers between
+>> > `memory_tier_init()` and `memory_tier_late_init()`, potentially bringi=
+ng
+>> > online memory nodes and configuring memory tiers. They should be exclu=
+ded
+>> > in the late init.
+>> >
+>> > * Handle cases where there is no HMAT when creating memory tiers
+>> > There is a scenario where a CPUless node does not provide HMAT informa=
+tion.
+>> > If no HMAT is specified, it falls back to using the default DRAM tier.
+>> >
+>> > * Introduce another new lock `default_dram_perf_lock` for adist calcul=
+ation
+>> > In the current implementation, iterating through CPUlist nodes requires
+>> > holding the `memory_tier_lock`. However, `mt_calc_adistance()` will en=
+d up
+>> > trying to acquire the same lock, leading to a potential deadlock.
+>> > Therefore, we propose introducing a standalone `default_dram_perf_lock=
+` to
+>> > protect `default_dram_perf_*`. This approach not only avoids deadlock
+>> > but also prevents holding a large lock simultaneously.
+>> >
+>> > * Upgrade `set_node_memory_tier` to support additional cases, including
+>> >   default DRAM, late CPUless, and hot-plugged initializations.
+>> > To cover hot-plugged memory nodes, `mt_calc_adistance()` and
+>> > `mt_find_alloc_memory_type()` are moved into `set_node_memory_tier()` =
+to
+>> > handle cases where memtype is not initialized and where HMAT informati=
+on is
+>> > available.
+>> >
+>> > * Introduce `default_memory_types` for those memory types that are not
+>> >   initialized by device drivers.
+>> > Because late initialized memory and default DRAM memory need to be man=
+aged,
+>> > a default memory type is created for storing all memory types that are
+>> > not initialized by device drivers and as a fallback.
+>> >
+>> > Signed-off-by: Ho-Ren (Jack) Chuang <horenchuang@bytedance.com>
+>> > Signed-off-by: Hao Xiang <hao.xiang@bytedance.com>
+>> > ---
+>> >  mm/memory-tiers.c | 73 ++++++++++++++++++++++++++++++++++++++++-------
+>> >  1 file changed, 63 insertions(+), 10 deletions(-)
+>> >
+>> > diff --git a/mm/memory-tiers.c b/mm/memory-tiers.c
+>> > index 974af10cfdd8..9396330fa162 100644
+>> > --- a/mm/memory-tiers.c
+>> > +++ b/mm/memory-tiers.c
+>> > @@ -36,6 +36,11 @@ struct node_memory_type_map {
+>> >
+>> >  static DEFINE_MUTEX(memory_tier_lock);
+>> >  static LIST_HEAD(memory_tiers);
+>> > +/*
+>> > + * The list is used to store all memory types that are not created
+>> > + * by a device driver.
+>> > + */
+>> > +static LIST_HEAD(default_memory_types);
+>> >  static struct node_memory_type_map node_memory_types[MAX_NUMNODES];
+>> >  struct memory_dev_type *default_dram_type;
+>> >
+>> > @@ -108,6 +113,7 @@ static struct demotion_nodes *node_demotion __read=
+_mostly;
+>> >
+>> >  static BLOCKING_NOTIFIER_HEAD(mt_adistance_algorithms);
+>> >
+>> > +static DEFINE_MUTEX(default_dram_perf_lock);
+>>
+>> Better to add comments about what is protected by this lock.
+>>
+>
+> Thank you. I will add a comment like this:
+> + /* The lock is used to protect `default_dram_perf*` info and nid. */
+> +static DEFINE_MUTEX(default_dram_perf_lock);
+>
+> I also found an error path was not handled and
+> found the lock could be put closer to what it protects.
+> I will have them fixed in V5.
+>
+>> >  static bool default_dram_perf_error;
+>> >  static struct access_coordinate default_dram_perf;
+>> >  static int default_dram_perf_ref_nid =3D NUMA_NO_NODE;
+>> > @@ -505,7 +511,8 @@ static inline void __init_node_memory_type(int nod=
+e, struct memory_dev_type *mem
+>> >  static struct memory_tier *set_node_memory_tier(int node)
+>> >  {
+>> >       struct memory_tier *memtier;
+>> > -     struct memory_dev_type *memtype;
+>> > +     struct memory_dev_type *mtype;
+>>
+>> mtype may be referenced without initialization now below.
+>>
+>
+> Good catch! Thank you.
+>
+> Please check below.
+> I may found a potential NULL pointer dereference.
+>
+>> > +     int adist =3D MEMTIER_ADISTANCE_DRAM;
+>> >       pg_data_t *pgdat =3D NODE_DATA(node);
+>> >
+>> >
+>> > @@ -514,11 +521,20 @@ static struct memory_tier *set_node_memory_tier(=
+int node)
+>> >       if (!node_state(node, N_MEMORY))
+>> >               return ERR_PTR(-EINVAL);
+>> >
+>> > -     __init_node_memory_type(node, default_dram_type);
+>> > +     mt_calc_adistance(node, &adist);
+>> > +     if (node_memory_types[node].memtype =3D=3D NULL) {
+>> > +             mtype =3D mt_find_alloc_memory_type(adist, &default_memo=
+ry_types);
+>> > +             if (IS_ERR(mtype)) {
+>> > +                     mtype =3D default_dram_type;
+>> > +                     pr_info("Failed to allocate a memory type. Fall =
+back.\n");
+>> > +             }
+>> > +     }
+>> >
+>> > -     memtype =3D node_memory_types[node].memtype;
+>> > -     node_set(node, memtype->nodes);
+>> > -     memtier =3D find_create_memory_tier(memtype);
+>> > +     __init_node_memory_type(node, mtype);
+>> > +
+>> > +     mtype =3D node_memory_types[node].memtype;
+>> > +     node_set(node, mtype->nodes);
+>
+> If the `mtype` could be NULL, would there be a potential
+> NULL pointer dereference. Do you have a preferred idea
+> to fix this if needed?
 
-On 3/25/24 16:47, Jason Gunthorpe wrote:
-> On Mon, Mar 25, 2024 at 02:24:07PM -0600, Gustavo A. R. Silva wrote:
->> -Wflex-array-member-not-at-end is coming in GCC-14, and we are getting
->> ready to enable it globally.
->>
->> Use the `struct_group_tagged()` helper to separate the flexible array
->> from the rest of the members in flexible `struct cm_work`, and avoid
->> embedding the flexible-array member in `struct cm_timewait_info`.
->>
->> Also, use `container_of()` to retrieve a pointer to the flexible
->> structure.
->>
->> So, with these changes, fix the following warning:
->> drivers/infiniband/core/cm.c:196:24: warning: structure containing a flexible array member is not at the end of another structure [-Wflex-array-member-not-at-end]
->>
->> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
->> ---
->>   drivers/infiniband/core/cm.c | 21 ++++++++++++---------
->>   1 file changed, 12 insertions(+), 9 deletions(-)
->>
->> diff --git a/drivers/infiniband/core/cm.c b/drivers/infiniband/core/cm.c
->> index bf0df6ee4f78..80c87085499c 100644
->> --- a/drivers/infiniband/core/cm.c
->> +++ b/drivers/infiniband/core/cm.c
->> @@ -182,18 +182,21 @@ struct cm_av {
->>   };
->>   
->>   struct cm_work {
->> -	struct delayed_work work;
->> -	struct list_head list;
->> -	struct cm_port *port;
->> -	struct ib_mad_recv_wc *mad_recv_wc;	/* Received MADs */
->> -	__be32 local_id;			/* Established / timewait */
->> -	__be32 remote_id;
->> -	struct ib_cm_event cm_event;
->> +	/* New members must be added within the struct_group() macro below. */
->> +	struct_group_tagged(cm_work_hdr, hdr,
->> +		struct delayed_work work;
->> +		struct list_head list;
->> +		struct cm_port *port;
->> +		struct ib_mad_recv_wc *mad_recv_wc;	/* Received MADs */
->> +		__be32 local_id;			/* Established / timewait */
->> +		__be32 remote_id;
->> +		struct ib_cm_event cm_event;
->> +	);
->>   	struct sa_path_rec path[];
->>   };
-> 
-> I didn't look, but does it make more sense to break out the path side
-> into its own type and avoid the struct_group_tagged? I seem to
-> remember only one thing used it.
-> 
+Initialize mtype with default_dram_type?
 
-I thought about that, but I'd have to change the parameter type of
-`static int cm_timewait_handler(struct cm_work *work)`, and that would
-imply also modifying the internals of function `cm_work_handler()` (and
-then I didn't look much into it). So, the `struct_group_tagged()`
-strategy is in general more cleaner and straightforward.
+>> > +     memtier =3D find_create_memory_tier(mtype);
+>> >       if (!IS_ERR(memtier))
+>> >               rcu_assign_pointer(pgdat->memtier, memtier);
+>> >       return memtier;
+>> > @@ -655,6 +671,34 @@ void mt_put_memory_types(struct list_head *memory=
+_types)
+>> >  }
+>> >  EXPORT_SYMBOL_GPL(mt_put_memory_types);
+>> >
+
+[snip]
 
 --
-Gustavo
-
+Best Regards,
+Huang, Ying
 
