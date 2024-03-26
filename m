@@ -1,71 +1,71 @@
-Return-Path: <linux-kernel+bounces-119925-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-119928-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AC33288CEFF
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 21:37:38 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6631588CF08
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 21:38:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CD8381C63BEF
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 20:37:37 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 964591C38228
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 20:38:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F33B0134735;
-	Tue, 26 Mar 2024 20:31:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 910631411EF;
+	Tue, 26 Mar 2024 20:32:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="JMT8zpp1"
-Received: from mail-ej1-f44.google.com (mail-ej1-f44.google.com [209.85.218.44])
+	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="JNBev4Xm"
+Received: from mail-ed1-f46.google.com (mail-ed1-f46.google.com [209.85.208.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4BD7012B15D
-	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 20:31:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E916613D89B
+	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 20:32:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711485099; cv=none; b=G7OoMTBrVoWpg/jPYFjm4BZlK/sHiUOsYE9KueH4HfOJCqV8TpdCJ+1qHw10wUSuSoBW6T7472BV3xltIk7nVaJ61iV7JRTtilXd+g4CB43JvZ5a75TtnR8l06MVBSVB5nYoGjM+MTKTg0pCPzTzIH17Va7cqCWTArLpFUVoPmA=
+	t=1711485161; cv=none; b=fB3H2DpCrdC/UtxGEBSXZqry0L27hJwOYfGw6kKYN3RijiXRVueKTjZpPjro9U0caULOhwKX3JqqLaoTs2jXFbsZ5q+WwOLDfPVu0zIMEhTdIsh5HQfi/7pWKWPlWtXf41Y+Zuk3Jn/JLpQzURsHo6QhxA2nEBFoFCKGjq4w668=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711485099; c=relaxed/simple;
-	bh=8/EpHjzfJ1MVMJ4+tmHiCSex+TF4T3+5RAEcQnunBp8=;
+	s=arc-20240116; t=1711485161; c=relaxed/simple;
+	bh=o7Ismljs5kdN2ZKFTdylXCiqx/6WCg6NzZXI5LKLDRo=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=eYgOQTzx3dPmkh0xsQ/wQ90cgCZ5u+ggNhMk1eNmicGfjEz8Wh1U/+DsJykAK9jsK8IIu9ugSAUSO/MOk2MzFI1/WM8bc6q+4IrKEO4DIzSP4H7lFD5APvc5aBxgYSevHNw/Ulf2vL47ypjXYjiazgLV6wT6uGCv97rAug6dQ0A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com; spf=pass smtp.mailfrom=rivosinc.com; dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b=JMT8zpp1; arc=none smtp.client-ip=209.85.218.44
+	 MIME-Version; b=jFCUEAJCRjP4B0KOdvv3jheKX4z8W38tstd/o2drroJ8D9BMeHh2n3oQnvifJpCRhlCZSVtroKtA4I2tOK8Rf2kSVltUB27iohGzePusWJmOVcbXjDJ35tP8C4/m7JgkKJHx0aXbv3kdozf4mkxaj7uNls7F9Kdts1X4ZZcOV5o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com; spf=pass smtp.mailfrom=rivosinc.com; dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b=JNBev4Xm; arc=none smtp.client-ip=209.85.208.46
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rivosinc.com
-Received: by mail-ej1-f44.google.com with SMTP id a640c23a62f3a-a46d0a8399aso31589866b.1
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 13:31:36 -0700 (PDT)
+Received: by mail-ed1-f46.google.com with SMTP id 4fb4d7f45d1cf-56c08d1e900so3613162a12.3
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 13:32:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1711485095; x=1712089895; darn=vger.kernel.org;
+        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1711485158; x=1712089958; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=/lh9U/vyewLtbDFJmjDS8r3hvigj8QyKr7Iw+wfw7H8=;
-        b=JMT8zpp1n0ZHDEyEvs2Opkdkf4TP+PKF8Yvicx9qpC4dCandjwKVr5RdmaHMg5HZOm
-         +7S44AVM2sL9Itik4EYu9EwxV+Vi5pncBpcl02l4Yls78CqR46LeT2GHIteUMo31bfp/
-         Tmh7xER7AjYeZ2xnCOO2mW57/979WKdoXv1i4r6kxjRb7SMPp3osdAC3WBW+0wJWwfee
-         XnBSjw4FrRvp0SL3ya/7oeJpQ0s8jJdrNGsnCZsOwQ+5od2uWfEX23Zii30JcI0S1KAg
-         X+1ZTkvkYtO+Pf1e6zTDlyJ8z9MJ6vULfK3AO4ybmG8JWyQWXXr5Qxm2rPtb0AZc75Nv
-         ypnQ==
+        bh=SwoTWlECTszcl/qxdYVc4t6fpZ8kE/2UkB07bRVsSm8=;
+        b=JNBev4XmZ1jX89eLFA8IH8Qx/7zzIWPRuKXmPiwdvyPBC740K33WRPXxGATQ4cAGmI
+         KvjPIDfVRkxEInMFuyxEAEwKy88H9f0Fz/e3DtfBb93gP9X/7AOT3Qf8rlz4B6v0BSFv
+         xbUwhyIejk6HUuZXCOQ0+yoKU6qf3K26BYhxeoOm8uN9G1ulsbkl0qUEkR3GCRWBW/VA
+         uX1ded1yHJFw9tCU5SPYZSNs40c7+oGyzbpWcV+a8SdNwDEfhZvdRdfO8B1IBQhG8kZm
+         Kundqe0q96nDNa2oMJS9JI1QAcDCzVmgpyfKan0+rJlSSrIIoC7TWj3M2TNNl5Ei/mRj
+         DCjw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711485095; x=1712089895;
+        d=1e100.net; s=20230601; t=1711485158; x=1712089958;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=/lh9U/vyewLtbDFJmjDS8r3hvigj8QyKr7Iw+wfw7H8=;
-        b=FOqd/mmqeJBBEi6c17Ev4VVORDqyXiUOxa3fXQFDYGZo4PJEm42Hwo3VGjm3oW5GAP
-         1YH4gGcUJskCHk6+xlybG4yb2oM5Q1yJrj4PEZw3ho6DY7tKYJ04cClFJbzSA10TFbaC
-         NkckccdJXKpfwA99h3sxSNh2zOuBRHpgpWv5KjZBVe3m0QRsrdt9TY+8mKlJmy4IzWic
-         hrzjXTblpF7BSSStGoiBNt9FrPYIJI+n/SPqy272UWXwUXwU8XjxDL4U+sO9Ditfzaip
-         G94wAnraaR5YAqPG8XyrH9mJJRIOz5KoSz7JKPvTgkUGvO7QdweWWa3Dls05G0tLj4mQ
-         cQSA==
-X-Forwarded-Encrypted: i=1; AJvYcCWfAMU0th5BtZLIKQrfi11ZP/4PffF3LgYS+gaZZvsLLq133H52Rv1reweVIwtNRI/UlpeyhQFSucLtO+5FNlxpJtLGyn654wy2xN4i
-X-Gm-Message-State: AOJu0YzmnnGIWHBfoHTsIMETMuQDzmLdPD8ZN6XzI/38BJH0RKX3XbRH
-	YgfVdZCo09GIQHIhIlN8yjrMqFIumS3dUW9fDaaFdMlil6FeHs3ru6SLc5HK1Q4=
-X-Google-Smtp-Source: AGHT+IHn5ukEbrOXa/xSQN4+acm8vFx4OO0mc31kNe5p13cGaOnb1+adQLu+u+OBPHzLUDOI3daDvw==
-X-Received: by 2002:a17:907:7213:b0:a4d:fb90:4a4e with SMTP id dr19-20020a170907721300b00a4dfb904a4emr1302204ejc.2.1711485095264;
-        Tue, 26 Mar 2024 13:31:35 -0700 (PDT)
+        bh=SwoTWlECTszcl/qxdYVc4t6fpZ8kE/2UkB07bRVsSm8=;
+        b=sQ04GDsuZlyPRkViJhHzus9OhFMXolQR8ZELyAmJxIOqhO7KvCF5TRfmiztM4bt7Lx
+         qdtiqCE8FDn2NxZvVYWLwdLq35q0IHXutmE7zaYj6xhABp5COsTuC8NaxtVRKggBQCc2
+         whogmFPkUe8Mpsx2eJAAbWI9tmj55RaUYdpueHk+ll7ZeQCx+ap8zVNExKynm9HgTqGW
+         bRBgd6OH7Q3C43V6fz6YDkakF10z1s5HWOtloQeWaPAEEk9XQAu0qn2I7QKMM7cpktSa
+         n49XAxbQpM65/CVXn1qYf7yVqoVLUdUbsl7Asxjihv0NFDVCgbKRneMk/5c6FX2IfBHd
+         d+kA==
+X-Forwarded-Encrypted: i=1; AJvYcCUxiw2To2NsLMHmN7Btk3uDEiEzMIXliHDn8Hg2oomh1jrWOYgm9hYAzQWVMuzHlI6mE24Bxv+aan+cYEhqdZ0V7W00v3L5wvniXomp
+X-Gm-Message-State: AOJu0YxiB4TSnn5BmP6iH1olRlscnXAkIrO7is9kK23P8pYWsE5R8EV3
+	96hlKO/2oDDKu7K3JVDnmRXlEBYbdmqJ0Fm0xpqKpCnSZjLMd/KmR7I0e3/iqMY=
+X-Google-Smtp-Source: AGHT+IENt7YBLnNtoUOQOQp272wkaUn+XI5a9KNpsaZCh2RNyyuvnhB+Bx/GceA3IeXjeVnoNmMyRA==
+X-Received: by 2002:a50:8e12:0:b0:565:bb25:bb7a with SMTP id 18-20020a508e12000000b00565bb25bb7amr3175538edw.24.1711485157973;
+        Tue, 26 Mar 2024 13:32:37 -0700 (PDT)
 Received: from alex-rivos.ba.rivosinc.com ([2a02:8440:5240:d2b3:9657:7432:d88d:84a9])
-        by smtp.gmail.com with ESMTPSA id ae12-20020a17090725cc00b00a47522c193asm3273954ejc.196.2024.03.26.13.31.27
+        by smtp.gmail.com with ESMTPSA id da12-20020a056402176c00b0056b816e253esm4525782edb.13.2024.03.26.13.32.36
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Mar 2024 13:31:34 -0700 (PDT)
+        Tue, 26 Mar 2024 13:32:37 -0700 (PDT)
 From: Alexandre Ghiti <alexghiti@rivosinc.com>
 To: Paul Walmsley <paul.walmsley@sifive.com>,
 	Palmer Dabbelt <palmer@dabbelt.com>,
@@ -80,10 +80,11 @@ To: Paul Walmsley <paul.walmsley@sifive.com>,
 	linux-riscv@lists.infradead.org,
 	linux-kernel@vger.kernel.org
 Cc: Alexandre Ghiti <alexghiti@rivosinc.com>,
-	Evgenii Shatokhin <e.shatokhin@yadro.com>
-Subject: [PATCH 1/2] riscv: Fix warning by declaring arch_cpu_idle() as noinstr
-Date: Tue, 26 Mar 2024 21:30:16 +0100
-Message-Id: <20240326203017.310422-2-alexghiti@rivosinc.com>
+	Andrea Parri <andrea@rivosinc.com>,
+	Andy Chiu <andy.chiu@sifive.com>
+Subject: [PATCH 2/2] riscv: Disable preemption when using patch_map()
+Date: Tue, 26 Mar 2024 21:30:17 +0100
+Message-Id: <20240326203017.310422-3-alexghiti@rivosinc.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20240326203017.310422-1-alexghiti@rivosinc.com>
 References: <20240326203017.310422-1-alexghiti@rivosinc.com>
@@ -95,58 +96,69 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-The following warning appears when using ftrace:
+patch_map() uses fixmap mappings to circumvent the non-writability of
+the kernel text mapping.
 
-[89855.443413] RCU not on for: arch_cpu_idle+0x0/0x1c
-[89855.445640] WARNING: CPU: 5 PID: 0 at include/linux/trace_recursion.h:162 arch_ftrace_ops_list_func+0x208/0x228
-[89855.445824] Modules linked in: xt_conntrack(E) nft_chain_nat(E) xt_MASQUERADE(E) nf_conntrack_netlink(E) xt_addrtype(E) nft_compat(E) nf_tables(E) nfnetlink(E) br_netfilter(E) cfg80211(E) nls_iso8859_1(E) ofpart(E) redboot(E) cmdlinepart(E) cfi_cmdset_0001(E) virtio_net(E) cfi_probe(E) cfi_util(E) 9pnet_virtio(E) gen_probe(E) net_failover(E) virtio_rng(E) failover(E) 9pnet(E) physmap(E) map_funcs(E) chipreg(E) mtd(E) uio_pdrv_genirq(E) uio(E) dm_multipath(E) scsi_dh_rdac(E) scsi_dh_emc(E) scsi_dh_alua(E) drm(E) efi_pstore(E) backlight(E) ip_tables(E) x_tables(E) raid10(E) raid456(E) async_raid6_recov(E) async_memcpy(E) async_pq(E) async_xor(E) xor(E) async_tx(E) raid6_pq(E) raid1(E) raid0(E) virtio_blk(E)
-[89855.451563] CPU: 5 PID: 0 Comm: swapper/5 Tainted: G            E      6.8.0-rc6ubuntu-defconfig #2
-[89855.451726] Hardware name: riscv-virtio,qemu (DT)
-[89855.451899] epc : arch_ftrace_ops_list_func+0x208/0x228
-[89855.452016]  ra : arch_ftrace_ops_list_func+0x208/0x228
-[89855.452119] epc : ffffffff8016b216 ra : ffffffff8016b216 sp : ffffaf808090fdb0
-[89855.452171]  gp : ffffffff827c7680 tp : ffffaf808089ad40 t0 : ffffffff800c0dd8
-[89855.452216]  t1 : 0000000000000001 t2 : 0000000000000000 s0 : ffffaf808090fe30
-[89855.452306]  s1 : 0000000000000000 a0 : 0000000000000026 a1 : ffffffff82cd6ac8
-[89855.452423]  a2 : ffffffff800458c8 a3 : ffffaf80b1870640 a4 : 0000000000000000
-[89855.452646]  a5 : 0000000000000000 a6 : 00000000ffffffff a7 : ffffffffffffffff
-[89855.452698]  s2 : ffffffff82766872 s3 : ffffffff80004caa s4 : ffffffff80ebea90
-[89855.452743]  s5 : ffffaf808089bd40 s6 : 8000000a00006e00 s7 : 0000000000000008
-[89855.452787]  s8 : 0000000000002000 s9 : 0000000080043700 s10: 0000000000000000
-[89855.452831]  s11: 0000000000000000 t3 : 0000000000100000 t4 : 0000000000000064
-[89855.452874]  t5 : 000000000000000c t6 : ffffaf80b182dbfc
-[89855.452929] status: 0000000200000100 badaddr: 0000000000000000 cause: 0000000000000003
-[89855.453053] [<ffffffff8016b216>] arch_ftrace_ops_list_func+0x208/0x228
-[89855.453191] [<ffffffff8000e082>] ftrace_call+0x8/0x22
-[89855.453265] [<ffffffff800a149c>] do_idle+0x24c/0x2ca
-[89855.453357] [<ffffffff8000da54>] return_to_handler+0x0/0x26
-[89855.453429] [<ffffffff8000b716>] smp_callin+0x92/0xb6
-[89855.453785] ---[ end trace 0000000000000000 ]---
+The __set_fixmap() function only flushes the current cpu tlb, it does
+not emit an IPI so we must make sure that while we use a fixmap mapping,
+the current task is not migrated on another cpu which could miss the
+newly introduced fixmap mapping.
 
-To fix this, mark arch_cpu_idle() as noinstr, like it is done in commit
-a9cbc1b471d2 ("s390/idle: mark arch_cpu_idle() noinstr").
+So in order to avoid any task migration, disable the preemption.
 
-Reported-by: Evgenii Shatokhin <e.shatokhin@yadro.com>
-Closes: https://lore.kernel.org/linux-riscv/51f21b87-ebed-4411-afbc-c00d3dea2bab@yadro.com/
-Fixes: cfbc4f81c9d0 ("riscv: Select ARCH_WANTS_NO_INSTR")
+Reported-by: Andrea Parri <andrea@rivosinc.com>
+Closes: https://lore.kernel.org/all/ZcS+GAaM25LXsBOl@andrea/
+Reported-by: Andy Chiu <andy.chiu@sifive.com>
+Closes: https://lore.kernel.org/linux-riscv/CABgGipUMz3Sffu-CkmeUB1dKVwVQ73+7=sgC45-m0AE9RCjOZg@mail.gmail.com/
+Fixes: cad539baa48f ("riscv: implement a memset like function for text")
+Fixes: 0ff7c3b33127 ("riscv: Use text_mutex instead of patch_lock")
+Co-developed-by: Andy Chiu <andy.chiu@sifive.com>
+Signed-off-by: Andy Chiu <andy.chiu@sifive.com>
 Signed-off-by: Alexandre Ghiti <alexghiti@rivosinc.com>
 ---
- arch/riscv/kernel/process.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/riscv/kernel/patch.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-diff --git a/arch/riscv/kernel/process.c b/arch/riscv/kernel/process.c
-index 92922dbd5b5c..6abeecbfc51d 100644
---- a/arch/riscv/kernel/process.c
-+++ b/arch/riscv/kernel/process.c
-@@ -37,7 +37,7 @@ EXPORT_SYMBOL(__stack_chk_guard);
+diff --git a/arch/riscv/kernel/patch.c b/arch/riscv/kernel/patch.c
+index 37e87fdcf6a0..30e12b310cab 100644
+--- a/arch/riscv/kernel/patch.c
++++ b/arch/riscv/kernel/patch.c
+@@ -80,6 +80,8 @@ static int __patch_insn_set(void *addr, u8 c, size_t len)
+ 	 */
+ 	lockdep_assert_held(&text_mutex);
  
- extern asmlinkage void ret_from_fork(void);
++	preempt_disable();
++
+ 	if (across_pages)
+ 		patch_map(addr + PAGE_SIZE, FIX_TEXT_POKE1);
  
--void arch_cpu_idle(void)
-+void noinstr arch_cpu_idle(void)
- {
- 	cpu_do_idle();
+@@ -92,6 +94,8 @@ static int __patch_insn_set(void *addr, u8 c, size_t len)
+ 	if (across_pages)
+ 		patch_unmap(FIX_TEXT_POKE1);
+ 
++	preempt_enable();
++
+ 	return 0;
  }
+ NOKPROBE_SYMBOL(__patch_insn_set);
+@@ -122,6 +126,8 @@ static int __patch_insn_write(void *addr, const void *insn, size_t len)
+ 	if (!riscv_patch_in_stop_machine)
+ 		lockdep_assert_held(&text_mutex);
+ 
++	preempt_disable();
++
+ 	if (across_pages)
+ 		patch_map(addr + PAGE_SIZE, FIX_TEXT_POKE1);
+ 
+@@ -134,6 +140,8 @@ static int __patch_insn_write(void *addr, const void *insn, size_t len)
+ 	if (across_pages)
+ 		patch_unmap(FIX_TEXT_POKE1);
+ 
++	preempt_enable();
++
+ 	return ret;
+ }
+ NOKPROBE_SYMBOL(__patch_insn_write);
 -- 
 2.39.2
 
