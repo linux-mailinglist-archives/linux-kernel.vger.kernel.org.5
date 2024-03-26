@@ -1,96 +1,132 @@
-Return-Path: <linux-kernel+bounces-118927-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-118928-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9061788C14D
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 12:55:44 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 94DAE88C14E
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 12:57:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0C28AB222CD
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 11:55:42 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EC9C9B22613
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 11:57:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CFE286EB59;
-	Tue, 26 Mar 2024 11:55:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=tesarici.cz header.i=@tesarici.cz header.b="gpRgXg4K"
-Received: from bee.tesarici.cz (bee.tesarici.cz [37.205.15.56])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0AFFC6CDCC
-	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 11:55:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=37.205.15.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E36626E61D;
+	Tue, 26 Mar 2024 11:57:28 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7F5361E485
+	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 11:57:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711454126; cv=none; b=ZuX6xn8FvKp/0SJWVYpAXBHi3p52teln4UlG0i31W8l1Fp6u4gUtD7zCUEybU6b90tW3y5pprInHCb2RjWnQGj1bM8/aSsTItdo/Hh3NhpV7VNOBEEk0hhbBVne7vbnXIQJWUYWiikd6D/v5MtHaz4UCRJlhlW23wDYOPRBaG8M=
+	t=1711454248; cv=none; b=O4YL3emJDMxBW5Nn6EHCSkomq4Fl+Kli/+uWgL5fiyygEt25qx3/wep0r7Oyl/k2F2/ciKJLPKd9oi5brxy86iiXcWLe8YsZ6ubrH6+pW+AUzpbF6Fp2i9Q/GdlJGMp9gTVmK5VPhKus6wzhh8bXEU7y2Be19T9q/0V1ebYqQGg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711454126; c=relaxed/simple;
-	bh=3JXq7xfw33BAjKe2vrE7FVmkKyrZz+2pN3PkS293FPA=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=D//CzhmVa/CyX8Y+49QPNy3X/oU1st64SyBYVCv4qXWz1f/rXampf1ClqpWSBOl0/3yAqruTlGkPd5SryJgVzqtmqYME0ql012rsTd0d8XHqpMriPdr4r84vvYVNUWk8LCK4dZwMHuHNxxlPTnb40sktR2O/WTzGg9ERndEZkZs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=tesarici.cz; spf=pass smtp.mailfrom=tesarici.cz; dkim=pass (2048-bit key) header.d=tesarici.cz header.i=@tesarici.cz header.b=gpRgXg4K; arc=none smtp.client-ip=37.205.15.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=tesarici.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tesarici.cz
-Received: from meshulam.tesarici.cz (dynamic-2a00-1028-83b8-1e7a-b985-910f-39e1-703f.ipv6.o2.cz [IPv6:2a00:1028:83b8:1e7a:b985:910f:39e1:703f])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by bee.tesarici.cz (Postfix) with ESMTPSA id 427CD1AFFC5;
-	Tue, 26 Mar 2024 12:55:14 +0100 (CET)
-Authentication-Results: mail.tesarici.cz; dmarc=fail (p=quarantine dis=none) header.from=tesarici.cz
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=tesarici.cz; s=mail;
-	t=1711454114; bh=/T963m0awUECKjS5oYbqzSukhasYP4dIjzgrxQhicCY=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=gpRgXg4KcQ7JdPeLOOim7ujdCjsdB3qiwce2opq+4AkFkPepCJrcb1Nr0LjvS8DC5
-	 gES3mxyskqKxZGxhAn2g2+TSYGGWz5mDDqF2lfJJzlkLqNO+XJqyzn8f3Il1Mi9Xcl
-	 XWb2OL6v0AIoIiqI5bDBjj3R6r2Al843f/gY2MgpCx0YHbBMAF/6e+RFMYyECBgmHq
-	 +ZFXJlcE1JUh6uQcZhTLlyL6b2M6wx+5oNHzvKRddLZ39vjCThDcQkiu2lxdnyqkyL
-	 JTTknh+l3kArFYHWYOZ1uYl4xLc7cHogmFwEkUn1BWQ57d580S6lbVPUGJvSHHOh1Q
-	 qNu3m8vPqLZPA==
-Date: Tue, 26 Mar 2024 12:55:12 +0100
-From: Petr =?UTF-8?B?VGVzYcWZw61r?= <petr@tesarici.cz>
-To: Christoph Hellwig <hch@lst.de>
-Cc: Petr Tesarik <petrtesarik@huaweicloud.com>, Marek Szyprowski
- <m.szyprowski@samsung.com>, Robin Murphy <robin.murphy@arm.com>, Petr
- Tesarik <petr.tesarik1@huawei-partners.com>, Michael Kelley
- <mhklinux@outlook.com>, Will Deacon <will@kernel.org>, open list
- <linux-kernel@vger.kernel.org>, "open list:DMA MAPPING HELPERS"
- <iommu@lists.linux.dev>, Roberto Sassu <roberto.sassu@huaweicloud.com>
-Subject: Re: [PATCH v4 2/2] bug: introduce ASSERT_VAR_CAN_HOLD()
-Message-ID: <20240326125512.430c1ed0@meshulam.tesarici.cz>
-In-Reply-To: <20240326075606.GA10489@lst.de>
-References: <20240325083105.658-1-petrtesarik@huaweicloud.com>
-	<20240325083105.658-3-petrtesarik@huaweicloud.com>
-	<20240326075606.GA10489@lst.de>
-X-Mailer: Claws Mail 4.2.0 (GTK 3.24.41; x86_64-suse-linux-gnu)
+	s=arc-20240116; t=1711454248; c=relaxed/simple;
+	bh=AUxD16eO23TVUlexS95nn7p567lWfigu9ezPpPzl8dk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=uobjL0Pe2wj8KgdpmZEs5BXPP8hO28HAFKdjTxzEwtu3qKvMmdOdDRs7ksPUtCsYCG97Byxooh6BZC0YpUmG8A336ng7DN8PfGqKyhlcwwkVOuBx7AKPqURAGZr4J3YDYew8MtweDtY6NUbN+HxvP4pjM/hosHD7ge8r6NAC/Qg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 8C84E2F4;
+	Tue, 26 Mar 2024 04:57:59 -0700 (PDT)
+Received: from pluto (unknown [172.31.20.19])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 7562C3F64C;
+	Tue, 26 Mar 2024 04:57:25 -0700 (PDT)
+Date: Tue, 26 Mar 2024 11:57:23 +0000
+From: Cristian Marussi <cristian.marussi@arm.com>
+To: Sudeep Holla <sudeep.holla@arm.com>
+Cc: linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v2 3/5] firmware: arm_scmi: Add message dump traces for
+ bad and unexpected replies
+Message-ID: <ZgK4I32LHbmqrhCN@pluto>
+References: <20240325204620.1437237-1-cristian.marussi@arm.com>
+ <20240325204620.1437237-4-cristian.marussi@arm.com>
+ <ZgKwdhLQeYDd9SAl@bogus>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZgKwdhLQeYDd9SAl@bogus>
 
-On Tue, 26 Mar 2024 08:56:06 +0100
-Christoph Hellwig <hch@lst.de> wrote:
-
-> On Mon, Mar 25, 2024 at 09:31:05AM +0100, Petr Tesarik wrote:
-> > From: Petr Tesarik <petr.tesarik1@huawei-partners.com>
+On Tue, Mar 26, 2024 at 11:24:38AM +0000, Sudeep Holla wrote:
+> On Mon, Mar 25, 2024 at 08:46:18PM +0000, Cristian Marussi wrote:
+> > Trace also late-timed-out, out-of-order and unexpected/spurious messages.
 > > 
-> > Introduce an ASSERT_VAR_CAN_HOLD() macro to check at build time that a
-> > variable can hold the given value.  
+> > Signed-off-by: Cristian Marussi <cristian.marussi@arm.com>
+> > ---
+> >  drivers/firmware/arm_scmi/driver.c  | 10 ++++++++++
+> >  drivers/firmware/arm_scmi/mailbox.c |  4 +++-
+> >  2 files changed, 13 insertions(+), 1 deletion(-)
+> > 
+> > diff --git a/drivers/firmware/arm_scmi/driver.c b/drivers/firmware/arm_scmi/driver.c
+> > index 7fc1c5b1a2a4..207ed1a52d69 100644
+> > --- a/drivers/firmware/arm_scmi/driver.c
+> > +++ b/drivers/firmware/arm_scmi/driver.c
+> > @@ -861,6 +861,9 @@ scmi_xfer_command_acquire(struct scmi_chan_info *cinfo, u32 msg_hdr)
+> >  			"Message for %d type %d is not expected!\n",
+> >  			xfer_id, msg_type);
+> >  		spin_unlock_irqrestore(&minfo->xfer_lock, flags);
+> > +
+> > +		scmi_bad_message_trace(cinfo, msg_hdr, MSG_UNEXPECTED);
+> > +
+> >  		return xfer;
+> >  	}
+> >  	refcount_inc(&xfer->users);
+> > @@ -885,6 +888,9 @@ scmi_xfer_command_acquire(struct scmi_chan_info *cinfo, u32 msg_hdr)
+> >  		dev_err(cinfo->dev,
+> >  			"Invalid message type:%d for %d - HDR:0x%X  state:%d\n",
+> >  			msg_type, xfer_id, msg_hdr, xfer->state);
+> > +
+> > +		scmi_bad_message_trace(cinfo, msg_hdr, MSG_INVALID);
+> > +
+> >  		/* On error the refcount incremented above has to be dropped */
+> >  		__scmi_xfer_put(minfo, xfer);
+> >  		xfer = ERR_PTR(-EINVAL);
+> > @@ -921,6 +927,9 @@ static void scmi_handle_notification(struct scmi_chan_info *cinfo,
+> >  	if (IS_ERR(xfer)) {
+> >  		dev_err(dev, "failed to get free message slot (%ld)\n",
+> >  			PTR_ERR(xfer));
+> > +
+> > +		scmi_bad_message_trace(cinfo, msg_hdr, MSG_NOMEM);
+> > +
+> >  		scmi_clear_channel(info, cinfo);
+> >  		return;
+> >  	}
+> > @@ -1040,6 +1049,7 @@ void scmi_rx_callback(struct scmi_chan_info *cinfo, u32 msg_hdr, void *priv)
+> >  		break;
+> >  	default:
+> >  		WARN_ONCE(1, "received unknown msg_type:%d\n", msg_type);
+> > +		scmi_bad_message_trace(cinfo, msg_hdr, MSG_UNKNOWN);
+> >  		break;
+> >  	}
+> >  }
+> > diff --git a/drivers/firmware/arm_scmi/mailbox.c b/drivers/firmware/arm_scmi/mailbox.c
+> > index b8d470417e8f..fb0824af7180 100644
+> > --- a/drivers/firmware/arm_scmi/mailbox.c
+> > +++ b/drivers/firmware/arm_scmi/mailbox.c
+> > @@ -56,7 +56,9 @@ static void rx_callback(struct mbox_client *cl, void *m)
+> >  	 */
+> >  	if (cl->knows_txdone && !shmem_channel_free(smbox->shmem)) {
+> >  		dev_warn(smbox->cinfo->dev, "Ignoring spurious A2P IRQ !\n");
+> > -		return;
+> > +		return scmi_bad_message_trace(smbox->cinfo,
+> > +				     shmem_read_header(smbox->shmem),
+> > +				     MSG_MBOX_SPURIOUS);
 > 
-> This really should be run past whoever maintains build_bug.h and
-> also cc linux-kernel.  Please also split the addition and the user
-> in swiotlb into separate patches.
+> From previous patch, IIUC scmi_bad_message_trace is a void func and doesn't
+> return anything. Did you not get any build error/warning for this ?
 > 
-> I plan to pick up patch 1 for now, and wait for the discussion on
-> this addition.
 
-Fair enough. The use in swiotlb depends on patch 1 from this series,
-but you're right, I can send the macro addition as a separate patch to
-get some feedback.
+No...I am building with W=1....but note that the caller itself here
+rx_callback() is supposed to return a void...
 
-Thank you!
-Petr T
+..in V3 I may just split this into 2 lines and leave the return; alone on its
+own line to avoid any confusion...
+
+Thanks,
+Cristian
 
