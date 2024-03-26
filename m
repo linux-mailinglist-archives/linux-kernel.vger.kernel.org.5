@@ -1,146 +1,146 @@
-Return-Path: <linux-kernel+bounces-119560-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-119561-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id E0DB588CA72
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 18:12:25 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id A77BE88CA76
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 18:12:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 80FCF1F82AF1
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 17:12:25 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CAF8F1C65B58
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 17:12:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2240C1D554;
-	Tue, 26 Mar 2024 17:11:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3BB5553387;
+	Tue, 26 Mar 2024 17:12:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="k9DczX69"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="LmNciYel"
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6803C20B20;
-	Tue, 26 Mar 2024 17:11:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B1F617BA0;
+	Tue, 26 Mar 2024 17:11:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711473111; cv=none; b=RLgKf8+ZU1sBU0s6J7RL9l2JFJSnAfcCdQ/hOIkTkGrcifTeW3KyCOx46Kx7ErPZkq8wV27/6Rth9uG2kwhXOZXoAymKNi7xNPZzwIe5m5MAFOnFL8O75QIwJR/WN+b0L5RfNHhUVB0VV8sQu+zdwWi/UGHG/VKTnajk6xp2sKc=
+	t=1711473121; cv=none; b=YNLFIn08pMYtrt5xNK6nVw24BpXHJjs4mb5NX6zBxsxmuWafU3THlU4uQqP6EbTVYMhbVPynIqsck7k4NCD7ETxUSir2UIqshH2tMpAmQ9/Gx9yarl0hhAxVr6EXhouAM2VZ9xeLwOzFsZ51GSQrTytYgXorGKfciwVT8Q3m0M4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711473111; c=relaxed/simple;
-	bh=SHSbPddnUrZNJUnZQETz0axiiuHhU56cJ/TyjxOm3LE=;
-	h=Mime-Version:Content-Type:Date:Message-Id:Cc:Subject:From:To:
-	 References:In-Reply-To; b=FVTFyClDiLqdmA8HOooMYgCGkAk6do3bl6vomI2aQ6r2/cVnx//qBuSt7PLnJGY3rqnI9yuPPCAakSxL9w4lEI/ZKrMOmBkGnuzypiyQ9QVT3tMLpe5w6IDpk9egETSzkwfs8eT8SNs9QEGAEpH4uLYNgVd+4tPEDiEk1VkSyz4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=k9DczX69; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 68446C43399;
-	Tue, 26 Mar 2024 17:11:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711473110;
-	bh=SHSbPddnUrZNJUnZQETz0axiiuHhU56cJ/TyjxOm3LE=;
-	h=Date:Cc:Subject:From:To:References:In-Reply-To:From;
-	b=k9DczX69FvUQ6wdICAIJXiq1qaqYzNybKX/V+0hbSEhTZO6Q/IDyUfO+T0mZbLFoU
-	 2JHkuWbGZdLCAZSmiLl89L9xs/BUDMV+wis1wiXB9+tw6CMioewzz6Xxg7iHfyIeer
-	 MV7OmEh/I3M8FcPpapn0tWIkyR9n0nE1+sudyLFMOdzX9z4KNEqDFHBYHa4chU9MtF
-	 ooPpKMvpI0iVPfvhZ1Gx4+7AAnNvVhp2bxMgj5z5687GC8kmpz2DOnm3nPo8qHH++t
-	 Jo5FPJqDXtzFwnMxVzuIkhqAzH9pIgUsca/G/irikJZYMdpRStUUUmdmw9PYHR3rkB
-	 SfVjRo212/Ptg==
+	s=arc-20240116; t=1711473121; c=relaxed/simple;
+	bh=31wGWIPo+c/oEpudO5XMXBMQ2M8snO+1qTCP8lP1PGw=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=SCPuSMet0V/1vkZVHOikSpowLpbgp14Spx9I575uSD7e+Ytt4DRu2pLHqhV4icdHVA8QodGWbaRzUjtiTCosO1tW3MmtJ4G+SaJVAI7xuc83OPxfrwnJgiWYPDCXg1lsmEqAoAPOvQlaizmAVCKb8mQGEi6UYLOzDnLrOkN7clE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=LmNciYel; arc=none smtp.client-ip=198.137.202.133
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+	Message-ID:Sender:Reply-To:Content-ID:Content-Description;
+	bh=2DVDjn14jcmXI06omFunOWKNfCuEsxTlBPssx+oZvkM=; b=LmNciYel9AIIAuzc17ceAVCp4g
+	SbWXMbuqF6BpYr+UBRhH6+7v138c15rv0K1vu4kkMs/Yv2xP1GTKqnU9ETniAAOycQJ8800JZOd4E
+	g6YdRztEFr1RkREzfq9RTioqjtEH/RpE0qVk7dNPc9S2sDl3NH43rPuPsEk9Bpi+lHsv900qmgpp3
+	Dx1FtKrUU9PByLpEOW4IprjBfozF7Ot5IDSA0GXlfV9QDGSVo89HjFptoGs6cmLnaM1ByvE2LoMOe
+	z9xp6yo4C3CN+GitFK6P7RyI0kS05Q0L7D8yb9YRmKu/s1OrZnEARY49fPZ2moMzKJhZDisXprzPw
+	ZUIgocCw==;
+Received: from [50.53.2.121] (helo=[192.168.254.15])
+	by bombadil.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1rpAL2-00000005fKX-32AV;
+	Tue, 26 Mar 2024 17:11:52 +0000
+Message-ID: <0a9fb564-7129-4153-97d6-76e9b3a1b6c1@infradead.org>
+Date: Tue, 26 Mar 2024 10:11:50 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v6 05/10] block: Add core atomic write support
+Content-Language: en-US
+To: John Garry <john.g.garry@oracle.com>, axboe@kernel.dk, kbusch@kernel.org,
+ hch@lst.de, sagi@grimberg.me, jejb@linux.ibm.com,
+ martin.petersen@oracle.com, djwong@kernel.org, viro@zeniv.linux.org.uk,
+ brauner@kernel.org, dchinner@redhat.com, jack@suse.cz
+Cc: linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-nvme@lists.infradead.org, linux-fsdevel@vger.kernel.org,
+ tytso@mit.edu, jbongio@google.com, linux-scsi@vger.kernel.org,
+ ojaswin@linux.ibm.com, linux-aio@kvack.org, linux-btrfs@vger.kernel.org,
+ io-uring@vger.kernel.org, nilay@linux.ibm.com, ritesh.list@gmail.com,
+ willy@infradead.org, Himanshu Madhani <himanshu.madhani@oracle.com>
+References: <20240326133813.3224593-1-john.g.garry@oracle.com>
+ <20240326133813.3224593-6-john.g.garry@oracle.com>
+From: Randy Dunlap <rdunlap@infradead.org>
+In-Reply-To: <20240326133813.3224593-6-john.g.garry@oracle.com>
 Content-Type: text/plain; charset=UTF-8
-Date: Tue, 26 Mar 2024 19:11:46 +0200
-Message-Id: <D03UKZ3OIEXX.2PCKOX8NOLMKT@kernel.org>
-Cc: <linux-riscv@lists.infradead.org>, "Paul Walmsley"
- <paul.walmsley@sifive.com>, "Palmer Dabbelt" <palmer@dabbelt.com>, "Albert
- Ou" <aou@eecs.berkeley.edu>, <linux-kernel@vger.kernel.org>, "Naveen N .
- Rao" <naveen.n.rao@linux.ibm.com>, "Anil S Keshavamurthy"
- <anil.s.keshavamurthy@intel.com>, "David S . Miller" <davem@davemloft.net>,
- <linux-trace-kernel@vger.kernel.org>, "Calvin Owens"
- <jcalvinowens@gmail.com>
-Subject: Re: [PATCH v2] arch/riscv: Enable kprobes when CONFIG_MODULES=n
-From: "Jarkko Sakkinen" <jarkko@kernel.org>
-To: "Mark Rutland" <mark.rutland@arm.com>, "Masami Hiramatsu"
- <mhiramat@kernel.org>
-X-Mailer: aerc 0.17.0
-References: <20240323232908.13261-1-jarkko@kernel.org>
- <20240325115632.04e37297491cadfbbf382767@kernel.org>
- <ZgLfsvbCZj2S6fRE@FVFF77S0Q05N.cambridge.arm.com>
- <20240327002403.62649aee45508b7a16caedba@kernel.org>
- <ZgL5779MIS61GpV6@FVFF77S0Q05N.cambridge.arm.com>
-In-Reply-To: <ZgL5779MIS61GpV6@FVFF77S0Q05N.cambridge.arm.com>
+Content-Transfer-Encoding: 7bit
 
-On Tue Mar 26, 2024 at 6:38 PM EET, Mark Rutland wrote:
-> On Wed, Mar 27, 2024 at 12:24:03AM +0900, Masami Hiramatsu wrote:
-> > On Tue, 26 Mar 2024 14:46:10 +0000
-> > Mark Rutland <mark.rutland@arm.com> wrote:
-> > >=20
-> > > On Mon, Mar 25, 2024 at 11:56:32AM +0900, Masami Hiramatsu wrote:
-> > > > I think, we'd better to introduce `alloc_execmem()`,
-> > > > CONFIG_HAVE_ALLOC_EXECMEM and CONFIG_ALLOC_EXECMEM at first
-> > > >=20
-> > > >   config HAVE_ALLOC_EXECMEM
-> > > > 	bool
-> > > >=20
-> > > >   config ALLOC_EXECMEM
-> > > > 	bool "Executable trampline memory allocation"
-> > > > 	depends on MODULES || HAVE_ALLOC_EXECMEM
-> > > >=20
-> > > > And define fallback macro to module_alloc() like this.
-> > > >=20
-> > > > #ifndef CONFIG_HAVE_ALLOC_EXECMEM
-> > > > #define alloc_execmem(size, gfp)	module_alloc(size)
-> > > > #endif
-> > >=20
-> > > Please can we *not* do this? I think this is abstracting at the wrong=
- level (as
-> > > I mentioned on the prior execmem proposals).
-> > >=20
-> > > Different exectuable allocations can have different requirements. For=
- example,
-> > > on arm64 modules need to be within 2G of the kernel image, but the kp=
-robes XOL
-> > > areas can be anywhere in the kernel VA space.
-> > >=20
-> > > Forcing those behind the same interface makes things *harder* for arc=
-hitectures
-> > > and/or makes the common code more complicated (if that ends up having=
- to track
-> > > all those different requirements). From my PoV it'd be much better to=
- have
-> > > separate kprobes_alloc_*() functions for kprobes which an architectur=
-e can then
-> > > choose to implement using a common library if it wants to.
-> > >=20
-> > > I took a look at doing that using the core ifdeffery fixups from Jark=
-ko's v6,
-> > > and it looks pretty clean to me (and works in testing on arm64):
-> > >=20
-> > >   https://git.kernel.org/pub/scm/linux/kernel/git/mark/linux.git/log/=
-?h=3Dkprobes/without-modules
-> > >=20
-> > > Could we please start with that approach, with kprobe-specific alloc/=
-free code
-> > > provided by the architecture?
-> >=20
-> > OK, as far as I can read the code, this method also works and neat!=20
-> > (and minimum intrusion). I actually found that exposing CONFIG_ALLOC_EX=
-ECMEM
-> > to user does not help, it should be an internal change. So hiding this =
-change
-> > from user is better choice. Then there is no reason to introduce the ne=
-w
-> > alloc_execmem, but just expand kprobe_alloc_insn_page() is reasonable.
-> >=20
-> > Mark, can you send this series here, so that others can review/test it?
->
-> I've written up a cover letter and sent that out:
->  =20
->   https://lore.kernel.org/lkml/20240326163624.3253157-1-mark.rutland@arm.=
-com/
->
-> Mark.
+Hi,
 
-Ya, saw it thanks!
+On 3/26/24 06:38, John Garry wrote:
+> diff --git a/Documentation/ABI/stable/sysfs-block b/Documentation/ABI/stable/sysfs-block
+> index 1fe9a553c37b..4c775f4bdefe 100644
+> --- a/Documentation/ABI/stable/sysfs-block
+> +++ b/Documentation/ABI/stable/sysfs-block
+> @@ -21,6 +21,58 @@ Description:
+>  		device is offset from the internal allocation unit's
+>  		natural alignment.
+>  
+> +What:		/sys/block/<disk>/atomic_write_max_bytes
+> +Date:		February 2024
+> +Contact:	Himanshu Madhani <himanshu.madhani@oracle.com>
+> +Description:
+> +		[RO] This parameter specifies the maximum atomic write
+> +		size reported by the device. This parameter is relevant
+> +		for merging of writes, where a merged atomic write
+> +		operation must not exceed this number of bytes.
+> +		This parameter may be greater to the value in
 
-BR, Jarkko
+		                              than
+
+> +		atomic_write_unit_max_bytes as
+> +		atomic_write_unit_max_bytes will be rounded down to a
+> +		power-of-two and atomic_write_unit_max_bytes may also be
+> +		limited by some other queue limits, such as max_segments.
+> +		This parameter - along with atomic_write_unit_min_bytes
+> +		and atomic_write_unit_max_bytes - will not be larger than
+> +		max_hw_sectors_kb, but may be larger than max_sectors_kb.
+> +
+> +
+> +What:		/sys/block/<disk>/atomic_write_unit_min_bytes
+> +Date:		February 2024
+> +Contact:	Himanshu Madhani <himanshu.madhani@oracle.com>
+> +Description:
+> +		[RO] This parameter specifies the smallest block which can
+> +		be written atomically with an atomic write operation. All
+> +		atomic write operations must begin at a
+> +		atomic_write_unit_min boundary and must be multiples of
+> +		atomic_write_unit_min. This value must be a power-of-two.
+> +
+> +
+> +What:		/sys/block/<disk>/atomic_write_unit_max_bytes
+> +Date:		February 2024
+> +Contact:	Himanshu Madhani <himanshu.madhani@oracle.com>
+> +Description:
+> +		[RO] This parameter defines the largest block which can be
+> +		written atomically with an atomic write operation. This
+> +		value must be a multiple of atomic_write_unit_min and must
+> +		be a power-of-two. This value will not be larger than
+> +		atomic_write_max_bytes.
+> +
+> +
+> +What:		/sys/block/<disk>/atomic_write_boundary_bytes
+> +Date:		February 2024
+> +Contact:	Himanshu Madhani <himanshu.madhani@oracle.com>
+> +Description:
+> +		[RO] A device may need to internally split I/Os which
+> +		straddle a given logical block address boundary. In that
+> +		case a single atomic write operation will be processed as
+> +		one of more sub-operations which each complete atomically.
+
+		    or
+
+> +		This parameter specifies the size in bytes of the atomic
+> +		boundary if one is reported by the device. This value must
+> +		be a power-of-two.
+
+-- 
+#Randy
 
