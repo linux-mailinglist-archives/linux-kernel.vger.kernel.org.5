@@ -1,204 +1,139 @@
-Return-Path: <linux-kernel+bounces-118990-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-118991-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CE3FF88C258
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 13:39:11 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 413D788C259
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 13:39:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B43C8B2242C
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 12:39:08 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 725071C3F901
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 12:39:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EA3FE6AF85;
-	Tue, 26 Mar 2024 12:39:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 936916D1CC;
+	Tue, 26 Mar 2024 12:39:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=sakamocchi.jp header.i=@sakamocchi.jp header.b="E1hUty5a";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="RkZ3pIBz"
-Received: from wfout2-smtp.messagingengine.com (wfout2-smtp.messagingengine.com [64.147.123.145])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="H3MPJ6sO"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 05EFF5C8FF
-	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 12:38:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=64.147.123.145
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D91FD14A8E
+	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 12:39:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711456740; cv=none; b=R6yTtkOdqL41UzlJ7NSGPVLtht2KQ1gX5Cy6VBHET7ihvNIWAOlgBd00LLXl/QZ4NvFu/v2bqf0UjUs/C3ebyOW+97DPRT2OuqydD4Z8mS4FWn20Lbt0UsPyfk7Of4Ydw9PpOrWqHGi8LfcSyPlMJkd/4sQXiihHekWNR948asI=
+	t=1711456748; cv=none; b=PHKWT2tsc9yai+GhmQyObHzR6MIzJvL98uukJ4/nElIZhUxOCzA26atkNFfxm9R8RrO6wSZ+kUXcqZ0HARB1jyqLpe7aOyfu7o3mg/fZo4lnsrXlYheWZi8DKMUBOC+SJFNDM/+XhozVCO932PndyTt9ZSmB1LN7imMSY0LPvc8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711456740; c=relaxed/simple;
-	bh=5vpBVi8l5SdPJOEq8VnBU5XwcDzOC3AOa50PlgKFA/4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=T54SlwRWHC4cfuwCTMAhywc4XJYFjCBTqDdy63G6+uINrnOobNcesKXXWhULEDYUy7i0q9VbPMDVuj3SpHdUxXRspc68zTpJ739VvwCT9HlGXyvFyzsSxQ+mZouf2UNj9czwF/ZbtrSCJyLmYx8hZnvuWackZle8sxE/47Juv+U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sakamocchi.jp; spf=pass smtp.mailfrom=sakamocchi.jp; dkim=pass (2048-bit key) header.d=sakamocchi.jp header.i=@sakamocchi.jp header.b=E1hUty5a; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=RkZ3pIBz; arc=none smtp.client-ip=64.147.123.145
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sakamocchi.jp
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sakamocchi.jp
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
-	by mailfout.west.internal (Postfix) with ESMTP id B8A3E1C000B8;
-	Tue, 26 Mar 2024 08:38:56 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute6.internal (MEProxy); Tue, 26 Mar 2024 08:38:57 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sakamocchi.jp;
-	 h=cc:cc:content-type:content-type:date:date:from:from
-	:in-reply-to:in-reply-to:message-id:mime-version:references
-	:reply-to:subject:subject:to:to; s=fm2; t=1711456736; x=
-	1711543136; bh=SpN1i+9IU2YyhmBo6ufdJzLACq9EamCprJ4iEIQKtrI=; b=E
-	1hUty5az9b1XwLJYZVo+vl6MYqo/f3dzKyBovCvm1QOa0ZvTJ40tvcyfvT2QYzMW
-	2pGxLrX6vxNlg2zNPf5ZRy6WTVE0XChQgYKdbRj6MklSKvA1HRZiceVAGAaiTnCJ
-	GIYeiw1rnuOx8XIDjsQcEQ0yoFy0gCeQuCER+dY6Kr6ImPIsMIu+OYSeVUcpt2so
-	KIyDwjoufIy10Yu+Uev70OMi4A/hRjMNnk7svOmB2zje60YlrjSLQxpkGsEyMLCG
-	04L/X9m8HT3RhyNgTKASbI5rDY+nv9s9P3Dy3hJ9ol2gnAs6n9MgEkssA3cIrYhV
-	tTNfJgB1NKKw34bOYEKNQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-	fm2; t=1711456736; x=1711543136; bh=SpN1i+9IU2YyhmBo6ufdJzLACq9E
-	amCprJ4iEIQKtrI=; b=RkZ3pIBzdXiu38ljJxqXCxCpmCscnBZO5XWEXaN8XIuo
-	ODBnOmql2DchhALur7xClxP/UnJcbMwimrKblUMyrdutVlPO4AgRfPvpDiW0yqC9
-	gPwXNuQAFn0hIW7JFymDp2b7DJO9q5Rg8KwuwZMxN9EffLsXjdk5TrsAxI+NexcB
-	vxsBVbyGCmYb4O3JtEqYG3wIkTjc9W8w8y7N/NkanxHloqpnkn6lNfJWHW8lWr2A
-	5qv43O7il8Srbslub7CVmQ1bKUvlGAaievO0Zojt0jLfX2XfwwEf9quyyKzEfv/L
-	zkhHq/0WGKA3GdftQYkyXRJC2ARfvovxULZzFT9HLg==
-X-ME-Sender: <xms:4MECZpDpw8cJwRBmV-ZdBNqrix5JQdTrBWx52QEttnTifhLF6m3qdw>
-    <xme:4MECZnju94q9RTr_IRKCBGFKz1xTrP7u8pxDbQtk9_qDPTqfVc1VzZqQ9SKjL65WT
-    XwumpV2FCrqKDl14rk>
-X-ME-Received: <xmr:4MECZkmx0MlMTpkeUiKsYCsvasUfIz7Z-8kJVuX3Qiac3p1woVhrtHZIFz-SPe-mmkraiXQkDC9CPWiMWqOprp2jgKaeA7NQj9I>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledruddufedggedvucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvfevuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepvfgrkhgr
-    shhhihcuufgrkhgrmhhothhouceoohdqthgrkhgrshhhihesshgrkhgrmhhotggthhhird
-    hjpheqnecuggftrfgrthhtvghrnhepudehgeeuveetuedvkeekvdfgffelieeivdelhfet
-    tedtveettefgffegjeefleeknecuffhomhgrihhnpehgihhthhhusgdrtghomhenucevlh
-    hushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehoqdhtrghkrghs
-    hhhisehsrghkrghmohgttghhihdrjhhp
-X-ME-Proxy: <xmx:4MECZjx-Um8aHTaZk_W-1HGPLcXlrUZwBq46T7_a9aIogXhKzB49hg>
-    <xmx:4MECZuRrHSfmpLukLH5bnlDx6nK4L0gA8jyg6w3R3wwbOC-vBOWeJQ>
-    <xmx:4MECZmZkjMXgYSBf6Grm3TfU8dBUn844mgHJvGosvXt1alqu8RGdDg>
-    <xmx:4MECZvT0n7PFJDAjTkKV0xwI-JdzAvMn0DOZZo0Ju9WxIL9czxqs0w>
-    <xmx:4MECZkOu98iuUFVAY3E6R9hvIdbakumiq7G7UVHHyd0OrQctcX1slWwByUM>
-Feedback-ID: ie8e14432:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
- 26 Mar 2024 08:38:54 -0400 (EDT)
-Date: Tue, 26 Mar 2024 21:38:52 +0900
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-To: Adam Goldman <adamg@pobox.com>
-Cc: linux1394-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] firewire: core: option to log bus reset initiation
-Message-ID: <20240326123852.GA140364@workstation.local>
-Mail-Followup-To: Adam Goldman <adamg@pobox.com>,
-	linux1394-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org
-References: <Zfqo43xhFluOgO01@iguana.24-8.net>
- <20240325004134.GA21329@workstation.local>
- <ZgK9GNLURNg63zRU@iguana.24-8.net>
+	s=arc-20240116; t=1711456748; c=relaxed/simple;
+	bh=aIZN4ayFWAxqe4bKOQlECj+NTdd2YL5f3lY7krQamOI=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
+	 MIME-Version:Content-Type; b=PvNS2KdTc7VT7Lf06mCqydgWIgk4PQF5vFpysdXpnIxCGPbm+9iKlDpaWQu1DBlYDSbHhtJ0b9NteqqBTwWzZzCUakVNA+NCn1CpPZovjG7vtC+84ArD4FQgef9v0QIxTXbhahsEYhk7mgi04Ww/vy52w5FIVDkc24jtcPPjw/Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=H3MPJ6sO; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B7FD2C43394;
+	Tue, 26 Mar 2024 12:39:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1711456748;
+	bh=aIZN4ayFWAxqe4bKOQlECj+NTdd2YL5f3lY7krQamOI=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+	b=H3MPJ6sOxaDeI8bHhLDFMP2Ffwr6cvCkA0U+3nDbvylo/g0j9l/OlkyHD2TGM9HRl
+	 ds1FvyfPZDloy+G7iQUEMRqlHqigq2GM8bAKN8ZPfLQaQ3ZD7oytI//3lTWoIFpuJq
+	 DyAG/rjOUhjYxChskOOmq/wj/OV7WJNdfGiDQSfi1trxwiswy/dtFi53pXx+93mIHn
+	 Q8pkaS+ZQ5thrA8EJIKCrBoSJjzwPLyC37q/dg/XSsjfBIDi4Pynsopu5HV/I+gR0K
+	 /ObQQa+0ONrCFOyLy+6pe52oj312ufuQ76nd5g8ZKXJUlAMxsOnIRDdhDVJrwK+gK8
+	 FzMvcEDHC9Ryw==
+From: Mark Brown <broonie@kernel.org>
+To: support.opensource@diasemi.com, lgirdwood@gmail.com, 
+ matthias.bgg@gmail.com, angelogioacchino.delregno@collabora.com, 
+ jagan@amarulasolutions.com, Bo Liu <liubo03@inspur.com>
+Cc: linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
+ linux-mediatek@lists.infradead.org
+In-Reply-To: <20240320085740.4604-1-liubo03@inspur.com>
+References: <20240320085740.4604-1-liubo03@inspur.com>
+Subject: Re: [PATCH v1 00/13] regulator: convert to use maple tree register
+ cache
+Message-Id: <171145674540.65165.16145640493562999646.b4-ty@kernel.org>
+Date: Tue, 26 Mar 2024 12:39:05 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZgK9GNLURNg63zRU@iguana.24-8.net>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.14-dev
 
-Hi,
-
-On Tue, Mar 26, 2024 at 05:18:32AM -0700, Adam Goldman wrote:
-> Hi Takashi,
+On Wed, 20 Mar 2024 04:57:27 -0400, Bo Liu wrote:
+> The maple tree register cache is based on a much more modern data structure
+> than the rbtree cache and makes optimisation choices which are probably
+> more appropriate for modern systems than those made by the rbtree cache.
 > 
-> On Mon, Mar 25, 2024 at 09:41:34AM +0900, Takashi Sakamoto wrote:
-> > Now we have two debug parameters per module for the slightly-similar
-> > purpose. In my opinion, it is a pretty cumbersome to enable them when
-> > checking bus-reset behaviour. I think it is time to investigate the other
-> > way.
-> > 
-> > Linux Kernel Tracepoints[2] is one of options. Roughly describing, the
-> > tracepoints mechanism allows users to deliver structured data from kernel
-> > space to user space via ring-buffer when enabling it by either sysfs or
-> > kernel command-line parameters. Linux kernel also has a command-line
-> > parameter to redirect the human-readable formatted data to kernel log[3].
-> > I think it is suitable in the case.
-> > 
-> > It requires many work to replace the existent debug parameter of
-> > firewire-ohci, while it is a good start to work just for bus-reset debug.
-> > The data structure layout should be pre-defined in each subsystem, thus we
-> > need to decide it. In my opinion, it would be like:
-> > 
-> > ```
-> > struct bus_reset_event {
-> >     enum reason {
-> >         Initiate,
-> > 	Schedule,
-> > 	Postpone,
-> > 	Detect,
-> >     },
-> >     // We can put any other data if prefering.
-> > }
-> > ```
+> Bo Liu (13):
+>   regulator: da9121: convert to use maple tree register cache
+>   regulator: da9211: convert to use maple tree register cache
+>   regulator: isl9305: convert to use maple tree register cache
+>   regulator: max8973: convert to use maple tree register cache
+>   regulator: mt6311: convert to use maple tree register cache
+>   regulator: pca9450: convert to use maple tree register cache
+>   regulator: pf8x00: convert to use maple tree register cache
+>   regulator: pfuze100: convert to use maple tree register cache
+>   regulator: rtmv20: convert to use maple tree register cache
+>   regulator: rtq6752: convert to use maple tree register cache
+>   regulator: tps51632: convert to use maple tree register cache
+>   regulator: tps62360: convert to use maple tree register cache
+>   regulator: rpi-panel-attiny: convert to use maple tree register cache
 > 
-> Maybe these should be four separate trace events?
-> 
-> > Would I ask your opinion about my idea?
-> 
-> It seems that tracepoints are the modern way to make debugging logs, so 
-> if we want to modernize the FireWire driver, we should replace the 
-> existent logging with tracepoints.
+> [...]
 
-Thanks for your positive comment.
+Applied to
 
-I pushed my work-in-progress patches to the following specific topic
-branch::
-https://github.com/takaswie/linux-firewire-dkms/tree/topic/backport-to-v6.8/tracepoints
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/regulator.git for-next
 
-You can see some patches onto your commits:
+Thanks!
 
-* 145da78e firewire: ohci: obsolete OHCI_PARAM_DEBUG_BUSRESETS from debug parameter with tracepoints event
-* 3bdad35d firewire: core: obsolete debug parameter with tracepoints event
-* 30f489af firewire: ohci: support bus_reset tracepoints event
-* 4937d9c8 firewire: core: support bus_reset tracepoints event
-* 0da26087 firewire: core: add support for Linux kernel tracepoints
-* 961cba18 firewire: core: option to log bus reset initiation
-* b3124560 firewire: ohci: mask bus reset interrupts between ISR and bottom half
+[01/13] regulator: da9121: convert to use maple tree register cache
+        commit: d92eb7c333c5ac8d8add10d5a211ac9c405e4393
+[02/13] regulator: da9211: convert to use maple tree register cache
+        commit: 03ddbcbe2f1ca9fac2759849be6714d8e82aa331
+[03/13] regulator: isl9305: convert to use maple tree register cache
+        commit: 66a4ead5ed9393d250105fcbe6e3525e1cdd977a
+[04/13] regulator: max8973: convert to use maple tree register cache
+        commit: 36649db5b216a85cfd7937a289c4cdd0b4b69126
+[05/13] regulator: mt6311: convert to use maple tree register cache
+        commit: bc125125125c10ec14764d153227c95ad0fd0b48
+[06/13] regulator: pca9450: convert to use maple tree register cache
+        commit: 0b03e9cb8b137490f4adedf07482384ffeee7145
+[07/13] regulator: pf8x00: convert to use maple tree register cache
+        commit: cea065dced280306ff5a4f7adfeb3773c49b2818
+[08/13] regulator: pfuze100: convert to use maple tree register cache
+        commit: 0332f074f5c3d8c2a32db24c9dcc3c3f13056cef
+[09/13] regulator: rtmv20: convert to use maple tree register cache
+        commit: 43edba6b670bc4f5426e77873b400fe91f8d3c75
+[10/13] regulator: rtq6752: convert to use maple tree register cache
+        commit: 81c180e77d60755ca5ff217786e2f427ccab04e0
+[11/13] regulator: tps51632: convert to use maple tree register cache
+        commit: 9500d38e50d0cfd33536454a204dedb9d47d84a3
+[12/13] regulator: tps62360: convert to use maple tree register cache
+        commit: fe258f54c0a85c1bfc0e836e20c3e4e52f1a8318
+[13/13] regulator: rpi-panel-attiny: convert to use maple tree register cache
+        commit: ab470abe58c09b2fbe2c1478e67a904fd803e84f
 
-In the above, I added 'bus_reset' events in 'firewire' tracepoints
-subsystem. The structure is something like:
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
 
-```
-struct bus_reset {
-    enum fw_trace_bus_reset_issue issue;
-    bool short_reset;
-};
-```
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-The issue enumerations are in 'drivers/firewire/core.h':
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
-```
-enum fw_trace_bus_reset_issue {
-	FW_TRACE_BUS_RESET_ISSUE_INITIATE = 0,
-	FW_TRACE_BUS_RESET_ISSUE_SCHEDULE,
-	FW_TRACE_BUS_RESET_ISSUE_POSTPONE,
-	FW_TRACE_BUS_RESET_ISSUE_DETECT,
-};
-```
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
-You can see the above event is trigerred by two kernel modules:
+Thanks,
+Mark
 
-* firewire-core
-* firewire-ohci
-
-When merging the above changes and build/load the kernel modules, we can
-see 'firewire:bus_reset' event in Linux Kernel tracepoints system, like:
-
-```
-$ ls /sys/kernel/debug/tracing/events/firewire/bus_reset
-```
-
-I currently consider about a pair of events for OHCI interrupts and PHY
-operation, instead of the above event. I'm happy if receiving your
-opinion about it or the other ideas.
-
-
-Regards
-
-Takashi Sakamoto
 
