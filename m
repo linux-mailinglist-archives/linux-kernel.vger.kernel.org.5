@@ -1,86 +1,91 @@
-Return-Path: <linux-kernel+bounces-118480-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-118481-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 09FB988BB88
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 08:42:43 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id D778F88BB90
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 08:44:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8260DB21690
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 07:42:40 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id F2618B2195B
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 07:44:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D8D041327F1;
-	Tue, 26 Mar 2024 07:42:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6A234130AEC;
+	Tue, 26 Mar 2024 07:44:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="NmeTkp1V"
-Received: from mail-pf1-f171.google.com (mail-pf1-f171.google.com [209.85.210.171])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="K44Vpity"
+Received: from mail-pj1-f53.google.com (mail-pj1-f53.google.com [209.85.216.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B0DE01804F
-	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 07:42:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 27A5A130A48
+	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 07:44:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711438953; cv=none; b=HzCNlNZK5q32HEH3j9ksgVGiS8XKSig3CVjze70IhwIDVxnpGiyqJ1BKG4sXH+4SjqeSXNp16XriKWm1QktWks9pNl9+R8cQEC74THa+5rli6dRsQX1fYrkMr82FMZiWYNiD1ZCFEWOrATIw7mga71sUnjj7LEPrdrixpOBy/7c=
+	t=1711439079; cv=none; b=sSyPGrsKMoVvPgJrwaysxqE8FIgTi3uIU9MYsxdNP+2wObxeQ/WivUJiNin0D4U7wGKwBreJEL8P/qrJ35wDI6hZYUT/1rWV+fTKGD+DaSYZWEXd2PiWDvDLJAe4nu++o0lO6zZe84mG7FPE0sNh8im7vj4Hi6Nvf6vgzXg3tyY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711438953; c=relaxed/simple;
-	bh=lQLJYF/S6aNnizdrvZwuqBFYXgWMgmOQnMbgfAPsYiM=;
+	s=arc-20240116; t=1711439079; c=relaxed/simple;
+	bh=MsrkW69p8rySCRtLMEt7t+ExHfkgy2bgx4K2VLJtRIw=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=phCvTQGUIsuSoO/xW9LtE8u8jx5zQFKptdJN9l5unbT5EAmIwwWivgb/J7fN7PYUx29L3UPyy+z6JhoDBayh6qyhUYe9BG6gn7A/tIvWMpJkNLALjC/LHWekpJ5EPDExHemvo0qB7cT5tnwyzqP62jSvnz/RiQutmtOVRCjpxds=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=NmeTkp1V; arc=none smtp.client-ip=209.85.210.171
+	 Content-Type:Content-Disposition:In-Reply-To; b=dSqPDdbX1xbQuqnYbLltLTVkN5BvxEMIV08pXF0Uym5kKOqK3s0OfHIeUYgeUOPk39kYg60Dw3SeADQ6r0AOCXTrqs2Ycwss7czDxn+QmhvHP/eIBaISO7jyPD/yUAK0CgaQWQEmWlzlyigACLpgaPMRoxgAHkAbzVsApZY/Nv0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=K44Vpity; arc=none smtp.client-ip=209.85.216.53
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-pf1-f171.google.com with SMTP id d2e1a72fcca58-6ea8a0d1a05so2092817b3a.1
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 00:42:31 -0700 (PDT)
+Received: by mail-pj1-f53.google.com with SMTP id 98e67ed59e1d1-2a0782f0da5so967248a91.0
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 00:44:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1711438951; x=1712043751; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1711439077; x=1712043877; darn=vger.kernel.org;
         h=in-reply-to:content-transfer-encoding:content-disposition
          :mime-version:references:message-id:subject:cc:to:from:date:from:to
          :cc:subject:date:message-id:reply-to;
-        bh=suWtwDEm4B03eU+FNeyx8FV8u6kO5WvtfeH16xAc4og=;
-        b=NmeTkp1V7Xu9S3lMJMQawDIf6myHY8XQCtdQq4/jp9Gq+emaSf90nqfPH91VjefEkm
-         vqXx+vZPNSJLOnWYOhmGmkUXTIWM79eaab1nhBtRnuDgXwAaSmgAjfhli4hDVpZnO8A0
-         vd8PSXor5j0NWFBfuynf1kpNOBmMHHYI2AKuuwV3iJYQVsAOHjVieCrC61XwHVnDkZbM
-         tXUPob354J2vaQFIueDJp7mYvD6Sy5r2Hw2pEArkoVm0Yv92nZ71C4UCC/l/oiVKtf48
-         sL4RxwOQjrBQjDZk5b4ZuV1bJ7m5LJX/2CfyomH7lvgPkqLJBdLumG9Vd7JoAw9WAoJf
-         k4YQ==
+        bh=ltBMUKgzn3zhp60fMyljAq7QO/sGMekj2XSf0AJieWY=;
+        b=K44Vpityl70wxDk+ib6CnDpqrxYFhnGK9av1CsMF9Ys4/iwNWdrVIi+FEhyxvce0CB
+         gU9hm41RFiiUA963wzug+ypG3N2Ze6bOC1Raaxul8rWiyjM1J2EeaG/beRff2Lh8fMFH
+         pmn6GVf8JKeX8kdB8Q8AEL7lKz3Ouv63hzVoKHz+7dTaH24WI13qMZCwb+3NEfN221+1
+         JblUd0Gt4ZWQUIK0y1Trvniu5goKH17Up88VAPGiIaodMO3IJLVWc6zWyf2Zwj58PdXN
+         DRHDOioCrIR0i6tMhz2P/tUnusQ+BUuVf4Y7zf2iV8wppt84ptibSximcUl1xjBzj8FD
+         Q5kQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711438951; x=1712043751;
+        d=1e100.net; s=20230601; t=1711439077; x=1712043877;
         h=in-reply-to:content-transfer-encoding:content-disposition
          :mime-version:references:message-id:subject:cc:to:from:date
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=suWtwDEm4B03eU+FNeyx8FV8u6kO5WvtfeH16xAc4og=;
-        b=Pje2mmeoXDjRVgmZP69t+dFRUOkkb7crYvT3PSyDwWPkVR1yYj7JfwOicPDzhK6zWp
-         mvlT/EEjdlRHS5OR3zqwrTppxtWanO+kRpksmlS/WkevtoCexfnZddRkrOEdmSiyRgTD
-         9DCDAXnScYL3v95g+2yKjbtKM0pnoI6pSEENKtoSrMNNc3vbuh7EJPU+HVm5WqfGTMhW
-         PFZ6+NQ4m0JcsQeYI9l3jpxQ7elcp+VA3fNs7uJEkV5w7/p6A820Xn9XGVJgact/L+L1
-         KReOqe1tHuTYXrqPwztQkcC+Lteq9drQIX1M8SFFStKcxtH9FSFx1wJxQ0Vq+KAdQRU1
-         HtSg==
-X-Forwarded-Encrypted: i=1; AJvYcCXVWipbKuPSUl5b1njnjW1cRQczqSu0bGOl0Y0fPIW8DbIqvl13ebA2Z9jC5L2MO3LiElt67MRBVEd1Io3wQcQkQc/YLMKq4OwXuZcT
-X-Gm-Message-State: AOJu0Yz5dLWaB2qZzOMF/MgIpNc20eMIhnZvmk2ekkXuOJptKjM4JeqW
-	B6f1mqxmD4hHUGdAjBwPNk+LKa4ErIpIhBjIWxuUwTv/PfjRllE0HeWg64qQNA==
-X-Google-Smtp-Source: AGHT+IENYADQhqltAgsX3SaQGsChrRbnmlYma0ZqXAvA2PgQ9EbWV1JZJVQXA1LqKU8H1D8C5SxnMA==
-X-Received: by 2002:a05:6a20:3d87:b0:1a3:a8ff:473b with SMTP id s7-20020a056a203d8700b001a3a8ff473bmr939435pzi.29.1711438950796;
-        Tue, 26 Mar 2024 00:42:30 -0700 (PDT)
+        bh=ltBMUKgzn3zhp60fMyljAq7QO/sGMekj2XSf0AJieWY=;
+        b=IR/f/GDaBlj9eVYXYzY28IkCyGmGv0+mMifhh+vcH8hXHL4CPWmsc3mrzoKF4W4OVJ
+         1VC5r6xTNxlDoTIo/Iw3ScsWmhxS58E/jn7L5MXCLjSIrptLyRxC1YNXDkfQBl+si8fP
+         REgdmE4LKx1KN9Mi2/gd5uSNiU6sw8R52cpMpTP+MP1dhxn+jJkNgdhvC266H/Xy09xP
+         Emg4IM9vLvSpxXKIh7XKV0fqWtK4sxYRSCbEf/8kWfQrcKuFXdfM9IdOGVqOim+DCnKS
+         SukUIS4lHdpR2oSxyEBMBCfm5g4qOG6SHPydgoMBg7gvuEobFiHv/wWP5/1/EeN8KZEG
+         8hRw==
+X-Forwarded-Encrypted: i=1; AJvYcCWBZsgYkoUnc8SIGl7tWCbbvjPYrXMzst+iArK6HQBq6Kj0+Y/lB0CEG/7MuVqLz9CdDrtWoKwoVSc1XbQAT7bjMTov5TTDZ0gAEaDe
+X-Gm-Message-State: AOJu0YyMzqDjwcnIwtHjQS5N2ENgb+wRAL+0RMdUP8SEpfy8djz6mbb6
+	/HXF78cTHJdLiMS+B5wHOoGpcJeGDHDRflKULjcWH562OfWT8KMc/EySAeRbSQ==
+X-Google-Smtp-Source: AGHT+IFpNW25eFjP8EzgblCKW0udVOJeCu+1W8FIYLgYCGlpAIzgTkcJLGCCZzYcvI56FkcxZcDtgA==
+X-Received: by 2002:a17:90a:ec0d:b0:2a0:61ca:8d8a with SMTP id l13-20020a17090aec0d00b002a061ca8d8amr1054642pjy.6.1711439077214;
+        Tue, 26 Mar 2024 00:44:37 -0700 (PDT)
 Received: from thinkpad ([117.207.28.168])
-        by smtp.gmail.com with ESMTPSA id fi16-20020a056a00399000b006e795082439sm5313094pfb.25.2024.03.26.00.42.27
+        by smtp.gmail.com with ESMTPSA id q67-20020a17090a17c900b0029c5ee381dfsm8460725pja.26.2024.03.26.00.44.33
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Mar 2024 00:42:30 -0700 (PDT)
-Date: Tue, 26 Mar 2024 13:12:23 +0530
+        Tue, 26 Mar 2024 00:44:36 -0700 (PDT)
+Date: Tue, 26 Mar 2024 13:14:29 +0530
 From: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To: Christian Marangi <ansuelsmth@gmail.com>
-Cc: Miquel Raynal <miquel.raynal@bootlin.com>,
-	Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	Md Sadre Alam <quic_mdalam@quicinc.com>,
-	Sricharan Ramabadhran <quic_srichara@quicinc.com>,
-	linux-mtd@lists.infradead.org, linux-arm-msm@vger.kernel.org,
-	linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Subject: Re: [PATCH v2 2/2] mtd: rawnand: qcom: Fix broken reset in
- misc_cmd_type in exec_op
-Message-ID: <20240326074223.GB9565@thinkpad>
-References: <20240325103053.24408-1-ansuelsmth@gmail.com>
- <20240325103053.24408-2-ansuelsmth@gmail.com>
+To: Niklas Cassel <cassel@kernel.org>
+Cc: Lorenzo Pieralisi <lpieralisi@kernel.org>,
+	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+	Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
+	Kishon Vijay Abraham I <kishon@kernel.org>,
+	Thierry Reding <thierry.reding@gmail.com>,
+	Jonathan Hunter <jonathanh@nvidia.com>,
+	Jingoo Han <jingoohan1@gmail.com>,
+	Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
+	linux-pci@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+	linux-kernel@vger.kernel.org, mhi@lists.linux.dev,
+	linux-tegra@vger.kernel.org
+Subject: Re: [PATCH 01/11] PCI: qcom-ep: Disable resources unconditionally
+ during PERST# assert
+Message-ID: <20240326074429.GC9565@thinkpad>
+References: <20240314-pci-epf-rework-v1-0-6134e6c1d491@linaro.org>
+ <20240314-pci-epf-rework-v1-1-6134e6c1d491@linaro.org>
+ <Zf2s9kTMlZncldWx@ryzen>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -90,44 +95,57 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240325103053.24408-2-ansuelsmth@gmail.com>
+In-Reply-To: <Zf2s9kTMlZncldWx@ryzen>
 
-On Mon, Mar 25, 2024 at 11:30:48AM +0100, Christian Marangi wrote:
-> misc_cmd_type in exec_op have multiple problems. With commit a82990c8a409
-> ("mtd: rawnand: qcom: Add read/read_start ops in exec_op path") it was
-> reworked and generalized but actually dropped the handling of the
-> RESET_DEVICE command.
+On Fri, Mar 22, 2024 at 05:08:22PM +0100, Niklas Cassel wrote:
+> On Thu, Mar 14, 2024 at 08:53:40PM +0530, Manivannan Sadhasivam wrote:
+> > All EP specific resources are enabled during PERST# deassert. As a counter
+> > operation, all resources should be disabled during PERST# assert. There is
+> > no point in skipping that if the link was not enabled.
+> > 
+> > This will also result in enablement of the resources twice if PERST# got
+> > deasserted again. So remove the check from qcom_pcie_perst_assert() and
+> > disable all the resources unconditionally.
+> > 
+> > Fixes: f55fee56a631 ("PCI: qcom-ep: Add Qualcomm PCIe Endpoint controller driver")
+> > Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+> > ---
+> >  drivers/pci/controller/dwc/pcie-qcom-ep.c | 6 ------
+> >  1 file changed, 6 deletions(-)
+> > 
+> > diff --git a/drivers/pci/controller/dwc/pcie-qcom-ep.c b/drivers/pci/controller/dwc/pcie-qcom-ep.c
+> > index 2fb8c15e7a91..50b1635e3cbb 100644
+> > --- a/drivers/pci/controller/dwc/pcie-qcom-ep.c
+> > +++ b/drivers/pci/controller/dwc/pcie-qcom-ep.c
+> > @@ -500,12 +500,6 @@ static int qcom_pcie_perst_deassert(struct dw_pcie *pci)
+> >  static void qcom_pcie_perst_assert(struct dw_pcie *pci)
+> >  {
+> >  	struct qcom_pcie_ep *pcie_ep = to_pcie_ep(pci);
+> > -	struct device *dev = pci->dev;
+> > -
+> > -	if (pcie_ep->link_status == QCOM_PCIE_EP_LINK_DISABLED) {
+> > -		dev_dbg(dev, "Link is already disabled\n");
+> > -		return;
+> > -	}
+> >  
+> >  	dw_pcie_ep_cleanup(&pci->ep);
+> >  	qcom_pcie_disable_resources(pcie_ep);
 > 
-> The rework itself was correct with supporting case where a single misc
-> command is handled, but became problematic by the addition of exiting
-> early if we didn't had an ERASE or an OP_PROGRAM_PAGE operation.
+> Are you really sure that this is safe?
 > 
-> Add additional logic to handle the reset command and return early only
-> if we don't have handling for the requested command.
+> I think I remember seeing some splat in dmesg if some clks, or maybe it
+> was regulators, got disabled while already being disabled.
 > 
-> Fixes: a82990c8a409 ("mtd: rawnand: qcom: Add read/read_start ops in exec_op path")
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Christian Marangi <ansuelsmth@gmail.com>
-> ---
-> Changes v2:
-> - Add this patch
+> Perhaps you could test it by simply calling:
+> qcom_pcie_disable_resources();
+> twice here, and see if you see and splat in dmesg.
 > 
->  drivers/mtd/nand/raw/qcom_nandc.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/mtd/nand/raw/qcom_nandc.c b/drivers/mtd/nand/raw/qcom_nandc.c
-> index 19d76e345a49..b8cff9240b28 100644
-> --- a/drivers/mtd/nand/raw/qcom_nandc.c
-> +++ b/drivers/mtd/nand/raw/qcom_nandc.c
-> @@ -2815,7 +2815,7 @@ static int qcom_misc_cmd_type_exec(struct nand_chip *chip, const struct nand_sub
->  			      host->cfg0_raw & ~(7 << CW_PER_PAGE));
->  		nandc_set_reg(chip, NAND_DEV0_CFG1, host->cfg1_raw);
->  		instrs = 3;
-> -	} else {
-> +	} else if (q_op.cmd_reg != OP_RESET_DEVICE) {
 
-But this will fail if the previous patch is not applied. So this makes me think
-that you are trying to fix the OP_RESET_DEVICE command with these 2 patches.
+Calling the disable_resources() function twice will definitely result in the
+splat. But here PERST# is level triggered, so I don't see how the EP can see
+assert twice.
+
+Am I missing something?
 
 - Mani
 
