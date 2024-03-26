@@ -1,91 +1,97 @@
-Return-Path: <linux-kernel+bounces-119189-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-119190-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8E06788C545
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 15:36:34 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 43B9988C54C
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 15:38:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 10C42B22756
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 14:36:32 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6DF37B252BB
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 14:38:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD10513C3E1;
-	Tue, 26 Mar 2024 14:36:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="HOLND2jc"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5A89413C3D9;
+	Tue, 26 Mar 2024 14:38:17 +0000 (UTC)
+Received: from rtg-sunil-navi33.amd.com (unknown [165.204.156.251])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EFFCD13C3CD;
-	Tue, 26 Mar 2024 14:36:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2200F13C3D0
+	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 14:38:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=165.204.156.251
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711463782; cv=none; b=oR/+4a9WsglgydRjBe/XaCrcMnjBfJH5vasBsoVvUEvYHKlitxIlqcKdqq5jjBWnMdXEMV8XEmrGR6M36nD3FHkH0Tu0AL0vfRC5u/EFMxtpOUjdM/4niSy9O4AS7OdvgZ6a3KmrWL4Sxw+ud80bOcqJiO1TjZyCNSbXZ8gTEQ8=
+	t=1711463896; cv=none; b=na9pDGSrsJiPJ1dYgRXSMxFE78H9w4zwu7q4UYN+Ug+nEfK4rRv9ah5A+LWGmh5TU272oRNkdYyRDX5OqGHN6mO6ClpC4Bx56lp3AWi0mpEY4N461I4eVaTqe2k9nZt69awyOi6h8goc8q8DzQLq2p+IuDKyoxL8XVvy6YUPRZI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711463782; c=relaxed/simple;
-	bh=T5+Ilvr1b291b954quPpgBb3WMNDJu0NuiX26qSRQHM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=RHp6Z8PLJsv6gFqPNgX56rhYBgZPQ6UEFIGRpmIiKMZkmNnmstPLDfTjVe0jdf4Tufs0bYaKe+XREXO4TkjzRrD8b+gNJNVAnVsw+vj3u+9vIA1A0jLbeZjvQZA8LtpecjX1XAnfLdnPoT2sWgxlo2KLLVj/5+c3MkrfySGoSbY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=HOLND2jc; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 79317C433F1;
-	Tue, 26 Mar 2024 14:36:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711463781;
-	bh=T5+Ilvr1b291b954quPpgBb3WMNDJu0NuiX26qSRQHM=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=HOLND2jcqr9pzlZ0/W6u68xW9sxo5LaL+MKtPF7dPa0aiJMCqkhT98LeRf0bujSJM
-	 Aa4TBjibbEVL3Hv0ClMRocZaoqSY1KnXqSGMtGZNwipJeC+dR8i1BxCeuRWdkaO2xq
-	 QWn6ElobDNbOk5GfozD4c+Jbhr3JX2FVbEZCHzc3dDXxxtOqPY0x0AxUPoR9JUY5qZ
-	 n0vU4KN7M7ATBm3/UzyCjDoZc4K15QFWoJMRmGJWaC8m+P1u2Gwb5r7AZPWd6HK7So
-	 +sAeH/GwaJqoKLpWHJpYhNM4SuLIbDKFbTHC5Ubbvnax06TQgknCruQB8sPLh/hPzM
-	 An5+oSrus34kw==
-Date: Tue, 26 Mar 2024 14:36:16 +0000
-From: Simon Horman <horms@kernel.org>
-To: Bjorn Helgaas <helgaas@kernel.org>
-Cc: Jesse Brandeburg <jesse.brandeburg@intel.com>,
-	Tony Nguyen <anthony.l.nguyen@intel.com>,
-	"David S . Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Heiner Kallweit <hkallweit1@gmail.com>,
-	Konstantin Khlebnikov <khlebnikov@openvz.org>,
-	Zheng Yan <zheng.z.yan@intel.com>,
-	Sasha Neftin <sasha.neftin@intel.com>,
-	"Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
-	intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org, Bjorn Helgaas <bhelgaas@google.com>
-Subject: Re: [PATCH 3/3] igc: Remove redundant runtime resume for ethtool ops
-Message-ID: <20240326143616.GA403975@kernel.org>
-References: <20240325222951.1460656-1-helgaas@kernel.org>
- <20240325222951.1460656-4-helgaas@kernel.org>
+	s=arc-20240116; t=1711463896; c=relaxed/simple;
+	bh=43omAjlq2ZrWI3KlUvCu83WnZVKo8Vnn4E/RJ2eoZkc=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=hOojiOJWV3jmiftEGCn9QGVrt6AwsNyjaQ/YQVmN5M1n2WmIqzeWvKTMpao/CVwZIysVjxVVAihjmBmoa3nKCN9wqdhiSBs45zLBkyrQwWqbGBYBve9ryMBVAMgAp6CHM3KZNn1pfgGk+t+DysAUYhMsFZNHlDOGEUq2NymzqG4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=amd.com; spf=none smtp.mailfrom=rtg-sunil-navi33.amd.com; arc=none smtp.client-ip=165.204.156.251
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=amd.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=rtg-sunil-navi33.amd.com
+Received: from rtg-sunil-navi33.amd.com (localhost [127.0.0.1])
+	by rtg-sunil-navi33.amd.com (8.15.2/8.15.2/Debian-22ubuntu3) with ESMTP id 42QEbt622292989;
+	Tue, 26 Mar 2024 20:07:55 +0530
+Received: (from sunil@localhost)
+	by rtg-sunil-navi33.amd.com (8.15.2/8.15.2/Submit) id 42QEbshY2292982;
+	Tue, 26 Mar 2024 20:07:54 +0530
+From: Sunil Khatri <sunil.khatri@amd.com>
+To: Alex Deucher <alexander.deucher@amd.com>,
+        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+        Shashank Sharma <shashank.sharma@amd.com>
+Cc: amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, Hawking Zhang <Hawking.Zhang@amd.com>,
+        Felix Kuehling <Felix.Kuehling@amd.com>,
+        Lijo Lazar <lijo.lazar@amd.com>, Sunil Khatri <sunil.khatri@amd.com>
+Subject: [PATCH] drm/amdgpu: add support of bios dump in devcoredump
+Date: Tue, 26 Mar 2024 20:07:50 +0530
+Message-Id: <20240326143750.2292945-1-sunil.khatri@amd.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240325222951.1460656-4-helgaas@kernel.org>
+Content-Transfer-Encoding: 8bit
 
-On Mon, Mar 25, 2024 at 05:29:51PM -0500, Bjorn Helgaas wrote:
-> From: Bjorn Helgaas <bhelgaas@google.com>
-> 
-> 8c5ad0dae93c ("igc: Add ethtool support") added ethtool_ops.begin() and
-> .complete(), which used pm_runtime_get_sync() to resume suspended devices
-> before any ethtool_ops callback and allow suspend after it completed.
-> 
-> Subsequently, f32a21376573 ("ethtool: runtime-resume netdev parent before
-> ethtool ioctl ops") added pm_runtime_get_sync() in the dev_ethtool() path,
-> so the device is resumed before any ethtool_ops callback even if the driver
-> didn't supply a .begin() callback.
-> 
-> Remove the .begin() and .complete() callbacks, which are now redundant
-> because dev_ethtool() already resumes the device.
-> 
-> Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
+dump the bios binary in the devcoredump.
 
-Reviewed-by: Simon Horman <horms@kernel.org>
+Signed-off-by: Sunil Khatri <sunil.khatri@amd.com>
+---
+ .../gpu/drm/amd/amdgpu/amdgpu_dev_coredump.c  | 20 +++++++++++++++++++
+ 1 file changed, 20 insertions(+)
+
+diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_dev_coredump.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_dev_coredump.c
+index 44c5da8aa9ce..f33963d777eb 100644
+--- a/drivers/gpu/drm/amd/amdgpu/amdgpu_dev_coredump.c
++++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_dev_coredump.c
+@@ -132,6 +132,26 @@ amdgpu_devcoredump_read(char *buffer, loff_t offset, size_t count,
+ 	drm_printf(&p, "Faulty page starting at address: 0x%016llx\n", fault_info->addr);
+ 	drm_printf(&p, "Protection fault status register: 0x%x\n\n", fault_info->status);
+ 
++	/* Dump BIOS */
++	if (coredump->adev->bios && coredump->adev->bios_size) {
++		int i = 0;
++
++		drm_printf(&p, "BIOS Binary dump\n");
++		drm_printf(&p, "Valid BIOS  Size:%d bytes type:%s\n",
++			   coredump->adev->bios_size,
++			   coredump->adev->is_atom_fw ?
++			   "Atom bios":"Non Atom Bios");
++
++		while (i < coredump->adev->bios_size) {
++			/* Printing 15 bytes in a line */
++			if (i % 15 == 0)
++				drm_printf(&p, "\n");
++			drm_printf(&p, "0x%x \t", coredump->adev->bios[i]);
++			i++;
++		}
++		drm_printf(&p, "\n");
++	}
++
+ 	/* Add ring buffer information */
+ 	drm_printf(&p, "Ring buffer information\n");
+ 	for (int i = 0; i < coredump->adev->num_rings; i++) {
+-- 
+2.34.1
 
 
