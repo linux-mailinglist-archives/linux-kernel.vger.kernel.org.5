@@ -1,126 +1,149 @@
-Return-Path: <linux-kernel+bounces-119849-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-119850-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CB14888CDAC
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 20:58:48 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 46A0088CDAD
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 20:59:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 08A941C3C0E3
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 19:58:48 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F04EB2E5B8C
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 19:59:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CFB1913D287;
-	Tue, 26 Mar 2024 19:58:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0F8E613D284;
+	Tue, 26 Mar 2024 19:59:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="CwYvkPx/"
-Received: from out-185.mta1.migadu.com (out-185.mta1.migadu.com [95.215.58.185])
+	dkim=pass (2048-bit key) header.d=alliedtelesis.co.nz header.i=@alliedtelesis.co.nz header.b="ek8XSzD3"
+Received: from gate2.alliedtelesis.co.nz (gate2.alliedtelesis.co.nz [202.36.163.20])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8CDBF13D279
-	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 19:58:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.185
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BCBE513D265
+	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 19:59:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.36.163.20
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711483122; cv=none; b=G5NUPUZ9/NFilbZSJhcF5uKV6HzFl9ep6oZLkEFj5HeXawMk/0287jPkogN/NmJv5kDGZyWTtOMBG9Hdlo9gLLDsnq75JPrgb+zbaV8ssm8dPUx37FF4S+X/alrvjIqS+y41Q0Sba8zW9YB3reRWQJGnjSnKriK/y8XK3TXy5ug=
+	t=1711483182; cv=none; b=UaPqdBM2HfL+3VPrtYXoaylKuff2wjOsMDa1QShRUoqJYkJwbwlseVkX27Du2jOXD9Z6JxyAtv3G9kq/FgyeIKMa4jNEMbGrzvHNmkRgN8VQzRL8WgJEP2aswd2cgYqBMI+2S+TmEYJpClrtnku+RAC/wDL/MUotbyeB/HtnlVs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711483122; c=relaxed/simple;
-	bh=4bbx/0DROSkMt/Yb7A3sC9L2/Uu13cLTx4FbFsJkgEE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=t/PsrBf0IYLJpthEQWsHgU8EZYBhMR39pNnlRqms+3Tw36UqAuiSymmOx1UAcbA+BEBJSoLQMOn5l7m/aZCm77SDBOjxNHF0X7v3dRe+hjVW3lm/Pl10tvCpvbENW0XvhVFsHYkMkxnwr8+KmMJJd1O+QTmZDXYE4vP2Dm8fwY4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=CwYvkPx/; arc=none smtp.client-ip=95.215.58.185
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Tue, 26 Mar 2024 15:58:33 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1711483117;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=PZYB/y6k8bcQC7rHm6ARDNEfjZZ2NSOcHr4vMV4p3tE=;
-	b=CwYvkPx/oTDcqRTbPkwL79nQUG3HmjA4D3ZFwejiNPyG7ADnojOjqlx5iJL/IHDphjceqZ
-	jIGF+NU6WBHyrecbgGmC4b5Ebgto7nSVP8zvIx95g8VcDAIoL+oXNoTr/CVghUzSf9fde6
-	HvD0RRdiPwhFaUckUvTQj/XE7xBmJ1E=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: zhuxiaohui <zhuxiaohui400@gmail.com>
-Cc: bfoster@redhat.com, linux-bcachefs@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, zhuxiaohui <zhuxiaohui.400@bytedance.com>
-Subject: Re: [PATCH] bcachefs: add REQ_SYNC and REQ_IDLE in write dio
-Message-ID: <wor6mzq6nxhochp2bi42ece3hh6pywnt5lz2jacto4ns6lysj7@bc6crgl44rdu>
-References: <20240326120345.68786-1-zhuxiaohui.400@bytedance.com>
+	s=arc-20240116; t=1711483182; c=relaxed/simple;
+	bh=uSY/5yUXpFhF37jtWsUF8uCAWH6WjFmsLCA3CUa7tYU=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=OTbtYWKOVmu4xdxZSJn6Xo764spQNQ0g/3hjieqRUhwb4+AVKJ5K+5TzTU0ocoKVT1OVzfVr+nWO1QL8QPl7T3cg8V5mXjjNrJMZ/wgZJcrf8rpkLj3AcINPUfY8RmLck4ot8weAY4UNLawBKn6SE/CmFFgBoZMDEnWF6G2z8S4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=alliedtelesis.co.nz; spf=pass smtp.mailfrom=alliedtelesis.co.nz; dkim=pass (2048-bit key) header.d=alliedtelesis.co.nz header.i=@alliedtelesis.co.nz header.b=ek8XSzD3; arc=none smtp.client-ip=202.36.163.20
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=alliedtelesis.co.nz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alliedtelesis.co.nz
+Received: from svr-chch-seg1.atlnz.lc (mmarshal3.atlnz.lc [10.32.18.43])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(Client did not present a certificate)
+	by gate2.alliedtelesis.co.nz (Postfix) with ESMTPS id 260CE2C02AF;
+	Wed, 27 Mar 2024 08:59:30 +1300 (NZDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alliedtelesis.co.nz;
+	s=mail181024; t=1711483170;
+	bh=iGTSsX93dvRHkGyPXPVZGiSgM6ztYpSq86uvj2mmT7M=;
+	h=From:To:Cc:Subject:Date:From;
+	b=ek8XSzD3sbFT0pHnnuCVZMALK6ahKcLXLYTX9VOxHAE4zwWqxP7UAK+f32bfTJU3h
+	 GunD0fPAf9mmtbH76wqKw+U4flXHWHLyV3W1zumQXeaQR/aLT7LFZ343YFKnjUZGyh
+	 9UsH/q9IHPHK5kI54N+gD6dKrGoTKU208nJcNsp7KiYHa/QUwGGHd6IRqikaF18dA5
+	 FAfvaSPr4ycZ4Y8JG7jfRrKw2grXekDTMTQZYynxKzDYX16gFixAp3nURQPJaWvdWd
+	 5p8sbr4NSlXnySgiDDixlb+Zn78vGBBXeSv3Uw8k6DcLd8+tU/OgpP5GemKMJU0Ujn
+	 UW6YPgbR5ouEA==
+Received: from pat.atlnz.lc (Not Verified[10.32.16.33]) by svr-chch-seg1.atlnz.lc with Trustwave SEG (v8,2,6,11305)
+	id <B660329210000>; Wed, 27 Mar 2024 08:59:29 +1300
+Received: from chrisp-dl.ws.atlnz.lc (chrisp-dl.ws.atlnz.lc [10.33.22.30])
+	by pat.atlnz.lc (Postfix) with ESMTP id DAFFD13ED7B;
+	Wed, 27 Mar 2024 08:59:29 +1300 (NZDT)
+Received: by chrisp-dl.ws.atlnz.lc (Postfix, from userid 1030)
+	id D437E280A3F; Wed, 27 Mar 2024 08:59:29 +1300 (NZDT)
+From: Chris Packham <chris.packham@alliedtelesis.co.nz>
+To: gregkh@linuxfoundation.org
+Cc: linux-kernel@vger.kernel.org,
+	Chris Packham <chris.packham@alliedtelesis.co.nz>
+Subject: [PATCH] uio: use threaded interrupts
+Date: Wed, 27 Mar 2024 08:59:27 +1300
+Message-ID: <20240326195927.3265297-1-chris.packham@alliedtelesis.co.nz>
+X-Mailer: git-send-email 2.43.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240326120345.68786-1-zhuxiaohui.400@bytedance.com>
-X-Migadu-Flow: FLOW_OUT
+Content-Transfer-Encoding: quoted-printable
+X-SEG-SpamProfiler-Analysis: v=2.4 cv=KIH5D0Fo c=1 sm=1 tr=0 ts=66032921 a=KLBiSEs5mFS1a/PbTCJxuA==:117 a=K6JAEmCyrfEA:10 a=J0zaVX0nx6ystpX9sXEA:9 a=3ZKOabzyN94A:10
+X-SEG-SpamProfiler-Score: 0
+x-atlnz-ls: pat
 
-On Tue, Mar 26, 2024 at 08:03:45PM +0800, zhuxiaohui wrote:
-> when writing file with direct_IO on bcachefs, then performance is
-> much lower than other fs due to write back throttle in block layer:
-> 
->         wbt_wait+1
->         __rq_qos_throttle+32
->         blk_mq_submit_bio+394
->         submit_bio_noacct_nocheck+649
->         bch2_submit_wbio_replicas+538
->         __bch2_write+2539
->         bch2_direct_write+1663
->         bch2_write_iter+318
->         aio_write+355
->         io_submit_one+1224
->         __x64_sys_io_submit+169
->         do_syscall_64+134
->         entry_SYSCALL_64_after_hwframe+110
-> 
-> add set REQ_SYNC and REQ_IDLE in bio->bi_opf as standard dirct-io
-> 
-> Signed-off-by: zhuxiaohui <zhuxiaohui.400@bytedance.com>
+Split the existing uio_interrupt into a hardirq handler and a thread
+function. The hardirq handler deals with the interrupt source in
+hardware, the thread function notifies userspace that there is an event
+to be handled.
 
-Can I get you interested in a bigger project?
+Signed-off-by: Chris Packham <chris.packham@alliedtelesis.co.nz>
+---
 
-The writeback throttling code is a problem; it really shouldn't be
-specific to writeback, it really ought to be a general purpose
-backpressure mechanism.
+Notes:
+    I find myself needing to have a UIO interrupt associated with an
+    interrupt pin on a PCA9539 (yes I know, it's a terrible chip but HW
+    engineers love it because it's cheap).
+   =20
+    Prior to this the UIO registration fails with:
+   =20
+      [    6.484699] uio_pdrv_genirq detect-gpio-9: unable to register ui=
+o device
+      [    6.484722] uio_pdrv_genirq detect-gpio-9: probe with driver uio=
+_pdrv_genirq failed with error -22
+   =20
+    The -EINVAL ultimately comes from __setup_irq() where it knows the
+    interrupt descriptor is nested but we haven't provided a thread_fn.
 
-Unfortunately, I've found the code to be opaque, practically to the
-point of obfuscation, so it's going to be a difficult nut to crack.
+ drivers/uio/uio.c | 17 +++++++++++++----
+ 1 file changed, 13 insertions(+), 4 deletions(-)
 
-But the lack of higher level, more workable backpressure is a problem,
-it leads to queueing delays and priority inversions in filesystem code
-and below.
+diff --git a/drivers/uio/uio.c b/drivers/uio/uio.c
+index bb77de6fa067..a86cf2e4f200 100644
+--- a/drivers/uio/uio.c
++++ b/drivers/uio/uio.c
+@@ -442,18 +442,27 @@ EXPORT_SYMBOL_GPL(uio_event_notify);
+  * @irq: IRQ number, can be UIO_IRQ_CYCLIC for cyclic timer
+  * @dev_id: Pointer to the devices uio_device structure
+  */
+-static irqreturn_t uio_interrupt(int irq, void *dev_id)
++static irqreturn_t uio_interrupt_handler(int irq, void *dev_id)
+ {
+ 	struct uio_device *idev =3D (struct uio_device *)dev_id;
+ 	irqreturn_t ret;
+=20
+ 	ret =3D idev->info->handler(irq, idev->info);
+ 	if (ret =3D=3D IRQ_HANDLED)
+-		uio_event_notify(idev->info);
++		ret =3D IRQ_WAKE_THREAD;
+=20
+ 	return ret;
+ }
+=20
++static irqreturn_t uio_interrupt_thread(int irq, void *dev_id)
++{
++	struct uio_device *idev =3D (struct uio_device *)dev_id;
++
++	uio_event_notify(idev->info);
++
++	return IRQ_HANDLED;
++}
++
+ struct uio_listener {
+ 	struct uio_device *dev;
+ 	s32 event_count;
+@@ -1024,8 +1033,8 @@ int __uio_register_device(struct module *owner,
+ 		 * FDs at the time of unregister and therefore may not be
+ 		 * freed until they are released.
+ 		 */
+-		ret =3D request_irq(info->irq, uio_interrupt,
+-				  info->irq_flags, info->name, idev);
++		ret =3D request_threaded_irq(info->irq, uio_interrupt_handler, uio_int=
+errupt_thread,
++					   info->irq_flags, info->name, idev);
+ 		if (ret) {
+ 			info->uio_dev =3D NULL;
+ 			goto err_request_irq;
+--=20
+2.43.2
 
-> ---
->  fs/bcachefs/fs-io-direct.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/fs/bcachefs/fs-io-direct.c b/fs/bcachefs/fs-io-direct.c
-> index 33cb6da3a5ad..f49e6c0f0f68 100644
-> --- a/fs/bcachefs/fs-io-direct.c
-> +++ b/fs/bcachefs/fs-io-direct.c
-> @@ -536,7 +536,7 @@ static __always_inline long bch2_dio_write_loop(struct dio_write *dio)
->  		if (likely(!dio->iter.count) || dio->op.error)
->  			break;
->  
-> -		bio_reset(bio, NULL, REQ_OP_WRITE);
-> +		bio_reset(bio, NULL, REQ_OP_WRITE | REQ_SYNC | REQ_IDLE);
->  	}
->  out:
->  	return bch2_dio_write_done(dio);
-> @@ -618,7 +618,7 @@ ssize_t bch2_direct_write(struct kiocb *req, struct iov_iter *iter)
->  
->  	bio = bio_alloc_bioset(NULL,
->  			       bio_iov_vecs_to_alloc(iter, BIO_MAX_VECS),
-> -			       REQ_OP_WRITE,
-> +			       REQ_OP_WRITE | REQ_SYNC | REQ_IDLE,
->  			       GFP_KERNEL,
->  			       &c->dio_write_bioset);
->  	dio = container_of(bio, struct dio_write, op.wbio.bio);
-> -- 
-> 2.41.0
-> 
 
