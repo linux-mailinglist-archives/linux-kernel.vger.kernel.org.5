@@ -1,196 +1,163 @@
-Return-Path: <linux-kernel+bounces-118959-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-118960-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8470888C1F3
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 13:21:36 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A7F7B88C1F4
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 13:21:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A8DB41C3F3B7
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 12:21:35 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 637B83014E5
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 12:21:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5F6E971B40;
-	Tue, 26 Mar 2024 12:21:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EB52B745DC;
+	Tue, 26 Mar 2024 12:21:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="CbjX0r/Y"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="mtpuVFXI"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8A3397174B;
-	Tue, 26 Mar 2024 12:21:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 754287441F
+	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 12:21:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711455686; cv=none; b=sTP7Z4mMxW6vTXII82CewT2aaS4iC0CovpKhybSUvvOKWlybmw1qQe84pq7r82myHvNktwsHIp7khQgasG6vS1AfFepCYf/537exmAm4ZYAWo1RzhU2pA03aoJFa+AwCnFD6D4F1onGJIDOqA5h15ISu4gUxCnIeHqmK5p2qoWk=
+	t=1711455691; cv=none; b=P8sAXUvBxLhxpnG+feGzP6ZDmNG1zIN9k+7LMeigdFkuwJSS+8cuJhu4AfA9S1ajk8ldycadpDlEMQh6fEDVkP25dkBMddlPODEj+WdGQW5lQD0inRlwwhj3ys89XMMNgeUavAuoOVh/IemMQxmwPD2yPepfc4vHTPXxAgIL0SQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711455686; c=relaxed/simple;
-	bh=5pFOehu23RiUY0BYXzSTBk2aotPMSZ0Omiv/vhmPVTY=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=L5yQyFhurFFKP32JgU6tacpZY1AjKsm9TJHi68tl8xhd/myYSdwltGMHcsgaWzsJu9kncTVf+8vBbmLkUPw7zOW4Q1Ww4Aj/Jp716N1UKrW8D5Ym3ymQHp1ozAS/c0MAGL+GgYfZNE51SqzpijRnMGxfpXfUtUNqORfgu66wjME=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=CbjX0r/Y; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 15F70C43399;
-	Tue, 26 Mar 2024 12:21:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711455686;
-	bh=5pFOehu23RiUY0BYXzSTBk2aotPMSZ0Omiv/vhmPVTY=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=CbjX0r/YOTkJvv3GDIkOKz+upCe1NGNNDaQ65PF6+1tOCzAgC24UxPSql+7rwL5Wb
-	 DeANhU0XuyJmDHnZJBB9WfwMfrLknoF4JnyWhNNNsUszcT3/XJpTJlKClr1tu+dlAp
-	 ObKjBKGTCSVzVRzVUpJv7tQeoxHKfOHja4v5B1ajvXfFxYqH//O6sPGJQVyrdhWr5+
-	 MXhpWaWgPTyurFUeM4io8KViKwQVi5J2gs9L61ZaaFeVrPJRX+sMI/kBoQdV70LE9m
-	 Yq1hvmZCz6iXLJ+TUfKtlpmutTd4nGfPRQ+w+TEPDk3zQqU5bU7wbmmGgLHg08aN+2
-	 KuoodPthZT4Mw==
-Received: by mail-oo1-f45.google.com with SMTP id 006d021491bc7-5a48320f0f3so776270eaf.1;
-        Tue, 26 Mar 2024 05:21:26 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCWz40F9eaboEh9Ie+JGSj8M5VcK5eRNPlZZqd3TH5L2eoq27DqC8M/46ymYci3MMyg8IxPguMCHxZQIOby8XIkJpK3op7bWOQ7kt0aHoluvw5xU9vBIqR9bZwJc4XyEc/EuSwZrdUA=
-X-Gm-Message-State: AOJu0YwuTwJdDWKZUqR2+nv0qaz1DSrKn5zxZgSQ//NKrunYTv8NBemH
-	Q0JKDYLQ4zrTbMnbfFs9HkCj/YpkpGNAVI5LJ/XgVb5L3bGhrjNAqwU19HyOOJdlg46bDOmHKG3
-	vpMbhN3FxLITY5ZdoHtLckGwYIws=
-X-Google-Smtp-Source: AGHT+IEK57tP/VjSYirhPAhG/Ufy9aEFvsV0mjUGELZEVKAiXgwO+z2LIM7XmmQJ+Yc3Jo5405DIQ+lcUn3r1t7eVrM=
-X-Received: by 2002:a4a:6c19:0:b0:5a4:7790:61b4 with SMTP id
- q25-20020a4a6c19000000b005a4779061b4mr8128005ooc.0.1711455685354; Tue, 26 Mar
- 2024 05:21:25 -0700 (PDT)
+	s=arc-20240116; t=1711455691; c=relaxed/simple;
+	bh=fB1NRi5e23WxYWmcslguhVN6x/28OSeS/uzIQxRcQ3I=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=NdbaHPR0iRdlrEwZNnrBZmkFG2bdmj2wF2p3PdPjhjKdg6vLJe70FVY86CBFmCRr82MRNQF3A30yZ04gw33op9iBFAhBDUjJ0ACKZPpYVlgyowA6qI6dYstS2HowKtPLMP0hKIU+YsOeR33CpTenC0KG6/QRB5Rj5+hRFWH46lo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=mtpuVFXI; arc=none smtp.client-ip=192.198.163.18
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1711455689; x=1742991689;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=fB1NRi5e23WxYWmcslguhVN6x/28OSeS/uzIQxRcQ3I=;
+  b=mtpuVFXI5HCHGJeLc4aFeRurXIpoxjGmwxdav+L7FcvJ1HBgslWUU6T7
+   b28GCLZbXySN0arGmCh+/zm2DayfTjWIyCpSvGpayJYu/98k6ruIU3yrx
+   k2jgJtjEEKTamCAC68oAW/0if+qdqdhcHT/BAt/sQXgTTT3wdehOXJpVo
+   FW7w38dI5b6Moyi27PfzaDRgtOfM3OBAMb/ZJGoQZg2Tp8FrmCZl8IsFR
+   YEXVSTTmxBbGJmqyCq7YfK9oz5WfIPc7GpaXAD7ZoElvPi/4XiS4KuyoA
+   AQ9FKmXHkbTFEoAdcjA7F3D7ZSPRKSEo+eWIK2nKjAQZOyvaRvnWBBShp
+   g==;
+X-CSE-ConnectionGUID: 8KJvAbCLQzmMEmsypb5Hlw==
+X-CSE-MsgGUID: bVBazYFYTLyYBCkJx1cRNQ==
+X-IronPort-AV: E=McAfee;i="6600,9927,11024"; a="6333945"
+X-IronPort-AV: E=Sophos;i="6.07,156,1708416000"; 
+   d="scan'208";a="6333945"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmvoesa112.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Mar 2024 05:21:28 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,11024"; a="937072476"
+X-IronPort-AV: E=Sophos;i="6.07,156,1708416000"; 
+   d="scan'208";a="937072476"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by fmsmga001.fm.intel.com with ESMTP; 26 Mar 2024 05:21:25 -0700
+Received: by black.fi.intel.com (Postfix, from userid 1000)
+	id 942D3E7; Tue, 26 Mar 2024 14:21:24 +0200 (EET)
+Date: Tue, 26 Mar 2024 14:21:24 +0200
+From: "kirill.shutemov@linux.intel.com" <kirill.shutemov@linux.intel.com>
+To: "Huang, Kai" <kai.huang@intel.com>
+Cc: "tglx@linutronix.de" <tglx@linutronix.de>, 
+	"mingo@redhat.com" <mingo@redhat.com>, "Hansen, Dave" <dave.hansen@intel.com>, 
+	"bp@alien8.de" <bp@alien8.de>, 
+	"sathyanarayanan.kuppuswamy@linux.intel.com" <sathyanarayanan.kuppuswamy@linux.intel.com>, "hpa@zytor.com" <hpa@zytor.com>, 
+	"Reshetova, Elena" <elena.reshetova@intel.com>, "seanjc@google.com" <seanjc@google.com>, 
+	"Edgecombe, Rick P" <rick.p.edgecombe@intel.com>, "x86@kernel.org" <x86@kernel.org>, 
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCHv2 4/4] x86/tdx: Enable ENUM_TOPOLOGY
+Message-ID: <mh5bwjdwzg5kg6b4mqnxpu2ri5765ilgoskefdnbkgyhzqymqg@elweoth2mh6j>
+References: <20240325104607.2653307-1-kirill.shutemov@linux.intel.com>
+ <20240325104607.2653307-5-kirill.shutemov@linux.intel.com>
+ <ea00b63e4e7f27dfb35b8b5947bd0951039db9bd.camel@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240325222424.4179635-1-daniel.lezcano@linaro.org> <fbef883e-23f8-41b9-852b-c52d18816559@notapiano>
-In-Reply-To: <fbef883e-23f8-41b9-852b-c52d18816559@notapiano>
-From: "Rafael J. Wysocki" <rafael@kernel.org>
-Date: Tue, 26 Mar 2024 13:21:14 +0100
-X-Gmail-Original-Message-ID: <CAJZ5v0g5wZvKgh7HGa0NSrVQ=E-WeC1v0Av0h08-mQC9t7HQ3Q@mail.gmail.com>
-Message-ID: <CAJZ5v0g5wZvKgh7HGa0NSrVQ=E-WeC1v0Av0h08-mQC9t7HQ3Q@mail.gmail.com>
-Subject: Re: [PATCH] Revert "thermal: core: Don't update trip points inside
- the hysteresis range"
-To: =?UTF-8?B?TsOtY29sYXMgRi4gUi4gQS4gUHJhZG8=?= <nfraprado@collabora.com>, 
-	Daniel Lezcano <daniel.lezcano@linaro.org>
-Cc: Manaf Meethalavalappu Pallikunhi <quic_manafm@quicinc.com>, Zhang Rui <rui.zhang@intel.com>, 
-	Lukasz Luba <lukasz.luba@arm.com>, "open list:THERMAL" <linux-pm@vger.kernel.org>, 
-	open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ea00b63e4e7f27dfb35b8b5947bd0951039db9bd.camel@intel.com>
 
-On Tue, Mar 26, 2024 at 12:29=E2=80=AFAM N=C3=ADcolas F. R. A. Prado
-<nfraprado@collabora.com> wrote:
->
-> On Mon, Mar 25, 2024 at 11:24:24PM +0100, Daniel Lezcano wrote:
-> > It has been reported the commit cf3986f8c01d3 introduced a regression
-> > when the temperature is wavering in the hysteresis region. The
-> > mitigation stops leading to an uncontrolled temperature increase until
-> > reaching the critical trip point.
-> >
-> > Here what happens:
-> >
-> >  * 'throttle' is when the current temperature is greater than the trip
-> >    point temperature
-> >  * 'target' is the mitigation level
-> >  * 'passive' is positive when there is a mitigation, zero otherwise
-> >  * these values are computed in the step_wise governor
-> >
-> > Configuration:
-> >
-> >  trip point 1: temp=3D95=C2=B0C, hyst=3D5=C2=B0C (passive)
-> >  trip point 2: temp=3D115=C2=B0C, hyst=3D0=C2=B0C (critical)
-> >  governor: step_wise
-> >
-> > 1. The temperature crosses the way up the trip point 1 at 95=C2=B0C
-> >
-> >    - trend=3Draising
-> >    - throttle=3D1, target=3D1
-> >    - passive=3D1
-> >    - set_trips: low=3D90=C2=B0C, high=3D115=C2=B0C
-> >
-> > 2. The temperature decreases but stays in the hysteresis region at
-> >    93=C2=B0C
-> >
-> >    - trend=3Ddropping
-> >    - throttle=3D0, target=3D0
-> >    - passive=3D1
-> >
-> >    Before cf3986f8c01d3
-> >    - set_trips: low=3D90=C2=B0C, high=3D95=C2=B0C
-> >
-> >    After cf3986f8c01d3
-> >    - set_trips: low=3D90=C2=B0C, high=3D115=C2=B0C
-> >
-> > 3. The temperature increases a bit but stays in the hysteresis region
-> >    at 94=C2=B0C (so below the trip point 1 temp 95=C2=B0C)
-> >
-> >    - trend=3Draising
-> >    - throttle=3D0, target=3D0
-> >    - passive=3D1
-> >
-> >    Before cf3986f8c01d3
-> >    - set_trips: low=3D90=C2=B0C, high=3D95=C2=B0C
-> >
-> >    After cf3986f8c01d3
-> >    - set_trips: low=3D90=C2=B0C, high=3D115=C2=B0C
-> >
-> > 4. The temperature decreases but stays in the hysteresis region at
-> >    93=C2=B0C
-> >
-> >    - trend=3Ddropping
-> >    - throttle=3D0, target=3DTHERMAL_NO_TARGET
-> >    - passive=3D0
-> >
-> >    Before cf3986f8c01d3
-> >    - set_trips: low=3D90=C2=B0C, high=3D95=C2=B0C
-> >
-> >    After cf3986f8c01d3
-> >    - set_trips: low=3D90=C2=B0C, high=3D115=C2=B0C
-> >
-> > At this point, the 'passive' value is zero, there is no mitigation,
-> > the temperature is in the hysteresis region, the next trip point is
-> > 115=C2=B0C. As 'passive' is zero, the timer to monitor the thermal zone=
- is
-> > disabled. Consequently if the temperature continues to increase, no
-> > mitigation will happen and it will reach the 115=C2=B0C trip point and
-> > reboot.
-> >
-> > Before the optimization, the high boundary would have been 95=C2=B0C, t=
-hus
-> > triggering the mitigation again and rearming the polling timer.
-> >
-> > The optimization make sense but given the current implementation of
-> > the step_wise governor collaborating via this 'passive' flag with the
-> > core framework it can not work.
-> >
-> > From a higher perspective it seems like there is a problem between the
-> > governor which sets a variable to be used by the core framework. That
-> > sounds akward and it would make much more sense if the core framework
-> > controls the governor and not the opposite. But as the devil hides in
-> > the details, there are some subtilities to be addressed before.
-> >
-> > Elaborating those would be out of the scope this changelog. So let's
-> > stay simple and revert the change first to fixup all broken mobile
-> > platforms.
-> >
-> > This reverts commit cf3986f8c01d355490d0ac6024391b989a9d1e9d.
-> >
-> > This revert applies on top of v6.9-rc1.
-> >
-> > Fixes: cf3986f8c01d3 ("thermal: core: Don't update trip points inside t=
-he hysteresis range")
-> > Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
-> > Reported-by: Manaf Meethalavalappu Pallikunhi <quic_manafm@quicinc.com>
-> > Cc: N=C3=ADcolas F. R. A. Prado <nfraprado@collabora.com>
->
-> As mentioned in the commit, the issue is elsewhere, but given the origina=
-l
-> commit was an optimization to prevent unnecessary trip point updates, and=
- that
-> it seems to have caused a regression, sounds reasonable to revert at leas=
-t while
-> a proper fix isn't found.
->
-> Acked-by: N=C3=ADcolas F. R. A. Prado <nfraprado@collabora.com>
->
-> Only thing is you might want to add a cc: stable tag to guarantee it is
-> backported (AFAIR Fixes: doesn't guarantee backport), even more so given =
-there
-> are conflicts.
+On Tue, Mar 26, 2024 at 10:59:38AM +0000, Huang, Kai wrote:
+> On Mon, 2024-03-25 at 12:46 +0200, Kirill A. Shutemov wrote:
+> > TDX 1.0 defines baseline behaviour of TDX guest platform. In TDX 1.0
+> 
 
-Applied as 6.9-rc material, thanks!
+Okay.
+
+> > generates a #VE when accessing topology-related CPUID leafs (0xB and
+> > 0x1F) and the X2APIC_APICID MSR. The kernel returns all zeros on CPUID
+> > topology. Any complications will cause problems.
+> > 
+> > The ENUM_TOPOLOGY feature allows the VMM to provide topology
+> > information to the guest. Enabling the feature eliminates
+> > topology-related #VEs: the TDX module virtualizes accesses to
+> > the CPUID leafs and the MSR.
+> > 
+> > Enable ENUM_TOPOLOGY if it is available.
+> > 
+> > Signed-off-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+> > ---
+> >  arch/x86/coco/tdx/tdx.c           | 19 +++++++++++++++++++
+> >  arch/x86/include/asm/shared/tdx.h |  3 +++
+> >  2 files changed, 22 insertions(+)
+> > 
+> > diff --git a/arch/x86/coco/tdx/tdx.c b/arch/x86/coco/tdx/tdx.c
+> > index 860bfdd5a11d..b2d969432a22 100644
+> > --- a/arch/x86/coco/tdx/tdx.c
+> > +++ b/arch/x86/coco/tdx/tdx.c
+> > @@ -289,6 +289,25 @@ static void tdx_setup(u64 *cc_mask)
+> >  		else
+> >  			tdx_panic(msg);
+> >  	}
+> > +
+> > +	/*
+> > +	 * TDX 1.0 generates a #VE when accessing topology-related CPUID leafs
+> > +	 * (0xB and 0x1F) and the X2APIC_APICID MSR. The kernel returns all
+> > +	 * zeros on CPUID #VEs. In practice, this means that the kernel can only
+> > +	 * boot with a plain topology. Any complications will cause problems.
+> > +	 *
+> > +	 * The ENUM_TOPOLOGY feature allows the VMM to provide topology
+> > +	 * information to the guest in a safe manner. Enabling the feature
+> > +	 * eliminates topology-related #VEs: the TDX module virtualizes
+> > +	 * accesses to the CPUID leafs and the MSR.
+> > +	 *
+> > +	 * Enable ENUM_TOPOLOGY if it is available.
+> > +	 */
+> > +	if ((features & TDX_FEATURES0_ENUM_TOPOLOGY) &&
+> > +	    tdg_vm_rd(TDCS_TOPOLOGY_ENUM_CONFIGURED)) {
+> > +		if (!tdcs_ctls_set(TD_CTLS_ENUM_TOPOLOGY))
+> > +			pr_warn("Failed to enable ENUM_TOPOLOGY\n");
+> > +	}
+> >  }
+> >  
+> >  /*
+> > diff --git a/arch/x86/include/asm/shared/tdx.h b/arch/x86/include/asm/shared/tdx.h
+> > index 29a61c72e4dd..2964c506b241 100644
+> > --- a/arch/x86/include/asm/shared/tdx.h
+> > +++ b/arch/x86/include/asm/shared/tdx.h
+> > @@ -27,15 +27,18 @@
+> >  #define TDCS_CONFIG_FLAGS		0x1110000300000016
+> >  #define TDCS_TD_CTLS			0x1110000300000017
+> >  #define TDCS_NOTIFY_ENABLES		0x9100000000000010
+> > +#define TDCS_TOPOLOGY_ENUM_CONFIGURED	0x9100000000000019
+> 
+> Do you know where can I find the metadata field ID definition?
+> 
+> It seems I couldn't find all metadata field ID definitions in the latest TDX 1.5
+> ABI spec anymore.
+
+See "Intel TDX Module v1.5 ABI Definitions":
+
+https://cdrdv2.intel.com/v1/dl/getContent/795381
+
+It has all fields described in JSON.
+
+-- 
+  Kiryl Shutsemau / Kirill A. Shutemov
 
