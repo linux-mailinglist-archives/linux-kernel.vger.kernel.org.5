@@ -1,192 +1,79 @@
-Return-Path: <linux-kernel+bounces-118730-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-118732-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 15A3388BE9F
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 11:00:47 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id DE57788BEA9
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 11:02:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 64E3BB244E6
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 10:00:44 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 98FC62E5D6D
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 10:02:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 148D654915;
-	Tue, 26 Mar 2024 10:00:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3E41E548EC;
+	Tue, 26 Mar 2024 10:02:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="UOznrKGV";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="Nifv0FZX";
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="UOznrKGV";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="Nifv0FZX"
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="1xywrusx";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="CDDf/Q6N"
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 99992487B5;
-	Tue, 26 Mar 2024 10:00:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1F7834F88C
+	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 10:02:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711447231; cv=none; b=MGzi1z18QPNoQw9McJcxCLA+1msLvlg8ozJ9LEtL1Ie+8pZfBOKVK2UKJVHVChBSqKe6ikyPPcVkNCymo5mwI1i3n0EooVQwngyPR554eIdOVjvuEj9my+HVfU/p+aJhmLNrdw9TgMMnYzulnqfsJY2FgqQxUGYfZOIkjhRAMEg=
+	t=1711447326; cv=none; b=eX3psAjTj/FSDIylmqcOef9zP8qXGsbCYnrI5qkez+VOhrytMpo/RwW8sXbpxqkQfi62MA4tbscjfdysrCkGOQCIbxjSwA+Auhpa52RIP4jh/BLHm0x7qCH8G5GOuKD7sMiHFhbChkvxKcBb1VmJ5jd5F3msPd1PmXySoDLQ0Gw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711447231; c=relaxed/simple;
-	bh=XJNsynjzhDj0K6HmxLv28+YnYkW2HnZhhLlHe4y7U3k=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=IaiAKgn+PsDl56UNnHEnrkwZ6QndH2rjHHz3gvvX9X2hWhQSJ6GGmDg9qqmP9/uBpLuf0Y7bRKuUp4SI0oqRFsbiqE6BlZrD5umW2mzn/VslllUiWgvgn2FYaJiI0pkMlxBGkQlSCvNeRaPu32VCtaG7zttnSROLcXUrWJ9Ha8o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=UOznrKGV; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=Nifv0FZX; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=UOznrKGV; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=Nifv0FZX; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 578B55D41B;
-	Tue, 26 Mar 2024 10:00:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1711447227; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
+	s=arc-20240116; t=1711447326; c=relaxed/simple;
+	bh=cIozTMyMkGTuWmMy5E6bpi3mGnPyoPmFmY+nCcyhY2g=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=QEpXWTJC0iYnrsQhIKKBSN9ygyZE1Sz+ObIVNsHPzSwa8F71IkumvliJh2S1LJvTEyvuKFMnvfbfHupYWy2K2z1it7OJEuWexAoGTol+Dp6ugFZFXo4WZzsHcxPC3fAqg9qV6X6WMfgpaw9av6cJCYmyIDnh3vXsKeMfZoXhBQw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=1xywrusx; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=CDDf/Q6N; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+From: Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1711447320;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=KICT4ootVVkt82VIPFNRhNaswFEFMB6uWwwdlc+odyo=;
-	b=UOznrKGVKIfFw2Fuszv5rYbTxsSo6NUggGIl4qc4DEs4/FyktjuYR8w/28z9wRcXhmp5DM
-	yuDOfmvFfgFCmZqQuLpc940hGiok4U5tIA1OnKTWVm8hgbCxN1xChmxDD0tz78xhpYhuoV
-	Y4rO/xz2+NyOS6VhgXYbMjfCH5lhB/s=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1711447227;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
+	bh=cIozTMyMkGTuWmMy5E6bpi3mGnPyoPmFmY+nCcyhY2g=;
+	b=1xywrusxZYr06kkq2IwgfcCuF1RWn9POjuk+5aOJlDiIbW03sxe3vPh3I+CGoQBnEHc4hk
+	cN87ZHKSVqDiJRcj1rrARayNiaYZWRkPUoBHEwboLbPDPwUFgVUEiBRYgW4ZOHCI4++O2p
+	A4pMVd88oSG69gaiWAJjjI6k4vtY75AhYyXiyqBrXZpBVbsAO4yh+3BlUU5Uo4KPekY8e1
+	MEOZIT4ErHniAw/0ZlJWsk0EvrhU9y7GvulJM8Kgu+Ko0XYbFNZH9sQtAKV0y4ArwoLsXK
+	ds25XIzGBCMyNKDSOf0/8QCKDpQsnfxaER1vwq15+ydLlTz9ltGJpwq/5lASvg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1711447320;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=KICT4ootVVkt82VIPFNRhNaswFEFMB6uWwwdlc+odyo=;
-	b=Nifv0FZX88quizLkdpQphaS7PfqMVM9ArrCcCEpGk+35zdfozitUjml3zkzOyQKwHZ0nLb
-	McctA9slEgNiv+Aw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1711447227; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=KICT4ootVVkt82VIPFNRhNaswFEFMB6uWwwdlc+odyo=;
-	b=UOznrKGVKIfFw2Fuszv5rYbTxsSo6NUggGIl4qc4DEs4/FyktjuYR8w/28z9wRcXhmp5DM
-	yuDOfmvFfgFCmZqQuLpc940hGiok4U5tIA1OnKTWVm8hgbCxN1xChmxDD0tz78xhpYhuoV
-	Y4rO/xz2+NyOS6VhgXYbMjfCH5lhB/s=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1711447227;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=KICT4ootVVkt82VIPFNRhNaswFEFMB6uWwwdlc+odyo=;
-	b=Nifv0FZX88quizLkdpQphaS7PfqMVM9ArrCcCEpGk+35zdfozitUjml3zkzOyQKwHZ0nLb
-	McctA9slEgNiv+Aw==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 1759B138A1;
-	Tue, 26 Mar 2024 10:00:27 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id uMT8BLucAmZfeQAAD6G6ig
-	(envelope-from <hare@suse.de>); Tue, 26 Mar 2024 10:00:27 +0000
-Message-ID: <3aa8bdf1-24f6-4e1f-a5c4-8dc2d11ca292@suse.de>
-Date: Tue, 26 Mar 2024 11:00:26 +0100
+	bh=cIozTMyMkGTuWmMy5E6bpi3mGnPyoPmFmY+nCcyhY2g=;
+	b=CDDf/Q6NBUFXVngr85o+dhunicsYWsdLkdyw7KgGgw6zKC0FXpV+2trQHXEA8DhHuhVwdL
+	uYsGEhuIB6pQ61Dw==
+To: Tiezhu Yang <yangtiezhu@loongson.cn>, Huacai Chen
+ <chenhuacai@kernel.org>, Arnd Bergmann <arnd@arndb.de>, Marc Zyngier
+ <maz@kernel.org>
+Cc: loongarch@lists.linux.dev, linux-kernel@vger.kernel.org,
+ loongson-kernel@lists.loongnix.cn
+Subject: Re: [PATCH] LoongArch: Give chance to build under !CONFIG_SMP
+In-Reply-To: <20240326062101.9822-1-yangtiezhu@loongson.cn>
+References: <20240326062101.9822-1-yangtiezhu@loongson.cn>
+Date: Tue, 26 Mar 2024 11:02:00 +0100
+Message-ID: <87v859e2g7.ffs@tglx>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 04/11] readahead: rework loop in
- page_cache_ra_unbounded()
-Content-Language: en-US
-To: Pankaj Raghav <kernel@pankajraghav.com>,
- Matthew Wilcox <willy@infradead.org>
-Cc: linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
- gost.dev@samsung.com, chandan.babu@oracle.com, mcgrof@kernel.org,
- djwong@kernel.org, linux-mm@kvack.org, linux-kernel@vger.kernel.org,
- david@fromorbit.com, akpm@linux-foundation.org,
- Pankaj Raghav <p.raghav@samsung.com>
-References: <20240313170253.2324812-1-kernel@pankajraghav.com>
- <20240313170253.2324812-5-kernel@pankajraghav.com>
- <ZgHFPZ9tNLLjKZpz@casper.infradead.org>
- <7217df4e-470b-46ab-a4fc-1d4681256885@suse.de>
- <5e5523b1-0766-43b2-abb1-f18ea63906d6@pankajraghav.com>
-From: Hannes Reinecke <hare@suse.de>
-In-Reply-To: <5e5523b1-0766-43b2-abb1-f18ea63906d6@pankajraghav.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Score: -4.29
-X-Spamd-Result: default: False [-4.29 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 XM_UA_NO_VERSION(0.01)[];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 BAYES_HAM(-3.00)[100.00%];
-	 MIME_GOOD(-0.10)[text/plain];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	 NEURAL_HAM_SHORT(-0.20)[-0.994];
-	 RCPT_COUNT_TWELVE(0.00)[13];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 RCVD_TLS_ALL(0.00)[];
-	 MID_RHS_MATCH_FROM(0.00)[]
-X-Spam-Level: 
-Authentication-Results: smtp-out2.suse.de;
-	none
-X-Spam-Flag: NO
+Content-Type: text/plain
 
-On 3/26/24 10:44, Pankaj Raghav wrote:
-> Hi Hannes,
-> 
-> On 26/03/2024 10:39, Hannes Reinecke wrote:
->> On 3/25/24 19:41, Matthew Wilcox wrote:
->>> On Wed, Mar 13, 2024 at 06:02:46PM +0100, Pankaj Raghav (Samsung) wrote:
->>>> @@ -239,8 +239,8 @@ void page_cache_ra_unbounded(struct readahead_control *ractl,
->>>>                 * not worth getting one just for that.
->>>>                 */
->>>>                read_pages(ractl);
->>>> -            ractl->_index++;
->>>> -            i = ractl->_index + ractl->_nr_pages - index - 1;
->>>> +            ractl->_index += folio_nr_pages(folio);
->>>> +            i = ractl->_index + ractl->_nr_pages - index;
->>>>                continue;
->>>>            }
->>>>    @@ -252,13 +252,14 @@ void page_cache_ra_unbounded(struct readahead_control *ractl,
->>>>                folio_put(folio);
->>>>                read_pages(ractl);
->>>>                ractl->_index++;
->>>> -            i = ractl->_index + ractl->_nr_pages - index - 1;
->>>> +            i = ractl->_index + ractl->_nr_pages - index;
->>>>                continue;
->>>>            }
->>>
->>> You changed index++ in the first hunk, but not the second hunk.  Is that
->>> intentional?
->>
->> Hmm. Looks you are right; it should be modified, too.
->> Will be fixing it up.
->>
-> You initially had also in the second hunk:
-> ractl->index += folio_nr_pages(folio);
-> 
-> and I changed it to what it is now.
-> 
-> The reason is in my reply to willy:
-> https://lore.kernel.org/linux-xfs/s4jn4t4betknd3y4ltfccqxyfktzdljiz7klgbqsrccmv3rwrd@orlwjz77oyxo/
-> 
-> Let me know if you agree with it.
-> 
-Bah. That really is overly complicated. When we attempt a conversion 
-that conversion should be stand-alone, not rely on some other patch 
-modifications later on.
-We definitely need to work on that to make it easier to review, even
-without having to read the mail thread.
+On Tue, Mar 26 2024 at 14:21, Tiezhu Yang wrote:
+>
+> This patch is based on 6.9-rc1. Please let me know if it is better to
+> split it into two patches, the first one is for arch/loongarch and the
+> second one is for drivers/irqchip.
 
-Cheers,
-
-Hannes
-
+Why are you asking? It's documented that patches should be split, no?
 
