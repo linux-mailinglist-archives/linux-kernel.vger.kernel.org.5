@@ -1,93 +1,77 @@
-Return-Path: <linux-kernel+bounces-119928-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-119924-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6631588CF08
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 21:38:28 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 390F588CEFE
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 21:37:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 964591C38228
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 20:38:27 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8E75E1F33FE1
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 20:37:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 910631411EF;
-	Tue, 26 Mar 2024 20:32:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ECCA712B152;
+	Tue, 26 Mar 2024 20:31:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="JNBev4Xm"
-Received: from mail-ed1-f46.google.com (mail-ed1-f46.google.com [209.85.208.46])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="cll2y3EP"
+Received: from mail-pf1-f174.google.com (mail-pf1-f174.google.com [209.85.210.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E916613D89B
-	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 20:32:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A531712B149
+	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 20:31:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711485161; cv=none; b=fB3H2DpCrdC/UtxGEBSXZqry0L27hJwOYfGw6kKYN3RijiXRVueKTjZpPjro9U0caULOhwKX3JqqLaoTs2jXFbsZ5q+WwOLDfPVu0zIMEhTdIsh5HQfi/7pWKWPlWtXf41Y+Zuk3Jn/JLpQzURsHo6QhxA2nEBFoFCKGjq4w668=
+	t=1711485096; cv=none; b=eMqxnD1Q7EPgbgQ7kte87RmWIujj4wi1M1csZjwogWP3ocYE0k8sawADGvSPSEy2GYb8vmzAJ3DUQCCXrKvqUnE4RkjqscX5QB27G+Of+23UzzD8CXQMX5+2eGgBREGYB+zzulRaRgFhkhMfmYOwlesy7EelmYSmZHPMpyIFsjY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711485161; c=relaxed/simple;
-	bh=o7Ismljs5kdN2ZKFTdylXCiqx/6WCg6NzZXI5LKLDRo=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=jFCUEAJCRjP4B0KOdvv3jheKX4z8W38tstd/o2drroJ8D9BMeHh2n3oQnvifJpCRhlCZSVtroKtA4I2tOK8Rf2kSVltUB27iohGzePusWJmOVcbXjDJ35tP8C4/m7JgkKJHx0aXbv3kdozf4mkxaj7uNls7F9Kdts1X4ZZcOV5o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com; spf=pass smtp.mailfrom=rivosinc.com; dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b=JNBev4Xm; arc=none smtp.client-ip=209.85.208.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rivosinc.com
-Received: by mail-ed1-f46.google.com with SMTP id 4fb4d7f45d1cf-56c08d1e900so3613162a12.3
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 13:32:39 -0700 (PDT)
+	s=arc-20240116; t=1711485096; c=relaxed/simple;
+	bh=evfHZFmAivw5Tzsqyp6alzJJjVcNw+9R6AYc1vJWM+8=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=L4egdhDh+GFOWm0fIv82smjWYSIIbgViBkFO8TZ0SXAMeycI3GHRd47F0XlNKMs9vGeUvxHopcOz9B2Rq1mqpXXNgnydILyunbWyxIGx+3BxU2ZxO8pjhhlax1uSWYl5DuU4BYY3cIl6OST4Iqf9bVzkAz/6Y/rLf51ag9D2KK0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=cll2y3EP; arc=none smtp.client-ip=209.85.210.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f174.google.com with SMTP id d2e1a72fcca58-6e703e0e5deso4336355b3a.3
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 13:31:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1711485158; x=1712089958; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=SwoTWlECTszcl/qxdYVc4t6fpZ8kE/2UkB07bRVsSm8=;
-        b=JNBev4XmZ1jX89eLFA8IH8Qx/7zzIWPRuKXmPiwdvyPBC740K33WRPXxGATQ4cAGmI
-         KvjPIDfVRkxEInMFuyxEAEwKy88H9f0Fz/e3DtfBb93gP9X/7AOT3Qf8rlz4B6v0BSFv
-         xbUwhyIejk6HUuZXCOQ0+yoKU6qf3K26BYhxeoOm8uN9G1ulsbkl0qUEkR3GCRWBW/VA
-         uX1ded1yHJFw9tCU5SPYZSNs40c7+oGyzbpWcV+a8SdNwDEfhZvdRdfO8B1IBQhG8kZm
-         Kundqe0q96nDNa2oMJS9JI1QAcDCzVmgpyfKan0+rJlSSrIIoC7TWj3M2TNNl5Ei/mRj
-         DCjw==
+        d=gmail.com; s=20230601; t=1711485093; x=1712089893; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=oWIpvUmmuUd4IVbU7Iw4AFY1pG5K7APNMP8l68hu9ho=;
+        b=cll2y3EPYFjCGoPgUtklR6X36t3hYQP8vrmdO3UMZq34M+yAAw8ieiQoIvjqZkkVbu
+         lwAfkB1iTvILjoSktIrgrZVVtGiv5XpYkKaxtrNejQE9WSUj3iY5rU6Ea3pvKKAuoOoZ
+         n8Q0F0/BCERfN1MlXMQtx62HYOiyUTjKda2antrUQ3FDi5c+RJwHMLZUp2brvSO1fT7p
+         ECF6QHmvuU2hEUpx+ZzhfYD+Is67ydlJKkWi06ZGeMo3ppktkZl38vo5AEEqHph9yj5e
+         6vgL/LUJSXbJ3HUpcNDpHeSEXyvi3TDYyVG+JKimF0Fc58y/vEmcWIJoCrRD9CP5EeNa
+         KD8Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711485158; x=1712089958;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=SwoTWlECTszcl/qxdYVc4t6fpZ8kE/2UkB07bRVsSm8=;
-        b=sQ04GDsuZlyPRkViJhHzus9OhFMXolQR8ZELyAmJxIOqhO7KvCF5TRfmiztM4bt7Lx
-         qdtiqCE8FDn2NxZvVYWLwdLq35q0IHXutmE7zaYj6xhABp5COsTuC8NaxtVRKggBQCc2
-         whogmFPkUe8Mpsx2eJAAbWI9tmj55RaUYdpueHk+ll7ZeQCx+ap8zVNExKynm9HgTqGW
-         bRBgd6OH7Q3C43V6fz6YDkakF10z1s5HWOtloQeWaPAEEk9XQAu0qn2I7QKMM7cpktSa
-         n49XAxbQpM65/CVXn1qYf7yVqoVLUdUbsl7Asxjihv0NFDVCgbKRneMk/5c6FX2IfBHd
-         d+kA==
-X-Forwarded-Encrypted: i=1; AJvYcCUxiw2To2NsLMHmN7Btk3uDEiEzMIXliHDn8Hg2oomh1jrWOYgm9hYAzQWVMuzHlI6mE24Bxv+aan+cYEhqdZ0V7W00v3L5wvniXomp
-X-Gm-Message-State: AOJu0YxiB4TSnn5BmP6iH1olRlscnXAkIrO7is9kK23P8pYWsE5R8EV3
-	96hlKO/2oDDKu7K3JVDnmRXlEBYbdmqJ0Fm0xpqKpCnSZjLMd/KmR7I0e3/iqMY=
-X-Google-Smtp-Source: AGHT+IENt7YBLnNtoUOQOQp272wkaUn+XI5a9KNpsaZCh2RNyyuvnhB+Bx/GceA3IeXjeVnoNmMyRA==
-X-Received: by 2002:a50:8e12:0:b0:565:bb25:bb7a with SMTP id 18-20020a508e12000000b00565bb25bb7amr3175538edw.24.1711485157973;
-        Tue, 26 Mar 2024 13:32:37 -0700 (PDT)
-Received: from alex-rivos.ba.rivosinc.com ([2a02:8440:5240:d2b3:9657:7432:d88d:84a9])
-        by smtp.gmail.com with ESMTPSA id da12-20020a056402176c00b0056b816e253esm4525782edb.13.2024.03.26.13.32.36
+        d=1e100.net; s=20230601; t=1711485093; x=1712089893;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=oWIpvUmmuUd4IVbU7Iw4AFY1pG5K7APNMP8l68hu9ho=;
+        b=k6+pcxK+SvLbvwggmr6hosg0suE+GqxjxXvSGtZF72YDfj0XXok+nd2WPidq/pPQ0V
+         7Wh+bTks3szPv/J1dltAh1LH55SPfU+JmJKrPcYmWJHEl7jRP3ND46jDC7r/jKpYaQlt
+         mkJaC14x5DZ6EllQ6iOMcUU55GpLOVYC1W2++8zHF3vW5urb/qtJwVMfAZYj8rC0vNL8
+         99k2cRyCwV/d/71A+AO8JfX2a6sdUSygtxWdAOLpOf0LveOH5lKeB6woX0EKxG2kMyu5
+         zOQ1T95qhEhkbNzBm2APumBiPIgS7xF5ZAQFn2Aq2idKJnZdR6qX8/DJbzOs1/L7NVWy
+         +KNQ==
+X-Gm-Message-State: AOJu0Yyndi4bRR+/4sXfle/jWaSG3JM/okd0/l88CcZfrOKmIKZXd5GY
+	l5f/pqaEWX4AXnMOyYdgn+b0lLo7jVNIEksSfXkA9WUfvQjPxTQPZmsZv1gB
+X-Google-Smtp-Source: AGHT+IFvFxp511Ppefu6lB/2hF5JJHC2DrMBwr+oLjF2vHyJWwQlH/ghml9tDaCKjUMnMtZTyYhbmw==
+X-Received: by 2002:a05:6a00:ad5:b0:6ea:7468:1f31 with SMTP id c21-20020a056a000ad500b006ea74681f31mr997043pfl.30.1711485093309;
+        Tue, 26 Mar 2024 13:31:33 -0700 (PDT)
+Received: from daehojeong-desktop.mtv.corp.google.com ([2620:0:1000:8411:6e7a:7c1d:ebf:951e])
+        by smtp.gmail.com with ESMTPSA id k9-20020aa79d09000000b006e535bf8da4sm6364595pfp.57.2024.03.26.13.31.32
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Mar 2024 13:32:37 -0700 (PDT)
-From: Alexandre Ghiti <alexghiti@rivosinc.com>
-To: Paul Walmsley <paul.walmsley@sifive.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Albert Ou <aou@eecs.berkeley.edu>,
-	Jisheng Zhang <jszhang@kernel.org>,
-	=?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn@kernel.org>,
-	Pu Lehui <pulehui@huawei.com>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Puranjay Mohan <puranjay12@gmail.com>,
-	Zong Li <zong.li@sifive.com>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	linux-riscv@lists.infradead.org,
-	linux-kernel@vger.kernel.org
-Cc: Alexandre Ghiti <alexghiti@rivosinc.com>,
-	Andrea Parri <andrea@rivosinc.com>,
-	Andy Chiu <andy.chiu@sifive.com>
-Subject: [PATCH 2/2] riscv: Disable preemption when using patch_map()
-Date: Tue, 26 Mar 2024 21:30:17 +0100
-Message-Id: <20240326203017.310422-3-alexghiti@rivosinc.com>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20240326203017.310422-1-alexghiti@rivosinc.com>
-References: <20240326203017.310422-1-alexghiti@rivosinc.com>
+        Tue, 26 Mar 2024 13:31:32 -0700 (PDT)
+From: Daeho Jeong <daeho43@gmail.com>
+To: linux-kernel@vger.kernel.org,
+	linux-f2fs-devel@lists.sourceforge.net,
+	kernel-team@android.com
+Cc: Daeho Jeong <daehojeong@google.com>
+Subject: [PATCH v5] f2fs: prevent writing without fallocate() for pinned files
+Date: Tue, 26 Mar 2024 13:31:30 -0700
+Message-ID: <20240326203130.85748-1-daeho43@gmail.com>
+X-Mailer: git-send-email 2.44.0.396.g6e790dbe36-goog
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -96,70 +80,126 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-patch_map() uses fixmap mappings to circumvent the non-writability of
-the kernel text mapping.
+From: Daeho Jeong <daehojeong@google.com>
 
-The __set_fixmap() function only flushes the current cpu tlb, it does
-not emit an IPI so we must make sure that while we use a fixmap mapping,
-the current task is not migrated on another cpu which could miss the
-newly introduced fixmap mapping.
+In a case writing without fallocate(), we can't guarantee it's allocated
+in the conventional area for zoned stroage. To make it consistent across
+storage devices, we disallow it regardless of storage device types.
 
-So in order to avoid any task migration, disable the preemption.
-
-Reported-by: Andrea Parri <andrea@rivosinc.com>
-Closes: https://lore.kernel.org/all/ZcS+GAaM25LXsBOl@andrea/
-Reported-by: Andy Chiu <andy.chiu@sifive.com>
-Closes: https://lore.kernel.org/linux-riscv/CABgGipUMz3Sffu-CkmeUB1dKVwVQ73+7=sgC45-m0AE9RCjOZg@mail.gmail.com/
-Fixes: cad539baa48f ("riscv: implement a memset like function for text")
-Fixes: 0ff7c3b33127 ("riscv: Use text_mutex instead of patch_lock")
-Co-developed-by: Andy Chiu <andy.chiu@sifive.com>
-Signed-off-by: Andy Chiu <andy.chiu@sifive.com>
-Signed-off-by: Alexandre Ghiti <alexghiti@rivosinc.com>
+Signed-off-by: Daeho Jeong <daehojeong@google.com>
 ---
- arch/riscv/kernel/patch.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
+v2: covered the direct io case
+v3: covered the mkwrite case
+v4: moved pin file check position in prepare_write_begin()
+v5: removed unnecessary condition in f2fs_map_blocks() and disallowed
+    pre-written inodes for file pinning
+---
+ fs/f2fs/data.c | 20 ++++++++++++++++----
+ fs/f2fs/file.c | 18 +++++++++---------
+ 2 files changed, 25 insertions(+), 13 deletions(-)
 
-diff --git a/arch/riscv/kernel/patch.c b/arch/riscv/kernel/patch.c
-index 37e87fdcf6a0..30e12b310cab 100644
---- a/arch/riscv/kernel/patch.c
-+++ b/arch/riscv/kernel/patch.c
-@@ -80,6 +80,8 @@ static int __patch_insn_set(void *addr, u8 c, size_t len)
- 	 */
- 	lockdep_assert_held(&text_mutex);
+diff --git a/fs/f2fs/data.c b/fs/f2fs/data.c
+index c21b92f18463..1b02a9291176 100644
+--- a/fs/f2fs/data.c
++++ b/fs/f2fs/data.c
+@@ -1584,8 +1584,11 @@ int f2fs_map_blocks(struct inode *inode, struct f2fs_map_blocks *map, int flag)
  
-+	preempt_disable();
+ 	/* use out-place-update for direct IO under LFS mode */
+ 	if (map->m_may_create &&
+-	    (is_hole || (f2fs_lfs_mode(sbi) && flag == F2FS_GET_BLOCK_DIO))) {
+-		if (unlikely(f2fs_cp_error(sbi))) {
++	    (is_hole || (f2fs_lfs_mode(sbi) && flag == F2FS_GET_BLOCK_DIO &&
++			 !f2fs_is_pinned_file(inode)))) {
++		if (unlikely(f2fs_cp_error(sbi)) ||
++		    (f2fs_is_pinned_file(inode) &&
++		     flag != F2FS_GET_BLOCK_PRE_DIO)) {
+ 			err = -EIO;
+ 			goto sync_out;
+ 		}
+@@ -3378,6 +3381,8 @@ static int prepare_write_begin(struct f2fs_sb_info *sbi,
+ 		f2fs_map_lock(sbi, flag);
+ 		locked = true;
+ 	} else if ((pos & PAGE_MASK) >= i_size_read(inode)) {
++		if (f2fs_is_pinned_file(inode))
++			return -EIO;
+ 		f2fs_map_lock(sbi, flag);
+ 		locked = true;
+ 	}
+@@ -3414,8 +3419,15 @@ static int prepare_write_begin(struct f2fs_sb_info *sbi,
+ 
+ 		/* hole case */
+ 		err = f2fs_get_dnode_of_data(&dn, index, LOOKUP_NODE);
+-		if (!err && dn.data_blkaddr != NULL_ADDR)
+-			goto out;
++		if (!err) {
++			if (dn.data_blkaddr != NULL_ADDR) {
++				goto out;
++			} else if (f2fs_is_pinned_file(inode)) {
++				err = -EIO;
++				goto out;
++			}
++		}
 +
- 	if (across_pages)
- 		patch_map(addr + PAGE_SIZE, FIX_TEXT_POKE1);
+ 		f2fs_put_dnode(&dn);
+ 		f2fs_map_lock(sbi, F2FS_GET_BLOCK_PRE_AIO);
+ 		WARN_ON(flag != F2FS_GET_BLOCK_PRE_AIO);
+diff --git a/fs/f2fs/file.c b/fs/f2fs/file.c
+index 82277e95c88f..7aa53cf553a1 100644
+--- a/fs/f2fs/file.c
++++ b/fs/f2fs/file.c
+@@ -57,7 +57,7 @@ static vm_fault_t f2fs_vm_page_mkwrite(struct vm_fault *vmf)
+ 	struct inode *inode = file_inode(vmf->vma->vm_file);
+ 	struct f2fs_sb_info *sbi = F2FS_I_SB(inode);
+ 	struct dnode_of_data dn;
+-	bool need_alloc = true;
++	bool need_alloc = !f2fs_is_pinned_file(inode);
+ 	int err = 0;
+ 	vm_fault_t ret;
  
-@@ -92,6 +94,8 @@ static int __patch_insn_set(void *addr, u8 c, size_t len)
- 	if (across_pages)
- 		patch_unmap(FIX_TEXT_POKE1);
+@@ -114,19 +114,15 @@ static vm_fault_t f2fs_vm_page_mkwrite(struct vm_fault *vmf)
+ 		goto out_sem;
+ 	}
  
-+	preempt_enable();
++	set_new_dnode(&dn, inode, NULL, NULL, 0);
+ 	if (need_alloc) {
+ 		/* block allocation */
+-		set_new_dnode(&dn, inode, NULL, NULL, 0);
+ 		err = f2fs_get_block_locked(&dn, page->index);
+-	}
+-
+-#ifdef CONFIG_F2FS_FS_COMPRESSION
+-	if (!need_alloc) {
+-		set_new_dnode(&dn, inode, NULL, NULL, 0);
++	} else {
+ 		err = f2fs_get_dnode_of_data(&dn, page->index, LOOKUP_NODE);
+ 		f2fs_put_dnode(&dn);
+ 	}
+-#endif
 +
- 	return 0;
- }
- NOKPROBE_SYMBOL(__patch_insn_set);
-@@ -122,6 +126,8 @@ static int __patch_insn_write(void *addr, const void *insn, size_t len)
- 	if (!riscv_patch_in_stop_machine)
- 		lockdep_assert_held(&text_mutex);
+ 	if (err) {
+ 		unlock_page(page);
+ 		goto out_sem;
+@@ -3235,7 +3231,7 @@ static int f2fs_ioc_set_pin_file(struct file *filp, unsigned long arg)
+ 		goto done;
+ 	}
  
-+	preempt_disable();
+-	if (f2fs_sb_has_blkzoned(sbi) && F2FS_HAS_BLOCKS(inode)) {
++	if (F2FS_HAS_BLOCKS(inode)) {
+ 		ret = -EFBIG;
+ 		goto out;
+ 	}
+@@ -4611,6 +4607,10 @@ static int f2fs_preallocate_blocks(struct kiocb *iocb, struct iov_iter *iter,
+ 			return ret;
+ 	}
+ 
++	/* For pinned files, it should be fallocate()-ed in advance. */
++	if (f2fs_is_pinned_file(inode))
++		return 0;
 +
- 	if (across_pages)
- 		patch_map(addr + PAGE_SIZE, FIX_TEXT_POKE1);
- 
-@@ -134,6 +140,8 @@ static int __patch_insn_write(void *addr, const void *insn, size_t len)
- 	if (across_pages)
- 		patch_unmap(FIX_TEXT_POKE1);
- 
-+	preempt_enable();
-+
- 	return ret;
- }
- NOKPROBE_SYMBOL(__patch_insn_write);
+ 	/* Do not preallocate blocks that will be written partially in 4KB. */
+ 	map.m_lblk = F2FS_BLK_ALIGN(pos);
+ 	map.m_len = F2FS_BYTES_TO_BLK(pos + count);
 -- 
-2.39.2
+2.44.0.396.g6e790dbe36-goog
 
 
