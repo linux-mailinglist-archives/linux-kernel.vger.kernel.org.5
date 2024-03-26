@@ -1,141 +1,163 @@
-Return-Path: <linux-kernel+bounces-119061-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-119062-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6FD1A88C387
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 14:34:37 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0365688C389
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 14:34:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E72AEB21EBE
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 13:34:34 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9780B1F3B056
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 13:34:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 33A8674BF7;
-	Tue, 26 Mar 2024 13:34:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 28A8A75814;
+	Tue, 26 Mar 2024 13:34:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PfaoiGYF"
-Received: from mail-ed1-f46.google.com (mail-ed1-f46.google.com [209.85.208.46])
+	dkim=pass (2048-bit key) header.d=denx.de header.i=@denx.de header.b="tgB4ALv+"
+Received: from phobos.denx.de (phobos.denx.de [85.214.62.61])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D80F24F890;
-	Tue, 26 Mar 2024 13:34:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6098E7175F;
+	Tue, 26 Mar 2024 13:34:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=85.214.62.61
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711460066; cv=none; b=qbRsI/H5xdDphLRKvrClTSVBqbP8J4w8bykVYefWeG02V2BQteXzB3Lu9yPmLFgpfMXWfP06WSP2CvrlLBemcak6aNAUK/mgg5yPXPIIwSX4rxsdsQYrOapv6jkVS7C/bwBNbFhU8Jk27bgjrlGQ0gwkTfNW28RMh21mmyFx8rA=
+	t=1711460075; cv=none; b=IZ5pnSwBRPoA5seBDm1zO3z3WyeHvie5vEBFJ7jwFncvEmyFqalh+MaJ8UMCnFfQjzLNT0dthZRQFrk6VLr1hv9NZt9/K5c+GNJpodT/rs8BJLd+6bWr9OLwL7xcifN+iMoRspC1i21iC+1VMOU5lhf1VRzdNTdOOwy4bKaGBGo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711460066; c=relaxed/simple;
-	bh=FT1vX791HGO7aKS9G/ZPDGT71wZoKwZ8shUH9nLTTLA=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=hZ67qxBtMXY46N+nqyU3aHkqkPTuY+A0BcEE7rH/wCKlY/LJpwi66cem0IujPczC+TWWORVTF1p7YCl2s7+PTKMAnd7fr5PEHHIULvRrYaT5ReOR5Sj+5IUZN1w/BciW+GBo6DSdBQM6hMZvKTGv+4d91j6VtD2mQKM6m3Gc+ow=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=PfaoiGYF; arc=none smtp.client-ip=209.85.208.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f46.google.com with SMTP id 4fb4d7f45d1cf-56c147205b9so3233067a12.0;
-        Tue, 26 Mar 2024 06:34:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711460063; x=1712064863; darn=vger.kernel.org;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=MS1VY+YyK3WfAN9Fvb2/BOf2p6kWCOG3l21nlXYxAzI=;
-        b=PfaoiGYFivPQ5McUPl2bIEb1FFTrR0Xydo15KMAsbPO3zvP6vIIEIz/iuRGDKXahzA
-         vZY+LoyNpXf6agVXa+JGQxDNKy5oQxL1obrqjJnfVAkfF0iJDAWGlXoISesMKrHqvy5Y
-         JIW9KMIx7TwvitwarLnFbm8n/NCAY/qmTA538GSpNBz+6oSPbZ0S2R2AFYTc5mSTUV1x
-         hzYPuNxG34n3fTMkrQGtO/1Osn6DH08mr1hA6VpS4tobbg1BgLbLhj5FONNKU4mYeaOS
-         ev3tXtItWrAPG4qEO0Jeb02dR3tPr9U8TvHTvI3VQdeqFSOx6vX4WEKNAKNmMLeEQD9Q
-         SPeg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711460063; x=1712064863;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=MS1VY+YyK3WfAN9Fvb2/BOf2p6kWCOG3l21nlXYxAzI=;
-        b=JJdD+T1rKaQlvyldVY7jWd425Ne5cHraKRZtEbSJUc/6g0y0jckFRuPRx03bkWt+bL
-         /pWxJ3BnnpL3z4lRwMNgl8LBNhRYi/1Heq/yL2PgazzoflTURpwIQOnZrtG06jx8+/i7
-         uxOQ/cLqd93Q+hoSq6/sZLCeRnHjK9SGdsIaJD/Bt/HVh9BDmCUwRGgxuaVhr9b8Evh4
-         2SHcxptSk1VQ7SF4S3+y5oBOTXwx50GkaDc9Bo9hTwj7tppeE/SDV5wby+3yYn4VNf8Y
-         1iOFQiN+rW6S+/WksMG9QnxnSX3cdWxhsbc1c4MrfIWbLEfDL6aOH6jH86tfclCMX1Cp
-         j1LA==
-X-Forwarded-Encrypted: i=1; AJvYcCUsgH1tUhK1o+W8H09tWP9DwWx/aEY90P7GvenMwJPDMluozcycvKGjqjnmk0h3vuy4JtRtHtpPF6F7j1w2rd85ek9YDRq7+0moFPYcrguWCC6COUeJVRbT+9CIoKOU0wOfNh2DXwQs
-X-Gm-Message-State: AOJu0Yzlo8xR/JF8yoUMTikictvPN27TlG+SFcnig858fyGFnGB1fxwb
-	0GuHf3/no+qtdFSzQBJUgHFRR0tZoVyr2sPH20CwUMD4dKp8WH16
-X-Google-Smtp-Source: AGHT+IG8/Od7w+V1C3/Y6DkJoNE3VLKfgWZDJyxZHEjxxObhmW7WJ+p3G9ws/FpiMjGOJCQyvMyWPA==
-X-Received: by 2002:a50:9ec3:0:b0:568:c6d5:e13a with SMTP id a61-20020a509ec3000000b00568c6d5e13amr1351788edf.15.1711460062735;
-        Tue, 26 Mar 2024 06:34:22 -0700 (PDT)
-Received: from [192.168.1.253] (57657817.catv.pool.telekom.hu. [87.101.120.23])
-        by smtp.googlemail.com with ESMTPSA id bc5-20020a056402204500b0056c3048e64esm134184edb.70.2024.03.26.06.34.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Mar 2024 06:34:22 -0700 (PDT)
-From: Gabor Juhos <j4g8y7@gmail.com>
-Date: Tue, 26 Mar 2024 14:34:11 +0100
-Subject: [PATCH] clk: qcom: apss-ipq-pll: fix PLL rate for IPQ5018
+	s=arc-20240116; t=1711460075; c=relaxed/simple;
+	bh=C09MDaDhCo5/cwICaB1cD+3IlLSyH394RN6EST48y2k=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=rpIiXq7DFuffe8VFkYI78kwXPqDaDqdCOBkOW+sfX/iaR/7+i8Ud/2igI7ZMuXUjyPXsMEEuxp49Wby8PzBILY8hKel40Rzp1GBe3gfZEYyAwpeJwrDfm06Ys5xhEiFBc5vtSUyGTSAGvWCGA8l28wi6eG9XJCuZTMderet7Hx8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=denx.de; spf=pass smtp.mailfrom=denx.de; dkim=pass (2048-bit key) header.d=denx.de header.i=@denx.de header.b=tgB4ALv+; arc=none smtp.client-ip=85.214.62.61
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=denx.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=denx.de
+Received: from wsk (85-222-111-42.dynamic.chello.pl [85.222.111.42])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+	(No client certificate requested)
+	(Authenticated sender: lukma@denx.de)
+	by phobos.denx.de (Postfix) with ESMTPSA id A4C3D87F64;
+	Tue, 26 Mar 2024 14:34:30 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=denx.de;
+	s=phobos-20191101; t=1711460071;
+	bh=TdmERBCHi/8gKslCCrNCorIXxZyxmrn/AoD5wJSNB4U=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=tgB4ALv+ajiXCzJ3BUsA6Wf8RWG62Tx13jTecW9THXPUA7URfTAKXUf4ldL+SJH+e
+	 TarYKYMfqG2WxeQkomKmX06SzeQumNQGN+PAKdPjtfjbLqbhhuf8UZEWxpR/L2GbOD
+	 c3Ko8Rgv21fburbwXQybeW4Yuh7uB+Ou3jPJ5/FWjPsCIhqsnzsRvusQIED+m2Xs/V
+	 Yk1xprl5Oh7OCuH0VFN5mdw6cODZ0KVSPLPsr/Vc6skuVrn7NaUkIRNHVBeU2NinHL
+	 te6DdKoWvJjr1XDYg2hbFNAZRluhvedskdDuMz2Ajag75UVZQdCVSIE0AU1UacCsBj
+	 um8u5KLpNMVIA==
+Date: Tue, 26 Mar 2024 14:34:24 +0100
+From: Lukasz Majewski <lukma@denx.de>
+To: Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
+Cc: Andrew Lunn <andrew@lunn.ch>, Florian Fainelli <f.fainelli@gmail.com>,
+ Vladimir Oltean <olteanv@gmail.com>, "David S. Miller"
+ <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Jakub Kicinski
+ <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux@ew.tq-group.com, Michael Krummsdorf
+ <michael.krummsdorf@tq-group.com>
+Subject: Re: [PATCH] net: dsa: mv88e6xxx: fix usable ports on 88e6020
+Message-ID: <20240326143424.3368d9b1@wsk>
+In-Reply-To: <20240326123655.40666-1-matthias.schiffer@ew.tq-group.com>
+References: <20240326123655.40666-1-matthias.schiffer@ew.tq-group.com>
+Organization: denx.de
+X-Mailer: Claws Mail 3.19.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240326-fix-ipq5018-apss-pll-rate-v1-1-82ab31c9da7e@gmail.com>
-X-B4-Tracking: v=1; b=H4sIANLOAmYC/x2MWwqAIBAArxL73YLag+gq0YfmWgtR5kYE0d2TP
- gdm5gGhxCTQFw8kulh43zLosoBpsdtMyD4zGGVqVZkWA9/I8WiU7tBGEYzrismehIF8ZV2jnZ4
- M5D4myvL/Hsb3/QAZtxYsawAAAA==
-To: Bjorn Andersson <andersson@kernel.org>, 
- Konrad Dybcio <konrad.dybcio@linaro.org>, 
- Michael Turquette <mturquette@baylibre.com>, 
- Stephen Boyd <sboyd@kernel.org>, 
- Sricharan Ramabadhran <quic_srichara@quicinc.com>, 
- Gokul Sriram Palanisamy <quic_gokulsri@quicinc.com>, 
- Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Cc: linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org, 
- linux-kernel@vger.kernel.org, Gabor Juhos <j4g8y7@gmail.com>
-X-Mailer: b4 0.13.0
+Content-Type: multipart/signed; boundary="Sig_/NP2qDeJCkPvX5.p498HS=_l";
+ protocol="application/pgp-signature"; micalg=pgp-sha512
+X-Virus-Scanned: clamav-milter 0.103.8 at phobos.denx.de
+X-Virus-Status: Clean
 
-According to ipq5018.dtsi, the maximum supported rate by the
-CPU is 1.008 GHz on the IPQ5018 platform, however the current
-configuration of the PLL results in 1.2 GHz rate.
+--Sig_/NP2qDeJCkPvX5.p498HS=_l
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Change the 'L' value in the PLL configuration to limit the
-rate to 1.008 GHz. The downstream kernel also uses the same
-value [1]. Also add a comment to indicate the desired
-frequency.
+Hi Matthias,
 
-[1] https://git.codelinaro.org/clo/qsdk/oss/kernel/linux-ipq-5.4/-/blob/NHSS.QSDK.12.4/drivers/clk/qcom/apss-ipq5018.c?ref_type=heads#L151
+> From: Michael Krummsdorf <michael.krummsdorf@tq-group.com>
+>=20
+> The switch has 4 ports with 2 internal PHYs, but ports are numbered up
+> to 6, with ports 0, 1, 5 and 6 being usable.
+>=20
+> Fixes: 71d94a432a15 ("net: dsa: mv88e6xxx: add support for MV88E6020
+> switch") Signed-off-by: Michael Krummsdorf
+> <michael.krummsdorf@tq-group.com> Signed-off-by: Matthias Schiffer
+> <matthias.schiffer@ew.tq-group.com> ---
+>=20
+> I was unfortunately too busy to notice the issue when the patch this
+> Fixes was resubmitted in my name. It would have been better to change
+> my From into a Based-on-patch-by or similar when modifying it
 
-Fixes: 50492f929486 ("clk: qcom: apss-ipq-pll: add support for IPQ5018")
-Signed-off-by: Gabor Juhos <j4g8y7@gmail.com>
----
-Based on v6.9-rc1.
+The "discussion" about this work was lasting at least a few months with
+several iterations and changing the design decisions ...
 
-Note: The change is independent from the "clk: qcom: apss-ipq-pll: various
-cleanups" series posted earlier [2].
+> - and
+> the final version obviously wasn't even tested on an 88E6020...
 
-[2] https://lore.kernel.org/r/20240326-apss-ipq-pll-cleanup-v3-0-15c4aeeb14ac@gmail.com
----
- drivers/clk/qcom/apss-ipq-pll.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/clk/qcom/apss-ipq-pll.c b/drivers/clk/qcom/apss-ipq-pll.c
-index 678b805f13d45..5e3da5558f4e0 100644
---- a/drivers/clk/qcom/apss-ipq-pll.c
-+++ b/drivers/clk/qcom/apss-ipq-pll.c
-@@ -73,8 +73,9 @@ static struct clk_alpha_pll ipq_pll_stromer_plus = {
- 	},
- };
- 
-+/* 1.008 GHz configuration */
- static const struct alpha_pll_config ipq5018_pll_config = {
--	.l = 0x32,
-+	.l = 0x2a,
- 	.config_ctl_val = 0x4001075b,
- 	.config_ctl_hi_val = 0x304,
- 	.main_output_mask = BIT(0),
+Can you share on which kernel version have you tested the patch that
+you claim that testing was omitted?
 
----
-base-commit: 4cece764965020c22cff7665b18a012006359095
-change-id: 20240326-fix-ipq5018-apss-pll-rate-fed3ab51b1c2
+
+>=20
+> Best regards,
+> Matthias
+>=20
+>=20
+>  drivers/net/dsa/mv88e6xxx/chip.c | 6 +++++-
+>  1 file changed, 5 insertions(+), 1 deletion(-)
+>=20
+> diff --git a/drivers/net/dsa/mv88e6xxx/chip.c
+> b/drivers/net/dsa/mv88e6xxx/chip.c index 9ed1821184ece..c95787cb90867
+> 100644 --- a/drivers/net/dsa/mv88e6xxx/chip.c
+> +++ b/drivers/net/dsa/mv88e6xxx/chip.c
+> @@ -5503,8 +5503,12 @@ static const struct mv88e6xxx_info
+> mv88e6xxx_table[] =3D { .family =3D MV88E6XXX_FAMILY_6250,
+>  		.name =3D "Marvell 88E6020",
+>  		.num_databases =3D 64,
+> -		.num_ports =3D 4,
+> +		/* Ports 2-4 are not routed to pins
+> +		 * =3D> usable ports 0, 1, 5, 6
+> +		 */
+> +		.num_ports =3D 7,
+>  		.num_internal_phys =3D 2,
+> +		.invalid_port_mask =3D BIT(2) | BIT(3) | BIT(4),
+>  		.max_vid =3D 4095,
+>  		.port_base_addr =3D 0x8,
+>  		.phy_base_addr =3D 0x0,
+
+
+
 
 Best regards,
--- 
-Gabor Juhos <j4g8y7@gmail.com>
 
+Lukasz Majewski
+
+--
+
+DENX Software Engineering GmbH,      Managing Director: Erika Unter
+HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
+Phone: (+49)-8142-66989-59 Fax: (+49)-8142-66989-80 Email: lukma@denx.de
+
+--Sig_/NP2qDeJCkPvX5.p498HS=_l
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCgAdFiEEgAyFJ+N6uu6+XupJAR8vZIA0zr0FAmYCzuAACgkQAR8vZIA0
+zr0WZQf/TS8tiLOb/uxni7yXlc91NzpTBzJttjl0eCjVQXLAAM91ACAh31rDNN9V
+SpzRqygxu7tCrijEtp4mdNk1M2Q0Yv6dJ+nzDXQwcBfCoXZ8aoW15gO0Dl82Ndso
+Xe1zfzC42AUucu4MIP/gJSYt6zCcUxX2qhoQ/QD8HMHPabR52XviVmIRu+8DswaK
+gu7DLLKGOUZdY3bczYlo+yp+M1Lr+6lAJLuBoERP/xOXZ1pjhluYtvsFFJcvzxzk
+EGU27rFF/vo8qfjaOHQ2gXQT3/IvTEMebT7lVLP71bs71Gnm1/R2uwKhDr2SWpbh
+v8biXDw0AFh1iAm0ecFoOCmu1mSOCQ==
+=mBsF
+-----END PGP SIGNATURE-----
+
+--Sig_/NP2qDeJCkPvX5.p498HS=_l--
 
