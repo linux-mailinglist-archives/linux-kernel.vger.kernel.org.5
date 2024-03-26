@@ -1,59 +1,59 @@
-Return-Path: <linux-kernel+bounces-120142-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-120143-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4876A88D2E3
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 00:39:35 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id BB94188D2E5
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 00:39:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AD8F8B22135
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 23:39:32 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 77CFF2E445C
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 23:39:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7767A13E04C;
-	Tue, 26 Mar 2024 23:39:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AFC9513E6A3;
+	Tue, 26 Mar 2024 23:39:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="GGSfsO/5"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="KmW55Etd"
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 338BC13E036
-	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 23:39:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7034113E41E
+	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 23:39:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711496359; cv=none; b=f4XktRU0FL5r90LuKfZyUHqu8gSLosKFNKuFGIVDdRJh+Umn+s4yFN8exlPjwekH6M/vyXDpZfvONbSdDeL9eK1g8ja7wASAc7mAeLwblW4n5lSsMsZqmPTSkZzyhJi/oePgzhXfRRCpepgtPolSX9Lg2W80m82db9lF21/x5ZM=
+	t=1711496364; cv=none; b=YXJfP6EiGpBFTch86P+O8n0p53NcyMEguFP++LZVQNyyA0Zdg2x3Sd6Igj1783ZjwlAQReXOTn2zLqPGw5/1HMmz4PnipmF/oI6zZVSnMA2VtkQNq9l5PoHXADwG6nxpz5FpCKRK9oas8+9k+vY/d++lTxwRbKkDqT3JOk0Cr+I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711496359; c=relaxed/simple;
-	bh=fWYVtaH0/z/cCVWdfxOLtkKAaxll/03zmW3kINIVDTA=;
+	s=arc-20240116; t=1711496364; c=relaxed/simple;
+	bh=C66pxqnaYgvSMHHvu/Rl5/6ccP5Y4wM4IySE5hpm7Kg=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=Y6jTpMvSvuwVPbkmFztAfK6a7NIJ75HjJRMqhSApjx3BtfQD6ZjNLfXs/AM3YPCqaL0jpReh5sP6l7Y/Icg0IqbXzzkX50nkEvL+tQOCXlIKHaNtSBRRGZ/XO3ivriGTq/2bzq48WBmdgXWHfRVO1tBz6wiupdjYZuiwt5U5wEQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=GGSfsO/5; arc=none smtp.client-ip=170.10.129.124
+	 MIME-Version:Content-Type; b=LubzUeswFlXCyyyAZ/aRbGU5cEXtDhLgTRyczi3cL9XH0taUkK69DoT96ghuB9eQ/4Y4qRnjkmAEDXQNvw6tyUOVhCwoUiOLUQq50VMRZuhab042UhRnqarZHGb3ddZ4vtmlZPQaKTFuGRgRFR/4OyUr/5GvILIHKTH4NEykHEo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=KmW55Etd; arc=none smtp.client-ip=170.10.129.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1711496357;
+	s=mimecast20190719; t=1711496361;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=GZ+JJ9n8sK7PpPAJN/QuwYe5pLKlmB/LHTMULmu89sw=;
-	b=GGSfsO/5w2NtiYOtmiVkw/ZNBxXB6Fs5VGO9eknLadYxNWjiGumpIxm/Qn8SXTMkZXYTQM
-	Hh7ePE2IyQ1Jyv3SAoYMAA7wpedHGcaY23LC8QWMkzTsTRjsko+slnpHWiU5F2YUhjl6BQ
-	Bpb0UBm1M60cBvouYB1HT5GcQRrDqFM=
+	bh=xGW7zYz0pRH3cTXT89dCGhJ9Ht7hdJj/uu/aueTV3H4=;
+	b=KmW55EtdJzmg/lDAd4QGhnMVqe6g8QGrP44uWcm5KD8RhfV6E+vOz3C2DSNh7JyXsiUzLq
+	QllAJur4ZzSQ0XabkITv+iE/LYLOA2HVq5tLGRmwXtLHnfY60Y5j4UAS4/Za6cvtdp1ueB
+	by8M/oMNZLrs4+Sq+v4Hy3QMssc3tZY=
 Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
  [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-379-M8JCPtOJP2CGDkT1ZpLatA-1; Tue, 26 Mar 2024 19:39:13 -0400
-X-MC-Unique: M8JCPtOJP2CGDkT1ZpLatA-1
+ us-mta-149-DIN0kOIZPSKlaT7y_Yhb7g-1; Tue, 26 Mar 2024 19:39:18 -0400
+X-MC-Unique: DIN0kOIZPSKlaT7y_Yhb7g-1
 Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.rdu2.redhat.com [10.11.54.3])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 56420811E81;
-	Tue, 26 Mar 2024 23:39:13 +0000 (UTC)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 9EA30800264;
+	Tue, 26 Mar 2024 23:39:17 +0000 (UTC)
 Received: from gshan-thinkpadx1nanogen2.remote.csb (unknown [10.64.136.81])
-	by smtp.corp.redhat.com (Postfix) with ESMTPS id 851E21121306;
-	Tue, 26 Mar 2024 23:39:09 +0000 (UTC)
+	by smtp.corp.redhat.com (Postfix) with ESMTPS id CDC031121306;
+	Tue, 26 Mar 2024 23:39:13 +0000 (UTC)
 From: Gavin Shan <gshan@redhat.com>
 To: virtualization@lists.linux.dev
 Cc: linux-kernel@vger.kernel.org,
@@ -65,9 +65,9 @@ Cc: linux-kernel@vger.kernel.org,
 	keirf@google.com,
 	yihyu@redhat.com,
 	shan.gavin@gmail.com
-Subject: [PATCH v2 1/2] vhost: Add smp_rmb() in vhost_vq_avail_empty()
-Date: Wed, 27 Mar 2024 09:38:45 +1000
-Message-ID: <20240326233846.1086253-2-gshan@redhat.com>
+Subject: [PATCH v2 2/2] vhost: Add smp_rmb() in vhost_enable_notify()
+Date: Wed, 27 Mar 2024 09:38:46 +1000
+Message-ID: <20240326233846.1086253-3-gshan@redhat.com>
 In-Reply-To: <20240326233846.1086253-1-gshan@redhat.com>
 References: <20240326233846.1086253-1-gshan@redhat.com>
 Precedence: bulk
@@ -80,7 +80,7 @@ Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.3
 
-A smp_rmb() has been missed in vhost_vq_avail_empty(), spotted by
+A smp_rmb() has been missed in vhost_enable_notify(), inspired by
 Will Deacon <will@kernel.org>. Otherwise, it's not ensured the
 available ring entries pushed by guest can be observed by vhost
 in time, leading to stale available ring entries fetched by vhost
@@ -99,12 +99,12 @@ grace-hopper (ARM64) platform.
   guest# netperf -H 10.26.1.81 -l 60 -C -c -t UDP_STREAM
   virtio_net virtio0: output.0:id 100 is not a head!
 
-Add the missed smp_rmb() in vhost_vq_avail_empty(). Note that it
-should be safe until vq->avail_idx is changed by commit 275bf960ac697
-("vhost: better detection of available buffers").
+Add the missed smp_rmb() in vhost_enable_notify(). Note that it
+should be safe until vq->avail_idx is changed by commit d3bb267bbdcb
+("vhost: cache avail index in vhost_enable_notify()").
 
-Fixes: 275bf960ac697 ("vhost: better detection of available buffers")
-Cc: <stable@kernel.org> # v4.11+
+Fixes: d3bb267bbdcb ("vhost: cache avail index in vhost_enable_notify()")
+Cc: <stable@kernel.org> # v5.18+
 Reported-by: Yihuang Yu <yihyu@redhat.com>
 Signed-off-by: Gavin Shan <gshan@redhat.com>
 ---
@@ -112,13 +112,13 @@ Signed-off-by: Gavin Shan <gshan@redhat.com>
  1 file changed, 10 insertions(+), 1 deletion(-)
 
 diff --git a/drivers/vhost/vhost.c b/drivers/vhost/vhost.c
-index 045f666b4f12..00445ab172b3 100644
+index 00445ab172b3..58f9d6a435f0 100644
 --- a/drivers/vhost/vhost.c
 +++ b/drivers/vhost/vhost.c
-@@ -2799,9 +2799,18 @@ bool vhost_vq_avail_empty(struct vhost_dev *dev, struct vhost_virtqueue *vq)
- 	r = vhost_get_avail_idx(vq, &avail_idx);
- 	if (unlikely(r))
+@@ -2847,9 +2847,18 @@ bool vhost_enable_notify(struct vhost_dev *dev, struct vhost_virtqueue *vq)
+ 		       &vq->avail->idx, r);
  		return false;
+ 	}
 +
  	vq->avail_idx = vhost16_to_cpu(vq, avail_idx);
 +	if (vq->avail_idx != vq->last_avail_idx) {
@@ -127,13 +127,13 @@ index 045f666b4f12..00445ab172b3 100644
 +		 * by guest.
 +		 */
 +		smp_rmb();
-+		return false;
++		return true;
 +	}
  
--	return vq->avail_idx == vq->last_avail_idx;
-+	return true;
+-	return vq->avail_idx != vq->last_avail_idx;
++	return false;
  }
- EXPORT_SYMBOL_GPL(vhost_vq_avail_empty);
+ EXPORT_SYMBOL_GPL(vhost_enable_notify);
  
 -- 
 2.44.0
