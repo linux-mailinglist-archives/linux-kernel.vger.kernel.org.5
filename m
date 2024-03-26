@@ -1,98 +1,110 @@
-Return-Path: <linux-kernel+bounces-118961-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-118965-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 74D7688C1F9
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 13:22:16 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 271B688C202
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 13:23:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A0A1E1C37C32
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 12:22:15 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CE7A22C20B2
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 12:23:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 64AC471B5D;
-	Tue, 26 Mar 2024 12:21:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EB6A57F7E0;
+	Tue, 26 Mar 2024 12:22:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="Md/x4yH8"
-Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
+	dkim=pass (2048-bit key) header.d=marvell.com header.i=@marvell.com header.b="Dmr45xrb"
+Received: from mx0b-0016f401.pphosted.com (mx0a-0016f401.pphosted.com [67.231.148.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DD22971B5E
-	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 12:21:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BBFE171B24;
+	Tue, 26 Mar 2024 12:22:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=67.231.148.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711455710; cv=none; b=b5IbVHOEZ8ANY1HqAiqqBzLETDccI5WMWgj8Zyr3mrfoRPyMsh1AELoZDwosSWyOpmhWPQtArPSsq6c8erMJLT21IYGqgqFGtLmIKI3GMuoQm5ZOiVOWb8W83EIPSDPRMXqfxfvcHsPaQIMQORhnkqYJA8qQpe3RoEorUioCMVY=
+	t=1711455729; cv=none; b=qLR2KAgqWokqkuulK11vtqaR1TM9VwimFON6pYTF3j5z43lbPDZMsSRgbDU0AoOu/Xug4zeFjSF5HLqybZIlB7NZryZ8rF5TEBXbY3nZ6cll/ObjOIOHbGkPJ0Dn9JeKfB/OCiSE6M89wBgSzs7GnIanjdhxrqj/YZufkoZhkVE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711455710; c=relaxed/simple;
-	bh=+HULUAtlNQ3MvWiH8WLL0jBlfjkDhhBdZ5vAO5ZkBLY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=iaLjo15EdUiU/gOk8q05nNBzV+vkAlA07tLicA/ixSZoqobUHhgRmReER31jATPijrDEHWSZoM/k+EAlJ/IH86oBB0AGGE8L2BoUMHVAcy8WnKlYWAi6q9RvWfVxSKMFJtFCWZtawIKQpncCV/MBTnjj0QjV8E5dyFHltBE6990=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=Md/x4yH8; arc=none smtp.client-ip=90.155.50.34
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=FZXEPvoG9Rls8PIO0odIAJYGvb7rtlOkN7UCiLUWwBk=; b=Md/x4yH8d9E5HoKw0wvTvsk+wZ
-	FJOVgTvLxA35NtYaTkHPJM2R941CMY/A8v/mwdaj/fObKchdnHAfY7IntSz9j2um8iKECpAcumTDl
-	HaA0ESdg3j0QFb3gtJDnnaGCsYNZ5GRylQavSE5uUQ+1t+W6B4GnaJmUZAuSORsEk3C1OA5zCQsPr
-	2B8x8/dhmDdMqGPArmN7PCawWhksFelmn8lq+yr2hJayEfOJcF12krpr9YKfzACqx6ojX36RT4g6M
-	hQzzM7xCt+b8u92+rv9c/pQY9LUV1UIN46M30Ohmd6CpurctTmLZ2ytLcKpecm9xbvUhmUf3L8hRA
-	k5eILGxQ==;
-Received: from willy by casper.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rp5oC-00000001FQ5-46kw;
-	Tue, 26 Mar 2024 12:21:41 +0000
-Date: Tue, 26 Mar 2024 12:21:40 +0000
-From: Matthew Wilcox <willy@infradead.org>
-To: Zhaoyang Huang <huangzhaoyang@gmail.com>
-Cc: =?utf-8?B?6buE5pyd6ZizIChaaGFveWFuZyBIdWFuZyk=?= <zhaoyang.huang@unisoc.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	"linux-mm@kvack.org" <linux-mm@kvack.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	=?utf-8?B?5bq357qq5ruoIChTdGV2ZSBLYW5nKQ==?= <Steve.Kang@unisoc.com>
-Subject: Re: summarize all information again at bottom//reply: reply: [PATCH]
- mm: fix a race scenario in folio_isolate_lru
-Message-ID: <ZgK91II_eSYY6D2F@casper.infradead.org>
-References: <Zfg0WLrcOmCtdn_M@casper.infradead.org>
- <CAGWkznGhiuzkqfeewNq-ykKehvFTBjH2v_==xAS2_7iFqsFk5A@mail.gmail.com>
- <Zfj_-LbiIsAVWcPX@casper.infradead.org>
- <CAGWkznHOWVPpKHOuvvDF2zppkTT0_x4WyJ5S75j+EghhZmEDdg@mail.gmail.com>
- <ZfwpuRjAZV07_lc3@casper.infradead.org>
- <CAGWkznFtez1fj2L2CtFnA5k-Tn4WtxmDOw=fjOWPg-ZGJX=VWw@mail.gmail.com>
- <Zfz4_GJAHRInB8ul@casper.infradead.org>
- <CAGWkznEzpcWi4oXVn_WFahnQj3dHcwc_4VW6m1Ss-KJ8mD3F3Q@mail.gmail.com>
- <ZgDt9mwN-Py5Y-xr@casper.infradead.org>
- <CAGWkznHO27EpVVpFyKnv-SX-JTYCXQxb0MG+EW07gaupocR4RQ@mail.gmail.com>
+	s=arc-20240116; t=1711455729; c=relaxed/simple;
+	bh=deFxA3Wuj8SlRNBvbVPEKsNDOYmV5l4G649FOt1wOrE=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=qI11m4rvSz5ENhqDEaknuQPXaSzGrcd1xwtvd6KkSs/08DSWj27gS9nih+8ARnnPgutesE89t2gbJ9Rw697g4Q55BVUOQ7+3xyStW9dsvL2HKSOolNTh3R2ZfSKZ6pEcy6Xe+RvNqSabe62A0aJ5BOpky7KW7R/LVbCYtbgHp2A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=marvell.com; spf=pass smtp.mailfrom=marvell.com; dkim=pass (2048-bit key) header.d=marvell.com header.i=@marvell.com header.b=Dmr45xrb; arc=none smtp.client-ip=67.231.148.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=marvell.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=marvell.com
+Received: from pps.filterd (m0045849.ppops.net [127.0.0.1])
+	by mx0a-0016f401.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 42QB9sYD015440;
+	Tue, 26 Mar 2024 05:21:55 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=
+	from:to:cc:subject:date:message-id:mime-version:content-type; s=
+	pfpt0220; bh=c4Jux4wLKHVwolXHnHDW2QYhlDWWrBk745gJOqZmmLY=; b=Dmr
+	45xrb0p2MR1BqGdosh9N53NdZZIYK9Q55ckUkw/wDw+vUsyn2zMbsOctNxt/4lDc
+	lR5lAlztPziHHhQQtWKZZbf8D0WHK7o5ncfyDl1W6PDTwL3woygcIUiXNeGhXXkJ
+	J2FLpXmtWOU+B4TULk+5Sw6fTVF+Gxcs688inDlJKweeS2oZbkhJocyqBSfgxCfk
+	+kEBQ6GIsDGo54OcsyXFTvYdjU14se6OpcC727MQh/A4pcG8NMVuCzI5ymQmGReH
+	1mtGh7TTxCYyCli5RfHLqJ+qrqOFxQpOTbMU7p8qOQROneZ8GImCUyxCkd6EhOpG
+	LVXETxEsGtloOJlDGZg==
+Received: from dc5-exch05.marvell.com ([199.233.59.128])
+	by mx0a-0016f401.pphosted.com (PPS) with ESMTPS id 3x3twtgqma-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 26 Mar 2024 05:21:55 -0700 (PDT)
+Received: from DC5-EXCH05.marvell.com (10.69.176.209) by
+ DC5-EXCH05.marvell.com (10.69.176.209) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.4; Tue, 26 Mar 2024 05:21:54 -0700
+Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH05.marvell.com
+ (10.69.176.209) with Microsoft SMTP Server id 15.2.1544.4 via Frontend
+ Transport; Tue, 26 Mar 2024 05:21:54 -0700
+Received: from hyd1soter3.marvell.com (unknown [10.29.37.12])
+	by maili.marvell.com (Postfix) with ESMTP id B07863F706D;
+	Tue, 26 Mar 2024 05:21:50 -0700 (PDT)
+From: Hariprasad Kelam <hkelam@marvell.com>
+To: <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+CC: <kuba@kernel.org>, <davem@davemloft.net>, <sgoutham@marvell.com>,
+        <gakula@marvell.com>, <jerinj@marvell.com>, <lcherian@marvell.com>,
+        <sbhatta@marvell.com>, <hkelam@marvell.com>, <naveenm@marvell.com>,
+        <edumazet@google.com>, <pabeni@redhat.com>
+Subject: [net Patch] octeontx2-af: Fix issue with loading coalesced KPU profiles
+Date: Tue, 26 Mar 2024 17:51:49 +0530
+Message-ID: <20240326122149.4377-1-hkelam@marvell.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAGWkznHO27EpVVpFyKnv-SX-JTYCXQxb0MG+EW07gaupocR4RQ@mail.gmail.com>
+Content-Type: text/plain
+X-Proofpoint-GUID: GNGMqGgfdrzuNBFSYnn2bGr-vpVeevsZ
+X-Proofpoint-ORIG-GUID: GNGMqGgfdrzuNBFSYnn2bGr-vpVeevsZ
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-03-26_06,2024-03-21_02,2023-05-22_02
 
-On Tue, Mar 26, 2024 at 05:06:55PM +0800, Zhaoyang Huang wrote:
-> 1. Thread_readahead remove the folio from page cache and drop 2 refcnt
-> by readahead_folio & filemap_remove_folio(get rid of the folios which
-> failed to launch IO during readahead)
->     refcnt == 0, PG_lru == true, PG_lock == true
->     read_pages
-> ...
->         folio = readahead_folio
->         <one refcnt dropped here>
-> ********For the folio which can not launch IO, we should NOT drop
-> refcnt here??? replaced by __readahead_folio???**********
->         folio_get
->         filemap_remove_folio(folio)
->         folio_unlock
->         <one refcnt dropped here>
->         folio_put
+The current implementation for loading coalesced KPU profiles has
+a limitation.  The "offset" field, which is used to locate profiles
+within the profile is restricted to a u16.
 
-Ignoring any other thread, you're basically saying that there's a
-refcount imbalance here.  Which means we'd hit an assert (that folio
-refcount went below zero) in the normal case where another thread wasn't
-simultaneously trying to do anything.
+This restricts the number of profiles that can be loaded. This patch
+addresses this limitation by increasing the size of the "offset" field.
+
+Fixes: 11c730bfbf5b ("octeontx2-af: support for coalescing KPU profiles")
+Signed-off-by: Hariprasad Kelam <hkelam@marvell.com>
+---
+ drivers/net/ethernet/marvell/octeontx2/af/rvu_npc.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/net/ethernet/marvell/octeontx2/af/rvu_npc.c b/drivers/net/ethernet/marvell/octeontx2/af/rvu_npc.c
+index e350242bbafb..be709f83f331 100644
+--- a/drivers/net/ethernet/marvell/octeontx2/af/rvu_npc.c
++++ b/drivers/net/ethernet/marvell/octeontx2/af/rvu_npc.c
+@@ -1657,7 +1657,7 @@ static int npc_fwdb_detect_load_prfl_img(struct rvu *rvu, uint64_t prfl_sz,
+ 	struct npc_coalesced_kpu_prfl *img_data = NULL;
+ 	int i = 0, rc = -EINVAL;
+ 	void __iomem *kpu_prfl_addr;
+-	u16 offset;
++	u32 offset;
+ 
+ 	img_data = (struct npc_coalesced_kpu_prfl __force *)rvu->kpu_prfl_addr;
+ 	if (le64_to_cpu(img_data->signature) == KPU_SIGN &&
+-- 
+2.17.1
+
 
