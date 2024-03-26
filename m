@@ -1,117 +1,96 @@
-Return-Path: <linux-kernel+bounces-119584-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-119586-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id A366A88CAB8
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 18:25:50 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9801688CABE
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 18:26:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 58B3B1F837DF
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 17:25:50 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CA16F1C66408
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 17:26:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 56B2B1CD3D;
-	Tue, 26 Mar 2024 17:25:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Tflyxy7o"
-Received: from mail-yw1-f176.google.com (mail-yw1-f176.google.com [209.85.128.176])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6FD6B208B4;
+	Tue, 26 Mar 2024 17:26:08 +0000 (UTC)
+Received: from gloria.sntech.de (gloria.sntech.de [185.11.138.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D81E1CAB3
-	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 17:25:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 14898200CB;
+	Tue, 26 Mar 2024 17:26:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.11.138.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711473943; cv=none; b=oZon0Cpv5kLFjTacpsqSvsU9ERmLl1nyjIIzAZsTNeU7oh/INvOnEmGb6DB0KxsuUtrCWIcoRefBRwAV4OpwgK/9Ms2UYAeURqkO/wmcxXwvPxih8OiZZFSvYOHWEtOk+IJoo3VXLMo8K+MOVUqfo+ORWD4aUaAsBrgojxskgeg=
+	t=1711473968; cv=none; b=aZ87cXW8zg227izgsMTFszDG8LZSa76HpJl2yQb5Pkvjr2OCCj3z7DAENOVMECiotGhjWm9NJPsNsEVhCRAIo+Hft2Inmv6A1eZrbcGcydGYdCPBPZGJkVO4XeEO3RXcw82lsn2gjXUzHRWIBooEAetitIPE4gY1xxicDvm9a+k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711473943; c=relaxed/simple;
-	bh=yyQwpK/tvNeVmAcL6V3vNVLP7qfT3WoMXUkxWnz/n9g=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Y6qWYZbuGFywe7QN4ppgWxbGb5z3fy6XFJ1KQ1JsB2fVIU7rBR5z/GlS55BVzLO3/CtnmeCggeRD0ZOgDxoI0Q71bebpCtcUQ92YnOJ4ReCnzRqkrRcajg0InHMIDGnWdldX1eg//c1vT8OLXZkNWuqybR2bTJQVLqJj1baQqeo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=Tflyxy7o; arc=none smtp.client-ip=209.85.128.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yw1-f176.google.com with SMTP id 00721157ae682-611248b4805so41815317b3.0
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 10:25:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1711473941; x=1712078741; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=TEdNW8/uGdjjd6EX6eCNJ+oK6HuOhO4oxjWYMugQ7qE=;
-        b=Tflyxy7oNp9t0pU1CyrGyusUO4RAs4dtRi6Vr/VNFfYX84cS/UgkTlHxFFgSHcw1jT
-         4Q9pMnshnr7o0O8cbgHIqhiXDHCfMCC71zMpsB/pucunGktQ9F6JSy0DYW+HAJ7lRBF7
-         xngC+ptCYxLvTEa8JSO3VeWYYdUBIrEwVzpFm7pccV0iwufVpimC2nQUy5qRSgFjvI7T
-         qpZ/+96MIDs72oIUhOL02yefixAINQBzWkE4ynzaSHQLnS5kWOUur98pj0PfevxvJzeY
-         rdhY+5xoC2zDCghGztRolBcgY0Y3cWYPnnCzCBhTVAVnL2E0ynx1lPKySv7CWdNPFCUO
-         nmyw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711473941; x=1712078741;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=TEdNW8/uGdjjd6EX6eCNJ+oK6HuOhO4oxjWYMugQ7qE=;
-        b=sLqXcoaM76l1ml7fUgijeyegBCZr/olXlrleqjwHNnLENq4KfzkTlzInrqDLuauwzx
-         cvYSOFXUUqMX3WNIkEydjA5EXfgAiA3i5GOQQEgyCRVR5Gsk74K8JRVa1owbYK2u24TQ
-         z9oCkLa2qiVOQfQRP11Aqll2Qtxbclpiqbr7TciI9WqnXKckwGK75uvTPB+8ou7O7ikE
-         RXERStLdW66sU3cbK6KgsaDo7av/qKNZh08tAFOzt/40tkIYOEo3V3KHqD4+Hwcp+iU8
-         aWO/+oGIvbK3TxCN/H+gvBVrj5qp6OxruFdle5QZhEqtDlwv9Pd2ocjTfrk7uaWEA6lx
-         +1Wg==
-X-Forwarded-Encrypted: i=1; AJvYcCUYmW8ZOFh4EXTnsQSxdZV5B9qxcgsIod29yZtu4IxDZwOW6GYXh/6zfB5TuIScS5nBLDl1VV92/pWYu4T1gvvcXKJxp1zuf4TIdghG
-X-Gm-Message-State: AOJu0YxotfY/JGmA6RMe9GAYJ4KCZYTqTCGrioMKh0NZIV3lJIqJ4zfR
-	mPdhkvgzQKbH7sSlOSLyadmDtwrqSz8huwdQYQHhK5IfGgINIMIBym1LUWt8kJSQ3AwczoneDNO
-	qHDkhS1GkNn+0MShIQaPZuMT0+M3fHZORqwR2gg==
-X-Google-Smtp-Source: AGHT+IElgsfXK1k0/1DM7zOc8OoCYkRnDISpRbo+Bkm3BattXbANP61MPSEV6vui3iEtoCHBc2Kn/kL4l17pBRyy4Qs=
-X-Received: by 2002:a25:db85:0:b0:dd9:2a67:f470 with SMTP id
- g127-20020a25db85000000b00dd92a67f470mr1553098ybf.25.1711473940945; Tue, 26
- Mar 2024 10:25:40 -0700 (PDT)
+	s=arc-20240116; t=1711473968; c=relaxed/simple;
+	bh=Ka0BqODwFrLwyN3SMEtrICxiPAvB0WKMvGb82tkKccg=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=C2JSPCH3eJ8xIUQEBkCWsjVdopmioIKCbJRRrvJqKKGTijIKMb9FMrahk1PyhvMmdLuijB347PnZiB9lWwOHOL7JA8y9Cq+vHPalSWj+CUVlMGPZiJGAnShtF00UfbxoM+NPuETQgT9QRA6OgYf75nN1tuyAPbQBKSwRCSUX8Qc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sntech.de; spf=pass smtp.mailfrom=sntech.de; arc=none smtp.client-ip=185.11.138.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sntech.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sntech.de
+Received: from [194.95.143.137] (helo=phil.dip.tu-dresden.de)
+	by gloria.sntech.de with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <heiko@sntech.de>)
+	id 1rpAYb-000658-2p; Tue, 26 Mar 2024 18:25:53 +0100
+From: Heiko Stuebner <heiko@sntech.de>
+To: Jaroslav Kysela <perex@perex.cz>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Liam Girdwood <lgirdwood@gmail.com>,
+	Luca Ceresoli <luca.ceresoli@bootlin.com>,
+	Philipp Zabel <p.zabel@pengutronix.de>,
+	Nicolas Frattaroli <frattaroli.nicolas@gmail.com>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Rob Herring <robh+dt@kernel.org>,
+	Mark Brown <broonie@kernel.org>,
+	Takashi Iwai <tiwai@suse.com>
+Cc: Heiko Stuebner <heiko@sntech.de>,
+	linux-arm-kernel@lists.infradead.org,
+	devicetree@vger.kernel.org,
+	Rob Herring <robh@kernel.org>,
+	linux-rockchip@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	linux-sound@vger.kernel.org,
+	alsa-devel@alsa-project.org,
+	Thomas Petazzoni <thomas.petazzoni@bootlin.com>
+Subject: Re: (subset) [PATCH v4 0/7] Add support for the internal RK3308 audio codec
+Date: Tue, 26 Mar 2024 18:25:50 +0100
+Message-Id: <171147393346.1162935.3469121716836265382.b4-ty@sntech.de>
+X-Mailer: git-send-email 2.39.2
+In-Reply-To: <20240305-rk3308-audio-codec-v4-0-312acdbe628f@bootlin.com>
+References: <20240305-rk3308-audio-codec-v4-0-312acdbe628f@bootlin.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240326-msm-dp-cleanup-v1-0-e775556ecec0@quicinc.com> <20240326-msm-dp-cleanup-v1-3-e775556ecec0@quicinc.com>
-In-Reply-To: <20240326-msm-dp-cleanup-v1-3-e775556ecec0@quicinc.com>
-From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date: Tue, 26 Mar 2024 19:25:30 +0200
-Message-ID: <CAA8EJprVYSSXj5y2TDLiUVTR4r1qaYjgbBDswaHAFeapQ0wPcw@mail.gmail.com>
-Subject: Re: [PATCH 3/6] drm/msm/dp: Remove unused defines and members
-To: Bjorn Andersson <andersson@kernel.org>
-Cc: Rob Clark <robdclark@gmail.com>, Abhinav Kumar <quic_abhinavk@quicinc.com>, 
-	Sean Paul <sean@poorly.run>, Marijn Suijten <marijn.suijten@somainline.org>, 
-	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, linux-arm-msm@vger.kernel.org, 
-	dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org, 
-	linux-kernel@vger.kernel.org, Bjorn Andersson <quic_bjorande@quicinc.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 
-On Tue, 26 Mar 2024 at 17:06, Bjorn Andersson <andersson@kernel.org> wrote:
->
-> From: Bjorn Andersson <quic_bjorande@quicinc.com>
->
-> Throughout the Qualcomm Displayport driver a number of defines and
-> struct members has become unused, but lingers in the code. Remove these.
->
-> Signed-off-by: Bjorn Andersson <quic_bjorande@quicinc.com>
-> ---
->  drivers/gpu/drm/msm/dp/dp_audio.c   |  5 -----
->  drivers/gpu/drm/msm/dp/dp_catalog.c |  1 -
->  drivers/gpu/drm/msm/dp/dp_catalog.h | 17 -----------------
->  drivers/gpu/drm/msm/dp/dp_ctrl.h    |  1 -
->  drivers/gpu/drm/msm/dp/dp_display.c |  5 -----
->  drivers/gpu/drm/msm/dp/dp_display.h |  3 ---
->  drivers/gpu/drm/msm/dp/dp_drm.c     |  2 --
->  drivers/gpu/drm/msm/dp/dp_link.c    |  4 ----
->  drivers/gpu/drm/msm/dp/dp_link.h    |  1 -
->  drivers/gpu/drm/msm/dp/dp_panel.h   |  2 --
->  10 files changed, 41 deletions(-)
->
+On Tue, 05 Mar 2024 15:36:27 +0100, Luca Ceresoli wrote:
+> This series adds a driver for the internal audio codec of the Rockchip
+> RK3308 SoC, along with some related patches. This codec is internally
+> connected to the I2S peripherals on the same chip, and it has some
+> peculiarities arising from that interconnection.
+> 
+> For proper bidirectional operation with the internal codec at any possible
+> combination of sampling rates, the I2S peripheral needs two clock sources
+> (tx and rx), while connection with an external codec commonly needs only
+> one.
+> 
+> [...]
 
-I'd have preferred to have this split into somewhat logical chunks,
-but I think it doesn't make sense for such cleanup.
+Applied, thanks!
 
-Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+[5/7] arm64: defconfig: enable Rockchip RK3308 internal audio codec driver
+      commit: 9fdd7b45da18b84d5e7d5a6b8b4b0167910f2d13
+[6/7] arm64: dts: rockchip: add i2s_8ch_2 and i2s_8ch_3
+      commit: b5ffc424360eaced41f405f0e38bcabe61fecf39
+[7/7] arm64: dts: rockchip: add the internal audio codec
+      commit: 30d72458624bb1ba7bab1c7a1d5f4c42f512010c
 
-
+Best regards,
 -- 
-With best wishes
-Dmitry
+Heiko Stuebner <heiko@sntech.de>
 
