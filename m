@@ -1,119 +1,109 @@
-Return-Path: <linux-kernel+bounces-118853-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-118854-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 567B788C047
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 12:12:01 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id A1C1F88C051
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 12:13:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 846831C30D6F
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 11:12:00 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D3DF71C311C7
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 11:13:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6A75E481A5;
-	Tue, 26 Mar 2024 11:11:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 325734DA19;
+	Tue, 26 Mar 2024 11:13:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="UZUDLLRu"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="QWzFEIh6"
+Received: from mail-wr1-f54.google.com (mail-wr1-f54.google.com [209.85.221.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AE65114AB8
-	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 11:11:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CB45814AB8
+	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 11:13:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711451515; cv=none; b=tGBdxaHFHmSBqgD+p3S3rfyGbMKetzTAmrQ1sF2ycM3GiKZwd0+bJVxWSBIbMeUHHaCUTMQpvAQ8N26zYBHPnOfH6OMqTlqT/2r9BnpdFehzzliZQJJnAzpA1ozuHUgfeM9Jr8wp16dAkQ/0T36fLHGrJ1IpAHz4vcTT2ndf/6g=
+	t=1711451586; cv=none; b=dNXBMxjMIsvgLSBAi0+a8MSc6bjZBdJjqHVp6cnxLeqDJtcDMQwG8bUPOTYqIVlO7abvILXRCh6fHJDhc9YlZVu2rHM9ttiB4z++Vbzhv+h+pB1w5B1oxMOndYkkR4sE/RkAvyncB/Smdar6F802qOPjD6bJmzqFM8vFwHw9Ris=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711451515; c=relaxed/simple;
-	bh=XOachr2WIaie8cJhl/lzaSmTxBP/4J3wqYR/eRLBdO8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Z70Ma0CHYVy8FvBXdDITqoQ/hGqoPx4ei449CD3acqP1j+yt9s+TYghX5tlvlOa4ZQpTwd1j3s3wx3yLW74b0H9GzJFxBPNQ6f9shXYSJjyrHzwIsWZBrNIGYYyDO5cBYwHSyiBizisZ9dTbjsHcG7nyD8nW+L8QPJprSNoHMMc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=UZUDLLRu; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 51EACC433F1;
-	Tue, 26 Mar 2024 11:11:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711451515;
-	bh=XOachr2WIaie8cJhl/lzaSmTxBP/4J3wqYR/eRLBdO8=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=UZUDLLRuPSnii715EPgehEkwLpc2bCCpy55jaWgGp7uH9FxbqW6+vaJAhstkh64Ho
-	 Gp2OkGWlSF8rL6b5MobYtUjhJ33VzlDTeB+jQlCNoOyHba2er/P6yvjlddDKuq9CI0
-	 SwiMQlt4FBmRFGIXM3Str9hGkUeWkCbme/wd5mNGTkAZHewRFc1hjyZuB1v9fUijfn
-	 bhvkzlyOaCdIkKuEaHm5LXOWbNoBoljVZn2jRggs8ETEQ07HIcP/PwN0OanHRA6oFr
-	 h6AymSgN3MVLdAhMD2Eu6CjqbXrt4UkovwTTKET5xqQx7IlY+/YbJjZGSJRgTo6rGn
-	 t4GxWigrJrzwA==
-Message-ID: <8a6b2768-8ab6-4275-8c4e-05b4eca83987@kernel.org>
-Date: Tue, 26 Mar 2024 19:11:50 +0800
+	s=arc-20240116; t=1711451586; c=relaxed/simple;
+	bh=obuHcm/3xdOzAnj87UVbyqU27DBpx+x5xHMGLWBzQIs=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=eGYwanCMRTnhpvn3tFFbtPDxRBkU4lcuADAFlAJeV1mVscU+J/tnaxeZOD40tcaBtuQUy/9q/jh8VUKLvszXzfEVZ489M8+bhYnxlXVtYKLKDEMsk1O0I7K0H+RJdLqUGCa6/QiYTL4kIPrto6JnNM/hw3vJranwV/QP8cfqPyI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=QWzFEIh6; arc=none smtp.client-ip=209.85.221.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wr1-f54.google.com with SMTP id ffacd0b85a97d-341ccef5058so1391279f8f.2
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 04:13:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1711451583; x=1712056383; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=obuHcm/3xdOzAnj87UVbyqU27DBpx+x5xHMGLWBzQIs=;
+        b=QWzFEIh6i8GZqoN++S2BWJG/xse+ekUgLf8c7ohCtExEQv5UWZ034M6KcFbK2Y7DBI
+         SRv31gE/+k6XJaE+KyNMsK2o9Pq9lHkUPpGxhA8O3gb+Ij/1tr/YZ7xI0KDT4UTdQAnw
+         +pKOyaSA6AYjOCvq1jACSTjk2sQ7+WPNDq34nQyP18J/c9WVBXhEWbkWikBm1WaW8Zh6
+         c62TRWtVONILJVbyuTM/EJJrLJaFmfbnfl7ACcjbqLi+Na7gkw+5RwYz77ST6G0hI3Wr
+         M8QWiL24Opl5lLoMJhaU583mbhXVfpltjcY2iv+kznXyR8XeYETJ7mhhUmHYjvuLOUhD
+         qENQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711451583; x=1712056383;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=obuHcm/3xdOzAnj87UVbyqU27DBpx+x5xHMGLWBzQIs=;
+        b=k7j6xgARQ5/RomQOhn1J8TGKFDg4/4WvlvwnUF/5GLMxedkJUS7lDaacxM7MwO+knm
+         8j2GB9QXdsrQQQU6bqAdnwjNhbuBcJKBGNSNiXSkXmpfWQWFkXdZ4hAf0jE2cI6qN7sB
+         X8dy5xg1mzOTRhr/zUjz/2AaLapY5Hcp8/HUVleHkG/MWiU1ejQvYL9Dlq3EHrVEfXpB
+         h9y9DX6n+fh6clgusDJqQz0L5yBV0bI26bHF5yHybMnHaAhKnslND5tF6X6dQ+hxp0LJ
+         5a1Iw61PZRC2h7Bya8vKSlVTEpR6xtSYpTzVGMB6LVjK44mD+wjV10So2s9wGscoeDHH
+         KP0A==
+X-Forwarded-Encrypted: i=1; AJvYcCV9Swb2ku8VkihloA0PHLgbzOh1EBMr+immKJXJ4OtgKQKdGvfRyu2wSj0dVwQSxaC0Dn5VS09jAYDS273bX/uYmG7Oev70DV5chBLX
+X-Gm-Message-State: AOJu0YwCzctGTPV26nXaFiz6zkZ5oSXHRgpXUm5uKpmQHsmAJ71TFAUg
+	dk5lDMNYEhtGiZb9Ubhq/lbCG2W3hkKjwr1me2XMkbPZMTsJvnUyMhD0fR8v20w=
+X-Google-Smtp-Source: AGHT+IGbgs8epz50aPlOWQHVksIvzA+lR3GutAL2nVRw5PemwOzalG1PtcF/Y6WO7R4P8gZsBDXvHQ==
+X-Received: by 2002:a5d:4e8c:0:b0:33e:6d6c:8503 with SMTP id e12-20020a5d4e8c000000b0033e6d6c8503mr6765943wru.16.1711451583172;
+        Tue, 26 Mar 2024 04:13:03 -0700 (PDT)
+Received: from [10.1.1.109] ([80.111.64.44])
+        by smtp.gmail.com with ESMTPSA id n14-20020a5d51ce000000b0033e9fca1e49sm11869966wrv.60.2024.03.26.04.13.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 26 Mar 2024 04:13:02 -0700 (PDT)
+Message-ID: <9f2c715e671de0c083355bfbece703936e14045a.camel@linaro.org>
+Subject: Re: [PATCH v2 2/4] arm64: dts: exynos: gs101: order pinctrl-* props
+ alphabetically
+From: =?ISO-8859-1?Q?Andr=E9?= Draszik <andre.draszik@linaro.org>
+To: Tudor Ambarus <tudor.ambarus@linaro.org>, peter.griffin@linaro.org, 
+	robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org
+Cc: alim.akhtar@samsung.com, linux-arm-kernel@lists.infradead.org, 
+ linux-samsung-soc@vger.kernel.org, devicetree@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, willmcvicker@google.com,
+ kernel-team@android.com
+Date: Tue, 26 Mar 2024 11:13:01 +0000
+In-Reply-To: <20240326103620.298298-3-tudor.ambarus@linaro.org>
+References: <20240326103620.298298-1-tudor.ambarus@linaro.org>
+	 <20240326103620.298298-3-tudor.ambarus@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.50.2-1 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH V2] f2fs: fix to adjust appropirate defragment pg_end
-To: Zhiguo Niu <zhiguo.niu@unisoc.com>, jaegeuk@kernel.org
-Cc: linux-f2fs-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org,
- niuzhiguo84@gmail.com, ke.wang@unisoc.com, hongyu.jin@unisoc.com
-References: <1711346195-24555-1-git-send-email-zhiguo.niu@unisoc.com>
-Content-Language: en-US
-From: Chao Yu <chao@kernel.org>
-In-Reply-To: <1711346195-24555-1-git-send-email-zhiguo.niu@unisoc.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
 
-On 2024/3/25 13:56, Zhiguo Niu wrote:
-> A length that exceeds the real size of the inode may be
-> specified from user, although these out-of-range areas
-> are not mapped, but they still need to be check in
-> while loop, which is unnecessary.
-> 
-> Signed-off-by: Zhiguo Niu <zhiguo.niu@unisoc.com>
-> ---
-> v2: check i_size within inode lock according to Chao's suggestions
-> ---
-> ---
->   fs/f2fs/file.c | 11 +++++++----
->   1 file changed, 7 insertions(+), 4 deletions(-)
-> 
-> diff --git a/fs/f2fs/file.c b/fs/f2fs/file.c
-> index 128e53d..cf63db7 100644
-> --- a/fs/f2fs/file.c
-> +++ b/fs/f2fs/file.c
-> @@ -2608,9 +2608,6 @@ static int f2fs_defragment_range(struct f2fs_sb_info *sbi,
->   	bool fragmented = false;
->   	int err;
->   
-> -	pg_start = range->start >> PAGE_SHIFT;
-> -	pg_end = (range->start + range->len) >> PAGE_SHIFT;
-> -
->   	f2fs_balance_fs(sbi, true);
->   
->   	inode_lock(inode);
-> @@ -2629,10 +2626,16 @@ static int f2fs_defragment_range(struct f2fs_sb_info *sbi,
+Hi Tudor,
 
-pg_start = range->start >> PAGE_SHIFT;
-pg_end = min_t(pgoff_t, (range->start + range->len) >> PAGE_SHIFT,
-			DIV_ROUND_UP(i_size_read(inode), PAGE_SIZE));
+On Tue, 2024-03-26 at 10:36 +0000, Tudor Ambarus wrote:
+> Reverse pinctrl-* lines, first pinctrl-0 then pinctrl-names. Move the
+> pinctrl-* properties after clocks so that we keep alphabetic order and
+> align with the other similar definitions.
 
->   
->   	/* writeback all dirty pages in the range */
->   	err = filemap_write_and_wait_range(inode->i_mapping, range->start,
-> -						range->start + range->len - 1);
-> +						min_t(loff_t, range->start + range->len - 1,
-> +						i_size_read(inode) - 1));
+Krzysztof had requested to change not just the DTSI but all instances for G=
+S101
+here:
+https://lore.kernel.org/all/98810c49-38e6-4402-bd47-05d8cbc99ef3@linaro.org=
+/
 
-, pg_start << PAGE_SHIFT - 1, pg_end << PAGE_SHIFT - 1); ?
+Cheers,
+Andre'
 
-Thanks,
-
->   	if (err)
->   		goto out;
->   
-> +	pg_start = range->start >> PAGE_SHIFT;
-> +	pg_end = min_t(pgoff_t,
-> +				(range->start + range->len) >> PAGE_SHIFT,
-> +				DIV_ROUND_UP(i_size_read(inode), PAGE_SIZE));
-> +
->   	/*
->   	 * lookup mapping info in extent cache, skip defragmenting if physical
->   	 * block addresses are continuous.
 
