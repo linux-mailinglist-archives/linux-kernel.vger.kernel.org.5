@@ -1,75 +1,74 @@
-Return-Path: <linux-kernel+bounces-118430-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-118432-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id F2E0188BABE
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 07:50:59 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6EC2088BAC8
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 07:51:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 22A131C2EDA3
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 06:50:59 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 22B0D2A87D3
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 06:51:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 13DED129A65;
-	Tue, 26 Mar 2024 06:50:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B5213823DA;
+	Tue, 26 Mar 2024 06:51:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="JiFZVdOc"
-Received: from mail-ej1-f42.google.com (mail-ej1-f42.google.com [209.85.218.42])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="nNNWQsmj"
+Received: from mail-lf1-f44.google.com (mail-lf1-f44.google.com [209.85.167.44])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 897FF823D1
-	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 06:50:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6BA64839E4
+	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 06:51:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711435851; cv=none; b=NYSEkDysyG92UfeUTYlAj7S25a0FznipyFr2/x4Wrajy6QOvk67bVssOOvZli9ld78Cy0hszM1nimNaapJ6FhSc/SRPv6K6bYpgY6YH8DXKW43Qera6NqJpfmeJexy0NO1ddBNF+7hstw+IKAd28hJhkaIVXFOT/lvwgaaoe0Ck=
+	t=1711435894; cv=none; b=cq10H5sVNWbZlMNZXBWHyaauAr60JT810KGbZHxJ7M/3E/r7ttnKw5Wj/04LuXF3dX0YXmmOCJtoiMk67gRNTwbqx7XzQjV3Bt58k75/Pszgn+VD8jcMV8NrPYy0A9YUpqBBPhox2YeqMLL8s9pg8BZ6F1JfLaQ63gqq7ciTLHM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711435851; c=relaxed/simple;
-	bh=+UeqcSIa8j3tiyfU3G25KJScLdmp2Wmms8GGl1R6LGI=;
+	s=arc-20240116; t=1711435894; c=relaxed/simple;
+	bh=XMYmyg6j+x1fMC/aD7Sus31kCZBytCleG6kliYvou0c=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Ofz1Kz1Q++Uc1PHBsjy0V9I6ZC2vTP7q1Iue59yxK1L/Y3bDCfP2B4/J46owmczW6qdLmBOrJJJUqk1rcevBJY06zJSHbw22tt1f+JKYo/0e2X3YkmL6F+YRY7RInHVjc6S7wWirOSF4sYNvEVA42J7Sp08IPDJVj5e27ity96c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=JiFZVdOc; arc=none smtp.client-ip=209.85.218.42
+	 In-Reply-To:Content-Type; b=NWxteOXNEoC/HM4g7njzWd8fSvr1QddXcCFs5UskhHeuRe+QbdDe3yHLUNFRRTZcuFwoPIlcoykDKeuKcfKZfm9FcB5YGmRQQxVTJb0PzF4w2e30THqw9m7ou9ox1PPqOI2DCNE/OwL3iuQ7Y2lu6NAJTggXYEVd8ICev0Vjp0Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=nNNWQsmj; arc=none smtp.client-ip=209.85.167.44
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ej1-f42.google.com with SMTP id a640c23a62f3a-a4751063318so262534966b.0
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 23:50:49 -0700 (PDT)
+Received: by mail-lf1-f44.google.com with SMTP id 2adb3069b0e04-513cfc93f4eso5554545e87.3
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 23:51:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1711435848; x=1712040648; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1711435890; x=1712040690; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from
          :content-language:references:cc:to:subject:user-agent:mime-version
          :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=CcYszJVzk4g1YlTjCZo19PYSJoJO6aoTmeXZSldpIoM=;
-        b=JiFZVdOc6IyE8zmeQEwxmaV12EkHEy1EXpNf5hcZQ7lnHK19Ztc4TmmI53ZcF0XkaF
-         EYgtv7vbb/bdUQoRZFpokaX/GYcSKoe45uFC/NdB0HxYm4FUbVzR9lwMbfU6AuBcbg3T
-         6Q3eEOSUATQXCRRW8v5uErJ/n3pbXggK4iHfOQo0Pg5bBb93aEsX8A9q/BGL2vyiP2t8
-         urkYe+m6HXwPPbYO0pQivl7CyIrkHsk36JVmxhkMN4oDmPJvnc+sc53RlLgsfwOai41q
-         BOXl4XlUtM/uLodBwhT3CnXfj78MVmYrUKoJjfiX69gUgE77f+Y+T3nQcY/H1F/+McL7
-         cz/A==
+        bh=ZQQUbFAlR5W/6GE/lvdJOw1ZfdoypRl3WnR9N4vE3Do=;
+        b=nNNWQsmjG4L3VoC5Ic4Mq7XiqBW/ysXMBIm0RQzbK1dz9dMz5OtUk/42GvzQiAdUWk
+         jsK19iDWigGYO988D2XMh4vzTV8EOk0UepBdfewKk3aL4MwlXG/LNsWgFLZcWGKYzYGy
+         XxbtEp0NfBygAR3kjjETcZ658S8IriQV9YQ2RMca0y8kA7uNGo6iEOvTkjh1ZBwCRCPS
+         EJ/sfqT9w9Cn5NP4zly+pzo7ysgvt7lHJpZuK91sJv5Ikxsa7cVEV7ILWGkM60qD0DYw
+         NNYKjLxNw+/PRcA8c98DXrNZqmWzgFoKKURllHhnvWxie+1Rs7h6b/rkrnczQiZsxpf8
+         QFxg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711435848; x=1712040648;
+        d=1e100.net; s=20230601; t=1711435890; x=1712040690;
         h=content-transfer-encoding:in-reply-to:autocrypt:from
          :content-language:references:cc:to:subject:user-agent:mime-version
          :date:message-id:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=CcYszJVzk4g1YlTjCZo19PYSJoJO6aoTmeXZSldpIoM=;
-        b=MEeFteb9a6BeFld3tHRMByhRX/DXoMrFo+JcpmWK+tCzyloYNVNNpFY8+DHa1MZ3Ae
-         FhkEsAC9Dzsu19k4V1SCtnEiVwdemdQ8hjkN2alSrnMGLTwWqQg7/60g4yEXBUr1yknz
-         f3L/cr1VCXPTmeuEme20NnwEDbMYkYJmlUB+aFasj5uFzngsB+IwVj2vUFJ1jcrNBRET
-         pmDJiRXEmMH5MjsrUA+QQ+Ye9Kdg6Tzn/7ndO33dfbp2OJ1q5BldcOOa8Ci5wSo/0J9G
-         dQi/Y/Fvy/4SebVbUafWx2K7t6Z/RgCZDkY0fC6hZTnPdmpw1PJ/zFIeVwrTvAXrzHvY
-         tnmA==
-X-Forwarded-Encrypted: i=1; AJvYcCX1vRn9d7dnbi7Rqt+waTw/4lCNwH9t9QDbjOjjFB2Lmo4qq60EuQaLmJFwqWn2zrb2pBrdHWWqwyIJ0O5nxp1oevYcDfoPKrfYaOFC
-X-Gm-Message-State: AOJu0YwERJ2eTt1qJHFOs6W7oKSy6KDToK1SOTC8c6tAfRBMQrbpEL2c
-	6YUz3JeSmLr/9T8sLUQPo10OFu0S7RsEg5P1E2sEDcXzgLpfitqrivx5hTjWwQ1Nr9KAstt3UWC
-	N
-X-Google-Smtp-Source: AGHT+IE4HfWUGwxqmUfayIT22jk+nqjwUsI8ApUyR9/HchWuudDay05zuCJfHGFE1BreKgJVEwWcTg==
-X-Received: by 2002:a17:906:b257:b0:a47:39c6:8970 with SMTP id ce23-20020a170906b25700b00a4739c68970mr205641ejb.39.1711435847894;
-        Mon, 25 Mar 2024 23:50:47 -0700 (PDT)
+        bh=ZQQUbFAlR5W/6GE/lvdJOw1ZfdoypRl3WnR9N4vE3Do=;
+        b=d4o9XtoEH8JNYHPkrOlNqxxPvri+oRG4HD5WI1eaWy9ANqezv8fGXhzz97XtipuqcK
+         6GhcPhYhtqnlm8Q8y+vGqAX7ZJzwfPH91zdj5CbfH5VaBbHM5IBwi8g4LX55Dr+nd5w/
+         doa0bxU5i1vkX9DgSo05jpMYhyM89l3uObIE3+mzuqk93ASm++v1mSz/dwl2YhK8aM+v
+         1cbuDZ3MAzuatuDZM8qccjz8/BHISXEu7Q2bxusLGTDOTQ4rUqxM/vrRYhNOWYmmK1kW
+         OYTfX/drp8vPTgz+vDz8QMNlXUDjRegi1fFMPppwpk1OnIUBGOdlyF8t9jQCZxhleRq7
+         wfyQ==
+X-Forwarded-Encrypted: i=1; AJvYcCU5ytHd5x4C2HZz9eoMYhYCyvwyuyK8yWkWrq2955tAmVXB9zNqv40R8fgO22vgipdavD4Yg9B6DSabhuQra4+Ze9ZCF7+Ghc9gLp7Z
+X-Gm-Message-State: AOJu0YwLe9F6mNUKZFGiZkBZc6LT1vEH7YFsEBcTToB1LTsuhL9G6hgB
+	IvD4zkvBilUXmzBlbEsTJz+n37KZ7FuDDMqcfefcryzG6bfbGvciNgwC7XQtofU=
+X-Google-Smtp-Source: AGHT+IFaUb++Oio47WMhGl4Izq878yZKJXYnIiH4zNqnBwAnklh75GT9lgEaRz9sdP0bQgc3aapeuA==
+X-Received: by 2002:ac2:4dba:0:b0:515:9e22:698a with SMTP id h26-20020ac24dba000000b005159e22698amr1295548lfe.2.1711435890540;
+        Mon, 25 Mar 2024 23:51:30 -0700 (PDT)
 Received: from [192.168.1.20] ([178.197.222.44])
-        by smtp.gmail.com with ESMTPSA id h22-20020a1709060f5600b00a473a1fe089sm3867467ejj.1.2024.03.25.23.50.46
+        by smtp.gmail.com with ESMTPSA id bn10-20020a170907268a00b00a475301cd82sm2504353ejc.170.2024.03.25.23.51.29
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 25 Mar 2024 23:50:47 -0700 (PDT)
-Message-ID: <4a30ce5d-c308-4983-8c7b-d83ced6a9ef1@linaro.org>
-Date: Tue, 26 Mar 2024 07:50:45 +0100
+        Mon, 25 Mar 2024 23:51:30 -0700 (PDT)
+Message-ID: <e32e05c8-805b-42ce-9b03-87d1bf3feb56@linaro.org>
+Date: Tue, 26 Mar 2024 07:51:28 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -143,22 +142,19 @@ Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
 On 26/03/2024 04:37, Frank Li wrote:
-> On Tue, Mar 26, 2024 at 09:47:03AM +0800, Inochi Amaoto wrote:
->> The DMA IP of Sophgo CV18XX/SG200X is based on a DW AXI CORE, with
->> an additional channel remap register located in the top system control
->> area. The DMA channel is exclusive to each core.
->>
->> Add the dmamux binding for CV18XX/SG200X series SoC
->>
->> Signed-off-by: Inochi Amaoto <inochiama@outlook.com>
->> ---
->>  .../bindings/dma/sophgo,cv1800-dmamux.yaml    | 48 ++++++++++++++++
->>  include/dt-bindings/dma/cv1800-dma.h          | 55 +++++++++++++++++++
+>> +properties:
+>> +  compatible:
+>> +    const: sophgo,cv1800-dmamux
+>> +
+>> +  reg:
+>> +    items:
+>> +      - description: DMA channal remapping register
+>> +      - description: DMA channel interrupt mapping register
+>> +
 > 
-> I remember checkpatch.pl require .h have seperate patch.
+> Look like driver have not use it.
 
-Why do you insist on that? Bindings header should be with binding.
-That's incorrect advice.
+And what does it mean for the bindings?
 
 Best regards,
 Krzysztof
