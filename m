@@ -1,181 +1,84 @@
-Return-Path: <linux-kernel+bounces-118698-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-118699-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1478988BE2B
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 10:44:39 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 20D8688BE2D
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 10:45:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B546F2E1C91
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 09:44:37 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CE87E2E2AFA
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 09:44:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F08B57352F;
-	Tue, 26 Mar 2024 09:39:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="ZbIU7G5D";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="a0eJdvzO";
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="ZbIU7G5D";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="a0eJdvzO"
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CC35C67A01;
+	Tue, 26 Mar 2024 09:40:28 +0000 (UTC)
+Received: from gloria.sntech.de (gloria.sntech.de [185.11.138.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 284D471723;
-	Tue, 26 Mar 2024 09:39:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B629482E2
+	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 09:40:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.11.138.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711445950; cv=none; b=chMBBIlNlwcgqbH/ILsY5syZJH8+pSPOF3aoCpkkDtY90APNQE1eywiqyL7J5sakf4ePppDz/2oQJIOun+vI6eXIZ19TGEt41dN/oHtlvOmkKfSjWEvRiS6uCyZzz0dOCg65p/u6PtsC24e5qntsb7obn/BucVf/ppQuxWkN3KI=
+	t=1711446028; cv=none; b=Iuc9OK1tDV/G7/xuEpI9JUrjdp/LfFanJ84KvXD05gAelZK1PG0w1VUQ1j6T9t0eAf4WBVZGhIF0B5BKCnk53Cqlvug3grilzKFYiTTr66pYoChAg2yy49Y4QCYTkpnuIqvLRtmYEQJMBiDEsxmiYIgWmeS8yEk+RPy7JQ9vgBY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711445950; c=relaxed/simple;
-	bh=LIcVoQTdCH6pdWydpKG+x/1RlQHFfp9f/AqkxkYf85g=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=AUtKYYhAPKCSRq9/ocsSZ1CmzS6LZ6Q/KU69A4PUlvFZByLxSXyZKVLjFNsFO3kkZaZOHZNipim0q3EP+IklJy82a1CHhGZ7bfZYp9Lr4yVaIgsKAXwc+Q/toSx4aQ87NB54vT0py4IBcHi1tswQlS2ne77BfJ5qL4Tc5J2N3II=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=ZbIU7G5D; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=a0eJdvzO; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=ZbIU7G5D; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=a0eJdvzO; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id F31485D3D7;
-	Tue, 26 Mar 2024 09:39:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1711445943; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=kGl36ZnVCOBSUYs46//SH0vHjzvfLhWPNt9V5YwfBJE=;
-	b=ZbIU7G5DkSH+jpZAFdb+J2b0NX74xsnNDpOY1ITDpfwH4Bom+dmZlmUihPYQhqYaG3gt2C
-	hcjA/Ko4BvCTVTFS8bxlYEPvbL7ukootV7TjUPVG8ZbHtpG9nDe8n7w7TtpNcedHFpuzeE
-	maTDQMbsyjlVmrGkoLdHQcP5sgMYyK8=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1711445943;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=kGl36ZnVCOBSUYs46//SH0vHjzvfLhWPNt9V5YwfBJE=;
-	b=a0eJdvzOIyEJSe9rsEYCU6FGOTEjDMObliszcUoPG1w9ANsSUmhK2+hgDcueK2UTQC+asC
-	0+wSYiwa0SNXwBAg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1711445943; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=kGl36ZnVCOBSUYs46//SH0vHjzvfLhWPNt9V5YwfBJE=;
-	b=ZbIU7G5DkSH+jpZAFdb+J2b0NX74xsnNDpOY1ITDpfwH4Bom+dmZlmUihPYQhqYaG3gt2C
-	hcjA/Ko4BvCTVTFS8bxlYEPvbL7ukootV7TjUPVG8ZbHtpG9nDe8n7w7TtpNcedHFpuzeE
-	maTDQMbsyjlVmrGkoLdHQcP5sgMYyK8=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1711445943;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=kGl36ZnVCOBSUYs46//SH0vHjzvfLhWPNt9V5YwfBJE=;
-	b=a0eJdvzOIyEJSe9rsEYCU6FGOTEjDMObliszcUoPG1w9ANsSUmhK2+hgDcueK2UTQC+asC
-	0+wSYiwa0SNXwBAg==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id AEF96138A1;
-	Tue, 26 Mar 2024 09:39:02 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id EEwMKbaXAmZpcgAAD6G6ig
-	(envelope-from <hare@suse.de>); Tue, 26 Mar 2024 09:39:02 +0000
-Message-ID: <7217df4e-470b-46ab-a4fc-1d4681256885@suse.de>
-Date: Tue, 26 Mar 2024 10:39:02 +0100
+	s=arc-20240116; t=1711446028; c=relaxed/simple;
+	bh=dy5+4IjR6YMVgmJELKcy7ArkXCIFzoqeEnhI6PVo1QU=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=nGE/4A+AkBM5fbiQ6SZqc25vYkArXSgUQOBi0iY97yHWgybD3AxuItDCJXptCZaMFlgAG8hGzU3um7QAxQ7GXkd3fT0XMyNSI5r31y2pcl19rxaOQRv2QmSAI7y7bp5E2TlmNsO3Nr93no+sGJV4XKHdukDuqSfsGOSiOTXLAyA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sntech.de; spf=pass smtp.mailfrom=sntech.de; arc=none smtp.client-ip=185.11.138.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sntech.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sntech.de
+Received: from i53875aaf.versanet.de ([83.135.90.175] helo=phil.lan)
+	by gloria.sntech.de with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <heiko@sntech.de>)
+	id 1rp3Hw-0001HT-FA; Tue, 26 Mar 2024 10:40:12 +0100
+From: Heiko Stuebner <heiko@sntech.de>
+To: Heiko Stuebner <heiko@sntech.de>,
+	quic_jesszhan@quicinc.com,
+	neil.armstrong@linaro.org,
+	sam@ravnborg.org
+Cc: tzimmermann@suse.de,
+	klaus.goger@theobroma-systems.com,
+	dri-devel@lists.freedesktop.org,
+	Heiko Stuebner <heiko.stuebner@cherry.de>,
+	linux-kernel@vger.kernel.org,
+	maarten.lankhorst@linux.intel.com,
+	mripard@kernel.org,
+	quentin.schulz@theobroma-systems.com
+Subject: Re: [PATCH 1/2] drm/panel: ltk050h3146w: add MIPI_DSI_MODE_VIDEO to LTK050H3148W flags
+Date: Tue, 26 Mar 2024 10:40:10 +0100
+Message-Id: <171144600424.1118335.2717050705855214232.b4-ty@sntech.de>
+X-Mailer: git-send-email 2.39.2
+In-Reply-To: <20240320131232.327196-1-heiko@sntech.de>
+References: <20240320131232.327196-1-heiko@sntech.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 04/11] readahead: rework loop in
- page_cache_ra_unbounded()
-Content-Language: en-US
-To: Matthew Wilcox <willy@infradead.org>,
- "Pankaj Raghav (Samsung)" <kernel@pankajraghav.com>
-Cc: linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
- gost.dev@samsung.com, chandan.babu@oracle.com, mcgrof@kernel.org,
- djwong@kernel.org, linux-mm@kvack.org, linux-kernel@vger.kernel.org,
- david@fromorbit.com, akpm@linux-foundation.org,
- Pankaj Raghav <p.raghav@samsung.com>
-References: <20240313170253.2324812-1-kernel@pankajraghav.com>
- <20240313170253.2324812-5-kernel@pankajraghav.com>
- <ZgHFPZ9tNLLjKZpz@casper.infradead.org>
-From: Hannes Reinecke <hare@suse.de>
-In-Reply-To: <ZgHFPZ9tNLLjKZpz@casper.infradead.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Level: 
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.de header.s=susede2_rsa header.b=ZbIU7G5D;
-	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=a0eJdvzO
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-3.78 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	 XM_UA_NO_VERSION(0.01)[];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 BAYES_HAM(-2.28)[96.64%];
-	 MIME_GOOD(-0.10)[text/plain];
-	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 DWL_DNSWL_BLOCKED(0.00)[suse.de:dkim];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	 DKIM_TRACE(0.00)[suse.de:+];
-	 MX_GOOD(-0.01)[];
-	 RCPT_COUNT_TWELVE(0.00)[13];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:dkim];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 NEURAL_HAM_SHORT(-0.20)[-1.000];
-	 RCVD_TLS_ALL(0.00)[];
-	 MID_RHS_MATCH_FROM(0.00)[];
-	 RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]
-X-Spam-Score: -3.78
-X-Rspamd-Queue-Id: F31485D3D7
-X-Spam-Flag: NO
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 
-On 3/25/24 19:41, Matthew Wilcox wrote:
-> On Wed, Mar 13, 2024 at 06:02:46PM +0100, Pankaj Raghav (Samsung) wrote:
->> @@ -239,8 +239,8 @@ void page_cache_ra_unbounded(struct readahead_control *ractl,
->>   			 * not worth getting one just for that.
->>   			 */
->>   			read_pages(ractl);
->> -			ractl->_index++;
->> -			i = ractl->_index + ractl->_nr_pages - index - 1;
->> +			ractl->_index += folio_nr_pages(folio);
->> +			i = ractl->_index + ractl->_nr_pages - index;
->>   			continue;
->>   		}
->>   
->> @@ -252,13 +252,14 @@ void page_cache_ra_unbounded(struct readahead_control *ractl,
->>   			folio_put(folio);
->>   			read_pages(ractl);
->>   			ractl->_index++;
->> -			i = ractl->_index + ractl->_nr_pages - index - 1;
->> +			i = ractl->_index + ractl->_nr_pages - index;
->>   			continue;
->>   		}
+On Wed, 20 Mar 2024 14:12:31 +0100, Heiko Stuebner wrote:
+> From: Heiko Stuebner <heiko.stuebner@cherry.de>
 > 
-> You changed index++ in the first hunk, but not the second hunk.  Is that
-> intentional?
+> Similar to other variants, the LTK050H3148W wants to run in video mode
+> when displaying data. So far only the Synopsis DSI driver was using this
+> panel and it is always switching to video mode, independent of this flag
+> being set.
+> 
+> [...]
 
-Hmm. Looks you are right; it should be modified, too.
-Will be fixing it up.
+Applied, thanks!
 
-Cheers,
+[1/2] drm/panel: ltk050h3146w: add MIPI_DSI_MODE_VIDEO to LTK050H3148W flags
+      commit: 80cc8c0d09e6bab3bd016ddaccd0570cadbe1891
+[2/2] drm/panel: ltk050h3146w: drop duplicate commands from LTK050H3148W init
+      commit: 55679cc22e60e8ec23b2340248389022798416cd
 
-Hannes
-
+Best regards,
+-- 
+Heiko Stuebner <heiko@sntech.de>
 
