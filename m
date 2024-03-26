@@ -1,118 +1,136 @@
-Return-Path: <linux-kernel+bounces-119645-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-119643-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6EC6E88CB81
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 19:05:26 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id E1D0B88CB7A
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 19:05:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9CDA41C2B758
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 18:05:25 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 837B91F82974
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 18:05:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 423146F07B;
-	Tue, 26 Mar 2024 18:05:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C2F7780C1F;
+	Tue, 26 Mar 2024 18:04:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="T8k8uz2T"
-Received: from mail-pj1-f54.google.com (mail-pj1-f54.google.com [209.85.216.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="OhqPwuZT"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3691B84D34
-	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 18:05:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 014641C2AF;
+	Tue, 26 Mar 2024 18:04:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711476305; cv=none; b=rm4geP30nkXKPwBlfrPFoPgKKd0CtrvKgD/MCsL465cOr5cp+tmG00Ujrc0tFj/PBnASVwyygz96egnHTWBy7jAhDoG3m0ay6dijhnMgRzYyBFmcjNiijYDfeM78KBMVHk2RW5YaiKtendB7UYDrNIqIqGMQWl95L7OfTg6kbrc=
+	t=1711476293; cv=none; b=LIuD8tXiz1ctkXP3rOxhlzoZYytlSQOaoiIOBkjbNXPRUB9FXGGwkOBcOq6OW7OLEeVcx8LAJborbdZzxbVqgZO18NjZFq/qrStzQ1uaooB9HI1Uxw7wemDGETARcEQ70enx+2KmeYts3kSoRmJ+xiW2SpyN1m67anbzbwdh5K8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711476305; c=relaxed/simple;
-	bh=1HtAEn3GUDU1rNP6LZWmBuVwhufr+rjFcdlx8t9YYvw=;
-	h=MIME-Version:From:Date:Message-ID:Subject:To:Cc:Content-Type; b=RpKaelVFOXlJPvwBULwSBzr4/l90GV33dHRsMqzdFd33ew8jC4T4aUho5L64ch73YAstUFjs05vKDxIB+8T0F7KOkkQmwwByd2jPBBImX9MHh3XZR7ipL4//jSsapVU//k3HxXUPlpSjEvhJGr8O/+CgZL5mesuNJa51Jr+cjAg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=T8k8uz2T; arc=none smtp.client-ip=209.85.216.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f54.google.com with SMTP id 98e67ed59e1d1-2a07b092c4fso1437949a91.0
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 11:05:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711476303; x=1712081103; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=InAZ9/C9EDyJhkW+bEV5eavwbh4jrGbQhGajHqMOaXs=;
-        b=T8k8uz2T2njzNwO9uuJCZUPbgR7UFW3VEzMiwRNl2nNnkzK0CQ0ib/Ud1d8W/cZ7zR
-         gs/sTUjSgsy+g9XB4s3HmW8K2Z4QH674pe38Y9CdG6pxuzLH60WLj2VLrdQvh5R9nK07
-         /TF0KH0xwUpPyLq8WJbFiuKVsH9uwJO8/hywywXg6O5vOjbVAvxYEAnanO899MyHqdoQ
-         PY3wMbQkBRl1gRtwlQcRV822sE+pi9QwTeRAvUWRIbtTYkfvLgOowj6kxQd0W/YpziZS
-         nKNAjMIhDWSu+Hr4SVNSGMF61ufFq7KGK9RBnHoWjajT0jqvruf8XqYrxvaxcTqVENfD
-         fv7Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711476303; x=1712081103;
-        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=InAZ9/C9EDyJhkW+bEV5eavwbh4jrGbQhGajHqMOaXs=;
-        b=pWXkrvEv7H8s6aGXqyITehsameVNCy6Ejt1sAOSxNzspON3iQW56pq+1PmjZugKsy7
-         I+OMQ36d5GCraGFf/aw12+xpvFJ2tH+AdjTla91CQk1toai3Os/A81A/jqK6izJO2Lbi
-         VsG0uhVnL/vQPTkrM4yHX1R3ZJ5FzQNUSJHEAYGranX+oUtXvXdT5aAoJt9JXAg2J6K3
-         bu9Jl9WdtwzgGXpdpkYlUe2jlQnNFlGdJnPPOOFiEuQIplLgeaF8WkGuAcrT20sD+ZAO
-         73kgq72eviF2F6V0Sno1PdqUQC4uR5mcmsprngh7D5t3x2VpSayPd4EyBKUMpnWSnwgQ
-         QT0Q==
-X-Forwarded-Encrypted: i=1; AJvYcCXn6/1VmaaTzDrsqxY85zMiiDg4Zq0FSwt2K57L/m9QLrLWxT4WUS+knFz3bEDwRLkUihnSS1RSejYPgrzWq1d9ZdDI5MV8Faq/O+Lv
-X-Gm-Message-State: AOJu0YypFzQOebOc/9YC3VS8FsANXlRvTIaKetu+vZIG//37fcdSGMtc
-	slTZZ4FS+TecPaIfEHoyN7ueR8ObzuRPp5H4XFXuXjxFrQ5KgmbhosJ8DI1CLaQuKRaHkbTogWw
-	wT1Wx3AmQh3BdmkszAqDL8R10OkE=
-X-Google-Smtp-Source: AGHT+IEBhA+WnnRTf8AR2UyUOmIouX8FcColXZqyCdRGDNFO76HxCoWYBYVkcsPJZ6LizCzy9BOlPUU/AKNzLxSVaQ8=
-X-Received: by 2002:a17:90b:380c:b0:29f:e443:204f with SMTP id
- mq12-20020a17090b380c00b0029fe443204fmr8861033pjb.18.1711476303337; Tue, 26
- Mar 2024 11:05:03 -0700 (PDT)
+	s=arc-20240116; t=1711476293; c=relaxed/simple;
+	bh=FpwR17g2PH56G0XDh6Pi3WB67cdLCnSyZjbxboXsr0w=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=h1xPafAie7fDsuf+0O8Hs6Ahv6Nefcio/yyFwhZO3O9+gyGBOHh+PiCJND6Q94P/Bban9JziEnRuO4OVMOp3OWbKyhkjzaC8rO4ahKeBDwI6BdoDlAnhE4GClMaPaGDKu8xnv662CuGk1JyP98y69CkJu4GArg/XKFm78V5Gg8s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=OhqPwuZT; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 14588C433F1;
+	Tue, 26 Mar 2024 18:04:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1711476292;
+	bh=FpwR17g2PH56G0XDh6Pi3WB67cdLCnSyZjbxboXsr0w=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=OhqPwuZTdQ1s7BpgL1VIfuejwlhhnnaQebCxnJRAG0seH7mpEyQLj8LiyS6MhTs3D
+	 lAsHUNE6c5YMjRyPqRfd1SioWqtf+T74GNlkByMBviw6YJiCSjPGxhY8iRV7s+qwcw
+	 qvxfkjefy4d0o2sX9eBnM6zuVZg4clFyVlPCmIJyIxM8jje4z1vxa1H/D7ZoHNxCAe
+	 guE2pbxtTTqlzpZDIeZhzbw08HFzcIv+Jo5mI8SXPjbXWVcQQZBNyz5cPX9gVYg6VV
+	 t3oNj0XtFGgXIuFircYNgE4t+HXmIX9iZSHEVETnqq+FzRLbUdLtwNm0Oh2a/ILudH
+	 H3VeWif2pNhEA==
+Date: Tue, 26 Mar 2024 18:04:46 +0000
+From: Conor Dooley <conor@kernel.org>
+To: Alexey Romanov <avromanov@salutedevices.com>
+Cc: neil.armstrong@linaro.org, clabbe@baylibre.com,
+	herbert@gondor.apana.org.au, davem@davemloft.net,
+	robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+	conor+dt@kernel.org, khilman@baylibre.com, jbrunet@baylibre.com,
+	martin.blumenstingl@googlemail.com, vadim.fedorenko@linux.dev,
+	linux-crypto@vger.kernel.org, linux-amlogic@lists.infradead.org,
+	linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org, kernel@salutedevices.com
+Subject: Re: [PATCH v6 19/23] dt-bindings: crypto: meson: support new SoC's
+Message-ID: <20240326-boneless-patrol-b1156a4be70b@spud>
+References: <20240326153219.2915080-1-avromanov@salutedevices.com>
+ <20240326153219.2915080-20-avromanov@salutedevices.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-From: Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Date: Tue, 26 Mar 2024 19:04:34 +0100
-Message-ID: <CANiq72mbsAYmR_dRPpQQ=9-NWhTtp0TWiOz0v=V-0AvwYbWw4A@mail.gmail.com>
-Subject: drivers/gpu/drm/qxl/qxl_cmd.c:424:6: error: variable 'count' set but
- not used
-To: Dave Airlie <airlied@redhat.com>, Gerd Hoffmann <kraxel@redhat.com>
-Cc: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>, 
-	Thomas Zimmermann <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, 
-	virtualization@lists.linux.dev, spice-devel@lists.freedesktop.org, 
-	dri-devel <dri-devel@lists.freedesktop.org>, 
-	linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="TsFS7LpYqhJ6X8MW"
+Content-Disposition: inline
+In-Reply-To: <20240326153219.2915080-20-avromanov@salutedevices.com>
 
-Hi,
 
-In today's next, I got:
+--TsFS7LpYqhJ6X8MW
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-    drivers/gpu/drm/qxl/qxl_cmd.c:424:6: error: variable 'count' set
-but not used [-Werror,-Wunused-but-set-variable]
+On Tue, Mar 26, 2024 at 06:32:15PM +0300, Alexey Romanov wrote:
+> Now crypto module available at G12A/G12B/S4/A1/SM1/AXG.
+>=20
+> 1. Add new compatibles:
+>   - amlogic,g12a-crypto
+>   - amlogic,axg-crypto
+>   - amlogic,a1-crypto
+>   - amlogic,s4-crypto (uses a1-crypto as fallback)
+>=20
+> 2. Add power-domains in schema.
+>=20
+> Signed-off-by: Alexey Romanov <avromanov@salutedevices.com>
+> ---
+>  .../bindings/crypto/amlogic,gxl-crypto.yaml       | 15 +++++++++++++--
+>  1 file changed, 13 insertions(+), 2 deletions(-)
+>=20
+> diff --git a/Documentation/devicetree/bindings/crypto/amlogic,gxl-crypto.=
+yaml b/Documentation/devicetree/bindings/crypto/amlogic,gxl-crypto.yaml
+> index d3af7b4d5f39..c92edde314aa 100644
+> --- a/Documentation/devicetree/bindings/crypto/amlogic,gxl-crypto.yaml
+> +++ b/Documentation/devicetree/bindings/crypto/amlogic,gxl-crypto.yaml
+> @@ -11,8 +11,16 @@ maintainers:
+> =20
+>  properties:
+>    compatible:
+> -    items:
+> -      - const: amlogic,gxl-crypto
+> +    oneOf:
+> +      - items:
+> +          - enum:
+> +              - amlogic,s4-crypto
+> +          - const: amlogic,a1-crypto
+> +      - enum:
+> +          - amlogic,gxl-crypto
+> +          - amlogic,axg-crypto
+> +          - amlogic,g12a-crypto
+> +          - amlogic,a1-crypto
+> =20
+>    reg:
+>      maxItems: 1
+> @@ -21,6 +29,9 @@ properties:
+>      items:
+>        - description: Interrupt for flow 0
+> =20
+> +  power-domains:
+> +    maxItems: 1
 
-`count` seems to be there since commit f64122c1f6ad ("drm: add new QXL
-driver. (v1.4)").
+Is power-domains valid for the devices that existed prior to your patch?
 
-Untested diff below -- if you want a formal patch, please let me know.
+--TsFS7LpYqhJ6X8MW
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Cheers,
-Miguel
+-----BEGIN PGP SIGNATURE-----
 
-diff --git a/drivers/gpu/drm/qxl/qxl_cmd.c b/drivers/gpu/drm/qxl/qxl_cmd.c
-index 281edab518cd..d6ea01f3797b 100644
---- a/drivers/gpu/drm/qxl/qxl_cmd.c
-+++ b/drivers/gpu/drm/qxl/qxl_cmd.c
-@@ -421,7 +421,6 @@ int qxl_surface_id_alloc(struct qxl_device *qdev,
- {
-        uint32_t handle;
-        int idr_ret;
--       int count = 0;
- again:
-        idr_preload(GFP_ATOMIC);
-        spin_lock(&qdev->surf_id_idr_lock);
-@@ -433,7 +432,6 @@ int qxl_surface_id_alloc(struct qxl_device *qdev,
-        handle = idr_ret;
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZgMOPgAKCRB4tDGHoIJi
+0tshAQCtbEqOHiJFUm5lxRMtAn+5YxU2CDgCh0rFA4v9v07M5QEAtxnoZzj0b3c8
+yH8w5AJrE8FRKbXSqTKMNF83M4Te2Qo=
+=OFV3
+-----END PGP SIGNATURE-----
 
-        if (handle >= qdev->rom->n_surfaces) {
--               count++;
-                spin_lock(&qdev->surf_id_idr_lock);
-                idr_remove(&qdev->surf_id_idr, handle);
-                spin_unlock(&qdev->surf_id_idr_lock);
+--TsFS7LpYqhJ6X8MW--
 
