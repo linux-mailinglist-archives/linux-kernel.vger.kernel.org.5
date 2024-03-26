@@ -1,275 +1,386 @@
-Return-Path: <linux-kernel+bounces-118253-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-118254-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2778488B6E2
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 02:31:38 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BF88388B6E5
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 02:32:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D0DAF3001C6
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 01:31:36 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CB78DB23382
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 01:31:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 585A01CD37;
-	Tue, 26 Mar 2024 01:31:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E5EB4200D1;
+	Tue, 26 Mar 2024 01:31:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=sifive.com header.i=@sifive.com header.b="Bx+l1E1R"
-Received: from mail-pf1-f169.google.com (mail-pf1-f169.google.com [209.85.210.169])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="IzslBCk1"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 476411CD20
-	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 01:31:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CBD29282EB;
+	Tue, 26 Mar 2024 01:31:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711416689; cv=none; b=luIiLphJeDyzvW+13MyjIROuQXWpdhcbnochcw6wkcSDIx5xmzmrpNoWbGh0z6d/l5LOBVUH2AKqjoKoz1Jz/pYJP/NXU+yGqPl5e1oNLw5fxOjvJ/kFOqGJLVd24VAjIkuL2b/rktlHxGNxpM8ux7bSuYcruXBYACV17ZggFww=
+	t=1711416706; cv=none; b=CScmilDHRXHwEXPhyTzJORAgUeXzzniuSms5fSbGRUcDoBaVWVjzM8sAjpm4hA5hjs7+CIHjDVjI8t9Cr024QAukXrMzv74hsxvuAFoCSSF0UFFACXNuvMhG48tUQG4WTMnUCaHczVmGjyskACCvi4qvCvIUUCdIRTqMvFLTL8s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711416689; c=relaxed/simple;
-	bh=Fl+yRjd0UrHOAiD6WIaH4FFdnBSi6P1vaZZG/JCGnkU=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References; b=AYW9qA7QCQjqROLig1iH9/yx5RJnkvpN0m7OdxBK+sSrh/TILvN4YvWUKQOYuekkKQGKrRERmL1Cvp+0EFW7IsfCC9AbMjz3M3XLd4+PMJGVLlu6j9krwzQJSVk6Z2q/rJzQ9y7oo2kK/sMEdgSYmQCMvV7SpHMJAq+EFVawR6I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=sifive.com; spf=pass smtp.mailfrom=sifive.com; dkim=pass (2048-bit key) header.d=sifive.com header.i=@sifive.com header.b=Bx+l1E1R; arc=none smtp.client-ip=209.85.210.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=sifive.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sifive.com
-Received: by mail-pf1-f169.google.com with SMTP id d2e1a72fcca58-6ea8a0d1a05so1949722b3a.1
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 18:31:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sifive.com; s=google; t=1711416686; x=1712021486; darn=vger.kernel.org;
-        h=references:in-reply-to:message-id:date:subject:cc:to:from:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=xL3rc040eKk6aS3kn8YpvfEGan/cVzm8MFiFJYrFFIA=;
-        b=Bx+l1E1RguroxyboASRE3Si+qswODnxyduA5v/aQg41xzqQQzPF9Brv42Ss9eGu9QY
-         Eoi2ud/qY7znvCdUVw9NOQMP845PUjdW+D9EjiM/hLZcCJ7dlZalwqgmqFCWMBoJMGQb
-         ZDTcGE4iCH4s1inbntlg9HD7IaTVyDgIUami8HqMjAyxKG33LbAyl5UzNPGEQpvRgDwT
-         nfPDGqvQf6Vdx8lbhsAodoB+KlszPHIf1/HHRKgLBwUSTjbV8nnCimvEubio1PeHVDPT
-         k3Sblo5bWDma+KZfE6u905VjyG1c4AjxqIEvJHPNlhoic9x6zjQB9Fp5XaCOfV1/w0E2
-         hl2g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711416686; x=1712021486;
-        h=references:in-reply-to:message-id:date:subject:cc:to:from
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=xL3rc040eKk6aS3kn8YpvfEGan/cVzm8MFiFJYrFFIA=;
-        b=NdE5FVp5WE8a1VBWXhO11fB7jOlLfjVs3avyN/BeeHbi5k7UAtJkP8ZrqJ7g1U0UVQ
-         Xuj9uhFjHeyuHN4tSbaTJdwuYOyQNg3UaeIYjPS8s6INrJfsvGoRT3jtBl3qOGB45avR
-         6RMAgQevOow7LSU0vshJRb2k/9Tte8zfbAmeKywidfpT5dn3ecUYZV4akxdQENZHGxge
-         gTGSTeaappPsh90KWyQlnji5CgdCU+0i3xcMOeQlcWs+rwKFu/SY6pZcHtxWG3ts/6BA
-         vnjByI4BbmR1hUb40wIJ3mU6haEPIj9RNw07GWVoWxbAMXDCRpO9iozz4d1fvGTOP0qF
-         woig==
-X-Forwarded-Encrypted: i=1; AJvYcCUrD9KWbfWGdjKaD5Sa3svaJ8lwdznPuR8nhFtu8iRmn2z9FMq5iP+GE7i9ugFswt8wndi3sIDX7akFlzZuco0u1rcSinbc0Hcagr4W
-X-Gm-Message-State: AOJu0YyUONJk7Y59nZd+2/DlLIFxwhOMlFWTVlNWAXJviKSL23SiK/HT
-	orcj2r+5ivm9pTPePPHiKmOWeHVKkpQMJldM9T3pknhOVmdF2I6UGW23U2+NCzU=
-X-Google-Smtp-Source: AGHT+IG9ZhWQHv78QSHczCurjPGCufikynH54sKO+XOUJb+NA4j/kl8/nWQa7OAQoYkmCdzpzJl8fQ==
-X-Received: by 2002:a05:6a20:3950:b0:1a3:c8ab:5a7c with SMTP id r16-20020a056a20395000b001a3c8ab5a7cmr105666pzg.22.1711416686296;
-        Mon, 25 Mar 2024 18:31:26 -0700 (PDT)
-Received: from hsinchu26.internal.sifive.com (59-124-168-89.hinet-ip.hinet.net. [59.124.168.89])
-        by smtp.gmail.com with ESMTPSA id d18-20020a63d712000000b005bdbe9a597fsm6396157pgg.57.2024.03.25.18.31.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 Mar 2024 18:31:25 -0700 (PDT)
-From: Zong Li <zong.li@sifive.com>
-To: geert+renesas@glider.be
-Cc: arnd@arndb.de,
-	hca@linux.ibm.com,
-	iommu@lists.linux.dev,
-	joro@8bytes.org,
-	jstultz@google.com,
-	kai.heng.feng@canonical.com,
-	krzk@kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-clk@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-pm@vger.kernel.org,
-	linux-renesas-soc@vger.kernel.org,
-	linux@armlinux.org.uk,
-	magnus.damm@gmail.com,
-	mturquette@baylibre.com,
-	npiggin@gmail.com,
-	peterz@infradead.org,
-	rafael.j.wysocki@intel.com,
-	robin.murphy@arm.com,
-	s.nawrocki@samsung.com,
-	sboyd@kernel.org,
-	tero.kristo@linux.intel.com,
-	tglx@linutronix.de,
-	tomasz.figa@gmail.com,
-	tony@atomide.com,
-	ulf.hansson@linaro.org,
-	vincent.guittot@linaro.org,
-	will@kernel.org,
-	wsa+renesas@sang-engineering.com,
-	yoshihiro.shimoda.uh@renesas.com,
-	zhengdejin5@gmail.com
-Subject: Re: [PATCH v3 2/7] iopoll: Do not use timekeeping in read_poll_timeout_atomic()
-Date: Tue, 26 Mar 2024 09:31:19 +0800
-Message-Id: <20240326013119.10591-1-zong.li@sifive.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <3d2a2f4e553489392d871108797c3be08f88300b.1685692810.git.geert+renesas@glider.be>
-References: <3d2a2f4e553489392d871108797c3be08f88300b.1685692810.git.geert+renesas@glider.be>
+	s=arc-20240116; t=1711416706; c=relaxed/simple;
+	bh=fyMVCArFo+f8p4yZJMhm4nPq0mpcMqn01kbP8JFPM+w=;
+	h=Mime-Version:Content-Type:Date:Message-Id:Cc:Subject:From:To:
+	 References:In-Reply-To; b=mg0na/zPkpDeS5V4xaYK7R5foLO3duwPoB5AJqMNGx7EeZFkIV8wbxBd21E+g3nJFetFhbmA/wtAbH9Y0/shIcTGVSxdVYbl94aWBI59t7RELlNNG7elbzyJcy2z/4jAa5hEvMtCh77Y5tRslJwMBTrnq7Kc2PWCn97/GXGLU2A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=IzslBCk1; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1BEE4C433F1;
+	Tue, 26 Mar 2024 01:31:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1711416706;
+	bh=fyMVCArFo+f8p4yZJMhm4nPq0mpcMqn01kbP8JFPM+w=;
+	h=Date:Cc:Subject:From:To:References:In-Reply-To:From;
+	b=IzslBCk1C74hsa8EtTUZRErzCYazb1ez8+TFdOfWsvRuudRGkP8Usg+3yZnVnKSAf
+	 QK6TPzCjn8coUnMfy0q6bNYpZzDYzGFPrVPHJYGLeyLafGa57Q5ehgmYimzYNSDsPH
+	 DPINiDT8By+kfJz7cyFzNpWaD+Dn1M/JY4oup9RdIonlGSaDANAo9le0aL55QSB5as
+	 5+C5Gmdq+VVnwXHsFvbsYZBPTFNhgc6xrla1LyEVPqk68rNJa/MXhjkrekYuFlFJaG
+	 lVgXeka5EdnyDrCK9hCfrePFc57JSmUq1U9YcX5SMPOA+W1UJ1TcS4IPsuHnpclUNZ
+	 dcjQyzXEEFSMA==
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Date: Tue, 26 Mar 2024 03:31:42 +0200
+Message-Id: <D03AL7A5G3M2.3UK4ASWILGBJS@kernel.org>
+Cc: <linux-riscv@lists.infradead.org>, "Paul Walmsley"
+ <paul.walmsley@sifive.com>, "Palmer Dabbelt" <palmer@dabbelt.com>, "Albert
+ Ou" <aou@eecs.berkeley.edu>, <linux-kernel@vger.kernel.org>, "Luis
+ Chamberlain" <mcgrof@kernel.org>, <linux-modules@vger.kernel.org>, "Naveen
+ N . Rao" <naveen.n.rao@linux.ibm.com>, "Anil S Keshavamurthy"
+ <anil.s.keshavamurthy@intel.com>, "David S . Miller" <davem@davemloft.net>
+Subject: Re: [PATCH v5 1/2] kprobes: textmem API
+From: "Jarkko Sakkinen" <jarkko@kernel.org>
+To: "Masami Hiramatsu" <mhiramat@kernel.org>
+X-Mailer: aerc 0.17.0
+References: <20240325215502.660-1-jarkko@kernel.org>
+ <20240326095836.f43d259b7747269a7c0b9d23@kernel.org>
+In-Reply-To: <20240326095836.f43d259b7747269a7c0b9d23@kernel.org>
 
-On Fri, Jun 02, 2023 at 10:50:37AM +0200, Geert Uytterhoeven wrote:
-> read_poll_timeout_atomic() uses ktime_get() to implement the timeout
-> feature, just like its non-atomic counterpart.  However, there are
-> several issues with this, due to its use in atomic contexts:
-> 
->   1. When called in the s2ram path (as typically done by clock or PM
->      domain drivers), timekeeping may be suspended, triggering the
->      WARN_ON(timekeeping_suspended) in ktime_get():
-> 
-> 	WARNING: CPU: 0 PID: 654 at kernel/time/timekeeping.c:843 ktime_get+0x28/0x78
-> 
->      Calling ktime_get_mono_fast_ns() instead of ktime_get() would get
->      rid of that warning.  However, that would break timeout handling,
->      as (at least on systems with an ARM architectured timer), the time
->      returned by ktime_get_mono_fast_ns() does not advance while
->      timekeeping is suspended.
->      Interestingly, (on the same ARM systems) the time returned by
->      ktime_get() does advance while timekeeping is suspended, despite
->      the warning.
-> 
->   2. Depending on the actual clock source, and especially before a
->      high-resolution clocksource (e.g. the ARM architectured timer)
->      becomes available, time may not advance in atomic contexts, thus
->      breaking timeout handling.
-> 
-> Fix this by abandoning the idea that one can rely on timekeeping to
-> implement timeout handling in all atomic contexts, and switch from a
-> global time-based to a locally-estimated timeout handling.  In most
-> (all?) cases the timeout condition is exceptional and an error
-> condition, hence any additional delays due to underestimating wall clock
-> time are irrelevant.
+On Tue Mar 26, 2024 at 2:58 AM EET, Masami Hiramatsu (Google) wrote:
+> On Mon, 25 Mar 2024 23:55:01 +0200
+> Jarkko Sakkinen <jarkko@kernel.org> wrote:
 >
+> > Tracing with kprobes while running a monolithic kernel is currently
+> > impossible because CONFIG_KPROBES depends on CONFIG_MODULES because it =
+uses
+> > the kernel module allocator.
+> >=20
+> > Introduce alloc_textmem() and free_textmem() for allocating executable
+> > memory. If an arch implements these functions, it can mark this up with
+> > the HAVE_ALLOC_EXECMEM kconfig flag.
+> >=20
+> > At first this feature will be used for enabling kprobes without
+> > modules support for arch/riscv.
+> >=20
+> > Link: https://lore.kernel.org/all/20240325115632.04e37297491cadfbbf3827=
+67@kernel.org/
+> > Suggested-by: Masami Hiramatsu <mhiramat@kernel.org>
+> > Signed-off-by: Jarkko Sakkinen <jarkko@kernel.org>
+> > ---
+> > v5:
+> > - alloc_execmem() was missing GFP_KERNEL parameter. The patch set did
+> >   compile because 2/2 had the fixup (leaked there when rebasing the
+> >   patch set).
+> > v4:
+> > - Squashed a couple of unrequired CONFIG_MODULES checks.
+> > - See https://lore.kernel.org/all/D034M18D63EC.2Y11D954YSZYK@kernel.org=
+/
+> > v3:
+> > - A new patch added.
+> > - For IS_DEFINED() I need advice as I could not really find that many
+> >   locations where it would be applicable.
+> > ---
+> >  arch/Kconfig                | 16 +++++++++++++++-
+> >  include/linux/execmem.h     | 13 +++++++++++++
+> >  kernel/kprobes.c            | 17 ++++++++++++++---
+> >  kernel/trace/trace_kprobe.c |  8 ++++++++
+> >  4 files changed, 50 insertions(+), 4 deletions(-)
+> >  create mode 100644 include/linux/execmem.h
+> >=20
+> > diff --git a/arch/Kconfig b/arch/Kconfig
+> > index a5af0edd3eb8..33ba68b7168f 100644
+> > --- a/arch/Kconfig
+> > +++ b/arch/Kconfig
+> > @@ -52,8 +52,8 @@ config GENERIC_ENTRY
+> > =20
+> >  config KPROBES
+> >  	bool "Kprobes"
+> > -	depends on MODULES
+> >  	depends on HAVE_KPROBES
+> > +	select ALLOC_EXECMEM
+> >  	select KALLSYMS
+> >  	select TASKS_RCU if PREEMPTION
+> >  	help
+> > @@ -215,6 +215,20 @@ config HAVE_OPTPROBES
+> >  config HAVE_KPROBES_ON_FTRACE
+> >  	bool
+> > =20
+> > +config HAVE_ALLOC_EXECMEM
+> > +	bool
+> > +	help
+> > +	  Architectures that select this option are capable of allocating exe=
+cutable
+> > +	  memory, which can be used by subsystems but is not dependent of any=
+ of its
+> > +	  clients.
+> > +
+> > +config ALLOC_EXECMEM
+> > +	bool "Executable (trampoline) memory allocation"
+> > +	depends on MODULES || HAVE_ALLOC_EXECMEM
+> > +	help
+> > +	  Select this for executable (trampoline) memory. Can be enabled when=
+ either
+> > +	  module allocator or arch-specific allocator is available.
+> > +
+> >  config ARCH_CORRECT_STACKTRACE_ON_KRETPROBE
+> >  	bool
+> >  	help
+> > diff --git a/include/linux/execmem.h b/include/linux/execmem.h
+> > new file mode 100644
+> > index 000000000000..ae2ff151523a
+> > --- /dev/null
+> > +++ b/include/linux/execmem.h
+> > @@ -0,0 +1,13 @@
+> > +/* SPDX-License-Identifier: GPL-2.0 */
+> > +#ifndef _LINUX_EXECMEM_H
+> > +#define _LINUX_EXECMEM_H
+> > +
+> > +#ifdef CONFIG_HAVE_ALLOC_EXECMEM
+> > +void *alloc_execmem(unsigned long size, gfp_t gfp);
+> > +void free_execmem(void *region);
+> > +#else
+> > +#define alloc_execmem(size, gfp)	module_alloc(size)
+> > +#define free_execmem(region)		module_memfree(region)
+> > +#endif
+> > +
+> > +#endif /* _LINUX_EXECMEM_H */
+> > diff --git a/kernel/kprobes.c b/kernel/kprobes.c
+> > index 9d9095e81792..87fd8c14a938 100644
+> > --- a/kernel/kprobes.c
+> > +++ b/kernel/kprobes.c
+> > @@ -44,6 +44,7 @@
+> >  #include <asm/cacheflush.h>
+> >  #include <asm/errno.h>
+> >  #include <linux/uaccess.h>
+> > +#include <linux/execmem.h>
+> > =20
+> >  #define KPROBE_HASH_BITS 6
+> >  #define KPROBE_TABLE_SIZE (1 << KPROBE_HASH_BITS)
+> > @@ -113,17 +114,17 @@ enum kprobe_slot_state {
+> >  void __weak *alloc_insn_page(void)
+> >  {
+> >  	/*
+> > -	 * Use module_alloc() so this page is within +/- 2GB of where the
+> > +	 * Use alloc_execmem() so this page is within +/- 2GB of where the
+> >  	 * kernel image and loaded module images reside. This is required
+> >  	 * for most of the architectures.
+> >  	 * (e.g. x86-64 needs this to handle the %rip-relative fixups.)
+> >  	 */
+> > -	return module_alloc(PAGE_SIZE);
+> > +	return alloc_execmem(PAGE_SIZE, GFP_KERNEL);
+> >  }
+> > =20
+> >  static void free_insn_page(void *page)
+> >  {
+> > -	module_memfree(page);
+> > +	free_execmem(page);
+> >  }
+> > =20
+> >  struct kprobe_insn_cache kprobe_insn_slots =3D {
+> > @@ -1580,6 +1581,7 @@ static int check_kprobe_address_safe(struct kprob=
+e *p,
+> >  		goto out;
+> >  	}
+> > =20
+> > +#ifdef CONFIG_MODULES
+>
+> You don't need this block, because these APIs have dummy functions.
 
-Hi Geert,
-I tested this patch on the FPGA, and I noticed the timeout duration
-was much longer than expected. I tested it by removing the op operation
-and break condition for avoiding the influence of other factors.
-The code would look like as follows:
+Hmm... I'll verify this tomorrow.
 
-for (;;) {
-        if (__timeout_us && __left_ns < 0)
-                break;
-        if (__delay_us) {
-                udelay(__delay_us);
-                if (__timeout_us)
-                        __left_ns -= __delay_ns;;
-	cpu_relex();
-        if (__timeout_us)
-                __left_ns--;
-        }
-}
+>
+> >  	/* Check if 'p' is probing a module. */
+> >  	*probed_mod =3D __module_text_address((unsigned long) p->addr);
+> >  	if (*probed_mod) {
+>
+> So this block never be true if !CONFIG_MODULES automatically, and it shou=
+ld be
+> optimized out by compiler.
 
-Despite setting the timeout to 1 second, it actually takes 25 seconds
-to reach the specified timeout value. I displayed the value of
-__left_ns when a timeout occurred. As follows: __delay_us is 1, when
-__left_ns counts down to -1, the system has run for 25 seconds.
+Yeah sure, was not done for saving cycles. Just wanted to make sure that
+my stuff compiles with different config flag combinations related but
+I'll check tomorrow morning if I can relax this further.
 
-[   26.016213] __timeout_us: 1000000 __left_ns: -1
-[   50.818585] __timeout_us: 1000000  __left_ns: -1
-[   75.620467] __timeout_us: 1000000  __left_ns: -1
-[  100.422664] __timeout_us: 1000000  __left_ns: -1
-[  125.224775] __timeout_us: 1000000  __left_ns: -1
-..
+>
+> > @@ -1603,6 +1605,8 @@ static int check_kprobe_address_safe(struct kprob=
+e *p,
+> >  			ret =3D -ENOENT;
+> >  		}
+> >  	}
+> > +#endif
+> > +
+> >  out:
+> >  	preempt_enable();
+> >  	jump_label_unlock();
+> > @@ -2482,6 +2486,7 @@ int kprobe_add_area_blacklist(unsigned long start=
+, unsigned long end)
+> >  	return 0;
+> >  }
+> > =20
+> > +#ifdef CONFIG_MODULES
+> >  /* Remove all symbols in given area from kprobe blacklist */
+> >  static void kprobe_remove_area_blacklist(unsigned long start, unsigned=
+ long end)
+> >  {
+> > @@ -2499,6 +2504,7 @@ static void kprobe_remove_ksym_blacklist(unsigned=
+ long entry)
+> >  {
+> >  	kprobe_remove_area_blacklist(entry, entry + 1);
+> >  }
+> > +#endif /* CONFIG_MODULES */
+>
+> I think this block should be moved right before remove_module_kprobe_blac=
+klist().
+> Then we can gather the code depending on modules in one place.
 
-I attempted to blend the two versions (e.g., ktime version and the
-current version) for discarding the value of __left_ns. The resulting
-output is as follows: __delay_us is 1, when it exceeds 1 second
-according to ktime, __left_ns only counts around 40 ms.
+Agree with this without verification :-)
 
-[    6.734482] __timeout_us: 1000000  __left_ns: 961699000
-[    7.738485] __timeout_us: 1000000  __left_ns: 961228000
-[    8.812797] __timeout_us: 1000000  __left_ns: 961755000
-[    9.814021] __timeout_us: 1000000  __left_ns: 961542000
-[   10.815373] __timeout_us: 1000000 __left_ns: 962464000
-[   11.816184] __timeout_us: 1000000 __left_ns: 961536000
-[   12.817137] __timeout_us: 1000000 __left_ns: 961121000
-..
 
-Per your suggestion, I attempted to increase delay_us to 10 us,
-it really helps to eliminate the underestimation. The actual
-timeout became 3 secs on the FPGA.
+>
+> > =20
+> >  int __weak arch_kprobe_get_kallsym(unsigned int *symnum, unsigned long=
+ *value,
+> >  				   char *type, char *sym)
+> > @@ -2564,6 +2570,7 @@ static int __init populate_kprobe_blacklist(unsig=
+ned long *start,
+> >  	return ret ? : arch_populate_kprobe_blacklist();
+> >  }
+> > =20
+> > +#ifdef CONFIG_MODULES
+> >  static void add_module_kprobe_blacklist(struct module *mod)
+> >  {
+> >  	unsigned long start, end;
+> > @@ -2665,6 +2672,7 @@ static struct notifier_block kprobe_module_nb =3D=
+ {
+> >  	.notifier_call =3D kprobes_module_callback,
+> >  	.priority =3D 0
+> >  };
+> > +#endif /* CONFIG_MODULES */
+>
+> So, keep the kprobe_module_nb outside of this #ifdef as I sed.
 
-I moved on my host x86 machine, the timeout has been reduced to
-2 seconds even if the delay_us is 1. And the timeout can be
-precise 1 seconds when delay_us is 10. I'm not sure if the clock
-frequency or RTC frequency might also determine the underestimation
-of wall clock time? Is there a suggested value of delay_us for a
-driver that runs on various platforms?
-What is your perspective for those situation?
+Yup, already done in v6.
 
-Thanks.
+>
+>
+> > =20
+> >  void kprobe_free_init_mem(void)
+> >  {
+> > @@ -2724,8 +2732,11 @@ static int __init init_kprobes(void)
+> >  	err =3D arch_init_kprobes();
+> >  	if (!err)
+> >  		err =3D register_die_notifier(&kprobe_exceptions_nb);
+> > +
+> > +#ifdef CONFIG_MODULES
+> >  	if (!err)
+> >  		err =3D register_module_notifier(&kprobe_module_nb);
+> > +#endif
+>
+> Then we don't need this #ifdef.
 
-> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
-> Acked-by: Arnd Bergmann <arnd@arndb.de>
-> Reviewed-by: Tony Lindgren <tony@atomide.com>
-> Reviewed-by: Ulf Hansson <ulf.hansson@linaro.org>
-> ---
-> The first issue was seen with the rcar-sysc driver in the BSP, as the
-> BSP contains modifications to the resume sequence of various PM Domains.
-> 
-> v3:
->   - Add Acked-by, Reviewed-by,
->   - Add comment about not using timekeeping, and its impact,
-> 
-> v2:
->   - New.
-> ---
->  include/linux/iopoll.h | 22 +++++++++++++++++-----
->  1 file changed, 17 insertions(+), 5 deletions(-)
-> 
-> diff --git a/include/linux/iopoll.h b/include/linux/iopoll.h
-> index 0417360a6db9b0d6..19a7b00baff43595 100644
-> --- a/include/linux/iopoll.h
-> +++ b/include/linux/iopoll.h
-> @@ -74,6 +74,10 @@
->   * Returns 0 on success and -ETIMEDOUT upon a timeout. In either
->   * case, the last read value at @args is stored in @val.
->   *
-> + * This macro does not rely on timekeeping.  Hence it is safe to call even when
-> + * timekeeping is suspended, at the expense of an underestimation of wall clock
-> + * time, which is rather minimal with a non-zero delay_us.
-> + *
->   * When available, you'll probably want to use one of the specialized
->   * macros defined below rather than this macro directly.
->   */
-> @@ -81,22 +85,30 @@
->  					delay_before_read, args...) \
->  ({ \
->  	u64 __timeout_us = (timeout_us); \
-> +	s64 __left_ns = __timeout_us * NSEC_PER_USEC; \
->  	unsigned long __delay_us = (delay_us); \
-> -	ktime_t __timeout = ktime_add_us(ktime_get(), __timeout_us); \
-> -	if (delay_before_read && __delay_us) \
-> +	u64 __delay_ns = __delay_us * NSEC_PER_USEC; \
-> +	if (delay_before_read && __delay_us) { \
->  		udelay(__delay_us); \
-> +		if (__timeout_us) \
-> +			__left_ns -= __delay_ns; \
-> +	} \
->  	for (;;) { \
->  		(val) = op(args); \
->  		if (cond) \
->  			break; \
-> -		if (__timeout_us && \
-> -		    ktime_compare(ktime_get(), __timeout) > 0) { \
-> +		if (__timeout_us && __left_ns < 0) { \
->  			(val) = op(args); \
->  			break; \
->  		} \
-> -		if (__delay_us) \
-> +		if (__delay_us) { \
->  			udelay(__delay_us); \
-> +			if (__timeout_us) \
-> +				__left_ns -= __delay_ns; \
-> +		} \
->  		cpu_relax(); \
-> +		if (__timeout_us) \
-> +			__left_ns--; \
->  	} \
->  	(cond) ? 0 : -ETIMEDOUT; \
->  })
-> -- 
-> 2.34.1
-> 
+Addressed in v6.
+
+>
+> > =20
+> >  	kprobes_initialized =3D (err =3D=3D 0);
+> >  	kprobe_sysctls_init();
+> > diff --git a/kernel/trace/trace_kprobe.c b/kernel/trace/trace_kprobe.c
+> > index c4c6e0e0068b..af70bb1e9c3a 100644
+> > --- a/kernel/trace/trace_kprobe.c
+> > +++ b/kernel/trace/trace_kprobe.c
+> > @@ -111,6 +111,7 @@ static nokprobe_inline bool trace_kprobe_within_mod=
+ule(struct trace_kprobe *tk,
+> >  	return strncmp(module_name(mod), name, len) =3D=3D 0 && name[len] =3D=
+=3D ':';
+> >  }
+> > =20
+> > +#ifdef CONFIG_MODULES
+> >  static nokprobe_inline bool trace_kprobe_module_exist(struct trace_kpr=
+obe *tk)
+> >  {
+> >  	char *p;
+> > @@ -129,6 +130,9 @@ static nokprobe_inline bool trace_kprobe_module_exi=
+st(struct trace_kprobe *tk)
+> > =20
+> >  	return ret;
+> >  }
+> > +#else
+> > +#define trace_kprobe_module_exist(tk) false /* aka a module never exis=
+ts */
+> > +#endif /* CONFIG_MODULES */
+> > =20
+> >  static bool trace_kprobe_is_busy(struct dyn_event *ev)
+> >  {
+> > @@ -670,6 +674,7 @@ static int register_trace_kprobe(struct trace_kprob=
+e *tk)
+> >  	return ret;
+> >  }
+> > =20
+> > +#ifdef CONFIG_MODULES
+> >  /* Module notifier call back, checking event on the module */
+> >  static int trace_kprobe_module_callback(struct notifier_block *nb,
+> >  				       unsigned long val, void *data)
+> > @@ -704,6 +709,7 @@ static struct notifier_block trace_kprobe_module_nb=
+ =3D {
+> >  	.notifier_call =3D trace_kprobe_module_callback,
+> >  	.priority =3D 1	/* Invoked after kprobe module callback */
+> >  };
+> > +#endif /* CONFIG_MODULES */
+>
+> As I similar to the above, let's move trace_kprobe_module_nb outside
+> of #ifdef.
+
+Ditto (also in v6).
+
+>
+> > =20
+> >  static int count_symbols(void *data, unsigned long unused)
+> >  {
+> > @@ -1897,8 +1903,10 @@ static __init int init_kprobe_trace_early(void)
+> >  	if (ret)
+> >  		return ret;
+> > =20
+> > +#ifdef CONFIG_MODULES
+> >  	if (register_module_notifier(&trace_kprobe_module_nb))
+> >  		return -EINVAL;
+> > +#endif /* CONFIG_MODULES */
+>
+> And remove this #ifdef.
+>
+> Thank you!
+
+Thanks for quick reviews and sorry for the spam. I just try to move this
+forward with small pushes because with compilation flags it is easy to
+blow up compilation.
+
+I'll do the aforementioned suggestions that were missing from v6 to v7.
+
+>
+> > =20
+> >  	return 0;
+> >  }
+> > --=20
+> > 2.44.0
+> >=20
+
+
+BR, Jarkko
 
