@@ -1,123 +1,112 @@
-Return-Path: <linux-kernel+bounces-119874-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-119875-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4F5D688CDFC
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 21:13:35 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7112588CE04
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 21:14:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E314F1F32EA7
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 20:13:34 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A211F1C66A11
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 20:14:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3311013D500;
-	Tue, 26 Mar 2024 20:13:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 44F7313D250;
+	Tue, 26 Mar 2024 20:14:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="YxSVHsDT"
-Received: from mail-yb1-f176.google.com (mail-yb1-f176.google.com [209.85.219.176])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="O5dHHv1Y"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.16])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE32013D250
-	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 20:13:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E3F0013D504
+	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 20:13:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.16
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711484001; cv=none; b=eQcUqG/t2O3QgIghnI3s0imWANHDv4ertipe6wmuQSiy6aPpQv2zOdMHkc80vp+i6Nty3GC4tktQXseH8oQpEjWxscrcSxeyMMVWtJUvJKQH8XCWWDZyFc01ml/kSGbKW4QEmk/+H0zSZYzlFEOIJXu/RbfE4hkuq96GIpU3+I0=
+	t=1711484041; cv=none; b=BW383NJNaibKxhgkydpdD4+abu7sVINx7xEnbSWktc/O6HTPrGpz2EBRSjb7sTAy4r/LKgjRAWvp2MlnY5jR9Nnde1mhyNULduAMuH16mlH2RXiFOVA1m/Pq7jKb+pqQKHzp+9UeML6h3FOzEgMMhjkr6fZw4sZ1+NSb0zz3RTY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711484001; c=relaxed/simple;
-	bh=btunXKwgkufCO7HD+m8VJEh9e4JqDOX4/d3qyOulTA8=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=ovvUo4qX2DRKvhiwWzBeT3FmZxvoT5Wbk6p9wIM1gYusKS+bjf5E0bt4vDvJ1iLGOBnBYCCc328+E3jKcpigtlHcNxVNCK92ZUUXox23y0OaEN8xK9+k4Db600OcHE92WswqoN3fO93TpoROdmCy+hTU/JkEhZpWijjvg0r57ac=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=YxSVHsDT; arc=none smtp.client-ip=209.85.219.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yb1-f176.google.com with SMTP id 3f1490d57ef6-dd161eb03afso5397130276.0
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 13:13:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1711483999; x=1712088799; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=UbYSMMZKtzawfJDJE4cir49VqhmCQiE1LJhdXx2FwYw=;
-        b=YxSVHsDTPGIouqPy5YnQfc4NLv2Xe7U54N3RH+K8OaERQL6XR1h6YWhMOR2y4jM0Hj
-         4/e24S25rukMeHVEGZqJoC6Sn8I/fxSYRCXRvdpRZozRfRk2DdW1oQBd+R5dcAIkZI1d
-         hvNGH2q4A5Y02FzS/bb/ui8Rbbi5NWPknBqc4tFKzHQeM12ou1NSXTLT0MqhI/1FHq6d
-         kakkthDG3QcO8a4CwZWGnjPGIXWO5NPy8Y1H3HQvYnFkAq8h/THE+Yqehmfg47KLAZ+s
-         2UatPvhX5rUQPzvtc4EA57f9CkykU7YyKjBWguXlHImDRpicAQgFdXSk8v92G3ZZ1PMf
-         5Nqw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711483999; x=1712088799;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=UbYSMMZKtzawfJDJE4cir49VqhmCQiE1LJhdXx2FwYw=;
-        b=ip/sYEJGOs+OyCgxVyO9kt2Ese2xwZBWbEXoPeMWpAShX5waGZsCXuJjAhyfzZhTGK
-         O9SXFlvrwOZtO4fACNZ+7rVS6Fqe5lS9aEPt19sMAvBEsoL0ndY5Grppyd4bPU0KPFhO
-         gGtN8IV9LAtU+WTJY5gtxVC57M2SMSjauyY/0lP1hucbp0VZmr7X7BCsxAG7jPh9r7+s
-         Vzv2HcHxoJBGUYekEtCFO8FyCPHXUZPMjk20ZB/JlFPl+359xceQs478bv3GQHQfkIbJ
-         nhVaHxEZst4x7s0fs6eaLbZLD6kNbgOSZX3S7Gpo2ZrKSlCKbnfXO313plvCtYu9ha0S
-         SQxw==
-X-Forwarded-Encrypted: i=1; AJvYcCUPXnDFwzMbHB2+60v+sgdJY5EIlolkP5qo0yzIdiwm7oXwNtHIZuNmipIhlWstVqregk4qLP4u5rJ5F7iRIl0LzgupZdUDIrhem1PW
-X-Gm-Message-State: AOJu0Ywh7psrC0zNTHXgryC1VIwGRja154Q5uCxTA7rybWRcxiJBQJWD
-	4uGqZZMWHwOQn2n+/rVkz3hfKfnz9up69iVRCpc+T6S1lyi9udwEA/JrFB7t1hrDjQB4jg0p0sa
-	P9iO7Gt7LuFYecyZAXLIN7CLCpDjwQgoH+vA4xQ==
-X-Google-Smtp-Source: AGHT+IFFX483t90XKNX+OO769dAgkkQ3Mdks7uUfVPLNLZ5sWIKnzmWcN1zXVl0obYk/iP34XbMH5Mhww+pfc58YeU8=
-X-Received: by 2002:a25:c7ca:0:b0:dcc:623d:e475 with SMTP id
- w193-20020a25c7ca000000b00dcc623de475mr3650511ybe.30.1711483998811; Tue, 26
- Mar 2024 13:13:18 -0700 (PDT)
+	s=arc-20240116; t=1711484041; c=relaxed/simple;
+	bh=2ZigpZne1OgZ3Y2jvwTGcmJst0jBDyRxvyWL9zm2dC4=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=Qew9FtjKDhUPkBbUPQUunc8gmJtSsnw9wQTUbEilr7pTlqxkpR9s4ovBF599Gv+vw+5XWpVpNYQdzj2oTQ6BhkeD51SwSAiVyyT98DqBcytFQY1MLB0K/72s8Wj6MhN6WKFrirmH1oe43ooSRbEib9qt0BoLsZ7KyXrJ8Hcc1HE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=O5dHHv1Y; arc=none smtp.client-ip=198.175.65.16
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1711484039; x=1743020039;
+  h=from:to:cc:subject:in-reply-to:references:date:
+   message-id:mime-version;
+  bh=2ZigpZne1OgZ3Y2jvwTGcmJst0jBDyRxvyWL9zm2dC4=;
+  b=O5dHHv1YuR+d6EVkNcZE70vE+lML979DXBp8mLvgsSk3DoysgO9jHQdu
+   mKZrX0o1gH647B/fpeCxsT4py6NJkB+1TSJ21nDzH1s6Xsw/7t29bqiD/
+   PBV3yZdEtHcuHt68BOMuZ7gNsKFY1xzwQdpftBIcjeBkpvNIeQNphGmYD
+   LXQCuydZilctqwk0jL/0B6KiVjpzkjzwWIY6q4zzzcF8X5DjN665e1CZr
+   zU8yrgeika3IwLu+SzUeX6XTc92uhvJjyYHkCOmC8rd72e8ndO5312zfb
+   Hs21cOXtvTOgFHg2jRo9ocxX6pIHfRKO0AAMRfKZSSdFoS+TUBW7qXcRw
+   Q==;
+X-CSE-ConnectionGUID: rK5JHyHNTbi6habI9cxqMg==
+X-CSE-MsgGUID: 6fE119c1R3eqQrKdBdneQg==
+X-IronPort-AV: E=McAfee;i="6600,9927,11025"; a="6676552"
+X-IronPort-AV: E=Sophos;i="6.07,157,1708416000"; 
+   d="scan'208";a="6676552"
+Received: from orviesa009.jf.intel.com ([10.64.159.149])
+  by orvoesa108.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Mar 2024 13:13:58 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,157,1708416000"; 
+   d="scan'208";a="16026031"
+Received: from eldobson-mobl1.ger.corp.intel.com (HELO localhost) ([10.252.55.140])
+  by orviesa009-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Mar 2024 13:13:54 -0700
+From: Jani Nikula <jani.nikula@intel.com>
+To: Geert Uytterhoeven <geert+renesas@glider.be>, Maarten Lankhorst
+ <maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>,
+ Thomas Zimmermann <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>,
+ Daniel Vetter <daniel@ffwll.ch>, Hamza Mahfooz <hamza.mahfooz@amd.com>,
+ Javier
+ Martinez Canillas <javierm@redhat.com>
+Cc: dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org, Geert
+ Uytterhoeven <geert+renesas@glider.be>
+Subject: Re: [PATCH] drm: DRM_WERROR should depend on DRM
+In-Reply-To: <631a1f4c066181b54617bfe2f38b0bd0ac865b68.1711474200.git.geert+renesas@glider.be>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <631a1f4c066181b54617bfe2f38b0bd0ac865b68.1711474200.git.geert+renesas@glider.be>
+Date: Tue, 26 Mar 2024 22:13:51 +0200
+Message-ID: <87msqkhhts.fsf@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240326-topic-rpm_icc_qos_cleanup-v1-0-357e736792be@linaro.org> <20240326-topic-rpm_icc_qos_cleanup-v1-1-357e736792be@linaro.org>
-In-Reply-To: <20240326-topic-rpm_icc_qos_cleanup-v1-1-357e736792be@linaro.org>
-From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date: Tue, 26 Mar 2024 22:13:07 +0200
-Message-ID: <CAA8EJpo=JScW9ksFtq_rzvJKue_1bVcK2oiA5ZfjpyD=F3wNZA@mail.gmail.com>
-Subject: Re: [PATCH 1/4] interconnect: qcom: sm6115: Unspaghettify SNoC QoS
- port numbering
-To: Konrad Dybcio <konrad.dybcio@linaro.org>
-Cc: Bjorn Andersson <andersson@kernel.org>, Georgi Djakov <djakov@kernel.org>, 
-	Shawn Guo <shawn.guo@linaro.org>, Marijn Suijten <marijn.suijten@somainline.org>, 
-	linux-arm-msm@vger.kernel.org, linux-pm@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, Stephan Gerhold <stephan@gerhold.net>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
 
-On Tue, 26 Mar 2024 at 21:43, Konrad Dybcio <konrad.dybcio@linaro.org> wrote:
+On Tue, 26 Mar 2024, Geert Uytterhoeven <geert+renesas@glider.be> wrote:
+> There is no point in asking the user about enforcing the DRM compiler
+> warning policy when configuring a kernel without DRM support.
 >
-> When I was creating this driver, my bright mind overlooked the existence
-> of desc->qos_offset and decided to make up for the difference it made by
-> adding 21 (0x15) to the port index on SNoC and its downstream buses.
->
-> Undo this mistake to make the indices actually mean something.
+> Fixes: f89632a9e5fa6c47 ("drm: Add CONFIG_DRM_WERROR")
+> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
 
-So, what is the meaning of qos_port?
+D'oh! My bad.
 
-Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Reviewed-by: Jani Nikula <jani.nikula@intel.com>
 
->
-> Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
 > ---
->  drivers/interconnect/qcom/sm6115.c | 33 ++++++++++++++++++---------------
->  1 file changed, 18 insertions(+), 15 deletions(-)
+>  drivers/gpu/drm/Kconfig | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 >
-> diff --git a/drivers/interconnect/qcom/sm6115.c b/drivers/interconnect/qcom/sm6115.c
-> index 7e15ddf0a80a..271b07c74862 100644
-> --- a/drivers/interconnect/qcom/sm6115.c
-> +++ b/drivers/interconnect/qcom/sm6115.c
-> @@ -242,7 +242,7 @@ static struct qcom_icc_node crypto_c0 = {
->         .id = SM6115_MASTER_CRYPTO_CORE0,
->         .channels = 1,
->         .buswidth = 8,
-> -       .qos.qos_port = 43,
-> +       .qos.qos_port = 22,
->         .qos.qos_mode = NOC_QOS_MODE_FIXED,
->         .qos.areq_prio = 2,
->         .mas_rpm_id = 23,
->
-
+> diff --git a/drivers/gpu/drm/Kconfig b/drivers/gpu/drm/Kconfig
+> index f2bcf5504aa77679..2e1b23ccf30423a9 100644
+> --- a/drivers/gpu/drm/Kconfig
+> +++ b/drivers/gpu/drm/Kconfig
+> @@ -423,7 +423,7 @@ config DRM_PRIVACY_SCREEN
+>  
+>  config DRM_WERROR
+>  	bool "Compile the drm subsystem with warnings as errors"
+> -	depends on EXPERT
+> +	depends on DRM && EXPERT
+>  	default n
+>  	help
+>  	  A kernel build should not cause any compiler warnings, and this
 
 -- 
-With best wishes
-Dmitry
+Jani Nikula, Intel
 
