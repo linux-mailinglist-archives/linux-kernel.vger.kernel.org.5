@@ -1,124 +1,119 @@
-Return-Path: <linux-kernel+bounces-119603-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-119602-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2B53288CAF9
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 18:33:01 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 450B388CAF7
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 18:32:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D9B9E2E164A
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 17:32:59 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 762631C656C8
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 17:32:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2313E1D543;
-	Tue, 26 Mar 2024 17:32:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="NO6RgJQb"
-Received: from mail-ot1-f51.google.com (mail-ot1-f51.google.com [209.85.210.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 057F31CD3F;
-	Tue, 26 Mar 2024 17:32:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F269B1D545;
+	Tue, 26 Mar 2024 17:32:41 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 530651CD2D
+	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 17:32:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711474370; cv=none; b=AT8DU/HfG5aHo9zKeADaatglbzCmnGxyMEsdXoLr/Sof66ntyZKfrIbQtHtISZg45cm30QYex484GR93BRydZkeQ4QZndL+Cu/903/o1RqxRCuGBegQqhJhQv3LWFnhr4gsKtXjAxio8tsf5yP7RmXsTN/7jAzyIKDsCdbLtipk=
+	t=1711474361; cv=none; b=qU4NjwkC8MZr78IFOjfrewXvMPNDK0EIncu5z5Iiv/vu7ouG5evkWCNMcSVRGnTpzD/bXumBdvjjJb8184RuqsWraoMwQz4kJFpTmfkgDGHr8ElPBQQZL2USKjarDm324+Kk64bwQyBby8MzZGsguMqLeIjaxMa+60bcY/b6U88=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711474370; c=relaxed/simple;
-	bh=2WxwL5HzmgKunPlikOV/EN/ipnW5U6Nmd6bDqTnpTOQ=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=u0YmlDy9hKFViNOI6TG+EEl+BZfC3W/Uj43ZqFX6RoHw9EZGTeS1jl0PD6hzv0mzqmkBBxg1vr0Efpt38ZzHdhIjQVGhIY2rmijn8GQ/PrYOIB3m+r9BF9UbGNR0NBSzxen/EazOTmn+hOKbJhOOfo/oRPtLlSkFcpbQ6+rTHzM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=NO6RgJQb; arc=none smtp.client-ip=209.85.210.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ot1-f51.google.com with SMTP id 46e09a7af769-6e6a1d24770so3333727a34.0;
-        Tue, 26 Mar 2024 10:32:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711474368; x=1712079168; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=VVDA+32rMLdFw4O/cOMy466iqo+UkQCw9ATNyEyDe30=;
-        b=NO6RgJQb7PtasLO3L3KNK3bM0PkVpfubMIZ6TPZdYOzuw7nlkaV9qUQ7D5wjaDD1sn
-         8zCPeShkGLmQp9hnAYEd6iPVjqGrPcYPT4yPjiKENMOMVA+fWam4tSvbu3+wWILZTNCK
-         GO7tbhqTlq6FkVBqSyvZBkmUpjObpihxtw4en/l9zNpt2XxxokiuUh8muNkauooPbFcx
-         5BOyRoPCBLBDqBXFYIJ9f3yEhD/h+AeUtGIx4H+z1mUpaB8MdVaGA8lt42PdDI9Hnr3i
-         I9trC4fgLMPEk1lwBgVlL3dtL1qijZyMcKSp398vQZTguXw8HIq8S/w53NFEZYs62bIh
-         oKFA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711474368; x=1712079168;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=VVDA+32rMLdFw4O/cOMy466iqo+UkQCw9ATNyEyDe30=;
-        b=MzXCdxPuA/4ikEGvP8yr57ffwPbhn32uAp37XUr6vaIEyZ/GQSBJ9pBu5Uv6NkPlkO
-         8pu4EnFy5bpEoLdsqSP0ZbKB99rdNK6w3TdhN94SvvYMh8zSm0GY3aLMYW7ZUBvMw92U
-         KIUIrxe9D4/xoMu0fBnl0OMWJCAbFykFNeYgpRgMGNEbbEn/c2oSlp0Q+38x55AHH3Ax
-         EAvS9PxmiaoaMCa16rb8uf7tkDirWnyqkZ/V10dK/yIabQ49IvJ/o+mekzH4rDZGsnnj
-         6TtzAExX4mRLhb+NJdA4JatEEDBzI+VDnAwbA1uBQ821Vqa645FjgfIHiNNjybXdN4fi
-         jQkQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWaPHARGI7ynHVWJDjO9q3Hru6ivotyGwWrSEO4eQSF0BTGoRkmUGR8sls3hrpAHU0VtctdWen3r8xPgwQ/Tl0fl/a6KltYDGmMzRfclLd7kNR/E0h7pKZEQuAjZ6T//+xGqhaQquwlgQ==
-X-Gm-Message-State: AOJu0Yz0f7OiMY3B7abXZKCXgkm8r6Zo9XPLhIVM3HDcMvyNfmG26iNb
-	mRepNkvzMJHeSLW1PZT9L0H4jeIHc1kpkgeQImHCjY5pF+D3ezNg3nN1jiZ2bX9TtmPCjzSNtWG
-	rKB0a2gGIhYhjHhgayJtDcMwzrNU=
-X-Google-Smtp-Source: AGHT+IFUtNEJraYpHw9pOZBsWMNCGOXN0v96AA64kioTRERW+zbel2owsSSseGb0t3juLykLovzBvNrckVxaDe4RvzE=
-X-Received: by 2002:a05:6830:3d0a:b0:6e6:8b5a:814d with SMTP id
- eu10-20020a0568303d0a00b006e68b5a814dmr283931otb.13.1711474368056; Tue, 26
- Mar 2024 10:32:48 -0700 (PDT)
+	s=arc-20240116; t=1711474361; c=relaxed/simple;
+	bh=vOF9mPa+/P1UOv/ObCzlRrx/mZT31F+P8zDSgXc7/IY=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Pry2jBsW1ZLodjf4mRN4yFf/CGMCwe9SH2alXdHSi7dClNsjnincqam6PaT4FWDr660mO2H0Yd34udTmZlinEWy4t3NR9jLwwjj7MrFFyxbAuR7MQudJL8+5ohMIG4hQ/7Wj4wPU5Ul/kvmfCaDyyXhEqZGLCTtIjpzVz9FfhBs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 622C22F4;
+	Tue, 26 Mar 2024 10:33:12 -0700 (PDT)
+Received: from [10.1.29.179] (XHFQ2J9959.cambridge.arm.com [10.1.29.179])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B53323F64C;
+	Tue, 26 Mar 2024 10:32:36 -0700 (PDT)
+Message-ID: <a41b0534-b841-42c2-8c06-41337c35347d@arm.com>
+Date: Tue, 26 Mar 2024 17:32:35 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240325210045.153827-1-afd@ti.com> <2024032631-excursion-opposing-be36@gregkh>
- <CAOCHtYjauA+BAxZJBMTaxxaMGcvipP9=ZPeWe4FiNFs_jpq6dg@mail.gmail.com>
- <c2125144-659e-42f2-af1f-ffef7ec3d157@ti.com> <2024032658-chosen-salaried-4702@gregkh>
-In-Reply-To: <2024032658-chosen-salaried-4702@gregkh>
-From: Robert Nelson <robertcnelson@gmail.com>
-Date: Tue, 26 Mar 2024 12:32:21 -0500
-Message-ID: <CAOCHtYjj0RfFyOfzjyU8XeivNmmLO0YnNf+376Uqg9gnVvJ3PA@mail.gmail.com>
-Subject: Re: [PATCH] uio: pruss: Deprecate use of this driver
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: Andrew Davis <afd@ti.com>, Jason Kridner <jkridner@beagleboard.org>, 
-	Matthijs van Duin <matthijsvanduin@gmail.com>, Drew Fustini <drew@beagleboard.org>, 
-	Tony Lindgren <tony@atomide.com>, linux-omap@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC PATCH v1 0/4] Reduce cost of ptep_get_lockless on arm64
+Content-Language: en-GB
+To: David Hildenbrand <david@redhat.com>, Mark Rutland
+ <mark.rutland@arm.com>, Catalin Marinas <catalin.marinas@arm.com>,
+ Will Deacon <will@kernel.org>,
+ Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+ Jiri Olsa <jolsa@kernel.org>, Ian Rogers <irogers@google.com>,
+ Adrian Hunter <adrian.hunter@intel.com>,
+ Andrew Morton <akpm@linux-foundation.org>,
+ Muchun Song <muchun.song@linux.dev>
+Cc: linux-arm-kernel@lists.infradead.org, linux-mm@kvack.org,
+ linux-kernel@vger.kernel.org
+References: <20240215121756.2734131-1-ryan.roberts@arm.com>
+ <0ae22147-e1a1-4bcb-8a4c-f900f3f8c39e@redhat.com>
+ <d8b3bcf2-495f-42bd-b114-6e3a010644d8@arm.com>
+ <de143212-49ce-4c30-8bfa-4c0ff613f107@redhat.com>
+ <374d8500-4625-4bff-a934-77b5f34cf2ec@arm.com>
+ <c1218cdb-905b-4896-8e17-109700577cec@redhat.com>
+From: Ryan Roberts <ryan.roberts@arm.com>
+In-Reply-To: <c1218cdb-905b-4896-8e17-109700577cec@redhat.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-> > These users rely on out-of-tree patches to make this driver usable[0].
-> > In its current state upstream, this driver is not used/usable. Since you
-> > have to make update patches anyway, why not simply carry the whole driver
-> > as an out-of-tree patch?
-> >
-> > That is why I was thinking of just marking it deprecated for a cycle
-> > or two, just to give one last hint that it will be going away soon
-> > (or you cancarry the driver out-of-tree for however long you want).
->
-> No one notices "deprecated" stuff, they only notice if the code is
-> removed.  So removing it is the only way to pay attention.
->
-> But why are out-of-tree changes needed?  If they are needed, why are
-> they not submitted for us to take so that it is usable by everyone?  Or
-> is the out-of-tree patches also not supposed to be used?
+On 26/03/2024 17:04, David Hildenbrand wrote:
+>>>>>
+>>>>> Likely, we just want to read "the real deal" on both sides of the pte_same()
+>>>>> handling.
+>>>>
+>>>> Sorry I'm not sure I understand? You mean read the full pte including
+>>>> access/dirty? That's the same as dropping the patch, right? Of course if we do
+>>>> that, we still have to keep pte_get_lockless() around for this case. In an
+>>>> ideal
+>>>> world we would convert everything over to ptep_get_lockless_norecency() and
+>>>> delete ptep_get_lockless() to remove the ugliness from arm64.
+>>>
+>>> Yes, agreed. Patch #3 does not look too crazy and it wouldn't really affect any
+>>> architecture.
+>>>
+>>> I do wonder if pte_same_norecency() should be defined per architecture and the
+>>> default would be pte_same(). So we could avoid the mkold etc on all other
+>>> architectures.
+>>
+>> Wouldn't that break it's semantics? The "norecency" of
+>> ptep_get_lockless_norecency() means "recency information in the returned pte may
+>> be incorrect". But the "norecency" of pte_same_norecency() means "ignore the
+>> access and dirty bits when you do the comparison".
+> 
+> My idea was that ptep_get_lockless_norecency() would return the actual result on
+> these architectures. So e.g., on x86, there would be no actual change in
+> generated code.
 
-I saw Matthijs, did chime in, I'll wait for his full reply, we've been
-utilizing his knowledge on the pru subsystem to keep the uio driver
-alive with our out of tree patches. (and extending it to even newer
-TI am57xx devices, which TI didn't want us to do..)
+I think this is a bad plan... You'll end up with subtle differences between
+architectures.
 
-Looking at lore, Matt Porter originally had am335x support in the
-initial drop of uio when adding it to the DA850 family.
+> 
+> But yes, the documentation of these functions would have to be improved.
+> 
+> Now I wonder if ptep_get_lockless_norecency() should actively clear
+> dirty/accessed bits to more easily find any actual issues where the bits still
+> matter ...
 
-https://lore.kernel.org/lkml/20121003150058.GB11180@beef/
+I did a version that took that approach. Decided it was not as good as this way
+though. Now for the life of me, I can't remember my reasoning.
 
-I'll dig for his v3 to find the real reason on why it was later dropped.
+> 
+>>
+>> I think you could only do the optimization you describe if you required that
+>> pte_same_norecency() would only be given values returned by
+>> ptep_get_lockless_norecency() (or ptep_get_norecency()). Even then, its not
+>> quite the same; if a page is accessed between gets one will return true and the
+>> other false.
+> 
+> Right.
+> 
 
-But at some point the remoteproc framework became the preferred
-method, so uio patches were not allowed.. (one IP block, two drivers..
-Community vs TI/Mainline)
-
-
-Regards,
-
---
-Robert Nelson
-https://rcn-ee.com/
 
