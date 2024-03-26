@@ -1,108 +1,125 @@
-Return-Path: <linux-kernel+bounces-118471-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-118472-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0DB7188BB71
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 08:38:31 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3945B88BB73
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 08:39:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6705EB218CB
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 07:38:28 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6B5AC1C30CEE
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 07:38:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 24D7A132489;
-	Tue, 26 Mar 2024 07:38:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 87F231327EB;
+	Tue, 26 Mar 2024 07:38:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="v2trDSC1"
-Received: from mail-yw1-f201.google.com (mail-yw1-f201.google.com [209.85.128.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="MuUFQBYC"
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EF94112DDBA
-	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 07:38:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6BD45839E2;
+	Tue, 26 Mar 2024 07:38:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711438699; cv=none; b=GKgGKO9opS8AO/I9T/kKneHqRkOfypNAkUz8grzfvgx5KqGxJx6+HbiJNvIpIj9WgmYlh8v9her6EFySz2ebUlTHav9A2cy9a+xp8fssfzKGD3GsoWR4QxjPMHNcdN+0CBx6fKqWPkPSprvkZHUfOSdSCD9vF3R7SqWfEYkERS0=
+	t=1711438729; cv=none; b=VFriFRScN4hw8ibcc7bG+rtomZfDsoW3tHArxWHINHz+Tc4GtZaAuHMhNOxhDc6iNGUF3NfZ3B8Mmrta5kYLEV6ZtabNDl4frJSQZFiFOauekHtghrn/W7B0uKi+nXzcKysvh4Zw9b56CVc5iAmDcDGsruY0hTG71jCR51Ln/yU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711438699; c=relaxed/simple;
-	bh=9XJh0CzYDWGiCksBgfcLCO2dZJOCVan0S7tu1cQ1viw=;
-	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=mbV+VYcJlyPrLxu3Cw3egIvgnO3Qe+AF+YGvmMzwtbhLYFtp0PU6VrDB1872uWorxm5fJHxGtE3i1F2xiZWZioPmoJ0XnYfjdsDt9AFk4h3XbtnDBWkL7fjhpUFWpKzcXs16DhckYFhD/Ar55kjY6XdpiJuZCIKuRBQ49w8t5Ec=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--surenb.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=v2trDSC1; arc=none smtp.client-ip=209.85.128.201
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--surenb.bounces.google.com
-Received: by mail-yw1-f201.google.com with SMTP id 00721157ae682-611e89cf3b5so5046847b3.3
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 00:38:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1711438697; x=1712043497; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=egxD8lhrCUbXKjoayD1s0sEl15YwV5GNDF5jJ/ZQHhc=;
-        b=v2trDSC1H8X7t0d9eLGNTIX9pt7wsP2woiJVBvxY/WkoDWvx+INkFeP3jl6XzplKf1
-         HnEK1PRaAqundtnPbKUajH5/6jNzxumXfz3/M40jnG9SrMzkMEgb6XmdSeJLtfYYvedn
-         B3MCp0NJA0EBEN2aG9pl4TeWC8aURawOiQa6as4pRIRa1wLOxYraSQM4fX3PDiJ9vyX4
-         yqyUhpRflgJQU5k4PIfLua8kWBTAS/tqNHcj+khJDvnvSNzE1U94Vh36CpO5vs8Ewf2R
-         RNcbigq6CeHIM6Pq3eskPyReQm6BGe2iFM5flzS3PKphiNPoz7G2ceW4RN3yV90W28ZL
-         FEag==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711438697; x=1712043497;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=egxD8lhrCUbXKjoayD1s0sEl15YwV5GNDF5jJ/ZQHhc=;
-        b=hSgAhTcwqQq5LqCUn6ZiQRINyVtj4nmrmVdpoe9DVuUJcV27WKDZHSg96PV+i9iu31
-         VfibtzJ+xBnGNETIdd2Rc5NcnpHUv8/dS1sWOhvNgUga3McUjwH1ROVxay+8LpIepKXC
-         bRuaGo5Ptv2AW3g21m6aKHn6nZPjrTX8eDrbyySmjk7043ARQqdi9e2JcCK3OrPrr2io
-         ZQtJ0bmjg0VjF3gxX0ENYJjB49n+6qPUvwqMCUcM6nc8yt8/XFUxGdtkh/bHAzsn7RjV
-         o7qHUb4igSk49l2P6oVMs3BOEJG9ue2ND6iMIQJo2ayQRDQ4upCwCaqXOGpyhIyB78fe
-         edqA==
-X-Forwarded-Encrypted: i=1; AJvYcCWlmP0Fhxc5QGyGs8Z4AIi28rBTplkA/2yxDQyVDxt2ooxYSEqP1CopRsGO9mlA6tc6PU2RJc3Iz8FBxC2LX/u65/ZBgvqYTse8t8Xu
-X-Gm-Message-State: AOJu0YyB0G17zvDOV0zM+a1RxRWOd2F3yhRbEthnylfRpl5U3RAGUSxM
-	TV+whwkQ1wLHWh3AdQWiB/WzJuy6liQHa/Z6Mvz/XwzvRhOCUVbfaYNLMA72mifiRbRb0mZedJ8
-	8SQ==
-X-Google-Smtp-Source: AGHT+IEd+5GPQZQNt+Hcw0OMk85Ig7li+vYOFhowC9mcnO8i7BoXvgnyYvR7c53gQ53uZs3OxbGiR0BbG+w=
-X-Received: from surenb-desktop.mtv.corp.google.com ([2620:15c:211:201:f77:52ef:ebeb:2cec])
- (user=surenb job=sendgmr) by 2002:a05:690c:7303:b0:611:9c16:6cb8 with SMTP id
- jp3-20020a05690c730300b006119c166cb8mr531299ywb.10.1711438697064; Tue, 26 Mar
- 2024 00:38:17 -0700 (PDT)
-Date: Tue, 26 Mar 2024 00:38:13 -0700
+	s=arc-20240116; t=1711438729; c=relaxed/simple;
+	bh=zasrgEQ8PpQSnTnjWuIuknfRyFZDN6ocuqsuM92kjzQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Zei3cahctvIGHu13OO8WyvgZVRlNj3tdYKINllze5SRNS7KKm6mnfFRZ9zAvkUByELZsDGFaJku8z4ZPUP8cZZR6/IoN8zP6mO5iVnS58WcOW2/HZNoIvGQmNazi2SQbybmrOndu5CEu+35ib18847JwTUQVBCHzDzck7Q39Qew=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=MuUFQBYC; arc=none smtp.client-ip=148.163.156.1
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0353728.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 42Q5LbsP026333;
+	Tue, 26 Mar 2024 07:38:42 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=pp1; bh=oB4/YmzW/XBsuEVbbPCASdcRnc5ejjoZ5/zY1M4QVqw=;
+ b=MuUFQBYC+X5LOzvVKpOzWltKuUBvsdfLgvkn6JVxiJ0rx3/fDuZlsi8STc/zbvhuLpac
+ dYVOKiEGFnNTH2j0QKmaKpqYrTF+WP+AfITlSJeKxAg4rDjsqFR3S6KA6T8VdC5r34Lx
+ 8QjY1cfYJh7QW8UOnkGJU0BhMhZzW9icIZkJ3uqMjmtZLMitkkTRPmswjnoko40AbkPV
+ +Z2vqp2gZfGo0VK+R+wLQvkddDLClCJ8TmkqdXAL7SU5rbvk6CTbwgpSrw312mxseWjJ
+ QPnZapmXpoc49x+0nnkq66IzwX8IpwaTb1/KoXQEq2lz8MRptZ26KfDTJJdnPPmVKKih hw== 
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3x3kb10ukp-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 26 Mar 2024 07:38:42 +0000
+Received: from m0353728.ppops.net (m0353728.ppops.net [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 42Q7cf4l000915;
+	Tue, 26 Mar 2024 07:38:41 GMT
+Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3x3kb10ukj-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 26 Mar 2024 07:38:41 +0000
+Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
+	by ppma11.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 42Q4bnhE003780;
+	Tue, 26 Mar 2024 07:38:40 GMT
+Received: from smtprelay01.fra02v.mail.ibm.com ([9.218.2.227])
+	by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 3x2c42nu9a-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 26 Mar 2024 07:38:40 +0000
+Received: from smtpav07.fra02v.mail.ibm.com (smtpav07.fra02v.mail.ibm.com [10.20.54.106])
+	by smtprelay01.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 42Q7cZTB44958184
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Tue, 26 Mar 2024 07:38:37 GMT
+Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 40ED32004E;
+	Tue, 26 Mar 2024 07:38:35 +0000 (GMT)
+Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 02B1420040;
+	Tue, 26 Mar 2024 07:38:35 +0000 (GMT)
+Received: from osiris (unknown [9.152.212.60])
+	by smtpav07.fra02v.mail.ibm.com (Postfix) with ESMTPS;
+	Tue, 26 Mar 2024 07:38:34 +0000 (GMT)
+Date: Tue, 26 Mar 2024 08:38:33 +0100
+From: Heiko Carstens <hca@linux.ibm.com>
+To: Andrew Morton <akpm@linux-foundation.org>
+Cc: David Hildenbrand <david@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, Christian Borntraeger <borntraeger@linux.ibm.com>,
+        Janosch Frank <frankja@linux.ibm.com>,
+        Claudio Imbrenda <imbrenda@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>, Peter Xu <peterx@redhat.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Sven Schnelle <svens@linux.ibm.com>,
+        Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
+        Andrea Arcangeli <aarcange@redhat.com>, kvm@vger.kernel.org,
+        linux-s390@vger.kernel.org
+Subject: Re: [PATCH v1 0/2] s390/mm: shared zeropage + KVM fix and
+ optimization
+Message-ID: <20240326073833.6078-A-hca@linux.ibm.com>
+References: <20240321215954.177730-1-david@redhat.com>
+ <20240321151353.68f9a3c9c0b261887e4e5411@linux-foundation.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.44.0.396.g6e790dbe36-goog
-Message-ID: <20240326073813.727090-1-surenb@google.com>
-Subject: [PATCH 1/1] Documentation: fs/proc: fix allocinfo title
-From: Suren Baghdasaryan <surenb@google.com>
-To: akpm@linux-foundation.org
-Cc: sfr@canb.auug.org.au, kent.overstreet@linux.dev, surenb@google.com, 
-	linux-doc@vger.kernel.org, linux-next@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240321151353.68f9a3c9c0b261887e4e5411@linux-foundation.org>
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: S0IbuxD46Xgg4Qw0IOpeHf3APGY4p-aQ
+X-Proofpoint-ORIG-GUID: Y3fTsNA5ux-kI7T0fse-O9DbeqeHt6go
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-03-26_04,2024-03-21_02,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
+ priorityscore=1501 lowpriorityscore=0 clxscore=1011 spamscore=0
+ phishscore=0 bulkscore=0 suspectscore=0 malwarescore=0 adultscore=0
+ mlxscore=0 mlxlogscore=480 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2403210000 definitions=main-2403260051
 
-Fix "Title underline too short." warning in the documentation.
+On Thu, Mar 21, 2024 at 03:13:53PM -0700, Andrew Morton wrote:
+> On Thu, 21 Mar 2024 22:59:52 +0100 David Hildenbrand <david@redhat.com> wrote:
+> 
+> > Based on current mm-unstable. Maybe at least the second patch should
+> > go via the s390x tree, I think patch #1 could go that route as well.
+> 
+> Taking both via the s390 tree is OK by me.  I'll drop the mm.git copies
+> if/when these turn up in the linux-next feed.
 
-Fixes: d08b311b6d49 ("lib: add allocation tagging support for memory allocation profiling")
-Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
-Signed-off-by: Suren Baghdasaryan <surenb@google.com>
-Cc: Randy Dunlap <rdunlap@infradead.org>
----
- Documentation/filesystems/proc.rst | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/Documentation/filesystems/proc.rst b/Documentation/filesystems/proc.rst
-index 5d2fc58b5b1f..245269dd6e02 100644
---- a/Documentation/filesystems/proc.rst
-+++ b/Documentation/filesystems/proc.rst
-@@ -955,7 +955,7 @@ reclaimed to achieve this.
- 
- 
- allocinfo
--~~~~~~~
-+~~~~~~~~~
- 
- Provides information about memory allocations at all locations in the code
- base. Each allocation in the code is identified by its source file, line
--- 
-2.44.0.396.g6e790dbe36-goog
-
+Considering the comments I would expect a v2 of this series at some
+time in the future.
 
