@@ -1,63 +1,62 @@
-Return-Path: <linux-kernel+bounces-119472-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-119496-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 776E688C970
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 17:34:02 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AF1FD88C9A9
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 17:47:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 211751F8214C
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 16:34:02 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 68B5EB243B1
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 16:46:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 96E8E1B964;
-	Tue, 26 Mar 2024 16:33:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 382E017BA0;
+	Tue, 26 Mar 2024 16:46:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=xff.cz header.i=@xff.cz header.b="KmeApJWj"
-Received: from vps.xff.cz (vps.xff.cz [195.181.215.36])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="C0L+gOje"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A97F1CFBD;
-	Tue, 26 Mar 2024 16:33:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.181.215.36
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E04E14A82
+	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 16:46:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711470806; cv=none; b=itwVp8bMvjnIyHbeMO8IZVqszFUtaw5bYDIXA5daQXiRZ9JMQEciQ1Pq/vlU80sBnI0chk4wfHGWb04BL+Atpbd7M+jabhwAKpk/MdbSjDF7VZFcDYln6tAnFC+Pgg0KGPQ+s7AHyClL0fqY3vL3rPXNxKTRInxMW3mhFLEU41U=
+	t=1711471611; cv=none; b=RPUjThH94eqCXwjzV9A1gIF8O5i5TM/UV0Faw+q98qh447QeMpvdukHLEA4DCE9Mrs+Nk7FG1iIJzPXVIFtqcqE1RQyJQbyGdZw1KibN1uK8btQnm016ncg9OELy6X0Lg+WROqrky92I6rLaKTBm/wnbeEGfWdsWm0KFicUpVgk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711470806; c=relaxed/simple;
-	bh=CleG5/amzFryHUGk0qi21He4sc6qBTmF2lsXmm/dW1Y=;
+	s=arc-20240116; t=1711471611; c=relaxed/simple;
+	bh=TjizBl5fTdirAVYLMBFY14ay2KbScOAk50MLwJ9ycJ4=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=uPhJhAHlEH1r9G+joaYsIHWHAhqP7Nqw3lk6syOeYix+XsM340Em9SiA6qQVlMyDnUuaVQyJWVjt3JexeAaReEV9VjeKeUFWF9QTOcDh0N6jCkDKtM77MqrendrnGRuATPqCaRwWyUdt57qcVfynNPuwspkETs8z+JEpFEk+pYQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=xff.cz; spf=pass smtp.mailfrom=xff.cz; dkim=pass (1024-bit key) header.d=xff.cz header.i=@xff.cz header.b=KmeApJWj; arc=none smtp.client-ip=195.181.215.36
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=xff.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=xff.cz
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=xff.cz; s=mail;
-	t=1711470794; bh=CleG5/amzFryHUGk0qi21He4sc6qBTmF2lsXmm/dW1Y=;
-	h=Date:From:To:Cc:Subject:X-My-GPG-KeyId:References:From;
-	b=KmeApJWjNNXi6WuapEfvIV+WeLpX2gT8+KizMYv9ifPSw4NGc/sIb0r+NRP/Q5RxF
-	 WbV2jOf9weUe0VVvUtOcB62/69819MpZsZkBufP1exdcaer1uTpFFkGR1N4WMilfg+
-	 Wl0z7DPQTlN3wnaFLALPnFEQUA4z5WwEJcwQbZYw=
-Date: Tue, 26 Mar 2024 17:33:14 +0100
-From: =?utf-8?Q?Ond=C5=99ej?= Jirman <megi@xff.cz>
-To: Mark Brown <broonie@kernel.org>
-Cc: linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, 
-	Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Chen-Yu Tsai <wens@csie.org>, 
-	Jernej Skrabec <jernej.skrabec@gmail.com>, Samuel Holland <samuel@sholland.org>, 
-	Arnaud Ferraris <arnaud.ferraris@collabora.com>, linux-sound@vger.kernel.org, 
-	linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev
-Subject: Re: [PATCH v3 0/4] Add support for jack detection to codec present
- in A64 SoC
-Message-ID: <2vhd45kylttgonosdcfn7ugwyy2vx56gijwf3ealz4tel65iqr@cs3kxrl6d2hh>
-Mail-Followup-To: =?utf-8?Q?Ond=C5=99ej?= Jirman <megi@xff.cz>, 
-	Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org, 
-	Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, 
-	Chen-Yu Tsai <wens@csie.org>, Jernej Skrabec <jernej.skrabec@gmail.com>, 
-	Samuel Holland <samuel@sholland.org>, Arnaud Ferraris <arnaud.ferraris@collabora.com>, 
-	linux-sound@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
-	linux-sunxi@lists.linux.dev
-X-My-GPG-KeyId: EBFBDDE11FB918D44D1F56C1F9F0A873BE9777ED
- <https://xff.cz/key.txt>
-References: <20240302140042.1990256-1-megi@xff.cz>
- <171146686191.132239.8280140430376443574.b4-ty@kernel.org>
+	 Content-Type:Content-Disposition:In-Reply-To; b=VIn/uakxrsS7AhhI5qQRVtHQn/ZVnb0CvArIzmBMhOwvGF8HaMMXaVcSXZq1O43i6rgiOygapAnyvpSBgjGv2tDIlEYkWMxdbh6y+0bZfpqPlFupQ5Vp5rv0ESQV4YpqIVSq7nKq1TdEk65/NiazYmn8hSMSMOO4aqBFcwmZGv0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=C0L+gOje; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7475FC433F1;
+	Tue, 26 Mar 2024 16:46:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1711471611;
+	bh=TjizBl5fTdirAVYLMBFY14ay2KbScOAk50MLwJ9ycJ4=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=C0L+gOjexMKnKGWpTZ9nDGrG2131IeHyn1P8YvU1Qv24kATa0FT2OhDfOQSy4FDMW
+	 AnDWr/eqJtkK9dQPb04Ip69yQk3XQSKjr+/3hlf4Pu9k9+VNUINTPkDa1IBqK1UI+/
+	 P65trwCu1qY33WpWchVMNRDQxj2PzlYLcXUkyDLX2bEgmd2rDpMMdqEPXa/qXsGp9M
+	 tXwOAKpxqLdGaOlhOefEaNoI4SaDu9xZ+vHQI3nfWyplcP1uQgO8poHS+CDfTX2+HZ
+	 bPIAj/N2hFo6FQ1NVcJjurI0BIP70yUo9nOPXBLIJjJNNIW0HXy61c2d8mrIDXklp6
+	 30fihUl/no1AQ==
+Date: Wed, 27 Mar 2024 00:33:35 +0800
+From: Jisheng Zhang <jszhang@kernel.org>
+To: Bo Gan <ganboing@gmail.com>
+Cc: Paul Walmsley <paul.walmsley@sifive.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Albert Ou <aou@eecs.berkeley.edu>,
+	Daniel Lezcano <daniel.lezcano@linaro.org>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 5/5] clocksource/drivers/timer-clint: Add T-Head C9xx
+ clint support
+Message-ID: <ZgL434xHzYqpcdwD@xhacker>
+References: <20240325164021.3229-1-jszhang@kernel.org>
+ <20240325164021.3229-6-jszhang@kernel.org>
+ <72eac56e-61d4-e42f-cfbd-8bcc35ed7bb6@gmail.com>
+ <ZgIj8QQ7zO_eSZcA@xhacker>
+ <ZgIlXWLymVd8XwFc@xhacker>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -66,66 +65,110 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <171146686191.132239.8280140430376443574.b4-ty@kernel.org>
+In-Reply-To: <ZgIlXWLymVd8XwFc@xhacker>
 
-Hello Mark,
+On Tue, Mar 26, 2024 at 09:31:14AM +0800, Jisheng Zhang wrote:
+> On Tue, Mar 26, 2024 at 09:25:09AM +0800, Jisheng Zhang wrote:
+> > On Mon, Mar 25, 2024 at 03:22:11PM -0700, Bo Gan wrote:
+> > > On 3/25/24 9:40 AM, Jisheng Zhang wrote:
+> > > > The mtimecmp in T-Head C9xx clint only supports 32bit read/write,
+> > > > implement such support.
+> > > > 
+> > > > Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
+> > > > ---
+> > > >   drivers/clocksource/timer-clint.c | 24 ++++++++++++++++++++++++
+> > > >   1 file changed, 24 insertions(+)
+> > > > 
+> > > > diff --git a/drivers/clocksource/timer-clint.c b/drivers/clocksource/timer-clint.c
+> > > > index 4537c77e623c..71188732e8a3 100644
+> > > > --- a/drivers/clocksource/timer-clint.c
+> > > > +++ b/drivers/clocksource/timer-clint.c
+> > > > @@ -34,6 +34,7 @@ static unsigned int clint_ipi_irq;
+> > > >   static u64 __iomem *clint_timer_cmp;
+> > > >   static unsigned long clint_timer_freq;
+> > > >   static unsigned int clint_timer_irq;
+> > > > +static bool is_c900_clint;
+> > > >   #ifdef CONFIG_SMP
+> > > >   static void clint_send_ipi(unsigned int cpu)
+> > > > @@ -88,6 +89,19 @@ static int clint_clock_next_event(unsigned long delta,
+> > > >   	return 0;
+> > > >   }
+> > > > +static int c900_clint_clock_next_event(unsigned long delta,
+> > > > +				       struct clock_event_device *ce)
+> > > > +{
+> > > > +	void __iomem *r = clint_timer_cmp +
+> > > > +			  cpuid_to_hartid_map(smp_processor_id());
+> > > > +	u64 val = clint_get_cycles64() + delta;
+> > > > +
+> > > > +	csr_set(CSR_IE, IE_TIE);
+> > > Perhaps you should do a writel_relaxed(-1, r) here. just like openSBI, because the update
+> > > to mtimecmp is now split into 2 parts.
+> > > https://github.com/riscv-software-src/opensbi/blob/v1.4/lib/utils/timer/aclint_mtimer.c#L54
 
-On Tue, Mar 26, 2024 at 03:27:41PM +0000, Mark Brown wrote:
-> On Sat, 02 Mar 2024 15:00:34 +0100, Ondřej Jirman wrote:
-> > This series adds support for jack detection to this codec. I used
-> > and tested this on Pinephone. It works quite nicely. I tested it
-> > against Android headset mic button resistor specification.
+Hi,
+
+The reason of "writel_relaxed(-1, r)" is to avoid spurious irq, this is
+well explained by riscv spec. 
+After more thoughts, this is not needed here in linux kernel because
+set_next_event() is only called in ISR, so the irq has been disabled,
+we don't suffer from spurious irq problem.
+
+Thanks
 > > 
-> > The patches are a rewritten and debugged version of the original
-> > ones from Arnaud Ferraris and Samuel Holland, improved to better
-> > handle headset button presses and with more robust plug-in/out
-> > event debouncing, and to use set_jack API instead of sniffing
-> > the sound card widget names, to detect the type of jack connector.
+> > Thanks, I also noticed the mtimecmp update on 32bit platforms doesn't
+> > strictly follow the riscv spec:
 > > 
-> > [...]
+> > # New comparand is in a1:a0.
+> > li t0, -1
+> > la t1, mtimecmp
+> > sw t0, 0(t1) # No smaller than old value.
+> > sw a1, 4(t1) # No smaller than new value.
+> > sw a0, 0(t1) # New value.
+> > 
+> > So A new bug fix patch will be added in v2.
+> > 
 > 
-> Applied to
+> wait, I found a similar bug in timer-riscv.c, and since these are fixes,
+> I'd like to send fixes as a seperate series. I'm cooking the patches
 > 
->    https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
-
-Thank you.
-
-Coincidentally, Intel kernel test bot found an issue today that this fails to
-build with CONFIG_SND_JACK_INPUT_DEV disabled. Should I send a followup fix or
-should I send v5 with the fix integrated into the patch that breaks?
-
-Kind regards,
-	o.
-
-> Thanks!
-> 
-> [1/4] ASoC: sun50i-codec-analog: Move suspend/resume to set_bias_level
->       commit: c0454d31e05062b1c7df7eef21855ba1f56c5158
-> [2/4] ASoC: sun8i-codec: Enable bus clock at STANDBY and higher bias
->       commit: c556814b926c3f16fdca3d18cac793ccf0d14c44
-> [3/4] ASoC: sun50i-codec-analog: Enable jack detection on startup
->       commit: d5961e43b28668088087befbf4f7a043bd0ae65c
-> [4/4] ASoC: sun8i-codec: Implement jack and accessory detection
->       commit: 21fa98f4197bb3365dda1417708b318f403c13c1
-> 
-> All being well this means that it will be integrated into the linux-next
-> tree (usually sometime in the next 24 hours) and sent to Linus during
-> the next merge window (or sooner if it is a bug fix), however if
-> problems are discovered then the patch may be dropped or reverted.
-> 
-> You may get further e-mails resulting from automated or manual testing
-> and review of the tree, please engage with people reporting problems and
-> send followup patches addressing any issues that are reported if needed.
-> 
-> If any updates are required or you are submitting further changes they
-> should be sent as incremental updates against current git, existing
-> patches will not be replaced.
-> 
-> Please add any relevant lists and maintainers to the CCs when replying
-> to this mail.
-> 
-> Thanks,
-> Mark
-> 
+> > 
+> > > 
+> > > > +	writel_relaxed(val, r);
+> > > > +	writel_relaxed(val >> 32, r + 4);
+> > > > +	return 0;
+> > > > +}
+> > > > +>   static DEFINE_PER_CPU(struct clock_event_device, clint_clock_event) = {
+> > > >   	.name		= "clint_clockevent",
+> > > >   	.features	= CLOCK_EVT_FEAT_ONESHOT,
+> > > > @@ -99,6 +113,9 @@ static int clint_timer_starting_cpu(unsigned int cpu)
+> > > >   {
+> > > >   	struct clock_event_device *ce = per_cpu_ptr(&clint_clock_event, cpu);
+> > > > +	if (is_c900_clint)
+> > > > +		ce->set_next_event = c900_clint_clock_next_event;
+> > > > +
+> > > >   	ce->cpumask = cpumask_of(cpu);
+> > > >   	clockevents_config_and_register(ce, clint_timer_freq, 100, ULONG_MAX);
+> > > > @@ -233,5 +250,12 @@ static int __init clint_timer_init_dt(struct device_node *np)
+> > > >   	return rc;
+> > > >   }
+> > > > +static int __init c900_clint_timer_init_dt(struct device_node *np)
+> > > > +{
+> > > > +	is_c900_clint = true;
+> > > > +	return clint_timer_init_dt(np);
+> > > > +}
+> > > > +
+> > > >   TIMER_OF_DECLARE(clint_timer, "riscv,clint0", clint_timer_init_dt);
+> > > >   TIMER_OF_DECLARE(clint_timer1, "sifive,clint0", clint_timer_init_dt);
+> > > > +TIMER_OF_DECLARE(clint_timer2, "thead,c900-clint", clint_timer_init_dt);
+> > > > 
+> > > Better use a more generic term to describe the fact that mtimecmp doesn't support
+> > > 64-bit mmio, just like what openSBI is currently doing, instead of making it c900 specific:
+> > 
+> > This has been mentioned in commit msg, but adding a code comment seems fine.
+> > > 
+> > > https://github.com/riscv-software-src/opensbi/blob/v1.4/lib/utils/timer/fdt_timer_mtimer.c#L152
+> > > 
+> > > Then your `is_c900_clint` becomes something like `timecmp_64bit_mmio`.
+> > > 
+> > > Bo
 
