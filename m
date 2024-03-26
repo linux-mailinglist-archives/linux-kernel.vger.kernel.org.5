@@ -1,165 +1,120 @@
-Return-Path: <linux-kernel+bounces-119267-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-119268-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id ECC0A88C662
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 16:10:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 25C8488C665
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 16:10:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2AEEB1C23F07
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 15:10:37 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 576101C3E993
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 15:10:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9C3B313C809;
-	Tue, 26 Mar 2024 15:10:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 20CD413C80C;
+	Tue, 26 Mar 2024 15:10:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="NqzpyW/O"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ecLQ4xF6"
+Received: from mail-qt1-f171.google.com (mail-qt1-f171.google.com [209.85.160.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A01413C69A
-	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 15:10:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0BEBD13C67E;
+	Tue, 26 Mar 2024 15:10:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711465828; cv=none; b=ccet4T7L3pkl+/neZy2FV6N5aNCqRAW/klSKxx9I6EQrSzq09q6ROF+CpJa/f1HphB3p2U8q3vtIexa9CImqSp/I2/1vWp9AbnL5WjZe2l9A6WHwwCHgTVshSG6ggamoXBn5tp9H5EzB5DHjA5bIarh8mi7lCe74CEyKzaI3pqE=
+	t=1711465841; cv=none; b=greEap8CabneL7FU2u0KgbF7siFJHhicyIJSmyNtACF3qLlESXbupmS4XcQSTcfflfwxGWpIOAgXL+3C6X3cntbvrpyQD3iPVBCHStDHR1kMIFzDJQ7KTsKmqmrN8lHN3RZtbqEgdAdadcD759zc4HVxGzlSA6OgD8kwsf5txbs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711465828; c=relaxed/simple;
-	bh=e5EeTl3wYXOA8HWoN02Gkhrn5/pml2nfdGqSgR5aucs=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=k0SfyrQMNjxTs1206Acbak9ZRL4jRSi5iOgrD8pyycx1LZxQrQh0iGuRWGT0r3MpHm2O7NS+Z0Z51QzGZIMFob+2gturdC6z2MU8oQpwYKKOG4bqUggnbTyb88H4fgvLZX4cZa6FSv9jYpC+zO4S8Aw8h2bOz1ALir6Yb3ReF3s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=NqzpyW/O; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1711465826;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=rHBAVem4f68aO9p9lIl2iAeX/K7t0SIt6WI+yo8kk5A=;
-	b=NqzpyW/OD2WbI/zFOjk1khDSwyLXh9N0/U9opTbQZ1OXYo455Fs4oL/BNINs2C6QPtzCCH
-	YBD6eAzfFNhxNFN0yH5Q39Gfh/GOO9tAB35j7lbanECChYvEs/iDCXXL877SOShTBAQVDF
-	rdsWqakcCrK1/asc671RXtBNL79ncno=
-Received: from mail-pj1-f69.google.com (mail-pj1-f69.google.com
- [209.85.216.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-193-z8SDUwxSONu8QpaHxGLhzA-1; Tue, 26 Mar 2024 11:10:25 -0400
-X-MC-Unique: z8SDUwxSONu8QpaHxGLhzA-1
-Received: by mail-pj1-f69.google.com with SMTP id 98e67ed59e1d1-29df4ec4304so4635955a91.3
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 08:10:23 -0700 (PDT)
+	s=arc-20240116; t=1711465841; c=relaxed/simple;
+	bh=mzJombKbEWRKDl6OlPgaMOZIIcKPzrlFoWruizKqFJA=;
+	h=Date:From:To:Cc:Message-ID:In-Reply-To:References:Subject:
+	 Mime-Version:Content-Type; b=pAOas2itF9APnkL58k+dY5vCCqFmWy1M1YrSpuEE/gCEbgqp03Pag9kAiRnV6PzLswBvUvuIzeB8t+FATEXQ9syLCNv+cR2OVHNm3/CALJyqCwnUOcolD0vMZbb8HqV9iz0f49oyAq9wyw1zI+CY+nT8kB9nXQuawD957s5Y/os=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ecLQ4xF6; arc=none smtp.client-ip=209.85.160.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-qt1-f171.google.com with SMTP id d75a77b69052e-430c45ab240so32898481cf.0;
+        Tue, 26 Mar 2024 08:10:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1711465838; x=1712070638; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=xgboSOXSaJN+npjxRR5//kw9dc8gv3PuHBnyX+Oqs3c=;
+        b=ecLQ4xF6eEwC8koQ1SQ2hCwD9jVnXRAj8q6G5FbjDZkJqxZOTWjFRnddLg1DJD1nwJ
+         XxkcfRHd1HbGBrnbC3lfEXEuV9K+XVwvfiToAFap3FlVqlC8iMgJO9mhLEb/Dqa4pJGo
+         WrrAIklrX2FMLSFcB1CuasOFMlN7Q4V/lXJ1QV274uSz2ZHMgKJAK7CZggcAAeJzTyUM
+         rbjRq4+ukFsSWGsq/Blp/lQiKdmYlIuMzRZw41URfXxMG9sgQT8TqYy0tfIL0P1YioYR
+         zfI54xL5Ab44mJg+zUa6kdbi6OWhVEPrg+i60Xw37uTB/bkuuxJt2aUrjKazfVznjv1o
+         uz2Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711465823; x=1712070623;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=rHBAVem4f68aO9p9lIl2iAeX/K7t0SIt6WI+yo8kk5A=;
-        b=g9hK9/E6InecVJSXb5dQ2JJDwtZc+E0LfIyXqxDEzMv0g2H7ZToukLlybL05nKsavG
-         g/VW+egVlRyl5Nj3ZkxI6BnAvjuJUraJ5vcz2OhejQfmRCpIJkM5CITtvgv/KCnGvUkn
-         lWQwNjmc/UXSSv3x8Xb5f7tbrZsaVJV0AxXZ0x//U061+0v8jSGZT82z5AUPeKlp61+y
-         fPjFdgK02uHltGi2OtGra/RGqJApaUmHzfbn5FOKtCVpsf5pwvFEatkkZKmCNOKzHQvT
-         a6dSrmTilksUnoL6JUmvIuMy6gkWia/u4gpLImLeCLT0Dt58+uvOvfiUkxxI/aEZWLuu
-         lhpA==
-X-Gm-Message-State: AOJu0Ywv6a2TpSok2R4VsYigkzpd/JBiSxDNh0pnLEtvefb7EEozYwY5
-	Zf0BUeqFm69fZL724DaNp/4acUfeq064ZVcmB8G+NccBHk4lrUEPbCg91idIpPZQtaPXncRhE/o
-	pllc7Oy7KcMRb1282tztp/CwAM6twBvdE7jBa1eu1mSje1+YWDo+kEYZifMIqrGbi2bPX6T+xtn
-	pD7hkW1zcwonpa92YwYOz/z/ztshzunD/keAkS
-X-Received: by 2002:a17:90a:fe85:b0:2a0:33c2:997e with SMTP id co5-20020a17090afe8500b002a033c2997emr8413639pjb.41.1711465822877;
-        Tue, 26 Mar 2024 08:10:22 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IGAJWrGzQomM3G/TFjykkA3Nu+aRm+SLIK3wmvcd0KA8T1wqDiVw9EewPPyP3FnLGu1d7WEN7AavJuwcxUDtgs=
-X-Received: by 2002:a17:90a:fe85:b0:2a0:33c2:997e with SMTP id
- co5-20020a17090afe8500b002a033c2997emr8413608pjb.41.1711465822503; Tue, 26
- Mar 2024 08:10:22 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1711465838; x=1712070638;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=xgboSOXSaJN+npjxRR5//kw9dc8gv3PuHBnyX+Oqs3c=;
+        b=TBDygXdMtAuCe59P/itShaH9CsZJcY/88XWojcvSPfIdDZJbV7b0w/+uxetWoRhlB7
+         P09C+zbRyAHMO7N6z7AUpeZPVA565Dwfgrw43rv0DphOI6UlavbVs72WmSla68BbeejH
+         IBQJdRA5MXQCQJIK/Echt3vv+4T96zWq3pVMKUz3JxGTTtKtSkoTRKKF7CNjAuB1uZin
+         uMAXr1vl93wZbfM4CE2lWVaJ76Vdw3bidPyCsFNZUeDhPFC5I7AYeJCwbEXeQ/5KFnno
+         SuHWb0q+OYI1Ha5MA7nmHCXMTqbUkZD7Iotfv2/kUULEbZxePSdEEd1s6xksdbPzObSj
+         5zVA==
+X-Forwarded-Encrypted: i=1; AJvYcCVj8q8br4tfy8E+5zMYTdV2mROCcNVYTlpES4Ej8EAKDYVTr5EL6iitM8gI07O8smPwm9a/knA7qNKkk/usI2LZZMgLdCScFzPJWTwYPGie7mOkCxv9h9GUgdtfRESo/E+fJRg0WauaVv4/3/sNys7cDNmF5pk9cF861BP/jeLYE4KqENCc
+X-Gm-Message-State: AOJu0YyypI3dRWkWoqskYm1RLrnKtYOHhBFOpOHErn0NAhaGMvfRp4wl
+	+SQ/yRHH+ZHlgC/ObVqj6Hq3blSZ6IOkDI+eIi8qXGIl0IeANyrg
+X-Google-Smtp-Source: AGHT+IGzyx0zvMcRf1q9UjiligTtpy6suyD4CI7inXc9cNeFIiGqNvE8sABz/EuQAAZd4VFfuUvzwA==
+X-Received: by 2002:a05:622a:283:b0:431:23c8:7aa3 with SMTP id z3-20020a05622a028300b0043123c87aa3mr1433295qtw.13.1711465837959;
+        Tue, 26 Mar 2024 08:10:37 -0700 (PDT)
+Received: from localhost (55.87.194.35.bc.googleusercontent.com. [35.194.87.55])
+        by smtp.gmail.com with ESMTPSA id hz2-20020a05622a678200b004313b7cf2c7sm3708208qtb.39.2024.03.26.08.10.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 26 Mar 2024 08:10:37 -0700 (PDT)
+Date: Tue, 26 Mar 2024 11:10:37 -0400
+From: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+To: Richard Gobert <richardbgobert@gmail.com>, 
+ Eric Dumazet <edumazet@google.com>
+Cc: davem@davemloft.net, 
+ kuba@kernel.org, 
+ pabeni@redhat.com, 
+ willemdebruijn.kernel@gmail.com, 
+ netdev@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, 
+ linux-kselftest@vger.kernel.org
+Message-ID: <6602e56d7a02c_1408f429432@willemb.c.googlers.com.notmuch>
+In-Reply-To: <6566fd5f-fcdf-4dc7-b8a2-5e8a182f8c49@gmail.com>
+References: <20240325182543.87683-1-richardbgobert@gmail.com>
+ <20240325182543.87683-5-richardbgobert@gmail.com>
+ <CANn89iKzeTKuBA3NL0DQUmUHmmc0QzZ0X62DUarZ2Q7cKRZvSA@mail.gmail.com>
+ <46e0c775-91e7-4bf6-88f3-53ab5e00414f@gmail.com>
+ <CANn89iJkDbzLKmUGRHNFpfiaO8z19i44qgqkBA9Updt4QsRkyg@mail.gmail.com>
+ <6566fd5f-fcdf-4dc7-b8a2-5e8a182f8c49@gmail.com>
+Subject: Re: [PATCH net-next v4 4/4] net: gro: move L3 flush checks to
+ tcp_gro_receive
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <20240326143210.291116-1-david@redhat.com> <20240326143210.291116-3-david@redhat.com>
-In-Reply-To: <20240326143210.291116-3-david@redhat.com>
-From: Miklos Szeredi <mszeredi@redhat.com>
-Date: Tue, 26 Mar 2024 16:10:11 +0100
-Message-ID: <CAOssrKdKaYua48K5F2xD68cFCoiGZSxcYdqgVXrdYTocey2pTg@mail.gmail.com>
-Subject: Re: [PATCH v2 2/3] selftests/memfd_secret: add vmsplice() test
-To: David Hildenbrand <david@redhat.com>
-Cc: linux-kernel@vger.kernel.org, linux-mm@kvack.org, 
-	Andrew Morton <akpm@linux-foundation.org>, Mike Rapoport <rppt@kernel.org>, 
-	Lorenzo Stoakes <lstoakes@gmail.com>, xingwei lee <xrivendell7@gmail.com>, 
-	yue sun <samsun1006219@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: 7bit
 
-On Tue, Mar 26, 2024 at 3:32=E2=80=AFPM David Hildenbrand <david@redhat.com=
-> wrote:
->
-> Let's add a simple reproducer for a scenario where GUP-fast could succeed
-> on secretmem folios, making vmsplice() succeed instead of failing. The
-> reproducer is based on a reproducer [1] by Miklos Szeredi.
->
-> We want to perform two tests: vmsplice() when a fresh page was just
-> faulted in, and vmsplice() on an existing page after munmap() that
-> would drain certain LRU caches/batches in the kernel.
->
-> In an ideal world, we could use fallocate(FALLOC_FL_PUNCH_HOLE) /
-> MADV_REMOVE to remove any existing page. As that is currently not
-> possible, run the test before any other tests that would allocate memory
-> in the secretmem fd.
->
-> Perform the ftruncate() only once, and check the return value.
->
-> [1] https://lkml.kernel.org/r/CAJfpegt3UCsMmxd0taOY11Uaw5U=3DeS1fE5dn0wZX=
-3HF0oy8-oQ@mail.gmail.com
->
-> Signed-off-by: David Hildenbrand <david@redhat.com>
-> ---
->  tools/testing/selftests/mm/memfd_secret.c | 51 ++++++++++++++++++++++-
->  1 file changed, 49 insertions(+), 2 deletions(-)
->
-> diff --git a/tools/testing/selftests/mm/memfd_secret.c b/tools/testing/se=
-lftests/mm/memfd_secret.c
-> index 9b298f6a04b3..9a0597310a76 100644
-> --- a/tools/testing/selftests/mm/memfd_secret.c
-> +++ b/tools/testing/selftests/mm/memfd_secret.c
-> @@ -20,6 +20,7 @@
->  #include <unistd.h>
->  #include <errno.h>
->  #include <stdio.h>
-> +#include <fcntl.h>
->
->  #include "../kselftest.h"
->
-> @@ -83,6 +84,45 @@ static void test_mlock_limit(int fd)
->         pass("mlock limit is respected\n");
->  }
->
-> +static void test_vmsplice(int fd, const char *desc)
-> +{
-> +       ssize_t transferred;
-> +       struct iovec iov;
-> +       int pipefd[2];
-> +       char *mem;
-> +
-> +       if (pipe(pipefd)) {
-> +               fail("pipe failed: %s\n", strerror(errno));
-> +               return;
-> +       }
-> +
-> +       mem =3D mmap(NULL, page_size, prot, mode, fd, 0);
-> +       if (mem =3D=3D MAP_FAILED) {
-> +               fail("Unable to mmap secret memory\n");
-> +               goto close_pipe;
-> +       }
-> +
-> +       /*
-> +        * vmsplice() may use GUP-fast, which must also fail. Prefault th=
-e
-> +        * page table, so GUP-fast could find it.
-> +        */
-> +       memset(mem, PATTERN, page_size);
+Richard Gobert wrote:
+> Eric Dumazet wrote:
+> > 
+> > I do not understand this patch 4/4 then.
+> > 
+> > Why bother moving stuff in net/ipv4/tcp_offload.c if we plan to move
+> > it back to where it belongs ?
+> 
+> Willem also pointed that out, and I agree. I'll post a v5 and move this
+> functionality to gro.c. Currently, gro_network_flush will be called from
+> tcp_gro_receive and in a separate series I'll fix the bug by calling
+> gro_network_flush in skb_gro_receive or adding it to
+> udp_gro_receive_segment - whichever is better.
+> 
+> This patch is meaningful by itself - removing checks against non-relevant
+> packets and making the flush/flush_id checks in a single place.
 
-Shouldn't the non-prefault case be tested as well?
-
-Thanks,
-Miklos
+One issue: if the do this move in net/next, then a later fix that
+relies on it cannot be backporter to older stable kernels.
 
 
