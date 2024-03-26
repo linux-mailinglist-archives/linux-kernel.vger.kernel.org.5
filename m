@@ -1,75 +1,75 @@
-Return-Path: <linux-kernel+bounces-119826-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-119827-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7887688CD64
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 20:43:11 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id CBD5688CD67
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 20:43:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2EA2A1F66615
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 19:43:11 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EF2F91C3A2E3
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 19:43:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0B74613D2B0;
-	Tue, 26 Mar 2024 19:42:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0B5E113D53E;
+	Tue, 26 Mar 2024 19:42:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="z2b1FnVQ"
-Received: from mail-ej1-f51.google.com (mail-ej1-f51.google.com [209.85.218.51])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="GJ/T1efa"
+Received: from mail-ej1-f48.google.com (mail-ej1-f48.google.com [209.85.218.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8DB8013D265
-	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 19:42:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E2D9D13D282
+	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 19:42:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711482167; cv=none; b=i/auNyzjUbodfaWgRA7hHfwLlSpZ4ATZa+G9Lt7hhu0tCcXM0aExaMwo22ac83Pf1XaLHU3oBhDT2GSyS1c1aXHoq3bbQZ3RxsGSydFN2yuLisMJS5hlCeUBuw9uXZjJdohZMZD11GEPhUjPZzG+iORhLB+8Ec01Kf7SrrJIJ2o=
+	t=1711482168; cv=none; b=GYSDgUQFk5qWynugJ7LO6vdkSLVSwer8hPm3tnGOlQe5izrqnjnLS17kghWvEGDrXap2hGAb5y1lPd7ZLvpaCFa8K51YSlG/DjmOjsL/MilzN40YEJsAwD9WNo4fgqBPbc9w9sx/HNLqFqtmYJlpMl7IUNBIQHXGCxls7vW5ln0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711482167; c=relaxed/simple;
-	bh=oOKy+s0UncDHMzy0sCXGno/jN+7VHEire36Z2/0jSjs=;
+	s=arc-20240116; t=1711482168; c=relaxed/simple;
+	bh=wB9I6D7BQJWznN8UthzGm+vDfU+W6H61008voNH+YNg=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=Y0BENDEcxkPow0t5DkruoLRy3Ru1m7TJhxTlshs4L8MLB+2bE4ZDqPCytUn1K4UctaIlNphMlYpAioDDSfCqHIlMkxLRwk/jbRuaXAHgL1/rDKRYzh+BV8otdciIxkBxpw92p0h2Ak+PqDzBxmo9ssLlefScI0svVViAG9V5Wec=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=z2b1FnVQ; arc=none smtp.client-ip=209.85.218.51
+	 In-Reply-To:To:Cc; b=gyE4a/K+EyPbEoMdLG3gsYAesu9uiVHfCuq1nUX79gfhduhEAhtcx4uCbM0+bxANLUwadXILI1xMxm4dc+JQ8+6c+Q6rUdMxLDft7ENQZkzA6+T0empC44ypw1QLMRJsnNmqmqxIxw39tzGnFVuKvh5Q338mSxH7G+O7JKeVSnI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=GJ/T1efa; arc=none smtp.client-ip=209.85.218.48
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ej1-f51.google.com with SMTP id a640c23a62f3a-a466e53f8c0so784804566b.1
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 12:42:45 -0700 (PDT)
+Received: by mail-ej1-f48.google.com with SMTP id a640c23a62f3a-a4dfe6564b6so35461966b.3
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 12:42:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1711482164; x=1712086964; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1711482165; x=1712086965; darn=vger.kernel.org;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=X2MOT4emaHQnBcdhGx0ryRRILbJ/qZ8WNQ+3qQOoAxc=;
-        b=z2b1FnVQv97RYu++PgQ8xak+X11GMZfF2xfHFUv6pZicjgHRXe2jXwbgvxQqN2Idzr
-         QwWV7v3KmLkLk7zwO25dLprI83YvwKXWWR+aS4IwxI0pr0bGm/U6thRtCPQWtVPRamIB
-         +ngaqOiYQj5rqzA8PHVH4VOBChSe+av06CmJRQAoxgik1grxO3LPxsS2IYnTJAKg2c3o
-         7VQs0Y5kJEWJOg30jqOGzC5ovlJtpMsJCElOSWGKCs6vN5n1/dm3fjMxFkL3JmoLaCyp
-         i3VmrRytaCIi8RI1wSL7TEMyNyBnKs/96iv8t66+bRFZmn1zKGdNVuM0eN4f51r9IgAu
-         /lYw==
+        bh=myF/FT3mjzDetGM0IGFxtzNFS3L3TFzuRPAO+3JyykQ=;
+        b=GJ/T1efaD01P6RHnPrIi9n+WIzt2mggDCbzCSyndZi5XKN6mh4Z85WU4t0nWlgkeeV
+         EsaPWE+IlFh4ZsVqHpwhBlkTQYxgq2BS27mrvMrx32uJXP0wf6J3bikB4P5dEeKfEQww
+         vpjebWiWpdCwkhnGHCYEOIs/WE6JTbP8Sq/jO0usjsq0p2HEnv73UV3jSlQfyp/GRJew
+         UeHrmWoT74tb7Ox9kVf2LQ+NvhERXnl6Snn5T69KBG4Cm8Pd0G6nsgDQvacHZJkopOc1
+         pJ/m6cIH39gsL7s094qPlOQBB1GPqpWJtdBhakjAqkDUVdyv77/iGV3USBFSiloUS+Ci
+         64pg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711482164; x=1712086964;
+        d=1e100.net; s=20230601; t=1711482165; x=1712086965;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=X2MOT4emaHQnBcdhGx0ryRRILbJ/qZ8WNQ+3qQOoAxc=;
-        b=DXD3oT5dfkMsR5qweR+QTTzxLNMO7LHgqwCAv1M2XPuFHE/lZVi1fCjqTyRbqYXz5e
-         h0kWliqoIgvRQhuzuwEAJof+8NVVPoJx8vbK3XAXxS/KDg8SEF0SsXjkDDmMnyuGT1tp
-         jWS3wGzI4fwneZlw6zJ1qx19PlJMgeKITDFmHuFxG0NqA0J4qXc2Sx9Y1BhPu3fa9Ol1
-         qc0O9YzVIWHvhjaMTxsN/DIR2j/nVWgHNRYYhTMoB3hafu6WnUqVOg8P7KAf2NL60q2m
-         HcIinHCi2kWlad9CQd3rFOobz8ZSMQ/4tKmiNqWDnUkAUMmAbLrtNtGXOXmflk5y6qDa
-         kPHg==
-X-Forwarded-Encrypted: i=1; AJvYcCX8SOXVZTZHQdYY4zGgZXRRxZLDYXPsnK8kAHU4XVKPcPWJJHEr4sEQZpdNNHgJuFZc5Hi4049R1wkMDmktK7Sz0rONA7CkGyeypXzG
-X-Gm-Message-State: AOJu0YySg1CuA9T4LZUykcLS58u4Il6KQBmCxqDFJGXvRCpHumh3BNQ8
-	658YOw6lraDv4WX+bh5zxUuA8wugeuyaE7c/hyI6ZgE+tz4ZpLTAaw4oeq4AvTs=
-X-Google-Smtp-Source: AGHT+IEtLIh+oxJU3qv0DY10/DtNE3qVjcy0SfG34hWYv/2FwteGaYK6Yyc3PMONxp3/QRIYq0fwNQ==
-X-Received: by 2002:a17:906:c099:b0:a46:da84:471a with SMTP id f25-20020a170906c09900b00a46da84471amr7761655ejz.63.1711482163867;
-        Tue, 26 Mar 2024 12:42:43 -0700 (PDT)
+        bh=myF/FT3mjzDetGM0IGFxtzNFS3L3TFzuRPAO+3JyykQ=;
+        b=r3Q4IVzknZy4sQZBizXaEzBOP9u0lT/hXTqcls567cRE6MApuLOVs0CB9SHcu+uTQp
+         PIsknskacR+o8u1mUBTN0t6uRMLn403lPOL71Vp/tCXzpS2hcqeF15bh0je6r4QBWVOR
+         SiyLeB8en3b/PbhMDeCuZOA1Md/cGC9zpc08GbK7g+R/UiMQdCK8CztgOpx0gn6a2AMJ
+         SXsxh1HQ2e3pOQddJO/6wba9J5G8Ti8UktT7JhejwfUUCwJ1IKMN91FydJ8WoOwaOjUt
+         oKCWX/gbN+AGwkGLgb74fW74mz1h65MhqoBeFzwzuG5JzuiRhRvImWkqsuu61A5bwjv2
+         yUKw==
+X-Forwarded-Encrypted: i=1; AJvYcCXb3Ll+wBU8GwloG1jqDW95dnLmcXVv+s7/U1FR1ElzQgNqvYnx3BECJCMowONn11ssyJ4C2vLdM9W0/VCs9JZgtKkcBsoT4kLszOqG
+X-Gm-Message-State: AOJu0YwLQVePBXWue37b00YR6LE9lhdA4GKVX4saX0WbIadMt2t7EmOz
+	xzmNREwZLOt+lLdmJE7C9pIzhbcHPiJKSEsqxJe+rOD75y7ggP4NcNMdDDXMb00=
+X-Google-Smtp-Source: AGHT+IEPmaOMC2f9TTTD0MXVvmiX5xYz9V5w3kr6WBjVVtmT4USwnf7OD0Ni7SDbwpzt5QOlCusEqw==
+X-Received: by 2002:a17:906:114d:b0:a4d:f806:ad6e with SMTP id i13-20020a170906114d00b00a4df806ad6emr1477735eja.52.1711482165158;
+        Tue, 26 Mar 2024 12:42:45 -0700 (PDT)
 Received: from [192.168.92.47] (078088045141.garwolin.vectranet.pl. [78.88.45.141])
-        by smtp.gmail.com with ESMTPSA id i8-20020a17090671c800b00a46d4e26301sm4523807ejk.27.2024.03.26.12.42.42
+        by smtp.gmail.com with ESMTPSA id i8-20020a17090671c800b00a46d4e26301sm4523807ejk.27.2024.03.26.12.42.43
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Mar 2024 12:42:43 -0700 (PDT)
+        Tue, 26 Mar 2024 12:42:44 -0700 (PDT)
 From: Konrad Dybcio <konrad.dybcio@linaro.org>
-Date: Tue, 26 Mar 2024 20:42:33 +0100
-Subject: [PATCH 2/4] interconnect: qcom: qcm2290: Fix mas_snoc_bimc QoS
- port assignment
+Date: Tue, 26 Mar 2024 20:42:34 +0100
+Subject: [PATCH 3/4] interconnect: qcom: icc-rpm: Make simple functions
+ return void
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -78,7 +78,7 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20240326-topic-rpm_icc_qos_cleanup-v1-2-357e736792be@linaro.org>
+Message-Id: <20240326-topic-rpm_icc_qos_cleanup-v1-3-357e736792be@linaro.org>
 References: <20240326-topic-rpm_icc_qos_cleanup-v1-0-357e736792be@linaro.org>
 In-Reply-To: <20240326-topic-rpm_icc_qos_cleanup-v1-0-357e736792be@linaro.org>
 To: Bjorn Andersson <andersson@kernel.org>, 
@@ -88,36 +88,229 @@ Cc: Marijn Suijten <marijn.suijten@somainline.org>,
  linux-kernel@vger.kernel.org, Stephan Gerhold <stephan@gerhold.net>, 
  Konrad Dybcio <konrad.dybcio@linaro.org>
 X-Mailer: b4 0.12.2
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1711482160; l=803;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1711482160; l=7134;
  i=konrad.dybcio@linaro.org; s=20230215; h=from:subject:message-id;
- bh=oOKy+s0UncDHMzy0sCXGno/jN+7VHEire36Z2/0jSjs=;
- b=47PKuOBRf08el4ftmJgJT7Eg306dqETTPhwAVizzG4J7znmhOgtxetRjkkC3VVGcxQItWiI3H
- 21PDaJ9veoMB7RJJt0YBLSygubYU6cWXMEbsVpmb8M2Gm6AjkiT9Sa6
+ bh=wB9I6D7BQJWznN8UthzGm+vDfU+W6H61008voNH+YNg=;
+ b=y68BVQ60c5ekdqx/JspG4LRXqNIy5iwcJjZJxz0kWref3DQwaEL4g4XqOWx2hwAotRPjK7FBC
+ pdqGQ3XbWDcCXJlav9pGlfMhACZVm63VM9J86rItGkHEkDs4T94yILR
 X-Developer-Key: i=konrad.dybcio@linaro.org; a=ed25519;
  pk=iclgkYvtl2w05SSXO5EjjSYlhFKsJ+5OSZBjOkQuEms=
 
-The value was wrong, resulting in misprogramming of the hardware.
-Fix it.
+Register accesses can't just randomly fail. Change the return type of
+functions that only do that to void.
 
-Fixes: 1a14b1ac3935 ("interconnect: qcom: Add QCM2290 driver support")
 Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
 ---
- drivers/interconnect/qcom/qcm2290.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/interconnect/qcom/icc-rpm.c | 110 +++++++++++++++---------------------
+ 1 file changed, 47 insertions(+), 63 deletions(-)
 
-diff --git a/drivers/interconnect/qcom/qcm2290.c b/drivers/interconnect/qcom/qcm2290.c
-index 96735800b13c..ba4cc08684d6 100644
---- a/drivers/interconnect/qcom/qcm2290.c
-+++ b/drivers/interconnect/qcom/qcm2290.c
-@@ -164,7 +164,7 @@ static struct qcom_icc_node mas_snoc_bimc = {
- 	.name = "mas_snoc_bimc",
- 	.buswidth = 16,
- 	.qos.ap_owned = true,
--	.qos.qos_port = 2,
-+	.qos.qos_port = 6,
- 	.qos.qos_mode = NOC_QOS_MODE_BYPASS,
- 	.mas_rpm_id = 164,
- 	.slv_rpm_id = -1,
+diff --git a/drivers/interconnect/qcom/icc-rpm.c b/drivers/interconnect/qcom/icc-rpm.c
+index a8ed435f696c..0169de588a46 100644
+--- a/drivers/interconnect/qcom/icc-rpm.c
++++ b/drivers/interconnect/qcom/icc-rpm.c
+@@ -50,30 +50,27 @@
+ 
+ #define ICC_BUS_CLK_MIN_RATE		19200ULL /* kHz */
+ 
+-static int qcom_icc_set_qnoc_qos(struct icc_node *src)
++static void qcom_icc_set_qnoc_qos(struct icc_node *src)
+ {
+ 	struct icc_provider *provider = src->provider;
+ 	struct qcom_icc_provider *qp = to_qcom_provider(provider);
+ 	struct qcom_icc_node *qn = src->data;
+ 	struct qcom_icc_qos *qos = &qn->qos;
+-	int rc;
+-
+-	rc = regmap_update_bits(qp->regmap,
+-			qp->qos_offset + QNOC_QOS_MCTL_LOWn_ADDR(qos->qos_port),
+-			QNOC_QOS_MCTL_DFLT_PRIO_MASK,
+-			qos->areq_prio << QNOC_QOS_MCTL_DFLT_PRIO_SHIFT);
+-	if (rc)
+-		return rc;
+-
+-	return regmap_update_bits(qp->regmap,
+-			qp->qos_offset + QNOC_QOS_MCTL_LOWn_ADDR(qos->qos_port),
+-			QNOC_QOS_MCTL_URGFWD_EN_MASK,
+-			!!qos->urg_fwd_en << QNOC_QOS_MCTL_URGFWD_EN_SHIFT);
++
++	regmap_update_bits(qp->regmap,
++			   qp->qos_offset + QNOC_QOS_MCTL_LOWn_ADDR(qos->qos_port),
++			   QNOC_QOS_MCTL_DFLT_PRIO_MASK,
++			   qos->areq_prio << QNOC_QOS_MCTL_DFLT_PRIO_SHIFT);
++
++	regmap_update_bits(qp->regmap,
++			   qp->qos_offset + QNOC_QOS_MCTL_LOWn_ADDR(qos->qos_port),
++			   QNOC_QOS_MCTL_URGFWD_EN_MASK,
++			   !!qos->urg_fwd_en << QNOC_QOS_MCTL_URGFWD_EN_SHIFT);
+ }
+ 
+-static int qcom_icc_bimc_set_qos_health(struct qcom_icc_provider *qp,
+-					struct qcom_icc_qos *qos,
+-					int regnum)
++static void qcom_icc_bimc_set_qos_health(struct qcom_icc_provider *qp,
++					 struct qcom_icc_qos *qos,
++					 int regnum)
+ {
+ 	u32 val;
+ 	u32 mask;
+@@ -90,19 +87,18 @@ static int qcom_icc_bimc_set_qos_health(struct qcom_icc_provider *qp,
+ 		mask |= M_BKE_HEALTH_CFG_LIMITCMDS_MASK;
+ 	}
+ 
+-	return regmap_update_bits(qp->regmap,
+-				  qp->qos_offset + M_BKE_HEALTH_CFG_ADDR(regnum, qos->qos_port),
+-				  mask, val);
++	regmap_update_bits(qp->regmap,
++			   qp->qos_offset + M_BKE_HEALTH_CFG_ADDR(regnum, qos->qos_port),
++			   mask, val);
+ }
+ 
+-static int qcom_icc_set_bimc_qos(struct icc_node *src)
++static void qcom_icc_set_bimc_qos(struct icc_node *src)
+ {
+ 	struct qcom_icc_provider *qp;
+ 	struct qcom_icc_node *qn;
+ 	struct icc_provider *provider;
+ 	u32 mode = NOC_QOS_MODE_BYPASS;
+ 	u32 val = 0;
+-	int i, rc = 0;
+ 
+ 	qn = src->data;
+ 	provider = src->provider;
+@@ -115,48 +111,42 @@ static int qcom_icc_set_bimc_qos(struct icc_node *src)
+ 	 * only if we are NOT in Bypass Mode.
+ 	 */
+ 	if (mode != NOC_QOS_MODE_BYPASS) {
+-		for (i = 3; i >= 0; i--) {
+-			rc = qcom_icc_bimc_set_qos_health(qp,
+-							  &qn->qos, i);
+-			if (rc)
+-				return rc;
+-		}
++		qcom_icc_bimc_set_qos_health(qp, &qn->qos, 3);
++		qcom_icc_bimc_set_qos_health(qp, &qn->qos, 2);
++		qcom_icc_bimc_set_qos_health(qp, &qn->qos, 1);
++		qcom_icc_bimc_set_qos_health(qp, &qn->qos, 0);
+ 
+ 		/* Set BKE_EN to 1 when Fixed, Regulator or Limiter Mode */
+ 		val = 1;
+ 	}
+ 
+-	return regmap_update_bits(qp->regmap,
+-				  qp->qos_offset + M_BKE_EN_ADDR(qn->qos.qos_port),
+-				  M_BKE_EN_EN_BMASK, val);
++	regmap_update_bits(qp->regmap,
++			   qp->qos_offset + M_BKE_EN_ADDR(qn->qos.qos_port),
++			   M_BKE_EN_EN_BMASK, val);
+ }
+ 
+-static int qcom_icc_noc_set_qos_priority(struct qcom_icc_provider *qp,
++static void qcom_icc_noc_set_qos_priority(struct qcom_icc_provider *qp,
+ 					 struct qcom_icc_qos *qos)
+ {
+ 	u32 val;
+-	int rc;
+ 
+ 	/* Must be updated one at a time, P1 first, P0 last */
+ 	val = qos->areq_prio << NOC_QOS_PRIORITY_P1_SHIFT;
+-	rc = regmap_update_bits(qp->regmap,
+-				qp->qos_offset + NOC_QOS_PRIORITYn_ADDR(qos->qos_port),
+-				NOC_QOS_PRIORITY_P1_MASK, val);
+-	if (rc)
+-		return rc;
+-
+-	return regmap_update_bits(qp->regmap,
+-				  qp->qos_offset + NOC_QOS_PRIORITYn_ADDR(qos->qos_port),
+-				  NOC_QOS_PRIORITY_P0_MASK, qos->prio_level);
++	regmap_update_bits(qp->regmap,
++			   qp->qos_offset + NOC_QOS_PRIORITYn_ADDR(qos->qos_port),
++			   NOC_QOS_PRIORITY_P1_MASK, val);
++
++	regmap_update_bits(qp->regmap,
++			   qp->qos_offset + NOC_QOS_PRIORITYn_ADDR(qos->qos_port),
++			   NOC_QOS_PRIORITY_P0_MASK, qos->prio_level);
+ }
+ 
+-static int qcom_icc_set_noc_qos(struct icc_node *src)
++static void qcom_icc_set_noc_qos(struct icc_node *src)
+ {
+ 	struct qcom_icc_provider *qp;
+ 	struct qcom_icc_node *qn;
+ 	struct icc_provider *provider;
+ 	u32 mode = NOC_QOS_MODE_BYPASS_VAL;
+-	int rc = 0;
+ 
+ 	qn = src->data;
+ 	provider = src->provider;
+@@ -166,15 +156,12 @@ static int qcom_icc_set_noc_qos(struct icc_node *src)
+ 		dev_dbg(src->provider->dev,
+ 			"NoC QoS: Skipping %s: vote aggregated on parent.\n",
+ 			qn->name);
+-		return 0;
+ 	}
+ 
+ 	if (qn->qos.qos_mode == NOC_QOS_MODE_FIXED) {
+ 		dev_dbg(src->provider->dev, "NoC QoS: %s: Set Fixed mode\n", qn->name);
+ 		mode = NOC_QOS_MODE_FIXED_VAL;
+-		rc = qcom_icc_noc_set_qos_priority(qp, &qn->qos);
+-		if (rc)
+-			return rc;
++		qcom_icc_noc_set_qos_priority(qp, &qn->qos);
+ 	} else if (qn->qos.qos_mode == NOC_QOS_MODE_BYPASS) {
+ 		dev_dbg(src->provider->dev, "NoC QoS: %s: Set Bypass mode\n", qn->name);
+ 		mode = NOC_QOS_MODE_BYPASS_VAL;
+@@ -182,12 +169,12 @@ static int qcom_icc_set_noc_qos(struct icc_node *src)
+ 		/* How did we get here? */
+ 	}
+ 
+-	return regmap_update_bits(qp->regmap,
+-				  qp->qos_offset + NOC_QOS_MODEn_ADDR(qn->qos.qos_port),
+-				  NOC_QOS_MODEn_MASK, mode);
++	regmap_update_bits(qp->regmap,
++			   qp->qos_offset + NOC_QOS_MODEn_ADDR(qn->qos.qos_port),
++			   NOC_QOS_MODEn_MASK, mode);
+ }
+ 
+-static int qcom_icc_qos_set(struct icc_node *node)
++static void qcom_icc_qos_set(struct icc_node *node)
+ {
+ 	struct qcom_icc_provider *qp = to_qcom_provider(node->provider);
+ 	struct qcom_icc_node *qn = node->data;
+@@ -196,11 +183,14 @@ static int qcom_icc_qos_set(struct icc_node *node)
+ 
+ 	switch (qp->type) {
+ 	case QCOM_ICC_BIMC:
+-		return qcom_icc_set_bimc_qos(node);
++		qcom_icc_set_bimc_qos(node);
++		break;
+ 	case QCOM_ICC_QNOC:
+-		return qcom_icc_set_qnoc_qos(node);
++		qcom_icc_set_qnoc_qos(node);
++		break;
+ 	default:
+-		return qcom_icc_set_noc_qos(node);
++		qcom_icc_set_noc_qos(node);
++		break;
+ 	}
+ }
+ 
+@@ -586,14 +576,8 @@ int qnoc_probe(struct platform_device *pdev)
+ 
+ 		/* Set QoS registers (we only need to do it once, generally) */
+ 		if (qnodes[i]->qos.ap_owned &&
+-		    qnodes[i]->qos.qos_mode != NOC_QOS_MODE_INVALID) {
+-			ret = qcom_icc_qos_set(node);
+-			if (ret) {
+-				clk_bulk_disable_unprepare(qp->num_intf_clks,
+-							   qp->intf_clks);
+-				goto err_remove_nodes;
+-			}
+-		}
++		    qnodes[i]->qos.qos_mode != NOC_QOS_MODE_INVALID)
++			qcom_icc_qos_set(node);
+ 
+ 		data->nodes[i] = node;
+ 	}
 
 -- 
 2.44.0
