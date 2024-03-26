@@ -1,294 +1,228 @@
-Return-Path: <linux-kernel+bounces-119356-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-119355-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 99B7788C79A
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 16:43:08 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8227F88C794
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 16:42:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BDF131C640D9
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 15:43:07 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 32B69320CD8
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 15:42:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A17813CAAF;
-	Tue, 26 Mar 2024 15:39:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B926413CAA1;
+	Tue, 26 Mar 2024 15:39:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=salutedevices.com header.i=@salutedevices.com header.b="ePA7RZGi"
-Received: from mx1.sberdevices.ru (mx2.sberdevices.ru [45.89.224.132])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GfAxhXAb"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C7EF6FC0E;
-	Tue, 26 Mar 2024 15:39:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.89.224.132
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C2F9B13CA91;
+	Tue, 26 Mar 2024 15:39:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711467597; cv=none; b=MfbOC/YioSuKfRc2aNBQUo24+yevm8HQvvaIKwUfjR3yuSi6LXENNyLKMkOTl85tPbBRk5LZcs/BN7lxAcydhmT29fpRwKIgdnUQUD2Kj68q+txwNZDZw6WNzQALaZm5NxingsWwwMd2GHO2jxZUQLVH4jEmuPsFyDqC/yN760U=
+	t=1711467573; cv=none; b=jpGxr5FxGApD+r/6h2pzD3Ui8BpX4a0TrWJWYKCbv9WE0VTBb3doO2AfAaGrW72/Jh+0UM3G0qOWJccThTweZyZAGqw+k3zQ1GV3yzHqGchdICLkvAxYwHysGrW8674SuTknm1ZJ8R3C0zVM3o5gEV6mwzEhXsKlqAnWBC1y2UY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711467597; c=relaxed/simple;
-	bh=X1kX69Jlpw+6CmX8mQiJm4O+sWo7JoMK2tt6HDIjWZE=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=F/DKJYlTSmgbroEuBCA3DNXpjc0Q2+0txoRi7LZ8bbKVkKJPbinChGSgYsvOi72Eq66d3c9Dm/ol8L4/ztOgJ5kk4t7wX28F6QtXN7t26rh4jNCmlO5C0vW+hJaLxwrtGWpu5pJvbKXuEIgtJ64LlbqTYGiUyxK8RvZHShxDES4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=salutedevices.com; spf=pass smtp.mailfrom=sberdevices.ru; dkim=pass (2048-bit key) header.d=salutedevices.com header.i=@salutedevices.com header.b=ePA7RZGi; arc=none smtp.client-ip=45.89.224.132
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=salutedevices.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sberdevices.ru
-Received: from p-infra-ksmg-sc-msk02 (localhost [127.0.0.1])
-	by mx1.sberdevices.ru (Postfix) with ESMTP id B15B9120004;
-	Tue, 26 Mar 2024 18:39:50 +0300 (MSK)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru B15B9120004
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=salutedevices.com;
-	s=mail; t=1711467590;
-	bh=BspCg4rrPJ0Kpig9Yf6f5Zh/R+hA73hjDZvRIpKseLo=;
-	h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type:From;
-	b=ePA7RZGi1LFC23l7KSsw/4S8dcZ2KX7MSOkB/o4z7Kk2vlwHcGfjZwFTTSddxMF+f
-	 URyiU38kBwTwoJt/UMLBrUizr1BgaYdV4ur+KuUm83f1EozvmNDZ9cpdkeUnpSqQuw
-	 1drQJP1WX826/tyNAVRms1daZhOuqIEHvqQLsIC+JCu+9ywl2hDy5YQDDnBdKRfQvD
-	 pj8lzOMMbooGkBUAhXtSGhBv0LHmcIPKS1BFyB+YOywk42LakpkX/wKKFjbJBw+WEo
-	 z3xSGvHF6QNA37l/vjQL+zyxidP40CmEf+/uQkGuApvFmVpnxMJwDPazWs1VmAbs9x
-	 B2Fcv3mMDFswA==
-Received: from smtp.sberdevices.ru (p-i-exch-sc-m02.sberdevices.ru [172.16.192.103])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by mx1.sberdevices.ru (Postfix) with ESMTPS;
-	Tue, 26 Mar 2024 18:39:50 +0300 (MSK)
-Received: from [192.168.20.2] (100.64.160.123) by
- p-i-exch-sc-m02.sberdevices.ru (172.16.192.103) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Tue, 26 Mar 2024 18:39:50 +0300
-Message-ID: <13bfb247-9210-48ae-902b-629d850cbae7@salutedevices.com>
-Date: Tue, 26 Mar 2024 18:38:44 +0300
+	s=arc-20240116; t=1711467573; c=relaxed/simple;
+	bh=QM9scf4YeVv1B0PTlmFeoNK0slLx4CfaV119dLz2wHI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=g736hRQTDPVkVb5KGMG/RY1bixFbI9ouvw/tGZ2JYx7YKhazAwa49CErTrSC2MGueVFiKjxrK0qxkj/ISrOqjyCrHwqzH/PSoNfW/symVue+0+7bIUNOCMc0sj+vReF8GM3LtGdhw2AwtCLfU+8znuDeKmmHGNvmtKf10CqXnmo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=GfAxhXAb; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7AED0C433C7;
+	Tue, 26 Mar 2024 15:39:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1711467573;
+	bh=QM9scf4YeVv1B0PTlmFeoNK0slLx4CfaV119dLz2wHI=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=GfAxhXAbMUApmOiyq/UeGdj5vIevwyYpM/P5riJ7xF9GqYMKDdTHF5HNk1PTVDYPh
+	 ipROtl+1fPO9mzkESKCLZSnMvOQb3AjoOcCyHuj8OuAYsySUCQDT/8ebUPoS0x2ck4
+	 M7JsfLn7qVEGtoeUGHlmjfEHgrCy7Rdw/ISV303xM/ENMn59QEXz93TNwavRcqzCCS
+	 V7zzJ4XcGu0f8Y8m7DchGQbdgPSecDrjiboVb3IzquSYm0u3b7mWRsOn5y4F5+4IR/
+	 GHbBTgs58b5qm8LteE4mXTM/2AOfS0Xqek5GEvpQu2ig8gL2VtcbIl9axckvN+9Fel
+	 a7f3IgvyvXhHA==
+Date: Tue, 26 Mar 2024 16:39:27 +0100
+From: Benjamin Tissoires <bentiss@kernel.org>
+To: Werner Sembach <wse@tuxedocomputers.com>
+Cc: Hans de Goede <hdegoede@redhat.com>, Lee Jones <lee@kernel.org>, 
+	jikos@kernel.org, linux-kernel@vger.kernel.org, Jelle van der Waa <jelle@vdwaa.nl>, 
+	Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>, 
+	"dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>, linux-input@vger.kernel.org, ojeda@kernel.org, 
+	linux-leds@vger.kernel.org, Pavel Machek <pavel@ucw.cz>, Gregor Riepl <onitake@gmail.com>
+Subject: Re: In kernel virtual HID devices (was Future handling of complex
+ RGB devices on Linux v3)
+Message-ID: <vjd5xqgd2gsyz4ubgk6eusuyqdtxpdw6vogc5u537x2a245xcj@m2twppbxea4p>
+References: <b6d79727-ae94-44b1-aa88-069416435c14@redhat.com>
+ <a21f6c49-2c05-4496-965c-a7524ed38634@gmail.com>
+ <825129ea-d389-4c6c-8a23-39f05572e4b4@redhat.com>
+ <adbfdf6c-fb59-4fae-a472-17b04dd8a3f6@tuxedocomputers.com>
+ <1fb08a74-62c7-4d0c-ba5d-648e23082dcb@tuxedocomputers.com>
+ <aec1d22d-9e59-4dfc-b108-5ba339b0e76a@redhat.com>
+ <siebkhaauocqkuox73q2e5p2mbsyc7j4gvpzfvt4c3gvncdpap@oxh5pp4gxpuo>
+ <870cca8a-1a1b-4d17-874e-a26c30aca2bf@tuxedocomputers.com>
+ <fcf4dd53-f461-4c2e-8fbe-50b50e4e6797@redhat.com>
+ <65b24776-ae1a-4290-a1d5-c7637ad0accc@tuxedocomputers.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH v2] ASoC: meson: g12a-toacodec: rework the definition
- of bits
-Content-Language: en-US
-To: Jerome Brunet <jbrunet@baylibre.com>
-CC: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
-	Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Neil
- Armstrong <neil.armstrong@linaro.org>, Kevin Hilman <khilman@baylibre.com>,
-	Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-	<alsa-devel@alsa-project.org>, <linux-sound@vger.kernel.org>,
-	<linux-arm-kernel@lists.infradead.org>, <linux-amlogic@lists.infradead.org>,
-	<linux-kernel@vger.kernel.org>
-References: <20240325235311.411920-1-jan.dakinevich@salutedevices.com>
- <1j34sd9fur.fsf@starbuckisacylon.baylibre.com>
-From: Jan Dakinevich <jan.dakinevich@salutedevices.com>
-In-Reply-To: <1j34sd9fur.fsf@starbuckisacylon.baylibre.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) To
- p-i-exch-sc-m02.sberdevices.ru (172.16.192.103)
-X-KSMG-Rule-ID: 10
-X-KSMG-Message-Action: clean
-X-KSMG-AntiSpam-Lua-Profiles: 184425 [Mar 26 2024]
-X-KSMG-AntiSpam-Version: 6.1.0.4
-X-KSMG-AntiSpam-Envelope-From: YVDakinevich@sberdevices.ru
-X-KSMG-AntiSpam-Rate: 0
-X-KSMG-AntiSpam-Status: not_detected
-X-KSMG-AntiSpam-Method: none
-X-KSMG-AntiSpam-Auth: dkim=none
-X-KSMG-AntiSpam-Info: LuaCore: 12 0.3.12 d1a01b14eb3fc102c904d35fe6c2622ed2d1c16e, {Tracking_smtp_not_equal_from}, {Tracking_uf_ne_domains}, {Tracking_from_domain_doesnt_match_to}, d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;lore.kernel.org:7.1.1;127.0.0.199:7.1.2;smtp.sberdevices.ru:5.0.1,7.1.1;sberdevices.ru:5.0.1,7.1.1;100.64.160.123:7.1.2;salutedevices.com:7.1.1, FromAlignment: n, {Tracking_smtp_domain_mismatch}, {Tracking_smtp_domain_2level_mismatch}, {Tracking_white_helo}, ApMailHostAddress: 100.64.160.123
-X-MS-Exchange-Organization-SCL: -1
-X-KSMG-AntiSpam-Interceptor-Info: scan successful
-X-KSMG-AntiPhishing: Clean, bases: 2024/03/26 11:48:00
-X-KSMG-LinksScanning: Clean, bases: 2024/03/26 11:48:00
-X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2024/03/26 13:11:00 #24452135
-X-KSMG-AntiVirus-Status: Clean, skipped
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <65b24776-ae1a-4290-a1d5-c7637ad0accc@tuxedocomputers.com>
 
-
-
-On 3/26/24 18:15, Jerome Brunet wrote:
+On Mar 26 2024, Werner Sembach wrote:
+> Hi all,
 > 
-> On Tue 26 Mar 2024 at 02:53, Jan Dakinevich <jan.dakinevich@salutedevices.com> wrote:
+> Am 25.03.24 um 19:30 schrieb Hans de Goede:
 > 
->> There is a lot of defines, but almost all of them are not used. Lets
->> rework them:
-> 
-> Thanks for noticing. Please start by removing what's unused.
-> 
+> [snip]
+> > > > If the kernel already handles the custom protocol into generic HID, the
+> > > > work for userspace is not too hard because they can deal with a known
+> > > > protocol and can be cross-platform in their implementation.
+> > > > 
+> > > > I'm mentioning that cross-platform because SDL used to rely on the
+> > > > input, LEDs, and other Linux peculiarities and eventually fell back on
+> > > > using hidraw only because it's way more easier that way.
+> > > > 
+> > > > The other advantage of LampArray is that according to Microsoft's
+> > > > document, new devices are going to support it out of the box, so they'll
+> > > > be supported out of the box directly.
+> > > > 
+> > > > Most of the time my stance is "do not add new kernel API, you'll regret
+> > > > it later". So in that case, given that we have a formally approved
+> > > > standard, I would suggest to use it, and consider it your API.
+> > > The only new UAPI would be the use_leds_uapi switch to turn on/off the backwards compatibility.
 
-I mean, that some values are named. But then numbers are used instead names.
+I have my reserves with such a kill switch (see below).
 
->>
->>  - keep separate the definition for different platforms to make easier
->>    checking that they match documentation.
->>
->>  - use LSB/MSB sufixes for uniformity.
+> > Actually we don't even need that. Typically there is a single HID
+> > driver handling both keys and the backlight, so userspace cannot
+> > just unbind the HID driver since then the keys stop working.
+
+I don't think Werner meant unbinding the HID driver, just a toggle to
+enable/disable the basic HID core processing of LampArray.
+
+> > 
+> > But with a virtual LampArray HID device the only functionality
+> > for an in kernel HID driver would be to export a basic keyboard
+> > backlight control interface for simple non per key backlight control
+> > to integrate nicely with e.g. GNOME's backlight control.
 > 
-> I'd be in favor of dropping these suffixes completely.
+> Don't forget that in the future there will be devices that natively support
+> LampArray in their firmware, so for them it is the same device.
+
+Yeah, the generic LampArray support will not be able to differentiate
+"emulated" devices from native ones.
+
 > 
->>
->>  - don't use hard-coded values for already declared defines.
->>
->> Signed-off-by: Jan Dakinevich <jan.dakinevich@salutedevices.com>
->> ---
->> Links:
->>
->>  [1] https://lore.kernel.org/lkml/20240314232201.2102178-1-jan.dakinevich@salutedevices.com/
->>
->> Changes v1 -> v2:
->>  - Detached from v1's series (patch 7).
->>  - Fixed my wrong understanding of SOC_SINGLE's input parameters.
->>
->>  sound/soc/meson/g12a-toacodec.c | 79 ++++++++++++++++++++-------------
->>  1 file changed, 49 insertions(+), 30 deletions(-)
->>
->> diff --git a/sound/soc/meson/g12a-toacodec.c b/sound/soc/meson/g12a-toacodec.c
->> index 531bb8707a3e..22181f4bab72 100644
->> --- a/sound/soc/meson/g12a-toacodec.c
->> +++ b/sound/soc/meson/g12a-toacodec.c
->> @@ -20,26 +20,37 @@
->>  #define G12A_TOACODEC_DRV_NAME "g12a-toacodec"
->>  
->>  #define TOACODEC_CTRL0			0x0
->> -#define  CTRL0_ENABLE_SHIFT		31
->> -#define  CTRL0_DAT_SEL_SM1_MSB		19
->> -#define  CTRL0_DAT_SEL_SM1_LSB		18
->> -#define  CTRL0_DAT_SEL_MSB		15
->> -#define  CTRL0_DAT_SEL_LSB		14
->> -#define  CTRL0_LANE_SEL_SM1		16
->> -#define  CTRL0_LANE_SEL			12
->> -#define  CTRL0_LRCLK_SEL_SM1_MSB	14
->> -#define  CTRL0_LRCLK_SEL_SM1_LSB	12
->> -#define  CTRL0_LRCLK_SEL_MSB		9
->> -#define  CTRL0_LRCLK_SEL_LSB		8
->> -#define  CTRL0_LRCLK_INV_SM1		BIT(10)
->> -#define  CTRL0_BLK_CAP_INV_SM1		BIT(9)
->> -#define  CTRL0_BLK_CAP_INV		BIT(7)
->> -#define  CTRL0_BCLK_O_INV_SM1		BIT(8)
->> -#define  CTRL0_BCLK_O_INV		BIT(6)
->> -#define  CTRL0_BCLK_SEL_SM1_MSB		6
->> -#define  CTRL0_BCLK_SEL_MSB		5
->> -#define  CTRL0_BCLK_SEL_LSB		4
->> -#define  CTRL0_MCLK_SEL			GENMASK(2, 0)
->> +
->> +/* Common bits */
->> +#define CTRL0_ENABLE_SHIFT		31
->> +#define CTRL0_MCLK_SEL			GENMASK(2, 0)
->> +
->> +/* G12A bits */
->> +#define CTRL0_DAT_SEL_G12A_MSB		15
->> +#define CTRL0_DAT_SEL_G12A_LSB		14
->> +#define CTRL0_LANE_SEL_G12A_MSB		13
->> +#define CTRL0_LANE_SEL_G12A_LSB		12
->> +#define CTRL0_LANE_SEL_G12A_MAX		3
->> +#define CTRL0_LRCLK_SEL_G12A_MSB	9
->> +#define CTRL0_LRCLK_SEL_G12A_LSB	8
->> +#define CTRL0_BLK_CAP_INV_G12A		BIT(7)
->> +#define CTRL0_BCLK_O_INV_G12A		BIT(6)
->> +#define CTRL0_BCLK_SEL_G12A_MSB		5
->> +#define CTRL0_BCLK_SEL_G12A_LSB		4
->> +
->> +/* SM1 bits */
->> +#define CTRL0_DAT_SEL_SM1_MSB		19
->> +#define CTRL0_DAT_SEL_SM1_LSB		18
->> +#define CTRL0_LANE_SEL_SM1_MSB		17
->> +#define CTRL0_LANE_SEL_SM1_LSB		16
->> +#define CTRL0_LANE_SEL_SM1_MAX		3
->> +#define CTRL0_LRCLK_SEL_SM1_MSB		14
->> +#define CTRL0_LRCLK_SEL_SM1_LSB		12
->> +#define CTRL0_LRCLK_INV_SM1		BIT(10)
->> +#define CTRL0_BLK_CAP_INV_SM1		BIT(9)
->> +#define CTRL0_BCLK_O_INV_SM1		BIT(8)
->> +#define CTRL0_BCLK_SEL_SM1_MSB		6
->> +#define CTRL0_BCLK_SEL_SM1_LSB		4
->>  
->>  #define TOACODEC_OUT_CHMAX		2
->>  
->> @@ -108,7 +119,7 @@ static int g12a_toacodec_mux_put_enum(struct snd_kcontrol *kcontrol,
->>  }
->>  
->>  static SOC_ENUM_SINGLE_DECL(g12a_toacodec_mux_enum, TOACODEC_CTRL0,
->> -			    CTRL0_DAT_SEL_LSB,
->> +			    CTRL0_DAT_SEL_G12A_LSB,
->>  			    g12a_toacodec_mux_texts);
->>  
->>  static SOC_ENUM_SINGLE_DECL(sm1_toacodec_mux_enum, TOACODEC_CTRL0,
->> @@ -210,7 +221,7 @@ static int g12a_toacodec_component_probe(struct snd_soc_component *c)
->>  {
->>  	/* Initialize the static clock parameters */
->>  	return snd_soc_component_write(c, TOACODEC_CTRL0,
->> -				       CTRL0_BLK_CAP_INV);
->> +				       CTRL0_BLK_CAP_INV_G12A);
->>  }
->>  
->>  static int sm1_toacodec_component_probe(struct snd_soc_component *c)
->> @@ -229,11 +240,13 @@ static const struct snd_soc_dapm_route g12a_toacodec_routes[] = {
->>  };
->>  
->>  static const struct snd_kcontrol_new g12a_toacodec_controls[] = {
->> -	SOC_SINGLE("Lane Select", TOACODEC_CTRL0, CTRL0_LANE_SEL, 3, 0),
->> +	SOC_SINGLE("Lane Select", TOACODEC_CTRL0, CTRL0_LANE_SEL_G12A_LSB,
->> +		   CTRL0_LANE_SEL_G12A_MAX, 0),
->>  };
->>  
->>  static const struct snd_kcontrol_new sm1_toacodec_controls[] = {
->> -	SOC_SINGLE("Lane Select", TOACODEC_CTRL0, CTRL0_LANE_SEL_SM1, 3, 0),
->> +	SOC_SINGLE("Lane Select", TOACODEC_CTRL0, CTRL0_LANE_SEL_SM1_LSB,
->> +		   CTRL0_LANE_SEL_SM1_MAX, 0),
->>  };
->>  
->>  static const struct snd_soc_component_driver g12a_toacodec_component_drv = {
->> @@ -266,16 +279,22 @@ static const struct regmap_config g12a_toacodec_regmap_cfg = {
->>  
->>  static const struct g12a_toacodec_match_data g12a_toacodec_match_data = {
->>  	.component_drv	= &g12a_toacodec_component_drv,
->> -	.field_dat_sel	= REG_FIELD(TOACODEC_CTRL0, 14, 15),
->> -	.field_lrclk_sel = REG_FIELD(TOACODEC_CTRL0, 8, 9),
->> -	.field_bclk_sel	= REG_FIELD(TOACODEC_CTRL0, 4, 5),
->> +	.field_dat_sel	= REG_FIELD(TOACODEC_CTRL0, CTRL0_DAT_SEL_G12A_LSB,
->> +				    CTRL0_DAT_SEL_G12A_MSB),
->> +	.field_lrclk_sel = REG_FIELD(TOACODEC_CTRL0, CTRL0_LRCLK_SEL_G12A_LSB,
->> +				     CTRL0_LRCLK_SEL_G12A_MSB),
->> +	.field_bclk_sel	= REG_FIELD(TOACODEC_CTRL0, CTRL0_BCLK_SEL_G12A_LSB,
->> +				    CTRL0_BCLK_SEL_G12A_MSB),
->>  };
->>  
->>  static const struct g12a_toacodec_match_data sm1_toacodec_match_data = {
->>  	.component_drv	= &sm1_toacodec_component_drv,
->> -	.field_dat_sel	= REG_FIELD(TOACODEC_CTRL0, 18, 19),
->> -	.field_lrclk_sel = REG_FIELD(TOACODEC_CTRL0, 12, 14),
->> -	.field_bclk_sel	= REG_FIELD(TOACODEC_CTRL0, 4, 6),
->> +	.field_dat_sel	= REG_FIELD(TOACODEC_CTRL0, CTRL0_DAT_SEL_SM1_LSB,
->> +				    CTRL0_DAT_SEL_SM1_MSB),
->> +	.field_lrclk_sel = REG_FIELD(TOACODEC_CTRL0, CTRL0_LRCLK_SEL_SM1_LSB,
->> +				     CTRL0_LRCLK_SEL_SM1_MSB),
->> +	.field_bclk_sel	= REG_FIELD(TOACODEC_CTRL0, CTRL0_BCLK_SEL_SM1_LSB,
->> +				    CTRL0_BCLK_SEL_SM1_MSB),
+> Regards,
 > 
-> Those defines are already platform specific by the structure holding
-> them and the defines you have added are not helping readability.
+> Werner
 > 
+> > And then when OpenRGB wants to take over it can just unbind the HID
+> > driver from the HID device using existing mechanisms for that.
 
-These values are duplicated. Would it be reasonable to remove them from
-defines?
+Again no, it'll be too unpredicted.
 
-> I don't see the point to see.
-> I'd prefer to keep the field defined as they are.
-> 
+> > 
+> > Hmm, I wonder if that will not also kill hidraw support though ...
+> > I guess getting hidraw support back might require then also manually
+> > binding the default HID input driver.  Bentiss any input on this?
 
-Main goal of this patch is to rearrange definitions by platforms. From
-my point it is quite difficult to read things like this:
+To be able to talk over hidraw you need a driver to be bound, yes. But I
+had the impression that LampArray would be supported by default in
+hid-input.c, thus making this hard to remove. Having a separate driver
+will work, but as soon as the LampArray device will also export a
+multitouch touchpad, we are screwed and will have to make a choice
+between LampArray and touch...
 
-#define  CTRL0_LANE_SEL_SM1		16
-#define  CTRL0_LANE_SEL			12
-#define  CTRL0_LRCLK_SEL_SM1_MSB	14
-#define  CTRL0_LRCLK_SEL_SM1_LSB	12
-#define  CTRL0_LRCLK_SEL_MSB		9
-#define  CTRL0_LRCLK_SEL_LSB		8
+> > 
+> > Background info: as discussed earlier in the thread Werner would like
+> > to have a basic driver registering a /sys/class/leds/foo::kbd_backlight/
+> > device, since those are automatically supported by GNOME (and others)
+> > and will give basic kbd backlight brightness control in the desktop
+> > environment. This could be a simple HID driver for
+> > the hid_allocate_device()-ed virtual HID device, but userspace needs
+> > to be able to move that out of the way when it wants to take over
+> > full control of the per key lighting.
 
-I am going to add one more platforms, and this will get worse.
+Do we really need to entirely unregister the led class device? Can't we
+snoop on the commands and get some "mean value"?
 
->>  };
->>  
->>  static const struct of_device_id g12a_toacodec_of_match[] = {
-> 
-> 
+> > 
+> > Regards,
+> > 
+> > Hans
+> > 
+> > 
+> > 
+> > 
+> > 
+> > 
+> > 
+> > > The control flow for the whole system would look something like this:
+> > > 
+> > > - System boots
+> > > 
+> > >      - Kernel driver initializes keyboard (maybe stops rainbowpuke boot effects, sets brightness to a default value, or initializes a solid color)
+> > > 
+> > >      - systemd-backlight restores last keyboard backlight brightness
+> > > 
+> > >      - UPower sees sysfs leds entry and exposes it to DBus for DEs to do keyboard brightness handling
+> > > 
+> > > - If the user wants more control they (auto-)start OpenRGB
+> > > 
+> > >      - OpenRGB disables sysfs leds entry via use_leds_uapi to prevent double control of the same device by UPower
+> > > 
+> > >      - OpenRGB directly interacts with hidraw device via LampArray API to give fine granular control of the backlight
+> > > 
+> > >      - When OpenRGB closes it should reenable the sysfs leds entry
 
--- 
-Best regards
-Jan Dakinevich
+That's where your plan falls short: if OpenRGB crashes, or is killed it
+will not reset that bit.
+
+Next question: is OpenRGB supposed to keep the hidraw node opened all
+the time or not?
+
+If it has to keep it open, we should be able to come up with a somewhat
+similar hack that we have with hid-steam: when the hidraw node is
+opened, we disable the kernel processing of LampArray. When the node is
+closed, we re-enable it.
+
+But that also means we have to distinguish steam/SDL from OpenRGB...
+
+I just carefully read the LampArray spec. And it's simpler than what
+I expected. But the thing that caught my attention was that it's
+mentioned that there is no way for the host to query the current
+color/illumination of the LEDs when the mode is set to
+AutonomousMode=false. Which means that the kernel should be able to
+snoop into any commands sent from OpenRGB to the device, compute a mean
+value and update its internal state.
+
+Basically all we need is the "toggle" to put the led class in read-only
+mode while OpenRGB kicks in. Maybe given that we are about to snoop on
+the commands sent, we can detect that there is a LampArray command
+emitted, attach this information to the struct file * in hidraw, and
+then re-enable rw when that user closes the hidraw node.
+
+Cheers,
+Benjamin
+
+> > > 
+> > > - System shutdown
+> > > 
+> > >      - Since OpenRGB reenables the sysfs leds entry, systemd-backlight can correctly store a brightness value for next boot
+> > > 
+> > > Regards,
+> > > 
+> > > Werner
+> > > 
+> > > > Side note to self: I really need to resurrect the hidraw revoke series
+> > > > so we could export those hidraw node to userspace with uaccess through
+> > > > logind...
+> > > > 
+> > > > Cheers,
+> > > > Benjamin
 
