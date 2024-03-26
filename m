@@ -1,973 +1,188 @@
-Return-Path: <linux-kernel+bounces-119774-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-119775-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2A99588CCD9
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 20:13:49 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0A1F788CCDE
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 20:15:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4F11F1C3508D
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 19:13:48 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9D78E1F8036A
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 19:15:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DE9FF13CC57;
-	Tue, 26 Mar 2024 19:13:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6555613C9D1;
+	Tue, 26 Mar 2024 19:15:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ITZu76tE"
-Received: from mail-wm1-f45.google.com (mail-wm1-f45.google.com [209.85.128.45])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="KzWHNqHF"
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 06DA013CA97
-	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 19:13:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 15A1713CA91;
+	Tue, 26 Mar 2024 19:15:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711480423; cv=none; b=c+GYpEEt/I+WZ2l3oUKnwugy3YZWIKnZzjG0nZbDwqiipGMSt2Bqkycja5gOpGLFVtzdXPfa9SGZuyrmSAo6cLcLfrebPvCrHiy93IDLDvovLtlZJosrRPfoF9997P0e7whkrkOlvivGAIyd97kLqPGn0QdcP/iX51Mev0tiSyU=
+	t=1711480513; cv=none; b=fARzKKNALE+WDu7+zo/WjJwZ2Jb5ezBi+n1YJ4mYdcKAFt0FgL+7nJjHZalyNCGgGXx/ZW5vMm1PQ26lL7dCObxYrz1j9JIgRAxZPztxRJ9sJ1zXCRTkJ5HlNCRbSR/xLy8K95Z8zxLfoW8QUujHTTVVFyb560Vhpr6b3dfrPa4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711480423; c=relaxed/simple;
-	bh=FP05DJ6kceH5XVWTl0BG82XmkR227EVHcxoEBgCEYxM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=EZWcNJhiA2I7sXN4CtJIhWgQ84BWQPrN4uLNO07lMKevqCXdiv3sFWcePr/R8ecqDnqBTiKvhIGx2xdMj0nBZK+yRjObJoDxSTe2k1TVwI9s2vv1bGLO0lz2cn91w1j8xWRlvExn2rWc6Xtbp6dWUnpUF1dqX7ejI7Afucd4inc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ITZu76tE; arc=none smtp.client-ip=209.85.128.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f45.google.com with SMTP id 5b1f17b1804b1-414911fa3edso2871055e9.0
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 12:13:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711480419; x=1712085219; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=iBormajWv6dhZnTzuki8pvvv7sXvFtWom3oxka8S6QU=;
-        b=ITZu76tE0Uu7c1lgbLhhVG2imuxuXOjw0KEbIf5ARa4g+Cn0UDtPf7ac2PMkLAhVEc
-         ZZNfpMp/C5M9g2SLCsqEP1k7uIiGIebmtFtkKWxc1Ij0bi0G8j8aBRXP+3EfeS6TunD0
-         Sth3AAS+bnRbZruj2uUF+qD7LNmz9LflWHvvyN15ZTCfh6PySEGBlE/gUsG/VDeCOq93
-         bUouBbZyaxLsc1P424bobVpyxLeO476CYeOqZB93ZPDLMSLFoO/L+8e4UXjpn3WV384v
-         z9JTJvWt++rqUENtiAHAv1tafznqvxttiyWuEh7LUcZtoZD1oBTn1XVVogy971QFsQnP
-         BeOw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711480419; x=1712085219;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=iBormajWv6dhZnTzuki8pvvv7sXvFtWom3oxka8S6QU=;
-        b=SQ+kvchQmcX/X57AYYCfEUif2WlB/52WDtq5doOilr4eWSvyVxhQJHCHBU/XrnkhU6
-         5wtvp3Pgk7v78fD0UeMT5zOqU+5KeS4ybrgUv20J/7kHE2X4P69vYz+2EJVq6s2Z0w0K
-         O59QGrXhI+0ZMTlMyb8aPyXPeWAxFA5TBEAaOgKYOKKmbgkyNGC5pyMXnJU4NdRggIQ/
-         c9p1bN1s/zclRUPHZfxHKkBZqkoYG1INz/ek4JA2LVQJs5JsvyFkaydK46g5WiIEePsP
-         f4FXvrZevHbdqHuyL0syMsSxb0udUR7lgAGI/xmYbENwzHr87JhLpjF1rc9HDRadiSKM
-         29fw==
-X-Gm-Message-State: AOJu0Yy2eLjVfBwtEorairQLzlupwAGxp0EFk3UigmbDKnDh65ueC8Rk
-	S93f7gevQeQJGo5MjVBBANpwJitkY3qKIdDJeu59Od6eZRZbkXGI
-X-Google-Smtp-Source: AGHT+IEPULia2+eSCUXmpf2LJjUGjbg4YEhA8h1Mldg5bPAB6pLAY4W1oXLV9mfiIoCEch3UFXAQJQ==
-X-Received: by 2002:a7b:c5c8:0:b0:413:ea2c:7c72 with SMTP id n8-20020a7bc5c8000000b00413ea2c7c72mr330713wmk.11.1711480418705;
-        Tue, 26 Mar 2024 12:13:38 -0700 (PDT)
-Received: from gmail.com (1F2EF63C.nat.pool.telekom.hu. [31.46.246.60])
-        by smtp.gmail.com with ESMTPSA id hg9-20020a05600c538900b004101f27737asm12276026wmb.29.2024.03.26.12.13.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Mar 2024 12:13:38 -0700 (PDT)
-Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
-Date: Tue, 26 Mar 2024 20:13:35 +0100
-From: Ingo Molnar <mingo@kernel.org>
-To: Oleg Nesterov <oleg@redhat.com>
-Cc: linux-kernel@vger.kernel.org, Andy Lutomirski <luto@amacapital.net>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Dave Hansen <dave@sr71.net>, Peter Zijlstra <peterz@infradead.org>,
-	Borislav Petkov <bp@alien8.de>, "H . Peter Anvin" <hpa@zytor.com>,
-	Linus Torvalds <torvalds@linux-foundation.org>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Uros Bizjak <ubizjak@gmail.com>
-Subject: [PATCH 1/1 -v2] headers/deps: x86/fpu: Make task_struct::thread
- constant size
-Message-ID: <ZgMeX+lFNgwYdOJF@gmail.com>
-References: <20240320131908.2708438-1-mingo@kernel.org>
- <20240320131908.2708438-2-mingo@kernel.org>
- <20240326174903.GA4539@redhat.com>
- <ZgMeH9p0BTnMfmOM@gmail.com>
+	s=arc-20240116; t=1711480513; c=relaxed/simple;
+	bh=lcXIQeQPpJSsjJa4r3+xmC6l2y1ERylB+XQntlhKESw=;
+	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=hP5uWogDWWCYEvBPbi1QX4rUW0lD8t6ZLDU5xIbbloevav8+PSURZEOPHXyCkpwfLgVVdNG1yQIYJ0AEXbmxmbiV+m6ZvG91/eNZ4cLGgEq1Fz45PSHdwmSuPW6sWw68nMsoYeBhP4Q9UuHCh35537mO2GyT3IsMUqqR6V6aU7k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=KzWHNqHF; arc=none smtp.client-ip=205.220.168.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 42QIgd9r006771;
+	Tue, 26 Mar 2024 19:14:57 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	date:from:to:cc:subject:message-id:references:mime-version
+	:content-type:in-reply-to; s=qcppdkim1; bh=dnefISPJ3uXmoKMiF9edx
+	eaKbGhHLoEqhLnEFMxNj1U=; b=KzWHNqHFGhjE6iKcaCl3yybXAxfsFp9Da0HA/
+	TsceNQ0Nmev7iFQVkboVv5/46afmV1oou8oHQibcz3wqhczBnVgZUs4JQNgtyR2+
+	xz8jLt2hpAC+Oq4t+FEPt2k2ZQYUmw82raXaNCwa1cZxWvVbokLj7mSBcsoJ3S7R
+	hrHfrbiwfhIJkr43GIdfAUyRe5WiR4uP8wT6by2xH/obPz5O7eCvqR7ZZAM05xmO
+	TupczWBen9ZIKGpWU51MnTcgI8CEt5kJI8XZuj8XVDX7cPl2McgkmgqO6qUo3Nud
+	ADphLCXNd9Z8n54y66QAHOnnxXDNbIeJr6jXjoJXqsMonBu+Q==
+Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3x41k68g47-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 26 Mar 2024 19:14:57 +0000 (GMT)
+Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
+	by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 42QJEu1m025863
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 26 Mar 2024 19:14:56 GMT
+Received: from hu-bjorande-lv.qualcomm.com (10.49.16.6) by
+ nalasex01c.na.qualcomm.com (10.47.97.35) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.40; Tue, 26 Mar 2024 12:14:55 -0700
+Date: Tue, 26 Mar 2024 12:14:54 -0700
+From: Bjorn Andersson <quic_bjorande@quicinc.com>
+To: Abel Vesa <abel.vesa@linaro.org>
+CC: Rob Clark <robdclark@gmail.com>,
+        Abhinav Kumar
+	<quic_abhinavk@quicinc.com>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Sean Paul <sean@poorly.run>,
+        Marijn Suijten <marijn.suijten@somainline.org>,
+        David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+        "Maarten
+ Lankhorst" <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard
+	<mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Rob Herring
+	<robh@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Kuogee Hsieh <quic_khsieh@quicinc.com>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio
+	<konrad.dybcio@linaro.org>,
+        Johan Hovold <johan@kernel.org>, <linux-arm-msm@vger.kernel.org>,
+        <dri-devel@lists.freedesktop.org>, <freedreno@lists.freedesktop.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v4 1/2] drm/msm/dp: Add support for determining the
+ eDP/DP mode from DT
+Message-ID: <20240326191454.GA1637694@hu-bjorande-lv.qualcomm.com>
+References: <20240324-x1e80100-display-refactor-connector-v4-0-e0ebaea66a78@linaro.org>
+ <20240324-x1e80100-display-refactor-connector-v4-1-e0ebaea66a78@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <ZgMeH9p0BTnMfmOM@gmail.com>
+In-Reply-To: <20240324-x1e80100-display-refactor-connector-v4-1-e0ebaea66a78@linaro.org>
+X-ClientProxiedBy: nalasex01a.na.qualcomm.com (10.47.209.196) To
+ nalasex01c.na.qualcomm.com (10.47.97.35)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: uSZvd6OyOHb8pCzyFT3mtMm9FBgQ7dxU
+X-Proofpoint-GUID: uSZvd6OyOHb8pCzyFT3mtMm9FBgQ7dxU
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-03-26_08,2024-03-21_02,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 bulkscore=0
+ lowpriorityscore=0 clxscore=1011 mlxlogscore=999 priorityscore=1501
+ malwarescore=0 phishscore=0 spamscore=0 adultscore=0 suspectscore=0
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2403210001 definitions=main-2403260138
 
-
-* Ingo Molnar <mingo@kernel.org> wrote:
-
-> > >  void __init fpu__init_system(void)
-> > >  {
-> > > -	fpstate_reset(&current->thread.fpu);
-> > >  	fpu__init_system_early_generic();
-> > > +	fpstate_reset(current->thread.fpu);
-> > 
-> > It seems that fpstate_reset(current->thread.fpu) is not needed after the
-> > change in fpu__init_system_early_generic() above.
+On Sun, Mar 24, 2024 at 08:56:51PM +0200, Abel Vesa wrote:
+> Instead of relying on different compatibles for eDP and DP, lookup
+> the panel node in devicetree to figure out the connector type and
+> then pass on that information to the PHY. External DP doesn't have
+> a panel described in DT, therefore, assume it's eDP if panel node
+> is present.
 > 
-> Yeah. Something like the delta patch below?
 
-Full -v2 patch also attached, for reference.
+Reviewed-by: Bjorn Andersson <quic_bjorande@quicinc.com>
 
-Thanks,
+Regards,
+Bjorn
 
-	Ingo
-
-============>
-From: Ingo Molnar <mingo@kernel.org>
-Date: Wed, 20 Mar 2024 13:47:13 +0100
-Subject: [PATCH] headers/deps: x86/fpu: Make task_struct::thread constant size
-
-Turn thread.fpu into a pointer. Since most FPU code internals work by passing
-around the FPU pointer already, the code generation impact is small.
-
-This allows us to remove the old kludge of task_struct being variable size:
-
-  struct task_struct {
-
-       ...
-       /*
-        * New fields for task_struct should be added above here, so that
-        * they are included in the randomized portion of task_struct.
-        */
-       randomized_struct_fields_end
-
-       /* CPU-specific state of this task: */
-       struct thread_struct            thread;
-
-       /*
-        * WARNING: on x86, 'thread_struct' contains a variable-sized
-        * structure.  It *MUST* be at the end of 'task_struct'.
-        *
-        * Do not put anything below here!
-        */
-  };
-
-.. which creates a number of problems, such as requiring thread_struct to be
-the last member of the struct - not allowing it to be struct-randomized, etc.
-
-But the primary motivation is to allow the decoupling of task_struct from
-hardware details (<asm/processor.h> in particular), and to eventually allow
-the per-task infrastructure:
-
-   DECLARE_PER_TASK(type, name);
-   ...
-   per_task(current, name) = val;
-
-.. which requires task_struct to be a constant size struct.
-
-The fpu_thread_struct_whitelist() quirk to hardened usercopy can be removed,
-now that the FPU structure is not embedded in the task struct anymore, which
-reduces text footprint a bit.
-
-Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Cc: Andy Lutomirski <luto@kernel.org>
-Cc: Borislav Petkov <bp@alien8.de>
-Cc: H. Peter Anvin <hpa@zytor.com>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Oleg Nesterov <oleg@redhat.com>
-Cc: Dave Hansen <dave.hansen@linux.intel.com>
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Uros Bizjak <ubizjak@gmail.com>
----
- arch/x86/include/asm/fpu/sched.h |  2 +-
- arch/x86/include/asm/processor.h | 14 +++++------
- arch/x86/kernel/fpu/context.h    |  4 ++--
- arch/x86/kernel/fpu/core.c       | 51 ++++++++++++++++++++--------------------
- arch/x86/kernel/fpu/init.c       | 25 ++++++++++++--------
- arch/x86/kernel/fpu/regset.c     | 22 ++++++++---------
- arch/x86/kernel/fpu/signal.c     | 18 +++++++-------
- arch/x86/kernel/fpu/xstate.c     | 22 ++++++++---------
- arch/x86/kernel/fpu/xstate.h     |  6 ++---
- arch/x86/kernel/process.c        |  6 ++---
- arch/x86/kernel/signal.c         |  6 ++---
- arch/x86/kernel/traps.c          |  2 +-
- arch/x86/math-emu/fpu_aux.c      |  2 +-
- arch/x86/math-emu/fpu_entry.c    |  4 ++--
- arch/x86/math-emu/fpu_system.h   |  2 +-
- arch/x86/mm/extable.c            |  2 +-
- include/linux/sched.h            | 13 +++-------
- 17 files changed, 99 insertions(+), 102 deletions(-)
-
-diff --git a/arch/x86/include/asm/fpu/sched.h b/arch/x86/include/asm/fpu/sched.h
-index c485f1944c5f..3cf20ab49b5f 100644
---- a/arch/x86/include/asm/fpu/sched.h
-+++ b/arch/x86/include/asm/fpu/sched.h
-@@ -41,7 +41,7 @@ static inline void switch_fpu_prepare(struct task_struct *old, int cpu)
- {
- 	if (cpu_feature_enabled(X86_FEATURE_FPU) &&
- 	    !(old->flags & (PF_KTHREAD | PF_USER_WORKER))) {
--		struct fpu *old_fpu = &old->thread.fpu;
-+		struct fpu *old_fpu = old->thread.fpu;
- 
- 		save_fpregs_to_fpstate(old_fpu);
- 		/*
-diff --git a/arch/x86/include/asm/processor.h b/arch/x86/include/asm/processor.h
-index 811548f131f4..151880f2b079 100644
---- a/arch/x86/include/asm/processor.h
-+++ b/arch/x86/include/asm/processor.h
-@@ -491,19 +491,17 @@ struct thread_struct {
- #endif
- 
- 	/* Floating point and extended processor state */
--	struct fpu		fpu;
--	/*
--	 * WARNING: 'fpu' is dynamically-sized.  It *MUST* be at
--	 * the end.
--	 */
-+	struct fpu		*fpu;
- };
- 
--extern void fpu_thread_struct_whitelist(unsigned long *offset, unsigned long *size);
--
-+/*
-+ * X86 doesn't need any embedded-FPU-struct quirks:
-+ */
- static inline void arch_thread_struct_whitelist(unsigned long *offset,
- 						unsigned long *size)
- {
--	fpu_thread_struct_whitelist(offset, size);
-+	*offset = 0;
-+	*size = 0;
- }
- 
- static inline void
-diff --git a/arch/x86/kernel/fpu/context.h b/arch/x86/kernel/fpu/context.h
-index f6d856bd50bc..96d1f34179b3 100644
---- a/arch/x86/kernel/fpu/context.h
-+++ b/arch/x86/kernel/fpu/context.h
-@@ -53,7 +53,7 @@ static inline void fpregs_activate(struct fpu *fpu)
- /* Internal helper for switch_fpu_return() and signal frame setup */
- static inline void fpregs_restore_userregs(void)
- {
--	struct fpu *fpu = &current->thread.fpu;
-+	struct fpu *fpu = current->thread.fpu;
- 	int cpu = smp_processor_id();
- 
- 	if (WARN_ON_ONCE(current->flags & (PF_KTHREAD | PF_USER_WORKER)))
-@@ -67,7 +67,7 @@ static inline void fpregs_restore_userregs(void)
- 		 * If PKRU is enabled, then the PKRU value is already
- 		 * correct because it was either set in switch_to() or in
- 		 * flush_thread(). So it is excluded because it might be
--		 * not up to date in current->thread.fpu.xsave state.
-+		 * not up to date in current->thread.fpu->xsave state.
- 		 *
- 		 * XFD state is handled in restore_fpregs_from_fpstate().
- 		 */
-diff --git a/arch/x86/kernel/fpu/core.c b/arch/x86/kernel/fpu/core.c
-index 520deb411a70..93a45de0c67f 100644
---- a/arch/x86/kernel/fpu/core.c
-+++ b/arch/x86/kernel/fpu/core.c
-@@ -204,7 +204,7 @@ static void fpu_init_guest_permissions(struct fpu_guest *gfpu)
- 		return;
- 
- 	spin_lock_irq(&current->sighand->siglock);
--	fpuperm = &current->group_leader->thread.fpu.guest_perm;
-+	fpuperm = &current->group_leader->thread.fpu->guest_perm;
- 	perm = fpuperm->__state_perm;
- 
- 	/* First fpstate allocation locks down permissions. */
-@@ -316,7 +316,7 @@ EXPORT_SYMBOL_GPL(fpu_update_guest_xfd);
-  */
- void fpu_sync_guest_vmexit_xfd_state(void)
- {
--	struct fpstate *fps = current->thread.fpu.fpstate;
-+	struct fpstate *fps = current->thread.fpu->fpstate;
- 
- 	lockdep_assert_irqs_disabled();
- 	if (fpu_state_size_dynamic()) {
-@@ -330,7 +330,7 @@ EXPORT_SYMBOL_GPL(fpu_sync_guest_vmexit_xfd_state);
- int fpu_swap_kvm_fpstate(struct fpu_guest *guest_fpu, bool enter_guest)
- {
- 	struct fpstate *guest_fps = guest_fpu->fpstate;
--	struct fpu *fpu = &current->thread.fpu;
-+	struct fpu *fpu = current->thread.fpu;
- 	struct fpstate *cur_fps = fpu->fpstate;
- 
- 	fpregs_lock();
-@@ -430,7 +430,7 @@ void kernel_fpu_begin_mask(unsigned int kfpu_mask)
- 	if (!(current->flags & (PF_KTHREAD | PF_USER_WORKER)) &&
- 	    !test_thread_flag(TIF_NEED_FPU_LOAD)) {
- 		set_thread_flag(TIF_NEED_FPU_LOAD);
--		save_fpregs_to_fpstate(&current->thread.fpu);
-+		save_fpregs_to_fpstate(current->thread.fpu);
- 	}
- 	__cpu_invalidate_fpregs_state();
- 
-@@ -458,7 +458,7 @@ EXPORT_SYMBOL_GPL(kernel_fpu_end);
-  */
- void fpu_sync_fpstate(struct fpu *fpu)
- {
--	WARN_ON_FPU(fpu != &current->thread.fpu);
-+	WARN_ON_FPU(fpu != current->thread.fpu);
- 
- 	fpregs_lock();
- 	trace_x86_fpu_before_save(fpu);
-@@ -543,7 +543,7 @@ void fpstate_reset(struct fpu *fpu)
- static inline void fpu_inherit_perms(struct fpu *dst_fpu)
- {
- 	if (fpu_state_size_dynamic()) {
--		struct fpu *src_fpu = &current->group_leader->thread.fpu;
-+		struct fpu *src_fpu = current->group_leader->thread.fpu;
- 
- 		spin_lock_irq(&current->sighand->siglock);
- 		/* Fork also inherits the permissions of the parent */
-@@ -563,7 +563,7 @@ static int update_fpu_shstk(struct task_struct *dst, unsigned long ssp)
- 	if (!ssp)
- 		return 0;
- 
--	xstate = get_xsave_addr(&dst->thread.fpu.fpstate->regs.xsave,
-+	xstate = get_xsave_addr(&dst->thread.fpu->fpstate->regs.xsave,
- 				XFEATURE_CET_USER);
- 
- 	/*
-@@ -584,8 +584,19 @@ static int update_fpu_shstk(struct task_struct *dst, unsigned long ssp)
- int fpu_clone(struct task_struct *dst, unsigned long clone_flags, bool minimal,
- 	      unsigned long ssp)
- {
--	struct fpu *src_fpu = &current->thread.fpu;
--	struct fpu *dst_fpu = &dst->thread.fpu;
-+	/*
-+	 * We allocate the new FPU structure right after the end of the task struct.
-+	 * task allocation size already took this into account.
-+	 *
-+	 * This is safe because task_struct size is a multiple of cacheline size.
-+	 */
-+	struct fpu *dst_fpu = (void *)dst + sizeof(*dst);
-+	struct fpu *src_fpu = current->thread.fpu;
-+
-+	BUILD_BUG_ON(sizeof(*dst) % SMP_CACHE_BYTES != 0);
-+	BUG_ON(!src_fpu);
-+
-+	dst->thread.fpu = dst_fpu;
- 
- 	/* The new task's FPU state cannot be valid in the hardware. */
- 	dst_fpu->last_cpu = -1;
-@@ -654,16 +665,6 @@ int fpu_clone(struct task_struct *dst, unsigned long clone_flags, bool minimal,
- 	return 0;
- }
- 
--/*
-- * Whitelist the FPU register state embedded into task_struct for hardened
-- * usercopy.
-- */
--void fpu_thread_struct_whitelist(unsigned long *offset, unsigned long *size)
--{
--	*offset = offsetof(struct thread_struct, fpu.__fpstate.regs);
--	*size = fpu_kernel_cfg.default_size;
--}
--
- /*
-  * Drops current FPU state: deactivates the fpregs and
-  * the fpstate. NOTE: it still leaves previous contents
-@@ -677,7 +678,7 @@ void fpu__drop(struct fpu *fpu)
- {
- 	preempt_disable();
- 
--	if (fpu == &current->thread.fpu) {
-+	if (fpu == current->thread.fpu) {
- 		/* Ignore delayed exceptions from user space */
- 		asm volatile("1: fwait\n"
- 			     "2:\n"
-@@ -711,7 +712,7 @@ static inline void restore_fpregs_from_init_fpstate(u64 features_mask)
-  */
- static void fpu_reset_fpregs(void)
- {
--	struct fpu *fpu = &current->thread.fpu;
-+	struct fpu *fpu = current->thread.fpu;
- 
- 	fpregs_lock();
- 	__fpu_invalidate_fpregs_state(fpu);
-@@ -740,7 +741,7 @@ static void fpu_reset_fpregs(void)
-  */
- void fpu__clear_user_states(struct fpu *fpu)
- {
--	WARN_ON_FPU(fpu != &current->thread.fpu);
-+	WARN_ON_FPU(fpu != current->thread.fpu);
- 
- 	fpregs_lock();
- 	if (!cpu_feature_enabled(X86_FEATURE_FPU)) {
-@@ -773,7 +774,7 @@ void fpu__clear_user_states(struct fpu *fpu)
- 
- void fpu_flush_thread(void)
- {
--	fpstate_reset(&current->thread.fpu);
-+	fpstate_reset(current->thread.fpu);
- 	fpu_reset_fpregs();
- }
- /*
-@@ -814,7 +815,7 @@ void fpregs_lock_and_load(void)
-  */
- void fpregs_assert_state_consistent(void)
- {
--	struct fpu *fpu = &current->thread.fpu;
-+	struct fpu *fpu = current->thread.fpu;
- 
- 	if (test_thread_flag(TIF_NEED_FPU_LOAD))
- 		return;
-@@ -826,7 +827,7 @@ EXPORT_SYMBOL_GPL(fpregs_assert_state_consistent);
- 
- void fpregs_mark_activate(void)
- {
--	struct fpu *fpu = &current->thread.fpu;
-+	struct fpu *fpu = current->thread.fpu;
- 
- 	fpregs_activate(fpu);
- 	fpu->last_cpu = smp_processor_id();
-diff --git a/arch/x86/kernel/fpu/init.c b/arch/x86/kernel/fpu/init.c
-index 998a08f17e33..de618ec509aa 100644
---- a/arch/x86/kernel/fpu/init.c
-+++ b/arch/x86/kernel/fpu/init.c
-@@ -38,7 +38,7 @@ static void fpu__init_cpu_generic(void)
- 	/* Flush out any pending x87 state: */
- #ifdef CONFIG_MATH_EMULATION
- 	if (!boot_cpu_has(X86_FEATURE_FPU))
--		fpstate_init_soft(&current->thread.fpu.fpstate->regs.soft);
-+		fpstate_init_soft(&current->thread.fpu->fpstate->regs.soft);
- 	else
- #endif
- 		asm volatile ("fninit");
-@@ -71,8 +71,17 @@ static bool __init fpu__probe_without_cpuid(void)
- 	return fsw == 0 && (fcw & 0x103f) == 0x003f;
- }
- 
-+static struct fpu x86_init_fpu __read_mostly;
-+
- static void __init fpu__init_system_early_generic(void)
- {
-+	int this_cpu = smp_processor_id();
-+
-+	fpstate_reset(&x86_init_fpu);
-+	current->thread.fpu = &x86_init_fpu;
-+	per_cpu(fpu_fpregs_owner_ctx, this_cpu) = &x86_init_fpu;
-+	x86_init_fpu.last_cpu = this_cpu;
-+
- 	if (!boot_cpu_has(X86_FEATURE_CPUID) &&
- 	    !test_bit(X86_FEATURE_FPU, (unsigned long *)cpu_caps_cleared)) {
- 		if (fpu__probe_without_cpuid())
-@@ -150,11 +159,13 @@ static void __init fpu__init_task_struct_size(void)
- {
- 	int task_size = sizeof(struct task_struct);
- 
-+	task_size += sizeof(struct fpu);
-+
- 	/*
- 	 * Subtract off the static size of the register state.
- 	 * It potentially has a bunch of padding.
- 	 */
--	task_size -= sizeof(current->thread.fpu.__fpstate.regs);
-+	task_size -= sizeof(current->thread.fpu->__fpstate.regs);
- 
- 	/*
- 	 * Add back the dynamically-calculated register state
-@@ -164,14 +175,9 @@ static void __init fpu__init_task_struct_size(void)
- 
- 	/*
- 	 * We dynamically size 'struct fpu', so we require that
--	 * it be at the end of 'thread_struct' and that
--	 * 'thread_struct' be at the end of 'task_struct'.  If
--	 * you hit a compile error here, check the structure to
--	 * see if something got added to the end.
-+	 * 'state' be at the end of 'it:
- 	 */
- 	CHECK_MEMBER_AT_END_OF(struct fpu, __fpstate);
--	CHECK_MEMBER_AT_END_OF(struct thread_struct, fpu);
--	CHECK_MEMBER_AT_END_OF(struct task_struct, thread);
- 
- 	arch_task_struct_size = task_size;
- }
-@@ -204,7 +210,7 @@ static void __init fpu__init_system_xstate_size_legacy(void)
- 	fpu_kernel_cfg.default_size = size;
- 	fpu_user_cfg.max_size = size;
- 	fpu_user_cfg.default_size = size;
--	fpstate_reset(&current->thread.fpu);
-+	fpstate_reset(current->thread.fpu);
- }
- 
- /*
-@@ -213,7 +219,6 @@ static void __init fpu__init_system_xstate_size_legacy(void)
-  */
- void __init fpu__init_system(void)
- {
--	fpstate_reset(&current->thread.fpu);
- 	fpu__init_system_early_generic();
- 
- 	/*
-diff --git a/arch/x86/kernel/fpu/regset.c b/arch/x86/kernel/fpu/regset.c
-index 6bc1eb2a21bd..38bc0b390d02 100644
---- a/arch/x86/kernel/fpu/regset.c
-+++ b/arch/x86/kernel/fpu/regset.c
-@@ -45,7 +45,7 @@ int regset_xregset_fpregs_active(struct task_struct *target, const struct user_r
-  */
- static void sync_fpstate(struct fpu *fpu)
- {
--	if (fpu == &current->thread.fpu)
-+	if (fpu == current->thread.fpu)
- 		fpu_sync_fpstate(fpu);
- }
- 
-@@ -63,7 +63,7 @@ static void fpu_force_restore(struct fpu *fpu)
- 	 * Only stopped child tasks can be used to modify the FPU
- 	 * state in the fpstate buffer:
- 	 */
--	WARN_ON_FPU(fpu == &current->thread.fpu);
-+	WARN_ON_FPU(fpu == current->thread.fpu);
- 
- 	__fpu_invalidate_fpregs_state(fpu);
- }
-@@ -71,7 +71,7 @@ static void fpu_force_restore(struct fpu *fpu)
- int xfpregs_get(struct task_struct *target, const struct user_regset *regset,
- 		struct membuf to)
- {
--	struct fpu *fpu = &target->thread.fpu;
-+	struct fpu *fpu = target->thread.fpu;
- 
- 	if (!cpu_feature_enabled(X86_FEATURE_FXSR))
- 		return -ENODEV;
-@@ -91,7 +91,7 @@ int xfpregs_set(struct task_struct *target, const struct user_regset *regset,
- 		unsigned int pos, unsigned int count,
- 		const void *kbuf, const void __user *ubuf)
- {
--	struct fpu *fpu = &target->thread.fpu;
-+	struct fpu *fpu = target->thread.fpu;
- 	struct fxregs_state newstate;
- 	int ret;
- 
-@@ -133,7 +133,7 @@ int xstateregs_get(struct task_struct *target, const struct user_regset *regset,
- 	if (!cpu_feature_enabled(X86_FEATURE_XSAVE))
- 		return -ENODEV;
- 
--	sync_fpstate(&target->thread.fpu);
-+	sync_fpstate(target->thread.fpu);
- 
- 	copy_xstate_to_uabi_buf(to, target, XSTATE_COPY_XSAVE);
- 	return 0;
-@@ -143,7 +143,7 @@ int xstateregs_set(struct task_struct *target, const struct user_regset *regset,
- 		  unsigned int pos, unsigned int count,
- 		  const void *kbuf, const void __user *ubuf)
- {
--	struct fpu *fpu = &target->thread.fpu;
-+	struct fpu *fpu = target->thread.fpu;
- 	struct xregs_state *tmpbuf = NULL;
- 	int ret;
- 
-@@ -187,7 +187,7 @@ int ssp_active(struct task_struct *target, const struct user_regset *regset)
- int ssp_get(struct task_struct *target, const struct user_regset *regset,
- 	    struct membuf to)
- {
--	struct fpu *fpu = &target->thread.fpu;
-+	struct fpu *fpu = target->thread.fpu;
- 	struct cet_user_state *cetregs;
- 
- 	if (!cpu_feature_enabled(X86_FEATURE_USER_SHSTK))
-@@ -213,7 +213,7 @@ int ssp_set(struct task_struct *target, const struct user_regset *regset,
- 	    unsigned int pos, unsigned int count,
- 	    const void *kbuf, const void __user *ubuf)
- {
--	struct fpu *fpu = &target->thread.fpu;
-+	struct fpu *fpu = target->thread.fpu;
- 	struct xregs_state *xsave = &fpu->fpstate->regs.xsave;
- 	struct cet_user_state *cetregs;
- 	unsigned long user_ssp;
-@@ -367,7 +367,7 @@ static void __convert_from_fxsr(struct user_i387_ia32_struct *env,
- void
- convert_from_fxsr(struct user_i387_ia32_struct *env, struct task_struct *tsk)
- {
--	__convert_from_fxsr(env, tsk, &tsk->thread.fpu.fpstate->regs.fxsave);
-+	__convert_from_fxsr(env, tsk, &tsk->thread.fpu->fpstate->regs.fxsave);
- }
- 
- void convert_to_fxsr(struct fxregs_state *fxsave,
-@@ -400,7 +400,7 @@ void convert_to_fxsr(struct fxregs_state *fxsave,
- int fpregs_get(struct task_struct *target, const struct user_regset *regset,
- 	       struct membuf to)
- {
--	struct fpu *fpu = &target->thread.fpu;
-+	struct fpu *fpu = target->thread.fpu;
- 	struct user_i387_ia32_struct env;
- 	struct fxregs_state fxsave, *fx;
- 
-@@ -432,7 +432,7 @@ int fpregs_set(struct task_struct *target, const struct user_regset *regset,
- 	       unsigned int pos, unsigned int count,
- 	       const void *kbuf, const void __user *ubuf)
- {
--	struct fpu *fpu = &target->thread.fpu;
-+	struct fpu *fpu = target->thread.fpu;
- 	struct user_i387_ia32_struct env;
- 	int ret;
- 
-diff --git a/arch/x86/kernel/fpu/signal.c b/arch/x86/kernel/fpu/signal.c
-index 247f2225aa9f..6b262d0b8fc1 100644
---- a/arch/x86/kernel/fpu/signal.c
-+++ b/arch/x86/kernel/fpu/signal.c
-@@ -38,7 +38,7 @@ static inline bool check_xstate_in_sigframe(struct fxregs_state __user *fxbuf,
- 	/* Check for the first magic field and other error scenarios. */
- 	if (fx_sw->magic1 != FP_XSTATE_MAGIC1 ||
- 	    fx_sw->xstate_size < min_xstate_size ||
--	    fx_sw->xstate_size > current->thread.fpu.fpstate->user_size ||
-+	    fx_sw->xstate_size > current->thread.fpu->fpstate->user_size ||
- 	    fx_sw->xstate_size > fx_sw->extended_size)
- 		goto setfx;
- 
-@@ -54,7 +54,7 @@ static inline bool check_xstate_in_sigframe(struct fxregs_state __user *fxbuf,
- 	if (likely(magic2 == FP_XSTATE_MAGIC2))
- 		return true;
- setfx:
--	trace_x86_fpu_xstate_check_failed(&current->thread.fpu);
-+	trace_x86_fpu_xstate_check_failed(current->thread.fpu);
- 
- 	/* Set the parameters for fx only state */
- 	fx_sw->magic1 = 0;
-@@ -69,13 +69,13 @@ static inline bool check_xstate_in_sigframe(struct fxregs_state __user *fxbuf,
- static inline bool save_fsave_header(struct task_struct *tsk, void __user *buf)
- {
- 	if (use_fxsr()) {
--		struct xregs_state *xsave = &tsk->thread.fpu.fpstate->regs.xsave;
-+		struct xregs_state *xsave = &tsk->thread.fpu->fpstate->regs.xsave;
- 		struct user_i387_ia32_struct env;
- 		struct _fpstate_32 __user *fp = buf;
- 
- 		fpregs_lock();
- 		if (!test_thread_flag(TIF_NEED_FPU_LOAD))
--			fxsave(&tsk->thread.fpu.fpstate->regs.fxsave);
-+			fxsave(&tsk->thread.fpu->fpstate->regs.fxsave);
- 		fpregs_unlock();
- 
- 		convert_from_fxsr(&env, tsk);
-@@ -188,7 +188,7 @@ static inline int copy_fpregs_to_sigframe(struct xregs_state __user *buf)
- bool copy_fpstate_to_sigframe(void __user *buf, void __user *buf_fx, int size)
- {
- 	struct task_struct *tsk = current;
--	struct fpstate *fpstate = tsk->thread.fpu.fpstate;
-+	struct fpstate *fpstate = tsk->thread.fpu->fpstate;
- 	bool ia32_fxstate = (buf != buf_fx);
- 	int ret;
- 
-@@ -276,7 +276,7 @@ static int __restore_fpregs_from_user(void __user *buf, u64 ufeatures,
-  */
- static bool restore_fpregs_from_user(void __user *buf, u64 xrestore, bool fx_only)
- {
--	struct fpu *fpu = &current->thread.fpu;
-+	struct fpu *fpu = current->thread.fpu;
- 	int ret;
- 
- 	/* Restore enabled features only. */
-@@ -336,7 +336,7 @@ static bool __fpu_restore_sig(void __user *buf, void __user *buf_fx,
- 			      bool ia32_fxstate)
- {
- 	struct task_struct *tsk = current;
--	struct fpu *fpu = &tsk->thread.fpu;
-+	struct fpu *fpu = tsk->thread.fpu;
- 	struct user_i387_ia32_struct env;
- 	bool success, fx_only = false;
- 	union fpregs_state *fpregs;
-@@ -456,7 +456,7 @@ static inline unsigned int xstate_sigframe_size(struct fpstate *fpstate)
-  */
- bool fpu__restore_sig(void __user *buf, int ia32_frame)
- {
--	struct fpu *fpu = &current->thread.fpu;
-+	struct fpu *fpu = current->thread.fpu;
- 	void __user *buf_fx = buf;
- 	bool ia32_fxstate = false;
- 	bool success = false;
-@@ -503,7 +503,7 @@ unsigned long
- fpu__alloc_mathframe(unsigned long sp, int ia32_frame,
- 		     unsigned long *buf_fx, unsigned long *size)
- {
--	unsigned long frame_size = xstate_sigframe_size(current->thread.fpu.fpstate);
-+	unsigned long frame_size = xstate_sigframe_size(current->thread.fpu->fpstate);
- 
- 	*buf_fx = sp = round_down(sp - frame_size, 64);
- 	if (ia32_frame && use_fxsr()) {
-diff --git a/arch/x86/kernel/fpu/xstate.c b/arch/x86/kernel/fpu/xstate.c
-index 117e74c44e75..df442b2df55b 100644
---- a/arch/x86/kernel/fpu/xstate.c
-+++ b/arch/x86/kernel/fpu/xstate.c
-@@ -734,7 +734,7 @@ static void __init fpu__init_disable_system_xstate(unsigned int legacy_size)
- 	 */
- 	init_fpstate.xfd = 0;
- 
--	fpstate_reset(&current->thread.fpu);
-+	fpstate_reset(current->thread.fpu);
- }
- 
- /*
-@@ -844,7 +844,7 @@ void __init fpu__init_system_xstate(unsigned int legacy_size)
- 		goto out_disable;
- 
- 	/* Reset the state for the current task */
--	fpstate_reset(&current->thread.fpu);
-+	fpstate_reset(current->thread.fpu);
- 
- 	/*
- 	 * Update info used for ptrace frames; use standard-format size and no
-@@ -918,7 +918,7 @@ void fpu__resume_cpu(void)
- 	}
- 
- 	if (fpu_state_size_dynamic())
--		wrmsrl(MSR_IA32_XFD, current->thread.fpu.fpstate->xfd);
-+		wrmsrl(MSR_IA32_XFD, current->thread.fpu->fpstate->xfd);
- }
- 
- /*
-@@ -1186,8 +1186,8 @@ void __copy_xstate_to_uabi_buf(struct membuf to, struct fpstate *fpstate,
- void copy_xstate_to_uabi_buf(struct membuf to, struct task_struct *tsk,
- 			     enum xstate_copy_mode copy_mode)
- {
--	__copy_xstate_to_uabi_buf(to, tsk->thread.fpu.fpstate,
--				  tsk->thread.fpu.fpstate->user_xfeatures,
-+	__copy_xstate_to_uabi_buf(to, tsk->thread.fpu->fpstate,
-+				  tsk->thread.fpu->fpstate->user_xfeatures,
- 				  tsk->thread.pkru, copy_mode);
- }
- 
-@@ -1327,7 +1327,7 @@ int copy_uabi_from_kernel_to_xstate(struct fpstate *fpstate, const void *kbuf, u
- int copy_sigframe_from_user_to_xstate(struct task_struct *tsk,
- 				      const void __user *ubuf)
- {
--	return copy_uabi_to_xstate(tsk->thread.fpu.fpstate, NULL, ubuf, &tsk->thread.pkru);
-+	return copy_uabi_to_xstate(tsk->thread.fpu->fpstate, NULL, ubuf, &tsk->thread.pkru);
- }
- 
- static bool validate_independent_components(u64 mask)
-@@ -1421,7 +1421,7 @@ static bool xstate_op_valid(struct fpstate *fpstate, u64 mask, bool rstor)
- 	  * The XFD MSR does not match fpstate->xfd. That's invalid when
- 	  * the passed in fpstate is current's fpstate.
- 	  */
--	if (fpstate->xfd == current->thread.fpu.fpstate->xfd)
-+	if (fpstate->xfd == current->thread.fpu->fpstate->xfd)
- 		return false;
- 
- 	/*
-@@ -1498,7 +1498,7 @@ void fpstate_free(struct fpu *fpu)
- static int fpstate_realloc(u64 xfeatures, unsigned int ksize,
- 			   unsigned int usize, struct fpu_guest *guest_fpu)
- {
--	struct fpu *fpu = &current->thread.fpu;
-+	struct fpu *fpu = current->thread.fpu;
- 	struct fpstate *curfps, *newfps = NULL;
- 	unsigned int fpsize;
- 	bool in_use;
-@@ -1591,7 +1591,7 @@ static int __xstate_request_perm(u64 permitted, u64 requested, bool guest)
- 	 * AVX512.
- 	 */
- 	bool compacted = cpu_feature_enabled(X86_FEATURE_XCOMPACTED);
--	struct fpu *fpu = &current->group_leader->thread.fpu;
-+	struct fpu *fpu = current->group_leader->thread.fpu;
- 	struct fpu_state_perm *perm;
- 	unsigned int ksize, usize;
- 	u64 mask;
-@@ -1694,7 +1694,7 @@ int __xfd_enable_feature(u64 xfd_err, struct fpu_guest *guest_fpu)
- 		return -EPERM;
- 	}
- 
--	fpu = &current->group_leader->thread.fpu;
-+	fpu = current->group_leader->thread.fpu;
- 	perm = guest_fpu ? &fpu->guest_perm : &fpu->perm;
- 	ksize = perm->__state_size;
- 	usize = perm->__user_state_size;
-@@ -1799,7 +1799,7 @@ long fpu_xstate_prctl(int option, unsigned long arg2)
-  */
- static void avx512_status(struct seq_file *m, struct task_struct *task)
- {
--	unsigned long timestamp = READ_ONCE(task->thread.fpu.avx512_timestamp);
-+	unsigned long timestamp = READ_ONCE(task->thread.fpu->avx512_timestamp);
- 	long delta;
- 
- 	if (!timestamp) {
-diff --git a/arch/x86/kernel/fpu/xstate.h b/arch/x86/kernel/fpu/xstate.h
-index 3518fb26d06b..aca8a89bea84 100644
---- a/arch/x86/kernel/fpu/xstate.h
-+++ b/arch/x86/kernel/fpu/xstate.h
-@@ -22,7 +22,7 @@ static inline void xstate_init_xcomp_bv(struct xregs_state *xsave, u64 mask)
- 
- static inline u64 xstate_get_group_perm(bool guest)
- {
--	struct fpu *fpu = &current->group_leader->thread.fpu;
-+	struct fpu *fpu = current->group_leader->thread.fpu;
- 	struct fpu_state_perm *perm;
- 
- 	/* Pairs with WRITE_ONCE() in xstate_request_perm() */
-@@ -261,7 +261,7 @@ static inline int xsave_to_user_sigframe(struct xregs_state __user *buf)
- 	 * internally, e.g. PKRU. That's user space ABI and also required
- 	 * to allow the signal handler to modify PKRU.
- 	 */
--	struct fpstate *fpstate = current->thread.fpu.fpstate;
-+	struct fpstate *fpstate = current->thread.fpu->fpstate;
- 	u64 mask = fpstate->user_xfeatures;
- 	u32 lmask;
- 	u32 hmask;
-@@ -292,7 +292,7 @@ static inline int xrstor_from_user_sigframe(struct xregs_state __user *buf, u64
- 	u32 hmask = mask >> 32;
- 	int err;
- 
--	xfd_validate_state(current->thread.fpu.fpstate, mask, true);
-+	xfd_validate_state(current->thread.fpu->fpstate, mask, true);
- 
- 	stac();
- 	XSTATE_OP(XRSTOR, xstate, lmask, hmask, err);
-diff --git a/arch/x86/kernel/process.c b/arch/x86/kernel/process.c
-index b8441147eb5e..5f3f48713870 100644
---- a/arch/x86/kernel/process.c
-+++ b/arch/x86/kernel/process.c
-@@ -97,7 +97,7 @@ int arch_dup_task_struct(struct task_struct *dst, struct task_struct *src)
- 	dst->thread.vm86 = NULL;
- #endif
- 	/* Drop the copied pointer to current's fpstate */
--	dst->thread.fpu.fpstate = NULL;
-+	dst->thread.fpu = NULL;
- 
- 	return 0;
- }
-@@ -106,7 +106,7 @@ int arch_dup_task_struct(struct task_struct *dst, struct task_struct *src)
- void arch_release_task_struct(struct task_struct *tsk)
- {
- 	if (fpu_state_size_dynamic())
--		fpstate_free(&tsk->thread.fpu);
-+		fpstate_free(tsk->thread.fpu);
- }
- #endif
- 
-@@ -116,7 +116,7 @@ void arch_release_task_struct(struct task_struct *tsk)
- void exit_thread(struct task_struct *tsk)
- {
- 	struct thread_struct *t = &tsk->thread;
--	struct fpu *fpu = &t->fpu;
-+	struct fpu *fpu = t->fpu;
- 
- 	if (test_thread_flag(TIF_IO_BITMAP))
- 		io_bitmap_exit(tsk);
-diff --git a/arch/x86/kernel/signal.c b/arch/x86/kernel/signal.c
-index 31b6f5dddfc2..7e709ae8e99a 100644
---- a/arch/x86/kernel/signal.c
-+++ b/arch/x86/kernel/signal.c
-@@ -228,7 +228,7 @@ static void
- handle_signal(struct ksignal *ksig, struct pt_regs *regs)
- {
- 	bool stepping, failed;
--	struct fpu *fpu = &current->thread.fpu;
-+	struct fpu *fpu = current->thread.fpu;
- 
- 	if (v8086_mode(regs))
- 		save_v86_state((struct kernel_vm86_regs *) regs, VM86_SIGNAL);
-@@ -396,14 +396,14 @@ bool sigaltstack_size_valid(size_t ss_size)
- 	if (!fpu_state_size_dynamic() && !strict_sigaltstack_size)
- 		return true;
- 
--	fsize += current->group_leader->thread.fpu.perm.__user_state_size;
-+	fsize += current->group_leader->thread.fpu->perm.__user_state_size;
- 	if (likely(ss_size > fsize))
- 		return true;
- 
- 	if (strict_sigaltstack_size)
- 		return ss_size > fsize;
- 
--	mask = current->group_leader->thread.fpu.perm.__state_perm;
-+	mask = current->group_leader->thread.fpu->perm.__state_perm;
- 	if (mask & XFEATURE_MASK_USER_DYNAMIC)
- 		return ss_size > fsize;
- 
-diff --git a/arch/x86/kernel/traps.c b/arch/x86/kernel/traps.c
-index 4fa0b17e5043..c79e36c4071b 100644
---- a/arch/x86/kernel/traps.c
-+++ b/arch/x86/kernel/traps.c
-@@ -1148,7 +1148,7 @@ DEFINE_IDTENTRY_RAW(exc_debug)
- static void math_error(struct pt_regs *regs, int trapnr)
- {
- 	struct task_struct *task = current;
--	struct fpu *fpu = &task->thread.fpu;
-+	struct fpu *fpu = task->thread.fpu;
- 	int si_code;
- 	char *str = (trapnr == X86_TRAP_MF) ? "fpu exception" :
- 						"simd exception";
-diff --git a/arch/x86/math-emu/fpu_aux.c b/arch/x86/math-emu/fpu_aux.c
-index d62662bdd460..8087953164fc 100644
---- a/arch/x86/math-emu/fpu_aux.c
-+++ b/arch/x86/math-emu/fpu_aux.c
-@@ -53,7 +53,7 @@ void fpstate_init_soft(struct swregs_state *soft)
- 
- void finit(void)
- {
--	fpstate_init_soft(&current->thread.fpu.fpstate->regs.soft);
-+	fpstate_init_soft(&current->thread.fpu->fpstate->regs.soft);
- }
- 
- /*
-diff --git a/arch/x86/math-emu/fpu_entry.c b/arch/x86/math-emu/fpu_entry.c
-index 91c52ead1226..30400d95d9d0 100644
---- a/arch/x86/math-emu/fpu_entry.c
-+++ b/arch/x86/math-emu/fpu_entry.c
-@@ -641,7 +641,7 @@ int fpregs_soft_set(struct task_struct *target,
- 		    unsigned int pos, unsigned int count,
- 		    const void *kbuf, const void __user *ubuf)
- {
--	struct swregs_state *s387 = &target->thread.fpu.fpstate->regs.soft;
-+	struct swregs_state *s387 = &target->thread.fpu->fpstate->regs.soft;
- 	void *space = s387->st_space;
- 	int ret;
- 	int offset, other, i, tags, regnr, tag, newtop;
-@@ -692,7 +692,7 @@ int fpregs_soft_get(struct task_struct *target,
- 		    const struct user_regset *regset,
- 		    struct membuf to)
- {
--	struct swregs_state *s387 = &target->thread.fpu.fpstate->regs.soft;
-+	struct swregs_state *s387 = &target->thread.fpu->fpstate->regs.soft;
- 	const void *space = s387->st_space;
- 	int offset = (S387->ftop & 7) * 10, other = 80 - offset;
- 
-diff --git a/arch/x86/math-emu/fpu_system.h b/arch/x86/math-emu/fpu_system.h
-index eec3e4805c75..3417337e7d99 100644
---- a/arch/x86/math-emu/fpu_system.h
-+++ b/arch/x86/math-emu/fpu_system.h
-@@ -73,7 +73,7 @@ static inline bool seg_writable(struct desc_struct *d)
- 	return (d->type & SEG_TYPE_EXECUTE_MASK) == SEG_TYPE_WRITABLE;
- }
- 
--#define I387			(&current->thread.fpu.fpstate->regs)
-+#define I387			(&current->thread.fpu->fpstate->regs)
- #define FPU_info		(I387->soft.info)
- 
- #define FPU_CS			(*(unsigned short *) &(FPU_info->regs->cs))
-diff --git a/arch/x86/mm/extable.c b/arch/x86/mm/extable.c
-index b522933bfa56..cd73a533db69 100644
---- a/arch/x86/mm/extable.c
-+++ b/arch/x86/mm/extable.c
-@@ -111,7 +111,7 @@ static bool ex_handler_sgx(const struct exception_table_entry *fixup,
- 
- /*
-  * Handler for when we fail to restore a task's FPU state.  We should never get
-- * here because the FPU state of a task using the FPU (task->thread.fpu.state)
-+ * here because the FPU state of a task using the FPU (task->thread.fpu->state)
-  * should always be valid.  However, past bugs have allowed userspace to set
-  * reserved bits in the XSAVE area using PTRACE_SETREGSET or sys_rt_sigreturn().
-  * These caused XRSTOR to fail when switching to the task, leaking the FPU
-diff --git a/include/linux/sched.h b/include/linux/sched.h
-index 3c2abbc587b4..069d262730b4 100644
---- a/include/linux/sched.h
-+++ b/include/linux/sched.h
-@@ -1550,21 +1550,14 @@ struct task_struct {
- 	struct user_event_mm		*user_event_mm;
- #endif
- 
-+	/* CPU-specific state of this task: */
-+	struct thread_struct		thread;
-+
- 	/*
- 	 * New fields for task_struct should be added above here, so that
- 	 * they are included in the randomized portion of task_struct.
- 	 */
- 	randomized_struct_fields_end
--
--	/* CPU-specific state of this task: */
--	struct thread_struct		thread;
--
--	/*
--	 * WARNING: on x86, 'thread_struct' contains a variable-sized
--	 * structure.  It *MUST* be at the end of 'task_struct'.
--	 *
--	 * Do not put anything below here!
--	 */
- };
- 
- #define TASK_REPORT_IDLE	(TASK_REPORT + 1)
+> Signed-off-by: Abel Vesa <abel.vesa@linaro.org>
+> ---
+>  drivers/gpu/drm/msm/dp/dp_display.c | 29 ++++++++++++++++++++++++++++-
+>  1 file changed, 28 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/gpu/drm/msm/dp/dp_display.c b/drivers/gpu/drm/msm/dp/dp_display.c
+> index c4cb82af5c2f..9169a739cc54 100644
+> --- a/drivers/gpu/drm/msm/dp/dp_display.c
+> +++ b/drivers/gpu/drm/msm/dp/dp_display.c
+> @@ -726,6 +726,14 @@ static int dp_init_sub_modules(struct dp_display_private *dp)
+>  	if (IS_ERR(phy))
+>  		return PTR_ERR(phy);
+>  
+> +	rc = phy_set_mode_ext(phy, PHY_MODE_DP,
+> +			      dp->dp_display.is_edp ? PHY_SUBMODE_EDP : PHY_SUBMODE_DP);
+> +	if (rc) {
+> +		DRM_ERROR("failed to set phy submode, rc = %d\n", rc);
+> +		dp->catalog = NULL;
+> +		goto error;
+> +	}
+> +
+>  	dp->catalog = dp_catalog_get(dev);
+>  	if (IS_ERR(dp->catalog)) {
+>  		rc = PTR_ERR(dp->catalog);
+> @@ -1241,6 +1249,25 @@ static int dp_auxbus_done_probe(struct drm_dp_aux *aux)
+>  	return dp_display_probe_tail(aux->dev);
+>  }
+>  
+> +static int dp_display_get_connector_type(struct platform_device *pdev,
+> +					 const struct msm_dp_desc *desc)
+> +{
+> +	struct device_node *node = pdev->dev.of_node;
+> +	struct device_node *aux_bus = of_get_child_by_name(node, "aux-bus");
+> +	struct device_node *panel = of_get_child_by_name(aux_bus, "panel");
+> +	int connector_type;
+> +
+> +	if (panel)
+> +		connector_type = DRM_MODE_CONNECTOR_eDP;
+> +	else
+> +		connector_type = DRM_MODE_SUBCONNECTOR_DisplayPort;
+> +
+> +	of_node_put(panel);
+> +	of_node_put(aux_bus);
+> +
+> +	return connector_type;
+> +}
+> +
+>  static int dp_display_probe(struct platform_device *pdev)
+>  {
+>  	int rc = 0;
+> @@ -1263,7 +1290,7 @@ static int dp_display_probe(struct platform_device *pdev)
+>  	dp->dp_display.pdev = pdev;
+>  	dp->name = "drm_dp";
+>  	dp->id = desc->id;
+> -	dp->dp_display.connector_type = desc->connector_type;
+> +	dp->dp_display.connector_type = dp_display_get_connector_type(pdev, desc);
+>  	dp->wide_bus_supported = desc->wide_bus_supported;
+>  	dp->dp_display.is_edp =
+>  		(dp->dp_display.connector_type == DRM_MODE_CONNECTOR_eDP);
+> 
+> -- 
+> 2.34.1
+> 
 
