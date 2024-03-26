@@ -1,293 +1,117 @@
-Return-Path: <linux-kernel+bounces-119200-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-119199-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4274E88C578
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 15:43:48 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3EA2D88C576
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 15:43:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 10A991C62DB3
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 14:43:47 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 97C77B217C9
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 14:43:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4FC2B13C67A;
-	Tue, 26 Mar 2024 14:43:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D544D13C3EE;
+	Tue, 26 Mar 2024 14:43:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ti.com header.i=@ti.com header.b="igrJ00EC"
-Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="J7U9Codm"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7CE0A13C3F8;
-	Tue, 26 Mar 2024 14:43:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.19.141
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B5616ED9
+	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 14:43:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.9
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711464211; cv=none; b=pS/PcPiT7lOV3MctFFHWXDjQYaMpQyGReAr1xGn3oL4Rf2eHZmmiQYLFlF2YP5x35gncigHEffbL7ln0+ISwKxO0IFaY1Zr1B6S5byqLsgXMgyz7zFeS/OJsDRL8wY/57CGT3BHWYNsLE9PudRkrfYQZT3Ef6t4HwrxlnfI7Klg=
+	t=1711464208; cv=none; b=b3XAdkXp8uCaSsJ1xNW29VJjYPICy+DjFoKcMU3rZGnQQI7RTPn7CRvJQVss7jnQOaSrQnbf2aTFOV3xKqfXl/LqkTP1W++Qk8znXdIfg79PHbAK1C/1McHqNYaOPMMmaICaa2bwmE2tfv/Ao3dGMGaWpHN5K+S5XWhGI5fkl6U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711464211; c=relaxed/simple;
-	bh=dhPNFnXqNz7MyRueA7i8eRJMctZ7L861mSkCd6aiLic=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=WStdbNnalX6Mdw+sLmdJWGeyRF3sEaNX+hSD1sFU15mZGbFGAlUJ73b0NJ7/njOpfrLDFcJ7p4C9hYOMEGqFEpoEfIkBcPvfVixlb9clhvemwT9iBVzawDJylbIqC1I7hjNCyTPZS7s47GzhepxrOq8E5ziCVBaqpqMCCNeqLPo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=igrJ00EC; arc=none smtp.client-ip=198.47.19.141
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-	by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 42QEh4et120096;
-	Tue, 26 Mar 2024 09:43:04 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1711464184;
-	bh=BXUiSRzxDxZfaQUcL26qbyVKdqBilV07vRkMOn/zbh8=;
-	h=From:To:CC:Subject:Date;
-	b=igrJ00ECxwQaeze00MPcpOWFZhsvQKjWc18mpT5G0Gx+Kk0Zjywmj7+QYUQnk02Vd
-	 8DaJQOaXRk1tCE1eNIYK2S/vhgMCvTV2GQtTmr1eq2Ny0PBwIJy+x4Dbwze2XvtwtL
-	 YtsdFWQwE4gyYK2IuvaSi0Dnh6kxhyY8jnas8yF4=
-Received: from DLEE101.ent.ti.com (dlee101.ent.ti.com [157.170.170.31])
-	by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 42QEh4nc092364
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Tue, 26 Mar 2024 09:43:04 -0500
-Received: from DLEE110.ent.ti.com (157.170.170.21) by DLEE101.ent.ti.com
- (157.170.170.31) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Tue, 26
- Mar 2024 09:43:04 -0500
-Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DLEE110.ent.ti.com
- (157.170.170.21) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Tue, 26 Mar 2024 09:43:04 -0500
-Received: from uda0492258.dhcp.ti.com (uda0492258.dhcp.ti.com [172.24.227.9])
-	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 42QEgxxZ014526;
-	Tue, 26 Mar 2024 09:43:00 -0500
-From: Siddharth Vadapalli <s-vadapalli@ti.com>
-To: <lpieralisi@kernel.org>, <kw@linux.com>, <robh@kernel.org>,
-        <bhelgaas@google.com>, <manivannan.sadhasivam@linaro.org>,
-        <fancer.lancer@gmail.com>, <u.kleine-koenig@pengutronix.de>,
-        <cassel@kernel.org>, <dlemoal@kernel.org>,
-        <yoshihiro.shimoda.uh@renesas.com>
-CC: <linux-pci@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, <srk@ti.com>,
-        <s-vadapalli@ti.com>
-Subject: [PATCH v6] PCI: keystone: Fix pci_ops for AM654x SoC
-Date: Tue, 26 Mar 2024 20:12:58 +0530
-Message-ID: <20240326144258.2404433-1-s-vadapalli@ti.com>
-X-Mailer: git-send-email 2.40.1
+	s=arc-20240116; t=1711464208; c=relaxed/simple;
+	bh=bPqnX/yjZHJo0l77pmjevs928g1gLuLFPl0cLw5KQ6c=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=JT8Suul3IsIK++guYnEA18X4h9/L60U+XAD31KETnUCpLFdZZnmrkl+4nTKEzLlT6A0PXq2aQ/wusV54A2tDVFFSZ8JRIjIqRjj7IY7mWxzBa1u+R1kgAmSFnPkKhQfaxtQ0vmk/Cu8L162DtQXsZCDt3h0rb0EdhP8f+nCSXnU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=J7U9Codm; arc=none smtp.client-ip=198.175.65.9
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1711464206; x=1743000206;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=bPqnX/yjZHJo0l77pmjevs928g1gLuLFPl0cLw5KQ6c=;
+  b=J7U9CodmJrl85bZrCQnWc/sAzGuFjyrFsiY8ttCKI31an0cptjDJXn6t
+   UkLb2hb2/GWHiBaXaMctYQKcU70RQ93q3AiSwl9A2tQaGpcPkV3e+abJh
+   dlx+3bxiPmUqNGjXQtwPUjhgRODUsXYnyALYmCVFwCIFLGhSA8obyz10e
+   aHcJ5umQloB5dE4KRXzBS2DBsJAyHIRGL1S53njZr0YUqbcoGw8Qrwpfi
+   k+HCABHhJ7Mi9In6H4VtE2b++QfHesbNBjC6jSLSBa0aR9NjxTYWCMrCI
+   Z8LgBB6HMbhwdXL1olUJa6cvCME679urG9QwHW1EMeZ01cgPhnIE3x2sV
+   Q==;
+X-CSE-ConnectionGUID: 0wbD8oXqTb+lDnqFg+y8RA==
+X-CSE-MsgGUID: njK+nGf/TJyVV+s/9M0R1Q==
+X-IronPort-AV: E=McAfee;i="6600,9927,11025"; a="28997856"
+X-IronPort-AV: E=Sophos;i="6.07,156,1708416000"; 
+   d="scan'208";a="28997856"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Mar 2024 07:43:26 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,11025"; a="914882279"
+X-IronPort-AV: E=Sophos;i="6.07,156,1708416000"; 
+   d="scan'208";a="914882279"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Mar 2024 07:43:24 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.97)
+	(envelope-from <andriy.shevchenko@linux.intel.com>)
+	id 1rp81J-0000000GKTG-2fcX;
+	Tue, 26 Mar 2024 16:43:21 +0200
+Date: Tue, 26 Mar 2024 16:43:21 +0200
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: Bjorn Helgaas <helgaas@kernel.org>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	"Rafael J . Wysocki" <rafael@kernel.org>,
+	linux-kernel@vger.kernel.org, Bjorn Helgaas <bhelgaas@google.com>,
+	Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+	Linus Walleij <linus.walleij@linaro.org>
+Subject: Re: [PATCH] driver core: Remove unused platform_notify,
+ platform_notify_remove
+Message-ID: <ZgLfCZ_mtxRvCRgc@smile.fi.intel.com>
+References: <20240325221409.1457036-1-helgaas@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240325221409.1457036-1-helgaas@kernel.org>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 
-In the process of converting .scan_bus() callbacks to .add_bus(), the
-ks_pcie_v3_65_scan_bus() function was changed to ks_pcie_v3_65_add_bus().
-The .scan_bus() method belonged to ks_pcie_host_ops which was specific
-to controller version 3.65a, while the .add_bus() method had been added
-to ks_pcie_ops which is shared between the controller versions 3.65a and
-4.90a. Neither the older ks_pcie_v3_65_scan_bus() method, nor the newer
-ks_pcie_v3_65_add_bus() method is applicable to the controller version
-4.90a which is present in AM654x SoCs.
+On Mon, Mar 25, 2024 at 05:14:09PM -0500, Bjorn Helgaas wrote:
+> From: Bjorn Helgaas <bhelgaas@google.com>
+> 
+> The "platform_notify" and "platform_notify_remove" hooks have been unused
+> since 00ba9357d189 ("ARM: ixp4xx: Drop custom DMA coherency and bouncing").
+> 
+> Remove "platform_notify" and "platform_notify_remove".  No functional
+> change intended.
 
-Thus, as a fix, move the contents of "ks_pcie_v3_65_add_bus()" to the
-msi_init callback "ks_pcie_msi_host_init()" which is specific to the
-3.65a controller. Also, move the definitions of ks_pcie_set_dbi_mode()
-and ks_pcie_clear_dbi_mode() above ks_pcie_msi_host_init() in order to
-avoid forward declaration.
+Less this invasive callbacks, better to maintain, thank you for the contribution!
 
-Fixes: 6ab15b5e7057 ("PCI: dwc: keystone: Convert .scan_bus() callback to use add_bus")
-Suggested-by: Serge Semin <fancer.lancer@gmail.com>
-Suggested-by: Bjorn Helgaas <helgaas@kernel.org>
-Suggested-by: Niklas Cassel <cassel@kernel.org>
-Reviewed-by: Niklas Cassel <cassel@kernel.org>
-Signed-off-by: Siddharth Vadapalli <s-vadapalli@ti.com>
----
+Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
-Hello,
+> Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
 
-This patch is based on linux-next tagged next-20240326.
+> Cc: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+> Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> Cc: Linus Walleij <linus.walleij@linaro.org>
 
-v5:
-https://lore.kernel.org/r/20240326111905.2369778-1-s-vadapalli@ti.com/
-Changes since v5:
-- Fixed indentation of comment as pointed out by:
-  Niklas Cassel <cassel@kernel.org>
-  at:
-  https://lore.kernel.org/r/ZgLUCqh12RMApzyr@x1-carbon/
-- Collected Reviewed-by tag from:
-  Niklas Cassel <cassel@kernel.org>
+Btw, can we start moving Cc list out of the commit messages?
 
-Regards,
-Siddharth.
+> ---
 
- drivers/pci/controller/dwc/pci-keystone.c | 136 ++++++++++------------
- 1 file changed, 60 insertions(+), 76 deletions(-)
+You can simply put Cc here, and it will have the same effect (and being
+archived on lore.kernel.org) while making commit messages less polluted.
 
-diff --git a/drivers/pci/controller/dwc/pci-keystone.c b/drivers/pci/controller/dwc/pci-keystone.c
-index 844de4418724..6cb3a4713009 100644
---- a/drivers/pci/controller/dwc/pci-keystone.c
-+++ b/drivers/pci/controller/dwc/pci-keystone.c
-@@ -245,8 +245,68 @@ static struct irq_chip ks_pcie_msi_irq_chip = {
- 	.irq_unmask = ks_pcie_msi_unmask,
- };
- 
-+/**
-+ * ks_pcie_set_dbi_mode() - Set DBI mode to access overlaid BAR mask registers
-+ * @ks_pcie: A pointer to the keystone_pcie structure which holds the KeyStone
-+ *	     PCIe host controller driver information.
-+ *
-+ * Since modification of dbi_cs2 involves different clock domain, read the
-+ * status back to ensure the transition is complete.
-+ */
-+static void ks_pcie_set_dbi_mode(struct keystone_pcie *ks_pcie)
-+{
-+	u32 val;
-+
-+	val = ks_pcie_app_readl(ks_pcie, CMD_STATUS);
-+	val |= DBI_CS2;
-+	ks_pcie_app_writel(ks_pcie, CMD_STATUS, val);
-+
-+	do {
-+		val = ks_pcie_app_readl(ks_pcie, CMD_STATUS);
-+	} while (!(val & DBI_CS2));
-+}
-+
-+/**
-+ * ks_pcie_clear_dbi_mode() - Disable DBI mode
-+ * @ks_pcie: A pointer to the keystone_pcie structure which holds the KeyStone
-+ *	     PCIe host controller driver information.
-+ *
-+ * Since modification of dbi_cs2 involves different clock domain, read the
-+ * status back to ensure the transition is complete.
-+ */
-+static void ks_pcie_clear_dbi_mode(struct keystone_pcie *ks_pcie)
-+{
-+	u32 val;
-+
-+	val = ks_pcie_app_readl(ks_pcie, CMD_STATUS);
-+	val &= ~DBI_CS2;
-+	ks_pcie_app_writel(ks_pcie, CMD_STATUS, val);
-+
-+	do {
-+		val = ks_pcie_app_readl(ks_pcie, CMD_STATUS);
-+	} while (val & DBI_CS2);
-+}
-+
- static int ks_pcie_msi_host_init(struct dw_pcie_rp *pp)
- {
-+	struct dw_pcie *pci = to_dw_pcie_from_pp(pp);
-+	struct keystone_pcie *ks_pcie = to_keystone_pcie(pci);
-+
-+	/* Configure and set up BAR0 */
-+	ks_pcie_set_dbi_mode(ks_pcie);
-+
-+	/* Enable BAR0 */
-+	dw_pcie_writel_dbi(pci, PCI_BASE_ADDRESS_0, 1);
-+	dw_pcie_writel_dbi(pci, PCI_BASE_ADDRESS_0, SZ_4K - 1);
-+
-+	ks_pcie_clear_dbi_mode(ks_pcie);
-+
-+	/*
-+	 * For BAR0, just setting bus address for inbound writes (MSI) should
-+	 * be sufficient.  Use physical address to avoid any conflicts.
-+	 */
-+	dw_pcie_writel_dbi(pci, PCI_BASE_ADDRESS_0, ks_pcie->app.start);
-+
- 	pp->msi_irq_chip = &ks_pcie_msi_irq_chip;
- 	return dw_pcie_allocate_domains(pp);
- }
-@@ -340,48 +400,6 @@ static const struct irq_domain_ops ks_pcie_intx_irq_domain_ops = {
- 	.xlate = irq_domain_xlate_onetwocell,
- };
- 
--/**
-- * ks_pcie_set_dbi_mode() - Set DBI mode to access overlaid BAR mask registers
-- * @ks_pcie: A pointer to the keystone_pcie structure which holds the KeyStone
-- *	     PCIe host controller driver information.
-- *
-- * Since modification of dbi_cs2 involves different clock domain, read the
-- * status back to ensure the transition is complete.
-- */
--static void ks_pcie_set_dbi_mode(struct keystone_pcie *ks_pcie)
--{
--	u32 val;
--
--	val = ks_pcie_app_readl(ks_pcie, CMD_STATUS);
--	val |= DBI_CS2;
--	ks_pcie_app_writel(ks_pcie, CMD_STATUS, val);
--
--	do {
--		val = ks_pcie_app_readl(ks_pcie, CMD_STATUS);
--	} while (!(val & DBI_CS2));
--}
--
--/**
-- * ks_pcie_clear_dbi_mode() - Disable DBI mode
-- * @ks_pcie: A pointer to the keystone_pcie structure which holds the KeyStone
-- *	     PCIe host controller driver information.
-- *
-- * Since modification of dbi_cs2 involves different clock domain, read the
-- * status back to ensure the transition is complete.
-- */
--static void ks_pcie_clear_dbi_mode(struct keystone_pcie *ks_pcie)
--{
--	u32 val;
--
--	val = ks_pcie_app_readl(ks_pcie, CMD_STATUS);
--	val &= ~DBI_CS2;
--	ks_pcie_app_writel(ks_pcie, CMD_STATUS, val);
--
--	do {
--		val = ks_pcie_app_readl(ks_pcie, CMD_STATUS);
--	} while (val & DBI_CS2);
--}
--
- static void ks_pcie_setup_rc_app_regs(struct keystone_pcie *ks_pcie)
- {
- 	u32 val;
-@@ -445,44 +463,10 @@ static struct pci_ops ks_child_pcie_ops = {
- 	.write = pci_generic_config_write,
- };
- 
--/**
-- * ks_pcie_v3_65_add_bus() - keystone add_bus post initialization
-- * @bus: A pointer to the PCI bus structure.
-- *
-- * This sets BAR0 to enable inbound access for MSI_IRQ register
-- */
--static int ks_pcie_v3_65_add_bus(struct pci_bus *bus)
--{
--	struct dw_pcie_rp *pp = bus->sysdata;
--	struct dw_pcie *pci = to_dw_pcie_from_pp(pp);
--	struct keystone_pcie *ks_pcie = to_keystone_pcie(pci);
--
--	if (!pci_is_root_bus(bus))
--		return 0;
--
--	/* Configure and set up BAR0 */
--	ks_pcie_set_dbi_mode(ks_pcie);
--
--	/* Enable BAR0 */
--	dw_pcie_writel_dbi(pci, PCI_BASE_ADDRESS_0, 1);
--	dw_pcie_writel_dbi(pci, PCI_BASE_ADDRESS_0, SZ_4K - 1);
--
--	ks_pcie_clear_dbi_mode(ks_pcie);
--
--	 /*
--	  * For BAR0, just setting bus address for inbound writes (MSI) should
--	  * be sufficient.  Use physical address to avoid any conflicts.
--	  */
--	dw_pcie_writel_dbi(pci, PCI_BASE_ADDRESS_0, ks_pcie->app.start);
--
--	return 0;
--}
--
- static struct pci_ops ks_pcie_ops = {
- 	.map_bus = dw_pcie_own_conf_map_bus,
- 	.read = pci_generic_config_read,
- 	.write = pci_generic_config_write,
--	.add_bus = ks_pcie_v3_65_add_bus,
- };
- 
- /**
 -- 
-2.40.1
+With Best Regards,
+Andy Shevchenko
+
 
 
