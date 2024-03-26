@@ -1,226 +1,150 @@
-Return-Path: <linux-kernel+bounces-118784-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-118785-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 321C888BF43
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 11:25:02 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BA8D388BF48
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 11:25:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9E2C51F3DFCB
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 10:25:01 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3CBBEB27C31
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 10:25:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9F71D6CDA5;
-	Tue, 26 Mar 2024 10:24:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 953996EB7A;
+	Tue, 26 Mar 2024 10:24:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="kgSPhqRs"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.15])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="V2r619DL"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 150806BFCB
-	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 10:24:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.15
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BB2AF5C911;
+	Tue, 26 Mar 2024 10:24:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711448648; cv=none; b=TlJQ4Q6IESjt3x27mewtXmy9YxoFLMSntk5uVKfzS0yB7iszB3HLgs8kDMroJV0ZfjMQ0Cv47+gWd5y9j0TzoPTYBY5bw/dVg5cumM+mDnDRYspF9/pie5ynHxdi9ubRS91jWuVvYXKJ3rPlvaOUeXwQMWSWo7YTKGOyABtV49Y=
+	t=1711448665; cv=none; b=tnAJFsNvd0gh3Y3KzbMvJleYfyPqGHrbZ1MgWCkglVDqWjGMntLHeAGsevMt+JRTDlk/lDxIW80KDZJ5I/5erEPfa6ww2YHFsqk4X9xD314SC75WSLqeYCNoIjSBEj1guESwICzuXr3GcRso9N4Yvh3IHTlwiT0C65H7A/nYaIk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711448648; c=relaxed/simple;
-	bh=0fN7gsqYsnGc6ao955RNcoGm8yBWFIYv/ncU5MgaFNM=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=jFaeUqzV6kIdO3x8OLkuyZjfxknSLz5CQTFuJX0HThqiOqFA6LDcWXrIEuKzuGJcaHGVdlZDesDl0D2GE7gkUSeJJ3unlIFMJq6WCQkvrjx462ra2xlpgCSMia8YTdHWmwOHpYoEsRRlUDuMvU8NCLpBmRtRjciTI1+vfgvGqUM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=kgSPhqRs; arc=none smtp.client-ip=192.198.163.15
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1711448647; x=1742984647;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=0fN7gsqYsnGc6ao955RNcoGm8yBWFIYv/ncU5MgaFNM=;
-  b=kgSPhqRseXGda87W+bnxPA+ntG7A/McFa/lEpNLoBtBeuGBB5+e17YT7
-   HKITdg+O8GobNemaN16XToLrKSl6/fFnY/PrUjo9C3MD8aQZ1GdN0y7fx
-   O6BnstsgSoDjG1reaPcgg640kQd/0VhAFS+5jUAF0Bhh519n5mRIf1oXs
-   aTVfGhQPpKv4JeYEIno9ezhWJ/zBgNBM2H6xkkzNp3uRhb3zf1y3+Fj/Q
-   ltsdf23mad2pH59dXWBWNoLJsfurGf2ghVOWgsEDOk/qw9DBzITxc7u6M
-   oxAVnRBVnI12PvL8CBGzYalQMxXd1xT4cgRUrmkvLnMA0eQjEz8f3zkpZ
-   Q==;
-X-CSE-ConnectionGUID: CF0pCFjaQ4ekEm7EQ2DeHg==
-X-CSE-MsgGUID: FMMUS7LURdSds3+Ps12czQ==
-X-IronPort-AV: E=McAfee;i="6600,9927,11024"; a="6678792"
-X-IronPort-AV: E=Sophos;i="6.07,156,1708416000"; 
-   d="scan'208";a="6678792"
-Received: from fmviesa002.fm.intel.com ([10.60.135.142])
-  by fmvoesa109.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Mar 2024 03:24:06 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,156,1708416000"; 
-   d="scan'208";a="39029428"
-Received: from pyong-mobl2.amr.corp.intel.com (HELO khuang2-desk.gar.corp.intel.com) ([10.209.75.208])
-  by fmviesa002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Mar 2024 03:24:04 -0700
-From: Kai Huang <kai.huang@intel.com>
-To: linux-kernel@vger.kernel.org
-Cc: x86@kernel.org,
-	dave.hansen@intel.com,
-	kirill.shutemov@linux.intel.com,
-	peterz@infradead.org,
-	tglx@linutronix.de,
-	bp@alien8.de,
-	mingo@redhat.com,
-	hpa@zytor.com,
-	seanjc@google.com,
-	pbonzini@redhat.com,
-	rick.p.edgecombe@intel.com,
-	isaku.yamahata@intel.com,
-	jgross@suse.com,
-	binbin.wu@linux.intel.com,
-	kai.huang@intel.com
-Subject: [PATCH v2 5/5] x86/virt/tdx: Export global metadata read infrastructure
-Date: Tue, 26 Mar 2024 23:23:32 +1300
-Message-ID: <20d6035063f00825b3f4e1f2b6c9abc20c73f177.1711447449.git.kai.huang@intel.com>
-X-Mailer: git-send-email 2.43.2
-In-Reply-To: <cover.1711447449.git.kai.huang@intel.com>
-References: <cover.1711447449.git.kai.huang@intel.com>
+	s=arc-20240116; t=1711448665; c=relaxed/simple;
+	bh=ZkbHCq6nAL0MIaIZEtKSB6EEfdQdN64B2/Jl1eMR0RU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=WT6DWZy0/dRPgQWq/was24CJyiEp0EPYaKk6IJOULYJPTx6oBqksXMzWqnbORAdYGo7k60OeMLScongS0j+LBUIrDRV8+zHH/gYN5IXkWXDYmQMZFRLn3P9GLyUKGCHRjtwi/sUuRyxp+U9szSu7QalbhXlaRSCMg2RYiEkpJXE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=V2r619DL; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CB07FC433F1;
+	Tue, 26 Mar 2024 10:24:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1711448665;
+	bh=ZkbHCq6nAL0MIaIZEtKSB6EEfdQdN64B2/Jl1eMR0RU=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=V2r619DLhNC10h/q01WXZyG3D9Lx1CmqGmcxGAhui0+34BpHk+Y2EtptfqDzY5x9A
+	 qlIKZlbcmPq5DM81PNrXZQVR/VC4WGPS8KHfLAOFXPBl4spLFZdgwdqE1w6bgE0G1c
+	 CG7xUr/FETI8rnJRcIGgyr7ahE2HKJwDBOC0vzDKCgX/6zTKNAOGxW0Zh9TNMJM6e/
+	 UH9u1ElIIsLbv7431IcQ3apZtT77bQzpYF33e+nlzRz5Ltk7EEaLCW3JJcA97ELNWY
+	 +VxWcSi40qO77OMoPIERYzGnUWhR+RHOsVKslT9Wv8IobfyYzHB8rvEl7ILg4otZ3X
+	 LnP7rrsx4ggEA==
+Date: Tue, 26 Mar 2024 11:24:18 +0100
+From: Niklas Cassel <cassel@kernel.org>
+To: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Cc: Lorenzo Pieralisi <lpieralisi@kernel.org>,
+	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+	Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
+	Kishon Vijay Abraham I <kishon@kernel.org>,
+	Thierry Reding <thierry.reding@gmail.com>,
+	Jonathan Hunter <jonathanh@nvidia.com>,
+	Jingoo Han <jingoohan1@gmail.com>,
+	Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
+	linux-pci@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+	linux-kernel@vger.kernel.org, mhi@lists.linux.dev,
+	linux-tegra@vger.kernel.org
+Subject: Re: [PATCH 01/11] PCI: qcom-ep: Disable resources unconditionally
+ during PERST# assert
+Message-ID: <ZgKiUogkgrMwV1uD@x1-carbon>
+References: <20240314-pci-epf-rework-v1-0-6134e6c1d491@linaro.org>
+ <20240314-pci-epf-rework-v1-1-6134e6c1d491@linaro.org>
+ <Zf2s9kTMlZncldWx@ryzen>
+ <20240326074429.GC9565@thinkpad>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240326074429.GC9565@thinkpad>
 
-KVM will need to read a bunch of non-TDMR related metadata to create and
-run TDX guests.  Export the metadata read infrastructure for KVM to use.
+On Tue, Mar 26, 2024 at 01:14:29PM +0530, Manivannan Sadhasivam wrote:
+> On Fri, Mar 22, 2024 at 05:08:22PM +0100, Niklas Cassel wrote:
+> > On Thu, Mar 14, 2024 at 08:53:40PM +0530, Manivannan Sadhasivam wrote:
+> > > All EP specific resources are enabled during PERST# deassert. As a counter
+> > > operation, all resources should be disabled during PERST# assert. There is
+> > > no point in skipping that if the link was not enabled.
+> > > 
+> > > This will also result in enablement of the resources twice if PERST# got
+> > > deasserted again. So remove the check from qcom_pcie_perst_assert() and
+> > > disable all the resources unconditionally.
+> > > 
+> > > Fixes: f55fee56a631 ("PCI: qcom-ep: Add Qualcomm PCIe Endpoint controller driver")
+> > > Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+> > > ---
+> > >  drivers/pci/controller/dwc/pcie-qcom-ep.c | 6 ------
+> > >  1 file changed, 6 deletions(-)
+> > > 
+> > > diff --git a/drivers/pci/controller/dwc/pcie-qcom-ep.c b/drivers/pci/controller/dwc/pcie-qcom-ep.c
+> > > index 2fb8c15e7a91..50b1635e3cbb 100644
+> > > --- a/drivers/pci/controller/dwc/pcie-qcom-ep.c
+> > > +++ b/drivers/pci/controller/dwc/pcie-qcom-ep.c
+> > > @@ -500,12 +500,6 @@ static int qcom_pcie_perst_deassert(struct dw_pcie *pci)
+> > >  static void qcom_pcie_perst_assert(struct dw_pcie *pci)
+> > >  {
+> > >  	struct qcom_pcie_ep *pcie_ep = to_pcie_ep(pci);
+> > > -	struct device *dev = pci->dev;
+> > > -
+> > > -	if (pcie_ep->link_status == QCOM_PCIE_EP_LINK_DISABLED) {
+> > > -		dev_dbg(dev, "Link is already disabled\n");
+> > > -		return;
+> > > -	}
+> > >  
+> > >  	dw_pcie_ep_cleanup(&pci->ep);
+> > >  	qcom_pcie_disable_resources(pcie_ep);
+> > 
+> > Are you really sure that this is safe?
+> > 
+> > I think I remember seeing some splat in dmesg if some clks, or maybe it
+> > was regulators, got disabled while already being disabled.
+> > 
+> > Perhaps you could test it by simply calling:
+> > qcom_pcie_disable_resources();
+> > twice here, and see if you see and splat in dmesg.
+> > 
+> 
+> Calling the disable_resources() function twice will definitely result in the
+> splat. But here PERST# is level triggered, so I don't see how the EP can see
+> assert twice.
+> 
+> Am I missing something?
 
-Specifically, export two helpers:
+I think I remember now, I was developing a driver using a .core_init_notifier,
+but I followed the pcie-tegra model, which does not enable any resources in
+probe() (it only gets them), so I got the splat because when PERST got
+asserted, resources would get disabled even though they were already disabled.
 
-1) The helper which reads multiple metadata fields to a buffer of a
-   structure based on the "field ID -> structure member" mapping table.
+pcie-qcom:
+-gets resources in .probe()
+-enables resources in .probe()
+-sets no default state in .probe()
 
-2) The low level helper which just reads a given field ID.
+pcie-tegra:
+-gets resources in .probe()
+-enables resources in perst_deassert()
+-sets default state to EP_STATE_DISABLED in probe()
 
-The two helpers cover cases when the user wants to cache a bunch of
-metadata fields to a certain structure and when the user just wants to
-query a specific metadata field on demand.  They are enough for KVM to
-use (and also should be enough for other potential users).
+So pcie-qcom does not seem to be following the same pattern like pcie-tegra,
+because pcie-qcom actually does enable resources for the first time in
+probe(), while tegra will enable resources for the first time in
+perst_deassert().
 
-Signed-off-by: Kai Huang <kai.huang@intel.com>
-Reviewed-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
-Reviewed-by: Binbin Wu <binbin.wu@linux.intel.com>
----
- arch/x86/include/asm/tdx.h  | 22 ++++++++++++++++++++++
- arch/x86/virt/vmx/tdx/tdx.c | 25 ++++++++-----------------
- 2 files changed, 30 insertions(+), 17 deletions(-)
+Sorry for the noise.
 
-diff --git a/arch/x86/include/asm/tdx.h b/arch/x86/include/asm/tdx.h
-index eba178996d84..709b9483f9e4 100644
---- a/arch/x86/include/asm/tdx.h
-+++ b/arch/x86/include/asm/tdx.h
-@@ -116,6 +116,28 @@ static inline u64 sc_retry(sc_func_t func, u64 fn,
- int tdx_cpu_enable(void);
- int tdx_enable(void);
- const char *tdx_dump_mce_info(struct mce *m);
-+
-+struct tdx_metadata_field_mapping {
-+	u64 field_id;
-+	int offset;
-+	int size;
-+};
-+
-+#define TD_SYSINFO_MAP(_field_id, _struct, _member)	\
-+	{ .field_id = MD_FIELD_ID_##_field_id,		\
-+	  .offset   = offsetof(_struct, _member),	\
-+	  .size     = sizeof(typeof(((_struct *)0)->_member)) }
-+
-+/*
-+ * Read multiple global metadata fields to a buffer of a structure
-+ * based on the "field ID -> structure member" mapping table.
-+ */
-+int tdx_sys_metadata_read(const struct tdx_metadata_field_mapping *fields,
-+			  int nr_fields, void *stbuf);
-+
-+/* Read a single global metadata field */
-+int tdx_sys_metadata_field_read(u64 field_id, u64 *data);
-+
- #else
- static inline void tdx_init(void) { }
- static inline int tdx_cpu_enable(void) { return -ENODEV; }
-diff --git a/arch/x86/virt/vmx/tdx/tdx.c b/arch/x86/virt/vmx/tdx/tdx.c
-index 4ee4b8cf377c..dc21310776ab 100644
---- a/arch/x86/virt/vmx/tdx/tdx.c
-+++ b/arch/x86/virt/vmx/tdx/tdx.c
-@@ -251,7 +251,7 @@ static int build_tdx_memlist(struct list_head *tmb_list)
- 	return ret;
- }
- 
--static int read_sys_metadata_field(u64 field_id, u64 *data)
-+int tdx_sys_metadata_field_read(u64 field_id, u64 *data)
- {
- 	struct tdx_module_args args = {};
- 	int ret;
-@@ -270,6 +270,7 @@ static int read_sys_metadata_field(u64 field_id, u64 *data)
- 
- 	return 0;
- }
-+EXPORT_SYMBOL_GPL(tdx_sys_metadata_field_read);
- 
- /* Return the metadata field element size in bytes */
- static int get_metadata_field_bytes(u64 field_id)
-@@ -295,7 +296,7 @@ static int stbuf_read_sys_metadata_field(u64 field_id,
- 	if (WARN_ON_ONCE(get_metadata_field_bytes(field_id) != bytes))
- 		return -EINVAL;
- 
--	ret = read_sys_metadata_field(field_id, &tmp);
-+	ret = tdx_sys_metadata_field_read(field_id, &tmp);
- 	if (ret)
- 		return ret;
- 
-@@ -304,19 +305,8 @@ static int stbuf_read_sys_metadata_field(u64 field_id,
- 	return 0;
- }
- 
--struct field_mapping {
--	u64 field_id;
--	int offset;
--	int size;
--};
--
--#define TD_SYSINFO_MAP(_field_id, _struct, _member)	\
--	{ .field_id = MD_FIELD_ID_##_field_id,		\
--	  .offset   = offsetof(_struct, _member),	\
--	  .size     = sizeof(typeof(((_struct *)0)->_member)) }
--
--static int read_sys_metadata(const struct field_mapping *fields, int nr_fields,
--			     void *stbuf)
-+int tdx_sys_metadata_read(const struct tdx_metadata_field_mapping *fields,
-+			  int nr_fields, void *stbuf)
- {
- 	int i, ret;
- 
-@@ -331,6 +321,7 @@ static int read_sys_metadata(const struct field_mapping *fields, int nr_fields,
- 
- 	return 0;
- }
-+EXPORT_SYMBOL_GPL(tdx_sys_metadata_read);
- 
- #define TD_SYSINFO_MAP_TDMR_INFO(_field_id, _member)	\
- 	TD_SYSINFO_MAP(_field_id, struct tdx_tdmr_sysinfo, _member)
-@@ -338,7 +329,7 @@ static int read_sys_metadata(const struct field_mapping *fields, int nr_fields,
- static int get_tdx_tdmr_sysinfo(struct tdx_tdmr_sysinfo *tdmr_sysinfo)
- {
- 	/* Map TD_SYSINFO fields into 'struct tdx_tdmr_sysinfo': */
--	const struct field_mapping fields[] = {
-+	const struct tdx_metadata_field_mapping fields[] = {
- 		TD_SYSINFO_MAP_TDMR_INFO(MAX_TDMRS,		max_tdmrs),
- 		TD_SYSINFO_MAP_TDMR_INFO(MAX_RESERVED_PER_TDMR, max_reserved_per_tdmr),
- 		TD_SYSINFO_MAP_TDMR_INFO(PAMT_4K_ENTRY_SIZE,    pamt_entry_size[TDX_PS_4K]),
-@@ -347,7 +338,7 @@ static int get_tdx_tdmr_sysinfo(struct tdx_tdmr_sysinfo *tdmr_sysinfo)
- 	};
- 
- 	/* Populate 'tdmr_sysinfo' fields using the mapping structure above: */
--	return read_sys_metadata(fields, ARRAY_SIZE(fields), tdmr_sysinfo);
-+	return tdx_sys_metadata_read(fields, ARRAY_SIZE(fields), tdmr_sysinfo);
- }
- 
- /* Calculate the actual TDMR size */
--- 
-2.43.2
 
+Kind regards,
+Niklas
 
