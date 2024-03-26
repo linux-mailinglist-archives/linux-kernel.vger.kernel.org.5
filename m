@@ -1,107 +1,148 @@
-Return-Path: <linux-kernel+bounces-119959-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-119962-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0FE7688CF6E
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 21:55:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id BF90288CF7A
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 21:56:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9D9161F32EE5
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 20:55:11 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 396DA1F3913D
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 20:56:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3EFA612AAFE;
-	Tue, 26 Mar 2024 20:55:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E9DBC12BF04;
+	Tue, 26 Mar 2024 20:56:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="mJZWbeJP"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b="WlOtjyaZ";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="oTYV8adQ"
+Received: from fout7-smtp.messagingengine.com (fout7-smtp.messagingengine.com [103.168.172.150])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 81733EDF;
-	Tue, 26 Mar 2024 20:55:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A44A612C7FF;
+	Tue, 26 Mar 2024 20:56:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.150
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711486503; cv=none; b=q86t/aG3Uz6u2stSedJ+fbtvHJdC8Bf/gHh6QH6U3ZpYyuJzzHV8EXlSJyCxlyVjAN3Q0HSiCIwJUXXaM9UNo85tIcpty9Sz2ZhKwXoomjaBu7F2QDOCG7uB+hEYqwTBsTwJUx1GEfQ/WyWnkSceJid9DLl7P1/K902UYG/iFJk=
+	t=1711486581; cv=none; b=n0H4jbt+v3h9VHuac52zXXKvPD4riyIZCrdL97sW7XuEi2Q1h0FCOvwnjJNBfm8qLFvR4GmRlyjy500Yg5XPjGoXpZwSeTneO6Gq9eY3DDAi4/fcFm9VKIkFko1bhu034cgtZpEkaRBXjg0+46ME8BP9bsmTliM7rdwHhT2tXR0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711486503; c=relaxed/simple;
-	bh=6UED1DuBXDFLDIlwXk5lac5pJViHxSdwaTodCx4UgWI=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
-	 MIME-Version:Content-Type; b=nBSEFxkOVOGFmHz5EvcHF1tqfYP5ZbL0qiJXI7Je7w6Q7T/x4ZWELFn8KdJEEvDibL1hVfTdRnxr9eV+BtoMCsyMRNEJu/L/AOzDnUV1Uz0zk29IqElOKygQRYfNcPH2G09fUL4mru9Q3xjPK4dajBstNkvhK2dk5CZ+ySFEarc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=mJZWbeJP; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 50EB0C433F1;
-	Tue, 26 Mar 2024 20:55:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711486503;
-	bh=6UED1DuBXDFLDIlwXk5lac5pJViHxSdwaTodCx4UgWI=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=mJZWbeJPV7hGF6RU0lA5z//aN3h5gPEJtX3/Z7noHrkTSGK3t+NH4zRb518eKbtH5
-	 fsuj/uKmfgrlDJUVWVsCRi304we4//rdlssURXBliK45lpOeL40IUp7Q1ujl/jnhbK
-	 eaW8RyT8NCCxIekdcce2BtfmaFu+4gCDD6Gv97NTMb+UGV1QSF0USoKzEo7ID+aziJ
-	 jZEd5B3bYI3U+hethAv92FiS5jfNE8g/YKOgrciCOrYKMrwC6T9WxtO1EeSdE3NkdM
-	 869FYrMKi/u11QG1XBl4zCIkpV2XT/Iip7RxdXwhSDJmFFmpM48Ubl32RbVJMCGaET
-	 tFKDoSANT1mJw==
-From: Mark Brown <broonie@kernel.org>
-To: linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org, 
- linux-arm-kernel@lists.infradead.org, 
- Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc: Daniel Mack <daniel@zonque.org>, 
- Haojian Zhuang <haojian.zhuang@gmail.com>, 
- Robert Jarzmik <robert.jarzmik@free.fr>, 
- Russell King <linux@armlinux.org.uk>, Arnd Bergmann <arnd@arndb.de>
-In-Reply-To: <20240326181027.1418989-1-andriy.shevchenko@linux.intel.com>
-References: <20240326181027.1418989-1-andriy.shevchenko@linux.intel.com>
-Subject: Re: (subset) [PATCH v1 00/10] spi: pxa2xx: Drop
- linux/spi/pxa2xx_spi.h
-Message-Id: <171148650105.211121.16181693472480434734.b4-ty@kernel.org>
-Date: Tue, 26 Mar 2024 20:55:01 +0000
+	s=arc-20240116; t=1711486581; c=relaxed/simple;
+	bh=Olz4AkNkzYVK19w+Jh6klcHV6fbs+XGQtH12Ue6EbtA=;
+	h=MIME-Version:Message-Id:In-Reply-To:References:Date:From:To:Cc:
+	 Subject:Content-Type; b=Gejj+PHDoJ261zFF/+liw9o/R62sP6a4rd175No5dgw8qi7NrqYVi+wbxNFA2BNXr7THYuelVsCIx0T66TcS0fYu9mancmrvgukgBOyCyn0ev/ch45Az3yFqKLKW9AvtZRqOjyiC5LTlqkyN4M7QWxkTbZg2Z6T/MMINC3J9S4g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de; spf=pass smtp.mailfrom=arndb.de; dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b=WlOtjyaZ; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=oTYV8adQ; arc=none smtp.client-ip=103.168.172.150
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arndb.de
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+	by mailfout.nyi.internal (Postfix) with ESMTP id C0777138014E;
+	Tue, 26 Mar 2024 16:56:17 -0400 (EDT)
+Received: from imap51 ([10.202.2.101])
+  by compute5.internal (MEProxy); Tue, 26 Mar 2024 16:56:17 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
+	:cc:content-type:content-type:date:date:from:from:in-reply-to
+	:in-reply-to:message-id:mime-version:references:reply-to:subject
+	:subject:to:to; s=fm1; t=1711486577; x=1711572977; bh=bTK7qxB/Dz
+	ZvcacQ3ARgA6AoDzT5XFaivWWd8YVHcDs=; b=WlOtjyaZiklsRi4cCh1jYIRpIM
+	pLVHILPIPgQ/oogUIpqoqYnwK1W+6v8z0OA+zU38ovpQrKeC5G+uoNavTn26eOcw
+	Rx9zFSqTneqsXKVF54y5rwO2vHU/viQNr11OsBlahezKkGRdxR1vhDu/HNpjHWZH
+	Hw8/5n6K5X+u1wgp5XcZivytgK6eq1An+lKKX426vYBoEHRjKtJ2g5tzqxxS1pN5
+	GnkBq5GRV0kmxf1/iX6DMkND5yOLsrsoGUtnkkew0BYhBhDf12kqBMhkcdMKdzRv
+	1ZZvx0c+58bG33DpLg54XvIvoERfC3DtCU/rHLAyGy1/fVXzvUpuuDc60MwA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm2; t=1711486577; x=1711572977; bh=bTK7qxB/DzZvcacQ3ARgA6AoDzT5
+	XFaivWWd8YVHcDs=; b=oTYV8adQxdjRh9Snl2cz1eHQHqctI5puzvhK2J/F+mJ8
+	7tl0gvwKM0afyXZkz8C6MXAAifZckQygqw5ORc7w0qpS1TPlbO+w9G7jd3heTiCC
+	r8I6RrrlNvFIk91tWPjbL747c8kuc3cUPm9wPnAItnHcvIkE5C+9ExKz8Ajn6gg4
+	XtFClsZhAv7KlA2mcHHBjgSBHAdbPX7syjzicTpPVslBt7hIXn/nym+aa8280ApW
+	IeFHW75gBBPdbNdhp32G4czj+aGTUaSrQiNUAlmapyxtBNnRSxScoAW/oimlmTKi
+	uS/mrXXVeAnS/EwrWwW0shCoI/5h1CnBk3kKJ1UCxw==
+X-ME-Sender: <xms:cDYDZnJ8rnTBWm06xK346QIC-QafLXL2gNmwIgqfmVnvDbkBSqHQWQ>
+    <xme:cDYDZrKEJ0-53M2cA3w9Y_dAEKcjYEVn8bzx34Tifka9Xow_kVoe0xGHM4NN3qkKF
+    gRRP3ldGGLjW5vpIVI>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledruddufedgudegfecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enucfjughrpefofgggkfgjfhffhffvvefutgesthdtredtreertdenucfhrhhomhepfdet
+    rhhnugcuuegvrhhgmhgrnhhnfdcuoegrrhhnugesrghrnhgusgdruggvqeenucggtffrrg
+    htthgvrhhnpeffheeugeetiefhgeethfejgfdtuefggeejleehjeeutefhfeeggefhkedt
+    keetffenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
+    grrhhnugesrghrnhgusgdruggv
+X-ME-Proxy: <xmx:cDYDZvvDg9wFUZ4OAUyKEggLe0cNB4rFNN936cbq-sR_6OTqjVXIrw>
+    <xmx:cDYDZgZgdeDjBNgszo_zOpuYNlLc03uqLjysmZTeLwTAqDSTOmltzw>
+    <xmx:cDYDZuYKC_wI7ro2wW0eBCrJnbpxAudYAU5P82Iecn1qctEWiMRPFw>
+    <xmx:cDYDZkDkbD19cuKpTJQbi0S_atQZTcbT2a9iBKqGsY57IhQu9VXbdA>
+    <xmx:cTYDZgYxthdidcJydzecKKASkiaYUTKEbJFDurjUEzrMsGAkjExe_w>
+Feedback-ID: i56a14606:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+	id 658BDB6008D; Tue, 26 Mar 2024 16:56:16 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.11.0-alpha0-328-gc998c829b7-fm-20240325.002-gc998c829
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.14-dev
+Message-Id: <cb853762-06d4-401c-a1c8-07a0c031b499@app.fastmail.com>
+In-Reply-To: <87jzlohhbc.fsf@intel.com>
+References: <20240326144741.3094687-1-arnd@kernel.org>
+ <20240326144741.3094687-2-arnd@kernel.org> <87jzlohhbc.fsf@intel.com>
+Date: Tue, 26 Mar 2024 21:55:46 +0100
+From: "Arnd Bergmann" <arnd@arndb.de>
+To: "Jani Nikula" <jani.nikula@linux.intel.com>,
+ "Arnd Bergmann" <arnd@kernel.org>, linux-kbuild@vger.kernel.org,
+ "Masahiro Yamada" <masahiroy@kernel.org>,
+ "Harry Wentland" <harry.wentland@amd.com>,
+ "Alex Deucher" <alexander.deucher@amd.com>,
+ =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+ "Lucas De Marchi" <lucas.demarchi@intel.com>,
+ "Oded Gabbay" <ogabbay@kernel.org>,
+ "Maarten Lankhorst" <maarten.lankhorst@linux.intel.com>,
+ "Maxime Ripard" <mripard@kernel.org>,
+ "Thomas Zimmermann" <tzimmermann@suse.de>,
+ "Jakub Kicinski" <kuba@kernel.org>, "Paolo Abeni" <pabeni@redhat.com>,
+ "Andrew Jeffery" <andrew@codeconstruct.com.au>,
+ "Linus Walleij" <linus.walleij@linaro.org>, "Joel Stanley" <joel@jms.id.au>,
+ "Alexei Starovoitov" <ast@kernel.org>,
+ "Daniel Borkmann" <daniel@iogearbox.net>,
+ "Andrew Morton" <akpm@linux-foundation.org>,
+ "Nathan Chancellor" <nathan@kernel.org>
+Cc: "Nicolas Schier" <nicolas@fjasle.eu>, dri-devel@lists.freedesktop.org,
+ linux-kernel@vger.kernel.org, Netdev <netdev@vger.kernel.org>,
+ linux-mm@kvack.org, llvm@lists.linux.dev
+Subject: Re: [PATCH 01/12] kbuild: make -Woverride-init warnings more consistent
+Content-Type: text/plain
 
-On Tue, 26 Mar 2024 20:07:50 +0200, Andy Shevchenko wrote:
-> As Arnd suggested we may drop linux/spi/pxa2xx_spi.h as most of
-> its content is being used solely internally to SPI subsystem
-> (PXA2xx drivers). Hence this refactoring series with the additional
-> win of getting rid of legacy documentation.
-> 
-> Cc: Arnd Bergmann <arnd@arndb.de>
-> 
-> [...]
+On Tue, Mar 26, 2024, at 21:24, Jani Nikula wrote:
+> On Tue, 26 Mar 2024, Arnd Bergmann <arnd@kernel.org> wrote:
+>> From: Arnd Bergmann <arnd@arndb.de>
+>> index 475e1e8c1d35..0786eb0da391 100644
+>> --- a/drivers/net/ethernet/renesas/sh_eth.c
+>> +++ b/drivers/net/ethernet/renesas/sh_eth.c
+>> @@ -50,7 +50,7 @@
+>>   * the macros available to do this only define GCC 8.
+>>   */
+>>  __diag_push();
+>> -__diag_ignore(GCC, 8, "-Woverride-init",
+>> +__diag_ignore_all("-Woverride-init",
+>>  	      "logic to initialize all and then override some is OK");
+>
+> This is nice because it's more localized than the per-file
+> disable. However, we tried to do this in i915, but this doesn't work for
+> GCC versions < 8, and some defconfigs enabling -Werror forced us to
+> revert. See commit 290d16104575 ("Revert "drm/i915: use localized
+> __diag_ignore_all() instead of per file"").
 
-Applied to
+It works now.
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git for-next
+The original __diag_ignore_all() only did it for gcc-8 and above
+because that was initially needed to suppress warnings that
+got added in that version, but this was always a mistake.
 
-Thanks!
+689b097a06ba ("compiler-gcc: Suppress -Wmissing-prototypes
+warning for all supported GCC") made it work correctly.
 
-[02/10] spi: pxa2xx: Keep PXA*_SSP types together
-        commit: dad983d8812975b53db83f02ae6b0ad15f018a9e
-[03/10] spi: pxa2xx: Switch to use dev_err_probe()
-        commit: d5449432f794e75cd4f5e46bc33bfe6ce20b657d
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
+     Arnd
 
