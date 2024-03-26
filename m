@@ -1,145 +1,126 @@
-Return-Path: <linux-kernel+bounces-119624-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-119630-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AE81D88CB49
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 18:49:22 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 338FA88CB59
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 18:51:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 30C35B2684B
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 17:49:20 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EB016B294A3
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 17:51:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 450CD6F07B;
-	Tue, 26 Mar 2024 17:49:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5CF128627A;
+	Tue, 26 Mar 2024 17:50:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="fsDoUcEu"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.17])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="LYcK9D3h"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BBC631CD31;
-	Tue, 26 Mar 2024 17:49:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.17
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 000401CFB5
+	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 17:50:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711475343; cv=none; b=IZBTNh2gPEX8ybu1nihldfw20Ju6Pkpgac6QJGBfKneX3OPp3myjtRnCkIi6vdWUTimvcDwzIoDi19p4OCDZKgQTSkiG4ustsQBd3D7B44pPXmwA1ME1j31VqLvcX7SL/J7+eWCVgrs1GAe6C929J28MhF/gzvn0NJMkpaoEnz4=
+	t=1711475446; cv=none; b=nMvsI941XNezLnVJ4Eh58nWOjFfpKjKfq0QAnngwAonvaExsTkeo3saTGLsFm25c2xCut+jkMK3+UCRdgacKaJptaYSe56b88FeP5PL2XqQzSYyZaNzv+VVRAmSK1YuKAfyPer7QJJKky/tzGCWteIn50PicZEdjURKRO66ErQk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711475343; c=relaxed/simple;
-	bh=x0X3KIjo28KMgDBY7G4N3EMgX+0BDWgru26mZ2+VhDo=;
+	s=arc-20240116; t=1711475446; c=relaxed/simple;
+	bh=ZgKMK8xswTHSw8bkndycLMlEayJd2LqASlPalDvSrvU=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ixq5cOqFMgQvS18dn5eJ7r67A0FjwuyP7gSFKBAz3p+Kyk29c2Poteky6jv0M7TX347Zu7s/6ugbfHLhk35rvfict1IILo6TnrmEoNDl16q8Vt2/tVBd0SIky/e/yeddV93nqnUoDE2V0WOLozKxYFVF7nqcm/ydLIO/UPPBIrk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=fsDoUcEu; arc=none smtp.client-ip=198.175.65.17
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1711475342; x=1743011342;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:content-transfer-encoding:in-reply-to;
-  bh=x0X3KIjo28KMgDBY7G4N3EMgX+0BDWgru26mZ2+VhDo=;
-  b=fsDoUcEuyeAYt94FCd7K2Cb4hkRIhdBRnQnasbGyOEU1kEfVvozZkqCB
-   Q9nFg4Ze3DGnVJFEyoNr7aWPKg9gDMnWDnn429kptwZ4fIrR/aw4YxPQA
-   nb1j38hSKnv6kbnIo5/AXZ10K8EiW4BJUvhekJZVBEpX8qEJ5sNn4VLfi
-   wFRmZCchnThQff83gORbs/98TPgTLhhRQlVrpOIcOhbjdXSv2zV105X3n
-   Y0T+gRo06wR1oF0fAiLcHlrY/uWfkWS5RnB5yTR5c4u3zAd4x152KO7Av
-   bhKl26ZYPM8Tv4/CNcFtf7LBZeslsgx4bC9Gwk635F9GeDojOeW6wWc8c
-   Q==;
-X-CSE-ConnectionGUID: fL5uzmBxSfahbE/0TFvSrg==
-X-CSE-MsgGUID: zrRDr491SHOqt5KaU5elOQ==
-X-IronPort-AV: E=McAfee;i="6600,9927,11025"; a="6650937"
-X-IronPort-AV: E=Sophos;i="6.07,156,1708416000"; 
-   d="scan'208";a="6650937"
-Received: from orviesa001.jf.intel.com ([10.64.159.141])
-  by orvoesa109.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Mar 2024 10:49:01 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,156,1708416000"; 
-   d="scan'208";a="53498965"
-Received: from ls.sc.intel.com (HELO localhost) ([172.25.112.31])
-  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Mar 2024 10:49:01 -0700
-Date: Tue, 26 Mar 2024 10:48:59 -0700
-From: Isaku Yamahata <isaku.yamahata@intel.com>
-To: Chao Gao <chao.gao@intel.com>
-Cc: "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>,
-	"Yamahata, Isaku" <isaku.yamahata@intel.com>,
-	"Zhang, Tina" <tina.zhang@intel.com>,
-	"isaku.yamahata@linux.intel.com" <isaku.yamahata@linux.intel.com>,
-	"seanjc@google.com" <seanjc@google.com>,
-	"Huang, Kai" <kai.huang@intel.com>, "Chen, Bo2" <chen.bo@intel.com>,
-	"sagis@google.com" <sagis@google.com>,
-	"isaku.yamahata@gmail.com" <isaku.yamahata@gmail.com>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"Aktas, Erdem" <erdemaktas@google.com>,
-	"kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-	"pbonzini@redhat.com" <pbonzini@redhat.com>,
-	"Yuan, Hang" <hang.yuan@intel.com>,
-	"sean.j.christopherson@intel.com" <sean.j.christopherson@intel.com>
-Subject: Re: [PATCH v19 059/130] KVM: x86/tdp_mmu: Don't zap private pages
- for unsupported cases
-Message-ID: <20240326174859.GB2444378@ls.amr.corp.intel.com>
-References: <96fcb59cd53ece2c0d269f39c424d087876b3c73.camel@intel.com>
- <20240325190525.GG2357401@ls.amr.corp.intel.com>
- <5917c0ee26cf2bb82a4ff14d35e46c219b40a13f.camel@intel.com>
- <20240325221836.GO2357401@ls.amr.corp.intel.com>
- <20240325231058.GP2357401@ls.amr.corp.intel.com>
- <edcfc04cf358e6f885f65d881ef2f2165e059d7e.camel@intel.com>
- <20240325233528.GQ2357401@ls.amr.corp.intel.com>
- <ZgIzvHKobT2K8LZb@chao-email>
- <20db87741e356e22a72fadeda8ab982260f26705.camel@intel.com>
- <ZgKt6ljcmnfSbqG/@chao-email>
+	 Content-Type:Content-Disposition:In-Reply-To; b=GjRX7+A7Tkm9ZFtiAv9qgFfeH92iT+6TEEXtni4dOftpUUmQE5XHpCs+U7ZRWGWD5+66GYWYuHIS04NsJaemGAW/9PRZXuPGmciATUaasz6HeI3Dt+1u/p80/6IVSmbx2uKB9p/ONAjw5cMxG+0F8oJbL9soPSEWgJne+tXxZDc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=LYcK9D3h; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1711475443;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=OInvw2pLCNL9a/HYNNz1Jd3xF0ugYHZTriTHSuVCyz0=;
+	b=LYcK9D3hQSBwcHlpFLwIkA/5lFgs9u5beLs9ms55EArzbVCAcVf7aw3RMefCYL5buGqDgg
+	TSLxihvW45QMCv/nTEZTnNx0ojBzLpaiTS8Gx2hkz2CaQn4iWqyYN+5IH7wTRdMB0Dkxyp
+	V+e5Jhbj+5WM5E32CWagq7usKo9rK8s=
+Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
+ by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-404-mmcdDO0QN_iUXDYzsWu3UQ-1; Tue,
+ 26 Mar 2024 13:50:35 -0400
+X-MC-Unique: mmcdDO0QN_iUXDYzsWu3UQ-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.rdu2.redhat.com [10.11.54.8])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 6C4A438035A9;
+	Tue, 26 Mar 2024 17:50:34 +0000 (UTC)
+Received: from dhcp-27-174.brq.redhat.com (unknown [10.45.224.68])
+	by smtp.corp.redhat.com (Postfix) with SMTP id BB232C66106;
+	Tue, 26 Mar 2024 17:50:31 +0000 (UTC)
+Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
+	oleg@redhat.com; Tue, 26 Mar 2024 18:49:10 +0100 (CET)
+Date: Tue, 26 Mar 2024 18:49:03 +0100
+From: Oleg Nesterov <oleg@redhat.com>
+To: Ingo Molnar <mingo@kernel.org>
+Cc: linux-kernel@vger.kernel.org, Andy Lutomirski <luto@amacapital.net>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Dave Hansen <dave@sr71.net>, Peter Zijlstra <peterz@infradead.org>,
+	Borislav Petkov <bp@alien8.de>, "H . Peter Anvin" <hpa@zytor.com>,
+	Linus Torvalds <torvalds@linux-foundation.org>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Uros Bizjak <ubizjak@gmail.com>
+Subject: Re: [PATCH 1/1] headers/deps: x86/fpu: Make task_struct::thread
+ constant size
+Message-ID: <20240326174903.GA4539@redhat.com>
+References: <20240320131908.2708438-1-mingo@kernel.org>
+ <20240320131908.2708438-2-mingo@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <ZgKt6ljcmnfSbqG/@chao-email>
+In-Reply-To: <20240320131908.2708438-2-mingo@kernel.org>
+User-Agent: Mutt/1.5.24 (2015-08-30)
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.8
 
-On Tue, Mar 26, 2024 at 07:13:46PM +0800,
-Chao Gao <chao.gao@intel.com> wrote:
+On 03/20, Ingo Molnar wrote:
+>
+> --- a/arch/x86/kernel/fpu/init.c
+> +++ b/arch/x86/kernel/fpu/init.c
+> @@ -38,7 +38,7 @@ static void fpu__init_cpu_generic(void)
+>  	/* Flush out any pending x87 state: */
+>  #ifdef CONFIG_MATH_EMULATION
+>  	if (!boot_cpu_has(X86_FEATURE_FPU))
+> -		fpstate_init_soft(&current->thread.fpu.fpstate->regs.soft);
+> +		fpstate_init_soft(current->thread.fpu->fpstate->regs.soft);
+                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Typo? it should be
 
-> On Tue, Mar 26, 2024 at 10:42:36AM +0800, Edgecombe, Rick P wrote:
-> >On Tue, 2024-03-26 at 10:32 +0800, Chao Gao wrote:
-> >> > > > Something like this for "112/130 KVM: TDX: Handle TDX PV rdmsr/wrmsr hypercall"
-> >> > > > Compile only tested at this point.
-> >> > > 
-> >> > > Seems reasonable to me. Does QEMU configure a special set of MSRs to filter for TDX currently?
-> >> > 
-> >> > No for TDX at the moment.  We need to add such logic.
-> >> 
-> >> What if QEMU doesn't configure the set of MSRs to filter? In this case, KVM
-> >> still needs to handle the MSR accesses.
-> >
-> >Do you see a problem for the kernel? I think if any issues are limited to only the guest, then we
-> >should count on userspace to configure the msr list.
-> 
-> How can QEMU handle MTRR MSR accesses if KVM exits to QEMU? I am not sure if
-> QEMU needs to do a lot of work to virtualize MTRR.
+	&current->thread.fpu->fpstate->regs.soft
 
-The default kernel logic will to return error for
-TDG.VP.VMCALL<RDMSR or WRMSR MTRR registers>.
-Qemu can have mostly same in the current kernel logic.
+> +static struct fpu x86_init_fpu __read_mostly;
+> +
+>  static void __init fpu__init_system_early_generic(void)
+>  {
+> +	{
+> +		int this_cpu = smp_processor_id();
+> +
+> +		fpstate_reset(&x86_init_fpu);
+> +		current->thread.fpu = &x86_init_fpu;
+> +		per_cpu(fpu_fpregs_owner_ctx, this_cpu) = &x86_init_fpu;
+> +		x86_init_fpu.last_cpu = this_cpu;
+> +	}
 
-rdmsr:
-MTRRCAP: 0
-MTRRDEFTYPE: MTRR_TYPE_WRBACK
+Can't x86_init_fpu be declared inside the block above?
 
-wrmsr:
-MTRRDEFTYPE: If write back, nop. Otherwise error.
+>  void __init fpu__init_system(void)
+>  {
+> -	fpstate_reset(&current->thread.fpu);
+>  	fpu__init_system_early_generic();
+> +	fpstate_reset(current->thread.fpu);
 
+It seems that fpstate_reset(current->thread.fpu) is not needed after the
+change in fpu__init_system_early_generic() above.
 
-> If QEMU doesn't configure the msr filter list correctly, KVM has to handle
-> guest's MTRR MSR accesses. In my understanding, the suggestion is KVM zap
-> private memory mappings. But guests won't accept memory again because no one
-> currently requests guests to do this after writes to MTRR MSRs. In this case,
-> guests may access unaccepted memory, causing infinite EPT violation loop
-> (assume SEPT_VE_DISABLE is set). This won't impact other guests/workloads on
-> the host. But I think it would be better if we can avoid wasting CPU resource
-> on the useless EPT violation loop.
+Oleg.
 
-Qemu is expected to do it correctly.  There are manyways for userspace to go
-wrong.  This isn't specific to MTRR MSR.
--- 
-Isaku Yamahata <isaku.yamahata@intel.com>
 
