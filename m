@@ -1,106 +1,138 @@
-Return-Path: <linux-kernel+bounces-120147-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-120148-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DA09F88D2EF
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 00:49:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id BBE4188D2F4
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 00:55:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 957662E23C3
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 23:49:19 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 799A430746D
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 23:55:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4192113E3F9;
-	Tue, 26 Mar 2024 23:49:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8AAC01772F;
+	Tue, 26 Mar 2024 23:55:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="lZVa/qM1"
-Received: from mail-vs1-f54.google.com (mail-vs1-f54.google.com [209.85.217.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="dDkhEcxf"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 02F2F13E038
-	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 23:49:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.217.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 49E303FD4
+	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 23:55:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711496951; cv=none; b=ocLlIz9NbpEa1jeM3aSDdLjQB8NTrJIt+8YJQ9UMUAAF4AZyS3Y6ceOMSaqzHQRBFXgov2ljpz4Lzlpc256IvcOCRtMDaKfAoiy6W70DCi/nKj6Xt9pf+4xIQofX30cq88fCPPMSoRSdTRNNf7APO+iusUD36I9JSwqiv0d9vrs=
+	t=1711497349; cv=none; b=KmkRF2ikDxo9Vd0NECZieTceoRPFLlc0cWKfnRiVxncT7AZ0+r3aEZ1T1NSIXpzaDeHN6kRt0hUESJadEo7+oL45osd/tvatrmJ0vLyZRyh6aZRxRrO/hFos0pX0VWrIbhus1FlAk1wywWvMb5w6YBdqDeACu9JwNayrG8dUHL8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711496951; c=relaxed/simple;
-	bh=+lNYPPUuU4qCCfbZl+u/vUnP2u9x2iU8g+hkyYC/s3s=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=mep4h0BLsyhO4KrOB8vg1hrwZnAfxjXSJ9Q7b5oa9BQidft9Af4FTeOsXS320KcN1nP5RiUxQnxT/wv/zfkY4qHXuye75Km0SyyAxP8ePwJUgJmcdMn/UL6cRsZsNBo6Zs6EmIrWiEa3e/tEPmkjoZ9jUe6zDr+1xOA/ySGe1s4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=lZVa/qM1; arc=none smtp.client-ip=209.85.217.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-vs1-f54.google.com with SMTP id ada2fe7eead31-4782cb1162fso322772137.2
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 16:49:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1711496949; x=1712101749; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=TgM3qLWsfwfIOap0//JWQ8L3ny8CBVn3j70yjvXP748=;
-        b=lZVa/qM1B4R7pnGRLfhqerT7Ngip0KyJGCGaNYdb/QSdQ7w5ANkhrMpK6ZStITD907
-         uDj/0B18XUx9YN37mOgoPnvZpQW8ffPjH5qQ1dsmdD/EJdnKrHbANo+TPodedFnwLokw
-         gecGW5srNaSSsjaxf+g7V2Sm4yf9pwyS1z/CU=
+	s=arc-20240116; t=1711497349; c=relaxed/simple;
+	bh=CGBZO6sWtWt1UsxFRGNjlem6tqqGRAu237yPiACZoHw=;
+	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
+	 In-Reply-To:Content-Type; b=CONNSGKB7wBLthB/peqaUZZSLbnFi5FrqvkMjt2qfegtPw31Tw2v7I+psi37Wp3ZuzeVNN3OUxb6gG7szUJHIA2NjYdTz+SrrK89pe1k65oVQs4j/Mth6jbxp4O0c/Dq2e/Xt6Zwt+NSCi2n2wTGZUNBF38L90ffsKTTc9Tb/nQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=dDkhEcxf; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1711497347;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=BGsDJu8XpAr6x1oX6/jFrO71+5iqc/pjZkV4HoqWC1Q=;
+	b=dDkhEcxf6Z7U74Aql5aFTq8X71V3ow+KzyKBNYNUERi0dld8GofKA5szMqX/AlwXNsNnmr
+	qkwZrSXFooaQoxt1+uGjohVtaHGhWchm3vrfMhz3nUk0CnyhuYGy5zAMJtQuQimwT4CNf8
+	bMKDsuXgVX8rQlj4qhE2VGyF1zNS4vY=
+Received: from mail-pg1-f199.google.com (mail-pg1-f199.google.com
+ [209.85.215.199]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-266-16we0NusMEWwjw_q96pEFg-1; Tue, 26 Mar 2024 19:55:45 -0400
+X-MC-Unique: 16we0NusMEWwjw_q96pEFg-1
+Received: by mail-pg1-f199.google.com with SMTP id 41be03b00d2f7-5cfd6ba1c11so4190950a12.0
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 16:55:45 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711496949; x=1712101749;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=TgM3qLWsfwfIOap0//JWQ8L3ny8CBVn3j70yjvXP748=;
-        b=gr7IAQSmEYhV06wl9yC6w+AJN2QFf5goLiGXAPo8+YPxZPinvpZgsev+F1Nc9yWRGf
-         zegUoL5eRbj52x13em3ratpPlSdMUWqB/3XY2hbng5AMtBbhFwoq8EeynKsOJ+XHG7Vl
-         PSODfeJWCrQPPkIZQ0LfBx1mKtVGtfUvOmd0HIr6Dt13WYfUdMwLcqB50j2Z2gWK5Au5
-         cBAmSZsHIE0dXd2DpSOEC4Bs0q1k4VeYKLPmbbk5vym2hFkDGEeKlOvkC4i85FlC3AUr
-         b6SUcz/G+DXTvUh0e39EFqUkP+h16AHa5T5wk2aTYSsltk7NvNQ4lKdKzS4MP56QEJpC
-         JlmA==
-X-Forwarded-Encrypted: i=1; AJvYcCUSO69H2e6hRMUM1FAdh3gflpjDkekFTSxTHW14RHLAUeFItuZYqmvMUJhK/P+eXexu5cMXMBCcwOKDPhqVcIY56CKJMSH4xLwXWJ9t
-X-Gm-Message-State: AOJu0YxBiHDwz1SuiPqmWefxbbzw0K8/1w1HGxaKiXEy67kGQ+oKEU/F
-	cKcUsiBzBOjZaIjRsrXhH72BDzkBmHRvUQ0FJRyqJhROkrRP2ctveA5rFFimdkBGCJ4ehNmDi1b
-	b3q86AP973cCaFQ7Sie6VbuAEeWL4pKQ+xyh2
-X-Google-Smtp-Source: AGHT+IFQR1LE4IGpHWOgN68Bu1/0frk/Z/b02yz/ER26JmP39OA1O2ygzenFSkITtcJvH3+gAKLR9RUPuP7BAUGizPI=
-X-Received: by 2002:a05:6102:c2:b0:475:111d:c0dc with SMTP id
- u2-20020a05610200c200b00475111dc0dcmr8786314vsp.14.1711496948974; Tue, 26 Mar
- 2024 16:49:08 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1711497345; x=1712102145;
+        h=content-transfer-encoding:in-reply-to:references:cc:to:from
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=BGsDJu8XpAr6x1oX6/jFrO71+5iqc/pjZkV4HoqWC1Q=;
+        b=sxXZ09iYiH7n3g5AgIcr9C9fswsaMWHY02aRpiaQadEWN3mEiItaIb7v7FkIJ68SW4
+         jwp9vWDSqkjCdLJlKaDKbvFlCk4MqWTZUpyb8VrcDYS1eArcXdp2EwFOaefCLZSQxV8/
+         owveLvB+zkfqrWGWFjYrxQCdEibr6yVNBU2HzxbOJisJeM4Im6aHmJBji8y0sWKLFBvw
+         7H+iA1Jh+gzbSfah5UfiyShDbIk7U+bLvIjvo38F2xUYoq+7zoD/lqiYqRcD8Bv+Zw5C
+         jbsx7Y1M+GH7glP+jCHK3ua1kTW0lBW58FDfkrQKeNMJy/0RpPa4IeqcIFT/O4koitfQ
+         UC3g==
+X-Gm-Message-State: AOJu0YwSDbcc7kXno5h+kcb61xrD5eVQm1VREF+YlkO+cryyJOluXd1l
+	6D01/xMOXD54zxf7ySq29BLZ4IEegMknIBwz2JaCgUQXt35xR9X4b3Igzemi/CBk5hUGlDNc/jK
+	rS+skT4fx2/VxSDzOgg2+dc2gKTpqFJCwz/RcSkSdkME+dxxDu4w0p21wL/wQfA==
+X-Received: by 2002:a17:902:e546:b0:1e0:2377:b23c with SMTP id n6-20020a170902e54600b001e02377b23cmr11306266plf.51.1711497344852;
+        Tue, 26 Mar 2024 16:55:44 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IE0PwA7G3bbW59cTMwsRfBzB0MvWtcaXY+g1f6iUtKsH2Z84f05R+a0cugj0CKI9MKqWCmnSA==
+X-Received: by 2002:a17:902:e546:b0:1e0:2377:b23c with SMTP id n6-20020a170902e54600b001e02377b23cmr11306241plf.51.1711497344429;
+        Tue, 26 Mar 2024 16:55:44 -0700 (PDT)
+Received: from [192.168.68.51] ([43.252.115.31])
+        by smtp.gmail.com with ESMTPSA id k24-20020a170902761800b001e1153c3047sm48387pll.106.2024.03.26.16.55.39
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 26 Mar 2024 16:55:43 -0700 (PDT)
+Message-ID: <46c6a9aa-821c-4013-afe7-61ec05fc9dd4@redhat.com>
+Date: Wed, 27 Mar 2024 09:55:37 +1000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240325-public-ucsi-h-v1-0-7c7e888edc0a@chromium.org>
- <20240325-public-ucsi-h-v1-1-7c7e888edc0a@chromium.org> <2024032603-tactful-exes-f2d0@gregkh>
-In-Reply-To: <2024032603-tactful-exes-f2d0@gregkh>
-From: Pavan Holla <pholla@chromium.org>
-Date: Tue, 26 Mar 2024 16:48:33 -0700
-Message-ID: <CAB2FV=7MgEUj+sr0UiJ9-Kru2q81g1-Jk0RGUeOZ8XzF6dZ6DQ@mail.gmail.com>
-Subject: Re: [PATCH 1/3] usb: typec: ucsi: Provide interface for UCSI transport
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: Heikki Krogerus <heikki.krogerus@linux.intel.com>, linux-kernel@vger.kernel.org, 
-	linux-usb@vger.kernel.org, 
-	Abhishek Pandit-Subedi <abhishekpandit@chromium.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 0/2] vhost: Fix stale available ring entries
+Content-Language: en-US
+From: Gavin Shan <gshan@redhat.com>
+To: virtualization@lists.linux.dev
+Cc: linux-kernel@vger.kernel.org, mst@redhat.com, jasowang@redhat.com,
+ davem@davemloft.net, stefanha@redhat.com, sgarzare@redhat.com,
+ keirf@google.com, yihyu@redhat.com, shan.gavin@gmail.com,
+ Will Deacon <will@kernel.org>
+References: <20240326233846.1086253-1-gshan@redhat.com>
+In-Reply-To: <20240326233846.1086253-1-gshan@redhat.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Hi Greg,
+On 3/27/24 09:38, Gavin Shan wrote:
+> The issue was reported by Yihuang Yu on NVidia's grace-hopper (ARM64)
+> platform. The wrong head (available ring entry) is seen by the guest
+> when running 'netperf' on the guest and running 'netserver' on another
+> NVidia's grace-grace machine.
+> 
+>    /home/gavin/sandbox/qemu.main/build/qemu-system-aarch64      \
+>    -accel kvm -machine virt,gic-version=host -cpu host          \
+>    -smp maxcpus=1,cpus=1,sockets=1,clusters=1,cores=1,threads=1 \
+>    -m 4096M,slots=16,maxmem=64G                                 \
+>    -object memory-backend-ram,id=mem0,size=4096M                \
+>     :                                                           \
+>    -netdev tap,id=tap0,vhost=true                               \
+>    -device virtio-net-pci,bus=pcie.8,netdev=tap0,mac=52:54:00:f1:26:b0
+>     :
+>    guest# ifconfig eth0 | grep 'inet addr'
+>    inet addr:10.26.1.220
+>    guest# netperf -H 10.26.1.81 -l 60 -C -c -t UDP_STREAM
+>    virtio_net virtio0: output.0:id 100 is not a head!
+> 
+> There is missed smp_rmb() in vhost_vq_avail_empty() and vhost_enable_notify().
+> Without smp_rmb(), vq->avail_idx is increased but the available ring
+> entries aren't arriving to vhost side yet. So a stale available ring
+> entry can be fetched in vhost_get_vq_desc().
+> 
+> Fix it by adding smp_rmb() in those two functions. Note that I need
+> two patches so that they can be easily picked up by the stable kernel.
+> With the changes, I'm unable to hit the issue again.
+> 
+> Gavin Shan (2):
+>    vhost: Add smp_rmb() in vhost_vq_avail_empty()
+>    vhost: Add smp_rmb() in vhost_enable_notify()
+> 
+>   drivers/vhost/vhost.c | 22 ++++++++++++++++++++--
+>   1 file changed, 20 insertions(+), 2 deletions(-)
+> 
 
-Thanks for the review.
+Sorry, I was supposed to copy Will. Amending for it.
 
-On Tue, Mar 26, 2024 at 2:12=E2=80=AFAM Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
-> No copyright line?  I think your employer would not like it if they saw
-> that :(
+Thanks,
+Gavin
 
-My employer ( Google ) does not want me to insert a copyright notice
-if third party code
-was copied verbatim. I plan to squash commit 1 and commit 2 in my next
-version so that
-the move becomes clearer. I will keep your comment in mind for future CL's.
-
-> Please get review from some internal-to-google developers before
-> submitting your next version of this series.
-
-Acknowledged.
-
-Best Regards,
-Pavan
 
