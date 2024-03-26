@@ -1,115 +1,138 @@
-Return-Path: <linux-kernel+bounces-119540-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-119541-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 29FB488CA2B
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 18:05:32 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C0D1A88CA2D
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 18:05:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 87249320E53
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 17:05:30 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 286D0B277B9
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 17:05:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0199F1CAB3;
-	Tue, 26 Mar 2024 17:03:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 785481CD30;
+	Tue, 26 Mar 2024 17:03:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="HE17y/Ts"
-Received: from mail-io1-f54.google.com (mail-io1-f54.google.com [209.85.166.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=proton.me header.i=@proton.me header.b="IhThkzkP"
+Received: from mail-4316.protonmail.ch (mail-4316.protonmail.ch [185.70.43.16])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 977691C69D
-	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 17:03:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0443C1CA95
+	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 17:03:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.70.43.16
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711472617; cv=none; b=lfdY1scWEPEX4rG8sQ5Lz0/0fA0TgcSB1+Juy7JFw0pLctx2/nymavXkPN61WVHdluD4WtdbW2s2xRgPz4OWk7Wlyy8ZZPHwqyHFrtdqQTycWlNy5pqXd5VptZMl5L48kdv5VvxWMURvOSBxuH8rF64IjLDyjUFmeCuvhadkgLY=
+	t=1711472631; cv=none; b=Dn+s1YTvkljIzIRQaMiDz650iGFt0Q0JZ1h1dZfOHnaCoBXfOS6RVhTdzvsf3lWBSkkHV/29/JYlxYZRmKgUllMS7d9x6oNFCnfRvASTU0uFu8OMEzBJof9d7Ii405YxjHCE/Zw2of0gq6+KHpxwrCXvCenJXSucaMtr5SX0ioE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711472617; c=relaxed/simple;
-	bh=EOIwSflAMj+uoDKrD29/XL4C7buZCq5H6gnUJLDPy4Y=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=AtLdV1J30bhX+c1Kl1MGjXOc1coqVr3W3+UFmma8t9LevTA6iF1dNcLW9GKL/pgSI73bjmTotIky769DVj0l2c0nYB3hNYgWjalJQjuYF5+xPcd/wNTcal1Pfq7/SSGzsMQewxBf084cs83DHL5J4J4h1IoZRPcjVcUPyln0y8A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linuxfoundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=HE17y/Ts; arc=none smtp.client-ip=209.85.166.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linuxfoundation.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
-Received: by mail-io1-f54.google.com with SMTP id ca18e2360f4ac-7cc0e831e11so83177339f.1
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 10:03:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google; t=1711472614; x=1712077414; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=FadKByhjEcDx2BLRRuVA0xlYC6rBI0jxy9VlghDSGvo=;
-        b=HE17y/TsntXoGa4gyYoH7jYuqECr8lFu98VTfoUMxahh6YCyP3zxsIzlR/igIf4IV7
-         uiMc7lGxKDkRKZYXIB0GUeLcPRechsBipwmaY5AgOWfutZPEMuyPAx8XRL+LInb4umrg
-         0TQxjaGTF8wz+jdX5ZgRZObXQZ/JS6Pr8pU2Q=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711472614; x=1712077414;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=FadKByhjEcDx2BLRRuVA0xlYC6rBI0jxy9VlghDSGvo=;
-        b=OKgextYwidC/hOpZP9ieqsZosCsddMs2GwXgTw71av45dKbO91xpuTRGBjySngszvW
-         D80DqCKBLgRKV1elJ6JJjhewe4SXbA79S9jlwlBwHaCtkO0Ifgrs6+ebZDxxE4gKs9ex
-         f3L0Jct0cGLsnreXh4yZpKpIP8huwkF6YJKKutOyW40R8QrIYZ1qHjIx9ZUARQcneQPQ
-         QuvoEeJonEqyahpLhDxZrnf9O1rr0FlXKCr0ssgDQOrv4SGYz4IcGTQhlmcpNoD8GIkN
-         mp+VLSVcpnV4pvYMU3pATH2Sz+dgbsD0GoMCiAe7riDaASWtnKJ1ciixaTe3QYj075bO
-         JbLQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWhN4EXFhRa6lioUmZ3rykbi4G088aXuFgqzaS88jH5Fqzrgdy6Kea6iOMeuZqzYjPiD41bwUa/s2zPQGX6DGqvF8LDCmxLSLXKtiTn
-X-Gm-Message-State: AOJu0YzVOwZ6d3bR8V57MOiLH5C7qaED16NkD0S02DBBZq8QhXEmxlUY
-	1xbJ6i3poLy4K8TuRCgqB5uXxwTdmsmIxEsmoptSAemnNoIOxdLdgm5qVFk1JRE=
-X-Google-Smtp-Source: AGHT+IHlnbl8Kp9qRx9T7KqLxILUY5M2NuRzPdWJQoe9ZoSIcJ+aIjNcMyXGzxe/pzHbHLma6Fes6Q==
-X-Received: by 2002:a5d:81da:0:b0:7d0:4d78:989b with SMTP id t26-20020a5d81da000000b007d04d78989bmr7534219iol.2.1711472614680;
-        Tue, 26 Mar 2024 10:03:34 -0700 (PDT)
-Received: from [192.168.1.128] ([38.175.170.29])
-        by smtp.gmail.com with ESMTPSA id q7-20020a5e9407000000b007cf1d77305dsm2987494ioj.53.2024.03.26.10.03.34
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 26 Mar 2024 10:03:34 -0700 (PDT)
-Message-ID: <651e3b4b-294d-4700-82da-1042ea70a5fd@linuxfoundation.org>
-Date: Tue, 26 Mar 2024 11:03:33 -0600
+	s=arc-20240116; t=1711472631; c=relaxed/simple;
+	bh=wOZNZfomGTf09846FMrd2stSkyFpKdRYfI18SIaqofY=;
+	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=Wtj0RzV+ZNcXzDz2gCHtvVjjzf4GooxJZJs484k7VBiZnXbqFWRlweMTmu3wEoBkpOpu8geoMWa3fO7sPYZQkJbJ1gTdKl907eZodyaDe6r+VtAxAIEP1wqsaHVjKEs0hcV+xsg2saDPefGGdUw0jI8ma9X+NCLwCDGI7bSnCz8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=proton.me; spf=pass smtp.mailfrom=proton.me; dkim=pass (2048-bit key) header.d=proton.me header.i=@proton.me header.b=IhThkzkP; arc=none smtp.client-ip=185.70.43.16
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=proton.me
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=proton.me
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=proton.me;
+	s=4q2uozfqpzck3c7isjb5szza2i.protonmail; t=1711472627; x=1711731827;
+	bh=rtXdk3BS/YRFaYMhxgJIWorIJjeDwKo7k6/Ds/zUnk4=;
+	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
+	 Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
+	 Message-ID:BIMI-Selector;
+	b=IhThkzkPWttmF06bgJPyLmmbKIqfLs4Zv341oKnGjka7RHSUH/HQZjg/luJtpzB9T
+	 fF1exY1cbkHThksDlYw6h8S4FpzfWNjaqlwNE6gcJtgmqaWMo+NVuDBG/F749L8+5p
+	 oj9NWhBK4yghTgxnS2HImZ2Nhga68jn0jyVWZcP71+xdTj4DI/4rZYhuPysNDaPqnF
+	 7zGCvUYTUW54gP8EzHDVvdt8RXBZ7369ItneM1kovMPmLtw6ERps8AtBfpKPygzaS8
+	 2R3EWjZBE0MRZQzdTWiq4UTAaRFTVQ4JV0m/QyMyM4LIZkoCnuISBfxZC3r8mJ9zpc
+	 lsXT3t3PY6WCA==
+Date: Tue, 26 Mar 2024 17:03:41 +0000
+To: Boqun Feng <boqun.feng@gmail.com>
+From: Benno Lossin <benno.lossin@proton.me>
+Cc: rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>, Alice Ryhl <aliceryhl@google.com>, Miguel Ojeda <ojeda@kernel.org>, Alex Gaynor <alex.gaynor@gmail.com>, Wedson Almeida Filho <wedsonaf@gmail.com>, Gary Guo <gary@garyguo.net>, =?utf-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, Andreas Hindborg <a.hindborg@samsung.com>, John Stultz <jstultz@google.com>, Stephen Boyd <sboyd@kernel.org>, Valentin Obst <kernel@valentinobst.de>, Heghedus Razvan <heghedus.razvan@protonmail.com>, Asahi Lina <lina@asahilina.net>
+Subject: Re: [PATCH 4/5] rust: time: Support reading CLOCK_MONOTONIC
+Message-ID: <4wFCQqSgpLIPmdFau6MTL1XLLB73d9Tuv5y-VFnXTDc1DFuTnmNV-GLtF582V5yz8s9ogWP_4U0NK3ei6sZlD1oLl929f8ADoT5K9bO6uKs=@proton.me>
+In-Reply-To: <20240324223339.971934-5-boqun.feng@gmail.com>
+References: <20240324223339.971934-1-boqun.feng@gmail.com> <20240324223339.971934-5-boqun.feng@gmail.com>
+Feedback-ID: 71780778:user:proton
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 6.6 000/632] 6.6.23-rc2 review
-Content-Language: en-US
-To: Sasha Levin <sashal@kernel.org>, linux-kernel@vger.kernel.org,
- stable@vger.kernel.org
-Cc: torvalds@linux-foundation.org, akpm@linux-foundation.org,
- linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
- lkft-triage@lists.linaro.org, florian.fainelli@broadcom.com, pavel@denx.de,
- Shuah Khan <skhan@linuxfoundation.org>
-References: <20240325115951.1766937-1-sashal@kernel.org>
-From: Shuah Khan <skhan@linuxfoundation.org>
-In-Reply-To: <20240325115951.1766937-1-sashal@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-On 3/25/24 05:59, Sasha Levin wrote:
-> 
-> This is the start of the stable review cycle for the 6.6.23 release.
-> There are 632 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Wed Mar 27 11:59:50 AM UTC 2024.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
->          https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git/patch/?id=linux-6.6.y&id2=v6.6.22
-> or in the git tree and branch at:
->          git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.6.y
-> and the diffstat can be found below.
-> 
-> Thanks,
-> Sasha
-> 
+On 24.03.24 23:33, Boqun Feng wrote:
+> Rust Binder will need to read CLOCK_MONOTONIC to compute how many
+> milliseconds a transaction has been active for when dumping the current
+> state of the Binder driver. This replicates the logic in C Binder [1].
+>=20
+> For a usage example in Rust Binder, see [2].
+>=20
+> Hence add the support for CLOCK_MONOTONIC read.
+>=20
+> The `ktime_get` method cannot be safely called in NMI context. This
+> requirement is not checked by these abstractions, but it is intended
+> that klint [3] or a similar tool will be used to check it in the future.
+>=20
+> Link: https://lore.kernel.org/lkml/5ac8c0d09392290be789423f0dd78a520b830f=
+ab.1682333709.git.zhangchuang3@xiaomi.com/ [1]
+> Link: https://r.android.com/3004103 [2]
+> Link: https://rust-for-linux.com/klint [3]
+> Co-developed-by: Heghedus Razvan <heghedus.razvan@protonmail.com>
+> Signed-off-by: Heghedus Razvan <heghedus.razvan@protonmail.com>
+> Co-developed-by: Asahi Lina <lina@asahilina.net>
+> Signed-off-by: Asahi Lina <lina@asahilina.net>
+> Co-developed-by: Alice Ryhl <aliceryhl@google.com>
+> Signed-off-by: Alice Ryhl <aliceryhl@google.com>
+> Signed-off-by: Boqun Feng <boqun.feng@gmail.com>
 
-Compiled and booted on my test system. No dmesg regressions.
+With the nit fixed:
 
-Tested-by: Shuah Khan <skhan@linuxfoundation.org>
+Reviewed-by: Benno Lossin <benno.lossin@proton.me>
 
-thanks,
--- Shuah
+> ---
+> @Alice, I still put the link to the usage of Android binder here, if you
+> want to remove that, please let me know.
+>=20
+>  rust/kernel/time.rs | 19 +++++++++++++++++++
+>  1 file changed, 19 insertions(+)
+>=20
+> diff --git a/rust/kernel/time.rs b/rust/kernel/time.rs
+> index 0f9f5605ed48..5cd669cbea01 100644
+> --- a/rust/kernel/time.rs
+> +++ b/rust/kernel/time.rs
+> @@ -113,3 +113,22 @@ fn sub(self, other: Self) -> Self::Output {
+>          Duration::new(self.inner.wrapping_sub(other.inner))
+>      }
+>  }
+> +
+> +/// Contains the various clock source types available to the kernel.
+> +pub mod clock {
+> +    use super::*;
+> +
+> +    /// A clock representing the default kernel time source (`CLOCK_MONO=
+TONIC`).
+> +    pub struct KernelTime;
+> +
+> +    /// `CLOCK_MONOTONIC` is monotonic.
+> +    impl Monotonic for KernelTime {}
+> +
+> +    impl Clock for KernelTime {
+> +        #[inline]
+> +        fn now() -> Instant<Self> {
+> +            // SAFETY: It is always safe to call `ktime_get` outside of =
+NMI context.
+> +            Instant::<Self>::new(unsafe { bindings::ktime_get() })
+
+I don't think the turbofish syntax (the `::<Self>` part) is needed here.
+
+--=20
+Cheers,
+Benno
+
+> +        }
+> +    }
+> +}
+> --
+> 2.44.0
+> 
 
