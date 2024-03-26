@@ -1,162 +1,164 @@
-Return-Path: <linux-kernel+bounces-119639-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-119640-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 92E1488CB72
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 19:01:11 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id F004088CB73
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 19:01:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B737B1C656D6
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 18:01:10 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 38990B23239
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 18:01:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EA4A24CE09;
-	Tue, 26 Mar 2024 18:01:03 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 97C2A1F934;
-	Tue, 26 Mar 2024 18:01:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E977853803;
+	Tue, 26 Mar 2024 18:01:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="HOh31o5D"
+Received: from mail-yw1-f182.google.com (mail-yw1-f182.google.com [209.85.128.182])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 96B6E1C2AF
+	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 18:01:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711476063; cv=none; b=KutLV6XD2bjdWAKIMnXBarBjL8RIeaYcsNIZnkyo/t8MyhacOJcW35Ciy2T4uUH1NVBpG6hGG+mm950JGSLT1NjSP6JzKWJR6zC0aPjsIJ7Ej1nlYSC+PBlqJpEB6Nu5xeDv+FNFGiMJUPT/Mnlw/QsvDT8dENL/tLfCGgm6XdE=
+	t=1711476084; cv=none; b=Epa6BImQTi4FafrfCnsUFqlGbPjznJfyROH6phQDT60Csu7mXRQHWJIXeDLqmtaRSA7qx2pZTO9geMFYzyVJwJGxguoa8efIQeYt2H9rRWIkeSs8A7yJgy3szMkHXd2vzf4JSrtEoqgSkzmFmE+3wAOSCgs96HKuHtMvSJik4cI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711476063; c=relaxed/simple;
-	bh=J+s6fDz4tfmoWA+aY/9bdkTwSJ8H/Gq1EfnRBneA0OE=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=UMA/7D1NMbN0l4prWX56+q6FT+cOCs0UceNZrK191ke62BqPrZpQnjJ5fV9F0hR7zVkq1065hlHSelfPpKaAwrwlW6cBOw3y8vNdYAD4jmiIIOug/YLGvHGx8JdasNl3H9Y40cbachc5C/Lkhh56SXDo1ahSHxFC0Z6+IUmJv4k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 8981D2F4;
-	Tue, 26 Mar 2024 11:01:34 -0700 (PDT)
-Received: from e133047.arm.com (unknown [10.57.81.230])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 8ECD23F64C;
-	Tue, 26 Mar 2024 11:00:59 -0700 (PDT)
-From: Christian Loehle <christian.loehle@arm.com>
-To: linux-kernel@vger.kernel.org
-Cc: vincent.guittot@linaro.org,
-	qyousef@layalina.io,
-	mingo@redhat.com,
-	rafael@kernel.org,
-	dietmar.eggemann@arm.com,
-	linux-pm@vger.kernel.org,
-	Christian Loehle <christian.loehle@arm.com>
-Subject: [PATCH] sched/uclamp: Fix iowait boost UCLAMP_MAX escape
-Date: Tue, 26 Mar 2024 18:00:54 +0000
-Message-Id: <20240326180054.487388-1-christian.loehle@arm.com>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1711476084; c=relaxed/simple;
+	bh=6clewCtNwrXAGDiENW7darKyKjOLpnki5JqhBB84ve0=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=CvTzf6TK1cbRz0LmiHljDNnDnIsTsmdaYU6pUmPWzYZXBUk0im6nn7wsHWZmk793Sdzj+Cbt6NR+fOYQM3O6q16jzko2qyBUqnEvpiYy8peUgvCcr0YWtWjo8Ik+Dq/Ns4zKZbz4iZm+zyFNlO4Sb0kNiF4bZGE/9oAFJQzDQzM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=HOh31o5D; arc=none smtp.client-ip=209.85.128.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-yw1-f182.google.com with SMTP id 00721157ae682-609fc742044so62292947b3.1
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 11:01:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1711476081; x=1712080881; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=XObRnJOe5x5g/XgoRchvbLOOBTbF4Ayrr8n6yojYLIc=;
+        b=HOh31o5DGE0WdQzexF7jwioU7AzfFzn5mwX6RY7F4bfa681QW1yMRfAnJt+7wJvRjd
+         J+mazABNuU4tczEH6cUdq0tutF1x5hH5ayiqXDsTMGv+v3K/t3SKl30ATDXsOfN/pJE9
+         ZXMnR/HS6w/Pp7Weq68zydE1bV2iGJ/lrp6j7Wfb4t6fhs2ps/W59eKUp/eR8S6kc1a6
+         seS1rSzQYNKCEB65DCZaWdTFVky8KsWvVDZ2hpgl+JTSb1EI2umNO6jL0vE/57c7HYpg
+         JbSfk8XyTKdi64jW+KVYTmJysnkaFg7IMeJERBDraY84nQmEMkqAhy3T9ncZ+u/VXtWw
+         4vpQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711476081; x=1712080881;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=XObRnJOe5x5g/XgoRchvbLOOBTbF4Ayrr8n6yojYLIc=;
+        b=vDZralUwha3of0OwVcfc3yCNIs/1kvWpBZnLlVFRJuakXU+icrFjsmsJMRn/I58nk/
+         1kk2tXIoF9OJ73pZ9uyBh8S1esSMK+5tq2R+V+i2VWa8mYmMSKN36mZXgiJcMtueJP74
+         0xgtUSN+FLa4UAR0Z5tiFjm1LAM6DI9oTzPz3AehspKxuH3ynUZDTVxGFG/7kGOBlMEW
+         W/7JnY/hLM3LmUFy0Xs6XCUcqRG+WEjZLUcFTAMj0gWzO85cXPBiqxEARRnetlARJePC
+         OgqQjdf7J219Q8ipkaV7ORQFpoNxzQj6HltDj7WkozMViwnO4g183s9uRkrt3XYoDrw7
+         6+ww==
+X-Forwarded-Encrypted: i=1; AJvYcCWS1SnWxhv5kOum/ZsbfJJ9Bh7nJUF6Q70qJSKJiRcWcRaOIcutNsi7ADJGFYwKzlUXBVh6I6Ghg1qiAYEHfvoSARYf0iU+aaeKMJX6
+X-Gm-Message-State: AOJu0Yw0SkK3NyRyjSzSX6GGZ7IsiowxzYvZ191PVo0WSb9sbml9eJlq
+	tQdy0M0lenl3+4QPN+I2NNVFOibhA8EsJz6bHhN6Ykke6alzLRAnUeAE1O9dzwj3jI3JOtNwgy9
+	jVMr1tzjPxzR73WpmP+B49z/eMLEfQ70IpbiI
+X-Google-Smtp-Source: AGHT+IGCseJIoMjDVzKMGoo7nvvK3wtQHbbHa017mImqV17QHRR7XHngt3I0u1VScWdNaaK+p7nFJk+L1dPVdJtbjgA=
+X-Received: by 2002:a25:c706:0:b0:dd1:7908:3a49 with SMTP id
+ w6-20020a25c706000000b00dd179083a49mr418843ybe.23.1711476081106; Tue, 26 Mar
+ 2024 11:01:21 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20240226211237.48415-1-ppbuk5246@gmail.com> <Ze_x3kovSFe4z9SO@Levi-MacBook-Pro.local>
+ <CAJuCfpFdbh37qWFS8eCXk0CCQD9bA2wtpOj5BMYPNTcz-0Oxnw@mail.gmail.com>
+In-Reply-To: <CAJuCfpFdbh37qWFS8eCXk0CCQD9bA2wtpOj5BMYPNTcz-0Oxnw@mail.gmail.com>
+From: Suren Baghdasaryan <surenb@google.com>
+Date: Tue, 26 Mar 2024 11:01:07 -0700
+Message-ID: <CAJuCfpGwnn3zuHc=iSZN60hactO+4NAiyGR51y_7X4wfS7x6tA@mail.gmail.com>
+Subject: Re: [PATCH v2] psi: Fix avg trigger being fired unexpectedly.
+To: peterz@infradead.org
+Cc: hannes@cmpxchg.org, mingo@redhat.com, juri.lelli@redhat.com, 
+	vincent.guittot@linaro.org, dietmar.eggemann@arm.com, rostedt@goodmis.org, 
+	bsegall@google.com, mgorman@suse.de, bristot@redhat.com, vschneid@redhat.com, 
+	linux-kernel@vger.kernel.org, "levi.yun" <ppbuk5246@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-A task, regardless of UCLAMP_MAX value, was previously allowed to
-build up the sg_cpu->iowait boost up to SCHED_CAPACITY_SCALE when
-enqueued. Since the boost was only uclamped when applied this led
-to sugov iowait boosting the rq while the task is dequeued.
+On Tue, Mar 26, 2024 at 10:49=E2=80=AFAM Suren Baghdasaryan <surenb@google.=
+com> wrote:
+>
+> On Tue, Mar 12, 2024 at 6:10=E2=80=AFAM levi.yun <ppbuk5246@gmail.com> wr=
+ote:
+> >
+> > Gentle ping..
+> >
+> > On Mon, Feb 26, 2024 at 09:12:37PM +0000, Levi Yun wrote:
+> > > commit 915a087e4c473("psi: Fix trigger being fired unexpectedly at in=
+itial")
+> > > fixes unexpected event fired when group->total accumulated for PSI_PO=
+LL.
+> > > But, for PSI_AVGS, win->value should be initialized with group->total=
+[PSI_AVGS].
+> > > Moreover, to get exact initial value for win->value, it should be set
+> > > under each trigger lock to avoid concurrent changes to group->total[]=
+.
+> > >
+> > > Signed-off-by: Levi Yun <ppbuk5246@gmail.com>
+> > > Acked-by: Suren Baghdasaryan <surenb@google.com>
+>
+> Hi Peter,
+> Could you please pull this patch into your tree? I don't see it in any
+> tree, so I think you missed it.
 
-The fix introduced by
-commit d37aee9018e6 ("sched/uclamp: Fix iowait boost escaping uclamp restriction")
-added the uclamp check before the boost is applied. Unfortunately
-that is insufficient, as the iowait_boost may be built up purely by
-a task with UCLAMP_MAX task, but since this task is in_iowait often,
-the clamps are no longer active during the in_iowait periods.
-So another task (let's say with low utilization) may immediately
-receive the iowait_boost value previously built up under UCLAMP_MAX
-restrictions.
+Forgot to set the right recipient. Fixed now.
 
-The issue is less prevalent than the above might suggest, since if
-the dequeuing of the UCLAMP_MAX set task will turn the cpu idle the
-previous UCLAMP_MAX value is preserved by uclamp_idle_value().
-Nonetheless anything being enqueued on the rq during the in_iowait
-phase will falsely receive the iowait_boost.
 
-Can be observed with a basic single-threaded benchmark running with
-UCLAMP_MAX of 0, the iowait_boost is then triggered by the occasional
-kworker.
-
-Fixes: 982d9cdc22c9 ("sched/cpufreq, sched/uclamp: Add clamps for FAIR and RT tasks")
-Signed-off-by: Christian Loehle <christian.loehle@arm.com>
----
- kernel/sched/cpufreq_schedutil.c | 36 +++++++++++++++++++++++++-------
- 1 file changed, 28 insertions(+), 8 deletions(-)
-
-diff --git a/kernel/sched/cpufreq_schedutil.c b/kernel/sched/cpufreq_schedutil.c
-index eece6244f9d2..bfd79762b28d 100644
---- a/kernel/sched/cpufreq_schedutil.c
-+++ b/kernel/sched/cpufreq_schedutil.c
-@@ -205,6 +205,25 @@ static void sugov_get_util(struct sugov_cpu *sg_cpu, unsigned long boost)
- 	sg_cpu->util = sugov_effective_cpu_perf(sg_cpu->cpu, util, min, max);
- }
- 
-+/**
-+ * sugov_iowait_clamp() - Clamp the boost with UCLAMP_MAX
-+ * @sg_cpu: the sugov data for the CPU
-+ * @boost: the requested new boost
-+ *
-+ * Clamps the iowait boost according to the rq's UCLAMP_MAX restriction.
-+ */
-+static void sugov_iowait_clamp(struct sugov_cpu *sg_cpu, unsigned int boost)
-+{
-+#if CONFIG_UCLAMP_TASK
-+	unsigned int boost_scaled = (boost *
-+		arch_scale_cpu_capacity(sg_cpu->cpu)) >> SCHED_CAPACITY_SHIFT;
-+
-+	if (uclamp_rq_get(cpu_rq(sg_cpu->cpu), UCLAMP_MAX) < boost_scaled)
-+		return;
-+#endif
-+	sg_cpu->iowait_boost = boost;
-+	sg_cpu->iowait_boost_pending = true;
-+}
- /**
-  * sugov_iowait_reset() - Reset the IO boost status of a CPU.
-  * @sg_cpu: the sugov data for the CPU to boost
-@@ -225,8 +244,8 @@ static bool sugov_iowait_reset(struct sugov_cpu *sg_cpu, u64 time,
- 	if (delta_ns <= TICK_NSEC)
- 		return false;
- 
--	sg_cpu->iowait_boost = set_iowait_boost ? IOWAIT_BOOST_MIN : 0;
--	sg_cpu->iowait_boost_pending = set_iowait_boost;
-+	if (set_iowait_boost)
-+		sugov_iowait_clamp(sg_cpu, IOWAIT_BOOST_MIN);
- 
- 	return true;
- }
-@@ -249,6 +268,7 @@ static void sugov_iowait_boost(struct sugov_cpu *sg_cpu, u64 time,
- 			       unsigned int flags)
- {
- 	bool set_iowait_boost = flags & SCHED_CPUFREQ_IOWAIT;
-+	unsigned int iowait_boost;
- 
- 	/* Reset boost if the CPU appears to have been idle enough */
- 	if (sg_cpu->iowait_boost &&
-@@ -262,17 +282,17 @@ static void sugov_iowait_boost(struct sugov_cpu *sg_cpu, u64 time,
- 	/* Ensure boost doubles only one time at each request */
- 	if (sg_cpu->iowait_boost_pending)
- 		return;
--	sg_cpu->iowait_boost_pending = true;
- 
- 	/* Double the boost at each request */
- 	if (sg_cpu->iowait_boost) {
--		sg_cpu->iowait_boost =
--			min_t(unsigned int, sg_cpu->iowait_boost << 1, SCHED_CAPACITY_SCALE);
--		return;
-+		iowait_boost = min_t(unsigned int, sg_cpu->iowait_boost << 1,
-+				SCHED_CAPACITY_SCALE);
-+	} else {
-+		/* First wakeup after IO: start with minimum boost */
-+		iowait_boost = IOWAIT_BOOST_MIN;
- 	}
- 
--	/* First wakeup after IO: start with minimum boost */
--	sg_cpu->iowait_boost = IOWAIT_BOOST_MIN;
-+	sugov_iowait_clamp(sg_cpu, iowait_boost);
- }
- 
- /**
--- 
-2.34.1
-
+> Thanks,
+> Suren.
+>
+> > > ---
+> > > v2: Fix commit message.
+> > > ---
+> > >  kernel/sched/psi.c | 8 +++++---
+> > >  1 file changed, 5 insertions(+), 3 deletions(-)
+> > >
+> > > diff --git a/kernel/sched/psi.c b/kernel/sched/psi.c
+> > > index 7b4aa5809c0f..e7f66ab2ad3e 100644
+> > > --- a/kernel/sched/psi.c
+> > > +++ b/kernel/sched/psi.c
+> > > @@ -1323,9 +1323,6 @@ struct psi_trigger *psi_trigger_create(struct p=
+si_group *group, char *buf,
+> > >       t->state =3D state;
+> > >       t->threshold =3D threshold_us * NSEC_PER_USEC;
+> > >       t->win.size =3D window_us * NSEC_PER_USEC;
+> > > -     window_reset(&t->win, sched_clock(),
+> > > -                     group->total[PSI_POLL][t->state], 0);
+> > > -
+> > >       t->event =3D 0;
+> > >       t->last_event_time =3D 0;
+> > >       t->of =3D of;
+> > > @@ -1336,6 +1333,8 @@ struct psi_trigger *psi_trigger_create(struct p=
+si_group *group, char *buf,
+> > >
+> > >       if (privileged) {
+> > >               mutex_lock(&group->rtpoll_trigger_lock);
+> > > +             window_reset(&t->win, sched_clock(),
+> > > +                             group->total[PSI_POLL][t->state], 0);
+> > >
+> > >               if (!rcu_access_pointer(group->rtpoll_task)) {
+> > >                       struct task_struct *task;
+> > > @@ -1361,6 +1360,9 @@ struct psi_trigger *psi_trigger_create(struct p=
+si_group *group, char *buf,
+> > >       } else {
+> > >               mutex_lock(&group->avgs_lock);
+> > >
+> > > +             window_reset(&t->win, sched_clock(),
+> > > +                             group->total[PSI_AVGS][t->state], 0);
+> > > +
+> > >               list_add(&t->node, &group->avg_triggers);
+> > >               group->avg_nr_triggers[t->state]++;
+> > >
+> > > --
+> > > 2.39.2
 
