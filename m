@@ -1,78 +1,78 @@
-Return-Path: <linux-kernel+bounces-119707-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-119709-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id E318488CC47
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 19:47:45 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 17B2388CC4C
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 19:48:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 20B181C65B1F
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 18:47:45 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id BFC401F856AF
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 18:48:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 01BBE13CC72;
-	Tue, 26 Mar 2024 18:47:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 23E6C13C836;
+	Tue, 26 Mar 2024 18:47:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="cQMK5M0j"
-Received: from mail-lf1-f52.google.com (mail-lf1-f52.google.com [209.85.167.52])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="YUknMdlJ"
+Received: from mail-lf1-f45.google.com (mail-lf1-f45.google.com [209.85.167.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 931EE13CC75
-	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 18:47:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AE7B513CFA0
+	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 18:47:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711478829; cv=none; b=k+buwH0/tm1IcRVRDALqQ2rsJ90V8O/wn9eJXRcP2d9b4bxZoYdixXnzsI8SfRwctxjHS+CXKrqeRFNevTsth+VMV9MsvQ+eSEQBveAosVy3WwPb0oGZLh+edZoHo7nWeLoG1zaZhq3AzNmlhftA39i42Dly9Dkjw2CzcHNayYc=
+	t=1711478837; cv=none; b=RZbm9tpJ9o1ZZLVqtzMUZGMygDSFMDPDvSKnIT3UpTmPJIQcFzlBOrLbdJsea66TEEm4E18ys3qWFBobQeX3mi2mpIVD59cjq88J88ns3JTTQdAeJ/CKefv2fAHTZEDZ8945LZ7oQ5tUyC52TAjuVHrSIAei0HRk9c4vLLy+hJM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711478829; c=relaxed/simple;
-	bh=T8dQDg721TMeOxVX+4bCSMO1oVhUAaIGWnDcDr+ZAG8=;
+	s=arc-20240116; t=1711478837; c=relaxed/simple;
+	bh=qJq0cSG6/Z2CaYD7aH9kWyOyMhGjPxTKdVQgOaB8aU4=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=qpcMt9cOV22k9iumgHC2Xi06YIfYxLn69j9F37SvczYY3QbVQZuJIupHrJKG92g0wCz9P2hJcKJRimaiiWyAP+GCqNEZDs5p5qX3cfo2w3F3XoLRRZq7huq88cnKBS0o2KZ9F66FKJBWHEXwrdlLqbtJmGvlpL2JX1qW7A5yKxc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=cQMK5M0j; arc=none smtp.client-ip=209.85.167.52
+	 MIME-Version; b=QpKkxBr6bIbhDMpY2yLp1+YcIW4SRENd3l/oBQIDKCPMDhK3rs82KhMqbcyQYTjJENIX0tww9iP/SBmyWtOiwaNAi0bt1H5qjI5c529GECuISzDQNaTx1KfP9qzg2CVjSVogAPrrOhtySPJsJw//J9i3o3z3P0W583wXjXsiNFU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=YUknMdlJ; arc=none smtp.client-ip=209.85.167.45
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f52.google.com with SMTP id 2adb3069b0e04-515a86daf09so4000933e87.3
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 11:47:07 -0700 (PDT)
+Received: by mail-lf1-f45.google.com with SMTP id 2adb3069b0e04-5101cd91017so6926441e87.2
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 11:47:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711478825; x=1712083625; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1711478833; x=1712083633; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=DZ+eJwDoGKUGIZxflpcMnwv/9sVegxaxVgL5v55tN+g=;
-        b=cQMK5M0jGSl10K9i4YA4DSFXTuDUQr/fe7kiQo5YOBLa1NCCHHSEJyqsc//wv8OoHp
-         t1ZQTuXWkM4rJJxh5Hay/xmuXei+W4qZRQamI+KBjJvmmdAm9T1DGa/GPfxpwVu/2Fl/
-         8bT9A0jx0gFrikClVYmwM2CnMlLOzu9W22cH5V9eyFCCRph+X+1BRxAjOrYIFIPnQbpK
-         880U9fZV78u8JwjUqR3BDo2oRlhAeknyRdQNKlfCW8qKqvYACuF7rlZSXRLKmQSfS+Vl
-         gZpdq1Uts1mT1Nj+GTXYgEtAYTS0i4rgHBHA3dc3qadpc9FQ5IknSvnnwXgH9cpuI7Vn
-         ENzg==
+        bh=VycL5qDrPHCDWWbHqXExQCkFHxLflz/cf4MtnxAQLPE=;
+        b=YUknMdlJYzRpnMfixv93oT0M6Lgd6wxErkSu9vJ+dcc3ZS6pTxp0HREqyQjfTumst0
+         R843qcROEMUvce+I1Ix3N82Z1KZLST+Bp14e7O+/grfsSjBP62jdlvRMUy7fyx29YV0b
+         R0o+QvNFHUwF9Koe3SCcfNVRIM8K5ynbip7Y47XaK4IjGh+UKMsHsyAGoAHAeHHqfXYn
+         iZRxvyZpCuM0Zko4dGfvkJTPqgZWgvIsrmfYl83fMRnMdpuIktK20LorJqbPaCv2K1y4
+         HolBQvZP/10apWcISRTepF6wqVooeQT75NeVEE9DEPsVpTGFzf4cjyaCRQ/AJ8jMq1zU
+         S4hQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711478825; x=1712083625;
+        d=1e100.net; s=20230601; t=1711478833; x=1712083633;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=DZ+eJwDoGKUGIZxflpcMnwv/9sVegxaxVgL5v55tN+g=;
-        b=smAvMiCehTlOZ/lwG/SnZJnjeR2gPQtAd0dOlt9GRBCOfjP5knBwWHPFG1jbf/f/y0
-         Xwfe2KBU5M8j07ogcg6g6RajE3pPu5JnT08hzS0p0t3+Z7wnsmHLapGxMsa1VoIEPfJO
-         UecOFW+VLbbaWyGynr65nfAy/VeXL/fhLfxlVh5yv1nFdJDl2oI+pW8iLej/xdTKm2aW
-         4EKCnS0SBQCyxqM8oRVjj4OdSXoc6eJgmW8nEpPh/tTuAToERSjMWBNC8Of75frP4CEw
-         TBwohX+9t2raOCelOxNVMctRbdU8HftmReCEZe8C62GtNiYNadK0a1Q4LA1454GcmJ3O
-         1MHg==
-X-Gm-Message-State: AOJu0YzrB4W4K/H4OyCTtjnUXTzWMkCkyxii74R0GrSwOf9WBdDWNsEW
-	r3rWZ2DED/At3ZZeePso4JVsTv5Qy2B0EYvt7j1q3wQ6mwm9xe0NAthyQr0a
-X-Google-Smtp-Source: AGHT+IG0UR4ZxalYUP3/BGhC3ydzBVAx8ZbJv+hJuW20soqYkAUdt+i/vabzYxhkausLup9ufaY2ZA==
-X-Received: by 2002:a19:2d17:0:b0:513:e27c:78f0 with SMTP id k23-20020a192d17000000b00513e27c78f0mr7501017lfj.46.1711478825321;
-        Tue, 26 Mar 2024 11:47:05 -0700 (PDT)
+        bh=VycL5qDrPHCDWWbHqXExQCkFHxLflz/cf4MtnxAQLPE=;
+        b=d0psBC8AFUgFyhH0bRD6gda5KHOloHXqI/8bb/nn1JdFVfE0P0aSZldHLIO3WjTpXv
+         jelI+lFBoyKVr6mndjlZCnky9MIRqRsF2SSADtAI+3M+EVGUvmSyvBvZGpiy/IoQV9Zo
+         mD34pbREdmb9NI8owNrwF2g0tQtU0w2AKn+bRbtPDBzsI+6HTwl22GamXeGaCs7NPaQn
+         fhff2YjqZyMalkS3Gv3DYU/FPPwpGHHy8PnWHosDraLk9wU1K+LRfWclAHqluA6yfhiK
+         TtyeVnSyE1pAwX9W17Azmj5vdGSWQDB5yiZeBGfPfFZUw+Lgl/HCNahivlrCF7sZ3o/8
+         chvQ==
+X-Gm-Message-State: AOJu0YyJknuUvu564NB8zzFirjj3nWZQ5qQcWCsnBM8FvcT8neuo6Cvf
+	FHcYrfOAgEErlFsbE2ZJwPBFS9WBQCmdCGrQa4OyHBo1Ka3yrhlqlx1WlY2H
+X-Google-Smtp-Source: AGHT+IF5J7Ksbagb52c2AWvuyqGKYpcRR+4uDFGY23w4k3s/FSuJLokWRE9iE9uJg2YSIfdloe1UQg==
+X-Received: by 2002:a19:6a0e:0:b0:513:dba5:ac67 with SMTP id u14-20020a196a0e000000b00513dba5ac67mr1666249lfu.32.1711478833471;
+        Tue, 26 Mar 2024 11:47:13 -0700 (PDT)
 Received: from localhost.localdomain (109-252-14-191.nat.spd-mgts.ru. [109.252.14.191])
-        by smtp.gmail.com with ESMTPSA id h10-20020ac2596a000000b00513d24f1d38sm1586371lfp.172.2024.03.26.11.47.04
+        by smtp.gmail.com with ESMTPSA id i12-20020a0565123e0c00b00515acc50f71sm890424lfv.260.2024.03.26.11.47.12
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Mar 2024 11:47:04 -0700 (PDT)
+        Tue, 26 Mar 2024 11:47:13 -0700 (PDT)
 From: Maxim Moskalets <maximmosk4@gmail.com>
 X-Google-Original-From: Maxim Moskalets <Maxim.Moskalets@kaspersky.com>
 To: linux-kernel@vger.kernel.org
 Cc: maximmosk4@gmail.com,
 	Maxim Moskalets <Maxim.Moskalets@kaspersky.com>
-Subject: [PATCH 5/8] sched: replace seq_puts by seq_putc
-Date: Tue, 26 Mar 2024 21:47:02 +0300
-Message-Id: <20240326184702.8768-1-Maxim.Moskalets@kaspersky.com>
+Subject: [PATCH 6/8] locking: replace seq_puts by seq_putc
+Date: Tue, 26 Mar 2024 21:47:10 +0300
+Message-Id: <20240326184710.8799-1-Maxim.Moskalets@kaspersky.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20240326184514.8478-1-Maxim.Moskalets@kaspersky.com>
 References: <20240326184514.8478-1-Maxim.Moskalets@kaspersky.com>
@@ -90,76 +90,98 @@ to use a more powerful and less fast function.
 
 Signed-off-by: Maxim Moskalets <Maxim.Moskalets@kaspersky.com>
 ---
- kernel/sched/cpuacct.c |  4 ++--
- kernel/sched/debug.c   | 14 +++++++-------
- 2 files changed, 9 insertions(+), 9 deletions(-)
+ kernel/locking/lockdep_proc.c | 24 ++++++++++++------------
+ 1 file changed, 12 insertions(+), 12 deletions(-)
 
-diff --git a/kernel/sched/cpuacct.c b/kernel/sched/cpuacct.c
-index 0de9dda09949..0c1ce2e1c89b 100644
---- a/kernel/sched/cpuacct.c
-+++ b/kernel/sched/cpuacct.c
-@@ -245,14 +245,14 @@ static int cpuacct_all_seq_show(struct seq_file *m, void *V)
- 	seq_puts(m, "cpu");
- 	for (index = 0; index < CPUACCT_STAT_NSTATS; index++)
- 		seq_printf(m, " %s", cpuacct_stat_desc[index]);
+diff --git a/kernel/locking/lockdep_proc.c b/kernel/locking/lockdep_proc.c
+index e2bfb1db589d..4612d1c4f45e 100644
+--- a/kernel/locking/lockdep_proc.c
++++ b/kernel/locking/lockdep_proc.c
+@@ -101,17 +101,17 @@ static int l_show(struct seq_file *m, void *v)
+ 
+ 	seq_printf(m, ": ");
+ 	print_name(m, class);
 -	seq_puts(m, "\n");
 +	seq_putc(m, '\n');
  
- 	for_each_possible_cpu(cpu) {
- 		seq_printf(m, "%d", cpu);
- 		for (index = 0; index < CPUACCT_STAT_NSTATS; index++)
- 			seq_printf(m, " %llu",
- 				   cpuacct_cpuusage_read(ca, cpu, index));
+ 	if (IS_ENABLED(CONFIG_PROVE_LOCKING)) {
+ 		list_for_each_entry(entry, &class->locks_after, entry) {
+ 			if (entry->distance == 1) {
+ 				seq_printf(m, " -> [%p] ", entry->class->key);
+ 				print_name(m, entry->class);
+-				seq_puts(m, "\n");
++				seq_putc(m, '\n');
+ 			}
+ 		}
 -		seq_puts(m, "\n");
 +		seq_putc(m, '\n');
  	}
+ 
  	return 0;
- }
-diff --git a/kernel/sched/debug.c b/kernel/sched/debug.c
-index 8d5d98a5834d..03d78cff66e3 100644
---- a/kernel/sched/debug.c
-+++ b/kernel/sched/debug.c
-@@ -62,7 +62,7 @@ static int sched_feat_show(struct seq_file *m, void *v)
- 			seq_puts(m, "NO_");
- 		seq_printf(m, "%s ", sched_feat_names[i]);
+@@ -175,9 +175,9 @@ static int lc_show(struct seq_file *m, void *v)
+ 
+ 		seq_printf(m, "[%p] ", class->key);
+ 		print_name(m, class);
+-		seq_puts(m, "\n");
++		seq_putc(m, '\n');
  	}
 -	seq_puts(m, "\n");
 +	seq_putc(m, '\n');
  
  	return 0;
  }
-@@ -251,15 +251,15 @@ static int sched_dynamic_show(struct seq_file *m, void *v)
+@@ -379,7 +379,7 @@ static int lockdep_stats_show(struct seq_file *m, void *v)
+ 	/*
+ 	 * Zapped classes and lockdep data buffers reuse statistics.
+ 	 */
+-	seq_puts(m, "\n");
++	seq_putc(m, '\n');
+ 	seq_printf(m, " zapped classes:                %11lu\n",
+ 			nr_zapped_classes);
+ #ifdef CONFIG_PROVE_LOCKING
+@@ -422,10 +422,10 @@ static void seq_line(struct seq_file *m, char c, int offset, int length)
+ 	int i;
  
- 	for (i = 0; i < ARRAY_SIZE(preempt_modes); i++) {
- 		if (preempt_dynamic_mode == i)
--			seq_puts(m, "(");
-+			seq_putc(m, '(');
- 		seq_puts(m, preempt_modes[i]);
- 		if (preempt_dynamic_mode == i)
--			seq_puts(m, ")");
-+			seq_putc(m, ')');
- 
+ 	for (i = 0; i < offset; i++)
 -		seq_puts(m, " ");
 +		seq_putc(m, ' ');
- 	}
- 
+ 	for (i = 0; i < length; i++)
+ 		seq_printf(m, "%c", c);
 -	seq_puts(m, "\n");
 +	seq_putc(m, '\n');
- 	return 0;
  }
  
-@@ -389,9 +389,9 @@ static int sd_flags_show(struct seq_file *m, void *v)
- 
- 	for_each_set_bit(idx, &flags, __SD_FLAG_CNT) {
- 		seq_puts(m, sd_flag_debug[idx].name);
--		seq_puts(m, " ");
-+		seq_putc(m, ' ');
+ static void snprint_time(char *buf, size_t bufsiz, s64 nr)
+@@ -512,7 +512,7 @@ static void seq_stats(struct seq_file *m, struct lock_stat_data *data)
+ 		seq_lock_time(m, &stats->write_waittime);
+ 		seq_printf(m, " %14lu ", stats->bounces[bounce_acquired_write]);
+ 		seq_lock_time(m, &stats->write_holdtime);
+-		seq_puts(m, "\n");
++		seq_putc(m, '\n');
  	}
--	seq_puts(m, "\n");
-+	seq_putc(m, '\n');
  
- 	return 0;
+ 	if (stats->read_holdtime.nr) {
+@@ -521,7 +521,7 @@ static void seq_stats(struct seq_file *m, struct lock_stat_data *data)
+ 		seq_lock_time(m, &stats->read_waittime);
+ 		seq_printf(m, " %14lu ", stats->bounces[bounce_acquired_read]);
+ 		seq_lock_time(m, &stats->read_holdtime);
+-		seq_puts(m, "\n");
++		seq_putc(m, '\n');
+ 	}
+ 
+ 	if (stats->read_waittime.nr + stats->write_waittime.nr == 0)
+@@ -561,9 +561,9 @@ static void seq_stats(struct seq_file *m, struct lock_stat_data *data)
+ 			   ip, (void *)class->contending_point[i]);
+ 	}
+ 	if (i) {
+-		seq_puts(m, "\n");
++		seq_putc(m, '\n');
+ 		seq_line(m, '.', 0, 40 + 1 + 12 * (14 + 1));
+-		seq_puts(m, "\n");
++		seq_putc(m, '\n');
+ 	}
  }
+ 
 -- 
 2.39.2
 
