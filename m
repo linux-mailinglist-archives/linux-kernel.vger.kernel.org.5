@@ -1,145 +1,186 @@
-Return-Path: <linux-kernel+bounces-119036-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-119037-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7EA7E88C2FD
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 14:08:28 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id F083A88C300
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 14:08:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AFEBF1C28296
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 13:08:27 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6AE391F3D37B
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 13:08:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 76B5B74411;
-	Tue, 26 Mar 2024 13:08:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5E2257440B;
+	Tue, 26 Mar 2024 13:08:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="Q3BPGshZ";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="ETN1EH6y"
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	dkim=pass (2048-bit key) header.d=pankajraghav.com header.i=@pankajraghav.com header.b="ZpPpldsn"
+Received: from mout-p-202.mailbox.org (mout-p-202.mailbox.org [80.241.56.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 493396EB56;
-	Tue, 26 Mar 2024 13:08:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B006EEEA9;
+	Tue, 26 Mar 2024 13:08:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.241.56.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711458496; cv=none; b=u8v02o78+AxVpT/9WLLtM8dyw08nW/1d2tNqji1Zez9Ki2WyabwfCs93Mj5xLy5L/7Swv2nbS+aul+6VTwNhzC5nVqy8VEGLNmSgp33B+6HGibIW4WvQdVJ9KL7gmHrCE+CW1yjFvECJJyqfI8Cq5MtKA3FFUElN4ckIrl51GIw=
+	t=1711458517; cv=none; b=lRcSQaSSA9rkRKhT1v8wjd9AGaeGt5TcVKuAkM00foaSQrgSmOLqBuB0mLvrr1J6BBApLCNtjjiXujvtnOjRiBZRU74QcM38RIicG7QyaDr7Fyg8KOHvLDz9x5gcypUxv6TwMFIS3SBs6440RSJLJMsOPfZih1ffwYdMzuCKwE0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711458496; c=relaxed/simple;
-	bh=EFshh7X9ubM0+XF5Ra6jL39fGH/o4V6QpqW2xLYoLl4=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=rjzFIZWk+jnORBDLcA3WiAoQIrVQMZf81ZsRJxRDa7Arp9//KeQK0cEy5IFVfYUVg3gHKlOiQHrsuGlcHch1sd+45dhpmQBJWxkWO6fhT0EKMkz0/l2W4U3C9a1AByOcuVO/PxhWkCPdH6RHcGNbc7OjmSyA6O7ybAuZL2hgu4w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=Q3BPGshZ; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=ETN1EH6y; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-From: Kurt Kanzenbach <kurt@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1711458493;
+	s=arc-20240116; t=1711458517; c=relaxed/simple;
+	bh=zb+c1eJhGpVi8lvJndVvpd3BeurHRjqMmwzo2z5blnY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=kbAoHWKBjQ/O+/eHxROAqIkKxEM8uGifdEioqpSrZXeNKsP6j4UPsu27iJrdW0Zee9i4c0dtg5WHj3UtyO0I1kNBl1as7ylF1UjVbCNeX+cyTV2rHQdexhTLWnb82VhZ3HgfOPUYIohZ67y7+JT8ifWaA89hBrcd2a2QvV9eopM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=pankajraghav.com; spf=pass smtp.mailfrom=pankajraghav.com; dkim=pass (2048-bit key) header.d=pankajraghav.com header.i=@pankajraghav.com header.b=ZpPpldsn; arc=none smtp.client-ip=80.241.56.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=pankajraghav.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pankajraghav.com
+Received: from smtp2.mailbox.org (smtp2.mailbox.org [10.196.197.2])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mout-p-202.mailbox.org (Postfix) with ESMTPS id 4V3qqZ1vgkz9sZw;
+	Tue, 26 Mar 2024 14:08:26 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pankajraghav.com;
+	s=MBO0001; t=1711458506;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=EFshh7X9ubM0+XF5Ra6jL39fGH/o4V6QpqW2xLYoLl4=;
-	b=Q3BPGshZjYjwajuB08w+lCsgYc4jwV721Wv5kUoUeHfAFvZkyxyndQHGFurpE95oBdR4bX
-	YpJjFXDFZWJr7xwnkfmW3FHTGgNjgbHxVo3KcAN7n83/W4ps0adlGOwyu50R0Qk+O2a69N
-	1xd2Ccp638kp4wALLynd+IL5F4zUqBdo/2mYwtWONS/L22/bdK2/pCCoK6Eqvs0u3M8Gzu
-	Gotov/THQ8uRTkAP5UACHcIJVGxVQLYm0FD6D/oxxhY3szI+2N/c0ILavEIEfPDdTbHsm9
-	PGQnH1iJAOWK1xQbzQTOCcciMsApeSFTClTAJR6WzEw1cNDufscUg0zVIcQDqQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1711458493;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=EFshh7X9ubM0+XF5Ra6jL39fGH/o4V6QpqW2xLYoLl4=;
-	b=ETN1EH6yWipj0JNpAd5nRCoQV2L5x2Mn9uiIkmMkcszRTyQQ0yU/InWK3ccY47SVq72IP1
-	H6ZpPfeK79IJ7wAg==
-To: Florian Bezdeka <florian.bezdeka@siemens.com>, Song Yoong Siang
- <yoong.siang.song@intel.com>, Jesse Brandeburg
- <jesse.brandeburg@intel.com>, Tony Nguyen <anthony.l.nguyen@intel.com>,
- "David S . Miller" <davem@davemloft.net>, Eric Dumazet
- <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni
- <pabeni@redhat.com>, Richard Cochran <richardcochran@gmail.com>, Alexei
- Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend
- <john.fastabend@gmail.com>, Stanislav Fomichev <sdf@google.com>, Vinicius
- Costa Gomes <vinicius.gomes@intel.com>, Maciej Fijalkowski
- <maciej.fijalkowski@intel.com>
-Cc: intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
- xdp-hints@xdp-project.net
-Subject: Re: [PATCH iwl-next,v4 1/1] igc: Add Tx hardware timestamp request
- for AF_XDP zero-copy packet
-In-Reply-To: <d2623ac0f1cb07a23976416cdcf9eee1986747b0.camel@siemens.com>
-References: <20240325020928.1987947-1-yoong.siang.song@intel.com>
- <d2623ac0f1cb07a23976416cdcf9eee1986747b0.camel@siemens.com>
-Date: Tue, 26 Mar 2024 14:08:11 +0100
-Message-ID: <87h6gtb0p0.fsf@kurt.kurt.home>
+	bh=8d3EYhEfZQrAxbjR62dfoi3Du1p/pSGgH8hAUpFy1wc=;
+	b=ZpPpldsnkTVp8fEwuvWULTRBSOBTvIVSqq5FwEnlkX6aBXsg6IxKtbiT4cC9fpCeuZP4Pa
+	0QDhOQMjnvd8vrpFFschiKqbVfCx4ldj9We/LGbWrFUZ+Ir2mBlbhAggwldAbACN/BCVYX
+	pp8dnbZbIw0pkRhn4wzqUCoFNjvAoBeaJegHoJN/JgNyIkQ1lYl19MUTvT02Ecz9UDlG4l
+	MlqfrzPw8n9PoU3e9C9Yjny1M5NoEnesiFxLQUaKqiSQVA8oy2WD4Bai2b6KrJxD16ufLW
+	dQb4pWjeeNcY58dCxJOwf/ETisiFLVe3vBEXbnzUXiLoQhRkRNLem3tqSScy7Q==
+Date: Tue, 26 Mar 2024 14:08:22 +0100
+From: "Pankaj Raghav (Samsung)" <kernel@pankajraghav.com>
+To: Matthew Wilcox <willy@infradead.org>
+Cc: linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
+	gost.dev@samsung.com, chandan.babu@oracle.com, hare@suse.de, mcgrof@kernel.org, 
+	djwong@kernel.org, linux-mm@kvack.org, linux-kernel@vger.kernel.org, 
+	david@fromorbit.com, akpm@linux-foundation.org, Pankaj Raghav <p.raghav@samsung.com>
+Subject: Re: [PATCH v3 05/11] readahead: allocate folios with
+ mapping_min_order in readahead
+Message-ID: <ftoxbmcyyvrfo5qx6dj2kmifoky36ij3c3wx7h5wl4cg4ml5gw@yi7lxegriowg>
+References: <20240313170253.2324812-1-kernel@pankajraghav.com>
+ <20240313170253.2324812-6-kernel@pankajraghav.com>
+ <ZgHJxiYHvN9DfD15@casper.infradead.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="=-=-=";
-	micalg=pgp-sha512; protocol="application/pgp-signature"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZgHJxiYHvN9DfD15@casper.infradead.org>
 
---=-=-=
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
+> > 
+> > page_cache_ra_unbounded() was allocating single pages (0 order folios)
+> > if there was no folio found in an index. Allocate mapping_min_order folios
+> > as we need to guarantee the minimum order if it is set.
+> > When read_pages() is triggered and if a page is already present, check
+> > for truncation and move the ractl->_index by mapping_min_nrpages if that
+> > folio was truncated. This is done to ensure we keep the alignment
+> > requirement while adding a folio to the page cache.
+> > 
+> > page_cache_ra_order() tries to allocate folio to the page cache with a
+> > higher order if the index aligns with that order. Modify it so that the
+> > order does not go below the min_order requirement of the page cache.
+> 
+> This paragraph doesn't make sense.  We have an assertion that there's no
+> folio in the page cache with a lower order than the minimum, so this
+> seems to be describing a situation that can't happen.  Does it need to
+> be rephrased (because you're actually describing something else) or is
+> it just stale?
+> 
+Hmm, maybe I need to explain better here.
 
-Hi Florian,
+> > @@ -489,12 +520,18 @@ void page_cache_ra_order(struct readahead_control *ractl,
+> >  {
+> >  	struct address_space *mapping = ractl->mapping;
+> >  	pgoff_t index = readahead_index(ractl);
+> > +	unsigned int min_order = mapping_min_folio_order(mapping);
+> >  	pgoff_t limit = (i_size_read(mapping->host) - 1) >> PAGE_SHIFT;
+> >  	pgoff_t mark = index + ra->size - ra->async_size;
+> >  	int err = 0;
+> >  	gfp_t gfp = readahead_gfp_mask(mapping);
+> > +	unsigned int min_ra_size = max(4, mapping_min_folio_nrpages(mapping));
+> >  
+> > -	if (!mapping_large_folio_support(mapping) || ra->size < 4)
 
-On Tue Mar 26 2024, Florian Bezdeka wrote:
-> On Mon, 2024-03-25 at 10:09 +0800, Song Yoong Siang wrote:
->> This patch adds support to per-packet Tx hardware timestamp request to
->> AF_XDP zero-copy packet via XDP Tx metadata framework. Please note that
->> user needs to enable Tx HW timestamp capability via igc_ioctl() with
->> SIOCSHWTSTAMP cmd before sending xsk Tx hardware timestamp request.
->>=20
->> Same as implementation in RX timestamp XDP hints kfunc metadata, Timer 0
->> (adjustable clock) is used in xsk Tx hardware timestamp. i225/i226 have
->> four sets of timestamping registers. *skb and *xsk_tx_buffer pointers
->> are used to indicate whether the timestamping register is already occupi=
-ed.
->
-> Let me make sure that I fully understand that: In my own words:
->
-> With that applied I'm able to get the point in time from the device
-> when a specific frame made it to the wire. I have to enable that
-> functionality using the mentioned ioctl() call first, and then check
-> the meta area (located in the umem right before the frame payload)
-> while consuming the completion queue/ring. Correct?
->
-> If so, we now have a feedback channel for meta information for/from TX.
-> Are there any plans - or would it be possible - to support Earliest
-> TxTime First (NET_SCHED_ETF) QDisc based on that channel? In the past
-> we had the problem that we we're missing a feedback channel to
-> communicate back invalid lunch times.
+I had one question: `4` was used here because we could not support order
+1 folios I assume? As we now support order-1 folios, can this fallback
+if ra->size < min_nrpages?
 
-Just asking: How would that work? AFAIK XDP bypasses the Qdisc
-layer. Currently invalid Launch Times are accounted in the ETF Qdisc
-itself. Does that mean every driver has to take care of it?
+> > +	/*
+> > +	 * Fallback when size < min_nrpages as each folio should be
+> > +	 * at least min_nrpages anyway.
+> > +	 */
+> > +	if (!mapping_large_folio_support(mapping) || ra->size < min_ra_size)
+> >  		goto fallback;
+> >  
+> >  	limit = min(limit, index + ra->size - 1);
+> > @@ -505,9 +542,19 @@ void page_cache_ra_order(struct readahead_control *ractl,
+> >  			new_order = MAX_PAGECACHE_ORDER;
+> >  		while ((1 << new_order) > ra->size)
+> >  			new_order--;
+> > +		if (new_order < min_order)
+> > +			new_order = min_order;
+> 
+> I think these are the two lines you're describing in the paragraph that
+Yes. At least I tried to ;)
 
-Thanks,
-Kurt
+> doesn't make sense to me?  And if so, I think they're useless?
 
---=-=-=
-Content-Type: application/pgp-signature; name="signature.asc"
+We need this because:
+The caller might pass new_order = 0 (such as when we start mmap around)
+but ra_order will do the "right" thing by taking care of the page cache
+alignment requirements. The previous revision did this other way around
+and it felt a bit all over the place.
 
------BEGIN PGP SIGNATURE-----
+One of the main changes I did for this revision is to adapt the
+functions that alloc and add a folio to respect the min order alignment,
+and not on the caller side.
 
-iQJHBAEBCgAxFiEEvLm/ssjDfdPf21mSwZPR8qpGc4IFAmYCyLsTHGt1cnRAbGlu
-dXRyb25peC5kZQAKCRDBk9HyqkZzggJ7D/9ZO6iQENtqCYv6/eWBp7S7wfIxVTnA
-/O1AKCo1zVKtj0of1aR/1pAf1BsbmZNpYXHf0bTL74M6gzJtxRJDb+X9TX++wIRP
-TBAKlWuIiOMTRgKJ6b8lO9Jv3MExJ7WOJDarXI7wFHsgUEwZ4XgDRf+v550KVztw
-t1qEskkv0SCqZsidryG19aSwECAlvkie5JPX6WS5YuvmWRg6Gj4P8GKXUctHakfW
-z2O/mFbuq+fkAsYRA1MLXQw+uVliEoSbNaMkUCC6bH2MmAHJPs9rrmXqTMuWz5tK
-lTA4sh/OYTPJWhqvEPlJp3aCmgDmvd3VyEhxJPdnYdzhPCQ6CG+D4A5hzKjNC0eq
-Dw3UR7Gqsa4lpSrwUOcGZjtmdUQbH+lsKgekCZq/FQeU4McrWGWDJSRHC9Ak6Wge
-Zuh2KmRx7+8TynukUG+mZq0pso+F8bABY0/CK6ftt3KXhq3pS/jsMUZK6FQ0ASXP
-8PFU8imBZQorzkKnXfQv4VD9ZtXuWA9eJ2ipGFCrg2a4BEcVltXEqgy1u0yysZtZ
-Ajj/R8KvMplogG2/MSg4QS6mYxWd4sPGa8TmpSr+h4TPM+x5prFInVhTUTlUyt/D
-2+uooj7jtx07znqgPaMRrRSitxd/qGxEMW+qwNwzDgpSiKFmSyftE0A9UPBo/nSP
-SqzH1kto/s6nmw==
-=EfO9
------END PGP SIGNATURE-----
---=-=-=--
+The rationale I went for this is three fold: 
+- the callers of page_cache_ra_order() and page_cache_ra_unbounded() 
+  requests a range for which we need to do add a folio and read it. They
+  don't care about the folios size and alignment.
+
+- file_ra_state also does not need any poking around because we will
+  make sure to cover from [ra->start, ra->size] and update ra->size if
+  we spilled over due to the min_order requirement(like it was done before).
+
+- And this is also consistent with what we do in filemap where we adjust
+  the index before adding the folio to the page cache.
+
+Let me know if this approach makes sense.
+> 
+> > @@ -515,7 +562,7 @@ void page_cache_ra_order(struct readahead_control *ractl,
+> >  		if (index & ((1UL << order) - 1))
+> >  			order = __ffs(index);
+> >  		/* Don't allocate pages past EOF */
+> > -		while (index + (1UL << order) - 1 > limit)
+> > +		while (order > min_order && index + (1UL << order) - 1 > limit)
+> >  			order--;
+> 
+> This raises an interesting question that I don't know if we have a test
+> for.  POSIX says that if we mmap, let's say, the first 16kB of a 10kB
+> file, then we can store into offset 0-12287, but stores to offsets
+> 12288-16383 get a signal (I forget if it's SEGV or BUS).  Thus far,
+> we've declined to even create folios in the page cache that would let us
+> create PTEs for offset 12288-16383, so I haven't paid too much attention
+> to this.  Now we're going to have folios that extend into that range, so
+> we need to be sure that when we mmap(), we only create PTEs that go as
+> far as 12287.
+> 
+> Can you check that we have such an fstest, and that we still pass it
+> with your patches applied and a suitably large block size?
+
+Hmmm, good point.
+I think you mean this from the man page:
+
+SIGBUS Attempted access to a page of the buffer that lies beyond the end
+of the mapped file.  For an explanation of the treatment of the bytes in
+the page that corresponds to the end of a mapped file that is not a 
+multiple of the page size, see NOTES.
+
+I will add a test case for this and see what happens. I am not sure if I
+need to make some changes or the current implementation should hold.
 
