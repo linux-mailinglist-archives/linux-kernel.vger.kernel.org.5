@@ -1,47 +1,47 @@
-Return-Path: <linux-kernel+bounces-119317-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-119318-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id CD08588C701
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 16:30:59 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0CF7888C702
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 16:31:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 88D8C3208E5
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 15:30:58 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 849E9B269C3
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 15:31:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8898C13C919;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 97FC613C91B;
 	Tue, 26 Mar 2024 15:30:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VpWdrLGo"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="pqFxomEA"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C6A3258220;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C6A8E757FD;
 	Tue, 26 Mar 2024 15:30:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711467040; cv=none; b=Pr3uWkLPFYOmKA87B/+4/04fWNHDRMiI5tuRv3ptDzRdjkIC92ihYoevwr1vMZOGVH0GdTiZiieK4Lcddgy88lL7zbG+fEox9OY0Xl2wXWJ0LEHn00I4AaGJHAsFP1Fk1eDwP53W8VdoQXyBoZSXUHPDytbWQfVsAAyBlNNEgZs=
+	t=1711467040; cv=none; b=LxWsqklMJzSCUdvNglf/l4jEIqihOaVLQLtyXZhG2wWflAL4fuz5Cz1trJAMQ7Iyy2LGFOfV2xkDmGocdqzv7QJDNEsgJstorxCA6UABMqnN/Uv6FG6LHpCp6XCevcilk0tS/oOOFm9yyA7IWn6ELO0dA4qWCcu2Jh+eTK64+yI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1711467040; c=relaxed/simple;
-	bh=XJotx7SDA6uGR4v8KxMLQ7h0N4gsqiAlZu8rWZ9dRm8=;
+	bh=o6CYcZxpDQIt2/pbcizSI8kvPoWkCHq1wkzT2k2XcIY=;
 	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=RcebrBCfBFqa17rkwlWYxHvVpPKjNznTMpoeR+URmxaHTD0uf1tKOTtO5KvzrOVFwrTzVc8Abj5/KXrzBGuDw0gZs1IVZgPL30wesCtqXhSCaLc1thNiM++3TnrmRV4H1R0N7A3XPoS9sclhlkBfP1SZ83S7qN6YElsGHm5U5IM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=VpWdrLGo; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 69559C433F1;
+	 In-Reply-To:To:Cc; b=JO+GCtn1miHqRhxYSlwYsSv9xihLiu1sdbCgnANEEMox5z5wUCjVPZtvtcSFOJiimU8eyXP4Z/DMzRDNs0mX+uvkQnS6532Rj8hYxkRkv8BUttjAf6lsWhLKSdivC5xE/NgKTiwxYrLF1vFgIH/wjR+JPt/NlPzoOfF/IBsKzMw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=pqFxomEA; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 61DCAC43390;
 	Tue, 26 Mar 2024 15:30:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1711467040;
-	bh=XJotx7SDA6uGR4v8KxMLQ7h0N4gsqiAlZu8rWZ9dRm8=;
+	bh=o6CYcZxpDQIt2/pbcizSI8kvPoWkCHq1wkzT2k2XcIY=;
 	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=VpWdrLGoy382RyEOvpIFPA8aNqPDNFumg8vT0RyYesdZbfqyiRWSzNLlAQMDvv+be
-	 2xLvNvCqNZX6SW4wJLgEFL30gTBipmT4pMMN5r1tNCh+HZtW1zYXKUtu3JmLXdCk0+
-	 xS+Fm4cw1zzHPdmLuaa1JE0eYu3MHbi5MKeT5yWrz7yd84NlEzocP7JC3kDtFcaeiN
-	 x1CEZejE5BWOGP8pKk9yBzjfJ0IWaexCJvi+zKkUGMguWv8m7/MCxaYWSf9Wcagfck
-	 cQPtlSLapO7K7GNMxmDuY7UxJQmU3bUXlU88siFJ9ohmXzoPCToA3ZJ6Chek2m8Cr9
-	 +DHgH0pvKZjeg==
+	b=pqFxomEAFsI0Uc52UqguqMRU+vuximhONo1wk9jsKiAAvfKpoMjaUMRB8pdyxqLTW
+	 uV1FlhJB6uqhOdhBER+T8uAKjX4K/++ylq56UCZK1p//0u1jYEhYqWyaHvlT8WEn8Y
+	 nlolO/GGGgM+PgqOTxVBove7AVZLypFqGGuP6xml1wxnVEw/GzNzAGP+gUoYAyCu1Q
+	 FYH/MLuVUv4v+QB41lN0Et+IFwelaQYPGuAaOv+hyI+yB4HlTpYwLOYKH9bd+DSakR
+	 0AWjkwgmcG+VnVc5sghWjU7GV5r/D2tk2tmTlCHp2l+F0Pg1wM9d0TGM/P9AzbXV4m
+	 49Ck99G1lcteg==
 Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 588E3D8BCE8;
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 4CCB1D2D0E9;
 	Tue, 26 Mar 2024 15:30:40 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
@@ -51,37 +51,50 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH] Revert "Bluetooth: hci_qca: Set BDA quirk bit if fwnode
- exists in DT"
+Subject: Re: [PATCH v4 0/4] Bluetooth: qca: fix device-address endianness
 From: patchwork-bot+bluetooth@kernel.org
 Message-Id: 
- <171146704035.9961.13096206001570615153.git-patchwork-notify@kernel.org>
+ <171146704030.9961.6734393156915246148.git-patchwork-notify@kernel.org>
 Date: Tue, 26 Mar 2024 15:30:40 +0000
-References: <20240314084412.1127-1-johan+linaro@kernel.org>
-In-Reply-To: <20240314084412.1127-1-johan+linaro@kernel.org>
+References: <20240320075554.8178-1-johan+linaro@kernel.org>
+In-Reply-To: <20240320075554.8178-1-johan+linaro@kernel.org>
 To: Johan Hovold <johan+linaro@kernel.org>
-Cc: luiz.dentz@gmail.com, marcel@holtmann.org,
- linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org,
- stable@vger.kernel.org, quic_janathot@quicinc.com
+Cc: marcel@holtmann.org, luiz.dentz@gmail.com, andersson@kernel.org,
+ robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+ cros-qcom-dts-watchers@chromium.org, konrad.dybcio@linaro.org,
+ johan.hedberg@gmail.com, quic_bgodavar@quicinc.com, mka@chromium.org,
+ dianders@chromium.org, quic_rjliao@quicinc.com, dmitry.baryshkov@linaro.org,
+ linux-bluetooth@vger.kernel.org, netdev@vger.kernel.org,
+ devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+ linux-kernel@vger.kernel.org
 
 Hello:
 
-This patch was applied to bluetooth/bluetooth-next.git (master)
+This series was applied to bluetooth/bluetooth-next.git (master)
 by Luiz Augusto von Dentz <luiz.von.dentz@intel.com>:
 
-On Thu, 14 Mar 2024 09:44:12 +0100 you wrote:
-> This reverts commit 7dcd3e014aa7faeeaf4047190b22d8a19a0db696.
+On Wed, 20 Mar 2024 08:55:50 +0100 you wrote:
+> The Qualcomm Bluetooth driver is configuring the device address in
+> reverse order for none-ROME devices, which breaks user space tools like
+> btmgmt and the 'local-bd-address' devicetree property.
 > 
-> Qualcomm Bluetooth controllers like WCN6855 do not have persistent
-> storage for the Bluetooth address and must therefore start as
-> unconfigured to allow the user to set a valid address unless one has
-> been provided by the boot firmware in the devicetree.
+> As these Qualcomm controllers lack persistent storage for the device
+> address, boot firmware can use the 'local-bd-address' devicetree
+> property to provide a valid address. The property should specify the
+> address in little endian order but instead some boot firmware has been
+> reversing the address to match the buggy Qualcomm driver.
 > 
 > [...]
 
 Here is the summary with links:
-  - Revert "Bluetooth: hci_qca: Set BDA quirk bit if fwnode exists in DT"
-    https://git.kernel.org/bluetooth/bluetooth-next/c/ac0cf3552972
+  - [v4,1/4] dt-bindings: bluetooth: add 'qcom,local-bd-address-broken'
+    https://git.kernel.org/bluetooth/bluetooth-next/c/ea56aab91231
+  - [v4,2/4] arm64: dts: qcom: sc7180-trogdor: mark bluetooth address as broken
+    https://git.kernel.org/bluetooth/bluetooth-next/c/c4406d97b78c
+  - [v4,3/4] Bluetooth: add quirk for broken address properties
+    https://git.kernel.org/bluetooth/bluetooth-next/c/ddaa064664fe
+  - [v4,4/4] Bluetooth: qca: fix device-address endianness
+    https://git.kernel.org/bluetooth/bluetooth-next/c/ff2ed85c0122
 
 You are awesome, thank you!
 -- 
