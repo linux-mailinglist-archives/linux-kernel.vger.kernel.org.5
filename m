@@ -1,168 +1,168 @@
-Return-Path: <linux-kernel+bounces-119412-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-119413-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1FFA488C857
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 17:00:25 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 774E688C85B
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 17:00:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C7D6E300F79
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 16:00:23 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3245E322C53
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 16:00:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 84BA013C901;
-	Tue, 26 Mar 2024 15:59:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CDEE613C9DD;
+	Tue, 26 Mar 2024 15:59:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="ZEjR9Arw"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jxJAfeHA"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F1A2713C837
-	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 15:59:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F268013C9C9;
+	Tue, 26 Mar 2024 15:59:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711468777; cv=none; b=SZU0gaQ76ILEx+UTc2qbwYhCUXuB/ZqfWZP+EaCr+mFX4HSYE+X+ImXW3/DiI9V2KpQOZuHHFv569j6/XvoyKzRhumHxblGLUCdWa1gSOH7DgfbvE2CcO0JMBVGH0cVtWtPOcwYZWvjk5V4idzDG8p/61a199htBX/rMaWozv8Q=
+	t=1711468790; cv=none; b=MUqJA7f+cqbsv4CdfqPCRiLtgVb7nCV8ReNiuoTqVOsZkp2bxWuLREEecB/q0ivTkFSBpOxiF0gltcIQsTfdQJ5TGxMX0kXDjQn41PJJ3LmKUvtS2zlyaH7BaDAOq1/oUQa6BYfh86c7PgN341Zq4kQ/b0VdWcC9LQMT5KNOup0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711468777; c=relaxed/simple;
-	bh=Ynl1v8gS98gAwGFyFLKby7KV+b8y8whJ/pPgiYiDqbY=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=BwktalFjOWI41VfrM+wt8wgrYI/akONM0SUhD+V3A3jG4m6Kcizb4BQkPz4T6foHcemQmn2Oe1k01kv3A7WkwZvAVh2R+snvFfkuhKDSvGdsdk1U12a6L59Uqe5BIaZuzK6HXSQYviMr66bDm68J+UT64NE9QfWSIX2iK13Z8iI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=ZEjR9Arw; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1711468775;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=jQ8clIjXc4soz7eWewvwlvASClEQyBetLO4fGly13aQ=;
-	b=ZEjR9Arw10ZyhaO84/a60ZB29IAa+Nex1uYjVuNGO4RZ7cHzzZwW6ISRpOMSawzR0jjxib
-	u23CGEctPVC0HvSPPwiTLzTg2BG7QKUixJDqYYTui5eJThCv50klhJa+TydGrPEcvZo4Qv
-	dQaqe6QoZWV8ND4iH7mH//RIpikoK9I=
-Received: from mail-oa1-f69.google.com (mail-oa1-f69.google.com
- [209.85.160.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-505-UnfUaIXYOTCtJXWWWERgJA-1; Tue, 26 Mar 2024 11:59:33 -0400
-X-MC-Unique: UnfUaIXYOTCtJXWWWERgJA-1
-Received: by mail-oa1-f69.google.com with SMTP id 586e51a60fabf-229f4995573so2766251fac.1
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 08:59:33 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711468773; x=1712073573;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=jQ8clIjXc4soz7eWewvwlvASClEQyBetLO4fGly13aQ=;
-        b=M413Qh4yX9mC6GfVnzl93hVA351h7un0VmcZEnI4/Aah7PQfitnEAd6VLQ6+KmumSf
-         7GybntURddPMe54+++wj+yNtymajb+SWCBjNT5QyI3EMjyhS6UeYvWxyQVXm6ajHqmMM
-         5bG5QBKkiwB/t7R0sxg0vCatYyAANBgG4e9U9rcutrs1+3wymvx7XAkN7keXrZUuwWnM
-         xIjJUrKKYNHeqx9IIRecGCoY8s7aIO0LAQWi+1byU5N54WWmfpRLLaSTwwy5u3SH0IrB
-         enqs8iXhWMozdt/zvqhOj6xqzD0cHDGtX64ozAWPRPldXLrJFk0fEjtLlvDxBAvnaexo
-         AF8Q==
-X-Forwarded-Encrypted: i=1; AJvYcCVMPCVoqyUOIG5P9Y+QD3+ZkJpymS4bAHf4tuLhLTP+InIPaqmyaiC9bfvX3V+rTv6mO08q8WZfR/tIzMADoWKZf9zKnNB3ne/EWq6e
-X-Gm-Message-State: AOJu0Yy62erKHjfJfPdeKDFwfk/WcgeDVms7uGTwhPqtqru/n3mvIzmz
-	U39N75vOazkHgW2Vin4JMMlDZNmA1DId8oz+bvJgdMi6MwSvduk8fR3Sg0mCR4GIII+oBHj7rKh
-	MZBKk5WSSFL9r69Qo21ZW3UCXpLFllH3qgAP2/lP5IAQnqyMMEVrpZWB4AS8lvw==
-X-Received: by 2002:a05:6871:2b0e:b0:222:5ff6:43f1 with SMTP id dr14-20020a0568712b0e00b002225ff643f1mr1841623oac.16.1711468772780;
-        Tue, 26 Mar 2024 08:59:32 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IHgzBoNk7aHkGsNEwNVhcEMsbOfldxjSZnKhmacfHPBzgsBueev9oXHbaC3XghCk7h6QPy9yA==
-X-Received: by 2002:a05:6871:2b0e:b0:222:5ff6:43f1 with SMTP id dr14-20020a0568712b0e00b002225ff643f1mr1841604oac.16.1711468772497;
-        Tue, 26 Mar 2024 08:59:32 -0700 (PDT)
-Received: from [192.168.8.125] ([173.34.154.202])
-        by smtp.gmail.com with ESMTPSA id fv24-20020a05622a4a1800b00430dbd6edf9sm3788120qtb.68.2024.03.26.08.59.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Mar 2024 08:59:32 -0700 (PDT)
-Message-ID: <22be7d6156e38dfba1a055cc3e9cc3d10de75dbb.camel@redhat.com>
-Subject: Re: [PATCH 0/5] AVIC bugfixes and workarounds
-From: mlevitsk@redhat.com
-To: Jim Mattson <jmattson@google.com>
-Cc: kvm@vger.kernel.org, Will Deacon <will@kernel.org>, Borislav Petkov
- <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>, Suravee
- Suthikulpanit <suravee.suthikulpanit@amd.com>, Thomas Gleixner
- <tglx@linutronix.de>, Paolo Bonzini <pbonzini@redhat.com>, x86@kernel.org,
- Robin Murphy <robin.murphy@arm.com>,  iommu@lists.linux.dev, Ingo Molnar
- <mingo@redhat.com>, Joerg Roedel <joro@8bytes.org>, Sean Christopherson
- <seanjc@google.com>, "H. Peter Anvin" <hpa@zytor.com>,
- linux-kernel@vger.kernel.org, David Rientjes <rientjes@google.com>
-Date: Tue, 26 Mar 2024 11:59:30 -0400
-In-Reply-To: <CALMp9eSSCUSOpP64Ho16sU6iV1urbjfTafJ0nThAWGHE6oOkLw@mail.gmail.com>
-References: <20230928150428.199929-1-mlevitsk@redhat.com>
-	 <CALMp9eSSCUSOpP64Ho16sU6iV1urbjfTafJ0nThAWGHE6oOkLw@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.44.4 (3.44.4-3.fc36) 
+	s=arc-20240116; t=1711468790; c=relaxed/simple;
+	bh=TJNBS3lfeWVqLqK+0GJDBRxc46WmxEu8kjT1yWM00fM=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=jVCuKAHCsvZCFTrUvYvapgP1xDpH/wo+yEPrcbmsBuKj8AD/o39Rw0dHIGeI2KW+o3bMGIKUimwhmrJRBuxcp8iVKxWlTKE3l+iooiXpZruSlcrl7hcAQc/GDktZzsv5j/bEqP7I3mE3+J2wYJl4jjdEukDCYWZQc1z+Q7WYCdE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=jxJAfeHA; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8B27AC433C7;
+	Tue, 26 Mar 2024 15:59:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1711468789;
+	bh=TJNBS3lfeWVqLqK+0GJDBRxc46WmxEu8kjT1yWM00fM=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=jxJAfeHA20urkXwf1TGJH4ESHxB30OzTdUrgDvLY/7ID6TGbt7xytqHzTKgbTM03p
+	 n5uCb1hVpzmOWnk4oJ3i0znecLWgx3X1x6VHsQgE2X/z/vb/55UWs2PEhZavKJns0p
+	 laePbJ9xdjBv2cstxwY8rQBR5V4MN8MWQbcg5POlM1HgK1K/ux7VEf0SHBhMrbrwbj
+	 U3xgPLnI/dRas9t49/MIUGovUtD9bZTxuByjrO2XrzT5/QTyyotRV6l4xTZidoXxaF
+	 6524QBoxr3qXO0e5F9tuMhIp7YvUDw/w793uPFqi5akCXV5yprE8SEaFqEDL/XV6fb
+	 GnfFNVwdA50AA==
+Message-ID: <a6fbbfd3-516b-4269-b4b2-611979b62fd7@kernel.org>
+Date: Tue, 26 Mar 2024 16:59:43 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/5] dt-bindings: clock: qcom: add SA8540P gpucc
+To: Johan Hovold <johan+linaro@kernel.org>,
+ Bjorn Andersson <andersson@kernel.org>
+Cc: Konrad Dybcio <konrad.dybcio@linaro.org>,
+ Michael Turquette <mturquette@baylibre.com>, Stephen Boyd
+ <sboyd@kernel.org>, Rob Herring <robh@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>, Mark Brown <broonie@kernel.org>,
+ Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+ linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <20240326140108.21307-1-johan+linaro@kernel.org>
+ <20240326140108.21307-2-johan+linaro@kernel.org>
+Content-Language: en-US
+From: Krzysztof Kozlowski <krzk@kernel.org>
+Autocrypt: addr=krzk@kernel.org; keydata=
+ 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 fv0=
+In-Reply-To: <20240326140108.21307-2-johan+linaro@kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Mon, 2024-03-25 at 20:15 -0700, Jim Mattson wrote:
-> > On Thu, Sep 28, 2023 at 8:05=E2=80=AFAM Maxim Levitsky <mlevitsk@redhat=
-com> wrote:
-> > > >=20
-> > > > Hi!
-> > > >=20
-> > > > This patch series includes several fixes to AVIC I found while work=
-ing
-> > > > on a new version of nested AVIC code.
-> > > >=20
-> > > > Also while developing it I realized that a very simple workaround f=
-or
-> > > > AVIC's errata #1235 exists and included it in this patch series as =
-well.
-> > > >=20
-> > > > Best regards,
-> > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 Maxim Levitsky
-> >=20
-> > Can someone explain why we're still unwilling to enable AVIC by
-> > default? Have the performance issues that plagued the Rome
-> > implementation been fixed? What is AMD's guidance?
-> >=20
-Hi
+On 26/03/2024 15:01, Johan Hovold wrote:
+> The SA8540P platform is closely related to SC8280XP but differs in that
+> it uses an external supply for the GX power domain.
+> 
+> Add a new compatible string for the SA8540P GPU clock controller so that
+> the OS can determine which resources to look for.
+> 
+> Fixes: e60b95d2b687 ("dt-bindings: clock: qcom: Allow VDD_GFX supply to GX")
 
-This is what I know:
+I don't get why adding new device support is a fix. Commit msg did not
+help me to understand it.
 
-Zen1:
-	I never tested it, so I don't know how well AVIC works there and if it has=
- any erratas.
 
-Zen2:
-	Has CPU errata in regard to IPI virtualization that makes it unusable in p=
-roduction,
- 	but if AVIC's IPI virtualization (borrowing the Intel term here) is disab=
-led,
-	then it works just fine and 1:1 equivalent to APICv without IPI.
+> Signed-off-by: Johan Hovold <johan+linaro@kernel.org>
+> ---
+>  Documentation/devicetree/bindings/clock/qcom,gpucc.yaml | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/clock/qcom,gpucc.yaml b/Documentation/devicetree/bindings/clock/qcom,gpucc.yaml
+> index f57aceddac6b..5b385e4976b6 100644
+> --- a/Documentation/devicetree/bindings/clock/qcom,gpucc.yaml
+> +++ b/Documentation/devicetree/bindings/clock/qcom,gpucc.yaml
+> @@ -28,6 +28,7 @@ properties:
+>    compatible:
+>      enum:
+>        - qcom,sdm845-gpucc
+> +      - qcom,sa8540p-gpucc
 
-	I posted patches for this several times, latest version is here, it still =
-applies I think:
-	https://lkml.iu.edu/hypermail/linux/kernel/2310.0/00790.html
+This looks fine and pretty trivial, but I really do not understand why
+skipping our list for automated testing.
 
-Zen3:
-	For some reason AVIC got disabled by AMD in CPUID. It is still there thoug=
-h and force_avic=3D1 kvm_amd option
-	can make KVM use it and AFAIK it works just fine.
+<standard letter>
+Please use scripts/get_maintainers.pl to get a list of necessary people
+and lists to CC. It might happen, that command when run on an older
+kernel, gives you outdated entries. Therefore please be sure you base
+your patches on recent Linux kernel.
 
-	It is possible that it got disabled due to Zen2 errata that is fixed on Ze=
-n3,
-	but maybe AMD wasn't sure back then that it will be fixed or it might be d=
-ue to performance issues with broadcast
-	IPIs which I think ended up being a software issue and was fixed a long ti=
-me ago.
+Tools like b4 or scripts/get_maintainer.pl provide you proper list of
+people, so fix your workflow. Tools might also fail if you work on some
+ancient tree (don't, instead use mainline), work on fork of kernel
+(don't, instead use mainline) or you ignore some maintainers (really
+don't). Just use b4 and everything should be fine, although remember
+about `b4 prep --auto-to-cc` if you added new patches to the patchset.
 
-Zen4+
-	I haven't tested it much, but AFAIK it should work out of the box. It also=
- got x2avic mode which allows
-	to use AVIC with VMs that have more that 254 vCPUs.
+You missed at least devicetree list (maybe more), so this won't be
+tested by automated tooling. Performing review on untested code might be
+a waste of time.
 
-IMHO if we merge the workaround I have for IPI virtualization and make IPI =
-virtualization off for Zen2
-(and maybe Zen1 as well), then I don't see why we can't make AVIC be the de=
-fault on.
+Please kindly resend and include all necessary To/Cc entries.
+</standard letter>
 
 Best regards,
-	Maxim Levitsky
-
+Krzysztof
 
 
