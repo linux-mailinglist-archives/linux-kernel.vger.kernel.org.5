@@ -1,129 +1,210 @@
-Return-Path: <linux-kernel+bounces-119676-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-119677-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A37C188CBE2
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 19:19:25 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6A9D688CBE5
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 19:20:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 26206B22026
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 18:19:23 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E39A3B22C40
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 18:20:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 13B7586249;
-	Tue, 26 Mar 2024 18:19:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4326E86643;
+	Tue, 26 Mar 2024 18:20:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Eldnj7Q/"
-Received: from mail-yb1-f171.google.com (mail-yb1-f171.google.com [209.85.219.171])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="mE1eYCTV"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C5F081CD30
-	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 18:19:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 797321CD30;
+	Tue, 26 Mar 2024 18:20:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711477155; cv=none; b=Y1XJyP5l7KiTZHKgvMguULNDKxkunqlISnaUMpFLHS9li0JsxJXHf89PDmaAHe9ahIxqnPM03d2zcVanwJBsqGnuRVM9rrXY5pcygRRT6clknrZ//5oOMBYZYkoVOYl9UKoikQlnEvrGyYlRUPeldDgvF6ntSLU96T+E02uoSOo=
+	t=1711477209; cv=none; b=ijPNzk55pLfSESsarK9VbeC01XuvjAq0Ww/3ngwC51op2cJVx+N1A0vFlq6557Fy83DNMZ0Bm3ATlbCYFKgYb74LFQZD5vlN1S4Yhyz3ffNmr83Jj9umyzyzyK7hvxpfht2yN4Oey5NbHNGaJ0gYTizJzZhCdox07UezpE+fHfg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711477155; c=relaxed/simple;
-	bh=kE4s7E13A37rsrQkk/iO8j4r372xV995/m+AqVZL8wk=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=WvVVz4frD7d2ElmhB+k05kzMi82eH5cTb05eF8ArnxQgTy3GrIN+dTH5PYDTtnWmFraxQucC5mnrazzhi4DOR7zMeIe7LV85XQharlWd4tRFhC9uq+F8720Tv7ePwfLvabT4yPBTjxsN6Co33aK0kd7lVDaL2HsaMHoG7eRo8M0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=Eldnj7Q/; arc=none smtp.client-ip=209.85.219.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yb1-f171.google.com with SMTP id 3f1490d57ef6-dbed0710c74so4924271276.1
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 11:19:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1711477153; x=1712081953; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=qOkXmyl/X1aGG4AnOp91IyV31wzedhnJYqHOnnSV7Nc=;
-        b=Eldnj7Q/Jid4KYYwV5NEQbyBhTI8Dm/WF4s5CjzAwIMHYoi3R0O0Ev7FOH3xE4hvyL
-         9DzqT8OGinBUATDjyAX+HQPigDWd6cES7pnQ8Srx9JUEL8sE3uzGl97b5akoNCLUgm6A
-         YZ1CHzW2i7ojylbpZuX79IfKSjX6SaePi58AsJxquZGWdpvhFbEupp9xQ3Qt6GqTvXkd
-         KlyXsZ71fu4jAQseF09L/Ki360RCV8LRhFty4DAGLoLOMp5PnqIKXh8m9KY01cADjUuy
-         6IN+EfyyCoiyLPbzLKJbn8jW5pdQqcGYI94/PP9zjUs/oei2+luvTPwfln7CDQvSeooq
-         oneg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711477153; x=1712081953;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=qOkXmyl/X1aGG4AnOp91IyV31wzedhnJYqHOnnSV7Nc=;
-        b=vNXH1CfGQTmYSmJpfagP4biBBWgqf1t3asjZqz0dygtVqvQDYsmpMVHpZq6Fngg13s
-         aM8vMUk9ptHoHCGqTqhhmiXMiSnEbOcOtDS0px3JR7HOAtl9uGnip9XjE6WgpWFMkKzq
-         mgZgplXlX8r1KlRJ9FUbgP1991sOaUh6eBfIa5/cXOwNi+w/pheTaFQ8lXesTi4BPW1r
-         Xeb1ZU1J3nZX4ZNr6gJomr0DSUoyBn7EvzpK/IOtj1WfIT6HGfrzjAiVHmIS09AvgCin
-         efEma8rlsFULoJSja3A/Pg3jXqLVgc8Uq+A045lEoKqEAH1gOH5S7hSJv7F5fFC7FckO
-         YwHA==
-X-Forwarded-Encrypted: i=1; AJvYcCVRiSlLhc/BVWdbvWTdKW2KiLL6+CLXkY4S/syKun2fvAvcjIEA4reXwtj+VxV/WTeUSANPtcRGsWYJC81Bte/ohZt9k8Gn6AVJH++Q
-X-Gm-Message-State: AOJu0Yw0k/FJnKvGTHafFYn5ZK+ZoXp6/6tGEa5++2RfRDGHFNrZn6b3
-	oGnvyVWg2dZDBJtbkaWOg+ycdMDYeUlsv0GYE/JIN0Xv79au58rD9TtURQNoZ8ofzKqDUonFBbb
-	BeIRXTpgGZicmgI4LEulTCv0avIvoYOlDRv6cvg==
-X-Google-Smtp-Source: AGHT+IFMp3OMawqOBv0a8n7GbzvaXu6Kp6vGmhRT4WskjxEebuGXOrN6fvoyGzz6SGmREGfuoZ6gKvGOsfAU2TMNBoo=
-X-Received: by 2002:a25:820e:0:b0:dc6:d093:8622 with SMTP id
- q14-20020a25820e000000b00dc6d0938622mr491441ybk.15.1711477152723; Tue, 26 Mar
- 2024 11:19:12 -0700 (PDT)
+	s=arc-20240116; t=1711477209; c=relaxed/simple;
+	bh=4m5eEwy1+MBW/gtdTfU2mHFqq/XLYeQEZ/TG3auFMIs=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=h8bifpuBUQBqwNH1+sS+/oxRiUO1UQy4tM351qZW664dlIqKK5VHUDYL9rJ7KBhoTUHY0XvUR4UTjnfdfy0El1V0lkydDl767YtJj+L9IlG3WnkBKkiuiI9qFbl21LuvvIGzSqANUsmiKksz2XvkI7Xxki22kN1YBKZElk3v9FE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=mE1eYCTV; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3AAB2C433F1;
+	Tue, 26 Mar 2024 18:20:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1711477209;
+	bh=4m5eEwy1+MBW/gtdTfU2mHFqq/XLYeQEZ/TG3auFMIs=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=mE1eYCTVAOLE9+u3M1XJE46jxij0JZWVFKLIynCrEtzWLQRBNOPoXheY4s+ZV7MaJ
+	 Xv8f6ch25FA/BK1jxOF/uF1FY+JbTyYyyW0HolxhWT+CrSdGYANR6AtemOF8ahiiWc
+	 85axShKI2S6wdEwhQSSdgdkbnXWyemaVDghGlKBlB8qIbXmC+Uz9EeFoaNX7ytAYpB
+	 5DyYZojLWfGT2zuKW/7/Q4APY2g+vlQIEQAJ2qgCpY/I7LAn5/BaPp0u2DTQmUtdZR
+	 I4BmyEKZibc/IETbxyCpXF0rwqLMCr9J3oTji90rjvwd6sy3oqZ2vhy76vxkCgewMi
+	 XNtwO+nB3pBEw==
+Date: Tue, 26 Mar 2024 18:20:05 +0000
+From: Conor Dooley <conor@kernel.org>
+To: Animesh Agarwal <animeshagarwal28@gmail.com>
+Cc: Herbert Xu <herbert@gondor.apana.org.au>,
+	"David S. Miller" <davem@davemloft.net>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>, linux-crypto@vger.kernel.org,
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] dt-bindings: crypto: ti,omap-sham: Convert to dtschema
+Message-ID: <20240326-spectrum-talon-0fc977c32c5c@spud>
+References: <20240326120107.13442-1-animeshagarwal28@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <CANiq72mjc5t4n25SQvYSrOEhxxpXYPZ4pPzneSJHEnc3qApu2Q@mail.gmail.com>
-In-Reply-To: <CANiq72mjc5t4n25SQvYSrOEhxxpXYPZ4pPzneSJHEnc3qApu2Q@mail.gmail.com>
-From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date: Tue, 26 Mar 2024 20:19:01 +0200
-Message-ID: <CAA8EJprTNFgKJ_3cdZz4f_LCkYFghi-cfaj3bZmYh3oA63my6A@mail.gmail.com>
-Subject: Re: drivers/gpu/drm/msm/adreno/a6xx_gpu_state.c:843:6: error:
- variable 'out' set but not used
-To: Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Cc: Rob Clark <robdclark@gmail.com>, Abhinav Kumar <quic_abhinavk@quicinc.com>, 
-	Sean Paul <sean@poorly.run>, Marijn Suijten <marijn.suijten@somainline.org>, 
-	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, 
-	linux-arm-msm <linux-arm-msm@vger.kernel.org>, dri-devel <dri-devel@lists.freedesktop.org>, 
-	freedreno@lists.freedesktop.org, linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-
-On Tue, 26 Mar 2024 at 20:05, Miguel Ojeda
-<miguel.ojeda.sandonis@gmail.com> wrote:
->
-> Hi,
->
-> In today's next, I got:
->
->     drivers/gpu/drm/msm/adreno/a6xx_gpu_state.c:843:6: error: variable
-> 'out' set but not used [-Werror,-Wunused-but-set-variable]
->
-> `out` seems to be there since commit 64d6255650d4 ("drm/msm: More
-> fully implement devcoredump for a7xx").
->
-> Untested diff below assuming `dumper->iova` is constant -- if you want
-> a formal patch, please let me know.
-
-Please send a proper patch that we can pick up.
-
->
-> Cheers,
-> Miguel
->
-> diff --git a/drivers/gpu/drm/msm/adreno/a6xx_gpu_state.c
-> b/drivers/gpu/drm/msm/adreno/a6xx_gpu_state.c
-> index 1f5245fc2cdc..a847a0f7a73c 100644
-> --- a/drivers/gpu/drm/msm/adreno/a6xx_gpu_state.c
-> +++ b/drivers/gpu/drm/msm/adreno/a6xx_gpu_state.c
-> @@ -852,7 +852,7 @@ static void a6xx_get_shader_block(struct msm_gpu *gpu,
->              (block->type << 8) | i);
->
->          in += CRASHDUMP_READ(in, REG_A6XX_HLSQ_DBG_AHB_READ_APERTURE,
-> -            block->size, dumper->iova + A6XX_CD_DATA_OFFSET);
-> +            block->size, out);
->
->          out += block->size * sizeof(u32);
->      }
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="hn4Xnm/Dw7PYM+ZO"
+Content-Disposition: inline
+In-Reply-To: <20240326120107.13442-1-animeshagarwal28@gmail.com>
 
 
+--hn4Xnm/Dw7PYM+ZO
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
--- 
-With best wishes
-Dmitry
+On Tue, Mar 26, 2024 at 05:31:00PM +0530, Animesh Agarwal wrote:
+> Convert the OMAP SoC SHA crypto Module bindings to DT Schema.
+>=20
+> Signed-off-by: Animesh Agarwal <animeshagarwal28@gmail.com>
+> ---
+>  .../devicetree/bindings/crypto/omap-sham.txt  | 28 ----------
+>  .../bindings/crypto/ti,omap-sham.yaml         | 56 +++++++++++++++++++
+>  2 files changed, 56 insertions(+), 28 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/crypto/omap-sham.txt
+>  create mode 100644 Documentation/devicetree/bindings/crypto/ti,omap-sham=
+=2Eyaml
+>=20
+> diff --git a/Documentation/devicetree/bindings/crypto/omap-sham.txt b/Doc=
+umentation/devicetree/bindings/crypto/omap-sham.txt
+> deleted file mode 100644
+> index ad9115569611..000000000000
+> --- a/Documentation/devicetree/bindings/crypto/omap-sham.txt
+> +++ /dev/null
+> @@ -1,28 +0,0 @@
+> -OMAP SoC SHA crypto Module
+> -
+> -Required properties:
+> -
+> -- compatible : Should contain entries for this and backward compatible
+> -  SHAM versions:
+> -  - "ti,omap2-sham" for OMAP2 & OMAP3.
+> -  - "ti,omap4-sham" for OMAP4 and AM33XX.
+> -  - "ti,omap5-sham" for OMAP5, DRA7 and AM43XX.
+> -- ti,hwmods: Name of the hwmod associated with the SHAM module
+> -- reg : Offset and length of the register set for the module
+> -- interrupts : the interrupt-specifier for the SHAM module.
+> -
+> -Optional properties:
+> -- dmas: DMA specifiers for the rx dma. See the DMA client binding,
+> -	Documentation/devicetree/bindings/dma/dma.txt
+> -- dma-names: DMA request name. Should be "rx" if a dma is present.
+> -
+> -Example:
+> -	/* AM335x */
+> -	sham: sham@53100000 {
+> -		compatible =3D "ti,omap4-sham";
+> -		ti,hwmods =3D "sham";
+> -		reg =3D <0x53100000 0x200>;
+> -		interrupts =3D <109>;
+> -		dmas =3D <&edma 36>;
+> -		dma-names =3D "rx";
+> -	};
+> diff --git a/Documentation/devicetree/bindings/crypto/ti,omap-sham.yaml b=
+/Documentation/devicetree/bindings/crypto/ti,omap-sham.yaml
+> new file mode 100644
+> index 000000000000..7a2529cc4cae
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/crypto/ti,omap-sham.yaml
+> @@ -0,0 +1,56 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/crypto/ti,omap-sham.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: OMAP SoC SHA crypto Module
+> +
+> +maintainers:
+> +  - Animesh Agarwal <animeshagarwal28@gmail.com>
+> +
+> +properties:
+> +  compatible:
+> +    enum:
+> +      - ti,omap2-sham
+> +      - ti,omap4-sham
+> +      - ti,omap5-sham
+> +
+> +  ti,hwmods:
+> +    description: Name of the hwmod associated with the SHAM module
+> +    $ref: /schemas/types.yaml#/definitions/string
+> +    enum: [sham]
+
+Is there really only one value possible here?
+Also, the convention is to put vendor properties like this after more
+common properties like reg, interrupts etc.
+
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  interrupts:
+> +    maxItems: 1
+> +
+> +  dmas:
+> +    maxItems: 1
+> +
+> +  dma-names:
+> +    const: rx
+> +
+> +dependencies:
+> +  dmas: [dma-names]
+
+Is this needed? Unless I'm sorely mistaken dt-schema enforces this itself
+(and same for any $foo-names).
+
+Thanks,
+Conor.
+
+> +
+> +additionalProperties: false
+> +
+> +required:
+> +  - compatible
+> +  - ti,hwmods
+> +  - reg
+> +  - interrupts
+> +
+> +examples:
+> +  - |
+> +    sham@53100000 {
+> +        compatible =3D "ti,omap4-sham";
+> +        ti,hwmods =3D "sham";
+> +        reg =3D <0x53100000 0x200>;
+> +        interrupts =3D <109>;
+> +        dmas =3D <&edma 36>;
+> +        dma-names =3D "rx";
+> +    };
+> --=20
+> 2.44.0
+>=20
+
+--hn4Xnm/Dw7PYM+ZO
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZgMR1QAKCRB4tDGHoIJi
+0v54AQC4HWNODH2r8yWAVzjiwAn8PSjSkxuy6RyXjZzUCySwIQD+KpVxdJk4gcUm
+Z6qhpXMYSROaqvxEDe0rIdh1AyGXXQ0=
+=/a36
+-----END PGP SIGNATURE-----
+
+--hn4Xnm/Dw7PYM+ZO--
 
