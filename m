@@ -1,148 +1,182 @@
-Return-Path: <linux-kernel+bounces-119903-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-119905-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 523AD88CED5
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 21:31:45 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C457D88CEDC
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 21:32:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0DD75327BDC
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 20:31:44 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 46094B24E5A
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 20:32:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 576E1142911;
-	Tue, 26 Mar 2024 20:24:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E3FD9143871;
+	Tue, 26 Mar 2024 20:24:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Z+Krid79"
-Received: from mail-ed1-f54.google.com (mail-ed1-f54.google.com [209.85.208.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="p4JFORtz"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 914A01428FD
-	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 20:24:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 11C7A13D884;
+	Tue, 26 Mar 2024 20:24:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711484682; cv=none; b=oAuDjcsAvx7LyR0G6frkxFy+7/XX2s0Ibt7OydVuY0EOSJOfegb4Jap5BQBxNK/EbsCOVqG/NwBq+Ed4fFWAonTlV2mZvl6Q8Cy55u8EGXOs6T8dAuhcyz9Gey6xnBEkyXAjIeoOG8kKS6LDpI4zFR55TPLNe1zGzsnR8owUblw=
+	t=1711484692; cv=none; b=ioiA0Pn5qYjYAatDa3k8rBebKMZGkEPNQh4Kx3AA3RYyzhFVuh55xRMjReRFY7sg5u5sIdW2ZqoQGC1Q8xV6wcU1eLq+lAFS9KhSpPDQBwJ839q120r/fIu6xGW4HvzX5V4b9KShZsOiqptu0pSAtWzMux6IIm3JQq6tpgTCfjI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711484682; c=relaxed/simple;
-	bh=ojs7mEKPrcvVUr2JWEMqEzKtHrhLtgwuKK5bfH7PiKY=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=G8YW2syvwzTNZIeUdnTh4ZJMrAaIIDulD4pZ5LAF2TAIErohNUKJWcH9b9/o43tpsuNZMShmrYA2YD5BAalEf3jsWmFqpk2rEtjtobG0HnSQmT56oKyMFFHrSI4BcBGD9e2CLyU71WtV6tQjkg8BNTIA0EPqZoXqpHsSP99BXTI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=Z+Krid79; arc=none smtp.client-ip=209.85.208.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ed1-f54.google.com with SMTP id 4fb4d7f45d1cf-56bf6418434so4495776a12.0
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 13:24:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1711484679; x=1712089479; darn=vger.kernel.org;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Evydkn1Lb5ncyuedil0BLosCcwb0y4nVC6Xek2Vd9oM=;
-        b=Z+Krid795vrVpYVCGUSU7L98sxumHHvjb32dFWYWSuNrUGG/JPr0kvGaUbFdXGOYCL
-         VXwQLSRMwahixlxjmiA9sQ295xkKKKXgJuOY7Ztp+kGFOZ9K+2Xx7NbLB6LLUyUDdWO5
-         sHp0hT3NX+yF51CQ9PGp0FXfegNkAjbwOXZQvnCRTRtG0YxCHYW+WdEuVS3Gx0h2E/BM
-         7HellXDPEGPuhgs/ul366uHAgTHWFhgZ5A/ua60jTJYQkkPYSFJAI7S6oKI4jL6qp2un
-         D0Gl1M3S4fblm4/w++33Kn80NMAGEMZzxzuIywL8AtPHSwLd7QePMpsPm85/duAjVt7z
-         JQzA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711484679; x=1712089479;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Evydkn1Lb5ncyuedil0BLosCcwb0y4nVC6Xek2Vd9oM=;
-        b=tvy/vGX5BRhDbXS6d4uxZNIgWHb74qmYJnWqm60zcw4TGPjXZFNpGI3DM2zT/CLD/G
-         TewtYmSsOEDXSOI3OkKmeOHeQW8RxoVu26OjM02NkfRZgBJ5B0c+CjGbWXoEY3Jk5zhi
-         Jf1t3AkwQcAnEzREUCRV31NDYv/cOgC5euLMRGngcmPSP9CVP6MYkz3y2DYaee7WQaKb
-         OJYzmneDCfq1zioZR1kbbSgVpa6zIs9NPIJzYXxS4D+yY5N2+61Y3entpZo9tyqhhQWp
-         0//53LOtu/7esM+kf2shR8SeizeVjbTBfzOTWeYfXMDpYk3Lrz2Dhqmfogc7OioRUJ9V
-         3gbg==
-X-Gm-Message-State: AOJu0Yxy5Gad6jT+eM37SsG7a51+muV0okuH4FAR5FWwqp1cJrLAFXGo
-	e/Ea25/uFaiaDRPGW0UP5dWC9cf0ODL82uRVYWkdPiVDlLCmNBrTmIKtcyp+raU=
-X-Google-Smtp-Source: AGHT+IFgvfjWWox9Uo3i/AT2VYhjSoo4ckuT5rPp5BpEMm6OBEQgZd29xjK7bZzgB1ctJUvP8kQ51A==
-X-Received: by 2002:a17:906:3013:b0:a47:3409:2948 with SMTP id 19-20020a170906301300b00a4734092948mr499391ejz.38.1711484678778;
-        Tue, 26 Mar 2024 13:24:38 -0700 (PDT)
-Received: from [127.0.1.1] ([178.197.222.44])
-        by smtp.gmail.com with ESMTPSA id b2-20020a1709062b4200b00a4725e4f53asm4584492ejg.40.2024.03.26.13.24.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Mar 2024 13:24:38 -0700 (PDT)
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Date: Tue, 26 Mar 2024 21:23:49 +0100
-Subject: [PATCH 19/19] vfio: amba: drop owner assignment
+	s=arc-20240116; t=1711484692; c=relaxed/simple;
+	bh=XBx/8R7L2B6+rjNGoBxN/n8BedOCOXaomAypWF28x3w=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=N2dkW+Kw7ZYE2ENoBF9hLiKgtSlwlzY4NHm3GSLAdbvDQjmO3MFqa/3bhoegPyCKZWFt1XcYO5J9vvd/CvG6SPj9bcZ7FlDjlDGy1K0QKUWto6yBtfWXMpfwyqMP3nI1Pcy4/8OA0dRhsQ49FDb+gmDigDOx8D+PohNm/SIJVyU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=p4JFORtz; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5B36FC433C7;
+	Tue, 26 Mar 2024 20:24:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1711484691;
+	bh=XBx/8R7L2B6+rjNGoBxN/n8BedOCOXaomAypWF28x3w=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=p4JFORtzTY4+T0i9CTpyZ5n9Kzv7uBoHhdb2MFuQIi5GSJEHbCgPlIkln4YnP7rLt
+	 DlplLsXo68oHda4f3DZgkPNp3kcXZeuS7zaxvF6nDthF3XESUYT6OmpOxXiiTq4oFz
+	 8jyGdnq9XjjFNxONhHd8h701YNRDQnUCE21xRg0IE+77G0Gsk0SNrCYFpqW9UjswZh
+	 1SNIF805YDoPnHCJsDAlRCEgRYeYageUpcultqZ566QjXKZkMCzAuO7ifkQ5AsXcBv
+	 IW8rcj5oq2HGy0PNo4uK8ehBPPanY74TYpuZql52Rnx9C/rf/EqcOsSw9L8BleGEgg
+	 qaP/o40frckkA==
+Date: Tue, 26 Mar 2024 15:24:49 -0500
+From: Rob Herring <robh@kernel.org>
+To: Daniel Golle <daniel@makrotopia.org>
+Cc: Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Ulf Hansson <ulf.hansson@linaro.org>, Jens Axboe <axboe@kernel.dk>,
+	Dave Chinner <dchinner@redhat.com>, Jan Kara <jack@suse.cz>,
+	Thomas =?iso-8859-1?Q?Wei=DFschuh?= <linux@weissschuh.net>,
+	Damien Le Moal <dlemoal@kernel.org>,
+	Li Lingfeng <lilingfeng3@huawei.com>,
+	Christian Brauner <brauner@kernel.org>,
+	Christian Heusel <christian@heusel.eu>,
+	Min Li <min15.li@samsung.com>,
+	Adrian Hunter <adrian.hunter@intel.com>,
+	Avri Altman <avri.altman@wdc.com>, Hannes Reinecke <hare@suse.de>,
+	Christian Loehle <CLoehle@hyperstone.com>,
+	Bean Huo <beanhuo@micron.com>, Yeqi Fu <asuk4.q@gmail.com>,
+	Victor Shih <victor.shih@genesyslogic.com.tw>,
+	Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+	Dominique Martinet <dominique.martinet@atmark-techno.com>,
+	"Ricardo B. Marliere" <ricardo@marliere.net>,
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-mmc@vger.kernel.org, linux-block@vger.kernel.org
+Subject: Re: [PATCH 0/8] block: implement NVMEM provider
+Message-ID: <20240326202449.GA3255378-robh@kernel.org>
+References: <cover.1711048433.git.daniel@makrotopia.org>
+ <20240325151046.GA3591150-robh@kernel.org>
+ <ZgGaay6bLFAcCo2E@makrotopia.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240326-module-owner-amba-v1-19-4517b091385b@linaro.org>
-References: <20240326-module-owner-amba-v1-0-4517b091385b@linaro.org>
-In-Reply-To: <20240326-module-owner-amba-v1-0-4517b091385b@linaro.org>
-To: Russell King <linux@armlinux.org.uk>, 
- Suzuki K Poulose <suzuki.poulose@arm.com>, 
- Mike Leach <mike.leach@linaro.org>, James Clark <james.clark@arm.com>, 
- Alexander Shishkin <alexander.shishkin@linux.intel.com>, 
- Maxime Coquelin <mcoquelin.stm32@gmail.com>, 
- Alexandre Torgue <alexandre.torgue@foss.st.com>, 
- Linus Walleij <linus.walleij@linaro.org>, 
- Andi Shyti <andi.shyti@kernel.org>, Olivia Mackall <olivia@selenic.com>, 
- Herbert Xu <herbert@gondor.apana.org.au>, Vinod Koul <vkoul@kernel.org>, 
- Dmitry Torokhov <dmitry.torokhov@gmail.com>, 
- Miquel Raynal <miquel.raynal@bootlin.com>, 
- Michal Simek <michal.simek@amd.com>, 
- Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, 
- Eric Auger <eric.auger@redhat.com>, 
- Alex Williamson <alex.williamson@redhat.com>
-Cc: linux-kernel@vger.kernel.org, coresight@lists.linaro.org, 
- linux-arm-kernel@lists.infradead.org, 
- linux-stm32@st-md-mailman.stormreply.com, linux-i2c@vger.kernel.org, 
- linux-crypto@vger.kernel.org, dmaengine@vger.kernel.org, 
- linux-input@vger.kernel.org, kvm@vger.kernel.org
-X-Mailer: b4 0.13.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=679;
- i=krzysztof.kozlowski@linaro.org; h=from:subject:message-id;
- bh=ojs7mEKPrcvVUr2JWEMqEzKtHrhLtgwuKK5bfH7PiKY=;
- b=owEBbQKS/ZANAwAKAcE3ZuaGi4PXAcsmYgBmAy7cQ2wMjp46pnEE8icKKqMelI6pPSmG+hUfb
- 2ZrlhxjMw+JAjMEAAEKAB0WIQTd0mIoPREbIztuuKjBN2bmhouD1wUCZgMu3AAKCRDBN2bmhouD
- 13gZD/4v9CVFU7qVO1P9WYH/VG3+reXnSoM713azcrYjyCKdI7dioF4epmmI1zi/UB/Ls061Qv8
- SrlosGP6BdnuD97+Kvw/cpKXm9HmT9jZkcDUKzpPh9JIh/t1us2INa0wjhDPp4P4wb5vS1VQbqf
- knzsoX+/dcV5b+/3iPoc6xeP0r9lhTYHmVHMmW+eSiiGBW2QCBbJsYnKrnNhv6rLaRSq57U1nHx
- pT71c7XiLtDPKStg5wPxjzjpHq4jWPxaTFrh3LQmtnRzN5bhVUbrCUzab+4ktZS9yimWLF4a+Oo
- iAT7g98DxDdr8jSClcqQu87kLTLqjxaseT/J1dplC/DdXUdP5Mep1DYMRjKI3Q/YYlWvTBJ0lNt
- 5myY9ur2Ia4Nueg1OJ3LZT3VmNq2tcSG3uWqM3D1NLDlM8ptjTMnfEMaAio2NCUpuiRo2x6H2Jc
- ZcF1QzB99fnqpxdMfZ4KJNgdRfZyMp3/9Z7xlMC4J2UTLz1mm1aQRplMfE5t2wRcqNTDQ6SEorz
- Ok5M2JDCYslcCDpBS8zXB/nwzbwFGsCubbWPopaZpdma6LdVcyKYFnBHeRjMptl4qFsnIPRL+J2
- zLgKtjqK87ihte/KUXER7VcN2ABZHfh6N3p+xK2LfGxwdEyjrz72tFdE1bh8ND0soV3z3u97Ju4
- aPVYjjB/5NvG2Zw==
-X-Developer-Key: i=krzysztof.kozlowski@linaro.org; a=openpgp;
- fpr=9BD07E0E0C51F8D59677B7541B93437D3B41629B
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZgGaay6bLFAcCo2E@makrotopia.org>
 
-Amba bus core already sets owner, so driver does not need to.
++boot-architecture list
 
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+On Mon, Mar 25, 2024 at 03:38:19PM +0000, Daniel Golle wrote:
+> On Mon, Mar 25, 2024 at 10:10:46AM -0500, Rob Herring wrote:
+> > On Thu, Mar 21, 2024 at 07:31:48PM +0000, Daniel Golle wrote:
+> > > On embedded devices using an eMMC it is common that one or more (hw/sw)
+> > > partitions on the eMMC are used to store MAC addresses and Wi-Fi
+> > > calibration EEPROM data.
+> > > 
+> > > Implement an NVMEM provider backed by a block device as typically the
+> > > NVMEM framework is used to have kernel drivers read and use binary data
+> > > from EEPROMs, efuses, flash memory (MTD), ...
+> > > 
+> > > In order to be able to reference hardware partitions on an eMMC, add code
+> > > to bind each hardware partition to a specific firmware subnode.
+> > > 
+> > > Overall, this enables uniform handling across practially all flash
+> > > storage types used for this purpose (MTD, UBI, and now also MMC).
+> > > 
+> > > As part of this series it was necessary to define a device tree schema
+> > > for block devices and partitions on them, which (similar to how it now
+> > > works also for UBI volumes) can be matched by one or more properties.
+> > > 
+> > > ---
+> > > This series has previously been submitted as RFC on July 19th 2023[1]
+> > > and most of the basic idea did not change since. Another round of RFC
+> > > was submitted on March 5th 2024[2] which has received overall positive
+> > > feedback and only minor corrections have been done since (see
+> > > changelog below).
+> > 
+> > I don't recall giving positive feedback.
+> > 
+> > I still think this should use offsets rather than partition specific 
+> > information. Not wanting to have to update the offsets if they change is 
+> > not reason enough to not use them.
+> 
+> Using raw offsets on the block device (rather than the partition)
+> won't work for most existing devices and boot firmware out there. They
+> always reference the partition, usually by the name of a GPT
+> partition (but sometimes also PARTUUID or even PARTNO) which is then
+> used in the exact same way as an MTD partition or UBI volume would be
+> on devices with NOR or NAND flash.
 
----
+MTD normally uses offsets hence why I'd like some alignment. UBI is 
+special because raw NAND is, well, special.
 
-Depends on first amba patch.
----
- drivers/vfio/platform/vfio_amba.c | 1 -
- 1 file changed, 1 deletion(-)
+> Just on eMMC we usually use a GPT
+> or MBR partition table rather than defining partitions in DT or cmdline,
+> which is rather rare (for historic reasons, I suppose, but it is what it
+> is now).
 
-diff --git a/drivers/vfio/platform/vfio_amba.c b/drivers/vfio/platform/vfio_amba.c
-index 485c6f9161a9..ff8ff8480968 100644
---- a/drivers/vfio/platform/vfio_amba.c
-+++ b/drivers/vfio/platform/vfio_amba.c
-@@ -134,7 +134,6 @@ static struct amba_driver vfio_amba_driver = {
- 	.id_table = vfio_amba_ids,
- 	.drv = {
- 		.name = "vfio-amba",
--		.owner = THIS_MODULE,
- 	},
- 	.driver_managed_dma = true,
- };
+Yes, I understand how eMMC works. I don't understand why if you have 
+part #, uuid, or name you can't get to the offset or vice-versa. You 
+need only 1 piece of identification to map partition table entries to DT 
+nodes. Sure, offsets can change, but surely the firmware can handle 
+adjusting the DT? 
 
--- 
-2.34.1
+An offset would also work for the case of random firmware data on the 
+disk that may or may not have a partition associated with it. There are 
+certainly cases of that. I don't think we have much of a solution for 
+that other than trying to educate vendors to not do that or OS 
+installers only supporting installing to something other than eMMC. This 
+is something EBBR[1] is trying to address.
 
+> Depending on the eMMC chip used, that partition may not even be at the
+> same offset for different batches of the same device and hence I'd
+> like to just do it in the same way vendor firmware does it as well.
+
+Often vendor firmware is not a model to follow...
+
+> Chad of Adtran has previously confirmed that [1], which was the
+> positive feedback I was refering to. Other vendors like GL-iNet or
+> Netgear are doing the exact same thing.
+> 
+> As of now, we support this in OpenWrt by adding a lot of
+> board-specific knowledge to userland, which is ugly and also prevents
+> using things like PXE-initiated nfsroot on those devices.
+> 
+> The purpose of this series is to be able to properly support such devices
+> (ie. practially all consumer-grade routers out there using an eMMC for
+> storing firmware).
+> 
+> Also, those devices have enough resources to run a general purpose
+> distribution like Debian instead of OpenWrt, and all the userland
+> hacks to set MAC addresses and extract WiFi-EEPROM-data in a
+> board-specific ways will most certainly never find their way into
+> Debian. It's just not how embedded Linux works, unless you are looking
+> only at the RaspberryPi which got that data stored in a textfile
+> which is shipped by the distribution -- something very weird and very
+> different from literally all of-the-shelf routers, access-points or
+> switches I have ever seen (and I've seen many). Maybe Felix who has
+> seen even more of them can tell us more about that.
+
+General purpose distros want to partition the disk themselves. Adding 
+anything to the DT for disk partitions would require the installer to be 
+aware of it. There's various distro folks on the boot-arch list, so 
+maybe one of them can comment.
+
+Rob
+
+[1] https://arm-software.github.io/ebbr/index.html#document-chapter4-firmware-media
 
