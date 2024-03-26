@@ -1,116 +1,97 @@
-Return-Path: <linux-kernel+bounces-119680-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-119682-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id D378688CBEF
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 19:24:38 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id CA5B188CBF9
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 19:25:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1144C1C63A37
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 18:24:38 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6AC251F83DF7
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 18:25:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 88F5B86626;
-	Tue, 26 Mar 2024 18:24:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="b28mlofq"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 11C6D86AC6;
+	Tue, 26 Mar 2024 18:25:22 +0000 (UTC)
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C537A482EE;
-	Tue, 26 Mar 2024 18:24:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1A7A9482EE;
+	Tue, 26 Mar 2024 18:25:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711477471; cv=none; b=trBz0RaUcqB7STOpikY3PLgKsIuZ+ld9akS3ZrHrZAcKF0vNPWDnr1lX7j1uNNZhpbpVdGXkyEjkSNy4NMN6rgalBQD9hSIAIPcuhdQlf7XpAglN1FupfxajPT+rZHPLPk/1AcWt5MicrsFh1wYRxla41kd73tKRkO0nqsRCxkc=
+	t=1711477521; cv=none; b=bVQX0bDTeImgxlK8Nw4KLp92hiIhhrQ28x7gPVl1p38KujzTDMU2UaM12vzcs0pvYGdzIPMPlFx3LwY55SzierPp0cqI3xvqxebWzwt1bDA0BHHhPUO1AOPGU4GIyVrLWIeRhhGgKPgCTVSoPJfPtMrGUpbB9aB7PQPjudwr2L8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711477471; c=relaxed/simple;
-	bh=3xBRhog27kxC70sDx2aQpj3OzOt3xnmvvAsyDrsmcII=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=opll3aHgSXZFlQPhRgsVbfbXfr+12NCtxtaqoaHmd91mZvdaYh8X2Q+7EpEy7J/rf1Uk0kFuE6GaAwLhOPzsNAPQW4+w1uZ46w6k6A7ZO4Dc2p6FIydY+BfVw0hoAVG+uw3YmRgw9UCnNZmXNUZOytYWEIBktO8tH1nUG4RS0Uo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=b28mlofq; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0572BC433C7;
-	Tue, 26 Mar 2024 18:24:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711477471;
-	bh=3xBRhog27kxC70sDx2aQpj3OzOt3xnmvvAsyDrsmcII=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=b28mlofqMpgdxgVoQwKl8xE5R3uFIancJn4ehIIqdxVvqItovYRjc0SScholjd/QT
-	 GWuk/KKHJsAkhi505UdUHjsnvpf/1qlIHa0yMn6hV3w11DZOqTFfwSF8X/60t/JQ9/
-	 jc6M4mWwT/YjK+WblM3Aq7Y1INPJmcz45pHvSpcppInNgQz4zB6q0cma1NXVV/0fs4
-	 /I3HB2oSaVfGFVuY9gfatvsW22+uoQV9IEgAL83hxaxaBOPu5Hp4AL+aIYEaQiFfSe
-	 f4PBLdf45fUGRRtaC2HGu1v4CzVhmmyhEilob1839hZkBy0S2pOfWyCSY+FN8PdAkw
-	 7QXys+J0KIVjg==
-Date: Tue, 26 Mar 2024 18:24:25 +0000
-From: Conor Dooley <conor@kernel.org>
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc: Kelly Hung <ppighouse@gmail.com>, robh+dt@kernel.org,
-	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-	joel@jms.id.au, andrew@codeconstruct.com.au,
-	devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-	linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-	openbmc@lists.ozlabs.org, kelly_hung@asus.com, Allenyy_Hsu@asus.com,
-	Rob Herring <robh@kernel.org>, Zev Weiss <zweiss@equinix.com>,
-	Conor Dooley <conor.dooley@microchip.com>
-Subject: Re: [PATCH v6 1/2] dt-bindings: arm: aspeed: add ASUS X4TF board
-Message-ID: <20240326-april-word-972cd4836e81@spud>
-References: <20240326103549.2413515-1-Kelly_Hung@asus.com>
- <20240326103549.2413515-2-Kelly_Hung@asus.com>
- <32cd6f33-b4e9-4b7a-bcea-b1f2e421d67e@linaro.org>
+	s=arc-20240116; t=1711477521; c=relaxed/simple;
+	bh=PS4v8wUt8nGUndi43RCDdFlDiRKh22UGvcJwOMISI4M=;
+	h=From:In-Reply-To:Content-Type:References:Date:Cc:To:MIME-Version:
+	 Message-ID:Subject; b=dJJUhVUw4DUHutxVA9U2op/2Ih8KH5LM+8GtS/6MLVmdR5OfCvT1GJ9p4RFvuyEtP9X0z+4RsUJKvHt22n+rkDDuAvWKMxqwUOg06Dur2eseQ2bKC8KSJwk0mH3KD/hqewNOZLt1VsW/km0gvNgV5F0t9ArhqCa3+0OfbCFcY6E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; arc=none smtp.client-ip=46.235.227.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+Received: from harlem.collaboradmins.com (harlem.collaboradmins.com [IPv6:2a01:4f8:1c0c:5936::1])
+	by madrid.collaboradmins.com (Postfix) with ESMTP id 27C403780C6C;
+	Tue, 26 Mar 2024 18:25:17 +0000 (UTC)
+From: "Shreeya Patel" <shreeya.patel@collabora.com>
+In-Reply-To: <20240324234027.1354210-1-sashal@kernel.org>
+Content-Type: text/plain; charset="utf-8"
+X-Forward: 127.0.0.1
+References: <20240324234027.1354210-1-sashal@kernel.org>
+Date: Tue, 26 Mar 2024 18:25:16 +0000
+Cc: linux-kernel@vger.kernel.org, stable@vger.kernel.org, torvalds@linux-foundation.org, akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org, lkft-triage@lists.linaro.org, florian.fainelli@broadcom.com, pavel@denx.de, "Gustavo Padovan" <gustavo.padovan@collabora.com>, "kernelci-regressions mailing list" <kernelci-regressions@lists.collabora.co.uk>
+To: "Sasha Levin" <sashal@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="/q+Q8QflJy7p9izc"
-Content-Disposition: inline
-In-Reply-To: <32cd6f33-b4e9-4b7a-bcea-b1f2e421d67e@linaro.org>
-
-
---/q+Q8QflJy7p9izc
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Message-ID: <28824a-66031300-1-3bb0ad80@260002568>
+Subject: =?utf-8?q?Re=3A?= [PATCH =?utf-8?q?5=2E10?= 000/238] 
+ =?utf-8?q?5=2E10=2E214-rc1?= review
+User-Agent: SOGoMail 5.10.0
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Mar 26, 2024 at 12:36:50PM +0100, Krzysztof Kozlowski wrote:
-> On 26/03/2024 11:35, Kelly Hung wrote:
-> > Document the new compatibles used on ASUS X4TF.
-> >=20
-> > Signed-off-by: Kelly Hung <Kelly_Hung@asus.com>
-> > Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-> > Reviewed-by: Rob Herring <robh@kernel.org>
+On Monday, March 25, 2024 05:06 IST, Sasha Levin <sashal@kernel.org> wr=
+ote:
+
 >=20
-> Where did it happen? Where did you receive this tag? Please provide link
-> to lore.
-
-Robh's bot sent two reports, but I do not see a tag:
-https://lore.kernel.org/all/?q=3Dc%3AKelly_Hung%40asus.com+f%3Arobh
-
-> > Reviewed-by: Zev Weiss <zweiss@equinix.com>
+> This is the start of the stable review cycle for the 5.10.214 release=
+.
+> There are 238 patches in this series, all will be posted as a respons=
+e
+> to this one.  If anyone has any issues with these being applied, plea=
+se
+> let me know.
 >=20
-> Where did it happen? Where did you receive this tag? Please provide link
-> to lore.
+> Responses should be made by Tue Mar 26 11:40:23 PM UTC 2024.
+> Anything received after that time might be too late.
+>=20
+> The whole patch series can be found in one patch at:
+>         https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-=
+stable-rc.git/patch/?id=3Dlinux-5.10.y&id2=3Dv5.10.213
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-st=
+able-rc.git linux-5.10.y
+> and the diffstat can be found below.
+>=20
 
-Zev seems to have left a comment on this, but not provided a tag:
-https://lore.kernel.org/all/20240223220115.GB9299@packtop/
+KernelCI report for stable-rc/linux-5.10.y for this week.
 
-Kelly, it is important that you do not add tags unless someone gives
-them to you explicitly.
+## stable-rc HEAD for linux-5.10.y:
+Date: 2024-03-25
+https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.=
+git/log/?h=3Dbbdc0ccf6f1665aabba4a0a227f9c118e86804eb
+
+## Build failures:
+No build failures seen for the stable-rc/linux-5.10.y commit head \o/
+
+## Boot failures:
+No **new** boot failures seen for the stable-rc/linux-5.10.y commit hea=
+d \o/
+
+Tested-by: kernelci.org bot <bot@kernelci.org>
 
 Thanks,
-Conor.
+Shreeya Patel
 
---/q+Q8QflJy7p9izc
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZgMS2QAKCRB4tDGHoIJi
-0sgmAP99qKHB+cAXDMc3qKChE30qQxxp/UYWhpZUny6oL3v5fgD/Vi2hhcCmf16A
-C/hk3u2rhCGbNyawGryEwd6Z81hpgw0=
-=cX+i
------END PGP SIGNATURE-----
-
---/q+Q8QflJy7p9izc--
 
