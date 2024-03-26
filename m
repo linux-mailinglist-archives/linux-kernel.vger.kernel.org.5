@@ -1,48 +1,48 @@
-Return-Path: <linux-kernel+bounces-119261-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-119262-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id AD3C788C650
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 16:06:59 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 66A0D88C655
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 16:07:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5AB99306ECE
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 15:06:58 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CC5E41F66287
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 15:07:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 65B8D13C81E;
-	Tue, 26 Mar 2024 15:06:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7AC3F13C8E2;
+	Tue, 26 Mar 2024 15:06:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="RbjlGWWx"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Ed4hVGyY"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7EF8113C800;
-	Tue, 26 Mar 2024 15:06:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AA16613C81C;
+	Tue, 26 Mar 2024 15:06:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711465603; cv=none; b=rZm+Kn/HHsPCd46HjgT8LzUUoZsNY0evxLoR5MWPa0Z3WGMV+QilGU1GAsiJYT8It0ivbHJ+b+p32usu/W3PUpd0JHeDPjGZCNJbmJwR/Zy+4zY+cNxAFJX0CQNmUqYywi1vCOgxCANQm7f9M2jZ0cLTKaWjH0pxbAiLAUfTKd4=
+	t=1711465604; cv=none; b=g1U5HXoozWTvANi4Z/vnBPf8UPdlWAMY7meh2LKh2uXhvK1ExDKLyekJYVrA0KNhg58svI6+HTx/HV4t4YuMOt9PlAVPapi8vd0E1SuP8oxXULPHlvXKGjP9TEtI4YVaQcTCFhXyuJWEZC8qWmueUy/4aiY5hJx58we4d4oGUOg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711465603; c=relaxed/simple;
-	bh=F74sSb1TUT1wdavk14eo4VvZEROfyAVRNFw7tDHtFsc=;
+	s=arc-20240116; t=1711465604; c=relaxed/simple;
+	bh=oEL9QHuRjaF8oclNwKr4lsV4jXuopDx5ZyED4A8zK+M=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=Z8T/FYtlxr2QLpty5R26X66PV8o9HH8BBDvLrLDyUxDSYVMOuBdr649FgV+qEeVva5BbP+fcKjXnQApQUmvR3m3hJ++sMOxQW6WYe8jYFAVvA8WPiO26off4l+mf1qCq4Oh11pQoSD8vx9kqo0xtBii/tYdUHuxIzXvwbSQFtD4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=RbjlGWWx; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8D485C43390;
-	Tue, 26 Mar 2024 15:06:42 +0000 (UTC)
+	 In-Reply-To:To:Cc; b=gwcabR2Q5gpjJWK3UQoynqiQ0/a4WBXOZXoWumgi7xLDJUZlHQYSGl88r4cdWYWF2/hYYnD3VuDmeRV/MejpS/auKI7hKAm9qPjFsATvOAdKdxn939AOOE4aZqYI0kivmi4nIRaQDkwPBUGbCkpB4TG82WrkkJibQXXKhZqOMcw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Ed4hVGyY; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 87CD6C43330;
+	Tue, 26 Mar 2024 15:06:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711465603;
-	bh=F74sSb1TUT1wdavk14eo4VvZEROfyAVRNFw7tDHtFsc=;
+	s=k20201202; t=1711465604;
+	bh=oEL9QHuRjaF8oclNwKr4lsV4jXuopDx5ZyED4A8zK+M=;
 	h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-	b=RbjlGWWxz1Q0bTbF1cr625dy8ZLo4E+JnnlnA511SMawYZIFtK5x+5cwvtNFuJg35
-	 v4OW8aXBZQGfzd+DIMKwTj/jsQcFuO8QSkEfMPYeIj60WYkC9Csa+EUS6bYBEDPVVy
-	 4nH3KwoYqRuqT/GOQg2/nh2yrqndl8RaZs2z2ARQshQiJhrpwguypCRdETPgiTVKDf
-	 GzUjzacCP8gRuif2yCi4JnRJBIa6d1Ge1K7f3ButxLIakmAmM7VSPiaOAsDjcGHaR7
-	 kMqzGGpW5APzXFDEAdZziZs30tvqmqVmNFZja5noQ7fLo6P4KFWO5H50GjX8NYhsqi
-	 fy2edAqshlQow==
+	b=Ed4hVGyYIVwp8s6P9scRKIQ9872S3tS11Qx/SLDBDxDxtCwjjyfllHk49gSHQpFzW
+	 UTztQuJwXtUdtOYTjvq9yr6aOt0hUJ08sMJrZ+ng8PhF9tHi+dGaJL7tpuNtoJtzU2
+	 uSi+YYk90nLYMK2dL8CHd0ZoXQb+L1IlXGZzY3EW4uLIIADdMcNsVUeNWPvk8iMJVc
+	 IIziTPM/A6cbCdL1DhlOtQpx1sB1kM5p3UU7ag3BuuWiFvWuidaeM7ZaPOf2S2hP4C
+	 KW72wfQaMBihMrgm66Zt0UASNxMyG8cS9eDdxK5Vwy80l8rP+bF9GclI3JSrtzpRoW
+	 WV9KHl7OSkyVQ==
 From: Bjorn Andersson <andersson@kernel.org>
-Date: Tue, 26 Mar 2024 08:11:29 -0700
-Subject: [PATCH 1/6] drm/msm/dp: Drop unused dp_debug struct
+Date: Tue, 26 Mar 2024 08:11:30 -0700
+Subject: [PATCH 2/6] drm/msm/dp: Removed fixed nvid "support"
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -51,7 +51,7 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20240326-msm-dp-cleanup-v1-1-e775556ecec0@quicinc.com>
+Message-Id: <20240326-msm-dp-cleanup-v1-2-e775556ecec0@quicinc.com>
 References: <20240326-msm-dp-cleanup-v1-0-e775556ecec0@quicinc.com>
 In-Reply-To: <20240326-msm-dp-cleanup-v1-0-e775556ecec0@quicinc.com>
 To: Rob Clark <robdclark@gmail.com>, 
@@ -63,205 +63,114 @@ Cc: linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
  freedreno@lists.freedesktop.org, linux-kernel@vger.kernel.org, 
  Bjorn Andersson <quic_bjorande@quicinc.com>
 X-Mailer: b4 0.12.4
-X-Developer-Signature: v=1; a=openpgp-sha256; l=5546;
+X-Developer-Signature: v=1; a=openpgp-sha256; l=3667;
  i=quic_bjorande@quicinc.com; h=from:subject:message-id;
- bh=3M3qSEuc5xZbhZocgufvkSxT1oRUyTPG9hEV+dTs68o=;
- b=owEBgwJ8/ZANAwAIAQsfOT8Nma3FAcsmYgBmAuWiytUIeRdX1FXogzeoEOBMSa7Q5ATTd+erT
- u7ieVErYuGJAkkEAAEIADMWIQQF3gPMXzXqTwlm1SULHzk/DZmtxQUCZgLlohUcYW5kZXJzc29u
- QGtlcm5lbC5vcmcACgkQCx85Pw2ZrcUFXg//dEX3ua3NRihGVTS7nlhv1GQh2i2xUCWHe774Zak
- bxJhrgvdR3iQYQ1M4a+ydUybhehrAcyB4pfB9ubJz0j+I0aLRv8rAIaLtYXSPCeel5xhpED0X4F
- fV5M3sp/JXu9cQZE4pfFenbQbWRflWpCu+7Jr8B1hcpWr/xYo6aEduqqjJbBpFpv8/kdHwX4wSJ
- zOsIbaHfTpT3Xwc++o5w28KuDRCZ4ANBtxvkvITLlt/kP+E6g6vlNK1slHKfzYtp3lYbU88kAc2
- pAiS+0ho/NpTp0qkr4m8zn/J2he4Z5QlSjzfSmhxAUQAzclLguBolf/UL8OI016buaC/GQz386q
- aZFspCFbG81cwJXkquf/+PInZfD9bQxc6NlKoxQv9BixIAAMZagCKPfTZaQ/VsSspFxPa7glQnI
- kB6RW6sCzMswz/4MfK6mZmG8Vr8bv/ZYzNhfpRsOcT8DIfHXRSZLw5Ehvd/+wLu2+oMEeV0+tBR
- vGWsGdSC9viG5zhjB172cgpcn7YGEDCxAvg3N14NV7AqALqPMSRu1j+h4Bz09jnsWxfZNesQfkU
- S3WUrXexY/aqIsbDIgWtjfhy4P8eeFNCZEaRFIUEcViKzwc7crKnUMS/nokb+4vsiVu4tY2RZ9r
- qvCt6B+erPs2/kl9iXzWpnPvoRLDuR/bUEN922kzrruU=
+ bh=qycwTDe39/z7P5q+0zY5dlx4BRy8hlXGCuCcnrwdKSM=;
+ b=owEBgwJ8/ZANAwAIAQsfOT8Nma3FAcsmYgBmAuWinRfj+eExKLVCRJV0/h3saaFlb4+B6/tpz
+ 2wwKt06kLGJAkkEAAEIADMWIQQF3gPMXzXqTwlm1SULHzk/DZmtxQUCZgLlohUcYW5kZXJzc29u
+ QGtlcm5lbC5vcmcACgkQCx85Pw2ZrcUtjRAArx5w2fq0qfDxaDJMXvcm8nhp3W0WeW47zEeLl6v
+ Lf4ftSWe81XS8YIV2fSPYv3C0Ks9kAlgvJp4fLcdmBUB0O/D4C5j5WHSLlNPm4j8Hee5DMf5NN8
+ s6ac5C21RzRU1eeMKhasyTOYfXRHZGrChsCbK8v2oVtBJSj5/gMVQ9TZjC8QYnOFFdxr1+Ob8G7
+ b7V3v3KmGRG0Z5bdk2uz2FnLzEtBXyGnIfHWbJZ5aYJ71zycMO3dtYtQ6QVR6V44a8r34oib344
+ IlrRPn97ym0xoVeH82Crgv042z8pdVeOfJmowehorKrJbq0Pt+RMAEMN3l6B4fQpRReRwXmsoSX
+ by+XbtsEl0UJ5RM1I7V1ImWTuGXvxf2sc+rbnZkLl35xw3k/eUGMvHehhS+nxIRqg390Cc7bbJS
+ uzR33PWtrnn+vY1x6TrhgV/nFQMn+kN9Gt8cjtF7auGSU+RYmK2ln4T5hfv4UUnnQGO75lUmdlo
+ FmMmVhHQxCUUS1H7ZElm17m5oUKkFoR8ApbbeDRObfKI/XG+1Z3W2ub96T9av8jl+ri2U3ZSvRT
+ EpB347YxCEgFMIj0g+k9m4Jch0+gr1NO81RAf5gJ2qvp3yFVzZT8ILOre0IbHzQSVi0lpoptrYe
+ xFPedah0j0p8LArgKmKbxYfoEm2ObRDRZYuL3AzV7pec=
 X-Developer-Key: i=quic_bjorande@quicinc.com; a=openpgp;
  fpr=05DE03CC5F35EA4F0966D5250B1F393F0D99ADC5
 
 From: Bjorn Andersson <quic_bjorande@quicinc.com>
 
-The members of struct dp_debug are no longer used, so the only purpose
-of this struct is as a type of the return value of dp_debug_get(), to
-signal success/error.
+The "desc" member of struct dp_panel is zero-initialized during
+allocation and never assigned, resulting in dp_ctrl_use_fixed_nvid()
+never returning true. This returned boolean value is passed around but
+never acted upon.
 
-Drop the struct in favor of signalling the result of initialization
-using an int.
+Perform constant propagation and remove the traces of "fixed nvid".
 
 Signed-off-by: Bjorn Andersson <quic_bjorande@quicinc.com>
 ---
- drivers/gpu/drm/msm/dp/dp_debug.c   | 38 ++++++++++---------------------------
- drivers/gpu/drm/msm/dp/dp_debug.h   | 38 +++++++++++--------------------------
- drivers/gpu/drm/msm/dp/dp_display.c | 10 ++--------
- 3 files changed, 23 insertions(+), 63 deletions(-)
+ drivers/gpu/drm/msm/dp/dp_catalog.c |  2 +-
+ drivers/gpu/drm/msm/dp/dp_catalog.h |  2 +-
+ drivers/gpu/drm/msm/dp/dp_ctrl.c    | 17 +----------------
+ drivers/gpu/drm/msm/dp/dp_panel.h   |  1 -
+ 4 files changed, 3 insertions(+), 19 deletions(-)
 
-diff --git a/drivers/gpu/drm/msm/dp/dp_debug.c b/drivers/gpu/drm/msm/dp/dp_debug.c
-index eca5a02f9003..a631cbe0e599 100644
---- a/drivers/gpu/drm/msm/dp/dp_debug.c
-+++ b/drivers/gpu/drm/msm/dp/dp_debug.c
-@@ -21,8 +21,6 @@ struct dp_debug_private {
- 	struct dp_link *link;
- 	struct dp_panel *panel;
+diff --git a/drivers/gpu/drm/msm/dp/dp_catalog.c b/drivers/gpu/drm/msm/dp/dp_catalog.c
+index 3e7c84cdef47..8c72d532d96b 100644
+--- a/drivers/gpu/drm/msm/dp/dp_catalog.c
++++ b/drivers/gpu/drm/msm/dp/dp_catalog.c
+@@ -469,7 +469,7 @@ void dp_catalog_setup_peripheral_flush(struct dp_catalog *dp_catalog)
+ 
+ void dp_catalog_ctrl_config_msa(struct dp_catalog *dp_catalog,
+ 					u32 rate, u32 stream_rate_khz,
+-					bool fixed_nvid, bool is_ycbcr_420)
++					bool is_ycbcr_420)
+ {
+ 	u32 pixel_m, pixel_n;
+ 	u32 mvid, nvid, pixel_div = 0, dispcc_input_rate;
+diff --git a/drivers/gpu/drm/msm/dp/dp_catalog.h b/drivers/gpu/drm/msm/dp/dp_catalog.h
+index 75ec290127c7..b85ad6bdb2e7 100644
+--- a/drivers/gpu/drm/msm/dp/dp_catalog.h
++++ b/drivers/gpu/drm/msm/dp/dp_catalog.h
+@@ -99,7 +99,7 @@ void dp_catalog_ctrl_psr_mainlink_enable(struct dp_catalog *dp_catalog, bool ena
+ void dp_catalog_setup_peripheral_flush(struct dp_catalog *dp_catalog);
+ void dp_catalog_ctrl_config_misc(struct dp_catalog *dp_catalog, u32 cc, u32 tb);
+ void dp_catalog_ctrl_config_msa(struct dp_catalog *dp_catalog, u32 rate,
+-				u32 stream_rate_khz, bool fixed_nvid, bool is_ycbcr_420);
++				u32 stream_rate_khz, bool is_ycbcr_420);
+ int dp_catalog_ctrl_set_pattern_state_bit(struct dp_catalog *dp_catalog, u32 pattern);
+ u32 dp_catalog_hw_revision(const struct dp_catalog *dp_catalog);
+ void dp_catalog_ctrl_reset(struct dp_catalog *dp_catalog);
+diff --git a/drivers/gpu/drm/msm/dp/dp_ctrl.c b/drivers/gpu/drm/msm/dp/dp_ctrl.c
+index c4dda1faef67..e65a460fb52d 100644
+--- a/drivers/gpu/drm/msm/dp/dp_ctrl.c
++++ b/drivers/gpu/drm/msm/dp/dp_ctrl.c
+@@ -1566,21 +1566,6 @@ void dp_ctrl_phy_exit(struct dp_ctrl *dp_ctrl)
+ 			phy, phy->init_count, phy->power_count);
+ }
+ 
+-static bool dp_ctrl_use_fixed_nvid(struct dp_ctrl_private *ctrl)
+-{
+-	const u8 *dpcd = ctrl->panel->dpcd;
+-
+-	/*
+-	 * For better interop experience, used a fixed NVID=0x8000
+-	 * whenever connected to a VGA dongle downstream.
+-	 */
+-	if (drm_dp_is_branch(dpcd))
+-		return (drm_dp_has_quirk(&ctrl->panel->desc,
+-					 DP_DPCD_QUIRK_CONSTANT_N));
+-
+-	return false;
+-}
+-
+ static int dp_ctrl_reinitialize_mainlink(struct dp_ctrl_private *ctrl)
+ {
+ 	struct phy *phy = ctrl->phy;
+@@ -2022,7 +2007,7 @@ int dp_ctrl_on_stream(struct dp_ctrl *dp_ctrl, bool force_link_train)
+ 
+ 	dp_catalog_ctrl_config_msa(ctrl->catalog,
+ 		ctrl->link->link_params.rate,
+-		pixel_rate_orig, dp_ctrl_use_fixed_nvid(ctrl),
++		pixel_rate_orig,
+ 		ctrl->panel->dp_mode.out_fmt_is_yuv_420);
+ 
+ 	dp_ctrl_setup_tr_unit(ctrl);
+diff --git a/drivers/gpu/drm/msm/dp/dp_panel.h b/drivers/gpu/drm/msm/dp/dp_panel.h
+index e843f5062d1f..9afd99e00b0c 100644
+--- a/drivers/gpu/drm/msm/dp/dp_panel.h
++++ b/drivers/gpu/drm/msm/dp/dp_panel.h
+@@ -40,7 +40,6 @@ struct dp_panel {
+ 	u8 downstream_ports[DP_MAX_DOWNSTREAM_PORTS];
+ 
+ 	struct dp_link_info link_info;
+-	struct drm_dp_desc desc;
+ 	struct edid *edid;
  	struct drm_connector *connector;
--
--	struct dp_debug dp_debug;
- };
- 
- static int dp_debug_show(struct seq_file *seq, void *p)
-@@ -199,11 +197,8 @@ static const struct file_operations test_active_fops = {
- 	.write = dp_test_active_write
- };
- 
--static void dp_debug_init(struct dp_debug *dp_debug, struct dentry *root, bool is_edp)
-+static void dp_debug_init(struct dp_debug_private *debug, struct dentry *root, bool is_edp)
- {
--	struct dp_debug_private *debug = container_of(dp_debug,
--			struct dp_debug_private, dp_debug);
--
- 	debugfs_create_file("dp_debug", 0444, root,
- 			debug, &dp_debug_fops);
- 
-@@ -222,39 +217,26 @@ static void dp_debug_init(struct dp_debug *dp_debug, struct dentry *root, bool i
- 	}
- }
- 
--struct dp_debug *dp_debug_get(struct device *dev, struct dp_panel *panel,
--		struct dp_link *link,
--		struct drm_connector *connector,
--		struct dentry *root, bool is_edp)
-+int dp_debug_get(struct device *dev, struct dp_panel *panel,
-+		 struct dp_link *link,
-+		 struct drm_connector *connector,
-+		 struct dentry *root, bool is_edp)
- {
- 	struct dp_debug_private *debug;
--	struct dp_debug *dp_debug;
--	int rc;
- 
- 	if (!dev || !panel || !link) {
- 		DRM_ERROR("invalid input\n");
--		rc = -EINVAL;
--		goto error;
-+		return -EINVAL;
- 	}
- 
- 	debug = devm_kzalloc(dev, sizeof(*debug), GFP_KERNEL);
--	if (!debug) {
--		rc = -ENOMEM;
--		goto error;
--	}
-+	if (!debug)
-+		return -ENOMEM;
- 
--	debug->dp_debug.debug_en = false;
- 	debug->link = link;
- 	debug->panel = panel;
- 
--	dp_debug = &debug->dp_debug;
--	dp_debug->vdisplay = 0;
--	dp_debug->hdisplay = 0;
--	dp_debug->vrefresh = 0;
--
--	dp_debug_init(dp_debug, root, is_edp);
-+	dp_debug_init(debug, root, is_edp);
- 
--	return dp_debug;
-- error:
--	return ERR_PTR(rc);
-+	return 0;
- }
-diff --git a/drivers/gpu/drm/msm/dp/dp_debug.h b/drivers/gpu/drm/msm/dp/dp_debug.h
-index 9b3b2e702f65..c57200751c9f 100644
---- a/drivers/gpu/drm/msm/dp/dp_debug.h
-+++ b/drivers/gpu/drm/msm/dp/dp_debug.h
-@@ -9,22 +9,6 @@
- #include "dp_panel.h"
- #include "dp_link.h"
- 
--/**
-- * struct dp_debug
-- * @debug_en: specifies whether debug mode enabled
-- * @vdisplay: used to filter out vdisplay value
-- * @hdisplay: used to filter out hdisplay value
-- * @vrefresh: used to filter out vrefresh value
-- * @tpg_state: specifies whether tpg feature is enabled
-- */
--struct dp_debug {
--	bool debug_en;
--	int aspect_ratio;
--	int vdisplay;
--	int hdisplay;
--	int vrefresh;
--};
--
- #if defined(CONFIG_DEBUG_FS)
- 
- /**
-@@ -41,22 +25,22 @@ struct dp_debug {
-  * This function sets up the debug module and provides a way
-  * for debugfs input to be communicated with existing modules
-  */
--struct dp_debug *dp_debug_get(struct device *dev, struct dp_panel *panel,
--		struct dp_link *link,
--		struct drm_connector *connector,
--		struct dentry *root,
--		bool is_edp);
-+int dp_debug_get(struct device *dev, struct dp_panel *panel,
-+		 struct dp_link *link,
-+		 struct drm_connector *connector,
-+		 struct dentry *root,
-+		 bool is_edp);
- 
- #else
- 
- static inline
--struct dp_debug *dp_debug_get(struct device *dev, struct dp_panel *panel,
--		struct dp_link *link,
--		struct drm_connector *connector,
--		struct dentry *root,
--		bool is_edp)
-+int dp_debug_get(struct device *dev, struct dp_panel *panel,
-+		 struct dp_link *link,
-+		 struct drm_connector *connector,
-+		 struct dentry *root,
-+		 bool is_edp)
- {
--	return ERR_PTR(-EINVAL);
-+	return -EINVAL;
- }
- 
- #endif /* defined(CONFIG_DEBUG_FS) */
-diff --git a/drivers/gpu/drm/msm/dp/dp_display.c b/drivers/gpu/drm/msm/dp/dp_display.c
-index c4cb82af5c2f..a9187be95166 100644
---- a/drivers/gpu/drm/msm/dp/dp_display.c
-+++ b/drivers/gpu/drm/msm/dp/dp_display.c
-@@ -93,7 +93,6 @@ struct dp_display_private {
- 	struct dp_link    *link;
- 	struct dp_panel   *panel;
- 	struct dp_ctrl    *ctrl;
--	struct dp_debug   *debug;
- 
  	struct dp_display_mode dp_mode;
- 	struct msm_dp dp_display;
-@@ -1431,14 +1430,9 @@ void dp_display_debugfs_init(struct msm_dp *dp_display, struct dentry *root, boo
- 	dp = container_of(dp_display, struct dp_display_private, dp_display);
- 	dev = &dp->dp_display.pdev->dev;
- 
--	dp->debug = dp_debug_get(dev, dp->panel,
--					dp->link, dp->dp_display.connector,
--					root, is_edp);
--	if (IS_ERR(dp->debug)) {
--		rc = PTR_ERR(dp->debug);
-+	rc = dp_debug_get(dev, dp->panel, dp->link, dp->dp_display.connector, root, is_edp);
-+	if (rc)
- 		DRM_ERROR("failed to initialize debug, rc = %d\n", rc);
--		dp->debug = NULL;
--	}
- }
- 
- int msm_dp_modeset_init(struct msm_dp *dp_display, struct drm_device *dev,
 
 -- 
 2.43.0
