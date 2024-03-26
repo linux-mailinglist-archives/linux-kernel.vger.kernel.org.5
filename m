@@ -1,119 +1,113 @@
-Return-Path: <linux-kernel+bounces-118930-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-118932-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 19C1A88C157
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 12:59:03 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id A9FBB88C163
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 13:00:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4C2551C394BA
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 11:59:02 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6F0802E7C90
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 12:00:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 48E4F6F068;
-	Tue, 26 Mar 2024 11:58:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AA0596F07E;
+	Tue, 26 Mar 2024 12:00:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b="PEZXVVHe"
-Received: from mail-lj1-f176.google.com (mail-lj1-f176.google.com [209.85.208.176])
+	dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b="meYl6z2H"
+Received: from mail-lj1-f170.google.com (mail-lj1-f170.google.com [209.85.208.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7A4006E616
-	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 11:58:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5DAD06E616
+	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 12:00:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711454335; cv=none; b=Oh/QFcQCE4r3RfUbSkZWMPU/tgim8kubNN5GqejhCBsu+bxnSRrXx3XBPfwLgd7M/9xZnpqYALHIj8ymvH/GVsER2IRvKk0y5360eoAmwL19VsTuQEpQ+VuP1/OJ+Cu9CDso4o9Byeqrq4YjNjD8YLrly7gZIZwigbAcPPwnSpM=
+	t=1711454413; cv=none; b=iiGtHY5o8/WHQjxz34/VueqZXIR3fWnTmLb+ipV6aedzdx0IEEED6ZIGVO//pXh4owzfPQgKF3ts0cDVIepaaC5qHwS5Gid7FZIE2Yb5QykKhPUlvDMu8kqB4m4gPyf8IHa4EGBqqxiZno/uNTe6w7fbeKFgH7tVoh2Q4HRZTrw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711454335; c=relaxed/simple;
-	bh=mSuJQzY/x4nFRGAWr6w24/5X9mMqGb6qSo7jdxE2Vfc=;
+	s=arc-20240116; t=1711454413; c=relaxed/simple;
+	bh=5DLrqyloRw4HA2iztKCEKBkf1PO/zzmKtFuIEtK1KD0=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=S3CLyaP5vKT59utpjmftOSEJml5gIg4uK7d3m6yZ7YTIHikt3w57d3hilgt4Ur2OGiRbPXIbwNOGYCsiCizGn6GxCnTs0qOSgVFID0By7D7Ox4dsDW3My5Cffg7IPVZbIfgWEYwqVIPBWwwmT0RekyxT0bV6xsv9g127m22q5yk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl; spf=none smtp.mailfrom=bgdev.pl; dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b=PEZXVVHe; arc=none smtp.client-ip=209.85.208.176
+	 To:Cc:Content-Type; b=KdnqJDJWW45iRV3zXqWCovgD4DqNXVyxoaA4QPEk4mFAQjeOU6EwPo1tR5uQflgYl/Lh0VXhB85BFNCDVu/3ghplwcsapRKg+5ce1WzShcwcQH7+sSZlKRaKD6cX0atJ+Uz0EKig1MJQ0hQ87KnvCvqrQzLC7FY0Y7RPM6NDWsM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl; spf=none smtp.mailfrom=bgdev.pl; dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b=meYl6z2H; arc=none smtp.client-ip=209.85.208.170
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bgdev.pl
-Received: by mail-lj1-f176.google.com with SMTP id 38308e7fff4ca-2d4a901e284so104875871fa.1
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 04:58:53 -0700 (PDT)
+Received: by mail-lj1-f170.google.com with SMTP id 38308e7fff4ca-2d6dda3adb9so18250671fa.1
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 05:00:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1711454331; x=1712059131; darn=vger.kernel.org;
+        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1711454409; x=1712059209; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=zL/jmxxtIm5wkejRdpCLJvo91BH250kAbxPb/fDHf7E=;
-        b=PEZXVVHeSd2FtVWuReIHQGluKEAhwSGNTMy3bIHvL9ZgJ3ub6nK8r5XSqfuBxIbAHO
-         vvYOvVyi6iJN+pKzzO7Fe+kkK7l2T76OpJPNNEQ+TDKQUDaP8YvAkSrlcookVc+5thfG
-         PlNNeoy5IeJDc9qSF2wGnGrFU+tHnpSLoP3GFySSDhKdEs4vPqGE/vaZ8DTP4NPAYv4o
-         VPNF5JGnGwDoqiz5664WRwFtNGg5ZF1imCcAy3rHb5xnsXDy0VRmS4hqwfbZkoY55dUf
-         Q7Zp0/BUeog4FN+ELlflCQdLzXC0lUQiBn6+Ruv7/i87jOCK4s/h78LvsMQym70UffJq
-         BcAQ==
+        bh=SCv5OyIKI9MbyQpyJs4bOZC+lzj0+dfLVYcz2czS3cU=;
+        b=meYl6z2HGqvvCqek/SBsYcOkCtaKFnITbwl32h3incexUXPyhEZH/H/dpBRqQoNCAG
+         LVC/T4aD7FxzYz9bg/NcIbqxJTK/AwGSsldHvdiXbaAdvJBR5M3lmGzBVdafT5UBLQw/
+         Hu2rAcV4NSVmvuj3R3ZqXHslGmXd+tMCBRKT7i6aquf/yXP9/zpb8MwOGuxPzZVRtNn/
+         Pni/Y/Z3FlDrbx5wyZWh4L54cdxZGHbC15tjR06G3Azup3ZfanahUXzUY8Llk/LUKtJm
+         5E4lbB4Y/bSxhh6bQllerL5qTvkKV708KDRUS179g/QEICEUDpJwCi68rF5oJjjk3hNp
+         jsFA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711454331; x=1712059131;
+        d=1e100.net; s=20230601; t=1711454409; x=1712059209;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=zL/jmxxtIm5wkejRdpCLJvo91BH250kAbxPb/fDHf7E=;
-        b=AuTBysm0D68NA5v1jOGQ9OegCYPwPi50LXds5KUfFhYGMJPtoBT9EdD3HXRkxDmZEj
-         KwrwZBl1Bk0fZjbmANWCTPN+xPGZ6qYOBJq9ofzlygVM3VKeP0AWJGI20GlKDjEV6YU8
-         nimL4PyVJsuhWcdV9P353OqODcdbgsFIv8vYGnMIJdxlfafdaJyYEh7jAob/GIe3FR0I
-         edUyNrHJHiDcEMMHhuiL0mAIVQjn+CJrLGDnSQdOrJOX2QO/bfsPnkEq6TaGbel7kF+W
-         6lMh/iGJu0Zw+UXSELXeQPkm+wk8NsiirvNGyUAjUv+AVOXuLQVhWUclcgkLAv5bwrw7
-         k6XA==
-X-Forwarded-Encrypted: i=1; AJvYcCUFWiioLGncQDfl548zcC8wzzB+uOEHqV4g2RfIP4bot2dURMFpHjs8r0Z1I0HJfwCEUqNRPsOFZr9EGbxwG+2XMk9nRNVmL5IekLI7
-X-Gm-Message-State: AOJu0Yzn1NbrA51NL6qmTdJSq8/0K1DpDZz9gmIWUGuvay7STwE5tbjB
-	3lwPpK6eWt1uqBAlojtHJZE46BKr4I/bkmCJ1CyqUjRNEPmCJkqkUpz/UsHNrmmrZ03XnzUd8y+
-	wHCJ8U6YP1AaQuzFSZryIOtMkoN4XDe+dwUdVxQ==
-X-Google-Smtp-Source: AGHT+IE/wUOqdcPxZFJQNNGXgXfUkl7+qojfXRZVcxjVlMA+00ZQ+LEJXyyGYTRHAzgyIuUAeJ7COMQDg6fwlTUM2JE=
-X-Received: by 2002:a2e:b90d:0:b0:2d6:ba1e:a54a with SMTP id
- b13-20020a2eb90d000000b002d6ba1ea54amr6581217ljb.51.1711454331513; Tue, 26
- Mar 2024 04:58:51 -0700 (PDT)
+        bh=SCv5OyIKI9MbyQpyJs4bOZC+lzj0+dfLVYcz2czS3cU=;
+        b=NrWfvytQSrE+qJN1W8B7gMBDilcKUrVgguWjJVsCgAqpZj6Npl+kat9DyzgTEirQ3Q
+         05AQ2eXVCDFWdcwRRPsr0cGEL4bl7EHNYbJsljVimE/muZNMHElP+Y+MPBjzre/wdNtw
+         qVWWAk2D44V6uD+9tn6+vs+qNwkp+A2i4Sgwp1OxTLfg2hFSj3AjYwU0pKL6OtwZ6JIr
+         e2uMFtK0COCiu09oHRW0XIyG5s3Tma6Kv/8TUgc9EcziUt5Vki2Sl5mPskwraat4xC9w
+         vZ2WqhRGGo7mgcGDGjlgyJS0Y0EaKW5gv54QXYKBfWXnWk48qqHkMlSxAn+SEHeqH63p
+         y24w==
+X-Forwarded-Encrypted: i=1; AJvYcCVRcQ3Egcm4ulbxYQA8Q66LPNGfCne5NZpoxaytOupJQxdKC70QtwOZx6DMVLzlxDxczbtHDowrfJ1OJ3/kx9OxSKT6lEKAR9iGheiW
+X-Gm-Message-State: AOJu0YzeyHX+9+qjSc7AVg9ZO9YD9WfOo3UrhBFhNJdTewuzYl5MF2o9
+	CxUhzhY/GNoSbjM8ewSg4X7XpWaeW0FaWbaVhvECUQO7noQxNU7v+idqXfI0mud6Lh5QkrgGCK/
+	PSDnu0Cuw8O96GmwyCqII8y4AYt7lH3CkZ1HeLQ==
+X-Google-Smtp-Source: AGHT+IFNzs3lUN7jBqt538CCJ/Kmi9XufjzZKlCPHzb2+sbiFzwhETIGqSwEBOwlrE9EYPH1QyZuRmy5e6/qRp6e0hY=
+X-Received: by 2002:a2e:3509:0:b0:2d2:f5fa:f37e with SMTP id
+ z9-20020a2e3509000000b002d2f5faf37emr1412010ljz.51.1711454408639; Tue, 26 Mar
+ 2024 05:00:08 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240325171804.3375280-1-andriy.shevchenko@linux.intel.com> <20240325171804.3375280-2-andriy.shevchenko@linux.intel.com>
-In-Reply-To: <20240325171804.3375280-2-andriy.shevchenko@linux.intel.com>
+References: <20240325-gpiolib-find-by-fwnode-stub-v2-1-c843288cb01f@kernel.org>
+In-Reply-To: <20240325-gpiolib-find-by-fwnode-stub-v2-1-c843288cb01f@kernel.org>
 From: Bartosz Golaszewski <brgl@bgdev.pl>
-Date: Tue, 26 Mar 2024 12:58:40 +0100
-Message-ID: <CAMRc=Mcf0b0HwAcT=ZQ31rdsuWSDJkg=r9Z6Ni1Tcrg-KCsXsQ@mail.gmail.com>
-Subject: Re: [PATCH v4 1/2] gpiolib: Fix debug messaging in gpiod_find_and_request()
-To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>, linux-gpio@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, Linus Walleij <linus.walleij@linaro.org>, 
-	Ferry Toth <ftoth@exalondelft.nl>, Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Date: Tue, 26 Mar 2024 12:59:57 +0100
+Message-ID: <CAMRc=MeeG6+Q0YU21k19ADCDumDqSVej1DDdydi2axJ3J7Yf-w@mail.gmail.com>
+Subject: Re: [PATCH v2] gpiolib: Add stubs for GPIO lookup functions
+To: Mark Brown <broonie@kernel.org>
+Cc: Linus Walleij <linus.walleij@linaro.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, linux-gpio@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, Mar 25, 2024 at 6:18=E2=80=AFPM Andy Shevchenko
-<andriy.shevchenko@linux.intel.com> wrote:
+On Mon, Mar 25, 2024 at 6:01=E2=80=AFPM Mark Brown <broonie@kernel.org> wro=
+te:
 >
-> When consolidating GPIO lookups in ACPI code, the debug messaging
-> had been reworked that the user may see
+> The gpio_device_find_by_() functions do not have stubs which means that i=
+f
+> they are referenced from code with an optiona dependency on gpiolib then
+> the code will fail to link. Add stubs for lookups via fwnode and label. I
+> have not added a stub for plain gpio_device_find() since it seems harder =
+to
+> see a use case for that which does not depend on gpiolib.
 >
->   [   13.401147] (NULL device *): using ACPI '\_SB.LEDS.led-0' for '(null=
-)' GPIO lookup
->   [   13.401378] gpio gpiochip0: Persistence not supported for GPIO 40
->   [   13.401402] gpio-40 (?): no flags found for (null)
+> With the addition of the GPIO reset controller (which lacks a gpiolib
+> dependency) to the arm64 defconfig this is causing build breaks for arm64
+> virtconfig in -next:
 >
-> instead of
+> aarch64-linux-gnu-ld: drivers/reset/core.o: in function `__reset_add_rese=
+t_gpio_lookup':
+>  /build/stage/linux/drivers/reset/core.c:861:(.text+0xccc): undefined ref=
+erence to `gpio_device_find_by_fwnode'
 >
->   [   14.182962] gpio gpiochip0: Persistence not supported for GPIO 40
->   [   14.182994] gpio-40 (?): no flags found for gpios
->
-> The '(null)' parts are less informative and likely scare the users.
-> Replace them by '(default)' which can point out to the default connection
-> IDs, such as 'gpios'.
->
-> While at it, amend other places where con_id is used in the messages.
->
-> Reported-by: Ferry Toth <ftoth@exalondelft.nl>
-> Fixes: 8eb1f71e7acc ("gpiolib: consolidate GPIO lookups")
-> Suggested-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-> Tested-by: Ferry Toth <ftoth@exalondelft.nl>
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+> Signed-off-by: Mark Brown <broonie@kernel.org>
 > ---
 
-I queued this one for fixes. I will take patch 2/2 through the
-for-next tree as it's not really a fix.
+Applied, thanks!
 
 Bart
 
