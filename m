@@ -1,152 +1,166 @@
-Return-Path: <linux-kernel+bounces-119882-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-119883-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5374C88CE2C
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 21:20:01 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 39C5288CE30
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 21:20:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D4CCC1F68202
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 20:20:00 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A027C1F68291
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 20:20:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2DB4B13D61D;
-	Tue, 26 Mar 2024 20:19:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3F69D13D50C;
+	Tue, 26 Mar 2024 20:20:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="1gm41FVZ"
-Received: from mail-ed1-f43.google.com (mail-ed1-f43.google.com [209.85.208.43])
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="fovfPeXR"
+Received: from mail-io1-f54.google.com (mail-io1-f54.google.com [209.85.166.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0A10F13D2A3
-	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 20:19:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8DC8013D266
+	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 20:20:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711484377; cv=none; b=nD37hJlEl5iiX1OKmSJ95FHOOET/rb7v9bjPrkhY8eZ0VAd+xQKkmt75BItU6nVQSYKeDScN8YQSFOcsbmXeS3NX/PRBIxAYh+N963XKYa1NpEBLp1qq3NKWcnImbr9t+M9KF75a+5rxpG8vCNZHk7+pikgWedr+15DyaIetYV0=
+	t=1711484412; cv=none; b=lfIUliGG+2iuk4jF19pcFxyneP/UPQIlqTvJAZuadcJ3L2T/xxjUP5SpXwNe3EkWnvROJAcWjsOVZsIrnZ02TTTgZbcBIrADKJLYMG8SsD3xVAGPfEj6M8DopwESbVfGlAqU6bH49KeLEjeP+IT0+VtpjOpLUAEZm3YTNWoYaSg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711484377; c=relaxed/simple;
-	bh=/HolUtBGOSvO7vytyqHWVK1okzyRfH/uWmvtvWb27FA=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=VkpydVnmN0rU9Kv6NBAqSaOTly2U70IQmsEC+so+dhFwj2vPSCL9yEACN3sGwXVE6ivtGHcSb4972moCS8EdW8oyz6LXTrgktd7prrMo5F3JBhCakRNcExjKQIPFYRaEmEB3IMt0VBMAhsdY4WiBUPtS3jrkC/edYMbDi0JjwcU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=1gm41FVZ; arc=none smtp.client-ip=209.85.208.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ed1-f43.google.com with SMTP id 4fb4d7f45d1cf-5684db9147dso7009471a12.2
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 13:19:34 -0700 (PDT)
+	s=arc-20240116; t=1711484412; c=relaxed/simple;
+	bh=WdTVzGbYBU83Xj49U54/sNSOFS0096DdrMcZAb/ZR7w=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Nw9flsChkg1CDpukgpxJlCEgxYnCqUPXG4Q6xXlyHug00e7L1TrN+cUKxf7bXvMkh0+RbNn77o4hVp3Mg6EL2xDl3NwTIHP2+z2QK7T+z4XWvyDaS2bxWhJZdpsBzCPpnR01f0hHUDQTKFFZp1sjdWhIf1IwjfmC5rn3H4Lqljg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linuxfoundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=fovfPeXR; arc=none smtp.client-ip=209.85.166.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linuxfoundation.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
+Received: by mail-io1-f54.google.com with SMTP id ca18e2360f4ac-7cc67249181so4679839f.1
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 13:20:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1711484373; x=1712089173; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=/HolUtBGOSvO7vytyqHWVK1okzyRfH/uWmvtvWb27FA=;
-        b=1gm41FVZkSn4Ai7WlX1D0mAvsiIhXcNKLG0Z0iVMbEyuhSc6lAFnYsQce/3uLx2VOQ
-         F13pVTO9dMRWzS/d7sfOBXIkS3ngp/9f5y9jWOoAa6189WcyF2NonArWAQ719WFAi114
-         zU2eBR/j4Sp8dRmx3JNiO0l7Z06mGs29qV6F7W7oAwBVZ4wOXL0SG4oZfOKMR4pofar8
-         GukfmgjQtDxSyZ4EeIfkAX4mF4CDBv3LOIhV1e4bHqCsqkAZkHkXbxpNT7BTyqBDSwo0
-         t6V0x1PQN7YCjKQ72LzuDlwkJ2sQ1fUKugFapN4Dt5u28GWEdnMNP+fAmqirbn6HeFth
-         mCEw==
+        d=linuxfoundation.org; s=google; t=1711484409; x=1712089209; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=KI+ANmKI38SB+G1ldu6RHNJOsvZO06CcYftV9TojULA=;
+        b=fovfPeXRcryhHamnAEl2/k0J6miaesgO7xnx3VEOt17vdeWq7QX9Z1+HXYFvO4odSB
+         F8V675eo8sbGHDlmUtZuPoPINScUsFV6CDNCHcIDW+UFvfv2UKP4F8IxAFKu8dAeSQUE
+         hl5rQJrAIfRCfUtuVK08Ipmy5wu3SJ+iB+HfA=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711484373; x=1712089173;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=/HolUtBGOSvO7vytyqHWVK1okzyRfH/uWmvtvWb27FA=;
-        b=JnetWfWS132Rb8sfpmRC9MM7b0sodFEvFOemXlgzc/Y/OAczXvIW2clGkqW7EM6bbe
-         awcsjqITGnYxTnAdnsDKNm5xCt+hM6qUKzVfgtKNuJJfYp2bkfUALZGlO6Z4cjnFHBRG
-         yRXm8BTpCddOPnxP/jzh802R0rpqthqV5IYJowRYLGaY644TzQrP/NxOfm1wNBGNpSnf
-         f6nrgLIlYDCy/yDv1glMGb9JbF8Y3GagaMUDkQLekUHnAxCyqcXCiCIoyBOCxBRxNHoO
-         nfmM4qn/Kd6qlbU5gIdmNB0z1suLn25BOtqMis8e4fxs0FCrmFux/ng5PvIIna4Z3s33
-         cj5g==
-X-Forwarded-Encrypted: i=1; AJvYcCUvscNcJOJAcfdP1ltiepItJU/qWXFi1REy+gGUUK6I652d2Q9za3cVch5rDGM4gq4NxKg30g/0BWMnwU8Vf/Tu122jwsUG5wVmniaZ
-X-Gm-Message-State: AOJu0Yw4GCu/dyLvmEaEuGcOzKfduSQu39O26r7pUaCDTfg/kRKz3+/Y
-	fj7x9HeF9opFEoF+/4sAcIGqbOR5nWXU3tIubzYX7zq96AyAX/BO8YQ+HDw554h7rIp3sIt0p8N
-	/46UJjuE4btZ0gGkt2LU4LWrcv7RKCBT2Z5AAKqhmMTxIZwZufTaS
-X-Google-Smtp-Source: AGHT+IFjAY/eoFDY4BwdVzDOePbePtoPltk1wuczOVWu/9VSVvPKPc9DWk1TgGZAdfUjGFfCBB9+wtsJgpHCZYEgPKU=
-X-Received: by 2002:a17:906:2dc9:b0:a46:70d1:dda6 with SMTP id
- h9-20020a1709062dc900b00a4670d1dda6mr1426517eji.28.1711484372999; Tue, 26 Mar
- 2024 13:19:32 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1711484409; x=1712089209;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=KI+ANmKI38SB+G1ldu6RHNJOsvZO06CcYftV9TojULA=;
+        b=grqWcVmcLFFcvOkna0Sb6Nny0fbnpJT3TONYvjoFXIyyz7348PTW3ENkIolWZdmJKN
+         DCq8gy/VPF863T/xkbMtNh2+PGakkjl3sxpHYdRB3Ba4w410KjWy8z/vdYyBoLTnsLwC
+         U05Q89I75fl88r3GvpQ6oZT2uc+fD3JJEPQg95fITn2moNs9rkfGwUF5jqrQI6oG+hsU
+         +g3xVdEYUPeHpfR0tSLmPuP18l39d7ETEW6w83qs3OSG9/vpT69uN0qtGrebDRcR7esx
+         Ow+yTkUWwk8S9ZJ0mfaIpY+DlcnqJMKW6K5HBc3Z5TqXp4cnwTNK7B0+zMwapcPzwtv1
+         7V8g==
+X-Gm-Message-State: AOJu0Yw8kxLV57o7JlV6IKVFXuZlw2ummezoiLhPE5h/MAGpgXqgJYtc
+	1wajExYBheKDa/EzRI8oha0F3Kf291pKZiBWPVHc0CYSTruIdJGXqHPqig6Kz6w=
+X-Google-Smtp-Source: AGHT+IEeYQSyK17YBl+U+tvoZOMjMKwL2UrahcoOzwyD1lTh7xUyy0SiAWRclW+KgU5X/fe3zma58A==
+X-Received: by 2002:a5e:c302:0:b0:7c8:789b:b3d8 with SMTP id a2-20020a5ec302000000b007c8789bb3d8mr10366765iok.0.1711484409484;
+        Tue, 26 Mar 2024 13:20:09 -0700 (PDT)
+Received: from [192.168.1.128] ([38.175.170.29])
+        by smtp.gmail.com with ESMTPSA id y205-20020a6bc8d6000000b007d0648c020asm829969iof.49.2024.03.26.13.20.08
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 26 Mar 2024 13:20:09 -0700 (PDT)
+Message-ID: <91f2e916-2f90-4970-9448-09f821597083@linuxfoundation.org>
+Date: Tue, 26 Mar 2024 14:20:08 -0600
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240305020153.2787423-1-almasrymina@google.com>
- <20240305020153.2787423-3-almasrymina@google.com> <ZfegzB341oNc_Ocz@infradead.org>
- <CAHS8izOUi6qGp=LSQb_o5oph-EnhNOuhLkPSfbQRU3eniZvbdA@mail.gmail.com> <ZgC5JoSiWAYf3IgX@infradead.org>
-In-Reply-To: <ZgC5JoSiWAYf3IgX@infradead.org>
-From: Mina Almasry <almasrymina@google.com>
-Date: Tue, 26 Mar 2024 13:19:20 -0700
-Message-ID: <CAHS8izO5-giYhM1bVCLLOXRXq-Xd0=pi0kPq5E1-R=3i=XihmQ@mail.gmail.com>
-Subject: Re: [RFC PATCH net-next v6 02/15] net: page_pool: create hooks for
- custom page providers
-To: Christoph Hellwig <hch@infradead.org>, shakeel.butt@linux.dev
-Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-doc@vger.kernel.org, linux-alpha@vger.kernel.org, 
-	linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org, 
-	sparclinux@vger.kernel.org, linux-trace-kernel@vger.kernel.org, 
-	linux-arch@vger.kernel.org, bpf@vger.kernel.org, 
-	linux-kselftest@vger.kernel.org, linux-media@vger.kernel.org, 
-	dri-devel@lists.freedesktop.org, "David S. Miller" <davem@davemloft.net>, 
-	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
-	Jonathan Corbet <corbet@lwn.net>, Richard Henderson <richard.henderson@linaro.org>, 
-	Ivan Kokshaysky <ink@jurassic.park.msu.ru>, Matt Turner <mattst88@gmail.com>, 
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
-	"James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>, Helge Deller <deller@gmx.de>, 
-	Andreas Larsson <andreas@gaisler.com>, Jesper Dangaard Brouer <hawk@kernel.org>, 
-	Ilias Apalodimas <ilias.apalodimas@linaro.org>, Steven Rostedt <rostedt@goodmis.org>, 
-	Masami Hiramatsu <mhiramat@kernel.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, 
-	Arnd Bergmann <arnd@arndb.de>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
-	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
-	Jiri Olsa <jolsa@kernel.org>, David Ahern <dsahern@kernel.org>, 
-	Willem de Bruijn <willemdebruijn.kernel@gmail.com>, Shuah Khan <shuah@kernel.org>, 
-	Sumit Semwal <sumit.semwal@linaro.org>, =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>, 
-	Pavel Begunkov <asml.silence@gmail.com>, David Wei <dw@davidwei.uk>, Jason Gunthorpe <jgg@ziepe.ca>, 
-	Yunsheng Lin <linyunsheng@huawei.com>, Shailend Chand <shailend@google.com>, 
-	Harshitha Ramamurthy <hramamurthy@google.com>, Jeroen de Borst <jeroendb@google.com>, 
-	Praveen Kaligineedi <pkaligineedi@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3] kselftest/clone3: Make test names for set_tid test
+ stable
+Content-Language: en-US
+To: Mark Brown <broonie@kernel.org>, Christian Brauner <brauner@kernel.org>,
+ Shuah Khan <shuah@kernel.org>
+Cc: linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+ Shuah Khan <skhan@linuxfoundation.org>
+References: <20240325-kselftest-clone3-set-tid-v3-1-6fdd91506e53@kernel.org>
+ <0cee99af-f058-47a0-9119-94cc9a37e88b@linuxfoundation.org>
+From: Shuah Khan <skhan@linuxfoundation.org>
+In-Reply-To: <0cee99af-f058-47a0-9119-94cc9a37e88b@linuxfoundation.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Sun, Mar 24, 2024 at 4:37=E2=80=AFPM Christoph Hellwig <hch@infradead.or=
-g> wrote:
->
-> On Fri, Mar 22, 2024 at 10:54:54AM -0700, Mina Almasry wrote:
-> > Sorry I don't mean to argue but as David mentioned, there are some
-> > plans in the works and ones not in the works to extend this to other
-> > memory types. David mentioned io_uring & Jakub's huge page use cases
-> > which may want to re-use this design. I have an additional one in
-> > mind, which is extending devmem TCP for storage devices. Currently
-> > storage devices do not support dmabuf and my understanding is that
-> > it's very hard to do so, and NVMe uses pci_p2pdma instead. I wonder if
-> > it's possible to extend devmem TCP in the future to support pci_p2pdma
-> > to support nvme devices in the future.
->
-> The block layer needs to suppotr dmabuf for this kind of I/O.
-> Any special netdev to block side channel will be NAKed before you can
-> even send it out.
+On 3/26/24 13:17, Shuah Khan wrote:
+> On 3/25/24 08:29, Mark Brown wrote:
+>> The test results reported for the clone3_set_tid tests interact poorly with
+>> automation for running kselftest since the reported test names include TIDs
+>> dynamically allocated at runtime. A lot of automation for running kselftest
+>> will compare runs by looking at the test name to identify if the same test
+>> is being run so changing names make it look like the testsuite has been
+>> updated to include new tests. This makes the results display less clearly
+>> and breaks cases like bisection.
+>>
+>> Address this by providing a brief description of the tests and logging that
+>> along with the stable parameters for the test currently logged. The TIDs
+>> are already logged separately in existing logging except for the final test
+>> which has a new log message added. We also tweak the formatting of the
+>> logging of expected/actual values for clarity.
+>>
+>> There are still issues with the logging of skipped tests (many are simply
+>> not logged at all when skipped and all are logged with different names) but
+>> these are less disruptive since the skips are all based on not being run as
+>> root, a condition likely to be stable for a given test system.
+>>
+>> Acked-by: Christian Brauner <brauner@kernel.org>
+>> Signed-off-by: Mark Brown <broonie@kernel.org>
+>> ---
+>> Changes in v3:
+>> - Rebase onto v6.9-rc1.
+>> - This is the second release I've posted this for with no changes or
+>>    review comments.
+>> - Link to v2: https://lore.kernel.org/r/20240122-kselftest-clone3-set-tid-v2-1-72af5d7dbae8@kernel.org
+>>
+> 
+> Thank you for patience. Applied now to linux-kselftest fixes for
+> next rc.
+> 
 
-Thanks, a few questions if you have time to help me understand the
-potential of extending this to storage devices.
+Mark,
 
-Are you envisioning that dmabuf support would be added to the block
-layer (which I understand is part of the VFS and not driver specific),
-or as part of the specific storage driver (like nvme for example)? If
-we can add dmabuf support to the block layer itself that sounds
-awesome. We may then be able to do devmem TCP on all/most storage
-devices without having to modify each individual driver.
+I am seeing the following compile warnings. Please fix and send patch
+on top pf linux-kselftest fixes.
 
-In your estimation, is adding dmabuf support to the block layer
-something technically feasible & acceptable upstream? I notice you
-suggested it so I'm guessing yes to both, but I thought I'd confirm.
+clone3_set_tid.c: In function ‘test_clone3_set_tid’:
+clone3_set_tid.c:136:43: warning: format ‘%d’ expects argument of type ‘int’, but argument 3 has type ‘size_t’ {aka ‘long unsigned int’} [-Wformat=]
+   136 |         ksft_test_result(ret == expected, "%s with %d TIDs and flags 0x%x\n",
+       |                                           ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   137 |                          desc, set_tid_size, flags);
+       |                                ~~~~~~~~~~~~
+       |                                |
+       |                                size_t {aka long unsigned int}
+./kselftest.h:210:39: note: in definition of macro ‘ksft_test_result’
+   210 |                 ksft_test_result_pass(fmt, ##__VA_ARGS__);\
+       |                                       ^~~
+clone3_set_tid.c:136:53: note: format string is defined here
+   136 |         ksft_test_result(ret == expected, "%s with %d TIDs and flags 0x%x\n",
+       |                                                    ~^
+       |                                                     |
+       |                                                     int
+       |                                                    %ld
+clone3_set_tid.c:136:43: warning: format ‘%d’ expects argument of type ‘int’, but argument 3 has type ‘size_t’ {aka ‘long unsigned int’} [-Wformat=]
+   136 |         ksft_test_result(ret == expected, "%s with %d TIDs and flags 0x%x\n",
+       |                                           ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   137 |                          desc, set_tid_size, flags);
+       |                                ~~~~~~~~~~~~
+       |                                |
+       |                                size_t {aka long unsigned int}
+./kselftest.h:212:39: note: in definition of macro ‘ksft_test_result’
+   212 |                 ksft_test_result_fail(fmt, ##__VA_ARGS__);\
+       |                                       ^~~
+clone3_set_tid.c:136:53: note: format string is defined here
+   136 |         ksft_test_result(ret == expected, "%s with %d TIDs and flags 0x%x\n",
+       |                                                    ~^
+       |                                                     |
+       |                                                     int
+       |                                                    %ld
 
-Worthy of note this is all pertaining to potential follow up use
-cases, nothing in this particular proposal is trying to do any of this
-yet.
+thanks,
+-- Shuah
 
---=20
-Thanks,
-Mina
+
 
