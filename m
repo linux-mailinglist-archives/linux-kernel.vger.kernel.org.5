@@ -1,117 +1,106 @@
-Return-Path: <linux-kernel+bounces-119579-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-119581-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9382C88CAA6
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 18:23:36 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 394B388CAAD
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 18:24:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EBEBC325306
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 17:23:34 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5C19F1C653FD
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 17:24:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 050D21CD29;
-	Tue, 26 Mar 2024 17:23:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 118241CD2E;
+	Tue, 26 Mar 2024 17:24:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="eftGmQ5y"
-Received: from mail-io1-f53.google.com (mail-io1-f53.google.com [209.85.166.53])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Fs8hLRmu"
+Received: from mail-ej1-f44.google.com (mail-ej1-f44.google.com [209.85.218.44])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BB7761C6A0
-	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 17:23:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC6BC1C6A0;
+	Tue, 26 Mar 2024 17:24:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711473809; cv=none; b=UcqpAYARsRUoaZ6+zV1lkHAMfLoXRUNxDmoy8wkD77YmzbFcntZfWTl7hikeMJdfKNDZJvOdqy7AhA0vdLv9Lm/qxY2CBb3UaoIz6agh/07XWB5zjc1hPikeCo6PLrxy/NjimRVkzSGhUgLRCMVcDpmCkO1TQpkTQgLfje6isJQ=
+	t=1711473880; cv=none; b=fplFy0Jejr2JldnUeuNF0vaP/pfsI4Du+UDrlzdINyzsBhfI+piiKPmXvCY7obArL8IvaMx9KKydLiL7tQuFkXySBeVSIF46XXW3ZqcMrVMhS4C+bvQESBdJROBRA2cHBrgkejQU5AYevJljx4qvQJgsb6K2KCI0a3WbRCmmLuY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711473809; c=relaxed/simple;
-	bh=cMXba/qoy/bpGv4NqvbSD5Zu08ZKbaf7xWPSRDDJAhA=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=hdb0eBLPaUNKbMElDHJCfKSInzWIk/tQ1mcugHxy9kqlPJABt3S9Ij3aV/Tzv6wpytYcnuURaTsKAUo83oDTeo/NS9TO1pfpIlM35CXvxJcqx3buYYyHYnU8Tsk4DgtTkbPpEjLOQAfqJish4H+q/3KMMpYfIlogK3R5X7QbLOg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linuxfoundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=eftGmQ5y; arc=none smtp.client-ip=209.85.166.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linuxfoundation.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
-Received: by mail-io1-f53.google.com with SMTP id ca18e2360f4ac-7cc5e664d52so65814539f.0
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 10:23:27 -0700 (PDT)
+	s=arc-20240116; t=1711473880; c=relaxed/simple;
+	bh=8MxJLVegabRBz98Kr4jfe2uumdXdL9WWQG6U0d84h20=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=juQCDd00xGOlBF5wB1plP4ycQ+gHXgpzqmxA1TDbqNhgi8JU+QkFhCMCyAMVGUM5AbcxuEH5s+Ad6mONqIp+5AtCO9qirLuA9EVARa24P2Yz7O06TQlAe6iMhWo7UhtNrmLKwy3eQ3rbuRAQHESFkc/3zSaZlUmXv8GjFot+PTI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Fs8hLRmu; arc=none smtp.client-ip=209.85.218.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f44.google.com with SMTP id a640c23a62f3a-a44ad785a44so664366666b.3;
+        Tue, 26 Mar 2024 10:24:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google; t=1711473807; x=1712078607; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=WfqhMfTwQzjtukQYLlDEi7Fz8060jibOn1ZPoDBARM8=;
-        b=eftGmQ5y1zlwc3fT6elMtQD476b4DvzyPM+7SJrIMealbql3ZWPWbCE8tR8IjT1AKQ
-         vi4uK8/gXXRYLGrRlZFQjnh+l14nbtP1oSbVqxawqmskOWiHEacqeoH+thH9s0fkh/7X
-         DYxa2pO1sgm6ZMjM5SSAkEsHhAsCC83QZ8yuA=
+        d=gmail.com; s=20230601; t=1711473877; x=1712078677; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references
+         :mail-followup-to:message-id:subject:cc:to:from:date:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=HWssbRS4LXejM/4y1x22PFUSQF3V8Eb/sTfSEE3bEaM=;
+        b=Fs8hLRmuIUnaqsXFKFv/WSa1dhc4bKA+1GdDnF9AZaffwUlQk/Rkc12AEL86+PXuH0
+         MSkjh6Mi4xqB3nQSjujEuggVgWzgShBnuLFTvgvN4JhXnWJMSp+b3og2Q0slZVfp0Qib
+         FDwLxeXGyIp2PlLOHv1xcivAtPcvKY5+axIv65wwNzo7G9b3kRMFYt3rYaxl08oYxads
+         m7PeYhhAFmvYUKP/4Nlt938GBYG5XnsJeADS0kF7c22Rw84vrru8950H8/WC+t43DzPh
+         3I0wafBhuoUEcdaucQeBsL+k+VrckBqPtsKKlt5kFY5qyEINwUWGCmtKUbex4drEPiH/
+         C5Yg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711473807; x=1712078607;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
+        d=1e100.net; s=20230601; t=1711473877; x=1712078677;
+        h=in-reply-to:content-disposition:mime-version:references
+         :mail-followup-to:message-id:subject:cc:to:from:date
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=WfqhMfTwQzjtukQYLlDEi7Fz8060jibOn1ZPoDBARM8=;
-        b=ekB4DtIFwn27S8Q6sBd/uPcJ3wGRRvQuHrZ7A8cy3Vs+pKck2JoHZp/z/LTVfRABaO
-         dp/WoDUh+uuKixOPRQlSHRZg4YOUaMWBoUIv9gUXWFElmVxrR/EIaS4tlOgmEVmN3/5V
-         gvtN9vfsCCHC6XG/emAycZqErObmilHUSLj/yljmemAlR/FU++6N50eqEqmQYRTB4+la
-         DqV0UZWxGjOiRyrjuYRRXh363PrEKWnOPN72hZqL00klLhklPjdC35j9ZCcZt2SSXoIc
-         EOpHKeM2/olH3uNwjIlX56Xpbh3oOn+VL4ZJKUgiYXpql7XbgLEAryhxZEsN/RJhZ3+g
-         5nRQ==
-X-Forwarded-Encrypted: i=1; AJvYcCU78wdQD7Iq3WFYeVP4vHAJszYNjA3PhxZtMu2DHzS2y3YTqv9WVyaBaOs+xuDfI6q/4URJBbkfQft9XWk5ciu66mxVRtcx40bkYG4I
-X-Gm-Message-State: AOJu0YxsoOu1sCgWbi2XWg6uIrCJMLmvUrYzoz0lLwANgGmFGrPRke/H
-	BYZP9q+qduMX7bQ0QujFL2SdUhe+KHeOy8YlaJKGwi4j7zjUEycHvqzsqZhVk84=
-X-Google-Smtp-Source: AGHT+IGpnam4gq6TybGxH3HiZtwDvaITufJE24+llwHdPu6wnAx9XSZzUUSFdlZCbzfidG0rgDUoMw==
-X-Received: by 2002:a6b:5d16:0:b0:7d0:3f6b:6af9 with SMTP id r22-20020a6b5d16000000b007d03f6b6af9mr9560845iob.0.1711473806766;
-        Tue, 26 Mar 2024 10:23:26 -0700 (PDT)
-Received: from [192.168.1.128] ([38.175.170.29])
-        by smtp.gmail.com with ESMTPSA id k13-20020a02a70d000000b0047c0c7b6c6esm1912654jam.175.2024.03.26.10.23.25
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 26 Mar 2024 10:23:26 -0700 (PDT)
-Message-ID: <6ae8509a-b071-474e-b93a-2814109ccfa1@linuxfoundation.org>
-Date: Tue, 26 Mar 2024 11:23:25 -0600
+        bh=HWssbRS4LXejM/4y1x22PFUSQF3V8Eb/sTfSEE3bEaM=;
+        b=PpwfilFLiy2db1JLmDj8Pswu1UGMHTOrgyHrFZtoT78YqHJ0NLZHZw0/BYbuK7jbWW
+         /TBX+m8Sgno8hLTnJEWsLkx/Jxs4mzRRMAQQvec707Zzr8v2XADJYu5yzjsZajZ/CbMm
+         2BBY9104zNhbDS6lXVB1B0xG9RiePnOM+T/6xov9r+RPQMpLZa3CDbS3nWZZbDuS2HY9
+         qPIlWaa3yD38c0FFOk9ckOq31mGQR8vZPWbdY0ufwuao8e6B4JC1r84ZSb505T9UN27s
+         dpCI2o8FAO7ZrVeyiz/a5wiPD3bLz1u/scsW1gmFzJqUcHiu1LzzQc6dEX+Z5P/U0mo8
+         PELQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXMgxCfu8hyAJlEhYaqIyRl7sO3y2mK3zHj4JseyENz7qUJOU0gYTOWrsQShsTvVpMBY2sGW/AbZgdDhlLK5EQxfuN5SY+dzdMyLM0mob1BRdgMa81tNk92euxqVT+FQ3lPgk+dncKEsQ==
+X-Gm-Message-State: AOJu0YxkhvgUEaCZ+Y7ZEVwZ+Fk1ypMWwk9Vj3XyKF8AmHZZZV0ky4ZG
+	SH0bNLae1DcOUu/76W7p114sryMpfGDg0ncdiiOjRym3kAz9/gAb
+X-Google-Smtp-Source: AGHT+IHmJMH1ofGnAheKhTqTGvl14MXcrHx5BC6Ai/Drqkfgs1jFGFFCrX3fSqGrAeWzK2LgWEyJdA==
+X-Received: by 2002:a17:906:2414:b0:a4d:fe65:631b with SMTP id z20-20020a170906241400b00a4dfe65631bmr196855eja.18.1711473876829;
+        Tue, 26 Mar 2024 10:24:36 -0700 (PDT)
+Received: from chinchilla (92-109-110-130.cable.dynamic.v4.ziggo.nl. [92.109.110.130])
+        by smtp.gmail.com with ESMTPSA id m12-20020a1709061ecc00b00a46d04b6117sm4438352ejj.64.2024.03.26.10.24.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 26 Mar 2024 10:24:36 -0700 (PDT)
+Date: Tue, 26 Mar 2024 18:24:34 +0100
+From: Matthijs van Duin <matthijsvanduin@gmail.com>
+To: Robert Nelson <robertcnelson@gmail.com>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Jason Kridner <jkridner@beagleboard.org>,
+	Drew Fustini <drew@beagleboard.org>, Andrew Davis <afd@ti.com>,
+	Tony Lindgren <tony@atomide.com>, linux-omap@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] uio: pruss: Deprecate use of this driver
+Message-ID: <ZgME0qSL3KXCD07I@chinchilla>
+Mail-Followup-To: Robert Nelson <robertcnelson@gmail.com>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Jason Kridner <jkridner@beagleboard.org>,
+	Drew Fustini <drew@beagleboard.org>, Andrew Davis <afd@ti.com>,
+	Tony Lindgren <tony@atomide.com>, linux-omap@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+References: <20240325210045.153827-1-afd@ti.com>
+ <2024032631-excursion-opposing-be36@gregkh>
+ <CAOCHtYjauA+BAxZJBMTaxxaMGcvipP9=ZPeWe4FiNFs_jpq6dg@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 5.4 000/180] 5.4.273-rc2 review
-Content-Language: en-US
-To: Sasha Levin <sashal@kernel.org>, linux-kernel@vger.kernel.org,
- stable@vger.kernel.org
-Cc: torvalds@linux-foundation.org, akpm@linux-foundation.org,
- linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
- lkft-triage@lists.linaro.org, florian.fainelli@broadcom.com, pavel@denx.de,
- Shuah Khan <skhan@linuxfoundation.org>
-References: <20240325115908.1765126-1-sashal@kernel.org>
-From: Shuah Khan <skhan@linuxfoundation.org>
-In-Reply-To: <20240325115908.1765126-1-sashal@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAOCHtYjauA+BAxZJBMTaxxaMGcvipP9=ZPeWe4FiNFs_jpq6dg@mail.gmail.com>
 
-On 3/25/24 05:59, Sasha Levin wrote:
-> 
-> This is the start of the stable review cycle for the 5.4.273 release.
-> There are 180 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Wed Mar 27 11:59:07 AM UTC 2024.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
->          https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git/patch/?id=linux-5.4.y&id2=v5.4.272
-> or in the git tree and branch at:
->          git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.4.y
-> and the diffstat can be found below.
-> 
-> Thanks,
-> Sasha
-> 
+I'll write a more in-depth reply when I have a moment, but right now I'd
+like to point out that the uio-pruss driver in mainline linux is for the
+pru subsystem on the freon/primus family of ARM9-based SoCs (OMAP-L1xx /
+AM17xx / AM18xx / TMS320C674x / DA8xx), which is not currently supported
+by remoteproc-pru.
 
-Compiled and booted on my test system. No dmesg regressions.
-
-Tested-by: Shuah Khan <skhan@linuxfoundation.org>
-
-thanks,
--- Shuah
-
-
+-- 
+Matthijs van Duin
 
