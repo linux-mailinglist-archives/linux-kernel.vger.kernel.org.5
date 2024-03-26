@@ -1,148 +1,176 @@
-Return-Path: <linux-kernel+bounces-119962-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-119960-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id BF90288CF7A
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 21:56:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id CB5CA88CF71
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 21:56:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 396DA1F3913D
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 20:56:48 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3D4631F3804D
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 20:56:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E9DBC12BF04;
-	Tue, 26 Mar 2024 20:56:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2482C12B143;
+	Tue, 26 Mar 2024 20:56:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b="WlOtjyaZ";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="oTYV8adQ"
-Received: from fout7-smtp.messagingengine.com (fout7-smtp.messagingengine.com [103.168.172.150])
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="NqotJdVz"
+Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A44A612C7FF;
-	Tue, 26 Mar 2024 20:56:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.150
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 93D76EDF;
+	Tue, 26 Mar 2024 20:55:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.19.142
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711486581; cv=none; b=n0H4jbt+v3h9VHuac52zXXKvPD4riyIZCrdL97sW7XuEi2Q1h0FCOvwnjJNBfm8qLFvR4GmRlyjy500Yg5XPjGoXpZwSeTneO6Gq9eY3DDAi4/fcFm9VKIkFko1bhu034cgtZpEkaRBXjg0+46ME8BP9bsmTliM7rdwHhT2tXR0=
+	t=1711486561; cv=none; b=S9OmmNRPUjYH71OCBWRP71omx2gh8XrKL4iKWl4pZIUZfP8O38M7nk4wm4VHe64lqlj/ilPpJsg+ObwDCV0sPBo1KfzaS27dllFMWzhNm+vzy2eNcWPF8RExiUL3+DdmPt1QRFOC/ppnMNAjFIPKNDGTQ9gR+WkctS13fock4zE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711486581; c=relaxed/simple;
-	bh=Olz4AkNkzYVK19w+Jh6klcHV6fbs+XGQtH12Ue6EbtA=;
-	h=MIME-Version:Message-Id:In-Reply-To:References:Date:From:To:Cc:
-	 Subject:Content-Type; b=Gejj+PHDoJ261zFF/+liw9o/R62sP6a4rd175No5dgw8qi7NrqYVi+wbxNFA2BNXr7THYuelVsCIx0T66TcS0fYu9mancmrvgukgBOyCyn0ev/ch45Az3yFqKLKW9AvtZRqOjyiC5LTlqkyN4M7QWxkTbZg2Z6T/MMINC3J9S4g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de; spf=pass smtp.mailfrom=arndb.de; dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b=WlOtjyaZ; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=oTYV8adQ; arc=none smtp.client-ip=103.168.172.150
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arndb.de
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-	by mailfout.nyi.internal (Postfix) with ESMTP id C0777138014E;
-	Tue, 26 Mar 2024 16:56:17 -0400 (EDT)
-Received: from imap51 ([10.202.2.101])
-  by compute5.internal (MEProxy); Tue, 26 Mar 2024 16:56:17 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
-	:cc:content-type:content-type:date:date:from:from:in-reply-to
-	:in-reply-to:message-id:mime-version:references:reply-to:subject
-	:subject:to:to; s=fm1; t=1711486577; x=1711572977; bh=bTK7qxB/Dz
-	ZvcacQ3ARgA6AoDzT5XFaivWWd8YVHcDs=; b=WlOtjyaZiklsRi4cCh1jYIRpIM
-	pLVHILPIPgQ/oogUIpqoqYnwK1W+6v8z0OA+zU38ovpQrKeC5G+uoNavTn26eOcw
-	Rx9zFSqTneqsXKVF54y5rwO2vHU/viQNr11OsBlahezKkGRdxR1vhDu/HNpjHWZH
-	Hw8/5n6K5X+u1wgp5XcZivytgK6eq1An+lKKX426vYBoEHRjKtJ2g5tzqxxS1pN5
-	GnkBq5GRV0kmxf1/iX6DMkND5yOLsrsoGUtnkkew0BYhBhDf12kqBMhkcdMKdzRv
-	1ZZvx0c+58bG33DpLg54XvIvoERfC3DtCU/rHLAyGy1/fVXzvUpuuDc60MwA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-	fm2; t=1711486577; x=1711572977; bh=bTK7qxB/DzZvcacQ3ARgA6AoDzT5
-	XFaivWWd8YVHcDs=; b=oTYV8adQxdjRh9Snl2cz1eHQHqctI5puzvhK2J/F+mJ8
-	7tl0gvwKM0afyXZkz8C6MXAAifZckQygqw5ORc7w0qpS1TPlbO+w9G7jd3heTiCC
-	r8I6RrrlNvFIk91tWPjbL747c8kuc3cUPm9wPnAItnHcvIkE5C+9ExKz8Ajn6gg4
-	XtFClsZhAv7KlA2mcHHBjgSBHAdbPX7syjzicTpPVslBt7hIXn/nym+aa8280ApW
-	IeFHW75gBBPdbNdhp32G4czj+aGTUaSrQiNUAlmapyxtBNnRSxScoAW/oimlmTKi
-	uS/mrXXVeAnS/EwrWwW0shCoI/5h1CnBk3kKJ1UCxw==
-X-ME-Sender: <xms:cDYDZnJ8rnTBWm06xK346QIC-QafLXL2gNmwIgqfmVnvDbkBSqHQWQ>
-    <xme:cDYDZrKEJ0-53M2cA3w9Y_dAEKcjYEVn8bzx34Tifka9Xow_kVoe0xGHM4NN3qkKF
-    gRRP3ldGGLjW5vpIVI>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledruddufedgudegfecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enucfjughrpefofgggkfgjfhffhffvvefutgesthdtredtreertdenucfhrhhomhepfdet
-    rhhnugcuuegvrhhgmhgrnhhnfdcuoegrrhhnugesrghrnhgusgdruggvqeenucggtffrrg
-    htthgvrhhnpeffheeugeetiefhgeethfejgfdtuefggeejleehjeeutefhfeeggefhkedt
-    keetffenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
-    grrhhnugesrghrnhgusgdruggv
-X-ME-Proxy: <xmx:cDYDZvvDg9wFUZ4OAUyKEggLe0cNB4rFNN936cbq-sR_6OTqjVXIrw>
-    <xmx:cDYDZgZgdeDjBNgszo_zOpuYNlLc03uqLjysmZTeLwTAqDSTOmltzw>
-    <xmx:cDYDZuYKC_wI7ro2wW0eBCrJnbpxAudYAU5P82Iecn1qctEWiMRPFw>
-    <xmx:cDYDZkDkbD19cuKpTJQbi0S_atQZTcbT2a9iBKqGsY57IhQu9VXbdA>
-    <xmx:cTYDZgYxthdidcJydzecKKASkiaYUTKEbJFDurjUEzrMsGAkjExe_w>
-Feedback-ID: i56a14606:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-	id 658BDB6008D; Tue, 26 Mar 2024 16:56:16 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.11.0-alpha0-328-gc998c829b7-fm-20240325.002-gc998c829
+	s=arc-20240116; t=1711486561; c=relaxed/simple;
+	bh=w35Zj+d0IyalQMWGYTBSeTjFwYAewQtIyiV34Mz8T7s=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=FbAn3N2YlQtuIHgq0bnY6idkfgW8baA74RXTz0x+elG0qUAktcyjJA+8vP0YfdmXRgHjT3s0v5BfuxHlph1APVjABG01flQUK0srByJrbxR0jP4QQbJRV7k41pqgVUUJxvR1/lVyD1FEKm8z/miZ5J7duxwX+eFntxQr9A2a5VY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=NqotJdVz; arc=none smtp.client-ip=198.47.19.142
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+	by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 42QKtmi5095003;
+	Tue, 26 Mar 2024 15:55:48 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+	s=ti-com-17Q1; t=1711486548;
+	bh=Smy5k79vUe3OVEPHAMKYoMHVAX3ehZ3inkD06MeHs1A=;
+	h=Date:Subject:To:CC:References:From:In-Reply-To;
+	b=NqotJdVzXO8kVtZYpNXo8LQ5S2mLSUdodqfgatERWVTgbXM4QtNTS14w85tV9iGii
+	 E7CUYDnpHHPw9ssUNpZugnQ6Q//+0NIDwSk0gm3kG236MuwNSdMLs6r6kvU95k7UKW
+	 WScI8+9pUtEs1Ny5G2COXPmLUEevF7cX7CdQRDa4=
+Received: from DLEE103.ent.ti.com (dlee103.ent.ti.com [157.170.170.33])
+	by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 42QKtmKK065361
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+	Tue, 26 Mar 2024 15:55:48 -0500
+Received: from DLEE101.ent.ti.com (157.170.170.31) by DLEE103.ent.ti.com
+ (157.170.170.33) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Tue, 26
+ Mar 2024 15:55:48 -0500
+Received: from fllvsmtp7.itg.ti.com (10.64.40.31) by DLEE101.ent.ti.com
+ (157.170.170.31) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Tue, 26 Mar 2024 15:55:47 -0500
+Received: from [10.249.42.149] ([10.249.42.149])
+	by fllvsmtp7.itg.ti.com (8.15.2/8.15.2) with ESMTP id 42QKtlLY084896;
+	Tue, 26 Mar 2024 15:55:47 -0500
+Message-ID: <fe1feb62-767f-40d2-95f9-75594afccafb@ti.com>
+Date: Tue, 26 Mar 2024 15:55:47 -0500
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-Id: <cb853762-06d4-401c-a1c8-07a0c031b499@app.fastmail.com>
-In-Reply-To: <87jzlohhbc.fsf@intel.com>
-References: <20240326144741.3094687-1-arnd@kernel.org>
- <20240326144741.3094687-2-arnd@kernel.org> <87jzlohhbc.fsf@intel.com>
-Date: Tue, 26 Mar 2024 21:55:46 +0100
-From: "Arnd Bergmann" <arnd@arndb.de>
-To: "Jani Nikula" <jani.nikula@linux.intel.com>,
- "Arnd Bergmann" <arnd@kernel.org>, linux-kbuild@vger.kernel.org,
- "Masahiro Yamada" <masahiroy@kernel.org>,
- "Harry Wentland" <harry.wentland@amd.com>,
- "Alex Deucher" <alexander.deucher@amd.com>,
- =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
- "Lucas De Marchi" <lucas.demarchi@intel.com>,
- "Oded Gabbay" <ogabbay@kernel.org>,
- "Maarten Lankhorst" <maarten.lankhorst@linux.intel.com>,
- "Maxime Ripard" <mripard@kernel.org>,
- "Thomas Zimmermann" <tzimmermann@suse.de>,
- "Jakub Kicinski" <kuba@kernel.org>, "Paolo Abeni" <pabeni@redhat.com>,
- "Andrew Jeffery" <andrew@codeconstruct.com.au>,
- "Linus Walleij" <linus.walleij@linaro.org>, "Joel Stanley" <joel@jms.id.au>,
- "Alexei Starovoitov" <ast@kernel.org>,
- "Daniel Borkmann" <daniel@iogearbox.net>,
- "Andrew Morton" <akpm@linux-foundation.org>,
- "Nathan Chancellor" <nathan@kernel.org>
-Cc: "Nicolas Schier" <nicolas@fjasle.eu>, dri-devel@lists.freedesktop.org,
- linux-kernel@vger.kernel.org, Netdev <netdev@vger.kernel.org>,
- linux-mm@kvack.org, llvm@lists.linux.dev
-Subject: Re: [PATCH 01/12] kbuild: make -Woverride-init warnings more consistent
-Content-Type: text/plain
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/6] arm64: dts: ti: k3-am65: Remove UART baud rate
+ selection
+Content-Language: en-US
+To: Nishanth Menon <nm@ti.com>
+CC: Vignesh Raghavendra <vigneshr@ti.com>, Tero Kristo <kristo@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski
+	<krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+References: <20240326185441.29656-1-afd@ti.com>
+ <20240326202105.duim7cooxk4dwlz2@makeshift>
+From: Andrew Davis <afd@ti.com>
+In-Reply-To: <20240326202105.duim7cooxk4dwlz2@makeshift>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
-On Tue, Mar 26, 2024, at 21:24, Jani Nikula wrote:
-> On Tue, 26 Mar 2024, Arnd Bergmann <arnd@kernel.org> wrote:
->> From: Arnd Bergmann <arnd@arndb.de>
->> index 475e1e8c1d35..0786eb0da391 100644
->> --- a/drivers/net/ethernet/renesas/sh_eth.c
->> +++ b/drivers/net/ethernet/renesas/sh_eth.c
->> @@ -50,7 +50,7 @@
->>   * the macros available to do this only define GCC 8.
->>   */
->>  __diag_push();
->> -__diag_ignore(GCC, 8, "-Woverride-init",
->> +__diag_ignore_all("-Woverride-init",
->>  	      "logic to initialize all and then override some is OK");
->
-> This is nice because it's more localized than the per-file
-> disable. However, we tried to do this in i915, but this doesn't work for
-> GCC versions < 8, and some defconfigs enabling -Werror forced us to
-> revert. See commit 290d16104575 ("Revert "drm/i915: use localized
-> __diag_ignore_all() instead of per file"").
+On 3/26/24 3:21 PM, Nishanth Menon wrote:
+> On 13:54-20240326, Andrew Davis wrote:
+>> As described in the binding document for the "current-speed" property:
+>>
+>> "This should only be present in case a driver has no chance to know the
+>> baud rate of the slave device."
+>>
+>> This is not the case for the UART used in K3 devices, the current
+>> baud-rate can be calculated from the registers. Having this property
+> 
+> I do not understand the explanation above -> how does one do this?
+> If you are talking of the 8250 divider registers, someone has to program
+> those - how do you compute the baud rate from registers that aren't
+> programmed? Note: I am not commenting on the rationale of removing the
+> property, just trying to understand the assertion above.
+> 
 
-It works now.
+This divider register, when "unprogrammed", has a default value. When one
+wants to use a TTY/serial device they pick the baud-rate(stty, termios, etc.),
+that then programs the register with the value they selected.
 
-The original __diag_ignore_all() only did it for gcc-8 and above
-because that was initially needed to suppress warnings that
-got added in that version, but this was always a mistake.
+As stated below, this property does not program that register, it only
+tells the driver what it should have already been set to. Some drivers
+need this as they do not have a way to know what the divider is actually
+set to.
 
-689b097a06ba ("compiler-gcc: Suppress -Wmissing-prototypes
-warning for all supported GCC") made it work correctly.
+Setting this in our case is wrong for two reasons:
+1) Our driver can and does just check the divider itself.
+2) We do not setup most of these UARTs before the kernel starts, so
+    if our driver *did* care about this property it would not reflect
+    the actual divider value (which is unprogrammed at this point).
 
-     Arnd
+Andrew
+
+>> has the effect of actually skipping the baud-rate setup in some drivers
+>> as it assumes it will already be set to this rate, which may not always
+>> be the case.
+>>
+>> It seems this property's purpose was mistaken as selecting the desired
+>> baud-rate, which it does not. It would have been wrong to select that
+>> here anyway as DT is not the place for configuration, especially when
+>> there are already more standard ways to set serial baud-rates.
+>>
+>> Signed-off-by: Andrew Davis <afd@ti.com>
+>> ---
+>>   arch/arm64/boot/dts/ti/k3-am65-main.dtsi   | 1 -
+>>   arch/arm64/boot/dts/ti/k3-am65-mcu.dtsi    | 1 -
+>>   arch/arm64/boot/dts/ti/k3-am65-wakeup.dtsi | 1 -
+>>   3 files changed, 3 deletions(-)
+>>
+>> diff --git a/arch/arm64/boot/dts/ti/k3-am65-main.dtsi b/arch/arm64/boot/dts/ti/k3-am65-main.dtsi
+>> index ff857117d7193..670557c89f756 100644
+>> --- a/arch/arm64/boot/dts/ti/k3-am65-main.dtsi
+>> +++ b/arch/arm64/boot/dts/ti/k3-am65-main.dtsi
+>> @@ -89,7 +89,6 @@ main_uart0: serial@2800000 {
+>>   		reg = <0x00 0x02800000 0x00 0x100>;
+>>   		interrupts = <GIC_SPI 192 IRQ_TYPE_LEVEL_HIGH>;
+>>   		clock-frequency = <48000000>;
+>> -		current-speed = <115200>;
+>>   		power-domains = <&k3_pds 146 TI_SCI_PD_EXCLUSIVE>;
+>>   		status = "disabled";
+>>   	};
+>> diff --git a/arch/arm64/boot/dts/ti/k3-am65-mcu.dtsi b/arch/arm64/boot/dts/ti/k3-am65-mcu.dtsi
+>> index 6ff3ccc39fb44..4f808e5089755 100644
+>> --- a/arch/arm64/boot/dts/ti/k3-am65-mcu.dtsi
+>> +++ b/arch/arm64/boot/dts/ti/k3-am65-mcu.dtsi
+>> @@ -43,7 +43,6 @@ mcu_uart0: serial@40a00000 {
+>>   		reg = <0x00 0x40a00000 0x00 0x100>;
+>>   		interrupts = <GIC_SPI 565 IRQ_TYPE_LEVEL_HIGH>;
+>>   		clock-frequency = <96000000>;
+>> -		current-speed = <115200>;
+>>   		power-domains = <&k3_pds 149 TI_SCI_PD_EXCLUSIVE>;
+>>   		status = "disabled";
+>>   	};
+>> diff --git a/arch/arm64/boot/dts/ti/k3-am65-wakeup.dtsi b/arch/arm64/boot/dts/ti/k3-am65-wakeup.dtsi
+>> index 37527890ddeaf..eee072e44a42f 100644
+>> --- a/arch/arm64/boot/dts/ti/k3-am65-wakeup.dtsi
+>> +++ b/arch/arm64/boot/dts/ti/k3-am65-wakeup.dtsi
+>> @@ -59,7 +59,6 @@ wkup_uart0: serial@42300000 {
+>>   		reg = <0x42300000 0x100>;
+>>   		interrupts = <GIC_SPI 697 IRQ_TYPE_LEVEL_HIGH>;
+>>   		clock-frequency = <48000000>;
+>> -		current-speed = <115200>;
+>>   		power-domains = <&k3_pds 150 TI_SCI_PD_EXCLUSIVE>;
+>>   		status = "disabled";
+>>   	};
+>> -- 
+>> 2.39.2
+>>
+> 
 
