@@ -1,148 +1,177 @@
-Return-Path: <linux-kernel+bounces-119287-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-119288-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 67CE188C6A2
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 16:17:32 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4CA9F88C6A8
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 16:18:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B5FD9307D67
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 15:17:30 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 24C7A1C6355B
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 15:18:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 00CCC13C80C;
-	Tue, 26 Mar 2024 15:17:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CEE6B13C83E;
+	Tue, 26 Mar 2024 15:18:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="RAcQN9+Y"
-Received: from out30-124.freemail.mail.aliyun.com (out30-124.freemail.mail.aliyun.com [115.124.30.124])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="HGoxXeV4"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A726313C67C
-	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 15:17:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F069013C805;
+	Tue, 26 Mar 2024 15:18:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711466240; cv=none; b=FB5Qr+QDx2pYXBGiiwskSpriUFYbsRcEyNOc6P/NRRpLZKV414FBnck1mkCv+Imd/aynoy9ONORVevNQ4DVUIgTNzU8OpWql6gSl4AsRbiHaG14HOyXNGaPqaNYTbmTyAMz7uJcsTdLx6wBueu/BmELA/ZaX5lcb0lASP7BliSQ=
+	t=1711466289; cv=none; b=BNAIQ2nQVtLsUiuKPJcomB19NGDRKhzw4iS9u9wsxuJziR8pZSZDnb7iO9U/mSoikj6KAinwDK5OkPzfp1/Z0nkk6DuFjgag6GtKT3jsOqqZPJ8Kn6KOvg1qY1CCCJbRWr5iFC168to4RLgJPZrkwq2LCKJDqHuzpk8UhcOhtus=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711466240; c=relaxed/simple;
-	bh=LcrFDC4HybOuKHTUi2WYoCJx+v1pfVTAhYpKJU0nqqg=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=GAGWR8x/MNkphOW/hKJvQ9fohn+sZul8jy9q5vlVDidWoJKvpJHq4129nY+M2ktvZ0nY76Zw8cgAJqFe4eQh36Np0LK3C0L1iQYr9WNB6FD6c3r9CanSlK9nvmxZXeasnXM91OAKXuT/0QWsaxKTXGzxrxuXPZd8dCfQcPYcWXY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=RAcQN9+Y; arc=none smtp.client-ip=115.124.30.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
-DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=linux.alibaba.com; s=default;
-	t=1711466235; h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type;
-	bh=LJQmTQE2BThbacVB/qSQ5Zu1gkc4s6kLgcT1epLF09k=;
-	b=RAcQN9+YwgY9Vm8ZJWsp7LM9ixpQNQf5q0VmBJtMdfWRSDKPRH/SNihRKbldWAMEKwqViARm5neySplgczr0CD/KBgKfb+psZoC3qWMbrMy45DVimoGI23wljRTVjxSNFEiiOSWFj3QjUwDiGr8bcrSB8Og97LYjBk6NRPBaoTc=
-X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R121e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046049;MF=baolin.wang@linux.alibaba.com;NM=1;PH=DS;RN=11;SR=0;TI=SMTPD_---0W3Lj8Lz_1711466233;
-Received: from 192.168.0.106(mailfrom:baolin.wang@linux.alibaba.com fp:SMTPD_---0W3Lj8Lz_1711466233)
-          by smtp.aliyun-inc.com;
-          Tue, 26 Mar 2024 23:17:14 +0800
-Message-ID: <af3eeb12-a850-4f24-a0e6-ac58a0cb4fef@linux.alibaba.com>
-Date: Tue, 26 Mar 2024 23:17:13 +0800
+	s=arc-20240116; t=1711466289; c=relaxed/simple;
+	bh=5CFqXTRiPA7QPiMzP6jRV1zgDfIHtr1T5FItOcXiCCA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=X+CHxwj8/oeGUKvjNEl7qq3CGB0ar5Ap5bXUjpJTc0FRWRAPf/+bkNnQn1xoeCqbkDncLNOC1R1ETrd4ptpxBci5R8yN5USHkKBP/Hnpxxr9bycJ6YHTiHfqUFe9MBjuPCcNDvH8d2eT6gTxnCBFl1Su2wIXd45OWomJwnfBpzA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=HGoxXeV4; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7B428C43390;
+	Tue, 26 Mar 2024 15:18:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1711466288;
+	bh=5CFqXTRiPA7QPiMzP6jRV1zgDfIHtr1T5FItOcXiCCA=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=HGoxXeV41GEMH80edsOQXFQBWqYiVMBVcjgUFa/D+LbXeyWyBRKj6mHOirR3w+BCt
+	 p5x8gNJpShgQwJwL29tNGXdoSxadPhXjrZLKeWqKac8C5C0/UkWSy7xnkihxuw5N0X
+	 6NBos5YrWhwsUiJtz6wMqAGzjKBHvBSsxIcJ0NGnieGJ2LXCpmL+m+Gox+9IuRjG8P
+	 4tZx6GXE2lMoeGAsLOdbMkXyjwcP6y2uNw662FgiHmQbV6T2Q1Mh527Kiutw9r3/ak
+	 J0XohuzmVVG9V9OIxvAmAQgjDs3+C4/Syh3DC2S5D2xlMXu+mOBQqTB8baYq+UrC0C
+	 hbyv1sqn5LGuQ==
+Received: from johan by xi.lan with local (Exim 4.97.1)
+	(envelope-from <johan@kernel.org>)
+	id 1rp8Z6-000000006RV-2tuL;
+	Tue, 26 Mar 2024 16:18:16 +0100
+Date: Tue, 26 Mar 2024 16:18:16 +0100
+From: Johan Hovold <johan@kernel.org>
+To: Luiz Augusto von Dentz <luiz.dentz@gmail.com>
+Cc: Linux regressions mailing list <regressions@lists.linux.dev>,
+	Johan Hovold <johan+linaro@kernel.org>,
+	Marcel Holtmann <marcel@holtmann.org>,
+	linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org,
+	stable@vger.kernel.org,
+	Janaki Ramaiah Thota <quic_janathot@quicinc.com>
+Subject: Re: [PATCH] Revert "Bluetooth: hci_qca: Set BDA quirk bit if fwnode
+ exists in DT"
+Message-ID: <ZgLnOHiCzo5AQzra@hovoldconsulting.com>
+References: <964131ff-293d-47d1-8119-a389fa21f385@leemhuis.info>
+ <CABBYNZJ0ukd_8=SFzy8CEwgP7hV5unodca0NZ2zDZh+jPJsEFQ@mail.gmail.com>
+ <ZgGzWWV4Lh2Nal--@hovoldconsulting.com>
+ <CABBYNZJaXUhu1A+NyVT-TAJw49zcV6TMdGeVy2F+AVKWBOVC-g@mail.gmail.com>
+ <ZgHVFjAZ1uqEiUa2@hovoldconsulting.com>
+ <CABBYNZJUVhNKVD=s+=eYJ1q+j1W8rVSRqM4bKPbxT=TKrnZdoQ@mail.gmail.com>
+ <ZgHbPo57UKUxK7G8@hovoldconsulting.com>
+ <CABBYNZJFzDaLdXsdNEP1384JaJEN5E78cgmWfOus_LGOREGsWA@mail.gmail.com>
+ <ZgJ0okobGv5nPreG@hovoldconsulting.com>
+ <CABBYNZKJJuPHEwyXFRi8Z=P0GyaY-HdamsxmV8sR+R97ETTmEg@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v6] mm/migrate: split source folio if it is on deferred
- split list
-To: Zi Yan <ziy@nvidia.com>, linux-mm@kvack.org
-Cc: Andrew Morton <akpm@linux-foundation.org>,
- "Matthew Wilcox (Oracle)" <willy@infradead.org>,
- Yang Shi <shy828301@gmail.com>, Huang Ying <ying.huang@intel.com>,
- "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
- Ryan Roberts <ryan.roberts@arm.com>, "Yin, Fengwei" <fengwei.yin@intel.com>,
- SeongJae Park <sj@kernel.org>, linux-kernel@vger.kernel.org
-References: <20240326150031.569387-1-zi.yan@sent.com>
-From: Baolin Wang <baolin.wang@linux.alibaba.com>
-In-Reply-To: <20240326150031.569387-1-zi.yan@sent.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CABBYNZKJJuPHEwyXFRi8Z=P0GyaY-HdamsxmV8sR+R97ETTmEg@mail.gmail.com>
 
+On Tue, Mar 26, 2024 at 10:17:13AM -0400, Luiz Augusto von Dentz wrote:
+> On Tue, Mar 26, 2024 at 3:09 AM Johan Hovold <johan@kernel.org> wrote:
+> > On Mon, Mar 25, 2024 at 04:31:53PM -0400, Luiz Augusto von Dentz wrote:
+> > > On Mon, Mar 25, 2024 at 4:14 PM Johan Hovold <johan@kernel.org> wrote:
 
+> > > > I just verified that it applies cleanly to 6.9-rc1.
+> > > >
+> > > >         $ git checkout tmp v6.9-rc1
+> > > >         $ b4 am -sl ZgHVFjAZ1uqEiUa2@hovoldconsulting.com
+> > > >         ...
+> > > >         $ git am ./20240314_johan_linaro_revert_bluetooth_hci_qca_set_bda_quirk_bit_if_fwnode_exists_in_dt.mbx
+> > > >         Applying: Revert "Bluetooth: hci_qca: Set BDA quirk bit if fwnode exists in DT"
+> > > >         $ b4 am -sl 20240320075554.8178-2-johan+linaro@kernel.org
+> > > >         ...
+> > > >         $ git am ./v4_20240320_johan_linaro_bluetooth_qca_fix_device_address_endianness.mbx
+> > > >         Applying: dt-bindings: bluetooth: add 'qcom,local-bd-address-broken'
+> > > >         Applying: arm64: dts: qcom: sc7180-trogdor: mark bluetooth address as broken
+> > > >         Applying: Bluetooth: add quirk for broken address properties
+> > > >         Applying: Bluetooth: qca: fix device-address endianness
+> > > >
+> > > > Do you have anything else in your tree which may interfere? What tree is
+> > > > that exactly?
+> > >
+> > > bluetooth-next tree, why would it be anything other than that?
+> >
+> > I ask because I did not see anything in either the bluetooth or
+> > bluetooth-next tree which should interfere.
+> >
+> > And I just verified that by applying the revert followed by the series
+> > to bluetooth-next. In that order it applies just fine, as expected.
+> >
+> > > All the
+> > > CI automation is done on bluetooth-next and if you are asking to be
+> > > done via bluetooth tree which is based on the latest rc that is not
+> > > how things works here, we usually first apply to bluetooth-next and in
+> > > case it needs to be backported then it later done via pull-request.
+> >
+> > The revert fixes a regression in 6.7-rc7 and should get to Linus as soon
+> > as possible and I assume you have some way to get fixes into mainline
+> > for the current development cycle.
+> 
+> Yeah I will send it later today to be included in the next rc release
+> and since it is marked for stable that shall trigger the process of
+> backporting it.
+> 
+> > The series fixes a critical bug in the Qualcomm driver and should
+> > similarly get into mainline as soon as possible to avoid having people
+> > unknowingly start relying on the broken behaviour (reversed address).
+> > The bug in this case is older, but since the bug is severe and we're
+> > only at rc1, I don't think this one should wait for 6.10 either.
+> 
+> The revert is now pushed, I had to apply it manually though since it
+> didn't apply cleanly, that said the other set still don't apply:
 
-On 2024/3/26 23:00, Zi Yan wrote:
-> From: Zi Yan <ziy@nvidia.com>
-> 
-> If the source folio is on deferred split list, it is likely some subpages
-> are not used. Split it before migration to avoid migrating unused subpages.
-> 
-> Commit 616b8371539a6 ("mm: thp: enable thp migration in generic path")
-> did not check if a THP is on deferred split list before migration, thus,
-> the destination THP is never put on deferred split list even if the source
-> THP might be. The opportunity of reclaiming free pages in a partially
-> mapped THP during deferred list scanning is lost, but no other harmful
-> consequence is present[1].
-> 
->  From v5:
-> 1. Fixed an error in migrate_misplaced_folio() reported by Baolin Wang[3].
-> 
->  From v4:
-> 1. Simplify _deferred_list check without locking and do not count as
->     migration failures. (per Matthew Wilcox)
-> 
->  From v3:
-> 1. Guarded deferred list code behind CONFIG_TRANSPARENT_HUGEPAGE to avoid
->     compilation error (per SeongJae Park).
-> 
->  From v2:
-> 1. Split the source folio instead of migrating it (per Matthew Wilcox)[2].
-> 
->  From v1:
-> 1. Used dst to get correct deferred split list after migration
->     (per Ryan Roberts).
-> 
-> [1]: https://lore.kernel.org/linux-mm/03CE3A00-917C-48CC-8E1C-6A98713C817C@nvidia.com/
-> [2]: https://lore.kernel.org/linux-mm/Ze_P6xagdTbcu1Kz@casper.infradead.org/
-> [3]: https://lore.kernel.org/linux-mm/df9a644c-a007-46ac-98e3-61d4014fcfff@linux.alibaba.com/
-> 
-> Fixes: 616b8371539a ("mm: thp: enable thp migration in generic path")
-> Signed-off-by: Zi Yan <ziy@nvidia.com>
+I have no idea what you did here but you need to drop that commit
+immediately, it's completely messed up:
 
-LGTM. Feel free to add:
-Tested-by: Baolin Wang <baolin.wang@linux.alibaba.com>
-Reviewed-by: Baolin Wang <baolin.wang@linux.alibaba.com>
+	https://git.kernel.org/pub/scm/linux/kernel/git/bluetooth/bluetooth-next.git/commit/?id=1b2cc5c2e5a666bdaa57a7a3964a2fe2afefb667
 
-> ---
->   mm/migrate.c | 23 +++++++++++++++++++++++
->   1 file changed, 23 insertions(+)
+This is the revert:
+
+	https://lore.kernel.org/lkml/20240314084412.1127-1-johan+linaro@kernel.org/
+
+and as you can see your commit bears no resemblance to the revert
+(instead it includes code from the below series which obviously then
+fails to apply):
+
+> Applying: Bluetooth: qca: fix device-address endianness
+> error: patch failed: drivers/bluetooth/btqca.c:826
+> error: drivers/bluetooth/btqca.c: patch does not apply
+> error: drivers/bluetooth/hci_qca.c: does not match index
+> Patch failed at 0004 Bluetooth: qca: fix device-address endianness
 > 
-> diff --git a/mm/migrate.c b/mm/migrate.c
-> index 1dbe5bd927de..a31aa75d223d 100644
-> --- a/mm/migrate.c
-> +++ b/mm/migrate.c
-> @@ -1652,6 +1652,29 @@ static int migrate_pages_batch(struct list_head *from,
->   
->   			cond_resched();
->   
-> +			/*
-> +			 * The rare folio on the deferred split list should
-> +			 * be split now. It should not count as a failure.
-> +			 * Only check it without removing it from the list.
-> +			 * Since the folio can be on deferred_split_scan()
-> +			 * local list and removing it can cause the local list
-> +			 * corruption. Folio split process below can handle it
-> +			 * with the help of folio_ref_freeze().
-> +			 *
-> +			 * nr_pages > 2 is needed to avoid checking order-1
-> +			 * page cache folios. They exist, in contrast to
-> +			 * non-existent order-1 anonymous folios, and do not
-> +			 * use _deferred_list.
-> +			 */
-> +			if (nr_pages > 2 &&
-> +			   !list_empty(&folio->_deferred_list)) {
-> +				if (try_split_folio(folio, split_folios) == 0) {
-> +					stats->nr_thp_split += is_thp;
-> +					stats->nr_split++;
-> +					continue;
-> +				}
-> +			}
-> +
->   			/*
->   			 * Large folio migration might be unsupported or
->   			 * the allocation might be failed so we should retry
+> So please rebase and send a v5.
+
+There should be no need to resend as the problem is clearly on your end.
+
+Just drop whatever you applied and start fresh:
+
+> > > >         $ b4 am -sl ZgHVFjAZ1uqEiUa2@hovoldconsulting.com
+> > > >         ...
+> > > >         $ git am ./20240314_johan_linaro_revert_bluetooth_hci_qca_set_bda_quirk_bit_if_fwnode_exists_in_dt.mbx
+> > > >         Applying: Revert "Bluetooth: hci_qca: Set BDA quirk bit if fwnode exists in DT"
+
+This is the revert from this thread.
+
+> > > >         $ b4 am -sl 20240320075554.8178-2-johan+linaro@kernel.org
+> > > >         ...
+> > > >         $ git am ./v4_20240320_johan_linaro_bluetooth_qca_fix_device_address_endianness.mbx
+> > > >         Applying: dt-bindings: bluetooth: add 'qcom,local-bd-address-broken'
+> > > >         Applying: arm64: dts: qcom: sc7180-trogdor: mark bluetooth address as broken
+> > > >         Applying: Bluetooth: add quirk for broken address properties
+> > > >         Applying: Bluetooth: qca: fix device-address endianness
+
+And this is the follow-on series that depends on the revert.
+
+Johan
 
