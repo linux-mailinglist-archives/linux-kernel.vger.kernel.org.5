@@ -1,142 +1,131 @@
-Return-Path: <linux-kernel+bounces-119856-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-119871-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2684488CDD0
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 21:04:58 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 93DCF88CDF2
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 21:12:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D0CA71F65CAD
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 20:04:57 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1E6741F66BBA
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 20:12:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3B0BE13D290;
-	Tue, 26 Mar 2024 20:04:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 15BA113D2B1;
+	Tue, 26 Mar 2024 20:12:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Wi9j+7bl"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.14])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Tg/mjcCC"
+Received: from mail-ej1-f50.google.com (mail-ej1-f50.google.com [209.85.218.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0569D3DABE1;
-	Tue, 26 Mar 2024 20:04:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.14
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F13613D295;
+	Tue, 26 Mar 2024 20:12:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711483490; cv=none; b=q7sTZ58jLOGe+KuDy5aTRkCjk4VOiByE3ETFpj2uhkCwAlsT7iUZRKbPyOrMyQquXOaN75yOR9nHRxvxZlG/0+r88icS9/pwP1fRX61NdHMRAo5268kGyLVHnRnbi7zBHlbwjPUL9dty9sV7cGYJaxfV+N7hdH5bzQbWQPx2jyk=
+	t=1711483960; cv=none; b=sdwYSLaGmCXVN9a7iEP9JbiOdgof+nMwv9ldyyurEFqiuqPpfI/JqUncEUx15Q5uJoigRnxaVbY3hLN0mUO5RnxhXuU9XgwmuKuJ84QR0A+6Hhs2dGrlE3VNmb7+uMGQxePJjTLvXgwCleu+rzXkNyyg27fgzlfnYXArJlxfEmQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711483490; c=relaxed/simple;
-	bh=BmIFG4WcPLJlFIuPlSfB+NIT8dikrnWScED+BVvdLYE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=cZ4APihdGkvBoPUgYopJBbPFRn/02kuia3f0VhAQ8ClobCsZLaSBgKqfnJPnG3TYK1ehzpga7tLVny8k4mwb76oKBjxRR5G2ZEKrfFvuY2twk4KB9J6IzXQRTu+L4SS5oqz4w+esw8ZiiLqTc0sJ4Xa3Fq4+bdHAFQdR/K5P6vg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Wi9j+7bl; arc=none smtp.client-ip=192.198.163.14
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1711483489; x=1743019489;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=BmIFG4WcPLJlFIuPlSfB+NIT8dikrnWScED+BVvdLYE=;
-  b=Wi9j+7blGePKrM6gV2UjtKM3HtT+pFcocDd/3mu8bGlpEbz7DSgqwDvZ
-   GRF/YAIzGe5YRVHL3a42TYSt7lJcisNUJPMO0m7g8czSi3SaI2P5XYgwg
-   OzvRcEuqu6KMmH+jos/b3uWUFrs6pDtCKN/3pPu2MoemETYelQY0wvBL1
-   +NexTs9yF6dfEejQJgdLu609livZV5DE4cJ77xRx3L7OTv3NhtJtlkTG/
-   xf3L9vuGeEWldwj4xGPj+8bq5tIEFU50nuEhKpAlAfbzUnDqUf5nycIIJ
-   8+YlABwCO/NrpMHKCmZWhDHJ5e2QBHeGc4wLNne7/pRijApaOulNSJIvK
-   A==;
-X-CSE-ConnectionGUID: 0HgJAdDnQHifcn8kxfADJA==
-X-CSE-MsgGUID: BdYPXVWLRfmy+QYu94OUFA==
-X-IronPort-AV: E=McAfee;i="6600,9927,11025"; a="6768768"
-X-IronPort-AV: E=Sophos;i="6.07,156,1708416000"; 
-   d="scan'208";a="6768768"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmvoesa108.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Mar 2024 13:04:48 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,11025"; a="914889497"
-X-IronPort-AV: E=Sophos;i="6.07,156,1708416000"; 
-   d="scan'208";a="914889497"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Mar 2024 13:04:46 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.97)
-	(envelope-from <andriy.shevchenko@linux.intel.com>)
-	id 1rpD2J-0000000GRSv-1dJS;
-	Tue, 26 Mar 2024 22:04:43 +0200
-Date: Tue, 26 Mar 2024 22:04:43 +0200
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: Mark Brown <broonie@kernel.org>
-Cc: linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	Daniel Mack <daniel@zonque.org>,
-	Haojian Zhuang <haojian.zhuang@gmail.com>,
-	Robert Jarzmik <robert.jarzmik@free.fr>,
-	Russell King <linux@armlinux.org.uk>
-Subject: Re: [PATCH v1 01/10] spi: pxa2xx: Drop ACPI_PTR() and of_match_ptr()
-Message-ID: <ZgMqW6TSHYJ2NOPq@smile.fi.intel.com>
-References: <20240326181027.1418989-2-andriy.shevchenko@linux.intel.com>
- <14f08a50-edef-4b36-891e-2b4b2283f40c@sirena.org.uk>
- <ZgMSg5Tr97mWgPW4@smile.fi.intel.com>
- <424de3ed-f0ea-4fc1-80f5-3ab1d23cf1e1@sirena.org.uk>
- <ZgMXe4EMbJ44W1tr@smile.fi.intel.com>
- <c3066481-bac6-48fd-8b38-6797975d83c2@sirena.org.uk>
- <ZgMZhdsDc-bzWa6P@smile.fi.intel.com>
- <4241ecb8-07e4-4613-a289-4699c39d0d08@sirena.org.uk>
- <ZgMf5eISwE2P_1tN@smile.fi.intel.com>
- <a30da48d-f801-4d0a-9db7-9c9bb159ca6b@sirena.org.uk>
+	s=arc-20240116; t=1711483960; c=relaxed/simple;
+	bh=RKV33t6NM50ofM+TdpIua/TkfTKHK73Iq3XDVFTSM08=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=YiDeLtV0mlqSgLAYivSCreMGAOrIjzcxwPOEpC7/BVMCyv8YZHts4I7kd8AWAIz+RQoS0rwHeRPQJqCKojuQfZDFx6uwgqqiJ9nRLgW17yOAkI2qXUS2VhnviUXhSsN3/IzoU3KuBBs7xGNaGM5IL8bmW/thPWg/PgkDXIKwrTU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Tg/mjcCC; arc=none smtp.client-ip=209.85.218.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f50.google.com with SMTP id a640c23a62f3a-a466e53f8c0so788234966b.1;
+        Tue, 26 Mar 2024 13:12:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1711483956; x=1712088756; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=xUqd/hXXnUj9kaAJZ97jeBbCMUvezK3PPckw8kw8588=;
+        b=Tg/mjcCC74ht1i61CgI/dWue5UN1OQEm3s+K2cxA+C084b0p1d+getHgxKA5p8m9jj
+         VAPwG9FS7rhG9neGQa24zRSNZOXdsnYQHIjkZyDITUSKyJWVXoOk/VO6aPgY2LI2TPeH
+         bw+DWudpSxqu8Lg6hajZredmgfVkhHUXX+WUto6eyeoabIdfg/8aA+aioaoF0yQ/CUWN
+         H0E9KYdBmgUvwpebTG17FuE0F7rULrII41rDabeC/3ydRDg/l/Mp9dn21rNCNeWXKEuC
+         biofIV6orCvTLx/vADqIPRbzk2aCUUsS8l0H/ShKEOgUzraxdcHUWGwcfI7w7LJfhr0K
+         +oDA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711483956; x=1712088756;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=xUqd/hXXnUj9kaAJZ97jeBbCMUvezK3PPckw8kw8588=;
+        b=iWrCClzxsMpb2jNsIPqk+HurRvIo8Vjx0c3xAq5f6N5I1anx8U6uemrm/X+FNu8etI
+         gc5Kg3Y1ZlrTl4I5+hhzJmuBk9s6q6mJBz3v2yfMRYjfb/AdnJQptZijCW8N3wokxXpY
+         ryz7vjGgx4+cOFPyJOBYZr49Tiasp3uGRiZ1Zo2z2DytezWOa84vfpF8shzB7F3S6Ua9
+         KnKld7VRc/s3Fo+T3+7Duagl50fnReYaEKzf2ASMfJcNviItstFb5CR7YW8ImhRucVFw
+         jjhWZYL2rxJzfCaz/dF0wE5t8gBAGaaCG/so52yNDPUgG4OLxhHHC1XtEVB95/l79p1W
+         wrTQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXTZ5R71tM4NL3x1Q2BO7Nxqs6Tq5dKdCRDQ3BrL3SScV91raumqLnjOhXwp6eaK4vQ4+SsB41cZskNZ9V6asVq1a/3sdc8/moLQhVbJhCJpmr/dnFUeuqKuPktbOpwT+56yv5fyYRNMguCvGnbRsp0lNSbKRD1h8Dq+55mtNMKckHlCKkR+QY=
+X-Gm-Message-State: AOJu0YypivZsGQQ4RaVoKGPBPFn9cyQ4v6aNfJ3enUbVKV86JVDg85zl
+	afC7vR0Jp5V7P7gs58daOXGxxMkFbsy2JBbR99QxOzensguIEL94gZwI3paD
+X-Google-Smtp-Source: AGHT+IHg3ORZ80GhUvJ9XJEF6YPpHT+zBqZGXseRfkvUVWidu77wObbjjRoQtlhIZSCbSWeVSEZbqw==
+X-Received: by 2002:a17:907:7d92:b0:a47:5248:68d5 with SMTP id oz18-20020a1709077d9200b00a47524868d5mr7307816ejc.60.1711483956009;
+        Tue, 26 Mar 2024 13:12:36 -0700 (PDT)
+Received: from localhost.localdomain (byv80.neoplus.adsl.tpnet.pl. [83.30.41.80])
+        by smtp.gmail.com with ESMTPSA id du1-20020a17090772c100b00a4da28f42f1sm1714257ejc.177.2024.03.26.13.12.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 26 Mar 2024 13:12:35 -0700 (PDT)
+From: Adam Skladowski <a39.skl@gmail.com>
+To: 
+Cc: phone-devel@vger.kernel.org,
+	~postmarketos/upstreaming@lists.sr.ht,
+	Adam Skladowski <a39.skl@gmail.com>,
+	Rob Clark <robdclark@gmail.com>,
+	Abhinav Kumar <quic_abhinavk@quicinc.com>,
+	Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+	Sean Paul <sean@poorly.run>,
+	Marijn Suijten <marijn.suijten@somainline.org>,
+	David Airlie <airlied@gmail.com>,
+	Daniel Vetter <daniel@ffwll.ch>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	linux-arm-msm@vger.kernel.org,
+	dri-devel@lists.freedesktop.org,
+	freedreno@lists.freedesktop.org,
+	devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [RFC PATCH 0/1] Split Adreno schemas
+Date: Tue, 26 Mar 2024 21:05:57 +0100
+Message-Id: <20240326201140.10561-1-a39.skl@gmail.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <a30da48d-f801-4d0a-9db7-9c9bb159ca6b@sirena.org.uk>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Content-Transfer-Encoding: 8bit
 
-On Tue, Mar 26, 2024 at 07:32:47PM +0000, Mark Brown wrote:
-> On Tue, Mar 26, 2024 at 09:20:05PM +0200, Andy Shevchenko wrote:
-> 
-> > For my knowledge there is none of the ACPI-based platform where CONFIG_ACPI
-> > needs to be 'n' while having the real device (as per ACPI ID table) to be on.
-> > That's why I answered purely from the compilation point of view.
-> 
-> I don't understand the relevance of that, and frankly can't make much
-> sense of it.
+Following recommendation from Dmitry Baryshkov this series split schema
+into separate schemas per gpu family, as i don't really understand much
+of yamls and dt-schema i decided to send this as RFC and if there
+are any changes suggested i will be glad if these can be explained
+to me in ELI5 format.
 
-It's relevant to the ID table presence at run-time. But it seems I wrongly got
-your point (see below).
+Adam Skladowski (1):
+  dt-bindings: display/msm: gpu: Split Adreno schemas into separate
+    files
 
-> > Personally I see that dependency more confusing than hinting about anything.
-> 
-> When you don't have a dependency in Kconfig then people get offered the
-> device even if it is impossible for it to be useful on their platform.
-
-There is currently a dependency among others PCI || ACPI || COMPILE_TEST
-
-From the point of view of the real platforms it means that if there is
-a PCI compiled we support PCI devices that use this "platform" driver.
-Similar with ACPI.
-
-What you want is to hide this in the menuconfig for the irrelevant platforms
-which have PCI _or_ ACPI enabled, correct?
-
-But if we add x86 dependency to that, it will drop the support for non-x86
-ACPI-based platforms with this device. I have no clue what are those.
-
-Yes, we may try to have ((PCI || ACPI) && X86) at the end, but I believe
-this will have a good regression effect.
-
-
-> The purpose of any || COMPILE_TEST dependency is to improve the
-> usability of Kconfig.
-
-Right, when I see FOO || COMPILE_TEST I interpret FOO as *functional*
-dependency, meaning that without FOO the certain driver makes no sense
-from functional point of view.
-
+ .../devicetree/bindings/display/msm/gpu.yaml  | 317 ++----------------
+ .../bindings/display/msm/qcom,adreno-306.yaml | 115 +++++++
+ .../bindings/display/msm/qcom,adreno-330.yaml | 111 ++++++
+ .../bindings/display/msm/qcom,adreno-405.yaml | 135 ++++++++
+ .../bindings/display/msm/qcom,adreno-506.yaml | 184 ++++++++++
+ .../bindings/display/msm/qcom,adreno-530.yaml | 161 +++++++++
+ .../bindings/display/msm/qcom,adreno-540.yaml | 154 +++++++++
+ .../bindings/display/msm/qcom,adreno-6xx.yaml | 160 +++++++++
+ .../display/msm/qcom,adreno-common.yaml       | 112 +++++++
+ 9 files changed, 1157 insertions(+), 292 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/display/msm/qcom,adreno-306.yaml
+ create mode 100644 Documentation/devicetree/bindings/display/msm/qcom,adreno-330.yaml
+ create mode 100644 Documentation/devicetree/bindings/display/msm/qcom,adreno-405.yaml
+ create mode 100644 Documentation/devicetree/bindings/display/msm/qcom,adreno-506.yaml
+ create mode 100644 Documentation/devicetree/bindings/display/msm/qcom,adreno-530.yaml
+ create mode 100644 Documentation/devicetree/bindings/display/msm/qcom,adreno-540.yaml
+ create mode 100644 Documentation/devicetree/bindings/display/msm/qcom,adreno-6xx.yaml
+ create mode 100644 Documentation/devicetree/bindings/display/msm/qcom,adreno-common.yaml
 
 -- 
-With Best Regards,
-Andy Shevchenko
-
+2.44.0
 
 
