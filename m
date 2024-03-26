@@ -1,149 +1,93 @@
-Return-Path: <linux-kernel+bounces-119093-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-119094-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AF8FF88C416
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 14:48:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 9C8C888C418
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 14:49:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 69C01282899
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 13:48:46 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 578B22E68AE
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 13:48:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BDE9D80046;
-	Tue, 26 Mar 2024 13:47:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2002775806;
+	Tue, 26 Mar 2024 13:48:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="pYeJpAUH"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="TlcMFjDS"
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F3F4974C17;
-	Tue, 26 Mar 2024 13:47:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A67BE74BF3
+	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 13:48:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711460857; cv=none; b=gyCnljRFV/0Jdo6aKKVlfMld2HUxB48ROTX+ENJcU2kPLZo9jexOmbou5G7KEL9K6TbC7hcGhyJTBo1HL6jDe9LZBDJkg9PD98v77cazCbi7SA5SvZVQpIXg53TLlAAYh0Algkjk3ENWgLTsjwUFq0afREL60NK6uPjimBcZxRA=
+	t=1711460903; cv=none; b=lA/hx3n+dBBKkyFNT3INs5OUjZ/B9wfF6EcXePxcVEOt8V6sS01LtXOWuopaqXF5EebTPq1kck76aL1E6JXrPvW0nSZqhPJM87Utw5abP/YULq+4Sz1J49iC5mHspnmYM2u6e9SA1aXmf9P9CnaCHQeCYDe+Xlt6LAyq0IR1afA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711460857; c=relaxed/simple;
-	bh=P2qK25AOinNz1eP+vHSK/lBmvdrjVtBZ8Su3RQbwtRQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=bHoba7KgkBBzapWlV7ExMnPz2tfbkYjx2WO6jTOu3cBWOw+qab1TdW6nsEC1a+CMcaEeB/gX3XuhEzfEnekZTFeqQZKY4C9xabPCYCGF+O8A2Rb8co4nVl6hjAcelwROkwFSazIVIP5RJx+RS/6ezl6VMtH4HJJiP1yyRADV+5s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=pYeJpAUH; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A807CC433C7;
-	Tue, 26 Mar 2024 13:47:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711460856;
-	bh=P2qK25AOinNz1eP+vHSK/lBmvdrjVtBZ8Su3RQbwtRQ=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=pYeJpAUHeFOtG+bIdXG4Ruq0TGZaT46Di9QiU5jbnT4y5EU9XK1+HYVCYRYP+QIGd
-	 H85d8RqAmdnILOZQGO1qo1KdsKLrUibL0+sH46/JIdwl99uiItbPikVDfNWmvWAVZb
-	 ucKWnIWAwts3UaDdSfSyN3bmzu/9xOt24yVX9WAaL/GuyLS6YcW2JvnEh+USq8VDmn
-	 WEp9bB5M1INWnORCaztLLJ9m1LP9cTLSMOIdhui4ACXSvAimJ+CCWr8f/cyN4RkTsb
-	 If9D5XeKXZDIun/nWRAOJcv7IcL2go3FXh61EAbq3DJeQf1kUd+HKY8wAt6hK1e4CC
-	 DcGcFdR15J+0w==
-Date: Tue, 26 Mar 2024 14:47:30 +0100
-From: Niklas Cassel <cassel@kernel.org>
-To: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Cc: Lorenzo Pieralisi <lpieralisi@kernel.org>,
-	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-	Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
-	Kishon Vijay Abraham I <kishon@kernel.org>,
-	Thierry Reding <thierry.reding@gmail.com>,
-	Jonathan Hunter <jonathanh@nvidia.com>,
-	Jingoo Han <jingoohan1@gmail.com>,
-	Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
-	linux-pci@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-	linux-kernel@vger.kernel.org, mhi@lists.linux.dev,
-	linux-tegra@vger.kernel.org
-Subject: Re: [PATCH 01/11] PCI: qcom-ep: Disable resources unconditionally
- during PERST# assert
-Message-ID: <ZgLR8jWfBcZB8laa@ryzen>
-References: <20240314-pci-epf-rework-v1-0-6134e6c1d491@linaro.org>
- <20240314-pci-epf-rework-v1-1-6134e6c1d491@linaro.org>
- <Zf2s9kTMlZncldWx@ryzen>
- <20240326074429.GC9565@thinkpad>
- <ZgKiUogkgrMwV1uD@x1-carbon>
- <20240326111021.GA13849@thinkpad>
+	s=arc-20240116; t=1711460903; c=relaxed/simple;
+	bh=gPfgKHrLxGr1W7vHRNerursGf2x5MRa0hohrvEmjeMM=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=qwLONXVAAtRXftW0BsZN9W3T5/+dGOVGV2EIUDPKVAIfoMRR4EYyLirr8ntWP5l2azkXDtRd4zUmyXPT5xr0q16OZH7oF1yMg+VyObLQojc0PNqhnWe91dkxWhyO7ewjW9uYLONVjcqykVFBxM5p5V/vWzxG3BhlpZLJvBxnnp8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=TlcMFjDS; arc=none smtp.client-ip=46.235.227.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1711460899;
+	bh=gPfgKHrLxGr1W7vHRNerursGf2x5MRa0hohrvEmjeMM=;
+	h=From:To:Cc:Subject:Date:From;
+	b=TlcMFjDSLP8yhGW+GNHoCFs6ORFRZ6iRq3BRiOmDhY0NSKEPoKFTaSIx0EtzFArx8
+	 viQjo4PM0nx6k9qgT3/jCsKY5GCfnq6XESWboh7HsrMAV1mlXs7X9FpzK3ttLohj0X
+	 eqJS3dTZP8fUCWVvfbuyUwQ5h91jRv/ioR/g5JTXwSPjSJZn1nH8v0f3Bz31J5jtP2
+	 ayfPAQR9vL4SMwPsayUFAIk4fR3Q5rB9gscQr5eXZQ4ZcSUDmAKnAkgmRpwNHwkIGo
+	 TJ1vFXx8fX2FrDmd/E56N+SIEzOedG6mNwb3ox2zNdsSctGGCLap4NL5pmGacIHgcj
+	 /YYBWVZS1DlGw==
+Received: from localhost.localdomain (cola.collaboradmins.com [195.201.22.229])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: alarumbe)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 6AF1837810C0;
+	Tue, 26 Mar 2024 13:48:19 +0000 (UTC)
+From: =?UTF-8?q?Adri=C3=A1n=20Larumbe?= <adrian.larumbe@collabora.com>
+To: Boris Brezillon <boris.brezillon@collabora.com>,
+	Steven Price <steven.price@arm.com>,
+	=?UTF-8?q?Adri=C3=A1n=20Larumbe?= <adrian.larumbe@collabora.com>
+Cc: kernel@collabora.com,
+	Stephen Rothwell <sfr@canb.auug.org.au>,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] ABI: sysfs-driver-panfrost-profiling: fix indentation problem
+Date: Tue, 26 Mar 2024 13:48:10 +0000
+Message-ID: <20240326134812.4008775-1-adrian.larumbe@collabora.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240326111021.GA13849@thinkpad>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On Tue, Mar 26, 2024 at 04:40:21PM +0530, Manivannan Sadhasivam wrote:
-> 
-> I was planning to drop enable_resources() from Qcom driver once the DBI rework
-> series gets merged. Because, the resource enablement during probe is currently
-> done to avoid the crash that is bound to happen if registers are accessed during
-> probe.
-> 
-> But what your observation reveals is that it is possible to get PERST# assert
-> during the EP boot up itself which I was not accounting for. I always assumed
-> that the EP will receive PERST# deassert first. If that is not the case, then
-> this patch needs to be dropped.
+Also add a newline character at the end of the last one.
 
-From what I saw when having debug prints from my old email to you:
-https://lore.kernel.org/linux-pci/Zalu%2F%2FdNi5BhZlBU@x1-carbon/
+Fixes: b12f3ea7c188 ("drm/panfrost: Replace fdinfo's profiling debugfs knob with sysfs")
+Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
+Closes: https://lore.kernel.org/dri-devel/20240326160110.4c00e1e5@canb.auug.org.au/
+Signed-off-by: Adrián Larumbe <adrian.larumbe@collabora.com>
+---
+ Documentation/ABI/testing/sysfs-driver-panfrost-profiling | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
+diff --git a/Documentation/ABI/testing/sysfs-driver-panfrost-profiling b/Documentation/ABI/testing/sysfs-driver-panfrost-profiling
+index 1d8bb0978920..7597c420e54b 100644
+--- a/Documentation/ABI/testing/sysfs-driver-panfrost-profiling
++++ b/Documentation/ABI/testing/sysfs-driver-panfrost-profiling
+@@ -7,4 +7,4 @@ Description:
+ 		Valid values are:
+ 		0: Don't enable fdinfo job profiling sources.
+ 		1: Enable fdinfo job profiling sources, this enables both the GPU's
+-		   timestamp and cycle counter registers.
+\ No newline at end of file
++		timestamp and cycle counter registers.
+-- 
+2.43.0
 
-## RC side:
-# reboot
-
-## EP side
-[  845.606810] pci: PERST asserted by host!
-[  852.483985] pci: PERST de-asserted by host!
-[  852.503041] pci: PERST asserted by host!
-[  852.522375] pci: link up! (LTSSM_STATUS: 0x230011)
-[  852.610318] pci: PERST de-asserted by host!
-
-
-
-So in my case, I assume that the RC asserts PERST during a SoC reset.
-
-This is obviously from the RC driver asserting PERST + sleep 100 ms +
-PERST deassert:
-[  852.503041] pci: PERST asserted by host!
-[  852.610318] pci: PERST de-asserted by host!
-
-The two before that:
-[  852.483985] pci: PERST de-asserted by host!
-[  852.503041] pci: PERST asserted by host!
-
-appears to be because the RC I am using, incorrectly sets the PERST gpio as
-ACTIVE HIGH:
-https://github.com/torvalds/linux/blob/v6.9-rc1/arch/arm64/boot/dts/rockchip/rk3588-rock-5b.dts#L300
-
-Well, at least they are bug compatible and sets the output to:
-https://github.com/torvalds/linux/blob/v6.9-rc1/drivers/pci/controller/dwc/pcie-dw-rockchip.c#L170-L184
-
-0 and the 1, which, since the DT binding is incorrect, will actually
-do the right thing and assert and the deassert PERST.
-
-The problem seems to be that the initial flags:
-https://github.com/torvalds/linux/blob/v6.9-rc1/drivers/pci/controller/dwc/pcie-dw-rockchip.c#L242-L243
-is: GPIOD_OUT_HIGH
-
-which explains why I get the extra:
-[  852.483985] pci: PERST de-asserted by host!
-before
-[  852.503041] pci: PERST asserted by host!
-
-with basically no time between them..
-
-
-I guess I should send a patch to set the initial value to
-GPIOD_OUT_LOW, so that the RC driver does not trigger a
-"spurious" PERST deassertion when requesting the IRQ.
-
-
-So I think this patch should be fine if the RC is not buggy,
-but as we can see, in reality there are at least one platform
-in mainline that does manage to get this wrong.
-
-
-Kind regards,
-Niklas
 
