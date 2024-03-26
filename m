@@ -1,99 +1,144 @@
-Return-Path: <linux-kernel+bounces-119258-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-119238-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9B9C688C63C
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 16:04:36 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 24AC788C605
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 15:56:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3AC9B1F65EBE
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 15:04:36 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CDA2D1F6508C
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 14:56:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 40FA713C803;
-	Tue, 26 Mar 2024 15:04:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 44FC313C82C;
+	Tue, 26 Mar 2024 14:56:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=pankajraghav.com header.i=@pankajraghav.com header.b="EkT1s0A3"
-Received: from mout-p-201.mailbox.org (mout-p-201.mailbox.org [80.241.56.171])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jdLWA5mw"
+Received: from mail-pf1-f178.google.com (mail-pf1-f178.google.com [209.85.210.178])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 222D312D76F;
-	Tue, 26 Mar 2024 15:04:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.241.56.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 29DCE13C698;
+	Tue, 26 Mar 2024 14:56:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711465464; cv=none; b=hfqiaZA2DrpZhYUdmA39KNK7QY24TEm3AFvkVEdjCsCA26c7svsup/fDdrNDXeE4a5GVf6eZYu/0NQdmW7h89yobuOuOWVCDu1S11afsSkrroOhWxe4E3TNLvaWbTn13DD4T2IOw387frKjSi3G46pkJrQrAjc1aRAI1jobfQIY=
+	t=1711464971; cv=none; b=gPXX/lSW/kF6yuHXTFpiIH+RHsvwN2cubmKoM8GE99P5uQObF9c4xtdqEjzER1Y8xXN0me1JLtXuOGL87Y2ullpXmurpPP3x+okUKeV2Cz2Bm+1REDOd2I4heuo0gsvaP613AxD36U8EMAuyzLVoR8K3jxJreH1QIdihJpqVPQw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711465464; c=relaxed/simple;
-	bh=QwHGxohidfEE89ntqE7k8WK7rV4jGKj9cyEcRAHVK+o=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=mMTiRTscQoAK+iqwjAXe0mHwKqHPbL1WAa1GSIdLBGxcgMfvKWJtw6ueSHaWLahSc8oyhp9rWQnYyFheaVw5bWxBUwY/AyxYurNf7cjwUgXNTx/8r06oL3fy8h/rBD8SvxXjjPtbA8dXyUhpeQ0Qt0v5L4k8Ubb5ncCo1UKXN+0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=pankajraghav.com; spf=pass smtp.mailfrom=pankajraghav.com; dkim=pass (2048-bit key) header.d=pankajraghav.com header.i=@pankajraghav.com header.b=EkT1s0A3; arc=none smtp.client-ip=80.241.56.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=pankajraghav.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pankajraghav.com
-Received: from smtp102.mailbox.org (smtp102.mailbox.org [IPv6:2001:67c:2050:b231:465::102])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mout-p-201.mailbox.org (Postfix) with ESMTPS id 4V3t9t6lNtz9sJ6;
-	Tue, 26 Mar 2024 15:54:26 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pankajraghav.com;
-	s=MBO0001; t=1711464867;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=a9Q/eCZ6v2bw9iLxiFT4xLPFqiE1zWXHKWDB+B3WRm4=;
-	b=EkT1s0A3EaBOYWBwVSwGLfqiEHDG+uZDtGtzy/KDIs8RhV5bdRzJ6KwIxFsimklA3dYay8
-	Fx26NMvyL6DDn/96RqgcluBtZTuDsuRa8L5V4NkAwvogES+w/a2iw6Er9bDSGcDvYqMlje
-	Xzsh0Maj3QqdmaxBE5E04YMK0Gk5ToMq/xkZnjeVSZdWnfkR9+fSs+3tRiy5a8kOJnFWcW
-	wj23r9krEvDL3Jm+zgyUsn1VQ/sAAdLkkBCT8wwUj/le62LJXWnl0Jc6g5xnN1039BO+Fq
-	CpMEW6liJzT26NyWLn2fQPVBhJy7Fu0BwEfDUzYiFlcZD1llT5VvoC4qbL6ePw==
-Date: Tue, 26 Mar 2024 15:54:22 +0100
-From: "Pankaj Raghav (Samsung)" <kernel@pankajraghav.com>
-To: Matthew Wilcox <willy@infradead.org>
-Cc: linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
-	gost.dev@samsung.com, chandan.babu@oracle.com, hare@suse.de, mcgrof@kernel.org, 
-	djwong@kernel.org, linux-mm@kvack.org, linux-kernel@vger.kernel.org, 
-	david@fromorbit.com, akpm@linux-foundation.org, Pankaj Raghav <p.raghav@samsung.com>
-Subject: Re: [PATCH v3 00/11] enable bs > ps in XFS
-Message-ID: <vyw2u4kmij7ddzfj5xfacc5lgmpbvxif3ennxp7oselxt4agfj@kuli2o7nrzin>
-References: <20240313170253.2324812-1-kernel@pankajraghav.com>
- <ZgHOK9T2K9HKkju1@casper.infradead.org>
+	s=arc-20240116; t=1711464971; c=relaxed/simple;
+	bh=Ao9xrtlBjjMHKg6mAXNmAgHvzUgtjPOcVb3C9HD4Ym4=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=C/OHBB3EDxMx8JLjpA4q35YfhyAicWCADkTOQgn9EQtAxeZhs8pQzInAzTIVTSF4AEVCra/x9pewTtVKmQgVGgSGaU4p7hAJ2xY0tkQLgdbi2Z9ugGTEwPNPUXmsllLyA3TcLXKt1atuEK9AfjpTcwgsS4mRsYyI7mom/YGVyEE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=jdLWA5mw; arc=none smtp.client-ip=209.85.210.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f178.google.com with SMTP id d2e1a72fcca58-6e704078860so4028139b3a.0;
+        Tue, 26 Mar 2024 07:56:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1711464968; x=1712069768; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
+         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Ea+4Fw+41iIKXXGA7q/TyXxJtlrOYEAjwc3VHw2gqU8=;
+        b=jdLWA5mwVzj1M3SH3c2iJjgbbd4ecuL6BK+Uka3QvCFzuf4ZjfnV+9qV+BAaoRgmWv
+         EFGEAQHNONtzsGF+86Z0NCjMPQJzwz/C1q/CTtSC2WVAU+6OQVqhBzq3WlXh+61Tx21c
+         3gvfeg7+w2wHktigwNPJPhh4w4DotQ6bFEKtZoeRRkX+Qg7qNPq5pCX+Fds+shRDY9Q+
+         VSGQBazb+4kMPPPcF17Gtt3ZIy1Dc4SDbBtPp6KtcsGkqfcMQ0CM1fKsC/ILOQHN+1f9
+         tNUsnvsjN5CzK35B54F9X2EA8yoZrJF0xQylr9PbhXKerPHPDCcLQ4Lxpp7QyaYr4jOv
+         zePg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711464968; x=1712069768;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
+         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=Ea+4Fw+41iIKXXGA7q/TyXxJtlrOYEAjwc3VHw2gqU8=;
+        b=Fy4InEuvQHBpAWfJGGvQ8W5UidJXHmz4/IavyaLnYd/wpQH1rc2HbeUfX+h8XqKujG
+         edaUEJQYUD8y9qFvw5FlTSOCUp8qGcMSzr3HerFzDKIaFNMQ89M6hALgpaNBTL8KAhFd
+         1kIhLs/P2re1+Xlsh4/phmz0r+txiOipTEKUdhESgBo9cl5qMnhRC9nzMumkVRK2p5L8
+         RKe9ppPnvFW3tshhWC1JLLcy7RmhrQGsAp+rAVM7Pw8g/Xe6Jxy0A0EgQIsfOJUIfU3O
+         uDQ2bhuFP1IkaSuOycGFRwQA3AZs6cIHunXPTFvm+RRB3zafSGFIjXoAR6czIzhufy0U
+         wR4Q==
+X-Forwarded-Encrypted: i=1; AJvYcCWwshkcb3LijR+lwKVc4Pc22nl1SZqW+IMHgQ79iMg7pllf+JgvTnP8/h2+L33WOM4I1PKp43hcYQvoMGaZoujZpijSHYF2iu2Nfhb5eOxNZtg+H0KCkoMkU4qvdTZXcz+Q
+X-Gm-Message-State: AOJu0YzbGaLqfA5KjCt7Yoo7VeU7tVWcgMTPXYzHhI1qn1cERTWsjB/Z
+	y9AcHmDEuTaYpAILNNx+5gqRzCKyVTz7iE5gKIAoHWPcSCDCFXKM
+X-Google-Smtp-Source: AGHT+IHutcjK2KIIFE7BfCUSIhG136DuJ9KPGu7ULPaOdcq2MXtZjrAcep2ywRxg5COswSSU6S9AxQ==
+X-Received: by 2002:a05:6a00:4656:b0:6ea:950f:7d25 with SMTP id kp22-20020a056a00465600b006ea950f7d25mr1134370pfb.18.1711464968309;
+        Tue, 26 Mar 2024 07:56:08 -0700 (PDT)
+Received: from [192.168.0.104] ([117.147.31.37])
+        by smtp.gmail.com with ESMTPSA id p23-20020a056a000a1700b006eaafccff73sm2959677pfh.212.2024.03.26.07.56.03
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 26 Mar 2024 07:56:07 -0700 (PDT)
+Message-ID: <47529e7e-437e-4601-a5dc-518b38aaf496@gmail.com>
+Date: Tue, 26 Mar 2024 22:54:53 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZgHOK9T2K9HKkju1@casper.infradead.org>
-X-Rspamd-Queue-Id: 4V3t9t6lNtz9sJ6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC PATCH] libbpf: Add bpf_program__set_section_name api
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: Alexei Starovoitov <ast@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
+ Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
+ Yonghong Song <yonghong.song@linux.dev>,
+ John Fastabend <john.fastabend@gmail.com>, bpf@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <20240325154737.3754820-1-chen.dylane@gmail.com>
+ <CAEf4Bzag72gYXWJ2+mPnWaysyTK0OC3NjnasxNsb+N0NxXY2fw@mail.gmail.com>
+From: Tao Chen <chen.dylane@gmail.com>
+In-Reply-To: <CAEf4Bzag72gYXWJ2+mPnWaysyTK0OC3NjnasxNsb+N0NxXY2fw@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Mon, Mar 25, 2024 at 07:19:07PM +0000, Matthew Wilcox wrote:
-> On Wed, Mar 13, 2024 at 06:02:42PM +0100, Pankaj Raghav (Samsung) wrote:
-> > This is the third version of the series that enables block size > page size
-> > (Large Block Size) in XFS. The context and motivation can be seen in cover
-> > letter of the RFC v1[1]. We also recorded a talk about this effort at LPC [3],
-> > if someone would like more context on this effort.
+Hi, Andrii, thank you for your reply. I read the apis again in libbpf.h, 
+as you say, it seems that this patch no need. Thanks again.
+
+在 2024/3/26 上午1:25, Andrii Nakryiko 写道:
+> On Mon, Mar 25, 2024 at 8:48 AM Tao Chen <chen.dylane@gmail.com> wrote:
+>>
+>> The new api can be used to reset the function we want to trace in
+>> runtime. So we need not to change the code again when we just do
+>> minor changes to the trace function in kprobe or other ebpf event
+>> type. We can replace the old section with new section passed in via
+>> parameter. Maybe the following scenario we can use the api:
+>>
+>> 1. solve "*.isra.o" issue caused by compiler in new kernel
+>> obj = offcputime_bpf__open();
+>> bpf_program__set_section_name(*(obj->skeleton->obj),
+>> "kprobe/finish_task_switch", "kprobe/finish_task_switch.isra.0");
+>>
+>> 2. dynamic adjustment for trace function offset
+>> obj = offcputime_bpf__open();
+>> bpf_program__set_section_name(*(obj->skeleton->obj),
+>> "kprobe/finish_task_switch+23", "kprobe/finish_task_switch+45");
+>>
+>> Signed-off-by: Tao Chen <chen.dylane@gmail.com>
+>> ---
+>>   tools/lib/bpf/libbpf.c   | 24 ++++++++++++++++++++++++
+>>   tools/lib/bpf/libbpf.h   |  2 ++
+>>   tools/lib/bpf/libbpf.map |  1 +
+>>   3 files changed, 27 insertions(+)
+>>
 > 
-> Thank you.  This is a lot better.
-
-Thanks.
+> This is a wrong approach. SEC() is immutable and serves as a hint to
+> libbpf on program type and possibly some attach parameters. But after
+> that libbpf allows to override all of them though APIs like
+> bpf_program__set_type() and others. Attach APIs always allow to
+> specify all the target parameters, including kprobe function name and
+> so on.
 > 
-> I'm still trying to understand your opinion on the contents of the
-> file_ra_state.  Is it supposed to be properly aligned at all times, or
-> do we work with it in the terms of "desired number of pages" and then
-> force it to conform to the minimum-block-size reality right at the end?
-
-The intention of the patches is to do the latter. Apart from the patch
-that rounds up file_ra_state->ra_pages, I don't poke file_ra_state
-anywhere and it is updated only at the end after we enforce
-minimum-block-size constraint (page_cache_ra_order).
-
-> Because you seem to be doing both at various points.
-Could you elaborate more on where I do both? Maybe I am missing
-something and I could change it in the next series.
-
-The previous series was trying to do both but I intentially stuck to
-updating the ra_state at the end in this series.
+> Please check all of the libbpf APIs in libbpf.h.
+> 
+> pw-bot: cr
+> 
+>> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+>> index 96ff1aa4bf6a..94f32e845c61 100644
+>> --- a/tools/lib/bpf/libbpf.c
+>> +++ b/tools/lib/bpf/libbpf.c
+>> @@ -8576,6 +8576,30 @@ const char *bpf_program__section_name(const struct bpf_program *prog)
+>>          return prog->sec_name;
+>>   }
+>>
+> 
+> [...]
 
