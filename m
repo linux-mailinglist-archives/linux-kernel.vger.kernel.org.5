@@ -1,508 +1,256 @@
-Return-Path: <linux-kernel+bounces-120136-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-120137-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 093D388D2D3
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 00:27:40 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6010F88D2D6
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 00:31:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 86BE11F3E703
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 23:27:39 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D3D202E1B8F
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 23:31:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D5D213E04D;
-	Tue, 26 Mar 2024 23:27:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 24F6A13E040;
+	Tue, 26 Mar 2024 23:31:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="buEfocda"
-Received: from mail-pl1-f179.google.com (mail-pl1-f179.google.com [209.85.214.179])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="n1iGFLV0"
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4254B13DDDC;
-	Tue, 26 Mar 2024 23:27:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 733FD6FE35;
+	Tue, 26 Mar 2024 23:31:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711495648; cv=none; b=sCUM6Men2fkQFDjzRtyecC1CZpgcdDQP6sMq73u8ZFjIl6EmeKqspvFgOW3jgQ85QXIynE6ZFntwqrdD+4gOtm8tLEIXt1UoN4flKD/+I4uE7gMdr/lLgnMUFKzHpWKrc396iTMADHd4rf3LEsijXucEdUevNyjVsRMnJgNRz8I=
+	t=1711495877; cv=none; b=KSY4c8yEHpBmOhaKJxn060rSsf418AKIG73I2I+kSiTkM0LatoeN/Pv0pus/A5WKL3FYNdyr9KYBQITcRS+0kUkES/zrq+8s8BZYS6US6wu6BiIlfZ4Ar2i64yhWxHIU+2GPzQ/52xbgmi1t4U084JKCliGrabdsoRCVvO4vqeg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711495648; c=relaxed/simple;
-	bh=FAv4l+qicXSeBVXK7lKVx7CHeQ6AE3aj28UwkG+muuA=;
-	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=uEOoW/E8gijiz70NBVEWWqKch4DGgoJwTlBw7qAjiv4TXKIeInIKtBgHwDjX+UiTUUd/cY2N3ITFdFYPBUA+etVY/CoIZYIdiEqCdUsDqNf7IwkvN2H/nIWpkKxFIZxwKVw7wMTRVPc2ZbVXZfnXLUWXibyx6Tte4k/di9y+xtQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=buEfocda; arc=none smtp.client-ip=209.85.214.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f179.google.com with SMTP id d9443c01a7336-1e0b889901bso22523065ad.1;
-        Tue, 26 Mar 2024 16:27:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711495645; x=1712100445; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=Z8nQtnBGKSgDQJ1lADFuubuP/9NSrGllStCb4siHlzo=;
-        b=buEfocda+c6r1FSqb8KZ8b4l4HUEKOV6WaCfw+9BOYk7Du4cQ8sz3YfX/ktPYOJHQG
-         F0n3ZgpBhcSQqtFAWg9SOwnHxAckB3pnQnN1FK31qXp1Kr5S+iKjhqblW87Y2cvx8Wmr
-         u/aPZ2Ljt6wodCZENdEx0LUPWhX6RcmIBaIxmhik4RNUPMFh0jzk0L/sRE+RmqLrCYqf
-         jOp+lB01SJe5NYFFMrMQJxxeMmHGAGSiCRggD1UJ5kJHDanhOOLukOB8eO097eBCAoqH
-         OyV1h4KmpZxSqlyJ7R393BJ4jOe/IKlidV+NYunYDcPzgcA1mjT9PBlANkE7oBmBxpY6
-         og+Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711495645; x=1712100445;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Z8nQtnBGKSgDQJ1lADFuubuP/9NSrGllStCb4siHlzo=;
-        b=cw9RTmAHm/bkRb6aau0Tuwo9wXsVRAuqESKntpv1VEqdM0L30dYKUhIEHgNQXojsiF
-         9LWbFPfKgT6DttTaGN4EwXMpV+HCqFOpNGRMatZocYILR0x7rW+I/8ETo9UuHqGftEME
-         1bzpQ5JWoTVyF/stLjom47SmlLmdVsIOrUBCYMHazVVFCIQ/LHT6JHoP8nx9RUx4pwNW
-         ql5mJVd4PUo+4K+PjFK3hHjGH6cwu/J1Y1zc4CyLfoJPASJOTCT7BAvK4uDAUNm7jkJz
-         gpAxMEi4fuoUffe2egW9Hj3EMpRBCH7i4vrUInPvaRiCjSXc4+kjSO7zhA4hy5UxDUSA
-         c8kg==
-X-Forwarded-Encrypted: i=1; AJvYcCUrdiKExWj14UnUu408YtYwKFJF/q9r5I5dRzg+1vdVtZ/rOem+no40hAwn9XwTvimxZDvolXC44MZDwqTWQInQmeIUvmxT4IUL9sDGjFMr8dwNHl7owIs4nHGXeXiOf687beMZGcoEhW/ZAm4lCZYr0+0SjWFOwZJXALvKd4F8HrpmC6c=
-X-Gm-Message-State: AOJu0YzhZ415SqpzbKYZHBasMayVjyWduMayIVzPTcXHxQH45exjSx2L
-	obl6yUlUfWwDv7vZaP5cVneei3zUcxBL5zHrW3Cejqix0tQeAnnfJf7oqw3J
-X-Google-Smtp-Source: AGHT+IFGMkKZKPTva1WxA2Qc9OaIy6cOtBETIHbFqoWVwmWOSPQGiTDOT8jIsbvIdhtvYKoeb0DopQ==
-X-Received: by 2002:a17:902:7d8e:b0:1e0:a7c5:b5a5 with SMTP id a14-20020a1709027d8e00b001e0a7c5b5a5mr991933plm.37.1711495645378;
-        Tue, 26 Mar 2024 16:27:25 -0700 (PDT)
-Received: from debian ([2601:641:300:14de:dab1:15ff:5381:7f21])
-        by smtp.gmail.com with ESMTPSA id e4-20020a17090301c400b001dee4a22c2bsm7460946plh.34.2024.03.26.16.27.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Mar 2024 16:27:25 -0700 (PDT)
-From: fan <nifan.cxl@gmail.com>
-X-Google-Original-From: fan <fan@debian>
-Date: Tue, 26 Mar 2024 16:27:20 -0700
-To: ira.weiny@intel.com
-Cc: Dave Jiang <dave.jiang@intel.com>, Fan Ni <fan.ni@samsung.com>,
-	Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-	Navneet Singh <navneet.singh@intel.com>,
-	Dan Williams <dan.j.williams@intel.com>,
-	Davidlohr Bueso <dave@stgolabs.net>,
-	Alison Schofield <alison.schofield@intel.com>,
-	Vishal Verma <vishal.l.verma@intel.com>,
-	linux-btrfs@vger.kernel.org, linux-cxl@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 14/26] cxl/region: Read existing extents on region
- creation
-Message-ID: <ZgNZ2Fl8vdW_qm_I@debian>
-References: <20240324-dcd-type2-upstream-v1-0-b7b00d623625@intel.com>
- <20240324-dcd-type2-upstream-v1-14-b7b00d623625@intel.com>
+	s=arc-20240116; t=1711495877; c=relaxed/simple;
+	bh=MTHbQxWWr82Pgl4Qpl4eCiscQ+kIVFbl12TUbUWZXfk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=PCTp3OKuJcVIp428afAnCYFIFt4Z06XVo/t7LlSAJ50ycHW5prJZg+rEQe8tpSjFoxvJH1l/DOarLBsZrVJ2MGa3ZmGloyXRkNEkHWktQT5AgClq6hBGZMoEIqD4wI66qqGMTwmII/NnucZ3klaXVLM5MmvCjUklIZuriKjryOY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=n1iGFLV0; arc=none smtp.client-ip=46.235.227.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1711495873;
+	bh=MTHbQxWWr82Pgl4Qpl4eCiscQ+kIVFbl12TUbUWZXfk=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=n1iGFLV0hIJ00/P6UnGBL2sCMeGrkCpUMc8TrbTr4kT+yzDJfyKHTg/NYejkGg2ag
+	 ONxhBfk1IIAJracIV3NFfmBk2OdTXMYO+BZrZ3pcmTZkJaLxJMIHxD4PCHquD5nTEH
+	 zn2ofxsxNkFNzCKPx9zkAB5D9dU6SO6gdk6LGjfGbkx8G/sIOA37vFoDkWibxH0xqW
+	 gBzYR4ZlNsNbTfsoPDoT6SxC108y6cC/3boom+1MmZ4bb9dDe2RDPOuMXcCFWsdSIn
+	 ZSgTDwtApYRf/yyZKK8lGCoRYbzWHVqmijM/4EVKzWcUUA8X5SOP5LfBANfUNcrdrV
+	 0oaTTLpm7k7pw==
+Received: from mercury (cola.collaboradmins.com [195.201.22.229])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: sre)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 723BF37810C0;
+	Tue, 26 Mar 2024 23:31:13 +0000 (UTC)
+Received: by mercury (Postfix, from userid 1000)
+	id E8D2B10608D9; Wed, 27 Mar 2024 00:31:12 +0100 (CET)
+Date: Wed, 27 Mar 2024 00:31:12 +0100
+From: Sebastian Reichel <sebastian.reichel@collabora.com>
+To: nikita.shubin@maquefel.me
+Cc: linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org, 
+	Arnd Bergmann <arnd@arndb.de>
+Subject: Re: [PATCH v9 05/38] power: reset: Add a driver for the ep93xx reset
+Message-ID: <oxvj7wmugkxzeddmrzyowr6lxxahbo766sbip22a564qeczxoy@oagxcoathnsr>
+References: <20240326-ep93xx-v9-0-156e2ae5dfc8@maquefel.me>
+ <20240326-ep93xx-v9-5-156e2ae5dfc8@maquefel.me>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="bxlmjncesy7eix7u"
+Content-Disposition: inline
+In-Reply-To: <20240326-ep93xx-v9-5-156e2ae5dfc8@maquefel.me>
+
+
+--bxlmjncesy7eix7u
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240324-dcd-type2-upstream-v1-14-b7b00d623625@intel.com>
+Content-Transfer-Encoding: quoted-printable
 
-On Sun, Mar 24, 2024 at 04:18:17PM -0700, ira.weiny@intel.com wrote:
-> From: Navneet Singh <navneet.singh@intel.com>
-> 
-> Dynamic capacity device extents may be left in an accepted state on a
-> device due to an unexpected host crash.  In this case creation of a new
-> region on top of the DC partition (region) is expected to expose those
-> extents for continued use.
-> 
-> Once all endpoint decoders are part of a region and the region is being
-> realized read the device extent list.  For ease of review, this patch
-> stops after reading the extent list and leaves realization of the region
-> extents to a future patch.
-> 
-> Signed-off-by: Navneet Singh <navneet.singh@intel.com>
-> Co-developed-by: Ira Weiny <ira.weiny@intel.com>
-> Signed-off-by: Ira Weiny <ira.weiny@intel.com>
-> 
+Hi,
+
+On Tue, Mar 26, 2024 at 12:18:32PM +0300, Nikita Shubin via B4 Relay wrote:
+> From: Nikita Shubin <nikita.shubin@maquefel.me>
+>=20
+> Implement the reset behaviour of the various EP93xx SoCS
+> in drivers/power/reset.
+>=20
+> It used to be located in arch/arm/mach-ep93xx.
+>=20
+> Signed-off-by: Nikita Shubin <nikita.shubin@maquefel.me>
+> Acked-by: Sebastian Reichel <sre@kernel.org>
 > ---
-> Changes for v1:
-> [iweiny: remove extent list xarray]
-> [iweiny: Update spec references to 3.1]
-> [iweiny: use struct range in extents]
-> [iweiny: remove all reference tracking and let regions track extents
-> 	 through the extent devices.]
-> [djbw/Jonathan/Fan: move extent tracking to endpoint decoders]
-> ---
->  drivers/cxl/core/core.h   |   9 +++
->  drivers/cxl/core/mbox.c   | 192 ++++++++++++++++++++++++++++++++++++++++++++++
->  drivers/cxl/core/region.c |  29 +++++++
->  drivers/cxl/cxlmem.h      |  49 ++++++++++++
->  4 files changed, 279 insertions(+)
-> 
-> diff --git a/drivers/cxl/core/core.h b/drivers/cxl/core/core.h
-> index 91abeffbe985..119b12362977 100644
-> --- a/drivers/cxl/core/core.h
-> +++ b/drivers/cxl/core/core.h
-> @@ -4,6 +4,8 @@
->  #ifndef __CXL_CORE_H__
->  #define __CXL_CORE_H__
->  
-> +#include <cxlmem.h>
-> +
->  extern const struct device_type cxl_nvdimm_bridge_type;
->  extern const struct device_type cxl_nvdimm_type;
->  extern const struct device_type cxl_pmu_type;
-> @@ -28,6 +30,8 @@ void cxl_decoder_kill_region(struct cxl_endpoint_decoder *cxled);
->  int cxl_region_init(void);
->  void cxl_region_exit(void);
->  int cxl_get_poison_by_endpoint(struct cxl_port *port);
-> +int cxl_ed_add_one_extent(struct cxl_endpoint_decoder *cxled,
-> +			  struct cxl_dc_extent *dc_extent);
->  #else
->  static inline int cxl_get_poison_by_endpoint(struct cxl_port *port)
->  {
-> @@ -43,6 +47,11 @@ static inline int cxl_region_init(void)
->  static inline void cxl_region_exit(void)
->  {
->  }
-> +static inline int cxl_ed_add_one_extent(struct cxl_endpoint_decoder *cxled,
-> +					struct cxl_dc_extent *dc_extent)
-> +{
-> +	return 0;
-> +}
->  #define CXL_REGION_ATTR(x) NULL
->  #define CXL_REGION_TYPE(x) NULL
->  #define SET_CXL_REGION_ATTR(x)
-> diff --git a/drivers/cxl/core/mbox.c b/drivers/cxl/core/mbox.c
-> index 58b31fa47b93..9e33a0976828 100644
-> --- a/drivers/cxl/core/mbox.c
-> +++ b/drivers/cxl/core/mbox.c
-> @@ -870,6 +870,53 @@ int cxl_enumerate_cmds(struct cxl_memdev_state *mds)
->  }
->  EXPORT_SYMBOL_NS_GPL(cxl_enumerate_cmds, CXL);
->  
-> +static int cxl_validate_extent(struct cxl_memdev_state *mds,
-> +			       struct cxl_dc_extent *dc_extent)
-> +{
-> +	struct device *dev = mds->cxlds.dev;
-> +	uint64_t start, len;
-> +
-> +	start = le64_to_cpu(dc_extent->start_dpa);
-> +	len = le64_to_cpu(dc_extent->length);
-> +
-> +	/* Extents must not cross region boundary's */
-> +	for (int i = 0; i < mds->nr_dc_region; i++) {
-> +		struct cxl_dc_region_info *dcr = &mds->dc_region[i];
-> +
-> +		if (dcr->base <= start &&
-> +		    (start + len) <= (dcr->base + dcr->decode_len)) {
 
-Why not use range_contains here as below?
+If another round is needed, please use devm_register_sys_off_handler()
+instead of register_restart_handler().
 
-Fan
-> +			dev_dbg(dev, "DC extent DPA %#llx - %#llx (DCR:%d:%#llx)\n",
-> +				start, start + len - 1, i, start - dcr->base);
-> +			return 0;
-> +		}
-> +	}
+Greetings,
+
+-- Sebastian
+
+>  drivers/power/reset/Kconfig          | 10 +++++
+>  drivers/power/reset/Makefile         |  1 +
+>  drivers/power/reset/ep93xx-restart.c | 84 ++++++++++++++++++++++++++++++=
+++++++
+>  3 files changed, 95 insertions(+)
+>=20
+> diff --git a/drivers/power/reset/Kconfig b/drivers/power/reset/Kconfig
+> index fece990af4a7..389d5a193e5d 100644
+> --- a/drivers/power/reset/Kconfig
+> +++ b/drivers/power/reset/Kconfig
+> @@ -75,6 +75,16 @@ config POWER_RESET_BRCMSTB
+>  	  Say Y here if you have a Broadcom STB board and you wish
+>  	  to have restart support.
+> =20
+> +config POWER_RESET_EP93XX
+> +	bool "Cirrus EP93XX reset driver" if COMPILE_TEST
+> +	depends on MFD_SYSCON
+> +	default ARCH_EP93XX
+> +	help
+> +	  This driver provides restart support for Cirrus EP93XX SoC.
 > +
-> +	dev_err_ratelimited(dev,
-> +			    "DC extent DPA %#llx - %#llx is not in any DC region\n",
-> +			    start, start + len - 1);
-> +	return -EINVAL;
+> +	  Say Y here if you have a Cirrus EP93XX SoC and you wish
+> +	  to have restart support.
+> +
+>  config POWER_RESET_GEMINI_POWEROFF
+>  	bool "Cortina Gemini power-off driver"
+>  	depends on ARCH_GEMINI || COMPILE_TEST
+> diff --git a/drivers/power/reset/Makefile b/drivers/power/reset/Makefile
+> index a95d1bd275d1..10782d32e1da 100644
+> --- a/drivers/power/reset/Makefile
+> +++ b/drivers/power/reset/Makefile
+> @@ -7,6 +7,7 @@ obj-$(CONFIG_POWER_RESET_ATC260X) +=3D atc260x-poweroff.o
+>  obj-$(CONFIG_POWER_RESET_AXXIA) +=3D axxia-reset.o
+>  obj-$(CONFIG_POWER_RESET_BRCMKONA) +=3D brcm-kona-reset.o
+>  obj-$(CONFIG_POWER_RESET_BRCMSTB) +=3D brcmstb-reboot.o
+> +obj-$(CONFIG_POWER_RESET_EP93XX) +=3D ep93xx-restart.o
+>  obj-$(CONFIG_POWER_RESET_GEMINI_POWEROFF) +=3D gemini-poweroff.o
+>  obj-$(CONFIG_POWER_RESET_GPIO) +=3D gpio-poweroff.o
+>  obj-$(CONFIG_POWER_RESET_GPIO_RESTART) +=3D gpio-restart.o
+> diff --git a/drivers/power/reset/ep93xx-restart.c b/drivers/power/reset/e=
+p93xx-restart.c
+> new file mode 100644
+> index 000000000000..57cfb8620faf
+> --- /dev/null
+> +++ b/drivers/power/reset/ep93xx-restart.c
+> @@ -0,0 +1,84 @@
+> +// SPDX-License-Identifier: GPL-2.0+
+> +/*
+> + * Cirrus EP93xx SoC reset driver
+> + *
+> + * Copyright (C) 2021 Nikita Shubin <nikita.shubin@maquefel.me>
+> + */
+> +
+> +#include <linux/bits.h>
+> +#include <linux/container_of.h>
+> +#include <linux/delay.h>
+> +#include <linux/errno.h>
+> +#include <linux/mfd/syscon.h>
+> +#include <linux/module.h>
+> +#include <linux/mod_devicetable.h>
+> +#include <linux/notifier.h>
+> +#include <linux/reboot.h>
+> +#include <linux/slab.h>
+> +
+> +#include <linux/soc/cirrus/ep93xx.h>
+> +
+> +#define EP93XX_SYSCON_DEVCFG		0x80
+> +#define EP93XX_SYSCON_DEVCFG_SWRST	BIT(31)
+> +
+> +struct ep93xx_restart {
+> +	struct ep93xx_regmap_adev *aux_dev;
+> +	struct notifier_block restart_handler;
+> +};
+> +
+> +static int ep93xx_restart_handle(struct notifier_block *this,
+> +				 unsigned long mode, void *cmd)
+> +{
+> +	struct ep93xx_restart *priv =3D
+> +		container_of(this, struct ep93xx_restart, restart_handler);
+> +	struct ep93xx_regmap_adev *aux =3D priv->aux_dev;
+> +
+> +	/* Issue the reboot */
+> +	aux->update_bits(aux->map, aux->lock, EP93XX_SYSCON_DEVCFG,
+> +			 EP93XX_SYSCON_DEVCFG_SWRST, EP93XX_SYSCON_DEVCFG_SWRST);
+> +	aux->update_bits(aux->map, aux->lock, EP93XX_SYSCON_DEVCFG,
+> +			 EP93XX_SYSCON_DEVCFG_SWRST, 0);
+> +
+> +	return NOTIFY_DONE;
 > +}
 > +
-> +static bool cxl_dc_extent_in_ed(struct cxl_endpoint_decoder *cxled,
-> +				struct cxl_dc_extent *extent)
+> +static int ep93xx_reboot_probe(struct auxiliary_device *adev,
+> +			       const struct auxiliary_device_id *id)
 > +{
-> +	uint64_t start = le64_to_cpu(extent->start_dpa);
-> +	uint64_t length = le64_to_cpu(extent->length);
-> +	struct range ext_range = (struct range){
-> +		.start = start,
-> +		.end = start + length - 1,
-> +	};
-> +	struct range ed_range = (struct range) {
-> +		.start = cxled->dpa_res->start,
-> +		.end = cxled->dpa_res->end,
-> +	};
+> +	struct ep93xx_regmap_adev *rdev =3D to_ep93xx_regmap_adev(adev);
+> +	struct device *dev =3D &adev->dev;
+> +	struct ep93xx_restart *priv;
+> +	int err;
 > +
-> +	dev_dbg(&cxled->cxld.dev, "Checking ED (%pr) for extent DPA:%#llx LEN:%#llx\n",
-> +		cxled->dpa_res, start, length);
+> +	if (!rdev->update_bits)
+> +		return -ENODEV;
 > +
-> +	return range_contains(&ed_range, &ext_range);
-> +}
-> +
->  void cxl_event_trace_record(const struct cxl_memdev *cxlmd,
->  			    enum cxl_event_log_type type,
->  			    enum cxl_event_type event_type,
-> @@ -973,6 +1020,15 @@ static int cxl_clear_event_record(struct cxl_memdev_state *mds,
->  	return rc;
->  }
->  
-> +static struct cxl_memdev_state *
-> +cxled_to_mds(struct cxl_endpoint_decoder *cxled)
-> +{
-> +	struct cxl_memdev *cxlmd = cxled_to_memdev(cxled);
-> +	struct cxl_dev_state *cxlds = cxlmd->cxlds;
-> +
-> +	return container_of(cxlds, struct cxl_memdev_state, cxlds);
-> +}
-> +
->  static void cxl_mem_get_records_log(struct cxl_memdev_state *mds,
->  				    enum cxl_event_log_type type)
->  {
-> @@ -1406,6 +1462,142 @@ int cxl_dev_dynamic_capacity_identify(struct cxl_memdev_state *mds)
->  }
->  EXPORT_SYMBOL_NS_GPL(cxl_dev_dynamic_capacity_identify, CXL);
->  
-> +static int cxl_dev_get_dc_extent_cnt(struct cxl_memdev_state *mds,
-> +				     unsigned int *extent_gen_num)
-> +{
-> +	struct cxl_mbox_get_dc_extent_in get_dc_extent;
-> +	struct cxl_mbox_get_dc_extent_out dc_extents;
-> +	struct cxl_mbox_cmd mbox_cmd;
-> +	unsigned int count;
-> +	int rc;
-> +
-> +	get_dc_extent = (struct cxl_mbox_get_dc_extent_in) {
-> +		.extent_cnt = cpu_to_le32(0),
-> +		.start_extent_index = cpu_to_le32(0),
-> +	};
-> +
-> +	mbox_cmd = (struct cxl_mbox_cmd) {
-> +		.opcode = CXL_MBOX_OP_GET_DC_EXTENT_LIST,
-> +		.payload_in = &get_dc_extent,
-> +		.size_in = sizeof(get_dc_extent),
-> +		.size_out = sizeof(dc_extents),
-> +		.payload_out = &dc_extents,
-> +		.min_out = 1,
-> +	};
-> +
-> +	rc = cxl_internal_send_cmd(mds, &mbox_cmd);
-> +	if (rc < 0)
-> +		return rc;
-> +
-> +	count = le32_to_cpu(dc_extents.total_extent_cnt);
-> +	*extent_gen_num = le32_to_cpu(dc_extents.extent_list_num);
-> +
-> +	return count;
-> +}
-> +
-> +static int cxl_dev_get_dc_extents(struct cxl_endpoint_decoder *cxled,
-> +				  unsigned int start_gen_num,
-> +				  unsigned int exp_cnt)
-> +{
-> +	struct cxl_memdev_state *mds = cxled_to_mds(cxled);
-> +	unsigned int start_index, total_read;
-> +	struct device *dev = mds->cxlds.dev;
-> +	struct cxl_mbox_cmd mbox_cmd;
-> +
-> +	struct cxl_mbox_get_dc_extent_out *dc_extents __free(kfree) =
-> +				kvmalloc(mds->payload_size, GFP_KERNEL);
-> +	if (!dc_extents)
+> +	priv =3D devm_kzalloc(dev, sizeof(*priv), GFP_KERNEL);
+> +	if (!priv)
 > +		return -ENOMEM;
 > +
-> +	total_read = 0;
-> +	start_index = 0;
-> +	do {
-> +		unsigned int nr_ext, total_extent_cnt, gen_num;
-> +		struct cxl_mbox_get_dc_extent_in get_dc_extent;
-> +		int rc;
+> +	priv->aux_dev =3D rdev;
 > +
-> +		get_dc_extent = (struct cxl_mbox_get_dc_extent_in) {
-> +			.extent_cnt = cpu_to_le32(exp_cnt - start_index),
-> +			.start_extent_index = cpu_to_le32(start_index),
-> +		};
+> +	priv->restart_handler.notifier_call =3D ep93xx_restart_handle;
+> +	priv->restart_handler.priority =3D 128;
 > +
-> +		mbox_cmd = (struct cxl_mbox_cmd) {
-> +			.opcode = CXL_MBOX_OP_GET_DC_EXTENT_LIST,
-> +			.payload_in = &get_dc_extent,
-> +			.size_in = sizeof(get_dc_extent),
-> +			.size_out = mds->payload_size,
-> +			.payload_out = dc_extents,
-> +			.min_out = 1,
-> +		};
-> +
-> +		rc = cxl_internal_send_cmd(mds, &mbox_cmd);
-> +		if (rc < 0)
-> +			return rc;
-> +
-> +		nr_ext = le32_to_cpu(dc_extents->ret_extent_cnt);
-> +		total_read += nr_ext;
-> +		total_extent_cnt = le32_to_cpu(dc_extents->total_extent_cnt);
-> +		gen_num = le32_to_cpu(dc_extents->extent_list_num);
-> +
-> +		dev_dbg(dev, "Get extent list count:%d generation Num:%d\n",
-> +			total_extent_cnt, gen_num);
-> +
-> +		if (gen_num != start_gen_num || exp_cnt != total_extent_cnt) {
-> +			dev_err(dev, "Possible incomplete extent list; gen %u != %u : cnt %u != %u\n",
-> +				gen_num, start_gen_num, exp_cnt, total_extent_cnt);
-> +			return -EIO;
-> +		}
-> +
-> +		for (int i = 0; i < nr_ext ; i++) {
-> +			dev_dbg(dev, "Processing extent %d/%d\n",
-> +				start_index + i, exp_cnt);
-> +			rc = cxl_validate_extent(mds, &dc_extents->extent[i]);
-> +			if (rc)
-> +				continue;
-> +			if (!cxl_dc_extent_in_ed(cxled, &dc_extents->extent[i]))
-> +				continue;
-> +			rc = cxl_ed_add_one_extent(cxled, &dc_extents->extent[i]);
-> +			if (rc)
-> +				return rc;
-> +		}
-> +
-> +		start_index += nr_ext;
-> +	} while (exp_cnt > total_read);
+> +	err =3D register_restart_handler(&priv->restart_handler);
+> +	if (err)
+> +		return dev_err_probe(dev, err, "can't register restart notifier\n");
 > +
 > +	return 0;
 > +}
 > +
-> +/**
-> + * cxl_read_dc_extents() - Read any existing extents
-> + * @cxled: Endpoint decoder which is part of a region
-> + *
-> + * Issue the Get Dynamic Capacity Extent List command to the device
-> + * and add any existing extents found which belong to this decoder.
-> + *
-> + * Return: 0 if command was executed successfully, -ERRNO on error.
-> + */
-> +int cxl_read_dc_extents(struct cxl_endpoint_decoder *cxled)
-> +{
-> +	struct cxl_memdev_state *mds = cxled_to_mds(cxled);
-> +	struct device *dev = mds->cxlds.dev;
-> +	unsigned int extent_gen_num;
-> +	int rc;
+> +static const struct auxiliary_device_id ep93xx_reboot_ids[] =3D {
+> +	{
+> +		.name =3D "soc_ep93xx.reset-ep93xx",
+> +	},
+> +	{ /* sentinel */ }
+> +};
+> +MODULE_DEVICE_TABLE(auxiliary, ep93xx_reboot_ids);
 > +
-> +	if (!cxl_dcd_supported(mds)) {
-> +		dev_dbg(dev, "DCD unsupported\n");
-> +		return 0;
-> +	}
-> +
-> +	rc = cxl_dev_get_dc_extent_cnt(mds, &extent_gen_num);
-> +	dev_dbg(mds->cxlds.dev, "Extent count: %d Generation Num: %d\n",
-> +		rc, extent_gen_num);
-> +	if (rc <= 0) /* 0 == no records found */
-> +		return rc;
-> +
-> +	return cxl_dev_get_dc_extents(cxled, extent_gen_num, rc);
-> +}
-> +EXPORT_SYMBOL_NS_GPL(cxl_read_dc_extents, CXL);
-> +
->  static int add_dpa_res(struct device *dev, struct resource *parent,
->  		       struct resource *res, resource_size_t start,
->  		       resource_size_t size, const char *type)
-> diff --git a/drivers/cxl/core/region.c b/drivers/cxl/core/region.c
-> index 0d7b09a49dcf..3e563ab29afe 100644
-> --- a/drivers/cxl/core/region.c
-> +++ b/drivers/cxl/core/region.c
-> @@ -1450,6 +1450,13 @@ static int cxl_region_validate_position(struct cxl_region *cxlr,
->  	return 0;
->  }
->  
-> +/* Callers are expected to ensure cxled has been attached to a region */
-> +int cxl_ed_add_one_extent(struct cxl_endpoint_decoder *cxled,
-> +			  struct cxl_dc_extent *dc_extent)
-> +{
-> +	return 0;
-> +}
-> +
->  static int cxl_region_attach_position(struct cxl_region *cxlr,
->  				      struct cxl_root_decoder *cxlrd,
->  				      struct cxl_endpoint_decoder *cxled,
-> @@ -2773,6 +2780,22 @@ static int devm_cxl_add_pmem_region(struct cxl_region *cxlr)
->  	return rc;
->  }
->  
-> +static int cxl_region_read_extents(struct cxl_region *cxlr)
-> +{
-> +	struct cxl_region_params *p = &cxlr->params;
-> +	int i;
-> +
-> +	for (i = 0; i < p->nr_targets; i++) {
-> +		int rc;
-> +
-> +		rc = cxl_read_dc_extents(p->targets[i]);
-> +		if (rc)
-> +			return rc;
-> +	}
-> +
-> +	return 0;
-> +}
-> +
->  static void cxlr_dax_unregister(void *_cxlr_dax)
->  {
->  	struct cxl_dax_region *cxlr_dax = _cxlr_dax;
-> @@ -2807,6 +2830,12 @@ static int devm_cxl_add_dax_region(struct cxl_region *cxlr)
->  	dev_dbg(&cxlr->dev, "%s: register %s\n", dev_name(dev->parent),
->  		dev_name(dev));
->  
-> +	if (cxlr->mode == CXL_REGION_DC) {
-> +		rc = cxl_region_read_extents(cxlr);
-> +		if (rc)
-> +			goto err;
-> +	}
-> +
->  	return devm_add_action_or_reset(&cxlr->dev, cxlr_dax_unregister,
->  					cxlr_dax);
->  err:
-> diff --git a/drivers/cxl/cxlmem.h b/drivers/cxl/cxlmem.h
-> index 01bee6eedff3..8f2d8944d334 100644
-> --- a/drivers/cxl/cxlmem.h
-> +++ b/drivers/cxl/cxlmem.h
-> @@ -604,6 +604,54 @@ enum cxl_opcode {
->  	UUID_INIT(0xe1819d9, 0x11a9, 0x400c, 0x81, 0x1f, 0xd6, 0x07, 0x19,     \
->  		  0x40, 0x3d, 0x86)
->  
-> +/*
-> + * Add Dynamic Capacity Response
-> + * CXL rev 3.1 section 8.2.9.9.9.3; Table 8-168 & Table 8-169
-> + */
-> +struct cxl_mbox_dc_response {
-> +	__le32 extent_list_size;
-> +	u8 flags;
-> +	u8 reserved[3];
-> +	struct updated_extent_list {
-> +		__le64 dpa_start;
-> +		__le64 length;
-> +		u8 reserved[8];
-> +	} __packed extent_list[];
-> +} __packed;
-> +
-> +/*
-> + * CXL rev 3.1 section 8.2.9.2.1.6; Table 8-51
-> + */
-> +#define CXL_DC_EXTENT_TAG_LEN 0x10
-> +struct cxl_dc_extent {
-> +	__le64 start_dpa;
-> +	__le64 length;
-> +	u8 tag[CXL_DC_EXTENT_TAG_LEN];
-> +	__le16 shared_extn_seq;
-> +	u8 reserved[6];
-> +} __packed;
-> +
-> +/*
-> + * Get Dynamic Capacity Extent List; Input Payload
-> + * CXL rev 3.1 section 8.2.9.9.9.2; Table 8-166
-> + */
-> +struct cxl_mbox_get_dc_extent_in {
-> +	__le32 extent_cnt;
-> +	__le32 start_extent_index;
-> +} __packed;
-> +
-> +/*
-> + * Get Dynamic Capacity Extent List; Output Payload
-> + * CXL rev 3.1 section 8.2.9.9.9.2; Table 8-167
-> + */
-> +struct cxl_mbox_get_dc_extent_out {
-> +	__le32 ret_extent_cnt;
-> +	__le32 total_extent_cnt;
-> +	__le32 extent_list_num;
-> +	u8 rsvd[4];
-> +	struct cxl_dc_extent extent[];
-> +} __packed;
-> +
->  struct cxl_mbox_get_supported_logs {
->  	__le16 entries;
->  	u8 rsvd[6];
-> @@ -879,6 +927,7 @@ int cxl_internal_send_cmd(struct cxl_memdev_state *mds,
->  			  struct cxl_mbox_cmd *cmd);
->  int cxl_dev_state_identify(struct cxl_memdev_state *mds);
->  int cxl_dev_dynamic_capacity_identify(struct cxl_memdev_state *mds);
-> +int cxl_read_dc_extents(struct cxl_endpoint_decoder *cxled);
->  int cxl_await_media_ready(struct cxl_dev_state *cxlds);
->  int cxl_enumerate_cmds(struct cxl_memdev_state *mds);
->  int cxl_mem_create_range_info(struct cxl_memdev_state *mds);
-> 
-> -- 
-> 2.44.0
-> 
+> +static struct auxiliary_driver ep93xx_reboot_driver =3D {
+> +	.probe		=3D ep93xx_reboot_probe,
+> +	.id_table	=3D ep93xx_reboot_ids,
+> +};
+> +module_auxiliary_driver(ep93xx_reboot_driver);
+>=20
+> --=20
+> 2.41.0
+>=20
+>=20
+
+--bxlmjncesy7eix7u
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAmYDWrwACgkQ2O7X88g7
++ppn2A/7BgKXlLfayzxDGsLA+7oVEcxwjQwTAffSwpyYzOUL4p+nfQLNMPUJ5G+o
+bchGTHW9eGaWN8sL/bXyTtJZSIPisxtd0qKwGKLJH+kPY4ZFK7UAm+kxzeygXRbk
+JhHksfeuhefcbpZRGWOJaXamMRLWa5o2Mj+O/5+fK/p2bJuQUCyBuRNbvdnFfUmu
+E4cOcgnT4OlBH4REKwiQCtXIFmdv+BIJoFSW2qpqH4efjd9H14eZ75DSzFdANaQc
+2WqfGBccwOx1oYlkkocxlzMPwlEaKLpj3XtpyGwCD2uIhGSFRapud+i4h5hDB0fE
+0nYi4/orD91lWJpxg5awMlw7BiKyDnwH2OBFuWXmF+FVerLO49f4/OO9T89PbXzz
+ECQNWg35sMqA7Y8p2YhkeDH5Fa8CFtbFyAivuBM4pbFTwJrsW8+iaSI5dVW/ATVx
+CvzSPogVyiwzawupz00TMvlVPOgF3dxYA+hgh0GVRT2Wdo8YCWj2WGl9pUKW1/XZ
+nROizDuPIAYxrheZnCbSQuiBnWDzlypMzXLX/pP0w/yS1cUEa4teAdVE+ZJbqn2y
+yPaZ5KCJTNk30JoGMaSXAe1NbeFisVhtDCIb3W5/vTLTMRmnrk4JT5FuacWLDQZM
+/Cq5IfTTg4ougV87UZcz/Cn37z2733DRNZgjrmSQULhVRh8QkLM=
+=Q8qH
+-----END PGP SIGNATURE-----
+
+--bxlmjncesy7eix7u--
 
