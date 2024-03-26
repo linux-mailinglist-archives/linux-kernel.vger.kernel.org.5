@@ -1,131 +1,134 @@
-Return-Path: <linux-kernel+bounces-119618-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-119620-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8A2B688CB26
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 18:43:53 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8933088CB40
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 18:47:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BC3B11C62E78
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 17:43:52 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BA91F1C38D06
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 17:47:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5905D1D555;
-	Tue, 26 Mar 2024 17:43:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 59ED48529B;
+	Tue, 26 Mar 2024 17:46:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Cu8OTgNH"
-Received: from mail-wm1-f47.google.com (mail-wm1-f47.google.com [209.85.128.47])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="k3ImuXZA"
+Received: from mail-ed1-f49.google.com (mail-ed1-f49.google.com [209.85.208.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC1661B28D
-	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 17:43:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D62D1D559
+	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 17:46:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711475024; cv=none; b=UHnCIIzAN1SpUMjopi94/35ctX00CLE4lpBWogobbyInu5LDZ3rQ+pdGkQYlJz/jYjoiFiiFhc7isGxs58PRXmkhNBX7IVP5R8m7C21Uq86mKdcKaxXrHXUHTI0ZjCwaBVNr0ZKWpedvId5u6wQ0ZEKzh3JahOWueFs9GAGxo4I=
+	t=1711475202; cv=none; b=ZD1d/uPPUgfawXg1w3IdEnRpmlPqZVUde2abSyfaYq6YvIT5dc7ALStRTkj5qjMhIBAN11PDIy92jotfEo0BhT7fUWW2pjnTlanStWcVuGWKpsQw5tNngt8L/GQLy7aY7Dj5YowSAnvwIQkpAyPd9gB59bIXeZ4eqS5DEGBpQCs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711475024; c=relaxed/simple;
-	bh=oUwPm+LhhzEAcP5+F2HK822pq0W7vnOXkTx+lfC3XGs=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=ONRpGodNSf/YO2adueve6572n7QJAFu4iDXm0Ledr5A8PNsXhTzq1z+ZyZ5aB20hs6CqgIWn8IyktkoV46ac6S270Wg5/o2vZn4ObPJKHXKXUHTlXQzxXaLgiwpxnpB9DnuQqVvuBv7olYbkv8Sj4W5mgBCHAlzjLDFp8zO5OMc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=Cu8OTgNH; arc=none smtp.client-ip=209.85.128.47
+	s=arc-20240116; t=1711475202; c=relaxed/simple;
+	bh=+Jb3+P97t3/SYjNzJeD0Doe3JTD7QKu5XiF0KJGtqvE=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=IrzuCoeti3xXxoGidfMMhDcTMnVp9fAGhYrXt9DOek24Y8FObhqm6tkozevjhyS98OUu13L2Ifr8a14plHrpaA7zJroO9KUkeG9MAQg6Q74/Cdl7q2wGua8h0vQXhDIHIs86cM1m1ddtPaScb2tfkwpJMLMDkpo2dsmMnsMyDqI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=k3ImuXZA; arc=none smtp.client-ip=209.85.208.49
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wm1-f47.google.com with SMTP id 5b1f17b1804b1-4148cbc5b01so8607705e9.1
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 10:43:42 -0700 (PDT)
+Received: by mail-ed1-f49.google.com with SMTP id 4fb4d7f45d1cf-56c1364ff79so2987728a12.1
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 10:46:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1711475021; x=1712079821; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=d+pLwrN7IzQtt4YVaoVDzL2T1kedcYqHyKuMC9bhaZk=;
-        b=Cu8OTgNH1LeXqtz7/X/onlu7RaIMEl/6qL9su2RKKyfYJvRM54ws+236tmtVA6Db6m
-         +yhImJcWV5NPWxhWdhxNfJ9N4SVLsYhPDn2y1s7luabhNAYhm52mKzPmoa2wVYWwQWS6
-         HLpJrNLLncSkipIsD2IJxhCLcr9kVlQwdeLg4rf8ArSxq3H0vXJLvyeBwpueChxNmr/F
-         7q3RmiTxiDJDBTJtCoivT5nWn0/bBS6ALPPWd+4TnQicLRDQOVfNQMfp3EojBrBG9c9m
-         GegCyjxn84pJlHX7e5BbCnu0YU74p4DKOldXdpvZDN1Dyk8h/QyVyf/7qXEAh88JzPqd
-         PlBQ==
+        d=linaro.org; s=google; t=1711475196; x=1712079996; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=xEazo7CkUjqyyWnsaq027rdmCtFwk9evR4G6KKq+jfU=;
+        b=k3ImuXZABKLxMtlS5jhB/uwjnfN5VK7JEQJIHp8a+aGIZiqswNhk27zUh/JBoLl8r6
+         t1CVwhLwCM2zkkwXnapZ8vUBwgpadJsQyIYDvqOn3UntxjuMclnRJqZAgGehgPE1LHjf
+         kaqO7EOnymZ1D8ZXbvGQ+xiElSi9mMRofMyH94CgEGJ7KwIWZTtB5aiVawgh2BmJBgH0
+         97j7OGhqFUH+JN1Jyj5eeEJy2ZvCoOe7pazOh2KKPNbaPPKuSk9/7DWzGLSIJmKOxLzg
+         55bQ7kbtNuJJhXUNMiSXugDxEMidn2Je99iHq5pDjhrjr4ZzWgsksWWFqjumKreug/XF
+         njdg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711475021; x=1712079821;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=d+pLwrN7IzQtt4YVaoVDzL2T1kedcYqHyKuMC9bhaZk=;
-        b=Z8XZmfY9zEV4MgIaI9ihuRppJ4yCTcWQLV6pIIf1B2dhBgHh0gpaearwqWYuHEM6E+
-         qseNEC4b2DVq2L8seS04XlbL7Em5DE252QQ3IT5DIevxotQDTaofWx83bGg97jZvBo/7
-         PjFTBvDwff2kfFtbWnJfzf+REdBcnNs/zv6pmRUoWhZmcagFXXgPRe7ErWim+Lehk3Im
-         KBBT+ift81xBee8GJLNKov2g9P9Lbo+iry3vxm1qXsj5Mr2gfu+4/sEvrbcWkGATxmIx
-         YEa7pPdQpTaWEWsWLjJbVJ6U6lj2+2SvHaJRl3tvKCEf8jdH4/L06cC+DyezeSVOjUZ0
-         RZLQ==
-X-Forwarded-Encrypted: i=1; AJvYcCX3rOJHZC2NTZikWzrK0lQj1UkekTxiL9IMVuzdU7o+YvXHVdOXuofR3ctdqJieA/7paEToSZ547ugm+JhBtvLMiOjRvuyWnMWqd8TR
-X-Gm-Message-State: AOJu0Yz5TzYCWOjlQ0MtinrlAozYD6UXXtg3X0j7sz5bhflVbh2sS5a1
-	aouQLHEaow2z/c+JnVgS1xDZPOtgYN8Q4yoBEmUayq2DLg2cTk6wDArUCtkmHcE=
-X-Google-Smtp-Source: AGHT+IEyEXDtYyd75K2bmQfUIiC16cTW8DNiy24ESWAtnb8lrm3Dg6lDC68YQjKZFYHpQF9mZihYjg==
-X-Received: by 2002:a05:600c:2201:b0:414:71b2:73c4 with SMTP id z1-20020a05600c220100b0041471b273c4mr8862368wml.12.1711475021184;
-        Tue, 26 Mar 2024 10:43:41 -0700 (PDT)
-Received: from [10.1.1.109] ([80.111.64.44])
-        by smtp.gmail.com with ESMTPSA id j19-20020a05600c191300b00414610d9223sm12215452wmq.14.2024.03.26.10.43.40
+        d=1e100.net; s=20230601; t=1711475196; x=1712079996;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=xEazo7CkUjqyyWnsaq027rdmCtFwk9evR4G6KKq+jfU=;
+        b=iWLmhI6kEJE9KDD4hvDLDec1IpgBrzMJEXolXudB+Y0TDF01mVasjVPLwoosjyIkqY
+         mBXFtaYq5XCetz+gEgwwnBve0ZG1fXgiUX9IxtwSXGAS/kSLJPtmJxmjh7JXY0HnAMjO
+         Iia+D1cT6EieIJBmKmYNt822WC38qfkJpWGOHetGXwzq4y/uRe+mLNYubpfF0nYq0lyW
+         rZnDuYgoK6NMCd/A/UCP16a775gp3ni1WaM6PdZqcsHdiChJhmxq9V7LAOf8RIAnYXZi
+         Gnmi/JiSKBZY4Hi73vFLY+uF0ScohV70PdgqYxpQ7GW53UlOPkhw0nUAxn8qWHSrvRFL
+         9zPw==
+X-Forwarded-Encrypted: i=1; AJvYcCUfjuc0r5+tPF+B24pjZid6Je+YEdZKIWJHtVPD+ZWQ2RfcOCvUhJe0cTnAlnNJO/0fc7dBxiq0BpB6Ug6waxP6xcaIMmXacG9Wn59H
+X-Gm-Message-State: AOJu0YxmSsQMxPe2mcPZvzt+rzyPwjxX5Hk1uk9kQQMgPSF2DQuJoo+g
+	2nxcWoC3Sxj56Y+J6wjGgBIVzSPlGejCkzAKSCTJy+l7F7jKJxnsYJRP1CMPpkE=
+X-Google-Smtp-Source: AGHT+IEDXr/rGD/GEqrQHL/G3YeNWczFxMCfJdYUN/McfMgn2peLnTcs3anULp1X3DvgNu3GWK0kxw==
+X-Received: by 2002:a17:906:c9ce:b0:a46:be85:4410 with SMTP id hk14-20020a170906c9ce00b00a46be854410mr243447ejb.74.1711475196041;
+        Tue, 26 Mar 2024 10:46:36 -0700 (PDT)
+Received: from krzk-bin.. ([178.197.222.44])
+        by smtp.gmail.com with ESMTPSA id l19-20020a17090612d300b00a46cffe6d06sm4451438ejb.42.2024.03.26.10.46.34
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Mar 2024 10:43:40 -0700 (PDT)
-Message-ID: <c20452059e62d3b8c45efb8070223f10f0bd06ed.camel@linaro.org>
-Subject: Re: [PATCH v2 1/3] clk: samsung: introduce nMUX for MUX clks that
- can reparented
-From: =?ISO-8859-1?Q?Andr=E9?= Draszik <andre.draszik@linaro.org>
-To: Tudor Ambarus <tudor.ambarus@linaro.org>, peter.griffin@linaro.org, 
-	krzysztof.kozlowski@linaro.org
-Cc: alim.akhtar@samsung.com, linux-arm-kernel@lists.infradead.org, 
- linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org, 
- willmcvicker@google.com, kernel-team@android.com, s.nawrocki@samsung.com, 
- cw00.choi@samsung.com, mturquette@baylibre.com, sboyd@kernel.org, 
- semen.protsenko@linaro.org, linux-clk@vger.kernel.org,
- jaewon02.kim@samsung.com
-Date: Tue, 26 Mar 2024 17:43:39 +0000
-In-Reply-To: <20240326172813.801470-2-tudor.ambarus@linaro.org>
-References: <20240326172813.801470-1-tudor.ambarus@linaro.org>
-	 <20240326172813.801470-2-tudor.ambarus@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.50.2-1 
+        Tue, 26 Mar 2024 10:46:35 -0700 (PDT)
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+To: Bjorn Andersson <andersson@kernel.org>,
+	Konrad Dybcio <konrad.dybcio@linaro.org>,
+	Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+	Alim Akhtar <alim.akhtar@samsung.com>,
+	Avri Altman <avri.altman@wdc.com>,
+	Bart Van Assche <bvanassche@acm.org>,
+	Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Andy Gross <agross@kernel.org>,
+	linux-arm-msm@vger.kernel.org,
+	linux-scsi@vger.kernel.org,
+	devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Subject: [PATCH 1/3] dt-bindings: ufs: qcom: document SC8180X UFS
+Date: Tue, 26 Mar 2024 18:46:30 +0100
+Message-Id: <20240326174632.209745-1-krzysztof.kozlowski@linaro.org>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 
-Hi Tudor,
+Document already upstreamed and used Qualcomm SC8180x UFS host
+controller to fix dtbs_check warnings like:
 
-On Tue, 2024-03-26 at 17:28 +0000, Tudor Ambarus wrote:
-> All samsung MUX clocks that are defined with MUX() set the
-> CLK_SET_RATE_NO_REPARENT flag in __MUX(), which prevents MUXes to be
-> reparented during clk_set_rate().
->=20
-> Introduce nMUX() for MUX clocks that can be reparented.
+  sc8180x-primus.dtb: ufshc@1d84000: compatible:0: 'qcom,sc8180x-ufshc' is not one of ['qcom,msm8994-ufshc', ... ]
+  sc8180x-primus.dtb: ufshc@1d84000: Unevaluated properties are not allowed ('compatible' was unexpected)
 
-What does n in nMUX stand for?
+Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
-> [...]
-> =C2=A0
-> +/* Used by MUX clocks where reparenting is allowed. */
-> +#define __nMUX(_id, cname, pnames, o, s, w, f, mf)		\
-> +	{							\
-> +		.id		=3D _id,				\
-> +		.name		=3D cname,			\
-> +		.parent_names	=3D pnames,			\
-> +		.num_parents	=3D ARRAY_SIZE(pnames),		\
-> +		.flags		=3D f,				\
-> +		.offset		=3D o,				\
-> +		.shift		=3D s,				\
-> +		.width		=3D w,				\
-> +		.mux_flags	=3D mf,				\
-> +	}
+---
 
-You've duplicated __MUX() and removed the CLK_SET_RATE_NO_REPARENT
-from flags - I think it would make sense to instead drop the flag
-from the existing __MUX(), and adjust the only two existing users
-of the macro, i.e. to add it in MUX() and MUX_F().
+Rob, considering limbo status of this binding, maybe you can take it
+directly? Would be the fastest.
+---
+ Documentation/devicetree/bindings/ufs/qcom,ufs.yaml | 2 ++
+ 1 file changed, 2 insertions(+)
 
-
-Cheers,
-Andre'
+diff --git a/Documentation/devicetree/bindings/ufs/qcom,ufs.yaml b/Documentation/devicetree/bindings/ufs/qcom,ufs.yaml
+index 10c146424baa..1ab3d16917ac 100644
+--- a/Documentation/devicetree/bindings/ufs/qcom,ufs.yaml
++++ b/Documentation/devicetree/bindings/ufs/qcom,ufs.yaml
+@@ -28,6 +28,7 @@ properties:
+           - qcom,msm8998-ufshc
+           - qcom,sa8775p-ufshc
+           - qcom,sc7280-ufshc
++          - qcom,sc8180x-ufshc
+           - qcom,sc8280xp-ufshc
+           - qcom,sdm845-ufshc
+           - qcom,sm6115-ufshc
+@@ -120,6 +121,7 @@ allOf:
+               - qcom,msm8998-ufshc
+               - qcom,sa8775p-ufshc
+               - qcom,sc7280-ufshc
++              - qcom,sc8180x-ufshc
+               - qcom,sc8280xp-ufshc
+               - qcom,sm8250-ufshc
+               - qcom,sm8350-ufshc
+-- 
+2.34.1
 
 
