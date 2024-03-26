@@ -1,138 +1,233 @@
-Return-Path: <linux-kernel+bounces-119541-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-119542-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C0D1A88CA2D
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 18:05:50 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id C09B188CA30
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 18:06:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 286D0B277B9
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 17:05:48 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 37D961F81E49
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 17:06:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 785481CD30;
-	Tue, 26 Mar 2024 17:03:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AFA8A4500D;
+	Tue, 26 Mar 2024 17:04:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=proton.me header.i=@proton.me header.b="IhThkzkP"
-Received: from mail-4316.protonmail.ch (mail-4316.protonmail.ch [185.70.43.16])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=embeddedor.com header.i=@embeddedor.com header.b="kK8daU+p"
+Received: from omta036.useast.a.cloudfilter.net (omta036.useast.a.cloudfilter.net [44.202.169.35])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0443C1CA95
-	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 17:03:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.70.43.16
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 308401F60A
+	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 17:04:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=44.202.169.35
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711472631; cv=none; b=Dn+s1YTvkljIzIRQaMiDz650iGFt0Q0JZ1h1dZfOHnaCoBXfOS6RVhTdzvsf3lWBSkkHV/29/JYlxYZRmKgUllMS7d9x6oNFCnfRvASTU0uFu8OMEzBJof9d7Ii405YxjHCE/Zw2of0gq6+KHpxwrCXvCenJXSucaMtr5SX0ioE=
+	t=1711472650; cv=none; b=VZh56yUOTpkeWAWkDvxJNXyzpfsenmZy/PjWkYKiQSD+tkCF2SBDWqzNndccfSNwG6pRi6QpWuohztY9R95TAIar/FkVY8MmB5EyBWaetTcf2Ybi1gvg1eMknpECum3+7DlhR8bUQQGsYrUmlQ7KLzLzDkYdD74Y7mEwlrTSkHk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711472631; c=relaxed/simple;
-	bh=wOZNZfomGTf09846FMrd2stSkyFpKdRYfI18SIaqofY=;
-	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=Wtj0RzV+ZNcXzDz2gCHtvVjjzf4GooxJZJs484k7VBiZnXbqFWRlweMTmu3wEoBkpOpu8geoMWa3fO7sPYZQkJbJ1gTdKl907eZodyaDe6r+VtAxAIEP1wqsaHVjKEs0hcV+xsg2saDPefGGdUw0jI8ma9X+NCLwCDGI7bSnCz8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=proton.me; spf=pass smtp.mailfrom=proton.me; dkim=pass (2048-bit key) header.d=proton.me header.i=@proton.me header.b=IhThkzkP; arc=none smtp.client-ip=185.70.43.16
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=proton.me
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=proton.me
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=proton.me;
-	s=4q2uozfqpzck3c7isjb5szza2i.protonmail; t=1711472627; x=1711731827;
-	bh=rtXdk3BS/YRFaYMhxgJIWorIJjeDwKo7k6/Ds/zUnk4=;
-	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
-	 Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
-	 Message-ID:BIMI-Selector;
-	b=IhThkzkPWttmF06bgJPyLmmbKIqfLs4Zv341oKnGjka7RHSUH/HQZjg/luJtpzB9T
-	 fF1exY1cbkHThksDlYw6h8S4FpzfWNjaqlwNE6gcJtgmqaWMo+NVuDBG/F749L8+5p
-	 oj9NWhBK4yghTgxnS2HImZ2Nhga68jn0jyVWZcP71+xdTj4DI/4rZYhuPysNDaPqnF
-	 7zGCvUYTUW54gP8EzHDVvdt8RXBZ7369ItneM1kovMPmLtw6ERps8AtBfpKPygzaS8
-	 2R3EWjZBE0MRZQzdTWiq4UTAaRFTVQ4JV0m/QyMyM4LIZkoCnuISBfxZC3r8mJ9zpc
-	 lsXT3t3PY6WCA==
-Date: Tue, 26 Mar 2024 17:03:41 +0000
-To: Boqun Feng <boqun.feng@gmail.com>
-From: Benno Lossin <benno.lossin@proton.me>
-Cc: rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>, Alice Ryhl <aliceryhl@google.com>, Miguel Ojeda <ojeda@kernel.org>, Alex Gaynor <alex.gaynor@gmail.com>, Wedson Almeida Filho <wedsonaf@gmail.com>, Gary Guo <gary@garyguo.net>, =?utf-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, Andreas Hindborg <a.hindborg@samsung.com>, John Stultz <jstultz@google.com>, Stephen Boyd <sboyd@kernel.org>, Valentin Obst <kernel@valentinobst.de>, Heghedus Razvan <heghedus.razvan@protonmail.com>, Asahi Lina <lina@asahilina.net>
-Subject: Re: [PATCH 4/5] rust: time: Support reading CLOCK_MONOTONIC
-Message-ID: <4wFCQqSgpLIPmdFau6MTL1XLLB73d9Tuv5y-VFnXTDc1DFuTnmNV-GLtF582V5yz8s9ogWP_4U0NK3ei6sZlD1oLl929f8ADoT5K9bO6uKs=@proton.me>
-In-Reply-To: <20240324223339.971934-5-boqun.feng@gmail.com>
-References: <20240324223339.971934-1-boqun.feng@gmail.com> <20240324223339.971934-5-boqun.feng@gmail.com>
-Feedback-ID: 71780778:user:proton
+	s=arc-20240116; t=1711472650; c=relaxed/simple;
+	bh=Yz0WYqolMnvLJC5i8aR7bo15fCEbWsCkVWmWBYrTGZ8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=EvExbRI14MszJJ9IonJlmbyJECAW6d4vEcRB2ctWInnwiEDIjjXOwrVFJrlGKRQIEc7hbCf5iHWvozeg3LfML6vlqQVctZChZBns11SL7WHEAKgt4Fu/BZivqsGxMeHjBonL0iUDdR60s0Yjg6kCv98fHMNJ2UQnYaHHOEW6eMw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=embeddedor.com; spf=pass smtp.mailfrom=embeddedor.com; dkim=pass (2048-bit key) header.d=embeddedor.com header.i=@embeddedor.com header.b=kK8daU+p; arc=none smtp.client-ip=44.202.169.35
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=embeddedor.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=embeddedor.com
+Received: from eig-obgw-5009a.ext.cloudfilter.net ([10.0.29.176])
+	by cmsmtp with ESMTPS
+	id ocSirtgU0uh6spADWrjzW7; Tue, 26 Mar 2024 17:04:06 +0000
+Received: from gator4166.hostgator.com ([108.167.133.22])
+	by cmsmtp with ESMTPS
+	id pADKrI6iXELAWpADKrirNq; Tue, 26 Mar 2024 17:03:54 +0000
+X-Authority-Analysis: v=2.4 cv=EfzOQumC c=1 sm=1 tr=0 ts=6602fffa
+ a=1YbLdUo/zbTtOZ3uB5T3HA==:117 a=zXgy4KOrraTBHT4+ULisNA==:17
+ a=IkcTkHD0fZMA:10 a=K6JAEmCyrfEA:10 a=wYkD_t78qR0A:10 a=cm27Pg_UAAAA:8
+ a=QyXUC8HyAAAA:8 a=VwQbUJbxAAAA:8 a=lPTLYKuCpi3VH0QkE-kA:9 a=QEXdDO2ut3YA:10
+ a=xmb-EsYY8bH0VWELuYED:22 a=AjGcO6oz07-iQ99wixmX:22
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
+	In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
+	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+	List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=NrE7Vt2pNurTp9Y0mAxOJgCgwBMGZJicbQxramXY6P8=; b=kK8daU+pLWX9/an16K0GdT02OK
+	kgUgx85xu2TUmkImlc0GpPPyoWXw5stddVx3gGeQAfszsoL+Qj1Po3jKsm3UAVLseRTNJ3AF7fIFQ
+	mdQUTfh3yEb/6RgkoV5EnzXTrRTVvDmY7m52TVhBWbUvXgwR/aa0xyXfsyP9QYsNs/fTXRk1T2M96
+	9314CyobTBVyp2HOtWljrGglwQQrYZK2vfUnZ2wU6XF158Xhp2Kc4x4SC8yrnTnW1jc+b4zbBkLAM
+	fz6cXS9SC6uNyG+CSlr1sj5yqHy4CIt0+kos2zb2j+xnF+cQONUPLhtvZjDYCGOhEeKRsezL0Pa+9
+	d3+8erhQ==;
+Received: from [201.172.173.147] (port=44416 helo=[192.168.15.10])
+	by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+	(Exim 4.96.2)
+	(envelope-from <gustavo@embeddedor.com>)
+	id 1rpADC-001bkE-0E;
+	Tue, 26 Mar 2024 12:03:46 -0500
+Message-ID: <de9a1396-7793-4420-8d3e-1c634059cfe0@embeddedor.com>
+Date: Tue, 26 Mar 2024 11:03:44 -0600
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net-next 3/3] idpf: sprinkle __counted_by{,_le}() in the
+ virtchnl2 header
+Content-Language: en-US
+To: Alexander Lobakin <aleksander.lobakin@intel.com>,
+ "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
+ Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>
+Cc: Kees Cook <keescook@chromium.org>,
+ "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+ Nathan Chancellor <nathan@kernel.org>, Simon Horman <horms@kernel.org>,
+ nex.sw.ncis.osdt.itp.upstreaming@intel.com,
+ intel-wired-lan@lists.osuosl.org, linux-hardening@vger.kernel.org,
+ netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20240326164116.645718-1-aleksander.lobakin@intel.com>
+ <20240326164116.645718-4-aleksander.lobakin@intel.com>
+From: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+In-Reply-To: <20240326164116.645718-4-aleksander.lobakin@intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - embeddedor.com
+X-BWhitelist: no
+X-Source-IP: 201.172.173.147
+X-Source-L: No
+X-Exim-ID: 1rpADC-001bkE-0E
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: ([192.168.15.10]) [201.172.173.147]:44416
+X-Source-Auth: gustavo@embeddedor.com
+X-Email-Count: 15
+X-Org: HG=hgshared;ORG=hostgator;
+X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
+X-Local-Domain: yes
+X-CMAE-Envelope: MS4xfOzoMfQdiCmWzhJlqLhaK2K94p+L57XSKNpwa6NIcgXqG+C6PzckqCQ3H2V134jDTqcitmV/gUDvQZD1gcyE6q2gQjF7fUttkrSb5N3kV9HAbBlQgtcX
+ A8CnT1lhAKP/SRIyKgpGf96OqFyZvcunFYs6UYi986rQvEOoz77PF7tXStjdBSYN0MzutsKBfAe5SmkfqU+qXJ9W4lFo8UO9m26ngqYSjRtpyJV6NWZmVcRd
 
-On 24.03.24 23:33, Boqun Feng wrote:
-> Rust Binder will need to read CLOCK_MONOTONIC to compute how many
-> milliseconds a transaction has been active for when dumping the current
-> state of the Binder driver. This replicates the logic in C Binder [1].
->=20
-> For a usage example in Rust Binder, see [2].
->=20
-> Hence add the support for CLOCK_MONOTONIC read.
->=20
-> The `ktime_get` method cannot be safely called in NMI context. This
-> requirement is not checked by these abstractions, but it is intended
-> that klint [3] or a similar tool will be used to check it in the future.
->=20
-> Link: https://lore.kernel.org/lkml/5ac8c0d09392290be789423f0dd78a520b830f=
-ab.1682333709.git.zhangchuang3@xiaomi.com/ [1]
-> Link: https://r.android.com/3004103 [2]
-> Link: https://rust-for-linux.com/klint [3]
-> Co-developed-by: Heghedus Razvan <heghedus.razvan@protonmail.com>
-> Signed-off-by: Heghedus Razvan <heghedus.razvan@protonmail.com>
-> Co-developed-by: Asahi Lina <lina@asahilina.net>
-> Signed-off-by: Asahi Lina <lina@asahilina.net>
-> Co-developed-by: Alice Ryhl <aliceryhl@google.com>
-> Signed-off-by: Alice Ryhl <aliceryhl@google.com>
-> Signed-off-by: Boqun Feng <boqun.feng@gmail.com>
 
-With the nit fixed:
 
-Reviewed-by: Benno Lossin <benno.lossin@proton.me>
+On 3/26/24 10:41, Alexander Lobakin wrote:
+> Both virtchnl2.h and its consumer idpf_virtchnl.c are very error-prone.
+> There are 10 structures with flexible arrays at the end, but 9 of them
+> has flex member counter in Little Endian.
+> Make the code a bit more robust by applying __counted_by_le() to those
+> 9. LE platforms is the main target for this driver, so they would
+> receive additional protection.
+> While we're here, add __counted_by() to virtchnl2_ptype::proto_id, as
+> its counter is `u8` regardless of the Endianness.
+> Compile test on x86_64 (LE) didn't reveal any new issues after applying
+> the attributes.
+> 
+> Acked-by: Kees Cook <keescook@chromium.org>
+> Signed-off-by: Alexander Lobakin <aleksander.lobakin@intel.com>
+
+LGTM:
+
+Acked-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+
+Thanks
+-- 
+Gustavo
 
 > ---
-> @Alice, I still put the link to the usage of Android binder here, if you
-> want to remove that, please let me know.
->=20
->  rust/kernel/time.rs | 19 +++++++++++++++++++
->  1 file changed, 19 insertions(+)
->=20
-> diff --git a/rust/kernel/time.rs b/rust/kernel/time.rs
-> index 0f9f5605ed48..5cd669cbea01 100644
-> --- a/rust/kernel/time.rs
-> +++ b/rust/kernel/time.rs
-> @@ -113,3 +113,22 @@ fn sub(self, other: Self) -> Self::Output {
->          Duration::new(self.inner.wrapping_sub(other.inner))
->      }
->  }
-> +
-> +/// Contains the various clock source types available to the kernel.
-> +pub mod clock {
-> +    use super::*;
-> +
-> +    /// A clock representing the default kernel time source (`CLOCK_MONO=
-TONIC`).
-> +    pub struct KernelTime;
-> +
-> +    /// `CLOCK_MONOTONIC` is monotonic.
-> +    impl Monotonic for KernelTime {}
-> +
-> +    impl Clock for KernelTime {
-> +        #[inline]
-> +        fn now() -> Instant<Self> {
-> +            // SAFETY: It is always safe to call `ktime_get` outside of =
-NMI context.
-> +            Instant::<Self>::new(unsafe { bindings::ktime_get() })
-
-I don't think the turbofish syntax (the `::<Self>` part) is needed here.
-
---=20
-Cheers,
-Benno
-
-> +        }
-> +    }
-> +}
-> --
-> 2.44.0
+>   drivers/net/ethernet/intel/idpf/virtchnl2.h | 20 ++++++++++----------
+>   1 file changed, 10 insertions(+), 10 deletions(-)
 > 
+> diff --git a/drivers/net/ethernet/intel/idpf/virtchnl2.h b/drivers/net/ethernet/intel/idpf/virtchnl2.h
+> index 29419211b3d9..63deb120359c 100644
+> --- a/drivers/net/ethernet/intel/idpf/virtchnl2.h
+> +++ b/drivers/net/ethernet/intel/idpf/virtchnl2.h
+> @@ -555,7 +555,7 @@ VIRTCHNL2_CHECK_STRUCT_LEN(32, virtchnl2_queue_reg_chunk);
+>   struct virtchnl2_queue_reg_chunks {
+>   	__le16 num_chunks;
+>   	u8 pad[6];
+> -	struct virtchnl2_queue_reg_chunk chunks[];
+> +	struct virtchnl2_queue_reg_chunk chunks[] __counted_by_le(num_chunks);
+>   };
+>   VIRTCHNL2_CHECK_STRUCT_LEN(8, virtchnl2_queue_reg_chunks);
+>   
+> @@ -703,7 +703,7 @@ struct virtchnl2_config_tx_queues {
+>   	__le32 vport_id;
+>   	__le16 num_qinfo;
+>   	u8 pad[10];
+> -	struct virtchnl2_txq_info qinfo[];
+> +	struct virtchnl2_txq_info qinfo[] __counted_by_le(num_qinfo);
+>   };
+>   VIRTCHNL2_CHECK_STRUCT_LEN(16, virtchnl2_config_tx_queues);
+>   
+> @@ -782,7 +782,7 @@ struct virtchnl2_config_rx_queues {
+>   	__le32 vport_id;
+>   	__le16 num_qinfo;
+>   	u8 pad[18];
+> -	struct virtchnl2_rxq_info qinfo[];
+> +	struct virtchnl2_rxq_info qinfo[] __counted_by_le(num_qinfo);
+>   };
+>   VIRTCHNL2_CHECK_STRUCT_LEN(24, virtchnl2_config_rx_queues);
+>   
+> @@ -868,7 +868,7 @@ VIRTCHNL2_CHECK_STRUCT_LEN(32, virtchnl2_vector_chunk);
+>   struct virtchnl2_vector_chunks {
+>   	__le16 num_vchunks;
+>   	u8 pad[14];
+> -	struct virtchnl2_vector_chunk vchunks[];
+> +	struct virtchnl2_vector_chunk vchunks[] __counted_by_le(num_vchunks);
+>   };
+>   VIRTCHNL2_CHECK_STRUCT_LEN(16, virtchnl2_vector_chunks);
+>   
+> @@ -912,7 +912,7 @@ struct virtchnl2_rss_lut {
+>   	__le16 lut_entries_start;
+>   	__le16 lut_entries;
+>   	u8 pad[4];
+> -	__le32 lut[];
+> +	__le32 lut[] __counted_by_le(lut_entries);
+>   };
+>   VIRTCHNL2_CHECK_STRUCT_LEN(12, virtchnl2_rss_lut);
+>   
+> @@ -977,7 +977,7 @@ struct virtchnl2_ptype {
+>   	u8 ptype_id_8;
+>   	u8 proto_id_count;
+>   	__le16 pad;
+> -	__le16 proto_id[];
+> +	__le16 proto_id[] __counted_by(proto_id_count);
+>   } __packed __aligned(2);
+>   VIRTCHNL2_CHECK_STRUCT_LEN(6, virtchnl2_ptype);
+>   
+> @@ -1104,7 +1104,7 @@ struct virtchnl2_rss_key {
+>   	__le32 vport_id;
+>   	__le16 key_len;
+>   	u8 pad;
+> -	u8 key_flex[];
+> +	u8 key_flex[] __counted_by_le(key_len);
+>   } __packed;
+>   VIRTCHNL2_CHECK_STRUCT_LEN(7, virtchnl2_rss_key);
+>   
+> @@ -1131,7 +1131,7 @@ VIRTCHNL2_CHECK_STRUCT_LEN(16, virtchnl2_queue_chunk);
+>   struct virtchnl2_queue_chunks {
+>   	__le16 num_chunks;
+>   	u8 pad[6];
+> -	struct virtchnl2_queue_chunk chunks[];
+> +	struct virtchnl2_queue_chunk chunks[] __counted_by_le(num_chunks);
+>   };
+>   VIRTCHNL2_CHECK_STRUCT_LEN(8, virtchnl2_queue_chunks);
+>   
+> @@ -1195,7 +1195,7 @@ struct virtchnl2_queue_vector_maps {
+>   	__le32 vport_id;
+>   	__le16 num_qv_maps;
+>   	u8 pad[10];
+> -	struct virtchnl2_queue_vector qv_maps[];
+> +	struct virtchnl2_queue_vector qv_maps[] __counted_by_le(num_qv_maps);
+>   };
+>   VIRTCHNL2_CHECK_STRUCT_LEN(16, virtchnl2_queue_vector_maps);
+>   
+> @@ -1247,7 +1247,7 @@ struct virtchnl2_mac_addr_list {
+>   	__le32 vport_id;
+>   	__le16 num_mac_addr;
+>   	u8 pad[2];
+> -	struct virtchnl2_mac_addr mac_addr_list[];
+> +	struct virtchnl2_mac_addr mac_addr_list[] __counted_by_le(num_mac_addr);
+>   };
+>   VIRTCHNL2_CHECK_STRUCT_LEN(8, virtchnl2_mac_addr_list);
+>   
 
