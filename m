@@ -1,91 +1,85 @@
-Return-Path: <linux-kernel+bounces-119348-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-119346-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8AEB588C762
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 16:40:28 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1C53488C759
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 16:39:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2B0A71F67D70
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 15:40:28 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CC1F6320191
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 15:39:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0ABED13CFA0;
-	Tue, 26 Mar 2024 15:35:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=lwn.net header.i=@lwn.net header.b="FFvn4P5i"
-Received: from ms.lwn.net (ms.lwn.net [45.79.88.28])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9357513CC79;
-	Tue, 26 Mar 2024 15:35:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.79.88.28
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 51D2F13C8F9;
+	Tue, 26 Mar 2024 15:35:38 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B705513C8E3
+	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 15:35:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711467346; cv=none; b=lj1NjNFTwp/rl3h56yQPzoq/wLOVJaQajz56cEWo7H55sGz1zgmxlG5DncP1KHZgb855TwPdnmfq2kzz+Tak6Txv+bYEb18IIH4x/iCKSArvTbQbNvVhz3gyvcFlH0Q7T8nXm7kPdPr7jxPuJUoLYKhkoDmXydv4C3JAX+m9Prg=
+	t=1711467337; cv=none; b=caFcjmjIxpKhZ00v+9T25tGS+c4/vGSu0z3Aq8ISdg3RDv9kR358yN2okEBr7B85Wugr2gajb6fliDRVVLkWF4bvR7GFpJA/FIo8xVl3HZqpDJVGu0GHWDHi2BuFp6qQFxme8iU0ZhLyYFPmHPg03hyY8KPSvNZRMiLNiG9egyc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711467346; c=relaxed/simple;
-	bh=cpbePfHGBKTWOTvvus/3XrPd8U/PqtNlq98UXTNxgtc=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=gehvnzHc4+1qTVJV6wuqwzyjonQabq7jTaDii8oRNZF7ACvUNaTYbZR2LozeQt8pcD7KAQmxGbiRIggJ9qlG1Ks55FJjbcLiWRBNGViDZmLf+ZTT1qo8JVkdKQYot+TH6WHmpZOvXAyUDOQ/boofeao4Hw7qUUYrl9vjqBHXlDI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lwn.net; spf=pass smtp.mailfrom=lwn.net; dkim=pass (2048-bit key) header.d=lwn.net header.i=@lwn.net header.b=FFvn4P5i; arc=none smtp.client-ip=45.79.88.28
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lwn.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lwn.net
-DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net 3B44047AA3
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
-	t=1711467336; bh=cpbePfHGBKTWOTvvus/3XrPd8U/PqtNlq98UXTNxgtc=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-	b=FFvn4P5iUGFV/C84IYrDeszQ3l4X72UHM7BHMKC4XcgtG2N2QFnXn6xdz0VAqxRNV
-	 Emf24AR4aL0OrPrXsmrgJ6afMPpl3nOT6W+g4eCOIq1Zb49xxCQfd0ZPOR7F+HeUsB
-	 cszy1ZEszzufBkmfeD58hXM6Y1PQwAVM8L/JbuH3uljqBmQG1i/t4fu4czw9AASV1+
-	 tP3xaIaLK7HMDBQYt7UYjixP6/QkqTyb1P82r4FZdhCFrnxysGhznSXe++ZIzncHOp
-	 HhyJBHmAYmO5JH6rjBTuz2Y8F0E14H4E6waBB9ouTuV6DyZbC4z0RnJ11jbDgu4k23
-	 9uOORglGwpt9w==
-Received: from localhost (unknown [205.220.129.20])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by ms.lwn.net (Postfix) with ESMTPSA id 3B44047AA3;
-	Tue, 26 Mar 2024 15:35:35 +0000 (UTC)
-From: Jonathan Corbet <corbet@lwn.net>
-To: Dan Williams <dan.j.williams@intel.com>, peterz@infradead.org,
- torvalds@linux-foundation.org
-Cc: Bjorn Helgaas <bhelgaas@google.com>, Ira Weiny <ira.weiny@intel.com>,
- Jonathan Cameron <jonathan.cameron@huawei.com>, Jesse Brandeburg
- <jesse.brandeburg@intel.com>, Ilpo =?utf-8?Q?J=C3=A4rvinen?=
- <ilpo.jarvinen@linux.intel.com>, Lukas Wunner <lukas@wunner.de>,
- linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
- gregkh@linuxfoundation.org, linux-doc@vger.kernel.org
-Subject: Re: [PATCH v2] cleanup: Add usage and style documentation
-In-Reply-To: <171140738438.1574931.15717256954707430472.stgit@dwillia2-xfh.jf.intel.com>
-References: <171097196970.1011049.9726486429680041876.stgit@dwillia2-xfh.jf.intel.com>
- <171140738438.1574931.15717256954707430472.stgit@dwillia2-xfh.jf.intel.com>
-Date: Tue, 26 Mar 2024 09:35:28 -0600
-Message-ID: <8734sd0zwf.fsf@meer.lwn.net>
+	s=arc-20240116; t=1711467337; c=relaxed/simple;
+	bh=Kyhb5q3lU4UhpGJ7tYd+4i5cDP17k8NZvE0FhPQYUCE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ZRNysy72SAsF6RfVTHbVPEAaWMHtcg1oD3PUSnlnt7l9ZTQf00jHA+XsDYxP0IYPg08yQ14xD+um3+fYX7VNDV7hwUC5sKaIv9y5jQ6/2o1g3ztNACvVyOD0aNr54oTn5YWPUT41KrJnt50o5/xafNw9+ofCLrxCOqF8Z9vmxUw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 86D252F4;
+	Tue, 26 Mar 2024 08:36:08 -0700 (PDT)
+Received: from bogus (e103737-lin.cambridge.arm.com [10.1.197.49])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id CFC993F694;
+	Tue, 26 Mar 2024 08:35:33 -0700 (PDT)
+Date: Tue, 26 Mar 2024 15:35:31 +0000
+From: Sudeep Holla <sudeep.holla@arm.com>
+To: Jens Wiklander <jens.wiklander@linaro.org>
+Cc: linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	Marc Bonnici <marc.bonnici@arm.com>,
+	Sudeep Holla <sudeep.holla@arm.com>,
+	Olivier Deprez <Olivier.Deprez@arm.com>,
+	Lorenzo Pieralisi <lpieralisi@kernel.org>,
+	Bertrand Marquis <Bertrand.Marquis@arm.com>
+Subject: Re: [PATCH v2] firmware: arm_ffa: support running as a guest in a vm
+Message-ID: <ZgLrQ7FtDy3INX8F@bogus>
+References: <20240325081335.2326979-1-jens.wiklander@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240325081335.2326979-1-jens.wiklander@linaro.org>
 
-One little nit...
+On Mon, Mar 25, 2024 at 09:13:35AM +0100, Jens Wiklander wrote:
+> Add support for running the driver in a guest to a hypervisor. The main
+> difference is introducing notification pending interrupt and that
+> FFA_NOTIFICATION_BITMAP_CREATE doesn't need to be called.
+> 
+> The guest may need to use a notification pending interrupt instead of or
+> in addition to the schedule receiver interrupt.
 
-Dan Williams <dan.j.williams@intel.com> writes:
+The above statement makes me worry a bit that we are still not on the same
+page about NPI vs SRI. NPI need not exist in addition to SRI. And in v1
+you did mention you have SRI in the guest as well. Then why do we need
+NPI in addition to that. As part of SRI, the callback  ffa_self_notif_handle
+gets registered and will be called as part of SRI handling. What you
+do in  notif_pend_irq_handler(), exactly what ffa_self_notif_handle()
+already does.
 
-> + * The DEFINE_FREE() macro can arrange for PCI device references to be
-> + * dropped when the associated variable goes out of scope:
-> + *
-> + * ::
-> + *
+I am still struggling to understand the usecase here. If you just have
+NPI and no SRI when running the driver in the VM, then it aligns with
+my understanding of possible use-case(not the one you mentioned in v1:
+where FF-A driver in VM will have SRI as OPTEE is the secondary scheduler)
 
-This can be written a bit more concisely as:
+If we are supporting NPI or SRI, I think we can see if we can further
+simplify this change, but I want to get to an agreement with usage model
+before we dig into implementation details in this patch.
 
- ...goes out of scope::
-
-without the separate "::" line, reducing the markup noise a bit more.
-
-Thanks,
-
-jon
+--
+Regards,
+Sudeep
 
