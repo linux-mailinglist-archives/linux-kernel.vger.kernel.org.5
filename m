@@ -1,77 +1,54 @@
-Return-Path: <linux-kernel+bounces-118433-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-118435-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4307388BACD
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 07:54:04 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id E7E1D88BAD5
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 07:58:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 747EB1C319BA
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 06:54:03 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9D51A1F3A207
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 06:58:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 299A5129E98;
-	Tue, 26 Mar 2024 06:53:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D15CA12CD9B;
+	Tue, 26 Mar 2024 06:58:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="BBNo5Xrc"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.15])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ay3TqeCm"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 31D5F823BF;
-	Tue, 26 Mar 2024 06:53:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.15
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F0B84129A71
+	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 06:58:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711436036; cv=none; b=BYGi42SnGvHWPJ35ED12KIjJhVy1n25Z6mGLVou3QplKV1x/tH30DECjBmzEHBW2Ibj/eLet5qnipvXAFy+DIZCwC408B77Mydh3mTLRCEtTk99H+lzfJATqzadYMaN27W0YYrjVfg+rTUe4o+XQ9OHvDK+jBuh0SBhrrHZyo74=
+	t=1711436291; cv=none; b=P25U7KSgL4DO8R+BMrQXypjxcgAPjc/3+CHfTIZVe3K6mLTXg2UW79Qe2D4Pwt2fiAS0pkqVe31AVdIRzNQVhKB9ILWG+hfOrWMvzHoiPY5+w3XrhcVJrwXI1SAceGYiA6hN+ZMOZ5lRfRi2MCELn+/4KX1OU8ywho13SI4rW4Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711436036; c=relaxed/simple;
-	bh=T93oDLJVqmXjMft3p/o0gcTvmzd4o0CYgIVWkB1+goo=;
+	s=arc-20240116; t=1711436291; c=relaxed/simple;
+	bh=Oto1Bgx2nEcBajuiq3zg5pa2/Kdk7vuiCcvbsEb1ox4=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=YFy+qu/vjo9p2POQyimFtGkNIHhx6MV7N/djotpyvy0e8iJ4afNqKnriH2LxvoiT6uM83PJgP9A6IuLuZf6BkreItJCg8igxDsxG8/oWrkfP+1czPcN2lEYzBK9JpMah+LmMZtFYAI7fRQeayV+HVqNFRSk6etRho0GZ8lvj9rg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=BBNo5Xrc; arc=none smtp.client-ip=198.175.65.15
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1711436034; x=1742972034;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=T93oDLJVqmXjMft3p/o0gcTvmzd4o0CYgIVWkB1+goo=;
-  b=BBNo5Xrc8S1GuoUym+incVARZtH+VKRCrWCLi5JekqJohCWSjWbhX0u6
-   96V1bYgs9xz/EP38WG58H8Qax2P/kfiF+P/Fucv2itAWkc2qJh6hqYpaw
-   DRtkqa7orER+97JY3V19E4fYHcARv7JUgQf7vw3hSx7FwRA5neF3g495P
-   NU8SQReuu/1p2wXuJBFHSP8iR098UNJ+g5JBQULEeUcsBe7wjnHgeFA4b
-   vFjy9kUZayBUULwp9D2CZ8QUAupQ/YDNpncHl2HuWKX9qtRfeMlutmuGX
-   XrMuAPcqs0jPgiV7JWFORdI+x8q6H9RH6Jcxw3WwYOIj3XmVa1w+oj4iX
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11024"; a="10264706"
-X-IronPort-AV: E=Sophos;i="6.07,155,1708416000"; 
-   d="scan'208";a="10264706"
-Received: from orviesa002.jf.intel.com ([10.64.159.142])
-  by orvoesa107.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Mar 2024 23:53:54 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,155,1708416000"; 
-   d="scan'208";a="46870214"
-Received: from lkp-server01.sh.intel.com (HELO b21307750695) ([10.239.97.150])
-  by orviesa002.jf.intel.com with ESMTP; 25 Mar 2024 23:53:51 -0700
-Received: from kbuild by b21307750695 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rp0gu-000NBW-0N;
-	Tue, 26 Mar 2024 06:53:48 +0000
-Date: Tue, 26 Mar 2024 14:53:26 +0800
-From: kernel test robot <lkp@intel.com>
-To: Sugar Zhang <sugar.zhang@rock-chips.com>, heiko@sntech.de
-Cc: oe-kbuild-all@lists.linux.dev, linux-rockchip@lists.infradead.org,
-	Sugar Zhang <sugar.zhang@rock-chips.com>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Krzysztof Kozlowski <krzk@kernel.org>,
-	Michael Turquette <mturquette@baylibre.com>,
-	Rob Herring <robh@kernel.org>, Stephen Boyd <sboyd@kernel.org>,
-	devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-	linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1 2/2] dt-bindings: clock: rockchip: Add support for clk
- input / output switch
-Message-ID: <202403261442.9P6rk3Wk-lkp@intel.com>
-References: <1711340191-69588-2-git-send-email-sugar.zhang@rock-chips.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=WvAMOLitua8tfq89yoTSYXhRPchydrU3vsSrK5RSE8gCy/g2dJlHBbBrEMukt3uZewp+7duXvAGTHbWwWNDLhlbsyFLZoPAYSrnabyd4wSNKFYLtlHsKywc2lvEyU/wxIWYPAiaCbuNBBQbRAmJuCVOBLEfwEwRZmyrYVmiYHHI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ay3TqeCm; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6D0DFC433F1;
+	Tue, 26 Mar 2024 06:58:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1711436290;
+	bh=Oto1Bgx2nEcBajuiq3zg5pa2/Kdk7vuiCcvbsEb1ox4=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=ay3TqeCmVtCa4qF1OL7AxLUF84qxvhegocKTuLWHsbSzS0UgBlX6f7JYNGb8GsCCe
+	 qFmQRDbOM1FkEdIcqkVwhm64D+hPxIJNp6dbf8c0W/FuEw56ogMEjRCM/FOdLWKAbZ
+	 0yHansf3kxUb5Lg4jDxjCOL5HNwe/eO/kiY4JrnAhwSZ5dG1adz9keSrXWgyqnlyI1
+	 WcvlKvRNMtOCP7F40tIJ1Dvam3LfxDgwCOx6j8B7kc4BEl++YLMZJu715mR4qd56gl
+	 FDAxb7ulwHdEUegXRfRWU/qnUO20UzXt3ALdHLqKNdWqmYi24QG6HIL2SjP2TydLZT
+	 zKa93/C8jXs1g==
+Date: Tue, 26 Mar 2024 08:57:29 +0200
+From: Mike Rapoport <rppt@kernel.org>
+To: Baoquan He <bhe@redhat.com>
+Cc: linux-mm@kvack.org, linux-kernel@vger.kernel.org, x86@kernel.org,
+	linuxppc-dev@lists.ozlabs.org, akpm@linux-foundation.org
+Subject: Re: [PATCH v2 3/6] mm/mm_init.c: add new function calc_nr_all_pages()
+Message-ID: <ZgJx2RLPAdom1EbE@kernel.org>
+References: <20240325145646.1044760-1-bhe@redhat.com>
+ <20240325145646.1044760-4-bhe@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -80,36 +57,72 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1711340191-69588-2-git-send-email-sugar.zhang@rock-chips.com>
+In-Reply-To: <20240325145646.1044760-4-bhe@redhat.com>
 
-Hi Sugar,
+Hi Baoquan,
 
-kernel test robot noticed the following build warnings:
+On Mon, Mar 25, 2024 at 10:56:43PM +0800, Baoquan He wrote:
+> This is a preparation to calculate nr_kernel_pages and nr_all_pages,
+> both of which will be used later in alloc_large_system_hash().
+> 
+> nr_all_pages counts up all free but not reserved memory in memblock
+> allocator, including HIGHMEM memory. While nr_kernel_pages counts up
+> all free but not reserved low memory in memblock allocator, excluding
+> HIGHMEM memory.
 
-[auto build test WARNING on rockchip/for-next]
-[also build test WARNING on linus/master v6.9-rc1 next-20240325]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+Sorry I've missed this in the previous review, but I think this patch and
+the patch "remove unneeded calc_memmap_size()" can be merged into "remove
+meaningless calculation of zone->managed_pages in free_area_init_core()"
+with an appropriate update of the commit message.
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Sugar-Zhang/clk-rockchip-Add-support-for-clk-input-output-switch/20240325-212211
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/mmind/linux-rockchip.git for-next
-patch link:    https://lore.kernel.org/r/1711340191-69588-2-git-send-email-sugar.zhang%40rock-chips.com
-patch subject: [PATCH v1 2/2] dt-bindings: clock: rockchip: Add support for clk input / output switch
-compiler: loongarch64-linux-gcc (GCC) 13.2.0
-reproduce: (https://download.01.org/0day-ci/archive/20240326/202403261442.9P6rk3Wk-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202403261442.9P6rk3Wk-lkp@intel.com/
-
-dtcheck warnings: (new ones prefixed by >>)
->> Documentation/devicetree/bindings/clock/rockchip,clk-out.yaml: title: 'Rockchip Clock Out Control Module Binding' should not be valid under {'pattern': '([Bb]inding| [Ss]chema)'}
-   	hint: Everything is a binding/schema, no need to say it. Describe what hardware the binding is for.
-   	from schema $id: http://devicetree.org/meta-schemas/base.yaml#
+With the current patch splitting there will be compilation warning about unused
+function for this and the next patch.
+ 
+> Signed-off-by: Baoquan He <bhe@redhat.com>
+> ---
+>  mm/mm_init.c | 24 ++++++++++++++++++++++++
+>  1 file changed, 24 insertions(+)
+> 
+> diff --git a/mm/mm_init.c b/mm/mm_init.c
+> index 153fb2dc666f..c57a7fc97a16 100644
+> --- a/mm/mm_init.c
+> +++ b/mm/mm_init.c
+> @@ -1264,6 +1264,30 @@ static void __init reset_memoryless_node_totalpages(struct pglist_data *pgdat)
+>  	pr_debug("On node %d totalpages: 0\n", pgdat->node_id);
+>  }
+>  
+> +static void __init calc_nr_kernel_pages(void)
+> +{
+> +	unsigned long start_pfn, end_pfn;
+> +	phys_addr_t start_addr, end_addr;
+> +	u64 u;
+> +#ifdef CONFIG_HIGHMEM
+> +	unsigned long high_zone_low = arch_zone_lowest_possible_pfn[ZONE_HIGHMEM];
+> +#endif
+> +
+> +	for_each_free_mem_range(u, NUMA_NO_NODE, MEMBLOCK_NONE, &start_addr, &end_addr, NULL) {
+> +		start_pfn = PFN_UP(start_addr);
+> +		end_pfn   = PFN_DOWN(end_addr);
+> +
+> +		if (start_pfn < end_pfn) {
+> +			nr_all_pages += end_pfn - start_pfn;
+> +#ifdef CONFIG_HIGHMEM
+> +			start_pfn = clamp(start_pfn, 0, high_zone_low);
+> +			end_pfn = clamp(end_pfn, 0, high_zone_low);
+> +#endif
+> +			nr_kernel_pages += end_pfn - start_pfn;
+> +		}
+> +	}
+> +}
+> +
+>  static void __init calculate_node_totalpages(struct pglist_data *pgdat,
+>  						unsigned long node_start_pfn,
+>  						unsigned long node_end_pfn)
+> -- 
+> 2.41.0
+> 
 
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Sincerely yours,
+Mike.
 
