@@ -1,184 +1,197 @@
-Return-Path: <linux-kernel+bounces-119773-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-119771-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id B650C88CCD8
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 20:13:13 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C023288CCD2
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 20:12:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D9C0B1C33FD2
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 19:13:12 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E14EA1C3678A
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 19:12:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 969ED13CC65;
-	Tue, 26 Mar 2024 19:13:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 93C0613CA97;
+	Tue, 26 Mar 2024 19:12:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="lNXVLKDt"
-Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="IQ/Vnn/s"
+Received: from mail-wm1-f45.google.com (mail-wm1-f45.google.com [209.85.128.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DCDA213CA97
-	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 19:12:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E4FB6481A3
+	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 19:12:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711480383; cv=none; b=lfLsoeb2Qz3aAsjOi/m+JSAJrCnlBI7yEwop6u9RzRCdy9nLsJPuvWlS07wFVJmZsrnFDsx17m/RmNik/NAcKNt/DoQbejpkwartmsuJ2As8S3/p/hDwNvKVjQlxlkKKV6e8mRAtk1buUEnS5EpEUC0NouvKz5ijUP3phgNppIc=
+	t=1711480358; cv=none; b=Ucu7sf99xfpcwOU/quIKDJoc///s1trp4P1bjwTuWZdTaJFTA64xQZFn6v05ulH9hSCHwLnuRyvA0DOZ5VbYQPlffP9ohACdG/SrwV8JzMlvMO+VLjslhUsrqjwE3p5RRwI0xVt78Jzk+ZyuvYKBsmSrP1B9w3vI3RvaMDdPRRk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711480383; c=relaxed/simple;
-	bh=YfLzbr1Cbu1iedRDur0CjMqPaAAfzdvJz0kdWY4MeP8=;
+	s=arc-20240116; t=1711480358; c=relaxed/simple;
+	bh=vf3NWfA3B2pN92scVZUpS8FutXNA4Gu9OrZsXCtRMHg=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=cshgt3tugxs/r9s6VpcxfyxaLeq1ktjuICgxKXayFkHnk61TCDEMOEA4MxQq9OEc+z722+B+O/1OOxZdsOiQt8zvMov+gH59TbTsqCtRNeq/GmRWlgZBKqRv+g1m38nOeEMTIm7doderG5yIAjmjmJ6yU6Ep040uuCTf43PVyyM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=lNXVLKDt; arc=none smtp.client-ip=65.109.113.108
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
-Received: from localhost (localhost.localdomain [127.0.0.1])
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 4EEA940E024C;
-	Tue, 26 Mar 2024 19:12:51 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-	header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-	with ESMTP id dEwE2u3E4tLL; Tue, 26 Mar 2024 19:12:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-	t=1711480367; bh=XXsjYyRIb1HQzV+63JjLPbHzP1gIoqqZ5bMRYD4+nG0=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=lNXVLKDtvB4LiuXinh24KxW/JaOFd0z5aHbq9YlVg4Hp/bHTAwexliUkh0a6kGPjh
-	 Xd/1dBwxOFKhvFsMPDJWHMKK+K7qdiH4eWNR1sLDeAwqyRHbnnJaVCicFPCaOdOPXw
-	 JSi2Xgqzuk4iSVHuHBN+vmOuY4jjoq7Vr3jIC393rSmrvhUYru31GBL+6avklF+QIf
-	 xRg1sngQqfTTCzZXqxZww6bx5s84JWGQmOOZOxeAHxroZVYzinEnhijRDZj8GY0DCl
-	 o+BszBm6QMchdl5uBu9hYRIEqKlvseKGITwFbjluFsG/Y62LpWA2vfr3tb++ZK/7vP
-	 ISrodBREkx6+Ro2nfUR1Wi2ooIl66qR3vFvJ+OJ62me4T+/IuOsg39oizGLaz8hZ7y
-	 M8uyQ9oTxEJWDBvIITshtVgnNQjn4/Cu7K6vDuaTAGk+XysQKtb6DEg8U56K6b6D/u
-	 86H3ar5ju3OgZIJCl2jr945HfX1yzi32b1Q+phId7Z+k/aPUlkOAquEPNwWRp1rVnq
-	 XJ1EYIYAaQpdHHp1tckeFweqBEa0b6t/0971tG8qP5q77ha5EhIzcS1biKrDpH13Ub
-	 AR/krgLxAV6QPrhPcF57ypYGxSwRBFJkmPbmMZQMJl7fvEJXUqfUNPE1ko86T7GQmr
-	 rzxRJ2pE4xXGyxU68iDMDnxs=
-Received: from zn.tnic (p5de8ecf7.dip0.t-ipconnect.de [93.232.236.247])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-	(No client certificate requested)
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 17D9940E00B2;
-	Tue, 26 Mar 2024 19:12:35 +0000 (UTC)
-Date: Tue, 26 Mar 2024 20:12:29 +0100
-From: Borislav Petkov <bp@alien8.de>
-To: Nikolay Borisov <nik.borisov@suse.com>, Marco Elver <elver@google.com>,
-	Josh Poimboeuf <jpoimboe@kernel.org>
-Cc: Paul Menzel <pmenzel@molgen.mpg.de>,
+	 Content-Type:Content-Disposition:In-Reply-To; b=XE9Okn8TFKd1eG+AiIhppKRkehbwr0mxqlU/xhxIVLwGTeMVgeEejzFyGuL0Gi1pktN3uNfp9JKVoVw+NjqZ/D30z2sUlzRXaW+1vc3l8X5D8VyyWpIGpYXHs72IGI7QtdGscshAY/KE88wYT5RU6u4SSwLJdVYgytRZX4tpVF0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=IQ/Vnn/s; arc=none smtp.client-ip=209.85.128.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f45.google.com with SMTP id 5b1f17b1804b1-41490d249e9so3875505e9.3
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 12:12:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1711480355; x=1712085155; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=m8CSbXEuA4Zn/RoDwlaOSx79lJuQhcbis+lvZo8LMpo=;
+        b=IQ/Vnn/sEVwzTEalqZ4fTYcCOrwQDahKLkPbwyO3HcegAiqzFhva7pNXimH0nZ0TKR
+         Ve/RVa2DRzYINBt94XyUQWZkT3UdgEVOggti0tG+fAHY6oE66JKMwRdZri3i2suWkBf3
+         u6I1C3RTIkasgs0SC4g1Qf/5vyMTXKgi3R/aE3FaO5O6Rh240gMx/hDpJouNZV0mu8qs
+         JfYbcB6IQhwOncpFyFabDfj3aykIfCW9khWHg+Uywu5AXSrh7+AOAR0KwHmiL0ycjE0P
+         LUWI5DnhU32x4vZWBaeR8ds83INewn35JCGzxqydOkqRTpUKLq+y1XjGOcfQeZFm6VE0
+         m0Xg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711480355; x=1712085155;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=m8CSbXEuA4Zn/RoDwlaOSx79lJuQhcbis+lvZo8LMpo=;
+        b=q9eSZBZ3EDu85gZncF++UCAJL6EP/QMrBMdKa0XESdP9df+W9GqYbMz1dFvD71SsSP
+         fyDD5unrHoiu0MyHyFaEXUpDTtmacbovL+Tv5KpdzMCqBSwrvucKlhyW8arDuEBE7oHV
+         cx1xCXcAJyeE+ZudXJDU07rugXnomERjNIr9IndtjFC0VN6rm1FkQJeAB9Aln2OOnc/c
+         SRLxpzZPP4aw9Y6AhSg8LVcCaO1QN8eQgcZD0Bl3l/cdZFh8OJjkfGBI20tHnQLztzH+
+         MheUwTrgBKwtssX593GXI+F+ucNhjfVPxFKHPa2dapR96pOoScBB9xQnknNoAgdcta4p
+         gFeA==
+X-Gm-Message-State: AOJu0Yy8vi/NVGopg3CR1wELCl3IY4t1jvJxWwbPKxqJg4otzeJIrqiX
+	3amO4h8MRpk3nD0LFBTVzRCQj3ORauxbR+kUkNQzY9jjfK/lV5nF
+X-Google-Smtp-Source: AGHT+IE/grDEsdCKbR306sqoBmvU1BZ79Gn3+x8Z09xZAupDMP2oPEBtP/2jf8tRWrwR0NG458TgPg==
+X-Received: by 2002:a05:600c:1f84:b0:414:887f:6167 with SMTP id je4-20020a05600c1f8400b00414887f6167mr6519766wmb.7.1711480354591;
+        Tue, 26 Mar 2024 12:12:34 -0700 (PDT)
+Received: from gmail.com (1F2EF63C.nat.pool.telekom.hu. [31.46.246.60])
+        by smtp.gmail.com with ESMTPSA id v11-20020a05600c470b00b0041488978873sm8462862wmo.44.2024.03.26.12.12.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 26 Mar 2024 12:12:33 -0700 (PDT)
+Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
+Date: Tue, 26 Mar 2024 20:12:31 +0100
+From: Ingo Molnar <mingo@kernel.org>
+To: Oleg Nesterov <oleg@redhat.com>
+Cc: linux-kernel@vger.kernel.org, Andy Lutomirski <luto@amacapital.net>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Dave Hansen <dave@sr71.net>, Peter Zijlstra <peterz@infradead.org>,
+	Borislav Petkov <bp@alien8.de>, "H . Peter Anvin" <hpa@zytor.com>,
+	Linus Torvalds <torvalds@linux-foundation.org>,
 	Thomas Gleixner <tglx@linutronix.de>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Ingo Molnar <mingo@redhat.com>,
-	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-	LKML <linux-kernel@vger.kernel.org>, kasan-dev@googlegroups.com,
-	David Kaplan <David.Kaplan@amd.com>
-Subject: Re: Unpatched return thunk in use. This should not happen!
-Message-ID: <20240326191211.GKZgMeC21uxi7H16o_@fat_crate.local>
-References: <0851a207-7143-417e-be31-8bf2b3afb57d@molgen.mpg.de>
- <47e032a0-c9a0-4639-867b-cb3d67076eaf@suse.com>
- <20240326155247.GJZgLvT_AZi3XPPpBM@fat_crate.local>
- <80582244-8c1c-4eb4-8881-db68a1428817@suse.com>
+	Uros Bizjak <ubizjak@gmail.com>
+Subject: Re: [PATCH 1/1] headers/deps: x86/fpu: Make task_struct::thread
+ constant size
+Message-ID: <ZgMeH9p0BTnMfmOM@gmail.com>
+References: <20240320131908.2708438-1-mingo@kernel.org>
+ <20240320131908.2708438-2-mingo@kernel.org>
+ <20240326174903.GA4539@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <80582244-8c1c-4eb4-8881-db68a1428817@suse.com>
+In-Reply-To: <20240326174903.GA4539@redhat.com>
 
-On Tue, Mar 26, 2024 at 06:04:26PM +0200, Nikolay Borisov wrote:
-> So this       _sub_I_00099_0 is the compiler generated ctors that is likely
-> not patched. What's strange is that when adding debugging code I see that 2
-> ctors are being executed and only the 2nd one fires:
+
+* Oleg Nesterov <oleg@redhat.com> wrote:
+
+> On 03/20, Ingo Molnar wrote:
+> >
+> > --- a/arch/x86/kernel/fpu/init.c
+> > +++ b/arch/x86/kernel/fpu/init.c
+> > @@ -38,7 +38,7 @@ static void fpu__init_cpu_generic(void)
+> >  	/* Flush out any pending x87 state: */
+> >  #ifdef CONFIG_MATH_EMULATION
+> >  	if (!boot_cpu_has(X86_FEATURE_FPU))
+> > -		fpstate_init_soft(&current->thread.fpu.fpstate->regs.soft);
+> > +		fpstate_init_soft(current->thread.fpu->fpstate->regs.soft);
+>                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> Typo? it should be
 > 
-> [    7.635418] in do_mod_ctors
-> [    7.635425] calling 0 ctor 00000000aa7a443a
-> [    7.635430] called 0 ctor
-> [    7.635433] calling 1 ctor 00000000fe9d0d54
-> [    7.635437] ------------[ cut here ]------------
-> [    7.635441] Unpatched return thunk in use. This should not happen!
+> 	&current->thread.fpu->fpstate->regs.soft
 
-.. and this is just the beginning of the rabbit hole. David and I went
-all the way down.
+Thx, fixed.
 
-Turns out that objtool runs on the .o files and creates the
-return_sites just fine but then the module building dance creates an
-intermediary *.mod.c file and when that thing is built, KCSAN would
-cause the addition of *another* constructor to .text.startup in the
-module.
+> 
+> > +static struct fpu x86_init_fpu __read_mostly;
+> > +
+> >  static void __init fpu__init_system_early_generic(void)
+> >  {
+> > +	{
+> > +		int this_cpu = smp_processor_id();
+> > +
+> > +		fpstate_reset(&x86_init_fpu);
+> > +		current->thread.fpu = &x86_init_fpu;
+> > +		per_cpu(fpu_fpregs_owner_ctx, this_cpu) = &x86_init_fpu;
+> > +		x86_init_fpu.last_cpu = this_cpu;
+> > +	}
+> 
+> Can't x86_init_fpu be declared inside the block above?
 
-The .o file has one:
+As a function-local static? I think globals are better defined in a visible 
+fashion, not hidden among local variables where they are easy to overlook.
 
--------------------
-Disassembly of section .text.startup:
+But the extra block is unnecessary in any case.
 
-..
+> >  void __init fpu__init_system(void)
+> >  {
+> > -	fpstate_reset(&current->thread.fpu);
+> >  	fpu__init_system_early_generic();
+> > +	fpstate_reset(current->thread.fpu);
+> 
+> It seems that fpstate_reset(current->thread.fpu) is not needed after the
+> change in fpu__init_system_early_generic() above.
 
-0000000000000010 <_sub_I_00099_0>:
-  10:   f3 0f 1e fa             endbr64
-  14:   e8 00 00 00 00          call   19 <_sub_I_00099_0+0x9>
-                        15: R_X86_64_PLT32      __tsan_init-0x4
-  19:   e9 00 00 00 00          jmp    1e <__UNIQUE_ID___addressable_cryptd_alloc_aead349+0x6>
-                        1a: R_X86_64_PLT32      __x86_return_thunk-0x4
--------------------
+Yeah. Something like the delta patch below?
 
+Thanks,
 
-while the .ko file has two:
+	Ingo
 
--------------------
-Disassembly of section .text.startup:
+=================>
 
-0000000000000010 <_sub_I_00099_0>:
-  10:   f3 0f 1e fa             endbr64
-  14:   e8 00 00 00 00          call   19 <_sub_I_00099_0+0x9>
-                        15: R_X86_64_PLT32      __tsan_init-0x4
-  19:   e9 00 00 00 00          jmp    1e <_sub_I_00099_0+0xe>
-                        1a: R_X86_64_PLT32      __x86_return_thunk-0x4
+ arch/x86/kernel/fpu/init.c | 15 ++++++---------
+ 1 file changed, 6 insertions(+), 9 deletions(-)
 
-..
-
-0000000000000030 <_sub_I_00099_0>:
-  30:   f3 0f 1e fa             endbr64
-  34:   e8 00 00 00 00          call   39 <_sub_I_00099_0+0x9>
-                        35: R_X86_64_PLT32      __tsan_init-0x4
-  39:   e9 00 00 00 00          jmp    3e <__ksymtab_cryptd_alloc_ahash+0x2>
-                        3a: R_X86_64_PLT32      __x86_return_thunk-0x4
--------------------
-
-Once we've figured that out, finding a fix is easy:
-
-diff --git a/scripts/Makefile.modfinal b/scripts/Makefile.modfinal
-index 8568d256d6fb..79fcf2731686 100644
---- a/scripts/Makefile.modfinal
-+++ b/scripts/Makefile.modfinal
-@@ -23,7 +23,7 @@ modname = $(notdir $(@:.mod.o=))
- part-of-module = y
+diff --git a/arch/x86/kernel/fpu/init.c b/arch/x86/kernel/fpu/init.c
+index f9412d012191..de618ec509aa 100644
+--- a/arch/x86/kernel/fpu/init.c
++++ b/arch/x86/kernel/fpu/init.c
+@@ -38,7 +38,7 @@ static void fpu__init_cpu_generic(void)
+ 	/* Flush out any pending x87 state: */
+ #ifdef CONFIG_MATH_EMULATION
+ 	if (!boot_cpu_has(X86_FEATURE_FPU))
+-		fpstate_init_soft(current->thread.fpu->fpstate->regs.soft);
++		fpstate_init_soft(&current->thread.fpu->fpstate->regs.soft);
+ 	else
+ #endif
+ 		asm volatile ("fninit");
+@@ -75,14 +75,12 @@ static struct fpu x86_init_fpu __read_mostly;
  
- quiet_cmd_cc_o_c = CC [M]  $@
--      cmd_cc_o_c = $(CC) $(filter-out $(CC_FLAGS_CFI) $(CFLAGS_GCOV), $(c_flags)) -c -o $@ $<
-+      cmd_cc_o_c = $(CC) $(filter-out $(CC_FLAGS_CFI) $(CFLAGS_GCOV) $(CFLAGS_KCSAN), $(c_flags)) -c -o $@ $<
+ static void __init fpu__init_system_early_generic(void)
+ {
+-	{
+-		int this_cpu = smp_processor_id();
++	int this_cpu = smp_processor_id();
  
- %.mod.o: %.mod.c FORCE
-        $(call if_changed_dep,cc_o_c)
-
-However, I'm not sure.
-
-I wanna say that since those are constructors then we don't care about
-dynamic races there so we could exclude them from KCSAN.
-
-If not, I could disable the warning on KCSAN. I'm thinking no one would
-run KCSAN in production...
-
-A third option would be to make objtool run on .ko files. Yeah, that
-would be fun for Josh. :-P
-
-I'd look into the direction of melver for suggestions here.
-
-Thx.
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+-		fpstate_reset(&x86_init_fpu);
+-		current->thread.fpu = &x86_init_fpu;
+-		per_cpu(fpu_fpregs_owner_ctx, this_cpu) = &x86_init_fpu;
+-		x86_init_fpu.last_cpu = this_cpu;
+-	}
++	fpstate_reset(&x86_init_fpu);
++	current->thread.fpu = &x86_init_fpu;
++	per_cpu(fpu_fpregs_owner_ctx, this_cpu) = &x86_init_fpu;
++	x86_init_fpu.last_cpu = this_cpu;
+ 
+ 	if (!boot_cpu_has(X86_FEATURE_CPUID) &&
+ 	    !test_bit(X86_FEATURE_FPU, (unsigned long *)cpu_caps_cleared)) {
+@@ -222,7 +220,6 @@ static void __init fpu__init_system_xstate_size_legacy(void)
+ void __init fpu__init_system(void)
+ {
+ 	fpu__init_system_early_generic();
+-	fpstate_reset(current->thread.fpu);
+ 
+ 	/*
+ 	 * The FPU has to be operational for some of the
 
