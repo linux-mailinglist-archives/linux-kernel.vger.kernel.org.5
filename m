@@ -1,132 +1,84 @@
-Return-Path: <linux-kernel+bounces-118928-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-118929-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 94DAE88C14E
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 12:57:38 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 23E4888C154
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 12:57:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EC9C9B22613
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 11:57:35 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A6398303049
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 11:57:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E36626E61D;
-	Tue, 26 Mar 2024 11:57:28 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7F5361E485
-	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 11:57:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 875A670CCC;
+	Tue, 26 Mar 2024 11:57:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hMw4D1PQ"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D7FE6E61D;
+	Tue, 26 Mar 2024 11:57:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711454248; cv=none; b=O4YL3emJDMxBW5Nn6EHCSkomq4Fl+Kli/+uWgL5fiyygEt25qx3/wep0r7Oyl/k2F2/ciKJLPKd9oi5brxy86iiXcWLe8YsZ6ubrH6+pW+AUzpbF6Fp2i9Q/GdlJGMp9gTVmK5VPhKus6wzhh8bXEU7y2Be19T9q/0V1ebYqQGg=
+	t=1711454264; cv=none; b=USrDyUDbxrTHXCsaC/FoL9kxSgpT+B+QK8wqLMxPXTJNOd+h0gAs0CCGBNlpD3T0eICy0mB1n825GvHvXus7IqSRGm9eK9sn3M+RhjlKa2FNpAaunKdje7B1D0pPTBlWujsm+YOWld3VjRAklwNuvoWfvkhogTFUXn9b3tnvWy0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711454248; c=relaxed/simple;
-	bh=AUxD16eO23TVUlexS95nn7p567lWfigu9ezPpPzl8dk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=uobjL0Pe2wj8KgdpmZEs5BXPP8hO28HAFKdjTxzEwtu3qKvMmdOdDRs7ksPUtCsYCG97Byxooh6BZC0YpUmG8A336ng7DN8PfGqKyhlcwwkVOuBx7AKPqURAGZr4J3YDYew8MtweDtY6NUbN+HxvP4pjM/hosHD7ge8r6NAC/Qg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 8C84E2F4;
-	Tue, 26 Mar 2024 04:57:59 -0700 (PDT)
-Received: from pluto (unknown [172.31.20.19])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 7562C3F64C;
-	Tue, 26 Mar 2024 04:57:25 -0700 (PDT)
-Date: Tue, 26 Mar 2024 11:57:23 +0000
-From: Cristian Marussi <cristian.marussi@arm.com>
-To: Sudeep Holla <sudeep.holla@arm.com>
-Cc: linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v2 3/5] firmware: arm_scmi: Add message dump traces for
- bad and unexpected replies
-Message-ID: <ZgK4I32LHbmqrhCN@pluto>
-References: <20240325204620.1437237-1-cristian.marussi@arm.com>
- <20240325204620.1437237-4-cristian.marussi@arm.com>
- <ZgKwdhLQeYDd9SAl@bogus>
+	s=arc-20240116; t=1711454264; c=relaxed/simple;
+	bh=EKJhulSFxLWQLaF7yaxSDnu58jC9IeQn/dXAU0JKliQ=;
+	h=Mime-Version:Content-Type:Date:Message-Id:Cc:Subject:From:To:
+	 References:In-Reply-To; b=QoPZOEwAk0Yt6nEs/hzNVqxnig8kslz/wTvcTI/TW57XOoaVHHnZzsngqormlyVJfCCu+L+CNjtq9lGn6RcoQwcCmOf405Y9daau7UXgq/mE3zda2M5HjZE67E+o1QZhNHGm4UOdeZl2x3HzdUXJ73us5PAoYPZmZ3Gjm9j5F+Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=hMw4D1PQ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2E9C1C433F1;
+	Tue, 26 Mar 2024 11:57:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1711454264;
+	bh=EKJhulSFxLWQLaF7yaxSDnu58jC9IeQn/dXAU0JKliQ=;
+	h=Date:Cc:Subject:From:To:References:In-Reply-To:From;
+	b=hMw4D1PQCahqfw8MtYxsjzHrzUNPiIFh/by6PO26L5JBoud0NXvOoP+pWDolP6A7W
+	 MHWxMfRihenzXqisqycL3g12C+CTWoltIvH4CNPUdz+72PbKPN+WRf81R/oXG8bDpf
+	 T1dkgCTQSYki+AzT7VZB67H8zKEuIGM/3R4nByOKzGAkwCto7GnC2k4qJLIzF7Eq/D
+	 /5kSEGrmMOO3Stz0ZnDtyv2/s9EdzPUq06xhiB22b5Veavz/fy0YY//StezneyCMcw
+	 b0BhOnWShhQodg0X1OfcREnyS8OlaUMwqW9UypBtbcnB46bzRA+9vjV1wmjQjZJ4Bo
+	 J5FymRUa+DgSQ==
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZgKwdhLQeYDd9SAl@bogus>
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Date: Tue, 26 Mar 2024 13:57:37 +0200
+Message-Id: <D03NWFQM9XP2.1AWMB9VW98Z98@kernel.org>
+Cc: <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>,
+ <linux-s390@vger.kernel.org>, <sparclinux@vger.kernel.org>,
+ <linux-sgx@vger.kernel.org>, <nvdimm@lists.linux.dev>,
+ <linux-cxl@vger.kernel.org>, <linux-fsdevel@vger.kernel.org>,
+ <io-uring@vger.kernel.org>, <bpf@vger.kernel.org>
+Subject: Re: [PATCH v4 02/14] mm: Switch mm->get_unmapped_area() to a flag
+From: "Jarkko Sakkinen" <jarkko@kernel.org>
+To: "Rick Edgecombe" <rick.p.edgecombe@intel.com>,
+ <Liam.Howlett@oracle.com>, <akpm@linux-foundation.org>, <bp@alien8.de>,
+ <broonie@kernel.org>, <christophe.leroy@csgroup.eu>,
+ <dave.hansen@linux.intel.com>, <debug@rivosinc.com>, <hpa@zytor.com>,
+ <keescook@chromium.org>, <kirill.shutemov@linux.intel.com>,
+ <luto@kernel.org>, <mingo@redhat.com>, <peterz@infradead.org>,
+ <tglx@linutronix.de>, <x86@kernel.org>
+X-Mailer: aerc 0.17.0
+References: <20240326021656.202649-1-rick.p.edgecombe@intel.com>
+ <20240326021656.202649-3-rick.p.edgecombe@intel.com>
+In-Reply-To: <20240326021656.202649-3-rick.p.edgecombe@intel.com>
 
-On Tue, Mar 26, 2024 at 11:24:38AM +0000, Sudeep Holla wrote:
-> On Mon, Mar 25, 2024 at 08:46:18PM +0000, Cristian Marussi wrote:
-> > Trace also late-timed-out, out-of-order and unexpected/spurious messages.
-> > 
-> > Signed-off-by: Cristian Marussi <cristian.marussi@arm.com>
-> > ---
-> >  drivers/firmware/arm_scmi/driver.c  | 10 ++++++++++
-> >  drivers/firmware/arm_scmi/mailbox.c |  4 +++-
-> >  2 files changed, 13 insertions(+), 1 deletion(-)
-> > 
-> > diff --git a/drivers/firmware/arm_scmi/driver.c b/drivers/firmware/arm_scmi/driver.c
-> > index 7fc1c5b1a2a4..207ed1a52d69 100644
-> > --- a/drivers/firmware/arm_scmi/driver.c
-> > +++ b/drivers/firmware/arm_scmi/driver.c
-> > @@ -861,6 +861,9 @@ scmi_xfer_command_acquire(struct scmi_chan_info *cinfo, u32 msg_hdr)
-> >  			"Message for %d type %d is not expected!\n",
-> >  			xfer_id, msg_type);
-> >  		spin_unlock_irqrestore(&minfo->xfer_lock, flags);
-> > +
-> > +		scmi_bad_message_trace(cinfo, msg_hdr, MSG_UNEXPECTED);
-> > +
-> >  		return xfer;
-> >  	}
-> >  	refcount_inc(&xfer->users);
-> > @@ -885,6 +888,9 @@ scmi_xfer_command_acquire(struct scmi_chan_info *cinfo, u32 msg_hdr)
-> >  		dev_err(cinfo->dev,
-> >  			"Invalid message type:%d for %d - HDR:0x%X  state:%d\n",
-> >  			msg_type, xfer_id, msg_hdr, xfer->state);
-> > +
-> > +		scmi_bad_message_trace(cinfo, msg_hdr, MSG_INVALID);
-> > +
-> >  		/* On error the refcount incremented above has to be dropped */
-> >  		__scmi_xfer_put(minfo, xfer);
-> >  		xfer = ERR_PTR(-EINVAL);
-> > @@ -921,6 +927,9 @@ static void scmi_handle_notification(struct scmi_chan_info *cinfo,
-> >  	if (IS_ERR(xfer)) {
-> >  		dev_err(dev, "failed to get free message slot (%ld)\n",
-> >  			PTR_ERR(xfer));
-> > +
-> > +		scmi_bad_message_trace(cinfo, msg_hdr, MSG_NOMEM);
-> > +
-> >  		scmi_clear_channel(info, cinfo);
-> >  		return;
-> >  	}
-> > @@ -1040,6 +1049,7 @@ void scmi_rx_callback(struct scmi_chan_info *cinfo, u32 msg_hdr, void *priv)
-> >  		break;
-> >  	default:
-> >  		WARN_ONCE(1, "received unknown msg_type:%d\n", msg_type);
-> > +		scmi_bad_message_trace(cinfo, msg_hdr, MSG_UNKNOWN);
-> >  		break;
-> >  	}
-> >  }
-> > diff --git a/drivers/firmware/arm_scmi/mailbox.c b/drivers/firmware/arm_scmi/mailbox.c
-> > index b8d470417e8f..fb0824af7180 100644
-> > --- a/drivers/firmware/arm_scmi/mailbox.c
-> > +++ b/drivers/firmware/arm_scmi/mailbox.c
-> > @@ -56,7 +56,9 @@ static void rx_callback(struct mbox_client *cl, void *m)
-> >  	 */
-> >  	if (cl->knows_txdone && !shmem_channel_free(smbox->shmem)) {
-> >  		dev_warn(smbox->cinfo->dev, "Ignoring spurious A2P IRQ !\n");
-> > -		return;
-> > +		return scmi_bad_message_trace(smbox->cinfo,
-> > +				     shmem_read_header(smbox->shmem),
-> > +				     MSG_MBOX_SPURIOUS);
-> 
-> From previous patch, IIUC scmi_bad_message_trace is a void func and doesn't
-> return anything. Did you not get any build error/warning for this ?
-> 
+On Tue Mar 26, 2024 at 4:16 AM EET, Rick Edgecombe wrote:
+> The mm_struct contains a function pointer *get_unmapped_area(), which
+> is set to either arch_get_unmapped_area() or
+> arch_get_unmapped_area_topdown() during the initialization of the mm.
 
-No...I am building with W=1....but note that the caller itself here
-rx_callback() is supposed to return a void...
+In which conditions which path is used during the initialization of mm
+and why is this the case? It is an open claim in the current form.
 
-..in V3 I may just split this into 2 lines and leave the return; alone on its
-own line to avoid any confusion...
+That would be nice to have documented for the sake of being complete
+description. I have zero doubts of the claim being untrue.
 
-Thanks,
-Cristian
+BR, Jarkko
 
