@@ -1,94 +1,96 @@
-Return-Path: <linux-kernel+bounces-119144-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-119145-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1198988C4C3
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 15:13:10 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EC3DF88C4C4
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 15:13:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3CBF61C617E7
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 14:13:09 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 264DD1C613D0
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 14:13:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1763B12D1EA;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D81AB12D765;
 	Tue, 26 Mar 2024 14:10:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=zx2c4.com header.i=@zx2c4.com header.b="lRV6JDv3"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="RctuSQs7"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B5D212D74A;
-	Tue, 26 Mar 2024 14:10:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1831D12D752;
+	Tue, 26 Mar 2024 14:10:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711462218; cv=none; b=Mchl94cRuYrw6HG45WoB4Ny+KyR2OtRp1R5kATcfGtXmzMq+NHO55NeTDs2E9KjaNfrd26k/xk3LeQxIkP+O5jNUDsZfwxiZKjttnNRZQKp90ft6FdHiebshrsIgRMNgSLohw2LzVblW17TA37dP0To9Il/v97032Ntl/oHgQ6Y=
+	t=1711462219; cv=none; b=SWXYNF9rru/YgMAKld1eYTcuysMtpPX2sMKYXV71Prvo6juVYRVAMKTaDCgl5SOhcx/OP3PffTwCRJOFSHj4YeDFGwRw1cZl1bOGGU9jF/t+QAKoiqueV2w7xG94nB9qysOGXLlbDnFGzxCULNfbjkAkkIvA3f8631G2J0tTWBs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711462218; c=relaxed/simple;
-	bh=usLAHk8BV9jHqvzX3o4QI3o24c0IExgHc7XQSzkNkw8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=O+wr0ekqJI5X+zm6kXAELyYgukJUN6X/ekIqOVv1NUymDlusRB8h5tiG9vRtLffm0DDpqTqKE5V70S9cB7SyTa2o5gH3fCOg6wo0MsiTm0CTwM3u2T1nZNBxA3spYLEShmUiQtD+ftA+ojOpxPdHuelS8gPESpLFtX8oFb8iolo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=zx2c4.com header.i=@zx2c4.com header.b=lRV6JDv3; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1D77FC433F1;
-	Tue, 26 Mar 2024 14:10:16 +0000 (UTC)
-Authentication-Results: smtp.kernel.org;
-	dkim=pass (1024-bit key) header.d=zx2c4.com header.i=@zx2c4.com header.b="lRV6JDv3"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zx2c4.com; s=20210105;
-	t=1711462214;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=1pu5lwM70ugmVTU5ofl0zZEKekyP5GxIE+9D4D9dNtg=;
-	b=lRV6JDv3MhBjFHPKF0rp2Pmyo2aXFIIwEtNOc1A6gPIaiP5UvLjl+G2W4tIklkrDVHy6au
-	xW/8XtChvcHnNAXVo3EsWOk8i5arIxho2iK8S1RpksBx4EzbsW4BT9v2tusO51peEVtU4k
-	qyeeLalj1yBe8aFUh1240vaPMabE3zE=
-Received: 
-	by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTPSA id 217a2fe7 (TLSv1.3:TLS_AES_256_GCM_SHA384:256:NO);
-	Tue, 26 Mar 2024 14:10:14 +0000 (UTC)
-Date: Tue, 26 Mar 2024 15:10:11 +0100
-From: "Jason A. Donenfeld" <Jason@zx2c4.com>
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc: Sudan Landge <sudanl@amazon.com>, tytso@mit.edu, robh+dt@kernel.org,
-	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-	sathyanarayanan.kuppuswamy@linux.intel.com, thomas.lendacky@amd.com,
-	dan.j.williams@intel.com, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org, graf@amazon.de, dwmw@amazon.co.uk,
-	bchalios@amazon.es, xmarcalx@amazon.co.uk
-Subject: Re: [PATCH v3 4/4] virt: vmgenid: add support for devicetree bindings
-Message-ID: <ZgLXQ0P8aDl4Xh21@zx2c4.com>
-References: <20240325195306.13133-1-sudanl@amazon.com>
- <20240325195306.13133-5-sudanl@amazon.com>
- <5ca78fc8-4a53-4f09-878f-4a47875f9de5@linaro.org>
+	s=arc-20240116; t=1711462219; c=relaxed/simple;
+	bh=2ai8Am+tAXrFzT1ggWJHakOixG0+KZCWlpUeSszQ44g=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
+	 MIME-Version:Content-Type; b=Jntk1+uRt3QHzGoHB8BtteQt24SoHKlaCExHL/vvAokO14Elo3JDFUWKjXzU0dYF4hTNnY37xzc7h7LfzxKULRlVUTtMqRTYYD+/hmGUaVwJzFObyNqhqToiwANnwTVKdfITEQ951IwyVj1zkKgbQ+D8zZhRiuNsgBMvEVjxOFI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=RctuSQs7; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 65BEBC43394;
+	Tue, 26 Mar 2024 14:10:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1711462218;
+	bh=2ai8Am+tAXrFzT1ggWJHakOixG0+KZCWlpUeSszQ44g=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+	b=RctuSQs7IPtY63Nq5kuxtSZhw36G2ffG/2Bn52mnKW9FwiTXmYJl8AsenNmXbvMAq
+	 F3kse3abeXNNq/9D1zV1GunRlzZkxiVx2WQmCyNN48Y4gDFh9UKhFqrivE7nDLHhbm
+	 WaLQNboOZyoTqiRteH07pWIZQi1+y3FeISYxrQJrKrxPR3DN/87jAyHuwokMJVNsWe
+	 daOqnUjq7XH3gV4w2lI7epNhLQn72/dYOkVKcHYzlVP4fioJS6N/46sNwtMRhH6G6l
+	 nQ2+CLnXyooS1ONb2L6CiRYQDGpbeokbqsmELCxQqTPkFOKlIWvyF5exkt3Qm5053g
+	 hCrs0UoWmTe4g==
+From: Mark Brown <broonie@kernel.org>
+To: Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, 
+ Takashi Iwai <tiwai@suse.com>, John Watts <contact@jookia.org>
+Cc: linux-sound@vger.kernel.org, linux-kernel@vger.kernel.org
+In-Reply-To: <20240326-dai_mclk_hint-v1-1-653cbd2d78d9@jookia.org>
+References: <20240326-dai_mclk_hint-v1-1-653cbd2d78d9@jookia.org>
+Subject: Re: [PATCH] ASoC: soc-dai: Note valid values of sysclock direction
+Message-Id: <171146221713.96138.6449456122956204470.b4-ty@kernel.org>
+Date: Tue, 26 Mar 2024 14:10:17 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <5ca78fc8-4a53-4f09-878f-4a47875f9de5@linaro.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.14-dev
 
-On Mon, Mar 25, 2024 at 10:51:25PM +0100, Krzysztof Kozlowski wrote:
-> >  		.owner = THIS_MODULE,
+On Tue, 26 Mar 2024 22:48:00 +1100, John Watts wrote:
+> Clock direction is marked as 'unsigned int' but only two values are
+> currently used in practice. Note these down in the documentation.
 > 
-> This is clearly some abandoned driver... sigh... I thought we get rid of
-> all this owner crap. Many years ago. How could it appear back if
-> automated tools report it?
 > 
-> Considering how many failures LKP reported for your patchsets, I have
-> real doubts that anyone actually tests this code.
 
-Now you're commenting on the context rather than the patch.
+Applied to
 
-No, this isn't an abandoned driver, no it's not untested. Rather, it's
-code I maintain, care deeply about, and have a tree that receives quite
-a bit of testing (random.git) where I'll be taking these OF patches in
-the case that this patchset improves (and thanks very much for your
-review on it; I'll be appreciative of your ack whenever/if ever it
-improves to that point), and if you have other cleanups like removing
-owner, please don't hesitate to send a patch.
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
-That all is to say, I'm following these threads closely and care.
+Thanks!
 
-Jason
+[1/1] ASoC: soc-dai: Note valid values of sysclock direction
+      commit: 1e90a846493c716e3e6b4d901fc0844e9eea6430
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
 
