@@ -1,190 +1,110 @@
-Return-Path: <linux-kernel+bounces-119264-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-119270-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8FA9F88C659
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 16:07:45 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0855688C668
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 16:12:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A8FA9B236AF
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 15:07:42 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 389221C26EA2
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 15:12:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 94A3F13C9AA;
-	Tue, 26 Mar 2024 15:06:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1723113C82D;
+	Tue, 26 Mar 2024 15:11:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NikPNzag"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=pankajraghav.com header.i=@pankajraghav.com header.b="ckx1i64Z"
+Received: from mout-p-102.mailbox.org (mout-p-102.mailbox.org [80.241.56.152])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B10D713C90E;
-	Tue, 26 Mar 2024 15:06:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD8D512B82;
+	Tue, 26 Mar 2024 15:11:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.241.56.152
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711465606; cv=none; b=N8LxHV75quZZnezXE3eLjJDHY3qndXMHbtnLAW5Y8mFjPDA4n4mDoqrbnzpCOj5Ycb9WYqHUMVfsMuUhpUb5ZnrzXlN6sloB8VjwlHh+fQvdBkFcH1o9NahbD6wwtwI2CAda3HYfIjN4fALHkJzW5Rl+vdUk39efnq+VHzdDQaM=
+	t=1711465902; cv=none; b=I/SKZ4GuhktGZWq2ffWLZoED1fFtViV4eULpDBL0LhYUEYoh6vu/Bx/oPb05bEleVyasrmLY9Q1kwQtkgO+OSbzUHJWBgAKGDLqSy8MW3etOtnl7sa/TtCLazqmJ7AWYrw+43NmewPK7tI+mZ9jgUmPIoqoN04A4kaqpFADPl14=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711465606; c=relaxed/simple;
-	bh=01R4o89skC9mMhEqK+LcqdaFSJT7bI5I12tQM6+HOi8=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=NaOdHwdFmO9mtrfhtirC4YqtOBDMP9OVTUmW+LMZFxs7JJZN2o0nr7cNXflkoiM1HnMAK2Ac65pDOm5pwJv+mSP5A5pGhGLQjCi/XEMCuJtDFFFwTMzCacbe+hDOjXeTqsd4jiuwv/oLfBr6SjEqNk80COY8yLi+xsN7KSMkWEg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NikPNzag; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 79C59C43390;
-	Tue, 26 Mar 2024 15:06:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711465606;
-	bh=01R4o89skC9mMhEqK+LcqdaFSJT7bI5I12tQM6+HOi8=;
-	h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-	b=NikPNzagaQ+CDSMXqShgXElR3I3yb4Y5dbO540Uu6Vzcmj56Q7TnbPGxjhqYHT0Oq
-	 0l2t81kChzsS1DS5H1Abv4IMzTMLJZ/wr7pMjF0PiSbDDaqehiU9U05HiTpJ0GtbrU
-	 HeU0d5eSswKAoq02FnD2IOEE1nAIE7DUvzOViAXlt8ADQvxT/E71pNaIM7PG8X15Xa
-	 ZkDZs3NGO/6+oyeA6L9UTXl55dmtG+IPg42mn8uL6zE+mY6gDwFJg/3z/U9bIBcLr/
-	 Bl3mLUuIHxqVAeWXG91h/Qst/rPYkS8J35DFvgLSgxjFW+Te6Nq2owULyKqH4011+s
-	 fvkwa3CQlC4LA==
-From: Bjorn Andersson <andersson@kernel.org>
-Date: Tue, 26 Mar 2024 08:11:32 -0700
-Subject: [PATCH 4/6] drm/msm/dp: Use function arguments for aux writes
+	s=arc-20240116; t=1711465902; c=relaxed/simple;
+	bh=WLa1hi3+Ql113gRhJTdmKN7z9fyxinYMoU43wM1KnpE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=YVu7vvmxC22zfihGmHnZwHK5Ypovsbwu6XVqB3tQYxhmVB2C+iyGCjmCT2TIQb+Q0AOph4r7P5ptkyA4+njdl6FBh81VEwQ22G2toFavzm43i+5AhnZWzFBQQNLiQ5lndsoYmyEkJn3us84/vKJ/vewMbzFZekAP06bEgkHumqo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=pankajraghav.com; spf=pass smtp.mailfrom=pankajraghav.com; dkim=pass (2048-bit key) header.d=pankajraghav.com header.i=@pankajraghav.com header.b=ckx1i64Z; arc=none smtp.client-ip=80.241.56.152
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=pankajraghav.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pankajraghav.com
+Received: from smtp202.mailbox.org (smtp202.mailbox.org [IPv6:2001:67c:2050:b231:465::202])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mout-p-102.mailbox.org (Postfix) with ESMTPS id 4V3tYj0QYqz9sqM;
+	Tue, 26 Mar 2024 16:11:37 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pankajraghav.com;
+	s=MBO0001; t=1711465897;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=3Nr5pbxteCfHgzj/i1W+/blhYMSR+J/eweuH6yYi/Aw=;
+	b=ckx1i64ZvOdoSlf/gp1LfF6YwXSO3PDpqi2rnltX3PTl7K8dZc83b+H262KO0u8DvboKq3
+	eM5tH0MilsVxjvMhzhWRTp87YG/yvg7MZuAy2A/2KXBcTHJv9fLjURlfu5WhYzbl/sQZi5
+	8axc0iDbBul5pMoK0AYCN1DTKc4VDTxvYxQTf3jtFeqtOTWMugNH6btgtA8KZg80nz83kj
+	2nL5Hawm8YGEwsg9qDH6ITS8VVbSFRofzZvr89iT/Jy+V7TAK9EgioV5IR8V29desK0FXA
+	4LU6yzkA4OxIkBWQaX68XBpwc9IKaAEiRrHUKkXE8y04TB+bDTg9iy/Ul2/2qA==
+Date: Tue, 26 Mar 2024 16:11:33 +0100
+From: "Pankaj Raghav (Samsung)" <kernel@pankajraghav.com>
+To: Matthew Wilcox <willy@infradead.org>
+Cc: linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
+	gost.dev@samsung.com, chandan.babu@oracle.com, hare@suse.de, mcgrof@kernel.org, 
+	djwong@kernel.org, linux-mm@kvack.org, linux-kernel@vger.kernel.org, 
+	david@fromorbit.com, akpm@linux-foundation.org, Pankaj Raghav <p.raghav@samsung.com>
+Subject: Re: [PATCH v3 04/11] readahead: rework loop in
+ page_cache_ra_unbounded()
+Message-ID: <k3pqp6aryvnekneqqs7hnolr7pkdayrudpjpizpptot6jp7xax@cog4esp24yve>
+References: <20240313170253.2324812-1-kernel@pankajraghav.com>
+ <20240313170253.2324812-5-kernel@pankajraghav.com>
+ <ZgHFPZ9tNLLjKZpz@casper.infradead.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240326-msm-dp-cleanup-v1-4-e775556ecec0@quicinc.com>
-References: <20240326-msm-dp-cleanup-v1-0-e775556ecec0@quicinc.com>
-In-Reply-To: <20240326-msm-dp-cleanup-v1-0-e775556ecec0@quicinc.com>
-To: Rob Clark <robdclark@gmail.com>, 
- Abhinav Kumar <quic_abhinavk@quicinc.com>, 
- Dmitry Baryshkov <dmitry.baryshkov@linaro.org>, Sean Paul <sean@poorly.run>, 
- Marijn Suijten <marijn.suijten@somainline.org>, 
- David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>
-Cc: linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org, 
- freedreno@lists.freedesktop.org, linux-kernel@vger.kernel.org, 
- Bjorn Andersson <quic_bjorande@quicinc.com>
-X-Mailer: b4 0.12.4
-X-Developer-Signature: v=1; a=openpgp-sha256; l=3889;
- i=quic_bjorande@quicinc.com; h=from:subject:message-id;
- bh=OGQGdcYpP/wYyvD9AcFcPxIGkVinB3aiEgxfZBK8ts4=;
- b=owEBgwJ8/ZANAwAIAQsfOT8Nma3FAcsmYgBmAuWi1kOqvXMLrq0dCKxSnv3iMCr1CKkr5hEGk
- EjUkd6kPUKJAkkEAAEIADMWIQQF3gPMXzXqTwlm1SULHzk/DZmtxQUCZgLlohUcYW5kZXJzc29u
- QGtlcm5lbC5vcmcACgkQCx85Pw2ZrcXKlA/+Psn2oZyyM5bfZYqL/17qHfBtGblE4Og7NO0Rr4R
- KDwYmNNRsGGR+kfKzofLIn7LyCpEbWNyvxugh3Z2XLIo8gKAf7o80w4VNP9ladmjT9qIcp80bY6
- yLIb8weLoDiuTG8Jj/EvGgS5aVnZxJrxAI5DozUWPRQo6suRqNcoeljziav9RHNX0dP171fVwTt
- jfXqpfSJHgiBxlbBNu3bQ4tPbCqxUiqBBszLFKzJ5yMY84Ih9V7Eq5SBHjA56tufdxxPpIkzVU1
- NsKw6w12ZfEIYhMOFlJFYFWCD/0fJ3B3aKrNd2le8Hzlb8F5oZupQnETFc9DnOYTu7gxznPrrFs
- 6xkRbMyhwxOBx/1drVwUl4Dvs2QP6laK2AzKeQLNR757HAOAZTbgKvNJ528+Mu/Z8sYQmHXQUnj
- v8SIGcxuSqNPQKhnkXUydNj/kha83OtyvMnLXAX4QsEgXLNmgVkMxQ7Nr4ZMHfhWDS6j4Cyjbvl
- 3wLFECmNSBK4wTRtLouVbzHHzQ69TsCtwqOXufV36ATfKLr38OfmEeJYaEWlE0PG6Zaxq2iACKX
- gWbDTTKTVdVa+8dn7JJstCY7haXF52xCRQwGle1AWn3usYPixhB1GIoZXpN6VovCBrwo7nMxsnG
- 6dJRTaruXIU6WSdLBakNQRKIx7bxceKHtQLSyk8Y/LZg=
-X-Developer-Key: i=quic_bjorande@quicinc.com; a=openpgp;
- fpr=05DE03CC5F35EA4F0966D5250B1F393F0D99ADC5
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZgHFPZ9tNLLjKZpz@casper.infradead.org>
+X-Rspamd-Queue-Id: 4V3tYj0QYqz9sqM
 
-From: Bjorn Andersson <quic_bjorande@quicinc.com>
+On Mon, Mar 25, 2024 at 06:41:01PM +0000, Matthew Wilcox wrote:
+> On Wed, Mar 13, 2024 at 06:02:46PM +0100, Pankaj Raghav (Samsung) wrote:
+> > @@ -239,8 +239,8 @@ void page_cache_ra_unbounded(struct readahead_control *ractl,
+> >  			 * not worth getting one just for that.
+> >  			 */
+> >  			read_pages(ractl);
+> > -			ractl->_index++;
+> > -			i = ractl->_index + ractl->_nr_pages - index - 1;
+> > +			ractl->_index += folio_nr_pages(folio);
+> > +			i = ractl->_index + ractl->_nr_pages - index;
+> >  			continue;
+> >  		}
+> >  
+> > @@ -252,13 +252,14 @@ void page_cache_ra_unbounded(struct readahead_control *ractl,
+> >  			folio_put(folio);
+> >  			read_pages(ractl);
+> >  			ractl->_index++;
+> > -			i = ractl->_index + ractl->_nr_pages - index - 1;
+> > +			i = ractl->_index + ractl->_nr_pages - index;
+> >  			continue;
+> >  		}
+> 
+> You changed index++ in the first hunk, but not the second hunk.  Is that
+> intentional?
+After having some back and forth with Hannes, I see where the confusion
+is coming from.
 
-The dp_aux write operations takes the data to be operated on through a
-member of struct dp_catalog, rather than as an argument to the function.
+I intended this to be a non-functional change that helps with adding 
+min_order support later.
 
-No state is maintained other than across the calling of the functions,
-so replace this member with a function argument.
+As this is a non-functional change, I will move this patch to be at the
+start of the series as preparation patches before we start adding min_order
+helpers and support.
 
-Signed-off-by: Bjorn Andersson <quic_bjorande@quicinc.com>
----
- drivers/gpu/drm/msm/dp/dp_aux.c     | 9 +++------
- drivers/gpu/drm/msm/dp/dp_catalog.c | 8 ++++----
- drivers/gpu/drm/msm/dp/dp_catalog.h | 5 ++---
- 3 files changed, 9 insertions(+), 13 deletions(-)
-
-diff --git a/drivers/gpu/drm/msm/dp/dp_aux.c b/drivers/gpu/drm/msm/dp/dp_aux.c
-index adbd5a367395..2c8bcc60692a 100644
---- a/drivers/gpu/drm/msm/dp/dp_aux.c
-+++ b/drivers/gpu/drm/msm/dp/dp_aux.c
-@@ -87,8 +87,7 @@ static ssize_t dp_aux_write(struct dp_aux_private *aux,
- 		/* index = 0, write */
- 		if (i == 0)
- 			reg |= DP_AUX_DATA_INDEX_WRITE;
--		aux->catalog->aux_data = reg;
--		dp_catalog_aux_write_data(aux->catalog);
-+		dp_catalog_aux_write_data(aux->catalog, reg);
- 	}
- 
- 	dp_catalog_aux_clear_trans(aux->catalog, false);
-@@ -106,8 +105,7 @@ static ssize_t dp_aux_write(struct dp_aux_private *aux,
- 	}
- 
- 	reg |= DP_AUX_TRANS_CTRL_GO;
--	aux->catalog->aux_data = reg;
--	dp_catalog_aux_write_trans(aux->catalog);
-+	dp_catalog_aux_write_trans(aux->catalog, reg);
- 
- 	return len;
- }
-@@ -145,8 +143,7 @@ static ssize_t dp_aux_cmd_fifo_rx(struct dp_aux_private *aux,
- 	data = DP_AUX_DATA_INDEX_WRITE; /* INDEX_WRITE */
- 	data |= DP_AUX_DATA_READ;  /* read */
- 
--	aux->catalog->aux_data = data;
--	dp_catalog_aux_write_data(aux->catalog);
-+	dp_catalog_aux_write_data(aux->catalog, data);
- 
- 	dp = msg->buffer;
- 
-diff --git a/drivers/gpu/drm/msm/dp/dp_catalog.c b/drivers/gpu/drm/msm/dp/dp_catalog.c
-index 55114a6aba7e..295bd4cb72cc 100644
---- a/drivers/gpu/drm/msm/dp/dp_catalog.c
-+++ b/drivers/gpu/drm/msm/dp/dp_catalog.c
-@@ -169,21 +169,21 @@ u32 dp_catalog_aux_read_data(struct dp_catalog *dp_catalog)
- 	return dp_read_aux(catalog, REG_DP_AUX_DATA);
- }
- 
--int dp_catalog_aux_write_data(struct dp_catalog *dp_catalog)
-+int dp_catalog_aux_write_data(struct dp_catalog *dp_catalog, u32 data)
- {
- 	struct dp_catalog_private *catalog = container_of(dp_catalog,
- 				struct dp_catalog_private, dp_catalog);
- 
--	dp_write_aux(catalog, REG_DP_AUX_DATA, dp_catalog->aux_data);
-+	dp_write_aux(catalog, REG_DP_AUX_DATA, data);
- 	return 0;
- }
- 
--int dp_catalog_aux_write_trans(struct dp_catalog *dp_catalog)
-+int dp_catalog_aux_write_trans(struct dp_catalog *dp_catalog, u32 data)
- {
- 	struct dp_catalog_private *catalog = container_of(dp_catalog,
- 				struct dp_catalog_private, dp_catalog);
- 
--	dp_write_aux(catalog, REG_DP_AUX_TRANS_CTRL, dp_catalog->aux_data);
-+	dp_write_aux(catalog, REG_DP_AUX_TRANS_CTRL, data);
- 	return 0;
- }
- 
-diff --git a/drivers/gpu/drm/msm/dp/dp_catalog.h b/drivers/gpu/drm/msm/dp/dp_catalog.h
-index 2c2dbeee7634..290ef8180c12 100644
---- a/drivers/gpu/drm/msm/dp/dp_catalog.h
-+++ b/drivers/gpu/drm/msm/dp/dp_catalog.h
-@@ -48,7 +48,6 @@ enum dp_catalog_audio_header_type {
- };
- 
- struct dp_catalog {
--	u32 aux_data;
- 	u32 total;
- 	u32 sync_start;
- 	u32 width_blanking;
-@@ -64,8 +63,8 @@ void dp_catalog_snapshot(struct dp_catalog *dp_catalog, struct msm_disp_state *d
- 
- /* AUX APIs */
- u32 dp_catalog_aux_read_data(struct dp_catalog *dp_catalog);
--int dp_catalog_aux_write_data(struct dp_catalog *dp_catalog);
--int dp_catalog_aux_write_trans(struct dp_catalog *dp_catalog);
-+int dp_catalog_aux_write_data(struct dp_catalog *dp_catalog, u32 data);
-+int dp_catalog_aux_write_trans(struct dp_catalog *dp_catalog, u32 data);
- int dp_catalog_aux_clear_trans(struct dp_catalog *dp_catalog, bool read);
- int dp_catalog_aux_clear_hw_interrupts(struct dp_catalog *dp_catalog);
- void dp_catalog_aux_reset(struct dp_catalog *dp_catalog);
-
--- 
-2.43.0
-
+--
+Pankaj
 
