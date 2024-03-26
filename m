@@ -1,137 +1,260 @@
-Return-Path: <linux-kernel+bounces-118450-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-118451-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 661EC88BB0B
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 08:17:34 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0A50A88BB0E
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 08:18:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1B8D92E2987
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 07:17:33 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 88D251F35963
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 07:18:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1FBB913049C;
-	Tue, 26 Mar 2024 07:17:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7A03C130A65;
+	Tue, 26 Mar 2024 07:18:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=wiwynn.com header.i=@wiwynn.com header.b="dEXlYBJ1"
-Received: from APC01-PSA-obe.outbound.protection.outlook.com (mail-psaapc01on2041.outbound.protection.outlook.com [40.107.255.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="wTmiXm2x"
+Received: from mail-ej1-f43.google.com (mail-ej1-f43.google.com [209.85.218.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8634012AAE6;
-	Tue, 26 Mar 2024 07:17:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.255.41
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711437447; cv=fail; b=i7YUai8/g1M89tiUT7GyL0jKB/W+ar7m8Id21yXSENWSkBxUTdijp4sCPc5p5503/nyZStmoRYQy5Squke/+TxRD3goXhg0Kz/d/MC6xJrtQoK65Ot2swffRFYK/FcNYPgBHqTiCfwbJ9iCGlInJVnspH+XfPjhgt3LNCj+gmFY=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711437447; c=relaxed/simple;
-	bh=8WpteGatTRXCROe7pMH70ODPFZLc3MJu77cscNWAg7c=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=UBScaHMo8yZY7tpW+aG8L4tlyolKUtOTnnGLW2wkLpULduulQU8Ike06gO8P+x9UB0H1+O/feZH4YIDmBiUwIgPrKMfepoHZUIdXokQf9ju9I10i5taCTQW/j+qBGr6OaswRbpXpScy6jRSGnDWCaMO2Uhe7M4T+0wzM2E8T9Cc=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wiwynn.com; spf=pass smtp.mailfrom=wiwynn.com; dkim=pass (2048-bit key) header.d=wiwynn.com header.i=@wiwynn.com header.b=dEXlYBJ1; arc=fail smtp.client-ip=40.107.255.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wiwynn.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wiwynn.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=SYqQIeu7ae/U8eO5EJXw14pKsPjBXwlgNddOrXaCzJlpbzB7lrj+GZDnuSIKWBH+YKbSUE8TMBPAuBbMQciUpkgDdNwEj5ar/K5Jfkm/l+JlbMBnFC5OGAmd/XXgCnewGrgYZbpOzn+OdRjjTnMgm/MeUaXP5z+aZFT+yTdl6UIbfU2uboV11jNqo4exHggtQZZ6FsYPNXFj0q+hM6Ku/axdrOJYA2AJoQj8b6D34HCkqjFnebWKAAfDuIOFl3ZW4I6XXxt5+VLuIPZ7W8Y2FI5KaiUXad3g1T3YLagQO6S1EKznUJlUbYeGO0Ub/FOjlKn7F/vv6rBpeAvnnLBPmA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=jAHQfx/4wOeZpm05XcBAClVTtOvvBTSz38r0WxzNCZU=;
- b=lztg4+hRZXf7faTwPK2w5UzxltxvQq6BGoEneWwQPKp1O7fYNQYoSnpxdVkOVQOgwgYWZSTaE3YbCF1b2HZshRn6k6SsRaURmmu3w3poBU3QdO9ZJIrBPu4fxrj3ehjyDD6ZKFJuyrN3bGJG4ENC9IgvUHfdqU5fiE0ls+fPxLdm3mPF2O3p/9ctG6ERpV5VRaEYHzIeT7myKgOxZbtMtK3hbWFdH2f+FDwiKRTgMrowJH6xQJwxPBG8b3Va/JrJlSY+vddm2tStbhjuzo/KScsQsS3trKynEjz1ASWgJnhIJsWvnwE46jb/rJWWxlD38zvLLto1NH7o+btmhrZcEw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=fail (sender ip is
- 211.20.1.79) smtp.rcpttodomain=stwcx.xyz smtp.mailfrom=wiwynn.com; dmarc=fail
- (p=quarantine sp=quarantine pct=100) action=quarantine
- header.from=wiwynn.com; dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wiwynn.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=jAHQfx/4wOeZpm05XcBAClVTtOvvBTSz38r0WxzNCZU=;
- b=dEXlYBJ1G5CQJ5GuFMtct6b3S7sswHIHGEX8vzoCI1FVaOnDqTMFL/L56irdml/xOCG26/1gf7K5Pke7jAnnW1WCYTDx1r1q9sDL19ndf6j2h16XsCMpKU3NwSR9A0beScF7g+NVeANVhtGfpn7HIgk4Bb3LJ4Agmug3w83e5JCnCGuaZUi0MzJBzh9lUZW35u+y5d4NE050DJrBdOlFOYRJ24AZ/X9BrWVNVovMKYrhNFw5oBmFsjKFjJq2YCNztLFLDfZfh9uON1S6sRMMb567/CohWuKg7vYXsge911LNiHSOXdI82CDMftw0hVFZ7hks3tr/muMopTs2v8Sb+g==
-Received: from SG2P153CA0035.APCP153.PROD.OUTLOOK.COM (2603:1096:4:c7::22) by
- SEZPR04MB5754.apcprd04.prod.outlook.com (2603:1096:101:75::10) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.7409.32; Tue, 26 Mar 2024 07:17:18 +0000
-Received: from SG2PEPF000B66CA.apcprd03.prod.outlook.com
- (2603:1096:4:c7:cafe::f0) by SG2P153CA0035.outlook.office365.com
- (2603:1096:4:c7::22) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.13 via Frontend
- Transport; Tue, 26 Mar 2024 07:17:17 +0000
-X-MS-Exchange-Authentication-Results: spf=fail (sender IP is 211.20.1.79)
- smtp.mailfrom=wiwynn.com; dkim=none (message not signed)
- header.d=none;dmarc=fail action=quarantine header.from=wiwynn.com;
-Received-SPF: Fail (protection.outlook.com: domain of wiwynn.com does not
- designate 211.20.1.79 as permitted sender) receiver=protection.outlook.com;
- client-ip=211.20.1.79; helo=localhost.localdomain;
-Received: from localhost.localdomain (211.20.1.79) by
- SG2PEPF000B66CA.mail.protection.outlook.com (10.167.240.22) with Microsoft
- SMTP Server id 15.20.7409.10 via Frontend Transport; Tue, 26 Mar 2024
- 07:17:16 +0000
-From: Delphine CC Chiu <Delphine_CC_Chiu@wiwynn.com>
-To: patrick@stwcx.xyz
-Cc: Delphine CC Chiu <Delphine_CC_Chiu@wiwynn.com>,
-	Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Joel Stanley <joel@jms.id.au>,
-	Andrew Jeffery <andrew@codeconstruct.com.au>,
-	devicetree@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-aspeed@lists.ozlabs.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH v1] ARM: dts: aspeed: yosemite4: set bus13 frequency to 100k
-Date: Tue, 26 Mar 2024 15:17:13 +0800
-Message-Id: <20240326071713.2786206-1-Delphine_CC_Chiu@wiwynn.com>
-X-Mailer: git-send-email 2.25.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C55CF13048D
+	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 07:18:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.43
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1711437524; cv=none; b=MS9lA0kXIDlCkAbWi7II5I1x/5WimzdG3DauEpFLNSzUokRI0Rstd4qrDfGPlmilKuGcggtESI3jTI61Go/p3mxa5aum0nO5CDfbvhwK0+2XAZCUAkTWjLKLYFk2zLq6cjioh2+uicdIC/AjxPXs88jAhiQYRqD2UvnoZ3S8EGY=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1711437524; c=relaxed/simple;
+	bh=xk5ngh//0etSjxXuZueYUupdxIwqf5DD2o/enmtnOgY=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=UW4U6Qc8MURMsRReGzK1kcny1J6BoHrzoWy+cDZL8XUOurIl4hHU/EPS3uIkYuK4NR7kupoIY1sFTlmjuCGFZxxSRJ8OKq+cCMYy6xc+JicwNjX7tEd2ch9hJy/iis8vFPP3ZUywZFGHtrBzwPaQb5I1QSY90OclB7qBw7ey1WI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=wTmiXm2x; arc=none smtp.client-ip=209.85.218.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ej1-f43.google.com with SMTP id a640c23a62f3a-a46ba938de0so693091666b.3
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 00:18:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1711437521; x=1712042321; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=wst34g7aDI1Y1qIgvRqvSl8QmnnNWUgzQivFPN5vxdg=;
+        b=wTmiXm2xHD2qtb245xRrSjN7976iGaxZkFtIYjk0s+M7OqadnHxbtEhEUvfm26uAHF
+         ol5x0xL3cmbdys0TT7DXLneyZBwnVlSVEJLrdnLP9Kg+qYxMWRp+u4XBQKL7IfqeKXZy
+         SieKGuSR1dH+j8GwDE6FQKlWmkI9MUyU1/CCx3gMsk0EIbP4F9OFK6/4WPrvr6nnc3Cw
+         guxlGNhNcJV+ru64q5KlPbYjIWb/vBlzX+3fUSPhlFuy1uTA79CTHrOnGJSb9qL43XrK
+         jaDro/lGKTh5dAY+y5Z8ZwBcfqWo5nY+u3S5kd7JMZhOGEhhFvUiC2+iQDeJS39N1s2w
+         u5Pw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711437521; x=1712042321;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=wst34g7aDI1Y1qIgvRqvSl8QmnnNWUgzQivFPN5vxdg=;
+        b=j/6KAjeGAnpYloffcjmaxDfsRrx5SyJm0suj18D2wt5bGp5Wgf0snqx3haMOSwkSr0
+         Vbe9suBv2o+xnyFmVmtHn5u2Srh7/rLQdmYpHzqKqd2ehPJm96mLE+8MU/S7GazY1Shp
+         dWLyYBi65DwkOFmSshtXCHwu24df/TAETInx0wz0Rm7bCd6udDpqyPvcbV5roddZQM/J
+         G/u8KL7giSqIT9bL/eXpzBW6iBHgCPEYCzvKSlpYyhXeP26dDua6lFF/K1yyhskQHzEf
+         yyNPB/KQA2AL3h5eWSDOi7lpGyq43K04L+iQxrwoCsTndEQW4AgXOZTbn9teK7ZPO17c
+         SPBA==
+X-Forwarded-Encrypted: i=1; AJvYcCWD30/wv8CfUnMs4T6jjR/FbPS2388AJnsvEU8miAuRMSJSWOUItazxIYs8up41/St9A9jvildGUdrnKuaF9IjJUy/wwc1pFy27T0EN
+X-Gm-Message-State: AOJu0Yxw6ltawHtyB0mzFMz+YOMONFMJRYVrMFYuhtH+IabNX0bP4W88
+	GiktxApQWAt+KOeSmiDTMIifPT6Z+OJyrdhkMW0govGfSkwYm0EUCe7xu1pdn48=
+X-Google-Smtp-Source: AGHT+IGuNZrgtLgZJe/8sFakjyicwMckbQoYVPx05H4Gt/Ul9Ig3HIOt4+4rCkA4fdzE4qed436cvg==
+X-Received: by 2002:a17:906:3e53:b0:a47:4896:c4a1 with SMTP id t19-20020a1709063e5300b00a474896c4a1mr1178590eji.42.1711437521041;
+        Tue, 26 Mar 2024 00:18:41 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.222.44])
+        by smtp.gmail.com with ESMTPSA id ka17-20020a170907991100b00a472c4b9486sm3883901ejc.84.2024.03.26.00.18.39
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 26 Mar 2024 00:18:40 -0700 (PDT)
+Message-ID: <2905247d-03b0-45c1-add5-d3c2a986d87c@linaro.org>
+Date: Tue, 26 Mar 2024 08:18:39 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SG2PEPF000B66CA:EE_|SEZPR04MB5754:EE_
-Content-Type: text/plain
-X-MS-Office365-Filtering-Correlation-Id: a195ffdc-e2e9-4b8f-5c9d-08dc4d64c4ce
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	m7gh1kTIBnxtdLeEoGoHbD09X1PuVXTCpB+7J8mC2qFYCaKxj2L7mDriIfU4SLTQnLp28u645PP++TqYrJjHNfmwJvf0MdHvgDonUv0BCpQDoclCKaWfbsSSj8sCxvMbReEgac1Z1jTxTNXs5O1xCCq9c8tFaddgdObya6mnX0j6Y3SQzkkQyD/nFetERgYa8ycNlshXq8MPg2jQc1tJAebxiBqJQ6GpZqouZwaIJxfdm/6IZGtT/D3jSzps20l5P/nnmmKQgXYleXInpl9iSMUe6TwXFVFjmnS17IHMgcI6a/pnZLXGer5cctIXBXjAW0YYg6VaHFK0nHUlODfrsWyqABwUh9bSNKb6Wljr7z3NdaqzKkxC4pdqN7l8QLN6HqH8qVoghNDzxphleiNu/iPeZ1PSr4TJy3qGtR5gpqz6+9bxnkCKpxjcu6qls08MmU8woc3vcoyE7dYiBdwNxLM5ngeeLkjJM+oQky8VcfM/FamxwtueUJlkmZLTRi++ZV737lEeBjVYyBOBYyRuFZglVEfPV+bDrFBNQfFYitXETfu6fKXZtOayUayVs7ynogItiUKo2mIplFm+29yOQi+qU3Tj/fhkDArrd+a95KG5VLQlVdEsobNaVfg+UWYPG/ADJNpCS+tc3azKWeZnRuZjl53JdwzOigiNICBFlYOUuNUiIM/YiXq0fSV05Q13ztvM4XkZq7WzMmRE31QjqUrLaPYc228uS34Z5GB7yc9WDORUcFThj6/x+lyNlV4X
-X-Forefront-Antispam-Report:
-	CIP:211.20.1.79;CTRY:TW;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:localhost.localdomain;PTR:211-20-1-79.hinet-ip.hinet.net;CAT:NONE;SFS:(13230031)(1800799015)(36860700004)(7416005)(376005)(82310400014);DIR:OUT;SFP:1101;
-X-OriginatorOrg: wiwynn.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Mar 2024 07:17:16.6663
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: a195ffdc-e2e9-4b8f-5c9d-08dc4d64c4ce
-X-MS-Exchange-CrossTenant-Id: da6e0628-fc83-4caf-9dd2-73061cbab167
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=da6e0628-fc83-4caf-9dd2-73061cbab167;Ip=[211.20.1.79];Helo=[localhost.localdomain]
-X-MS-Exchange-CrossTenant-AuthSource:
-	SG2PEPF000B66CA.apcprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SEZPR04MB5754
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/3] dt-bindings: hsi: hsi-client: convert to YAML
+To: Sebastian Reichel <sebastian.reichel@collabora.com>,
+ Rob Herring <robh@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>, Sebastian Reichel <sre@kernel.org>
+Cc: Tony Lindgren <tony@atomide.com>, devicetree@vger.kernel.org,
+ linux-omap@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20240325-hsi-dt-binding-v1-0-88e8e97c3aae@collabora.com>
+ <20240325-hsi-dt-binding-v1-1-88e8e97c3aae@collabora.com>
+Content-Language: en-US
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <20240325-hsi-dt-binding-v1-1-88e8e97c3aae@collabora.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Since the ocp debug card only supports 100k, the bus is also set to 100k.
+On 25/03/2024 22:45, Sebastian Reichel wrote:
+> Convert the legacy txt binding to modern YAML and rename from
+> client-devices to hsi-client. No semantic change.
 
-Signed-off-by: Delphine CC Chiu <Delphine_CC_Chiu@wiwynn.com>
----
- arch/arm/boot/dts/aspeed/aspeed-bmc-facebook-yosemite4.dts | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+There is semantic change: missing example (which is reasonable for
+shared schema) but more importantly: some properties are now excluding
+each other.
 
-diff --git a/arch/arm/boot/dts/aspeed/aspeed-bmc-facebook-yosemite4.dts b/arch/arm/boot/dts/aspeed/aspeed-bmc-facebook-yosemite4.dts
-index 64075cc41d92..98e58e3fea77 100644
---- a/arch/arm/boot/dts/aspeed/aspeed-bmc-facebook-yosemite4.dts
-+++ b/arch/arm/boot/dts/aspeed/aspeed-bmc-facebook-yosemite4.dts
-@@ -369,7 +369,7 @@ rtc@6f {
- 
- &i2c13 {
- 	status = "okay";
--	bus-frequency = <400000>;
-+	bus-frequency = <100000>;
- };
- 
- &i2c14 {
--- 
-2.25.1
+> 
+> Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
+> ---
+
+..
+
+> diff --git a/Documentation/devicetree/bindings/hsi/hsi-client.yaml b/Documentation/devicetree/bindings/hsi/hsi-client.yaml
+> new file mode 100644
+> index 000000000000..df6e1fdd2702
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/hsi/hsi-client.yaml
+> @@ -0,0 +1,84 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/hsi/hsi-client.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: HSI bus peripheral
+> +
+> +description:
+> +  Each HSI port is supposed to have one child node, which
+> +  symbols the remote device connected to the HSI port.
+> +
+> +maintainers:
+> +  - Sebastian Reichel <sre@kernel.org>
+> +
+> +properties:
+> +  $nodename:
+> +    const: hsi-client
+
+Why? Does anything depend on this? It breaks generic-node-name rule. It
+seems you need it only to match the schema, but this just point to main
+problem - missing bus schema.
+
+> +
+> +  hsi-channel-ids:
+> +    $ref: /schemas/types.yaml#/definitions/uint32-array
+> +    minItems: 1
+> +    maxItems: 8
+> +
+> +  hsi-channel-names:
+> +    minItems: 1
+> +    maxItems: 8
+> +
+> +  hsi-rx-mode:
+> +    enum: [stream, frame]
+> +    description: Receiver Bit transmission mode
+> +
+> +  hsi-tx-mode:
+> +    enum: [stream, frame]
+> +    description: Transmitter Bit transmission mode
+> +
+> +  hsi-mode:
+> +    enum: [stream, frame]
+> +    description:
+> +      May be used instead hsi-rx-mode and hsi-tx-mode if the
+> +      transmission mode is the same for receiver and transmitter.
+> +
+> +  hsi-speed-kbps:
+> +    description: Max bit transmission speed in kbit/s
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +
+> +  hsi-flow:
+> +    enum: [synchronized, pipeline]
+> +    description: RX flow type
+> +
+> +  hsi-arb-mode:
+> +    enum: [round-robin, priority]
+> +    description: Arbitration mode for TX frame
+> +
+> +additionalProperties: true
+> +
+> +required:
+> +  - compatible
+> +  - hsi-channel-ids
+> +  - hsi-speed-kbps
+> +  - hsi-flow
+> +  - hsi-arb-mode
+> +
+> +anyOf:
+> +  - required:
+> +      - hsi-mode
+> +  - required:
+> +      - hsi-rx-mode
+> +      - hsi-tx-mode
+> +
+> +allOf:
+> +  - if:
+> +      required:
+> +        - hsi-mode
+> +    then:
+> +      properties:
+> +        hsi-rx-mode: false
+> +        hsi-tx-mode: false
+
+I don't understand what you are trying to achieve here and with anyOf.
+It looks like just oneOf. OTOH, old binding did not exclude these
+properties.
+
+
+> +  - if:
+> +      required:
+> +        - hsi-rx-mode
+> +    then:
+> +      properties:
+> +        hsi-mode: false
+> 
+
+
+
+Best regards,
+Krzysztof
 
 
