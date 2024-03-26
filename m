@@ -1,140 +1,218 @@
-Return-Path: <linux-kernel+bounces-119508-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-119509-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id F1CED88C9C5
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 17:49:50 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id EEF7788C9C7
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 17:50:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2F59A1C650CD
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 16:49:50 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1EC631C6406F
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 16:50:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 067DF1C69D;
-	Tue, 26 Mar 2024 16:48:52 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DE43A1C69C
-	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 16:48:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EFD5F1BC3E;
+	Tue, 26 Mar 2024 16:49:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Rb1LiOVj"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 220481C288;
+	Tue, 26 Mar 2024 16:49:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711471731; cv=none; b=DQyqMj7CcgTqRhilmSxzX+NkpiVuTAGvxeltiDNP71wluLWh/cl47VHB8xZSFhO5UUAc6RuQ1VYpkTRz13P+nxK02WGOp9ac3ygaLUQyEEAo1EuVZyuQCh2DsSOBRxilKIYSKUZRMRSOnSbYcDuY1blcIft2ucGbHFR5esN7UNA=
+	t=1711471770; cv=none; b=qTZLQizcyqj1hsDTUROJJzGe0XgN0B7PFvHIF+w9mSDEF7+HpU8gUnzFZ4+Dar0lnOv4lRxmdSF5A94Dc2uI+1OhzAjCqcLZbsnIpAXJ56x3c+ZSc1meDO2c4IExD57baK76qFiwb1H9S8FdvEoen2EtVuaykIwGqt4xXQ9xc0I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711471731; c=relaxed/simple;
-	bh=dOBYFG2CFVG88RBbN6IiQLjRxxljLiWi7mMX9/e5kiM=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=SzO5nGFvKRylEKNaJeIK0kdWflY7FEE1QmG79HSc1T1WT4dDB1nldvupVmd4qA8FtMZfG1JVQXS1ROI/YPYX4lE6r6Y3OrVcfrEZixy5rgmbzeDko4kX4xuJqT+DLHPMlm81DLZZYQn8ghdsUkyLa3T9olytLLVh7Y4SFGWIfFg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E5E172F4;
-	Tue, 26 Mar 2024 09:49:22 -0700 (PDT)
-Received: from [10.1.29.179] (XHFQ2J9959.cambridge.arm.com [10.1.29.179])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 69D4D3F694;
-	Tue, 26 Mar 2024 09:48:47 -0700 (PDT)
-Message-ID: <79ade347-419a-4c9e-84db-def06ec5f36a@arm.com>
-Date: Tue, 26 Mar 2024 16:48:45 +0000
+	s=arc-20240116; t=1711471770; c=relaxed/simple;
+	bh=H2HpTU1EmHDoY/mcqae3NhFHA7uFSeakgfW/r6p76sQ=;
+	h=Mime-Version:Content-Type:Date:Message-Id:To:Cc:Subject:From:
+	 References:In-Reply-To; b=nd8z9KI+D3SM869O1EcDxODGDcS4RM6ouAqzzKTug6YrAf50R3Hit2JhPBJAn1e7CK2levSvf705BMy9V9jAPA1FbObC5a1HlbOZ+VXO+4koECGPqrpsVbExwrXX8gBm3nZwYjbPod/ocHGKr4y/wSkbmIKh1T3EAUalow5lSc0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Rb1LiOVj; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9400CC433C7;
+	Tue, 26 Mar 2024 16:49:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1711471770;
+	bh=H2HpTU1EmHDoY/mcqae3NhFHA7uFSeakgfW/r6p76sQ=;
+	h=Date:To:Cc:Subject:From:References:In-Reply-To:From;
+	b=Rb1LiOVjtZh6e2NNbZ+rKw3OGvUoB+4Y12YHHS/D+WSBc0gCcc/iRQX3Ub2HGSj5F
+	 Dt8yu94iSHRlIB+e3gelfxcGfDAcDl0IRzBJTkS5OTTrO66OGnqxCmnKd9PteK6mV/
+	 m4zTp75pHeBPPkOckURWggi/akxlFKVQTH6IQNn1/W+6NILIvtJd4B9uNQ+iox0JgT
+	 shYeK4DSLx5hgEDTFAyHfT3Mf2NjKSelhKZlpQJC0flSKpkt8Tt4MkUzZQDK0shRyT
+	 TWqBnwyfjWMGzDHucKvIxZNyLYemKUuvwtI2g+euY2CHGQOQcxQtzy20QtBFxGATNR
+	 yT1Ivng41AjmQ==
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH v1 2/4] mm/gup: Use ptep_get_lockless_norecency()
-Content-Language: en-GB
-To: David Hildenbrand <david@redhat.com>, Mark Rutland
- <mark.rutland@arm.com>, Catalin Marinas <catalin.marinas@arm.com>,
- Will Deacon <will@kernel.org>,
- Alexander Shishkin <alexander.shishkin@linux.intel.com>,
- Jiri Olsa <jolsa@kernel.org>, Ian Rogers <irogers@google.com>,
- Adrian Hunter <adrian.hunter@intel.com>,
- Andrew Morton <akpm@linux-foundation.org>,
- Muchun Song <muchun.song@linux.dev>
-Cc: linux-arm-kernel@lists.infradead.org, linux-mm@kvack.org,
- linux-kernel@vger.kernel.org
-References: <20240215121756.2734131-1-ryan.roberts@arm.com>
- <20240215121756.2734131-3-ryan.roberts@arm.com>
- <5d80c368-7ce7-4a44-9cd7-aee3e1c9182b@redhat.com>
-From: Ryan Roberts <ryan.roberts@arm.com>
-In-Reply-To: <5d80c368-7ce7-4a44-9cd7-aee3e1c9182b@redhat.com>
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Date: Tue, 26 Mar 2024 18:49:25 +0200
+Message-Id: <D03U3UZ4XBOW.66TLKVR1PKPH@kernel.org>
+To: "Alexandre Ghiti" <alex@ghiti.fr>, <linux-riscv@lists.infradead.org>
+Cc: "Paul Walmsley" <paul.walmsley@sifive.com>, "Palmer Dabbelt"
+ <palmer@dabbelt.com>, "Albert Ou" <aou@eecs.berkeley.edu>,
+ <linux-kernel@vger.kernel.org>, "Luis Chamberlain" <mcgrof@kernel.org>,
+ <linux-modules@vger.kernel.org>, "Naveen N . Rao"
+ <naveen.n.rao@linux.ibm.com>, "Anil S Keshavamurthy"
+ <anil.s.keshavamurthy@intel.com>, "David S . Miller" <davem@davemloft.net>,
+ "Masami Hiramatsu" <mhiramat@kernel.org>
+Subject: Re: [PATCH v5 2/2] arch/riscv: Enable kprobes when CONFIG_MODULES=n
+From: "Jarkko Sakkinen" <jarkko@kernel.org>
+X-Mailer: aerc 0.17.0
+References: <20240325215502.660-1-jarkko@kernel.org>
+ <20240325215502.660-2-jarkko@kernel.org>
+ <474ed846-672a-4ff0-9d53-cbf8192fee5f@ghiti.fr>
+In-Reply-To: <474ed846-672a-4ff0-9d53-cbf8192fee5f@ghiti.fr>
 
-On 26/03/2024 16:30, David Hildenbrand wrote:
-> On 15.02.24 13:17, Ryan Roberts wrote:
->> Gup needs to read ptes locklessly, so it uses ptep_get_lockless().
->> However, the returned access and dirty bits are unimportant so let's
->> switch over to ptep_get_lockless_norecency().
->>
->> The wrinkle is that gup needs to check that the pte hasn't changed once
->> it has pinned the folio following this model:
->>
->>      pte = ptep_get_lockless_norecency(ptep)
->>      ...
->>      if (!pte_same(pte, ptep_get_lockless(ptep)))
->>              // RACE!
->>      ...
->>
->> And now that pte may not contain correct access and dirty information,
->> the pte_same() comparison could spuriously fail. So let's introduce a
->> new pte_same_norecency() helper which will ignore the access and dirty
->> bits when doing the comparison.
->>
->> Note that previously, ptep_get() was being used for the comparison; this
->> is technically incorrect because the PTL is not held. I've also
->> converted the comparison to use the preferred pmd_same() helper instead
->> of doing a raw value comparison.
->>
->> As a side-effect, this new approach removes the possibility of
->> concurrent read/write to the page causing a spurious fast gup failure,
->> because the access and dirty bits are no longer used in the comparison.
->>
->> Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
->> ---
-> 
-> [...]
-> 
->>   #ifndef __HAVE_ARCH_PTE_UNUSED
->>   /*
->>    * Some architectures provide facilities to virtualization guests
->> diff --git a/mm/gup.c b/mm/gup.c
->> index df83182ec72d..0f96d0a5ec09 100644
->> --- a/mm/gup.c
->> +++ b/mm/gup.c
->> @@ -2576,7 +2576,7 @@ static int gup_pte_range(pmd_t pmd, pmd_t *pmdp,
->> unsigned long addr,
->>       if (!ptep)
->>           return 0;
->>       do {
->> -        pte_t pte = ptep_get_lockless(ptep);
->> +        pte_t pte = ptep_get_lockless_norecency(ptep);
->>           struct page *page;
->>           struct folio *folio;
->>
->> @@ -2617,8 +2617,9 @@ static int gup_pte_range(pmd_t pmd, pmd_t *pmdp,
->> unsigned long addr,
->>               goto pte_unmap;
->>           }
->>
->> -        if (unlikely(pmd_val(pmd) != pmd_val(*pmdp)) ||
->> -            unlikely(pte_val(pte) != pte_val(ptep_get(ptep)))) {
->> +        if (unlikely(!pmd_same(pmd, *pmdp)) ||
->> +            unlikely(!pte_same_norecency(pte,
->> +                    ptep_get_lockless_norecency(ptep)))) {
->>               gup_put_folio(folio, 1, flags);
->>               goto pte_unmap;
-> 
-> We pass the pte into pte_access_permitted(). It would be good to mention that
-> you checked all implementations.
+On Tue Mar 26, 2024 at 3:57 PM EET, Alexandre Ghiti wrote:
+> Hi Jarkko,
+>
+> On 25/03/2024 22:55, Jarkko Sakkinen wrote:
+> > Tacing with kprobes while running a monolithic kernel is currently
+> > impossible due the kernel module allocator dependency.
+> >
+> > Address the issue by implementing textmem API for RISC-V.
+> >
+> > Link: https://www.sochub.fi # for power on testing new SoC's with a min=
+imal stack
+> > Link: https://lore.kernel.org/all/20220608000014.3054333-1-jarkko@profi=
+an.com/ # continuation
+> > Signed-off-by: Jarkko Sakkinen <jarkko@kernel.org>
+> > ---
+> > v5:
+> > - No changes, expect removing alloc_execmem() call which should have
+> >    been part of the previous patch.
+> > v4:
+> > - Include linux/execmem.h.
+> > v3:
+> > - Architecture independent parts have been split to separate patches.
+> > - Do not change arch/riscv/kernel/module.c as it is out of scope for
+> >    this patch set now.
+> > v2:
+> > - Better late than never right? :-)
+> > - Focus only to RISC-V for now to make the patch more digestable. This
+> >    is the arch where I use the patch on a daily basis to help with QA.
+> > - Introduce HAVE_KPROBES_ALLOC flag to help with more gradual migration=
+.
+> > ---
+> >   arch/riscv/Kconfig          |  1 +
+> >   arch/riscv/kernel/Makefile  |  3 +++
+> >   arch/riscv/kernel/execmem.c | 22 ++++++++++++++++++++++
+> >   3 files changed, 26 insertions(+)
+> >   create mode 100644 arch/riscv/kernel/execmem.c
+> >
+> > diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
+> > index e3142ce531a0..499512fb17ff 100644
+> > --- a/arch/riscv/Kconfig
+> > +++ b/arch/riscv/Kconfig
+> > @@ -132,6 +132,7 @@ config RISCV
+> >   	select HAVE_KPROBES if !XIP_KERNEL
+> >   	select HAVE_KPROBES_ON_FTRACE if !XIP_KERNEL
+> >   	select HAVE_KRETPROBES if !XIP_KERNEL
+> > +	select HAVE_ALLOC_EXECMEM if !XIP_KERNEL
+> >   	# https://github.com/ClangBuiltLinux/linux/issues/1881
+> >   	select HAVE_LD_DEAD_CODE_DATA_ELIMINATION if !LD_IS_LLD
+> >   	select HAVE_MOVE_PMD
+> > diff --git a/arch/riscv/kernel/Makefile b/arch/riscv/kernel/Makefile
+> > index 604d6bf7e476..337797f10d3e 100644
+> > --- a/arch/riscv/kernel/Makefile
+> > +++ b/arch/riscv/kernel/Makefile
+> > @@ -73,6 +73,9 @@ obj-$(CONFIG_SMP)		+=3D cpu_ops.o
+> >  =20
+> >   obj-$(CONFIG_RISCV_BOOT_SPINWAIT) +=3D cpu_ops_spinwait.o
+> >   obj-$(CONFIG_MODULES)		+=3D module.o
+> > +ifeq ($(CONFIG_ALLOC_EXECMEM),y)
+> > +obj-y				+=3D execmem.o
+> > +endif
+> >   obj-$(CONFIG_MODULE_SECTIONS)	+=3D module-sections.o
+> >  =20
+> >   obj-$(CONFIG_CPU_PM)		+=3D suspend_entry.o suspend.o
+> > diff --git a/arch/riscv/kernel/execmem.c b/arch/riscv/kernel/execmem.c
+> > new file mode 100644
+> > index 000000000000..3e52522ead32
+> > --- /dev/null
+> > +++ b/arch/riscv/kernel/execmem.c
+> > @@ -0,0 +1,22 @@
+> > +// SPDX-License-Identifier: GPL-2.0-or-later
+> > +
+> > +#include <linux/mm.h>
+> > +#include <linux/execmem.h>
+> > +#include <linux/vmalloc.h>
+> > +#include <asm/sections.h>
+> > +
+> > +void *alloc_execmem(unsigned long size, gfp_t /* gfp */)
 
-TBH, I hadn't; I decided that since the "inaccurate access/dirty bits" was only
-possible on arm64, then only arm64's implementation needed checking. But given
-your comment, I just had a quick look at all impls. I didn't spot any problems
-where any impl needs the access/dirty bits. I'll add this to the commit log.
+Need to have the parameter name here. I guess this could just as well
+pass through gfp to vmalloc from the caller as kprobes does call
+module_alloc() with GFP_KERNEL set in RISC-V.
 
-> 
-> Acked-by: David Hildenbrand <david@redhat.com>
-> 
+> > +{
+> > +	return __vmalloc_node_range(size, 1, MODULES_VADDR,
+> > +				    MODULES_END, GFP_KERNEL,
+> > +				    PAGE_KERNEL, 0, NUMA_NO_NODE,
+> > +				    __builtin_return_address(0));
+> > +}
+>
+>
+> The __vmalloc_node_range() line ^^ must be from an old kernel since we=20
+> added VM_FLUSH_RESET_PERMS in 6.8, see 749b94b08005 ("riscv: Fix=20
+> module_alloc() that did not reset the linear mapping permissions").
+>
+> In addition, I guess module_alloc() should now use alloc_execmem() right?
 
+Ack for the first comment. For the 2nd it is up to arch/<arch> to choose
+whether to have shared or separate allocators.
+
+So if you want I can change it that way but did not want to make the
+call myself.
+
+>
+>
+> > +
+> > +void free_execmem(void *region)
+> > +{
+> > +	if (in_interrupt())
+> > +		pr_warn("In interrupt context: vmalloc may not work.\n");
+> > +
+> > +	vfree(region);
+> > +}
+>
+>
+> I remember Mike Rapoport sent a patchset to introduce an API for=20
+> executable memory allocation=20
+> (https://lore.kernel.org/linux-mm/20230918072955.2507221-1-rppt@kernel.or=
+g/),=20
+> how does this intersect with your work? I don't know the status of his=20
+> patchset though.
+>
+> Thanks,
+>
+> Alex
+
+I have also made a patch set for kprobes in the 2022:
+
+https://lore.kernel.org/all/20220608000014.3054333-1-jarkko@profian.com/
+
+I think this Calvin's, Mike's and my early patch set have the same
+problem: they try to choke all architectures at once. And further,
+Calvin's and Mike's work also try to cover also tracing subsystems
+at once.
+
+I feel that my relatively small patch set which deals only with
+trivial kprobe (which is more in the leaf than e.g. bpf which
+is more like orchestrator tool) and implements one arch of which
+dog food I actually eat is a better starting point.
+
+Arch code is always something where you need to have genuine
+understanding so full architecture coverage from day one is
+just too risky for stability. Linux is better off if people who
+work on a  specific arch proactively will "fill the holes".
+
+So the way I see my patch set is "lowest common denominator"
+in both architecture axis and tracing subsystem axist. It should
+not interfere that much with the other work (like bpf).
+
+BR, Jarkko
 
