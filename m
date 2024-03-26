@@ -1,144 +1,252 @@
-Return-Path: <linux-kernel+bounces-119238-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-119236-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 24AC788C605
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 15:56:29 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4785F88C602
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 15:55:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CDA2D1F6508C
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 14:56:28 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8039229E5C3
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 14:55:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 44FC313C82C;
-	Tue, 26 Mar 2024 14:56:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8DD1813C810;
+	Tue, 26 Mar 2024 14:55:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jdLWA5mw"
-Received: from mail-pf1-f178.google.com (mail-pf1-f178.google.com [209.85.210.178])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="UvryIMkY"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.11])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 29DCE13C698;
-	Tue, 26 Mar 2024 14:56:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.178
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711464971; cv=none; b=gPXX/lSW/kF6yuHXTFpiIH+RHsvwN2cubmKoM8GE99P5uQObF9c4xtdqEjzER1Y8xXN0me1JLtXuOGL87Y2ullpXmurpPP3x+okUKeV2Cz2Bm+1REDOd2I4heuo0gsvaP613AxD36U8EMAuyzLVoR8K3jxJreH1QIdihJpqVPQw=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711464971; c=relaxed/simple;
-	bh=Ao9xrtlBjjMHKg6mAXNmAgHvzUgtjPOcVb3C9HD4Ym4=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=C/OHBB3EDxMx8JLjpA4q35YfhyAicWCADkTOQgn9EQtAxeZhs8pQzInAzTIVTSF4AEVCra/x9pewTtVKmQgVGgSGaU4p7hAJ2xY0tkQLgdbi2Z9ugGTEwPNPUXmsllLyA3TcLXKt1atuEK9AfjpTcwgsS4mRsYyI7mom/YGVyEE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=jdLWA5mw; arc=none smtp.client-ip=209.85.210.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f178.google.com with SMTP id d2e1a72fcca58-6e704078860so4028139b3a.0;
-        Tue, 26 Mar 2024 07:56:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711464968; x=1712069768; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
-         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Ea+4Fw+41iIKXXGA7q/TyXxJtlrOYEAjwc3VHw2gqU8=;
-        b=jdLWA5mwVzj1M3SH3c2iJjgbbd4ecuL6BK+Uka3QvCFzuf4ZjfnV+9qV+BAaoRgmWv
-         EFGEAQHNONtzsGF+86Z0NCjMPQJzwz/C1q/CTtSC2WVAU+6OQVqhBzq3WlXh+61Tx21c
-         3gvfeg7+w2wHktigwNPJPhh4w4DotQ6bFEKtZoeRRkX+Qg7qNPq5pCX+Fds+shRDY9Q+
-         VSGQBazb+4kMPPPcF17Gtt3ZIy1Dc4SDbBtPp6KtcsGkqfcMQ0CM1fKsC/ILOQHN+1f9
-         tNUsnvsjN5CzK35B54F9X2EA8yoZrJF0xQylr9PbhXKerPHPDCcLQ4Lxpp7QyaYr4jOv
-         zePg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711464968; x=1712069768;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
-         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=Ea+4Fw+41iIKXXGA7q/TyXxJtlrOYEAjwc3VHw2gqU8=;
-        b=Fy4InEuvQHBpAWfJGGvQ8W5UidJXHmz4/IavyaLnYd/wpQH1rc2HbeUfX+h8XqKujG
-         edaUEJQYUD8y9qFvw5FlTSOCUp8qGcMSzr3HerFzDKIaFNMQ89M6hALgpaNBTL8KAhFd
-         1kIhLs/P2re1+Xlsh4/phmz0r+txiOipTEKUdhESgBo9cl5qMnhRC9nzMumkVRK2p5L8
-         RKe9ppPnvFW3tshhWC1JLLcy7RmhrQGsAp+rAVM7Pw8g/Xe6Jxy0A0EgQIsfOJUIfU3O
-         uDQ2bhuFP1IkaSuOycGFRwQA3AZs6cIHunXPTFvm+RRB3zafSGFIjXoAR6czIzhufy0U
-         wR4Q==
-X-Forwarded-Encrypted: i=1; AJvYcCWwshkcb3LijR+lwKVc4Pc22nl1SZqW+IMHgQ79iMg7pllf+JgvTnP8/h2+L33WOM4I1PKp43hcYQvoMGaZoujZpijSHYF2iu2Nfhb5eOxNZtg+H0KCkoMkU4qvdTZXcz+Q
-X-Gm-Message-State: AOJu0YzbGaLqfA5KjCt7Yoo7VeU7tVWcgMTPXYzHhI1qn1cERTWsjB/Z
-	y9AcHmDEuTaYpAILNNx+5gqRzCKyVTz7iE5gKIAoHWPcSCDCFXKM
-X-Google-Smtp-Source: AGHT+IHutcjK2KIIFE7BfCUSIhG136DuJ9KPGu7ULPaOdcq2MXtZjrAcep2ywRxg5COswSSU6S9AxQ==
-X-Received: by 2002:a05:6a00:4656:b0:6ea:950f:7d25 with SMTP id kp22-20020a056a00465600b006ea950f7d25mr1134370pfb.18.1711464968309;
-        Tue, 26 Mar 2024 07:56:08 -0700 (PDT)
-Received: from [192.168.0.104] ([117.147.31.37])
-        by smtp.gmail.com with ESMTPSA id p23-20020a056a000a1700b006eaafccff73sm2959677pfh.212.2024.03.26.07.56.03
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 26 Mar 2024 07:56:07 -0700 (PDT)
-Message-ID: <47529e7e-437e-4601-a5dc-518b38aaf496@gmail.com>
-Date: Tue, 26 Mar 2024 22:54:53 +0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 58BB01F168;
+	Tue, 26 Mar 2024 14:55:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=198.175.65.11
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1711464940; cv=fail; b=fiYqN1FWmAJZ/huEJ5jrXL44sVwAJxznOyI/RhFa7O39VqlxZKdnrQ2XlEfc9fGmsrGUL/BRIOYfW4JDmxn4IVvM5DXdJs0RXX8bM7G1y+MBVIHKI4tEFJU45Mwk4pt3v+amrlo35UU4dKvgx2g94u+xg/gZtcVoZG5/kb3b7Wo=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1711464940; c=relaxed/simple;
+	bh=AFiGdtVpYvGkYQpcQdwjuZS8tPo6pz+PizLTBxbITEc=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=QuQOZxr4Q2Jez7PeP0npaGBMoxHfiUmU0LNgNua+7OESMbSoSC6KkmlaBjMMfH1zSg4K/V6vPJQm34yAj4JkY+c/m+Phoy42z0/h+MU3OConnLd2LnQV2LCk4+1X0xUkt6/dYAQRMOlS9FhvNgnIFtOsWf9wLCOTAkQ5j9ZR+38=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=UvryIMkY; arc=fail smtp.client-ip=198.175.65.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1711464938; x=1743000938;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=AFiGdtVpYvGkYQpcQdwjuZS8tPo6pz+PizLTBxbITEc=;
+  b=UvryIMkYH5OqYnhU4AcEbVQTXUOjqE6WV2LGdpG+ySP4OQCBa/EX79fB
+   hYYRaZePM5Ox5zoljydEfUFamWIXbtW4AAdafCC15bKIvnokoLnLv8aAK
+   Suo0yegRmdAsJ8qo1pgPJEnpFWMHk0Cel5pPKwjF0ewgnDy8hBNBuNzDR
+   XboPIaMP4OJ3nTe+GkrsPq7Pb2f9VO43qFENUCMQ4r+P+/ZArBlzIPHAx
+   COvua5JXlCgzGN7WBvKCFYRGB8OnvqwN+4o2JvOOsZhiTf8Ceqsvj6rli
+   UDVkSIwxMFRC3CoflgQpjKpR7i9dFfy+8BJ1e0+HH+uu7orqDtJMf1Vq2
+   A==;
+X-CSE-ConnectionGUID: haHF2h15Rxq6hDMr7SG1WQ==
+X-CSE-MsgGUID: VABtGsYuRiWugtikt/eWDw==
+X-IronPort-AV: E=McAfee;i="6600,9927,11025"; a="17064666"
+X-IronPort-AV: E=Sophos;i="6.07,156,1708416000"; 
+   d="scan'208";a="17064666"
+Received: from orviesa005.jf.intel.com ([10.64.159.145])
+  by orvoesa103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Mar 2024 07:55:37 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,156,1708416000"; 
+   d="scan'208";a="20705240"
+Received: from orsmsx602.amr.corp.intel.com ([10.22.229.15])
+  by orviesa005.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 26 Mar 2024 07:55:38 -0700
+Received: from orsmsx603.amr.corp.intel.com (10.22.229.16) by
+ ORSMSX602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Tue, 26 Mar 2024 07:55:37 -0700
+Received: from orsedg603.ED.cps.intel.com (10.7.248.4) by
+ orsmsx603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35 via Frontend Transport; Tue, 26 Mar 2024 07:55:37 -0700
+Received: from NAM11-BN8-obe.outbound.protection.outlook.com (104.47.58.169)
+ by edgegateway.intel.com (134.134.137.100) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Tue, 26 Mar 2024 07:55:36 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=BOKaAMvS/XuYUhAhzzX7SNF9y8xpSTuxdZBkA1sWBto4RPHdoXkcHZ1YGwZctloR55QzC2we6AZwZkCM1bFVLaUHxJNpGRSapZZoHG/ypw5a972CS6qpEYfHIVhiROaDflwVnVddEKFlxoUR77Rxe7w4ItCKIpLAFAR8A0piZMgj0cyzsk/T3v4rwLDRAID9fg4+NLzH7zSAdv0ZqInB+op5h4OhKUCevUJXwjZo/VNUlBn2kUHScI3SD+kigl6njCPohshukbbXBI9OwnIG8YlwB8iKefNqVUNhMMsi0NBfEYWnqH+RFvk37rNX1hOpqGZKhYihqEUkKCVHvTitXA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=AFiGdtVpYvGkYQpcQdwjuZS8tPo6pz+PizLTBxbITEc=;
+ b=fYaXBmYAyFI01mpxbHA9b66s5+o5nto5bfilGuQE2L8KzzDxsBZNgOpcb0CqomEyUBKCC/mPgqWaLOpkL77aHnWmvf4xHWhnid9Pk6jvOW4jIeNQn9mVZ6xsOeUsz2GWXkfmpM1alExp7V39ajhCjHiT6eTJCcvOw0+9/S9At9tS/MmJRNuqhZDd75fuk6Io5Q8e8xkz1MMIhcZSyVn9sku/x8SWRcXc/HoaPf1iDjPC3wceHjM8HlesZR8qJUWTFF8U9wTfilm6i9424NSJWI/D4MKOrJTQ8Ln/kJdtqQVMrn1dXyC9Pxyu5v+N5kXwVommekaBIWiAarPD/nOGuw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Received: from PH0PR11MB5830.namprd11.prod.outlook.com (2603:10b6:510:129::20)
+ by SA1PR11MB8475.namprd11.prod.outlook.com (2603:10b6:806:3a3::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.33; Tue, 26 Mar
+ 2024 14:55:33 +0000
+Received: from PH0PR11MB5830.namprd11.prod.outlook.com
+ ([fe80::9445:5793:b0b7:711a]) by PH0PR11MB5830.namprd11.prod.outlook.com
+ ([fe80::9445:5793:b0b7:711a%7]) with mapi id 15.20.7409.031; Tue, 26 Mar 2024
+ 14:55:33 +0000
+From: "Song, Yoong Siang" <yoong.siang.song@intel.com>
+To: Kurt Kanzenbach <kurt@linutronix.de>, "Bezdeka, Florian"
+	<florian.bezdeka@siemens.com>, "Brandeburg, Jesse"
+	<jesse.brandeburg@intel.com>, "Nguyen, Anthony L"
+	<anthony.l.nguyen@intel.com>, "David S . Miller" <davem@davemloft.net>, "Eric
+ Dumazet" <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni
+	<pabeni@redhat.com>, Richard Cochran <richardcochran@gmail.com>, "Alexei
+ Starovoitov" <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Jesper
+ Dangaard Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>,
+	Stanislav Fomichev <sdf@google.com>, "Gomes, Vinicius"
+	<vinicius.gomes@intel.com>, "Fijalkowski, Maciej"
+	<maciej.fijalkowski@intel.com>
+CC: "intel-wired-lan@lists.osuosl.org" <intel-wired-lan@lists.osuosl.org>,
+	"netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"bpf@vger.kernel.org" <bpf@vger.kernel.org>, "xdp-hints@xdp-project.net"
+	<xdp-hints@xdp-project.net>
+Subject: RE: [xdp-hints] Re: [PATCH iwl-next,v4 1/1] igc: Add Tx hardware
+ timestamp request for AF_XDP zero-copy packet
+Thread-Topic: [xdp-hints] Re: [PATCH iwl-next,v4 1/1] igc: Add Tx hardware
+ timestamp request for AF_XDP zero-copy packet
+Thread-Index: AQHaf1vDcRX66gQlB0+gJtjiHFgRbLFJ/peAgAAUiKA=
+Date: Tue, 26 Mar 2024 14:55:33 +0000
+Message-ID: <PH0PR11MB583028B2023E1E809B45B51DD8352@PH0PR11MB5830.namprd11.prod.outlook.com>
+References: <20240325020928.1987947-1-yoong.siang.song@intel.com>
+ <d2623ac0f1cb07a23976416cdcf9eee1986747b0.camel@siemens.com>
+ <87h6gtb0p0.fsf@kurt.kurt.home>
+In-Reply-To: <87h6gtb0p0.fsf@kurt.kurt.home>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: PH0PR11MB5830:EE_|SA1PR11MB8475:EE_
+x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: mFVgk/6+3g4sIDRq/Eh0X5zPto+0ldenQi3e8iawaUyf/AVw0oOeDmlS0kXIuVVvBWMWM/W+b0QZfFF23IIHgK7MbslP6NU6oIXAAsUNDz74P6AH9q6LJCN/aannqfQn0WHTEB4Rc2qoBIUjSpNIlv1PbHIS5Su9EOdK1n/BCor9ZRkLiJ2CSiX0x6Rsbw26pnPB4qkzmDruH/6ZQZIVd3SDZLWEfWkD39PFDKMzCXDh9ME0aS6ENBwbROFh1H/4BMJ7rEJlp/SFOyo9O7Lfuooi58Dfw8qg/+2fJVnr25tjc9cDq+w6NWyUhh6hOz9FOgTI6dSK2OyWtiQDBcz6bvDyahClCrkpUGluBFO25XtV9kpiMK6DFYFC1fuxrrZ9f1iDeOVOYy9kR64MzfHoD/o16T69z9LT4COD7SU+f0Sp1T+N9DK6oQYrzTMidfXVwybBBChGnNonGhxw8P+nNSSfmGHmhJdPFhrRzdjdXQ49nLtAQDeeSLrWrc+GKXkbW4O7BOK0zjAxzazlX9DRUK60WjVGgZpcioYgtS4rQatuzcIk3yYsRlcTHO/CD0ylO34YiYoBScyEc1qEEg0AZzXqGF2HmmHn2gYWFUoZjBNw8M0+e+h6hjcrQDBxD4o/lXLVgwwvg1ZRPX9nlOfBlg==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR11MB5830.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(366007)(1800799015)(7416005)(921011);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?og/6LcLMwYMQGxTSXlch13FqdWAhQD7qFlu5OgdW8pyfz32UV6EprUZ3a6IR?=
+ =?us-ascii?Q?FM8uqCyCj9F4Kbmr6uYr40S6ViLJIwt8GSpkHwInUhP/WKFkbE1c/CRqTdc6?=
+ =?us-ascii?Q?Fnlx+vIMb+dWS2CXd+k4zOh6DHGbopzutSf7qoJOv+bpcpT0ek55C007bV+n?=
+ =?us-ascii?Q?blrPwD5QCAwafIhu9OR7cvMVfLTGJVGBk4CxKMdJc0FMZG2UwECGvkItXF5k?=
+ =?us-ascii?Q?UvI6BbZbu5dhBQADUjjorYzEpFZEmipEodivSc9pe8x8OhZQYKreSL6pMB7D?=
+ =?us-ascii?Q?6DEfh6Gzd74FgUUNuVXqHhKCeCHepn3eMQQGHHFUBw5cUGc9fv0xJdBJd2lU?=
+ =?us-ascii?Q?iVkw4axHXXKBDplm+D9pRs/NevfohkqUPlWIFh4KcdJtGrBV0zrjfEXhWl0j?=
+ =?us-ascii?Q?+zxH7C27t+92YbgJgBORFLiZ2rma8xXmeU5l++1gMvhJDJtQip4UVTAVUPGa?=
+ =?us-ascii?Q?n/rNk5CV7em3/PfgySvfwfbOm0GU68DJN3L4q2nNrCse9D+soU0nJ4upc4oE?=
+ =?us-ascii?Q?9GmNrVd2etLwcE7gBpzVbeJfhuoh4y4JToYtqoPR1ZNX7uKnKWp1Jezy/fX3?=
+ =?us-ascii?Q?TgALBWfAeDGFrn+Ik23eordwjOHhUnUFBOcod1qgb5OqEfpEiBIHWqMoB9OO?=
+ =?us-ascii?Q?9N7WFarsl/RbPK/SV0M4UJYKBVKiyzss1V0X90XSqVyOuLYn8ACoGoL8twcn?=
+ =?us-ascii?Q?LjxqMiQsQRdIO7xemTb92zI1AI4glj6agidsxpz4d1VaoPcJ5FN5JivtxE2C?=
+ =?us-ascii?Q?GOluqh+iAzjMrGMhQZ6Z1hwhw9ptT1y+iNjwzNIs6HUPLUVVUVhpfjexfDHG?=
+ =?us-ascii?Q?C2APDQf6AJ8jIwSL/3vKemEbrrBxTxSzixucpQ08iZ45mC2BbXpM+nt+Q/7T?=
+ =?us-ascii?Q?+I8jIh7FItR3HFhiDW06Ahpp7oZ8yoxkOSjTrnUcZYQVO2nX7tzFpwaOmhaA?=
+ =?us-ascii?Q?94M5J0I140HFqcRfDLwJeL6dTa4zWHN8X0QafYPdznJG4zJcYu4jqAr2l7O0?=
+ =?us-ascii?Q?pQp16BuTWMhwfuoAqKVYdKIY/a22PFxaZOKUzvBFhzKkrd5zJCsCeie96hkK?=
+ =?us-ascii?Q?avTa0vU5vTcM3WqzMIEKpNgSOo1QIc4XFTA96rTO6ab8kxyRe7qkO+XXyWnq?=
+ =?us-ascii?Q?5Bx7M9hgGMQjiGVYh07yfWDuJmGLpSkoQFrqX9c9kyfEnXfRbHe0OYgeqqXA?=
+ =?us-ascii?Q?zErUktcPFnCWAhQAG34FaAHelMeX1KiapTKN1aMqwy2fTgDENepa7KdwL9IL?=
+ =?us-ascii?Q?O3uBF49D9+lGDndJXH1PeGg7NCeAWL0Q3yMY9N5jF2PajxVzlaPs0zwApQ/j?=
+ =?us-ascii?Q?JLZaGfp+CrYade3PcuSTvF97Sba8cM/aKP0LL3xF2PPpO0Fs/3UeAE0Wyr7m?=
+ =?us-ascii?Q?YFxI7KmcMP0aYTIF843idE/YPhcnc4JLAuOyjxRl5HpIrABrijoRUySdJEnW?=
+ =?us-ascii?Q?u0Shlie8Vpg2sLroZ+A/iarwEKaZm2Ni+Zf43jr8LauFlVhFYP4jgkh4SYzC?=
+ =?us-ascii?Q?gVXQ5F18kErGbhCoiyo1zjJxJLZo7aWUkIgw3j9PI7gZLR/furKi1glmqmAx?=
+ =?us-ascii?Q?DlYeMU6kQjmCwBgMnAwB5kaoeACj38jkpcG6le5uta3WeO2jDZJTq99vybrn?=
+ =?us-ascii?Q?+g=3D=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH] libbpf: Add bpf_program__set_section_name api
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: Alexei Starovoitov <ast@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
- Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
- Yonghong Song <yonghong.song@linux.dev>,
- John Fastabend <john.fastabend@gmail.com>, bpf@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <20240325154737.3754820-1-chen.dylane@gmail.com>
- <CAEf4Bzag72gYXWJ2+mPnWaysyTK0OC3NjnasxNsb+N0NxXY2fw@mail.gmail.com>
-From: Tao Chen <chen.dylane@gmail.com>
-In-Reply-To: <CAEf4Bzag72gYXWJ2+mPnWaysyTK0OC3NjnasxNsb+N0NxXY2fw@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR11MB5830.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: a1c5213e-82e4-4a90-856e-08dc4da4c9d3
+X-MS-Exchange-CrossTenant-originalarrivaltime: 26 Mar 2024 14:55:33.5628
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: UkAxq41FP9fx4KtprjHbZYgUcSmqFkfZ1ZVRPlksHAcHzapw9GJ9P5xlZwJklv/OBSKVnEo9ioFrcR0iDwYI3WreRT8XSR3bcJjQqO2RfAQ=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR11MB8475
+X-OriginatorOrg: intel.com
 
-Hi, Andrii, thank you for your reply. I read the apis again in libbpf.h, 
-as you say, it seems that this patch no need. Thanks again.
+On Tuesday, March 26, 2024 9:08 PM, Kurt Kanzenbach <kurt@linutronix.de> wr=
+ote:
+>Hi Florian,
+>
+>On Tue Mar 26 2024, Florian Bezdeka wrote:
+>> On Mon, 2024-03-25 at 10:09 +0800, Song Yoong Siang wrote:
+>>> This patch adds support to per-packet Tx hardware timestamp request to
+>>> AF_XDP zero-copy packet via XDP Tx metadata framework. Please note that
+>>> user needs to enable Tx HW timestamp capability via igc_ioctl() with
+>>> SIOCSHWTSTAMP cmd before sending xsk Tx hardware timestamp request.
+>>>
+>>> Same as implementation in RX timestamp XDP hints kfunc metadata, Timer =
+0
+>>> (adjustable clock) is used in xsk Tx hardware timestamp. i225/i226 have
+>>> four sets of timestamping registers. *skb and *xsk_tx_buffer pointers
+>>> are used to indicate whether the timestamping register is already occup=
+ied.
+>>
+>> Let me make sure that I fully understand that: In my own words:
+>>
+>> With that applied I'm able to get the point in time from the device
+>> when a specific frame made it to the wire. I have to enable that
+>> functionality using the mentioned ioctl() call first, and then check
+>> the meta area (located in the umem right before the frame payload)
+>> while consuming the completion queue/ring. Correct?
 
-在 2024/3/26 上午1:25, Andrii Nakryiko 写道:
-> On Mon, Mar 25, 2024 at 8:48 AM Tao Chen <chen.dylane@gmail.com> wrote:
+Hi Florian,
+
+Yes, you are right. But before you pass the frame to driver, make sure
+you request Tx metadata hardware timestamp feature by setting
+XDP_TXMD_FLAGS_TIMESTAMP flag.
+You can refer to tools/testing/selftests/bpf/xdp_hw_metadata.c
+on how to do it.=20
+
 >>
->> The new api can be used to reset the function we want to trace in
->> runtime. So we need not to change the code again when we just do
->> minor changes to the trace function in kprobe or other ebpf event
->> type. We can replace the old section with new section passed in via
->> parameter. Maybe the following scenario we can use the api:
->>
->> 1. solve "*.isra.o" issue caused by compiler in new kernel
->> obj = offcputime_bpf__open();
->> bpf_program__set_section_name(*(obj->skeleton->obj),
->> "kprobe/finish_task_switch", "kprobe/finish_task_switch.isra.0");
->>
->> 2. dynamic adjustment for trace function offset
->> obj = offcputime_bpf__open();
->> bpf_program__set_section_name(*(obj->skeleton->obj),
->> "kprobe/finish_task_switch+23", "kprobe/finish_task_switch+45");
->>
->> Signed-off-by: Tao Chen <chen.dylane@gmail.com>
->> ---
->>   tools/lib/bpf/libbpf.c   | 24 ++++++++++++++++++++++++
->>   tools/lib/bpf/libbpf.h   |  2 ++
->>   tools/lib/bpf/libbpf.map |  1 +
->>   3 files changed, 27 insertions(+)
->>
-> 
-> This is a wrong approach. SEC() is immutable and serves as a hint to
-> libbpf on program type and possibly some attach parameters. But after
-> that libbpf allows to override all of them though APIs like
-> bpf_program__set_type() and others. Attach APIs always allow to
-> specify all the target parameters, including kprobe function name and
-> so on.
-> 
-> Please check all of the libbpf APIs in libbpf.h.
-> 
-> pw-bot: cr
-> 
->> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
->> index 96ff1aa4bf6a..94f32e845c61 100644
->> --- a/tools/lib/bpf/libbpf.c
->> +++ b/tools/lib/bpf/libbpf.c
->> @@ -8576,6 +8576,30 @@ const char *bpf_program__section_name(const struct bpf_program *prog)
->>          return prog->sec_name;
->>   }
->>
-> 
-> [...]
+>> If so, we now have a feedback channel for meta information for/from TX.
+>> Are there any plans - or would it be possible - to support Earliest
+>> TxTime First (NET_SCHED_ETF) QDisc based on that channel? In the past
+>> we had the problem that we we're missing a feedback channel to
+>> communicate back invalid lunch times.
+>
+>Just asking: How would that work? AFAIK XDP bypasses the Qdisc
+>layer. Currently invalid Launch Times are accounted in the ETF Qdisc
+>itself. Does that mean every driver has to take care of it?
+>
+>Thanks,
+>Kurt
+
+Florian & Kurt,
+
+Yes, me and Stanislav are trying to add Earliest TxTime First / Launch Time=
+ to the framework.
+Please refer to [1] for the patchset. The metadata framework will just pass=
+ the
+Launch time value to driver, and driver need to handle the rest.
+In the patchset, I am enabling it on stmmac driver only, but we need more d=
+rivers
+to check whether the design is feasible for different drivers, cause each d=
+river is
+having their own limitation on launch time. Therefore, after this tx hwts p=
+atch accepted,
+I will try to enable launch time on igc driver, and submit new version.=20
+
+Kurt is right that current metadata framework is lacking a way to feedback =
+whether
+the launch time is invalid or not. Maybe we can try to enable launch time w=
+ithout feedback,
+then discuss about the status report design.
+
+[1] https://patchwork.kernel.org/project/netdevbpf/cover/20231203165129.174=
+0512-1-yoong.siang.song@intel.com/
+
+Thanks & Regards
+Siang
 
