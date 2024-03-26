@@ -1,193 +1,125 @@
-Return-Path: <linux-kernel+bounces-118217-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-118219-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0D64C88B638
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 01:38:39 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D312488B63F
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 01:41:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 31B2D1C3715B
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 00:38:38 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5973B2E88F4
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 00:41:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7F6891B810;
-	Tue, 26 Mar 2024 00:38:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 182CE1BC4F;
+	Tue, 26 Mar 2024 00:41:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="HBAcR3BQ"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="bjPrIo17"
+Received: from mail-pf1-f179.google.com (mail-pf1-f179.google.com [209.85.210.179])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B0AE31803E;
-	Tue, 26 Mar 2024 00:38:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E92CB1B28D;
+	Tue, 26 Mar 2024 00:41:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711413509; cv=none; b=W23kq3Rx6Sb04iUuUedUBbSL9zOtqWAD6iVspBv5Vb0lrEGqkTdjpgD5yuj65D+LIZyES1a1n8GVtMQblRkd4lRxVUfcUc6yezICFk/hSN69T1ELwO6OmDjcyU0uTUpw200sUDIlZeOymgUHHdZaIqcIokZmqgjwQd+s+vkGl0w=
+	t=1711413706; cv=none; b=A6bpKX4t3s1XLH1zT4ZQYq+FNEUYpoHOWPXQRuEUxSkvD8LzviBgng6+L0014TzmJtcFwYSVJKq0VagvXBdY0fajXP4Yh3Yk6VyUBNixi7vl9jReMtf4J0Bdr2Yn4l+WVBblVFWRyokjv2ZXZRqloerZ50gwtpW0JClr4OjQSpU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711413509; c=relaxed/simple;
-	bh=JCGKDo3dviFF4SlEAVy67T1MafCPW0V3lPzG+X/B7gQ=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=AOiJMwjXaU/WEwIPNey8v4yGnrQDqc1WDpJCbssrLe33/KTNBOhmJO1goZ/i2GzzP7b9zpaQNebsSccjgsk12Qjx8XJLkDITfWUIc0pPCafiVEDVq/k5KCop+70MXbfQsB4iolOKKl2Ihp48+BoFIZCG2poc9szjvbs5B2bNXCA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=HBAcR3BQ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 7CBF1C433C7;
-	Tue, 26 Mar 2024 00:38:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711413509;
-	bh=JCGKDo3dviFF4SlEAVy67T1MafCPW0V3lPzG+X/B7gQ=;
-	h=From:Date:Subject:To:Cc:Reply-To:From;
-	b=HBAcR3BQ76GYA3DaaZNgK1xtttAsCiCvr9uTnmhNlpQ/2R8wZf6bSzTHlkBFc8VzY
-	 tNSG07+nNn1VBY/VaOebnGht9puv8CExdPzfuH6zuUCtqQDodLl4L+ETCe+cW3wPbQ
-	 DwGPnMsuqFNGBh4aARKb0K8lyRf68RBlxcr5LwgBGIWFK/l1D4QncuGRQNkozfSpQ8
-	 YL1pV/EPqf+Gu+Nh7EVWEOOejzoPU/A1yjKbt6L833E2BR0dusjCDxPYMLjd3W8NLU
-	 2l+fNPIfMH1DrX3TXxVlINpOkBws7MsBTpilloqDU8qL/VTOotDFMtDczzoXvdjzEz
-	 Ye096k59mHJMQ==
-Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 714D0C6FD1F;
-	Tue, 26 Mar 2024 00:38:29 +0000 (UTC)
-From: John Bauer via B4 Relay <devnull+johnebgood.securitylive.com@kernel.org>
-Date: Mon, 25 Mar 2024 19:38:22 -0500
-Subject: [PATCH] uvcvideo: Remo OBSBOT quirk fix for incorrect relative min
- pan/tilt/zoom speeds
+	s=arc-20240116; t=1711413706; c=relaxed/simple;
+	bh=sO0d/mps9kdY+m5kw8PixGdK4LtIlRtqftGoHYkhLKM=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=L6dah08sICqHaw7vavSGem953zcAIxVi7jOuAN9tJ+SubHNyEiaZuES7ib0HoMj/ny8B/bnwuPmwFKR+JvdV/p5jN9A+LB5hg/DHjqKWHENcYTm/CUdSVwt351rhg7hVYXQ7EwEhFcOnuD6xDxXY+GpzgVxTMTwsFau4zA9BsSs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=bjPrIo17; arc=none smtp.client-ip=209.85.210.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f179.google.com with SMTP id d2e1a72fcca58-6ea8a0d1a05so1931425b3a.1;
+        Mon, 25 Mar 2024 17:41:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1711413704; x=1712018504; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=oZ0qd1iGxtr/mWs3kOYHpeMOliTzM44U+9k3boYAHSY=;
+        b=bjPrIo17hZCEh+E0X3m2J3ArqkUjbUvIEmYIKLw+WTgiwfpHvaBLEFfDHi3t2YchbY
+         RbLqeYKujv24L+PmZR+xREPgkI7OaxugCGvNnThbisSS7jfo5DSTKIsa3VY0DIPEy+2g
+         asKklHk4gAjQjFuLhU6a/lSFEHjPYQEkxS97T0PKkdcD4lVDsY1xCCPNH9DiligRiyQT
+         GKopjLnI+i6uctSjQmxvuxehspv6l6u/KM1I9z5FeaDHBORcTo4RLO0HLnGscSoJYLTB
+         xTsftPzVh0XMq9s85JhrZyjf8mSZsWjWh+cerReqf/XiWZf6Xuj6Q9oVGUo8mPi5nQMq
+         Qxgg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711413704; x=1712018504;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=oZ0qd1iGxtr/mWs3kOYHpeMOliTzM44U+9k3boYAHSY=;
+        b=TaZOlAQaNogdje6sNtxlngi4uM6R0eCHnJsQKFkX9V9sbTGP+MzxtjZSBjFwLB3Bt/
+         osW0qZ6/ifD43tCgsguo4HuyuKzVj+w0pBWJmmbR3yqq4bI56RM/QoIwIyyNq2V4cTfE
+         X0rZjSG+IqKD8KP23j/1bE+vDLzW9fLUtNajQK9HNPo4aTYMauv2f8StMmB5rfaFJPdD
+         cxWELZIIb9caGFtSV5JDw6LWjvhC+pCoGxQfH+KMDseTjS3xqnP53Vh1eN0X+er3H45e
+         P65QmZwGT1iCOenUb5QVyFz3nFYQvOVOL5LQpgps9dzFXfFYJ0OMzYowrCnyTrMBZBVu
+         wzRg==
+X-Forwarded-Encrypted: i=1; AJvYcCX5ruWUurh4ZuKVsgx+vtmdi/kOXNXRoUCir1dv+HsZyXggu7Gnzk78hRPHjyDppfICqgJYBrzj3hfBGZa+THOB8MI+bA72lAvq8Pwu
+X-Gm-Message-State: AOJu0Yw7ozq19rX/FsH+5rEEqlFyJZzw864EHC4Op3tNEewIAtDeuQar
+	2JIKMT3wYXpdqc+Wxf/zY/EYIV36Rmdpi4yYrm/nsEcLPUilx9ns
+X-Google-Smtp-Source: AGHT+IEYA+WGKNoGVFoskptYgEJAnpjVW/jus1NyBr8FPL7f00woF98aIvALMq/Ie3Y4t7IfilsxDg==
+X-Received: by 2002:a17:903:228f:b0:1e0:b5d3:3f99 with SMTP id b15-20020a170903228f00b001e0b5d33f99mr8045499plh.26.1711413704161;
+        Mon, 25 Mar 2024 17:41:44 -0700 (PDT)
+Received: from localhost.localdomain ([190.196.101.184])
+        by smtp.gmail.com with ESMTPSA id o16-20020a170902d4d000b001e0a80bc0casm5005148plg.8.2024.03.25.17.41.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 25 Mar 2024 17:41:43 -0700 (PDT)
+From: Camila Alvarez <cam.alvarez.i@gmail.com>
+To: ast@kernel.org,
+	daniel@iogearbox.net
+Cc: bpf@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Camila Alvarez <cam.alvarez.i@gmail.com>,
+	syzbot+d2a2c639d03ac200a4f1@syzkaller.appspotmail.com
+Subject: [PATCH] fix array-index-out-of-bounds in bpf_prog_select_runtime
+Date: Mon, 25 Mar 2024 21:38:35 -0300
+Message-Id: <20240326003832.102750-1-cam.alvarez.i@gmail.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240325-obsbot-quirk-fix-relative-ptz-speed-v1-1-0eb1387d98c7@securitylive.com>
-X-B4-Tracking: v=1; b=H4sIAP0YAmYC/x2NwQrCMBAFf6Xs2YUYW7D+inhIzWtdlCbuxiKW/
- ruhx4FhZiWDCowuzUqKRUzSXOF4aOj+CPMElliZvPOtO/mO02BDKvz+iD55lC8rXqHIAs7lx5a
- ByH1Ai7Hr49kFqqWsqOZ+ud627Q+HVMGsdQAAAA==
-To: Laurent Pinchart <laurent.pinchart@ideasonboard.com>, 
- Mauro Carvalho Chehab <mchehab@kernel.org>
-Cc: linux-media@vger.kernel.org, linux-kernel@vger.kernel.org, 
- linh.tp.vu@gmail.com, ribalda@chromium.org, soyer@irl.hu, 
- John Bauer <john@oxt.co>, John Bauer <johnebgood@securitylive.com>
-X-Mailer: b4 0.13.0
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1711413509; l=4420;
- i=johnebgood@securitylive.com; s=20240325; h=from:subject:message-id;
- bh=EC3DcD5yUB9YFZIy5yjNz83GEhb0RRD1YpnYxRcoesY=;
- b=7CLWWKuRqGJlsL0tB7PQ5mZVY2XRp5a0sqsaeYhEJB2qAQscB+U710fOIiceS7k1Niq4Za3Gj
- GMHr47YiVYOCaod5ydoGwYFXrzcNfyYcZMfMv5GIJ/U7BcOlaB0xkj1
-X-Developer-Key: i=johnebgood@securitylive.com; a=ed25519;
- pk=RN31Fmrxbidp1TwtZGNmQwTDjUWMPnewQJfA/ug2P9E=
-X-Endpoint-Received: by B4 Relay for johnebgood@securitylive.com/20240325
- with auth_id=143
-X-Original-From: John Bauer <johnebgood@securitylive.com>
-Reply-To: johnebgood@securitylive.com
+Content-Transfer-Encoding: 8bit
 
-From: John Bauer <johnebgood@securitylive.com>
+BPF documentation specifies that the maximum stack depth for a BPF
+program is 512 bytes. This is not enforced when selecting a bpf
+interpreter, thus casuing an index out of bounds error when trying to
+obtain an interpreter with a bigger stack size.
 
-The OBSBOT series of cameras misreports the minimum relative
-pan_speed, tilt_speed and zoom_continuous v4l2 controls resulting
-in the inability to control the camera with finesse with an analog
-stick or other programmatic methods. This patch applies to all
-Remo (OBSBOT) vendor cameras with the vendor ID of 0x3564. If the
-vendor fixes the firmware this behavior should still remain valid.
-With this broad vendor fix when new devices are released the kernel
-module won't need to be modified. When the vendor fixes the firmware the
-device list can be modified with finer grained device filters.
+This patch enforces the stack size to be not bigger than
+512.
 
-Signed-off-by: John Bauer <johnebgood@securitylive.com>
+Reported-by: syzbot+d2a2c639d03ac200a4f1@syzkaller.appspotmail.com
+Signed-off-by: Camila Alvarez <cam.alvarez.i@gmail.com>
 ---
-If the Remo/OBSBOT vendor filter is considered too broad I will track down 
-all of the current product ID's and update the device list. It's currently 
-unknown if the vendor is pursuing a fix this issue; this issue has been 
-reported and known to them for over a year. Their only support channel 
-is their Facebook group. 
----
- drivers/media/usb/uvc/uvc_ctrl.c   | 27 ++++++++++++++++++++++++++-
- drivers/media/usb/uvc/uvc_driver.c |  8 ++++++++
- drivers/media/usb/uvc/uvcvideo.h   |  1 +
- 3 files changed, 35 insertions(+), 1 deletion(-)
+ kernel/bpf/core.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/media/usb/uvc/uvc_ctrl.c b/drivers/media/usb/uvc/uvc_ctrl.c
-index e59a463c2761..1951e06527cf 100644
---- a/drivers/media/usb/uvc/uvc_ctrl.c
-+++ b/drivers/media/usb/uvc/uvc_ctrl.c
-@@ -1322,10 +1322,23 @@ static int __uvc_query_v4l2_ctrl(struct uvc_video_chain *chain,
- 		break;
- 	}
- 
--	if (ctrl->info.flags & UVC_CTRL_FLAG_GET_MIN)
-+	if (ctrl->info.flags & UVC_CTRL_FLAG_GET_MIN) {
- 		v4l2_ctrl->minimum = mapping->get(mapping, UVC_GET_MIN,
- 				     uvc_ctrl_data(ctrl, UVC_CTRL_DATA_MIN));
- 
-+		if (chain->dev->quirks & UVC_QUIRK_OBSBOT_MIN_SETTINGS) {
-+			switch (v4l2_ctrl->id) {
-+			case V4L2_CID_ZOOM_CONTINUOUS:
-+			case V4L2_CID_PAN_SPEED:
-+			case V4L2_CID_TILT_SPEED:
-+				v4l2_ctrl->minimum = -1 * mapping->get(mapping, UVC_GET_MAX,
-+						     uvc_ctrl_data(ctrl, UVC_CTRL_DATA_MAX));
-+			default:
-+				break;
-+			}
-+		}
-+	}
-+
- 	if (ctrl->info.flags & UVC_CTRL_FLAG_GET_MAX)
- 		v4l2_ctrl->maximum = mapping->get(mapping, UVC_GET_MAX,
- 				     uvc_ctrl_data(ctrl, UVC_CTRL_DATA_MAX));
-@@ -1914,6 +1927,18 @@ int uvc_ctrl_set(struct uvc_fh *handle,
- 				   uvc_ctrl_data(ctrl, UVC_CTRL_DATA_MIN));
- 		max = mapping->get(mapping, UVC_GET_MAX,
- 				   uvc_ctrl_data(ctrl, UVC_CTRL_DATA_MAX));
-+
-+		if (chain->dev->quirks & UVC_QUIRK_OBSBOT_MIN_SETTINGS) {
-+			switch (xctrl->id) {
-+			case V4L2_CID_ZOOM_CONTINUOUS:
-+			case V4L2_CID_PAN_SPEED:
-+			case V4L2_CID_TILT_SPEED:
-+				min = max * -1;
-+			default:
-+				break;
-+			}
-+		}
-+
- 		step = mapping->get(mapping, UVC_GET_RES,
- 				    uvc_ctrl_data(ctrl, UVC_CTRL_DATA_RES));
- 		if (step == 0)
-diff --git a/drivers/media/usb/uvc/uvc_driver.c b/drivers/media/usb/uvc/uvc_driver.c
-index bbd90123a4e7..d4edc1adb11b 100644
---- a/drivers/media/usb/uvc/uvc_driver.c
-+++ b/drivers/media/usb/uvc/uvc_driver.c
-@@ -3120,6 +3120,14 @@ static const struct usb_device_id uvc_ids[] = {
- 	  .bInterfaceSubClass	= 1,
- 	  .bInterfaceProtocol	= 0,
- 	  .driver_info		= UVC_INFO_META(V4L2_META_FMT_D4XX) },
-+	/* OBSBOT pan, tilt, zoom min settings quirk */
-+	{ .match_flags		= USB_DEVICE_ID_MATCH_VENDOR
-+				| USB_DEVICE_ID_MATCH_INT_INFO,
-+	  .idVendor		= 0x3564,
-+	  .bInterfaceClass	= USB_CLASS_VIDEO,
-+	  .bInterfaceSubClass	= 1,
-+	  .bInterfaceProtocol	= 0,
-+	  .driver_info		= UVC_INFO_QUIRK(UVC_QUIRK_OBSBOT_MIN_SETTINGS) },
- 	/* Generic USB Video Class */
- 	{ USB_INTERFACE_INFO(USB_CLASS_VIDEO, 1, UVC_PC_PROTOCOL_UNDEFINED) },
- 	{ USB_INTERFACE_INFO(USB_CLASS_VIDEO, 1, UVC_PC_PROTOCOL_15) },
-diff --git a/drivers/media/usb/uvc/uvcvideo.h b/drivers/media/usb/uvc/uvcvideo.h
-index 6fb0a78b1b00..0e2f083a5c0e 100644
---- a/drivers/media/usb/uvc/uvcvideo.h
-+++ b/drivers/media/usb/uvc/uvcvideo.h
-@@ -73,6 +73,7 @@
- #define UVC_QUIRK_FORCE_Y8		0x00000800
- #define UVC_QUIRK_FORCE_BPP		0x00001000
- #define UVC_QUIRK_WAKE_AUTOSUSPEND	0x00002000
-+#define UVC_QUIRK_OBSBOT_MIN_SETTINGS 0x00004000
- 
- /* Format flags */
- #define UVC_FMT_FLAG_COMPRESSED		0x00000001
-
----
-base-commit: e8f897f4afef0031fe618a8e94127a0934896aba
-change-id: 20240325-obsbot-quirk-fix-relative-ptz-speed-9ae4ef59d80a
-
-Best regards,
+diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
+index 696bc55de8e8..8167b3a721e9 100644
+--- a/kernel/bpf/core.c
++++ b/kernel/bpf/core.c
+@@ -2196,7 +2196,7 @@ static u64 ___bpf_prog_run(u64 *regs, const struct bpf_insn *insn)
+ 		BUG_ON(1);
+ 		return 0;
+ }
+-
++#define BPF_MAX_STACK_SIZE 512
+ #define PROG_NAME(stack_size) __bpf_prog_run##stack_size
+ #define DEFINE_BPF_PROG_RUN(stack_size) \
+ static unsigned int PROG_NAME(stack_size)(const void *ctx, const struct bpf_insn *insn) \
+@@ -2345,7 +2345,7 @@ static void bpf_prog_select_func(struct bpf_prog *fp)
+ {
+ #ifndef CONFIG_BPF_JIT_ALWAYS_ON
+ 	u32 stack_depth = max_t(u32, fp->aux->stack_depth, 1);
+-
++	stack_depth = min_t(u32, stack_depth, BPF_MAX_STACK_SIZE);
+ 	fp->bpf_func = interpreters[(round_up(stack_depth, 32) / 32) - 1];
+ #else
+ 	fp->bpf_func = __bpf_prog_ret0_warn;
 -- 
-John Bauer <johnebgood@securitylive.com>
-
+2.34.1
 
 
