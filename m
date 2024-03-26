@@ -1,47 +1,62 @@
-Return-Path: <linux-kernel+bounces-118740-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-118743-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id A982A88BEBB
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 11:05:54 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7B93C88BEC5
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 11:07:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CBDA01C3C60D
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 10:05:53 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id ADADD1C2CA0A
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 10:07:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 02E1E5C904;
-	Tue, 26 Mar 2024 10:05:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BFB6A6BFDE;
+	Tue, 26 Mar 2024 10:06:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="THGAJerI"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="kekSt440"
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2BB15524D0;
-	Tue, 26 Mar 2024 10:05:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7122F679E1;
+	Tue, 26 Mar 2024 10:06:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711447539; cv=none; b=M8ZmPQ4dsGVZNAIbOwhRXpGkpktbZALAqYi9njMOblpBCJiIAHHesh1aKh4cmNyDRi6X3Q53SF6JNWMXiDwbW4AbYM9+/OClML+Qw5/s8curAw2DPY1AZhXZzr+q7984xHfTi8cg63Z9JgGBsNwb0WK0YfJ6Ap+CwDhqfJq2W84=
+	t=1711447613; cv=none; b=JVdXVH14bCQa64TB36WZ1K7+/ZfZE7O2bvN9cPPOLARf138iCRcxb5njpFb28aHxsWonDlkQC/kjbuBMr9pjSnn6dCnyRRToLxwwj70uP88yQfFh8gmQeDgyv/JoDLjOoaNy2MIyVrczBnY1tJleC1MSluAFbzdTMk5Y+CnhRLg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711447539; c=relaxed/simple;
-	bh=/oYS92t78LsjtBRAu2wTfiubNqaf7k6aYu+wQ42Dlp8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=shSWrES5wknKDdDgr2bQYsVlPMLODEh7+rtLxehFQKT4A1cWD0bkGpznIuRKyJ9sRx0pmX6R9iOeW0OkvvtQPgY+sTWYLUY/IpwRID2+bhDE5PvML7RQ2MVNh4JZhpZLJ4zfa0fE9fhDgcMUlvjX0xvX2jAlEAw5JenM1jOU2y4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=THGAJerI; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B8A7EC433C7;
-	Tue, 26 Mar 2024 10:05:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711447539;
-	bh=/oYS92t78LsjtBRAu2wTfiubNqaf7k6aYu+wQ42Dlp8=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=THGAJerIDhr2e97aM7xHDFFhNVDgNVOoQLzkMlbvDQCGhE9sPoFrZyfuy2H8MgTjf
-	 CqEPlNGfwATXIjPnyLcKVRQrWYg7KCiINzEDJFoyXmJOqDeCnPHeVHo6wnbgLaA8MK
-	 +gHIYG5ksqjqFJHqk9OPDk8c7cmJhZmBnajWXyXy8cKcTobUfcB4BZJ+4mPcoYMnx4
-	 LAHodiEmwCXkkZp/85dinuNAVfn/15TYoh8cvU9hkanDem5AJM+UZZy2mMnTk5n+ci
-	 Vik1eBJpRwdcio63M1j85HfKFctIqcgZWl0zoc8uqMt9EJlnGA7EJJL+GxazermINO
-	 yo67UtsjKZTIw==
-Message-ID: <6ce6edde-67f0-4452-aee2-602af3d71ecd@kernel.org>
-Date: Tue, 26 Mar 2024 19:05:35 +0900
+	s=arc-20240116; t=1711447613; c=relaxed/simple;
+	bh=e9rjLhsGUsOfk2IfGhHzXVHO0YjmBd4tuhNPwoR2aA0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=RIs+Nmt0HdCSMGEpqxo+p7sdnUy1UARp4nRI28Iyvj3d1Hvo9594GlwfeUI0gnfDo/yaTuzWBA8peWiWbYYeQKggM+jOghvzis2o7k/npJ1o9SlY3NP9FcPEweu1R7F77SsfxR4fbdWgPERQz5p8hPwytVRwh7Xaa8/tki03hwA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=kekSt440; arc=none smtp.client-ip=205.220.168.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279863.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 42Q4H3uq021424;
+	Tue, 26 Mar 2024 10:06:38 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=nl4E2X95msSqYDli7PLf4WrJbHQU3ND3a3UYloS/oY8=; b=ke
+	kSt440rECrd8T6/8n7n9ZQFmXiDICyfH8wsdTwmek1033Dsg8BuM9jGNFritb6s2
+	T33+P1fu9S3vRs7rS9ZYssojKzCpGDoUyKV9ha8WB7Etwrp7imLntJGl+ItpbrSb
+	z/sA8LBlfbYbgjjNywkNxFcab1ayKpiFbATUZQqgWQMMosvqiWF/awGlObxpua6g
+	SSdhupI7rUSl2PCA5EKpL/MvnTZHfhDR+WH0MSdnAVz+GQghSnj06kXqVGTw7wb4
+	ZNoDCsQiInfKFAU2NDYje+RChAWX4lNjxf4PZ1cvS/vVs3+DlNU/Enqd7pbZTQXQ
+	Osnx14AAamMMPVDnVLqw==
+Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3x3j54hf6b-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 26 Mar 2024 10:06:38 +0000 (GMT)
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+	by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 42QA6b13017468
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 26 Mar 2024 10:06:37 GMT
+Received: from [10.216.2.127] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Tue, 26 Mar
+ 2024 03:06:31 -0700
+Message-ID: <ec3bf11a-0dc2-4313-ba93-c81494c4cc38@quicinc.com>
+Date: Tue, 26 Mar 2024 15:36:27 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -49,130 +64,117 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v8 2/7] scsi: libsas: Define NCQ Priority sysfs attributes
- for SATA devices
+Subject: Re: [PATCH v16 7/9] usb: dwc3: qcom: Refactor IRQ handling in glue
+ driver
+To: Johan Hovold <johan@kernel.org>
+CC: Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Rob Herring
+	<robh+dt@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Wesley Cheng
+	<quic_wcheng@quicinc.com>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        "Greg
+ Kroah-Hartman" <gregkh@linuxfoundation.org>,
+        Conor Dooley
+	<conor+dt@kernel.org>,
+        Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
+        Felipe Balbi
+	<balbi@kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-arm-msm@vger.kernel.org>, <linux-usb@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <quic_ppratap@quicinc.com>,
+        <quic_jackp@quicinc.com>
+References: <20240307062052.2319851-1-quic_kriskura@quicinc.com>
+ <20240307062052.2319851-8-quic_kriskura@quicinc.com>
+ <ZgFyukBXIIwZo7v-@hovoldconsulting.com>
+ <50926b91-3c61-4dbf-85c9-7558ab96e628@quicinc.com>
+ <ZgF6zvaT2OkrbkHK@hovoldconsulting.com>
+ <807015d4-c5ed-4e04-9948-fd1ff894a04e@quicinc.com>
+ <ZgHUR-Rk-YzqiTtt@hovoldconsulting.com>
+ <7b4a6d7f-76ad-471f-a178-dc598fbc0e22@quicinc.com>
+ <ZgKHNuziNtBhGO9V@hovoldconsulting.com>
 Content-Language: en-US
-To: Geert Uytterhoeven <geert@linux-m68k.org>,
- Igor Pylypiv <ipylypiv@google.com>
-Cc: Niklas Cassel <cassel@kernel.org>, John Garry <john.g.garry@oracle.com>,
- Jason Yan <yanaijie@huawei.com>, "James E.J. Bottomley"
- <jejb@linux.ibm.com>, "Martin K. Petersen" <martin.petersen@oracle.com>,
- Jack Wang <jinpu.wang@cloud.ionos.com>, Hannes Reinecke <hare@suse.de>,
- Xiang Chen <chenxiang66@hisilicon.com>,
- Artur Paszkiewicz <artur.paszkiewicz@intel.com>,
- Bart Van Assche <bvanassche@acm.org>, TJ Adams <tadamsjr@google.com>,
- linux-ide@vger.kernel.org, linux-scsi@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <20240307214418.3812290-1-ipylypiv@google.com>
- <20240307214418.3812290-3-ipylypiv@google.com>
- <CAMuHMdWxVbT=f+kZ58urwGhYD9RfBnu7u8oLAyrx_riU8OGt0w@mail.gmail.com>
-From: Damien Le Moal <dlemoal@kernel.org>
-Organization: Western Digital Research
-In-Reply-To: <CAMuHMdWxVbT=f+kZ58urwGhYD9RfBnu7u8oLAyrx_riU8OGt0w@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+From: Krishna Kurapati PSSNV <quic_kriskura@quicinc.com>
+In-Reply-To: <ZgKHNuziNtBhGO9V@hovoldconsulting.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: zaJxAJd3PocZS3YQVLxelHTILjtXeGGj
+X-Proofpoint-ORIG-GUID: zaJxAJd3PocZS3YQVLxelHTILjtXeGGj
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-03-26_04,2024-03-21_02,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 malwarescore=0
+ impostorscore=0 priorityscore=1501 phishscore=0 clxscore=1015
+ lowpriorityscore=0 adultscore=0 spamscore=0 suspectscore=0 mlxlogscore=867
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2403210001 definitions=main-2403260068
 
-On 3/26/24 18:53, Geert Uytterhoeven wrote:
-> Hi Igor,
-> 
-> On Thu, Mar 7, 2024 at 10:55 PM Igor Pylypiv <ipylypiv@google.com> wrote:
->> Libata sysfs attributes cannot be used for libsas managed SATA devices
->> because the ata_port location is different for libsas.
+
+
+On 3/26/2024 1:58 PM, Johan Hovold wrote:
+> On Tue, Mar 26, 2024 at 01:41:52PM +0530, Krishna Kurapati PSSNV wrote:
+>> On 3/26/2024 1:15 AM, Johan Hovold wrote:
 >>
->> Defined sysfs attributes (visible for SATA devices only):
->> - /sys/block/sda/device/ncq_prio_enable
->> - /sys/block/sda/device/ncq_prio_supported
+>>> Just change the logic in dwc3_qcom_find_num_ports() so that it returns 1
+>>> if "dp_hs_phy_1" is missing, and otherwise you determine the number of
+>>> ports by iterating from 2 to DWC3_MAX_PORTS - 1.
+> 
+>> I made this change and it works. Removed any return value check for the
+>> find_num_ports call as it can return only 1/2/3/4 now.
 >>
->> The newly defined attributes will pass the correct ata_port to libata
->> helper functions.
+>> ---
+>>       irq = platform_get_irq_byname_optional(pdev, "qusb2_phy");
+>>           if (irq > 0)
+>>                   return 1;
 >>
->> Reviewed-by: John Garry <john.g.garry@oracle.com>
->> Reviewed-by: Damien Le Moal <dlemoal@kernel.org>
->> Reviewed-by: Jason Yan <yanaijie@huawei.com>
->> Signed-off-by: Igor Pylypiv <ipylypiv@google.com>
+>>           irq = platform_get_irq_byname_optional(pdev, "dp_hs_phy_irq");
+>>           if (irq > 0)
+>>                   return 1;
 > 
-> Thanks for your patch, which is now commit b4d3ddd2df7531e3 ("scsi:
-> libsas: Define NCQ Priority sysfs attributes for SATA devices")
-> in scsi-mkp/for-next
+> As I mentioned above, these two lookups are no longer needed and should
+> be removed.
+>   
+>>           irq = platform_get_irq_byname_optional(pdev, "dp_hs_phy_1");
+>>           if (irq <= 0)
+>>                   return 1;
 > 
->> --- a/drivers/scsi/libsas/sas_ata.c
->> +++ b/drivers/scsi/libsas/sas_ata.c
+> Just assume it's a single port controller unless "dp_hs_phy_1" is
+> present.
+>   
+>>           for (port_index = 1; port_index < DWC3_MAX_PORTS - 1;
+>> port_index++) {
 > 
->> +
->> +DEVICE_ATTR(ncq_prio_supported, S_IRUGO, sas_ncq_prio_supported_show, NULL);
->> +
+> I think this would be more readable if you use port (num) as iterator
+> (2..DWC3_MAX_PORTS) as you're returning a number of ports.
 > 
-> [...]
+>>                   sprintf(irq_name, "dp_hs_phy_%d", port_index + 1);
 > 
->> +
->> +DEVICE_ATTR(ncq_prio_enable, S_IRUGO | S_IWUSR,
->> +           sas_ncq_prio_enable_show, sas_ncq_prio_enable_store);
->> +
+> Then this would use just "port";
 > 
-> When both CONFIG_SCSI_SAS_ATA and CONFIG_SATA_HOST are enabled:
+>>
+>>                   irq = platform_get_irq_byname_optional(pdev, irq_name);
+>>                   if (irq <= 0)
+>>                           return port_index;
 > 
-> aarch64-linux-gnu-ld: drivers/ata/libata-sata.o:(.data+0x110):
-> multiple definition of `dev_attr_ncq_prio_supported';
-> drivers/scsi/libsas/sas_ata.o:(.data+0x260): first defined here
-> aarch64-linux-gnu-ld: drivers/ata/libata-sata.o:(.data+0xd8): multiple
-> definition of `dev_attr_ncq_prio_enable';
-> drivers/scsi/libsas/sas_ata.o:(.data+0x228): first defined here
+> And return "port - 1" here.
 > 
-> Making both new DEVICE_ATTR() declarations static doesn't work,
-> as <linux/libata.h> contains a forward declaration for the existing global
-> dev_attr_ncq_prio_supported in libata:
-> 
-> In file included from include/linux/async.h:14,
->                  from drivers/scsi/libsas/sas_ata.c:12:
-> include/linux/device.h:156:33: error: static declaration of
-> ‘dev_attr_ncq_prio_supported’ follows non-static declaration
->   156 |         struct device_attribute dev_attr_##_name =
-> __ATTR(_name, _mode, _show, _store)
->       |                                 ^~~~~~~~~
-> drivers/scsi/libsas/sas_ata.c:984:8: note: in expansion of macro ‘DEVICE_ATTR’
->   984 | static DEVICE_ATTR(ncq_prio_supported, S_IRUGO,
-> sas_ncq_prio_supported_show,
->       |        ^~~~~~~~~~~
-> In file included from include/scsi/sas_ata.h:13,
->                  from drivers/scsi/libsas/sas_ata.c:15:
-> include/linux/libata.h:508:32: note: previous declaration of
-> ‘dev_attr_ncq_prio_supported’ with type ‘struct device_attribute’
->   508 | extern struct device_attribute dev_attr_ncq_prio_supported;
->       |                                ^~~~~~~~~~~~~~~~~~~~~~~~~~~
-> In file included from include/linux/async.h:14,
->                  from drivers/scsi/libsas/sas_ata.c:12:
-> include/linux/device.h:156:33: error: static declaration of
-> ‘dev_attr_ncq_prio_enable’ follows non-static declaration
->   156 |         struct device_attribute dev_attr_##_name =
-> __ATTR(_name, _mode, _show, _store)
->       |                                 ^~~~~~~~~
-> drivers/scsi/libsas/sas_ata.c:1023:8: note: in expansion of macro ‘DEVICE_ATTR’
->  1023 | static DEVICE_ATTR(ncq_prio_enable, S_IRUGO | S_IWUSR,
->       |        ^~~~~~~~~~~
-> In file included from include/scsi/sas_ata.h:13,
->                  from drivers/scsi/libsas/sas_ata.c:15:
-> include/linux/libata.h:509:32: note: previous declaration of
-> ‘dev_attr_ncq_prio_enable’ with type ‘struct device_attribute’
->   509 | extern struct device_attribute dev_attr_ncq_prio_enable;
->       |                                ^~~~~~~~~~~~~~~~~~~~~~~~
-> 
-> Perhaps the new attributes can be renamed?
-> Alternatively, the DEVICE_ATTR() can be open-coded, so the actual
-> device_attribute structures are named differently.
+>>           }
+>>
+>>           return DWC3_MAX_PORTS;
 
-I think we need to do that because I do not want the attribute name to change in
-sysfs as that creates hell for the user to control a feature that is identical
-beside the different transport (which the user should not care about).
-I will send something asap.
+Ok,Thanks.
 
-> 
-> Gr{oetje,eeting}s,
-> 
->                         Geert
-> 
+With the above fixed, can I put your RB tag given on [1] or will you be 
+providing another one. Asking because when you gave that RB, this 
+malformed DT thing wasn't there. So wanted to check with you before 
+pushing the code.
 
--- 
-Damien Le Moal
-Western Digital Research
+[1]: https://lore.kernel.org/all/ZgFyukBXIIwZo7v-@hovoldconsulting.com/
 
+Regards,
+Krishna,
 
