@@ -1,170 +1,172 @@
-Return-Path: <linux-kernel+bounces-119394-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-119395-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id C3C8F88C823
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 16:55:24 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C668788C828
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 16:55:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3950D1F802BF
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 15:55:24 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 570DC321169
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 15:55:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6309F13D242;
-	Tue, 26 Mar 2024 15:53:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 98A6313D267;
+	Tue, 26 Mar 2024 15:53:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="bZhX3a6w"
-Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="N79VwtwG"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7CFC713CFAC
-	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 15:53:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711468393; cv=none; b=pqNN6xQrR8pp1muuXvOdNmjvrlDoNMXZk82T+E6PMB1Q4NTlIoKhyfXNtpr1Ibgk1BmEfGiNGkWFpscaXXU2OrrKbI/SVo7/Ck1nyxInLvu+XKSE/JuvM3r2+b1Ki0qPaMIQZS83epBhwGocAiKN1oCIMwVvpn4gii14htJJwUs=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711468393; c=relaxed/simple;
-	bh=CMYGhs1gXEUfzVLwLKQFOQK6SPtPUQZCTfrV/Hgx2GU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=aNU/OVV6MQWjf8o4yyS40iE8HGZMytyFpRqZyGIiAFa7aIWDLEypWPaSfg84OpjOAh/uXsIhVbG8eN8oUqwChyXSsoH/tbkqYP1f/TcoYX8JnJoeWMyzm/YWZqLa8UGP/1+rN3KBRS6MGQucLjYieJDejbyn1yz918UYV+x0Wt4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=bZhX3a6w; arc=none smtp.client-ip=65.109.113.108
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
-Received: from localhost (localhost.localdomain [127.0.0.1])
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id C6E0E40E02A6;
-	Tue, 26 Mar 2024 15:53:07 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-	header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-	with ESMTP id Xxzb6lMyPGkW; Tue, 26 Mar 2024 15:53:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-	t=1711468384; bh=TcZAuev01yKZaJPvDyAUZzPEAjCX2jHAgYb7hloP0qg=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=bZhX3a6wfjs7R5QZ9n1OGetMIxdodBb1ktAPUVyaasWwUXWHD3iLRnAGHSjIfIwU3
-	 PDQqHNXvzpF23KeTu1fdTSz0DGJkifGwKzXQ7iTIsRVD58wg+XfcApyXioQFBN+w6d
-	 n0qli2AH+DVnpbAJL4QkHUWsZxANrgRl2dZ1ttAPY1TYbXEoB01YuA7h8fZ49AqFSZ
-	 QHyxd57RLHaSGTjggh2rz0dqGc5x6+lvBlr0tRwUAp7IDQEou+JJXRnG6TeYJAYDlo
-	 GSTc/SS51o21jzHFEKcQblpS4jsftFuVjRRKw9wqGWMZWcEmfh7zznilw4QHhp+tQC
-	 mB51o2YpF+v1o84htIe307bCXw8fbGU5x2iI3Hp/F0ca49SWYZIPYkc1dyIbMh3wQp
-	 r2oOlOr2TJHyVcEsM2YMnnI6j7XKeRX3fzSvui8gLo0xPzmapt6Vzs5ig2pM8sUZOd
-	 u5yI9HcetGJWq6Fs9Svy3qEaCHK91bEgLcCB0FPwT1mB+OYsafAKbFKJo/tf8vnr8X
-	 8hIBCB2CMw5g44FFAYzFVVB4AMfKhI9gikcXhhkY4v53qgXcwd4o1muJ9IFFWcmlre
-	 z98UO+4ceov+S+gs6onwFvjcD29izKYusPiHONhSLRfexdXr4i5chdDVZGzNFQGDaG
-	 8rS5Uig/xeYqd6P9dvOv4PaY=
-Received: from zn.tnic (p5de8ecf7.dip0.t-ipconnect.de [93.232.236.247])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-	(No client certificate requested)
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 8004540E024C;
-	Tue, 26 Mar 2024 15:52:53 +0000 (UTC)
-Date: Tue, 26 Mar 2024 16:52:47 +0100
-From: Borislav Petkov <bp@alien8.de>
-To: Nikolay Borisov <nik.borisov@suse.com>
-Cc: Paul Menzel <pmenzel@molgen.mpg.de>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Josh Poimboeuf <jpoimboe@kernel.org>,
-	Ingo Molnar <mingo@redhat.com>,
-	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-	LKML <linux-kernel@vger.kernel.org>, Marco Elver <elver@google.com>,
-	kasan-dev@googlegroups.com
-Subject: Re: Unpatched return thunk in use. This should not happen!
-Message-ID: <20240326155247.GJZgLvT_AZi3XPPpBM@fat_crate.local>
-References: <0851a207-7143-417e-be31-8bf2b3afb57d@molgen.mpg.de>
- <47e032a0-c9a0-4639-867b-cb3d67076eaf@suse.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D3B013CFA3;
+	Tue, 26 Mar 2024 15:53:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=192.198.163.11
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1711468394; cv=fail; b=NTGQ1Q4C/Pb64FCJBiSBjgGHy30oCkUlmvg2wiRft+E7c0y7fTLscYOm0ED56xH2VwAmO7VoyO9/ducZMTX5Raf0L8mVC3rhG3mDyRWEPozDiC0DHXiwOFQagU+X7bUSrgx9artqlAPBDQXyyptHr6JJuHbbdrWCuQ31qCjzZw4=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1711468394; c=relaxed/simple;
+	bh=RS1Ntwxq8/sQAFFTf5/3b2fBhTQmwjz9foCYOB0g444=;
+	h=Date:From:To:CC:Subject:Message-ID:References:Content-Type:
+	 Content-Disposition:In-Reply-To:MIME-Version; b=qgafXHq7JJ/VoWEgYLdSBr1uVUsLnsQi87xU+kDJ6bfSZwGcO7RNdrollOb8+ldWhQZr+KKBs9UuuiRV7YYe4F2l57hxQNiX5fzmf0S97eHpkC1YItQRfLHwULmdYVgSKNSyfhv38vqMdYxO6Agl682ZhST5iV4B3HjRSxNMMRM=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=N79VwtwG; arc=fail smtp.client-ip=192.198.163.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1711468393; x=1743004393;
+  h=date:from:to:cc:subject:message-id:references:
+   in-reply-to:mime-version;
+  bh=RS1Ntwxq8/sQAFFTf5/3b2fBhTQmwjz9foCYOB0g444=;
+  b=N79VwtwGT1fwDO00Qg4arykmRYn+XtBgCtFyvLEyj6xNzie0AAQH6zqd
+   L5tMH58vGPXjPUQWkXZISdusjV45fWmpjRpaG8jvJxciuDZz+ZUA64lCc
+   YAA2EgyAwgRSbpjGHHZi1hAbYq/OXVZYtMWjsAWlrAZoSJ/D6m/81eBN0
+   fsmVBl1gY7V7PEhARNuiz2l/HVHVOjoSsrcslErY3C0IIWRv0Ae+/whA8
+   Ciq106RkYRRa8B5CxlKM2fLOykT6hmFXwUo6H0PnNTSsraGTIcs4JbdMW
+   wDU1R+f4oG5+HjVbP0QKCnNL74MiRHQAYda8WrOMA0J2FtcOzPEIQdvWm
+   Q==;
+X-CSE-ConnectionGUID: HyXQW4h9Tz+/oTU1tdEZQQ==
+X-CSE-MsgGUID: XAGHYApaRf6hEKTDnOl43w==
+X-IronPort-AV: E=McAfee;i="6600,9927,11025"; a="17160166"
+X-IronPort-AV: E=Sophos;i="6.07,156,1708416000"; 
+   d="scan'208";a="17160166"
+Received: from fmviesa007.fm.intel.com ([10.60.135.147])
+  by fmvoesa105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Mar 2024 08:53:11 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,156,1708416000"; 
+   d="scan'208";a="15992601"
+Received: from orsmsx603.amr.corp.intel.com ([10.22.229.16])
+  by fmviesa007.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 26 Mar 2024 08:53:07 -0700
+Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
+ ORSMSX603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Tue, 26 Mar 2024 08:53:06 -0700
+Received: from orsedg603.ED.cps.intel.com (10.7.248.4) by
+ orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35 via Frontend Transport; Tue, 26 Mar 2024 08:53:06 -0700
+Received: from NAM11-DM6-obe.outbound.protection.outlook.com (104.47.57.169)
+ by edgegateway.intel.com (134.134.137.100) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Tue, 26 Mar 2024 08:53:05 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=PchLYWZWg0jZsDhgN5jfqmd9O0AQoBeJBrWwUZmtZCrFb2vLu6+DPhzD2QPhlk07Wzgx0Xw/E5mxCZkFWtGP8TwWaVfpih5L6wUORhQ5maDOh7KP4Wa0W+7kCZ0BQdWhAf2JQgJceqItQtns79VyvWeXGW5R3OrQkKOiZavNdhYnSIK5Mob1YyUhtHX2L0m5GBoxEIm4DgSd/bOb8kfl89sPUE7sI99vC4F6RT6x0BH7E0y3+zmsQ/qogLBhlftKBYXbtnm8/hHib9SEm2Lohjoz06sYbLxFn+h0UOqqXhRpRJUJ2e5A0xKyDQtrMbQS77yYnIy+raOr6Qwqic7JRQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=X5d0O37pfnfV2WVu4K0KY6/HnhI0EGOP5vRLVgCG1vM=;
+ b=LN9Y8hgCczy5FIAFL05hd3ypeuzZ+YSBiTx85H/mIOhJQI8Qyvn1uOTi/I4x+7pGCcbIYwdZZ6Ay9X0oUFuRJHiO5u+KMVHs471iku5kvTYtA4yQqZd/P+6sjjiH2W+N0xjhJzymuHpyda7A38v5XhTJ6Wfqkhpm2m5l7oRwUr05zWE2fx4g0gY9cYWHAjbKP7W63NQoixRSxpUqKDolQgCmx0izLEzo6HuSuC4230ijXNAZhYoT7TX72czeAgiw6LlDPMZzfnU0QzVmdsIYddFdEY6UADVvMm/leJeFegsx89VQ8uM1g20wOUI86C/wgh7L26d/gcdB6AqY/f6dGw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Received: from CY5PR11MB6139.namprd11.prod.outlook.com (2603:10b6:930:29::17)
+ by PH0PR11MB5206.namprd11.prod.outlook.com (2603:10b6:510:3f::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.24; Tue, 26 Mar
+ 2024 15:53:04 +0000
+Received: from CY5PR11MB6139.namprd11.prod.outlook.com
+ ([fe80::e9dd:320:976f:e257]) by CY5PR11MB6139.namprd11.prod.outlook.com
+ ([fe80::e9dd:320:976f:e257%4]) with mapi id 15.20.7409.031; Tue, 26 Mar 2024
+ 15:53:04 +0000
+Date: Tue, 26 Mar 2024 10:52:59 -0500
+From: Lucas De Marchi <lucas.demarchi@intel.com>
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+CC: <linux-kernel@vger.kernel.org>, <linux-crypto@vger.kernel.org>, "Chris
+ Zankel" <chris@zankel.net>, Max Filippov <jcmvbkbc@gmail.com>, Rob Clark
+	<robdclark@gmail.com>, Abhinav Kumar <quic_abhinavk@quicinc.com>, "Dmitry
+ Baryshkov" <dmitry.baryshkov@linaro.org>, <linux-arm-msm@vger.kernel.org>,
+	<dri-devel@lists.freedesktop.org>, <freedreno@lists.freedesktop.org>, "Oded
+ Gabbay" <ogabbay@kernel.org>, Thomas =?utf-8?Q?Hellstr=C3=B6m?=
+	<thomas.hellstrom@linux.intel.com>, <intel-xe@lists.freedesktop.org>,
+	<linux-mips@vger.kernel.org>, <sparclinux@vger.kernel.org>
+Subject: Re: Build regressions/improvements in v6.9-rc1
+Message-ID: <gtqvjakd2qgymz2zxkaq5tch2s2akavnpb3d2ix6mtqvbtdmse@yecsvxa4f2ea>
+References: <CAHk-=wgOw_13JuuX4khpn4K+n09cRG3EBQWufAPBWoa0GLLQ0A@mail.gmail.com>
+ <20240325200315.3896021-1-geert@linux-m68k.org>
+ <8d78894-dd89-9f4d-52bb-1b873c50be9c@linux-m68k.org>
+Content-Type: text/plain; charset="us-ascii"; format=flowed
+Content-Disposition: inline
+In-Reply-To: <8d78894-dd89-9f4d-52bb-1b873c50be9c@linux-m68k.org>
+X-ClientProxiedBy: SJ0PR13CA0002.namprd13.prod.outlook.com
+ (2603:10b6:a03:2c0::7) To CY5PR11MB6139.namprd11.prod.outlook.com
+ (2603:10b6:930:29::17)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <47e032a0-c9a0-4639-867b-cb3d67076eaf@suse.com>
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CY5PR11MB6139:EE_|PH0PR11MB5206:EE_
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: +y1LfLdiK3ckTk7GiVF51z0wCE1aAbRjYSMtm1fOtOA2hhNg597hDC6KS2mMOHxdhb81v8oRlwZU7/5pAOb+7BypzejJCop649DKLcm+VwFm1/ZuhO8Y96ND66H6cuWCvVKrxln5Iafi8s0lnAXeVTgIkDt4cjIhCXB4wxj1lVS95xZg4vPw23mIy3ORQ3BjTYV2e0JmXRFjG/i0t6BxabO4BaT3fR7P/mEyPjPNlQr3/xP4rsObAn1QDI/qeBKsbap6ZM48YP3+yU8mE7aeifZdYIt9SdjoJRTsXTszWbkrRiZMpJOyrZh4lDt6E+rlw94eobMPOlmH6BfaWJhvetMp8btYo3uOHA/GXyT0QWZGU0RY/Gb67kqCU/0HX77KR8Xn8vYD+aaLcwUgNtdo+ku2KLETEIA2dXgdGEfAwhO3LxSdZ9wWTCWkfEb3QuxGJ+rWLttCaS8y5vRVbAZZN8zFpLaE/llRhN4oeXNQvpVaSjpx2ebr1zpOdYAvy3Ct6HFZynjRLI6tAb+OnrbQn5MAwUgs6ypA3jYworJa2aAXVI6UvLWFb7DV3Wma8gLn6dod6dwCW8rPNoXuyvRqimltoxnMBJLRLmfKtwrFShs=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CY5PR11MB6139.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(1800799015)(376005)(7416005)(366007);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?aVFi+N5FVbZscy+Z2i7ZgJ0m7cfzwy/QcXCsI1p3lpWzHrpt7PYrH9voRChZ?=
+ =?us-ascii?Q?gtp8dzQxNi+aDYP7xVwku2LPo+I8KwpRxw1AgAtRDHnc+GSd4iXtoHBJ2RYJ?=
+ =?us-ascii?Q?9U7ankz47+H2vnXgXXuhAohs4sPvsCI9GWXoiLA9y0byrtutGf4Y2BSc+wQh?=
+ =?us-ascii?Q?y/LoIRa1XixqWrol6dNktFH5VJLd4jE6gEQPBonC83Pni7C9HF5Y1lO7ywGa?=
+ =?us-ascii?Q?l13F1MRNJnNp7ZmHnFbiDr9ukLyjz1pQuSl+tM5dQEY/b/8HXXQr0Of2H/7I?=
+ =?us-ascii?Q?U/jGaU/50bt3SJ1iTixlSvceSWx5mQ+EaSwQ13IAv79psNbduc9rxBiOvJ+Q?=
+ =?us-ascii?Q?4N7bBnNCZq7afb24XVQT2H6ZnJ3emuG5PHlwBXe6gJBAaa0szQ+zMHDHj6jp?=
+ =?us-ascii?Q?Pk9iTjgIIMqCqfQNKhpg7PtuhSX7/U7XgtTdPQxKhjmM8EExv4faNvWEeGbg?=
+ =?us-ascii?Q?AoRRWrlXRoBLrJlpsj1/kgMFSEAuX3asBLuaja4a5alUa3DMMP5tsMWXBExO?=
+ =?us-ascii?Q?HMCpVB3g7KBGiHnLalnBqWb30KKVFap+DieF2IrIw+Oea+TG7OmLqchPzSEi?=
+ =?us-ascii?Q?mLS1Pfs7tM5rl/2481o3Wv2pnIXqO9NH1AmDZysL5jasZn7Gjvgxqd4CFswP?=
+ =?us-ascii?Q?8ezWp6pLDbBf4BflDU08lm+et3NR53Whuw34AO6iLrOWnb5bvOXbeqG49P40?=
+ =?us-ascii?Q?YFT6cumcymrnEbKA8MydnYldTuLFPBAWT43dBkMxOmPQfFsAZRry4J99hJ6P?=
+ =?us-ascii?Q?LGFrLMPR6wXNLM2UcmP54Oj9n3Y2FRrICfMfqhdRM95tl24/5apTwtdXiYid?=
+ =?us-ascii?Q?OYuVD2mRZgXsZFstNPfHPGo0xYQRwKTlHzDrresM4xuszdfRC21QKQBabswx?=
+ =?us-ascii?Q?jX4XMC1THy0Hyyq02D63aUgzTMAWeoHhPxXRnZ9IpQnBH96G2/srTX6OLH2F?=
+ =?us-ascii?Q?DftEdB/0NffdNRzXSB3i3WrI7qoEeewpa4Wr7x5lGTMHcjBW65B7AKbP8yVY?=
+ =?us-ascii?Q?aRCDfrMkld91vqrBXZUVAk7hj2wLzWlPOIwrkiN+vWjeFg9y1bQbrRJ9+VAX?=
+ =?us-ascii?Q?x4Qm6m2u/1oZMv83u2ZeVIRuw0ZziBbnfRj7TaSkywne7N5VroSSfsdn7gYg?=
+ =?us-ascii?Q?PKOZm7RZF6UqCdCshYigWNfqpTJrcVlgAcEpdgoRxUjYRSHpkwuaxTtobdjk?=
+ =?us-ascii?Q?G8ovbqLjQ+RTzfE0RwW3V/c/jm+A4SliywPgMBNvAedybMHQ6R+8rwkHj/E2?=
+ =?us-ascii?Q?Maee2N5z93VlMvNrOlUb/JYnZBm2PbW0Maek4eP6d+I8vAyQGvJSYDTJR//R?=
+ =?us-ascii?Q?enIUDavQcrKqQaAb/bt47sKoaTRqDPzjifOqwAuuNhsZX68hjz/3FMoxyj5/?=
+ =?us-ascii?Q?apwf4tMPNQ0jYzalPp9tkpRt6eHw3Ol3RPd6jIGRKuNce4SvlJrmHEPEv+aK?=
+ =?us-ascii?Q?3yZJNDfTLyKi6m9WQHyIkIZ3ZC0RrDdhU9X/jWNW0askipR5K+mzG8TW7ILc?=
+ =?us-ascii?Q?JdHbi582BJnVNc7GZpi0tPHQpjClxxMfoTlgFMGNQNDnuhU3jfRyfoW9Ly7P?=
+ =?us-ascii?Q?aVNWwYjop1aMkGddLSWufRFyIDFsFWiF7wlXOgbOHy0tcTwQIeBloUPx2wEt?=
+ =?us-ascii?Q?wg=3D=3D?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9afc13c0-b887-493c-9795-08dc4dacd285
+X-MS-Exchange-CrossTenant-AuthSource: CY5PR11MB6139.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Mar 2024 15:53:04.2607
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: VYH5TKPQYBR0VoeVj/WZPoMqfw3u55FS/sQN4GjMJ841NhotaBER+bSVQcs3sdr+uOLgoeZyDs9GuXcOUdclW+J08hC4xPtv49haYGRkxTc=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR11MB5206
+X-OriginatorOrg: intel.com
 
-On Tue, Mar 26, 2024 at 04:08:32PM +0200, Nikolay Borisov wrote:
-> So the problem happens when KCSAN=y CONFIG_CONSTRUCTORS is also enabled and
-> this results in an indirect call in do_mod_ctors():
-> 
->    mod->ctors[i]();
-> 
-> 
-> When KCSAN is disabled, do_mod_ctors is empty, hence the warning is not
-> printed.
+On Tue, Mar 26, 2024 at 08:50:49AM +0100, Geert Uytterhoeven wrote:
+>  + /kisskb/src/drivers/gpu/drm/xe/xe_lrc.c: error: "END" redefined [-Werror]:  => 100
 
-Yeah, KCSAN is doing something weird. I was able to stop the guest when
-the warning fires. Here's what I see:
+fix is in the drm-xe-fixes queued for this week.
+https://gitlab.freedesktop.org/drm/xe/kernel/-/commit/0d8cf0c924732a045273c6aca6900a340ac88529
 
-The callstack when it fires:
-
-#0  warn_thunk_thunk () at arch/x86/entry/entry.S:48
-#1  0xffffffff811a98f9 in do_mod_ctors (mod=0xffffffffa00052c0) at kernel/module/main.c:2462
-#2  do_init_module (mod=mod@entry=0xffffffffa00052c0) at kernel/module/main.c:2535
-#3  0xffffffff811ad2e1 in load_module (info=info@entry=0xffffc900004c7dd0, uargs=uargs@entry=0x564c103dd4a0 "", flags=flags@entry=0) at kernel/module/main.c:3001
-#4  0xffffffff811ad8ef in init_module_from_file (f=f@entry=0xffff8880151c5d00, uargs=uargs@entry=0x564c103dd4a0 "", flags=flags@entry=0) at kernel/module/main.c:3168
-#5  0xffffffff811adade in idempotent_init_module (f=f@entry=0xffff8880151c5d00, uargs=uargs@entry=0x564c103dd4a0 "", flags=flags@entry=0) at kernel/module/main.c:3185
-#6  0xffffffff811adec9 in __do_sys_finit_module (flags=0, uargs=0x564c103dd4a0 "", fd=3) at kernel/module/main.c:3206
-#7  __se_sys_finit_module (flags=<optimized out>, uargs=94884689990816, fd=3) at kernel/module/main.c:3189
-#8  __x64_sys_finit_module (regs=<optimized out>) at kernel/module/main.c:3189
-#9  0xffffffff81fccdff in do_syscall_x64 (nr=<optimized out>, regs=0xffffc900004c7f58) at arch/x86/entry/common.c:52
-#10 do_syscall_64 (regs=0xffffc900004c7f58, nr=<optimized out>) at arch/x86/entry/common.c:83
-#11 0xffffffff82000126 in entry_SYSCALL_64 () at arch/x86/entry/entry_64.S:120
-#12 0x0000000000000000 in ?? ()
-
-Now, when we look at frame #1:
-
-ffffffff811a9800 <do_init_module>:
-ffffffff811a9800:       e8 bb 36 ee ff          call   ffffffff8108cec0 <__fentry__>
-ffffffff811a9805:       41 57                   push   %r15
-ffffffff811a9807:       41 56                   push   %r14
-ffffffff811a9809:       41 55                   push   %r13
-ffffffff811a980b:       41 54                   push   %r12
-ffffffff811a980d:       55                      push   %rbp
-ffffffff811a980e:       53                      push   %rbx
-ffffffff811a980f:       48 89 fb                mov    %rdi,%rbx
-ffffffff811a9812:       48 c7 c7 c8 9f 6a 82    mov    $0xffffffff826a9fc8,%rdi
-ffffffff811a9819:       48 83 ec 08             sub    $0x8,%rsp
-ffffffff811a981d:       e8 5e 51 0d 00          call   ffffffff8127e980 <__tsan_read8>
-ffffffff811a9822:       48 8b 3d 9f 07 50 01    mov    0x150079f(%rip),%rdi        # ffffffff826a9fc8 <kmalloc_caches+0x28>
-
-..
-
-ffffffff811a98ec:       e8 8f 50 0d 00          call   ffffffff8127e980 <__tsan_read8>
-ffffffff811a98f1:       49 8b 07                mov    (%r15),%rax
-ffffffff811a98f4:       e8 27 d1 e3 00          call   ffffffff81fe6a20 <__x86_indirect_thunk_array>
-ffffffff811a98f9:       4c 89 ef                mov    %r13,%rdi
-
-there's that call to the indirect array. Which is in the static kernel image:
-
-ffffffff81fe6a20 <__x86_indirect_thunk_array>:
-ffffffff81fe6a20:       e8 01 00 00 00          call   ffffffff81fe6a26 <__x86_indirect_thunk_array+0x6>
-ffffffff81fe6a25:       cc                      int3
-ffffffff81fe6a26:       48 89 04 24             mov    %rax,(%rsp)
-ffffffff81fe6a2a:       e9 b1 07 00 00          jmp    ffffffff81fe71e0 <__x86_return_thunk>
-
-where you'd think, ah, yes, that's why it fires.
-
-BUT! The live kernel image in gdb looks like this:
-
-Dump of assembler code for function __x86_indirect_thunk_array:
-   0xffffffff81fe6a20 <+0>:     call   0xffffffff81fe6a26 <__x86_indirect_thunk_array+6>
-   0xffffffff81fe6a25 <+5>:     int3 
-   0xffffffff81fe6a26 <+6>:     mov    %rax,(%rsp)
-   0xffffffff81fe6a2a <+10>:    jmp    0xffffffff81fe70a0 <srso_return_thunk>
-
-so the right thunk is already there!
-
-And yet, the warning still fired.
-
-I need to singlestep this whole loading bit more carefully.
-
-Thx.
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+Lucas De Marchi
 
