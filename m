@@ -1,166 +1,113 @@
-Return-Path: <linux-kernel+bounces-119192-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-119193-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0561088C553
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 15:39:34 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A33FF88C556
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 15:39:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8FF9A1F3B77E
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 14:39:33 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5EEBC2E13A1
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 14:39:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A061113C3F7;
-	Tue, 26 Mar 2024 14:39:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C68C113C3E1;
+	Tue, 26 Mar 2024 14:39:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="pjwfmNZ1"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="mmJDdAEm"
+Received: from mail-wr1-f52.google.com (mail-wr1-f52.google.com [209.85.221.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D49B613C3DB;
-	Tue, 26 Mar 2024 14:39:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6D5F013C3E0
+	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 14:39:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711463962; cv=none; b=QH5GfCddvh/CJdgv2HHYo2eZBVEmab21APzVSET279vBECmE7WKe6MQzk1yCcgq/kXTlMHFicqweB4zDxLq4eGuPmegNS9kqEnx5lzhvx2mSmDCNJETyxoRhR8XYnXugbK8GK0EBoczB/cElD3dpgT8Y1fsupTZ9vYuT2mRsHSE=
+	t=1711463974; cv=none; b=Kga8zmf05D92KU5ziu1CfYf1pY2MpwK/DUHx4VToiTyr5qzQ6oOtLAO6Ga6U+Jg85/LiLh+X2cRom8mDz7uTfHQtYRzJKztwAVlbPW1GzhG1hGfa1QCcNhCwNKZPf+zxptjkY4gc1gNkSRHRwpVEpG2JNbdGJDQyZdxh//8/x0I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711463962; c=relaxed/simple;
-	bh=694uUrQurged0DpiGcIKRXaR7f7IY1ihpJjxlFzcTmk=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=u9thdaV3hks+RekVD9pMZgNn6U5xUs/AQ/ig50vpXkn91BKYO6S1W13M0tPlQ9mijmfBPq7YpQjnuMBJ68L4LOxBSp6XLoYBYOvQJLFpDfqgCGVMtU9yu3be0HLdI8MniVSkUM24Sgj289Vi5XieSr9KX06f0NrHJUIN05ItZYM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=pjwfmNZ1; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7D684C433F1;
-	Tue, 26 Mar 2024 14:39:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711463961;
-	bh=694uUrQurged0DpiGcIKRXaR7f7IY1ihpJjxlFzcTmk=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=pjwfmNZ1TweH9ISfP9b/Kmwt/5cyA42r1F1XKtie1SFE90bnSPsWUp9mgj5sz+wu5
-	 9oR4383cI/j5IDxSLXpccKFuY1VW5mv4ekQIvXjMjaTRN6sUadwz5tnOFnUEoQ7Q90
-	 SFFn0WTcQyUJ7PvU+q85kgC3ZL1jYp1f+QAl0CyaPZvhQbSNn2oPG0EwowtfaPih8s
-	 FQMoex/0eXJdAaHxVcC+ygzwkQq9/URLvpyrRhbSj/CFbpcsp56k8G2EtuY457hP9z
-	 i61md7kqXW1ZV7XJWmNRXkW8r71RDsG10R43ip/GT55jceOu/yLNSFwMxutiP9+i3z
-	 fu3as+SmNMIAA==
-Received: by mail-lj1-f175.google.com with SMTP id 38308e7fff4ca-2d6c8d741e8so48994441fa.3;
-        Tue, 26 Mar 2024 07:39:21 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCXeT0BG2NVCKm0VqavueHPCRlBYAoNoSjbLFsnkwzvAXRp1JusySytZ5ji6EGPgVDfLw8pJHHfx32hzw0i/vgzUjewsH38KDVwXztWlK4r4dugo0cCsk2uAPXfFDq3xAW6QpU7zHYDFEuXRcEUeqCu2SOXqTXmhQ1yuRWVgBHyQ9KQs/3d7PcHTmONuwBs8u5ySW+xGzN86y3xA6enIl3ma
-X-Gm-Message-State: AOJu0YxfjLQgy9PWFYjKfJP/9f5DarWrGtMq2iruwop4aOjWVLKT4bEW
-	4PZ9EBp2Q9CpVatBYsnAUukmzFL35eNeY7MlYWxk9iP4Zsf1GJMHaUrGlH8//R6wxxB8CpMaWMG
-	KyLFoZ2k3PvO6gZCjWETJ+yBZSQs=
-X-Google-Smtp-Source: AGHT+IHRLtVwQBliK06CNyOkOnUVQC6pejo7AnQDeCYkZeCtaGd/3ULk5T8a2lopDISmhpKZBiypht1J7vGrFSjSdRI=
-X-Received: by 2002:a2e:989a:0:b0:2d2:3fac:5fc7 with SMTP id
- b26-20020a2e989a000000b002d23fac5fc7mr5651686ljj.45.1711463960202; Tue, 26
- Mar 2024 07:39:20 -0700 (PDT)
+	s=arc-20240116; t=1711463974; c=relaxed/simple;
+	bh=PVCqUI2IthMT8jtHUQFgN0wk4nd/zHp6x9pGlyM8wjg=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=tVCFsiqtb6MikjwCLJScb8NeifUEGuuSxLDOd/TZUptnnT74r3LeV57c9KV1K/gdjG8yaYO1FNU2lM2SGRMGhNQAvIYM0LG02j+4OS6Ci+eWURLSN67vBYSb+Ej8FRHlLHjpsDSv+aLxynxrpgnT1oH0U2RvWaTVGnQTOSVFTfs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=mmJDdAEm; arc=none smtp.client-ip=209.85.221.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wr1-f52.google.com with SMTP id ffacd0b85a97d-341cf28e055so1475908f8f.0
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 07:39:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1711463970; x=1712068770; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=cfqyT8DykVWS2FVT06Lc/GB2ETA54ZjApWkcdYSEHgE=;
+        b=mmJDdAEmdcbg0XZ0wVIXC76s8wLBrcmWLcyW2MIbty/FPvCRK9LP7CJjR938Ihj7a8
+         hwJUY+skNoWBMpMf7kcKKYzZSbfO2Y3u+/UW8XeMpjIVuro0BOAHuYI7ifNGRzvGaXPW
+         m2MF339XVJV1sIk5JSmTJA/VdVMmN15NutP3SlOhqjFfFDC11WSPobqNmFntqtCBO5v/
+         fRxmaFcks0hg/5B++kL47PfE14q41OfIvIFnqZRokCX8a1WL11e1UMJ/X1/++hwwFdSb
+         09hChma3FRfpKFg3P6RRd4WgLFD1dm+oWkFR7M6jp/rMVqxUK+tmS0jPpEWikb05eSy/
+         Pcaw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711463970; x=1712068770;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=cfqyT8DykVWS2FVT06Lc/GB2ETA54ZjApWkcdYSEHgE=;
+        b=hv/EHwKW1c3MKdQ1EPR/oVLWeAkSXZXKXrZi+PtnGWliHXME1gGRM2HYitRYAyLZYG
+         l0F3OJcYlld3Ru9otd2TxW/KTr7DHPcu1cxqXnZpBuNFTp7jwvg2bLJpCh2Cctql968J
+         NdLo/WgqEmcGSxg7tQZ2i0J46i4LddoKFvEBMDQMCX4ywwMYZFxTMUbZy1duvdSejDGw
+         FAUBX9GiMz9EUN3ts5OoqnwWcUYAGqhnLUpQIUV/JHFaivmrFUuaPvKwYCDjzQHwDFqC
+         ivN69/KB97RAU+kExeyw6luDxOrLa4aHkiWNc4ATN3R0E94zd1vYKwp4/hCmhZv+PLL4
+         PZwQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVYSKB8CC+TXB0x/YQljqjPqYXsOgwtJSX6MQMGvI/rQtayK0DUu92ZHwmbnx8xK+cloPW1J+wpn5Q80339WzWUrT5cMkEw0aLgLHYg
+X-Gm-Message-State: AOJu0YzFq0zB4vzh0869wZC6NVvoXkmGEjqYJ/Ket3snDHDYYoeh20uH
+	bir+IkMNUZkuAizMT9yq+nO4DbQ5LS9cGs8e80icjucqWajIYVjmotvj/gksD2g=
+X-Google-Smtp-Source: AGHT+IFMbpIbW88EA8mOGps+QLuXd1FMyYQpvKzji8LKbQ9tVeTRAt7QVs0I2203R8pDGu9n+TxvwA==
+X-Received: by 2002:a5d:42c3:0:b0:33e:7650:1297 with SMTP id t3-20020a5d42c3000000b0033e76501297mr7274848wrr.6.1711463969712;
+        Tue, 26 Mar 2024 07:39:29 -0700 (PDT)
+Received: from [192.168.2.107] ([79.115.63.252])
+        by smtp.gmail.com with ESMTPSA id bo4-20020a056000068400b00341b749ab8bsm10004692wrb.69.2024.03.26.07.39.28
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 26 Mar 2024 07:39:29 -0700 (PDT)
+Message-ID: <b80134a2-99b8-489e-860e-7ddb2bda576a@linaro.org>
+Date: Tue, 26 Mar 2024 14:39:27 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240314042659.232142-1-sjg@chromium.org> <20240314042659.232142-3-sjg@chromium.org>
-In-Reply-To: <20240314042659.232142-3-sjg@chromium.org>
-From: Masahiro Yamada <masahiroy@kernel.org>
-Date: Tue, 26 Mar 2024 23:38:44 +0900
-X-Gmail-Original-Message-ID: <CAK7LNASWKyTXuPwj0_xaD=8_WfbXhejCe_Z+2Os2MD+mU_D5Fg@mail.gmail.com>
-Message-ID: <CAK7LNASWKyTXuPwj0_xaD=8_WfbXhejCe_Z+2Os2MD+mU_D5Fg@mail.gmail.com>
-Subject: Re: [PATCH v11 2/2] arm64: boot: Support Flat Image Tree
-To: Simon Glass <sjg@chromium.org>
-Cc: linux-arm-kernel@lists.infradead.org, 
-	Ahmad Fatoum <a.fatoum@pengutronix.de>, Nicolas Schier <nicolas@fjasle.eu>, 
-	Catalin Marinas <catalin.marinas@arm.com>, Jonathan Corbet <corbet@lwn.net>, 
-	Nathan Chancellor <nathan@kernel.org>, Nick Terrell <terrelln@fb.com>, Will Deacon <will@kernel.org>, 
-	linux-doc@vger.kernel.org, linux-kbuild@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, workflows@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-
-On Thu, Mar 14, 2024 at 1:28=E2=80=AFPM Simon Glass <sjg@chromium.org> wrot=
-e:
->
-> Add a script which produces a Flat Image Tree (FIT), a single file
-> containing the built kernel and associated devicetree files.
-> Compression defaults to gzip which gives a good balance of size and
-> performance.
->
-> The files compress from about 86MB to 24MB using this approach.
->
-> The FIT can be used by bootloaders which support it, such as U-Boot
-> and Linuxboot. It permits automatic selection of the correct
-> devicetree, matching the compatible string of the running board with
-> the closest compatible string in the FIT. There is no need for
-> filenames or other workarounds.
->
-> Add a 'make image.fit' build target for arm64, as well.
->
-> The FIT can be examined using 'dumpimage -l'.
->
-> This uses the 'dtbs-list' file but processes only .dtb files, ignoring
-> the overlay .dtbo files.
->
-> This features requires pylibfdt (use 'pip install libfdt'). It also
-> requires compression utilities for the algorithm being used. Supported
-> compression options are the same as the Image.xxx files. Use
-> FIT_COMPRESSION to select an algorithm other than gzip.
->
-> While FIT supports a ramdisk / initrd, no attempt is made to support
-> this here, since it must be built separately from the Linux build.
->
-> Signed-off-by: Simon Glass <sjg@chromium.org>
-> ---
->
-> Changes in v11:
-> - Use dtbslist file in image.fit rule
-> - Update cmd_fit rule as per Masahiro
-> - Don't mention ignoring files without a .dtb prefix
-> - Use argparse fromfile_prefix_chars feature
-> - Add a -v option and use it for output (with make V=3D1)
-> - rename srcdir to dtbs
-> - Use -o for the output file instead of -f
->
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 2/4] arm64: dts: exynos: gs101: order pinctrl-* props
+ alphabetically
+Content-Language: en-US
+To: =?UTF-8?Q?Andr=C3=A9_Draszik?= <andre.draszik@linaro.org>,
+ peter.griffin@linaro.org, robh+dt@kernel.org,
+ krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org
+Cc: alim.akhtar@samsung.com, linux-arm-kernel@lists.infradead.org,
+ linux-samsung-soc@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, willmcvicker@google.com,
+ kernel-team@android.com
+References: <20240326103620.298298-1-tudor.ambarus@linaro.org>
+ <20240326103620.298298-3-tudor.ambarus@linaro.org>
+ <9f2c715e671de0c083355bfbece703936e14045a.camel@linaro.org>
+From: Tudor Ambarus <tudor.ambarus@linaro.org>
+In-Reply-To: <9f2c715e671de0c083355bfbece703936e14045a.camel@linaro.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
 
 
+On 3/26/24 11:13, André Draszik wrote:
+> Hi Tudor,
+> 
+> On Tue, 2024-03-26 at 10:36 +0000, Tudor Ambarus wrote:
+>> Reverse pinctrl-* lines, first pinctrl-0 then pinctrl-names. Move the
+>> pinctrl-* properties after clocks so that we keep alphabetic order and
+>> align with the other similar definitions.
+> 
+> Krzysztof had requested to change not just the DTSI but all instances for GS101
+> here:
+> https://lore.kernel.org/all/98810c49-38e6-4402-bd47-05d8cbc99ef3@linaro.org/
+> 
 
-> --- a/scripts/Makefile.lib
-> +++ b/scripts/Makefile.lib
-> @@ -504,6 +504,21 @@ quiet_cmd_uimage =3D UIMAGE  $@
->                         -a $(UIMAGE_LOADADDR) -e $(UIMAGE_ENTRYADDR) \
->                         -n '$(UIMAGE_NAME)' -d $< $@
->
-> +# Flat Image Tree (FIT)
-> +# This allows for packaging of a kernel and all devicetrees files, using
-> +# compression.
-> +# ----------------------------------------------------------------------=
------
-> +
-> +MAKE_FIT :=3D $(srctree)/scripts/make_fit.py
-> +
-> +# Use this to override the compression algorithm
-> +FIT_COMPRESSION ?=3D gzip
-> +
-> +quiet_cmd_fit =3D FIT     $@
-> +      cmd_fit =3D $(MAKE_FIT) -o $@ --arch $(UIMAGE_ARCH) --os linux \
-> +               --name '$(UIMAGE_NAME)' $(if $(V),-v) \
-> +               --compress $(FIT_COMPRESSION) -k $< @$(word 2,$^)
-> +
-
-
-
-
-A nit in your new code.
-
-
-$(if $(V),-v) does not work for KBUILD_VERBOSE env variable.
-
-
-It should be
-
-    $(if $(findstring 1,$(KBUILD_VERBOSE)),-v)
-
-
-
-
-
---=20
-Best Regards
-Masahiro Yamada
+ah, yes, makes sense. I saw you had your own patch doing the reverse,
+I'll take yours and rebase on top.
 
