@@ -1,227 +1,294 @@
-Return-Path: <linux-kernel+bounces-118403-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-118404-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9543E88BA56
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 07:20:50 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7D80188BA57
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 07:21:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E0575B23AA8
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 06:20:47 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 33ACC2C291A
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 06:21:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5145812DDA4;
-	Tue, 26 Mar 2024 06:20:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="bhJxtPaf"
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BF1AF12B17A
-	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 06:20:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4415712EBDC;
+	Tue, 26 Mar 2024 06:21:18 +0000 (UTC)
+Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 910DC12C802
+	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 06:21:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=114.242.206.163
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711434041; cv=none; b=L4AZ8nbk33MI4kmP7EcsCfG44Mf5aQRshHWlazJ0fTTlcu8JkNOTSqW8yaCVSXvzK6uPSrP0ioQ4VAXC7UzzBJc/MiCwjPWKXfLY5d+ogNBmBw83voKm9izYLxzjxdm/6snIpQL1d6OsRr3kArbW9IYnaL57u4Av8E8107YWu+w=
+	t=1711434077; cv=none; b=NfBidAwVNfA9TVTxD8Ie7TWLanvBXg2RetqyFYNNN4Lt89VL0NG3RlitinpCOXBGGj5pWQL/B6q3HXFe8eVlMqpUWbt36UJPPTyZzmK3m+1R0SfOMZECDMTFo3EEpTNlaCKySceSupBgPRf3a7GyN8BIw3wGYTrxpG8kpCAP5rQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711434041; c=relaxed/simple;
-	bh=ZA5ROUhSMNttRAy3HLO/xlrNqJqfQIxiF9yjTXYVEPo=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=c/V9ql/MUvB73YupCTWkpG7JWc2MrNYyhxNzCrWAkWV/sZBTzU1rUQtkcMdjD329ziDAwsWummt4opPBG+fFvd7WjMjXIsraai7x90vFfMiNjQYZxdnzYcBOI8yWnBGa9QMzSAR0f98ao4FK75GtZ8hr7JD6kOiuYAwsXitaHv0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=bhJxtPaf; arc=none smtp.client-ip=148.163.156.1
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0360083.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 42Q4t0ht001860;
-	Tue, 26 Mar 2024 06:20:24 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : references : mime-version : content-type :
- content-transfer-encoding : in-reply-to; s=pp1;
- bh=Ds72AP2X2VYffRsuZCWiXaUCA9J6zHk47cZhCV6ClUs=;
- b=bhJxtPafZkg7Ke1GebSQycdwFYJ40TAwYdhqZAOdTbMi8B4qf18cQ4tvjMw8JtUqfehw
- M81gubcfvIQ9pJuC2VccrqKEC6VLcLA4rl140R5+kqHRSS8SyeYH63m6GbubqpYREWr1
- 3KTA+sjLPE2FS+gLBYi6PM2QYz/tS0sUPStzItPI9BCqimQGmi7sYCqm4YhMZkdb60mo
- nE7ZbHCN1XOh4RLkOFdluH0x3g0OJi86VUKX+MkAbFyHLmtAJWW2QYcwNPKAMqaFwBWS
- 1WrPPFqPhslLPY0LHeizLOgJ325T69QTrCMyEXsfPcGmAytNGBK5YK/wEbP57CNjWgfX IA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3x3k3j8pa1-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 26 Mar 2024 06:20:23 +0000
-Received: from m0360083.ppops.net (m0360083.ppops.net [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 42Q6KNLM015730;
-	Tue, 26 Mar 2024 06:20:23 GMT
-Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3x3k3j8p9x-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 26 Mar 2024 06:20:23 +0000
-Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
-	by ppma12.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 42Q5VTRF016605;
-	Tue, 26 Mar 2024 06:20:22 GMT
-Received: from smtprelay02.fra02v.mail.ibm.com ([9.218.2.226])
-	by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 3x29dtxas0-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 26 Mar 2024 06:20:22 +0000
-Received: from smtpav01.fra02v.mail.ibm.com (smtpav01.fra02v.mail.ibm.com [10.20.54.100])
-	by smtprelay02.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 42Q6KIaC45351276
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Tue, 26 Mar 2024 06:20:20 GMT
-Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 5855A20063;
-	Tue, 26 Mar 2024 06:20:18 +0000 (GMT)
-Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 1483E20043;
-	Tue, 26 Mar 2024 06:20:15 +0000 (GMT)
-Received: from linux.ibm.com (unknown [9.204.201.194])
-	by smtpav01.fra02v.mail.ibm.com (Postfix) with ESMTPS;
-	Tue, 26 Mar 2024 06:20:14 +0000 (GMT)
-Date: Tue, 26 Mar 2024 11:50:12 +0530
-From: Vishal Chourasia <vishalc@linux.ibm.com>
-To: John Stultz <jstultz@google.com>
-Cc: LKML <linux-kernel@vger.kernel.org>, Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>, Ben Segall <bsegall@google.com>,
-        Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Phil Auld <pauld@redhat.com>, Valentin Schneider <vschneid@redhat.com>,
-        kernel-team@android.com, Zimuzo Ezeozue <zezeozue@google.com>
-Subject: Re: [RESEND][PATCH v2] sched: Add trace_sched_waking() tracepoint to
- sched_ttwu_pending()
-Message-ID: <ZgJpHAmxS4Lh8QEE@linux.ibm.com>
-References: <20240318192846.75299-1-jstultz@google.com>
- <Zfpy4Z4MhErKrHBZ@linux.ibm.com>
- <CANDhNCro84C8uxTo5MJ1xX0wGnTXE7_REm4nqp7jGQ+mN0wfkQ@mail.gmail.com>
+	s=arc-20240116; t=1711434077; c=relaxed/simple;
+	bh=uEGwVKWcAbcnEXmXYuDVGEOJc7TzdSmrVYmKKVY5XhY=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=QLxWPq7xobn9D5xw6jIQZUgL9U3tNITxUYCM3F8by+N8D2ppS15CrJsZYxdwZ1D+vC94YBQ4opGrGZg5rnz9lZGG5NUXaPYGwvvFuP8isKctpNgRw9ziMjuQAiTi1Pi3ZxDN2jdPevM7+wIBG/fD5Yt39Hrx0PZvV1v5ap8130Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn; spf=pass smtp.mailfrom=loongson.cn; arc=none smtp.client-ip=114.242.206.163
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=loongson.cn
+Received: from loongson.cn (unknown [113.200.148.30])
+	by gateway (Coremail) with SMTP id _____8CxWOhRaQJm30MeAA--.51658S3;
+	Tue, 26 Mar 2024 14:21:05 +0800 (CST)
+Received: from linux.localdomain (unknown [113.200.148.30])
+	by localhost.localdomain (Coremail) with SMTP id AQAAf8Cxf89NaQJm0oloAA--.9550S2;
+	Tue, 26 Mar 2024 14:21:01 +0800 (CST)
+From: Tiezhu Yang <yangtiezhu@loongson.cn>
+To: Huacai Chen <chenhuacai@kernel.org>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Arnd Bergmann <arnd@arndb.de>,
+	Marc Zyngier <maz@kernel.org>
+Cc: loongarch@lists.linux.dev,
+	linux-kernel@vger.kernel.org,
+	loongson-kernel@lists.loongnix.cn
+Subject: [PATCH] LoongArch: Give chance to build under !CONFIG_SMP
+Date: Tue, 26 Mar 2024 14:21:01 +0800
+Message-ID: <20240326062101.9822-1-yangtiezhu@loongson.cn>
+X-Mailer: git-send-email 2.42.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CANDhNCro84C8uxTo5MJ1xX0wGnTXE7_REm4nqp7jGQ+mN0wfkQ@mail.gmail.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: AnozjOeip3v_kGU9oVl5_P31z6lblwjk
-X-Proofpoint-GUID: d6iK-oQrrGwVMbJYrGTadFxz5gUoTmoE
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-03-26_02,2024-03-21_02,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 mlxlogscore=999
- bulkscore=0 adultscore=0 spamscore=0 phishscore=0 clxscore=1015
- suspectscore=0 impostorscore=0 lowpriorityscore=0 malwarescore=0
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2403210000 definitions=main-2403260040
+X-CM-TRANSID:AQAAf8Cxf89NaQJm0oloAA--.9550S2
+X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
+X-Coremail-Antispam: 1Uk129KBj93XoW3Jr4UKFWDJw4kZFyfXr4DKFX_yoW3tFW3pF
+	ZFyr1ktr4rWr1kAryqy3s5Wry5Jrn7G3y2qay2kay8XFsrXw1UZr1ktrnrXFy8Kws5GFWI
+	gFs3Wa4avF15AwbCm3ZEXasCq-sJn29KB7ZKAUJUUUUx529EdanIXcx71UUUUU7KY7ZEXa
+	sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
+	0xBIdaVrnRJUUUB2b4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
+	IYs7xG6rWj6s0DM7CIcVAFz4kK6r1Y6r17M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
+	e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_JFI_Gr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
+	0_Jr0_Gr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVCY1x0267AK
+	xVW8Jr0_Cr1UM2kKe7AKxVWUAVWUtwAS0I0E0xvYzxvE52x082IY62kv0487Mc804VCY07
+	AIYIkI8VC2zVCFFI0UMc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWU
+	AVWUtwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7V
+	AKI48JMxkF7I0En4kS14v26r126r1DMxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY
+	6r1j6r4UMxCIbckI1I0E14v26r126r1DMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7
+	xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUAVWUtwCIc40Y0x0EwIxGrwCI42IY6xII
+	jxv20xvE14v26r1I6r4UMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAIw2
+	0EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x02
+	67AKxVWUJVW8JbIYCTnIWIevJa73UjIFyTuYvjxUcbAwUUUUU
 
-On Wed, Mar 20, 2024 at 03:42:31PM -0700, John Stultz wrote:
-> On Tue, Mar 19, 2024 at 10:24 PM Vishal Chourasia <vishalc@linux.ibm.com> wrote:
-> > On Mon, Mar 18, 2024 at 12:28:33PM -0700, John Stultz wrote:
-> > > Zimuzo reported seeing occasional cases in perfetto traces where
-> > > tasks went from sleeping directly to trace_sched_wakeup()
-> > > without always seeing a trace_sched_waking().
-> > >
-> > > Looking at the code, trace_sched_wakeup() is only called in
-> > > ttwu_do_wakeup()
-> > >
-> > > The call paths that get you to ttwu_do_wakeup() are:
-> > > try_to_wake_up() -> ttwu_do_wakeup()
-> > > try_to_wake_up() -> ttwu_runnable() -> ttwu_do_wakeup()
-> > > try_to_wake_up() -> ttwu_queue() -> ttwu_do_activate() -> ttwu_do_wakeup()
-> > > sched_ttwu_pending() -> ttwu_do_activate() -> ttwu_do_wakeup()
-> > Notably, sched_ttwu_pending() is invoked for remote wakeups.
-> >
-> > Given this, I anticipate a scenario similar to the following
-> > occurred: When a process (P) is to be awakened on a remote CPU,
-> > the scheduler adds P to the remote CPU's wakelist,a per-CPU queue,
-> > and sends an IPI to the remote CPU. This action triggers
-> > sched_ttwu_pending() on the remote CPU, which then processes the
-> > wakelist and wakes up the queued processes.
-> 
-> Hey! Thanks for taking a look here and sharing this feedback.
-> 
-> Indeed, looking closer here I do have a hard time seeing how we can
-> get to sched_ttwu_pending() without having gone through the paths in
-> try_to_wake_up() that would call trace_sched_wakeup():
->   try_to_wake_up()->[ttwu_queue ->]
-> ttwu_queue_wakelist()->sched_ttwu_pending()->...
-> 
-> > In this scenario, the "waking trace" of P, signifying the initiation
-> > of the wake-up, is recorded on the CPU where try_to_wake_up was executed.
-> > Meanwhile, the "wakeup trace," denoting the completion of the wake-up,
-> > is observed on the remote CPU where sched_ttwu_pending() is executed.
-> >
-> > Is there a possibility that something other than the above occurred
-> > in your case?
-> 
-> I suspect that the case reported may be that the task went to sleep
-> right after the trace_sched_waking(). Which could result in the
-> transition from sleeping to trace_sched_wakeup() without the
-> trace_sched_waking() inbetween.  The added latency from the remote
-> wakeup probably increases the chance for this race to occur.
+In the current code, SMP is selected in Kconfig for LoongArch, the users
+can not unset it, this is reasonable for a multiprocessor machine. But as
+the help info of config SMP said, if you have a system with only one CPU,
+say N. On a uniprocessor machine, the kernel will run faster if you say N
+here.
 
-Hi,
+The Loongson-2K0500 is a single-core CPU for applications like industrial
+control, printing terminals, and BMC (Baseboard Management Controller),
+there are many development boards, products and solutions on the market,
+so it is better and necessary to give a chance to build under !CONFIG_SMP
+for a uniprocessor machine.
 
-# trace-cmd record -e sched:* perf record -a -g -e sched:* ./schbench
-This generates perf.data and trace.dat file.
+First of all, do not select SMP for config LOONGARCH in Kconfig to make it
+possible to unset CONFIG_SMP. Then, do some changes to fix the warnings and
+errors if CONFIG_SMP is not set.
 
-Running a simple check for equality between sched_waking and
-sched_wakeup. I see two different results.
+(1) Select GENERIC_IRQ_EFFECTIVE_AFF_MASK only if SMP for config
+IRQ_LOONGARCH_CPU to fix the warning when make menuconfig:
+WARNING: unmet direct dependencies detected for GENERIC_IRQ_EFFECTIVE_AFF_MASK
 
-# perf script -G | grep -i "sched_waking" | wc -l
-35264
-# perf script -G | grep -i "sched_wakeup:" | wc -l
-35314
+(2) Define cpu_logical_map(cpu) as 0 under !CONFIG_SMP in asm/smp.h and
+include asm/smp.h in asm/acpi.h to fix the error:
+/arch/loongarch/include/asm/acpi.h: In function ‘get_acpi_id_for_cpu’:
+/arch/loongarch/include/asm/acpi.h:44:30: error: implicit declaration of function ‘cpu_logical_map’ [-Wimplicit-function-declaration]
 
-perf report suggests missing sched_waking events. Although trace
-collected through ftrace (using trace-cmd) suggests equal waking and
-wakeup events.
+(3) Define get_ipi_irq() only if CONFIG_SMP is set to fix the warning:
+arch/loongarch/kernel/irq.c:90:19: warning: ‘get_ipi_irq’ defined but not used [-Wunused-function]
 
-# trace-cmd report | grep -i "sched_waking" | wc -l
-35959
-# trace-cmd report | grep -i "sched_wakeup:" | wc -l
-35959
+(4) Define machine_shutdown() as empty under !CONFIG_SMP to fix the error:
+arch/loongarch/kernel/machine_kexec.c: In function ‘machine_shutdown’:
+arch/loongarch/kernel/machine_kexec.c:233:25: error: implicit declaration of function ‘cpu_device_up’; did you mean ‘put_device’? [-Wimplicit-function-declaration]
 
-Below is a stack trace for a sched_wakeup event for which sched_waking
-was not recorded in perf.data file,
+(5) Make config SCHED_SMT depends on SMP to avoid many errors such as:
+kernel/sched/core.c: In function ‘sched_core_find’:
+kernel/sched/core.c:310:43: error: ‘struct rq’ has no member named ‘cpu’
 
-schbench  307346 [023] 600177.250150:    
-         sched:sched_wakeup: perf:307321 [120] CPU:023
-         ttwu_do_activate+0x1c0 ([kernel.kallsyms])
-         print_fmt_xfs_perag_intents_class+0x0 ([xfs].data)
-         sched_ttwu_pending+0x118 ([kernel.kallsyms])
-=>       __flush_smp_call_function_queue+0x19c ([kernel.kallsyms])
-         smp_ipi_demux_relaxed+0xec ([kernel.kallsyms])
-         xive_muxed_ipi_action+0x20 ([kernel.kallsyms])
-         __handle_irq_event_percpu+0x8c ([kernel.kallsyms])
-         handle_irq_event_percpu+0x2c ([kernel.kallsyms])
-         handle_percpu_irq+0x80 ([kernel.kallsyms])
-         generic_handle_irq+0x50 ([kernel.kallsyms])
-         __do_irq+0xb8 ([kernel.kallsyms])
-         __do_IRQ+0x88 ([kernel.kallsyms])
-         print_fmt_xfs_perag_intents_class+0x0 ([xfs].data)
-         do_IRQ+0x50 ([kernel.kallsyms])
-         hardware_interrupt_common_virt+0x28c ([kernel.kallsyms])
-         worker_thread+0x268 (/usr/bin/schbench)
-         worker_thread+0x4cc (/usr/bin/schbench)
-         start_thread+0x170 (/usr/lib64/glibc-hwcaps/power10/libc.so.6)
-         __clone+0xa0 (/usr/lib64/glibc-hwcaps/power10/libc.so.6)
+(6) Call per_cpu_offset() only under CONFIG_HAVE_SETUP_PER_CPU_AREA to
+fix the error:
+arch/loongarch/power/suspend.c: In function ‘loongarch_common_resume’:
+arch/loongarch/power/suspend.c:47:21: error: implicit declaration of function ‘per_cpu_offset’ [-Wimplicit-function-declaration]
 
-Also, it has been observed for cases where sched_waking is missing only
-happens when perf task is woken up.
+(7) Define and call eiointc_set_irq_affinity() under CONFIG_SMP to set
+the CPU affinity only on SMP machines.
 
-Looking at the code in __flush_smp_call_function_queue,
-it invokes all the callbacks currently queue on the given cpu, and if
-sched_ttwu_pending is being called, suggesting that csd of type CSD_TYPE_TTWU
-was queued. Now, this happens inside try_to_wake_up.
+When running the UnixBench tests with "-c 1" single-streamed pass,
+the improvement in performance is about 9 percent with this patch.
 
-if there are no other way to queue a csd of type CSD_TYPE_TTWU, then
-this suggests some events are being missed by perf.
+By the way, it is helpful to debug and analysis the kernel issue
+of multi-core system under !CONFIG_SMP.
 
-> 
-> So I'll withdraw this change for now and sync back up to check if my
-> suspicions are correct or not.
-> 
-> Thanks so much again for pointing this out.
-> -john
+Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+---
+
+This patch is based on 6.9-rc1. Please let me know if it is better to
+split it into two patches, the first one is for arch/loongarch and the
+second one is for drivers/irqchip.
+
+ arch/loongarch/Kconfig                 | 2 +-
+ arch/loongarch/include/asm/acpi.h      | 1 +
+ arch/loongarch/include/asm/smp.h       | 5 +++++
+ arch/loongarch/kernel/irq.c            | 2 ++
+ arch/loongarch/kernel/machine_kexec.c  | 2 +-
+ arch/loongarch/power/suspend.c         | 2 ++
+ drivers/irqchip/Kconfig                | 2 +-
+ drivers/irqchip/irq-loongson-eiointc.c | 4 ++++
+ 8 files changed, 17 insertions(+), 3 deletions(-)
+
+diff --git a/arch/loongarch/Kconfig b/arch/loongarch/Kconfig
+index a5f300ec6f28..8d892de0b7a8 100644
+--- a/arch/loongarch/Kconfig
++++ b/arch/loongarch/Kconfig
+@@ -174,7 +174,6 @@ config LOONGARCH
+ 	select PCI_QUIRKS
+ 	select PERF_USE_VMALLOC
+ 	select RTC_LIB
+-	select SMP
+ 	select SPARSE_IRQ
+ 	select SYSCTL_ARCH_UNALIGN_ALLOW
+ 	select SYSCTL_ARCH_UNALIGN_NO_WARN
+@@ -420,6 +419,7 @@ config EFI_STUB
+ 
+ config SCHED_SMT
+ 	bool "SMT scheduler support"
++	depends on SMP
+ 	default y
+ 	help
+ 	  Improves scheduler's performance when there are multiple
+diff --git a/arch/loongarch/include/asm/acpi.h b/arch/loongarch/include/asm/acpi.h
+index 49e29b29996f..313f66f7913a 100644
+--- a/arch/loongarch/include/asm/acpi.h
++++ b/arch/loongarch/include/asm/acpi.h
+@@ -8,6 +8,7 @@
+ #ifndef _ASM_LOONGARCH_ACPI_H
+ #define _ASM_LOONGARCH_ACPI_H
+ 
++#include <asm/smp.h>
+ #include <asm/suspend.h>
+ 
+ #ifdef CONFIG_ACPI
+diff --git a/arch/loongarch/include/asm/smp.h b/arch/loongarch/include/asm/smp.h
+index f81e5f01d619..c14ddfcd4829 100644
+--- a/arch/loongarch/include/asm/smp.h
++++ b/arch/loongarch/include/asm/smp.h
+@@ -6,6 +6,7 @@
+ #ifndef __ASM_SMP_H
+ #define __ASM_SMP_H
+ 
++#ifdef CONFIG_SMP
+ #include <linux/atomic.h>
+ #include <linux/bitops.h>
+ #include <linux/linkage.h>
+@@ -101,4 +102,8 @@ static inline void __cpu_die(unsigned int cpu)
+ }
+ #endif
+ 
++#else /* !CONFIG_SMP */
++#define cpu_logical_map(cpu)	0
++#endif
++
+ #endif /* __ASM_SMP_H */
+diff --git a/arch/loongarch/kernel/irq.c b/arch/loongarch/kernel/irq.c
+index 883e5066ae44..e791fa275ec5 100644
+--- a/arch/loongarch/kernel/irq.c
++++ b/arch/loongarch/kernel/irq.c
+@@ -87,6 +87,7 @@ static void __init init_vec_parent_group(void)
+ 	acpi_table_parse(ACPI_SIG_MCFG, early_pci_mcfg_parse);
+ }
+ 
++#ifdef CONFIG_SMP
+ static int __init get_ipi_irq(void)
+ {
+ 	struct irq_domain *d = irq_find_matching_fwnode(cpuintc_handle, DOMAIN_BUS_ANY);
+@@ -96,6 +97,7 @@ static int __init get_ipi_irq(void)
+ 
+ 	return -EINVAL;
+ }
++#endif
+ 
+ void __init init_IRQ(void)
+ {
+diff --git a/arch/loongarch/kernel/machine_kexec.c b/arch/loongarch/kernel/machine_kexec.c
+index 2dcb9e003657..8ae641dc53bb 100644
+--- a/arch/loongarch/kernel/machine_kexec.c
++++ b/arch/loongarch/kernel/machine_kexec.c
+@@ -225,6 +225,7 @@ void crash_smp_send_stop(void)
+ 
+ void machine_shutdown(void)
+ {
++#ifdef CONFIG_SMP
+ 	int cpu;
+ 
+ 	/* All CPUs go to reboot_code_buffer */
+@@ -232,7 +233,6 @@ void machine_shutdown(void)
+ 		if (!cpu_online(cpu))
+ 			cpu_device_up(get_cpu_device(cpu));
+ 
+-#ifdef CONFIG_SMP
+ 	smp_call_function(kexec_shutdown_secondary, NULL, 0);
+ #endif
+ }
+diff --git a/arch/loongarch/power/suspend.c b/arch/loongarch/power/suspend.c
+index 166d9e06a64b..e8ca77eb3288 100644
+--- a/arch/loongarch/power/suspend.c
++++ b/arch/loongarch/power/suspend.c
+@@ -44,7 +44,9 @@ void loongarch_common_resume(void)
+ {
+ 	sync_counter();
+ 	local_flush_tlb_all();
++#ifdef CONFIG_HAVE_SETUP_PER_CPU_AREA
+ 	csr_write64(per_cpu_offset(0), PERCPU_BASE_KS);
++#endif
+ 	csr_write64(eentry, LOONGARCH_CSR_EENTRY);
+ 	csr_write64(eentry, LOONGARCH_CSR_MERRENTRY);
+ 	csr_write64(tlbrentry, LOONGARCH_CSR_TLBRENTRY);
+diff --git a/drivers/irqchip/Kconfig b/drivers/irqchip/Kconfig
+index 72c07a12f5e1..bfa1d77749f3 100644
+--- a/drivers/irqchip/Kconfig
++++ b/drivers/irqchip/Kconfig
+@@ -568,7 +568,7 @@ config IRQ_LOONGARCH_CPU
+ 	bool
+ 	select GENERIC_IRQ_CHIP
+ 	select IRQ_DOMAIN
+-	select GENERIC_IRQ_EFFECTIVE_AFF_MASK
++	select GENERIC_IRQ_EFFECTIVE_AFF_MASK if SMP
+ 	select LOONGSON_HTVEC
+ 	select LOONGSON_LIOINTC
+ 	select LOONGSON_EIOINTC
+diff --git a/drivers/irqchip/irq-loongson-eiointc.c b/drivers/irqchip/irq-loongson-eiointc.c
+index b64cbe3052e8..4f5e6d21d77d 100644
+--- a/drivers/irqchip/irq-loongson-eiointc.c
++++ b/drivers/irqchip/irq-loongson-eiointc.c
+@@ -59,6 +59,7 @@ static int cpu_to_eio_node(int cpu)
+ 	return cpu_logical_map(cpu) / CORES_PER_EIO_NODE;
+ }
+ 
++#ifdef CONFIG_SMP
+ static void eiointc_set_irq_route(int pos, unsigned int cpu, unsigned int mnode, nodemask_t *node_map)
+ {
+ 	int i, node, cpu_node, route_node;
+@@ -126,6 +127,7 @@ static int eiointc_set_irq_affinity(struct irq_data *d, const struct cpumask *af
+ 
+ 	return IRQ_SET_MASK_OK;
+ }
++#endif
+ 
+ static int eiointc_index(int node)
+ {
+@@ -238,7 +240,9 @@ static struct irq_chip eiointc_irq_chip = {
+ 	.irq_ack		= eiointc_ack_irq,
+ 	.irq_mask		= eiointc_mask_irq,
+ 	.irq_unmask		= eiointc_unmask_irq,
++#ifdef CONFIG_SMP
+ 	.irq_set_affinity	= eiointc_set_irq_affinity,
++#endif
+ };
+ 
+ static int eiointc_domain_alloc(struct irq_domain *domain, unsigned int virq,
+-- 
+2.42.0
+
 
