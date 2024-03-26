@@ -1,63 +1,80 @@
-Return-Path: <linux-kernel+bounces-118215-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-118216-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 22D1188B633
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 01:37:00 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id C6BC088B634
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 01:37:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 67F222E7B71
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 00:36:58 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 047471C37226
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 00:37:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C8FB81BC43;
-	Tue, 26 Mar 2024 00:36:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A36B31AAD3;
+	Tue, 26 Mar 2024 00:37:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="RFOy9Sck"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="NLb9kon9"
+Received: from out-187.mta0.migadu.com (out-187.mta0.migadu.com [91.218.175.187])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E256B1804F;
-	Tue, 26 Mar 2024 00:36:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AD52C1804E
+	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 00:37:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.187
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711413406; cv=none; b=s/wPuTkwcAZC/mztNgv2M9V/PhIGPAcx6w6BAsDWtQQGkl73MEWj569zN8pFjg74lXLCyU6P9lBTOatNDmpg9fgJ1E8UY8o4YBK8xE2/fqWCI5/w29HDPvH4V3FdgZIU2c95Rf7jXvPdtyhwRXvVjl4h5HVvJaR+/WeXjidT1bI=
+	t=1711413431; cv=none; b=eabmhozWqKvAt8Om0Ase8mcihh6j5IbcB8mW8nOw+kMQE7lf/GNjbZuM7UojQTUjJbjw0xQuoGiOdEPmwvAhsrKMrWhPgZRJlQN5GOETrvDBmEWkCdZgPynFgLxEPS+kOv9UGH2eOA5qm/6VjzcFO/MRfPquKTNRqg9yDEQ9nio=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711413406; c=relaxed/simple;
-	bh=r6ja1S3WkmxWys+sE3KabUy5bKAQKHZGyKXel35g+zY=;
+	s=arc-20240116; t=1711413431; c=relaxed/simple;
+	bh=ESqWTQ+HRZyQ87yUo/GTNFE0cDkeMSEhIHwbnTdrt8o=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Dpc+FvOx18fHm1OGndsMDgpoQyDIMSjFGHKmGbshxy45Ao/sgRnwfvIaTWlts0nhnzwQS945Vc2ZXiv3G3xafTrYj66NuWfvwY14zz2rJ0arutkxDAPH3AAKEy1W4IQjXsK0GJeQkcJbU2848eYoUajcE0okRAQwhJFB19z6Pok=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=RFOy9Sck; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 84803C433C7;
-	Tue, 26 Mar 2024 00:36:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711413405;
-	bh=r6ja1S3WkmxWys+sE3KabUy5bKAQKHZGyKXel35g+zY=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=RFOy9SckrUmOjcVY80p+Bpxbe+5dpDJq+JeaQvIywXepTed1YRXnEepoqUkHhDLDv
-	 KZQ8orGHJmcfhxU4yqXzvKwkkh03GuDsm5VknrzWZxwAeC8moegodFxeAFmHcguP3V
-	 MvMXRlBgmBX55pjBPgOUTWQbK7zrjPHUR7Ivk7miBmPv+gpyP5Ja8S02vD6UZnj61n
-	 CqfQ4NXy/CKPT7KniveufUJdSfosIbl7mM5+gISfC65C9eTYs21OyRMfhMeYTy9MAj
-	 ov2d24lOwn4Oj/ZJVUPrXNuEHsLe2pES4uVY1T8XSrKZegQunB7Zn3qmkn816MOaQo
-	 yZPbuVAYSRHAg==
-Date: Tue, 26 Mar 2024 01:36:41 +0100
-From: Andi Shyti <andi.shyti@kernel.org>
-To: Wolfram Sang <wsa+renesas@sang-engineering.com>
-Cc: linux-i2c@vger.kernel.org, asahi@lists.linux.dev, 
-	chrome-platform@lists.linux.dev, imx@lists.linux.dev, linux-actions@lists.infradead.org, 
-	linux-amlogic@lists.infradead.org, linux-arm-kernel@lists.infradead.org, 
-	linux-arm-msm@vger.kernel.org, linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org, 
-	linux-mediatek@lists.infradead.org, linux-mips@vger.kernel.org, linux-omap@vger.kernel.org, 
-	linuxppc-dev@lists.ozlabs.org, linux-renesas-soc@vger.kernel.org, 
-	linux-riscv@lists.infradead.org, linux-rockchip@lists.infradead.org, 
-	linux-rpi-kernel@lists.infradead.org, linux-samsung-soc@vger.kernel.org, 
-	linux-stm32@st-md-mailman.stormreply.com, linux-sunxi@lists.linux.dev, linux-tegra@vger.kernel.org, 
-	openbmc@lists.ozlabs.org, virtualization@lists.linux.dev
-Subject: Re: [PATCH 00/64] i2c: reword i2c_algorithm according to newest
- specification
-Message-ID: <j2l7tu24itjelylrgwe6gdsy3mfrw3dnve4rdofmri3z7xdroc@se56t5ylmdak>
-References: <20240322132619.6389-1-wsa+renesas@sang-engineering.com>
- <ug266trshvhhbsln3eoh53fmsuj3l63ziz6gavcl7rv2jhjr5t@3av5givh5n7m>
+	 Content-Type:Content-Disposition:In-Reply-To; b=KDNvQBcwTSHkxBKTtANYpLnmxVmkVB4LV7Oprjd+VNOrf2+W+rUNKj4PAuuBoE3zEVn8EDXvf6Yl/vsufxVYqmhTUYLoomATKUwV0LROubtzNwdsKRN+EnXeSXc8JNAkad+0k/85PTir6jVk1qD4AaFDn9eJZl3fk5XzIUdnMv0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=NLb9kon9; arc=none smtp.client-ip=91.218.175.187
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Date: Mon, 25 Mar 2024 20:36:59 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1711413427;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=K7/P1e12pVDFD60cFU8dr+GfEYW0gad9J1o/dhSRroU=;
+	b=NLb9kon9YXeMPqajYlhJHM/8psRsNlhfBLdL0kTxa+vUMeGImlECNyeyGq09Ue5Wcutxh6
+	kuHWyImi7GVqgD5GJuuGKm6U0F/3s9oQzoXGdf5FuRJtzoDtacMjGzA5sI9ReSSU6cClND
+	6KC01NNpfxLWl6Prlf+9TF2C4TQVtpA=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Kent Overstreet <kent.overstreet@linux.dev>
+To: "Dr. David Alan Gilbert" <dave@treblig.org>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>, 
+	Philipp Stanner <pstanner@redhat.com>, Boqun Feng <boqun.feng@gmail.com>, 
+	rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org, 
+	llvm@lists.linux.dev, Miguel Ojeda <ojeda@kernel.org>, 
+	Alex Gaynor <alex.gaynor@gmail.com>, Wedson Almeida Filho <wedsonaf@gmail.com>, 
+	Gary Guo <gary@garyguo.net>, =?utf-8?B?QmrDtnJu?= Roy Baron <bjorn3_gh@protonmail.com>, 
+	Benno Lossin <benno.lossin@proton.me>, Andreas Hindborg <a.hindborg@samsung.com>, 
+	Alice Ryhl <aliceryhl@google.com>, Alan Stern <stern@rowland.harvard.edu>, 
+	Andrea Parri <parri.andrea@gmail.com>, Will Deacon <will@kernel.org>, 
+	Peter Zijlstra <peterz@infradead.org>, Nicholas Piggin <npiggin@gmail.com>, 
+	David Howells <dhowells@redhat.com>, Jade Alglave <j.alglave@ucl.ac.uk>, 
+	Luc Maranget <luc.maranget@inria.fr>, "Paul E. McKenney" <paulmck@kernel.org>, 
+	Akira Yokosawa <akiyks@gmail.com>, Daniel Lustig <dlustig@nvidia.com>, 
+	Joel Fernandes <joel@joelfernandes.org>, Nathan Chancellor <nathan@kernel.org>, 
+	Nick Desaulniers <ndesaulniers@google.com>, kent.overstreet@gmail.com, 
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, elver@google.com, Mark Rutland <mark.rutland@arm.com>, 
+	Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
+	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>, 
+	Catalin Marinas <catalin.marinas@arm.com>, linux-arm-kernel@lists.infradead.org, 
+	linux-fsdevel@vger.kernel.org
+Subject: Re: [WIP 0/3] Memory model and atomic API in Rust
+Message-ID: <vevxfv67ureybf7sjwfxzdvl4tt62khyn2gfzn7o74ke2m554s@xxddzz6nurbn>
+References: <20240322233838.868874-1-boqun.feng@gmail.com>
+ <s2jeqq22n5ef5jknaps37mfdjvuqrns4w7i22qp2r7r4bzjqs2@my3eyxoa3pl3>
+ <CAHk-=whY5A=S=bLwCFL=043DoR0TTgSDUmfPDx2rXhkk3KANPQ@mail.gmail.com>
+ <u2suttqa4c423q4ojehbucaxsm6wguqtgouj7vudp55jmuivq3@okzfgryarwnv>
+ <CAHk-=whkQk=zq5XiMcaU3xj4v69+jyoP-y6Sywhq-TvxSSvfEA@mail.gmail.com>
+ <c51227c9a4103ad1de43fc3cda5396b1196c31d7.camel@redhat.com>
+ <CAHk-=wjP1i014DGPKTsAC6TpByC3xeNHDjVA4E4gsnzUgJBYBQ@mail.gmail.com>
+ <bu3seu56hfozsvgpdqjarbdkqo3lsjfc4lhluk5oj456xmrjc7@lfbbjxuf4rpv>
+ <CAHk-=wgLGWBXvNODAkzkVHEj7zrrnTq_hzMft62nKNkaL89ZGQ@mail.gmail.com>
+ <ZgIRXL5YM2AwBD0Y@gallifrey>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -66,20 +83,54 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ug266trshvhhbsln3eoh53fmsuj3l63ziz6gavcl7rv2jhjr5t@3av5givh5n7m>
+In-Reply-To: <ZgIRXL5YM2AwBD0Y@gallifrey>
+X-Migadu-Flow: FLOW_OUT
 
-Hi Wolfram,
-
-> > @Andi: are you okay with this approach? It means you'd need to merge
-> > -rc2 into your for-next branch. Or rebase if all fails.
+On Tue, Mar 26, 2024 at 12:05:48AM +0000, Dr. David Alan Gilbert wrote:
+> * Linus Torvalds (torvalds@linux-foundation.org) wrote:
 > 
-> I think it's a good plan, I'll try to support you with it.
+> <snip>
+> 
+> > IOW, the whole access size problem that Boqun described is
+> > *inherently* tied to the fact that the C++ and Rust memory model is
+> > badly designed from the wrong principles.
+> > 
+> > Instead of designing it as a "this is an atomic object that you can do
+> > these operations on", it should have been "this is an atomic access,
+> > and you can use this simple object model to have the compiler generate
+> > the accesses for you".
+> 
+> Isn't one of the aims of the Rust/C++ idea that you can't forget to access
+> a shared piece of data atomically?
+> 
+> If you want to have 'atomic accesses' explicitly, how do you tell the compiler
+> what you can use them on, and when it should stop you mixing them with
+> normal accesses on the same object?
 
-Do you feel more comfortable if I take the patches as soon as
-they are reviewd?
+"can't forget to access data atomically" - that's only half of it. And
+atomic accesses loads/stores are not a thing under the hood, they're
+just loads and stores (possibly, but not necessarily, with memory
+barriers).
 
-So far I have tagged patch 1-4 and I can already merge 2,3,4 as
-long as you merge patch 1.
+The other half is at the _source_ level you don't want to treat accesses
+to volatiles/atomics like accesses to normal variables, you really want
+those to be explicit, and not look like normal variable accesses.
 
-Andi
+std:atomic_int is way better than volatile in the sense that it's not a
+barely specified mess, but adding operator overloading was just
+gratuitious and unnecessary.
+
+This is a theme with C++ - they add a _ton_ of magic to make things
+concise and pretty, but you have to understand in intimate detail what
+all that magic is doing or you're totally fucked.
+
+std::atomic_int makes it such that just changing a single line of code
+in a single location in your program will change the semantics of your
+_entire_ program and the only obserable result will be that it's faster
+but a ticking time bomb because you just introduced a ton of races.
+
+With Rust - I honestly haven't looked at whether they added operator
+overlaoding for their atomics, but it's _much_ less of a concern because
+changing the type to the non-atomic version means your program won't
+compile if it's now racy.
 
