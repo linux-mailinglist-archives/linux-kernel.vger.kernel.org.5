@@ -1,44 +1,81 @@
-Return-Path: <linux-kernel+bounces-118329-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-118330-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4FB0D88B83B
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 04:16:03 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 737B888B857
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 04:22:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 73A0C1C39925
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 03:16:02 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 05F722C7C87
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 03:22:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 43B6A128833;
-	Tue, 26 Mar 2024 03:15:56 +0000 (UTC)
-Received: from dggsgout12.his.huawei.com (unknown [45.249.212.56])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CB0FC1292D9;
+	Tue, 26 Mar 2024 03:21:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="a+WcccQg"
+Received: from NAM11-BN8-obe.outbound.protection.outlook.com (mail-bn8nam11on2041.outbound.protection.outlook.com [40.107.236.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4FEDF128823;
-	Tue, 26 Mar 2024 03:15:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711422955; cv=none; b=rllRXCpXxYXymD8z4UDzWwipoB4LW64XpnZUuyU9tYInfJdpHBdb5MVdlJ+Ug18g2o9O//Af5Z8JnrQlccXbkRsAJrMwYyc+LV69FYz2K4nIttKmrxR2UbjQtfOrPfrjR3TjVS2SVgkc0yhRTfeVGTD7X0Z29A4HinvKlnqjd68=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711422955; c=relaxed/simple;
-	bh=EOWWbZppdu13obubPqYzcvbmSD4F3oSk31MDSLafIrQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:Cc:
-	 In-Reply-To:Content-Type; b=oWzBat+C8gDZY+h66iLEGGcXECGlBmxMQUyaK9zrLdzyzFAh7+4bZ+fI3CqErf4XOEE7nhMdQJGKLxjaxOySXnOtEx3CQfqINaBs8iJmyf/GMf3bqki48wqHHPFnGVWl+65pCeH/YCwL6ZDXiEuQA2PeUKpzAi7JvoTVlxC9n8A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.93.142])
-	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4V3Zgf2YW1z4f3kj1;
-	Tue, 26 Mar 2024 11:15:42 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.112])
-	by mail.maildlp.com (Postfix) with ESMTP id 8454E1A0172;
-	Tue, 26 Mar 2024 11:15:48 +0800 (CST)
-Received: from [10.67.109.184] (unknown [10.67.109.184])
-	by APP1 (Coremail) with SMTP id cCh0CgCHoQrjPQJm5oFlIA--.21954S2;
-	Tue, 26 Mar 2024 11:15:48 +0800 (CST)
-Message-ID: <6936ff0c-d9bd-4136-a5ed-8df377d2206b@huaweicloud.com>
-Date: Tue, 26 Mar 2024 11:15:47 +0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CA0B657314
+	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 03:21:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.236.41
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1711423312; cv=fail; b=dmS28d82zy6LacjmtxuXO2TNOE0WnR6ltTq7LyVpwYDtUEfNDM2Ey8tfZkM5NVa+fkuEtt3MgMsFjer1qmZSkhbwflJMGJxN/B9t9FBLE3gdrPs5C3zA5PpN1NEQH2v2Y9UVq6MakJnuMQFTiGhoCVYpmNY71NuhUKgr3/UWe+s=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1711423312; c=relaxed/simple;
+	bh=aTvFEY4CFAiWn2vZxAkUSSxZY20aBO0u9pf9oT195XY=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=qOPYVV2+CKrqJWrrt+OYvIHcGLb0wb8xujQME6qrnX6Tm69w67pghHwNoBcCoR503I1V5AZIQkz/BJAqv72/XumI+aEeqspH+jnjDQx+YIZ+y/TTUu7GdSkg1BEOpT/wPMTP2KieGH0G7vn6ge7aV210hcQ+a1Rbtsvs/Xbhy5k=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=a+WcccQg; arc=fail smtp.client-ip=40.107.236.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=RXXEkn3lemGfRZ3K2vJ32ODuPTjciO7L6gqQv76oGTPHH3xk6OM1yUHcbcXQVmQovGoKrP0MdUCmRdZrEA06QzcD6mbs9eqKJhrbQLPL5JYZf5A+2yXp5iC90k+NERohicUYpOykIbwZN5GURkRALtsPxJDBf4y7H8QWo8/0Fj/yWrLtY9RYmT4pOmtdmPyawB8PpVFnCkjpTkJtZXFUUaGH3edr1Qajb60PvwlbpcONn0npwFhiPhA3YUFZP0urF8Qq4qyLJgsCTXyrzAtB3qubFn2tgqvGLXY/ztJmftY+ym2SEkoLv3ivkikgOew0yTalvZZstuafZJMXPG2r1w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=8NV7aG2a83iw/0FpRqbJ3CNrZoSTOlaRaiNBxpPPXh8=;
+ b=JbNVY0Qd2JMrCRj1RFxFFOBuVWSqJWSRfaEUvpM2jr9CRqgCIH+QWVGWW3vDUODHK0c4aTwdhpl26Z35QtfJJxdhgfsXdQ0pWoRSECbMF4kRajGRCEEdPxs+FgY085nWdERyqXHn0Q22GvpgEDdIc3b/q/JrUFde3rd4vT7M9o46KG6NDfB4nzAQN6zPoEuZVp2JCESx9YW8igl4gDC0DSn8EOhDt40nNuQ8965ExOAOF2gvSKsjttIxEUunxL/MMCn0wy+oEGCMaxuljNZ1F6dEtwEtRFtIMIialsOinXuYRtjhNWPe3FrItXC70Yrfp4ccXMfCCQvfA7nUqctmdg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.117.161) smtp.rcpttodomain=infradead.org smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=8NV7aG2a83iw/0FpRqbJ3CNrZoSTOlaRaiNBxpPPXh8=;
+ b=a+WcccQgiAFXj2/yJYn15uEyW9yyoef99PG8CjnmgLAx+atgcf0lZRt8OFsBvRgQMDyKWfotMQloxNlyUSZrzdZjT9OHbwqh+pSVZ8zpEuBcJpcRNPo8svlZ0MrZ7wqEtWSQAI71WLhBoQkJDBRTk7kUhGScKbzaAk/WhQFE377FBWxf3oQ+nkQgmg/ncxNviXuBuJal/nubjJI2FU+/Dy7UPauwulR1CczpOOf90asew3Ei54h6SwQY4CLXb7oauRgKbOVv9CAYASGiXEnJmFXKjxen5YOZIOEf68WVnMyxRWaH0l0k2xY/Z0nkCzUdMCOsKrIdqBcIwJylx3tgOQ==
+Received: from DS7PR06CA0038.namprd06.prod.outlook.com (2603:10b6:8:54::19) by
+ PH7PR12MB5710.namprd12.prod.outlook.com (2603:10b6:510:1e1::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.31; Tue, 26 Mar
+ 2024 03:21:47 +0000
+Received: from CY4PEPF0000E9D9.namprd05.prod.outlook.com
+ (2603:10b6:8:54:cafe::d7) by DS7PR06CA0038.outlook.office365.com
+ (2603:10b6:8:54::19) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.13 via Frontend
+ Transport; Tue, 26 Mar 2024 03:21:47 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.161)
+ smtp.mailfrom=nvidia.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.117.161 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.117.161; helo=mail.nvidia.com; pr=C
+Received: from mail.nvidia.com (216.228.117.161) by
+ CY4PEPF0000E9D9.mail.protection.outlook.com (10.167.241.77) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.7409.10 via Frontend Transport; Tue, 26 Mar 2024 03:21:47 +0000
+Received: from rnnvmail201.nvidia.com (10.129.68.8) by mail.nvidia.com
+ (10.129.200.67) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41; Mon, 25 Mar
+ 2024 20:21:29 -0700
+Received: from [10.110.48.28] (10.126.231.35) by rnnvmail201.nvidia.com
+ (10.129.68.8) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1258.12; Mon, 25 Mar
+ 2024 20:21:28 -0700
+Message-ID: <0cba949e-6c77-491a-bc4e-7f52738e0f36@nvidia.com>
+Date: Mon, 25 Mar 2024 20:21:28 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -46,299 +83,143 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH bpf-next v2 1/2] bpf,riscv: Implement PROBE_MEM32 pseudo
- instructions
+Subject: Re: [RFC] mm: page-flags.h: remove the bias against tail pages
+To: Matthew Wilcox <willy@infradead.org>
+CC: Andrew Morton <akpm@linux-foundation.org>, LKML
+	<linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>, David Hildenbrand
+	<david@redhat.com>, Mike Rapoport <rppt@kernel.org>, Theodore Ts'o
+	<tytso@mit.edu>, Vishal Moola <vishal.moola@gmail.com>, Peter Collingbourne
+	<pcc@google.com>
+References: <20240325045519.222458-1-jhubbard@nvidia.com>
+ <ZgEKkd9nc9rdfzCK@casper.infradead.org>
 Content-Language: en-US
-To: Puranjay Mohan <puranjay12@gmail.com>
-References: <20240325155434.65589-1-puranjay12@gmail.com>
- <20240325155434.65589-2-puranjay12@gmail.com>
- <875xxafe33.fsf@all.your.base.are.belong.to.us> <mb61ple66mdvc.fsf@gmail.com>
-From: Pu Lehui <pulehui@huaweicloud.com>
-Cc: =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
- Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau
- <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>,
- Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>,
- John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
- Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>,
- Jiri Olsa <jolsa@kernel.org>, Luke Nelson <luke.r.nels@gmail.com>,
- Xi Wang <xi.wang@gmail.com>, Paul Walmsley <paul.walmsley@sifive.com>,
- Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>,
- bpf@vger.kernel.org, linux-riscv@lists.infradead.org,
- linux-kernel@vger.kernel.org
-In-Reply-To: <mb61ple66mdvc.fsf@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:cCh0CgCHoQrjPQJm5oFlIA--.21954S2
-X-Coremail-Antispam: 1UD129KBjvJXoW3Jr4kXw43WFWDtw4rGFW3Wrg_yoWfZr4rp3
-	4UKF4fArWqqr4I9FyqgF12g3WFyr48CFnrWr1ft34fJasIqr4fG3W5Kr1a9ry5Ary8ZrWU
-	JF4jk39I9asxGrDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUk0b4IE77IF4wAFF20E14v26ryj6rWUM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7MxAIw28IcxkI
-	7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxV
-	Cjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVW8ZVWrXwCIc40Y0x0EwIxGrwCI42IY
-	6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6x
-	AIw20EY4v20xvaj40_WFyUJVCq3wCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv
-	6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUFDGOUUUUU
-X-CM-SenderInfo: psxovxtxl6x35dzhxuhorxvhhfrp/
+From: John Hubbard <jhubbard@nvidia.com>
+In-Reply-To: <ZgEKkd9nc9rdfzCK@casper.infradead.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: rnnvmail201.nvidia.com (10.129.68.8) To
+ rnnvmail201.nvidia.com (10.129.68.8)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CY4PEPF0000E9D9:EE_|PH7PR12MB5710:EE_
+X-MS-Office365-Filtering-Correlation-Id: d14ec72d-2731-4dca-5f04-08dc4d43dea8
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	sljG1gtMTt4CoRiULjAS6QBCF2lB+AcW+FRu4bh4VFJGrbYWmgKGT+jiTrXf8yL48KxWpmFPlqUiaO0gDM6QSNPuaWvmbcv4mM3AsEomHQ3xE6tWIrPhyQDZKYj3dknbhNNynqpzgBiCp/1tJFVbRHE6RbIzCNUUvqyXDdGWJwVpvx7LL0G83geBQJ1Jzl5Tk4hRp3EDf3KrbGYug+FyRKX+sQjD0G3CpzyJM5KFY0reoLsNqueXIkVaO2ASzzHu/td+6EOBGO/b56A8csbNDwDywP5BqyXqgna2X3nIp46IKeTfDFfcAXFqvjVgVR79VPA5n4nbYziPFveqjm+HT8bIZOCVMxnGSDsWkwgg9f2AMpH8dB+SgF0R6OOgK0AmvBJ+AKnNO9cQ0wx5mBNXtV4tQQ+6fHCFDUiRxWdFAXRYayX1mNspthILKM0boiYu0r+ZxBfGjfhuJeCXrvEGB652ZLQghFaPs8jo1JK0QXIiychdO/cC307Npm0tNwB0dwslJKh1bwR4YXC318iFe9Bg31tbu1OTqPYMe5TjahnLZG5TzIH2kCPN/Pre/IOT/bMxqXl5q9dtwt/0u3jS6JgsqB1/gIbDXsoxpwUF3or0392aqi9V8SiI6rdV/G+FGb6dXykB63qf6RmvmsrAfG9c+SP5wZvbs9LxHeg3trAyJRUSUTmy4tKE12N6yUJqvn9oK0455nW7Kjo43zALb7NYDiO3oWTSpvLPB3KnKSi41AtaH0k41Clv5R459jRW
+X-Forefront-Antispam-Report:
+	CIP:216.228.117.161;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge2.nvidia.com;CAT:NONE;SFS:(13230031)(1800799015)(376005)(36860700004)(82310400014);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Mar 2024 03:21:47.2085
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: d14ec72d-2731-4dca-5f04-08dc4d43dea8
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.161];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource:
+	CY4PEPF0000E9D9.namprd05.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR12MB5710
+
+On 3/24/24 10:24 PM, Matthew Wilcox wrote:
+..
+> It's complicated.  On the one hand, it's "more likely" because there are
+> more tail pages than there are head pages or order-0 pages.  On the
+> other hand, a _lot_ of the time we call compound_head(), it's done with
+> a non-tail page because we tend to pass around head pages (eg,
+
+ah yes, that's true.
+
+> pmd_page() on hugetlbfs, or looking up a folio in the page cache and
+> passing &folio->page to some function that's not yet converted.
+> 
+> On the third hand, does the compiler really do much with the annotation?
+> 
+> Before your patch:
+> 
+>      27d6:       a8 01                   test   $0x1,%al
+>      27d8:       75 02                   jne    27dc <clear_refs_pte_range+0x9c>
+
+I should have thought to check this. Usually I'll see a change between je/jne
+if __builtin_expect is doing its job. Here it is, oddly, missing in action.
+
+Maybe I'll look a little closer into why that is...
+
+>      27da:       eb 59                   jmp    2835 <clear_refs_pte_range+0xf5>
+>      27dc:       49 8b 44 24 08          mov    0x8(%r12),%rax
+>      27e1:       a8 01                   test   $0x1,%al
+>      27e3:       75 6f                   jne    2854 <clear_refs_pte_range+0x114>
+>      27e5:       eb 73                   jmp    285a <clear_refs_pte_range+0x11a>
+> 
+> With your patch:
+> 
+>      1ee6:       a8 01                   test   $0x1,%al
+>      1ee8:       75 02                   jne    1eec <clear_refs_pte_range+0x9c>
+>      1eea:       eb 5f                   jmp    1f4b <clear_refs_pte_range+0xfb>
+>      1eec:       49 8b 44 24 08          mov    0x8(%r12),%rax
+>      1ef1:       a8 01                   test   $0x1,%al
+>      1ef3:       75 50                   jne    1f45 <clear_refs_pte_range+0xf5>
+>      1ef5:       eb 6c                   jmp    1f63 <clear_refs_pte_range+0x113>
+> 
+> Looks pretty much the same.  bloat-o-meter says:
+> 
+> $ ./scripts/bloat-o-meter before.o after.o
+> add/remove: 0/0 grow/shrink: 2/4 up/down: 32/-48 (-16)
+> Function                                     old     new   delta
+> gather_stats.constprop                       730     753     +23
+> smaps_hugetlb_range                          635     644      +9
+> smaps_page_accumulate                        342     338      -4
+> clear_refs_pte_range                         339     328     -11
+> pagemap_hugetlb_range                        422     407     -15
+> smaps_pte_range                             1406    1388     -18
+> Total: Before=20066, After=20050, chg -0.08%
+> 
+> (I was looking at clear_refs_pte_range above).  This seems marginal.
+> The benefits of removing a call to compound_head are much less
+> ambiguous:
+> 
+> $ ./scripts/bloat-o-meter before.o .build/fs/proc/task_mmu.o
+> add/remove: 0/0 grow/shrink: 0/1 up/down: 0/-101 (-101)
+> Function                                     old     new   delta
+> clear_refs_pte_range                         339     238    -101
+> Total: Before=20066, After=19965, chg -0.50%
+> 
+> I'd describe that as replacing four calls to compound_head() with two:
+> 
+> -               page = pmd_page(*pmd);
+> +               folio = page_folio(pmd_page(*pmd));
+> 
+>                  /* Clear accessed and referenced bits. */
+>                  pmdp_test_and_clear_young(vma, addr, pmd);
+> -               test_and_clear_page_young(page);
+> -               ClearPageReferenced(page);
+> +               folio_test_clear_young(folio);
+> +               folio_clear_referenced(folio);
+> ...
+> -               page = vm_normal_page(vma, addr, ptent);
+> -               if (!page)
+> +               folio = vm_normal_folio(vma, addr, ptent);
+> +               if (!folio)
+>                          continue;
+> 
+>                  /* Clear accessed and referenced bits. */
+>                  ptep_test_and_clear_young(vma, addr, pte);
+> -               test_and_clear_page_young(page);
+> -               ClearPageReferenced(page);
+> +               folio_test_clear_young(folio);
+> +               folio_clear_referenced(folio);
+> 
+> I'm not saying this patch is necessarily wrong, I just think it's
+> "not proven".
+
+I appreciate your looking at this and explaining the analysis steps
+you used!
 
 
-
-On 2024/3/26 1:15, Puranjay Mohan wrote:
-> Björn Töpel <bjorn@kernel.org> writes:
-> 
->> Puranjay Mohan <puranjay12@gmail.com> writes:
->>
->>> Add support for [LDX | STX | ST], PROBE_MEM32, [B | H | W | DW]
->>> instructions.  They are similar to PROBE_MEM instructions with the
->>> following differences:
->>> - PROBE_MEM32 supports store.
->>> - PROBE_MEM32 relies on the verifier to clear upper 32-bit of the
->>>    src/dst register
->>> - PROBE_MEM32 adds 64-bit kern_vm_start address (which is stored in S7
->>>    in the prologue). Due to bpf_arena constructions such S7 + reg +
->>>    off16 access is guaranteed to be within arena virtual range, so no
->>>    address check at run-time.
->>> - S7 is a free callee-saved register, so it is used to store kern_vm_start
->>> - PROBE_MEM32 allows STX and ST. If they fault the store is a nop. When
->>>    LDX faults the destination register is zeroed.
->>>
->>> To support these on riscv, we do tmp = S7 + src/dst reg and then use
->>> tmp2 as the new src/dst register. This allows us to reuse most of the
->>> code for normal [LDX | STX | ST].
->>
->> Cool to see the RV BPF JIT keeping up with x86 features! ;-) Nice work!
-> 
-> It is my self proclaimed duty to make sure that all 64-bit JITs have
-> feature parity. :D
-> 
->>
->> A couple of minor comments below.
->>
->>> Signed-off-by: Puranjay Mohan <puranjay12@gmail.com>
->>> ---
->>>   arch/riscv/net/bpf_jit.h        |   1 +
->>>   arch/riscv/net/bpf_jit_comp64.c | 193 +++++++++++++++++++++++++++++++-
->>>   arch/riscv/net/bpf_jit_core.c   |   1 +
->>>   3 files changed, 192 insertions(+), 3 deletions(-)
->>>
->>> diff --git a/arch/riscv/net/bpf_jit.h b/arch/riscv/net/bpf_jit.h
->>> index f4b6b3b9edda..8a47da08dd9c 100644
->>> --- a/arch/riscv/net/bpf_jit.h
->>> +++ b/arch/riscv/net/bpf_jit.h
->>> @@ -81,6 +81,7 @@ struct rv_jit_context {
->>>   	int nexentries;
->>>   	unsigned long flags;
->>>   	int stack_size;
->>> +	u64 arena_vm_start;
->>>   };
->>>   
->>>   /* Convert from ninsns to bytes. */
->>> diff --git a/arch/riscv/net/bpf_jit_comp64.c b/arch/riscv/net/bpf_jit_comp64.c
->>> index 1adf2f39ce59..0c0588e327af 100644
->>> --- a/arch/riscv/net/bpf_jit_comp64.c
->>> +++ b/arch/riscv/net/bpf_jit_comp64.c
->>> @@ -255,6 +255,10 @@ static void __build_epilogue(bool is_tail_call, struct rv_jit_context *ctx)
->>>   		emit_ld(RV_REG_S6, store_offset, RV_REG_SP, ctx);
->>>   		store_offset -= 8;
->>>   	}
->>> +	if (ctx->arena_vm_start) {
->>> +		emit_ld(RV_REG_S7, store_offset, RV_REG_SP, ctx);
->>> +		store_offset -= 8;
->>> +	}
-
-As RV_REG_S7 is only for bpf arena, how about define this register as 
-bellow, like RV_REG_TCC
-
-#define RV_REG_ARENA RV_REG_S7
-
->>>   
->>>   	emit_addi(RV_REG_SP, RV_REG_SP, stack_adjust, ctx);
->>>   	/* Set return value. */
->>> @@ -548,6 +552,7 @@ static void emit_atomic(u8 rd, u8 rs, s16 off, s32 imm, bool is64,
->>>   
->>>   #define BPF_FIXUP_OFFSET_MASK   GENMASK(26, 0)
->>>   #define BPF_FIXUP_REG_MASK      GENMASK(31, 27)
->>> +#define DONT_CLEAR		17	/* RV_REG_A7 unused in pt_regmap */
->>
->> Hmm, so this is just a a sentinel node, right? Isn't it more robust to
->> use, say REG_ZERO which will never be used? Maybe REG_DONT_CLEAR_MARKER
->> or smth, so it's obvious how it's used?
-> 
-> Yes, I agree, RV_REG_ZERO would be the best thing to use here.
-> 
->>
->>
->>>   bool ex_handler_bpf(const struct exception_table_entry *ex,
->>>   		    struct pt_regs *regs)
->>> @@ -555,7 +560,8 @@ bool ex_handler_bpf(const struct exception_table_entry *ex,
->>>   	off_t offset = FIELD_GET(BPF_FIXUP_OFFSET_MASK, ex->fixup);
->>>   	int regs_offset = FIELD_GET(BPF_FIXUP_REG_MASK, ex->fixup);
->>>   
->>> -	*(unsigned long *)((void *)regs + pt_regmap[regs_offset]) = 0;
->>> +	if (regs_offset != DONT_CLEAR)
->>> +		*(unsigned long *)((void *)regs + pt_regmap[regs_offset]) = 0;
->>>   	regs->epc = (unsigned long)&ex->fixup - offset;
->>>   
->>>   	return true;
->>> @@ -572,7 +578,8 @@ static int add_exception_handler(const struct bpf_insn *insn,
->>>   	off_t fixup_offset;
->>>   
->>>   	if (!ctx->insns || !ctx->ro_insns || !ctx->prog->aux->extable ||
->>> -	    (BPF_MODE(insn->code) != BPF_PROBE_MEM && BPF_MODE(insn->code) != BPF_PROBE_MEMSX))
->>> +	    (BPF_MODE(insn->code) != BPF_PROBE_MEM && BPF_MODE(insn->code) != BPF_PROBE_MEMSX &&
->>> +	     BPF_MODE(insn->code) != BPF_PROBE_MEM32))
->>>   		return 0;
->>>   
->>>   	if (WARN_ON_ONCE(ctx->nexentries >= ctx->prog->aux->num_exentries))
->>> @@ -622,6 +629,9 @@ static int add_exception_handler(const struct bpf_insn *insn,
->>>   
->>>   	ex->insn = ins_offset;
->>>   
->>> +	if (BPF_CLASS(insn->code) != BPF_LDX)
->>> +		dst_reg = DONT_CLEAR;
->>> +
->>
->> Instead of having a side-effect, and passing a dummy dst_reg for the
->> probe_mem32, just explicitly add DONT_CLEAR when calling
->> add_exception_handler(). It's more obvious to me at least.
-> 
-> Sure, will do that in the next version.
-> 
->>
->>>   	ex->fixup = FIELD_PREP(BPF_FIXUP_OFFSET_MASK, fixup_offset) |
->>>   		FIELD_PREP(BPF_FIXUP_REG_MASK, dst_reg);
->>>   	ex->type = EX_TYPE_BPF;
->>> @@ -1063,7 +1073,7 @@ int bpf_jit_emit_insn(const struct bpf_insn *insn, struct rv_jit_context *ctx,
->>>   		    BPF_CLASS(insn->code) == BPF_JMP;
->>>   	int s, e, rvoff, ret, i = insn - ctx->prog->insnsi;
->>>   	struct bpf_prog_aux *aux = ctx->prog->aux;
->>> -	u8 rd = -1, rs = -1, code = insn->code;
->>> +	u8 rd = -1, rs = -1, code = insn->code, reg_arena_vm_start = RV_REG_S7;
->>>   	s16 off = insn->off;
->>>   	s32 imm = insn->imm;
->>>   
->>> @@ -1539,6 +1549,11 @@ int bpf_jit_emit_insn(const struct bpf_insn *insn, struct rv_jit_context *ctx,
->>>   	case BPF_LDX | BPF_PROBE_MEMSX | BPF_B:
->>>   	case BPF_LDX | BPF_PROBE_MEMSX | BPF_H:
->>>   	case BPF_LDX | BPF_PROBE_MEMSX | BPF_W:
->>> +	/* LDX | PROBE_MEM32: dst = *(unsigned size *)(src + S7 + off)*/
->>> +	case BPF_LDX | BPF_PROBE_MEM32 | BPF_B:
->>> +	case BPF_LDX | BPF_PROBE_MEM32 | BPF_H:
->>> +	case BPF_LDX | BPF_PROBE_MEM32 | BPF_W:
->>> +	case BPF_LDX | BPF_PROBE_MEM32 | BPF_DW:
->>>   	{
->>>   		int insn_len, insns_start;
->>>   		bool sign_ext;
->>> @@ -1546,6 +1561,11 @@ int bpf_jit_emit_insn(const struct bpf_insn *insn, struct rv_jit_context *ctx,
->>>   		sign_ext = BPF_MODE(insn->code) == BPF_MEMSX ||
->>>   			   BPF_MODE(insn->code) == BPF_PROBE_MEMSX;
->>>   
->>> +		if (BPF_MODE(insn->code) == BPF_PROBE_MEM32) {
->>> +			emit_add(RV_REG_T2, rs, reg_arena_vm_start, ctx);
->>> +			rs = RV_REG_T2;
->>> +		}
->>> +
->>>   		switch (BPF_SIZE(code)) {
->>>   		case BPF_B:
->>>   			if (is_12b_int(off)) {
->>> @@ -1682,6 +1702,87 @@ int bpf_jit_emit_insn(const struct bpf_insn *insn, struct rv_jit_context *ctx,
->>>   		emit_sd(RV_REG_T2, 0, RV_REG_T1, ctx);
->>>   		break;
->>>   
->>> +	case BPF_ST | BPF_PROBE_MEM32 | BPF_B:
->>> +	case BPF_ST | BPF_PROBE_MEM32 | BPF_H:
->>> +	case BPF_ST | BPF_PROBE_MEM32 | BPF_W:
->>> +	case BPF_ST | BPF_PROBE_MEM32 | BPF_DW:
->>> +	{
->>> +		int insn_len, insns_start;
->>> +
->>> +		emit_add(RV_REG_T3, rd, reg_arena_vm_start, ctx);
->>> +		rd = RV_REG_T3;
->>> +
->>> +		/* Load imm to a register then store it */
->>> +		emit_imm(RV_REG_T1, imm, ctx);
->>> +
->>> +		switch (BPF_SIZE(code)) {
->>> +		case BPF_B:
->>> +			if (is_12b_int(off)) {
->>> +				insns_start = ctx->ninsns;
->>> +				emit(rv_sb(rd, off, RV_REG_T1), ctx);
->>> +				insn_len = ctx->ninsns - insns_start;
->>> +				break;
->>> +			}
->>> +
->>> +			emit_imm(RV_REG_T2, off, ctx);
->>> +			emit_add(RV_REG_T2, RV_REG_T2, rd, ctx);
->>> +			insns_start = ctx->ninsns;
->>> +			emit(rv_sb(RV_REG_T2, 0, RV_REG_T1), ctx);
->>> +			insn_len = ctx->ninsns - insns_start;
->>> +
->>> +			break;
->>> +
->>> +		case BPF_H:
->>> +			if (is_12b_int(off)) {
->>> +				insns_start = ctx->ninsns;
->>> +				emit(rv_sh(rd, off, RV_REG_T1), ctx);
->>> +				insn_len = ctx->ninsns - insns_start;
->>> +				break;
->>> +			}
->>> +
->>> +			emit_imm(RV_REG_T2, off, ctx);
->>> +			emit_add(RV_REG_T2, RV_REG_T2, rd, ctx);
->>> +			insns_start = ctx->ninsns;
->>> +			emit(rv_sh(RV_REG_T2, 0, RV_REG_T1), ctx);
->>> +			insn_len = ctx->ninsns - insns_start;
->>> +			break;
->>> +		case BPF_W:
->>> +			if (is_12b_int(off)) {
->>> +				insns_start = ctx->ninsns;
->>> +				emit_sw(rd, off, RV_REG_T1, ctx);
->>> +				insn_len = ctx->ninsns - insns_start;
->>> +				break;
->>> +			}
->>> +
->>> +			emit_imm(RV_REG_T2, off, ctx);
->>> +			emit_add(RV_REG_T2, RV_REG_T2, rd, ctx);
->>> +			insns_start = ctx->ninsns;
->>> +			emit_sw(RV_REG_T2, 0, RV_REG_T1, ctx);
->>> +			insn_len = ctx->ninsns - insns_start;
->>> +			break;
->>> +		case BPF_DW:
->>> +			if (is_12b_int(off)) {
->>> +				insns_start = ctx->ninsns;
->>> +				emit_sd(rd, off, RV_REG_T1, ctx);
->>> +				insn_len = ctx->ninsns - insns_start;
->>> +				break;
->>> +			}
->>> +
->>> +			emit_imm(RV_REG_T2, off, ctx);
->>> +			emit_add(RV_REG_T2, RV_REG_T2, rd, ctx);
->>> +			insns_start = ctx->ninsns;
->>> +			emit_sd(RV_REG_T2, 0, RV_REG_T1, ctx);
->>> +			insn_len = ctx->ninsns - insns_start;
->>> +			break;
->>> +		}
->>
->> A lot of similar code, with emit of different sizes. Possible to move
->> move out to a function, and wrap the emits? The main loop is hard read
->> already!
-> 
-> I thought about this as well. My plan is to refactor the whole thing in a
-> seperate patch. I did not do it with this feature as it will cause a lot
-> of unrelated code churn.
-
-Yeah, I think we could do that factor out for LDX, ST, STX, while I had 
-done it before another riscv bpf arena. BUT, looking forword to your 
-implementation.😄
-
-> 
-> Thanks,
-> Puranjay
+thanks,
+-- 
+John Hubbard
+NVIDIA
 
 
