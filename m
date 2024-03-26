@@ -1,309 +1,173 @@
-Return-Path: <linux-kernel+bounces-119024-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-119029-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5593688C2CF
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 13:59:37 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 258CC88C2E5
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 14:02:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 792B21C3595E
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 12:59:36 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 90FDF1F6679F
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 13:02:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1CBB674433;
-	Tue, 26 Mar 2024 12:59:02 +0000 (UTC)
-Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 95EFC6FE2B
-	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 12:58:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=114.242.206.163
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 403FA71B40;
+	Tue, 26 Mar 2024 13:02:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=foss.st.com header.i=@foss.st.com header.b="H86dfRXp"
+Received: from mx08-00178001.pphosted.com (mx08-00178001.pphosted.com [91.207.212.93])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CA5D76FE26;
+	Tue, 26 Mar 2024 13:02:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.207.212.93
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711457941; cv=none; b=RWerBEAIZ0EWrwzzQwKuBhbiCypG8lKscbDgFWi3hiWfRTjjnbsBKGiYbjyvqAOui5vWK4kl7Y+a+VoRyaNu09A6C3Y8YyOnk2yuN9ztQ6iIThpZ+IEdbKGDrnvyMvqMDzl+S66yCuNFSdm39SDIHLalbdVufEJnQNnjyM7JyUo=
+	t=1711458149; cv=none; b=ReuJbXRDqdlyKCL5wY7nrVCCjqgzHeaJPcONi/kKM0wN3+4hweK2sUYw29pxvr5x98FH9Rw4P9kNfsRNkhi8Di+bAgYdIPQ77gogn7t6FW82OVT4Q80+qGH/KTleI7goHS569mLpi4TmedaZjDvZvgsfKtEUOFflkSCiOp4DGoA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711457941; c=relaxed/simple;
-	bh=52VpueoKuCHelfDdjmDBD/RaiFytrkMn0a6ic5DGkUk=;
-	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=qnXv4N1DY/qXDKQvFEQ8wpE2bLW9IshmPq58NxOVpcbSHI75PLfv3RjNd5ks8EmESibFz8gcDmo6TjUj+JsY9azhA+67OvzSjXMBskHDMCv968BzXYEMIJl9iDjantOVCXiPxQDKc56Lzx9EkwSa7kG2cM1ERApCpnvhqZMdPMw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn; spf=pass smtp.mailfrom=loongson.cn; arc=none smtp.client-ip=114.242.206.163
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=loongson.cn
-Received: from loongson.cn (unknown [10.20.42.173])
-	by gateway (Coremail) with SMTP id _____8DxvuuPxgJm92AeAA--.5427S3;
-	Tue, 26 Mar 2024 20:58:55 +0800 (CST)
-Received: from [10.20.42.173] (unknown [10.20.42.173])
-	by localhost.localdomain (Coremail) with SMTP id AQAAf8AxX8+LxgJmJvJoAA--.9641S3;
-	Tue, 26 Mar 2024 20:58:53 +0800 (CST)
-Subject: Re: [PATCH] LoongArch: Give chance to build under !CONFIG_SMP
-To: Tiezhu Yang <yangtiezhu@loongson.cn>, Huacai Chen
- <chenhuacai@kernel.org>, Thomas Gleixner <tglx@linutronix.de>,
- Arnd Bergmann <arnd@arndb.de>, Marc Zyngier <maz@kernel.org>
-Cc: loongarch@lists.linux.dev, linux-kernel@vger.kernel.org,
- loongson-kernel@lists.loongnix.cn
-References: <20240326062101.9822-1-yangtiezhu@loongson.cn>
-From: maobibo <maobibo@loongson.cn>
-Message-ID: <55494710-ddaa-c35a-f6cd-5baf98b13931@loongson.cn>
-Date: Tue, 26 Mar 2024 20:58:50 +0800
-User-Agent: Mozilla/5.0 (X11; Linux loongarch64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+	s=arc-20240116; t=1711458149; c=relaxed/simple;
+	bh=eNyG2SQ69HyaYFsda24myvfLARA/R7XISr9MP1yNOjs=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=PO0a0J7dZXFjmaJl8kPx4YzZT3V1RDSMnSJywoyVKbiMevT5EoaApHPvQUbnHWc9d7V8UgPshPIqrE5/FL6jS4kGVx4LkqQfChW9dPMOERd30Un41VmYQ2rs1VqbihPd5ax298QrqVN7BhHCb0iZFFQsOP1XMCGGWAFNgKw3PjQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foss.st.com; spf=pass smtp.mailfrom=foss.st.com; dkim=pass (2048-bit key) header.d=foss.st.com header.i=@foss.st.com header.b=H86dfRXp; arc=none smtp.client-ip=91.207.212.93
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foss.st.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=foss.st.com
+Received: from pps.filterd (m0369457.ppops.net [127.0.0.1])
+	by mx07-00178001.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 42Q9FH4S009970;
+	Tue, 26 Mar 2024 14:01:59 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=
+	from:to:cc:subject:date:message-id:mime-version
+	:content-transfer-encoding:content-type; s=selector1; bh=QloCXwv
+	iKDQy08mLenO0tS2XCKRzTagg1MEsZ0Mf8XA=; b=H86dfRXpBT8MM9lxQbwMshD
+	XLhWXJq2AGMR8Dz1uSEJAJbKvxy5nUClfKUDL57PePil2AckF37ufhmrRkmTyLe6
+	XVu8xjaY+BVyZzmEMPA4aUxw0BCAo3Vo0pB1h/EvzOROiVkq9MBI84bCUm/643uC
+	e9SHQJrCzqNAoVjKrBuJMyOFVMTaP+DlOMMN3gMcMTIk3fJTyXKeZirEThPjIe9p
+	KH4WlTpjU9Vr3JLfVxPy8IV0v7zeETXsr9eo2A7I8ezTuTnKykEU8h3q5x7+f+2N
+	Kpsi3ar4ifVe8IVzuaooC2UwJDYj20IYkRgWzRfZSgqi4f5Diy98/v3dkiHBojQ=
+	=
+Received: from beta.dmz-ap.st.com (beta.dmz-ap.st.com [138.198.100.35])
+	by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3x2awpasx1-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 26 Mar 2024 14:01:58 +0100 (CET)
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+	by beta.dmz-ap.st.com (STMicroelectronics) with ESMTP id AA6D14002D;
+	Tue, 26 Mar 2024 14:01:55 +0100 (CET)
+Received: from Webmail-eu.st.com (shfdag1node2.st.com [10.75.129.70])
+	by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 057C221863B;
+	Tue, 26 Mar 2024 14:00:42 +0100 (CET)
+Received: from localhost (10.201.21.128) by SHFDAG1NODE2.st.com (10.75.129.70)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Tue, 26 Mar
+ 2024 14:00:39 +0100
+From: Christophe Roullier <christophe.roullier@foss.st.com>
+To: "David S . Miller" <davem@davemloft.net>,
+        Eric Dumazet
+	<edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni
+	<pabeni@redhat.com>, Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski
+	<krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue
+	<alexandre.torgue@foss.st.com>,
+        Richard Cochran <richardcochran@gmail.com>,
+        Jose Abreu <joabreu@synopsys.com>, Liam Girdwood <lgirdwood@gmail.com>,
+        Mark
+ Brown <broonie@kernel.org>,
+        Christophe Roullier
+	<christophe.roullier@foss.st.com>,
+        Marek Vasut <marex@denx.de>
+CC: <netdev@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH v4 2/2] dt-bindings: net: dwmac: Document STM32 property st,ext-phyclk
+Date: Tue, 26 Mar 2024 14:00:17 +0100
+Message-ID: <20240326130017.226875-3-christophe.roullier@foss.st.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20240326062101.9822-1-yangtiezhu@loongson.cn>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:AQAAf8AxX8+LxgJmJvJoAA--.9641S3
-X-CM-SenderInfo: xpdruxter6z05rqj20fqof0/
-X-Coremail-Antispam: 1Uk129KBj93XoW3XFy7uF1DXr4DXrWfKry7twc_yoWfWF1rpF
-	WqyF4kJr4rGr4kur90y3y3ury5Jwn7G3y2g3W2kay8JFnrXw1UZr1kJ3srXFykKws5WF4I
-	gFn3ua4a9a1UAwbCm3ZEXasCq-sJn29KB7ZKAUJUUUUx529EdanIXcx71UUUUU7KY7ZEXa
-	sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
-	0xBIdaVrnRJUUUP2b4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
-	IYs7xG6rWj6s0DM7CIcVAFz4kK6r1Y6r17M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
-	e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Gr0_Xr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
-	0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVCY1x0267AK
-	xVWxJr0_GcWln4kS14v26r126r1DM2AIxVAIcxkEcVAq07x20xvEncxIr21l57IF6xkI12
-	xvs2x26I8E6xACxx1l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r12
-	6r1DMcIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IY64vIr4
-	1lc7I2V7IY0VAS07AlzVAYIcxG8wCY1x0262kKe7AKxVWUAVWUtwCF04k20xvY0x0EwIxG
-	rwCFx2IqxVCFs4IE7xkEbVWUJVW8JwCFI7km07C267AKxVWUAVWUtwC20s026c02F40E14
-	v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIxkG
-	c2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUCVW8JwCI42IY6xIIjxv20xvEc7CjxVAFwI
-	0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r1j6r4U
-	MIIF0xvEx4A2jsIEc7CjxVAFwI0_Jr0_GrUvcSsGvfC2KfnxnUUI43ZEXa7IU8Dl1DUUUU
-	U==
+Content-Type: text/plain
+X-ClientProxiedBy: SHFCAS1NODE2.st.com (10.75.129.73) To SHFDAG1NODE2.st.com
+ (10.75.129.70)
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-03-26_06,2024-03-21_02,2023-05-22_02
 
+The Linux kernel dwmac-stm32 driver currently supports three DT
+properties used to configure whether PHY clock are generated by
+the MAC or supplied to the MAC from the PHY.
 
+Originally there were two properties, st,eth-clk-sel and
+st,eth-ref-clk-sel, each used to configure MAC clocking in
+different bus mode and for different MAC clock frequency.
+Since it is possible to determine the MAC 'eth-ck' clock
+frequency from the clock subsystem and PHY bus mode from
+the 'phy-mode' property, two disparate DT properties are
+no longer required to configure MAC clocking.
 
-On 2024/3/26 下午2:21, Tiezhu Yang wrote:
-> In the current code, SMP is selected in Kconfig for LoongArch, the users
-> can not unset it, this is reasonable for a multiprocessor machine. But as
-> the help info of config SMP said, if you have a system with only one CPU,
-> say N. On a uniprocessor machine, the kernel will run faster if you say N
-> here.
-> 
-> The Loongson-2K0500 is a single-core CPU for applications like industrial
-> control, printing terminals, and BMC (Baseboard Management Controller),
-> there are many development boards, products and solutions on the market,
-> so it is better and necessary to give a chance to build under !CONFIG_SMP
-> for a uniprocessor machine.
-> 
-> First of all, do not select SMP for config LOONGARCH in Kconfig to make it
-> possible to unset CONFIG_SMP. Then, do some changes to fix the warnings and
-> errors if CONFIG_SMP is not set.
-> 
-> (1) Select GENERIC_IRQ_EFFECTIVE_AFF_MASK only if SMP for config
-> IRQ_LOONGARCH_CPU to fix the warning when make menuconfig:
-> WARNING: unmet direct dependencies detected for GENERIC_IRQ_EFFECTIVE_AFF_MASK
-> 
-> (2) Define cpu_logical_map(cpu) as 0 under !CONFIG_SMP in asm/smp.h and
-> include asm/smp.h in asm/acpi.h to fix the error:
-> /arch/loongarch/include/asm/acpi.h: In function ‘get_acpi_id_for_cpu’:
-> /arch/loongarch/include/asm/acpi.h:44:30: error: implicit declaration of function ‘cpu_logical_map’ [-Wimplicit-function-declaration]
-> 
-> (3) Define get_ipi_irq() only if CONFIG_SMP is set to fix the warning:
-> arch/loongarch/kernel/irq.c:90:19: warning: ‘get_ipi_irq’ defined but not used [-Wunused-function]
-> 
-> (4) Define machine_shutdown() as empty under !CONFIG_SMP to fix the error:
-> arch/loongarch/kernel/machine_kexec.c: In function ‘machine_shutdown’:
-> arch/loongarch/kernel/machine_kexec.c:233:25: error: implicit declaration of function ‘cpu_device_up’; did you mean ‘put_device’? [-Wimplicit-function-declaration]
-> 
-> (5) Make config SCHED_SMT depends on SMP to avoid many errors such as:
-> kernel/sched/core.c: In function ‘sched_core_find’:
-> kernel/sched/core.c:310:43: error: ‘struct rq’ has no member named ‘cpu’
-> 
-> (6) Call per_cpu_offset() only under CONFIG_HAVE_SETUP_PER_CPU_AREA to
-> fix the error:
-> arch/loongarch/power/suspend.c: In function ‘loongarch_common_resume’:
-> arch/loongarch/power/suspend.c:47:21: error: implicit declaration of function ‘per_cpu_offset’ [-Wimplicit-function-declaration]
-> 
-> (7) Define and call eiointc_set_irq_affinity() under CONFIG_SMP to set
-> the CPU affinity only on SMP machines.
-> 
-> When running the UnixBench tests with "-c 1" single-streamed pass,
-> the improvement in performance is about 9 percent with this patch.
-> 
-> By the way, it is helpful to debug and analysis the kernel issue
-> of multi-core system under !CONFIG_SMP.
-> 
-> Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
-> ---
-> 
-> This patch is based on 6.9-rc1. Please let me know if it is better to
-> split it into two patches, the first one is for arch/loongarch and the
-> second one is for drivers/irqchip.
-> 
->   arch/loongarch/Kconfig                 | 2 +-
->   arch/loongarch/include/asm/acpi.h      | 1 +
->   arch/loongarch/include/asm/smp.h       | 5 +++++
->   arch/loongarch/kernel/irq.c            | 2 ++
->   arch/loongarch/kernel/machine_kexec.c  | 2 +-
->   arch/loongarch/power/suspend.c         | 2 ++
->   drivers/irqchip/Kconfig                | 2 +-
->   drivers/irqchip/irq-loongson-eiointc.c | 4 ++++
->   8 files changed, 17 insertions(+), 3 deletions(-)
-> 
-> diff --git a/arch/loongarch/Kconfig b/arch/loongarch/Kconfig
-> index a5f300ec6f28..8d892de0b7a8 100644
-> --- a/arch/loongarch/Kconfig
-> +++ b/arch/loongarch/Kconfig
-> @@ -174,7 +174,6 @@ config LOONGARCH
->   	select PCI_QUIRKS
->   	select PERF_USE_VMALLOC
->   	select RTC_LIB
-> -	select SMP
->   	select SPARSE_IRQ
->   	select SYSCTL_ARCH_UNALIGN_ALLOW
->   	select SYSCTL_ARCH_UNALIGN_NO_WARN
-> @@ -420,6 +419,7 @@ config EFI_STUB
->   
->   config SCHED_SMT
->   	bool "SMT scheduler support"
-> +	depends on SMP
->   	default y
->   	help
->   	  Improves scheduler's performance when there are multiple
-> diff --git a/arch/loongarch/include/asm/acpi.h b/arch/loongarch/include/asm/acpi.h
-> index 49e29b29996f..313f66f7913a 100644
-> --- a/arch/loongarch/include/asm/acpi.h
-> +++ b/arch/loongarch/include/asm/acpi.h
-> @@ -8,6 +8,7 @@
->   #ifndef _ASM_LOONGARCH_ACPI_H
->   #define _ASM_LOONGARCH_ACPI_H
->   
-> +#include <asm/smp.h>
->   #include <asm/suspend.h>
->   
->   #ifdef CONFIG_ACPI
-> diff --git a/arch/loongarch/include/asm/smp.h b/arch/loongarch/include/asm/smp.h
-> index f81e5f01d619..c14ddfcd4829 100644
-> --- a/arch/loongarch/include/asm/smp.h
-> +++ b/arch/loongarch/include/asm/smp.h
-> @@ -6,6 +6,7 @@
->   #ifndef __ASM_SMP_H
->   #define __ASM_SMP_H
->   
-> +#ifdef CONFIG_SMP
->   #include <linux/atomic.h>
->   #include <linux/bitops.h>
->   #include <linux/linkage.h>
-> @@ -101,4 +102,8 @@ static inline void __cpu_die(unsigned int cpu)
->   }
->   #endif
->   
-> +#else /* !CONFIG_SMP */
-> +#define cpu_logical_map(cpu)	0
-It is unsafe here though physical cpuid of BSP is 0 always.
-It is better to use __cpu_logical_map[cpu] or read_csr_cpuid()
+Linux kernel commit 1bb694e20839 ("net: ethernet: stmmac: simplify phy modes management for stm32")
+introduced a third, unified, property st,ext-phyclk. This property
+covers both use cases of st,eth-clk-sel and st,eth-ref-clk-sel DT
+properties, as well as a new use case for 25 MHz clock generated
+by the MAC.
 
-> +#endif
-> +
->   #endif /* __ASM_SMP_H */
-> diff --git a/arch/loongarch/kernel/irq.c b/arch/loongarch/kernel/irq.c
-> index 883e5066ae44..e791fa275ec5 100644
-> --- a/arch/loongarch/kernel/irq.c
-> +++ b/arch/loongarch/kernel/irq.c
-> @@ -87,6 +87,7 @@ static void __init init_vec_parent_group(void)
->   	acpi_table_parse(ACPI_SIG_MCFG, early_pci_mcfg_parse);
->   }
->   
-> +#ifdef CONFIG_SMP
->   static int __init get_ipi_irq(void)
->   {
->   	struct irq_domain *d = irq_find_matching_fwnode(cpuintc_handle, DOMAIN_BUS_ANY);
-> @@ -96,6 +97,7 @@ static int __init get_ipi_irq(void)
->   
->   	return -EINVAL;
->   }
-> +#endif
->   
->   void __init init_IRQ(void)
->   {
-> diff --git a/arch/loongarch/kernel/machine_kexec.c b/arch/loongarch/kernel/machine_kexec.c
-> index 2dcb9e003657..8ae641dc53bb 100644
-> --- a/arch/loongarch/kernel/machine_kexec.c
-> +++ b/arch/loongarch/kernel/machine_kexec.c
-> @@ -225,6 +225,7 @@ void crash_smp_send_stop(void)
->   
->   void machine_shutdown(void)
->   {
-> +#ifdef CONFIG_SMP
->   	int cpu;
->   
->   	/* All CPUs go to reboot_code_buffer */
-> @@ -232,7 +233,6 @@ void machine_shutdown(void)
->   		if (!cpu_online(cpu))
->   			cpu_device_up(get_cpu_device(cpu));
->   
-> -#ifdef CONFIG_SMP
->   	smp_call_function(kexec_shutdown_secondary, NULL, 0);
->   #endif
->   }
-> diff --git a/arch/loongarch/power/suspend.c b/arch/loongarch/power/suspend.c
-> index 166d9e06a64b..e8ca77eb3288 100644
-> --- a/arch/loongarch/power/suspend.c
-> +++ b/arch/loongarch/power/suspend.c
-> @@ -44,7 +44,9 @@ void loongarch_common_resume(void)
->   {
->   	sync_counter();
->   	local_flush_tlb_all();
-> +#ifdef CONFIG_HAVE_SETUP_PER_CPU_AREA
->   	csr_write64(per_cpu_offset(0), PERCPU_BASE_KS);
-> +#endif
-It is another issue, CONFIG_HAVE_SETUP_PER_CPU_AREA should not depend on 
-NUMA. PERCPU_BASE_KS should be set even for UP.
+The third property st,ext-phyclk is so far undocumented,
+document it.
 
-Regards
-Bibo Mao
+Below table summarizes the clock requirement and clock sources for
+supported PHY interface modes.
+ __________________________________________________________________________
+|PHY_MODE | Normal | PHY wo crystal|   PHY wo crystal   |No 125Mhz from PHY|
+|         |        |      25MHz    |        50MHz       |                  |
 
->   	csr_write64(eentry, LOONGARCH_CSR_EENTRY);
->   	csr_write64(eentry, LOONGARCH_CSR_MERRENTRY);
->   	csr_write64(tlbrentry, LOONGARCH_CSR_TLBRENTRY);
-> diff --git a/drivers/irqchip/Kconfig b/drivers/irqchip/Kconfig
-> index 72c07a12f5e1..bfa1d77749f3 100644
-> --- a/drivers/irqchip/Kconfig
-> +++ b/drivers/irqchip/Kconfig
-> @@ -568,7 +568,7 @@ config IRQ_LOONGARCH_CPU
->   	bool
->   	select GENERIC_IRQ_CHIP
->   	select IRQ_DOMAIN
-> -	select GENERIC_IRQ_EFFECTIVE_AFF_MASK
-> +	select GENERIC_IRQ_EFFECTIVE_AFF_MASK if SMP
->   	select LOONGSON_HTVEC
->   	select LOONGSON_LIOINTC
->   	select LOONGSON_EIOINTC
-> diff --git a/drivers/irqchip/irq-loongson-eiointc.c b/drivers/irqchip/irq-loongson-eiointc.c
-> index b64cbe3052e8..4f5e6d21d77d 100644
-> --- a/drivers/irqchip/irq-loongson-eiointc.c
-> +++ b/drivers/irqchip/irq-loongson-eiointc.c
-> @@ -59,6 +59,7 @@ static int cpu_to_eio_node(int cpu)
->   	return cpu_logical_map(cpu) / CORES_PER_EIO_NODE;
->   }
->   
-> +#ifdef CONFIG_SMP
->   static void eiointc_set_irq_route(int pos, unsigned int cpu, unsigned int mnode, nodemask_t *node_map)
->   {
->   	int i, node, cpu_node, route_node;
-> @@ -126,6 +127,7 @@ static int eiointc_set_irq_affinity(struct irq_data *d, const struct cpumask *af
->   
->   	return IRQ_SET_MASK_OK;
->   }
-> +#endif
->   
->   static int eiointc_index(int node)
->   {
-> @@ -238,7 +240,9 @@ static struct irq_chip eiointc_irq_chip = {
->   	.irq_ack		= eiointc_ack_irq,
->   	.irq_mask		= eiointc_mask_irq,
->   	.irq_unmask		= eiointc_unmask_irq,
-> +#ifdef CONFIG_SMP
->   	.irq_set_affinity	= eiointc_set_irq_affinity,
-> +#endif
->   };
->   
->   static int eiointc_domain_alloc(struct irq_domain *domain, unsigned int virq,
-> 
+---------------------------------------------------------------------------
+|  MII    |    -   |     eth-ck    |        n/a         |       n/a        |
+|         |        | st,ext-phyclk |                    |                  |
+
+---------------------------------------------------------------------------
+|  GMII   |    -   |     eth-ck    |        n/a         |       n/a        |
+|         |        | st,ext-phyclk |                    |                  |
+
+---------------------------------------------------------------------------
+| RGMII   |    -   |     eth-ck    |        n/a         |      eth-ck      |
+|         |        | st,ext-phyclk |                    | st,eth-clk-sel or|
+|         |        |               |                    | st,ext-phyclk    |
+
+---------------------------------------------------------------------------
+| RMII    |    -   |     eth-ck    |      eth-ck        |       n/a        |
+|         |        | st,ext-phyclk | st,eth-ref-clk-sel |                  |
+|         |        |               | or st,ext-phyclk   |                  |
+
+---------------------------------------------------------------------------
+
+Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Signed-off-by: Christophe Roullier <christophe.roullier@foss.st.com>
+---
+ Documentation/devicetree/bindings/net/stm32-dwmac.yaml | 7 +++++++
+ 1 file changed, 7 insertions(+)
+
+diff --git a/Documentation/devicetree/bindings/net/stm32-dwmac.yaml b/Documentation/devicetree/bindings/net/stm32-dwmac.yaml
+index 80937b28fa046..529665d4fc911 100644
+--- a/Documentation/devicetree/bindings/net/stm32-dwmac.yaml
++++ b/Documentation/devicetree/bindings/net/stm32-dwmac.yaml
+@@ -85,6 +85,13 @@ properties:
+   phy-supply:
+     description: PHY regulator
+ 
++  st,ext-phyclk:
++    description:
++      set this property in RMII mode when you have PHY without crystal 50MHz and want to
++      select RCC clock instead of ETH_REF_CLK. OR in RGMII mode when you want to select
++      RCC clock instead of ETH_CLK125.
++    type: boolean
++
+   st,eth-clk-sel:
+     description:
+       set this property in RGMII PHY when you want to select RCC clock instead of ETH_CLK125.
+-- 
+2.25.1
 
 
