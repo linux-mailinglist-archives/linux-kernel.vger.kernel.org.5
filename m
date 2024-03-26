@@ -1,156 +1,131 @@
-Return-Path: <linux-kernel+bounces-119022-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-119023-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6D9A788C2CC
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 13:58:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id D934B88C2CE
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 13:59:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0DFFD1F64550
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 12:58:56 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 797CD1F645EF
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 12:59:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 098F476404;
-	Tue, 26 Mar 2024 12:57:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2E0191EB56;
+	Tue, 26 Mar 2024 12:58:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="SBVI7TeG"
-Received: from mail-ed1-f46.google.com (mail-ed1-f46.google.com [209.85.208.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="HgczrhOE"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.14])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8069F757FD;
-	Tue, 26 Mar 2024 12:57:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CB6DE5C8FF;
+	Tue, 26 Mar 2024 12:58:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.14
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711457875; cv=none; b=DIH5dVYmeGKPgZRxJ8xU0LvE4p76SCeSwn8zNhmTy6zwc5RhOPtiFHShlObQhkikGbIlGVk48An3cidwwdKksR3Mp7A62Txxw6e0mO9Pk1cS17nL+BqV02VBezG8cVtI2NtexsVaVGs39/EG2LoKXZm0sSvTwZWyRFJtN2UvdXc=
+	t=1711457932; cv=none; b=I4TiyjcVM7YI2jsS3TKc6n2epd8GFcCRx/Ncwvzs7KusQmBzRzsGGjVP9bydmNpFswNBF3S4ioLPNfBGBHtqkZS41JGnc4mr3FrDZGH51zY3aFXTl4TPIHLZc9MhEZZXgJMnaDLJgWcrzsR6fbDOtAutQyN6zwR4cySaJVfRg1E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711457875; c=relaxed/simple;
-	bh=oYCsxsfSFaFHBDDJQkn/FDgFzKP1hHPSiJsjZW1H/bI=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=lodtrPT2OtWGwrvuJZ8yz8a+p8b6iIw0MxVOPZQP7B/lu5+73gtyW8hqe+zyP/cVLxKucXpxdB7JgDZILHXs6CQbYK4/Sr+dDezytU7sY7cioZ+26WqxSeLOSM5i/+hxc/942jLlh060znEN9amUivge1EQZb/oVlPQe09/XZe8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=SBVI7TeG; arc=none smtp.client-ip=209.85.208.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f46.google.com with SMTP id 4fb4d7f45d1cf-56829f41f81so6815087a12.2;
-        Tue, 26 Mar 2024 05:57:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711457872; x=1712062672; darn=vger.kernel.org;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=JS7nxv8tugyml+hsxbfo9kWmjKT1N355RpJIJwQxhuA=;
-        b=SBVI7TeG7Xr/C4VdOzwIxGBzUBcOR5imGsCA0r+sknXw8T78TPw8BsbvjNQoEu/PX4
-         jJRH+fldLRFkGQmk5gC001bdxfWHtFYzKv1pdb96MmNnkQqKWBOgM3I2Oc2YcpArBCgM
-         pQwioy/EW/Ii+/tACwHf8LJ72a7a+mkDXBerlQp3JqhhsC86w5mGfby4wQRHHEM+AUOj
-         9IgitjjPAAMSGfd0lcv7LvOKwyVs/e241XWHC1ySNOszdwzqXMFDxAuB9eisI/fSWhKI
-         Mjx7ZH5geCQF+GEZeK4cUjg+itLtQGkOgCr79ZyUC4FtP0D50lsJqpV7k1VK3AKcFhZU
-         7oBg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711457872; x=1712062672;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=JS7nxv8tugyml+hsxbfo9kWmjKT1N355RpJIJwQxhuA=;
-        b=ZY6tVnxwkfUkofBit1TZMgmd4CEfSNPLDSGvq9CjCpGrPa5j8aswhp1GFg4Pv1l93x
-         0kOOrkGRFy2wMitl1FWULJWVQcuR31pasJqgJiSOsSV4toOazC/6xe0qq73lHFMj/mhE
-         gFF61IShhAjkRnL643u+Zd7SInUHagBkHeg59SjhPTou4BdZv7if27VFRakszs21G0lY
-         mOpYuWM7doj3jWFSK/bzdTUfK7toqo/UOvDpmEMDR0CTtsK0s3bV37Mh0V13+fVW/zg9
-         KUR+0CPt5UhaBWSwPfaADbeMM9qyZ/l3Lxnb8SkCTb0vUwAHr40OmrSrdDP7rol5QZ+H
-         beBg==
-X-Forwarded-Encrypted: i=1; AJvYcCWnnR4JL31cjOpUVXb+i+jVxs5X3/3Jeii/BpMAeBKAP26V0Mg4+OgoRDlZDW5LDCXR1QEY3J3L8MqvvWFyUQLx0qKZyd9gv9QMvlPvMilaIsZrCJ7PaGaW4U3ivNp3ABdydCXGm31n
-X-Gm-Message-State: AOJu0YzYe+Z7r1f0QCH7/SElLtGGe59DhiFNSOAHmXTWkUcu1g6xt2Po
-	/s6Mb2AqB8xhUaLanfvrV5kqsYPMRPs1Vim5cIETGUSMo2MzvW0f8t+HMhXf
-X-Google-Smtp-Source: AGHT+IEUU16a5r7JK4pdVixGyZyoUXZ4LHnPl74GPUB7g1QMuT12o+YC4RCDe42E7a/FJ0ZVr/mbHQ==
-X-Received: by 2002:a50:bb47:0:b0:56b:ced7:8a53 with SMTP id y65-20020a50bb47000000b0056bced78a53mr6711351ede.20.1711457871874;
-        Tue, 26 Mar 2024 05:57:51 -0700 (PDT)
-Received: from [192.168.1.253] (57657817.catv.pool.telekom.hu. [87.101.120.23])
-        by smtp.googlemail.com with ESMTPSA id n1-20020aa7c781000000b0056bb65f4a1esm4101413eds.94.2024.03.26.05.57.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Mar 2024 05:57:51 -0700 (PDT)
-From: Gabor Juhos <j4g8y7@gmail.com>
-Date: Tue, 26 Mar 2024 13:57:42 +0100
-Subject: [PATCH v3 5/5] clk: qcom: clk-cbf-8996: use HUAYRA_APPS register
- map for cbf_pll
+	s=arc-20240116; t=1711457932; c=relaxed/simple;
+	bh=MtfhUEPPdvxqzOoAPyYQzVuPsUOh0otfavoqH+DBvNY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=UuYMabMNBX+DbD6iIY60go57zOaAXUT51wTyaxcxJWfBlNECvNuTBVtyFYT4SKtxEA8jOSRraMAGW4eoeTlakvsXYNM1kbQ22nglpAgbOAAfe97NN3PXheBad61NzY/1tYcnNhZVc1yU7qaUGWgUFgADFHVSTv4cw+vd36kUC88=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=HgczrhOE; arc=none smtp.client-ip=192.198.163.14
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1711457931; x=1742993931;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=MtfhUEPPdvxqzOoAPyYQzVuPsUOh0otfavoqH+DBvNY=;
+  b=HgczrhOEpGXNqmsakg/SLY84LWY2aMh438b4xSHF03g26JTY7hen7SgO
+   sQR/q5ck1pR95IBLDWhWpA1XNYbYFzY7WIGH/gbqDYh+J4mkrnVvEtMoR
+   CxRlBtZftEb1yTbEFvVNX70x6ZbkoMoQEU/S0uWzYBrvEKpeYew3NRQl2
+   uhdEaVXa33gzfPxzdMSui2hpuwnPLoGLobeJB3z9S0MvGMNQhV8kdEK7V
+   mT2NLwvzhodB66OrsrpoTpzApDDMCX5fzHhSNNbEcpRHBcQ594Jza3K0s
+   AK93iJtNk3kxD8Z7nw3P6OrTHfGBtwZb4SB/PtfI0M1w8UVJdKCRZiPxF
+   w==;
+X-CSE-ConnectionGUID: RK+MHI/cTEK2XpodvZouBw==
+X-CSE-MsgGUID: HZ+/je3iTeGFH5McCr62nQ==
+X-IronPort-AV: E=McAfee;i="6600,9927,11024"; a="6717075"
+X-IronPort-AV: E=Sophos;i="6.07,156,1708416000"; 
+   d="scan'208";a="6717075"
+Received: from orviesa002.jf.intel.com ([10.64.159.142])
+  by fmvoesa108.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Mar 2024 05:58:50 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,156,1708416000"; 
+   d="scan'208";a="46972395"
+Received: from lkp-server01.sh.intel.com (HELO be39aa325d23) ([10.239.97.150])
+  by orviesa002.jf.intel.com with ESMTP; 26 Mar 2024 05:58:47 -0700
+Received: from kbuild by be39aa325d23 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rp6O4-00003Q-2A;
+	Tue, 26 Mar 2024 12:58:44 +0000
+Date: Tue, 26 Mar 2024 20:58:27 +0800
+From: kernel test robot <lkp@intel.com>
+To: Gergo Koteles <soyer@irl.hu>, Shenghao Ding <shenghao-ding@ti.com>,
+	Kevin Lu <kevin-lu@ti.com>, Baojun Xu <baojun.xu@ti.com>,
+	Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+Cc: oe-kbuild-all@lists.linux.dev, alsa-devel@alsa-project.org,
+	linux-sound@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Gergo Koteles <soyer@irl.hu>, stable@vger.kernel.org
+Subject: Re: [PATCH 1/3] ALSA: hda/tas2781: remove digital gain kcontrol
+Message-ID: <202403262031.SxBP17EM-lkp@intel.com>
+References: <313e00499eb2caadd23a92284fdec418b650b7f4.1711401621.git.soyer@irl.hu>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240326-apss-ipq-pll-cleanup-v3-5-15c4aeeb14ac@gmail.com>
-References: <20240326-apss-ipq-pll-cleanup-v3-0-15c4aeeb14ac@gmail.com>
-In-Reply-To: <20240326-apss-ipq-pll-cleanup-v3-0-15c4aeeb14ac@gmail.com>
-To: Bjorn Andersson <andersson@kernel.org>, 
- Konrad Dybcio <konrad.dybcio@linaro.org>, 
- Dmitry Baryshkov <dmitry.baryshkov@linaro.org>, 
- Michael Turquette <mturquette@baylibre.com>, 
- Stephen Boyd <sboyd@kernel.org>
-Cc: linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org, 
- linux-kernel@vger.kernel.org, Gabor Juhos <j4g8y7@gmail.com>
-X-Mailer: b4 0.13.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <313e00499eb2caadd23a92284fdec418b650b7f4.1711401621.git.soyer@irl.hu>
 
-The register map used for 'cbf_pll' is the same as the one defined for
-the CLK_ALPHA_PLL_TYPE_HUAYRA_APSS indice in the 'clk_alpha_pll_regs'
-array.
+Hi Gergo,
 
-Drop the local register map and use the global one instead to reduce
-code duplication.
+kernel test robot noticed the following build errors:
 
-No functional changes intended. Compile tested only.
+[auto build test ERROR on 4cece764965020c22cff7665b18a012006359095]
 
-Suggested-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Signed-off-by: Gabor Juhos <j4g8y7@gmail.com>
----
-Changes since v2:
- - rebase on top of v6.9-rc1
- - add Reviewed-by tag from Dmitry
- - Link to v2: https://lore.kernel.org/r/20240321-apss-ipq-pll-cleanup-v2-5-201f3cf79fd4@gmail.com
+url:    https://github.com/intel-lab-lkp/linux/commits/Gergo-Koteles/ALSA-hda-tas2781-remove-digital-gain-kcontrol/20240326-052937
+base:   4cece764965020c22cff7665b18a012006359095
+patch link:    https://lore.kernel.org/r/313e00499eb2caadd23a92284fdec418b650b7f4.1711401621.git.soyer%40irl.hu
+patch subject: [PATCH 1/3] ALSA: hda/tas2781: remove digital gain kcontrol
+config: i386-buildonly-randconfig-004-20240326 (https://download.01.org/0day-ci/archive/20240326/202403262031.SxBP17EM-lkp@intel.com/config)
+compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240326/202403262031.SxBP17EM-lkp@intel.com/reproduce)
 
-Changes since v1:
-  - new patch
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202403262031.SxBP17EM-lkp@intel.com/
 
-Note: Although this patch is not strictly related to the subject of the
-series but as the change has been suggested by Dmitry during the review
-process it has been added here for completeness.
----
- drivers/clk/qcom/clk-cbf-8996.c | 13 +------------
- 1 file changed, 1 insertion(+), 12 deletions(-)
+All errors (new ones prefixed by >>):
 
-diff --git a/drivers/clk/qcom/clk-cbf-8996.c b/drivers/clk/qcom/clk-cbf-8996.c
-index fe24b4abeab48..76bf523431b85 100644
---- a/drivers/clk/qcom/clk-cbf-8996.c
-+++ b/drivers/clk/qcom/clk-cbf-8996.c
-@@ -41,17 +41,6 @@ enum {
- 
- #define CBF_PLL_OFFSET 0xf000
- 
--static const u8 cbf_pll_regs[PLL_OFF_MAX_REGS] = {
--	[PLL_OFF_L_VAL] = 0x08,
--	[PLL_OFF_ALPHA_VAL] = 0x10,
--	[PLL_OFF_USER_CTL] = 0x18,
--	[PLL_OFF_CONFIG_CTL] = 0x20,
--	[PLL_OFF_CONFIG_CTL_U] = 0x24,
--	[PLL_OFF_TEST_CTL] = 0x30,
--	[PLL_OFF_TEST_CTL_U] = 0x34,
--	[PLL_OFF_STATUS] = 0x28,
--};
--
- static struct alpha_pll_config cbfpll_config = {
- 	.l = 72,
- 	.config_ctl_val = 0x200d4828,
-@@ -67,7 +56,7 @@ static struct alpha_pll_config cbfpll_config = {
- 
- static struct clk_alpha_pll cbf_pll = {
- 	.offset = CBF_PLL_OFFSET,
--	.regs = cbf_pll_regs,
-+	.regs = clk_alpha_pll_regs[CLK_ALPHA_PLL_TYPE_HUAYRA_APSS],
- 	.flags = SUPPORTS_DYNAMIC_UPDATE | SUPPORTS_FSM_MODE,
- 	.clkr.hw.init = &(struct clk_init_data){
- 		.name = "cbf_pll",
+   In file included from sound/soc/codecs/tas2781-i2c.c:29:
+>> sound/soc/codecs/tas2781-i2c.c:148:41: error: 'dvc_tlv' undeclared here (not in a function)
+     148 |                 tas2781_digital_putvol, dvc_tlv),
+         |                                         ^~~~~~~
+   include/sound/soc.h:271:19: note: in definition of macro 'SOC_SINGLE_RANGE_EXT_TLV'
+     271 |         .tlv.p = (tlv_array), \
+         |                   ^~~~~~~~~
+
+
+vim +/dvc_tlv +148 sound/soc/codecs/tas2781-i2c.c
+
+ef3bcde75d06d6 Shenghao Ding 2023-06-18  141  
+ef3bcde75d06d6 Shenghao Ding 2023-06-18  142  static const struct snd_kcontrol_new tas2781_snd_controls[] = {
+ef3bcde75d06d6 Shenghao Ding 2023-06-18  143  	SOC_SINGLE_RANGE_EXT_TLV("Speaker Analog Gain", TAS2781_AMP_LEVEL,
+ef3bcde75d06d6 Shenghao Ding 2023-06-18  144  		1, 0, 20, 0, tas2781_amp_getvol,
+ef3bcde75d06d6 Shenghao Ding 2023-06-18  145  		tas2781_amp_putvol, amp_vol_tlv),
+ef3bcde75d06d6 Shenghao Ding 2023-06-18  146  	SOC_SINGLE_RANGE_EXT_TLV("Speaker Digital Gain", TAS2781_DVC_LVL,
+ef3bcde75d06d6 Shenghao Ding 2023-06-18  147  		0, 0, 200, 1, tas2781_digital_getvol,
+ef3bcde75d06d6 Shenghao Ding 2023-06-18 @148  		tas2781_digital_putvol, dvc_tlv),
+ef3bcde75d06d6 Shenghao Ding 2023-06-18  149  	SOC_SINGLE_BOOL_EXT("Speaker Force Firmware Load", 0,
+ef3bcde75d06d6 Shenghao Ding 2023-06-18  150  		tas2781_force_fwload_get, tas2781_force_fwload_put),
+ef3bcde75d06d6 Shenghao Ding 2023-06-18  151  };
+ef3bcde75d06d6 Shenghao Ding 2023-06-18  152  
 
 -- 
-2.44.0
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
