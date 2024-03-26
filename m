@@ -1,148 +1,167 @@
-Return-Path: <linux-kernel+bounces-119530-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-119533-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3BF4B88CA4C
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 18:08:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id BDED688C9F7
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 18:01:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E61BD1F8240C
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 17:08:37 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 735B51F65190
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 17:01:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C6D0E13D28A;
-	Tue, 26 Mar 2024 16:58:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 33B9113D53C;
+	Tue, 26 Mar 2024 17:00:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="E6zriJyu"
-Received: from mail-lj1-f174.google.com (mail-lj1-f174.google.com [209.85.208.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=proton.me header.i=@proton.me header.b="Bq8BxIi3"
+Received: from mail-40133.protonmail.ch (mail-40133.protonmail.ch [185.70.40.133])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 800611865C;
-	Tue, 26 Mar 2024 16:58:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3834F13C91F
+	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 17:00:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.70.40.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711472308; cv=none; b=V9aR13ydGZSkHUJb8GAFCS2cKK8DLPTw6J+oylz2IkC3/EOndNDMVcWekm2rh2U3Hn8pqy07Rrq+7QDb4c1S0eFJdVQEogmtTMVUHbfngTGP9kcxMOYfDxgLZIkyhT9eIcqn4XHAVpt0PE821sMAS3RFLNwikbktqY45hQrJT5w=
+	t=1711472453; cv=none; b=RpqIDl7NVPM39En5IKJ1zcaSYr9madK8/aOpPJwJ7lreFvgFUD5Eb6ZdFdtKTKMox9OUezwM7yvmfV+4Wgu4sTCCHvRmIp10m2kcTeuD/yzYuCBfA75llAltPu+8Hh5R83A/zNgi3wF0dz1gCMxOlBlQE//zqTEtMlX4SN+W64Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711472308; c=relaxed/simple;
-	bh=50BqQDcDVQNITuDK3eJNa0b+mguy7/AkzhyNXxuLwAs=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=fIQuEmo5Z0GEqGR9YD2tP5IF4wddFGRUmRi3Szq28+ENRrNtoejjJpT0xeQ3Amn6l50xUYLUErV9tY8l+bFipNTqhEUuM6h17ROwtRmv3SmEepfpuup3jrHX+kzzJPhqoTq8WseS/WcVxpL1NMEG2izE+mTiy1Auk8VrB/oMbf0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=E6zriJyu; arc=none smtp.client-ip=209.85.208.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f174.google.com with SMTP id 38308e7fff4ca-2d6eedf3e99so6454431fa.1;
-        Tue, 26 Mar 2024 09:58:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711472305; x=1712077105; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=50BqQDcDVQNITuDK3eJNa0b+mguy7/AkzhyNXxuLwAs=;
-        b=E6zriJyuOAgFrT6Sr+C6C19vUFvatjLmIpfKFaUs9M1mjP3KmEct4vfmvQhHDZs6Qc
-         xiK2CH9QvNh2wxtGMcExn1naF0AFMrhqZ7OX3RRf6JsL1L30AohNjl9ON5Qd4O56BRJy
-         XmN6VKJHbO7AsNe8O1Gl9OqtZ/ooMKf0CJUS5JGhuvPyZdm0o7dOyt82/2CRcPayyz1y
-         34iV+OuAQgFXmvoeuhhAF8Fma6AxLRdgOqkYaeDZ4O+iBuMyR+I/KKcguzvSEGv3eU/S
-         l3e2kMCeGlKxNOifCEmjTnph0RVW1kEdQnUJ9+7BrUI5iOeRjx+TcIJmnMD8fkCYiOQM
-         J+LA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711472305; x=1712077105;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=50BqQDcDVQNITuDK3eJNa0b+mguy7/AkzhyNXxuLwAs=;
-        b=oh501KOeghLRTzk20Iq6SGTunOAy5VMpRXP71NJ6/dUoXk9RBefv2lxWdOdM1iUZQf
-         GOpQdpxpu40meCxYEJoYW86A1/PeiE3HRBbcb597sd4zL0RGSnEyIKrzkZ8cYvpkMk7e
-         /R3+4l64oP1HvYKdeCH+nONDTJ179waQWLbbuYEyXBtoPwIW9YAig9nLUHl6cqJBoWVm
-         FsOD/YaLbgeWatwC4h9Pjx0q/41jSEllSSF7u0QsbH49VNzLYigUY2BA+/16Hrlimg39
-         Yt2L2CM3rw1vRnN2lPzPnlxeGb9sLTgtojNg+EYIhDoqRZV99rKwEBAPdODq6yA8cauz
-         r4rA==
-X-Forwarded-Encrypted: i=1; AJvYcCWJM/+hNpPVl5A7nidcwFMHmV17sFGyOJKWq3XC3yjsoWbrINbkvncoLe7eNGADXqqhTzZvjtPUfzPc5Wv1daNxRKsToQIiolGAghSV+z2eQD64KbVMScZYqj5dFMiIzuDpUpVmDttPmCIxnO3JoL0evwXrcYTcevT3O/MnJB5ooU9DclIV
-X-Gm-Message-State: AOJu0YwNve6HyfLmD4bNj5DygkNJPq0zyr2sOE9Zjr7PzKuXnjfYpzHt
-	gWQXcZZMOfMgL1fMCjT1PFQVRjSvSHLkIRMi1bA9P7Giq2YZ71G9AuFIZ0JQiqi7QHBLfkRNSK4
-	xu9h/Cn3m8o2gJGEpqQwkTRk3ng8=
-X-Google-Smtp-Source: AGHT+IEuCe2UdhWsZ9pv7297ZbfrjwO9PvFFV1b1MMnC3eyQey151SCgwgx3p7p9BMN5BYGkpdafNnXXiZTJJYvS5Vg=
-X-Received: by 2002:a2e:a374:0:b0:2d4:6d2a:2df7 with SMTP id
- i20-20020a2ea374000000b002d46d2a2df7mr753307ljn.18.1711472304649; Tue, 26 Mar
- 2024 09:58:24 -0700 (PDT)
+	s=arc-20240116; t=1711472453; c=relaxed/simple;
+	bh=CtLOcxudgrp9+pmo6QzQf8rk8HsbaSoWbUzcGjkYPpg=;
+	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=cp7leSTq6+XGnB9eV8vFpz/lOaQHPU52QGyV7Ph4m59JNPMVmQWZb017lepR1WK1nfaz+qyhCePlLWE2YDBRLrC77PGcBuV9uDAR3Nn6pdIAHFAdGNtQH7d7mdX69V1pgiW2vb2HaFkYAIpar7+81Jb0S8k0A/YvK2obKibavpM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=proton.me; spf=pass smtp.mailfrom=proton.me; dkim=pass (2048-bit key) header.d=proton.me header.i=@proton.me header.b=Bq8BxIi3; arc=none smtp.client-ip=185.70.40.133
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=proton.me
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=proton.me
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=proton.me;
+	s=protonmail; t=1711472449; x=1711731649;
+	bh=JbKvJkvXu2iWSuwGdU1AIzET2bU96rDLVAc7bBO6aLw=;
+	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
+	 Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
+	 Message-ID:BIMI-Selector;
+	b=Bq8BxIi3qd+9EkR1NWQWDt5q8Prr2Fm1Ac2IhTEUUxaOW6KBU6GWhluOBpMaSl6y7
+	 01zCTsOYMhDrhWApuTstxbepjc5uWNulk81Ew5AXYb0OR21s87HSZ+i5Fd30Qmc1DM
+	 rORVqAYnEwmGmZ0y7aU9/KmybTyYTwb4lHJMCVb3zo3Ol4yMcB+pL1jQzAEEVpOejO
+	 zkxvrhp5SWXKIIZ/sk1tKtBmuWVHbJmtpsMppUAK32D1Y9Xu/HDJTZ+CiPWZICWYHM
+	 nzmr0IzmCKKcUn4/LLV36U7MZn5hqbGGxNdnpCufxVte8Gv5kJommIzKvKy5+NHeJy
+	 GebvbgHJdWLcw==
+Date: Tue, 26 Mar 2024 17:00:39 +0000
+To: Boqun Feng <boqun.feng@gmail.com>
+From: Benno Lossin <benno.lossin@proton.me>
+Cc: rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>, Alice Ryhl <aliceryhl@google.com>, Miguel Ojeda <ojeda@kernel.org>, Alex Gaynor <alex.gaynor@gmail.com>, Wedson Almeida Filho <wedsonaf@gmail.com>, Gary Guo <gary@garyguo.net>, =?utf-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, Andreas Hindborg <a.hindborg@samsung.com>, John Stultz <jstultz@google.com>, Stephen Boyd <sboyd@kernel.org>, Valentin Obst <kernel@valentinobst.de>, Heghedus Razvan <heghedus.razvan@protonmail.com>, Asahi Lina <lina@asahilina.net>
+Subject: Re: [PATCH 3/5] rust: time: Introduce clock reading framework
+Message-ID: <c2XJe4xCqT5WrHu9XZKQ03ggEZLwd2KBuSBb9Onivny9v7fqKBkm1aywmztjiDyuLKqr2Igt_6XUJiuArLl9JVwq0xa4gKfocP2H5YZDrFk=@proton.me>
+In-Reply-To: <20240324223339.971934-4-boqun.feng@gmail.com>
+References: <20240324223339.971934-1-boqun.feng@gmail.com> <20240324223339.971934-4-boqun.feng@gmail.com>
+Feedback-ID: 71780778:user:proton
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <CABBYNZJ0ukd_8=SFzy8CEwgP7hV5unodca0NZ2zDZh+jPJsEFQ@mail.gmail.com>
- <ZgGzWWV4Lh2Nal--@hovoldconsulting.com> <CABBYNZJaXUhu1A+NyVT-TAJw49zcV6TMdGeVy2F+AVKWBOVC-g@mail.gmail.com>
- <ZgHVFjAZ1uqEiUa2@hovoldconsulting.com> <CABBYNZJUVhNKVD=s+=eYJ1q+j1W8rVSRqM4bKPbxT=TKrnZdoQ@mail.gmail.com>
- <ZgHbPo57UKUxK7G8@hovoldconsulting.com> <CABBYNZJFzDaLdXsdNEP1384JaJEN5E78cgmWfOus_LGOREGsWA@mail.gmail.com>
- <ZgJ0okobGv5nPreG@hovoldconsulting.com> <CABBYNZKJJuPHEwyXFRi8Z=P0GyaY-HdamsxmV8sR+R97ETTmEg@mail.gmail.com>
- <ZgLnOHiCzo5AQzra@hovoldconsulting.com> <ZgL10ur0825LgWVK@hovoldconsulting.com>
-In-Reply-To: <ZgL10ur0825LgWVK@hovoldconsulting.com>
-From: Luiz Augusto von Dentz <luiz.dentz@gmail.com>
-Date: Tue, 26 Mar 2024 12:58:12 -0400
-Message-ID: <CABBYNZ+1vXi51YbcfqaHTwW+z7OL=yDCuab6X8eDB-q+CoO+7w@mail.gmail.com>
-Subject: Re: [PATCH] Revert "Bluetooth: hci_qca: Set BDA quirk bit if fwnode
- exists in DT"
-To: Johan Hovold <johan@kernel.org>
-Cc: Linux regressions mailing list <regressions@lists.linux.dev>, Johan Hovold <johan+linaro@kernel.org>, 
-	Marcel Holtmann <marcel@holtmann.org>, linux-bluetooth@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, stable@vger.kernel.org, 
-	Janaki Ramaiah Thota <quic_janathot@quicinc.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
 
-Hi Johan,
+On 24.03.24 23:33, Boqun Feng wrote:
+> To make sure Rust code doesn't mix timestamps from different clocks, a
+> type safe clock reading framework is introduced. It includes:
+>=20
+> * A `Clock` trait that represents different clocks, to read a particular
+>   clock, one needs implement the `Clock::now()` function.
+>=20
+> * A `Instant<Clock>` type that represents timestamps of different
+>   clocks, whose implementation is just a `ktime_t`, so all the
+>   calculation on `ktime_t` should apply to it as well.
+>=20
+> Co-developed-by: Heghedus Razvan <heghedus.razvan@protonmail.com>
+> Signed-off-by: Heghedus Razvan <heghedus.razvan@protonmail.com>
+> Co-developed-by: Asahi Lina <lina@asahilina.net>
+> Signed-off-by: Asahi Lina <lina@asahilina.net>
+> Signed-off-by: Boqun Feng <boqun.feng@gmail.com>
+> ---
+>  rust/kernel/time.rs | 49 +++++++++++++++++++++++++++++++++++++++++++++
+>  1 file changed, 49 insertions(+)
+>=20
+> diff --git a/rust/kernel/time.rs b/rust/kernel/time.rs
+> index b238b3a4e899..0f9f5605ed48 100644
+> --- a/rust/kernel/time.rs
+> +++ b/rust/kernel/time.rs
+> @@ -6,6 +6,9 @@
+>  //! have been ported or wrapped for usage by Rust code in the kernel.
+>  //!
+>  //! C header: [`include/linux/jiffies.h`](srctree/include/linux/jiffies.=
+h).
+> +//! C header: [`include/linux/ktime.h`](srctree/include/linux/ktime.h).
+> +
+> +use core::marker::PhantomData;
+>=20
+>  /// The number of nanoseconds per millisecond.
+>  pub const NSEC_PER_MSEC: i64 =3D bindings::NSEC_PER_MSEC as i64;
+> @@ -64,3 +67,49 @@ pub fn to_ns(self) -> i64 {
+>          self.inner
+>      }
+>  }
+> +
+> +/// Represents a clock, that is, a unique time source and it can be quer=
+ied for the current time.
+> +pub trait Clock: Sized {
+> +    /// Returns the current time for this clock.
+> +    fn now() -> Instant<Self>;
+> +}
+> +
+> +/// Marker trait for clock sources that are guaranteed to be monotonic.
+> +pub trait Monotonic {}
 
-On Tue, Mar 26, 2024 at 12:20=E2=80=AFPM Johan Hovold <johan@kernel.org> wr=
-ote:
->
-> Hi Luiz,
->
-> On Tue, Mar 26, 2024 at 04:18:16PM +0100, Johan Hovold wrote:
-> > On Tue, Mar 26, 2024 at 10:17:13AM -0400, Luiz Augusto von Dentz wrote:
-> > > On Tue, Mar 26, 2024 at 3:09=E2=80=AFAM Johan Hovold <johan@kernel.or=
-g> wrote:
-> > > > On Mon, Mar 25, 2024 at 04:31:53PM -0400, Luiz Augusto von Dentz wr=
-ote:
->
-> > > > > All the
-> > > > > CI automation is done on bluetooth-next and if you are asking to =
-be
-> > > > > done via bluetooth tree which is based on the latest rc that is n=
-ot
-> > > > > how things works here, we usually first apply to bluetooth-next a=
-nd in
-> > > > > case it needs to be backported then it later done via pull-reques=
-t.
-> > > >
-> > > > The revert fixes a regression in 6.7-rc7 and should get to Linus as=
- soon
-> > > > as possible and I assume you have some way to get fixes into mainli=
-ne
-> > > > for the current development cycle.
-> > >
-> > > Yeah I will send it later today to be included in the next rc release
-> > > and since it is marked for stable that shall trigger the process of
-> > > backporting it.
-> > >
-> > > > The series fixes a critical bug in the Qualcomm driver and should
-> > > > similarly get into mainline as soon as possible to avoid having peo=
-ple
-> > > > unknowingly start relying on the broken behaviour (reversed address=
-).
-> > > > The bug in this case is older, but since the bug is severe and we'r=
-e
-> > > > only at rc1, I don't think this one should wait for 6.10 either.
->
-> I just double checked the bluetooth-next branch and everything looks
-> good now (revert + endianness fix series). Thanks!
->
-> Did I understand you correctly that you'll be able to get all five
-> commits into 6.9 during this development cycle (e.g. 6.9-rc2)?
+Why is this trait not an extension of `Clock`?
 
-Yep, I will be preparing a pull-request with them later this week,
-there are some other fixes that I want to get in as well.
+> +
+> +/// A timestamp of a given [`Clock`]
 
+Missing '.'.
+
+> +#[repr(transparent)]
+> +#[derive(Debug)]
+> +pub struct Instant<T: Clock> {
+> +    inner: bindings::ktime_t,
+> +    clock: PhantomData<T>,
+> +}
+> +
+> +impl<T: Clock> Clone for Instant<T> {
+> +    fn clone(&self) -> Self {
+> +        *self
+> +    }
+> +}
+> +
+> +impl<T: Clock> Copy for Instant<T> {}
+> +
+> +impl<T: Clock> Instant<T> {
+> +    fn new(ktime: bindings::ktime_t) -> Self {
+
+When compiling, this function is marked as dead-code in this patch.
 
 --=20
-Luiz Augusto von Dentz
+Cheers,
+Benno
+
+> +        Self {
+> +            inner: ktime,
+> +            clock: PhantomData,
+> +        }
+> +    }
+> +}
+> +
+> +impl<T: Clock> core::ops::Sub for Instant<T> {
+> +    type Output =3D Duration;
+> +
+> +    /// Returns the difference of two timestamps.
+> +    #[inline]
+> +    fn sub(self, other: Self) -> Self::Output {
+> +        // `ktime_t` is an `i64` value of nanoseconds, and kernel define=
+s signed overflow to behave
+> +        // like 2s-complement, hence `wrapping_sub()` is used here to mi=
+rror `ktime_sub()`.
+> +        Duration::new(self.inner.wrapping_sub(other.inner))
+> +    }
+> +}
+> --
+> 2.44.0
+> 
 
