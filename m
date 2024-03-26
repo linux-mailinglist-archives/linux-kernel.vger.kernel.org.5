@@ -1,53 +1,52 @@
-Return-Path: <linux-kernel+bounces-119455-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-119457-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0DE3288C92D
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 17:29:04 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0064088C934
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 17:29:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 798F51F649DC
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 16:29:03 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id AA1A71F65BA2
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 16:29:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3979D13CC75;
-	Tue, 26 Mar 2024 16:28:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8595B13CA91;
+	Tue, 26 Mar 2024 16:28:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="HVtj1YeZ"
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="H7RHzrLp"
 Received: from relay7-d.mail.gandi.net (relay7-d.mail.gandi.net [217.70.183.200])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 32D3413CA97;
-	Tue, 26 Mar 2024 16:28:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 372BD13CC51;
+	Tue, 26 Mar 2024 16:28:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.200
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711470520; cv=none; b=dpKEWJ+qL8Id+Aqws31aJ0EUiRQ4buKwW4e7RaC5dhmBqe5N69GotSpHJN1NthSc0oGnM7Rl6SiADRInmJVH4N0TuhCPtXFI3VF03Q3vp8batZ7AHz8iAJITvrpqk95AgfYawrAzr1RDwZk1JwyokC2nBGWWqx3wZNMSKFZ2XSw=
+	t=1711470522; cv=none; b=SJ/QsU2FkeFbZnyBLCa9b/BiwW55B2tihz5rY1aTM/v/yTCmpVzQ3itAmAHR7EK5fi4DILiZw9+Lc2Ori7l3sZLDuuJ9YSgs64ZHS+QpMU0hK/X5GZTpsMjnkp5XW01lPMXaMfLMzbfV3m8TgowCrbZwSId1DXKiF8sEVaVLufo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711470520; c=relaxed/simple;
-	bh=nR5TuLci3iFlAYcZ6pedtZwXIkYrkHTO/+6OUO3NIHI=;
+	s=arc-20240116; t=1711470522; c=relaxed/simple;
+	bh=V2/V9+ScTzmE+T6ph5QIRM6bSdthiHWfE8ShdVeXhSk=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=PmB8pSUfCcGtlwIgnBBojk6giayLnrlGL5lZCICOwNtL9r8V/ahPNlQniZp4oCtdm7g/p1LNvTiWb2zYdyiqD4qKuV+TuiMeOS6uflynRbyXhxEjAoxxnVoQnYNQRblT8wdkPkTf2qz0q5O9SBZ3AK8yBPgLCl399UdDevlcXB8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=HVtj1YeZ; arc=none smtp.client-ip=217.70.183.200
+	 In-Reply-To:To:Cc; b=ikRCci/jE9+gaYcI8VS7GD7+rU+aCYnB8w+d+hDZPPLuT2R85v9qq+1TbtLkVAvxrjVgOvQLQpLtkPX0WSTjJNiV9oZj2NRx8Jh3F3u0zB+Nr/41JAoWYfsq9sjnoKWH+m8Y7Pymn7aajBpZekr7YlXfSqeQFG2qm3rAibTvVbc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=H7RHzrLp; arc=none smtp.client-ip=217.70.183.200
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id A2D5820003;
-	Tue, 26 Mar 2024 16:28:34 +0000 (UTC)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id A4A4420012;
+	Tue, 26 Mar 2024 16:28:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1711470516;
+	t=1711470518;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=sI8WmkUUHY9Zro8RyMVYK+yqLrqdOum7SUJ1HQ/OZVw=;
-	b=HVtj1YeZm6CRmYhskLomAR0SwckgFSmqlvAg460JM8EsoW+eCTsVP1edT8mjLLL9i8R3zV
-	/+WLl3nwInPBxbfj50BizLlh6CdPyRBcFiLZ1hQUm3m3JzBnTVLsDFlkktpnhmpMEGH3Tm
-	zrOD4Tz+zOouLrlxA0nHbgbwVRqouCAjuxos6NvwYnlGzOXH31hjXfb2bITDynpRXp1zmM
-	8C/Y0rCiZvR6tpt98ppSgZbJa4+onTqRXvnSyxHptSaasWEUTscgIMn7P2mXURB4y4fWzU
-	a4n0Gdp/chmSOVnte1nm0Y2Jnjo2YJhD9EShu97dsMYov5aGzYbs1v27EOgKGA==
+	bh=ElqEQwFcV4YHaCCBf2EVHYAZ/9/5OX5WYRwZoNy8qxM=;
+	b=H7RHzrLpcIz1FZgjuGDrJW16xhCXRGN2tVMfDyCJqunXhhGbmrYRFpO6xcO+mmpydbQL/b
+	CtZ4++t5g3HG4fQdJWZEgZfYer4ZgWxSlAkD2OKZl/ZEL32qSY44xO4K0rv0EIp/X9PE6M
+	TEmc4auT8ApbB+ufHLY1dcLOpvvEqFwOdTX+EVg/x6rJ4ibJz2sIVThjXgnnW2a46RYMog
+	Abe+NN9pwZIxFcG21dVAukmL8Us4EDjUxbbrkeW631FLQitjyRjPJommxGcS/RwLlejMU1
+	I3ICtMz7T8xZ6aJ/XEjRlCjClMcmbJC/2f6Nnj9/34AD5mLmHlzTwFb8q8PMBA==
 From: Luca Ceresoli <luca.ceresoli@bootlin.com>
-Date: Tue, 26 Mar 2024 17:28:12 +0100
-Subject: [PATCH 2/4] drm/bridge: add bridge notifier to be notified of
- bridge addition and removal
+Date: Tue, 26 Mar 2024 17:28:13 +0100
+Subject: [PATCH 3/4] drm/encoder: add drm_encoder_cleanup_from()
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -56,7 +55,7 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20240326-hotplug-drm-bridge-v1-2-4b51b5eb75d5@bootlin.com>
+Message-Id: <20240326-hotplug-drm-bridge-v1-3-4b51b5eb75d5@bootlin.com>
 References: <20240326-hotplug-drm-bridge-v1-0-4b51b5eb75d5@bootlin.com>
 In-Reply-To: <20240326-hotplug-drm-bridge-v1-0-4b51b5eb75d5@bootlin.com>
 To: Andrzej Hajda <andrzej.hajda@intel.com>, 
@@ -79,124 +78,62 @@ Cc: Paul Kocialkowski <contact@paulk.fr>,
 X-Mailer: b4 0.13.0
 X-GND-Sasl: luca.ceresoli@bootlin.com
 
-From: Paul Kocialkowski <paul.kocialkowski@bootlin.com>
+Supporting hardware whose final part of the DRM pipeline can be physically
+removed requires the ability to detach all bridges from a given point to
+the end of the pipeline.
 
-In preparation for allowing bridges to be added to and removed from a DRM
-card without destroying the whole card, add a DRM bridge notifier. Notified
-events are addition and removal to/from the global bridge list.
+Introduce a variant of drm_encoder_cleanup() for this.
 
-Co-developed-by: Luca Ceresoli <luca.ceresoli@bootlin.com>
 Signed-off-by: Luca Ceresoli <luca.ceresoli@bootlin.com>
-Signed-off-by: Paul Kocialkowski <paul.kocialkowski@bootlin.com>
 ---
- drivers/gpu/drm/drm_bridge.c | 35 +++++++++++++++++++++++++++++++++++
- include/drm/drm_bridge.h     | 19 +++++++++++++++++++
- 2 files changed, 54 insertions(+)
+ drivers/gpu/drm/drm_encoder.c | 21 +++++++++++++++++++++
+ include/drm/drm_encoder.h     |  1 +
+ 2 files changed, 22 insertions(+)
 
-diff --git a/drivers/gpu/drm/drm_bridge.c b/drivers/gpu/drm/drm_bridge.c
-index 521a71c61b16..245f7fa4ea22 100644
---- a/drivers/gpu/drm/drm_bridge.c
-+++ b/drivers/gpu/drm/drm_bridge.c
-@@ -25,6 +25,7 @@
- #include <linux/media-bus-format.h>
- #include <linux/module.h>
- #include <linux/mutex.h>
-+#include <linux/notifier.h>
+diff --git a/drivers/gpu/drm/drm_encoder.c b/drivers/gpu/drm/drm_encoder.c
+index 8f2bc6a28482..13149447bec8 100644
+--- a/drivers/gpu/drm/drm_encoder.c
++++ b/drivers/gpu/drm/drm_encoder.c
+@@ -207,6 +207,27 @@ void drm_encoder_cleanup(struct drm_encoder *encoder)
+ }
+ EXPORT_SYMBOL(drm_encoder_cleanup);
  
- #include <drm/drm_atomic_state_helper.h>
- #include <drm/drm_bridge.h>
-@@ -197,6 +198,36 @@
- 
- static DEFINE_MUTEX(bridge_lock);
- static LIST_HEAD(bridge_list);
-+static BLOCKING_NOTIFIER_HEAD(bridge_notifier);
-+
 +/**
-+ * drm_bridge_notifier_register - add a DRM bridge notifier
-+ * @nb: the notifier block to be registered
++ * drm_encoder_cleanup_from - remove a given bridge and all the following
++ * @encoder: encoder whole list of bridges shall be pruned
++ * @bridge: first bridge to remove
 + *
-+ * The notifier block will be notified of events defined in
-+ * &drm_bridge_notifier_event
++ * Removes from an encoder all the bridges starting with a given bridges
++ * and until the end of the chain.
++ *
++ * This should not be used in "normal" DRM pipelines. It is only useful for
++ * devices whose final part of the DRM chain can be physically removed and
++ * later reconnected (possibly with different hardware).
 + */
-+int drm_bridge_notifier_register(struct notifier_block *nb)
++void drm_encoder_cleanup_from(struct drm_encoder *encoder, struct drm_bridge *bridge)
 +{
-+	return blocking_notifier_chain_register(&bridge_notifier, nb);
-+}
-+EXPORT_SYMBOL(drm_bridge_notifier_register);
++	struct drm_bridge *next;
 +
-+/**
-+ * drm_bridge_notifier_unregister - remove a DRM bridge notifier
-+ * @nb: the notifier block to be unregistered
-+ */
-+int drm_bridge_notifier_unregister(struct notifier_block *nb)
-+{
-+	return blocking_notifier_chain_unregister(&bridge_notifier, nb);
++	list_for_each_entry_safe_from(bridge, next, &encoder->bridge_chain, chain_node)
++		drm_bridge_detach(bridge);
 +}
-+EXPORT_SYMBOL(drm_bridge_notifier_unregister);
++EXPORT_SYMBOL(drm_encoder_cleanup_from);
 +
-+static void drm_bridge_notifier_notify(unsigned long event,
-+				       struct drm_bridge *bridge)
-+{
-+	blocking_notifier_call_chain(&bridge_notifier, event, bridge);
-+}
- 
- /**
-  * drm_bridge_add - add the given bridge to the global bridge list
-@@ -210,6 +241,8 @@ void drm_bridge_add(struct drm_bridge *bridge)
- 	mutex_lock(&bridge_lock);
- 	list_add_tail(&bridge->list, &bridge_list);
- 	mutex_unlock(&bridge_lock);
-+
-+	drm_bridge_notifier_notify(DRM_BRIDGE_NOTIFY_ADD, bridge);
- }
- EXPORT_SYMBOL(drm_bridge_add);
- 
-@@ -243,6 +276,8 @@ EXPORT_SYMBOL(devm_drm_bridge_add);
-  */
- void drm_bridge_remove(struct drm_bridge *bridge)
+ static void drmm_encoder_alloc_release(struct drm_device *dev, void *ptr)
  {
-+	drm_bridge_notifier_notify(DRM_BRIDGE_NOTIFY_REMOVE, bridge);
-+
- 	mutex_lock(&bridge_lock);
- 	list_del_init(&bridge->list);
- 	mutex_unlock(&bridge_lock);
-diff --git a/include/drm/drm_bridge.h b/include/drm/drm_bridge.h
-index 4baca0d9107b..ee48c1eb76ae 100644
---- a/include/drm/drm_bridge.h
-+++ b/include/drm/drm_bridge.h
-@@ -43,6 +43,22 @@ struct drm_panel;
- struct edid;
- struct i2c_adapter;
- 
-+/**
-+ * enum drm_bridge_notifier_event - DRM bridge events
-+ */
-+enum drm_bridge_notifier_event {
-+	/**
-+	 * @DRM_BRIDGE_NOTIFY_ADD: A bridge has just been added to the
-+	 * global bridge list. See drm_bridge_add().
-+	 */
-+	DRM_BRIDGE_NOTIFY_ADD,
-+	/**
-+	 * @DRM_BRIDGE_NOTIFY_REMOVE: A bridge is about to be removed from
-+	 * the global bridge list. See drm_bridge_remove().
-+	 */
-+	DRM_BRIDGE_NOTIFY_REMOVE,
-+};
-+
- /**
-  * enum drm_bridge_attach_flags - Flags for &drm_bridge_funcs.attach
-  */
-@@ -781,6 +797,9 @@ drm_priv_to_bridge(struct drm_private_obj *priv)
- 	return container_of(priv, struct drm_bridge, base);
+ 	struct drm_encoder *encoder = ptr;
+diff --git a/include/drm/drm_encoder.h b/include/drm/drm_encoder.h
+index 977a9381c8ba..bafcabb24267 100644
+--- a/include/drm/drm_encoder.h
++++ b/include/drm/drm_encoder.h
+@@ -320,6 +320,7 @@ static inline struct drm_encoder *drm_encoder_find(struct drm_device *dev,
  }
  
-+int drm_bridge_notifier_register(struct notifier_block *nb);
-+int drm_bridge_notifier_unregister(struct notifier_block *nb);
-+
- void drm_bridge_add(struct drm_bridge *bridge);
- int devm_drm_bridge_add(struct device *dev, struct drm_bridge *bridge);
- void drm_bridge_remove(struct drm_bridge *bridge);
+ void drm_encoder_cleanup(struct drm_encoder *encoder);
++void drm_encoder_cleanup_from(struct drm_encoder *encoder, struct drm_bridge *bridge);
+ 
+ /**
+  * drm_for_each_encoder_mask - iterate over encoders specified by bitmask
 
 -- 
 2.34.1
