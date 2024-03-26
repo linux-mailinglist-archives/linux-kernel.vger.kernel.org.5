@@ -1,203 +1,240 @@
-Return-Path: <linux-kernel+bounces-119648-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-119649-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3BC0E88CB87
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 19:06:28 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BE11E88CB89
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 19:06:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A71771F82BF5
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 18:06:27 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DEEDC1C2A216
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 18:06:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5B25484FC9;
-	Tue, 26 Mar 2024 18:06:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2464C823B8;
+	Tue, 26 Mar 2024 18:06:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="NxCHy5mZ"
-Received: from mail-wr1-f42.google.com (mail-wr1-f42.google.com [209.85.221.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="iM8JsJWJ"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.10])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C3DBB41238;
-	Tue, 26 Mar 2024 18:05:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 68A0D127B43;
+	Tue, 26 Mar 2024 18:06:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.10
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711476359; cv=none; b=qeC5w9vYGa3T/M+y7RI6Nt8Ygff+RUR5MnwoTFMSrCnEvGU4RSfFlVzXtmkg7v/gXu6RJkqXyQMcycC1VXCVsO7cUn2YtGkYNdHk1dWZ2Zd01r280X5QKcb29ZtW5jhmfWs5BnzhK6kXUV55Kfmd8+w05ruy83VD6yiuacjEQTU=
+	t=1711476370; cv=none; b=uV59Ijr8NjZEamNi4Ehs7S/xPU7gOLV5XEewxgf+4tpdOUXkHHX8fcS2Os7fPoV4v5TtSO/YZQjWKiUujM12W9nluhR+TCUTA13If+3/etjqOHvKg/nTTBaOlvHkzOSuAxA/Td5pOq+YvU54AUIU6lhZ89P4y1XlPxJphAsrQD4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711476359; c=relaxed/simple;
-	bh=Z8BlIPVLI03rfVazMUWT5hVeAe+y76SizIxskoTqgm4=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=riIFAQ7s53AN0J6LnxjVkrpc7aP7ISCGj4A3Yebz8NA263AlG3bvSk/xxYZvIo9x47qRzBs9ZYn0+nKd2p+VB13X+kdSBlz65pyhma6rUn8dKgarysinEuEHPZviXjz7YSz6z/5v3qSFPrnwGIU11wz0DNTC57R4X17lINMx0dA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=NxCHy5mZ; arc=none smtp.client-ip=209.85.221.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f42.google.com with SMTP id ffacd0b85a97d-34175878e30so4185799f8f.3;
-        Tue, 26 Mar 2024 11:05:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711476356; x=1712081156; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=4c2stnKJuR84Ay01kn2oc6rwDVFwsXL9yn0nGaU5p5Q=;
-        b=NxCHy5mZyG2JFab5XGWnt6ycDMedt1JELpJgQScFFE/tRtFyJ/70qPT7+7FnTeMt3V
-         AS9oP7sGXEhk4ncnb8HiL8tC2rnC0v0H5LcFhcPuCyl4LAZ9TaQJI1lrC5QsCwWMjSZN
-         2UN/iszIGyVZW26NQ37AB/LBgAGPs3lvUBOno/0CtZZBtTjB8+/aifF/dJsiLjKKdwnP
-         KN3MRzszhx5aMtiKYF5go7bn+kjyF4Eq392t3RY6EEPR0gRGeGcjiffqDcx21n9604cw
-         0dl4FY45K5vxCZaLtXn85VwH9Va8VDo+tk2CShLCtcU06H1L4YDalqLYa/Rq2wRiqlda
-         BMfQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711476356; x=1712081156;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=4c2stnKJuR84Ay01kn2oc6rwDVFwsXL9yn0nGaU5p5Q=;
-        b=pfd2EvTfJqcnrOU5C4tM4njK8+C8Rsdf41tR/m6/AxxbpH5mWOdcju2cZXnyIotYzU
-         PhcgqJk3q3wzZ4LqsuI5VGiDcVmUjaBj6z2ncTvfBXT9LxYKAt2/Bd8hplTDWB0xSVE9
-         uu+p0SWDwrxnxFmMdDmzFRqT4Dc9X2nxxu8N9je4tdiFMdwVyCxTAvSiY7NJ282Ppv5Y
-         VctyhX9PXKmpIstyMiUVEiajLHnQLhjtngAxix6KkRyu4IOAx/oV21ZooRkVdRNz8FW4
-         QfxaRysf4XiDEQh98ZCxB0kdLko5alRl0vdQlRV89m7s0fAuL5nEdKO326hFPtlmFxVZ
-         v9aw==
-X-Forwarded-Encrypted: i=1; AJvYcCWjYcALl2iRWpSuno3Ko2XCQLfazOxwBCFGlVCzVgvlnt2gHMgDUr3WoTd2obZTg5k6PUk9hrl8yI9JA1SR3pDGFOPN6ccopBk/ArUKfk4xPZDzRo6ukTuEh45XA3KYKTTjvB/9tea/Tktok+WDtVvF2JCdATwGLUENsmBKFMN2OJgBfEibbRBA
-X-Gm-Message-State: AOJu0Yy1UoOqsnafpeuEwaWtsntD9hThEWTMkrEMD3xZcISTHFXXtot4
-	9zvHyS+xb5iN//89Z9DpFRzCWQEVoTan9ReKuTWn3lQYCGbM6/+k
-X-Google-Smtp-Source: AGHT+IFQI9z0WQomLuNHg4+6pEZtOvE3uVTDQSk/n5uIUoFcS1OWyTQCSMdXg6+vHONM0C2CwVNaVA==
-X-Received: by 2002:a5d:648e:0:b0:341:cf92:ed33 with SMTP id o14-20020a5d648e000000b00341cf92ed33mr6141919wri.11.1711476355861;
-        Tue, 26 Mar 2024 11:05:55 -0700 (PDT)
-Received: from localhost.localdomain (91-83-10-45.pool.digikabel.hu. [91.83.10.45])
-        by smtp.gmail.com with ESMTPSA id fa7-20020a056000258700b00341c6b53358sm8275523wrb.66.2024.03.26.11.05.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Mar 2024 11:05:55 -0700 (PDT)
-From: Balazs Scheidler <bazsi77@gmail.com>
-X-Google-Original-From: Balazs Scheidler <balazs.scheidler@axoflow.com>
-To: kerneljasonxing@gmail.com,
-	kuniyu@amazon.com,
-	netdev@vger.kernel.org,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	David Ahern <dsahern@kernel.org>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>
-Cc: Balazs Scheidler <balazs.scheidler@axoflow.com>,
-	linux-kernel@vger.kernel.org,
-	linux-trace-kernel@vger.kernel.org
-Subject: [PATCH net-next v4 2/2] net: udp: add IP/port data to the tracepoint udp/udp_fail_queue_rcv_skb
-Date: Tue, 26 Mar 2024 19:05:47 +0100
-Message-Id: <0c8b3e33dbf679e190be6f4c6736603a76988a20.1711475011.git.balazs.scheidler@axoflow.com>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <cover.1711475011.git.balazs.scheidler@axoflow.com>
-References: <cover.1711475011.git.balazs.scheidler@axoflow.com>
+	s=arc-20240116; t=1711476370; c=relaxed/simple;
+	bh=Gk8fI9iUrOUGQ34gEWUgllLORmfKWRcrBsMtW1W/wiw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=jgiuXpCNjHEuPLhHGsKloN8h//qhlvtNjCByohoN/wRMV3DB//lio/1i9ixfyWSdP6ZONhYcWzUfn4vq12tJ3HWuJJdHtrkJcH/ChIzqkD6TwF3GWo9vXBdtQ/UzKSQAwMbnuiCQsGyMraJaQ2mn/j7bZ6s6k193RAlQgFGOGEc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=iM8JsJWJ; arc=none smtp.client-ip=192.198.163.10
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1711476367; x=1743012367;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:content-transfer-encoding:in-reply-to;
+  bh=Gk8fI9iUrOUGQ34gEWUgllLORmfKWRcrBsMtW1W/wiw=;
+  b=iM8JsJWJ3SEBhFsdOL6NMy/FWO9TGj3g/UxqPa++BjABa6K22HBgWR31
+   ym05mROOBBmFFMd841C+nifesnZoRr87N5u/W+B/HAk/42SkD/0OZwDHQ
+   yfpsOD/89vVBh1Uxk4u/X/iBVtf8km4jIK63+CAFXzLp4/CAP6TbWhWf7
+   nowa4CWMxDl2x0kYe88tdzhAFyXAj3QZmT7LglHYQPYe++YyIJs1WvSlk
+   Oz3ingKaGHzAqiARmLvChKLYrar+r8coXb6uM/e8sbyouDpLyPOCA1qJn
+   kDiDqNZ8UatvsWMfWTA6lacXdU3ylwAaOk3YXPNWnLZHMxI0qcLDXLQ2e
+   g==;
+X-CSE-ConnectionGUID: +OdF6dRDTv652QICOYGp5A==
+X-CSE-MsgGUID: x5iLw7TrRFi2qzaQkm7aYQ==
+X-IronPort-AV: E=McAfee;i="6600,9927,11025"; a="17931530"
+X-IronPort-AV: E=Sophos;i="6.07,156,1708416000"; 
+   d="scan'208";a="17931530"
+Received: from orviesa004.jf.intel.com ([10.64.159.144])
+  by fmvoesa104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Mar 2024 11:06:07 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,156,1708416000"; 
+   d="scan'208";a="20744583"
+Received: from ls.sc.intel.com (HELO localhost) ([172.25.112.31])
+  by orviesa004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Mar 2024 11:06:06 -0700
+Date: Tue, 26 Mar 2024 11:06:05 -0700
+From: Isaku Yamahata <isaku.yamahata@intel.com>
+To: "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>
+Cc: "Yamahata, Isaku" <isaku.yamahata@intel.com>,
+	"Zhang, Tina" <tina.zhang@intel.com>,
+	"isaku.yamahata@linux.intel.com" <isaku.yamahata@linux.intel.com>,
+	"seanjc@google.com" <seanjc@google.com>,
+	"Huang, Kai" <kai.huang@intel.com>, "Chen, Bo2" <chen.bo@intel.com>,
+	"sagis@google.com" <sagis@google.com>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"Yuan, Hang" <hang.yuan@intel.com>,
+	"Aktas, Erdem" <erdemaktas@google.com>,
+	"kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+	"pbonzini@redhat.com" <pbonzini@redhat.com>,
+	"isaku.yamahata@gmail.com" <isaku.yamahata@gmail.com>
+Subject: Re: [PATCH v19 062/130] KVM: x86/tdp_mmu: Support TDX private
+ mapping for TDP MMU
+Message-ID: <20240326180605.GC2444378@ls.amr.corp.intel.com>
+References: <cover.1708933498.git.isaku.yamahata@intel.com>
+ <fc97847d04f2b469d8f4cfceee84c7ef055ab1ac.1708933498.git.isaku.yamahata@intel.com>
+ <7b76900a42b4044cbbcb0c42922c935562993d1e.camel@intel.com>
+ <20240325200122.GH2357401@ls.amr.corp.intel.com>
+ <ad203761cf0f93e9feb4ea7037c9b9c1f39714ae.camel@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <ad203761cf0f93e9feb4ea7037c9b9c1f39714ae.camel@intel.com>
 
-The udp_fail_queue_rcv_skb() tracepoint lacks any details on the source
-and destination IP/port whereas this information can be critical in case
-of UDP/syslog.
+On Mon, Mar 25, 2024 at 10:31:49PM +0000,
+"Edgecombe, Rick P" <rick.p.edgecombe@intel.com> wrote:
 
-Signed-off-by: Balazs Scheidler <balazs.scheidler@axoflow.com>
----
- include/trace/events/udp.h | 29 ++++++++++++++++++++++++-----
- net/ipv4/udp.c             |  2 +-
- net/ipv6/udp.c             |  3 ++-
- 3 files changed, 27 insertions(+), 7 deletions(-)
+> On Mon, 2024-03-25 at 13:01 -0700, Isaku Yamahata wrote:
+> >  Also, kvm_tdp_mmu_alloc_root() never returns non-zero, even though mmu_alloc_direct_roots() does.
+> > > Probably today when there is one caller it makes mmu_alloc_direct_roots() cleaner to just have
+> > > it
+> > > return the always zero value from kvm_tdp_mmu_alloc_root(). Now that there are two calls, I
+> > > think we
+> > > should refactor kvm_tdp_mmu_alloc_root() to return void, and have kvm_tdp_mmu_alloc_root()
+> > > return 0
+> > > manually in this case.
+> > > 
+> > > Or maybe instead change it back to returning an hpa_t and then kvm_tdp_mmu_alloc_root() can lose
+> > > the
+> > > "if (private)" logic at the end too.
+> > 
+> > Probably we can make void kvm_tdp_mmu_alloc_root() instead of returning always
+> > zero as clean up.
+> 
+> Why is it better than returning an hpa_t once we are calling it twice for mirror and shared roots.
 
-diff --git a/include/trace/events/udp.h b/include/trace/events/udp.h
-index 336fe272889f..62bebe2a6ece 100644
---- a/include/trace/events/udp.h
-+++ b/include/trace/events/udp.h
-@@ -7,24 +7,43 @@
- 
- #include <linux/udp.h>
- #include <linux/tracepoint.h>
-+#include <trace/events/net_probe_common.h>
- 
- TRACE_EVENT(udp_fail_queue_rcv_skb,
- 
--	TP_PROTO(int rc, struct sock *sk),
-+	TP_PROTO(int rc, struct sock *sk, struct sk_buff *skb),
- 
--	TP_ARGS(rc, sk),
-+	TP_ARGS(rc, sk, skb),
- 
- 	TP_STRUCT__entry(
- 		__field(int, rc)
--		__field(__u16, lport)
-+
-+		__field(__u16, sport)
-+		__field(__u16, dport)
-+		__field(__u16, family)
-+		__array(__u8, saddr, sizeof(struct sockaddr_in6))
-+		__array(__u8, daddr, sizeof(struct sockaddr_in6))
- 	),
- 
- 	TP_fast_assign(
-+		const struct udphdr *uh = (const struct udphdr *)udp_hdr(skb);
-+
- 		__entry->rc = rc;
--		__entry->lport = inet_sk(sk)->inet_num;
-+
-+		/* for filtering use */
-+		__entry->sport = ntohs(uh->source);
-+		__entry->dport = ntohs(uh->dest);
-+		__entry->family = sk->sk_family;
-+
-+		memset(__entry->saddr, 0, sizeof(struct sockaddr_in6));
-+		memset(__entry->daddr, 0, sizeof(struct sockaddr_in6));
-+
-+		TP_STORE_ADDR_PORTS_SKB(__entry, skb, uh);
- 	),
- 
--	TP_printk("rc=%d port=%hu", __entry->rc, __entry->lport)
-+	TP_printk("rc=%d family=%s src=%pISpc dest=%pISpc", __entry->rc,
-+		  show_family_name(__entry->family),
-+		  __entry->saddr, __entry->daddr)
- );
- 
- #endif /* _TRACE_UDP_H */
-diff --git a/net/ipv4/udp.c b/net/ipv4/udp.c
-index 661d0e0d273f..531882f321f2 100644
---- a/net/ipv4/udp.c
-+++ b/net/ipv4/udp.c
-@@ -2049,8 +2049,8 @@ static int __udp_queue_rcv_skb(struct sock *sk, struct sk_buff *skb)
- 			drop_reason = SKB_DROP_REASON_PROTO_MEM;
- 		}
- 		UDP_INC_STATS(sock_net(sk), UDP_MIB_INERRORS, is_udplite);
-+		trace_udp_fail_queue_rcv_skb(rc, sk, skb);
- 		kfree_skb_reason(skb, drop_reason);
--		trace_udp_fail_queue_rcv_skb(rc, sk);
- 		return -1;
- 	}
- 
-diff --git a/net/ipv6/udp.c b/net/ipv6/udp.c
-index 7c1e6469d091..2e4dc5e6137b 100644
---- a/net/ipv6/udp.c
-+++ b/net/ipv6/udp.c
-@@ -34,6 +34,7 @@
- #include <linux/slab.h>
- #include <linux/uaccess.h>
- #include <linux/indirect_call_wrapper.h>
-+#include <trace/events/udp.h>
- 
- #include <net/addrconf.h>
- #include <net/ndisc.h>
-@@ -658,8 +659,8 @@ static int __udpv6_queue_rcv_skb(struct sock *sk, struct sk_buff *skb)
- 			drop_reason = SKB_DROP_REASON_PROTO_MEM;
- 		}
- 		UDP6_INC_STATS(sock_net(sk), UDP_MIB_INERRORS, is_udplite);
-+		trace_udp_fail_queue_rcv_skb(rc, sk, skb);
- 		kfree_skb_reason(skb, drop_reason);
--		trace_udp_fail_queue_rcv_skb(rc, sk);
- 		return -1;
- 	}
- 
+You mean split out "if (private)" from the core part? Makes sense.
+
+
+> > > >         } else if (shadow_root_level >= PT64_ROOT_4LEVEL) {
+> > > >                 root = mmu_alloc_root(vcpu, 0, 0, shadow_root_level);
+> > > > @@ -4627,7 +4632,7 @@ int kvm_tdp_page_fault(struct kvm_vcpu *vcpu, struct kvm_page_fault
+> > > > *fault)
+> > > >         if (kvm_mmu_honors_guest_mtrrs(vcpu->kvm)) {
+> > > >                 for ( ; fault->max_level > PG_LEVEL_4K; --fault->max_level) {
+> > > >                         int page_num = KVM_PAGES_PER_HPAGE(fault->max_level);
+> > > > -                       gfn_t base = gfn_round_for_level(fault->gfn,
+> > > > +                       gfn_t base = gfn_round_for_level(gpa_to_gfn(fault->addr),
+> > > >                                                          fault->max_level);
+> > > >  
+> > > >                         if (kvm_mtrr_check_gfn_range_consistency(vcpu, base, page_num))
+> > > > @@ -4662,6 +4667,7 @@ int kvm_mmu_map_tdp_page(struct kvm_vcpu *vcpu, gpa_t gpa, u64
+> > > > error_code,
+> > > >         };
+> > > >  
+> > > >         WARN_ON_ONCE(!vcpu->arch.mmu->root_role.direct);
+> > > > +       fault.gfn = gpa_to_gfn(fault.addr) & ~kvm_gfn_shared_mask(vcpu->kvm);
+> > > >         fault.slot = kvm_vcpu_gfn_to_memslot(vcpu, fault.gfn);
+> > > >  
+> > > >         r = mmu_topup_memory_caches(vcpu, false);
+> > > > @@ -6166,6 +6172,7 @@ static int __kvm_mmu_create(struct kvm_vcpu *vcpu, struct kvm_mmu *mmu)
+> > > >  
+> > > >         mmu->root.hpa = INVALID_PAGE;
+> > > >         mmu->root.pgd = 0;
+> > > > +       mmu->private_root_hpa = INVALID_PAGE;
+> > > >         for (i = 0; i < KVM_MMU_NUM_PREV_ROOTS; i++)
+> > > >                 mmu->prev_roots[i] = KVM_MMU_ROOT_INFO_INVALID;
+> > > >  
+> > > > @@ -7211,6 +7218,12 @@ int kvm_mmu_vendor_module_init(void)
+> > > >  void kvm_mmu_destroy(struct kvm_vcpu *vcpu)
+> > > >  {
+> > > >         kvm_mmu_unload(vcpu);
+> > > > +       if (tdp_mmu_enabled) {
+> > > > +               write_lock(&vcpu->kvm->mmu_lock);
+> > > > +               mmu_free_root_page(vcpu->kvm, &vcpu->arch.mmu->private_root_hpa,
+> > > > +                               NULL);
+> > > > +               write_unlock(&vcpu->kvm->mmu_lock);
+> > > 
+> > > What is the reason for the special treatment of private_root_hpa here? The rest of the roots are
+> > > freed in kvm_mmu_unload(). I think it is because we don't want the mirror to get freed during
+> > > kvm_mmu_reset_context()?
+> > 
+> > It reflects that we don't free Secure-EPT pages during runtime, and free them
+> > when destroying the guest.
+> 
+> Right. If would be great if we could do something like warn on freeing role.private = 1 sp's during
+> runtime. It could cover several cases that get worried about in other patches.
+
+Ok, let me move it to kvm_mmu_unload() and try to sprinkle warn-on.
+
+
+> While looking at how we could do this, I noticed that kvm_arch_vcpu_create() calls kvm_mmu_destroy()
+> in an error path. So this could end up zapping/freeing a private root. It should be bad userspace
+> behavior too I guess. But the number of edge cases makes me think the case of zapping private sp
+> while a guest is running is something that deserves a VM_BUG_ON().
+
+Let me clean the code.  I think we can clean them up.
+
+
+> > > Oof. For the sake of trying to justify the code, I'm trying to keep track of the pros and cons
+> > > of
+> > > treating the mirror/private root like a normal one with just a different role bit.
+> > > 
+> > > The whole “list of roots” thing seems to date from the shadow paging, where there is is critical
+> > > to
+> > > keep multiple cached shared roots of different CPU modes of the same shadowed page tables. Today
+> > > with non-nested TDP, AFAICT, the only different root is for SMM. I guess since the machinery for
+> > > managing multiple roots in a list already exists it makes sense to use it for both.
+> > > 
+> > > For TDX there are also only two, but the difference is, things need to be done in special ways
+> > > for
+> > > the two roots. You end up with a bunch of loops (for_each_*tdp_mmu_root(), etc) that essentially
+> > > process a list of two different roots, but with inner logic tortured to work for the
+> > > peculiarities
+> > > of both private and shared. An easier to read alternative could be to open code both cases.
+> > > 
+> > > I guess the major benefit is to keep one set of logic for shadow paging, normal TDP and TDX, but
+> > > it
+> > > makes the logic a bit difficult to follow for TDX compared to looking at it from the normal
+> > > guest
+> > > perspective. So I wonder if making special versions of the TDX root traversing operations might
+> > > make
+> > > the code a little easier to follow. I’m not advocating for it at this point, just still working
+> > > on
+> > > an opinion. Is there any history around this design point?
+> > 
+> > The original desire to keep the modification contained, and not introduce a
+> > function for population and zap.  With the open coding, do you want something
+> > like the followings?  We can try it and compare the outcome.
+> > 
+> > For zapping
+> >   if (private) {
+> >      __for_each_tdp_mmu_root_yield_safe_private()
+> >        private case
+> >   } else {
+> >      __for_each_tdp_mmu_root_yield_safe()
+> >         shared case
+> >   }
+> > 
+> > For fault,
+> > kvm_tdp_mmu_map()
+> >   if (private) {
+> >     tdp_mmu_for_each_pte_private(iter, mmu, raw_gfn, raw_gfn + 1)
+> >       private case
+> >   } else {
+> >     tdp_mmu_for_each_pte_private(iter, mmu, raw_gfn, raw_gfn + 1)
+> >       shared case
+> >   }
+> 
+> I was wondering about something limited to the operations that iterate over the roots. So not
+> keeping private_root_hpa in the list of roots where it has to be carefully protected from getting
+> zapped or get its gfn adjusted, and instead open coding the private case in the higher level zapping
+> operations. For normal VM's the private case would be a NOP.
+> 
+> Since kvm_tdp_mmu_map() already grabs private_root_hpa manually, it wouldn't change in this idea. I
+> don't know how much better it would be though. I think you are right we would have to create them
+> and compare. 
+
+Given the large page support gets complicated, it would be worthwhile to try,
+I think.
 -- 
-2.40.1
-
+Isaku Yamahata <isaku.yamahata@intel.com>
 
