@@ -1,164 +1,164 @@
-Return-Path: <linux-kernel+bounces-119640-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-119687-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id F004088CB73
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 19:01:32 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3178E88CC0D
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 19:32:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 38990B23239
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 18:01:30 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 613801C65814
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 18:32:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E977853803;
-	Tue, 26 Mar 2024 18:01:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B299D128814;
+	Tue, 26 Mar 2024 18:31:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="HOh31o5D"
-Received: from mail-yw1-f182.google.com (mail-yw1-f182.google.com [209.85.128.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="Houtpz5a"
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 96B6E1C2AF
-	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 18:01:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 84CEE84D0D;
+	Tue, 26 Mar 2024 18:31:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711476084; cv=none; b=Epa6BImQTi4FafrfCnsUFqlGbPjznJfyROH6phQDT60Csu7mXRQHWJIXeDLqmtaRSA7qx2pZTO9geMFYzyVJwJGxguoa8efIQeYt2H9rRWIkeSs8A7yJgy3szMkHXd2vzf4JSrtEoqgSkzmFmE+3wAOSCgs96HKuHtMvSJik4cI=
+	t=1711477911; cv=none; b=T94OrGQlIQx/xNAAeFmVB309z8L7E2nfJoP5UWeiWTE2aiCogTiQrhaTX0GMfFvSO6N2ectTcAq/RWEbrO+i/XLR7DW5ImbKwbvjSnyPSjeO4WG1wDAMz8FG1sbvSY+DxEMJcOhk8oU3ahQC4tlB5SOa/8FL1ivJ41jgdb3K/XE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711476084; c=relaxed/simple;
-	bh=6clewCtNwrXAGDiENW7darKyKjOLpnki5JqhBB84ve0=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=CvTzf6TK1cbRz0LmiHljDNnDnIsTsmdaYU6pUmPWzYZXBUk0im6nn7wsHWZmk793Sdzj+Cbt6NR+fOYQM3O6q16jzko2qyBUqnEvpiYy8peUgvCcr0YWtWjo8Ik+Dq/Ns4zKZbz4iZm+zyFNlO4Sb0kNiF4bZGE/9oAFJQzDQzM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=HOh31o5D; arc=none smtp.client-ip=209.85.128.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-yw1-f182.google.com with SMTP id 00721157ae682-609fc742044so62292947b3.1
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 11:01:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1711476081; x=1712080881; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=XObRnJOe5x5g/XgoRchvbLOOBTbF4Ayrr8n6yojYLIc=;
-        b=HOh31o5DGE0WdQzexF7jwioU7AzfFzn5mwX6RY7F4bfa681QW1yMRfAnJt+7wJvRjd
-         J+mazABNuU4tczEH6cUdq0tutF1x5hH5ayiqXDsTMGv+v3K/t3SKl30ATDXsOfN/pJE9
-         ZXMnR/HS6w/Pp7Weq68zydE1bV2iGJ/lrp6j7Wfb4t6fhs2ps/W59eKUp/eR8S6kc1a6
-         seS1rSzQYNKCEB65DCZaWdTFVky8KsWvVDZ2hpgl+JTSb1EI2umNO6jL0vE/57c7HYpg
-         JbSfk8XyTKdi64jW+KVYTmJysnkaFg7IMeJERBDraY84nQmEMkqAhy3T9ncZ+u/VXtWw
-         4vpQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711476081; x=1712080881;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=XObRnJOe5x5g/XgoRchvbLOOBTbF4Ayrr8n6yojYLIc=;
-        b=vDZralUwha3of0OwVcfc3yCNIs/1kvWpBZnLlVFRJuakXU+icrFjsmsJMRn/I58nk/
-         1kk2tXIoF9OJ73pZ9uyBh8S1esSMK+5tq2R+V+i2VWa8mYmMSKN36mZXgiJcMtueJP74
-         0xgtUSN+FLa4UAR0Z5tiFjm1LAM6DI9oTzPz3AehspKxuH3ynUZDTVxGFG/7kGOBlMEW
-         W/7JnY/hLM3LmUFy0Xs6XCUcqRG+WEjZLUcFTAMj0gWzO85cXPBiqxEARRnetlARJePC
-         OgqQjdf7J219Q8ipkaV7ORQFpoNxzQj6HltDj7WkozMViwnO4g183s9uRkrt3XYoDrw7
-         6+ww==
-X-Forwarded-Encrypted: i=1; AJvYcCWS1SnWxhv5kOum/ZsbfJJ9Bh7nJUF6Q70qJSKJiRcWcRaOIcutNsi7ADJGFYwKzlUXBVh6I6Ghg1qiAYEHfvoSARYf0iU+aaeKMJX6
-X-Gm-Message-State: AOJu0Yw0SkK3NyRyjSzSX6GGZ7IsiowxzYvZ191PVo0WSb9sbml9eJlq
-	tQdy0M0lenl3+4QPN+I2NNVFOibhA8EsJz6bHhN6Ykke6alzLRAnUeAE1O9dzwj3jI3JOtNwgy9
-	jVMr1tzjPxzR73WpmP+B49z/eMLEfQ70IpbiI
-X-Google-Smtp-Source: AGHT+IGCseJIoMjDVzKMGoo7nvvK3wtQHbbHa017mImqV17QHRR7XHngt3I0u1VScWdNaaK+p7nFJk+L1dPVdJtbjgA=
-X-Received: by 2002:a25:c706:0:b0:dd1:7908:3a49 with SMTP id
- w6-20020a25c706000000b00dd179083a49mr418843ybe.23.1711476081106; Tue, 26 Mar
- 2024 11:01:21 -0700 (PDT)
+	s=arc-20240116; t=1711477911; c=relaxed/simple;
+	bh=Hy7edzumEoWeONYYCu1G0+IrMmMDfxYK/QUHU24I/Pk=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-ID:To:CC; b=RyVS4DiZKjJyZ3KxVaH7cylSpVcEx4QVY+qsTUoTtj11RWFj5rYcihm/SqByEUIMh1KfLocGPZbfABe2DQGI+GCJsENPzAuE8B5pu6PWuw5MORkbD1867xjy//RX4rJspN2+hqcd7t1ksIMJyFnaTYaE7i78b2Q3ALd3SHNRaZc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=Houtpz5a; arc=none smtp.client-ip=205.220.168.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 42QG6CL1011820;
+	Tue, 26 Mar 2024 18:02:31 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	from:date:subject:mime-version:content-type
+	:content-transfer-encoding:message-id:to:cc; s=qcppdkim1; bh=CLe
+	32OEPO+KVS6LX1ndJG84GupdaXxVbnPB6jH9BUAI=; b=Houtpz5aPGZkHtUop7J
+	R6Hj+jP3cG9jIdgEt000sjfowcFglPUUt3BHAnRJb82SzIbE1OC7tSJYgqewDLMi
+	wTOJSKY527H41fd3RUtFP8urBgjkS0TrH512mQzESSZrDLu+91iUsqOPUN0aWKbL
+	/zlj4B2kXWBxPXst/33BgWJycZUe7/mIlGEX4YivVgwZvIxLKnVIAVvI/Qb4lliy
+	EM53d6YINyjVXJevOPSXqDv/fpMygkwsXrHq1JX8ErfsoyOPQ4KyPSzCS1LTE3WZ
+	DBcn3TGSnQ8L3S4bapRbM8VW2yQv8NtK8REOsbDW5YVTUDuFLp4Wd9uMHKCcy+lg
+	Prw==
+Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3x41k68att-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 26 Mar 2024 18:02:31 +0000 (GMT)
+Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
+	by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 42QI2UT3015068
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 26 Mar 2024 18:02:30 GMT
+Received: from [169.254.0.1] (10.49.16.6) by nalasex01c.na.qualcomm.com
+ (10.47.97.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Tue, 26 Mar
+ 2024 11:02:30 -0700
+From: Bjorn Andersson <quic_bjorande@quicinc.com>
+Date: Tue, 26 Mar 2024 11:02:30 -0700
+Subject: [PATCH] arm64: dts: qcom: qcs6490-rb3gen2: Enable UFS
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240226211237.48415-1-ppbuk5246@gmail.com> <Ze_x3kovSFe4z9SO@Levi-MacBook-Pro.local>
- <CAJuCfpFdbh37qWFS8eCXk0CCQD9bA2wtpOj5BMYPNTcz-0Oxnw@mail.gmail.com>
-In-Reply-To: <CAJuCfpFdbh37qWFS8eCXk0CCQD9bA2wtpOj5BMYPNTcz-0Oxnw@mail.gmail.com>
-From: Suren Baghdasaryan <surenb@google.com>
-Date: Tue, 26 Mar 2024 11:01:07 -0700
-Message-ID: <CAJuCfpGwnn3zuHc=iSZN60hactO+4NAiyGR51y_7X4wfS7x6tA@mail.gmail.com>
-Subject: Re: [PATCH v2] psi: Fix avg trigger being fired unexpectedly.
-To: peterz@infradead.org
-Cc: hannes@cmpxchg.org, mingo@redhat.com, juri.lelli@redhat.com, 
-	vincent.guittot@linaro.org, dietmar.eggemann@arm.com, rostedt@goodmis.org, 
-	bsegall@google.com, mgorman@suse.de, bristot@redhat.com, vschneid@redhat.com, 
-	linux-kernel@vger.kernel.org, "levi.yun" <ppbuk5246@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-ID: <20240326-rb3gen2-ufs-v1-1-8c5c2dae1e64@quicinc.com>
+X-B4-Tracking: v=1; b=H4sIALUNA2YC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
+ vPSU3UzU4B8JSMDIxMDYyMz3aIk4/TUPCPd0rRiXfOUlCQDc0NTc1NTMyWgjoKi1LTMCrBp0bG
+ 1tQBGS2bKXQAAAA==
+To: Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio
+	<konrad.dybcio@linaro.org>,
+        Rob Herring <robh@kernel.org>,
+        "Krzysztof
+ Kozlowski" <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley
+	<conor+dt@kernel.org>
+CC: <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        Bjorn Andersson <quic_bjorande@quicinc.com>
+X-Mailer: b4 0.12.4
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1711476150; l=1626;
+ i=quic_bjorande@quicinc.com; s=20230915; h=from:subject:message-id;
+ bh=Hy7edzumEoWeONYYCu1G0+IrMmMDfxYK/QUHU24I/Pk=;
+ b=lDO306RXcsUfdGEU/nZkY0RAVYJ6JLaKK3YRNJc/yf9lrJeMOxFZoSkpcRVVKC/lt6NDUd87v
+ jYmbjeny+XeB5bTDXzwLLjXDWpoLaOm24XmUbWCMZF4OZWb/yRNSmzZ
+X-Developer-Key: i=quic_bjorande@quicinc.com; a=ed25519;
+ pk=VkhObtljigy9k0ZUIE1Mvr0Y+E1dgBEH9WoLQnUtbIM=
+X-ClientProxiedBy: nalasex01b.na.qualcomm.com (10.47.209.197) To
+ nalasex01c.na.qualcomm.com (10.47.97.35)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: eNto9_vGL8HkPuqiG2lbeY-eOPn7AEpB
+X-Proofpoint-GUID: eNto9_vGL8HkPuqiG2lbeY-eOPn7AEpB
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-03-26_07,2024-03-21_02,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 bulkscore=0
+ lowpriorityscore=0 clxscore=1011 mlxlogscore=847 priorityscore=1501
+ malwarescore=0 phishscore=0 spamscore=0 adultscore=0 suspectscore=0
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2403210001 definitions=main-2403260129
 
-On Tue, Mar 26, 2024 at 10:49=E2=80=AFAM Suren Baghdasaryan <surenb@google.=
-com> wrote:
->
-> On Tue, Mar 12, 2024 at 6:10=E2=80=AFAM levi.yun <ppbuk5246@gmail.com> wr=
-ote:
-> >
-> > Gentle ping..
-> >
-> > On Mon, Feb 26, 2024 at 09:12:37PM +0000, Levi Yun wrote:
-> > > commit 915a087e4c473("psi: Fix trigger being fired unexpectedly at in=
-itial")
-> > > fixes unexpected event fired when group->total accumulated for PSI_PO=
-LL.
-> > > But, for PSI_AVGS, win->value should be initialized with group->total=
-[PSI_AVGS].
-> > > Moreover, to get exact initial value for win->value, it should be set
-> > > under each trigger lock to avoid concurrent changes to group->total[]=
-.
-> > >
-> > > Signed-off-by: Levi Yun <ppbuk5246@gmail.com>
-> > > Acked-by: Suren Baghdasaryan <surenb@google.com>
->
-> Hi Peter,
-> Could you please pull this patch into your tree? I don't see it in any
-> tree, so I think you missed it.
+The rb3gen2 has UFS memory, adjust the necessary supply voltage and add
+the controller and phy nodes to enable this.
 
-Forgot to set the right recipient. Fixed now.
+Signed-off-by: Bjorn Andersson <quic_bjorande@quicinc.com>
+---
+ arch/arm64/boot/dts/qcom/qcs6490-rb3gen2.dts | 23 +++++++++++++++++++++--
+ 1 file changed, 21 insertions(+), 2 deletions(-)
 
+diff --git a/arch/arm64/boot/dts/qcom/qcs6490-rb3gen2.dts b/arch/arm64/boot/dts/qcom/qcs6490-rb3gen2.dts
+index 63ebe0774f1d..0177d93ecd1d 100644
+--- a/arch/arm64/boot/dts/qcom/qcs6490-rb3gen2.dts
++++ b/arch/arm64/boot/dts/qcom/qcs6490-rb3gen2.dts
+@@ -221,8 +221,8 @@ vreg_l6b_1p2: ldo6 {
+ 
+ 		vreg_l7b_2p952: ldo7 {
+ 			regulator-name = "vreg_l7b_2p952";
+-			regulator-min-microvolt = <2400000>;
+-			regulator-max-microvolt = <3544000>;
++			regulator-min-microvolt = <2952000>;
++			regulator-max-microvolt = <2952000>;
+ 			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
+ 		};
+ 
+@@ -508,6 +508,25 @@ &usb_1_qmpphy {
+ 	status = "okay";
+ };
+ 
++&ufs_mem_hc {
++	reset-gpios = <&tlmm 175 GPIO_ACTIVE_LOW>;
++	vcc-supply = <&vreg_l7b_2p952>;
++	vcc-max-microamp = <800000>;
++	vccq-supply = <&vreg_l9b_1p2>;
++	vccq-max-microamp = <900000>;
++	vccq2-supply = <&vreg_l9b_1p2>;
++	vccq2-max-microamp = <900000>;
++
++	status = "okay";
++};
++
++&ufs_mem_phy {
++	vdda-phy-supply = <&vreg_l10c_0p88>;
++	vdda-pll-supply = <&vreg_l6b_1p2>;
++
++	status = "okay";
++};
++
+ &wifi {
+ 	memory-region = <&wlan_fw_mem>;
+ };
 
-> Thanks,
-> Suren.
->
-> > > ---
-> > > v2: Fix commit message.
-> > > ---
-> > >  kernel/sched/psi.c | 8 +++++---
-> > >  1 file changed, 5 insertions(+), 3 deletions(-)
-> > >
-> > > diff --git a/kernel/sched/psi.c b/kernel/sched/psi.c
-> > > index 7b4aa5809c0f..e7f66ab2ad3e 100644
-> > > --- a/kernel/sched/psi.c
-> > > +++ b/kernel/sched/psi.c
-> > > @@ -1323,9 +1323,6 @@ struct psi_trigger *psi_trigger_create(struct p=
-si_group *group, char *buf,
-> > >       t->state =3D state;
-> > >       t->threshold =3D threshold_us * NSEC_PER_USEC;
-> > >       t->win.size =3D window_us * NSEC_PER_USEC;
-> > > -     window_reset(&t->win, sched_clock(),
-> > > -                     group->total[PSI_POLL][t->state], 0);
-> > > -
-> > >       t->event =3D 0;
-> > >       t->last_event_time =3D 0;
-> > >       t->of =3D of;
-> > > @@ -1336,6 +1333,8 @@ struct psi_trigger *psi_trigger_create(struct p=
-si_group *group, char *buf,
-> > >
-> > >       if (privileged) {
-> > >               mutex_lock(&group->rtpoll_trigger_lock);
-> > > +             window_reset(&t->win, sched_clock(),
-> > > +                             group->total[PSI_POLL][t->state], 0);
-> > >
-> > >               if (!rcu_access_pointer(group->rtpoll_task)) {
-> > >                       struct task_struct *task;
-> > > @@ -1361,6 +1360,9 @@ struct psi_trigger *psi_trigger_create(struct p=
-si_group *group, char *buf,
-> > >       } else {
-> > >               mutex_lock(&group->avgs_lock);
-> > >
-> > > +             window_reset(&t->win, sched_clock(),
-> > > +                             group->total[PSI_AVGS][t->state], 0);
-> > > +
-> > >               list_add(&t->node, &group->avg_triggers);
-> > >               group->avg_nr_triggers[t->state]++;
-> > >
-> > > --
-> > > 2.39.2
+---
+base-commit: 084c8e315db34b59d38d06e684b1a0dd07d30287
+change-id: 20240326-rb3gen2-ufs-7ddb07157556
+
+Best regards,
+-- 
+Bjorn Andersson <quic_bjorande@quicinc.com>
+
 
