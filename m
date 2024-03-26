@@ -1,122 +1,185 @@
-Return-Path: <linux-kernel+bounces-120017-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-120018-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0A3AC88D04D
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 22:49:51 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2397B88D053
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 22:52:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 830512E6B0D
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 21:49:49 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A2C931F37252
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 21:52:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CB79D13D894;
-	Tue, 26 Mar 2024 21:49:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6718213D89C;
+	Tue, 26 Mar 2024 21:52:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="cVA+APJA"
-Received: from mail-qv1-f46.google.com (mail-qv1-f46.google.com [209.85.219.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="U6RerBLb"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.9])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A38C53C26
-	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 21:49:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 968C913D617
+	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 21:52:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.9
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711489784; cv=none; b=RPEFv2njXV2y511ZTKcLSNgxH5LvJS3lzHXWNEpcb/hHzS1+0cu3wojAccafXmnyEgslagdLkw2Q3g5sVTAQHne+el1LNfeFoP1NoQM4pgZEuoNDDtEF+cSi6ADyLnYoh/B/Y5cfObt87TghwYGQ8pmwbgsQZ8dLZMTZiZMAGoM=
+	t=1711489925; cv=none; b=AcfOH4PLdQQFOPi+pXRx1OhLPA9vivXfjjKi7BkNJ4t3EF5i5SeyrUwS74JS1suLPUkBVGK+8vdft5kZ27l2Wvne1wZ5IDI2M5zYlpSg57eiZRnebAqjQ3T0psXN2N8vLgctfBvazSuzG7dgdvuBQ+Wv9NMd5dC600v3sMoEktU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711489784; c=relaxed/simple;
-	bh=lwSWDCf6521pCIK2wxRX5q6L/z8P0K8KTFLPzlgmrQw=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Zt4mNvjx8Dd7a8BFLF1ONjovADMG66JIhvhqmJx0qkoOonAOu6gQked/9IrrXxpml9vQY3S3U8xz3ewpQxAkL0ShOqojhg9b5wSNUfAAbzcrAUxjp/t7uGVEyatZMeBJ+PBqjR8GQiK+Q/Cup5Z7YaTaUlDJq8SxhLVuTr2N5+s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=cVA+APJA; arc=none smtp.client-ip=209.85.219.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qv1-f46.google.com with SMTP id 6a1803df08f44-69682bdf1d5so18342196d6.2
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 14:49:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711489781; x=1712094581; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ZEGnANGCVnpDGUZcTQwIUkqQ/IKd//G8yebAW3mMqzk=;
-        b=cVA+APJAN6GNQkJ5f0+0p9fsifpKsqeExpSQAIfr6Cx4aJXcz6Ei+iXoyRY/je81e9
-         ID3jGRlhoLWpmTIQMCybbiIvuUAExmVF6TiCKo3XJYXrQqdpUHRegwG4mn4BHlOP1Ttb
-         aqxpZBwdmwRlU4Ze36LVmCddeR6DdnylXkJiVQZKesWj7zoj/yt8+bOOiRUEPuhnp7kI
-         hwBZrZDkMbvC0bK6g+u8qeDtll2FWHYuNV5H3CmM53aE/BtuoX9jf2vrdtoPE4zsdI/o
-         fUHqzJYbyilvvM3GsyqU+x9M9PN0OznXteC4zkIUSM0aEyy7ibFmHMUG+KgTbPoCirN1
-         msCA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711489781; x=1712094581;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ZEGnANGCVnpDGUZcTQwIUkqQ/IKd//G8yebAW3mMqzk=;
-        b=r7fLA5+EsDr003kp+olPWRoZicHHwZ07JInT733cVg3ImRfnjKTfISNJ7B5DO9JosF
-         kOhHQJOsWgi5ypuOLi6A4d6KO12oX1AvQOlrPd0WTMsCiXSv/oSL5DbjUhWLlK/L9LXr
-         jSoJbdgyphQ8ummjO8rcSmHtLc3z7sJQCT42Zm0IXTamq65hy1fqzc6Z3xOg4BiXS4P0
-         s2KaOgj1DcmEg2Exy0g0Fe1vv+W9QIbU1iayxwi7bDmqre+ehMEh74+Rhmcc6O8dsc3o
-         QtnndwjLJ5HRY0O6NyXjvo0M54hoNFJ8RfsOAwHB/FDuGFD7/XCigS44ybqYTEE9unaW
-         //5w==
-X-Forwarded-Encrypted: i=1; AJvYcCVCKbkrGXKQO24Cniz4patYR65TGHa2nqP39Hq6pMRJNKucB3wXnbGdo07Af+RJhsDdTCz+YFHWmQpRcu4eCxbi6c/CobyOOTiUmm5e
-X-Gm-Message-State: AOJu0YwDy8jOk103tV2NKuZ4psFPDUP0wgONxMPkhwzrnHFbAwMU6yOj
-	pKMjGRHZEPSSs1o1/brkTcNmsjL7BdZW3YIJfHJVbQTUj+CF9BKjf7+jOQPMTtHkUpsCHUsr6BC
-	s7mVInIXmGpHF7rfeUJjuykoLZaA=
-X-Google-Smtp-Source: AGHT+IGZRfsZKvzxxmjKHJcU8npENvv6KZIBvRhpv0stws6LsEWKrN5MKxFXWH/RhYDtrr/SPkvIL9YRckODznyn6Us=
-X-Received: by 2002:a05:6214:1cc1:b0:695:f40f:d7e6 with SMTP id
- g1-20020a0562141cc100b00695f40fd7e6mr728029qvd.28.1711489781475; Tue, 26 Mar
- 2024 14:49:41 -0700 (PDT)
+	s=arc-20240116; t=1711489925; c=relaxed/simple;
+	bh=P6ouwPi87Mlc6BhoT1yPLNjMO+5Lo7IL3cnXEjQsaeM=;
+	h=Date:From:To:Cc:Subject:Message-ID; b=iOnTafM2b58DKbH7BEJFasDl40KU8FYfggTQrWd531sav6Ud2QNiEefM+wEHVVNDknSjes14YrkbCp6Ab9ve193iNRziV5LSJx82zWuTkJsz+CO+g+6SeohBmPxNwzY0oOETFTkNOySZ222eG0Uyz4FpL/+kRH04Z8PIPYqWlso=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=U6RerBLb; arc=none smtp.client-ip=192.198.163.9
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1711489923; x=1743025923;
+  h=date:from:to:cc:subject:message-id;
+  bh=P6ouwPi87Mlc6BhoT1yPLNjMO+5Lo7IL3cnXEjQsaeM=;
+  b=U6RerBLb31IZBRqB9ItsjQU/MQkjjkjXvrwKATe5uSNQVShzI3Z+OGI9
+   VTDEt9aOVYJi2/u9tooyRERLT1Wos9Wz2lZr0JGVpIhnBqoi7M4lZazqp
+   dAu/xA7frVdUoXOqpTtyqMrCcawLDzBqRVWc3gOcTCvHTZ/mfUdQ+rCfL
+   JAEna58mjr7WISGqTB9o/ZO48CXdfoErHBjr26xDD8hKpLFoRJR9Eb/nr
+   XZhM+q1MAFHY6r6C1CjRZTTeol/vcz7dzgjCvykL5+YEdNcwf7z9Seyt0
+   oeblRvSTlrEsvymE1Rvyq02bnrFA/k5fYh9On2sIy+NHImvEU903jocz2
+   w==;
+X-CSE-ConnectionGUID: s3sbzEIZTtyfl4mvjcGcgQ==
+X-CSE-MsgGUID: fd9m7GmBQ0StnRh/N4WpPg==
+X-IronPort-AV: E=McAfee;i="6600,9927,11025"; a="17295981"
+X-IronPort-AV: E=Sophos;i="6.07,157,1708416000"; 
+   d="scan'208";a="17295981"
+Received: from fmviesa010.fm.intel.com ([10.60.135.150])
+  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Mar 2024 14:52:03 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,157,1708416000"; 
+   d="scan'208";a="16015305"
+Received: from lkp-server01.sh.intel.com (HELO be39aa325d23) ([10.239.97.150])
+  by fmviesa010.fm.intel.com with ESMTP; 26 Mar 2024 14:52:02 -0700
+Received: from kbuild by be39aa325d23 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rpEi7-0000RO-2n;
+	Tue, 26 Mar 2024 21:51:59 +0000
+Date: Wed, 27 Mar 2024 05:51:09 +0800
+From: kernel test robot <lkp@intel.com>
+To: "x86-ml" <x86@kernel.org>
+Cc: linux-kernel@vger.kernel.org
+Subject: [tip:x86/cpu] BUILD SUCCESS
+ cd2236c2f49eb46443fd7573d0ddad5373577b11
+Message-ID: <202403270506.IwfRlbo6-lkp@intel.com>
+User-Agent: s-nail v14.9.24
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <20240325235018.2028408-1-yosryahmed@google.com> <20240325235018.2028408-2-yosryahmed@google.com>
-In-Reply-To: <20240325235018.2028408-2-yosryahmed@google.com>
-From: Nhat Pham <nphamcs@gmail.com>
-Date: Tue, 26 Mar 2024 14:49:30 -0700
-Message-ID: <CAKEwX=PXUCnubYJEzF0wKU3B1aVGm3oS4EFmtMXUj4LsPyLK8A@mail.gmail.com>
-Subject: Re: [RFC PATCH 1/9] mm: zswap: always shrink in zswap_store() if zswap_pool_reached_full
-To: Yosry Ahmed <yosryahmed@google.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>, Johannes Weiner <hannes@cmpxchg.org>, 
-	Chengming Zhou <chengming.zhou@linux.dev>, linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Mon, Mar 25, 2024 at 4:50=E2=80=AFPM Yosry Ahmed <yosryahmed@google.com>=
- wrote:
->
-> The cleanup code in zswap_store() is not pretty, particularly the
-> 'shrink' label at the bottom that ends up jumping between cleanup
-> labels.
->
-> Instead of having a dedicated label to shrink the pool, just use
-> zswap_pool_reached_full directly to figure out if the pool needs
-> shrinking. zswap_pool_reached_full should be true if and only if the
-> pool needs shrinking.
->
-> The only caveat is that the value of zswap_pool_reached_full may be
-> changed by concurrent zswap_store() calls between checking the limit and
-> testing zswap_pool_reached_full in the cleanup code. This is fine
-> because:
-> - If zswap_pool_reached_full was true during limit checking then became
->   false during the cleanup code, then someone else already took care of
->   shrinking the pool and there is no need to queue the worker. That
->   would be a good change.
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86/cpu
+branch HEAD: cd2236c2f49eb46443fd7573d0ddad5373577b11  x86/cpu: Clear TME feature flag if TME is not enabled by BIOS
 
-Yup.
+elapsed time: 750m
 
-> - If zswap_pool_reached_full was false during limit checking then became
->   true during the cleanup code, then someone else hit the limit
->   meanwhile. In this case, both threads will try to queue the worker,
->   but it never gets queued more than once anyway. Also, calling
->   queue_work() multiple times when the limit is hit could already happen
->   today, so this isn't a significant change in any way.
+configs tested: 95
+configs skipped: 135
 
-Agree.
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
->
-> Signed-off-by: Yosry Ahmed <yosryahmed@google.com>
+tested configs:
+alpha                             allnoconfig   gcc  
+alpha                               defconfig   gcc  
+arc                               allnoconfig   gcc  
+arc                                 defconfig   gcc  
+arm                       netwinder_defconfig   gcc  
+arm                           spitz_defconfig   gcc  
+arm64                            allmodconfig   clang
+arm64                             allnoconfig   gcc  
+arm64                            allyesconfig   clang
+arm64                               defconfig   gcc  
+csky                              allnoconfig   gcc  
+csky                                defconfig   gcc  
+i386                             allmodconfig   gcc  
+i386                              allnoconfig   gcc  
+i386                             allyesconfig   gcc  
+i386         buildonly-randconfig-001-20240326   gcc  
+i386         buildonly-randconfig-002-20240326   clang
+i386         buildonly-randconfig-003-20240326   clang
+i386         buildonly-randconfig-004-20240326   gcc  
+i386         buildonly-randconfig-005-20240326   gcc  
+i386         buildonly-randconfig-006-20240326   gcc  
+i386                                defconfig   clang
+i386                  randconfig-001-20240326   gcc  
+i386                  randconfig-002-20240326   gcc  
+i386                  randconfig-003-20240326   gcc  
+i386                  randconfig-004-20240326   clang
+i386                  randconfig-005-20240326   gcc  
+i386                  randconfig-006-20240326   clang
+i386                  randconfig-011-20240326   clang
+i386                  randconfig-012-20240326   gcc  
+i386                  randconfig-013-20240326   clang
+i386                  randconfig-014-20240326   clang
+i386                  randconfig-015-20240326   clang
+i386                  randconfig-016-20240326   clang
+loongarch                         allnoconfig   gcc  
+loongarch                           defconfig   gcc  
+m68k                              allnoconfig   gcc  
+m68k                                defconfig   gcc  
+microblaze                        allnoconfig   gcc  
+microblaze                          defconfig   gcc  
+mips                              allnoconfig   gcc  
+mips                          malta_defconfig   gcc  
+mips                       rbtx49xx_defconfig   gcc  
+mips                          rm200_defconfig   gcc  
+nios2                             allnoconfig   gcc  
+nios2                               defconfig   gcc  
+powerpc                          allyesconfig   clang
+powerpc                    klondike_defconfig   gcc  
+riscv                            allmodconfig   clang
+riscv                            allyesconfig   clang
+riscv                               defconfig   clang
+s390                              allnoconfig   clang
+s390                             allyesconfig   gcc  
+s390                          debug_defconfig   gcc  
+s390                                defconfig   clang
+sh                               allmodconfig   gcc  
+sh                               allyesconfig   gcc  
+sh                         apsh4a3a_defconfig   gcc  
+sparc                            allmodconfig   gcc  
+sparc64                          allmodconfig   gcc  
+sparc64                          allyesconfig   gcc  
+um                                allnoconfig   clang
+um                                  defconfig   clang
+um                             i386_defconfig   gcc  
+um                           x86_64_defconfig   clang
+x86_64                            allnoconfig   clang
+x86_64                           allyesconfig   clang
+x86_64       buildonly-randconfig-001-20240326   clang
+x86_64       buildonly-randconfig-002-20240326   gcc  
+x86_64       buildonly-randconfig-003-20240326   clang
+x86_64       buildonly-randconfig-004-20240326   gcc  
+x86_64       buildonly-randconfig-005-20240326   gcc  
+x86_64       buildonly-randconfig-006-20240326   gcc  
+x86_64                              defconfig   gcc  
+x86_64                randconfig-001-20240326   gcc  
+x86_64                randconfig-002-20240326   gcc  
+x86_64                randconfig-003-20240326   gcc  
+x86_64                randconfig-004-20240326   clang
+x86_64                randconfig-005-20240326   gcc  
+x86_64                randconfig-006-20240326   clang
+x86_64                randconfig-011-20240326   gcc  
+x86_64                randconfig-012-20240326   clang
+x86_64                randconfig-013-20240326   gcc  
+x86_64                randconfig-014-20240326   gcc  
+x86_64                randconfig-015-20240326   clang
+x86_64                randconfig-016-20240326   clang
+x86_64                randconfig-071-20240326   clang
+x86_64                randconfig-072-20240326   gcc  
+x86_64                randconfig-073-20240326   gcc  
+x86_64                randconfig-074-20240326   gcc  
+x86_64                randconfig-075-20240326   gcc  
+x86_64                randconfig-076-20240326   gcc  
+x86_64                          rhel-8.3-rust   clang
+x86_64                               rhel-8.3   gcc  
+xtensa                    xip_kc705_defconfig   gcc  
 
-This change by itself seems fine to me.
-Reviewed-by: Nhat Pham <nphamcs@gmail.com>
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
