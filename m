@@ -1,57 +1,67 @@
-Return-Path: <linux-kernel+bounces-119214-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-119216-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3405A88C5C1
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 15:50:33 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9385888C5C5
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 15:50:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D41D61F622AA
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 14:50:32 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1A5811C630A2
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 14:50:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 363BA13C8EE;
-	Tue, 26 Mar 2024 14:49:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="aqQzgcLL"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 79B5C13C819;
-	Tue, 26 Mar 2024 14:49:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 76E0513C68E;
+	Tue, 26 Mar 2024 14:50:05 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 959C213C674
+	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 14:50:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711464593; cv=none; b=fY0koFWY5bkXZ458I4zbdcZfzeEt8R2zo2SbDZtBeh4YFxxVrE8KTd2m8AigWIvOkTiAs1TRrWZXxFdEVTwMW26bIUPvK7OOIYCqd9HUEr4Qnbapg2nDiqI2xGqeHz8uQbsTLmCur86VsfU6Ce/+vkTG9a4fIUeQ67IZtCEDOeY=
+	t=1711464605; cv=none; b=XYMOxzyI492c0Vt12/cLA9O+fSsbvxEuy9hE7qNihweNMtWC5XCZtJ1GzrKIL6ID/owtNO+6AIkfhavuJ8sbCy4tgKniWhUF+f+eP1DTN/K3NaBjo/zWa3CAhn2ymx55dbqCdv9MSj/ZYsjGvEngdFPLug/LZ6/WWwIAVhlXNT0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711464593; c=relaxed/simple;
-	bh=ASjwD7pJp1QVPdIY4VaqbkU4p3lWLNQhHSEK1Mb6Lq8=;
+	s=arc-20240116; t=1711464605; c=relaxed/simple;
+	bh=K283dq0rMCMbXlbjFmsIYUEw3mlmXF2plQnChcVoYxw=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=gO1Idqe8SMikuRogbx5FQEWat/GMgFBr4/m+DGX6Hw12LR8tUKkfFVeg1vXtihNSgklrS+QfwJYSzCgGu1faXI4vb3HZ6dER4OiZcK7aghbO/zNcp/lUqcyk1L+fCVdtM42haowotQ9Od3RgxTZtZl/y2RF4Kswlp/+yYC1mnxs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=aqQzgcLL; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 06885C433C7;
-	Tue, 26 Mar 2024 14:49:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711464593;
-	bh=ASjwD7pJp1QVPdIY4VaqbkU4p3lWLNQhHSEK1Mb6Lq8=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=aqQzgcLL7LriJUPU7Yh/2d+4i6zlMg8hXgq61RPx4TPmVPv3xYYNjdOyYgwRMaB2k
-	 r0ovk40QhDtJsrGOOL1Ic85pouWcMAJDgYmzZW7okzlmr93rkIvSw31iD5JE2y+Xte
-	 ZBcVyEaWkldrOerHY3ziPriLLpnf7uPga7Sk1bOkPGFpbj+p3aEraYeDfhyjbtvXcT
-	 OxGi7jiaKD1eefxYV9nPKei5XIDFcHYJAhNNbxWdqHR3Qa5Mj6dU7X2F5gMyHDD0Fp
-	 yVmsyXug6tBhNLuEuVt9wiVtBij++7wQlKRHNqF0N6HkZvbgdkhQb4NGA8wgImHwe2
-	 2XYezfyuKWwpQ==
-Date: Tue, 26 Mar 2024 14:49:48 +0000
-From: Simon Horman <horms@kernel.org>
-To: Bjorn Helgaas <helgaas@kernel.org>
-Cc: Ariel Elior <aelior@marvell.com>, Manish Chopra <manishc@marvell.com>,
-	"David S . Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Bjorn Helgaas <bhelgaas@google.com>
-Subject: Re: [PATCH] qed: Drop useless pci_params.pm_cap
-Message-ID: <20240326144948.GC403975@kernel.org>
-References: <20240325224931.1462051-1-helgaas@kernel.org>
+	 Content-Type:Content-Disposition:In-Reply-To; b=a41CK21z4Efd0Y++uNoE7x1L3Nf+tQBzxZJ02y82jisHHOI885WwgTG5TsUlvyYRZH2LHDR9EVz8PKsaQAISzNfp8IJHDup4z6JUTSSwd9nCweTHCITX1HDiW+wGuMursOgoiqYa2u190delaX9S/31j2bAiO+o+ORw/OUH6VWI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 8BBA1339;
+	Tue, 26 Mar 2024 07:50:36 -0700 (PDT)
+Received: from FVFF77S0Q05N.cambridge.arm.com (FVFF77S0Q05N.cambridge.arm.com [10.1.35.184])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 7C25E3F694;
+	Tue, 26 Mar 2024 07:50:00 -0700 (PDT)
+Date: Tue, 26 Mar 2024 14:49:57 +0000
+From: Mark Rutland <mark.rutland@arm.com>
+To: David Laight <David.Laight@aculab.com>
+Cc: 'Arnd Bergmann' <arnd@arndb.de>, Alexandre Ghiti <alex@ghiti.fr>,
+	Samuel Holland <samuel.holland@sifive.com>,
+	Alexandre Ghiti <alexghiti@rivosinc.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	"linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
+	Albert Ou <aou@eecs.berkeley.edu>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Charlie Jenkins <charlie@rivosinc.com>, guoren <guoren@kernel.org>,
+	Jisheng Zhang <jszhang@kernel.org>,
+	Kemeng Shi <shikemeng@huaweicloud.com>,
+	Matthew Wilcox <willy@infradead.org>,
+	Mike Rapoport <rppt@kernel.org>,
+	Paul Walmsley <paul.walmsley@sifive.com>,
+	Xiao W Wang <xiao.w.wang@intel.com>, Yangyu Chen <cyy@cyyself.name>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] riscv: Define TASK_SIZE_MAX for __access_ok()
+Message-ID: <ZgLglSl94dnWIoqX@FVFF77S0Q05N.cambridge.arm.com>
+References: <CAHVXubjLWZkjSapnsWJzimWg_2swEy7tQ-DQ6ri8yMk8-Qsc-A@mail.gmail.com>
+ <88de4a1a-047e-4be9-b5b0-3e53434dc022@sifive.com>
+ <b5624bba-9917-421b-8ef0-4515d442f80b@ghiti.fr>
+ <f786e02245424e02b38f55ae6b29d14a@AcuMS.aculab.com>
+ <d323eb10-c79b-49cb-94db-9b135e6fd280@ghiti.fr>
+ <ZgGosOiW6mTeSnTL@FVFF77S0Q05N>
+ <eeccbc9f-7544-42c9-964f-2b4c924c2b2f@app.fastmail.com>
+ <ZgHCpgHh1ypSyrtv@FVFF77S0Q05N>
+ <95eb125d-dd54-42f1-b080-938faca6a8a1@app.fastmail.com>
+ <882fc86da89f4adb81570cde3a653e6f@AcuMS.aculab.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -60,16 +70,40 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240325224931.1462051-1-helgaas@kernel.org>
+In-Reply-To: <882fc86da89f4adb81570cde3a653e6f@AcuMS.aculab.com>
 
-On Mon, Mar 25, 2024 at 05:49:31PM -0500, Bjorn Helgaas wrote:
-> From: Bjorn Helgaas <bhelgaas@google.com>
+On Tue, Mar 26, 2024 at 10:19:28AM +0000, David Laight wrote:
+> From: Arnd Bergmann
+> > Sent: 25 March 2024 20:38
+> > 
+> > On Mon, Mar 25, 2024, at 19:30, Mark Rutland wrote:
+> > > On Mon, Mar 25, 2024 at 07:02:13PM +0100, Arnd Bergmann wrote:
+> > >> On Mon, Mar 25, 2024, at 17:39, Mark Rutland wrote:
+> > >
+> > >> If an architecture ignores all the top bits of a virtual address,
+> > >> the largest TASK_SIZE would be higher than the smallest (positive,
+> > >> unsigned) PAGE_OFFSET, so you need TASK_SIZE_MAX to be dynamic.
+> > >
+> > > Agreed, but do we even support such architectures within Linux?
+> > 
+> > Apparently not.
+> > 
+> > On 32-bit architectures, you often have TASK_SIZE==PAGE_OFFSET,
+> > but not on 64-bit -- either the top few bits in PAGE_OFFSET are
+> > always ones, or the user and kernel page tables are completely
+> > separate.
 > 
-> qed_init_pci() used pci_params.pm_cap only to cache the pci_dev.pm_cap.
-> Drop the cache and use pci_dev.pm_cap directly.
-> 
-> Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
+> ISTR that arm64 uses (something like) bit 56 to select kernel
+> with the annoying 'feature' that the high bits can be ignored
+> just to complicate things.
 
-Reviewed-by: Simon Horman <horms@kernel.org>
+Yes, bit 55.
 
+We choose our TASK_SIZE_MAX to be below 2^55, so no kernel address will pass
+access_ok(), and we pre-mangle the TBI bits for userspace so they can't affect
+the check and fail unexpectedly.
+
+So it doesn't actually matter -- leave that aspect to arch code.
+
+Mark.
 
