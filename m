@@ -1,51 +1,51 @@
-Return-Path: <linux-kernel+bounces-118655-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-118658-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5FD9888BDD5
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 10:28:12 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5C8FA88BDD6
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 10:28:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AC463B24C41
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 09:28:09 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6C670B24F40
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 09:28:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1B176129E9E;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AA25A12BE9A;
 	Tue, 26 Mar 2024 09:20:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="oxaV0gA+"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gJi8j1CC"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B46976EB72;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D6EC26F079;
 	Tue, 26 Mar 2024 09:20:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711444842; cv=none; b=uxPTAUAbwu0AHik+ifUnzbFSUAGl62q5kQOBk3fPqKdECewvoUg2B5J6nOrYHZrKUOj93lyWeJrH4yqWhX5X27slGdw58JNE+bqGAQsZqYecviD0V8onPkeMF8r6kG9X0RMGIz5WyHhVZg6aH1/ZlI9DQcKpzxA7k+2S8Ykhnqk=
+	t=1711444842; cv=none; b=T5YoM8UVU8U0Ww5BxHugjggVIuojgGF6zvVZ/MQUcnPEHgR2NhzoOMG8JqCjKStQ78NH8eP51dbh9ppKB5EEoJm4+zhPwEVGKIR7eo2WVa9inkcnzjcwLZSkoLIWen3n4uEYfB6p2O9pCzb1KFIHuqYH8/kw0oDvP1xGVDgB6+o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1711444842; c=relaxed/simple;
-	bh=SGXoMlY26vISdHvZzmwBAflrGzKbs6k3UUldXLz/FXQ=;
+	bh=z8ZWhs/5zvx3G6R8b4jbvSH/4gHgw6KY8ml450z0UoI=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=FINB6xklfVlZFWoUm2wpYRr9FVwRzo4sxxMoCd8rxhAzNFMae7kDSotZjmPLuzqi0xPFmLyZPlswtz8aibxfeBwkE+9yxi/rp1Zlds6skdj2ndoHRLa8D/J2/1p2Io+BUxBH2UVsMLQAEs0e4WZmm4q9h62YUAIWQ4Gp/5wEamc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=oxaV0gA+; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 1D457C4AF6A;
+	 In-Reply-To:To:Cc; b=CMlmAcMqnwPTkNVi6X0tdTFKhi3QGYi5b5AZCoCYYElOnv1lY7Zme1ewZDnvVDLetCJRpRSuXQU/P0YCDunVfWxMBv7xdEdCqi/ChFbUj3vELq6LVdFuHVGERD8G1X7KjcOaS2YmrkcMS6F8BFmKNhW4TjFUmpdeaBoqmUOYk+w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=gJi8j1CC; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 249F9C4AF73;
 	Tue, 26 Mar 2024 09:20:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1711444842;
-	bh=SGXoMlY26vISdHvZzmwBAflrGzKbs6k3UUldXLz/FXQ=;
+	bh=z8ZWhs/5zvx3G6R8b4jbvSH/4gHgw6KY8ml450z0UoI=;
 	h=From:Date:Subject:References:In-Reply-To:To:Cc:Reply-To:From;
-	b=oxaV0gA+blIDy7NtGMmiT78FvpLhQG8dAjPQiWo/NAscT+TE0wZo6BVr6V5txIjMq
-	 eojMvUntQbMZ4r+fO+FkiRO7V1+VaNddj3+q4aeEo8CtTqn/fGwXQxs4C2MWaZWDFs
-	 zt6MuqPbv1z87zdc+14qW1AUe81PAT6P9nKVknzKge5iTHywWwabSXow0W7SPxrAcZ
-	 z+/8/dyPnMhyk3xy4CytQaFinRBRR/wjx8rQba1Yztd+uSKUua0QIblsz92yXOX8Cm
-	 3xXJCRr/M0t3HXkKQ/AFIB9WfC57oSws60syrxf7o4gBBw6xr0uB9usBasy5gVfxjc
-	 31Pz15xVHS0VA==
+	b=gJi8j1CCVHoSsuI2+FweiNX9ydr+T5E0NwFXCk4LsdTuwEyeDKlqW9y8HvSOxvEuk
+	 nSt/v8oUw+un7CnXvf/trnLzit0y6wkPmMhk/pT1Ksg1FtJNO+98oJhRxEdAKfhWkV
+	 927NGqxBP4XE1vH12Z0DL6nvB+zm0XfcE4nI4OlVVigccPnFp98biwo0iumA2x4hKl
+	 CYuvGXTB+qFfiH5fNQ2Do5Y2L4RBz96pGXkDdsTq4GqGg79/y1dtWlPGFY0NQLB4Ia
+	 8t6IONFPbjP0aDS7KKSjC5audAQvbzFMHDd9XT9wMuOX66C80zAGAixx0d7klJq9ma
+	 OHWi4gBQpxPNQ==
 Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0EB76CD11DF;
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1DCD3C54E58;
 	Tue, 26 Mar 2024 09:20:42 +0000 (UTC)
 From: Nikita Shubin via B4 Relay <devnull+nikita.shubin.maquefel.me@kernel.org>
-Date: Tue, 26 Mar 2024 12:18:48 +0300
-Subject: [PATCH v9 21/38] ata: pata_ep93xx: add device tree support
+Date: Tue, 26 Mar 2024 12:18:49 +0300
+Subject: [PATCH v9 22/38] dt-bindings: input: Add Cirrus EP93xx keypad
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -54,19 +54,23 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20240326-ep93xx-v9-21-156e2ae5dfc8@maquefel.me>
+Message-Id: <20240326-ep93xx-v9-22-156e2ae5dfc8@maquefel.me>
 References: <20240326-ep93xx-v9-0-156e2ae5dfc8@maquefel.me>
 In-Reply-To: <20240326-ep93xx-v9-0-156e2ae5dfc8@maquefel.me>
-To: Sergey Shtylyov <s.shtylyov@omp.ru>, 
- Damien Le Moal <dlemoal@kernel.org>, Niklas Cassel <cassel@kernel.org>
-Cc: linux-ide@vger.kernel.org, linux-kernel@vger.kernel.org, 
- Arnd Bergmann <arnd@arndb.de>
+To: Dmitry Torokhov <dmitry.torokhov@gmail.com>, 
+ Rob Herring <robh@kernel.org>, 
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+ Conor Dooley <conor+dt@kernel.org>, 
+ Alexander Sverdlin <alexander.sverdlin@gmail.com>
+Cc: linux-input@vger.kernel.org, devicetree@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>, 
+ Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 X-Mailer: b4 0.13-dev-e3e53
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1711444837; l=5839;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1711444837; l=3131;
  i=nikita.shubin@maquefel.me; s=20230718; h=from:subject:message-id;
- bh=J/0jofmjgTG/7stXmnaHaXQdUGd+YYpzoDObEyCoEqo=;
- b=pfo/KQMvaQ6t/kvSdjzDjCJNquZSwDOBWz9ev+UTH9ruBsKxMmgiRr1JFKM+N973yxAdASELAHvn
- eJsW+7RMBZpM66AKy4pK1y2c0DGyDCPF7u41M3JYcYVxK4GvrGyQ
+ bh=BmV75DVRygMtC4JmBqsWTX4r3uOQf/4IH1RLZhibCAg=;
+ b=aFVKrEHsPQPgsVdie9w6RPYDqHY6i2WrBOlhHxBad4yfDnOuZZ3uO+z6TEimokKaqs1HLUdow8Kw
+ ixGMbC4bAuU1Rxu913yhr609WkmPG/B81AMz9AeuYR8iE2hBzYpR
 X-Developer-Key: i=nikita.shubin@maquefel.me; a=ed25519;
  pk=vqf5YIUJ7BJv3EJFaNNxWZgGuMgDH6rwufTLflwU9ac=
 X-Endpoint-Received: by B4 Relay for nikita.shubin@maquefel.me/20230718
@@ -76,174 +80,107 @@ Reply-To: nikita.shubin@maquefel.me
 
 From: Nikita Shubin <nikita.shubin@maquefel.me>
 
-- add OF ID match table
-- drop platform DMA and filters
-- change DMA setup to OF, so we can defer probe
+Add YAML bindings for ep93xx SoC keypad.
 
-Reviewed-by: Sergey Shtylyov <s.shtylyov@omp.ru>
-Acked-by: Damien Le Moal <dlemoal@kernel.org>
+Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Signed-off-by: Nikita Shubin <nikita.shubin@maquefel.me>
 ---
- drivers/ata/pata_ep93xx.c | 80 +++++++++++++++++++++++++----------------------
- 1 file changed, 42 insertions(+), 38 deletions(-)
+ .../bindings/input/cirrus,ep9307-keypad.yaml       | 87 ++++++++++++++++++++++
+ 1 file changed, 87 insertions(+)
 
-diff --git a/drivers/ata/pata_ep93xx.c b/drivers/ata/pata_ep93xx.c
-index c84a20892f1b..13246a92e29f 100644
---- a/drivers/ata/pata_ep93xx.c
-+++ b/drivers/ata/pata_ep93xx.c
-@@ -44,8 +44,8 @@
- #include <linux/delay.h>
- #include <linux/dmaengine.h>
- #include <linux/ktime.h>
-+#include <linux/mod_devicetable.h>
- 
--#include <linux/platform_data/dma-ep93xx.h>
- #include <linux/soc/cirrus/ep93xx.h>
- 
- #define DRV_NAME	"ep93xx-ide"
-@@ -126,7 +126,7 @@ enum {
- };
- 
- struct ep93xx_pata_data {
--	const struct platform_device *pdev;
-+	struct platform_device *pdev;
- 	void __iomem *ide_base;
- 	struct ata_timing t;
- 	bool iordy;
-@@ -135,9 +135,7 @@ struct ep93xx_pata_data {
- 	unsigned long udma_out_phys;
- 
- 	struct dma_chan *dma_rx_channel;
--	struct ep93xx_dma_data dma_rx_data;
- 	struct dma_chan *dma_tx_channel;
--	struct ep93xx_dma_data dma_tx_data;
- };
- 
- static void ep93xx_pata_clear_regs(void __iomem *base)
-@@ -637,20 +635,13 @@ static void ep93xx_pata_release_dma(struct ep93xx_pata_data *drv_data)
- 	}
- }
- 
--static bool ep93xx_pata_dma_filter(struct dma_chan *chan, void *filter_param)
-+static int ep93xx_pata_dma_init(struct ep93xx_pata_data *drv_data)
- {
--	if (ep93xx_dma_chan_is_m2p(chan))
--		return false;
--
--	chan->private = filter_param;
--	return true;
--}
--
--static void ep93xx_pata_dma_init(struct ep93xx_pata_data *drv_data)
--{
--	const struct platform_device *pdev = drv_data->pdev;
-+	struct platform_device *pdev = drv_data->pdev;
-+	struct device *dev = &pdev->dev;
- 	dma_cap_mask_t mask;
- 	struct dma_slave_config conf;
-+	int ret;
- 
- 	dma_cap_zero(mask);
- 	dma_cap_set(DMA_SLAVE, mask);
-@@ -660,22 +651,16 @@ static void ep93xx_pata_dma_init(struct ep93xx_pata_data *drv_data)
- 	 * to request only one channel, and reprogram it's direction at
- 	 * start of new transfer.
- 	 */
--	drv_data->dma_rx_data.port = EP93XX_DMA_IDE;
--	drv_data->dma_rx_data.direction = DMA_DEV_TO_MEM;
--	drv_data->dma_rx_data.name = "ep93xx-pata-rx";
--	drv_data->dma_rx_channel = dma_request_channel(mask,
--		ep93xx_pata_dma_filter, &drv_data->dma_rx_data);
--	if (!drv_data->dma_rx_channel)
--		return;
-+	drv_data->dma_rx_channel = dma_request_chan(dev, "rx");
-+	if (IS_ERR(drv_data->dma_rx_channel))
-+		return dev_err_probe(dev, PTR_ERR(drv_data->dma_rx_channel),
-+				     "rx DMA setup failed\n");
- 
--	drv_data->dma_tx_data.port = EP93XX_DMA_IDE;
--	drv_data->dma_tx_data.direction = DMA_MEM_TO_DEV;
--	drv_data->dma_tx_data.name = "ep93xx-pata-tx";
--	drv_data->dma_tx_channel = dma_request_channel(mask,
--		ep93xx_pata_dma_filter, &drv_data->dma_tx_data);
--	if (!drv_data->dma_tx_channel) {
--		dma_release_channel(drv_data->dma_rx_channel);
--		return;
-+	drv_data->dma_tx_channel = dma_request_chan(&pdev->dev, "tx");
-+	if (IS_ERR(drv_data->dma_tx_channel)) {
-+		ret = dev_err_probe(dev, PTR_ERR(drv_data->dma_tx_channel),
-+				    "tx DMA setup failed\n");
-+		goto fail_release_rx;
- 	}
- 
- 	/* Configure receive channel direction and source address */
-@@ -683,10 +668,10 @@ static void ep93xx_pata_dma_init(struct ep93xx_pata_data *drv_data)
- 	conf.direction = DMA_DEV_TO_MEM;
- 	conf.src_addr = drv_data->udma_in_phys;
- 	conf.src_addr_width = DMA_SLAVE_BUSWIDTH_4_BYTES;
--	if (dmaengine_slave_config(drv_data->dma_rx_channel, &conf)) {
--		dev_err(&pdev->dev, "failed to configure rx dma channel\n");
--		ep93xx_pata_release_dma(drv_data);
--		return;
-+	ret = dmaengine_slave_config(drv_data->dma_rx_channel, &conf);
-+	if (ret) {
-+		dev_err_probe(dev, ret, "failed to configure rx dma channel");
-+		goto fail_release_dma;
- 	}
- 
- 	/* Configure transmit channel direction and destination address */
-@@ -694,10 +679,20 @@ static void ep93xx_pata_dma_init(struct ep93xx_pata_data *drv_data)
- 	conf.direction = DMA_MEM_TO_DEV;
- 	conf.dst_addr = drv_data->udma_out_phys;
- 	conf.dst_addr_width = DMA_SLAVE_BUSWIDTH_4_BYTES;
--	if (dmaengine_slave_config(drv_data->dma_tx_channel, &conf)) {
--		dev_err(&pdev->dev, "failed to configure tx dma channel\n");
--		ep93xx_pata_release_dma(drv_data);
-+	ret = dmaengine_slave_config(drv_data->dma_tx_channel, &conf);
-+	if (ret) {
-+		dev_err_probe(dev, ret, "failed to configure tx dma channel");
-+		goto fail_release_dma;
- 	}
+diff --git a/Documentation/devicetree/bindings/input/cirrus,ep9307-keypad.yaml b/Documentation/devicetree/bindings/input/cirrus,ep9307-keypad.yaml
+new file mode 100644
+index 000000000000..a0d2460c55ab
+--- /dev/null
++++ b/Documentation/devicetree/bindings/input/cirrus,ep9307-keypad.yaml
+@@ -0,0 +1,87 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/input/cirrus,ep9307-keypad.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
 +
-+	return 0;
++title: Cirrus ep93xx keypad
 +
-+fail_release_rx:
-+	dma_release_channel(drv_data->dma_rx_channel);
-+fail_release_dma:
-+	ep93xx_pata_release_dma(drv_data);
++maintainers:
++  - Alexander Sverdlin <alexander.sverdlin@gmail.com>
 +
-+	return ret;
- }
- 
- static void ep93xx_pata_dma_start(struct ata_queued_cmd *qc)
-@@ -954,7 +949,9 @@ static int ep93xx_pata_probe(struct platform_device *pdev)
- 	drv_data->ide_base = ide_base;
- 	drv_data->udma_in_phys = mem_res->start + IDEUDMADATAIN;
- 	drv_data->udma_out_phys = mem_res->start + IDEUDMADATAOUT;
--	ep93xx_pata_dma_init(drv_data);
-+	err = ep93xx_pata_dma_init(drv_data);
-+	if (err)
-+		return err;
- 
- 	/* allocate host */
- 	host = ata_host_alloc(&pdev->dev, 1);
-@@ -1021,9 +1018,16 @@ static void ep93xx_pata_remove(struct platform_device *pdev)
- 	ep93xx_ide_release_gpio(pdev);
- }
- 
-+static const struct of_device_id ep93xx_pata_of_ids[] = {
-+	{ .compatible = "cirrus,ep9312-pata" },
-+	{ /* sentinel */ }
-+};
-+MODULE_DEVICE_TABLE(of, ep93xx_pata_of_ids);
++allOf:
++  - $ref: /schemas/input/matrix-keymap.yaml#
 +
- static struct platform_driver ep93xx_pata_platform_driver = {
- 	.driver = {
- 		.name = DRV_NAME,
-+		.of_match_table = ep93xx_pata_of_ids,
- 	},
- 	.probe = ep93xx_pata_probe,
- 	.remove_new = ep93xx_pata_remove,
++description:
++  The KPP is designed to interface with a keypad matrix with 2-point contact
++  or 3-point contact keys. The KPP is designed to simplify the software task
++  of scanning a keypad matrix. The KPP is capable of detecting, debouncing,
++  and decoding one or multiple keys pressed simultaneously on a keypad.
++
++properties:
++  compatible:
++    oneOf:
++      - const: cirrus,ep9307-keypad
++      - items:
++          - enum:
++              - cirrus,ep9312-keypad
++              - cirrus,ep9315-keypad
++          - const: cirrus,ep9307-keypad
++
++  reg:
++    maxItems: 1
++
++  interrupts:
++    maxItems: 1
++
++  clocks:
++    maxItems: 1
++
++  debounce-delay-ms:
++    description: |
++          Time in microseconds that key must be pressed or
++          released for state change interrupt to trigger.
++
++  cirrus,prescale:
++    description: row/column counter pre-scaler load value
++    $ref: /schemas/types.yaml#/definitions/uint16
++    maximum: 1023
++
++required:
++  - compatible
++  - reg
++  - interrupts
++  - clocks
++  - linux,keymap
++
++unevaluatedProperties: false
++
++examples:
++  - |
++    #include <dt-bindings/input/input.h>
++    #include <dt-bindings/clock/cirrus,ep9301-syscon.h>
++    keypad@800f0000 {
++        compatible = "cirrus,ep9307-keypad";
++        reg = <0x800f0000 0x0c>;
++        interrupt-parent = <&vic0>;
++        interrupts = <29>;
++        clocks = <&eclk EP93XX_CLK_KEYPAD>;
++        pinctrl-names = "default";
++        pinctrl-0 = <&keypad_default_pins>;
++        linux,keymap = <KEY_UP>,
++                       <KEY_DOWN>,
++                       <KEY_VOLUMEDOWN>,
++                       <KEY_HOME>,
++                       <KEY_RIGHT>,
++                       <KEY_LEFT>,
++                       <KEY_ENTER>,
++                       <KEY_VOLUMEUP>,
++                       <KEY_F6>,
++                       <KEY_F8>,
++                       <KEY_F9>,
++                       <KEY_F10>,
++                       <KEY_F1>,
++                       <KEY_F2>,
++                       <KEY_F3>,
++                       <KEY_POWER>;
++    };
 
 -- 
 2.41.0
