@@ -1,84 +1,66 @@
-Return-Path: <linux-kernel+bounces-118770-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-118772-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B556088BF1B
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 11:17:17 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id ED98188BF1F
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 11:17:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 59D0830685B
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 10:17:16 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A8B6130685B
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 10:17:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 681965D480;
-	Tue, 26 Mar 2024 10:17:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=sipsolutions.net header.i=@sipsolutions.net header.b="xn1P/ON/"
-Received: from sipsolutions.net (s3.sipsolutions.net [168.119.38.16])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7553A6EB7D;
+	Tue, 26 Mar 2024 10:17:30 +0000 (UTC)
+Received: from www262.sakura.ne.jp (www262.sakura.ne.jp [202.181.97.72])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9AA39EAF6;
-	Tue, 26 Mar 2024 10:17:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=168.119.38.16
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6D18D6E614
+	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 10:17:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.181.97.72
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711448230; cv=none; b=rRTglPNTEuxAOZ4rpzRoP9iV9M5yTDuAP6zaWJDztSyRETqPloJENa1T2c38pypyr+5ISxEXCq1vfL8bm7db6jgpEwKEZ1R/jtM/HEQ5DgEA0dVAekQAind3ZavYKlOXCB/giuMMTpIjGaNytqMf5echwE30YCrgc7I8hoPsWQY=
+	t=1711448250; cv=none; b=f59PEz3pX9ImLZ/k6SeQ4FhAQNmZYkvSquXpzkcFtAMwMvWxWP9DBUmtbuZYEEzwEsCM9Fk7T+cBhUoM9ohdWb24vMeg4xQ1uOGlOOTSPTbNDoeanBPQR+stJ0WikOzahNSuM4fbgwwAJw19n1mF2GgMPRsFywjHhl1r1qr4GEo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711448230; c=relaxed/simple;
-	bh=pdDzJ4I1i10nF0ugfqTYvU9sGjwwKUbQsBGjybZ+7q4=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=M9JvaHxi317Jve+4Kvq9WxNMbXp7Be/0oYzMbICcUCYzSCV/NyCW0SKjCPdtYW9cnZzqgshbCyimjjrn2f1UtLSJdsJX7iGLOD+6cZhW6lQojw9WUvQP4yac6GlG7epoq9auEOvHWxtzZ/sRq0tHDffad9admSeq2qFNAHaMwNY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sipsolutions.net; spf=pass smtp.mailfrom=sipsolutions.net; dkim=pass (2048-bit key) header.d=sipsolutions.net header.i=@sipsolutions.net header.b=xn1P/ON/; arc=none smtp.client-ip=168.119.38.16
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sipsolutions.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sipsolutions.net
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=sipsolutions.net; s=mail; h=MIME-Version:Content-Transfer-Encoding:
-	Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender
-	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
-	Resent-Cc:Resent-Message-ID; bh=pdDzJ4I1i10nF0ugfqTYvU9sGjwwKUbQsBGjybZ+7q4=;
-	t=1711448228; x=1712657828; b=xn1P/ON/G7JzntbIFaE/yxzQ3kNCvjqKRKyK0ju8LI8Ntm8
-	CFm5+VgPEnxgsDGjIZXoCYrg96AcuQU9i+Z6d+VOxrVi1D1tBo+nzoAUpm3Oza+K2ZNft3AWR8ztc
-	5UyD+dsKV1NRovCtOABD9pBhnW3M/YSxQVw/UrD8b0o6BeawcLHxl2Lqxerr1ewfXn0nJJa/OhJhL
-	/1ivTposcWAQD9/bnWk13kMBWjeFqMUq9nj5rIv0XNERGarDtT9YRnyroGze125FYG5fVXcdZ1qBj
-	6fZjhoatJEzOvMXoTf+zypQGBWCHHfWhxX/enbO/gmnm1KvNFs6ulydUo8bsLohw==;
-Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
-	(Exim 4.97)
-	(envelope-from <johannes@sipsolutions.net>)
-	id 1rp3rY-0000000FdUT-0ht8;
-	Tue, 26 Mar 2024 11:17:00 +0100
-Message-ID: <3088ef70d96eaec0f33c4588581cb0f23a790b05.camel@sipsolutions.net>
-Subject: Re: [PATCH] kunit: configs: Enable CONFIG_DAMON_DBGFS_DEPRECATED
- for --alltests
-From: Johannes Berg <johannes@sipsolutions.net>
-To: David Gow <davidgow@google.com>, SeongJae Park <sj@kernel.org>, Rae Moar
-	 <rmoar@google.com>, Mark Brown <broonie@kernel.org>
-Cc: "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>, 
-	"kunit-dev@googlegroups.com"
-	 <kunit-dev@googlegroups.com>, "linux-kernel@vger.kernel.org"
-	 <linux-kernel@vger.kernel.org>, Shuah Khan <skhan@linuxfoundation.org>
-Date: Tue, 26 Mar 2024 11:16:58 +0100
-In-Reply-To: <20240326100740.178594-1-davidgow@google.com>
-References: <20240326100740.178594-1-davidgow@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.50.4 (3.50.4-1.fc39) 
+	s=arc-20240116; t=1711448250; c=relaxed/simple;
+	bh=fYqDdIXapUBE0MxV0rIK+zXf297Qb+0D5VWup0Hvs9E=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=hPE/5xdhL5SoPMmwB5/4jkcOKv+1LqSJ7jARXWVlK1cuTs1xcnaEzixE+fKeUEnZMuoAV8F5DX8FpEY0JoYq2ko59oCPKfZsktYnmJ/6AGnFSPzFYUT4K0/UMl/Vhzw4+j19ho3N6CABJsfgjwR5Iz4C4STry7TrghKV0COU0N4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=I-love.SAKURA.ne.jp; spf=pass smtp.mailfrom=I-love.SAKURA.ne.jp; arc=none smtp.client-ip=202.181.97.72
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=I-love.SAKURA.ne.jp
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=I-love.SAKURA.ne.jp
+Received: from fsav314.sakura.ne.jp (fsav314.sakura.ne.jp [153.120.85.145])
+	by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 42QAHIBd086764;
+	Tue, 26 Mar 2024 19:17:18 +0900 (JST)
+	(envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
+Received: from www262.sakura.ne.jp (202.181.97.72)
+ by fsav314.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav314.sakura.ne.jp);
+ Tue, 26 Mar 2024 19:17:18 +0900 (JST)
+X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav314.sakura.ne.jp)
+Received: from [192.168.1.6] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
+	(authenticated bits=0)
+	by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 42QAHIFa086756
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NO);
+	Tue, 26 Mar 2024 19:17:18 +0900 (JST)
+	(envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
+Message-ID: <3491cd0a-369c-4827-95b0-eef04bad64e9@I-love.SAKURA.ne.jp>
+Date: Tue, 26 Mar 2024 19:17:18 +0900
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-malware-bazaar: not-scanned
+User-Agent: Mozilla Thunderbird
+Subject: Re: [syzbot] [mm?] WARNING: refcount bug in __reset_page_owner
+Content-Language: en-US
+To: syzbot <syzbot+98c1a1753a0731df2dd4@syzkaller.appspotmail.com>,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+References: <000000000000015b940614004701@google.com>
+From: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+In-Reply-To: <000000000000015b940614004701@google.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Tue, 2024-03-26 at 10:07 +0000, David Gow wrote:
->=20
-> Johannes: Does this conflict with the CONFIG_NETDEVICES / CONFIG_WLAN
-> fixes to all_tests.config? I'd assume not, but I'm happy to take them
-> via KUnit if you'd prefer anyway.
->=20
+#syz fix: mm,page_owner: Fix refcount imbalance
 
-I already have it in my tree, so I guess I'd prefer it to stay, but it
-also doesn't conflict at all, I added the lines before the existing
-wireless ones.
-
-johannes
 
