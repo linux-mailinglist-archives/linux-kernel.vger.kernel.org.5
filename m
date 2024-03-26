@@ -1,143 +1,123 @@
-Return-Path: <linux-kernel+bounces-119149-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-119148-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id A6A5B88C4D8
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 15:14:29 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CB6E188C4D5
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 15:14:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D17B91C61ABE
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 14:14:27 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4CC70B24FDE
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 14:14:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 74ECE12D21E;
-	Tue, 26 Mar 2024 14:13:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD4C212D20B;
+	Tue, 26 Mar 2024 14:13:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b="IfAd/QhD";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="JfDwFEmQ"
-Received: from fout3-smtp.messagingengine.com (fout3-smtp.messagingengine.com [103.168.172.146])
+	dkim=pass (2048-bit key) header.d=protonmail.com header.i=@protonmail.com header.b="DGcEKE4R"
+Received: from mail-4324.protonmail.ch (mail-4324.protonmail.ch [185.70.43.24])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F1CC012D1E9;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2573412D1EB;
 	Tue, 26 Mar 2024 14:13:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.146
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.70.43.24
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711462391; cv=none; b=AgnOgmrrDUqGScoOja6GPsRrfss2NketQXl8Uw6KBsFhUavl2zwI6mZq3Q0XkWvb3KUylRjYQ+cM0Fo9bilHRkk8wOsgT3XdmDBdTlfmkfddmRHi+w5gwMGdCIO7eVvqKGrN/6F60T5x44AWunMhTuAnQZk61Vr4h0G9YaAsv4w=
+	t=1711462391; cv=none; b=H5lbCzdFKQCxZmPweM0eaKnoq+loN79qHxpyQghhWbQSOlzErjor1hFhpjDXS6G4rRLe/uc8TlA93jLmnobTHO0bsQqNiXsNHM9k4U5+D0z/oO3cZx5x3Qj3JtGLeufyBmAibHw/Dhd6LHONNEQ82RkHo3WK0jsSeCGuBYmvcGo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1711462391; c=relaxed/simple;
-	bh=C07QoGZwFIqiiGLDYtIT/bDm7g2eW60WzjZK/2lcL1o=;
-	h=MIME-Version:Message-Id:In-Reply-To:References:Date:From:To:Cc:
-	 Subject:Content-Type; b=ByZvyNI5SOS03lp+RedS25cWWM26I8JBomJwzzWEx46+5eXJkXZ4cBaU/TJDDDbvqhZRHZ42tllryR2dEnH/rVw+l6rHyePdoDChre1VRRxkoUKwKzJUF+MNaorMFskD0nN60z7d22H71JYTcsJDxonRzAjMBFCRiXfpVZh87hw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de; spf=pass smtp.mailfrom=arndb.de; dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b=IfAd/QhD; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=JfDwFEmQ; arc=none smtp.client-ip=103.168.172.146
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arndb.de
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-	by mailfout.nyi.internal (Postfix) with ESMTP id 0A94A13800C7;
-	Tue, 26 Mar 2024 10:13:08 -0400 (EDT)
-Received: from imap51 ([10.202.2.101])
-  by compute5.internal (MEProxy); Tue, 26 Mar 2024 10:13:08 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
-	:cc:content-type:content-type:date:date:from:from:in-reply-to
-	:in-reply-to:message-id:mime-version:references:reply-to:subject
-	:subject:to:to; s=fm1; t=1711462388; x=1711548788; bh=qwEl2RbjTY
-	FZ3+lGDXzFX22ORlHVarQEQDkkqeWQ6+M=; b=IfAd/QhDJkneIhSG1PMAHOgbo/
-	mcVTxuJiD/yHg9YhAnYnZUftiTZkSefCnZODbx157mbtsl6c9KOoEEJw5GVPRs1t
-	4pKyrlXc3PE5L1IOIP/0QKVBGs2yNstleCl35baKMMtsQLa/DCZ9omCnFOXrxM+y
-	YaYt9yA5nphdbfUHbwQZtnDC0awtsvnxQpY+mpuYRV5vowZLKiTpjW2SxhNU64J9
-	QEujTdGbAPcin+SRXLf4b3DAFEoCsr1einZXn7xfTAyugJwP1Y7DB1BCHA4QcLNU
-	W3mYGxECmUf0jcgzAIchIFVXoDxcpt1cuObldDCcZ8Gj/2s0oXUvqlT/B0Gw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-	fm2; t=1711462388; x=1711548788; bh=qwEl2RbjTYFZ3+lGDXzFX22ORlHV
-	arQEQDkkqeWQ6+M=; b=JfDwFEmQ8TcsCAzZifaUtTGemxt/kA2wS6Wxfey7Yrya
-	l1oV15QGJN9tspkG4Jvphm8fXiHE1lt5cDzZ25+/63XjMn6rFfQU+eeRl4nU24hB
-	X0tKZ5Nu46ni4fT5FqyWmxwJ3xI6uaVtB2N4O7Lbw1bTI5p8da/L6Yodjz8J+R8q
-	ogHIG+CeJOu0FnKMAf/qjCuXVgtbbVxzKWXtsf7heSNO1o4a/4ikWT1IunJsfH9V
-	/7xEQoh7k5cXmeRO0CP4Xce0r/kEMyXQC98+AlkvWtY9rdipL2M8JQ1zJ4NdW4Ww
-	ffU0Tz3dJ0CCmJUX5g/Vs/d8eJJzaG4+1xVcg4Z3jg==
-X-ME-Sender: <xms:89cCZpuStysZle_lcQ6e_39Ge5HGVApzWhrBgJRpBZ7vqbresYYPXA>
-    <xme:89cCZifKumP_QBFxyJCgRHqsmRNzZ787fJzS-XrEjRDlnMRPIRio5ynT7nwaMU-A9
-    jK-uuXPoZOIDizT5RE>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledruddufedgieduucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepofgfggfkjghffffhvfevufgtsehttdertderredtnecuhfhrohhmpedftehr
-    nhguuceuvghrghhmrghnnhdfuceorghrnhgusegrrhhnuggsrdguvgeqnecuggftrfgrth
-    htvghrnhepffehueegteeihfegtefhjefgtdeugfegjeelheejueethfefgeeghfektdek
-    teffnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheprg
-    hrnhgusegrrhhnuggsrdguvg
-X-ME-Proxy: <xmx:89cCZsx0e212wvfgtlWiXcYU5tqkhNAczCkNZP9wfA0EO_X-u8xnVQ>
-    <xmx:89cCZgNvc2GXUQRxPl1yyEz95GvFxNjCeFcRcPNikptFpkl7RNlJhQ>
-    <xmx:89cCZp-66mD18GWucmFFBGYq9XMM7lTwSeMdRgUXwKURHsg9kvBKUw>
-    <xmx:89cCZgXsFpVb_mBNe5-9MAf1AXATaTe_lx4ptHKhkMWsgMY3wgHsLQ>
-    <xmx:9NcCZpzUasImbbYFeND7Zcn2AAUpgwINPS0QeIIbxpl3ss3JyIsxjw>
-Feedback-ID: i56a14606:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-	id 96BB1B6008F; Tue, 26 Mar 2024 10:13:07 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.11.0-alpha0-328-gc998c829b7-fm-20240325.002-gc998c829
+	bh=iqCJ/OaHyezop56ox/r8NGwkQ6lD2JshOlCSeJwb0rc=;
+	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=nsU9jjxyllTRE4v9OWC7ji1CDoYnopTbcu4ZuZgEezS/pc6W23CiTLqHmJiDtM6BkBwk4qVMiwunJToRNVUZVlSsKr45n3CJRZUZrfVHbQFfmd6/osA8t/KQiQNOaYcxk05Eo3B8PvLd4SEzRG6a+4BDcxQY6XNZ66bXF+hCMrk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=protonmail.com; spf=pass smtp.mailfrom=protonmail.com; dkim=pass (2048-bit key) header.d=protonmail.com header.i=@protonmail.com header.b=DGcEKE4R; arc=none smtp.client-ip=185.70.43.24
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=protonmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=protonmail.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
+	s=protonmail3; t=1711462385; x=1711721585;
+	bh=unSapoCM0+7NQ0sQ0bqtuuuIegjLMwC+z3pRdJSUAbs=;
+	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
+	 Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
+	 Message-ID:BIMI-Selector;
+	b=DGcEKE4RdrpD3rlcfdpvfB61N2nBVO6I06lh14dWPreOc4kr6b/2qU68iwKVnVRTN
+	 4lyHWA037dbCKjlPZPRAbcv/DIYdDRexmw5RZQMTcCh0nBPzcg3OhC7wlWqxeDxbci
+	 eWmKnnqGJE/6JQIajST4zjQ1yGVuYcYU0he1UjeAK6fz0INU5O/jEle45E4RPpnSFA
+	 HF3EnZiSngk4LdYggxEodXQL5hLx6rdqMZWcuWFLSVfCPR8nII0HvEHQo1Nt6um+CU
+	 fcGL89N/06d0YinUDlQIPkiDlY/QOpzpKXhgpSPjCYsf3IVcqFbWkBfv5LUQvbxYRg
+	 5Sm3uMbnjj5CA==
+Date: Tue, 26 Mar 2024 14:12:50 +0000
+To: linux-kernel@vger.kernel.org
+From: Raymond Hackley <raymondhackley@protonmail.com>
+Cc: Bjorn Andersson <andersson@kernel.org>, Konrad Dybcio <konrad.dybcio@linaro.org>, Rob Herring <robh+dt@kernel.org>, Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, Stephan Gerhold <stephan@gerhold.net>, Nikita Travkin <nikita@trvn.ru>, linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org, ~postmarketos/upstreaming@lists.sr.ht
+Subject: [PATCH 1/2] arm64: dts: qcom: msm8916/8216-samsung-fortuna: Add samsung,fortuna binding
+Message-ID: <20240326141222.200452-2-raymondhackley@protonmail.com>
+In-Reply-To: <20240326141222.200452-1-raymondhackley@protonmail.com>
+References: <20240326141222.200452-1-raymondhackley@protonmail.com>
+Feedback-ID: 49437091:user:proton
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-Id: <5fb74d31-a5f7-4fc0-96f0-f69158829df3@app.fastmail.com>
-In-Reply-To: <2024032349-corporate-detached-0dc9@gregkh>
-References: <20240322173930.947963-1-arnd@kernel.org>
- <2024032349-corporate-detached-0dc9@gregkh>
-Date: Tue, 26 Mar 2024 15:12:46 +0100
-From: "Arnd Bergmann" <arnd@arndb.de>
-To: "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>,
- "Arnd Bergmann" <arnd@kernel.org>
-Cc: "Luis Chamberlain" <mcgrof@kernel.org>, linux-modules@vger.kernel.org,
- "Rafael J . Wysocki" <rafael@kernel.org>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] [v2] module: don't ignore sysfs_create_link() failures
-Content-Type: text/plain
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-On Sat, Mar 23, 2024, at 17:50, Greg Kroah-Hartman wrote:
-> On Fri, Mar 22, 2024 at 06:39:11PM +0100, Arnd Bergmann wrote:
->> diff --git a/drivers/base/bus.c b/drivers/base/bus.c
->> index daee55c9b2d9..7ef75b60d331 100644
->> --- a/drivers/base/bus.c
->> +++ b/drivers/base/bus.c
->> @@ -674,7 +674,12 @@ int bus_add_driver(struct device_driver *drv)
->>  		if (error)
->>  			goto out_del_list;
->>  	}
->> -	module_add_driver(drv->owner, drv);
->> +	error = module_add_driver(drv->owner, drv);
->> +	if (error) {
->> +		printk(KERN_ERR "%s: failed to create module links for %s\n",
->> +			__func__, drv->name);
->> +		goto out_del_list;
->
-> Don't we need to walk back the driver_attach() call here if this fails?
+Add common binding samsung,fortuna used by the following
+Samsung Galaxy Grand Prime devices:
+- SM-G530FZ (msm8916-samsung-grandprimelte)
+- SM-G530H  (msm8216-samsung-fortuna3g)
+- SM-G530W  (msm8916-gprimeltecan)
 
-Yes, fixed now. There are still some other calls right after
-it that print an error but don't cause bus_add_driver() to fail
-though. We may want to add similar unwinding there, but that
-feels like it should be a separate patch.
+Signed-off-by: Raymond Hackley <raymondhackley@protonmail.com>
+---
+ arch/arm64/boot/dts/qcom/msm8216-samsung-fortuna3g.dts     | 2 +-
+ arch/arm64/boot/dts/qcom/msm8916-samsung-gprimeltecan.dts  | 2 +-
+ arch/arm64/boot/dts/qcom/msm8916-samsung-grandprimelte.dts | 2 +-
+ 3 files changed, 3 insertions(+), 3 deletions(-)
 
->>  
->>  	if (!mk)
->> -		return;
->> +		return 0;
->> +
->> +	ret = sysfs_create_link(&drv->p->kobj, &mk->kobj, "module");
->> +	if (ret && ret != -EEXIST)
->
-> Why would EEXIST happen here?  How can this be called twice?
->
+diff --git a/arch/arm64/boot/dts/qcom/msm8216-samsung-fortuna3g.dts b/arch/=
+arm64/boot/dts/qcom/msm8216-samsung-fortuna3g.dts
+index 366914be7d53..877fd2d7bb57 100644
+--- a/arch/arm64/boot/dts/qcom/msm8216-samsung-fortuna3g.dts
++++ b/arch/arm64/boot/dts/qcom/msm8216-samsung-fortuna3g.dts
+@@ -6,6 +6,6 @@
+=20
+ / {
+ =09model =3D "Samsung Galaxy Grand Prime (SM-G530H)";
+-=09compatible =3D "samsung,fortuna3g", "qcom,msm8916";
++=09compatible =3D "samsung,fortuna3g", "samsung,fortuna", "qcom,msm8916";
+ =09chassis-type =3D "handset";
+ };
+diff --git a/arch/arm64/boot/dts/qcom/msm8916-samsung-gprimeltecan.dts b/ar=
+ch/arm64/boot/dts/qcom/msm8916-samsung-gprimeltecan.dts
+index 9d65fa58ba92..8c7d71e05da3 100644
+--- a/arch/arm64/boot/dts/qcom/msm8916-samsung-gprimeltecan.dts
++++ b/arch/arm64/boot/dts/qcom/msm8916-samsung-gprimeltecan.dts
+@@ -6,7 +6,7 @@
+=20
+ / {
+ =09model =3D "Samsung Galaxy Grand Prime (SM-G530W)";
+-=09compatible =3D "samsung,gprimeltecan", "qcom,msm8916";
++=09compatible =3D "samsung,gprimeltecan", "samsung,fortuna", "qcom,msm8916=
+";
+ =09chassis-type =3D "handset";
+=20
+ =09reserved-memory {
+diff --git a/arch/arm64/boot/dts/qcom/msm8916-samsung-grandprimelte.dts b/a=
+rch/arm64/boot/dts/qcom/msm8916-samsung-grandprimelte.dts
+index a66ce4b13547..1781e04a25c9 100644
+--- a/arch/arm64/boot/dts/qcom/msm8916-samsung-grandprimelte.dts
++++ b/arch/arm64/boot/dts/qcom/msm8916-samsung-grandprimelte.dts
+@@ -6,7 +6,7 @@
+=20
+ / {
+ =09model =3D "Samsung Galaxy Grand Prime (SM-G530FZ)";
+-=09compatible =3D "samsung,grandprimelte", "qcom,msm8916";
++=09compatible =3D "samsung,grandprimelte", "samsung,fortuna", "qcom,msm891=
+6";
+ =09chassis-type =3D "handset";
+ };
+=20
+--=20
+2.39.2
 
-My impression was that the lack of error handling and the
-comment was ab out a case where that might happen
-intentionally. I've removed it now as I couldn't find any
-evidence that this is really needed. I suppose we would
-find out in testing if we do.
 
-     Arnd
 
