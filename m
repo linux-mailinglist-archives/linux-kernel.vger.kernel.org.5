@@ -1,253 +1,170 @@
-Return-Path: <linux-kernel+bounces-119392-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-119394-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id D88C988C81E
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 16:54:52 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id C3C8F88C823
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 16:55:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EAFE51C647AF
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 15:54:51 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3950D1F802BF
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 15:55:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 992C413CC7F;
-	Tue, 26 Mar 2024 15:52:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6309F13D242;
+	Tue, 26 Mar 2024 15:53:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=denx.de header.i=@denx.de header.b="bILQm8jB"
-Received: from phobos.denx.de (phobos.denx.de [85.214.62.61])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=fail reason="signature verification failed" (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="bZhX3a6w"
+Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C25C613CABC;
-	Tue, 26 Mar 2024 15:52:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=85.214.62.61
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7CFC713CFAC
+	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 15:53:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711468345; cv=none; b=nTqAh0/sOmffJVs1nJFXmDmoyZfKohHUYW+07GtozamHCm55cqqNoP3Mdxzw3vwcYOrGGa9zwnkwAg8waMKUw09YtmA1yvxlvGi2Cf/ENlKWBMqAvYcGZMkMlXzCDzn6vwmlQZiuFYedDdAIGsPNrONPJ0h1wMsRcdLEIbWHlbQ=
+	t=1711468393; cv=none; b=pqNN6xQrR8pp1muuXvOdNmjvrlDoNMXZk82T+E6PMB1Q4NTlIoKhyfXNtpr1Ibgk1BmEfGiNGkWFpscaXXU2OrrKbI/SVo7/Ck1nyxInLvu+XKSE/JuvM3r2+b1Ki0qPaMIQZS83epBhwGocAiKN1oCIMwVvpn4gii14htJJwUs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711468345; c=relaxed/simple;
-	bh=Zyzm4+ik2ZIZ+RRLqBpLsZ49PhPd8h/lVV8304aAQE8=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=j9aFQORdTip0P26d/hvHUswPr61oSD41BEFQ8xa56NZ3VaL3+v5YXMvoGVoQEdMVNjY5SfeSH+5Io+J32n3wh8BqojbGwY1gl7Sy/ySJxWtFG4ADhHmzpgDh1PfAcL+WFA56F5TfGHlH/BVWQur40QzTa564VDzTGn4zwq5NIp8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=denx.de; spf=pass smtp.mailfrom=denx.de; dkim=pass (2048-bit key) header.d=denx.de header.i=@denx.de header.b=bILQm8jB; arc=none smtp.client-ip=85.214.62.61
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=denx.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=denx.de
-Received: from wsk (85-222-111-42.dynamic.chello.pl [85.222.111.42])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+	s=arc-20240116; t=1711468393; c=relaxed/simple;
+	bh=CMYGhs1gXEUfzVLwLKQFOQK6SPtPUQZCTfrV/Hgx2GU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=aNU/OVV6MQWjf8o4yyS40iE8HGZMytyFpRqZyGIiAFa7aIWDLEypWPaSfg84OpjOAh/uXsIhVbG8eN8oUqwChyXSsoH/tbkqYP1f/TcoYX8JnJoeWMyzm/YWZqLa8UGP/1+rN3KBRS6MGQucLjYieJDejbyn1yz918UYV+x0Wt4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=bZhX3a6w; arc=none smtp.client-ip=65.109.113.108
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
+Received: from localhost (localhost.localdomain [127.0.0.1])
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id C6E0E40E02A6;
+	Tue, 26 Mar 2024 15:53:07 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
+	header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id Xxzb6lMyPGkW; Tue, 26 Mar 2024 15:53:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+	t=1711468384; bh=TcZAuev01yKZaJPvDyAUZzPEAjCX2jHAgYb7hloP0qg=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=bZhX3a6wfjs7R5QZ9n1OGetMIxdodBb1ktAPUVyaasWwUXWHD3iLRnAGHSjIfIwU3
+	 PDQqHNXvzpF23KeTu1fdTSz0DGJkifGwKzXQ7iTIsRVD58wg+XfcApyXioQFBN+w6d
+	 n0qli2AH+DVnpbAJL4QkHUWsZxANrgRl2dZ1ttAPY1TYbXEoB01YuA7h8fZ49AqFSZ
+	 QHyxd57RLHaSGTjggh2rz0dqGc5x6+lvBlr0tRwUAp7IDQEou+JJXRnG6TeYJAYDlo
+	 GSTc/SS51o21jzHFEKcQblpS4jsftFuVjRRKw9wqGWMZWcEmfh7zznilw4QHhp+tQC
+	 mB51o2YpF+v1o84htIe307bCXw8fbGU5x2iI3Hp/F0ca49SWYZIPYkc1dyIbMh3wQp
+	 r2oOlOr2TJHyVcEsM2YMnnI6j7XKeRX3fzSvui8gLo0xPzmapt6Vzs5ig2pM8sUZOd
+	 u5yI9HcetGJWq6Fs9Svy3qEaCHK91bEgLcCB0FPwT1mB+OYsafAKbFKJo/tf8vnr8X
+	 8hIBCB2CMw5g44FFAYzFVVB4AMfKhI9gikcXhhkY4v53qgXcwd4o1muJ9IFFWcmlre
+	 z98UO+4ceov+S+gs6onwFvjcD29izKYusPiHONhSLRfexdXr4i5chdDVZGzNFQGDaG
+	 8rS5Uig/xeYqd6P9dvOv4PaY=
+Received: from zn.tnic (p5de8ecf7.dip0.t-ipconnect.de [93.232.236.247])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
 	(No client certificate requested)
-	(Authenticated sender: lukma@denx.de)
-	by phobos.denx.de (Postfix) with ESMTPSA id 21CB987DF8;
-	Tue, 26 Mar 2024 16:52:20 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=denx.de;
-	s=phobos-20191101; t=1711468341;
-	bh=y8VR58RDxB8LgNvt513KCxtG12NFq+KcsRROU7mxUDU=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=bILQm8jBIqXCOtNkIc++4xt6UtZpiX9xbZdGYKtC5x3h7u8z7AcBBqXFXH1OdU1vC
-	 wwfozrT5oJPiQG4rkAmTr2HPhx28ROtxoxpVOQjYhaaHuJT0glkcXQSqGGW0izsZ/g
-	 7XacuXjJgcoovKSa3bEkjTfTx8Gc6PTNVeXbBgu6ylwiL+QbXbZHsXkbONYgduRSPI
-	 f5i+2THFojft3tpUR5Cq6CXvMbWBWlkFtx6DFP1Jka67ArCFER7Q65LOv1LzAMS3LK
-	 OJJDFuhwaBwICaK0Bqs69ywFDnsFyfG15g7HX1XwqWWbTTBHd3pU4X+9CA8aD0s67Z
-	 ijNR7zyT7NWFQ==
-Date: Tue, 26 Mar 2024 16:52:15 +0100
-From: Lukasz Majewski <lukma@denx.de>
-To: Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
-Cc: Andrew Lunn <andrew@lunn.ch>, Florian Fainelli <f.fainelli@gmail.com>,
- Vladimir Oltean <olteanv@gmail.com>, "David S. Miller"
- <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Jakub Kicinski
- <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux@ew.tq-group.com, Michael Krummsdorf
- <michael.krummsdorf@tq-group.com>
-Subject: Re: [PATCH] net: dsa: mv88e6xxx: fix usable ports on 88e6020
-Message-ID: <20240326165215.5fb4326c@wsk>
-In-Reply-To: <35cc888230a0146a7687d8b859e5a6ceffec581a.camel@ew.tq-group.com>
-References: <20240326123655.40666-1-matthias.schiffer@ew.tq-group.com>
-	<20240326143424.3368d9b1@wsk>
-	<35cc888230a0146a7687d8b859e5a6ceffec581a.camel@ew.tq-group.com>
-Organization: denx.de
-X-Mailer: Claws Mail 3.19.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 8004540E024C;
+	Tue, 26 Mar 2024 15:52:53 +0000 (UTC)
+Date: Tue, 26 Mar 2024 16:52:47 +0100
+From: Borislav Petkov <bp@alien8.de>
+To: Nikolay Borisov <nik.borisov@suse.com>
+Cc: Paul Menzel <pmenzel@molgen.mpg.de>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Josh Poimboeuf <jpoimboe@kernel.org>,
+	Ingo Molnar <mingo@redhat.com>,
+	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+	LKML <linux-kernel@vger.kernel.org>, Marco Elver <elver@google.com>,
+	kasan-dev@googlegroups.com
+Subject: Re: Unpatched return thunk in use. This should not happen!
+Message-ID: <20240326155247.GJZgLvT_AZi3XPPpBM@fat_crate.local>
+References: <0851a207-7143-417e-be31-8bf2b3afb57d@molgen.mpg.de>
+ <47e032a0-c9a0-4639-867b-cb3d67076eaf@suse.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/ybwj9Ab0+CEoQ20xl1ri6JC";
- protocol="application/pgp-signature"; micalg=pgp-sha512
-X-Virus-Scanned: clamav-milter 0.103.8 at phobos.denx.de
-X-Virus-Status: Clean
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <47e032a0-c9a0-4639-867b-cb3d67076eaf@suse.com>
 
---Sig_/ybwj9Ab0+CEoQ20xl1ri6JC
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+On Tue, Mar 26, 2024 at 04:08:32PM +0200, Nikolay Borisov wrote:
+> So the problem happens when KCSAN=y CONFIG_CONSTRUCTORS is also enabled and
+> this results in an indirect call in do_mod_ctors():
+> 
+>    mod->ctors[i]();
+> 
+> 
+> When KCSAN is disabled, do_mod_ctors is empty, hence the warning is not
+> printed.
 
-Hi Matthias,
+Yeah, KCSAN is doing something weird. I was able to stop the guest when
+the warning fires. Here's what I see:
 
-> On Tue, 2024-03-26 at 14:34 +0100, Lukasz Majewski wrote:
-> > Hi Matthias,
-> >  =20
-> > > From: Michael Krummsdorf <michael.krummsdorf@tq-group.com>
-> > >=20
-> > > The switch has 4 ports with 2 internal PHYs, but ports are
-> > > numbered up to 6, with ports 0, 1, 5 and 6 being usable.
-> > >=20
-> > > Fixes: 71d94a432a15 ("net: dsa: mv88e6xxx: add support for
-> > > MV88E6020 switch") Signed-off-by: Michael Krummsdorf
-> > > <michael.krummsdorf@tq-group.com> Signed-off-by: Matthias Schiffer
-> > > <matthias.schiffer@ew.tq-group.com> ---
-> > >=20
-> > > I was unfortunately too busy to notice the issue when the patch
-> > > this Fixes was resubmitted in my name. It would have been better
-> > > to change my From into a Based-on-patch-by or similar when
-> > > modifying it =20
-> >=20
-> > The "discussion" about this work was lasting at least a few months
-> > with several iterations and changing the design decisions ...
-> >  =20
-> > > - and
-> > > the final version obviously wasn't even tested on an 88E6020... =20
-> >=20
-> >=20
-> > Can you share on which kernel version have you tested the patch that
-> > you claim that testing was omitted? =20
->=20
-> Hi Lukasz,
->=20
-> we are currently testing with commit 71d94a432a15 backported onto a
-> recent Linux 6.1.y. At least on this kernel version, the driver will
-> reject a Device Tree configuration that uses the=C2=A0ports 5 and 6
-> (rightfully so, as num_ports is set to 4), leaving only the
-> internal-PHY ports 0 and 1, and none of the *MII ports that are
-> likely to be used as CPU ports.
->=20
-> So if the accepted version worked fine for you, your configuration
-> possibly only used the first two ports,
+The callstack when it fires:
 
-And then the penny has dropped....
+#0  warn_thunk_thunk () at arch/x86/entry/entry.S:48
+#1  0xffffffff811a98f9 in do_mod_ctors (mod=0xffffffffa00052c0) at kernel/module/main.c:2462
+#2  do_init_module (mod=mod@entry=0xffffffffa00052c0) at kernel/module/main.c:2535
+#3  0xffffffff811ad2e1 in load_module (info=info@entry=0xffffc900004c7dd0, uargs=uargs@entry=0x564c103dd4a0 "", flags=flags@entry=0) at kernel/module/main.c:3001
+#4  0xffffffff811ad8ef in init_module_from_file (f=f@entry=0xffff8880151c5d00, uargs=uargs@entry=0x564c103dd4a0 "", flags=flags@entry=0) at kernel/module/main.c:3168
+#5  0xffffffff811adade in idempotent_init_module (f=f@entry=0xffff8880151c5d00, uargs=uargs@entry=0x564c103dd4a0 "", flags=flags@entry=0) at kernel/module/main.c:3185
+#6  0xffffffff811adec9 in __do_sys_finit_module (flags=0, uargs=0x564c103dd4a0 "", fd=3) at kernel/module/main.c:3206
+#7  __se_sys_finit_module (flags=<optimized out>, uargs=94884689990816, fd=3) at kernel/module/main.c:3189
+#8  __x64_sys_finit_module (regs=<optimized out>) at kernel/module/main.c:3189
+#9  0xffffffff81fccdff in do_syscall_x64 (nr=<optimized out>, regs=0xffffc900004c7f58) at arch/x86/entry/common.c:52
+#10 do_syscall_64 (regs=0xffffc900004c7f58, nr=<optimized out>) at arch/x86/entry/common.c:83
+#11 0xffffffff82000126 in entry_SYSCALL_64 () at arch/x86/entry/entry_64.S:120
+#12 0x0000000000000000 in ?? ()
 
+Now, when we look at frame #1:
 
-	switch@10 {
-			compatible =3D "marvell,mv88e6250";
-			reg =3D <0x10>;
+ffffffff811a9800 <do_init_module>:
+ffffffff811a9800:       e8 bb 36 ee ff          call   ffffffff8108cec0 <__fentry__>
+ffffffff811a9805:       41 57                   push   %r15
+ffffffff811a9807:       41 56                   push   %r14
+ffffffff811a9809:       41 55                   push   %r13
+ffffffff811a980b:       41 54                   push   %r12
+ffffffff811a980d:       55                      push   %rbp
+ffffffff811a980e:       53                      push   %rbx
+ffffffff811a980f:       48 89 fb                mov    %rdi,%rbx
+ffffffff811a9812:       48 c7 c7 c8 9f 6a 82    mov    $0xffffffff826a9fc8,%rdi
+ffffffff811a9819:       48 83 ec 08             sub    $0x8,%rsp
+ffffffff811a981d:       e8 5e 51 0d 00          call   ffffffff8127e980 <__tsan_read8>
+ffffffff811a9822:       48 8b 3d 9f 07 50 01    mov    0x150079f(%rip),%rdi        # ffffffff826a9fc8 <kmalloc_caches+0x28>
 
-			ports {
-				#address-cells =3D <1>;
-				#size-cells =3D <0>;
+..
 
-				port@0 {
-					reg =3D <0>;
-					label =3D "lan1";
-				};
+ffffffff811a98ec:       e8 8f 50 0d 00          call   ffffffff8127e980 <__tsan_read8>
+ffffffff811a98f1:       49 8b 07                mov    (%r15),%rax
+ffffffff811a98f4:       e8 27 d1 e3 00          call   ffffffff81fe6a20 <__x86_indirect_thunk_array>
+ffffffff811a98f9:       4c 89 ef                mov    %r13,%rdi
 
-				port@1 {
-					reg =3D <1>;
-					label =3D "lan2";
-				};
+there's that call to the indirect array. Which is in the static kernel image:
 
-				port@6 {
-					reg =3D <6>;
-					label =3D "cpu";
-					phy-mode =3D "rmii";
-					ethernet =3D <&fec2>;
+ffffffff81fe6a20 <__x86_indirect_thunk_array>:
+ffffffff81fe6a20:       e8 01 00 00 00          call   ffffffff81fe6a26 <__x86_indirect_thunk_array+0x6>
+ffffffff81fe6a25:       cc                      int3
+ffffffff81fe6a26:       48 89 04 24             mov    %rax,(%rsp)
+ffffffff81fe6a2a:       e9 b1 07 00 00          jmp    ffffffff81fe71e0 <__x86_return_thunk>
 
-					fixed-link {
-						   speed =3D <100>;
-						   full-duplex;
-					};
-				};
-			};
-		};
+where you'd think, ah, yes, that's why it fires.
 
+BUT! The live kernel image in gdb looks like this:
 
+Dump of assembler code for function __x86_indirect_thunk_array:
+   0xffffffff81fe6a20 <+0>:     call   0xffffffff81fe6a26 <__x86_indirect_thunk_array+6>
+   0xffffffff81fe6a25 <+5>:     int3 
+   0xffffffff81fe6a26 <+6>:     mov    %rax,(%rsp)
+   0xffffffff81fe6a2a <+10>:    jmp    0xffffffff81fe70a0 <srso_return_thunk>
 
-> or newer kernels somehow
-> ignore num_ports when determining if a port number is valid.
->=20
-> We should be able to repeat our test on a newer kernel next week if
-> needed.
+so the right thunk is already there!
 
-I think that considering the above snippet - customer was using only
-port 0 and 1.
+And yet, the warning still fired.
 
->=20
-> Best regards,
-> Matthias
->=20
->=20
-> >  =20
-> > >=20
-> > >=20
-> > >  drivers/net/dsa/mv88e6xxx/chip.c | 6 +++++-
-> > >  1 file changed, 5 insertions(+), 1 deletion(-)
-> > >=20
-> > > diff --git a/drivers/net/dsa/mv88e6xxx/chip.c
-> > > b/drivers/net/dsa/mv88e6xxx/chip.c index
-> > > 9ed1821184ece..c95787cb90867 100644 ---
-> > > a/drivers/net/dsa/mv88e6xxx/chip.c +++
-> > > b/drivers/net/dsa/mv88e6xxx/chip.c @@ -5503,8 +5503,12 @@ static
-> > > const struct mv88e6xxx_info mv88e6xxx_table[] =3D { .family =3D
-> > > MV88E6XXX_FAMILY_6250, .name =3D "Marvell 88E6020",
-> > >  		.num_databases =3D 64,
-> > > -		.num_ports =3D 4,
-> > > +		/* Ports 2-4 are not routed to pins
-> > > +		 * =3D> usable ports 0, 1, 5, 6
-> > > +		 */
-> > > +		.num_ports =3D 7,
-> > >  		.num_internal_phys =3D 2,
-> > > +		.invalid_port_mask =3D BIT(2) | BIT(3) | BIT(4),
-> > >  		.max_vid =3D 4095,
-> > >  		.port_base_addr =3D 0x8,
-> > >  		.phy_base_addr =3D 0x0, =20
-> >=20
-> >=20
-> >=20
-> >=20
-> > Best regards,
-> >=20
-> > Lukasz Majewski
-> >=20
-> > --
-> >=20
-> > DENX Software Engineering GmbH,      Managing Director: Erika Unter
-> > HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell,
-> > Germany Phone: (+49)-8142-66989-59 Fax: (+49)-8142-66989-80 Email:
-> > lukma@denx.de Achtung externe E-Mail:=C2=A0=C3=96ffnen Sie Anh=C3=A4nge=
- und Links
-> > nur, wenn Sie wissen, dass diese aus einer sicheren Quelle stammen
-> > und sicher sind. Leiten Sie die E-Mail im Zweifelsfall zur Pr=C3=BCfung
-> > an den IT-Helpdesk weiter. Attention external email:=C2=A0Open
-> > attachments and links only if you know that they are from a secure
-> > source and are safe. In doubt forward the email to the IT-Helpdesk
-> > to check it.
-> >=20
-> > =C2=A0 =20
->=20
+I need to singlestep this whole loading bit more carefully.
 
+Thx.
 
+-- 
+Regards/Gruss,
+    Boris.
 
-
-Best regards,
-
-Lukasz Majewski
-
---
-
-DENX Software Engineering GmbH,      Managing Director: Erika Unter
-HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
-Phone: (+49)-8142-66989-59 Fax: (+49)-8142-66989-80 Email: lukma@denx.de
-
---Sig_/ybwj9Ab0+CEoQ20xl1ri6JC
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCgAdFiEEgAyFJ+N6uu6+XupJAR8vZIA0zr0FAmYC7y8ACgkQAR8vZIA0
-zr3e8AgAoVf5u1Y+WC5X9uopKhu4PoN+fE0Eawss66SZxSteYQFku1uK7xotUkbh
-hsgNxyg5MO0mUprk04Hlj2FwKJ/b/r0osSIuhl3IQnBURksKIWpzFHQB0waodb5v
-kL/IGL78VC+XjlwbuiVqL49kUsAJfnIrL1hk+bE0RsFvuFp0NtUpKNpkCKIA6lRR
-Q+eakUtSATBhsMpnn+PL3J2P1ysCau85htvM2iRROxJTAOhRtqyzjC6eZjNvqgsp
-XiixKjxwlCrOtzqxwSJoFhai4WFML99uGhti0SAsDDnAPQCe5M+PRzoukPds6jff
-lzwDmzIe/X24XWv+oOn/Ml/wTzSbkw==
-=ZWew
------END PGP SIGNATURE-----
-
---Sig_/ybwj9Ab0+CEoQ20xl1ri6JC--
+https://people.kernel.org/tglx/notes-about-netiquette
 
