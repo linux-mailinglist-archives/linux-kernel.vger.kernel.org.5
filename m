@@ -1,221 +1,156 @@
-Return-Path: <linux-kernel+bounces-118434-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-118436-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id CAB7388BAD4
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 07:57:59 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9F11F88BAD6
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 07:58:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 411211F3A8BF
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 06:57:59 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 119E1B222DE
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 06:58:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6729C12DD8C;
-	Tue, 26 Mar 2024 06:57:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8CC94129E6A;
+	Tue, 26 Mar 2024 06:58:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="wKAHJLFk"
-Received: from mail-ej1-f48.google.com (mail-ej1-f48.google.com [209.85.218.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fnZXP2hr"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D9E3B839E4
-	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 06:57:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D4140823BF
+	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 06:58:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711436270; cv=none; b=CSNWQqUMNcZIIVX7jjw28zfRMQ1iLFNs5tu2cOxaZtqTgKCl1i/MoV24XVin2LOUrtSlPt3Nfuos6VKNJMd1Ohqd7FmUWx6bLTk15QFHtECzTvvKvL9xHYD4zibfG0b0oIzUVBiPcQdnSYVBa2G8A9UBYACeusr3lJpji6KHfVU=
+	t=1711436316; cv=none; b=PrpJ+eYK7PqFI7+VPfUBQLLQrroOprDpW9OYrYyve694UHo77tGLvJ+7bBcXh9fz4GrTH1Hh166HHtQZOFJ9tOB0fVvKaijrZKkIx+FJGLolWnLHRIQ3dsS4MBin2aSB62CeZD+cl8OxKqany+t7scgyeqypMkBfvRkqE6Kqoss=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711436270; c=relaxed/simple;
-	bh=55SdADad3OWx3kkVp1dRRhODKeeVTToOTYqoi+1XBlQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=hioMxFbU1wcdzIH15FQ2aM3juBSlFh3Dmj3m6zLapodPfPhDs35GkvFqKEeDLhScwzQzgd2zDboq0ub3lzBOSazLbfbXwGm3MCH5BHC9yhXkdebs921UErQVI2lV+wR+niY/I5zUDamtT1I5OglUasriLY9C4kae2YczQZFF/zw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=wKAHJLFk; arc=none smtp.client-ip=209.85.218.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ej1-f48.google.com with SMTP id a640c23a62f3a-a466a1f9ea0so308658666b.1
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 23:57:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1711436267; x=1712041067; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=b92irMn46EzcW/AtEokxK5lcxIlhufDIe6kzdSmDcBA=;
-        b=wKAHJLFkMT5VwVK36wL6jdpr6IUx2ionustJ6jtq4JDNyHwSM86WfXtgY34peUChzV
-         qqJnI3DdccvGwXE56f2TxXEOBbErCJvDGu1ZjFOeJUb1/SUJf78TmxOjNjF9MxAtiRLp
-         NGhaMDEwoovbn8ww6aXJoOt0qMXYiIaCiP3aNrbQKY0hnIcRyJntkP18AUINcXsEc+Ig
-         mMTiO2t1KnJW31GqRM7pVx93/U4lQylCabWPX6G3+kLUHC068VUBkC7I81FW+xbUcodZ
-         xV8ctLCFQBcDPGSpexNexISO6nNJywOcFPFgl+zMhRSMHZjWcA/4cYddLeiOpiCqrSzO
-         NRYQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711436267; x=1712041067;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=b92irMn46EzcW/AtEokxK5lcxIlhufDIe6kzdSmDcBA=;
-        b=ot0TgCV2F2jLi5zcdShmDoHP45vn0SmovVeBbgoxLybNHW0GgAQ+QLOftrV4XzXiR7
-         CO4ILrdk/6KxGwkM0pQdOM5lcmTmE6RNVfCKbaorTwdBHDiVzeAchOfhMwciF6CL9EyB
-         ESEUK7jcQpk/v7MiTQlzLFcqUyD0Hc4Dhnxss936aSa76CaEdQrQ6yH9gRZecXqdfdXC
-         nDpUk4QTtkQmr/tqryQjzqvjWYbJyqwFpyFAWgf87cnEHHVfe1sPqEglykO4B+fFi7uv
-         /Kb3gz8Gw2SnadsPv30bspkDlNyuLfGWJpKyYEFZhLxYG74/cLpjMfhgs2CHIkM7mRyy
-         nqdQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXnVJFVry0vEQJ9ZibtmMqVSHMSmcrFV4MUF5LDgWSr29elTlm1wMKCyhY1xHgWjntzq9kN3cDse0kRwwrTNCpFWsM6cfduQQQvW3ym
-X-Gm-Message-State: AOJu0YxSXrfBEyJNYl0GbtJB4PqGIZSH0dGloptNFKjolKLQpCHqB6L3
-	PIuSXIzJLOSGsDlroT1XJtgAW39cJyjpenluZ1BZ3qfXebrIATsO/Y/a78UU+oM=
-X-Google-Smtp-Source: AGHT+IF4QhB5PfHfKYdbDK8FmMLQwH5Qj67bD++YkAq6ilfHmf4Dq0FShfdvxJP+bF5RZCDfdLglEA==
-X-Received: by 2002:a05:6402:34c6:b0:56b:f54a:8485 with SMTP id w6-20020a05640234c600b0056bf54a8485mr9051599edc.0.1711436267278;
-        Mon, 25 Mar 2024 23:57:47 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.222.44])
-        by smtp.gmail.com with ESMTPSA id r1-20020aa7cb81000000b0056c052f9fafsm2939234edt.53.2024.03.25.23.57.45
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 25 Mar 2024 23:57:46 -0700 (PDT)
-Message-ID: <57398ee0-212c-4c82-bfed-bf38f4faa111@linaro.org>
-Date: Tue, 26 Mar 2024 07:57:44 +0100
+	s=arc-20240116; t=1711436316; c=relaxed/simple;
+	bh=2h+xwPao4UQjY5pzAeqIZuJmOnkTkwIZDSMWkOI2/m4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ULOn6hyfT2wT8i6tCcUyEgnJiiwxuslSLTxdNAeTnjpGMmm5ghG00K5SxxdhvjDukLy7rjaj8pADYieJPeAT3jcnLPX+TPNnvDqEXvaGAUBa/90DN5qSi/VRlpAoQo59Wlyw5nxX7oIjw0h5TzCWuiGVSamuWFaTdeZen7uy/BQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fnZXP2hr; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0D9A1C433C7;
+	Tue, 26 Mar 2024 06:58:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1711436316;
+	bh=2h+xwPao4UQjY5pzAeqIZuJmOnkTkwIZDSMWkOI2/m4=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=fnZXP2hrOZj2Z8QDTITPOCDYzWo/RpPKcF0v6NAm2SpxZh0PsXWZuJwc3oEBhKUWv
+	 Mi68YOrSG5ih18gIT2PvjY4DobC3VNnhLdVZ4TKV5pulyRNF+tgTqiupcSx4gKxdDF
+	 jeh31wT4loBcfFORRnpiYexhmfYOeJ0YRYAbUKlUvrW4KnatdYDaSPrIx66kjajELw
+	 ZmEbAEgh75QcmMm4slvb4gY5lIJxBCtvKm1zkNq5n1lycKvAdGz+YzlUO+7hqlJNOw
+	 OOI24Tspe9k4/8k5zOe4Nf3ymGckG543nJ0Hn4azqvR6YbgKjAskBkT5tdXk4ZBfMA
+	 uifqEFW4HXdvQ==
+Date: Tue, 26 Mar 2024 08:57:55 +0200
+From: Mike Rapoport <rppt@kernel.org>
+To: Baoquan He <bhe@redhat.com>
+Cc: linux-mm@kvack.org, linux-kernel@vger.kernel.org, x86@kernel.org,
+	linuxppc-dev@lists.ozlabs.org, akpm@linux-foundation.org
+Subject: Re: [PATCH v2 6/6] mm/mm_init.c: remove arch_reserved_kernel_pages()
+Message-ID: <ZgJx8wXHkbY4FsuT@kernel.org>
+References: <20240325145646.1044760-1-bhe@redhat.com>
+ <20240325145646.1044760-7-bhe@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5 1/3] dt-bindings: dmaengine: Add dmamux for
- CV18XX/SG200X series SoC
-To: Inochi Amaoto <inochiama@outlook.com>, Vinod Koul <vkoul@kernel.org>,
- Rob Herring <robh@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, Chen Wang <unicorn_wang@outlook.com>,
- Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt
- <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>
-Cc: Jisheng Zhang <jszhang@kernel.org>, Liu Gui <kenneth.liu@sophgo.com>,
- Jingbao Qiu <qiujingbao.dlmu@gmail.com>, dlan@gentoo.org,
- dmaengine@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org
-References: <IA1PR20MB4953B500D7451964EE37DA4CBB352@IA1PR20MB4953.namprd20.prod.outlook.com>
- <IA1PR20MB4953E2937788D9D92C91ABBBBB352@IA1PR20MB4953.namprd20.prod.outlook.com>
-Content-Language: en-US
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <IA1PR20MB4953E2937788D9D92C91ABBBBB352@IA1PR20MB4953.namprd20.prod.outlook.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240325145646.1044760-7-bhe@redhat.com>
 
-On 26/03/2024 02:47, Inochi Amaoto wrote:
-> The DMA IP of Sophgo CV18XX/SG200X is based on a DW AXI CORE, with
-> an additional channel remap register located in the top system control
-> area. The DMA channel is exclusive to each core.
+On Mon, Mar 25, 2024 at 10:56:46PM +0800, Baoquan He wrote:
+> Since the current calculation of calc_nr_kernel_pages() has taken into
+> consideration of kernel reserved memory, no need to have
+> arch_reserved_kernel_pages() any more.
 > 
-> Add the dmamux binding for CV18XX/SG200X series SoC
+> Signed-off-by: Baoquan He <bhe@redhat.com>
+
+Reviewed-by: Mike Rapoport (IBM) <rppt@kernel.org>
+
+> ---
+>  arch/powerpc/include/asm/mmu.h |  4 ----
+>  arch/powerpc/kernel/fadump.c   |  5 -----
+>  include/linux/mm.h             |  3 ---
+>  mm/mm_init.c                   | 12 ------------
+>  4 files changed, 24 deletions(-)
+> 
+> diff --git a/arch/powerpc/include/asm/mmu.h b/arch/powerpc/include/asm/mmu.h
+> index 3b72c7ed24cf..aa5c0fd5edb1 100644
+> --- a/arch/powerpc/include/asm/mmu.h
+> +++ b/arch/powerpc/include/asm/mmu.h
+> @@ -406,9 +406,5 @@ extern void *abatron_pteptrs[2];
+>  #include <asm/nohash/mmu.h>
+>  #endif
+>  
+> -#if defined(CONFIG_FA_DUMP) || defined(CONFIG_PRESERVE_FA_DUMP)
+> -#define __HAVE_ARCH_RESERVED_KERNEL_PAGES
+> -#endif
+> -
+>  #endif /* __KERNEL__ */
+>  #endif /* _ASM_POWERPC_MMU_H_ */
+> diff --git a/arch/powerpc/kernel/fadump.c b/arch/powerpc/kernel/fadump.c
+> index d14eda1e8589..ae8c7619e597 100644
+> --- a/arch/powerpc/kernel/fadump.c
+> +++ b/arch/powerpc/kernel/fadump.c
+> @@ -1735,8 +1735,3 @@ static void __init fadump_reserve_crash_area(u64 base)
+>  		memblock_reserve(mstart, msize);
+>  	}
+>  }
+> -
+> -unsigned long __init arch_reserved_kernel_pages(void)
+> -{
+> -	return memblock_reserved_size() / PAGE_SIZE;
+> -}
+> diff --git a/include/linux/mm.h b/include/linux/mm.h
+> index ad19350e1538..ab1ba0a31429 100644
+> --- a/include/linux/mm.h
+> +++ b/include/linux/mm.h
+> @@ -3221,9 +3221,6 @@ static inline void show_mem(void)
+>  extern long si_mem_available(void);
+>  extern void si_meminfo(struct sysinfo * val);
+>  extern void si_meminfo_node(struct sysinfo *val, int nid);
+> -#ifdef __HAVE_ARCH_RESERVED_KERNEL_PAGES
+> -extern unsigned long arch_reserved_kernel_pages(void);
+> -#endif
+>  
+>  extern __printf(3, 4)
+>  void warn_alloc(gfp_t gfp_mask, nodemask_t *nodemask, const char *fmt, ...);
+> diff --git a/mm/mm_init.c b/mm/mm_init.c
+> index e269a724f70e..089dc60159e9 100644
+> --- a/mm/mm_init.c
+> +++ b/mm/mm_init.c
+> @@ -2373,17 +2373,6 @@ void __init page_alloc_init_late(void)
+>  	page_alloc_sysctl_init();
+>  }
+>  
+> -#ifndef __HAVE_ARCH_RESERVED_KERNEL_PAGES
+> -/*
+> - * Returns the number of pages that arch has reserved but
+> - * is not known to alloc_large_system_hash().
+> - */
+> -static unsigned long __init arch_reserved_kernel_pages(void)
+> -{
+> -	return 0;
+> -}
+> -#endif
+> -
+>  /*
+>   * Adaptive scale is meant to reduce sizes of hash tables on large memory
+>   * machines. As memory size is increased the scale is also increased but at
+> @@ -2426,7 +2415,6 @@ void *__init alloc_large_system_hash(const char *tablename,
+>  	if (!numentries) {
+>  		/* round applicable memory size up to nearest megabyte */
+>  		numentries = nr_kernel_pages;
+> -		numentries -= arch_reserved_kernel_pages();
+>  
+>  		/* It isn't necessary when PAGE_SIZE >= 1MB */
+>  		if (PAGE_SIZE < SZ_1M)
+> -- 
+> 2.41.0
 > 
 
-
-> +
-> +allOf:
-> +  - $ref: dma-router.yaml#
-> +
-> +properties:
-> +  compatible:
-> +    const: sophgo,cv1800-dmamux
-> +
-> +  reg:
-> +    items:
-> +      - description: DMA channal remapping register
-> +      - description: DMA channel interrupt mapping register
-> +
-> +  '#dma-cells':
-> +    const: 2
-> +    description:
-> +      The first cells is device id. The second one is the cpu id.
-> +
-> +  dma-masters:
-> +    maxItems: 1
-> +
-> +  dma-requests:
-> +    const: 8
-
-If this is const, why do you need it in the DTS in the first place?
-compatible defines it.
-
-> +
-> +required:
-> +  - '#dma-cells'
-> +  - dma-masters
-> +
-
-
-I don't understand what happened here. Previously you had a child and I
-proposed to properly describe it with $ref.
-
-Now, all children are gone. Binding is supposed to be complete. Based on
-your cover letter, this is not complete, but why? What is missing and
-why it cannot be added?
-
-
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    dma-router {
-> +      compatible = "sophgo,cv1800-dmamux";
-> +      #dma-cells = <2>;
-> +      dma-masters = <&dmac>;
-> +      dma-requests = <8>;
-> +    };
-> diff --git a/include/dt-bindings/dma/cv1800-dma.h b/include/dt-bindings/dma/cv1800-dma.h
-> new file mode 100644
-> index 000000000000..3ce9dac25259
-> --- /dev/null
-> +++ b/include/dt-bindings/dma/cv1800-dma.h
-
-Filename should match bindings filename.
-
-
-Anyway, the problem is that it is a dead header. I don't see it being
-used, so it is not a binding.
-
-
-
-Best regards,
-Krzysztof
-
+-- 
+Sincerely yours,
+Mike.
 
