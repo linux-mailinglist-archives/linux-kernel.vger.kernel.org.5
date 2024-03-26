@@ -1,80 +1,74 @@
-Return-Path: <linux-kernel+bounces-119429-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-119430-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7BDB588C8A9
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 17:11:02 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1AF3D88C8AF
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 17:11:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 00F4C1F8172C
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 16:11:02 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9C658B23664
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 16:11:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B09A113C9B8;
-	Tue, 26 Mar 2024 16:10:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 67B3313C9B9;
+	Tue, 26 Mar 2024 16:11:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="C9xb629O"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="oRUmGKiv"
+Received: from mail-ej1-f44.google.com (mail-ej1-f44.google.com [209.85.218.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8958A13C91A
-	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 16:10:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF37E13C90A
+	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 16:11:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711469451; cv=none; b=kZ9Y/FiXbsVVMnw5DXLBd7dcCWI+8Jb4kj/k0YKdSuWEdav+ECxWLKYM8moxy8YyQr1u4mSyqXJlBMcgR0SOCepaEN5krSeEqxkHS0v35M8d2gZqXTXjsIaEPUsFgKnnxLF3c+9pzaXuPHxh3I2JywsZsU3QfM/Yi/oAcQh/A+M=
+	t=1711469463; cv=none; b=D//F64z6ZpFKGaTR+RxpgxXI9KI5KtGgTch1eFRmxwu5FBEKXezNcMIHwby4nn9l5id+C9QLniFJBAZ0lhV3P3UL94iQTIMmLuD46jVQDHwJwNWpEA/RolbDzx4as56IxA6jpzKx9lqLVfkPmhTc5KwZicI4moAq3DhbNM9uowI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711469451; c=relaxed/simple;
-	bh=uDEsdZL44ys2mfc6Tu8wXrdevz+6olzqLlV5D6/p404=;
+	s=arc-20240116; t=1711469463; c=relaxed/simple;
+	bh=KwMXp5AYs6WOVQjryYiZ7EdeG0cvYrV+oZuxAXVaIsg=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Ut6w2VCg2FrD0RCbMA2qjROeAZNCAHGKemlB7ymCP4WK3B6svaTk3zziT47vnwdKPib7qImsWQy3JERztaj2mwyhq60P+Hyzgrjr30yo1Ur1gWKENUdX+OWngD3M0nDgGYXyDItcPLCWZlQNsf5hTGP1MQ1zuTEy2uk/BfaTMyg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=C9xb629O; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1711469448;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=xYWWKtJsyIiOOREH/jvgE2Pym6yl6SXL43dmFzzxj1M=;
-	b=C9xb629OS7DhEbq4rnWVt792xNX0ANtBGtdG/LgMAJ2+4LZQGJXtH43enHjxX/CJrT2bOg
-	MlYvM9qTEgfruvmggqPcHcn3bFN0hBHifyP+n75U1e6dOyxR6joyyZMAXvvs/dqDCmWUBQ
-	hUzflemb2z50Yc84VDe9xlo2I8UoMmc=
-Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
- [209.85.128.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-98-LIP0ezOOMQKvu4w0w4X96A-1; Tue, 26 Mar 2024 12:10:46 -0400
-X-MC-Unique: LIP0ezOOMQKvu4w0w4X96A-1
-Received: by mail-wm1-f72.google.com with SMTP id 5b1f17b1804b1-40e4478a3afso29664615e9.1
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 09:10:46 -0700 (PDT)
+	 In-Reply-To:Content-Type; b=AiuASvTGLkN1V1N1Bpg8OksrHV02vjgYNcWyfz63VGGMXweeVxb59t/zAAPj4UP5yOHoC3K9pameA/WXDm5e0K5O+w5H4PGl/WYnlU0ubnzsZ6UEfQRvk68pkkC9o2Si30wJUbx+fVQyDywMAdJoPMX7JLub12vmr0ETsfQWP8Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=oRUmGKiv; arc=none smtp.client-ip=209.85.218.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ej1-f44.google.com with SMTP id a640c23a62f3a-a4a3a5e47baso279416766b.2
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 09:11:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1711469460; x=1712074260; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=CJEINb2e91P4WW8EGz190gc8mkLNheJ7gLR8cYMnru4=;
+        b=oRUmGKivNLUoj6m/eOzQb91DeiVGGgfa+jK2/bWFyh0etETC0Mh1BDuL6UrIQI9/aT
+         s2rr828QE//GI7BwvKsB3ypFcFg5Wpunq4xKXwEsz1LthLCjkqu4G5A9zjFA7PGEKyD7
+         ru+FDDLujuSFGhidMSKLwL+yDyRgXmQWZJbPo4mpUALUL/cL9cFZdJB1VIcG89aEtOQi
+         xDe+AzmG6QQYDpo3RuC33ZbbwxsgCfd6rnfGlj2OybH9JSleoxBBzjgenlLstMLhoUpV
+         S+yqfiFiu+FpnEzrjtEUR4FqWE5HVb75vo7OtNnQKs7cQkvCfjHivz8I6syV6JUCasGP
+         exfQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711469446; x=1712074246;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt:from
-         :references:cc:to:content-language:subject:user-agent:mime-version
+        d=1e100.net; s=20230601; t=1711469460; x=1712074260;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
          :date:message-id:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=xYWWKtJsyIiOOREH/jvgE2Pym6yl6SXL43dmFzzxj1M=;
-        b=pTIHHxOh8izKvVehfV0+cLF0GFsQ+4EA2dhe4iFNKD1gAiV0vRcnnjnJdEhD14H/tC
-         7I4DRMzyoB8sq8LZYAQRDsGUU6mVyE9vN8my7ubKQ2wJ1opHItldbgMJk0vXkw20ZmKW
-         0LlO8NL8F1bKi2UiK4lXvmTM7Hq08jjoywCu13CTNaySyKenid6W15DxFV3JOpi47mLz
-         GrffmSfwiRVRgDEL6KacF93bR/BbvKTV7nbhTdQmBF/5cE9/1SUop2JahkD4dFBNqydR
-         n7Q5biWFiU8Rx2ZLGPhm3+bVAAB1/oBeUfJxQ2+0jrZ1P7qJPAx49vswehart3xoNDGf
-         1/QA==
-X-Forwarded-Encrypted: i=1; AJvYcCV6nP4mKbdFXFkEaJji5jj8IhCY9DyNRzhl2GwstUI0d31eKYFhM9SCnqva5FowFllNndMPK/ACl9+9fVTwFRMwD7MTq0LYHzFqcD54
-X-Gm-Message-State: AOJu0Yw6u521+8/UIZ6x3hLivAKTrYw/UhHN+l5sQGVrL9Xp7NjH8SzE
-	tSgbuKMYvR9JCjzl5RnEHbqJ4tp+1IgaAdvczYNASiBD5armim28Z6Jzet5S1FxoAdeucbRoZEQ
-	HRXj0ngyiKaZpMGbdm2SQnnDoBVHLf+yKfXIz3/D1EWsSK06ID5Bhn8V29PP2ZA==
-X-Received: by 2002:a05:600c:3d90:b0:414:90ea:34ad with SMTP id bi16-20020a05600c3d9000b0041490ea34admr927520wmb.6.1711469445749;
-        Tue, 26 Mar 2024 09:10:45 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IEHHMeCfQQAYcQzf8EzgbgXZS09NcE5ekOSvfIcEXLaHftME0nWyseceBrLGav0KwMByU4/kQ==
-X-Received: by 2002:a05:600c:3d90:b0:414:90ea:34ad with SMTP id bi16-20020a05600c3d9000b0041490ea34admr927494wmb.6.1711469445247;
-        Tue, 26 Mar 2024 09:10:45 -0700 (PDT)
-Received: from ?IPV6:2003:cb:c741:c700:3db9:94c9:28b0:34f2? (p200300cbc741c7003db994c928b034f2.dip0.t-ipconnect.de. [2003:cb:c741:c700:3db9:94c9:28b0:34f2])
-        by smtp.gmail.com with ESMTPSA id fj12-20020a05600c0c8c00b0041409db0349sm11999073wmb.48.2024.03.26.09.10.44
+        bh=CJEINb2e91P4WW8EGz190gc8mkLNheJ7gLR8cYMnru4=;
+        b=ESM9Zvy0Z49f1Zc71ZM6u01TAMfzxIR/jQ7L2ZpSd6qJ7T8vj2uj+HWtIoWj8WLXru
+         /0LyUQlZgpAi4IgPbgR+wtADMJhKQHSIAQiAYspNUPkk+sXdmeQTbhxIfzRCsTcM1uF4
+         g+2lQoSk+8aqdGS/LmiqAu3WMu6x4rpL+RPtt01PzdtLAVVcODS6n2rElhKso0BL0S5F
+         FifgD3+hDYttwtsr+zLczzLMp1aM7inYlbm4h3FzqsJMXOFLBONBKwe/z/GYYySqyVQ5
+         2TzirXc0aOUG+Sfix8ewiBHZw0P4FVDGD9d9zKqDRZpiJqxM0bAQEL6vlKzs65YoRVLX
+         S8Pg==
+X-Forwarded-Encrypted: i=1; AJvYcCWdOkZB/MEc+OFqn2f6P5TDsepB8VIpjCFcLxNAC+iH7pad6HizTDmluz1vcoM28KSMIlL+zHFr3SmZtbseUU2Xipv5OvlVKr4QAJzT
+X-Gm-Message-State: AOJu0Yyt2LUMqHJwDDloIqkL13r1V3xoUjtTS4W1G0R0jGzJB4j7Kpon
+	aPBL/hRZh8jb0CgMN8mHtFqrGXkxHy1bDIiTixhNM/2afED/J7tGr3p8b4eyCZI=
+X-Google-Smtp-Source: AGHT+IEnfovCI/8gs5MyW507wofKNOAGHRO601c++5j8l3aXUe7AMIkTh7rSqBNUzYwqWbwHKTogNw==
+X-Received: by 2002:a17:907:8687:b0:a4d:f900:fada with SMTP id qa7-20020a170907868700b00a4df900fadamr1554040ejc.56.1711469459875;
+        Tue, 26 Mar 2024 09:10:59 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.222.44])
+        by smtp.gmail.com with ESMTPSA id le13-20020a170906ae0d00b00a47464a6ee4sm4006323ejb.173.2024.03.26.09.10.58
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 26 Mar 2024 09:10:44 -0700 (PDT)
-Message-ID: <cf16a19d-cc3b-4f19-a46f-83554a472368@redhat.com>
-Date: Tue, 26 Mar 2024 17:10:43 +0100
+        Tue, 26 Mar 2024 09:10:59 -0700 (PDT)
+Message-ID: <e91bed22-31d0-45b0-8d2a-69bfd361b125@linaro.org>
+Date: Tue, 26 Mar 2024 17:10:58 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -82,151 +76,102 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] mm: hold PTL from the first PTE while reclaiming a
- large folio
+Subject: Re: [PATCH] virt: vmgenid: drop redundant .owner
+To: "Jason A. Donenfeld" <Jason@zx2c4.com>
+Cc: Theodore Ts'o <tytso@mit.edu>, linux-kernel@vger.kernel.org
+References: <20240326075337.55377-1-krzysztof.kozlowski@linaro.org>
+ <461a8c3d-460b-4ca4-aa90-b70685958f6f@linaro.org>
+ <ZgLY6i7zZDh5uDb0@zx2c4.com>
 Content-Language: en-US
-To: Barry Song <21cnbao@gmail.com>, akpm@linux-foundation.org,
- linux-mm@kvack.org
-Cc: chrisl@kernel.org, hanchuanhua@oppo.com, hughd@google.com,
- linux-kernel@vger.kernel.org, mhocko@suse.com, ryan.roberts@arm.com,
- shy828301@gmail.com, v-songbaohua@oppo.com, wangkefeng.wang@huawei.com,
- willy@infradead.org, xiang@kernel.org, ying.huang@intel.com,
- yuzhao@google.com
-References: <20240306095219.71086-1-21cnbao@gmail.com>
-From: David Hildenbrand <david@redhat.com>
-Autocrypt: addr=david@redhat.com; keydata=
- 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
- WNyWQQ==
-Organization: Red Hat
-In-Reply-To: <20240306095219.71086-1-21cnbao@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <ZgLY6i7zZDh5uDb0@zx2c4.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
-On 06.03.24 10:52, Barry Song wrote:
-> From: Barry Song <v-songbaohua@oppo.com>
+On 26/03/2024 15:17, Jason A. Donenfeld wrote:
+> On Tue, Mar 26, 2024 at 09:07:52AM +0100, Krzysztof Kozlowski wrote:
+>> On 26/03/2024 08:53, Krzysztof Kozlowski wrote:
+>>> Core already sets .owner in acpi_bus_register_driver().
+>>>
+>>> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+>>> ---
+>>>  drivers/virt/vmgenid.c | 1 -
+>>>  1 file changed, 1 deletion(-)
+>>>
+>>> diff --git a/drivers/virt/vmgenid.c b/drivers/virt/vmgenid.c
+>>> index b67a28da4702..8f6880c3a87f 100644
+>>> --- a/drivers/virt/vmgenid.c
+>>> +++ b/drivers/virt/vmgenid.c
+>>> @@ -88,7 +88,6 @@ static const struct acpi_device_id vmgenid_ids[] = {
+>>>  static struct acpi_driver vmgenid_driver = {
+>>>  	.name = "vmgenid",
+>>>  	.ids = vmgenid_ids,
+>>> -	.owner = THIS_MODULE,
+>>
+>> This does not make sense and is not correct.  I need to fix
+>> acpi_bus_register_driver first(). Please ignore.
 > 
-> Within try_to_unmap_one(), page_vma_mapped_walk() races with other
-> PTE modifications preceded by pte clear. While iterating over PTEs
-> of a large folio, it only starts acquiring PTL from the first valid
-> (present) PTE. PTE modifications can temporarily set PTEs to
-> pte_none. Consequently, the initial PTEs of a large folio might
-> be skipped in try_to_unmap_one().
-> For example, for an anon folio, if we skip PTE0, we may have PTE0
-> which is still present, while PTE1 ~ PTE(nr_pages - 1) are swap
-> entries after try_to_unmap_one().
-> So folio will be still mapped, the folio fails to be reclaimed
-> and is put back to LRU in this round.
-> This also breaks up PTEs optimization such as CONT-PTE on this
-> large folio and may lead to accident folio_split() afterwards.
-> And since a part of PTEs are now swap entries, accessing those
-> parts will introduce overhead - do_swap_page.
-> Although the kernel can withstand all of the above issues, the
-> situation still seems quite awkward and warrants making it more
-> ideal.
-> The same race also occurs with small folios, but they have only
-> one PTE, thus, it won't be possible for them to be partially
-> unmapped.
-> This patch holds PTL from PTE0, allowing us to avoid reading PTE
-> values that are in the process of being transformed. With stable
-> PTE values, we can ensure that this large folio is either
-> completely reclaimed or that all PTEs remain untouched in this
-> round.
-> A corner case is that if we hold PTL from PTE0 and most initial
-> PTEs have been really unmapped before that, we may increase the
-> duration of holding PTL. Thus we only apply this optimization to
-> folios which are still entirely mapped (not in deferred_split
-> list).
+> Oh, okay. Does that mean this will resurface as part of a series that is
+> core fix + individual driver cleanups subsequently?
+
+Yes.
+
 > 
-> Cc: Hugh Dickins <hughd@google.com>
-> Signed-off-by: Barry Song <v-songbaohua@oppo.com>
-> ---
->   v2:
->    * Refine commit message and code comment after reading all comments
->      from Ryan and David, thanks!
->    * Avoid increasing the duration of PTL by applying optimization
->      on folios not in deferred_split_list with respect to Ying's
->      comment, thanks!
-> 
->   mm/vmscan.c | 12 ++++++++++++
->   1 file changed, 12 insertions(+)
-> 
-> diff --git a/mm/vmscan.c b/mm/vmscan.c
-> index 0b888a2afa58..7106741387e8 100644
-> --- a/mm/vmscan.c
-> +++ b/mm/vmscan.c
-> @@ -1270,6 +1270,18 @@ static unsigned int shrink_folio_list(struct list_head *folio_list,
->   
->   			if (folio_test_pmd_mappable(folio))
->   				flags |= TTU_SPLIT_HUGE_PMD;
-> +			/*
-> +			 * Without TTU_SYNC, try_to_unmap will only begin to hold PTL
-> +			 * from the first present PTE within a large folio. Some initial
-> +			 * PTEs might be skipped due to races with parallel PTE writes
-> +			 * in which PTEs can be cleared temporarily before being written
-> +			 * new present values. This will lead to a large folio is still
-> +			 * mapped while some subpages have been partially unmapped after
-> +			 * try_to_unmap; TTU_SYNC helps try_to_unmap acquire PTL from the
-> +			 * first PTE, eliminating the influence of temporary PTE values.
-> +			 */
-> +			if (folio_test_large(folio) && list_empty(&folio->_deferred_list))
-> +				flags |= TTU_SYNC;
->   
->   			try_to_unmap(folio, flags);
->   			if (folio_mapped(folio)) {
+> You made some comment on the other thread indicating that this
+> meant the driver is "clearly abandoned" because of "all this owner
+> crap". Wondering if this driver here hits some weird edge case that
+> isn't covered by changes made "many years ago" or if something else is
+> up.
 
-Hopefully this won't have unexpected performance "surprises".
+No, it was just my mistake. Driver is fine, sorry for too fast judging.
+It turns out only some xxx_driver set .owner field. Which I think leads
+to actual problems, but that's a bit bigger patchset I need to prepare.
 
-I do wonder if we should really care about the "_deferred_list" 
-optimization here, though, I'd just drop it.
-
-In any case
-
-Acked-by: David Hildenbrand <david@redhat.com>
-
--- 
-Cheers,
-
-David / dhildenb
+Best regards,
+Krzysztof
 
 
