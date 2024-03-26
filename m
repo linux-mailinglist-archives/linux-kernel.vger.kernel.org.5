@@ -1,194 +1,204 @@
-Return-Path: <linux-kernel+bounces-118314-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-118315-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id BDB1288B79D
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 03:48:32 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id EDAA688B7B5
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 03:51:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 741542E722E
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 02:48:31 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1CA791C2D33D
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 02:51:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5A4A712881E;
-	Tue, 26 Mar 2024 02:48:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 97DA5129A9A;
+	Tue, 26 Mar 2024 02:51:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="FEe3uYiH"
-Received: from mail-ed1-f43.google.com (mail-ed1-f43.google.com [209.85.208.43])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="AgRVmiR3"
+Received: from mail-qk1-f169.google.com (mail-qk1-f169.google.com [209.85.222.169])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC4D65788E;
-	Tue, 26 Mar 2024 02:48:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 23FCD128392;
+	Tue, 26 Mar 2024 02:51:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711421300; cv=none; b=E75zyIoiqMFItJr9NtaIFbtHll7l7O+L09MdE1uQtNVz9aYAymxof/zIxlDF8Dsnv0ZomnHkN0npslhGyNt0thL967EV7k5lX5LZYY88uFf2XKp64WB4lJyXf8sOFeuJDvxQrzhG8HPnyEWu6d17WBcXE5KGYasZFxIYOyh7mdo=
+	t=1711421478; cv=none; b=KQqhNg+/DSruGz+Y46b9fO1GSNIVUEaWs+BEyw3ffBfSwm0f8Z/36RFo/HqZECdln0wIMVhP9ewJ0mYg/nyXIxjPfnDxmb6UAtEkrqBqJfpHZ/zG/+U+bOuy8k04wgctsAfKb71MCI451jDb0Re8HpiB1H53uAeK11eaorHjPzY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711421300; c=relaxed/simple;
-	bh=Gx9X7vXUylCb0AsyGcpvgof2jbtykG7sjHQU5fJhc9U=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=YQvfipLOC/YYAaDRzMFgFSKmyGZmvDb7z4KMVSh8Qf1zmfHenMDpsKRhfNW03ufKKnm9J6VLiOwqwZDQdC4LiNSSvjKjb7Q3iZA/uVhALHPx7RRV0yNkk0Y6Nzg1qMU5FtBZ67wLhWChvIuLzAlfT+TAPW4K3VC7ElBlICAdydw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=FEe3uYiH; arc=none smtp.client-ip=209.85.208.43
+	s=arc-20240116; t=1711421478; c=relaxed/simple;
+	bh=N5UUxAKoTPcBjWK+QOUVolTBhb8j694WCAv1Ly4a9d8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=L5tMG7x0fHI0PfYHO0UTIpL4dweMwpCNmjLWypEVR0cVDiTJcmcfUXvYQL6ipBSEgpuLVdxHhSQHqYKhfx+DM7Kp33pLF0jFRW7di8NsjTUZyUimaWgWoHgCg98FzrcwnkL9RHisn7UHqFyQKhJata2X6f8z8O4KsJ3cLeQImSY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=AgRVmiR3; arc=none smtp.client-ip=209.85.222.169
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f43.google.com with SMTP id 4fb4d7f45d1cf-56bf6591865so3890946a12.0;
-        Mon, 25 Mar 2024 19:48:18 -0700 (PDT)
+Received: by mail-qk1-f169.google.com with SMTP id af79cd13be357-789db18e169so390188585a.1;
+        Mon, 25 Mar 2024 19:51:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711421297; x=1712026097; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1711421476; x=1712026276; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:feedback-id:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=dPPOsfiak5LVxPgduynFfOGZl8R/zGRlnbVETVUqeDA=;
-        b=FEe3uYiHwlcji/cI4IAjnmHayORuB8t5ni+lS9yV9x7Nfijo4dM/SlH4gdCqJclmF8
-         orXRXW3bElOi0AoXHc845pW85Pqq6OlG0KVV0OOrqHFZlbbHCahC50oDfnqPpUKNsxTd
-         0l3yN4TLGNkTWYdkOXi3In5UDr5KUfNN7j5BF2f64k8p5PJPv3utAXfZGsd3RWh25HSj
-         7bL/VZB7HdjxQchwKFoDtAusDpp/WOJcZe/FE5rYpxaIRtgZ6UO/WlaKUTlH/Md7XlC1
-         F+Hpm4yktOxfXxdy7T234uzcpw1/Nuf0TuHEjkMjrTw+rbNEk2gpCtHq76s5b64wAsHw
-         PNBA==
+        bh=fcNhvrzgAeTv+RtaHHdMdJGRePwYOV19cay72dN5zG0=;
+        b=AgRVmiR3D9mf+k/NIj7NXanJ7ArXrV15PnMeE+XYF7mcljRYdW1oRo/62fH5xlVOi2
+         62ZwhmqBWXuF064QyMpofaqV3O+SAMnR28Q4F2YRRRxuAoGRke5Kwn/K1FGbLpaAxFqB
+         LP383lgMqVmmxIlv+bXPMkU/na6aXv+eGCN6qbT+ft2e+L1IUBd0UCLonN0tduEFYnjQ
+         qK91OCpohVl1OCiLL2Q/UJiCylRks1wiulToJO+DPOmifF7COeY1v3ihjHr5GQ0+UeEv
+         NmjEqM6fP030GmlNEC2l5t966WR+oFUCDGkR8tPlzRl52dO4o72axc7F57ja+qVfWxuN
+         urwA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711421297; x=1712026097;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1711421476; x=1712026276;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:feedback-id:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=dPPOsfiak5LVxPgduynFfOGZl8R/zGRlnbVETVUqeDA=;
-        b=U119UVC4Gw98Iz24RIQzJC8WkuFa4Ip2H+1ECaL8hmqkc1hTeugH3vSncXjFvrV3W5
-         /CDi2CP820v3d4kOPDvNMi62GUFoUjjkXpfptUSfU3OPAoExVP7WJV1CuZGAze3pR2Dx
-         YDbStUMvAyNw8GWnpg4h8BxZdOHTu7PwARxbcmdumrN55AqPo/3Uhlm6aTNumTu4doiO
-         MCp95kU002pt18DQ7L9DC0+KRWvcdSa0ZR3bz63bcNkfOIgdswFoSu6P0K8JrN9BD5NN
-         oJ2amP/MIqnYiehfvCFb23EgVEGTt1XehK+SkpPZAhEQu92MgoNqW1WmsxzicONSry4s
-         GW+g==
-X-Forwarded-Encrypted: i=1; AJvYcCXltP9XIbXYd05Xv/xe2N0pw1V2Uxol8GM1Rp6bpT/Yh+pRMtfFXjYeXjq5zIHAVWQjoah88E8PNMJeSO9H0RzZJhMLfGJTvHwTVgXhAUM6obJoM7U7LsA1HJr+FMapzzACWSFhOhCAqDLAMIRa70/tJM/fJWjcnBK4
-X-Gm-Message-State: AOJu0YzyP+8NunBCRHcRRgGKv0R6CtATEx38gyd4/JEY+bYmuXQ1G+kM
-	bwu8HiNQbve944xRT9FA92dvlJX7+VhCV/DOCkg1zEOc38HsTLhIVUU480D4ia4kUzG0nHk2VBW
-	HYEk/LKU+0M3sX+KF0Rl9LicA21Y=
-X-Google-Smtp-Source: AGHT+IG2UDeQj0KZ8zVq2N2nObvvo2nYE/2IM60oh/gA+7rYApndDSID315TbUOlMANw66iWPUDkZ+8cS/yrGaa9fSw=
-X-Received: by 2002:a50:aac9:0:b0:568:d315:b85e with SMTP id
- r9-20020a50aac9000000b00568d315b85emr6124163edc.36.1711421296733; Mon, 25 Mar
- 2024 19:48:16 -0700 (PDT)
+        bh=fcNhvrzgAeTv+RtaHHdMdJGRePwYOV19cay72dN5zG0=;
+        b=blgRtuiA4rhqJ1mFlqsNBZR3BI/PApnZVCzIl+KNHazfxJ7YdODOtup9TAWAk9cBzp
+         rL581AhhS6Eh9B2cXTxncaY6i6PIxBo2twCaRuRg0urNBUHxfEfkQwbzJ1GIV0NTw93F
+         vMQAkpi3zAzdCBEQcz/U7mqN6ZOnBVEOnicz35ejGP5l/hQvz4W2Wrk+yXeNOLpYiLB6
+         5sjCNthrgiVZ3UCc8nEGlrpmuDW1D/FBtnoPZCzgFAm5VKVIB5bHqJqOx9xdEaIKYpMy
+         d78lefI+I+1Ai7/1lyaciiyph3Artz7DZT+q2sAPnfSJMgzfThJkKvdnmHgl9gw/4DeO
+         RnUA==
+X-Forwarded-Encrypted: i=1; AJvYcCUnKONaU6Nu8smKLOfS4ezzEDblRm2lstaanyoq9Rfr2iR6uQypaAhJFhY6i2aZaYLuMEvQcw0E5K71+z2ibMInmob5C44jNUjnfq5wvpmVzIgFp7iW2ET1SDS/DFqagRmGw66vCf0RxLYrK2KAD+T6DepForZulefbUCsW46K+e/4BxCmDpq0SRHT05oSsvkwea+ZAob14JGHq9tAk7pR3THTEZKhZkg==
+X-Gm-Message-State: AOJu0YyLq8fi13jBwHD7FOf5Xot+UygwCeTENjP+zwpx78prsCT8peGe
+	5KO1wERCLwpfDilLep4k7WTho/Ya/C2DGdJ2Blb4a2yIgEyjAj+Y
+X-Google-Smtp-Source: AGHT+IFDSXtUV4AQwiSzsedITS1Ks+VU5H+aA+IrwzXY0yARA6zx4+/SmU8LSwuDkN0+4uIvx/tnYA==
+X-Received: by 2002:a05:620a:1d99:b0:78a:45b9:c96f with SMTP id pj25-20020a05620a1d9900b0078a45b9c96fmr8386956qkn.59.1711421476022;
+        Mon, 25 Mar 2024 19:51:16 -0700 (PDT)
+Received: from fauth1-smtp.messagingengine.com (fauth1-smtp.messagingengine.com. [103.168.172.200])
+        by smtp.gmail.com with ESMTPSA id f23-20020ae9ea17000000b00789e800c204sm2642313qkg.62.2024.03.25.19.51.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 25 Mar 2024 19:51:15 -0700 (PDT)
+Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
+	by mailfauth.nyi.internal (Postfix) with ESMTP id 6C02F1200032;
+	Mon, 25 Mar 2024 22:51:14 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute1.internal (MEProxy); Mon, 25 Mar 2024 22:51:14 -0400
+X-ME-Sender: <xms:ITgCZq0KMEEsDawHXZdKnL8n4WUCu3oJXr-g9e8bQ51FudtBKjmfDA>
+    <xme:ITgCZtEVfhDHXly_ppW_xP0-FeKwM-fdfQ-EUyNRzOxFgEuCgU2crtIt7c8Mn_sx3
+    UbnWWtNEBsZqgIboQ>
+X-ME-Received: <xmr:ITgCZi5oVZ8ki9DHasrqwtZTEfQuziED9fPOcZhFon2BnRtBiS1axksDFw>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrudduvddgheduucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvfevuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepuehoqhhu
+    nhcuhfgvnhhguceosghoqhhunhdrfhgvnhhgsehgmhgrihhlrdgtohhmqeenucggtffrrg
+    htthgvrhhnpedvudfgheeikeehiedugfdugfegjeegvdelteeffeejfefgkeduteekgfev
+    keeitdenucffohhmrghinhepthhrvggslhhighdrohhrghenucevlhhushhtvghrufhiii
+    gvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegsohhquhhnodhmvghsmhhtphgruhht
+    hhhpvghrshhonhgrlhhithihqdeiledvgeehtdeigedqudejjeekheehhedvqdgsohhquh
+    hnrdhfvghngheppehgmhgrihhlrdgtohhmsehfihigmhgvrdhnrghmvg
+X-ME-Proxy: <xmx:ITgCZr0bQsaUqYUNd0feuVjVTTA008glsjcyqMC3K9VCveZqZ7ViQw>
+    <xmx:ITgCZtFhkYNIORHDvgCfcXQZdxGp48exRrJ-Dky0Ak6tT5Vi9Ega4w>
+    <xmx:ITgCZk8IW44RemklT6gJdGIXTGObj6V8Ru7piiqQbosIXr3uEBZVLA>
+    <xmx:ITgCZikVqwPyizH1Xengv-x1mKi2OOHJfx1tpfj87r72bZIGR3ihvw>
+    <xmx:IjgCZpAbMxss07kt1nC5b-UgIevPlKplkZZEdun6Pl8MpEEgIA_B-LEV6sqVb7xO>
+Feedback-ID: iad51458e:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
+ 25 Mar 2024 22:51:12 -0400 (EDT)
+Date: Mon, 25 Mar 2024 19:51:11 -0700
+From: Boqun Feng <boqun.feng@gmail.com>
+To: "Dr. David Alan Gilbert" <dave@treblig.org>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>,
+	Kent Overstreet <kent.overstreet@linux.dev>,
+	Philipp Stanner <pstanner@redhat.com>,	rust-for-linux@vger.kernel.org,
+ linux-kernel@vger.kernel.org,	linux-arch@vger.kernel.org,
+ llvm@lists.linux.dev,	Miguel Ojeda <ojeda@kernel.org>,
+	Alex Gaynor <alex.gaynor@gmail.com>,
+	Wedson Almeida Filho <wedsonaf@gmail.com>,	Gary Guo <gary@garyguo.net>,
+	=?iso-8859-1?Q?Bj=F6rn?= Roy Baron <bjorn3_gh@protonmail.com>,
+	Benno Lossin <benno.lossin@proton.me>,
+	Andreas Hindborg <a.hindborg@samsung.com>,
+	Alice Ryhl <aliceryhl@google.com>,
+	Alan Stern <stern@rowland.harvard.edu>,
+	Andrea Parri <parri.andrea@gmail.com>,	Will Deacon <will@kernel.org>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Nicholas Piggin <npiggin@gmail.com>,	David Howells <dhowells@redhat.com>,
+	Jade Alglave <j.alglave@ucl.ac.uk>,	Luc Maranget <luc.maranget@inria.fr>,
+	"Paul E. McKenney" <paulmck@kernel.org>,
+	Akira Yokosawa <akiyks@gmail.com>,	Daniel Lustig <dlustig@nvidia.com>,
+	Joel Fernandes <joel@joelfernandes.org>,
+	Nathan Chancellor <nathan@kernel.org>,
+	Nick Desaulniers <ndesaulniers@google.com>,	kent.overstreet@gmail.com,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, elver@google.com,
+	Mark Rutland <mark.rutland@arm.com>,
+	Thomas Gleixner <tglx@linutronix.de>,	Ingo Molnar <mingo@redhat.com>,
+ Borislav Petkov <bp@alien8.de>,
+	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+	"H. Peter Anvin" <hpa@zytor.com>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	linux-arm-kernel@lists.infradead.org, linux-fsdevel@vger.kernel.org
+Subject: Re: [WIP 0/3] Memory model and atomic API in Rust
+Message-ID: <ZgI4H8AMc3TAlEag@Boquns-Mac-mini.home>
+References: <20240322233838.868874-1-boqun.feng@gmail.com>
+ <s2jeqq22n5ef5jknaps37mfdjvuqrns4w7i22qp2r7r4bzjqs2@my3eyxoa3pl3>
+ <CAHk-=whY5A=S=bLwCFL=043DoR0TTgSDUmfPDx2rXhkk3KANPQ@mail.gmail.com>
+ <u2suttqa4c423q4ojehbucaxsm6wguqtgouj7vudp55jmuivq3@okzfgryarwnv>
+ <CAHk-=whkQk=zq5XiMcaU3xj4v69+jyoP-y6Sywhq-TvxSSvfEA@mail.gmail.com>
+ <c51227c9a4103ad1de43fc3cda5396b1196c31d7.camel@redhat.com>
+ <CAHk-=wjP1i014DGPKTsAC6TpByC3xeNHDjVA4E4gsnzUgJBYBQ@mail.gmail.com>
+ <bu3seu56hfozsvgpdqjarbdkqo3lsjfc4lhluk5oj456xmrjc7@lfbbjxuf4rpv>
+ <CAHk-=wgLGWBXvNODAkzkVHEj7zrrnTq_hzMft62nKNkaL89ZGQ@mail.gmail.com>
+ <ZgIRXL5YM2AwBD0Y@gallifrey>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <0000000000003dc8e00614076ab6@google.com> <CAADnVQLORV5PT0iTAhRER+iLBTkByCYNBYyvBSgjN1T31K+gOw@mail.gmail.com>
- <CABWLsetXQ8Xj-RECoyC7mp4YrdSsPwmSvkS36Eq2JKLfAYULuw@mail.gmail.com>
- <CAADnVQJAa1SREsqz9LY+-1OnbazWC-=O=TPuq-VEWkzp1ckH1Q@mail.gmail.com>
- <CABWLseuLmAys-YuyFVeug+XR0_xjZROvgRTXz3U6cNiT+pBX0g@mail.gmail.com> <CAADnVQ+oqe6EtC8rc9TSFeUPE1Rbf11Oi-CfTyDxfXT9qM0Vpg@mail.gmail.com>
-In-Reply-To: <CAADnVQ+oqe6EtC8rc9TSFeUPE1Rbf11Oi-CfTyDxfXT9qM0Vpg@mail.gmail.com>
-From: Andrei Matei <andreimatei1@gmail.com>
-Date: Mon, 25 Mar 2024 22:48:05 -0400
-Message-ID: <CABWLses5ZpokYC==6cVKkAz25rYtgtMYn+GpxOd4TuJ7jwcNBw@mail.gmail.com>
-Subject: Re: stack access issue. Re: [syzbot] [bpf?] UBSAN:
- array-index-out-of-bounds in check_stack_range_initialized
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: Edward Adam Davis <eadavis@qq.com>, Andrii Nakryiko <andrii@kernel.org>, 
-	Alexei Starovoitov <ast@kernel.org>, bpf <bpf@vger.kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Eddy Z <eddyz87@gmail.com>, Hao Luo <haoluo@google.com>, 
-	John Fastabend <john.fastabend@gmail.com>, Jiri Olsa <jolsa@kernel.org>, 
-	KP Singh <kpsingh@kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Network Development <netdev@vger.kernel.org>, 
-	Stanislav Fomichev <sdf@google.com>, Song Liu <song@kernel.org>, 
-	syzkaller-bugs <syzkaller-bugs@googlegroups.com>, Yonghong Song <yonghong.song@linux.dev>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZgIRXL5YM2AwBD0Y@gallifrey>
 
-Fixing in https://lore.kernel.org/bpf/20240324230323.1097685-1-andreimatei1=
-@gmail.com/
+On Tue, Mar 26, 2024 at 12:05:48AM +0000, Dr. David Alan Gilbert wrote:
+> * Linus Torvalds (torvalds@linux-foundation.org) wrote:
+> 
+> <snip>
+> 
+> > IOW, the whole access size problem that Boqun described is
+> > *inherently* tied to the fact that the C++ and Rust memory model is
+> > badly designed from the wrong principles.
+> > 
+> > Instead of designing it as a "this is an atomic object that you can do
+> > these operations on", it should have been "this is an atomic access,
+> > and you can use this simple object model to have the compiler generate
+> > the accesses for you".
+> 
+> Isn't one of the aims of the Rust/C++ idea that you can't forget to access
+> a shared piece of data atomically?
+> 
+> If you want to have 'atomic accesses' explicitly, how do you tell the compiler
+> what you can use them on, and when it should stop you mixing them with
+> normal accesses on the same object?
+> 
 
-FWIW, I managed to decode the BPF program that syzkaller used:
+Well, you can just wrap it in your own atomic types, can't you?
 
-0: (18) r0 =3D 0x0
-2: (18) r1 =3D map[id:4]
-4: (b7) r8 =3D 0
-5: (7b) *(u64 *)(r10 -8) =3D r8
-6: (bf) r2 =3D r10
-7: (07) r2 +=3D -8
-8: (b7) r3 =3D 8
-9: (b7) r4 =3D 0
-10: (85) call bloom_map_peek_elem#322320
-11: (95) exit
+If the atomic primitives that a language provides is access-based, users
+can create their own atomic types or language can provide via standard
+library, but mixed usage is still allowed when it makes sense (debug
+functionality, low level concurrent code that utilizes races, etc.) But
+if the atomic primitives that a language provides is type-based, then
+you're limited to what you can do. It might be totally fine as Linus
+pointed out, if you just write a portable library, and don't want to
+care about architectural details. But that's not the case in Linux
+kernel.
 
-Where the map is a bloom filter (as Alexei somehow already knew on the patc=
-h
-thread) with a humongous value size.
+Regards,
+Boqun
 
-4: type 30  flags 0x0
-        key 0B  value 2147483649B  max_entries 255  memlock 720B
-
-On Sat, Mar 23, 2024 at 10:55=E2=80=AFPM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
->
-> On Sat, Mar 23, 2024 at 7:12=E2=80=AFPM Andrei Matei <andreimatei1@gmail.=
-com> wrote:
-> >
-> > On Sat, Mar 23, 2024 at 8:52=E2=80=AFPM Alexei Starovoitov
-> > <alexei.starovoitov@gmail.com> wrote:
-> > >
-> > > On Sat, Mar 23, 2024 at 5:50=E2=80=AFPM Andrei Matei <andreimatei1@gm=
-ail.com> wrote:
-> > > >
-> > > > + Edward
-> > > >
-> > > > On Thu, Mar 21, 2024 at 3:33=E2=80=AFAM Alexei Starovoitov
-> > > > <alexei.starovoitov@gmail.com> wrote:
-> > > > >
-> > > > > Hi Andrei,
-> > > > >
-> > > > > looks like the refactoring of stack access introduced a bug.
-> > > > > See the reproducer below.
-> > > > > positive offsets are not caught by check_stack_access_within_boun=
-ds().
-> > > >
-> > > > check_stack_access_within_bounds() tries to catch positive offsets;
-> > > > It does: [1]
-> > > >
-> > > > err =3D check_stack_slot_within_bounds(env, min_off, state, type);
-> > > > if (!err && max_off > 0)
-> > > >   err =3D -EINVAL; /* out of stack access into non-negative offsets=
- */
-> > > >
-> > > > Notice the max_off > 0 in there.
-> > > > And we have various tests that seem to check that positive offsets =
-are
-> > > > rejected. Do you know what the bug is?
-> > > > I'm thinking maybe there's some overflow going on, except that UBSA=
-N
-> > > > reported an index of -1 as being the problem.
-> > > >
-> > > > Edward, I see that you've been tickling the robot trying to narrow =
-the issue;
-> > > > perhaps you've figured it out?
-> > > >
-> > > > If the bug is not immediately apparent to anyone, I would really ap=
-preciate a
-> > > > bit of tutoring around how to reproduce and get verifier logs.
-> > >
-> > > The repro is right there in the email I forwarded:
-> > >
-> > > > C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=3D15c3871=
-1180000
-> >
-> > I understand, but how does one go from this to either BPF assembly,
-> > or to running it in such a way that you also get verifier logs?
->
-> Adding logs to repro.c is too hard, but you can
-> hack the kernel with printk-s.
->
-> Like the following:
->
-> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> index de7813947981..d158b83ed16c 100644
-> --- a/kernel/bpf/verifier.c
-> +++ b/kernel/bpf/verifier.c
-> @@ -7179,6 +7179,7 @@ static int check_stack_range_initialized(
->                         return -EFAULT;
->                 }
->
-> +               printk("slot %d %d spi %d\n", slot, slot % BPF_REG_SIZE, =
-spi);
->                 stype =3D &state->stack[spi].slot_type[slot % BPF_REG_SIZ=
-E];
->
->
-> shows that spi and slot get negative: -1, -2, ...
+> Dave
+> 
+> > This is why I claim that LKMM is fundamentally better. It didn't start
+> > out from a bass-ackwards starting point of marking objects "atomic".
+> > 
+> > And yes, the LKMM is a bit awkward, because we don't have the
+> > shorthands, so you have to write out "atomic_read()" and friends.
+> > 
+> > Tough. It's better to be correct than to be simple.
+> > 
+> >              Linus
+> > 
+> -- 
+>  -----Open up your eyes, open up your mind, open up your code -------   
+> / Dr. David Alan Gilbert    |       Running GNU/Linux       | Happy  \ 
+> \        dave @ treblig.org |                               | In Hex /
+>  \ _________________________|_____ http://www.treblig.org   |_______/
 
