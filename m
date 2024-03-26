@@ -1,73 +1,73 @@
-Return-Path: <linux-kernel+bounces-119895-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-119896-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id A4DD988CE94
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 21:28:17 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3FE5D88CE9A
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 21:28:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EC042B2531B
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 20:28:14 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B7A46B2784C
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 20:28:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F3A8313F444;
-	Tue, 26 Mar 2024 20:24:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AAECA13FD69;
+	Tue, 26 Mar 2024 20:24:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="qQ/eSFW9"
-Received: from mail-lj1-f175.google.com (mail-lj1-f175.google.com [209.85.208.175])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="tMeEAvDE"
+Received: from mail-ej1-f53.google.com (mail-ej1-f53.google.com [209.85.218.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6C84413E8AF
-	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 20:24:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 34C7813F007
+	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 20:24:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711484665; cv=none; b=bkMReFXGf5FhTkIE4E5kowYwFdlPmIt74qOweojczTSfJF5n6mTcbxBysMPKR1zYNW1BS8cZeaMm/2H8fxTty/rJkgDgVW2UdKlDwpWh6zrcbzJ+QIA6r4exrwBIjWdyqaswjdGmpSH8EG3AlyeVRVDQ9Xu7nT5FJ2vSEt+XKVk=
+	t=1711484666; cv=none; b=odqee4P38K/EdNOoy27OpM4L7mDYMfrUql5xAqBtAgHeJt75yksgSxamf9L6muriIL/M5T5pUewL1wVfxQavqsRtEhDuhfUCM1GrQO3uiJuX0i1t0OZUMStCYyPA8zSwEOv3G5TitE1FemCuV0fwXYatXJEyFtTRrPrGW2cnoSg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711484665; c=relaxed/simple;
-	bh=GHYJDWqnZoc7/rYug0BmurqWnNvrY/zLtghYn4WZPjI=;
+	s=arc-20240116; t=1711484666; c=relaxed/simple;
+	bh=b7O+xsNW5AifEGP5unLgDOsETMh4o3Ed5FMEicgl0Bs=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=Zd6G8I5FQCl9uV/+MVQmu8GTx6Ey/7dnMfGm1EL9f22smd4M4p89Bua4A3vUyiTaPF724TVkeIet4ALS/A6aXGdD8zJkGBFvTmcrPQofbwfAyCQ+sLpjKwhH0+a1+A/OQDtYlc6kxOeEyZSc+F9nJmFv8IsD2VUA2sqgI3npep0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=qQ/eSFW9; arc=none smtp.client-ip=209.85.208.175
+	 In-Reply-To:To:Cc; b=caS0Q6/8wM37MQFxddVqnYxQuLKkYiL14kL5E2kKIcrsfOD+veqd5rocOQsX9vuiO7pGQTbqwIl3wNfJR7qwbImywvqxokG9u7yRCnLjaD7lWbbgtuNEq1E1j+q+LR8x2QYwWS2aYE2HJZcVCxyBgMhbBjlaC7AcBfQoDkXGqgA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=tMeEAvDE; arc=none smtp.client-ip=209.85.218.53
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-lj1-f175.google.com with SMTP id 38308e7fff4ca-2d28051376eso109302661fa.0
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 13:24:22 -0700 (PDT)
+Received: by mail-ej1-f53.google.com with SMTP id a640c23a62f3a-a46d0a8399aso30657666b.1
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 13:24:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1711484660; x=1712089460; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1711484662; x=1712089462; darn=vger.kernel.org;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=JKOnOabUB6pF+ej5SQDvcGeRRaglO84Sz9O3R1GaVFA=;
-        b=qQ/eSFW9m/z+cJNzmwm2jxAUMalRVu6gZTtVLS9SikVb/w7vORdF/cED/5FyVlqGnE
-         K1itBcC4y8C4Ax8rAPDiPlBuWJfk0wXIIDSp8765VF1iEpQn7gR4cqUBmhigblIJMh7t
-         rHTcuuKF7m+/8YrRohV0NaACH+JWlh4DgXHgfDWW3E3nH3F5HRzKMFVDpi4FjVW3oWe+
-         rAEYkb5OVa63LbvTmiCsJPgwqxXIeQbix+TzHz91nAmLSZUIOxFGHPjFHsPFc57/qdvz
-         eOUr3UdFrzVJCzcyvBj3fvjycU2yXXzMmttacfznF0lMYOuGJMe24s1KZS8cBBbrx5ew
-         y08w==
+        bh=/Iv0AZfW3wpSqdU6En0pi+/4bLDyGY5/1naPQo6iA0g=;
+        b=tMeEAvDEx7rEZcfFT9pQHbbX6/U9FBRZ0Yqe6XyPlAO/HmLgIOq5KC15gmXLLX6hEu
+         zZpqoaBY1TRlxOV+lavyczpXbZAcGjG3IR4WAhYjVMBduGbb5X7HogzY4KQax+A9lPtP
+         A1wDZMcv6uQKeU0NrwJRFILi12d88nB8tpHaBXpIEYIoxt7m2Tqru48c1TF5Rknxt9At
+         TvNfalVlI7I4NA3fNmwRiXMcnaBfH/xkk2imbde6roOGWs6LhN0dEFOjPIrMCYcOYbk7
+         z7zXmYHGN2YnLWMlURXmU0yB/4IJYnxMWJqDgxl2tnG9obeF21O0kfB7wzgIo85WfMLn
+         eAeA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711484660; x=1712089460;
+        d=1e100.net; s=20230601; t=1711484662; x=1712089462;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=JKOnOabUB6pF+ej5SQDvcGeRRaglO84Sz9O3R1GaVFA=;
-        b=N9WOrfxfS2AIoB22oR3Q7kpt/FpGvwFW+FGseTh9B+JGNqNro/KBnyru3EWhyrHT93
-         7Ua479XA+whlGKSWe3CRnW0w7vRrMe64HkAx85DwhURvOJhPYKYIJ3QdRAy/aY+QJpfr
-         q5bOgd5+x/NeXozpUt7kG94mT1+R1WfAAI+hcZBs59ZTI3NdfbLKY4PnuITiGw0099zX
-         e+jUEMjar5NdupRwmvsU6wPHe+rzQlY8LrhPF8Ygau0u4EEIj7zkRaI1ECTvPiFE/yWn
-         iQGCIijfHK5kSleLDqY4u7+HZJy2bbsnOVxehTiqyjwrYXqD5x8pUjDjfOl5sIiGd5yd
-         D0+A==
-X-Gm-Message-State: AOJu0YwhgtA1LMp6MRd7Z/h39ldaNTj0tFQZkxEkfzcHtXZvGEAONUY0
-	ifr7IcvE7Yi4ZtWsW/CAeMsNttpytImiDX5spmtuVKilMvbymEN2lOwzNBrU580=
-X-Google-Smtp-Source: AGHT+IESmzkKIx7adnGUE8VL685+RZ7GFnBS4CbHBYXytjFSFZVBSl9GE7H4tv5Ufd2Mfv7gRTK1NA==
-X-Received: by 2002:a2e:97c3:0:b0:2d6:8e88:5a8b with SMTP id m3-20020a2e97c3000000b002d68e885a8bmr610711ljj.32.1711484660485;
-        Tue, 26 Mar 2024 13:24:20 -0700 (PDT)
+        bh=/Iv0AZfW3wpSqdU6En0pi+/4bLDyGY5/1naPQo6iA0g=;
+        b=SoNC+xsFs36CHWsZSkDnTMe+nwPUJmOTp+MWbvJnKXV8RaIbzjR15w0DXFs6Tj2ipo
+         CKqkVqPVjX77v+e4Bvrc9kOBr33IAhzvwFz0TjltxU8MHzkn6Tr7Bu0dPpOGZBFnNLVs
+         okmbWwzssyyjFEpJQYDfb9TUyLdS3jjbKjhXlKmLzETw0mTWRnk8yo04sTo8TEXheQhi
+         V9xL0SGnkKfuIJH3hz+kn7lgSyzdStcMrQ59YcPO3zVWX5fc2kd8Kh8udW/Hrot/mMqT
+         KEr6eJ8Kl9QLQjOLkkVmWPhcJbQ2LW0lO1QXWA0fA1Qun+BeJvhJK9qkJI8K/e05NEjz
+         +Mxg==
+X-Gm-Message-State: AOJu0YxSLCnMb4nrvMErUwq+AX1YiFJ5wLqPAPzOuDbTSokLo+ZjfCcW
+	3iI8VkVPVk1KHvkTXuYBEOWidnJK4jxC3rVN2rCI78rznCo7XVJrEEH03JDVn70=
+X-Google-Smtp-Source: AGHT+IG7S4HjUMgBB49GHchvHAMJD2aht3cd8KtHCObSSzp1R2kWTUNNEN8xAhAkTlsu/KwDh2IF6A==
+X-Received: by 2002:a17:906:f59b:b0:a4a:3b69:66a0 with SMTP id cm27-20020a170906f59b00b00a4a3b6966a0mr2609291ejd.15.1711484662445;
+        Tue, 26 Mar 2024 13:24:22 -0700 (PDT)
 Received: from [127.0.1.1] ([178.197.222.44])
-        by smtp.gmail.com with ESMTPSA id b2-20020a1709062b4200b00a4725e4f53asm4584492ejg.40.2024.03.26.13.24.18
+        by smtp.gmail.com with ESMTPSA id b2-20020a1709062b4200b00a4725e4f53asm4584492ejg.40.2024.03.26.13.24.20
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Mar 2024 13:24:20 -0700 (PDT)
+        Tue, 26 Mar 2024 13:24:22 -0700 (PDT)
 From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Date: Tue, 26 Mar 2024 21:23:40 +0100
-Subject: [PATCH 10/19] coresight: tmc: drop owner assignment
+Date: Tue, 26 Mar 2024 21:23:41 +0100
+Subject: [PATCH 11/19] coresight: tpda: drop owner assignment
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -76,7 +76,7 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20240326-module-owner-amba-v1-10-4517b091385b@linaro.org>
+Message-Id: <20240326-module-owner-amba-v1-11-4517b091385b@linaro.org>
 References: <20240326-module-owner-amba-v1-0-4517b091385b@linaro.org>
 In-Reply-To: <20240326-module-owner-amba-v1-0-4517b091385b@linaro.org>
 To: Russell King <linux@armlinux.org.uk>, 
@@ -100,21 +100,21 @@ Cc: linux-kernel@vger.kernel.org, coresight@lists.linaro.org,
  linux-crypto@vger.kernel.org, dmaengine@vger.kernel.org, 
  linux-input@vger.kernel.org, kvm@vger.kernel.org
 X-Mailer: b4 0.13.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=745;
+X-Developer-Signature: v=1; a=openpgp-sha256; l=736;
  i=krzysztof.kozlowski@linaro.org; h=from:subject:message-id;
- bh=GHYJDWqnZoc7/rYug0BmurqWnNvrY/zLtghYn4WZPjI=;
- b=owEBbQKS/ZANAwAKAcE3ZuaGi4PXAcsmYgBmAy7UHCFK8a0nQ6hsfzaGBQG3fZhmF1o3Dz7kU
- 68k5ByzCrKJAjMEAAEKAB0WIQTd0mIoPREbIztuuKjBN2bmhouD1wUCZgMu1AAKCRDBN2bmhouD
- 12sbD/0bm9OxvO/yndxGXeD2ddir4+4GYj3zVF50/RCNP239KPawL714M6CqzE7jBWZUy2LZoLW
- pHHRmfpLw35XdFoNQv9vOyr5vIpdp6vH3L4o+zd3qdmBq603IIXiukXSMsw9xD9mM68xuon9cPO
- yZh9gLd7KC9zG3r6j6QDfTq42SoZVTVN/d3QugZKcgLO19tuw+5+i+QRNsie29m9D4MkSIu1yPg
- xMnaTymj0YvBhrERC1Qnc6N9NKa1i4Y6EdI1TAmw6x3qMXxpvxogoVFRujzpzX9AqNfUm8+5L1t
- jMxLXiBrW4p+tU38wlDISWmbZjiNogv/0VoamQKnmzjGqBCJ9XIX7mJBGv9RmEmcu7zyXNKbThm
- YN2SN9a/wu88AG6ZyQt+Ph2UPmrC7FjYQolln39hVlYXDPXp3ePlfH7t1h53gj9FvUjvyqGLaOK
- QPOf94OGpPJ65+iscAfXc2IbQ8aFFZGIWbZQx8gDTdv/koUUtWRthD1VmaU2SAJwMbRV0LKrCPM
- FOlzvEuL3zlKvPsG41il3k4BsIxm9qGgi8oa0vYEHuAFylq+x/fFvQGZtEKbQAwmDrwHX6XmAfg
- +Mr9ombJvshL+qUH/J6LTKxly06KNIdHmIaoSDc0/0pIW/ph2gVexYDQ0SxHlepokzpj/yhKFUJ
- qzrs4LxRd1z5t7w==
+ bh=b7O+xsNW5AifEGP5unLgDOsETMh4o3Ed5FMEicgl0Bs=;
+ b=owEBbQKS/ZANAwAKAcE3ZuaGi4PXAcsmYgBmAy7VS6fHhY3xQU5O23lff9iEFJQUVzhwHGejs
+ Mi4U6AthLOJAjMEAAEKAB0WIQTd0mIoPREbIztuuKjBN2bmhouD1wUCZgMu1QAKCRDBN2bmhouD
+ 12iXD/oCdCTPj6r3JiZLlJFxbtCDh14a8HKda5v2HiiA6tvYM9UGYM4Bph8HMfJwleEBMXuN7SD
+ RxobPBhCEEnohTCVDMENYkIUcrEfHqQvs7Bp2R0vVZaiqbOxJ0jTjQfm3/fzO/JtCU3a+YAPDN+
+ edgTgKX1eXv8Q7++REKJuXQwGN+lvtu+Bb9TjlkJx2vaWMrnNoJye7XTMui+iQYOk3/i0+khie6
+ 3NKkzdj0Wgwe+0Oov6kbByiSU5dIhUOVgpZoaBdHuK74MOl6k+XISmGTysOo+Ja6agYfeZsKyXh
+ J/k8bl5xwB2MA6ky4bbr+C24a1FdI7HlFsVceF65QqTkrILX5btPwxWq7ULXbmrTJQ98vdkgbpy
+ U2Hhi2lCO5ReLeckBwOEK6mhkjE60HSbH0csg6uPR87GMg1PCuCCjfA+D/GEdpsEu/4FnhG6Vc8
+ 6esqOmwTZdbGn2c4KHUTF2UNtkTo+U4Gkcu7AklWm5J5xGz7MbSNjFtDNXe2TctziusIdSmRDmF
+ VOsvI+FirAxU9IDMEnjI1EkyebUcwRaI3qIQokZRmdx+oinVHTi5+sILVQew6mx/NtFoF9c3HK/
+ D0UnRFlxOiKJy3uUMPSgIpwSrnDBDAokTtOzt+8vl94YkR9vkevWuetkueKUvkvDMOt5Rlr5MxH
+ Zo3LPLTDSOkdIJQ==
 X-Developer-Key: i=krzysztof.kozlowski@linaro.org; a=openpgp;
  fpr=9BD07E0E0C51F8D59677B7541B93437D3B41629B
 
@@ -122,21 +122,21 @@ Amba bus core already sets owner, so driver does not need to.
 
 Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 ---
- drivers/hwtracing/coresight/coresight-tmc-core.c | 1 -
+ drivers/hwtracing/coresight/coresight-tpda.c | 1 -
  1 file changed, 1 deletion(-)
 
-diff --git a/drivers/hwtracing/coresight/coresight-tmc-core.c b/drivers/hwtracing/coresight/coresight-tmc-core.c
-index 72005b0c633e..0d251cae814f 100644
---- a/drivers/hwtracing/coresight/coresight-tmc-core.c
-+++ b/drivers/hwtracing/coresight/coresight-tmc-core.c
-@@ -602,7 +602,6 @@ MODULE_DEVICE_TABLE(amba, tmc_ids);
- static struct amba_driver tmc_driver = {
+diff --git a/drivers/hwtracing/coresight/coresight-tpda.c b/drivers/hwtracing/coresight/coresight-tpda.c
+index 7739bc7adc44..bfca103f9f84 100644
+--- a/drivers/hwtracing/coresight/coresight-tpda.c
++++ b/drivers/hwtracing/coresight/coresight-tpda.c
+@@ -333,7 +333,6 @@ static struct amba_id tpda_ids[] = {
+ static struct amba_driver tpda_driver = {
  	.drv = {
- 		.name   = "coresight-tmc",
--		.owner  = THIS_MODULE,
+ 		.name   = "coresight-tpda",
+-		.owner	= THIS_MODULE,
  		.suppress_bind_attrs = true,
  	},
- 	.probe		= tmc_probe,
+ 	.probe          = tpda_probe,
 
 -- 
 2.34.1
