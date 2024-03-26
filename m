@@ -1,123 +1,119 @@
-Return-Path: <linux-kernel+bounces-119779-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-119781-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 16D2388CCE6
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 20:17:17 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9D76988CCF0
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 20:18:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BD86B1F83305
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 19:17:16 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7136FB26B32
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 19:18:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9998713CC67;
-	Tue, 26 Mar 2024 19:17:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E62A313CFB3;
+	Tue, 26 Mar 2024 19:18:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="SFKwvYbt"
-Received: from mail-il1-f176.google.com (mail-il1-f176.google.com [209.85.166.176])
+	dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b="EsFc3yX2"
+Received: from mail-yb1-f180.google.com (mail-yb1-f180.google.com [209.85.219.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 65AEE13CC65
-	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 19:17:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3F24213CFAC
+	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 19:18:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711480630; cv=none; b=rIYIeK91h83+wV2WpkHmQrg1Gpg22ojH/FjP5bDsoB15/vkfEvMfY58/j6q7ilBHpD8SOiuwhcxtTT2pWj1/W76YIvzaf4Nt9hS1u4/EMwFaqkkbDxdiXszyjoiedsytagT7ucEL0U07mbblh1Lw1Bk7C+vVFHoSF3D2wF87Rp8=
+	t=1711480695; cv=none; b=bVYkiHJAFQd0YSuzNYzBDSBAYdU0iafY4qqbQwBenrg5xKGf03FEBY6dx7JTlvxX+WitQj8qq7O0yvvcUFQVkt8kIOjwvsENp84NqowfP5ev+ufLjweKAF2KdbwQNDbQA9Ns3CWZQbIB0Zpx7wpO11RLIvzV9iDuZl6cf0wkh24=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711480630; c=relaxed/simple;
-	bh=d5oiFHuXdlxBu9o91T6TmgxwTU7ItEYzvBVBFxokMdc=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=D1+MVxhvhehu9xHt5+e7vacRDs94/eqB+L9tpH+gEvgpAfheDROOlKDhVZ4fe4M2z8x/tCiLOZPzyhshvpG226c4Gh2XlEU8g2ohF24PCB76wupa9R7khsAEAgCPqtkAgw+Fzavkya++GzGh9NBrdVoJUzpo+8ycgIWe+Ou4M4o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linuxfoundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=SFKwvYbt; arc=none smtp.client-ip=209.85.166.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linuxfoundation.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
-Received: by mail-il1-f176.google.com with SMTP id e9e14a558f8ab-3688dcc5055so419975ab.1
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 12:17:08 -0700 (PDT)
+	s=arc-20240116; t=1711480695; c=relaxed/simple;
+	bh=c2enpOGs0X4T4rjqA7ge5hA+2N1P5nMY1p+BtQwpvCk=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=oHUFjooTdtxx/MPagyWr7DD7ODEcs1Ld33di9TI+YiYQlDC1IuipGYabKfXHdHLeFnRXHzF+KRVzjw5J9bIPp0lJyf7e31k63MQEdCOkjuszitJFRxerd9MsoV1CsQh7KkZvr6Cupf6oDuABlO1dKBuAxqv1eTcv10DHxe9gqd4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com; spf=pass smtp.mailfrom=paul-moore.com; dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b=EsFc3yX2; arc=none smtp.client-ip=209.85.219.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=paul-moore.com
+Received: by mail-yb1-f180.google.com with SMTP id 3f1490d57ef6-db4364ecd6aso5593992276.2
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 12:18:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google; t=1711480627; x=1712085427; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=aAgAdxoAWBggRCLmNhHzURpQUXyex1VS2og6I0eJHg4=;
-        b=SFKwvYbtiHIg9dmQJc36AJa97p5dNiJUIsXe5/J5phY0QkI7AJnz8O3z5wd+tvllSi
-         N32lGwd03I0cGdX+rcHl5v8303HpKd3q6eNfB8cYd9S5FMEesU9Gz//SnBjj8fGgsn+g
-         5gkU+fqUlbk2BUeZ1kqbkW1AfNjWyqIqfUFno=
+        d=paul-moore.com; s=google; t=1711480691; x=1712085491; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=yaxPwfF6pcSWzIoXPt3G+TXmBRyW+5V+y3uoFizWf9Y=;
+        b=EsFc3yX2r7LXKbaBWPyMnOKWwGmNXgiF8lUhJDrsdtAHd5+ZBWiouzr2A7jkRmkKNQ
+         9ClNxKBDdC/fPj33Qnlpd1eDYYs371Ie61f/TuEx3H9IZlAbr0jtD8FSAXrB4w/ppFJa
+         Vq86UYpi7/bHFeaZZMJ4AHSS1mF0EcPeqk8taxaT/uyc9g//TJAMnFPD0mGc8IO5TSC7
+         sLRlKR7QhxD3kqhV1zFZTECgdtukh0zOlCuVxWJGcZFkOqEBYC6X90SikoCn6wUDoXB5
+         slUPTqcvaKDGa9WgteMAx4JqaOY/Pq6KthxnAQq5BAjodshJZzX5hC/FP7CHn0Z9jjWa
+         hJtA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711480627; x=1712085427;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=aAgAdxoAWBggRCLmNhHzURpQUXyex1VS2og6I0eJHg4=;
-        b=e1L0oncVbazWEh0y5YZEo2KiZnZRr6RL5YBddEz9ak5Mz1tukTmq8WoWTYFOObHH7o
-         T/4b3xj5zIlF9V4iytqScCcZJ9JJnvtDZJXaO8eM3EId1oOTgCWXA85efq1P0R+P4MSw
-         4/367CxDsDVLkrlH5jC6s1sR624eZ1L+gDwa+Nd7oHg0KbO/K3Q5Q8z5CFnyAwexDoVt
-         4iXM8nscXydNy2jIetmgS8vmF3ZIm2r+yFyXVjlB19FKjdAJ/LFpZJJLG6R2Cofxnw5M
-         tUoP3zVlBhzR2FAktnP2XEsSZmFlUO20WsaENZuNSitsHHfuKDZIT1tRGqiZ+T+cC0yU
-         Draw==
-X-Gm-Message-State: AOJu0Yx8yHDIwIJ/GJAyHBVQQaEqMWZ7lT6zrGiihJa+RWRhjEyj5g9L
-	vK5SNHNS3TdagrLcLK7p4nvRFAVBqmGCUXxA/dn3jt/2ccJijgWyUo0txMcKsgo=
-X-Google-Smtp-Source: AGHT+IERj3hrIyDnCZJ5UcMAXz2os4t+ojmXAKvLHG/6knoGZCHVaoWkXymnVBqCdt4RsIW8XSrQPw==
-X-Received: by 2002:a92:c9c6:0:b0:368:80b8:36fa with SMTP id k6-20020a92c9c6000000b0036880b836famr8573443ilq.2.1711480627401;
-        Tue, 26 Mar 2024 12:17:07 -0700 (PDT)
-Received: from [192.168.1.128] ([38.175.170.29])
-        by smtp.gmail.com with ESMTPSA id m18-20020a92c532000000b00368984422e1sm927267ili.23.2024.03.26.12.17.06
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 26 Mar 2024 12:17:07 -0700 (PDT)
-Message-ID: <0cee99af-f058-47a0-9119-94cc9a37e88b@linuxfoundation.org>
-Date: Tue, 26 Mar 2024 13:17:06 -0600
+        d=1e100.net; s=20230601; t=1711480691; x=1712085491;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=yaxPwfF6pcSWzIoXPt3G+TXmBRyW+5V+y3uoFizWf9Y=;
+        b=Ji5aVLioNLmn8kaLmIowl61eG5NAzPruyBao3EpJ+ds+1OOJZ/81w84bc8xJ31f6Kj
+         2cFFiIOFM3wlSlouSMxbcWEnAeuLeyxFPe9NW1CLP7B8KbTe8Ibp81f+9a6TQ5wFCd5o
+         zacUNz0ZgIQrr9NZVXb9dC9sjUZoM7bOb75onrA7UvZSNFqC7HidP5/FfD3QsgTQbjaD
+         g4vPDfwPzVr0+AnzFF4AlvqMjqBJLCFwhAH2IwY9n5HR/8zK/Y7uYDqxCOuRmK34ZVrQ
+         uyRbkAleufYl66FuZS5O9VBRZYpyG839h5BAXgRnrrcDDnhjMKX7MFwRBo60G7+vG1sK
+         oWVw==
+X-Forwarded-Encrypted: i=1; AJvYcCVTNCRLpRNZvs5va6DOhG9qWLFaiMqewgx3Ty1JUet+G59fBn2ibpa7r7W7A+OLXmcrJ0v28EH0/Y+N9XsoNXVnYCf2Aq05ptHxYWsY
+X-Gm-Message-State: AOJu0YxirojyKbbSBxBM15c4z2++SvJ/3JWB91L/r1+YQsEzY0zZZfpn
+	JHI59/Rafe/993iZ2lOuULxsDGFyQJsO1Enm/gE2xN4335vXlDtZIHn7oXem3IZ3+xVCPmw3z4D
+	BPtVePv4vnDIixrBK2Byj1gThjH+UgtW7v0Pj
+X-Google-Smtp-Source: AGHT+IEcNPIscIUrckKDg5If7x3ZclJg0Hn8ehLPXdqFB6Huk7CPYW+4wqalcC+NaGkyWtv8nYTfzs1Tr9JJsquzDkI=
+X-Received: by 2002:a25:bc87:0:b0:dd1:3cc1:5352 with SMTP id
+ e7-20020a25bc87000000b00dd13cc15352mr1736980ybk.15.1711480691209; Tue, 26 Mar
+ 2024 12:18:11 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3] kselftest/clone3: Make test names for set_tid test
- stable
-Content-Language: en-US
-To: Mark Brown <broonie@kernel.org>, Christian Brauner <brauner@kernel.org>,
- Shuah Khan <shuah@kernel.org>
-Cc: linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
- Shuah Khan <skhan@linuxfoundation.org>
-References: <20240325-kselftest-clone3-set-tid-v3-1-6fdd91506e53@kernel.org>
-From: Shuah Khan <skhan@linuxfoundation.org>
-In-Reply-To: <20240325-kselftest-clone3-set-tid-v3-1-6fdd91506e53@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+References: <20240315125418.273104-1-cgzones@googlemail.com> <20240315125418.273104-2-cgzones@googlemail.com>
+In-Reply-To: <20240315125418.273104-2-cgzones@googlemail.com>
+From: Paul Moore <paul@paul-moore.com>
+Date: Tue, 26 Mar 2024 15:18:00 -0400
+Message-ID: <CAHC9VhTOmkpZu-zUEcvWJxLVHwoUnTcPxhBexs1ZKjr_LRKx_w@mail.gmail.com>
+Subject: Re: [PATCH 1/2] yama: document function parameter
+To: =?UTF-8?Q?Christian_G=C3=B6ttsche?= <cgzones@googlemail.com>
+Cc: linux-security-module@vger.kernel.org, Kees Cook <keescook@chromium.org>, 
+	James Morris <jmorris@namei.org>, "Serge E. Hallyn" <serge@hallyn.com>, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 3/25/24 08:29, Mark Brown wrote:
-> The test results reported for the clone3_set_tid tests interact poorly with
-> automation for running kselftest since the reported test names include TIDs
-> dynamically allocated at runtime. A lot of automation for running kselftest
-> will compare runs by looking at the test name to identify if the same test
-> is being run so changing names make it look like the testsuite has been
-> updated to include new tests. This makes the results display less clearly
-> and breaks cases like bisection.
-> 
-> Address this by providing a brief description of the tests and logging that
-> along with the stable parameters for the test currently logged. The TIDs
-> are already logged separately in existing logging except for the final test
-> which has a new log message added. We also tweak the formatting of the
-> logging of expected/actual values for clarity.
-> 
-> There are still issues with the logging of skipped tests (many are simply
-> not logged at all when skipped and all are logged with different names) but
-> these are less disruptive since the skips are all based on not being run as
-> root, a condition likely to be stable for a given test system.
-> 
-> Acked-by: Christian Brauner <brauner@kernel.org>
-> Signed-off-by: Mark Brown <broonie@kernel.org>
+On Fri, Mar 15, 2024 at 8:54=E2=80=AFAM Christian G=C3=B6ttsche
+<cgzones@googlemail.com> wrote:
+>
+> Document the unused function parameter of yama_relation_cleanup() to
+> please kernel doc warnings.
+>
+> Signed-off-by: Christian G=C3=B6ttsche <cgzones@googlemail.com>
 > ---
-> Changes in v3:
-> - Rebase onto v6.9-rc1.
-> - This is the second release I've posted this for with no changes or
->    review comments.
-> - Link to v2: https://lore.kernel.org/r/20240122-kselftest-clone3-set-tid-v2-1-72af5d7dbae8@kernel.org
-> 
+>  security/yama/yama_lsm.c | 1 +
+>  1 file changed, 1 insertion(+)
 
-Thank you for patience. Applied now to linux-kselftest fixes for
-next rc.
+One small comment below, but otherwise looks okay to me.
 
-thanks,
--- Shuah
+Reviewed-by:
 
+> diff --git a/security/yama/yama_lsm.c b/security/yama/yama_lsm.c
+> index 49dc52b454ef..f8e4acd41b72 100644
+> --- a/security/yama/yama_lsm.c
+> +++ b/security/yama/yama_lsm.c
+> @@ -111,6 +111,7 @@ static void report_access(const char *access, struct =
+task_struct *target,
+>
+>  /**
+>   * yama_relation_cleanup - remove invalid entries from the relation list
+> + * @work: unused
+>   *
+>   */
+>  static void yama_relation_cleanup(struct work_struct *work)
+
+Should we also take this opportunity to mark the parameter as '__always_unu=
+sed'?
+
+--=20
+paul-moore.com
 
