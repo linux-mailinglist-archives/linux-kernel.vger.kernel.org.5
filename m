@@ -1,133 +1,132 @@
-Return-Path: <linux-kernel+bounces-119209-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-119210-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AB0A388C5A8
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 15:48:48 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 69E7388C5AB
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 15:49:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A0E301C62931
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 14:48:47 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 20E3C1F616A1
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 14:49:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EC90F13C3FA;
-	Tue, 26 Mar 2024 14:48:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E055113C80A;
+	Tue, 26 Mar 2024 14:48:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="aX8o8gh7"
-Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="eNus6lVf"
+Received: from mail-ej1-f43.google.com (mail-ej1-f43.google.com [209.85.218.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 45C8E13C3F1;
-	Tue, 26 Mar 2024 14:48:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.19.141
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E70913C3D9
+	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 14:48:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711464503; cv=none; b=Nf44+P3s27+uJ7nOeEdfct0TWvPrYu+UVZoQtq1zXq3im74TFvDzjTOzyP/fnrPGKDzJad4KsgioWwV/Y2YNNoqxuisas4EQTbsfvo4Fr+tNd9siugZ/GdFYffKgLWpvYKxcmrqF3KuCcGrco2Z95SoEccm9KKDk3V1ytT6PVDw=
+	t=1711464516; cv=none; b=XQXlGTCxVDbZVI7KHyKASZEN4MEzd3KMPGKoSB6mgtA+ltEp046Rm7ADRzLVyqPnkYzocMqseZ3/I6PW/Jv0mVZV0qOhws9Lg3xTiUrTD4aXBCHI4fs+o+waBKsI4ea8IcTerO8ASoMMqm78cUBbliYSGZx3tJbYZ6D2ADVW0iI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711464503; c=relaxed/simple;
-	bh=WSB5F1WSZax7rQrE9wzTv65xq0IhCJ8+VtjWj4me3m8=;
-	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=aUUV+0DwNrmeEfe38L8aTF5X13i6NvGxV5RqOzAVA1T3iK5uE8Nsc+HdlcnunvC3WRq9uL6tL1q7mFXoadB7Vrx8Cva7T+5Y+0ALtmmx9c4zgzvFJbwcpzoX7AMd2AnbIdzy8381xgqDlhQmmT0FZSekPhE3xRx2/NoA4tQl6PI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=aX8o8gh7; arc=none smtp.client-ip=198.47.19.141
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-	by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 42QEm1EK121149;
-	Tue, 26 Mar 2024 09:48:01 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1711464481;
-	bh=r5kO6gHMdss7KBmKCinOi5uDLA/3tf7mzyqUper/ros=;
-	h=Date:From:To:CC:Subject:References:In-Reply-To;
-	b=aX8o8gh7KKSVG4M7zvZf6QdRV0MxzOhc7xOYlTaQ09TlWUVrmBPwsevCzu0CVAtlS
-	 AC+bAqo8Px8MIFR6Mn8IrXfNVy+BndDAQ//MSqChtLf8djsMse1NL205ti9ThBmGco
-	 uxQ+49u6vtwOcpq66Fo7x5M4wrs0FM1snZK1xZm4=
-Received: from DFLE108.ent.ti.com (dfle108.ent.ti.com [10.64.6.29])
-	by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 42QEm1qk022383
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Tue, 26 Mar 2024 09:48:01 -0500
-Received: from DFLE111.ent.ti.com (10.64.6.32) by DFLE108.ent.ti.com
- (10.64.6.29) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Tue, 26
- Mar 2024 09:48:01 -0500
-Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DFLE111.ent.ti.com
- (10.64.6.32) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Tue, 26 Mar 2024 09:48:01 -0500
-Received: from localhost (uda0492258.dhcp.ti.com [172.24.227.9])
-	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 42QEm0PX024629;
-	Tue, 26 Mar 2024 09:48:00 -0500
-Date: Tue, 26 Mar 2024 20:17:59 +0530
-From: Siddharth Vadapalli <s-vadapalli@ti.com>
-To: Niklas Cassel <cassel@kernel.org>
-CC: Siddharth Vadapalli <s-vadapalli@ti.com>, <lpieralisi@kernel.org>,
-        <kw@linux.com>, <robh@kernel.org>, <bhelgaas@google.com>,
-        <manivannan.sadhasivam@linaro.org>, <fancer.lancer@gmail.com>,
-        <u.kleine-koenig@pengutronix.de>, <dlemoal@kernel.org>,
-        <yoshihiro.shimoda.uh@renesas.com>, <linux-pci@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
-        <srk@ti.com>
-Subject: Re: [PATCH v5] PCI: keystone: Fix pci_ops for AM654x SoC
-Message-ID: <c01170ab-b16b-45c7-9067-07cc9004e2c9@ti.com>
-References: <20240326111905.2369778-1-s-vadapalli@ti.com>
- <ZgLUCqh12RMApzyr@x1-carbon>
- <2e40b30d-b063-48ac-a566-f66eb2788003@ti.com>
+	s=arc-20240116; t=1711464516; c=relaxed/simple;
+	bh=nyOnMNk/fH+jvwDYAQaMxqpFfYbqHXAsFTWb8/syMtI=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=XCy2U/TtjP5Rv+26RxCw63nC/KQyhhDwXVmDsDfI92efMrgJcjcW6wK+3cZP9wEXoDtkwwcg6Edh7hgjJBkKogQBFx7SlDqmOCFaH5QAe7lDrk7eBn9c90404lLsqe+/pWZC0gC2KbU0Wv9lpupkscxdstRchpb+pPTC70RFPkI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=eNus6lVf; arc=none smtp.client-ip=209.85.218.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ej1-f43.google.com with SMTP id a640c23a62f3a-a4715991c32so675486266b.1
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 07:48:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1711464511; x=1712069311; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=FOCj3XrpHETGc+HuQ9wDIhJINMgt8oBfNRGdhrPmFYQ=;
+        b=eNus6lVfepjSGyrb1BtBtqvM/DPY4sigiqjLc3Lx9W8Mf2vLRUIqf5IM+y0jaWwRfz
+         E4T0Bvd8HweyWt0Jtjorq6NfSAlw7RxxY/h/xpHGkWZthGtcK/wN8S5KQUYrCC1tj5y7
+         mLj2fHefrsbxWb+UdJw7qTO1E8c43pp9FV2oe8yIRrf+gbTZyCs2kbgvPf0EtJdGF+aW
+         2LRCMQk7ZRTOVpeDZ8YMemazTdVdRxy0ZSI7ExJYC63UwpEEjVgVsRW4plFn9fApl3b6
+         UXLepsqLA72U1wxZl1OAVvzzzLvsjdkXphBEHb1zO8appWplaCn/rGtPMTcvtUpFdKRw
+         n/ow==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711464511; x=1712069311;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=FOCj3XrpHETGc+HuQ9wDIhJINMgt8oBfNRGdhrPmFYQ=;
+        b=JYdg3SrCvqbJtnnFj0q9wl45qLK5MEHl4r3UiIz7MgpuqRKU8378CTVkdVODmJHs4S
+         kqIr4QSM9XX4/TDX6ckbwNG7ja13a3or/HuCW3qJ9VcDKrxWpkoUS5iEoZaXxoGBIWLy
+         OEizHUXJGq+6vh2VlGRl9B5Cx0u29DrpenXtlbWEiRHdrtn0Eg7UDaqtWUjD47IxYR5V
+         G2w3d56RGnyvstFedADBKPynxTXk0Cm7ss4pcZvMNIYd6+PGKHP42MIulr+cNqhtV9NC
+         LbKWtKJ33ulaVcD2G12UElE3o6UDQgs7RlmUXknOAhmcoZzs6/9FHdnnxUx+tGCmDjTo
+         36Pw==
+X-Forwarded-Encrypted: i=1; AJvYcCUP8p7UWjHVjqEoogI/+5S6IUU8krBUd1ZyVQrp87U9u1s/nO+O0h9/tosb7/M5cKj80hHSVaUc6R6wBl1JsPRvxJ2s5xL0v89TmFwV
+X-Gm-Message-State: AOJu0YySDLusGpfrUGCchW9iNcEVvDjdjOqh3sl4WWisM//JN9679LpJ
+	Jwq3dMpEOQmr3yX9q9tksABPJXMKjmXF1cH7w4+4j22JhQ+rTAdX9JN3TmjQ9m4=
+X-Google-Smtp-Source: AGHT+IEn3F4qFSE2zRXD6YJGP/lgKIuAi+CKEx91s3sQzsBeykwMumuQvgV5xJhAddsJ/SVpuQ7/BQ==
+X-Received: by 2002:a17:906:528c:b0:a46:5d40:eb97 with SMTP id c12-20020a170906528c00b00a465d40eb97mr6690728ejm.70.1711464511632;
+        Tue, 26 Mar 2024 07:48:31 -0700 (PDT)
+Received: from [192.168.2.107] ([79.115.63.252])
+        by smtp.gmail.com with ESMTPSA id jw24-20020a170906e95800b00a49856ae93asm2547723ejb.198.2024.03.26.07.48.30
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 26 Mar 2024 07:48:31 -0700 (PDT)
+Message-ID: <454b88d5-885d-4933-ae49-46eaee99d75d@linaro.org>
+Date: Tue, 26 Mar 2024 14:48:29 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <2e40b30d-b063-48ac-a566-f66eb2788003@ti.com>
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 3/4] arm64: dts: exynos: gs101: join lines close to 80
+ chars
+Content-Language: en-US
+To: Alim Akhtar <alim.akhtar@samsung.com>, peter.griffin@linaro.org,
+ robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org
+Cc: linux-arm-kernel@lists.infradead.org, linux-samsung-soc@vger.kernel.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ andre.draszik@linaro.org, willmcvicker@google.com, kernel-team@android.com
+References: <20240326103620.298298-1-tudor.ambarus@linaro.org>
+ <CGME20240326103631epcas5p37bc95c57becdeb63b0d8b01ffc6606fb@epcas5p3.samsung.com>
+ <20240326103620.298298-4-tudor.ambarus@linaro.org>
+ <001801da7f6e$40545650$c0fd02f0$@samsung.com>
+From: Tudor Ambarus <tudor.ambarus@linaro.org>
+In-Reply-To: <001801da7f6e$40545650$c0fd02f0$@samsung.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Tue, Mar 26, 2024 at 08:00:04PM +0530, Siddharth Vadapalli wrote:
-> On Tue, Mar 26, 2024 at 02:56:26PM +0100, Niklas Cassel wrote:
-> > On Tue, Mar 26, 2024 at 04:49:05PM +0530, Siddharth Vadapalli wrote:
-> > > In the process of converting .scan_bus() callbacks to .add_bus(), the
-> > > ks_pcie_v3_65_scan_bus() function was changed to ks_pcie_v3_65_add_bus().
-> > > The .scan_bus() method belonged to ks_pcie_host_ops which was specific
-> > > to controller version 3.65a, while the .add_bus() method had been added
-> > > to ks_pcie_ops which is shared between the controller versions 3.65a and
-> > > 4.90a. Neither the older ks_pcie_v3_65_scan_bus() method, nor the newer
-> > > ks_pcie_v3_65_add_bus() method are applicable to the controller version
-> > > 4.90a which is present in AM654x SoCs.
-> > > 
-> 
-> ...
-> 
-> > > +	} while (val & DBI_CS2);
-> > > +}
-> > > +
-> > >  static int ks_pcie_msi_host_init(struct dw_pcie_rp *pp)
-> > >  {
-> > > +	struct dw_pcie *pci = to_dw_pcie_from_pp(pp);
-> > > +	struct keystone_pcie *ks_pcie = to_keystone_pcie(pci);
-> > > +
-> > > +	/* Configure and set up BAR0 */
-> > > +	ks_pcie_set_dbi_mode(ks_pcie);
-> > > +
-> > > +	/* Enable BAR0 */
-> > > +	dw_pcie_writel_dbi(pci, PCI_BASE_ADDRESS_0, 1);
-> > > +	dw_pcie_writel_dbi(pci, PCI_BASE_ADDRESS_0, SZ_4K - 1);
-> > > +
-> > > +	ks_pcie_clear_dbi_mode(ks_pcie);
-> > > +
-> > > +	 /*
-> > > +	  * For BAR0, just setting bus address for inbound writes (MSI) should
-> > > +	  * be sufficient.  Use physical address to avoid any conflicts.
-> > > +	  */
-> > 
-> > This comment seems to have wrong indentation.
-> > With that fixed:
-> > 
-> > Reviewed-by: Niklas Cassel <cassel@kernel.org>
-> 
-> I will fix it and post the v6 patch.
 
-I have posted the v6 patch at:
-https://lore.kernel.org/r/20240326144258.2404433-1-s-vadapalli@ti.com/
 
-Regards,
-Siddharth.
+On 3/26/24 11:10, Alim Akhtar wrote:
+> Hi Tudor
+
+Hi, Alim!
+> 
+>> -----Original Message-----
+>> From: Tudor Ambarus <tudor.ambarus@linaro.org>
+>> Sent: Tuesday, March 26, 2024 4:06 PM
+>> To: peter.griffin@linaro.org; robh+dt@kernel.org;
+>> krzysztof.kozlowski+dt@linaro.org; conor+dt@kernel.org
+>> Cc: alim.akhtar@samsung.com; linux-arm-kernel@lists.infradead.org; linux-
+>> samsung-soc@vger.kernel.org; devicetree@vger.kernel.org; linux-
+>> kernel@vger.kernel.org; andre.draszik@linaro.org;
+>> willmcvicker@google.com; kernel-team@android.com; Tudor Ambarus
+>> <tudor.ambarus@linaro.org>
+>> Subject: [PATCH v2 3/4] arm64: dts: exynos: gs101: join lines close to 80
+> chars
+>>
+>> These lines fit 81 characters, which is pretty close to 80.
+>> Join the lines.
+>>
+> Does this breaks checkpatch flow?
+
+/scripts/checkpatch --strict does not complain
+> 
+>> Signed-off-by: Tudor Ambarus <tudor.ambarus@linaro.org>
+>> ---
+> For better readability, this looks good.
+> 
+> Reviewed-by: Alim Akhtar <alim.akhtar@samsung.com>
+
+Thank you for reviewing the series!
+
+Cheers,
+ta
 
