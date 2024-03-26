@@ -1,105 +1,124 @@
-Return-Path: <linux-kernel+bounces-120139-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-120140-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8FE1B88D2DC
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 00:36:04 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1ED5D88D2DE
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 00:37:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 468711F3EF90
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 23:36:04 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 512661C2CE39
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 23:37:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C180613E047;
-	Tue, 26 Mar 2024 23:35:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DFF8A13E040;
+	Tue, 26 Mar 2024 23:37:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="NZ6262Kj"
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="SnCHX0g1";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="od8qGGCE"
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D01931C288;
-	Tue, 26 Mar 2024 23:35:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A8C1E13E03F
+	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 23:36:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711496158; cv=none; b=iNlfVKfN080ZsB2SXwtIAdDM0XchHcXkSK1WXdkldhIObeCCg+KLMTlRaVnBAPPPZCUeKGGiwKmQsOdGWXDdYiCBaKf1CRsYKt0J3q4WyxBnZJmBBrKZiJPB0YVL7Jxc+9B8XS6lCyCDV8HXdAYSZeQyKJgO19Z24iUtRdH1xy8=
+	t=1711496221; cv=none; b=e/1Lj/R8hvKBftb93ubgR61af9Nm1W1aChxPjTt2JF38DUfm1plWd1wWGLni2Bq9qisCQz/iniOLoAP2m3mkK75Qv1NDq/ivyTidgCw3FEH1+QZGCluN9r7N1U7K5amESovsPl/zTj6z00VvMe8hHXVRDk6IxnA/C+IQuVvey0k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711496158; c=relaxed/simple;
-	bh=2kYHyEHjL8vZZ93MqEh/vWakgojswPv+9v7lJxFVHFs=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=Taf1MOYc/dIfb5s3UUDbr6F3IseugtFySoLdgjtT6cIXrzpqm5FXqPl3s7YqociQLlqWF/09+K87DSIdHfDiaOXkNOxiMzemj69Qks8AXKlttcOT44kSMKW9znzkXJnGA97CmuwloeBjjUh3y6gb61wLi0UAmf6S0KIRvOmc4s0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au; spf=pass smtp.mailfrom=canb.auug.org.au; dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b=NZ6262Kj; arc=none smtp.client-ip=150.107.74.76
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-	s=201702; t=1711496152;
-	bh=2kYHyEHjL8vZZ93MqEh/vWakgojswPv+9v7lJxFVHFs=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=NZ6262Kj5XXUhR0E3X2YWJpmaC9m1zUbGtxoimTNTmPrbX88qALXmj45xalMwF+iH
-	 /g2juhHtjGA4sG1fUm+MwrpoOAAA8+jYsZBabHSLWWbUcMjDKVQ2vqfR6t9LbGOIAO
-	 kCGTKIAh0/z1lalNi9Ue55Jk2RZnXQ3Sxtil/mWZFOpX9nZwmxf/mMRPn8FmWfCu/o
-	 8PSQnEG89gu898KXVzbasvCPKmeFMthQ4yATx8XYrK93FqyT7qK+EeIY0FIV8R3Ust
-	 Pd0o9ABAsXIQzsCjJvZc/8DLZIH6B309o7mDuUdkLYZKuT+plMcVo27Gk3nv4sHznP
-	 VEBWvJuGMF4MQ==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mail.ozlabs.org (Postfix) with ESMTPSA id 4V45lX53hFz4wcQ;
-	Wed, 27 Mar 2024 10:35:52 +1100 (AEDT)
-Date: Wed, 27 Mar 2024 10:35:51 +1100
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-To: Daniel Lezcano <daniel.lezcano@linaro.org>
-Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Linux Next
- Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: error fetching the clockevents tree
-Message-ID: <20240327103551.392a1b87@canb.auug.org.au>
-In-Reply-To: <20240319093614.16d6eb11@canb.auug.org.au>
-References: <20240319093614.16d6eb11@canb.auug.org.au>
+	s=arc-20240116; t=1711496221; c=relaxed/simple;
+	bh=oahTA6dTYSWMdCkR8OHLK2ha2hSU4kUfoocggeRJGJs=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=kNCiA7kYMbkImteBm635gPnlNafQmRR44DobdI/MMcuOBkNEc8ctUtz/LaeApnDgnYGAZ9M4SwgdrvLJ8xWj6MC6SmMm2GraHT9cHAltQCu1MToJfkxj73UQTv0DMG21o/ezAthlwR9IdwoxoW9KhomxDas5UUTevluuwfpf7hM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=SnCHX0g1; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=od8qGGCE; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+From: Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1711496217;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=qVoO2SchxdEz7fwpw07CFpmgAKOUXncfAlsQ/m8G3/w=;
+	b=SnCHX0g1f6/dQ9Gm+zOYX3OywxBLcwYq+1b2na9SUxhs1MmdsK0HskY4tzlfR2eC5LerOa
+	WF6HiGD9OVCvlaKGz4dJFycGpAOzU3rEpjhqtJzZbb2PgkV9FrS3hiBWDYIEA5o1QDy+7t
+	8SXo9lcEZhnuEudzc4IbEgGUoN4WPzYysXK/JKPPI01dDGUSs0PLmnUXsqwcDZ0grsTCSq
+	TkTkA5TOwPVY9j0ncY1Lpog+6CnuEhojESsqVJUSAR/V4+W9dwx8ObOEhVmCGguCBwKLif
+	N5BLSKieSjCTYaY1nKhrcOGRpE5Y0HlE5elOUPv3QCGvYS7vluT3utLrLowE1Q==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1711496217;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=qVoO2SchxdEz7fwpw07CFpmgAKOUXncfAlsQ/m8G3/w=;
+	b=od8qGGCE60/d4xA8vQjxF6rPawNJBjmpfMH52NvmH8q+kcTQc8xaXQ9HTSQsffCwkIqZVh
+	3QoMyVAQBHaOe4Cg==
+To: Huang Adrian <adrianhuang0701@gmail.com>
+Cc: linux-kernel@vger.kernel.org, Jiwei Sun <sunjw10@lenovo.com>, Adrian
+ Huang <ahuang12@lenovo.com>
+Subject: Re: [PATCH 1/1] genirq/proc: Try to jump over the unallocated irq
+ hole whenever possible
+In-Reply-To: <CAHKZfL1xq-pemEMo7m8DctEVxSG_ASQWxCC_HsN=-92UAjP_Mw@mail.gmail.com>
+References: <20240325035102.15245-1-adrianhuang0701@gmail.com>
+ <874jcueydh.ffs@tglx>
+ <CAHKZfL1xq-pemEMo7m8DctEVxSG_ASQWxCC_HsN=-92UAjP_Mw@mail.gmail.com>
+Date: Wed, 27 Mar 2024 00:36:57 +0100
+Message-ID: <87h6gsefae.ffs@tglx>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/isLxSh+W9DLDD4TM98S8OuM";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-
---Sig_/isLxSh+W9DLDD4TM98S8OuM
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
 
-Hi all,
+On Tue, Mar 26 2024 at 21:35, Huang Adrian wrote:
+> On Tue, Mar 26, 2024 at 6:32=E2=80=AFAM Thomas Gleixner <tglx@linutronix.=
+de> wrote:
+> The reason I made the changes in show_interrupts() is to minimize the
+> traversal times of the 'sparse_irqs' maple tree since irq_to_desc() is
+> invoked in show_interrupts().
 
-On Tue, 19 Mar 2024 09:36:14 +1100 Stephen Rothwell <sfr@canb.auug.org.au> =
-wrote:
->
-> Fetching the clockevents tree produces this error:
->=20
-> fatal: unable to connect to git.linaro.org:
-> git.linaro.org[0: 54.152.253.35]: errno=3DConnection refused
+They are not really relevant. The cache line is hot after the
+irq_get_next_irq() lookup and maple tree is a highly optimized data
+structure.
 
-OK, it looks like someone turned off the git daemon on git.linaro.org.
-I will switch to fetching over https.
+I'm not saying that it is free, but if you want to avoid that in the
+first place then you need to do a lookup of the next descriptor and hand
+it into show_interrupts() right away and not just hack some completely
+obscure optimization into show_interrupts().
 
---=20
-Cheers,
-Stephen Rothwell
+> @@ -19,6 +19,10 @@ static void *int_seq_next(struct seq_file *f, void
+> *v, loff_t *pos)
+[ 3 more citation lines. Click/Enter to show. ]
+>         (*pos)++;
+>         if (*pos > nr_irqs)
+>                 return NULL;
+> +
+> +       if (!irq_to_desc(*pos))
+> +               *pos =3D irq_get_next_irq(*pos);
 
---Sig_/isLxSh+W9DLDD4TM98S8OuM
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+How is irq_get_next_irq() valid without either holding the sparse irq
+lock or RCU read lock?
 
------BEGIN PGP SIGNATURE-----
+Testing this with full debug enabled might give you the answer to that
+question.
 
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmYDW9cACgkQAVBC80lX
-0GxlGQf/ZkBNqsFh6gdlH8EdYCDnggO5SvJQoVzc65vOTqbwtYJBbkbX/GFjyvcq
-zVzOjaU1w5mXpmXuwBLULj5+1iwCmcFcpYQz0fKaZz584UE965PpiouGWDSFgKhi
-96ztjhOEqqCAJ1prXsBbqvyeMWW8kw5/bt6bzlTDD6l+DEp7umZXiIhyOZWJghDT
-MRYq9GUJYG1R/AaOR+Kawz8H4TcG0l7IMdozs0vjSHdOivwNiRunxR9tskWd6T3B
-h5tDBw5NnVaz52HiguDfrAK1nbJ5hYVPH2AGVSSWNmBvMrceYNirn/5b++78ttuQ
-YfdIt/qSt9eHSLN9rL9KrbGi9dl2mQ==
-=GArU
------END PGP SIGNATURE-----
+But that aside you are missing a massive performance problem in the
+generic show_interrupts() code:
 
---Sig_/isLxSh+W9DLDD4TM98S8OuM--
+	if (desc->kstat_irqs) {
+		for_each_online_cpu(j)
+			any_count |=3D data_race(*per_cpu_ptr(desc->kstat_irqs, j));
+	}
+
+	if ((!desc->action || irq_desc_is_chained(desc)) && !any_count)
+		goto outsparse;
+
+There are two obvious problems with that, no?
+
+Thanks,
+
+	tglx
 
