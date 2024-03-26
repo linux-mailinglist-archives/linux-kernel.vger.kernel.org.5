@@ -1,145 +1,167 @@
-Return-Path: <linux-kernel+bounces-119085-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-120016-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id CD49688C403
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 14:46:42 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 76CED88D03F
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 22:42:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6EB051F6341A
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 13:46:42 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A91991C329F7
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 21:42:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E86112C55A;
-	Tue, 26 Mar 2024 13:42:26 +0000 (UTC)
-Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 15FAA13D8AB;
+	Tue, 26 Mar 2024 21:41:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NAPOQrsf"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3D8AE12AAF5;
-	Tue, 26 Mar 2024 13:42:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4FC073FD4;
+	Tue, 26 Mar 2024 21:41:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711460545; cv=none; b=M9MFq28UbTFA3koJMRFLaOJlLp2wIPptA/tB8gMMfH5ew1EwAfqqDLwPcCyjUhe43AnQlRFiXnbZAmW2gmbWgetzEN3A0F8+crl/xk2bNoT1RG5o7AAB6pqbRl44UkusmtHImZrLQcDdUoRMmV2n6E8Cw6uhS64oHFyEsqEoAMY=
+	t=1711489311; cv=none; b=HSlPd/ssiBAa9dmK3vRLAJhnyHyXiY4yzL4cfU5j6CF75bguPOHFWxvUJcLV/RGfWgfTVsR4ezM5qgd1nt7PQV4NZ8lURsTpv+loptYml5NtlYhNPTsAMR5LCaV/NrGA81G0L1RzEUmGy5oT7lHKbIJTlnStNeKHqhcDMoa6VKs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711460545; c=relaxed/simple;
-	bh=rTsyKJ+6cQulWFeCm9Ty6fR+GXC23ReLWDU/rqmdMYk=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=THuwM3QZ7ey4/RipYcSejN4114j2lAE7jFYgn0lndHl0kvQlDgcj65hq3rx4VnmLVEYYrvXXe4vbjB3b6SWrlAl28TPzu2414QHT0kN6kGO5Wl4Z4UtfmCPi0aoa50Bql4agBnMF6fVA0hSY5PwGQQsD2FFlUEX0bVoAA+8KBcU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.93.142])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4V3rZW3QSMz4f3nKG;
-	Tue, 26 Mar 2024 21:42:11 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.112])
-	by mail.maildlp.com (Postfix) with ESMTP id 92DBF1A016E;
-	Tue, 26 Mar 2024 21:42:19 +0800 (CST)
-Received: from huaweicloud.com (unknown [10.175.124.27])
-	by APP1 (Coremail) with SMTP id cCh0CgCHowy00AJmmQiSIA--.63567S7;
-	Tue, 26 Mar 2024 21:42:19 +0800 (CST)
-From: Kemeng Shi <shikemeng@huaweicloud.com>
-To: tytso@mit.edu,
-	adilger.kernel@dilger.ca,
-	linux-ext4@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Cc: jack@suse.cz,
-	ojaswin@linux.ibm.com,
-	ritesh.list@gmail.com
-Subject: [PATCH 5/5] ext4: expand next_linear_group to remove repeat check for linear scan.
-Date: Wed, 27 Mar 2024 05:38:23 +0800
-Message-Id: <20240326213823.528302-6-shikemeng@huaweicloud.com>
-X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20240326213823.528302-1-shikemeng@huaweicloud.com>
-References: <20240326213823.528302-1-shikemeng@huaweicloud.com>
+	s=arc-20240116; t=1711489311; c=relaxed/simple;
+	bh=BzpgpbWcoTc7ijZRETE4B+xMagDt/ZzZpxxIA4FcHFA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=dCqOpAr5QqpBZnzlEBsKpUS6wDzNSDSfxGTXHPQi+Hdj7rnsE41sK03/xqEFVuYbD99k0m2UCcv2tn0LDRJDCNB7+sqpkHVPIxXM0FGNbp6n85/p25M/V6ffWDYdR6MaTnj+bxFTRhQEvFjDxbIYmMfAUJ6JyRDSon9xB2FxyLc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NAPOQrsf; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9564FC43390;
+	Tue, 26 Mar 2024 21:41:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1711489310;
+	bh=BzpgpbWcoTc7ijZRETE4B+xMagDt/ZzZpxxIA4FcHFA=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=NAPOQrsf9xO+R4J++979fPR1mikCnDwT2YSA3eK5h6kFH5ZvtO+EH4mROmh3jCTkb
+	 NdGVwPhQ9N7LaJlSmZJLUD00Wg1nn7pSzRprRip0XlPX3BVGf/+WIJ8gbGBsXJTjOk
+	 ThYy/tIUsivm9/O47z73Y2hFxdek6ao2HiQIEzaTo5RxUJVx5+6KeKKedtsnb/15rT
+	 rU9ZczreTQJq/5f+QievxNgsRhIn4jrmxJ0fYCh9yP+Qi8VSE2J/kzUc/IlqxqVIGi
+	 HM+bdbs2HbhqJcZHe7PuQraZmQrI2a+rJBHMhI5NFCcDHUcHVpVWGiM2CgcMFDYzKP
+	 1XknHlt85fr/w==
+Date: Tue, 26 Mar 2024 16:41:48 -0500
+From: Rob Herring <robh@kernel.org>
+To: Conor Dooley <conor@kernel.org>
+Cc: Animesh Agarwal <animeshagarwal28@gmail.com>,
+	Herbert Xu <herbert@gondor.apana.org.au>,
+	"David S. Miller" <davem@davemloft.net>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>, linux-crypto@vger.kernel.org,
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] dt-bindings: crypto: ti,omap-sham: Convert to dtschema
+Message-ID: <20240326214148.GA3709211-robh@kernel.org>
+References: <20240326120107.13442-1-animeshagarwal28@gmail.com>
+ <20240326-spectrum-talon-0fc977c32c5c@spud>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:cCh0CgCHowy00AJmmQiSIA--.63567S7
-X-Coremail-Antispam: 1UD129KBjvJXoW7KFW3Xr1xGFyDJFykWrW5Awb_yoW8ZF43pa
-	nxGFy7ur1xWFn8GFZ8Ga9Yg3WfKw18GF1UAryfG3s3tF13Arn8GFW2yr10vFy7GFZrCrnx
-	Xr45AF1UC3Z7CaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUBIb4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M280x2IEY4vEnII2IxkI6r1a6r45M2
-	8IrcIa0xkI8VA2jI8067AKxVWUAVCq3wA2048vs2IY020Ec7CjxVAFwI0_Xr0E3s1l8cAv
-	FVAK0II2c7xJM28CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW7JVWDJw
-	A2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_GcCE
-	3s1l84ACjcxK6I8E87Iv6xkF7I0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr2
-	1l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r106r15McIj6I8E87Iv
-	67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41l42xK82IYc2
-	Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s02
-	6x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48JMIIF0x
-	vE2Ix0cI8IcVAFwI0_JFI_Gr1lIxAIcVC0I7IYx2IY6xkF7I0E14v26F4j6r4UJwCI42IY
-	6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Gr0_Cr1lIxAIcVC2z280aV
-	CY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU058n7UUUUU==
-X-CM-SenderInfo: 5vklyvpphqwq5kxd4v5lfo033gof0z/
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240326-spectrum-talon-0fc977c32c5c@spud>
 
-Expand next_linear_group to remove repat check for linear scan.
+On Tue, Mar 26, 2024 at 06:20:05PM +0000, Conor Dooley wrote:
+> On Tue, Mar 26, 2024 at 05:31:00PM +0530, Animesh Agarwal wrote:
+> > Convert the OMAP SoC SHA crypto Module bindings to DT Schema.
+> > 
+> > Signed-off-by: Animesh Agarwal <animeshagarwal28@gmail.com>
+> > ---
+> >  .../devicetree/bindings/crypto/omap-sham.txt  | 28 ----------
+> >  .../bindings/crypto/ti,omap-sham.yaml         | 56 +++++++++++++++++++
+> >  2 files changed, 56 insertions(+), 28 deletions(-)
+> >  delete mode 100644 Documentation/devicetree/bindings/crypto/omap-sham.txt
+> >  create mode 100644 Documentation/devicetree/bindings/crypto/ti,omap-sham.yaml
+> > 
+> > diff --git a/Documentation/devicetree/bindings/crypto/omap-sham.txt b/Documentation/devicetree/bindings/crypto/omap-sham.txt
+> > deleted file mode 100644
+> > index ad9115569611..000000000000
+> > --- a/Documentation/devicetree/bindings/crypto/omap-sham.txt
+> > +++ /dev/null
+> > @@ -1,28 +0,0 @@
+> > -OMAP SoC SHA crypto Module
+> > -
+> > -Required properties:
+> > -
+> > -- compatible : Should contain entries for this and backward compatible
+> > -  SHAM versions:
+> > -  - "ti,omap2-sham" for OMAP2 & OMAP3.
+> > -  - "ti,omap4-sham" for OMAP4 and AM33XX.
+> > -  - "ti,omap5-sham" for OMAP5, DRA7 and AM43XX.
+> > -- ti,hwmods: Name of the hwmod associated with the SHAM module
+> > -- reg : Offset and length of the register set for the module
+> > -- interrupts : the interrupt-specifier for the SHAM module.
+> > -
+> > -Optional properties:
+> > -- dmas: DMA specifiers for the rx dma. See the DMA client binding,
+> > -	Documentation/devicetree/bindings/dma/dma.txt
+> > -- dma-names: DMA request name. Should be "rx" if a dma is present.
+> > -
+> > -Example:
+> > -	/* AM335x */
+> > -	sham: sham@53100000 {
+> > -		compatible = "ti,omap4-sham";
+> > -		ti,hwmods = "sham";
+> > -		reg = <0x53100000 0x200>;
+> > -		interrupts = <109>;
+> > -		dmas = <&edma 36>;
+> > -		dma-names = "rx";
+> > -	};
+> > diff --git a/Documentation/devicetree/bindings/crypto/ti,omap-sham.yaml b/Documentation/devicetree/bindings/crypto/ti,omap-sham.yaml
+> > new file mode 100644
+> > index 000000000000..7a2529cc4cae
+> > --- /dev/null
+> > +++ b/Documentation/devicetree/bindings/crypto/ti,omap-sham.yaml
+> > @@ -0,0 +1,56 @@
+> > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> > +%YAML 1.2
+> > +---
+> > +$id: http://devicetree.org/schemas/crypto/ti,omap-sham.yaml#
+> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > +
+> > +title: OMAP SoC SHA crypto Module
+> > +
+> > +maintainers:
+> > +  - Animesh Agarwal <animeshagarwal28@gmail.com>
+> > +
+> > +properties:
+> > +  compatible:
+> > +    enum:
+> > +      - ti,omap2-sham
+> > +      - ti,omap4-sham
+> > +      - ti,omap5-sham
+> > +
+> > +  ti,hwmods:
+> > +    description: Name of the hwmod associated with the SHAM module
+> > +    $ref: /schemas/types.yaml#/definitions/string
+> > +    enum: [sham]
+> 
+> Is there really only one value possible here?
+> Also, the convention is to put vendor properties like this after more
+> common properties like reg, interrupts etc.
+> 
+> > +
+> > +  reg:
+> > +    maxItems: 1
+> > +
+> > +  interrupts:
+> > +    maxItems: 1
+> > +
+> > +  dmas:
+> > +    maxItems: 1
+> > +
+> > +  dma-names:
+> > +    const: rx
+> > +
+> > +dependencies:
+> > +  dmas: [dma-names]
+> 
+> Is this needed? Unless I'm sorely mistaken dt-schema enforces this itself
+> (and same for any $foo-names).
 
-Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
----
- fs/ext4/mballoc.c | 37 ++++++-------------------------------
- 1 file changed, 6 insertions(+), 31 deletions(-)
+dtschema does not. It does do the other way around. This seems fine.
 
-diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
-index 0f8a34513bf6..561780a274cd 100644
---- a/fs/ext4/mballoc.c
-+++ b/fs/ext4/mballoc.c
-@@ -1075,31 +1075,6 @@ static inline int should_optimize_scan(struct ext4_allocation_context *ac)
- 	return 1;
- }
- 
--/*
-- * Return next linear group for allocation. If linear traversal should not be
-- * performed, this function just returns the same group
-- */
--static ext4_group_t
--next_linear_group(struct ext4_allocation_context *ac, ext4_group_t group,
--		  ext4_group_t ngroups)
--{
--	if (!should_optimize_scan(ac))
--		goto inc_and_return;
--
--	if (ac->ac_groups_linear_remaining) {
--		ac->ac_groups_linear_remaining--;
--		goto inc_and_return;
--	}
--
--	return group;
--inc_and_return:
--	/*
--	 * Artificially restricted ngroups for non-extent
--	 * files makes group > ngroups possible on first loop.
--	 */
--	return group + 1 >= ngroups ? 0 : group + 1;
--}
--
- /*
-  * ext4_mb_choose_next_group: choose next group for allocation.
-  *
-@@ -1118,12 +1093,12 @@ static void ext4_mb_choose_next_group(struct ext4_allocation_context *ac,
- {
- 	*new_cr = ac->ac_criteria;
- 
--	if (!should_optimize_scan(ac) || ac->ac_groups_linear_remaining) {
--		*group = next_linear_group(ac, *group, ngroups);
--		return;
--	}
--
--	if (*new_cr == CR_POWER2_ALIGNED) {
-+	if (!should_optimize_scan(ac))
-+		*group = *group + 1 >= ngroups ? 0 : *group + 1;
-+	else if (ac->ac_groups_linear_remaining) {
-+		ac->ac_groups_linear_remaining--;
-+		*group = *group + 1 >= ngroups ? 0 : *group + 1;
-+	} else if (*new_cr == CR_POWER2_ALIGNED) {
- 		ext4_mb_choose_next_group_p2_aligned(ac, new_cr, group);
- 	} else if (*new_cr == CR_GOAL_LEN_FAST) {
- 		ext4_mb_choose_next_group_goal_fast(ac, new_cr, group);
--- 
-2.30.0
-
+Rob
 
