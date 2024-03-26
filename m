@@ -1,45 +1,45 @@
-Return-Path: <linux-kernel+bounces-118995-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-118996-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BC1D288C261
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 13:40:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id EEC4188C263
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 13:40:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EE09D1C3FBE1
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 12:40:22 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2CFAB1C3FC90
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 12:40:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0961C75816;
-	Tue, 26 Mar 2024 12:39:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 91A8F763E2;
+	Tue, 26 Mar 2024 12:39:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VJ0oeA00"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dK2sYVfl"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4DC8E757FD;
-	Tue, 26 Mar 2024 12:39:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C5B5076041;
+	Tue, 26 Mar 2024 12:39:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711456761; cv=none; b=VYMkqB5dB7RuWK7cAzljMK1QIBdGyOHzGou425OLp+vqs53eIpSwb1dbtYT3x2VYzkB79PrtHaOibK/DLVAlkAH70qjTuk0/mpxa8IhlKv2rEf9uNLv45m1mDZVgE1VCZXIXr1G5P8B/u2wCKK2rUl76JKQIA8GchrgA02h6YE4=
+	t=1711456763; cv=none; b=FpTid9Ik1hJKuRSv+GuqaNs84WryKd1OBfyRTIaJDO1omAAWNHXj7NdgP/HKJqLybdnjkTz/M/2k2rjE7w1Espa8saEE1Ln30kL0OXVykTwaeleguWWpMTTCjLd3OTbtO8U8kvgi6U8p8sZQAYDEyoIGivbkAnbyV87wAhNUAzw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711456761; c=relaxed/simple;
-	bh=PXg37FMYYIv59/UvnQPnxU1WEtd7bp9EloMy+GxZ9uk=;
+	s=arc-20240116; t=1711456763; c=relaxed/simple;
+	bh=vpnXs1APoMjL9qXI9crs4MSSn43RNV7PTsUN91XUNNE=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
-	 MIME-Version:Content-Type; b=etXx0HPGzJNNVoP7r6zSLLxFSANDUQxMO2+7ntShY5t3NjKmc7DrcMBLvoLA2X0NI+2HAPiTWxRFH9kcjVS214CiyJ8/pZg3rB/G+h/HOtxPmL8i/er/I1r8Mf/N90SX+vmICZp2iHcm5rg/vYF0Z7J96e7QCClGdkaqY9o1nc0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=VJ0oeA00; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9EC71C433B1;
-	Tue, 26 Mar 2024 12:39:18 +0000 (UTC)
+	 MIME-Version:Content-Type; b=jq0MT5Q6pAzh+V+nuYstDqkNJIJBtos75J6so6y+Dl3dxTSD2orTBCbvkOtfuYbDIi1UokgsLdTTjXrfjwiJr+wstLGS2U6GV/Ol04+qnyi1+G7ZLQix1w967ZpWv0KNk6Dqpr5mRiLVw2fIMiicyUhi6Mk4rFIJcTizf1xSV1w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dK2sYVfl; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 52989C433F1;
+	Tue, 26 Mar 2024 12:39:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711456760;
-	bh=PXg37FMYYIv59/UvnQPnxU1WEtd7bp9EloMy+GxZ9uk=;
+	s=k20201202; t=1711456763;
+	bh=vpnXs1APoMjL9qXI9crs4MSSn43RNV7PTsUN91XUNNE=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=VJ0oeA00Dy6D4/oyk8A7RjMFSduq6qQKDPswRblrrexx3by2Fk8ZR2vFcKslr8d5y
-	 5IZuFVQuDvVYMAAVJslW+yWTCVFrw0VGoFGIBSaIAXJ6Viw2tOKeRwlKQNYqVh03ZD
-	 cmc4qsQxPTO4amIvvZS/n6oWuNG/vCE3XEPMV3gMHxeqitkiBe5jR6zG0q2sHvzvxV
-	 xPx2gv1KWf9EUbQ8j36RoZyFUGid8EDOSC2TD16ng9XB1+vepGWAl80tKcURDI518O
-	 JQtT5hbMDXDhoePRguflgQduNO+I8dGrFUrzTsJDkviw94D4nFzQvVcZ+m9jEm7wy3
-	 W9LkyAN/5Oikg==
+	b=dK2sYVflQVM+Pda1kO14JPs9gYqmGytOzd3aBbTNQyfyggzfrqguqzDhcGzU7Nv5N
+	 8ol2P8pfLeaxPe+XbeF8hR5ZRtQL3NdGOhnPk0fXQTNkOl0UYSC1ZXV6k4KT/I16a9
+	 ZsUyDrOn3zOekgzEfX1H0IQfq/OTo4vFIbcBoD0VT29bjRs3l+sHKaG7cGGzkEAing
+	 BvKSpjn/c3yYnvDz99466MBkTOjLQf0j6ekjqsHNyYv3sudAdYqF9zMojAOYnZQu0Q
+	 9nOYreO9ZDIMQTEfHFGtiYf8miXgSIllHRXTRSYZLsQffkybdaiQ2esuJMj1sut18P
+	 Ic5gkFPYWJklA==
 From: Mark Brown <broonie@kernel.org>
 To: Ryan Wanner <ryan.wanner@microchip.com>, 
  Nicolas Ferre <nicolas.ferre@microchip.com>, 
@@ -50,11 +50,11 @@ To: Ryan Wanner <ryan.wanner@microchip.com>,
  David Lechner <dlechner@baylibre.com>
 Cc: linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org, 
  linux-arm-kernel@lists.infradead.org
-In-Reply-To: <20240315-spi-remove-is_dma_mapped-v1-1-ca876f9de1c5@baylibre.com>
-References: <20240315-spi-remove-is_dma_mapped-v1-1-ca876f9de1c5@baylibre.com>
-Subject: Re: [PATCH] spi: remove struct spi_message::is_dma_mapped
-Message-Id: <171145675823.65249.1099257779521752838.b4-ty@kernel.org>
-Date: Tue, 26 Mar 2024 12:39:18 +0000
+In-Reply-To: <20240325-spi-remove-is_dma_mapped-v2-1-d08d62b61f1c@baylibre.com>
+References: <20240325-spi-remove-is_dma_mapped-v2-1-d08d62b61f1c@baylibre.com>
+Subject: Re: [PATCH v2] spi: remove struct spi_message::is_dma_mapped
+Message-Id: <171145676106.65249.12081850863906507008.b4-ty@kernel.org>
+Date: Tue, 26 Mar 2024 12:39:21 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -65,7 +65,7 @@ Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 X-Mailer: b4 0.14-dev
 
-On Fri, 15 Mar 2024 17:29:43 -0500, David Lechner wrote:
+On Mon, 25 Mar 2024 14:22:53 -0500, David Lechner wrote:
 > There are no more users of the deprecated is_dma_mapped in struct
 > spi_message so it can be removed.
 > 
