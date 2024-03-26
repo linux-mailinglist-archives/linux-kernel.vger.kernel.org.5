@@ -1,142 +1,129 @@
-Return-Path: <linux-kernel+bounces-120126-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-120125-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6386388D2B4
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 00:15:32 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 40F4B88D2B1
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 00:15:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id F31531F3CD0D
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 23:15:31 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 720FE1C37B8F
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 23:15:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 73DB713E416;
-	Tue, 26 Mar 2024 23:15:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 22B0213E03F;
+	Tue, 26 Mar 2024 23:15:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="SezgEI9o"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="UY2wN5Jq"
+Received: from mail-yb1-f201.google.com (mail-yb1-f201.google.com [209.85.219.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DA7B313E031
-	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 23:15:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 019D013DDAC
+	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 23:14:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711494902; cv=none; b=uRay6kQUBB20FFQ6u+lrW7Q1Mjj2Y4trdAlTNJwLD9qbQBV9QWxnwn+kkegHWGZCHXoJZeLKWx7ZAgit9JYdajkDkQUMrj6S18emiy1FpeDLU7DVNv2Qvcv4Xw/W5rH5W8zcTl5M2+jf6/pT90l+BZduZMQCV+aMp4OKNV0S2QI=
+	t=1711494900; cv=none; b=apDx8kgen8eBV6vK/Cv9qHc8Jkm1ljiWi5kgSPwaIL8b0IP8XOBaP3QeI13zooqlvGckXYCL4eCtTgx5TADj8QuE6PcoVDga+LZChsF7s/P1kK+4kwCGRZhsh83kBM2k7jOSehVidKR24nfp9mCju8t3/WLak0uWbuXkSADmJmA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711494902; c=relaxed/simple;
-	bh=gSKaYFfv4cMNoB/Xn0Tfp61c93C2qN7CcfMYY8i+xOU=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=SEdjkPpxXvK7/h+PNpRsy4VfTkhQvOEXR1NO3zfTF19Kk35I1oGdpQDcPbmxnIMWeNMhGTjFUJgrp3OlqefZMXzIclblBO37P88FZWeu5e9NaeFYqt3wLHIx5OCb1sfvO91BUn/QTHFlXmFjiqde3YoquzMXO5rF0T1Egc4Y/3A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=SezgEI9o; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1711494899;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=0mQCN5HobjN2Q/dtCo4+7FNCVXz9DGDP5AkWFtGzZjc=;
-	b=SezgEI9otM7MOqkq3QMijSGK9QdaTG3NiqSUoaudrF8U3o2/tea33GLGONoM4ugfqsbZ8K
-	YNoaZJBfhf9CNEOXH7IwCQ3iFJnEfdxdTzjsAyTusGky49HRnkVQfGMgVWYuELffgeW6oA
-	70rVd1fYPPtA1WlFBHk6b9j+Ut+7DgM=
-Received: from mail-pj1-f71.google.com (mail-pj1-f71.google.com
- [209.85.216.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-665-5wObMGolNqmixMftohw8jw-1; Tue, 26 Mar 2024 19:14:58 -0400
-X-MC-Unique: 5wObMGolNqmixMftohw8jw-1
-Received: by mail-pj1-f71.google.com with SMTP id 98e67ed59e1d1-29de3646c56so4536598a91.2
+	s=arc-20240116; t=1711494900; c=relaxed/simple;
+	bh=NzgIE1Rh/KOBzAQ73H3jelY8pZu994zjvj10N12XaqU=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=sk+eCMulz4HXwp3ANjW8uA5PpzBYckMZ19kgcJ0EG6Q1NktuXARnskv1gmQSaOdweeQRbySkJT/zzNrSyfzGRcQu/Aq/nUmcspcfIwJCu/GoCY+z3gGOPflwrYn0rubaqYBzWTiFg+EZMM24zXI89E3QhhzO6EMGgIFRoWGKxzo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--surenb.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=UY2wN5Jq; arc=none smtp.client-ip=209.85.219.201
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--surenb.bounces.google.com
+Received: by mail-yb1-f201.google.com with SMTP id 3f1490d57ef6-dd8e82dd47eso8403533276.2
         for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 16:14:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1711494898; x=1712099698; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=c2odR+gvA8sNOrt3e0IxQU+kOy08wVxcx+crcuSd5WY=;
+        b=UY2wN5JqrC2yw8HwpS80Y4xVE6Il1n9pAhSFKhWuTIwkA340KTr6+kIs7vTKNAKvr/
+         ZvfblRcqFmzGsTkjdxHc22p7Vcbpvf/ubbPYYLtlQQVyoGeoPFi5WjCCR42vImekVjnp
+         rEM3QI174Zzqt3IYLZhqRH9OPeXzKxBZfwJL5HfuXslopQJInrDdJZiH4eLp4Piib1Ne
+         TcbTRZJdpVur081KoaV43X/f0K8jN9F1Jm/jBjeKmHsUtIZronM+bAd1XXg5WbaSNBP9
+         D2y4+tL3Be2MUUWdP8SGYHa41PgaDcLgowoVMXTL5rLRfuTEaxPj0ArVT5I9dinVyVJj
+         tWlw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711494897; x=1712099697;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=0mQCN5HobjN2Q/dtCo4+7FNCVXz9DGDP5AkWFtGzZjc=;
-        b=FyfDmBwBmZjZgisqXPVGjuiwPUMJevv7TZoMhCkBYU7uwD3bt0I928225y7LaNj/N7
-         18Rl2Kwvsv8Y3ZoL+gMb9W5e9QKI5U2gzkHcFbhLIuIYyTh7QZpLqaZvECL2mkot4qRv
-         P9VN/Dk6eekzAzt+4vgksAx1eKJgaUVaIRJEi5xV4Oz/HjDc/G+iOzA4YoLHj9XVf9GL
-         8IZtJYVrsndIjNUtXMYqrE1Z9F/AXkDULicQGU+cLFd7EPq+BwdyiIIhMQmCNnX83ZYT
-         HXn63zJ+15lZAVE4b8ln/cLAnoWb7qbYUMX9eqGu1qqsya3xl9bSusGg8A9zKch+OPO2
-         PpDA==
-X-Forwarded-Encrypted: i=1; AJvYcCUT4V1bCnl+JCeA7yZQ1KIDAexLGSjbuhKXImYE660ogCIAOFCC89LUZcyjz31yb4SKmCD3xA/rZsAJbmYTeKysXHBSa0cE1qFoQorf
-X-Gm-Message-State: AOJu0Yyt17PC4i9Q7bo5yuYPmrmNugdjKklK9sEpLpVHZE20E9CAbRRb
-	kkTBelA2pvljIbuzNbguBOmqSnnC6jvevKQLXGB+7LyToKqlHMyfOM8/5MefNbVS9DE63FOFsuL
-	z3HQ/1ZDsE3CA1BpksGJ50Rf8CaJ2Bx5de/l6b4EwNqGeaCCFfKC/kN/jp6cpHQ==
-X-Received: by 2002:a17:90a:9606:b0:2a0:50ce:aa95 with SMTP id v6-20020a17090a960600b002a050ceaa95mr8314401pjo.21.1711494897373;
-        Tue, 26 Mar 2024 16:14:57 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IFaigOMr/7CiLFK70hJIs+MvOMb27KbuLh6qIXIIew+T0XDmdil0bNWD2Rq0OI35ubw/SLB0g==
-X-Received: by 2002:a17:90a:9606:b0:2a0:50ce:aa95 with SMTP id v6-20020a17090a960600b002a050ceaa95mr8314380pjo.21.1711494897036;
-        Tue, 26 Mar 2024 16:14:57 -0700 (PDT)
-Received: from [192.168.68.51] ([43.252.115.31])
-        by smtp.gmail.com with ESMTPSA id u14-20020a17090abb0e00b0029c49ed3974sm154556pjr.37.2024.03.26.16.14.50
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 26 Mar 2024 16:14:54 -0700 (PDT)
-Message-ID: <6bdf2884-852e-42d3-9e67-c9d5aa7d932a@redhat.com>
-Date: Wed, 27 Mar 2024 09:14:47 +1000
+        d=1e100.net; s=20230601; t=1711494898; x=1712099698;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=c2odR+gvA8sNOrt3e0IxQU+kOy08wVxcx+crcuSd5WY=;
+        b=VDND2+RBdkpChlIjtxb2Rn9iQaRccq18Nlpf/NW5rXvOdArnslx2F/Jw27lFh6WXVJ
+         mYSrjJKpyXyYgQnnXt90UgHfi6xStpwYpGA12JoQGLWOnhal+WQpTc+tASZGM8EySqIX
+         Jz8HAnhy1Bu6DoJ2eWpfmfznWDAV6w9gMbZs4OPpbGbKW0Q6FdNkPdafAzjZeb+lsDD/
+         9hQ13M+xdLPKjOXM2OSKsTUZjfrbEmYLl3+gvV5uejqup+4NS9vBpGqgYszadshWBgJM
+         9gDXAccCL5AEhMiFJklT2wjqAnINqqxnVuXqGAuidwg2NfDxMUprHFnyq9BsqQE64a96
+         jV9g==
+X-Forwarded-Encrypted: i=1; AJvYcCXiCyQbox83BGgD2kqDPu8mgMdmdhQk6HkLNASmy7sqvcyJy4wcHHnRQCzqyNGFZt5VIltXO4rYfkcBhFQH681IXK2jvS8NR+EF9KOq
+X-Gm-Message-State: AOJu0YzxwOo56L6+48Nfd6su1aiq7LKlUiqEbyRcuMR+PYxePWKhjU15
+	4zrwdoH/ciSir4gX10fMMNo9SWUMLQrrYSD+Y1hjWct59epq7b918tXWNNhQRel6w81v4PYyupM
+	o2g==
+X-Google-Smtp-Source: AGHT+IFHYkY4cIWeIG5C7L3cVtTLvopmfj6ciQBc+eUr6sGVUl9PkI+oKLP5GmybkNhRmxFsc0JGuY8yjgo=
+X-Received: from surenb-desktop.mtv.corp.google.com ([2620:15c:211:201:cef2:761:ad8:ed9a])
+ (user=surenb job=sendgmr) by 2002:a05:6902:150a:b0:dc7:82ba:ba6e with SMTP id
+ q10-20020a056902150a00b00dc782baba6emr629440ybu.7.1711494898139; Tue, 26 Mar
+ 2024 16:14:58 -0700 (PDT)
+Date: Tue, 26 Mar 2024 16:14:47 -0700
+In-Reply-To: <20240326231453.1206227-1-surenb@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] virtio_ring: Fix the stale index in available ring
-Content-Language: en-US
-To: Will Deacon <will@kernel.org>, Keir Fraser <keirf@google.com>
-Cc: "Michael S. Tsirkin" <mst@redhat.com>, virtualization@lists.linux.dev,
- linux-kernel@vger.kernel.org, jasowang@redhat.com,
- xuanzhuo@linux.alibaba.com, yihyu@redhat.com, shan.gavin@gmail.com,
- linux-arm-kernel@lists.infradead.org,
- Catalin Marinas <catalin.marinas@arm.com>, mochs@nvidia.com
-References: <35a6bcef-27cf-4626-a41d-9ec0a338fe28@redhat.com>
- <20240319182251.GB3121@willie-the-truck>
- <9500adaf-0075-4ae9-92db-7e310b6598b0@redhat.com>
- <20240319203540-mutt-send-email-mst@kernel.org>
- <3a6c8b23-af9c-47a7-8c22-8e0a78154bd3@redhat.com>
- <20240320030215-mutt-send-email-mst@kernel.org>
- <1dcec730-ec26-46f4-ba4c-06101fcc599e@redhat.com>
- <20240326033809-mutt-send-email-mst@kernel.org> <ZgKXr8IQ51xBECuP@google.com>
- <20240326114313.GA9482@willie-the-truck>
- <20240326154628.GA9613@willie-the-truck>
-From: Gavin Shan <gshan@redhat.com>
-In-Reply-To: <20240326154628.GA9613@willie-the-truck>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Mime-Version: 1.0
+References: <20240326231453.1206227-1-surenb@google.com>
+X-Mailer: git-send-email 2.44.0.396.g6e790dbe36-goog
+Message-ID: <20240326231453.1206227-2-surenb@google.com>
+Subject: [PATCH 1/6] Documentation: rhashtable: undo _noprof additions in the documentation
+From: Suren Baghdasaryan <surenb@google.com>
+To: akpm@linux-foundation.org
+Cc: rdunlap@infradead.org, sfr@canb.auug.org.au, kent.overstreet@linux.dev, 
+	surenb@google.com, linux-mm@kvack.org, linux-doc@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
+With kernel-doc script change to handle xyz_noprof() names, the previous
+documentation changes and not needed anymore.
 
-On 3/27/24 01:46, Will Deacon wrote:
-> On Tue, Mar 26, 2024 at 11:43:13AM +0000, Will Deacon wrote:
-> 
-> Ok, long shot after eyeballing the vhost code, but does the diff below
-> help at all? It looks like vhost_vq_avail_empty() can advance the value
-> saved in 'vq->avail_idx' but without the read barrier, possibly confusing
-> vhost_get_vq_desc() in polling mode.
-> 
-> diff --git a/drivers/vhost/vhost.c b/drivers/vhost/vhost.c
-> index 045f666b4f12..87bff710331a 100644
-> --- a/drivers/vhost/vhost.c
-> +++ b/drivers/vhost/vhost.c
-> @@ -2801,6 +2801,7 @@ bool vhost_vq_avail_empty(struct vhost_dev *dev, struct vhost_virtqueue *vq)
->                  return false;
->          vq->avail_idx = vhost16_to_cpu(vq, avail_idx);
->   
-> +       smp_rmb();
->          return vq->avail_idx == vq->last_avail_idx;
->   }
->   EXPORT_SYMBOL_GPL(vhost_vq_avail_empty);
-> 
+Fixes: 11c91be0e244 ("rhashtable: plumb through alloc tag")
+Signed-off-by: Suren Baghdasaryan <surenb@google.com>
+Cc: linux-doc@vger.kernel.org
+Cc: Randy Dunlap <rdunlap@infradead.org>
+Cc: Kent Overstreet <kent.overstreet@linux.dev>
+---
+ lib/rhashtable.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-Thanks, Will. I already noticed smp_rmb() has been missed in vhost_vq_avail_empty().
-The issue still exists after smp_rmb() is added here. However, I'm inspired by your
-suggestion and recheck the code again. It seems another smp_rmb() has been missed
-in vhost_enable_notify().
-
-With smp_rmb() added to vhost_vq_avail_empty() and vhost_enable_notify(), I'm unable
-to hit the issue. I will try for more times to make sure the issue is really resolved.
-After that, I will post formal patches for review.
-
-Thanks,
-Gavin
+diff --git a/lib/rhashtable.c b/lib/rhashtable.c
+index 35d841cf2b43..dbbed19f8fff 100644
+--- a/lib/rhashtable.c
++++ b/lib/rhashtable.c
+@@ -979,7 +979,7 @@ static u32 rhashtable_jhash2(const void *key, u32 length, u32 seed)
+ }
+ 
+ /**
+- * rhashtable_init_noprof - initialize a new hash table
++ * rhashtable_init - initialize a new hash table
+  * @ht:		hash table to be initialized
+  * @params:	configuration parameters
+  *
+@@ -1085,13 +1085,13 @@ int rhashtable_init_noprof(struct rhashtable *ht,
+ EXPORT_SYMBOL_GPL(rhashtable_init_noprof);
+ 
+ /**
+- * rhltable_init_noprof - initialize a new hash list table
++ * rhltable_init - initialize a new hash list table
+  * @hlt:	hash list table to be initialized
+  * @params:	configuration parameters
+  *
+  * Initializes a new hash list table.
+  *
+- * See documentation for rhashtable_init_noprof.
++ * See documentation for rhashtable_init.
+  */
+ int rhltable_init_noprof(struct rhltable *hlt, const struct rhashtable_params *params)
+ {
+-- 
+2.44.0.396.g6e790dbe36-goog
 
 
