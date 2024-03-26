@@ -1,102 +1,234 @@
-Return-Path: <linux-kernel+bounces-118199-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-118200-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id E579A88B5B1
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 00:59:33 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9E39688B5BA
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 01:02:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A1D382E8597
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 23:59:32 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4BD7428AAF0
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 00:02:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DA09186626;
-	Mon, 25 Mar 2024 23:59:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B86B429B0;
+	Tue, 26 Mar 2024 00:02:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="DZGH87cD"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="S3icT/pb"
+Received: from mail-yb1-f172.google.com (mail-yb1-f172.google.com [209.85.219.172])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9AF2D339BF;
-	Mon, 25 Mar 2024 23:59:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.7
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E721367;
+	Tue, 26 Mar 2024 00:02:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711411161; cv=none; b=jFjB7cvY7MH45xdRjY2f0ejdiTNqFuw2BJ7sZkyV2ccRHW482SjbUAA6vbmPPuxrkp6aMiFpEL9j+d5YFhcZIqWqA2yVF/JqbQSHNxUow70fRAWKHstEhZkDs0hOR3nCKh5GMuN7P+GKwqnb41I7XIAJE+wVznJKIChYsT7Ogz0=
+	t=1711411366; cv=none; b=pxQQhScaamt6bNi6QRyeBIwwjRy6MCahfVKI46CiNdF6ZWXR/rRzcXxEsfvUUWFb/KthXeVz89UDGIixIMxrBhMUiqG1F9gM3plLKMU+XLrUhJ/e/E3b+tEzRtminHc6F7qUlDyJUQ47NtFz5PNDMztkvMU4qa+HewWLO/vNc6k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711411161; c=relaxed/simple;
-	bh=weMSH2HY5gtyciUxIFxfYnwP9q0mVKBCRDJIjHcLgeE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=UaOrlEg96dlGilwzcqlEC3RKVZoZ7HQQ/4RC664teNUW25XOE2Ti9vPJYF968GwT8FiyCS/NsQLcROi9zfBu8mtEoYsszgshrJnoKzmZUUWCng2zhsPNrrWQYIRR67HUIl51xXLILbABr7TPaJq+Y9k9tVF/gUr03T9YKvkgnhc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=DZGH87cD; arc=none smtp.client-ip=192.198.163.7
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1711411159; x=1742947159;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=weMSH2HY5gtyciUxIFxfYnwP9q0mVKBCRDJIjHcLgeE=;
-  b=DZGH87cD1zkE+Xotd1TyPxAiL2lgkjFaGGP0wkJF8kQtHcJcqyM2QCmB
-   zI6ZwhBrwXKc7RilBBgXJp9rEUSB9LG1R9wVPoWQoOZPYFteMWILwJLYb
-   UD6FgY843NWPdebNtQW8nHPV6lNYayk10rPkCwUL8iW5UjAte2bb+7ILx
-   Gw52LmLA09V8MEnEqcr36KAisTYgnp82gPIQdPDpm6EBsrAV/1N/QQoQH
-   hqWXW/R8Baf/L/Rsl8W1wkzb7/Os3j3J1ne1liOtQUp1qnLYmC2mQ/vW1
-   2pdZQWs95qoZjtw2unIfNciEwFu/HYP614ebNUov2zxkkDwFXnzzVqg4E
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11024"; a="31880425"
-X-IronPort-AV: E=Sophos;i="6.07,154,1708416000"; 
-   d="scan'208";a="31880425"
-Received: from fmviesa001.fm.intel.com ([10.60.135.141])
-  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Mar 2024 16:59:18 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,154,1708416000"; 
-   d="scan'208";a="46938419"
-Received: from ls.sc.intel.com (HELO localhost) ([172.25.112.31])
-  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Mar 2024 16:59:18 -0700
-Date: Mon, 25 Mar 2024 16:59:18 -0700
-From: Isaku Yamahata <isaku.yamahata@intel.com>
-To: Paolo Bonzini <pbonzini@redhat.com>
-Cc: linux-kernel@vger.kernel.org, kvm@vger.kernel.org, michael.roth@amd.com,
-	isaku.yamahata@intel.com, seanjc@google.com,
-	isaku.yamahata@linux.intel.com, rick.p.edgecombe@intel.com,
-	xiaoyao.li@intel.com, kai.huang@intel.com
-Subject: Re: [PATCH v4 05/15] KVM: SEV: publish supported VMSA features
-Message-ID: <20240325235918.GR2357401@ls.amr.corp.intel.com>
-References: <20240318233352.2728327-1-pbonzini@redhat.com>
- <20240318233352.2728327-6-pbonzini@redhat.com>
+	s=arc-20240116; t=1711411366; c=relaxed/simple;
+	bh=Swt6+93KTELzBLQj7zUwl5HIGVhxbZse+TMgVXv8e0Y=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=AbFM32ABHuVZk8/f8HkV5qjeiScNOy/g6PTCXhPGQ1+hkdTXzNgchy1CbIOCN7G2263x9/Rgp3Sbl/Wm7GwHO0UpfJIk8h1dmVK20YnobBuKz8PqGbUQFOOYsdOHFObR0dvnO2eiDVc+NDfRkGP+BmkxqWFNEjqHspL+baSm55M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=S3icT/pb; arc=none smtp.client-ip=209.85.219.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yb1-f172.google.com with SMTP id 3f1490d57ef6-dc6dcd9124bso4757480276.1;
+        Mon, 25 Mar 2024 17:02:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1711411364; x=1712016164; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=0ZSaVSDwUkk79xkN09Vf+/rrtBLYHXzzW+Z8vmjcWb0=;
+        b=S3icT/pb4Y4T9bZrSidffyuyodQTjOQHDb74QiQjZffJ4Evn4JpnrVZwydAkdcymkw
+         w418xl1pzYCuuLFDI9DxTnUi73oVvH9URxFZRUweWNPFMZD6tR4GwPPsh9CO1C/u9zb2
+         IRbHIq/EWOn+rPJhzywLKgoFJ/L0PqmVzWVRUlbu//9XF11/hS0qd3VcOR3sCljqNsvt
+         SysIBLPWsA62+xA4oewG9O5cLeEvNpygiUvLM2LaWswd/BauOZMgU5JQG02kHl1wgpIu
+         vryuP+CKjFtgoAViT4pTYoq0g5LHvbIt7bUtSuuehDfCEOwiIK9VVNHvqLzxKpfBp0DP
+         s8Zw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711411364; x=1712016164;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=0ZSaVSDwUkk79xkN09Vf+/rrtBLYHXzzW+Z8vmjcWb0=;
+        b=JrJ95UowMd7O0OxRAcBQvTmeL3pqNyS3qMocbxAvFqvQR7QgbCTskG4V78PNvEPhEq
+         MQeqH0jbNqdEF033tELc2rAumlPaiyXzM28Biid1iRmHygY/EaVpLi6V2Nid4cWG9nao
+         61j0ZImdp8lTmmVUIV2iQ5aYkWH4xyDdse1MPcU5wUS0xZTo2y5keTXDOYzFR+3WcfdL
+         iEE3w3LTNhwE2JwJ3icn8HIQDiFAI/E6tYum26uFZYMR86IZj1BY3IOAI3Fa8lJRHt7/
+         zt2MTFOVxGpGpB8DNE94VvtbDl3+or5zdWzGa4vt2LM847xFgTpZzfJDCLnDqKOI0ar3
+         tjKA==
+X-Forwarded-Encrypted: i=1; AJvYcCX7BiqLiH/dwOIhoZu8aIWNQwGX9XabZYLodDtBZ1KgQp+ebMCHOz/poctdF2MVtA6erkp9wbvIKtHgkjQMQHN4Pu7+3t0uI9wgBqew
+X-Gm-Message-State: AOJu0YxmTIW9NyEFSeLdlj4HmE5fZM2hZl9DBJH8k1A98qJ1b2HosBKG
+	2Ug5itUgVT2DeorzUXxMlcKVn5xZTYDkZtB23OIMB1gk2cRiskN3V0bq4hesIc23WsFcTGYkoJf
+	wLg+qta4z3pzQHWdK1UywNnazllfzQtaPMVQ=
+X-Google-Smtp-Source: AGHT+IFJi4vw/rc8aDbAC5HKMEpuoPFUHrRZWYY8njdIFdukqddR/0qIDK5mDw85caFQ42g71xF1aSZoDSXATuOmB+4=
+X-Received: by 2002:a25:361e:0:b0:dcc:9dcc:a433 with SMTP id
+ d30-20020a25361e000000b00dcc9dcca433mr6546513yba.54.1711411364125; Mon, 25
+ Mar 2024 17:02:44 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20240318233352.2728327-6-pbonzini@redhat.com>
+References: <20240325195418.166013-1-wedsonaf@gmail.com> <20240325195418.166013-3-wedsonaf@gmail.com>
+ <g2iK91tWPKM5kXi-N6Nn3tn5jG4qvB6txrpq0ejLnQYgRNZJE1OO__SDANkSNP0JjMrqhEdc0m6YyxNlicxqzGr4hEsLAxPgCyPeyRoXLq0=@proton.me>
+In-Reply-To: <g2iK91tWPKM5kXi-N6Nn3tn5jG4qvB6txrpq0ejLnQYgRNZJE1OO__SDANkSNP0JjMrqhEdc0m6YyxNlicxqzGr4hEsLAxPgCyPeyRoXLq0=@proton.me>
+From: Wedson Almeida Filho <wedsonaf@gmail.com>
+Date: Mon, 25 Mar 2024 21:02:33 -0300
+Message-ID: <CANeycqq+uVp1O5k56LPtzvJQObrjT9JY3zBiX8T0nu6Gdsbu6g@mail.gmail.com>
+Subject: Re: [PATCH 02/10] rust: alloc: introduce the `VecExt` trait
+To: Benno Lossin <benno.lossin@proton.me>
+Cc: rust-for-linux@vger.kernel.org, Miguel Ojeda <ojeda@kernel.org>, 
+	Alex Gaynor <alex.gaynor@gmail.com>, Boqun Feng <boqun.feng@gmail.com>, 
+	Gary Guo <gary@garyguo.net>, =?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, 
+	Andreas Hindborg <a.hindborg@samsung.com>, Alice Ryhl <aliceryhl@google.com>, 
+	linux-kernel@vger.kernel.org, Wedson Almeida Filho <walmeida@microsoft.com>
+Content-Type: text/plain; charset="UTF-8"
 
-On Mon, Mar 18, 2024 at 07:33:42PM -0400,
-Paolo Bonzini <pbonzini@redhat.com> wrote:
+On Mon, 25 Mar 2024 at 19:05, Benno Lossin <benno.lossin@proton.me> wrote:
+>
+> On 25.03.24 20:54, Wedson Almeida Filho wrote:> From: Wedson Almeida Filho <walmeida@microsoft.com>
+> >
+> > Make `try_with_capacity`, `try_push`, and `try_extend_from_slice`
+> > methods available in `Vec` even though it doesn't implement them. It is
+> > implemented with `try_reserve` and `push_within_capacity`.
+> >
+> > This is in preparation for switching to the upstream `alloc` crate.
+> >
+> > Suggested-by: Gary Guo <gary@garyguo.net>
+> > Signed-off-by: Wedson Almeida Filho <walmeida@microsoft.com>
+> > ---
+> >   rust/kernel/alloc.rs        |  1 +
+> >   rust/kernel/alloc/vecext.rs | 52 +++++++++++++++++++++++++++++++++++++
+> >   rust/kernel/lib.rs          |  1 +
+> >   rust/kernel/prelude.rs      |  2 ++
+> >   4 files changed, 56 insertions(+)
+> >   create mode 100644 rust/kernel/alloc/vecext.rs
+> >
+> > diff --git a/rust/kernel/alloc.rs b/rust/kernel/alloc.rs
+> > index ccd4149932c3..8ad57a2e693e 100644
+> > --- a/rust/kernel/alloc.rs
+> > +++ b/rust/kernel/alloc.rs
+> > @@ -5,3 +5,4 @@
+> >   #[cfg(not(test))]
+> >   #[cfg(not(testlib))]
+> >   mod allocator;
+> > +pub mod vecext;
+> > diff --git a/rust/kernel/alloc/vecext.rs b/rust/kernel/alloc/vecext.rs
+> > new file mode 100644
+> > index 000000000000..59e92bab534e
+> > --- /dev/null
+> > +++ b/rust/kernel/alloc/vecext.rs
+> > @@ -0,0 +1,52 @@
+> > +// SPDX-License-Identifier: GPL-2.0
+> > +
+> > +//! Extensions to [`Vec`] for fallible allocations.
+> > +
+> > +use alloc::{collections::TryReserveError, vec::Vec};
+> > +use core::result::Result;
+> > +
+> > +/// Extensions to [`Vec`].
+> > +pub trait VecExt<T>: Sized {
+> > +    /// Creates a new [`Vec`] instance with at least the given capacity.
+> > +    fn try_with_capacity(capacity: usize) -> Result<Self, TryReserveError>;
+> > +
+> > +    /// Appends an element to the back of the [`Vec`] instance.
+> > +    fn try_push(&mut self, v: T) -> Result<(), TryReserveError>;
+> > +
+> > +    /// Pushes clones of the elements of slice into the [`Vec`] instance.
+> > +    fn try_extend_from_slice(&mut self, other: &[T]) -> Result<(), TryReserveError>
+> > +    where
+> > +        T: Clone;
+>
+> All of the non `try_` prefix functions require
+> `not(no_global_oom_handling)`, so we could also drop the `try_` prefix
+> here.
+> What do you think?
 
-> Compute the set of features to be stored in the VMSA when KVM is
-> initialized; move it from there into kvm_sev_info when SEV is initialized,
-> and then into the initial VMSA.
-> 
-> The new variable can then be used to return the set of supported features
-> to userspace, via the KVM_GET_DEVICE_ATTR ioctl.
+Yes, I do drop the `try_` prefixes in patch 7.
 
-Hi. The current TDX KVM introduces KVM_TDX_CAPABILITIES and struct
-kvm_tdx_capabilities for feature enumeration.  I'm wondering if TDX should also
-use/switch to KVM_GET_DEVICE_ATTR with its own group.  What do you think?
-Something like
+Patches 1 through 4 remove the fork with minimal changes. Patches 5 to
+10 introduce new functions with flags and drop `allocator_api`.
 
-#define KVM_DEVICE_ATTR_GROUP_SEV       1
-#define KVM_X86_SEV_VMSA_FEATURES       1
-#define KVM_X86_SEV_xxx                 ...
+> > +}
+> > +
+> > +impl<T> VecExt<T> for Vec<T> {
+> > +    fn try_with_capacity(capacity: usize) -> Result<Self, TryReserveError> {
+> > +        let mut v = Vec::new();
+> > +        v.try_reserve(capacity)?;
+> > +        Ok(v)
+> > +    }
+> > +
+> > +    fn try_push(&mut self, v: T) -> Result<(), TryReserveError> {
+> > +        if let Err(retry) = self.push_within_capacity(v) {
+> > +            self.try_reserve(1)?;
+> > +            let _ = self.push_within_capacity(retry);
+> > +        }
+> > +        Ok(())
+> > +    }
+> > +
+> > +    fn try_extend_from_slice(&mut self, other: &[T]) -> Result<(), TryReserveError>
+> > +    where
+> > +        T: Clone,
+> > +    {
+> > +        let extra_cap = self.capacity() - self.len();
+> > +        if extra_cap > 0 {
+> > +            self.try_reserve(extra_cap)?;
+> > +        }
+>
+> I am confused, why are you doing this? Did you mean to do this?:
+>     let extra_cap = self.capacity() - self.len() - other.len();
 
-#define KVM_DEVICE_ATTR_GROUP_TDX       2
-#define KVM_X86_TDX_xxx                 ...
+I originally meant `extracap = other.len() - self.capacity() +
+self.len()` because originally I thought `additional` meant additional
+capacity (so the final capacity would be original capacity plus
+`additional`). But after I looked at the code I learned that
+`additional` is really the minimum capacity.
 
-Thanks,
--- 
-Isaku Yamahata <isaku.yamahata@intel.com>
+Then I decided that we don't need this check at all in
+`try_extend_from_slice`, which I removed in patch 7, I just call
+`reserve` directly with `other.len()`.
+
+The code happens to work now because the `try_push` calls below ensure
+the capacity gets expanded. In any case, I'll fix this in v2.
+
+> --
+> Cheers,
+> Benno
+>
+> > +
+> > +        for item in other {
+> > +            self.try_push(item.clone())?;
+> > +        }
+> > +
+> > +        Ok(())
+> > +    }
+> > +}
+> > diff --git a/rust/kernel/lib.rs b/rust/kernel/lib.rs
+> > index 51f30e55bd00..7f2841a18d05 100644
+> > --- a/rust/kernel/lib.rs
+> > +++ b/rust/kernel/lib.rs
+> > @@ -19,6 +19,7 @@
+> >   #![feature(offset_of)]
+> >   #![feature(receiver_trait)]
+> >   #![feature(unsize)]
+> > +#![feature(vec_push_within_capacity)]
+> >
+> >   // Ensure conditional compilation based on the kernel configuration works;
+> >   // otherwise we may silently break things like initcall handling.
+> > diff --git a/rust/kernel/prelude.rs b/rust/kernel/prelude.rs
+> > index ae21600970b3..a0177f195dec 100644
+> > --- a/rust/kernel/prelude.rs
+> > +++ b/rust/kernel/prelude.rs
+> > @@ -14,6 +14,8 @@
+> >   #[doc(no_inline)]
+> >   pub use core::pin::Pin;
+> >
+> > +pub use crate::alloc::vecext::VecExt;
+> > +
+> >   #[doc(no_inline)]
+> >   pub use alloc::{boxed::Box, vec::Vec};
+> >
+> > --
+> > 2.34.1
+> >
 
