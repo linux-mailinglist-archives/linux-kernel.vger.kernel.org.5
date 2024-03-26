@@ -1,99 +1,166 @@
-Return-Path: <linux-kernel+bounces-119191-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-119192-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id B19B088C550
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 15:39:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 0561088C553
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 15:39:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 482801F34808
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 14:39:01 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8FF9A1F3B77E
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 14:39:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CCC2A13C3E1;
-	Tue, 26 Mar 2024 14:38:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A061113C3F7;
+	Tue, 26 Mar 2024 14:39:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Dm3l7G6E"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="pjwfmNZ1"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1AAEC763E6;
-	Tue, 26 Mar 2024 14:38:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D49B613C3DB;
+	Tue, 26 Mar 2024 14:39:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711463934; cv=none; b=hrr+sKA6Dv5etX2McQZQ4EC21VMPpVZDBLWQ6poydK0Wm+WEA0aB/ZAvH882rgD2AU9rtHZ+cn77Nlz0qysXAG4Ort65oTT78wrSH5XuPh5viwHjYkooDapOsosvbyeWKNA1OmTpQG9a/Pr4jfabHGSP0ho3gSBOHHtui8VHZgU=
+	t=1711463962; cv=none; b=QH5GfCddvh/CJdgv2HHYo2eZBVEmab21APzVSET279vBECmE7WKe6MQzk1yCcgq/kXTlMHFicqweB4zDxLq4eGuPmegNS9kqEnx5lzhvx2mSmDCNJETyxoRhR8XYnXugbK8GK0EBoczB/cElD3dpgT8Y1fsupTZ9vYuT2mRsHSE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711463934; c=relaxed/simple;
-	bh=gHroWCuJnf1md1YwPUVsD4d9qdV4yVBD8yNFmcL2YKQ=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=mdcpqOgEXjG4ZzlFtBJPkymQIYGR+u5KzdO9nYnkCBALx/Dk+IrF0BUZ672v9HGhVaxS/7IBJULwq0StN3Ko2wO4ddBIjCD1+Hn3ihQPEK8f29sx4AS8sPAdUk+is16pXIs2omv9SchYE8Rfb+r0KaCihnXy23baNjT3Yn6dwl0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Dm3l7G6E; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1919EC433C7;
-	Tue, 26 Mar 2024 14:38:52 +0000 (UTC)
+	s=arc-20240116; t=1711463962; c=relaxed/simple;
+	bh=694uUrQurged0DpiGcIKRXaR7f7IY1ihpJjxlFzcTmk=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=u9thdaV3hks+RekVD9pMZgNn6U5xUs/AQ/ig50vpXkn91BKYO6S1W13M0tPlQ9mijmfBPq7YpQjnuMBJ68L4LOxBSp6XLoYBYOvQJLFpDfqgCGVMtU9yu3be0HLdI8MniVSkUM24Sgj289Vi5XieSr9KX06f0NrHJUIN05ItZYM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=pjwfmNZ1; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7D684C433F1;
+	Tue, 26 Mar 2024 14:39:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711463933;
-	bh=gHroWCuJnf1md1YwPUVsD4d9qdV4yVBD8yNFmcL2YKQ=;
-	h=From:To:Cc:Subject:Date:From;
-	b=Dm3l7G6E8mDC6tvoPT/wB+izw+2N3ZOY2F9KPUAfngDhcSdUtxSCb572pfdHBv0LX
-	 2i7NzljIDb57F4M5WXuq4431cCRc9c7eNkwMmp8x/EtafbI59vkm5O4YJlJnQ9CpT9
-	 QXIs0usjGPWNJvn/eYrrxp69+/Nd2jRRXZZ1CyvVJkBWdIZRcPEep51pBRgBYxVcBL
-	 02x80CUtU5E4RcI/oAmAkwg7FVlN3B7/2CkZccVhZAVPvefirqjHbAm2yqY6BQZ2Jw
-	 /strzW7gCnt02yjIgE8P4fzhRIdfmLkqI9zsKLt5xRCKQjvegX3ygs5MGPXmmYfRQv
-	 SysaWSi1f540g==
-From: Jarkko Sakkinen <jarkko@kernel.org>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Jarkko Sakkinen <jarkko@kernel.org>,
-	Peter Huewe <peterhuewe@gmx.de>,
-	Jason Gunthorpe <jgg@ziepe.ca>,
-	David Howells <dhowells@redhat.com>,
-	linux-integrity@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	keyrings@vger.kernel.org
-Subject: [GIT PULL] tpmdd changes for v6.9-rc2
-Date: Tue, 26 Mar 2024 16:38:38 +0200
-Message-ID: <20240326143838.15076-1-jarkko@kernel.org>
-X-Mailer: git-send-email 2.44.0
+	s=k20201202; t=1711463961;
+	bh=694uUrQurged0DpiGcIKRXaR7f7IY1ihpJjxlFzcTmk=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=pjwfmNZ1TweH9ISfP9b/Kmwt/5cyA42r1F1XKtie1SFE90bnSPsWUp9mgj5sz+wu5
+	 9oR4383cI/j5IDxSLXpccKFuY1VW5mv4ekQIvXjMjaTRN6sUadwz5tnOFnUEoQ7Q90
+	 SFFn0WTcQyUJ7PvU+q85kgC3ZL1jYp1f+QAl0CyaPZvhQbSNn2oPG0EwowtfaPih8s
+	 FQMoex/0eXJdAaHxVcC+ygzwkQq9/URLvpyrRhbSj/CFbpcsp56k8G2EtuY457hP9z
+	 i61md7kqXW1ZV7XJWmNRXkW8r71RDsG10R43ip/GT55jceOu/yLNSFwMxutiP9+i3z
+	 fu3as+SmNMIAA==
+Received: by mail-lj1-f175.google.com with SMTP id 38308e7fff4ca-2d6c8d741e8so48994441fa.3;
+        Tue, 26 Mar 2024 07:39:21 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCXeT0BG2NVCKm0VqavueHPCRlBYAoNoSjbLFsnkwzvAXRp1JusySytZ5ji6EGPgVDfLw8pJHHfx32hzw0i/vgzUjewsH38KDVwXztWlK4r4dugo0cCsk2uAPXfFDq3xAW6QpU7zHYDFEuXRcEUeqCu2SOXqTXmhQ1yuRWVgBHyQ9KQs/3d7PcHTmONuwBs8u5ySW+xGzN86y3xA6enIl3ma
+X-Gm-Message-State: AOJu0YxfjLQgy9PWFYjKfJP/9f5DarWrGtMq2iruwop4aOjWVLKT4bEW
+	4PZ9EBp2Q9CpVatBYsnAUukmzFL35eNeY7MlYWxk9iP4Zsf1GJMHaUrGlH8//R6wxxB8CpMaWMG
+	KyLFoZ2k3PvO6gZCjWETJ+yBZSQs=
+X-Google-Smtp-Source: AGHT+IHRLtVwQBliK06CNyOkOnUVQC6pejo7AnQDeCYkZeCtaGd/3ULk5T8a2lopDISmhpKZBiypht1J7vGrFSjSdRI=
+X-Received: by 2002:a2e:989a:0:b0:2d2:3fac:5fc7 with SMTP id
+ b26-20020a2e989a000000b002d23fac5fc7mr5651686ljj.45.1711463960202; Tue, 26
+ Mar 2024 07:39:20 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20240314042659.232142-1-sjg@chromium.org> <20240314042659.232142-3-sjg@chromium.org>
+In-Reply-To: <20240314042659.232142-3-sjg@chromium.org>
+From: Masahiro Yamada <masahiroy@kernel.org>
+Date: Tue, 26 Mar 2024 23:38:44 +0900
+X-Gmail-Original-Message-ID: <CAK7LNASWKyTXuPwj0_xaD=8_WfbXhejCe_Z+2Os2MD+mU_D5Fg@mail.gmail.com>
+Message-ID: <CAK7LNASWKyTXuPwj0_xaD=8_WfbXhejCe_Z+2Os2MD+mU_D5Fg@mail.gmail.com>
+Subject: Re: [PATCH v11 2/2] arm64: boot: Support Flat Image Tree
+To: Simon Glass <sjg@chromium.org>
+Cc: linux-arm-kernel@lists.infradead.org, 
+	Ahmad Fatoum <a.fatoum@pengutronix.de>, Nicolas Schier <nicolas@fjasle.eu>, 
+	Catalin Marinas <catalin.marinas@arm.com>, Jonathan Corbet <corbet@lwn.net>, 
+	Nathan Chancellor <nathan@kernel.org>, Nick Terrell <terrelln@fb.com>, Will Deacon <will@kernel.org>, 
+	linux-doc@vger.kernel.org, linux-kbuild@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, workflows@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-  Merge tag 'gfs2-v6.8-fix' of git://git.kernel.org/pub/scm/linux/kernel/git/gfs2/linux-gfs2 (2024-03-25 10:53:39 -0700)
+On Thu, Mar 14, 2024 at 1:28=E2=80=AFPM Simon Glass <sjg@chromium.org> wrot=
+e:
+>
+> Add a script which produces a Flat Image Tree (FIT), a single file
+> containing the built kernel and associated devicetree files.
+> Compression defaults to gzip which gives a good balance of size and
+> performance.
+>
+> The files compress from about 86MB to 24MB using this approach.
+>
+> The FIT can be used by bootloaders which support it, such as U-Boot
+> and Linuxboot. It permits automatic selection of the correct
+> devicetree, matching the compatible string of the running board with
+> the closest compatible string in the FIT. There is no need for
+> filenames or other workarounds.
+>
+> Add a 'make image.fit' build target for arm64, as well.
+>
+> The FIT can be examined using 'dumpimage -l'.
+>
+> This uses the 'dtbs-list' file but processes only .dtb files, ignoring
+> the overlay .dtbo files.
+>
+> This features requires pylibfdt (use 'pip install libfdt'). It also
+> requires compression utilities for the algorithm being used. Supported
+> compression options are the same as the Image.xxx files. Use
+> FIT_COMPRESSION to select an algorithm other than gzip.
+>
+> While FIT supports a ramdisk / initrd, no attempt is made to support
+> this here, since it must be built separately from the Linux build.
+>
+> Signed-off-by: Simon Glass <sjg@chromium.org>
+> ---
+>
+> Changes in v11:
+> - Use dtbslist file in image.fit rule
+> - Update cmd_fit rule as per Masahiro
+> - Don't mention ignoring files without a .dtb prefix
+> - Use argparse fromfile_prefix_chars feature
+> - Add a -v option and use it for output (with make V=3D1)
+> - rename srcdir to dtbs
+> - Use -o for the output file instead of -f
+>
 
-are available in the Git repository at:
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/jarkko/linux-tpmdd.git tags/tpmdd-v6.9-rc2
 
-for you to fetch changes up to 6999f8229e5998e8286e6a960779b6c202d878da:
 
-  keys: Fix overwrite of key expiration on instantiation (2024-03-26 16:24:53 +0200)
+> --- a/scripts/Makefile.lib
+> +++ b/scripts/Makefile.lib
+> @@ -504,6 +504,21 @@ quiet_cmd_uimage =3D UIMAGE  $@
+>                         -a $(UIMAGE_LOADADDR) -e $(UIMAGE_ENTRYADDR) \
+>                         -n '$(UIMAGE_NAME)' -d $< $@
+>
+> +# Flat Image Tree (FIT)
+> +# This allows for packaging of a kernel and all devicetrees files, using
+> +# compression.
+> +# ----------------------------------------------------------------------=
+-----
+> +
+> +MAKE_FIT :=3D $(srctree)/scripts/make_fit.py
+> +
+> +# Use this to override the compression algorithm
+> +FIT_COMPRESSION ?=3D gzip
+> +
+> +quiet_cmd_fit =3D FIT     $@
+> +      cmd_fit =3D $(MAKE_FIT) -o $@ --arch $(UIMAGE_ARCH) --os linux \
+> +               --name '$(UIMAGE_NAME)' $(if $(V),-v) \
+> +               --compress $(FIT_COMPRESSION) -k $< @$(word 2,$^)
+> +
 
-----------------------------------------------------------------
-Hi,
 
-This pull request contains just a couple of unintrusive changes for
-v6.9.
 
-Note that "keys: update key quotas in key_put()" makes quotas less racy
-by updating qnkeys and qnbytes already in key_put(). It is not exactly a
-bug fix but does make overall kerrnel behaviour more stable and
-consistent. Just adding this because I try to keep follow-up PR's for
-kernel releases bug fix only but I think here it makes sense to make an
-exception.
 
-BR, Jarkko
+A nit in your new code.
 
-----------------------------------------------------------------
-Luis Henriques (1):
-      keys: update key quotas in key_put()
 
-Silvio Gissi (1):
-      keys: Fix overwrite of key expiration on instantiation
+$(if $(V),-v) does not work for KBUILD_VERBOSE env variable.
 
- security/keys/gc.c     |  8 --------
- security/keys/key.c    | 35 ++++++++++++++++++++++++-----------
- security/keys/keyctl.c | 11 ++++++-----
- 3 files changed, 30 insertions(+), 24 deletions(-)
+
+It should be
+
+    $(if $(findstring 1,$(KBUILD_VERBOSE)),-v)
+
+
+
+
+
+--=20
+Best Regards
+Masahiro Yamada
 
