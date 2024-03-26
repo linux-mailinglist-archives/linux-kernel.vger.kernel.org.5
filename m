@@ -1,211 +1,190 @@
-Return-Path: <linux-kernel+bounces-118360-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-118362-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id CABA888B97C
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 05:45:45 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0164F88B986
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 05:51:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 479981F3D938
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 04:45:45 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6E4FB1F38725
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 04:51:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E6DBE71B47;
-	Tue, 26 Mar 2024 04:45:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B253E128374;
+	Tue, 26 Mar 2024 04:51:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="UBNjYIA6"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=marvell.com header.i=@marvell.com header.b="RoW+3/ZK"
+Received: from mx0b-0016f401.pphosted.com (mx0b-0016f401.pphosted.com [67.231.156.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6AB4D33FD
-	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 04:45:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4B88C29B0;
+	Tue, 26 Mar 2024 04:50:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=67.231.156.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711428338; cv=none; b=lssh3xFqr4M4DU6aOnBUi9PKiJKQw01agmXhxFlfBUe1Ko3NVDLCVT18JYhmamr0F12Hy4eUtWb4unxr9efS3szMPTokkVxuCPFHK6EYOj0eHvZU9TcV+UdUzqfjycEZfi+pFGCo1QtWLYtg1yC7aLEFszV+Qa9I437o8Ur9zfA=
+	t=1711428661; cv=none; b=qxW98Q5VSjQLAOma2CtHYY5uQvp3cMA8XQH4da/HLV9BKruoA4gQyRzlQ6+4vFOv+Q0bvm4cr/XZRHusKqNSLcayy6zG6TJIePpEuM2z+wPr73V/6+XgBktqgvHg1zRrt6SkkQivUf/p7CqnhvIeRCiAAUtpo+qUuqwvkGGQr+s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711428338; c=relaxed/simple;
-	bh=Pgv/tT/N2P7ZAj+UJ3IWDPgKGNnA2zABKljkfQKwA2U=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=YGE8vHDUFdmtvcKzR1wb7C9YoVzVK4saTz6pUQ+2TrVXr5YdNe28mz+eheabD5Qx68021XV03yULluJLL2v86QZxPnT+5+K7MFYOb7KvVWcooIFkP9rmpBiSU7T+n64m70wahcxc8V2bGXA+gLGOF56BeSzJ7gj18TfIPxb9KJ8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=UBNjYIA6; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1711428335;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=iLn9q/d3IXDRXcZITYj+lKYLmTjyEeBrR8h5o+IkddE=;
-	b=UBNjYIA6AbXsH2WUPAUw2yYcxeNH7uemR6Xx1mp4pb8eYZjiqBDGs1NYTL2t41FrLta6Nr
-	o3evOnTNotHlpvwFXN1JeJy9S9bg6GzPRxJ84N7l+pIvxdaryyeU6w8ZQOLcxxMhQ7oIAF
-	Z+NDPY4JPKfDxHa9wWJKHVvWMD9Q/0Y=
-Received: from mail-vk1-f199.google.com (mail-vk1-f199.google.com
- [209.85.221.199]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-45-kBzeNlrDPV61i7_pQsiBGg-1; Tue, 26 Mar 2024 00:45:33 -0400
-X-MC-Unique: kBzeNlrDPV61i7_pQsiBGg-1
-Received: by mail-vk1-f199.google.com with SMTP id 71dfb90a1353d-4d45644084cso1996363e0c.3
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 21:45:33 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711428333; x=1712033133;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=iLn9q/d3IXDRXcZITYj+lKYLmTjyEeBrR8h5o+IkddE=;
-        b=FlY8wTJ1eY8forK3SwUlkOvvyXRHtKXf8AAL6eWB8cihx7TKqPxukauZarzcj8nASS
-         ULeYs3U3ulrpYg27/QZm9YaJFWsLAK7Z4f5m0Qwz6lBwE3tLiAoHnPNmoBI2fE8dzOLC
-         ev4qLRLJSS5TLDLpDurgdOVe+fdmbKsvfoAj3UJZHayxeegiLAN0yXGyOirKQasusA1U
-         pg+F5d2gn4xPxNTdX2NBzYXR+KPNbMh3pH52nGDqNn72MWLbDaiBZJNyJTwb0mY3ff/t
-         GDVJwu/wJelymhuG7TkI7TvXlal7A9QPyT0uk4040+0G917123go43RGO6F1DEB6MRxo
-         O8rg==
-X-Gm-Message-State: AOJu0YwfgWxnChF+Xa2fDGV6mx8UZNcEbn2BSAePFURJ8X6sCbCjfDVj
-	G9JbpBt57LaaUZ1NkFxUQlsbusiLCkrtrV3kG+ottveTlXHdVNWRqa110ow0thbAbY0aR9nl0eB
-	sLOs1ZSKr+e+xv+UhMTSVTyuWRFP76YegyW8TLaTaq/EP1jZoK9VDioJBveGnhQibMWLqF//7GE
-	F5/pD0gxJDnxa7gG+BtMTtp/2k9zsLXP12D4OF
-X-Received: by 2002:a05:6122:168a:b0:4c9:2540:8520 with SMTP id 10-20020a056122168a00b004c925408520mr1743467vkl.1.1711428332980;
-        Mon, 25 Mar 2024 21:45:32 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IGfNLJPf8BwG8GdUEorXPr162rmx5xbKqekfpH7H27QQ3Vu30bi3pOmdnAJp/Gx6xebGiQNvKpx8wabblhWq3o=
-X-Received: by 2002:a05:6122:168a:b0:4c9:2540:8520 with SMTP id
- 10-20020a056122168a00b004c925408520mr1743463vkl.1.1711428332671; Mon, 25 Mar
- 2024 21:45:32 -0700 (PDT)
+	s=arc-20240116; t=1711428661; c=relaxed/simple;
+	bh=F5JKSRogf2llIBkzzf0hpoa6S0VY2RBJ8xYm+J6GbQI=;
+	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=GrVs5QGsnVlzzSTUYBEhQPQNgOnLm3i3uy8jGdpAm44vYWVblFgammmf6jnM29LCdbd3i49ZV5l2ChoiwbkI1izxBDL9ufUJHBkGXqn340nAg+9ass6mNuU+jIvFPcsDmAA2SF8KnswLjFnbRVompgwKm/wNHhwf8Ql81apK3NE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=marvell.com; spf=pass smtp.mailfrom=marvell.com; dkim=pass (2048-bit key) header.d=marvell.com header.i=@marvell.com header.b=RoW+3/ZK; arc=none smtp.client-ip=67.231.156.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=marvell.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=marvell.com
+Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
+	by mx0b-0016f401.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 42PMIxAe009321;
+	Mon, 25 Mar 2024 21:50:13 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=
+	date:from:to:cc:subject:message-id:references:mime-version
+	:content-type:in-reply-to; s=pfpt0220; bh=9EyZHpQZPtNoiJ0ASAEMb+
+	9ZjiK6Us0t8XuxBxb61RY=; b=RoW+3/ZKAryUcbnF//1Pwcp2mZD0LhFslGpJgq
+	DNVQNxquyUWqj0Fcdw5wqxwPk7zv6dgrF7uSnuI5HQ8wC0RAbYZdUVOA2ADajE9v
+	quCZEkVPiJQDY/EmKFOqutsjsDIGFxRHycGJ5FkySb+inBrs/9F0SZUFNqfxOvRv
+	I/ERMQZPLNgWds1t+XiFj+9eZ2usURlzwV24EerF2lkogF+xv6CdWL+opNBwJNZI
+	EPVxsf/KPp4VXiWUArLFEkILZY6s0SGPFhrHAN6eWE5WfruSVc7PN5hbmCHRfbD6
+	N9v5lEwK64LSExoNJ2BCtT0dFkV8ZV0CV5DPZmQVwFHG0NgA==
+Received: from dc5-exch05.marvell.com ([199.233.59.128])
+	by mx0b-0016f401.pphosted.com (PPS) with ESMTPS id 3x3hy1s47q-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 25 Mar 2024 21:50:12 -0700 (PDT)
+Received: from DC5-EXCH05.marvell.com (10.69.176.209) by
+ DC5-EXCH05.marvell.com (10.69.176.209) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.4; Mon, 25 Mar 2024 21:50:11 -0700
+Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH05.marvell.com
+ (10.69.176.209) with Microsoft SMTP Server id 15.2.1544.4 via Frontend
+ Transport; Mon, 25 Mar 2024 21:50:11 -0700
+Received: from maili.marvell.com (unknown [10.28.36.165])
+	by maili.marvell.com (Postfix) with SMTP id A7E6E3F703F;
+	Mon, 25 Mar 2024 21:50:05 -0700 (PDT)
+Date: Tue, 26 Mar 2024 10:20:04 +0530
+From: Ratheesh Kannoth <rkannoth@marvell.com>
+To: Julien Panis <jpanis@baylibre.com>
+CC: "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet
+	<edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni
+	<pabeni@redhat.com>, Russell King <linux@armlinux.org.uk>,
+        Alexei Starovoitov
+	<ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard
+ Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Sumit
+ Semwal <sumit.semwal@linaro.org>,
+        Christian =?iso-8859-1?Q?K=F6nig?=
+	<christian.koenig@amd.com>,
+        Simon Horman <horms@kernel.org>, Andrew Lunn
+	<andrew@lunn.ch>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <bpf@vger.kernel.org>, <linux-media@vger.kernel.org>,
+        <dri-devel@lists.freedesktop.org>, <linaro-mm-sig@lists.linaro.org>
+Subject: Re: [PATCH net-next v4 2/3] net: ethernet: ti: Add desc_infos member
+ to struct k3_cppi_desc_pool
+Message-ID: <20240326045004.GA1362097@maili.marvell.com>
+References: <20240223-am65-cpsw-xdp-basic-v4-0-2e45e5dec048@baylibre.com>
+ <20240223-am65-cpsw-xdp-basic-v4-2-2e45e5dec048@baylibre.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240301203023.2197451-1-jsavitz@redhat.com> <87jzmduiva.fsf@kernel.org>
-In-Reply-To: <87jzmduiva.fsf@kernel.org>
-From: Joel Savitz <jsavitz@redhat.com>
-Date: Tue, 26 Mar 2024 00:45:16 -0400
-Message-ID: <CAL1p7m5BoxFDeK0MryQCmTDCeBLN3rMLRGx3cHa6teS02wsgZw@mail.gmail.com>
-Subject: Re: [PATCH] powerpc: align memory_limit to 16MB in early_parse_mem
-To: "Aneesh Kumar K.V" <aneesh.kumar@kernel.org>
-Cc: linux-kernel@vger.kernel.org, Michael Ellerman <mpe@ellerman.id.au>, 
-	Nicholas Piggin <npiggin@gmail.com>, Christophe Leroy <christophe.leroy@csgroup.eu>, 
-	"Naveen N. Rao" <naveen.n.rao@linux.ibm.com>, Benjamin Gray <bgray@linux.ibm.com>, 
-	Paul Mackerras <paulus@ozlabs.org>, linuxppc-dev@lists.ozlabs.org, 
-	Gonzalo Siero <gsierohu@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20240223-am65-cpsw-xdp-basic-v4-2-2e45e5dec048@baylibre.com>
+X-Proofpoint-GUID: IFJZH7V3Fi2mQzI6h7hsUbbGIVLBJOBJ
+X-Proofpoint-ORIG-GUID: IFJZH7V3Fi2mQzI6h7hsUbbGIVLBJOBJ
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-03-26_02,2024-03-21_02,2023-05-22_02
 
-On Fri, Mar 8, 2024 at 5:18=E2=80=AFAM Aneesh Kumar K.V <aneesh.kumar@kerne=
-l.org> wrote:
+On 2024-03-25 at 21:30:36, Julien Panis (jpanis@baylibre.com) wrote:
+> This patch introduces a member and the related accessors which can be
+> used to store descriptor specific additional information. This member
+> can store, for instance, an ID to differentiate a skb TX buffer type
+> from a xdpf TX buffer type.
 >
-> Joel Savitz <jsavitz@redhat.com> writes:
+> Signed-off-by: Julien Panis <jpanis@baylibre.com>
+> ---
+>  drivers/net/ethernet/ti/k3-cppi-desc-pool.c | 24 ++++++++++++++++++++++++
+>  drivers/net/ethernet/ti/k3-cppi-desc-pool.h |  2 ++
+>  2 files changed, 26 insertions(+)
 >
-> > On 64-bit powerpc, usage of a non-16MB-aligned value for the mem=3D ker=
-nel
-> > cmdline parameter results in a system hang at boot.
-> >
-> > For example, using 'mem=3D4198400K' will always reproduce this issue.
-> >
-> > This patch fixes the problem by aligning any argument to mem=3D to 16MB
-> > corresponding with the large page size on powerpc.
-> >
-> > Fixes: 2babf5c2ec2f ("[PATCH] powerpc: Unify mem=3D handling")
-> > Co-developed-by: Gonzalo Siero <gsierohu@redhat.com>
-> > Signed-off-by: Gonzalo Siero <gsierohu@redhat.com>
-> > Signed-off-by: Joel Savitz <jsavitz@redhat.com>
-> > ---
-> >  arch/powerpc/kernel/prom.c | 6 +++++-
-> >  1 file changed, 5 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/arch/powerpc/kernel/prom.c b/arch/powerpc/kernel/prom.c
-> > index 0b5878c3125b..8cd3e2445d8a 100644
-> > --- a/arch/powerpc/kernel/prom.c
-> > +++ b/arch/powerpc/kernel/prom.c
-> > @@ -82,8 +82,12 @@ static int __init early_parse_mem(char *p)
-> >  {
-> >       if (!p)
-> >               return 1;
-> > -
-> > +#ifdef CONFIG_PPC64
-> > +     /* Align to 16 MB =3D=3D size of ppc64 large page */
-> > +     memory_limit =3D ALIGN(memparse(p, &p), 0x1000000);
-> > +#else
-> >       memory_limit =3D PAGE_ALIGN(memparse(p, &p));
-> > +#endif
-> >       DBG("memory limit =3D 0x%llx\n", memory_limit);
-> >
-> >       return 0;
-> > --
-> > 2.43.0
+> diff --git a/drivers/net/ethernet/ti/k3-cppi-desc-pool.c b/drivers/net/ethernet/ti/k3-cppi-desc-pool.c
+> index fe8203c05731..d0c68d722ef2 100644
+> --- a/drivers/net/ethernet/ti/k3-cppi-desc-pool.c
+> +++ b/drivers/net/ethernet/ti/k3-cppi-desc-pool.c
+> @@ -22,6 +22,7 @@ struct k3_cppi_desc_pool {
+>  	size_t			mem_size;
+>  	size_t			num_desc;
+>  	struct gen_pool		*gen_pool;
+> +	void			**desc_infos;
+>  };
 >
-> Can you try this change?
+>  void k3_cppi_desc_pool_destroy(struct k3_cppi_desc_pool *pool)
+> @@ -72,6 +73,15 @@ k3_cppi_desc_pool_create_name(struct device *dev, size_t size,
+>  		goto gen_pool_create_fail;
+>  	}
 >
-> commit 5555bc55e1aa71f545cff31e1eccdb4a2e39df84
-> Author: Aneesh Kumar K.V (IBM) <aneesh.kumar@kernel.org>
-> Date:   Fri Mar 8 14:45:26 2024 +0530
->
->     powerpc/mm: Align memory_limit value specified using mem=3D kernel pa=
-rameter
->
->     The value specified for the memory limit is used to set a restriction=
- on
->     memory usage. It is important to ensure that this restriction is with=
-in
->     the linear map kernel address space range. The hash page table
->     translation uses a 16MB page size to map the kernel linear map addres=
-s
->     space. htab_bolt_mapping() function aligns down the size of the range
->     while mapping kernel linear address space. Since the memblock limit i=
-s
->     enforced very early during boot, before we can detect the type of mem=
-ory
->     translation (radix vs hash), we align the memory limit value specifie=
-d
->     as a kernel parameter to 16MB. This alignment value will work for bot=
-h
->     hash and radix translations.
->
->     Signed-off-by: Aneesh Kumar K.V (IBM) <aneesh.kumar@kernel.org>
->
-> diff --git a/arch/powerpc/kernel/prom.c b/arch/powerpc/kernel/prom.c
-> index 0b5878c3125b..9bd965d35352 100644
-> --- a/arch/powerpc/kernel/prom.c
-> +++ b/arch/powerpc/kernel/prom.c
-> @@ -824,8 +824,11 @@ void __init early_init_devtree(void *params)
->                 reserve_crashkernel();
->         early_reserve_mem();
->
-> -       /* Ensure that total memory size is page-aligned. */
-> -       limit =3D ALIGN(memory_limit ?: memblock_phys_mem_size(), PAGE_SI=
-ZE);
-> +       if (memory_limit > memblock_phys_mem_size())
-> +               memory_limit =3D 0;
+> +	pool->desc_infos = devm_kcalloc(dev, pool->num_desc,
+> +					sizeof(*pool->desc_infos), GFP_KERNEL);
+This should be freed as well, right ?
+set_channels() in ethtool ops cleans pools; but not this. This wont
+result in memory leak ? s/devm_kcalloc/kcalloc if my comment
+is correct.
+
+> +	if (!pool->desc_infos) {
+> +		ret = -ENOMEM;
+> +		dev_err(pool->dev, "pool descriptor infos alloc failed %d\n", ret);
+> +		kfree_const(pool_name);
+> +		goto gen_pool_desc_infos_alloc_fail;
+> +	}
 > +
-> +       /* Align down to 16 MB which is large page size with hash page tr=
-anslation */
-> +       limit =3D ALIGN_DOWN(memory_limit ?: memblock_phys_mem_size(), SZ=
-_16M);
->         memblock_enforce_memory_limit(limit);
+>  	pool->gen_pool->name = pool_name;
 >
->  #if defined(CONFIG_PPC_BOOK3S_64) && defined(CONFIG_PPC_4K_PAGES)
-> diff --git a/arch/powerpc/kernel/prom_init.c b/arch/powerpc/kernel/prom_i=
-nit.c
-> index e67effdba85c..d6410549e141 100644
-> --- a/arch/powerpc/kernel/prom_init.c
-> +++ b/arch/powerpc/kernel/prom_init.c
-> @@ -817,8 +817,8 @@ static void __init early_cmdline_parse(void)
->                 opt +=3D 4;
->                 prom_memory_limit =3D prom_memparse(opt, (const char **)&=
-opt);
->  #ifdef CONFIG_PPC64
-> -               /* Align to 16 MB =3D=3D size of ppc64 large page */
-> -               prom_memory_limit =3D ALIGN(prom_memory_limit, 0x1000000)=
-;
-> +               /* Align down to 16 MB which is large page size with hash=
- page translation */
-> +               prom_memory_limit =3D ALIGN_DOWN(prom_memory_limit, SZ_16=
-M);
->  #endif
->         }
+>  	pool->cpumem = dma_alloc_coherent(pool->dev, pool->mem_size,
+> @@ -94,6 +104,8 @@ k3_cppi_desc_pool_create_name(struct device *dev, size_t size,
+>  	dma_free_coherent(pool->dev, pool->mem_size, pool->cpumem,
+>  			  pool->dma_addr);
+>  dma_alloc_fail:
+> +	devm_kfree(pool->dev, pool->desc_infos);
+> +gen_pool_desc_infos_alloc_fail:
+>  	gen_pool_destroy(pool->gen_pool);	/* frees pool->name */
+>  gen_pool_create_fail:
+>  	devm_kfree(pool->dev, pool);
+> @@ -144,5 +156,17 @@ void *k3_cppi_desc_pool_cpuaddr(struct k3_cppi_desc_pool *pool)
+>  }
+>  EXPORT_SYMBOL_GPL(k3_cppi_desc_pool_cpuaddr);
 >
+> +void k3_cppi_desc_pool_desc_info_set(struct k3_cppi_desc_pool *pool, int desc_idx, void *info)
+> +{
+> +	pool->desc_infos[desc_idx] = info;
+> +}
+> +EXPORT_SYMBOL_GPL(k3_cppi_desc_pool_desc_info_set);
+> +
+> +void *k3_cppi_desc_pool_desc_info(struct k3_cppi_desc_pool *pool, int desc_idx)
+> +{
+> +	return pool->desc_infos[desc_idx];
+> +}
+> +EXPORT_SYMBOL_GPL(k3_cppi_desc_pool_desc_info);
+> +
+>  MODULE_LICENSE("GPL");
+>  MODULE_DESCRIPTION("TI K3 CPPI5 descriptors pool API");
+> diff --git a/drivers/net/ethernet/ti/k3-cppi-desc-pool.h b/drivers/net/ethernet/ti/k3-cppi-desc-pool.h
+> index 149d5579a5e2..0076596307e7 100644
+> --- a/drivers/net/ethernet/ti/k3-cppi-desc-pool.h
+> +++ b/drivers/net/ethernet/ti/k3-cppi-desc-pool.h
+> @@ -28,5 +28,7 @@ void k3_cppi_desc_pool_free(struct k3_cppi_desc_pool *pool, void *addr);
+>  size_t k3_cppi_desc_pool_avail(struct k3_cppi_desc_pool *pool);
+>  size_t k3_cppi_desc_pool_desc_size(struct k3_cppi_desc_pool *pool);
+>  void *k3_cppi_desc_pool_cpuaddr(struct k3_cppi_desc_pool *pool);
+> +void k3_cppi_desc_pool_desc_info_set(struct k3_cppi_desc_pool *pool, int desc_idx, void *info);
+> +void *k3_cppi_desc_pool_desc_info(struct k3_cppi_desc_pool *pool, int desc_idx);
 >
-
-Sorry for the delayed reply. I just tested this patch and it fixes the
-bug for me.
-
+>  #endif /* K3_CPPI_DESC_POOL_H_ */
+>
+> --
+> 2.37.3
+>
 
