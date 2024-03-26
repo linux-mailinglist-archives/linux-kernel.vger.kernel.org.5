@@ -1,121 +1,193 @@
-Return-Path: <linux-kernel+bounces-119050-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-119051-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D0B8988C33B
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 14:19:05 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6F87B88C33E
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 14:19:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8B8B02E3330
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 13:19:04 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AB2E0B24D81
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 13:19:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B1EED7441F;
-	Tue, 26 Mar 2024 13:18:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BABB57442E;
+	Tue, 26 Mar 2024 13:19:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=leemhuis.info header.i=@leemhuis.info header.b="YBYljSo1"
-Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
+	dkim=pass (2048-bit key) header.d=sakamocchi.jp header.i=@sakamocchi.jp header.b="LRz4axFL";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="vcIQVYf5"
+Received: from wfout2-smtp.messagingengine.com (wfout2-smtp.messagingengine.com [64.147.123.145])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D5C867A00;
-	Tue, 26 Mar 2024 13:18:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.237.130.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 831A273528;
+	Tue, 26 Mar 2024 13:19:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=64.147.123.145
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711459121; cv=none; b=hAK8kJQrspuI6S9WP1kSoO5H4XyrrN3zxYqhzeFdntXvJ4SF4189+pjIQleGFv74TBF66oqpxp/gXXg8UV81mltUXOlFe0zls6k0UEo9aCvqa/aHibnwQXFzRiC4wyCM4MSC7MtxseZGKHuf+QsmxEXoYg/EjuWLcZWBvdM4VE0=
+	t=1711459146; cv=none; b=a7990wBge9wWN01Db2QQLQOVq9J9p1pS4Khj1fF2QVl8dfNTuC/d4bGH5LO3vXMCBodnc/iUuGIYv6wcIjsmlLZpTgaEU7WctPwtkL6xF7RVrkLtwh5LFu9UHJPjK/w4muEnO06GCq0+tfkWonbAQe7sd2zQ/3xBmQ8UP+HsTVA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711459121; c=relaxed/simple;
-	bh=kwbtxjvyoboouuP30XD7UmJ9Tak2JX2+1XT+llOTBfU=;
-	h=Message-ID:Date:MIME-Version:From:To:Cc:Subject:Content-Type; b=QVmHGcJ/2CLE/0jFhB4SMli7S8cgy2C8vv7nReIO1sArDXPGnx0E4HW3CVWRP8X2vtA5GZZgH3x7m2bVxzPc33DGomuri3dw+9rUezHKC13E8Awf6nms3BNQKc9KoTOD0Pm469mBjlvVGFStB3YK05nk8mfQlSGDTqs4gdHVBu0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=leemhuis.info; spf=pass smtp.mailfrom=leemhuis.info; dkim=pass (2048-bit key) header.d=leemhuis.info header.i=@leemhuis.info header.b=YBYljSo1; arc=none smtp.client-ip=80.237.130.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=leemhuis.info
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=leemhuis.info
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=leemhuis.info; s=he214686; h=Content-Transfer-Encoding:Content-Type:
-	Reply-To:Subject:Cc:To:From:MIME-Version:Date:Message-ID:From:Sender:Reply-To
-	:Subject:Date:Message-ID:To:Cc:MIME-Version:Content-Type:
-	Content-Transfer-Encoding:Content-ID:Content-Description:In-Reply-To:
-	References; bh=lKr8vjI/MKPiGxt3h9ZRIfJRuD3apPKLQIAIGxuGMwY=; t=1711459119;
-	x=1711891119; b=YBYljSo1n6H8XdcfSJPHGDeh0/bBwb7Cwdtg4HST5YWsGyxgXgNz5Omgyz5IX
-	X8E/OQ6VqUggXEbl0UMTb0hAr2IZHe1mY8e9X2PlpHFws7PVaZ5Qss8/c19Vl2tSc+5/flRms7UHP
-	3Uwv4Cp4XPPyxb/1qOkr/HrI6IX/VeiIj25+exwzcoyCAZzM1SSmfxTE1dULHG3g5AeZt/9i53Eku
-	XhqZxQdn8MOlpWSuQRQRLAqbx/nZq8Kr0APR6UEqPQeetQD9DAuZMzS6ZIp4Wlbz9Pgcp6A7cM5U1
-	edLgOX6nTIPuXvmEqEDtI7tXaNyxYQfctzBQk74voWToGZcz4A==;
-Received: from [2a02:8108:8980:2478:8cde:aa2c:f324:937e]; authenticated
-	by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
-	id 1rp6hI-0005Mm-No; Tue, 26 Mar 2024 14:18:36 +0100
-Message-ID: <5b778e74-1278-42b1-84e1-a2c04a8211f0@leemhuis.info>
-Date: Tue, 26 Mar 2024 14:18:21 +0100
+	s=arc-20240116; t=1711459146; c=relaxed/simple;
+	bh=Nw6gkzwQJ3vq6k1vADx4v4AL14gU7jDXGeD/VmkPJN4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=CqZXX5Q02tlGPfxe0AVfdyc10sC2oXR3UHK2dqRH2TO5GlRQdkXcNBhjMudz7RZKGhy5+KWP0OwzM3PWDBzrlECJ0uAq8Ce7Ywq3t4vyH3NZwGzzX5wXpK3NS9u6jK97whjztHc2K0JCdqIxsCGQRpmNCkbjJ1+lYfU02If3nFw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sakamocchi.jp; spf=pass smtp.mailfrom=sakamocchi.jp; dkim=pass (2048-bit key) header.d=sakamocchi.jp header.i=@sakamocchi.jp header.b=LRz4axFL; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=vcIQVYf5; arc=none smtp.client-ip=64.147.123.145
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sakamocchi.jp
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sakamocchi.jp
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+	by mailfout.west.internal (Postfix) with ESMTP id 0EC171C000BA;
+	Tue, 26 Mar 2024 09:19:02 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute4.internal (MEProxy); Tue, 26 Mar 2024 09:19:03 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sakamocchi.jp;
+	 h=cc:cc:content-type:content-type:date:date:from:from
+	:in-reply-to:in-reply-to:message-id:mime-version:references
+	:reply-to:subject:subject:to:to; s=fm2; t=1711459142; x=
+	1711545542; bh=8dkrIjQAho8E94kcntncG9z/hDPUU+6X3l6A7O3vbF8=; b=L
+	Rz4axFLvC2Dxz1qd46z5nNt720WBYUvv0U/greVIMdj79SP4BG+PQRhEJcGBzeG+
+	Xkwu1ycGLwUVbhLQRbHlefYI8XAHAlYURsqGRvQ0FPQ15gCqRhJREdF1YsUGFmnc
+	LFTcBOpooxnzNTxnoR6Wd25ePDVKh8vnh/5JVWrDphLadthJTJr7V+hYWwpi04Mi
+	6AwPZ+CyqFrT97SvmVQdgr4V1qGUBlvLN7k6W/fuqf8HV0g/gIonGvnG1mkQ7+3u
+	cNfJYqoEnyfHTv1XxbUQMYjwTB1J8fldk4r9pq+SU5GyQyWTJE7KhUh6OxDuX+IZ
+	tWxgQZsM+/qlLnal4kOBw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm2; t=1711459142; x=1711545542; bh=8dkrIjQAho8E94kcntncG9z/hDPU
+	U+6X3l6A7O3vbF8=; b=vcIQVYf5UqI43Xsd10fnZJBQGDxy2yxBdGhf9YbHqwXC
+	TmGwGNYmYtGOZLW8AuU3Qm8nxRCnZV+ic73WqE+YiOuJXgAVTivEDg523EtASqxP
+	IcV5DB0wZXKB0ENzb5k7qClutbgsKFy2xowY5GR/Jw42Z93L+RsqzMTUjjNGls9X
+	VMPdEybPShIgxZUfj8OR8jceG3nDkWkU6JcjKNtc9iZEkBbf3koQhtx6MH0FBi0n
+	kDKjtl6jZI823YbgxQSumZnlqHV8SjYgLnxQtLfNW7X0/Z6BThhJG8YPSdnotZgZ
+	41jPoqpfivMb2T33YN0Tc44H2+W5milQpMcRD9lwTA==
+X-ME-Sender: <xms:RssCZkgqVs6R_BkltFmugRvphof3wFLCdwYbz9T6gmsmiPYejiUDFQ>
+    <xme:RssCZtDMAveXgIRoV7uGJ7qTFG0qm3hrYUMTAb8jUxlDXjfGeYRdLVFWC_zONpRGJ
+    CXrBsXFfspgoOpjjtY>
+X-ME-Received: <xmr:RssCZsFsVNcDNLN6yIR92Hxp1gd09hD9Oi17sdVbdOMFqnXe3MhNq2pnUBCnTCgfPXp0e2p459Pm8mU2fVM_0gY5h2yCvhKe5c8>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledruddufedgheduucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvfevuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepvfgrkhgr
+    shhhihcuufgrkhgrmhhothhouceoohdqthgrkhgrshhhihesshgrkhgrmhhotggthhhird
+    hjpheqnecuggftrfgrthhtvghrnhepveeilefhudekffehkeffudduvedvfeduleelfeeg
+    ieeljeehjeeuvdeghfetvedvnecuffhomhgrihhnpehkvghrnhgvlhdrohhrghenucevlh
+    hushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehoqdhtrghkrghs
+    hhhisehsrghkrghmohgttghhihdrjhhp
+X-ME-Proxy: <xmx:RssCZlQgd208te77QdxPinRYKYZW9mRiUo5C8Wdq5ouKl_1WmtRLcg>
+    <xmx:RssCZhwAeIRjzplboiN5VAs7YtwvFopvKvNssARPFcxVDZb9E8VO4A>
+    <xmx:RssCZj7Q5xmZoyvVg3GyTLRLopXWEBm92wfyolAiTJRbkgUllsleQA>
+    <xmx:RssCZuzvkHyBNVrp9xPVM3rfHPiSn2l8eT6fZXa-TAqgwfjNizJPBA>
+    <xmx:RssCZomxQuSXbUDISx_t69EzrWD0jlo2kPdGuGWJUky2MqzbyDFlAmstxzg>
+Feedback-ID: ie8e14432:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
+ 26 Mar 2024 09:19:00 -0400 (EDT)
+Date: Tue, 26 Mar 2024 22:18:58 +0900
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+To: Bjorn Helgaas <helgaas@kernel.org>
+Cc: linux1394-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org,
+	linux-pci@vger.kernel.org, edmund.raile@proton.me
+Subject: Re: [PATCH v2] PCI: Mark LSI FW643 to avoid bus reset
+Message-ID: <20240326131858.GA140624@workstation.local>
+Mail-Followup-To: Bjorn Helgaas <helgaas@kernel.org>,
+	linux1394-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org,
+	linux-pci@vger.kernel.org, edmund.raile@proton.me
+References: <20240325012135.36861-1-o-takashi@sakamocchi.jp>
+ <20240325144149.GA1432902@bhelgaas>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-From: "Linux regression tracking (Thorsten Leemhuis)"
- <regressions@leemhuis.info>
-Content-Language: en-US, de-DE
-To: Anna-Maria Behnsen <anna-maria@linutronix.de>
-Cc: Thomas Gleixner <tglx@linutronix.de>,
- Frederic Weisbecker <frederic@kernel.org>,
- LKML <linux-kernel@vger.kernel.org>,
- Linux kernel regressions list <regressions@lists.linux.dev>,
- Mario Limonciello <mario.limonciello@amd.com>
-Subject: [regression] Bug 218641 - Framework Laptop 13 AMD suspend/wakeup
- regression with 6.9rc1
-Reply-To: Linux regressions mailing list <regressions@lists.linux.dev>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1711459119;1ec67ad1;
-X-HE-SMSGID: 1rp6hI-0005Mm-No
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240325144149.GA1432902@bhelgaas>
 
-Hi, Thorsten here, the Linux kernel's regression tracker.
+Hi Bjorn,
 
-Anna-Maria, I noticed a regression report in bugzilla.kernel.org that
-apparently is caused by a change of yours. As many (most?) kernel
-developers don't keep an eye on it, I decided to forward it by mail.
+Thanks for your reply.
 
-Note, you have to use bugzilla to reach the reporter, as I sadly[1] can
-not CC them in mails like this.
+On Mon, Mar 25, 2024 at 09:41:49AM -0500, Bjorn Helgaas wrote:
+> So even without this patch, you are able to pass the FW643 to a VM
+> with VFIO, and you don't see any issues caused by VFIO resetting the
+> device?
+ 
+Absolutely yes, at least in my VM, for recent years to maintain Linux
+FireWire subsystem and ALSA firewire stack.
 
-Quoting from https://bugzilla.kernel.org/show_bug.cgi?id=218641 :
-
->  David Markey 2024-03-25 22:08:29 UTC
+> Can you collect the output of:
 > 
-> Was trying out 6.9rc1 to give prefcore a whirl but I've noticed that
-> when I go to s2idle I cannot wake up, the power button does not wake
-> the laptop up again and stays flashing and requires a full reboot to
-> become responsive again.
-Later:
+>   $ find /sys/devices -name reset_method | xargs grep .
+ 
+```
+$ sudo find /sys/devices -name reset_method | xargs grep .
+/sys/devices/pci0000:00/0000:00:01.2/0000:03:00.0/0000:04:09.0/0000:09:00.0/reset_method:bus
+/sys/devices/pci0000:00/0000:00:01.2/0000:03:00.0/0000:04:09.0/reset_method:pm
+/sys/devices/pci0000:00/0000:00:01.2/0000:03:00.0/0000:04:02.0/0000:06:00.0/reset_method:pm bus
+/sys/devices/pci0000:00/0000:00:01.2/0000:03:00.0/0000:04:02.0/reset_method:pm
+/sys/devices/pci0000:00/0000:00:01.2/0000:03:00.0/0000:04:05.0/0000:07:00.0/reset_method:bus
+/sys/devices/pci0000:00/0000:00:01.2/0000:03:00.0/0000:04:05.0/reset_method:pm
+/sys/devices/pci0000:00/0000:00:01.2/0000:03:00.0/0000:04:0a.0/0000:0a:00.0/reset_method:bus
+/sys/devices/pci0000:00/0000:00:01.2/0000:03:00.0/0000:04:0a.0/reset_method:pm
+/sys/devices/pci0000:00/0000:00:01.2/0000:03:00.0/0000:04:08.0/0000:08:00.0/reset_method:bus
+/sys/devices/pci0000:00/0000:00:01.2/0000:03:00.0/0000:04:08.0/0000:08:00.3/reset_method:pm
+/sys/devices/pci0000:00/0000:00:01.2/0000:03:00.0/0000:04:08.0/reset_method:pm
+/sys/devices/pci0000:00/0000:00:01.2/0000:03:00.0/0000:04:01.0/reset_method:pm bus
+/sys/devices/pci0000:00/0000:00:01.2/0000:03:00.0/0000:04:01.0/0000:05:00.0/reset_method:device_specific flr bus
+/sys/devices/pci0000:00/0000:00:01.2/0000:03:00.0/reset_method:pm bus
+/sys/devices/pci0000:00/0000:00:01.2/reset_method:pm
+/sys/devices/pci0000:00/0000:00:08.1/0000:0c:00.0/reset_method:flr bus
+/sys/devices/pci0000:00/0000:00:08.1/0000:0c:00.3/reset_method:pm
+/sys/devices/pci0000:00/0000:00:08.1/0000:0c:00.1/reset_method:flr pm
+/sys/devices/pci0000:00/0000:00:08.1/reset_method:pm
+/sys/devices/pci0000:00/0000:00:08.1/0000:0c:00.4/reset_method:pm
+/sys/devices/pci0000:00/0000:00:01.1/0000:01:00.0/0000:02:00.0/reset_method:pm bus
+/sys/devices/pci0000:00/0000:00:01.1/0000:01:00.0/reset_method:bus
+/sys/devices/pci0000:00/0000:00:01.1/reset_method:pm
+/sys/devices/pci0000:00/0000:00:01.6/0000:0b:00.0/reset_method:flr bus
+/sys/devices/pci0000:00/0000:00:01.6/reset_method:pm
+```
 
->  Mario Limonciello (AMD) 2024-03-26 02:38:06 UTC
+If you need each PCI bus bridge information, I can provide it to you.
+but I can promise they are typical hardware in AMD CPU or chipset for
+Zen generation and nothing special.
+
+> You should be able to manually reset the device with something like
+> this (I don't know your topology, so you might have to replace "1d.6"
+> with the bridge leading to 06:00.0):
 > 
-> I finished up bisecting and it comes down to this commit:
-> 
-> ```
-> commit 7ee988770326fca440472200c3eb58935fe712f6
-> Author: Anna-Maria Behnsen <anna-maria@linutronix.de>                          
-> Date:   Thu Feb 22 11:37:10 2024 +0100                                                   
->                                                                                          
->     timers: Implement the hierarchical pull model
-> ```
-See the ticket for more details and additional comments.
+>   # sudo echo 1 > # /sys/devices/pci0000:00/0000:00:1d.6/0000:06:00.0/reset
+ 
+```
+$ echo 1 > sudo tee -a /sys/devices/pci0000:00/0000:00:01.2/0000:03:00.0/0000:04:02.0/0000:06:00.0/reset
+(nothing happens)
+$ journalctl -k -n10
+(nothing specific)
+```
 
-Ciao, Thorsten (wearing his 'the Linux kernel's regression tracker' hat)
+Would I ask you any point to check after the reset operation?
 
-[1] because bugzilla.kernel.org tells users upon registration their
-"email address will never be displayed to logged out users"
---
-Everything you wanna know about Linux kernel regression tracking:
-https://linux-regtracking.leemhuis.info/about/#tldr
-If I did something stupid, please tell me, as explained on that page.
+> I don't *know* of a reason why a Secondary Bus Reset would work
+> correctly on your hardware but not on a Mac, but there could be
+> something weird going on.
 
-P.S.: let me use this mail to also add the report to the list of tracked
-regressions to ensure it's doesn't fall through the cracks:
+Note that the hardware provided by Apple for the past decade has no
+IEEE 1394 interface, thus the patch author seems to use any kind of
+bus extension to connect the issued 1394 OHCI hardware. I guess:
 
-#regzbot introduced: 7ee988770326fca440472200c3eb58935fe712f6
-#regzbot title: timers: suspend/wakeup problems on Framework Laptop 13 AMD
-#regzbot from: David Markey
-#regzbot duplicate: https://bugzilla.kernel.org/show_bug.cgi?id=218641
-#regzbot ignore-activity
+* Apple Thunderbolt Display
+   * https://lore.kernel.org/linux-pci/1372860295-8306-1-git-send-email-mika.westerberg@linux.intel.com/
+* Apple Thunderbolt-OHCI1394 adapter
+   * I know FW643 is used for the product.
+* Some kind of eGPU box
+
+> Does the patch cause a problem for you?  (Other than the fact that the
+> device leaks state between VMs?)
+
+It takes a bit time for me to set up my system with self-compiled v6.9-rc1
+kernel. However the leak between VMs is really inconvenient to me by itself.
+
+
+Thanks
+
+Takashi Sakamoto
 
