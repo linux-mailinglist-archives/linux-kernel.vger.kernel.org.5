@@ -1,193 +1,100 @@
-Return-Path: <linux-kernel+bounces-119051-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-119052-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6F87B88C33E
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 14:19:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id F342588C342
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 14:19:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AB2E0B24D81
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 13:19:25 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 74CCCB25D9F
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 13:19:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BABB57442E;
-	Tue, 26 Mar 2024 13:19:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 104637441C;
+	Tue, 26 Mar 2024 13:19:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=sakamocchi.jp header.i=@sakamocchi.jp header.b="LRz4axFL";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="vcIQVYf5"
-Received: from wfout2-smtp.messagingengine.com (wfout2-smtp.messagingengine.com [64.147.123.145])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="rkE8O2FF"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 831A273528;
-	Tue, 26 Mar 2024 13:19:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=64.147.123.145
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 50EAD5C61F;
+	Tue, 26 Mar 2024 13:19:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711459146; cv=none; b=a7990wBge9wWN01Db2QQLQOVq9J9p1pS4Khj1fF2QVl8dfNTuC/d4bGH5LO3vXMCBodnc/iUuGIYv6wcIjsmlLZpTgaEU7WctPwtkL6xF7RVrkLtwh5LFu9UHJPjK/w4muEnO06GCq0+tfkWonbAQe7sd2zQ/3xBmQ8UP+HsTVA=
+	t=1711459187; cv=none; b=T/flWRMsEIpPlfhKurcdcFQXXwZSGWGPwvcgE2V76p17W3yBHrDMnJZNnCBmFk/2m3AirbVF0GpBE1pw9+CwE2+b1VpHLxsRzke2qwEzLa6te+mJUVWtezvll5HSJjgSL7mdcVhwyo6lGNWdjGMQJEx3rrwMebRImCpNXUSo3DI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711459146; c=relaxed/simple;
-	bh=Nw6gkzwQJ3vq6k1vADx4v4AL14gU7jDXGeD/VmkPJN4=;
+	s=arc-20240116; t=1711459187; c=relaxed/simple;
+	bh=DzWrRgZIzXMpvefy2yfoXUd4dNEUUHTlgM0Wd9O7BaQ=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=CqZXX5Q02tlGPfxe0AVfdyc10sC2oXR3UHK2dqRH2TO5GlRQdkXcNBhjMudz7RZKGhy5+KWP0OwzM3PWDBzrlECJ0uAq8Ce7Ywq3t4vyH3NZwGzzX5wXpK3NS9u6jK97whjztHc2K0JCdqIxsCGQRpmNCkbjJ1+lYfU02If3nFw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sakamocchi.jp; spf=pass smtp.mailfrom=sakamocchi.jp; dkim=pass (2048-bit key) header.d=sakamocchi.jp header.i=@sakamocchi.jp header.b=LRz4axFL; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=vcIQVYf5; arc=none smtp.client-ip=64.147.123.145
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sakamocchi.jp
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sakamocchi.jp
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-	by mailfout.west.internal (Postfix) with ESMTP id 0EC171C000BA;
-	Tue, 26 Mar 2024 09:19:02 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute4.internal (MEProxy); Tue, 26 Mar 2024 09:19:03 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sakamocchi.jp;
-	 h=cc:cc:content-type:content-type:date:date:from:from
-	:in-reply-to:in-reply-to:message-id:mime-version:references
-	:reply-to:subject:subject:to:to; s=fm2; t=1711459142; x=
-	1711545542; bh=8dkrIjQAho8E94kcntncG9z/hDPUU+6X3l6A7O3vbF8=; b=L
-	Rz4axFLvC2Dxz1qd46z5nNt720WBYUvv0U/greVIMdj79SP4BG+PQRhEJcGBzeG+
-	Xkwu1ycGLwUVbhLQRbHlefYI8XAHAlYURsqGRvQ0FPQ15gCqRhJREdF1YsUGFmnc
-	LFTcBOpooxnzNTxnoR6Wd25ePDVKh8vnh/5JVWrDphLadthJTJr7V+hYWwpi04Mi
-	6AwPZ+CyqFrT97SvmVQdgr4V1qGUBlvLN7k6W/fuqf8HV0g/gIonGvnG1mkQ7+3u
-	cNfJYqoEnyfHTv1XxbUQMYjwTB1J8fldk4r9pq+SU5GyQyWTJE7KhUh6OxDuX+IZ
-	tWxgQZsM+/qlLnal4kOBw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-	fm2; t=1711459142; x=1711545542; bh=8dkrIjQAho8E94kcntncG9z/hDPU
-	U+6X3l6A7O3vbF8=; b=vcIQVYf5UqI43Xsd10fnZJBQGDxy2yxBdGhf9YbHqwXC
-	TmGwGNYmYtGOZLW8AuU3Qm8nxRCnZV+ic73WqE+YiOuJXgAVTivEDg523EtASqxP
-	IcV5DB0wZXKB0ENzb5k7qClutbgsKFy2xowY5GR/Jw42Z93L+RsqzMTUjjNGls9X
-	VMPdEybPShIgxZUfj8OR8jceG3nDkWkU6JcjKNtc9iZEkBbf3koQhtx6MH0FBi0n
-	kDKjtl6jZI823YbgxQSumZnlqHV8SjYgLnxQtLfNW7X0/Z6BThhJG8YPSdnotZgZ
-	41jPoqpfivMb2T33YN0Tc44H2+W5milQpMcRD9lwTA==
-X-ME-Sender: <xms:RssCZkgqVs6R_BkltFmugRvphof3wFLCdwYbz9T6gmsmiPYejiUDFQ>
-    <xme:RssCZtDMAveXgIRoV7uGJ7qTFG0qm3hrYUMTAb8jUxlDXjfGeYRdLVFWC_zONpRGJ
-    CXrBsXFfspgoOpjjtY>
-X-ME-Received: <xmr:RssCZsFsVNcDNLN6yIR92Hxp1gd09hD9Oi17sdVbdOMFqnXe3MhNq2pnUBCnTCgfPXp0e2p459Pm8mU2fVM_0gY5h2yCvhKe5c8>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledruddufedgheduucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvfevuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepvfgrkhgr
-    shhhihcuufgrkhgrmhhothhouceoohdqthgrkhgrshhhihesshgrkhgrmhhotggthhhird
-    hjpheqnecuggftrfgrthhtvghrnhepveeilefhudekffehkeffudduvedvfeduleelfeeg
-    ieeljeehjeeuvdeghfetvedvnecuffhomhgrihhnpehkvghrnhgvlhdrohhrghenucevlh
-    hushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehoqdhtrghkrghs
-    hhhisehsrghkrghmohgttghhihdrjhhp
-X-ME-Proxy: <xmx:RssCZlQgd208te77QdxPinRYKYZW9mRiUo5C8Wdq5ouKl_1WmtRLcg>
-    <xmx:RssCZhwAeIRjzplboiN5VAs7YtwvFopvKvNssARPFcxVDZb9E8VO4A>
-    <xmx:RssCZj7Q5xmZoyvVg3GyTLRLopXWEBm92wfyolAiTJRbkgUllsleQA>
-    <xmx:RssCZuzvkHyBNVrp9xPVM3rfHPiSn2l8eT6fZXa-TAqgwfjNizJPBA>
-    <xmx:RssCZomxQuSXbUDISx_t69EzrWD0jlo2kPdGuGWJUky2MqzbyDFlAmstxzg>
-Feedback-ID: ie8e14432:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
- 26 Mar 2024 09:19:00 -0400 (EDT)
-Date: Tue, 26 Mar 2024 22:18:58 +0900
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-To: Bjorn Helgaas <helgaas@kernel.org>
-Cc: linux1394-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org,
-	linux-pci@vger.kernel.org, edmund.raile@proton.me
-Subject: Re: [PATCH v2] PCI: Mark LSI FW643 to avoid bus reset
-Message-ID: <20240326131858.GA140624@workstation.local>
-Mail-Followup-To: Bjorn Helgaas <helgaas@kernel.org>,
-	linux1394-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org,
-	linux-pci@vger.kernel.org, edmund.raile@proton.me
-References: <20240325012135.36861-1-o-takashi@sakamocchi.jp>
- <20240325144149.GA1432902@bhelgaas>
+	 Content-Type:Content-Disposition:In-Reply-To; b=mHE1K5mF6rRaSzNk51ZIKeuJ31JEt/qjyBP4q/fZFul3BAG6uQ8N/Q5t7+qkvhdH2l61xYw4sQ1dcqnxhQyLbj+d9yjpS/2xlKN8kIFNYiKPpJXC1hL9k601xz+WDvu3I8OIMBKHRd39xbepiyqOI6UCdxaZqNeM6w1cG8hcdz8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=rkE8O2FF; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 44435C433F1;
+	Tue, 26 Mar 2024 13:19:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1711459186;
+	bh=DzWrRgZIzXMpvefy2yfoXUd4dNEUUHTlgM0Wd9O7BaQ=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=rkE8O2FFLvywoU3r7MQ2SVci8ViMRh//2dtlYaPJgs19ohBoyqxBrIs2/TV15xbIt
+	 c57Yv20emZrtcHPEE+3keIpqfCxCalpxmJJi0jezj6D9+EmtGsCwUyxC+Tq7rR/B5O
+	 +WPiYJTbZkjVnsUIbwPfVTP1udMsi0sWvd9WnOHfoAqdztFbrWr+b8MYIeMJdmk2f0
+	 ZmnckBhs1fqOifhxZKNZc+pzTOxBTwBBMHikrT3ZkDgzI6r9IjhcaLq5kkLT2ohPmY
+	 9GWyurle11jVl6bpvfF6EB4xHAjdIsRh9eAuGRbAvEghoR8yy9NqMUK2BVKyuZyYdp
+	 oK5Bx9VU1ukoA==
+Date: Tue, 26 Mar 2024 14:19:41 +0100
+From: Christian Brauner <brauner@kernel.org>
+To: Vinicius Costa Gomes <vinicius.gomes@intel.com>
+Cc: amir73il@gmail.com, hu1.chen@intel.com, miklos@szeredi.hu, 
+	malini.bhandaru@intel.com, tim.c.chen@intel.com, mikko.ylinen@intel.com, 
+	lizhen.you@intel.com, linux-unionfs@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Subject: Re: [RFC v3 1/5] cleanup: Fix discarded const warning when defining
+ lock guard
+Message-ID: <20240326-daheim-aluminium-810603172600@brauner>
+References: <20240216051640.197378-1-vinicius.gomes@intel.com>
+ <20240216051640.197378-2-vinicius.gomes@intel.com>
+ <20240318-flocken-nagetiere-1e027955d06e@brauner>
+ <20240318-dehnen-entdecken-dd436f42f91a@brauner>
+ <87msqlq0i8.fsf@intel.com>
+ <20240326-steil-sachpreis-cec621ae5c59@brauner>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20240325144149.GA1432902@bhelgaas>
+In-Reply-To: <20240326-steil-sachpreis-cec621ae5c59@brauner>
 
-Hi Bjorn,
-
-Thanks for your reply.
-
-On Mon, Mar 25, 2024 at 09:41:49AM -0500, Bjorn Helgaas wrote:
-> So even without this patch, you are able to pass the FW643 to a VM
-> with VFIO, and you don't see any issues caused by VFIO resetting the
-> device?
- 
-Absolutely yes, at least in my VM, for recent years to maintain Linux
-FireWire subsystem and ALSA firewire stack.
-
-> Can you collect the output of:
+On Tue, Mar 26, 2024 at 11:53:12AM +0100, Christian Brauner wrote:
+> On Mon, Mar 25, 2024 at 05:50:55PM -0700, Vinicius Costa Gomes wrote:
+> > Christian Brauner <brauner@kernel.org> writes:
+> > 
+> > >
+> > > So something like this? (Amir?)
+> > >
+> > >  
+> > > -DEFINE_LOCK_GUARD_1(cred, const struct cred, _T->lock = override_creds_light(_T->lock),
+> > > -	     revert_creds_light(_T->lock));
+> > > +DEFINE_LOCK_GUARD_1(cred, struct cred,
+> > > +		    _T->lock = (struct cred *)override_creds_light(_T->lock),
+> > > +		    revert_creds_light(_T->lock));
+> > > +
+> > > +#define cred_guard(_cred) guard(cred)(((struct cred *)_cred))
+> > > +#define cred_scoped_guard(_cred) scoped_guard(cred, ((struct cred *)_cred))
+> > >  
+> > >  /**
+> > >   * get_new_cred_many - Get references on a new set of credentials
+> > 
+> > Thinking about proposing a PATCH version (with these suggestions applied), Amir
+> > has suggested in the past that I should propose two separate series:
+> >  (1) introducing the guard helpers + backing file changes;
+> >  (2) overlayfs changes;
+> > 
+> > Any new ideas about this? Or should I go with this plan?
 > 
->   $ find /sys/devices -name reset_method | xargs grep .
- 
-```
-$ sudo find /sys/devices -name reset_method | xargs grep .
-/sys/devices/pci0000:00/0000:00:01.2/0000:03:00.0/0000:04:09.0/0000:09:00.0/reset_method:bus
-/sys/devices/pci0000:00/0000:00:01.2/0000:03:00.0/0000:04:09.0/reset_method:pm
-/sys/devices/pci0000:00/0000:00:01.2/0000:03:00.0/0000:04:02.0/0000:06:00.0/reset_method:pm bus
-/sys/devices/pci0000:00/0000:00:01.2/0000:03:00.0/0000:04:02.0/reset_method:pm
-/sys/devices/pci0000:00/0000:00:01.2/0000:03:00.0/0000:04:05.0/0000:07:00.0/reset_method:bus
-/sys/devices/pci0000:00/0000:00:01.2/0000:03:00.0/0000:04:05.0/reset_method:pm
-/sys/devices/pci0000:00/0000:00:01.2/0000:03:00.0/0000:04:0a.0/0000:0a:00.0/reset_method:bus
-/sys/devices/pci0000:00/0000:00:01.2/0000:03:00.0/0000:04:0a.0/reset_method:pm
-/sys/devices/pci0000:00/0000:00:01.2/0000:03:00.0/0000:04:08.0/0000:08:00.0/reset_method:bus
-/sys/devices/pci0000:00/0000:00:01.2/0000:03:00.0/0000:04:08.0/0000:08:00.3/reset_method:pm
-/sys/devices/pci0000:00/0000:00:01.2/0000:03:00.0/0000:04:08.0/reset_method:pm
-/sys/devices/pci0000:00/0000:00:01.2/0000:03:00.0/0000:04:01.0/reset_method:pm bus
-/sys/devices/pci0000:00/0000:00:01.2/0000:03:00.0/0000:04:01.0/0000:05:00.0/reset_method:device_specific flr bus
-/sys/devices/pci0000:00/0000:00:01.2/0000:03:00.0/reset_method:pm bus
-/sys/devices/pci0000:00/0000:00:01.2/reset_method:pm
-/sys/devices/pci0000:00/0000:00:08.1/0000:0c:00.0/reset_method:flr bus
-/sys/devices/pci0000:00/0000:00:08.1/0000:0c:00.3/reset_method:pm
-/sys/devices/pci0000:00/0000:00:08.1/0000:0c:00.1/reset_method:flr pm
-/sys/devices/pci0000:00/0000:00:08.1/reset_method:pm
-/sys/devices/pci0000:00/0000:00:08.1/0000:0c:00.4/reset_method:pm
-/sys/devices/pci0000:00/0000:00:01.1/0000:01:00.0/0000:02:00.0/reset_method:pm bus
-/sys/devices/pci0000:00/0000:00:01.1/0000:01:00.0/reset_method:bus
-/sys/devices/pci0000:00/0000:00:01.1/reset_method:pm
-/sys/devices/pci0000:00/0000:00:01.6/0000:0b:00.0/reset_method:flr bus
-/sys/devices/pci0000:00/0000:00:01.6/reset_method:pm
-```
+> I mean make it two separate patches and I can provide Amir with a stable
+> branch for the cleanup guards. I think that's what he wanted.
 
-If you need each PCI bus bridge information, I can provide it to you.
-but I can promise they are typical hardware in AMD CPU or chipset for
-Zen generation and nothing special.
-
-> You should be able to manually reset the device with something like
-> this (I don't know your topology, so you might have to replace "1d.6"
-> with the bridge leading to 06:00.0):
-> 
->   # sudo echo 1 > # /sys/devices/pci0000:00/0000:00:1d.6/0000:06:00.0/reset
- 
-```
-$ echo 1 > sudo tee -a /sys/devices/pci0000:00/0000:00:01.2/0000:03:00.0/0000:04:02.0/0000:06:00.0/reset
-(nothing happens)
-$ journalctl -k -n10
-(nothing specific)
-```
-
-Would I ask you any point to check after the reset operation?
-
-> I don't *know* of a reason why a Secondary Bus Reset would work
-> correctly on your hardware but not on a Mac, but there could be
-> something weird going on.
-
-Note that the hardware provided by Apple for the past decade has no
-IEEE 1394 interface, thus the patch author seems to use any kind of
-bus extension to connect the issued 1394 OHCI hardware. I guess:
-
-* Apple Thunderbolt Display
-   * https://lore.kernel.org/linux-pci/1372860295-8306-1-git-send-email-mika.westerberg@linux.intel.com/
-* Apple Thunderbolt-OHCI1394 adapter
-   * I know FW643 is used for the product.
-* Some kind of eGPU box
-
-> Does the patch cause a problem for you?  (Other than the fact that the
-> device leaks state between VMs?)
-
-It takes a bit time for me to set up my system with self-compiled v6.9-rc1
-kernel. However the leak between VMs is really inconvenient to me by itself.
-
-
-Thanks
-
-Takashi Sakamoto
+But send them out in one series ofc. Amir and I can sort this if needed.
 
