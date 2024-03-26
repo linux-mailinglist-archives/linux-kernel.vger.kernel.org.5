@@ -1,100 +1,99 @@
-Return-Path: <linux-kernel+bounces-119672-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-119673-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0564B88CBD1
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 19:14:57 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1C87B88CBD7
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 19:16:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 37ADF1C64BC0
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 18:14:56 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 708CBB2303D
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 18:16:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2AC328527A;
-	Tue, 26 Mar 2024 18:14:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3F7608627B;
+	Tue, 26 Mar 2024 18:16:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="EtFzhrlz"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=ravnborg.org header.i=@ravnborg.org header.b="nyeOTCdX";
+	dkim=permerror (0-bit key) header.d=ravnborg.org header.i=@ravnborg.org header.b="rL+ukD2Q"
+Received: from mailrelay5-1.pub.mailoutpod3-cph3.one.com (mailrelay5-1.pub.mailoutpod3-cph3.one.com [46.30.211.244])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 67FC71B59A;
-	Tue, 26 Mar 2024 18:14:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E33D24CE09
+	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 18:16:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.30.211.244
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711476889; cv=none; b=tjfGsvKLN+7pD8PHH1qhNDQZNPzYJMBkxvzI//ElVuxahvRKby/mfye6zxGbyy+f32JBmOWMdf3UCtFiXH2I5rt8pXmFuLzRGiw8z9A5LBmKuZ+jxkwN6sRQPyC55++D+Ens/nhkt8BoOIih6GBNOirZffcaB3QjfkG2uuZ3Nxc=
+	t=1711476974; cv=none; b=lOvGL8+cj6v5jN/o9bUrSOmnY4pXRvLwN4gv92m/BwDMA2M9yz1sfYU16wRgY77CxfqJCP9dhYKSh8AWonxtRnYZtLcyxi3J1EbNnKtdzwUKeu6desBDhcwsJ4VbFsga/nw/XUZIvc967uZaEnGrYVSvtVaP/hOOLtQWlROf6bQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711476889; c=relaxed/simple;
-	bh=X8a4b9n/2CO98Mv8FxoOR09KTzFb7RNSCqdYPkuQjlY=;
+	s=arc-20240116; t=1711476974; c=relaxed/simple;
+	bh=OQxXZfgehtfbFagTkSKRUD8y2GHLUHk2uynjOfd4oRI=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=XQ6iMSPrWsmPxCBDGDw0wH+ad9k+3G4ufSnz0Qcm2gDFJcSZ+runepIRh1d9A9orrXnv1kTkASttkQV75Nc07iERYOrcOnIxoFbIzG1hiTK3Kbhmv/eF/x+vYFdpQu9eHymqJGAxZVcjZvPAIE5EAuBtrIWSzNTM8B6X47e8snc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=EtFzhrlz; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 329CBC433F1;
-	Tue, 26 Mar 2024 18:14:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711476888;
-	bh=X8a4b9n/2CO98Mv8FxoOR09KTzFb7RNSCqdYPkuQjlY=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=EtFzhrlzdRk+KbzyPgQCs5I4W4erYn2OQ0+vm1Vns6/fI8/eQmT5v+ngLFszeU+20
-	 NCR56RMTfme2yhNj1ECez8zXAUIRquZMWUfduQFVBIOrcbhTFvcc79HJX2odS5kKKa
-	 6oHGT0yDxNWPtiyXV6afOr09jfRtZIV3NBNAgPCNIPv+PKDOoWkS6ril5pQ7T8Njpn
-	 lxibVlEmWkk5FCFf4k5vEqFFh/nI8/YbZ/yXvfN6PIGe3Ojp2JAqPJd1R+lUDqptQK
-	 9CZPrDa8oQqnslT/86I5T1Elzs8jINTJINqKt2SfqvQD5gI2rCnLv8Ms+x1PSUppWh
-	 2n3VxGLUar2dw==
-Date: Tue, 26 Mar 2024 18:14:45 +0000
-From: Conor Dooley <conor@kernel.org>
-To: Animesh Agarwal <animeshagarwal28@gmail.com>
-Cc: Damien Le Moal <dlemoal@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>, linux-ide@vger.kernel.org,
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] dt-bindings: ata: ahci-da850: Convert to dtschema
-Message-ID: <20240326-rerun-flap-6d827f654453@spud>
-References: <20240326121735.11994-1-animeshagarwal28@gmail.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=chajFYIPzXgkR6dunbQLOWt4jFOn4Kd9R8HwcL/3KPo/om2KvhxjmQFyJvfkKnOTNQPCx8vO1Od43YAStVqK/CNttebA4Zb1koM/MAkPtiS1PE9v7wY2zb7H+kZxs8MT197GliprKpXDmA4YduBNCSB1LQzHfCRxIlBWJxUERHw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ravnborg.org; spf=none smtp.mailfrom=ravnborg.org; dkim=pass (2048-bit key) header.d=ravnborg.org header.i=@ravnborg.org header.b=nyeOTCdX; dkim=permerror (0-bit key) header.d=ravnborg.org header.i=@ravnborg.org header.b=rL+ukD2Q; arc=none smtp.client-ip=46.30.211.244
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ravnborg.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=ravnborg.org
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=ravnborg.org; s=rsa2;
+	h=in-reply-to:content-type:mime-version:references:message-id:subject:cc:to:
+	 from:date:from;
+	bh=8cfX7j0cZTLxYnTUI6w58EoQmIDSw6kaORCfZyfLSls=;
+	b=nyeOTCdXkrX+AnYb2SH2o8UNaN7MEL/eLOuR/HxjUcCojfmUxEf1IYSvFe57aGwCXPRpwJnc2eKvF
+	 IgVer08UY4ywfd6yHdwNmVKKsRplrooqtKDG3xkplHga149okVZxGGy9GInR2g3HT1EKFlEQgQiI6/
+	 UskNZ+kb3sCMlzUq7OWUJ8PNQG9121mKwNR04NB58zJFOYpyjgEF4Bal4nwnL9WKEfF5dYXjMgU4fa
+	 ufj3SWJcgNd/3HKna6TzqZNQOCM8nFm4hnfFS26/dBKYNRmJso1M4n6mF9Sl0icrUSk6rEE+NCUHfW
+	 Ff2IMnIPUeikUZZpj8PhtuY9h0mersw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed;
+	d=ravnborg.org; s=ed2;
+	h=in-reply-to:content-type:mime-version:references:message-id:subject:cc:to:
+	 from:date:from;
+	bh=8cfX7j0cZTLxYnTUI6w58EoQmIDSw6kaORCfZyfLSls=;
+	b=rL+ukD2QXe4F+m5MLDkbUa/qyyilhQ/TiMT4rGWt3HqeijcmTmhKSIz4EVkcvr5PlEK0+Oj/0biOq
+	 Ngc23tKDA==
+X-HalOne-ID: c19233ce-eb9c-11ee-bd8a-9fce02cdf4bb
+Received: from ravnborg.org (2-105-2-98-cable.dk.customer.tdc.net [2.105.2.98])
+	by mailrelay5.pub.mailoutpod3-cph3.one.com (Halon) with ESMTPSA
+	id c19233ce-eb9c-11ee-bd8a-9fce02cdf4bb;
+	Tue, 26 Mar 2024 18:15:01 +0000 (UTC)
+Date: Tue, 26 Mar 2024 19:15:00 +0100
+From: Sam Ravnborg <sam@ravnborg.org>
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org,
+	Chris Zankel <chris@zankel.net>, Max Filippov <jcmvbkbc@gmail.com>,
+	Rob Clark <robdclark@gmail.com>,
+	Abhinav Kumar <quic_abhinavk@quicinc.com>,
+	Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+	linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
+	freedreno@lists.freedesktop.org,
+	Lucas De Marchi <lucas.demarchi@intel.com>,
+	Oded Gabbay <ogabbay@kernel.org>,
+	Thomas =?iso-8859-1?Q?Hellstr=F6m?= <thomas.hellstrom@linux.intel.com>,
+	intel-xe@lists.freedesktop.org, linux-mips@vger.kernel.org,
+	sparclinux@vger.kernel.org
+Subject: Re: Build regressions/improvements in v6.9-rc1
+Message-ID: <20240326181500.GA1501083@ravnborg.org>
+References: <CAHk-=wgOw_13JuuX4khpn4K+n09cRG3EBQWufAPBWoa0GLLQ0A@mail.gmail.com>
+ <20240325200315.3896021-1-geert@linux-m68k.org>
+ <8d78894-dd89-9f4d-52bb-1b873c50be9c@linux-m68k.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="gspvcYe74748VKy0"
-Content-Disposition: inline
-In-Reply-To: <20240326121735.11994-1-animeshagarwal28@gmail.com>
-
-
---gspvcYe74748VKy0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <8d78894-dd89-9f4d-52bb-1b873c50be9c@linux-m68k.org>
 
-On Tue, Mar 26, 2024 at 05:47:28PM +0530, Animesh Agarwal wrote:
+Hi all.
 
-> -  - compatible: must be "ti,da850-ahci"
-> -  - reg: physical base addresses and sizes of the two register regions
-> -         used by the controller: the register map as defined by the
-> -         AHCI 1.1 standard and the Power Down Control Register (PWRDN)
-> -         for enabling/disabling the SATA clock receiver
+>   + error: arch/sparc/kernel/process_32.o: relocation truncated to fit: R_SPARC_WDISP22 against `.text':  => (.fixup+0xc), (.fixup+0x4)
+>   + error: arch/sparc/kernel/signal_32.o: relocation truncated to fit: R_SPARC_WDISP22 against `.text':  => (.fixup+0x18), (.fixup+0x8), (.fixup+0x0), (.fixup+0x20), (.fixup+0x10)
+>   + error: relocation truncated to fit: R_SPARC_WDISP22 against `.init.text':  => (.head.text+0x5100), (.head.text+0x5040)
+>   + error: relocation truncated to fit: R_SPARC_WDISP22 against symbol `leon_smp_cpu_startup' defined in .text section in arch/sparc/kernel/trampoline_32.o:  => (.init.text+0xa4)
 
-> +  reg:
-> +    minItems: 2
-> +    maxItems: 2
+Looks like something is too big for the available space here.
+Any hints how to dig into this would be nice.
 
+Note: this is a sparc32 allmodconfig build
 
-Could you make this an items list with a pair of text descriptions
-please? The original text binding's text for each can be reused.
-
-Thanks,
-Conor.
-
---gspvcYe74748VKy0
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZgMQlQAKCRB4tDGHoIJi
-0kzNAQCvdiynFxfbTGd6T2pL7NC8T6GWa+FltXTVrKbv2NGymwEAlpLZIVPht5Vz
-5LIo1R6BiwZyyomefIWp4I0UNjMHmA8=
-=mmeI
------END PGP SIGNATURE-----
-
---gspvcYe74748VKy0--
+	Sam
 
