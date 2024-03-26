@@ -1,276 +1,134 @@
-Return-Path: <linux-kernel+bounces-118445-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-118446-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id E13ED88BAF4
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 08:08:38 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6600D88BAFA
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 08:09:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 43D442E20CA
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 07:08:37 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 982601C3066C
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 07:09:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D617312EBE1;
-	Tue, 26 Mar 2024 07:08:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 110D6130491;
+	Tue, 26 Mar 2024 07:09:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="huTx0jkm";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="k401TvKr";
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="huTx0jkm";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="k401TvKr"
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="o2tAol0C"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1834B128394;
-	Tue, 26 Mar 2024 07:08:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 464CD128394;
+	Tue, 26 Mar 2024 07:09:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711436911; cv=none; b=DhT7zqQ8yHSOZogj2o/uh5xxttiHlSnJQCmtbkBzl7OK4t9JvrISM8JdhoZ2W9IVxBsg6CnIiThVmmvfBZeuimzpI/dm+OuyuDlG+aMPCmp0cFSN/hr3Eed3zsBBrG9kfQViSR6rXLD+0ZimbXzzTRqtdfFjt9UmlUX3c+0jxdQ=
+	t=1711436956; cv=none; b=HYWEv5sBLDK8sQq+zWyBntE+e0QPxtiBL3ES0yNCw2b6JCgDHt05MxXS8yb+f3nFXrayXwtsWWB897Mrrsfcdcxa5eoMc3kfD7/8uWIN+dLvULBIYYbseDVma1wIgren1a2bibZxbAz0poevFf1dujchx/n2uutrIdQSow/9u8o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711436911; c=relaxed/simple;
-	bh=n2hd0h+IMI9EUi59bqCDnD0Jo2dp7ZKvVfWC7VLjrgc=;
-	h=Date:Message-ID:From:To:Cc:Subject:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=FhOR97dPvwzbB+/Z5LZ+a1wTVBOQ4XX7t7/YSPE5NdVhfm274PdPTfw8oh8OEjxHm1EXPm0WjWATM2saQtDxXL5BJDU1WlF5fMtvO/V4W3szOhdx5vUINfdsSO/hVuXTYNpw0PR4E3PfCBQJDK9RTazmrjEJdPyXSnmwIm9wL9c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=huTx0jkm; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=k401TvKr; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=huTx0jkm; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=k401TvKr; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 320F237883;
-	Tue, 26 Mar 2024 07:08:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1711436908; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=V9UVBcIjuVArecGJ6s7V8AL3G2kns/v6DY1WhKcSvhE=;
-	b=huTx0jkmh13C5WyoBCysgaHvGE0wodtYSL+O58LiObkRHn0xiclNMot/je5rNa+nRj7eCM
-	DBmjeyluACV0LLGLAbx3s+h93pI7r9FeelP+OsAyxQbqMycfoTazB6CrEJe9vZ5DtWwi8o
-	+3mHUFbRk1Sp+IG7TJSMu+SXe0t8nH0=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1711436908;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=V9UVBcIjuVArecGJ6s7V8AL3G2kns/v6DY1WhKcSvhE=;
-	b=k401TvKrL8szf1Lt+7DZ/5UlMUSeQeRJDj1xjCHdkYaRLtoFGmQKkHFJ3HCMF4utTvjUlK
-	43W/CgWdXvXBdQDA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1711436908; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=V9UVBcIjuVArecGJ6s7V8AL3G2kns/v6DY1WhKcSvhE=;
-	b=huTx0jkmh13C5WyoBCysgaHvGE0wodtYSL+O58LiObkRHn0xiclNMot/je5rNa+nRj7eCM
-	DBmjeyluACV0LLGLAbx3s+h93pI7r9FeelP+OsAyxQbqMycfoTazB6CrEJe9vZ5DtWwi8o
-	+3mHUFbRk1Sp+IG7TJSMu+SXe0t8nH0=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1711436908;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=V9UVBcIjuVArecGJ6s7V8AL3G2kns/v6DY1WhKcSvhE=;
-	b=k401TvKrL8szf1Lt+7DZ/5UlMUSeQeRJDj1xjCHdkYaRLtoFGmQKkHFJ3HCMF4utTvjUlK
-	43W/CgWdXvXBdQDA==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id E439F13306;
-	Tue, 26 Mar 2024 07:08:27 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id L5dhNWt0AmaiTAAAD6G6ig
-	(envelope-from <tiwai@suse.de>); Tue, 26 Mar 2024 07:08:27 +0000
-Date: Tue, 26 Mar 2024 08:08:29 +0100
-Message-ID: <875xx9wjv6.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: duoming@zju.edu.cn
-Cc: "Takashi Iwai" <tiwai@suse.de>,
-	linux-sound@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	tiwai@suse.com,
-	perex@perex.cz
-Subject: Re: [PATCH] ALSA: sh: aica: reorder cleanup operations to avoid UAF bug
-In-Reply-To: <75af0c57.6e39.18e796e478f.Coremail.duoming@zju.edu.cn>
-References: <20240325033946.47052-1-duoming@zju.edu.cn>
-	<871q7yybeb.wl-tiwai@suse.de>
-	<43e102f3.61dc.18e7601a2f2.Coremail.duoming@zju.edu.cn>
-	<874jcuxtf9.wl-tiwai@suse.de>
-	<75af0c57.6e39.18e796e478f.Coremail.duoming@zju.edu.cn>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+	s=arc-20240116; t=1711436956; c=relaxed/simple;
+	bh=S1+D5CctG8AMUv6EK6M5WzyBfkPV4fTXRAVv7FJqFkI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=KUkEz95uDrswXKzl8dxd1FwfF8krHFXgd3wPFl2hvUnyZrxL+NjDzBiWxAK65++z45FYp4IxTPOiBI1FBnp3FXF5G+Df8pEZkPdD7nB020a+TEsY/GgBTIicSwW0t++DY2iwKGBy+B2mIY1VYzIPscfCnpla8sw+WtziyTyxJfw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=o2tAol0C; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D4AE2C433C7;
+	Tue, 26 Mar 2024 07:09:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1711436955;
+	bh=S1+D5CctG8AMUv6EK6M5WzyBfkPV4fTXRAVv7FJqFkI=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=o2tAol0CxU9tomWHC/iz/dFozSU/D59ojiuI/3zLTetuGVO/oo53gqCkFAjGte4fo
+	 OgTaF/oL32d4rpcz4jpKxZ5qi4ho8M8KM9iM4rPJq2fb2+eAacq7uAMh2B0rfyd4TQ
+	 C9doQKhvnHmOfXgHKXqXMB8jGLcbieY0ce5C83YP/2Jxx84vYPC+DVXF047sSClPjs
+	 qctSgRjmbz1s35PsYz8G6J1n+Qp/XNJ64DuBVX5iBJgzFsaYGXWGlffbT0c8nLgsHi
+	 30MWDlByuga01WNoMg8HG18fZTn3QX7dUxzxfd+VOb/wNDdnj3zPrsV22u2ZZaURBW
+	 WjuEBLEm8qkyQ==
+Received: from johan by xi.lan with local (Exim 4.97.1)
+	(envelope-from <johan@kernel.org>)
+	id 1rp0vy-000000004q7-21w1;
+	Tue, 26 Mar 2024 08:09:23 +0100
+Date: Tue, 26 Mar 2024 08:09:22 +0100
+From: Johan Hovold <johan@kernel.org>
+To: Luiz Augusto von Dentz <luiz.dentz@gmail.com>
+Cc: Linux regressions mailing list <regressions@lists.linux.dev>,
+	Johan Hovold <johan+linaro@kernel.org>,
+	Marcel Holtmann <marcel@holtmann.org>,
+	linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org,
+	stable@vger.kernel.org,
+	Janaki Ramaiah Thota <quic_janathot@quicinc.com>
+Subject: Re: [PATCH] Revert "Bluetooth: hci_qca: Set BDA quirk bit if fwnode
+ exists in DT"
+Message-ID: <ZgJ0okobGv5nPreG@hovoldconsulting.com>
+References: <CABBYNZJV1htg46Gyu=7_iUWdukM+rHLitsLjxmWWYFGXty3tVw@mail.gmail.com>
+ <ZfMStHjwtCT1SW3z@hovoldconsulting.com>
+ <964131ff-293d-47d1-8119-a389fa21f385@leemhuis.info>
+ <CABBYNZJ0ukd_8=SFzy8CEwgP7hV5unodca0NZ2zDZh+jPJsEFQ@mail.gmail.com>
+ <ZgGzWWV4Lh2Nal--@hovoldconsulting.com>
+ <CABBYNZJaXUhu1A+NyVT-TAJw49zcV6TMdGeVy2F+AVKWBOVC-g@mail.gmail.com>
+ <ZgHVFjAZ1uqEiUa2@hovoldconsulting.com>
+ <CABBYNZJUVhNKVD=s+=eYJ1q+j1W8rVSRqM4bKPbxT=TKrnZdoQ@mail.gmail.com>
+ <ZgHbPo57UKUxK7G8@hovoldconsulting.com>
+ <CABBYNZJFzDaLdXsdNEP1384JaJEN5E78cgmWfOus_LGOREGsWA@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-X-Spam-Score: -3.30
-X-Spamd-Result: default: False [-3.30 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 NEURAL_HAM_LONG(-1.00)[-0.999];
-	 MIME_GOOD(-0.10)[text/plain];
-	 RCPT_COUNT_FIVE(0.00)[6];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	 NEURAL_HAM_SHORT(-0.20)[-0.995];
-	 MID_CONTAINS_FROM(1.00)[];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 RCVD_TLS_ALL(0.00)[];
-	 BAYES_HAM(-3.00)[100.00%]
-X-Spam-Level: 
-Authentication-Results: smtp-out1.suse.de;
-	none
-X-Spam-Flag: NO
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CABBYNZJFzDaLdXsdNEP1384JaJEN5E78cgmWfOus_LGOREGsWA@mail.gmail.com>
 
-On Tue, 26 Mar 2024 07:24:14 +0100,
-duoming@zju.edu.cn wrote:
+On Mon, Mar 25, 2024 at 04:31:53PM -0400, Luiz Augusto von Dentz wrote:
+> On Mon, Mar 25, 2024 at 4:14 PM Johan Hovold <johan@kernel.org> wrote:
+> > On Mon, Mar 25, 2024 at 04:07:03PM -0400, Luiz Augusto von Dentz wrote:
+
+> > > Probably needs rebasing:
+> > >
+> > > Applying: Revert "Bluetooth: hci_qca: Set BDA quirk bit if fwnode exists in DT"
+> > > error: drivers/bluetooth/hci_qca.c: does not match index
+> > > Patch failed at 0001 Revert "Bluetooth: hci_qca: Set BDA quirk bit if
+> > > fwnode exists in DT"
+> >
+> > I just verified that it applies cleanly to 6.9-rc1.
+> >
+> >         $ git checkout tmp v6.9-rc1
+> >         $ b4 am -sl ZgHVFjAZ1uqEiUa2@hovoldconsulting.com
+> >         ...
+> >         $ git am ./20240314_johan_linaro_revert_bluetooth_hci_qca_set_bda_quirk_bit_if_fwnode_exists_in_dt.mbx
+> >         Applying: Revert "Bluetooth: hci_qca: Set BDA quirk bit if fwnode exists in DT"
+> >         $ b4 am -sl 20240320075554.8178-2-johan+linaro@kernel.org
+> >         ...
+> >         $ git am ./v4_20240320_johan_linaro_bluetooth_qca_fix_device_address_endianness.mbx
+> >         Applying: dt-bindings: bluetooth: add 'qcom,local-bd-address-broken'
+> >         Applying: arm64: dts: qcom: sc7180-trogdor: mark bluetooth address as broken
+> >         Applying: Bluetooth: add quirk for broken address properties
+> >         Applying: Bluetooth: qca: fix device-address endianness
+> >
+> > Do you have anything else in your tree which may interfere? What tree is
+> > that exactly?
 > 
-> On Mon, 25 Mar 2024 15:44:26 +0100 Takashi Iwai wrote:
-> > > > > The dreamcastcard->timer could schedule the spu_dma_work and the
-> > > > > spu_dma_work could also arm the dreamcastcard->timer.
-> > > > > 
-> > > > > When the Yamaha AICA card is closing, the dreamcastcard->channel
-> > > > > will be deallocated. But it could still be dereferenced in the
-> > > > > worker thread. The reason is that del_timer() will return directly
-> > > > > regardless of whether the timer handler is running or not and the
-> > > > > worker could be rescheduled in the timer handler. As a result, the
-> > > > > UAF bug will happen. The racy situation is shown below:
-> > > > > 
-> > > > >       (Thread 1)                 |      (Thread 2)
-> > > > > snd_aicapcm_pcm_close()          |
-> > > > >  ...                             |  run_spu_dma() //worker
-> > > > >                                  |    mod_timer()
-> > > > >   flush_work()                   |
-> > > > >   del_timer()                    |  aica_period_elapsed() //timer
-> > > > >   kfree(dreamcastcard->channel)  |    schedule_work()
-> > > > >                                  |  run_spu_dma() //worker
-> > > > >   ...                            |    dreamcastcard->channel-> //USE
-> > > > > 
-> > > > > In order to mitigate this bug, use timer_shutdown_sync() to shutdown
-> > > > > the timer and then use flush_work() to cancel the worker.
-> > > > > 
-> > > > > Fixes: 198de43d758c ("[ALSA] Add ALSA support for the SEGA Dreamcast PCM device")
-> > > > > Signed-off-by: Duoming Zhou <duoming@zju.edu.cn>
-> > > > > ---
-> > > > >  sound/sh/aica.c | 2 +-
-> > > > >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > > > > 
-> > > > > diff --git a/sound/sh/aica.c b/sound/sh/aica.c
-> > > > > index 320ac792c7f..bc68a3903f2 100644
-> > > > > --- a/sound/sh/aica.c
-> > > > > +++ b/sound/sh/aica.c
-> > > > > @@ -354,8 +354,8 @@ static int snd_aicapcm_pcm_close(struct snd_pcm_substream
-> > > > >  				 *substream)
-> > > > >  {
-> > > > >  	struct snd_card_aica *dreamcastcard = substream->pcm->private_data;
-> > > > > +	timer_shutdown_sync(&dreamcastcard->timer);
-> > > > 
-> > > > I thought this call invalidates the timer object, hence it can't be
-> > > > used again; i.e. it breaks when the stream is re-opened, I suppose?
-> > > >
-> > > > In general timer_shutdown*() is used for the code path to clean up the
-> > > > driver (or the object the timer belongs to).  The PCM close is only
-> > > > about the PCM stream, and it's not the place.
-> > > > 
-> > > > A proper fix would be rather to implement two things:
-> > > > - Call mod_timer() conditionally in run_spu_dma()
-> > > > - Implement PCM sync_stop op to cancel/flush the work
-> > > > 
-> > > > The former alone should suffice to fix the UAF in your scenario,
-> > > > though.  The latter will cover other possible corner cases.
-> > > 
-> > > Thank you for your time and reply! I know using timer_shutdown_sync()
-> > > is not proper. In order to solve the problem, I add a shutdown flag 
-> > > in the struct snd_card_aica and set the flag to true when the PCM 
-> > > stream is closing. Then call mod_timer() conditionally in run_spu_dma().
-> > > What's more, use del_timer_sync() to stop the timer and put it before 
-> > > flush_work(). As a result, both timer and worker could be stopped safely. 
-> > > The detail is shown below:
-> > 
-> > You can use the existing API to check the PCM running state, e.g.
-> > 
-> > --- a/sound/sh/aica.c
-> > +++ b/sound/sh/aica.c
-> > @@ -278,7 +278,8 @@ static void run_spu_dma(struct work_struct *work)
-> >  		dreamcastcard->clicks++;
-> >  		if (unlikely(dreamcastcard->clicks >= AICA_PERIOD_NUMBER))
-> >  			dreamcastcard->clicks %= AICA_PERIOD_NUMBER;
-> > -		mod_timer(&dreamcastcard->timer, jiffies + 1);
-> > +		if (snd_pcm_running(dreamcastcard->substream))
-> > +			mod_timer(&dreamcastcard->timer, jiffies + 1);
-> >  	}
-> >  }
-> 
-> Thank you for your suggestions, The following is a new plan using the
-> existing API to mitigate the bug.
-> 
-> diff --git a/sound/sh/aica.c b/sound/sh/aica.c
-> index 320ac792c7fe..bc003dd91a82 100644
-> --- a/sound/sh/aica.c
-> +++ b/sound/sh/aica.c
-> @@ -278,7 +278,8 @@ static void run_spu_dma(struct work_struct *work)
->                 dreamcastcard->clicks++;
->                 if (unlikely(dreamcastcard->clicks >= AICA_PERIOD_NUMBER))
->                         dreamcastcard->clicks %= AICA_PERIOD_NUMBER;
-> -               mod_timer(&dreamcastcard->timer, jiffies + 1);
-> +               if (snd_pcm_running(dreamcastcard->substream))
-> +                       mod_timer(&dreamcastcard->timer, jiffies + 1);
->         }
->  }
-> 
-> @@ -316,6 +317,7 @@ static void spu_begin_dma(struct snd_pcm_substream *substream)
->         struct snd_pcm_runtime *runtime;
->         runtime = substream->runtime;
->         dreamcastcard = substream->pcm->private_data;
-> +       __snd_pcm_set_state(runtime, SNDRV_PCM_STATE_RUNNING);
+> bluetooth-next tree, why would it be anything other than that?
 
-Such an explicit state change isn't needed, rather wrong.
-The above condition check is performed only when kicked off from the
-timer handler, and that's always after the stream started.
+I ask because I did not see anything in either the bluetooth or
+bluetooth-next tree which should interfere.
 
-> @@ -354,8 +357,9 @@ static int snd_aicapcm_pcm_close(struct snd_pcm_substream
->                                  *substream)
->  {
->         struct snd_card_aica *dreamcastcard = substream->pcm->private_data;
-> +       __snd_pcm_set_state(substream->runtime, SNDRV_PCM_STATE_DISCONNECTED);
+And I just verified that by applying the revert followed by the series
+to bluetooth-next. In that order it applies just fine, as expected.
 
-This breaks things again!  You don't disconnect the device at closing
-the stream at all.  And the state change is handled in PCM core side,
-not in the driver side.
+> All the
+> CI automation is done on bluetooth-next and if you are asking to be
+> done via bluetooth tree which is based on the latest rc that is not
+> how things works here, we usually first apply to bluetooth-next and in
+> case it needs to be backported then it later done via pull-request.
 
-> +       del_timer_sync(&dreamcastcard->timer);
->         flush_work(&(dreamcastcard->spu_dma_work));
-> -       del_timer(&dreamcastcard->timer);
+The revert fixes a regression in 6.7-rc7 and should get to Linus as soon
+as possible and I assume you have some way to get fixes into mainline
+for the current development cycle.
 
-I'd leave this unchanged.  The UAF itself is covered by the stream
-state check.  And, if any, we can change more properly:
+The series fixes a critical bug in the Qualcomm driver and should
+similarly get into mainline as soon as possible to avoid having people
+unknowingly start relying on the broken behaviour (reversed address).
+The bug in this case is older, but since the bug is severe and we're
+only at rc1, I don't think this one should wait for 6.10 either.
 
-- Add the same PCM state check at the beginning of
-  aica_period_elapsed(), and bail out immediately if not running
-
-- Implement PCM sync_stop ops:
-  it should have like
-
-static int snd_aicapcm_pcm_sync_stop(struct snd_pcm_substream *substream)
-{
-	struct snd_card_aica *dreamcastcard = substream->pcm->private_data;
-
-	del_timer_sync(&dreamcastcard->timer);
-	cancel_work_sync(&dreamcastcard->spu_dma_work);
-	return 0;
-}
-
-  and get rid of the corresponding calls from snd_aicapcm_pcm_close()
-
-
-thanks,
-
-Takashi
+Johan
 
