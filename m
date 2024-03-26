@@ -1,158 +1,101 @@
-Return-Path: <linux-kernel+bounces-119218-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-119220-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 057BF88C5CE
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 15:51:37 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 558D588C5D2
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 15:52:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8700E1F62C38
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 14:51:36 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BB32EB21F60
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 14:52:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B65FB13C816;
-	Tue, 26 Mar 2024 14:50:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 80D6513C68E;
+	Tue, 26 Mar 2024 14:51:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="iCdN7rHJ"
-Received: from mail-pg1-f180.google.com (mail-pg1-f180.google.com [209.85.215.180])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="XK+MeDxF"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 75E6213C812
-	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 14:50:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C347013C67A;
+	Tue, 26 Mar 2024 14:51:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711464651; cv=none; b=j/1D4l7cTIW8kYWtZoKnEcPPlBJogwoZOdLeXCZTaz4YStF1FeQ8yV0/SSzVuFde5Y/tApBpr+qxErLkDCz7fSYNcNeBkGZUan1z6eTCzHBIHZlK6lEwtzfQygmoESS3YaBESRkVbziNEpTSIBXviNriCckreYdlIcWJzINYdCs=
+	t=1711464711; cv=none; b=oWkRkzTInpQvZOVxz8eeYTEOpLgOyFKGxJQxzw58rtRyxStTrOLHCq84dlGNfFy+aINFpicFPTxDuKPfqIR3EVJdxQCyvaNNZscfxfFDEApGM7VIoWETcKIHX6w+wrSlv5AreP/YOewapzORJ7tDAOpLA0fnvfjkwxdX66RFfwU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711464651; c=relaxed/simple;
-	bh=M0l3pASlijFBuC5mIXOLnjRqChsnB1fA9zTnKwjZtmM=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=pMfWXMbIIw3fuhTgcLfVANzXMb8vE8oxHcpwebOizRKZHrKKJNpqc5KKWC8PHwSyPDEoHKMRcaTvIzm5GDo0jZKB9v00BzAk8hdYi7oagqmKvWIRgmnQxhAuz0xZlHh2y0pKCS+eha5bKJxzx9Jd/Uuh5WHNCXvWhaiKUJrJvcM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=iCdN7rHJ; arc=none smtp.client-ip=209.85.215.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f180.google.com with SMTP id 41be03b00d2f7-5ce9555d42eso3375523a12.2
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 07:50:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711464648; x=1712069448; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=mH/IJ7qi61uZRp4uFBAxZpmaH7Saq5egmRjmLZJxRsM=;
-        b=iCdN7rHJFnhjoWQ7uI44GTq8asF4hKj7ZZwWei6EXMNNFLFccvM9eWX/n1dd/UrkiR
-         mw4CbV5LtVjqndiT6G7RLmCPy9MxRtMLSkGBQKeHrTCNIbGmgY/MS/js+5V8r322X0yU
-         7ahRNhzuxHBf+rZjACRRdADotGPdTLPCGsXr3irjBksALqdxZzqLGNpOKwzdKZS7/m91
-         9XUdOeB9B2jbVNWCsNsCmsdgoHJbU5D62jiwiAEXN5vlz0pdRdg3ENbl0y65zXGvnewV
-         O0NXCNqdyxr4S2ulON3YoyGIXMZoIeF2hiis1AF75vLFHHSCyR3tC6ARE0xDcQ+JH8L+
-         GWtw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711464648; x=1712069448;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=mH/IJ7qi61uZRp4uFBAxZpmaH7Saq5egmRjmLZJxRsM=;
-        b=aLxmew7aH/Oy1X3uBIXTXXv8VhSkhDCF6OBHCYFCJ8BafIjGB2rvEsPKouA0byxEoH
-         p1xtJ3vnYq5Qi9owOLwV4JTjy1pQf2KAS/dbV41G2U4oak4uKwk/hOnyp0FBzvPKK+vy
-         ZPf8sr2Ehm3dEBc/fmlsDoV0pfZZ8VMM4ItQHrcIlcamzwO4OdADiOvnVTlx45WODYM7
-         +5vEg5Slb+2OkKLIm/VHTumZO+95NrV65uGhVqaoinkpvX6tPONrRGwHI4epSZ23BlWI
-         MPe5kuHn5hMWBVrwr4YgDZSsvD7T6g1okIZjlON9STuCcn8Cdp4d9lXcW332NyI6DXvr
-         JTeQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXGZf7TVH8v8oofzuFoNl/gYFLm9fMmyvJb5M3GcwFCIkmuu74OWG8oLVuAbiBMFvFaxKZKovCh9B46wD3jD3jaMfhzzbufEdzp0p6V
-X-Gm-Message-State: AOJu0Yz6w3zmXLYrNFXk0H9nqfDHDHFYUmUJPY3SUsyuizb8EQY1RnDn
-	eeORoXJs1cwL3eWjiIuhVyxG4NV/ag2fd7QFlW1V1zjLQEpMQCIr0jijhMvmgcMtKNnbO4lI6X1
-	N2hIFsC2lUF0m1MdoOxYVDoZguE14wKVW1XY=
-X-Google-Smtp-Source: AGHT+IGvYt1rAYvBJqUKJk6hEYneUZeFwHr2eOm2WaAs4M8jDi5h0/8Lqjjz3HxqiIhKXp/k4BYojM1GkrAmfrtHNko=
-X-Received: by 2002:a17:90a:d148:b0:29b:6e9d:5897 with SMTP id
- t8-20020a17090ad14800b0029b6e9d5897mr47119pjw.23.1711464648476; Tue, 26 Mar
- 2024 07:50:48 -0700 (PDT)
+	s=arc-20240116; t=1711464711; c=relaxed/simple;
+	bh=sLOSA2H/JQY11OMFy/vZi8SPun9a9NZx8PpmPt3viRc=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=dWPQ6s4FuKis5Iw1H7gO8llPBCvJUFquK0fb2wg9/5/98PG0lDlfuncwhvPEab5l0VHYldhUJaKWGaBUuL9laAOLmTOVTuBm0+YcE2q1dDbBfQjT2AMWkjULnIg0Gn35xCn7Jqic2MGh1JHOX0UB1ZPTOwBKbAXvNRe25/Rnq/w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=XK+MeDxF; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 940B0C433C7;
+	Tue, 26 Mar 2024 14:51:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1711464711;
+	bh=sLOSA2H/JQY11OMFy/vZi8SPun9a9NZx8PpmPt3viRc=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=XK+MeDxFWZSbU6Ztv/eTdl1O/MnMn2rltqtau5hHB0cLkDe7/0lgQsYebdu+ZMaWj
+	 gYfcd/V3fwWCe40+c2Dd/WXqk0Uks4jufr4q4NIftomOghORvFssfU9cEyW+4sam0K
+	 fehwCZcCyAVYlqX9wkIjY1swNhL8xblyq1JFo2tHESrKu1L3Eub1YWn6hmkGIfyoNK
+	 K6SBdMvai+sEru3XlLS9YUn26FOLy5hihlrzfR6Wq/jaE2RqUK35YdYdGQuoQdRnwI
+	 iSMGE/C9kpCESavZGDZLmDtWJNiNcE16ix6ckFvld3zeM9xdIgirEDvF7UyQFVBYUo
+	 hgUpqwR97s+Cw==
+From: Arnd Bergmann <arnd@kernel.org>
+To: linux-kbuild@vger.kernel.org,
+	Masahiro Yamada <masahiroy@kernel.org>,
+	Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+Cc: Nicolas Schier <nicolas@fjasle.eu>,
+	Nathan Chancellor <nathan@kernel.org>,
+	Arnd Bergmann <arnd@arndb.de>,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH 02/12] [v3] parport: mfc3: avoid empty-body warning
+Date: Tue, 26 Mar 2024 15:51:27 +0100
+Message-Id: <20240326145140.3257163-1-arnd@kernel.org>
+X-Mailer: git-send-email 2.39.2
+In-Reply-To: <20240326144741.3094687-1-arnd@kernel.org>
+References: <20240326144741.3094687-1-arnd@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240312165905.1764507-1-andriy.shevchenko@linux.intel.com>
- <20240325211915.GA1449994@bhelgaas> <CAPf=4Rc2vQrWqcs=-ND3iOZFJyKE7FdPoqU9w6DKjoSaJo6KaQ@mail.gmail.com>
- <ZgLefFQanbq-ozKM@smile.fi.intel.com>
-In-Reply-To: <ZgLefFQanbq-ozKM@smile.fi.intel.com>
-From: Mateusz K <mateusz.kaduk@gmail.com>
-Date: Tue, 26 Mar 2024 15:50:37 +0100
-Message-ID: <CAPf=4Rdc6pHy34dSKex_KOmeAo2bsuaGv5X6MyJ6+Se5h3Mo4w@mail.gmail.com>
-Subject: Re: [PATCH v1 1/1] mfd: intel-lpss: Switch over to MSI interrupts
-To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc: Bjorn Helgaas <helgaas@kernel.org>, Lee Jones <lee@kernel.org>, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-Maybe it's much to ask, but I would really appreciate it if someone
-looked into intel-lpss supporting these devices.
-Been using a laptop without a functional touchpad over months now.
-If that helps, there is another thread here
-https://bugzilla.kernel.org/show_bug.cgi?id=3D218444 with perhaps more
-details on the problem.
-Battery and speaker are not a big deal, but the not working touchpad,
-which I believe should be handled by an intel-lpss driver, is kind of
-painful.
-If you need any help from my side, testing patches, don't hesitate to
-contact me.
+From: Arnd Bergmann <arnd@arndb.de>
 
-Regards,
-Mateusz
+on m68k builds, the mfc3 driver causes a warning about an empty if() block:
 
+drivers/parport/parport_mfc3.c: In function 'control_pc_to_mfc3':
+drivers/parport/parport_mfc3.c:106:37: warning: suggest braces around empty body in an 'if' statement [-Wempty-body]
 
-On Tue, Mar 26, 2024 at 3:41=E2=80=AFPM Andy Shevchenko
-<andriy.shevchenko@linux.intel.com> wrote:
->
-> On Tue, Mar 26, 2024 at 11:06:38AM +0100, Mateusz K wrote:
-> > I tried the patch that changes PCI_IRQ_LEGACY into PCI_IRQ_ALL_TYPES
-> > and it seems I get some other error now
-> >
-> > [    1.477341] intel-lpss 0000:00:15.0: enabling device (0004 -> 0006)
-> > [    1.477466] intel-lpss 0000:00:15.0: can't derive routing for PCI IN=
-T A
-> > [    1.477468] intel-lpss 0000:00:15.0: PCI INT A: not connected
-> > [    1.477488] intel-lpss 0000:00:15.0: probe with driver intel-lpss
-> > failed with error -2147483648
-> > [    1.489572] intel-lpss 0000:00:15.2: enabling device (0004 -> 0006)
-> > [    1.489688] intel-lpss 0000:00:15.2: can't derive routing for PCI IN=
-T C
-> > [    1.489689] intel-lpss 0000:00:15.2: PCI INT C: not connected
-> > [    1.489715] intel-lpss 0000:00:15.2: probe with driver intel-lpss
-> > failed with error -2147483648
-> > [    1.501886] intel-lpss 0000:00:19.0: enabling device (0004 -> 0006)
-> > [    1.502034] intel-lpss 0000:00:19.0: can't derive routing for PCI IN=
-T A
-> > [    1.502036] intel-lpss 0000:00:19.0: PCI INT A: not connected
-> > [    1.502067] intel-lpss 0000:00:19.0: probe with driver intel-lpss
-> > failed with error -2147483648
-> > [    1.514288] intel-lpss 0000:00:19.1: enabling device (0004 -> 0006)
-> > [    1.514535] intel-lpss 0000:00:19.1: can't derive routing for PCI IN=
-T B
-> > [    1.514538] intel-lpss 0000:00:19.1: PCI INT B: not connected
-> > [    1.514570] intel-lpss 0000:00:19.1: probe with driver intel-lpss
-> > failed with error -2147483648
-> > [    1.526291] intel-lpss 0000:00:1e.0: enabling device (0004 -> 0006)
-> > [    1.526555] intel-lpss 0000:00:1e.0: can't derive routing for PCI IN=
-T A
-> > [    1.526557] intel-lpss 0000:00:1e.0: PCI INT A: not connected
-> > [    1.526604] intel-lpss 0000:00:1e.0: probe with driver intel-lpss
-> > failed with error -2147483648
-> > [    1.538130] intel-lpss 0000:00:1e.3: enabling device (0004 -> 0006)
-> > [    1.538233] intel-lpss 0000:00:1e.3: can't derive routing for PCI IN=
-T D
-> > [    1.538235] intel-lpss 0000:00:1e.3: PCI INT D: not connected
-> > [    1.538253] intel-lpss 0000:00:1e.3: probe with driver intel-lpss
-> > failed with error -2147483648
->
-> Hmm... I have a unique board to test :-)
-> Let's revert it then.
->
-> Bjorn, in such case your tree should keep conversion one.
->
-> Lee, do you prefer a revert or can you simply drop this from the queue?
->
-> --
-> With Best Regards,
-> Andy Shevchenko
->
->
+Remove it in favor of a simpler comment.
+
+Acked-by: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+Link: https://lore.kernel.org/lkml/20230727122448.2479942-1-arnd@kernel.org/
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+v3: no changes, resending
+v2: fix typo
+---
+ drivers/parport/parport_mfc3.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+diff --git a/drivers/parport/parport_mfc3.c b/drivers/parport/parport_mfc3.c
+index f4d0da741e85..bb1817218d7b 100644
+--- a/drivers/parport/parport_mfc3.c
++++ b/drivers/parport/parport_mfc3.c
+@@ -102,8 +102,7 @@ static unsigned char control_pc_to_mfc3(unsigned char control)
+ 		ret |= 128;
+ 	if (control & PARPORT_CONTROL_AUTOFD) /* AUTOLF */
+ 		ret &= ~64;
+-	if (control & PARPORT_CONTROL_STROBE) /* Strobe */
+-		/* Handled directly by hardware */;
++	/* PARPORT_CONTROL_STROBE handled directly by hardware */
+ 	return ret;
+ }
+ 
+-- 
+2.39.2
+
 
