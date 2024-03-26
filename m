@@ -1,176 +1,167 @@
-Return-Path: <linux-kernel+bounces-119715-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-119714-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D056488CC57
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 19:49:50 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4F49E88CC56
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 19:49:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7CC24340909
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 18:49:49 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E3A651F379AF
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 18:49:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 744D512B169;
-	Tue, 26 Mar 2024 18:49:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 20F2113C3D8;
+	Tue, 26 Mar 2024 18:49:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="OD+txsyv"
-Received: from mail-lf1-f51.google.com (mail-lf1-f51.google.com [209.85.167.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="PBwJPZa5"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BFDEE13CA91
-	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 18:49:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5F6CB128839;
+	Tue, 26 Mar 2024 18:49:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711478979; cv=none; b=RNwHcPdnHyzo7CKuaxP6VYYL4LnWGaiAE0a8SMMtzXe6a5XQK5hd/o8pAH8zMUOmELcJh92qumhmlEOel63ZSNiLVP8OyU4g8Rcj9nflczknC9fSsPMZovRADLyOotV7UyE3tOejDRiwD3EbGaao1R03s2g2iJ1PAU7N8OWmDHU=
+	t=1711478970; cv=none; b=uR+oUOvHy6LgOsL/JlQVERzVpElSPfg1D9jqsVU4k69cgYO1WhWgYem/pHO0VbwopVa96/gRc6QbjcZKMdNED+eexmC94N+Hh5Z42fekXzYiPsdEi5xmVMSpuXSyfRxyNdAC1W6o5Jxi/t/gfStYZMs4tnH1uZafIWYFJLMIFZI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711478979; c=relaxed/simple;
-	bh=sz/KySFqkXJ/aVJ6XdfwyB3EarRQ8vsnsAWN1EYmjhw=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=V+KtQPzqyPKgXJZDrY1ODKb/umBWgrM66K0F+gnokMEZLDrER0IJqyEoO7PJZjISCAm1cFzijHr6bi9uIO5SpZCxmcQNeRKQX2ui1v0vGycWtwyPnYXnn19CcZG8iY9Ng7PY/1phJdev7F8ybMhMWMCkLhdFT669vLRLObmzrF8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=OD+txsyv; arc=none smtp.client-ip=209.85.167.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-lf1-f51.google.com with SMTP id 2adb3069b0e04-513e6777af4so10664986e87.2
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 11:49:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1711478976; x=1712083776; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=7mynrQyLYQKIvyzb5pPjoeLmjvmkiY75j1id5hI0x/A=;
-        b=OD+txsyvtkEf7CHmhu2Xheda4K0a/PAiBoFjEBhRtcQkEEQQyNAF4s7Z4DdEr0FzTI
-         m6Expxw4ZIHJQZp4EFrajhg133c5gABYjtY5DEYU2VDkvnnhRGYwlUwQ4dfJdJql2ogu
-         PaNjuVG9pjoAm5SRQeJHQpMqOLEdDFDE33j5sG6aIL0lIwdR7HcR65X8tLmYQhGi4ftY
-         kgg3oaC2DfFYTzMBRfa668KQ6FvtE9Na6oeavA5TNXlySa9KbdlYkCU/iR4Q3vrECCH6
-         x/fldArBmKSXIteZBgBgcKtQ2Py7HHi369Q9J70N7UVK1hofm3LisQrYIkA9rHSrGwLl
-         trZQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711478976; x=1712083776;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=7mynrQyLYQKIvyzb5pPjoeLmjvmkiY75j1id5hI0x/A=;
-        b=eWGFcjmnd4pFLYiSeR+fCih6mYmCcvc0YSmbY1KFWskY9Nvjxq0ChZwa0fZmd0doSV
-         4IVDUG9gLMDldqx1Ov25DS1QE1p/IUySDs4BH/9pRNffHiEmIvCWSX52dfKnNrHLaLko
-         SYcv8+h8mP6fqCut0a1+Ku/6rkHXMMY73csdS366Os8/4a0KNqBMZb9lVZkWnAtZt26t
-         7eG0bRfStpmpwTRMVxNHhDEnsXHFfe+wE7evuqorbmByqyBC3L29RIUuzT5x04/tsI4E
-         V4nQN26OUFA/wCXKgtmtE/9hBQMGA1EU2JrtUFoWo95ZWlo8cvXY+BsN8tDAPE8gyCkx
-         ziKg==
-X-Forwarded-Encrypted: i=1; AJvYcCWkeMAZKGSNNzutBni4v8hGVCnV4o0aYTQ/lS+O70kz3MyFPFUu0EcLe6mf/6lRsQoCfbsZGkruewcyYKxrCImUUqawnRFv12FTHUXJ
-X-Gm-Message-State: AOJu0Yyi4j6CLTPSw2Xh8Nh86jU4uAu9w7zv6iwXQ/iZYwk6QLizFMru
-	FbkdSvePvwcO6Jb7tzXSN/fhTwjGKxBzNwcUxNYTSXy11d93qsDLup1GOdXvPp8NrABzJH3m68y
-	FVm42kRteu7NiFAvVdhdjPRVyyQpl5ZhJYve29wougcJsr/Vtxw==
-X-Google-Smtp-Source: AGHT+IGadDByxC5Y8jsYw2G3ELZW4f5s1LwSvVhbepIXimyXtqmvP0RJWH5b0K5i33DD9xw9b2Q8/zpYp0ntt35t/Qg=
-X-Received: by 2002:a19:5e47:0:b0:513:c2e3:226e with SMTP id
- z7-20020a195e47000000b00513c2e3226emr341221lfi.8.1711478975472; Tue, 26 Mar
- 2024 11:49:35 -0700 (PDT)
+	s=arc-20240116; t=1711478970; c=relaxed/simple;
+	bh=UU2VDr3u/3TXCOqy+TTP1ocWAPAmrxpuuTkUu5erUDk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=TFqar4zSaqP+UX8NNHkUwxESs8Cbs9li+LySpNtmYTBwcXStYMZvFzbJLus4tGH6w7WsoT9zXxUVvPVUKUBBpKumLT8xCKhk0mXrT6oBekAmRH9OGunOI2oMoScsPeTwULRPVU+f2NAAhEK9DKFzNJemqFVeqjsqSNw9EDRqLqI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=PBwJPZa5; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EB2DBC433F1;
+	Tue, 26 Mar 2024 18:49:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1711478969;
+	bh=UU2VDr3u/3TXCOqy+TTP1ocWAPAmrxpuuTkUu5erUDk=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=PBwJPZa5DPG76Ku/rLXmTHS2TSZtuV1OhnF2IcXykh8DO9dhbAx6Rj+MiH36XNYm0
+	 z/CCvjUf/DfFy+oYzImWu29MntAO08O+h+gjiVqCXht566Q2IJeQc51ukzqV8Afn7W
+	 iSzzlxZqv0ul84yT6zg3aLv8A/EvTXVbuHUvqxDE8qSzLjDN8/eLrAr70f5rDCS77Z
+	 an332I9toO+IxNlKk9tevAEZKF40UGoJz4JAGRgr0r+tQjSYYFXk6+rxZliOdd28Jo
+	 79OqNa0pZC85cYV/WVkq8Mt/UkAYC9EXpv2WFwfgarN4bcizLd3LUZC951mYtBwhDv
+	 RMiijqOlPD0Zw==
+Date: Tue, 26 Mar 2024 18:49:25 +0000
+From: Conor Dooley <conor@kernel.org>
+To: Sami Tolvanen <samitolvanen@google.com>
+Cc: Paul Walmsley <paul.walmsley@sifive.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Albert Ou <aou@eecs.berkeley.edu>,
+	Kees Cook <keescook@chromium.org>, linux-riscv@lists.infradead.org,
+	llvm@lists.linux.dev, linux-kernel@vger.kernel.org,
+	Linux Kernel Functional Testing <lkft@linaro.org>
+Subject: Re: [PATCH] riscv: Mark __se_sys_* functions __used
+Message-ID: <20240326-proofing-projector-0b8eef253667@spud>
+References: <20240326153712.1839482-2-samitolvanen@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240326-zswap-xarray-v9-1-d2891a65dfc7@kernel.org> <CANeU7Q=8p4whMu+H9GXqQc4Ehjt0_kCtNdg34TiW4bWFw03dbw@mail.gmail.com>
-In-Reply-To: <CANeU7Q=8p4whMu+H9GXqQc4Ehjt0_kCtNdg34TiW4bWFw03dbw@mail.gmail.com>
-From: Yosry Ahmed <yosryahmed@google.com>
-Date: Tue, 26 Mar 2024 11:48:57 -0700
-Message-ID: <CAJD7tkajaRoZOmHV2HhkWk+j9rV6SBDMiZQYvAEw_Y-mH0CPtg@mail.gmail.com>
-Subject: Re: [PATCH v9] zswap: replace RB tree with xarray
-To: Chris Li <chrisl@kernel.org>
-Cc: Andrew Morton <akpm@linux-foundation.org>, linux-kernel@vger.kernel.org, 
-	linux-mm@kvack.org, Nhat Pham <nphamcs@gmail.com>, 
-	Johannes Weiner <hannes@cmpxchg.org>, "Matthew Wilcox (Oracle)" <willy@infradead.org>, 
-	Chengming Zhou <zhouchengming@bytedance.com>, Barry Song <v-songbaohua@oppo.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="UzV3RQm1Ipc55SDT"
+Content-Disposition: inline
+In-Reply-To: <20240326153712.1839482-2-samitolvanen@google.com>
+
+
+--UzV3RQm1Ipc55SDT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Mar 26, 2024 at 11:42=E2=80=AFAM Chris Li <chrisl@kernel.org> wrote=
-:
->
-> On Tue, Mar 26, 2024 at 11:35=E2=80=AFAM Chris Li <chrisl@kernel.org> wro=
-te:
-> >
-> > Very deep RB tree requires rebalance at times.  That contributes to the
-> > zswap fault latencies.  Xarray does not need to perform tree rebalance.
-> > Replacing RB tree to xarray can have some small performance gain.
-> >
-> > One small difference is that xarray insert might fail with ENOMEM, whil=
-e
-> > RB tree insert does not allocate additional memory.
-> >
-> > The zswap_entry size will reduce a bit due to removing the RB node, whi=
-ch
-> > has two pointers and a color field.  Xarray store the pointer in the
-> > xarray tree rather than the zswap_entry.  Every entry has one pointer f=
-rom
-> > the xarray tree.  Overall, switching to xarray should save some memory,=
- if
-> > the swap entries are densely packed.
-> >
-> > Notice the zswap_rb_search and zswap_rb_insert often followed by
-> > zswap_rb_erase.  Use xa_erase and xa_store directly.  That saves one tr=
-ee
-> > lookup as well.
-> >
-> > Remove zswap_invalidate_entry due to no need to call zswap_rb_erase any
-> > more.  Use zswap_free_entry instead.
-> >
-> > The "struct zswap_tree" has been replaced by "struct xarray".  The tree
-> > spin lock has transferred to the xarray lock.
-> >
-> > Run the kernel build testing 5 times for each version, averages:
-> > (memory.max=3D2GB, zswap shrinker and writeback enabled, one 50GB swapf=
-ile,
-> > 24 HT core, 32 jobs)
-> >
-> >            mm-unstable-4aaccadb5c04     xarray v9
-> > user       3548.902                     3534.375
-> > sys        522.232                      520.976
-> > real       202.796                      200.864
-> >
-> > Signed-off-by: Chris Li <chrisl@kernel.org>
->
-> I remove the previous review tags because I like to get some review of
-> the conflict resolution as well.
-[..]
-> > @@ -1624,20 +1562,14 @@ bool zswap_load(struct folio *folio)
-> >         pgoff_t offset =3D swp_offset(swp);
-> >         struct page *page =3D &folio->page;
-> >         bool swapcache =3D folio_test_swapcache(folio);
-> > -       struct zswap_tree *tree =3D swap_zswap_tree(swp);
-> > +       struct xarray *tree =3D swap_zswap_tree(swp);
-> >         struct zswap_entry *entry;
-> >         u8 *dst;
-> >
-> >         VM_WARN_ON_ONCE(!folio_test_locked(folio));
-> >
-> > -       spin_lock(&tree->lock);
-> > -       entry =3D zswap_rb_search(&tree->rbroot, offset);
-> > -       if (!entry) {
-> > -               spin_unlock(&tree->lock);
-> > -               return false;
-> > -       }
-> >         /*
-> > -        * When reading into the swapcache, invalidate our entry. The
-> > +        * When reading into the swapcache, erase our entry. The
-> >          * swapcache can be the authoritative owner of the page and
-> >          * its mappings, and the pressure that results from having two
-> >          * in-memory copies outweighs any benefits of caching the
-> > @@ -1649,8 +1581,12 @@ bool zswap_load(struct folio *folio)
-> >          * the fault fails. We remain the primary owner of the entry.)
-> >          */
-> >         if (swapcache)
-> > -               zswap_rb_erase(&tree->rbroot, entry);
-> > -       spin_unlock(&tree->lock);
-> > +               entry =3D xa_erase(tree, offset);
-> > +       else
-> > +               entry =3D xa_load(tree, offset);
->
-> This is the place I make the modification for the conflict resolution.
-> It depends on the swapcache to execute xa_erase() or xa_load().
-> Obviously, the xa_load() will not delete the entry from the tree.
+On Tue, Mar 26, 2024 at 03:37:13PM +0000, Sami Tolvanen wrote:
+> Clang doesn't think ___se_sys_* functions used even though they are
+> aliased to __se_sys_*, resulting in -Wunused-function warnings when
+> building rv32. For example:
+>=20
+>    mm/oom_kill.c:1195:1: warning: unused function '___se_sys_process_mrel=
+ease' [-Wunused-function]
+>     1195 | SYSCALL_DEFINE2(process_mrelease, int, pidfd, unsigned int, fl=
+ags)
+>          | ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~=
+~~~~
+>    include/linux/syscalls.h:221:36: note: expanded from macro 'SYSCALL_DE=
+FINE2'
+>      221 | #define SYSCALL_DEFINE2(name, ...) SYSCALL_DEFINEx(2, _##name,=
+ __VA_ARGS__)
+>          |                                    ^~~~~~~~~~~~~~~~~~~~~~~~~~~=
+~~~~~~~~~~~~~
+>    include/linux/syscalls.h:231:2: note: expanded from macro 'SYSCALL_DEF=
+INEx'
+>      231 |         __SYSCALL_DEFINEx(x, sname, __VA_ARGS__)
+>          |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>    arch/riscv/include/asm/syscall_wrapper.h:81:2: note: expanded from mac=
+ro '__SYSCALL_DEFINEx'
+>       81 |         __SYSCALL_SE_DEFINEx(x, sys, name, __VA_ARGS__)       =
+                  \
+>          |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>    arch/riscv/include/asm/syscall_wrapper.h:40:14: note: expanded from ma=
+cro '__SYSCALL_SE_DEFINEx'
+>       40 |         static long ___se_##prefix##name(__MAP(x,__SC_LONG,__V=
+A_ARGS__))
+>          |                     ^~~~~~~~~~~~~~~~~~~~
+>    <scratch space>:30:1: note: expanded from here
+>       30 | ___se_sys_process_mrelease
+>          | ^~~~~~~~~~~~~~~~~~~~~~~~~~
+>    1 warning generated.
+>=20
+> Mark the functions __used explicitly to fix the Clang warnings.
+>=20
+> Fixes: a9ad73295cc1 ("riscv: Fix syscall wrapper for >word-size arguments=
+")
+> Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
+> Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
+> Signed-off-by: Sami Tolvanen <samitolvanen@google.com>
 
-The conflict resolution LGTM. If this is the only change from v8 then:
+Oh neat, thanks. This was generating a shed load of noise in CI :)
+Tested-by: Conor Dooley <conor.dooley@microchip.com>
 
-Acked-by: Yosry Ahmed <yosryahmed@google.com>
+Thanks,
+Conor.
+
+> ---
+>  arch/riscv/include/asm/syscall_wrapper.h | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+>=20
+> diff --git a/arch/riscv/include/asm/syscall_wrapper.h b/arch/riscv/includ=
+e/asm/syscall_wrapper.h
+> index 980094c2e976..ac80216549ff 100644
+> --- a/arch/riscv/include/asm/syscall_wrapper.h
+> +++ b/arch/riscv/include/asm/syscall_wrapper.h
+> @@ -36,7 +36,8 @@ asmlinkage long __riscv_sys_ni_syscall(const struct pt_=
+regs *);
+>  					ulong)						\
+>  			__attribute__((alias(__stringify(___se_##prefix##name))));	\
+>  	__diag_pop();									\
+> -	static long noinline ___se_##prefix##name(__MAP(x,__SC_LONG,__VA_ARGS__=
+));	\
+> +	static long noinline ___se_##prefix##name(__MAP(x,__SC_LONG,__VA_ARGS__=
+))	\
+> +			__used;								\
+>  	static long ___se_##prefix##name(__MAP(x,__SC_LONG,__VA_ARGS__))
+> =20
+>  #define SC_RISCV_REGS_TO_ARGS(x, ...) \
+>=20
+> base-commit: 4cece764965020c22cff7665b18a012006359095
+> --=20
+> 2.44.0.396.g6e790dbe36-goog
+>=20
+>=20
+> _______________________________________________
+> linux-riscv mailing list
+> linux-riscv@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-riscv
+
+--UzV3RQm1Ipc55SDT
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZgMYtQAKCRB4tDGHoIJi
+0lpHAP9MHNkX3etDTKmHZ6qt1m7X45+uBOZZWopKhVa5d8UFvAD/YTeTIdZXASl8
+l+cYdYHZwoR710Xt9ZyEhVuNCGR0Igs=
+=jNoi
+-----END PGP SIGNATURE-----
+
+--UzV3RQm1Ipc55SDT--
 
