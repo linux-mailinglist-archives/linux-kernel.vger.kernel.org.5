@@ -1,156 +1,168 @@
-Return-Path: <linux-kernel+bounces-118436-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-118439-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9F11F88BAD6
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 07:58:46 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8BA4888BAE0
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 08:00:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 119E1B222DE
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 06:58:44 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EA5CF2C8082
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 07:00:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8CC94129E6A;
-	Tue, 26 Mar 2024 06:58:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AF18512C55D;
+	Tue, 26 Mar 2024 07:00:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fnZXP2hr"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="us3Qmdbn"
+Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.153.233])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D4140823BF
-	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 06:58:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CF10B1862F;
+	Tue, 26 Mar 2024 07:00:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=68.232.153.233
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711436316; cv=none; b=PrpJ+eYK7PqFI7+VPfUBQLLQrroOprDpW9OYrYyve694UHo77tGLvJ+7bBcXh9fz4GrTH1Hh166HHtQZOFJ9tOB0fVvKaijrZKkIx+FJGLolWnLHRIQ3dsS4MBin2aSB62CeZD+cl8OxKqany+t7scgyeqypMkBfvRkqE6Kqoss=
+	t=1711436444; cv=none; b=oBPMgCXwXD8/FS6+VM9Ssc1yM7h/2L79B64vLkOESOpKvqsSVvoo3vtN8UV1PNtzfBnMI9BHmI3Rlko/OhCNI/QMmtZYXD2AmMtaiYPhNxnZlQMeOzIubGzWFfPAqtRKn9KDls70BEgr0JoN6meCSr9BX/lWtPbbLXIjs8fw/Mw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711436316; c=relaxed/simple;
-	bh=2h+xwPao4UQjY5pzAeqIZuJmOnkTkwIZDSMWkOI2/m4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ULOn6hyfT2wT8i6tCcUyEgnJiiwxuslSLTxdNAeTnjpGMmm5ghG00K5SxxdhvjDukLy7rjaj8pADYieJPeAT3jcnLPX+TPNnvDqEXvaGAUBa/90DN5qSi/VRlpAoQo59Wlyw5nxX7oIjw0h5TzCWuiGVSamuWFaTdeZen7uy/BQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fnZXP2hr; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0D9A1C433C7;
-	Tue, 26 Mar 2024 06:58:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711436316;
-	bh=2h+xwPao4UQjY5pzAeqIZuJmOnkTkwIZDSMWkOI2/m4=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=fnZXP2hrOZj2Z8QDTITPOCDYzWo/RpPKcF0v6NAm2SpxZh0PsXWZuJwc3oEBhKUWv
-	 Mi68YOrSG5ih18gIT2PvjY4DobC3VNnhLdVZ4TKV5pulyRNF+tgTqiupcSx4gKxdDF
-	 jeh31wT4loBcfFORRnpiYexhmfYOeJ0YRYAbUKlUvrW4KnatdYDaSPrIx66kjajELw
-	 ZmEbAEgh75QcmMm4slvb4gY5lIJxBCtvKm1zkNq5n1lycKvAdGz+YzlUO+7hqlJNOw
-	 OOI24Tspe9k4/8k5zOe4Nf3ymGckG543nJ0Hn4azqvR6YbgKjAskBkT5tdXk4ZBfMA
-	 uifqEFW4HXdvQ==
-Date: Tue, 26 Mar 2024 08:57:55 +0200
-From: Mike Rapoport <rppt@kernel.org>
-To: Baoquan He <bhe@redhat.com>
-Cc: linux-mm@kvack.org, linux-kernel@vger.kernel.org, x86@kernel.org,
-	linuxppc-dev@lists.ozlabs.org, akpm@linux-foundation.org
-Subject: Re: [PATCH v2 6/6] mm/mm_init.c: remove arch_reserved_kernel_pages()
-Message-ID: <ZgJx8wXHkbY4FsuT@kernel.org>
-References: <20240325145646.1044760-1-bhe@redhat.com>
- <20240325145646.1044760-7-bhe@redhat.com>
+	s=arc-20240116; t=1711436444; c=relaxed/simple;
+	bh=9Z4N99ZACNP0VneOPln0Blk/fuX6LJzc+t1dRv0VSHs=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=llxT5yCSGatutBze0OGC4owqvettyMIr/MfskG5z9ilTSjrPYLO1ZV10zHOTEEb66zwIn4YxZVNKEy5yA5n4cICkpKQ4TOBjrA8ZRFdTDZ7cfSk6yQU3QiHXG7yIV5YVSVvb3k3XOp6tqWBxpAKNuD2ahx1HlSkWCPizK5fysZI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microchip.com; spf=pass smtp.mailfrom=microchip.com; dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b=us3Qmdbn; arc=none smtp.client-ip=68.232.153.233
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microchip.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=microchip.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1711436442; x=1742972442;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=9Z4N99ZACNP0VneOPln0Blk/fuX6LJzc+t1dRv0VSHs=;
+  b=us3QmdbnPcEWVwNML0og+/yU59G0couwQEvbJYpxTelulSIVFT5utWhN
+   GXSMlkbRKY5pF8Jfdvq/WJbbGg3Y6MRMHO5D7/1BojaZaDK4GMrlrAHWV
+   XMuDzeQsZm8TsmVHJjEDYbtOhTo+8mN6HlBWtdmYljPjxk5PCK5iK1HNY
+   Xr3TeZfqcNTxVxuc4tGni8WEnLvOf7rJpd0KJIt5y1r5MipfiqAoFyvaB
+   z6n9xvsOwFdOUQwzSF2oyD0iROZT99Xw9g0oB+X51tMzkjFDTTpSPC5hf
+   IOlmTNTTH8liQJriYsWEKjUvR4V4wd7DzkohUpDMk7UcVUKeV8qyxBRFF
+   Q==;
+X-CSE-ConnectionGUID: X34EXM5eSSuWFNtqmsXBGA==
+X-CSE-MsgGUID: cgo15euqQ4GOrX0oPzrK3g==
+X-IronPort-AV: E=Sophos;i="6.07,155,1708412400"; 
+   d="scan'208";a="248996839"
+X-Amp-Result: SKIPPED(no attachment in message)
+Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
+  by esa5.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 26 Mar 2024 00:00:41 -0700
+Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
+ chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Tue, 26 Mar 2024 00:00:19 -0700
+Received: from HYD-DK-UNGSW21.microchip.com (10.10.85.11) by
+ chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server id
+ 15.1.2507.35 via Frontend Transport; Tue, 26 Mar 2024 00:00:16 -0700
+From: Raju Lakkaraju <Raju.Lakkaraju@microchip.com>
+To: <netdev@vger.kernel.org>
+CC: <davem@davemloft.net>, <kuba@kernel.org>, <pabeni@redhat.com>,
+	<edumazet@google.com>, <linux-kernel@vger.kernel.org>,
+	<bryan.whitehead@microchip.com>, <horms@kernel.org>,
+	<UNGLinuxDriver@microchip.com>
+Subject: [PATCH net V2] net: lan743x: Add set RFE read fifo threshold for PCI1x1x chips
+Date: Tue, 26 Mar 2024 12:28:05 +0530
+Message-ID: <20240326065805.686128-1-Raju.Lakkaraju@microchip.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240325145646.1044760-7-bhe@redhat.com>
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 
-On Mon, Mar 25, 2024 at 10:56:46PM +0800, Baoquan He wrote:
-> Since the current calculation of calc_nr_kernel_pages() has taken into
-> consideration of kernel reserved memory, no need to have
-> arch_reserved_kernel_pages() any more.
-> 
-> Signed-off-by: Baoquan He <bhe@redhat.com>
+PCI11x1x Rev B0 devices might drop packets when receiving back to back frames
+at 2.5G link speed. Change the B0 Rev device's Receive filtering Engine FIFO
+threshold parameter from its hardware default of 4 to 3 dwords to prevent the
+problem. Rev C0 and later hardware already defaults to 3 dwords.
 
-Reviewed-by: Mike Rapoport (IBM) <rppt@kernel.org>
+Fixes: bb4f6bffe33c ("net: lan743x: Add PCI11010 / PCI11414 device IDs")
+Signed-off-by: Raju Lakkaraju <Raju.Lakkaraju@microchip.com>
+---
+Change List:
+------------
+V1 -> V2:
+  - change the function return type from int to void
 
-> ---
->  arch/powerpc/include/asm/mmu.h |  4 ----
->  arch/powerpc/kernel/fadump.c   |  5 -----
->  include/linux/mm.h             |  3 ---
->  mm/mm_init.c                   | 12 ------------
->  4 files changed, 24 deletions(-)
-> 
-> diff --git a/arch/powerpc/include/asm/mmu.h b/arch/powerpc/include/asm/mmu.h
-> index 3b72c7ed24cf..aa5c0fd5edb1 100644
-> --- a/arch/powerpc/include/asm/mmu.h
-> +++ b/arch/powerpc/include/asm/mmu.h
-> @@ -406,9 +406,5 @@ extern void *abatron_pteptrs[2];
->  #include <asm/nohash/mmu.h>
->  #endif
->  
-> -#if defined(CONFIG_FA_DUMP) || defined(CONFIG_PRESERVE_FA_DUMP)
-> -#define __HAVE_ARCH_RESERVED_KERNEL_PAGES
-> -#endif
-> -
->  #endif /* __KERNEL__ */
->  #endif /* _ASM_POWERPC_MMU_H_ */
-> diff --git a/arch/powerpc/kernel/fadump.c b/arch/powerpc/kernel/fadump.c
-> index d14eda1e8589..ae8c7619e597 100644
-> --- a/arch/powerpc/kernel/fadump.c
-> +++ b/arch/powerpc/kernel/fadump.c
-> @@ -1735,8 +1735,3 @@ static void __init fadump_reserve_crash_area(u64 base)
->  		memblock_reserve(mstart, msize);
->  	}
->  }
-> -
-> -unsigned long __init arch_reserved_kernel_pages(void)
-> -{
-> -	return memblock_reserved_size() / PAGE_SIZE;
-> -}
-> diff --git a/include/linux/mm.h b/include/linux/mm.h
-> index ad19350e1538..ab1ba0a31429 100644
-> --- a/include/linux/mm.h
-> +++ b/include/linux/mm.h
-> @@ -3221,9 +3221,6 @@ static inline void show_mem(void)
->  extern long si_mem_available(void);
->  extern void si_meminfo(struct sysinfo * val);
->  extern void si_meminfo_node(struct sysinfo *val, int nid);
-> -#ifdef __HAVE_ARCH_RESERVED_KERNEL_PAGES
-> -extern unsigned long arch_reserved_kernel_pages(void);
-> -#endif
->  
->  extern __printf(3, 4)
->  void warn_alloc(gfp_t gfp_mask, nodemask_t *nodemask, const char *fmt, ...);
-> diff --git a/mm/mm_init.c b/mm/mm_init.c
-> index e269a724f70e..089dc60159e9 100644
-> --- a/mm/mm_init.c
-> +++ b/mm/mm_init.c
-> @@ -2373,17 +2373,6 @@ void __init page_alloc_init_late(void)
->  	page_alloc_sysctl_init();
->  }
->  
-> -#ifndef __HAVE_ARCH_RESERVED_KERNEL_PAGES
-> -/*
-> - * Returns the number of pages that arch has reserved but
-> - * is not known to alloc_large_system_hash().
-> - */
-> -static unsigned long __init arch_reserved_kernel_pages(void)
-> -{
-> -	return 0;
-> -}
-> -#endif
-> -
->  /*
->   * Adaptive scale is meant to reduce sizes of hash tables on large memory
->   * machines. As memory size is increased the scale is also increased but at
-> @@ -2426,7 +2415,6 @@ void *__init alloc_large_system_hash(const char *tablename,
->  	if (!numentries) {
->  		/* round applicable memory size up to nearest megabyte */
->  		numentries = nr_kernel_pages;
-> -		numentries -= arch_reserved_kernel_pages();
->  
->  		/* It isn't necessary when PAGE_SIZE >= 1MB */
->  		if (PAGE_SIZE < SZ_1M)
-> -- 
-> 2.41.0
-> 
+V0 -> V1:
+  - misc_ctl change from int to unsigned int
+  - Use FIELD_PREP macro instead of logical shift operator
+  - Change 0x3 to macro RFE_RD_FIFO_TH_3_DWORDS
 
+ drivers/net/ethernet/microchip/lan743x_main.c | 20 +++++++++++++++++++
+ drivers/net/ethernet/microchip/lan743x_main.h |  4 ++++
+ 2 files changed, 22 insertions(+)
+
+diff --git a/drivers/net/ethernet/microchip/lan743x_main.c b/drivers/net/ethernet/microchip/lan743x_main.c
+index bd8aa83b47e5..75a988c0bd79 100644
+--- a/drivers/net/ethernet/microchip/lan743x_main.c
++++ b/drivers/net/ethernet/microchip/lan743x_main.c
+@@ -25,6 +25,8 @@
+ #define PCS_POWER_STATE_DOWN	0x6
+ #define PCS_POWER_STATE_UP	0x4
+ 
++#define RFE_RD_FIFO_TH_3_DWORDS	0x3
++
+ static void pci11x1x_strap_get_status(struct lan743x_adapter *adapter)
+ {
+ 	u32 chip_rev;
+@@ -3272,6 +3274,21 @@ static void lan743x_full_cleanup(struct lan743x_adapter *adapter)
+ 	lan743x_pci_cleanup(adapter);
+ }
+ 
++static void pci11x1x_set_rfe_rd_fifo_threshold(struct lan743x_adapter *adapter)
++{
++	u16 rev = adapter->csr.id_rev & ID_REV_CHIP_REV_MASK_;
++
++	if (rev == ID_REV_CHIP_REV_PCI11X1X_B0_) {
++		u32 misc_ctl;
++
++		misc_ctl = lan743x_csr_read(adapter, MISC_CTL_0);
++		misc_ctl &= ~MISC_CTL_0_RFE_READ_FIFO_MASK_;
++		misc_ctl |= FIELD_PREP(MISC_CTL_0_RFE_READ_FIFO_MASK_,
++				       RFE_RD_FIFO_TH_3_DWORDS);
++		lan743x_csr_write(adapter, MISC_CTL_0, misc_ctl);
++	}
++}
++
+ static int lan743x_hardware_init(struct lan743x_adapter *adapter,
+ 				 struct pci_dev *pdev)
+ {
+@@ -3287,6 +3304,7 @@ static int lan743x_hardware_init(struct lan743x_adapter *adapter,
+ 		pci11x1x_strap_get_status(adapter);
+ 		spin_lock_init(&adapter->eth_syslock_spinlock);
+ 		mutex_init(&adapter->sgmii_rw_lock);
++		pci11x1x_set_rfe_rd_fifo_threshold(adapter);
+ 	} else {
+ 		adapter->max_tx_channels = LAN743X_MAX_TX_CHANNELS;
+ 		adapter->used_tx_channels = LAN743X_USED_TX_CHANNELS;
+diff --git a/drivers/net/ethernet/microchip/lan743x_main.h b/drivers/net/ethernet/microchip/lan743x_main.h
+index be79cb0ae5af..645bc048e52e 100644
+--- a/drivers/net/ethernet/microchip/lan743x_main.h
++++ b/drivers/net/ethernet/microchip/lan743x_main.h
+@@ -26,6 +26,7 @@
+ #define ID_REV_CHIP_REV_MASK_		(0x0000FFFF)
+ #define ID_REV_CHIP_REV_A0_		(0x00000000)
+ #define ID_REV_CHIP_REV_B0_		(0x00000010)
++#define ID_REV_CHIP_REV_PCI11X1X_B0_	(0x000000B0)
+ 
+ #define FPGA_REV			(0x04)
+ #define FPGA_REV_GET_MINOR_(fpga_rev)	(((fpga_rev) >> 8) & 0x000000FF)
+@@ -311,6 +312,9 @@
+ #define SGMII_CTL_LINK_STATUS_SOURCE_	BIT(8)
+ #define SGMII_CTL_SGMII_POWER_DN_	BIT(1)
+ 
++#define MISC_CTL_0			(0x920)
++#define MISC_CTL_0_RFE_READ_FIFO_MASK_	GENMASK(6, 4)
++
+ /* Vendor Specific SGMII MMD details */
+ #define SR_VSMMD_PCS_ID1		0x0004
+ #define SR_VSMMD_PCS_ID2		0x0005
 -- 
-Sincerely yours,
-Mike.
+2.34.1
+
 
