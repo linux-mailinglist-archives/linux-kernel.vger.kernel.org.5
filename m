@@ -1,105 +1,105 @@
-Return-Path: <linux-kernel+bounces-119171-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-119172-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A45C388C513
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 15:26:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id A91C388C516
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 15:27:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 25B1DB223BA
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 14:26:32 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0F1E6B21DE5
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 14:27:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B099A12DDAC;
-	Tue, 26 Mar 2024 14:26:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4224F12DD90;
+	Tue, 26 Mar 2024 14:27:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel.com header.i=@intel.com header.b="B/wzM7M9"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.11])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qS4zhIih"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1DF4D12D765;
-	Tue, 26 Mar 2024 14:26:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7964F20DF7;
+	Tue, 26 Mar 2024 14:27:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711463172; cv=none; b=J5GxT9RElCkGZgt7Au7mZBiKT+d+mzph5AlmutcbU2kGYp8hDN2nD0Y2T35oZiMXxXmF3jwmuKVqy664knSXCbMFuLwkA5sW0taFePDeHb5d3RAoddOUsV7vl/mI4RkIPJJE+4RMQ2HZhukibbFe+DWVk7Q9US/X/AAeMiIkr9o=
+	t=1711463226; cv=none; b=RPjMtCw6ea0xHgxYYqiZld7GB3i3nQPHrlq/t9QRAUPLh68UEq7NNvDS8lJ5dqo0eMUs+yem54ISk/tpwZxsQ1eHuJo46GpKH7Ah2Z8XW+BA/pTorV142/UrHF2PzloPhToUc+hVR4lLm8+qayGeBhGkEjIfXmFydTnNZA6ZhlU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711463172; c=relaxed/simple;
-	bh=DNYEsZRuoGx/2qbDmyHpkyB5ZHI17xCru1qD3J5O4jg=;
+	s=arc-20240116; t=1711463226; c=relaxed/simple;
+	bh=qoEJASPCUxmcyaJydCy2VV6pZZWWMfCad+tM+6zcuU8=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Q3HvEvbLS3TdapyLGTCV2ktcbqVgkIejnbE7FLoagsDYAZD9prIlkCFppOV2+o63N17GNd7nfFF1Bti2JZ/q1BzhWLgK1OA7+PyU7IlyQEzgbliaPlr7znn4oav6auVFS4OfXhihGmn9MeoMrQd9L3kCewN4OUL6MnewuowZL3I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=B/wzM7M9; arc=none smtp.client-ip=198.175.65.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1711463170; x=1742999170;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:content-transfer-encoding:in-reply-to;
-  bh=DNYEsZRuoGx/2qbDmyHpkyB5ZHI17xCru1qD3J5O4jg=;
-  b=B/wzM7M9x0f86zrrPd+RsJXL9Vw8BJWFT13P5SKQR2cpre4dct47cWyS
-   W43LiR2ZMJ7aFbTnP14pKe4COeXkg337gZLaXRlB5dcU8ybcOsgq8bhD+
-   zyQ9k7B/oiGvd+Gri/26eNhFPjTNFpULTv4gKr7WZayYGtAR7vBiWsCxp
-   HSnigYjNJNGdNOOXYnFX7Jq3ktw4fBjxELYWRoDNvjbrkM0nPxWI0zlXe
-   NDUWPllWd7t4Ad7jQdAG3CVW10KA3l8RzRMS9nlN3l41B4z4i+s8c337w
-   tzF9MPf62Dkw4EQ0TbE+95+uuUToFOtTC4W+L7o3Sh7jfhmwcU82SxiXY
-   w==;
-X-CSE-ConnectionGUID: QkSKV1J5RVGv0fUnQ2DdTg==
-X-CSE-MsgGUID: p/WmUXErSZ6efOWE8+waag==
-X-IronPort-AV: E=McAfee;i="6600,9927,11025"; a="17059745"
-X-IronPort-AV: E=Sophos;i="6.07,156,1708416000"; 
-   d="scan'208";a="17059745"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orvoesa103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Mar 2024 07:26:09 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,11025"; a="914881913"
-X-IronPort-AV: E=Sophos;i="6.07,156,1708416000"; 
-   d="scan'208";a="914881913"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Mar 2024 07:26:07 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.97)
-	(envelope-from <andriy.shevchenko@linux.intel.com>)
-	id 1rp7kb-0000000GKBr-03Jo;
-	Tue, 26 Mar 2024 16:26:05 +0200
-Date: Tue, 26 Mar 2024 16:26:04 +0200
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: Bartosz Golaszewski <brgl@bgdev.pl>
-Cc: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
-	linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Linus Walleij <linus.walleij@linaro.org>,
-	Ferry Toth <ftoth@exalondelft.nl>,
-	Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Subject: Re: [PATCH v4 1/2] gpiolib: Fix debug messaging in
- gpiod_find_and_request()
-Message-ID: <ZgLa_ElceniDrlCW@smile.fi.intel.com>
-References: <20240325171804.3375280-1-andriy.shevchenko@linux.intel.com>
- <20240325171804.3375280-2-andriy.shevchenko@linux.intel.com>
- <CAMRc=Mcf0b0HwAcT=ZQ31rdsuWSDJkg=r9Z6Ni1Tcrg-KCsXsQ@mail.gmail.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=qGLavpmWKlFCUMIx3VuZNXmceC81faEZdUPcnaLrhm2eLVmYAMjs/TwKprLMZhAelc0jByAqb7RFVqiCCCD45J3d8dw7S8uo/nYjbCRHDf7x3MubqGR9wdPtzzPzucHQd/HAyR/rumhrUGveYvm61kmwf8c6ubJPpA7qf71sgps=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qS4zhIih; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A0A48C433C7;
+	Tue, 26 Mar 2024 14:27:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1711463226;
+	bh=qoEJASPCUxmcyaJydCy2VV6pZZWWMfCad+tM+6zcuU8=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=qS4zhIih2hC+so417yzJNvaab4L7Oie30dt1x5IbaGQQ5ivzJIMiragYqFDaziYdl
+	 V1SXGkh0w0txXIID6rDnT+oHviOLxvy2ES03x3Re1TldyhA2AUZl4DY1p11OiO+BvB
+	 3H9UHTAvd4AB2y3gwJwUCIThH2dDUGxyY4VbzCCv9zYw1fsHxcOSawEhKzQccsTFae
+	 P3CmJ4NfnmaNNexMwOrcJapL9yoTi/KTS+c9d7Jb/wfdgln34YADG86H+eV2Xk7KPV
+	 TPPczJfDQ39U0SvXP+0o9wLjnGE42PTK1qxA3d26lcrhjCWfzFnhyRdEmUavG3+dE+
+	 99qucStc/c9zg==
+Date: Tue, 26 Mar 2024 14:27:00 +0000
+From: Simon Horman <horms@kernel.org>
+To: Su Hui <suhui@nfschina.com>
+Cc: sgoutham@marvell.com, gakula@marvell.com, sbhatta@marvell.com,
+	hkelam@marvell.com, davem@davemloft.net, edumazet@google.com,
+	kuba@kernel.org, pabeni@redhat.com, nathan@kernel.org,
+	ndesaulniers@google.com, morbo@google.com, justinstitt@google.com,
+	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+	llvm@lists.linux.dev, kernel-janitors@vger.kernel.org,
+	Dan Carpenter <dan.carpenter@linaro.org>
+Subject: Re: [PATCH net v2 2/2] octeontx2-pf: remove unused variables req_hdr
+ and rsp_hdr
+Message-ID: <20240326142700.GX403975@kernel.org>
+References: <20240326061233.4133148-1-suhui@nfschina.com>
+ <20240326061233.4133148-2-suhui@nfschina.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAMRc=Mcf0b0HwAcT=ZQ31rdsuWSDJkg=r9Z6Ni1Tcrg-KCsXsQ@mail.gmail.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <20240326061233.4133148-2-suhui@nfschina.com>
 
-On Tue, Mar 26, 2024 at 12:58:40PM +0100, Bartosz Golaszewski wrote:
-> On Mon, Mar 25, 2024 at 6:18 PM Andy Shevchenko
-> <andriy.shevchenko@linux.intel.com> wrote:
++ Dan Carpenter
+
+On Tue, Mar 26, 2024 at 02:12:36PM +0800, Su Hui wrote:
+> Clang static checker(scan-buid):
+> drivers/net/ethernet/marvell/octeontx2/nic/otx2_pf.c:503:2: warning:
+> Value stored to 'rsp_hdr' is never read [deadcode.DeadStores]
+> 
+> Remove these unused variables to save some space.
+> 
+> Signed-off-by: Su Hui <suhui@nfschina.com>
+
+Hi Su Hui,
+
+as pointed out by Dan in his review of v1 of this patch, it is not a fix.
+This means that it should be targeted at the net-next rather than the net
+branch. As the granularity of patch handling on netdev is generally at the
+patchset level I believe that this means that you need to separately,
+in different email threads, repost:
+
+1. Patch 1/2 of this series, targeted at net
+
+   [PATCH net v3] octeontx2-pf: check negative error code in otx2_open()
+
+2. Patch 2/2 of this series, targeted at net-next
+
+   [PATCH net-next v3] octeontx2-pf: remove unused variables req_hdr
+
+Also, please be sure to wait 24 hours since the posting of this patch-set
+before reposting.
+
+Some more information can be found here:
+https://docs.kernel.org/process/maintainer-netdev.html
 
 ..
 
-> I queued this one for fixes. I will take patch 2/2 through the
-> for-next tree as it's not really a fix.
-
-But you asked me to sent them both at once... Whatever, thank you!
-
 -- 
-With Best Regards,
-Andy Shevchenko
-
-
+pw-bot: changes-requested
 
