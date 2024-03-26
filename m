@@ -1,162 +1,126 @@
-Return-Path: <linux-kernel+bounces-119848-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-119849-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8C01F88CDA7
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 20:57:36 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CB14888CDAC
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 20:58:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 46F46322D11
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 19:57:35 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 08A941C3C0E3
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 19:58:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5877E13D2A6;
-	Tue, 26 Mar 2024 19:57:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CFB1913D287;
+	Tue, 26 Mar 2024 19:58:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=manjaro.org header.i=@manjaro.org header.b="aJw4UsDY"
-Received: from mail.manjaro.org (mail.manjaro.org [116.203.91.91])
-	(using TLSv1.2 with cipher DHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="CwYvkPx/"
+Received: from out-185.mta1.migadu.com (out-185.mta1.migadu.com [95.215.58.185])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 777D113D26E;
-	Tue, 26 Mar 2024 19:57:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=116.203.91.91
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8CDBF13D279
+	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 19:58:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.185
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711483041; cv=none; b=gowFFxEdGxduIPQU/rLS/rgYzdQQIy01Dg2MBUBQ168asF+igcq6TLfOgFBIMUb5t9XfwwFFxKgO+I0mrw7GjeHICslHtTcY7fufRdC/fDTHoalwQ5XvsYa6jnZfBnwFC2iv++TKy/037+Ucz5cpo3/VPn6u2Fbx3RGFVqmWIrg=
+	t=1711483122; cv=none; b=G5NUPUZ9/NFilbZSJhcF5uKV6HzFl9ep6oZLkEFj5HeXawMk/0287jPkogN/NmJv5kDGZyWTtOMBG9Hdlo9gLLDsnq75JPrgb+zbaV8ssm8dPUx37FF4S+X/alrvjIqS+y41Q0Sba8zW9YB3reRWQJGnjSnKriK/y8XK3TXy5ug=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711483041; c=relaxed/simple;
-	bh=QGwS65KJjo0Qod2Xdlr+Q8+UcRquRTar4gyjPDRrK3A=;
-	h=MIME-Version:Date:From:To:Cc:Subject:In-Reply-To:References:
-	 Message-ID:Content-Type; b=ZOJUEn6M+8uE1d9u68IK+7dwSgc7Xd5uUch8gZYOhFwTHoqUpedmiQpFNhFES/bzKmSdZVAhfo89i76ar95NaIaYEdvzcnOkCiQqSWL3MTRocfUVPsycYu44YnpJhtiWktIHhL7sG5A+GgfVweJcqI9RdgkMAHv1zglrYs7u2g8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=manjaro.org; spf=pass smtp.mailfrom=manjaro.org; dkim=pass (2048-bit key) header.d=manjaro.org header.i=@manjaro.org header.b=aJw4UsDY; arc=none smtp.client-ip=116.203.91.91
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=manjaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=manjaro.org
+	s=arc-20240116; t=1711483122; c=relaxed/simple;
+	bh=4bbx/0DROSkMt/Yb7A3sC9L2/Uu13cLTx4FbFsJkgEE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=t/PsrBf0IYLJpthEQWsHgU8EZYBhMR39pNnlRqms+3Tw36UqAuiSymmOx1UAcbA+BEBJSoLQMOn5l7m/aZCm77SDBOjxNHF0X7v3dRe+hjVW3lm/Pl10tvCpvbENW0XvhVFsHYkMkxnwr8+KmMJJd1O+QTmZDXYE4vP2Dm8fwY4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=CwYvkPx/; arc=none smtp.client-ip=95.215.58.185
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Date: Tue, 26 Mar 2024 15:58:33 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1711483117;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=PZYB/y6k8bcQC7rHm6ARDNEfjZZ2NSOcHr4vMV4p3tE=;
+	b=CwYvkPx/oTDcqRTbPkwL79nQUG3HmjA4D3ZFwejiNPyG7ADnojOjqlx5iJL/IHDphjceqZ
+	jIGF+NU6WBHyrecbgGmC4b5Ebgto7nSVP8zvIx95g8VcDAIoL+oXNoTr/CVghUzSf9fde6
+	HvD0RRdiPwhFaUckUvTQj/XE7xBmJ1E=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Kent Overstreet <kent.overstreet@linux.dev>
+To: zhuxiaohui <zhuxiaohui400@gmail.com>
+Cc: bfoster@redhat.com, linux-bcachefs@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, zhuxiaohui <zhuxiaohui.400@bytedance.com>
+Subject: Re: [PATCH] bcachefs: add REQ_SYNC and REQ_IDLE in write dio
+Message-ID: <wor6mzq6nxhochp2bi42ece3hh6pywnt5lz2jacto4ns6lysj7@bc6crgl44rdu>
+References: <20240326120345.68786-1-zhuxiaohui.400@bytedance.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=manjaro.org; s=2021;
-	t=1711483036;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Xdxbt16Q0f6CqU6yeOFhWB+1nByjcjx4pNUNCjrto2I=;
-	b=aJw4UsDYDzSEQygSUSOl+p5ZjX2WL0g3w7qrdlsdnjGGmLl5td1BeQILUAgqHoT4SYOHnb
-	P2qKgWLD/ZtCAEgsyRlh/3fUxi9Wv3fBXOcQgUvWNXEv8RdFE0rbGOL2iOZmjl2DVqFvye
-	+IyvoDdB3JzxESeirCP6yFu4jiikr8olKy/z5v9T/hrlspxzVw6Gofk2f6+I5f121xHbhd
-	+AWmf2XQN3CCjYY977zAKlgdLVOi6r8t21XG3DUC9erQKwFEMiBBWj4zOdix3ubI4tsK0I
-	O4cpwLlYjbX0Bel7vir7n9dvBM23ZqmDlX5wItxFhMk6Bd9BIlyRclyffVklSA==
-Date: Tue, 26 Mar 2024 20:57:16 +0100
-From: Dragan Simic <dsimic@manjaro.org>
-To: Sebastian Reichel <sebastian.reichel@collabora.com>
-Cc: linux-rockchip@lists.infradead.org, heiko@sntech.de,
- linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
- robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
- boris.brezillon@collabora.com, linux-kernel@vger.kernel.org,
- kernel@collabora.com
-Subject: Re: [PATCH] arm64: dts: rockchip: quartzpro64: Enable the GPU
-In-Reply-To: <jbyqey5y5ngr7mkrrmdxrwyw5ogd7rq56af6mrmhsckboanvyp@tcaav2tridos>
-References: <0f3759ee390f245dac447bbee038445ddfecbec0.1711383286.git.dsimic@manjaro.org>
- <jbyqey5y5ngr7mkrrmdxrwyw5ogd7rq56af6mrmhsckboanvyp@tcaav2tridos>
-Message-ID: <78f5ee0cc543aa4406c15fcafa50f2e8@manjaro.org>
-X-Sender: dsimic@manjaro.org
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Authentication-Results: ORIGINATING;
-	auth=pass smtp.auth=dsimic@manjaro.org smtp.mailfrom=dsimic@manjaro.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240326120345.68786-1-zhuxiaohui.400@bytedance.com>
+X-Migadu-Flow: FLOW_OUT
 
-Hello Sebastian,
-
-On 2024-03-26 20:54, Sebastian Reichel wrote:
-> On Mon, Mar 25, 2024 at 05:19:04PM +0100, Dragan Simic wrote:
->> Following the approach used to enable the Mali GPU on the rk3588-evb1, 
->> [1]
->> do the same for the Pine64 QuartzPro64, which uses nearly identical 
->> hardware
->> design as the RK3588 EVB1.
->> 
->> The slight disadvantage is that the regulator coupling logic requires 
->> the
->> regulators to be always on, which is also noted in the comments.  This 
->> is
->> obviously something to be improved at some point in the future, but 
->> should
->> be fine for now, especially because the QuartzPro64 isn't a 
->> battery-powered
->> board, so low power consumption isn't paramount.
->> 
->> [1] 
->> https://lore.kernel.org/linux-rockchip/20240325153850.189128-5-sebastian.reichel@collabora.com/
->> 
->> Signed-off-by: Dragan Simic <dsimic@manjaro.org>
->> ---
+On Tue, Mar 26, 2024 at 08:03:45PM +0800, zhuxiaohui wrote:
+> when writing file with direct_IO on bcachefs, then performance is
+> much lower than other fs due to write back throttle in block layer:
 > 
-> FWIW
+>         wbt_wait+1
+>         __rq_qos_throttle+32
+>         blk_mq_submit_bio+394
+>         submit_bio_noacct_nocheck+649
+>         bch2_submit_wbio_replicas+538
+>         __bch2_write+2539
+>         bch2_direct_write+1663
+>         bch2_write_iter+318
+>         aio_write+355
+>         io_submit_one+1224
+>         __x64_sys_io_submit+169
+>         do_syscall_64+134
+>         entry_SYSCALL_64_after_hwframe+110
 > 
-> Reviewed-by: Sebastian Reichel <sebastian.reichel@collabora.com>
-
-Great, thanks for your review!
-
->>  .../arm64/boot/dts/rockchip/rk3588-quartzpro64.dts | 14 
->> ++++++++++++++
->>  1 file changed, 14 insertions(+)
->> 
->> diff --git a/arch/arm64/boot/dts/rockchip/rk3588-quartzpro64.dts 
->> b/arch/arm64/boot/dts/rockchip/rk3588-quartzpro64.dts
->> index 67414d72e2b6..68d432c61ea5 100644
->> --- a/arch/arm64/boot/dts/rockchip/rk3588-quartzpro64.dts
->> +++ b/arch/arm64/boot/dts/rockchip/rk3588-quartzpro64.dts
->> @@ -285,6 +285,12 @@ &gmac0_rgmii_clk
->>  	status = "okay";
->>  };
->> 
->> +&gpu {
->> +	mali-supply = <&vdd_gpu_s0>;
->> +	sram-supply = <&vdd_gpu_mem_s0>;
->> +	status = "okay";
->> +};
->> +
->>  &i2c2 {
->>  	status = "okay";
->> 
->> @@ -491,11 +497,15 @@ rk806_dvs3_null: dvs3-null-pins {
->>  		regulators {
->>  			vdd_gpu_s0: dcdc-reg1 {
->>  				regulator-name = "vdd_gpu_s0";
->> +				/* regulator coupling requires always-on */
->> +				regulator-always-on;
->>  				regulator-boot-on;
->>  				regulator-enable-ramp-delay = <400>;
->>  				regulator-min-microvolt = <550000>;
->>  				regulator-max-microvolt = <950000>;
->>  				regulator-ramp-delay = <12500>;
->> +				regulator-coupled-with = <&vdd_gpu_mem_s0>;
->> +				regulator-coupled-max-spread = <10000>;
->> 
->>  				regulator-state-mem {
->>  					regulator-off-in-suspend;
->> @@ -545,11 +555,15 @@ regulator-state-mem {
->> 
->>  			vdd_gpu_mem_s0: dcdc-reg5 {
->>  				regulator-name = "vdd_gpu_mem_s0";
->> +				/* regulator coupling requires always-on */
->> +				regulator-always-on;
->>  				regulator-boot-on;
->>  				regulator-enable-ramp-delay = <400>;
->>  				regulator-min-microvolt = <675000>;
->>  				regulator-max-microvolt = <950000>;
->>  				regulator-ramp-delay = <12500>;
->> +				regulator-coupled-with = <&vdd_gpu_s0>;
->> +				regulator-coupled-max-spread = <10000>;
->> 
->>  				regulator-state-mem {
->>  					regulator-off-in-suspend;
+> add set REQ_SYNC and REQ_IDLE in bio->bi_opf as standard dirct-io
 > 
-> _______________________________________________
-> Linux-rockchip mailing list
-> Linux-rockchip@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-rockchip
+> Signed-off-by: zhuxiaohui <zhuxiaohui.400@bytedance.com>
+
+Can I get you interested in a bigger project?
+
+The writeback throttling code is a problem; it really shouldn't be
+specific to writeback, it really ought to be a general purpose
+backpressure mechanism.
+
+Unfortunately, I've found the code to be opaque, practically to the
+point of obfuscation, so it's going to be a difficult nut to crack.
+
+But the lack of higher level, more workable backpressure is a problem,
+it leads to queueing delays and priority inversions in filesystem code
+and below.
+
+> ---
+>  fs/bcachefs/fs-io-direct.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/fs/bcachefs/fs-io-direct.c b/fs/bcachefs/fs-io-direct.c
+> index 33cb6da3a5ad..f49e6c0f0f68 100644
+> --- a/fs/bcachefs/fs-io-direct.c
+> +++ b/fs/bcachefs/fs-io-direct.c
+> @@ -536,7 +536,7 @@ static __always_inline long bch2_dio_write_loop(struct dio_write *dio)
+>  		if (likely(!dio->iter.count) || dio->op.error)
+>  			break;
+>  
+> -		bio_reset(bio, NULL, REQ_OP_WRITE);
+> +		bio_reset(bio, NULL, REQ_OP_WRITE | REQ_SYNC | REQ_IDLE);
+>  	}
+>  out:
+>  	return bch2_dio_write_done(dio);
+> @@ -618,7 +618,7 @@ ssize_t bch2_direct_write(struct kiocb *req, struct iov_iter *iter)
+>  
+>  	bio = bio_alloc_bioset(NULL,
+>  			       bio_iov_vecs_to_alloc(iter, BIO_MAX_VECS),
+> -			       REQ_OP_WRITE,
+> +			       REQ_OP_WRITE | REQ_SYNC | REQ_IDLE,
+>  			       GFP_KERNEL,
+>  			       &c->dio_write_bioset);
+>  	dio = container_of(bio, struct dio_write, op.wbio.bio);
+> -- 
+> 2.41.0
+> 
 
