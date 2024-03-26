@@ -1,73 +1,75 @@
-Return-Path: <linux-kernel+bounces-119213-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-119214-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 21AC688C5BD
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 15:50:05 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3405A88C5C1
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 15:50:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 85283296D18
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 14:50:03 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D41D61F622AA
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 14:50:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 455BE13C695;
-	Tue, 26 Mar 2024 14:49:46 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3998313C3FA
-	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 14:49:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 363BA13C8EE;
+	Tue, 26 Mar 2024 14:49:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="aqQzgcLL"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 79B5C13C819;
+	Tue, 26 Mar 2024 14:49:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711464585; cv=none; b=B33GuAaAaiXFqzoQrImhOev1ZTu7dmj5weyJ0+THw36kavCKpHO/QWh0b5P8Y1Dj9muXdG4USyiVNT+xBsMYpbeSLlvYsZdU6dJ0l0s/kKf+5QQi8L31ZSXvzrvtXC8q6LmUmDzJ3t2JYvSADDGO5AszV//A649BovpJxwH3YZM=
+	t=1711464593; cv=none; b=fY0koFWY5bkXZ458I4zbdcZfzeEt8R2zo2SbDZtBeh4YFxxVrE8KTd2m8AigWIvOkTiAs1TRrWZXxFdEVTwMW26bIUPvK7OOIYCqd9HUEr4Qnbapg2nDiqI2xGqeHz8uQbsTLmCur86VsfU6Ce/+vkTG9a4fIUeQ67IZtCEDOeY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711464585; c=relaxed/simple;
-	bh=k5v21t1TmqzSwACthF9qJZyOoMQAkYvln4gyBoWSjy4=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=IebJVEEv7ZVyQBtT1dHr4ysbi+uRWpycBgf+VPWkYFa1YwvzPe5ftRnPENBEOmFiM2pk8ctLU1dfkJu/RlitOkJS6yA2eisBzfvUjpXh//ZO4ofZuPFoJsV8gGd/0Y7CymMT1WLdaoZ/XyvVoL5NdHjlHyazDjX2ttn8SoiC2mI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 4130C339;
-	Tue, 26 Mar 2024 07:50:17 -0700 (PDT)
-Received: from usa.arm.com (e103737-lin.cambridge.arm.com [10.1.197.49])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id E442C3F694;
-	Tue, 26 Mar 2024 07:49:42 -0700 (PDT)
-From: Sudeep Holla <sudeep.holla@arm.com>
-To: linux-kernel@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	Cristian Marussi <cristian.marussi@arm.com>
-Cc: Sudeep Holla <sudeep.holla@arm.com>
-Subject: Re: [PATCH] firmware: arm_scmi: Make raw debugfs entries non-seekable
-Date: Tue, 26 Mar 2024 14:49:19 +0000
-Message-ID: <171146453849.2983526.5247920976483225405.b4-ty@arm.com>
-X-Mailer: git-send-email 2.43.2
-In-Reply-To: <20240315140324.231830-1-cristian.marussi@arm.com>
-References: <20240315140324.231830-1-cristian.marussi@arm.com>
+	s=arc-20240116; t=1711464593; c=relaxed/simple;
+	bh=ASjwD7pJp1QVPdIY4VaqbkU4p3lWLNQhHSEK1Mb6Lq8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=gO1Idqe8SMikuRogbx5FQEWat/GMgFBr4/m+DGX6Hw12LR8tUKkfFVeg1vXtihNSgklrS+QfwJYSzCgGu1faXI4vb3HZ6dER4OiZcK7aghbO/zNcp/lUqcyk1L+fCVdtM42haowotQ9Od3RgxTZtZl/y2RF4Kswlp/+yYC1mnxs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=aqQzgcLL; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 06885C433C7;
+	Tue, 26 Mar 2024 14:49:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1711464593;
+	bh=ASjwD7pJp1QVPdIY4VaqbkU4p3lWLNQhHSEK1Mb6Lq8=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=aqQzgcLL7LriJUPU7Yh/2d+4i6zlMg8hXgq61RPx4TPmVPv3xYYNjdOyYgwRMaB2k
+	 r0ovk40QhDtJsrGOOL1Ic85pouWcMAJDgYmzZW7okzlmr93rkIvSw31iD5JE2y+Xte
+	 ZBcVyEaWkldrOerHY3ziPriLLpnf7uPga7Sk1bOkPGFpbj+p3aEraYeDfhyjbtvXcT
+	 OxGi7jiaKD1eefxYV9nPKei5XIDFcHYJAhNNbxWdqHR3Qa5Mj6dU7X2F5gMyHDD0Fp
+	 yVmsyXug6tBhNLuEuVt9wiVtBij++7wQlKRHNqF0N6HkZvbgdkhQb4NGA8wgImHwe2
+	 2XYezfyuKWwpQ==
+Date: Tue, 26 Mar 2024 14:49:48 +0000
+From: Simon Horman <horms@kernel.org>
+To: Bjorn Helgaas <helgaas@kernel.org>
+Cc: Ariel Elior <aelior@marvell.com>, Manish Chopra <manishc@marvell.com>,
+	"David S . Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Bjorn Helgaas <bhelgaas@google.com>
+Subject: Re: [PATCH] qed: Drop useless pci_params.pm_cap
+Message-ID: <20240326144948.GC403975@kernel.org>
+References: <20240325224931.1462051-1-helgaas@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240325224931.1462051-1-helgaas@kernel.org>
 
-On Fri, 15 Mar 2024 14:03:24 +0000, Cristian Marussi wrote:
-> SCMI Raw debugfs entries are used to inject and snoop messages out of the
-> SCMI core and, as such, the underlying virtual files have no reason to
-> support seeking.
->
-> Modify the related file_operations descriptors to be non-seekable.
->
->
-> [...]
+On Mon, Mar 25, 2024 at 05:49:31PM -0500, Bjorn Helgaas wrote:
+> From: Bjorn Helgaas <bhelgaas@google.com>
+> 
+> qed_init_pci() used pci_params.pm_cap only to cache the pci_dev.pm_cap.
+> Drop the cache and use pci_dev.pm_cap directly.
+> 
+> Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
 
-Applied to sudeep.holla/linux (for-next/scmi/fixes), thanks!
-
-[1/1] firmware: arm_scmi: Make raw debugfs entries non-seekable
-      https://git.kernel.org/sudeep.holla/c/b70c7996d4ff
---
-Regards,
-Sudeep
+Reviewed-by: Simon Horman <horms@kernel.org>
 
 
