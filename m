@@ -1,168 +1,128 @@
-Return-Path: <linux-kernel+bounces-118439-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-118438-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8BA4888BAE0
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 08:00:54 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id D748388BADD
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 07:59:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EA5CF2C8082
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 07:00:52 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8B3A41F3A9A9
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 06:59:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AF18512C55D;
-	Tue, 26 Mar 2024 07:00:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 60397129A65;
+	Tue, 26 Mar 2024 06:59:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="us3Qmdbn"
-Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.153.233])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="FMnBGkri"
+Received: from mail-lf1-f53.google.com (mail-lf1-f53.google.com [209.85.167.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CF10B1862F;
-	Tue, 26 Mar 2024 07:00:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=68.232.153.233
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EB46B12880F;
+	Tue, 26 Mar 2024 06:59:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711436444; cv=none; b=oBPMgCXwXD8/FS6+VM9Ssc1yM7h/2L79B64vLkOESOpKvqsSVvoo3vtN8UV1PNtzfBnMI9BHmI3Rlko/OhCNI/QMmtZYXD2AmMtaiYPhNxnZlQMeOzIubGzWFfPAqtRKn9KDls70BEgr0JoN6meCSr9BX/lWtPbbLXIjs8fw/Mw=
+	t=1711436378; cv=none; b=dGr0L78DABJ/Ml/rPtnM0q5fLgazIclofUn5vgxYyw8ZPulpX+Sgyc4JedwY/cqF6FzQPHcPQyQwT66h3M/XQHH+XXUGwlhArEOgZLRj8JKPBB8y+RTHHZ3beat9BgFofVH7aXmrA2deE1iAcH0J2e3MzkbZg1VSosuwWF/9zmk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711436444; c=relaxed/simple;
-	bh=9Z4N99ZACNP0VneOPln0Blk/fuX6LJzc+t1dRv0VSHs=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=llxT5yCSGatutBze0OGC4owqvettyMIr/MfskG5z9ilTSjrPYLO1ZV10zHOTEEb66zwIn4YxZVNKEy5yA5n4cICkpKQ4TOBjrA8ZRFdTDZ7cfSk6yQU3QiHXG7yIV5YVSVvb3k3XOp6tqWBxpAKNuD2ahx1HlSkWCPizK5fysZI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microchip.com; spf=pass smtp.mailfrom=microchip.com; dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b=us3Qmdbn; arc=none smtp.client-ip=68.232.153.233
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microchip.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=microchip.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1711436442; x=1742972442;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=9Z4N99ZACNP0VneOPln0Blk/fuX6LJzc+t1dRv0VSHs=;
-  b=us3QmdbnPcEWVwNML0og+/yU59G0couwQEvbJYpxTelulSIVFT5utWhN
-   GXSMlkbRKY5pF8Jfdvq/WJbbGg3Y6MRMHO5D7/1BojaZaDK4GMrlrAHWV
-   XMuDzeQsZm8TsmVHJjEDYbtOhTo+8mN6HlBWtdmYljPjxk5PCK5iK1HNY
-   Xr3TeZfqcNTxVxuc4tGni8WEnLvOf7rJpd0KJIt5y1r5MipfiqAoFyvaB
-   z6n9xvsOwFdOUQwzSF2oyD0iROZT99Xw9g0oB+X51tMzkjFDTTpSPC5hf
-   IOlmTNTTH8liQJriYsWEKjUvR4V4wd7DzkohUpDMk7UcVUKeV8qyxBRFF
-   Q==;
-X-CSE-ConnectionGUID: X34EXM5eSSuWFNtqmsXBGA==
-X-CSE-MsgGUID: cgo15euqQ4GOrX0oPzrK3g==
-X-IronPort-AV: E=Sophos;i="6.07,155,1708412400"; 
-   d="scan'208";a="248996839"
-X-Amp-Result: SKIPPED(no attachment in message)
-Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
-  by esa5.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 26 Mar 2024 00:00:41 -0700
-Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
- chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Tue, 26 Mar 2024 00:00:19 -0700
-Received: from HYD-DK-UNGSW21.microchip.com (10.10.85.11) by
- chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server id
- 15.1.2507.35 via Frontend Transport; Tue, 26 Mar 2024 00:00:16 -0700
-From: Raju Lakkaraju <Raju.Lakkaraju@microchip.com>
-To: <netdev@vger.kernel.org>
-CC: <davem@davemloft.net>, <kuba@kernel.org>, <pabeni@redhat.com>,
-	<edumazet@google.com>, <linux-kernel@vger.kernel.org>,
-	<bryan.whitehead@microchip.com>, <horms@kernel.org>,
-	<UNGLinuxDriver@microchip.com>
-Subject: [PATCH net V2] net: lan743x: Add set RFE read fifo threshold for PCI1x1x chips
-Date: Tue, 26 Mar 2024 12:28:05 +0530
-Message-ID: <20240326065805.686128-1-Raju.Lakkaraju@microchip.com>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1711436378; c=relaxed/simple;
+	bh=9bnvoj6q4JRR1lYLLkAWD4fYP4y91/3k3df/uRd0GKA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=n8IkCyglfd4aK8epBqD6Whm+8lsziBjlgfgRMbJWnycNs3xZ0FmM7RiY6K1a8eTI5cXkGqp81fA565TC0zrtoqnAtmSlGDNn2w2Ikolx+2ZSoi6G22Rr2FrAc4KSqTrVPEUJub6pT8vDVqHNcqf/3YHyrBxxOT9xhtIVmoY4t2U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=FMnBGkri; arc=none smtp.client-ip=209.85.167.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lf1-f53.google.com with SMTP id 2adb3069b0e04-513d599dbabso6763975e87.1;
+        Mon, 25 Mar 2024 23:59:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1711436375; x=1712041175; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Adrz2UKt91HT9UEqTQ/lxgqrvfLugF+WBz3CLKokIek=;
+        b=FMnBGkrinYL2PBCPQke2aEI5hw10ATWLqtpVWFVpYcMIIgZz/px6p6JH1tho/5pi9U
+         YBbBPOrrBZ3RxuuPCjlevxgGjoOYKKxEZdhD2VnrZpGTxBm3PRVok4sdyky80f/yJrcF
+         fwucQf9T/+sqYEqZxj8tJ/PWKCn8HaZXzHCBZ8dpRXz4RWV9kvLNeYSac1mBbrXtTu37
+         A+Vy2L1EHIxoNibw3jNXlyGEEb0+TypwTBJTcOBUyrBuB009Uj6ucXrtiBU+Qkmw2ktb
+         4jLu3KlBUJo/6NBbj3PHnIqlAY88gNgQKfJEhPjvaQJGPTF70u8q35JXHO5NvlSuLv+1
+         goEw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711436375; x=1712041175;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Adrz2UKt91HT9UEqTQ/lxgqrvfLugF+WBz3CLKokIek=;
+        b=YtGsvlE+HpGqphO9nn/bj6Brcol0/H1PXOoWBCP/al+2KY9JYD9AyFK7yWRJ0sfxcq
+         +xwZIh1N0WOusC5dISqHussSKupBy3kbQMFwxg1/HBtBPs7qO15iBUegPFVwDjPpXgjw
+         i5nZQB0xMZ2kXBEjBSqZ32ZZ2H+d0xDnaACxR9Audy9mThB6ZBzzDjRtEnC+IWH0zMCp
+         d6+ySpUTUISV23zum/8mMR6zB1Sl+HxPU3udVMV5+UCByhnlfjl+FOPQBgym+kUYuipi
+         dRgAtzKSOC4nGEdpnE5WCawId6zkNfHZPGTo2WtMHWbIqfisyuxHpbmP1Fk56ph4Y/PF
+         o3sA==
+X-Forwarded-Encrypted: i=1; AJvYcCX2KN4vJhpZJKlWr3wVNTrNWeBaU3RCvgM0Q/fKpyL2IqO6Yj68lWiQU4GKOQxMcXUCPs+5Xax1/oc69KxMIvnS4zfERSx0
+X-Gm-Message-State: AOJu0YxEO03hQVnm6fJ9EA1aqbL4mkT+sD5taVfJ6m1Lk/QiJxHt1zdK
+	rLBIOMaYPGKGZl3kaTpZNoF5xRBLWVOofQq4U2UA99tTDCTq1EXX5EsDms1tBXg=
+X-Google-Smtp-Source: AGHT+IHJULcSjGY+2bfyPb37+1IpdGS93hSu6EOR2DCrF3wM3B3CsDCg0CoiF9OxOaVfokBUw/D5uA==
+X-Received: by 2002:ac2:562d:0:b0:513:3214:ae03 with SMTP id b13-20020ac2562d000000b005133214ae03mr5392450lff.69.1711436374672;
+        Mon, 25 Mar 2024 23:59:34 -0700 (PDT)
+Received: from eldamar.lan (c-82-192-242-114.customer.ggaweb.ch. [82.192.242.114])
+        by smtp.gmail.com with ESMTPSA id e7-20020adfc847000000b0033ec91c9eadsm11320418wrh.53.2024.03.25.23.59.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 25 Mar 2024 23:59:32 -0700 (PDT)
+Sender: Salvatore Bonaccorso <salvatore.bonaccorso@gmail.com>
+Received: by eldamar.lan (Postfix, from userid 1000)
+	id F3A67BE2EE8; Tue, 26 Mar 2024 07:59:31 +0100 (CET)
+Date: Tue, 26 Mar 2024 07:59:31 +0100
+From: Salvatore Bonaccorso <carnil@debian.org>
+To: Sasha Levin <sashal@kernel.org>
+Cc: linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+	torvalds@linux-foundation.org, akpm@linux-foundation.org,
+	linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+	lkft-triage@lists.linaro.org, pavel@denx.de,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Re: [PATCH 5.10 00/73] 5.10.213-rc1 review
+Message-ID: <ZgJyUxKgKhjVTqI5@eldamar.lan>
+References: <20240313164640.616049-1-sashal@kernel.org>
+ <ZfNwZ2dqQfw3Fsxe@eldamar.lan>
+ <ZfSV6RVweBOlKZW_@sashalap>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZfSV6RVweBOlKZW_@sashalap>
 
-PCI11x1x Rev B0 devices might drop packets when receiving back to back frames
-at 2.5G link speed. Change the B0 Rev device's Receive filtering Engine FIFO
-threshold parameter from its hardware default of 4 to 3 dwords to prevent the
-problem. Rev C0 and later hardware already defaults to 3 dwords.
+Hi Sasha,
 
-Fixes: bb4f6bffe33c ("net: lan743x: Add PCI11010 / PCI11414 device IDs")
-Signed-off-by: Raju Lakkaraju <Raju.Lakkaraju@microchip.com>
----
-Change List:
-------------
-V1 -> V2:
-  - change the function return type from int to void
+On Fri, Mar 15, 2024 at 02:39:37PM -0400, Sasha Levin wrote:
+> On Thu, Mar 14, 2024 at 10:47:19PM +0100, Salvatore Bonaccorso wrote:
+> > Hi Sasha,
+> > 
+> > On Wed, Mar 13, 2024 at 12:45:27PM -0400, Sasha Levin wrote:
+> > > 
+> > > This is the start of the stable review cycle for the 5.10.213 release.
+> > > There are 73 patches in this series, all will be posted as a response
+> > > to this one.  If anyone has any issues with these being applied, please
+> > > let me know.
+> > > 
+> > > Responses should be made by Fri Mar 15 04:46:39 PM UTC 2024.
+> > > Anything received after that time might be too late.
+> > 
+> > This one still has the problem with the documentation build and does
+> > not yet include:
+> > 
+> > https://lore.kernel.org/regressions/ZeZAHnzlmZoAhkqW@eldamar.lan/
+> > 
+> > Can you pick it up as well?
+> 
+> I'll pick it up for the next release cycle, thanks!
 
-V0 -> V1:
-  - misc_ctl change from int to unsigned int
-  - Use FIELD_PREP macro instead of logical shift operator
-  - Change 0x3 to macro RFE_RD_FIFO_TH_3_DWORDS
+Did something went wrong here? I do not see in in the current review
+for 5.10.214-rc2. Can you still pick it for 5.10.214 to get
+documentation build working?
 
- drivers/net/ethernet/microchip/lan743x_main.c | 20 +++++++++++++++++++
- drivers/net/ethernet/microchip/lan743x_main.h |  4 ++++
- 2 files changed, 22 insertions(+)
+Thanks a lot already,
 
-diff --git a/drivers/net/ethernet/microchip/lan743x_main.c b/drivers/net/ethernet/microchip/lan743x_main.c
-index bd8aa83b47e5..75a988c0bd79 100644
---- a/drivers/net/ethernet/microchip/lan743x_main.c
-+++ b/drivers/net/ethernet/microchip/lan743x_main.c
-@@ -25,6 +25,8 @@
- #define PCS_POWER_STATE_DOWN	0x6
- #define PCS_POWER_STATE_UP	0x4
- 
-+#define RFE_RD_FIFO_TH_3_DWORDS	0x3
-+
- static void pci11x1x_strap_get_status(struct lan743x_adapter *adapter)
- {
- 	u32 chip_rev;
-@@ -3272,6 +3274,21 @@ static void lan743x_full_cleanup(struct lan743x_adapter *adapter)
- 	lan743x_pci_cleanup(adapter);
- }
- 
-+static void pci11x1x_set_rfe_rd_fifo_threshold(struct lan743x_adapter *adapter)
-+{
-+	u16 rev = adapter->csr.id_rev & ID_REV_CHIP_REV_MASK_;
-+
-+	if (rev == ID_REV_CHIP_REV_PCI11X1X_B0_) {
-+		u32 misc_ctl;
-+
-+		misc_ctl = lan743x_csr_read(adapter, MISC_CTL_0);
-+		misc_ctl &= ~MISC_CTL_0_RFE_READ_FIFO_MASK_;
-+		misc_ctl |= FIELD_PREP(MISC_CTL_0_RFE_READ_FIFO_MASK_,
-+				       RFE_RD_FIFO_TH_3_DWORDS);
-+		lan743x_csr_write(adapter, MISC_CTL_0, misc_ctl);
-+	}
-+}
-+
- static int lan743x_hardware_init(struct lan743x_adapter *adapter,
- 				 struct pci_dev *pdev)
- {
-@@ -3287,6 +3304,7 @@ static int lan743x_hardware_init(struct lan743x_adapter *adapter,
- 		pci11x1x_strap_get_status(adapter);
- 		spin_lock_init(&adapter->eth_syslock_spinlock);
- 		mutex_init(&adapter->sgmii_rw_lock);
-+		pci11x1x_set_rfe_rd_fifo_threshold(adapter);
- 	} else {
- 		adapter->max_tx_channels = LAN743X_MAX_TX_CHANNELS;
- 		adapter->used_tx_channels = LAN743X_USED_TX_CHANNELS;
-diff --git a/drivers/net/ethernet/microchip/lan743x_main.h b/drivers/net/ethernet/microchip/lan743x_main.h
-index be79cb0ae5af..645bc048e52e 100644
---- a/drivers/net/ethernet/microchip/lan743x_main.h
-+++ b/drivers/net/ethernet/microchip/lan743x_main.h
-@@ -26,6 +26,7 @@
- #define ID_REV_CHIP_REV_MASK_		(0x0000FFFF)
- #define ID_REV_CHIP_REV_A0_		(0x00000000)
- #define ID_REV_CHIP_REV_B0_		(0x00000010)
-+#define ID_REV_CHIP_REV_PCI11X1X_B0_	(0x000000B0)
- 
- #define FPGA_REV			(0x04)
- #define FPGA_REV_GET_MINOR_(fpga_rev)	(((fpga_rev) >> 8) & 0x000000FF)
-@@ -311,6 +312,9 @@
- #define SGMII_CTL_LINK_STATUS_SOURCE_	BIT(8)
- #define SGMII_CTL_SGMII_POWER_DN_	BIT(1)
- 
-+#define MISC_CTL_0			(0x920)
-+#define MISC_CTL_0_RFE_READ_FIFO_MASK_	GENMASK(6, 4)
-+
- /* Vendor Specific SGMII MMD details */
- #define SR_VSMMD_PCS_ID1		0x0004
- #define SR_VSMMD_PCS_ID2		0x0005
--- 
-2.34.1
-
+Regards,
+Salvatore
 
