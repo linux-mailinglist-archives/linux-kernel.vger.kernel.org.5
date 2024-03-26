@@ -1,155 +1,153 @@
-Return-Path: <linux-kernel+bounces-118872-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-118873-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5325488C07F
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 12:20:49 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2F29788C085
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 12:22:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D5DFE301DFD
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 11:20:47 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A7428B216A6
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 11:22:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 343E755C13;
-	Tue, 26 Mar 2024 11:20:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 86485548E5;
+	Tue, 26 Mar 2024 11:22:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="qFWDvUdh";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="RGiqrTXZ";
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="qFWDvUdh";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="RGiqrTXZ"
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=fail reason="signature verification failed" (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="c3YBRnf2"
+Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 52F8152F9A;
-	Tue, 26 Mar 2024 11:20:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 04D3C52F67;
+	Tue, 26 Mar 2024 11:22:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711452012; cv=none; b=bWIXRkLEK8Ahx95scb1H/GiKu+Wwqd9F26sScc32GiYYHzI04fRxRM52gPBg4nWAfGSjfm2JoEs0vNzl5gYqiVvuzunsIor6RRtdyUklCGcmTwwaihpPn96hzprsL9/cI+Xk1cdkHBZVMMy0pJGNnH2gp6uw6pHas6j+8YYN+r0=
+	t=1711452125; cv=none; b=GiPfjwU5E018Eu0CilLyI1Vlp6dzJA6hZiwRWVpAFsyMbmVJ5O+xTi71A3WYx48Amz+UA0+U0zAX0zv3/AeH3eWEpSdkSTFrgHXfJbQgDsRMuwpg6mC6O/OS59kpjcwFugcJDDc8C9ZyXGekczWDCqfJwsy49wKJ2R01wPTq7co=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711452012; c=relaxed/simple;
-	bh=JZJYfdkOEfrBChAlxdomlE/FMRCLxwEMSTjs1gzQjmI=;
-	h=Date:Message-ID:From:To:Cc:Subject:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=DIWrA1tsvzfq/ZGLVKfIeucb57xB972ia22tQYHGCo/DtQ3QRgGjRrDid3REZrsR/gJSUH7UXChIAL20yar4Lt/Qvij7im5u8V5DooNu8oCD21lO9AS0tZ5djNcxBhufxGNmHf0qgR3GPvudS+5vdcQpPt47cciUyJxowhz7o2s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=qFWDvUdh; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=RGiqrTXZ; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=qFWDvUdh; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=RGiqrTXZ; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
+	s=arc-20240116; t=1711452125; c=relaxed/simple;
+	bh=Ga+xwbpBO/hlGb01zxGPxIvFBmt8yPbMcDjpoO97q3M=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=RFflxrW0uoUdlfxm2Y6Fone1zkKEuKHJNniYtNxMIzbcOyXMAgk3oBZcgExsKK2uU6RewHDvXfvoX8UVLllYsjlL+fg//6XWFQTLZKkc5IOIUmlTYoW9uYLD4bx1XheS1LjmILieLazuJ0abCOdTdZfMyOliyudQ/caVF8a7hZI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=fail (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=c3YBRnf2 reason="signature verification failed"; arc=none smtp.client-ip=65.109.113.108
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
+Received: from localhost (localhost.localdomain [127.0.0.1])
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 88B8240E024C;
+	Tue, 26 Mar 2024 11:22:01 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=fail (4096-bit key)
+	reason="fail (body has been altered)" header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id xqH6euSnifRy; Tue, 26 Mar 2024 11:21:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+	t=1711452116; bh=5xySxgxUex7yGo/N3CjIUaOQ92oGCY0B9c5aUdVDJHw=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=c3YBRnf2JupbhmiWyx3+d7vnRmROs10DZoQ+00EoYLMSAZhZhoPfdydM9S8QMOO/T
+	 Cn6d2qmXnIoYZiHiAVBZuCUhngqF/1Bup3PsSLiNuvNoVxbZM6zjdHw+vDM8+iueuD
+	 aXfragH1pM6MyY3kiJYACfWxgzbenIp1Ifl4pkRO35KdIQ7SAdPGUV49Skb9QKAwIR
+	 kwCLSN0yr3jYdsmF+gLgtT1UTRUCMaOkwzg0selKbaLBlbAs8e2iFZ2hTqBYCl3C52
+	 StTZq7gUnHjtVfRTOkIxtuBQYeLY7hE3i0wbV9/CqgEF2PgGCqKQuyjLgRYpfoPrpU
+	 OaxaRqEeFZPZX0axI1SqptsS3K7pJ4ftGdGjHJwHWp37WcEhR/8bRl0cZI6HzVH4V7
+	 dTryPnhHdJILUk6BrQmnePC0OaVjEBH3ao+Vf4Qp0p4//xko6PoFG7s57vTNVXDuIG
+	 DT3zbb9Iin0K3cz6vD4KHnldUpvaDmMYLcGOFrRSz+SN+9KRh24SrgMCUXMVJrDczn
+	 vZRG2JouUOtxUzPIP4DxrGu8kj/IuFbvVlEz/nrTQOz8w4iOc6hk/2Wz9WycEg6g8f
+	 V+Oyk7OQt4zaum9UFJg41HowMRyM9GzzMfkTLZlS0Su2PlzzOgfB3mqBWqa9Ikr/xb
+	 CvqaUFRHJsmKINNES/a1x4ZU=
+Received: from zn.tnic (p5de8ecf7.dip0.t-ipconnect.de [93.232.236.247])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 7E50037AD9;
-	Tue, 26 Mar 2024 11:20:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1711452007; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=tUTUfOoY+2SogT+OaWxxDe3rJC42MpmS4UtIqhLd8AA=;
-	b=qFWDvUdhEw+1w/36ez/ULmEshiSbU5BLtgbDEF5s7BImFrCk9b0FDVTJDah6rEIFcP+GDv
-	1tKvqWfah85kRk1vM3jHpa66iHIuxUF0xWPPxWdWbTDHPxRbl4bYf6kuD+FcICqI/jIQdT
-	LFo/4EeF93yBxknPJXIF9twrAR84Y0s=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1711452007;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=tUTUfOoY+2SogT+OaWxxDe3rJC42MpmS4UtIqhLd8AA=;
-	b=RGiqrTXZMmGKLYf71hZOyClLQLEXPh5KTBTWeJIWdVc50zMD57PT2M/+RVnKyF8BAcKIus
-	hrKfijCK98fmQMAg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1711452007; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=tUTUfOoY+2SogT+OaWxxDe3rJC42MpmS4UtIqhLd8AA=;
-	b=qFWDvUdhEw+1w/36ez/ULmEshiSbU5BLtgbDEF5s7BImFrCk9b0FDVTJDah6rEIFcP+GDv
-	1tKvqWfah85kRk1vM3jHpa66iHIuxUF0xWPPxWdWbTDHPxRbl4bYf6kuD+FcICqI/jIQdT
-	LFo/4EeF93yBxknPJXIF9twrAR84Y0s=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1711452007;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=tUTUfOoY+2SogT+OaWxxDe3rJC42MpmS4UtIqhLd8AA=;
-	b=RGiqrTXZMmGKLYf71hZOyClLQLEXPh5KTBTWeJIWdVc50zMD57PT2M/+RVnKyF8BAcKIus
-	hrKfijCK98fmQMAg==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 2737D13306;
-	Tue, 26 Mar 2024 11:20:07 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id n7DQB2evAmb6DgAAD6G6ig
-	(envelope-from <tiwai@suse.de>); Tue, 26 Mar 2024 11:20:07 +0000
-Date: Tue, 26 Mar 2024 12:20:08 +0100
-Message-ID: <87le65utnb.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Cc: Clemens Ladisch <clemens@ladisch.de>,
-	Takashi Sakamoto <o-takashi@sakamocchi.jp>,
-	Jaroslav Kysela <perex@perex.cz>,
-	Takashi Iwai <tiwai@suse.com>,
-	alsa-devel@alsa-project.org,
-	linux-sound@vger.kernel.org,
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 7966F40E00B2;
+	Tue, 26 Mar 2024 11:21:42 +0000 (UTC)
+Date: Tue, 26 Mar 2024 12:21:37 +0100
+From: Borislav Petkov <bp@alien8.de>
+To: "Jason A. Donenfeld" <Jason@zx2c4.com>
+Cc: x86@kernel.org, linux-coco@lists.linux.dev,
 	linux-kernel@vger.kernel.org,
-	linux-hardening@vger.kernel.org
-Subject: Re: [PATCH v2][next] ALSA: firewire-lib: Avoid -Wflex-array-member-not-at-end warning
-In-Reply-To: <ZgIsBqoMb7p3fMDr@neat>
-References: <ZgIsBqoMb7p3fMDr@neat>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+	Daniel P =?utf-8?B?LiBCZXJyYW5nw6k=?= <berrange@redhat.com>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	"H . Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Tom Lendacky <thomas.lendacky@amd.com>, stable@vger.kernel.org,
+	Elena Reshetova <elena.reshetova@intel.com>,
+	"Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+	Theodore Ts'o <tytso@mit.edu>
+Subject: Re: [PATCH v5] x86/coco: Require seeding RNG with RDRAND on CoCo
+ systems
+Message-ID: <20240326112137.GDZgKvwRHD4yQs3Zm-@fat_crate.local>
+References: <CAHmME9oN+7rbLYcvQN=+KMjwrokvARy_7khLWJvDK=K_S5uHqg@mail.gmail.com>
+ <20240224011921.2663985-1-Jason@zx2c4.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-Authentication-Results: smtp-out1.suse.de;
-	none
-X-Spam-Level: 
-X-Spam-Score: -3.29
-X-Spamd-Result: default: False [-3.29 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 MIME_GOOD(-0.10)[text/plain];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	 NEURAL_HAM_SHORT(-0.20)[-1.000];
-	 RCPT_COUNT_SEVEN(0.00)[9];
-	 MID_CONTAINS_FROM(1.00)[];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 RCVD_TLS_ALL(0.00)[];
-	 BAYES_HAM(-2.99)[99.97%]
-X-Spam-Flag: NO
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20240224011921.2663985-1-Jason@zx2c4.com>
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, 26 Mar 2024 02:59:34 +0100,
-Gustavo A. R. Silva wrote:
-> 
-> Use the `DEFINE_FLEX()` helper for an on-stack definition of a
-> flexible structure where the size of the flexible-array member
-> is known at compile-time, and refactor the rest of the code,
-> accordingly.
-> 
-> So, with these changes, fix the following warning:
-> sound/firewire/amdtp-stream.c:1184:46: warning: structure containing a flexible array member is not at the end of another structure [-Wflex-array-member-not-at-end]
-> 
-> Link: https://github.com/KSPP/linux/issues/202
-> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
-> ---
-> Changes in v2:
->  - Use DEFINE_FLEX() helper instead of a new tagged struct.
-> 
-> v1:
->  - Link: https://lore.kernel.org/linux-hardening/d3a764eb76909b16b8a22d9ff530e5edf0e59e6b.1709658886.git.gustavoars@kernel.org/
+On Sat, Feb 24, 2024 at 02:18:56AM +0100, Jason A. Donenfeld wrote:
+> +__init void cc_random_init(void)
+> +{
+> +	/*
+> +	 * The seed is 32 bytes (in units of longs), which is 256 bits, which
+> +	 * is the security level that the RNG is targeting.
+> +	 */
+> +	unsigned long rng_seed[32 / sizeof(long)];
+> +	size_t i, longs;
+> +
+> +	if (!cc_platform_has(CC_ATTR_GUEST_MEM_ENCRYPT))
+> +		return;
+> +
+> +	/*
+> +	 * Since the CoCo threat model includes the host, the only reliable
+> +	 * source of entropy that can be neither observed nor manipulated is
+> +	 * RDRAND. Usually, RDRAND failure is considered tolerable, but since
+> +	 * CoCo guests have no other unobservable source of entropy, it's
+> +	 * important to at least ensure the RNG gets some initial random seed=
+s.
+> +	 */
+> +	for (i =3D 0; i < ARRAY_SIZE(rng_seed); i +=3D longs) {
+> +		longs =3D arch_get_random_longs(&rng_seed[i], ARRAY_SIZE(rng_seed) -=
+ i);
+> +
+> +		/*
+> +		 * A zero return value means that the guest doesn't have RDRAND
+> +		 * or the CPU is physically broken, and in both cases that
+> +		 * means most crypto inside of the CoCo instance will be
+> +		 * broken, defeating the purpose of CoCo in the first place. So
+> +		 * just panic here because it's absolutely unsafe to continue
+> +		 * executing.
+> +		 */
+> +		if (longs =3D=3D 0)
+> +			panic("RDRAND is defective.");
+> +	}
+> +	add_device_randomness(rng_seed, sizeof(rng_seed));
+> +	memzero_explicit(rng_seed, sizeof(rng_seed));
 
-Applied now.  Thanks.
+Please redo your patch ontop of latest tip/master:
 
+arch/x86/coco/core.c: In function =E2=80=98cc_random_init=E2=80=99:
+arch/x86/coco/core.c:189:9: error: implicit declaration of function =E2=80=
+=98memzero_explicit=E2=80=99 [-Werror=3Dimplicit-function-declaration]
+  189 |         memzero_explicit(rng_seed, sizeof(rng_seed));
+      |         ^~~~~~~~~~~~~~~~
+cc1: some warnings being treated as errors
+make[4]: *** [scripts/Makefile.build:244: arch/x86/coco/core.o] Error 1
+make[3]: *** [scripts/Makefile.build:485: arch/x86/coco] Error 2
+make[3]: *** Waiting for unfinished jobs....
+make[2]: *** [scripts/Makefile.build:485: arch/x86] Error 2
+make[2]: *** Waiting for unfinished jobs....
+make[1]: *** [/mnt/kernel/kernel/2nd/linux/Makefile:1919: .] Error 2
+make: *** [Makefile:240: __sub-make] Error 2
 
-Takashi
+Thx.
+
+--=20
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
 
