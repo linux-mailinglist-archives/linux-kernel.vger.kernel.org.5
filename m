@@ -1,65 +1,72 @@
-Return-Path: <linux-kernel+bounces-119037-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-119038-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id F083A88C300
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 14:08:47 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B725F88C301
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 14:09:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6AE391F3D37B
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 13:08:47 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DFE5D1C2AB46
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 13:08:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5E2257440B;
-	Tue, 26 Mar 2024 13:08:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6A5B26FE1A;
+	Tue, 26 Mar 2024 13:08:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=pankajraghav.com header.i=@pankajraghav.com header.b="ZpPpldsn"
-Received: from mout-p-202.mailbox.org (mout-p-202.mailbox.org [80.241.56.172])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="SIQZkAEu"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B006EEEA9;
-	Tue, 26 Mar 2024 13:08:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.241.56.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CEF8E7175F
+	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 13:08:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711458517; cv=none; b=lRcSQaSSA9rkRKhT1v8wjd9AGaeGt5TcVKuAkM00foaSQrgSmOLqBuB0mLvrr1J6BBApLCNtjjiXujvtnOjRiBZRU74QcM38RIicG7QyaDr7Fyg8KOHvLDz9x5gcypUxv6TwMFIS3SBs6440RSJLJMsOPfZih1ffwYdMzuCKwE0=
+	t=1711458530; cv=none; b=WhDBPENwdO6esij/gY8ifuJluSO/1FlqN9iJ2AQI71AFAux0bfSoVjeKFhBrGOQLmowz/PG8L0Ddt78n8uSLTsW4jH/MD7tE7MBHX33O5wjADAjDMSPgL6R7cDw6vYPAteX67/yAM0hQ5Z3+YgFRzmpKgGTcct5OWdZ69cnxtpA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711458517; c=relaxed/simple;
-	bh=zb+c1eJhGpVi8lvJndVvpd3BeurHRjqMmwzo2z5blnY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=kbAoHWKBjQ/O+/eHxROAqIkKxEM8uGifdEioqpSrZXeNKsP6j4UPsu27iJrdW0Zee9i4c0dtg5WHj3UtyO0I1kNBl1as7ylF1UjVbCNeX+cyTV2rHQdexhTLWnb82VhZ3HgfOPUYIohZ67y7+JT8ifWaA89hBrcd2a2QvV9eopM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=pankajraghav.com; spf=pass smtp.mailfrom=pankajraghav.com; dkim=pass (2048-bit key) header.d=pankajraghav.com header.i=@pankajraghav.com header.b=ZpPpldsn; arc=none smtp.client-ip=80.241.56.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=pankajraghav.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pankajraghav.com
-Received: from smtp2.mailbox.org (smtp2.mailbox.org [10.196.197.2])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mout-p-202.mailbox.org (Postfix) with ESMTPS id 4V3qqZ1vgkz9sZw;
-	Tue, 26 Mar 2024 14:08:26 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pankajraghav.com;
-	s=MBO0001; t=1711458506;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=8d3EYhEfZQrAxbjR62dfoi3Du1p/pSGgH8hAUpFy1wc=;
-	b=ZpPpldsnkTVp8fEwuvWULTRBSOBTvIVSqq5FwEnlkX6aBXsg6IxKtbiT4cC9fpCeuZP4Pa
-	0QDhOQMjnvd8vrpFFschiKqbVfCx4ldj9We/LGbWrFUZ+Ir2mBlbhAggwldAbACN/BCVYX
-	pp8dnbZbIw0pkRhn4wzqUCoFNjvAoBeaJegHoJN/JgNyIkQ1lYl19MUTvT02Ecz9UDlG4l
-	MlqfrzPw8n9PoU3e9C9Yjny1M5NoEnesiFxLQUaKqiSQVA8oy2WD4Bai2b6KrJxD16ufLW
-	dQb4pWjeeNcY58dCxJOwf/ETisiFLVe3vBEXbnzUXiLoQhRkRNLem3tqSScy7Q==
-Date: Tue, 26 Mar 2024 14:08:22 +0100
-From: "Pankaj Raghav (Samsung)" <kernel@pankajraghav.com>
-To: Matthew Wilcox <willy@infradead.org>
-Cc: linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
-	gost.dev@samsung.com, chandan.babu@oracle.com, hare@suse.de, mcgrof@kernel.org, 
-	djwong@kernel.org, linux-mm@kvack.org, linux-kernel@vger.kernel.org, 
-	david@fromorbit.com, akpm@linux-foundation.org, Pankaj Raghav <p.raghav@samsung.com>
-Subject: Re: [PATCH v3 05/11] readahead: allocate folios with
- mapping_min_order in readahead
-Message-ID: <ftoxbmcyyvrfo5qx6dj2kmifoky36ij3c3wx7h5wl4cg4ml5gw@yi7lxegriowg>
-References: <20240313170253.2324812-1-kernel@pankajraghav.com>
- <20240313170253.2324812-6-kernel@pankajraghav.com>
- <ZgHJxiYHvN9DfD15@casper.infradead.org>
+	s=arc-20240116; t=1711458530; c=relaxed/simple;
+	bh=gt8vaX2b0FKGuEetK4iVG5ZZhrZs610OS2U/uLnwp68=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=hy48QueGd8jHVREp2B/QERdTkF2uqIKs+d2gUvTOBefw/dICd3C9cjGgTIWIryP5Ze5YI8XzYfSzbZuOdU6c1rRfkSl5iow6dnI+KRYEeeBeWT9fnPgaYSrt3iUAAxcx2CBJjQL1mE53q0wkw6EBmANklmI9uWelJburXTRsd8Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=SIQZkAEu; arc=none smtp.client-ip=198.175.65.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1711458529; x=1742994529;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=gt8vaX2b0FKGuEetK4iVG5ZZhrZs610OS2U/uLnwp68=;
+  b=SIQZkAEu6XPBOXDzo97JhgQ1TCYVr+yZi0BkB6DiZVjWRmoYDpwES6v6
+   Mf3AjWXvLY0AIodnfebZt41N9ukzpPE+31JDa4ldnSz0XHeId6gnCcvPs
+   cDR90PbO8Ly6W4wuvQCV8x3qASlj2HuQB/gH2ndJSYk6Eee+r9bfLc3bc
+   ciytQe0hZ1Fs2Hw9Ybuy+bbr09szMMd3enFOMzeqmx/RM1LL2j6WRh6p9
+   yqtpnBwiIKUxzneMD5y5xz4lW/I5IEa8Jz32MC4Ip/XSBkSfkMSI6EgaK
+   LMNq+hxIudHdnxRwlTGDYCKItG5uyd1FQUQOWZysPWDyZTsrbg64ohTyf
+   w==;
+X-CSE-ConnectionGUID: Ig2TGD3sTEewY+O2v0o0Xg==
+X-CSE-MsgGUID: raLN9tR/S3WgNf+y5LB9Ug==
+X-IronPort-AV: E=McAfee;i="6600,9927,11024"; a="17051039"
+X-IronPort-AV: E=Sophos;i="6.07,156,1708416000"; 
+   d="scan'208";a="17051039"
+Received: from orviesa001.jf.intel.com ([10.64.159.141])
+  by orvoesa103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Mar 2024 06:08:49 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,156,1708416000"; 
+   d="scan'208";a="53426069"
+Received: from lkp-server01.sh.intel.com (HELO be39aa325d23) ([10.239.97.150])
+  by orviesa001.jf.intel.com with ESMTP; 26 Mar 2024 06:08:47 -0700
+Received: from kbuild by be39aa325d23 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rp6Xk-00003c-2N;
+	Tue, 26 Mar 2024 13:08:44 +0000
+Date: Tue, 26 Mar 2024 21:08:39 +0800
+From: kernel test robot <lkp@intel.com>
+To: Yury Norov <yury.norov@gmail.com>
+Cc: oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+	Paolo Abeni <pabeni@redhat.com>,
+	Jacob Keller <jacob.e.keller@intel.com>
+Subject: powerpc64-linux-ld: warning: orphan section `.bss..Lubsan_data253'
+ from `kernel/ptrace.o' being placed in section `.bss..Lubsan_data253'
+Message-ID: <202403262146.GvXAshxv-lkp@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -68,119 +75,30 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZgHJxiYHvN9DfD15@casper.infradead.org>
 
-> > 
-> > page_cache_ra_unbounded() was allocating single pages (0 order folios)
-> > if there was no folio found in an index. Allocate mapping_min_order folios
-> > as we need to guarantee the minimum order if it is set.
-> > When read_pages() is triggered and if a page is already present, check
-> > for truncation and move the ractl->_index by mapping_min_nrpages if that
-> > folio was truncated. This is done to ensure we keep the alignment
-> > requirement while adding a folio to the page cache.
-> > 
-> > page_cache_ra_order() tries to allocate folio to the page cache with a
-> > higher order if the index aligns with that order. Modify it so that the
-> > order does not go below the min_order requirement of the page cache.
-> 
-> This paragraph doesn't make sense.  We have an assertion that there's no
-> folio in the page cache with a lower order than the minimum, so this
-> seems to be describing a situation that can't happen.  Does it need to
-> be rephrased (because you're actually describing something else) or is
-> it just stale?
-> 
-Hmm, maybe I need to explain better here.
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   928a87efa42302a23bb9554be081a28058495f22
+commit: c1f5204efcbcced83f67f12fa8f1a7f5f244fb87 cpumask: add cpumask_weight_andnot()
+date:   8 weeks ago
+config: powerpc64-randconfig-r009-20220608 (https://download.01.org/0day-ci/archive/20240326/202403262146.GvXAshxv-lkp@intel.com/config)
+compiler: powerpc64-linux-gcc (GCC) 13.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240326/202403262146.GvXAshxv-lkp@intel.com/reproduce)
 
-> > @@ -489,12 +520,18 @@ void page_cache_ra_order(struct readahead_control *ractl,
-> >  {
-> >  	struct address_space *mapping = ractl->mapping;
-> >  	pgoff_t index = readahead_index(ractl);
-> > +	unsigned int min_order = mapping_min_folio_order(mapping);
-> >  	pgoff_t limit = (i_size_read(mapping->host) - 1) >> PAGE_SHIFT;
-> >  	pgoff_t mark = index + ra->size - ra->async_size;
-> >  	int err = 0;
-> >  	gfp_t gfp = readahead_gfp_mask(mapping);
-> > +	unsigned int min_ra_size = max(4, mapping_min_folio_nrpages(mapping));
-> >  
-> > -	if (!mapping_large_folio_support(mapping) || ra->size < 4)
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202403262146.GvXAshxv-lkp@intel.com/
 
-I had one question: `4` was used here because we could not support order
-1 folios I assume? As we now support order-1 folios, can this fallback
-if ra->size < min_nrpages?
+All warnings (new ones prefixed by >>):
 
-> > +	/*
-> > +	 * Fallback when size < min_nrpages as each folio should be
-> > +	 * at least min_nrpages anyway.
-> > +	 */
-> > +	if (!mapping_large_folio_support(mapping) || ra->size < min_ra_size)
-> >  		goto fallback;
-> >  
-> >  	limit = min(limit, index + ra->size - 1);
-> > @@ -505,9 +542,19 @@ void page_cache_ra_order(struct readahead_control *ractl,
-> >  			new_order = MAX_PAGECACHE_ORDER;
-> >  		while ((1 << new_order) > ra->size)
-> >  			new_order--;
-> > +		if (new_order < min_order)
-> > +			new_order = min_order;
-> 
-> I think these are the two lines you're describing in the paragraph that
-Yes. At least I tried to ;)
+>> powerpc64-linux-ld: warning: orphan section `.bss..Lubsan_data253' from `kernel/ptrace.o' being placed in section `.bss..Lubsan_data253'
+>> powerpc64-linux-ld: warning: orphan section `.bss..Lubsan_data260' from `fs/overlayfs/copy_up.o' being placed in section `.bss..Lubsan_data260'
+>> powerpc64-linux-ld: warning: orphan section `.bss..Lubsan_data253' from `kernel/ptrace.o' being placed in section `.bss..Lubsan_data253'
+>> powerpc64-linux-ld: warning: orphan section `.bss..Lubsan_data260' from `fs/overlayfs/copy_up.o' being placed in section `.bss..Lubsan_data260'
+>> powerpc64-linux-ld: warning: orphan section `.bss..Lubsan_data253' from `kernel/ptrace.o' being placed in section `.bss..Lubsan_data253'
+>> powerpc64-linux-ld: warning: orphan section `.bss..Lubsan_data260' from `fs/overlayfs/copy_up.o' being placed in section `.bss..Lubsan_data260'
 
-> doesn't make sense to me?  And if so, I think they're useless?
-
-We need this because:
-The caller might pass new_order = 0 (such as when we start mmap around)
-but ra_order will do the "right" thing by taking care of the page cache
-alignment requirements. The previous revision did this other way around
-and it felt a bit all over the place.
-
-One of the main changes I did for this revision is to adapt the
-functions that alloc and add a folio to respect the min order alignment,
-and not on the caller side.
-
-The rationale I went for this is three fold: 
-- the callers of page_cache_ra_order() and page_cache_ra_unbounded() 
-  requests a range for which we need to do add a folio and read it. They
-  don't care about the folios size and alignment.
-
-- file_ra_state also does not need any poking around because we will
-  make sure to cover from [ra->start, ra->size] and update ra->size if
-  we spilled over due to the min_order requirement(like it was done before).
-
-- And this is also consistent with what we do in filemap where we adjust
-  the index before adding the folio to the page cache.
-
-Let me know if this approach makes sense.
-> 
-> > @@ -515,7 +562,7 @@ void page_cache_ra_order(struct readahead_control *ractl,
-> >  		if (index & ((1UL << order) - 1))
-> >  			order = __ffs(index);
-> >  		/* Don't allocate pages past EOF */
-> > -		while (index + (1UL << order) - 1 > limit)
-> > +		while (order > min_order && index + (1UL << order) - 1 > limit)
-> >  			order--;
-> 
-> This raises an interesting question that I don't know if we have a test
-> for.  POSIX says that if we mmap, let's say, the first 16kB of a 10kB
-> file, then we can store into offset 0-12287, but stores to offsets
-> 12288-16383 get a signal (I forget if it's SEGV or BUS).  Thus far,
-> we've declined to even create folios in the page cache that would let us
-> create PTEs for offset 12288-16383, so I haven't paid too much attention
-> to this.  Now we're going to have folios that extend into that range, so
-> we need to be sure that when we mmap(), we only create PTEs that go as
-> far as 12287.
-> 
-> Can you check that we have such an fstest, and that we still pass it
-> with your patches applied and a suitably large block size?
-
-Hmmm, good point.
-I think you mean this from the man page:
-
-SIGBUS Attempted access to a page of the buffer that lies beyond the end
-of the mapped file.  For an explanation of the treatment of the bytes in
-the page that corresponds to the end of a mapped file that is not a 
-multiple of the page size, see NOTES.
-
-I will add a test case for this and see what happens. I am not sure if I
-need to make some changes or the current implementation should hold.
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
