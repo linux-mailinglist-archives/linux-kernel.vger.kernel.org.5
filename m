@@ -1,71 +1,71 @@
-Return-Path: <linux-kernel+bounces-119746-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-119747-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id C4B0D88CCA3
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 20:05:17 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B141F88CCA7
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 20:06:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3BEAE1F80BAD
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 19:05:17 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AB00BB278C3
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 19:05:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B0CBB13C9D1;
-	Tue, 26 Mar 2024 19:04:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2385214265;
+	Tue, 26 Mar 2024 19:04:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fzVWRiSP"
-Received: from mail-pf1-f169.google.com (mail-pf1-f169.google.com [209.85.210.169])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="c+T4LvRl"
+Received: from mail-pg1-f178.google.com (mail-pg1-f178.google.com [209.85.215.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1DC6813CFB0
-	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 19:04:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A312013CC67
+	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 19:04:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711479876; cv=none; b=LLoPtUIcFNd857fTLiCEBke5S32D7fSOG0HDJMX29eGO/lIqoucpHXORn5ISGrEjXyQ0xzsEgLvO6HVCzyB17Lrb59PtUr2nulUGt922r4qiEYCr4tL0dH4udOPz1LVW/G605fRfYUgwtOfa2E8PLzWLkQ/a8OiUXju8vKuDvTs=
+	t=1711479881; cv=none; b=t0p9kewK1FmtKZXSLJRdnDfW+hSALLb+/PZBcCa0z30fdKiAZMCmcJlO/pgiQhieBjS1NJ9vorveVCL+w8wxUiOerCuigcc0FZDCCDYizuKeXcMwKZ9Zy58zVkZ9WYs2kpWJcCUFHBSOCOzeJdhkRXUDifeH0EKYj8meBvn/hkk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711479876; c=relaxed/simple;
-	bh=eyZTUAHh8OYDAQTYqNh8h4hZVIRE+gV03Q04b8TImjs=;
+	s=arc-20240116; t=1711479881; c=relaxed/simple;
+	bh=BhNSRTRGFLZQR9q1mLGd37SZqvsgnnuAv8LnFnESSus=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=oldYAw3H4Gj8qM63ajxY08VfG+0LTzykOoetUdMtS3v2KItxPFgzWBBROM3HAF86BCuC18rzfQymvr2wtNVeA0GBaGQqHxWp17ZEVYObGQ2T0Kv5KEk6qGwx+k1Y6sCEwnnRIRROqzdeYv4uS0K1/DoBd1yX/deXK3BuC/yVcsA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=fzVWRiSP; arc=none smtp.client-ip=209.85.210.169
+	 MIME-Version; b=h9UzgOyLGzgj3E+OUKEggPYXJd7GutTQ7aK805agNEtrgQu+57T+AKXv9utOgSzk83A8fDEaPk85s1b4j6hYeVRiVNU9fAE4lThUPwS/wXzU28XSyR7zH0f0cvvZTF0Z8Wk/IgJRt8ibF2sEMSM0A3oz8PptOhNORTFrlPKpLcU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=c+T4LvRl; arc=none smtp.client-ip=209.85.215.178
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f169.google.com with SMTP id d2e1a72fcca58-6e6b5432439so4576833b3a.1
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 12:04:34 -0700 (PDT)
+Received: by mail-pg1-f178.google.com with SMTP id 41be03b00d2f7-5d42e7ab8a9so2795379a12.3
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 12:04:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711479874; x=1712084674; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1711479879; x=1712084679; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:reply-to:references
          :in-reply-to:message-id:date:subject:cc:to:from:from:to:cc:subject
          :date:message-id:reply-to;
-        bh=AlnFQa5IuF1FU+kiw8JlfLUfSH7ltUVyYlgQl237ZM0=;
-        b=fzVWRiSPHOleXdKyZUp8F/rVo5I12zVscicmOUR5AONpRolCHIV6+dZhe1IqUon9i5
-         N2oe/gn5XtzZbpDXHOud4ni91nIN70lY3dxoocWFmYReSr8fXdHP+jNZtWDAwTkAEzQd
-         KHZHLZE1GSRLXAaVMos2YkGvSmUm49wUeBoq9wdcHbb52on40IiLVrs/X6k4Bd8S8vHk
-         r/4fOWYSw/plBz5s/vObAi4XBaa9UN23OQWCq1N2RCJ5YmnuCjEbbpJ18LuaV5DGZ9F7
-         jKjo6fDYdQ4Pmd6k4ZrFKbAMykccF0wNrZbnxED5TnOWF11MdRxNn4t2JjBR+E8KuCaI
-         o1AQ==
+        bh=QbZCOjluZtqwe+IJf5t2wPcomK28PDyLWYCalJheOPc=;
+        b=c+T4LvRlxNKyDu9GePa4TD/uptUmovAfahxSsKUHHOfiUu7LZi/9jAA7Brhr8QMoYy
+         UVXnNf0tc9HLg4Ew7r26uLWsuYCl8Kbz6+KV7T00fvUHbor+FenowYXTixxKkMPva+Nq
+         uf+fqfJ+IkDYn0yLnnTbERaBSYyGTwkK3SYou6GOi6Yq6Y4SPkxAzmPmNs8ZKnjmkHZs
+         wkyrsE3cyZ1xYqu/jQXrXPEI+/VoR3h/CYgYB9Nx1Zkh1I/yXwErzS299w3fiffnwxvK
+         gA1JKMm7bC4HKFXX03BBLPtskvl42mpOEfp0Hf361P8RAgiRtgLQtqDh9XBxv2lrD3TF
+         ji8w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711479874; x=1712084674;
+        d=1e100.net; s=20230601; t=1711479879; x=1712084679;
         h=content-transfer-encoding:mime-version:reply-to:references
          :in-reply-to:message-id:date:subject:cc:to:from:x-gm-message-state
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=AlnFQa5IuF1FU+kiw8JlfLUfSH7ltUVyYlgQl237ZM0=;
-        b=m+fqH1+QXrzNqESXCcV9daeeQZm6IuVI5i06dfan3JE32BREBU7SpWm/d7f9utaFw4
-         fVWWrLJcbgohGkpZCFRDa9sfQJ9lFeqaDGmAwwVlaLEmv+Edj14xLP4VcHVY1XjqTJsA
-         VlEAFp/bBsVy6ThrdsQPHllOC4u3bWDt0QD1jt2GapXyZbRBvG+WEcsMXenH+bKHwPEs
-         IJVELHdLPzxnYt/h4usrJAInaPNw4wGITnEjnXaGRtkINeuO3rZnIxJaFHs2m/JI9GEJ
-         jvoZd6Sd6AU8Qi7J3EhcrfRKPFsLsO3mCqJg1ujAlGFUNLto+owYvoNsY8y5n4AaquwQ
-         1S0w==
-X-Forwarded-Encrypted: i=1; AJvYcCV9iTRU0qO+r89AD1bHHEGIN7Uj7oRbj7nAvSHLwd3MW7afeI1kT79AKRwwMJPVJgNvUtgycoPKH3f/VG77G57DfiiahQEci7/7L7DE
-X-Gm-Message-State: AOJu0Yz9uw0YuFxWEENEBL58O0MqionGKZwkCSnz2IQvd7lJAbzG+5DQ
-	Oqu19CEK9ZYSBcog8WkrsNhK+79xPcQ1R6oe2FAMU5kj0q+KIMrmxG5VPQHt93uoVzZP
-X-Google-Smtp-Source: AGHT+IG6+WnJXSjAIBqkKDWHn5ts/KmlVMWEdeN8j0WCY8uGY9blEEX6n3YjmXe+budCoU47FIqAOg==
-X-Received: by 2002:a05:6a00:3d49:b0:6e8:f8a9:490e with SMTP id lp9-20020a056a003d4900b006e8f8a9490emr2484291pfb.5.1711479874359;
-        Tue, 26 Mar 2024 12:04:34 -0700 (PDT)
+        bh=QbZCOjluZtqwe+IJf5t2wPcomK28PDyLWYCalJheOPc=;
+        b=lfp5kLPoTxV8e3z3in4TH3ahk4wMgmi2zyu5GaX67gETyLwXs4PLo3gM1i1U06Mkz9
+         Sb2ABqQMMHi9uVxLNs6AG6jQrUTj1jxS6iWtKYLl3IUnkjCoEtx7EJirWxuQCsr155C4
+         voazUBZqJUVJZqu9xbHWheshxr4I4cO4PDwIrtiUeEsb6X7pOPqTa5R2KSDns0dAl2mI
+         2tClOA4tZonKs7MHFQwJqNzUERIHPhwMWjE16fLmBsVgNuLZT2wHUd9w1/12Vm3RwrUk
+         s+Y3eca8vDyTMwiCJwNLHHMP1RcnIcBY0eMvPgJxNOpZJW6srIU/gU22DnmP+OoXPSKF
+         uC1w==
+X-Forwarded-Encrypted: i=1; AJvYcCXWLTG6Fv1ysrWkU3kya8OhCdeweN4utZIPzFZ4NzwRodTL2oX7CdacqHxIMon0/seqWDTk6AOptmChJDNrJ42gwSYQr0luJeouwK4f
+X-Gm-Message-State: AOJu0Yy92OHomcEp7Cc2mzaoCI5t20oWmsiMecWu7BZ83MVn/OmHB6w7
+	wRn6BCTchCymrIph6MnyLEDUT7ODLXhmIrBdNDdm271Qf/OwpSXQ
+X-Google-Smtp-Source: AGHT+IHPrVL9xajG03QLF+CldgXO1e+DdNsfAc6WD2CDV/JcM0VHVNqqhHe8QUEsP8IyBUI6ApCsOQ==
+X-Received: by 2002:a05:6a20:9187:b0:1a3:c113:f441 with SMTP id v7-20020a056a20918700b001a3c113f441mr8667699pzd.15.1711479878748;
+        Tue, 26 Mar 2024 12:04:38 -0700 (PDT)
 Received: from KASONG-MB2.tencent.com ([115.171.40.106])
-        by smtp.gmail.com with ESMTPSA id j14-20020aa783ce000000b006ea790c2232sm6298350pfn.79.2024.03.26.12.04.30
+        by smtp.gmail.com with ESMTPSA id j14-20020aa783ce000000b006ea790c2232sm6298350pfn.79.2024.03.26.12.04.34
         (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
-        Tue, 26 Mar 2024 12:04:33 -0700 (PDT)
+        Tue, 26 Mar 2024 12:04:38 -0700 (PDT)
 From: Kairui Song <ryncsn@gmail.com>
 To: linux-mm@kvack.org
 Cc: "Huang, Ying" <ying.huang@intel.com>,
@@ -84,9 +84,9 @@ Cc: "Huang, Ying" <ying.huang@intel.com>,
 	Andrew Morton <akpm@linux-foundation.org>,
 	linux-kernel@vger.kernel.org,
 	Kairui Song <kasong@tencent.com>
-Subject: [RFC PATCH 04/10] mm/swap: remove cache bypass swapin
-Date: Wed, 27 Mar 2024 02:50:26 +0800
-Message-ID: <20240326185032.72159-5-ryncsn@gmail.com>
+Subject: [RFC PATCH 05/10] mm/swap: clean shadow only in unmap path
+Date: Wed, 27 Mar 2024 02:50:27 +0800
+Message-ID: <20240326185032.72159-6-ryncsn@gmail.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240326185032.72159-1-ryncsn@gmail.com>
 References: <20240326185032.72159-1-ryncsn@gmail.com>
@@ -101,248 +101,191 @@ Content-Transfer-Encoding: 8bit
 
 From: Kairui Song <kasong@tencent.com>
 
-We used to have the cache bypass swapin path for better performance,
-but by removing it, more optimization can be applied and have
-an even better overall performance and less hackish.
+After removing the cache bypass swapin, the first thing could be
+gone is all the clear_shadow_from_swap_cache calls. Currently
+clear_shadow_from_swap_cache is being called in many paths.
+It's currently being called by swap_range_free which has two
+direct callers:
 
-And these optimizations are not easily doable or not doable at all
-without this.
+- swap_free_cluster, which is only called by put_swap_folio to free up
+  the shadow of a slot cluster.
+- swap_entry_free, which is only called by swapcache_free_entries to
+  free up shadow of a slot.
 
-This patch simply removes it, and the performance will drop heavily
-for simple swapin, things won't get this worse for real workloads
-but still observable. Following commits will fix this and archive a
-better performance.
+And these two are very commonly used everywhere in SWAP codes.
 
-Swapout/in 30G zero pages from ZRAM (This mostly measures overhead
-of swap path itself, because zero pages are not compressed but simply
-recorded in ZRAM, and performance drops more as SWAP device is getting
-full):
+Notice the shadow is only written by __delete_from_swap_cache after
+after a successful SWAP out, so clearly we only want to clear shadow
+after SWAP in (the shadow is used and no longer needed) or Unmap/MADV_FREE.
+
+After all swapin is using cached swapin path, clear_shadow_from_swap_cache
+is not needed for swapin anymore, because we have to insert the folio
+first, and this already removed the shadow. So we only need to clear the
+shadow for Unmap/MADV_FREE.
+
+All direct/indirect caller of swap_free_cluster and swap_entry_free
+are listed below:
+
+- swap_free_cluster:
+  -> put_swap_folio (Clean the cache flag and try delete shadow, after
+                     removing the cache or error handling)
+    -> delete_from_swap_cache
+    -> __remove_mapping
+    -> shmem_writepage
+    -> folio_alloc_swap
+    -> add_to_swap
+    -> __read_swap_cache_async
+- swap_entry_free
+  -> swapcache_free_entries
+    -> drain_slots_cache_cpu
+    -> free_swap_slot
+      -> put_swap_folio (Already covered above)
+      -> __swap_entry_free / swap_free
+        -> free_swap_and_cache (Called by Unmap/Zap/MADV_FREE)
+          -> madvise_free_single_vma
+          -> unmap_page_range
+          -> shmem_undo_range
+        -> swap_free (Called by swapin path)
+          -> do_swap_page (Swapin path)
+          -> alloc_swapdev_block/free_all_swap_pages ()
+          -> try_to_unmap_one (Error handling, no shadow)
+          -> shmem_set_folio_swapin_error (Shadow just gone)
+          -> shmem_swapin_folio (Shmem's do_swap_page)
+          -> unuse_pte (Swapoff, which always use swapcache)
+
+So now we only need to call clear_shadow_from_swap_cache in
+free_swap_and_cache because all swapin/out will went through swap cache
+now. Previously all above functions could invoke
+clear_shadow_from_swap_cache in case a cache bypass swapin left a entry
+with uncleared shadow.
+
+Also make clear_shadow_from_swap_cache only clear one entry for
+simplicity.
 
 Test result of sequential swapin/out:
 
                Before (us)        After (us)
-Swapout:       33619409           33624641
-Swapin:        32393771           41614858 (-28.4%)
-Swapout (THP): 7817909            7795530
-Swapin (THP) : 32452387           41708471 (-28.4%)
+Swapout:       33624641           33648529
+Swapin:        41614858           40667696 (+2.3%)
+Swapout (THP): 7795530            7658664
+Swapin (THP) : 41708471           40602278 (+2.7%)
 
 Signed-off-by: Kairui Song <kasong@tencent.com>
 ---
- mm/memory.c     | 18 ++++-------------
- mm/swap.h       | 10 +++++-----
- mm/swap_state.c | 53 ++++++++++---------------------------------------
- mm/swapfile.c   | 13 ------------
- 4 files changed, 19 insertions(+), 75 deletions(-)
+ mm/swap.h       |  6 ++----
+ mm/swap_state.c | 33 ++++++++-------------------------
+ mm/swapfile.c   |  6 ++++--
+ 3 files changed, 14 insertions(+), 31 deletions(-)
 
-diff --git a/mm/memory.c b/mm/memory.c
-index dfdb620a9123..357d239ee2f6 100644
---- a/mm/memory.c
-+++ b/mm/memory.c
-@@ -3932,7 +3932,6 @@ vm_fault_t do_swap_page(struct vm_fault *vmf)
- 	struct page *page;
- 	struct swap_info_struct *si = NULL;
- 	rmap_t rmap_flags = RMAP_NONE;
--	bool need_clear_cache = false;
- 	bool exclusive = false;
- 	swp_entry_t entry;
- 	pte_t pte;
-@@ -4000,14 +3999,9 @@ vm_fault_t do_swap_page(struct vm_fault *vmf)
- 	if (!folio) {
- 		if (data_race(si->flags & SWP_SYNCHRONOUS_IO) &&
- 		    __swap_count(entry) == 1) {
--			/* skip swapcache and readahead */
- 			folio = swapin_direct(entry, GFP_HIGHUSER_MOVABLE, vmf);
--			if (PTR_ERR(folio) == -EBUSY)
--				goto out;
--			need_clear_cache = true;
- 		} else {
- 			folio = swapin_readahead(entry, GFP_HIGHUSER_MOVABLE, vmf);
--			swapcache = folio;
- 		}
- 
- 		if (!folio) {
-@@ -4023,6 +4017,7 @@ vm_fault_t do_swap_page(struct vm_fault *vmf)
- 			goto unlock;
- 		}
- 
-+		swapcache = folio;
- 		page = folio_file_page(folio, swp_offset(entry));
- 
- 		/* Had to read the page from swap area: Major fault */
-@@ -4187,7 +4182,7 @@ vm_fault_t do_swap_page(struct vm_fault *vmf)
- 	vmf->orig_pte = pte;
- 
- 	/* ksm created a completely new copy */
--	if (unlikely(folio != swapcache && swapcache)) {
-+	if (unlikely(folio != swapcache)) {
- 		folio_add_new_anon_rmap(folio, vma, vmf->address);
- 		folio_add_lru_vma(folio, vma);
- 	} else {
-@@ -4201,7 +4196,7 @@ vm_fault_t do_swap_page(struct vm_fault *vmf)
- 	arch_do_swap_page(vma->vm_mm, vma, vmf->address, pte, vmf->orig_pte);
- 
- 	folio_unlock(folio);
--	if (folio != swapcache && swapcache) {
-+	if (folio != swapcache) {
- 		/*
- 		 * Hold the lock to avoid the swap entry to be reused
- 		 * until we take the PT lock for the pte_same() check
-@@ -4227,9 +4222,6 @@ vm_fault_t do_swap_page(struct vm_fault *vmf)
- 	if (vmf->pte)
- 		pte_unmap_unlock(vmf->pte, vmf->ptl);
- out:
--	/* Clear the swap cache pin for direct swapin after PTL unlock */
--	if (need_clear_cache)
--		swapcache_clear(si, entry);
- 	if (si)
- 		put_swap_device(si);
- 	return ret;
-@@ -4240,12 +4232,10 @@ vm_fault_t do_swap_page(struct vm_fault *vmf)
- 	folio_unlock(folio);
- out_release:
- 	folio_put(folio);
--	if (folio != swapcache && swapcache) {
-+	if (folio != swapcache) {
- 		folio_unlock(swapcache);
- 		folio_put(swapcache);
- 	}
--	if (need_clear_cache)
--		swapcache_clear(si, entry);
- 	if (si)
- 		put_swap_device(si);
- 	return ret;
 diff --git a/mm/swap.h b/mm/swap.h
-index aee134907a70..ac9573b03432 100644
+index ac9573b03432..7721ddb3bdbc 100644
 --- a/mm/swap.h
 +++ b/mm/swap.h
-@@ -41,7 +41,6 @@ void __delete_from_swap_cache(struct folio *folio,
+@@ -39,8 +39,7 @@ int add_to_swap_cache(struct folio *folio, swp_entry_t entry,
+ void __delete_from_swap_cache(struct folio *folio,
+ 			      swp_entry_t entry, void *shadow);
  void delete_from_swap_cache(struct folio *folio);
- void clear_shadow_from_swap_cache(int type, unsigned long begin,
- 				  unsigned long end);
--void swapcache_clear(struct swap_info_struct *si, swp_entry_t entry);
+-void clear_shadow_from_swap_cache(int type, unsigned long begin,
+-				  unsigned long end);
++void clear_shadow_from_swap_cache(swp_entry_t entry);
  struct folio *swap_cache_get_folio(swp_entry_t entry,
  		struct vm_area_struct *vma, unsigned long addr);
  struct folio *filemap_get_incore_folio(struct address_space *mapping,
-@@ -100,14 +99,15 @@ static inline struct folio *swapin_readahead(swp_entry_t swp, gfp_t gfp_mask,
+@@ -148,8 +147,7 @@ static inline void delete_from_swap_cache(struct folio *folio)
  {
- 	return NULL;
- }
--
--static inline int swap_writepage(struct page *p, struct writeback_control *wbc)
-+static inline struct folio *swapin_direct(swp_entry_t entry, gfp_t flag,
-+			struct vm_fault *vmf);
- {
--	return 0;
-+	return NULL;
  }
  
--static inline void swapcache_clear(struct swap_info_struct *si, swp_entry_t entry)
-+static inline int swap_writepage(struct page *p, struct writeback_control *wbc)
+-static inline void clear_shadow_from_swap_cache(int type, unsigned long begin,
+-				unsigned long end)
++static inline void clear_shadow_from_swap_cache(swp_entry_t entry)
  {
-+	return 0;
  }
  
- static inline struct folio *swap_cache_get_folio(swp_entry_t entry,
 diff --git a/mm/swap_state.c b/mm/swap_state.c
-index 2a9c6bdff5ea..49ef6250f676 100644
+index 49ef6250f676..b84e7b0ea4a5 100644
 --- a/mm/swap_state.c
 +++ b/mm/swap_state.c
-@@ -880,61 +880,28 @@ static struct folio *swap_vma_readahead(swp_entry_t targ_entry, gfp_t gfp_mask,
+@@ -245,34 +245,17 @@ void delete_from_swap_cache(struct folio *folio)
+ 	folio_ref_sub(folio, folio_nr_pages(folio));
  }
  
- /**
-- * swapin_direct - swap in folios skipping swap cache and readahead
-+ * swapin_direct - swap in folios skipping readahead
-  * @entry: swap entry of this memory
-  * @gfp_mask: memory allocation flags
-  * @vmf: fault information
-  *
-- * Returns the struct folio for entry and addr after the swap entry is read
-- * in.
-+ * Returns the folio for entry after it is read in.
-  */
- struct folio *swapin_direct(swp_entry_t entry, gfp_t gfp_mask,
- 			    struct vm_fault *vmf)
+-void clear_shadow_from_swap_cache(int type, unsigned long begin,
+-				unsigned long end)
++void clear_shadow_from_swap_cache(swp_entry_t entry)
  {
--	struct vm_area_struct *vma = vmf->vma;
-+	struct mempolicy *mpol;
- 	struct folio *folio;
--	void *shadow = NULL;
+-	unsigned long curr = begin;
+-	void *old;
 -
--	/*
--	 * Prevent parallel swapin from proceeding with
--	 * the cache flag. Otherwise, another thread may
--	 * finish swapin first, free the entry, and swapout
--	 * reusing the same entry. It's undetectable as
--	 * pte_same() returns true due to entry reuse.
--	 */
--	if (swapcache_prepare(entry)) {
--		/* Relax a bit to prevent rapid repeated page faults */
--		schedule_timeout_uninterruptible(1);
--		return ERR_PTR(-EBUSY);
--	}
+-	for (;;) {
+-		swp_entry_t entry = swp_entry(type, curr);
+-		struct address_space *address_space = swap_address_space(entry);
+-		XA_STATE(xas, &address_space->i_pages, curr);
 -
--	/* skip swapcache */
--	folio = vma_alloc_folio(GFP_HIGHUSER_MOVABLE, 0,
--				vma, vmf->address, false);
--	if (folio) {
--		__folio_set_locked(folio);
--		__folio_set_swapbacked(folio);
--
--		if (mem_cgroup_swapin_charge_folio(folio,
--					vma->vm_mm, GFP_KERNEL,
--					entry)) {
--			folio_unlock(folio);
--			folio_put(folio);
--			return NULL;
+-		xas_set_update(&xas, workingset_update_node);
++	struct address_space *address_space = swap_address_space(entry);
++	XA_STATE(xas, &address_space->i_pages, swp_offset(entry));
+ 
+-		xa_lock_irq(&address_space->i_pages);
+-		xas_for_each(&xas, old, end) {
+-			if (!xa_is_value(old))
+-				continue;
+-			xas_store(&xas, NULL);
 -		}
--		mem_cgroup_swapin_uncharge_swap(entry);
--
--		shadow = get_shadow_from_swap_cache(entry);
--		if (shadow)
--			workingset_refault(folio, shadow);
-+	bool page_allocated;
-+	pgoff_t ilx;
+-		xa_unlock_irq(&address_space->i_pages);
++	xas_set_update(&xas, workingset_update_node);
  
--		folio_add_lru(folio);
-+	mpol = get_vma_policy(vmf->vma, vmf->address, 0, &ilx);
-+	folio = __read_swap_cache_async(entry, gfp_mask, mpol, ilx,
-+					&page_allocated, false);
-+	mpol_cond_put(mpol);
- 
--		/* To provide entry to swap_read_folio() */
--		folio->swap = entry;
-+	if (page_allocated)
- 		swap_read_folio(folio, true, NULL);
--		folio->private = NULL;
+-		/* search the next swapcache until we meet end */
+-		curr >>= SWAP_ADDRESS_SPACE_SHIFT;
+-		curr++;
+-		curr <<= SWAP_ADDRESS_SPACE_SHIFT;
+-		if (curr > end)
+-			break;
 -	}
- 
- 	return folio;
++	xa_lock_irq(&address_space->i_pages);
++	if (xa_is_value(xas_load(&xas)))
++		xas_store(&xas, NULL);
++	xa_unlock_irq(&address_space->i_pages);
  }
+ 
+ /*
 diff --git a/mm/swapfile.c b/mm/swapfile.c
-index 4dd894395a0f..ae8d3aa05df7 100644
+index ae8d3aa05df7..bafae23c0f26 100644
 --- a/mm/swapfile.c
 +++ b/mm/swapfile.c
-@@ -3389,19 +3389,6 @@ int swapcache_prepare(swp_entry_t entry)
- 	return __swap_duplicate(entry, SWAP_HAS_CACHE);
- }
- 
--void swapcache_clear(struct swap_info_struct *si, swp_entry_t entry)
--{
--	struct swap_cluster_info *ci;
--	unsigned long offset = swp_offset(entry);
--	unsigned char usage;
--
--	ci = lock_cluster_or_swap_info(si, offset);
--	usage = __swap_entry_free_locked(si, offset, SWAP_HAS_CACHE);
--	unlock_cluster_or_swap_info(si, ci);
--	if (!usage)
--		free_swap_slot(entry);
--}
--
- struct swap_info_struct *swp_swap_info(swp_entry_t entry)
+@@ -724,7 +724,6 @@ static void add_to_avail_list(struct swap_info_struct *p)
+ static void swap_range_free(struct swap_info_struct *si, unsigned long offset,
+ 			    unsigned int nr_entries)
  {
- 	return swap_type_to_swap_info(swp_type(entry));
+-	unsigned long begin = offset;
+ 	unsigned long end = offset + nr_entries - 1;
+ 	void (*swap_slot_free_notify)(struct block_device *, unsigned long);
+ 
+@@ -748,7 +747,6 @@ static void swap_range_free(struct swap_info_struct *si, unsigned long offset,
+ 			swap_slot_free_notify(si->bdev, offset);
+ 		offset++;
+ 	}
+-	clear_shadow_from_swap_cache(si->type, begin, end);
+ 
+ 	/*
+ 	 * Make sure that try_to_unuse() observes si->inuse_pages reaching 0
+@@ -1605,6 +1603,8 @@ bool folio_free_swap(struct folio *folio)
+ /*
+  * Free the swap entry like above, but also try to
+  * free the page cache entry if it is the last user.
++ * Useful when clearing the swap map and swap cache
++ * without reading swap content (eg. unmap, MADV_FREE)
+  */
+ int free_swap_and_cache(swp_entry_t entry)
+ {
+@@ -1626,6 +1626,8 @@ int free_swap_and_cache(swp_entry_t entry)
+ 		    !swap_page_trans_huge_swapped(p, entry))
+ 			__try_to_reclaim_swap(p, swp_offset(entry),
+ 					      TTRS_UNMAPPED | TTRS_FULL);
++		if (!count)
++			clear_shadow_from_swap_cache(entry);
+ 		put_swap_device(p);
+ 	}
+ 	return p != NULL;
 -- 
 2.43.0
 
