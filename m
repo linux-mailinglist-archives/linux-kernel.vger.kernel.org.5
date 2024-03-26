@@ -1,202 +1,228 @@
-Return-Path: <linux-kernel+bounces-119089-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-119088-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4F86388C40A
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 14:47:41 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7C4C788C408
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 14:47:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B972C1F63E73
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 13:47:40 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 321B2308D79
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 13:47:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C4F3C1272CF;
-	Tue, 26 Mar 2024 13:43:54 +0000 (UTC)
-Received: from CHN02-SH0-obe.outbound.protection.partner.outlook.cn (mail-sh0chn02on2113.outbound.protection.partner.outlook.cn [139.219.146.113])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EDA977FBAD;
+	Tue, 26 Mar 2024 13:43:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="teLviXGM"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E81D670CC2;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E2082768FE
+	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 13:43:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1711460632; cv=none; b=O6maIq+uR0PjJGyvGwGD8S3zebcJPU8qIdN3I8/0kLfNuBBO823M+i8ma2F0BAd+l4JZZpL7GIXU755rmap6LdeFBJBQOEBUHn7QpkD/PbPrhSnXpB4Ty5O/gjP/sdEBcwjm6JmBCBHJ0O1JC728YMTiAbc6bTVZEm91WTm0bAQ=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1711460632; c=relaxed/simple;
+	bh=MpdHKo/pfARWrNEUHGDFnEqINIOljO1DHUfimSXa2V4=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Yo9cKE3MbJUUUXE3e/SvX4NQ0FQioROZFBaLTs5/Oths+N+ZXiyXA70P0Ew8ZCyEe3zuaK2fLVnE0qGUKa6V6ScVISjAxpmvRBdDHj/De1AC6lEfEI7C0oKukrs1WUSpz8jEe+Oa1Tim1lVDEFUhvK9OGgOCH3NmwBQESD94yH8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=teLviXGM; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1B7C8C433C7;
 	Tue, 26 Mar 2024 13:43:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=139.219.146.113
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711460634; cv=fail; b=mdiZqnYEppa7xAXWvneajzIaCgTv+/qChwOzKpHvPevQuYE2/hM/EyEseRl0djRBw38MOTFIq0WC+599G6nlymhl61s7lcYwT/mDbx5GKGscfZIonKqXsYjmuXEJYR/d/X4Qiv/k3egie3FDZuaBUev94/fCZG7w+w/lO+j7HDU=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711460634; c=relaxed/simple;
-	bh=fgVSZp1/O91+awlYczJc1Vh2BH1ggI7xl9ORKfASGyY=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=E5l/wwfT1bgY5uTEeFxeSPB2rcxRl5MgCJWjxTJydEF6PxYCUT8qgUvbAH3K2HKbxv8fRS1XPTW1RUSyJsntZrQwbGVlYwn03iY5UFFgeMx6f7HO366egJpSmI9FynmHxF8IeYy23+VNkPlaQu3Gbp6syUeOgV9+lGZeR4hRTHQ=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=starfivetech.com; spf=pass smtp.mailfrom=starfivetech.com; arc=fail smtp.client-ip=139.219.146.113
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=starfivetech.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=starfivetech.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=avlogUOBHFONAa9mRa6YU4MhjzH5AJ9lkbA57evVeqa+s7m0QnisSRRF4lkZtFl8rxeSyw1lZmH9lcBNzuzT6svmypahKL8Yn3IBedo/y9Sh/Z5hAk5oWOAyIg4IwtOFWZniOfDcmiUE1ozc23WgUKKBfKsXMu77NVxfGN6LdqGCEFWyc3eaP5l4oq3bOFoSEMLvVSvzoMUBRc4Uj6k0LxKzpcZgITLxgMjLI2U2wECF1fDEOs0rcCnoQHyAwCqOIp26k99zPDr47Fe0YDLC4A5j5aBBLaCEoNKNldXYcmJkc7bmSOO/6ClYOTiBjL205MtZe6SnBaxKhIc8zj1wCA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=fgVSZp1/O91+awlYczJc1Vh2BH1ggI7xl9ORKfASGyY=;
- b=TFkKs4PuNtvyIjt2TluQGP+xmIK+ZbXNk8s+3FXdckHArE1vc1dL22gDjnIi2v5HFooyS+rmdhzhRYw4eDNTR/pldRd6HyDQAVurx8Pv0RDig4pxrWNjkUARIGjr2E/IuvjaeYki6x3LZORw3VZ0Otoc1OPJMq4N9Hr8ETrK1I4wLDl1bV8bgL2sbJApx1+hqdUthpoZwLrLeXOgh3GrSEh2/Xd+obSfJISBl9FT0xMp9miI6fTdNEdDjrW0pU1IJYL0DqeGdbq1m6Jn0o6YLmyqHwJusaj+CgLObEX2QDDcNE3Sk70ZdS7yiNpKsGB9lBxYBOL9NHmBLZavtyDs+Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=starfivetech.com; dmarc=pass action=none
- header.from=starfivetech.com; dkim=pass header.d=starfivetech.com; arc=none
-Received: from NTZPR01MB0956.CHNPR01.prod.partner.outlook.cn
- (2406:e500:c510:8::10) by NTZPR01MB1002.CHNPR01.prod.partner.outlook.cn
- (2406:e500:c510:b::13) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.13; Tue, 26 Mar
- 2024 13:43:22 +0000
-Received: from NTZPR01MB0956.CHNPR01.prod.partner.outlook.cn
- ([fe80::9a50:2c82:c5d4:2b3d]) by
- NTZPR01MB0956.CHNPR01.prod.partner.outlook.cn ([fe80::9a50:2c82:c5d4:2b3d%4])
- with mapi id 15.20.7409.028; Tue, 26 Mar 2024 13:43:22 +0000
-From: Xingyu Wu <xingyu.wu@starfivetech.com>
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, Liam Girdwood
-	<lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Claudiu Beznea
-	<Claudiu.Beznea@microchip.com>, Jaroslav Kysela <perex@perex.cz>, Takashi
- Iwai <tiwai@suse.com>, Rob Herring <robh+dt@kernel.org>, Krzysztof Kozlowski
-	<krzysztof.kozlowski+dt@linaro.org>, Conor Dooley
-	<conor.dooley@microchip.com>
-CC: "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
-	"linux-sound@vger.kernel.org" <linux-sound@vger.kernel.org>
-Subject:
- =?utf-8?B?UkU6IOWbnuWkjTogW1BBVENIIHYyIDEvMl0gQVNvQzogZHQtYmluZGluZ3M6?=
- =?utf-8?Q?_Add_bindings_for_Cadence_I2S-MC_controller?=
-Thread-Topic:
- =?utf-8?B?5Zue5aSNOiBbUEFUQ0ggdjIgMS8yXSBBU29DOiBkdC1iaW5kaW5nczogQWRk?=
- =?utf-8?Q?_bindings_for_Cadence_I2S-MC_controller?=
-Thread-Index: AQHaeqVg8Gitft8lDUSWv/hm2rXn9rFB3QUAgAeCKECAAD4OAIAAZEYQ
-Date: Tue, 26 Mar 2024 13:43:21 +0000
-Message-ID:
- <NTZPR01MB0956230296D881F112F92D119F35A@NTZPR01MB0956.CHNPR01.prod.partner.outlook.cn>
-References: <20240320090239.168743-1-xingyu.wu@starfivetech.com>
- <20240320090239.168743-2-xingyu.wu@starfivetech.com>
- <9d9efb8a-0b3c-4e7a-8673-07cd3b1f5f87@linaro.org>
- <NTZPR01MB0956BD6189974378958562D99F35A@NTZPR01MB0956.CHNPR01.prod.partner.outlook.cn>
- <9b1a5100-8536-4b59-b2e7-d6ebd2ba9e66@linaro.org>
-In-Reply-To: <9b1a5100-8536-4b59-b2e7-d6ebd2ba9e66@linaro.org>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=starfivetech.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: NTZPR01MB0956:EE_|NTZPR01MB1002:EE_
-x-ms-office365-filtering-correlation-id: 883d5523-c0ac-458c-94fc-08dc4d9ab3fa
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info:
- np4yAnpiSm/v06FQnuRY6pT08OGbG44/pzwpuqOvF6LSanmvvtesokUH5P9LPxXt0gRbRZPJwhAMfpZqDalfDyH8xOR71YTw2oYqGZ3CQcaI+h/kGJOnOUGLZQl079LdVGYremQqNhVlDeFvM5WxZ74EnuJocExA2hOfIRBOUUa/MKutTUQVtjz7i/dlO8lvlp0KAUTySvrUuVmPI9rqi2RvYFYH3onfL/aNnZ3YcBbVT/G6SEWQXWtjAHsVQg1oDdXAtJf43naye4Dno2esAWs/QYLkGA4KbeSfhr/oTBktCN1twwpLuN2T8RXGOCuKgY3qE7rWs3pivkrTuhTPIxps2t1fDxGJseuaZzrEVT/IXhyfkzRrUHt2FzpnhK1xfp5ofBsh8ZXEb6cDzxYm69Xv/hW9b3p6gDfQuBafwZ8rsWe/xgiLGF9WvqMFPTPVtoMcpKTYdHV7ZGAgE1UTzpyxSYbPWeUbAFYDswBRV55Fn6zBqb0Bp9HNVK/8jtdeng3UsfRVP2qPtVbfmSIGAhUwjdZ2bGyYNireevcFauOMmRybtqLOCX4BhnGs3y5b+38MEYZj7tcButgcEjTgoUhZPgBSbzW60SN7oG5a0lLejg0kDorWPAkX8RdXinY0
-x-forefront-antispam-report:
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:NTZPR01MB0956.CHNPR01.prod.partner.outlook.cn;PTR:;CAT:NONE;SFS:(13230031)(366007)(41320700004)(7416005)(1800799015)(38070700009);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?utf-8?B?M0o5NTQ5R2tmU2JLK0JpbnN6M3lmRVdrK2ppNU5vaFZOZ2dneENITUQ3ckpz?=
- =?utf-8?B?NVpTcVRhYkkvTE4rTlROeWZwM0g0dDZIZktvK3M3WWd0WktYM29CY1lnUmJ0?=
- =?utf-8?B?WFQzamtQOEUvMHNlWUJRSWhrcWpMbndpZkVKTU0zQTZsN0YrRWMvQUhEUGt3?=
- =?utf-8?B?dUtNUXpwN2JUZzVHME0reDdQN3RZUmJFc1hMSW1sdm1mUVVVcmc5cllNeTRi?=
- =?utf-8?B?dW9YYTVkeTJsdXBrSHJ1R2kwVHppUzNsVGlMc0VtTmZ6UG9WRi9iN1FwTk9T?=
- =?utf-8?B?R090elpuSkJNRjBpNHM0bExzZVBhSUl6S2s4eVAremxqZnRsNDBveVNRQ1JG?=
- =?utf-8?B?eVA1WlJmNmUxRU9pcWtka2tRZ0hlS0kyZXR6dTZsbFQxcllYbnhna0xWSmhM?=
- =?utf-8?B?aVhnU256QmIwTmNza1g5c2lUdGlXeE9zMU4vcW5jTHNzbG8xRTBmQnY4ZjVx?=
- =?utf-8?B?ZG1ycUZqR0RETm53V3YwWlA4RnUzbVR1TjBxdEVDa3kzMXhidzlDYkcvdFNl?=
- =?utf-8?B?Rm1SVE9qa0xoUklrc21ZbEpKc21LaWhXbkJoWVRySThxUmJoaFdIdEJIcS9u?=
- =?utf-8?B?UmVKT1MveUpkbG9Cd1BoSVdNOFdhWllnNjYrOStVeGlsVTNqa1JxaXdIT2lN?=
- =?utf-8?B?UUluTXZtUkVFeTBJK0NjWjdoVUd3Ym0weFpzdTlMcjJUU3FWOHRheExyMmFu?=
- =?utf-8?B?ZEtrL1hGeFJWU20xbHVxYmJYQnNaV09ublRHaFJMVVlpUUQ5SzdOcGdOL3Nr?=
- =?utf-8?B?ejFvZDNuM3NudktWbjg1R3dmVmV6djBkbnFGZ1Bqd053eFpDUkNxZVI2Tmtu?=
- =?utf-8?B?eWp6SEtXNlJtSEdDc3NkYzhMbktGWDJxYWdvSEVTT2VpS2JTVllmWlZDU1gx?=
- =?utf-8?B?eUhmZDVSMUJ6dlFvRjh4MU5aYTBubEtFVzNnMGF5NFNPRFpWbjNiUWp6TnpB?=
- =?utf-8?B?VzRTM1VsRWNodUE2YVQzQU12WUxCb1lrQW5zNnZVNldsSVgrYU5DRnNLaXhO?=
- =?utf-8?B?TWpxbVNicUhmSGJMR1JKUVhIcy9QV2tvVXhJTk9rTmh3djR1TzBCZSthUGtD?=
- =?utf-8?B?N0U4dXR0OHMvSis3dGlBeTBhUkpHZ2J5eGFTYjR2QUZ2dHJqYWxQOVZEdjE3?=
- =?utf-8?B?MVhmcSttNHJPdmFERWpQbXZQNlFTaWNTSGlLSmlaR1BZU2dmTXV2UjFqeGhJ?=
- =?utf-8?B?L1JzRHo1TGtHbTdwamxKZUhFMXRWUURmTExRNW5LWk5oRDRzZWRMZi9oaHVt?=
- =?utf-8?B?aXFxWVhzUXl0VzNkMm13RTFKU3Y3d1I1ZlFLUXJXTFdFcXZ4U3ViUWdIR3R2?=
- =?utf-8?B?R3pTa0xOVFZQZ21RN1NuQW9SenQ4amdTVmFUcW11ZFh2eGlWY29PUWNhTnVF?=
- =?utf-8?B?WWRhdjB1WkVGN0wxZUl0N2VVWVFaN1pjdGxMSVZIeGV5MjB2WC9Fczc4bHhU?=
- =?utf-8?B?NEw4WWswY09oQXBPM0hqM3F4d1l2N0xPRmh2Z3BlaWVkNFA0cHJ0UUQ5Y2No?=
- =?utf-8?B?THRiMjJXTlhQNXdBaWZqUlJmYzcyQ1ZyT0JYTVpQMnk2YjNmTGpBdm5kejJm?=
- =?utf-8?B?T09uVFFJWGRJMkw1enlvZGxqWGhEV0RNTTI2anBLR3loOXowRDdQcFFoa3J5?=
- =?utf-8?B?emJ5YUJYWmpBelowbFlKZElzQ21vTVk2S2tqNXNGZG1BTTJhdjc0MHMvQWdB?=
- =?utf-8?B?alRqR21SeFhlRFZvSUY0dERRR1JXUGNFeWFxNzA2bGxySXZXN2NlU0hPbmZs?=
- =?utf-8?B?dzZpMS9uUEh4ejAwdms3WGRoTHRRQ1Jrd1FLRmduSjM1Y3QvOEdPMEUzTXMw?=
- =?utf-8?B?UFdJMzBKNUt6UzEzdW51MnJVZk9CUjFnWE50a05vVFZjWUdRYnpwa2c4bitT?=
- =?utf-8?B?WC9xMEp5R2MxNitjWWlHYmVIeXRnYy9xQ0hvUlhOS3lsUlNNMWlhQS9MZzFV?=
- =?utf-8?B?bG8ra1pTUW8wdTlseFRIL2hNV1FMbXRkcmpMTTJncFp5TTRNWm1nWkpjVjNr?=
- =?utf-8?B?aTRLaW0vOFNwM0JWdW5mbERxNDFFSFFGbHhmanZNbTlvUVFYLzc0eE5tcjZU?=
- =?utf-8?B?MUloTlFQZVJlRkY5R0Vqd2xoMWdYQm1EL3EyOVJvelpzNnBiWDBjeUpzZHNt?=
- =?utf-8?Q?LsHUDqD5TFr97z29vTrMEW59w?=
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1711460631;
+	bh=MpdHKo/pfARWrNEUHGDFnEqINIOljO1DHUfimSXa2V4=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=teLviXGM1CEIFpViliftf4YncsY+PMH3k7xzGBav3T1W5z1hdGtU7zxnZtaQ1Ypa8
+	 n1pXW7caq/cMSiB7VF8lUNt+mhDRbOenFCHrtfQKwH1OrZkpDpgXHHxYtRjMmeiOkM
+	 SA3hC/q16H8r0t3LLWjncpGfCUbbfaNGgmGemEqD+t8aFluGUPFA2r0PNTQ/7fhRDj
+	 wTeYk2C4jXUVy5vs05/huSDJ/NYQjU2koYHuIYcKWuSU+VFI0S1V/daQ/DnbcKqVkA
+	 b/c9XB2268syaXbQENT38Du2IBG7nsW+bGNFjQNnpaB00flEBuYmGRJumvRzDutKD7
+	 2X7zvRAVDBQlg==
+Message-ID: <a0f95756-aaeb-43d7-93cc-a8befee2ec78@kernel.org>
+Date: Tue, 26 Mar 2024 21:43:48 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-OriginatorOrg: starfivetech.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: NTZPR01MB0956.CHNPR01.prod.partner.outlook.cn
-X-MS-Exchange-CrossTenant-Network-Message-Id: 883d5523-c0ac-458c-94fc-08dc4d9ab3fa
-X-MS-Exchange-CrossTenant-originalarrivaltime: 26 Mar 2024 13:43:21.9456
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 06fe3fa3-1221-43d3-861b-5a4ee687a85c
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: xi73DyGMqO8G+CqqTOSxZVaXaHyPrFtnt35iYlPH/Od4NmRXDMQ8OCpQVrRI1GMZbIG31hKB2mwMBRhZmuSxm6c/BM3OOTRfKn4HWLiYRHU=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: NTZPR01MB1002
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] f2fs: multidev: fix to recognize valid zero block address
+To: Yi Zhang <yi.zhang@redhat.com>
+Cc: jaegeuk@kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+ linux-kernel@vger.kernel.org,
+ Shin'ichiro Kawasaki <shinichiro.kawasaki@wdc.com>
+References: <20240325152623.797099-1-chao@kernel.org>
+ <CAHj4cs8vWQ2YRTKKETWX5sJduYO1BJ8NPSwo8mw3LqqRfsns1g@mail.gmail.com>
+Content-Language: en-US
+From: Chao Yu <chao@kernel.org>
+Autocrypt: addr=chao@kernel.org; keydata=
+ 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
+In-Reply-To: <CAHj4cs8vWQ2YRTKKETWX5sJduYO1BJ8NPSwo8mw3LqqRfsns1g@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-T24gMjYvMDMvMjAyNCAxNDo0NiwgS3J6eXN6dG9mIEtvemxvd3NraSB3cm90ZToNCj4gDQo+IE9u
-IDI2LzAzLzIwMjQgMDc6MjksIFhpbmd5dSBXdSB3cm90ZToNCj4gPj4NCj4gPj4gT24gMjAvMDMv
-MjAyNCAxMDowMiwgWGluZ3l1IFd1IHdyb3RlOg0KPiA+Pj4gQWRkIGJpbmRpbmdzIGZvciB0aGUg
-TXVsdGktQ2hhbm5lbCBJMlMgY29udHJvbGxlciBvZiBDYWRlbmNlLg0KPiANCj4gWW91ciBlbWFp
-bCBhcHAgcmVzcG9uZHMgdmVyeSB3ZWlyZC4gWW91IGJ5cGFzc2VkIGFsbCBwb3NzaWJsZSBmaWx0
-ZXJzIGFuZCBpdCBpcw0KPiBzaW1wbHkgbm90IHZpc2libGUgdGhhdCB5b3UgYW5zd2VyIHRvIG1l
-LiBZb3UgUmVwbHkgdG8gZXZlcnlvbmUsIG5vdCB0byBtZSB3aXRoDQo+IENjIHRvIG90aGVycy4g
-VGhlcmUgaXMgbm8gc3RhbmRhcmQgaGVhZGVyIHdob20gZG8geW91IHF1b3RlLCBlLmcuICJPbg0K
-PiAyNi8wMy8yMDI0IDA3OjI5LCBYaW5neXUgV3Ugd3JvdGU6Ig0KPiANCj4gUGxlYXNlIHVzZSBz
-b21lIGRlY2VudCBlbWFpbCBzeXN0ZW0sIG90aGVyd2lzZSBJIHdpbGwgbWlzcyBhbGwgcmVwbGll
-cyBmcm9tIHlvdS4NCg0KVGhhbmsgeW91IGZvciByZW1pbmRpbmcgbWUuIEkgd2lsbCBjb3JyZWN0
-IGl0Lg0KDQo+IA0KPiA+Pj4gKw0KPiA+Pj4gK3Byb3BlcnRpZXM6DQo+ID4+PiArICBjb21wYXRp
-YmxlOg0KPiA+Pj4gKyAgICBlbnVtOg0KPiA+Pj4gKyAgICAgIC0gY2RucyxpMnMtbWMNCj4gPj4N
-Cj4gPj4gV2h5IGRpZCB0aGlzIGFwcGVhcj8gV2hvIGFza2VkIGZvciB0aGlzPyBVc3VhbGx5IHRo
-ZXNlIGJsb2NrcyBhcmUgbm90DQo+ID4+IHVzYWJsZSBvbiB0aGVpciBvd24uDQo+ID4NCj4gPiBJ
-IHdvbmRlciBpZiBJIHNob3VsZCBrZWVwIHRoZSBvcmlnaW5hbCBJUCBjb21wYXRpYmxlLiBEbyBJ
-IG5vdCBuZWVkIGl0Pw0KPiANCj4gQXMgSSBzYWlkLCBpdCBpcyBub3QgdXNhYmxlIG9uIGl0cyBv
-d24sIHNvIHVubGVzcyB5b3UgaGF2ZSBvdGhlciBhcmd1bWVudHMgdGhlbiBuby4NCj4gQnV0IG15
-IHBvaW50IHdhcyB0aGF0IG5vIG9uZSBhc2tlZCBmb3IgdGhpcy4NCg0KSSB3YW50IHRvIGtlZXAg
-dGhlIG9yaWdpbmFsIElQIGNvbXBhdGlibGUgd2hpY2ggY2FuIGRpc3Rpbmd1aXNoIGZyb20gdGhl
-IEpIODEwMCBTb0MuDQpDYW4gSSB3cml0ZSBpdCBsaWtlIHRoaXM6DQpjb21wYXRpYmxlOg0KICAg
-ZW51bToNCiAgICAgICAgICAtIHN0YXJmaXZlLGpoODEwMC1pMnMNCiAgIGNvbnN0OiBjZG5zLGky
-cy1tYw0KDQphbmQgSSB3cml0ZSB0aGlzIGluIHRoZSBEVFM6DQpjb21wYXRpYmxlID0gInN0YXJm
-aXZlLGpoODEwMC1pMnMiLCAiY2RucyxpMnMtbWMiOw0KDQo+IA0KPiA+DQo+ID4+DQo+ID4+PiAr
-ICAgICAgLSBzdGFyZml2ZSxqaDgxMDAtaTJzDQo+ID4+PiArDQo+ID4+PiArICByZWc6DQo+ID4+
-PiArICAgIG1heEl0ZW1zOiAxDQo+ID4+PiArDQo+ID4+PiArICBpbnRlcnJ1cHRzOg0KPiA+Pj4g
-KyAgICBkZXNjcmlwdGlvbjoNCj4gPj4+ICsgICAgICBUaGUgaW50ZXJydXB0IGxpbmUgbnVtYmVy
-IGZvciB0aGUgSTJTIGNvbnRyb2xsZXIuIEFkZCB0aGlzDQo+ID4+PiArICAgICAgcGFyYW1ldGVy
-IGlmIHRoZSBJMlMgY29udHJvbGxlciB0aGF0IHlvdSBhcmUgdXNpbmcgZG9lcyBub3QNCj4gPj4+
-ICsgICAgICB1c2luZyBETUEuDQo+ID4+DQo+ID4+IFRoYXQncyBzdGlsbCB3cm9uZy4gWW91IGFs
-cmVhZHkgZ290IGNvbW1lbnQgb24gdGhpcy4gRWl0aGVyIHlvdSBoYXZlIGludGVycnVwdA0KPiBv
-ciBub3QuDQo+ID4+IFlvdSBkbyBub3QgYWRkIGludGVycnVwdHMsIGJhc2VkIG9uIHlvdXIgY2hv
-aWNlIG9yIG5vdCBvZiBoYXZpbmcgRE1BLg0KPiA+PiBEcm9wIHRoZSBjb21tZW50Lg0KPiA+DQo+
-ID4gRG8gSSBrZWVwIHRoaXMgcHJvcGVydHkgYW5kIGRyb3AgdGhpcyBkZXNjcmlwdGlvbj8NCj4g
-DQo+IERyb3AgZGVzY3JpcHRpb24uIEtlZXAgcHJvcGVydHksIGlmIHlvdXIgaGFyZHdhcmUgaGFz
-IGludGVycnVwdHMuDQo+IA0KDQpXaWxsIGRyb3AuDQoNCj4gLi4uDQo+IA0KPiA+Pg0KPiA+Pj4g
-KyAgLSBjb21wYXRpYmxlDQo+ID4+PiArICAtIHJlZw0KPiA+Pj4gKyAgLSBjbG9ja3MNCj4gPj4+
-ICsgIC0gY2xvY2stbmFtZXMNCj4gPj4+ICsgIC0gcmVzZXRzDQo+ID4+PiArDQo+ID4+PiArb25l
-T2Y6DQo+ID4+PiArICAtIHJlcXVpcmVkOg0KPiA+Pj4gKyAgICAgIC0gZG1hcw0KPiA+Pj4gKyAg
-ICAgIC0gZG1hLW5hbWVzDQo+ID4+PiArICAtIHJlcXVpcmVkOg0KPiA+Pj4gKyAgICAgIC0gaW50
-ZXJydXB0cw0KPiA+Pg0KPiA+PiBUaGlzIHdvbid0IHdvcmsuIFByb3ZpZGUgYm90aCBpbnRlcnJ1
-cHRzIGFuZCBkbWFzLCBhbmQgdGhlbiB0ZXN0IHlvdXIgRFRTLg0KPiA+DQo+ID4gSSBwcm92aWRl
-ZCBib3RoIHByb3BlcnRpZXMgaW4gdGhlIERUUyBhbmQgdGVzdCBieSBkdGJzX2NoZWNrLiBUaGVu
-IGl0IHByaW50ZWQNCj4gdGhhdDoNCj4gPiAnTW9yZSB0aGFuIG9uZSBjb25kaXRpb24gdHJ1ZSBp
-biBvbmUgb2Ygc2hlbWE6IC4uLicNCj4gDQo+IEV4YWN0bHkuIEhhdmluZyBib3RoIHByb3BlcnRp
-ZXMgaXMgYSBjb3JyZWN0IERUUy4gSW50ZXJydXB0cyBkbyBub3QgZGlzYXBwZWFyIGp1c3QNCj4g
-YmVjYXVzZSB5b3UgZGVjaWRlIHRvIGRlc2NyaWJlIERNQS4gSXQgaXMgT1MgY2hvaWNlIHdoYXQg
-dG8gdXNlIGlmIGJvdGggYXJlDQo+IHByb3ZpZGVkLg0KPiANCg0KQnV0IHRoaXMgSTJTIGNhbiBv
-bmx5IHVzZSBlaXRoZXIgRE1BIG9yIGludGVycnVwdHMuDQoNCkNhbiBJIHVzZSB0aGUgY29uZmln
-IChsaWtlIFNORF9TT0NfQ0FERU5DRV9JMlNfTUNfUENNKSAgdG8gY2hvb3NlIERNQSBvcg0KaW50
-ZXJydXB0IGlmIGhhdmluZyBib3RoIHRoZW0gaW4gRFRTPw0KDQpCZXN0IHJlZ2FyZHMsDQpYaW5n
-eXUgV3UNCg==
+On 2024/3/26 21:26, Yi Zhang wrote:
+> I confirmed the issue was fixed now, thanks.
+> 
+> Tested-by: Yi Zhang <yi.zhang@redhat.com>
+
+Yi, thanks for the test.
+
+Thanks,
+
+> 
+> On Mon, Mar 25, 2024 at 11:26 PM Chao Yu <chao@kernel.org> wrote:
+>>
+>> As reported by Yi Zhang in mailing list [1], kernel warning was catched
+>> during zbd/010 test as below:
+>>
+>> ./check zbd/010
+>> zbd/010 (test gap zone support with F2FS)                    [failed]
+>>      runtime    ...  3.752s
+>>      something found in dmesg:
+>>      [ 4378.146781] run blktests zbd/010 at 2024-02-18 11:31:13
+>>      [ 4378.192349] null_blk: module loaded
+>>      [ 4378.209860] null_blk: disk nullb0 created
+>>      [ 4378.413285] scsi_debug:sdebug_driver_probe: scsi_debug: trim
+>> poll_queues to 0. poll_q/nr_hw = (0/1)
+>>      [ 4378.422334] scsi host15: scsi_debug: version 0191 [20210520]
+>>                       dev_size_mb=1024, opts=0x0, submit_queues=1, statistics=0
+>>      [ 4378.434922] scsi 15:0:0:0: Direct-Access-ZBC Linux
+>> scsi_debug       0191 PQ: 0 ANSI: 7
+>>      [ 4378.443343] scsi 15:0:0:0: Power-on or device reset occurred
+>>      [ 4378.449371] sd 15:0:0:0: Attached scsi generic sg5 type 20
+>>      [ 4378.449418] sd 15:0:0:0: [sdf] Host-managed zoned block device
+>>      ...
+>>      (See '/mnt/tests/gitlab.com/api/v4/projects/19168116/repository/archive.zip/storage/blktests/blk/blktests/results/nodev/zbd/010.dmesg'
+>>
+>> WARNING: CPU: 22 PID: 44011 at fs/iomap/iter.c:51
+>> CPU: 22 PID: 44011 Comm: fio Not tainted 6.8.0-rc3+ #1
+>> RIP: 0010:iomap_iter+0x32b/0x350
+>> Call Trace:
+>>   <TASK>
+>>   __iomap_dio_rw+0x1df/0x830
+>>   f2fs_file_read_iter+0x156/0x3d0 [f2fs]
+>>   aio_read+0x138/0x210
+>>   io_submit_one+0x188/0x8c0
+>>   __x64_sys_io_submit+0x8c/0x1a0
+>>   do_syscall_64+0x86/0x170
+>>   entry_SYSCALL_64_after_hwframe+0x6e/0x76
+>>
+>> Shinichiro Kawasaki helps to analyse this issue and proposes a potential
+>> fixing patch in [2].
+>>
+>> Quoted from reply of Shinichiro Kawasaki:
+>>
+>> "I confirmed that the trigger commit is dbf8e63f48af as Yi reported. I took a
+>> look in the commit, but it looks fine to me. So I thought the cause is not
+>> in the commit diff.
+>>
+>> I found the WARN is printed when the f2fs is set up with multiple devices,
+>> and read requests are mapped to the very first block of the second device in the
+>> direct read path. In this case, f2fs_map_blocks() and f2fs_map_blocks_cached()
+>> modify map->m_pblk as the physical block address from each block device. It
+>> becomes zero when it is mapped to the first block of the device. However,
+>> f2fs_iomap_begin() assumes that map->m_pblk is the physical block address of the
+>> whole f2fs, across the all block devices. It compares map->m_pblk against
+>> NULL_ADDR == 0, then go into the unexpected branch and sets the invalid
+>> iomap->length. The WARN catches the invalid iomap->length.
+>>
+>> This WARN is printed even for non-zoned block devices, by following steps.
+>>
+>>   - Create two (non-zoned) null_blk devices memory backed with 128MB size each:
+>>     nullb0 and nullb1.
+>>   # mkfs.f2fs /dev/nullb0 -c /dev/nullb1
+>>   # mount -t f2fs /dev/nullb0 "${mount_dir}"
+>>   # dd if=/dev/zero of="${mount_dir}/test.dat" bs=1M count=192
+>>   # dd if="${mount_dir}/test.dat" of=/dev/null bs=1M count=192 iflag=direct
+>>
+>> ..."
+>>
+>> So, the root cause of this issue is: when multi-devices feature is on,
+>> f2fs_map_blocks() may return zero blkaddr in non-primary device, which is
+>> a verified valid block address, however, f2fs_iomap_begin() treats it as
+>> an invalid block address, and then it triggers the warning in iomap
+>> framework code.
+>>
+>> Finally, as discussed, we decide to use a more simple and direct way that
+>> checking (map.m_flags & F2FS_MAP_MAPPED) condition instead of
+>> (map.m_pblk != NULL_ADDR) to fix this issue.
+>>
+>> Thanks a lot for the effort of Yi Zhang and Shinichiro Kawasaki on this
+>> issue.
+>>
+>> [1] https://lore.kernel.org/linux-f2fs-devel/CAHj4cs-kfojYC9i0G73PRkYzcxCTex=-vugRFeP40g_URGvnfQ@mail.gmail.com/
+>> [2] https://lore.kernel.org/linux-f2fs-devel/gngdj77k4picagsfdtiaa7gpgnup6fsgwzsltx6milmhegmjff@iax2n4wvrqye/
+>>
+>> Reported-by: Yi Zhang <yi.zhang@redhat.com>
+>> Closes: https://lore.kernel.org/linux-f2fs-devel/CAHj4cs-kfojYC9i0G73PRkYzcxCTex=-vugRFeP40g_URGvnfQ@mail.gmail.com/
+>> Tested-by: Shin'ichiro Kawasaki <shinichiro.kawasaki@wdc.com>
+>> Fixes: 1517c1a7a445 ("f2fs: implement iomap operations")
+>> Fixes: 8d3c1fa3fa5e ("f2fs: don't rely on F2FS_MAP_* in f2fs_iomap_begin")
+>> Signed-off-by: Chao Yu <chao@kernel.org>
+>> ---
+>>   fs/f2fs/data.c | 2 +-
+>>   1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/fs/f2fs/data.c b/fs/f2fs/data.c
+>> index d9494b5fc7c1..5ef1874b572a 100644
+>> --- a/fs/f2fs/data.c
+>> +++ b/fs/f2fs/data.c
+>> @@ -4185,7 +4185,7 @@ static int f2fs_iomap_begin(struct inode *inode, loff_t offset, loff_t length,
+>>          if (WARN_ON_ONCE(map.m_pblk == COMPRESS_ADDR))
+>>                  return -EINVAL;
+>>
+>> -       if (map.m_pblk != NULL_ADDR) {
+>> +       if (map.m_flags & F2FS_MAP_MAPPED) {
+>>                  iomap->length = blks_to_bytes(inode, map.m_len);
+>>                  iomap->type = IOMAP_MAPPED;
+>>                  iomap->flags |= IOMAP_F_MERGED;
+>> --
+>> 2.40.1
+>>
+> 
+> 
 
