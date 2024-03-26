@@ -1,186 +1,121 @@
-Return-Path: <linux-kernel+bounces-118731-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-118722-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7CAAA88BEA1
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 11:00:59 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 77C2288BE77
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 10:54:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 120592E47C3
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 10:00:58 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A8D201C3AD97
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 09:54:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5943D67752;
-	Tue, 26 Mar 2024 10:00:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C0B8A6A008;
+	Tue, 26 Mar 2024 09:53:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=digikod.net header.i=@digikod.net header.b="WMzokmcs"
-Received: from smtp-42a9.mail.infomaniak.ch (smtp-42a9.mail.infomaniak.ch [84.16.66.169])
+	dkim=pass (2048-bit key) header.d=pankajraghav.com header.i=@pankajraghav.com header.b="SeKLaveT"
+Received: from mout-p-101.mailbox.org (mout-p-101.mailbox.org [80.241.56.151])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 699B15D8E1
-	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 10:00:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=84.16.66.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D8AAC5D734;
+	Tue, 26 Mar 2024 09:53:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.241.56.151
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711447237; cv=none; b=gu1MHHJUe20NwH1dklrbAFMqD9K3LUczrrLMRsCuW/uTAVRgh46wSt+2WeQMyTBL72EtFX/cW+YbdmFhWtBGs6dEk9bduOYa6eWsLyhjXWfPq+NBiLaALEbeX03C5ZAX/98oC+RKeXWq/5Tcjbl6NxyRsMH/k2+b7EqOPaFZjmo=
+	t=1711446820; cv=none; b=QJjGw2VT9vUiasgI+FrDPn3XXVUfTJQL2lVIIQW3DELGXD4bZaLepdslqWfZDgT24ZDzdDCWCGsHPqRbA519NRWpaziMpVrdGjlRGfeNbrnPJIHn8qJsgUkWHlo6XYqluD9AUUJlLWdGy20HbgNv2OdjGtPLmQwNVRzUnAbn+Hk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711447237; c=relaxed/simple;
-	bh=VwZxvUQPVph+NebLcCZQeB0+ANm/1LnxkgU/PHwfhyE=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=d98q/Gfj3cPW2HP0z9WUJlCpBiUliP+0KM+VivYGYdInL2cnq09KAYb0GM3uSqylZb0R0A3xibaqPTk3aXn+eFqQQ36OyiRxWhAQ1DwXYQxJ+FJ5IASriFaBDVvi8IMoLXsrLd/hCnLIXaDyL81tGZjPsybBmmMcl+v1qWoBNBw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=digikod.net; spf=pass smtp.mailfrom=digikod.net; dkim=pass (1024-bit key) header.d=digikod.net header.i=@digikod.net header.b=WMzokmcs; arc=none smtp.client-ip=84.16.66.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=digikod.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=digikod.net
-Received: from smtp-4-0001.mail.infomaniak.ch (smtp-4-0001.mail.infomaniak.ch [10.7.10.108])
-	by smtp-4-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 4V3lSZ71BPzbYZ;
-	Tue, 26 Mar 2024 10:51:42 +0100 (CET)
-Received: from unknown by smtp-4-0001.mail.infomaniak.ch (Postfix) with ESMTPA id 4V3lSZ2K2bzKQ0;
-	Tue, 26 Mar 2024 10:51:42 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=digikod.net;
-	s=20191114; t=1711446702;
-	bh=VwZxvUQPVph+NebLcCZQeB0+ANm/1LnxkgU/PHwfhyE=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=WMzokmcsGZ79WBn7AEb+orlII6XtoyVNZGG1dsY3l5PPHCyfs7cglkNI3nQ7/gLOi
-	 I4O5Qyp03FyEMp62eEFw3qMfkIxK6zH0ddlgJdYIB+0XY3mdrqhPAETKBNRtNgHcVx
-	 MDVtIaxPUX0WwGBf/Gd4HHn/ioXPHROZVrIlpJmw=
-From: =?UTF-8?q?Micka=C3=ABl=20Sala=C3=BCn?= <mic@digikod.net>
-To: Brendan Higgins <brendanhiggins@google.com>,
-	David Gow <davidgow@google.com>,
-	Rae Moar <rmoar@google.com>,
-	Shuah Khan <skhan@linuxfoundation.org>
-Cc: =?UTF-8?q?Micka=C3=ABl=20Sala=C3=BCn?= <mic@digikod.net>,
-	Alan Maguire <alan.maguire@oracle.com>,
-	Borislav Petkov <bp@alien8.de>,
-	Dave Hansen <dave.hansen@linux.intel.com>,
-	"Eric W . Biederman" <ebiederm@xmission.com>,
-	"H . Peter Anvin" <hpa@zytor.com>,
-	Ingo Molnar <mingo@redhat.com>,
-	James Morris <jamorris@linux.microsoft.com>,
-	Kees Cook <keescook@chromium.org>,
-	Luis Chamberlain <mcgrof@kernel.org>,
-	"Madhavan T . Venkataraman" <madvenka@linux.microsoft.com>,
-	Marco Pagani <marpagan@redhat.com>,
-	Paolo Bonzini <pbonzini@redhat.com>,
-	Sean Christopherson <seanjc@google.com>,
-	Stephen Boyd <sboyd@kernel.org>,
-	Thara Gopinath <tgopinath@microsoft.com>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Vitaly Kuznetsov <vkuznets@redhat.com>,
-	Zahra Tarkhani <ztarkhani@microsoft.com>,
-	kvm@vger.kernel.org,
-	linux-hardening@vger.kernel.org,
-	linux-hyperv@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-security-module@vger.kernel.org,
-	linux-um@lists.infradead.org,
-	x86@kernel.org
-Subject: [PATCH v4 7/7] kunit: Add tests for fault
-Date: Tue, 26 Mar 2024 10:51:18 +0100
-Message-ID: <20240326095118.126696-8-mic@digikod.net>
-In-Reply-To: <20240326095118.126696-1-mic@digikod.net>
-References: <20240326095118.126696-1-mic@digikod.net>
+	s=arc-20240116; t=1711446820; c=relaxed/simple;
+	bh=s+wXuGTKSM02LS+A7um+eisRIfxf9plFtAzb8lv0d/A=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=qFwbQM6rRsWslgw99KRRIrY/Wdo6AcHp62YfL07HHYjleuyUH2jKbDocRcHMh2M6awNEEztIkCEBTK4RWszCA+TDfKOTiIOkC9Xz943oZnXzKHd/sRK/Bnm8c1pTsE1jlAdfIKHSkpAVkXWHtJV4KR3jglHu7GOO9ILzYoTNZIA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=pankajraghav.com; spf=pass smtp.mailfrom=pankajraghav.com; dkim=pass (2048-bit key) header.d=pankajraghav.com header.i=@pankajraghav.com header.b=SeKLaveT; arc=none smtp.client-ip=80.241.56.151
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=pankajraghav.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pankajraghav.com
+Received: from smtp102.mailbox.org (smtp102.mailbox.org [IPv6:2001:67c:2050:b231:465::102])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mout-p-101.mailbox.org (Postfix) with ESMTPS id 4V3lVj1mj0z9smj;
+	Tue, 26 Mar 2024 10:53:33 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pankajraghav.com;
+	s=MBO0001; t=1711446813;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=XvQvmg7eUJ6XUFSwCSiynxp4lLJbG0KYQHnlFS2Zq7Q=;
+	b=SeKLaveTbGJlCa05UkQhGZe1nbeCvZzFhqOEbHEXZz2NGj7NOa8411XZe51acSHK+ptfUG
+	Ih9TDcPM2ktVGG+ZUraPNDOykE0tAWTc5f/eZcc+2V+z647KlkEEpsEWPzcCQ0LfIXsatn
+	0DwZf20pbBPRSomVcdai4NAIYV5WLuGG7IazYR5P5wGPQlPFLfWzKDUoxb3KV1MqWR0cdp
+	uSeMoocb01Z5BxriVA6nEJyXeVwoKzWk1A0qY0VFzTZbWPVNvp7MnEzfY32hAX0J9/37Y7
+	bb/LKm1W5PV4WYC8bBWlDaNsm8+rj4OgCSA4Qi6t7f4iCJ8+XucX3X5HEU+T0g==
+Date: Tue, 26 Mar 2024 10:53:27 +0100
+From: "Pankaj Raghav (Samsung)" <kernel@pankajraghav.com>
+To: Matthew Wilcox <willy@infradead.org>
+Cc: linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
+	gost.dev@samsung.com, chandan.babu@oracle.com, hare@suse.de, mcgrof@kernel.org, 
+	djwong@kernel.org, linux-mm@kvack.org, linux-kernel@vger.kernel.org, 
+	david@fromorbit.com, akpm@linux-foundation.org, Pankaj Raghav <p.raghav@samsung.com>
+Subject: Re: [PATCH v3 10/11] xfs: make the calculation generic in
+ xfs_sb_validate_fsb_count()
+Message-ID: <7djmiptum72jkug7kijmgy74olkkezeybicxiw2jpwj4yxjilp@2y2l2dyulczt>
+References: <20240313170253.2324812-1-kernel@pankajraghav.com>
+ <20240313170253.2324812-11-kernel@pankajraghav.com>
+ <ZgHNb3Led05RXRd2@casper.infradead.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Infomaniak-Routing: alpha
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZgHNb3Led05RXRd2@casper.infradead.org>
+X-Rspamd-Queue-Id: 4V3lVj1mj0z9smj
 
-Add a test case to check NULL pointer dereference and make sure it would
-result as a failed test.
+On Mon, Mar 25, 2024 at 07:15:59PM +0000, Matthew Wilcox wrote:
+> On Wed, Mar 13, 2024 at 06:02:52PM +0100, Pankaj Raghav (Samsung) wrote:
+> > From: Pankaj Raghav <p.raghav@samsung.com>
+> > 
+> > Instead of assuming that PAGE_SHIFT is always higher than the blocklog,
+> > make the calculation generic so that page cache count can be calculated
+> > correctly for LBS.
+> > 
+> > Signed-off-by: Pankaj Raghav <p.raghav@samsung.com>
+> > ---
+> >  fs/xfs/xfs_mount.c | 9 ++++++++-
+> >  1 file changed, 8 insertions(+), 1 deletion(-)
+> > 
+> > diff --git a/fs/xfs/xfs_mount.c b/fs/xfs/xfs_mount.c
+> > index aabb25dc3efa..9cf800586da7 100644
+> > --- a/fs/xfs/xfs_mount.c
+> > +++ b/fs/xfs/xfs_mount.c
+> > @@ -133,9 +133,16 @@ xfs_sb_validate_fsb_count(
+> >  {
+> >  	ASSERT(PAGE_SHIFT >= sbp->sb_blocklog);
+> 
+> but ... you're still asserting that PAGE_SHIFT is larger than blocklog.
+> Shouldn't you delete that assertion?
 
-The full kunit_fault test suite is marked as skipped when run on UML
-because it would result to a kernel panic.
+I do that in the next patch when we enable LBS support in XFS by setting
+min order. So we still need the check here that will be removed in the
+next patch.
+> 
+> >  	ASSERT(sbp->sb_blocklog >= BBSHIFT);
+> > +	uint64_t max_index;
+> > +	uint64_t max_bytes;
+> > +
+> > +	if (check_shl_overflow(nblocks, sbp->sb_blocklog, &max_bytes))
+> > +		return -EFBIG;
+> >  
+> >  	/* Limited by ULONG_MAX of page cache index */
+> > -	if (nblocks >> (PAGE_SHIFT - sbp->sb_blocklog) > ULONG_MAX)
+> > +	max_index = max_bytes >> PAGE_SHIFT;
+> > +
+> > +	if (max_index > ULONG_MAX)
+> >  		return -EFBIG;
+> 
+> This kind of depends on the implementation details of the page cache.
+> We have MAX_LFS_FILESIZE to abstract that; maybe that should be used
+> here?
 
-Tested with:
-/tools/testing/kunit/kunit.py run --arch x86_64 kunit_fault
-/tools/testing/kunit/kunit.py run --arch arm64 \
-  --cross_compile=aarch64-linux-gnu- kunit_fault
-
-Cc: Brendan Higgins <brendanhiggins@google.com>
-Cc: Rae Moar <rmoar@google.com>
-Cc: Shuah Khan <skhan@linuxfoundation.org>
-Reviewed-by: David Gow <davidgow@google.com>
-Signed-off-by: Mickaël Salaün <mic@digikod.net>
-Link: https://lore.kernel.org/r/20240326095118.126696-8-mic@digikod.net
----
-
-Changes since v2:
-* Add David's Reviewed-by.
-
-Changes since v1:
-* Remove the rodata and const test cases for now.
-* Replace CONFIG_X86 check with !CONFIG_UML, and remove the "_x86"
-  references.
----
- lib/kunit/kunit-test.c | 45 +++++++++++++++++++++++++++++++++++++++++-
- 1 file changed, 44 insertions(+), 1 deletion(-)
-
-diff --git a/lib/kunit/kunit-test.c b/lib/kunit/kunit-test.c
-index f7980ef236a3..0fdca5fffaec 100644
---- a/lib/kunit/kunit-test.c
-+++ b/lib/kunit/kunit-test.c
-@@ -109,6 +109,48 @@ static struct kunit_suite kunit_try_catch_test_suite = {
- 	.test_cases = kunit_try_catch_test_cases,
- };
- 
-+#ifndef CONFIG_UML
-+
-+static void kunit_test_null_dereference(void *data)
-+{
-+	struct kunit *test = data;
-+	int *null = NULL;
-+
-+	*null = 0;
-+
-+	KUNIT_FAIL(test, "This line should never be reached\n");
-+}
-+
-+static void kunit_test_fault_null_dereference(struct kunit *test)
-+{
-+	struct kunit_try_catch_test_context *ctx = test->priv;
-+	struct kunit_try_catch *try_catch = ctx->try_catch;
-+
-+	kunit_try_catch_init(try_catch,
-+			     test,
-+			     kunit_test_null_dereference,
-+			     kunit_test_catch);
-+	kunit_try_catch_run(try_catch, test);
-+
-+	KUNIT_EXPECT_EQ(test, try_catch->try_result, -EINTR);
-+	KUNIT_EXPECT_TRUE(test, ctx->function_called);
-+}
-+
-+#endif /* !CONFIG_UML */
-+
-+static struct kunit_case kunit_fault_test_cases[] = {
-+#ifndef CONFIG_UML
-+	KUNIT_CASE(kunit_test_fault_null_dereference),
-+#endif /* !CONFIG_UML */
-+	{}
-+};
-+
-+static struct kunit_suite kunit_fault_test_suite = {
-+	.name = "kunit_fault",
-+	.init = kunit_try_catch_test_init,
-+	.test_cases = kunit_fault_test_cases,
-+};
-+
- /*
-  * Context for testing test managed resources
-  * is_resource_initialized is used to test arbitrary resources
-@@ -826,6 +868,7 @@ static struct kunit_suite kunit_current_test_suite = {
- 
- kunit_test_suites(&kunit_try_catch_test_suite, &kunit_resource_test_suite,
- 		  &kunit_log_test_suite, &kunit_status_test_suite,
--		  &kunit_current_test_suite, &kunit_device_test_suite);
-+		  &kunit_current_test_suite, &kunit_device_test_suite,
-+		  &kunit_fault_test_suite);
- 
- MODULE_LICENSE("GPL v2");
--- 
-2.44.0
-
+Makes sense. I will use it instead of using ULONG_MAX.
 
