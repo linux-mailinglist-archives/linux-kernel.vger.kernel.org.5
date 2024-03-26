@@ -1,213 +1,114 @@
-Return-Path: <linux-kernel+bounces-118981-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-118983-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7FC8A88C232
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 13:35:13 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 92AEF88C237
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 13:35:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6C004B233E1
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 12:35:10 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 17E6FB22F33
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 12:35:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A3BB95BAFA;
-	Tue, 26 Mar 2024 12:35:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D2B025D73B;
+	Tue, 26 Mar 2024 12:35:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amazon.com header.i=@amazon.com header.b="rbvwCW0J"
-Received: from smtp-fw-2101.amazon.com (smtp-fw-2101.amazon.com [72.21.196.25])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PZDK5pEn"
+Received: from mail-wm1-f43.google.com (mail-wm1-f43.google.com [209.85.128.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0CEC41879;
-	Tue, 26 Mar 2024 12:34:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=72.21.196.25
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7A08B5A0FA;
+	Tue, 26 Mar 2024 12:35:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711456500; cv=none; b=pa31qnGQDATPK6zMSNJbXP1VIi42qhBplKF9hpq2OgQthjAQXyG16NMGA6HcRkg9DYFx04iPv57ListN23dePCC11ihOkUGXsn2XJ22RkmAXpgqA3LCMFKhVt9NOnALGtoeEVnwFEQyhH6ewZ7fNx34P4H03bQn71wAj0DhLRPw=
+	t=1711456526; cv=none; b=b9ln6Nu8dURopnmYGf+yhejfz869SE2sHpsiIXwTG0BwdOyPsmwbAD7P8uKDSREuwaD8ef5BsLpIh8EBva1jlB3ynE27HrtSdZBzqJQcyIpWC7+uIH1Y+Le3OAIsO4c6abhPd67jb79or9bK43YSviG5UP05jGqE/gfaCZJiCdk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711456500; c=relaxed/simple;
-	bh=Zr48gZ+iMtiZUMEn2j/4Ms/L/2+GuhX7mRUEzUTza5E=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=Qlh4dk/Ju4h1yQrK7iACos6sxexN+cJ20LXpJziKgwawUB7hrihGAOARVRC3UU+a/LSAipCBppx8+03r0CzhD7auesA7LlV6J8mIgVXOjPPAheDoOJVyMZEWo0BKeGGcd9OJu6JfPaH/ODjCdLMHI6gAq1v7kCg0eaqxn2GLpFY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com; spf=pass smtp.mailfrom=amazon.com; dkim=pass (1024-bit key) header.d=amazon.com header.i=@amazon.com header.b=rbvwCW0J; arc=none smtp.client-ip=72.21.196.25
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=amazon.com
+	s=arc-20240116; t=1711456526; c=relaxed/simple;
+	bh=6XTjoV9ZlDTzN5vXMrcYGZJGcOhwU6OBWtS33uI0Xvo=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=i3D892kvvGPZn3PMrpNsQ1xmwt6EpPCa3qMfj9/xXWwuiMKiDhN3W4a85WrS5wYRMXhIVbYZSiFRK5dUOBnEsblZRrj19jASyX33mHiJaaZfa7GmhmHI5J+5WrfLVZAtgRMVaSHdd3WQV53X1ql5FKSpTd9l6379IbytP6LG7kI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=PZDK5pEn; arc=none smtp.client-ip=209.85.128.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f43.google.com with SMTP id 5b1f17b1804b1-41488f9708fso14299805e9.3;
+        Tue, 26 Mar 2024 05:35:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1711456500; x=1742992500;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=mRQbNSw2E83MSaXvm8O7UtJ5JtXj8itcmTN7uuFR/aQ=;
-  b=rbvwCW0JuqarDbI5AApkio/mYiSYZUtFOr1zEGmn2Ll1oV08PfJxq6vn
-   7jR7mmu0Xhu7YxU7Kh/3cHNBQYLjoKaiUQzsz87+c4LTktXg1OyGXR/Cj
-   E0k8bdkevuO+P5/VIkvE8hPMAG9gQIuyo3YFK9UxNbT0Ax3AXCfjM0TrK
-   8=;
-X-IronPort-AV: E=Sophos;i="6.07,156,1708387200"; 
-   d="scan'208";a="390593410"
-Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO smtpout.prod.us-west-2.prod.farcaster.email.amazon.dev) ([10.43.8.6])
-  by smtp-border-fw-2101.iad2.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Mar 2024 12:34:56 +0000
-Received: from EX19MTAEUC001.ant.amazon.com [10.0.17.79:54885]
- by smtpin.naws.eu-west-1.prod.farcaster.email.amazon.dev [10.0.4.153:2525] with esmtp (Farcaster)
- id 1431dfb6-3a84-49e8-b598-f34b07be410d; Tue, 26 Mar 2024 12:34:54 +0000 (UTC)
-X-Farcaster-Flow-ID: 1431dfb6-3a84-49e8-b598-f34b07be410d
-Received: from EX19D031EUB003.ant.amazon.com (10.252.61.88) by
- EX19MTAEUC001.ant.amazon.com (10.252.51.193) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1258.28; Tue, 26 Mar 2024 12:34:54 +0000
-Received: from [192.168.79.84] (10.85.143.175) by
- EX19D031EUB003.ant.amazon.com (10.252.61.88) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1258.28; Tue, 26 Mar 2024 12:34:50 +0000
-Message-ID: <b6c0bd81-3b8d-465d-a0eb-faa5323a6b05@amazon.com>
-Date: Tue, 26 Mar 2024 14:34:45 +0200
+        d=gmail.com; s=20230601; t=1711456523; x=1712061323; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:to:subject
+         :mime-version:date:message-id:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Qj9viDkJqyEnEMoMdMZBdgZRhxl32v2W70TF8U83dEk=;
+        b=PZDK5pEnvwTucdkr4k8C4bCT2abBZisAuVojqflJm4boyzwQPnok9tPXFRGZBeukkL
+         85n+jXA7cmS+pWZwUxZ4M4wKMSeVHGF5Noc1At5Rmw81kmCJZwB0xBOFdRme2SzGkJ6Z
+         ageo9SYOJb1OC5PcZxkUQ9pdO0MeMM+hJRnLqVN8NzgYX87df9ddhsR8Xc4w9CfgHTaQ
+         JkQuvJ/t99pW71Q3Lv6vwRrb2gdNbbwfEadNZJOGSeTkfYI55q7AmCnT7vagk9d3pu/r
+         8TbsElkLZZW6Wka82JTGD5gmqVRpgC7OxiDX4CuyvyE+UaeLFhEjBj6pZRYldLsBC7gW
+         q0cA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711456523; x=1712061323;
+        h=content-transfer-encoding:in-reply-to:from:references:to:subject
+         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=Qj9viDkJqyEnEMoMdMZBdgZRhxl32v2W70TF8U83dEk=;
+        b=dh5iQ1nkcuuTDVZ5mYS+vfnbuUD8Y0YZ2eDvr75/8RGdzxdhDd0NgM9MGymklcQXcS
+         OG+SLTCFKn2EOJIaMWKWzFuTj5ZN5rd+oVATdUVHn6g9HIpdnjhnmeKHjTj1n90NVCJ2
+         XYSnYq960ayi/sRhANS/2/4AAFaO012R3dOchAZUNT/xx9km/gNGclGoYhnXg+2k7lc9
+         WADGUzMXL5HgFAtlcEcGZhfcdbsPE4LPTqGeKLjnaV4foaic8BA59UOJLWCHBGTu4LFW
+         4GPnpeWqYBINHnqFsA8FlbN+8022G8i9vGFKP8YDG6gLxBejBPFsPbyT5zmYd2IauxRX
+         dwMQ==
+X-Forwarded-Encrypted: i=1; AJvYcCW7AWQhzGTUw3MO+eASSaNk3C7gGvMBshvhV1N41dSqm5mwWBCWa4Okei35XMyfs1e3EGvsSE/AbOLUW8tRkhBg4G+BU1jpZiZRm+xcV3cCTOtxcrkRqwDTsl+vkjLUlYBtpmc2u79MMtdx9FvKgw/hs3uw0RtaDwNqIdiU+hREBNKP6mEt
+X-Gm-Message-State: AOJu0YwUyWE3qZSL1Ek8n/He4JqxlxNp1kruHDjV5WT7dTuVr7YlTSYm
+	mL+7ZvBxzeZH9hTul5eEE8Ob9w8NEvLH+2nDL/PkdvsflbxobJWT
+X-Google-Smtp-Source: AGHT+IGwgyBsaN7Ms+0IYQV0NG9hS1YRmOySH9NZ+A+pwuMXCxDaV1ICp2UXSJ+LiXZ/6OR9OQynaQ==
+X-Received: by 2002:a7b:c7d0:0:b0:413:fc09:7b19 with SMTP id z16-20020a7bc7d0000000b00413fc097b19mr5846747wmk.40.1711456522630;
+        Tue, 26 Mar 2024 05:35:22 -0700 (PDT)
+Received: from debian ([146.70.204.204])
+        by smtp.gmail.com with ESMTPSA id k26-20020a05600c1c9a00b00414807ef8dfsm11144822wms.5.2024.03.26.05.35.10
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 26 Mar 2024 05:35:22 -0700 (PDT)
+Message-ID: <494e8cac-e87a-4bc4-8a77-1801a703fd86@gmail.com>
+Date: Tue, 26 Mar 2024 13:35:01 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: Implementing .shutdown method for efa module
-Content-Language: en-US
-To: Tao Liu <ltao@redhat.com>, Gal Pressman <gal.pressman@linux.dev>
-CC: <sleybo@amazon.com>, <jgg@ziepe.ca>, <leon@kernel.org>,
-	<kexec@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
-	<linux-rdma@vger.kernel.org>
-References: <CAO7dBbVNv5NWRN6hXeo5rNEixn-ctmTLLn2KAKhEBYvvR+Du2w@mail.gmail.com>
- <5d81d6d0-5afc-4d0e-8d2b-445d48921511@linux.dev>
- <CAO7dBbXLU5teiYm8VvES7e7m7dUzJQYV9HHLOFKperjwq-NJeA@mail.gmail.com>
-From: "Margolin, Michael" <mrgolin@amazon.com>
-In-Reply-To: <CAO7dBbXLU5teiYm8VvES7e7m7dUzJQYV9HHLOFKperjwq-NJeA@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: EX19D033UWA003.ant.amazon.com (10.13.139.42) To
- EX19D031EUB003.ant.amazon.com (10.252.61.88)
+Subject: Re: [PATCH net-next v4 4/4] net: gro: move L3 flush checks to
+ tcp_gro_receive
+To: Willem de Bruijn <willemdebruijn.kernel@gmail.com>, davem@davemloft.net,
+ edumazet@google.com, kuba@kernel.org, pabeni@redhat.com, dsahern@kernel.org,
+ xeb@mail.ru, shuah@kernel.org, idosch@nvidia.com, amcohen@nvidia.com,
+ petrm@nvidia.com, jbenc@redhat.com, bpoirier@nvidia.com,
+ b.galvani@gmail.com, liujian56@huawei.com, horms@kernel.org,
+ linyunsheng@huawei.com, therbert@google.com, netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
+References: <20240325182543.87683-1-richardbgobert@gmail.com>
+ <20240325182543.87683-5-richardbgobert@gmail.com>
+ <6601c830c1daa_11c6072943b@willemb.c.googlers.com.notmuch>
+From: Richard Gobert <richardbgobert@gmail.com>
+In-Reply-To: <6601c830c1daa_11c6072943b@willemb.c.googlers.com.notmuch>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Hi Tao,
+Willem de Bruijn wrote:
+> In v3 we discussed how the flush on network layer differences (like
+> TTL or ToS) currently only affect the TCP GRO path, but should apply
+> more broadly.
+> 
+> We agreed that it is fine to leave that to a separate patch series.
+> 
+> But seeing this patch, it introduces a lot of churn, but also makes
+> it harder to address that issue for UDP, as it now moves network
+> layer checks directly to the TCP code.
+Currently the logic of flush_id is scattered in tcp_gro_receive and
+{inet,ipv6}_gro_receive with conditionals rewriting ->flush and ->flush_id,
+so IMO the code should be more concise when it's in one place - in addition
+to not doing checks against non relevant packets.
 
-Thanks for bringing this up.
-
-I've unsuccessfully tried to reproduce this kernel panic using 
-production Red Hat 9.3 AMI (5.14.0-362.18.1.el9_3.aarch64).
-
-Are there any related changes in the kernel you are testing?
-
-Anyways we do need to handle shutdown properly, please let know if 
-calling to efa_remove solves your issue.
-
-Michael
-
-On 3/26/2024 3:38 AM, Tao Liu wrote:
-> Hi Gal,
->
-> On Mon, Mar 25, 2024 at 4:06 PM Gal Pressman <gal.pressman@linux.dev> wrote:
->> On 25/03/2024 4:10, Tao Liu wrote:
->>> Hi,
->>>
->>> Recently I experienced a kernel panic which is related to efa module
->>> when testing kexec -l && kexec -e to switch to a new kernel on AWS
->>> i4g.16xlarge instance.
->>>
->>> Here is the dmesg log:
->>>
->>> [    6.379918] systemd[1]: Mounting FUSE Control File System...
->>> [    6.381984] systemd[1]: Mounting Kernel Configuration File System...
->>> [    6.383918] systemd[1]: Starting Apply Kernel Variables...
->>> [    6.385430] systemd[1]: Started Journal Service.
->>> [    6.394221] ACPI: bus type drm_connector registered
->>> [    6.421408] systemd-journald[1263]: Received client request to
->>> flush runtime journal.
->>> [    7.262543] efa 0000:00:1b.0: enabling device (0010 -> 0012)
->>> [    7.432420] efa 0000:00:1b.0: Setup irq:191 name:efa-mgmnt@pci:0000:00:1b.0
->>> [    7.435581] efa 0000:00:1b.0 efa_0: IB device registered
->>> [    7.885564] random: crng init done
->>> [    8.139857] XFS (nvme0n1p2): Mounting V5 Filesystem
->>> d7003ecc-db6f-4bfb-bf92-60376b6a6563
->>> [    8.265233] XFS (nvme0n1p2): Ending clean mount
->>> [   10.555612] IPv6: ADDRCONF(NETDEV_CHANGE): eth0: link becomes ready
->>>
->>> Red Hat Enterprise Linux 9.4 Beta (Plow)
->>> Kernel 5.14.0-425.el9.aarch64 on an aarch64
->>>
->>> ip-10-0-27-226 login: [   29.940381] kexec_core: Starting new kernel
->>> [   30.079279] psci: CPU1 killed (polled 0 ms)
->>> [   30.119222] psci: CPU2 killed (polled 0 ms)
->>> [   30.199293] psci: CPU3 killed (polled 0 ms)
->>> [   30.309214] psci: CPU4 killed (polled 0 ms)
->>> [   30.379221] psci: CPU5 killed (polled 0 ms)
->>> [   30.419210] psci: CPU6 killed (polled 0 ms)
->>> [   30.489207] IRQ 191: no longer affine to CPU7
->>> [   30.489667] psci: CPU7 killed (polled 0 ms)
->>> ..snip...
->>> [   33.849123] psci: CPU63 killed (polled 0 ms)
->>> [   33.849943] Bye!
->>> [    0.000000] Booting Linux on physical CPU 0x0000000000 [0x413fd0c1]
->>> [    0.000000] Linux version 5.14.0-417.el9.aarch64
->>> (mockbuild@arm64-025.build.eng.bos.redhat.com) (gcc (GCC) 11.4.1
->>> 20231218 (Red Hat 11.4.1-3), GNU ld version 2.35.2-42.el9) #1 SMP
->>> PREEMPT_DYNAMIC Thu Feb 1 21:23:03 EST 2024
->>> ...snip...
->>> [    1.012692] Freeing unused kernel memory: 6016K
->>> [    2.370947] Checked W+X mappings: passed, no W+X pages found
->>> [    2.370980] Run /init as init process
->>> [    2.370982]   with arguments:
->>> [    2.370983]     /init
->>> [    2.370984]   with environment:
->>> [    2.370984]     HOME=/
->>> [    2.370985]     TERM=linux
->>> [    2.373257] Kernel panic - not syncing: Attempted to kill init!
->>> exitcode=0x0000000b
->>> [    2.373259] CPU: 1 PID: 1 Comm: init Not tainted 5.14.0-417.el9.aarch64 #1
->>> [    2.382240] Hardware name: Amazon EC2 i4g.16xlarge/, BIOS 1.0 11/1/2018
->>> [    2.383814] Call trace:
->>> [    2.384410]  dump_backtrace+0xa8/0x120
->>> [    2.385318]  show_stack+0x1c/0x30
->>> [    2.386124]  dump_stack_lvl+0x74/0x8c
->>> [    2.387011]  dump_stack+0x14/0x24
->>> [    2.387810]  panic+0x158/0x368
->>> [    2.388553]  do_exit+0x3a8/0x3b0
->>> [    2.389333]  do_group_exit+0x38/0xa4
->>> [    2.390195]  get_signal+0x7a4/0x810
->>> [    2.391044]  do_signal+0x1bc/0x260
->>> [    2.391870]  do_notify_resume+0x108/0x210
->>> [    2.392839]  el0_da+0x154/0x160
->>> [    2.393603]  el0t_64_sync_handler+0xdc/0x150
->>> [    2.394628]  el0t_64_sync+0x17c/0x180
->>> [    2.395513] SMP: stopping secondary CPUs
->>> [    2.396483] Kernel Offset: 0x586f04e00000 from 0xffff800008000000
->>> [    2.397934] PHYS_OFFSET: 0x40000000
->>> [    2.398774] CPU features: 0x0,00000101,70020143,10417a0b
->>> [    2.400042] Memory Limit: none
->>> [    2.400783] ---[ end Kernel panic - not syncing: Attempted to kill
->>> init! exitcode=0x0000000b ]---
->>>
->>> In the dmesg log, I found "[   30.489207] IRQ 191: no longer affine to
->>> CPU7" is suspicious, which is related to efa module. After blacklist
->>> efa module from automatic loading when bootup, the kernel panic issue
->>> doesn't appear again.
->>>
->>> It looks to me it is due to the efa being not properly shutdown during
->>> kexec, so the ongoing DMA/interrupts etc overwrite the memory range.
->>>
->>> Though the issue is reproduced on rhel's kernel, the upstream kernel
->>> [1] doesn't have the .shutdown method implemented either. Since I'm
->>> not very familiar with the efa driver, could you please implement the
->>> .shutdown method in drivers/infiniband/hw/efa/efa_main.c? Thanks in
->>> advance!
->> Did you try to reproduce it on upstream kernel?
->>
-> Thanks for your comments! No I haven't, I will give it a try.
->>> [1]: https://github.com/torvalds/linux/blob/master/drivers/infiniband/hw/efa/efa_main.c#L674
->>>
->>> Thanks,
->>> Tao Liu
->>>
->> Try assigning efa_remove as the shutdown callback:
->>      .shutdown = efa_remove,
->>
->> Does it fix it?
-> Thanks, I will also try the code, and I will post the testing results.
->
-> Thanks,
-> Tao Liu
->
->
+With this patch, the fix will probably be simple, most likely just calling
+gro_network_flush from skb_gro_receive or from the relevant flow in
+udp_gro_receive_segment. Since this bug fix should be simple and it being
+not relevant to the optimization, I'd like to solve it in another series
+and properly test that new flow. Do you agree?
 
