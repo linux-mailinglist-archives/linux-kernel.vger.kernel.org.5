@@ -1,136 +1,174 @@
-Return-Path: <linux-kernel+bounces-119947-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-119946-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id ABF6988CF3C
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 21:43:46 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2E8D488CF37
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 21:43:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DD33B1C32BD1
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 20:43:45 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 604261C32D5E
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 20:43:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B1D0712B156;
-	Tue, 26 Mar 2024 20:43:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5B2CB7353B;
+	Tue, 26 Mar 2024 20:43:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="J7SvCAom"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="T1zG7X3F"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 685F7745E4
-	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 20:43:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 93C4017591;
+	Tue, 26 Mar 2024 20:43:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711485807; cv=none; b=oOUaAzGimI4zWHrXi3VC5ik6bGneqkg8BdTlEoiG47gcuXcGMzwwxMN2anTjnhiF2/Q2NTZgxPhW4uKUKM+O3FGlBw/ut1JHUmD8e0Qc+0EixUbxB1CfmGgnkUdoL2cNh2KDGOi1aHiWwhtlTGd5AAZNT6uvQtz8psxHXVX5whY=
+	t=1711485805; cv=none; b=ulhF3ztb5dt0Bb5DCq/UqanOAoR9V8oljCp8X7RYbnHNXFxEdlIM5QbeW3wsvTNpTphYpQdWJoWp5Qs7SyK71dqEcNWgeMQ/mTu3tcbOQrCSfhUsbvFDAXPMaeZNqKf9ueBVnJK02KwR9otFj5QgLkGdn5T6uZMAeCSraMu+jwI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711485807; c=relaxed/simple;
-	bh=xpgv3sgDQ7rpy8eSB8hXWoT4c/rHDCJv082+mAKX/Fc=;
+	s=arc-20240116; t=1711485805; c=relaxed/simple;
+	bh=SK4kbVI23QJSidrvvQmGhUSWkTsnFTBDfUyJyLO8ZLc=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Ol6WAPFFYJ/DMhodfCjrTZaMEJt3NdqRP6RqoPLSheHftbFmv5mLL0dc4KPbju22GzfeXc31BytBYwpF8GEkGgLvb54Cyb/qFeTzbswmbw+dn1V1erIGlHRBsXrvSYfg0zZg5CHDdflBN07qKFGiyc55XuNbeSS1jUEvBjWYfO4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=J7SvCAom; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1711485805;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=+7bjw/hteF8djmOoWPYQb6GfOlzxEGXIn8a6dn1jJ20=;
-	b=J7SvCAomlKsBUl3Oo8vPw7pRWDU2+PH628xnmqz0k70HQgJzAVAymdmeZun/0cmi42qvyL
-	wemvIRuM7mX7aCb0U1RvH2WZjZSYPWI947ilCNB4J27FAzptzn03MVFOT+n8q4LpodjQEy
-	sW7/kBxhwZd/5D4iO/lVkjDSoqMW9MQ=
-Received: from mail-qt1-f200.google.com (mail-qt1-f200.google.com
- [209.85.160.200]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-481-HH0yrNPKOZmYaVsvd4hiJQ-1; Tue, 26 Mar 2024 16:43:23 -0400
-X-MC-Unique: HH0yrNPKOZmYaVsvd4hiJQ-1
-Received: by mail-qt1-f200.google.com with SMTP id d75a77b69052e-430c9bbe925so10267951cf.0
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 13:43:23 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711485803; x=1712090603;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=+7bjw/hteF8djmOoWPYQb6GfOlzxEGXIn8a6dn1jJ20=;
-        b=NLb5DqGHJBNEpZi0KVWfGEFKsKoUwn1zHDTnBdoj1Lc2h3CPr27I68oJl6id5q5ZWQ
-         fwJdJKuKQR1KGzcyHzseQbeUJ/c919O5xj82dXVnFMMKt8LWE5CSo45GemdT5Qzih8b7
-         YO5ryB6xz7NVwNbchcQ6SVGq+dt+zUQadRakwpNT4r3ktuqtIrTW08U7R6cLLsFh6Fbl
-         Q9+UU1OPWwDd0J2ecll89X/Iwpm+9XlHtJt26F4JtJR6bu1XYw1YZDbNoDT1AZjVgFKc
-         KuGl2awgTUUX9FvA7rnQ9XxKHVNbu66vSWWIRuzwM9hlm8TMgKGCEjwL1aUoJOP8NtOL
-         uzaA==
-X-Gm-Message-State: AOJu0YzQrsRclH2bBA+MzVO9K4cNMMbWcV+K4fdf0F7wpi+PwC/MAozy
-	kZvSwEHnrYtGOXJlQMDm2Zef5X5ItjneBkm/kEb8ZLtDzO5e1Y5Qi/7amkHGzQX0X+e6QGS+zu2
-	pZVyv1SNJgkqhErp992nJbyC1Hnj0clqZ+msOEwUf8FM5l0AY6g1YsJbIob2fmA==
-X-Received: by 2002:a05:6214:3d8c:b0:696:6f95:4421 with SMTP id om12-20020a0562143d8c00b006966f954421mr12036053qvb.1.1711485803023;
-        Tue, 26 Mar 2024 13:43:23 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IE9o8Lvkh94OFhBwTYfrdCOZFUwRaCCOcIoegLN8mEEkmbFgDRGFirXEVx9siaWwZdIpqlZMA==
-X-Received: by 2002:a05:6214:3d8c:b0:696:6f95:4421 with SMTP id om12-20020a0562143d8c00b006966f954421mr12036034qvb.1.1711485802644;
-        Tue, 26 Mar 2024 13:43:22 -0700 (PDT)
-Received: from x1n ([99.254.121.117])
-        by smtp.gmail.com with ESMTPSA id fw11-20020a056214238b00b0069693e10869sm1875364qvb.143.2024.03.26.13.43.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Mar 2024 13:43:22 -0700 (PDT)
-Date: Tue, 26 Mar 2024 16:43:20 -0400
-From: Peter Xu <peterx@redhat.com>
-To: Andrew Morton <akpm@linux-foundation.org>
-Cc: linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-	SeongJae Park <sj@kernel.org>, Jason Gunthorpe <jgg@nvidia.com>,
-	Mike Rapoport <rppt@kernel.org>,
-	Matthew Wilcox <willy@infradead.org>,
-	kernel test robot <lkp@intel.com>
-Subject: Re: [PATCH] mm/arch: Provide pud_pfn() fallback
-Message-ID: <ZgMzaMu7oILiNLcG@x1n>
-References: <20240323151643.1047281-1-peterx@redhat.com>
- <20240326132726.67e82559a928ac1636c8050c@linux-foundation.org>
+	 Content-Type:Content-Disposition:In-Reply-To; b=BMNORMxc9IzGRia0e55OX8HEP5JehY5UpAx/VOTLg70jkrFsOKqP796CFYRQzch7Zag8II2ZZiKztSd3J22yjliH6DK8QOAxUVwUXQrw4+VEfZK+7XQ6U/555hFs4xx754zl6vSBgaDfAIYLw9U+51egYQbaer3pUukHiyk/iak=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=T1zG7X3F; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D0DF8C433C7;
+	Tue, 26 Mar 2024 20:43:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1711485805;
+	bh=SK4kbVI23QJSidrvvQmGhUSWkTsnFTBDfUyJyLO8ZLc=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=T1zG7X3FsdrUOA8RBROUWxAURta4X2xmEopM/2AQfsExg9+HdxvwMh31OsWBsdWld
+	 5A5yKq0cQF+S52QLaLfqg2I5cgx9pYlR44mKoQQ+IjXxZQj3GNvr826zovyj00zViF
+	 a3udcNZ5hfbUnZ5xnD7qd6NEvyFD0g57E1D1wdwlV6e5+xVAJicTSPbWbM6Ri/FaLB
+	 Pcf1YNWYAdqeA57trJw+P6zDKP6oju6s7JCHwsrWwEp+gGIVelQ7coeOBzeF3STI+R
+	 KQbZ4pGV+5BOeV9TQJg2USJHmpuDsnT2sv8oS9uHz+g0B6ktsHtpJooTsD+5CcCiTg
+	 kR6BbrYGaRkgA==
+Date: Tue, 26 Mar 2024 15:43:22 -0500
+From: Rob Herring <robh@kernel.org>
+To: Herve Codina <herve.codina@bootlin.com>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	"Rafael J. Wysocki" <rafael@kernel.org>,
+	Frank Rowand <frowand.list@gmail.com>,
+	Saravana Kannan <saravanak@google.com>,
+	Lizhi Hou <lizhi.hou@amd.com>, Max Zhen <max.zhen@amd.com>,
+	Sonal Santan <sonal.santan@amd.com>,
+	Stefano Stabellini <stefano.stabellini@xilinx.com>,
+	Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+	linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+	Allan Nielsen <allan.nielsen@microchip.com>,
+	Horatiu Vultur <horatiu.vultur@microchip.com>,
+	Steen Hegelund <steen.hegelund@microchip.com>,
+	Luca Ceresoli <luca.ceresoli@bootlin.com>,
+	Nuno Sa <nuno.sa@analog.com>,
+	Thomas Petazzoni <thomas.petazzoni@bootlin.com>
+Subject: Re: [PATCH v6 0/2] Synchronize DT overlay removal with devlink
+ removals
+Message-ID: <20240326204322.GA3376856-robh@kernel.org>
+References: <20240325152140.198219-1-herve.codina@bootlin.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20240326132726.67e82559a928ac1636c8050c@linux-foundation.org>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240325152140.198219-1-herve.codina@bootlin.com>
 
-On Tue, Mar 26, 2024 at 01:27:26PM -0700, Andrew Morton wrote:
-> On Sat, 23 Mar 2024 11:16:43 -0400 peterx@redhat.com wrote:
+On Mon, Mar 25, 2024 at 04:21:24PM +0100, Herve Codina wrote:
+> Hi,
 > 
-> > From: Peter Xu <peterx@redhat.com>
-> > 
-> > The comment in the code explains the reasons.  We took a different approach
-> > comparing to pmd_pfn() by providing a fallback function.
-> > 
-> > Another option is to provide some lower level config options (compare to
-> > HUGETLB_PAGE or THP) to identify which layer an arch can support for such
-> > huge mappings.  However that can be an overkill.
-> > 
-> > ...
-> >
-> > If we care about per-commit build errors (and if it is ever feasible to
-> > reorder), we can move this patch to be before the patch "mm/gup: handle
-> > huge pud for follow_pud_mask()" in mm-unstable to unbreak build on that
-> > commit.
+> In the following sequence:
+>   of_platform_depopulate(); /* Remove devices from a DT overlay node */
+>   of_overlay_remove(); /* Remove the DT overlay node itself */
 > 
-> I temporarily disabled that whole series a few days ago.  Because of
-> multiple build issues, iirc.
+> Some warnings are raised by __of_changeset_entry_destroy() which  was
+> called from of_overlay_remove():
+>   ERROR: memory leak, expected refcount 1 instead of 2 ...
 > 
-> Let's make that permanent.  Please redo the whole series against
-> mm-unstable and resend?
+> The issue is that, during the device devlink removals triggered from the
+> of_platform_depopulate(), jobs are put in a workqueue.
+> These jobs drop the reference to the devices. When a device is no more
+> referenced (refcount == 0), it is released and the reference to its
+> of_node is dropped by a call to of_node_put().
+> These operations are fully correct except that, because of the
+> workqueue, they are done asynchronously with respect to function calls.
+> 
+> In the sequence provided, the jobs are run too late, after the call to
+> __of_changeset_entry_destroy() and so a missing of_node_put() call is
+> detected by __of_changeset_entry_destroy().
+> 
+> This series fixes this issue introducing device_link_wait_removal() in
+> order to wait for the end of jobs execution (patch 1) and using this
+> function to synchronize the overlay removal with the end of jobs
+> execution (patch 2).
+> 
+> Compared to the previous iteration:
+>   https://lore.kernel.org/linux-kernel/20240307111036.225007-1-herve.codina@bootlin.com/
+> this v6 series:
+> - Add Saravana's 'Reviewed-by' tag
+> 
+> This series handles cases reported by Luca [1] and Nuno [2].
+>   [1]: https://lore.kernel.org/all/20231220181627.341e8789@booty/
+>   [2]: https://lore.kernel.org/all/20240205-fix-device-links-overlays-v2-2-5344f8c79d57@analog.com/
+> 
+> Best regards,
+> Hervé
+> 
+> Changes v5 -> v6
+>   - Patch 1
+>     Add 'Reviewed-by: Saravana Kannan <saravanak@google.com>'
+> 
+>   - Patch 2
+>     No changes
+> 
+> Changes v4 -> v5
+>   - Patch 1
+>     Remove the 'Fixes' tag
+>     Add 'Tested-by: Luca Ceresoli <luca.ceresoli@bootlin.com>'
+>     Add 'Reviewed-by: Nuno Sa <nuno.sa@analog.com>'
+> 
+>   - Patch 2
+>     Update comment as suggested
+>     Add 'Reviewed-by: Saravana Kannan <saravanak@google.com>'
+>     Add 'Tested-by: Luca Ceresoli <luca.ceresoli@bootlin.com>'
+>     Add 'Reviewed-by: Nuno Sa <nuno.sa@analog.com>'
+> 
+> Changes v3 -> v4
+>   - Patch 1
+>     Uses flush_workqueue() instead of drain_workqueue().
+> 
+>   - Patch 2
+>     Remove unlock/re-lock when calling device_link_wait_removal()
+>     Move device_link_wait_removal() call to of_changeset_destroy()
+>     Update commit log
+> 
+> Changes v2 -> v3
+>   - Patch 1
+>     No changes
+> 
+>   - Patch 2
+>     Add missing device.h
+> 
+> Changes v1 -> v2
+>   - Patch 1
+>     Rename the workqueue to 'device_link_wq'
+>     Add 'Fixes' tag and Cc stable
+> 
+>   - Patch 2
+>     Add device.h inclusion.
+>     Call device_link_wait_removal() later in the overlay removal
+>     sequence (i.e. in free_overlay_changeset() function).
+>     Drop of_mutex lock while calling device_link_wait_removal().
+>     Add	'Fixes'	tag and Cc stable
+> 
+> Herve Codina (2):
+>   driver core: Introduce device_link_wait_removal()
+>   of: dynamic: Synchronize of_changeset_destroy() with the devlink
+>     removals
+> 
+>  drivers/base/core.c    | 26 +++++++++++++++++++++++---
+>  drivers/of/dynamic.c   | 12 ++++++++++++
+>  include/linux/device.h |  1 +
+>  3 files changed, 36 insertions(+), 3 deletions(-)
 
-Yes, that's the plan.  Feel free to ignore this as this is not used until
-that GUP rework series, I'll include it in the whole set to be reposted.
-
-I'm currently doing the build tests; just finished writting the harness for
-testing the matrix.  It'll take a bit time to run through the tests I
-specified (I tried to cover a few more archs/configs), and I'll repost with
-all patches included (fixups squashed) when test finished.
-
-[side note: I think I can reproduce the other not-reported issue, on
- arm+alldefconfig; that'll get covered too]
-
-Thanks,
-
--- 
-Peter Xu
-
+Applied, thanks!
 
