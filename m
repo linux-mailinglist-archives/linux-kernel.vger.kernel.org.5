@@ -1,52 +1,51 @@
-Return-Path: <linux-kernel+bounces-119731-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-119730-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 77C7B88CC81
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 19:57:50 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6F94188CC85
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 19:58:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2C046309F01
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 18:57:49 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5B81CB2B149
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 18:57:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 07B7913CC69;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0F98213CC6C;
 	Tue, 26 Mar 2024 18:57:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="R5jhoRbN"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NFkZy5Y9"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3AF30129E88;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3AFC813C696;
 	Tue, 26 Mar 2024 18:57:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711479444; cv=none; b=RqQNu0uJUhxX0Cow/3E5ovLDp2G18jPh/vu8xwnEgsWy7+qH0iofu4RHIJtY4IsQq4zF26EEazWiGxVx4vqTJGqUK9CSTBz1MhzTmGvLygi4atR5dgE5lY5sujNhYUUraAvCKtXVsRfq84zSzAo7wSF7FtuD+p8eonWtE/JZxgU=
+	t=1711479444; cv=none; b=iC+CEzfPa6Iv7c55r700cgrP/JjMC6tLQ/QfWRSLM44hx8RBJaO54O0wtUImyCsRFyGedcdANOI0O79VTGe+eAh+etrd/09VCwtzPkig07GlfzJ19Xu+uVh/vMhTjtv77tvYYoC1J+5BvA+s/MXuGyLFmiZk+00eayoDYGI+GZM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1711479444; c=relaxed/simple;
-	bh=E43foxj+UySf1m9AXwAy4EcKz2179uEogLNPhzYtuqU=;
-	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=lCD6/eWO7ibwJmFPz847GQzgiL8/NDbKhTF3D0sYlacVFyN8GAcJcdHWX0HAZlBnnVv5WKJqNBUaZmlbeYKY5NUcWRSV4MWescs547swNAebfHK2fr9ET1IIzMskZYLBWKeFL5JgaHqUjN2wel7oOqpWeuKuU1tHRbo7t6vO+Aw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=R5jhoRbN; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id BB062C433C7;
+	bh=Gsn3xXI5BKQL/2L//Z3WWmwk7DoW960rhzJRT9Ymakc=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
+	 In-Reply-To:To:Cc; b=neCYT6uEEWSDqKTpA9ouSnjGEZe2VBgbBizpOyt9EWsEUaT7XlegTQMorX2mI7CGkpAAz62LTGtdOtyPg250g9yt7SBQOa4FWAU6SXybKD07/CVup+RooA0lSgFtgSNVROsvjqtStFJ0Gog1VTqmK3FBHcZ4zv0wIzv3jVzMnlA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NFkZy5Y9; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id C36E4C43390;
 	Tue, 26 Mar 2024 18:57:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1711479443;
-	bh=E43foxj+UySf1m9AXwAy4EcKz2179uEogLNPhzYtuqU=;
-	h=From:Subject:Date:To:Cc:Reply-To:From;
-	b=R5jhoRbNjNNZ8szwWvKMLlX9tX/YyyKDNyfAkAe32TdMq1uo6cOiS52xphFt+JGZH
-	 omO2+t8Sa8P7vTUxVswN15s5zgc++QAdnLjbQbFK17bk3adqXKuG8i2y1pGAjoflt8
-	 bPkb7f4M32A6sVrGV1Jk7AzBUq88Cz/k/moNAhnD+CMS6EUmqUv6CK2st1YRxxM0gQ
-	 weFAdl0pEx4IB+K33U8U++YrMd574AXYvpBX/yphhQL41scrnl1YU0Vr55hLMXt1kv
-	 OzWZPd7IdJCQOGZ6orl9TsiICs8Ax5r3Fx0sTvq9FHssSIk7ppsN3PxbCH0n82HsYS
-	 msmQ9sOwiNILg==
+	bh=Gsn3xXI5BKQL/2L//Z3WWmwk7DoW960rhzJRT9Ymakc=;
+	h=From:Date:Subject:References:In-Reply-To:To:Cc:Reply-To:From;
+	b=NFkZy5Y9KO2Hxq0mI84mZ9prB6Fytp67o6i5a/E4qS3vwxvFWzhv4AIpeM160GWfp
+	 AAmVMtfAXgmahmiyPwYN8nj4zBFY3Yyb+7Y4bIJbrE2u1iNhqZNOAGzurwjF72Rv8w
+	 /KsXhV57usRVY+CgK3FCqCGbAvn/v0XQNJpzuteTKJK/lbrh89y7fxabQIulbXB/JA
+	 Nf1GxyoCfRttFrH1QcjZdSQR+usSkjZ+OKL69z2gBjilVDX6dcH7rekmOelO6shf2x
+	 kjd2otmYtZT0F6WGyEViMFAPXuPlKBhKx0SbtgYA8u9vLzkiIzNCu1QTykOLUtfuux
+	 LNau16lWcj5bQ==
 Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9A14FCD11DF;
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B2E1EC6FD1F;
 	Tue, 26 Mar 2024 18:57:23 +0000 (UTC)
 From: Folker Schwesinger via B4 Relay <devnull+dev.folker-schwesinger.de@kernel.org>
-Subject: [PATCH 0/3] phy: rockchip: emmc: Enable internal strobe pull-down
- by default
-Date: Tue, 26 Mar 2024 19:54:34 +0100
-Message-Id: <20240326-rk-default-enable-strobe-pulldown-v1-0-f410c71605c0@folker-schwesinger.de>
+Date: Tue, 26 Mar 2024 19:54:35 +0100
+Subject: [PATCH 1/3] phy: rockchip: emmc: Enable pulldown for strobe line
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -55,9 +54,9 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-B4-Tracking: v=1; b=H4sIAOsZA2YC/x3NTQqDMBBA4avIrB3QRKX0KsVFfiY6NCQy0bYg3
- r3B5bd574RCwlTg2Zwg9OHCOVX0bQNuNWkhZF8NqlNDp9WE8kZPwRxxR0rGRsKyS7aE2xGjz9+
- EWo+Te7jQ2yFA7WxCgX/34zVf1x+9MGmIcwAAAA==
+Message-Id: <20240326-rk-default-enable-strobe-pulldown-v1-1-f410c71605c0@folker-schwesinger.de>
+References: <20240326-rk-default-enable-strobe-pulldown-v1-0-f410c71605c0@folker-schwesinger.de>
+In-Reply-To: <20240326-rk-default-enable-strobe-pulldown-v1-0-f410c71605c0@folker-schwesinger.de>
 To: Vinod Koul <vkoul@kernel.org>, 
  Kishon Vijay Abraham I <kishon@kernel.org>, 
  Heiko Stuebner <heiko@sntech.de>, Chris Ruehl <chris.ruehl@gtsys.com.hk>, 
@@ -73,13 +72,13 @@ Cc: Christopher Obbard <chris.obbard@collabora.com>,
  linux-kernel@vger.kernel.org, devicetree@vger.kernel.org, 
  Folker Schwesinger <dev@folker-schwesinger.de>
 X-Mailer: b4 0.13.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1969;
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2253;
  i=dev@folker-schwesinger.de; h=from:subject:message-id;
- bh=E43foxj+UySf1m9AXwAy4EcKz2179uEogLNPhzYtuqU=;
- b=owGbwMvMwCXG5FBoZNu1u5bxtFoSQxqzVPcG4XrhRdxbmas+173ql3lw5G3uxq5OPd6sDzq9m
- U3MsX86SlkYxLgYZMUUWVjzMrYwZ5Yvte76+RpmDisTyBAGLk4BmMgeNoY/nM+WhP5tVnq2wjs6
- kPnsU9EmyWUTV69YUBTcenfrjbKcfoZ/RmG52hezVCr2HS/90XD65CTtk8kWC3YYC4SuPKa2tfc
- NJwA=
+ bh=vn1WaogVqkovnF++lKXXa6btFkOAZlcxkgTSF4vHKKI=;
+ b=owGbwMvMwCXG5FBoZNu1u5bxtFoSQxqz1ESGm1xxESWPdL0nBP77tEF529PKYs66r0ez70y8w
+ 2eS2Tm5o5SFQYyLQVZMkYU1L2MLc2b5Uuuun69h5rAygQ3h4hSAibCEMfwVOiHs8frNmQnzo1mu
+ GdVGya19sFMoZ+G78y36Xp3W6h5fGRnaD1XFVlhoO08onHh787XvZ+ad11Ko0L/3/tkVv8uFT66
+ zAQA=
 X-Developer-Key: i=dev@folker-schwesinger.de; a=openpgp;
  fpr=056E68B4036977A53B8AF9EB024071323D8ABB7D
 X-Endpoint-Received: by B4 Relay for dev@folker-schwesinger.de/default with
@@ -87,47 +86,54 @@ X-Endpoint-Received: by B4 Relay for dev@folker-schwesinger.de/default with
 X-Original-From: Folker Schwesinger <dev@folker-schwesinger.de>
 Reply-To: dev@folker-schwesinger.de
 
-Various RK3399 boards, including the Rock Pi 4 series, the NanoPi 4
-series and possibly others showed instabilities with some eMMC modules
-when operating in HS400 mode [1]. Later, a missing pull-down resistor on
-the eMMC strobe line was identified as the root cause of these
-instabilities [2].
+From: Folker Schwesinger <dev@folker-schwesinger.de>
 
-This series changes the Rockchip eMMC PHY driver to enable the
-internal pull-down for the strobe line by default, effectively
-restoring the behavior of the vendor kernel [3].
-Addressing the problem in the driver avoids fix-ups in individual
-board DTs.
+Restore the behavior of the Rockchip kernel that undconditionally
+enables the internal strobe pulldown.
+As the DT property rockchip,enable-strobe-pulldown is obsolete now,
+replace it with a property to disable the internal pulldown.
 
-As this change makes the optional DT property enable-strobe-pulldown
-obsolete, it is replaced by a new property disable-strobe-pulldown,
-that, when used, allows to disable the internal pull-down.
+This fixes I/O errors observed on various Rock Pi 4 and NanoPi4 series
+boards with some eMMC modules. Other boards may also be affected.
 
-While at it, the enable-strobe-pulldown property was removed from the
-NanoPi4 series DTS (which was the only user of the property in the kernel).
+An example of these errors is as follows:
 
-[1]: https://lore.kernel.org/all/20230705144255.115299-1-chris.obbard@collabora.com/
-[2]: https://lore.kernel.org/all/20220822074139.3810-1-jensenhuang@friendlyarm.com/
-[3]: https://github.com/rockchip-linux/kernel/blob/develop-4.4/drivers/phy/rockchip/phy-rockchip-emmc.c#L310
+[  290.060817] mmc1: running CQE recovery
+[  290.061337] blk_update_request: I/O error, dev mmcblk1, sector 1411072 op 0x1:(WRITE) flags 0x800 phys_seg 36 prio class 0
+[  290.061370] EXT4-fs warning (device mmcblk1p1): ext4_end_bio:348: I/O error 10 writing to inode 29547 starting block 176466)
+[  290.061484] Buffer I/O error on device mmcblk1p1, logical block 172288
 
+Fixes: 8b5c2b45b8f0 ("phy: rockchip: set pulldown for strobe line in dts")
 Signed-off-by: Folker Schwesinger <dev@folker-schwesinger.de>
 ---
-Folker Schwesinger (3):
-      phy: rockchip: emmc: Enable pulldown for strobe line
-      devicetree: phy: rockchip-emmc: Document changed strobe-pulldown property
-      arm64: dts: rockchip: Remove enable-strobe-pulldown for NanoPi4 boards
+ drivers/phy/rockchip/phy-rockchip-emmc.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
- Documentation/devicetree/bindings/phy/rockchip-emmc-phy.txt | 4 ++--
- arch/arm64/boot/dts/rockchip/rk3399-nanopi4.dtsi            | 1 -
- drivers/phy/rockchip/phy-rockchip-emmc.c                    | 6 +++---
- 3 files changed, 5 insertions(+), 6 deletions(-)
----
-base-commit: 4cece764965020c22cff7665b18a012006359095
-change-id: 20240326-rk-default-enable-strobe-pulldown-3356c8cf1b4f
+diff --git a/drivers/phy/rockchip/phy-rockchip-emmc.c b/drivers/phy/rockchip/phy-rockchip-emmc.c
+index 20023f6eb994..6e637f3e1b19 100644
+--- a/drivers/phy/rockchip/phy-rockchip-emmc.c
++++ b/drivers/phy/rockchip/phy-rockchip-emmc.c
+@@ -376,14 +376,14 @@ static int rockchip_emmc_phy_probe(struct platform_device *pdev)
+ 	rk_phy->reg_offset = reg_offset;
+ 	rk_phy->reg_base = grf;
+ 	rk_phy->drive_impedance = PHYCTRL_DR_50OHM;
+-	rk_phy->enable_strobe_pulldown = PHYCTRL_REN_STRB_DISABLE;
++	rk_phy->enable_strobe_pulldown = PHYCTRL_REN_STRB_ENABLE;
+ 	rk_phy->output_tapdelay_select = PHYCTRL_OTAPDLYSEL_DEFAULT;
+ 
+ 	if (!of_property_read_u32(dev->of_node, "drive-impedance-ohm", &val))
+ 		rk_phy->drive_impedance = convert_drive_impedance_ohm(pdev, val);
+ 
+-	if (of_property_read_bool(dev->of_node, "rockchip,enable-strobe-pulldown"))
+-		rk_phy->enable_strobe_pulldown = PHYCTRL_REN_STRB_ENABLE;
++	if (of_property_read_bool(dev->of_node, "rockchip,disable-strobe-pulldown"))
++		rk_phy->enable_strobe_pulldown = PHYCTRL_REN_STRB_DISABLE;
+ 
+ 	if (!of_property_read_u32(dev->of_node, "rockchip,output-tapdelay-select", &val)) {
+ 		if (val <= PHYCTRL_OTAPDLYSEL_MAXVALUE)
 
-Best regards,
 -- 
-Folker Schwesinger <dev@folker-schwesinger.de>
+2.44.0
 
 
 
