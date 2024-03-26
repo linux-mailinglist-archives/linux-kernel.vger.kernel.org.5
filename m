@@ -1,137 +1,150 @@
-Return-Path: <linux-kernel+bounces-118255-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-118258-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 362CE88B6EC
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 02:34:16 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CCDA388B6F5
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 02:36:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C945A1F3AC96
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 01:34:15 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8604B2C807F
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 01:36:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3866348CDC;
-	Tue, 26 Mar 2024 01:34:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9BF992137F;
+	Tue, 26 Mar 2024 01:36:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="tzKWX3CA"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="itgmM2iL"
+Received: from mail-qt1-f181.google.com (mail-qt1-f181.google.com [209.85.160.181])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6BFE0208A5;
-	Tue, 26 Mar 2024 01:34:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 56D9182D80
+	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 01:36:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711416845; cv=none; b=VrzDizhOJryb3shG6s3C2JHjDKFhYxKGyH9+6m2jpZ6YigKPqc6jhwpbcwINpyyD4DSxT+zkGkHEVocoWflyH8r65/F42gU0jnyZ8IojIeNh50OTnjXClmOQ9Kg2EXCghjuPMvr6tFPqxikg7yFu7ECAjv7tKWIcja5dScA9jMM=
+	t=1711416984; cv=none; b=DZs0v2pIG20I6EqnFMEh/4XvmnTe67rz3UF5AKDm57Z1bc2PDqBgd11oAW/a/zWG5Uy644PbdRPpLw1vbgsZU6RosgtoTZEjnni7a7OW87BDNRDZj8MsMNfXu1BjQKGMWMPsXeTT3KJs3+9IgMGPehVvLSINfJyWBSTN/61xkr4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711416845; c=relaxed/simple;
-	bh=Kld8ee53LGFCJ947l/6fXt+DcJKCtXX/9+TvSa7mnjQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=nagDUTd0gWHlsiFgSNxGMyssseNqCgYyaPEOB2aUI/SDvL1+K0Zd3FV00gfsSKrl56H1NW5plLpnzy8VFulqgnN5GOsJuotLKiuTrClWgp7oHQJkQdDgMkwgcsuaWMezdMEvII+L1uML0YNAQ3Ri1BRfwfDXccyXLGdfo8I6jZU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=tzKWX3CA; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E3BAFC433F1;
-	Tue, 26 Mar 2024 01:34:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711416844;
-	bh=Kld8ee53LGFCJ947l/6fXt+DcJKCtXX/9+TvSa7mnjQ=;
-	h=Date:From:To:Cc:Subject:From;
-	b=tzKWX3CAVp6lzR+NO9U/wVxg+j/9VDnYwxQauhl5F5BKOCxTnfQYWfltEcgB/WI11
-	 61diXdiwjt0DBGdZBT3+HPPR5JXaTE3cJJ8UzRQWNOXMbx6Errnhz4MWVIj23Xz2/d
-	 AuJU4jyjp+I6rMRZE07Ju2rpV9IxmZGPmDq1m91dHc3twH8pS/ZdVDDvZgVkXwGI8o
-	 YbRZdx9MIVqAqM+5V/MlbiG2h2Z+vyecdVitHkBxQucbJEPwMEwLGnB6ESwUUrIk8+
-	 ++ZRLg+Mz7kCVn0C+aE+cHZZmqqAppSa61Mda6zq33KURZxou8DEII2sLgcggnGFQM
-	 AIj1PouNR37LA==
-Date: Mon, 25 Mar 2024 19:34:01 -0600
-From: "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To: Alexander Viro <viro@zeniv.linux.org.uk>,
-	Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>,
-	Chuck Lever <chuck.lever@oracle.com>,
-	Jeff Layton <jlayton@kernel.org>,
-	Amir Goldstein <amir73il@gmail.com>
-Cc: linux-fsdevel@vger.kernel.org, linux-nfs@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	"Gustavo A. R. Silva" <gustavoars@kernel.org>,
-	linux-hardening@vger.kernel.org
-Subject: [PATCH][next] fs: Annotate struct file_handle with __counted_by()
- and use struct_size()
-Message-ID: <ZgImCXTdGDTeBvSS@neat>
+	s=arc-20240116; t=1711416984; c=relaxed/simple;
+	bh=tCQybncCyylSiSFwYBDS7DYwZwG92wpYUyt99WynvKY=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=KVoHyNUglJ7Hd1KvhkyTArnKRXDuabtx0Xs01X/mU3bRnTAPlMm3UZYGQnVlBE0XXUBGxCXc7rZ9c9+rA356GCTUo0tqNFs2KG6jOin49DPqEXXM8yNdCKT+G2ShKwgQugvwWrb7hV9b05pVLiNGNiCkjBT3Kp2ZFgon87g/WyY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=itgmM2iL; arc=none smtp.client-ip=209.85.160.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-qt1-f181.google.com with SMTP id d75a77b69052e-431347c6c99so79601cf.0
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 18:36:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1711416982; x=1712021782; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=tCQybncCyylSiSFwYBDS7DYwZwG92wpYUyt99WynvKY=;
+        b=itgmM2iLNPYvoW6KnTo8S9KwMp+TjeQvrTiwrnJoVZYEpy9xF9TT5pzionq/1BuMqC
+         SSFGc7E0Z11e3qNfUwb4VKcAKIpUN31ScGWGrJQMp4hr/AoIMHkB1Fi9l9gHmhc2cQ3A
+         ehjNVqUyj6cf+fiCQdNCRoDBsnvSz3mXyLc0g561WUI1riNrGfUMKa26kRpEqDUpJ+vg
+         cN0lMWPy3wkI5ERMJ7zy86ldJ+/+dHtzccXGA/wjTnHXcxbEUO7PzhljkYNX31E96iPr
+         z1mBEEsBQM5u08Z2Q4PRxYnRsnYwg2FpBQTkOAImg62wsy3OIRfehYAMPMTdaLx4N8UO
+         6ifQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711416982; x=1712021782;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=tCQybncCyylSiSFwYBDS7DYwZwG92wpYUyt99WynvKY=;
+        b=kMjo79caX83I4uhGLsSYILIDsdBqI/fdNekhXBBGtkgYGvPI1PgbtM9E8XM0QJE3qJ
+         jtoinZ4pju5/N8pIkDMR5pvtIcjp/q/0QYsnTRN5SjBT6O/z1CtHXanjv4d0X9iWRQDR
+         mGd1HhpAZeLdMEBKnzU3M51EZ2pJRWFMW0N0suC6wsDSPpZiHymCIp3aDOtINw1w506S
+         R7UcXFmEjlcoUNJYsNowFTKGfffQBOZz6yPKmLM/FRkJqZvH6x7ms++br2/D0hFKZR6f
+         Ca2VkcnGmZHcYzwMZU89jaWkidabzrrlTmIhSbxwZ8t0FqtMA9op0rjsm/z7X31UJOQH
+         dU4Q==
+X-Forwarded-Encrypted: i=1; AJvYcCUpokKfxUZrQB3qFgSCaK8bISBW8+4+nbzf7Aioz1Khm9K8Xikx9cADGGo1aseAz4aIhhhv0AF2nf12pfMfvQga9TWlfBJ0HO5pIGO5
+X-Gm-Message-State: AOJu0Yyf5yx7wUkt1hUpNJ4ryj+oFDKFHVV/2LF3Rm+XkiuqcB4eA3rn
+	XlEk0gMh/YuGMjUJQTlShEMSiMX+p4h93tX6UubwzbwoaHb0iPvt401POo7xLwXAlLaSur5bv3u
+	e9l+1x/HO61/O+ND30u2+/gPqkQEZDvFoaBpK
+X-Google-Smtp-Source: AGHT+IGgGcwcgUzMgkYI2jlgeKoVTTvtP5lEBpDOK5cAEiTTvk606224kG1I/0QlbKwNkYXw5EAYik7Rk5X48MvaFqk=
+X-Received: by 2002:a05:622a:6114:b0:431:3d4d:92ed with SMTP id
+ hg20-20020a05622a611400b004313d4d92edmr29488qtb.9.1711416982092; Mon, 25 Mar
+ 2024 18:36:22 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+References: <20240224052436.3552333-1-saravanak@google.com>
+ <ZfvN5jDrftG-YRG4@titan> <CAGETcx8+vw0Vr0NWzjOAvxAZ07M4U7BWPAgO9avCngW0-9e_kA@mail.gmail.com>
+ <Zf7I65PiOR2wX1Uo@titan> <CAGETcx_=MmfgDajM16iJ4Of9Yr2Sy6ZpU=MyhYgnmOJFUTD_oA@mail.gmail.com>
+ <ZgIZ4LmFOqdiDJBH@titan>
+In-Reply-To: <ZgIZ4LmFOqdiDJBH@titan>
+From: Saravana Kannan <saravanak@google.com>
+Date: Mon, 25 Mar 2024 18:35:45 -0700
+Message-ID: <CAGETcx-Emvu41nB3UDnb4Gh2aJEKu_hFcHX89uWnBTnaqvpN8g@mail.gmail.com>
+Subject: Re: [PATCH] of: property: fw_devlink: Fix stupid bug in
+ remote-endpoint parsing
+To: John Watts <contact@jookia.org>
+Cc: Rob Herring <robh+dt@kernel.org>, Frank Rowand <frowand.list@gmail.com>, 
+	=?UTF-8?Q?Herv=C3=A9_Codina?= <herve.codina@bootlin.com>, 
+	Luca Ceresoli <luca.ceresoli@bootlin.com>, kernel-team@android.com, 
+	Rob Herring <robh@kernel.org>, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Prepare for the coming implementation by GCC and Clang of the __counted_by
-attribute. Flexible array members annotated with __counted_by can have
-their accesses bounds-checked at run-time via CONFIG_UBSAN_BOUNDS (for
-array indexing) and CONFIG_FORTIFY_SOURCE (for strcpy/memcpy-family
-functions).
+On Mon, Mar 25, 2024 at 5:42=E2=80=AFPM John Watts <contact@jookia.org> wro=
+te:
+>
+> Hello there,
+>
+> On Mon, Mar 25, 2024 at 03:49:44PM -0700, Saravana Kannan wrote:
+> > Ok, I think I understand now what's going on. fw_devlink does not know
+> > that "sound" device will not populate "multi" as a child device.
+> > Typically in such situations, "sound" would probe as a device and add
+> > its child DT nodes devices. At that point, the cycle is only between
+> > "multi" and "test_codec" and fw_devlink will detect that and not
+> > enforce any ordering. However, in this case, "sound" doesn't have any
+> > child devices and just depends on the remote endpoints directly.
+> >
+> > We already have "ports", "in-ports" and "out-ports". Is there a reason
+> > none of them will work for your use case and it has to be "multi"?
+> > When you use one of those 3 recognized node names, things are handled
+> > correctly.
+>
+> audio-graph-card2 uses 'multi' to define DAI links that have multiple
+> endpoints. It also suports codec2codec and dpcm.
+>
+> > I think the right fix is the use of post-init-providers. Because even
+> > if you do the above, all it does is let fw_devlink see that there's a
+> > cyclic dependency in DT. And it'll stop enforcing the probe and
+> > suspend/resume ordering. Ideally we want to enforce a specific order
+> > here. test_codec first and then sound.
+>
+> Is there a way to do this automatically so all the existing audio-graph-c=
+ard2
+> device trees aren't broken? As it stands it seems like this driver is now
+> broken due to this change.
 
-While there, use struct_size() helper, instead of the open-coded
-version.
+Ok, I have a solution. Have the audio-graph-card2 find the fwnode of
+"multi" and mark it as "not a device" by doing something like this in
+the driver. That should help fw_devlink handle this correctly.
 
-Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
----
- fs/fhandle.c       | 8 ++++----
- include/linux/fs.h | 2 +-
- 2 files changed, 5 insertions(+), 5 deletions(-)
+fwnode.flags |=3D FWNODE_FLAG_NOT_DEVICE;
 
-diff --git a/fs/fhandle.c b/fs/fhandle.c
-index 57a12614addf..53ed54711cd2 100644
---- a/fs/fhandle.c
-+++ b/fs/fhandle.c
-@@ -36,7 +36,7 @@ static long do_sys_name_to_handle(const struct path *path,
- 	if (f_handle.handle_bytes > MAX_HANDLE_SZ)
- 		return -EINVAL;
- 
--	handle = kzalloc(sizeof(struct file_handle) + f_handle.handle_bytes,
-+	handle = kzalloc(struct_size(handle, f_handle, f_handle.handle_bytes),
- 			 GFP_KERNEL);
- 	if (!handle)
- 		return -ENOMEM;
-@@ -71,7 +71,7 @@ static long do_sys_name_to_handle(const struct path *path,
- 	/* copy the mount id */
- 	if (put_user(real_mount(path->mnt)->mnt_id, mnt_id) ||
- 	    copy_to_user(ufh, handle,
--			 sizeof(struct file_handle) + handle_bytes))
-+			 struct_size(handle, f_handle, handle_bytes)))
- 		retval = -EFAULT;
- 	kfree(handle);
- 	return retval;
-@@ -192,7 +192,7 @@ static int handle_to_path(int mountdirfd, struct file_handle __user *ufh,
- 		retval = -EINVAL;
- 		goto out_err;
- 	}
--	handle = kmalloc(sizeof(struct file_handle) + f_handle.handle_bytes,
-+	handle = kmalloc(struct_size(handle, f_handle, f_handle.handle_bytes),
- 			 GFP_KERNEL);
- 	if (!handle) {
- 		retval = -ENOMEM;
-@@ -202,7 +202,7 @@ static int handle_to_path(int mountdirfd, struct file_handle __user *ufh,
- 	*handle = f_handle;
- 	if (copy_from_user(&handle->f_handle,
- 			   &ufh->f_handle,
--			   f_handle.handle_bytes)) {
-+			   struct_size(ufh, f_handle, f_handle.handle_bytes))) {
- 		retval = -EFAULT;
- 		goto out_handle;
- 	}
-diff --git a/include/linux/fs.h b/include/linux/fs.h
-index 034f0c918eea..1540e28d10d7 100644
---- a/include/linux/fs.h
-+++ b/include/linux/fs.h
-@@ -1033,7 +1033,7 @@ struct file_handle {
- 	__u32 handle_bytes;
- 	int handle_type;
- 	/* file identifier */
--	unsigned char f_handle[];
-+	unsigned char f_handle[] __counted_by(handle_bytes);
- };
- 
- static inline struct file *get_file(struct file *f)
--- 
-2.34.1
+>
+> > Maybe. But the logs would be more helpful.
+>
+> If you have a way for me to get more logs please tell me.
+>
+> > > > post-init-provider =3D <&multi>;
+> >
+> > Did you try this? Did it help?
+> >
+> > -Saravana
+>
+> No I haven't tried this yet. I shall try it soon. But I wouldn't consider
+> this a useful fix as it requires upgrading existing device trees.
 
+Definitely do this though as a forward looking improvement. It'll help
+make the suspend/resume more deterministic and will eventually let
+things happen in an async manner.
+
+
+-Saravana
 
