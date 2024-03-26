@@ -1,446 +1,224 @@
-Return-Path: <linux-kernel+bounces-118822-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-118829-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8915F88BFC2
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 11:38:44 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3090B88BFD4
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 11:48:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0297D1F3F339
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 10:38:44 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6012CB248D4
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 10:48:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2E59C52F74;
-	Tue, 26 Mar 2024 10:37:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B0EAB4C83;
+	Tue, 26 Mar 2024 10:48:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="GCpllyKE";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="oWpFples";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="PwnGi39Q";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="CD1op1JG"
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=hotmail.com header.i=@hotmail.com header.b="n11ToqI+"
+Received: from APC01-PSA-obe.outbound.protection.outlook.com (mail-psaapc01olkn2105.outbound.protection.outlook.com [40.92.52.105])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 500184A33;
-	Tue, 26 Mar 2024 10:37:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711449476; cv=none; b=gpyfEdSIsze79IhbczRtQ5d3C6fmJtLo2r8skHXBMEs3q2TMBDkcQBePOqrkdnaNPfQYcFT10abYsdHAu/OAYlQ0qYlKRlU4rUeUxdcpvMWS0Jkq+YI7BtE7lcOEnR4zzKyeCm+MBEH4YuVhNyRHwmt7MnVPUPUWCv7QEVpQV0g=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711449476; c=relaxed/simple;
-	bh=Ef6ry3rkXSHybfPVL08fo6mn1Sdgp7WIoOxeD10eQkM=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=mxlHGHEjcqchw5k3sCScjr6W3Z2UO0ZNj8ipkniUdQ3RD79fXGOrEuxBX/LEr8iENh5GzlDPiHdF8QHgKJhXUjEJr7WwBWfWkhoUiq8f7ZEvy4wC8FivlEptE61GRnqdRiZFxnSz/p3+bYhUETMxDnfQorrKItEL2COnGyfTFow=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=GCpllyKE; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=oWpFples; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=PwnGi39Q; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=CD1op1JG; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 588C237A70;
-	Tue, 26 Mar 2024 10:37:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1711449472; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=GDfSPXjTzI8NpXr42wOWxfoEVhCQpaMh0AnyozY6l0E=;
-	b=GCpllyKECK9loiIlPQRKwi2+c3gbX7EqAX/DuIN9UOfwf582bMqb/kcgEu6N6BOF57ujTs
-	hCl3BaveQ5DZDlmsYTVkTG6VOomCESkDZzV71nTMXLOw2FX1mGclnMtKXwYiAGSOdG1VC5
-	Sw9ca5Ccbv3MNhmFkN/zjykq7ctx3Zs=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1711449472;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=GDfSPXjTzI8NpXr42wOWxfoEVhCQpaMh0AnyozY6l0E=;
-	b=oWpFples/lcvviFjY1gsgzeNjy0fmnQ/iUUb9UGyEJoymOebLjrCWuyli1vrlpAL31qhG+
-	CoBlYMsrGLW2XFCA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1711449471; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=GDfSPXjTzI8NpXr42wOWxfoEVhCQpaMh0AnyozY6l0E=;
-	b=PwnGi39Q0EbhixY/+JdWiGWqkvZnIz8QuXyRhYQu+xQaRZdCzeUPJ0NURy6vbT8chtnl9H
-	3F5+sk4xBNrR9zB1OhL2Wg7yhTdZJMM/SEqdfXQmoyqYEFQ68s3EI71q9sIbrKjzJihpzL
-	12LN9twHBQ7SV2lK8UizSMc90KYLXGY=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1711449471;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=GDfSPXjTzI8NpXr42wOWxfoEVhCQpaMh0AnyozY6l0E=;
-	b=CD1op1JGC7naV6cSaHPt/62+MZpbcpO4Vaix4IrNiKj2bN47TIka12TZn0esuqu4WUbvSd
-	opbH8nSVxM89uBAA==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 31C9013939;
-	Tue, 26 Mar 2024 10:37:51 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id EDffC3+lAmb/AwAAD6G6ig
-	(envelope-from <vbabka@suse.cz>); Tue, 26 Mar 2024 10:37:51 +0000
-From: Vlastimil Babka <vbabka@suse.cz>
-Date: Tue, 26 Mar 2024 11:37:39 +0100
-Subject: [PATCH mm-unstable v3 2/2] mm, slab: move slab_memcg hooks to
- mm/memcontrol.c
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD2E612B87;
+	Tue, 26 Mar 2024 10:48:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.92.52.105
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1711450086; cv=fail; b=G1QZQl05E9QNsxQJ10H7rI0iblTSVpr1iabl/QMUBWvLOHP7BQ80BQhxbaxahwm/F+IZdz7NCsQERnsVMswMy9F1wGT21L+aE8v69bZY5TI2j7v6rzEUG9+yvDt3XhXlGy4hJ0LVudzk0HZbTL5/68C1mSyrBYdRuPM2EctCQW8=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1711450086; c=relaxed/simple;
+	bh=tvbkpu0j+UqO9z3dlWPAKtRiNUn8JIJ4JlI5DAS4Pl8=;
+	h=References:In-Reply-To:From:Date:Message-ID:Subject:To:Cc:
+	 Content-Type:MIME-Version; b=Bp+CfV0WciYHgUCbnzd2dDdEOQJqDC+AB+cXjRk6MtIiqHDQ77smC+GEYwQRDINZbRz8XuLNxOXyreKx8MxSrscZihnomARA2itD86JrzN3M0vMqICU48APkExwSuV8l5qdcRZlC95h5n5WCjRxi/8Cdlz3tn7Xw6x+LJsu+Obc=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=hotmail.com; spf=pass smtp.mailfrom=hotmail.com; dkim=pass (2048-bit key) header.d=hotmail.com header.i=@hotmail.com header.b=n11ToqI+; arc=fail smtp.client-ip=40.92.52.105
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=hotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=hotmail.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Xlf2iOTV/I5Kpf4tp5Or4JKn2jItE7dTKDCW17Cdel6atpodi13RlY0cEZGZLtPa2CgS5SVyNGVSLJYDvU93SDh/GWuCLitACbQIyhxmWwfwWhv8wq5E+E3W3dUz37Nh0TPnrCRbXgcraUyfpLZeB86LRXLXvuAsF8/F/f+iHHz/IXNIqikUjfAY49+63JA94XqZovp8LjqwvDZnx8N9TGBnxiFlEJgX+taRgwsLWvDMMhlX0fQ2Tqdl7iGzZ0LQx0ZtbO79SK18vCCue6q8uybuV+TM+nN7uUXc8QSb/L/enAaU6goyPani1BpzjOnwBnjrjeDHxvEvrsCNhR8QjQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=ANd7lW1p3WcQZLLW5h0eTHA3WPerP8VV1Gp7MC+kXSs=;
+ b=hJ0qBsDjbNaTdGXuVdCEjN7PVp15jjMkEevqLhK8GoP25KfnWvabryrU+oMR3/G3TSnnioGl3qoIXftI6ByVHA7mB1Ouxi6woE+ZcJEI1nu4vwuFSugMMP09wdSxqH4ZJiiwukvYWb8xQSaAHb61pgWqxaq7kMwJLeWEIyzZwSd1OLENKA6md93X31hc3PHz5FM1Ke/qZbNd8OnaBDPKoj6xmv+MFFT/xKycu+oB2EBrpmDpDCBPq5Af3Qz6Tn0w0LtIfxyh3rin5jaRHXRy0A7sf78VhsNIU3OHg8flQr56wCMdZmVhky6bIg6QPwFaH2STqmniL6aqIKh1Cze8lQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
+ dkim=none; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hotmail.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ANd7lW1p3WcQZLLW5h0eTHA3WPerP8VV1Gp7MC+kXSs=;
+ b=n11ToqI+mL4ApDPaNOt/PP0wldG0jD0Nyz8d7mlRUP+p4kv3kCfL1KDCRrRUzuAqBZ5/tw08BQI14kzlNJfN+OV77RNxrejS6Pe5Cmajsu643VW8TPHOv7r7OgXlaXtAc+4zNc3LSezPYQe7AFn7BPvglBPhMkfq0jPThiyRtwyfszQ3moFXQVKos7Ajq7MB+S4PAa8OilLzVkD2pc7BVC+duE/RpxweYoU+VCRH3plBrMccYL0eTKuEn9mHqIZSnEdrcrGx1XYA1XpdTtONh6jN51oM46sEJG49usy8vBc9YqCGRuCaKt8ATl9Gu4oiXXoQT/ACxMAygi/OqxuE+Q==
+Received: from TY0PR06MB5611.apcprd06.prod.outlook.com (2603:1096:400:31e::8)
+ by KL1PR06MB6986.apcprd06.prod.outlook.com (2603:1096:820:11e::8) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.32; Tue, 26 Mar
+ 2024 10:48:01 +0000
+Received: from TY0PR06MB5611.apcprd06.prod.outlook.com
+ ([fe80::d57a:9f0e:1ee7:85bf]) by TY0PR06MB5611.apcprd06.prod.outlook.com
+ ([fe80::d57a:9f0e:1ee7:85bf%5]) with mapi id 15.20.7409.031; Tue, 26 Mar 2024
+ 10:48:01 +0000
+X-Forwarded-Encrypted: i=1; AJvYcCWqyH5gFpDdnPPB4R5zwv+iRLI683eTRPzasgu1bvHSh2Ik99QfQaf/SrJpiGObAg/JLJtsOreyMQlIdbEPLYzjH1oHXarcWhh0LPdLKTAv5w2f5th5gVEdySKfkOxtkKwj6nIAORS4UMt0ZhG/+RMNwijOMlqgqLmTXCizf0So5CuOacoD
+X-Gm-Message-State: AOJu0YyILI60bZMedxltgOUH/oIuLoH+GlDYSXizbNyZAxPO0lOvOe9p
+	ZPo1Sbh/Cn6RGJhr8kKDLRLoG6bDtw5Ff8tvH8XgH/NwVkMJdDrWRNK4dL/58mxKieg1VpbPxG5
+	3uKPHLLJeskJMIqadLScvxtl59PM=
+X-Google-Smtp-Source: AGHT+IEzBApxx5yI3mM5Vu3r9F2NgawJXuZixR7QdwfWMvlMp6jTIf7XpbmwxlZqR4f8gQBmMtbUNTY3atqZCg9UmJ0=
+X-Received: by 2002:a17:907:a0a:b0:a47:52e7:1068 with SMTP id
+ bb10-20020a1709070a0a00b00a4752e71068mr4757726ejc.52.1711449640030; Tue, 26
+ Mar 2024 03:40:40 -0700 (PDT)
+References: <20240322085606.993896-1-allencl_lin@hotmail.com>
+ <TY0PR06MB56116F0902017225C78EDDDD9E312@TY0PR06MB5611.apcprd06.prod.outlook.com>
+ <20240322-mammary-boil-f9a4c347fba1@spud> <20240322183009.GA1227164-robh@kernel.org>
+ <20240322-rectified-udder-fef9102f58da@spud> <TY0PR06MB56110ADEA805B68BE2B887069E352@TY0PR06MB5611.apcprd06.prod.outlook.com>
+ <20240326-whoever-spotter-1fe7ace35428@wendy>
+In-Reply-To: <20240326-whoever-spotter-1fe7ace35428@wendy>
+From: Allen Lin <allencl_lin@hotmail.com>
+Date: Tue, 26 Mar 2024 18:40:28 +0800
+X-Gmail-Original-Message-ID: <CAEr79DU7EF7F5aJi6fLRip5HZ7V82Fva-Z4789A6rWq3e6F0Hg@mail.gmail.com>
+Message-ID:
+ <TY0PR06MB561197578717990F4BEA93D29E352@TY0PR06MB5611.apcprd06.prod.outlook.com>
+Subject: Re: [PATCH v1 1/4] dt-bindings: input: Add Himax HX83102J touchscreen
+To: Conor Dooley <conor.dooley@microchip.com>
+Cc: Conor Dooley <conor@kernel.org>, Rob Herring <robh@kernel.org>, dmitry.torokhov@gmail.com, 
+	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, jikos@kernel.org, 
+	benjamin.tissoires@redhat.com, linux-input@vger.kernel.org, 
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-TMN: [4mOVz6y+ODafbP/kX8pevhBiofeCWs3c]
+X-ClientProxiedBy: AM0PR03CA0034.eurprd03.prod.outlook.com
+ (2603:10a6:208:14::47) To TY0PR06MB5611.apcprd06.prod.outlook.com
+ (2603:1096:400:31e::8)
+X-Microsoft-Original-Message-ID:
+ <CAEr79DU7EF7F5aJi6fLRip5HZ7V82Fva-Z4789A6rWq3e6F0Hg@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240326-slab-memcg-v3-2-d85d2563287a@suse.cz>
-References: <20240326-slab-memcg-v3-0-d85d2563287a@suse.cz>
-In-Reply-To: <20240326-slab-memcg-v3-0-d85d2563287a@suse.cz>
-To: Linus Torvalds <torvalds@linux-foundation.org>, 
- Josh Poimboeuf <jpoimboe@kernel.org>, Jeff Layton <jlayton@kernel.org>, 
- Chuck Lever <chuck.lever@oracle.com>, Kees Cook <kees@kernel.org>, 
- Christoph Lameter <cl@linux.com>, Pekka Enberg <penberg@kernel.org>, 
- David Rientjes <rientjes@google.com>, Joonsoo Kim <iamjoonsoo.kim@lge.com>, 
- Andrew Morton <akpm@linux-foundation.org>, 
- Roman Gushchin <roman.gushchin@linux.dev>, 
- Hyeonggon Yoo <42.hyeyoo@gmail.com>, Johannes Weiner <hannes@cmpxchg.org>, 
- Michal Hocko <mhocko@kernel.org>, Muchun Song <muchun.song@linux.dev>, 
- Alexander Viro <viro@zeniv.linux.org.uk>, 
- Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>, 
- Shakeel Butt <shakeel.butt@linux.dev>
-Cc: linux-mm@kvack.org, linux-kernel@vger.kernel.org, 
- cgroups@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
- Vlastimil Babka <vbabka@suse.cz>
-X-Mailer: b4 0.13.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=8601; i=vbabka@suse.cz;
- h=from:subject:message-id; bh=Ef6ry3rkXSHybfPVL08fo6mn1Sdgp7WIoOxeD10eQkM=;
- b=owGbwMvMwMG4+8GG0kuuHbMYT6slMaQxLa3xDFuuHCc3N/fF7zCxOu69gv5vt5YpK1T2x89fa
- aga9Di/k9GYhYGRg0FWTJGlevcJR9GZyh7TPHw/wgxiZQKZwsDFKQATYevlYOhyWq30JvCU97XL
- k3kuV6xfduSqpMH/y8a8fskh11+fF+A7tmUmW2iqtfx/1m4lz7LwN/7alhop8wTeyMo62HFdmbf
- 3aPGjTXvslfas7yvg5r9V8ipCfkl2yYfiG523rYWFL3hElz3cf63wjV2xygKT98s5LXfky01wni
- LpJ6Xztj3qu+TNFYw/nCfX/IwztJu67GhlwyGbEn27KLv1aqtXeeW7Wy7REBN7YsrH7CApfnPzn
- IViD+eqtjWffnbjsSqf2Za5NTKBfTbh7pl5K7z+Tv+UoiCpLtMs8zVTxilLfOe5+a1R+RkvEg3r
- PO+uftl+UNo6dTZbq/HRqsxFZzeEzDXasc6n2Se6f2MtAA==
-X-Developer-Key: i=vbabka@suse.cz; a=openpgp;
- fpr=A940D434992C2E8E99103D50224FA7E7CC82A664
-Authentication-Results: smtp-out1.suse.de;
-	none
-X-Spam-Level: 
-X-Spam-Score: -2.80
-X-Spamd-Result: default: False [-2.80 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 MID_RHS_MATCH_FROM(0.00)[];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 TAGGED_RCPT(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 BAYES_HAM(-3.00)[100.00%];
-	 R_RATELIMIT(0.00)[to_ip_from(RL8ogcagzi1y561i1mcnzpnkwh)];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 NEURAL_HAM_SHORT(-0.20)[-1.000];
-	 RCPT_COUNT_TWELVE(0.00)[24];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email];
-	 FREEMAIL_TO(0.00)[linux-foundation.org,kernel.org,oracle.com,linux.com,google.com,lge.com,linux.dev,gmail.com,cmpxchg.org,zeniv.linux.org.uk,suse.cz];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 RCVD_TLS_ALL(0.00)[];
-	 SUSPICIOUS_RECIPS(1.50)[]
-X-Spam-Flag: NO
+X-MS-Exchange-MessageSentRepresentingType: 1
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: TY0PR06MB5611:EE_|KL1PR06MB6986:EE_
+X-MS-Office365-Filtering-Correlation-Id: 9100a42e-cbc4-49a0-c3ef-08dc4d8234d9
+X-MS-Exchange-SLBlob-MailProps:
+	P1EfU6pZOd9HkcCcDjRjCdtpMAlt6939v3oEdKjrGaIXPV01swwrZUllK1sIiUz02lW2M3dahsaLlUUQ6wEZBV0hgirFOYz8ev0hx4XE8jhPHYty3cwoVwLP7p1/7/45SoSHsJCrd4llkUO7c7VKGBrVKKcJlcSF8mq/Biz71FsiEEw1jyN9gNnYuvFLmT7Ud7iv6nJqf14V9/mcipD3Rtw0GZVWBEY9a3rZVFSx3LNVUSt6BAW8ZXgdvk1oBXBMesh4q3QiWdZlZzL1pI5dkjOH+dyz5eD114brC4csj5NkwXMpekiKyKl3mlDFa9bdKNj0WREUBSuTFjJJLhT3J1KM+5Baho7mv4iItzWJB4rQPL3vZxDvuiLtAOWEVBlzZqvnaoeLgWgYZU+OkksIjMhkUv5AEpFWQ9SI7zR3er5dtbeVfoLA+a6bnOBHqS8eTZF06ZscpH3I5lcduIkYx3LKyQtutxLIhMfGjJw/LdR0Q7ZQRlNnOq0gqhubHQOqtoMIXbQfxjcDfkpt+u2HwmldQtjqw2Y9e5AWT/D8KaetmUu00G5lNWKztiVvsHrgXIsm+ZMuGNdQqj8Sm+Lwy5sQbi5XoaeaBQxMrhR4XCn1wGo7thxo/mOkhTImNIrIOByr63UH2NX5+R5bZys8nGXl9nblkP+JBljdUXwgSJDl15yLjgl8cBrWt/SS6Wuv6hYjGcerxZpjT1uOHWRpTnxFVUkzEB4DVsh2c4MHRZ/HvRh0wNEYM7lqkVzLREq3J7/HO4QJZAAFS6cM87Yd6J7/gxkAVcyPasfpTCcXsDND8xKFtuOX8g==
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	mQVCtaertngBXt3SlcvYlsEWyK3EJJs7CQcTUEPAvrP2I+cSkt408sNclEeZ736CZ+ytulk3A9ezzrFS/hMQbkJbuAtie7XTY6W6dH3qN95T3m97wJw1DisOSfhzXXgxN1eI2vPeFnIRoAOz2+sR8Lb4gxLVCFddDjSCncasw/aau8qFconmFYNmRcVQJrG7mYeeiAYS28O1lG3knOlKF4MTTTpbyv45i5rtvsev7dx1v0trzHwQoIQPiSW8omjtcEpSMyafw4eKD0CycwiFy//N6M2IqppUjPpbGn/azkQhu8LiLRAve3kM1IlZNldrkXs9KfK2yIdI+gHZFXaLjqU3+Dbqb9FssuhrFyKd8RIRoyKnNJNcDjdhTd87lUjHM0/x0N6HB8z3T9YexNFdB/OJPGTtv+gbqYs07LyO/JeLpe9O7LOyxPPB90c6wl06g/LDwFXIvskHSJ/PyJj//1DuFaAjhGbvaCQSjRziJWYVyIHvXCfhgLlPOz6/UIze4cMfnAAq0S4BTU6bKQ/uQ6GCySvJBXyPn9q/Mi1RujxapzbxaBsXN4rch1rkyTyZtJjzpUMeBsLmC8YmAY92SWvUbHqcUZagx9fhsCcH458jzyq5dWsHJakZ+Bv0Ib24WYnekY8ORHLK/HvLk4Ke3zzhRjOnnd1QGEpgpB1Rj+U=
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?aDJqbEtPNDhKM01UekdRRWQ2WmdkL0d3TzNCVE1pL09xUjJneHhlZWl5Wndq?=
+ =?utf-8?B?a2VHaDd4Z0F0OHB0VGh0QnpRWkZMa05ZRUNRZlQwR0Ryci8ybHRUdnJWQzZL?=
+ =?utf-8?B?RU1TQ2RIM1pwdzlIbEg3WHVFbzNIeGxscmpmMlZQL2VjdXBjWVNic3NXZzBD?=
+ =?utf-8?B?eDV0Zk9LNWlvOHM4SDZOR1RGOTVXYmFaUS9xTHRpZ3hLKzY3MGRLNmY0TFE4?=
+ =?utf-8?B?Q2crdmxNQi9rNTR4YkJNWS85SUpSK04zVXFNSmMzaFpraXo3ZDdLbmZaajRC?=
+ =?utf-8?B?dGNXUEI4NC9zY2xFd0FGSE9nSTVnMjc5WUFRbG5BeHBrY2FyUUxERzY5Zisv?=
+ =?utf-8?B?T0pNUW10R25BeEkxc01XSTlINVptY3VNVS9jalYxdnNRYyt5WWh6c2M4NG9Q?=
+ =?utf-8?B?dlU2N0ptY2kvM0pGeUpuZXZvV3o2bXBoWG9QSGl0U3M3VDVIVUFOcE56YTFY?=
+ =?utf-8?B?NWNhZzdXMkx1YStEakdibXpoRHdmRENRbVFRcFoySWpiNVdKWmEzMVJvV1B2?=
+ =?utf-8?B?WFVNRTZKYnd2SHQzdENYc2dzeGpUbUxLSnduNFFOSUZ3bkNpZGdJdXZUZDJv?=
+ =?utf-8?B?RUJJZ29Tb2ZETmtWcWRhTkx6VW9ZdlA1YTVYYmJuRFZSWHpWRi9TMXZTRVlF?=
+ =?utf-8?B?UjNUQ2F1OFdpQlB5SXFTdjJzd3E2YmtpcTZlNTN1WDVQQlZFOENLU3ZZU2FP?=
+ =?utf-8?B?b0pueDhQUXV0Y1hlSGtEd2VZZjFZVFVyWitJSExNcExaUElhVm9VVXBlbkxo?=
+ =?utf-8?B?V25mWWJwS25mMnlxdWdkSkgvclVZZlBzYUo1dlV2a3ZpOVRYNWFuL2h6Y3JK?=
+ =?utf-8?B?L0pDNVJBblRnWWdDK2U5ZkJ6NG9SdmloTGRqL2JSZkRrc0dDMzYzUHo3d2xC?=
+ =?utf-8?B?KzBTQmtVcTdhZVdwR2tTRTREL1NiMGh4QkZQVzBQeVBTTEJtYkVESEtnd1A0?=
+ =?utf-8?B?OU9lL29XNG1USWpXSDFJaHkwaHk0TFhBaXZrWTBsb1ZZb2kzSTZtU25XMHZk?=
+ =?utf-8?B?R29IeUtUcXJRbkk2czJRRy8rLzRkN05VcVRGS1lIcjdzVkhDY0NPTzZ3UTlT?=
+ =?utf-8?B?RTU0bGNENUpDYllnbTBBZGdLQ1VhcSszbXMxV2lncjZFWjFWelpZL2lwQUU3?=
+ =?utf-8?B?aWxYR1U2VDF3bnpoNUNmRkUvbmN3VythZWhxdmExYm5Fb0lKU0g0RnZuVmNq?=
+ =?utf-8?B?cDR6QXNDVGt1ZW1HRWdBUk5jKzRiWCtyUnQ4TWlibUxhOTFqcmVnMDhMUVMr?=
+ =?utf-8?B?Y0NJWkc3VUxESUpFaDVEUnpWTm9Db0M3K1dyV29rZ215ZXgrOUl3cWNRZHR6?=
+ =?utf-8?B?OFV2RjRzUFhiREdaQjFyL2pjeDAzcGdvbUtQZ1d4RDNhNHppVHEvdHZYays1?=
+ =?utf-8?B?UlUyYnFiUE9RNlVFQU4zSHBGTjAyN3lwdGo4ZENXemxBREllREx1ZVY4eUxh?=
+ =?utf-8?B?L09YcGdMK3hyWEZLSEl5TFBxYTUvODBnYnN6WHpieFdYOVBjYWN1eXdZcWJN?=
+ =?utf-8?B?U0QwTWoxTlBYa3ZIcUNBYjhwYUZqUS9kcCtpalBPSGFkeEhqMmZlMlc0cDRX?=
+ =?utf-8?B?WXRRY0xseHRsUXNrNklMZWxJNjhBLzBScjdkNDFOYkZrOVdYdzAzZDMrNWxj?=
+ =?utf-8?B?cWpxc3JxbUgxeHM2L0xRb1hqSW91YjNqQUd5SVMyU0JCTUM5RTBXaU9rUnBT?=
+ =?utf-8?Q?Qv0nGWIQDjJoksjahLui?=
+X-OriginatorOrg: sct-15-20-4755-11-msonline-outlook-3208f.templateTenant
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9100a42e-cbc4-49a0-c3ef-08dc4d8234d9
+X-MS-Exchange-CrossTenant-AuthSource: TY0PR06MB5611.apcprd06.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Mar 2024 10:48:01.3651
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
+X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg:
+	00000000-0000-0000-0000-000000000000
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: KL1PR06MB6986
 
-The hooks make multiple calls to functions in mm/memcontrol.c, including
-to th current_obj_cgroup() marked __always_inline. It might be faster to
-make a single call to the hook in mm/memcontrol.c instead. The hooks
-also don't use almost anything from mm/slub.c. obj_full_size() can move
-with the hooks and cache_vmstat_idx() to the internal mm/slab.h
+Conor Dooley <conor.dooley@microchip.com> =E6=96=BC 2024=E5=B9=B43=E6=9C=88=
+26=E6=97=A5 =E9=80=B1=E4=BA=8C =E4=B8=8B=E5=8D=884:48=E5=AF=AB=E9=81=93=EF=
+=BC=9A
+>
+> On Tue, Mar 26, 2024 at 01:46:56PM +0800, Allen Lin wrote:
+> > Conor Dooley <conor@kernel.org> =E6=96=BC 2024=E5=B9=B43=E6=9C=8823=E6=
+=97=A5 =E9=80=B1=E5=85=AD =E4=B8=8A=E5=8D=882:34=E5=AF=AB=E9=81=93=EF=BC=9A
+> > >
+> > > On Fri, Mar 22, 2024 at 01:30:09PM -0500, Rob Herring wrote:
+> > > > On Fri, Mar 22, 2024 at 05:54:08PM +0000, Conor Dooley wrote:
+> > > > > On Fri, Mar 22, 2024 at 04:56:03PM +0800, Allen_Lin wrote:
+> > > > > > Add the HX83102j touchscreen device tree bindings documents.
+> > > > > > HX83102j is a Himax TDDI touchscreen controller.
+> > > > > > It's power sequence should be bound with a lcm driver, thus it
+> > > > > > needs to be a panel follower. Others are the same as normal SPI
+> > > > > > touchscreen controller.
+> > > > > >
+> > > > > > Signed-off-by: Allen_Lin <allencl_lin@hotmail.com>
+> > > > >
+> > > > > note to self/Krzysztof/Rob:
+> > > > > There was a previous attempt at this kind of device. This version=
+ looks
+> > > > > better but might be incomplete given there's a bunch more propert=
+ies in
+> > > > > that patchset:
+> > > > > https://lore.kernel.org/all/20231017091900.801989-1-tylor_yang@hi=
+max.corp-partner.google.com/
+> > > >
+> > > > Those don't look like properties we want coming back.
+> > >
+> > > Oh, I don't want most of them coming back either. There are some
+> > > supplies in there though that I think we would like to come back, no?
+> > > Maybe this particular device doesn't have any supplies, but that does=
+n't
+> > > really seem credible.
+> >
+> > We will use Firmware-name in Device Tree.
+>
+> > For power supply settings, because there may be other device using
+> > same regulator.
+>
+> If there are other devices using the same regulator is it more
+> important that you document it so that it doesn't get disabled by the
+> other users.
+>
+> > We plan to define it as an optional property for user to control in
+> > next release.
+>
+> I don't see how the regulator would not be required, the device doesn't
+> function without power.
+>
+> Thanks,
+> Conor.
 
-Reviewed-by: Roman Gushchin <roman.gushchin@linux.dev>
-Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
----
- mm/memcontrol.c |  90 +++++++++++++++++++++++++++++++++++++++++++++++++
- mm/slab.h       |  13 +++++++
- mm/slub.c       | 103 ++------------------------------------------------------
- 3 files changed, 105 insertions(+), 101 deletions(-)
+I will set power supply as required.
+The description of power supply as below,
 
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index 0a0720858ddb..1b3c3394a2ba 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -3558,6 +3558,96 @@ void obj_cgroup_uncharge(struct obj_cgroup *objcg, size_t size)
- 	refill_obj_stock(objcg, size, true);
- }
- 
-+static inline size_t obj_full_size(struct kmem_cache *s)
-+{
-+	/*
-+	 * For each accounted object there is an extra space which is used
-+	 * to store obj_cgroup membership. Charge it too.
-+	 */
-+	return s->size + sizeof(struct obj_cgroup *);
-+}
-+
-+bool __memcg_slab_post_alloc_hook(struct kmem_cache *s, struct list_lru *lru,
-+				  gfp_t flags, size_t size, void **p)
-+{
-+	struct obj_cgroup *objcg;
-+	struct slab *slab;
-+	unsigned long off;
-+	size_t i;
-+
-+	/*
-+	 * The obtained objcg pointer is safe to use within the current scope,
-+	 * defined by current task or set_active_memcg() pair.
-+	 * obj_cgroup_get() is used to get a permanent reference.
-+	 */
-+	objcg = current_obj_cgroup();
-+	if (!objcg)
-+		return true;
-+
-+	/*
-+	 * slab_alloc_node() avoids the NULL check, so we might be called with a
-+	 * single NULL object. kmem_cache_alloc_bulk() aborts if it can't fill
-+	 * the whole requested size.
-+	 * return success as there's nothing to free back
-+	 */
-+	if (unlikely(*p == NULL))
-+		return true;
-+
-+	flags &= gfp_allowed_mask;
-+
-+	if (lru) {
-+		int ret;
-+		struct mem_cgroup *memcg;
-+
-+		memcg = get_mem_cgroup_from_objcg(objcg);
-+		ret = memcg_list_lru_alloc(memcg, lru, flags);
-+		css_put(&memcg->css);
-+
-+		if (ret)
-+			return false;
-+	}
-+
-+	if (obj_cgroup_charge(objcg, flags, size * obj_full_size(s)))
-+		return false;
-+
-+	for (i = 0; i < size; i++) {
-+		slab = virt_to_slab(p[i]);
-+
-+		if (!slab_obj_exts(slab) &&
-+		    alloc_slab_obj_exts(slab, s, flags, false)) {
-+			obj_cgroup_uncharge(objcg, obj_full_size(s));
-+			continue;
-+		}
-+
-+		off = obj_to_index(s, slab, p[i]);
-+		obj_cgroup_get(objcg);
-+		slab_obj_exts(slab)[off].objcg = objcg;
-+		mod_objcg_state(objcg, slab_pgdat(slab),
-+				cache_vmstat_idx(s), obj_full_size(s));
-+	}
-+
-+	return true;
-+}
-+
-+void __memcg_slab_free_hook(struct kmem_cache *s, struct slab *slab,
-+			    void **p, int objects, struct slabobj_ext *obj_exts)
-+{
-+	for (int i = 0; i < objects; i++) {
-+		struct obj_cgroup *objcg;
-+		unsigned int off;
-+
-+		off = obj_to_index(s, slab, p[i]);
-+		objcg = obj_exts[off].objcg;
-+		if (!objcg)
-+			continue;
-+
-+		obj_exts[off].objcg = NULL;
-+		obj_cgroup_uncharge(objcg, obj_full_size(s));
-+		mod_objcg_state(objcg, slab_pgdat(slab), cache_vmstat_idx(s),
-+				-obj_full_size(s));
-+		obj_cgroup_put(objcg);
-+	}
-+}
- #endif /* CONFIG_MEMCG_KMEM */
- 
- /*
-diff --git a/mm/slab.h b/mm/slab.h
-index 1343bfa12cee..411251b9bdd1 100644
---- a/mm/slab.h
-+++ b/mm/slab.h
-@@ -558,6 +558,9 @@ static inline struct slabobj_ext *slab_obj_exts(struct slab *slab)
- 	return (struct slabobj_ext *)(obj_exts & ~OBJEXTS_FLAGS_MASK);
- }
- 
-+int alloc_slab_obj_exts(struct slab *slab, struct kmem_cache *s,
-+                        gfp_t gfp, bool new_slab);
-+
- #else /* CONFIG_SLAB_OBJ_EXT */
- 
- static inline struct slabobj_ext *slab_obj_exts(struct slab *slab)
-@@ -567,7 +570,17 @@ static inline struct slabobj_ext *slab_obj_exts(struct slab *slab)
- 
- #endif /* CONFIG_SLAB_OBJ_EXT */
- 
-+static inline enum node_stat_item cache_vmstat_idx(struct kmem_cache *s)
-+{
-+	return (s->flags & SLAB_RECLAIM_ACCOUNT) ?
-+		NR_SLAB_RECLAIMABLE_B : NR_SLAB_UNRECLAIMABLE_B;
-+}
-+
- #ifdef CONFIG_MEMCG_KMEM
-+bool __memcg_slab_post_alloc_hook(struct kmem_cache *s, struct list_lru *lru,
-+				  gfp_t flags, size_t size, void **p);
-+void __memcg_slab_free_hook(struct kmem_cache *s, struct slab *slab,
-+			    void **p, int objects, struct slabobj_ext *obj_exts);
- void mod_objcg_state(struct obj_cgroup *objcg, struct pglist_data *pgdat,
- 		     enum node_stat_item idx, int nr);
- #endif
-diff --git a/mm/slub.c b/mm/slub.c
-index 263ff2a9f251..f5b151a58b7d 100644
---- a/mm/slub.c
-+++ b/mm/slub.c
-@@ -1865,12 +1865,6 @@ static bool freelist_corrupted(struct kmem_cache *s, struct slab *slab,
- #endif
- #endif /* CONFIG_SLUB_DEBUG */
- 
--static inline enum node_stat_item cache_vmstat_idx(struct kmem_cache *s)
--{
--	return (s->flags & SLAB_RECLAIM_ACCOUNT) ?
--		NR_SLAB_RECLAIMABLE_B : NR_SLAB_UNRECLAIMABLE_B;
--}
--
- #ifdef CONFIG_SLAB_OBJ_EXT
- 
- #ifdef CONFIG_MEM_ALLOC_PROFILING_DEBUG
-@@ -1929,8 +1923,8 @@ static inline void handle_failed_objexts_alloc(unsigned long obj_exts,
- #define OBJCGS_CLEAR_MASK	(__GFP_DMA | __GFP_RECLAIMABLE | \
- 				__GFP_ACCOUNT | __GFP_NOFAIL)
- 
--static int alloc_slab_obj_exts(struct slab *slab, struct kmem_cache *s,
--			       gfp_t gfp, bool new_slab)
-+int alloc_slab_obj_exts(struct slab *slab, struct kmem_cache *s,
-+		        gfp_t gfp, bool new_slab)
- {
- 	unsigned int objects = objs_per_slab(s, slab);
- 	unsigned long new_exts;
-@@ -2089,78 +2083,6 @@ alloc_tagging_slab_free_hook(struct kmem_cache *s, struct slab *slab, void **p,
- #endif /* CONFIG_SLAB_OBJ_EXT */
- 
- #ifdef CONFIG_MEMCG_KMEM
--static inline size_t obj_full_size(struct kmem_cache *s)
--{
--	/*
--	 * For each accounted object there is an extra space which is used
--	 * to store obj_cgroup membership. Charge it too.
--	 */
--	return s->size + sizeof(struct obj_cgroup *);
--}
--
--static bool __memcg_slab_post_alloc_hook(struct kmem_cache *s,
--					 struct list_lru *lru,
--					 gfp_t flags, size_t size,
--					 void **p)
--{
--	struct obj_cgroup *objcg;
--	struct slab *slab;
--	unsigned long off;
--	size_t i;
--
--	/*
--	 * The obtained objcg pointer is safe to use within the current scope,
--	 * defined by current task or set_active_memcg() pair.
--	 * obj_cgroup_get() is used to get a permanent reference.
--	 */
--	objcg = current_obj_cgroup();
--	if (!objcg)
--		return true;
--
--	/*
--	 * slab_alloc_node() avoids the NULL check, so we might be called with a
--	 * single NULL object. kmem_cache_alloc_bulk() aborts if it can't fill
--	 * the whole requested size.
--	 * return success as there's nothing to free back
--	 */
--	if (unlikely(*p == NULL))
--		return true;
--
--	flags &= gfp_allowed_mask;
--
--	if (lru) {
--		int ret;
--		struct mem_cgroup *memcg;
--
--		memcg = get_mem_cgroup_from_objcg(objcg);
--		ret = memcg_list_lru_alloc(memcg, lru, flags);
--		css_put(&memcg->css);
--
--		if (ret)
--			return false;
--	}
--
--	if (obj_cgroup_charge(objcg, flags, size * obj_full_size(s)))
--		return false;
--
--	for (i = 0; i < size; i++) {
--		slab = virt_to_slab(p[i]);
--
--		if (!slab_obj_exts(slab) &&
--		    alloc_slab_obj_exts(slab, s, flags, false)) {
--			obj_cgroup_uncharge(objcg, obj_full_size(s));
--			continue;
--		}
--
--		off = obj_to_index(s, slab, p[i]);
--		obj_cgroup_get(objcg);
--		slab_obj_exts(slab)[off].objcg = objcg;
--		mod_objcg_state(objcg, slab_pgdat(slab),
--				cache_vmstat_idx(s), obj_full_size(s));
--	}
--
--	return true;
--}
- 
- static void memcg_alloc_abort_single(struct kmem_cache *s, void *object);
- 
-@@ -2187,27 +2109,6 @@ bool memcg_slab_post_alloc_hook(struct kmem_cache *s, struct list_lru *lru,
- 	return false;
- }
- 
--static void __memcg_slab_free_hook(struct kmem_cache *s, struct slab *slab,
--				   void **p, int objects,
--				   struct slabobj_ext *obj_exts)
--{
--	for (int i = 0; i < objects; i++) {
--		struct obj_cgroup *objcg;
--		unsigned int off;
--
--		off = obj_to_index(s, slab, p[i]);
--		objcg = obj_exts[off].objcg;
--		if (!objcg)
--			continue;
--
--		obj_exts[off].objcg = NULL;
--		obj_cgroup_uncharge(objcg, obj_full_size(s));
--		mod_objcg_state(objcg, slab_pgdat(slab), cache_vmstat_idx(s),
--				-obj_full_size(s));
--		obj_cgroup_put(objcg);
--	}
--}
--
- static __fastpath_inline
- void memcg_slab_free_hook(struct kmem_cache *s, struct slab *slab, void **p,
- 			  int objects)
+properties:
+  vccd-supply:
+    description: A phandle for the regualtor supplying IO power. Should be =
+own
+                 by TPIC only. This works for TP digital IO only, main powe=
+r is
+                 given by display part VSP/VSN power source which is contro=
+lled
+                 by lcm driver.
 
--- 
-2.44.0
+required:
+  - compatible
+  - reg
+  - interrupts
+  - reset-gpios
+  - panel
+  - vccd-supply
 
+Thanks
+Allen
 
