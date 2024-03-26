@@ -1,135 +1,147 @@
-Return-Path: <linux-kernel+bounces-120034-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-120059-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8BA8E88D093
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 23:12:36 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C56D788D10C
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 23:35:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 47952328EEF
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 22:12:35 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 81322321E90
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 22:35:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8422413DB9C;
-	Tue, 26 Mar 2024 22:12:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9F43C13DDC5;
+	Tue, 26 Mar 2024 22:34:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BDGImm8/"
-Received: from mail-pf1-f177.google.com (mail-pf1-f177.google.com [209.85.210.177])
+	dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b="bxtrlIfD"
+Received: from mail-ed1-f51.google.com (mail-ed1-f51.google.com [209.85.208.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7730313D538;
-	Tue, 26 Mar 2024 22:12:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2B821131185
+	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 22:34:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711491148; cv=none; b=RUEw/f1NrxkUTWXF136M4U8QAz2zQ8Wi64XmO6cUHTrOXGQY+43AEqSp1EVIb5mmjLH5tCFn8qNq9s9TbWEepXIpHmNho92gzKrQq0eXhRZXuXHQC8f0MOr5ezaVlTsf/A8pUWoqzyhff++verojkU0U6eY5FHVo2Z8mGbU6nus=
+	t=1711492491; cv=none; b=t6MfT/Bxi/EJLEjw6hFIgeEoGU6RtrOzNB20F3ID2CULJbfrp4nGkM795z6V2mp7URHD5B/fXzDTbOKfdKbh3hCwkWZkrmv+Pe29JZ+yCzwu4zcsaRqAfiJGkLEipna+ASwQsSM6qcbcc/DsGVPTAUT2bBbiNR4acl8IUCMK7Vk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711491148; c=relaxed/simple;
-	bh=+wYDyMnpKuLqfY43YpqtSm34ANzOiArR8y162hs7Fgw=;
-	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=BY8qsIzOsPF7xmS8V3u7UIDO9RYDpOYz0MLPVOQXHom7TeqBlWg18DgiCYVcXdXwfwSY15Ro1+ZldcZNtbnHCiZwjG0mpZLwQeVgwWFH+gP2JshIHaGBZ7bSd//HO/mR1e8SlG5NrBHRhYF/qH3zMJ1zqvbo3ip2PCMck9naZ7E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=BDGImm8/; arc=none smtp.client-ip=209.85.210.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f177.google.com with SMTP id d2e1a72fcca58-6ea8ee55812so3658071b3a.0;
-        Tue, 26 Mar 2024 15:12:27 -0700 (PDT)
+	s=arc-20240116; t=1711492491; c=relaxed/simple;
+	bh=0M4LvvNI77zQI/9DV2/Qo4nlzkup1uIbZ/plEPq0ClM=;
+	h=References:From:To:Cc:Subject:Date:In-reply-to:Message-ID:
+	 MIME-Version:Content-Type; b=HZ7lRfUc1SQ7LajMxGdspHzcsCiXJp7z5G0cK5RQ+x/AnI13JAppyYgsuZMkQqtEg2lrMuXd2mNYemTGktPvQ+TMCeRIQyBYeHFtkI224fQeWqRg5JSf9u3xeKYJf68oxagCpT9FlZMUfFOP7Sndg36d4akLxSZ/mQxwW0gXZOI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com; spf=pass smtp.mailfrom=cloudflare.com; dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b=bxtrlIfD; arc=none smtp.client-ip=209.85.208.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cloudflare.com
+Received: by mail-ed1-f51.google.com with SMTP id 4fb4d7f45d1cf-56c36f8f932so550940a12.0
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 15:34:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711491146; x=1712095946; darn=vger.kernel.org;
-        h=content-transfer-encoding:content-language:in-reply-to:mime-version
-         :user-agent:date:message-id:from:references:cc:to:subject:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=1bvrBpa6NIqmeIkXane8RW2BCIfL8oLVJSB/0WwZJE4=;
-        b=BDGImm8/XBWbRuy3nrNiT+oxlBMEv6d/KvKQtygvmEUDi56DmOow8x9V+7qdnCQJfw
-         gLKRdep9ADFrxnvv/jBOEP8d2JoLgpjUihBwno8WY2A45ZkTz4v4lw7yYATxfBZc9JUl
-         AOArB8ItirnnOU28k0fLEpeppbR+AulP1NILljj0iacealWWnzOY4wvh966SpfdYplkL
-         PXFFPqHw1u4gzLH9bBHyK2oKlIesuvNlWZeCOiBtFVn1l6M88ifXHvBfoiHoilliK4Ux
-         NtFFDR9sAhaAgCmKAX6f3J5uTLm/IFVwQuOWLTHMjij4QMvvNy+h8pwUG0LDPvPnZnYH
-         VBIA==
+        d=cloudflare.com; s=google09082023; t=1711492488; x=1712097288; darn=vger.kernel.org;
+        h=mime-version:message-id:in-reply-to:date:subject:cc:to:from
+         :user-agent:references:from:to:cc:subject:date:message-id:reply-to;
+        bh=ab5N2/+UMfCyeLSLqFwz+fy2fJSFKubepMeB6XNxJn0=;
+        b=bxtrlIfDbbiE/5MrJFqFtrQrJ50HoLyNg9llDly7kaSAi+zSWauS4PBLKN/3QAmD3T
+         ZFgg9rMOD4gSXQbu9mWywK7vJiOZ19uKpz470DBzEDiD8P1x26fhK6VdTDlTVnRuLg/D
+         aBQPJ29Lom9hqjUOzPgc+1bfi3RbFHXe8H1yezqnL4rWkBlF9zIFg52i10HcUNXvqJxV
+         3DLAKxttTZgbIR0pK5cxZkliX+4MXfxO/0rPkeS0KvsDr4hUbBrIerq4wtmVt8lDuGWl
+         zqCGlfY9rfVerVbW6yzIzSr1O86Kw72TZvAPpMQCLtykwg7re0kSg34AprY/yn4BoByZ
+         xyNQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711491146; x=1712095946;
-        h=content-transfer-encoding:content-language:in-reply-to:mime-version
-         :user-agent:date:message-id:from:references:cc:to:subject
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=1bvrBpa6NIqmeIkXane8RW2BCIfL8oLVJSB/0WwZJE4=;
-        b=FIFTgTUvRre0bU9QSNfWrB66mV8VPi1smdCHVT/uQhfHXu8ch+I3wWvlquS1qZqObK
-         z0wzx+XcHJUe/evDiwjMtEL2SEYqx6Xk49H4S6SMT4Xg4fOF14MBG+chF575XNr+BKu0
-         qYiyxQUghitHgo0u50KE8fDA22eR+gt7KQeMRwLa1iY7rLoY0+qHumFn+6J9pFycyvoa
-         1B5Cmo/HH+tASqpj4ngZDefVsY6DuJqcoeXX8WuSdtV6FBGB3FnLFrIbB+grSVJNRJPv
-         0BPQhK3fIZ6lSI+LMyNLN3Aaf8bwMn3t6sP9ksp/BfCczAiPOFNrrqHROihn8OMPxHJu
-         7/bA==
-X-Forwarded-Encrypted: i=1; AJvYcCVcBE00g/Vw0su03+6mZgbcRIskfZ62waJs1rYCEdh11gyzOnVyw64Mov1bSvsx0wgJHoGa47OSv0ImralIJdTDokRCC6pqoBXYYxMheig3uIUzdC1LRYXf+AcCIkqFK7Pkl6wU376JjgMS6Efri8guax2qT7azI+Vscw1i4kXmNw==
-X-Gm-Message-State: AOJu0YzAqRbXPe+zf7YWeFYbOXRDfJekUH22PQ5lO0JTQDhgyRdqmtp/
-	AEX1774xktdqKlDMo3lbVRcwzZilctBf/YV9w1EE/tCJb28Qbt5J2EN53YKlU3w=
-X-Google-Smtp-Source: AGHT+IGGeFNHDlhY2bt27k9H3IoMCM376JL/pBz7c2YgVW0if7A3uQaiNEyUhIlMV5hbE/Hj95e6eQ==
-X-Received: by 2002:a05:6a00:2303:b0:6ea:c42f:d75e with SMTP id h3-20020a056a00230300b006eac42fd75emr1855892pfh.11.1711491145682;
-        Tue, 26 Mar 2024 15:12:25 -0700 (PDT)
-Received: from [192.168.0.13] ([172.92.174.232])
-        by smtp.gmail.com with ESMTPSA id r10-20020a62e40a000000b006e6529c7d75sm6516071pfh.3.2024.03.26.15.12.24
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 26 Mar 2024 15:12:25 -0700 (PDT)
-Subject: Re: [PATCH v2] riscv: dts: starfive: Remove PMIC interrupt info for
- Visionfive 2 board
-To: Conor Dooley <conor@kernel.org>, Bo Gan <ganboing@gmail.com>
-Cc: kernel@esmil.dk, robh@kernel.org, krzysztof.kozlowski+dt@linaro.org,
- conor+dt@kernel.org, paul.walmsley@sifive.com, palmer@dabbelt.com,
- aou@eecs.berkeley.edu, devicetree@vger.kernel.org,
- linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
- Shengyu Qu <wiagn233@outlook.com>, Conor Dooley
- <conor.dooley@microchip.com>, stable@vger.kernel.org
-References: <TY3P286MB26116B828A34D614C09F4E8898202@TY3P286MB2611.JPNP286.PROD.OUTLOOK.COM>
- <20240326-create-motivate-2792be1692c5@spud>
- <f472affe-d1ef-cbdb-b5c5-76f6b3ac78b3@gmail.com>
- <20240326-ladylike-retold-9034734c2445@spud>
-From: Bo Gan <ganboing@gmail.com>
-Message-ID: <222340e5-b5d7-9abc-57df-ad1478090177@gmail.com>
-Date: Tue, 26 Mar 2024 15:12:13 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        d=1e100.net; s=20230601; t=1711492488; x=1712097288;
+        h=mime-version:message-id:in-reply-to:date:subject:cc:to:from
+         :user-agent:references:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ab5N2/+UMfCyeLSLqFwz+fy2fJSFKubepMeB6XNxJn0=;
+        b=kBEp5R8ALREWRjyMfxqD4Z8NJE+k5ITNlOD2/4JigYvZMK7ZCbuwhUlwYEafY+1Sdn
+         YL+tctwLf8u+xpcxbNPFDfFMEUf+rWel43MaHYSUZ2YK/mn3nOJ/2yvYT/i/ZLBxmx3C
+         lfvfKBc/22S5N7h7kxxKjYurO1XarhSHizFMqnOeSfQoHuySIUC9U7W2ODRptSuUG4Dz
+         sny9kovS763EcNPcaqZexfxbisXYilFYyfMdqI0XIJyMrKCcTBAWe+R6iBRZBdVdK8ST
+         bVyFpGNOj66+BaNOQkSNE+H3ftet/W4RKnQUVnztU+Oab+en4iJ8twz3CaCy4F9nakQK
+         f7Eg==
+X-Forwarded-Encrypted: i=1; AJvYcCUATKWnHP4Vos0LhJvwPE/mFlxGzKvM8wlRzGx+zwRVUsZn+kNKYUmwzdyg0onkmU5mtO72U5RCyBU6tc3sSBS1eiUKtF5SI75OKWsB
+X-Gm-Message-State: AOJu0Yx2bizSf+obJQ+ebmykVw7hwGyiVrXIvTn1lKfiPJaJiXQowJS0
+	FbmxV5UZsm3k0OZS6hRDlKwUQ71NexFoE24wGB2BD0X2Olx064eMlPkmm8zctcA=
+X-Google-Smtp-Source: AGHT+IFd29NI7E7fmbI2DetVVaDs2M2zc93WZvEnIfgrzdHQe3qFznuwCZPaHATWQui+pZyinL6lOw==
+X-Received: by 2002:a17:906:2655:b0:a46:e9f9:2208 with SMTP id i21-20020a170906265500b00a46e9f92208mr2494997ejc.3.1711492488485;
+        Tue, 26 Mar 2024 15:34:48 -0700 (PDT)
+Received: from cloudflare.com ([2a09:bac5:5064:2dc::49:1b1])
+        by smtp.gmail.com with ESMTPSA id v8-20020a170906180800b00a46be5169f1sm4672377eje.181.2024.03.26.15.34.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 26 Mar 2024 15:34:47 -0700 (PDT)
+References: <000000000000dc9aca0613ec855c@google.com>
+ <tencent_F436364A347489774B677A3D13367E968E09@qq.com>
+ <CAADnVQJQvcZOA_BbFxPqNyRbMdKTBSMnf=cKvW7NJ8LxxP54sA@mail.gmail.com>
+ <87y1a6biie.fsf@cloudflare.com>
+User-agent: mu4e 1.6.10; emacs 29.2
+From: Jakub Sitnicki <jakub@cloudflare.com>
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>, Edward Adam Davis
+ <eadavis@qq.com>, John Fastabend <john.fastabend@gmail.com>
+Cc: syzbot+c4f4d25859c2e5859988@syzkaller.appspotmail.com,
+ 42.hyeyoo@gmail.com, andrii@kernel.org, ast@kernel.org,
+ bpf@vger.kernel.org, daniel@iogearbox.net, davem@davemloft.net,
+ edumazet@google.com, kafai@fb.com, kpsingh@kernel.org, kuba@kernel.org,
+ linux-kernel@vger.kernel.org, namhyung@kernel.org, netdev@vger.kernel.org,
+ pabeni@redhat.com, peterz@infradead.org, songliubraving@fb.com,
+ syzkaller-bugs@googlegroups.com, yhs@fb.com
+Subject: Re: [PATCH] bpf, sockmap: fix deadlock in rcu_report_exp_cpu_mult
+Date: Tue, 26 Mar 2024 23:15:47 +0100
+In-reply-to: <87y1a6biie.fsf@cloudflare.com>
+Message-ID: <87plvgbp15.fsf@cloudflare.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20240326-ladylike-retold-9034734c2445@spud>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 
-On 3/26/24 3:10 PM, Conor Dooley wrote:
-> On Tue, Mar 26, 2024 at 03:06:33PM -0700, Bo Gan wrote:
->> On 3/26/24 1:37 PM, Conor Dooley wrote:
->>> From: Conor Dooley <conor.dooley@microchip.com>
->>>
->>> On Thu, 07 Mar 2024 20:21:12 +0800, Shengyu Qu wrote:
->>>> Interrupt line number of the AXP15060 PMIC is not a necessary part of
->>>> its device tree. And this would cause kernel to try to enable interrupt
->>>> line 0, which is not expected. So delete this part from device tree.
->>>>
->>>>
->>>
->>> Applied to riscv-dt-fixes, thanks! And I didn't forget, so I re-wrote
->>> the commit message to add some more information as promised.
->>>
->>> [1/1] riscv: dts: starfive: Remove PMIC interrupt info for Visionfive 2 board
->>>         https://git.kernel.org/conor/c/0b163f43920d
->>>
->>> Thanks,
->>> Conor.
->>>
->> Hi Conor,
->>
->> Thank you very much for taking care of this. Actually the PLIC may silently
->> ignore the enablement of interrupt 0, so the upstream openSBI won't notice
->> anything. My modified version, however, will deliberately trigger a fault
->> for all writes to the reserved fields of PLIC, thus catching this issue.
->>
->> Hope it can clarify things a bit more.
-> 
-> https://git.kernel.org/conor/c/0f74c64f0a9f
-> 
-> Better?
-> 
-Great! Thanks again.
+On Mon, Mar 25, 2024 at 01:23 PM +01, Jakub Sitnicki wrote:
+> On Sat, Mar 23, 2024 at 12:08 AM -07, Alexei Starovoitov wrote:
+>> It seems this bug was causing multiple syzbot reports.
+> Any chance we could disallow mutating sockhash from interrupt context?
 
-Bo
+I've been playing with the repro from one of the other reports:
+
+https://lore.kernel.org/all/CABOYnLzaRiZ+M1v7dPaeObnj_=S4JYmWbgrXaYsyBbWh=553vQ@mail.gmail.com/
+
+syzkaller workload is artificial. So, if we can avoid it, I'd rather not
+support modifying sockmap/sockhash in contexts where irqs are disabled,
+and lock safety rules are stricter than what we abide to today.
+
+Ideally, we allow task and softirq contexts with irqs enabled (so no
+tracing progs attached to timer tick, which syzcaller is using as corpus
+here). Otherwise, we will have to cover for that in selftests.
+
+I'm thinking about a restriction like:
+
+---8<---
+
+diff --git a/net/core/sock_map.c b/net/core/sock_map.c
+index 27d733c0f65e..3692f7256dd6 100644
+--- a/net/core/sock_map.c
++++ b/net/core/sock_map.c
+@@ -907,6 +907,7 @@ static void sock_hash_delete_from_link(struct bpf_map *map, struct sock *sk,
+ 	struct bpf_shtab_elem *elem_probe, *elem = link_raw;
+ 	struct bpf_shtab_bucket *bucket;
+ 
++	WARN_ON_ONCE(irqs_disabled());
+ 	WARN_ON_ONCE(!rcu_read_lock_held());
+ 	bucket = sock_hash_select_bucket(htab, elem->hash);
+ 
+@@ -933,6 +934,10 @@ static long sock_hash_delete_elem(struct bpf_map *map, void *key)
+ 	struct bpf_shtab_elem *elem;
+ 	int ret = -ENOENT;
+ 
++	/* Can't run. We don't play nice with hardirq-safe locks. */
++	if (irqs_disabled())
++		return -EOPNOTSUPP;
++
+ 	hash = sock_hash_bucket_hash(key, key_size);
+ 	bucket = sock_hash_select_bucket(htab, hash);
+ 
+@@ -986,6 +991,7 @@ static int sock_hash_update_common(struct bpf_map *map, void *key,
+ 	struct sk_psock *psock;
+ 	int ret;
+ 
++	WARN_ON_ONCE(irqs_disabled());
+ 	WARN_ON_ONCE(!rcu_read_lock_held());
+ 	if (unlikely(flags > BPF_EXIST))
+ 		return -EINVAL;
 
