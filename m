@@ -1,60 +1,60 @@
-Return-Path: <linux-kernel+bounces-118783-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-118784-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8D39188BF42
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 11:24:47 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 321C888BF43
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 11:25:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 42FE61F3E44B
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 10:24:47 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9E2C51F3DFCB
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 10:25:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9866E7173E;
-	Tue, 26 Mar 2024 10:24:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9F71D6CDA5;
+	Tue, 26 Mar 2024 10:24:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="h08lFlKR"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="kgSPhqRs"
 Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.15])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2A08A71727
-	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 10:24:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 150806BFCB
+	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 10:24:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.15
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711448644; cv=none; b=sDZLKFEEySO9VCHvYThil+oaWnY7NXeTqsfrpejCT43L+vwOZ8Rx/GerY6RTZK44/kh+GincWpFCPZ8a/TDOmQH9CmWTnyo0U4UcF8cCT5G0vo+bCzGpC5ZUyq/5Qt2tQdpu4Pqv7h1pbCbsUa0mKh/yAAPCqfamW0upnUCibLs=
+	t=1711448648; cv=none; b=TlJQ4Q6IESjt3x27mewtXmy9YxoFLMSntk5uVKfzS0yB7iszB3HLgs8kDMroJV0ZfjMQ0Cv47+gWd5y9j0TzoPTYBY5bw/dVg5cumM+mDnDRYspF9/pie5ynHxdi9ubRS91jWuVvYXKJ3rPlvaOUeXwQMWSWo7YTKGOyABtV49Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711448644; c=relaxed/simple;
-	bh=0eBX029BCiLTue40MgYy0Z6NggPwsRuK/phCsbkLIbo=;
+	s=arc-20240116; t=1711448648; c=relaxed/simple;
+	bh=0fN7gsqYsnGc6ao955RNcoGm8yBWFIYv/ncU5MgaFNM=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=TeH1Cj2JKonOThzpa8zniO2WezntYFuBtdASIyMKJ+ZOOlY+5a1+Km06/CdNxax48w91lIPxaYPUX9uVfFN6Q1nIjtijEEFk2QqR6EkhRmnfKxaSqpAowk+VQuGmJ0fyVveowdBjAlov4jplbKY9Ez0Hv3lnrYS2VJ+oCcCFqBs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=h08lFlKR; arc=none smtp.client-ip=192.198.163.15
+	 MIME-Version; b=jFaeUqzV6kIdO3x8OLkuyZjfxknSLz5CQTFuJX0HThqiOqFA6LDcWXrIEuKzuGJcaHGVdlZDesDl0D2GE7gkUSeJJ3unlIFMJq6WCQkvrjx462ra2xlpgCSMia8YTdHWmwOHpYoEsRRlUDuMvU8NCLpBmRtRjciTI1+vfgvGqUM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=kgSPhqRs; arc=none smtp.client-ip=192.198.163.15
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1711448643; x=1742984643;
+  t=1711448647; x=1742984647;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=0eBX029BCiLTue40MgYy0Z6NggPwsRuK/phCsbkLIbo=;
-  b=h08lFlKRg/2SF86g6i9Ji6K90wqWEb6Dy9XOYfJRCsBp0+0w6sibiKGA
-   UpK6o5ittE5K+8EPKVu6LzIUvTf6wIaYpxsVZv1W9PFJf8iRS6Kr4bk0V
-   Q62g5xVF6NHjwxlvNjMDWXs3dtTDQ4VqW4w2iU69QgSnz0o7UML0VvXRQ
-   rX/TU4LN5nOm0CGGozYjkaaeaJDT2JreoecOY7hQkZpz22MBYQ39G4gwF
-   JwG8+p94nlG+0j2vQpxycPwWf5vgJ7ATziogEFp9/KYBNDxPUiXXwQ8oG
-   fFhej0dZyyip2dg+PgvuwTsfGRcuNwqZMUIgikk1rZ8LyMNaqJHjWVomU
-   A==;
-X-CSE-ConnectionGUID: oo+Pj7oVQOeyR+Pfc8werA==
-X-CSE-MsgGUID: jPsG+tF0T52r5Qkjf/w1ww==
-X-IronPort-AV: E=McAfee;i="6600,9927,11024"; a="6678780"
+  bh=0fN7gsqYsnGc6ao955RNcoGm8yBWFIYv/ncU5MgaFNM=;
+  b=kgSPhqRseXGda87W+bnxPA+ntG7A/McFa/lEpNLoBtBeuGBB5+e17YT7
+   HKITdg+O8GobNemaN16XToLrKSl6/fFnY/PrUjo9C3MD8aQZ1GdN0y7fx
+   O6BnstsgSoDjG1reaPcgg640kQd/0VhAFS+5jUAF0Bhh519n5mRIf1oXs
+   aTVfGhQPpKv4JeYEIno9ezhWJ/zBgNBM2H6xkkzNp3uRhb3zf1y3+Fj/Q
+   ltsdf23mad2pH59dXWBWNoLJsfurGf2ghVOWgsEDOk/qw9DBzITxc7u6M
+   oxAVnRBVnI12PvL8CBGzYalQMxXd1xT4cgRUrmkvLnMA0eQjEz8f3zkpZ
+   Q==;
+X-CSE-ConnectionGUID: CF0pCFjaQ4ekEm7EQ2DeHg==
+X-CSE-MsgGUID: FMMUS7LURdSds3+Ps12czQ==
+X-IronPort-AV: E=McAfee;i="6600,9927,11024"; a="6678792"
 X-IronPort-AV: E=Sophos;i="6.07,156,1708416000"; 
-   d="scan'208";a="6678780"
+   d="scan'208";a="6678792"
 Received: from fmviesa002.fm.intel.com ([10.60.135.142])
-  by fmvoesa109.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Mar 2024 03:24:02 -0700
+  by fmvoesa109.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Mar 2024 03:24:06 -0700
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.07,156,1708416000"; 
-   d="scan'208";a="39029406"
+   d="scan'208";a="39029428"
 Received: from pyong-mobl2.amr.corp.intel.com (HELO khuang2-desk.gar.corp.intel.com) ([10.209.75.208])
-  by fmviesa002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Mar 2024 03:24:00 -0700
+  by fmviesa002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Mar 2024 03:24:04 -0700
 From: Kai Huang <kai.huang@intel.com>
 To: linux-kernel@vger.kernel.org
 Cc: x86@kernel.org,
@@ -72,9 +72,9 @@ Cc: x86@kernel.org,
 	jgross@suse.com,
 	binbin.wu@linux.intel.com,
 	kai.huang@intel.com
-Subject: [PATCH v2 4/5] x86/virt/tdx: Support global metadata read for all element sizes
-Date: Tue, 26 Mar 2024 23:23:31 +1300
-Message-ID: <bb4b780694f962a90e00de11a244c9c648070902.1711447449.git.kai.huang@intel.com>
+Subject: [PATCH v2 5/5] x86/virt/tdx: Export global metadata read infrastructure
+Date: Tue, 26 Mar 2024 23:23:32 +1300
+Message-ID: <20d6035063f00825b3f4e1f2b6c9abc20c73f177.1711447449.git.kai.huang@intel.com>
 X-Mailer: git-send-email 2.43.2
 In-Reply-To: <cover.1711447449.git.kai.huang@intel.com>
 References: <cover.1711447449.git.kai.huang@intel.com>
@@ -86,136 +86,140 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-For now the kernel only reads TDMR related global metadata fields for
-module initialization.  All these fields are 16-bits, and the kernel
-only supports reading 16-bits fields.
-
 KVM will need to read a bunch of non-TDMR related metadata to create and
-run TDX guests.  It's essential to provide a generic metadata read
-infrastructure which supports reading all 8/16/32/64 bits element sizes.
+run TDX guests.  Export the metadata read infrastructure for KVM to use.
 
-Extend the metadata read to support reading all these element sizes.
+Specifically, export two helpers:
+
+1) The helper which reads multiple metadata fields to a buffer of a
+   structure based on the "field ID -> structure member" mapping table.
+
+2) The low level helper which just reads a given field ID.
+
+The two helpers cover cases when the user wants to cache a bunch of
+metadata fields to a certain structure and when the user just wants to
+query a specific metadata field on demand.  They are enough for KVM to
+use (and also should be enough for other potential users).
 
 Signed-off-by: Kai Huang <kai.huang@intel.com>
 Reviewed-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+Reviewed-by: Binbin Wu <binbin.wu@linux.intel.com>
 ---
- arch/x86/virt/vmx/tdx/tdx.c | 59 +++++++++++++++++++++++++------------
- arch/x86/virt/vmx/tdx/tdx.h |  2 --
- 2 files changed, 40 insertions(+), 21 deletions(-)
+ arch/x86/include/asm/tdx.h  | 22 ++++++++++++++++++++++
+ arch/x86/virt/vmx/tdx/tdx.c | 25 ++++++++-----------------
+ 2 files changed, 30 insertions(+), 17 deletions(-)
 
-diff --git a/arch/x86/virt/vmx/tdx/tdx.c b/arch/x86/virt/vmx/tdx/tdx.c
-index eb208da4ff63..4ee4b8cf377c 100644
---- a/arch/x86/virt/vmx/tdx/tdx.c
-+++ b/arch/x86/virt/vmx/tdx/tdx.c
-@@ -271,23 +271,35 @@ static int read_sys_metadata_field(u64 field_id, u64 *data)
- 	return 0;
- }
- 
--static int read_sys_metadata_field16(u64 field_id,
--				     int offset,
--				     void *stbuf)
-+/* Return the metadata field element size in bytes */
-+static int get_metadata_field_bytes(u64 field_id)
- {
--	u16 *st_member = stbuf + offset;
-+	/*
-+	 * TDX supports 8/16/32/64 bits metadata field element sizes.
-+	 * TDX module determines the metadata element size based on the
-+	 * "element size code" encoded in the field ID (see the comment
-+	 * of MD_FIELD_ID_ELE_SIZE_CODE macro for specific encodings).
-+	 */
-+	return 1 << MD_FIELD_ID_ELE_SIZE_CODE(field_id);
-+}
+diff --git a/arch/x86/include/asm/tdx.h b/arch/x86/include/asm/tdx.h
+index eba178996d84..709b9483f9e4 100644
+--- a/arch/x86/include/asm/tdx.h
++++ b/arch/x86/include/asm/tdx.h
+@@ -116,6 +116,28 @@ static inline u64 sc_retry(sc_func_t func, u64 fn,
+ int tdx_cpu_enable(void);
+ int tdx_enable(void);
+ const char *tdx_dump_mce_info(struct mce *m);
 +
-+static int stbuf_read_sys_metadata_field(u64 field_id,
-+					 int offset,
-+					 int bytes,
-+					 void *stbuf)
-+{
-+	void *st_member = stbuf + offset;
- 	u64 tmp;
- 	int ret;
- 
--	if (WARN_ON_ONCE(MD_FIELD_ID_ELE_SIZE_CODE(field_id) !=
--			MD_FIELD_ID_ELE_SIZE_16BIT))
-+	if (WARN_ON_ONCE(get_metadata_field_bytes(field_id) != bytes))
- 		return -EINVAL;
- 
- 	ret = read_sys_metadata_field(field_id, &tmp);
- 	if (ret)
- 		return ret;
- 
--	*st_member = tmp;
-+	memcpy(st_member, &tmp, bytes);
- 
- 	return 0;
- }
-@@ -295,11 +307,30 @@ static int read_sys_metadata_field16(u64 field_id,
- struct field_mapping {
- 	u64 field_id;
- 	int offset;
++struct tdx_metadata_field_mapping {
++	u64 field_id;
++	int offset;
 +	int size;
- };
- 
- #define TD_SYSINFO_MAP(_field_id, _struct, _member)	\
- 	{ .field_id = MD_FIELD_ID_##_field_id,		\
--	  .offset   = offsetof(_struct, _member) }
++};
++
++#define TD_SYSINFO_MAP(_field_id, _struct, _member)	\
++	{ .field_id = MD_FIELD_ID_##_field_id,		\
 +	  .offset   = offsetof(_struct, _member),	\
 +	  .size     = sizeof(typeof(((_struct *)0)->_member)) }
 +
-+static int read_sys_metadata(const struct field_mapping *fields, int nr_fields,
-+			     void *stbuf)
-+{
-+	int i, ret;
++/*
++ * Read multiple global metadata fields to a buffer of a structure
++ * based on the "field ID -> structure member" mapping table.
++ */
++int tdx_sys_metadata_read(const struct tdx_metadata_field_mapping *fields,
++			  int nr_fields, void *stbuf);
 +
-+	for (i = 0; i < nr_fields; i++) {
-+		ret = stbuf_read_sys_metadata_field(fields[i].field_id,
-+				      fields[i].offset,
-+				      fields[i].size,
-+				      stbuf);
-+		if (ret)
-+			return ret;
-+	}
++/* Read a single global metadata field */
++int tdx_sys_metadata_field_read(u64 field_id, u64 *data);
 +
-+	return 0;
-+}
+ #else
+ static inline void tdx_init(void) { }
+ static inline int tdx_cpu_enable(void) { return -ENODEV; }
+diff --git a/arch/x86/virt/vmx/tdx/tdx.c b/arch/x86/virt/vmx/tdx/tdx.c
+index 4ee4b8cf377c..dc21310776ab 100644
+--- a/arch/x86/virt/vmx/tdx/tdx.c
++++ b/arch/x86/virt/vmx/tdx/tdx.c
+@@ -251,7 +251,7 @@ static int build_tdx_memlist(struct list_head *tmb_list)
+ 	return ret;
+ }
+ 
+-static int read_sys_metadata_field(u64 field_id, u64 *data)
++int tdx_sys_metadata_field_read(u64 field_id, u64 *data)
+ {
+ 	struct tdx_module_args args = {};
+ 	int ret;
+@@ -270,6 +270,7 @@ static int read_sys_metadata_field(u64 field_id, u64 *data)
+ 
+ 	return 0;
+ }
++EXPORT_SYMBOL_GPL(tdx_sys_metadata_field_read);
+ 
+ /* Return the metadata field element size in bytes */
+ static int get_metadata_field_bytes(u64 field_id)
+@@ -295,7 +296,7 @@ static int stbuf_read_sys_metadata_field(u64 field_id,
+ 	if (WARN_ON_ONCE(get_metadata_field_bytes(field_id) != bytes))
+ 		return -EINVAL;
+ 
+-	ret = read_sys_metadata_field(field_id, &tmp);
++	ret = tdx_sys_metadata_field_read(field_id, &tmp);
+ 	if (ret)
+ 		return ret;
+ 
+@@ -304,19 +305,8 @@ static int stbuf_read_sys_metadata_field(u64 field_id,
+ 	return 0;
+ }
+ 
+-struct field_mapping {
+-	u64 field_id;
+-	int offset;
+-	int size;
+-};
+-
+-#define TD_SYSINFO_MAP(_field_id, _struct, _member)	\
+-	{ .field_id = MD_FIELD_ID_##_field_id,		\
+-	  .offset   = offsetof(_struct, _member),	\
+-	  .size     = sizeof(typeof(((_struct *)0)->_member)) }
+-
+-static int read_sys_metadata(const struct field_mapping *fields, int nr_fields,
+-			     void *stbuf)
++int tdx_sys_metadata_read(const struct tdx_metadata_field_mapping *fields,
++			  int nr_fields, void *stbuf)
+ {
+ 	int i, ret;
+ 
+@@ -331,6 +321,7 @@ static int read_sys_metadata(const struct field_mapping *fields, int nr_fields,
+ 
+ 	return 0;
+ }
++EXPORT_SYMBOL_GPL(tdx_sys_metadata_read);
  
  #define TD_SYSINFO_MAP_TDMR_INFO(_field_id, _member)	\
  	TD_SYSINFO_MAP(_field_id, struct tdx_tdmr_sysinfo, _member)
-@@ -314,19 +345,9 @@ static int get_tdx_tdmr_sysinfo(struct tdx_tdmr_sysinfo *tdmr_sysinfo)
- 		TD_SYSINFO_MAP_TDMR_INFO(PAMT_2M_ENTRY_SIZE,    pamt_entry_size[TDX_PS_2M]),
- 		TD_SYSINFO_MAP_TDMR_INFO(PAMT_1G_ENTRY_SIZE,    pamt_entry_size[TDX_PS_1G]),
+@@ -338,7 +329,7 @@ static int read_sys_metadata(const struct field_mapping *fields, int nr_fields,
+ static int get_tdx_tdmr_sysinfo(struct tdx_tdmr_sysinfo *tdmr_sysinfo)
+ {
+ 	/* Map TD_SYSINFO fields into 'struct tdx_tdmr_sysinfo': */
+-	const struct field_mapping fields[] = {
++	const struct tdx_metadata_field_mapping fields[] = {
+ 		TD_SYSINFO_MAP_TDMR_INFO(MAX_TDMRS,		max_tdmrs),
+ 		TD_SYSINFO_MAP_TDMR_INFO(MAX_RESERVED_PER_TDMR, max_reserved_per_tdmr),
+ 		TD_SYSINFO_MAP_TDMR_INFO(PAMT_4K_ENTRY_SIZE,    pamt_entry_size[TDX_PS_4K]),
+@@ -347,7 +338,7 @@ static int get_tdx_tdmr_sysinfo(struct tdx_tdmr_sysinfo *tdmr_sysinfo)
  	};
--	int ret;
--	int i;
  
  	/* Populate 'tdmr_sysinfo' fields using the mapping structure above: */
--	for (i = 0; i < ARRAY_SIZE(fields); i++) {
--		ret = read_sys_metadata_field16(fields[i].field_id,
--						fields[i].offset,
--						tdmr_sysinfo);
--		if (ret)
--			return ret;
--	}
--
--	return 0;
-+	return read_sys_metadata(fields, ARRAY_SIZE(fields), tdmr_sysinfo);
+-	return read_sys_metadata(fields, ARRAY_SIZE(fields), tdmr_sysinfo);
++	return tdx_sys_metadata_read(fields, ARRAY_SIZE(fields), tdmr_sysinfo);
  }
  
  /* Calculate the actual TDMR size */
-diff --git a/arch/x86/virt/vmx/tdx/tdx.h b/arch/x86/virt/vmx/tdx/tdx.h
-index b701f69485d3..4c32c8bf156a 100644
---- a/arch/x86/virt/vmx/tdx/tdx.h
-+++ b/arch/x86/virt/vmx/tdx/tdx.h
-@@ -53,8 +53,6 @@
- #define MD_FIELD_ID_ELE_SIZE_CODE(_field_id)	\
- 		(((_field_id) & GENMASK_ULL(33, 32)) >> 32)
- 
--#define MD_FIELD_ID_ELE_SIZE_16BIT	1
--
- struct tdmr_reserved_area {
- 	u64 offset;
- 	u64 size;
 -- 
 2.43.2
 
