@@ -1,170 +1,168 @@
-Return-Path: <linux-kernel+bounces-119841-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-119831-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E98DD88CD97
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 20:54:27 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 10D1E88CD74
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 20:47:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D4C7FB27548
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 19:54:24 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B9C861F626FC
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 19:47:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D0AEA13D279;
-	Tue, 26 Mar 2024 19:54:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AC7D813D25D;
+	Tue, 26 Mar 2024 19:47:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=o2.pl header.i=@o2.pl header.b="GEj2oICR"
-Received: from mx-out.tlen.pl (mx-out.tlen.pl [193.222.135.140])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="lIXfB8H3"
+Received: from mail-yw1-f179.google.com (mail-yw1-f179.google.com [209.85.128.179])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 03C2013D265
-	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 19:54:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.222.135.140
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 55F1C3DABE1
+	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 19:47:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711482858; cv=none; b=tt3K7xwB9vSKGq5CRobdcMifrSxSquLAdLPOUS6NklLucjlTXGFK1NFNGRZgAromZ3P8gjGV2CEJfkTG2rOnjWZwQcXh/nGTKvBQRNcnkFTXIr5D8pmfvVk4QZYx1LApJzhx4aoRWxFv3aPMaXN7i9bgF1ZQxZ73NIukn4F7h1Q=
+	t=1711482464; cv=none; b=TaAFp3nPhaViS1jMdiNZaB0sDMlv3mIsuzJMJgjC9hVJ+XvDHZrYHvZBzAraRA5QzDvtn3A2J4wt6baNRQ+lQ9LusrWx8ntMckOjT+P5H3HEy3UY9w/Om9iIzUsdfT8hqAye4Z4rw3eVAhy3zvbMKlwEDykxXZKZCvezy/8flb4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711482858; c=relaxed/simple;
-	bh=TVQh7He8pCNuQhQFnvn+Z1vWx3JX3W8dztAvzVfDPJ8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=Dl4gkRLMMwS7brjwYl0QS/Z7WA2dNTwOguWhl1WJ1FXKj0Oo5y/p4yS7PLxmbtpJxmE3aWvoyms8J4UX7F3qYzOUcJUhY47pa1umEDGsd/OihAKJu+MVqNWj7xoc7e22lfPbzLQtiQKXFsiAgprnbN+/GyKZDEvuBRxYE8x+RTQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=o2.pl; spf=pass smtp.mailfrom=o2.pl; dkim=pass (1024-bit key) header.d=o2.pl header.i=@o2.pl header.b=GEj2oICR; arc=none smtp.client-ip=193.222.135.140
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=o2.pl
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=o2.pl
-Received: (wp-smtpd smtp.tlen.pl 25507 invoked from network); 26 Mar 2024 20:47:30 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=o2.pl; s=1024a;
-          t=1711482450; bh=IIhoIWpRJSiDJH2NqAEhNqlU5eNagQrEs7VzWuVJG3c=;
-          h=Subject:To:From;
-          b=GEj2oICR/tiC1RhMgpXfAS9rSCh7DhVHAREXphEekjYoFbosrPdJAlKilygj371ki
-           pgx50zgg5o57Q+/gmbIXY+zfeKXlDvHJL0+6xt7Js/eTGvJGhgqvl1nCP82c1JB+VL
-           MSC3lUgZoxZWKBsEeBWZci9y1p4Bq2BKErOUIA94=
-Received: from aaer216.neoplus.adsl.tpnet.pl (HELO [192.168.1.22]) (mat.jonczyk@o2.pl@[83.4.121.216])
-          (envelope-sender <mat.jonczyk@o2.pl>)
-          by smtp.tlen.pl (WP-SMTPD) with ECDHE-RSA-AES256-GCM-SHA384 encrypted SMTP
-          for <sashal@kernel.org>; 26 Mar 2024 20:47:30 +0100
-Message-ID: <49e3ce4a-e77e-47a6-819f-eba74c05f5f5@o2.pl>
-Date: Tue, 26 Mar 2024 20:47:25 +0100
+	s=arc-20240116; t=1711482464; c=relaxed/simple;
+	bh=9Hrv+yQ6ggCFqu5Jm8HZOWdy9wYvi7d9h22Bf0YsEa4=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Qnzc0YIH8ulVATvGkKVgKqCaxAqIAbuLP8LMSKfNsCBAAagmOP717WcWTWFwhi+jJmMKIMqXWdR8n+o/ctLsbvM/rY77W5yOa0p1QLgiMqD6RT72jkcYoTnbUFFc499MySQ2iB0rcPrv61wOYsIOqv5EZSDTQi1eu/jMXaWZdJ0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=lIXfB8H3; arc=none smtp.client-ip=209.85.128.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-yw1-f179.google.com with SMTP id 00721157ae682-609fb0450d8so63324657b3.0
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 12:47:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1711482461; x=1712087261; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=+qyPM89Y10g6lsVDwvjAhw3OysernPxYLdybxWGA1Ik=;
+        b=lIXfB8H3N2R03ZaF8Xmsh9SO6/3MB43g8Co3QazXF85TAOHLbofwzSp7ah+0ef5cOj
+         lGTTXItGvplb6qwu8Cgn5A79TjPtz+NbQqS+CAEEYSkP+XrP5RKNHoEuRgT5sw0UQAM5
+         7usZgfqj70bxQePonjtLUici5YAx+g1kpEDCcDeJYQuaBEoIex5D9wTyEPMRo6jwWCj2
+         9R48zuvIh6PEisXU4+jbsHX9wxcL+4Jtx2FMM7Y8QHSriRWpuA5QtaDNw0Ml9kucMN/T
+         wIXMy7WyPl6GspxnUZQU8LnGFyl1jb7Kj/RybAlb2RsRX1QzQA8hBpN6vXRNviicj8PJ
+         WydA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711482461; x=1712087261;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=+qyPM89Y10g6lsVDwvjAhw3OysernPxYLdybxWGA1Ik=;
+        b=t+XP1lCjMAVOdaLRgoRxbFIa4FmtUf+gGYcoSvlH4e+AGeHX6+U5f0M5nQAoM3fwg9
+         X2RMvqTq+/UTDCo2iXYPpTfeQL58L/NbFiLPYFuqzc8Rw5DsNrExyLjWvoKxnPq1L21K
+         JOXV8pHinlNKSkvTKusuNGmJxB4xrHdRrUAvenDlS/zleANt4q5oRLhNkoH9FwPQVHyI
+         ePEUeVJIyU38UzODyis1nucghAOphtsgtXkwPmGb3Veflt6ZNJWYVceZfQ/DOk2CIp6d
+         k0/vyPsvB0BJfg2DowcUWLHFV4CDg5VhNEdBmZph8wGhMT39ddEcuPbu6gZFQktAKHv9
+         XliA==
+X-Forwarded-Encrypted: i=1; AJvYcCXAfRsMYeI8uy9pTu0bZqN5ER6l+BLhxwHOCRmVF8AVb0+m/rqcrJFi/cC/P4ch52+0kWRoJ1xTsMwvu4Ewx+NTfb0Oa3urQeZD5ght
+X-Gm-Message-State: AOJu0YwFeH1o23iSxzjDfRWdN5cdlmNv8rC/dItZAr+JLAvOUKol/ZOo
+	v2nqJ6YbUJZs+oJExi5ki6hZaOb0GG8d8zEszQ30zF/pCYRkH4JFjI0whA55ZFDty8Mb1bXXK3A
+	WnDOgzAcAwh9aB1D8tzX+hgxVPYlqDfAE72JtoQ==
+X-Google-Smtp-Source: AGHT+IEDgs+miE1gX6ZQTUPVvtQ4tAfLoH8Z/nDmvJIeTUqUSoM57Xw13la+OqnoQDXlV9aokZwVCnZHBuAHWvDS4Lc=
+X-Received: by 2002:a25:aa4d:0:b0:dc7:8c3a:4e42 with SMTP id
+ s71-20020a25aa4d000000b00dc78c3a4e42mr8948827ybi.30.1711482461135; Tue, 26
+ Mar 2024 12:47:41 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 6.1 000/444] 6.1.83-rc2 review
-To: Sasha Levin <sashal@kernel.org>, linux-kernel@vger.kernel.org,
- stable@vger.kernel.org
-References: <20240325115939.1766258-1-sashal@kernel.org>
-Content-Language: en-GB
-From: =?UTF-8?Q?Mateusz_Jo=C5=84czyk?= <mat.jonczyk@o2.pl>
-Autocrypt: addr=mat.jonczyk@o2.pl; keydata=
- xsFNBFqMDyQBEAC2VYhOvwXdcGfmMs9amNUFjGFgLixeS2C1uYwaC3tYqjgDQNo/qDoPh52f
- ExoTMJRqx48qvvY/i6iwia7wOTBxbYCBDqGYxDudjtL41ko8AmbGOSkxJww5X/2ZAtFjUJxO
- QjNESFlRscMfDv5vcCvtH7PaJJob4TBZvKxdL4VCDCgEsmOadTy5hvwv0rjNjohau1y4XfxU
- DdvOcl6LpWMEezsHGc/PbSHNAKtVht4BZYg66kSEAhs2rOTN6pnWJVd7ErauehrET2xo2JbO
- 4lAv0nbXmCpPj37ZvURswCeP8PcHoA1QQKWsCnHU2WeVw+XcvR/hmFMI2QnE6V/ObHAb9bzg
- jxSYVZRAWVsdNakfT7xhkaeHjEQMVRQYBL6bqrJMFFXyh9YDj+MALjyb5hDG3mUcB4Wg7yln
- DRrda+1EVObfszfBWm2pC9Vz1QUQ4CD88FcmrlC7n2witke3gr38xmiYBzDqi1hRmrSj2WnS
- RP/s9t+C8M8SweQ2WuoVBLWUvcULYMzwy6mte0aSA8XV6+02a3VuBjP/6Y8yZUd0aZfAHyPi
- Rf60WVjYNRSeg27lZ9DJmHjSfZNn1FrtZi3W9Ff6bry/SY9D136qXBQxPYxXQfaGDhVeLUVF
- Q+NIZ6NEjqrLQ07LEvUW2Qzk2q851/IaXZPtP6swx0gqrpjNrwARAQABzSRNYXRldXN6IEpv
- xYRjenlrIDxtYXQuam9uY3p5a0BvMi5wbD7CwX4EEwECACgFAlqMDyQCGwMFCRLMAwAGCwkI
- BwMCBhUIAgkKCwQWAgMBAh4BAheAAAoJEPvWWrhhCv7Gb0MQAJVIpJ1KAOH6WaT8e65xZulI
- 1jkwGwNp+3bWWc5eLjKUnXtOYpa9oIsUUAqvh/L8MofGtM1V11kSX9dEloyqlqDyNSQk0h52
- hZxMsCQyzjGOcBAi0zmWGYB4xu6SXj4LpVpIPW0sogduEOfbC0i7uAIyotHgepQ8RPGmZoXU
- 9bzFCyqZ8kAqwOoCCx+ccnXtbnlAXQmDb88cIprAU+Elk4k4t7Bpjn2ek4fv35PsvsBdRTq3
- ADg8sGuq4KQXhbY53n1tyiab3M88uv6Cv//Ncgx+AqMdXq2AJ7amFsYdvkTC98sx20qk6Cul
- oHggmCre4MBcDD4S0qDXo5Z9NxVR/e9yUHxGLc5BlNj+FJPO7zwvkmIaMMnMlbydWVke0FSR
- AzJaEV/NNZKYctw2wYThdXPiz/y7aKd6/sM1jgPlleQhs3tZAIdjPfFjGdeeggv668M7GmKl
- +SEzpeFQ4b0x64XfLfLXX8GP/ArTuxEfJX4L05/Y9w9AJwXCVEwW4q17v8gNsPyVUVEdIroK
- cve6cgNNSWoxTaYcATePmkKnrAPqfg+6qFM4TuOWmyzCLQ1YoUZMxH+ddivDQtlKCp6JgGCz
- c9YCESxVii0vo8TsHdIAjQ/px9KsuYBmOlKnHXKbj6BsE/pkMMKQg/L415dvKzhLm2qVih7I
- U16IAtK5b7RpzsFNBFqMDyQBEACclVvbzpor4XfU6WLUofqnO3QSTwDuNyoNQaE4GJKEXA+p
- Bw5/D2ruHhj1Bgs6Qx7G4XL3odzO1xT3Iz6w26ZrxH69hYjeTdT8VW4EoYFvliUvgye2cC01
- ltYrMYV1IBXwJqSEAImU0Xb+AItAnHA1NNUUb9wKHvOLrW4Y7Ntoy1tp7Vww2ecAWEIYjcO6
- AMoUX8Q6gfVPxVEQv1EpspSwww+x/VlDGEiiYO4Ewm4MMSP4bmxsTmPb/f/K3rv830ZCQ5Ds
- U0rzUMG2CkyF45qXVWZ974NqZIeVCTE+liCTU7ARX1bN8VlU/yRs/nP2ISO0OAAMBKea7slr
- mu93to9gXNt3LEt+5aVIQdwEwPcqR09vGvTWdRaEQPqgkOJFyiZ0vYAUTwtITyjYxZWJbKJh
- JFaHpMds9kZLF9bH45SGb64uZrrE2eXTyI3DSeUS1YvMlJwKGumRTPXIzmVQ5PHiGXr2/9S4
- 16W9lBDJeHhmcVOsn+04x5KIxHtqAP3mkMjDBYa0A3ksqD84qUBNuEKkZKgibBbs4qT35oXf
- kgWJtW+JziZf6LYx4WvRa80VDIIYCcQM6TrpsXIJI+su5qpzON1XJQG2iswY8PJ40pkRI9Sm
- kfTFrHOgiTpwZnI9saWqJh2ABavtnKZ1CtAY2VA8gmEqQeqs2hjdiNHAmRxR2wARAQABwsFl
- BBgBAgAPBQJajA8kAhsMBQkSzAMAAAoJEPvWWrhhCv7GhpYP/1tH/Kc35OgWu2lsgJxR9Z49
- 4q+yYAuu11p0aQidL5utMFiemYHvxh/sJ4vMq65uPQXoQ3vo8lu9YR/p8kEt8jbljJusw6xQ
- iKA1Cc68xtseiKcUrjmN/rk3csbT+Qj2rZwkgod8v9GlKo6BJXMcKGbHb1GJtLF5HyI1q4j/
- zfeu7G1gVjGTx8e2OLyuBJp0HlFXWs2vWSMesmZQIBVNyyL9mmDLEwO4ULK2quF6RYtbvg+2
- PMyomNAaQB4s1UbXAO87s75hM79iszIzak2am4dEjTx+uYCWpvcw3rRDz7aMs401CphrlMKr
- WndS5qYcdiS9fvAfu/Jp5KIawpM0tVrojnKWCKHG4UnJIn+RF26+E7bjzE/Q5/NpkMblKD/Y
- 6LHzJWsnLnL1o7MUARU++ztOl2Upofyuj7BSath0N632+XCTXk9m5yeDCl/UzPbP9brIChuw
- gF7DbkdscM7fkYzkUVRJM45rKOupy5Z03EtAzuT5Z/If3qJPU0txAJsquDohppFsGHrzn/X2
- 0nI2LedLnIMUWwLRT4EvdYzsbP6im/7FXps15jaBOreobCaWTWtKtwD2LNI0l9LU9/RF+4Ac
- gwYu1CerMmdFbSo8ZdnaXlbEHinySUPqKmLHmPgDfxKNhfRDm1jJcGATkHCP80Fww8Ihl8aS
- TANkZ3QqXNX2
-In-Reply-To: <20240325115939.1766258-1-sashal@kernel.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-WP-MailID: 1bbdf9110afad6aeac496f367f500c2f
-X-WP-AV: skaner antywirusowy Poczty o2
-X-WP-SPAM: NO 0000000 [QVM0]                               
+References: <CANiq72mjc5t4n25SQvYSrOEhxxpXYPZ4pPzneSJHEnc3qApu2Q@mail.gmail.com>
+ <CAA8EJprTNFgKJ_3cdZz4f_LCkYFghi-cfaj3bZmYh3oA63my6A@mail.gmail.com>
+ <85204b78-7b24-61cd-4bae-3e7abc6e4fd3@quicinc.com> <CAA8EJppqrF10J1qExM=gopiF4GPDt7v4TB6LrQxx5OGyAL9hSg@mail.gmail.com>
+ <671d2662-df4e-4350-0084-476eb1671cc1@quicinc.com>
+In-Reply-To: <671d2662-df4e-4350-0084-476eb1671cc1@quicinc.com>
+From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date: Tue, 26 Mar 2024 21:47:30 +0200
+Message-ID: <CAA8EJpppre8ibYqN7gZObyvzR08yVbTevC6hDEDCKQVf8gRVRg@mail.gmail.com>
+Subject: Re: drivers/gpu/drm/msm/adreno/a6xx_gpu_state.c:843:6: error:
+ variable 'out' set but not used
+To: Abhinav Kumar <quic_abhinavk@quicinc.com>
+Cc: Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>, Rob Clark <robdclark@gmail.com>, 
+	Sean Paul <sean@poorly.run>, Marijn Suijten <marijn.suijten@somainline.org>, 
+	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, 
+	linux-arm-msm <linux-arm-msm@vger.kernel.org>, dri-devel <dri-devel@lists.freedesktop.org>, 
+	freedreno@lists.freedesktop.org, linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 
-W dniu 25.03.2024 o 12:59, Sasha Levin pisze:
-> This is the start of the stable review cycle for the 6.1.83 release.
-> There are 444 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+On Tue, 26 Mar 2024 at 21:32, Abhinav Kumar <quic_abhinavk@quicinc.com> wrote:
 >
-> Responses should be made by Wed Mar 27 11:59:37 AM UTC 2024.
-> Anything received after that time might be too late.
 >
-> The whole patch series can be found in one patch at:
->         https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git/patch/?id=linux-6.1.y&id2=v6.1.82
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.1.y
-> and the diffstat can be found below.
 >
-> Thanks,
-> Sasha
+> On 3/26/2024 12:10 PM, Dmitry Baryshkov wrote:
+> > On Tue, 26 Mar 2024 at 20:31, Abhinav Kumar <quic_abhinavk@quicinc.com> wrote:
+> >>
+> >>
+> >>
+> >> On 3/26/2024 11:19 AM, Dmitry Baryshkov wrote:
+> >>> On Tue, 26 Mar 2024 at 20:05, Miguel Ojeda
+> >>> <miguel.ojeda.sandonis@gmail.com> wrote:
+> >>>>
+> >>>> Hi,
+> >>>>
+> >>>> In today's next, I got:
+> >>>>
+> >>>>       drivers/gpu/drm/msm/adreno/a6xx_gpu_state.c:843:6: error: variable
+> >>>> 'out' set but not used [-Werror,-Wunused-but-set-variable]
+> >>>>
+> >>>> `out` seems to be there since commit 64d6255650d4 ("drm/msm: More
+> >>>> fully implement devcoredump for a7xx").
+> >>>>
+> >>>> Untested diff below assuming `dumper->iova` is constant -- if you want
+> >>>> a formal patch, please let me know.
+> >>>
+> >>> Please send a proper patch that we can pick up.
+> >>>
+> >>
+> >> This should be fixed with https://patchwork.freedesktop.org/patch/581853/.
+> >
+> > Is that a correct fix? If you check other usage locations for
+> > CRASHDUMP_READ, you'll see that `out` is the last parameter and it is
+> > being incremented.
+> >
+>
+> Right but in this function out is not the last parameter of CRASHDUMP_READ.
 
-Hello,
+Yes. I think in this case the patch from this email is more correct.
 
-Tested-by: Mateusz Jończyk <mat.jonczyk@o2.pl>
+>
+> Maybe you or Rob can correct me but I thought the fix looked sane
+> although noone commented on that patch.
 
-Tested on a HP 17-by0001nw laptop with an Intel Kaby Lake CPU and Ubuntu 20.04.
+>
+> >>
+> >> We can pickup that one with a Fixes tag applied.
+> >>
+> >>>>
+> >>>> Cheers,
+> >>>> Miguel
+> >>>>
+> >>>> diff --git a/drivers/gpu/drm/msm/adreno/a6xx_gpu_state.c
+> >>>> b/drivers/gpu/drm/msm/adreno/a6xx_gpu_state.c
+> >>>> index 1f5245fc2cdc..a847a0f7a73c 100644
+> >>>> --- a/drivers/gpu/drm/msm/adreno/a6xx_gpu_state.c
+> >>>> +++ b/drivers/gpu/drm/msm/adreno/a6xx_gpu_state.c
+> >>>> @@ -852,7 +852,7 @@ static void a6xx_get_shader_block(struct msm_gpu *gpu,
+> >>>>                (block->type << 8) | i);
+> >>>>
+> >>>>            in += CRASHDUMP_READ(in, REG_A6XX_HLSQ_DBG_AHB_READ_APERTURE,
+> >>>> -            block->size, dumper->iova + A6XX_CD_DATA_OFFSET);
+> >>>> +            block->size, out);
+> >>>>
+> >>>>            out += block->size * sizeof(u32);
+> >>>>        }
+> >>>
+> >>>
+> >>>
+> >
+> >
+> >
 
-Stack:
-- amd64,
-- ext4 on top of LVM on top of LUKS on top of mdraid on top of
-  NVMe and SATA drives (the SATA drive in write-mostly mode).
 
-Tested (lightly):
-- suspend to RAM,
-- suspend to disk,
 
-- GPU (Intel HD Graphics 620, with a Duke Nukem 3D game on Proton (Wine fork) and a Unigine benchmark)
-- WiFi (Realtek RTL8822BE),
-- Bluetooth (Realtek RTL8822BE),
-- webcam,
-
-- USB soundcard (Logitech Pro X),
-- PCI soundcard (Intel HD Audio),
-
-Filesystems tested very lightly:
-- NFS,
-- NTFS via FUSE
-- exFAT
-- vfat.
-
-Nitpicks:
-- Mozilla Thunderbird displays the main panel with a long delay,
-    - likely not connected with the kernel upgrade,
-- intermittent problems with suspend in GNOME (suspend hangs until I log back in),
-    - likely not connected with the kernel upgrade,
-- when I have GNOME Bluetooth settings open, the computer cannot receive any files from the phone,
-    - same as on some older kernels,
-- several errors in dmesg: "Bluetooth: hci0: SCO packet for unknown connection handle 2"
-    - same as on some older kernels,
-
-Greetings,
-
-Mateusz
-
+-- 
+With best wishes
+Dmitry
 
