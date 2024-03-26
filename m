@@ -1,193 +1,98 @@
-Return-Path: <linux-kernel+bounces-118970-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-118972-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id C5D8888C212
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 13:27:18 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3B99A88C217
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 13:27:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 482251F3C207
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 12:27:18 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6D28E1C3226A
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 12:27:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 788987316A;
-	Tue, 26 Mar 2024 12:27:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 81C7874267;
+	Tue, 26 Mar 2024 12:27:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="D+o9bill";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="ZvTfHubG";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="D+o9bill";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="ZvTfHubG"
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="f1eXqbhy"
+Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 091A270CDA;
-	Tue, 26 Mar 2024 12:27:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 57FA070CDA;
+	Tue, 26 Mar 2024 12:27:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.19.142
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711456027; cv=none; b=dONurWusw9A+RnU2Uzt3r3GEKIrkyyfWz+F2VSBQMHkkcFlvLYxCzH2QMQ+koIzzPndYKNgNySlksQVWc66mMvqMnVvb+h7FZWnpRZIAB+nW10XB4Mqp8mO68rXoB9EcgRVHFpGplrRviJOm91LwDrYt4Ew4SyCSaoCA9d/VvYI=
+	t=1711456060; cv=none; b=MmJ5PxyY8H4bUh4g2thO0iJA+e68SgHjl2TCGxpR2pNH1dSCzq+8rkFjOjpxPhMkUExj/3I0tJIZgwoiN25M2JO0YXJIa5bg9/+j3py+4uykMYTUbcM7PVpSXvag1iaM1voB4/+upK9YXnuU+XonpbFcpjvX18/xaD/DjYvGdt4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711456027; c=relaxed/simple;
-	bh=P5Og5SVif/TazRx1gfTuoFOFWCG/IMdoSqQLR9EiIgg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=jNoMBHlSJ1yvVMvc1xpGS3oFbvRquCrzGqq73ql2/Zr3sqpYgGSCHk+StnWcVTcTnaxVSrVgV6SKe2YGxzISEFeBF4ICOEwLjqf+HmPf1XFoDCRzDDO/AIGbS9w9MS8ulxHXsjaAHjRDVO/ZssPOIu1k/Va0zUmhidK7T0wP1GU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=D+o9bill; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=ZvTfHubG; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=D+o9bill; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=ZvTfHubG; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 04A8037B8F;
-	Tue, 26 Mar 2024 12:27:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1711456022; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=o+FQk8Pfj6cNE8lfvdU6/qaSkPWg47A6HFY6eoUrykg=;
-	b=D+o9billZjoMb/3DAYk8EBB31dPuuDphmyr2L+GWn7WHdwMKOVYPHni2IO1Rw3nWFgc8MP
-	wUrfV6KU4HFYM8p785OVesLYyXLPXC+u5DsZCLnZZMpBEmCFDUkblIyKpu78m+j4yuh/CD
-	x1RgJNHlAgTiXmCAFPnGl81QtTH8Mmg=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1711456022;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=o+FQk8Pfj6cNE8lfvdU6/qaSkPWg47A6HFY6eoUrykg=;
-	b=ZvTfHubGqrrgvVGEZTBZZycn4bhL8WQ4uuoiaUU2nuB2P7HV4ZZ6qR82ofs9HA9C2ZyelO
-	z4ZrUUzG0RMHNeCw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1711456022; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=o+FQk8Pfj6cNE8lfvdU6/qaSkPWg47A6HFY6eoUrykg=;
-	b=D+o9billZjoMb/3DAYk8EBB31dPuuDphmyr2L+GWn7WHdwMKOVYPHni2IO1Rw3nWFgc8MP
-	wUrfV6KU4HFYM8p785OVesLYyXLPXC+u5DsZCLnZZMpBEmCFDUkblIyKpu78m+j4yuh/CD
-	x1RgJNHlAgTiXmCAFPnGl81QtTH8Mmg=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1711456022;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=o+FQk8Pfj6cNE8lfvdU6/qaSkPWg47A6HFY6eoUrykg=;
-	b=ZvTfHubGqrrgvVGEZTBZZycn4bhL8WQ4uuoiaUU2nuB2P7HV4ZZ6qR82ofs9HA9C2ZyelO
-	z4ZrUUzG0RMHNeCw==
-Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id EF6C113215;
-	Tue, 26 Mar 2024 12:27:01 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap2.dmz-prg2.suse.org with ESMTPSA
-	id rT5yOhW/AmbDKgAAn2gu4w
-	(envelope-from <jack@suse.cz>); Tue, 26 Mar 2024 12:27:01 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id B0080A0812; Tue, 26 Mar 2024 13:27:01 +0100 (CET)
-Date: Tue, 26 Mar 2024 13:27:01 +0100
-From: Jan Kara <jack@suse.cz>
-To: Kemeng Shi <shikemeng@huaweicloud.com>
-Cc: akpm@linux-foundation.org, tj@kernel.org, linux-mm@kvack.org,
-	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-	willy@infradead.org, bfoster@redhat.com, jack@suse.cz,
-	dsterba@suse.com, mjguzik@gmail.com, dhowells@redhat.com,
-	peterz@infradead.org
-Subject: Re: [PATCH 5/6] writeback: rename nr_reclaimable to nr_dirty in
- balance_dirty_pages
-Message-ID: <20240326122701.e32op43zxuowjvgj@quack3>
-References: <20240320110222.6564-1-shikemeng@huaweicloud.com>
- <20240320110222.6564-6-shikemeng@huaweicloud.com>
+	s=arc-20240116; t=1711456060; c=relaxed/simple;
+	bh=8Jl54xlqjwkJWP5PUMyWwqy9IBRiotbXYLdQBgcsjJo=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=kxMGuZx44naak+c7Eiq5Vfzr7/zZlp04rOtiPas1B1AaHGAJTg/MviziotsJz/8c7fXZDjk3jVR7BM6UF2zmxwCc3X+8kPmoxVMyyjXJzJC8nG6y6jzUOsENiHCBSELAf2mG5Gt/4/y89Z459KxCn/bxIaTfBkNoN8XPpADG9gY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=f1eXqbhy; arc=none smtp.client-ip=198.47.19.142
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+	by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 42QCRR7d080815;
+	Tue, 26 Mar 2024 07:27:27 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+	s=ti-com-17Q1; t=1711456047;
+	bh=XMIn4Bg0h4wNwem/5Hp295ouaQHawgTd9UzgVAS9LZ8=;
+	h=From:To:CC:Subject:Date;
+	b=f1eXqbhy8Tv2ne/fpJ6An7ULgloUhTkKJ5mfFRou79EgQMkkYFWvx6qtIcpm7+q48
+	 132OzR50MsLWxb2H8L9+qmFzRs8mgcJh7ex13hARTiXFpdte2Qw2XPm0/ufv/qvPxI
+	 0/Y+8tGFapBTqt1Nh8dB16fBYVMHIrDoCvf6PVEk=
+Received: from DFLE108.ent.ti.com (dfle108.ent.ti.com [10.64.6.29])
+	by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 42QCRR4b035160
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+	Tue, 26 Mar 2024 07:27:27 -0500
+Received: from DFLE114.ent.ti.com (10.64.6.35) by DFLE108.ent.ti.com
+ (10.64.6.29) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Tue, 26
+ Mar 2024 07:27:27 -0500
+Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DFLE114.ent.ti.com
+ (10.64.6.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Tue, 26 Mar 2024 07:27:27 -0500
+Received: from a0497641-HP-Z2-Tower-G9-Workstation-Desktop-PC.dhcp.ti.com (a0497641-hp-z2-tower-g9-workstation-desktop-pc.dhcp.ti.com [172.24.227.36])
+	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 42QCRN2b129435;
+	Tue, 26 Mar 2024 07:27:24 -0500
+From: Neha Malcom Francis <n-francis@ti.com>
+To: <robh@kernel.org>, <conor+dt@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <vigneshr@ti.com>, <nm@ti.com>
+CC: <linux-arm-kernel@lists.infradead.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <kristo@kernel.org>, <u-kumar1@ti.com>,
+        <n-francis@ti.com>
+Subject: [PATCH 0/4] arm64: dts: ti: k3-j7*: Add missing ESM and watchdog nodes
+Date: Tue, 26 Mar 2024 17:57:19 +0530
+Message-ID: <20240326122723.2329402-1-n-francis@ti.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240320110222.6564-6-shikemeng@huaweicloud.com>
-Authentication-Results: smtp-out1.suse.de;
-	none
-X-Spam-Level: 
-X-Spam-Score: -0.47
-X-Spamd-Result: default: False [-0.47 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 BAYES_SPAM(0.33)[71.13%];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 NEURAL_HAM_SHORT(-0.20)[-1.000];
-	 RCPT_COUNT_TWELVE(0.00)[13];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email,suse.com:email];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 MID_RHS_NOT_FQDN(0.50)[];
-	 FREEMAIL_CC(0.00)[linux-foundation.org,kernel.org,kvack.org,vger.kernel.org,infradead.org,redhat.com,suse.cz,suse.com,gmail.com];
-	 RCVD_TLS_ALL(0.00)[]
-X-Spam-Flag: NO
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
-On Wed 20-03-24 19:02:21, Kemeng Shi wrote:
-> Commit 8d92890bd6b85 ("mm/writeback: discard NR_UNSTABLE_NFS, use
-> NR_WRITEBACK instead") removed NR_UNSTABLE_NFS and nr_reclaimable
-> only contains dirty page now.
-> Rename nr_reclaimable to nr_dirty properly.
-> 
-> Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
+Add missing ESM and watchdog nodes for the sake of devicetree completion
+of hardware description w.r.t Linux and ESM and WDT enablement on
+U-Boot. This patch series adds the missing nodes for J721E and J7200.
 
-Looks good. Feel free to add:
+Boot logs:
+https://gist.github.com/nehamalcom/5dc94ab60f57df5d515d0a6d0da6e0d1
 
-Reviewed-by: Jan Kara <jack@suse.cz>
+Neha Malcom Francis (4):
+  arm64: dts: ti: k3-j721e-mcu: Add the WKUP ESM instance
+  arm64: dts: ti: k3-j721e-mcu: Add the MCU domain watchdog instances
+  arm64: dts: ti: k3-j721e-main: Add the MAIN domain watchdog instances
+  arm64: dts: ti: k3-j7200-main: Add the MAIN domain watchdog instances
 
-								Honza
+ arch/arm64/boot/dts/ti/k3-j7200-main.dtsi     | 27 ++++++
+ arch/arm64/boot/dts/ti/k3-j721e-main.dtsi     | 93 +++++++++++++++++++
+ .../boot/dts/ti/k3-j721e-mcu-wakeup.dtsi      | 31 +++++++
+ 3 files changed, 151 insertions(+)
 
-> ---
->  mm/page-writeback.c | 8 ++++----
->  1 file changed, 4 insertions(+), 4 deletions(-)
-> 
-> diff --git a/mm/page-writeback.c b/mm/page-writeback.c
-> index ba1b6b5ae5d6..481b6bf34c21 100644
-> --- a/mm/page-writeback.c
-> +++ b/mm/page-writeback.c
-> @@ -1695,7 +1695,7 @@ static int balance_dirty_pages(struct bdi_writeback *wb,
->  	struct dirty_throttle_control * const mdtc = mdtc_valid(&mdtc_stor) ?
->  						     &mdtc_stor : NULL;
->  	struct dirty_throttle_control *sdtc;
-> -	unsigned long nr_reclaimable;	/* = file_dirty */
-> +	unsigned long nr_dirty;
->  	long period;
->  	long pause;
->  	long max_pause;
-> @@ -1716,9 +1716,9 @@ static int balance_dirty_pages(struct bdi_writeback *wb,
->  		unsigned long m_thresh = 0;
->  		unsigned long m_bg_thresh = 0;
->  
-> -		nr_reclaimable = global_node_page_state(NR_FILE_DIRTY);
-> +		nr_dirty = global_node_page_state(NR_FILE_DIRTY);
->  		gdtc->avail = global_dirtyable_memory();
-> -		gdtc->dirty = nr_reclaimable + global_node_page_state(NR_WRITEBACK);
-> +		gdtc->dirty = nr_dirty + global_node_page_state(NR_WRITEBACK);
->  
->  		domain_dirty_limits(gdtc);
->  
-> @@ -1769,7 +1769,7 @@ static int balance_dirty_pages(struct bdi_writeback *wb,
->  		 * In normal mode, we start background writeout at the lower
->  		 * background_thresh, to keep the amount of dirty memory low.
->  		 */
-> -		if (!laptop_mode && nr_reclaimable > gdtc->bg_thresh &&
-> +		if (!laptop_mode && nr_dirty > gdtc->bg_thresh &&
->  		    !writeback_in_progress(wb))
->  			wb_start_background_writeback(wb);
->  
-> -- 
-> 2.30.0
-> 
 -- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+2.34.1
+
 
