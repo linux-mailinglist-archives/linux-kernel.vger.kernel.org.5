@@ -1,196 +1,154 @@
-Return-Path: <linux-kernel+bounces-119301-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-119300-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 38F7C88C6D0
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 16:25:32 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4603388C6CF
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 16:25:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E37EA2C83DB
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 15:25:30 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 779D11C63AC4
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 15:25:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 26C2913C8E1;
-	Tue, 26 Mar 2024 15:25:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 896B113C834;
+	Tue, 26 Mar 2024 15:25:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="rYeFn2Qd"
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10on2102.outbound.protection.outlook.com [40.107.93.102])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="fBOye8oL"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.20])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 47C5E13C811
-	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 15:25:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.93.102
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711466721; cv=fail; b=m0s+zNOVu+y62w1tC4Gs9A42xnrlj7ZSI8ue+fX5KDD2xRcv4AkAXPos6WreMHlRFVSaV5SYbTXt8BWf67iwqH/WzpkFvYUa9uZEr/4/Sh6GjlzdCRFDgDL/+USzkNQ14oQXdqA3FeZ/q2MRQ5Haa9Vn8tYVtNz8VcL73ckGy34=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711466721; c=relaxed/simple;
-	bh=lfbiY41LoFcB3M+Nnnzck2CmhoQWerf69OcKfmzl59E=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=DhrMv5R0H3tzz2qYW3Eh2awyawCqDUPZMi7QcYibS+rSlrq6A6mSBg68tG3kMlYdWv8OMcNt0y3RDu6BRV4TPBdcBjWNciuZoZi9T3VZ/OI7oSsXEDOiPXpHvD/WvUHh8x7P8q8OaVUGpIBDBLN2MiAclcmth77D75F7ZwHUyAc=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=rYeFn2Qd; arc=fail smtp.client-ip=40.107.93.102
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ZPIPHB0e9WUR0r3jxEKnbQZPm6wmOq9pUIrzZRiSJNTz2H+s+sGJgkOT3F7dB2mx3UWYZ992FILDvFcv3O1oRyhAjIKPpGgvsnLOdXXk/U54rvidXDGPnBEer0aqwrqAQkKE9zBR/gZPAoOil5+veEV8JpxhsXHrLS9TVTB+GmkDDFOhts6+UidIgjWTjIJZD2jdPAcn7JJUBsx8h5/lt0+HIbW+rb+Y50cOTKrZnSe/0Czwr/6VRy1GMwjamPc8F4+868D5coV6cDy/nVo4h20ydZ3hC11Nj+Yg7LFLEja4OKkO7+BIj7LcphIShPjHAQXdjuxzKTGwCMBzH7XY5Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=GRsPxOmtBLzXGpzZvrIdd6XnMKYeT3heM1hi+TjER68=;
- b=WwU+OvMsQDYkumS2p8OEiwkR39wcuOQvYGxyRVSr+1A2s6nZWgvGur+HvStiJwmtUZ7GmLhh6zXsx0+0cuoCeuerugq7IJpLZhu3U/no/x6Yy4MIfoiNmevvaQKe9a7DT4DknZHVFGUfXxPFuHShLCX/mxxN4bPOGLldtu5yRsxrmJ/IHcaoF9FY2w75UpriGASiVM37sXHTQ8UVFatq60iY2SbHs9zFXpS5nSUQBSTH5vaZIk6Webf5Wk01JrAZpAfDD/htO9GMbJ/tONrHdIo1JMom4yFS1IBJXCalwCDiDmhx5HOerCNfPl9c75+f3LPV2BydY8ufWktvfgFafw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=GRsPxOmtBLzXGpzZvrIdd6XnMKYeT3heM1hi+TjER68=;
- b=rYeFn2QdBvlc2DZzf7yK3LaE3N/7lCDsVd66BYrCo0ftF0oRCdGtk0fralQdGeB72H2NZmy5Wzg60yVvFlwHEwUo7zoD/+OrObr8gzkECmRZN7RZCVl7S6n2RifvAc2BTiU5xUV47I8FQ3R6mqJJpAiIxesyfIiuEDg5+V835eE=
-Received: from MW4PR12MB5667.namprd12.prod.outlook.com (2603:10b6:303:18a::10)
- by IA0PR12MB7625.namprd12.prod.outlook.com (2603:10b6:208:439::22) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.32; Tue, 26 Mar
- 2024 15:25:16 +0000
-Received: from MW4PR12MB5667.namprd12.prod.outlook.com
- ([fe80::966b:7f50:4f07:3c8b]) by MW4PR12MB5667.namprd12.prod.outlook.com
- ([fe80::966b:7f50:4f07:3c8b%5]) with mapi id 15.20.7409.028; Tue, 26 Mar 2024
- 15:25:16 +0000
-Message-ID: <19a39ab2-ef75-cf2c-939b-7dd09dcc5b13@amd.com>
-Date: Tue, 26 Mar 2024 16:25:10 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.6.1
-Subject: Re: [PATCH] drm/amdgpu: fix deadlock while reading mqd from debugfs
-To: Johannes Weiner <hannes@cmpxchg.org>
-Cc: =?UTF-8?Q?Christian_K=c3=b6nig?= <ckoenig.leichtzumerken@gmail.com>,
- Alex Deucher <alexander.deucher@amd.com>,
- =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
- amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
- linux-kernel@vger.kernel.org
-References: <20240307221609.7651-1-hannes@cmpxchg.org>
- <c411dce6-faaf-46c3-8bb6-8c4db871e598@gmail.com>
- <20240314170948.GA581298@cmpxchg.org> <20240323145247.GC448621@cmpxchg.org>
- <c8efae98-3cf8-c21c-bfa4-d5998ab92a0e@amd.com>
- <CADnq5_OGSLpLLEJqh86_SAZcqv-Cv6AmZJRZyaFtSmTHJ8ybxg@mail.gmail.com>
-Content-Language: en-US
-From: "Sharma, Shashank" <shashank.sharma@amd.com>
-In-Reply-To: <CADnq5_OGSLpLLEJqh86_SAZcqv-Cv6AmZJRZyaFtSmTHJ8ybxg@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: FR3P281CA0158.DEUP281.PROD.OUTLOOK.COM
- (2603:10a6:d10:a2::8) To MW4PR12MB5667.namprd12.prod.outlook.com
- (2603:10b6:303:18a::10)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B0F913C824
+	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 15:25:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.20
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1711466720; cv=none; b=U6PyyN7ZDeA6opyHDJM2Dmcb67vCifM6seZ8nDTiYVCrUJxmYH+g8IJ01XWbDmv9pEVhYi/1DG+b6tG7MVlmt1psixKlIrlqgCubp/6s/u3T6SSCxfpUohGT9O2pDoQK6ZkbgpzGgHPqC6bmEcDab85ZoBqtXce6ONac+8ETXy4=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1711466720; c=relaxed/simple;
+	bh=XttMrvgAYZMCP1U+O9bqXvByUWIjb6AitS7lpjeSNn4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=AIaBMXhfV3jTVnlBMqf6MrFOzSpW8LV1o38rxDUGNW56cTCVlyiBsTktRAvULTaGVDocyeYCmA3LiIW4ckwmWuPyEI/Ci+NTbv/gX2xyrLiuoOjaL/sN1vxqbXqTDSamyEDoEK0lwHuuGwfAyvWJquUHJxFukN/jZLfg4yrmJCY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=fBOye8oL; arc=none smtp.client-ip=198.175.65.20
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1711466719; x=1743002719;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:content-transfer-encoding:in-reply-to;
+  bh=XttMrvgAYZMCP1U+O9bqXvByUWIjb6AitS7lpjeSNn4=;
+  b=fBOye8oLM5VQsYppG4jwZbCEw9teFbHnm3QEfBnbq9sqwNeqM70NoRet
+   Dj82nc/fesfYUVWkPNdM/anAS4adnCRXJ0fWfb17wOc+EH7dYs5kAHLbo
+   KHSr7TDnVlhbwmXEblN7jwb6J5sanPKOe3u22uD3T4cCbllqoTMDNFdjQ
+   2L33Zbr1aQOI1lfq5B5050pwlIk0+Brtc3ZGhykkvGWvk2C4nytABMKJL
+   i3UC1K46s32CMlU8/PRdL0GZGJ3J4C868dEPtGUWhBbhnjoai2SSKkCv1
+   pV/NarUtnjHAbQqPsnp9T/wb5Z6SLmuyYGJWj76ossqZC2WHvdrwl1vAA
+   w==;
+X-CSE-ConnectionGUID: 7GcbCTtmQGy+K24bTMSXew==
+X-CSE-MsgGUID: 0xHE1OecQKGwBR1Ju/XnCQ==
+X-IronPort-AV: E=McAfee;i="6600,9927,11025"; a="6420087"
+X-IronPort-AV: E=Sophos;i="6.07,156,1708416000"; 
+   d="scan'208";a="6420087"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orvoesa112.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Mar 2024 08:25:18 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,11025"; a="914883234"
+X-IronPort-AV: E=Sophos;i="6.07,156,1708416000"; 
+   d="scan'208";a="914883234"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Mar 2024 08:25:17 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.97)
+	(envelope-from <andriy.shevchenko@linux.intel.com>)
+	id 1rp8fr-0000000GL3K-0VmZ;
+	Tue, 26 Mar 2024 17:25:15 +0200
+Date: Tue, 26 Mar 2024 17:25:14 +0200
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: Mateusz K <mateusz.kaduk@gmail.com>
+Cc: Bjorn Helgaas <helgaas@kernel.org>, Lee Jones <lee@kernel.org>,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1 1/1] mfd: intel-lpss: Switch over to MSI interrupts
+Message-ID: <ZgLo2sbncwlkAOZE@smile.fi.intel.com>
+References: <20240312165905.1764507-1-andriy.shevchenko@linux.intel.com>
+ <20240325211915.GA1449994@bhelgaas>
+ <CAPf=4Rc2vQrWqcs=-ND3iOZFJyKE7FdPoqU9w6DKjoSaJo6KaQ@mail.gmail.com>
+ <ZgLefFQanbq-ozKM@smile.fi.intel.com>
+ <CAPf=4Rdc6pHy34dSKex_KOmeAo2bsuaGv5X6MyJ6+Se5h3Mo4w@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: MW4PR12MB5667:EE_|IA0PR12MB7625:EE_
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	aYonrzXUX263prEqYGmDSs78PSsypt6OIoADy7q2oCiqkX/FALQI0w7/1W4hmVhEWgIIMvW/r31L7K7jQXGuTinsql2G/+tZTYb1htZO7jgoYNw82Wq2q/JylE5FjZBCIY1zcss3qW+ru3TmWaUPzRs8g1IFFEgfen5YPnBUsnThXXw/II9oxFJfE9AzCm4GYUYWJYelR8PiDju9WdEbbJ9MFB+xFAJL5ccmsNeGuKM6NTjBxR7D+JREuV2kyCyzssttaqKrk4Aesvf5if+Oc5S1ZqZDsyKPjefvu+Mzfj2dlzZQ9mj7PI4A6VtkjUCMRGxRrW4UUtl3sDPEIBmi4U1EnwH0jXcUAYphuzDL+fye27wMehzZOmuCrvEl9MZk5OScUW71uKPK1ClNM49khVcwNOcF60nmOg+eY1QudPq9JUvXexkp8Pv4BRpiDp3+KnQWodDR3eD40zpeiKa8oq0PWLaZVRZAkwlVxFUBlP0jseHAtkxiFg5Dl4NJ0m3/y5BH3IMtv5I34jzIBf9uYhjs39j5GG2KY2Nw8/NY82g6sG5z1ieIrMKpevH87F8lkxiLZNvyK0nZAonRmekUXmUW9Vq+BS4tH30c58Ot+HS64TNi6yckV1xrZ12nmcJEgrKL7JqqKTRUQxkQiQLqcIwwhZGUhY68XQ5hVQA4Hwk=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW4PR12MB5667.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366007)(376005)(1800799015);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?NURaL3E2TlpuRlcyQU1mWmhwNkt5K25SY0xuRzAveG9nbytTSmhXYmZxb0lz?=
- =?utf-8?B?NjdhOTRIQmRBM2lENFNxZHplazE4b1FvUktOcy9ERFE1THRXMEJMUFc1WlBF?=
- =?utf-8?B?NkF1L0RES00vODhlTVh1T1VVVFBvWnA1bkl1eHpXRDIvT2k2MS92T3A0MFgx?=
- =?utf-8?B?YnJTM0QwVDBodytabnBFV3Nmdkl5NGtSQVJxQ0tOUlBvTit6S0ltMjhnajVz?=
- =?utf-8?B?bjQ3ZnVORUpQVkdpQjJ0cFh5SHl1M3crUnFaWlZ6RXF6TzNXOExKcWNBa0xi?=
- =?utf-8?B?aytSNjRhQ25RV2ZtcWw4SWZQc3BubWJ4eGRSQUtwTldyRW5YZlhPRUp6RHdN?=
- =?utf-8?B?MXFOTHI5NUt0ZkVyWVFZTnF0U2lSL2FsUk8xRUxNdzNsSUkrV0N6TVJRdnBZ?=
- =?utf-8?B?WUJlOXQwMTIwdG8wNzJTVUwyNjloRzl2QStBajJwU3VrNmJleUZmckFOTVRk?=
- =?utf-8?B?V1JiT1VsZTFLMVZMOE0zU0sxR0tzdDhLVEhscnlnUktQa3QrWEJCbGNYSmUr?=
- =?utf-8?B?ZjVmQ0ZoRHRKRU5MZzdoeU96YmF6Smx0TGQ0VGRIakxjajVoQUIyL3piY2Nn?=
- =?utf-8?B?NzBRWDVueUlnTkg2c00wY1dycTJqZ3ZkeTdQek5sZmQ3MzZqYUdxdDUyMmtE?=
- =?utf-8?B?Q2xyOEJNWW91OXZrSEZmODdBWmMwaEZDaXRCZEpuWU1EcW9PVFNBMEFvVW94?=
- =?utf-8?B?ZGNUZXBtdmIvaXhiMklGNytDRDhtZ2ErWWs5Nm9aQzlJU1NBS1ZlbEJrNWtM?=
- =?utf-8?B?aHpOamVqOGErUVNqRXZTUU5CTDVWR2UzSDRTU2I4MDFBZ0JIdnlQVkplUXhi?=
- =?utf-8?B?ejg4MFdwekUzNS9Pd0E1ZkNkbGR5TTB2M0E0Z0htZHFxdXR2dEtvTjBYamh5?=
- =?utf-8?B?cDBTV1JJRk56NU55UjdDVUkwa1VZVHR6WmV3WUtsMEdkWlRyWHZLYWVyOHBX?=
- =?utf-8?B?Sk4yRVdkM2k5eVpsL0NnZmtzaGh4TXRLK3RXSzNXNUNJSHp3TitOMmovQlQ5?=
- =?utf-8?B?cFZ4bC85UVZETlQ2cDhleXBnSmlwMThqVTZ4YkhkaHBtbStBNWhFdDVyRGVT?=
- =?utf-8?B?cXBQck11ZzhsZTJmYzhDcEZpdlhzWkpMNWxmbk5PZExVUFBWcm9LSEszdVFQ?=
- =?utf-8?B?QmpuWGY3ZnRSSXBRTEZSRUNyYU10bU5WTXFNTkNYVTBSdDlqMUw0R1FhaTVo?=
- =?utf-8?B?M0F1eTRaQmJDR05XK0xGc1d4dVVQamJ4WFl5VWVJTjlncDV1Z2t2ZUhlQmx4?=
- =?utf-8?B?YjNvcjRCRE5rbWdZSWdTTDA0U2FKekpZMWNXVkcxZ2ppYVVJWHVmMVZkVEd5?=
- =?utf-8?B?SjhpQzluRGVCNFU2ZUVSTmZqR3pMRVRpY2dMbTQwU0lQTUhUTXQ1NndMa09i?=
- =?utf-8?B?cmZLbFhqdWYwV3NoaXQyWjVPd09YSndvNzkwMWhWNVdmYjNCOXhnREZLYjVI?=
- =?utf-8?B?MTRnLzJudjV1d3ZCWkZCV3owNlhLOVZBSVJubjNadVAvQ3ZiVVpzREQzT3VU?=
- =?utf-8?B?bUhpNWRzUk5Ea2hsZVdZZVpnVWxmdW4yRXo2ell3ZFJZbzk5c1h3enBSQXhH?=
- =?utf-8?B?alVmdWtXeXFiRWxLMWlYR2p5MS9zd2czNVBYL2tnKzRTMHZ5dFdFcGtKNktW?=
- =?utf-8?B?cFNHdFlaMG43VXFOcFNBS3hRYjgydEY3UmNXMkZpNGRER1B4TVI0cEw0Mi96?=
- =?utf-8?B?UHV1SG1LSFZLamx3QlJmT3JjTm0rWnZmYnpDV1k2YSsvalFxYjdPR3dPNnUy?=
- =?utf-8?B?Z045MlI4Sk1HSFVhR2tiL3A0d1JHcG1tbWk3OFhLdDdEdEdKcnVDMjhKMS9O?=
- =?utf-8?B?elhYVU9xTWZVN2FUaTB0dStzUit5OGlTWElnK3lNNVRXV1oxeXNVNkpIMWxv?=
- =?utf-8?B?UWxzbGVtWnVnTDRBSjVjTkk2aUovbVFlWnducnJpa1dCVE5OYnlrUTV6aXc0?=
- =?utf-8?B?VnozUHRDR1p4WXVoRGZ6Slh4aUpnV1A0TEptdDFjT1I4RThuY2k4dWpPYnlv?=
- =?utf-8?B?c3d2aFlQM2R0eWo2czc2NWVZbXZkYjVRQkw4NmZGOWEyMk5aTzdpTlQxUnM3?=
- =?utf-8?B?R1hJS2c3QW1sVEc3amJBY2N0MFk3bVlWOXhFU2gxUmhaMFQ0b2pEUExHSVht?=
- =?utf-8?Q?zRPQ8uF2LsXHI3hh0drkofWPU?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 99f8d09b-9663-4dc5-7be7-08dc4da8f02c
-X-MS-Exchange-CrossTenant-AuthSource: MW4PR12MB5667.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Mar 2024 15:25:16.2362
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: y2XCi38XaTpj7IxBa86zrlFzAgbTIea0XMWjW+OgfixspWv9qhC+EzCPGQXcbvR2HOBIBVGoEmp8sA7WwggMvQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA0PR12MB7625
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAPf=4Rdc6pHy34dSKex_KOmeAo2bsuaGv5X6MyJ6+Se5h3Mo4w@mail.gmail.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 
-Thanks for the patch,
+Please, do not top post in the mailing lists!
 
-Patch pushed for staging.
+On Tue, Mar 26, 2024 at 03:50:37PM +0100, Mateusz K wrote:
+> Maybe it's much to ask, but I would really appreciate it if someone
+> looked into intel-lpss supporting these devices.
+> Been using a laptop without a functional touchpad over months now.
+> If that helps, there is another thread here
+> https://bugzilla.kernel.org/show_bug.cgi?id=218444 with perhaps more
+> details on the problem.
+> Battery and speaker are not a big deal, but the not working touchpad,
+> which I believe should be handled by an intel-lpss driver, is kind of
+> painful.
+> If you need any help from my side, testing patches, don't hesitate to
+> contact me.
+
+I will look at the report closer, but I can't guarantee anything.
+
+> On Tue, Mar 26, 2024 at 3:41 PM Andy Shevchenko
+> <andriy.shevchenko@linux.intel.com> wrote:
+> >
+> > On Tue, Mar 26, 2024 at 11:06:38AM +0100, Mateusz K wrote:
+> > > I tried the patch that changes PCI_IRQ_LEGACY into PCI_IRQ_ALL_TYPES
+> > > and it seems I get some other error now
+> > >
+> > > [    1.477341] intel-lpss 0000:00:15.0: enabling device (0004 -> 0006)
+> > > [    1.477466] intel-lpss 0000:00:15.0: can't derive routing for PCI INT A
+> > > [    1.477468] intel-lpss 0000:00:15.0: PCI INT A: not connected
+> > > [    1.477488] intel-lpss 0000:00:15.0: probe with driver intel-lpss
+> > > failed with error -2147483648
+> > > [    1.489572] intel-lpss 0000:00:15.2: enabling device (0004 -> 0006)
+> > > [    1.489688] intel-lpss 0000:00:15.2: can't derive routing for PCI INT C
+> > > [    1.489689] intel-lpss 0000:00:15.2: PCI INT C: not connected
+> > > [    1.489715] intel-lpss 0000:00:15.2: probe with driver intel-lpss
+> > > failed with error -2147483648
+> > > [    1.501886] intel-lpss 0000:00:19.0: enabling device (0004 -> 0006)
+> > > [    1.502034] intel-lpss 0000:00:19.0: can't derive routing for PCI INT A
+> > > [    1.502036] intel-lpss 0000:00:19.0: PCI INT A: not connected
+> > > [    1.502067] intel-lpss 0000:00:19.0: probe with driver intel-lpss
+> > > failed with error -2147483648
+> > > [    1.514288] intel-lpss 0000:00:19.1: enabling device (0004 -> 0006)
+> > > [    1.514535] intel-lpss 0000:00:19.1: can't derive routing for PCI INT B
+> > > [    1.514538] intel-lpss 0000:00:19.1: PCI INT B: not connected
+> > > [    1.514570] intel-lpss 0000:00:19.1: probe with driver intel-lpss
+> > > failed with error -2147483648
+> > > [    1.526291] intel-lpss 0000:00:1e.0: enabling device (0004 -> 0006)
+> > > [    1.526555] intel-lpss 0000:00:1e.0: can't derive routing for PCI INT A
+> > > [    1.526557] intel-lpss 0000:00:1e.0: PCI INT A: not connected
+> > > [    1.526604] intel-lpss 0000:00:1e.0: probe with driver intel-lpss
+> > > failed with error -2147483648
+> > > [    1.538130] intel-lpss 0000:00:1e.3: enabling device (0004 -> 0006)
+> > > [    1.538233] intel-lpss 0000:00:1e.3: can't derive routing for PCI INT D
+> > > [    1.538235] intel-lpss 0000:00:1e.3: PCI INT D: not connected
+> > > [    1.538253] intel-lpss 0000:00:1e.3: probe with driver intel-lpss
+> > > failed with error -2147483648
+> >
+> > Hmm... I have a unique board to test :-)
+> > Let's revert it then.
+> >
+> > Bjorn, in such case your tree should keep conversion one.
+> >
+> > Lee, do you prefer a revert or can you simply drop this from the queue?
+
+-- 
+With Best Regards,
+Andy Shevchenko
 
 
-Regards
-
-Shashank
-
-On 25/03/2024 00:23, Alex Deucher wrote:
-> On Sat, Mar 23, 2024 at 4:47 PM Sharma, Shashank
-> <shashank.sharma@amd.com> wrote:
->>
->> On 23/03/2024 15:52, Johannes Weiner wrote:
->>> On Thu, Mar 14, 2024 at 01:09:57PM -0400, Johannes Weiner wrote:
->>>> Hello,
->>>>
->>>> On Fri, Mar 08, 2024 at 12:32:33PM +0100, Christian König wrote:
->>>>> Am 07.03.24 um 23:07 schrieb Johannes Weiner:
->>>>>> Lastly I went with an open loop instead of a memcpy() as I wasn't
->>>>>> sure if that memory is safe to address a byte at at time.
->>>> Shashank pointed out to me in private that byte access would indeed be
->>>> safe. However, after actually trying it it won't work because memcpy()
->>>> doesn't play nice with mqd being volatile:
->>>>
->>>> /home/hannes/src/linux/linux/drivers/gpu/drm/amd/amdgpu/amdgpu_ring.c: In function 'amdgpu_debugfs_mqd_read':
->>>> /home/hannes/src/linux/linux/drivers/gpu/drm/amd/amdgpu/amdgpu_ring.c:550:22: warning: passing argument 1 of '__builtin_dynamic_object_size' discards 'volatil' qualifier from pointer target type [-Wdiscarded-qualifiers]
->>>>     550 |         memcpy(kbuf, mqd, ring->mqd_size);
->>>>
->>>> So I would propose leaving the patch as-is. Shashank, does that sound
->>>> good to you?
->>> Friendly ping :)
->>>
->>> Shashank, is your Reviewed-by still good for this patch, given the
->>> above?
->> Ah, sorry I missed this due to some parallel work, and just realized the
->> memcpy/volatile limitation.
->>
->> I also feel the need of protecting MQD read under a lock to avoid
->> parallel change in MQD while we do byte-by-byte copy, but I will add
->> that in my to-do list.
->>
->> Please feel free to use my R-b.
-> Shashank, if the patch looks good, can you pick it up and apply it?
->
-> Alex
->
->
->> - Shashank
->>
->>> Thanks
 
