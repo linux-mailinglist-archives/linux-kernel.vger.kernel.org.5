@@ -1,109 +1,101 @@
-Return-Path: <linux-kernel+bounces-119202-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-119203-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 10CBD88C57F
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 15:44:23 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5630E88C580
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 15:44:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E00963040D4
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 14:44:18 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5380E1C62CB6
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 14:44:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9DB3413C695;
-	Tue, 26 Mar 2024 14:44:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4E63B13C811;
+	Tue, 26 Mar 2024 14:44:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kYwgmkee"
-Received: from mail-wr1-f48.google.com (mail-wr1-f48.google.com [209.85.221.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=zx2c4.com header.i=@zx2c4.com header.b="PJnIYHx8"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 597E413C3F7;
-	Tue, 26 Mar 2024 14:43:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8669213C693;
+	Tue, 26 Mar 2024 14:44:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711464239; cv=none; b=Xdlt7BnDBE+kqOEwyNPoyr8ZN6P/+Z+Lo6AMEvnMpnp2XLC5uXq7iF3WO503Yd2EnLlE52cXgdshOFfIsdlqfPVxd5VQsueFKLg9ilsLsEYe8zOKsOOGVPiB4WBqCbINLS0Z6QHcCrJRn5UXEDiH87JgqWLWzLdsACwmmGhie/M=
+	t=1711464240; cv=none; b=BkQ3NY9mfPMF+1dam7NJhLUMV1Q75b+8g67ig99lDW28yjcUurjvK473iqM4sSNiLrClV4IAY27qFpVat7pK16jSX3A8JK8HRTTw0xTOBCKcgNKcM5Bl/t7desiLAavPWZrQWbveRmQrF+JGP1a6t1P8RSUqscvAi7tBGycwFyQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711464239; c=relaxed/simple;
-	bh=jPWM6+WpUBPL+YwV08qHgIODFf2tfl+DO7ozX+Tnf+Y=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=TFVietBmkn2fB1suMNK1QjjMqXyqiQ352dTARdver0k6IcDcZG1DzTedfwTUIpUw2ab78nKbuues6rTziccrBNE13jCgTWGmWWZYBEvu8zcyXJn6nGRdkw+1CuXgl5vZMT19Tsl/IDnOr9JfgMhBjy0/BGN461EvtMGRXUtaIm8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=kYwgmkee; arc=none smtp.client-ip=209.85.221.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f48.google.com with SMTP id ffacd0b85a97d-341d730bdfcso851299f8f.1;
-        Tue, 26 Mar 2024 07:43:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711464237; x=1712069037; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
-         :mime-version:date:message-id:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=jBZDNawipMzkUz/p9SvTq2gGRo0D52L34u+c+97yOhs=;
-        b=kYwgmkeej/3XRdK8hPjYAfx3ocbDeYIPAoydNlkGEsvM9BkSZo95Ve07+2UkZxTRmI
-         eCHgFiPcXjul3CvZ0Ht/WACNYuII56P5aKyLBW0cuMBOa/HQB5tnGz4pmuV4IRxQYGUE
-         zvTo9vyIrTHR3nAVRCv7rpZTLi8npQXiRMrbX882NloYCaGbxwbOBUpnjLnB8l74Iig8
-         Jlq863C3eOs01myYnKV0Dpn5F55red39BMOmUOdaZceRV3vqExjOFppeysURktIrnOwO
-         jocD5er4HybguhHQKnMZV9dJMBuxhKeSPEqteirMOBQRbLg3Tg9wONIVJdSlTU0oq/kA
-         xspg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711464237; x=1712069037;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
-         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=jBZDNawipMzkUz/p9SvTq2gGRo0D52L34u+c+97yOhs=;
-        b=UpiEfkxdd1z+PI4GhWkTSB49yRG3v698+WcjVKp2I54p0E4g6k88EEdX1VtVa6j5zu
-         fkOenuhM19qRPoyvuK6sO6Y558EjUqQtDtYiFL2Cuyhd8q7zsDhNwcsu0y3QNchxLDY3
-         93MYvc70BWNJbvwdqvbHCK76kQvYbAczqs9dwx4O0dgHcBp/3mduJCy4/30cW2N/AlG6
-         R38aFL8iRauoA45jnJFzf289EpqkbOsJG5NlPbnWdB8hcSHTABA//fzMb9F30ot18nX1
-         XFalp39gzBC2xTOCJlAShSXDi1wmhnWZrwE8goG0kOyrDrZYuUvF28Bflzv9REfRm5B1
-         PQRg==
-X-Forwarded-Encrypted: i=1; AJvYcCX+xdSlaywL7vAqsVFERjMk0/n8DlGQ3g11mB0B8ZVvRrxswJenA1QZw1Nvv3lNFe81J2uuZiU6/nlZO+zg9Zt+ciWltPfatYM+DApVSKK5XoXb1UY6fHGhRQTZbeHr8FPmYbNqFoVnPg34aM76bMg+QiyfJ2KrRQyZossVSlRnHk4W2QnA
-X-Gm-Message-State: AOJu0YyPZ/9V2/7WY3NyNmitLPG8tLSGLKMDJy1ScdzcZE0PuFuG1QSN
-	GH0b03FgTfSLwFo+tozdiOfvmkxY4pyBld8X9hXhJI40mJ2i0k8/
-X-Google-Smtp-Source: AGHT+IFr2Afh4wPA8cw5YTVxfO+9Jah04+g4n+rcVUGUTUmT1CTfF5BMd5FDJkcgxWGVd6tTbxFqIQ==
-X-Received: by 2002:a5d:4dd0:0:b0:33d:c5b5:5796 with SMTP id f16-20020a5d4dd0000000b0033dc5b55796mr7649289wru.22.1711464236611;
-        Tue, 26 Mar 2024 07:43:56 -0700 (PDT)
-Received: from debian ([146.70.204.204])
-        by smtp.gmail.com with ESMTPSA id dn1-20020a0560000c0100b0033ec7182673sm12357832wrb.52.2024.03.26.07.43.49
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 26 Mar 2024 07:43:56 -0700 (PDT)
-Message-ID: <46e0c775-91e7-4bf6-88f3-53ab5e00414f@gmail.com>
-Date: Tue, 26 Mar 2024 15:43:42 +0100
+	s=arc-20240116; t=1711464240; c=relaxed/simple;
+	bh=Yq3xPmqOC+jWpcs6JWkYjALCu081LQFaJBbCO9A5c2E=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=l1UpSpCSDMlcUu+cltxqoiPS0DyeKfDnxmsAB/x0aWeHp3P0fbJcuz4WhiGlTV9x13NaxZGd23B0eP/VoBoVMQW4y7JAHyDDllj7MZNIZSGYYr7JQfIz5AO9xv29Qy9bjtRglY4bcVX8UyO6P8j+rBTOAswUX639oiHlMPoK18o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=zx2c4.com header.i=@zx2c4.com header.b=PJnIYHx8; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9DD86C43394;
+	Tue, 26 Mar 2024 14:43:58 +0000 (UTC)
+Authentication-Results: smtp.kernel.org;
+	dkim=pass (1024-bit key) header.d=zx2c4.com header.i=@zx2c4.com header.b="PJnIYHx8"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zx2c4.com; s=20210105;
+	t=1711464236;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=QFtO6qgIeS/TrL6O/53SQRKmvPvLZK73MqbCr1eYYds=;
+	b=PJnIYHx8QR58FlkIH8G9EjxJmFe26UWCkDQ2wfcQf9+akz24j234w/Y5esoPePv+euqtXx
+	oB38fCdnbw8HA/CL7slD2bkNq/oYl5jkgNyews8PNgajO4GNeohowJOgnSW0K0JSmH/e6o
+	6WS9b6yav67jBb21t41EFsp/E1nDcc0=
+Received: 
+	by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTPSA id 30285613 (TLSv1.3:TLS_AES_256_GCM_SHA384:256:NO);
+	Tue, 26 Mar 2024 14:43:56 +0000 (UTC)
+Date: Tue, 26 Mar 2024 15:43:55 +0100
+From: "Jason A. Donenfeld" <Jason@zx2c4.com>
+To: "Landge, Sudan" <sudanl@amazon.co.uk>
+Cc: Rob Herring <robh@kernel.org>, Sudan Landge <sudanl@amazon.com>,
+	tytso@mit.edu, krzysztof.kozlowski+dt@linaro.org,
+	conor+dt@kernel.org, sathyanarayanan.kuppuswamy@linux.intel.com,
+	thomas.lendacky@amd.com, dan.j.williams@intel.com,
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+	graf@amazon.de, dwmw@amazon.co.uk, bchalios@amazon.es,
+	xmarcalx@amazon.co.uk
+Subject: Re: [PATCH v2 3/4] dt-bindings: rng: Add vmgenid support
+Message-ID: <ZgLfKwp6cSrX7knJ@zx2c4.com>
+References: <20240321025105.53210-1-sudanl@amazon.com>
+ <20240321025105.53210-4-sudanl@amazon.com>
+ <20240325150609.GA3477574-robh@kernel.org>
+ <51403072-f5ca-450e-9206-19ca627ead11@amazon.co.uk>
+ <CAL_JsqKpp+J2a_+wmcaOX8RfTEEyZBESWBX7GWGa_u_5_=4gsg@mail.gmail.com>
+ <96df7e5a-52df-4171-9cd6-78d088a7a1e2@amazon.co.uk>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH net-next v4 4/4] net: gro: move L3 flush checks to
- tcp_gro_receive
-To: Eric Dumazet <edumazet@google.com>
-Cc: davem@davemloft.net, kuba@kernel.org, pabeni@redhat.com,
- willemdebruijn.kernel@gmail.com, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
-References: <20240325182543.87683-1-richardbgobert@gmail.com>
- <20240325182543.87683-5-richardbgobert@gmail.com>
- <CANn89iKzeTKuBA3NL0DQUmUHmmc0QzZ0X62DUarZ2Q7cKRZvSA@mail.gmail.com>
-From: Richard Gobert <richardbgobert@gmail.com>
-In-Reply-To: <CANn89iKzeTKuBA3NL0DQUmUHmmc0QzZ0X62DUarZ2Q7cKRZvSA@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <96df7e5a-52df-4171-9cd6-78d088a7a1e2@amazon.co.uk>
 
-Eric Dumazet wrote:
-> On Mon, Mar 25, 2024 at 7:27 PM Richard Gobert <richardbgobert@gmail.com> wrote:
->>
->> {inet,ipv6}_gro_receive functions perform flush checks (ttl, flags,
->> iph->id, ...) against all packets in a loop. These flush checks are used
->> currently only in tcp flows in GRO.
-> 
-> I think this is a bug.
-> 
-> GRO should not aggregate packets if their ttl/tos fields do not match.
+On Tue, Mar 26, 2024 at 01:06:16PM +0000, Landge, Sudan wrote:
+> >>> Does the spec say anything about endianness or access size? DT assumes
+> >>> native endianness by default. We have properties to deal these, but
+> >>> would be better to be explicit if that's defined already.
+> >>>
+> >> The spec doesn't mention anything about the endianness but, I have
+> >> updated the description with some more data.
+> > 
+> > Then what does your driver assume? Microsoft may not have thought
+> > about it because they don't care, but now you want to use DT so you
+> > have to because it is frequently used on BE systems. If we define
+> > something, then there's some hope. Otherwise, it's pretty much a
+> > guarantee folks will do the opposite.
+> > 
+> > Rob
+> The driver does not assume any endianness. To provide more context, The 
+> hypervisor stores a 128bit unique ID at the address pointed by the 
+> "reg"'s 1st cell, driver memcpy's this ID to an internal context and 
+> uses memcmp to compare if the ID is new or old.
+> But yes, it will be good to define a fixed endianness to avoid any 
+> error. I will update the description to use little endian.
 
-AFAIU, the only UDP flow where ttl/flush_id need to be checked is when
-udp_gro_receive_segment calls skb_gro_receive - could you confirm / point
-out if there are any other flows to which these flush checks may be
-relevant?
+It's a 16-byte blob. Why care about endianness at all here? Treat it as
+a byte string, not an integer.
 
-As I've discussed with Willem in v3 I prefer to fix this bug in a separate
-series.
+Jason
 
