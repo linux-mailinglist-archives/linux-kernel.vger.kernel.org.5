@@ -1,137 +1,146 @@
-Return-Path: <linux-kernel+bounces-118473-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-118474-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7CBF788BB75
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 08:39:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id ACB0388BB78
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 08:40:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9D0741C30F3C
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 07:39:38 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C27AF1C31683
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 07:40:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8B9A01311B9;
-	Tue, 26 Mar 2024 07:39:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D905C839E2;
+	Tue, 26 Mar 2024 07:39:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="HoibRsy6"
-Received: from mail-lf1-f53.google.com (mail-lf1-f53.google.com [209.85.167.53])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="jCiGPbub"
+Received: from mail-pf1-f174.google.com (mail-pf1-f174.google.com [209.85.210.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 141091804F
-	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 07:39:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ABBF412DDBA
+	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 07:39:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711438771; cv=none; b=TdpvGd0oZzMlLVvJwnfDDV4LHnUW5nc8fWugGFSyXo3tCFZ7GlvRFVxB3nfy03PdV7cvXQ1HXWOllezvVGfXZx4ruxIELV3jkU2VClxRhS98q9lW92ay9x/psn9lFQ+GT8lLFjY9bQBvhRKGu46PFHTHkAFeFJUiiZTHJJraEZM=
+	t=1711438797; cv=none; b=tZL6gEgI6AL+GcFh1g3mAQKKiktrnYD5l1EZYKwWdXvmh9PFsUIVnw3xdD4t5adnrSrRpJIqWTPWWvJbUps/v8YrqB205J1st8JCsoujCLeK6KgF6QLURJn0SMDaigBN7E244w0XsFdEFxLKaD7HuYmBDoxi/EISn7I+ByxGyr0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711438771; c=relaxed/simple;
-	bh=8w7YyVfPHHkt9fsS4UfjXvhYBgUF6vCR2H6M+19LWqc=;
+	s=arc-20240116; t=1711438797; c=relaxed/simple;
+	bh=esPNlzpWbLxMQzI1yxZu2zFQjKNKfzX8D+qjmApMNiU=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=QD/cehTxH9bpLF+KWCE5+6xgZ7nAy1bPmEqRHYSrWMLgKx+7H1yMbW3PVnL71BPbF0ESt2+lckeeub/yk98HTm0Y80pvYbYd3fkv6HBCvpi1wA2GBqHA1q5lFcOMXo1R7oBxu5JGgeOU3EhWlriaY4vdPEpvRq/tGl3x7kUmMi4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=HoibRsy6; arc=none smtp.client-ip=209.85.167.53
+	 Content-Type:Content-Disposition:In-Reply-To; b=PHCAYRfJAFiWRYvoPoUGKyKiWxl7myGYCKKZ8/jy5EZO6Zk8E/BkFr6qTVEoCHGDc25qw0BCjxR+bm6ZWEt52H/0kf6jsFEDmQQDT5ojO9T1TC6uK69zdoOUhArbKqUAeVefpyEgv5Kyevd0Z4IhkYmG3JfODC9ov0Pv+4d1/9g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=jCiGPbub; arc=none smtp.client-ip=209.85.210.174
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-lf1-f53.google.com with SMTP id 2adb3069b0e04-513e6777af4so9329308e87.2
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 00:39:29 -0700 (PDT)
+Received: by mail-pf1-f174.google.com with SMTP id d2e1a72fcca58-6e46dcd8feaso2082970b3a.2
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 00:39:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1711438768; x=1712043568; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=ZvzSmPDSw/R6lc39rz+OtlP8UbFNqiP5ETVlhBX4TNw=;
-        b=HoibRsy6UtpDwFNCez+1lDYP/1iiB7LZHztplVucHyJxrKkTC9TPSxBk0hJYA35Ctw
-         bU4dOHAIU74V6ZNN4VXwhgKNuAF7mjHob2zZSw/cHGe4S0I7MlgtvIRWbfXDKa+qwrxe
-         0VnaExHy/IPvIaxa3mbkeqBFTAIzj7TjiG0aW5MrYj1PY8lpFcfja37XMpLotLXz2wKE
-         VdUJwjIzcP0uOKs6BqRzfXwRa6kOpCvfa7FgXkMDppLvJODwctG+sr16uMgCk805+aD5
-         Dm+zRmdq3kjU6VEuzqSSNGMMYoxJUcx7a2IqyoxqxsCl7KJeJr+dqrRALr8cNJZ+ejIG
-         RJuQ==
+        d=linaro.org; s=google; t=1711438795; x=1712043595; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=4FNmONmGMNfUWAyGbjVY02MYpPraJ84XZnXoSpBgNIE=;
+        b=jCiGPbub/vlTBcEG0jnQejpN1fc10Zs1NVFLp1IHkmUryg1tuaGX4NQtmo9vvj1za6
+         Kaxui34bmIyCj6iUgTyAtCLWpxcHr1pNTitCLBafan19R/RY/Xu+ZCIL60xS3+APyzRE
+         y9yUv+NaVy+/bxYaOOgzXrX2JNYp3TeDZ4AdakoT0HnaDSxyuM84V+oqiwbaX8ywoUk1
+         LXTmNL7jGT4r69cZ9qzezSTI4g5OgcreLPAtqKaT8OBP833za4j9dNPWyEom58cAW/3y
+         8/zHYqKrsNKolimh4UHRsodc2nNYecPTzR/vA0CL3AgHLdYq7LnfS2fkc3FFSC4kV1Hm
+         DV/A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711438768; x=1712043568;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ZvzSmPDSw/R6lc39rz+OtlP8UbFNqiP5ETVlhBX4TNw=;
-        b=jkTPQBxVxswhqdR9C485/X1icoR+eb1AD2FdqZ7LCW1HeKdlhWvApA5I+vpFAlc1Zr
-         bbfonYTiERgUchiOK+EAsmsBteZxVCAXTJ3t+WeLs/aTalKx5OLIIYKzuDIcW+fP/scv
-         FIH1HAGutKYMq52pPOqa8/6/Y+PfEIgPWPBXbC1jqC/7wgdEU1pFdb146yFtzHKdJQJg
-         zz2Uy0MNXNV4gLR3oIaQj2Huo5lcmEYYXFOmAx2wsGHU1tpybbl6PjKm9/+wNnDdoSmd
-         XIg7yZIaOcAIiY1+n+3YTWJaCOmvntnRftqeXkUpLE0DNVYmsJcIRtkGAkIwfh1sbLU3
-         1S7A==
-X-Forwarded-Encrypted: i=1; AJvYcCVgRhQL6Jdu8rJCh0ylxJLIZGsRUJxImhX9OHJ+kfNHPdNS9AG+QinlLcd4Mu+CYsjYSJy6BHcJ0sMHtqXuTusFSGlWkE2iRFSS6AdW
-X-Gm-Message-State: AOJu0YzDCG8G3u4fh4r9lY6nJYYniO4GpXVhouUuBHxNz5Ly7lO7EUiJ
-	UkpWUoSbh5pyoTbAZVcAak+1low1fB41Yb3oSkG4TMjYxDlP2GChJIvltunLO2cuRKZ3P/f7/J+
-	1
-X-Google-Smtp-Source: AGHT+IGLSL8WSBOQSKMFrBI50DzQHW/xu5ntChH4sQ0Wb7e369aYGWd5yEuyf5pb37QsBxA2rIRsyQ==
-X-Received: by 2002:a05:6512:3b90:b0:515:b02b:ce81 with SMTP id g16-20020a0565123b9000b00515b02bce81mr4136910lfv.30.1711438768009;
-        Tue, 26 Mar 2024 00:39:28 -0700 (PDT)
-Received: from localhost ([102.222.70.76])
-        by smtp.gmail.com with ESMTPSA id js20-20020a170906ca9400b00a474b7bbc76sm3115297ejb.56.2024.03.26.00.39.27
+        d=1e100.net; s=20230601; t=1711438795; x=1712043595;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=4FNmONmGMNfUWAyGbjVY02MYpPraJ84XZnXoSpBgNIE=;
+        b=RxQDY7hmh/fmkMvnjztXpvYWH7Z9O4i7Sy13kqbxdO0biMrXWsY2JcUh06xgWu7wU6
+         qK/jqn/oPuAaRpSXwWdvOTpIP2zPXSG5VGJbom1MWrGGOG2i7n1TonAZ6T1CkELrHCdv
+         /c1RKTRpRHvL6pKdU7ETftanpSsORAJFsSQZCBuXipX3Ki/4vjlw8vhzsPYd6eNLB5pS
+         0SqgxFZW2EnW19edeukz+tLjJbzoRVCYzoxGYyKzRbFCFc1qKKNrJg9FlcjtXTAns1Qn
+         BJe5ITXlXiDZCU5dVlFlsdG8FOl3IgbTGb72EACGzYa72+/W/x3CHB1ywWG2P1nDOlMV
+         s/5g==
+X-Forwarded-Encrypted: i=1; AJvYcCXu2XsQY03sf3wwRBK/ClzcgZLupbAJYthj8/QauLkdPc1kWYWoSTEc0ZnYGJiuG5SPZdzdX4aWcoldTfAbPWXnQ1Nq3DLANfzgtJcI
+X-Gm-Message-State: AOJu0Yw5IypH1Sy3TPzi52bLf+HT2M3ZX6WpNnA0/+cjZyem4dOSDH+8
+	k2W9/frkwwsGupAgKIw5i+Aq82x6Cj9NlnIPN51ysdHKO4w4ptPa53qZzbMfrg==
+X-Google-Smtp-Source: AGHT+IHJlXwZ3IC716MHv8npsQJ6w1dHTImu5xrrXh/rtboJQ6PofKuxB0iLA8zqqLrX+vk2q6DCmw==
+X-Received: by 2002:a05:6a21:99a2:b0:1a3:a67f:f3a8 with SMTP id ve34-20020a056a2199a200b001a3a67ff3a8mr9651411pzb.48.1711438794819;
+        Tue, 26 Mar 2024 00:39:54 -0700 (PDT)
+Received: from thinkpad ([117.207.28.168])
+        by smtp.gmail.com with ESMTPSA id d2-20020a170902cec200b001db5ecd115bsm6010635plg.276.2024.03.26.00.39.51
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Mar 2024 00:39:27 -0700 (PDT)
-Date: Tue, 26 Mar 2024 10:39:24 +0300
-From: Dan Carpenter <dan.carpenter@linaro.org>
-To: Johannes Berg <johannes@sipsolutions.net>
-Cc: Boqun Feng <boqun.feng@gmail.com>, rcu@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	"Paul E. McKenney" <paulmck@kernel.org>,
-	Frederic Weisbecker <frederic@kernel.org>,
-	Josh Triplett <josh@joshtriplett.org>,
-	Peter Zijlstra <peterz@infradead.org>
-Subject: Re: [PATCH] rcu: mollify sparse with RCU guard
-Message-ID: <04081c65-f9bf-404c-8557-7af72f6a72de@moroto.mountain>
-References: <20240325101626.41584-2-johannes@sipsolutions.net>
- <ZgGnuFJiTX5laS7c@boqun-archlinux>
- <055111792727869a98c1fa693014e0b6f5d256ea.camel@sipsolutions.net>
- <35355d02-3eef-4860-847b-b7bbf05f4a31@moroto.mountain>
- <48034addaeb6c33ca8b3e636262b6c043ddc5359.camel@sipsolutions.net>
+        Tue, 26 Mar 2024 00:39:54 -0700 (PDT)
+Date: Tue, 26 Mar 2024 13:09:47 +0530
+From: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To: Christian Marangi <ansuelsmth@gmail.com>
+Cc: Miquel Raynal <miquel.raynal@bootlin.com>,
+	Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	Md Sadre Alam <quic_mdalam@quicinc.com>,
+	Sricharan Ramabadhran <quic_srichara@quicinc.com>,
+	linux-mtd@lists.infradead.org, linux-arm-msm@vger.kernel.org,
+	linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Subject: Re: [PATCH v2 1/2] mtd: rawnand: qcom: Fix broken erase in
+ misc_cmd_type in exec_op
+Message-ID: <20240326073947.GA9565@thinkpad>
+References: <20240325103053.24408-1-ansuelsmth@gmail.com>
+ <20240326072512.GA8436@thinkpad>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <48034addaeb6c33ca8b3e636262b6c043ddc5359.camel@sipsolutions.net>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240326072512.GA8436@thinkpad>
 
-On Mon, Mar 25, 2024 at 07:43:18PM +0100, Johannes Berg wrote:
-> On Mon, 2024-03-25 at 21:28 +0300, Dan Carpenter wrote:
-> > On Mon, Mar 25, 2024 at 05:41:22PM +0100, Johannes Berg wrote:
-> > > Also __acquire()/__release() are just empty macros without __CHECKER__.
-> > > So not sure the indirection really is warranted for this special case.
-> > > 
-> > > I can add a comment in there, I guess, something like
-> > > 
-> > >  /* sparse doesn't actually "call" cleanup functions */
-> > > 
-> > > perhaps. That reminds me I forgot to CC Dan ...
-> > > 
+On Tue, Mar 26, 2024 at 12:55:19PM +0530, Manivannan Sadhasivam wrote:
+> On Mon, Mar 25, 2024 at 11:30:47AM +0100, Christian Marangi wrote:
+> > misc_cmd_type in exec_op have multiple problems. With commit a82990c8a409
+> > ("mtd: rawnand: qcom: Add read/read_start ops in exec_op path") it was
+> > reworked and generalized but actually broke the handling of the
+> > ERASE_BLOCK command.
 > > 
-> > These are Sparse warnings, not Smatch warning... Smatch doesn't use any
-> > of the Sparse locking annotations.
+> > Additional logic was added to the erase command cycle without clear
+> > explaination causing the erase command to be broken on testing it on
+> > a ipq806x nandc.
+> > 
+> > Fix the erase command by reverting the additional logic and only adding
+> > the NAND_DEV0_CFG0 additional call (required for erase command).
+> > 
+> > Fixes: a82990c8a409 ("mtd: rawnand: qcom: Add read/read_start ops in exec_op path")
+> > Cc: stable@vger.kernel.org
+> > Signed-off-by: Christian Marangi <ansuelsmth@gmail.com>
+> > ---
+> > Changes v2:
+> > - Split this and rework commit description and title
+> > 
+> >  drivers/mtd/nand/raw/qcom_nandc.c | 5 ++---
+> >  1 file changed, 2 insertions(+), 3 deletions(-)
+> > 
+> > diff --git a/drivers/mtd/nand/raw/qcom_nandc.c b/drivers/mtd/nand/raw/qcom_nandc.c
+> > index b079605c84d3..19d76e345a49 100644
+> > --- a/drivers/mtd/nand/raw/qcom_nandc.c
+> > +++ b/drivers/mtd/nand/raw/qcom_nandc.c
+> > @@ -2830,9 +2830,8 @@ static int qcom_misc_cmd_type_exec(struct nand_chip *chip, const struct nand_sub
+> >  	nandc_set_reg(chip, NAND_EXEC_CMD, 1);
+> >  
+> >  	write_reg_dma(nandc, NAND_FLASH_CMD, instrs, NAND_BAM_NEXT_SGL);
+> > -	(q_op.cmd_reg == OP_BLOCK_ERASE) ? write_reg_dma(nandc, NAND_DEV0_CFG0,
+> > -	2, NAND_BAM_NEXT_SGL) : read_reg_dma(nandc,
+> > -	NAND_FLASH_STATUS, 1, NAND_BAM_NEXT_SGL);
+> > +	if (q_op.cmd_reg == OP_BLOCK_ERASE)
+> > +		write_reg_dma(nandc, NAND_DEV0_CFG0, 2, NAND_BAM_NEXT_SGL);
 > 
-> Sure, of course. I just saw that you added cleanup stuff to sparse to
-> allow using it in smatch.
+> So this only avoids the call to, 'read_reg_dma(nandc, NAND_FLASH_STATUS, 1,
+> NAND_BAM_NEXT_SGL)' if q_op.cmd_reg != OP_BLOCK_ERASE. But for q_op.cmd_reg ==
+> OP_BLOCK_ERASE, the result is the same.
 > 
-> > Smatch handles cleanup basically correctly at this point.
+> I'm wondering how it results in fixing the OP_BLOCK_ERASE command.
 > 
-> Do you "run" / "emit" the cleanup function calls there?
 
-Yes.
+Perhaps you are trying to fix the OP_RESET_DEVICE command altogether?
 
-> I briefly look
-> at doing that in sparse but it felt ... complicated, and then I saw the
-> condition in the cleanup function which I thought sparse could probably
-> not see through anyway.
+- Mani
 
-The if (_T->lock) statements are a problem.  For those, I have to
-manually add them to check_locking.c as an unlock function and to
-check_preempt.c as a decrement the preempt count function.  The other
-place that I have to add them is to smatch_data/db/kernel.return_fixes
-because the scoped_guard() macros checks them as well.  I had to do
-quite a bit of patching things up when the sound subsystem started using
-cleanup.h so here is an example of what that looks like:
-
-https://github.com/error27/smatch/commit/a2f68c96f70a0cdc581beff81eb6d412ac8dfc4f
-
-regards,
-dan carpenter
+-- 
+மணிவண்ணன் சதாசிவம்
 
