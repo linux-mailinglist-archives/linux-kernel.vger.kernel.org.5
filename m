@@ -1,213 +1,94 @@
-Return-Path: <linux-kernel+bounces-119865-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-119867-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id D914188CDE4
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 21:09:04 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7C40488CDE8
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 21:09:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5226F1F327EB
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 20:09:04 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 37D4B324182
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 20:09:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EECB413D614;
-	Tue, 26 Mar 2024 20:08:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 357EE13D29B;
+	Tue, 26 Mar 2024 20:08:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="PQU9SYrm"
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD70013D28E;
-	Tue, 26 Mar 2024 20:08:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="e9CSzPO9"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 753FB13CAA1;
+	Tue, 26 Mar 2024 20:08:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711483707; cv=none; b=bXIUYDFMF9eiIyImppA8OL/LAMovdQoYCTNXsO00LiQBK2wPZLP0uPwHEAelLYxxeOr/WlywkA5YgP5hfvhlGhqczWPUBYHLcHlcasV6ZAl5tSrw0UQSWbRBC60nRf8WTnR9xTaduKaxPY15qqnrxmShETaUELPHPhzMU6X7pcQ=
+	t=1711483732; cv=none; b=MyufjGwKDl/ZI1TorblVZjePdgSeDxiNB0dq51e50uL19WE2xt4LmcCGxcHbhXsgkAOYtlmMlwQ66R9RZScN5WFwb1HGE8y2CRkHAqPCqONIGxas/LH+g0sXWbtIXdelA4VfPO2IUS/OY/ffVq/fFq5al2xHIwNn5SGXmD1zIiU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711483707; c=relaxed/simple;
-	bh=Ls4fVshGniv43gxJmhjkRm+O/WtM1xgnlACsdlTOhfI=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References; b=PZXTAbh9ig7xB68BI+mcGreN2MLjnpWKHPPdHkiyEQokY8Jo8L5lmzVac7MVrLwEEQk97JEf8LZReLfSvQIy70fyySCXwHjLHLVk8U/oMR1eREhzhSPGK1OPAaseF8ZdAR7o844RoqCCu+G5n5JBU+G8QOQXUd6W/Wdttm9rYGM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=PQU9SYrm; arc=none smtp.client-ip=13.77.154.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
-Received: from linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net (linux.microsoft.com [13.77.154.182])
-	by linux.microsoft.com (Postfix) with ESMTPSA id 598D52084326;
-	Tue, 26 Mar 2024 13:08:18 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 598D52084326
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-	s=default; t=1711483698;
-	bh=Rz7NUFddHhxSbuLiwy+f4HlOb8fknUrsOZrygt76PHA=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=PQU9SYrmq/PpabyXCTXemRFcgYlVr9m7NRl8NMbSWRMH34aWXm2pVZrzlBqKGXaCB
-	 po7DV4DMupjAoZii5CUmFV60AA+DR+sRuHA40ZvOmqcr6e/c6domSEz+J1kk8QNkLb
-	 H/EJcn2mOeSDBrsPDCyv6BlIb8y6KM6mvE678WiM=
-From: Konstantin Taranov <kotaranov@linux.microsoft.com>
-To: kotaranov@microsoft.com,
-	sharmaajay@microsoft.com,
-	longli@microsoft.com,
-	jgg@ziepe.ca,
-	leon@kernel.org
-Cc: linux-rdma@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH rdma-next v3 4/4] RDMA/mana_ib: Use struct mana_ib_queue for RAW QPs
-Date: Tue, 26 Mar 2024 13:08:08 -0700
-Message-Id: <1711483688-24358-5-git-send-email-kotaranov@linux.microsoft.com>
-X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <1711483688-24358-1-git-send-email-kotaranov@linux.microsoft.com>
-References: <1711483688-24358-1-git-send-email-kotaranov@linux.microsoft.com>
+	s=arc-20240116; t=1711483732; c=relaxed/simple;
+	bh=UvvEXa7/u+TvEsP4ULFQtxhfQt+x828rllZrGgBiyAw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=qs4rRwQkp38/3KofaSDstxk3vucI4W6moFUIwqwTQZ16kZkXSkDA/HJ0UYV36fsUnfvTe2u6ggz1n8NQBwfCJLoU9kTsLdv9E1mx2BWFKv3MsvN64n2oaagyySUVylKKiazSrAu4wEkC2hR7z4blNWlazLd8V+Mkgp1vNPUj7tE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=e9CSzPO9; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6E3D9C43390;
+	Tue, 26 Mar 2024 20:08:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1711483732;
+	bh=UvvEXa7/u+TvEsP4ULFQtxhfQt+x828rllZrGgBiyAw=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=e9CSzPO98RG06lCpIqFTyJDf6WolP5CwzaG/dgyiELf8YlZYhsbYYqt7v0hZy/zDI
+	 LYPzl9TGgUHRpxTZoBJP3t+YshBkRKMsoVdcqgEfMyYPFTxAdU5Mm6ri/ipWUDx1XL
+	 jKF3FeE+Wx7WtMepEPj5vH9nwC1oldmISpGv0yM84regA6B6cpP0KVwzFhKEsNxfND
+	 Px/32TgtGPErlCtjy4687DrZCCJ+Y399niAMh9chreSTezD3NsKNlaqQdCtGSn+Hzw
+	 RIQvP22sPhMP7UisuoFYwjtD/B/QTkGs6K7c87vwz0RBBQ2GtMjNA+zIiw3qH9zG8r
+	 sC4ATgfPNtvDg==
+Date: Tue, 26 Mar 2024 21:08:47 +0100
+From: Andi Shyti <andi.shyti@kernel.org>
+To: Wolfram Sang <wsa+renesas@sang-engineering.com>
+Cc: linux-i2c@vger.kernel.org, Eddie James <eajames@linux.ibm.com>, 
+	openbmc@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 20/64] i2c: fsi: reword according to newest specification
+Message-ID: <hvucbpsgihrbe4tgf4ksg4obz3rxitmyrdpl6zdh25pmok3uab@y6itjppsfbmd>
+References: <20240322132619.6389-1-wsa+renesas@sang-engineering.com>
+ <20240322132619.6389-21-wsa+renesas@sang-engineering.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240322132619.6389-21-wsa+renesas@sang-engineering.com>
 
-From: Konstantin Taranov <kotaranov@microsoft.com>
+Hi Wolfram,
 
-Use struct mana_ib_queue and its helpers for RAW QPs
+On Fri, Mar 22, 2024 at 02:25:13PM +0100, Wolfram Sang wrote:
+> Match the wording of this driver wrt. the newest I2C v7, SMBus 3.2, I3C
+> specifications and replace "master/slave" with more appropriate terms.
+> They are also more specific because we distinguish now between a remote
+> entity ("client") and a local one ("target").
+> 
+> Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
+> ---
+>  drivers/i2c/busses/i2c-fsi.c | 56 ++++++++++++++++++------------------
+>  1 file changed, 28 insertions(+), 28 deletions(-)
+> 
+> diff --git a/drivers/i2c/busses/i2c-fsi.c b/drivers/i2c/busses/i2c-fsi.c
+> index 10332693edf0..5eaf2c85a72c 100644
+> --- a/drivers/i2c/busses/i2c-fsi.c
+> +++ b/drivers/i2c/busses/i2c-fsi.c
+> @@ -1,6 +1,6 @@
+>  // SPDX-License-Identifier: GPL-2.0+
+>  /*
+> - * FSI-attached I2C master algorithm
+> + * FSI-attached I2C controller algorithm
 
-Signed-off-by: Konstantin Taranov <kotaranov@microsoft.com>
-Reviewed-by: Long Li <longli@microsoft.com>
----
- drivers/infiniband/hw/mana/mana_ib.h |  8 +---
- drivers/infiniband/hw/mana/qp.c      | 56 ++++++++--------------------
- 2 files changed, 18 insertions(+), 46 deletions(-)
+As this change is all about renaming, I think we need to be a bit
+more consistent in using either host or controller, at least
+within the same driver.
 
-diff --git a/drivers/infiniband/hw/mana/mana_ib.h b/drivers/infiniband/hw/mana/mana_ib.h
-index a8953ee80..ceca21cef 100644
---- a/drivers/infiniband/hw/mana/mana_ib.h
-+++ b/drivers/infiniband/hw/mana/mana_ib.h
-@@ -94,12 +94,8 @@ struct mana_ib_cq {
- struct mana_ib_qp {
- 	struct ib_qp ibqp;
- 
--	/* Work queue info */
--	struct ib_umem *sq_umem;
--	int sqe;
--	u64 sq_gdma_region;
--	u64 sq_id;
--	mana_handle_t tx_object;
-+	mana_handle_t qp_handle;
-+	struct mana_ib_queue raw_sq;
- 
- 	/* The port on the IB device, starting with 1 */
- 	u32 port;
-diff --git a/drivers/infiniband/hw/mana/qp.c b/drivers/infiniband/hw/mana/qp.c
-index f606caa75..ef0a6dc66 100644
---- a/drivers/infiniband/hw/mana/qp.c
-+++ b/drivers/infiniband/hw/mana/qp.c
-@@ -297,7 +297,6 @@ static int mana_ib_create_qp_raw(struct ib_qp *ibqp, struct ib_pd *ibpd,
- 	struct mana_obj_spec cq_spec = {};
- 	struct mana_port_context *mpc;
- 	struct net_device *ndev;
--	struct ib_umem *umem;
- 	struct mana_eq *eq;
- 	int eq_vec;
- 	u32 port;
-@@ -346,32 +345,15 @@ static int mana_ib_create_qp_raw(struct ib_qp *ibqp, struct ib_pd *ibpd,
- 	ibdev_dbg(&mdev->ib_dev, "ucmd sq_buf_addr 0x%llx port %u\n",
- 		  ucmd.sq_buf_addr, ucmd.port);
- 
--	umem = ib_umem_get(ibpd->device, ucmd.sq_buf_addr, ucmd.sq_buf_size,
--			   IB_ACCESS_LOCAL_WRITE);
--	if (IS_ERR(umem)) {
--		err = PTR_ERR(umem);
--		ibdev_dbg(&mdev->ib_dev,
--			  "Failed to get umem for create qp-raw, err %d\n",
--			  err);
--		goto err_free_vport;
--	}
--	qp->sq_umem = umem;
--
--	err = mana_ib_create_zero_offset_dma_region(mdev, qp->sq_umem,
--						    &qp->sq_gdma_region);
-+	err = mana_ib_create_queue(mdev, ucmd.sq_buf_addr, ucmd.sq_buf_size, &qp->raw_sq);
- 	if (err) {
- 		ibdev_dbg(&mdev->ib_dev,
--			  "Failed to create dma region for create qp-raw, %d\n",
--			  err);
--		goto err_release_umem;
-+			  "Failed to create queue for create qp-raw, err %d\n", err);
-+		goto err_free_vport;
- 	}
- 
--	ibdev_dbg(&mdev->ib_dev,
--		  "create_dma_region ret %d gdma_region 0x%llx\n",
--		  err, qp->sq_gdma_region);
--
- 	/* Create a WQ on the same port handle used by the Ethernet */
--	wq_spec.gdma_region = qp->sq_gdma_region;
-+	wq_spec.gdma_region = qp->raw_sq.gdma_region;
- 	wq_spec.queue_size = ucmd.sq_buf_size;
- 
- 	cq_spec.gdma_region = send_cq->queue.gdma_region;
-@@ -382,19 +364,19 @@ static int mana_ib_create_qp_raw(struct ib_qp *ibqp, struct ib_pd *ibpd,
- 	cq_spec.attached_eq = eq->eq->id;
- 
- 	err = mana_create_wq_obj(mpc, mpc->port_handle, GDMA_SQ, &wq_spec,
--				 &cq_spec, &qp->tx_object);
-+				 &cq_spec, &qp->qp_handle);
- 	if (err) {
- 		ibdev_dbg(&mdev->ib_dev,
- 			  "Failed to create wq for create raw-qp, err %d\n",
- 			  err);
--		goto err_destroy_dma_region;
-+		goto err_destroy_queue;
- 	}
- 
- 	/* The GDMA regions are now owned by the WQ object */
--	qp->sq_gdma_region = GDMA_INVALID_DMA_REGION;
-+	qp->raw_sq.gdma_region = GDMA_INVALID_DMA_REGION;
- 	send_cq->queue.gdma_region = GDMA_INVALID_DMA_REGION;
- 
--	qp->sq_id = wq_spec.queue_index;
-+	qp->raw_sq.id = wq_spec.queue_index;
- 	send_cq->queue.id = cq_spec.queue_index;
- 
- 	/* Create CQ table entry */
-@@ -403,10 +385,10 @@ static int mana_ib_create_qp_raw(struct ib_qp *ibqp, struct ib_pd *ibpd,
- 		goto err_destroy_wq_obj;
- 
- 	ibdev_dbg(&mdev->ib_dev,
--		  "ret %d qp->tx_object 0x%llx sq id %llu cq id %llu\n", err,
--		  qp->tx_object, qp->sq_id, send_cq->queue.id);
-+		  "ret %d qp->qp_handle 0x%llx sq id %llu cq id %llu\n", err,
-+		  qp->qp_handle, qp->raw_sq.id, send_cq->queue.id);
- 
--	resp.sqid = qp->sq_id;
-+	resp.sqid = qp->raw_sq.id;
- 	resp.cqid = send_cq->queue.id;
- 	resp.tx_vp_offset = pd->tx_vp_offset;
- 
-@@ -425,13 +407,10 @@ static int mana_ib_create_qp_raw(struct ib_qp *ibqp, struct ib_pd *ibpd,
- 	gc->cq_table[send_cq->queue.id] = NULL;
- 
- err_destroy_wq_obj:
--	mana_destroy_wq_obj(mpc, GDMA_SQ, qp->tx_object);
-+	mana_destroy_wq_obj(mpc, GDMA_SQ, qp->qp_handle);
- 
--err_destroy_dma_region:
--	mana_ib_gd_destroy_dma_region(mdev, qp->sq_gdma_region);
--
--err_release_umem:
--	ib_umem_release(umem);
-+err_destroy_queue:
-+	mana_ib_destroy_queue(mdev, &qp->raw_sq);
- 
- err_free_vport:
- 	mana_ib_uncfg_vport(mdev, pd, port);
-@@ -505,12 +484,9 @@ static int mana_ib_destroy_qp_raw(struct mana_ib_qp *qp, struct ib_udata *udata)
- 	mpc = netdev_priv(ndev);
- 	pd = container_of(ibpd, struct mana_ib_pd, ibpd);
- 
--	mana_destroy_wq_obj(mpc, GDMA_SQ, qp->tx_object);
-+	mana_destroy_wq_obj(mpc, GDMA_SQ, qp->qp_handle);
- 
--	if (qp->sq_umem) {
--		mana_ib_gd_destroy_dma_region(mdev, qp->sq_gdma_region);
--		ib_umem_release(qp->sq_umem);
--	}
-+	mana_ib_destroy_queue(mdev, &qp->raw_sq);
- 
- 	mana_ib_uncfg_vport(mdev, pd, qp->port);
- 
--- 
-2.43.0
+In this driver you are using sometimes host and sometimes
+controller.
 
+Thanks,
+Andi
 
