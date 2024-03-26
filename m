@@ -1,54 +1,37 @@
-Return-Path: <linux-kernel+bounces-119101-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-119102-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0F15288C42E
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 14:57:21 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 504D888C430
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 14:58:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8E7E71F34528
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 13:57:20 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C842EB23025
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 13:58:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DB520757FD;
-	Tue, 26 Mar 2024 13:57:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="oifsG60z"
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B45C374E2E;
+	Tue, 26 Mar 2024 13:57:56 +0000 (UTC)
+Received: from relay4-d.mail.gandi.net (relay4-d.mail.gandi.net [217.70.183.196])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DA1F3125C9;
-	Tue, 26 Mar 2024 13:57:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DFD67125C9;
+	Tue, 26 Mar 2024 13:57:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.196
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711461430; cv=none; b=rDpIbqHV1GV7WxXKywFweRdNctvsy+qMZH4Zpyq4zfY3mhpGZB0EZ9wPS3GESZYHXqEANAoaeDBp0xoAeaj7jd/gaowlej9JyytwLYNzcg0lJdcZRYAdzGIqY+jNaDL+/0krF0AnvVBtPPU9bkZL+HgS7DPoeckGQvtlsDkdnyU=
+	t=1711461476; cv=none; b=jYfZBrw7GOdi/BSxff686bO2GRCR9wxi0N3oRlvom1ahL0jsSMan25w59xjrzWqTUUD791idh3iaJJ4+6OmbKG63xPUuGnjW9kSInBdcQcgRNfq59CH67O8zGWQRJsJX6Agn1yDZu3sNiuciPOoNYX4uyvQc30vK8PKQmia6tW0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711461430; c=relaxed/simple;
-	bh=8+UkfQFcSGx7Ny6yQMpzS+qDlr7otfWIYw6zuYufEKA=;
+	s=arc-20240116; t=1711461476; c=relaxed/simple;
+	bh=CLFfLoPP9OaJ8wUgaocuHNJTFOcQ2uSgPXCCMz/0tII=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=WYIjT+EVCcJnAeU10uZwLBEeG4RWFUelEJvmNai5Wq+uMkLU5V9Jcl0NPDula7YHjLtXWaCyQ3z8gFfa31Qus8Mr/WqF83dtMGQ7HBWlxHsn9pxAMot7V4Coqnepty2lMem+lAOwsuhJo5GFlUSRIdHPeX8EaK9e0DFiwGOMM4s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=oifsG60z; arc=none smtp.client-ip=46.235.227.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1711461427;
-	bh=8+UkfQFcSGx7Ny6yQMpzS+qDlr7otfWIYw6zuYufEKA=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=oifsG60zOHSKEobk5bJ5iEvHc7XpGbb7rkWJyOq0MykFhb0aOPwA8/7HSRYmhAgTB
-	 +P9+wxtjg89937bURMkE75oNJCBLf97Ujh7d6SZeblqYvporXF5nOTwlZOFlVRZWgs
-	 vmC8G6xQDyAOlAJPQc89A6aK1/XZBl9B64TUkAYgcCc6dr9MbIGMRK8ZOcYGhrWYCN
-	 Zp4c9py+DqoM2cB+EbGFj8nGaVadyk+UZRiKHfae0yt6Rl/hbYavRw7GiwassVFEf+
-	 kEihc3RTDAP2PQMZ7mHve5pvltCFNI4tBW2J2v0kzfH/jAJDmwS+8Ihpb2+R8ZqMkT
-	 azCHOTiWpve3A==
-Received: from [100.113.186.2] (cola.collaboradmins.com [195.201.22.229])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: kholk11)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 739A537813D7;
-	Tue, 26 Mar 2024 13:57:06 +0000 (UTC)
-Message-ID: <dbf2b658-43c2-4994-81f9-24fb82d108a2@collabora.com>
-Date: Tue, 26 Mar 2024 14:57:05 +0100
+	 In-Reply-To:Content-Type; b=i4WC4fs5Mzaz3no3PyiKFqdcdv4vYOgFDD2OHxR5raM4wRAz1eRzcRdcvzq10MW7pudEvQ4V5zpY268laCR2XbgLdWvOiAaXOmMrmAYfamHdgatApyGMXiKEwBf+BL+kD+IKCYqenlVZxH6mK9+LytxiLFxsF7vZJpu8i16Dyew=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ghiti.fr; spf=pass smtp.mailfrom=ghiti.fr; arc=none smtp.client-ip=217.70.183.196
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ghiti.fr
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ghiti.fr
+Received: by mail.gandi.net (Postfix) with ESMTPSA id CA3A1E000D;
+	Tue, 26 Mar 2024 13:57:42 +0000 (UTC)
+Message-ID: <474ed846-672a-4ff0-9d53-cbf8192fee5f@ghiti.fr>
+Date: Tue, 26 Mar 2024 14:57:42 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -56,362 +39,131 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/2] soc: mediatek: pm-domains: support smi clamp
- protection
-To: =?UTF-8?B?WXUtY2hhbmcgTGVlICjmnY7nprnnkosp?= <Yu-chang.Lee@mediatek.com>,
- "ulf.hansson@linaro.org" <ulf.hansson@linaro.org>,
- "matthias.bgg@gmail.com" <matthias.bgg@gmail.com>
-Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "linux-mediatek@lists.infradead.org" <linux-mediatek@lists.infradead.org>,
- "linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>,
- =?UTF-8?B?TWFuZHlKSCBMaXUgKOWKieS6uuWDlik=?= <MandyJH.Liu@mediatek.com>,
- Project_Global_Chrome_Upstream_Group
- <Project_Global_Chrome_Upstream_Group@mediatek.com>,
- =?UTF-8?B?WGl1ZmVuZyBMaSAo5p2O56eA5bOwKQ==?= <Xiufeng.Li@mediatek.com>,
- "linux-arm-kernel@lists.infradead.org"
- <linux-arm-kernel@lists.infradead.org>, =?UTF-8?B?RmFuIENoZW4gKOmZs+WHoSk=?=
- <fan.chen@mediatek.com>
-References: <20240325121908.3958-1-yu-chang.lee@mediatek.com>
- <20240325121908.3958-3-yu-chang.lee@mediatek.com>
- <a6f54fdf-f0a9-4edc-9054-50d5204a6898@collabora.com>
- <c0086465922ec54bed17cee7b9e87d224240f21a.camel@mediatek.com>
-From: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+Subject: Re: [PATCH v5 2/2] arch/riscv: Enable kprobes when CONFIG_MODULES=n
 Content-Language: en-US
-In-Reply-To: <c0086465922ec54bed17cee7b9e87d224240f21a.camel@mediatek.com>
+To: Jarkko Sakkinen <jarkko@kernel.org>, linux-riscv@lists.infradead.org
+Cc: Paul Walmsley <paul.walmsley@sifive.com>,
+ Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>,
+ linux-kernel@vger.kernel.org, Luis Chamberlain <mcgrof@kernel.org>,
+ linux-modules@vger.kernel.org, "Naveen N . Rao"
+ <naveen.n.rao@linux.ibm.com>,
+ Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>,
+ "David S . Miller" <davem@davemloft.net>,
+ Masami Hiramatsu <mhiramat@kernel.org>
+References: <20240325215502.660-1-jarkko@kernel.org>
+ <20240325215502.660-2-jarkko@kernel.org>
+From: Alexandre Ghiti <alex@ghiti.fr>
+In-Reply-To: <20240325215502.660-2-jarkko@kernel.org>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
+X-GND-Sasl: alex@ghiti.fr
 
-Il 26/03/24 03:00, Yu-chang Lee (李禹璋) ha scritto:
-> On Mon, 2024-03-25 at 14:05 +0100, AngeloGioacchino Del Regno wrote:
->> Il 25/03/24 13:19, yu-chang.lee ha scritto:
->>> In order to avoid power glitch, this patch use smi clamp
->>> to disable/enable smi common port.
->>>
->>> Signed-off-by: yu-chang.lee <yu-chang.lee@mediatek.com>
->>> ---
->>>    drivers/pmdomain/mediatek/mt8188-pm-domains.h |  41 ++++-
->>>    drivers/pmdomain/mediatek/mtk-pm-domains.c    | 147
->>> ++++++++++++++----
->>>    drivers/pmdomain/mediatek/mtk-pm-domains.h    |   1 +
->>>    3 files changed, 156 insertions(+), 33 deletions(-)
->>>
->>> diff --git a/drivers/pmdomain/mediatek/mt8188-pm-domains.h
->>> b/drivers/pmdomain/mediatek/mt8188-pm-domains.h
->>> index 7bbba4d56a77..39f057dca92c 100644
->>> --- a/drivers/pmdomain/mediatek/mt8188-pm-domains.h
->>> +++ b/drivers/pmdomain/mediatek/mt8188-pm-domains.h
->>> @@ -573,6 +573,18 @@ static const struct scpsys_domain_data
->>> scpsys_domain_data_mt8188[] = {
->>>    		.pwr_sta2nd_offs = 0x170,
->>>    		.sram_pdn_bits = BIT(8),
->>>    		.sram_pdn_ack_bits = BIT(12),
->>> +		.bp_cfg = {
->>> +			BUS_PROT_WR(SMI,
->>> +				    MT8188_SMI_COMMON_SMI_CLAMP_DIP_TO_
->>> VDO0,
->>> +				    MT8188_SMI_COMMON_CLAMP_EN_SET,
->>> +				    MT8188_SMI_COMMON_CLAMP_EN_CLR,
->>> +				    MT8188_SMI_COMMON_CLAMP_EN_STA),
->>> +			BUS_PROT_WR(SMI,
->>> +				    MT8188_SMI_COMMON_SMI_CLAMP_DIP_TO_
->>> VPP1,
->>> +				    MT8188_SMI_COMMON_CLAMP_EN_SET,
->>> +				    MT8188_SMI_COMMON_CLAMP_EN_CLR,
->>> +				    MT8188_SMI_COMMON_CLAMP_EN_STA),
->>> +		},
->>>    		.reset_smi = {
->>>    			SMI_RESET_WR(MT8188_SMI_LARB10_RESET,
->>>    				     MT8188_SMI_LARB10_RESET_ADDR),
->>> @@ -585,7 +597,7 @@ static const struct scpsys_domain_data
->>> scpsys_domain_data_mt8188[] = {
->>>    			SMI_RESET_WR(MT8188_SMI_LARB15_RESET,
->>>    				     MT8188_SMI_LARB15_RESET_ADDR),
->>>    		},
->>> -		.caps = MTK_SCPD_KEEP_DEFAULT_OFF,
->>> +		.caps = MTK_SCPD_KEEP_DEFAULT_OFF |
->>> MTK_SCPD_CLAMP_PROTECTION,
->>>    	},
->>>    	[MT8188_POWER_DOMAIN_IPE] = {
->>>    		.name = "ipe",
->>> @@ -595,11 +607,18 @@ static const struct scpsys_domain_data
->>> scpsys_domain_data_mt8188[] = {
->>>    		.pwr_sta2nd_offs = 0x170,
->>>    		.sram_pdn_bits = BIT(8),
->>>    		.sram_pdn_ack_bits = BIT(12),
->>> +		.bp_cfg = {
->>> +			BUS_PROT_WR(SMI,
->>> +				    MT8188_SMI_COMMON_SMI_CLAMP_IPE_TO_
->>> VPP1,
->>> +				    MT8188_SMI_COMMON_CLAMP_EN_SET,
->>> +				    MT8188_SMI_COMMON_CLAMP_EN_CLR,
->>> +				    MT8188_SMI_COMMON_CLAMP_EN_STA),
->>> +		},
->>>    		.reset_smi = {
->>>    			SMI_RESET_WR(MT8188_SMI_LARB12_RESET,
->>>    				     MT8188_SMI_LARB12_RESET_ADDR),
->>>    		},
->>> -		.caps = MTK_SCPD_KEEP_DEFAULT_OFF,
->>> +		.caps = MTK_SCPD_KEEP_DEFAULT_OFF |
->>> MTK_SCPD_CLAMP_PROTECTION,
->>>    	},
->>>    	[MT8188_POWER_DOMAIN_CAM_VCORE] = {
->>>    		.name = "cam_vcore",
->>> @@ -676,13 +695,20 @@ static const struct scpsys_domain_data
->>> scpsys_domain_data_mt8188[] = {
->>>    		.pwr_sta2nd_offs = 0x170,
->>>    		.sram_pdn_bits = BIT(8),
->>>    		.sram_pdn_ack_bits = BIT(12),
->>> +		.bp_cfg = {
->>> +			BUS_PROT_WR(SMI,
->>> +				    MT8188_SMI_COMMON_SMI_CLAMP_IPE_TO_
->>> VPP1,
->>> +				    MT8188_SMI_COMMON_CLAMP_EN_SET,
->>> +				    MT8188_SMI_COMMON_CLAMP_EN_CLR,
->>> +				    MT8188_SMI_COMMON_CLAMP_EN_STA),
->>> +		},
->>>    		.reset_smi = {
->>>    			SMI_RESET_WR(MT8188_SMI_LARB16A_RESET,
->>>    				     MT8188_SMI_LARB16A_RESET_ADDR),
->>>    			SMI_RESET_WR(MT8188_SMI_LARB17A_RESET,
->>>    				     MT8188_SMI_LARB17A_RESET_ADDR),
->>>    		},
->>> -		.caps = MTK_SCPD_KEEP_DEFAULT_OFF,
->>> +		.caps = MTK_SCPD_KEEP_DEFAULT_OFF |
->>> MTK_SCPD_CLAMP_PROTECTION,
->>>    	},
->>>    	[MT8188_POWER_DOMAIN_CAM_SUBB] = {
->>>    		.name = "cam_subb",
->>> @@ -692,13 +718,20 @@ static const struct scpsys_domain_data
->>> scpsys_domain_data_mt8188[] = {
->>>    		.pwr_sta2nd_offs = 0x170,
->>>    		.sram_pdn_bits = BIT(8),
->>>    		.sram_pdn_ack_bits = BIT(12),
->>> +		.bp_cfg = {
->>> +			BUS_PROT_WR(SMI,
->>> +				    MT8188_SMI_COMMON_SMI_CLAMP_CAM_SUB
->>> B_TO_VDO0,
->>> +				    MT8188_SMI_COMMON_CLAMP_EN_SET,
->>> +				    MT8188_SMI_COMMON_CLAMP_EN_CLR,
->>> +				    MT8188_SMI_COMMON_CLAMP_EN_STA),
->>> +		},
->>>    		.reset_smi = {
->>>    			SMI_RESET_WR(MT8188_SMI_LARB16B_RESET,
->>>    				     MT8188_SMI_LARB16B_RESET_ADDR),
->>>    			SMI_RESET_WR(MT8188_SMI_LARB17B_RESET,
->>>    				     MT8188_SMI_LARB17B_RESET_ADDR),
->>>    		},
->>> -		.caps = MTK_SCPD_KEEP_DEFAULT_OFF,
->>> +		.caps = MTK_SCPD_KEEP_DEFAULT_OFF |
->>> MTK_SCPD_CLAMP_PROTECTION,
->>>    	},
->>>    };
->>>    
->>> diff --git a/drivers/pmdomain/mediatek/mtk-pm-domains.c
->>> b/drivers/pmdomain/mediatek/mtk-pm-domains.c
->>> index 9ab6fa105c8c..3c797e136c0e 100644
->>> --- a/drivers/pmdomain/mediatek/mtk-pm-domains.c
->>> +++ b/drivers/pmdomain/mediatek/mtk-pm-domains.c
->>> @@ -47,9 +47,10 @@ struct scpsys_domain {
->>>    	struct clk_bulk_data *subsys_clks;
->>>    	struct regmap *infracfg_nao;
->>>    	struct regmap *infracfg;
->>> -	struct regmap *smi;
->>> +	struct regmap **smi;
->>>    	struct regmap **larb;
->>>    	int num_larb;
->>> +	int num_smi;
->>>    	struct regulator *supply;
->>>    };
->>>    
->>> @@ -122,29 +123,19 @@ static int scpsys_sram_disable(struct
->>> scpsys_domain *pd)
->>>    					MTK_POLL_TIMEOUT);
->>>    }
->>>    
->>> -static struct regmap *scpsys_bus_protect_get_regmap(struct
->>> scpsys_domain *pd,
->>> -						    const struct
->>> scpsys_bus_prot_data *bpd)
->>> -{
->>> -	if (bpd->flags & BUS_PROT_COMPONENT_SMI)
->>> -		return pd->smi;
->>> -	else
->>> -		return pd->infracfg;
->>> -}
->>> -
->>>    static struct regmap *scpsys_bus_protect_get_sta_regmap(struct
->>> scpsys_domain *pd,
->>>    							const struct
->>> scpsys_bus_prot_data *bpd)
->>>    {
->>>    	if (bpd->flags & BUS_PROT_STA_COMPONENT_INFRA_NAO)
->>>    		return pd->infracfg_nao;
->>>    	else
->>> -		return scpsys_bus_protect_get_regmap(pd, bpd);
->>> +		return pd->infracfg;
->>>    }
->>>    
->>>    static int scpsys_bus_protect_clear(struct scpsys_domain *pd,
->>> -				    const struct scpsys_bus_prot_data
->>> *bpd)
->>> +				    const struct scpsys_bus_prot_data
->>> *bpd,
->>> +					struct regmap *sta_regmap,
->>> struct regmap *regmap)
->>>    {
->>> -	struct regmap *sta_regmap =
->>> scpsys_bus_protect_get_sta_regmap(pd, bpd);
->>> -	struct regmap *regmap = scpsys_bus_protect_get_regmap(pd, bpd);
->>>    	u32 sta_mask = bpd->bus_prot_sta_mask;
->>>    	u32 expected_ack;
->>>    	u32 val;
->>> @@ -165,10 +156,9 @@ static int scpsys_bus_protect_clear(struct
->>> scpsys_domain *pd,
->>>    }
->>>    
->>>    static int scpsys_bus_protect_set(struct scpsys_domain *pd,
->>> -				  const struct scpsys_bus_prot_data
->>> *bpd)
->>> +				  const struct scpsys_bus_prot_data
->>> *bpd,
->>> +				  struct regmap *sta_regmap, struct
->>> regmap *regmap)
->>>    {
->>> -	struct regmap *sta_regmap =
->>> scpsys_bus_protect_get_sta_regmap(pd, bpd);
->>> -	struct regmap *regmap = scpsys_bus_protect_get_regmap(pd, bpd);
->>>    	u32 sta_mask = bpd->bus_prot_sta_mask;
->>>    	u32 val;
->>>    
->>> @@ -182,19 +172,32 @@ static int scpsys_bus_protect_set(struct
->>> scpsys_domain *pd,
->>>    					MTK_POLL_DELAY_US,
->>> MTK_POLL_TIMEOUT);
->>>    }
->>>    
->>> -static int scpsys_bus_protect_enable(struct scpsys_domain *pd)
->>> +static int _scpsys_clamp_bus_protection_enable(struct
->>> scpsys_domain *pd, bool is_smi)
->>>    {
->>> +	int smi_count = 0;
->>> +
->>>    	for (int i = 0; i < SPM_MAX_BUS_PROT_DATA; i++) {
->>>    		const struct scpsys_bus_prot_data *bpd = &pd->data-
->>>> bp_cfg[i];
->>> +		struct regmap *sta_regmap, *regmap;
->>> +		bool is_smi = bpd->flags & BUS_PROT_COMPONENT_SMI;
->>>    		int ret;
->>>    
->>>    		if (!bpd->bus_prot_set_clr_mask)
->>>    			break;
->>>    
->>> +		if (is_smi) {
->>> +			sta_regmap = pd->smi[smi_count];
->>> +			regmap = pd->smi[smi_count];
->>> +			smi_count++;
->>> +		} else {
->>> +			sta_regmap =
->>> scpsys_bus_protect_get_sta_regmap(pd, bpd);
->>> +			regmap = pd->infracfg;
->>> +		}
->>> +
->>>    		if (bpd->flags & BUS_PROT_INVERTED)
->>> -			ret = scpsys_bus_protect_clear(pd, bpd);
->>> +			ret = scpsys_bus_protect_clear(pd, bpd,
->>> sta_regmap, regmap);
->>>    		else
->>> -			ret = scpsys_bus_protect_set(pd, bpd);
->>> +			ret = scpsys_bus_protect_set(pd, bpd,
->>> sta_regmap, regmap);
->>>    		if (ret)
->>>    			return ret;
->>>    	}
->>> @@ -202,19 +205,32 @@ static int scpsys_bus_protect_enable(struct
->>> scpsys_domain *pd)
->>>    	return 0;
->>>    }
->>>    
->>> -static int scpsys_bus_protect_disable(struct scpsys_domain *pd)
->>> +static int _scpsys_clamp_bus_protection_disable(struct
->>> scpsys_domain *pd, bool is_smi)
->>>    {
->>> +	int smi_count = pd->num_smi - 1;
->>> +
->>>    	for (int i = SPM_MAX_BUS_PROT_DATA - 1; i >= 0; i--) {
->>>    		const struct scpsys_bus_prot_data *bpd = &pd->data-
->>>> bp_cfg[i];
->>> +		struct regmap *sta_regmap, *regmap;
->>> +		bool is_smi = bpd->flags & BUS_PROT_COMPONENT_SMI;
->>>    		int ret;
->>>    
->>>    		if (!bpd->bus_prot_set_clr_mask)
->>>    			continue;
->>>    
->>> +		if (is_smi) {
->>> +			sta_regmap = pd->smi[smi_count];
->>> +			regmap = pd->smi[smi_count];
->>> +			smi_count--;
->>> +		} else {
->>> +			sta_regmap =
->>> scpsys_bus_protect_get_sta_regmap(pd, bpd);
->>> +			regmap = pd->infracfg;
->>> +		}
->>> +
->>>    		if (bpd->flags & BUS_PROT_INVERTED)
->>> -			ret = scpsys_bus_protect_set(pd, bpd);
->>> +			ret = scpsys_bus_protect_set(pd, bpd,
->>> sta_regmap, regmap);
->>>    		else
->>> -			ret = scpsys_bus_protect_clear(pd, bpd);
->>> +			ret = scpsys_bus_protect_clear(pd, bpd,
->>> sta_regmap, regmap);
->>>    		if (ret)
->>>    			return ret;
->>>    	}
->>> @@ -222,6 +238,50 @@ static int scpsys_bus_protect_disable(struct
->>> scpsys_domain *pd)
->>>    	return 0;
->>>    }
->>>    
->>> +static int scpsys_clamp_protection(struct scpsys_domain *pd)
->>> +{
->>> +	int ret;
->>> +
->>
->> You can directly call _scpsys_clamp_bus_protection_enable(), no need
->> for a helper.
->>
->>> +	ret = _scpsys_clamp_bus_protection_enable(pd, true);
->>> +	if (ret)
->>> +		return ret;
->>> +
->>> +	return 0;
->>> +}
->>> +
->>> +static int scpsys_clamp_protection_disable(struct scpsys_domain
->>> *pd)
->>> +{
->>> +	int ret;
->>> +
->>> +	ret = _scpsys_clamp_bus_protection_disable(pd, true);
->>> +	if (ret)
->>> +		return ret;
->>> +
->>> +	return 0;
->>> +}
->>> +
->>> +static int scpsys_bus_protect_enable(struct scpsys_domain *pd)
->>
->> Unused function, please remove.
-> 
-> I think this is used in scpsys_power_off function. Do you mean I
-> should directly call _scpsys_clamp_bus_protection_disable?
-> 
+Hi Jarkko,
 
-Yes, please.
+On 25/03/2024 22:55, Jarkko Sakkinen wrote:
+> Tacing with kprobes while running a monolithic kernel is currently
+> impossible due the kernel module allocator dependency.
+>
+> Address the issue by implementing textmem API for RISC-V.
+>
+> Link: https://www.sochub.fi # for power on testing new SoC's with a minimal stack
+> Link: https://lore.kernel.org/all/20220608000014.3054333-1-jarkko@profian.com/ # continuation
+> Signed-off-by: Jarkko Sakkinen <jarkko@kernel.org>
+> ---
+> v5:
+> - No changes, expect removing alloc_execmem() call which should have
+>    been part of the previous patch.
+> v4:
+> - Include linux/execmem.h.
+> v3:
+> - Architecture independent parts have been split to separate patches.
+> - Do not change arch/riscv/kernel/module.c as it is out of scope for
+>    this patch set now.
+> v2:
+> - Better late than never right? :-)
+> - Focus only to RISC-V for now to make the patch more digestable. This
+>    is the arch where I use the patch on a daily basis to help with QA.
+> - Introduce HAVE_KPROBES_ALLOC flag to help with more gradual migration.
+> ---
+>   arch/riscv/Kconfig          |  1 +
+>   arch/riscv/kernel/Makefile  |  3 +++
+>   arch/riscv/kernel/execmem.c | 22 ++++++++++++++++++++++
+>   3 files changed, 26 insertions(+)
+>   create mode 100644 arch/riscv/kernel/execmem.c
+>
+> diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
+> index e3142ce531a0..499512fb17ff 100644
+> --- a/arch/riscv/Kconfig
+> +++ b/arch/riscv/Kconfig
+> @@ -132,6 +132,7 @@ config RISCV
+>   	select HAVE_KPROBES if !XIP_KERNEL
+>   	select HAVE_KPROBES_ON_FTRACE if !XIP_KERNEL
+>   	select HAVE_KRETPROBES if !XIP_KERNEL
+> +	select HAVE_ALLOC_EXECMEM if !XIP_KERNEL
+>   	# https://github.com/ClangBuiltLinux/linux/issues/1881
+>   	select HAVE_LD_DEAD_CODE_DATA_ELIMINATION if !LD_IS_LLD
+>   	select HAVE_MOVE_PMD
+> diff --git a/arch/riscv/kernel/Makefile b/arch/riscv/kernel/Makefile
+> index 604d6bf7e476..337797f10d3e 100644
+> --- a/arch/riscv/kernel/Makefile
+> +++ b/arch/riscv/kernel/Makefile
+> @@ -73,6 +73,9 @@ obj-$(CONFIG_SMP)		+= cpu_ops.o
+>   
+>   obj-$(CONFIG_RISCV_BOOT_SPINWAIT) += cpu_ops_spinwait.o
+>   obj-$(CONFIG_MODULES)		+= module.o
+> +ifeq ($(CONFIG_ALLOC_EXECMEM),y)
+> +obj-y				+= execmem.o
+> +endif
+>   obj-$(CONFIG_MODULE_SECTIONS)	+= module-sections.o
+>   
+>   obj-$(CONFIG_CPU_PM)		+= suspend_entry.o suspend.o
+> diff --git a/arch/riscv/kernel/execmem.c b/arch/riscv/kernel/execmem.c
+> new file mode 100644
+> index 000000000000..3e52522ead32
+> --- /dev/null
+> +++ b/arch/riscv/kernel/execmem.c
+> @@ -0,0 +1,22 @@
+> +// SPDX-License-Identifier: GPL-2.0-or-later
+> +
+> +#include <linux/mm.h>
+> +#include <linux/execmem.h>
+> +#include <linux/vmalloc.h>
+> +#include <asm/sections.h>
+> +
+> +void *alloc_execmem(unsigned long size, gfp_t /* gfp */)
+> +{
+> +	return __vmalloc_node_range(size, 1, MODULES_VADDR,
+> +				    MODULES_END, GFP_KERNEL,
+> +				    PAGE_KERNEL, 0, NUMA_NO_NODE,
+> +				    __builtin_return_address(0));
+> +}
 
-Cheers,
-Angelo
 
+The __vmalloc_node_range() line ^^ must be from an old kernel since we 
+added VM_FLUSH_RESET_PERMS in 6.8, see 749b94b08005 ("riscv: Fix 
+module_alloc() that did not reset the linear mapping permissions").
+
+In addition, I guess module_alloc() should now use alloc_execmem() right?
+
+
+> +
+> +void free_execmem(void *region)
+> +{
+> +	if (in_interrupt())
+> +		pr_warn("In interrupt context: vmalloc may not work.\n");
+> +
+> +	vfree(region);
+> +}
+
+
+I remember Mike Rapoport sent a patchset to introduce an API for 
+executable memory allocation 
+(https://lore.kernel.org/linux-mm/20230918072955.2507221-1-rppt@kernel.org/), 
+how does this intersect with your work? I don't know the status of his 
+patchset though.
+
+Thanks,
+
+Alex
 
 
