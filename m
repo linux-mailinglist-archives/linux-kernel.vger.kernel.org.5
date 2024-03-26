@@ -1,70 +1,42 @@
-Return-Path: <linux-kernel+bounces-119003-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-119004-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2910E88C278
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 13:45:05 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 512ED88C27C
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 13:45:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D3E24304A24
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 12:45:03 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8238AB24223
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 12:45:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6A52D66B5E;
-	Tue, 26 Mar 2024 12:44:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="iQPMwwMF"
-Received: from mail-qv1-f50.google.com (mail-qv1-f50.google.com [209.85.219.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 93F446CDA1;
+	Tue, 26 Mar 2024 12:45:20 +0000 (UTC)
+Received: from mx3.molgen.mpg.de (mx3.molgen.mpg.de [141.14.17.11])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C0C8F6BFCC
-	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 12:44:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C689914A8E
+	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 12:45:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=141.14.17.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711457067; cv=none; b=ILzQlCWTU/6SM5rVxsEyn405n8b7k3ZiYsxeBGfUUpKtsxRktAJF2siV+o2gAP70XUWBmy+UwW0gfSo87bI578TpSCmPXwsJq4+OiV0SOspsoEZQQKEMnyTzpYQtCopLvBu1AHKBJTInbympFITwKBd4ch2Zt0wwFRJ7LcNqAFE=
+	t=1711457119; cv=none; b=HtAx8/zkdBv7CmkPqacER9Rie5uGlzmqkouWBbpgb6NV8j+v2IFQ20U+xhzfWmEDXL8dwSr6OAcjnXsiXRF5u0NDnEk4sCdZA6qQ0Wki/IyG+cSQLNBK3SefVIjFIcJQU6RpxKubQ2jGahjHsObzRGnBe5GxDxiyl65WU/CJoyE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711457067; c=relaxed/simple;
-	bh=1YaYyrHGiCnO3+Uw3vgcHccvOMZ7sUw0xPyXMYfoYI4=;
+	s=arc-20240116; t=1711457119; c=relaxed/simple;
+	bh=UYWbDchKJJiZ0xMZ+ihkHtQtdEoG7n5FrVF4fbMH8sA=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=LJHTFZIz09Y51869amJReB1orixRVD9jkzqZyWju87IdHbb09LGKJe56DlQnRQMRLydx0t7ddatBkJGUF71KvxgvWH78oi3V00brwFC94z/p6RZ7fmzvCXmBWRaFuP/FVwadE9Lsyc5zeFvXYJUaFTKZbOJfbQ1cUqCGUYS0FlU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=iQPMwwMF; arc=none smtp.client-ip=209.85.219.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=broadcom.com
-Received: by mail-qv1-f50.google.com with SMTP id 6a1803df08f44-690cf6ecd3cso32893066d6.2
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 05:44:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1711457064; x=1712061864; darn=vger.kernel.org;
-        h=in-reply-to:autocrypt:from:references:cc:to:subject:user-agent
-         :mime-version:date:message-id:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=VHguRnMuyVIjoem8AuniqVrC/Z6hM02ZsrYxr3Q39iE=;
-        b=iQPMwwMF01d5jPxaMNWXzIWmhdHktFZjqwH+q4f1gemmXiu3HOXqc7JOOvyC4sJSBs
-         RwmNi+DAZh3TN839n9sklw+kNe/FL+7hDYbkn2Dahzq/BDocrqlTT/yWcO4y+4sfQ8pK
-         ziAbl1ixs7ZQ+F9d7lNfs0DEjzuzTIDRNSPUM=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711457064; x=1712061864;
-        h=in-reply-to:autocrypt:from:references:cc:to:subject:user-agent
-         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=VHguRnMuyVIjoem8AuniqVrC/Z6hM02ZsrYxr3Q39iE=;
-        b=pp1hCckVPT1GoiCeG0t53WNXiXWL6dy3W5JTrPMYKSfm+zX2mBTykBqbMDxspcwTpe
-         rQ1tDjCRxg2Jk/0+qqfYQefXKU4Pqck+jAUIcScQT/7J0I39oEA2CrfXv6KiT/lH1na5
-         DwvwROhUs12eHO96CRIq59YkWm60kLC0mQzlDMBXhXgCNGBnhLCRd9eCKqx2Yz1V/P9M
-         0vJQWPbIhkOzogtMIRTgKoqly66X6ub31Dsa3ZhAB9WASafuii0L27Sx+xaL3p4E4peA
-         SwIjaoSGPyJm2jOEE0VISdGjvrljFhbdP72xgUdhjhXrv7P2LB2flhuuUC3+tFqTSvOd
-         Np5w==
-X-Forwarded-Encrypted: i=1; AJvYcCU0fVfuuzRYLKZ44QAAL53Y0g71uYpht1i0UtjQEkjvBmYMrTQOGy9HRcBks9RhtBhn261oLezy1RnOuPwWIqbcvhN7bzBZkmr68H09
-X-Gm-Message-State: AOJu0YwiTyfwxzgZKjf1tLlGqmosD41S1Uj6UZ+bxvF8kYp+dxJd8IBX
-	UKbScQFMF1HSR3wSIkOg73N+QdKGEhGedggJ5au/TRdX7fvWffDPvvPN3Y9utg==
-X-Google-Smtp-Source: AGHT+IG1bujcuBdMBmjkPR4wnOeUYVtSWieDmTfchBrGbEl05l3okfWVSuG6h+wY4yHZbP8yB/60SA==
-X-Received: by 2002:a05:6214:f0d:b0:692:fa66:9d5d with SMTP id gw13-20020a0562140f0d00b00692fa669d5dmr11373060qvb.18.1711457064642;
-        Tue, 26 Mar 2024 05:44:24 -0700 (PDT)
-Received: from [192.168.1.3] (ip68-4-215-93.oc.oc.cox.net. [68.4.215.93])
-        by smtp.gmail.com with ESMTPSA id jt4-20020a05621427e400b0069695563188sm1366872qvb.1.2024.03.26.05.44.22
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 26 Mar 2024 05:44:23 -0700 (PDT)
-Message-ID: <e6d0bc40-10ee-458f-98fd-534f54a1bf3a@broadcom.com>
-Date: Tue, 26 Mar 2024 05:44:21 -0700
+	 In-Reply-To:Content-Type; b=hXl2cL3RWJPUls9USLwpPFeAQcz7od4UouvgzQO8O0REZBUfFmxbNmjY0XfiM0cmMqdQNVKBnBdF2IfFdpoaSdffllG2NS3zcxk2DxqU8HyU/5MKVBSwR9iUH+RiWcHS/lcUvv1iql+6GJOqJljfbLT9O4KLL+b3Lu0oXyIDz44=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=molgen.mpg.de; spf=pass smtp.mailfrom=molgen.mpg.de; arc=none smtp.client-ip=141.14.17.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=molgen.mpg.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=molgen.mpg.de
+Received: from [141.14.220.34] (g34.guest.molgen.mpg.de [141.14.220.34])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: pmenzel)
+	by mx.molgen.mpg.de (Postfix) with ESMTPSA id B909A61E5FE01;
+	Tue, 26 Mar 2024 13:44:33 +0100 (CET)
+Message-ID: <05ba71e6-6b4e-4496-9183-c75bfc8b64cd@molgen.mpg.de>
+Date: Tue, 26 Mar 2024 13:44:32 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -72,151 +44,287 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 10/64] i2c: brcmstb: reword according to newest
- specification
-To: Wolfram Sang <wsa+renesas@sang-engineering.com>, linux-i2c@vger.kernel.org
-Cc: Kamal Dasu <kamal.dasu@broadcom.com>,
- Broadcom internal kernel review list
- <bcm-kernel-feedback-list@broadcom.com>, Andi Shyti <andi.shyti@kernel.org>,
- linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20240322132619.6389-1-wsa+renesas@sang-engineering.com>
- <20240322132619.6389-11-wsa+renesas@sang-engineering.com>
-From: Florian Fainelli <florian.fainelli@broadcom.com>
-Autocrypt: addr=florian.fainelli@broadcom.com; keydata=
- xsBNBFPAG8ABCAC3EO02urEwipgbUNJ1r6oI2Vr/+uE389lSEShN2PmL3MVnzhViSAtrYxeT
- M0Txqn1tOWoIc4QUl6Ggqf5KP6FoRkCrgMMTnUAINsINYXK+3OLe7HjP10h2jDRX4Ajs4Ghs
- JrZOBru6rH0YrgAhr6O5gG7NE1jhly+EsOa2MpwOiXO4DE/YKZGuVe6Bh87WqmILs9KvnNrQ
- PcycQnYKTVpqE95d4M824M5cuRB6D1GrYovCsjA9uxo22kPdOoQRAu5gBBn3AdtALFyQj9DQ
- KQuc39/i/Kt6XLZ/RsBc6qLs+p+JnEuPJngTSfWvzGjpx0nkwCMi4yBb+xk7Hki4kEslABEB
- AAHNMEZsb3JpYW4gRmFpbmVsbGkgPGZsb3JpYW4uZmFpbmVsbGlAYnJvYWRjb20uY29tPsLB
- IQQQAQgAywUCZWl41AUJI+Jo+hcKAAG/SMv+fS3xUQWa0NryPuoRGjsA3SAUAAAAAAAWAAFr
- ZXktdXNhZ2UtbWFza0BwZ3AuY29tjDAUgAAAAAAgAAdwcmVmZXJyZWQtZW1haWwtZW5jb2Rp
- bmdAcGdwLmNvbXBncG1pbWUICwkIBwMCAQoFF4AAAAAZGGxkYXA6Ly9rZXlzLmJyb2FkY29t
- Lm5ldAUbAwAAAAMWAgEFHgEAAAAEFQgJChYhBNXZKpfnkVze1+R8aIExtcQpvGagAAoJEIEx
- tcQpvGagWPEH/2l0DNr9QkTwJUxOoP9wgHfmVhqc0ZlDsBFv91I3BbhGKI5UATbipKNqG13Z
- TsBrJHcrnCqnTRS+8n9/myOF0ng2A4YT0EJnayzHugXm+hrkO5O9UEPJ8a+0553VqyoFhHqA
- zjxj8fUu1px5cbb4R9G4UAySqyeLLeqnYLCKb4+GklGSBGsLMYvLmIDNYlkhMdnnzsSUAS61
- WJYW6jjnzMwuKJ0ZHv7xZvSHyhIsFRiYiEs44kiYjbUUMcXor/uLEuTIazGrE3MahuGdjpT2
- IOjoMiTsbMc0yfhHp6G/2E769oDXMVxCCbMVpA+LUtVIQEA+8Zr6mX0Yk4nDS7OiBlvOwE0E
- U8AbwQEIAKxr71oqe+0+MYCc7WafWEcpQHFUwvYLcdBoOnmJPxDwDRpvU5LhqSPvk/yJdh9k
- 4xUDQu3rm1qIW2I9Puk5n/Jz/lZsqGw8T13DKyu8eMcvaA/irm9lX9El27DPHy/0qsxmxVmU
- pu9y9S+BmaMb2CM9IuyxMWEl9ruWFS2jAWh/R8CrdnL6+zLk60R7XGzmSJqF09vYNlJ6Bdbs
- MWDXkYWWP5Ub1ZJGNJQ4qT7g8IN0qXxzLQsmz6tbgLMEHYBGx80bBF8AkdThd6SLhreCN7Uh
- IR/5NXGqotAZao2xlDpJLuOMQtoH9WVNuuxQQZHVd8if+yp6yRJ5DAmIUt5CCPcAEQEAAcLB
- gQQYAQIBKwUCU8AbwgUbDAAAAMBdIAQZAQgABgUCU8AbwQAKCRCTYAaomC8PVQ0VCACWk3n+
- obFABEp5Rg6Qvspi9kWXcwCcfZV41OIYWhXMoc57ssjCand5noZi8bKg0bxw4qsg+9cNgZ3P
- N/DFWcNKcAT3Z2/4fTnJqdJS//YcEhlr8uGs+ZWFcqAPbteFCM4dGDRruo69IrHfyyQGx16s
- CcFlrN8vD066RKevFepb/ml7eYEdN5SRALyEdQMKeCSf3mectdoECEqdF/MWpfWIYQ1hEfdm
- C2Kztm+h3Nkt9ZQLqc3wsPJZmbD9T0c9Rphfypgw/SfTf2/CHoYVkKqwUIzI59itl5Lze+R5
- wDByhWHx2Ud2R7SudmT9XK1e0x7W7a5z11Q6vrzuED5nQvkhAAoJEIExtcQpvGagugcIAJd5
- EYe6KM6Y6RvI6TvHp+QgbU5dxvjqSiSvam0Ms3QrLidCtantcGT2Wz/2PlbZqkoJxMQc40rb
- fXa4xQSvJYj0GWpadrDJUvUu3LEsunDCxdWrmbmwGRKqZraV2oG7YEddmDqOe0Xm/NxeSobc
- MIlnaE6V0U8f5zNHB7Y46yJjjYT/Ds1TJo3pvwevDWPvv6rdBeV07D9s43frUS6xYd1uFxHC
- 7dZYWJjZmyUf5evr1W1gCgwLXG0PEi9n3qmz1lelQ8lSocmvxBKtMbX/OKhAfuP/iIwnTsww
- 95A2SaPiQZA51NywV8OFgsN0ITl2PlZ4Tp9hHERDe6nQCsNI/Us=
-In-Reply-To: <20240322132619.6389-11-wsa+renesas@sang-engineering.com>
-Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-	boundary="0000000000006795f606148fa6a7"
-
---0000000000006795f606148fa6a7
+Subject: Re: BUG: unable to handle page fault for address: 0000000000030368
+To: Marco Elver <elver@google.com>
+Cc: kasan-dev@googlegroups.com, Thomas Gleixner <tglx@linutronix.de>,
+ Borislav Petkov <bp@alien8.de>, Peter Zijlstra <peterz@infradead.org>,
+ Josh Poimboeuf <jpoimboe@kernel.org>, Ingo Molnar <mingo@redhat.com>,
+ Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+ LKML <linux-kernel@vger.kernel.org>
+References: <bd455761-3dbf-4f44-a0e3-dff664284fcc@molgen.mpg.de>
+ <CANpmjNMAfLDZtHaZBZk_tZ-oM5FgYTSOgfbJLTFN7JE-mq0u_A@mail.gmail.com>
 Content-Language: en-US
+From: Paul Menzel <pmenzel@molgen.mpg.de>
+In-Reply-To: <CANpmjNMAfLDZtHaZBZk_tZ-oM5FgYTSOgfbJLTFN7JE-mq0u_A@mail.gmail.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+
+[Cc: +X86 maintainers]
+
+Dear Marco,
 
 
+Thank you for your quick reply. (Note, that your mailer wrapped the 
+pasted lines.)
 
-On 3/22/2024 6:25 AM, Wolfram Sang wrote:
-> Match the wording of this driver wrt. the newest I2C v7, SMBus 3.2, I3C
-> specifications and replace "master/slave" with more appropriate terms.
-> They are also more specific because we distinguish now between a remote
-> entity ("client") and a local one ("target").
+Am 26.03.24 um 11:07 schrieb Marco Elver:
+> On Tue, 26 Mar 2024 at 10:23, Paul Menzel wrote:
+
+>> Trying KCSAN the first time – configuration attached –, it fails to boot
+>> on the Dell XPS 13 9360 and QEMU q35. I couldn’t get logs on the Dell
+>> XPS 13 9360, so here are the QEMU ones:
 > 
-> Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
+> If there's a bad access somewhere which is instrumented by KCSAN, it
+> will unfortunately still crash inside KCSAN.
+> 
+> What happens if you compile with CONFIG_KCSAN_EARLY_ENABLE=n? It
+> disables KCSAN (but otherwise the kernel image is the same) and
+> requires turning it on manually with "echo on >
+> /sys/kernel/debug/kcsan" after boot.
+> 
+> If it still crashes, then there's definitely a bug elsewhere. If it
+> doesn't crash, and only crashes with KCSAN enabled, my guess is that
+> KCSAN's delays of individual threads are perturbing execution to
+> trigger previously undetected bugs.
 
-Reviewed-by: Florian Fainelli <florian.fainelli@broadcom.com>
--- 
-Florian
+Such a Linux kernel booted with a warning on the Dell XPS 13 9360 (but 
+booted with *no* warning on QEMU q35) [1], but enabling KCSAN on the 
+laptop hangs the laptop right away. I couldn’t get any logs of the laptop.
 
---0000000000006795f606148fa6a7
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Description: S/MIME Cryptographic Signature
+> At least I can't explain it any other way.
 
-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
-riBJ/K1AFUjRAjFhGV64l++td7dkmnq/X8ET75ti+w1s4FRpFqkD2m7pg5NxdsZphYIXAgMBAAGj
-QjBAMA4GA1UdDwEB/wQEAwIBBjAPBgNVHRMBAf8EBTADAQH/MB0GA1UdDgQWBBSP8Et/qC5FJK5N
-UPpjmove4t0bvDANBgkqhkiG9w0BAQsFAAOCAQEAS0DbwFCq/sgM7/eWVEVJu5YACUGssxOGhigH
-M8pr5nS5ugAtrqQK0/Xx8Q+Kv3NnSoPHRHt44K9ubG8DKY4zOUXDjuS5V2yq/BKW7FPGLeQkbLmU
-Y/vcU2hnVj6DuM81IcPJaP7O2sJTqsyQiunwXUaMld16WCgaLx3ezQA3QY/tRG3XUyiXfvNnBB4V
-14qWtNPeTCekTBtzc3b0F5nCH3oO4y0IrQocLP88q1UOD5F+NuvDV0m+4S4tfGCLw0FREyOdzvcy
-a5QBqJnnLDMfOjsl0oZAzjsshnjJYS8Uuu7bVW/fhO4FCU29KNhyztNiUGUe65KXgzHZs7XKR1g/
-XzCCBVgwggRAoAMCAQICDBP8P9hKRVySg3Qv5DANBgkqhkiG9w0BAQsFADBbMQswCQYDVQQGEwJC
-RTEZMBcGA1UEChMQR2xvYmFsU2lnbiBudi1zYTExMC8GA1UEAxMoR2xvYmFsU2lnbiBHQ0MgUjMg
-UGVyc29uYWxTaWduIDIgQ0EgMjAyMDAeFw0yMjA5MTAxMjE4MTFaFw0yNTA5MTAxMjE4MTFaMIGW
-MQswCQYDVQQGEwJJTjESMBAGA1UECBMJS2FybmF0YWthMRIwEAYDVQQHEwlCYW5nYWxvcmUxFjAU
-BgNVBAoTDUJyb2FkY29tIEluYy4xGTAXBgNVBAMTEEZsb3JpYW4gRmFpbmVsbGkxLDAqBgkqhkiG
-9w0BCQEWHWZsb3JpYW4uZmFpbmVsbGlAYnJvYWRjb20uY29tMIIBIjANBgkqhkiG9w0BAQEFAAOC
-AQ8AMIIBCgKCAQEA+oi3jMmHltY4LMUy8Up5+1zjd1iSgUBXhwCJLj1GJQF+GwP8InemBbk5rjlC
-UwbQDeIlOfb8xGqHoQFGSW8p9V1XUw+cthISLkycex0AJ09ufePshLZygRLREU0H4ecNPMejxCte
-KdtB4COST4uhBkUCo9BSy1gkl8DJ8j/BQ1KNUx6oYe0CntRag+EnHv9TM9BeXBBLfmMRnWNhvOSk
-nSmRX0J3d9/G2A3FIC6WY2XnLW7eAZCQPa1Tz3n2B5BGOxwqhwKLGLNu2SRCPHwOdD6e0drURF7/
-Vax85/EqkVnFNlfxtZhS0ugx5gn2pta7bTdBm1IG4TX+A3B1G57rVwIDAQABo4IB3jCCAdowDgYD
-VR0PAQH/BAQDAgWgMIGjBggrBgEFBQcBAQSBljCBkzBOBggrBgEFBQcwAoZCaHR0cDovL3NlY3Vy
-ZS5nbG9iYWxzaWduLmNvbS9jYWNlcnQvZ3NnY2NyM3BlcnNvbmFsc2lnbjJjYTIwMjAuY3J0MEEG
-CCsGAQUFBzABhjVodHRwOi8vb2NzcC5nbG9iYWxzaWduLmNvbS9nc2djY3IzcGVyc29uYWxzaWdu
-MmNhMjAyMDBNBgNVHSAERjBEMEIGCisGAQQBoDIBKAowNDAyBggrBgEFBQcCARYmaHR0cHM6Ly93
-d3cuZ2xvYmFsc2lnbi5jb20vcmVwb3NpdG9yeS8wCQYDVR0TBAIwADBJBgNVHR8EQjBAMD6gPKA6
-hjhodHRwOi8vY3JsLmdsb2JhbHNpZ24uY29tL2dzZ2NjcjNwZXJzb25hbHNpZ24yY2EyMDIwLmNy
-bDAoBgNVHREEITAfgR1mbG9yaWFuLmZhaW5lbGxpQGJyb2FkY29tLmNvbTATBgNVHSUEDDAKBggr
-BgEFBQcDBDAfBgNVHSMEGDAWgBSWM9HmWBdbNHWKgVZk1b5I3qGPzzAdBgNVHQ4EFgQUUwwfJ6/F
-KL0fRdVROal/Lp4lAF0wDQYJKoZIhvcNAQELBQADggEBAKBgfteDc1mChZjKBY4xAplC6uXGyBrZ
-kNGap1mHJ+JngGzZCz+dDiHRQKGpXLxkHX0BvEDZLW6LGOJ83ImrW38YMOo3ZYnCYNHA9qDOakiw
-2s1RH00JOkO5SkYdwCHj4DB9B7KEnLatJtD8MBorvt+QxTuSh4ze96Jz3kEIoHMvwGFkgObWblsc
-3/YcLBmCgaWpZ3Ksev1vJPr5n8riG3/N4on8gO5qinmmr9Y7vGeuf5dmZrYMbnb+yCBalkUmZQwY
-NxADYvcRBA0ySL6sZpj8BIIhWiXiuusuBmt2Mak2eEv0xDbovE6Z6hYyl/ZnRadbgK/ClgbY3w+O
-AfUXEZ0xggJtMIICaQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52
-LXNhMTEwLwYDVQQDEyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIwAgwT
-/D/YSkVckoN0L+QwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIDT6QyBd9L26gjqa
-rA02X8uuACDSl4b/T97aXfQiMUefMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcN
-AQkFMQ8XDTI0MDMyNjEyNDQyNFowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJYIZI
-AWUDBAEWMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcNAQEH
-MAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQA/6OoUB+6wgkgO7T2PNHQPJIHSm5Feu5sm
-a4al5O7CFhyi555FDQYEQacO45ofqvCDF5hlHoHKqC9KLBE/6eVZ53dCVCc9YPBQo/asTh7QbTPr
-jTRFyVtiZQYLX+Y5H6dFpDxPqWLxELrYQHBPvmrvITS2cwR45VWkiFFU9DakP5E+al0h+7VqgvO1
-lGAXI9Vr2SO6PmP2/zw5/h0HB/CLGh7Wyxf/5JYDZnstKfD4lApHi0KYI7aScv9Dbxs9W6BKk5l6
-K9eX/QXg7Z2fL4ScO7E+u4OGMhtiyvOOa0o+ZOxjh1SUqTMfbkRQK33AOwEK2qZlunMRzbsJdQ4P
-keDn
---0000000000006795f606148fa6a7--
+How do you test KCSAN?
+
+
+
+Kind regards,
+
+Paul
+
+
+>> ```
+>> $ qemu-system-x86_64 -M q35 -enable-kvm -smp cpus=2 -m 1G -serial stdio -net nic -net user,hostfwd=tcp::22222-:22 -kernel boot/vmlinuz-6.9.0-rc1+ -append "root=/dev/sda1 console=ttyS0"
+>> [    0.000000] Linux version 6.9.0-rc1+ (build@bohemianrhapsody.molgen.mpg.de) (gcc (Debian 13.2.0-19) 13.2.0, GNU ld (GNU Binutils for Debian) 2.42) #75 SMP PREEMPT_DYNAMIC Tue Mar 26 07:03:41 CET 2024
+>> [    0.000000] Command line: root=/dev/sda1 console=ttyS0
+>> [    0.000000] BIOS-provided physical RAM map:
+>> [    0.000000] BIOS-e820: [mem 0x0000000000000000-0x000000000009fbff] usable
+>> [    0.000000] BIOS-e820: [mem 0x000000000009fc00-0x000000000009ffff] reserved
+>> [    0.000000] BIOS-e820: [mem 0x00000000000f0000-0x00000000000fffff] reserved
+>> [    0.000000] BIOS-e820: [mem 0x0000000000100000-0x000000003ffdefff] usable
+>> [    0.000000] BIOS-e820: [mem 0x000000003ffdf000-0x000000003fffffff] reserved
+>> [    0.000000] BIOS-e820: [mem 0x00000000b0000000-0x00000000bfffffff] reserved
+>> [    0.000000] BIOS-e820: [mem 0x00000000fed1c000-0x00000000fed1ffff] reserved
+>> [    0.000000] BIOS-e820: [mem 0x00000000feffc000-0x00000000feffffff] reserved
+>> [    0.000000] BIOS-e820: [mem 0x00000000fffc0000-0x00000000ffffffff] reserved
+>> [    0.000000] NX (Execute Disable) protection: active
+>> [    0.000000] APIC: Static calls initialized
+>> [    0.000000] SMBIOS 3.0.0 present.
+>> [    0.000000] DMI: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+>> [    0.000000] Hypervisor detected: KVM
+>> [    0.000000] kvm-clock: Using msrs 4b564d01 and 4b564d00
+>> [    0.000001] kvm-clock: using sched offset of 1376980956 cycles
+>> [    0.000006] clocksource: kvm-clock: mask: 0xffffffffffffffff max_cycles: 0x1cd42e4dffb, max_idle_ns: 881590591483 ns
+>> [    0.000014] tsc: Detected 2904.008 MHz processor
+>> [    0.004273] last_pfn = 0x3ffdf max_arch_pfn = 0x400000000
+>> [    0.004315] MTRR map: 4 entries (3 fixed + 1 variable; max 19), built from 8 variable MTRRs
+>> [    0.004323] x86/PAT: Configuration [0-7]: WB  WC  UC- UC  WB  WP  UC- WT
+>> [    0.012972] found SMP MP-table at [mem 0x000f5480-0x000f548f]
+>> [    0.013243] ACPI: Early table checksum verification disabled
+>> [    0.013252] ACPI: RSDP 0x00000000000F52C0 000014 (v00 BOCHS )
+>> [    0.013265] ACPI: RSDT 0x000000003FFE2357 000038 (v01 BOCHS  BXPC 00000001 BXPC 00000001)
+>> [    0.013283] ACPI: FACP 0x000000003FFE2147 0000F4 (v03 BOCHS  BXPC 00000001 BXPC 00000001)
+>> [    0.013304] ACPI: DSDT 0x000000003FFE0040 002107 (v01 BOCHS  BXPC 00000001 BXPC 00000001)
+>> [    0.013319] ACPI: FACS 0x000000003FFE0000 000040
+>> [    0.013331] ACPI: APIC 0x000000003FFE223B 000080 (v03 BOCHS  BXPC 00000001 BXPC 00000001)
+>> [    0.013346] ACPI: HPET 0x000000003FFE22BB 000038 (v01 BOCHS  BXPC 00000001 BXPC 00000001)
+>> [    0.013361] ACPI: MCFG 0x000000003FFE22F3 00003C (v01 BOCHS  BXPC 00000001 BXPC 00000001)
+>> [    0.013375] ACPI: WAET 0x000000003FFE232F 000028 (v01 BOCHS  BXPC 00000001 BXPC 00000001)
+>> [    0.013388] ACPI: Reserving FACP table memory at [mem 0x3ffe2147-0x3ffe223a]
+>> [    0.013393] ACPI: Reserving DSDT table memory at [mem 0x3ffe0040-0x3ffe2146]
+>> [    0.013398] ACPI: Reserving FACS table memory at [mem 0x3ffe0000-0x3ffe003f]
+>> [    0.013402] ACPI: Reserving APIC table memory at [mem 0x3ffe223b-0x3ffe22ba]
+>> [    0.013407] ACPI: Reserving HPET table memory at [mem 0x3ffe22bb-0x3ffe22f2]
+>> [    0.013411] ACPI: Reserving MCFG table memory at [mem 0x3ffe22f3-0x3ffe232e]
+>> [    0.013416] ACPI: Reserving WAET table memory at [mem 0x3ffe232f-0x3ffe2356]
+>> [    0.013746] No NUMA configuration found
+>> [    0.013750] Faking a node at [mem 0x0000000000000000-0x000000003ffdefff]
+>> [    0.013762] NODE_DATA(0) allocated [mem 0x3ffb4000-0x3ffdefff]
+>> [    0.015042] Zone ranges:
+>> [    0.015047]   DMA      [mem 0x0000000000001000-0x0000000000ffffff]
+>> [    0.015056]   DMA32    [mem 0x0000000001000000-0x000000003ffdefff]
+>> [    0.015067]   Normal   empty
+>> [    0.015073]   Device   empty
+>> [    0.015080] Movable zone start for each node
+>> [    0.015113] Early memory node ranges
+>> [    0.015116]   node   0: [mem 0x0000000000001000-0x000000000009efff]
+>> [    0.015122]   node   0: [mem 0x0000000000100000-0x000000003ffdefff]
+>> [    0.015128] Initmem setup node 0 [mem 0x0000000000001000-0x000000003ffdefff]
+>> [    0.015177] On node 0, zone DMA: 1 pages in unavailable ranges
+>> [    0.015913] On node 0, zone DMA: 97 pages in unavailable ranges
+>> [    0.028914] On node 0, zone DMA32: 33 pages in unavailable ranges
+>> [    0.029456] ACPI: PM-Timer IO Port: 0x608
+>> [    0.029493] ACPI: LAPIC_NMI (acpi_id[0xff] dfl dfl lint[0x1])
+>> [    0.029547] IOAPIC[0]: apic_id 0, version 17, address 0xfec00000, GSI 0-23
+>> [    0.029558] ACPI: INT_SRC_OVR (bus 0 bus_irq 0 global_irq 2 dfl dfl)
+>> [    0.029564] ACPI: INT_SRC_OVR (bus 0 bus_irq 5 global_irq 5 high level)
+>> [    0.029569] ACPI: INT_SRC_OVR (bus 0 bus_irq 9 global_irq 9 high level)
+>> [    0.029575] ACPI: INT_SRC_OVR (bus 0 bus_irq 10 global_irq 10 high level)
+>> [    0.029580] ACPI: INT_SRC_OVR (bus 0 bus_irq 11 global_irq 11 high level)
+>> [    0.029597] ACPI: Using ACPI (MADT) for SMP configuration information
+>> [    0.029602] ACPI: HPET id: 0x8086a201 base: 0xfed00000
+>> [    0.029624] CPU topo: Max. logical packages:   1
+>> [    0.029628] CPU topo: Max. logical dies:       1
+>> [    0.029631] CPU topo: Max. dies per package:   1
+>> [    0.029644] CPU topo: Max. threads per core:   1
+>> [    0.029647] CPU topo: Num. cores per package:     2
+>> [    0.029650] CPU topo: Num. threads per package:   2
+>> [    0.029653] CPU topo: Allowing 2 present CPUs plus 0 hotplug CPUs
+>> [    0.029679] kvm-guest: APIC: eoi() replaced with kvm_guest_apic_eoi_write()
+>> [    0.029726] PM: hibernation: Registered nosave memory: [mem 0x00000000-0x00000fff]
+>> [    0.029734] PM: hibernation: Registered nosave memory: [mem 0x0009f000-0x0009ffff]
+>> [    0.029738] PM: hibernation: Registered nosave memory: [mem 0x000a0000-0x000effff]
+>> [    0.029742] PM: hibernation: Registered nosave memory: [mem 0x000f0000-0x000fffff]
+>> [    0.029749] [mem 0x40000000-0xafffffff] available for PCI devices
+>> [    0.029753] Booting paravirtualized kernel on KVM
+>> [    0.029758] clocksource: refined-jiffies: mask: 0xffffffff max_cycles: 0xffffffff, max_idle_ns: 7645519600211568 ns
+>> [    0.035898] setup_percpu: NR_CPUS:8192 nr_cpumask_bits:2 nr_cpu_ids:2 nr_node_ids:1
+>> [    0.036314] percpu: Embedded 65 pages/cpu s229376 r8192 d28672 u1048576
+>> [    0.036436] kvm-guest: PV spinlocks disabled, no host support
+>> [    0.036440] Kernel command line: root=/dev/sda1 console=ttyS0
+>> [    0.036669] Dentry cache hash table entries: 131072 (order: 8, 1048576 bytes, linear)
+>> [    0.036739] Inode-cache hash table entries: 65536 (order: 7, 524288 bytes, linear)
+>> [    0.036830] Fallback order for Node 0: 0
+>> [    0.036839] Built 1 zonelists, mobility grouping on.  Total pages: 257759
+>> [    0.036844] Policy zone: DMA32
+>> [    0.036875] mem auto-init: stack:all(zero), heap alloc:on, heap free:off
+>> [    0.042521] Memory: 260860K/1048052K available (22528K kernel code, 2386K rwdata, 6124K rodata, 6304K init, 8064K bss, 70584K reserved, 0K cma-reserved)
+>> [    0.056267] SLUB: HWalign=64, Order=0-3, MinObjects=0, CPUs=2, Nodes=1
+>> [    0.056279] kmemleak: Kernel memory leak detector disabled
+>> [    0.056484] Kernel/User page tables isolation: enabled
+>> [    0.056631] ftrace: allocating 43400 entries in 170 pages
+>> [    0.065090] ftrace: allocated 170 pages with 4 groups
+>> [    0.066107] Dynamic Preempt: voluntary
+>> [    0.066496] rcu: Preemptible hierarchical RCU implementation.
+>> [    0.066500] rcu:     RCU restricting CPUs from NR_CPUS=8192 to nr_cpu_ids=2.
+>> [    0.066505]  Trampoline variant of Tasks RCU enabled.
+>> [    0.066508]  Rude variant of Tasks RCU enabled.
+>> [    0.066510]  Tracing variant of Tasks RCU enabled.
+>> [    0.066513] rcu: RCU calculated value of scheduler-enlistment delay is 25 jiffies.
+>> [    0.066517] rcu: Adjusting geometry for rcu_fanout_leaf=16, nr_cpu_ids=2
+>> [    0.066535] RCU Tasks: Setting shift to 1 and lim to 1 rcu_task_cb_adjust=1.
+>> [    0.066541] RCU Tasks Rude: Setting shift to 1 and lim to 1 rcu_task_cb_adjust=1.
+>> [    0.066546] RCU Tasks Trace: Setting shift to 1 and lim to 1 rcu_task_cb_adjust=1.
+>> [    0.079398] NR_IRQS: 524544, nr_irqs: 440, preallocated irqs: 16
+>> [    0.079764] rcu: srcu_init: Setting srcu_struct sizes based on contention.
+>> [    0.091718] Console: colour VGA+ 80x25
+>> [    0.091774] printk: legacy console [ttyS0] enabled
+>> [    0.232004] ACPI: Core revision 20230628
+>> [    0.233211] clocksource: hpet: mask: 0xffffffff max_cycles: 0xffffffff, max_idle_ns: 19112604467 ns
+>> [    0.234715] APIC: Switch to symmetric I/O mode setup
+>> [    0.235721] x2apic enabled
+>> [    0.236578] APIC: Switched APIC routing to: physical x2apic
+>> [    0.239656] ..TIMER: vector=0x30 apic1=0 pin1=2 apic2=-1 pin2=-1
+>> [    0.241221] clocksource: tsc-early: mask: 0xffffffffffffffff max_cycles: 0x29dc0d988f1, max_idle_ns: 440795328788 ns
+>> [    0.243872] Calibrating delay loop (skipped) preset value.. 5808.01 BogoMIPS (lpj=11616032)
+>> [    0.246030] Last level iTLB entries: 4KB 0, 2MB 0, 4MB 0
+>> [    0.247870] Last level dTLB entries: 4KB 0, 2MB 0, 4MB 0, 1GB 0
+>> [    0.248788] Spectre V1 : Mitigation: usercopy/swapgs barriers and __user pointer sanitization
+>> [    0.250127] Spectre V2 : Mitigation: Retpolines
+>> [    0.251176] Spectre V2 : Spectre v2 / SpectreRSB mitigation: Filling RSB on context switch
+>> [    0.251868] Spectre V2 : Spectre v2 / SpectreRSB : Filling RSB on VMEXIT
+>> [    0.253483] Speculative Store Bypass: Vulnerable
+>> [    0.255878] MDS: Vulnerable: Clear CPU buffers attempted, no microcode
+>> [    0.257191] MMIO Stale Data: Unknown: No mitigations
+>> [    0.258243] x86/fpu: x87 FPU will use FXSAVE
+>> [    0.327550] Freeing SMP alternatives memory: 36K
+>> [    0.327884] pid_max: default: 32768 minimum: 301
+>> [    0.330232] LSM: initializing lsm=capability,landlock,apparmor,tomoyo,bpf,ima,evm
+>> [    0.332326] landlock: Up and running.
+>> [    0.333534] AppArmor: AppArmor initialized
+>> [    0.334523] TOMOYO Linux initialized
+>> [    0.335895] LSM support for eBPF active
+>> [    0.337311] Mount-cache hash table entries: 2048 (order: 2, 16384 bytes, linear)
+>> [    0.339886] Mountpoint-cache hash table entries: 2048 (order: 2, 16384 bytes, linear)
+>> [    0.344459] kcsan: enabled early
+>> [    0.345245] kcsan: non-strict mode configured - use CONFIG_KCSAN_STRICT=y to see all data races
+>> [    0.375873] BUG: unable to handle page fault for address: 0000000000030368
+>> [    0.377316] #PF: supervisor read access in kernel mode
+>> [    0.378506] #PF: error_code(0x0000) - not-present page
+>> [    0.379647] PGD 0 P4D 0
+>> [    0.379861] Oops: 0000 [#1] PREEMPT SMP PTI
+>> [    0.379861] CPU: 0 PID: 1 Comm: swapper/0 Not tainted 6.9.0-rc1+ #75
+>> [    0.379861] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+>> [    0.379861] RIP: 0010:kcsan_setup_watchpoint+0x3cc/0x400
+>> [    0.379861] Code: 8b 04 24 4c 89 c2 48 31 c2 e9 69 fe ff ff 45 31 c0 e9 c3 fd ff ff 4c 89 c2 31 c0 e9 57 fe ff ff 45 0f b6 04 24 e9 af fd ff ff <45> 8b 04 24 e9 a6 fd ff ff 85 c9 74 08 f0 48 ff 05 b7 a2 6e 02 b9
+>> [    0.379861] RSP: 0000:ffff9fed80003de0 EFLAGS: 00010046
+>> [    0.379861] RAX: 0000000000000000 RBX: ffff8c2d3ec302c0 RCX: 0000000000000030
+>> [    0.379861] RDX: 0000000000000001 RSI: ffffffff995ff0f0 RDI: 0000000000000000
+>> [    0.379861] RBP: 0000000000000004 R08: 00000000aaaaaaab R09: 0000000000000000
+>> [    0.379861] R10: 0000000000030368 R11: 0008000000030368 R12: 0000000000030368
+>> [    0.379861] R13: 0000000000000031 R14: 0000000000000000 R15: 0000000000000000
+>> [    0.379861] FS:  0000000000000000(0000) GS:ffff8c2d3ec00000(0000) knlGS:0000000000000000
+>> [    0.379861] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+>> [    0.379861] CR2: 0000000000030368 CR3: 0000000030a20000 CR4: 00000000000006f0
+>> [    0.379861] Call Trace:
+>> [    0.379861]  <IRQ>
+>> [    0.379861]  ? __die+0x23/0x70
+>> [    0.379861]  ? page_fault_oops+0x173/0x4f0
+>> [    0.379861]  ? exc_page_fault+0x81/0x190
+>> [    0.379861]  ? asm_exc_page_fault+0x26/0x30
+>> [    0.379861]  ? perf_event_task_tick+0x40/0x130
+>> [    0.379861]  ? kcsan_setup_watchpoint+0x3cc/0x400
+>> [    0.379861]  ? update_load_avg+0x7e/0x7e0
+>> [    0.379861]  ? __hrtimer_run_queues+0x3e/0x4b0
+>> [    0.379861]  ? hrtimer_active+0x88/0xc0
+>> [    0.379861]  perf_event_task_tick+0x40/0x130
+>> [    0.379861]  scheduler_tick+0xe3/0x2a0
+>> [    0.379861]  update_process_times+0xb4/0xe0
+>> [    0.379861]  tick_periodic+0x4e/0x110
+>> [    0.379861]  tick_handle_periodic+0x39/0x90
+>> [    0.379861]  ? __pfx_timer_interrupt+0x10/0x10
+>> [    0.379861]  timer_interrupt+0x18/0x30
+>> [    0.379861]  __handle_irq_event_percpu+0x7b/0x280
+>> [    0.379861]  handle_irq_event+0x78/0xf0
+>> [    0.379861]  handle_edge_irq+0x11e/0x400
+>> [    0.379861]  __common_interrupt+0x3f/0xa0
+>> [    0.379861]  common_interrupt+0x80/0xa0
+>> [    0.379861]  </IRQ>
+>> [    0.379861]  <TASK>
+>> [    0.379861]  asm_common_interrupt+0x26/0x40
+>> [    0.379861] RIP: 0010:__tsan_read4+0x34/0x110
+>> [    0.379861] Code: 4c 8b 1c 24 48 b9 ff ff ff ff ff ff 01 00 48 c1 e8 09 49 21 ca 25 f8 01 00 00 4c 8d 80 60 e8 cc 9b 48 05 78 e8 cc 9b 4d 8b 08 <4d> 85 c9 79 2a 4c 89 ca 4c 89 ce 48 c1 ea 31 48 21 ce 81 e2 ff 3f
+>> [    0.379861] RSP: 0000:ffff9fed80013e18 EFLAGS: 00000296
+>> [    0.379861] RAX: ffffffff9bcce890 RBX: 000000012dbb5ed6 RCX: 0001ffffffffffff
+>> [    0.379861] RDX: 0000000000098472 RSI: ffffffff9b65df00 RDI: ffffffff9b043f64
+>> [    0.379861] RBP: 0000000000b13f20 R08: ffffffff9bcce878 R09: 0000000000000000
+>> [    0.379861] R10: 0001ffff9b043f64 R11: ffffffff9b65df00 R12: 00000000fffedb23
+>> [    0.379861] R13: 0000000000000000 R14: ffff8c2d3ec00000 R15: 00000000002c4fc8
+>> [    0.379861]  ? setup_boot_APIC_clock+0x180/0x8f0
+>> [    0.379861]  ? setup_boot_APIC_clock+0x180/0x8f0
+>> [    0.379861]  setup_boot_APIC_clock+0x180/0x8f0
+>> [    0.379861]  native_smp_prepare_cpus+0x2b/0xc0
+>> [    0.379861]  kernel_init_freeable+0x41e/0x7d0
+>> [    0.379861]  ? __pfx_kernel_init+0x10/0x10
+>> [    0.379861]  kernel_init+0x1f/0x230
+>> [    0.379861]  ret_from_fork+0x34/0x50
+>> [    0.379861]  ? __pfx_kernel_init+0x10/0x10
+>> [    0.379861]  ret_from_fork_asm+0x1a/0x30
+>> [    0.379861]  </TASK>
+>> [    0.379861] Modules linked in:
+>> [    0.379861] CR2: 0000000000030368
+>> [    0.379861] ---[ end trace 0000000000000000 ]---
+>> [    0.379861] RIP: 0010:kcsan_setup_watchpoint+0x3cc/0x400
+>> [    0.379861] Code: 8b 04 24 4c 89 c2 48 31 c2 e9 69 fe ff ff 45 31 c0 e9 c3 fd ff ff 4c 89 c2 31 c0 e9 57 fe ff ff 45 0f b6 04 24 e9 af fd ff ff <45> 8b 04 24 e9 a6 fd ff ff 85 c9 74 08 f0 48 ff 05 b7 a2 6e 02 b9
+>> [    0.379861] RSP: 0000:ffff9fed80003de0 EFLAGS: 00010046
+>> [    0.379861] RAX: 0000000000000000 RBX: ffff8c2d3ec302c0 RCX: 0000000000000030
+>> [    0.379861] RDX: 0000000000000001 RSI: ffffffff995ff0f0 RDI: 0000000000000000
+>> [    0.379861] RBP: 0000000000000004 R08: 00000000aaaaaaab R09: 0000000000000000
+>> [    0.379861] R10: 0000000000030368 R11: 0008000000030368 R12: 0000000000030368
+>> [    0.379861] R13: 0000000000000031 R14: 0000000000000000 R15: 0000000000000000
+>> [    0.379861] FS:  0000000000000000(0000) GS:ffff8c2d3ec00000(0000) knlGS:0000000000000000
+>> [    0.379861] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+>> [    0.379861] CR2: 0000000000030368 CR3: 0000000030a20000 CR4: 00000000000006f0
+>> [    0.379861] Kernel panic - not syncing: Fatal exception in interrupt
+>> [    0.379861] ---[ end Kernel panic - not syncing: Fatal exception in interrupt ]---
+>> ```
 
