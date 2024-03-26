@@ -1,144 +1,76 @@
-Return-Path: <linux-kernel+bounces-119239-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-119217-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 65C7E88C606
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 15:57:03 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7084588C5C8
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 15:51:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 20BB93058C7
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 14:57:02 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 225E41F62769
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 14:51:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6ADA413C683;
-	Tue, 26 Mar 2024 14:56:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b="f15vaomC"
-Received: from mail-wm1-f47.google.com (mail-wm1-f47.google.com [209.85.128.47])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC8B11F168
-	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 14:56:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E330813C815;
+	Tue, 26 Mar 2024 14:50:40 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C693A13C813
+	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 14:50:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711465017; cv=none; b=PcQjGZlk+vOp3JRmhF7Iggmqr8gzitWiiqtTgA/IYhy5dyGkosMXY0E00e2lnM62b7JRrOzLHLemwg9LrlyuhaP4WDGgln61hf5fYyRY6nYDEX1iJWKCPbnXK/LM2Ksd8VVX64C02eOq29QzngeiGygM9QNNmMJVEyu2JfrsSos=
+	t=1711464640; cv=none; b=nhwg7sIzAzz4V2bexy7qHZfbYN6LJ53SFCsDFh42Q1FeYV2Y1e70FpLlp5RNcdqj7hmrVs45MGor1mFIM4Wge/9yUZ1xxDv1J0HqZjct5h4rrwemFWWHhqf+cVZPz/0/mi/HuCQxccds9MtKswdm5zs80M1j7ELrVuGR7ZHtkhc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711465017; c=relaxed/simple;
-	bh=2y9ctp56HMkbvyZgKo5fx6Q9dshxX5+8r2XntdNWGeE=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=l0ZWyKw3uNCY9ybFphLBZJn6zDtjh8mzDdvEKXJmuX0uuc5Ka5Vm4ZbhtN544Gn//BxqxOOL4b7r2YCaqWvKWmFwd3/X1f4ZxTNM0xolVrEoW4gEunqZnFeUu744UW7q7DjRQuIn9oHjWI0A4GDj85oksXxVMVK1oj28XIceuZU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b=f15vaomC; arc=none smtp.client-ip=209.85.128.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baylibre.com
-Received: by mail-wm1-f47.google.com with SMTP id 5b1f17b1804b1-41490cc034aso2192015e9.2
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 07:56:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1711465013; x=1712069813; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=Z/G1vU/i34n4Yf6dbVXXOkUIfKhQJFotsjQ1E/HHO2A=;
-        b=f15vaomC0cvHnHoFzNXXTfWCoXvbuMy8w/RoqQBw0ku9hs/3EX5LWswwSWV4D/Q5Zv
-         qo+fZhzXcSNhBdt+kpbU40MdUxUVydKwL6nujj5g1XUs+ZbpOC7CsQRsWR/1D6460Ekb
-         pqSMHwZWnCQxOKtxA66IFEoXoR/rSHYvj4Kk6BLykWHE2cIgiEVldCLa5NFt6jiJKtcc
-         FTN0NjKdOXQfCXkmxGaSvasSKuDmQFcKmnEGeEAc5XESzB9lMusV7bVAwv8A/86OS6V2
-         YY6IrAWWhvOk8MrnszbSjeHsPg95zgbnXkZWaIlhxOnD9gnzJuF5DjZd4QJjPQ5ytO10
-         Iu8g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711465013; x=1712069813;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Z/G1vU/i34n4Yf6dbVXXOkUIfKhQJFotsjQ1E/HHO2A=;
-        b=O4bw+Xnd/asVHKY8d4+Znqy/+9F0Fbf93rBpgWjcg93OnR8UJWI1ET4q4Hnovt0imU
-         Jvh2KE+yLEoteCss1YHSGpRcn2OpE5VWAJWopfwJWqGg96XGpJsbHkw5VlU82cXqENB1
-         9065GbHi15jUkuOUxcxTBNdeq/MjV8uaXZUZ7s5P3zzm2Z2hDxOGCTnctZ5HN+am3g+y
-         u/vH0PUhp2PcRahAxHy5AIE8vJTiW9H2nh0qlJF6dFTgC928TtVsE+B2PPlcGxoTjMPF
-         Tb2LnNCC/AIy/Dh3USW3qUkUSD3BqxG37ue+bUJk3Vg+dgvw7cirgwXIeEssHxtSSnaw
-         8hnQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWqymt3djnJRJYzbnNqUiRyDf3xj6jJMER1Sb+TO352lm5aAxGeQ0DuzTCPLfVxtHjYJ0H02hGrb2ik6QnRabxCV/WOaaiSTuwUoTxU
-X-Gm-Message-State: AOJu0Yy7nEobSKA8B+eU/pf47vZ5tFq9nOIAcvkSD9eva7NTuRXQkQhV
-	AEgEd+MpQ9J7oAoYn1JCTypxRL8nRijio4fAG4468HoYZEP9DwBwvzBGFrFNCx8=
-X-Google-Smtp-Source: AGHT+IHgX0UjDpUS3pvvXSWQ89lGsdbFRcjbil8q0TiSG1zwcrctb+NcH3iuLaIhpS4dSbwwuyx9yA==
-X-Received: by 2002:a05:600c:4510:b0:414:1351:8662 with SMTP id t16-20020a05600c451000b0041413518662mr1176708wmo.12.1711465013025;
-        Tue, 26 Mar 2024 07:56:53 -0700 (PDT)
-Received: from blmsp.fritz.box ([2001:4091:a246:821e:6f3b:6b50:4762:8343])
-        by smtp.gmail.com with ESMTPSA id f12-20020a05600c4e8c00b00414850d567fsm9838120wmq.1.2024.03.26.07.55.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Mar 2024 07:56:00 -0700 (PDT)
-From: Markus Schneider-Pargmann <msp@baylibre.com>
-To: Grygorii Strashko <grygorii.strashko@ti.com>,
-	Santosh Shilimkar <ssantosh@kernel.org>,
-	Kevin Hilman <khilman@kernel.org>,
-	Linus Walleij <linus.walleij@linaro.org>,
-	Bartosz Golaszewski <brgl@bgdev.pl>
-Cc: linux-omap@vger.kernel.org,
-	linux-gpio@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Markus Schneider-Pargmann <msp@baylibre.com>,
-	Markus Mirevik <markus.mirevik@dpsolutions.se>
-Subject: [PATCH] gpio: omap: Fix double trigger for level interrupts
-Date: Tue, 26 Mar 2024 15:50:14 +0100
-Message-ID: <20240326145439.1293412-1-msp@baylibre.com>
-X-Mailer: git-send-email 2.43.0
+	s=arc-20240116; t=1711464640; c=relaxed/simple;
+	bh=/0pxlMZ1zHArlripP5Z7xHzTAEUYXB04xQcW7CZIOJE=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=jwcNaV6CaPrIEz32w8OXcYuNm5Yd96kNumNYefrIANOvpaApXRaBnYvwkBWDbqE0ohqo32214j7l6xp9M0zmeS4JDilEgvtYkm5r3PitkVBDbjGnIEE7uacFiEaaJr0T4vgsZLScghEoNqV7aOe5+5F8ghCW9N0ks9wDnOpPx6M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A732F339;
+	Tue, 26 Mar 2024 07:51:11 -0700 (PDT)
+Received: from usa.arm.com (e103737-lin.cambridge.arm.com [10.1.197.49])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id E60713F694;
+	Tue, 26 Mar 2024 07:50:36 -0700 (PDT)
+From: Sudeep Holla <sudeep.holla@arm.com>
+To: linux-kernel@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	Jens Wiklander <jens.wiklander@linaro.org>
+Cc: Sudeep Holla <sudeep.holla@arm.com>,
+	Marc Bonnici <marc.bonnici@arm.com>,
+	Olivier Deprez <Olivier.Deprez@arm.com>,
+	Lorenzo Pieralisi <lpieralisi@kernel.org>
+Subject: Re: [PATCH v2] firmware: arm_ffa: fix ffa_notification_info_get()
+Date: Tue, 26 Mar 2024 14:50:33 +0000
+Message-ID: <171146460965.2983730.14931789520460861310.b4-ty@arm.com>
+X-Mailer: git-send-email 2.43.2
+In-Reply-To: <20240311110700.2367142-1-jens.wiklander@linaro.org>
+References: <20240311110700.2367142-1-jens.wiklander@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 
-Set gpio trigger before clearing the irq status.
+On Mon, 11 Mar 2024 12:07:00 +0100, Jens Wiklander wrote:
+> FFA_NOTIFICATION_INFO_GET retrieves information about pending
+> notifications. Notifications can be either global or per VCPU. Global
+> notifications are reported with the partition ID only in the list of
+> endpoints with pending notifications.  ffa_notification_info_get()
+> incorrectly expect no ID at all for global notifications. Fix this by
+> checking for 1 ID instead of 0.
+>
+> [...]
 
-This patch was originally proposed by Grygorii Strashko.
+Applied to sudeep.holla/linux (for-next/ffa/fixes), thanks!
 
-Cc: Grygorii Strashko <grygorii.strashko@ti.com>
-Reported-by: Markus Mirevik <markus.mirevik@dpsolutions.se>
-Closes: https://lore.kernel.org/all/20220122235959.GA10737@sol/T/
-Signed-off-by: Markus Schneider-Pargmann <msp@baylibre.com>
----
-Hi everyone,
-
-this patch helped me on the beagleboneblack to remove the mentioned
-double trigger of level interrupts. This diff was proposed by Grygorii
-in the thread linked in the commit message. I am not sure why this never
-made it into the kernel, that's why I sending this patch. I did not
-create the diff just made a patch out of it, I don't care about being
-the author but I would be happy if this would get merged or some other
-solution to the problem.
-
-Thanks!
-
-Best
-Markus
-
- drivers/gpio/gpio-omap.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/gpio/gpio-omap.c b/drivers/gpio/gpio-omap.c
-index 76d5d87e9681..74b8fe2995e1 100644
---- a/drivers/gpio/gpio-omap.c
-+++ b/drivers/gpio/gpio-omap.c
-@@ -696,6 +696,9 @@ static void omap_gpio_unmask_irq(struct irq_data *d)
- 	raw_spin_lock_irqsave(&bank->lock, flags);
- 	omap_set_gpio_irqenable(bank, offset, 1);
- 
-+	if (trigger)
-+		omap_set_gpio_triggering(bank, offset, trigger);
-+
- 	/*
- 	 * For level-triggered GPIOs, clearing must be done after the source
- 	 * is cleared, thus after the handler has run. OMAP4 needs this done
-@@ -705,9 +708,6 @@ static void omap_gpio_unmask_irq(struct irq_data *d)
- 	    trigger & (IRQ_TYPE_LEVEL_HIGH | IRQ_TYPE_LEVEL_LOW))
- 		omap_clear_gpio_irqstatus(bank, offset);
- 
--	if (trigger)
--		omap_set_gpio_triggering(bank, offset, trigger);
--
- 	raw_spin_unlock_irqrestore(&bank->lock, flags);
- }
- 
--- 
-2.43.0
+[1/1] firmware: arm_ffa: fix ffa_notification_info_get()
+      https://git.kernel.org/sudeep.holla/c/1a4bd2b128fb
+--
+Regards,
+Sudeep
 
 
