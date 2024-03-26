@@ -1,45 +1,45 @@
-Return-Path: <linux-kernel+bounces-119312-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-119313-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2B9EE88C6EB
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 16:29:19 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id D33C888C6EE
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 16:29:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5DC7E1C3FC2A
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 15:29:18 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8B3513207CC
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 15:29:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C04A813CC5E;
-	Tue, 26 Mar 2024 15:27:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8E7F713CC7A;
+	Tue, 26 Mar 2024 15:28:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="R9H3froV"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Hxc4m8W1"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ECDA013C908;
-	Tue, 26 Mar 2024 15:27:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B5B0413C91B;
+	Tue, 26 Mar 2024 15:28:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711466879; cv=none; b=AkbJXjyc7VY40xincsXMMTjFg0pc8MwZmf/7cHRRgWLPX6WuE2EXrBYprLZLocL/qLYiet9Qh084iXLZ3/yDTpbFJ90VsXe9yy1DIqHPfQgr6vipmIPk/ktQnNKtrwUypffL0uYfQIrvZqj6StiTlNp4cIszJGwRUzxhyNpzi5Q=
+	t=1711466883; cv=none; b=iwlXVv/Mu22cLJo0cZortVxNp7p8SWTbgvEGdZqX+cF1IvNbJ7Hdn7ROqrWiS45uIK8bKw++yjjaXdKRO7dGOEX0KNF5alnrRbNtL8e4cqDg4Vll8/VgrcDHjEtQj8qTw3j5M4pZLtZq1aypHkIDivaLEqaJMKs4HjvnnlLx+c4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711466879; c=relaxed/simple;
-	bh=hRH8KwD0yeb6Ii/FGemUiqr+aQmrUQOnUFhl/QaNG9o=;
+	s=arc-20240116; t=1711466883; c=relaxed/simple;
+	bh=rtyqG7tbP6UdPkekPZzDTtw8SgBNzRw2sMyiAo22mhs=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
-	 MIME-Version:Content-Type; b=PrPOc3l/jL5fhiAImbsm0v2uCGKey4Y+NR1DMmCSW2a+cdv+jv4TUdLPECXPunChJAhJAyw0PsBrlQXzw/MWSv9zVyds1pW2hyENjUX0amP4m+gAgNsk3dn6/tSiVc8PMKIrADNBXEUk9UiXUomAy5qdXVAYRiA71qHxYFTXZOE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=R9H3froV; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 43B18C433B1;
-	Tue, 26 Mar 2024 15:27:54 +0000 (UTC)
+	 MIME-Version:Content-Type; b=jtSW4Gi4JSingdgB52czPAtiH5TcvTtG/u87D2v3QEa2eGWt0TJplObjQI2ccEc9yzMi4SptbcaNhyEf2jkthZYhyh8LQx6UANOr4OftFcMJBVkUB3J7PhKnx3E19eEqy/btOerlxgMddyQWnxRXAnyKMNdA6OEaMr7AwoOL6Ps=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Hxc4m8W1; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 038BDC433F1;
+	Tue, 26 Mar 2024 15:27:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711466878;
-	bh=hRH8KwD0yeb6Ii/FGemUiqr+aQmrUQOnUFhl/QaNG9o=;
+	s=k20201202; t=1711466883;
+	bh=rtyqG7tbP6UdPkekPZzDTtw8SgBNzRw2sMyiAo22mhs=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=R9H3froV73QGMdXLc9BBRgXfXoWKxlqMl7mfPzkiV0Xotb+lR0OyS567kcVd2m/01
-	 LInj8GTpsyRNN9SSVSTS6Lu3uLl2pGzZ7tAaBlgd7FKSj/5E1kuOSmiZ1sMVeENSLM
-	 xC3kaP05IWC150YFK8BFnXYQv9W+B0928djHny3OBZ+24C3+glAUY2nff0owN2kgoJ
-	 BG2o0V5bsX+KC9E7DnYDUK0aN50eMP/r2nNOzydUOmr0OEevwfIxqnVNe4F6PufLjR
-	 xYJ4VHNDO7zKjJl7kFfXKdw5ZsK4z1va7FkozBAMAkJpHb14C9yHr5nhY65b2BypjN
-	 jDxpj16VqKVtQ==
+	b=Hxc4m8W14eaRDGErYkG+g97Das8kOomVfVpVzmgTi8R+hLsDJG1g0s/AyCfvuUk6f
+	 IcWSC1pA1JrKLH4AEFZxSf3t9qYiTX2bOAs1iy17ylh96i2CnCPnquwew8XwLixVUt
+	 h4WNokMzanCKMtItm6z42ROvj2D7F+GqcPYAT8N8ZfddJTaZ7RN+1a0V19F95nkOQY
+	 lSsgz8i24rh8bxqNgBBfqRj2IjJpg+Hx787PQYjb4lqJqvZ5gkZdc6FO5crMPyjQDD
+	 ZO6Fv6Gp4oLt6wqDC2kbKJ1YgGDVjOnwHzbW9WFSHAUBFkX5zgllVwFsLCj7wEb2FJ
+	 QvvISKPVukXYg==
 From: Mark Brown <broonie@kernel.org>
 To: Lars-Peter Clausen <lars@metafoo.de>, Jaroslav Kysela <perex@perex.cz>, 
  Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, 
@@ -56,11 +56,12 @@ Cc: linux-sound@vger.kernel.org, linux-kernel@vger.kernel.org,
  linux-arm-kernel@lists.infradead.org, Vishal Sagar <vishal.sagar@amd.com>, 
  Anatoliy Klymenko <anatoliy.klymenko@amd.com>, 
  =?utf-8?q?P=C3=A9ter_Ujfalusi?= <peter.ujfalusi@gmail.com>
-In-Reply-To: <20240312-xilinx-dp-audio-v1-0-696c79facbb9@ideasonboard.com>
-References: <20240312-xilinx-dp-audio-v1-0-696c79facbb9@ideasonboard.com>
-Subject: Re: (subset) [PATCH 0/4] drm: xlnx: zynqmp: Add DP audio support
-Message-Id: <171146687400.132239.7354638412011978940.b4-ty@kernel.org>
-Date: Tue, 26 Mar 2024 15:27:54 +0000
+In-Reply-To: <20240319-xilinx-dp-audio-v2-0-92d6d3a7ca7e@ideasonboard.com>
+References: <20240319-xilinx-dp-audio-v2-0-92d6d3a7ca7e@ideasonboard.com>
+Subject: Re: (subset) [PATCH v2 0/4] drm: xlnx: zynqmp: Add DP audio
+ support
+Message-Id: <171146687873.132239.7709540608544229526.b4-ty@kernel.org>
+Date: Tue, 26 Mar 2024 15:27:58 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -71,7 +72,7 @@ Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 X-Mailer: b4 0.14-dev
 
-On Tue, 12 Mar 2024 11:41:01 +0200, Tomi Valkeinen wrote:
+On Tue, 19 Mar 2024 10:22:35 +0200, Tomi Valkeinen wrote:
 > Add DisplayPort audio support for Xilinx ZynqMP platforms.
 > 
 > This depends on patch adding cyclic DMA mode for DPDMA driver:
