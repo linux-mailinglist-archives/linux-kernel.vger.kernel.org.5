@@ -1,131 +1,219 @@
-Return-Path: <linux-kernel+bounces-118554-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-118555-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6729288BC8B
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 09:34:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 7A87A88BC8F
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 09:34:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 989371C2D12F
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 08:34:21 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9EF201C323B3
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 08:34:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 11DB554BF0;
-	Tue, 26 Mar 2024 08:33:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E655B12E71;
+	Tue, 26 Mar 2024 08:33:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="TA28UCZf"
-Received: from mail-wm1-f44.google.com (mail-wm1-f44.google.com [209.85.128.44])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="QDlg6BC5"
+Received: from mail-pl1-f177.google.com (mail-pl1-f177.google.com [209.85.214.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A4B5B548F1
-	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 08:33:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 95C1FEEDB
+	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 08:33:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711442012; cv=none; b=Sqxo0pHXDSZ1TL/ibLcyeW+/cBlwThUTumvMcaobMalQn+nI8A0g/Y/zJnyIQZ/rtbeKx69w/Ecdh/86cdbRwrx786jeUH6HBNmFVoxEaP5Cnb5IvXZEqwCEr9zoDJSN9UOBcP6y4KGS4OJYv9SO9/e0LBXlhNGNBGx5D11lHJc=
+	t=1711442029; cv=none; b=tCdRoH5m4rBdeBd41Rjqe8s2wGLGnlOutEuc8vpBHHUiCr7va+opsv+wHrc7hX2tRaV1HQsi56TucA2xriiEGyd5t9gwkAmUI4MUOGZyYJxzu0BTnHq8ZKSUquceaQ0sEpNmcm52SV+PAwd7kh8M74PicBz7rmpTjhLRsK8ssYk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711442012; c=relaxed/simple;
-	bh=6zeoSahOhvKcfe3tLZx3C8WD5UHvAts/40hAXVrjdkw=;
+	s=arc-20240116; t=1711442029; c=relaxed/simple;
+	bh=ekSZJD9CdDsC7N70aoX3Mzm0bRUXxt7Zdo8CRQJXlHg=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=tGOMTrRAbjHoWEQlqOH5WD7v4FWBVX8INzZGSc1SKRvjCsIokBWWwKDt9eNlzr1kvbfEtxAvl2JWDD3XvGEQxfWJ+qltE18w92U82voofXznzu5lPYcBwAq/jJqxPaTZU8La64qMM+4S359x1GUVDWo/BopzhWJ6fnlvuNdl1rs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=TA28UCZf; arc=none smtp.client-ip=209.85.128.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f44.google.com with SMTP id 5b1f17b1804b1-4148f00fa66so2770195e9.0
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 01:33:30 -0700 (PDT)
+	 Content-Type:Content-Disposition:In-Reply-To; b=eLV3UOnw8tKXzBWKquBqjP4B8oxp6+YiIF+cq7x1qGb+ogs3ue9dxxi+7nbA3e4SPgQyW49ITuiKBLuqkETsQLdSjCEBgPQ5SFKauLE2Dz1XRrXENFFeQVQ10s31i5BourZ8iDEcK8kvTw8zKWGC/eHr/5bdgBdCUAmtLOoarKM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=QDlg6BC5; arc=none smtp.client-ip=209.85.214.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-pl1-f177.google.com with SMTP id d9443c01a7336-1e04ac4209eso46898135ad.1
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 01:33:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711442009; x=1712046809; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=JyReadztiNYhjf4mOaaDyd5cW+HZXSffA6TTQkELG7U=;
-        b=TA28UCZfnvMDEqNg4pfa+zBKfa1hDsa8y4A7eLX7X0KTH4VVIBZdHMDIPtxrE5NxXz
-         gHiPwYKYnOgfTPNdtuo1RVOnBRX+xZw3MRTKfgSFYyzBOsD4KUcInl/IDG9fCYfvsNYa
-         FtQliaKeSRYe2adn8kh367/iyuITLORDstd41DKWqj5MdhQxeijdP4uaVgxuYMPBz9c8
-         ruTpGTss0piQhzInka8Cx6jbA3J+gDTeGSISzIyx6n6lgY/5hT+NKev/zvH6HSXmsC+J
-         oA+JZgsIT+dpvbLadN+v2eajk3otxrj9VzKKTllQcwg6u/CV3QaVh5t1ax9HN66bMgBx
-         p4oQ==
+        d=linaro.org; s=google; t=1711442026; x=1712046826; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=nQOtfcbnYc24Mh+gXI1bFDgfC9HlUS+Sxyvob3hinF4=;
+        b=QDlg6BC5TpEpQSiYK/ywqBmTCeMtYFVoAGi71ZSLenNMLZixXzy4HpvxwCIH28UH0o
+         UkYRKCOR3dkjAfHs78TTor3aXXJOQX5eE4dyOFbvcSQDlKIf6n7SmmJi0QD/OGo162ww
+         EhucN79Z4dlppF8Xmb443dHNhx9JMsA+6COFtzg7zBAN2SOxoXtFHsW9IrzdALSMo+Fl
+         N8FJAnJYpG74KiSs/Eeyg8hVsqeYwbsZehsYvdUHDSnxobC01i3WgT6OynfCNXX2VJT9
+         spduE8GqiCfFxWIgovejwa+ANb9AibJCLbbWxlM1JiOkeHXcZoQ8Th/ACZ/yvP5XKFWX
+         VxSA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711442009; x=1712046809;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=JyReadztiNYhjf4mOaaDyd5cW+HZXSffA6TTQkELG7U=;
-        b=nhtIdvOW4uDw1LJjTTDxOg3ma135PYugPgLCkhy9dYXtFuv58wYfnB4gMrb3iYZT21
-         TNnv9QaR2CMzEDk6++foHJkC9ijE88QLAEFu/+J/k003FdLR1psIXReVAx9PwL6ERMSw
-         +Jno6uMplzDrIpE3hCFRxmoVQCL390IIkjeboU4IoeDHzni+tJz4a6pyKF18Ty01Kng3
-         FZANDahLBMxYukFd4fBJAdTtUB2lN3MYCK4v2Msn340kqLuq1L+OAWDmNwW7zH40S4EX
-         SVWyrh59tmF34OYSQ9iPXKXxdF3iPZ4Z4zF6urt2PgBhJ8qX0Af2zumvT+cGJbrr3x0D
-         XJmw==
-X-Forwarded-Encrypted: i=1; AJvYcCXO3olqYg7QVrYE/jHJ4OE65ZTOAB69D0ph0FyEoBeI9QiEOFESZda5a9hl+APK4FVtHBopQPA75CQKU1J8+LmYtB8l2IIonkxKO8C2
-X-Gm-Message-State: AOJu0Ywn1ZvaIHt9WcGVK1VoCU73EfFSMNQM5xFOIInbrMJera4r8LI0
-	hTbdppp8bPnhByPj/a1jEsyS9xDH8oBplW+8xag1WoCHKwemsguW
-X-Google-Smtp-Source: AGHT+IGe/H7uGJpPfItdaEKmFG3qI74BSCeCvlOUtguH+50pCLSbUAekuapcayL/TrWpRTDKkLD5GA==
-X-Received: by 2002:a05:600c:1553:b0:414:8e02:e441 with SMTP id f19-20020a05600c155300b004148e02e441mr1116601wmg.13.1711442008633;
-        Tue, 26 Mar 2024 01:33:28 -0700 (PDT)
-Received: from gmail.com (1F2EF63C.nat.pool.telekom.hu. [31.46.246.60])
-        by smtp.gmail.com with ESMTPSA id u16-20020a05600c19d000b0041408e16e6bsm10932841wmq.25.2024.03.26.01.33.27
+        d=1e100.net; s=20230601; t=1711442026; x=1712046826;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=nQOtfcbnYc24Mh+gXI1bFDgfC9HlUS+Sxyvob3hinF4=;
+        b=Jo+NA1t3DzDYEgn562VPC6XiBFBIGgjHYWgzGjqy3ZCasetUrrQKePz9izpmRlpcLC
+         OQuJuDibWWA0RWy5lh3BufiJ+CJg7s01755WLKvkBQTW2m5k+uPqnF+SDTWMOPqQD9C+
+         LvxhUiD3FY40PmcauC17HlhpIj4Fs+D+U62JOzNSOJl6oIQ0rnXNBj6EzQLs0Nhexmy5
+         Vk4TZr1/7DVt9fhuGYtRLBeNZ/PuGcQQIuJC7KOMSVAR12oZ2krPcombvTHmZrBQr19/
+         ngsCImYFeg9QG3miXOijGEQuTubhVc+tHG4mFJuK2DO5YJ06zmvvzhGmqth7st1bXgiK
+         MZZg==
+X-Forwarded-Encrypted: i=1; AJvYcCV317Gh6Xwm6pTpqOvs9p1ey0wJh4elQZpGAC1sBZDk2run9vrKQa5Bewnd7xolimSyJMp2O37idpikSmgWdYutXkGSm7A5axy4/diW
+X-Gm-Message-State: AOJu0YxuTbefGYoWVaoxAst+W+CrXtj6W633tz6asY+5NTTkpC+JHMeg
+	cRH9YpF5c5UXrLy2x2+7vFEQP1lSOu+oD0DlewQ8zynI4AISC7WPpkQ93gxuow==
+X-Google-Smtp-Source: AGHT+IHM8PyfEgYVUSNeb8rAEehN4cswciWPXaugw1p1Nss4iAw4Hcpv2ciDq/JtT+SO2hYFDn/fhA==
+X-Received: by 2002:a17:902:c952:b0:1df:f681:3cd8 with SMTP id i18-20020a170902c95200b001dff6813cd8mr2343690pla.12.1711442025839;
+        Tue, 26 Mar 2024 01:33:45 -0700 (PDT)
+Received: from thinkpad ([117.207.28.168])
+        by smtp.gmail.com with ESMTPSA id w16-20020a170902e89000b001ddb505d50asm535867plg.244.2024.03.26.01.33.41
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Mar 2024 01:33:28 -0700 (PDT)
-Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
-Date: Tue, 26 Mar 2024 09:33:26 +0100
-From: Ingo Molnar <mingo@kernel.org>
-To: David Hildenbrand <david@redhat.com>
-Cc: Matthew Wilcox <willy@infradead.org>, linux-kernel@vger.kernel.org,
-	linux-mm@kvack.org, x86@kernel.org,
-	Wupeng Ma <mawupeng1@huawei.com>,
-	Dave Hansen <dave.hansen@linux.intel.com>,
-	Andy Lutomirski <luto@kernel.org>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-	"H. Peter Anvin" <hpa@zytor.com>,
-	Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [PATCH v1] x86/mm/pat: fix VM_PAT handling in COW mappings
-Message-ID: <ZgKIVogEUEnUMgpF@gmail.com>
-References: <20240312181118.318701-1-david@redhat.com>
- <ZfCrkL-Aieer2EAg@casper.infradead.org>
- <5bc9de2f-c3ba-46e7-a234-3d3a46e53ba1@redhat.com>
+        Tue, 26 Mar 2024 01:33:45 -0700 (PDT)
+Date: Tue, 26 Mar 2024 14:03:38 +0530
+From: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To: Niklas Cassel <cassel@kernel.org>
+Cc: Lorenzo Pieralisi <lpieralisi@kernel.org>,
+	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+	Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
+	Kishon Vijay Abraham I <kishon@kernel.org>,
+	Thierry Reding <thierry.reding@gmail.com>,
+	Jonathan Hunter <jonathanh@nvidia.com>,
+	Jingoo Han <jingoohan1@gmail.com>,
+	Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
+	linux-pci@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+	linux-kernel@vger.kernel.org, mhi@lists.linux.dev,
+	linux-tegra@vger.kernel.org
+Subject: Re: [PATCH 10/11] PCI: qcom-ep: Rework {start/stop}_link() callbacks
+ implementation
+Message-ID: <20240326083338.GI9565@thinkpad>
+References: <20240314-pci-epf-rework-v1-0-6134e6c1d491@linaro.org>
+ <20240314-pci-epf-rework-v1-10-6134e6c1d491@linaro.org>
+ <Zf2tjht4TR7Irewd@ryzen>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <5bc9de2f-c3ba-46e7-a234-3d3a46e53ba1@redhat.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <Zf2tjht4TR7Irewd@ryzen>
 
-
-* David Hildenbrand <david@redhat.com> wrote:
-
-> On 12.03.24 20:22, Matthew Wilcox wrote:
-> > On Tue, Mar 12, 2024 at 07:11:18PM +0100, David Hildenbrand wrote:
-> > > PAT handling won't do the right thing in COW mappings: the first PTE
-> > > (or, in fact, all PTEs) can be replaced during write faults to point at
-> > > anon folios. Reliably recovering the correct PFN and cachemode using
-> > > follow_phys() from PTEs will not work in COW mappings.
+On Fri, Mar 22, 2024 at 05:10:54PM +0100, Niklas Cassel wrote:
+> On Thu, Mar 14, 2024 at 08:53:49PM +0530, Manivannan Sadhasivam wrote:
+> > DWC specific start_link() and stop_link() callbacks are supposed to start
+> > and stop the link training of the PCIe bus. But the current implementation
+> > of this driver enables/disables the PERST# IRQ.
 > > 
-> > I guess the first question is: Why do we want to support COW mappings 
-> > of VM_PAT areas?  What breaks if we just disallow it?
+> > Even though this is not causing any issues, this creates inconsistency
+> > among the controller drivers. So for the sake of consistency, let's just
+> > start/stop the link training in these callbacks.
+> > 
+> > Also, PERST# IRQ is now enabled from the start itself, thus allowing the
+> > controller driver to initialize the registers when PERST# gets deasserted
+> > without waiting for the user intervention though configfs.
+> > 
+> > Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+> > ---
 > 
-> Well, that was my first approach. Then I decided to be less radical (IOW 
-> make my life easier by breaking less user space) and "fix it" with 
-> minimal effort.
+> Nice change:
+> Reviewed-by: Niklas Cassel <cassel@kernel.org>
 > 
-> Chances of breaking some weird user space is possible, although I believe 
-> for most such mappings MAP_PRIVATE doesn't make too much sense sense.
+> If you dump LTSSM after a PERST assert + deassert,
+> using e.g. dw_pcie_readl_dbi(pci, PCIE_PORT_DEBUG1);
+> to dump the debug registers (see dw_pcie_link_up())
+> do you see that PCIE_PORT_DEBUG1_LINK_IN_TRAINING is set?
 > 
-> Nasty COW support for VM_PFNMAP mappings dates back forever. So does PAT 
-> support.
+> I was thinking that perhaps there was a thought behind
+> this original design, that you had to explicitly set
+> LTSSM_EN after a fundamental core reset, because it
+> would get cleared?
 > 
-> I can try finding digging through some possible user space users 
-> tomorrow.
 
-I'd much prefer restricting VM_PAT areas than expanding support. Could we 
-try the trivial restriction approach first, and only go with your original 
-patch if that fails?
+Well, you are right. I was hoping to get an answer from Kishon/Vidya, but you
+throwed the light. I will drop these 2 patches.
 
-Thanks,
+Thanks!
 
-	Ingo
+- Mani
+
+> (It it is implemented like signals and not registers,
+> then this change should be fine.)
+> 
+> 
+> Kind regards,
+> Niklas
+> 
+> 
+> >  drivers/pci/controller/dwc/pcie-qcom-ep.c | 21 +++++++++++++--------
+> >  1 file changed, 13 insertions(+), 8 deletions(-)
+> > 
+> > diff --git a/drivers/pci/controller/dwc/pcie-qcom-ep.c b/drivers/pci/controller/dwc/pcie-qcom-ep.c
+> > index 811f250e967a..653e4ace0a07 100644
+> > --- a/drivers/pci/controller/dwc/pcie-qcom-ep.c
+> > +++ b/drivers/pci/controller/dwc/pcie-qcom-ep.c
+> > @@ -122,6 +122,9 @@
+> >  /* PARF_CFG_BITS register fields */
+> >  #define PARF_CFG_BITS_REQ_EXIT_L1SS_MSI_LTR_EN	BIT(1)
+> >  
+> > +/* PARF_LTSSM register fields */
+> > +#define LTSSM_EN				BIT(8)
+> > +
+> >  /* ELBI registers */
+> >  #define ELBI_SYS_STTS				0x08
+> >  #define ELBI_CS2_ENABLE				0xa4
+> > @@ -250,8 +253,12 @@ static int qcom_pcie_dw_link_up(struct dw_pcie *pci)
+> >  static int qcom_pcie_dw_start_link(struct dw_pcie *pci)
+> >  {
+> >  	struct qcom_pcie_ep *pcie_ep = to_pcie_ep(pci);
+> > +	u32 val;
+> >  
+> > -	enable_irq(pcie_ep->perst_irq);
+> > +	/* Enable LTSSM */
+> > +	val = readl_relaxed(pcie_ep->parf + PARF_LTSSM);
+> > +	val |= LTSSM_EN;
+> > +	writel_relaxed(val, pcie_ep->parf + PARF_LTSSM);
+> >  
+> >  	return 0;
+> >  }
+> > @@ -259,8 +266,12 @@ static int qcom_pcie_dw_start_link(struct dw_pcie *pci)
+> >  static void qcom_pcie_dw_stop_link(struct dw_pcie *pci)
+> >  {
+> >  	struct qcom_pcie_ep *pcie_ep = to_pcie_ep(pci);
+> > +	u32 val;
+> >  
+> > -	disable_irq(pcie_ep->perst_irq);
+> > +	/* Disable LTSSM */
+> > +	val = readl_relaxed(pcie_ep->parf + PARF_LTSSM);
+> > +	val &= ~LTSSM_EN;
+> > +	writel_relaxed(val, pcie_ep->parf + PARF_LTSSM);
+> >  }
+> >  
+> >  static void qcom_pcie_dw_write_dbi2(struct dw_pcie *pci, void __iomem *base,
+> > @@ -484,11 +495,6 @@ static int qcom_pcie_perst_deassert(struct dw_pcie *pci)
+> >  
+> >  	dw_pcie_ep_init_notify(&pcie_ep->pci.ep);
+> >  
+> > -	/* Enable LTSSM */
+> > -	val = readl_relaxed(pcie_ep->parf + PARF_LTSSM);
+> > -	val |= BIT(8);
+> > -	writel_relaxed(val, pcie_ep->parf + PARF_LTSSM);
+> > -
+> >  	return 0;
+> >  
+> >  err_disable_resources:
+> > @@ -707,7 +713,6 @@ static int qcom_pcie_ep_enable_irq_resources(struct platform_device *pdev,
+> >  	}
+> >  
+> >  	pcie_ep->perst_irq = gpiod_to_irq(pcie_ep->reset);
+> > -	irq_set_status_flags(pcie_ep->perst_irq, IRQ_NOAUTOEN);
+> >  	ret = devm_request_threaded_irq(&pdev->dev, pcie_ep->perst_irq, NULL,
+> >  					qcom_pcie_ep_perst_irq_thread,
+> >  					IRQF_TRIGGER_HIGH | IRQF_ONESHOT,
+> > 
+> > -- 
+> > 2.25.1
+> > 
+> 
+
+-- 
+மணிவண்ணன் சதாசிவம்
 
