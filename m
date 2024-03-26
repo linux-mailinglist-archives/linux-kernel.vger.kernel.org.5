@@ -1,120 +1,149 @@
-Return-Path: <linux-kernel+bounces-119976-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-119977-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D128E88CF9B
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 22:07:15 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E6F2F88CF9F
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 22:08:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 532C4B22066
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 21:07:13 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 162321C329CB
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 21:08:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BCF3B13D528;
-	Tue, 26 Mar 2024 21:07:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DA52013D24A;
+	Tue, 26 Mar 2024 21:08:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="cNjq53d0"
-Received: from mail-io1-f49.google.com (mail-io1-f49.google.com [209.85.166.49])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="dF99zDRN"
+Received: from mail-ej1-f46.google.com (mail-ej1-f46.google.com [209.85.218.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7547312B158
-	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 21:07:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5A03C12B158
+	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 21:08:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711487227; cv=none; b=bId33/2f5jHlprFZOV7w3wuZ/BIF2lllHmBgUvqiV5a0bTRBxQvCpEbd0rhBa9ES+Pml20NNLfI82sTxNFXMoYrTY7mkUuvUeX2lSsjhAA/+AAHXqZAXpwOqq5Pc/OUraTfcWkNlzn6A+iXdYDcufXeyWvsCqjYOM95Q+IPnr2s=
+	t=1711487317; cv=none; b=cqSAd2qjKhnpb/RVKRrEaUy28bL2f8r0w05nTJ2iGrCYwRueEhVpqX7mTWExn8WcDTMmpfw8bzV/fP+ZGm2NXn58VM2DNx5yLMOw1HG9H4dKGwKEgMBfp0niFd0dinkgdQAJS2JacmpUUEjEX539o87tZe1UBq1bPEvc84U8USE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711487227; c=relaxed/simple;
-	bh=CC5FyE0zQfuIyeTw+Qxp7dURi4ajWPDxw2mwU+3pW8w=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=NWTYy49NnXV1nKslBs+5o7c4bugkPrP34Crzst1yhBUe2r56fBv7sduA2wBG/ePcSd+hu6nI2OS0ZZYaMIZmRzpUikRwVFM8W0tPkWEebhufBWs8d322AjDWg4AlGoWx5vefcpEEnDE8mgJxEsJXy0/9zUzRWEfqO6YcWt7ki6w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linuxfoundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=cNjq53d0; arc=none smtp.client-ip=209.85.166.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linuxfoundation.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
-Received: by mail-io1-f49.google.com with SMTP id ca18e2360f4ac-7c86e6f649aso46098039f.0
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 14:07:05 -0700 (PDT)
+	s=arc-20240116; t=1711487317; c=relaxed/simple;
+	bh=eR4CFXwJ/DV52t3rPx/eaHmXMF5jodelDrArYPO4NaE=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=kU5xTMc3dFhw/hqXQ4GG4qk1MhRr3weLgkJDZvfaxvOu7sThLlfB94cil4KsIzhBecUO7yBJ0NjbJ0AIfFGWcXncQdwKey3L0L5odBCWEYfT7iP4VgUsrlmXMAD4uxsyeW0oLAJlhsCLSyFvtrK/x8ZRiCUFvuQ901PbanVUe2o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=dF99zDRN; arc=none smtp.client-ip=209.85.218.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ej1-f46.google.com with SMTP id a640c23a62f3a-a4715d4c2cbso766149066b.1
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 14:08:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google; t=1711487224; x=1712092024; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=PLiSINvcugXBKIj3e2GZRldo2gahoHYSJg2AQjA7b78=;
-        b=cNjq53d0fgPpe+1Nx3ewg+3NfsFcesgEh0of0sFewLx5kTkV44Val4/3Wbk7jlF5QA
-         J9dgR3Dx3VD3737UD8+wihh1jeCgF1nPO0gigJWMlnnIb0VXqTqfNhRFRFFYmTwrtT8F
-         cyzZG1jxayTIYiZaSGamRxE/ygpGhUt44cu0c=
+        d=linaro.org; s=google; t=1711487313; x=1712092113; darn=vger.kernel.org;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=Owu1u/GIpsA8DH2n23id8Dq1ZdjynMYs9dLtlBfR+WM=;
+        b=dF99zDRNGTLjFQhUGaTfpB/Nn7mq/mWe9g29mmnpQcbwdjcQp+9T1j7s/aFrEIX0Wq
+         tW7iuFITKP2HSyNDzck+RY77GpeysE5VR3NfP1KlW+fUPcPozF46GJ3otVAZRFAJgq5+
+         lrPLIIU6Q+wkp1QNUJx1rRbnlBrUKpArufbotv4BTf0cl03bVNT+HhaGEAhwfRV91hOK
+         dwZUprZ155iKVxi65VQ6beNcl6fnDJDyXnDWVw4IZMrOZKEXBQwDVFRhWdVJxuuQlnL4
+         Lk9secORo9pf4sr/exh5jlGt9mzmeSIfJj3yTQIzWsJN8MJZ13T9nyn5YHZWil/oVFEI
+         UD5A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711487224; x=1712092024;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=PLiSINvcugXBKIj3e2GZRldo2gahoHYSJg2AQjA7b78=;
-        b=r1lZAPQQkzRmH5T4Sr05rTD36lwM6uQBE2uoWQ86z9MAa1xQli+YcSF9MTFPmaIxiv
-         J/eqASnqtlE7uyrVvMPxuE4x+N/oZX7cW+FEza5T4Ytzh+E1Ef/87iPNiNSevDfq8OED
-         cN3A/FoW0Zqp8M4IFRLf+CesZk3/jxp0Yw66ye6hlcsxMCyvlQE39HDJt7yqsbxA5xSl
-         N+cuGC3hXnLSW0xNu9/0sCTrZYcFJVSJLOGt8gvfDKO446DjRSt7xNdy4PeHvxMV6pPX
-         P3DvnakvFf/SGpQDYPHKG/03zJIuom8DeEaasQz0ETUUR4N5D0TxdqTL50F+L+8a35t3
-         GVAw==
-X-Forwarded-Encrypted: i=1; AJvYcCWZEJWrX1GowIAwwBsyZwfDArfxlA+d1tkEUYXx4cwaTM3g+uOXFe3QNBVhkuUyuutI2+/jMgQe8jFeh4ejQjE22ghmINyDA4BL7Tz7
-X-Gm-Message-State: AOJu0YyhyxatQeQuNFQHFjpul6hkmjBR79s4lI61YCZDprt3lvdoSeB+
-	wrSlS+bUoAudCRvfML8Xn7n+p1ffptny7EeUTIjAmdXqti1B6Q+gsY70AeH7IPg=
-X-Google-Smtp-Source: AGHT+IEK6tjwy+wB5PmyL0t0pBd4tBi15bL0x9BUGWONuNhn8WQmANTLFnYKEwZSV1QCbXcPi+PqbA==
-X-Received: by 2002:a5d:81da:0:b0:7d0:4d78:989b with SMTP id t26-20020a5d81da000000b007d04d78989bmr8091369iol.2.1711487224561;
-        Tue, 26 Mar 2024 14:07:04 -0700 (PDT)
-Received: from [192.168.1.128] ([38.175.170.29])
-        by smtp.gmail.com with ESMTPSA id y8-20020a029508000000b00476e3cabd48sm1081667jah.69.2024.03.26.14.07.04
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 26 Mar 2024 14:07:04 -0700 (PDT)
-Message-ID: <984f9c34-7117-466b-afde-228f4a2d8522@linuxfoundation.org>
-Date: Tue, 26 Mar 2024 15:07:04 -0600
+        d=1e100.net; s=20230601; t=1711487313; x=1712092113;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Owu1u/GIpsA8DH2n23id8Dq1ZdjynMYs9dLtlBfR+WM=;
+        b=j/saJqpdKfWKHLGwRd/iX76Z+k5byuCntzfZhFRWpHy6drLmhqO9bTys5OWyM7be0f
+         qRERJyQFrJNMpna/FvdKweI6drxrNS0aH6wT2m8kdgpXcjt7CFuov7iQe+0aZfwdzQYZ
+         GAD/rUBFQcAlRbTWYuHryzX/M80ZalAfL1GeGSmeXcNVAa1DoYjvCmwh+iwKRLEQmO7e
+         zWwSYU7JM79ZYdZG7KVA3nD5J2J3uOt8iLAyzl2/KWq4Cn3l1lGVb9H+g1KbPnVaMqwu
+         riPInHbGYoshGttxTZLoiXH8bg9n7OW4paX6J1ytr+SMYf4nmTCGXifDVFasBpTQJNpM
+         wGrQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVftiokDcU0S0xY9AgDtHfLgev3GbYlg5cqKbDeq4lgLIaRJvDhmpPKI+qsLZjGK57jqvX2kq6632qjmq6fnyzH2vur6LFv97KfZ+Se
+X-Gm-Message-State: AOJu0YwBgDzXU5dSq95cz08/Jto+1DSHKIx0jfWfIMJSZ4fpXedn/2PI
+	13XWZUvJ1SY1JlReVYCSO2KQSE3OKX2wyGwTGT1v1DKRMvQB8mE+kuO43RZpqWM=
+X-Google-Smtp-Source: AGHT+IHUSHvtxOlBEUCvFuSqIQshOTsg/TGRscOieh+BC9vJhFsjCZ9Yng6qFsSIz8pbTSvGhhlurA==
+X-Received: by 2002:a17:906:840b:b0:a46:1cc2:3b8c with SMTP id n11-20020a170906840b00b00a461cc23b8cmr1724623ejx.20.1711487313611;
+        Tue, 26 Mar 2024 14:08:33 -0700 (PDT)
+Received: from [192.168.92.47] (078088045141.garwolin.vectranet.pl. [78.88.45.141])
+        by smtp.gmail.com with ESMTPSA id l19-20020a17090612d300b00a46cffe6d06sm4621697ejb.42.2024.03.26.14.08.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 26 Mar 2024 14:08:33 -0700 (PDT)
+From: Konrad Dybcio <konrad.dybcio@linaro.org>
+Subject: [PATCH v3 0/5] A702 support
+Date: Tue, 26 Mar 2024 22:08:22 +0100
+Message-Id: <20240219-topic-rb1_gpu-v3-0-86f67786539a@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5 2/2] selftests: dmabuf-heap: add config file for the
- test
-Content-Language: en-US
-To: Muhammad Usama Anjum <usama.anjum@collabora.com>,
- Shuah Khan <shuah@kernel.org>, "T.J. Mercier" <tjmercier@google.com>
-Cc: kernel@collabora.com, linux-kernel@vger.kernel.org,
- linux-kselftest@vger.kernel.org, Shuah Khan <skhan@linuxfoundation.org>
-References: <20240305060848.2478806-1-usama.anjum@collabora.com>
- <20240305060848.2478806-2-usama.anjum@collabora.com>
-From: Shuah Khan <skhan@linuxfoundation.org>
-In-Reply-To: <20240305060848.2478806-2-usama.anjum@collabora.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAEY5A2YC/32NywrCMBQFf0WyNnKbxDa68j9EJK+2gZKUmzYop
+ f9u2p0LXc6BmbOQ5NC7RK6HhaDLPvkYCvDjgZhehc5RbwsTBkwAqy50iqM3FHX17MaZcmekqSU
+ HLgUpjlbJUY0qmL5YYR6GMo7oWv/aT+6Pwr1PU8T3/pmrbf2VzxUFalkNrZJn0UBzG3xQGE8RO
+ 7KlMvurs6Izy22twGoQ8KWv6/oBzvTXwf8AAAA=
+To: Bjorn Andersson <andersson@kernel.org>, 
+ Michael Turquette <mturquette@baylibre.com>, 
+ Stephen Boyd <sboyd@kernel.org>, Rob Herring <robh@kernel.org>, 
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+ Conor Dooley <conor+dt@kernel.org>
+Cc: Marijn Suijten <marijn.suijten@somainline.org>, 
+ Konrad Dybcio <konradybcio@kernel.org>, linux-arm-msm@vger.kernel.org, 
+ linux-clk@vger.kernel.org, devicetree@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, Konrad Dybcio <konrad.dybcio@linaro.org>, 
+ Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, 
+ Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+X-Mailer: b4 0.12.2
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1711487311; l=1873;
+ i=konrad.dybcio@linaro.org; s=20230215; h=from:subject:message-id;
+ bh=eR4CFXwJ/DV52t3rPx/eaHmXMF5jodelDrArYPO4NaE=;
+ b=n3FIqlObwZssCgMB9MvlRA7U0Iw4dopzKLC4ZwE7c2tuJxTaMx2C5Og9f+ra4VVX5yjR//Uqi
+ ZBueHO5uMqMCzG8PbwOOzyFbM4zqrqQSxQYGBoQoSlOwhSmRQZuvv8c
+X-Developer-Key: i=konrad.dybcio@linaro.org; a=ed25519;
+ pk=iclgkYvtl2w05SSXO5EjjSYlhFKsJ+5OSZBjOkQuEms=
 
-On 3/4/24 23:08, Muhammad Usama Anjum wrote:
-> The config fragment enlists all the config options needed for the test.
-> This config is merged into the kernel's config on which this test is
-> run.
-> 
-> Reviewed-by: T.J. Mercier <tjmercier@google.com>
-> Signed-off-by: Muhammad Usama Anjum <usama.anjum@collabora.com>
-> ---
-> Changes since v1:
-> - Add reviewed-by tag
-> ---
->   tools/testing/selftests/dmabuf-heaps/config | 4 ++++
->   1 file changed, 4 insertions(+)
->   create mode 100644 tools/testing/selftests/dmabuf-heaps/config
-> 
-> diff --git a/tools/testing/selftests/dmabuf-heaps/config b/tools/testing/selftests/dmabuf-heaps/config
-> new file mode 100644
-> index 0000000000000..34bd294836df0
-> --- /dev/null
-> +++ b/tools/testing/selftests/dmabuf-heaps/config
-> @@ -0,0 +1,4 @@
-> +CONFIG_DMABUF_HEAPS=y
-> +CONFIG_DMABUF_HEAPS_SYSTEM=y
-> +CONFIG_DRM_VGEM=y
-> +
+Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+---
+Changes in v3:
+- Use EXPORT_SYMBOL_GPL in the alpha pll change
+- Drop applied patches
+- Pick up tags
+- Link to v2: https://lore.kernel.org/r/20240219-topic-rb1_gpu-v2-0-2d3d6a0db040@linaro.org
 
-I am applying this one linux-kselftest fixes for next rc.
+Changes in v2:
+- Drop applied smmu-bindings patch
+- Fix the gpucc bindings patch to be even better
+- Reorder HUAYRA_2290 definitions near HUAYRA (..Add HUAYRA_2290
+  support..)
+- Replace weird memory barriers copypasted from msm-5.4 with readback to
+  ensure timely write completion (..Add HUAYRA_2290 support..)
+- Keep my super amazing commit message referencing the 3D accelerator
+  official naming (dts)
+- Pick up tags
+- Link to v1: https://lore.kernel.org/r/20240219-topic-rb1_gpu-v1-0-d260fa854707@linaro.org
 
-thanks,
--- Shuah
+---
+Konrad Dybcio (5):
+      dt-bindings: clock: Add Qcom QCM2290 GPUCC
+      clk: qcom: clk-alpha-pll: Add HUAYRA_2290 support
+      clk: qcom: Add QCM2290 GPU clock controller driver
+      arm64: dts: qcom: qcm2290: Add GPU nodes
+      arm64: dts: qcom: qrb2210-rb1: Enable the GPU
+
+ .../bindings/clock/qcom,qcm2290-gpucc.yaml         |  77 ++++
+ arch/arm64/boot/dts/qcom/qcm2290.dtsi              | 154 ++++++++
+ arch/arm64/boot/dts/qcom/qrb2210-rb1.dts           |   8 +
+ drivers/clk/qcom/Kconfig                           |   9 +
+ drivers/clk/qcom/Makefile                          |   1 +
+ drivers/clk/qcom/clk-alpha-pll.c                   |  47 +++
+ drivers/clk/qcom/clk-alpha-pll.h                   |   3 +
+ drivers/clk/qcom/gpucc-qcm2290.c                   | 423 +++++++++++++++++++++
+ include/dt-bindings/clock/qcom,qcm2290-gpucc.h     |  32 ++
+ 9 files changed, 754 insertions(+)
+---
+base-commit: 084c8e315db34b59d38d06e684b1a0dd07d30287
+change-id: 20240219-topic-rb1_gpu-3ec8c6830384
+
+Best regards,
+-- 
+Konrad Dybcio <konrad.dybcio@linaro.org>
 
 
