@@ -1,200 +1,202 @@
-Return-Path: <linux-kernel+bounces-119426-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-119428-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 77C3088C89C
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 17:08:49 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2B13688C8AB
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 17:11:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A96A71C62C15
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 16:08:48 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D83D9B22051
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 16:10:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B88FF13C9C5;
-	Tue, 26 Mar 2024 16:08:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7D82D13CA8C;
+	Tue, 26 Mar 2024 16:10:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="UZiSlbHu"
-Received: from mail-ed1-f47.google.com (mail-ed1-f47.google.com [209.85.208.47])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=pankajraghav.com header.i=@pankajraghav.com header.b="yHdjTcr3"
+Received: from mout-p-102.mailbox.org (mout-p-102.mailbox.org [80.241.56.152])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0E3E013C696
-	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 16:08:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C0A1913C9DA;
+	Tue, 26 Mar 2024 16:10:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.241.56.152
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711469319; cv=none; b=DS/gA2WldZQz8T4DxSwhL82DBMRSscARKLeunVpFGPKA+cGv7piYhyMgYW0l6AARaVICI/pHKcjCtJJhZh7DuhxHpbbnxYCjiFqw3kRW2E91b76hhOQsojr8gIpI2mbA5Vl6iiwVmSKbt1pXkj4zVkksOsI7Da+b0q1TLwQ5yiY=
+	t=1711469431; cv=none; b=OFONFl82acBT0QBHlUECca3HO/emSxaapkzVk2DR2SQ6TJ2NrBJO6byzLOXQt4lesZx6Y4n0Y41WoCkXV/tITh92pl+zfySa0zqWldQxhrvodKjFQCddlbJxPoI0eeoJQo38vfu+vrklnNLXcek1z1jpQIMaOnOhSAbsDGJxTUE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711469319; c=relaxed/simple;
-	bh=I9jYhEpT1hJ4WkmCi5EfutNG7AD2pBTYUdgSEQ4l9cI=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=ri6nHLds1UVAE3pfLC5akuENLdJqaDie2R5upLmTbxsjKvSAwMFiDCYjvSSKZB+5nPMVvmBEy1RbOPZ9Sd/eq7bXyTCUBQTIFrEsp64hN+a4qgZqo2gwkcZowFKxEK92asuRRRrVOpdl1RAbzWcOM7sRbUMaI3EARO3rOsqZVmo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=UZiSlbHu; arc=none smtp.client-ip=209.85.208.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ed1-f47.google.com with SMTP id 4fb4d7f45d1cf-56b8e4f38a2so7366724a12.3
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 09:08:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1711469316; x=1712074116; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=PCcCW5MXBTsuYjj4AkYESlhZOGHwdUsHgBnc4ofEFK0=;
-        b=UZiSlbHuTzsJ4kLsTnJ2GsCb13brSipdn32C+zt1ehuKutuNrclSG55Uq9lYQPq8nS
-         iQtI/TCrXevDWdOo9IpZfSzXFIo6Z/cc3J1aXw9JZ7kiNj+GL14QQD/ssSI33cAz0otf
-         o5mFBvGYhjey6DskdikqwTHpsOGixOFUiBHf0kkVWhqw0zIS1pBLnsIP0jxJjc/fEK/h
-         aNeunUo/JLyn/2MbQeAofsSff+iRcVZCkM8oyIt2dmvl8Q+Y4by0+bItA01FrVyc8K1e
-         5xn0smhxe6W1mVSeXKzZbtexkn+Lkc/WMtyjt2SdV3k0t0y+a6Ejho7u6k4eM/+gHGJa
-         DqTw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711469316; x=1712074116;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=PCcCW5MXBTsuYjj4AkYESlhZOGHwdUsHgBnc4ofEFK0=;
-        b=E7KO3LPdwtpRMd7QVTNibEf7fpxWyhDMCK7eQNO1Jh1/eKOphIBjp4Lm6gyW1DwplA
-         Gfr3/bPYUUgJfKG7h7AqSjrGUlZsz3tbXRCXEsN8hpSct5t1dIBrVHZ9h1c6QutePIgJ
-         efQ8tV69PxcgnTaG7NTn2GhRYAOwLqDoaZO4LwaNH6QyHrmJmI33eyV5YNDH213Ta2j/
-         8XOvTzVWnEb6GOoe1nwvn/WXnMd1juNMD3bEeHxvR9alf63AOU8BtKZO0hFvqIdNaepB
-         7Dlc69pNFO0W3TLv1yBjNjzenaZTPiJCroH+xdY79sZaobz58cmPAq+3WeWrtA4Xcaow
-         KuQQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWAsTWBid5J/GabitxZYeoENLOadff3XcxKz94Heagn8iWA1of5XqRSifoEVMaon4kNNnshNZ0XgREcvKcmmflWlV6Kzy6KII+AkKJL
-X-Gm-Message-State: AOJu0YwXEm5UsDp35MZ4+ODzqX/OpLfPUDG6ppXQj82fd/5OQoiBgYF+
-	G8gmXETki0hYHNHkUHSupktDnBjRdzgOGTEDpkeDr9OsRnDwQjyJ36Rkb4J9by1u91enHi501nf
-	b
-X-Google-Smtp-Source: AGHT+IEu+k+uVqeRWjSz8Vqxdk6BKNgsJlvhhYLRcSQ85XnHIT117OdlV3cn0yZ1VEnkCrv0fWYlFQ==
-X-Received: by 2002:a50:cd9c:0:b0:56c:16c6:2091 with SMTP id p28-20020a50cd9c000000b0056c16c62091mr1145607edi.1.1711469316396;
-        Tue, 26 Mar 2024 09:08:36 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.222.44])
-        by smtp.gmail.com with ESMTPSA id es9-20020a056402380900b00568d60cfbccsm4266150edb.42.2024.03.26.09.08.35
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 26 Mar 2024 09:08:35 -0700 (PDT)
-Message-ID: <5aed1a7f-6cab-4e5b-91b3-99c1d9b7faa2@linaro.org>
-Date: Tue, 26 Mar 2024 17:08:34 +0100
+	s=arc-20240116; t=1711469431; c=relaxed/simple;
+	bh=/SwuSRn116nG3Z+Fz1PchQ+dbuLiQb7TRnc9ZAa32x0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=aAoC0pJCFaa3udlmhmdi395Xm1BCCd8bLuPk5L2xCfIdzoQaoyyVnAkfKAna07wWMlwa2mJxpAGwli7X5btyzk+5VoqjLoU+gSWnbUL4WKTwHUb8oB+tTT8czJtFmdEH/y9FvrpNV9I6tT3GY89mk/lrXeEIk3qSf+/PN3AYY00=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=pankajraghav.com; spf=pass smtp.mailfrom=pankajraghav.com; dkim=pass (2048-bit key) header.d=pankajraghav.com header.i=@pankajraghav.com header.b=yHdjTcr3; arc=none smtp.client-ip=80.241.56.152
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=pankajraghav.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pankajraghav.com
+Received: from smtp202.mailbox.org (smtp202.mailbox.org [IPv6:2001:67c:2050:b231:465::202])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mout-p-102.mailbox.org (Postfix) with ESMTPS id 4V3vsV0n1cz9scM;
+	Tue, 26 Mar 2024 17:10:22 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pankajraghav.com;
+	s=MBO0001; t=1711469422;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=3WN8iTw5DCvKXICzDy7GvWDFRE7iUHmu0GOhWN9n+ms=;
+	b=yHdjTcr384i1cvB7hFZT30C9uBwMD8Us2p3BaRxE0yzhUO6JeAPk0zbE/aLeBCdkTVl7D5
+	9z4OZ76A4edSg78yhI+sI+LkX0vMgIvnkZ87Umo2iejOCXrLpLweRxhAkG/pX+b5lhwt+1
+	CZf+iNlgRGCVeHaRVugTq+BcwLBVgJS+TnAibuVTetwJsAYtyvFH7+VzgyA0d/xTMPMysY
+	ljgBOdTodJUMIj6yb/ml9uROxuNUdW954fQNFWTMA4SPwNQHnqbUJ/qyPpwP/d4QAelyv9
+	btnQQq2OrXVss98yKjHHtksrbitZ6nra40b6cZZDvZVZdPf3F6Zj5BvBkKPtSA==
+Date: Tue, 26 Mar 2024 17:10:18 +0100
+From: "Pankaj Raghav (Samsung)" <kernel@pankajraghav.com>
+To: Matthew Wilcox <willy@infradead.org>, ziy@nvidia.com
+Cc: linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
+	gost.dev@samsung.com, chandan.babu@oracle.com, hare@suse.de, mcgrof@kernel.org, 
+	djwong@kernel.org, linux-mm@kvack.org, linux-kernel@vger.kernel.org, 
+	david@fromorbit.com, akpm@linux-foundation.org, Pankaj Raghav <p.raghav@samsung.com>
+Subject: Re: [PATCH v3 07/11] mm: do not split a folio if it has minimum
+ folio order requirement
+Message-ID: <muprk3zff7dsn3futp3by3t6bxuy5m62rpylmrp77ss3kay24k@wx4fn7uw7y6r>
+References: <20240313170253.2324812-1-kernel@pankajraghav.com>
+ <20240313170253.2324812-8-kernel@pankajraghav.com>
+ <ZgHLHNYdK-kU3UAi@casper.infradead.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/3] dt-bindings: hsi: hsi-client: convert to YAML
-To: Sebastian Reichel <sebastian.reichel@collabora.com>
-Cc: Rob Herring <robh@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, Tony Lindgren <tony@atomide.com>,
- devicetree@vger.kernel.org, linux-omap@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <20240325-hsi-dt-binding-v1-0-88e8e97c3aae@collabora.com>
- <20240325-hsi-dt-binding-v1-1-88e8e97c3aae@collabora.com>
- <2905247d-03b0-45c1-add5-d3c2a986d87c@linaro.org>
- <hz4fbdix5yaz2wtdkjkf23pc3m4kbeavynvjagundqvv3bisor@lc7dev4667i5>
- <1c6d995a-b1f1-48ca-b85c-f69071e7e3bb@linaro.org>
- <5z2b74h2zvo7fwc4624hy5vegvlkyfdflijr35byqeemoiwd6l@vfebii4m2mim>
-Content-Language: en-US
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <5z2b74h2zvo7fwc4624hy5vegvlkyfdflijr35byqeemoiwd6l@vfebii4m2mim>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZgHLHNYdK-kU3UAi@casper.infradead.org>
+X-Rspamd-Queue-Id: 4V3vsV0n1cz9scM
 
-On 26/03/2024 16:15, Sebastian Reichel wrote:
-> Hi,
+On Mon, Mar 25, 2024 at 07:06:04PM +0000, Matthew Wilcox wrote:
+> On Wed, Mar 13, 2024 at 06:02:49PM +0100, Pankaj Raghav (Samsung) wrote:
+> > From: Pankaj Raghav <p.raghav@samsung.com>
+> > 
+> > As we don't have a way to split a folio to a any given lower folio
+> > order yet, avoid splitting the folio in split_huge_page_to_list() if it
+> > has a minimum folio order requirement.
 > 
-> On Tue, Mar 26, 2024 at 01:56:22PM +0100, Krzysztof Kozlowski wrote:
->>>>> +allOf:
->>>>> +  - if:
->>>>> +      required:
->>>>> +        - hsi-mode
->>>>> +    then:
->>>>> +      properties:
->>>>> +        hsi-rx-mode: false
->>>>> +        hsi-tx-mode: false
->>>>
->>>> I don't understand what you are trying to achieve here and with anyOf.
->>>> It looks like just oneOf. OTOH, old binding did not exclude these
->>>> properties.
->>>
->>> So the anyOf ensures, that either hsi-mode or hsi-rx-mode +
->>> hsi-tx-mode are specified. Those properties were previously
->>
->> Not entirely. anyOf should succeed also when none of them are present,
->> which is not what you want in such case.
-> 
-> Right, this should be oneOf instead of anyOf. I fixed that for v2.
-> 
->>> listed as required and they are indeed mandatory by the Linux
->>> kernel implementation.
->>>
->>> The old binding also has this:
->>>
->>> hsi-mode:		May be used ***instead*** hsi-rx-mode and hsi-tx-mode
->>>
->>> So it's either hsi-rx-mode + hsi-tx-mode OR hsi-mode, but not
->>> all properties at the same time. That's what the allOf ensures:
->>> if hsi-mode is specified, then hsi-rx-mode and hsi-tx-mode may
->>> not be specified.
->>
->> Then wouldn't this work for you:
->> https://elixir.bootlin.com/linux/v5.17-rc2/source/Documentation/devicetree/bindings/reserved-memory/reserved-memory.yaml#L91
-> 
-> I suppose you mean using "then: not: required: PROPERTY" instead of
-> "then: PROPERTY: false"? The variant using "PROPERTY: false" is what
-> is being used in example-schema.yaml:
+> FYI, Zi Yan's patch to do that is now in Andrew's tree.
+> c010d47f107f609b9f4d6a103b6dfc53889049e9 in current linux-next (dated
+> Feb 26)
 
-No, I pointed to specific line with code for you.
+Yes, I started playing with the patches but I am getting a race condition
+resulting in a null-ptr-deref for which I don't have a good answer for
+yet.
 
-> 
-> https://elixir.bootlin.com/linux/v6.8/source/Documentation/devicetree/bindings/example-schema.yaml#L225
-> 
-> IMHO the "not: required: property" is harder to understand. I would
-> expect that to mean "the property is not required (i.e. optional)"
-> instead of "the property is not allowed".
+@zi yan Did you encounter any issue like this when you were testing?
+
+I did the following change (just a prototype) instead of this patch:
+
+diff --git a/mm/huge_memory.c b/mm/huge_memory.c
+index 9859aa4f7553..63ee7b6ed03d 100644
+--- a/mm/huge_memory.c
++++ b/mm/huge_memory.c
+@@ -3041,6 +3041,10 @@ int split_huge_page_to_list_to_order(struct page *page, struct list_head *list,
+ {
+        struct folio *folio = page_folio(page);
+        struct deferred_split *ds_queue = get_deferred_split_queue(folio);
++       unsigned int mapping_min_order = mapping_min_folio_order(folio->mapping);
++
++       if (!folio_test_anon(folio))
++               new_order = max_t(unsigned int, mapping_min_order, new_order);
+        /* reset xarray order to new order after split */
+        XA_STATE_ORDER(xas, &folio->mapping->i_pages, folio->index, new_order);
+        struct anon_vma *anon_vma = NULL;
+@@ -3117,6 +3121,8 @@ int split_huge_page_to_list_to_order(struct page *page, struct list_head *list,
+                        goto out;
+                }
+ 
++               // XXX: Remove it later
++               VM_WARN_ON_FOLIO((new_order < mapping_min_order), folio);
+                gfp = current_gfp_context(mapping_gfp_mask(mapping) &
+                                                        GFP_RECLAIM_MASK);
+
+I am getting a random null-ptr deref when I run generic/176 multiple
+times with different blksizes. I still don't have a minimal reproducer 
+for this issue. Race condition during writeback:
+
+filemap_get_folios_tag+0x171/0x5c0:
+arch_atomic_read at arch/x86/include/asm/atomic.h:23
+(inlined by) raw_atomic_read at include/linux/atomic/atomic-arch-fallback.h:457
+(inlined by) raw_atomic_fetch_add_unless at include/linux/atomic/atomic-arch-fallback.h:2426
+(inlined by) raw_atomic_add_unless at include/linux/atomic/atomic-arch-fallback.h:2456
+(inlined by) atomic_add_unless at include/linux/atomic/atomic-instrumented.h:1518
+(inlined by) page_ref_add_unless at include/linux/page_ref.h:238
+(inlined by) folio_ref_add_unless at include/linux/page_ref.h:247
+(inlined by) folio_ref_try_add_rcu at include/linux/page_ref.h:280
+(inlined by) folio_try_get_rcu at include/linux/page_ref.h:313
+(inlined by) find_get_entry at mm/filemap.c:1984
+(inlined by) filemap_get_folios_tag at mm/filemap.c:2222
 
 
-Best regards,
-Krzysztof
 
+[  537.863105] ==================================================================                                                                                                                                                                                                                                             
+[  537.863968] BUG: KASAN: null-ptr-deref in filemap_get_folios_tag+0x171/0x5c0                                                                                                                                                                                                                                               
+[  537.864581] Write of size 4 at addr 0000000000000036 by task kworker/u32:5/366                                                                                                                                                                                                                                             
+[  537.865123]                                                                                                                                                       
+[  537.865293] CPU: 6 PID: 366 Comm: kworker/u32:5 Not tainted 6.8.0-11739-g7d0c6e7b5a7d-dirty #795                                                                                                                                                                                                                           
+[  537.867201] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS rel-1.16.3-0-ga6ed6b701f0a-prebuilt.qemu.org 04/01/2014                                                                                                                                                                                               
+[  537.868444] Workqueue: writeback wb_workfn (flush-254:32)                                                                                                   
+[  537.869055] Call Trace:                                                                                                                                     
+[  537.869341]  <TASK>                                                                                                                                         
+[  537.869569]  dump_stack_lvl+0x4f/0x70                                                                                                                       
+[  537.869938]  kasan_report+0xbd/0xf0                                                                                                                         
+[  537.870293]  ? filemap_get_folios_tag+0x171/0x5c0                                                                                                           
+[  537.870767]  ? filemap_get_folios_tag+0x171/0x5c0                                                                                                           
+[  537.871578]  kasan_check_range+0x101/0x1b0                                                                                                                  
+[  537.871893]  filemap_get_folios_tag+0x171/0x5c0                                                                                                                                                                                                                                                                            
+[  537.872269]  ? __pfx_filemap_get_folios_tag+0x10/0x10                                                                                                       
+[  537.872857]  ? __pfx___submit_bio+0x10/0x10                                                                                                                 
+[  537.873326]  ? mlock_drain_local+0x234/0x3f0                                                                                                                
+[  537.873938]  writeback_iter+0x59a/0xe00                                                                                                                     
+[  537.874477]  ? __pfx_iomap_do_writepage+0x10/0x10                                                                                                           
+[  537.874969]  write_cache_pages+0x7f/0x100                                                                                                                   
+[  537.875396]  ? __pfx_write_cache_pages+0x10/0x10                                                                                                            
+[  537.875892]  ? do_raw_spin_lock+0x12d/0x270                                                                                                                 
+[  537.876345]  ? __pfx_do_raw_spin_lock+0x10/0x10                                                                                                                                                                                                                                                                            
+[  537.876804]  iomap_writepages+0x88/0xf0                                                                                                                     
+[  537.877186]  xfs_vm_writepages+0x120/0x190                                                                                                                  
+[  537.877705]  ? __pfx_xfs_vm_writepages+0x10/0x10                                                                                                            
+[  537.878161]  ? lock_release+0x36f/0x670                                                                                                                                                                                                                                                                                    
+[  537.878521]  ? __wb_calc_thresh+0xe5/0x3b0                                                                                                                                                                                                                                                                                 
+[  537.878892]  ? __pfx_lock_release+0x10/0x10                                                                                                                 
+[  537.879308]  do_writepages+0x170/0x7a0                                                                                                                                                                                                                                                                                     
+[  537.879676]  ? __pfx_do_writepages+0x10/0x10                                                                                                                                                                                                                                                                               
+[  537.880182]  ? writeback_sb_inodes+0x312/0xe40                                                                                                                                                                                                                                                                             
+[  537.880689]  ? reacquire_held_locks+0x1f1/0x4a0                                                                                                                                                                                                                                                                            
+[  537.881193]  ? writeback_sb_inodes+0x312/0xe40                                                                                                                                                                                                                                                                             
+[  537.881665]  ? find_held_lock+0x2d/0x110                                                                                                                                                                                                                                                                                   
+[  537.882104]  ? lock_release+0x36f/0x670                                                                                                                                                                                                                                                                                    
+[  537.883344]  ? wbc_attach_and_unlock_inode+0x3b8/0x710                                                                                                                                                                                                                                                                     
+[  537.883853]  ? __pfx_lock_release+0x10/0x10                                                                                                                                                                                                                                                                                
+[  537.884229]  ? __pfx_lock_release+0x10/0x10                                                                                                                                                                                                                                                                                
+[  537.884604]  ? lock_acquire+0x138/0x2f0                                                                                                                                                                                                                                                                                    
+[  537.884952]  __writeback_single_inode+0xd4/0xa60                                                                                                            
+[  537.885369]  writeback_sb_inodes+0x4cf/0xe40                                                                                                                
+[  537.885760]  ? __pfx_writeback_sb_inodes+0x10/0x10                                                                                                                                                                                                                                                                         
+[  537.886208]  ? __pfx_move_expired_inodes+0x10/0x10                                                                                                          
+[  537.886640]  __writeback_inodes_wb+0xb4/0x200                                                                                                               
+[  537.887037]  wb_writeback+0x55b/0x7c0                                                                                                                       
+[  537.887372]  ? __pfx_wb_writeback+0x10/0x10                                                                                                                                                                                                                                                                                
+[  537.887750]  ? lock_acquire+0x138/0x2f0                                                                                                                     
+[  537.888094]  ? __pfx_register_lock_class+0x10/0x10                                                                                                          
+[  537.888521]  wb_workfn+0x648/0xbb0                                                                                                                          
+[  537.888835]  ? __pfx_wb_workfn+0x10/0x10                                                                                                                                                                                                                                                                                   
+[  537.889192]  ? lock_acquire+0x128/0x2f0                                                                                                                     
+[  537.889539]  ? lock_acquire+0x138/0x2f0                                                                                                                     
+[  537.889890]  process_one_work+0x7ff/0x1710                                                                                                                                                                                                                                                                                 
+[  537.890272]  ? __pfx_process_one_work+0x10/0x10                                                                                                             
+[  537.890685]  ? assign_work+0x16c/0x240                                                                                                                                                                                                                                                                                     
+[  537.891026]  worker_thread+0x6e8/0x12b0                                                                                                                     
+[  537.891381]  ? __pfx_worker_thread+0x10/0x10                                                                                                                
+[  537.891768]  kthread+0x2ad/0x380                                                                                                                                                                                                                                                                                           
+[  537.892064]  ? __pfx_kthread+0x10/0x10                                                                                                                                                                                                                                                                                     
+[  537.892403]  ret_from_fork+0x2d/0x70                                                                                                                                                                                                                                                                                       
+[  537.892728]  ? __pfx_kthread+0x10/0x10                                                                                                                                                                                                                                                                                     
+[  537.893068]  ret_from_fork_asm+0x1a/0x30                                                                                                                                                                                                                                                                                   
+[  537.893434]  </TASK>
 
