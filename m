@@ -1,88 +1,90 @@
-Return-Path: <linux-kernel+bounces-120134-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-120135-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5E53288D2CA
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 00:24:13 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 19DA388D2D0
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 00:25:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8ABA51C33DC1
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 23:24:12 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C887B3048B2
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 23:25:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C001013DDCF;
-	Tue, 26 Mar 2024 23:24:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="XfbA6nji"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0EC2A13DDB5;
-	Tue, 26 Mar 2024 23:24:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 72F1A13E038;
+	Tue, 26 Mar 2024 23:25:06 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 446F36FE35;
+	Tue, 26 Mar 2024 23:25:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711495446; cv=none; b=KR5dLoI6wyvGiJek6Kprls3gz9VtQOJxJ39t9Pw2wnW3BakenL0tn7YX7jJgV5qQQtduTj4GOm2FXM35eclB0IDzEkjUW1EVoCrC4BwjR7mNjmy9ja/9md2608xPQoRisoQWHVv4rUU2UCkbq07hqRyIX7ke28Fi1frGBQ5aXqs=
+	t=1711495506; cv=none; b=YeuqNi3GEhDPOhm+AChSllaqMckK7D9p+LOxSrCSsBm+Y0giMHL6z6M9gVzh/3+vSTV+2MuNlgE+jWHlFNAzuYjBSZQSRKEHky9imbZrjVKAc027GddxOfTl87XBtdiGCrJ9ajohiyHxZy+BQAfH+QmKDwm6dV0b7Mr2Rj5hav0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711495446; c=relaxed/simple;
-	bh=GfgyZrV79xoa84Cgd+HTjsbRJ75ZS8ByhFEX2qPLfk4=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition:In-Reply-To; b=hWDtJkpQ0VFwhhUA+5aYDrIj21v5bSOQHLgA4X22mUhO8/I0N5SXM0p80TH8323JQ0k9WviuRLDFSz01nQarX0QfNlF7ucYTdEpALf80Lf2G6ABHfIk80SbRdJHD4/IK5CmNlD4Hva6vPBjsfYDAUA1iAuIdn/1+yHol3ndyL1w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=XfbA6nji; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3BC29C433F1;
-	Tue, 26 Mar 2024 23:24:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711495445;
-	bh=GfgyZrV79xoa84Cgd+HTjsbRJ75ZS8ByhFEX2qPLfk4=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:From;
-	b=XfbA6njiMzYq8iAN1Mgu+0B23d79KPXLQzGCVdXjI1PveafCTUxoAUOTJhtSAP9Sn
-	 uEQpq755ssawAlDuwSCwvAFE88XmZ2d3ZPOaYMrmi+6fu36PMFSPMVvI5sbcSDJW+w
-	 dWt5pBPwG1DzwPTX+/USomfTjSqJ3SGYID74cxHNBNXndrDq+qZWPehPCby/dXjrgl
-	 /Kjf3BOdZRZyKNZHVqOPzEip9SFSNzFh69L3eqOjg61Hg3w0RQZCcBfyeSD0dh02aZ
-	 hsY2k3iw7K1xwysm+CWP/jN1xWnxV5peX6uIqWddYeqm3dJrChQJNoqL8ZYSBwHNMd
-	 z1gKpfRp/xBfA==
-Date: Tue, 26 Mar 2024 18:24:03 -0500
-From: Bjorn Helgaas <helgaas@kernel.org>
-To: Siddharth Vadapalli <s-vadapalli@ti.com>
-Cc: lpieralisi@kernel.org, kw@linux.com, robh@kernel.org,
-	bhelgaas@google.com, manivannan.sadhasivam@linaro.org,
-	fancer.lancer@gmail.com, u.kleine-koenig@pengutronix.de,
-	cassel@kernel.org, dlemoal@kernel.org,
-	yoshihiro.shimoda.uh@renesas.com, linux-pci@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-	srk@ti.com
-Subject: Re: [PATCH v6] PCI: keystone: Fix pci_ops for AM654x SoC
-Message-ID: <20240326232403.GA1502764@bhelgaas>
+	s=arc-20240116; t=1711495506; c=relaxed/simple;
+	bh=/TwaUWPtbcr32wiCp9VhBHSukSNUm57OfrofMtXGVGY=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=clqgqDdf6qk8KZtm9C8T5e0IwxsRrMtRsIp59Y42dqqVoyjDFk8Ia0R5v+8D4JUtoS7xm5bh6skgsUzuihoAah5zXlnnFkP5MZk6dLm9UIUwWzyyp/PQXF819fXS56Er7F4UpSPC55W2SV2VgOBGgEhieLyPQXpiWg3JD/QWNls=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E6C022F4;
+	Tue, 26 Mar 2024 16:25:35 -0700 (PDT)
+Received: from [10.57.81.167] (unknown [10.57.81.167])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B73133F694;
+	Tue, 26 Mar 2024 16:24:58 -0700 (PDT)
+Message-ID: <3f61d6d3-a0d6-4c49-b094-6ba62d09ab14@arm.com>
+Date: Tue, 26 Mar 2024 23:24:56 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240326144258.2404433-1-s-vadapalli@ti.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 00/19] amba: store owner from modules with
+ amba_driver_register()
+Content-Language: en-GB
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+ Russell King <linux@armlinux.org.uk>, Mike Leach <mike.leach@linaro.org>,
+ James Clark <james.clark@arm.com>,
+ Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+ Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+ Alexandre Torgue <alexandre.torgue@foss.st.com>,
+ Linus Walleij <linus.walleij@linaro.org>, Andi Shyti
+ <andi.shyti@kernel.org>, Olivia Mackall <olivia@selenic.com>,
+ Herbert Xu <herbert@gondor.apana.org.au>, Vinod Koul <vkoul@kernel.org>,
+ Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+ Miquel Raynal <miquel.raynal@bootlin.com>,
+ Michal Simek <michal.simek@amd.com>, Eric Auger <eric.auger@redhat.com>,
+ Alex Williamson <alex.williamson@redhat.com>
+Cc: linux-kernel@vger.kernel.org, coresight@lists.linaro.org,
+ linux-arm-kernel@lists.infradead.org,
+ linux-stm32@st-md-mailman.stormreply.com, linux-i2c@vger.kernel.org,
+ linux-crypto@vger.kernel.org, dmaengine@vger.kernel.org,
+ linux-input@vger.kernel.org, kvm@vger.kernel.org
+References: <20240326-module-owner-amba-v1-0-4517b091385b@linaro.org>
+From: Suzuki K Poulose <suzuki.poulose@arm.com>
+In-Reply-To: <20240326-module-owner-amba-v1-0-4517b091385b@linaro.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Tue, Mar 26, 2024 at 08:12:58PM +0530, Siddharth Vadapalli wrote:
-> In the process of converting .scan_bus() callbacks to .add_bus(), the
-> ks_pcie_v3_65_scan_bus() function was changed to ks_pcie_v3_65_add_bus().
-> The .scan_bus() method belonged to ks_pcie_host_ops which was specific
-> to controller version 3.65a, while the .add_bus() method had been added
-> to ks_pcie_ops which is shared between the controller versions 3.65a and
-> 4.90a. Neither the older ks_pcie_v3_65_scan_bus() method, nor the newer
-> ks_pcie_v3_65_add_bus() method is applicable to the controller version
-> 4.90a which is present in AM654x SoCs.
-> 
-> Thus, as a fix, move the contents of "ks_pcie_v3_65_add_bus()" to the
-> .msi_init callback "ks_pcie_msi_host_init()" which is specific to the
-> 3.65a controller. Also, move the definitions of ks_pcie_set_dbi_mode()
-> and ks_pcie_clear_dbi_mode() above ks_pcie_msi_host_init() in order to
-> avoid forward declaration.
+Hi Krzysztof
 
-If it's possible to split this into two patches (one that strictly
-*moves* the code without otherwise changing it, and another that makes
-the actual fix), it would be easier to review the fix.  It's a pain to
-have to compare the code in the old location with that in the new
-location.
+On 26/03/2024 20:23, Krzysztof Kozlowski wrote:
+> Merging
+> =======
+> All further patches depend on the first amba patch, therefore please ack
+> and this should go via one tree.
 
-Bjorn
+Are you able to provide a stable branch with these patches once you pull
+them in to "one tree" here ? We have changes coming up in the coresight
+tree, which would conflict with the changes here (horribly).
+
+FWIW,
+
+For patches 1 to 13 :
+
+Acked-by: Suzuki K Poulose <suzuki.poulose@arm.com>
+
+Suzuki
 
