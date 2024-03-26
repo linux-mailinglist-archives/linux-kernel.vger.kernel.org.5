@@ -1,228 +1,116 @@
-Return-Path: <linux-kernel+bounces-119726-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-119728-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 84F5788CC73
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 19:56:34 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3FA1188CC78
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 19:57:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3A9183091CE
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 18:56:33 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EF3D8309715
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 18:57:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 429A613CA97;
-	Tue, 26 Mar 2024 18:55:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 087C513C9D6;
+	Tue, 26 Mar 2024 18:56:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gJpjPqdN"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="gpEL67fg"
+Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 723D513C3CD;
-	Tue, 26 Mar 2024 18:55:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C069213C8E4;
+	Tue, 26 Mar 2024 18:56:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.23.249
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711479314; cv=none; b=s0YBKZkxLw1EBjbk3mtlUVUl4vaK6WvpHrrNNRWnZknRHx5yE2Gpvi4syK50OQO5/yOGX3joqeHI5Vh5eEJUyYlB/qdhYDiEYYu/KzRNQnR3SSb005717YupbHlwM+WV+2NgdHKOFC8/yOBUYASPffbmssczgS9ZiA/GF2AV2RY=
+	t=1711479398; cv=none; b=jp2UYTjO5KYt5lVOfn0MRKJ8j1ki/MY8M7Akg7B6lddclvLU+Pmh8eJNnNhIbHueNoROpCq+jZ3q6Z63fz9QTuFXq8x/XWAuiYgA0AIm8REUsW+Wg+6CKWsZJLd3+rGwJl08d22V242Y5iqRxnFO6iiYPH/yTh+EeYlYRoYnqgY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711479314; c=relaxed/simple;
-	bh=eLWdTmkX6BBbodK2iLPdweL1DI0T40cTBvjP1ZxdWVg=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=dENtc095nYgr1Vj/hka5Nt6yY+xf3Op8w7YWJgiDbbkPSkBqoZdo0nOOoQ22olhAXDQMjQhyBwhs8IdQ0gOrr2XMX5g1DTtRmfYcbtpy5G+gqzrIPPEdRh8eTQmnfum8b96JLKraM2n0khI9eyUY8bQ8LBNriAb4JNiVzNQzKdk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=gJpjPqdN; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 53F7DC433F1;
-	Tue, 26 Mar 2024 18:55:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711479314;
-	bh=eLWdTmkX6BBbodK2iLPdweL1DI0T40cTBvjP1ZxdWVg=;
-	h=Date:From:To:Cc:Subject:From;
-	b=gJpjPqdNq3WnXv3+hUhWUVvUEF2NVYR0ZLnvkhMZ6KJ7JwzrdDRRjJkf841deUGnE
-	 tw2eZq/tSx9X2gsKS6VrjhTRfVwwuWYaQmxHIRMhpfOL3+O5i98IQtIDBxORllWLlq
-	 2kAJLNNHuUjftF90xiWDKuDzkuY/OB+KpbAyGd02iXXULptedGgYZZ5XHd2hMaaTx7
-	 eXyx/DYxp+2avG+l1fSqnrpn/hH3DtwinSf+XiYiU6wjdEWJcD61POOcG+4oEyYbC7
-	 rSapuobRYB8ansUL5Eqf/Xkq0FMgxxUk+X103J25tGliAgww+MEofAK0EPy6VOs5aw
-	 Xk362C9Qp0vqA==
-Date: Tue, 26 Mar 2024 12:55:10 -0600
-From: "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To: Benson Leung <bleung@chromium.org>, Tzung-Bi Shih <tzungbi@kernel.org>,
-	Guenter Roeck <groeck@chromium.org>
-Cc: chrome-platform@lists.linux.dev, linux-kernel@vger.kernel.org,
-	"Gustavo A. R. Silva" <gustavoars@kernel.org>,
-	linux-hardening@vger.kernel.org
-Subject: [PATCH][next] platform/chrome: cros_ec_proto: avoid
- -Wflex-array-member-not-at-end warnings
-Message-ID: <ZgMaDl/of8YC445S@neat>
+	s=arc-20240116; t=1711479398; c=relaxed/simple;
+	bh=Z6UlkkledCU4/2smMKSjUnj+jm96rDpmadhXGOBwObU=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=CKRiMymlG3eP8oO2ZhigWV0yPu1rHMRv8x7uErU01qb2v+3jNvMOjvhdLJEd+5V6v2GVgESAgb2RKVs5ab6rrSLeAaL3sj/zbScxvSsNKvTiCvuiM2pi5L1ZdRmgkC+u+o/0rZgXFWuaDXFVSXrzCInE9gyOOnqaAMQM40M2rbw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=gpEL67fg; arc=none smtp.client-ip=198.47.23.249
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+	by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 42QIuTvw041209;
+	Tue, 26 Mar 2024 13:56:29 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+	s=ti-com-17Q1; t=1711479389;
+	bh=2PvbqEDyejopBiHz9ZvkYFmBzkbgrJNY22MumI3wI9g=;
+	h=From:To:CC:Subject:Date;
+	b=gpEL67fg7ugUKZ2zqhQhoE711vMUibF70qZVFMSN+4e2PksuZjXr/3doRsINg6onQ
+	 vPgbiMVfF0VUDsHAU2JjTf5sM0SA8cEC6KL8acbPV8aynrEl4DkORIg9SKwGoHtnLt
+	 /YHoLYsXv25hUK5ajF4nsNU//zcBSRepHu0k4wWw=
+Received: from DFLE114.ent.ti.com (dfle114.ent.ti.com [10.64.6.35])
+	by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 42QIuTRI101909
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+	Tue, 26 Mar 2024 13:56:29 -0500
+Received: from DFLE105.ent.ti.com (10.64.6.26) by DFLE114.ent.ti.com
+ (10.64.6.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Tue, 26
+ Mar 2024 13:56:28 -0500
+Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DFLE105.ent.ti.com
+ (10.64.6.26) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Tue, 26 Mar 2024 13:56:28 -0500
+Received: from fllvsmtp7.itg.ti.com ([10.249.42.149])
+	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 42QIuSZ5093125;
+	Tue, 26 Mar 2024 13:56:28 -0500
+From: Andrew Davis <afd@ti.com>
+To: Nishanth Menon <nm@ti.com>, Vignesh Raghavendra <vigneshr@ti.com>,
+        Tero
+ Kristo <kristo@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        Krzysztof
+ Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley
+	<conor+dt@kernel.org>
+CC: <linux-arm-kernel@lists.infradead.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, Andrew Davis <afd@ti.com>
+Subject: [PATCH 1/2] arm64: dts: ti: k3-am65: Add full compatible to SerDes control nodes
+Date: Tue, 26 Mar 2024 13:56:26 -0500
+Message-ID: <20240326185627.29852-1-afd@ti.com>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
-Use the `DEFINE_RAW_FLEX()` helper for an on-stack definition of
-a flexible structure where the size of the flexible-array member
-is known at compile-time, and refactor the rest of the code,
-accordingly.
+This matches the binding for this register region which fixes a couple
+DTS check warnings.
 
-So, with these changes, fix the following warning:
-drivers/platform/chrome/cros_ec_proto_test.c:1547:40: warning: structure containing a flexible array member is not at the end of another structure [-Wflex-array-member-not-at-end]
-drivers/platform/chrome/cros_ec_proto_test.c:1607:40: warning: structure containing a flexible array member is not at the end of another structure [-Wflex-array-member-not-at-end]
-drivers/platform/chrome/cros_ec_proto_test.c:1645:40: warning: structure containing a flexible array member is not at the end of another structure [-Wflex-array-member-not-at-end]
-drivers/platform/chrome/cros_ec_proto_test.c:1668:40: warning: structure containing a flexible array member is not at the end of another structure [-Wflex-array-member-not-at-end]
+While here trim the leading 0s from the "reg" definition.
 
-Link: https://github.com/KSPP/linux/issues/202
-Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+Signed-off-by: Andrew Davis <afd@ti.com>
 ---
- drivers/platform/chrome/cros_ec_proto_test.c | 72 ++++++++------------
- 1 file changed, 30 insertions(+), 42 deletions(-)
+ arch/arm64/boot/dts/ti/k3-am65-main.dtsi | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/platform/chrome/cros_ec_proto_test.c b/drivers/platform/chrome/cros_ec_proto_test.c
-index b6169d6f2467..41378c2ee6a0 100644
---- a/drivers/platform/chrome/cros_ec_proto_test.c
-+++ b/drivers/platform/chrome/cros_ec_proto_test.c
-@@ -1543,21 +1543,18 @@ static void cros_ec_proto_test_cmd_xfer_normal(struct kunit *test)
- 	struct cros_ec_device *ec_dev = &priv->ec_dev;
- 	struct ec_xfer_mock *mock;
- 	int ret;
--	struct {
--		struct cros_ec_command msg;
--		u8 data[0x100];
--	} __packed buf;
-+	DEFINE_RAW_FLEX(struct cros_ec_command, buf, data, 0x100);
+diff --git a/arch/arm64/boot/dts/ti/k3-am65-main.dtsi b/arch/arm64/boot/dts/ti/k3-am65-main.dtsi
+index ff857117d7193..738c5c4acbcd2 100644
+--- a/arch/arm64/boot/dts/ti/k3-am65-main.dtsi
++++ b/arch/arm64/boot/dts/ti/k3-am65-main.dtsi
+@@ -483,13 +483,13 @@ scm_conf: scm-conf@100000 {
+ 		ranges = <0x0 0x0 0x00100000 0x1c000>;
  
- 	ec_dev->max_request = 0xff;
- 	ec_dev->max_response = 0xee;
- 	ec_dev->max_passthru = 0xdd;
+ 		serdes0_clk: clock@4080 {
+-			compatible = "syscon";
+-			reg = <0x00004080 0x4>;
++			compatible = "ti,am654-serdes-ctrl", "syscon";
++			reg = <0x4080 0x4>;
+ 		};
  
--	buf.msg.version = 0;
--	buf.msg.command = EC_CMD_HELLO;
--	buf.msg.insize = 4;
--	buf.msg.outsize = 2;
--	buf.data[0] = 0x55;
--	buf.data[1] = 0xaa;
-+	buf->version = 0;
-+	buf->command = EC_CMD_HELLO;
-+	buf->insize = 4;
-+	buf->outsize = 2;
-+	buf->data[0] = 0x55;
-+	buf->data[1] = 0xaa;
+ 		serdes1_clk: clock@4090 {
+-			compatible = "syscon";
+-			reg = <0x00004090 0x4>;
++			compatible = "ti,am654-serdes-ctrl", "syscon";
++			reg = <0x4090 0x4>;
+ 		};
  
- 	{
- 		u8 *data;
-@@ -1572,7 +1569,7 @@ static void cros_ec_proto_test_cmd_xfer_normal(struct kunit *test)
- 		data[3] = 0x33;
- 	}
- 
--	ret = cros_ec_cmd_xfer(ec_dev, &buf.msg);
-+	ret = cros_ec_cmd_xfer(ec_dev, buf);
- 	KUNIT_EXPECT_EQ(test, ret, 4);
- 
- 	{
-@@ -1590,10 +1587,10 @@ static void cros_ec_proto_test_cmd_xfer_normal(struct kunit *test)
- 		KUNIT_EXPECT_EQ(test, data[0], 0x55);
- 		KUNIT_EXPECT_EQ(test, data[1], 0xaa);
- 
--		KUNIT_EXPECT_EQ(test, buf.data[0], 0xaa);
--		KUNIT_EXPECT_EQ(test, buf.data[1], 0x55);
--		KUNIT_EXPECT_EQ(test, buf.data[2], 0xcc);
--		KUNIT_EXPECT_EQ(test, buf.data[3], 0x33);
-+		KUNIT_EXPECT_EQ(test, buf->data[0], 0xaa);
-+		KUNIT_EXPECT_EQ(test, buf->data[1], 0x55);
-+		KUNIT_EXPECT_EQ(test, buf->data[2], 0xcc);
-+		KUNIT_EXPECT_EQ(test, buf->data[3], 0x33);
- 	}
- }
- 
-@@ -1603,26 +1600,23 @@ static void cros_ec_proto_test_cmd_xfer_excess_msg_insize(struct kunit *test)
- 	struct cros_ec_device *ec_dev = &priv->ec_dev;
- 	struct ec_xfer_mock *mock;
- 	int ret;
--	struct {
--		struct cros_ec_command msg;
--		u8 data[0x100];
--	} __packed buf;
-+	DEFINE_RAW_FLEX(struct cros_ec_command, buf, data, 0x100);
- 
- 	ec_dev->max_request = 0xff;
- 	ec_dev->max_response = 0xee;
- 	ec_dev->max_passthru = 0xdd;
- 
--	buf.msg.version = 0;
--	buf.msg.command = EC_CMD_HELLO;
--	buf.msg.insize = 0xee + 1;
--	buf.msg.outsize = 2;
-+	buf->version = 0;
-+	buf->command = EC_CMD_HELLO;
-+	buf->insize = 0xee + 1;
-+	buf->outsize = 2;
- 
- 	{
- 		mock = cros_kunit_ec_xfer_mock_add(test, 0xcc);
- 		KUNIT_ASSERT_PTR_NE(test, mock, NULL);
- 	}
- 
--	ret = cros_ec_cmd_xfer(ec_dev, &buf.msg);
-+	ret = cros_ec_cmd_xfer(ec_dev, buf);
- 	KUNIT_EXPECT_EQ(test, ret, 0xcc);
- 
- 	{
-@@ -1641,21 +1635,18 @@ static void cros_ec_proto_test_cmd_xfer_excess_msg_outsize_without_passthru(stru
- 	struct cros_ec_proto_test_priv *priv = test->priv;
- 	struct cros_ec_device *ec_dev = &priv->ec_dev;
- 	int ret;
--	struct {
--		struct cros_ec_command msg;
--		u8 data[0x100];
--	} __packed buf;
-+	DEFINE_RAW_FLEX(struct cros_ec_command, buf, data, 0x100);
- 
- 	ec_dev->max_request = 0xff;
- 	ec_dev->max_response = 0xee;
- 	ec_dev->max_passthru = 0xdd;
- 
--	buf.msg.version = 0;
--	buf.msg.command = EC_CMD_HELLO;
--	buf.msg.insize = 4;
--	buf.msg.outsize = 0xff + 1;
-+	buf->version = 0;
-+	buf->command = EC_CMD_HELLO;
-+	buf->insize = 4;
-+	buf->outsize = 0xff + 1;
- 
--	ret = cros_ec_cmd_xfer(ec_dev, &buf.msg);
-+	ret = cros_ec_cmd_xfer(ec_dev, buf);
- 	KUNIT_EXPECT_EQ(test, ret, -EMSGSIZE);
- }
- 
-@@ -1664,21 +1655,18 @@ static void cros_ec_proto_test_cmd_xfer_excess_msg_outsize_with_passthru(struct
- 	struct cros_ec_proto_test_priv *priv = test->priv;
- 	struct cros_ec_device *ec_dev = &priv->ec_dev;
- 	int ret;
--	struct {
--		struct cros_ec_command msg;
--		u8 data[0x100];
--	} __packed buf;
-+	DEFINE_RAW_FLEX(struct cros_ec_command, buf, data, 0x100);
- 
- 	ec_dev->max_request = 0xff;
- 	ec_dev->max_response = 0xee;
- 	ec_dev->max_passthru = 0xdd;
- 
--	buf.msg.version = 0;
--	buf.msg.command = EC_CMD_PASSTHRU_OFFSET(CROS_EC_DEV_PD_INDEX) + EC_CMD_HELLO;
--	buf.msg.insize = 4;
--	buf.msg.outsize = 0xdd + 1;
-+	buf->version = 0;
-+	buf->command = EC_CMD_PASSTHRU_OFFSET(CROS_EC_DEV_PD_INDEX) + EC_CMD_HELLO;
-+	buf->insize = 4;
-+	buf->outsize = 0xdd + 1;
- 
--	ret = cros_ec_cmd_xfer(ec_dev, &buf.msg);
-+	ret = cros_ec_cmd_xfer(ec_dev, buf);
- 	KUNIT_EXPECT_EQ(test, ret, -EMSGSIZE);
- }
- 
+ 		serdes_mux: mux-controller {
 -- 
-2.34.1
+2.39.2
 
 
