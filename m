@@ -1,141 +1,262 @@
-Return-Path: <linux-kernel+bounces-119566-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-119567-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D085F88CA82
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 18:14:11 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 82D8488CA83
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 18:14:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 32FE3322F92
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 17:14:10 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 39619323988
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 17:14:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8016E1CA8C;
-	Tue, 26 Mar 2024 17:13:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D5BA51CD2D;
+	Tue, 26 Mar 2024 17:13:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=proton.me header.i=@proton.me header.b="AY/oPqhF"
-Received: from mail-4316.protonmail.ch (mail-4316.protonmail.ch [185.70.43.16])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NlHYV/Pf"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5BC8C1C69C
-	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 17:13:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.70.43.16
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F34191C69C
+	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 17:13:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711473231; cv=none; b=LlT3fSxKOuaIcbf8Jts7dhWLU8d7UXTIO5aSKtq4qKKh2cHkSgOChl1a2BoU6QUMxvYlt6njFZhuONL5aKybnPIFsRuiOHHBSgDkUbfmri1DKC4ZJxRJDOYdJUQHknsW71GP0rZdNTIrps89zyLMzeJIX/6sNHhbd/Ay1TIDlRE=
+	t=1711473238; cv=none; b=Mg9UMePwUDrKdY1cxWrIdDazMWSmBDt3vSsPZmn+C6C/1RU5c9XosY5DqNLb/o3RmSLrZLUXFrAc0pIUCkPcc/eYyCvX7HziS2iaxH+KaPmmgsuga1o/FER+5YrvwePUeVJKh1u1D41Y97AtSNB5WcsxA35zIJ7quLT2lcefIzc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711473231; c=relaxed/simple;
-	bh=FrW4urb3kaGNnmCDOoJ/pJREbGJJEOcKrsesprEishU=;
-	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=lLzCMJWu+l2U63EBcs32gnMWVG8YFufiKz75jlEdN+vEtqBHTBEATnBlYZ/l3YpCm2Z2xlBjgKOXGAVbOlJ/DJMvFnJawYWuSRsgrnhZ9KN+jxFnJxWxS2gSAT0VINeQL6aL7nPtfSJxqhjok2Oabuj+Wxo6FJSCJZENyRXxK40=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=proton.me; spf=pass smtp.mailfrom=proton.me; dkim=pass (2048-bit key) header.d=proton.me header.i=@proton.me header.b=AY/oPqhF; arc=none smtp.client-ip=185.70.43.16
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=proton.me
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=proton.me
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=proton.me;
-	s=protonmail; t=1711473227; x=1711732427;
-	bh=2SMAljw4XINFd821G0mOj/hS2BbJyOq2IwtofbwqjYM=;
-	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
-	 Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
-	 Message-ID:BIMI-Selector;
-	b=AY/oPqhFT+U/f9Jb34/v0EuZ9Y6G7v5QpAIgG/qKhmEwTwMQUg7LVx9edtm/wvfAL
-	 BuqY0+sQf8DmK2UUU+uVyDSyq6pLg3e4KJuKvcBXjqUxc8aNbyRr+QiWOX08grkAhX
-	 JyNDw4gxpYj+SRlWsyCK7i3yWoQG8Z5KEVqCGEQzKASxoubipZoicMK4lWlv5acRub
-	 6ynza26Kypc8FdmGPTTI+sSkCYSV+/5bUSaHEDV9wW2nbhgnvAR6z8qNcyENN+CtG7
-	 9d4zQNfcpM15EZtUJgE2ww478Un+/QI3FVMe0jIcdqskzR9Wuzc2Z1zoP3cwxX05N1
-	 AS2FY5L160fug==
-Date: Tue, 26 Mar 2024 17:13:38 +0000
-To: Boqun Feng <boqun.feng@gmail.com>
-From: Benno Lossin <benno.lossin@proton.me>
-Cc: rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>, Alice Ryhl <aliceryhl@google.com>, Miguel Ojeda <ojeda@kernel.org>, Alex Gaynor <alex.gaynor@gmail.com>, Wedson Almeida Filho <wedsonaf@gmail.com>, Gary Guo <gary@garyguo.net>, =?utf-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, Andreas Hindborg <a.hindborg@samsung.com>, John Stultz <jstultz@google.com>, Stephen Boyd <sboyd@kernel.org>, Valentin Obst <kernel@valentinobst.de>, Heghedus Razvan <heghedus.razvan@protonmail.com>, Asahi Lina <lina@asahilina.net>
-Subject: Re: [PATCH 5/5] rust: time: Add Instant::elapsed() for monotonic clocks
-Message-ID: <kZmwObXVcyEJFVR3I05Nab0WdjcccDVARoOm6U9EmXhd89fxYRjvNmEAUZsueWTUlBlHp8jpU3i2YfgN9aWCLZameta0tPT_OgQdBOWUIko=@proton.me>
-In-Reply-To: <20240324223339.971934-6-boqun.feng@gmail.com>
-References: <20240324223339.971934-1-boqun.feng@gmail.com> <20240324223339.971934-6-boqun.feng@gmail.com>
-Feedback-ID: 71780778:user:proton
+	s=arc-20240116; t=1711473238; c=relaxed/simple;
+	bh=AJR5USqJiMDQOJPpOHN5Bf+9uA64buMtfFzhzaUh3jg=;
+	h=Mime-Version:Content-Type:Date:Message-Id:Cc:Subject:From:To:
+	 References:In-Reply-To; b=TPQ1ERm0pHEnvar6Tc//Q4lP2bwxu9Na1GFMVfRc9YDgrGaLXL2beoK5h6RYRssUcBg8TwzNSWoxbrivruIUUwBhAu0MD/EnBMDRkFxixrdjbYz9dBIiZtPKUIAabJ8rUlpivET77oS3xGZeEFwt+9InTu2c5+QxqSFLrNm2tGs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NlHYV/Pf; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2C4F4C433F1;
+	Tue, 26 Mar 2024 17:13:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1711473237;
+	bh=AJR5USqJiMDQOJPpOHN5Bf+9uA64buMtfFzhzaUh3jg=;
+	h=Date:Cc:Subject:From:To:References:In-Reply-To:From;
+	b=NlHYV/PfVN+fR+oUL/bR8wrrYkHVzVrwwurW1v0qiQp4Pl3WuqaQJa3gkjg0ZjopU
+	 O59LhWiDSS2m1V/OQcpDwvQx7rEAVoANBoyRk9ymFhu0dnjHxnj5FjHPTARuknaKrk
+	 tJgqzCgaJuw9AlGJkq0Fm1BLH1b9psVm+WZSJctymRcP3LEDkGgOXAFg0lEBpvQ9sW
+	 4cPgMw57vLzHiwappHT/o3l4dUMrbXqNHgHcH4teUtFD8LP/DcAAOhNT+Z9C7ZuMN6
+	 gw8iDk1b8rQI4DSwjPcU/RauzGlztanbOCMy2JhrfUw5xFCJ64gsLeTch+PNdCuvvI
+	 f2tMhXwszhqgw==
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Date: Tue, 26 Mar 2024 19:13:51 +0200
+Message-Id: <D03UMKC71414.2D6NN1BIWD5TZ@kernel.org>
+Cc: <agordeev@linux.ibm.com>, <anil.s.keshavamurthy@intel.com>,
+ <aou@eecs.berkeley.edu>, <bp@alien8.de>, <catalin.marinas@arm.com>,
+ <dave.hansen@linux.intel.com>, <davem@davemloft.net>, <gor@linux.ibm.com>,
+ <hca@linux.ibm.com>, <jcalvinowens@gmail.com>,
+ <linux-arm-kernel@lists.infradead.org>, <mhiramat@kernel.org>,
+ <mingo@redhat.com>, <mpe@ellerman.id.au>, <naveen.n.rao@linux.ibm.com>,
+ <palmer@dabbelt.com>, <paul.walmsley@sifive.com>, <tglx@linutronix.de>,
+ <will@kernel.org>
+Subject: Re: [PATCH 4/4] kprobes: Remove core dependency on modules
+From: "Jarkko Sakkinen" <jarkko@kernel.org>
+To: "Mark Rutland" <mark.rutland@arm.com>, <linux-kernel@vger.kernel.org>
+X-Mailer: aerc 0.17.0
+References: <20240326163624.3253157-1-mark.rutland@arm.com>
+ <20240326163624.3253157-5-mark.rutland@arm.com>
+In-Reply-To: <20240326163624.3253157-5-mark.rutland@arm.com>
 
-On 24.03.24 23:33, Boqun Feng wrote:
-> This is a convenient way to do:
->=20
-> =09t1 =3D Clock::now();
-> =09...
-> =09delta =3D  Clock::now() - t1;
->=20
-> Hence add it.
->=20
-> Co-developed-by: Heghedus Razvan <heghedus.razvan@protonmail.com>
-> Signed-off-by: Heghedus Razvan <heghedus.razvan@protonmail.com>
-> Co-developed-by: Asahi Lina <lina@asahilina.net>
-> Signed-off-by: Asahi Lina <lina@asahilina.net>
-> Signed-off-by: Boqun Feng <boqun.feng@gmail.com>
+On Tue Mar 26, 2024 at 6:36 PM EET, Mark Rutland wrote:
+> From: Jarkko Sakkinen <jarkko@kernel.org>
+>
+> Tracing with kprobes while running a monolithic kernel is currently
+> impossible because KPROBES depends on MODULES. While this dependency is
+> necessary when KPROBES_USE_MODULE_ALLOC=3Dy, all the other module-specifi=
+c
+> code only exist to handle the case when MODULES=3Dy, and can be hidden
+> behind ifdeffery.
+>
+> Add the necessary ifdeffery, and remove the dependency on MODULES=3DN whe=
+n
+> KPROBES_USE_MODULE_ALLOC=3Dn.
+>
+> Currently this allows kprobes to be used when CONFIG_MODULES=3Dn on arm64
+> and riscv, and other architectures can enable support by implementing
+> their own kprobes_alloc_insn_page() and kprobes_free_insn_page() which
+> do not depend on MODULES.
+>
+> Signed-off-by: Jarkko Sakkinen <jarkko@kernel.org>
+> Link: https://lore.kernel.org/all/20240326012102.27438-1-jarkko@kernel.or=
+g/
+> [Mark: Remove execmem changes, depend on !KPROBES_USE_MODULE_ALLOC]
+> Signed-off-by: Mark Rutland <mark.rutland@arm.com>
+> Cc: Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>
+> Cc: David S. Miller <davem@davemloft.net>
+> Cc: Jarkko Sakkinen <jarkko@kernel.org>
+> Cc: Masami Hiramatsu <mhiramat@kernel.org>
+> Cc: Naveen N. Rao <naveen.n.rao@linux.ibm.com>
 > ---
->  rust/kernel/time.rs | 25 +++++++++++++++++++++++++
->  1 file changed, 25 insertions(+)
->=20
-> diff --git a/rust/kernel/time.rs b/rust/kernel/time.rs
-> index 5cd669cbea01..cd1e45169517 100644
-> --- a/rust/kernel/time.rs
-> +++ b/rust/kernel/time.rs
-> @@ -114,6 +114,31 @@ fn sub(self, other: Self) -> Self::Output {
->      }
->  }
->=20
-> +impl<T: Clock + Monotonic> Instant<T> {
-> +    /// Returns the time elapsed since this [`Instant`].
-> +    ///
-> +    /// This provides a convenient way to calculate time elapsed since a=
- previous [`Clock::now`].
-> +    /// Note even though the function only exists for monotonic clocks, =
-it could still return
-> +    /// negative [`Duration`] if the current time is earlier than the ti=
-me of `&self`, and this
-> +    /// could happen if `&self` is a timestamp generated by a [`Instant`=
-] + [`Duration`].
+>  arch/Kconfig                |  2 +-
+>  kernel/kprobes.c            | 12 +++++++++++-
+>  kernel/trace/trace_kprobe.c | 15 +++++++++++++--
+>  3 files changed, 25 insertions(+), 4 deletions(-)
+>
+> diff --git a/arch/Kconfig b/arch/Kconfig
+> index 85bb59f7b8c07..cf43de9ffb5b9 100644
+> --- a/arch/Kconfig
+> +++ b/arch/Kconfig
+> @@ -52,7 +52,7 @@ config GENERIC_ENTRY
+> =20
+>  config KPROBES
+>  	bool "Kprobes"
+> -	depends on MODULES
+> +	depends on MODULES || !KPROBES_USE_MODULE_ALLOC
+>  	depends on HAVE_KPROBES
+>  	select KALLSYMS
+>  	select TASKS_RCU if PREEMPTION
+> diff --git a/kernel/kprobes.c b/kernel/kprobes.c
+> index fa2ee4e59eca2..7c2f0b504cdcb 100644
+> --- a/kernel/kprobes.c
+> +++ b/kernel/kprobes.c
+> @@ -1582,6 +1582,7 @@ static int check_kprobe_address_safe(struct kprobe =
+*p,
+>  		goto out;
+>  	}
+> =20
+> +#ifdef CONFIG_MODULES
+>  	/* Check if 'p' is probing a module. */
+>  	*probed_mod =3D __module_text_address((unsigned long) p->addr);
+>  	if (*probed_mod) {
+> @@ -1605,6 +1606,8 @@ static int check_kprobe_address_safe(struct kprobe =
+*p,
+>  			ret =3D -ENOENT;
+>  		}
+>  	}
+> +#endif
 
-But there currently is no way to add an `Instant<T>` to a `Duration`.
+This can be scoped a bit more (see v7 of my patch set).
 
-> +    ///
-> +    /// But for typical usages, it should always return non-negative [`D=
-uration`]:
-> +    ///
-> +    /// # Examples
-> +    ///
-> +    /// ```
-> +    /// use kernel::time::{Clock, clock::KernelTime};
-> +    ///
-> +    /// let ts =3D KernelTime::now();
-> +    ///
-> +    /// // `KernelTime` is monotonic.
-> +    /// assert!(ts.elapsed().to_ns() >=3D 0);
-
-Now that I thought a bit more about the design, I think allowing
-negative durations is a bad idea.
-Do you disagree?
-
-If there is a case where you have a non-monotonic clock, or you are not
-sure if two timestamps are in the correct relation, we could have a
-function that returns a `Option<Duration>` or `Result<Duration>`.
-
---=20
-Cheers,
-Benno
-
-> +    /// ```
-> +    pub fn elapsed(&self) -> Duration {
-> +        T::now() - *self
-> +    }
-> +}
 > +
->  /// Contains the various clock source types available to the kernel.
->  pub mod clock {
->      use super::*;
-> --
-> 2.44.0
-> 
+>  out:
+>  	preempt_enable();
+>  	jump_label_unlock();
+> @@ -2484,6 +2487,7 @@ int kprobe_add_area_blacklist(unsigned long start, =
+unsigned long end)
+>  	return 0;
+>  }
+> =20
+> +#ifdef CONFIG_MODULES
+>  /* Remove all symbols in given area from kprobe blacklist */
+>  static void kprobe_remove_area_blacklist(unsigned long start, unsigned l=
+ong end)
+>  {
+> @@ -2501,6 +2505,7 @@ static void kprobe_remove_ksym_blacklist(unsigned l=
+ong entry)
+>  {
+>  	kprobe_remove_area_blacklist(entry, entry + 1);
+>  }
+> +#endif /* CONFIG_MODULES */
+> =20
+>  int __weak arch_kprobe_get_kallsym(unsigned int *symnum, unsigned long *=
+value,
+>  				   char *type, char *sym)
+> @@ -2566,6 +2571,7 @@ static int __init populate_kprobe_blacklist(unsigne=
+d long *start,
+>  	return ret ? : arch_populate_kprobe_blacklist();
+>  }
+> =20
+> +#ifdef CONFIG_MODULES
+>  static void add_module_kprobe_blacklist(struct module *mod)
+>  {
+>  	unsigned long start, end;
+> @@ -2662,6 +2668,9 @@ static int kprobes_module_callback(struct notifier_=
+block *nb,
+>  	mutex_unlock(&kprobe_mutex);
+>  	return NOTIFY_DONE;
+>  }
+> +#else
+> +#define kprobes_module_callback	(NULL)
+> +#endif /* CONFIG_MODULES */
+> =20
+>  static struct notifier_block kprobe_module_nb =3D {
+>  	.notifier_call =3D kprobes_module_callback,
+> @@ -2726,7 +2735,8 @@ static int __init init_kprobes(void)
+>  	err =3D arch_init_kprobes();
+>  	if (!err)
+>  		err =3D register_die_notifier(&kprobe_exceptions_nb);
+> -	if (!err)
+> +
+> +	if (!err && IS_ENABLED(CONFIG_MODULES))
+>  		err =3D register_module_notifier(&kprobe_module_nb);
+> =20
+>  	kprobes_initialized =3D (err =3D=3D 0);
+> diff --git a/kernel/trace/trace_kprobe.c b/kernel/trace/trace_kprobe.c
+> index 14099cc17fc9e..c509ba776e679 100644
+> --- a/kernel/trace/trace_kprobe.c
+> +++ b/kernel/trace/trace_kprobe.c
+> @@ -111,6 +111,7 @@ static nokprobe_inline bool trace_kprobe_within_modul=
+e(struct trace_kprobe *tk,
+>  	return strncmp(module_name(mod), name, len) =3D=3D 0 && name[len] =3D=
+=3D ':';
+>  }
+> =20
+> +#ifdef CONFIG_MODULES
+>  static nokprobe_inline bool trace_kprobe_module_exist(struct trace_kprob=
+e *tk)
+>  {
+>  	char *p;
+> @@ -129,6 +130,9 @@ static nokprobe_inline bool trace_kprobe_module_exist=
+(struct trace_kprobe *tk)
+> =20
+>  	return ret;
+>  }
+> +#else
+> +#define trace_kprobe_module_exist(tk) false /* aka a module never exists=
+ */
+> +#endif /* CONFIG_MODULES */
+> =20
+>  static bool trace_kprobe_is_busy(struct dyn_event *ev)
+>  {
+> @@ -670,6 +674,7 @@ static int register_trace_kprobe(struct trace_kprobe =
+*tk)
+>  	return ret;
+>  }
+> =20
+> +#ifdef CONFIG_MODULES
+>  /* Module notifier call back, checking event on the module */
+>  static int trace_kprobe_module_callback(struct notifier_block *nb,
+>  				       unsigned long val, void *data)
+> @@ -699,6 +704,9 @@ static int trace_kprobe_module_callback(struct notifi=
+er_block *nb,
+> =20
+>  	return NOTIFY_DONE;
+>  }
+> +#else
+> +#define trace_kprobe_module_callback (NULL)
+> +#endif /* CONFIG_MODULES */
+
+The last two CONFIG_MODULES sections could be combined. This was also in
+v7.
+
+> =20
+>  static struct notifier_block trace_kprobe_module_nb =3D {
+>  	.notifier_call =3D trace_kprobe_module_callback,
+> @@ -1933,8 +1941,11 @@ static __init int init_kprobe_trace_early(void)
+>  	if (ret)
+>  		return ret;
+> =20
+> -	if (register_module_notifier(&trace_kprobe_module_nb))
+> -		return -EINVAL;
+> +	if (IS_ENABLED(CONFIG_MODULES)) {
+> +		ret =3D register_module_notifier(&trace_kprobe_module_nb);
+> +		if (ret)
+> +			return -EINVAL;
+> +	}
+> =20
+>  	return 0;
+>  }
+
+Other than lgtm.
+
+BR, Jarkko
 
