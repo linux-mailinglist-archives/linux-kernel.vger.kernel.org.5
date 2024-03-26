@@ -1,69 +1,71 @@
-Return-Path: <linux-kernel+bounces-119742-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-119743-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id B215688CC9F
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 20:04:25 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4B2A188CCA0
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 20:04:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 315B01F66BAE
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 19:04:25 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F25DA327DCC
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 19:04:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CC73A13CA8E;
-	Tue, 26 Mar 2024 19:04:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5FF5D13CC62;
+	Tue, 26 Mar 2024 19:04:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hvvYb2t8"
-Received: from mail-pf1-f176.google.com (mail-pf1-f176.google.com [209.85.210.176])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="LfFZL5W9"
+Received: from mail-pf1-f174.google.com (mail-pf1-f174.google.com [209.85.210.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1C1B9481A3
-	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 19:04:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D0D8413CC44
+	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 19:04:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711479858; cv=none; b=JuKLh1/29cPJKxSPYqEd3DaNr+MHv/kBRbhO6gar6hSfRfNWchN0M28DiC7OvHW+DraBm96eHN0PFPvNlhC78R7e6Y93oFegIN1PtTsHP6ITpflhce25SuWp7GgRXAV70/0rH9QMHA7u8gaG1m/gMToQ9YzuDV2Q7OzmgKJAPeM=
+	t=1711479863; cv=none; b=tZshbS+TxfQs3n4vYNwvi1oKZ6cBTLOZeIZ91KpzNpP/O/iuRdYq9oQrVqTzGm9vxV09r6m1eGoXdS/4QtNyypTqZCIeFRjFCQm+77nxsrnYOWZXuoxjRYsOWGzsGkF5+OCh+eR8nobdVW4rxofIuv3q/2tK/QvppSCMyoSYk44=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711479858; c=relaxed/simple;
-	bh=8oXfY1G0fS4+cZF7nOtvS+yOZ5bqzBFtNVsaZMiqpq8=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=kt8TJUAhuUXwiG6scjfTQgUiJ6LeOZu6jVxs6phlvXD4aD556M8DQ5BUa4QZWlyqLgWcGb9vUv4w9pzIna62tQ3y6oW8cIwAy6ocQw0cImpR18CY8NIzfPpDJ1Cr63zoPwfNosqguuPYxmpBS7NYSSrtE0P/4pE2gyoLvXHISEM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=hvvYb2t8; arc=none smtp.client-ip=209.85.210.176
+	s=arc-20240116; t=1711479863; c=relaxed/simple;
+	bh=tkhzRdtmDHxGPLSNGrCz95fBiO47MFeM9d6uWVZhm/k=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=V549Xv4xPhjvMebThlmr9QSpIFGsFyTvm6g7Ao7xFncr+t7SMHDHr1ko+jNCcu3W3hTc+ptCp7u8oOkyOa4JUJTYPwYIr+7qGoL6WsYMwTge+dIkQR6cphJEmBL6+ROf4F0r805ZI5/YGlX/aEAGj14BbKTAUS7jsHEDUzbN3UQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=LfFZL5W9; arc=none smtp.client-ip=209.85.210.174
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f176.google.com with SMTP id d2e1a72fcca58-6e6b729669bso4905337b3a.3
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 12:04:16 -0700 (PDT)
+Received: by mail-pf1-f174.google.com with SMTP id d2e1a72fcca58-6e6b5432439so4576676b3a.1
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 12:04:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711479856; x=1712084656; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:reply-to:message-id:date
-         :subject:cc:to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=5TWiE8V41/HEEkIeCCX/V6RExr75EhLxd3ozyRzvmEY=;
-        b=hvvYb2t8am16UzGiCvmlX0iUDC/W1g7319xs4LyBqGgmbSRBKSkfBXCSNBBJh1kI4b
-         wVazyLHT+Ndkyi4HT+BMEeysZD9WAQAJ/3/1YXj6VjpLkw1LU17dFMzRr0HBoZhs7117
-         KUq46Oyu8X3UPGYABwhpbbmxAR3lI9uCf6tyeQKjzMDUWffWeIHsJzN7KMOu4T4HbJG5
-         6WOeikZHM5BdanaHmjxKWy4qVzxiB/AtrpkMERXUp0JZy8VZDCLug4OdrqSdHtsElvwy
-         wBT1Sjnn4w4jXQ8Kve/zVypEHLGyzxVYqqpjIVMyi/zE4MuAjTfNIs0lmOq2YnPaO5Ke
-         wHew==
+        d=gmail.com; s=20230601; t=1711479861; x=1712084661; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:reply-to:references
+         :in-reply-to:message-id:date:subject:cc:to:from:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=MPCeiBQ6Vuv/VMKCl+70rHoy18EK+MdrkqBGmpRbWL4=;
+        b=LfFZL5W9iI8VA0D87qczM7mAbvunmMc6ltI0tk36kwnYX0S3s8Ei0gSxMxpXIN6c2j
+         DnPWc3A5Z7amYnWfonyKeenwgwghOrCLLft8UcXDIwFJMhnNuCWttpk4Jyy9J4lTBIYq
+         cthoTByMsCiXIoLMqfKs0Gbv7UfUjiSRDwRWiFTPxogvxs5uHKV4Iji3oIy2pRENLrdH
+         8+iohbDEs8JUwc0DXFfxrk0pibpAgiEcsXf8Dr3eK6slwANvCW9O/k1tPv8Xl8OMG+lh
+         VAPlr+316zCGHnx+07/aeiqRp7ruEZOlG23UBEYq3TuCJYOraGbaUREFFjiMSS1YluZF
+         Wl5A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711479856; x=1712084656;
-        h=content-transfer-encoding:mime-version:reply-to:message-id:date
-         :subject:cc:to:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=5TWiE8V41/HEEkIeCCX/V6RExr75EhLxd3ozyRzvmEY=;
-        b=u8Au+jibBCHzTznWEZWc3Fh5w82RZ5kffVcNCTJtrKjekfEoti+utc5/QT2XIOj3/b
-         /lwvtIWBL2omEWxM4Od9DEXhctvR2LoJmgU++88kWdvPZtDrvUi/1P1a4McWtiQMCuIc
-         XbFbwfv+tgKmUGvb4sdQWPnTGeJBZv3F0N/1XZrg6x88SU+qW4jvjfza2PGISdMF5S9i
-         J21NjnVMG3hkHGqz9A22NuGOzcPFqYR8frAUfC/RkWAqUlI/JCaOUQN932N3yPCKsGUG
-         PVOZp3u3l+LR7CEqBLwg78ZXxrqXWf6nTZBNywPBzFDlWop/duyZq1HqKOOxTFE/XbcZ
-         4/PQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXp/B5cvPhInBeEjXEilWUdYxAwkoVtB/aR5XVS9za6a9HUGmAE684lOB/7dI8ERTtzotihJ6XyMSoMSKu1EKs+JIrjaqV+WHauhhfJ
-X-Gm-Message-State: AOJu0YyKI5mW4Z9Ti3NbJ5tyYpCU/LoRIcJDZmW2kL3pQKlDso8AXAo5
-	IqHGiAp5AYLQpLlA1oFBSTJaWRTByBIg+Cz1ihXghDEUrZcLMBKved1vfzBaAp0PtfUB
-X-Google-Smtp-Source: AGHT+IFIfGQ6R0T488evah4toOxvgSsRkizRRM/1ePf0r5KQNN9KPJ5OobJvjzwCnxXLpwoSk0Kw3w==
-X-Received: by 2002:a05:6a00:1996:b0:6ea:ad01:3590 with SMTP id d22-20020a056a00199600b006eaad013590mr6937777pfl.24.1711479856357;
-        Tue, 26 Mar 2024 12:04:16 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1711479861; x=1712084661;
+        h=content-transfer-encoding:mime-version:reply-to:references
+         :in-reply-to:message-id:date:subject:cc:to:from:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=MPCeiBQ6Vuv/VMKCl+70rHoy18EK+MdrkqBGmpRbWL4=;
+        b=MrsJtFM7Rv2/txNxOZ6U5tKNpSE6VNjFmgCes52mLPwsmTzD1AMe7gONncVnRW54j5
+         M1xcCYUCvRUIf6XApHhyK2UeMNjbVuNzkDzE7sClmFGmwpgVCk6chSxs+HLuDqgQvgPI
+         QymkzleW2zZs3nJIivMTkbBttX8zgtC3hztOZ3r3bb1tB1gZL/iVqiRxLGA1AItXZtgG
+         9SGTenLHkmBrSYkK+jUw7rvjBkTOZLYieJH2UpLwmClNt5L3SHR1yFM534oNPAP93bFi
+         8vrUY2kAC/sJH17IS9/xHIYdjUZTi5bc2NewoWDdFsoB1aKYgB+GGA4RVtEeViSo69si
+         qq8A==
+X-Forwarded-Encrypted: i=1; AJvYcCWQr3wlk0lOuYhddkWSYh5RCxHyY/b3tOVObw09TyyPqvY7TxF34h6qZ1kWU64Mx2Xc3p36FAsaXbGXd+tX3/xsN34zUoyA8z1o+B8N
+X-Gm-Message-State: AOJu0YwCDF4CwiS+9n//r0sUIzJN3f0KddIAEN8IFEm68cfUiB3CD7LA
+	1DtJC3zUIqlGbmXG/i+0bOG19/QCXNzNUpDS/ugdyVLrsFA5Ak8Z
+X-Google-Smtp-Source: AGHT+IEvuj2NywPp4edKIveEUgd69iy3TfxxMJh0u9KQ2EoAOriC83NY/O9bepwSOY7NB56Qt1OqEA==
+X-Received: by 2002:a05:6a00:814:b0:6e6:830:cd13 with SMTP id m20-20020a056a00081400b006e60830cd13mr2478320pfk.23.1711479860988;
+        Tue, 26 Mar 2024 12:04:20 -0700 (PDT)
 Received: from KASONG-MB2.tencent.com ([115.171.40.106])
-        by smtp.gmail.com with ESMTPSA id j14-20020aa783ce000000b006ea790c2232sm6298350pfn.79.2024.03.26.12.04.12
+        by smtp.gmail.com with ESMTPSA id j14-20020aa783ce000000b006ea790c2232sm6298350pfn.79.2024.03.26.12.04.16
         (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
-        Tue, 26 Mar 2024 12:04:15 -0700 (PDT)
+        Tue, 26 Mar 2024 12:04:20 -0700 (PDT)
 From: Kairui Song <ryncsn@gmail.com>
 To: linux-mm@kvack.org
 Cc: "Huang, Ying" <ying.huang@intel.com>,
@@ -82,10 +84,12 @@ Cc: "Huang, Ying" <ying.huang@intel.com>,
 	Andrew Morton <akpm@linux-foundation.org>,
 	linux-kernel@vger.kernel.org,
 	Kairui Song <kasong@tencent.com>
-Subject: [RFC PATCH 00/10] mm/swap: always use swap cache for synchronization
-Date: Wed, 27 Mar 2024 02:50:22 +0800
-Message-ID: <20240326185032.72159-1-ryncsn@gmail.com>
+Subject: [RFC PATCH 01/10] mm/filemap: split filemap storing logic into a standalone helper
+Date: Wed, 27 Mar 2024 02:50:23 +0800
+Message-ID: <20240326185032.72159-2-ryncsn@gmail.com>
 X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20240326185032.72159-1-ryncsn@gmail.com>
+References: <20240326185032.72159-1-ryncsn@gmail.com>
 Reply-To: Kairui Song <kasong@tencent.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -97,209 +101,237 @@ Content-Transfer-Encoding: 8bit
 
 From: Kairui Song <kasong@tencent.com>
 
-A month ago a bug was fixed for SWP_SYNCHRONOUS_IO swapin (swap cache
-bypass swapin):
-https://lore.kernel.org/linux-mm/20240219082040.7495-1-ryncsn@gmail.com/
+Swapcache can reuse this part for multi index support, no change of
+performance from page cache side except noise:
 
-Because we have to spin on the swap map on race, and swap map is too small
-to contain more usable info, an ugly schedule_timeout_uninterruptible(1)
-is added. It's not the first time a hackish workaround was added for cache
-bypass swapin and not the last time. I did many experiments locally to
-see if the swap cache bypass path can be dropped while keeping the
-performance still comparable. And it seems doable.
+Test in 8G memory cgroup and 16G brd ramdisk.
 
-This series does the following things:
-1. Remove swap cache bypass completely.
-2. Apply multiple optimizations after that, these optimizations are
-   either undoable or very difficult to do without dropping the cache
-   bypass swapin path.
-3. Use swap cache as a synchronization layer, also unify some code
-   with page cache (filemap).
+  echo 3 > /proc/sys/vm/drop_caches
 
-As a result, we have:
-1. A comparable performance, some tests are even faster.
-2. Multi-index support for swap cache.
-3. Removed many hackish workarounds including above long tailing
-   issue is gone.
+  fio -name=cached --numjobs=16 --filename=/mnt/test.img \
+    --buffered=1 --ioengine=mmap --rw=randread --time_based \
+    --ramp_time=30s --runtime=5m --group_reporting
 
-Sending this as RFC to collect some discussion, suggestion, or rejection
-early, this seems need to be split into multiple series, but the
-performance is not good until the last patch so I think start by
-seperating them may make this approach not very convincing. And there
-are still some (maybe further) TODO items and optimization space
-if we are OK with this approach.
+Before:
+bw (  MiB/s): min=  493, max= 3947, per=100.00%, avg=2625.56, stdev=25.74, samples=8651
+iops        : min=126454, max=1010681, avg=672142.61, stdev=6590.48, samples=8651
 
-This is based on my another series, for reusing filemap code for swapcache:
-[PATCH v2 0/4] mm/filemap: optimize folio adding and splitting
-https://lore.kernel.org/linux-mm/20240325171405.99971-1-ryncsn@gmail.com/
+After:
+bw (  MiB/s): min=  298, max= 3840, per=100.00%, avg=2614.34, stdev=23.77, samples=8689
+iops        : min=76464, max=983045, avg=669270.35, stdev=6084.31, samples=8689
 
-Patch 1/10, introduce a helper from filemap side to be used later.
-Patch 2/10, 3/10 are clean up and prepare for removing the swap cache
-  bypass swapin path.
-Patch 4/10, removed the swap cache bypass swapin path, and the
-  performance drop heavily (-28%).
-Patch 5/10, apply the first optimization after the removal, since all
-  folios goes through swap cache now, there is no need to explicit shadow
-  clearing any more.
-Patch 6/10, apply another optimization after clean up shadow clearing
-  routines. Now swapcache is very alike page cache, so just reuse page
-  cache code and we will have multi-index support. Shadow memory usage
-  dropped a lot.
-Patch 7/10, just rename __read_swap_cache_async, it will be refactored
-  and a key part of this series, and the naming is very confusing to me.
-Patch 8/10, make swap cache as a synchronization layer, introduce two
-  helpers for adding folios to swap cache, caller will either succeed or
-  get a folio to wait on.
-Patch 9/10, apply another optimization. With above two helpers, looking
-  up of swapcache can be optimized and avoid false looking up, which
-  helped improve the performance.
-Patch 10/10, apply a major optimization for SWP_SYNCHRONOUS_IO devices,
-  after this commit, performance for simple swapin/swapout is basically
-  same as before.
+Test result with THP (do a THP randread then switch to 4K page in hope it
+issues a lot of splitting):
 
-Test 1, sequential swapin/out of 30G zero page on ZRAM:
+  echo 3 > /proc/sys/vm/drop_caches
 
-               Before (us)        After (us)
-Swapout:       33619409           33886008
-Swapin:        32393771           32465441 (- 0.2%)
-Swapout (THP): 7817909            6899938  (+11.8%)
-Swapin (THP) : 32452387           33193479 (- 2.2%)
+  fio -name=cached --numjobs=16 --filename=/mnt/test.img \
+      --buffered=1 --ioengine=mmap -thp=1 --readonly \
+      --rw=randread --time_based --ramp_time=30s --runtime=10m \
+      --group_reporting
 
-And after swapping out 30G with THP, the radix node usage dropped by a
-lot:
+  fio -name=cached --numjobs=16 --filename=/mnt/test.img \
+      --buffered=1 --ioengine=mmap \
+      --rw=randread --time_based --runtime=5s --group_reporting
 
-Before: radix_tree_node 73728K
-After:  radix_tree_node  7056K (-94%)
+Before:
+bw (  KiB/s): min= 4611, max=15370, per=100.00%, avg=8928.74, stdev=105.17, samples=19146
+iops        : min= 1151, max= 3842, avg=2231.27, stdev=26.29, samples=19146
 
-Test 2:
-Mysql (16g buffer pool, 32G ZRAM SWAP, 4G memcg, Zswap disabled, THP never)
-  sysbench /usr/share/sysbench/oltp_read_only.lua --mysql-user=root \
-  --mysql-password=1234 --mysql-db=sb --tables=36 --table-size=2000000 \
-  --threads=48 --time=300 --report-interval=10 run
+READ: bw=4635B/s (4635B/s), 4635B/s-4635B/s (4635B/s-4635B/s), io=64.0KiB (65.5kB), run=14137-14137msec
 
-Before: transactions: 4849.25 per sec
-After:  transactions: 4849.40 per sec
+After:
+bw (  KiB/s): min= 4691, max=15666, per=100.00%, avg=8890.30, stdev=104.53, samples=19056
+iops        : min= 1167, max= 3913, avg=2218.68, stdev=26.15, samples=19056
 
-Test 3:
-Mysql (16g buffer pool, NVME SWAP, 4G memcg, Zswap enabled, THP never)
-  echo never > /sys/kernel/mm/transparent_hugepage/enabled
-  echo 100 > /sys/module/zswap/parameters/max_pool_percent
-  echo 1 > /sys/module/zswap/parameters/enabled
-  echo y > /sys/module/zswap/parameters/shrinker_enabled
+READ: bw=4590B/s (4590B/s), 4590B/s-4590B/s (4590B/s-4590B/s), io=64.0KiB (65.5kB), run=14275-14275msec
 
-  sysbench /usr/share/sysbench/oltp_read_only.lua --mysql-user=root \
-  --mysql-password=1234 --mysql-db=sb --tables=36 --table-size=2000000 \
-  --threads=48 --time=600 --report-interval=10 run
+Signed-off-by: Kairui Song <kasong@tencent.com>
+---
+ mm/filemap.c | 124 +++++++++++++++++++++++++++------------------------
+ 1 file changed, 65 insertions(+), 59 deletions(-)
 
-Before: transactions: 1662.90 per sec
-After:  transactions: 1726.52 per sec
-
-Test 4:
-Mysql (16g buffer pool, NVME SWAP, 4G memcg, Zswap enabled, THP always)
-  echo always > /sys/kernel/mm/transparent_hugepage/enabled
-  echo 100 > /sys/module/zswap/parameters/max_pool_percent
-  echo 1 > /sys/module/zswap/parameters/enabled
-  echo y > /sys/module/zswap/parameters/shrinker_enabled
-
-  sysbench /usr/share/sysbench/oltp_read_only.lua --mysql-user=root \
-  --mysql-password=1234 --mysql-db=sb --tables=36 --table-size=2000000 \
-  --threads=48 --time=600 --report-interval=10 run
-
-Before: transactions: 2860.90 per sec.
-After:  transactions: 2802.55 per sec.
-
-Test 5:
-Memtier / memcached (16G brd SWAP, 8G memcg, THP never):
-
-  memcached -u nobody -m 16384 -s /tmp/memcached.socket -a 0766 -t 16 -B binary &
-
-  memtier_benchmark -S /tmp/memcached.socket \
-    -P memcache_binary -n allkeys --key-minimum=1 \
-    --key-maximum=24000000 --key-pattern=P:P -c 1 -t 16 \
-    --ratio 1:0 --pipeline 8 -d 1000
-
-Before: 106730.31 Ops/sec
-After:  106360.11 Ops/sec
-
-Test 5:
-Memtier / memcached (16G brd SWAP, 8G memcg, THP always):
-
-  memcached -u nobody -m 16384 -s /tmp/memcached.socket -a 0766 -t 16 -B binary &
-
-  memtier_benchmark -S /tmp/memcached.socket \
-    -P memcache_binary -n allkeys --key-minimum=1 \
-    --key-maximum=24000000 --key-pattern=P:P -c 1 -t 16 \
-    --ratio 1:0 --pipeline 8 -d 1000
-
-Before: 83193.11 Ops/sec
-After:  82504.89 Ops/sec
-
-These tests are tested under heavy memory stress, and the performance
-seems basically same as before,very slightly better/worse for certain
-cases, the benefits of multi-index are basically erased by
-fragmentation and workingset nodes usage is slightly lower.
-
-Some (maybe further) TODO items if we are OK with this approach:
-
-- I see a slight performance regression for THP tests,
-  could identify a clear hotspot with perf, my guess is the
-  content on the xa_lock is an issue (we have a xa_lock for
-  every 64M swap cache space), THP handling needs to take the lock
-  longer than usual. splitting the xa_lock to be more
-  fine-grained seems a good solution. We have
-  SWAP_ADDRESS_SPACE_SHIFT = 14 which is not an optimal value.
-  Considering XA_CHUNK_SHIFT is 6, we will have three layer of Xarray
-  just for 2 extra bits. 12 should be better to always make use of
-  the whole XA chunk and having two layers at most. But duplicated
-  address_space struct also wastes more memory and cacheline.
-  I see an observable performance drop (~3%) after change
-  SWAP_ADDRESS_SPACE_SHIFT to 12. Might be a good idea to
-  decouple swap cache xarray from address_space (there are
-  too many user for swapcache, shouldn't come too dirty).
-
-- Actually after patch Patch 4/10, the performance is much better for
-  tests limited with memory cgroup, until 10/10 applied the direct swap
-  cache freeing logic for SWP_SYNCHRONOUS_IO swapin. Because if the swap
-  device is not near full, swapin doesn't clear up the swapcache, so
-  repeated swapout doesn't need to re-alloc a swap entry, make things
-  faster. This may indicate that lazy freeing of swap cache could benifit
-  certain workloads and may worth looking into later.
-
-- Now SWP_SYNCHRONOUS_IO swapin will bypass readahead and force drop
-  swap cache after swapin is done, which can be cleaned up and optimized
-  further after this patch. Device type will only determine the
-  readahead logic, and swap cache drop check can be based purely on swap
-  count.
-
-- Recent mTHP swapin/swapout series should have no fundamental
-  conflict with this.
-
-Kairui Song (10):
-  mm/filemap: split filemap storing logic into a standalone helper
-  mm/swap: move no readahead swapin code to a stand-alone helper
-  mm/swap: convert swapin_readahead to return a folio
-  mm/swap: remove cache bypass swapin
-  mm/swap: clean shadow only in unmap path
-  mm/swap: switch to use multi index entries
-  mm/swap: rename __read_swap_cache_async to swap_cache_alloc_or_get
-  mm/swap: use swap cache as a synchronization layer
-  mm/swap: delay the swap cache look up for swapin
-  mm/swap: optimize synchronous swapin
-
- include/linux/swapops.h |   5 +-
- mm/filemap.c            | 161 +++++++++-----
- mm/huge_memory.c        |  78 +++----
- mm/internal.h           |   2 +
- mm/memory.c             | 133 ++++-------
- mm/shmem.c              |  44 ++--
- mm/swap.h               |  71 ++++--
- mm/swap_state.c         | 478 +++++++++++++++++++++-------------------
- mm/swapfile.c           |  64 +++---
- mm/vmscan.c             |   8 +-
- mm/workingset.c         |   2 +-
- mm/zswap.c              |   4 +-
- 12 files changed, 540 insertions(+), 510 deletions(-)
-
+diff --git a/mm/filemap.c b/mm/filemap.c
+index 90b86f22a9df..0ccdc9e92764 100644
+--- a/mm/filemap.c
++++ b/mm/filemap.c
+@@ -848,38 +848,23 @@ void replace_page_cache_folio(struct folio *old, struct folio *new)
+ }
+ EXPORT_SYMBOL_GPL(replace_page_cache_folio);
+ 
+-noinline int __filemap_add_folio(struct address_space *mapping,
+-		struct folio *folio, pgoff_t index, gfp_t gfp, void **shadowp)
++static int __filemap_lock_store(struct xa_state *xas, struct folio *folio,
++				  pgoff_t index, gfp_t gfp, void **shadowp)
+ {
+-	XA_STATE(xas, &mapping->i_pages, index);
+-	void *alloced_shadow = NULL;
+-	int alloced_order = 0;
+-	bool huge;
+-	long nr;
+-
+-	VM_BUG_ON_FOLIO(!folio_test_locked(folio), folio);
+-	VM_BUG_ON_FOLIO(folio_test_swapbacked(folio), folio);
+-	mapping_set_update(&xas, mapping);
+-
+-	VM_BUG_ON_FOLIO(index & (folio_nr_pages(folio) - 1), folio);
+-	xas_set_order(&xas, index, folio_order(folio));
+-	huge = folio_test_hugetlb(folio);
+-	nr = folio_nr_pages(folio);
+-
++	void *entry, *old, *alloced_shadow = NULL;
++	int order, split_order, alloced_order = 0;
+ 	gfp &= GFP_RECLAIM_MASK;
+-	folio_ref_add(folio, nr);
+-	folio->mapping = mapping;
+-	folio->index = xas.xa_index;
+ 
+ 	for (;;) {
+-		int order = -1, split_order = 0;
+-		void *entry, *old = NULL;
++		order = -1;
++		split_order = 0;
++		old = NULL;
+ 
+-		xas_lock_irq(&xas);
+-		xas_for_each_conflict(&xas, entry) {
++		xas_lock_irq(xas);
++		xas_for_each_conflict(xas, entry) {
+ 			old = entry;
+ 			if (!xa_is_value(entry)) {
+-				xas_set_err(&xas, -EEXIST);
++				xas_set_err(xas, -EEXIST);
+ 				goto unlock;
+ 			}
+ 			/*
+@@ -887,72 +872,93 @@ noinline int __filemap_add_folio(struct address_space *mapping,
+ 			 * it will be the first and only entry iterated.
+ 			 */
+ 			if (order == -1)
+-				order = xas_get_order(&xas);
++				order = xas_get_order(xas);
+ 		}
+ 
+ 		/* entry may have changed before we re-acquire the lock */
+ 		if (alloced_order && (old != alloced_shadow || order != alloced_order)) {
+-			xas_destroy(&xas);
++			xas_destroy(xas);
+ 			alloced_order = 0;
+ 		}
+ 
+ 		if (old) {
+ 			if (order > 0 && order > folio_order(folio)) {
+-				/* How to handle large swap entries? */
+-				BUG_ON(shmem_mapping(mapping));
+ 				if (!alloced_order) {
+ 					split_order = order;
+ 					goto unlock;
+ 				}
+-				xas_split(&xas, old, order);
+-				xas_reset(&xas);
++				xas_split(xas, old, order);
++				xas_reset(xas);
+ 			}
+ 			if (shadowp)
+ 				*shadowp = old;
+ 		}
+ 
+-		xas_store(&xas, folio);
+-		if (xas_error(&xas))
+-			goto unlock;
+-
+-		mapping->nrpages += nr;
+-
+-		/* hugetlb pages do not participate in page cache accounting */
+-		if (!huge) {
+-			__lruvec_stat_mod_folio(folio, NR_FILE_PAGES, nr);
+-			if (folio_test_pmd_mappable(folio))
+-				__lruvec_stat_mod_folio(folio,
+-						NR_FILE_THPS, nr);
+-		}
+-
++		xas_store(xas, folio);
++		if (!xas_error(xas))
++			return 0;
+ unlock:
+-		xas_unlock_irq(&xas);
++		xas_unlock_irq(xas);
+ 
+ 		/* split needed, alloc here and retry. */
+ 		if (split_order) {
+-			xas_split_alloc(&xas, old, split_order, gfp);
+-			if (xas_error(&xas))
++			xas_split_alloc(xas, old, split_order, gfp);
++			if (xas_error(xas))
+ 				goto error;
+ 			alloced_shadow = old;
+ 			alloced_order = split_order;
+-			xas_reset(&xas);
++			xas_reset(xas);
+ 			continue;
+ 		}
+ 
+-		if (!xas_nomem(&xas, gfp))
++		if (!xas_nomem(xas, gfp))
+ 			break;
+ 	}
+ 
+-	if (xas_error(&xas))
+-		goto error;
+-
+-	trace_mm_filemap_add_to_page_cache(folio);
+-	return 0;
+ error:
+-	folio->mapping = NULL;
+-	/* Leave page->index set: truncation relies upon it */
+-	folio_put_refs(folio, nr);
+-	return xas_error(&xas);
++	return xas_error(xas);
++}
++
++noinline int __filemap_add_folio(struct address_space *mapping,
++		struct folio *folio, pgoff_t index, gfp_t gfp, void **shadowp)
++{
++	XA_STATE(xas, &mapping->i_pages, index);
++	bool huge;
++	long nr;
++	int ret;
++
++	VM_BUG_ON_FOLIO(!folio_test_locked(folio), folio);
++	VM_BUG_ON_FOLIO(folio_test_swapbacked(folio), folio);
++	mapping_set_update(&xas, mapping);
++
++	VM_BUG_ON_FOLIO(index & (folio_nr_pages(folio) - 1), folio);
++	xas_set_order(&xas, index, folio_order(folio));
++	huge = folio_test_hugetlb(folio);
++	nr = folio_nr_pages(folio);
++
++	folio_ref_add(folio, nr);
++	folio->mapping = mapping;
++	folio->index = xas.xa_index;
++
++	ret = __filemap_lock_store(&xas, folio, index, gfp, shadowp);
++	if (!ret) {
++		mapping->nrpages += nr;
++		/* hugetlb pages do not participate in page cache accounting */
++		if (!huge) {
++			__lruvec_stat_mod_folio(folio, NR_FILE_PAGES, nr);
++			if (folio_test_pmd_mappable(folio))
++				__lruvec_stat_mod_folio(folio,
++						NR_FILE_THPS, nr);
++		}
++		xas_unlock_irq(&xas);
++		trace_mm_filemap_add_to_page_cache(folio);
++	} else {
++		folio->mapping = NULL;
++		/* Leave page->index set: truncation relies upon it */
++		folio_put_refs(folio, nr);
++	}
++
++	return ret;
+ }
+ ALLOW_ERROR_INJECTION(__filemap_add_folio, ERRNO);
+ 
 -- 
 2.43.0
 
