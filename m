@@ -1,119 +1,257 @@
-Return-Path: <linux-kernel+bounces-118218-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-118220-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D210888B63A
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 01:39:29 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 756C788B682
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 02:09:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5E3CC2E86C9
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 00:39:28 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CEECFB2AA35
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 00:42:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 616791B28D;
-	Tue, 26 Mar 2024 00:39:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6B4B818E1E;
+	Tue, 26 Mar 2024 00:42:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="kM89+gX/"
-Received: from mail-lf1-f44.google.com (mail-lf1-f44.google.com [209.85.167.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=salutedevices.com header.i=@salutedevices.com header.b="rsf453z1"
+Received: from mx1.sberdevices.ru (mx2.sberdevices.ru [45.89.224.132])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0AA8718E1E
-	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 00:39:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7E7E21B28D
+	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 00:41:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.89.224.132
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711413562; cv=none; b=eJELFBmX5YegWoV5OA/p4M4IplPQqa8usMKerw8jqXZzRd88VTjwWPoVrgixSlmN7VLV9DqAZODyX/VlnizU3XnOS9znbWVxi4D+keuhhQ9MUrlAsd8PVI3rUjFwbzAFZzodF1iCfg09Asm1DKbRcCsUvgAO/YzE5QBtxuyhzoA=
+	t=1711413721; cv=none; b=m9L/HJSTfMw4SNhi+7OCswaiOhuDxjPYPvR14nxgpLj/4wXbZFAcSwLaMLmUginW1xGoQr6CXRZl/hbS2nBaR8rV0uKMAOyvW3jge/FjU3fwv7n8xIyzGnqoNu765cgzlByPLJ7Hz6SmUG9/uYptfNby36Q2OVgcjBy2cIc0n8I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711413562; c=relaxed/simple;
-	bh=9gKlpAbqJ9G3tiym20+wEsqTadiIAcUeSc98kxAYpQQ=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=n7MtpUOpVOGtOlQ3Gsy7CEbqoBroauACosv2uGOJxKbwELSAc7Xy/0wDSdGpbCXWGY2A2hFj1Tzzkh00zonGY+RWKign8ypZRwGBqr6DpQuY+LBLXad6fERTpERbA/Iw2JIEfTXt5h3Mxl6O1p0ReYaPLsYfTqOVuWVv7y4pLUo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=kM89+gX/; arc=none smtp.client-ip=209.85.167.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-lf1-f44.google.com with SMTP id 2adb3069b0e04-513e6777af4so8941534e87.2
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 17:39:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1711413559; x=1712018359; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=9gKlpAbqJ9G3tiym20+wEsqTadiIAcUeSc98kxAYpQQ=;
-        b=kM89+gX/VtSui1kqQBKTBrZUoovTbaZTrURy53uuyakSyQ3/CpDLl5PuFLliCH7b0O
-         OcLcjvsWo9Ol2CdWoCyzE4NzJek7THhksHcsltjO5+UFb9R05hzvOT+2xMfH6DDKwJWj
-         Jufo4xsDt6PKzv5FP1DNKs/Y5g72U6FXAt9CY=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711413559; x=1712018359;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=9gKlpAbqJ9G3tiym20+wEsqTadiIAcUeSc98kxAYpQQ=;
-        b=LAgMGo2nGDCJCO2wcjbAjPFwMBYKBBBhJZ0PHDbExM3blqH+YCW+ocze7hO0/nFHLv
-         VwMGngJVwCk2zcYK4WQCNm8EOXD/G2ubVj0I/TE7FSz/0OR6212Gsb+xMyLa91fO78KF
-         WzINdkpN/ENF5oaC2z08jUxAMJM7uwNKqTw/rlpBF0tfFlaqDC82aCFQvmAJ9W1rYoDk
-         hARK0jQeekv0MYQ59YXqsUZ5edSeUzkPHavPxGkqUH62oMnV/IALyjO4K2B6ptYqHU0F
-         aIIij2rbCs25Y2svNQ69BZtd0DaQBUp26h3AG81V84NZ+J0dOOSdE4dS/txt4FSIJ4Hm
-         V4ig==
-X-Forwarded-Encrypted: i=1; AJvYcCUcEokfVzCuKUmOk86hp5VUM5Br4zQEvjsq9ZwkN3jUTlme5ZNomMeH2HGOrk+qbNq8uYi1H80eerczLlY18Dm6x8WGNi+574mKX1OJ
-X-Gm-Message-State: AOJu0Yyc6asOOQi+iojJNvrRwggDb1p+PYGfSogJZmzDV0QBfQlNmRnZ
-	bIic1AzsgsNwUPFCreXV5NaeA0lWmPf1twMtY9qp8kyFVHYCmvepMtChWsZclsalhDVnEA6WdFe
-	0dQ==
-X-Google-Smtp-Source: AGHT+IEs0VESDTb4rmAMxbsFb0zMAWDuK6DRgWmBcnqGmbGai731veq9O4F1m8iLz1cVbRckPWY1Bw==
-X-Received: by 2002:a05:6512:443:b0:513:d976:496a with SMTP id y3-20020a056512044300b00513d976496amr5874665lfk.50.1711413559004;
-        Mon, 25 Mar 2024 17:39:19 -0700 (PDT)
-Received: from mail-wr1-f48.google.com (mail-wr1-f48.google.com. [209.85.221.48])
-        by smtp.gmail.com with ESMTPSA id c27-20020a170906171b00b00a44936527b5sm3601906eje.99.2024.03.25.17.39.17
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 25 Mar 2024 17:39:17 -0700 (PDT)
-Received: by mail-wr1-f48.google.com with SMTP id ffacd0b85a97d-341cce3e5f0so1519656f8f.1
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 17:39:17 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCXsXUNf2beHULcnF0rpXzjLvfY4WGVK50vnNK66E7gz8zzPBVvkXrgrndfshYLDr0yl6I2rB+AJqF6c/3riin5TJHjm4tnkDvZ2uJu/
-X-Received: by 2002:adf:e045:0:b0:33e:db44:9a5b with SMTP id
- w5-20020adfe045000000b0033edb449a5bmr6963918wrh.14.1711413556919; Mon, 25 Mar
- 2024 17:39:16 -0700 (PDT)
+	s=arc-20240116; t=1711413721; c=relaxed/simple;
+	bh=QVsSkNt9pgnUMPhWE69+PeK+7XEnYUycjIycH8MVul8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=L2NF5MFElYAQIY2j4Lvt9wnwzeud/B/GpPo3UWlP9ND9wx36nA5KfG0uiGzlCNuW18jXI3RuWOhYYQu76U9hG3ArUkHAXc042u30viRYcJh2pKgHRyCMPfX1yzRdL7RjLcfbwpffko/EpKFR8fCjz8GbGL3f7veR7rtvHtIU0r8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=salutedevices.com; spf=pass smtp.mailfrom=salutedevices.com; dkim=pass (2048-bit key) header.d=salutedevices.com header.i=@salutedevices.com header.b=rsf453z1; arc=none smtp.client-ip=45.89.224.132
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=salutedevices.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=salutedevices.com
+Received: from p-infra-ksmg-sc-msk02 (localhost [127.0.0.1])
+	by mx1.sberdevices.ru (Postfix) with ESMTP id E2F41120002;
+	Tue, 26 Mar 2024 03:41:55 +0300 (MSK)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru E2F41120002
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=salutedevices.com;
+	s=mail; t=1711413715;
+	bh=GUwFIrijniX6tWOtmBIV4uX2Els9gfR5OyRHtM8oZJY=;
+	h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type:From;
+	b=rsf453z1Okw4SLnv2UFa+1Weco2QHBe2yDbrtP00RdTiCVOmnVFydSkjL3l0kUZ8G
+	 9TTa9lIBfD7+rnABLNRsBZXFmdht3xC1gx4zLM3kZme6rKB63HzyRbVj0rXT7JXmYH
+	 quGOHeulx6YlFrQenBr/sXUcQK63nogixUBc5XMWDhrQTO3urtv//VQ6OlqTLF3rhd
+	 9oobc8gzKZHCrm04Ype9lxwbBCcNcsWRah0Q+TI0iMRYQeyGxTbxCLEHOMxsf7jn46
+	 yjntfmqemFh6i2zU8ovDNlnzFFmdA4mOkC/AjpG1XLmeLLfVjh0Lmhi50TFs3V5d+i
+	 AD198bynLVz7A==
+Received: from smtp.sberdevices.ru (p-i-exch-sc-m02.sberdevices.ru [172.16.192.103])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by mx1.sberdevices.ru (Postfix) with ESMTPS;
+	Tue, 26 Mar 2024 03:41:55 +0300 (MSK)
+Received: from [172.28.66.90] (100.64.160.123) by
+ p-i-exch-sc-m02.sberdevices.ru (172.16.192.103) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.40; Tue, 26 Mar 2024 03:41:55 +0300
+Message-ID: <37cb9bc9-88c0-4e2b-8f46-0f67b91bc5be@salutedevices.com>
+Date: Tue, 26 Mar 2024 03:41:55 +0300
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240322102800.1322022-1-s.horvath@outlook.com.au>
- <SY4P282MB3063D447DA09D35F5FBD4721C5312@SY4P282MB3063.AUSP282.PROD.OUTLOOK.COM>
- <CA+ASDXM9=0jQA=MWpBOttUT7k67wmEDFGoOObQfYm=ca_HL8GQ@mail.gmail.com> <SY4P282MB3063048C537120C8D3477774C5352@SY4P282MB3063.AUSP282.PROD.OUTLOOK.COM>
-In-Reply-To: <SY4P282MB3063048C537120C8D3477774C5352@SY4P282MB3063.AUSP282.PROD.OUTLOOK.COM>
-From: Brian Norris <briannorris@chromium.org>
-Date: Mon, 25 Mar 2024 17:39:02 -0700
-X-Gmail-Original-Message-ID: <CA+ASDXOj71wn1D1fxcScoLFpMFCN+-1UU9a7j=6FurVDsp4nug@mail.gmail.com>
-Message-ID: <CA+ASDXOj71wn1D1fxcScoLFpMFCN+-1UU9a7j=6FurVDsp4nug@mail.gmail.com>
-Subject: Re: [PATCH 2/2] platform/chrome: cros_kbd_led_backlight: Remove
- obsolete commands (EC_CMD_PWM_*_KEYBOARD_BACKLIGHT)
-To: Stephen Horvath <s.horvath@outlook.com.au>
-Cc: Lee Jones <lee@kernel.org>, Benson Leung <bleung@chromium.org>, 
-	Guenter Roeck <groeck@chromium.org>, Tzung-Bi Shih <tzungbi@kernel.org>, 
-	chrome-platform@lists.linux.dev, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v1 2/3] iio: adc: meson: consistently use bool/enum in
+ struct meson_sar_adc_param
+Content-Language: en-US
+To: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+CC: <linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+	<neil.armstrong@linaro.org>, <lars@metafoo.de>, <jic23@kernel.org>,
+	<linux-amlogic@lists.infradead.org>, "kernel@salutedevices.com"
+	<kernel@salutedevices.com>
+References: <20240323231309.415425-1-martin.blumenstingl@googlemail.com>
+ <20240323231309.415425-3-martin.blumenstingl@googlemail.com>
+From: George Stark <gnstark@salutedevices.com>
+In-Reply-To: <20240323231309.415425-3-martin.blumenstingl@googlemail.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: p-i-exch-sc-m02.sberdevices.ru (172.16.192.103) To
+ p-i-exch-sc-m02.sberdevices.ru (172.16.192.103)
+X-KSMG-Rule-ID: 10
+X-KSMG-Message-Action: clean
+X-KSMG-AntiSpam-Lua-Profiles: 184404 [Mar 25 2024]
+X-KSMG-AntiSpam-Version: 6.1.0.4
+X-KSMG-AntiSpam-Envelope-From: gnstark@salutedevices.com
+X-KSMG-AntiSpam-Rate: 0
+X-KSMG-AntiSpam-Status: not_detected
+X-KSMG-AntiSpam-Method: none
+X-KSMG-AntiSpam-Auth: dkim=none
+X-KSMG-AntiSpam-Info: LuaCore: 11 0.3.11 5ecf9895443a5066245fcb91e8430edf92b1b594, {Tracking_from_domain_doesnt_match_to}, salutedevices.com:7.1.1;smtp.sberdevices.ru:7.1.1,5.0.1;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;100.64.160.123:7.1.2;127.0.0.199:7.1.2, FromAlignment: s, ApMailHostAddress: 100.64.160.123
+X-MS-Exchange-Organization-SCL: -1
+X-KSMG-AntiSpam-Interceptor-Info: scan successful
+X-KSMG-AntiPhishing: Clean
+X-KSMG-LinksScanning: Clean
+X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2024/03/25 18:32:00 #24438765
+X-KSMG-AntiVirus-Status: Clean, skipped
 
-On Mon, Mar 25, 2024 at 5:30=E2=80=AFPM Stephen Horvath
-<s.horvath@outlook.com.au> wrote:
-> my laptop seems to support both so I'll agree
-> the older commands are probably the safer option.
+Hello Martin
 
-Huh, it's surprising to me that it supports both, if one was marked
-obsolete. But I haven't tracked the development in the EC firmware
-that closely recently.
+On 3/24/24 02:13, Martin Blumenstingl wrote:
+> Consistently use bool for any register bit that enables/disables
+> functionality and enum for register values where there's a choice
+> between different settings. The aim is to make the code easier to read
+> and understand by being more consistent. No functional changes intended.
+> 
+> Signed-off-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+> ---
+>   drivers/iio/adc/meson_saradc.c | 47 +++++++++++++++++++---------------
+>   1 file changed, 27 insertions(+), 20 deletions(-)
+> 
+> diff --git a/drivers/iio/adc/meson_saradc.c b/drivers/iio/adc/meson_saradc.c
+> index 2615d74534df..6b2af0c2bbc7 100644
+> --- a/drivers/iio/adc/meson_saradc.c
+> +++ b/drivers/iio/adc/meson_saradc.c
+> @@ -156,9 +156,9 @@
+>   #define MESON_SAR_ADC_REG11					0x2c
+>   	#define MESON_SAR_ADC_REG11_BANDGAP_EN			BIT(13)
+>   	#define MESON_SAR_ADC_REG11_CMV_SEL                     BIT(6)
+> -	#define MESON_SAR_ADC_REG11_VREF_VOLTAGE                BIT(5)
+> -	#define MESON_SAR_ADC_REG11_EOC                         BIT(1)
+> -	#define MESON_SAR_ADC_REG11_VREF_SEL                    BIT(0)
+> +	#define MESON_SAR_ADC_REG11_VREF_VOLTAGE		BIT(5)
+> +	#define MESON_SAR_ADC_REG11_EOC				BIT(1)
+> +	#define MESON_SAR_ADC_REG11_VREF_SEL			BIT(0)
+>   
+>   #define MESON_SAR_ADC_REG13					0x34
+>   	#define MESON_SAR_ADC_REG13_12BIT_CALIBRATION_MASK	GENMASK(13, 8)
+> @@ -224,6 +224,11 @@ enum meson_sar_adc_vref_sel {
+>   	VREF_VDDA = 1,
+>   };
+>   
+> +enum meson_sar_adc_vref_voltage {
+> +	VREF_VOLTAGE_0V9 = 0,
+> +	VREF_VOLTAGE_1V8 = 1,
+> +};
+> +
+>   enum meson_sar_adc_avg_mode {
+>   	NO_AVERAGING = 0x0,
+>   	MEAN_AVERAGING = 0x1,
+> @@ -321,13 +326,13 @@ struct meson_sar_adc_param {
+>   	u8					temperature_trimming_bits;
+>   	unsigned int				temperature_multiplier;
+>   	unsigned int				temperature_divider;
+> -	u8					disable_ring_counter;
+> +	bool					disable_ring_counter;
+>   	bool					has_reg11;
+>   	bool					has_vref_select;
+> -	u8					vref_select;
+> -	u8					cmv_select;
+> -	u8					adc_eoc;
 
-If the old command works, it's probably safe to keep using it. But
-it's possible we'll eventually see some device with firmware that
-doesn't support the old one, and we'll have to update the kernel
-drivers for both. Note that there's an existing driver for the newer
-generic PWM command protocol:
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/dri=
-vers/pwm/pwm-cros-ec.c?h=3Dv6.8
 
-So far, it's only been used on Device Tree systems as far as I can
-tell, and one would probably have to wire it up differently for an
-ACPI system. I just mention it as an FYI.
+The reason to choose u8 type over bool was that those are not actually
+bool values but direct values of hw register bits. We have little 
+information about real meaning of these bits so it won't help much to
+add bool layer and keep real values in the init code instead of param 
+section (adc_eoc, cmv_select).
+bool disable_ring_counter will look deceptive too because it doesn't
+say whether disable ring_counter or not (we always disable it) but
+how to disable it (write 0 or 1)
 
-Brian
+I think the poor choice was not the type of variables but their names:
+u8 adc_eoc_bit;
+u8 cmv_select_bit;
+u8 disable_ring_counter_bit;
+
+would be clearer.
+
+
+> -	enum meson_sar_adc_vref_sel		vref_voltage;
+> +	bool					cmv_select;
+> +	bool					adc_eoc;
+> +	enum meson_sar_adc_vref_sel		vref_select;
+> +	enum meson_sar_adc_vref_voltage		vref_voltage;
+>   };
+>   
+>   struct meson_sar_adc_data {
+> @@ -982,14 +987,16 @@ static int meson_sar_adc_init(struct iio_dev *indio_dev)
+>   				   MESON_SAR_ADC_DELTA_10_TS_REVE0, 0);
+>   	}
+>   
+> -	regval = FIELD_PREP(MESON_SAR_ADC_REG3_CTRL_CONT_RING_COUNTER_EN,
+> -			    priv->param->disable_ring_counter);
+> +	if (priv->param->disable_ring_counter)
+> +		regval = MESON_SAR_ADC_REG3_CTRL_CONT_RING_COUNTER_EN;
+> +	else
+> +		regval = 0;
+>   	regmap_update_bits(priv->regmap, MESON_SAR_ADC_REG3,
+>   			   MESON_SAR_ADC_REG3_CTRL_CONT_RING_COUNTER_EN,
+>   			   regval);
+>   
+>   	if (priv->param->has_reg11) {
+> -		regval = FIELD_PREP(MESON_SAR_ADC_REG11_EOC, priv->param->adc_eoc);
+> +		regval = priv->param->adc_eoc ? MESON_SAR_ADC_REG11_EOC : 0;
+>   		regmap_update_bits(priv->regmap, MESON_SAR_ADC_REG11,
+>   				   MESON_SAR_ADC_REG11_EOC, regval);
+>   
+> @@ -1005,8 +1012,7 @@ static int meson_sar_adc_init(struct iio_dev *indio_dev)
+>   		regmap_update_bits(priv->regmap, MESON_SAR_ADC_REG11,
+>   				   MESON_SAR_ADC_REG11_VREF_VOLTAGE, regval);
+>   
+> -		regval = FIELD_PREP(MESON_SAR_ADC_REG11_CMV_SEL,
+> -				    priv->param->cmv_select);
+> +		regval = priv->param->cmv_select ? MESON_SAR_ADC_REG11_CMV_SEL : 0;
+>   		regmap_update_bits(priv->regmap, MESON_SAR_ADC_REG11,
+>   				   MESON_SAR_ADC_REG11_CMV_SEL, regval);
+>   	}
+> @@ -1225,8 +1231,8 @@ static const struct meson_sar_adc_param meson_sar_adc_gxbb_param = {
+>   	.regmap_config = &meson_sar_adc_regmap_config_gxbb,
+>   	.resolution = 10,
+>   	.has_reg11 = true,
+> -	.vref_voltage = 1,
+> -	.cmv_select = 1,
+> +	.vref_voltage = VREF_VOLTAGE_1V8,
+> +	.cmv_select = true,
+>   };
+>   
+>   static const struct meson_sar_adc_param meson_sar_adc_gxl_param = {
+> @@ -1237,8 +1243,8 @@ static const struct meson_sar_adc_param meson_sar_adc_gxl_param = {
+>   	.resolution = 12,
+>   	.disable_ring_counter = 1,
+>   	.has_reg11 = true,
+> -	.vref_voltage = 1,
+> -	.cmv_select = 1,
+> +	.vref_voltage = VREF_VOLTAGE_1V8,
+> +	.cmv_select = true,
+>   };
+>   
+>   static const struct meson_sar_adc_param meson_sar_adc_axg_param = {
+> @@ -1249,10 +1255,10 @@ static const struct meson_sar_adc_param meson_sar_adc_axg_param = {
+>   	.resolution = 12,
+>   	.disable_ring_counter = 1,
+>   	.has_reg11 = true,
+> -	.vref_voltage = 1,
+> +	.vref_voltage = VREF_VOLTAGE_1V8,
+>   	.has_vref_select = true,
+>   	.vref_select = VREF_VDDA,
+> -	.cmv_select = 1,
+> +	.cmv_select = true,
+>   };
+>   
+>   static const struct meson_sar_adc_param meson_sar_adc_g12a_param = {
+> @@ -1263,7 +1269,8 @@ static const struct meson_sar_adc_param meson_sar_adc_g12a_param = {
+>   	.resolution = 12,
+>   	.disable_ring_counter = 1,
+>   	.has_reg11 = true,
+> -	.adc_eoc = 1,
+> +	.vref_voltage = VREF_VOLTAGE_0V9,
+> +	.adc_eoc = true,
+>   	.has_vref_select = true,
+>   	.vref_select = VREF_VDDA,
+>   };
+
+-- 
+Best regards
+George
 
