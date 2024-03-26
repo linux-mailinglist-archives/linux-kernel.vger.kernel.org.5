@@ -1,87 +1,159 @@
-Return-Path: <linux-kernel+bounces-119585-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-119587-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5043A88CABC
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 18:26:13 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id CBFAE88CAC2
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 18:27:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E3CC71F837C9
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 17:26:12 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7E2C11F6533A
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 17:27:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AF2BB1D539;
-	Tue, 26 Mar 2024 17:26:03 +0000 (UTC)
-Received: from gloria.sntech.de (gloria.sntech.de [185.11.138.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 57D7A1CD31;
-	Tue, 26 Mar 2024 17:26:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.11.138.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 15B361CD3D;
+	Tue, 26 Mar 2024 17:27:46 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 71BA7A95B
+	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 17:27:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711473963; cv=none; b=SnV9Y/hudVGI0rmigLLJSlItwoUhA+erwmkKrFtlPpgiqmhrEq3rZxMJ73zpDV1QckhGim1tIz6r/vmDJo3NByX5KAv7RGX0Otg/96HKd/dSYcd9knUWyqbW3JkdbZOLKrttvSLP3Cvig7FTJzBXHIeNCJNUoHYjHiwJ8CnXOtM=
+	t=1711474065; cv=none; b=LSWGCCFgnJbHvTAhuWnql8z3n06WmEE5j/ZgTbIjgWE9kCEvCA0Vgj09tet5qjm6bD/LrbWAcbq/Az2KRavOdVNBasRVP25CeGwjewUKzSaQoyPMujW/NwJyxLJf2lPd7SYIDV0B03qFEfnUCi3GaRH4SejW7wlN56TzaQcUhFU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711473963; c=relaxed/simple;
-	bh=bQOtfnvUNAhvnWjm4rdyKLtn+HaabaUAG9lOjm3y6/A=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=O0XIJdGS8d6HcqqJN0xEJPae+a4HVDZu/4jHYCl6hpAsN5b2c7O8Ouj4JAtAMeR/wXQ5aVOLOo/COMdykZuhrvsk+DcIUWISNFcebVUt47j0PQ1TB2bMFaSyXLujP6O6HrcoIG1hp06XQnbkCeNZbHV8l5vlTYKK5CmDFlbO29U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sntech.de; spf=pass smtp.mailfrom=sntech.de; arc=none smtp.client-ip=185.11.138.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sntech.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sntech.de
-Received: from [194.95.143.137] (helo=phil.dip.tu-dresden.de)
-	by gloria.sntech.de with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <heiko@sntech.de>)
-	id 1rpAYb-000658-AE; Tue, 26 Mar 2024 18:25:53 +0100
-From: Heiko Stuebner <heiko@sntech.de>
-To: Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Michael Riesch <michael.riesch@wolfvision.net>,
-	Conor Dooley <conor+dt@kernel.org>
-Cc: Heiko Stuebner <heiko@sntech.de>,
-	linux-kernel@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-rockchip@lists.infradead.org,
-	devicetree@vger.kernel.org
-Subject: Re: [PATCH 0/4] arm64: dts: rockchip: add wolfvision pf5 mainboard
-Date: Tue, 26 Mar 2024 18:25:51 +0100
-Message-Id: <171147393347.1162935.10169333694073762099.b4-ty@sntech.de>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20240325-feature-wolfvision-pf5-v1-0-5725445f792a@wolfvision.net>
-References: <20240325-feature-wolfvision-pf5-v1-0-5725445f792a@wolfvision.net>
+	s=arc-20240116; t=1711474065; c=relaxed/simple;
+	bh=Jv983fbLexCSUC5jPm28L6QH4n30UubKbPZvwa3RIiE=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=RugYS6vPG8hrTLjIvDuaye1WZEpGkbmLh0kgbm8W3rQQbCGKE39MGXtN3+cRDsE5FEc0nr3UupabNS4GDCnHxoSd/Gcq7qLGBwGeC2XN4LGXSi3gqgZ16D4/DNfs2C46C2lq57sGd5zhrWz9oTnCOFe2SGzS/e/P9RdZCQrCT+s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 5EB002F4;
+	Tue, 26 Mar 2024 10:28:16 -0700 (PDT)
+Received: from [10.1.29.179] (XHFQ2J9959.cambridge.arm.com [10.1.29.179])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C68693F64C;
+	Tue, 26 Mar 2024 10:27:40 -0700 (PDT)
+Message-ID: <febd0c97-8869-4ce5-bd37-cbbdf5be0a43@arm.com>
+Date: Tue, 26 Mar 2024 17:27:39 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC PATCH v1 3/4] mm/memory: Use ptep_get_lockless_norecency()
+ for orig_pte
+Content-Language: en-GB
+To: David Hildenbrand <david@redhat.com>, Mark Rutland
+ <mark.rutland@arm.com>, Catalin Marinas <catalin.marinas@arm.com>,
+ Will Deacon <will@kernel.org>,
+ Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+ Jiri Olsa <jolsa@kernel.org>, Ian Rogers <irogers@google.com>,
+ Adrian Hunter <adrian.hunter@intel.com>,
+ Andrew Morton <akpm@linux-foundation.org>,
+ Muchun Song <muchun.song@linux.dev>
+Cc: linux-arm-kernel@lists.infradead.org, linux-mm@kvack.org,
+ linux-kernel@vger.kernel.org
+References: <20240215121756.2734131-1-ryan.roberts@arm.com>
+ <20240215121756.2734131-4-ryan.roberts@arm.com>
+ <e0bdbd5e-a098-422a-90af-9cf07ce378a4@redhat.com>
+From: Ryan Roberts <ryan.roberts@arm.com>
+In-Reply-To: <e0bdbd5e-a098-422a-90af-9cf07ce378a4@redhat.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-On Mon, 25 Mar 2024 15:22:30 +0100, Michael Riesch wrote:
-> Habidere,
+On 26/03/2024 17:02, David Hildenbrand wrote:
+> On 15.02.24 13:17, Ryan Roberts wrote:
+>> Let's convert handle_pte_fault()'s use of ptep_get_lockless() to
+>> ptep_get_lockless_norecency() to save orig_pte.
+>>
+>> There are a number of places that follow this model:
+>>
+>>      orig_pte = ptep_get_lockless(ptep)
+>>      ...
+>>      <lock>
+>>      if (!pte_same(orig_pte, ptep_get(ptep)))
+>>              // RACE!
+>>      ...
+>>      <unlock>
+>>
+>> So we need to be careful to convert all of those to use
+>> pte_same_norecency() so that the access and dirty bits are excluded from
+>> the comparison.
+>>
+>> Additionally there are a couple of places that genuinely rely on the
+>> access and dirty bits of orig_pte, but with some careful refactoring, we
+>> can use ptep_get() once we are holding the lock to achieve equivalent
+>> logic.
 > 
-> This series adds the device tree for the WolfVision PF5 mainboard, which
-> serves as base for recent WolfVision products. It features the Rockchip
-> RK3568 and can be extended with several different extension boards.
+> We really should document that changed behavior somewhere where it can be easily
+> found: that orig_pte might have incomplete/stale accessed/dirty information.
+
+I could add it to the orig_pte definition in the `struct vm_fault`?
+
 > 
-> The WolfVision PF5 IO Expander is one example of such an extension board.
-> The corresponding device tree overlay is also included in this series.
 > 
-> [...]
+>> @@ -5343,7 +5356,7 @@ static vm_fault_t handle_pte_fault(struct vm_fault *vmf)
+>>                            vmf->address, &vmf->ptl);
+>>           if (unlikely(!vmf->pte))
+>>               return 0;
+>> -        vmf->orig_pte = ptep_get_lockless(vmf->pte);
+>> +        vmf->orig_pte = ptep_get_lockless_norecency(vmf->pte);
+>>           vmf->flags |= FAULT_FLAG_ORIG_PTE_VALID;
+>>
+>>           if (pte_none(vmf->orig_pte)) {
+>> @@ -5363,7 +5376,7 @@ static vm_fault_t handle_pte_fault(struct vm_fault *vmf)
+>>
+>>       spin_lock(vmf->ptl);
+>>       entry = vmf->orig_pte;
+>> -    if (unlikely(!pte_same(ptep_get(vmf->pte), entry))) {
+>> +    if (unlikely(!pte_same_norecency(ptep_get(vmf->pte), entry))) {
+>>           update_mmu_tlb(vmf->vma, vmf->address, vmf->pte);
+>>           goto unlock;
+> 
+> I was wondering about the following:
+> 
+> Assume the PTE is not dirty.
+> 
+> Thread 1 does
 
-Applied, thanks!
+Sorry not sure what threads have to do with this? How is the vmf shared between
+threads? What have I misunderstood...
 
-[1/4] dt-bindings: add wolfvision vendor prefix
-      commit: 37a6d5864fb8226c97eefa59a79de57571e1fee8
-[2/4] dt-bindings: arm: rockchip: add wolfvision pf5 mainboard
-      commit: 6be2ad17acb76c47e544864467680a7b738d7eb8
-[3/4] arm64: dts: rockchip: add wolfvision pf5 mainboard
-      commit: 0be29f76633a447e15fc58066ea47688974e68d9
-[4/4] arm64: dts: rockchip: add wolfvision pf5 io expander board
-      commit: 28799a7734a0e1a38d01b511ca08d33d8cf91b6c
+> 
+> vmf->orig_pte = ptep_get_lockless_norecency(vmf->pte)
+> /* not dirty */
+> 
+> /* Now, thread 2 ends up setting the PTE dirty under PT lock. */
+> 
+> spin_lock(vmf->ptl);
+> entry = vmf->orig_pte;
+> if (unlikely(!pte_same(ptep_get(vmf->pte), entry))) {
+>     ...
+> }
+> ...
+> entry = pte_mkyoung(entry);
 
-Best regards,
--- 
-Heiko Stuebner <heiko@sntech.de>
+Do you mean pte_mkdirty() here? You're talking about dirty everywhere else.
+
+> if (ptep_set_access_flags(vmf->vma, ...)
+> ...
+> pte_unmap_unlock(vmf->pte, vmf->ptl);
+> 
+> 
+> Generic ptep_set_access_flags() will do another pte_same() check and realize
+> "hey, there was a change!" let's update the PTE!
+> 
+> set_pte_at(vma->vm_mm, address, ptep, entry);
+
+This is called from the generic ptep_set_access_flags() in your example, right?
+
+> 
+> would overwrite the dirty bit set by thread 2.
+
+I'm not really sure what you are getting at... Is your concern that there is a
+race where the page could become dirty in the meantime and it now gets lost? I
+think that's why arm64 overrides ptep_set_access_flags(); since the hw can
+update access/dirty we have to deal with the races.
+
 
