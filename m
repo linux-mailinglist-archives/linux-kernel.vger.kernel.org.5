@@ -1,163 +1,133 @@
-Return-Path: <linux-kernel+bounces-118960-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-118963-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A7F7B88C1F4
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 13:21:50 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3259988C1FD
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 13:22:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 637B83014E5
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 12:21:49 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 648FA1C3666A
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 12:22:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EB52B745DC;
-	Tue, 26 Mar 2024 12:21:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AF67976042;
+	Tue, 26 Mar 2024 12:21:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="mtpuVFXI"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.18])
+	dkim=pass (2048-bit key) header.d=leemhuis.info header.i=@leemhuis.info header.b="uYSHkLWv"
+Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 754287441F
-	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 12:21:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8A30C74433;
+	Tue, 26 Mar 2024 12:21:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.237.130.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711455691; cv=none; b=P8sAXUvBxLhxpnG+feGzP6ZDmNG1zIN9k+7LMeigdFkuwJSS+8cuJhu4AfA9S1ajk8ldycadpDlEMQh6fEDVkP25dkBMddlPODEj+WdGQW5lQD0inRlwwhj3ys89XMMNgeUavAuoOVh/IemMQxmwPD2yPepfc4vHTPXxAgIL0SQ=
+	t=1711455714; cv=none; b=D8dsy0B6YeJ68RbPsv1LtpjhybJuzak9MrqhMdKkKotzdyLHwugHvXDnvsHsq+Phsv9BuJgcnJdZzHAZqU6Z12rxjUYzTfioLbgXf2S3SUhIUPJuPeu6GZeXLdaXvXtqWKCVplho+wzsg1huJQrnjDTES1SVnUkt1uioY+iihWk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711455691; c=relaxed/simple;
-	bh=fB1NRi5e23WxYWmcslguhVN6x/28OSeS/uzIQxRcQ3I=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=NdbaHPR0iRdlrEwZNnrBZmkFG2bdmj2wF2p3PdPjhjKdg6vLJe70FVY86CBFmCRr82MRNQF3A30yZ04gw33op9iBFAhBDUjJ0ACKZPpYVlgyowA6qI6dYstS2HowKtPLMP0hKIU+YsOeR33CpTenC0KG6/QRB5Rj5+hRFWH46lo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=mtpuVFXI; arc=none smtp.client-ip=192.198.163.18
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1711455689; x=1742991689;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=fB1NRi5e23WxYWmcslguhVN6x/28OSeS/uzIQxRcQ3I=;
-  b=mtpuVFXI5HCHGJeLc4aFeRurXIpoxjGmwxdav+L7FcvJ1HBgslWUU6T7
-   b28GCLZbXySN0arGmCh+/zm2DayfTjWIyCpSvGpayJYu/98k6ruIU3yrx
-   k2jgJtjEEKTamCAC68oAW/0if+qdqdhcHT/BAt/sQXgTTT3wdehOXJpVo
-   FW7w38dI5b6Moyi27PfzaDRgtOfM3OBAMb/ZJGoQZg2Tp8FrmCZl8IsFR
-   YEXVSTTmxBbGJmqyCq7YfK9oz5WfIPc7GpaXAD7ZoElvPi/4XiS4KuyoA
-   AQ9FKmXHkbTFEoAdcjA7F3D7ZSPRKSEo+eWIK2nKjAQZOyvaRvnWBBShp
-   g==;
-X-CSE-ConnectionGUID: 8KJvAbCLQzmMEmsypb5Hlw==
-X-CSE-MsgGUID: bVBazYFYTLyYBCkJx1cRNQ==
-X-IronPort-AV: E=McAfee;i="6600,9927,11024"; a="6333945"
-X-IronPort-AV: E=Sophos;i="6.07,156,1708416000"; 
-   d="scan'208";a="6333945"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmvoesa112.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Mar 2024 05:21:28 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,11024"; a="937072476"
-X-IronPort-AV: E=Sophos;i="6.07,156,1708416000"; 
-   d="scan'208";a="937072476"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by fmsmga001.fm.intel.com with ESMTP; 26 Mar 2024 05:21:25 -0700
-Received: by black.fi.intel.com (Postfix, from userid 1000)
-	id 942D3E7; Tue, 26 Mar 2024 14:21:24 +0200 (EET)
-Date: Tue, 26 Mar 2024 14:21:24 +0200
-From: "kirill.shutemov@linux.intel.com" <kirill.shutemov@linux.intel.com>
-To: "Huang, Kai" <kai.huang@intel.com>
-Cc: "tglx@linutronix.de" <tglx@linutronix.de>, 
-	"mingo@redhat.com" <mingo@redhat.com>, "Hansen, Dave" <dave.hansen@intel.com>, 
-	"bp@alien8.de" <bp@alien8.de>, 
-	"sathyanarayanan.kuppuswamy@linux.intel.com" <sathyanarayanan.kuppuswamy@linux.intel.com>, "hpa@zytor.com" <hpa@zytor.com>, 
-	"Reshetova, Elena" <elena.reshetova@intel.com>, "seanjc@google.com" <seanjc@google.com>, 
-	"Edgecombe, Rick P" <rick.p.edgecombe@intel.com>, "x86@kernel.org" <x86@kernel.org>, 
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCHv2 4/4] x86/tdx: Enable ENUM_TOPOLOGY
-Message-ID: <mh5bwjdwzg5kg6b4mqnxpu2ri5765ilgoskefdnbkgyhzqymqg@elweoth2mh6j>
-References: <20240325104607.2653307-1-kirill.shutemov@linux.intel.com>
- <20240325104607.2653307-5-kirill.shutemov@linux.intel.com>
- <ea00b63e4e7f27dfb35b8b5947bd0951039db9bd.camel@intel.com>
+	s=arc-20240116; t=1711455714; c=relaxed/simple;
+	bh=qyTuZJJBB6SRCYQaUw+XLTTc5thHeDk4mK9OvDwIPpA=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Fjs30J1zhZixm/kUYNCRSZHv1l6n57rPh3BnCa5HMfW1WNJ2+Bm6NrDEyLfZg3Wg193BoVD8Trr9JAIKrULt2FV5AaIfBJsAoBk9mByL9F7Tt3B01mFO0L9x+5q2T7h5cz5IAHn84lnjADjVlsRyLTHRFotJgx1ai+84YdZJySg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=leemhuis.info; spf=pass smtp.mailfrom=leemhuis.info; dkim=pass (2048-bit key) header.d=leemhuis.info header.i=@leemhuis.info header.b=uYSHkLWv; arc=none smtp.client-ip=80.237.130.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=leemhuis.info
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=leemhuis.info
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=leemhuis.info; s=he214686; h=Content-Transfer-Encoding:MIME-Version:
+	Message-ID:Date:Subject:Cc:To:From:From:Sender:Reply-To:Subject:Date:
+	Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+	Content-ID:Content-Description:In-Reply-To:References;
+	bh=T7Rg75OUQXr/P0BzSaCpqEAwDPUMWNB+wRhXebgxorI=; t=1711455711; x=1711887711;
+	 b=uYSHkLWv64FkbGkKSuwa305CY9DsjE43kyGFs3OJy03ac9AWv/a51WtI5MZUqovUVbuboGKXZe
+	0ecJ1d7m/dTM8FFfWeiM3MZs8mB3h7VGTFrBHJBr4yLfApnR39Kzv4ESnwAmtK2Sp5uZcxoNq0mXZ
+	u5El0Jh91NPAGzhN03nQCqywXNfD9fyoDFfeXFMUT8THUTMlnyiozF9suwX8VVngg6BaFM3NFK9ov
+	Y5wWsozCAxREv3heTwTi0ezQmJM75P+w3HB7GmGv7Jh4qdpIL1tWTg/aI9l5Gk/W5PrxiN81gdVHE
+	wugyVvLQLhUE3Mnxw8nTDVu8uSzotuAiilQpA==;
+Received: from [77.20.141.166] (helo=truhe.fritz.box); authenticated
+	by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+	id 1rp5oH-0000kc-8I; Tue, 26 Mar 2024 13:21:45 +0100
+From: Thorsten Leemhuis <linux@leemhuis.info>
+To: Jonathan Corbet <corbet@lwn.net>
+Cc: regressions@lists.linux.dev,
+	linux-doc@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	workflows@vger.kernel.org
+Subject: [RFC PATCH v1 0/2] docs: reporting-issues: rework while involving the 'verify bugs' text
+Date: Tue, 26 Mar 2024 13:21:27 +0100
+Message-ID: <cover.1711455295.git.linux@leemhuis.info>
+X-Mailer: git-send-email 2.44.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ea00b63e4e7f27dfb35b8b5947bd0951039db9bd.camel@intel.com>
+Content-Transfer-Encoding: 8bit
+X-bounce-key: webpack.hosteurope.de;linux@leemhuis.info;1711455711;c092b3a9;
+X-HE-SMSGID: 1rp5oH-0000kc-8I
 
-On Tue, Mar 26, 2024 at 10:59:38AM +0000, Huang, Kai wrote:
-> On Mon, 2024-03-25 at 12:46 +0200, Kirill A. Shutemov wrote:
-> > TDX 1.0 defines baseline behaviour of TDX guest platform. In TDX 1.0
-> 
+This is a RFC with two WIP patches that basically rewrite the detailed
+step-by-step guide and the TLDR of
+Documentation/admin-guide/reporting-issues.rst. Those two patches cover
+all main changes I currently plan to do in those areas of the text, but
+the explanations in the reference section are not yet updated to match
+the changed step-by-step guide.
 
-Okay.
+I'm nevertheless posting this now as RFC so people get a chance to
+express things like "Thorsten, you are crazy, go away and find a hobby"
+or "you are on the wrong path, this makes things worse, and would also
+create a lot of trouble for translators for a questionable gain".
+Getting such feedback now would be good: I'd prefer to not waste time on
+updating the reference section if something like the two patches posted
+here have no chance to be merged.
 
-> > generates a #VE when accessing topology-related CPUID leafs (0xB and
-> > 0x1F) and the X2APIC_APICID MSR. The kernel returns all zeros on CPUID
-> > topology. Any complications will cause problems.
-> > 
-> > The ENUM_TOPOLOGY feature allows the VMM to provide topology
-> > information to the guest. Enabling the feature eliminates
-> > topology-related #VEs: the TDX module virtualizes accesses to
-> > the CPUID leafs and the MSR.
-> > 
-> > Enable ENUM_TOPOLOGY if it is available.
-> > 
-> > Signed-off-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
-> > ---
-> >  arch/x86/coco/tdx/tdx.c           | 19 +++++++++++++++++++
-> >  arch/x86/include/asm/shared/tdx.h |  3 +++
-> >  2 files changed, 22 insertions(+)
-> > 
-> > diff --git a/arch/x86/coco/tdx/tdx.c b/arch/x86/coco/tdx/tdx.c
-> > index 860bfdd5a11d..b2d969432a22 100644
-> > --- a/arch/x86/coco/tdx/tdx.c
-> > +++ b/arch/x86/coco/tdx/tdx.c
-> > @@ -289,6 +289,25 @@ static void tdx_setup(u64 *cc_mask)
-> >  		else
-> >  			tdx_panic(msg);
-> >  	}
-> > +
-> > +	/*
-> > +	 * TDX 1.0 generates a #VE when accessing topology-related CPUID leafs
-> > +	 * (0xB and 0x1F) and the X2APIC_APICID MSR. The kernel returns all
-> > +	 * zeros on CPUID #VEs. In practice, this means that the kernel can only
-> > +	 * boot with a plain topology. Any complications will cause problems.
-> > +	 *
-> > +	 * The ENUM_TOPOLOGY feature allows the VMM to provide topology
-> > +	 * information to the guest in a safe manner. Enabling the feature
-> > +	 * eliminates topology-related #VEs: the TDX module virtualizes
-> > +	 * accesses to the CPUID leafs and the MSR.
-> > +	 *
-> > +	 * Enable ENUM_TOPOLOGY if it is available.
-> > +	 */
-> > +	if ((features & TDX_FEATURES0_ENUM_TOPOLOGY) &&
-> > +	    tdg_vm_rd(TDCS_TOPOLOGY_ENUM_CONFIGURED)) {
-> > +		if (!tdcs_ctls_set(TD_CTLS_ENUM_TOPOLOGY))
-> > +			pr_warn("Failed to enable ENUM_TOPOLOGY\n");
-> > +	}
-> >  }
-> >  
-> >  /*
-> > diff --git a/arch/x86/include/asm/shared/tdx.h b/arch/x86/include/asm/shared/tdx.h
-> > index 29a61c72e4dd..2964c506b241 100644
-> > --- a/arch/x86/include/asm/shared/tdx.h
-> > +++ b/arch/x86/include/asm/shared/tdx.h
-> > @@ -27,15 +27,18 @@
-> >  #define TDCS_CONFIG_FLAGS		0x1110000300000016
-> >  #define TDCS_TD_CTLS			0x1110000300000017
-> >  #define TDCS_NOTIFY_ENABLES		0x9100000000000010
-> > +#define TDCS_TOPOLOGY_ENUM_CONFIGURED	0x9100000000000019
-> 
-> Do you know where can I find the metadata field ID definition?
-> 
-> It seems I couldn't find all metadata field ID definitions in the latest TDX 1.5
-> ABI spec anymore.
+That being said: I (obviously) think these changes are worth it, as they
+make both the TLDR and the guide easier to follow and fix a few things
+that didn't work too well. It also offers users a new fast track to
+inquire if a regression is known already. The step-by-step guide
+furthermore is now a bit more verbose, so users have to consult the
+reference section less -- this felt appropriate, now that the TLDR uses
+a step-by-step approach as well that is quite similar.
 
-See "Intel TDX Module v1.5 ABI Definitions":
+In the end it looks like a rewrite, even if many things remained
+similar. And all in all those changes sadly makes both sections larger:
 
-https://cdrdv2.intel.com/v1/dl/getContent/795381
+TLDR:
+- before: 374 words, 2332 characters;
+- after: 491 words, 3085 characters
 
-It has all fields described in JSON.
+Step-by-step guide:
+- before: 1058 words, 6279 characters (excluding a section that becomes
+  obsolete)
+- before: 1332 words, 8048 characters (including a section that becomes
+  obsolete)
+- after: 1491 words, 9015 characters;
 
+Note, the changes to the reference section should not turn out to be as
+extensive as these two patches, as many of the steps in the new detailed
+step-by-step guide had equivalents in the older one; many sections in
+the reference section will thus only need small changes or maybe none at
+all; a few things are also unnecessary now, so the reference section
+should get shorter.
+
+To alleviate reviewing and translations, I plan to submit the changes to
+the reference section in two steps. The first patch will perform all
+changes, but will add newlines before significant changes, which will
+wrap at 120 characters or so: both things should make it easier to see
+the actual changes with ordinary diff. A second patch then will just
+rewrap the text to the usual 80 characters boundary.
+
+Side note: the two patches submitted now could and maybe should be
+merged into one, but I decided to keep them separate for now to have
+section-specific diffstats.
+
+Thorsten Leemhuis (2):
+  docs: reporting-issue: rework the detailed guide
+  docs: reporting-issue: rework the TLDR
+
+ .../admin-guide/reporting-issues.rst          | 497 ++++++++++--------
+ 1 file changed, 273 insertions(+), 224 deletions(-)
+
+
+base-commit: b8cfda5c9065cd619a97c17da081cbfab3b1e756
 -- 
-  Kiryl Shutsemau / Kirill A. Shutemov
+2.44.0
+
 
