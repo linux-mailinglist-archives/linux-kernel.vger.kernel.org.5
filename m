@@ -1,101 +1,209 @@
-Return-Path: <linux-kernel+bounces-118920-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-118921-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6007988C13D
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 12:50:12 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3CD9888C140
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 12:50:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 016011F62C13
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 11:50:12 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id BBCDD1F6181E
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 11:50:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3768A6CDCC;
-	Tue, 26 Mar 2024 11:50:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3BB146E61B;
+	Tue, 26 Mar 2024 11:50:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="hLFnzUYW"
-Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="efXwt10d"
+Received: from mail-ej1-f54.google.com (mail-ej1-f54.google.com [209.85.218.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B431B6BB5D;
-	Tue, 26 Mar 2024 11:50:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9E8996A8DE
+	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 11:50:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711453804; cv=none; b=YJ38htV0hWG3o3XsKnDXFU8ZcTeoQfrK+whnZnezDDdmdccRM2jDA0qVZNuIk19A7Cwm1asE1VmEW8GHO1oxpsz3Ep2YMc9+8gYPuwTCZY+wIfhtYLkVpQpSXq4W/1u49urXJj61/7gu5uWc2q20eIbAzEFMY2FX0468npD5Ek0=
+	t=1711453839; cv=none; b=BxecPA/BPaQrQBGb7JnP7J2NABG+6u90Uniy//uG91pqHh03WANHP4bYqMuJy8FkR5RX7nXiWkT5xQUNnmLRrp1DysuhB+5OApRzNiPHRcNaZ+WNlVWGuyxL7o5YJgI4TwQEAznAyk9EDiG+yvjZrOtEXvqxp06N32BJ61gTsYw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711453804; c=relaxed/simple;
-	bh=EDRGr0XiS5XxgjyxuIYgM/fzheL+KMSa8NRn3sANHUE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ONCwi23eKoWqCYlqdaH2fLYTxslLHe9etMrAquJ4/UVE6WXmJS1VM0tZOwpHdc0BQouJg1tDfqkd7dlRi6LPbFaMr1H707fJbEqDghaXwTQhse/T0ID9X9j48tj5ODHd1m299rm3vvxZzpaxwaM81wuqHga2WqCQGfBFCdgmzTA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=hLFnzUYW; arc=none smtp.client-ip=65.109.113.108
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
-Received: from localhost (localhost.localdomain [127.0.0.1])
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 914D740E02A5;
-	Tue, 26 Mar 2024 11:50:00 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-	header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-	with ESMTP id Vv1Q3r0T9g5U; Tue, 26 Mar 2024 11:49:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-	t=1711453797; bh=YQSqFoSKslIAbcaScbRhUZMD4A8hZrrFlPhDRUl7ZX8=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=hLFnzUYWhUz892PkZodHyUd8IPNjT+lL1SaZUL+TZZzlAsRDOdByeyOPYG3BVmvys
-	 +cRgnTn0A6SY9aw2qnKM23tK/wnvbW11lUje6FQhKWuw/P4tl7xd85/IXDTn+hMV3r
-	 r4ysTvjhDE140zt1w4Fr6tGmvLWCCYDbXkl/1Uot+Y7Tj5cme4eqEn5A/p5yWVNBym
-	 Wu5ZbYbwfZkf5OG9cTXumtMUaAPvzZtKM8kkhvXNpxf8I+gJVep8LRbMu6oTyTDJVg
-	 5Ost+Z6PaCOfaXsRxc0mwhKXIUozIV3/5any2wmL9n2GqLW4J4/hNwjOWrujxLC4Bf
-	 rUqsZ3CnZBOgfhKw05cpH9fOzhuTChPJ0u6WWSuKeM2Ws6ZzJ5uxMiCzgCoCIOxrHq
-	 CrWkfT4Kk6R8V+5L2JDd5UG8EFvlt0pxCbgrWGfQSekHs0HnVkMVCfFHpxRC+ficjm
-	 Nvgkq5HIGXp7wZMCdLQY6kpGUVjtNg3wljdry05KCYb/udEe2CNIu3yMOYvM/C6a5g
-	 i08aQ3SzvKy0LRgA0D/dDQLTX21ASVv7TNYd1soJwmo0K/EVQDzGrCOgMPU4QKEuTz
-	 NbS7zV2BvbDLvXM/s+hJwutv3YAt6Y8b7gyZIkf5j8MquXwy5DQbY30ZRwcxr6Nl2Z
-	 UmimZ13ua8JGxLQ8UwjIOROs=
-Received: from zn.tnic (p5de8ecf7.dip0.t-ipconnect.de [93.232.236.247])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-	(No client certificate requested)
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 5AF5D40E02A2;
-	Tue, 26 Mar 2024 11:49:50 +0000 (UTC)
-Date: Tue, 26 Mar 2024 12:49:45 +0100
-From: Borislav Petkov <bp@alien8.de>
-To: Tony Luck <tony.luck@intel.com>
-Cc: "Naik, Avadhut" <avadnaik@amd.com>,
-	"Mehta, Sohil" <sohil.mehta@intel.com>,
-	Yazen Ghannam <yazen.ghannam@amd.com>, x86@kernel.org,
-	linux-edac@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3] x86/mce: Dynamically size space for machine check
- records
-Message-ID: <20240326114945.GEZgK2WUJRKexfQomR@fat_crate.local>
-References: <20240307192704.37213-1-tony.luck@intel.com>
+	s=arc-20240116; t=1711453839; c=relaxed/simple;
+	bh=zIsRPBERtYd9KT5eFf4SlflyWfRi00voryrIaoJ7HcQ=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=i43ayJIOKDzbJsY9xRYU7ZTqfTRAegTaNsqgqArbkcDKrrG67ir7PlYx8zC8jfF5q1RcJOi3LDKrn5oOUU3fdTQC683rRTk2cq7Oo4mFrFK+Ucynnzr4Ayb/pvl+BzHHrhhg36Odp/SaR0tyrKq83ry10cbE9yD06c79oZfQvwE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=efXwt10d; arc=none smtp.client-ip=209.85.218.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ej1-f54.google.com with SMTP id a640c23a62f3a-a4751063318so297368466b.0
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 04:50:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1711453836; x=1712058636; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=+RQirBONGT7g/mBKFr4U8ujDZu4jx0LwzCH8oxof1pw=;
+        b=efXwt10d+TBl/th7kmwdARkdsJ550WK7fniQuY88pwMOqDEyGqZPepJ+NuG02/w/kV
+         Lzksz8gyOcA6soelNFE1voH5K2gjvbBFfoq2gXapfdCqwqkPQutCqy6GOcEYxU9iaaO1
+         Nd9Dh86DFpjQ0bSCmNJoSLs43tw4GlVh0NQ5ZB27TLQq4MydQ+KIncicELEAxDlqdtNP
+         xv+V8apMvGHRQFwvhAgrXcaf1hulQKcxeDg/KCaFJXJnSCzm9i6CE21GtRK5fy7NvgLk
+         j8L47Pp/lj82jVm3WFHP4jDsmxQqNQM73jKAeqL9RQH4/gRGS0HEf6ybFXichUHoGPLx
+         Yz0w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711453836; x=1712058636;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=+RQirBONGT7g/mBKFr4U8ujDZu4jx0LwzCH8oxof1pw=;
+        b=mQHrKZTBH2syhDD2NapRyrm4hTOeL2nwPds167KZVZdWco6ByrCpR2CuDOsB0n31dN
+         L09dyaVIATYFveRy3vMKGXAgUBF21ySqOjXZfn6EAF3nbgxX7gIubO2fVS1CIDjabJ4W
+         6JIevRne5aYNrAEbxBIk7K3I5QFbKN7ZXvoYS7Xr3jZykiAz33htiAKMLKGrM1BgggV4
+         i6eG7sGPf5a0TjTiU9M+0sriQmAI7r/Zc1PTkJuWNM3iFH379LljJIdLUgpy57Uzd5Oy
+         olLk94sbSBZ4+qkGTrdE6CruyjS2d0ztN9D+XOaAB4zhfR/b4EEfBV5WIBWW6R4SXKnG
+         Q10Q==
+X-Forwarded-Encrypted: i=1; AJvYcCWJsepLYBtN3TZjVTqGg+iZq9Nl5WvsizxIFTq8iAIKm97P0Z7kAKlB9A5lXeYqzbZxDQX3uM26iHARKBVZiEoQhiaw8VoqmGSLjwlf
+X-Gm-Message-State: AOJu0YzoNk+iYRvzlOiNT9OEQxaKzZ3nsLrdcbxJNGdCBHLckabtYfQQ
+	1VSQIFjcrs+c6ymxPwc68a5/64nzaZE+VwOS8FmT39k5l011FfwDOKawjLEalZM=
+X-Google-Smtp-Source: AGHT+IHpoEVb/26aK2O+7U5or3L/IkOBa5iS8jIYohvuDTytIFqlj/I8s6WOjKZTQm/IuKv3EZnZFA==
+X-Received: by 2002:a17:906:2810:b0:a47:2036:dbc4 with SMTP id r16-20020a170906281000b00a472036dbc4mr654986ejc.25.1711453835868;
+        Tue, 26 Mar 2024 04:50:35 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.222.44])
+        by smtp.gmail.com with ESMTPSA id kq1-20020a170906abc100b00a46a04d7dc4sm4148259ejb.61.2024.03.26.04.50.34
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 26 Mar 2024 04:50:35 -0700 (PDT)
+Message-ID: <1525c377-af73-4204-8a2b-983c6d99316c@linaro.org>
+Date: Tue, 26 Mar 2024 12:50:33 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20240307192704.37213-1-tony.luck@intel.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v5 1/3] dt-bindings: dmaengine: Add dmamux for
+ CV18XX/SG200X series SoC
+To: Inochi Amaoto <inochiama@outlook.com>, Vinod Koul <vkoul@kernel.org>,
+ Rob Herring <robh@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>, Chen Wang <unicorn_wang@outlook.com>,
+ Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt
+ <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>
+Cc: Jisheng Zhang <jszhang@kernel.org>, Liu Gui <kenneth.liu@sophgo.com>,
+ Jingbao Qiu <qiujingbao.dlmu@gmail.com>, dlan@gentoo.org,
+ dmaengine@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org
+References: <IA1PR20MB4953B500D7451964EE37DA4CBB352@IA1PR20MB4953.namprd20.prod.outlook.com>
+ <IA1PR20MB4953E2937788D9D92C91ABBBBB352@IA1PR20MB4953.namprd20.prod.outlook.com>
+ <57398ee0-212c-4c82-bfed-bf38f4faa111@linaro.org>
+ <IA1PR20MB4953EDEEFC3128741F8E152EBB352@IA1PR20MB4953.namprd20.prod.outlook.com>
+ <473528ac-dce2-41e3-a6d7-28f8c53a89ef@linaro.org>
+ <IA1PR20MB4953517450F0E622A66E9A7DBB352@IA1PR20MB4953.namprd20.prod.outlook.com>
+ <cf42e020-9a5b-48bb-bc14-c0cc9498627b@linaro.org>
+ <IA1PR20MB4953EA589A0FF36DC6FCF0E8BB352@IA1PR20MB4953.namprd20.prod.outlook.com>
+Content-Language: en-US
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <IA1PR20MB4953EA589A0FF36DC6FCF0E8BB352@IA1PR20MB4953.namprd20.prod.outlook.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Thu, Mar 07, 2024 at 11:27:04AM -0800, Tony Luck wrote:
-> -	ret = gen_pool_add(tmpp, (unsigned long)gen_pool_buf, MCE_POOLSZ, -1);
-> +	mce_numrecords = max(MCE_MIN_ENTRIES, num_possible_cpus() * MCE_PER_CPU);
-> +	mce_poolsz = mce_numrecords * (1 << order);
+On 26/03/2024 12:41, Inochi Amaoto wrote:
+>>>
+>>> The driver does use this file.
+>>
+>> I checked and could not find. Please point me to specific parts of the code.
+>>
+> 
+> In cv1800_dmamux_route_allocate.
+>> +	regmap_set_bits(dmamux->regmap,
+>> +			DMAMUX_CH_REG(chid),
+>> +			DMAMUX_CH_SET(chid, devid));
+>> +
+>> +	regmap_update_bits(dmamux->regmap, CV1800_SDMA_DMA_INT_MUX,
+>> +			   DMAMUX_INT_CH_MASK(chid, cpuid),
+>> +			   DMAMUX_INT_CH_BIT(chid, cpuid));
+> 
+> I think this is.
 
-So, on a big fat machine with 8K CPUs that's, what
+So where exactly? I don't see any define being used here.
+CV1800_SDMA_DMA_INT_MUX is not in your header. DMAMUX_ is not in your
+header. So what are you pointing?
 
-	8192 * 2 * (1 << 8) = ~4M
+I don't understand this communication. Are you mocking me here or what?
+It's waste of my time.
 
-buffer?
+> 
+>>>
+>>>>> And considering the limitation of this dmamux, maybe only devices that 
+>>>>> require dma as a must can have the dma assigned. 
+>>>>> Due to the fact, I think it may be a long time to wait for this header
+>>>>> to be used as the binding header.
+>>>>
+>>>> I don't understand. You did not provide a single reason why this is a
+>>>> binding. Reason is: mapping IDs between DTS and driver. Where is this
+>>>> reason?
+>>>>
+>>>
+>>> It seems like that I misunderstood something. This file provides one-one
+>>> mapping between the dma device id and cpuid, which is both used in the
+>>> dts and driver. For dts, it provides device id and cpu id mapping. And
+>>> for driver, it is used as the directive to tell how to write the mapping
+>>> register.
+>>
+>> So where is it? I looked for DMA_TDM0_RX - nothing. Then DMA_I2C1_RX -
+>> nothing. Then any "DMA_" - also looks nothing.
+>>
+> 
+> It is just the value writed, so I say it is just a one-one mapping.
+> Maybe I misunderstand the binding meaning? Is the binding a mapping 
+> between the dts and something defind in the driver (not the real 
+> device)?
 
-Well, if you have a fat machine, you get fat buffers too.
+Binding headers contains IDs which are used by the driver and DTS code.
+Hardware constants are not bindings. Register values, addresses,
+whatever hardware is using is not a binding.
 
--- 
-Regards/Gruss,
-    Boris.
 
-https://people.kernel.org/tglx/notes-about-netiquette
+Best regards,
+Krzysztof
+
 
