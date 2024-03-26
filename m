@@ -1,107 +1,128 @@
-Return-Path: <linux-kernel+bounces-118491-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-118490-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 068C488BBBA
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 08:53:59 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 001E288BBB9
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 08:53:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 38C3A1C2BE0B
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 07:53:58 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A840C2E2E56
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 07:53:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5ECDB133400;
-	Tue, 26 Mar 2024 07:53:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B7878132816;
+	Tue, 26 Mar 2024 07:53:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="ZsPZ7K6N"
-Received: from mail-lj1-f173.google.com (mail-lj1-f173.google.com [209.85.208.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=sipsolutions.net header.i=@sipsolutions.net header.b="tg/RSc4V"
+Received: from sipsolutions.net (s3.sipsolutions.net [168.119.38.16])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EB3EB129E6F
-	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 07:53:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B199F4CB2E;
+	Tue, 26 Mar 2024 07:53:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=168.119.38.16
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711439626; cv=none; b=Qdv8QlBuMm7MIUsrRy7tCgQkQqDuIkU8o3bF1d+rZc5/sEUD9jhC2stWc5P3HcDz4E+9SzExkHnI3AL0hjVCokBNB8aGQw0JY2yonYxziAuiK2wCF3q+UZ/gtaQi9TisGXImxguP2fQP1ts5IqsGjR3oILcPU0ZCrMG0f9ZK8IE=
+	t=1711439625; cv=none; b=Yz6q7OjcmMjxz78vXELf62o+1wANWcUGOZE9ofUjycKgVuF0YCNorE/J9v9qcK/fIw5b5A35dMtGXSPAq7QGoqIpuYq+CUJ65ToSD3z774Rg5mPB5d5MFMGY56t1lxTvq2J0sIuCyH7BNZNIc1+MYon0kDMYuFjcGUFKccgj5NM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711439626; c=relaxed/simple;
-	bh=PG+YoBzPj5jfZIegUA9uti2/BxJ/n75EgFGMHvLJVZQ=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=GuEsokstq/br3jhs/gBIz+TBjhzpjDXfmxC/T1t8MeNTVqE+KWDpP+tR6mxyo+N3x5iK/LXDk4/xKHU3CZ1BNVAl6LDu+nEvJdEJ3ds86EBT6bsGu7lW6Ka8ZhIukqckGXOu0Ew+0IzkhNlYQhq2iq2CTNxvO6va3ZZu6fRJY7Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=ZsPZ7K6N; arc=none smtp.client-ip=209.85.208.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-lj1-f173.google.com with SMTP id 38308e7fff4ca-2d4a901e284so101117341fa.1
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 00:53:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1711439623; x=1712044423; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=gjxwVBnuQ/K20A64Qc+EoBsJsbyKZh+2nwPwG7SD+KY=;
-        b=ZsPZ7K6NHbuZO5B/Ym+ns8Gmci1sSdTR/ZC4Fn0cCAWPTZ+HpcBrPRvgpTsySw1fo+
-         uDL1ky7TO8ZhYLppBhWDA6eerNtWh7cDV4HWOTI+PC6UM0n4SPedRqbhxzSCKqEWf7ho
-         J2AH3eOv1sVA7nK3srekvOe23JeAbtU7R18/lb9dPlaMfYqLV/0ELiLlRjyWrjjy5EUk
-         hPunBnaNfQ4hT3tWWCZU+iZxMfXJe668Nx4ThYr/tj4hguWv3pY16xDQjpOAltdmBVbi
-         lffINbHoFsii9TsavzbAobW2japg9PKgevSSrudqTQ32md142mexzba5sF42d3Di5tCk
-         9bBg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711439623; x=1712044423;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=gjxwVBnuQ/K20A64Qc+EoBsJsbyKZh+2nwPwG7SD+KY=;
-        b=lmcZzI2sg1Yr32GmY1muIU2E54SeSeCnus5CskOiJp4NEeniTnFOdgEl+FggVqySBM
-         a0128yKoeVRIjEIrv6XsJjEsd2fmZ0vbXTkI/obF3MrMOXPTRf4FFbbuvoCwas8WWjgY
-         Pfw+eqOvHcfhzaut7eSeWQAZcFf4W3SPSpqqHOAoGEJl1Epeoj+bMH4gt6aM1mgi+YQB
-         SEL0yEvebv924EMH0qj0vCDHdmU1zREJzIwCq571CjHOEnCHC3iG88MrYOO4LZsLnA95
-         e79wasaTJQ4fZWB3/TdhyY3iSIf6FOHY4mnznniAEGsPKD+HGj9Z502fgmCWPWyBDqi2
-         4xyw==
-X-Forwarded-Encrypted: i=1; AJvYcCUAe7ynFhZKQQYhpvwrKYoQekaA661su9Tv9NXVMpgXmLQoCYn+Edyv2FgqMrB5dNk93A7VRDbzZROLZyMhwzSTmGgyBAUOtZHUSONn
-X-Gm-Message-State: AOJu0YwZpI2r2Gy63VcZ61DI4uszlTEaai8SyYKwIwjFf2bNBFomwFUT
-	JgsfFSzaCVZmWAVTG+7YXULPXol67x3wPQcolndOzXNReeAUUqpIveJjal5XXyRv+B+x80vIT5H
-	y
-X-Google-Smtp-Source: AGHT+IG9y5ndJ6oRkEe7UN5reyJscNBQXXw3eD7MyAaFc6udt4nkQT5PJ+koYh/yowbN8nKlKNoutA==
-X-Received: by 2002:a2e:b74e:0:b0:2d4:6a34:97bf with SMTP id k14-20020a2eb74e000000b002d46a3497bfmr6608596ljo.49.1711439623083;
-        Tue, 26 Mar 2024 00:53:43 -0700 (PDT)
-Received: from krzk-bin.. ([178.197.222.44])
-        by smtp.gmail.com with ESMTPSA id g17-20020a170906539100b00a4b27cd1c8esm1349034ejo.120.2024.03.26.00.53.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Mar 2024 00:53:42 -0700 (PDT)
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-To: "Theodore Ts'o" <tytso@mit.edu>,
-	"Jason A. Donenfeld" <Jason@zx2c4.com>,
-	linux-kernel@vger.kernel.org
-Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Subject: [PATCH] virt: vmgenid: drop redundant .owner
-Date: Tue, 26 Mar 2024 08:53:37 +0100
-Message-Id: <20240326075337.55377-1-krzysztof.kozlowski@linaro.org>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1711439625; c=relaxed/simple;
+	bh=RSZylZlCpTdbm+Z9o6U3XqmKBS0KpMhd9GAVethT39M=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=bX7rkRoOUhREL19yf1krFhojPLqTtT6cLzcSiORsF4q7M6VaUlVNuu0+0xeS/PUmhgMjmCl91b4GEL6Bvj+ThekIqPithbgrOenw4urfaP2nIjF8/4zbM+5BTHNbt/lkT4bgrOtS9q2YCK1/j9zVDk1v+Ja7wuWKOKu3Pcja6GM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sipsolutions.net; spf=pass smtp.mailfrom=sipsolutions.net; dkim=pass (2048-bit key) header.d=sipsolutions.net header.i=@sipsolutions.net header.b=tg/RSc4V; arc=none smtp.client-ip=168.119.38.16
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sipsolutions.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sipsolutions.net
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=sipsolutions.net; s=mail; h=MIME-Version:Content-Transfer-Encoding:
+	Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender
+	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
+	Resent-Cc:Resent-Message-ID; bh=Ot6b39AXYDAVGwlyEemjJVuPK4U4r83NNhgKBebl2bA=;
+	t=1711439623; x=1712649223; b=tg/RSc4VYDSnmfkVKJrEkvfEeqmJfQgxumJcpSsqMuwj11j
+	WzojvYa8DYb+0WCXdkOThtdhjx8mRDaYQTlZrh6y2su34DsZc9g9G0vl2v9XogzQTuXfmIEB9Q7iZ
+	eiavY8AEVRuPrXh0fzAFBnjWYfusBqHWiUvCpaKroGb5pd3GhXylZFVjg29kqX/Te+tH4DkoeOTnA
+	sqDcK7zkbti4bAONOCEZOZyosvCypIL/0nDZ7hUkYp3E1g8xa5UboEASxJS6o5yc0ljwQE4KGstQL
+	JfLKiXbm4qF647EBeO7ZhevNZXh4D6I+uxVyFhlLci3IAwYxdJYoKmc41B5yvmnw==;
+Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
+	(Exim 4.97)
+	(envelope-from <johannes@sipsolutions.net>)
+	id 1rp1cq-0000000FYHx-0UH6;
+	Tue, 26 Mar 2024 08:53:40 +0100
+Message-ID: <0659e47eb33c4159168abe392764a1de44e9bc71.camel@sipsolutions.net>
+Subject: Re: [PATCH] rcu: mollify sparse with RCU guard
+From: Johannes Berg <johannes@sipsolutions.net>
+To: Dan Carpenter <dan.carpenter@linaro.org>
+Cc: Boqun Feng <boqun.feng@gmail.com>, rcu@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, "Paul E. McKenney" <paulmck@kernel.org>, 
+ Frederic Weisbecker <frederic@kernel.org>, Josh Triplett
+ <josh@joshtriplett.org>, Peter Zijlstra <peterz@infradead.org>
+Date: Tue, 26 Mar 2024 08:53:39 +0100
+In-Reply-To: <04081c65-f9bf-404c-8557-7af72f6a72de@moroto.mountain>
+References: <20240325101626.41584-2-johannes@sipsolutions.net>
+	 <ZgGnuFJiTX5laS7c@boqun-archlinux>
+	 <055111792727869a98c1fa693014e0b6f5d256ea.camel@sipsolutions.net>
+	 <35355d02-3eef-4860-847b-b7bbf05f4a31@moroto.mountain>
+	 <48034addaeb6c33ca8b3e636262b6c043ddc5359.camel@sipsolutions.net>
+	 <04081c65-f9bf-404c-8557-7af72f6a72de@moroto.mountain>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.50.4 (3.50.4-1.fc39) 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-malware-bazaar: not-scanned
 
-Core already sets .owner in acpi_bus_register_driver().
+On Tue, 2024-03-26 at 10:39 +0300, Dan Carpenter wrote:
+> On Mon, Mar 25, 2024 at 07:43:18PM +0100, Johannes Berg wrote:
+> > On Mon, 2024-03-25 at 21:28 +0300, Dan Carpenter wrote:
+> > > On Mon, Mar 25, 2024 at 05:41:22PM +0100, Johannes Berg wrote:
+> > > > Also __acquire()/__release() are just empty macros without __CHECKE=
+R__.
+> > > > So not sure the indirection really is warranted for this special ca=
+se.
+> > > >=20
+> > > > I can add a comment in there, I guess, something like
+> > > >=20
+> > > >  /* sparse doesn't actually "call" cleanup functions */
+> > > >=20
+> > > > perhaps. That reminds me I forgot to CC Dan ...
+> > > >=20
+> > >=20
+> > > These are Sparse warnings, not Smatch warning... Smatch doesn't use a=
+ny
+> > > of the Sparse locking annotations.
+> >=20
+> > Sure, of course. I just saw that you added cleanup stuff to sparse to
+> > allow using it in smatch.
+> >=20
+> > > Smatch handles cleanup basically correctly at this point.
+> >=20
+> > Do you "run" / "emit" the cleanup function calls there?
+>=20
+> Yes.
 
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
----
- drivers/virt/vmgenid.c | 1 -
- 1 file changed, 1 deletion(-)
+I see. I guess that doesn't work for sparse. You write:
 
-diff --git a/drivers/virt/vmgenid.c b/drivers/virt/vmgenid.c
-index b67a28da4702..8f6880c3a87f 100644
---- a/drivers/virt/vmgenid.c
-+++ b/drivers/virt/vmgenid.c
-@@ -88,7 +88,6 @@ static const struct acpi_device_id vmgenid_ids[] = {
- static struct acpi_driver vmgenid_driver = {
- 	.name = "vmgenid",
- 	.ids = vmgenid_ids,
--	.owner = THIS_MODULE,
- 	.ops = {
- 		.add = vmgenid_add,
- 		.notify = vmgenid_notify
--- 
-2.34.1
+   This shouldn't really have been needed if I had written the parse.c
+   code correctly to create new scopes for every __cleanup__.
 
+Would that maybe be a way to handle it in sparse? Though not sure how to
+return then.
+
+> > I briefly look
+> > at doing that in sparse but it felt ... complicated, and then I saw the
+> > condition in the cleanup function which I thought sparse could probably
+> > not see through anyway.
+>=20
+> The if (_T->lock) statements are a problem.  For those, I have to
+> manually add them to check_locking.c as an unlock function and to
+> check_preempt.c as a decrement the preempt count function.
+
+OK, no fun.
+
+I think overall it's still easier to go with this patch :)
+
+And maybe we should think about replacing what we need sparse for...
+
+johannes
 
