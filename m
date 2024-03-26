@@ -1,228 +1,207 @@
-Return-Path: <linux-kernel+bounces-119043-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-119044-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5B62588C310
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 14:12:11 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8B69588C311
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 14:13:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7A5001C2CEA0
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 13:12:10 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id ABE141C2CEA0
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 13:13:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8DA4A71756;
-	Tue, 26 Mar 2024 13:12:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="ae3colTs"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 46EFD71756;
+	Tue, 26 Mar 2024 13:13:47 +0000 (UTC)
+Received: from mail-io1-f71.google.com (mail-io1-f71.google.com [209.85.166.71])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0272A5CDE7
-	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 13:12:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2BBB05CDE7
+	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 13:13:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.71
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711458724; cv=none; b=sj6ipwdxxx7rmVAS9Y5krZ/sPxj8g4ry6b/EJX7pvDykhCwNMLDlwENtCBltmDhoEa94fbnhNI02h4hCJsbu8p4gyJ/qREE93Gi6VpABH/VGegwIhGcUz6eBMmri0baUnRDviO3aFgBhqzHcecwp2lCJLMVSUS0J9ekt9LZHfL4=
+	t=1711458826; cv=none; b=DEpTBHFCj5DuDlcSFnk1nKTr+Vbc0Kal/goNUmREgcjuC2ypd+l8jk9NmSh/uQDZmOvqrTjcwvfVHKs0OdpX3a8Ljk+JljMuuNsjnlEQF/buSOlYsneeq4I1AZvMpcZawufzXluWAAprhw05LwoqRu3VY+vK6qFQpj8h4TVNBQw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711458724; c=relaxed/simple;
-	bh=L1CC80wvbfPihajVobuY15lHbNslUhbwAc21XGQWkVA=;
-	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
-	 In-Reply-To:Content-Type; b=uLZrM9i8S4GMIZECRmMnxbSAck6We7takUCtebg5Y/tOB3lq3Lz/+mwGNMsj0lh1m1ygJfH3S6Kdszg6i8g06xcKIhc2V2SVBTxZ8kahirM0+n1mpzNTy6TLaMSe5IB/JVytOR3AkdL8BlMtX8Iit5E1mnZK+lWB/bNCu7VBzWc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=ae3colTs; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1711458721;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=SstXmpRLl6U15pJ2YX9fo4k0mTXmFDcpuWk8o+l4dcc=;
-	b=ae3colTsL6fN3MRjfhqBrCkSPawrwq8hjPTBE3/rVbwgKmre60SCxShp/Pk/QS9lDJ2FaY
-	WWS70kvu3PzmQiIxb5QoqFLUZlgm8EbClgesOgBWaDzhyudW2awqzXWUbt4ZkZI6B+aHS6
-	Wfhr7GJS2rHUHzHOUTP0D/K6SnfQHFg=
-Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
- [209.85.128.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-160-26MH97WWNqSe3E0PzZRRGg-1; Tue, 26 Mar 2024 09:12:00 -0400
-X-MC-Unique: 26MH97WWNqSe3E0PzZRRGg-1
-Received: by mail-wm1-f69.google.com with SMTP id 5b1f17b1804b1-41482ca91b9so12269645e9.2
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 06:11:59 -0700 (PDT)
+	s=arc-20240116; t=1711458826; c=relaxed/simple;
+	bh=01rXpUtRadwgSZ4e86OoQVxRQkmfd4pGXxG0GUkQX/Q=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
+	 Content-Type; b=KwOb3BrzzACcAo3WSdmVGVIm9rMzVUGQ2YBTSbciMWEWlJYSLJa5on6+M5X7okXmCXI3Kf5Ph/nD0JzztyzdL1jeb2AbYn3P4mWuuo8QpbnnHUNysMt3so3carFl/9Nrpaswnzpefw0icn6GFLCjPdFnBo/HmzWiY1Dz3Hl86FQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.71
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f71.google.com with SMTP id ca18e2360f4ac-7cf265b30e2so556786139f.1
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 06:13:44 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711458719; x=1712063519;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt
-         :references:cc:to:from:content-language:subject:user-agent
-         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=SstXmpRLl6U15pJ2YX9fo4k0mTXmFDcpuWk8o+l4dcc=;
-        b=NcNLfon44+Y87/IRs8XSXhBTfzY67RJpj2rpKxvRjc1p86CEh4jfcGpk7TWamdskau
-         SYX5x9h4eOPBSvwjXbulRYpZ/DoIDNFtK1LsWEvnbckQDYqCWuYQmrLPEJGZio+AkBC3
-         oiEmG9sEvD6uKjoQnAIsNfOiRmkeop2214WMf3rvHLXG9GQIZ8tizib/ih6WKK/DIWaZ
-         D9Mk7XsELr4StggjbpiaGZw7yWaPmgT1m+dsitC2B2PlChHbeT6mNMo5hhlQxG03XrLP
-         bVUOuzay9eQBJs/Y6gRAVOhlqEOo/XbjfbqnArK8wbaZ31V0TGL5O/fPWAL924AqDuoR
-         0lrg==
-X-Gm-Message-State: AOJu0YzodM1DQKAZQfH4aWLBdXzvhEgf51UaYBCjFF3ZenCr8t+PT4Qr
-	M1YegGGA+iotmRC5xSI77GxIE91nuESpMdUYqGdZ3tjr7asqoDcuEnVQRviB0+WZEGagaKk/k9q
-	AAPaMI1kSp3tm/Fvi39mf/+88JqvAkYNjncJomT7pKkGJYH7MkAUc3DZ+I3JW7w==
-X-Received: by 2002:a05:600c:21c7:b0:413:f3f0:c591 with SMTP id x7-20020a05600c21c700b00413f3f0c591mr9111581wmj.41.1711458718698;
-        Tue, 26 Mar 2024 06:11:58 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IGHDxMAqmH2tBl1eEu7r4nPE/sVz/hybBa3idj9cGsWkq/6yQGLJIRQWGESLrY5OPr18pYLEg==
-X-Received: by 2002:a05:600c:21c7:b0:413:f3f0:c591 with SMTP id x7-20020a05600c21c700b00413f3f0c591mr9111558wmj.41.1711458718252;
-        Tue, 26 Mar 2024 06:11:58 -0700 (PDT)
-Received: from ?IPV6:2003:cb:c741:c700:3db9:94c9:28b0:34f2? (p200300cbc741c7003db994c928b034f2.dip0.t-ipconnect.de. [2003:cb:c741:c700:3db9:94c9:28b0:34f2])
-        by smtp.gmail.com with ESMTPSA id o3-20020a5d62c3000000b0033ec94c6277sm12096327wrv.115.2024.03.26.06.11.57
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 26 Mar 2024 06:11:57 -0700 (PDT)
-Message-ID: <15117d1a-a03b-4ad5-9900-4c968212137f@redhat.com>
-Date: Tue, 26 Mar 2024 14:11:56 +0100
+        d=1e100.net; s=20230601; t=1711458824; x=1712063624;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=d9isEF4216kbY5BoMZnM3m0Nc6D/iwXUtaIHD8mAK9Y=;
+        b=T6p1mmdNiZU3KDTNfVq2zy8ZQVxI87CaB5RK5yhG/BpWgJRexaKnlJoRqpZUh13yhO
+         y3oca508w4nfmITKjJaj08fBm0qGzlSTwJ6SXwkCGhFm7Icni2/cNjnkQyfg0abute7/
+         o+3zr8FvXkqGfiFksGAeNdUwWwap1sst6522lE0enyiqYadky1IUuQP5IhV5JWoKVEQ0
+         3d5kNs0wyeaKIF0R9SD6Bx73LfhpvTEI5unxkMMM3VY6fA4v82n5U8A9kNZwuwS/LaNy
+         ymG7493wb+SkGfN0fOp16CpID2sEdT7BrgZrPwKBU7aO1PIrmUNYdPKyoLtcjJVDSRBJ
+         m/ZQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXOQ5KqTwFyiIfGw96p/GnVLH/rwgPlr3c7wveXlIWYFZUdOFWLjtiL7jksSmrBPRJQkSYqJR1gadFo0WFHIZG9PvzbJTAU54f3vX3C
+X-Gm-Message-State: AOJu0YzuZzJ77/hgoVpvwYZzQq1ejsmiJ+qrMxShIcIiu045SLB61r3g
+	ikFyWRympc0GLJicT+2YGjJoaMu23Nz3vW1yWCxA+W1J2Js0qKvHKqOJUiybvtU4eDmK6Omj/Gh
+	3KJBuyU0V85LZKx2B0wGkQM8ImO0ijfTwsRvIxlYVn7EMyx/DAwSfAG0=
+X-Google-Smtp-Source: AGHT+IHNcvfQVw2v6mEwMqMCx2PV+8QaNynrDznqj4s/DSejhJ/FY851u01ED6HKTOtkrgTPj9+qZk2TxzmjFdZgHqPBBgP2Uu/M
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1 2/3] selftests/memfd_secret: add vmsplice() test
-Content-Language: en-US
-From: David Hildenbrand <david@redhat.com>
-To: Mike Rapoport <rppt@kernel.org>
-Cc: linux-kernel@vger.kernel.org, linux-mm@kvack.org,
- Andrew Morton <akpm@linux-foundation.org>,
- Miklos Szeredi <mszeredi@redhat.com>, Lorenzo Stoakes <lstoakes@gmail.com>,
- xingwei lee <xrivendell7@gmail.com>, yue sun <samsun1006219@gmail.com>
-References: <20240325134114.257544-1-david@redhat.com>
- <20240325134114.257544-3-david@redhat.com> <ZgJol_hwpoTwaibB@kernel.org>
- <baafcfbb-f767-41fb-b2de-1367991d073a@redhat.com>
-Autocrypt: addr=david@redhat.com; keydata=
- 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
- WNyWQQ==
-Organization: Red Hat
-In-Reply-To: <baafcfbb-f767-41fb-b2de-1367991d073a@redhat.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+X-Received: by 2002:a05:6638:2b23:b0:47c:19be:1f5b with SMTP id
+ fm35-20020a0566382b2300b0047c19be1f5bmr484426jab.0.1711458824388; Tue, 26 Mar
+ 2024 06:13:44 -0700 (PDT)
+Date: Tue, 26 Mar 2024 06:13:44 -0700
+In-Reply-To: <000000000000c676ac061478ebeb@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000004696ac0614900f54@google.com>
+Subject: Re: [syzbot] [kernel?] inconsistent lock state in sock_map_delete_elem
+From: syzbot <syzbot+27b586a74c69839e9bba@syzkaller.appspotmail.com>
+To: frederic@kernel.org, linux-kernel@vger.kernel.org, mingo@kernel.org, 
+	syzkaller-bugs@googlegroups.com, tglx@linutronix.de
+Content-Type: text/plain; charset="UTF-8"
 
-On 26.03.24 13:32, David Hildenbrand wrote:
-> On 26.03.24 07:17, Mike Rapoport wrote:
->> Hi David,
->>
->> On Mon, Mar 25, 2024 at 02:41:13PM +0100, David Hildenbrand wrote:
->>> Let's add a simple reproducer for a scneario where GUP-fast could succeed
->>> on secretmem folios, making vmsplice() succeed instead of failing. The
->>> reproducer is based on a reproducer [1] by Miklos Szeredi.
->>>
->>> Perform the ftruncate() only once, and check the return value.
->>>
->>> For some reason, vmsplice() reliably fails (making the test succeed) when
->>> we move the test_vmsplice() call after test_process_vm_read() /
->>> test_ptrace().
->>
->> That's because ftruncate() call was in test_remote_access() and you need it
->> to mmap secretmem.
-> 
-> I don't think that's the reason. I reshuffled the code a couple of times
-> without luck.
-> 
-> And in fact, even executing the vmsplice() test twice results in the
-> second iteration succeeding on an old kernel (6.7.4-200.fc39.x86_64).
-> 
-> ok 1 mlock limit is respected
-> ok 2 file IO is blocked as expected
-> not ok 3 vmsplice is blocked as expected
-> ok 4 vmsplice is blocked as expected
-> ok 5 process_vm_read is blocked as expected
-> ok 6 ptrace is blocked as expected
-> 
-> Note that the mmap()+memset() succeeded. So the secretmem pages should be in the page table.
-> 
-> 
-> Even weirder, if I simply mmap()+memset()+munmap() secretmem *once*, the test passes
-> 
-> diff --git a/tools/testing/selftests/mm/memfd_secret.c b/tools/testing/selftests/mm/memfd_secret.c
-> index 0acbdcf8230e..7a973ec6ac8f 100644
-> --- a/tools/testing/selftests/mm/memfd_secret.c
-> +++ b/tools/testing/selftests/mm/memfd_secret.c
-> @@ -96,6 +96,14 @@ static void test_vmsplice(int fd)
->                   return;
->           }
->    
-> +       mem = mmap(NULL, page_size, prot, mode, fd, 0);
-> +       if (mem == MAP_FAILED) {
-> +               fail("Unable to mmap secret memory\n");
-> +               goto close_pipe;
-> +       }
-> +       memset(mem, PATTERN, page_size);
-> +       munmap(mem, page_size);
-> +
->           mem = mmap(NULL, page_size, prot, mode, fd, 0);
->           if (mem == MAP_FAILED) {
->                   fail("Unable to mmap secret memory\n");
-> 
-> ok 1 mlock limit is respected
-> ok 2 file IO is blocked as expected
-> ok 3 vmsplice is blocked as expected
-> ok 4 process_vm_read is blocked as expected
-> ok 5 ptrace is blocked as expected
-> 
-> 
-> ... could it be that munmap()+mmap() will end up turning these pages into LRU pages?
+syzbot has found a reproducer for the following issue on:
 
-Okay, now I am completely confused.
+HEAD commit:    fe46a7dd189e Merge tag 'sound-6.9-rc1' of git://git.kernel..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=1297023a180000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=aef2a55903e5791c
+dashboard link: https://syzkaller.appspot.com/bug?extid=27b586a74c69839e9bba
+compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=13534231180000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=12201aa5180000
 
-secretmem_fault() calls filemap_add_folio(), which should turn this into 
-an LRU page.
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/089e25869df5/disk-fe46a7dd.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/423b1787914f/vmlinux-fe46a7dd.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/4c043e30c07d/bzImage-fe46a7dd.xz
 
-So secretmem pages should always be LRU pages. .. unless we're batching 
-in the LRU cache and haven't done the lru_add_drain() ...
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+27b586a74c69839e9bba@syzkaller.appspotmail.com
 
-And likely, the munmap() will drain the lru cache and turn the page into 
-an LRU page.
+================================
+WARNING: inconsistent lock state
+6.8.0-syzkaller-08951-gfe46a7dd189e #0 Not tainted
+--------------------------------
+inconsistent {IN-HARDIRQ-W} -> {HARDIRQ-ON-W} usage.
+syz-executor298/5057 [HC0[0]:SC0[0]:HE0:SE1] takes:
+ffff8880b943e698 (&rq->__lock){?.-.}-{2:2}, at: raw_spin_rq_lock_nested+0x29/0x130 kernel/sched/core.c:559
+{IN-HARDIRQ-W} state was registered at:
+  lock_acquire kernel/locking/lockdep.c:5754 [inline]
+  lock_acquire+0x1b1/0x540 kernel/locking/lockdep.c:5719
+  _raw_spin_lock_nested+0x31/0x40 kernel/locking/spinlock.c:378
+  raw_spin_rq_lock_nested+0x29/0x130 kernel/sched/core.c:559
+  raw_spin_rq_lock kernel/sched/sched.h:1385 [inline]
+  rq_lock kernel/sched/sched.h:1699 [inline]
+  scheduler_tick+0xa2/0x650 kernel/sched/core.c:5679
+  update_process_times+0x199/0x220 kernel/time/timer.c:2481
+  tick_periodic+0x7e/0x230 kernel/time/tick-common.c:100
+  tick_handle_periodic+0x45/0x120 kernel/time/tick-common.c:112
+  timer_interrupt+0x4e/0x80 arch/x86/kernel/time.c:57
+  __handle_irq_event_percpu+0x22c/0x750 kernel/irq/handle.c:158
+  handle_irq_event_percpu kernel/irq/handle.c:193 [inline]
+  handle_irq_event+0xab/0x1e0 kernel/irq/handle.c:210
+  handle_level_irq+0x25d/0x6f0 kernel/irq/chip.c:648
+  generic_handle_irq_desc include/linux/irqdesc.h:161 [inline]
+  handle_irq arch/x86/kernel/irq.c:238 [inline]
+  __common_interrupt+0xe1/0x250 arch/x86/kernel/irq.c:257
+  common_interrupt+0xab/0xd0 arch/x86/kernel/irq.c:247
+  asm_common_interrupt+0x26/0x40 arch/x86/include/asm/idtentry.h:693
+  __raw_spin_unlock_irqrestore include/linux/spinlock_api_smp.h:151 [inline]
+  _raw_spin_unlock_irqrestore+0x31/0x80 kernel/locking/spinlock.c:194
+  __setup_irq+0x1069/0x1e80 kernel/irq/manage.c:1818
+  request_threaded_irq+0x2b4/0x3e0 kernel/irq/manage.c:2202
+  request_irq include/linux/interrupt.h:168 [inline]
+  setup_default_timer_irq arch/x86/kernel/time.c:70 [inline]
+  hpet_time_init+0x5b/0x90 arch/x86/kernel/time.c:82
+  x86_late_time_init+0x51/0xc0 arch/x86/kernel/time.c:94
+  start_kernel+0x317/0x490 init/main.c:1039
+  x86_64_start_reservations+0x18/0x30 arch/x86/kernel/head64.c:509
+  x86_64_start_kernel+0xb2/0xc0 arch/x86/kernel/head64.c:490
+  common_startup_64+0x13e/0x148
+irq event stamp: 2112
+hardirqs last  enabled at (2109): [<ffffffff8ad251cb>] irqentry_exit+0x3b/0x90 kernel/entry/common.c:351
+hardirqs last disabled at (2110): [<ffffffff8ad48b14>] __schedule+0x2644/0x5c70 kernel/sched/core.c:6634
+softirqs last  enabled at (2112): [<ffffffff88cb3a2d>] spin_unlock_bh include/linux/spinlock.h:396 [inline]
+softirqs last  enabled at (2112): [<ffffffff88cb3a2d>] __sock_map_delete net/core/sock_map.c:424 [inline]
+softirqs last  enabled at (2112): [<ffffffff88cb3a2d>] sock_map_delete_elem+0xfd/0x150 net/core/sock_map.c:446
+softirqs last disabled at (2111): [<ffffffff88cb39f8>] spin_lock_bh include/linux/spinlock.h:356 [inline]
+softirqs last disabled at (2111): [<ffffffff88cb39f8>] __sock_map_delete net/core/sock_map.c:414 [inline]
+softirqs last disabled at (2111): [<ffffffff88cb39f8>] sock_map_delete_elem+0xc8/0x150 net/core/sock_map.c:446
 
-Okay, I'll go make sure if that's the case. If so, relying on the page 
-being LRU vs. not LRU in GUP-fast is unreliable and shall be dropped.
+other info that might help us debug this:
+ Possible unsafe locking scenario:
 
--- 
-Cheers,
+       CPU0
+       ----
+  lock(&rq->__lock
+);
+  <Interrupt>
+    lock(&rq->__lock
+);
 
-David / dhildenb
+ *** DEADLOCK ***
 
+6 locks held by syz-executor298/5057:
+ #0: ffffffff8d8265a8
+ (tracepoints_mutex
+){+.+.}-{3:3}
+, at: tracepoint_probe_register_prio_may_exist+0x9c/0x110 kernel/tracepoint.c:478
+ #1: 
+ffffffff8d653cb0
+ (cpu_hotplug_lock
+){++++}-{0:0}
+, at: static_key_enable+0x12/0x20 kernel/jump_label.c:217
+ #2: ffffffff8d8bbc08
+ (jump_label_mutex
+){+.+.}-{3:3}
+, at: jump_label_lock kernel/jump_label.c:27 [inline]
+, at: static_key_enable_cpuslocked+0xb5/0x270 kernel/jump_label.c:202
+ #3: ffffffff8d671328
+ (text_mutex
+){+.+.}-{3:3}
+, at: arch_jump_label_transform_apply+0x17/0x30 arch/x86/kernel/jump_label.c:145
+ #4: ffff8880b943e698
+ (&rq->__lock
+){?.-.}-{2:2}
+, at: raw_spin_rq_lock_nested+0x29/0x130 kernel/sched/core.c:559
+ #5: ffffffff8d7b08e0
+ (rcu_read_lock
+){....}-{1:2}
+, at: rcu_lock_acquire include/linux/rcupdate.h:298 [inline]
+, at: rcu_read_lock include/linux/rcupdate.h:750 [inline]
+, at: __bpf_trace_run kernel/trace/bpf_trace.c:2380 [inline]
+, at: bpf_trace_run4+0x107/0x460 kernel/trace/bpf_trace.c:2422
+
+stack backtrace:
+CPU: 0 PID: 5057 Comm: syz-executor298 Not tainted 6.8.0-syzkaller-08951-gfe46a7dd189e #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 02/29/2024
+Call Trace:
+ <TASK>
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0x116/0x1f0 lib/dump_stack.c:114
+ print_usage_bug kernel/locking/lockdep.c:3971 [inline]
+ valid_state kernel/locking/lockdep.c:4013 [inline]
+ mark_lock_irq kernel/locking/lockdep.c:4216 [inline]
+ mark_lock+0x923/0xc60 kernel/locking/lockdep.c:4678
+ mark_held_locks+0x9f/0xe0 kernel/locking/lockdep.c:4274
+ __trace_hardirqs_on_caller kernel/locking/lockdep.c:4292 [inline]
+ lockdep_hardirqs_on_prepare+0x137/0x420 kernel/locking/lockdep.c:4359
+ trace_hardirqs_on+0x36/0x40 kernel/trace/trace_preemptirq.c:61
+ __local_bh_enable_ip+0xa4/0x120 kernel/softirq.c:387
+ spin_unlock_bh include/linux/spinlock.h:396 [inline]
+ __sock_map_delete net/core/sock_map.c:424 [inline]
+ sock_map_delete_elem+0xfd/0x150 net/core/sock_map.c:446
+
+
+---
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
 
