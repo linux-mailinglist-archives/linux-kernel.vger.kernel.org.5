@@ -1,195 +1,179 @@
-Return-Path: <linux-kernel+bounces-118982-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-118984-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9BD8C88C234
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 13:35:24 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 779B388C23D
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 13:36:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4C73A30186A
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 12:35:23 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A922E1C3F77D
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 12:36:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E47AC5C61F;
-	Tue, 26 Mar 2024 12:35:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A62CE5B5B3;
+	Tue, 26 Mar 2024 12:36:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="TOjiO3pZ";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="Cf2J6aND";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="TOjiO3pZ";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="Cf2J6aND"
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="CoxqXOzJ";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="Jyge/063"
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6168A6EB52;
-	Tue, 26 Mar 2024 12:35:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B5B4E1CA9C;
+	Tue, 26 Mar 2024 12:36:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711456512; cv=none; b=kyTUWh3TuqCDg3GMORo+9A/m/s0y/rRTzdsK3qkdHtHbmWy7YeFLZvqNruNqHSiHzBHoiTiLmUENrJybtTfh/PDw9Ha7capYbmir6n9k2FMiGkuquy3lE2PwRiRCRnbZjJDUOzM6/4/B/Q8qQ6vcPqPrkLOuB9FFOYRieRtRTw0=
+	t=1711456567; cv=none; b=PVx/le/6F2PnZ6/qs9ZLLPQXZ/l4pYuBDJ/IXplgBBDtpaWQIZMjLg5v+snoYIB6N9rDk8IcDxs61y/muoYLdXyaKC1a20aVvAfYVylGAu0qvV6sB9S4iVb61X36aGeGTBHxiMnEMqhnYMJ9FzpanpBlqeL34ADcJLeDNzGCANQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711456512; c=relaxed/simple;
-	bh=dgcPC9NomIkty18Wg70jAIx1755O4jg4IsU0lFA0a2I=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=g0gmS70lyBZ7jhVArhsOCYXPfXIXpvk27clNVzrZqjsJTGOvzyOifNwi92HaXQIWlGLuNfKlHJZAUiDSs9QMAHXx6q4A//MhppcadSxUZmdiFKiUxkmSP9UXtZKVXIr3dsYhYsglxINGcyCrYlB5EcIe6A76hxD4LQXilDHXnEc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=TOjiO3pZ; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=Cf2J6aND; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=TOjiO3pZ; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=Cf2J6aND; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 51F1437BB6;
-	Tue, 26 Mar 2024 12:35:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1711456508; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
+	s=arc-20240116; t=1711456567; c=relaxed/simple;
+	bh=Ln00QjIocVOEh7cEbdyeopMQ1njFgOHqxxc5fU7j1UM=;
+	h=Date:From:To:Subject:Cc:In-Reply-To:References:MIME-Version:
+	 Message-ID:Content-Type; b=cHX1GugWuaZ+BlcCIZJK6kpj4R7/1iz5uMR7OXjNPNL+PRqt1pRm09OGihT/zWBdMWGPeUXbPrE7bgzfkZXG+7PWdWmMMeGTK7a4Q5OIG/RyJEBKZSnJDnpB8CbHWQ4HJdW/RFpldhNTFk31SDRyDY/VXpftAyRcRnb8LUaWaLg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=CoxqXOzJ; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=Jyge/063; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+Date: Tue, 26 Mar 2024 12:35:56 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1711456557;
+	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+	 content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=+3ellU7x8YCGXwJKrWV7ABao9PNb+LN/5kUyZ33fOdU=;
-	b=TOjiO3pZ1crf51dWW9qEqm/7Qco0XAPmiXC/Q2MOoBhN/zSb6ifMGYO2eNZ1Ow+wTTvMpx
-	rqZ2izBEtN0RcZLrKf5jObCFxSP49r6CiXvB4qYkt1F7DhPYD8fvBxJrrCnYi8o3WjNWp0
-	bc9WNfoxnK0PqBzIiRl61fVcOpC18Vc=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1711456508;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
+	bh=fxpZuljtjT2twvLmklrZ+zGqJLtDaFO5N7Hy49wYyRI=;
+	b=CoxqXOzJCe9mOekcC4u2yqhPNBOmQJZXaiIdXPTKoOe11CSckMwOYVuK4pF1GWlBYfz7cP
+	dKnlkKPyu4y/CaO4G9ZUbG/xZ3C9VV1Rk88IHYlKbasfkZrVdcnGvtshV95u9MWjjicRtQ
+	x9dtN9JIXnyC1EO/E9Jpr+gsgbGOX+2FYaVYQWRCEq6V5aS5+eUKNv22+OJdWhUvUjcUDM
+	cHitOKwx7ODE1wP9U5aGSdb42KQTDen2afjdLCuLDfsp1TNzk77YecY1Mrm5aWEVFJ/ZOZ
+	NyYXRmlQFJikC85ZdHByq7d2rkGtkbvwNCzJwJyrDU8bC3vAQ6G2iAU5kzo5dw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1711456557;
+	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+	 content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=+3ellU7x8YCGXwJKrWV7ABao9PNb+LN/5kUyZ33fOdU=;
-	b=Cf2J6aNDRK974IYzCsXFSg2GicFhQKNW/aQwjt/pbsGVC4kDbBu10WSPBYxYw0LBS8BcPz
-	TJcMfPcDyHyLdADg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1711456508; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=+3ellU7x8YCGXwJKrWV7ABao9PNb+LN/5kUyZ33fOdU=;
-	b=TOjiO3pZ1crf51dWW9qEqm/7Qco0XAPmiXC/Q2MOoBhN/zSb6ifMGYO2eNZ1Ow+wTTvMpx
-	rqZ2izBEtN0RcZLrKf5jObCFxSP49r6CiXvB4qYkt1F7DhPYD8fvBxJrrCnYi8o3WjNWp0
-	bc9WNfoxnK0PqBzIiRl61fVcOpC18Vc=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1711456508;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=+3ellU7x8YCGXwJKrWV7ABao9PNb+LN/5kUyZ33fOdU=;
-	b=Cf2J6aNDRK974IYzCsXFSg2GicFhQKNW/aQwjt/pbsGVC4kDbBu10WSPBYxYw0LBS8BcPz
-	TJcMfPcDyHyLdADg==
-Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 429AD13215;
-	Tue, 26 Mar 2024 12:35:08 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap2.dmz-prg2.suse.org with ESMTPSA
-	id pW89EPzAAmZ7LAAAn2gu4w
-	(envelope-from <jack@suse.cz>); Tue, 26 Mar 2024 12:35:08 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id E7A62A0812; Tue, 26 Mar 2024 13:35:03 +0100 (CET)
-Date: Tue, 26 Mar 2024 13:35:03 +0100
-From: Jan Kara <jack@suse.cz>
-To: Kemeng Shi <shikemeng@huaweicloud.com>
-Cc: akpm@linux-foundation.org, tj@kernel.org, linux-mm@kvack.org,
-	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-	willy@infradead.org, bfoster@redhat.com, jack@suse.cz,
-	dsterba@suse.com, mjguzik@gmail.com, dhowells@redhat.com,
-	peterz@infradead.org
-Subject: Re: [PATCH 6/6] writeback: remove unneeded GDTC_INIT_NO_WB
-Message-ID: <20240326123503.kxyxg75xr7wk3ux3@quack3>
-References: <20240320110222.6564-1-shikemeng@huaweicloud.com>
- <20240320110222.6564-7-shikemeng@huaweicloud.com>
+	bh=fxpZuljtjT2twvLmklrZ+zGqJLtDaFO5N7Hy49wYyRI=;
+	b=Jyge/063PrHhIILGbSEtIomoxIu6vd2M4D0g1Mi7GHLnlohmPvw+cXIK4aHWf9AUj9ImVb
+	3eS+HyvRTAiWHxCg==
+From: "tip-bot2 for Tony Luck" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To: linux-tip-commits@vger.kernel.org
+Subject:
+ [tip: ras/core] x86/mce: Dynamically size space for machine check records
+Cc: Tony Luck <tony.luck@intel.com>, "Borislav Petkov (AMD)" <bp@alien8.de>,
+ Sohil Mehta <sohil.mehta@intel.com>, Avadhut Naik <avadhut.naik@amd.com>,
+ x86@kernel.org, linux-kernel@vger.kernel.org
+In-Reply-To: <20240307192704.37213-1-tony.luck@intel.com>
+References: <20240307192704.37213-1-tony.luck@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240320110222.6564-7-shikemeng@huaweicloud.com>
-Authentication-Results: smtp-out1.suse.de;
-	none
-X-Spam-Level: ****
-X-Spam-Score: 4.30
-X-Spamd-Result: default: False [4.30 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 BAYES_SPAM(5.10)[100.00%];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 NEURAL_HAM_SHORT(-0.20)[-1.000];
-	 RCPT_COUNT_TWELVE(0.00)[13];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 MID_RHS_NOT_FQDN(0.50)[];
-	 FREEMAIL_CC(0.00)[linux-foundation.org,kernel.org,kvack.org,vger.kernel.org,infradead.org,redhat.com,suse.cz,suse.com,gmail.com];
-	 RCVD_TLS_ALL(0.00)[]
-X-Spam-Flag: NO
+Message-ID: <171145655619.10875.5517260204670721403.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe:
+ Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Precedence: bulk
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 
-On Wed 20-03-24 19:02:22, Kemeng Shi wrote:
-> We never use gdtc->dom set with GDTC_INIT_NO_WB, just remove unneeded
-> GDTC_INIT_NO_WB
-> 
-> Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
+The following commit has been merged into the ras/core branch of tip:
 
-Please no, this leaves a trap for the future. If anything, I'd teach
-GDTC_INIT() that 'wb' can be NULL and replace GDTC_INIT_NO_WB with
-GDTC_INIT(NULL).
+Commit-ID:     108c6494bdf1dfeaefc0a506e2f471aa92fafdd6
+Gitweb:        https://git.kernel.org/tip/108c6494bdf1dfeaefc0a506e2f471aa92fafdd6
+Author:        Tony Luck <tony.luck@intel.com>
+AuthorDate:    Thu, 07 Mar 2024 11:27:04 -08:00
+Committer:     Borislav Petkov (AMD) <bp@alien8.de>
+CommitterDate: Tue, 26 Mar 2024 12:40:42 +01:00
 
-								Honza
+x86/mce: Dynamically size space for machine check records
 
-> ---
->  mm/page-writeback.c | 7 ++-----
->  1 file changed, 2 insertions(+), 5 deletions(-)
-> 
-> diff --git a/mm/page-writeback.c b/mm/page-writeback.c
-> index 481b6bf34c21..09b2b0754cc5 100644
-> --- a/mm/page-writeback.c
-> +++ b/mm/page-writeback.c
-> @@ -154,8 +154,6 @@ struct dirty_throttle_control {
->  				.dom = &global_wb_domain,		\
->  				.wb_completions = &(__wb)->completions
->  
-> -#define GDTC_INIT_NO_WB		.dom = &global_wb_domain
-> -
->  #define MDTC_INIT(__wb, __gdtc)	.wb = (__wb),				\
->  				.dom = mem_cgroup_wb_domain(__wb),	\
->  				.wb_completions = &(__wb)->memcg_completions, \
-> @@ -210,7 +208,6 @@ static void wb_min_max_ratio(struct bdi_writeback *wb,
->  
->  #define GDTC_INIT(__wb)		.wb = (__wb),                           \
->  				.wb_completions = &(__wb)->completions
-> -#define GDTC_INIT_NO_WB
->  #define MDTC_INIT(__wb, __gdtc)
->  
->  static bool mdtc_valid(struct dirty_throttle_control *dtc)
-> @@ -438,7 +435,7 @@ static void domain_dirty_limits(struct dirty_throttle_control *dtc)
->   */
->  void global_dirty_limits(unsigned long *pbackground, unsigned long *pdirty)
->  {
-> -	struct dirty_throttle_control gdtc = { GDTC_INIT_NO_WB };
-> +	struct dirty_throttle_control gdtc = { };
->  
->  	gdtc.avail = global_dirtyable_memory();
->  	domain_dirty_limits(&gdtc);
-> @@ -895,7 +892,7 @@ unsigned long wb_calc_thresh(struct bdi_writeback *wb, unsigned long thresh)
->  
->  unsigned long wb_calc_cg_thresh(struct bdi_writeback *wb)
->  {
-> -	struct dirty_throttle_control gdtc = { GDTC_INIT_NO_WB };
-> +	struct dirty_throttle_control gdtc = { };
->  	struct dirty_throttle_control mdtc = { MDTC_INIT(wb, &gdtc) };
->  	unsigned long filepages, headroom, writeback;
->  
-> -- 
-> 2.30.0
-> 
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+Systems with a large number of CPUs may generate a large number of
+machine check records when things go seriously wrong. But Linux has
+a fixed-size buffer that can only capture a few dozen errors.
+
+Allocate space based on the number of CPUs (with a minimum value based
+on the historical fixed buffer that could store 80 records).
+
+  [ bp: Rename local var from tmpp to something more telling: gpool. ]
+
+Signed-off-by: Tony Luck <tony.luck@intel.com>
+Signed-off-by: Borislav Petkov (AMD) <bp@alien8.de>
+Reviewed-by: Sohil Mehta <sohil.mehta@intel.com>
+Reviewed-by: Avadhut Naik <avadhut.naik@amd.com>
+Link: https://lore.kernel.org/r/20240307192704.37213-1-tony.luck@intel.com
+---
+ arch/x86/kernel/cpu/mce/genpool.c | 40 ++++++++++++++++++------------
+ 1 file changed, 25 insertions(+), 15 deletions(-)
+
+diff --git a/arch/x86/kernel/cpu/mce/genpool.c b/arch/x86/kernel/cpu/mce/genpool.c
+index fbe8b61..4284749 100644
+--- a/arch/x86/kernel/cpu/mce/genpool.c
++++ b/arch/x86/kernel/cpu/mce/genpool.c
+@@ -16,14 +16,14 @@
+  * used to save error information organized in a lock-less list.
+  *
+  * This memory pool is only to be used to save MCE records in MCE context.
+- * MCE events are rare, so a fixed size memory pool should be enough. Use
+- * 2 pages to save MCE events for now (~80 MCE records at most).
++ * MCE events are rare, so a fixed size memory pool should be enough.
++ * Allocate on a sliding scale based on number of CPUs.
+  */
+-#define MCE_POOLSZ	(2 * PAGE_SIZE)
++#define MCE_MIN_ENTRIES	80
++#define MCE_PER_CPU	2
+ 
+ static struct gen_pool *mce_evt_pool;
+ static LLIST_HEAD(mce_event_llist);
+-static char gen_pool_buf[MCE_POOLSZ];
+ 
+ /*
+  * Compare the record "t" with each of the records on list "l" to see if
+@@ -118,22 +118,32 @@ int mce_gen_pool_add(struct mce *mce)
+ 
+ static int mce_gen_pool_create(void)
+ {
+-	struct gen_pool *tmpp;
++	int mce_numrecords, mce_poolsz, order;
++	struct gen_pool *gpool;
+ 	int ret = -ENOMEM;
+-
+-	tmpp = gen_pool_create(ilog2(sizeof(struct mce_evt_llist)), -1);
+-	if (!tmpp)
+-		goto out;
+-
+-	ret = gen_pool_add(tmpp, (unsigned long)gen_pool_buf, MCE_POOLSZ, -1);
++	void *mce_pool;
++
++	order = order_base_2(sizeof(struct mce_evt_llist));
++	gpool = gen_pool_create(order, -1);
++	if (!gpool)
++		return ret;
++
++	mce_numrecords = max(MCE_MIN_ENTRIES, num_possible_cpus() * MCE_PER_CPU);
++	mce_poolsz = mce_numrecords * (1 << order);
++	mce_pool = kmalloc(mce_poolsz, GFP_KERNEL);
++	if (!mce_pool) {
++		gen_pool_destroy(gpool);
++		return ret;
++	}
++	ret = gen_pool_add(gpool, (unsigned long)mce_pool, mce_poolsz, -1);
+ 	if (ret) {
+-		gen_pool_destroy(tmpp);
+-		goto out;
++		gen_pool_destroy(gpool);
++		kfree(mce_pool);
++		return ret;
+ 	}
+ 
+-	mce_evt_pool = tmpp;
++	mce_evt_pool = gpool;
+ 
+-out:
+ 	return ret;
+ }
+ 
 
