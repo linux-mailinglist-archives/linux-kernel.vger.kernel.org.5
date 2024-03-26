@@ -1,136 +1,193 @@
-Return-Path: <linux-kernel+bounces-118216-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-118217-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id C6BC088B634
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 01:37:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 0D64C88B638
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 01:38:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 047471C37226
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 00:37:17 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 31B2D1C3715B
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 00:38:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A36B31AAD3;
-	Tue, 26 Mar 2024 00:37:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7F6891B810;
+	Tue, 26 Mar 2024 00:38:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="NLb9kon9"
-Received: from out-187.mta0.migadu.com (out-187.mta0.migadu.com [91.218.175.187])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="HBAcR3BQ"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AD52C1804E
-	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 00:37:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.187
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B0AE31803E;
+	Tue, 26 Mar 2024 00:38:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711413431; cv=none; b=eabmhozWqKvAt8Om0Ase8mcihh6j5IbcB8mW8nOw+kMQE7lf/GNjbZuM7UojQTUjJbjw0xQuoGiOdEPmwvAhsrKMrWhPgZRJlQN5GOETrvDBmEWkCdZgPynFgLxEPS+kOv9UGH2eOA5qm/6VjzcFO/MRfPquKTNRqg9yDEQ9nio=
+	t=1711413509; cv=none; b=W23kq3Rx6Sb04iUuUedUBbSL9zOtqWAD6iVspBv5Vb0lrEGqkTdjpgD5yuj65D+LIZyES1a1n8GVtMQblRkd4lRxVUfcUc6yezICFk/hSN69T1ELwO6OmDjcyU0uTUpw200sUDIlZeOymgUHHdZaIqcIokZmqgjwQd+s+vkGl0w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711413431; c=relaxed/simple;
-	bh=ESqWTQ+HRZyQ87yUo/GTNFE0cDkeMSEhIHwbnTdrt8o=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=KDNvQBcwTSHkxBKTtANYpLnmxVmkVB4LV7Oprjd+VNOrf2+W+rUNKj4PAuuBoE3zEVn8EDXvf6Yl/vsufxVYqmhTUYLoomATKUwV0LROubtzNwdsKRN+EnXeSXc8JNAkad+0k/85PTir6jVk1qD4AaFDn9eJZl3fk5XzIUdnMv0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=NLb9kon9; arc=none smtp.client-ip=91.218.175.187
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Mon, 25 Mar 2024 20:36:59 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1711413427;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=K7/P1e12pVDFD60cFU8dr+GfEYW0gad9J1o/dhSRroU=;
-	b=NLb9kon9YXeMPqajYlhJHM/8psRsNlhfBLdL0kTxa+vUMeGImlECNyeyGq09Ue5Wcutxh6
-	kuHWyImi7GVqgD5GJuuGKm6U0F/3s9oQzoXGdf5FuRJtzoDtacMjGzA5sI9ReSSU6cClND
-	6KC01NNpfxLWl6Prlf+9TF2C4TQVtpA=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: "Dr. David Alan Gilbert" <dave@treblig.org>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>, 
-	Philipp Stanner <pstanner@redhat.com>, Boqun Feng <boqun.feng@gmail.com>, 
-	rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org, 
-	llvm@lists.linux.dev, Miguel Ojeda <ojeda@kernel.org>, 
-	Alex Gaynor <alex.gaynor@gmail.com>, Wedson Almeida Filho <wedsonaf@gmail.com>, 
-	Gary Guo <gary@garyguo.net>, =?utf-8?B?QmrDtnJu?= Roy Baron <bjorn3_gh@protonmail.com>, 
-	Benno Lossin <benno.lossin@proton.me>, Andreas Hindborg <a.hindborg@samsung.com>, 
-	Alice Ryhl <aliceryhl@google.com>, Alan Stern <stern@rowland.harvard.edu>, 
-	Andrea Parri <parri.andrea@gmail.com>, Will Deacon <will@kernel.org>, 
-	Peter Zijlstra <peterz@infradead.org>, Nicholas Piggin <npiggin@gmail.com>, 
-	David Howells <dhowells@redhat.com>, Jade Alglave <j.alglave@ucl.ac.uk>, 
-	Luc Maranget <luc.maranget@inria.fr>, "Paul E. McKenney" <paulmck@kernel.org>, 
-	Akira Yokosawa <akiyks@gmail.com>, Daniel Lustig <dlustig@nvidia.com>, 
-	Joel Fernandes <joel@joelfernandes.org>, Nathan Chancellor <nathan@kernel.org>, 
-	Nick Desaulniers <ndesaulniers@google.com>, kent.overstreet@gmail.com, 
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, elver@google.com, Mark Rutland <mark.rutland@arm.com>, 
-	Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
-	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>, 
-	Catalin Marinas <catalin.marinas@arm.com>, linux-arm-kernel@lists.infradead.org, 
-	linux-fsdevel@vger.kernel.org
-Subject: Re: [WIP 0/3] Memory model and atomic API in Rust
-Message-ID: <vevxfv67ureybf7sjwfxzdvl4tt62khyn2gfzn7o74ke2m554s@xxddzz6nurbn>
-References: <20240322233838.868874-1-boqun.feng@gmail.com>
- <s2jeqq22n5ef5jknaps37mfdjvuqrns4w7i22qp2r7r4bzjqs2@my3eyxoa3pl3>
- <CAHk-=whY5A=S=bLwCFL=043DoR0TTgSDUmfPDx2rXhkk3KANPQ@mail.gmail.com>
- <u2suttqa4c423q4ojehbucaxsm6wguqtgouj7vudp55jmuivq3@okzfgryarwnv>
- <CAHk-=whkQk=zq5XiMcaU3xj4v69+jyoP-y6Sywhq-TvxSSvfEA@mail.gmail.com>
- <c51227c9a4103ad1de43fc3cda5396b1196c31d7.camel@redhat.com>
- <CAHk-=wjP1i014DGPKTsAC6TpByC3xeNHDjVA4E4gsnzUgJBYBQ@mail.gmail.com>
- <bu3seu56hfozsvgpdqjarbdkqo3lsjfc4lhluk5oj456xmrjc7@lfbbjxuf4rpv>
- <CAHk-=wgLGWBXvNODAkzkVHEj7zrrnTq_hzMft62nKNkaL89ZGQ@mail.gmail.com>
- <ZgIRXL5YM2AwBD0Y@gallifrey>
+	s=arc-20240116; t=1711413509; c=relaxed/simple;
+	bh=JCGKDo3dviFF4SlEAVy67T1MafCPW0V3lPzG+X/B7gQ=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=AOiJMwjXaU/WEwIPNey8v4yGnrQDqc1WDpJCbssrLe33/KTNBOhmJO1goZ/i2GzzP7b9zpaQNebsSccjgsk12Qjx8XJLkDITfWUIc0pPCafiVEDVq/k5KCop+70MXbfQsB4iolOKKl2Ihp48+BoFIZCG2poc9szjvbs5B2bNXCA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=HBAcR3BQ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 7CBF1C433C7;
+	Tue, 26 Mar 2024 00:38:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1711413509;
+	bh=JCGKDo3dviFF4SlEAVy67T1MafCPW0V3lPzG+X/B7gQ=;
+	h=From:Date:Subject:To:Cc:Reply-To:From;
+	b=HBAcR3BQ76GYA3DaaZNgK1xtttAsCiCvr9uTnmhNlpQ/2R8wZf6bSzTHlkBFc8VzY
+	 tNSG07+nNn1VBY/VaOebnGht9puv8CExdPzfuH6zuUCtqQDodLl4L+ETCe+cW3wPbQ
+	 DwGPnMsuqFNGBh4aARKb0K8lyRf68RBlxcr5LwgBGIWFK/l1D4QncuGRQNkozfSpQ8
+	 YL1pV/EPqf+Gu+Nh7EVWEOOejzoPU/A1yjKbt6L833E2BR0dusjCDxPYMLjd3W8NLU
+	 2l+fNPIfMH1DrX3TXxVlINpOkBws7MsBTpilloqDU8qL/VTOotDFMtDczzoXvdjzEz
+	 Ye096k59mHJMQ==
+Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 714D0C6FD1F;
+	Tue, 26 Mar 2024 00:38:29 +0000 (UTC)
+From: John Bauer via B4 Relay <devnull+johnebgood.securitylive.com@kernel.org>
+Date: Mon, 25 Mar 2024 19:38:22 -0500
+Subject: [PATCH] uvcvideo: Remo OBSBOT quirk fix for incorrect relative min
+ pan/tilt/zoom speeds
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZgIRXL5YM2AwBD0Y@gallifrey>
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20240325-obsbot-quirk-fix-relative-ptz-speed-v1-1-0eb1387d98c7@securitylive.com>
+X-B4-Tracking: v=1; b=H4sIAP0YAmYC/x2NwQrCMBAFf6Xs2YUYW7D+inhIzWtdlCbuxiKW/
+ ruhx4FhZiWDCowuzUqKRUzSXOF4aOj+CPMElliZvPOtO/mO02BDKvz+iD55lC8rXqHIAs7lx5a
+ ByH1Ai7Hr49kFqqWsqOZ+ud627Q+HVMGsdQAAAA==
+To: Laurent Pinchart <laurent.pinchart@ideasonboard.com>, 
+ Mauro Carvalho Chehab <mchehab@kernel.org>
+Cc: linux-media@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ linh.tp.vu@gmail.com, ribalda@chromium.org, soyer@irl.hu, 
+ John Bauer <john@oxt.co>, John Bauer <johnebgood@securitylive.com>
+X-Mailer: b4 0.13.0
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1711413509; l=4420;
+ i=johnebgood@securitylive.com; s=20240325; h=from:subject:message-id;
+ bh=EC3DcD5yUB9YFZIy5yjNz83GEhb0RRD1YpnYxRcoesY=;
+ b=7CLWWKuRqGJlsL0tB7PQ5mZVY2XRp5a0sqsaeYhEJB2qAQscB+U710fOIiceS7k1Niq4Za3Gj
+ GMHr47YiVYOCaod5ydoGwYFXrzcNfyYcZMfMv5GIJ/U7BcOlaB0xkj1
+X-Developer-Key: i=johnebgood@securitylive.com; a=ed25519;
+ pk=RN31Fmrxbidp1TwtZGNmQwTDjUWMPnewQJfA/ug2P9E=
+X-Endpoint-Received: by B4 Relay for johnebgood@securitylive.com/20240325
+ with auth_id=143
+X-Original-From: John Bauer <johnebgood@securitylive.com>
+Reply-To: johnebgood@securitylive.com
 
-On Tue, Mar 26, 2024 at 12:05:48AM +0000, Dr. David Alan Gilbert wrote:
-> * Linus Torvalds (torvalds@linux-foundation.org) wrote:
-> 
-> <snip>
-> 
-> > IOW, the whole access size problem that Boqun described is
-> > *inherently* tied to the fact that the C++ and Rust memory model is
-> > badly designed from the wrong principles.
-> > 
-> > Instead of designing it as a "this is an atomic object that you can do
-> > these operations on", it should have been "this is an atomic access,
-> > and you can use this simple object model to have the compiler generate
-> > the accesses for you".
-> 
-> Isn't one of the aims of the Rust/C++ idea that you can't forget to access
-> a shared piece of data atomically?
-> 
-> If you want to have 'atomic accesses' explicitly, how do you tell the compiler
-> what you can use them on, and when it should stop you mixing them with
-> normal accesses on the same object?
+From: John Bauer <johnebgood@securitylive.com>
 
-"can't forget to access data atomically" - that's only half of it. And
-atomic accesses loads/stores are not a thing under the hood, they're
-just loads and stores (possibly, but not necessarily, with memory
-barriers).
+The OBSBOT series of cameras misreports the minimum relative
+pan_speed, tilt_speed and zoom_continuous v4l2 controls resulting
+in the inability to control the camera with finesse with an analog
+stick or other programmatic methods. This patch applies to all
+Remo (OBSBOT) vendor cameras with the vendor ID of 0x3564. If the
+vendor fixes the firmware this behavior should still remain valid.
+With this broad vendor fix when new devices are released the kernel
+module won't need to be modified. When the vendor fixes the firmware the
+device list can be modified with finer grained device filters.
 
-The other half is at the _source_ level you don't want to treat accesses
-to volatiles/atomics like accesses to normal variables, you really want
-those to be explicit, and not look like normal variable accesses.
+Signed-off-by: John Bauer <johnebgood@securitylive.com>
+---
+If the Remo/OBSBOT vendor filter is considered too broad I will track down 
+all of the current product ID's and update the device list. It's currently 
+unknown if the vendor is pursuing a fix this issue; this issue has been 
+reported and known to them for over a year. Their only support channel 
+is their Facebook group. 
+---
+ drivers/media/usb/uvc/uvc_ctrl.c   | 27 ++++++++++++++++++++++++++-
+ drivers/media/usb/uvc/uvc_driver.c |  8 ++++++++
+ drivers/media/usb/uvc/uvcvideo.h   |  1 +
+ 3 files changed, 35 insertions(+), 1 deletion(-)
 
-std:atomic_int is way better than volatile in the sense that it's not a
-barely specified mess, but adding operator overloading was just
-gratuitious and unnecessary.
+diff --git a/drivers/media/usb/uvc/uvc_ctrl.c b/drivers/media/usb/uvc/uvc_ctrl.c
+index e59a463c2761..1951e06527cf 100644
+--- a/drivers/media/usb/uvc/uvc_ctrl.c
++++ b/drivers/media/usb/uvc/uvc_ctrl.c
+@@ -1322,10 +1322,23 @@ static int __uvc_query_v4l2_ctrl(struct uvc_video_chain *chain,
+ 		break;
+ 	}
+ 
+-	if (ctrl->info.flags & UVC_CTRL_FLAG_GET_MIN)
++	if (ctrl->info.flags & UVC_CTRL_FLAG_GET_MIN) {
+ 		v4l2_ctrl->minimum = mapping->get(mapping, UVC_GET_MIN,
+ 				     uvc_ctrl_data(ctrl, UVC_CTRL_DATA_MIN));
+ 
++		if (chain->dev->quirks & UVC_QUIRK_OBSBOT_MIN_SETTINGS) {
++			switch (v4l2_ctrl->id) {
++			case V4L2_CID_ZOOM_CONTINUOUS:
++			case V4L2_CID_PAN_SPEED:
++			case V4L2_CID_TILT_SPEED:
++				v4l2_ctrl->minimum = -1 * mapping->get(mapping, UVC_GET_MAX,
++						     uvc_ctrl_data(ctrl, UVC_CTRL_DATA_MAX));
++			default:
++				break;
++			}
++		}
++	}
++
+ 	if (ctrl->info.flags & UVC_CTRL_FLAG_GET_MAX)
+ 		v4l2_ctrl->maximum = mapping->get(mapping, UVC_GET_MAX,
+ 				     uvc_ctrl_data(ctrl, UVC_CTRL_DATA_MAX));
+@@ -1914,6 +1927,18 @@ int uvc_ctrl_set(struct uvc_fh *handle,
+ 				   uvc_ctrl_data(ctrl, UVC_CTRL_DATA_MIN));
+ 		max = mapping->get(mapping, UVC_GET_MAX,
+ 				   uvc_ctrl_data(ctrl, UVC_CTRL_DATA_MAX));
++
++		if (chain->dev->quirks & UVC_QUIRK_OBSBOT_MIN_SETTINGS) {
++			switch (xctrl->id) {
++			case V4L2_CID_ZOOM_CONTINUOUS:
++			case V4L2_CID_PAN_SPEED:
++			case V4L2_CID_TILT_SPEED:
++				min = max * -1;
++			default:
++				break;
++			}
++		}
++
+ 		step = mapping->get(mapping, UVC_GET_RES,
+ 				    uvc_ctrl_data(ctrl, UVC_CTRL_DATA_RES));
+ 		if (step == 0)
+diff --git a/drivers/media/usb/uvc/uvc_driver.c b/drivers/media/usb/uvc/uvc_driver.c
+index bbd90123a4e7..d4edc1adb11b 100644
+--- a/drivers/media/usb/uvc/uvc_driver.c
++++ b/drivers/media/usb/uvc/uvc_driver.c
+@@ -3120,6 +3120,14 @@ static const struct usb_device_id uvc_ids[] = {
+ 	  .bInterfaceSubClass	= 1,
+ 	  .bInterfaceProtocol	= 0,
+ 	  .driver_info		= UVC_INFO_META(V4L2_META_FMT_D4XX) },
++	/* OBSBOT pan, tilt, zoom min settings quirk */
++	{ .match_flags		= USB_DEVICE_ID_MATCH_VENDOR
++				| USB_DEVICE_ID_MATCH_INT_INFO,
++	  .idVendor		= 0x3564,
++	  .bInterfaceClass	= USB_CLASS_VIDEO,
++	  .bInterfaceSubClass	= 1,
++	  .bInterfaceProtocol	= 0,
++	  .driver_info		= UVC_INFO_QUIRK(UVC_QUIRK_OBSBOT_MIN_SETTINGS) },
+ 	/* Generic USB Video Class */
+ 	{ USB_INTERFACE_INFO(USB_CLASS_VIDEO, 1, UVC_PC_PROTOCOL_UNDEFINED) },
+ 	{ USB_INTERFACE_INFO(USB_CLASS_VIDEO, 1, UVC_PC_PROTOCOL_15) },
+diff --git a/drivers/media/usb/uvc/uvcvideo.h b/drivers/media/usb/uvc/uvcvideo.h
+index 6fb0a78b1b00..0e2f083a5c0e 100644
+--- a/drivers/media/usb/uvc/uvcvideo.h
++++ b/drivers/media/usb/uvc/uvcvideo.h
+@@ -73,6 +73,7 @@
+ #define UVC_QUIRK_FORCE_Y8		0x00000800
+ #define UVC_QUIRK_FORCE_BPP		0x00001000
+ #define UVC_QUIRK_WAKE_AUTOSUSPEND	0x00002000
++#define UVC_QUIRK_OBSBOT_MIN_SETTINGS 0x00004000
+ 
+ /* Format flags */
+ #define UVC_FMT_FLAG_COMPRESSED		0x00000001
 
-This is a theme with C++ - they add a _ton_ of magic to make things
-concise and pretty, but you have to understand in intimate detail what
-all that magic is doing or you're totally fucked.
+---
+base-commit: e8f897f4afef0031fe618a8e94127a0934896aba
+change-id: 20240325-obsbot-quirk-fix-relative-ptz-speed-9ae4ef59d80a
 
-std::atomic_int makes it such that just changing a single line of code
-in a single location in your program will change the semantics of your
-_entire_ program and the only obserable result will be that it's faster
-but a ticking time bomb because you just introduced a ton of races.
+Best regards,
+-- 
+John Bauer <johnebgood@securitylive.com>
 
-With Rust - I honestly haven't looked at whether they added operator
-overlaoding for their atomics, but it's _much_ less of a concern because
-changing the type to the non-atomic version means your program won't
-compile if it's now racy.
+
 
