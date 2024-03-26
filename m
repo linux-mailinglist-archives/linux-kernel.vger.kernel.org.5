@@ -1,118 +1,172 @@
-Return-Path: <linux-kernel+bounces-120067-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-120073-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 58B0B88D122
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 23:38:26 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 39D7988D13A
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 23:40:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B3BF62C60CF
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 22:38:24 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 96862B25BEC
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 22:40:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3CC9513E3E3;
-	Tue, 26 Mar 2024 22:37:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AE9DB13E888;
+	Tue, 26 Mar 2024 22:38:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="o/fPq/5S"
-Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="pGx4NCTG"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D25B413DDAA;
-	Tue, 26 Mar 2024 22:37:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.23.249
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A3EF11CAAE;
+	Tue, 26 Mar 2024 22:38:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711492663; cv=none; b=kVNySydMHaF084HoKtzfapQU4CTjp6vd/PRRZqefsPzl4kjgo8I+Ssex10Esl2GwI6ugtPbgIsCoSuB680uiFmBug0iay3Z7NEgOKTA1LuUwtcYTF/taDbO+/l+G8OUxaZsYwIDJ1btghwWejV55pPS5ZgjLuXzR+HaEoBhpqV4=
+	t=1711492718; cv=none; b=PeJX4x6FprfZnO5m1b3rffLvUdtKwkVx5hHXp+Tcdg8vrFTtXYTxHReWa22CJQTofV57JJzlAINibmogxo6bLXG3N0mHldY4cQsJQKwh6td57gqDvf9UGAu72V5+YwGINVCY9rHe7g/qo5Vq5gbdx4SKJfJ903G7F7CdgONNd3U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711492663; c=relaxed/simple;
-	bh=vtHSBbG2DXeQb1yPN/j/c2M0hMX/XtE+AuOAzok3w6E=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=FaXQnKHkn0lWFT6cw77XDGhn4UyMjarBUC80fF44dvQokSJwBL3zSUHSGe3/VWQCnbQ4yRA1vKu92sM/6lNE811ZFCsCfNitRTqYm0GxeYY/sXOhfTwnC03rprQnVxqb1IHBYk0C1Hue12NgI7Emgw3yxnYeY8MRkEeDFjJptSI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=o/fPq/5S; arc=none smtp.client-ip=198.47.23.249
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-	by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 42QMbXD1092778;
-	Tue, 26 Mar 2024 17:37:33 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1711492653;
-	bh=/m8GoNEQsRLxqh9NQPyFQwvDN6J319O/acSr4HwVOVY=;
-	h=From:To:CC:Subject:Date:In-Reply-To:References;
-	b=o/fPq/5SSQ+VArFeDEix1gk/agcwEhg72ojykz+sOWTAgh6n/3WZh5/h4eJCn7JVJ
-	 t42QOhpdioZoPZi76QLJAb1C7doWikG70nA649tXN6eKUgry4hKyPLFz51Qd87r8Yw
-	 oyacQxK8IFs0d/muIS+OEFLJzW0TBZRGW1WYjQF0=
-Received: from DLEE112.ent.ti.com (dlee112.ent.ti.com [157.170.170.23])
-	by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 42QMbXvs045399
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Tue, 26 Mar 2024 17:37:33 -0500
-Received: from DLEE109.ent.ti.com (157.170.170.41) by DLEE112.ent.ti.com
- (157.170.170.23) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Tue, 26
- Mar 2024 17:37:33 -0500
-Received: from fllvsmtp8.itg.ti.com (10.64.41.158) by DLEE109.ent.ti.com
- (157.170.170.41) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Tue, 26 Mar 2024 17:37:33 -0500
-Received: from fllvsmtp8.itg.ti.com ([10.249.42.149])
-	by fllvsmtp8.itg.ti.com (8.15.2/8.15.2) with ESMTP id 42QMbVmb109669;
-	Tue, 26 Mar 2024 17:37:32 -0500
-From: Andrew Davis <afd@ti.com>
-To: Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski
-	<krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Santosh Shilimkar <ssantosh@kernel.org>, Nishanth Menon <nm@ti.com>,
-        Vignesh
- Raghavendra <vigneshr@ti.com>
-CC: <devicetree@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, Andrew Davis <afd@ti.com>
-Subject: [PATCH 4/4] dt-bindings: arm: keystone: Remove ti,system-reboot-controller property
-Date: Tue, 26 Mar 2024 17:37:30 -0500
-Message-ID: <20240326223730.54639-5-afd@ti.com>
+	s=arc-20240116; t=1711492718; c=relaxed/simple;
+	bh=SPB6L/ctChhLveaXdYBbCjCt9oobwLX1bdGDBwGOoO0=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=Un9hgeGrMF/OiPcwJCWsFpvigripAziA4Gwo8NKYXHCuZRwCqj9ZOnexbEnLzeM9UBuJ3hMjTo32k1IeUU0SzV8bClgFuXtRqodYSBPHI9slCYLGuOwifNBhid4d1cdgSTFDW4BKWQjdPSodclvsRdKgBJjRmPRKLQX3xWvPNXM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=pGx4NCTG; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C948DC433C7;
+	Tue, 26 Mar 2024 22:38:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1711492718;
+	bh=SPB6L/ctChhLveaXdYBbCjCt9oobwLX1bdGDBwGOoO0=;
+	h=From:To:Cc:Subject:Date:From;
+	b=pGx4NCTG2LWhkmyMjnIr7QzormuwKJKb8jduPcvEr9fHh9kO7VEnTBmioJRHspeDT
+	 H5YNlaoP6D7Q2ZgNhshKsS/BmV6fY0stqvvKrjUKukKt4t3PljRcdOcYW/I+80sDbg
+	 R89SGRiBcBON/LwB2ujoF+tWhQ32eqIRVBcCpCVeYkax6D8uqqRGex5bSxoqmAZeGP
+	 jXOGpr6Ob6HCEsFvy948o0gSqCxIS6NpNrU2aJMXy9NSc5Ih2WSgU5M/QN5d0Wk4Em
+	 AUaltyTlXALh0GnoMXcZLFVs6K3I9Nov1ese+LhHwPhrOpJpNBoK+83Fr966hvuTK7
+	 Zkic1AdBfrkmw==
+From: Arnd Bergmann <arnd@kernel.org>
+To: llvm@lists.linux.dev
+Cc: Arnd Bergmann <arnd@arndb.de>,
+	Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+	Claudiu Manoil <claudiu.manoil@nxp.com>,
+	Vladimir Oltean <vladimir.oltean@nxp.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Saeed Mahameed <saeedm@nvidia.com>,
+	Leon Romanovsky <leon@kernel.org>,
+	Ariel Elior <aelior@marvell.com>,
+	Manish Chopra <manishc@marvell.com>,
+	Hans de Goede <hdegoede@redhat.com>,
+	=?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
+	Maximilian Luz <luzmaximilian@gmail.com>,
+	Hannes Reinecke <hare@kernel.org>,
+	"Martin K. Petersen" <martin.petersen@oracle.com>,
+	Helge Deller <deller@gmx.de>,
+	Masahiro Yamada <masahiroy@kernel.org>,
+	Nathan Chancellor <nathan@kernel.org>,
+	Nicolas Schier <nicolas@fjasle.eu>,
+	Johannes Berg <johannes@sipsolutions.net>,
+	Jaroslav Kysela <perex@perex.cz>,
+	Takashi Iwai <tiwai@suse.com>,
+	Nick Desaulniers <ndesaulniers@google.com>,
+	Bill Wendling <morbo@google.com>,
+	Justin Stitt <justinstitt@google.com>,
+	linux-input@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	netdev@vger.kernel.org,
+	linux-rdma@vger.kernel.org,
+	platform-driver-x86@vger.kernel.org,
+	linux-scsi@vger.kernel.org,
+	linux-fbdev@vger.kernel.org,
+	dri-devel@lists.freedesktop.org,
+	linux-kbuild@vger.kernel.org,
+	linuxppc-dev@lists.ozlabs.org,
+	alsa-devel@alsa-project.org,
+	linux-sound@vger.kernel.org
+Subject: [PATCH 0/9] enabled -Wformat-truncation for clang
+Date: Tue, 26 Mar 2024 23:37:59 +0100
+Message-Id: <20240326223825.4084412-1-arnd@kernel.org>
 X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20240326223730.54639-1-afd@ti.com>
-References: <20240326223730.54639-1-afd@ti.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
-This property was only ever used in one device. It is no longer needed as
-what it signaled is now default. Remove this unneeded/unused property.
+From: Arnd Bergmann <arnd@arndb.de>
 
-Signed-off-by: Andrew Davis <afd@ti.com>
----
- Documentation/devicetree/bindings/arm/keystone/ti,sci.yaml | 5 -----
- 1 file changed, 5 deletions(-)
+With randconfig build testing, I found only eight files that produce
+warnings with clang when -Wformat-truncation is enabled. This means
+we can just turn it on by default rather than only enabling it for
+"make W=1".
 
-diff --git a/Documentation/devicetree/bindings/arm/keystone/ti,sci.yaml b/Documentation/devicetree/bindings/arm/keystone/ti,sci.yaml
-index c24ad0968f3ef..7f06b10802449 100644
---- a/Documentation/devicetree/bindings/arm/keystone/ti,sci.yaml
-+++ b/Documentation/devicetree/bindings/arm/keystone/ti,sci.yaml
-@@ -61,10 +61,6 @@ properties:
-   mboxes:
-     minItems: 2
- 
--  ti,system-reboot-controller:
--    description: Determines If system reboot can be triggered by SoC reboot
--    type: boolean
--
-   ti,host-id:
-     $ref: /schemas/types.yaml#/definitions/uint32
-     description: |
-@@ -94,7 +90,6 @@ examples:
-   - |
-     pmmc: system-controller@2921800 {
-       compatible = "ti,k2g-sci";
--      ti,system-reboot-controller;
-       mbox-names = "rx", "tx";
-       mboxes = <&msgmgr 5 2>,
-                <&msgmgr 0 0>;
+Unfortunately, gcc produces a lot more warnings when the option
+is enabled, so it's not yet possible to turn it on both both
+compilers.
+
+I hope that the patches can get picked up by platform maintainers
+directly, so the final patch can go in later on.
+
+     Arnd
+
+Arnd Bergmann (9):
+  fbdev: shmobile: fix snprintf truncation
+  enetc: avoid truncating error message
+  qed: avoid truncating work queue length
+  mlx5: avoid truncating error message
+  surface3_power: avoid format string truncation warning
+  Input: IMS: fix printf string overflow
+  scsi: mylex: fix sysfs buffer lengths
+  ALSA: aoa: avoid false-positive format truncation warning
+  kbuild: enable -Wformat-truncation on clang
+
+ drivers/input/misc/ims-pcu.c                  |  4 ++--
+ drivers/net/ethernet/freescale/enetc/enetc.c  |  2 +-
+ .../ethernet/mellanox/mlx5/core/esw/bridge.c  |  2 +-
+ drivers/net/ethernet/qlogic/qed/qed_main.c    |  9 ++++---
+ drivers/platform/surface/surface3_power.c     |  2 +-
+ drivers/scsi/myrb.c                           | 20 ++++++++--------
+ drivers/scsi/myrs.c                           | 24 +++++++++----------
+ drivers/video/fbdev/sh_mobile_lcdcfb.c        |  2 +-
+ scripts/Makefile.extrawarn                    |  2 ++
+ sound/aoa/soundbus/i2sbus/core.c              |  2 +-
+ 10 files changed, 35 insertions(+), 34 deletions(-)
+
 -- 
 2.39.2
+
+Cc: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Cc: Claudiu Manoil <claudiu.manoil@nxp.com>
+Cc: Vladimir Oltean <vladimir.oltean@nxp.com>
+Cc: Jakub Kicinski <kuba@kernel.org>
+Cc: Saeed Mahameed <saeedm@nvidia.com>
+Cc: Leon Romanovsky <leon@kernel.org>
+Cc: Ariel Elior <aelior@marvell.com>
+Cc: Manish Chopra <manishc@marvell.com>
+Cc: Hans de Goede <hdegoede@redhat.com>
+Cc: "Ilpo Järvinen" <ilpo.jarvinen@linux.intel.com>
+Cc: Maximilian Luz <luzmaximilian@gmail.com>
+Cc: Hannes Reinecke <hare@kernel.org>
+Cc: "Martin K. Petersen" <martin.petersen@oracle.com>
+Cc: Helge Deller <deller@gmx.de>
+Cc: Masahiro Yamada <masahiroy@kernel.org>
+Cc: Nathan Chancellor <nathan@kernel.org>
+Cc: Nicolas Schier <nicolas@fjasle.eu>
+Cc: Johannes Berg <johannes@sipsolutions.net>
+Cc: Jaroslav Kysela <perex@perex.cz>
+Cc: Takashi Iwai <tiwai@suse.com>
+Cc: Nick Desaulniers <ndesaulniers@google.com>
+Cc: Bill Wendling <morbo@google.com>
+Cc: Justin Stitt <justinstitt@google.com>
+Cc: linux-input@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
+Cc: netdev@vger.kernel.org
+Cc: linux-rdma@vger.kernel.org
+Cc: platform-driver-x86@vger.kernel.org
+Cc: linux-scsi@vger.kernel.org
+Cc: linux-fbdev@vger.kernel.org
+Cc: dri-devel@lists.freedesktop.org
+Cc: linux-kbuild@vger.kernel.org
+Cc: linuxppc-dev@lists.ozlabs.org
+Cc: alsa-devel@alsa-project.org
+Cc: linux-sound@vger.kernel.org
+Cc: llvm@lists.linux.dev
 
 
