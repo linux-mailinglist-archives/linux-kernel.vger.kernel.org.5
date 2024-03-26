@@ -1,40 +1,40 @@
-Return-Path: <linux-kernel+bounces-118361-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-118332-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1939388B97F
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 05:46:57 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9893E88B873
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 04:27:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 702B7B2286E
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 04:46:54 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id F21F0B22FC2
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 03:27:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 05BE174BEB;
-	Tue, 26 Mar 2024 04:46:46 +0000 (UTC)
-Received: from CHN02-SH0-obe.outbound.protection.partner.outlook.cn (mail-sh0chn02on2114.outbound.protection.partner.outlook.cn [139.219.146.114])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B9D4E129A69;
+	Tue, 26 Mar 2024 03:27:09 +0000 (UTC)
+Received: from CHN02-SH0-obe.outbound.protection.partner.outlook.cn (mail-sh0chn02on2094.outbound.protection.partner.outlook.cn [139.219.146.94])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 134385B1E6;
-	Tue, 26 Mar 2024 04:46:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=139.219.146.114
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E3FE11292D9;
+	Tue, 26 Mar 2024 03:27:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=139.219.146.94
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711428405; cv=fail; b=oLRYmMaXmI3hK4L3Ni8A5zwsWHv+ghTGVnPWV/8tqayg+1X+UjYAK6yE7gaYcfA4bOB80XavBXEQH4WELIuEz1P87vwNtpIriR45lHzR8lF8TykjKEA+eOPZQ8AfGcXcyLQtPvfk55nBVoCQhK5XbQpW2rFX5JZjOzLV3SpEk2w=
+	t=1711423629; cv=fail; b=e4LTVCW5nBbRdHvcGkwhXWsrBN38HHU2EPbUOBe4VLNMlRGopVaWIIxidul/NqRRhgSBcn1IQ9YW1K+uaZCcrvCq+5hooKHVzcXX1o9ydwOzCyrrtqJOhxTUYMMIxOFRK3A6WD7soookVWuedr3KLZAhLr0KWTylv6gV1Sj/7mw=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711428405; c=relaxed/simple;
-	bh=7vP3Gc+Ho6xyy1bUk973u2WS+gFUP7mWhupOiH231tg=;
+	s=arc-20240116; t=1711423629; c=relaxed/simple;
+	bh=ZzzORs4N4TpCL/GzR7EeRCVzRTVCpTvMUqWC1YCSFUY=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=b7bpbpxRN9x3k1UrU5X9AFFwBDLFYUL6YEA+svPCsAji+I+Mj1p0wKJQD3WtyuQzr9GgLii8ILhMgzStt9TOEUdAZCoALAnLJUIjroFPS+Tt7rkQ33GECruPV+ohEuoQmBI/CHEjffxlzQDHl5zcfZwJG9PU4hby8KFAVcstTEg=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=starfivetech.com; spf=pass smtp.mailfrom=starfivetech.com; arc=fail smtp.client-ip=139.219.146.114
+	 Content-Type:MIME-Version; b=JN3lAyjv6+TEND0L/Y8W1q0xNuGlEbVOZezh/V48n4a6MTys8uyAk7zgiRFcmngTDVF2JTYlHQqO87mjbKROoalXTP2rIpAcU6gYXnvJ3159fx5SqEQTJdVsZtzi5LlnmucCMR65XRaxsJQO9HcJMJ/RhTtz7+dsyg4b+jjQhaU=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=starfivetech.com; spf=pass smtp.mailfrom=starfivetech.com; arc=fail smtp.client-ip=139.219.146.94
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=starfivetech.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=starfivetech.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Z2XAinq8k9VhKKeYMPe8AZHDP21noauL0ivLKUcO33cRzUsI01FaeekIPv5WFCSxlDGrDrsz9nAV0gSKHWGCYmja3z8Y+C8sbXgQyopp9rXibNeHRMlS52+XY2mzMCwR4kc2MjY8sqje5y+KhZS8qJ6Ge01w0pjzxRfewUeC8D9cVJcfSCXXFMi1ABpCBVZb4IYfTmSrrgadvVcNkKCEYo4oG3zuSxXBIXG+ZKDH5+OVNn6N6Sh3DEkaWbE8D6UMQ50kqicNx/PIrDTeEc7qC3KS5xYHhLDIPPfC/bKAivQdimdPw3cf3Izyb3XaWDOq1v2IpKYEEy13t0ahMwzKDA==
+ b=ChTprVMLY2HcEkbXuip78PCM8q6Yl/0579SW6J0tXYOSjCftfowhg+Qq6E8axmvl3Trmto56qYII8z15D5vDl+p5nqrPsfvjV52RhR4osfE7v3VxNLN93vn3n000R7JyGmVMcS19YjEhXzaDpLBu2fiNsfVHk3Wu4jM3gVlNT/thYNIxdnDmr7C0aCwMNWTzbfy2zD98LSlLZr/vBKtHpgQVQLSl5vLY7oPzI4e5+inPj3ILaIjEm3SKX5mja00yc9iLyiNl8CpwId9Xb5rCDOAodpgpIhdStyisBm37jR2apE68tgtlzKlluCPQnpw1eaiALM9u6Pnv+Fqkb8+EnQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=C1y4Od0XhZZgH2wkf0U7a9cpksgvilO8PHN0vxOHNkk=;
- b=Tjzb+LdTerc0HJ4yxxu2n7rkvCaIJj7Qsh7LiMJ+LrUpqEc1ZfYIop2KP4hPoEIdU60/WYPkgSckihQAc4h+yW9Hb01XQA4PnfLzQa1dki0njss/Xon5HanEw2vqXXjhGX669On9CoUw0+kpaIqLpPwXHFT/1tBBhgOjyv/mp1Yav4wDYacAJ7JjsVPVxgkBYOjlakALikp1qytJWXW3MvG+PNgHUW/z5HHZaLQM9OSqOrzx8nmSgR+GAO7ZbF8YnHddnxxJ2uI/ZxF+7JK/79ReKFUhkiZq2R0lf9Xi0mYKQNfrlkvm9LYFZAoTgE0lbzCHNbkpdX8X1R2hRY3EXw==
+ bh=ucD0oXFf1SvC7cqQnsM+UhxRRmuGkb3qGoOijnPu3/E=;
+ b=ZCT9WWCbh4e5l4/V0894OEWyO0BvHCrPx3ghRCzXCk2WItd2IKcSnA9R9rHx0dgHIlYtpYTe7q1tA4GZnvK17ufv4R1E9m11NJahzhCl4Zpj/wS5ZniR+m/zjjjR1TheTonfNl6bAnyuVX4wY4rMDPgyFdskHLNXxNi/3XccjiwF8KlUoPuZf/ZsmCYThT6xTXNZKqzYeAsmdNVde8d+cm32UfcKJrviQ+6JLhT0zlfOpTgiHgBif0xwzNmQesosp2WKFeaEuqMia5MrD83Ksosg65ikbopIaeU2SEAqMdgK6XHmAe0p6J16i4Im82UHDV8BiHfzeTMHot7klPDtag==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=starfivetech.com; dmarc=pass action=none
  header.from=starfivetech.com; dkim=pass header.d=starfivetech.com; arc=none
@@ -44,11 +44,11 @@ Received: from SHXPR01MB0671.CHNPR01.prod.partner.outlook.cn
  (2406:e500:c311:25::10) by SHXPR01MB0622.CHNPR01.prod.partner.outlook.cn
  (2406:e500:c311:1f::13) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.30; Tue, 26 Mar
- 2024 03:12:47 +0000
+ 2024 03:12:48 +0000
 Received: from SHXPR01MB0671.CHNPR01.prod.partner.outlook.cn
  ([fe80::b0af:4c9d:2058:a344]) by
  SHXPR01MB0671.CHNPR01.prod.partner.outlook.cn ([fe80::b0af:4c9d:2058:a344%6])
- with mapi id 15.20.7249.041; Tue, 26 Mar 2024 03:12:47 +0000
+ with mapi id 15.20.7249.041; Tue, 26 Mar 2024 03:12:48 +0000
 From: Changhuang Liang <changhuang.liang@starfivetech.com>
 To: Mauro Carvalho Chehab <mchehab@kernel.org>,
 	Greg Kroah-Hartman <gregkh@linuxfoundation.org>
@@ -62,9 +62,9 @@ Cc: Hans Verkuil <hverkuil-cisco@xs4all.nl>,
 	linux-media@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	linux-staging@lists.linux.dev
-Subject: [PATCH v1 1/4] media: cadence: csi2rx: Support runtime PM
-Date: Mon, 25 Mar 2024 20:12:34 -0700
-Message-Id: <20240326031237.25331-2-changhuang.liang@starfivetech.com>
+Subject: [PATCH v1 2/4] media: cadence: csi2rx: Add suspend and resume support
+Date: Mon, 25 Mar 2024 20:12:35 -0700
+Message-Id: <20240326031237.25331-3-changhuang.liang@starfivetech.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20240326031237.25331-1-changhuang.liang@starfivetech.com>
 References: <20240326031237.25331-1-changhuang.liang@starfivetech.com>
@@ -81,176 +81,75 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
 X-MS-TrafficTypeDiagnostic: SHXPR01MB0671:EE_|SHXPR01MB0622:EE_
-X-MS-Office365-Filtering-Correlation-Id: dfa20edf-6693-4f3b-c6d1-08dc4d429c7a
+X-MS-Office365-Filtering-Correlation-Id: 49b94b62-5d0f-4486-5675-08dc4d429d51
 X-MS-Exchange-SenderADCheck: 1
 X-Microsoft-Antispam: BCL:0;
 X-Microsoft-Antispam-Message-Info:
-	4dnXPHYogcaxAhlXTfsp9cNKtOxik/sUYU8usq7GBIScUCyGcqdfiBFfeknLFN0tuVjf3ZQyGq1YXAjL7Nmro+yqw5QYixPa7trLZIh54snzEFE7xNfvFoskLPcazvp4UZfZVhE3XZqa81/OcBTubUKudQm9cZ7fxlE3VAIVY2KttNg7643mp6YEc779vfL5HWuKvjcVyAlp54cJ8Wa7DNx91gFCN1gFt/EpLKWLRGtZJfVLx/PycMlfJzf1ijCaL207HyqegPYAqC6E34NEn3d50Ll39EN+18j2S5asMeKInOSLBLxYblYVgqBsQ0PTx6AAYLDygih6PGrViOBmKT2Kzg4uuSydT2LNhXA/eQ1Y5ORHn+RTt6j4NQYgDZoS3PanqHNlyf2UbawyGHRLmrvZtQ2N+vpQZADUo78Lp1ncxNR/YMTDgrQ9tiTEulib5WUcCVrdvSQ3ybMLQiRASQPTpAJVovoq6I/ESavtsjA0FiAopA16xB8pRxyv/TxVgbWe9pIQKHuBEbvg2UxWC5Knj3OUr9ESH84V/JLSBzF7wVJATsv4g66jyV3Mk6mKJ78pR2kJ2wJOYames2piTv9LHCBwc7nExk4+uJpdIl3B3cqzAUTUyDm634TDoABq
+	GW9wITTQexcUAjE7sbz86LZF+StuOuAtrH7EZhDT2/g795GKPzG5Fa0mo+o6imSKavlroFHI/MDiU8hE4RCsSInfMNX09EDEhEAznnVzfYwtjLFAp8crIuA5GnyofTM7+kL1zq2mpK1dLefI06ccwXuDENG7o/Q17+2YpppU55tWXCIyuw9zUivx3MQsbM5O3WZzjzD7ahpUWbsEVYJsY/e8S6D8DZhxiDhgQ+yBXRhK0JS88xsq8elgc4LosnmdDFvLMyOWYBXz+N1Ondg3QeZVGLS3sym63C+2ucalCebHnK0nx8xn4TpWGcsrWiTQDPCtXIs6xhyZ8+i9M50C0/S9OsQzNqnCsn16LB+CQuXtpjvUYhT9Mj7NTxSNkqMRWc28vhAydHI0MyXBPjAJ3RozQhoIi9gZ90gorMbOTy87GKonMYyci15fvYZ+CPbzOrbi80fVSxxiHUJ4zNgW7S+1gX3bdYGF0LPujVs5TbRWV6DGP8lQjMmmVFOJapuUH5zSwz+rie5F0eHnD2wdNOGWPsizPM9p0Xc8svS932ZDCZQqnD8NaRwM3TCSNBuW+rXr747lFwSJHkUtUd8Kdu6sFdLV6n43vNE+nR0I/ka4OBWwuzEsPAjG9xp/VwWB
 X-Forefront-Antispam-Report:
 	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SHXPR01MB0671.CHNPR01.prod.partner.outlook.cn;PTR:;CAT:NONE;SFS:(13230031)(366007)(52116005)(1800799015)(41320700004)(7416005)(38350700005);DIR:OUT;SFP:1102;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?etQA1UgOAA7rRBOjY1Ts05X7LpVpQ1wSrTXhwpdiEioWaBQcCzFx+4ZrqDNr?=
- =?us-ascii?Q?igkN1y1ArlHKhI96xcr4SwsOAI6bA3vOqQX0GYQ6aSGHV/dHXIqN66NhmjX/?=
- =?us-ascii?Q?Spho8xbi9kW1LPGMTHryoqkWgG3ODZ+vF3UKPh/uiteC8vopeDD+ayxsxZ3y?=
- =?us-ascii?Q?2G/b8MrF631PQu71+gs6ArG0HuW5rVjGOAl6K0rTzMTG8MhZSzFZ8WiVkblc?=
- =?us-ascii?Q?yusLX9pTqgRWSVL8PlRR6xi6L2vbmmoIwaBY0KIAbwtiBhWDY5VrUJqaacCm?=
- =?us-ascii?Q?TXsAtdO9coIJDMH0N6nsWSsHujDd/fqYO0KO0ObxyavyCP8Sa2gm3hksdSIf?=
- =?us-ascii?Q?Z/bONHE8WbEYo1Jj/61U5+BQDpw2Iki0+t779MhJBdBn801dIYO5DQEoZRXv?=
- =?us-ascii?Q?lN4/6gxz68eNO5pjR9bulpp+LNbX8e7I5Qx85maP2WT8MtR7yTPEKG6kLqJG?=
- =?us-ascii?Q?utVqS6x/yFCvf/ceKC0+brrcMbqdqOPdFP45Ldla4ThTP+hgTbYj69F7oIDP?=
- =?us-ascii?Q?TSruUmObhnj5IzxdrFIngfVrWvtdawlrvn6VGXXtiznmU1defg3R2ei6SlS6?=
- =?us-ascii?Q?Y0YqSb4RDKIGPyFGFMrxbe9weOZoqIcZgSkLbSVH3V1dptTJp0O+JhBCuE5v?=
- =?us-ascii?Q?Hqdj7PpYvigpjKn+7+j0KREQBmJ3WqlGpuIk51yRt9FtLYJRV5fAdXG5etQl?=
- =?us-ascii?Q?DidKsuxOwgIQsb5H3mKmXLQl7UeTFBZBKdtSuLvvrroOL4n03hmjKIN4VpsT?=
- =?us-ascii?Q?nbY3Cno8sFmItVjw4wHDYWpJU4u1x9UaTLDPERZWsW3xVn8w3Z2RFxHO+j2w?=
- =?us-ascii?Q?V0bYVxEZ8KAPV0Y857dBdSzxLICO3I0SCdDWQgtNDgvFQc27Dyi0682zGR2a?=
- =?us-ascii?Q?evoIleYqNLOZXFuXJ9S5XzXUyvictyLRzvIhmg5mZnRYF9AnvRx9n8lXoSrH?=
- =?us-ascii?Q?TSpSQhCRg6rfYKlDOqSeIp1Mty9/lAvTWykbDQIFRpSKnTPpa/r5JXcaMysq?=
- =?us-ascii?Q?JEFxhMvSK4j026slP6GBB2i6tRfo4btOot8yORl6NxCOeOJyRyTFlfWoUPZF?=
- =?us-ascii?Q?3Dsshl7q3Ik9AQC2SXFGwHbOYKeLUX8m9OnXanWzjS/BaiM3YqAl/Cy3ZFxt?=
- =?us-ascii?Q?skvOJ0jyhWYFzSgcNS3YgaBGV+msPIQBVvkJxT+VvLgj7nnjLHx+MToCWB0a?=
- =?us-ascii?Q?r+isALl3jbFfCN4fWNDmzPt1hcaId9G1CriMlVvMhPY1zQPJzAosdTlstQRq?=
- =?us-ascii?Q?cLC5nuOtQOfpl7QKAxBEYSwZqLn00x16N1wFvND1cMe1Vmwm72oH8Ijes4sI?=
- =?us-ascii?Q?YlrqBt3dICCcWXx3qpTA4e7N36HT1FP79LjkRDmC3OLAnC+lX+AsAcWzSCHm?=
- =?us-ascii?Q?0hFvZtgqFykiH1NHo8OssqeKV2k/osD+Yr5UUqcF4oVMuU6cbFmzG91yA6K2?=
- =?us-ascii?Q?9ReZ7Kw7QDkPBFJ6Fx/fWvRRACD+op3lLREHt1WySUn6isTz5gkoHjubS7+j?=
- =?us-ascii?Q?f9pEoKgcBLoxCCOJgnJT7CmduWmsX4zFNWFYuTqnI3jzc9ley+wvJK1E4QEL?=
- =?us-ascii?Q?GQS38d9k/kzubU28hChRhmw2fIrB8GRjZ/+w439nbfdje+2N1AW5rDVfiGc+?=
- =?us-ascii?Q?kRLKL+g7DHduue1x9P7AOrg=3D?=
+	=?us-ascii?Q?sop5JPLTm4Zc1T9v8f5CMczxuowyU3s+aOexZb1vEeFy6U20SfEnKVUdGf8E?=
+ =?us-ascii?Q?SOBTPFVM9jF8CVzwBOdUMI/dzBbARCyBC8QcJnYNyX4YIpl18RLumi2fOv7w?=
+ =?us-ascii?Q?P6QIDzAdYB7lK/zB9qg/9E716myD2xVvRfUcHdhCfKvso7cRLEDmV3HUXN+i?=
+ =?us-ascii?Q?TApJCdfaiUK4D0YhSPr+o2fEC0K/ucEUVhTASLRn7Ing5IdWKG5D0b5HRO31?=
+ =?us-ascii?Q?QD1V1V5KtUOSj3v89DK/jWYe+RDAiYMHDTSg/F1J5eCWjKpfNIW5QNV1rdS5?=
+ =?us-ascii?Q?XgEfBEnoE8ENPgCJuptcUxAOGdHjx79NGFxDJf13GKKzli0inqa5ARp4DGdD?=
+ =?us-ascii?Q?aoO4R9Evm42Ua4repRE5PU8oqvFA48dPm7eM1uwBf/VYtzhBadCr67Ep9sO5?=
+ =?us-ascii?Q?cnf21Vu5ASHyQd0q2KE+QXR0HO2si3V2458GQbVNppL+ys9xh4UiRBIhacLb?=
+ =?us-ascii?Q?y1TAVPovJJ/zQt7gM90vLRmk84u8SKmKxFFlCDrNOYQliDPpZaM06KHLBA9Y?=
+ =?us-ascii?Q?sGLHJ5AWDmk1JSUwDko4fjU0SMlvN++aEpoKsnBUljcs67kS7usCaIs1DLGJ?=
+ =?us-ascii?Q?C4b2UeDiJ6LdDz4JUXALUDvrnlsAgHeNa6ccMpw4mKRsCcn7B2652uJRs5TR?=
+ =?us-ascii?Q?Q9hdPzMJDDo/I061dLVrP5AjV1NeJHy05a67meiIMXtoNQ7wocRozuAqRUvQ?=
+ =?us-ascii?Q?2zPJr4byeh2JUqyzJzAJoLV5zeSsqZmK2Iw+JyU6QYQyASOb1qVCXsPofDP4?=
+ =?us-ascii?Q?39Zc8jBsTOl/GiH2TENFCtNQ+nX/AhzOWLWhbQaHNNiBHqtWSBPsfVHPpqg6?=
+ =?us-ascii?Q?VywxGSN1N2xYD5nOHo9N3kZqcTN7tx69Idlhb415P0utAUVH+S2gi214212M?=
+ =?us-ascii?Q?M3aITL+c5/2Uoz7gPDNyD/91FM//j8ZRQcO0CC4KzSiZiHrxbmlABPyCxTo7?=
+ =?us-ascii?Q?GY22Ewpa1d7IIxOxeBRScx0rCV8EmYgXBXmD9lczT1y2vAj4Z9PM2MUpwW/Y?=
+ =?us-ascii?Q?70u2x9985TxZntu96TKSghiTqozVHZHJgslY8N1zPQ5fDxfzjfjAeOOfBHV/?=
+ =?us-ascii?Q?xGbkBcos79uYK3sdAY10+Arfweh6GYz5TZ3ryrBWCnPEDSF9RWIAGhwuEgCm?=
+ =?us-ascii?Q?idSv6ETlu+GO8jk5t7ZSvAHlO0Ot4YT/JNpsQSU0F+VOAiCnObsS5hUlbHlB?=
+ =?us-ascii?Q?4J5FfntOOuCcapW/fGBCnB5NlPIu8mKZudDqXoXIW5jLJMQ9x5ZMmzHBxAgR?=
+ =?us-ascii?Q?wVPpHyFyDimZobP28Q4XKxJbrnb0Knae6JzloKTy/81jaDYn4H8WOn2vBcw2?=
+ =?us-ascii?Q?fuVj+OCPFti9F7IWKzn4dkTo1DgUZlOZb9qjU07sNmPiVzF2qooGed0nfDkf?=
+ =?us-ascii?Q?iHtsTpmpXe0XUgLg2AFqQZmcODWW1KUo39IoyuP4cBt0id5xFKS/fYWUZQ7U?=
+ =?us-ascii?Q?tip3oo56uvVM5ruY4F3Ukg+huQ2Y/wX54Yfl8DgsGMiDqLFbZvosTGgCVIi+?=
+ =?us-ascii?Q?V5394VdpeEm0zY2rSN0Q2QbAEdXhEk/gI/AcDEmB9ywWr9XLcDc8uQlET512?=
+ =?us-ascii?Q?6cGCI6yCp+mcXl/fFIJ/dSuFvwrCBJFCi7JNWyzZrrPZD4EuCz06u/gfg3Ye?=
+ =?us-ascii?Q?rYKCxiiljT54dz8TeUefoUs=3D?=
 X-OriginatorOrg: starfivetech.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: dfa20edf-6693-4f3b-c6d1-08dc4d429c7a
+X-MS-Exchange-CrossTenant-Network-Message-Id: 49b94b62-5d0f-4486-5675-08dc4d429d51
 X-MS-Exchange-CrossTenant-AuthSource: SHXPR01MB0671.CHNPR01.prod.partner.outlook.cn
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Mar 2024 03:12:46.9486
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Mar 2024 03:12:48.3860
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 06fe3fa3-1221-43d3-861b-5a4ee687a85c
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: Co0MiNhgEwktfsSY5W7wpctxtKnHBx7Si7e0+4uKsV2mh4Bo07GZdFoK+XNlPGff2+I8zqEXkiWg+F7J5qPUDZo3QWFFnlk6Ychl1RRqSvzt9haUjxqPv/BJvMhK6lv1
+X-MS-Exchange-CrossTenant-UserPrincipalName: MtXlffkcSi+7rHzpI0CShw3b78XMv+CK4187FuaVwb4SnibnHCNMyipBEFAkCwVlKv5jSVHdPC52NaNu1e0Av3Cry2czff7yIJnfStVLoeaCP3jLLYe1FEMDvkC52uRa
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: SHXPR01MB0622
 
-From: Jayshri Pawar <jpawar@cadence.com>
+This patch implements suspend and resume operation for Cadence MIPI-CSI2
+RX Controller.
 
-Use runtime power management hooks to save power when CSI-RX is not in
-use. Also stop/start any in-progress streams, which might happen during
-a system suspend/resume cycle.
-
-Signed-off-by: Jayshri Pawar <jpawar@cadence.com>
-Co-developed-by: Jai Luthra <j-luthra@ti.com>
-Signed-off-by: Jai Luthra <j-luthra@ti.com>
 Signed-off-by: Changhuang Liang <changhuang.liang@starfivetech.com>
 ---
- drivers/media/platform/cadence/cdns-csi2rx.c | 43 +++++++++++++++++++-
- 1 file changed, 42 insertions(+), 1 deletion(-)
+ drivers/media/platform/cadence/cdns-csi2rx.c | 1 +
+ 1 file changed, 1 insertion(+)
 
 diff --git a/drivers/media/platform/cadence/cdns-csi2rx.c b/drivers/media/platform/cadence/cdns-csi2rx.c
-index 2d7b0508cc9a..a8b86369e34f 100644
+index a8b86369e34f..1f629be91bf5 100644
 --- a/drivers/media/platform/cadence/cdns-csi2rx.c
 +++ b/drivers/media/platform/cadence/cdns-csi2rx.c
-@@ -364,6 +364,12 @@ static int csi2rx_s_stream(struct v4l2_subdev *subdev, int enable)
- 	struct csi2rx_priv *csi2rx = v4l2_subdev_to_csi2rx(subdev);
- 	int ret = 0;
+@@ -778,6 +778,7 @@ static void csi2rx_remove(struct platform_device *pdev)
  
-+	if (enable) {
-+		ret = pm_runtime_resume_and_get(csi2rx->dev);
-+		if (ret < 0)
-+			return ret;
-+	}
-+
- 	mutex_lock(&csi2rx->lock);
- 
- 	if (enable) {
-@@ -373,8 +379,10 @@ static int csi2rx_s_stream(struct v4l2_subdev *subdev, int enable)
- 		 */
- 		if (!csi2rx->count) {
- 			ret = csi2rx_start(csi2rx);
--			if (ret)
-+			if (ret) {
-+				pm_runtime_put(csi2rx->dev);
- 				goto out;
-+			}
- 		}
- 
- 		csi2rx->count++;
-@@ -386,6 +394,8 @@ static int csi2rx_s_stream(struct v4l2_subdev *subdev, int enable)
- 		 */
- 		if (!csi2rx->count)
- 			csi2rx_stop(csi2rx);
-+
-+		pm_runtime_put(csi2rx->dev);
- 	}
- 
- out:
-@@ -659,6 +669,29 @@ static int csi2rx_parse_dt(struct csi2rx_priv *csi2rx)
- 	return ret;
- }
- 
-+static int csi2rx_suspend(struct device *dev)
-+{
-+	struct csi2rx_priv *csi2rx = dev_get_drvdata(dev);
-+
-+	mutex_lock(&csi2rx->lock);
-+	if (csi2rx->count)
-+		csi2rx_stop(csi2rx);
-+	mutex_unlock(&csi2rx->lock);
-+
-+	return 0;
-+}
-+
-+static int csi2rx_resume(struct device *dev)
-+{
-+	struct csi2rx_priv *csi2rx = dev_get_drvdata(dev);
-+
-+	mutex_lock(&csi2rx->lock);
-+	if (csi2rx->count)
-+		csi2rx_start(csi2rx);
-+	mutex_unlock(&csi2rx->lock);
-+	return 0;
-+}
-+
- static int csi2rx_probe(struct platform_device *pdev)
- {
- 	struct csi2rx_priv *csi2rx;
-@@ -705,6 +738,7 @@ static int csi2rx_probe(struct platform_device *pdev)
- 	if (ret)
- 		goto err_cleanup;
- 
-+	pm_runtime_enable(csi2rx->dev);
- 	ret = v4l2_async_register_subdev(&csi2rx->subdev);
- 	if (ret < 0)
- 		goto err_free_state;
-@@ -719,6 +753,7 @@ static int csi2rx_probe(struct platform_device *pdev)
- 
- err_free_state:
- 	v4l2_subdev_cleanup(&csi2rx->subdev);
-+	pm_runtime_disable(csi2rx->dev);
- err_cleanup:
- 	v4l2_async_nf_unregister(&csi2rx->notifier);
- 	v4l2_async_nf_cleanup(&csi2rx->notifier);
-@@ -737,9 +772,14 @@ static void csi2rx_remove(struct platform_device *pdev)
- 	v4l2_async_unregister_subdev(&csi2rx->subdev);
- 	v4l2_subdev_cleanup(&csi2rx->subdev);
- 	media_entity_cleanup(&csi2rx->subdev.entity);
-+	pm_runtime_disable(csi2rx->dev);
- 	kfree(csi2rx);
- }
- 
-+static const struct dev_pm_ops csi2rx_pm_ops = {
-+	SET_RUNTIME_PM_OPS(csi2rx_suspend, csi2rx_resume, NULL)
-+};
-+
- static const struct of_device_id csi2rx_of_table[] = {
- 	{ .compatible = "starfive,jh7110-csi2rx" },
- 	{ .compatible = "cdns,csi2rx" },
-@@ -754,6 +794,7 @@ static struct platform_driver csi2rx_driver = {
- 	.driver	= {
- 		.name		= "cdns-csi2rx",
- 		.of_match_table	= csi2rx_of_table,
-+		.pm		= &csi2rx_pm_ops,
- 	},
+ static const struct dev_pm_ops csi2rx_pm_ops = {
+ 	SET_RUNTIME_PM_OPS(csi2rx_suspend, csi2rx_resume, NULL)
++	SET_SYSTEM_SLEEP_PM_OPS(pm_runtime_force_suspend, pm_runtime_force_resume)
  };
- module_platform_driver(csi2rx_driver);
+ 
+ static const struct of_device_id csi2rx_of_table[] = {
 -- 
 2.25.1
 
