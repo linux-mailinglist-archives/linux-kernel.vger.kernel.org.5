@@ -1,126 +1,176 @@
-Return-Path: <linux-kernel+bounces-118678-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-118679-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 841E888BDE8
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 10:33:46 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3C05788BDEF
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 10:36:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 05AC4B27267
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 09:33:44 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E4C04304D18
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 09:36:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7287B12F362;
-	Tue, 26 Mar 2024 09:20:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6FC8D535CF;
+	Tue, 26 Mar 2024 09:21:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="BpRINKu0"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.17])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="dD6JKrhM";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="MBeym/TH"
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 92ABD73500;
-	Tue, 26 Mar 2024 09:20:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.17
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E6A764CE09;
+	Tue, 26 Mar 2024 09:21:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711444845; cv=none; b=DLh46Z/9+sDfttYXYhOXBkWwh1JC2kZzw0+bxEDXbTacVSoWTorKR0edLfTTMZgw4s1LN4KSRa8f9R80DBipVbFnSxm/gwZkPkPdsod4m1lIqslhQpEkWfy1NJ02ZI6+kjM5sLYibkHsQRNYhBpzuJNipmgULoLfDLSTlhyZCEM=
+	t=1711444871; cv=none; b=olfzJ3F3qVVBO1kwMGsNx+bWLGEQHG/SRuJyGrjXG51ZvJLViWxv/sVKkCt7SmWCtys7eboEdTfqvzfk/F/UCA2pEsg3XCxcK5b8yAG7ZOFh3JWlW9uww/ZbAojVrKgeJxL/M5jGHx1J62KIYq2v2uXs84D6WpRbCeDMbMiqX4o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711444845; c=relaxed/simple;
-	bh=ZhNVE0cVvxF6vOSto8uaF4d/Wo+PXywhYyMEAUEj+b4=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=CAI10pg/pZatyIgdO/oi5dpcB1vq9t8gwiqv+AN19+cMcnLwmFxqLzhJQUV9hjRNVaAND1VRawWKNRtuxitSYI4chsgxs0g8SK8u60ns9J/CzA9p6qb6eYthVfK8cqkGx01o6pXIKKy+N78o0oSoaVaxs5elp1sUR/PJcFevZT0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=BpRINKu0; arc=none smtp.client-ip=192.198.163.17
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1711444844; x=1742980844;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=ZhNVE0cVvxF6vOSto8uaF4d/Wo+PXywhYyMEAUEj+b4=;
-  b=BpRINKu0VVJgHo65VqFWEZ/vQU0+uiIBhWDzDHazqOcx81GehFtGi583
-   oq59uDJnzH9snWXKGHxJcCzpwKlV0HEi2+lTYMcwE4OkWYzj7uDgSgzhR
-   HUhommkpaqiPMzDjonzaUrtAs5jCzOwyCoJmtHRX4NQteCdbwRSajJbSn
-   A1vhNfzkPvmG9IvXdi3O7FsAMLqKVoilaZ+2smL3LZOeisNKXY7AESxBw
-   xoc5eP0CQF5iWHidn1uBDBbMumXJ4vDXZTuWYIFCEEqa4gbeSzHg6aAgD
-   AknyD0a3D1YYmLoFWAybFKC2V8xLDTDmSZQc/GmQAVXSJsHP8w81PxMHv
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11024"; a="6350355"
-X-IronPort-AV: E=Sophos;i="6.07,155,1708416000"; 
-   d="scan'208";a="6350355"
-Received: from orviesa007.jf.intel.com ([10.64.159.147])
-  by fmvoesa111.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Mar 2024 02:20:37 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,155,1708416000"; 
-   d="scan'208";a="16293279"
-Received: from yungchua-ws.ostc.intel.com (HELO yungchua-ws.intel.com) ([10.54.69.90])
-  by orviesa007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Mar 2024 02:20:36 -0700
-From: Bard Liao <yung-chuan.liao@linux.intel.com>
-To: linux-sound@vger.kernel.org,
-	vkoul@kernel.org
-Cc: vinod.koul@linaro.org,
-	linux-kernel@vger.kernel.org,
-	pierre-louis.bossart@linux.intel.com,
-	bard.liao@intel.com
-Subject: [PATCH 7/7] soundwire: intel_ace2x: set the clock source
-Date: Tue, 26 Mar 2024 09:20:30 +0000
-Message-Id: <20240326092030.1062802-8-yung-chuan.liao@linux.intel.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240326092030.1062802-1-yung-chuan.liao@linux.intel.com>
-References: <20240326092030.1062802-1-yung-chuan.liao@linux.intel.com>
+	s=arc-20240116; t=1711444871; c=relaxed/simple;
+	bh=L1aGiArlPsZ+bQny3tvbhbXelHlaXT2szGwtPU5OQGw=;
+	h=Date:From:To:Subject:Cc:In-Reply-To:References:MIME-Version:
+	 Message-ID:Content-Type; b=CJWuUcGlFKj4UXEJGmTmfNfzjMnZS3QRRgoHrqj73E41wyjCAQfe2KOxe2cieUxQBNZpoFgw4iu3WPiHNzgDqm+9gnQIWUAqEaHicVBbtVGrggQA3CI4uYQ8K8IDwSnziTxCilC+avQAtaffQAYkWxLSVh96UBNt0bkmY8x8PDY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=dD6JKrhM; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=MBeym/TH; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+Date: Tue, 26 Mar 2024 09:21:06 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1711444867;
+	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+	 content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=2A00E/c8uqCaQHkVCU/Oq9rDbHV2kx2Rs5KES71fn6M=;
+	b=dD6JKrhM0zqXW3Lj06bAHUVyZ2AEztZI0Sk+OGTO2FkU3hzg0D0mucLMIIh3u31gNTN4Au
+	SRDmrem2P9HyUqrsIx9TnIMQgzH6ysAi9a18NfHTxqkdA0oG5GAgXqGtPOb+tTQK7OcUE8
+	bnLBTmr1z8eKC6zoCrzhEjZ3z+A1gaXEmtiTzgrdvyrRROmpTqZ3JSeX0ZWCQXeS+FTax0
+	RQN89f5jQz3BcwJQdhBSOfWBWIceTZ5fNmSk+bSQviJ7hQ3j3A7+kkqhDj4xuzSkvfvJDe
+	OckA+oo/F2/XWtkR4+K0SjckDQ1OUmK87+a2UljfTCsHe7GMqOaTA1vWRK63dQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1711444867;
+	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+	 content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=2A00E/c8uqCaQHkVCU/Oq9rDbHV2kx2Rs5KES71fn6M=;
+	b=MBeym/THDeLwvWMPZ9s6Mc0J8IRF6UhqjjlxIr6ZdbxyHPNCDyP31o1V6uWpnXG/kd82XY
+	JEIRgm3zFgY0S/Cg==
+From: "tip-bot2 for Paul E. McKenney" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To: linux-tip-commits@vger.kernel.org
+Subject:
+ [tip: x86/urgent] x86/nmi: Upgrade NMI backtrace stall checks & messages
+Cc: Breno Leitao <leitao@debian.org>, "Paul E. McKenney" <paulmck@kernel.org>,
+ Ingo Molnar <mingo@kernel.org>,
+ Linus Torvalds <torvalds@linux-foundation.org>, x86@kernel.org,
+ linux-kernel@vger.kernel.org
+In-Reply-To: <ab4d70c8-c874-42dc-b206-643018922393@paulmck-laptop>
+References: <ab4d70c8-c874-42dc-b206-643018922393@paulmck-laptop>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Message-ID: <171144486643.10875.13891742949847997035.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe:
+ Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Precedence: bulk
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+The following commit has been merged into the x86/urgent branch of tip:
 
-Insert clock setup after power-up and before setting up the SYNCPRD,
-per hardware recommendations.
+Commit-ID:     3186b61812c007179f1852d8e63a0f0f7dd7c783
+Gitweb:        https://git.kernel.org/tip/3186b61812c007179f1852d8e63a0f0f7dd7c783
+Author:        Paul E. McKenney <paulmck@kernel.org>
+AuthorDate:    Thu, 07 Mar 2024 17:32:15 -08:00
+Committer:     Ingo Molnar <mingo@kernel.org>
+CommitterDate: Tue, 26 Mar 2024 10:07:59 +01:00
 
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Reviewed-by: Rander Wang <rander.wang@intel.com>
-Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
+x86/nmi: Upgrade NMI backtrace stall checks & messages
+
+The commit to improve NMI stall debuggability:
+
+  344da544f177 ("x86/nmi: Print reasons why backtrace NMIs are ignored")
+
+.. has shown value, but widespread use has also identified a few
+opportunities for improvement.
+
+The systems have (as usual) shown far more creativity than that commit's
+author, demonstrating yet again that failing CPUs can do whatever they want.
+
+In addition, the current message format is less friendly than one might
+like to those attempting to use these messages to identify failing CPUs.
+
+Therefore, separately flag CPUs that, during the full time that the
+stack-backtrace request was waiting, were always in an NMI handler,
+were never in an NMI handler, or exited one NMI handler.
+
+Also, split the message identifying the CPU and the time since that CPU's
+last NMI-related activity so that a single line identifies the CPU without
+any other variable information, greatly reducing the processing overhead
+required to identify repeat-offender CPUs.
+
+Co-developed-by: Breno Leitao <leitao@debian.org>
+Signed-off-by: Breno Leitao <leitao@debian.org>
+Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+Signed-off-by: Ingo Molnar <mingo@kernel.org>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>
+Link: https://lore.kernel.org/r/ab4d70c8-c874-42dc-b206-643018922393@paulmck-laptop
 ---
- drivers/soundwire/intel_ace2x.c | 16 ++++++++++++++++
- 1 file changed, 16 insertions(+)
+ arch/x86/kernel/nmi.c | 24 ++++++++++++++----------
+ 1 file changed, 14 insertions(+), 10 deletions(-)
 
-diff --git a/drivers/soundwire/intel_ace2x.c b/drivers/soundwire/intel_ace2x.c
-index d8ae05cf3d57..43a348db83bf 100644
---- a/drivers/soundwire/intel_ace2x.c
-+++ b/drivers/soundwire/intel_ace2x.c
-@@ -33,6 +33,20 @@ static void intel_shim_vs_init(struct sdw_intel *sdw)
- 	usleep_range(10, 15);
+diff --git a/arch/x86/kernel/nmi.c b/arch/x86/kernel/nmi.c
+index 9a5b372..ed163c8 100644
+--- a/arch/x86/kernel/nmi.c
++++ b/arch/x86/kernel/nmi.c
+@@ -580,7 +580,7 @@ EXPORT_SYMBOL_GPL(asm_exc_nmi_kvm_vmx);
+ 
+ static char *nmi_check_stall_msg[] = {
+ /*									*/
+-/* +--------- nsp->idt_seq_snap & 0x1: CPU is in NMI handler.		*/
++/* +--------- nmi_seq & 0x1: CPU is currently in NMI handler.		*/
+ /* | +------ cpu_is_offline(cpu)					*/
+ /* | | +--- nsp->idt_calls_snap != atomic_long_read(&nsp->idt_calls):	*/
+ /* | | |	NMI handler has been invoked.				*/
+@@ -628,22 +628,26 @@ void nmi_backtrace_stall_check(const struct cpumask *btp)
+ 		nmi_seq = READ_ONCE(nsp->idt_nmi_seq);
+ 		if (nsp->idt_nmi_seq_snap + 1 == nmi_seq && (nmi_seq & 0x1)) {
+ 			msgp = "CPU entered NMI handler function, but has not exited";
+-		} else if ((nsp->idt_nmi_seq_snap & 0x1) != (nmi_seq & 0x1)) {
+-			msgp = "CPU is handling NMIs";
+-		} else {
+-			idx = ((nsp->idt_seq_snap & 0x1) << 2) |
++		} else if (nsp->idt_nmi_seq_snap == nmi_seq ||
++			   nsp->idt_nmi_seq_snap + 1 == nmi_seq) {
++			idx = ((nmi_seq & 0x1) << 2) |
+ 			      (cpu_is_offline(cpu) << 1) |
+ 			      (nsp->idt_calls_snap != atomic_long_read(&nsp->idt_calls));
+ 			msgp = nmi_check_stall_msg[idx];
+ 			if (nsp->idt_ignored_snap != READ_ONCE(nsp->idt_ignored) && (idx & 0x1))
+ 				modp = ", but OK because ignore_nmis was set";
+-			if (nmi_seq & 0x1)
+-				msghp = " (CPU currently in NMI handler function)";
+-			else if (nsp->idt_nmi_seq_snap + 1 == nmi_seq)
++			if (nsp->idt_nmi_seq_snap + 1 == nmi_seq)
+ 				msghp = " (CPU exited one NMI handler function)";
++			else if (nmi_seq & 0x1)
++				msghp = " (CPU currently in NMI handler function)";
++			else
++				msghp = " (CPU was never in an NMI handler function)";
++		} else {
++			msgp = "CPU is handling NMIs";
+ 		}
+-		pr_alert("%s: CPU %d: %s%s%s, last activity: %lu jiffies ago.\n",
+-			 __func__, cpu, msgp, modp, msghp, j - READ_ONCE(nsp->recv_jiffies));
++		pr_alert("%s: CPU %d: %s%s%s\n", __func__, cpu, msgp, modp, msghp);
++		pr_alert("%s: last activity: %lu jiffies ago.\n",
++			 __func__, j - READ_ONCE(nsp->recv_jiffies));
+ 	}
  }
  
-+static void intel_shim_vs_set_clock_source(struct sdw_intel *sdw, u32 source)
-+{
-+	void __iomem *shim_vs = sdw->link_res->shim_vs;
-+	u32 val;
-+
-+	val = intel_readl(shim_vs, SDW_SHIM2_INTEL_VS_LVSCTL);
-+
-+	u32p_replace_bits(&val, source, SDW_SHIM2_INTEL_VS_LVSCTL_MLCS);
-+
-+	intel_writel(shim_vs, SDW_SHIM2_INTEL_VS_LVSCTL, val);
-+
-+	dev_dbg(sdw->cdns.dev, "clock source %d LVSCTL %#x\n", source, val);
-+}
-+
- static int intel_shim_check_wake(struct sdw_intel *sdw)
- {
- 	void __iomem *shim_vs;
-@@ -100,6 +114,8 @@ static int intel_link_power_up(struct sdw_intel *sdw)
- 		goto out;
- 	}
- 
-+	intel_shim_vs_set_clock_source(sdw, clock_source);
-+
- 	if (!*shim_mask) {
- 		/* we first need to program the SyncPRD/CPU registers */
- 		dev_dbg(sdw->cdns.dev, "first link up, programming SYNCPRD\n");
--- 
-2.34.1
-
 
