@@ -1,181 +1,119 @@
-Return-Path: <linux-kernel+bounces-118759-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-118760-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id F299888BEF7
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 11:11:10 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D768C88BEF8
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 11:11:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AC812302985
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 10:11:09 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 020381C3D456
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 10:11:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 714CB6FE19;
-	Tue, 26 Mar 2024 10:10:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6AE786BB4C;
+	Tue, 26 Mar 2024 10:10:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Spkhi5zQ"
-Received: from mail-ed1-f41.google.com (mail-ed1-f41.google.com [209.85.208.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="oeGfP4sO"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B43553809
-	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 10:10:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6D07C5F850;
+	Tue, 26 Mar 2024 10:10:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711447821; cv=none; b=Vrr5VeSmnp4oqf0/jW9SHZ9aWu2oS0FkKjC7iDe1cAxtndCYGLOhbRjEEdAk4cE7UdC+As5eaLx3IMRRrQXcxvwHrpXFdFe2pe3yxRs1L3lcCxRHHFVYfPzPpcTpor+x1ISWyPbN3IiW9BU1sEw1cvJP3FU39NgsIIrPJVJDc2o=
+	t=1711447847; cv=none; b=oDOi06j4R0rmDMb7rCK8eWLguo1aDFDVYg4M8elDR+cmBKaGnHOax+ZBLHIdTYZZeADckeroWWt5TNG4nXsVq+S70Reou/EEpE/jkFRc0gyYeOBAHncZUgUVJ/CNTelE3wjzm5zIdH0OTQcCPPUmy0oRTp7YENfBWSce7hEOjyA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711447821; c=relaxed/simple;
-	bh=Y305OI8+v/GYz4bHx//3LsQDwUJMII2U2I5ZCcX149E=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=PNJtu0JaJIJWpC8WmhUyExQq6YQYig/6XsbsbAvANhhpA2nrCgU9C6gxZ4q5A0qUSD7eIzvZYlYUS4qCmy/oU541WAua0q+CPDiE0+2vmcqCuRWNEm/HiBnMAQM1egEBALP1XMN9uj6FGLyhkjpWnSee0w2YwfJozudSgx4Bikg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=Spkhi5zQ; arc=none smtp.client-ip=209.85.208.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ed1-f41.google.com with SMTP id 4fb4d7f45d1cf-56bf6418434so3610682a12.0
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 03:10:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1711447816; x=1712052616; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=JQnaSyYwl5rD6XVmt2ooNtpLwR2x205PFtPTu6yX330=;
-        b=Spkhi5zQ/5UA4GZa0538/8J0uRT+AB76DOIR4ePSrWpD9OWqIaAW0zbeaOU2MnXe/y
-         hOFU14P99vAB2t3RIQj4SXwvsJ5G2LmJZHaoHNB/lA9kLUl4GE3BzYMuOAENFS6ejQ9y
-         OQcQN557Gnh0eHW2lZmx44DI0fjJabuxZtosnbUjAH3zpyzUzT6R52aTN00LCM4TNhqo
-         +9PgY2gIZhSZ0m6H2Sscpp1mtXFectUzsh/tKIn2zmOj1deD2w11Q7XHVXfOkjgttMyG
-         mM0fTMWPe9/81ZXlk84kPSVyJfzcwzA/qaHKKuSLMbjhuQct1lPKvsCxUDLyzGNxtir7
-         WNMA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711447816; x=1712052616;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=JQnaSyYwl5rD6XVmt2ooNtpLwR2x205PFtPTu6yX330=;
-        b=P923UGS6AYKl8+JdZ+hJT1KDgcEgZEc7+FcxsEiQzt8mtnhHlyauNG28Kpn9bSmTfq
-         9KXkFF66PF4NbBSKqaFtntmRndUV66ncsfyRMhEmCRSR/8n+1CXTGVIPALnUJN4t+Wnw
-         +AWQjd2PoDzN6UnNJvEk+lVkRvjULAMRc3zSs2kxHm33h1mMdGukIlJxrzRLFOsIJiBj
-         RhMAj2Aj8UwfZNahRH/P+LHI8RHt9MjMsUysLE+2sNHfWfZ7bufzYfYWwwxv5/k3yNpq
-         UYHSEmxy89cfDdTEvcUnxiUN2Z+Go3DruCvTsetON4xWrulDsAcoUX4UI5jIG7WJ0/IG
-         E68w==
-X-Forwarded-Encrypted: i=1; AJvYcCXo1UQmYk0X+Lug6Spq5/o5lP0OJoR98cZCIw5WtEq8rUKZZCgsuVxyTjwZkLRQWYaVAkklUsc9BdKk5SHTSWHv1TTRMgDqQiBRT0WA
-X-Gm-Message-State: AOJu0Yx5GowpJ9rDRV6/Wwr1+JCPGeb/qLleJuGphpybYY3nzgyPWmes
-	GEt9rosI8E8wtnHBQRuuTZfsnWyO58VxX1dT4y6BdEnG/NTS4/XBPXFunEfDYBk=
-X-Google-Smtp-Source: AGHT+IE5g6nuG88tlLs73Wec3cLhmWwqjWuu+9HPNJuUBta5wdqIVeW1wvlCSpOkxC0z+zMSsyj2Sw==
-X-Received: by 2002:a50:874a:0:b0:56b:defb:3b59 with SMTP id 10-20020a50874a000000b0056bdefb3b59mr6554522edv.19.1711447816609;
-        Tue, 26 Mar 2024 03:10:16 -0700 (PDT)
-Received: from [192.168.92.47] (078088045141.garwolin.vectranet.pl. [78.88.45.141])
-        by smtp.gmail.com with ESMTPSA id ek27-20020a056402371b00b0056c2d0052c0sm293096edb.60.2024.03.26.03.10.15
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 26 Mar 2024 03:10:16 -0700 (PDT)
-Message-ID: <ece192bc-adee-4d99-9fc2-c133f1402cae@linaro.org>
-Date: Tue, 26 Mar 2024 11:10:14 +0100
+	s=arc-20240116; t=1711447847; c=relaxed/simple;
+	bh=eKvFx10FRqYuOj5g1/CsmrMtepfNYWyi0Atr8paEtrs=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=Dq4k0+7q9qPJyBdn3oZAxObefcbYk/LAZ80j3lVyc84rGYq+PALmrL+nzX1M2knbwSFU3R7YM29oBvDvWSBlVUOjR+Mb4g5XmJqopCV+NVcQthqi9OlD58lz/uxwJ1A4FBg0rF7Kng+ZGIuBfEbHAyzDtHdoWD2327SP/vw+lyg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=oeGfP4sO; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E0533C433F1;
+	Tue, 26 Mar 2024 10:10:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1711447847;
+	bh=eKvFx10FRqYuOj5g1/CsmrMtepfNYWyi0Atr8paEtrs=;
+	h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+	b=oeGfP4sONrrtelg21yNyezUIsX04ZTMnLXjGFXkyiHeQLRYs6ezIWu27hOUe4qCv0
+	 sWc1LUxqd3r3IOF/njPlur4P3czL8GmGqzvh2DaSezSyeVsTqPB2au7GJlGlmIWaAw
+	 cf09C+PTe7ulZRrV2E0chA26+VDF575urCJjWZJCTEZFGDPb8mvR0bJOajzx6yIACd
+	 ErA6XYCNAwZ4bjGZJMEWzlSqZ+QB12gSL3gMY8xH2zVjhZENnMSeDY3hPt1lj7Wxvt
+	 O2Zm9X5AsiqXXTmE61Tmk7DiSYifwkr2YFi4yi3BKvPnWPZzRbbubl7KKvd/ZvnFzJ
+	 QPwWRdPb3CU2A==
+Message-ID: <c1ba341a7f6b7bd631be7f2a992910acd2c497da.camel@kernel.org>
+Subject: Re: [PATCH RFC] fuse: require FUSE drivers to opt-in for local file
+ leases
+From: Jeff Layton <jlayton@kernel.org>
+To: Miklos Szeredi <miklos@szeredi.hu>
+Cc: linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Date: Tue, 26 Mar 2024 06:10:45 -0400
+In-Reply-To: <CAJfpegvTOe8GpsdRUcvi6Ctb7SnBQHrbfP9Kr3Xc4PU5ac0jCw@mail.gmail.com>
+References: <20240319-setlease-v1-1-4ce5a220e85d@kernel.org>
+	 <CAJfpegvTOe8GpsdRUcvi6Ctb7SnBQHrbfP9Kr3Xc4PU5ac0jCw@mail.gmail.com>
+Autocrypt: addr=jlayton@kernel.org; prefer-encrypt=mutual;
+ keydata=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
+	kZWuOsJdJQdmwlWC5L5ln9xgfr/4mOY38B0U=
+Content-Type: text/plain; charset="ISO-8859-15"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.50.4 (3.50.4-1.fc39) 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/2] ARM: dts: qcom: Add support for Motorola Moto G
- (2013)
-To: Stanislav Jakubek <stano.jakubek@gmail.com>
-Cc: Bjorn Andersson <andersson@kernel.org>, Rob Herring <robh@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, linux-arm-msm@vger.kernel.org,
- devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- phone-devel@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <f5d4d71cd59f25b80889ef88fa044aa3a4268d46.1711288736.git.stano.jakubek@gmail.com>
- <b35ad5ff8a13f9df415b6e6700b3b5d3f13bfce8.1711288736.git.stano.jakubek@gmail.com>
- <ffa93b4a-608a-4cf5-b111-0d1f8520afdd@linaro.org>
- <ZgHdoK6luxRcKgRx@standask-GA-A55M-S2HP>
-Content-Language: en-US
-From: Konrad Dybcio <konrad.dybcio@linaro.org>
-Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
- 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
- izWDgYvmBE8=
-In-Reply-To: <ZgHdoK6luxRcKgRx@standask-GA-A55M-S2HP>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
 
-On 25.03.2024 9:25 PM, Stanislav Jakubek wrote:
-> On Mon, Mar 25, 2024 at 08:28:27PM +0100, Konrad Dybcio wrote:
->> On 24.03.2024 3:04 PM, Stanislav Jakubek wrote:
->>> Add a device tree for the Motorola Moto G (2013) smartphone based
->>> on the Qualcomm MSM8226 SoC.
->>>
->>> Initially supported features:
->>>   - Buttons (Volume Down/Up, Power)
->>>   - eMMC
->>>   - Hall Effect Sensor
->>>   - SimpleFB display
->>>   - TMP108 temperature sensor
->>>   - Vibrator
->>>
->>> Signed-off-by: Stanislav Jakubek <stano.jakubek@gmail.com>
->>> ---
->>
->> [...]
->>
->>> +		hob-ram@f500000 {
->>> +			reg = <0x0f500000 0x40000>,
->>> +			      <0x0f540000 0x2000>;
->>> +			no-map;
->>> +		};
->>
->> Any reason it's in two parts? Should it be one contiguous region, or
->> two separate nodes?
->>
->> lgtm otherwise
-> 
-> Hi Konrad, I copied this from downstream as-is.
-> According to the downstream docs [1]:
-> 
-> HOB RAM MMAP Device provides ability for userspace to access the
-> hand over block memory to read out modem related parameters.
-> 
-> And the two regs are the "DHOB partition" and "SHOB partition".
+On Tue, 2024-03-26 at 10:47 +0100, Miklos Szeredi wrote:
+> On Tue, 19 Mar 2024 at 17:54, Jeff Layton <jlayton@kernel.org> wrote:
+> >=20
+> > Traditionally, we've allowed people to set leases on FUSE inodes.  Some
+> > FUSE drivers are effectively local filesystems and should be fine with
+> > kernel-internal lease support. But others are backed by a network serve=
+r
+> > that may have multiple clients, or may be backed by something non-file
+> > like entirely.
+> >=20
+> > Have the filesytem driver to set a fuse_conn flag to indicate whether i=
+t
+> > wants support for local, in-kernel leases. If the flag is unset (the
+> > default), then setlease attempts will fail with -EINVAL, indicating tha=
+t
+> > leases aren't supported on that inode.
+> >=20
+> > Signed-off-by: Jeff Layton <jlayton@kernel.org>
+> > ---
+> > This is only tested for compilation, but it's fairly straightforward.
+> > Having the FUSE drivers opt-out of this support might be more
+> > backward-compatible, but that is a bit more dangerous. I'd rather drive=
+r
+> > maintainer consciously opt-in.
+>=20
+> In the end the lease behavior will need to be reverted if there are
+> regressions.  I really don't know which is worse, the risk of
+> regressions or the of risk data corruption...
+>=20
 
-Oh right, motorola made some inventions here..
+Yeah, it's a tough call. My hope was that FUSE drivers that did want
+lease support can just set the flag and and rebuild. Worst case, they'd
+just lose lease support until that was done. Lease support is generally
+an optimization, so things should still work but may be slower.
 
-> 
-> I suppose this is something Motorola (firmware?) specific (since the
-> downstream compatible is mmi,hob_ram [2]).
-> Should I split this into 2 nodes - dhob@f500000 and shob@f540000?
+> Also I'd prefer a more general flag indicating that the the kernel
+> driver can assume no external changes to the filesystem.  E.g.
+> FUSE_NO_OUTSIDE_CHANGE.
+>=20
+> Does this make sense?  Can you imagine a case where FUSE_LOCAL_LEASES
+> would be set, but caching policy would not assume no external changes?
+>=20
 
-Yes please and add the downstream txt link to the commit message in case
-somebody was curious down the line.
-
-Konrad
+No, that seems like it would work just as well. I can respin the patch
+along those lines and resend.
+--=20
+Jeff Layton <jlayton@kernel.org>
 
