@@ -1,427 +1,178 @@
-Return-Path: <linux-kernel+bounces-118739-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-118740-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id B16E388BEB7
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 11:05:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id A982A88BEBB
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 11:05:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D4FD21C3C720
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 10:05:33 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CBDA01C3C60D
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 10:05:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2E72C6FE19;
-	Tue, 26 Mar 2024 10:04:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 02E1E5C904;
+	Tue, 26 Mar 2024 10:05:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="JSx1NK/8"
-Received: from mail-wr1-f74.google.com (mail-wr1-f74.google.com [209.85.221.74])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="THGAJerI"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 61DBB5A0E1
-	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 10:04:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.74
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2BB15524D0;
+	Tue, 26 Mar 2024 10:05:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711447481; cv=none; b=iCzHRGBoC6vewKL3UB9F3DemL/1MEFv5OI7VsJydm9VQ+RtCBIUTWM7WY7oEYMO/CfEVRu5RoYCryAaJthuZDameTaMgwiCHnSVe54V+aN2LWvVkdHxAFquivGIAkBnUp/52ll7uehh4GeZg091EDvpnrwrcWjIyEDpR8+oH5b0=
+	t=1711447539; cv=none; b=M8ZmPQ4dsGVZNAIbOwhRXpGkpktbZALAqYi9njMOblpBCJiIAHHesh1aKh4cmNyDRi6X3Q53SF6JNWMXiDwbW4AbYM9+/OClML+Qw5/s8curAw2DPY1AZhXZzr+q7984xHfTi8cg63Z9JgGBsNwb0WK0YfJ6Ap+CwDhqfJq2W84=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711447481; c=relaxed/simple;
-	bh=X4fNxkqHrvNilL5EJi7n4AWaFPh2JTq2Sk7Rj6AwTU4=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=BZpsSO8kaV8n4Wjq0BpmmG2sQbSaXMOiyX9LzdvKXSI+VkzNG/LOIRkaoKWpbnQWSQ1pcFjTwhwFq4Bu35k30ZQLzSDmjbYNYUcisDpCtUOUypAels1sL7w10KZ2iY+cjTqZz5o5k7pKmlx9iQ/GHkRKKJgU4MKiFstHhyge1dY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--vdonnefort.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=JSx1NK/8; arc=none smtp.client-ip=209.85.221.74
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--vdonnefort.bounces.google.com
-Received: by mail-wr1-f74.google.com with SMTP id ffacd0b85a97d-33eca6f6e4bso3305681f8f.0
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 03:04:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1711447478; x=1712052278; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=+UuIkN0zX2MQNfbCDwIEOWActo/+STrYH1ER+CouzEs=;
-        b=JSx1NK/8sIEiCzBLve9VtdK0LOZ78UyyUkqln3cqmv27FU2WY6zETzE/ywM60SLPem
-         bqEajz9kIRYmEZj1F+kMmrCsF80DgAP2NDbRqJFWbQdmSevTXOvwXjUTMz/VGxH7GAIo
-         x+4ClNe3VfPVn6pLVzYQDyhNIcg/Dh70M1jDn1abrhr+EXoWC5J0MAKC/ARNOEbll0Kh
-         KYVzFlRvc+pM/LgbDjyiHcgAPuNUwVAz7YaCUN4a04S1B/kuOytXY115DKg5e4BHBZjM
-         vdRUT/KCr0bVdh1I9d7kX5ZW/Rxeu8oKSfB7fM9hPAiebhXv5GvAKMYikJFQbkMddkAu
-         vPLQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711447478; x=1712052278;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=+UuIkN0zX2MQNfbCDwIEOWActo/+STrYH1ER+CouzEs=;
-        b=qoTtHdskCWHR6PUeYW67uTGjWxZy9SDzJU2oS1R7rofALZM1KtEFtD1kE8hz73UlvU
-         LiaN8RFao+Bmy79TsrnEdxfsJqat+TQKnudyu19JVG1FCBZdLDYyeO3T02C6yUjBTCBo
-         WkGfzOPdvO+mj7/NJIQhVSXahS5yQSLDBwWzIgQNny9Up77KIiNU/bwZ4jlfAfmg628o
-         tdueHREUvX7KGnrO4x0JWyB8T87dHtud1ZnULMCXSlRfyd9GiFCCLLnmyGGEZuctfwh3
-         lFtHixZy0go0aQGTc4FToRIZYszHOsqlLF/URUbb6AlLV6rQyHlppF3vBbvi9rCtoXdQ
-         Ng7g==
-X-Forwarded-Encrypted: i=1; AJvYcCVffcmPrl3k4728lVm0W/qJvmBvU4Lb5cBh9V8zJ2D0D7cwS4gWZSSzfnwHwBcxQE0ieUuWoFk8ZivyHj/wWa6jg7WbGkhvmljBIid5
-X-Gm-Message-State: AOJu0YzYWXoSeUOoJDNN7XUSMFHr+SjdzNMKWdDlgGi8+D8emHjkiMMA
-	4qCSTlu2jZ4i4tYZQMMobRSBwIhKhp7ifB5Zt4t0/yOI9JU3MgmhY2YJLTyLf2nUqAYC6mixEs0
-	lz0SpJT2TCr1vJqUHmA==
-X-Google-Smtp-Source: AGHT+IGNyLQvGh2hxy9vQyzAVAqVk3UFqpdsTwbarhjVMIeldiIOZFMiec6AEOrSjKKi3m7Us+Db34MHEZC9frNs
-X-Received: from vdonnefort.c.googlers.com ([fda3:e722:ac3:cc00:28:9cb1:c0a8:2eea])
- (user=vdonnefort job=sendgmr) by 2002:a05:600c:3b16:b0:414:908e:aa9e with
- SMTP id m22-20020a05600c3b1600b00414908eaa9emr5484wms.6.1711447477963; Tue,
- 26 Mar 2024 03:04:37 -0700 (PDT)
-Date: Tue, 26 Mar 2024 10:03:30 +0000
-In-Reply-To: <20240326100330.1321861-1-vdonnefort@google.com>
+	s=arc-20240116; t=1711447539; c=relaxed/simple;
+	bh=/oYS92t78LsjtBRAu2wTfiubNqaf7k6aYu+wQ42Dlp8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=shSWrES5wknKDdDgr2bQYsVlPMLODEh7+rtLxehFQKT4A1cWD0bkGpznIuRKyJ9sRx0pmX6R9iOeW0OkvvtQPgY+sTWYLUY/IpwRID2+bhDE5PvML7RQ2MVNh4JZhpZLJ4zfa0fE9fhDgcMUlvjX0xvX2jAlEAw5JenM1jOU2y4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=THGAJerI; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B8A7EC433C7;
+	Tue, 26 Mar 2024 10:05:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1711447539;
+	bh=/oYS92t78LsjtBRAu2wTfiubNqaf7k6aYu+wQ42Dlp8=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=THGAJerIDhr2e97aM7xHDFFhNVDgNVOoQLzkMlbvDQCGhE9sPoFrZyfuy2H8MgTjf
+	 CqEPlNGfwATXIjPnyLcKVRQrWYg7KCiINzEDJFoyXmJOqDeCnPHeVHo6wnbgLaA8MK
+	 +gHIYG5ksqjqFJHqk9OPDk8c7cmJhZmBnajWXyXy8cKcTobUfcB4BZJ+4mPcoYMnx4
+	 LAHodiEmwCXkkZp/85dinuNAVfn/15TYoh8cvU9hkanDem5AJM+UZZy2mMnTk5n+ci
+	 Vik1eBJpRwdcio63M1j85HfKFctIqcgZWl0zoc8uqMt9EJlnGA7EJJL+GxazermINO
+	 yo67UtsjKZTIw==
+Message-ID: <6ce6edde-67f0-4452-aee2-602af3d71ecd@kernel.org>
+Date: Tue, 26 Mar 2024 19:05:35 +0900
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20240326100330.1321861-1-vdonnefort@google.com>
-X-Mailer: git-send-email 2.44.0.396.g6e790dbe36-goog
-Message-ID: <20240326100330.1321861-6-vdonnefort@google.com>
-Subject: [PATCH v19 5/5] ring-buffer/selftest: Add ring-buffer mapping test
-From: Vincent Donnefort <vdonnefort@google.com>
-To: rostedt@goodmis.org, mhiramat@kernel.org, linux-kernel@vger.kernel.org, 
-	linux-trace-kernel@vger.kernel.org
-Cc: mathieu.desnoyers@efficios.com, kernel-team@android.com, 
-	Vincent Donnefort <vdonnefort@google.com>, Shuah Khan <shuah@kernel.org>, 
-	Shuah Khan <skhan@linuxfoundation.org>, linux-kselftest@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v8 2/7] scsi: libsas: Define NCQ Priority sysfs attributes
+ for SATA devices
+Content-Language: en-US
+To: Geert Uytterhoeven <geert@linux-m68k.org>,
+ Igor Pylypiv <ipylypiv@google.com>
+Cc: Niklas Cassel <cassel@kernel.org>, John Garry <john.g.garry@oracle.com>,
+ Jason Yan <yanaijie@huawei.com>, "James E.J. Bottomley"
+ <jejb@linux.ibm.com>, "Martin K. Petersen" <martin.petersen@oracle.com>,
+ Jack Wang <jinpu.wang@cloud.ionos.com>, Hannes Reinecke <hare@suse.de>,
+ Xiang Chen <chenxiang66@hisilicon.com>,
+ Artur Paszkiewicz <artur.paszkiewicz@intel.com>,
+ Bart Van Assche <bvanassche@acm.org>, TJ Adams <tadamsjr@google.com>,
+ linux-ide@vger.kernel.org, linux-scsi@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <20240307214418.3812290-1-ipylypiv@google.com>
+ <20240307214418.3812290-3-ipylypiv@google.com>
+ <CAMuHMdWxVbT=f+kZ58urwGhYD9RfBnu7u8oLAyrx_riU8OGt0w@mail.gmail.com>
+From: Damien Le Moal <dlemoal@kernel.org>
+Organization: Western Digital Research
+In-Reply-To: <CAMuHMdWxVbT=f+kZ58urwGhYD9RfBnu7u8oLAyrx_riU8OGt0w@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-This test maps a ring-buffer and validate the meta-page after reset and
-after emitting few events.
+On 3/26/24 18:53, Geert Uytterhoeven wrote:
+> Hi Igor,
+> 
+> On Thu, Mar 7, 2024 at 10:55 PM Igor Pylypiv <ipylypiv@google.com> wrote:
+>> Libata sysfs attributes cannot be used for libsas managed SATA devices
+>> because the ata_port location is different for libsas.
+>>
+>> Defined sysfs attributes (visible for SATA devices only):
+>> - /sys/block/sda/device/ncq_prio_enable
+>> - /sys/block/sda/device/ncq_prio_supported
+>>
+>> The newly defined attributes will pass the correct ata_port to libata
+>> helper functions.
+>>
+>> Reviewed-by: John Garry <john.g.garry@oracle.com>
+>> Reviewed-by: Damien Le Moal <dlemoal@kernel.org>
+>> Reviewed-by: Jason Yan <yanaijie@huawei.com>
+>> Signed-off-by: Igor Pylypiv <ipylypiv@google.com>
+> 
+> Thanks for your patch, which is now commit b4d3ddd2df7531e3 ("scsi:
+> libsas: Define NCQ Priority sysfs attributes for SATA devices")
+> in scsi-mkp/for-next
+> 
+>> --- a/drivers/scsi/libsas/sas_ata.c
+>> +++ b/drivers/scsi/libsas/sas_ata.c
+> 
+>> +
+>> +DEVICE_ATTR(ncq_prio_supported, S_IRUGO, sas_ncq_prio_supported_show, NULL);
+>> +
+> 
+> [...]
+> 
+>> +
+>> +DEVICE_ATTR(ncq_prio_enable, S_IRUGO | S_IWUSR,
+>> +           sas_ncq_prio_enable_show, sas_ncq_prio_enable_store);
+>> +
+> 
+> When both CONFIG_SCSI_SAS_ATA and CONFIG_SATA_HOST are enabled:
+> 
+> aarch64-linux-gnu-ld: drivers/ata/libata-sata.o:(.data+0x110):
+> multiple definition of `dev_attr_ncq_prio_supported';
+> drivers/scsi/libsas/sas_ata.o:(.data+0x260): first defined here
+> aarch64-linux-gnu-ld: drivers/ata/libata-sata.o:(.data+0xd8): multiple
+> definition of `dev_attr_ncq_prio_enable';
+> drivers/scsi/libsas/sas_ata.o:(.data+0x228): first defined here
+> 
+> Making both new DEVICE_ATTR() declarations static doesn't work,
+> as <linux/libata.h> contains a forward declaration for the existing global
+> dev_attr_ncq_prio_supported in libata:
+> 
+> In file included from include/linux/async.h:14,
+>                  from drivers/scsi/libsas/sas_ata.c:12:
+> include/linux/device.h:156:33: error: static declaration of
+> ‘dev_attr_ncq_prio_supported’ follows non-static declaration
+>   156 |         struct device_attribute dev_attr_##_name =
+> __ATTR(_name, _mode, _show, _store)
+>       |                                 ^~~~~~~~~
+> drivers/scsi/libsas/sas_ata.c:984:8: note: in expansion of macro ‘DEVICE_ATTR’
+>   984 | static DEVICE_ATTR(ncq_prio_supported, S_IRUGO,
+> sas_ncq_prio_supported_show,
+>       |        ^~~~~~~~~~~
+> In file included from include/scsi/sas_ata.h:13,
+>                  from drivers/scsi/libsas/sas_ata.c:15:
+> include/linux/libata.h:508:32: note: previous declaration of
+> ‘dev_attr_ncq_prio_supported’ with type ‘struct device_attribute’
+>   508 | extern struct device_attribute dev_attr_ncq_prio_supported;
+>       |                                ^~~~~~~~~~~~~~~~~~~~~~~~~~~
+> In file included from include/linux/async.h:14,
+>                  from drivers/scsi/libsas/sas_ata.c:12:
+> include/linux/device.h:156:33: error: static declaration of
+> ‘dev_attr_ncq_prio_enable’ follows non-static declaration
+>   156 |         struct device_attribute dev_attr_##_name =
+> __ATTR(_name, _mode, _show, _store)
+>       |                                 ^~~~~~~~~
+> drivers/scsi/libsas/sas_ata.c:1023:8: note: in expansion of macro ‘DEVICE_ATTR’
+>  1023 | static DEVICE_ATTR(ncq_prio_enable, S_IRUGO | S_IWUSR,
+>       |        ^~~~~~~~~~~
+> In file included from include/scsi/sas_ata.h:13,
+>                  from drivers/scsi/libsas/sas_ata.c:15:
+> include/linux/libata.h:509:32: note: previous declaration of
+> ‘dev_attr_ncq_prio_enable’ with type ‘struct device_attribute’
+>   509 | extern struct device_attribute dev_attr_ncq_prio_enable;
+>       |                                ^~~~~~~~~~~~~~~~~~~~~~~~
+> 
+> Perhaps the new attributes can be renamed?
+> Alternatively, the DEVICE_ATTR() can be open-coded, so the actual
+> device_attribute structures are named differently.
 
-Cc: Shuah Khan <shuah@kernel.org>
-Cc: Shuah Khan <skhan@linuxfoundation.org>
-Cc: linux-kselftest@vger.kernel.org
-Signed-off-by: Vincent Donnefort <vdonnefort@google.com>
+I think we need to do that because I do not want the attribute name to change in
+sysfs as that creates hell for the user to control a feature that is identical
+beside the different transport (which the user should not care about).
+I will send something asap.
 
-diff --git a/tools/testing/selftests/ring-buffer/Makefile b/tools/testing/selftests/ring-buffer/Makefile
-new file mode 100644
-index 000000000000..627c5fa6d1ab
---- /dev/null
-+++ b/tools/testing/selftests/ring-buffer/Makefile
-@@ -0,0 +1,8 @@
-+# SPDX-License-Identifier: GPL-2.0
-+CFLAGS += -Wl,-no-as-needed -Wall
-+CFLAGS += $(KHDR_INCLUDES)
-+CFLAGS += -D_GNU_SOURCE
-+
-+TEST_GEN_PROGS = map_test
-+
-+include ../lib.mk
-diff --git a/tools/testing/selftests/ring-buffer/config b/tools/testing/selftests/ring-buffer/config
-new file mode 100644
-index 000000000000..d936f8f00e78
---- /dev/null
-+++ b/tools/testing/selftests/ring-buffer/config
-@@ -0,0 +1,2 @@
-+CONFIG_FTRACE=y
-+CONFIG_TRACER_SNAPSHOT=y
-diff --git a/tools/testing/selftests/ring-buffer/map_test.c b/tools/testing/selftests/ring-buffer/map_test.c
-new file mode 100644
-index 000000000000..50a09e1371d4
---- /dev/null
-+++ b/tools/testing/selftests/ring-buffer/map_test.c
-@@ -0,0 +1,302 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Ring-buffer memory mapping tests
-+ *
-+ * Copyright (c) 2024 Vincent Donnefort <vdonnefort@google.com>
-+ */
-+#include <fcntl.h>
-+#include <sched.h>
-+#include <stdbool.h>
-+#include <stdio.h>
-+#include <stdlib.h>
-+#include <unistd.h>
-+
-+#include <linux/trace_mmap.h>
-+
-+#include <sys/mman.h>
-+#include <sys/ioctl.h>
-+
-+#include "../user_events/user_events_selftests.h" /* share tracefs setup */
-+#include "../kselftest_harness.h"
-+
-+#define TRACEFS_ROOT "/sys/kernel/tracing"
-+
-+static int __tracefs_write(const char *path, const char *value)
-+{
-+	int fd, ret;
-+
-+	fd = open(path, O_WRONLY | O_TRUNC);
-+	if (fd < 0)
-+		return fd;
-+
-+	ret = write(fd, value, strlen(value));
-+
-+	close(fd);
-+
-+	return ret == -1 ? -errno : 0;
-+}
-+
-+static int __tracefs_write_int(const char *path, int value)
-+{
-+	char *str;
-+	int ret;
-+
-+	if (asprintf(&str, "%d", value) < 0)
-+		return -1;
-+
-+	ret = __tracefs_write(path, str);
-+
-+	free(str);
-+
-+	return ret;
-+}
-+
-+#define tracefs_write_int(path, value) \
-+	ASSERT_EQ(__tracefs_write_int((path), (value)), 0)
-+
-+#define tracefs_write(path, value) \
-+	ASSERT_EQ(__tracefs_write((path), (value)), 0)
-+
-+static int tracefs_reset(void)
-+{
-+	if (__tracefs_write_int(TRACEFS_ROOT"/tracing_on", 0))
-+		return -1;
-+	if (__tracefs_write(TRACEFS_ROOT"/trace", ""))
-+		return -1;
-+	if (__tracefs_write(TRACEFS_ROOT"/set_event", ""))
-+		return -1;
-+	if (__tracefs_write(TRACEFS_ROOT"/current_tracer", "nop"))
-+		return -1;
-+
-+	return 0;
-+}
-+
-+struct tracefs_cpu_map_desc {
-+	struct trace_buffer_meta	*meta;
-+	int				cpu_fd;
-+};
-+
-+int tracefs_cpu_map(struct tracefs_cpu_map_desc *desc, int cpu)
-+{
-+	int page_size = getpagesize();
-+	char *cpu_path;
-+	void *map;
-+
-+	if (asprintf(&cpu_path,
-+		     TRACEFS_ROOT"/per_cpu/cpu%d/trace_pipe_raw",
-+		     cpu) < 0)
-+		return -ENOMEM;
-+
-+	desc->cpu_fd = open(cpu_path, O_RDONLY | O_NONBLOCK);
-+	free(cpu_path);
-+	if (desc->cpu_fd < 0)
-+		return -ENODEV;
-+
-+	map = mmap(NULL, page_size, PROT_READ, MAP_SHARED, desc->cpu_fd, 0);
-+	if (map == MAP_FAILED)
-+		return -errno;
-+
-+	desc->meta = (struct trace_buffer_meta *)map;
-+
-+	return 0;
-+}
-+
-+void tracefs_cpu_unmap(struct tracefs_cpu_map_desc *desc)
-+{
-+	munmap(desc->meta, desc->meta->meta_page_size);
-+	close(desc->cpu_fd);
-+}
-+
-+FIXTURE(map) {
-+	struct tracefs_cpu_map_desc	map_desc;
-+	bool				umount;
-+};
-+
-+FIXTURE_VARIANT(map) {
-+	int	subbuf_size;
-+};
-+
-+FIXTURE_VARIANT_ADD(map, subbuf_size_4k) {
-+	.subbuf_size = 4,
-+};
-+
-+FIXTURE_VARIANT_ADD(map, subbuf_size_8k) {
-+	.subbuf_size = 8,
-+};
-+
-+FIXTURE_SETUP(map)
-+{
-+	int cpu = sched_getcpu();
-+	cpu_set_t cpu_mask;
-+	bool fail, umount;
-+	char *message;
-+
-+	if (!tracefs_enabled(&message, &fail, &umount)) {
-+		if (fail) {
-+			TH_LOG("Tracefs setup failed: %s", message);
-+			ASSERT_FALSE(fail);
-+		}
-+		SKIP(return, "Skipping: %s", message);
-+	}
-+
-+	self->umount = umount;
-+
-+	ASSERT_GE(cpu, 0);
-+
-+	ASSERT_EQ(tracefs_reset(), 0);
-+
-+	tracefs_write_int(TRACEFS_ROOT"/buffer_subbuf_size_kb", variant->subbuf_size);
-+
-+	ASSERT_EQ(tracefs_cpu_map(&self->map_desc, cpu), 0);
-+
-+	/*
-+	 * Ensure generated events will be found on this very same ring-buffer.
-+	 */
-+	CPU_ZERO(&cpu_mask);
-+	CPU_SET(cpu, &cpu_mask);
-+	ASSERT_EQ(sched_setaffinity(0, sizeof(cpu_mask), &cpu_mask), 0);
-+}
-+
-+FIXTURE_TEARDOWN(map)
-+{
-+	tracefs_reset();
-+
-+	if (self->umount)
-+		tracefs_unmount();
-+
-+	tracefs_cpu_unmap(&self->map_desc);
-+}
-+
-+TEST_F(map, meta_page_check)
-+{
-+	struct tracefs_cpu_map_desc *desc = &self->map_desc;
-+	int cnt = 0;
-+
-+	ASSERT_EQ(desc->meta->entries, 0);
-+	ASSERT_EQ(desc->meta->overrun, 0);
-+	ASSERT_EQ(desc->meta->read, 0);
-+
-+	ASSERT_EQ(desc->meta->reader.id, 0);
-+	ASSERT_EQ(desc->meta->reader.read, 0);
-+
-+	ASSERT_EQ(ioctl(desc->cpu_fd, TRACE_MMAP_IOCTL_GET_READER), 0);
-+	ASSERT_EQ(desc->meta->reader.id, 0);
-+
-+	tracefs_write_int(TRACEFS_ROOT"/tracing_on", 1);
-+	for (int i = 0; i < 16; i++)
-+		tracefs_write_int(TRACEFS_ROOT"/trace_marker", i);
-+again:
-+	ASSERT_EQ(ioctl(desc->cpu_fd, TRACE_MMAP_IOCTL_GET_READER), 0);
-+
-+	ASSERT_EQ(desc->meta->entries, 16);
-+	ASSERT_EQ(desc->meta->overrun, 0);
-+	ASSERT_EQ(desc->meta->read, 16);
-+
-+	ASSERT_EQ(desc->meta->reader.id, 1);
-+
-+	if (!(cnt++))
-+		goto again;
-+}
-+
-+TEST_F(map, data_mmap)
-+{
-+	struct tracefs_cpu_map_desc *desc = &self->map_desc;
-+	unsigned long meta_len, data_len;
-+	void *data;
-+
-+	meta_len = desc->meta->meta_page_size;
-+	data_len = desc->meta->subbuf_size * desc->meta->nr_subbufs;
-+
-+	/* Map all the available subbufs */
-+	data = mmap(NULL, data_len, PROT_READ, MAP_SHARED,
-+		    desc->cpu_fd, meta_len);
-+	ASSERT_NE(data, MAP_FAILED);
-+	munmap(data, data_len);
-+
-+	/* Map all the available subbufs - 1 */
-+	data_len -= desc->meta->subbuf_size;
-+	data = mmap(NULL, data_len, PROT_READ, MAP_SHARED,
-+		    desc->cpu_fd, meta_len);
-+	ASSERT_NE(data, MAP_FAILED);
-+	munmap(data, data_len);
-+
-+	/* Overflow the available subbufs by 1 */
-+	meta_len += desc->meta->subbuf_size * 2;
-+	data = mmap(NULL, data_len, PROT_READ, MAP_SHARED,
-+		    desc->cpu_fd, meta_len);
-+	ASSERT_EQ(data, MAP_FAILED);
-+
-+	/* Verify meta-page padding */
-+	if (desc->meta->meta_page_size > getpagesize()) {
-+		void *addr;
-+
-+		data_len = desc->meta->meta_page_size;
-+		data = mmap(NULL, data_len,
-+			    PROT_READ, MAP_SHARED, desc->cpu_fd, 0);
-+		ASSERT_NE(data, MAP_FAILED);
-+
-+		addr = (void *)((unsigned long)data + getpagesize());
-+		ASSERT_EQ(*((int *)addr), 0);
-+		munmap(data, data_len);
-+	}
-+}
-+
-+FIXTURE(snapshot) {
-+	bool	umount;
-+};
-+
-+FIXTURE_SETUP(snapshot)
-+{
-+	bool fail, umount;
-+	struct stat sb;
-+	char *message;
-+
-+	if (stat(TRACEFS_ROOT"/snapshot", &sb))
-+		SKIP(return, "Skipping: %s", "snapshot not available");
-+
-+	if (!tracefs_enabled(&message, &fail, &umount)) {
-+		if (fail) {
-+			TH_LOG("Tracefs setup failed: %s", message);
-+			ASSERT_FALSE(fail);
-+		}
-+		SKIP(return, "Skipping: %s", message);
-+	}
-+
-+	self->umount = umount;
-+}
-+
-+FIXTURE_TEARDOWN(snapshot)
-+{
-+	__tracefs_write(TRACEFS_ROOT"/events/sched/sched_switch/trigger",
-+			"!snapshot");
-+	tracefs_reset();
-+
-+	if (self->umount)
-+		tracefs_unmount();
-+}
-+
-+TEST_F(snapshot, excludes_map)
-+{
-+	struct tracefs_cpu_map_desc map_desc;
-+	int cpu = sched_getcpu();
-+
-+	ASSERT_GE(cpu, 0);
-+	tracefs_write(TRACEFS_ROOT"/events/sched/sched_switch/trigger",
-+		      "snapshot");
-+	ASSERT_EQ(tracefs_cpu_map(&map_desc, cpu), -EBUSY);
-+}
-+
-+TEST_F(snapshot, excluded_by_map)
-+{
-+	struct tracefs_cpu_map_desc map_desc;
-+	int cpu = sched_getcpu();
-+
-+	ASSERT_EQ(tracefs_cpu_map(&map_desc, cpu), 0);
-+
-+	ASSERT_EQ(__tracefs_write(TRACEFS_ROOT"/events/sched/sched_switch/trigger",
-+				  "snapshot"), -EBUSY);
-+	ASSERT_EQ(__tracefs_write(TRACEFS_ROOT"/snapshot",
-+				  "1"), -EBUSY);
-+}
-+
-+TEST_HARNESS_MAIN
+> 
+> Gr{oetje,eeting}s,
+> 
+>                         Geert
+> 
+
 -- 
-2.44.0.396.g6e790dbe36-goog
+Damien Le Moal
+Western Digital Research
 
 
