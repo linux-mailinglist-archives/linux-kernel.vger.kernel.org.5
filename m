@@ -1,155 +1,163 @@
-Return-Path: <linux-kernel+bounces-119802-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-119803-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 95EB888CD20
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 20:24:54 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 746D288CD24
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 20:25:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C81011C6692E
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 19:24:53 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 142C51F87A52
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 19:25:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AF13213CFB3;
-	Tue, 26 Mar 2024 19:24:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 86F0313D26B;
+	Tue, 26 Mar 2024 19:24:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="Q7jcxuwX";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="K8FRbeLy"
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="B273VRIJ"
+Received: from mail-io1-f50.google.com (mail-io1-f50.google.com [209.85.166.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E465802;
-	Tue, 26 Mar 2024 19:24:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C422C13D251
+	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 19:24:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711481053; cv=none; b=aN+13xKWHwN3panO1qXjymU1DC8JKm40heM8Q8Vsg7ZufeluyGgAG73Rx9HVyuh03H3+eN2rHFCNW7ajBcXmK5rzNL/R/F6PzJMzW+SFKPir3xbOCOgPK2VfhiV/7jVKgXljaziXh/JKsHpVSzbSSR4otE20E1O7r48t5vrs7Q0=
+	t=1711481091; cv=none; b=HGMvALRZFukiFDpT+RcWeCJ6fMDOuqh+NtS++zlOky8i1LAtx/smGdbfNOj30KVrRKd41DvvusgGNDaoKZo0Xp8TqV5tM7e579fzYSOR6wk2Xzh+MGAAEj0IAT35UD/RpXO7MCiumHxPkDxpb81Ex2bo1c7lehx3idCd1f7LOd0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711481053; c=relaxed/simple;
-	bh=JCXdozmnkFPX1WkDRioLRzOTLAtfQiY/F1KQJhvEJvY=;
-	h=Date:From:To:Subject:Cc:In-Reply-To:References:MIME-Version:
-	 Message-ID:Content-Type; b=f33h1S9FMQBECaybYjvhS7lSSbTtT98bUGZBMniamgLtvPpOPc79pmIc0RXn+Z08C53h7NIdAILc/9ezgNzGeCZ32ELTENqvmmK2U9NsVfgqiGKA5CYq8If7Ks929m5oWXCXhm7y/gNXzA+pMw/5FSKhI0Rf3jAZ2kY3/tkU8BE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=Q7jcxuwX; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=K8FRbeLy; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-Date: Tue, 26 Mar 2024 19:24:07 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1711481048;
-	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-	 content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=n0bPrOBaybgV0zMx9zb0a7yAk6f3pE1zicCfdO6qy9U=;
-	b=Q7jcxuwXkPZWSSkZroA2Z/0ftNbGpVonkqN+0Y94C2EFuSbuPplow2V4QHU7ZwCrSQ4UKj
-	Lb47bBc5UNI+jnBIxnngDkKMUr9Ti7FBs54l9ZrkmPrOxlABXZPq5+X/0+FUxd4dLjPNJP
-	akFOEUPdRj8J6GMyuaK6QbBC5IaujYpq4lU5ePGyK8bGvHrhUWSWoLC0amKkQM06fS09za
-	YuAwgA0mLzZT4pncltz4Z/jHpRyS56c9DWPtbcUw4zbrv0kJ7c6cUzg/yVP4ECkyobrJpe
-	cXgUFKhaSZROj5EnE/kfh+X97s7dQ+QcaBUpxoyc0WeAkMxP78pGoBgeYDSmdg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1711481048;
-	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-	 content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=n0bPrOBaybgV0zMx9zb0a7yAk6f3pE1zicCfdO6qy9U=;
-	b=K8FRbeLys8ng03ART++ksn/EqD981zwAXjoLO81KvyJNm8d3JV7DUDpJWuo4ICQt/m1h95
-	2KS4g5wr0noYffBA==
-From: "tip-bot2 for Shrikanth Hegde" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To: linux-tip-commits@vger.kernel.org
-Subject: [tip: sched/core] sched/fair: Simplify the continue_balancing logic
- in sched_balance_newidle()
-Cc: Shrikanth Hegde <sshegde@linux.ibm.com>, Ingo Molnar <mingo@kernel.org>,
- Dietmar Eggemann <dietmar.eggemann@arm.com>, x86@kernel.org,
- linux-kernel@vger.kernel.org
-In-Reply-To: <20240325153926.274284-1-sshegde@linux.ibm.com>
-References: <20240325153926.274284-1-sshegde@linux.ibm.com>
+	s=arc-20240116; t=1711481091; c=relaxed/simple;
+	bh=nJEBYeRpGreh1QGrVI8xb2lqButvSZ322Cq+521//Gw=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=LFnzQwhEMVxKECBX/1BiCs4BcHqrTlFdZELcYSV8FHhpqYN7qUg01BbVOS3gvzRS4BhbHg7bYfu9RPJRIfdEkNM8hDvfWQ0qXYbMwq9KgmDP+y+wl8SYAPTbDqnq3KSEZn4IOSHn3P+lOtxskmhGN5b5U5MS1FGraSoQih8Wlyo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linuxfoundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=B273VRIJ; arc=none smtp.client-ip=209.85.166.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linuxfoundation.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
+Received: by mail-io1-f50.google.com with SMTP id ca18e2360f4ac-7cc0e831e11so85594639f.1
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 12:24:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxfoundation.org; s=google; t=1711481089; x=1712085889; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=ldMsiEP3mMIpydboV2AKm9Ciyx4AVPzGnmoIpfuSLAY=;
+        b=B273VRIJvuaLdT0PcUdpfdXj7ikTwf5++cK/1AeEyiFcAP4cxK4mM7r95Uv9GLcZ9U
+         mdmMmEax/pay4QZNK4/JPbS19fCH7XICDqc7KX39MGMT6xIS4xNdZvO999PyU0uR0s5P
+         TynnZLio/9xEancMrDWcP4XAzEBgBsKQoq1qw=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711481089; x=1712085889;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=ldMsiEP3mMIpydboV2AKm9Ciyx4AVPzGnmoIpfuSLAY=;
+        b=ttbOvLnqJ9Wk85ebqMs6VnDSqiX6BYzQhl80OIN+xhJLRAZRbW3fTg0Pg7DxZgJbLy
+         GwvWHe6HDUCC7F8Ny6OUNCqyTV7uhASn7P4FvF9uUTLfKhlp3piizHPhcFCGd0pZ4mI6
+         1r7Syaopf80pWWj+/zrWRRvjIwgRwbjtsRH8V4Sm7IROoqVRW3ufoRGU2n+Ayve8dY1A
+         xK6mV3xGZYV0W3Y8uK8oYCTrAjNAPaWpV+1tCrNpnVRAwF4gaQfSopIN1u3RKeguInM1
+         /d7fHtZB/PFPStD1FSFeuv+8xR/aGTTohJZ3xIWebIUTjhwkw8lpsfrZeGJYri/KQi9d
+         NkGw==
+X-Gm-Message-State: AOJu0YyYzzmEtojoDI/6DUEUQmkx/GO1bY6gx9JhrP5lZul/s+SJt3Up
+	49E/8U3ZM7QE9hfLvG/a1Y2yUDsYhTXwiLC2Mm7+Ty2N9EDY9VYhcunZjuOb9oQ=
+X-Google-Smtp-Source: AGHT+IFUHe5xOEXL/Du4BCSSxq1iQ4534XkkfdPWlPWgaWBt+Z+AC8GWX/FuKYk9lSWgJA/RBthZ0w==
+X-Received: by 2002:a92:dc4f:0:b0:368:a917:168f with SMTP id x15-20020a92dc4f000000b00368a917168fmr1220395ilq.3.1711481088841;
+        Tue, 26 Mar 2024 12:24:48 -0700 (PDT)
+Received: from [192.168.1.128] ([38.175.170.29])
+        by smtp.gmail.com with ESMTPSA id v12-20020a92d24c000000b00366bb13bd89sm3115775ilg.41.2024.03.26.12.24.48
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 26 Mar 2024 12:24:48 -0700 (PDT)
+Message-ID: <54e5ac2c-d844-47c2-b811-03d949554515@linuxfoundation.org>
+Date: Tue, 26 Mar 2024 13:24:47 -0600
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-ID: <171148104719.10875.2014914765830035022.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe:
- Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Precedence: bulk
-Content-Type: text/plain; charset="utf-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] selftests/ftrace: Fix event filter target_func selection
+Content-Language: en-US
+To: "Masami Hiramatsu (Google)" <mhiramat@kernel.org>,
+ Mark Rutland <mark.rutland@arm.com>, Shuah Khan <shuah@kernel.org>
+Cc: linux-kernel@vger.kernel.org, aishwarya.tcv@arm.com,
+ linux-kselftest@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+ mathieu.desnoyers@efficios.com, rostedt@goodmis.org,
+ Shuah Khan <skhan@linuxfoundation.org>
+References: <20240320141844.1779984-1-mark.rutland@arm.com>
+ <20240321090950.f96e6b3918bb2dfd121db138@kernel.org>
+From: Shuah Khan <skhan@linuxfoundation.org>
+In-Reply-To: <20240321090950.f96e6b3918bb2dfd121db138@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 
-The following commit has been merged into the sched/core branch of tip:
+On 3/20/24 18:09, Masami Hiramatsu (Google) wrote:
+> On Wed, 20 Mar 2024 14:18:44 +0000
+> Mark Rutland <mark.rutland@arm.com> wrote:
+> 
+>> The event filter function test has been failing in our internal test
+>> farm:
+>>
+>> | # not ok 33 event filter function - test event filtering on functions
+>>
+>> Running the test in verbose mode indicates that this is because the test
+>> erroneously determines that kmem_cache_free() is the most common caller
+>> of kmem_cache_free():
+>>
+>>    # # + cut -d: -f3 trace
+>>    # # + sed s/call_site=([^+]*)+0x.*/1/
+>>    # # + sort
+>>    # # + uniq -c
+>>    # # + sort
+>>    # # + tail -n 1
+>>    # # + sed s/^[ 0-9]*//
+>>    # # + target_func=kmem_cache_free
+>>
+>> .. and as kmem_cache_free() doesn't call itself, setting this as the
+>> filter function for kmem_cache_free() results in no hits, and
+>> consequently the test fails:
+>>
+>>    # # + grep kmem_cache_free trace
+>>    # # + grep kmem_cache_free
+>>    # # + wc -l
+>>    # # + hitcnt=0
+>>    # # + grep kmem_cache_free trace
+>>    # # + grep -v kmem_cache_free
+>>    # # + wc -l
+>>    # # + misscnt=0
+>>    # # + [ 0 -eq 0 ]
+>>    # # + exit_fail
+>>
+>> This seems to be because the system in question has tasks with ':' in
+>> their name (which a number of kernel worker threads have). These show up
+>> in the trace, e.g.
+>>
+>>    test:.sh-1299    [004] .....  2886.040608: kmem_cache_free: call_site=putname+0xa4/0xc8 ptr=000000000f4d22f4 name=names_cache
+>>
+>> .. and so when we try to extact the call_site with:
+>>
+>>    cut -d: -f3 trace | sed 's/call_site=\([^+]*\)+0x.*/\1/'
+>>
+>> .. the 'cut' command will extrace the column containing
+>> 'kmem_cache_free' rather than the column containing 'call_site=...', and
+>> the 'sed' command will leave this unchanged. Consequently, the test will
+>> decide to use 'kmem_cache_free' as the filter function, resulting in the
+>> failure seen above.
+>>
+>> Fix this by matching the 'call_site=<func>' part specifically to extract
+>> the function name.
+>>
+> 
+> Looks good to me.
+> 
+> Acked-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+> 
+> I think this should be a fix because test task name can have ':'.
+> 
+> Fixes: eb50d0f250e9 ("selftests/ftrace: Choose target function for filter test from samples")
+> Cc: stable@vger.kernel.org
+> 
+> Shuah, can you pick this as a fix?
+> 
 
-Commit-ID:     c829d6818b60c591f70c060b2bb75d76cf0cec6d
-Gitweb:        https://git.kernel.org/tip/c829d6818b60c591f70c060b2bb75d76cf0cec6d
-Author:        Shrikanth Hegde <sshegde@linux.ibm.com>
-AuthorDate:    Mon, 25 Mar 2024 21:09:26 +05:30
-Committer:     Ingo Molnar <mingo@kernel.org>
-CommitterDate: Tue, 26 Mar 2024 20:16:20 +01:00
+Applied to linux-ksleftest fixes for next rc
 
-sched/fair: Simplify the continue_balancing logic in sched_balance_newidle()
+thanks,
+-- Shuah
 
-newidle(CPU_NEWLY_IDLE) balancing doesn't stop the load-balancing if the
-continue_balancing flag is reset, but the other two balancing (IDLE, BUSY)
-cases do that.
-
-newidle balance stops the load balancing if rq has a task or there
-is wakeup pending. The same checks are present in should_we_balance for
-newidle. Hence use the return value and simplify continue_balancing
-mechanism for newidle. Update the comment surrounding it as well.
-
-No change in functionality intended.
-
-Signed-off-by: Shrikanth Hegde <sshegde@linux.ibm.com>
-Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Reviewed-by: Dietmar Eggemann <dietmar.eggemann@arm.com>
-Link: https://lore.kernel.org/r/20240325153926.274284-1-sshegde@linux.ibm.com
----
- kernel/sched/fair.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
-
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index 24a7530..1856e58 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -12358,6 +12358,7 @@ static int sched_balance_newidle(struct rq *this_rq, struct rq_flags *rf)
- {
- 	unsigned long next_balance = jiffies + HZ;
- 	int this_cpu = this_rq->cpu;
-+	int continue_balancing = 1;
- 	u64 t0, t1, curr_cost = 0;
- 	struct sched_domain *sd;
- 	int pulled_task = 0;
-@@ -12372,8 +12373,9 @@ static int sched_balance_newidle(struct rq *this_rq, struct rq_flags *rf)
- 		return 0;
- 
- 	/*
--	 * We must set idle_stamp _before_ calling idle_balance(), such that we
--	 * measure the duration of idle_balance() as idle time.
-+	 * We must set idle_stamp _before_ calling sched_balance_rq()
-+	 * for CPU_NEWLY_IDLE, such that we measure the this duration
-+	 * as idle time.
- 	 */
- 	this_rq->idle_stamp = rq_clock(this_rq);
- 
-@@ -12412,7 +12414,6 @@ static int sched_balance_newidle(struct rq *this_rq, struct rq_flags *rf)
- 
- 	rcu_read_lock();
- 	for_each_domain(this_cpu, sd) {
--		int continue_balancing = 1;
- 		u64 domain_cost;
- 
- 		update_next_balance(sd, &next_balance);
-@@ -12438,8 +12439,7 @@ static int sched_balance_newidle(struct rq *this_rq, struct rq_flags *rf)
- 		 * Stop searching for tasks to pull if there are
- 		 * now runnable tasks on this rq.
- 		 */
--		if (pulled_task || this_rq->nr_running > 0 ||
--		    this_rq->ttwu_pending)
-+		if (pulled_task || !continue_balancing)
- 			break;
- 	}
- 	rcu_read_unlock();
 
