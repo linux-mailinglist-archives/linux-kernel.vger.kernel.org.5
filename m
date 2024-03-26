@@ -1,140 +1,151 @@
-Return-Path: <linux-kernel+bounces-119575-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-119576-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2640988CA9D
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 18:21:48 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id D7E8A88CA9F
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 18:21:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BBAC41F82E44
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 17:21:47 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 933A832411C
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 17:21:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9188A1CD16;
-	Tue, 26 Mar 2024 17:21:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Ria7CDjh"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 52BC61CD2D;
+	Tue, 26 Mar 2024 17:21:56 +0000 (UTC)
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D4F1617BA0;
-	Tue, 26 Mar 2024 17:21:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 84F811D543;
+	Tue, 26 Mar 2024 17:21:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.176.79.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711473701; cv=none; b=c8HSqMcCBZuit11Mio3ue9Zur+4oRaYUwgJ67TUo9m5a4pVN6p5pfWxslv7E/d2ZaT+HamynyH+a5EIiOiPgo9C87LGWDv5ng+FlsGR+jYlsV3kB8d9TZru47GakxZZOf7gbUK9P+Bk8YSNBhbarHX7Lifrhsoz4NodLxJyx4js=
+	t=1711473715; cv=none; b=JWNLpe6miG4lA3D9fBb9+hMj92ScG3eL5TBQiXyO1fVtwO86gwepFktBo2by+jKQM90DsIYFfalRY7+jBy3+gugnT9ssUxgJXXlVotjXVm27AVbDHLwuSuuryJ1cxCkvvz1+92/0NNIRKCzx16JlNycHEc34iFNVCyQoPpTwF6Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711473701; c=relaxed/simple;
-	bh=Y2psVmmKz1IVlz2128aKGOfPLJwSPX4Xp8L0iyNSHXg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=WkxD6UD6C00107XOZId2QlYQYE3xJ9jVNB871yAg9Sf2dQtDlZYSXaaOpNBSxbADvDgYlj2EwlZnrD6FMW2ROWuk1hLqYOV39HexxTlydSSDzVyV+ssefY60Bp4nlSeSjp4eKIYvzpnWWzNnCu9H2yQ94DVtUnAa1tmthZgBSxg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Ria7CDjh; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 54CBDC433F1;
-	Tue, 26 Mar 2024 17:21:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711473701;
-	bh=Y2psVmmKz1IVlz2128aKGOfPLJwSPX4Xp8L0iyNSHXg=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=Ria7CDjhdCEvJpQdokB9O8PlgR9VLZJzLYOIlMZCdtpy7kjHFDktOj9wx9xxoIxjY
-	 Drjm+nVZAgdaY/LGr7ruUXIkjlsrp+MCT24lwKVI5fyMgSiJGiVX/3MoF64X5SuZES
-	 LJaIWm6SA+hlbHxL09dvBETD4pq7NjxebfMaRofF4gKa8HevLZlo+gR1TDyLQdMlcU
-	 9W93oHL9OOu15RrBASTjhOxShjdWg55uEtbUWGPRQ2d0KtbdalOkugrFIbnqoK1tXm
-	 O24REZM2D/HXGmqhqQ7U54aqz6CEHd3gKGjkEg8nZUtT6iPaxRYm0yhgrU8P7Nmet6
-	 hqzlMflXAaDQw==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 4B673CE129B; Tue, 26 Mar 2024 10:21:40 -0700 (PDT)
-Date: Tue, 26 Mar 2024 10:21:40 -0700
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Boqun Feng <boqun.feng@gmail.com>
-Cc: Johannes Berg <johannes@sipsolutions.net>, rcu@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Frederic Weisbecker <frederic@kernel.org>,
-	Josh Triplett <josh@joshtriplett.org>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Johannes Berg <johannes.berg@intel.com>
-Subject: Re: [PATCH v2] rcu: mollify sparse with RCU guard
-Message-ID: <df1ecb31-fed2-4069-93bf-8773f30842b2@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <20240325183907.7205bf36489a.Ic3ac66ff5d6a9bd8a610858060117e1364641a3f@changeid>
- <ZgG3UC-x8wAIOdd3@boqun-archlinux>
+	s=arc-20240116; t=1711473715; c=relaxed/simple;
+	bh=wHPXTdCN/SeU9t8rC4jveK0ET7TysbQBSYGX7I9XLKc=;
+	h=Date:From:To:CC:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=Yj8ZTjQcZeKLPRoD5KFphlIpqolDWiZIVzDsf1aDOb9hYKUQQZEoCHhQriQpba0BdbO/WUwrHO7lofMYmXtRWLm56Yn5bAW3RJSgNRCTiu0qAy9ShNzmVCvRJzHHlK5bCaiOCgOEdD4NjM8cmwoioFocIh9qn7cELkUggIJ+mRA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=185.176.79.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.18.186.216])
+	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4V3xQt1sGzz6JB9Z;
+	Wed, 27 Mar 2024 01:20:54 +0800 (CST)
+Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
+	by mail.maildlp.com (Postfix) with ESMTPS id 32087140A90;
+	Wed, 27 Mar 2024 01:21:51 +0800 (CST)
+Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
+ (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.35; Tue, 26 Mar
+ 2024 17:21:50 +0000
+Date: Tue, 26 Mar 2024 17:21:49 +0000
+From: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To: David Lechner <dlechner@baylibre.com>
+CC: Jonathan Cameron <jic23@kernel.org>, Michael Hennerich
+	<Michael.Hennerich@analog.com>, Nuno =?ISO-8859-1?Q?S=E1?=
+	<nuno.sa@analog.com>, <linux-iio@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] iio: adc: ad7944: use spi_optimize_message()
+Message-ID: <20240326172149.00004247@Huawei.com>
+In-Reply-To: <20240325-ad7944-spi-optimize-message-v1-1-cded69b9e27f@baylibre.com>
+References: <20240325-ad7944-spi-optimize-message-v1-1-cded69b9e27f@baylibre.com>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZgG3UC-x8wAIOdd3@boqun-archlinux>
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: lhrpeml100006.china.huawei.com (7.191.160.224) To
+ lhrpeml500005.china.huawei.com (7.191.163.240)
 
-On Mon, Mar 25, 2024 at 10:41:36AM -0700, Boqun Feng wrote:
-> On Mon, Mar 25, 2024 at 06:39:08PM +0100, Johannes Berg wrote:
-> > From: Johannes Berg <johannes.berg@intel.com>
-> > 
-> > When using "guard(rcu)();" sparse will complain, because even
-> > though it now understands the cleanup attribute, it doesn't
-> > evaluate the calls from it at function exit, and thus doesn't
-> > count the context correctly.
-> > 
-> > Given that there's a conditional in the resulting code:
-> > 
-> >   static inline void class_rcu_destructor(class_rcu_t *_T)
-> >   {
-> >       if (_T->lock) {
-> >           rcu_read_unlock();
-> >       }
-> >   }
-> > 
-> > it seems that even trying to teach sparse to evalulate the
-> > cleanup attribute function it'd still be difficult to really
-> > make it understand the full context here.
-> > 
-> > Suppress the sparse warning by just releasing the context in
-> > the acquisition part of the function, after all we know it's
-> > safe with the guard, that's the whole point of it.
-> > 
-> > Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+On Mon, 25 Mar 2024 17:03:13 -0500
+David Lechner <dlechner@baylibre.com> wrote:
+
+> This modifies the ad7944 driver to use spi_optimize_message() to reduce
+> CPU usage and increase the max sample rate by avoiding repeating
+> validation of the spi message on each transfer.
 > 
-> Reviewed-by: Boqun Feng <boqun.feng@gmail.com>
+> Signed-off-by: David Lechner <dlechner@baylibre.com>
+One buglet inline. Otherwise looks fine to me.
 
-Queued, thank you both!
 
-							Thanx, Paul
+Jonathan
 
-> Regards,
-> Boqun
+> ---
+>  drivers/iio/adc/ad7944.c | 177 +++++++++++++++++++++++++++--------------------
+>  1 file changed, 103 insertions(+), 74 deletions(-)
 > 
-> > ---
-> > v2: add a comment after discussion with Boqun
-> > 
-> > ---
-> >  include/linux/rcupdate.h | 14 +++++++++++++-
-> >  1 file changed, 13 insertions(+), 1 deletion(-)
-> > 
-> > diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
-> > index 0746b1b0b663..6a3c52b3c180 100644
-> > --- a/include/linux/rcupdate.h
-> > +++ b/include/linux/rcupdate.h
-> > @@ -1059,6 +1059,18 @@ rcu_head_after_call_rcu(struct rcu_head *rhp, rcu_callback_t f)
-> >  extern int rcu_expedited;
-> >  extern int rcu_normal;
-> >  
-> > -DEFINE_LOCK_GUARD_0(rcu, rcu_read_lock(), rcu_read_unlock())
-> > +DEFINE_LOCK_GUARD_0(rcu,
-> > +		    do {
-> > +			rcu_read_lock();
-> > +			/*
-> > +			 * sparse doesn't call the cleanup function,
-> > +			 * so just release immediately and don't track
-> > +			 * the context. We don't need to anyway, since
-> > +			 * the whole point of the guard is to not need
-> > +			 * the explicit unlock.
-> > +			 */
-> > +			__release(RCU);
-> > +		    } while(0),
-> > +		    rcu_read_unlock())
-> >  
-> >  #endif /* __LINUX_RCUPDATE_H */
-> > -- 
-> > 2.44.0
-> > 
+> diff --git a/drivers/iio/adc/ad7944.c b/drivers/iio/adc/ad7944.c
+> index 261a3f645fd8..c767401712af 100644
+> --- a/drivers/iio/adc/ad7944.c
+> +++ b/drivers/iio/adc/ad7944.c
+> @@ -51,6 +51,8 @@ static const char * const ad7944_spi_modes[] = {
+>  struct ad7944_adc {
+>  	struct spi_device *spi;
+>  	enum ad7944_spi_mode spi_mode;
+> +	struct spi_transfer xfers[3];
+> +	struct spi_message msg;
+>  	/* Chip-specific timing specifications. */
+>  	const struct ad7944_timing_spec *timing_spec;
+>  	/* GPIO connected to CNV pin. */
+> @@ -130,6 +132,88 @@ AD7944_DEFINE_CHIP_INFO(ad7985, ad7944, 16, 0);
+>  /* fully differential */
+>  AD7944_DEFINE_CHIP_INFO(ad7986, ad7986, 18, 1);
+>  
+> +static void ad7944_unoptimize_msg(void *msg)
+> +{
+> +	spi_unoptimize_message(msg);
+> +}
+> +
+> +static int ad7944_3wire_cs_mode_init_msg(struct device *dev, struct ad7944_adc *adc,
+> +					 const struct iio_chan_spec *chan)
+> +{
+> +	unsigned int t_conv_ns = adc->always_turbo ? adc->timing_spec->turbo_conv_ns
+> +						   : adc->timing_spec->conv_ns;
+> +	struct spi_transfer *xfers = adc->xfers;
+> +	int ret;
+> +
+> +	/*
+> +	 * NB: can get better performance from some SPI controllers if we use
+> +	 * the same bits_per_word in every transfer.
+> +	 */
+> +	xfers[0].bits_per_word = chan->scan_type.realbits;
+> +	/*
+> +	 * CS is tied to CNV and we need a low to high transition to start the
+> +	 * conversion, so place CNV low for t_QUIET to prepare for this.
+> +	 */
+> +	xfers[0].delay.value = T_QUIET_NS;
+> +	xfers[0].delay.unit = SPI_DELAY_UNIT_NSECS;
+> +
+> +	/*
+> +	 * CS has to be high for full conversion time to avoid triggering the
+> +	 * busy indication.
+> +	 */
+> +	xfers[1].cs_off = 1;
+> +	xfers[1].delay.value = t_conv_ns;
+> +	xfers[1].delay.unit = SPI_DELAY_UNIT_NSECS;
+> +	xfers[0].bits_per_word = chan->scan_type.realbits;
+
+0 ?
+
+> +
+> +	/* Then we can read the data during the acquisition phase */
+> +	xfers[2].rx_buf = &adc->sample.raw;
+> +	xfers[2].len = BITS_TO_BYTES(chan->scan_type.storagebits);
+> +	xfers[2].bits_per_word = chan->scan_type.realbits;
+> +
+> +	spi_message_init_with_transfers(&adc->msg, xfers, 3);
+> +
+> +	ret = spi_optimize_message(adc->spi, &adc->msg);
+> +	if (ret)
+> +		return ret;
+> +
+> +	return devm_add_action_or_reset(dev, ad7944_unoptimize_msg, &adc->msg);
+> +}
+
+
 
