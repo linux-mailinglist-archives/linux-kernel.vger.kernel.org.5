@@ -1,172 +1,144 @@
-Return-Path: <linux-kernel+bounces-118799-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-118862-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 18A6088BF83
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 11:31:51 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6895C88C069
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 12:18:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C88012E3449
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 10:31:49 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 99608B228C2
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 11:18:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 73C2880021;
-	Tue, 26 Mar 2024 10:29:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="Jct6hplu"
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E9F294E1C6;
+	Tue, 26 Mar 2024 11:18:03 +0000 (UTC)
+Received: from mo-csw-fb.securemx.jp (mo-csw-fb1122.securemx.jp [210.130.202.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 36D3773533;
-	Tue, 26 Mar 2024 10:29:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 92C8D803;
+	Tue, 26 Mar 2024 11:18:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=210.130.202.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711448986; cv=none; b=oUfto7VmeI6JnPUnsXhf0pv4z31XcYp8IxpAqgvTNItWKYZTh+O7Mkp8+cupcqVMYGeIq8qTfiBN0bhP9QfQQ6kxo4egPEF5+1QjYSb3JJa1u7TAjGJzUbrMFmmQxxOKSzHcjjho4NxkAqeHGkoD8psYnCx+VmMvZFWpNa4nYMo=
+	t=1711451883; cv=none; b=p7bLdt+kjYKHNxypxTynVvz0zGPlgvj1s9C2ZbamjvIXH09e158BX4QqERIWI3K6Ur/BjJHcwIyG0qUd9yC9YMjmZTXy7EzpUcbqQ4PgA0OtX77x0V2Y5ppwb3Sohxk3WH2sE5tYtc1iP3JebcHDI+GHBUTcImbZzY2BOCvXa6Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711448986; c=relaxed/simple;
-	bh=CzpPya17rTt1Zek9UJn68nt2er922OD0kuS2fjisXSc=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=up2P31KK+wImepA1GwMtnPmjc2dmnYQFj3m0TwI+lwa/A6RNlMSMUyCn4oS1ezjcbtwU14YHNca/O23EjM1Ea1QJrxDi1sJDCD+ktkfUCypAGmYpgzA8ZdMxwoIzaPPMuqyHf8IyfW0V3Voj+wRZdKbJh7Adp+/k+I5t+uHt32M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=Jct6hplu; arc=none smtp.client-ip=205.220.180.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279871.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 42Q6Zcxr015198;
-	Tue, 26 Mar 2024 10:29:24 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	from:to:cc:subject:date:message-id:in-reply-to:references
-	:mime-version:content-transfer-encoding:content-type; s=
-	qcppdkim1; bh=O1jhtF+6LeV7nIcb4IBhtIsdKOL+6JFICh68FWa7Nc4=; b=Jc
-	t6hpluGpH/0IyERK0hDzq2dEn4DLId35Nwtlk9acTzCLgJR3VcsgLDTLUMjp1VX9
-	+YFgYqV6rWe7JA8smY5At7b5u3gpn3DYjDBWLARHlcVuCjtn5ACtqK9Jew1D1o64
-	wu4Aywoxth30L6COSxXVlmkJr/dO8NVEeoELx3Mkb48y5kivw22dlsUBw231epPH
-	tkm1KciYgq1OEMjb7DOOPEGxlni5zpbDN59qVkldxlkbUVyhVDpIMRSip0ZMCcJz
-	CjuTiFW+PZduwFqZ8BRSxdinZDSGc995+7wiT5OTlkOLAU5Ne8GmqcpyXXiSdLOP
-	MR3lO2y1bS8IrQ7UEzeg==
-Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3x3s7n0mkq-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 26 Mar 2024 10:29:24 +0000 (GMT)
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-	by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 42QATNvH019504
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 26 Mar 2024 10:29:23 GMT
-Received: from hu-kriskura-hyd.qualcomm.com (10.80.80.8) by
- nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Tue, 26 Mar 2024 03:29:17 -0700
-From: Krishna Kurapati <quic_kriskura@quicinc.com>
-To: Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Rob Herring
-	<robh@kernel.org>, Bjorn Andersson <andersson@kernel.org>,
-        Wesley Cheng
-	<quic_wcheng@quicinc.com>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        "Greg
- Kroah-Hartman" <gregkh@linuxfoundation.org>,
-        Conor Dooley
-	<conor+dt@kernel.org>,
-        Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
-        Felipe Balbi
-	<balbi@kernel.org>, Johan Hovold <johan@kernel.org>
-CC: <devicetree@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>,
-        <linux-usb@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <quic_ppratap@quicinc.com>, <quic_jackp@quicinc.com>,
-        Krishna Kurapati
-	<quic_kriskura@quicinc.com>,
-        Johan Hovold <johan+linaro@kernel.org>
-Subject: [PATCH v17 9/9] usb: dwc3: qcom: Add multiport suspend/resume support for wrapper
-Date: Tue, 26 Mar 2024 15:58:09 +0530
-Message-ID: <20240326102809.2940123-10-quic_kriskura@quicinc.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240326102809.2940123-1-quic_kriskura@quicinc.com>
-References: <20240326102809.2940123-1-quic_kriskura@quicinc.com>
+	s=arc-20240116; t=1711451883; c=relaxed/simple;
+	bh=EJ2ztyq7sMa6fZAUWBIpzG0seKO1DHeU1ApmIbIb8jU=;
+	h=From:To:CC:Subject:Date:Message-ID:Content-Type:MIME-Version; b=bmvj/bqiaUQQYq9w2OpXBONuUZMIpED5YoOrK+rsHDWJoBX8bCK7WStr3cmNni4P86hfPQcf/5p0jd199vha5tOcYNf8WSczTlSC2LTZUSBS3ZBAgaMyZm8j3IOR/qDVwjT/nUSy4ooXW4DOGIFld0tPucOW41QZSl6waG+IYuI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=kioxia.com; spf=pass smtp.mailfrom=kioxia.com; arc=none smtp.client-ip=210.130.202.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=kioxia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kioxia.com
+Received: by mo-csw-fb.securemx.jp (mx-mo-csw-fb1122) id 42QATikT899004; Tue, 26 Mar 2024 19:29:44 +0900
+Received: by mo-csw.securemx.jp (mx-mo-csw1121) id 42QATJjK2377118; Tue, 26 Mar 2024 19:29:19 +0900
+X-Iguazu-Qid: 2rWgdkpBNplgg44mI6
+X-Iguazu-QSIG: v=2; s=0; t=1711448958; q=2rWgdkpBNplgg44mI6; m=EDiCsAsvOikaimQ8/2iYLoxgNF2e7jwkNUA59DB6gvs=
+Received: from CNN1EMTA02.test.kioxia.com ([202.248.33.144])
+	by relay.securemx.jp (mx-mr1120) id 42QATHHT2927459
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+	Tue, 26 Mar 2024 19:29:18 +0900
+Received: from Switcher-Post_Send (gateway [10.232.20.1])
+	by CNN1EMTA02.test.kioxia.com (Postfix) with ESMTP id 942E12F028;
+	Tue, 26 Mar 2024 19:29:17 +0900 (JST)
+Received: from CNN1ESTR04.kioxia.com (localhost [127.0.0.1])
+	by Switcher-Post_Send (Postfix) with ESMTP id 5C5451900001E2;
+	Tue, 26 Mar 2024 19:16:51 +0900 (JST)
+Received: from localhost [127.0.0.1] 
+	 by CNN1ESTR04.kioxia.com with ESMTP id 0003VAAAAAA01LH2;
+	 Tue, 26 Mar 2024 19:16:51 +0900
+Received: from CNN1EXMB04.r1.kioxia.com (CNN1EXMB04.r1.kioxia.com [10.232.20.153])
+	by Switcher-Pre_Send (Postfix) with ESMTP id 50F99A29B6838;
+	Tue, 26 Mar 2024 19:16:51 +0900 (JST)
+Received: from CNN1EXMB03.r1.kioxia.com (10.232.20.152) by
+ CNN1EXMB04.r1.kioxia.com (10.232.20.153) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Tue, 26 Mar 2024 19:29:16 +0900
+Received: from CNN1EXMB03.r1.kioxia.com ([10.13.100.22]) by
+ CNN1EXMB03.r1.kioxia.com ([10.13.100.22]) with mapi id 15.01.2507.035; Tue,
+ 26 Mar 2024 19:29:16 +0900
+From: tada keisuke <keisuke1.tada@kioxia.com>
+To: "song@kernel.org" <song@kernel.org>,
+        "yukuai3@huawei.com"
+	<yukuai3@huawei.com>
+CC: "linux-raid@vger.kernel.org" <linux-raid@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: [PATCH 00/11] md: avoid counter operation conflicts
+Thread-Topic: [PATCH 00/11] md: avoid counter operation conflicts
+Thread-Index: Adp/Y1jSZkz1OENpR0iwTWSI17JctA==
+Date: Tue, 26 Mar 2024 10:29:16 +0000
+Message-ID: <a022f547c43e40e2b9f0aebb2bd0bfa8@kioxia.com>
+Accept-Language: ja-JP, en-US
+Content-Language: ja-JP
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+x-tm-as-product-ver: ISME-14.0.0.2080-9.0.1002-28274.000
+x-tm-as-result: No-10--7.718100-8.000000
+x-tmase-matchedrid: qiJ73D9abaWmagT1k9kBpgrcxrzwsv5uXPK9y3z82GskZ/X003mSjrWO
+	DdZ1PDmEWdeP1D3rX+FqrRvLBntyL1zsSetYc4qWzYK5U+QI3O430KSHUeaVmFGJGXffuLdvhSU
+	mXGVMhP4smgs5IfYoxnf/bfV/o9zNyPJ7XPXPXTEHz0YoejTedncF/0kiqyh4OhR0VsdhRrDJw6
+	G9NdOWi5KQhRnJRBQncqHNBgW+pKyQB2N+lzcDUufOVcxjDhcwPcCXjNqUmkXCttcwYNipX6pqC
+	pA94QmM1BDRiB4eeCPyEnOe3ra2BHC+EljyibT0ZaHJFVY9zjGXEWdkgv56pw==
+x-tm-as-user-approved-sender: No
+x-tm-as-user-blocked-sender: No
+x-tmase-result: 10--7.718100-8.000000
+x-tmase-version: ISME-14.0.0.2080-9.0.1002-28274.000
+x-tm-snts-smtp: 09B56E109C13C6AB31B9438989AF5091A938865B184494FE7CD9F52324406A2C2000:8
+Content-Type: text/plain; charset="iso-2022-jp"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: KqcLm5xMXE9mP6QZ7WPg-9XLeGkjHZad
-X-Proofpoint-ORIG-GUID: KqcLm5xMXE9mP6QZ7WPg-9XLeGkjHZad
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-03-26_04,2024-03-21_02,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- malwarescore=0 adultscore=0 suspectscore=0 mlxscore=0 priorityscore=1501
- impostorscore=0 clxscore=1015 phishscore=0 mlxlogscore=999 bulkscore=0
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2403210001 definitions=main-2403260071
+X-CrossPremisesHeadersFilteredBySendConnector: CNN1EXMB04.r1.kioxia.com
+X-OrganizationHeadersPreserved: CNN1EXMB04.r1.kioxia.com
 
-Power event IRQ is used for wakeup in cases:
-a) where the controller is super speed capable and missing an
-ss_phy interrupt.
-b) where the GIC is not capable of detecting DP/DM hs phy irq's.
+Currently, active_aligned_reads and nr_pending used as counters are atomic =
+types.
+Therefore, when inc/dec in a multi-core results in conflicts.
 
-Power event IRQ stat register indicates whether high speed phy
-entered and exited L2 successfully during suspend and resume.
-Indicate the same for all ports of multiport.
+To solve this problem, use "percpu_ref" counters that can avoid conflicts a=
+nd maintain consistency.
 
-Signed-off-by: Krishna Kurapati <quic_kriskura@quicinc.com>
-Reviewed-by: Johan Hovold <johan+linaro@kernel.org>
----
- drivers/usb/dwc3/dwc3-qcom.c | 22 +++++++++++++++++-----
- 1 file changed, 17 insertions(+), 5 deletions(-)
+Switch modes of percpu_ref to achieve both consistency and conflict avoidan=
+ce.
+During normal operations such as inc/dec, it operates as percpu mode.
+When consistency is required, it operates as atomic mode.
+The operations that require consistency are as follows:
+=1B$B!&=1B(BZero check for the counter
+=1B$B!&=1B(BAll operations in RAID 1/10
 
-diff --git a/drivers/usb/dwc3/dwc3-qcom.c b/drivers/usb/dwc3/dwc3-qcom.c
-index f8d3c9ecf461..2d06f83a4f4b 100644
---- a/drivers/usb/dwc3/dwc3-qcom.c
-+++ b/drivers/usb/dwc3/dwc3-qcom.c
-@@ -52,6 +52,13 @@
- #define APPS_USB_AVG_BW 0
- #define APPS_USB_PEAK_BW MBps_to_icc(40)
- 
-+static const u32 pwr_evnt_irq_stat_reg[DWC3_MAX_PORTS] = {
-+	0x58,
-+	0x1dc,
-+	0x228,
-+	0x238,
-+};
-+
- struct dwc3_qcom_port {
- 	int			qusb2_phy_irq;
- 	int			dp_hs_phy_irq;
-@@ -421,9 +428,11 @@ static int dwc3_qcom_suspend(struct dwc3_qcom *qcom, bool wakeup)
- 	if (qcom->is_suspended)
- 		return 0;
- 
--	val = readl(qcom->qscratch_base + PWR_EVNT_IRQ_STAT_REG);
--	if (!(val & PWR_EVNT_LPM_IN_L2_MASK))
--		dev_err(qcom->dev, "HS-PHY not in L2\n");
-+	for (i = 0; i < qcom->num_ports; i++) {
-+		val = readl(qcom->qscratch_base + pwr_evnt_irq_stat_reg[i]);
-+		if (!(val & PWR_EVNT_LPM_IN_L2_MASK))
-+			dev_err(qcom->dev, "port-%d HS-PHY not in L2\n", i + 1);
-+	}
- 
- 	for (i = qcom->num_clocks - 1; i >= 0; i--)
- 		clk_disable_unprepare(qcom->clks[i]);
-@@ -472,8 +481,11 @@ static int dwc3_qcom_resume(struct dwc3_qcom *qcom, bool wakeup)
- 		dev_warn(qcom->dev, "failed to enable interconnect: %d\n", ret);
- 
- 	/* Clear existing events from PHY related to L2 in/out */
--	dwc3_qcom_setbits(qcom->qscratch_base, PWR_EVNT_IRQ_STAT_REG,
--			  PWR_EVNT_LPM_IN_L2_MASK | PWR_EVNT_LPM_OUT_L2_MASK);
-+	for (i = 0; i < qcom->num_ports; i++) {
-+		dwc3_qcom_setbits(qcom->qscratch_base,
-+				  pwr_evnt_irq_stat_reg[i],
-+				  PWR_EVNT_LPM_IN_L2_MASK | PWR_EVNT_LPM_OUT_L2_MASK);
-+	}
- 
- 	qcom->is_suspended = false;
- 
--- 
+Patches 1, 3, 6 change active_aligned_reads, and patches 2, 4, 5, 7 to 11 c=
+hange nr_pending.
+nr_pending temporarily switch from percpu mode to atomic mode in patch 7.
+This is to reduce the amount of changes from patches 8 to 10.
+Finally, nr_pending switch from atomic mode to percpu mode in patch 11.
+
+Keisuke TADA (11):
+  add infra for active_aligned_reads changes
+  add infra for nr_pending changes
+  workaround for inconsistency of config state in takeover
+  minimize execution of zero check for nr_pending
+  match the type of variables to percpu_ref
+  avoid conflicts in active_aligned_reads operations
+  change the type of nr_pending from atomic_t to percpu_ref
+  add atomic mode switching in RAID 1/10
+  add atomic mode switching when removing disk
+  add atomic mode switching when I/O completion
+  avoid conflicts in nr_pending operations
+
+ drivers/md/md-bitmap.c   |  2 +-
+ drivers/md/md.c          | 40 +++++++++++++++---
+ drivers/md/md.h          | 62 ++++++++++++++++++++++++----
+ drivers/md/raid1.c       | 37 +++++++++++------
+ drivers/md/raid10.c      | 60 ++++++++++++++++-----------
+ drivers/md/raid5-cache.c |  4 +-
+ drivers/md/raid5.c       | 89 +++++++++++++++++++++++++++-------------
+ drivers/md/raid5.h       | 17 +++++++-
+ 8 files changed, 230 insertions(+), 81 deletions(-)
+
+
+base-commit: fcf3f7e2fc8a53a6140beee46ec782a4c88e4744
+--=20
 2.34.1
 
 
