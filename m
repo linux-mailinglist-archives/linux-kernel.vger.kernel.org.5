@@ -1,168 +1,118 @@
-Return-Path: <linux-kernel+bounces-119831-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-119832-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 10D1E88CD74
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 20:47:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 0174588CD79
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 20:48:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B9C861F626FC
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 19:47:50 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id AB1701F63889
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 19:48:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AC7D813D25D;
-	Tue, 26 Mar 2024 19:47:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CA49613D264;
+	Tue, 26 Mar 2024 19:48:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="lIXfB8H3"
-Received: from mail-yw1-f179.google.com (mail-yw1-f179.google.com [209.85.128.179])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Tr9ln9mE"
+Received: from mail-pl1-f180.google.com (mail-pl1-f180.google.com [209.85.214.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 55F1C3DABE1
-	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 19:47:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C958B380;
+	Tue, 26 Mar 2024 19:48:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711482464; cv=none; b=TaAFp3nPhaViS1jMdiNZaB0sDMlv3mIsuzJMJgjC9hVJ+XvDHZrYHvZBzAraRA5QzDvtn3A2J4wt6baNRQ+lQ9LusrWx8ntMckOjT+P5H3HEy3UY9w/Om9iIzUsdfT8hqAye4Z4rw3eVAhy3zvbMKlwEDykxXZKZCvezy/8flb4=
+	t=1711482494; cv=none; b=M1a2boz7eJMafDyFhW5KGqkC2kuou0tWLDR9X8XCObgujgDWB69vT/HZoEG+MVWv0vnyj2/+oZiYdzG0aPyzJwWuUwiL5WeN86nKXsmyEup7CPpb/Qkfc+1TcqFNp+rM+QYnVMniA22n1lgJDxmJvicaA+lFJbo1tZ9LBHmfBeU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711482464; c=relaxed/simple;
-	bh=9Hrv+yQ6ggCFqu5Jm8HZOWdy9wYvi7d9h22Bf0YsEa4=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Qnzc0YIH8ulVATvGkKVgKqCaxAqIAbuLP8LMSKfNsCBAAagmOP717WcWTWFwhi+jJmMKIMqXWdR8n+o/ctLsbvM/rY77W5yOa0p1QLgiMqD6RT72jkcYoTnbUFFc499MySQ2iB0rcPrv61wOYsIOqv5EZSDTQi1eu/jMXaWZdJ0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=lIXfB8H3; arc=none smtp.client-ip=209.85.128.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yw1-f179.google.com with SMTP id 00721157ae682-609fb0450d8so63324657b3.0
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 12:47:42 -0700 (PDT)
+	s=arc-20240116; t=1711482494; c=relaxed/simple;
+	bh=9cmXfVQI/nC9ykIDRPwIkUayK3sJamHkua2d6Tcdjzo=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=UfsE28Uh/pE1DpK3G8HGBJvKbx0k+yTfiOihuL7kWorjyDw3H+ZsbcpZFioXT4/ADfHoJy4oMP/Choloq6/ekTXGaNyF/4o9wfxxhr3U7gDAz1J0xjSgYf8wb+2D9TdiQwSzCVR0rQP1kwsaSwqudQuWNlMNwqvOZhSt3hHbHSE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Tr9ln9mE; arc=none smtp.client-ip=209.85.214.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f180.google.com with SMTP id d9443c01a7336-1e0fa980d55so7828225ad.3;
+        Tue, 26 Mar 2024 12:48:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1711482461; x=1712087261; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=+qyPM89Y10g6lsVDwvjAhw3OysernPxYLdybxWGA1Ik=;
-        b=lIXfB8H3N2R03ZaF8Xmsh9SO6/3MB43g8Co3QazXF85TAOHLbofwzSp7ah+0ef5cOj
-         lGTTXItGvplb6qwu8Cgn5A79TjPtz+NbQqS+CAEEYSkP+XrP5RKNHoEuRgT5sw0UQAM5
-         7usZgfqj70bxQePonjtLUici5YAx+g1kpEDCcDeJYQuaBEoIex5D9wTyEPMRo6jwWCj2
-         9R48zuvIh6PEisXU4+jbsHX9wxcL+4Jtx2FMM7Y8QHSriRWpuA5QtaDNw0Ml9kucMN/T
-         wIXMy7WyPl6GspxnUZQU8LnGFyl1jb7Kj/RybAlb2RsRX1QzQA8hBpN6vXRNviicj8PJ
-         WydA==
+        d=gmail.com; s=20230601; t=1711482492; x=1712087292; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=MxBAPr9eXOadeecJbaBW+PIKQfHxWzuOy7OIoDoAlhI=;
+        b=Tr9ln9mEwIHpI19N0/C0EJpHKXphn2mtuT1W4AriiX3AMp+IC90mvOmZY0EkBc6hni
+         7xtayoWudk30MUKKbxSebe4a3w35kCJelhjlEDtWrKTdDOdYjHGnSBPTaMEKz54ACylt
+         US9Ba4RepM5uko/vevEd5MCFCJWrBHE0tF2FOQRcr+mz4ftZNhjnDy/XqKeORp+mUQ6Q
+         PngtZ2G5uG6rRIWrmqZo5JgXHIQ7uxp7WydV0al2qtBVVoM/txNvSubMQFNFMXA2OdMS
+         vuK4mKagjZLvNTPGeHC/54EfGPT3sQkb1CC7vS5dmKwdpeB1ox3B0jHtndpOJQF9CQD9
+         BSVA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711482461; x=1712087261;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=+qyPM89Y10g6lsVDwvjAhw3OysernPxYLdybxWGA1Ik=;
-        b=t+XP1lCjMAVOdaLRgoRxbFIa4FmtUf+gGYcoSvlH4e+AGeHX6+U5f0M5nQAoM3fwg9
-         X2RMvqTq+/UTDCo2iXYPpTfeQL58L/NbFiLPYFuqzc8Rw5DsNrExyLjWvoKxnPq1L21K
-         JOXV8pHinlNKSkvTKusuNGmJxB4xrHdRrUAvenDlS/zleANt4q5oRLhNkoH9FwPQVHyI
-         ePEUeVJIyU38UzODyis1nucghAOphtsgtXkwPmGb3Veflt6ZNJWYVceZfQ/DOk2CIp6d
-         k0/vyPsvB0BJfg2DowcUWLHFV4CDg5VhNEdBmZph8wGhMT39ddEcuPbu6gZFQktAKHv9
-         XliA==
-X-Forwarded-Encrypted: i=1; AJvYcCXAfRsMYeI8uy9pTu0bZqN5ER6l+BLhxwHOCRmVF8AVb0+m/rqcrJFi/cC/P4ch52+0kWRoJ1xTsMwvu4Ewx+NTfb0Oa3urQeZD5ght
-X-Gm-Message-State: AOJu0YwFeH1o23iSxzjDfRWdN5cdlmNv8rC/dItZAr+JLAvOUKol/ZOo
-	v2nqJ6YbUJZs+oJExi5ki6hZaOb0GG8d8zEszQ30zF/pCYRkH4JFjI0whA55ZFDty8Mb1bXXK3A
-	WnDOgzAcAwh9aB1D8tzX+hgxVPYlqDfAE72JtoQ==
-X-Google-Smtp-Source: AGHT+IEDgs+miE1gX6ZQTUPVvtQ4tAfLoH8Z/nDmvJIeTUqUSoM57Xw13la+OqnoQDXlV9aokZwVCnZHBuAHWvDS4Lc=
-X-Received: by 2002:a25:aa4d:0:b0:dc7:8c3a:4e42 with SMTP id
- s71-20020a25aa4d000000b00dc78c3a4e42mr8948827ybi.30.1711482461135; Tue, 26
- Mar 2024 12:47:41 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1711482492; x=1712087292;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=MxBAPr9eXOadeecJbaBW+PIKQfHxWzuOy7OIoDoAlhI=;
+        b=dPFb6IAKBHEHlFkv933l1+rLflMyTDbckn8ppF9CCRte3maIvSunw7vJJ+faOY0nlG
+         hJQ3u16mcWL3kub4Zo1oAb1DbQY3MTk6dH3MCjOv66RSugdu9YuM45wlA5iI5UN7fcwv
+         xhoUv20bg3k3IO6be9VyWjfUSH0x23Wv3BXfbNjj8aOwiRMhyvfut6DtpzZiX5Meif6H
+         8J5QVNQC6m5eYqBnISyYIa3hKtK8F72KXzEdLDXTmokRCb4zOH352EK9gFW3cSbhS2eH
+         uphluOVbvHj4gD8rvMzkkRrDgam12hyZj/dy8KigcpF8RjMDAbFrS198oT69/reO1xrY
+         PdKA==
+X-Forwarded-Encrypted: i=1; AJvYcCUzqbbZPzVoT2I+hKrK/6ljfnOU5pz+A7BojdrrzPOyJTi9/DFhYrNYbT6a88SBhFnus5FYBQnW6fjjkRbJC3EL1UKBb+AspdT76T6JZb8l11CJWEbbBCVixhXjM0NmkGLykwrb+jfI3eDUhIXejZnzAceoW8/icGzySq5Tig==
+X-Gm-Message-State: AOJu0YzckDkl2GLga01cdSgXWykF2RUM3hvm4q6/2o+jE5xnEcHRQ5pG
+	8Qfyq32Ssov0EndUAG2AkG4hcOsvpKWbRYKj1+4rDRVwdkevvRzY
+X-Google-Smtp-Source: AGHT+IHgG6MA5Lsu+aw0wxyCe4+UncFf8kJs1/g6C00v9EoIyHznZ9wyUpauWmcrhILSNtqUOtgwbw==
+X-Received: by 2002:a17:902:ea11:b0:1e0:a731:ea4d with SMTP id s17-20020a170902ea1100b001e0a731ea4dmr2248814plg.62.1711482492054;
+        Tue, 26 Mar 2024 12:48:12 -0700 (PDT)
+Received: from fedora (c-73-170-51-167.hsd1.ca.comcast.net. [73.170.51.167])
+        by smtp.gmail.com with ESMTPSA id p7-20020a170902e74700b001e0b5d4a2a8sm5279877plf.149.2024.03.26.12.48.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 26 Mar 2024 12:48:11 -0700 (PDT)
+Date: Tue, 26 Mar 2024 12:48:09 -0700
+From: Vishal Moola <vishal.moola@gmail.com>
+To: Qi Zheng <zhengqi.arch@bytedance.com>
+Cc: akpm@linux-foundation.org, hughd@google.com, david@redhat.com,
+	rppt@kernel.org, willy@infradead.org, muchun.song@linux.dev,
+	linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+	Christian Borntraeger <borntraeger@linux.ibm.com>,
+	Janosch Frank <frankja@linux.ibm.com>,
+	Claudio Imbrenda <imbrenda@linux.ibm.com>, kvm@vger.kernel.org,
+	linux-s390@vger.kernel.org
+Subject: Re: [PATCH 3/3] s390: supplement for ptdesc conversion
+Message-ID: <ZgMmec2paNA0GFwY@fedora>
+References: <cover.1709541697.git.zhengqi.arch@bytedance.com>
+ <04beaf3255056ffe131a5ea595736066c1e84756.1709541697.git.zhengqi.arch@bytedance.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <CANiq72mjc5t4n25SQvYSrOEhxxpXYPZ4pPzneSJHEnc3qApu2Q@mail.gmail.com>
- <CAA8EJprTNFgKJ_3cdZz4f_LCkYFghi-cfaj3bZmYh3oA63my6A@mail.gmail.com>
- <85204b78-7b24-61cd-4bae-3e7abc6e4fd3@quicinc.com> <CAA8EJppqrF10J1qExM=gopiF4GPDt7v4TB6LrQxx5OGyAL9hSg@mail.gmail.com>
- <671d2662-df4e-4350-0084-476eb1671cc1@quicinc.com>
-In-Reply-To: <671d2662-df4e-4350-0084-476eb1671cc1@quicinc.com>
-From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date: Tue, 26 Mar 2024 21:47:30 +0200
-Message-ID: <CAA8EJpppre8ibYqN7gZObyvzR08yVbTevC6hDEDCKQVf8gRVRg@mail.gmail.com>
-Subject: Re: drivers/gpu/drm/msm/adreno/a6xx_gpu_state.c:843:6: error:
- variable 'out' set but not used
-To: Abhinav Kumar <quic_abhinavk@quicinc.com>
-Cc: Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>, Rob Clark <robdclark@gmail.com>, 
-	Sean Paul <sean@poorly.run>, Marijn Suijten <marijn.suijten@somainline.org>, 
-	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, 
-	linux-arm-msm <linux-arm-msm@vger.kernel.org>, dri-devel <dri-devel@lists.freedesktop.org>, 
-	freedreno@lists.freedesktop.org, linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <04beaf3255056ffe131a5ea595736066c1e84756.1709541697.git.zhengqi.arch@bytedance.com>
 
-On Tue, 26 Mar 2024 at 21:32, Abhinav Kumar <quic_abhinavk@quicinc.com> wrote:
->
->
->
-> On 3/26/2024 12:10 PM, Dmitry Baryshkov wrote:
-> > On Tue, 26 Mar 2024 at 20:31, Abhinav Kumar <quic_abhinavk@quicinc.com> wrote:
-> >>
-> >>
-> >>
-> >> On 3/26/2024 11:19 AM, Dmitry Baryshkov wrote:
-> >>> On Tue, 26 Mar 2024 at 20:05, Miguel Ojeda
-> >>> <miguel.ojeda.sandonis@gmail.com> wrote:
-> >>>>
-> >>>> Hi,
-> >>>>
-> >>>> In today's next, I got:
-> >>>>
-> >>>>       drivers/gpu/drm/msm/adreno/a6xx_gpu_state.c:843:6: error: variable
-> >>>> 'out' set but not used [-Werror,-Wunused-but-set-variable]
-> >>>>
-> >>>> `out` seems to be there since commit 64d6255650d4 ("drm/msm: More
-> >>>> fully implement devcoredump for a7xx").
-> >>>>
-> >>>> Untested diff below assuming `dumper->iova` is constant -- if you want
-> >>>> a formal patch, please let me know.
-> >>>
-> >>> Please send a proper patch that we can pick up.
-> >>>
-> >>
-> >> This should be fixed with https://patchwork.freedesktop.org/patch/581853/.
-> >
-> > Is that a correct fix? If you check other usage locations for
-> > CRASHDUMP_READ, you'll see that `out` is the last parameter and it is
-> > being incremented.
-> >
->
-> Right but in this function out is not the last parameter of CRASHDUMP_READ.
+On Mon, Mar 04, 2024 at 07:07:20PM +0800, Qi Zheng wrote:
+> --- a/arch/s390/mm/gmap.c
+> +++ b/arch/s390/mm/gmap.c
+> @@ -206,9 +206,11 @@ static void gmap_free(struct gmap *gmap)
+>  
+>  	/* Free additional data for a shadow gmap */
+>  	if (gmap_is_shadow(gmap)) {
+> +		struct ptdesc *ptdesc;
+> +
+>  		/* Free all page tables. */
+> -		list_for_each_entry_safe(page, next, &gmap->pt_list, lru)
+> -			page_table_free_pgste(page);
+> +		list_for_each_entry_safe(ptdesc, next, &gmap->pt_list, pt_list)
+> +			page_table_free_pgste(ptdesc);
 
-Yes. I think in this case the patch from this email is more correct.
+An important note: ptdesc allocation/freeing is different than the
+standard alloc_pages()/free_pages() routines architectures are used to.
+Are we sure we don't have memory leaks here?
 
->
-> Maybe you or Rob can correct me but I thought the fix looked sane
-> although noone commented on that patch.
+We always allocate and free ptdescs as compound pages; for page table
+struct pages, most archictectures do not. s390 has CRST_ALLOC_ORDER
+pagetables, meaning if we free anything using the ptdesc api, we better
+be sure it was allocated using the ptdesc api as well.
 
->
-> >>
-> >> We can pickup that one with a Fixes tag applied.
-> >>
-> >>>>
-> >>>> Cheers,
-> >>>> Miguel
-> >>>>
-> >>>> diff --git a/drivers/gpu/drm/msm/adreno/a6xx_gpu_state.c
-> >>>> b/drivers/gpu/drm/msm/adreno/a6xx_gpu_state.c
-> >>>> index 1f5245fc2cdc..a847a0f7a73c 100644
-> >>>> --- a/drivers/gpu/drm/msm/adreno/a6xx_gpu_state.c
-> >>>> +++ b/drivers/gpu/drm/msm/adreno/a6xx_gpu_state.c
-> >>>> @@ -852,7 +852,7 @@ static void a6xx_get_shader_block(struct msm_gpu *gpu,
-> >>>>                (block->type << 8) | i);
-> >>>>
-> >>>>            in += CRASHDUMP_READ(in, REG_A6XX_HLSQ_DBG_AHB_READ_APERTURE,
-> >>>> -            block->size, dumper->iova + A6XX_CD_DATA_OFFSET);
-> >>>> +            block->size, out);
-> >>>>
-> >>>>            out += block->size * sizeof(u32);
-> >>>>        }
-> >>>
-> >>>
-> >>>
-> >
-> >
-> >
-
-
-
--- 
-With best wishes
-Dmitry
+Like you, I don't have a s390 to test on, so hopefully some s390 expert
+can chime in to let us know if we need a fix for this.
 
