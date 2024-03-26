@@ -1,89 +1,88 @@
-Return-Path: <linux-kernel+bounces-120133-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-120134-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5436E88D2C5
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 00:20:10 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5E53288D2CA
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 00:24:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5879C1C375BE
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 23:20:09 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8ABA51C33DC1
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 23:24:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CE7F913E04A;
-	Tue, 26 Mar 2024 23:19:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C001013DDCF;
+	Tue, 26 Mar 2024 23:24:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="GbaqqkGa"
-Received: from mail-yw1-f180.google.com (mail-yw1-f180.google.com [209.85.128.180])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="XfbA6nji"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C428713DDB9
-	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 23:19:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0EC2A13DDB5;
+	Tue, 26 Mar 2024 23:24:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711495196; cv=none; b=GSER5DJBO7W95iVyy5AB+f6MHOtHn/wOW6xkRAlfZmJy54/HuEzKDG7rdTcL8beA3BVCqWpGDVBUnrxgrJu77jwKpuOlYHCjXsQ8s2eEs+JLEABU/jRxAG0dmPiekySSV5E+e21LAA7WLwGKTYJJWWljHuRIQcVnSV3TC0yS09U=
+	t=1711495446; cv=none; b=KR5dLoI6wyvGiJek6Kprls3gz9VtQOJxJ39t9Pw2wnW3BakenL0tn7YX7jJgV5qQQtduTj4GOm2FXM35eclB0IDzEkjUW1EVoCrC4BwjR7mNjmy9ja/9md2608xPQoRisoQWHVv4rUU2UCkbq07hqRyIX7ke28Fi1frGBQ5aXqs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711495196; c=relaxed/simple;
-	bh=xivAcXbXZtZ2lZQPrmwGcUcqzDk/Gs4X/pZkpMagjE4=;
-	h=MIME-Version:From:Date:Message-ID:Subject:To:Content-Type; b=dqph+NHJKoYhlruxANppRT/alCeulloVEjYTIpYLiR8lSs79n5lAdgeo9dNH7dH8bJwi4SejLGjexQKUnKU+A5D1lhpU09bEbdVLaB+SrtQUkhyybZfoxZ2tdc1FdRWQRoF3rSG971MKXqy5rpomyKfGJK9BqjPtpWSxyiOnX0o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=GbaqqkGa; arc=none smtp.client-ip=209.85.128.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f180.google.com with SMTP id 00721157ae682-609f4155b76so65539677b3.1
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 16:19:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711495193; x=1712099993; darn=vger.kernel.org;
-        h=to:subject:message-id:date:from:mime-version:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=xivAcXbXZtZ2lZQPrmwGcUcqzDk/Gs4X/pZkpMagjE4=;
-        b=GbaqqkGaYglxdfQV9F0eEIc4+oToxJ1ikU4GjelF3hHZTr+aOA+ylJtr1S46fgeO4f
-         gTFJU0GKjBP8gsCnL12i9ELpcxjq3GzmZ9V0FXJFRlj1PvrFIvCg1pXgDZkeVhFxMwwk
-         w/D9UOqo8qn0RDxIMNsB10GZ0j//9/mDr9ngij9ouJkRq1y1BfHuKSlvIJE+J5otA+Hv
-         jzLg5sVANahBw0BAeSykSy4PNQZploaPHURgdeqblQOYz9yrwP5F18bERToK3Qesyb8C
-         3Qs74xfc5uNC5EolYWFn1T9+C5il8fd3lCGsoZ32WLubSW4gmgQxreaunRfWUpMvj0ME
-         CIKQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711495193; x=1712099993;
-        h=to:subject:message-id:date:from:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=xivAcXbXZtZ2lZQPrmwGcUcqzDk/Gs4X/pZkpMagjE4=;
-        b=Xo9hShf1RqzzXnTw/NKd6CQROkhkvHZUpZurn5FnYqMhg6VwJjjCqGJa34VSqtgSLI
-         4I77qVyblnRLmddot17bdaC+Y5PNvC99Dr36xITj4spX3OpEGTUhJ9xuE+HmxLXsoz8Y
-         1jl0P3gZ6aShun2bSgIZoCKcBVCnRbbBYT3NqfcMVNMzWwZA8I/lMrsZsLji1SEH6kup
-         lGu5YH78E0dxJCthq3TOIfJ4GsnXgbEtiHUWJUlpuUuL9CY7gctq/T7sxAGwQ/k+6llZ
-         zqsroGWuzG3Sn6VQn/oeb6e3F2s1B2B5ItvYgUcWHWwOZsvadxAT7ianhZ98kIHUHOFg
-         p7mA==
-X-Gm-Message-State: AOJu0Yy++N2q/j1llTNlGDmRHqdC9ry//jJP6rMJqy0Mp6QbINez6GeJ
-	kZo9hxVcGbe/Eo1cx6tYbyIWcAGEpu0TShcolDCe1C6cQsxkMerPUpphbaMUqAlrh0oFrVoJ7Wa
-	y6Gh6f+SdZeVhOP7pcPonjK6Fo1zwaCz32js=
-X-Google-Smtp-Source: AGHT+IFwHnuJaBLb38Gu1ErU73uqJkk2TL1TjYfD6cVMVP7fheWpM6jfBhCtB/7CBPAkNqGmrWLuGxkp46gdnNmTUQ8=
-X-Received: by 2002:a25:a4a4:0:b0:dd0:129f:16 with SMTP id g33-20020a25a4a4000000b00dd0129f0016mr8515932ybi.11.1711495193416;
- Tue, 26 Mar 2024 16:19:53 -0700 (PDT)
+	s=arc-20240116; t=1711495446; c=relaxed/simple;
+	bh=GfgyZrV79xoa84Cgd+HTjsbRJ75ZS8ByhFEX2qPLfk4=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition:In-Reply-To; b=hWDtJkpQ0VFwhhUA+5aYDrIj21v5bSOQHLgA4X22mUhO8/I0N5SXM0p80TH8323JQ0k9WviuRLDFSz01nQarX0QfNlF7ucYTdEpALf80Lf2G6ABHfIk80SbRdJHD4/IK5CmNlD4Hva6vPBjsfYDAUA1iAuIdn/1+yHol3ndyL1w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=XfbA6nji; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3BC29C433F1;
+	Tue, 26 Mar 2024 23:24:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1711495445;
+	bh=GfgyZrV79xoa84Cgd+HTjsbRJ75ZS8ByhFEX2qPLfk4=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:From;
+	b=XfbA6njiMzYq8iAN1Mgu+0B23d79KPXLQzGCVdXjI1PveafCTUxoAUOTJhtSAP9Sn
+	 uEQpq755ssawAlDuwSCwvAFE88XmZ2d3ZPOaYMrmi+6fu36PMFSPMVvI5sbcSDJW+w
+	 dWt5pBPwG1DzwPTX+/USomfTjSqJ3SGYID74cxHNBNXndrDq+qZWPehPCby/dXjrgl
+	 /Kjf3BOdZRZyKNZHVqOPzEip9SFSNzFh69L3eqOjg61Hg3w0RQZCcBfyeSD0dh02aZ
+	 hsY2k3iw7K1xwysm+CWP/jN1xWnxV5peX6uIqWddYeqm3dJrChQJNoqL8ZYSBwHNMd
+	 z1gKpfRp/xBfA==
+Date: Tue, 26 Mar 2024 18:24:03 -0500
+From: Bjorn Helgaas <helgaas@kernel.org>
+To: Siddharth Vadapalli <s-vadapalli@ti.com>
+Cc: lpieralisi@kernel.org, kw@linux.com, robh@kernel.org,
+	bhelgaas@google.com, manivannan.sadhasivam@linaro.org,
+	fancer.lancer@gmail.com, u.kleine-koenig@pengutronix.de,
+	cassel@kernel.org, dlemoal@kernel.org,
+	yoshihiro.shimoda.uh@renesas.com, linux-pci@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	srk@ti.com
+Subject: Re: [PATCH v6] PCI: keystone: Fix pci_ops for AM654x SoC
+Message-ID: <20240326232403.GA1502764@bhelgaas>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-From: Chris Rankin <rankincj@gmail.com>
-Date: Tue, 26 Mar 2024 23:19:42 +0000
-Message-ID: <CAK2bqVLcN3=vmT0t-Cp9VYC0hoGQP6Qevbq40A_8nZ5VNdL2Pw@mail.gmail.com>
-Subject: RE: Linux 6.7.11
-To: LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240326144258.2404433-1-s-vadapalli@ti.com>
 
-> I'm announcing the release of the 6.7.11 kernel.
->
-> All users of the 6.7 kernel series must upgrade.
+On Tue, Mar 26, 2024 at 08:12:58PM +0530, Siddharth Vadapalli wrote:
+> In the process of converting .scan_bus() callbacks to .add_bus(), the
+> ks_pcie_v3_65_scan_bus() function was changed to ks_pcie_v3_65_add_bus().
+> The .scan_bus() method belonged to ks_pcie_host_ops which was specific
+> to controller version 3.65a, while the .add_bus() method had been added
+> to ks_pcie_ops which is shared between the controller versions 3.65a and
+> 4.90a. Neither the older ks_pcie_v3_65_scan_bus() method, nor the newer
+> ks_pcie_v3_65_add_bus() method is applicable to the controller version
+> 4.90a which is present in AM654x SoCs.
+> 
+> Thus, as a fix, move the contents of "ks_pcie_v3_65_add_bus()" to the
+> .msi_init callback "ks_pcie_msi_host_init()" which is specific to the
+> 3.65a controller. Also, move the definitions of ks_pcie_set_dbi_mode()
+> and ks_pcie_clear_dbi_mode() above ks_pcie_msi_host_init() in order to
+> avoid forward declaration.
 
-Hi,
+If it's possible to split this into two patches (one that strictly
+*moves* the code without otherwise changing it, and another that makes
+the actual fix), it would be easier to review the fix.  It's a pain to
+have to compare the code in the old location with that in the new
+location.
 
-Can you also upload the incremental patches to the usual places
-please, for people who only compile their kernels?
-
-https://www.kernel.org/pub/linux/kernel/v6.x/
-https://www.kernel.org/pub/linux/kernel/v6.x/incr/
-
-Thanks,
-Chris
+Bjorn
 
