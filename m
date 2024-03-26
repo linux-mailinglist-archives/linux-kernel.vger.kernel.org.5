@@ -1,56 +1,56 @@
-Return-Path: <linux-kernel+bounces-119821-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-119822-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 402A488CD58
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 20:40:37 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 70C8388CD59
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 20:40:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7B56E1C2E029
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 19:40:36 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A2F771C35AC7
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 19:40:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8CC5013D27F;
-	Tue, 26 Mar 2024 19:40:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1C57413D2A5;
+	Tue, 26 Mar 2024 19:40:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="eb/8fzo0"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="BWBxELgD"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D0BA213D265;
-	Tue, 26 Mar 2024 19:40:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5D53613D293;
+	Tue, 26 Mar 2024 19:40:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711482023; cv=none; b=BT4ONRTZHGZ8CLiFkYvhS+wD3y7jP8znHTXLtAxP7xN2Etffk6RuZMT7H0Ee+Xv1nXDjnzAxhFbRQUpUgu+FubTBhaSatsFHtTgBAy9u/HPR54W69+uT0DXmvNf1TKAZ02rw3V+yWoIlHbjBygLEm2dkw5HhHZC1x6/Eq2IK8G4=
+	t=1711482025; cv=none; b=tVD8UtH9pq/BLgdJYrJsglHiLbQU6VEc2bD3jcgLdlm0NFimLEhzJWxd1Q9tZ5bUTKbu0eTHLgx1KqqPCW2YgvoqYab7X3on4iMvqbiTKWSLDN7YyB2Oo9joWQsGBLiv580KoUvnhW7AZd139KQP5Xq/1WTjRFRLtzpsMR63bUc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711482023; c=relaxed/simple;
-	bh=uSqvDhj9B952JToi5VL34sNCznAoHgfyEhJAjUhjfD4=;
+	s=arc-20240116; t=1711482025; c=relaxed/simple;
+	bh=x0TTBRigEsuZwoi8waGTwMiUmmSaW138ZPTL9PFeVe4=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
-	 MIME-Version:Content-Type; b=P1SS5uwv0kxYGuURk6P+j2o4RZwPQiOtAVWCMPaFS4x5KhASfYqNiQ62IKwChxS/yrygCjbN4pUSqZZ/TBAJq964bIuWl/w44YqzVFAHVOutLASmrwU12NH/6utbugpwVuInw0oG7XCuZoQz1vHuEITi+msgsaWI83v6QOUBZtY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=eb/8fzo0; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 158DAC43390;
-	Tue, 26 Mar 2024 19:40:21 +0000 (UTC)
+	 MIME-Version:Content-Type; b=PAmr0OcDZuczOvK4SN14NyTl4RH28GqlJ6YPQcDn8gBhcyqTk3lZyRiREawcyNrTOjEZ3Z7V1cavRQUR9RM0BbVpphVFAS/hF1C22C3CSgFkz7nQMVjgnIS37LQ4huyVOd9nvB9qLgBz0FNIURChurAZAvfQgerXQ8NJYxnd4Sw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=BWBxELgD; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D8986C43399;
+	Tue, 26 Mar 2024 19:40:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711482023;
-	bh=uSqvDhj9B952JToi5VL34sNCznAoHgfyEhJAjUhjfD4=;
+	s=k20201202; t=1711482025;
+	bh=x0TTBRigEsuZwoi8waGTwMiUmmSaW138ZPTL9PFeVe4=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=eb/8fzo03WGpnZufwM6MUoiC2Q5Hb8WLpf3l7Iqyt/tx1aQpauV1EXWarBhyZGtnu
-	 sbACG0VuDG4FJszAzIb/iem7tSzVDB9S9It64OYqUlzQ8kegJlHzvg8NM4YZw5CP3V
-	 cHB+wwQAWHSm6bwDrZSFoY8j1DR/Oi4C0ymM3lrenuy8zHMAw9j45iW/vUzzYFGszw
-	 QcBMwVOSBY+L4RI83Tni0d5B+giqMd5JKZISaO6ey3uH9zl7+rpj+tVGi1l6TQXnPY
-	 pWOhEzpqY0tAcOrl25B+5OfLQk8oUHkYggYAjEHHWs1Beq6Ywi7DlMgJU711NAbmAC
-	 fkqGx9D7qazJA==
+	b=BWBxELgDsZ0DEW+f6ZFmjGZv+imC3IgkjGQ6idn+Vk50cKqPZeRrIqa6M1eddxIYA
+	 Z74+W6g+4x0+5SVki4gnig7y1sf/2RM8eLTOuNbmaW1fkDl4/ZYRR4dQhDbd1NX5cc
+	 aORv+96x3qCcTlrqZ6H22lItVrZwfdvxAhU58BGr2lCrXsM5TVqSV0sO5CBAq1LkWy
+	 Xw7y1QbMm54RHNl7GIGr1TTrhy5LYUeplhD/wGUBNIEISVTGnv00SgPHTzyW/QXSd0
+	 8ZsGHlF6kmB7kBA35V33ZDxbqw2vPz26HiZiNtbIKVokdrd0insLR+Xh7K7LE1tJIS
+	 Px6LYnwhC799Q==
 From: Mark Brown <broonie@kernel.org>
 To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, 
  linux-sound@vger.kernel.org, linux-kernel@vger.kernel.org, 
  Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 Cc: Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, 
  Takashi Iwai <tiwai@suse.com>
-In-Reply-To: <20240325143654.3305498-1-andriy.shevchenko@linux.intel.com>
-References: <20240325143654.3305498-1-andriy.shevchenko@linux.intel.com>
-Subject: Re: [PATCH v2 1/1] ASoC: soc-jack: Get rid of legacy GPIO support
-Message-Id: <171148202182.195485.3428083891126732883.b4-ty@kernel.org>
-Date: Tue, 26 Mar 2024 19:40:21 +0000
+In-Reply-To: <20240326171134.1414462-1-andriy.shevchenko@linux.intel.com>
+References: <20240326171134.1414462-1-andriy.shevchenko@linux.intel.com>
+Subject: Re: [PATCH v3 1/1] ASoC: soc-jack: Get rid of legacy GPIO support
+Message-Id: <171148202361.195485.9515319942433271607.b4-ty@kernel.org>
+Date: Tue, 26 Mar 2024 19:40:23 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -61,7 +61,7 @@ Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 X-Mailer: b4 0.14-dev
 
-On Mon, 25 Mar 2024 16:33:50 +0200, Andy Shevchenko wrote:
+On Tue, 26 Mar 2024 19:09:48 +0200, Andy Shevchenko wrote:
 > No more users.
 > 
 > 
