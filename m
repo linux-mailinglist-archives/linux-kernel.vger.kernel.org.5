@@ -1,283 +1,203 @@
-Return-Path: <linux-kernel+bounces-119907-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-119910-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5C39288CEE0
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 21:32:59 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 394FA88CEE5
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 21:33:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CA80F1F33277
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 20:32:58 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E1998326929
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 20:33:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 543CB13DBA7;
-	Tue, 26 Mar 2024 20:25:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 44E5B13DDDE;
+	Tue, 26 Mar 2024 20:26:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QgwUbWwS"
-Received: from mail-ua1-f53.google.com (mail-ua1-f53.google.com [209.85.222.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=fail reason="signature verification failed" (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="k++KNz+4"
+Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A4EF913DBA5
-	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 20:25:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C3E3713DDD3;
+	Tue, 26 Mar 2024 20:26:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711484722; cv=none; b=F35kdZvgHE0dWe0JmBs+ibMwlZgLbMPwJCjenJcuRKmAPyx2k7WxWnOxKnm9a344iUW1YMn/tWRxlFpF27zhakAaJr5rdorJVRnI18VrzES7vWHqTAQYZia5JXs7yMnD976hlrCWLbgXJFpWpeOeEMUpcPvnBumTL8FgUAY/TBs=
+	t=1711484781; cv=none; b=mLoEZDf3JWEO22A4F84R8EvuLyQXveDiC5VNk7vqU6s+bvyR3aDXL8ailAsmm0CxoaMSf+D14vcPREsfxq+bXxEURbiVpfqibLdOXYG+ZIcfJMzTC2yO83cCvAm8AvJm3+t3z3M0sBztxEmghk+7fgJxXDbAg7A7urNzNrRPz1I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711484722; c=relaxed/simple;
-	bh=MEVM6KuktXIuyAG1KfiH2fzByR4I8+0IeY0y7RVjsUU=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=gFqkyzmEJktb6JCQNVg570hVgcoVKJSsTScz90uYKVoxGgY9wBTLG/WczyhliqILasD2m1HVcwOwgVdYN6IH/LJEwGB4T78vkJz0V9+bqNlAt4H+1UdU5CnaCsdzfaqqkXyMIcOuAymsPIiJcFHwBzlxAltFzwXWQW4Z5IjX+CU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=QgwUbWwS; arc=none smtp.client-ip=209.85.222.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ua1-f53.google.com with SMTP id a1e0cc1a2514c-7e046990b6aso2160109241.1
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 13:25:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711484719; x=1712089519; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=3lrTejwUO7gSf4EEEECNjtBUVn0RqW8Izhk85EDEe30=;
-        b=QgwUbWwSIomRV2UdadPTmi4X9cbolj5+6gLMsV4TiWHmmuzdxAvBEVIYLQAOS+m6OO
-         smKG8SH/wo76ffo1q2NnOteZbHdak59DvNhd+rLwaBYgiRUBwg/BIig4GPTVXz61/AUR
-         GY+YA968WC6rcKgutEpqYp0tgLu03kSgFa68n+Bsc1XMLQbQ9rc0M2lscTpCkpYoEFIa
-         eJYK6TYn/hW95db6VHhXfScnm1Az0SqOc5sXnRrmoDAyZjY0M5GHi4nLmf7bITyudRFF
-         mWDetXKLFU//hS2XgQU7LyKZD4CGlNaWQLmHGo0d7ZpH1sRBL9G8J3TnOVOJ+bUBW89T
-         305Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711484719; x=1712089519;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=3lrTejwUO7gSf4EEEECNjtBUVn0RqW8Izhk85EDEe30=;
-        b=uvimrEk50NeBfqXwnFtauVOK4PKbJZvpREbx5+r2+G7aGxUbrBBQeAqNZry0hIRxI0
-         iDLpca9bigZtjwJTGHgaIufR+MJPciC/uMydvyPjdP4/M6axPE3d9/VG/OiazZJnPLDf
-         4r4c54CDG6joEaK4NxA2wJCaiyTzwFLoXfJ9F+WacWsViyS6E2CkCdX7hxVH7m+V4y6b
-         YvP5x7BuZio69UqE6/O39zXjH0WFOBb3TUlOnteKXX01kAhRGmsBD9gBvitq/10QXcTR
-         HQ2H4KoqpWttNpjKG60N1Jl2NeERoU9iGqliyMqk5qZDEitm/Vgbs32osJA5n3DILexr
-         x5WQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWhCpIow0W4umoN+v51L79afzwBVuFAhn+28J24pnQXCswxkjML2q8s1njEXFdVcPW7F4fd8F9CY7YKXglib1jx/XKtDeYAWJUMUnsv
-X-Gm-Message-State: AOJu0YyZHV3cCCnpA9AN84JCvMjeydvYFXVfBFcOjhCFy1iWEq0dj6jH
-	8GqfVlQmqzhLI0EOU42fziwBnsj0MI+CoujC1jZg2eQCMMq2nG7w2O+v+8Z+KyLfHFTUXc1BEax
-	WK0BnAwUFGba4/orejbqsX0oGuuk=
-X-Google-Smtp-Source: AGHT+IGIHS+kBqSr20euVi3Yv8PWhLs+WmpCLWNT5DyowQ3IxTEGgzyjDhr+4ON8nLie8Gz5xQE5hNOKE/BqaIUONIQ=
-X-Received: by 2002:a67:b602:0:b0:476:d9f2:f9aa with SMTP id
- d2-20020a67b602000000b00476d9f2f9aamr1057538vsm.0.1711484719349; Tue, 26 Mar
- 2024 13:25:19 -0700 (PDT)
+	s=arc-20240116; t=1711484781; c=relaxed/simple;
+	bh=F+L/h3rZ3z5tOVvFOUDDEOBQKST3mb9eXYvpmYWj7AY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=XhbMnSW8B04q41RibjolLSRt8MuCzDTgaGjk181lTvIO3W6i8WapHFsCJrZl1VHYyz4TsTgKT2o8rEt9EeiU/EtJVP3rREtXDsrsJNwQKtGfQjtiQvfzuTnuscpBRQZzrFfJCkVIgn9XxUqWDdBxwnRNcdBhTKnEjflWzes8Weo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=k++KNz+4; arc=none smtp.client-ip=65.109.113.108
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
+Received: from localhost (localhost.localdomain [127.0.0.1])
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id D606540E02A2;
+	Tue, 26 Mar 2024 20:26:15 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
+	header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id ipJStxiHWz6w; Tue, 26 Mar 2024 20:26:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+	t=1711484769; bh=3SbmZZlB5wb5VIeyhkLEZvwoIUAa+ndZFBbsOshMQUA=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=k++KNz+4aL1QetjecZlkBF1D+hdfT+nfPt5X/AJmyq84BC8fSu58u1L8HlEKFDkwP
+	 5jScY1uLerHph5o93L69N1eeePmDwze2ODL3H0GunKiK+qIzXq3tG/BEzaEewI/jca
+	 nImyCtwaUifuU0tau7FwTRLgVzG3ASoVpFjCh0yUvTnlwkDob1NTz7lnLne4pw8qM9
+	 xZxROET8zJLpWM7z+MBaktZW57xljgtsCM8BlfMxg3qfUBuJ9QiHnQs6Ay8bZLwzdP
+	 QJYO3MskddagiQz47m5MkHWifonjz+ttAZlr+9n27TJo4G0NvyirXCsS3rovdVi5mo
+	 Q82BgEZO1CVjPTkPTiCVLexnT1Eu+YrkV0dLWJu6lc2q7uSGbt/dkGgpfCrUoos53Q
+	 g55gYhqLnjmDPm0fblT2ta34ErkABpx4l0vnfyP1cqAc+Qy1Hvtg2RTLdEIiUvw8OB
+	 2JptRxdxh4OmecSdK02L7TPQTiUObgMSxN27wXSV9CVoTLJ2+U/Jr2oLV0k0XmjP8R
+	 Pqq+DBjh5T8k0+TXCnIL6w06Uttf2wsJq6jlhavYYE/XiCOMuwTqjNNOpAsOvxPpRv
+	 djCf6eItqe/thU7znQJwu+VmcEaW2nM9/M3ecwb4nGSWt5sfJKAi2NMiwSGBRnC3dd
+	 IEGlNwfkq10dmfoeeCj/2O4U=
+Received: from zn.tnic (p5de8ecf7.dip0.t-ipconnect.de [93.232.236.247])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+	(No client certificate requested)
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 9C07A40E024C;
+	Tue, 26 Mar 2024 20:25:53 +0000 (UTC)
+Date: Tue, 26 Mar 2024 21:25:48 +0100
+From: Borislav Petkov <bp@alien8.de>
+To: Masahiro Yamada <masahiroy@kernel.org>,
+	Nathan Chancellor <nathan@kernel.org>,
+	Nicolas Schier <nicolas@fjasle.eu>, linux-kbuild@vger.kernel.org
+Cc: Marco Elver <elver@google.com>, Nikolay Borisov <nik.borisov@suse.com>,
+	Josh Poimboeuf <jpoimboe@kernel.org>,
+	Paul Menzel <pmenzel@molgen.mpg.de>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Ingo Molnar <mingo@redhat.com>,
+	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+	LKML <linux-kernel@vger.kernel.org>, kasan-dev@googlegroups.com,
+	David Kaplan <David.Kaplan@amd.com>
+Subject: [PATCH] kbuild: Disable KCSAN for autogenerated *.mod.c
+ intermediaries
+Message-ID: <20240326202548.GLZgMvTGpPfQcs2cQ_@fat_crate.local>
+References: <0851a207-7143-417e-be31-8bf2b3afb57d@molgen.mpg.de>
+ <47e032a0-c9a0-4639-867b-cb3d67076eaf@suse.com>
+ <20240326155247.GJZgLvT_AZi3XPPpBM@fat_crate.local>
+ <80582244-8c1c-4eb4-8881-db68a1428817@suse.com>
+ <20240326191211.GKZgMeC21uxi7H16o_@fat_crate.local>
+ <CANpmjNOcKzEvLHoGGeL-boWDHJobwfwyVxUqMq2kWeka3N4tXA@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <a49546e8-6749-4458-98da-67fd37b7df18@rivosinc.com>
- <mhng-a3b495e6-aca6-4137-a3c1-8fcacafd8596@palmer-ri-x1c9a>
- <ZfLxip96o5MVjHAF@xhacker> <ZfL1buKdDI-p5b9X@xhacker> <ZgGteKG_a3KGn5wV@xhacker>
-In-Reply-To: <ZgGteKG_a3KGn5wV@xhacker>
-From: Charles Lohr <lohr85@gmail.com>
-Date: Tue, 26 Mar 2024 13:25:08 -0700
-Message-ID: <CAGu26P_tUpSvXqdSz3pOdPNHbe6MyEYJ2XCHo8pD8jeE5pT+_Q@mail.gmail.com>
-Subject: Re: [PATCH] riscv: deprecate CONFIG_MMU=n
-To: Jisheng Zhang <jszhang@kernel.org>
-Cc: Palmer Dabbelt <palmer@dabbelt.com>, cleger@rivosinc.com, 
-	Conor Dooley <conor@kernel.org>, samuel.holland@sifive.com, 
-	Paul Walmsley <paul.walmsley@sifive.com>, aou@eecs.berkeley.edu, 
-	linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org, 
-	Conor Dooley <conor.dooley@microchip.com>, ajones@ventanamicro.com, dlemoal@kernel.org, 
-	Bjorn Topel <bjorn@rivosinc.com>, Atish Patra <atishp@rivosinc.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <CANpmjNOcKzEvLHoGGeL-boWDHJobwfwyVxUqMq2kWeka3N4tXA@mail.gmail.com>
 
-Jisheng, are you using musl or uclibc? I've been having difficulty
-getting new versions of each working with the newer kernels with
-system calls not lining up.
+On Tue, Mar 26, 2024 at 08:33:31PM +0100, Marco Elver wrote:
+> I think just removing instrumentation from the mod.c files is very reasonable.
 
-Also, is there a better place to ask questions about the more
-user-spacy stuff?  That's really where I've been struggling to
-maintain things, keeping buildroot working when targeting RV32 NOMMU.
-Thankfully a lot of the stickiest problems have all been upstreamed.
+Thanks!
 
-Charles
+@Masahiro: pls send this to Linus now as the commit which adds the
+warning is in 6.9 so we should make sure we release it with all issues
+fixed.
 
-On Mon, Mar 25, 2024 at 10:12=E2=80=AFAM Jisheng Zhang <jszhang@kernel.org>=
- wrote:
->
-> On Thu, Mar 14, 2024 at 09:02:43PM +0800, Jisheng Zhang wrote:
-> > On Thu, Mar 14, 2024 at 08:46:21PM +0800, Jisheng Zhang wrote:
-> > > On Tue, Feb 27, 2024 at 08:38:50AM -0800, Palmer Dabbelt wrote:
-> > > > On Tue, 27 Feb 2024 01:11:41 PST (-0800), cleger@rivosinc.com wrote=
-:
-> > > > >
-> > > > >
-> > > > > On 26/02/2024 20:00, Charles Lohr wrote:
-> > > > > > WOAH! Please DO NOT deprecate NOMMU. I use the NOMMU build cons=
-tantly
-> > > > > > and NOMMU Linux on RISC-V is the avenue used by many FPGA soft =
-cores
-> > > > > > for Linux, as well as some limited systems.
-> > > >
-> > > > OK.
-> > > >
-> > > > I just build test this stuff, as I don't really have a use for it
-> > > > personally.  I figured if nobody's reporting bugs then probably it'=
-s broken
-> > > > and nobody's noticed because nobody's using it.
-> > > >
-> > > > > > I get new copies of the kernel when there are releases and test=
- them
-> > > > > > frequently to make sure everything is still working as expected=
-.
-> > > >
-> > > > I'd actually expected it to be broken, but I guess we managed to av=
-oid
-> > > > screwing things up ;)
-> > > >
-> > > > > > For us we just don't care about XIP. I mean if someone did push=
- it
-> > >
-> > > I don't care XIP either, and IMHO the XIP's maintenance effort is muc=
-h
-> > > bigger than NOMMU(just check the various XIP_FIXUP* or CONFIG_XIP_KER=
-NEL
-> > > macros around lowlevel pgtable.h, page.h). If we can remove XIP, the
-> > > code readability will be much better.
-> > >
-> > > Or sending out a similar XIP deprecation patch to see whether there's
-> > > any complain ? ;)
-> > >
-> > > > > > through to fruition, I'd also test and use it, but I urge you p=
-lease
-> > > > > > do not deprecate this.  While it's sometimes needed a bit of a
-> > >
-> > > +1 for urge the upstream please do not deprecate NOMMU.
-> > >
-> > > Besides the soft(FPGA) core mentioned by Charles, here is another rea=
-l
-> >
-> > And I'd like to write more about soft core: riscv is a free and open
-> > ISA, this make it really good for education, for simple riscv
-> > implementation or emulator. Once riscv IMA is implemented(even if MMU,
-> > cache, TLB stuff don't exist), it's not far away from making linux
-> > running on the FPGA or emulator. If the gain is larger than the mainten=
-ance
-> > effort, I'd like to urge keeping the NOMMU support.
-> >
-> > Thanks a lot
-> >
-> > > usage case: As is known, Sophgo CV1800B platforms such as Milk Duo
-> > > contains two C906 core, one(a.k.a big core) with MMU another(a.k.a sm=
-all
-> > > core)w/o MMU. The vendor sdk runs freertos on the small core, but it
-> > > doesn't prevent users to run other OS such as threadx, zephyr or nomm=
-u
-> > > linux on the small core. In fact, I sucessfully brought up nommu linu=
-x
-> > > on the small core. I didn't just send out the patches in time during =
-this
-> > > dev window duo to my personal career reason(I spent the time on hunti=
-ng
-> > > for a new job)
-> > >
-> > > I plan to send out NOMMU related patches once 6.9-rc1 is out.
->
-> As is promised, the NOMMU improvement patches are sent out
-> https://lore.kernel.org/linux-riscv/20240325164021.3229-1-jszhang@kernel.=
-org/T/#t
->
-> Thanks
->
-> > >
-> > > > > > creative build to get everything working, I've never needed to =
-patch
-> > > > > > anything in the kernel beyond patching in a custom console for =
-serial
-> > > > > > output.
-> > > > > >
-> > > > >
-> > > > > Hey Charles,
-> > > > >
-> > > > > No worries, we actually did not expected NOMMU to have *so many* =
-users.
-> > > > > I guess deprecating stuff is a good way to have immediate feedbac=
-k ;).
-> > > > > Having FDPIC psABI to be merged upstream could also probably be a
-> > > > > positive point toward a better NOMMU support.
-> > > >
-> > > > Ya, that's probably the right way to do it.  Touching anything in t=
-he psABI
-> > > > is pretty miserable, though, so I don't really want to force people=
- to do
-> > > > it...
-> > > >
-> > > > > > I am happy to discuss the possibility of me and or one of the o=
-ther
-> > > > > > RISC-V soft (FPGA) core people stepping up to try to be more ac=
-tive,
-> > > > > > but so far we've just been very well serviced by the current NO=
-MMU
-> > > > > > Linux setup.
-> > > > >
-> > > > > It could probably be nice to have some feedback/Tested-by: from N=
-OMMU
-> > > > > users for new releases then.
-> > > >
-> > > > Having more upstream interaction from users is always appreciated, =
-that's
-> > > > the best way to prove people are using the code.  If you guys have =
-the time
-> > > > it'd be great to get this into some sort of CI, ideally running on =
-some real
-> > > > platform.
-> > >
-> > > As above, I'd also like to step up on the NOMMU stuff, at least test
-> > > nommu on milkv duo's small core. And can be seen from my git commit
-> > > histotry, I was active, and I belive I will still be active on riscv =
-linux
-> > > kernel development.
-> > >
-> > > >
-> > > > > Thanks,
-> > > > >
-> > > > > Cl=C3=A9ment
-> > > > >
-> > > > > >
-> > > > > > Charles
-> > > > > >
-> > > > > >
-> > > > > > On Mon, Feb 26, 2024 at 8:03=E2=80=AFAM Conor Dooley <conor@ker=
-nel.org> wrote:
-> > > > > > >
-> > > > > > > On Mon, Feb 26, 2024 at 04:25:24PM +0100, Cl=C3=A9ment L=C3=
-=A9ger wrote:
-> > > > > > > > I guess I could also mark XIP as deprecated.
-> > > > > > >
-> > > > > > > I'm not so sure, people recently added XIP support to QEMU (a=
-nd sent
-> > > > > > > kernel fixes in December). XIP is also not nearly as much of =
-a problem
-> > > > > > > to support, there's far less that it does differently, the ma=
-in barrier
-> > > > > > > was the inability to test it which is no longer the case.
-> > > > > > > That said, XIP is gonna kill itself off I feel as it does not=
- support
-> > > > > > > runtime patching and therefore is extremely limited on extens=
-ions, given
-> > > > > > > we use alternatives for all of that (although I suppose if so=
-meone has a
-> > > > > > > usecase they could make nasty macros worse and implement a co=
-mpiletime
-> > > > > > > switch in the alternatives too).
-> > > > > > >
-> > > > > > > Cheers,
-> > > > > > > Conor.
-> > > > > > >
-> > > > > > > _______________________________________________
-> > > > > > > linux-riscv mailing list
-> > > > > > > linux-riscv@lists.infradead.org
-> > > > > > > http://lists.infradead.org/mailman/listinfo/linux-riscv
-> > > >
-> > > > _______________________________________________
-> > > > linux-riscv mailing list
-> > > > linux-riscv@lists.infradead.org
-> > > > http://lists.infradead.org/mailman/listinfo/linux-riscv
+Thx.
+
+---
+From: "Borislav Petkov (AMD)" <bp@alien8.de>
+Date: Tue, 26 Mar 2024 21:11:01 +0100
+
+When KCSAN and CONSTRUCTORS are enabled, one can trigger the
+
+  "Unpatched return thunk in use. This should not happen!"
+
+catch-all warning.
+
+Usually, when objtool runs on the .o objects, it does generate a section
+return_sites which contains all offsets in the objects to the return
+thunks of the functions present there. Those return thunks then get
+patched at runtime by the alternatives.
+
+KCSAN and CONSTRUCTORS add this to the the object file's .text.startup
+section:
+
+  -------------------
+  Disassembly of section .text.startup:
+
+  ...
+
+  0000000000000010 <_sub_I_00099_0>:
+    10:   f3 0f 1e fa             endbr64
+    14:   e8 00 00 00 00          call   19 <_sub_I_00099_0+0x9>
+                          15: R_X86_64_PLT32      __tsan_init-0x4
+    19:   e9 00 00 00 00          jmp    1e <__UNIQUE_ID___addressable_cryptd_alloc_aead349+0x6>
+                          1a: R_X86_64_PLT32      __x86_return_thunk-0x4
+  -------------------
+
+which, if it is built as a module goes through the intermediary stage of
+creating a <module>.mod.c file which, when translated, receives a second
+constructor:
+
+  -------------------
+  Disassembly of section .text.startup:
+
+  0000000000000010 <_sub_I_00099_0>:
+    10:   f3 0f 1e fa             endbr64
+    14:   e8 00 00 00 00          call   19 <_sub_I_00099_0+0x9>
+                          15: R_X86_64_PLT32      __tsan_init-0x4
+    19:   e9 00 00 00 00          jmp    1e <_sub_I_00099_0+0xe>
+                          1a: R_X86_64_PLT32      __x86_return_thunk-0x4
+
+  ...
+
+  0000000000000030 <_sub_I_00099_0>:
+    30:   f3 0f 1e fa             endbr64
+    34:   e8 00 00 00 00          call   39 <_sub_I_00099_0+0x9>
+                          35: R_X86_64_PLT32      __tsan_init-0x4
+    39:   e9 00 00 00 00          jmp    3e <__ksymtab_cryptd_alloc_ahash+0x2>
+                          3a: R_X86_64_PLT32      __x86_return_thunk-0x4
+  -------------------
+
+in the .ko file.
+
+Objtool has run already so that second constructor's return thunk cannot
+be added to the .return_sites section and thus the return thunk remains
+unpatched and the warning rightfully fires.
+
+Drop KCSAN flags from the mod.c generation stage as those constructors
+do not contain data races one would be interested about.
+
+Debugged together with David Kaplan <David.Kaplan@amd.com> and Nikolay
+Borisov <nik.borisov@suse.com>.
+
+Reported-by: Paul Menzel <pmenzel@molgen.mpg.de>
+Signed-off-by: Borislav Petkov (AMD) <bp@alien8.de>
+Link: https://lore.kernel.org/r/0851a207-7143-417e-be31-8bf2b3afb57d@molgen.mpg.de
+---
+ scripts/Makefile.modfinal | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/scripts/Makefile.modfinal b/scripts/Makefile.modfinal
+index 8568d256d6fb..79fcf2731686 100644
+--- a/scripts/Makefile.modfinal
++++ b/scripts/Makefile.modfinal
+@@ -23,7 +23,7 @@ modname = $(notdir $(@:.mod.o=))
+ part-of-module = y
+ 
+ quiet_cmd_cc_o_c = CC [M]  $@
+-      cmd_cc_o_c = $(CC) $(filter-out $(CC_FLAGS_CFI) $(CFLAGS_GCOV), $(c_flags)) -c -o $@ $<
++      cmd_cc_o_c = $(CC) $(filter-out $(CC_FLAGS_CFI) $(CFLAGS_GCOV) $(CFLAGS_KCSAN), $(c_flags)) -c -o $@ $<
+ 
+ %.mod.o: %.mod.c FORCE
+ 	$(call if_changed_dep,cc_o_c)
+-- 
+2.43.0
+
+
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
 
