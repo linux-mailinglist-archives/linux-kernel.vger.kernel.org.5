@@ -1,162 +1,129 @@
-Return-Path: <linux-kernel+bounces-119432-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-119433-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6482E88C8BD
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 17:14:09 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 131F288C8C0
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 17:14:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id EECC31F8127A
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 16:14:08 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 452A11C6392E
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 16:14:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 07AB013C9B9;
-	Tue, 26 Mar 2024 16:14:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5C51C13C9D0;
+	Tue, 26 Mar 2024 16:14:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="apOwC4P3"
-Received: from mail-qt1-f181.google.com (mail-qt1-f181.google.com [209.85.160.181])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="PI0CJPiX"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C085913C903
-	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 16:13:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B58031A8F
+	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 16:14:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711469641; cv=none; b=hmTaBM9z8HVk0b5hbeDy8uny2wb6y1Ki8nRHUOF5LRuUHod9aWX+L9Xz7hoxpcaUnp4flB1DnGRbDI+Ygz9uUre5tdNblMElx2+I8AvOdjVXRzBc8HtC9XhsUJ/NHVIVc1CMs8a8hR64omkadz+e/ytBNYUg+8YrOT1QPgEMK7M=
+	t=1711469660; cv=none; b=uKgx/heSKJaUtaa/Ssdi6rB4i2xGwus3sPDSKRWeE4oYY7MYz+qYAbp/XwULOEYnSY85UOgxvm2qqCwc253bVQFxwKpYvh7FzZUeBxCv4wvawzwh5B+9bJs0Uc219fnGK7o/WpxdugUh/qJina+lWilRsZX607M18znnk8Ml9K8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711469641; c=relaxed/simple;
-	bh=cZoq0o7ad5PeIU5Dggn5JwU+BryvvaISPpzzmhX/QyY=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=osLVgRAZ79NGVmL4Lciw9SgWylwOXCQcZMtSL8QxKQXDljUX/8lpGNaze7jqhXRyKi2EwXreBAfYHQJUef4xYdt3GVAYoCgJeP0DOrlMbuWaH40kcIeJQ5MUT35+FdDcMzilR2HsVImyszC0UlvLarrGmtUV+RXGVAI3kvut75k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=apOwC4P3; arc=none smtp.client-ip=209.85.160.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-qt1-f181.google.com with SMTP id d75a77b69052e-431347c6c99so287521cf.0
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 09:13:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1711469639; x=1712074439; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=sbMtObAheSsAzdeSiEvX6OHpKYNeToJOIcYIcWYK+c0=;
-        b=apOwC4P3vOo8z9UmsVCnfxjW3v/4z6uVxQpHwAtE5PDjqfWVrb4zsu4K/Cl15lZfzf
-         twdHn4beF9GxwsN2sFf448gZ5MvdLDJc7C8nsL5TKGf7gODcwngSdqLCLz1IbUfyZuKV
-         E+abXPTyoxL6DGjWMHdYB3kjHtILDvmLvwlpOVBG0DYyHYGK2cKvWFrNedb0aroRqYbP
-         XSwBrhG9MDSjFJK6ourcXJFKtg4e95X+T0nNzhzpVAUh08c3kRm7hE7mrg+jBoo5MHJS
-         5BaJQLFWCLNejg6pjQT4kn/sCXQFzk666Bifv4rEIQ2W0kc7jwRFq8YREUxkxBFwz8GT
-         R+hA==
+	s=arc-20240116; t=1711469660; c=relaxed/simple;
+	bh=7SawbmnWI7rPJsnre2a+4vB+2de3J0Bbtlxm2lwABJA=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=htjwls7OraNxL1kaEg9cCUIxlREICZEQsEpvLZqYISfv4/VWd4ReK3W4Jyd6B7xGE7HmP6Rvbi1cdeP9G3Yxw/6d92k3fi5R1cBlRv3oKZYhS7sIZel0neqn1AtuHyJ8oq8rdsvsQ+Cdj+qDJoovRmgwBkSSXxOvxd55WzUt9eg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=PI0CJPiX; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1711469658;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=7SawbmnWI7rPJsnre2a+4vB+2de3J0Bbtlxm2lwABJA=;
+	b=PI0CJPiXJqcVEbmsJJYemSLNpfCKTqbDZ/4QmB9/Ah6OUAjeMF1M8c9ocxOqwCoMvLX5KW
+	WGL2y+54pArPCsYyfYgLPG3HLNZpB4CbgynI1uAyfAXWOFydGiV9YZ6+IAONYsyaStDSJH
+	8jBrUsdOiDRoeq6+MHsBZnwpOyvafiI=
+Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
+ [209.85.221.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-134-9GI1ugOmOY2xSr5GZpJG2g-1; Tue, 26 Mar 2024 12:14:16 -0400
+X-MC-Unique: 9GI1ugOmOY2xSr5GZpJG2g-1
+Received: by mail-wr1-f69.google.com with SMTP id ffacd0b85a97d-341d0499bbdso415367f8f.1
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 09:14:15 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711469639; x=1712074439;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=sbMtObAheSsAzdeSiEvX6OHpKYNeToJOIcYIcWYK+c0=;
-        b=TocecKO+SkaF8Iq8NNsWYQBXju6Qz9TfT0J9eMRwzUQw6KohdyBwHwVuIMRR3JyUMB
-         eOfkZxVJiZsmmH8gH7RuuA/Sy+FfMXGZNqPq3KD0+YkS9zmjO54iFu0CG9aVxtwXrNOf
-         N/PpfB5+l9JVCpHPubW6nydqi4fHpnzmAwF9AOWTn/xqStWo4nYE52iZdsTgLk15EWWf
-         Oc/Ilzyhy/Jvaj2G+GgI/AoOxVJJsz38Vsi2u7hOtGaBo/nlUwo/gJXNDL1yvEm2qcC4
-         Ki3hx0QO5J5jyATQqp4Qdw5qVuthFy0JeBvL2koy8CntNiPWVbCGnUuzky1M8GtkkB7G
-         nfHg==
-X-Forwarded-Encrypted: i=1; AJvYcCVusyORcy5Fc3sSvzeM1TjF06xQGhjV4RIDT9kF9JcdqWERGckt1qVm1Gpsd/PF+7Zleknua8nG9nhnQAkr8s9CEWvsboiIyi0nMa3L
-X-Gm-Message-State: AOJu0YypRACkAwpDspTac/Ee+DKjB1rCrE/b9WHrtySLXpdrxqwTRedG
-	jmO0iuusXbXLVkA/vQWYcPdwFlmOyDLkK6iS7sM6fTB3o+YzBiYBRjYRykcWStEZz5kedS4ndGE
-	Ges0fEgZTYQyG43avv7YTXDqUFluFmEz2cqlb
-X-Google-Smtp-Source: AGHT+IEqVSh9DxVcvxp7ujQTBkubsreCdaJFgDje9+tSP+o3LivsvPLSae+Aa0KdBbQeSQ5zMDQOVyZhHu7658VlZ0U=
-X-Received: by 2002:a05:622a:510b:b0:431:3477:1b1b with SMTP id
- ev11-20020a05622a510b00b0043134771b1bmr279349qtb.24.1711469638547; Tue, 26
- Mar 2024 09:13:58 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1711469654; x=1712074454;
+        h=mime-version:user-agent:content-transfer-encoding:autocrypt
+         :references:in-reply-to:date:cc:to:from:subject:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=7SawbmnWI7rPJsnre2a+4vB+2de3J0Bbtlxm2lwABJA=;
+        b=Wku9XdA+UVqr1b21amGeYB2ttqdeA78OqBKL88I4B0hcwj+KbGI1gUI1l5IjHkAaZW
+         4p7i0AVbEY+DPd6gxvPlz92+0KH9IQYTPrpIHmDfstJ14pKlud6oq3s1szMOlV1wStpk
+         XjULa5MBsjpSabhsH/HFdDQFzVPo7BmKUzZPtDChWuQdFklJVyacod5dtKuXsu74ooMj
+         Lu4uotWrWwrVqG8LfVYAa8jNqRnMDqGbBO3AFsbuevnttPWTavxAoKIwhQofRJnuka0b
+         naCvLe2HAmdYtIklxRT9nERuA/Hu0FPfXLNDQzTpEyksmxxZhzlBBA+sYVS4+NNzD6jQ
+         kuQA==
+X-Forwarded-Encrypted: i=1; AJvYcCU1DiB/AEEgja6F/jYl2D5io+iDJBJ6UvOt/4Bczg9eO2AGy+SNzkJbzb0n7v0BqKYU9ClpkXViu83eeuDS0gfJHsJBHTebt6pir2lz
+X-Gm-Message-State: AOJu0YzmzcdK00iJcpy7Uc6CdphpmfODssDYZCrv1V/mP3lF/LwrDmWT
+	TXrAvdVPCmrpzCRpaSi0SHGNM1tuJYsfp5fWfjBOX7sZSttLYk5HuFRAfkxAxqO0MkxD5HB4R1D
+	13U2vJapnUHXGpgyms4qZhsWjhwnvzB9ByZ4ADTkt092mFOvJaSrX8s1l8yP0EQ==
+X-Received: by 2002:a05:6000:1d8f:b0:341:cf6a:9edb with SMTP id bk15-20020a0560001d8f00b00341cf6a9edbmr5122116wrb.1.1711469654756;
+        Tue, 26 Mar 2024 09:14:14 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IHjShKKyWXmkUtgp7SlwTyVgwVrWoywvcERPA7AbkHbHielkBEJwiDiyusdfK4L/qlc139cWw==
+X-Received: by 2002:a05:6000:1d8f:b0:341:cf6a:9edb with SMTP id bk15-20020a0560001d8f00b00341cf6a9edbmr5122103wrb.1.1711469654383;
+        Tue, 26 Mar 2024 09:14:14 -0700 (PDT)
+Received: from gerbillo.redhat.com (146-241-229-159.dyn.eolo.it. [146.241.229.159])
+        by smtp.gmail.com with ESMTPSA id bf12-20020a0560001ccc00b0033e745b8bcfsm12550390wrb.88.2024.03.26.09.14.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 26 Mar 2024 09:14:13 -0700 (PDT)
+Message-ID: <d60c6185b8394da02479100981fa3f1306d9c81f.camel@redhat.com>
+Subject: Re: [PATCH net-next v4 4/4] net: gro: move L3 flush checks to
+ tcp_gro_receive
+From: Paolo Abeni <pabeni@redhat.com>
+To: Richard Gobert <richardbgobert@gmail.com>, Eric Dumazet
+	 <edumazet@google.com>
+Cc: davem@davemloft.net, kuba@kernel.org, willemdebruijn.kernel@gmail.com, 
+	netdev@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-kselftest@vger.kernel.org
+Date: Tue, 26 Mar 2024 17:14:12 +0100
+In-Reply-To: <6566fd5f-fcdf-4dc7-b8a2-5e8a182f8c49@gmail.com>
+References: <20240325182543.87683-1-richardbgobert@gmail.com>
+	 <20240325182543.87683-5-richardbgobert@gmail.com>
+	 <CANn89iKzeTKuBA3NL0DQUmUHmmc0QzZ0X62DUarZ2Q7cKRZvSA@mail.gmail.com>
+	 <46e0c775-91e7-4bf6-88f3-53ab5e00414f@gmail.com>
+	 <CANn89iJkDbzLKmUGRHNFpfiaO8z19i44qgqkBA9Updt4QsRkyg@mail.gmail.com>
+	 <6566fd5f-fcdf-4dc7-b8a2-5e8a182f8c49@gmail.com>
+Autocrypt: addr=pabeni@redhat.com; prefer-encrypt=mutual; keydata=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
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.50.4 (3.50.4-1.fc39) 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240320162619.1272015-1-irogers@google.com> <20240326083223.10883-1-adrian.hunter@intel.com>
-In-Reply-To: <20240326083223.10883-1-adrian.hunter@intel.com>
-From: Ian Rogers <irogers@google.com>
-Date: Tue, 26 Mar 2024 09:13:40 -0700
-Message-ID: <CAP-5=fVbR8xvFvG_cnzq6==QbZ1wX9mPT-RWHEMgaTp6ic0jNA@mail.gmail.com>
-Subject: Re: [PATCH] perf intel-pt: Fix unassigned instruction op
-To: Adrian Hunter <adrian.hunter@intel.com>
-Cc: Arnaldo Carvalho de Melo <acme@kernel.org>, Jiri Olsa <jolsa@kernel.org>, 
-	Namhyung Kim <namhyung@kernel.org>, linux-kernel@vger.kernel.org, 
-	linux-perf-users@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Tue, Mar 26, 2024 at 1:32=E2=80=AFAM Adrian Hunter <adrian.hunter@intel.=
-com> wrote:
->
-> MemorySanitizer discovered instances where the instruction op value was
-> not assigned.:
->
->   WARNING: MemorySanitizer: use-of-uninitialized-value
->     #0 0x5581c00a76b3 in intel_pt_sample_flags tools/perf/util/intel-pt.c=
-:1527:17
->   Uninitialized value was stored to memory at
->     #0 0x5581c005ddf8 in intel_pt_walk_insn tools/perf/util/intel-pt-deco=
-der/intel-pt-decoder.c:1256:25
->
-> The op value is used to set branch flags for branch instructions
-> encountered when walking the code, so fix by setting op to
-> INTEL_PT_OP_OTHER in other cases.
->
-> Reported-by: Ian Rogers <irogers@google.com>
-> Closes: https://lore.kernel.org/linux-perf-users/20240320162619.1272015-1=
--irogers@google.com/
-> Signed-off-by: Adrian Hunter <adrian.hunter@intel.com>
+Hi,
 
-Great, thanks! Should it have a Fixes tag like:
+On Tue, 2024-03-26 at 16:02 +0100, Richard Gobert wrote:
+> This patch is meaningful by itself - removing checks against non-relevant
+> packets and making the flush/flush_id checks in a single place.
 
-Fixes: 4c761d805bb2 ("perf intel-pt: Fix intel_pt_fup_event()
-assumptions about setting state type")
+I'm personally not sure this patch is a win. The code churn is
+significant. I understand this is for performance's sake, but I don't
+see the benefit???=20
 
-Tested-by: Ian Rogers <irogers@google.com>
+The changelog shows that perf reports slightly lower figures for
+inet_gro_receive(). That is expected, as this patch move code out of
+such functio. What about inet_gro_flush()/tcp_gro_receive() where such
+code is moved?
 
-Ian
+Additionally the reported deltas is within noise level according to my
+personal experience with similar tests.
 
-> ---
->  tools/perf/util/intel-pt-decoder/intel-pt-decoder.c | 2 ++
->  tools/perf/util/intel-pt.c                          | 2 ++
->  2 files changed, 4 insertions(+)
->
-> diff --git a/tools/perf/util/intel-pt-decoder/intel-pt-decoder.c b/tools/=
-perf/util/intel-pt-decoder/intel-pt-decoder.c
-> index b450178e3420..e733f6b1f7ac 100644
-> --- a/tools/perf/util/intel-pt-decoder/intel-pt-decoder.c
-> +++ b/tools/perf/util/intel-pt-decoder/intel-pt-decoder.c
-> @@ -1319,6 +1319,8 @@ static bool intel_pt_fup_event(struct intel_pt_deco=
-der *decoder, bool no_tip)
->         bool ret =3D false;
->
->         decoder->state.type &=3D ~INTEL_PT_BRANCH;
-> +       decoder->state.insn_op =3D INTEL_PT_OP_OTHER;
-> +       decoder->state.insn_len =3D 0;
->
->         if (decoder->set_fup_cfe_ip || decoder->set_fup_cfe) {
->                 bool ip =3D decoder->set_fup_cfe_ip;
-> diff --git a/tools/perf/util/intel-pt.c b/tools/perf/util/intel-pt.c
-> index f38893e0b036..4db9a098f592 100644
-> --- a/tools/perf/util/intel-pt.c
-> +++ b/tools/perf/util/intel-pt.c
-> @@ -764,6 +764,7 @@ static int intel_pt_walk_next_insn(struct intel_pt_in=
-sn *intel_pt_insn,
->
->         addr_location__init(&al);
->         intel_pt_insn->length =3D 0;
-> +       intel_pt_insn->op =3D INTEL_PT_OP_OTHER;
->
->         if (to_ip && *ip =3D=3D to_ip)
->                 goto out_no_cache;
-> @@ -898,6 +899,7 @@ static int intel_pt_walk_next_insn(struct intel_pt_in=
-sn *intel_pt_insn,
->
->                         if (to_ip && *ip =3D=3D to_ip) {
->                                 intel_pt_insn->length =3D 0;
-> +                               intel_pt_insn->op =3D INTEL_PT_OP_OTHER;
->                                 goto out_no_cache;
->                         }
->
-> --
-> 2.34.1
->
+I think we are better off without this patch.
+
+Paolo
+
+
 
