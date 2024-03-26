@@ -1,106 +1,91 @@
-Return-Path: <linux-kernel+bounces-119345-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-119348-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D706C88C758
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 16:39:43 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8AEB588C762
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 16:40:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9236132015D
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 15:39:42 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2B0A71F67D70
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 15:40:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0715E13CC48;
-	Tue, 26 Mar 2024 15:34:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0ABED13CFA0;
+	Tue, 26 Mar 2024 15:35:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="ZxQ6upFq"
-Received: from mail-ed1-f41.google.com (mail-ed1-f41.google.com [209.85.208.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=lwn.net header.i=@lwn.net header.b="FFvn4P5i"
+Received: from ms.lwn.net (ms.lwn.net [45.79.88.28])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EDA3413CA98
-	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 15:34:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9357513CC79;
+	Tue, 26 Mar 2024 15:35:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.79.88.28
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711467252; cv=none; b=uumF03OC0DH5uS3JBaxhH0IDhqUMsgOqRxMMkquTDchimI4pQVkJDXCiarMdNgGoloyyllRq+BKzfAPnc36HjwgTQLNsnKYTjG8zx8DJauCRC65HACTgBSLMNF1XUsSe+L6Ba7H2HUvLttcopUtkc5KNlZCkei35otuMiaztc60=
+	t=1711467346; cv=none; b=lj1NjNFTwp/rl3h56yQPzoq/wLOVJaQajz56cEWo7H55sGz1zgmxlG5DncP1KHZgb855TwPdnmfq2kzz+Tak6Txv+bYEb18IIH4x/iCKSArvTbQbNvVhz3gyvcFlH0Q7T8nXm7kPdPr7jxPuJUoLYKhkoDmXydv4C3JAX+m9Prg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711467252; c=relaxed/simple;
-	bh=YCGVUXqjT2VDQHJCmUVjnpWe1+Wa5WfZ7bt5vQxRrH0=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=lVVTn4hSe07YiTpEjnzYaZ9vKoTcZPdVHF7q1hOyjuSpAKvTVRzXODxUdHMYUx6m7JXctuKhzsaIjPBmnvcNI58nGk065R/jjCOb4RU14s9IDfGeTlcHzgG6Tsc4/mpCYkStwzNlFg0MAqouKkQUKxuuu2+c3RdZP4uJZvabYbo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=ZxQ6upFq; arc=none smtp.client-ip=209.85.208.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-ed1-f41.google.com with SMTP id 4fb4d7f45d1cf-56c3689ad2cso224779a12.1
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 08:34:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1711467248; x=1712072048; darn=vger.kernel.org;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=55ZfJBrH48piI0JAMfMBwXalNWWcs1zncHAc7+A3Aj8=;
-        b=ZxQ6upFqtggDHAVQtP4wSqwXrCR0kCHeJQuCf8XIZ54TueUQyGLos45QdYWFbqiuq+
-         YVkUtdqkV/176QcHwmOeET2UQUmSxMNdncaZZLbpkWwnJKGNdBJUsAhbfo1xXzcbyicm
-         bnggb/gxgaOWNqH//TJ7Myof2GKzcNlwqRGsztPFn66yTXjjuwiKRDfT2Scvr6lZVatc
-         se4FZSE56yjVcraNpqKjGd8mFcSwWOIWmN+UGcDx/H6WhvhSEJSP59mIqKHhUBMCM1+h
-         F7rmSWyy6BrBuRwwrT2NpJjCXfdqis9vofpF7cKNMzIdREdF2YSfcNeybFMnhCRSOqPB
-         SPGg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711467248; x=1712072048;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=55ZfJBrH48piI0JAMfMBwXalNWWcs1zncHAc7+A3Aj8=;
-        b=dvy/FH6An4OfF2K9xXftTBux2CPFqFDlAHHL2Odh+YunaCEgtNgV3ImhKS2y8uc2UG
-         EpviELQVoiuJe1RLqCOktcWhdpBrArEsOMxG2oMIOWoZZjv48YW+apGGSKE0HL96XdD6
-         fPsYCRHVGZHmo6T9CiwEQ0mPisUGBaS29XWnYuydJ0SfjoDC/e3bBRGskGo3jpXNgLfL
-         cLkx9gPD0IKlHQ9i+zTPisTRYi25su+9eXH8pmALsni1iSxNzleAnXzPZgSDnmwKYqPi
-         Zr2VrIV1e1VNGW8+IOgBaG/6245fx+xE1nufqk01+lsUl9u6wW6FqxejvuUtXoaToKl6
-         PUIw==
-X-Forwarded-Encrypted: i=1; AJvYcCX+Z+ZEMk2FRmuMSasAFhu68miavPG9CvANfHDmds6iR6Wb45VGui8HpBGV6qB2i6VaONFZE2LT7rOme70HKqnLPfZBdMSx4FDoY8bN
-X-Gm-Message-State: AOJu0Yw+uxOdrRXmUH8lfx0IuZfh87aZIUtDMvacDtM3WOEZuCa97peL
-	i5MumGd28dkl34G/n03oF8kwyfbPbkU+Dn9rYGvdtyvkameAcicCPEpgvejFkBY=
-X-Google-Smtp-Source: AGHT+IFD72eddjYWygJrpo+ZwRbM4G2apEunAbhdV30JZ5/9l+iXN1FpY93mApNWes/wJ+lV+zL35w==
-X-Received: by 2002:a50:d71e:0:b0:56c:d47:e403 with SMTP id t30-20020a50d71e000000b0056c0d47e403mr2263091edi.28.1711467248382;
-        Tue, 26 Mar 2024 08:34:08 -0700 (PDT)
-Received: from alley ([176.114.240.50])
-        by smtp.gmail.com with ESMTPSA id j26-20020aa7de9a000000b0056c08268768sm3068196edv.10.2024.03.26.08.34.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Mar 2024 08:34:08 -0700 (PDT)
-Date: Tue, 26 Mar 2024 16:34:06 +0100
-From: Petr Mladek <pmladek@suse.com>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Sergey Senozhatsky <senozhatsky@chromium.org>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	John Ogness <john.ogness@linutronix.de>,
-	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-	Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-	Thomas Gleixner <tglx@linutronix.de>, Jan Kara <jack@suse.cz>,
-	Peter Zijlstra <peterz@infradead.org>, linux-kernel@vger.kernel.org
-Subject: [GIT PULL] printk for 6.9-rc2
-Message-ID: <ZgLq7uQzrzY1_C6M@alley>
+	s=arc-20240116; t=1711467346; c=relaxed/simple;
+	bh=cpbePfHGBKTWOTvvus/3XrPd8U/PqtNlq98UXTNxgtc=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=gehvnzHc4+1qTVJV6wuqwzyjonQabq7jTaDii8oRNZF7ACvUNaTYbZR2LozeQt8pcD7KAQmxGbiRIggJ9qlG1Ks55FJjbcLiWRBNGViDZmLf+ZTT1qo8JVkdKQYot+TH6WHmpZOvXAyUDOQ/boofeao4Hw7qUUYrl9vjqBHXlDI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lwn.net; spf=pass smtp.mailfrom=lwn.net; dkim=pass (2048-bit key) header.d=lwn.net header.i=@lwn.net header.b=FFvn4P5i; arc=none smtp.client-ip=45.79.88.28
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lwn.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lwn.net
+DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net 3B44047AA3
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
+	t=1711467336; bh=cpbePfHGBKTWOTvvus/3XrPd8U/PqtNlq98UXTNxgtc=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+	b=FFvn4P5iUGFV/C84IYrDeszQ3l4X72UHM7BHMKC4XcgtG2N2QFnXn6xdz0VAqxRNV
+	 Emf24AR4aL0OrPrXsmrgJ6afMPpl3nOT6W+g4eCOIq1Zb49xxCQfd0ZPOR7F+HeUsB
+	 cszy1ZEszzufBkmfeD58hXM6Y1PQwAVM8L/JbuH3uljqBmQG1i/t4fu4czw9AASV1+
+	 tP3xaIaLK7HMDBQYt7UYjixP6/QkqTyb1P82r4FZdhCFrnxysGhznSXe++ZIzncHOp
+	 HhyJBHmAYmO5JH6rjBTuz2Y8F0E14H4E6waBB9ouTuV6DyZbC4z0RnJ11jbDgu4k23
+	 9uOORglGwpt9w==
+Received: from localhost (unknown [205.220.129.20])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by ms.lwn.net (Postfix) with ESMTPSA id 3B44047AA3;
+	Tue, 26 Mar 2024 15:35:35 +0000 (UTC)
+From: Jonathan Corbet <corbet@lwn.net>
+To: Dan Williams <dan.j.williams@intel.com>, peterz@infradead.org,
+ torvalds@linux-foundation.org
+Cc: Bjorn Helgaas <bhelgaas@google.com>, Ira Weiny <ira.weiny@intel.com>,
+ Jonathan Cameron <jonathan.cameron@huawei.com>, Jesse Brandeburg
+ <jesse.brandeburg@intel.com>, Ilpo =?utf-8?Q?J=C3=A4rvinen?=
+ <ilpo.jarvinen@linux.intel.com>, Lukas Wunner <lukas@wunner.de>,
+ linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+ gregkh@linuxfoundation.org, linux-doc@vger.kernel.org
+Subject: Re: [PATCH v2] cleanup: Add usage and style documentation
+In-Reply-To: <171140738438.1574931.15717256954707430472.stgit@dwillia2-xfh.jf.intel.com>
+References: <171097196970.1011049.9726486429680041876.stgit@dwillia2-xfh.jf.intel.com>
+ <171140738438.1574931.15717256954707430472.stgit@dwillia2-xfh.jf.intel.com>
+Date: Tue, 26 Mar 2024 09:35:28 -0600
+Message-ID: <8734sd0zwf.fsf@meer.lwn.net>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Type: text/plain
 
-Hi Linus,
+One little nit...
 
-please pull one simple printk fixup from
+Dan Williams <dan.j.williams@intel.com> writes:
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/printk/linux.git tags/printk-for-6.9-rc2
+> + * The DEFINE_FREE() macro can arrange for PCI device references to be
+> + * dropped when the associated variable goes out of scope:
+> + *
+> + * ::
+> + *
 
-======================================
+This can be written a bit more concisely as:
 
-- Prevent scheduling in an atomic context when printk() takes over
-  the console flushing duty.
+ ...goes out of scope::
 
-----------------------------------------------------------------
-John Ogness (1):
-      printk: Update @console_may_schedule in console_trylock_spinning()
+without the separate "::" line, reducing the markup noise a bit more.
 
- kernel/printk/printk.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+Thanks,
+
+jon
 
