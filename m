@@ -1,284 +1,190 @@
-Return-Path: <linux-kernel+bounces-119116-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-119119-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 69EF388C45C
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 15:04:15 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CB41288C46E
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 15:05:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1F3FC300FE4
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 14:04:14 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 16BEEB22EE3
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 14:05:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AEC167602D;
-	Tue, 26 Mar 2024 14:04:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 042A281753;
+	Tue, 26 Mar 2024 14:05:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (4096-bit key) header.d=ccbib.org header.i=@ccbib.org header.b="Ji3jGEE9"
-Received: from mail.multiname.org (h4.multiname.org [94.130.68.253])
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="DiEiYc2m"
+Received: from relay5-d.mail.gandi.net (relay5-d.mail.gandi.net [217.70.183.197])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 695C5125C9;
-	Tue, 26 Mar 2024 14:04:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=94.130.68.253
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B5EBA74C0B;
+	Tue, 26 Mar 2024 14:04:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.197
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711461847; cv=none; b=bZZ8+dvZwG1oC/RKp+sRTH3Ke0MPubK6zj+LtBDQopm/8cokfW3rq5b3B/xedGRbGR49hEB9UWVxGClWVfI1bHgO/avfH1HbKPz5cIdMXvx1euKt0Yfm5I1Y0qFUNdC1BP/logDLciHZloAQZQXbTFFBByP22OVpv5PWJhQEc7k=
+	t=1711461899; cv=none; b=ZFdUbRIqLL3aAiVgPc/wXOBcEDYFOMwN3vLY7dUrFou8c/CFqRkAAD4ytSJo+mbbmDYZ2xwW8420UlbSmLN7yhtIHvflo0J0SDG4mX8tvWokRO6VTK5t05J/FhaVJTLgDsYaOM9HKi3qvOP2FtSeXa12mcGA7ORwqxN8g+axpzU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711461847; c=relaxed/simple;
-	bh=kAw9k+LFDrKZWmnFSG9W+3GRp1EStC0PTWb9L4AGv6U=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=Z9pk5BxoVxHQ8W1wcDKG2rTrkp6wX/QZXgpfsEbetxYSxx3YH1kY1EMZPPikBmwglbjltoCiLry/xTra/nC66MWceFhreBykHQJFjTVg7mtTaWKGr6XAp+WAHxCf1YlBKNdBGvW03anobf1vfWdLxcVDKINQBO9WywfQno0sEHw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=ccbib.org; spf=pass smtp.mailfrom=ccbib.org; dkim=pass (4096-bit key) header.d=ccbib.org header.i=@ccbib.org header.b=Ji3jGEE9; arc=none smtp.client-ip=94.130.68.253
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=ccbib.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ccbib.org
-Received: from raab.fritz.box (unknown [IPv6:2a02:1748:dd5c:fec0:221:9bff:fe61:eebd])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mail.multiname.org (Postfix) with ESMTPSA id 4V3s3b6rGdzPLs9B;
-	Tue, 26 Mar 2024 15:03:55 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ccbib.org; s=20220806;
-	t=1711461836;
+	s=arc-20240116; t=1711461899; c=relaxed/simple;
+	bh=Bht56GKwfxqVLHT3PK85DitT4MWOhPng5tzAATBDR8s=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=qwJzeMA9QB6bS8ahFrZZXkVOK076EsfxCU7onl64mFJsrfM4SaOW7hW2DpnQSpZyf8xv/PNvYemY4aq/qQ4E3BpfGdEbJY6EDhF9bDd8C7cRZDsNc3hSNR6FKAAZfqgo/FY89olvekA64fEisMEGvOch4lQZHiYu7yHwOXeCRzE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=DiEiYc2m; arc=none smtp.client-ip=217.70.183.197
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 43BF91C000A;
+	Tue, 26 Mar 2024 14:04:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1711461887;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=5KIo+nzMht9DjNalrh+8JfHFES0AtewbPHT7HbC94Y8=;
-	b=Ji3jGEE9oPN9MjjiQebUJEj8oStxLH7J5fJuAj3vSZmdfAwAj118KbogRpjm9grkWU5Q/4
-	z9nWslujQFlfBTkBQlrBQv1cNMOy4gmqkZQQkF4g/CdDoWCvCPiJ4f13uJR0udKzHBMQzr
-	lUYcPR1zBwGFzBS075FJzcK7kR4IuL6PV9Jv7fIWB+XnwwOoDqjwMsANeXjhY1pFQ1JjY8
-	ZhZ1KswQ0ZSllYhkqJYHru9Zn8yUSccD0AaiTW/9H0uzOHbRIB7MPeF/FaMmngpETAov5P
-	IhADNClp+73dIIDevKyqCu3DQWHSsy2qXGW6PvifChhfHFSvzjwapoQlPODLicXuJeJAIe
-	erPVwSsJ2Dz/J6+M0mduXo6KojI0EMYSj4PO0VUdMVM60NiaWSjfwoDadF1Eo9AMnfGSZP
-	vd7EGqdZ31XA/vRQu4QodLeHoBpF34FEZenFNFm/jet2VAvzJvoQG/WTI8f9Fw21DOeqeE
-	EoE6D1X06cjP2j0xAP+u19eYvhuBd4weZ+9+ZqvZkM7g17tKW0Wgt+/iT+/gb0TQ+3daj8
-	4QdOxROXRVFHtdoGM0ZSiDKhr9EjS111baSdS4mkXKH3/N9US16foQW7Wl8QF6wBfBnX+1
-	5ekjThHdd/ovUY6jb44XtiCsbH/ADOwkfvsvrNauxijGxVN4MJOH8=
-Message-ID: <e3765f2d7de8a9d26e97750a6a0d1e26da74ab9b.camel@ccbib.org>
-Subject: Re: [PATCH] iio: dht11: set debug log level for parsing error
- messages
-From: Harald Geyer <harald@ccbib.org>
-To: George Stark <gnstark@salutedevices.com>, lars@metafoo.de,
- jic23@kernel.org
-Cc: linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	kernel@salutedevices.com
-Date: Tue, 26 Mar 2024 15:03:55 +0100
-In-Reply-To: <01ed720d-a990-40dd-8a59-a95ea960ecec@salutedevices.com>
-References: <20240325165406.226916-1-gnstark@salutedevices.com>
-	 <c2fb93a5b2e6f437e2c92d0d797509c619cb63a8.camel@ccbib.org>
-	 <01ed720d-a990-40dd-8a59-a95ea960ecec@salutedevices.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.46.4-2 
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=mDQJ6BqK7hwq+aJhog7TsYkjrfTNYhsBctyPN0Rrc+s=;
+	b=DiEiYc2mkkpVcrbkbZWV4Gd4rOxwCqep4QznxAcskGy7ztIIciskxLpTbiVt8+9VqXvtGF
+	iu9WlHAOTmsjsEXSDy+Z+zawJWDmpiKTYvz5eJYp++8TyJGLbGRst5skcrCOxfPvMmAYa9
+	ovKQ75wGqPM3FYfLyJlwnJmc3nx1fA47S5mjtf2m2zP9SqHluts4ajAB+TEFY4ec89YC+S
+	PQxDXGDCw3uKWJR4lspppfV04p1uKTX3j0aRHzqIuyX35SnFVj7kedgKODotvNgcJj9E3G
+	lpwLvAtlxVvjiw3U8kCuT6naF6M96Sa5iCofmFBjRzEfXUC+qZCbmwvanIBB3A==
+From: Kory Maincent <kory.maincent@bootlin.com>
+Subject: [PATCH net-next v6 00/17] net: Add support for Power over Ethernet
+ (PoE)
+Date: Tue, 26 Mar 2024 15:04:37 +0100
+Message-Id: <20240326-feature_poe-v6-0-c1011b6ea1cb@bootlin.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-B4-Tracking: v=1; b=H4sIAPXVAmYC/2XN0UrEMBCF4VdZcm1kMpmmrVe+h4ik6cQNaLKks
+ awsfXdjQdzQy8Pw/XMTC+fAi3g63UTmNSwhxTrMw0m4s43vLMNct0BArQBJerblK/PbJbFUeqQ
+ RuNcEWlRxyezDda+9iMhFRr4W8Vov57CUlL/3N6va73tRKdMUVyVBTkwDEE0eaXyeUiofIT669
+ LmXVvzXCKrVWHVn5sFZZ6D39qj1nyZAGFqtf7VWM5qeyIx81HSnVddqqlp300QONRrjjrq709i
+ 3uqsaBw/W0oBk5lZv2/YD4r6aUaoBAAA=
+To: "David S. Miller" <davem@davemloft.net>, 
+ Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, 
+ Paolo Abeni <pabeni@redhat.com>, Jonathan Corbet <corbet@lwn.net>, 
+ Luis Chamberlain <mcgrof@kernel.org>, Russ Weight <russ.weight@linux.dev>, 
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
+ "Rafael J. Wysocki" <rafael@kernel.org>, Rob Herring <robh+dt@kernel.org>, 
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+ Conor Dooley <conor+dt@kernel.org>, 
+ Oleksij Rempel <o.rempel@pengutronix.de>, Mark Brown <broonie@kernel.org>, 
+ Frank Rowand <frowand.list@gmail.com>, Andrew Lunn <andrew@lunn.ch>, 
+ Heiner Kallweit <hkallweit1@gmail.com>, 
+ Russell King <linux@armlinux.org.uk>
+Cc: Thomas Petazzoni <thomas.petazzoni@bootlin.com>, netdev@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org, 
+ devicetree@vger.kernel.org, Dent Project <dentproject@linuxfoundation.org>, 
+ Kory Maincent <kory.maincent@bootlin.com>
+X-Mailer: b4 0.14-dev
+X-GND-Sasl: kory.maincent@bootlin.com
 
-Hi George!
+From: Kory Maincent (Dent Project) <kory.maincent@bootlin.com>
 
-Am Montag, dem 25.03.2024 um 23:18 +0300 schrieb George Stark:
-> On 3/25/24 21:48, Harald Geyer wrote:
-> > Am Montag, dem 25.03.2024 um 19:54 +0300 schrieb George Stark:
-> > > Protocol parsing errors could happen due to several reasons like
-> > > noise
-> > > environment, heavy load on system etc. If to poll the sensor
-> > > frequently
-> > > and/or for a long period kernel log will become polluted with
-> > > error
-> > > messages if their log level is err (i.e. on by default).
-> >=20
-> > Yes, these error are often recoverable. (As are many other HW
-> > errors,
-> > that typically are logged. Eg USB bus resets due to EMI)
-> >=20
-> > [...]
-> >=20
-> > The idea is, that these messages help users understand issues with
-> > their HW (like too long cables, broken cables etc). But it is true,
-> > that they will slowly accumulate in many real world scenarios
-> > without
-> > anything being truly wrong.
->=20
-> I agree with you that it's very convenient to just take a look to
-> dmesg
-> and see device connection problems at once. But unlike e.g. usb user
-> has
-> to actually start reading sensor to perform communication and read
-> errors will be propagated to the userspace and could be noticed \
-> handled.
+This patch series aims at adding support for PoE (Power over Ethernet),
+based on the already existing support for PoDL (Power over Data Line)
+implementation. In addition, it adds support for two specific PoE
+controller, the Microchip PD692x0 and the TI TPS23881.
 
-Not really. The log lines contain additional information useful for
-understanding the problem with the setup.
+In detail:
+- Patch 1 to 13 prepare net to support PoE devices.
+- Patch 14 and 15 add PD692x0 PoE PSE controller driver and its binding.
+- Patch 16 and 17 add TI TPS23881 PSE controller driver and its binding.
 
-> Anyway I believe we should use uniform approach for read errors -
-> currently in the driver there're already dbg messages:
->=20
-> "lost synchronisation at edge %d\n"
-> "invalid checksum\n"
+Changes in v6:
+- TPS23881 fix firmware management release missing.
+- Use pcdev device pointer as regulator consumer and provider.
+- Rename of_legacy to no_of_pse_pi.
+- Add kdoc, and separate functions for better readability.
+- Add vpwr-supply regulator parent.
+- Link to v5: https://lore.kernel.org/r/20240227-feature_poe-v5-0-28f0aa48246d@bootlin.com
 
-These errors are usually caused by EMI and there isn't much to do aside
-from trying again until we find a time window with less interference.
-They are not logged, because in some cases they might be very frequent
-and can be handled by the user space client programatically anyway.
+Changes in v5:
+- Fix bindings nit.
+- Add supported-polarity parameter to bindings.
+- Fix yamllint binding errors.
+- Remove the nested lock brought by the use of regulator framework.
+- Link to v4: https://lore.kernel.org/r/20240215-feature_poe-v4-0-35bb4c23266c@bootlin.com
 
-> I changed log level from err to dbg for the messages:
->=20
-> "Only %d signal edges detected\n"
+Changes in v4:
+- Replaced sponsored-by tag by a simple sentence.
+- Fix pse_pi node bindings.
+- Add pse pi documentation written by Oleksij.
+- Link to v3: https://lore.kernel.org/r/20240208-feature_poe-v3-0-531d2674469e@bootlin.com
 
-This mostly indicates a problem with the setup. Long cable, dead
-sensor, high (interrupt) load etc.
+Changes in v3:
+- Add patches to add Oleksij and myself to PSE MAINTAINERS.
+- Add patches to add pse devlink.
+- Add TI TPS23881 PSE controller driver with its binding.
+- Replace pse_get_types helper by pse_has_podl and pse_has_c33
+- Changed the PSE core bindings.
+- Add a setup_pi_matrix callback.
+- Register regulator for each PSE PI (Power Interface).
+- Changed the PD692x0 bindings.
+- Updated PD692x0 drivers to new bindings and PSE PI description.
+- Updated PD692x0 drivers according to the reviews and made fixes.
+- Link to v2: https://lore.kernel.org/r/20231201-feature_poe-v2-0-56d8cac607fa@bootlin.com
 
-Its true that this can happen during normal operation. - Usually when
-the system takes too long to enter the irq handler.
+Changes in v2:
+- Extract "firmware_loader: Expand Firmware upload error codes patches" to
+  send it alone and get it merge in an immutable branch.
+- Add "c33" prefix for PoE variables and enums.
+- Enhance few comments.
+- Add PSE Documentation.
+- Make several changes in pd692x0 driver, mainly for readibility.
+- Link to v1: https://lore.kernel.org/r/20231116-feature_poe-v1-0-be48044bf249@bootlin.com
 
-But the primary causes are:
-1) Your wiring is broken. In this case, the message is immediately
-helpful and points you in the right direction. (Only if you understand
-the protocol though.)
-2) Your sensor is dead or "crashed", which also warrants an error msg
-IMO.
+Signed-off-by: Kory Maincent <kory.maincent@bootlin.com>
+---
+Kory Maincent (17):
+      MAINTAINERS: net: Add Oleksij to pse-pd maintainers
+      of: property: Add fw_devlink support for pse parent
+      net: pse-pd: Rectify and adapt the naming of admin_cotrol member of struct pse_control_config
+      ethtool: Expand Ethernet Power Equipment with c33 (PoE) alongside PoDL
+      net: pse-pd: Introduce PSE types enumeration
+      net: ethtool: pse-pd: Expand pse commands with the PSE PoE interface
+      netlink: specs: Modify pse attribute prefix
+      netlink: specs: Expand the pse netlink command with PoE interface
+      MAINTAINERS: Add myself to pse networking maintainer
+      net: pse-pd: Add support for PSE PIs
+      dt-bindings: net: pse-pd: Add another way of describing several PSE PIs
+      net: pse-pd: Add support for setup_pi_matrix callback
+      net: pse-pd: Use regulator framework within PSE framework
+      dt-bindings: net: pse-pd: Add bindings for PD692x0 PSE controller
+      net: pse-pd: Add PD692x0 PSE controller driver
+      dt-bindings: net: pse-pd: Add bindings for TPS23881 PSE controller
+      net: pse-pd: Add TI TPS23881 PSE controller driver
 
-The "crashed" case is a bit special. Some chips seem to randomly stop
-working after a couple of hours and the only remedy is to power cycle
-them. This could be done automatically. - I have the sensor power
-supply pin on a GPIO and reset it from userspace in my setup. I tried
-to work on a version of the driver some years ago, that would
-optionally register with a regulator and manage sensor resets from
-within the kernel driver. If this was actually implemented, we could
-reduce the logging to cases, where the reset didn't solve the problem.
-
-I stopped working on this, because it would have required changes to
-the regulator framework, to be actually useful, and the regulator
-maintainers didn't seem to keen about them. However, if you want to
-pick this up in an effort to reduce unnecessary error conditions and
-messages, I certainly would be happy.
-
-> "Don't know how to decode data: %d %d %d %d\n"
-
-This would indicate a sensor, that uses the same protocol but an
-unsupported data format. This is a permanent error and therefor should
-be logged IMO.
-
-I guess, if you have a bad readout due to EMI but the checksum
-accidentally matches, then you might get this message too. But this
-should be a very rare case.
-
-> They all are from a single callback and say the same thing -
-> communication problem.
-
-Not really. See above.
-
-> If we make all those messages as errors it'd be great to have
-> mechanism
-> to disable them e.g. thru module parameter or somehow without
-> rebuilding
-> kernel.
-
-No. What you try to change is cosmetic at best. It certainly doesn't
-justify adding any complexity.
-
-Since Jonathan deferred to my judgment:
-
-As you can see, I did consider the trade-off between useful diagnostics
-and spamming the log carefully. So naturally I'm inclined to reject
-your proposal unless it solves an actual problem.
-
-Also people still mail me directly with bogus bug reports about the
-driver when really they have some issue with their setup. I fear, if we
-reduce diagnostics, it will increase that noise.
-
-So I reject your proposed changes, if they are for the sake of
-unification. I'm willing to discuss, what the most sensible trade-off
-is, but it would need to actually add to the considerations I already
-did.
+ .../bindings/net/pse-pd/microchip,pd692x0.yaml     |  158 +++
+ .../bindings/net/pse-pd/pse-controller.yaml        |  102 +-
+ .../bindings/net/pse-pd/ti,tps23881.yaml           |   93 ++
+ Documentation/netlink/specs/ethtool.yaml           |   33 +-
+ Documentation/networking/ethtool-netlink.rst       |   20 +
+ Documentation/networking/index.rst                 |    1 +
+ Documentation/networking/pse-pd/index.rst          |   10 +
+ Documentation/networking/pse-pd/introduction.rst   |   73 ++
+ Documentation/networking/pse-pd/pse-pi.rst         |  302 +++++
+ MAINTAINERS                                        |    8 +
+ drivers/net/pse-pd/Kconfig                         |   20 +
+ drivers/net/pse-pd/Makefile                        |    2 +
+ drivers/net/pse-pd/pd692x0.c                       | 1223 ++++++++++++++++++++
+ drivers/net/pse-pd/pse_core.c                      |  511 +++++++-
+ drivers/net/pse-pd/pse_regulator.c                 |   49 +-
+ drivers/net/pse-pd/tps23881.c                      |  818 +++++++++++++
+ drivers/of/property.c                              |    2 +
+ include/linux/pse-pd/pse.h                         |   86 +-
+ include/uapi/linux/ethtool.h                       |   55 +
+ include/uapi/linux/ethtool_netlink.h               |    3 +
+ net/ethtool/pse-pd.c                               |   60 +-
+ 21 files changed, 3527 insertions(+), 102 deletions(-)
+---
+base-commit: f81d6cec4a4ed1b6580340a43ec68f3132423964
+change-id: 20231024-feature_poe-139490e73403
 
 Best regards,
-Harald
-
-
->  Those errors can be bypassed by increasing read rate.
->=20
-> >=20
-> > I don't consider the dmesg buffer being rotated after a month or
-> > two a
-> > bug. But I suppose this is a corner case. I'll happily accept
-> > whatever
-> > Jonathan thinks is reasonable.
-> >=20
-> > Best regards,
-> > Harald
-> >=20
-> >=20
-> > > Signed-off-by: George Stark <gnstark@salutedevices.com>
-> > > ---
-> > > I use DHT22 sensor with Raspberry Pi Zero W as a simple home
-> > > meteo
-> > > station.
-> > > Even if to poll the sensor once per tens of seconds after month
-> > > or
-> > > two dmesg
-> > > may become full of useless parsing error messages. Anyway those
-> > > errors are caught
-> > > in the user software thru return values.
-> > >=20
-> > > =C2=A0=C2=A0drivers/iio/humidity/dht11.c | 4 ++--
-> > > =C2=A0=C2=A01 file changed, 2 insertions(+), 2 deletions(-)
-> > >=20
-> > > diff --git a/drivers/iio/humidity/dht11.c
-> > > b/drivers/iio/humidity/dht11.c
-> > > index c97e25448772..e2cbc442177b 100644
-> > > --- a/drivers/iio/humidity/dht11.c
-> > > +++ b/drivers/iio/humidity/dht11.c
-> > > @@ -156,7 +156,7 @@ static int dht11_decode(struct dht11 *dht11,
-> > > int
-> > > offset)
-> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0dht11->temperature =3D temp_int * 1000;
-> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0dht11->humidity =3D hum_int * 1000;
-> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0} else {
-> > > -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0dev_err(dht11->dev,
-> > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0dev_dbg(dht11->dev,
-> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0"Don't know how to decode data: %d %d %d
-> > > %d\n",
-> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0hum_int, hum_dec, temp_int, temp_dec);
-> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0return -EIO;
-> > > @@ -239,7 +239,7 @@ static int dht11_read_raw(struct iio_dev
-> > > *iio_dev,
-> > > =C2=A0=C2=A0#endif
-> > >=20
-> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0if (ret =3D=3D 0 && dht11->num_edges <
-> > > DHT11_EDGES_PER_READ - 1) {
-> > > -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0dev=
-_err(dht11->dev, "Only %d signal edges
-> > > detected\n",
-> > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0dev=
-_dbg(dht11->dev, "Only %d signal edges
-> > > detected\n",
-> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0dht11->num_edges);
-> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0ret =3D -ETIMEDOUT;
-> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0}
-> > > --
-> > > 2.25.1
-> > >=20
-> >=20
->=20
+-- 
+Köry Maincent, Bootlin
+Embedded Linux and kernel engineering
+https://bootlin.com
 
 
