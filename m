@@ -1,128 +1,121 @@
-Return-Path: <linux-kernel+bounces-120117-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-120119-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id D4CF488D249
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 23:58:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id A32E488D298
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 00:03:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 56E60B23F1D
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 22:58:09 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 12094B2227E
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 23:03:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9445613E05D;
-	Tue, 26 Mar 2024 22:53:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2D27213DDCF;
+	Tue, 26 Mar 2024 23:03:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="N1QHEGhf"
-Received: from mail-lj1-f176.google.com (mail-lj1-f176.google.com [209.85.208.176])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=codeconstruct.com.au header.i=@codeconstruct.com.au header.b="eIfMHGsP"
+Received: from codeconstruct.com.au (pi.codeconstruct.com.au [203.29.241.158])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 47D5713DDC7;
-	Tue, 26 Mar 2024 22:53:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A7D976FE16;
+	Tue, 26 Mar 2024 23:03:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.29.241.158
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711493586; cv=none; b=P6BV7Sp3rYUQFKuTHHyK354/3UpVhMQJLiYfZKq8zlkD/xoyAl5tRdG3UR3LYa6kotKZlvaXMAs4eQj234BGNKFldJZZWyIPKs6jwCFVEZLVR5aAWLR7o2ZWAxJXlpodnxfiTR6guIX35jMKIHzWzMXNDeSmrTLZo103mVpm6qM=
+	t=1711494193; cv=none; b=HJBu7tbEnrFPwaQPzVdzTKBmbWsi6f9tNkAEWFx/edOYNIdQ3AW3uGFaT7XYxCue17glmYoIiazHuYbf/8NTg7twzG959f2dkqPCjEUSVgRge7otOVEvmGYNCMpuoAAoMI06SrGBlnJN+p2C14Z+9RS1dtCwDODsMipNH/QdbCM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711493586; c=relaxed/simple;
-	bh=kr4ugb0a2ULz64/mCBMSxX3n7SnZ+F784fzqUgvlurk=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=b9Bs+Ps410CGMvTetDJL9wcxZYAsluLypDk36+8DS5ktbKiYj/q3YYpzPnfbXd08uvNC80x4wE4SAz1Dqzf0osSSlAZ4iqhg8gr3fGE0UUrSIOrq55GH9tLA/bJAXtmk9+1l7pHCttZcuA7O4X3imfwRME5oZG8JZFbhK4pdAAA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=N1QHEGhf; arc=none smtp.client-ip=209.85.208.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f176.google.com with SMTP id 38308e7fff4ca-2d41d1bedc9so114279921fa.3;
-        Tue, 26 Mar 2024 15:53:05 -0700 (PDT)
+	s=arc-20240116; t=1711494193; c=relaxed/simple;
+	bh=iTn6EPmsN8OMOA4hJKWthraMCB2c+E5xZHjJCKAza/I=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=jA+ExowZtAYckGW/AgpMNmLpaQgoa1J2uf0idmOI9nnPxTckf1Ng6m4TXhBVWdecfpKFzQT94BPl+b+yMMPo6+4deh8hDEM4uSt4PQltEcxEAdsd3Yl6SLLsd9RDIt8YIYRdbCYxrfEZh85ZNIzfMAdV0ta1HL8wFJc7UxsdoDM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=codeconstruct.com.au; spf=pass smtp.mailfrom=codeconstruct.com.au; dkim=pass (2048-bit key) header.d=codeconstruct.com.au header.i=@codeconstruct.com.au header.b=eIfMHGsP; arc=none smtp.client-ip=203.29.241.158
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=codeconstruct.com.au
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=codeconstruct.com.au
+Received: from [192.168.68.112] (ppp118-210-177-226.adl-adc-lon-bras34.tpg.internode.on.net [118.210.177.226])
+	by mail.codeconstruct.com.au (Postfix) with ESMTPSA id DC391200DB;
+	Wed, 27 Mar 2024 07:02:56 +0800 (AWST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711493583; x=1712098383; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=OGgALYVn3j6sEFQYAH/+oIf0Xfv3DpByVPwYwGg56do=;
-        b=N1QHEGhfL1Vnbi8kKvWplmiXf+p9l2RhNUX268yewGKx5iEOuESHAKwCm2wreDCLM3
-         ZDjZwtRsqbQQWiETioifKeqxKX0Be4hwy/qFFaBPh4nINUKp1RnsJhTcWP0wvBpG0p5+
-         2HpH89J2PXz08jaS5mMcH35YhP3xHDyH6lWIxjB4XaPx5tyQlRQR/FhZvAr7D8d5JGw1
-         AgUT9FTPVXWLIctgtaRArmJU+yvxb5o3nnyfdubgL4UOOe4nvuQDT0ua/dVu3Bsl56iW
-         PtmVc5UxMQX0YxkDxTDaqr4mylhJOrM5rCTCHZx+YUxtHztienIzkEdNg2clkr16jkVc
-         mNtw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711493583; x=1712098383;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=OGgALYVn3j6sEFQYAH/+oIf0Xfv3DpByVPwYwGg56do=;
-        b=pPWXBahSpArGrlIAP9adE+Mg6HukpdiR8DqW8Ff3/up3hm3fpVU37E3C5dcCKT/3Jt
-         nhzslKA81fs1nmm0dHURTbxddkFNiR6KhFHeXd5KJxVpaO3Rh9OgRWSo5cK3fdbZtXN3
-         HPMZUkpntfbcf39w479oOoyR5s82ueQPKycSYfLnbp1xkkrSs6stJ4j4/h0IQBZh9jCg
-         xIAWCLCqIen/q0VV+j8cVJUWL+Q3iBsbRP7g6lN2jTegCyZvKQ+7XW6IiZ0B5swNJ/pM
-         eL9III6X4vG4EEGYOhDf2eGGoZwya0fERXiL/Bux00N/yR7WE2b4DSUHkZCclxdJ0UJ6
-         gZEA==
-X-Forwarded-Encrypted: i=1; AJvYcCVTKRxC6sTnBaT/TbeXYzy38hl6CLgeHsV4rVaxzkTRxVlw1obdRR1zSVb7kJeLH7QxhTahPDG+xHhC4f1ArVzVG5+YjLGt27AaozJHw+0087J4JnBqSZPt7IjrRhcNCRESSF3I3cpKCho7+Q==
-X-Gm-Message-State: AOJu0YzEmLLIZGy3dz/AsQF3casX1AcoFSDHSTcRF0i0NgXaadR3F1Q1
-	/d9JR1r+K1KJxHSiK/2IBiVklUtIauxCm91MtI6I3l20X+M9tKLC5cyQewrEKineFBhxj6WXSVV
-	6W4SvxuEQHuBoqjNfHpOma/wJpXM=
-X-Google-Smtp-Source: AGHT+IEolqJMeAANTemImf2DuaNJdNaLuCTNmbxSFTah/htK+cycypMcUiMVK4vogxZfUZcHT97fZM4T0r9XQUXO0YU=
-X-Received: by 2002:a2e:781a:0:b0:2d4:714b:4c5d with SMTP id
- t26-20020a2e781a000000b002d4714b4c5dmr816730ljc.44.1711493582960; Tue, 26 Mar
- 2024 15:53:02 -0700 (PDT)
+	d=codeconstruct.com.au; s=2022a; t=1711494183;
+	bh=tz3fNHh1K/JnaN3rWzXOsduTzNNjTpy00qDhmUkVo8k=;
+	h=Subject:From:To:Cc:Date:In-Reply-To:References;
+	b=eIfMHGsPNwHmXwNNstH9IMj4w2lyPGURp6LMbwLrjHmlPyWfu99sWNZIhMk2gO6uz
+	 RgeTjJOiQM0pv47zQxIswraW0rFx3ZPiwJSHKORRHDpqe3US9RXTYofm+LfhboiiTX
+	 0/2nDinsXDMjMsSQxs2l6/VHxtwFkD9IKm5EvxniqkwLV0JMXkRE5RjbJG83+NbtCN
+	 qcam/A+94EU+rkbVi8UIoPMWSMl+z844LZNWJnywiVy85Sxc2rC3fDh+0d1MeyeTmc
+	 pAYFOzZm0LtzVIwBEgEJ5JYODCCsjCp/BnFptrq5B4iieSj8Tq3llCMFTW9l5/tOpw
+	 Z5xqzSAoUof7Q==
+Message-ID: <e0453eb8a2da206cf591c6a7c4d431c771cf5794.camel@codeconstruct.com.au>
+Subject: Re: [PATCH 01/12] kbuild: make -Woverride-init warnings more
+ consistent
+From: Andrew Jeffery <andrew@codeconstruct.com.au>
+To: Arnd Bergmann <arnd@kernel.org>, linux-kbuild@vger.kernel.org, Masahiro
+ Yamada <masahiroy@kernel.org>, Harry Wentland <harry.wentland@amd.com>,
+ Alex Deucher <alexander.deucher@amd.com>, Christian
+ =?ISO-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>, Jani Nikula
+ <jani.nikula@linux.intel.com>, Lucas De Marchi <lucas.demarchi@intel.com>,
+ Oded Gabbay <ogabbay@kernel.org>, Maarten Lankhorst
+ <maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>, 
+ Thomas Zimmermann <tzimmermann@suse.de>, Jakub Kicinski <kuba@kernel.org>,
+ Paolo Abeni <pabeni@redhat.com>, Linus Walleij <linus.walleij@linaro.org>,
+ Joel Stanley <joel@jms.id.au>, Alexei Starovoitov <ast@kernel.org>, Daniel
+ Borkmann <daniel@iogearbox.net>, Andrew Morton <akpm@linux-foundation.org>,
+ Nathan Chancellor <nathan@kernel.org>
+Cc: Nicolas Schier <nicolas@fjasle.eu>, Arnd Bergmann <arnd@arndb.de>, 
+	dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org, 
+	netdev@vger.kernel.org, linux-mm@kvack.org, llvm@lists.linux.dev
+Date: Wed, 27 Mar 2024 09:32:36 +1030
+In-Reply-To: <20240326144741.3094687-2-arnd@kernel.org>
+References: <20240326144741.3094687-1-arnd@kernel.org>
+	 <20240326144741.3094687-2-arnd@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.46.4-2 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240322210455.3738-1-soma.nakata01@gmail.com> <20240326140533.a0d0041371e21540dd934722@linux-foundation.org>
-In-Reply-To: <20240326140533.a0d0041371e21540dd934722@linux-foundation.org>
-From: Soma <soma.nakata01@gmail.com>
-Date: Wed, 27 Mar 2024 07:52:51 +0900
-Message-ID: <CAOpe7Sc1PByy+c9V4eWH=fo9_zjgNGw1D6TWAiZ9-ujKgNdq_w@mail.gmail.com>
-Subject: Re: [PATCH] mm/filemap: set folio->mapping to NULL before xas_store()
-To: Andrew Morton <akpm@linux-foundation.org>
-Cc: linux-mm@kvack.org, "Matthew Wilcox (Oracle)" <willy@infradead.org>, linux-fsdevel@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Wed, Mar 27, 2024 at 6:05=E2=80=AFAM Andrew Morton <akpm@linux-foundatio=
-n.org> wrote:
->
-> On Sat, 23 Mar 2024 06:04:54 +0900 Soma Nakata <soma.nakata01@gmail.com> =
-wrote:
->
-> > Functions such as __filemap_get_folio() check the truncation of
-> > folios based on the mapping field. Therefore setting this field to NULL
-> > earlier prevents unnecessary operations on already removed folios.
-> >
-> > ...
-> >
-> > --- a/mm/filemap.c
-> > +++ b/mm/filemap.c
-> > @@ -139,11 +139,12 @@ static void page_cache_delete(struct address_spac=
-e *mapping,
-> >
-> >       VM_BUG_ON_FOLIO(!folio_test_locked(folio), folio);
-> >
-> > +     folio->mapping =3D NULL;
-> > +     /* Leave page->index set: truncation lookup relies upon it */
-> > +
-> >       xas_store(&xas, shadow);
-> >       xas_init_marks(&xas);
-> >
-> > -     folio->mapping =3D NULL;
-> > -     /* Leave page->index set: truncation lookup relies upon it */
-> >       mapping->nrpages -=3D nr;
-> >  }
->
-> Seems at least harmless, but I wonder if it can really make any
-> difference.  Don't readers of folio->mapping lock the folio first?
+On Tue, 2024-03-26 at 15:47 +0100, Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
+>=20
+> The -Woverride-init warn about code that may be intentional or not,
+> but the inintentional ones tend to be real bugs, so there is a bit of
+> disagreement on whether this warning option should be enabled by default
+> and we have multiple settings in scripts/Makefile.extrawarn as well as
+> individual subsystems.
+>=20
+> Older versions of clang only supported -Wno-initializer-overrides with
+> the same meaning as gcc's -Woverride-init, though all supported versions
+> now work with both. Because of this difference, an earlier cleanup of
+> mine accidentally turned the clang warning off for W=3D1 builds and only
+> left it on for W=3D2, while it's still enabled for gcc with W=3D1.
+>=20
+> There is also one driver that only turns the warning off for newer
+> versions of gcc but not other compilers, and some but not all the
+> Makefiles still use a cc-disable-warning conditional that is no
+> longer needed with supported compilers here.
+>=20
+> Address all of the above by removing the special cases for clang
+> and always turning the warning off unconditionally where it got
+> in the way, using the syntax that is supported by both compilers.
+>=20
+> Fixes: 2cd3271b7a31 ("kbuild: avoid duplicate warning options")
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> ---
+>  drivers/gpu/drm/amd/display/dc/dce110/Makefile |  2 +-
+>  drivers/gpu/drm/amd/display/dc/dce112/Makefile |  2 +-
+>  drivers/gpu/drm/amd/display/dc/dce120/Makefile |  2 +-
+>  drivers/gpu/drm/amd/display/dc/dce60/Makefile  |  2 +-
+>  drivers/gpu/drm/amd/display/dc/dce80/Makefile  |  2 +-
+>  drivers/gpu/drm/i915/Makefile                  |  6 +++---
+>  drivers/gpu/drm/xe/Makefile                    |  4 ++--
+>  drivers/net/ethernet/renesas/sh_eth.c          |  2 +-
+>  drivers/pinctrl/aspeed/Makefile                |  2 +-
 
-Yes, the reader locks the folio.
-Only __filemap_remove_folio() calls page_cache_delete(),
-and it says the caller has to lock the folio or make sure
-that usage is safe. In the latter case, this patch improves
-efficiency a little bit.
-However, I found that there is not any latter case actually,
-so discard it or apply, also to make the order of operations in
-page_cache_delete() and page_cache_delete_batch() the same
-for a cleanup.
-Thanks,
+For the Aspeed change:
+
+Acked-by: Andrew Jeffery <andrew@codeconstruct.com.au>
+
+Thanks!
 
