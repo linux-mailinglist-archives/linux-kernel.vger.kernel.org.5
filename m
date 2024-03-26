@@ -1,77 +1,71 @@
-Return-Path: <linux-kernel+bounces-119699-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-119700-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9F63888CC32
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 19:45:32 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id E58C288CC34
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 19:45:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4133F1F82E58
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 18:45:32 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 56E71B28484
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 18:45:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD632130AC3;
-	Tue, 26 Mar 2024 18:45:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F3C0313C9D1;
+	Tue, 26 Mar 2024 18:45:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ddFcMbqz"
-Received: from mail-lf1-f53.google.com (mail-lf1-f53.google.com [209.85.167.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=marvell.com header.i=@marvell.com header.b="AFWRWC7t"
+Received: from mx0b-0016f401.pphosted.com (mx0a-0016f401.pphosted.com [67.231.148.174])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 65E49128839
-	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 18:45:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C93691292C7;
+	Tue, 26 Mar 2024 18:45:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=67.231.148.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711478725; cv=none; b=ISZKDfQ5vdgI6J34IdRgsCTYeIQoEPaFL+HTaOAeeQ0PmpqA65+7HcoJBRMOErsIc5LS0jwz67TPmYNXTPxIY/kLqU/NGxoqaXhIgpuG3ZMXr+yWRMnJMMKUH3G4Kifc9E8KxsmH4ZQgKablZMqjd7MVT6Pdiz8wXPDOu2cMxwI=
+	t=1711478726; cv=none; b=VgDFJy6C/mB2zh47EeRp6mdq86EccewD5YeityqDzG2KSE8l+4hYrHBSePXSSBwsDXRS5sr1R0R1dRmD8jQh208oWGj934J49ZGrHnRWhFFGvjio7egO5/BMf2WiHJHzNnncizP+0IxL25Bcox9W/Drymj+wk/qYyFRUVPd9AeM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711478725; c=relaxed/simple;
-	bh=UTcTbnVlp+R3j/QcQGkv7iwPOMks4xnt+av9k0W3BCU=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=L7jESKH7m82mLnbLXOnWVioMfypsgr6hVjR21TlzVqIxulTMqhMYJwFYGI/PaNyNrkpIlbiCgDOj3Y4LQlHaubvyYfgROvLdac34bqSG0/2H8obK8eXPNvJT4M5An6sKGedUY7pslmRC3K3ClzSfIUh8cTgFWHiXSsLumoz9M6M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ddFcMbqz; arc=none smtp.client-ip=209.85.167.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f53.google.com with SMTP id 2adb3069b0e04-513edc88d3cso6498226e87.0
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 11:45:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711478721; x=1712083521; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=mh9owPDgvrpePnVPwpPSO32CUGQbXuA10ztokdq6Ehs=;
-        b=ddFcMbqzzK8MTuLysC1uCsmsVVHKY+5bRsbdYfdrjJCyGsuJqNqsW+QKHNP1L6Ogoz
-         9z/uXhs48g4bX9FwZQuKFCzwa5X+mPYETjcFb5SLq8ODOdr8Qx/UkrxHoYzPxMPMZwPh
-         Atc1RKaVSnGNA24BNPE8FrSkQj21KD8NjhEbZxcYu7Bwu0OSERsyy6cBZD6V5hDJcl7u
-         IEHQCeMd/6RXtywT3m04uh+47u97diw3mTw5zkkTJrbH8Z+bfMKzRWT0hJBL698yZcup
-         2ApYQ8/LZyO4xjYrh3DJDNIV63rFLs5uXwrBANhNHT/iDr0S6e2PW23Cbkaue5/NNbft
-         pPnA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711478721; x=1712083521;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=mh9owPDgvrpePnVPwpPSO32CUGQbXuA10ztokdq6Ehs=;
-        b=j4MUVQdtNWUA1V4TgQIMxH75ztgGBziU5K8wT+CXKpHo9f9jHB90Z8TIaUUrGpZBBs
-         tnTUZjUrIuqZY4FTKTfoXGppPLEWzFjMdIRxYwmBLKSyKQTqrimZfUcOQRt/58ehvGGa
-         SQcLJG3z0XJPJQsdMZK4TaVsp/Kc2hjJQ2UMKHkhKAelK8BfqtG6cxF/RCj0/SEB35lh
-         /30hACKZva6BGBvN/VjP1t0HbpBxoWKspkjpdZ/s1q0rdS5Tg6rCjJ/94OxpnqidjKvN
-         Y8GnhV1DEc4RjMs8lpzk3rxKFuB16107CdGsO8rHMolm6KRYwykbx5cNsxsubwGJMQKC
-         x7rQ==
-X-Gm-Message-State: AOJu0YzjbPAfzQvXiQrkNvdKupjVhJQ8cDHrcMnveMsG3Wf+S4QKnx5L
-	L88SzQGzuK7Xt73mJq0b1jjr6FQxYZSZWCj4qret8/G4A+gR/ZejRYBcJ11W
-X-Google-Smtp-Source: AGHT+IHD/8heNbsdXaJipM0kXisQgw+5ZdCc51difvdkiqu8M9bgiE0Rojmy+5njizVI12cv1HxGRg==
-X-Received: by 2002:ac2:4e84:0:b0:513:a732:4878 with SMTP id o4-20020ac24e84000000b00513a7324878mr1710436lfr.41.1711478720883;
-        Tue, 26 Mar 2024 11:45:20 -0700 (PDT)
-Received: from localhost.localdomain (109-252-14-191.nat.spd-mgts.ru. [109.252.14.191])
-        by smtp.gmail.com with ESMTPSA id c42-20020a05651223aa00b00515ac42651dsm942595lfv.257.2024.03.26.11.45.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Mar 2024 11:45:20 -0700 (PDT)
-From: Maxim Moskalets <maximmosk4@gmail.com>
-X-Google-Original-From: Maxim Moskalets <Maxim.Moskalets@kaspersky.com>
-To: linux-kernel@vger.kernel.org
-Cc: maximmosk4@gmail.com,
-	Maxim Moskalets <Maxim.Moskalets@kaspersky.com>
-Subject: [PATCH 0/8] kernel: replace seq_puts by seq_putc
-Date: Tue, 26 Mar 2024 21:45:14 +0300
-Message-Id: <20240326184514.8478-1-Maxim.Moskalets@kaspersky.com>
-X-Mailer: git-send-email 2.39.2
+	s=arc-20240116; t=1711478726; c=relaxed/simple;
+	bh=wQY0mvP9mcZDDkl/5tK4Zee9HLlnOO1nDNKawSvnlbc=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=ZU34cLo4n7owgrCvo6Ic6pH/SqadLMF1lKIhcANMAEG452kF6DKgxoP912ZsKjGnL3sJ2h0RFgSsogQd3ne/H3OJNsaO+yKdvWqmEXokfR65OqjqU0DHiwWXBMBElRMaaosFocehyIDhL0yWu8PwM20apMXphxb6xwEWImvQDn0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=marvell.com; spf=pass smtp.mailfrom=marvell.com; dkim=pass (2048-bit key) header.d=marvell.com header.i=@marvell.com header.b=AFWRWC7t; arc=none smtp.client-ip=67.231.148.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=marvell.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=marvell.com
+Received: from pps.filterd (m0045849.ppops.net [127.0.0.1])
+	by mx0a-0016f401.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 42QCmprI017695;
+	Tue, 26 Mar 2024 11:45:17 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=
+	from:to:cc:subject:date:message-id:mime-version
+	:content-transfer-encoding:content-type; s=pfpt0220; bh=ekx30cLX
+	kPKx7KG2DDmuv4cQEvcz0BL0vVsR8e3P8aM=; b=AFWRWC7tZpo/kdrupzBhe7Sq
+	34hX36+lr5N63HyDlt5dGScaZYbNU0war8xgaJ+wrXHokB0ijlDFe/3q0dxvfdpA
+	cBgg40t4NtVxGfNQt1YPWNUN+rlde0bTL2ht5Tgi7WnrW6iRIlbhPOB+Iu8irD0x
+	ACtyI5IehF1Fea1z4tykj5oRuO5LMcfCwSqWvec20pAaCIDLRekxzyOKznemJaiD
+	A+B6VcvHI6yMXn1P12CfB6gf/sit5tJ5dVhGqjb95iU+MfSj7sI1BlAw+QTabGyy
+	Q/AybLXcls0dey1UTGXM/LwzrOhypGmNjryPJBss4xpqvnmc5D2BNC4qcvSOWQ==
+Received: from dc5-exch05.marvell.com ([199.233.59.128])
+	by mx0a-0016f401.pphosted.com (PPS) with ESMTPS id 3x3xpu1vhw-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 26 Mar 2024 11:45:17 -0700 (PDT)
+Received: from DC5-EXCH05.marvell.com (10.69.176.209) by
+ DC5-EXCH05.marvell.com (10.69.176.209) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.4; Tue, 26 Mar 2024 11:45:16 -0700
+Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH05.marvell.com
+ (10.69.176.209) with Microsoft SMTP Server id 15.2.1544.4 via Frontend
+ Transport; Tue, 26 Mar 2024 11:45:16 -0700
+Received: from rchintakuntla-lnx3.sclab.marvell.com (unknown [10.111.142.125])
+	by maili.marvell.com (Postfix) with ESMTP id 526AE3F705E;
+	Tue, 26 Mar 2024 11:45:16 -0700 (PDT)
+From: Radha Mohan Chintakuntla <radhac@marvell.com>
+To: <davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
+        <pabeni@redhat.com>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <sgoutham@marvell.com>,
+        <lcherian@marvell.com>, <gakula@marvell.com>, <hkelam@marvell.com>,
+        <jerinj@marvell.com>, <sbhatta@marvell.com>, <horms@kernel.org>
+CC: Radha Mohan Chintakuntla <radhac@marvell.com>
+Subject: [PATCH net-next RESEND] octeontx2-af: Increase maximum BPID channels
+Date: Tue, 26 Mar 2024 11:45:14 -0700
+Message-ID: <20240326184514.1628284-1-radhac@marvell.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -79,42 +73,43 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Proofpoint-ORIG-GUID: vOVD8OWwbQ1YekRTIHl-8tNvy0hV6Kw6
+X-Proofpoint-GUID: vOVD8OWwbQ1YekRTIHl-8tNvy0hV6Kw6
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-03-26_08,2024-03-21_02,2023-05-22_02
 
-Using seq_putc for single characters is faster and more appropriate
-than seq_puts, since only one character is passed and there is no need
-to use a more powerful and less fast function.
+Any NIX interface type can have maximum 256 channels. So increased the
+backpressure ID count to 256 so that it can cover cn9k and cn10k SoCs that
+have different NIX interface types with varied maximum channels.
 
-Maxim Moskalets (8):
-  bpf: replace seq_puts by seq_putc
-  cgroup: replace seq_puts by seq_putc
-  trace: replace seq_puts by seq_putc
-  module: replace seq_puts by seq_putc
-  sched: replace seq_puts by seq_putc
-  locking: replace seq_puts by seq_putc
-  time: replace seq_puts by seq_putc
-  kernel: replace seq_puts by seq_putc
+Signed-off-by: Radha Mohan Chintakuntla <radhac@marvell.com>
+---
+Note: Earlier version didn't have 'net-next' designation in subject. No
+other changes.
 
- kernel/bpf/arraymap.c            |  6 +++---
- kernel/bpf/bpf_struct_ops.c      |  2 +-
- kernel/bpf/hashtab.c             |  4 ++--
- kernel/bpf/local_storage.c       |  4 ++--
- kernel/cgroup/cgroup.c           |  2 +-
- kernel/cgroup/debug.c            |  6 +++---
- kernel/latencytop.c              |  2 +-
- kernel/locking/lockdep_proc.c    | 24 ++++++++++++------------
- kernel/module/procfs.c           |  4 ++--
- kernel/module/tracking.c         |  2 +-
- kernel/sched/cpuacct.c           |  4 ++--
- kernel/sched/debug.c             | 14 +++++++-------
- kernel/time/test_udelay.c        |  2 +-
- kernel/trace/trace_events_hist.c | 26 +++++++++++++-------------
- kernel/trace/trace_events_user.c |  8 ++++----
- kernel/trace/trace_hwlat.c       |  4 ++--
- 16 files changed, 57 insertions(+), 57 deletions(-)
+ drivers/net/ethernet/marvell/octeontx2/af/mbox.h | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
-
-base-commit: 928a87efa42302a23bb9554be081a28058495f22
+diff --git a/drivers/net/ethernet/marvell/octeontx2/af/mbox.h b/drivers/net/ethernet/marvell/octeontx2/af/mbox.h
+index eb2a20b5a0d0..3d801a1a4f70 100644
+--- a/drivers/net/ethernet/marvell/octeontx2/af/mbox.h
++++ b/drivers/net/ethernet/marvell/octeontx2/af/mbox.h
+@@ -1213,10 +1213,8 @@ struct nix_bp_cfg_req {
+ 	/* bpid_per_chan = 1 assigns separate bp id for each channel */
+ };
+ 
+-/* PF can be mapped to either CGX or LBK interface,
+- * so maximum 64 channels are possible.
+- */
+-#define NIX_MAX_BPID_CHAN	64
++/* Maximum channels any single NIX interface can have */
++#define NIX_MAX_BPID_CHAN	256
+ struct nix_bp_cfg_rsp {
+ 	struct mbox_msghdr hdr;
+ 	u16	chan_bpid[NIX_MAX_BPID_CHAN]; /* Channel and bpid mapping */
 -- 
-2.39.2
+2.34.1
 
 
