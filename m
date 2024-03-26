@@ -1,264 +1,197 @@
-Return-Path: <linux-kernel+bounces-119547-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-119545-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3DDB588CA3B
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 18:07:31 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id CE40A88CA37
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 18:07:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C16961F82401
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 17:07:30 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 14406B27AD2
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 17:07:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6629C1C6AE;
-	Tue, 26 Mar 2024 17:05:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 464A713D61D;
+	Tue, 26 Mar 2024 17:04:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.de header.i=scpcom@gmx.de header.b="HNWfmjNE"
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Zyc1dPoa"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8DE821C694;
-	Tue, 26 Mar 2024 17:05:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.21
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CA6751C697
+	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 17:04:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711472735; cv=none; b=PdbMhRUe7nMIRAGR30yr5c+mS3X7dQZ9JSn5r0luUY7agLOgI7dy3QualJ3FiM6bYwYeQC5DcaLSAdZvVJf1hY42r2wb/RFC0DZ1D7r9qqrWA4cgg3Ms37yZoH1CiNMr7n1mQebwfA6E46b5IVCO1fD8VrgnNnKWMgLC9Sc5SdY=
+	t=1711472693; cv=none; b=KZwLXOMpjOrSmJuZjj+R7qoRmohYTz8Vq2bgANZ7IixrSJSQzrkeJKj7a4GiDq5ztV9oC710cXmWFBs3mFg+wzAcFSpCf6oqCQwNKC28rPED30N/zNKk9zGyeR0W7LM06BQ0Cgs8IAlvc20DUospULG6hkTavuA8X3CWz8LZt40=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711472735; c=relaxed/simple;
-	bh=3cVHszlpUgtIFKqOc5ghUMzNZLFQmq4uEJS23k+l1jY=;
-	h=MIME-Version:Message-ID:From:To:Cc:Subject:Content-Type:Date:
-	 In-Reply-To:References; b=NlpHXmo6SRNPEdfMgraCJ5LR4OMgbUne1KDiXl+kY9LSldrpitu6k+NFrXDl0hS4ChjA+yPiaPa7St/SJ58E+RZNmRPU55zKLSGanVOxB5NimsikNtb/mTbtKDL9WY5tOY8Z9AQzwspAqELP2gKzEN9V0851fehMbYdUrW4EyQc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de; spf=pass smtp.mailfrom=gmx.de; dkim=pass (2048-bit key) header.d=gmx.de header.i=scpcom@gmx.de header.b=HNWfmjNE; arc=none smtp.client-ip=212.227.17.21
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.de;
-	s=s31663417; t=1711472684; x=1712077484; i=scpcom@gmx.de;
-	bh=FDJuIUgeh6X3GJbzePWjCCXAIHEqJ2emAZvka9I1lmQ=;
-	h=X-UI-Sender-Class:From:To:Cc:Subject:Date:In-Reply-To:
-	 References;
-	b=HNWfmjNE/xUe+nzudYeTrpJgMtX5i2BnfPlP3dgNIYtuxK/yzKnQiWZsPSE5P4/j
-	 9bQ3ipLdbNZ1faxPPYsjleaxWpNjnqcxG42yfL65p/QFGLknsIOzGNzPU8p34N+eO
-	 KlMfCGt3bw7pX0ctLE5GsOKK3vN1zOGypzSPKCuxbCELSWMi/D2vv6GHoKJmIeURq
-	 Yc5MdzEDNYzIrMQ3n5Q7Vyq2XD1HdS9NBnjmTXb7PK+v+NhMC1ITvqu/ob3zOFdsh
-	 voAB3ixhZh3x54EErDWa4emN3W/vT5LU4/qClbiHsQqo8t7814IyqYIjRsRQcs9An
-	 wjdTA2cSMH19tn2WRQ==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [10.236.203.6] ([10.236.203.6]) by msvc-mesg-gmx123 (via
- HTTP); Tue, 26 Mar 2024 18:04:44 +0100
+	s=arc-20240116; t=1711472693; c=relaxed/simple;
+	bh=kpsWRkeiV8YzMY2AI1vNmodJ9g81fNrq7YQw6sCWt+s=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=P/xCNx8v5DDubDJms9tyCo02e3UYLfFmAuSCWPgiQIjL4OMzin4kDN5jCaOOkZXAsfNnBHCkP9gCAn05p+eq1DXHqu5/s+TJyRpALkbYdEWMDc8EdiFkbGeI9wmf3c/Vt161yPLMccP+73r2006RmTXWBFJ6dHfUNRZqju0WcJA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Zyc1dPoa; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1711472690;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=03P2aTLfOU4JI8jvZfElyWjm8J8f3fb9SGZBFQXPDVg=;
+	b=Zyc1dPoaXVATyiWkbAd3P2hRqx2v6DOt6zh5TDrsJ6iy1D0EaeZpj2A0b2WrC+qOj6WoUx
+	VtTMbOGNiqO2WAY5r79W1ziW79V28pAr6uMKaQrLuRu5SSXnABEJm1AXdaAgY3mg5zq24C
+	NwxlTKh4XhWShDd4qK3QxR7uH2QzDX4=
+Received: from mail-lj1-f200.google.com (mail-lj1-f200.google.com
+ [209.85.208.200]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-244-avhHloy4MwiZ4yV8PlC9JA-1; Tue, 26 Mar 2024 13:04:49 -0400
+X-MC-Unique: avhHloy4MwiZ4yV8PlC9JA-1
+Received: by mail-lj1-f200.google.com with SMTP id 38308e7fff4ca-2d48d13b3c9so51830571fa.1
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 10:04:48 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711472687; x=1712077487;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt:from
+         :references:cc:to:content-language:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=03P2aTLfOU4JI8jvZfElyWjm8J8f3fb9SGZBFQXPDVg=;
+        b=NiZhgCGiJBUCxx+sRMiJnxC45XGccOAM1CDGD4UcxxtQImOZhbR9dBXL4TlM4xL+fi
+         F3z4Xn4IIVNK2PdyCgAl7g3hI7rpH773aYYh2MvCleBWIICDq11yI/J/aaZiv6yrFYeV
+         Xl+Wm78fL1goFhzwGZKrO38emaZfqeMsKkyUOjYy30I4BiDrEZqnyH3Sa9wcWJetJwaE
+         fo2OmVcZkJzGwxRaEHRtb56TCnenvcD92atQUyjmm4irtUWqQ4oklOEHefF3L3222m5R
+         EGM5HI6OfTJkLA2Ov4QOF21HrpuH5C0K1sDpO2VHKTYVlRGMFbFUYkbA2/fT8eHN3cp9
+         dsmg==
+X-Forwarded-Encrypted: i=1; AJvYcCVGaFafuDO46xR+bTlhf2gJc2CijWtXvrIYwY5wzgXXyXy9sY33XbAXiGE2duDtimoqDcrL5QOc7XbcOBfQC4dxMOAtxE9Grn/W7oYm
+X-Gm-Message-State: AOJu0YwVjynqTKEGZ8oj8UWuZp9LRqjOt9wMWZ/9Wjq8VukjUxA/qYH7
+	/xu3bTEudYXXUrXJDlKYKuZt9DfuUP6di0BMiNvzJF/5bPUTXbVVqaliFqw6qc6HiEjlhQ1azFm
+	2v6jrNx3RWU+1AbC3Abg3uU0BshN4l1Yf4cH5s+M0IAdsZj02Q981hI4FRiudncEGBYFyyg==
+X-Received: by 2002:a2e:824a:0:b0:2d4:5ce6:a98b with SMTP id j10-20020a2e824a000000b002d45ce6a98bmr1535685ljh.22.1711472687624;
+        Tue, 26 Mar 2024 10:04:47 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IEhLvwcE9L0qlrL+TvSqfSActOYPZmwun2UKHtr7kk/ptfNYv2QauPlfqH7AHvVZxqgyZQzMw==
+X-Received: by 2002:a2e:824a:0:b0:2d4:5ce6:a98b with SMTP id j10-20020a2e824a000000b002d45ce6a98bmr1535665ljh.22.1711472687197;
+        Tue, 26 Mar 2024 10:04:47 -0700 (PDT)
+Received: from ?IPV6:2003:cb:c741:c700:3db9:94c9:28b0:34f2? (p200300cbc741c7003db994c928b034f2.dip0.t-ipconnect.de. [2003:cb:c741:c700:3db9:94c9:28b0:34f2])
+        by smtp.gmail.com with ESMTPSA id n12-20020a056000170c00b00341ddd7db5csm192186wrc.75.2024.03.26.10.04.46
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 26 Mar 2024 10:04:46 -0700 (PDT)
+Message-ID: <c1218cdb-905b-4896-8e17-109700577cec@redhat.com>
+Date: Tue, 26 Mar 2024 18:04:45 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-ID: <trinity-0ed602bd-15d4-4110-b3f4-668c2051904a-1711472684521@msvc-mesg-gmx122>
-From: Jan Schunk <scpcom@gmx.de>
-To: Benjamin Coddington <bcodding@redhat.com>
-Cc: Chuck Lever III <chuck.lever@oracle.com>, Jeff Layton
- <jlayton@kernel.org>, Neil Brown <neilb@suse.de>, Olga Kornievskaia
- <kolga@netapp.com>, Dai Ngo <dai.ngo@oracle.com>, Tom Talpey
- <tom@talpey.com>, Linux NFS Mailing List <linux-nfs@vger.kernel.org>,
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC PATCH v1 0/4] Reduce cost of ptep_get_lockless on arm64
+Content-Language: en-US
+To: Ryan Roberts <ryan.roberts@arm.com>, Mark Rutland <mark.rutland@arm.com>,
+ Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>,
+ Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+ Jiri Olsa <jolsa@kernel.org>, Ian Rogers <irogers@google.com>,
+ Adrian Hunter <adrian.hunter@intel.com>,
+ Andrew Morton <akpm@linux-foundation.org>,
+ Muchun Song <muchun.song@linux.dev>
+Cc: linux-arm-kernel@lists.infradead.org, linux-mm@kvack.org,
  linux-kernel@vger.kernel.org
-Subject: Aw: Re: [External] : nfsd: memory leak when client does many file
- operations
-Content-Type: text/plain; charset=UTF-8
-Importance: normal
-Sensitivity: Normal
-Content-Transfer-Encoding: quoted-printable
-Date: Tue, 26 Mar 2024 18:04:44 +0100
-In-Reply-To: <F594EBB2-5F92-40A9-86FB-CFD58E9CE516@redhat.com>
-References: <trinity-068f55c9-6088-418d-bf3a-c2778a871e98-1711310237802@msvc-mesg-gmx120>
- <E3109CAA-8261-4F66-9D1B-3546E8B797DF@oracle.com>
- <trinity-bfafb9db-d64f-4cad-8cb1-40dac0a2c600-1711313314331@msvc-mesg-gmx105>
- <567BBF54-D104-432C-99C0-1A7EE7939090@oracle.com>
- <trinity-66047013-4d84-4eef-b5d3-d710fe6be805-1711316386382@msvc-mesg-gmx005>
- <6F16BCCE-3000-4BCB-A3B4-95B4767E3577@oracle.com>
- <trinity-ad0037c0-1060-4541-a8ca-15f826a5b5a2-1711396545958@msvc-mesg-gmx024>
- <088D9CC3-C5B0-4646-A85D-B3B9ACE8C532@oracle.com>
- <F594EBB2-5F92-40A9-86FB-CFD58E9CE516@redhat.com>
-X-Priority: 3
-X-Provags-ID: V03:K1:evzH4bfiFxj6Gj3tW7ucmQBukt0MHjcXEFVkMpla2Eg20vfxAFF3orFzdZeTqVTwktdBE
- f6XzK8FdDDYNK1Nhubdq8tl7jPW53gJe/IxvPQMs9LUAdR7GxV97657MFO/6jhfyFb1qSvkiRCOr
- tYsYtG1SFiK5rbq85MV8bmx97Ds3g55MBE+SpwXPyQgwv8zMVgQrFFrvwYHOO8mJuiMp03Gdf5dR
- bOGFA0cYQMHG69X/b55I2GWRCtY4XstItdSUobwiLJyedai/d8CYVOyzi6LZN5AbpaYPdWk16Js1
- lY=
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:WLbq3r+ZK1g=;eSve7IUapAgJsef1cz8tsfGZ73E
- d504y5REeRaVsWcyC5l8SwxSgz2B2HWKI/dPvDDyyeXbRMSBGUeGV6k+62hbx/5QhD+IF3KLc
- oXkirLYb8u5klErrjKYpHcK5/Scw4bKQBtsyeQRyLq7cmL3ooxUf3sZOjS++rVIX3LFuT29Lp
- CCmMtxC1R4yg5n2E8UTVm4LK9sMdt12YkEeNT6JZ1LcS2UD2jNpNzrGgP/OkeZtGylmm8EVhN
- A8aH+AIkpWNFfIwn5N6jrNUuO0fy5aMWkeSeHYIJLfvRmZTeWuDmVVRarCrV4EyLiC7+dMFNt
- pQ9vKoboazEIOSfMjOpw9VedOERukfz+ugR6WGgd4KWBjNmKvEX9ZYokoZSqvvAQBDeiE4GoQ
- Jvs9EciBZCtZQ/QgWHkP9pa5VosKZphnR48/om2kNlmLgf0EqEGAq2WCDuprNOVbf2yIFTlPb
- mzlMbX4vq79HR73rB6rljvCjgbObGcOqexutGQHs2oYQ6HfQ3o9ZMIyDzExtJXnA+VHm28bzT
- HZCcQOIPpjQfoZ0mL76Hn3FDC1s9gboopEA1zI6sdZdO6eEpOHckOiIFX5DYoBrC+1GUA72Xq
- HiFc5be30Op9TJLiHUhqDsbfCIuZSEd6OmtvVroAXrUgVb6EkJJFAkh2z+QzPTF2LAGGhiCUO
- cntp76l29sIoFuIde3aE0sLoP1vV+ABvi4E//nU27joPbpOXkApzKMC55kZD87A=
+References: <20240215121756.2734131-1-ryan.roberts@arm.com>
+ <0ae22147-e1a1-4bcb-8a4c-f900f3f8c39e@redhat.com>
+ <d8b3bcf2-495f-42bd-b114-6e3a010644d8@arm.com>
+ <de143212-49ce-4c30-8bfa-4c0ff613f107@redhat.com>
+ <374d8500-4625-4bff-a934-77b5f34cf2ec@arm.com>
+From: David Hildenbrand <david@redhat.com>
+Autocrypt: addr=david@redhat.com; keydata=
+ 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
+ WNyWQQ==
+Organization: Red Hat
+In-Reply-To: <374d8500-4625-4bff-a934-77b5f34cf2ec@arm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Before I start doing this on my own build I tried it with unmodified linux-=
-image-6=2E6=2E13+bpo-amd64 from Debian 12=2E
-I installed systemtap, linux-headers-6=2E6=2E13+bpo-amd64 and linux-image-=
-6=2E6=2E13+bpo-amd64-dbg and tried to run stap:
+>>>>
+>>>> Likely, we just want to read "the real deal" on both sides of the pte_same()
+>>>> handling.
+>>>
+>>> Sorry I'm not sure I understand? You mean read the full pte including
+>>> access/dirty? That's the same as dropping the patch, right? Of course if we do
+>>> that, we still have to keep pte_get_lockless() around for this case. In an ideal
+>>> world we would convert everything over to ptep_get_lockless_norecency() and
+>>> delete ptep_get_lockless() to remove the ugliness from arm64.
+>>
+>> Yes, agreed. Patch #3 does not look too crazy and it wouldn't really affect any
+>> architecture.
+>>
+>> I do wonder if pte_same_norecency() should be defined per architecture and the
+>> default would be pte_same(). So we could avoid the mkold etc on all other
+>> architectures.
+> 
+> Wouldn't that break it's semantics? The "norecency" of
+> ptep_get_lockless_norecency() means "recency information in the returned pte may
+> be incorrect". But the "norecency" of pte_same_norecency() means "ignore the
+> access and dirty bits when you do the comparison".
 
-user@deb:~$ sudo stap -v --all-modules kmem_alloc=2Estp nfsd_file
-WARNING: Kernel function symbol table missing [man warning::symbols]
-Pass 1: parsed user script and 484 library scripts using 110120virt/96896r=
-es/7168shr/89800data kb, in 1360usr/1080sys/4963real ms=2E
-WARNING: cannot find module kernel debuginfo: No DWARF information found [=
-man warning::debuginfo]
-semantic error: resolution failed in DWARF builder
+My idea was that ptep_get_lockless_norecency() would return the actual 
+result on these architectures. So e.g., on x86, there would be no actual 
+change in generated code.
 
-semantic error: while resolving probe point: identifier 'kernel' at kmem_a=
-lloc=2Estp:5:7
-        source: probe kernel=2Efunction("kmem_cache_alloc") {
-                      ^
+But yes, the documentation of these functions would have to be improved.
 
-semantic error: no match
+Now I wonder if ptep_get_lockless_norecency() should actively clear 
+dirty/accessed bits to more easily find any actual issues where the bits 
+still matter ...
 
-Pass 2: analyzed script: 1 probe, 5 functions, 1 embed, 3 globals using 11=
-2132virt/100352res/8704shr/91792data kb, in 30usr/30sys/167real ms=2E
-Pass 2: analysis failed=2E  [man error::pass2]
-Tip: /usr/share/doc/systemtap/README=2EDebian should help you get started=
-=2E
-user@deb:~$=20
+> 
+> I think you could only do the optimization you describe if you required that
+> pte_same_norecency() would only be given values returned by
+> ptep_get_lockless_norecency() (or ptep_get_norecency()). Even then, its not
+> quite the same; if a page is accessed between gets one will return true and the
+> other false.
 
-user@deb:~$ grep -E 'CONFIG_DEBUG_INFO|CONFIG_KPROBES|CONFIG_DEBUG_FS|CONF=
-IG_RELAY' /boot/config-6=2E6=2E13+bpo-amd64=20
-CONFIG_RELAY=3Dy
-CONFIG_KPROBES=3Dy
-CONFIG_KPROBES_ON_FTRACE=3Dy
-CONFIG_DEBUG_INFO=3Dy
-# CONFIG_DEBUG_INFO_NONE is not set
-CONFIG_DEBUG_INFO_DWARF_TOOLCHAIN_DEFAULT=3Dy
-# CONFIG_DEBUG_INFO_DWARF4 is not set
-# CONFIG_DEBUG_INFO_DWARF5 is not set
-# CONFIG_DEBUG_INFO_REDUCED is not set
-CONFIG_DEBUG_INFO_COMPRESSED_NONE=3Dy
-# CONFIG_DEBUG_INFO_COMPRESSED_ZLIB is not set
-# CONFIG_DEBUG_INFO_SPLIT is not set
-CONFIG_DEBUG_INFO_BTF=3Dy
-CONFIG_DEBUG_INFO_BTF_MODULES=3Dy
-CONFIG_DEBUG_FS=3Dy
-CONFIG_DEBUG_FS_ALLOW_ALL=3Dy
-# CONFIG_DEBUG_FS_DISALLOW_MOUNT is not set
-# CONFIG_DEBUG_FS_ALLOW_NONE is not set
-user@deb:~$=20
+Right.
 
-Do I need to enable other options?
+-- 
+Cheers,
 
+David / dhildenb
 
-> Gesendet: Dienstag, den 26=2E03=2E2024 um 12:15 Uhr
-> Von: "Benjamin Coddington" <bcodding@redhat=2Ecom>
-> An: "Chuck Lever III" <chuck=2Elever@oracle=2Ecom>
-> Cc: "Jan Schunk" <scpcom@gmx=2Ede>, "Jeff Layton" <jlayton@kernel=2Eorg>=
-, "Neil Brown" <neilb@suse=2Ede>, "Olga Kornievskaia" <kolga@netapp=2Ecom>,=
- "Dai Ngo" <dai=2Engo@oracle=2Ecom>, "Tom Talpey" <tom@talpey=2Ecom>, "Linu=
-x NFS Mailing List" <linux-nfs@vger=2Ekernel=2Eorg>, linux-kernel@vger=2Eke=
-rnel=2Eorg
-> Betreff: Re: [External] : nfsd: memory leak when client does many file o=
-perations
->=20
-> On 25 Mar 2024, at 16:11, Chuck Lever III wrote:
->=20
-> >> On Mar 25, 2024, at 3:55=E2=80=AFPM, Jan Schunk <scpcom@gmx=2Ede> wro=
-te:
-> >>
-> >> The VM is now running 20 hours with 512MB RAM, no desktop, without th=
-e "noatime" mount option and without the "async" export option=2E
-> >>
-> >> Currently there is no issue, but the memory usage is still contantly =
-growing=2E It may just take longer before something happens=2E
-> >>
-> >> top - 00:49:49 up 3 min,  1 user,  load average: 0,21, 0,19, 0,09
-> >> Tasks: 111 total,   1 running, 110 sleeping,   0 stopped,   0 zombie
-> >> %CPU(s):  0,2 us,  0,3 sy,  0,0 ni, 99,5 id,  0,0 wa,  0,0 hi,  0,0 s=
-i,  0,0 st
-> >> MiB Spch:    467,0 total,    302,3 free,     89,3 used,     88,1 buff=
-/cache
-> >> MiB Swap:    975,0 total,    975,0 free,      0,0 used=2E    377,7 av=
-ail Spch
-> >>
-> >> top - 15:05:39 up 14:19,  1 user,  load average: 1,87, 1,72, 1,65
-> >> Tasks: 104 total,   1 running, 103 sleeping,   0 stopped,   0 zombie
-> >> %CPU(s):  0,2 us,  4,9 sy,  0,0 ni, 53,3 id, 39,0 wa,  0,0 hi,  2,6 s=
-i,  0,0 st
-> >> MiB Spch:    467,0 total,     21,2 free,    147,1 used,    310,9 buff=
-/cache
-> >> MiB Swap:    975,0 total,    952,9 free,     22,1 used=2E    319,9 av=
-ail Spch
-> >>
-> >> top - 20:48:16 up 20:01,  1 user,  load average: 5,02, 2,72, 2,08
-> >> Tasks: 104 total,   5 running,  99 sleeping,   0 stopped,   0 zombie
-> >> %CPU(s):  0,2 us, 46,4 sy,  0,0 ni, 11,9 id,  2,3 wa,  0,0 hi, 39,2 s=
-i,  0,0 st
-> >> MiB Spch:    467,0 total,     16,9 free,    190,8 used,    271,6 buff=
-/cache
-> >> MiB Swap:    975,0 total,    952,9 free,     22,1 used=2E    276,2 av=
-ail Spch
-> >
-> > I don't see anything in your original memory dump that
-> > might account for this=2E But I'm at a loss because I'm
-> > a kernel developer, not a support guy -- I don't have
-> > any tools or expertise that can troubleshoot a system
-> > without rebuilding a kernel with instrumentation=2E My
-> > first instinct is to tell you to bisect between v6=2E3
-> > and v6=2E4, or at least enable kmemleak, but I'm guessing
-> > you don't build your own kernels=2E
-> >
-> > My only recourse at this point would be to try to
-> > reproduce it myself, but unfortunately I've just
-> > upgraded my whole lab to Fedora 39, and there's a grub
-> > bug that prevents booting any custom-built kernel
-> > on my hardware=2E
-> >
-> > So I'm stuck until I can nail that down=2E Anyone else
-> > care to help out?
->=20
-> Sure - I can throw some stuff=2E=2E
->=20
-> Can we dig into which memory slabs might be growing?  Something like:
->=20
-> watch -d "cat /proc/slabinfo | grep nfsd"
->=20
-> =2E=2E for a bit might show what is growing=2E
->=20
-> Then use a systemtap script like the one below to trace the allocations =
-- use:
->=20
-> stap -v --all-modules kmem_alloc=2Estp <slab_name>
->=20
-> Ben
->=20
->=20
-> 8<---------------------------- save as kmem_alloc=2Estp ----------------=
-------------
->=20
-> # This script displays the number of given slab allocations and the back=
-traces leading up to it=2E
->=20
-> global slab =3D @1
-> global stats, stacks
-> probe kernel=2Efunction("kmem_cache_alloc") {
->         if (kernel_string($s->name) =3D=3D slab) {
->                 stats[execname()] <<< 1
->                 stacks[execname(),kernel_string($s->name),backtrace()] <=
-<< 1
->         }
-> }
-> # Exit after 10 seconds
-> # probe timer=2Ems(10000) { exit () }
-> probe end {
->         printf("Number of %s slab allocations by process\n", slab)
->         foreach ([exec] in stats) {
->                 printf("%s:\t%d\n",exec,@count(stats[exec]))
->         }
->         printf("\nBacktrace of processes when allocating\n")
->         foreach ([proc,cache,bt] in stacks) {
->                 printf("Exec: %s Name: %s  Count: %d\n",proc,cache,@coun=
-t(stacks[proc,cache,bt]))
->                 print_stack(bt)
->                 printf("\n----------------------------------------------=
----------\n\n")
->         }
-> }
->
 
