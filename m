@@ -1,144 +1,80 @@
-Return-Path: <linux-kernel+bounces-119177-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-118977-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0B89888C525
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 15:29:20 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7696588C226
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 13:32:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3CDA11C62466
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 14:29:19 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 141121F33DA2
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 12:32:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2051712E1C8;
-	Tue, 26 Mar 2024 14:29:04 +0000 (UTC)
-Received: from out0-204.mail.aliyun.com (out0-204.mail.aliyun.com [140.205.0.204])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8F87C5810D;
+	Tue, 26 Mar 2024 12:32:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MYa4Vslj"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0C07112D778
-	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 14:28:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=140.205.0.204
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CED47139E;
+	Tue, 26 Mar 2024 12:32:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711463343; cv=none; b=nycjseN6HDIVSiZrpdF1qm+Z1/jBdk7aiNTFa27kKRciJ+iwZfeOYpsHd/BW/uHsIp9iwsccXiP34trHn4wl0h9BMktl0SRPuzj5AV5/vmNR16Yap0wBHzAqg0kZlHKmp9r42frxr7p+7nM7EIT5ojx18lPGaLlVV4VR2IDK+Ks=
+	t=1711456334; cv=none; b=bjQqqlMaH33ygEG09LVaMrf3GOv3VZixQmLZm2fqo/vCp/X41xZeyr6UgA8mxImelGKSPoBv6G9FOx9JIsy8Liu6NMsFXZCph3oNrpeyvCnirDFh3FTf/FAX/rRNgFHWP7R/ynSRrGj/o8n+HruEqTh/AXf7z/MXVyGwMy6R9Fk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711463343; c=relaxed/simple;
-	bh=Lha9r1yTPRt+Ir2erTc0KhtZOH0UdVKOFgiq/LV+uJE=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=pKAztiuVBCEac3gpg9m6RvglXCgF5JzWpMG29yp0kl0zpQpPsHXkUuBY62tSgczj3S5uMHTTbNi2YesoQiZrWUgk5N5CN4O/s1Mm+PIpw/jSqQllVR388fgIuSk1B6xO1aSWel5p1BxPKDBa9m0kw9Qp6MxfR/cnLlhu/EVZvq4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=antgroup.com; spf=pass smtp.mailfrom=antgroup.com; arc=none smtp.client-ip=140.205.0.204
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=antgroup.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=antgroup.com
-X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R151e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018047204;MF=tiwei.btw@antgroup.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---.WwV9z9B_1711456045;
-Received: from 30.230.85.20(mailfrom:tiwei.btw@antgroup.com fp:SMTPD_---.WwV9z9B_1711456045)
-          by smtp.aliyun-inc.com;
-          Tue, 26 Mar 2024 20:27:33 +0800
-Message-ID: <fbd44e8a-713b-4e66-9241-e18fc78c9168@antgroup.com>
-Date: Tue, 26 Mar 2024 20:27:25 +0800
+	s=arc-20240116; t=1711456334; c=relaxed/simple;
+	bh=stZGntb/EkNeA0sqMpP34JEU8CoCxYM+VpStBeNimXs=;
+	h=Content-Type:MIME-Version:Subject:From:In-Reply-To:References:To:
+	 Cc:Message-ID:Date; b=MnnGdSuPOc9Crts2+bjrRcN7jBWmHoW8/29i7qlAWY92y0NS7n9GIXqyjzQIlfQyfSwTUXBJmYkPvwahBOUNhtKSP2p6P2xD1k6pvznK/r0OV5qxrVjyVSine/iLm9eFxqyoS7ez15gP6NgfBj9yujNxlUZGq2sUWTx1xrxv5To=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MYa4Vslj; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3E862C433F1;
+	Tue, 26 Mar 2024 12:32:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1711456334;
+	bh=stZGntb/EkNeA0sqMpP34JEU8CoCxYM+VpStBeNimXs=;
+	h=Subject:From:In-Reply-To:References:To:Cc:Date:From;
+	b=MYa4VsljBaJVaFlcjYOqG/IB0rQoPFMfI5n9pY+wKkVCQwebMktMr2z9688Q7utHF
+	 AAj1pJYfRMoGKOiz2prC5lrG+Xeq0o9XXYyDoICcM3jAqiH7TG/ZwFazKrK1FXPmI5
+	 3HhCT6oAQgFifs8Zd9CWYs1J8gXpbkwMd4wTigBzE5LQre+r9ES+ESgHZKmL7r0apm
+	 jUj5dfF0rPEgDYjR4vScx8AQ44TxWRbiJnhZSE/MbrdTYwNJwC/XIeRBZFPNYesRye
+	 F6tkg4Y3l+rhcr4Y+LXPz23bVC/FX3imJC7iiMR2a7XBhJG+OUQXA9LFIcSlWW8/c0
+	 F9331sL4rG9TA==
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 0/9] um: Minor fixes and cleanups
-To: richard@nod.at, anton.ivanov@cambridgegreys.com, johannes@sipsolutions.net
-Cc: jani.nikula@intel.com, linux-um@lists.infradead.org,
- linux-kernel@vger.kernel.org, intel-xe@lists.freedesktop.org
-References: <20240306101925.1088870-1-tiwei.btw@antgroup.com>
-Content-Language: en-US
-From: "Tiwei Bie" <tiwei.btw@antgroup.com>
-In-Reply-To: <20240306101925.1088870-1-tiwei.btw@antgroup.com>
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
+Subject: Re: MAINTAINERS: wifi: mwifiex: add Francesco as reviewer
+From: Kalle Valo <kvalo@kernel.org>
+In-Reply-To: <20240321163420.11158-1-francesco@dolcini.it>
+References: <20240321163420.11158-1-francesco@dolcini.it>
+To: Francesco Dolcini <francesco@dolcini.it>
+Cc: Brian Norris <briannorris@chromium.org>,
+ Francesco Dolcini <francesco@dolcini.it>, linux-kernel@vger.kernel.org,
+ linux-wireless@vger.kernel.org
+User-Agent: pwcli/0.1.1-git (https://github.com/kvalo/pwcli/) Python/3.11.2
+Message-ID: <171145633125.3037799.11730170138730953666.kvalo@kernel.org>
+Date: Tue, 26 Mar 2024 12:32:13 +0000 (UTC)
 
-Hi,
+Francesco Dolcini <francesco@dolcini.it> wrote:
 
-Gentle ping.. Please take a look at this series if possible. The changes
-in this series are very straightforward, so it shouldn't require much effort
-to review. But they cover a wide area, making them prone to conflicts
-with other patches :/, e.g.
-
-https://lore.kernel.org/linux-um/20240326073750.726636-1-surenb@google.com/T/#u
-
-Sorry to be impatient, but pinging this. This series was originally posted
-two months ago, and hasn't received a review yet. Just want to make sure that
-this series is not lost..
-
-PS. I have tested this series on both of 64bit and 32bit platforms manually.
-There is also a CI test report from patchwork@emeril.freedesktop.org:
-
-https://lore.kernel.org/all/87bk7rzj70.fsf@intel.com/
-
-Thanks,
-Tiwei
-
-On 3/6/24 6:19 PM, Tiwei Bie wrote:
-> A series of minor fixes and cleanups for UML.
+> As discussed on the mailing list, add myself as mwifiex driver reviewer.
 > 
-> Most changes in this series are very straightforward. Please consider
-> picking this series for v6.9.
-> 
-> There are still some remaining -Wmissing-prototypes warnings. I plan to
-> send a followup RFC series first to fix those warnings.
-> 
-> Feedbacks on this series would be appreciated. Thanks!
-> 
-> Changes since v2:
-> https://lore.kernel.org/lkml/20240205114708.25235-1-tiwei.btw@antgroup.com/
-> - Add "um: Move declarations to proper headers";
-> - Add "um: Fix -Wmissing-prototypes warnings for text_poke*";
-> - Add "um: Fix -Wmissing-prototypes warnings for __warp_* and foo";
-> - Make do_set_thread_area() static;
-> - Add the missing header for calibrate_delay_is_known;
-> 
-> Tiwei Bie (9):
->   um: Make local functions and variables static
->   um: Fix the declaration of vfree
->   um: Remove unused functions
->   um: Fix the return type of __switch_to
->   um: Add missing headers
->   um: Stop tracking host PID in cpu_tasks
->   um: Move declarations to proper headers
->   um: Fix -Wmissing-prototypes warnings for text_poke*
->   um: Fix -Wmissing-prototypes warnings for __warp_* and foo
-> 
->  arch/um/drivers/pcap_kern.c                |  4 +-
->  arch/um/drivers/ubd_user.c                 |  2 +-
->  arch/um/include/asm/ptrace-generic.h       |  3 ++
->  arch/um/include/shared/as-layout.h         |  1 -
->  arch/um/include/shared/kern_util.h         |  1 +
->  arch/um/include/shared/um_malloc.h         |  2 +-
->  arch/um/kernel/kmsg_dump.c                 |  2 +-
->  arch/um/kernel/mem.c                       |  2 +
->  arch/um/kernel/physmem.c                   |  3 +-
->  arch/um/kernel/process.c                   | 48 +++++-----------------
->  arch/um/kernel/ptrace.c                    |  3 --
->  arch/um/kernel/reboot.c                    |  1 +
->  arch/um/kernel/skas/mmu.c                  |  1 +
->  arch/um/kernel/skas/process.c              |  5 +--
->  arch/um/kernel/time.c                      |  7 ++--
->  arch/um/kernel/tlb.c                       |  7 +---
->  arch/um/kernel/um_arch.c                   |  1 +
->  arch/um/kernel/um_arch.h                   |  2 +
->  arch/um/os-Linux/drivers/ethertap_kern.c   |  2 +-
->  arch/um/os-Linux/drivers/tuntap_kern.c     |  2 +-
->  arch/um/os-Linux/main.c                    |  5 +++
->  arch/um/os-Linux/signal.c                  |  4 +-
->  arch/um/os-Linux/start_up.c                |  1 +
->  arch/x86/um/asm/ptrace.h                   |  6 +++
->  arch/x86/um/bugs_32.c                      |  1 +
->  arch/x86/um/bugs_64.c                      |  1 +
->  arch/x86/um/elfcore.c                      |  1 +
->  arch/x86/um/fault.c                        |  1 +
->  arch/x86/um/os-Linux/mcontext.c            |  1 +
->  arch/x86/um/os-Linux/registers.c           |  2 +-
->  arch/x86/um/os-Linux/tls.c                 |  1 +
->  arch/x86/um/ptrace_32.c                    |  2 -
->  arch/x86/um/shared/sysdep/kernel-offsets.h |  3 ++
->  arch/x86/um/tls_32.c                       |  2 +-
->  arch/x86/um/user-offsets.c                 |  3 ++
->  35 files changed, 63 insertions(+), 70 deletions(-)
-> 
+> Link: https://lore.kernel.org/all/20240318112830.GA9565@francesco-nb/
+> Signed-off-by: Francesco Dolcini <francesco@dolcini.it>
+> Acked-by: Brian Norris <briannorris@chromium.org>
+
+Patch applied to wireless.git, thanks.
+
+8ea3f4f1a1b4 MAINTAINERS: wifi: mwifiex: add Francesco as reviewer
+
+-- 
+https://patchwork.kernel.org/project/linux-wireless/patch/20240321163420.11158-1-francesco@dolcini.it/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
 
