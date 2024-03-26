@@ -1,163 +1,150 @@
-Return-Path: <linux-kernel+bounces-119295-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-119297-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id DD80D88C6C0
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 16:22:42 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6A01488C6C7
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 16:24:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 926101F36B48
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 15:22:42 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 94B431C60339
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 15:24:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B65A813C81A;
-	Tue, 26 Mar 2024 15:22:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 54E8E13C831;
+	Tue, 26 Mar 2024 15:24:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="hWjOzW1H";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="pNMv7idU";
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="hWjOzW1H";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="pNMv7idU"
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZM51zYNl"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 441C458220
-	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 15:22:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9786E757FD;
+	Tue, 26 Mar 2024 15:24:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711466558; cv=none; b=TUIMVaLAofTfsv3n3McK1tZZZYl8DV4fOvthFoWl02Vo9i6gsTdnkH0n7PeswKvC6OStXuYwbWfWuySlD00TMeb4fULyhBMoci+X/7ej+zZlHBR0RriiQTNbmxpGQMIAZrBNd1QuCC/gyuyMwWs3mB3wix+S3cQfnkDSOdT7Ui4=
+	t=1711466650; cv=none; b=jqwWqlabetayMt6p3r3JKJIkIaLTg6Y/grJCE6vVzyWhI/9UfMytw420b+H9pN+/f6wBlkVaUDtGgLaTwyKGYvtMRP4aNfV4nK+71Wrc2JsKPoDa94vpaCTewhYEi23FAr5s8I5YuRYJ3Ym99lFTBnRyMp3wneBuomHFavv+sIE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711466558; c=relaxed/simple;
-	bh=fBNcQUHOtvyZsysftwY23WAq61KVO16Ox520bWwmTKE=;
-	h=Date:Message-ID:From:To:Cc:Subject:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=oG4uCNPmHP8/PE8hPBltfOGQsu3IJ+cHzNOVf2tOWXVoram7vZYbixZKEAVZB2mHY72IxwpyiV+ISehRO7/6au8jo43YHWoQECj10IuJcw/L2v2oQNOLfbTXUC+bV19Z1RZLpQIkdaXzqx2mIb6mf1uos0qP5PTBVe8+qOK1LPg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=hWjOzW1H; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=pNMv7idU; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=hWjOzW1H; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=pNMv7idU; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 73B3221E3D;
-	Tue, 26 Mar 2024 15:22:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1711466554; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=KXH5uUDLtBRAB47YTVHB6bZditscTqY6M49f3hWQIm0=;
-	b=hWjOzW1HqNS1ii0R8rstNDFJMG0KONLVKpbkNxwUISXQ3rq84H7y7dbv2TAc/G9D5vxGTU
-	uY7/9kFo2jqr45S8FQXU8mZjC4ur4oIIdBddNeYGV0KekJFMeOoCzUTvYu36tcy1KCLiPG
-	YSH1+bY0pSP7F6HFSgaKsc9lSy1i/LQ=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1711466554;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=KXH5uUDLtBRAB47YTVHB6bZditscTqY6M49f3hWQIm0=;
-	b=pNMv7idUbMhs/IcgPQmJKVhGDE3oaaAPdU69K4zrkrZ8OkyivBHN1W9uDLa8fagjaOvHhx
-	booslhzqaTBZz0Ag==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1711466554; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=KXH5uUDLtBRAB47YTVHB6bZditscTqY6M49f3hWQIm0=;
-	b=hWjOzW1HqNS1ii0R8rstNDFJMG0KONLVKpbkNxwUISXQ3rq84H7y7dbv2TAc/G9D5vxGTU
-	uY7/9kFo2jqr45S8FQXU8mZjC4ur4oIIdBddNeYGV0KekJFMeOoCzUTvYu36tcy1KCLiPG
-	YSH1+bY0pSP7F6HFSgaKsc9lSy1i/LQ=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1711466554;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=KXH5uUDLtBRAB47YTVHB6bZditscTqY6M49f3hWQIm0=;
-	b=pNMv7idUbMhs/IcgPQmJKVhGDE3oaaAPdU69K4zrkrZ8OkyivBHN1W9uDLa8fagjaOvHhx
-	booslhzqaTBZz0Ag==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 0B83613306;
-	Tue, 26 Mar 2024 15:22:34 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id JwdzATroAmYETQAAD6G6ig
-	(envelope-from <tiwai@suse.de>); Tue, 26 Mar 2024 15:22:34 +0000
-Date: Tue, 26 Mar 2024 16:22:35 +0100
-Message-ID: <877chpuif8.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Baojun Xu <baojun.xu@ti.com>
-Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-	robh+dt@kernel.org,
-	lgirdwood@gmail.com,
-	perex@perex.cz,
-	pierre-louis.bossart@linux.intel.com,
-	kevin-lu@ti.com,
-	13916275206@139.com,
-	alsa-devel@alsa-project.org,
-	linux-kernel@vger.kernel.org,
-	liam.r.girdwood@intel.com,
-	yung-chuan.liao@linux.intel.com,
-	broonie@kernel.org,
-	soyer@irl.hu
-Subject: Re: [PATCH v1 2/8] ALSA: hda/tas2781: Add tas2781 SPI-based driver
-In-Reply-To: <ZgLjAz99JZQvrx_h@smile.fi.intel.com>
-References: <20240326010905.2147-1-baojun.xu@ti.com>
-	<20240326010905.2147-2-baojun.xu@ti.com>
-	<ZgLjAz99JZQvrx_h@smile.fi.intel.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+	s=arc-20240116; t=1711466650; c=relaxed/simple;
+	bh=ujR0rPXLZBsE/QY8uXI1pDCWebcjJRNm9iHPbJUo0Ss=;
+	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
+	 Mime-Version:Content-Type; b=rEgZXA734K8l8IhsRNEZCG5ZCqXddexOEw8vGFjmZmvevHCGnGcRH0d8O+EubYWx5H2s54+ioOMvCwKu5+9veh4hYNLORrorxJzFuIVUv4zZh2V6QdiBWKueNWh0AOOs7f2ZyrFru3t92ZFjBKxnEdJeV5nGqd9QNzur+0J7W9w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ZM51zYNl; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2F539C433C7;
+	Tue, 26 Mar 2024 15:24:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1711466649;
+	bh=ujR0rPXLZBsE/QY8uXI1pDCWebcjJRNm9iHPbJUo0Ss=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=ZM51zYNl1VjBdBbarCQPT4o8P7JTUjymm1ldrFKsskdIQUDl75XGY0h3MFLabpNf2
+	 9zL2Bu9qLsM8u54povk/MhiUucL53tjN5IS7Fq82hnjo7gJxZHI8EDJleWKsf60eNn
+	 qGlxpvC1VxhVsR2dgvcNLy1NNI77sjwxejRMFx2J6Y0g39I+Ng9ZkV0j38Zq3cEmlr
+	 RfN9BDIAOTeD7Yy3Jxn4aVxkCw8WdesRqiLw9nsypvJLPkVzgEggqnlwGugr8n3ZWV
+	 XUxSbVBtahoDBvjZASK0h5m/5ZIwZHI6FHIPEFqFXvbgRLpJGDi2JrmX80Dtl6rZr+
+	 7/0qXV7dIPJaA==
+Date: Wed, 27 Mar 2024 00:24:03 +0900
+From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+To: Mark Rutland <mark.rutland@arm.com>
+Cc: Jarkko Sakkinen <jarkko@kernel.org>, linux-riscv@lists.infradead.org,
+ Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt
+ <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>,
+ linux-kernel@vger.kernel.org, "Naveen N . Rao"
+ <naveen.n.rao@linux.ibm.com>, Anil S Keshavamurthy
+ <anil.s.keshavamurthy@intel.com>, "David S . Miller" <davem@davemloft.net>,
+ linux-trace-kernel@vger.kernel.org, Calvin Owens <jcalvinowens@gmail.com>
+Subject: Re: [PATCH v2] arch/riscv: Enable kprobes when CONFIG_MODULES=n
+Message-Id: <20240327002403.62649aee45508b7a16caedba@kernel.org>
+In-Reply-To: <ZgLfsvbCZj2S6fRE@FVFF77S0Q05N.cambridge.arm.com>
+References: <20240323232908.13261-1-jarkko@kernel.org>
+	<20240325115632.04e37297491cadfbbf382767@kernel.org>
+	<ZgLfsvbCZj2S6fRE@FVFF77S0Q05N.cambridge.arm.com>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Mime-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
-Authentication-Results: smtp-out1.suse.de;
-	none
-X-Spam-Level: 
-X-Spam-Score: 0.12
-X-Spamd-Result: default: False [0.12 / 50.00];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 R_RATELIMIT(0.00)[to_ip_from(RL3kqsx7g8wwj8c3joodxqsamu)];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 NEURAL_HAM_SHORT(-0.20)[-1.000];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 BAYES_HAM(-1.08)[88.02%];
-	 ARC_NA(0.00)[];
-	 FROM_HAS_DN(0.00)[];
-	 FREEMAIL_ENVRCPT(0.00)[139.com,gmail.com];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 TAGGED_RCPT(0.00)[dt];
-	 MIME_GOOD(-0.10)[text/plain];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	 RCPT_COUNT_TWELVE(0.00)[14];
-	 MID_CONTAINS_FROM(1.00)[];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FREEMAIL_CC(0.00)[linux.intel.com,kernel.org,gmail.com,perex.cz,ti.com,139.com,alsa-project.org,vger.kernel.org,intel.com,irl.hu];
-	 RCVD_TLS_ALL(0.00)[];
-	 SUSPICIOUS_RECIPS(1.50)[]
-X-Spam-Flag: NO
+Content-Transfer-Encoding: 7bit
 
-On Tue, 26 Mar 2024 16:00:19 +0100,
-Andy Shevchenko wrote:
+On Tue, 26 Mar 2024 14:46:10 +0000
+Mark Rutland <mark.rutland@arm.com> wrote:
+
+> Hi Masami,
 > 
-> On Tue, Mar 26, 2024 at 09:08:59AM +0800, Baojun Xu wrote:
-> > Add TXNW2781 support in smi.
+> On Mon, Mar 25, 2024 at 11:56:32AM +0900, Masami Hiramatsu wrote:
+> > Hi Jarkko,
+> > 
+> > On Sun, 24 Mar 2024 01:29:08 +0200
+> > Jarkko Sakkinen <jarkko@kernel.org> wrote:
+> > 
+> > > Tracing with kprobes while running a monolithic kernel is currently
+> > > impossible due the kernel module allocator dependency.
+> > > 
+> > > Address the issue by allowing architectures to implement module_alloc()
+> > > and module_memfree() independent of the module subsystem. An arch tree
+> > > can signal this by setting HAVE_KPROBES_ALLOC in its Kconfig file.
+> > > 
+> > > Realize the feature on RISC-V by separating allocator to module_alloc.c
+> > > and implementing module_memfree().
+> > 
+> > Even though, this involves changes in arch-independent part. So it should
+> > be solved by generic way. Did you checked Calvin's thread?
+> > 
+> > https://lore.kernel.org/all/cover.1709676663.git.jcalvinowens@gmail.com/
+> > 
+> > I think, we'd better to introduce `alloc_execmem()`,
+> > CONFIG_HAVE_ALLOC_EXECMEM and CONFIG_ALLOC_EXECMEM at first
+> > 
+> >   config HAVE_ALLOC_EXECMEM
+> > 	bool
+> > 
+> >   config ALLOC_EXECMEM
+> > 	bool "Executable trampline memory allocation"
+> > 	depends on MODULES || HAVE_ALLOC_EXECMEM
+> > 
+> > And define fallback macro to module_alloc() like this.
+> > 
+> > #ifndef CONFIG_HAVE_ALLOC_EXECMEM
+> > #define alloc_execmem(size, gfp)	module_alloc(size)
+> > #endif
 > 
-> Same comment WRT the commit message.
+> Please can we *not* do this? I think this is abstracting at the wrong level (as
+> I mentioned on the prior execmem proposals).
+> 
+> Different exectuable allocations can have different requirements. For example,
+> on arm64 modules need to be within 2G of the kernel image, but the kprobes XOL
+> areas can be anywhere in the kernel VA space.
+> 
+> Forcing those behind the same interface makes things *harder* for architectures
+> and/or makes the common code more complicated (if that ends up having to track
+> all those different requirements). From my PoV it'd be much better to have
+> separate kprobes_alloc_*() functions for kprobes which an architecture can then
+> choose to implement using a common library if it wants to.
+> 
+> I took a look at doing that using the core ifdeffery fixups from Jarkko's v6,
+> and it looks pretty clean to me (and works in testing on arm64):
+> 
+>   https://git.kernel.org/pub/scm/linux/kernel/git/mark/linux.git/log/?h=kprobes/without-modules
+> 
+> Could we please start with that approach, with kprobe-specific alloc/free code
+> provided by the architecture?
 
-Yeah, in general, all patches in this series have too short patch
-descriptions.
+OK, as far as I can read the code, this method also works and neat! 
+(and minimum intrusion). I actually found that exposing CONFIG_ALLOC_EXECMEM
+to user does not help, it should be an internal change. So hiding this change
+from user is better choice. Then there is no reason to introduce the new
+alloc_execmem, but just expand kprobe_alloc_insn_page() is reasonable.
 
-Baojun, please give more words to explain what those patches do, and
-more importantly tell why they are needed in that way.  Silence isn't
-golden in the case of patches.  So, please resubmit the patch set with
-the proper descriptions in each patch.
+Mark, can you send this series here, so that others can review/test it?
+
+Thank you!
 
 
-thanks,
+> 
+> Thanks,
+> Mark.
 
-Takashi
+
+-- 
+Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
