@@ -1,142 +1,121 @@
-Return-Path: <linux-kernel+bounces-119048-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-119050-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id C205E88C335
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 14:18:34 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D0B8988C33B
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 14:19:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F38101C356E7
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 13:18:33 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8B8B02E3330
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 13:19:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6033870CBA;
-	Tue, 26 Mar 2024 13:18:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B1EED7441F;
+	Tue, 26 Mar 2024 13:18:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Mnj8t6Ox"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=leemhuis.info header.i=@leemhuis.info header.b="YBYljSo1"
+Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E2BA71739;
-	Tue, 26 Mar 2024 13:18:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D5C867A00;
+	Tue, 26 Mar 2024 13:18:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.237.130.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711459106; cv=none; b=VAg2rcgYuAHp3H8tgcDT5L5qXqyXvauzDsgOFsE9vrvrEFBYGyYr3wDLBQNHXRz0mGYsGYv+vs2dX/UgqNc+DnHSZfpOh6JRfUt6xCvW16sq9DPXL93gX/0JL3shHcXNNXJeK619bCLxqu9Lx6F+ZqxXRVmctBkwBi9O+8FwvlQ=
+	t=1711459121; cv=none; b=hAK8kJQrspuI6S9WP1kSoO5H4XyrrN3zxYqhzeFdntXvJ4SF4189+pjIQleGFv74TBF66oqpxp/gXXg8UV81mltUXOlFe0zls6k0UEo9aCvqa/aHibnwQXFzRiC4wyCM4MSC7MtxseZGKHuf+QsmxEXoYg/EjuWLcZWBvdM4VE0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711459106; c=relaxed/simple;
-	bh=G+Hn6cNlyKUyvTsdLqpYQU3MpaSHBX/VmoCrwmgKiuA=;
-	h=Mime-Version:Content-Type:Date:Message-Id:To:Cc:Subject:From:
-	 References:In-Reply-To; b=dX/OToSOveVNJuuphO95+VJ8Igxa6WqeGb90MpOx6uqa2HMj7MjiW7EpzI93G/H1yJr7F8mQWllNXv0RbJs77qSSEf0+khLadUMwhg1OeGgMsuQGC3g7EZ2AVoBQphqh+06xJjTBbXrJE3znHcqr2EbQiWRPE5Jr0NtHiq0PQ/4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Mnj8t6Ox; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C1E86C43390;
-	Tue, 26 Mar 2024 13:18:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711459106;
-	bh=G+Hn6cNlyKUyvTsdLqpYQU3MpaSHBX/VmoCrwmgKiuA=;
-	h=Date:To:Cc:Subject:From:References:In-Reply-To:From;
-	b=Mnj8t6OxtLu5AG5u89v26bd8wmZLcN0UmHvjkWAbtmKZtYzeFLucbhoW0h/+cR4WH
-	 Uem+3ticvY2WBlCuBTbWDPMtTqaDWzCzkJd7UwMRGPpsp5Tqr+vLCY4s3Nn5iObh/9
-	 6ndmKyH5POpbP/BbyaqBqloIgAPrVvE6f13T5Z8W1iVXCh+ZHMrCyie5kOMtxgMNrM
-	 lu/a3BKf0wzlsW8ZU1Z5WyZgaAy2GdqWFUET2XEk6/N2YQKIITonFFq1KwPmNgY7E2
-	 TGHWE7+bkMHXID92ze6dpg2dpwb2xbLo3VyUP5jG55oSeCsByjb3u7AHXy1JnQ5FFS
-	 lVxeLvshqqILQ==
+	s=arc-20240116; t=1711459121; c=relaxed/simple;
+	bh=kwbtxjvyoboouuP30XD7UmJ9Tak2JX2+1XT+llOTBfU=;
+	h=Message-ID:Date:MIME-Version:From:To:Cc:Subject:Content-Type; b=QVmHGcJ/2CLE/0jFhB4SMli7S8cgy2C8vv7nReIO1sArDXPGnx0E4HW3CVWRP8X2vtA5GZZgH3x7m2bVxzPc33DGomuri3dw+9rUezHKC13E8Awf6nms3BNQKc9KoTOD0Pm469mBjlvVGFStB3YK05nk8mfQlSGDTqs4gdHVBu0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=leemhuis.info; spf=pass smtp.mailfrom=leemhuis.info; dkim=pass (2048-bit key) header.d=leemhuis.info header.i=@leemhuis.info header.b=YBYljSo1; arc=none smtp.client-ip=80.237.130.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=leemhuis.info
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=leemhuis.info
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=leemhuis.info; s=he214686; h=Content-Transfer-Encoding:Content-Type:
+	Reply-To:Subject:Cc:To:From:MIME-Version:Date:Message-ID:From:Sender:Reply-To
+	:Subject:Date:Message-ID:To:Cc:MIME-Version:Content-Type:
+	Content-Transfer-Encoding:Content-ID:Content-Description:In-Reply-To:
+	References; bh=lKr8vjI/MKPiGxt3h9ZRIfJRuD3apPKLQIAIGxuGMwY=; t=1711459119;
+	x=1711891119; b=YBYljSo1n6H8XdcfSJPHGDeh0/bBwb7Cwdtg4HST5YWsGyxgXgNz5Omgyz5IX
+	X8E/OQ6VqUggXEbl0UMTb0hAr2IZHe1mY8e9X2PlpHFws7PVaZ5Qss8/c19Vl2tSc+5/flRms7UHP
+	3Uwv4Cp4XPPyxb/1qOkr/HrI6IX/VeiIj25+exwzcoyCAZzM1SSmfxTE1dULHG3g5AeZt/9i53Eku
+	XhqZxQdn8MOlpWSuQRQRLAqbx/nZq8Kr0APR6UEqPQeetQD9DAuZMzS6ZIp4Wlbz9Pgcp6A7cM5U1
+	edLgOX6nTIPuXvmEqEDtI7tXaNyxYQfctzBQk74voWToGZcz4A==;
+Received: from [2a02:8108:8980:2478:8cde:aa2c:f324:937e]; authenticated
+	by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+	id 1rp6hI-0005Mm-No; Tue, 26 Mar 2024 14:18:36 +0100
+Message-ID: <5b778e74-1278-42b1-84e1-a2c04a8211f0@leemhuis.info>
+Date: Tue, 26 Mar 2024 14:18:21 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+From: "Linux regression tracking (Thorsten Leemhuis)"
+ <regressions@leemhuis.info>
+Content-Language: en-US, de-DE
+To: Anna-Maria Behnsen <anna-maria@linutronix.de>
+Cc: Thomas Gleixner <tglx@linutronix.de>,
+ Frederic Weisbecker <frederic@kernel.org>,
+ LKML <linux-kernel@vger.kernel.org>,
+ Linux kernel regressions list <regressions@lists.linux.dev>,
+ Mario Limonciello <mario.limonciello@amd.com>
+Subject: [regression] Bug 218641 - Framework Laptop 13 AMD suspend/wakeup
+ regression with 6.9rc1
+Reply-To: Linux regressions mailing list <regressions@lists.linux.dev>
 Content-Type: text/plain; charset=UTF-8
-Date: Tue, 26 Mar 2024 15:18:21 +0200
-Message-Id: <D03PM9A6IS79.3D6BW7KBLH9C3@kernel.org>
-To: "Jarkko Sakkinen" <jarkko@kernel.org>, "Masami Hiramatsu"
- <mhiramat@kernel.org>
-Cc: <linux-riscv@lists.infradead.org>, "Paul Walmsley"
- <paul.walmsley@sifive.com>, "Palmer Dabbelt" <palmer@dabbelt.com>, "Albert
- Ou" <aou@eecs.berkeley.edu>, <linux-kernel@vger.kernel.org>, "Luis
- Chamberlain" <mcgrof@kernel.org>, <linux-modules@vger.kernel.org>, "Naveen
- N . Rao" <naveen.n.rao@linux.ibm.com>, "Anil S Keshavamurthy"
- <anil.s.keshavamurthy@intel.com>, "David S . Miller" <davem@davemloft.net>
-Subject: Re: [PATCH v5 1/2] kprobes: textmem API
-From: "Jarkko Sakkinen" <jarkko@kernel.org>
-X-Mailer: aerc 0.17.0
-References: <20240325215502.660-1-jarkko@kernel.org>
- <20240326095836.f43d259b7747269a7c0b9d23@kernel.org>
- <D03AL7A5G3M2.3UK4ASWILGBJS@kernel.org>
- <D03B7XJYRFC1.2L3I2TO5HNQD3@kernel.org>
-In-Reply-To: <D03B7XJYRFC1.2L3I2TO5HNQD3@kernel.org>
+Content-Transfer-Encoding: 7bit
+X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1711459119;1ec67ad1;
+X-HE-SMSGID: 1rp6hI-0005Mm-No
 
-On Tue Mar 26, 2024 at 4:01 AM EET, Jarkko Sakkinen wrote:
-> On Tue Mar 26, 2024 at 3:31 AM EET, Jarkko Sakkinen wrote:
-> > > > +#endif /* _LINUX_EXECMEM_H */
-> > > > diff --git a/kernel/kprobes.c b/kernel/kprobes.c
-> > > > index 9d9095e81792..87fd8c14a938 100644
-> > > > --- a/kernel/kprobes.c
-> > > > +++ b/kernel/kprobes.c
-> > > > @@ -44,6 +44,7 @@
-> > > >  #include <asm/cacheflush.h>
-> > > >  #include <asm/errno.h>
-> > > >  #include <linux/uaccess.h>
-> > > > +#include <linux/execmem.h>
-> > > > =20
-> > > >  #define KPROBE_HASH_BITS 6
-> > > >  #define KPROBE_TABLE_SIZE (1 << KPROBE_HASH_BITS)
-> > > > @@ -113,17 +114,17 @@ enum kprobe_slot_state {
-> > > >  void __weak *alloc_insn_page(void)
-> > > >  {
-> > > >  	/*
-> > > > -	 * Use module_alloc() so this page is within +/- 2GB of where the
-> > > > +	 * Use alloc_execmem() so this page is within +/- 2GB of where th=
-e
-> > > >  	 * kernel image and loaded module images reside. This is required
-> > > >  	 * for most of the architectures.
-> > > >  	 * (e.g. x86-64 needs this to handle the %rip-relative fixups.)
-> > > >  	 */
-> > > > -	return module_alloc(PAGE_SIZE);
-> > > > +	return alloc_execmem(PAGE_SIZE, GFP_KERNEL);
-> > > >  }
-> > > > =20
-> > > >  static void free_insn_page(void *page)
-> > > >  {
-> > > > -	module_memfree(page);
-> > > > +	free_execmem(page);
-> > > >  }
-> > > > =20
-> > > >  struct kprobe_insn_cache kprobe_insn_slots =3D {
-> > > > @@ -1580,6 +1581,7 @@ static int check_kprobe_address_safe(struct k=
-probe *p,
-> > > >  		goto out;
-> > > >  	}
-> > > > =20
-> > > > +#ifdef CONFIG_MODULES
-> > >
-> > > You don't need this block, because these APIs have dummy functions.
-> >
-> > Hmm... I'll verify this tomorrow.
->
-> It depends on having struct module available given "(*probed_mod)->state"=
-.
->
-> It is non-existent unless CONFIG_MODULES is set given how things are
-> flagged in include/linux/module.h.
+Hi, Thorsten here, the Linux kernel's regression tracker.
 
-Hey, noticed kconfig issue.
+Anna-Maria, I noticed a regression report in bugzilla.kernel.org that
+apparently is caused by a change of yours. As many (most?) kernel
+developers don't keep an eye on it, I decided to forward it by mail.
 
-According to kconfig-language.txt:
+Note, you have to use bugzilla to reach the reporter, as I sadly[1] can
+not CC them in mails like this.
 
-"select should be used with care. select will force a symbol to a value
-without visiting the dependencies."
+Quoting from https://bugzilla.kernel.org/show_bug.cgi?id=218641 :
 
-So the problem here lies in KPROBES config entry using select statement
-to pick ALLOC_EXECMEM. It will not take the depends on statement into
-account and thus will allow to select kprobes without any allocator in
-place.
+>  David Markey 2024-03-25 22:08:29 UTC
+> 
+> Was trying out 6.9rc1 to give prefcore a whirl but I've noticed that
+> when I go to s2idle I cannot wake up, the power button does not wake
+> the laptop up again and stays flashing and requires a full reboot to
+> become responsive again.
+Later:
 
-So to address this I'd suggest to use depends on statement also for
-describing relation between KPROBES and ALLOC_EXECMEM. It does not make
-life worse than before for anyone because even with the current kernel
-you have to select MODULES before you can move forward with kprobes.
+>  Mario Limonciello (AMD) 2024-03-26 02:38:06 UTC
+> 
+> I finished up bisecting and it comes down to this commit:
+> 
+> ```
+> commit 7ee988770326fca440472200c3eb58935fe712f6
+> Author: Anna-Maria Behnsen <anna-maria@linutronix.de>                          
+> Date:   Thu Feb 22 11:37:10 2024 +0100                                                   
+>                                                                                          
+>     timers: Implement the hierarchical pull model
+> ```
+See the ticket for more details and additional comments.
 
-BR, Jarkko
+Ciao, Thorsten (wearing his 'the Linux kernel's regression tracker' hat)
+
+[1] because bugzilla.kernel.org tells users upon registration their
+"email address will never be displayed to logged out users"
+--
+Everything you wanna know about Linux kernel regression tracking:
+https://linux-regtracking.leemhuis.info/about/#tldr
+If I did something stupid, please tell me, as explained on that page.
+
+P.S.: let me use this mail to also add the report to the list of tracked
+regressions to ensure it's doesn't fall through the cracks:
+
+#regzbot introduced: 7ee988770326fca440472200c3eb58935fe712f6
+#regzbot title: timers: suspend/wakeup problems on Framework Laptop 13 AMD
+#regzbot from: David Markey
+#regzbot duplicate: https://bugzilla.kernel.org/show_bug.cgi?id=218641
+#regzbot ignore-activity
 
