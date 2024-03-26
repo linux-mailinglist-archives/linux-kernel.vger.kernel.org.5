@@ -1,69 +1,66 @@
-Return-Path: <linux-kernel+bounces-119311-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-119312-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E30A988C6E6
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 16:29:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 2B9EE88C6EB
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 16:29:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1E6AD1C63D79
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 15:29:04 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5DC7E1C3FC2A
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 15:29:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A1D8413CAB5;
-	Tue, 26 Mar 2024 15:27:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C04A813CC5E;
+	Tue, 26 Mar 2024 15:27:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hp6Esqla"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="R9H3froV"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD97613C8F1;
-	Tue, 26 Mar 2024 15:27:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ECDA013C908;
+	Tue, 26 Mar 2024 15:27:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711466873; cv=none; b=irTYZctTQ+SQBRvFvmqXZHSqgU+n6R4VZSaXV1Yazy/W6wgS3EEKTi1zxEvIIghouV4CmRGp/RmHceDkq3wWoD6esNsSgbZ0zJVd1RUUH4kTyzWXhPVdOh+crD6YceV3SnlHcLMAkUQYCbW1BWxlTPztiLsNOfASIikDs1b4luc=
+	t=1711466879; cv=none; b=AkbJXjyc7VY40xincsXMMTjFg0pc8MwZmf/7cHRRgWLPX6WuE2EXrBYprLZLocL/qLYiet9Qh084iXLZ3/yDTpbFJ90VsXe9yy1DIqHPfQgr6vipmIPk/ktQnNKtrwUypffL0uYfQIrvZqj6StiTlNp4cIszJGwRUzxhyNpzi5Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711466873; c=relaxed/simple;
-	bh=d7mywm5rWXgjpSN3I9ojlV17yktCzrZdNxZNYpgH1yQ=;
+	s=arc-20240116; t=1711466879; c=relaxed/simple;
+	bh=hRH8KwD0yeb6Ii/FGemUiqr+aQmrUQOnUFhl/QaNG9o=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
-	 MIME-Version:Content-Type; b=oSnhYh7eZ5mvy7FfNy7M7hhNcyB4snPlDH2zqAHUZL/o7kGIJNW/rWwlGXsuIYWZK3G+vIKlQQaiZqCq15zLk7eg5hzzeEsBYzl9DlNmAW/jRZ1P4ufPor9veXz0BA+obhhyS8vfvUFwSd2l4fkMKk5Bzrtd5wGKoIVsdgK37f0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=hp6Esqla; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 166E3C433F1;
-	Tue, 26 Mar 2024 15:27:46 +0000 (UTC)
+	 MIME-Version:Content-Type; b=PrPOc3l/jL5fhiAImbsm0v2uCGKey4Y+NR1DMmCSW2a+cdv+jv4TUdLPECXPunChJAhJAyw0PsBrlQXzw/MWSv9zVyds1pW2hyENjUX0amP4m+gAgNsk3dn6/tSiVc8PMKIrADNBXEUk9UiXUomAy5qdXVAYRiA71qHxYFTXZOE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=R9H3froV; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 43B18C433B1;
+	Tue, 26 Mar 2024 15:27:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711466873;
-	bh=d7mywm5rWXgjpSN3I9ojlV17yktCzrZdNxZNYpgH1yQ=;
+	s=k20201202; t=1711466878;
+	bh=hRH8KwD0yeb6Ii/FGemUiqr+aQmrUQOnUFhl/QaNG9o=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=hp6Esqla1sjCT4T/dOuLOdPJZJ401oUDnrm2g7ZKzIYsSHuUajnZnSUOxJ+ajTyMC
-	 RmXLnvNEpkQi3Avbi9D5focccqQ1CCFjcz7btuhY7Zrykz/t7kC0MPV4AF2VmkPWwO
-	 mQplefko5AwG3GGe/5rk+J8Wv2h5jafianOzsF1IsDMBP4+vPT7ZAo3Gj5X7UM91DC
-	 Qy2+BaRHT2+GOPn8/8COxnkQylaqCzcNmPWySsBZtZ+j3QycwAWhg0Oj2yyzgNQgE7
-	 nNIuQXfDipaZQeQRoZujONjXeJvkictOIygpcA3TdDHmDxu8da7rV7N/9JzZ7nyfr6
-	 8nZKG4LEPmu+g==
+	b=R9H3froV73QGMdXLc9BBRgXfXoWKxlqMl7mfPzkiV0Xotb+lR0OyS567kcVd2m/01
+	 LInj8GTpsyRNN9SSVSTS6Lu3uLl2pGzZ7tAaBlgd7FKSj/5E1kuOSmiZ1sMVeENSLM
+	 xC3kaP05IWC150YFK8BFnXYQv9W+B0928djHny3OBZ+24C3+glAUY2nff0owN2kgoJ
+	 BG2o0V5bsX+KC9E7DnYDUK0aN50eMP/r2nNOzydUOmr0OEevwfIxqnVNe4F6PufLjR
+	 xYJ4VHNDO7zKjJl7kFfXKdw5ZsK4z1va7FkozBAMAkJpHb14C9yHr5nhY65b2BypjN
+	 jDxpj16VqKVtQ==
 From: Mark Brown <broonie@kernel.org>
-To: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-Cc: wenst@chromium.org, lgirdwood@gmail.com, robh@kernel.org, 
- krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, 
- matthias.bgg@gmail.com, perex@perex.cz, tiwai@suse.com, 
- trevor.wu@mediatek.com, maso.huang@mediatek.com, 
- xiazhengqiao@huaqin.corp-partner.google.com, arnd@arndb.de, 
- kuninori.morimoto.gx@renesas.com, shraash@google.com, amergnat@baylibre.com, 
- nicolas.ferre@microchip.com, u.kleine-koenig@pengutronix.de, 
- dianders@chromium.org, frank.li@vivo.com, allen-kh.cheng@mediatek.com, 
- eugen.hristev@collabora.com, claudiu.beznea@tuxon.dev, 
- jarkko.nikula@bitmer.com, jiaxin.yu@mediatek.com, alpernebiyasak@gmail.com, 
- ckeepax@opensource.cirrus.com, zhourui@huaqin.corp-partner.google.com, 
- nfraprado@collabora.com, alsa-devel@alsa-project.org, 
- shane.chien@mediatek.com, linux-sound@vger.kernel.org, 
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
- linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org, 
- kernel@collabora.com
-In-Reply-To: <20240313110147.1267793-1-angelogioacchino.delregno@collabora.com>
-References: <20240313110147.1267793-1-angelogioacchino.delregno@collabora.com>
-Subject: Re: (subset) [PATCH v3 00/22] SoC: Cleanup MediaTek soundcard
- machine drivers
-Message-Id: <171146686681.132239.6648296431652591544.b4-ty@kernel.org>
-Date: Tue, 26 Mar 2024 15:27:46 +0000
+To: Lars-Peter Clausen <lars@metafoo.de>, Jaroslav Kysela <perex@perex.cz>, 
+ Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, 
+ Laurent Pinchart <laurent.pinchart@ideasonboard.com>, 
+ Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, 
+ Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>, 
+ David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, 
+ Rob Herring <robh+dt@kernel.org>, 
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+ Conor Dooley <conor+dt@kernel.org>, Michal Simek <michal.simek@amd.com>, 
+ Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+Cc: linux-sound@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org, 
+ linux-arm-kernel@lists.infradead.org, Vishal Sagar <vishal.sagar@amd.com>, 
+ Anatoliy Klymenko <anatoliy.klymenko@amd.com>, 
+ =?utf-8?q?P=C3=A9ter_Ujfalusi?= <peter.ujfalusi@gmail.com>
+In-Reply-To: <20240312-xilinx-dp-audio-v1-0-696c79facbb9@ideasonboard.com>
+References: <20240312-xilinx-dp-audio-v1-0-696c79facbb9@ideasonboard.com>
+Subject: Re: (subset) [PATCH 0/4] drm: xlnx: zynqmp: Add DP audio support
+Message-Id: <171146687400.132239.7354638412011978940.b4-ty@kernel.org>
+Date: Tue, 26 Mar 2024 15:27:54 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -74,16 +71,15 @@ Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 X-Mailer: b4 0.14-dev
 
-On Wed, 13 Mar 2024 12:01:25 +0100, AngeloGioacchino Del Regno wrote:
-> Changes in v3:
->  - Added audio-routing names in enum in all yaml files
->  - Added mention of disallowing old and new properties together in
->    commit message of bindings patches
->  - Fixed validation errors with sound-card-common.yaml inclusion
->    due to missing model property in examples
->  - Removed `else` enforcing headset-codec/speaker-codecs requirement
->    if xxx-dai-link not present to avoid future commit noise as the
->    deprecated statement will disallow deprecated properties as required
+On Tue, 12 Mar 2024 11:41:01 +0200, Tomi Valkeinen wrote:
+> Add DisplayPort audio support for Xilinx ZynqMP platforms.
+> 
+> This depends on patch adding cyclic DMA mode for DPDMA driver:
+> 
+> https://lore.kernel.org/all/20240228042124.3074044-3-vishal.sagar@amd.com/
+> 
+> If that patch is missing, starting an audio playback will fail with an
+> ASoC error.
 > 
 > [...]
 
@@ -93,46 +89,8 @@ Applied to
 
 Thanks!
 
-[01/22] ASoC: mediatek: mt8192-afe-pcm: Convert to devm_pm_runtime_enable()
-        commit: 7aaaa22de56ce0dae15fd9f42a69a1d1a7a6e078
-[02/22] ASoC: mediatek: mt8192-afe-pcm: Simplify with dev_err_probe()
-        commit: 324c603a4efca7d1045e0bf3477ca54970eac72c
-[03/22] ASoC: mediatek: Commonize ADDA rate transform functions and enums
-        commit: d6c01755805d346a1382d2d81c214b2ca557487a
-[04/22] ASoC: mediatek: Assign dummy when codec not specified for a DAI link
-        commit: 5f39231888c63f0a7708abc86b51b847476379d8
-[05/22] ASoC: mediatek: Add common machine soundcard driver probe mechanism
-        (no commit info)
-[06/22] ASoC: mediatek: common: Constify struct mtk_sof_priv
-        (no commit info)
-[07/22] ASoC: mediatek: mt8188: Migrate to mtk_soundcard_common_probe
-        (no commit info)
-[08/22] ASoC: mediatek: mt8195: Migrate to mtk_soundcard_common_probe
-        (no commit info)
-[09/22] ASoC: mediatek: mt8192: Migrate to mtk_soundcard_common_probe
-        (no commit info)
-[10/22] ASoC: mediatek: mt8186: Migrate to mtk_soundcard_common_probe
-        (no commit info)
-[11/22] ASoC: mediatek: Add common snd_soc_ops .startup() callback
-        (no commit info)
-[12/22] ASoC: mediatek: mt8195: Migrate to the common mtk_soundcard_startup
-        (no commit info)
-[13/22] ASoC: mediatek: mt8192: Migrate to the common mtk_soundcard_startup
-        (no commit info)
-[14/22] ASoC: mediatek: mt8186-rt1019: Migrate to the common mtk_soundcard_startup
-        (no commit info)
-[15/22] ASoC: mediatek: Add common mtk_afe_component_probe callback
-        (no commit info)
-[16/22] ASoC: mediatek: Use common mtk_afe_pcm_platform with common probe cb
-        (no commit info)
-[17/22] ASoC: mediatek: mt8186: Unify mt8186-mt6366 machine drivers
-        (no commit info)
-[18/22] ASoC: dt-bindings: mt8195: Document audio-routing and dai-link subnode
-        (no commit info)
-[19/22] ASoC: dt-bindings: mt8192: Document audio-routing and dai-link subnode
-        (no commit info)
-[20/22] ASoC: dt-bindings: mt8186: Document audio-routing and dai-link subnode
-        (no commit info)
+[1/4] ASoC: dmaengine_pcm: Allow passing component name via config
+      commit: cee28113db17f0de58df0eaea4e2756c404ee01f
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
