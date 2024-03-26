@@ -1,176 +1,129 @@
-Return-Path: <linux-kernel+bounces-118680-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-118682-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 969C788BDF4
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 10:36:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 18B3188BDFC
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 10:37:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3DC241F2D3CF
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 09:36:59 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 922CC1F3153F
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 09:37:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4CE9C6BB46;
-	Tue, 26 Mar 2024 09:23:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A9A5070CDC;
+	Tue, 26 Mar 2024 09:25:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="V8Cimmlx"
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="TZs53TSZ"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6BF29482FE;
-	Tue, 26 Mar 2024 09:23:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D547454BF0;
+	Tue, 26 Mar 2024 09:25:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711445038; cv=none; b=nmIfS/rotu6LlzRwLr3hYicbaeXLEonEbMVwobuMuo6yfn6uWISEWA4aqC3yERMMbnPoEojt2GiJdeL5JGTh0yhk9cP4gSPrD0lfkxmDcCxhEB7bNwdKxwIwVl5C/HwzeTyZ0STQbN+UMyWCs9gdR9LexiXDgjfyGK4YWlfOiNo=
+	t=1711445106; cv=none; b=KXoPuyJm0WP4f4LrYQURtzuua1QFvtxBe2Vee6Pi7BG8+0G1Fx4kwBPViK1tI3lkaQCeKppVWnJ/iQTfdqzxnDpPaFAq0mEF5u9x/ZKgUwbhMAeWHiUfqmtWN+WZqhuaI4IGCIUd6RtWJRVRU86ZYsrgEKp8TCBQvP9z0Y25C0k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711445038; c=relaxed/simple;
-	bh=T4wnvnOffzTLpIPRwQQWSDDDt431HpMY8RhCicsc/Mo=;
-	h=Message-ID:Date:MIME-Version:Cc:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=TjuLsKOs+w3zHL2jqUL3zbd8xfW5rbWf0jA9BsdwUaNBZQOG02xu+FOtdZipuXbbHc5gUrBZ8biYHmdqvhkRB7E+NgxUcLqjbdQ8Dt8Hs1pUJW7VbYoFBlz8qXslGo6pcO+SdQk38X0mybwcjEaQImbteBm0/WsbPitUKprb0cw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=V8Cimmlx; arc=none smtp.client-ip=46.235.227.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1711445034;
-	bh=T4wnvnOffzTLpIPRwQQWSDDDt431HpMY8RhCicsc/Mo=;
-	h=Date:Cc:Subject:To:References:From:In-Reply-To:From;
-	b=V8CimmlxEYx6zepbCze4CZSx4oilJpLz+AVX00iN65uOwMjul0jnBdiK3UPhuvwLn
-	 XHcrZ2UeISLsYBxa4UzM02s9K/SDnEVhtNUaWCzGmngRndn7M2vMG+o30FFcu3F6vn
-	 OCh5s1Lc/0FDO/R/l5hkNQWTeHKYwUEpHpyu/bQHf+ro7flockyIr6CVcnIlntHz7N
-	 H45AfcQLVtLPUynJyjVYPFFROugi4eddJ0YfW/+Vkr90/QUgTIlikXh5INZ0Dp8O/o
-	 yicLSzO0SY3VEeZcKeIfIoAkryh4cHBKkmAKDz87VT5Iv+IhvKcQtrb2yUZ7NRwmZA
-	 TnQ/WhNoMzb/w==
-Received: from [10.193.1.1] (broslavsky.collaboradmins.com [68.183.210.73])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: usama.anjum)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id AD5B037813E4;
-	Tue, 26 Mar 2024 09:23:52 +0000 (UTC)
-Message-ID: <2099346e-c657-4781-97e1-7dcb41f66c43@collabora.com>
-Date: Tue, 26 Mar 2024 14:24:22 +0500
+	s=arc-20240116; t=1711445106; c=relaxed/simple;
+	bh=ljvUxtK/9jOt8kIDbODRBzu12bdgGAnl4c7NLEPO/4A=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=IGtECuVcFuVfcmmAeylpD1TjtgpitfMWrAwO84kxkFcZqJmHYptN03Nki1iU8FcgMHutL+KZRrZPdjwK+FgyO47IRcyHrGEBjeA8Pl4KR88cFEbH1Bi9dxPRBwSOdPbKbX0O+CfTjVUnyNxPpuel6aiKvLuuU7Jx5vqjlpH4g9U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=TZs53TSZ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 298F7C433C7;
+	Tue, 26 Mar 2024 09:25:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1711445106;
+	bh=ljvUxtK/9jOt8kIDbODRBzu12bdgGAnl4c7NLEPO/4A=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=TZs53TSZOugXXT8bwTOrikFQZb0aY2cYhS4a1hN7NQDQy90LeZ6+kpGLt5zm9IeJ/
+	 zDJpQg+TadxLf0+vCuJWPDCXy3erj3Ubacg1npWKgX0Sg4OKAMxVSvXEqSqAqvHM+W
+	 0Pv/eL2R8yfjq76aI0eZcd1dVv20/CtkXUGdhVv19PEgjGygk10ongdHKVfmB4HkTH
+	 qnEu/TRiXnVKsI5Q3fO5F1LS+B8q0lc5HIesQwgmFqGkksdD1sW9uM93CAJiOUKv7i
+	 4nNVTmQ07wWQ9ALtMyX1adzeR2KokJ5CmkvXvZpa3+SDGZDt5TCXJxyqYim586G0kw
+	 BKKGjoWLTCXLg==
+Date: Tue, 26 Mar 2024 09:24:59 +0000
+From: Simon Horman <horms@kernel.org>
+To: Jose Ignacio Tornos Martinez <jtornosm@redhat.com>
+Cc: davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+	pabeni@redhat.com, linux-usb@vger.kernel.org,
+	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+	stable@vger.kernel.org,
+	Dave Stevenson <dave.stevenson@raspberrypi.com>
+Subject: Re: [PATCH] net: usb: ax88179_178a: avoid the interface always
+ configured as random address
+Message-ID: <20240326092459.GG403975@kernel.org>
+References: <20240325173155.671807-1-jtornosm@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Cc: Muhammad Usama Anjum <usama.anjum@collabora.com>,
- Shuah Khan <shuah@kernel.org>, linux-kselftest@vger.kernel.org,
- linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] KVM: selftests: Use TAP in the steal_time test
-To: Thomas Huth <thuth@redhat.com>, Paolo Bonzini <pbonzini@redhat.com>,
- kvm@vger.kernel.org
-References: <20231019095900.450467-1-thuth@redhat.com>
-Content-Language: en-US
-From: Muhammad Usama Anjum <usama.anjum@collabora.com>
-In-Reply-To: <20231019095900.450467-1-thuth@redhat.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240325173155.671807-1-jtornosm@redhat.com>
 
-On 10/19/23 2:59 PM, Thomas Huth wrote:
-> For easier use of the tests in automation and for having some
-> status information for the user while the test is running, let's
-> provide some TAP output in this test.
-LGTM. I was thinking why kselftest.h hasn't been included. I found out that
-test_util.h includes kselftest.h.
-
+On Mon, Mar 25, 2024 at 06:31:50PM +0100, Jose Ignacio Tornos Martinez wrote:
+> After the commit d2689b6a86b9 ("net: usb: ax88179_178a: avoid two
+> consecutive device resets"), reset is not executed from bind operation and
+> mac address is not read from the device registers or the devicetree at that
+> moment. Since the check to configure if the assigned mac address is random
+> or not for the interface, happens after the bind operation from
+> usbnet_probe, the interface keeps configured as random address, although the
+> address is correctly read and set during open operation (the only reset
+> now).
 > 
-> Signed-off-by: Thomas Huth <thuth@redhat.com>
-Reviewed-by: Muhammad Usama Anjum <usama.anjum@collabora.com>
+> In order to keep only one reset for the device and to avoid the interface
+> always configured as random address, after reset, configure correctly the
+> suitable field from the driver, if the mac address is read successfully from
+> the device registers or the devicetree.
 
+Thanks Jose,
+
+The above makes sense to me and I agree with your fix and
+corresponding Fixes tag.
+
+> In addition, if mac address can not be read from the driver, a random
+> address is configured again, so it is not necessary to call
+> eth_hw_addr_random from here. Indeed, in this situtatuon, when reset was
+> also executed from bind, this was invalidating the check to configure if the
+> assigned mac address for the interface was random or not.
+
+I also agree with your analysis here. However it does seem to be a separate
+problem. And perhaps warrants a separate patch. I am also wondering
+if this is more of a clean-up than a fix: does it cause a bug
+that is observable by users?
+
+> cc: stable@vger.kernel.org # 6.6+
+> Fixes: d2689b6a86b9 ("net: usb: ax88179_178a: avoid two consecutive device resets")
+> Reported-by: Dave Stevenson  <dave.stevenson@raspberrypi.com>
+> Signed-off-by: Jose Ignacio Tornos Martinez <jtornosm@redhat.com>
 > ---
->  NB: This patch does not use the interface from kselftest_harness.h
->      since it is not very suitable for the for-loop in this patch.
+>  drivers/net/usb/ax88179_178a.c | 5 ++---
+>  1 file changed, 2 insertions(+), 3 deletions(-)
 > 
->  tools/testing/selftests/kvm/steal_time.c | 46 ++++++++++++------------
->  1 file changed, 23 insertions(+), 23 deletions(-)
-> 
-> diff --git a/tools/testing/selftests/kvm/steal_time.c b/tools/testing/selftests/kvm/steal_time.c
-> index 171adfb2a6cb..aa6149eb9ea1 100644
-> --- a/tools/testing/selftests/kvm/steal_time.c
-> +++ b/tools/testing/selftests/kvm/steal_time.c
-> @@ -81,20 +81,18 @@ static void steal_time_init(struct kvm_vcpu *vcpu, uint32_t i)
->  static void steal_time_dump(struct kvm_vm *vm, uint32_t vcpu_idx)
->  {
->  	struct kvm_steal_time *st = addr_gva2hva(vm, (ulong)st_gva[vcpu_idx]);
-> -	int i;
+> diff --git a/drivers/net/usb/ax88179_178a.c b/drivers/net/usb/ax88179_178a.c
+> index 88e084534853..d2324cc02461 100644
+> --- a/drivers/net/usb/ax88179_178a.c
+> +++ b/drivers/net/usb/ax88179_178a.c
+> @@ -1273,10 +1273,9 @@ static void ax88179_get_mac_addr(struct usbnet *dev)
 >  
-> -	pr_info("VCPU%d:\n", vcpu_idx);
-> -	pr_info("    steal:     %lld\n", st->steal);
-> -	pr_info("    version:   %d\n", st->version);
-> -	pr_info("    flags:     %d\n", st->flags);
-> -	pr_info("    preempted: %d\n", st->preempted);
-> -	pr_info("    u8_pad:    ");
-> -	for (i = 0; i < 3; ++i)
-> -		pr_info("%d", st->u8_pad[i]);
-> -	pr_info("\n    pad:       ");
-> -	for (i = 0; i < 11; ++i)
-> -		pr_info("%d", st->pad[i]);
-> -	pr_info("\n");
-> +	ksft_print_msg("VCPU%d:\n", vcpu_idx);
-> +	ksft_print_msg("    steal:     %lld\n", st->steal);
-> +	ksft_print_msg("    version:   %d\n", st->version);
-> +	ksft_print_msg("    flags:     %d\n", st->flags);
-> +	ksft_print_msg("    preempted: %d\n", st->preempted);
-> +	ksft_print_msg("    u8_pad:    %d %d %d\n",
-> +			st->u8_pad[0], st->u8_pad[1], st->u8_pad[2]);
-> +	ksft_print_msg("    pad:       %d %d %d %d %d %d %d %d %d %d %d\n",
-> +			st->pad[0], st->pad[1], st->pad[2], st->pad[3],
-> +			st->pad[4], st->pad[5], st->pad[6], st->pad[7],
-> +			st->pad[8], st->pad[9], st->pad[10]);
->  }
->  
->  #elif defined(__aarch64__)
-> @@ -197,10 +195,10 @@ static void steal_time_dump(struct kvm_vm *vm, uint32_t vcpu_idx)
->  {
->  	struct st_time *st = addr_gva2hva(vm, (ulong)st_gva[vcpu_idx]);
->  
-> -	pr_info("VCPU%d:\n", vcpu_idx);
-> -	pr_info("    rev:     %d\n", st->rev);
-> -	pr_info("    attr:    %d\n", st->attr);
-> -	pr_info("    st_time: %ld\n", st->st_time);
-> +	ksft_print_msg("VCPU%d:\n", vcpu_idx);
-> +	ksft_print_msg("    rev:     %d\n", st->rev);
-> +	ksft_print_msg("    attr:    %d\n", st->attr);
-> +	ksft_print_msg("    st_time: %ld\n", st->st_time);
->  }
->  
->  #endif
-> @@ -267,7 +265,9 @@ int main(int ac, char **av)
->  	vm_userspace_mem_region_add(vm, VM_MEM_SRC_ANONYMOUS, ST_GPA_BASE, 1, gpages, 0);
->  	virt_map(vm, ST_GPA_BASE, ST_GPA_BASE, gpages);
->  
-> +	ksft_print_header();
->  	TEST_REQUIRE(is_steal_time_supported(vcpus[0]));
-> +	ksft_set_plan(NR_VCPUS);
->  
->  	/* Run test on each VCPU */
->  	for (i = 0; i < NR_VCPUS; ++i) {
-> @@ -308,14 +308,14 @@ int main(int ac, char **av)
->  			    run_delay, stolen_time);
->  
->  		if (verbose) {
-> -			pr_info("VCPU%d: total-stolen-time=%ld test-stolen-time=%ld", i,
-> -				guest_stolen_time[i], stolen_time);
-> -			if (stolen_time == run_delay)
-> -				pr_info(" (BONUS: guest test-stolen-time even exactly matches test-run_delay)");
-> -			pr_info("\n");
-> +			ksft_print_msg("VCPU%d: total-stolen-time=%ld test-stolen-time=%ld%s\n",
-> +				       i, guest_stolen_time[i], stolen_time,
-> +				       stolen_time == run_delay ?
-> +				       " (BONUS: guest test-stolen-time even exactly matches test-run_delay)" : "");
->  			steal_time_dump(vm, i);
->  		}
-> +		ksft_test_result_pass("vcpu%d\n", i);
->  	}
->  
-> -	return 0;
-> +	ksft_finished();        /* Print results and exit() accordingly */
->  }
+>  	if (is_valid_ether_addr(mac)) {
+>  		eth_hw_addr_set(dev->net, mac);
+> -	} else {
+> +		dev->net->addr_assign_type = NET_ADDR_PERM;
+> +	} else
+>  		netdev_info(dev->net, "invalid MAC address, using random\n");
+> -		eth_hw_addr_random(dev->net);
+> -	}
 
--- 
-BR,
-Muhammad Usama Anjum
+nit: AFAIK, if one arm of a conditional has curly-brackets, then all should.
+     So there is no need to drop them here.
+
+>  
+>  	ax88179_write_cmd(dev, AX_ACCESS_MAC, AX_NODE_ID, ETH_ALEN, ETH_ALEN,
+>  			  dev->net->dev_addr);
+> -- 
+> 2.44.0
+> 
+> 
 
