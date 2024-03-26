@@ -1,154 +1,103 @@
-Return-Path: <linux-kernel+bounces-119569-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-119570-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9639288CA89
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 18:15:59 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4095588CA8C
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 18:16:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 53286323A26
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 17:15:58 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9ACF1B256F8
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 17:16:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CD76E1C6AE;
-	Tue, 26 Mar 2024 17:15:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 40B051C6BB;
+	Tue, 26 Mar 2024 17:16:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="bZYbyib9"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="NglBZgkx"
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ADA771C2AF
-	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 17:15:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9BDEF1C2AF;
+	Tue, 26 Mar 2024 17:16:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711473352; cv=none; b=XuW7RPyruUa56jVQyGHTStHXYkr7d8758ihAKULXRXXGMSSTdxijDuGalKwYjusbpGT6Q65F/WITw73rt456iXlsoD9+I76Ck4CsQh0i3ofHIBvbAsjUtyzDmqPvV3OBl0ykhFEY1Ntt1YVmG6HEJDbnN0s58R0wPl4pAHGIhew=
+	t=1711473381; cv=none; b=nfczhX4M+n6wRvJpuu3FsEu92MDANMB5uQsh3y1MIkJO6Yqu069XXxxYL5UwxQ7Gc0bCuyZtIhzZZG0pA9OuRR593ewagc6dFAk5alAoS3NmR5e2FA/xWr/7yZBO9G+4GEokOo6ZDoqpVzb124kCNftgSW+yT5b6qQ3n/xGwUFQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711473352; c=relaxed/simple;
-	bh=LoladC18vN7o4gjKcyxmmepIsMgeUKlzNuRv3Hg00LQ=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=IbxzXXslpQQl5XXHpW/KTdop1ng2N9rdHw/YXkZVrdaqRCCMjMuF8GKtR0k+gxe/WLx5fpZGRGCTUFDZ2OMa1xHQK82Lxr084u9x2uqOfHtvXe9ONqVNsZI88yXE9ZG2L7a013aaaCGvx2V120/65G66XG1cV5+qVzKkcpnlpMI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=bZYbyib9; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1711473349;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=83HZCuvdetNwVOhsg4UWAZu5Vujs+vemNZ3aPKHm26A=;
-	b=bZYbyib9kEiXuqjoyMXTln8SBcFo5GSebY7yyofv1vRHTzewjgG1i05glMlQ2VRRdEuxuF
-	bcjA2tsfJO7LA7xXLklxknurAd0qFXser8koCnoFcFe36UkmVBC7BugHtQNSxtOYFCf3eo
-	b+SM9RjjJcuVm6u5pJSuyyCKB0IsA+Y=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-220-MsRG69mVNE-g4GYGImo1dg-1; Tue, 26 Mar 2024 13:15:43 -0400
-X-MC-Unique: MsRG69mVNE-g4GYGImo1dg-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.rdu2.redhat.com [10.11.54.4])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id CCF5C101A586;
-	Tue, 26 Mar 2024 17:15:42 +0000 (UTC)
-Received: from [100.115.132.116] (unknown [10.22.50.19])
-	by smtp.corp.redhat.com (Postfix) with ESMTPS id 3B6FB202451F;
-	Tue, 26 Mar 2024 17:15:41 +0000 (UTC)
-From: Benjamin Coddington <bcodding@redhat.com>
-To: Jan Schunk <scpcom@gmx.de>
-Cc: Chuck Lever III <chuck.lever@oracle.com>,
- Jeff Layton <jlayton@kernel.org>, Neil Brown <neilb@suse.de>,
- Olga Kornievskaia <kolga@netapp.com>, Dai Ngo <dai.ngo@oracle.com>,
- Tom Talpey <tom@talpey.com>,
- Linux NFS Mailing List <linux-nfs@vger.kernel.org>,
- linux-kernel@vger.kernel.org
-Subject: Re: [External] : nfsd: memory leak when client does many file
- operations
-Date: Tue, 26 Mar 2024 13:15:36 -0400
-Message-ID: <13E7E8AF-46DF-45BF-96BB-0C820B9FA23A@redhat.com>
-In-Reply-To: <1AE35F72-77CF-4F5A-9B65-72AB6A53A621@redhat.com>
-References: <trinity-068f55c9-6088-418d-bf3a-c2778a871e98-1711310237802@msvc-mesg-gmx120>
- <E3109CAA-8261-4F66-9D1B-3546E8B797DF@oracle.com>
- <trinity-bfafb9db-d64f-4cad-8cb1-40dac0a2c600-1711313314331@msvc-mesg-gmx105>
- <567BBF54-D104-432C-99C0-1A7EE7939090@oracle.com>
- <trinity-66047013-4d84-4eef-b5d3-d710fe6be805-1711316386382@msvc-mesg-gmx005>
- <6F16BCCE-3000-4BCB-A3B4-95B4767E3577@oracle.com>
- <trinity-ad0037c0-1060-4541-a8ca-15f826a5b5a2-1711396545958@msvc-mesg-gmx024>
- <088D9CC3-C5B0-4646-A85D-B3B9ACE8C532@oracle.com>
- <F594EBB2-5F92-40A9-86FB-CFD58E9CE516@redhat.com>
- <trinity-0ed602bd-15d4-4110-b3f4-668c2051904a-1711472684521@msvc-mesg-gmx122>
- <1AE35F72-77CF-4F5A-9B65-72AB6A53A621@redhat.com>
+	s=arc-20240116; t=1711473381; c=relaxed/simple;
+	bh=o2EHSZ1pkNNwsVraQPR7FRdXvD9eeSKp4Seu6Q6Uanc=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=MxjjHQzvg69XrjYuGFDrCyiioww5/rVXLpDrKp0X304xU7pSAcI4mfBq+mw3J/VShs1JMB2C4mJUUFkFDPhE3gwtQWwOmLn3F/w8cLMqmXsZ37v0gKJDKbW2CBKcxBqFcrHdYO8JUR6n+22IBFklKXoxR5zU4zv5PHbDkKJubbY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=NglBZgkx; arc=none smtp.client-ip=198.137.202.133
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+	Message-ID:Sender:Reply-To:Content-ID:Content-Description;
+	bh=4Sv85FGjimXN6NzHHLB+VPfFSPQPE+zInd7evQBHyig=; b=NglBZgkxNAVisLL0m2NA8J0CyW
+	Hd0aBI3/ilxcg3ICww4bOxZC5uuH88f3nS/b0aSFwqlASNzoRSUMQ0DU2HTVR65e8iGlX5o/gzDV6
+	B3Tn327hF4KNtcKfUhrKrVz2gwM7N4+qeLJqv61U8gHK6QlNMkOKwuhJyYcQsQnKS6CokfPELHfbz
+	nc/FajqXsed7f8hYQP8vLy0k8mPC+rswoRFluAtgu0fWN5d/jikE6LVsAW7HBEu9YWGa4B9nWWsel
+	baUTrg6PrexhN7+n2z8QbB1CWf3hL3bl67R4AYBctUc8vQfiUCZv4pJeFreOixqXewoZt89DtfcF9
+	qgqL+QIw==;
+Received: from [50.53.2.121] (helo=[192.168.254.15])
+	by bombadil.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1rpAPJ-00000005gbJ-21MC;
+	Tue, 26 Mar 2024 17:16:17 +0000
+Message-ID: <40fcf36e-3a60-474e-a7ef-1de874743828@infradead.org>
+Date: Tue, 26 Mar 2024 10:16:16 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.4
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/1] Documentation: fs/proc: fix allocinfo title
+Content-Language: en-US
+To: Suren Baghdasaryan <surenb@google.com>, akpm@linux-foundation.org
+Cc: sfr@canb.auug.org.au, kent.overstreet@linux.dev,
+ linux-doc@vger.kernel.org, linux-next@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <20240326073813.727090-1-surenb@google.com>
+From: Randy Dunlap <rdunlap@infradead.org>
+In-Reply-To: <20240326073813.727090-1-surenb@google.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On 26 Mar 2024, at 13:13, Benjamin Coddington wrote:
 
-> On 26 Mar 2024, at 13:04, Jan Schunk wrote:
->
->> Before I start doing this on my own build I tried it with unmodified l=
-inux-image-6.6.13+bpo-amd64 from Debian 12.
->> I installed systemtap, linux-headers-6.6.13+bpo-amd64 and linux-image-=
-6.6.13+bpo-amd64-dbg and tried to run stap:
->>
->> user@deb:~$ sudo stap -v --all-modules kmem_alloc.stp nfsd_file
->> WARNING: Kernel function symbol table missing [man warning::symbols]
->> Pass 1: parsed user script and 484 library scripts using 110120virt/96=
-896res/7168shr/89800data kb, in 1360usr/1080sys/4963real ms.
->> WARNING: cannot find module kernel debuginfo: No DWARF information fou=
-nd [man warning::debuginfo]
->> semantic error: resolution failed in DWARF builder
->>
->> semantic error: while resolving probe point: identifier 'kernel' at km=
-em_alloc.stp:5:7
->>         source: probe kernel.function("kmem_cache_alloc") {
->>                       ^
->>
->> semantic error: no match
->>
->> Pass 2: analyzed script: 1 probe, 5 functions, 1 embed, 3 globals usin=
-g 112132virt/100352res/8704shr/91792data kb, in 30usr/30sys/167real ms.
->> Pass 2: analysis failed.  [man error::pass2]
->> Tip: /usr/share/doc/systemtap/README.Debian should help you get starte=
-d.
->> user@deb:~$
->>
->> user@deb:~$ grep -E 'CONFIG_DEBUG_INFO|CONFIG_KPROBES|CONFIG_DEBUG_FS|=
-CONFIG_RELAY' /boot/config-6.6.13+bpo-amd64
->> CONFIG_RELAY=3Dy
->> CONFIG_KPROBES=3Dy
->> CONFIG_KPROBES_ON_FTRACE=3Dy
->> CONFIG_DEBUG_INFO=3Dy
->> # CONFIG_DEBUG_INFO_NONE is not set
->> CONFIG_DEBUG_INFO_DWARF_TOOLCHAIN_DEFAULT=3Dy
->> # CONFIG_DEBUG_INFO_DWARF4 is not set
->> # CONFIG_DEBUG_INFO_DWARF5 is not set
->> # CONFIG_DEBUG_INFO_REDUCED is not set
->> CONFIG_DEBUG_INFO_COMPRESSED_NONE=3Dy
->> # CONFIG_DEBUG_INFO_COMPRESSED_ZLIB is not set
->> # CONFIG_DEBUG_INFO_SPLIT is not set
->> CONFIG_DEBUG_INFO_BTF=3Dy
->> CONFIG_DEBUG_INFO_BTF_MODULES=3Dy
->> CONFIG_DEBUG_FS=3Dy
->> CONFIG_DEBUG_FS_ALLOW_ALL=3Dy
->> # CONFIG_DEBUG_FS_DISALLOW_MOUNT is not set
->> # CONFIG_DEBUG_FS_ALLOW_NONE is not set
->> user@deb:~$
->>
->> Do I need to enable other options?
->
-> You should just need DEBUG_INFO.. maybe stap can't find it?  You can tr=
-y to add: -r /path/to/the/kernel/build
 
-oh, nevermind - you're using a packaged kernel.  I'm no familiar with the=
- packaged requirements for systemtap on debian.
+On 3/26/24 00:38, Suren Baghdasaryan wrote:
+> Fix "Title underline too short." warning in the documentation.
+> 
+> Fixes: d08b311b6d49 ("lib: add allocation tagging support for memory allocation profiling")
+> Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
+> Signed-off-by: Suren Baghdasaryan <surenb@google.com>
+> Cc: Randy Dunlap <rdunlap@infradead.org>
 
-Ben
 
+Reviewed-by: Randy Dunlap <rdunlap@infradead.org>
+
+Thanks.
+
+> ---
+>  Documentation/filesystems/proc.rst | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/Documentation/filesystems/proc.rst b/Documentation/filesystems/proc.rst
+> index 5d2fc58b5b1f..245269dd6e02 100644
+> --- a/Documentation/filesystems/proc.rst
+> +++ b/Documentation/filesystems/proc.rst
+> @@ -955,7 +955,7 @@ reclaimed to achieve this.
+>  
+>  
+>  allocinfo
+> -~~~~~~~
+> +~~~~~~~~~
+>  
+>  Provides information about memory allocations at all locations in the code
+>  base. Each allocation in the code is identified by its source file, line
+
+-- 
+#Randy
 
