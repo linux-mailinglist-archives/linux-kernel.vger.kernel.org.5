@@ -1,128 +1,145 @@
-Return-Path: <linux-kernel+bounces-118336-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-118337-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id DC4A788B89F
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 04:33:06 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 548F088B8B5
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 04:37:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 196241C37FD6
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 03:33:06 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 862AB1C2DCC7
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 03:37:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3578012A159;
-	Tue, 26 Mar 2024 03:32:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AAF9F129E8D;
+	Tue, 26 Mar 2024 03:37:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="GQ/yKgv4"
-Received: from mail-wm1-f47.google.com (mail-wm1-f47.google.com [209.85.128.47])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Z5MUTg48"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D637F128823;
-	Tue, 26 Mar 2024 03:32:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5C43D129A69
+	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 03:37:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711423974; cv=none; b=PLrxTrwdjILWshfjMuC5XDmwSW/IMqKlj9FqLkUyO1KIt8GRkUfPuJbIhkC2JX61fkpqwbNF7ITxMW6Pm0CM4KQUiEEp0WpAiMv1qfuxAnVNCJsoryeaiFb6jR3cKkwpJzVkQuXOiw+OsIK5HqIfpwotPjH3VEKPl9caz3gU67g=
+	t=1711424239; cv=none; b=T1ruSkjbwF3F2Q3xLtFz1OtgA5TMntyIt3dhzjKslQjtXygqxbb5JSduj6Fpti44A3MHLCQh3B3i28AxMNWUn3DyvpLGhSgTQyMm6P1QEGilpKyHn8Yvm9cTs4NURZmQSjl49Yl668gWv1Kyhv+R1wzl1n5b9QmOwYkfE+hPUqE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711423974; c=relaxed/simple;
-	bh=f5P7jXuaPxF8gxKTJOiUPKZMuLKQpBGNZmyCMdfpQew=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=W8AGvVYmbVUe2apVdz2PsqbPJLgZQSM/KTAOfUD01iaYVo2ZMihkLuX9HAWNCoMwYKUsWAoNAQKu8LyM3KyBqleOwEy0bpgzUuPxFU//s0GFX3sbIuqmt9ji0GzmL1Uffn5h8/1Mg/sa7QspryVqnCUKldOdm70XjBWKMZOhlbI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=GQ/yKgv4; arc=none smtp.client-ip=209.85.128.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f47.google.com with SMTP id 5b1f17b1804b1-41488d6752eso10821765e9.2;
-        Mon, 25 Mar 2024 20:32:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711423971; x=1712028771; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=lA5o6h754u6ODWqcXZI/yfZmhgXKlz5ceCEo4tpQucE=;
-        b=GQ/yKgv46sqFnSCBelHnAnN508cFDTH28rJLuZ6V2bjpScVQ3HKjJalz+ylvKz2hmB
-         DBF3ShSXyxxp6u0Kh1ZhSdVJ8hxor/zl5vsZPXMp20oXODQvp5897+fIEUkKcf93x8mL
-         KBbtYe3H2NGGyMYstb37YLWepFJmicNDM/0G0InWzIDnL7gjDG5InDxMlTPBz/nxPNab
-         7cPgbPTjscyAqu5npqXXomA8HAwVfxqTr3TXc4svWbzx41gzXXtezxDS1rc1mJ69ESi3
-         E5ybo69ULxBgoZgrSVqtEtktM/wdkmCLjC9ch73wt+VrBL4JzbIiZoZ9S87j9hApctwr
-         aEmg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711423971; x=1712028771;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=lA5o6h754u6ODWqcXZI/yfZmhgXKlz5ceCEo4tpQucE=;
-        b=N0klvxvfSE8JxEsdNayWaepFKiRxCYeXN4J1qGYyqy6Tl5G1NkaUHbJsrZWINdG+gh
-         imcVFh7GREh5T9bAALkEHRZG0U88I4Strc90PB2zUd1lQqfYuOM12FlnzDT8VfsegaDY
-         bSSiQlase5SvGmWJcXcvrfqOIlOFmUJNl7sScAloJNZu86gu8pB9tyX6bdiMtdIUaYcB
-         ZUPFY/dbvyO+hOCl8v9mdHxijLUi+yB/tL7Y7/u0C+CoNDx3KFMO+zyDzyFw4DkO+HOB
-         z/SaDAkpcO7WAVKgomKrb6t+D8OUqETOKztnEpoozB088OsswWeZuQFnQy+LytRdcWpP
-         fyjA==
-X-Forwarded-Encrypted: i=1; AJvYcCXt9vUv1hboSJIa2Wk0CGjD1afSVZLRfkz3WSs2uB+fCN65VGYGcmrmRcOfoG4Xs4iKa8chh2WPpcHwo05wQLJltymwj2gQ1X8OJxtW4tq7vtGeV1EstlKt9JT+ekJWHrLEeX+Yg8cRddUlA23iz7n+lW0jjQb96hOWwJhQOgcriKDZAEVBKUoLG0T9E6OpuprnBS2pBKUH15e2XVku5Ifj1qiJFwq3MB4XCEwqIN67kdpvlH0aoDHYJc17pqJ1E5aBxcBNSVhKjATrKvk3NIBb6MgWtcXcbfybFCQwwlBlXgSjJ/OwEDAeTNYxT5JmB/r2qQlCN+3Uma/G+KUoFfNRkT+BBWg8dEc=
-X-Gm-Message-State: AOJu0Yx2L+Ugcmv/iPcXz+KA1Brw1i6kPdtRDEdgyN7EpNBACsVJs0tc
-	NXCkdqwe6fTxnLigincKMPvAT7kV0WCeCuq0mxzZijtq3AI4i0vtMjhznrefb+Iv7GQA/uroAZ9
-	LDyiTZLKcC2GOHr9ryTmt3djgMus=
-X-Google-Smtp-Source: AGHT+IFQ9mbx3pz3lWDfK2p6wsj2aDG+6I6RjpqCge2Sd5poBB31E3vi/9DrtwhPj4IF4gJiiqaho8oQ5gTSaHJ4YJE=
-X-Received: by 2002:a05:6000:120d:b0:33e:a5e1:eccc with SMTP id
- e13-20020a056000120d00b0033ea5e1ecccmr5218777wrx.68.1711423971122; Mon, 25
- Mar 2024 20:32:51 -0700 (PDT)
+	s=arc-20240116; t=1711424239; c=relaxed/simple;
+	bh=1DoP2Fjwe00tbNl1+MIh1xPqYei6SxWFWgUgaew4iqg=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=txZeUxKznd9xpE/+nDTs9P5zoS6m14+cdm9qQQiAZriMTjztO0+RwSumxzj7FZDr8/k1NtRrMKIu7ZsHmqtVz28bhHQVkndPDM8MCEYWr5WlKKQaJQuGAODEFoILZ/MBLdEpca7W6LqpNrYPBwkKKUAORYSJhwkd2jbwsZ0AWng=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Z5MUTg48; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1711424236;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=6hbrLiMgE7iweX/QVbc9uBWRgTpnQVS9niEfppmTwgE=;
+	b=Z5MUTg48kI6IhFfx35SDmliXMar7lBC8bzHZr2L5tYkOWNLVIVY/LcqvPly5gISsSiSOLZ
+	YCrGVDUH5BiidY0mBOn+szOXzwOURZZQtV3L+nBtpZ9tLrGEK3hQuZinH2vZS1qLJQOL4N
+	7BU+wJs/VXeip0+h2oNIt0U7xjD/6B8=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-447-Y3eCi57SPiGUFq-GhiyY_A-1; Mon, 25 Mar 2024 23:37:10 -0400
+X-MC-Unique: Y3eCi57SPiGUFq-GhiyY_A-1
+Received: from smtp.corp.redhat.com (int-mx10.intmail.prod.int.rdu2.redhat.com [10.11.54.10])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id C9E98811E81;
+	Tue, 26 Mar 2024 03:37:09 +0000 (UTC)
+Received: from virt-mtcollins-01.lab.eng.rdu2.redhat.com (virt-mtcollins-01.lab.eng.rdu2.redhat.com [10.8.1.196])
+	by smtp.corp.redhat.com (Postfix) with ESMTP id 8F6DD492BD1;
+	Tue, 26 Mar 2024 03:37:09 +0000 (UTC)
+From: Shaoqin Huang <shahuang@redhat.com>
+To: Oliver Upton <oliver.upton@linux.dev>,
+	Marc Zyngier <maz@kernel.org>,
+	kvmarm@lists.linux.dev
+Cc: Shaoqin Huang <shahuang@redhat.com>,
+	James Morse <james.morse@arm.com>,
+	kvm@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	linux-kselftest@vger.kernel.org,
+	Paolo Bonzini <pbonzini@redhat.com>,
+	Shuah Khan <shuah@kernel.org>,
+	Suzuki K Poulose <suzuki.poulose@arm.com>,
+	Zenghui Yu <yuzenghui@huawei.com>
+Subject: [PATCH v6 0/3] KVM: selftests: aarch64: Introduce pmu_event_filter_test
+Date: Mon, 25 Mar 2024 23:36:59 -0400
+Message-Id: <20240326033706.117189-1-shahuang@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240326021656.202649-1-rick.p.edgecombe@intel.com> <20240326021656.202649-3-rick.p.edgecombe@intel.com>
-In-Reply-To: <20240326021656.202649-3-rick.p.edgecombe@intel.com>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Mon, 25 Mar 2024 20:32:40 -0700
-Message-ID: <CAADnVQKHtRX2WS9c2qcMUJTmNNda+attkXoiNurFyMKvHNfa=A@mail.gmail.com>
-Subject: Re: [PATCH v4 02/14] mm: Switch mm->get_unmapped_area() to a flag
-To: Rick Edgecombe <rick.p.edgecombe@intel.com>
-Cc: Liam.Howlett@oracle.com, Andrew Morton <akpm@linux-foundation.org>, 
-	Borislav Petkov <bp@alien8.de>, Mark Brown <broonie@kernel.org>, 
-	Christophe Leroy <christophe.leroy@csgroup.eu>, Dave Hansen <dave.hansen@linux.intel.com>, 
-	debug@rivosinc.com, "H. Peter Anvin" <hpa@zytor.com>, Kees Cook <keescook@chromium.org>, 
-	"Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>, Andy Lutomirski <luto@kernel.org>, 
-	Ingo Molnar <mingo@redhat.com>, Peter Zijlstra <peterz@infradead.org>, 
-	Thomas Gleixner <tglx@linutronix.de>, X86 ML <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
-	linux-mm <linux-mm@kvack.org>, linux-s390 <linux-s390@vger.kernel.org>, 
-	sparclinux@vger.kernel.org, linux-sgx@vger.kernel.org, nvdimm@lists.linux.dev, 
-	linux-cxl@vger.kernel.org, Linux-Fsdevel <linux-fsdevel@vger.kernel.org>, 
-	io-uring@vger.kernel.org, bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.10
 
-On Mon, Mar 25, 2024 at 7:17=E2=80=AFPM Rick Edgecombe
-<rick.p.edgecombe@intel.com> wrote:
->
->
-> diff --git a/mm/util.c b/mm/util.c
-> index 669397235787..8619d353a1aa 100644
-> --- a/mm/util.c
-> +++ b/mm/util.c
-> @@ -469,17 +469,17 @@ void arch_pick_mmap_layout(struct mm_struct *mm, st=
-ruct rlimit *rlim_stack)
->
->         if (mmap_is_legacy(rlim_stack)) {
->                 mm->mmap_base =3D TASK_UNMAPPED_BASE + random_factor;
-> -               mm->get_unmapped_area =3D arch_get_unmapped_area;
-> +               clear_bit(MMF_TOPDOWN, &mm->flags);
->         } else {
->                 mm->mmap_base =3D mmap_base(random_factor, rlim_stack);
-> -               mm->get_unmapped_area =3D arch_get_unmapped_area_topdown;
-> +               set_bit(MMF_TOPDOWN, &mm->flags);
->         }
->  }
->  #elif defined(CONFIG_MMU) && !defined(HAVE_ARCH_PICK_MMAP_LAYOUT)
->  void arch_pick_mmap_layout(struct mm_struct *mm, struct rlimit *rlim_sta=
-ck)
->  {
->         mm->mmap_base =3D TASK_UNMAPPED_BASE;
-> -       mm->get_unmapped_area =3D arch_get_unmapped_area;
-> +       clear_bit(MMF_TOPDOWN, &mm->flags);
->  }
->  #endif
+The test is inspired by the pmu_event_filter_test which implemented by x86. On
+the arm64 platform, there is the same ability to set the pmu_event_filter
+through the KVM_ARM_VCPU_PMU_V3_FILTER attribute. So add the test for arm64.
 
-Makes sense to me.
-Acked-by: Alexei Starovoitov <ast@kernel.org>
-for the idea and for bpf bits.
+The series first create the helper function which can be used
+for the vpmu related tests. Then, it implement the test.
+
+Changelog:
+----------
+v5->v6:
+  - Rebased to v6.9-rc1.
+  - Collect RB.
+  - Add multiple filter test.
+
+v4->v5:
+  - Rebased to v6.8-rc6.
+  - Refactor the helper function, make it fine-grained and easy to be used.
+  - Namimg improvements.
+  - Use the kvm_device_attr_set() helper.
+  - Make the test descriptor array readable and clean.
+  - Delete the patch which moves the pmu related helper to vpmu.h.
+  - Remove the kvm_supports_pmu_event_filter() function since nobody will run
+  this on a old kernel.
+
+v3->v4:
+  - Rebased to the v6.8-rc2.
+
+v2->v3:
+  - Check the pmceid in guest code instead of pmu event count since different
+  hardware may have different event count result, check pmceid makes it stable
+  on different platform.                        [Eric]
+  - Some typo fixed and commit message improved.
+
+v1->v2:
+  - Improve the commit message.                 [Eric]
+  - Fix the bug in [enable|disable]_counter.    [Raghavendra & Marc]
+  - Add the check if kvm has attr KVM_ARM_VCPU_PMU_V3_FILTER.
+  - Add if host pmu support the test event throught pmceid0.
+  - Split the test_invalid_filter() to another patch. [Eric]
+
+v1: https://lore.kernel.org/all/20231123063750.2176250-1-shahuang@redhat.com/
+v2: https://lore.kernel.org/all/20231129072712.2667337-1-shahuang@redhat.com/
+v3: https://lore.kernel.org/all/20240116060129.55473-1-shahuang@redhat.com/
+v4: https://lore.kernel.org/all/20240202025659.5065-1-shahuang@redhat.com/
+v5: https://lore.kernel.org/all/20240229065625.114207-1-shahuang@redhat.com/
+
+Shaoqin Huang (3):
+  KVM: selftests: aarch64: Add helper function for the vpmu vcpu
+    creation
+  KVM: selftests: aarch64: Introduce pmu_event_filter_test
+  KVM: selftests: aarch64: Add invalid filter test in
+    pmu_event_filter_test
+
+ tools/testing/selftests/kvm/Makefile          |   1 +
+ .../kvm/aarch64/pmu_event_filter_test.c       | 336 ++++++++++++++++++
+ .../kvm/aarch64/vpmu_counter_access.c         |  33 +-
+ .../selftests/kvm/include/aarch64/vpmu.h      |  28 ++
+ 4 files changed, 372 insertions(+), 26 deletions(-)
+ create mode 100644 tools/testing/selftests/kvm/aarch64/pmu_event_filter_test.c
+ create mode 100644 tools/testing/selftests/kvm/include/aarch64/vpmu.h
+
+-- 
+2.40.1
+
 
