@@ -1,98 +1,81 @@
-Return-Path: <linux-kernel+bounces-119525-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-119526-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id E1F3488CA4D
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 18:08:45 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EDE5388CA52
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 18:09:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 51C10B22DC8
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 17:08:43 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2AF6D1C656F4
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 17:09:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EE5B386AF8;
-	Tue, 26 Mar 2024 16:56:31 +0000 (UTC)
-Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 906CF127B7C;
+	Tue, 26 Mar 2024 16:56:38 +0000 (UTC)
+Received: from irl.hu (irl.hu [95.85.9.111])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DF99D86643;
-	Tue, 26 Mar 2024 16:56:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.176.79.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3D8C91272DD;
+	Tue, 26 Mar 2024 16:56:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.85.9.111
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711472191; cv=none; b=euALFmGiCHD78X4cpPQZ6oKs1FeRkbyddNy2HU6CqHNM4UleIj4kTetASgWy77TahF/PTcTXNF94MaAvn98Dr+sfY7QiPOFyjmjud//b307cEW4ObztIRaKFYMEzXJzcxjivgefCp5cUzvfSYv9iVXPy3koMudYyxE2wsSDXAfM=
+	t=1711472198; cv=none; b=V3NNhc3V18/8GsgAMk56AFCYBIB939z/hbgoE35T5rag1Xk9RiPpayqRXeBiZvX80zyxLYpJTJeflMvAf6V9CHw+m6J1zrQxLbllkRdfgDat3WkFaWX4FztKDBHnylAN/Yx3O7Ha4wfARqDJmT6bogkiijxpzH8EbSEmB/X3kbI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711472191; c=relaxed/simple;
-	bh=4RBQkJlhFKpCT4/hh4bcHX7zCUxKMVUv7eGrJmW03nA=;
-	h=Date:From:To:CC:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=NISFMqTEoHofYkpmf4gzE+nJt+/R0l1otyAakhRD2EzYCKRJneV7/8dnmY8oAtE0eOUAgIwOnuayp1G78hkkH/Hxu04cuCYQaZFUX7uxk8o4E26GKV8QwbYqJV/Q2hZX8d7IpR6qDmeKqefq6VeW6MPwxSUNdBoqCAbmYdR7TW0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=185.176.79.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.18.186.31])
-	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4V3wnW1FbRz688KN;
-	Wed, 27 Mar 2024 00:51:59 +0800 (CST)
-Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
-	by mail.maildlp.com (Postfix) with ESMTPS id 21185140B2F;
-	Wed, 27 Mar 2024 00:56:25 +0800 (CST)
-Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
- (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.35; Tue, 26 Mar
- 2024 16:56:24 +0000
-Date: Tue, 26 Mar 2024 16:56:23 +0000
-From: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To: Dan Williams <dan.j.williams@intel.com>
-CC: <peterz@infradead.org>, <torvalds@linux-foundation.org>, Bjorn Helgaas
-	<bhelgaas@google.com>, Ira Weiny <ira.weiny@intel.com>, Jesse Brandeburg
-	<jesse.brandeburg@intel.com>, Ilpo =?ISO-8859-1?Q?J=E4rvinen?=
-	<ilpo.jarvinen@linux.intel.com>, Lukas Wunner <lukas@wunner.de>, "Jonathan
- Corbet" <corbet@lwn.net>, <linux-pci@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>, <gregkh@linuxfoundation.org>,
-	<linux-doc@vger.kernel.org>
-Subject: Re: [PATCH v2] cleanup: Add usage and style documentation
-Message-ID: <20240326165623.000002fa@Huawei.com>
-In-Reply-To: <171140738438.1574931.15717256954707430472.stgit@dwillia2-xfh.jf.intel.com>
-References: <171097196970.1011049.9726486429680041876.stgit@dwillia2-xfh.jf.intel.com>
-	<171140738438.1574931.15717256954707430472.stgit@dwillia2-xfh.jf.intel.com>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
+	s=arc-20240116; t=1711472198; c=relaxed/simple;
+	bh=IglCwu5f4Ix7p/tpI7GNTvVkN5XfpLJo32H+dnFeqR0=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=JG4qWaRARaTelnOfrdcbRQxqgYoV7kFI9eDfpKyNu1eIu2DkJ7G5qbRI44gkFiUHDt5TIfFJcs9tvkJZcwNuglk6uyOxWyVszyOH6O+39Zz2MwzL6rX+eYuvJMxKOa+5TpJ6EhEJBdjNA9bjYSfz9eQ5Q9xnmQDOl7RneeDLi54=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=irl.hu; spf=pass smtp.mailfrom=irl.hu; arc=none smtp.client-ip=95.85.9.111
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=irl.hu
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=irl.hu
+Received: from [192.168.2.4] (51b68717.dsl.pool.telekom.hu [::ffff:81.182.135.23])
+  (AUTH: CRAM-MD5 soyer@irl.hu, )
+  by irl.hu with ESMTPSA
+  id 0000000000077355.000000006602FE42.0023D51D; Tue, 26 Mar 2024 17:56:34 +0100
+Message-ID: <199a8f6e65ab07f48223bbd458683971d7156e55.camel@irl.hu>
+Subject: Re: [PATCH] media: uvcvideo: UVC minimum relative pan/tilt/zoom
+ speed fix.
+From: Gergo Koteles <soyer@irl.hu>
+To: Ricardo Ribalda <ribalda@chromium.org>,
+  johnebgood@securitylive.com
+Cc: Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+  Mauro Carvalho Chehab <mchehab@kernel.org>,
+  linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+  linh.tp.vu@gmail.com
+Date: Tue, 26 Mar 2024 17:56:33 +0100
+In-Reply-To: <CANiDSCtdgQhAyeLm89W-zNsMsNAVY0Ey5tZ4XpemzaZHXf8ZFQ@mail.gmail.com>
+References: 
+	<20240326-uvc-relative-ptz-speed-fix-v1-1-453fd5ccfd37@securitylive.com>
+	 <CANiDSCtdgQhAyeLm89W-zNsMsNAVY0Ey5tZ4XpemzaZHXf8ZFQ@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.50.4 (3.50.4-1.fc39) 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"
-Content-Transfer-Encoding: quoted-printable
-X-ClientProxiedBy: lhrpeml500005.china.huawei.com (7.191.163.240) To
- lhrpeml500005.china.huawei.com (7.191.163.240)
 
-On Mon, 25 Mar 2024 15:57:42 -0700
-Dan Williams <dan.j.williams@intel.com> wrote:
+Hi Ricardo,
 
-> When proposing that PCI grow some new cleanup helpers for pci_dev_put()
-> and pci_dev_{lock,unlock} [1], Bjorn had some fundamental questions
-> about expectations and best practices. Upon reviewing an updated
-> changelog with those details he recommended adding them to documentation
-> in the header file itself.
+On Tue, 2024-03-26 at 15:22 +0100, Ricardo Ribalda wrote:
+> Thanks for your patch. If we confirm that there are no devices with
+> ranges [-A,B], with A!=3DB, then it looks like the way to go
 >=20
-> Add that documentation and link it into the rendering for
-> Documentation/core-api/.
->=20
-> Link: http://lore.kernel.org/r/20240104183218.GA1820872@bhelgaas [1]
-> Cc: Bjorn Helgaas <bhelgaas@google.com>
-> Cc: Ira Weiny <ira.weiny@intel.com>
-> Cc: Jonathan Cameron <jonathan.cameron@huawei.com>
-> Cc: Jesse Brandeburg <jesse.brandeburg@intel.com>
-> Cc: Ilpo J=E4rvinen <ilpo.jarvinen@linux.intel.com>
-> Cc: Lukas Wunner <lukas@wunner.de>
-> Cc: Peter Zijlstra <peterz@infradead.org>
-> Cc: Jonathan Corbet <corbet@lwn.net>
-> Signed-off-by: Dan Williams <dan.j.williams@intel.com>
 
-Other than the formatting improvement Jon suggested, this looks good to me
-and corresponds to my understanding of how this stuff should be used.
+I tried looking for a device that has different speeds for the
+positive/negative directions. I couldn't find any with the search
+engines.
 
-FWIW
+But I found that the Jabra Panacast (which is an "ePTZ" camera) needs
+this patch also, it has the following controls:
 
-Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+pan_speed 0x009a0920 (int): min=3D0 max=3D10 step=3D1 default=3D5 value=3D0
+tilt_speed 0x009a0921 (int): min=3D0 max=3D10 step=3D1 default=3D5 value=3D=
+0
+
+Regards,
+Gergo
+
 
