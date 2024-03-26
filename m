@@ -1,264 +1,79 @@
-Return-Path: <linux-kernel+bounces-118310-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-118307-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A626988B788
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 03:40:06 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id C9B8688B784
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 03:39:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5C25D2E7D58
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 02:40:05 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 076001C35B52
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 02:39:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F4149128387;
-	Tue, 26 Mar 2024 02:40:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 082551D53C;
+	Tue, 26 Mar 2024 02:38:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="XRML10vk"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.15])
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="Yzb+hCzp"
+Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 180161D53C
-	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 02:39:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.15
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 127CD57314
+	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 02:38:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711420801; cv=none; b=DykioSnZxKKHL1uXBrwGSadzw8Dc5Mff6D8bDy8gHfD2o8ZEyWsbUn/yQiue+yMiBxgRlgbhtSpPAHJhU5Mb2dIk+jhLvoZAjP4ub/Irj00OZIu976fn8KnMnDDDt0fuAZuCT3fpr//MuCBuXj2WT0CfUE4yliHRdWklMnG92hY=
+	t=1711420696; cv=none; b=fGe4EHajW/7zL5OZXpTmXY+Zmg9WsXKvcz4vgEErusrTjymtx25AehPLBHSqIgOIS11uGrA0g4lsB0FaO0//UgpVXOzOtjoZDrL2mqAr3GlZEDYNQqevCtYYACleow2Ye8/2UZ9pDwoEShimAWB9EusDcby0RDMggxIPvPmkhr8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711420801; c=relaxed/simple;
-	bh=a+rFEOl+Jv1er7xV3rfzd9s10Ay9aPwSRWomvQxiApg=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=MQKSCbl4veDQZcKUqankIHt546vIIjwfNk8chJEKnHLndOr4rQZ/HLfVSNgcHaaDXyPDYnzabUDMzRHmHcHswC/i4Ud/BkOq72B8IdE9fBH6nyRlG+8YBH0QcIerhkN+nLTj8mMU1oTjPL18fOHDTIegkJrXWo4HQTzYCsQes6U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=XRML10vk; arc=none smtp.client-ip=198.175.65.15
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1711420799; x=1742956799;
-  h=from:to:cc:subject:in-reply-to:references:date:
-   message-id:mime-version;
-  bh=a+rFEOl+Jv1er7xV3rfzd9s10Ay9aPwSRWomvQxiApg=;
-  b=XRML10vk93HTLGUKLxFkihN7/cbNzWOw/hisAzwbGJjLjqqde2eEAOeB
-   1PJvz1BPqO0pgzLTqLjh9k6PQwgTZEqbfo1RtswTVaaGM9Lp689Fd+8Sg
-   stl2ulzBwzGZL9jDKZ2Ikg/pfnZmU6xhG7+PUo6oC2tcVWm6rqMGXdUJ/
-   RPEIs3UwERjhlbeCfi8IEdfLnX/IO82UW2hS0fcquIjmpRXhE209nPKSj
-   NRRs0H+Iq35cSCyFvxSxhDK9zuMIMZwfgdZFlRiP6gnvaQ51jZ7mMIEia
-   O/lLJmtGEG5yi2YvYkIc0SYf9p085jkIDWgxsavcB8onnH8ypXMHWw0a5
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11024"; a="10248324"
-X-IronPort-AV: E=Sophos;i="6.07,155,1708416000"; 
-   d="scan'208";a="10248324"
-Received: from fmviesa006.fm.intel.com ([10.60.135.146])
-  by orvoesa107.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Mar 2024 19:39:58 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,155,1708416000"; 
-   d="scan'208";a="15879132"
-Received: from yhuang6-desk2.sh.intel.com (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.238.208.55])
-  by fmviesa006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Mar 2024 19:39:53 -0700
-From: "Huang, Ying" <ying.huang@intel.com>
-To: Donet Tom <donettom@linux.ibm.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>,  linux-mm@kvack.org,
-  linux-kernel@vger.kernel.org,  Aneesh Kumar <aneesh.kumar@kernel.org>,
-  Michal Hocko <mhocko@kernel.org>,  Dave Hansen
- <dave.hansen@linux.intel.com>,  Mel Gorman <mgorman@suse.de>,  Feng Tang
- <feng.tang@intel.com>,  Andrea Arcangeli <aarcange@redhat.com>,  Peter
- Zijlstra <peterz@infradead.org>,  Ingo Molnar <mingo@redhat.com>,  Rik van
- Riel <riel@surriel.com>,  Johannes Weiner <hannes@cmpxchg.org>,  Matthew
- Wilcox <willy@infradead.org>,  Vlastimil Babka <vbabka@suse.cz>,  Dan
- Williams <dan.j.williams@intel.com>,  Hugh Dickins <hughd@google.com>,
-  Kefeng Wang <wangkefeng.wang@huawei.com>,  Suren Baghdasaryan
- <surenb@google.com>
-Subject: Re: [PATCH v4 0/2] Allow migrate on protnone reference with
- MPOL_PREFERRED_MANY policy
-In-Reply-To: <cover.1711373653.git.donettom@linux.ibm.com> (Donet Tom's
-	message of "Mon, 25 Mar 2024 09:24:12 -0500")
-References: <cover.1711373653.git.donettom@linux.ibm.com>
-Date: Tue, 26 Mar 2024 10:38:00 +0800
-Message-ID: <875xx9pvjr.fsf@yhuang6-desk2.ccr.corp.intel.com>
-User-Agent: Gnus/5.13 (Gnus v5.13)
+	s=arc-20240116; t=1711420696; c=relaxed/simple;
+	bh=HnFm+A9qW3Sao+BRj4HydAB/I6+qsg4Ok7mMrweomOA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ukLq/efp2Gpjl9WUYMV3IG1W25uIAavbi7HUDeCzoP3FTq5rkwyHX1zPNnjYwYUgU5B+aWWZwJbPaHSYwIeo13qRz9vZTJIEeBv3vUGfE5ExAb5Qqj9CHkoFDuauCaDfWq6X+lr5TELkXIzpEYDjI+YlJJESdR0kGQlsnY0zv10=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=Yzb+hCzp; arc=none smtp.client-ip=90.155.50.34
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=W3EmlvMxvmSCZUfAMehehHFG2uVjyj7K2eHcds6LHvI=; b=Yzb+hCzpAwApFvOQV2sw1RYBun
+	R1RMqIjoSN+VO36z8aaEhs5nrl5cLdArIfBSmof4cSjhQJ6KVwqTcrsKYRvi7bsCdHo2DhgmWHgDY
+	a/AMF1vblqSf7IJN8W1wNXpggEWCuU6Vk/b/pWSRpi185A8fzF+Ctneg4Wgq+42G+WA8b+Xx9FzUI
+	gfIh7VM35q1rdwRfFBwE1Rd3zXbVsKbq8c87TZ57Ua6A95ZnEsTqL3Z7KnRFy1fFGOAVkfpzR2Wsr
+	0yOjl2lUEh0Q4Asp/gPIioO11SbuKAGslI40NyL6vuUnkLdcTMEdsBnUB/uut6MCdS4XKWaFRqC/N
+	Adowfrug==;
+Received: from willy by casper.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1rowhM-00000000HwW-3xaQ;
+	Tue, 26 Mar 2024 02:38:01 +0000
+Date: Tue, 26 Mar 2024 02:38:00 +0000
+From: Matthew Wilcox <willy@infradead.org>
+To: "Vishal Moola (Oracle)" <vishal.moola@gmail.com>
+Cc: linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+	akpm@linux-foundation.org, muchun.song@linux.dev
+Subject: Re: [PATCH 4/5] mm: Make pgoff non-const in struct vm_fault
+Message-ID: <ZgI1CF2dw-mauoIZ@casper.infradead.org>
+References: <20240325223339.169350-1-vishal.moola@gmail.com>
+ <20240325223339.169350-5-vishal.moola@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ascii
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240325223339.169350-5-vishal.moola@gmail.com>
 
-Donet Tom <donettom@linux.ibm.com> writes:
+On Mon, Mar 25, 2024 at 03:33:38PM -0700, Vishal Moola (Oracle) wrote:
+> Hugetlb calculates addresses and page offsets differently from the rest of
+> mm. In order to pass struct vm_fault through the fault pathway we will let
+> hugetlb_fault() and __handle_mm_fault() set those variables themselves
+> instead.
 
-> This patchset is to optimize the cross-socket memory access with
-> MPOL_PREFERRED_MANY policy.
->
-> To test this patch we ran the following test on a 3 node system.
->  Node 0 - 2GB   - Tier 1
->  Node 1 - 11GB  - Tier 1
->  Node 6 - 10GB  - Tier 2
->
-> Below changes are made to memcached to set the memory policy,
-> It select Node0 and Node1 as preferred nodes.
->
->    #include <numaif.h>
->    #include <numa.h>
->
->     unsigned long nodemask;
->     int ret;
->
->     nodemask = 0x03;
->     ret = set_mempolicy(MPOL_PREFERRED_MANY | MPOL_F_NUMA_BALANCING,
->                                                &nodemask, 10);
->     /* If MPOL_F_NUMA_BALANCING isn't supported,
->      * fall back to MPOL_PREFERRED_MANY */
->     if (ret < 0 && errno == EINVAL){
->        printf("set mem policy normal\n");
->         ret = set_mempolicy(MPOL_PREFERRED_MANY, &nodemask, 10);
->     }
->     if (ret < 0) {
->        perror("Failed to call set_mempolicy");
->        exit(-1);
->     }
->
-> Test Procedure:
-> ===============
-> 1. Make sure memory tiering and demotion are enabled.
-> 2. Start memcached.
->
->    # ./memcached -b 100000 -m 204800 -u root -c 1000000 -t 7
->        -d -s "/tmp/memcached.sock"
->
-> 3. Run memtier_benchmark to store 3200000 keys.
->
->   #./memtier_benchmark -S "/tmp/memcached.sock" --protocol=memcache_binary
->     --threads=1 --pipeline=1 --ratio=1:0 --key-pattern=S:S --key-minimum=1
->     --key-maximum=3200000 -n allkeys -c 1 -R -x 1 -d 1024
->
-> 4. Start a memory eater on node 0 and 1. This will demote all memcached
->    pages to node 6.
-> 5. Make sure all the memcached pages got demoted to lower tier by reading
->    /proc/<memcaced PID>/numa_maps.
->
->     # cat /proc/2771/numa_maps
->      ---
->     default anon=1009 dirty=1009 active=0 N6=1009 kernelpagesize_kB=64
->     default anon=1009 dirty=1009 active=0 N6=1009 kernelpagesize_kB=64
->      ---
->
-> 6. Kill memory eater.
-> 7. Read the pgpromote_success counter.
-> 8. Start reading the keys by running memtier_benchmark.
->
->   #./memtier_benchmark -S "/tmp/memcached.sock" --protocol=memcache_binary
->    --pipeline=1 --distinct-client-seed --ratio=0:3 --key-pattern=R:R
->    --key-minimum=1 --key-maximum=3200000 -n allkeys
->    --threads=64 -c 1 -R -x 6
->
-> 9. Read the pgpromote_success counter.
->
-> Test Results:
-> =============
-> Without Patch
-> ------------------
-> 1. pgpromote_success  before test
-> Node 0:  pgpromote_success 11
-> Node 1:  pgpromote_success 140974
->
-> pgpromote_success  after test
-> Node 0:  pgpromote_success 11
-> Node 1:  pgpromote_success 140974
->
-> 2. Memtier-benchmark result.
-> AGGREGATED AVERAGE RESULTS (6 runs)
-> ==================================================================
-> Type    Ops/sec   Hits/sec   Misses/sec  Avg. Latency  p50 Latency
-> ------------------------------------------------------------------
-> Sets     0.00       ---         ---        ---          ---
-> Gets    305792.03  305791.93   0.10       0.18949       0.16700
-> Waits    0.00       ---         ---        ---          ---
-> Totals  305792.03  305791.93   0.10       0.18949       0.16700
->
-> ======================================
-> p99 Latency  p99.9 Latency  KB/sec
-> -------------------------------------
-> ---          ---            0.00
-> 0.44700     1.71100        11542.69
-> ---           ---            ---
-> 0.44700     1.71100        11542.69
->
-> With Patch
-> ---------------
-> 1. pgpromote_success  before test
-> Node 0:  pgpromote_success 5
-> Node 1:  pgpromote_success 89386
->
-> pgpromote_success  after test
-> Node 0:  pgpromote_success 57895
-> Node 1:  pgpromote_success 141463
->
-> 2. Memtier-benchmark result.
-> AGGREGATED AVERAGE RESULTS (6 runs)
-> ====================================================================
-> Type    Ops/sec    Hits/sec  Misses/sec  Avg. Latency  p50 Latency
-> --------------------------------------------------------------------
-> Sets     0.00        ---       ---        ---           ---
-> Gets    521942.24  521942.07  0.17       0.11459        0.10300
-> Waits    0.00        ---       ---         ---          ---
-> Totals  521942.24  521942.07  0.17       0.11459        0.10300
->
-> =======================================
-> p99 Latency  p99.9 Latency  KB/sec
-> ---------------------------------------
->  ---          ---            0.00
-> 0.23100      0.31900        19701.68
-> ---          ---             ---
-> 0.23100      0.31900        19701.68
->
->
-> Test Result Analysis:
-> =====================
-> 1. With patch we could observe pages are getting promoted.
-> 2. Memtier-benchmark results shows that, with the patch,
->    performance has increased more than 50%.
->
->  Ops/sec without fix -  305792.03
->  Ops/sec with fix    -  521942.24
->
-> Changes:
-> V4
-> - Added an example in the "PATCH 2/2" commit message as per the discussion
->   from V3.
-> V3:
-> - Added "* @vmf: structure describing the fault" comment for
->   mpol_misplaced() to fix the warning.
-> https://lore.kernel.org/oe-kbuild-all/202403202229.WZeAnUuO-lkp@intel.com/
-> -https://lore.kernel.org/lkml/cover.1711002865.git.donettom@linux.ibm.com/
-> v2:
-> - Rebased on latest upstream (v6.8-rc7)
-> - Used 'numa_node_id()' to get the current execution node ID, Added
->   'lockdep_assert_held' to make sure that the 'mpol_misplaced()' is
->   called with ptl held.
-> - The migration condition has been updated; now, migration will only
->   occur if the execution node is present in the policy nodemask.
-> -https://lore.kernel.org/lkml/cover.1709909210.git.donettom@linux.ibm.com/
->
-> -v1: https://lore.kernel.org/linux-mm/9c3f7b743477560d1c5b12b8c111a584a2cc92ee.1708097962.git.donettom@linux.ibm.com/#t
->
->
-> Donet Tom (2):
->   mm/mempolicy: Use numa_node_id() instead of cpu_to_node()
->   mm/numa_balancing:Allow migrate on protnone reference with
->     MPOL_PREFERRED_MANY policy
->
->  include/linux/mempolicy.h |  5 +++--
->  mm/huge_memory.c          |  2 +-
->  mm/internal.h             |  2 +-
->  mm/memory.c               |  8 +++++---
->  mm/mempolicy.c            | 36 +++++++++++++++++++++++++++---------
->  5 files changed, 37 insertions(+), 16 deletions(-)
+I don't think this is a great idea.  I'd rather not do patch 5 than do
+patch 4+5.  If you look at the history, commits 742d33729a0df11 and
+5857c9209ce58f show that drivers got into the bad habit of changing
+address & pgoff, so they got made const to prevent that.
 
-LGTM, Thanks!  Feel free to add
-
-Reviewed-by: "Huang, Ying" <ying.huang@intel.com>
-
-in the future version.
-
---
-Best Regards,
-Huang, Ying
+So can we make hugetlbfs OK with using addresses & pgoffsets that aren't
+aligned to HPAGE boundaries?  Worth playing with for a bit to see how
+deep that assumption runs.
 
