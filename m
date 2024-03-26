@@ -1,90 +1,255 @@
-Return-Path: <linux-kernel+bounces-119112-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-119115-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6D23188C455
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 15:03:03 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8403688C459
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 15:03:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 22A661F65FBC
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 14:03:03 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B3E88B22C5E
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 14:03:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9126276404;
-	Tue, 26 Mar 2024 14:01:55 +0000 (UTC)
-Received: from dggsgout12.his.huawei.com (unknown [45.249.212.56])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 298CF76022;
+	Tue, 26 Mar 2024 14:03:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="gbiwtsnv"
+Received: from NAM10-BN7-obe.outbound.protection.outlook.com (mail-bn7nam10on2115.outbound.protection.outlook.com [40.107.92.115])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 30A64762DA;
-	Tue, 26 Mar 2024 14:01:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711461715; cv=none; b=SQlhDaJ0TzojfzIFsA4lqJRuYY4eTFCcyFsKfFdljyAITamtcgr1/puQD0uagA/TxtOP7pSH/xaE5ozeJMe70ZLYPfsR2GuWvp2qte71avGW6XSPoxtlAjZPzVk23N9p5F+IuIHvXgKq33Ifp+fGRvRwTbMT5k7lB27Hj2bvLBA=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711461715; c=relaxed/simple;
-	bh=CQPzmrmIC9p3Xew9lnpRqlyPip57uhVVQNN8AMBn96A=;
-	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=PRlvShRjIiM9G2rr39vdITxlq636bgAjUBn+pIaZbqphSgH59WkNlZD8GoG171ND+bWTefYD4XnoothXDjrK54hvys8k8xEPcvvN4fqY8rcmp2FniRYHXp8URg1HSjTtW8tXRqIWWaUmNulLDjrcHJ5RrIgBi2XIx6yDWhG1U4A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.235])
-	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4V3s112czyz4f3jHt;
-	Tue, 26 Mar 2024 22:01:41 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.112])
-	by mail.maildlp.com (Postfix) with ESMTP id 8C3C41A0CB1;
-	Tue, 26 Mar 2024 22:01:47 +0800 (CST)
-Received: from [10.174.176.73] (unknown [10.174.176.73])
-	by APP1 (Coremail) with SMTP id cCh0CgBHZQ5J1QJmq2uTIA--.18997S3;
-	Tue, 26 Mar 2024 22:01:47 +0800 (CST)
-Subject: Re: [PATCH 00/11] md: avoid counter operation conflicts
-To: tada keisuke <keisuke1.tada@kioxia.com>, "song@kernel.org"
- <song@kernel.org>
-Cc: "linux-raid@vger.kernel.org" <linux-raid@vger.kernel.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "yukuai (C)" <yukuai3@huawei.com>
-References: <a022f547c43e40e2b9f0aebb2bd0bfa8@kioxia.com>
-From: Yu Kuai <yukuai1@huaweicloud.com>
-Message-ID: <140c7f16-4c2a-390a-7021-53d3723626ec@huaweicloud.com>
-Date: Tue, 26 Mar 2024 22:01:45 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 49F7371726
+	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 14:02:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.92.115
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1711461780; cv=fail; b=oKCwqxFW/B51w+oRBKz5AEwtC49U5hndwSKaNbZP6dnSpREfdPCc6UzgXt1aPxgTn7fdANEs0Uk/odWZEUJexBMKP3fO9PetKUwY3K+Meff1CDnU7TE3Cl0ULtrf5IoJnoJT4DbUB5DANlCoGPSpoyuDL5lWHg//9V854mSHQ6s=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1711461780; c=relaxed/simple;
+	bh=PhdqTFkQ4sE6LkIR3+pOEemWRrWGvvSwEGdpW9OKNf8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
+	 Content-Disposition:In-Reply-To:MIME-Version; b=ijRdwwec3imnayPiGfeTjEzKinzABgZByEXQufpfMkZUpCx/pq4y+e2edCfJvQb0eECpSrVY8jjRpB8yRiv6hTY4MZP7LTwK52wkQ6W+o7NQVHqSyf31DYWQkdTGwhUKHm76G8lrKGo+6PUJZBvqyOFfJTLsk40MWOxhJshrRTQ=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=gbiwtsnv; arc=fail smtp.client-ip=40.107.92.115
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=cixS7WWen8h09l24yjy75oUBX9FgBUyaukkXaSM68sEJToQBQSDlFjxcJdxpgcc6w5uj/fS+0YdFUI8ENjqX20sMPV40gEIx1IQG68i0QqMXwROiib6AreRzTa+I2Lr4rTeIe8mORa9abOIou+DJMQK/ue3CsADMcelzgdkWBfo3tUQQq7vwJweeqOICh0aBQYLDShs5W0J7HLL7GbTWQuw7e4LSK3PKUHxUwMlV7rHuO7cUQm711dXBeqOcbc0rVbmRVDmcq9mX+z9PCMZLTZJZfT8+zx4KAFbRcfEvxDubxeWqc6OakLgN83sIKbvl8iVMbCka934QadGp8fSlsA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=h1TBTpNqsHYSkKcMoenf+IHxaqsv5TIjbk94zSjyQ/g=;
+ b=n3duTWCyhJb3y4mji6o5N6je/o8JTnJfAyaWdO0vr8G1QHg2i2DtlIKulR0yJa8wpA6pVFov5O+PZY2qhBdFWAmFL/6FXuABRK+zRhAFauIddW9dQPknlHAgtgsoAW3+pBa71YKkstya+5IMRXu2R1KRPA/NSW0v7V1dHdoUXy0gmTu9TkadWDnsxmYecpThehk2gEoq+ZtyvqsdLtJLujgtNbPZjH6OLtOjGGfMEebitNbrjlADsz6UxzW8wccEurvZk5ONsRqAMwC3kZMHfzdYlxUICECUg2lHrEJlpRM47rkXQV2cQqOhfwL6Rh2QN8+0vgk/bAFrrHU5QSSudg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=h1TBTpNqsHYSkKcMoenf+IHxaqsv5TIjbk94zSjyQ/g=;
+ b=gbiwtsnvbcS+4qxrpc5NgqY5QqDcpbob3eUKddUHqVN+QuGJsC2nSrj2GUqHomrxulN/X4DyhR57xcZmvXhm2+IwFFSsaWjRP1+up02saS+v9u5rzuDWRFuMtlmnTzdinoA7nFPtbqsHcsmifD0jIcFw+dmPNoHwnPPiyyBeCeON/A/EXrJXFAMtKwmJi3UbbzBJG7GzLoNDpXuwrgmh3QWJcjQzvj5STSDsFqR97aGaDF0mauYgOtG/EqXUeRyhZ89J/sBKfn+UitwGTUa4Lfcrw3F/uusQllDwrE9YhO68XrylrJYEZzh7ixUaMhVAcDl+ypEzsP4Hk2QGaiE1mA==
+Received: from DM6PR12MB3849.namprd12.prod.outlook.com (2603:10b6:5:1c7::26)
+ by MN0PR12MB6200.namprd12.prod.outlook.com (2603:10b6:208:3c3::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.33; Tue, 26 Mar
+ 2024 14:02:54 +0000
+Received: from DM6PR12MB3849.namprd12.prod.outlook.com
+ ([fe80::6aec:dbca:a593:a222]) by DM6PR12MB3849.namprd12.prod.outlook.com
+ ([fe80::6aec:dbca:a593:a222%5]) with mapi id 15.20.7409.031; Tue, 26 Mar 2024
+ 14:02:53 +0000
+Date: Tue, 26 Mar 2024 11:02:52 -0300
+From: Jason Gunthorpe <jgg@nvidia.com>
+To: Peter Xu <peterx@redhat.com>
+Cc: linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+	linuxppc-dev@lists.ozlabs.org,
+	Michael Ellerman <mpe@ellerman.id.au>,
+	Christophe Leroy <christophe.leroy@csgroup.eu>,
+	Matthew Wilcox <willy@infradead.org>,
+	Rik van Riel <riel@surriel.com>,
+	Lorenzo Stoakes <lstoakes@gmail.com>,
+	Axel Rasmussen <axelrasmussen@google.com>,
+	Yang Shi <shy828301@gmail.com>, John Hubbard <jhubbard@nvidia.com>,
+	linux-arm-kernel@lists.infradead.org,
+	"Kirill A . Shutemov" <kirill@shutemov.name>,
+	Andrew Jones <andrew.jones@linux.dev>,
+	Vlastimil Babka <vbabka@suse.cz>, Mike Rapoport <rppt@kernel.org>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Muchun Song <muchun.song@linux.dev>,
+	Christoph Hellwig <hch@infradead.org>,
+	linux-riscv@lists.infradead.org,
+	James Houghton <jthoughton@google.com>,
+	David Hildenbrand <david@redhat.com>,
+	Andrea Arcangeli <aarcange@redhat.com>,
+	"Aneesh Kumar K . V" <aneesh.kumar@kernel.org>,
+	Mike Kravetz <mike.kravetz@oracle.com>
+Subject: Re: [PATCH v3 00/12] mm/gup: Unify hugetlb, part 2
+Message-ID: <20240326140252.GH6245@nvidia.com>
+References: <20240321220802.679544-1-peterx@redhat.com>
+ <20240322161000.GJ159172@nvidia.com>
+ <ZgHJaJSpoeJVEccN@x1n>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZgHJaJSpoeJVEccN@x1n>
+X-ClientProxiedBy: MN2PR20CA0010.namprd20.prod.outlook.com
+ (2603:10b6:208:e8::23) To DM6PR12MB3849.namprd12.prod.outlook.com
+ (2603:10b6:5:1c7::26)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <a022f547c43e40e2b9f0aebb2bd0bfa8@kioxia.com>
-Content-Type: text/plain; charset=iso-2022-jp; format=flowed; delsp=yes
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID:cCh0CgBHZQ5J1QJmq2uTIA--.18997S3
-X-Coremail-Antispam: 1UD129KBjDUn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7v73
-	VFW2AGmfu7bjvjm3AaLaJ3UjIYCTnIWjp_UUU5i7kC6x804xWl14x267AKxVWUJVW8JwAF
-	c2x0x2IEx4CE42xK8VAvwI8IcIk0rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII
-	0Yj41l84x0c7CEw4AK67xGY2AK021l84ACjcxK6xIIjxv20xvE14v26r4j6ryUM28EF7xv
-	wVC0I7IYx2IY6xkF7I0E14v26r4j6F4UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjc
-	xK6I8E87Iv6xkF7I0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVAC
-	Y4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJV
-	W8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lc7I2V7IY0VAS07AlzVAYIcxG
-	8wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r
-	1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_Jw1lIxkGc2Ij
-	64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr
-	0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6rW3Jr0E3s1lIxAIcVC2z280aVAFwI0_Jr0_Gr1l
-	IxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU1CPfJUUUU
-	U==
-X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DM6PR12MB3849:EE_|MN0PR12MB6200:EE_
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	2z/++uZvbciIaPk87VCEhCaFvbfMQ0nExC/Cu93D80vOE5MNY4dH8p83KdJx89gH+OVqzT41HefGFasZbqbPg1nIe1pPl2NURzQIkqFA/ikBpkP30ZiHUOkG+DS4zfOE8pQluG6CFB44jc8NOvXN8A9wFHhPUoKF8D879R1VR/FN/Qkgpsmhk8L+aNJkh6R90sVYxjCZiqIdVX/UWvn2eJc2Uv1SKSDX8XkJ0eWYeUE/hG8tOZAwe5h5eCSR3++Vb6lKxEJfMPokFVXwzKWf8bRdUjaG+SEU/vcI0RXAkLX9PB+YHQCVwXuXyJQBR1hQWXxGKdYu4Dmy+BTzhsjB6P3cHT5ht+ZEmf+S5pAensjOk+XjLfKPP1NGj7FHzMMuA+ndiNyEzfdp+3qxdQImwPn/LzYFD6k5OwX07e054+ZM3+FMw7R4Fvg4k4Ncr1lc1P05p/vq/839BSlBOr4Nxb7Mqk7hl1U/tp9l8JIbvctbbE4XALs/R09fdds3gSLBGDr/Wfky7DX+xPmnqAKrW++uP3I16lgBudLFPgdls0frlUVOYx93uEAkxpSjxDywAc+H8+mvRpE5UPn9+FM48zgxN/xicrEJ/kVWA/+5Ok8dGFyTFJvxZbZckRnToBEiMKmsjsRCnpLz2OROLj4WZOw+0zLXxUgM7uuMJ4kmbNA=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3849.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7416005)(376005)(366007)(1800799015);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?R1RBZSzEcdFftCbqPsPSY1vSXWtsSh92/Squ5OOK309gpoA7yPXlh16rOS/U?=
+ =?us-ascii?Q?AZI8bdaIlQ2iCVigk9UbfM6Gc1rtLZSGcS3WHlUtlJ7hQezAda+W4g1P8ZYW?=
+ =?us-ascii?Q?iopkKcuvZpZ/IVHZvuDmyl0Sc8Vyz2sHNNZMqTfA2Wfjoq+4L8ZHO/e8ywe9?=
+ =?us-ascii?Q?gzmWId1e3W4nTR5IF7y9oCs8BVOM7N901bw/4JryHiVPneElP+biCG9NAvCG?=
+ =?us-ascii?Q?/SRii3ODvPpKUJQ6hQwqllBLPnPnKDR2ss6r0pErSs3WYPwwpe9YDb31xuaq?=
+ =?us-ascii?Q?PM1m3Nf/JJMAQ5t8pBDIJJ/IYgKe4C2oH3Kurc09USgumivKxhj0W97Ioqi2?=
+ =?us-ascii?Q?Kkh+QXHhouFDYrNij5Ao+BSlFM08cMggokiJfgj0hjBSD7NiNmRWP5nz5ft3?=
+ =?us-ascii?Q?Zx0jJklYZ6p5bT/axlt2R4XGOUl5544I29HSpe2MUrQ9KjsJlLlG9tswJQJQ?=
+ =?us-ascii?Q?Bmu02nufVeuRnucQqbM2LrnkdUZ4O0V7ZjgAQTDCiJP1Z4kBQqD3marM/5dn?=
+ =?us-ascii?Q?J9SHQKlYkFfLnEi9Y+tN+dym4lQ5wWgrmMElh+4ekqvlRP5QCevpYGMO4shd?=
+ =?us-ascii?Q?7U2V1KnV8R/RDG/PtSXuOS5v3NJQfxbha25jhao1qVB6ozKEE7X8j6xaWFsI?=
+ =?us-ascii?Q?hJiChbV3KKmaBviI90K4R/B7LxlHFvxtVHSaGZyDUlWcY0tu4qzHswqs+M1Z?=
+ =?us-ascii?Q?OtS0bk2fnRk1Lg6kfWY1g9N+4OEGeDn2s8i43XhBGLNmkEMY3LdaXDmYaLf1?=
+ =?us-ascii?Q?47LqaZypV1BRpZCtwSLVEknlIttdHWQZ4W5jA8THlornu165XNKbUe/kCapq?=
+ =?us-ascii?Q?JlN/4Y/oH3+hDO13ZvvaXds/v9dvMxfhuyQxJreETbGvvpjrzbU8y5e644f6?=
+ =?us-ascii?Q?kcBM2CMbD63ym2+Uo+oZWJme7IT2dMc18Dt228LDG9By6W6CFt4h2yfsRJkP?=
+ =?us-ascii?Q?bOHYm86BYgxDnuiyAGxN/TVpeK0mu6oNcOpsobZMKfKDFxoMb5ZrJQhQOMs+?=
+ =?us-ascii?Q?rna/4DUx8ErgFaKhwWUibI1U9XEdeFmEB1AEdrJSzROWSnd0XALqPGOPSxrv?=
+ =?us-ascii?Q?Q8hC8ccBL75lpIKFMXT9OyU2WybibYA7xD8C7e0dH4mKkAcUej7T6XlWMEWI?=
+ =?us-ascii?Q?sr05paIqF9YbVk7E1A0aTo/nWvqXBTDYdOXsIEDXIYXh5jxPzhfwJxz1muop?=
+ =?us-ascii?Q?Z3Uu33WJGTeCwR9OMFKEnsOOHFXxM4BfRzdlrB0Vsa8/omfj0PH5vY9tEuAs?=
+ =?us-ascii?Q?eDT3slMUeBNc8iNJGnuAeGOhh7pEsJGQ4H76vXXgtx2NCUV5QmJdFh9HDecv?=
+ =?us-ascii?Q?GJNSK8SYUl+cT949xv/fJSSER4LrHRknoSAnXzNDUsBPWrnz7W79/pCVPF4o?=
+ =?us-ascii?Q?c9IFjM4Gv3Bl97ovSE0PdYAjZrwQXKGnBoZelyphABdb0zk7z+DfOUtZQWP1?=
+ =?us-ascii?Q?1I1CfWnmMamsTjNopPEk9qeWLR3WvIsFj+aOScrGeegzmcNZyJ2UgqgUTEs8?=
+ =?us-ascii?Q?jFZC7nI3ls1+0dkQDqcLbusHhgHRcN5fbVAivPymlX6iMoUG4W2eUB3RBD82?=
+ =?us-ascii?Q?00g05e19AMG8l4nfzT0=3D?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: bbe89727-4cab-4195-7b4b-08dc4d9d6e2b
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB3849.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Mar 2024 14:02:53.4840
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: OuHtmBfC/NXj/C4gQuBxrHxv+vV1eFnVpstoGdWgNx+6xQB2JqiKo+aFcp/0m64k
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN0PR12MB6200
 
-Hi,
+On Mon, Mar 25, 2024 at 02:58:48PM -0400, Peter Xu wrote:
 
-在 2024/03/26 18:29, tada keisuke 写道:
-> Currently, active_aligned_reads and nr_pending used as counters are atomic types.
-> Therefore, when inc/dec in a multi-core results in conflicts.
+> > This remark would be a little easier to understand if you refer to
+> > hugetlb_walk() not huge_pte_offset() - the latter is only used to
+> > implement hugetlb_walk() and isn't removed by this series, while a
+> > single hugetlb_walk() was removed.
+> 
+> Right.  Here huge_pte_offset() is the arch API that I hope we can remove,
+> the hugetlb_walk() is simply the wrapper.
 
-I don't uderstand what's the problem here, what's wrong with atomic
-types in a multi-core system?
+But arguably hugetlb_walk is the thing that should go..
 
-Thanks,
-Kuai
+In the generic code we should really try to get away from the weird
+hugetlb abuse of treating every level as a pte_t. That is not how the
+generic page table API works and that weirdness is part of what
+motivates the arch API to supply special functions for reading. Not
+every arch can just cast every level to a pte_t and still work.
 
+But that weirdness is also saving alot of code so something else needs
+to be though up..
+
+> > Regardless, I think the point is spot on, the direction should be to
+> > make the page table reading generic with minimal/no interaction with
+> > hugetlbfs in the generic code.
+> 
+> Yes, and I also like your terms on calling them "pgtable readers".  It's a
+> better way to describe the difference in that regard between
+> huge_pte_offset() v.s. huge_pte_alloc().  Exactly that's my goal, that we
+> should start with the "readers".
+
+Yeah, it makes alot of sense to tackle the readers first - we are
+pretty close now to having enough done to have generic readers. I
+would imagine tackling everything outside mm/huge*.c to use the normal
+page table API for reading.
+
+Then consider what to do with the reading in mm/huge*.c
+ 
+> The writters might change semantics when merge, and can be more
+> challenging, I'll need to look into details of each one, like page fault
+> handlers.  Such work may need to be analyzed case by case, and this GUP
+> part is definitely the low hanging fruit comparing to the rest.
+
+The write side is tricky, I think if the read side is sorted out then
+it will be easer to reason about the write side. Today the write side
+is paired with the special read side and it is extra hard to
+understand if there is something weird hidden in the arch.
+ 
+> measurements too when getting there.  And btw, IIUC the major challenge of
+> pagewalk.c is not the removal of walk_hugetlb_range() alone - that may not
+> be that hard if that's the solo purpose.  The better way to go is to remove
+> mm_walk_ops.hugetlb_entry() altogether, which will cause a change in all
+> callers; that's "the challenge".. pretty much labor works, not a major
+> technical challenge it seems.  Not sure if it's a good news or bad..
+
+Ugh, that is a big pain. It is relying on that hugetlbfs trick of
+passing in a pte that is not a pte to make the API generic..
+
+The more I look at this the more I think we need to get to Matthew's
+idea of having some kind of generic page table API that is not tightly
+tied to level. Replacing the hugetlb trick of 'everything is a PTE'
+with 5 special cases in every place seems just horrible.
+
+   struct mm_walk_ops {
+       int (*leaf_entry)(struct mm_walk_state *state, struct mm_walk *walk);
+   }
+
+And many cases really want something like:
+   struct mm_walk_state state;
+
+   if (!mm_walk_seek_leaf(state, mm, address))
+          goto no_present
+   if (mm_walk_is_write(state)) ..
+
+And detailed walking:
+   for_each_pt_leaf(state, mm, address) {
+       if (mm_walk_is_write(state)) ..
+   }
+
+Replacing it with a mm_walk_state that retains the level or otherwise
+to allow decoding any entry composes a lot better. Forced Loop
+unrolling can get back to the current code gen in alot of places.
+
+It also makes the power stuff a bit nicer as the mm_walk_state could
+automatically retain back pointers to the higher levels in the state
+struct too...
+
+The puzzle is how to do it and still get reasonable efficient codegen,
+many operations are going to end up switching on some state->level to
+know how to decode the entry.
+
+> One thing I'll soon look into is to allow huge mappings for PFNMAP; there's
+> one request from VFIO side for MMIO. Dropping mm_walk_ops.hugetlb_entry()
+> seems to be good for all such purposes; well, I may need to bite the bullet
+> here.. for either of the purposes to move on.
+
+That would be a nice feature!
+
+> > If, or how much, the hugepd write side remains special is the open
+> > question, I think.
+> 
+> It seems balls are rolling in that aspect, I haven't looked in depth there
+> in Christophe's series but it's great to have started!
+
+Yes!
+
+Jason
 
