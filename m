@@ -1,403 +1,168 @@
-Return-Path: <linux-kernel+bounces-119404-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-119412-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id B805D88C84E
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 16:58:19 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1FFA488C857
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 17:00:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 45B621F81C56
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 15:58:19 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C7D6E300F79
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 16:00:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CCA3F13CC63;
-	Tue, 26 Mar 2024 15:57:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 84BA013C901;
+	Tue, 26 Mar 2024 15:59:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="ek9x/s5q"
-Received: from relay5-d.mail.gandi.net (relay5-d.mail.gandi.net [217.70.183.197])
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="ZEjR9Arw"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 13C7213C9A2
-	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 15:57:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.197
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F1A2713C837
+	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 15:59:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711468629; cv=none; b=Nuyg4EavxgcG3sIb3i/fyiy018ogO33736v+SDKmiY4PO7Q9Ku4o4N516IxgDo1emgXDJ+3WyOjr7s4lKtQU//0p5zDr090zpRjR9Hq+nCPnwpPAMHH219U+AjcO8o2OA4km1j6SwHluE3nlb0RDFYkN1xXnuGQIYZtsseXZNt0=
+	t=1711468777; cv=none; b=SZU0gaQ76ILEx+UTc2qbwYhCUXuB/ZqfWZP+EaCr+mFX4HSYE+X+ImXW3/DiI9V2KpQOZuHHFv569j6/XvoyKzRhumHxblGLUCdWa1gSOH7DgfbvE2CcO0JMBVGH0cVtWtPOcwYZWvjk5V4idzDG8p/61a199htBX/rMaWozv8Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711468629; c=relaxed/simple;
-	bh=EwSDtBfSERf1SulivXMAtF1ySXj2XlLbikNLrpoiy8s=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Hs1oqKys9SDni4d6Im+eCpP3TCxPRk8s35sHnx3XL4A4oJQ/PuVJZZV9lPnjuI8N0hiSOPwoljhP9LDk259RvPOSag3uJrULyp8+mAVP6OV2j78kPRFJLjbeLKG2vI7GOUE23NAYSy0wpxgcpwNCHZ4xBoOnwOOZQodtZMBmLig=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=ek9x/s5q; arc=none smtp.client-ip=217.70.183.197
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 951FF1C0007;
-	Tue, 26 Mar 2024 15:57:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1711468625;
+	s=arc-20240116; t=1711468777; c=relaxed/simple;
+	bh=Ynl1v8gS98gAwGFyFLKby7KV+b8y8whJ/pPgiYiDqbY=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=BwktalFjOWI41VfrM+wt8wgrYI/akONM0SUhD+V3A3jG4m6Kcizb4BQkPz4T6foHcemQmn2Oe1k01kv3A7WkwZvAVh2R+snvFfkuhKDSvGdsdk1U12a6L59Uqe5BIaZuzK6HXSQYviMr66bDm68J+UT64NE9QfWSIX2iK13Z8iI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=ZEjR9Arw; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1711468775;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=cj4+K3Q18OP+zaHpsf73IF0YvyFrPci37KR5EMxaAhE=;
-	b=ek9x/s5qL9OQw/9nadbUES4SLfBNBN+WazdAm0CYzaUm+RTsU1OjBkDvO0A6S2yE/n91Q1
-	IJWaixWIAwRnN8k2m9H0rJLKEl07270X4T6wvpY1x6ji/dLGEMijzeXS4wZCnZI98aBUeC
-	TyoGlgfV9YkrcyJgeYkjYVNR3vw+8eaVZ0QHbGKGkS4to+hdA+1w1XCLUxOfpFdzlyb+zi
-	DX+FzJNOQ0OmGtS0xNJLzKBo9bI1dtdonfZfnrkCSi3LFy3DXRpCckTvPAlCWjmiIGX3HL
-	iUq1uJBPZvcI6RH2qZBEHGN1a5HIW8tGYV1PVuyozs489bgiZfp+MUUqCXqDGw==
-Date: Tue, 26 Mar 2024 16:57:03 +0100
-From: Louis Chauvet <louis.chauvet@bootlin.com>
-To: =?iso-8859-1?Q?Ma=EDra?= Canal <mcanal@igalia.com>
-Cc: Rodrigo Siqueira <rodrigosiqueiramelo@gmail.com>,
-	Melissa Wen <melissa.srw@gmail.com>,
-	Haneen Mohammed <hamohammed.sa@gmail.com>,
-	Daniel Vetter <daniel@ffwll.ch>,
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-	Maxime Ripard <mripard@kernel.org>,
-	Thomas Zimmermann <tzimmermann@suse.de>,
-	David Airlie <airlied@gmail.com>, arthurgrillo@riseup.net,
-	Jonathan Corbet <corbet@lwn.net>, pekka.paalanen@haloniitty.fi,
-	dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-	jeremie.dautheribes@bootlin.com, miquel.raynal@bootlin.com,
-	thomas.petazzoni@bootlin.com, seanpaul@google.com,
-	marcheu@google.com, nicolejadeyee@google.com
-Subject: Re: [PATCH v5 11/16] drm/vkms: Add YUV support
-Message-ID: <ZgLwT2Kkax8cJEhz@localhost.localdomain>
-Mail-Followup-To: =?iso-8859-1?Q?Ma=EDra?= Canal <mcanal@igalia.com>,
-	Rodrigo Siqueira <rodrigosiqueiramelo@gmail.com>,
-	Melissa Wen <melissa.srw@gmail.com>,
-	Haneen Mohammed <hamohammed.sa@gmail.com>,
-	Daniel Vetter <daniel@ffwll.ch>,
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-	Maxime Ripard <mripard@kernel.org>,
-	Thomas Zimmermann <tzimmermann@suse.de>,
-	David Airlie <airlied@gmail.com>, arthurgrillo@riseup.net,
-	Jonathan Corbet <corbet@lwn.net>, pekka.paalanen@haloniitty.fi,
-	dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-	jeremie.dautheribes@bootlin.com, miquel.raynal@bootlin.com,
-	thomas.petazzoni@bootlin.com, seanpaul@google.com,
-	marcheu@google.com, nicolejadeyee@google.com
-References: <20240313-yuv-v5-0-e610cbd03f52@bootlin.com>
- <20240313-yuv-v5-11-e610cbd03f52@bootlin.com>
- <e5d8297f-3e1f-459f-bef2-3a91f2caf94f@igalia.com>
+	bh=jQ8clIjXc4soz7eWewvwlvASClEQyBetLO4fGly13aQ=;
+	b=ZEjR9Arw10ZyhaO84/a60ZB29IAa+Nex1uYjVuNGO4RZ7cHzzZwW6ISRpOMSawzR0jjxib
+	u23CGEctPVC0HvSPPwiTLzTg2BG7QKUixJDqYYTui5eJThCv50klhJa+TydGrPEcvZo4Qv
+	dQaqe6QoZWV8ND4iH7mH//RIpikoK9I=
+Received: from mail-oa1-f69.google.com (mail-oa1-f69.google.com
+ [209.85.160.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-505-UnfUaIXYOTCtJXWWWERgJA-1; Tue, 26 Mar 2024 11:59:33 -0400
+X-MC-Unique: UnfUaIXYOTCtJXWWWERgJA-1
+Received: by mail-oa1-f69.google.com with SMTP id 586e51a60fabf-229f4995573so2766251fac.1
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 08:59:33 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711468773; x=1712073573;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=jQ8clIjXc4soz7eWewvwlvASClEQyBetLO4fGly13aQ=;
+        b=M413Qh4yX9mC6GfVnzl93hVA351h7un0VmcZEnI4/Aah7PQfitnEAd6VLQ6+KmumSf
+         7GybntURddPMe54+++wj+yNtymajb+SWCBjNT5QyI3EMjyhS6UeYvWxyQVXm6ajHqmMM
+         5bG5QBKkiwB/t7R0sxg0vCatYyAANBgG4e9U9rcutrs1+3wymvx7XAkN7keXrZUuwWnM
+         xIjJUrKKYNHeqx9IIRecGCoY8s7aIO0LAQWi+1byU5N54WWmfpRLLaSTwwy5u3SH0IrB
+         enqs8iXhWMozdt/zvqhOj6xqzD0cHDGtX64ozAWPRPldXLrJFk0fEjtLlvDxBAvnaexo
+         AF8Q==
+X-Forwarded-Encrypted: i=1; AJvYcCVMPCVoqyUOIG5P9Y+QD3+ZkJpymS4bAHf4tuLhLTP+InIPaqmyaiC9bfvX3V+rTv6mO08q8WZfR/tIzMADoWKZf9zKnNB3ne/EWq6e
+X-Gm-Message-State: AOJu0Yy62erKHjfJfPdeKDFwfk/WcgeDVms7uGTwhPqtqru/n3mvIzmz
+	U39N75vOazkHgW2Vin4JMMlDZNmA1DId8oz+bvJgdMi6MwSvduk8fR3Sg0mCR4GIII+oBHj7rKh
+	MZBKk5WSSFL9r69Qo21ZW3UCXpLFllH3qgAP2/lP5IAQnqyMMEVrpZWB4AS8lvw==
+X-Received: by 2002:a05:6871:2b0e:b0:222:5ff6:43f1 with SMTP id dr14-20020a0568712b0e00b002225ff643f1mr1841623oac.16.1711468772780;
+        Tue, 26 Mar 2024 08:59:32 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IHgzBoNk7aHkGsNEwNVhcEMsbOfldxjSZnKhmacfHPBzgsBueev9oXHbaC3XghCk7h6QPy9yA==
+X-Received: by 2002:a05:6871:2b0e:b0:222:5ff6:43f1 with SMTP id dr14-20020a0568712b0e00b002225ff643f1mr1841604oac.16.1711468772497;
+        Tue, 26 Mar 2024 08:59:32 -0700 (PDT)
+Received: from [192.168.8.125] ([173.34.154.202])
+        by smtp.gmail.com with ESMTPSA id fv24-20020a05622a4a1800b00430dbd6edf9sm3788120qtb.68.2024.03.26.08.59.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 26 Mar 2024 08:59:32 -0700 (PDT)
+Message-ID: <22be7d6156e38dfba1a055cc3e9cc3d10de75dbb.camel@redhat.com>
+Subject: Re: [PATCH 0/5] AVIC bugfixes and workarounds
+From: mlevitsk@redhat.com
+To: Jim Mattson <jmattson@google.com>
+Cc: kvm@vger.kernel.org, Will Deacon <will@kernel.org>, Borislav Petkov
+ <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>, Suravee
+ Suthikulpanit <suravee.suthikulpanit@amd.com>, Thomas Gleixner
+ <tglx@linutronix.de>, Paolo Bonzini <pbonzini@redhat.com>, x86@kernel.org,
+ Robin Murphy <robin.murphy@arm.com>,  iommu@lists.linux.dev, Ingo Molnar
+ <mingo@redhat.com>, Joerg Roedel <joro@8bytes.org>, Sean Christopherson
+ <seanjc@google.com>, "H. Peter Anvin" <hpa@zytor.com>,
+ linux-kernel@vger.kernel.org, David Rientjes <rientjes@google.com>
+Date: Tue, 26 Mar 2024 11:59:30 -0400
+In-Reply-To: <CALMp9eSSCUSOpP64Ho16sU6iV1urbjfTafJ0nThAWGHE6oOkLw@mail.gmail.com>
+References: <20230928150428.199929-1-mlevitsk@redhat.com>
+	 <CALMp9eSSCUSOpP64Ho16sU6iV1urbjfTafJ0nThAWGHE6oOkLw@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.44.4 (3.44.4-3.fc36) 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <e5d8297f-3e1f-459f-bef2-3a91f2caf94f@igalia.com>
-X-GND-Sasl: louis.chauvet@bootlin.com
 
-Le 25/03/24 - 11:26, Maíra Canal a écrit :
-> On 3/13/24 14:45, Louis Chauvet wrote:
-> > From: Arthur Grillo <arthurgrillo@riseup.net>
-> > 
-> > Add support to the YUV formats bellow:
-> > 
-> > - NV12/NV16/NV24
-> > - NV21/NV61/NV42
-> > - YUV420/YUV422/YUV444
-> > - YVU420/YVU422/YVU444
-> > 
-> > The conversion from yuv to rgb is done with fixed-point arithmetic, using
-> > 32.32 floats and the drm_fixed helpers.
-> > 
-> > To do the conversion, a specific matrix must be used for each color range
-> > (DRM_COLOR_*_RANGE) and encoding (DRM_COLOR_*). This matrix is stored in
-> > the `conversion_matrix` struct, along with the specific y_offset needed.
-> > This matrix is queried only once, in `vkms_plane_atomic_update` and
-> > stored in a `vkms_plane_state`. Those conversion matrices of each
-> > encoding and range were obtained by rounding the values of the original
-> > conversion matrices multiplied by 2^32. This is done to avoid the use of
-> > floating point operations.
-> > 
-> > The same reading function is used for YUV and YVU formats. As the only
-> > difference between those two category of formats is the order of field, a
-> > simple swap in conversion matrix columns allows using the same function.
-> > 
-> > Signed-off-by: Arthur Grillo <arthurgrillo@riseup.net>
-> > [Louis Chauvet:
-> > - Adapted Arthur's work
-> > - Implemented the read_line_t callbacks for yuv
-> > - add struct conversion_matrix
-> > - remove struct pixel_yuv_u8
-> > - update the commit message
-> > - Merge the modifications from Arthur]
-> 
-> A Co-developed-by tag would be more appropriate.
+On Mon, 2024-03-25 at 20:15 -0700, Jim Mattson wrote:
+> > On Thu, Sep 28, 2023 at 8:05=E2=80=AFAM Maxim Levitsky <mlevitsk@redhat=
+com> wrote:
+> > > >=20
+> > > > Hi!
+> > > >=20
+> > > > This patch series includes several fixes to AVIC I found while work=
+ing
+> > > > on a new version of nested AVIC code.
+> > > >=20
+> > > > Also while developing it I realized that a very simple workaround f=
+or
+> > > > AVIC's errata #1235 exists and included it in this patch series as =
+well.
+> > > >=20
+> > > > Best regards,
+> > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 Maxim Levitsky
+> >=20
+> > Can someone explain why we're still unwilling to enable AVIC by
+> > default? Have the performance issues that plagued the Rome
+> > implementation been fixed? What is AMD's guidance?
+> >=20
+Hi
 
-I am not the main author of this part, I only applied a few simple 
-suggestions, the complex part was done by Arthur.
+This is what I know:
 
-I will wait for Arthur's confirmation to change it to Co-developed by if
-he agrees.
+Zen1:
+	I never tested it, so I don't know how well AVIC works there and if it has=
+ any erratas.
 
- 
-> > Signed-off-by: Louis Chauvet <louis.chauvet@bootlin.com>
-> > ---
-> >   drivers/gpu/drm/vkms/vkms_drv.h     |  22 ++
-> >   drivers/gpu/drm/vkms/vkms_formats.c | 431 ++++++++++++++++++++++++++++++++++++
-> >   drivers/gpu/drm/vkms/vkms_formats.h |   4 +
-> >   drivers/gpu/drm/vkms/vkms_plane.c   |  17 +-
-> >   4 files changed, 473 insertions(+), 1 deletion(-)
-> > 
-> > diff --git a/drivers/gpu/drm/vkms/vkms_drv.h b/drivers/gpu/drm/vkms/vkms_drv.h
-> > index 23e1d247468d..f3116084de5a 100644
-> > --- a/drivers/gpu/drm/vkms/vkms_drv.h
-> > +++ b/drivers/gpu/drm/vkms/vkms_drv.h
-> > @@ -99,6 +99,27 @@ typedef void (*pixel_read_line_t)(const struct vkms_plane_state *plane, int x_st
-> >   				  int y_start, enum pixel_read_direction direction, int count,
-> >   				  struct pixel_argb_u16 out_pixel[]);
-> >   
-> > +/**
-> > + * CONVERSION_MATRIX_FLOAT_DEPTH - Number of digits after the point for conversion matrix values
-> > + */
-> > +#define CONVERSION_MATRIX_FLOAT_DEPTH 32
-> > +
-> > +/**
-> > + * struct conversion_matrix - Matrix to use for a specific encoding and range
-> > + *
-> > + * @matrix: Conversion matrix from yuv to rgb. The matrix is stored in a row-major manner and is
-> > + * used to compute rgb values from yuv values:
-> > + *     [[r],[g],[b]] = @matrix * [[y],[u],[v]]
-> > + *   OR for yvu formats:
-> > + *     [[r],[g],[b]] = @matrix * [[y],[v],[u]]
-> > + *  The values of the matrix are fixed floats, 32.CONVERSION_MATRIX_FLOAT_DEPTH > + * @y_offest: Offset to apply on the y value.
-> 
-> s/y_offest/y_offset
+Zen2:
+	Has CPU errata in regard to IPI virtualization that makes it unusable in p=
+roduction,
+ 	but if AVIC's IPI virtualization (borrowing the Intel term here) is disab=
+led,
+	then it works just fine and 1:1 equivalent to APICv without IPI.
 
-Fixed in v6.
+	I posted patches for this several times, latest version is here, it still =
+applies I think:
+	https://lkml.iu.edu/hypermail/linux/kernel/2310.0/00790.html
 
-> > + */
-> > +struct conversion_matrix {
-> > +	s64 matrix[3][3];
-> > +	s64 y_offset;
-> > +};
-> > +
-> >   /**
-> >    * vkms_plane_state - Driver specific plane state
-> >    * @base: base plane state
-> > @@ -110,6 +131,7 @@ struct vkms_plane_state {
-> >   	struct drm_shadow_plane_state base;
-> >   	struct vkms_frame_info *frame_info;
-> >   	pixel_read_line_t pixel_read_line;
-> > +	struct conversion_matrix *conversion_matrix;
-> 
-> Add @conversion_matrix on the kernel-doc from the struct
-> vkms_plane_state.
+Zen3:
+	For some reason AVIC got disabled by AMD in CPUID. It is still there thoug=
+h and force_avic=3D1 kvm_amd option
+	can make KVM use it and AFAIK it works just fine.
 
-Fixed in v6.
+	It is possible that it got disabled due to Zen2 errata that is fixed on Ze=
+n3,
+	but maybe AMD wasn't sure back then that it will be fixed or it might be d=
+ue to performance issues with broadcast
+	IPIs which I think ended up being a software issue and was fixed a long ti=
+me ago.
 
-> >   };
-> >   
-> >   struct vkms_plane {
-> > diff --git a/drivers/gpu/drm/vkms/vkms_formats.c b/drivers/gpu/drm/vkms/vkms_formats.c
-> > index 1449a0e6c706..edbf4b321b91 100644
-> > --- a/drivers/gpu/drm/vkms/vkms_formats.c
-> > +++ b/drivers/gpu/drm/vkms/vkms_formats.c
-> > @@ -105,6 +105,44 @@ static int get_step_next_block(struct drm_framebuffer *fb, enum pixel_read_direc
-> >   	return 0;
-> >   }
-> >   
-> > +/**
-> > + * get_subsampling() - Get the subsampling divisor value on a specific direction
-> 
-> Where are the arguments?
+Zen4+
+	I haven't tested it much, but AFAIK it should work out of the box. It also=
+ got x2avic mode which allows
+	to use AVIC with VMs that have more that 254 vCPUs.
 
-Fixed in v6.
+IMHO if we merge the workaround I have for IPI virtualization and make IPI =
+virtualization off for Zen2
+(and maybe Zen1 as well), then I don't see why we can't make AVIC be the de=
+fault on.
 
-> > + */
-> > +static int get_subsampling(const struct drm_format_info *format,
-> > +			   enum pixel_read_direction direction)
-> > +{
-> > +	switch (direction) {
-> > +	case READ_BOTTOM_TO_TOP:
-> > +	case READ_TOP_TO_BOTTOM:
-> > +		return format->vsub;
-> > +	case READ_RIGHT_TO_LEFT:
-> > +	case READ_LEFT_TO_RIGHT:
-> > +		return format->hsub;
-> > +	}
-> > +	WARN_ONCE(true, "Invalid direction for pixel reading: %d\n", direction);
-> > +	return 1;
-> > +}
-> > +
-> > +/**
-> > + * get_subsampling_offset() - An offset for keeping the chroma siting consistent regardless of
-> > + * x_start and y_start values
-> 
-> Same.
+Best regards,
+	Maxim Levitsky
 
-Fixed in v6.
 
-> > + */
-> > +static int get_subsampling_offset(enum pixel_read_direction direction, int x_start, int y_start)
-> > +{
-> > +	switch (direction) {
-> > +	case READ_BOTTOM_TO_TOP:
-> > +		return -y_start - 1;
-> > +	case READ_TOP_TO_BOTTOM:
-> > +		return y_start;
-> > +	case READ_RIGHT_TO_LEFT:
-> > +		return -x_start - 1;
-> > +	case READ_LEFT_TO_RIGHT:
-> > +		return x_start;
-> > +	}
-> > +	WARN_ONCE(true, "Invalid direction for pixel reading: %d\n", direction);
-> > +	return 0;
-> > +}
-> > +
-> >   /*
-> >    * The following  functions take pixel data (a, r, g, b, pixel, ...), convert them to the format
-> >    * ARGB16161616 in out_pixel.
-> > @@ -161,6 +199,42 @@ static struct pixel_argb_u16 argb_u16_from_RGB565(const u16 *pixel)
-> >   	return out_pixel;
-> >   }
-> >   
-> 
-> [...]
-> 
-> >   
-> > +/**
-> > + * get_conversion_matrix_to_argb_u16() - Retrieve the correct yuv to rgb conversion matrix for a
-> > + * given encoding and range.
-> > + *
-> > + * If the matrix is not found, return a null pointer. In all other cases, it return a simple
-> > + * diagonal matrix, which act as a "no-op".
-> > + *
-> > + * @format: DRM_FORMAT_* value for which to obtain a conversion function (see [drm_fourcc.h])
-> > + * @encoding: DRM_COLOR_* value for which to obtain a conversion matrix
-> > + * @range: DRM_COLOR_*_RANGE value for which to obtain a conversion matrix
-> 
-> A bit odd to see the arguments after the description.
-
-Fixed in v6.
-
-> > + */
-> > +struct conversion_matrix *
-> > +get_conversion_matrix_to_argb_u16(u32 format, enum drm_color_encoding encoding,
-> > +				  enum drm_color_range range)
-> > +{
-> > +	static struct conversion_matrix no_operation = {
-> > +		.matrix = {
-> > +			{ 4294967296, 0,          0, },
-> > +			{ 0,          4294967296, 0, },
-> > +			{ 0,          0,          4294967296, },
-> > +		},
-> > +		.y_offset = 0,
-> > +	};
-
-[...]
-
-> > +
-> > +	/* Breaking in this switch means that the color format+encoding+range is not supported */
-> 
-> s/color format+encoding+range/color format + encoding + range
-
-Fixed in v6.
-
-> > +	switch (format) {
-> > +	case DRM_FORMAT_NV12:
-> > +	case DRM_FORMAT_NV16:
-> > +	case DRM_FORMAT_NV24:
-> > +	case DRM_FORMAT_YUV420:
-> > +	case DRM_FORMAT_YUV422:
-> > +	case DRM_FORMAT_YUV444:
-> > +		switch (encoding) {
-> > +		case DRM_COLOR_YCBCR_BT601:
-> > +			switch (range) {
-> > +			case DRM_COLOR_YCBCR_LIMITED_RANGE:
-> > +				return &yuv_bt601_limited;
-> > +			case DRM_COLOR_YCBCR_FULL_RANGE:
-
-[...]
-
-> > diff --git a/drivers/gpu/drm/vkms/vkms_formats.h b/drivers/gpu/drm/vkms/vkms_formats.h
-> > index 8d2bef95ff79..e1d324764b17 100644
-> > --- a/drivers/gpu/drm/vkms/vkms_formats.h
-> > +++ b/drivers/gpu/drm/vkms/vkms_formats.h
-> > @@ -9,4 +9,8 @@ pixel_read_line_t get_pixel_read_line_function(u32 format);
-> >   
-> >   pixel_write_t get_pixel_write_function(u32 format);
-> >   
-> > +struct conversion_matrix *
-> > +get_conversion_matrix_to_argb_u16(u32 format, enum drm_color_encoding encoding,
-> > +				  enum drm_color_range range);
-> > +
-> >   #endif /* _VKMS_FORMATS_H_ */
-> > diff --git a/drivers/gpu/drm/vkms/vkms_plane.c b/drivers/gpu/drm/vkms/vkms_plane.c
-> > index 8875bed76410..987dd2b686a8 100644
-> > --- a/drivers/gpu/drm/vkms/vkms_plane.c
-> > +++ b/drivers/gpu/drm/vkms/vkms_plane.c
-> > @@ -17,7 +17,19 @@ static const u32 vkms_formats[] = {
-> >   	DRM_FORMAT_XRGB8888,
-> >   	DRM_FORMAT_XRGB16161616,
-> >   	DRM_FORMAT_ARGB16161616,
-> > -	DRM_FORMAT_RGB565
-> > +	DRM_FORMAT_RGB565,
-> > +	DRM_FORMAT_NV12,
-> > +	DRM_FORMAT_NV16,
-> > +	DRM_FORMAT_NV24,
-> > +	DRM_FORMAT_NV21,
-> > +	DRM_FORMAT_NV61,
-> > +	DRM_FORMAT_NV42,
-> > +	DRM_FORMAT_YUV420,
-> > +	DRM_FORMAT_YUV422,
-> > +	DRM_FORMAT_YUV444,
-> > +	DRM_FORMAT_YVU420,
-> > +	DRM_FORMAT_YVU422,
-> > +	DRM_FORMAT_YVU444
-> 
-> Let's add a comma by the end of this entry, to avoid deleting this line
-> when adding a new format.
-
-Fixed in v6.
-
-> >   };
-> >   
-> >   static struct drm_plane_state *
-> > @@ -117,12 +129,15 @@ static void vkms_plane_atomic_update(struct drm_plane *plane,
-> >   	drm_framebuffer_get(frame_info->fb);
-> >   	frame_info->rotation = drm_rotation_simplify(new_state->rotation, DRM_MODE_ROTATE_0 |
-> >   									  DRM_MODE_ROTATE_90 |
-> > +									  DRM_MODE_ROTATE_180 |
-> 
-> Why do we need to add DRM_MODE_ROTATE_180 here? Isn't the same as
-> reflecting both along the X and Y axis?
-
-Oops, I had no intention of putting that change here. I will move it to 
-another patch.
-
-I don't understand why DRM_MODE_ROTATE_180 isn't in this list. If I read 
-the drm_rotation_simplify documentation, it explains that this argument 
-should contain all supported rotations and reflections, and ROT_180 is 
-supported by VKMS. Perhaps this call is unnecessary because all 
-combinations are supported by vkms?
-
-Thanks,
-Louis Chauvet
-
-> Best Regards,
-> - Maíra
-> 
-> >   									  DRM_MODE_ROTATE_270 |
-> >   									  DRM_MODE_REFLECT_X |
-> >   									  DRM_MODE_REFLECT_Y);
-> >   
-> >   
-> >   	vkms_plane_state->pixel_read_line = get_pixel_read_line_function(fmt);
-> > +	vkms_plane_state->conversion_matrix = get_conversion_matrix_to_argb_u16
-> > +		(fmt, new_state->color_encoding, new_state->color_range);
-> >   }
-> >   
-> >   static int vkms_plane_atomic_check(struct drm_plane *plane,
-> > 
-
--- 
-Louis Chauvet, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
 
