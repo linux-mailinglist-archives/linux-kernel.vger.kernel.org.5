@@ -1,75 +1,70 @@
-Return-Path: <linux-kernel+bounces-119957-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-119958-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 362F888CF6A
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 21:51:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 4CB5F88CF6C
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 21:51:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 59FDB1C676E9
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 20:51:37 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7B7281C2E154
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 20:51:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B5983811F9;
-	Tue, 26 Mar 2024 20:51:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B68E812AAF6;
+	Tue, 26 Mar 2024 20:51:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="EQ0vf9yz"
-Received: from mail-ej1-f52.google.com (mail-ej1-f52.google.com [209.85.218.52])
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="b6G4NyNI"
+Received: from mail-io1-f52.google.com (mail-io1-f52.google.com [209.85.166.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AD1AB74429
-	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 20:51:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3015CEDF
+	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 20:51:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711486290; cv=none; b=JIyjmI4DC3uNDJTotvwR7vCZi5uqnMsHWeQiNkWZITAJhdjIGPbprCAsptDvsqcyTUCtEKdtPQmreWvoZiSK9tbmXiWEwWqLmVV83kzpb1SvsdkNjTiGiOp6yahn2xhvhjaKmvqVxP5Z75OUe/toT8UyvellVcLDy77LsdDe68k=
+	t=1711486308; cv=none; b=eBP+EtJmnETP/ATVU2dSdZLwnRu+u2GuRzX1B9abirPFXAlPsJ99CC7MEw78vc0ncuej3Znq4joup2Zn+GhgVuQr73tdfMBEQ3qH3gw50hW6FlHXrVuwUIkKiE7YIKBSdj6ORSQ93fegozY0L26Qrb/Tcs2PBMXxhKOpuYGIZWU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711486290; c=relaxed/simple;
-	bh=LxOyp0NjGeH5uTcpz5vFvBjens4zOm830JN4rXrjxM0=;
+	s=arc-20240116; t=1711486308; c=relaxed/simple;
+	bh=hBC772ybdf+Owd0PNC117b7rIoH9nw9Zgk2CSiwxMwE=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=UvpBBX65z2J4R/plfCnrrGQY6R1jxRh9Tuav6AXz7NR3n5QFWm0a9DxtXHKcSksGJIFW+nKk4KXZu6od1BYRdFTQHCTvQPa7jdqjJxDRMePckyr3b32vzLvfFbPthy1RYErP+3sPDOtxioQm1YcCMCbCBGjoh1i79JK0JU/TBmA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=EQ0vf9yz; arc=none smtp.client-ip=209.85.218.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ej1-f52.google.com with SMTP id a640c23a62f3a-a46cd9e7fcaso719372466b.1
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 13:51:28 -0700 (PDT)
+	 In-Reply-To:Content-Type; b=qAS+l9rzLXWRUo3T9W7DiKho5DGMyKEmYWMfXda+sRBscVCsh1E+qAw5g9TtgIJqFKjDg6IogISgSTOPLDLHYPnJQZ2OsWIN3j0JGM2qdcGqSRldLzYRgtWIVJIIv1WA5CSqid5FvJIiV2+wxyTHDrx4Z06pXOJ5JMJ8/fUJlTo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linuxfoundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=b6G4NyNI; arc=none smtp.client-ip=209.85.166.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linuxfoundation.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
+Received: by mail-io1-f52.google.com with SMTP id ca18e2360f4ac-7d0772bb5ffso4258239f.0
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 13:51:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1711486287; x=1712091087; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=mHOe/G5KYN7b17DIn2VPfNGGBUH/PrZyNCw0MGfKBTw=;
-        b=EQ0vf9yzxxV0jGL4q77k1dJmgBJkHryUgwawP/d+7xjGsW68fldEKTR2x8JNZlX9BX
-         9KsARVTWfRhrmkaTFPuFtcyCxXXvWKbBA3AavQiZ9WsexBrk3ZTaSQLyHSPzhUDzElET
-         TQTeYoNhbM6urDp4QiNsayCNviLZY05iqe1ygNrWlsgU1zSnDtwywFBcdbsnafHwHeAM
-         TdDI1h9GdAvOomjg0sSuIMSsAy5Ib1DvyOzTdKPf9Tt+a7Z+XzHq+Fpywn+utQVqdiuy
-         DNH+T+0uXLMpyVKjGEykS6EZ5FmthB9YlDf8Bzh+NFq8Vr1SqRidpiUbQ6SK0DnXr9Co
-         hKsQ==
+        d=linuxfoundation.org; s=google; t=1711486306; x=1712091106; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=iGATlVHZqsOUXgCYm+M0WxHRZxp5uAZbCgkClimc7Og=;
+        b=b6G4NyNI759FFivuZ6Fnv2k+NiOpUs5HsMUseoZrjVeDtv+1U+hYRwX8O4c7jXwQwt
+         FSJ3Tz2gE5sLah38IafMVCgPdGyoHnx3Fju7I27PdoN88tsPrBLaeoOMw3e5jl+wsvaL
+         Kqz8o0ORfu48i2z58im20vIvxfoFhbVYrGhms=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711486287; x=1712091087;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=mHOe/G5KYN7b17DIn2VPfNGGBUH/PrZyNCw0MGfKBTw=;
-        b=L1mHjhpbIr82YlQrLsCEoNzMlpY0Yth+M+RAeRbfo/KAMJCdoaG2CyhVhxs6cLUkex
-         EEVFgKGroKoMQG4DP6RtkscIxPu19cJfpkA7FrBoBqm5NKigzIzV23IksV/nYy9qwn8j
-         +dpLG1RXu8to3D3840XqVewIAMbxbJELA4t1WPzhCWzJd+ot9wqBBY4JQoc/Hw+jxI4T
-         rlgoN6rUgq8swnt8GVeoS5wQNbvejWuOwuVtcDgxkGLzetEt4iPBZjwXgfPr9AgOuKq6
-         EjXpVu2RiieAdPy1dpffVpEs0MWw6cPLHawb5F32Fc5MHbFvYxXnfgeVEQXMJFyekJae
-         YRkg==
-X-Forwarded-Encrypted: i=1; AJvYcCXcWUHxi38Ft4myiEHb/ltGc/ZsulU+b2AmiJ4CnalldwVdX7MtQNlH6kXnNAjT2iKRK7k3QB+eAv8L4mH1S9QytwaQSpQf7UpRCipR
-X-Gm-Message-State: AOJu0YwpBPUGM7BnZpMGOqWze+IEt9fclhge3VvzzMQnoOJiJIgiY9JO
-	5x1buNMNhVkmisBP8AiSZIK5o19auTnnzQkeTQQ3BntdrJfaPmOwr6Lc19vU+9eFdhf537y9Qoh
-	u
-X-Google-Smtp-Source: AGHT+IEO6x339HcRMWYEWkSqK1A87Ti6i1dy4IluQnQL8ERZxsmTGhD7CN2Lj/e5gSaomLWEVvgZBw==
-X-Received: by 2002:a17:906:1d53:b0:a47:1f9d:8f17 with SMTP id o19-20020a1709061d5300b00a471f9d8f17mr9012058ejh.32.1711486286876;
-        Tue, 26 Mar 2024 13:51:26 -0700 (PDT)
-Received: from [192.168.92.47] (078088045141.garwolin.vectranet.pl. [78.88.45.141])
-        by smtp.gmail.com with ESMTPSA id du1-20020a17090772c100b00a4da28f42f1sm1746091ejc.177.2024.03.26.13.51.25
+        d=1e100.net; s=20230601; t=1711486306; x=1712091106;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=iGATlVHZqsOUXgCYm+M0WxHRZxp5uAZbCgkClimc7Og=;
+        b=jarqjO2h6k6HyK9OU4l4XRzUrZAOuz/W0y4RgmkZ/vX0cpsO3lhHrxU4NAVXOZaB18
+         rvLUkziEkfFQkT6nx1jnHxZiZxsJ4qv54Vf1aAxFhWR8W21tg2c8KdlR9ZcJIP4ZDWIu
+         1RMcx2yTfhYWUv+2fQHiRS9EQELg1MtKKsyUAzZ5H6DG2CIPnngGcqL+ZLOivqWW98Re
+         8mAaM8ohZ7KcS0lAvMCu1UwxS9R2ImypsJK5YFlswowzxsIxW6xTRWCo6tnIBQauH5w2
+         cZICHfpKScrXqxn2mQD9XquIw+qIOlh9sZzEbwK3sn7AXTXkQOWF4x6xeODhK3A7I5Ek
+         RRYQ==
+X-Forwarded-Encrypted: i=1; AJvYcCV6gcc8kuDJw0+1iss8NLCCKQuLLDoEFZHnJ9/phz8wvEMm5GrfY6eOQ02q4kaEa19as2Zt2O5Z8q7wZlvLPR2/+aW9NbhZB2tvuLGA
+X-Gm-Message-State: AOJu0Yxd0ZO8sOh+8GPF5Gg82EQZCJEDZ2gE4EdAplSUa8mbjjLCN3Xp
+	aAaHb/qc26Fz/+lgC5Bh3X4B4mb79oyUiHVPhuLO5sLh09VRy3H7CQVZBM0HfdY=
+X-Google-Smtp-Source: AGHT+IHAp11c7EjAcw6b14fWfZVHqaxnCDOx73bI6BHZWtF7bzd4aqfe69GcIDq750caftPwpUeppA==
+X-Received: by 2002:a6b:c986:0:b0:7d0:3d2c:5987 with SMTP id z128-20020a6bc986000000b007d03d2c5987mr11140257iof.0.1711486306120;
+        Tue, 26 Mar 2024 13:51:46 -0700 (PDT)
+Received: from [192.168.1.128] ([38.175.170.29])
+        by smtp.gmail.com with ESMTPSA id y24-20020a02bb18000000b00474dc6544c2sm2886255jan.97.2024.03.26.13.51.45
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 26 Mar 2024 13:51:26 -0700 (PDT)
-Message-ID: <87af7b7e-9c2f-41e1-af97-01d3f29f5970@linaro.org>
-Date: Tue, 26 Mar 2024 21:51:24 +0100
+        Tue, 26 Mar 2024 13:51:45 -0700 (PDT)
+Message-ID: <9b30d5a7-1a23-4f48-b6c3-4908535a998b@linuxfoundation.org>
+Date: Tue, 26 Mar 2024 14:51:44 -0600
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -77,117 +72,85 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] clk: qcom: clk-alpha-pll: fix rate setting for Stromer
- PLLs
-To: Gabor Juhos <j4g8y7@gmail.com>, Bjorn Andersson <andersson@kernel.org>,
- Michael Turquette <mturquette@baylibre.com>, Stephen Boyd
- <sboyd@kernel.org>, Varadarajan Narayanan <quic_varada@quicinc.com>,
- Sricharan R <quic_srichara@quicinc.com>,
- Kathiravan T <quic_kathirav@quicinc.com>
-Cc: linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
- linux-kernel@vger.kernel.org, stable@vger.kernel.org
-References: <20240326-alpha-pll-fix-stromer-set-rate-v2-1-48ae83af71c8@gmail.com>
+Subject: Re: [PATCH v2] selftests: x86: skip the tests if prerequisites aren't
+ fulfilled
 Content-Language: en-US
-From: Konrad Dybcio <konrad.dybcio@linaro.org>
-Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
- 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
- izWDgYvmBE8=
-In-Reply-To: <20240326-alpha-pll-fix-stromer-set-rate-v2-1-48ae83af71c8@gmail.com>
-Content-Type: text/plain; charset=UTF-8
+To: Muhammad Usama Anjum <usama.anjum@collabora.com>,
+ Shuah Khan <shuah@kernel.org>,
+ "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+ "Chang S. Bae" <chang.seok.bae@intel.com>,
+ Dave Hansen <dave.hansen@linux.intel.com>,
+ Binbin Wu <binbin.wu@linux.intel.com>,
+ "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+ Weihong Zhang <weihong.zhang@intel.com>, angquan yu <angquan21@gmail.com>
+Cc: kernel@collabora.com, linux-kselftest@vger.kernel.org,
+ linux-kernel@vger.kernel.org, Shuah Khan <skhan@linuxfoundation.org>
+References: <20240314114502.466806-1-usama.anjum@collabora.com>
+From: Shuah Khan <skhan@linuxfoundation.org>
+In-Reply-To: <20240314114502.466806-1-usama.anjum@collabora.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 
-On 26.03.2024 1:15 PM, Gabor Juhos wrote:
-> The clk_alpha_pll_stromer_set_rate() function writes inproper
-> values into the ALPHA_VAL{,_U} registers which results in wrong
-> clock rates when the alpha value is used.
+On 3/14/24 05:44, Muhammad Usama Anjum wrote:
+> Skip instead of failing when prerequisite conditions aren't fulfilled,
+> such as invalid xstate values etc. This patch would make the tests show
+> as skip when run by:
+>    make -C tools/testing/selftests/ TARGETS=x86 run_tests
 > 
-> The broken behaviour can be seen on IPQ5018 for example, when
-> dynamic scaling sets the CPU frequency to 800000 KHz. In this
-> case the CPU cores are running only at 792031 KHz:
+>    ...
+>    # timeout set to 45
+>    # selftests: x86: amx_64
+>    # # xstate cpuid: invalid tile data size/offset: 0/0
+>    ok 42 selftests: x86: amx_64 # SKIP
+>    # timeout set to 45
+>    # selftests: x86: lam_64
+>    # # Unsupported LAM feature!
+>    ok 43 selftests: x86: lam_64 # SKIP
+>    ...
 > 
->   # cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_cur_freq
->   800000
->   # cat /sys/devices/system/cpu/cpu0/cpufreq/cpuinfo_cur_freq
->   792031
-> 
-> This happens because the function ignores the fact that the alpha
-> value calculated by the alpha_pll_round_rate() function is only
-> 32 bits wide which must be extended to 40 bits if it is used on
-> a hardware which supports 40 bits wide values.
-> 
-> Extend the clk_alpha_pll_stromer_set_rate() function to convert
-> the alpha value to 40 bits before wrinting that into the registers
-> in order to ensure that the hardware really uses the requested rate.
-> 
-> After the change the CPU frequency is correct:
-> 
->   # cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_cur_freq
->   800000
->   # cat /sys/devices/system/cpu/cpu0/cpufreq/cpuinfo_cur_freq
->   800000
-> 
-> Cc: stable@vger.kernel.org
-> Fixes: e47a4f55f240 ("clk: qcom: clk-alpha-pll: Add support for Stromer PLLs")
-> Signed-off-by: Gabor Juhos <j4g8y7@gmail.com>
+> Cc: Chang S. Bae <chang.seok.bae@intel.com>
+> Acked-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+> Reviewed-by: Binbin Wu <binbin.wu@linux.intel.com>
+> Signed-off-by: Muhammad Usama Anjum <usama.anjum@collabora.com>
 > ---
-> Changes in v2:
->   - fix subject prefix
->   - rebase on v6.9-rc1
->   - Link to v1: https://lore.kernel.org/r/20240324-alpha-pll-fix-stromer-set-rate-v1-1-335b0b157219@gmail.com
-> 
-> Depends on the following patch:
->   https://lore.kernel.org/r/20240315-apss-ipq-pll-ipq5018-hang-v2-1-6fe30ada2009@gmail.com
+> Changes since v1:
+> - Use arch_prctl to check if amx is supported
+
+This should be mentioned in the changelog  and also
+show that there are bo backwards compatibility issues.
+
 > ---
->  drivers/clk/qcom/clk-alpha-pll.c | 4 ++++
->  1 file changed, 4 insertions(+)
+>   tools/testing/selftests/x86/amx.c | 27 ++++++++++-----------------
+>   tools/testing/selftests/x86/lam.c |  2 +-
+>   2 files changed, 11 insertions(+), 18 deletions(-)
 > 
-> diff --git a/drivers/clk/qcom/clk-alpha-pll.c b/drivers/clk/qcom/clk-alpha-pll.c
-> index 8a412ef47e163..8e98198d4b4b6 100644
-> --- a/drivers/clk/qcom/clk-alpha-pll.c
-> +++ b/drivers/clk/qcom/clk-alpha-pll.c
-> @@ -2490,6 +2490,10 @@ static int clk_alpha_pll_stromer_set_rate(struct clk_hw *hw, unsigned long rate,
->  	rate = alpha_pll_round_rate(rate, prate, &l, &a, ALPHA_REG_BITWIDTH);
->  
->  	regmap_write(pll->clkr.regmap, PLL_L_VAL(pll), l);
-> +
-> +	if (ALPHA_REG_BITWIDTH > ALPHA_BITWIDTH)
-> +		a <<= ALPHA_REG_BITWIDTH - ALPHA_BITWIDTH;
+> diff --git a/tools/testing/selftests/x86/amx.c b/tools/testing/selftests/x86/amx.c
+> index d884fd69dd510..95aad6d8849be 100644
+> --- a/tools/testing/selftests/x86/amx.c
+> +++ b/tools/testing/selftests/x86/amx.c
+> @@ -103,21 +103,6 @@ static void clearhandler(int sig)
+>   
+>   #define CPUID_LEAF1_ECX_XSAVE_MASK	(1 << 26)
+>   #define CPUID_LEAF1_ECX_OSXSAVE_MASK	(1 << 27)
+> -static inline void check_cpuid_xsave(void)
+> -{
+> -	uint32_t eax, ebx, ecx, edx;
+> -
+> -	/*
+> -	 * CPUID.1:ECX.XSAVE[bit 26] enumerates general
+> -	 * support for the XSAVE feature set, including
+> -	 * XGETBV.
+> -	 */
+> -	__cpuid_count(1, 0, eax, ebx, ecx, edx);
+> -	if (!(ecx & CPUID_LEAF1_ECX_XSAVE_MASK))
+> -		fatal_error("cpuid: no CPU xsave support");
+> -	if (!(ecx & CPUID_LEAF1_ECX_OSXSAVE_MASK))
+> -		fatal_error("cpuid: no OS xsave support");
+> -}
+>   
 
-Uh.. that's not right, this is comparing two constants
+Why doesn't the changelog mention the code removal?
 
-Did you mean to use pll_alpha_width()?
-
-Konrad
+thanks,
+-- Shuah
 
