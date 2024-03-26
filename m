@@ -1,158 +1,191 @@
-Return-Path: <linux-kernel+bounces-119884-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-119885-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6BD7088CE35
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 21:21:28 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8BD4B88CE46
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 21:24:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9DCDF1C66B0D
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 20:21:27 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 024A51F81657
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 20:24:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 76CDE13D518;
-	Tue, 26 Mar 2024 20:21:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 10B8F13D2B8;
+	Tue, 26 Mar 2024 20:24:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="QR9hfHKM"
-Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="dqMvEOxI"
+Received: from mail-ej1-f43.google.com (mail-ej1-f43.google.com [209.85.218.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D6E6313D250;
-	Tue, 26 Mar 2024 20:21:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.23.249
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E425B13D2B1
+	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 20:24:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711484482; cv=none; b=Tj1fLprib/WYy8+GeUJQKKUr4LqwH9dccWsd7j1uJ1BvpGq6aUOs49AXumE3EQI1FIzizYDOTsCfsvxvOQU42HGWZ7zr/Qoz9+iMpi0bePVM1Vmy6CFse+QRw/sxf2MHb7Jy6F9WR1I63I0dlrrI+iPk32BQEkFdSuSN3hYNjKg=
+	t=1711484642; cv=none; b=syJCnkYiUQ53tzCe5dg+0fUvxKr6d3ShKWY1m9XaGmB7DmbBnNU9x16VzM47qjmik9NwJDpzf5/meFli4d/vEcDbNbcFsMjkf5w0IRLrcidq//fiqYzhSdQ4K8gpNl0UjOngygiIdFunVG3YS5fZquWqdXGhqSSnHmFm4XK+m6U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711484482; c=relaxed/simple;
-	bh=ugkhIh8LPDu6CqWLRYYCLsjM5750dODZnN0y3eIFpKw=;
-	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=NDnoeSEjBdBKD5yz43AdeZy77yHaN1W8w79f4vnTsFdObTf13hj/yUHKX6KiugAiLl8+6GZ6Tq+gX6N9x1tUldJIPsLrtxOp2eAHh+KiRb2Tcp6v1tdYfo0NHuHrdarB6PaTmOoQ7UJT3M29CYNNncb10Izq3H8Re2Y4BEAJTr0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=QR9hfHKM; arc=none smtp.client-ip=198.47.23.249
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-	by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 42QKL5ix059927;
-	Tue, 26 Mar 2024 15:21:05 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1711484465;
-	bh=FdHAjC/7les37YnkMTaQnJcFGPt0pYqC/e6SnuxXsSE=;
-	h=Date:From:To:CC:Subject:References:In-Reply-To;
-	b=QR9hfHKMbQNi1QYVrr44ZP6S87lmhGk/WN1dCoWOrpsdhU/3QY6XS7XSR1L06jq0H
-	 n6CIAPr3yfUGSiy1S6Uooi4brB21tyD0+wQENKZ7y+kX4mRfoFwXInSWATKRcM6abn
-	 xCi6+9kUDCH+W3GHtnQwtzRtCJ7NF7tPpG+mxqfU=
-Received: from DFLE114.ent.ti.com (dfle114.ent.ti.com [10.64.6.35])
-	by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 42QKL5HV057504
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Tue, 26 Mar 2024 15:21:05 -0500
-Received: from DFLE100.ent.ti.com (10.64.6.21) by DFLE114.ent.ti.com
- (10.64.6.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Tue, 26
- Mar 2024 15:21:05 -0500
-Received: from lelvsmtp5.itg.ti.com (10.180.75.250) by DFLE100.ent.ti.com
- (10.64.6.21) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Tue, 26 Mar 2024 15:21:05 -0500
-Received: from localhost (uda0133052.dhcp.ti.com [128.247.81.232])
-	by lelvsmtp5.itg.ti.com (8.15.2/8.15.2) with ESMTP id 42QKL5cf002062;
-	Tue, 26 Mar 2024 15:21:05 -0500
-Date: Tue, 26 Mar 2024 15:21:05 -0500
-From: Nishanth Menon <nm@ti.com>
-To: Andrew Davis <afd@ti.com>
-CC: Vignesh Raghavendra <vigneshr@ti.com>, Tero Kristo <kristo@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski
-	<krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 1/6] arm64: dts: ti: k3-am65: Remove UART baud rate
- selection
-Message-ID: <20240326202105.duim7cooxk4dwlz2@makeshift>
-References: <20240326185441.29656-1-afd@ti.com>
+	s=arc-20240116; t=1711484642; c=relaxed/simple;
+	bh=vLJVttyU0unj5HjuSsO9gb5EMeZQpEnywYmaCFIJqoc=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=Lm5NpcqYU2QbeDlnWtZgSL9vd5CHuFGKxvZ+LC3SG1JGlBhjIDqt8RSi5yjqihLwQ49ZWGUvLyNKqFBvZcLX33vNrvJPxkumYffQ0UAYtTH2JxlxzUk4I7C+ffAINBDxDnuSGyj/u+uDICHRt8vmn44A0Ebx6/+Fz9Ns0OmShiM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=dqMvEOxI; arc=none smtp.client-ip=209.85.218.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ej1-f43.google.com with SMTP id a640c23a62f3a-a4715d4c2cbso761958966b.1
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 13:24:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1711484639; x=1712089439; darn=vger.kernel.org;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=knEQ4mryQwBiq0ncopBZJftzfm8XTJ3CLErQObi0yU0=;
+        b=dqMvEOxIGZMr0g6hOQQzeQzMFpmza3FbjTpmtVSMFPaIrfa5BZnG8EZ5C+tYUQ7+ga
+         uOJv6BThAViX0MVLUV8cQXsrCpMu4oGzEBFyb3y9dh8lu4TexeqaWhMLxFDw+oXG1Y6b
+         ldtDuK3ueoaAhvUwUIES35Dmbm0K3uW0y43DkMRTIOOVLEnxmvqYnGFboWee3AXoEbGw
+         XwZZ7OlFzi+AVvO8XqBjG2D+F00U1uVJXY8s2ct0QCYf8koKVfs5TidYxY6imx+DaiUA
+         c9SDClm/2B90g5B3QGxIVc7ZGADRcD6Jjc/Gi1YlPMb2MTQSllANnKVJ4zJvCyAVSsU+
+         c9yQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711484639; x=1712089439;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=knEQ4mryQwBiq0ncopBZJftzfm8XTJ3CLErQObi0yU0=;
+        b=swm/lVAb6KkTApvmjw1pKs+0SuePqVYaE2rj6wrpU6dmZQtDVztGnOzGK5ZrTqueZu
+         XLwylzbKueDMaBN/Dhn8v95iF2GpMc2FK/QR2s2vWe/uAmvcc8hW/kRMv6S7ji4HG/WU
+         vrlqg0ZrzunUbbfFJXhQmOhVB115cwEr2RKdQXKvFyNECrC75TLQKhqaUGYAcapA3MMX
+         NueEHWGxycxQWqbfBswgjT/dqeuUseNxphe7Y2okEdgHo1UzlIkCoYTcXiLc7CZH5gJI
+         rdwV2GdgFgo+C+9/UUpT8aTX5vBgjJHXqUO2JvzshlyaRWCG1kVUZR4kba1fJxKCeuR0
+         5Q1g==
+X-Gm-Message-State: AOJu0YyKi6z3y/62BQ+I0fLKRqqI3EhZkElG7PMJEhSzJ9IODJ+XP+38
+	67rP6I7GVBF7kpMI0fV0iywF7Xr5x48Vei5rux/n00pkMRzu600QabQaxRDJErMjBLBOZvtR/FK
+	W
+X-Google-Smtp-Source: AGHT+IH0dK859sUAUhEQqGBCv46vWClhoFv9qf1bBqBgtaiUINfNf3lrctA8c7WDHIrVwNuBvhWlKA==
+X-Received: by 2002:a17:906:b806:b0:a4d:ff6a:1d93 with SMTP id dv6-20020a170906b80600b00a4dff6a1d93mr262242ejb.60.1711484638972;
+        Tue, 26 Mar 2024 13:23:58 -0700 (PDT)
+Received: from [127.0.1.1] ([178.197.222.44])
+        by smtp.gmail.com with ESMTPSA id b2-20020a1709062b4200b00a4725e4f53asm4584492ejg.40.2024.03.26.13.23.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 26 Mar 2024 13:23:58 -0700 (PDT)
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Subject: [PATCH 00/19] amba: store owner from modules with
+ amba_driver_register()
+Date: Tue, 26 Mar 2024 21:23:30 +0100
+Message-Id: <20240326-module-owner-amba-v1-0-4517b091385b@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20240326185441.29656-1-afd@ti.com>
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAMIuA2YC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
+ vPSU3UzU4B8JSMDIxMDYyMz3dz8lNKcVN388rzUIt3E3KREXePUpCQzUyNTs6RUcyWgvoKi1LT
+ MCrCZ0bG1tQCgwIKfYwAAAA==
+To: Russell King <linux@armlinux.org.uk>, 
+ Suzuki K Poulose <suzuki.poulose@arm.com>, 
+ Mike Leach <mike.leach@linaro.org>, James Clark <james.clark@arm.com>, 
+ Alexander Shishkin <alexander.shishkin@linux.intel.com>, 
+ Maxime Coquelin <mcoquelin.stm32@gmail.com>, 
+ Alexandre Torgue <alexandre.torgue@foss.st.com>, 
+ Linus Walleij <linus.walleij@linaro.org>, 
+ Andi Shyti <andi.shyti@kernel.org>, Olivia Mackall <olivia@selenic.com>, 
+ Herbert Xu <herbert@gondor.apana.org.au>, Vinod Koul <vkoul@kernel.org>, 
+ Dmitry Torokhov <dmitry.torokhov@gmail.com>, 
+ Miquel Raynal <miquel.raynal@bootlin.com>, 
+ Michal Simek <michal.simek@amd.com>, 
+ Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, 
+ Eric Auger <eric.auger@redhat.com>, 
+ Alex Williamson <alex.williamson@redhat.com>
+Cc: linux-kernel@vger.kernel.org, coresight@lists.linaro.org, 
+ linux-arm-kernel@lists.infradead.org, 
+ linux-stm32@st-md-mailman.stormreply.com, linux-i2c@vger.kernel.org, 
+ linux-crypto@vger.kernel.org, dmaengine@vger.kernel.org, 
+ linux-input@vger.kernel.org, kvm@vger.kernel.org
+X-Mailer: b4 0.13.0
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2890;
+ i=krzysztof.kozlowski@linaro.org; h=from:subject:message-id;
+ bh=vLJVttyU0unj5HjuSsO9gb5EMeZQpEnywYmaCFIJqoc=;
+ b=owEBbQKS/ZANAwAKAcE3ZuaGi4PXAcsmYgBmAy7IJ8hV8xU+Fvg50aj7Bm1TrFxta5NflDG5C
+ Z0GX9z3UjOJAjMEAAEKAB0WIQTd0mIoPREbIztuuKjBN2bmhouD1wUCZgMuyAAKCRDBN2bmhouD
+ 1zMeD/4j+he5Lc0O5CAxCQTaYhyHw2jsG/5EdmADJJfjbMxmsMOFRSqBgFCmMTYlikBybNpMvGX
+ Njz5qu6tleCNVFVzX64LgMF9CHk/qK88sFohHb9gDLy3INj8Cc7dCQay4J1RKYsX9JgvTm//yhG
+ 1i0kOuGUFGiUgkNVllH7OPSUBI01iGXoYWh3MIdiP4adZO5ydPW87HOHzk0K8fGWClJyOsN1l8o
+ pk2Nfo0PeoM8o8H2QIcet14VfBgi9QJyqr77GM5vJnpR45KaRc3l93yej3zFWQ6OZHULyGayEtK
+ 8IUUp9ruU6fkzqDKIEsERhna3Fa1GacQADv0twz9n616/L1pcFTJaoLhItOUm1R+UfMX4mCtXOV
+ Xs+nlz7EefbYDT1rvvHDuJ9q1gwp68PBnzMIHQFPM4BMXk25A2Wvjmk6YvBYIrhIMl3azHYFCRQ
+ 8x9/ojjzQkmBBvAp3CfFUGFpNadd6tLrlZnPySeeHRVnKbaqHw/AQ8h5RiTcTyrIzTqFSFufol7
+ FoHmrA7z7yzQukzlsIcq27iQ0ObssgXHnSS1ZjXve056mJ8eQEJ/AAm2QJJW2Qqc1ay32P52oSj
+ EE9gfAssEm8pTYJuc2ctEJu4BHdP9Sr+CAZ098xlIaFOiAEwGyAwmrrUoGgp7jm8R9lk0whhQwY
+ ZdsRrJGwUkr5EFQ==
+X-Developer-Key: i=krzysztof.kozlowski@linaro.org; a=openpgp;
+ fpr=9BD07E0E0C51F8D59677B7541B93437D3B41629B
 
-On 13:54-20240326, Andrew Davis wrote:
-> As described in the binding document for the "current-speed" property:
-> 
-> "This should only be present in case a driver has no chance to know the
-> baud rate of the slave device."
-> 
-> This is not the case for the UART used in K3 devices, the current
-> baud-rate can be calculated from the registers. Having this property
+Merging
+=======
+All further patches depend on the first amba patch, therefore please ack
+and this should go via one tree.
 
-I do not understand the explanation above -> how does one do this?
-If you are talking of the 8250 divider registers, someone has to program
-those - how do you compute the baud rate from registers that aren't
-programmed? Note: I am not commenting on the rationale of removing the
-property, just trying to understand the assertion above.
+Description
+===========
+Modules registering driver with amba_driver_register() often forget to
+set .owner field.
 
-> has the effect of actually skipping the baud-rate setup in some drivers
-> as it assumes it will already be set to this rate, which may not always
-> be the case.
-> 
-> It seems this property's purpose was mistaken as selecting the desired
-> baud-rate, which it does not. It would have been wrong to select that
-> here anyway as DT is not the place for configuration, especially when
-> there are already more standard ways to set serial baud-rates.
-> 
-> Signed-off-by: Andrew Davis <afd@ti.com>
-> ---
->  arch/arm64/boot/dts/ti/k3-am65-main.dtsi   | 1 -
->  arch/arm64/boot/dts/ti/k3-am65-mcu.dtsi    | 1 -
->  arch/arm64/boot/dts/ti/k3-am65-wakeup.dtsi | 1 -
->  3 files changed, 3 deletions(-)
-> 
-> diff --git a/arch/arm64/boot/dts/ti/k3-am65-main.dtsi b/arch/arm64/boot/dts/ti/k3-am65-main.dtsi
-> index ff857117d7193..670557c89f756 100644
-> --- a/arch/arm64/boot/dts/ti/k3-am65-main.dtsi
-> +++ b/arch/arm64/boot/dts/ti/k3-am65-main.dtsi
-> @@ -89,7 +89,6 @@ main_uart0: serial@2800000 {
->  		reg = <0x00 0x02800000 0x00 0x100>;
->  		interrupts = <GIC_SPI 192 IRQ_TYPE_LEVEL_HIGH>;
->  		clock-frequency = <48000000>;
-> -		current-speed = <115200>;
->  		power-domains = <&k3_pds 146 TI_SCI_PD_EXCLUSIVE>;
->  		status = "disabled";
->  	};
-> diff --git a/arch/arm64/boot/dts/ti/k3-am65-mcu.dtsi b/arch/arm64/boot/dts/ti/k3-am65-mcu.dtsi
-> index 6ff3ccc39fb44..4f808e5089755 100644
-> --- a/arch/arm64/boot/dts/ti/k3-am65-mcu.dtsi
-> +++ b/arch/arm64/boot/dts/ti/k3-am65-mcu.dtsi
-> @@ -43,7 +43,6 @@ mcu_uart0: serial@40a00000 {
->  		reg = <0x00 0x40a00000 0x00 0x100>;
->  		interrupts = <GIC_SPI 565 IRQ_TYPE_LEVEL_HIGH>;
->  		clock-frequency = <96000000>;
-> -		current-speed = <115200>;
->  		power-domains = <&k3_pds 149 TI_SCI_PD_EXCLUSIVE>;
->  		status = "disabled";
->  	};
-> diff --git a/arch/arm64/boot/dts/ti/k3-am65-wakeup.dtsi b/arch/arm64/boot/dts/ti/k3-am65-wakeup.dtsi
-> index 37527890ddeaf..eee072e44a42f 100644
-> --- a/arch/arm64/boot/dts/ti/k3-am65-wakeup.dtsi
-> +++ b/arch/arm64/boot/dts/ti/k3-am65-wakeup.dtsi
-> @@ -59,7 +59,6 @@ wkup_uart0: serial@42300000 {
->  		reg = <0x42300000 0x100>;
->  		interrupts = <GIC_SPI 697 IRQ_TYPE_LEVEL_HIGH>;
->  		clock-frequency = <48000000>;
-> -		current-speed = <115200>;
->  		power-domains = <&k3_pds 150 TI_SCI_PD_EXCLUSIVE>;
->  		status = "disabled";
->  	};
-> -- 
-> 2.39.2
-> 
+Solve the problem by moving this task away from the drivers to the core
+amba bus code, just like we did for platform_driver in commit
+9447057eaff8 ("platform_device: use a macro instead of
+platform_driver_register").
 
+Best regards,
+Krzysztof
+
+---
+Krzysztof Kozlowski (19):
+      amba: store owner from modules with amba_driver_register()
+      coresight: cti: drop owner assignment
+      coresight: catu: drop owner assignment
+      coresight: etm3x: drop owner assignment
+      coresight: etm4x: drop owner assignment
+      coresight: funnel: drop owner assignment
+      coresight: replicator: drop owner assignment
+      coresight: etb10: drop owner assignment
+      coresight: stm: drop owner assignment
+      coresight: tmc: drop owner assignment
+      coresight: tpda: drop owner assignment
+      coresight: tpdm: drop owner assignment
+      coresight: tpiu: drop owner assignment
+      i2c: nomadik: drop owner assignment
+      hwrng: nomadik: drop owner assignment
+      dmaengine: pl330: drop owner assignment
+      Input: ambakmi - drop owner assignment
+      memory: pl353-smc: drop owner assignment
+      vfio: amba: drop owner assignment
+
+ drivers/amba/bus.c                                 | 11 +++++++----
+ drivers/char/hw_random/nomadik-rng.c               |  1 -
+ drivers/dma/pl330.c                                |  1 -
+ drivers/hwtracing/coresight/coresight-catu.c       |  1 -
+ drivers/hwtracing/coresight/coresight-cti-core.c   |  1 -
+ drivers/hwtracing/coresight/coresight-etb10.c      |  1 -
+ drivers/hwtracing/coresight/coresight-etm3x-core.c |  1 -
+ drivers/hwtracing/coresight/coresight-etm4x-core.c |  1 -
+ drivers/hwtracing/coresight/coresight-funnel.c     |  1 -
+ drivers/hwtracing/coresight/coresight-replicator.c |  1 -
+ drivers/hwtracing/coresight/coresight-stm.c        |  1 -
+ drivers/hwtracing/coresight/coresight-tmc-core.c   |  1 -
+ drivers/hwtracing/coresight/coresight-tpda.c       |  1 -
+ drivers/hwtracing/coresight/coresight-tpdm.c       |  1 -
+ drivers/hwtracing/coresight/coresight-tpiu.c       |  1 -
+ drivers/i2c/busses/i2c-nomadik.c                   |  1 -
+ drivers/input/serio/ambakmi.c                      |  1 -
+ drivers/memory/pl353-smc.c                         |  1 -
+ drivers/vfio/platform/vfio_amba.c                  |  1 -
+ include/linux/amba/bus.h                           | 11 +++++++++--
+ 20 files changed, 16 insertions(+), 24 deletions(-)
+---
+base-commit: 1fdad13606e104ff103ca19d2d660830cb36d43e
+change-id: 20240326-module-owner-amba-3ebb65256be7
+
+Best regards,
 -- 
-Regards,
-Nishanth Menon
-Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
+Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+
 
