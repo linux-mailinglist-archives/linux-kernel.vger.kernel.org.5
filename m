@@ -1,52 +1,52 @@
-Return-Path: <linux-kernel+bounces-118694-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-118695-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3064188BE1F
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 10:42:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 1601288BE22
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 10:43:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 621EF1C3CFE5
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 09:42:50 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 46D571C28DB0
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 09:43:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 167405D734;
-	Tue, 26 Mar 2024 09:38:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4583B6BFAA;
+	Tue, 26 Mar 2024 09:38:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="lHf+Cb4C"
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="kL2JR6Hf"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 50E27482FE;
-	Tue, 26 Mar 2024 09:38:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 842D46BB46;
+	Tue, 26 Mar 2024 09:38:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711445888; cv=none; b=kjByBRfGJcpnRF+D5TBtoSEcvb4EaUtkYX4q/H5/BGx7fCWZvJn5pyAaAQzCBxL0qMbP+Aqsx3fRUKgkKdKwv32RMAWIds+dCXfbOkdC/1M6NAR3fwJPctbSuNZBMEtB+6ScNtj9vJiLoFUXPyay8pRqyMmhWcbS1ciorfzoGEY=
+	t=1711445893; cv=none; b=IKzjrtTzBbFblOjN3J+ePDh1m5QCuuI5nTkNRu5JoAP/BWcOEUe0U0V7dSWM/c+aHRHvVX4DQs22Q48bBvSuOo/ceDwVL1mKYsHg6c3whgTC+5lPGqD6gUj0hHJGtBd1bCQf7MjhgYVimuD/kF7Aum27polEl1U9YaqW8+siHFo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711445888; c=relaxed/simple;
-	bh=mQEX1MUJmQxCZbULnvOm+ar9krGd8RTh8z2bMcAYA2c=;
+	s=arc-20240116; t=1711445893; c=relaxed/simple;
+	bh=PpvEElaALOMzBdU/09Xc1Z37y/Dg3DUH2bQsNEp/h9E=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ZICAfLaAY1v6r7qr9yGwmSmKLwVLNA0EJzyPqOB2pkjmAqlH7l82HaVeekNkKYhgHzLPHQwI3WNBRgOivWlIEAYCQyLlNi0j1eAslpCG8f4WOyYaO2SQTF7rSclwlJNVI/oHAbl+pMsMlbBPOaDNedLx1F0EZk529UIk37R7cU4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=lHf+Cb4C; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4E7D4C433F1;
-	Tue, 26 Mar 2024 09:38:07 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=nk9whRmfOm5W2z9vzvs1ZsjMNHbX9SZq5G8VEoP+PlQQZJ/kldQn+Eh5ps4FQAlUWEswxL2a8giEa6dWTbYQugHh131CD6tZ2a4vhfU8c8V4I3ufAshQarno04w16P462MU7JQR7Cg9AB4bk3tK3G87gnoFjnYj+dWF2hY1qIYI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=kL2JR6Hf; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0868EC433F1;
+	Tue, 26 Mar 2024 09:38:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1711445887;
-	bh=mQEX1MUJmQxCZbULnvOm+ar9krGd8RTh8z2bMcAYA2c=;
+	s=korg; t=1711445893;
+	bh=PpvEElaALOMzBdU/09Xc1Z37y/Dg3DUH2bQsNEp/h9E=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=lHf+Cb4Cp6TmT+wJl0XDS12an+VJHvjtC3YC297IXw3bPbww8DMYBvxoKCo2PvBW6
-	 Csf5GJOnpMekCJtszTZ0WD7qmOcLaNYhfBG/1RHE8fdJFRWCSJKUy+29ry6NJgq71T
-	 E3/zy1kiqqqTO30JICuUqfihSR4b8FwoK1Ntni4g=
-Date: Tue, 26 Mar 2024 10:38:03 +0100
+	b=kL2JR6HfJ/cu7afsToonpRaL9BTrovRT+hlWtS/crF88g1W9ZgqgpOxKLHPf9a3W/
+	 8U6ouC0dhhAOP21z4q2UGkVQaDld/i/jToO/B1Cvrgla0uS1F/ox5eauyu4XJ7fOcW
+	 /zHJVA+0sqSO+a1j+Hw6TL8uMNugjtJi9AxY0elw=
+Date: Tue, 26 Mar 2024 10:38:09 +0100
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To: Javier Carrasco <javier.carrasco@wolfvision.net>
 Cc: Heikki Krogerus <heikki.krogerus@linux.intel.com>,
 	Abdel Alkuor <abdelalkuor@geotab.com>, linux-usb@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] usb: typec: tipd: fix event checking for tps25750
-Message-ID: <2024032652-caucasian-clothes-cf44@gregkh>
+Subject: Re: [PATCH 2/2] usb: typec: tipd: fix event checking for tps6598x
+Message-ID: <2024032605-pension-bagging-5000@gregkh>
 References: <20240325-tps6598x_fix_event_handling-v1-0-633fe0c87cc8@wolfvision.net>
- <20240325-tps6598x_fix_event_handling-v1-1-633fe0c87cc8@wolfvision.net>
+ <20240325-tps6598x_fix_event_handling-v1-2-633fe0c87cc8@wolfvision.net>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -55,60 +55,104 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240325-tps6598x_fix_event_handling-v1-1-633fe0c87cc8@wolfvision.net>
+In-Reply-To: <20240325-tps6598x_fix_event_handling-v1-2-633fe0c87cc8@wolfvision.net>
 
-On Mon, Mar 25, 2024 at 10:02:21AM +0100, Javier Carrasco wrote:
-> In its current form, the interrupt service routine of the tps25750
-> checks the event flags in the lowest 64 bits of the interrupt event
-> register (event[0]), but also in the upper part (event[1]).
+On Mon, Mar 25, 2024 at 10:02:22AM +0100, Javier Carrasco wrote:
+> The current interrupt service routine of the tps6598x only reads the
+> first 64 bits of the INT_EVENT1 and INT_EVENT2 registers, which means
+> that any event above that range will be ignored, leaving interrupts
+> unattended. Moreover, those events will not be cleared, and the device
+> will keep the interrupt enabled.
 > 
-> Given that all flags are defined as BIT() or BIT_ULL(), they are
-> restricted to the first 64 bits of the INT_EVENT1 register. Including
-> the upper part of the register can lead to false positives e.g. if the
-> event 64 bits above the one being checked is set, but the one being
-> checked is not.
+> This issue has been observed while attempting to load patches, and the
+> 'ReadyForPatch' field (bit 81) of INT_EVENT1 was set.
 > 
-> Restrict the flag checking to the first 64 bits of the INT_EVENT1
-> register.
+> Read the complete INT_EVENT registers to handle all interrupts generated
+> by the device in a similar fashion to what is already done for the
+> tps25750.
 > 
-> Fixes: 7e7a3c815d22 ("USB: typec: tps6598x: Add TPS25750 support")
+> Fixes: 0a4c005bd171 ("usb: typec: driver for TI TPS6598x USB Power Delivery controllers")
 > Signed-off-by: Javier Carrasco <javier.carrasco@wolfvision.net>
 > ---
->  drivers/usb/typec/tipd/core.c | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
+>  drivers/usb/typec/tipd/core.c | 31 ++++++++++++++++++-------------
+>  1 file changed, 18 insertions(+), 13 deletions(-)
 > 
 > diff --git a/drivers/usb/typec/tipd/core.c b/drivers/usb/typec/tipd/core.c
-> index 0717cfcd9f8c..7c2f01344860 100644
+> index 7c2f01344860..308748d6cae6 100644
 > --- a/drivers/usb/typec/tipd/core.c
 > +++ b/drivers/usb/typec/tipd/core.c
-> @@ -604,11 +604,11 @@ static irqreturn_t tps25750_interrupt(int irq, void *data)
+> @@ -637,48 +637,53 @@ static irqreturn_t tps25750_interrupt(int irq, void *data)
+>  static irqreturn_t tps6598x_interrupt(int irq, void *data)
+>  {
+>  	struct tps6598x *tps = data;
+> -	u64 event1 = 0;
+> -	u64 event2 = 0;
+> +	u64 event1[2] = { };
+> +	u64 event2[2] = { };
+>  	u32 status;
+>  	int ret;
+>  
+>  	mutex_lock(&tps->lock);
+>  
+> -	ret = tps6598x_read64(tps, TPS_REG_INT_EVENT1, &event1);
+> -	ret |= tps6598x_read64(tps, TPS_REG_INT_EVENT2, &event2);
+> +	ret = tps6598x_block_read(tps, TPS_REG_INT_EVENT1, event1, 11);
+>  	if (ret) {
+> -		dev_err(tps->dev, "%s: failed to read events\n", __func__);
+> +		dev_err(tps->dev, "%s: failed to read event1\n", __func__);
+>  		goto err_unlock;
+>  	}
+> -	trace_tps6598x_irq(event1, event2);
+> +	ret = tps6598x_block_read(tps, TPS_REG_INT_EVENT2, event2, 11);
+> +	if (ret) {
+> +		dev_err(tps->dev, "%s: failed to read event2\n", __func__);
+> +		goto err_unlock;
+> +	}
+> +	trace_tps6598x_irq(event1[0], event2[0]);
+>  
+> -	if (!(event1 | event2))
+> +	if (!(event1[0] | event1[1] | event2[0] | event2[1]))
+>  		goto err_unlock;
+>  
 >  	if (!tps6598x_read_status(tps, &status))
 >  		goto err_clear_ints;
 >  
-> -	if ((event[0] | event[1]) & TPS_REG_INT_POWER_STATUS_UPDATE)
-> +	if (event[0] & TPS_REG_INT_POWER_STATUS_UPDATE)
+> -	if ((event1 | event2) & TPS_REG_INT_POWER_STATUS_UPDATE)
+> +	if ((event1[0] | event2[0]) & TPS_REG_INT_POWER_STATUS_UPDATE)
 >  		if (!tps6598x_read_power_status(tps))
 >  			goto err_clear_ints;
 >  
-> -	if ((event[0] | event[1]) & TPS_REG_INT_DATA_STATUS_UPDATE)
-> +	if (event[0] & TPS_REG_INT_DATA_STATUS_UPDATE)
+> -	if ((event1 | event2) & TPS_REG_INT_DATA_STATUS_UPDATE)
+> +	if ((event1[0] | event2[0]) & TPS_REG_INT_DATA_STATUS_UPDATE)
 >  		if (!tps6598x_read_data_status(tps))
 >  			goto err_clear_ints;
 >  
-> @@ -617,7 +617,7 @@ static irqreturn_t tps25750_interrupt(int irq, void *data)
->  	 * a plug event. Therefore, we need to check
->  	 * for pr/dr status change to set TypeC dr/pr accordingly.
->  	 */
-> -	if ((event[0] | event[1]) & TPS_REG_INT_PLUG_EVENT ||
-> +	if (event[0] & TPS_REG_INT_PLUG_EVENT ||
->  	    tps6598x_has_role_changed(tps, status))
+>  	/* Handle plug insert or removal */
+> -	if ((event1 | event2) & TPS_REG_INT_PLUG_EVENT)
+> +	if ((event1[0] | event2[0]) & TPS_REG_INT_PLUG_EVENT)
 >  		tps6598x_handle_plug_event(tps, status);
+>  
+>  err_clear_ints:
+> -	tps6598x_write64(tps, TPS_REG_INT_CLEAR1, event1);
+> -	tps6598x_write64(tps, TPS_REG_INT_CLEAR2, event2);
+> +	tps6598x_block_write(tps, TPS_REG_INT_CLEAR1, event1, 11);
+> +	tps6598x_block_write(tps, TPS_REG_INT_CLEAR2, event2, 11);
+>  
+>  err_unlock:
+>  	mutex_unlock(&tps->lock);
+>  
+> -	if (event1 | event2)
+> +	if (event1[0] | event1[1] | event2[0] | event2[1])
+>  		return IRQ_HANDLED;
+> +
+>  	return IRQ_NONE;
+>  }
 >  
 > 
 > -- 
 > 2.40.1
-> 
-> 
+>
+
 
 Hi,
 
