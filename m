@@ -1,184 +1,167 @@
-Return-Path: <linux-kernel+bounces-119304-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-119344-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8677388C6D5
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 16:27:01 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id C35B688C755
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 16:39:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B81C21C3B398
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 15:27:00 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1D244B27031
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 15:39:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7D2F413C833;
-	Tue, 26 Mar 2024 15:26:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 53EFF13CA8F;
+	Tue, 26 Mar 2024 15:34:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="VcX+Gl+7"
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="EDxrDSuz";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="cZAsHj4j";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="EDxrDSuz";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="cZAsHj4j"
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E089613AD03
-	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 15:26:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9A20513C838;
+	Tue, 26 Mar 2024 15:34:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711466814; cv=none; b=Oe9g3z44kxpv49maGvx0XgIwOd46YH6rjY024owrhWPhN+CuNIBXvIoTpRCpAluVxY29x2umtnrXwcfOepvk50sT2tuSqsCH2n/kVMwK/QTpd7RHi58d7QT+rzamfT5k5Iovr3PsztNhNPpun26PkTafPEcSlLER6kMIdChQTCo=
+	t=1711467248; cv=none; b=EvpphA8ILOdBqSGbD9ObAoHZNVG1hmXfWhcjVUNiXjSAV5r1Brb2nfjlqM5CYH6K56wv1N2FWJZ8CfuosqWiQ3mGuTGP9HXXR0vytAVb6URJFMGuUmCrjEAsz2agWK+KpWTHheOLQ2+r9TdhG5Ji6tiEb6gqP5OjVoJRxg7DQcU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711466814; c=relaxed/simple;
-	bh=mkjtb6GjqiKzKAPgPuP/1snQCK9mmOWP03fV8t4a17Y=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=Vc2iHDxdjrczVeHP/Tb04aYCewC4eE/LRpizXuOKcSeiXILr6UZTVXwSr99zCS+mpRWyPgksxI9+6GvsIADLGliMeT6Un0wIvKFf1y+Y+0p96kGMbFkedph5vX8bB4YhAwFtplSLJqdpquveEdzOTgBlv/OVrrq91xzXkG61cYk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=VcX+Gl+7; arc=none smtp.client-ip=148.163.156.1
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0360083.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 42QF2EuO016707;
-	Tue, 26 Mar 2024 15:26:40 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : mime-version : content-transfer-encoding; s=pp1;
- bh=ADnlaU9yoIddQghLF+HT2oM/IhYvEt7oWPcLJzNLTJw=;
- b=VcX+Gl+7OmHAQdazYXptmKAzEXnkHd5Xr6ckc0sfyzFyy2aIsZQBDemhV7fI8CYw6Uk1
- 9TPdg0wYujBSQKZPmOevXHCt688h5yuEUhcRsrwmOFdH4/kFgUd2RlPe8Qwi89OGmQPK
- 4eP58YC/BNwpHjkIWM71T/la4bs+Lnzeah5De4+xEZgVC6YBlV9OH2leVIo+t2M5SQiJ
- sk/zolzaMVidPzrld6vW4fOkr9Q28AQ/ucNjJmJcjFe9RnQQsPAZArxEFaQ5/l+3HvYB
- ol679sVmvQp3vdqXi5fwNOk6jB2xLBq7zlAMDAnUu3/DiIVo1lE0dzyAo5BK1X0sbkwz Ig== 
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3x40n8g2aw-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 26 Mar 2024 15:26:40 +0000
-Received: from m0360083.ppops.net (m0360083.ppops.net [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 42QFQeeC026560;
-	Tue, 26 Mar 2024 15:26:40 GMT
-Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3x40n8g2au-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 26 Mar 2024 15:26:39 +0000
-Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
-	by ppma11.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 42QEoe7a003753;
-	Tue, 26 Mar 2024 15:26:39 GMT
-Received: from smtprelay01.fra02v.mail.ibm.com ([9.218.2.227])
-	by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 3x2c42r0hv-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 26 Mar 2024 15:26:38 +0000
-Received: from smtpav03.fra02v.mail.ibm.com (smtpav03.fra02v.mail.ibm.com [10.20.54.102])
-	by smtprelay01.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 42QFQZx643712916
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Tue, 26 Mar 2024 15:26:37 GMT
-Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 45B2D2004F;
-	Tue, 26 Mar 2024 15:26:35 +0000 (GMT)
-Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id B1FED20040;
-	Tue, 26 Mar 2024 15:26:33 +0000 (GMT)
-Received: from li-c1fdab4c-355a-11b2-a85c-ef242fe9efb4.ibm.com.com (unknown [9.195.45.32])
-	by smtpav03.fra02v.mail.ibm.com (Postfix) with ESMTP;
-	Tue, 26 Mar 2024 15:26:33 +0000 (GMT)
-From: Shrikanth Hegde <sshegde@linux.ibm.com>
-To: mingo@kernel.org, peterz@infradead.org, vincent.guittot@linaro.org
-Cc: sshegde@linux.ibm.com, dietmar.eggemann@arm.com, qyousef@layalina.io,
-        linux-kernel@vger.kernel.org, vschneid@redhat.com
-Subject: [PATCH] sched/fair: Combine EAS check with overutilized access
-Date: Tue, 26 Mar 2024 20:56:16 +0530
-Message-Id: <20240326152616.380999-1-sshegde@linux.ibm.com>
-X-Mailer: git-send-email 2.39.3
+	s=arc-20240116; t=1711467248; c=relaxed/simple;
+	bh=voHU8CXUO9rULptOoqbMxaCGiQWg8c8+PXZAh+/GUZg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=uT9pOy/tZOp3ljKyS4QER2sZ58YYPYXqkN9Zn/3/gQ6rjkotJFNd7IGVN1JqmffMJmkPf8KhuBpx0ZGmsXEhLDOwEGxeM9+9vPSwbbVv3PRyKh7HOUqPxB8n7sl0F3SDZeF4bmZK3u30kU9NDc3Ns0gC6tKty5CjFZLDdbp0Qtg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=EDxrDSuz; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=cZAsHj4j; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=EDxrDSuz; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=cZAsHj4j; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:98])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 865865D7A2;
+	Tue, 26 Mar 2024 15:34:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1711467244;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=t65TdSxXFIxn9BLM0RNbweNcsBs25Tsa2iIZM848EpM=;
+	b=EDxrDSuzGdTIZEvFJXQ/KrhdNkm2lnAFm2OIi6u7+CbwrDFoKhAA/UsX7nzlgnm/WC8YoY
+	LXY3eEDAKDMaJEZYSk42GAo7r9t0kx/Li2DVEHJm1oqf5JZ4UMULbxYD24XAJWqNNshDOj
+	7QJXOAwv5Mftg9AXGKmlq0zd6HOUHQI=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1711467244;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=t65TdSxXFIxn9BLM0RNbweNcsBs25Tsa2iIZM848EpM=;
+	b=cZAsHj4jo9izmPjkI7dgpCRG9bs2SeweJWTtflaoDNug5DSJT0da4cLMj0CBXGhTvK0qWP
+	bHNapEx6KYA7QlDw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1711467244;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=t65TdSxXFIxn9BLM0RNbweNcsBs25Tsa2iIZM848EpM=;
+	b=EDxrDSuzGdTIZEvFJXQ/KrhdNkm2lnAFm2OIi6u7+CbwrDFoKhAA/UsX7nzlgnm/WC8YoY
+	LXY3eEDAKDMaJEZYSk42GAo7r9t0kx/Li2DVEHJm1oqf5JZ4UMULbxYD24XAJWqNNshDOj
+	7QJXOAwv5Mftg9AXGKmlq0zd6HOUHQI=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1711467244;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=t65TdSxXFIxn9BLM0RNbweNcsBs25Tsa2iIZM848EpM=;
+	b=cZAsHj4jo9izmPjkI7dgpCRG9bs2SeweJWTtflaoDNug5DSJT0da4cLMj0CBXGhTvK0qWP
+	bHNapEx6KYA7QlDw==
+Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 6F63913587;
+	Tue, 26 Mar 2024 15:34:04 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+	by imap2.dmz-prg2.suse.org with ESMTPSA
+	id fry3GuzqAmbmVgAAn2gu4w
+	(envelope-from <dsterba@suse.cz>); Tue, 26 Mar 2024 15:34:04 +0000
+Date: Tue, 26 Mar 2024 16:26:43 +0100
+From: David Sterba <dsterba@suse.cz>
+To: Dan Carpenter <dan.carpenter@linaro.org>
+Cc: Chris Mason <clm@fb.com>, Qu Wenruo <wqu@suse.com>,
+	Josef Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>,
+	linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+	kernel-janitors@vger.kernel.org
+Subject: Re: [PATCH] btrfs: qgroup: delete unnecessary check in
+ btrfs_qgroup_check_inherit()
+Message-ID: <20240326152643.GT14596@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+References: <cb21ce67-e9d8-4844-8c70-eb42f6ac4aee@moroto.mountain>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: Hoe224IwZV7rjmUitiMHN-qNC_ofaZFe
-X-Proofpoint-ORIG-GUID: JKlNLV9Ms6ahX3IeleiMUdMVfsxmkJUR
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-03-26_06,2024-03-21_02,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 adultscore=0
- mlxscore=0 lowpriorityscore=0 phishscore=0 priorityscore=1501
- mlxlogscore=999 clxscore=1015 bulkscore=0 impostorscore=0 malwarescore=0
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2403210000 definitions=main-2403260108
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cb21ce67-e9d8-4844-8c70-eb42f6ac4aee@moroto.mountain>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Spam-Score: -1.21
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Spam-Flag: NO
+X-Spamd-Result: default: False [-1.21 / 50.00];
+	 ARC_NA(0.00)[];
+	 HAS_REPLYTO(0.30)[dsterba@suse.cz];
+	 R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 MIME_GOOD(-0.10)[text/plain];
+	 REPLYTO_ADDR_EQ_FROM(0.00)[];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 DKIM_TRACE(0.00)[suse.cz:+];
+	 MX_GOOD(-0.01)[];
+	 RCPT_COUNT_SEVEN(0.00)[8];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[linaro.org:email,suse.cz:dkim];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 NEURAL_HAM_SHORT(-0.20)[-1.000];
+	 RCVD_TLS_ALL(0.00)[];
+	 BAYES_HAM(-0.00)[44.04%];
+	 RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:98:from]
+X-Spam-Level: 
+Authentication-Results: smtp-out2.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=EDxrDSuz;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=cZAsHj4j
+X-Rspamd-Queue-Id: 865865D7A2
 
-Access to overutilized is always used with sched_energy_enabled in
-the pattern:
+On Thu, Mar 07, 2024 at 05:53:47PM +0300, Dan Carpenter wrote:
+> This check "if (inherit->num_qgroups > PAGE_SIZE)" is confusing and
+> unnecessary.
+> 
+> The problem with the check is that static checkers flag it as a
+> potential mixup of between units of bytes vs number of elements.
+> Fortunately, the check can safely be deleted because the next check is
+> correct and applies an even stricter limit:
+> 
+> 	if (size != struct_size(inherit, qgroups, inherit->num_qgroups))
+> 		return -EINVAL;
+> 
+> The "inherit" struct ends in a variable array of __u64 and
+> "inherit->num_qgroups" is the number of elements in the array.  At the
+> start of the function we check that:
+> 
+> 	if (size < sizeof(*inherit) || size > PAGE_SIZE)
+> 		return -EINVAL;
+> 
+> Thus, since we verify that the whole struct fits within one page, that
+> means that the number of elements in the inherit->qgroups[] array must
+> be less than PAGE_SIZE.
+> 
+> Signed-off-by: Dan Carpenter <dan.carpenter@linaro.org>
 
-if (sched_energy_enabled && !overutilized)
-       do something
-
-So modify the helper function to return this pattern. This is more
-readable code as it would say, do something when root domain is not
-overutilized. This function always return true when EAS is disabled.
-
-No change in functionality intended.
-
-Suggested-by: Vincent Guittot <vincent.guittot@linaro.org>
-Signed-off-by: Shrikanth Hegde <sshegde@linux.ibm.com>
----
- kernel/sched/fair.c | 20 +++++++-------------
- 1 file changed, 7 insertions(+), 13 deletions(-)
-
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index 24a7530a7d3f..e222e3ad4cfe 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -6686,12 +6686,11 @@ static inline bool cpu_overutilized(int cpu)
- }
-
- /*
-- * Ensure that caller can do EAS. overutilized value
-- * make sense only if EAS is enabled
-+ * overutilized value make sense only if EAS is enabled
-  */
- static inline int is_rd_overutilized(struct root_domain *rd)
- {
--	return READ_ONCE(rd->overutilized);
-+	return !sched_energy_enabled() || READ_ONCE(rd->overutilized);
- }
-
- static inline void set_rd_overutilized_status(struct root_domain *rd,
-@@ -6710,8 +6709,6 @@ static inline void check_update_overutilized_status(struct rq *rq)
- 	 * overutilized field is used for load balancing decisions only
- 	 * if energy aware scheduler is being used
- 	 */
--	if (!sched_energy_enabled())
--		return;
-
- 	if (!is_rd_overutilized(rq->rd) && cpu_overutilized(rq->cpu))
- 		set_rd_overutilized_status(rq->rd, SG_OVERUTILIZED);
-@@ -7999,7 +7996,7 @@ static int find_energy_efficient_cpu(struct task_struct *p, int prev_cpu)
-
- 	rcu_read_lock();
- 	pd = rcu_dereference(rd->pd);
--	if (!pd || is_rd_overutilized(rd))
-+	if (!pd)
- 		goto unlock;
-
- 	/*
-@@ -8202,7 +8199,7 @@ select_task_rq_fair(struct task_struct *p, int prev_cpu, int wake_flags)
- 		    cpumask_test_cpu(cpu, p->cpus_ptr))
- 			return cpu;
-
--		if (sched_energy_enabled()) {
-+		if (!is_rd_overutilized(this_rq()->rd)) {
- 			new_cpu = find_energy_efficient_cpu(p, prev_cpu);
- 			if (new_cpu >= 0)
- 				return new_cpu;
-@@ -10903,12 +10900,9 @@ static struct sched_group *sched_balance_find_src_group(struct lb_env *env)
- 	if (busiest->group_type == group_misfit_task)
- 		goto force_balance;
-
--	if (sched_energy_enabled()) {
--		struct root_domain *rd = env->dst_rq->rd;
--
--		if (rcu_dereference(rd->pd) && !is_rd_overutilized(rd))
--			goto out_balanced;
--	}
-+	if (!is_rd_overutilized(env->dst_rq->rd) &&
-+	    rcu_dereference(env->dst_rq->rd->pd))
-+		goto out_balanced;
-
- 	/* ASYM feature bypasses nice load balance check */
- 	if (busiest->group_type == group_asym_packing)
---
-2.39.3
-
+Added to for-next, thanks.
 
