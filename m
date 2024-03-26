@@ -1,107 +1,89 @@
-Return-Path: <linux-kernel+bounces-119103-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-119104-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3C13188C434
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 14:58:29 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9ABE388C437
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 14:58:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E5FA21F631F6
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 13:58:28 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1E74CB22E5F
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 13:58:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 91EF37602D;
-	Tue, 26 Mar 2024 13:58:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9BB6576022;
+	Tue, 26 Mar 2024 13:58:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="TfAnJHGU"
-Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
+	dkim=pass (2048-bit key) header.d=proton.me header.i=@proton.me header.b="ghr8XxPr"
+Received: from mail-4322.protonmail.ch (mail-4322.protonmail.ch [185.70.43.22])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B9C6E125C9;
-	Tue, 26 Mar 2024 13:58:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=156.67.10.101
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5CCCA7440B
+	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 13:58:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.70.43.22
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711461498; cv=none; b=Gw07PqYOqx7crn9tsWT6l+MMtBjCKQ3PDCLE9PVD88/ZsG96BGmeFGLsHCWBH0Z7C2KanbWZiRnNDg1yaZjfHfkkAhYdC5ClS3HeeAM0c5EM7NV9FYbOmU8zsybNQEx/E/AmyeoQR70bBxK3DU2Mhaa7DLy+4kgR3H/Zo7NgLQE=
+	t=1711461522; cv=none; b=nwMTv42Hu+D6Mb5nW6QWDOUAu5BP0/sDSKfPeY/uuTW8lVEXChXbvdkUh36op9HilvbXLLlia9G9FeOIxjtyYBuYY2nTdNthx5P3lNg6EoDOxrOcm0wSErhxyAuSArrk3Y53SJzRlS1hQ7CPvv42qPtXNnwPo1d084+f316tjdA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711461498; c=relaxed/simple;
-	bh=UkX75V9l2kKeZPRM2sj6rUQZY2m0OPjpnlnv9BQJ7zM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Q3Pt8hp1CxKwdcnBlBLTbEUWdOtxAX7MsIV16yx4zTkWfXhLQIYGgB5uCwvxwKLm+bqmMtNbg1RalAh6enLrJd/duzPD3OwSJ1A9b48eAC+MWkMbWPcHQSa/lH8WsYpak4SoFzN/ZgYmfoMo8f/8FX80JKh+MsjLPzH5VFJ0kNQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch; spf=pass smtp.mailfrom=lunn.ch; dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b=TfAnJHGU; arc=none smtp.client-ip=156.67.10.101
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lunn.ch
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-	s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-	Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-	Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-	bh=vNnrYFubP6muTfOE3nnaUwzi5pQkV31BF/tVPuyXjRs=; b=TfAnJHGU62uIy+XDLC9mejbExn
-	EyKUGfPCjZbxdkxhdmwkZHLJWY8syH7wZdLL0KzAmlsqj0lh3RPaRm4fmWJmjFrDIzT2Cc4vvJeDQ
-	KLyQ7UFGJojCR5tYNwV/RZG4lPqL+vGXbCnppM77jN9sAqp4A6NiDvLPjzpF5iqw9wlU=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-	(envelope-from <andrew@lunn.ch>)
-	id 1rp7JT-00BHZx-Kb; Tue, 26 Mar 2024 14:58:03 +0100
-Date: Tue, 26 Mar 2024 14:58:03 +0100
-From: Andrew Lunn <andrew@lunn.ch>
-To: Christophe Roullier <christophe.roullier@foss.st.com>
-Cc: "David S . Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-	Alexandre Torgue <alexandre.torgue@foss.st.com>,
-	Richard Cochran <richardcochran@gmail.com>,
-	Jose Abreu <joabreu@synopsys.com>,
-	Liam Girdwood <lgirdwood@gmail.com>,
-	Mark Brown <broonie@kernel.org>, Marek Vasut <marex@denx.de>,
-	netdev@vger.kernel.org, devicetree@vger.kernel.org,
-	linux-stm32@st-md-mailman.stormreply.com,
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 1/2] dt-bindings: net: add phy-supply property for
- stm32
-Message-ID: <0e14ad5d-3c25-40ab-981a-fbc4e245fc94@lunn.ch>
-References: <20240326125849.226765-1-christophe.roullier@foss.st.com>
- <20240326125849.226765-2-christophe.roullier@foss.st.com>
+	s=arc-20240116; t=1711461522; c=relaxed/simple;
+	bh=zKa4/45e9odHjxrpuei7T8kQZfCmORh48encO6ZwDXA=;
+	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=o4wxmpB0OvVxk20LqK4xyuWcwd+rNG3NH32wyp9lCY2SJmNixrXM820CbOxhTSdFUXwobJ3ObCl3OEbabpoM9cuLk5H0217M8UeYZEivRY3V3XOx9o0avABCqbBK5p3eYtWU6e39Awib8HRCxJQ9jCk/D7be7vl6RIqKrVGDt10=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=proton.me; spf=pass smtp.mailfrom=proton.me; dkim=pass (2048-bit key) header.d=proton.me header.i=@proton.me header.b=ghr8XxPr; arc=none smtp.client-ip=185.70.43.22
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=proton.me
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=proton.me
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=proton.me;
+	s=protonmail; t=1711461518; x=1711720718;
+	bh=qtEBAIBIYK65CQa7Za5xsfAYMGv1McPLumPTs6claeg=;
+	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
+	 Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
+	 Message-ID:BIMI-Selector;
+	b=ghr8XxPrelWouWgUrziU85wQJAplgbqyXXWDYwZytG4/i4HzAQxjYzYr9ghQ0E6Wr
+	 ovoUPMACwUzwkEpYtcV2bNHWqOuYJ53npXv4O0CjbA3hOk4jnPfcrI2eb+ej2kOqpB
+	 amsvKjQaEnFlRKXfatWy1db8T21Ba2Y5mXe5l60zeF1jU2MARIKjFbZ5PwIqCCu4ay
+	 MKhSoJHLPxwQZVHZ8NoiDoRHGbHnPy1rTz+naUDn0JExRIkIco9dGDjyMXXqWLWIOG
+	 wJeeeptdHy6SBfbha2hLSSaf/n/YVsoXpbJ7fjEaGlnHw4q72TN46cokaIkx5e5eat
+	 +aMATUl4Yrs4g==
+Date: Tue, 26 Mar 2024 13:58:33 +0000
+To: Wedson Almeida Filho <wedsonaf@gmail.com>
+From: Benno Lossin <benno.lossin@proton.me>
+Cc: Boqun Feng <boqun.feng@gmail.com>, rust-for-linux@vger.kernel.org, Miguel Ojeda <ojeda@kernel.org>, Alex Gaynor <alex.gaynor@gmail.com>, Gary Guo <gary@garyguo.net>, =?utf-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, Andreas Hindborg <a.hindborg@samsung.com>, Alice Ryhl <aliceryhl@google.com>, linux-kernel@vger.kernel.org, Wedson Almeida Filho <walmeida@microsoft.com>
+Subject: Re: [PATCH 07/10] rust: alloc: update `VecExt` to take allocation flags
+Message-ID: <L8Btmo6IhqMHoSXiTDQ-avI42EPw1WUkSiIshVgNZ4gvBZJEYkNL2Ag3hQ0dLEwF_c1FnLTG1rY9G4UTHAbRvxuAxiN-Dk5vGryaNvKD450=@proton.me>
+In-Reply-To: <CANeycqpRfgTof1QeX4NnTV5NidEHxYCan7rvEw+T5nRyMDD9oQ@mail.gmail.com>
+References: <20240325195418.166013-1-wedsonaf@gmail.com> <20240325195418.166013-8-wedsonaf@gmail.com> <ZgHiJ23TdOmnSGe9@boqun-archlinux> <CANeycqpRfgTof1QeX4NnTV5NidEHxYCan7rvEw+T5nRyMDD9oQ@mail.gmail.com>
+Feedback-ID: 71780778:user:proton
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240326125849.226765-2-christophe.roullier@foss.st.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, Mar 26, 2024 at 01:58:48PM +0100, Christophe Roullier wrote:
-> Phandle to a regulator that provides power to the PHY. This
-> regulator will be managed during the PHY power on/off sequence.
-> 
-> Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-> Signed-off-by: Christophe Roullier <christophe.roullier@foss.st.com>
+On 25.03.24 20:54, Wedson Almeida Filho wrote:
+> From: Wedson Almeida Filho <walmeida@microsoft.com>
+>=20
+> We also rename the methods by removing the `try_` prefix since the names
+> are available due to our usage of the `no_global_oom_handling` config
+> when building the `alloc` crate.
+>=20
+> Signed-off-by: Wedson Almeida Filho <walmeida@microsoft.com>
 > ---
->  Documentation/devicetree/bindings/net/stm32-dwmac.yaml | 3 +++
->  1 file changed, 3 insertions(+)
-> 
-> diff --git a/Documentation/devicetree/bindings/net/stm32-dwmac.yaml b/Documentation/devicetree/bindings/net/stm32-dwmac.yaml
-> index fc8c96b08d7dc..80937b28fa046 100644
-> --- a/Documentation/devicetree/bindings/net/stm32-dwmac.yaml
-> +++ b/Documentation/devicetree/bindings/net/stm32-dwmac.yaml
-> @@ -82,6 +82,9 @@ properties:
->        Should be phandle/offset pair. The phandle to the syscon node which
->        encompases the glue register, and the offset of the control register
->  
-> +  phy-supply:
-> +    description: PHY regulator
+>   rust/kernel/alloc/vecext.rs  | 106 ++++++++++++++++++++++++++++-------
+>   rust/kernel/lib.rs           |   1 -
+>   rust/kernel/str.rs           |   6 +-
+>   rust/kernel/types.rs         |   4 +-
+>   samples/rust/rust_minimal.rs |   6 +-
+>   5 files changed, 95 insertions(+), 28 deletions(-)
 
-~/linux/drivers/net/ethernet/stmicro/stmmac$ grep regulator_get *
-dwmac-rk.c:	bsp_priv->regulator = devm_regulator_get(dev, "phy");
-dwmac-sun8i.c:	gmac->regulator = devm_regulator_get_optional(dev, "phy");
-dwmac-sunxi.c:	gmac->regulator = devm_regulator_get_optional(dev, "phy");
+With Boqun's change:
 
-Maybe i'm missing something, but i don't see an actual implementation
-of this binding?
+Reviewed-by: Benno Lossin <benno.lossin@proton.me>
 
-	Andrew
+One thing that we might consider in the future would be to create
+our own `Extend` trait to allow extending a Vec with any iterator.
+
+--=20
+Cheers,
+Benno
 
