@@ -1,94 +1,111 @@
-Return-Path: <linux-kernel+bounces-119597-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-119598-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5366888CAEA
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 18:31:36 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A66DF88CAF2
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 18:31:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 08F5A1F659AE
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 17:31:36 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0DC07B29511
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 17:31:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F1BC01CF9B;
-	Tue, 26 Mar 2024 17:31:29 +0000 (UTC)
-Received: from baptiste.telenet-ops.be (baptiste.telenet-ops.be [195.130.132.51])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8B6F21C6A0;
+	Tue, 26 Mar 2024 17:31:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="bb2LxkaE"
+Received: from mail-yw1-f171.google.com (mail-yw1-f171.google.com [209.85.128.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A3D6D1C69C
-	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 17:31:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.130.132.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4D6951CFBE
+	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 17:31:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711474289; cv=none; b=ZKqHdSLbqv7a0BT7gtJ7SIm+aoM7PizsQeu+tECjtREzW/pGaXP6ZQUGqf1CVyFN1ceFbcnJrqrCiBRUTiZHRsP4l2KQ+fsqpz5mHBsg4tmjtg5s0as8gdasdkbMPayVo4NmutObEuFaqEECgjzMX0MJTriLWuxpLOa0uqpOkmI=
+	t=1711474306; cv=none; b=WEx0GYucoX1xR+Wn+6hBBW4b4QpoUfkwCrwBvU3CBIk5se5flPpQPpJ/AYCWNgH7DZuf41JJfVTlpLCdDO9Mc8n6XfHTysw1bAPgzq2fJck9ZEAKa5wMesA9rD06Ix0DT07+m0reKPGzWumbSrgnavd5BqIvxauA4cOIIWvUrzw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711474289; c=relaxed/simple;
-	bh=bq4YNkziyQcZmvz2N637u5vOHPJJEnrP824rDyNrXGE=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=l28p/Fvs/cswbIfSFqNNnFXWM8He9i2JXLl62aEc6KFkrd/ITZQ7OgbqJOe40I2QffviBsZdvxcdFUo2ty1zzlpHnfPm+4g2pIw/e3PDX1+J+tYF0Z+ktvHKbNgTMKKLjhMW5mwumH+X3KBqQ9SEm78Wg6aRU5r5eQFKNj09uxE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=glider.be; spf=none smtp.mailfrom=linux-m68k.org; arc=none smtp.client-ip=195.130.132.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=glider.be
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux-m68k.org
-Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed80:76d0:2bff:fec8:549])
-	by baptiste.telenet-ops.be with bizsmtp
-	id 3VXD2C00R0SSLxL01VXDi8; Tue, 26 Mar 2024 18:31:18 +0100
-Received: from rox.of.borg ([192.168.97.57])
-	by ramsan.of.borg with esmtp (Exim 4.95)
-	(envelope-from <geert@linux-m68k.org>)
-	id 1rpAdO-0053lJ-Rf;
-	Tue, 26 Mar 2024 18:31:13 +0100
-Received: from geert by rox.of.borg with local (Exim 4.95)
-	(envelope-from <geert@linux-m68k.org>)
-	id 1rpAdl-001ZMO-Kd;
-	Tue, 26 Mar 2024 18:31:13 +0100
-From: Geert Uytterhoeven <geert+renesas@glider.be>
-To: Emil Renner Berthing <kernel@esmil.dk>,
-	Hal Feng <hal.feng@starfivetech.com>,
-	Michael Turquette <mturquette@baylibre.com>,
-	Stephen Boyd <sboyd@kernel.org>,
-	Paul Walmsley <paul.walmsley@sifive.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Albert Ou <aou@eecs.berkeley.edu>,
-	Conor Dooley <conor.dooley@microchip.com>,
-	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-	Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc: linux-clk@vger.kernel.org,
-	linux-riscv@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	Geert Uytterhoeven <geert+renesas@glider.be>
-Subject: [PATCH] drm: DRM_WERROR should depend on DRM
-Date: Tue, 26 Mar 2024 18:31:11 +0100
-Message-Id: <631a1f4c066181b54617bfe2f38b0bd0ac865b68.1711474200.git.geert+renesas@glider.be>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1711474306; c=relaxed/simple;
+	bh=SbAoClBp6vcfCL54MkSlIoYTIV7r1b+nCCdUl2D5njA=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=sTNuhTInlM+FJu0XywOoEiIJHX3Y488zZTuK8j1Bj8Uk3ys2gKLdS99B/l1ccYITQgPmx6d0lDy5Annhys/cc9AqfxbJPj4IyVOoPc+UcpqpXX+7kHhoReTrJ6LnuidwXbjH/U4JKNyUKFOHRLO8Kxhx/VX4ULDmY+QQ4EVJAJ4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=bb2LxkaE; arc=none smtp.client-ip=209.85.128.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-yw1-f171.google.com with SMTP id 00721157ae682-60a5a11b59dso63753067b3.0
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 10:31:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1711474304; x=1712079104; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=9zt/phGBfZSdp8qy9N6Gw8zdXEBb0+nioLRknU84U6I=;
+        b=bb2LxkaElAqiObuviNo2utz9kb5g7gX6/zhj3E83ANUvnBUK7MvYc+bS05fc+GcNst
+         qArvvBL3Buoz0iMtiJFbtBwvEe7+oA8DT121n7lP9Wj/Q4RsNCvJXoZ1LYTR9EvZhXFI
+         SWvkoyQj7Y3cOeoQZqDG6cJnSvADWaPhIDlCco/gBJIkTzW4Q84+piy9P5wSfrO9wf5l
+         i/G+p0+ubv9pMzPmwvgQtSKU3b3sNgq4AyEBX5yEs2Z64buqRC7bqyT4QMqATlaN93m7
+         b7j94z/BCjEk8MvD7GGk73G3zV0lT5dvztOuqw8TqlNLEq1x4bTi7nmNnBBnxV3GotyS
+         zRGA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711474304; x=1712079104;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=9zt/phGBfZSdp8qy9N6Gw8zdXEBb0+nioLRknU84U6I=;
+        b=OSE6mcuctgyHyVcEutTwByV8Sa1xq7IV10L9deawPiewl1IQVtMISyCm2LxqbTKyxh
+         TAASTmzccrBwK8f67OJNIV6C8uxbYC8p2LWSQc3LUVkhRmNiT+1rBhVTt+rMlIfKf0dO
+         gOcS7m/Xo6SCWFSbV7tDjpHq1wwPXJVXEPL2o5O/9qv0tt5QAoelyeLnOmEfg4A0hEwX
+         ZbxQy/me/VfPG3Fv1WZL9lWNUUfHv6MR9qtIEJzs4+aDyp3i5yRuZI7tKeBmCD39BWB/
+         A+QvClTg546x/9zCy7Li7NO4g5z8VAXtoQgfc5ExBsXzjLYySf4br9x9Y63iOC2sBJjq
+         N4gw==
+X-Forwarded-Encrypted: i=1; AJvYcCVMLBMSPEBpscf6/7Eq3CQdkFN61nG50+rmPMysB4/V55edWKOKXPRM+VgaWszHRG+wYMBnhTx9YFUOdPYgAtFb+3aE4f3D9hetXTuc
+X-Gm-Message-State: AOJu0YxSgiMBdf0tKLV8OYHvg3E479Ca1u0ri/PWDi6c4QbZUVl0alPp
+	YsRFkWMvhm8tie1cUXgDQq8fwV4tTexeWo4k1cd3dagglBEJO9zesWwNtfueov8HOPl8e0Mafh0
+	sk6qiERvIAgW9LTTEiTFEw/6/+ScEcXqu/ysq8A==
+X-Google-Smtp-Source: AGHT+IHKvErihvCqyYvqxnaKemrvy7TNx3gwuqYnQoUJPA6s9U6270M569opHM8owaC5W9WEJhp8lM+R6e3WArVuFyo=
+X-Received: by 2002:a25:db10:0:b0:dcb:be59:25e1 with SMTP id
+ g16-20020a25db10000000b00dcbbe5925e1mr291813ybf.30.1711474304335; Tue, 26 Mar
+ 2024 10:31:44 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20240326-msm-dp-cleanup-v1-0-e775556ecec0@quicinc.com> <20240326-msm-dp-cleanup-v1-4-e775556ecec0@quicinc.com>
+In-Reply-To: <20240326-msm-dp-cleanup-v1-4-e775556ecec0@quicinc.com>
+From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date: Tue, 26 Mar 2024 19:31:33 +0200
+Message-ID: <CAA8EJpoJQ+K6S7PbeWt740WhaMRWbNmu2LXz1Js+x8HgzuH24A@mail.gmail.com>
+Subject: Re: [PATCH 4/6] drm/msm/dp: Use function arguments for aux writes
+To: Bjorn Andersson <andersson@kernel.org>
+Cc: Rob Clark <robdclark@gmail.com>, Abhinav Kumar <quic_abhinavk@quicinc.com>, 
+	Sean Paul <sean@poorly.run>, Marijn Suijten <marijn.suijten@somainline.org>, 
+	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, linux-arm-msm@vger.kernel.org, 
+	dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org, 
+	linux-kernel@vger.kernel.org, Bjorn Andersson <quic_bjorande@quicinc.com>
+Content-Type: text/plain; charset="UTF-8"
 
-There is no point in asking the user about enforcing the DRM compiler
-warning policy when configuring a kernel without DRM support.
+On Tue, 26 Mar 2024 at 17:06, Bjorn Andersson <andersson@kernel.org> wrote:
+>
+> From: Bjorn Andersson <quic_bjorande@quicinc.com>
+>
+> The dp_aux write operations takes the data to be operated on through a
+> member of struct dp_catalog, rather than as an argument to the function.
+>
+> No state is maintained other than across the calling of the functions,
+> so replace this member with a function argument.
 
-Fixes: f89632a9e5fa6c47 ("drm: Add CONFIG_DRM_WERROR")
-Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
----
- drivers/gpu/drm/Kconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Definitely yes, thank you!
 
-diff --git a/drivers/gpu/drm/Kconfig b/drivers/gpu/drm/Kconfig
-index f2bcf5504aa77679..2e1b23ccf30423a9 100644
---- a/drivers/gpu/drm/Kconfig
-+++ b/drivers/gpu/drm/Kconfig
-@@ -423,7 +423,7 @@ config DRM_PRIVACY_SCREEN
- 
- config DRM_WERROR
- 	bool "Compile the drm subsystem with warnings as errors"
--	depends on EXPERT
-+	depends on DRM && EXPERT
- 	default n
- 	help
- 	  A kernel build should not cause any compiler warnings, and this
+Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+
+>
+> Signed-off-by: Bjorn Andersson <quic_bjorande@quicinc.com>
+> ---
+>  drivers/gpu/drm/msm/dp/dp_aux.c     | 9 +++------
+>  drivers/gpu/drm/msm/dp/dp_catalog.c | 8 ++++----
+>  drivers/gpu/drm/msm/dp/dp_catalog.h | 5 ++---
+>  3 files changed, 9 insertions(+), 13 deletions(-)
+
 -- 
-2.34.1
-
+With best wishes
+Dmitry
 
