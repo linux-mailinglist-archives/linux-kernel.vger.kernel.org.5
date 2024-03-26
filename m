@@ -1,152 +1,236 @@
-Return-Path: <linux-kernel+bounces-118522-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-118523-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 45ADD88BC16
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 09:14:34 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 567A388BC18
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 09:15:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D3CE11F3F504
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 08:14:33 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 769141C2D13D
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 08:15:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 318D6134422;
-	Tue, 26 Mar 2024 08:14:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3531C133998;
+	Tue, 26 Mar 2024 08:15:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="ZIcRNIoq";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="ZxfcEH2F"
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=oxt-co.20230601.gappssmtp.com header.i=@oxt-co.20230601.gappssmtp.com header.b="tsPfr+Im"
+Received: from mail-ua1-f49.google.com (mail-ua1-f49.google.com [209.85.222.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 08F5313341E;
-	Tue, 26 Mar 2024 08:14:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 761251332BC
+	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 08:15:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711440863; cv=none; b=pj3BrXj8RU9u3a/KlCih5va2wrTGqM1lqsD6w0xbjltAHjPYyc4m3544PXy8xC+laXh3e3RDPrfdckUyivC92B3DM72QjTKvdxwgmbKH7nGHSIJo9akQfVMoEQs8NO9/qtuslwojUTAXhz/IaxYwJOT6JuZcQjR1z+59E+cdwuU=
+	t=1711440923; cv=none; b=RCa1bRQaOe2WnFNlw7dQykn+MYOelG9xfLH3hEftu3nODAA4Hc4NZ2EIZM6TX2/rLfPYBIlZjzubtgRNonWMpoaiR7qMBLwVPhCqSRQV4OkP8T5yWaMJTErMpdDPnMhrbITdaMtmCNEmLFwRIS/dY+ZTDD/LDO+jy5ZbEX3RUZM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711440863; c=relaxed/simple;
-	bh=uXNuOnrlxoacDE4htCHyP4Jg8sVjasry7YMjexT7+ZQ=;
-	h=Date:From:To:Subject:Cc:In-Reply-To:References:MIME-Version:
-	 Message-ID:Content-Type; b=O7V8wwdOe1aOCgIqzVGZD5VIWkO1/NpnG3Da66Ke93/1A0j3JwV94bHCRUuJPM+k0/y8AOrRy/T8ofBaaLMTReV8hBx5Os1NIVY+tglxoE1EHoIoYtMMmI1sW6jvlv8B3C5bvoI0cVQ3g/savEUGAwKyt+3eg2O0CvRwQzWgraQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=ZIcRNIoq; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=ZxfcEH2F; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-Date: Tue, 26 Mar 2024 08:14:19 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1711440860;
-	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-	 content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=lvY99s+9IkddCUDp0OxjqZVvEwm8fe3ntlSIWWtmCj4=;
-	b=ZIcRNIoqKqfxNcoNr7t5+KALq8NdV9Zoz8yt02it9iip/VC9oQCEDNr5/CtqFvYhHUAa7W
-	OMrvVtV7hj8v0wH6t0uMpNIGp9d0Fe2e1tVl7KRhUePwDa5Y1AsySF2JVnTSraF9ZhAujC
-	1mf07BO6Cq79U0hIAAiA9LH6qVwv6JT+P827hm8gDtEgqSVAKsDRj1jfzZPZLiHYZA03fW
-	L2VSMbvSazEQ6CUvkvwlE7erPMxSN3xq5di2QxLwgaheAsm4ePYXkdKVytDmTZALQj26/e
-	M4DknOxrmBMf9uZsgTw5LGIc/pnlvSFjDw/TAGuutBo5dE204pBYCTOpHJecLQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1711440860;
-	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-	 content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=lvY99s+9IkddCUDp0OxjqZVvEwm8fe3ntlSIWWtmCj4=;
-	b=ZxfcEH2F9bBX2y/i2BDFVJ41dm++cbK1dq0yB7G7j27Z7OmNt9voLKx+eDugaL1yzyF4nM
-	99lBV/ErpeqCUBCQ==
-From: "tip-bot2 for Sandipan Das" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To: linux-tip-commits@vger.kernel.org
-Subject: [tip: perf/urgent] perf/x86/amd/core: Update and fix stalled-cycles-*
- events for Zen 2 and later
-Cc: Sandipan Das <sandipan.das@amd.com>, Ingo Molnar <mingo@kernel.org>,
- Ian Rogers <irogers@google.com>, x86@kernel.org, linux-kernel@vger.kernel.org
-In-Reply-To: =?utf-8?q?=3C03d7fc8fa2a28f9be732116009025bdec1b3ec97=2E17113?=
- =?utf-8?q?52180=2Egit=2Esandipan=2Edas=40amd=2Ecom=3E?=
-References: =?utf-8?q?=3C03d7fc8fa2a28f9be732116009025bdec1b3ec97=2E171135?=
- =?utf-8?q?2180=2Egit=2Esandipan=2Edas=40amd=2Ecom=3E?=
+	s=arc-20240116; t=1711440923; c=relaxed/simple;
+	bh=AHsF7pl4Nf8PIxJRkpi6eIzZQcxPKtxq/DQ61XjaxM4=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=KyhVrdPizby5D7YnqgvKFGF9u5puKfCcysve1suUlUAutiCVZHK0l2NxPaaM1z9D7i9nvV8ZfCw7uzv4gbcQmuIgxF+lleW40nuSlYCfPLFkXOOsydptcQZKEN+D4xRkDV34rCLV5t0yDyODr85XEJWZjC+WC8KW7T5/K5m1DMw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=oxt.co; spf=none smtp.mailfrom=oxt.co; dkim=pass (2048-bit key) header.d=oxt-co.20230601.gappssmtp.com header.i=@oxt-co.20230601.gappssmtp.com header.b=tsPfr+Im; arc=none smtp.client-ip=209.85.222.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=oxt.co
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=oxt.co
+Received: by mail-ua1-f49.google.com with SMTP id a1e0cc1a2514c-7e04e70c372so1470648241.0
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 01:15:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=oxt-co.20230601.gappssmtp.com; s=20230601; t=1711440920; x=1712045720; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=CM2Y038SjZyb1eGsQwstN6fVzjkdst+K8jbQKRjvRBI=;
+        b=tsPfr+Im1AzjeUZ3orsTLi8UAgqn2+T56M6o6LquCISwOm5hZsMZtINtwZ3sYE2Wm+
+         P7vQA9taDGUxOW2LXRumfHS8A8v1EJ64ADWv8XIfKDGGVphKFCtQxCemF2vFqOgHVJdR
+         kb1EXivMPNr0ttRIhNQVUwU2TxiRYi2FlVylgnDClxyZdpYlpkqhAlDIgDd7Olwm4TxR
+         GqNGhXJbp451sX2CtzFEZ/gTrrWGS14Ek8vOflLMK4Q6M4Ghn1m2oAN5hDwYY/Xivi47
+         iWfAD3A0DHHn6V5Umv9pm18uzBbAI+EorCOmVjseRoBd0cKQ2qbLXsVB6bcOgRmV5vSQ
+         bFeA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711440920; x=1712045720;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=CM2Y038SjZyb1eGsQwstN6fVzjkdst+K8jbQKRjvRBI=;
+        b=hyya9wm2+QJhr9rMz3jhsxKd+B9fAgnygd/liuJV2olomwZ67zeoTZZeaiRJB8+3v1
+         ZUulmAzihcacafynFUt++zcVPXPeM9m+Sz0ML3ut3ba+KDpHrZ8UjLbDnzrMEJi1oVkO
+         iy7OToQBbNT6VWo3DYXypDn6HQ4awsPSJitnpTYsf2nX1k+ctkbzskU4bYVlxcl4kC3k
+         Imvqbkx7Z626lT+461aC+2fwdwlkJcEW6EyTFY892j6wcXs7yQgeGJ/a6TEcpK7yOkqi
+         UJ33xVvTF3ao6kZkFv07N2Rpo4k0qwmzCFcxcEP7ZRntOi58SZJbHNpH9/7WMEj3gozn
+         S4yQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVVzIZU54RUnL+Q3WcXJ8HztHwisU3BT46ME/O6O8MRaq1YeguH5g78eSY7T9OTXX/+R/1H4g+jXhIpMWPKYdNpERYu6pKMpi+WkxZN
+X-Gm-Message-State: AOJu0YxIApUCWDafHlfVikwZCJ3YBhZCyvqybA0yLir4eCVIs1hhALHd
+	FU+VwgeqzPYwSv2OvS6DBMvh7ez5sBWe7WP3e3Bz+6ACAqPOIMa4GSTW4mg11pBLEzdBg7Qc0UU
+	U9X9537JSXe3AvGOAmtmQDMMFLRUwHGNHEKD+ISISHMC1quIYWfsT2A==
+X-Google-Smtp-Source: AGHT+IEmFzrkE1uu0P3w6ZHI4kWUQ7hFSMcinvjcf0h7M46f1eXFfIlN081Cp6Cmf6kN+ncXGA4KEAXyFanQJg4lhZs=
+X-Received: by 2002:ac5:cdd1:0:b0:4d4:15d2:8b3b with SMTP id
+ u17-20020ac5cdd1000000b004d415d28b3bmr6113449vkn.9.1711440920144; Tue, 26 Mar
+ 2024 01:15:20 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-ID: <171144085952.10875.16500416606586334675.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe:
- Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Precedence: bulk
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+References: <20240325-obsbot-quirk-fix-relative-ptz-speed-v1-1-0eb1387d98c7@securitylive.com>
+ <6e6b75a15cdc6a1239edc4d49b927b187ed20054.camel@irl.hu> <CAMB8T1ULcfBOB5VwZzUtvRnp4FvtBCFWxxTdb+OJK8FOpjKCXA@mail.gmail.com>
+ <ec0430f6e687fc5e1a19338e381804b9d6aeabba.camel@irl.hu> <CAMB8T1Vv7CMqhH1ZY6fouxsE6r+6JbmeLnuFma_0_de814UoMA@mail.gmail.com>
+ <CAMB8T1VWGaWtE0k5en4-xhE69G=OyFnhqJ3mexcgNSuvO_7uUQ@mail.gmail.com> <CANiDSCvGfA=B5YCQhSMRW-0cTQNWKGytQF74z9F_x-77WFPHpw@mail.gmail.com>
+In-Reply-To: <CANiDSCvGfA=B5YCQhSMRW-0cTQNWKGytQF74z9F_x-77WFPHpw@mail.gmail.com>
+From: John Bauer <john@oxt.co>
+Date: Tue, 26 Mar 2024 03:15:09 -0500
+Message-ID: <CAMB8T1W5K68fX4jw=V8+kqc8eT2HGCv75PAidO0Nkzy-A1jFAQ@mail.gmail.com>
+Subject: Re: [PATCH] uvcvideo: Remo OBSBOT quirk fix for incorrect relative
+ min pan/tilt/zoom speeds
+To: Ricardo Ribalda <ribalda@chromium.org>
+Cc: Gergo Koteles <soyer@irl.hu>, johnebgood@securitylive.com, 
+	Laurent Pinchart <laurent.pinchart@ideasonboard.com>, 
+	Mauro Carvalho Chehab <mchehab@kernel.org>, linux-media@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linh.tp.vu@gmail.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-The following commit has been merged into the perf/urgent branch of tip:
+According to the spec bPanRelative and bTiltRelative are of "Signed
+Number" but bPanSpeed and bTiltSpeed are of "Number". I think this
+implies that a negative number is not possible for a minimum here.
 
-Commit-ID:     c7b2edd8377be983442c1344cb940cd2ac21b601
-Gitweb:        https://git.kernel.org/tip/c7b2edd8377be983442c1344cb940cd2ac21b601
-Author:        Sandipan Das <sandipan.das@amd.com>
-AuthorDate:    Mon, 25 Mar 2024 13:17:53 +05:30
-Committer:     Ingo Molnar <mingo@kernel.org>
-CommitterDate: Tue, 26 Mar 2024 09:03:40 +01:00
+It is very beneficial that the direction and speed are condensed into
+one value, it greatly simplifies control as shown in a test I just did
+below.
 
-perf/x86/amd/core: Update and fix stalled-cycles-* events for Zen 2 and later
+Here is a quick test I just did with the patch I'll be sending
+shortly: https://www.youtube.com/watch?v=3D1XqWPROw49s
 
-AMD processors based on Zen 2 and later microarchitectures do not
-support PMCx087 (instruction pipe stalls) which is used as the backing
-event for "stalled-cycles-frontend" and "stalled-cycles-backend".
+Thanks,
+John
 
-Use PMCx0A9 (cycles where micro-op queue is empty) instead to count
-frontend stalls and remove the entry for backend stalls since there
-is no direct replacement.
-
-Signed-off-by: Sandipan Das <sandipan.das@amd.com>
-Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Reviewed-by: Ian Rogers <irogers@google.com>
-Fixes: 3fe3331bb285 ("perf/x86/amd: Add event map for AMD Family 17h")
-Link: https://lore.kernel.org/r/03d7fc8fa2a28f9be732116009025bdec1b3ec97.1711352180.git.sandipan.das@amd.com
----
- arch/x86/events/amd/core.c | 20 +++++++++++++++++---
- 1 file changed, 17 insertions(+), 3 deletions(-)
-
-diff --git a/arch/x86/events/amd/core.c b/arch/x86/events/amd/core.c
-index 5692e82..af8add6 100644
---- a/arch/x86/events/amd/core.c
-+++ b/arch/x86/events/amd/core.c
-@@ -250,7 +250,7 @@ static const u64 amd_perfmon_event_map[PERF_COUNT_HW_MAX] =
- /*
-  * AMD Performance Monitor Family 17h and later:
-  */
--static const u64 amd_f17h_perfmon_event_map[PERF_COUNT_HW_MAX] =
-+static const u64 amd_zen1_perfmon_event_map[PERF_COUNT_HW_MAX] =
- {
- 	[PERF_COUNT_HW_CPU_CYCLES]		= 0x0076,
- 	[PERF_COUNT_HW_INSTRUCTIONS]		= 0x00c0,
-@@ -262,10 +262,24 @@ static const u64 amd_f17h_perfmon_event_map[PERF_COUNT_HW_MAX] =
- 	[PERF_COUNT_HW_STALLED_CYCLES_BACKEND]	= 0x0187,
- };
- 
-+static const u64 amd_zen2_perfmon_event_map[PERF_COUNT_HW_MAX] =
-+{
-+	[PERF_COUNT_HW_CPU_CYCLES]		= 0x0076,
-+	[PERF_COUNT_HW_INSTRUCTIONS]		= 0x00c0,
-+	[PERF_COUNT_HW_CACHE_REFERENCES]	= 0xff60,
-+	[PERF_COUNT_HW_CACHE_MISSES]		= 0x0964,
-+	[PERF_COUNT_HW_BRANCH_INSTRUCTIONS]	= 0x00c2,
-+	[PERF_COUNT_HW_BRANCH_MISSES]		= 0x00c3,
-+	[PERF_COUNT_HW_STALLED_CYCLES_FRONTEND]	= 0x00a9,
-+};
-+
- static u64 amd_pmu_event_map(int hw_event)
- {
--	if (boot_cpu_data.x86 >= 0x17)
--		return amd_f17h_perfmon_event_map[hw_event];
-+	if (cpu_feature_enabled(X86_FEATURE_ZEN2) || boot_cpu_data.x86 >= 0x19)
-+		return amd_zen2_perfmon_event_map[hw_event];
-+
-+	if (cpu_feature_enabled(X86_FEATURE_ZEN1))
-+		return amd_zen1_perfmon_event_map[hw_event];
- 
- 	return amd_perfmon_event_map[hw_event];
- }
+On Tue, Mar 26, 2024 at 2:47=E2=80=AFAM Ricardo Ribalda <ribalda@chromium.o=
+rg> wrote:
+>
+> Hi Jon, Hi Gergo
+>
+> On Tue, 26 Mar 2024 at 07:23, John Bauer <john@oxt.co> wrote:
+> >
+> > After looking through the current implementation all of the proper chec=
+ks are done in the getter and setter for the pan/tilt/zoom controls so the =
+only change needed is the 2 locations to get/check/set the minimum when nee=
+ded. Thankfully all the code that does the hard work is already implemented=
+ I'll be submitting another patch that summarizes our findings.
+>
+>
+> My issue with the spec is that it is not clear about what GET_MIN
+> should return.  Is it the minimum absolute value for that control, or
+> the minimum value in that direction?
+>
+> In other words, can we have a device with a range (-10,20) (-A,B), or
+> only (-20,20) (-A,A) is allowed.
+>
+> If there is no device that supports (-A,B), then we do not need a quirk.
+>
+> Regards!
+>
+>
+> >
+> > Thanks,
+> > John
+> >
+> >
+> >
+> > On Mon, Mar 25, 2024 at 10:42=E2=80=AFPM John Bauer <john@oxt.co> wrote=
+:
+> >>
+> >> Ok, I get you now Gergo, I think I got lucky and I think you're right!=
+ Digging into the UVC 1.5 spec I can see why this works, the first byte in =
+each 2 byte pair signifying the direction is just getting the signed bit se=
+t when a negative value is applied to both bytes so there should probably b=
+e some checks.
+> >>
+> >> Here from the UVC 1.5 spec:  CT_PANTILT_RELATIVE_CONTROL
+> >> +--------+---------------+------+---------------+---------------------=
+---------------------------+
+> >> | Offset |     Field     | Size |     Value     |                  Des=
+cription                   |
+> >> +--------+---------------+------+---------------+---------------------=
+---------------------------+
+> >> |      0 | bPanRelative  |    1 | Signed Number | 0: Stop, 1: clockwis=
+e, 0xFF: counter-clockwise |
+> >> |      1 | bPanSpeed     |    1 | Number        | Speed of the Pan mov=
+ement                      |
+> >> |      2 | bTiltRelative |    1 | Signed Number | 0: Stop, 1: tilt up,=
+ 0xFF: tilt down           |
+> >> |      3 | bTiltSpeed    |    1 | Number        | Speed for the Tilt m=
+ovement                    |
+> >> +--------+---------------+------+---------------+---------------------=
+---------------------------+
+> >>
+> >> I think it is the direction of the original implementation which is wa=
+y easier to use than having 2 controls anyway, I would say it's preferred, =
+it's how I have all my analog stick controls mappings.
+> >>
+> >> While the OBSBOT firmware implementation may handle any signed negativ=
+e value in the direction byte we should probably check and make sure it con=
+forms to spec with 0xFF for counter clockwise and down.
+> >>
+> >> In the current implementation both pan and tilt each use 2 bytes:
+> >>
+> >> {
+> >> .id =3D V4L2_CID_PAN_SPEED,
+> >> .entity =3D UVC_GUID_UVC_CAMERA,
+> >> .selector =3D UVC_CT_PANTILT_RELATIVE_CONTROL,
+> >> .size =3D 16,
+> >> .offset =3D 0,
+> >> .v4l2_type =3D V4L2_CTRL_TYPE_INTEGER,
+> >> .data_type =3D UVC_CTRL_DATA_TYPE_SIGNED,
+> >> .get =3D uvc_ctrl_get_rel_speed,
+> >> .set =3D uvc_ctrl_set_rel_speed,
+> >> },
+> >> {
+> >> .id =3D V4L2_CID_TILT_SPEED,
+> >> .entity =3D UVC_GUID_UVC_CAMERA,
+> >> .selector =3D UVC_CT_PANTILT_RELATIVE_CONTROL,
+> >> .size =3D 16,
+> >> .offset =3D 16,
+> >> .v4l2_type =3D V4L2_CTRL_TYPE_INTEGER,
+> >> .data_type =3D UVC_CTRL_DATA_TYPE_SIGNED,
+> >> .get =3D uvc_ctrl_get_rel_speed,
+> >> .set =3D uvc_ctrl_set_rel_speed,
+> >> },
+> >>
+> >> Going to do some testing and report back.
+> >>
+> >> Thanks,
+> >> John
+> >>
+> >>
+> >>
+> >> On Mon, Mar 25, 2024 at 9:23=E2=80=AFPM Gergo Koteles <soyer@irl.hu> w=
+rote:
+> >>>
+> >>> Hi John,
+> >>>
+> >>> On Mon, 2024-03-25 at 20:51 -0500, John Bauer wrote:
+> >>>
+> >>> I understand this patch might not be the ideal or proper solution; bu=
+t it works. I don't think the UVC
+> >>> implementation can be trusted on these cameras, just like the Windows=
+ DirectShow implementation is off.
+> >>> I put this patch out there as I have encountered many Linux users who=
+ are struggling to get proper
+> >>> control of these awesome cameras. If the patch dies here for now, tha=
+t's OK, at least there's a possible
+> >>> patch for those in need.
+> >>>
+> >>>
+> >>> Sorry, maybe I didn't phrase it well. Based on the UVC specs, I think=
+ your patch is good for all UVC PTZ cameras, so you don't need to use UVC_Q=
+UIRK_OBSBOT_MIN_SETTINGS quirk entry, just apply the quirk changes to all c=
+ameras.
+> >>>
+> >>> Thanks for doing this!
+> >>>
+> >>> Regards,
+> >>> Gergo
+> >>>
+>
+>
+> --
+> Ricardo Ribalda
 
