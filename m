@@ -1,922 +1,631 @@
-Return-Path: <linux-kernel+bounces-119278-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-119281-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 051E988C689
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 16:14:45 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9FAA688C68D
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 16:15:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 53B28B24B25
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 15:14:42 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1664E1F64F9F
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 15:15:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7E3CE13CC41;
-	Tue, 26 Mar 2024 15:13:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7616913C908;
+	Tue, 26 Mar 2024 15:13:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="QKshboez"
-Received: from mail-wr1-f49.google.com (mail-wr1-f49.google.com [209.85.221.49])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="mmeEye+D"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.13])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C75A013C9A2
-	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 15:13:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2274D13C82C
+	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 15:13:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.13
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711465992; cv=none; b=EcReTDwYFbPOmC8qJkMhn7fjA47pcjSX1mV67NZxKJ6nMIayH1TCHXXJ8zkzMi9ZhBsMYHxbuqiKMZ6WEt1EWOQFEoO/DdZDzfTEFBUoUJJEO0Q+c5vQXK0s5xRI86xLNY+323ad1A+wqAu+2QzORqAPhkDdUCp5jHgSIYxn3Rc=
+	t=1711466016; cv=none; b=mTeQoast//NIe5NXX7lEZBfXRtvJ+I3SQkopFGz2Wp7/0NNqdKRsQUru2T7Ywhsu7dC1o9j1nvtFyiyJ2pEx5TdCo3zWkGuvi0sD5LK6nEisHXvkFDjPcbCbuJOpKiBkdHeE3WgrC+JkJvpmsolxT0TXUfFnuuNns6kw1aptgnU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711465992; c=relaxed/simple;
-	bh=3MjqmoH3WniLREjKtpJy6Ei22eZ2CTVq3YCpFO/uyZg=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=i8+/EkydxRGN84/0gVnl2ujjW89XWbkw7dqJlqJKPUpS1iQBqIDnreKS9eTETsl8tHveFA3sdyq0IeZMNWABFXyVyNo1fR8qBYZWzCy1lfshoVgRBD09JiNSndXTrPjSQKyYl5bCAP3pUZi4lBJFDFQjtAhX714J/5in0KwaKT0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=QKshboez; arc=none smtp.client-ip=209.85.221.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wr1-f49.google.com with SMTP id ffacd0b85a97d-341cf77b86bso1430578f8f.2
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 08:13:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1711465988; x=1712070788; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=fswag0r4wwD6QybKq0XpPvu7XTv6A3HgoPtC1X0d1eE=;
-        b=QKshboezaV3PNclEG0hN7CVemdqWJv8UpnPanxsalFAd813oBd+jieMHGDdzVz/6E7
-         4xgxMrhZDl3fQ5zrOP381012EBPJOV2h8GpLR3xk8Gbzt4mCg7W73+VkcHiq8PdAAHcd
-         OFM9drNGixdv4u2dlO0tNXhLRB7MrghicMVb0EPSNo+JSIhTCQlL/FUCQHtVl+DWTBrB
-         aU0pdtybXMTA4bffAPaLcXvo1MHCOwpcyqRz5f0t9GuWyc4zr1wDS1FfuW7ok6Ta58wI
-         5HDwVcOLNGe+aA4myPTvsy12zEAjvBybNTBlRX2X1JjhzzZ4nGwMkmdkMuFE1b9As9NP
-         c4RQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711465988; x=1712070788;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=fswag0r4wwD6QybKq0XpPvu7XTv6A3HgoPtC1X0d1eE=;
-        b=L/z1t62NhmynR91CoG6BMwL6VjtKGGqsUmeAX4Se3hCehuKevhDPb9dAWmB/PJcwqt
-         gz9J6pFO51sbxJrD4qHF3d2MLAKasRe3JqZH44K8NWgTs7Aft62YOp4gNCu6pf0t3Rhz
-         n0GapSrAAm3dWWGsBigCuhzj6dqB5QL3KJNb0LQu1+/m48xlOkCJ/bziVjZaXjYB7ZGq
-         a8gepILUpZE628224siRkrPRnM1/q1WST4D1QL9KuQ+cRlEpT9Iparade25OJwtaOmRt
-         by4KaszBRALzBNTT/bE2Bki7w7jh6Z1jSdtEvisMRUzAVh1LTM8Z1W2SLDBsVRVepclI
-         Cjmw==
-X-Forwarded-Encrypted: i=1; AJvYcCXTUXzHagwwD23uDL51aT0QdlhdH6g4FrC5+tnF9uNbkOWVq94Xf7RClN1PJwdXyv3RwAXhwp1Ux0NySXMPUhDbYwRGE5ILQCw/Kr6K
-X-Gm-Message-State: AOJu0YxTacwX+Tf5vmq8EsVdxlB7gf5hwwotDmszUtMxbrtQYi3p9KHO
-	Ev3dk0NYn9NI+4utkTkDcfpCjYdWEW9oOkOCL2iNRR/f3ma1B8z62eOMRE3vjIAQSvvhENCeOfQ
-	6iuA=
-X-Google-Smtp-Source: AGHT+IGf3X9LqSwQUYHkUPSLjuQF/lZVpgI2xGvAQ1ZwgqoexpehCBgs7FTo6pMFyLdIFg4/MF5D7A==
-X-Received: by 2002:a05:6000:1d85:b0:341:c9d1:eae5 with SMTP id bk5-20020a0560001d8500b00341c9d1eae5mr6787384wrb.27.1711465988133;
-        Tue, 26 Mar 2024 08:13:08 -0700 (PDT)
-Received: from ta2.c.googlers.com.com (158.100.79.34.bc.googleusercontent.com. [34.79.100.158])
-        by smtp.gmail.com with ESMTPSA id b1-20020a5d40c1000000b0033e7a204dc7sm12325692wrq.32.2024.03.26.08.13.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Mar 2024 08:13:07 -0700 (PDT)
-From: Tudor Ambarus <tudor.ambarus@linaro.org>
-To: peter.griffin@linaro.org,
-	robh+dt@kernel.org,
-	krzysztof.kozlowski+dt@linaro.org,
-	conor+dt@kernel.org
-Cc: alim.akhtar@samsung.com,
-	linux-arm-kernel@lists.infradead.org,
-	linux-samsung-soc@vger.kernel.org,
-	devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	andre.draszik@linaro.org,
-	willmcvicker@google.com,
-	kernel-team@android.com,
-	Tudor Ambarus <tudor.ambarus@linaro.org>
-Subject: [PATCH v3 5/5] arm64: dts: exynos: gs101: define all PERIC USI nodes
-Date: Tue, 26 Mar 2024 15:13:01 +0000
-Message-ID: <20240326151301.348932-6-tudor.ambarus@linaro.org>
-X-Mailer: git-send-email 2.44.0.396.g6e790dbe36-goog
-In-Reply-To: <20240326151301.348932-1-tudor.ambarus@linaro.org>
-References: <20240326151301.348932-1-tudor.ambarus@linaro.org>
+	s=arc-20240116; t=1711466016; c=relaxed/simple;
+	bh=OmwQm3heyvidD10nwGyEHU8v8fgAtD9vjQhNMPL7aDA=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=MvT+ytpGIZNyUsHGFiaQy3HUQqkbZFMYV4p+po5R+ikjm5GLSZOz3f8XlKoVHrTxMMB7C8zCklyLKv2psOxRiFw6ODtTv6ykSZB3dpkoKdX6VunM4Pw/B8JOO+emuc+aKxA8/kEiGg2qGeuPis6aooEORyAhIikXyLcON71fC7k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=mmeEye+D; arc=none smtp.client-ip=192.198.163.13
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1711466014; x=1743002014;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=OmwQm3heyvidD10nwGyEHU8v8fgAtD9vjQhNMPL7aDA=;
+  b=mmeEye+DCkRncquaUugzt2KopTX5T3J/0qtnYFax2G9WkGVYJlffpan9
+   pPQ/Yi6yvaYJd9aurZsKvtbBeWVZYcEWet25C2nsy//ZTn1NepJuBSsqO
+   eiRd8mofRUMNI8ds6Fi2FAs7sIYJgFK5hYlZzvQ59/gvVRQOOk2k7HVzC
+   bl+SJFo3j48gqYH5PJKJ7ykrk3vGRnM5rY5nVHhvubqZIDy8j0d3c7l3v
+   H6cjsZB5uoURlGbDD1oR9kAESFdAhCwfsjjOd/ahjkzRpdsA//IF05VNb
+   KpYrHfP7B9GHq+YttbtpVd5HXzlXyOlHG+stH1mti1Td9JLCBvPhINUgK
+   w==;
+X-CSE-ConnectionGUID: EIBqHPDyRo2l+u06tKWVmQ==
+X-CSE-MsgGUID: v6J1K1jNQxiSZXSqTiJiiA==
+X-IronPort-AV: E=McAfee;i="6600,9927,11025"; a="9489052"
+X-IronPort-AV: E=Sophos;i="6.07,156,1708416000"; 
+   d="scan'208";a="9489052"
+Received: from orviesa010.jf.intel.com ([10.64.159.150])
+  by fmvoesa107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Mar 2024 08:13:33 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,156,1708416000"; 
+   d="scan'208";a="15862599"
+Received: from bhubbert-mobl.amr.corp.intel.com (HELO [10.212.65.108]) ([10.212.65.108])
+  by orviesa010-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Mar 2024 08:13:31 -0700
+Message-ID: <a95c6ec2-d99a-41b4-add3-6ec5ef6d6830@linux.intel.com>
+Date: Tue, 26 Mar 2024 10:13:06 -0500
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v1 7/8] ALSA: hda/tas2781: Add tas2781 SPI-based driver
+Content-Language: en-US
+To: Baojun Xu <baojun.xu@ti.com>, tiwai@suse.de
+Cc: robh+dt@kernel.org, andriy.shevchenko@linux.intel.com,
+ lgirdwood@gmail.com, perex@perex.cz, kevin-lu@ti.com, 13916275206@139.com,
+ alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+ liam.r.girdwood@intel.com, yung-chuan.liao@linux.intel.com,
+ broonie@kernel.org, soyer@irl.hu
+References: <20240326010905.2147-1-baojun.xu@ti.com>
+ <20240326010905.2147-7-baojun.xu@ti.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <20240326010905.2147-7-baojun.xu@ti.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Universal Serial Interface (USI) supports three types of serial
-interface such as UART, SPI and I2C. Each protocol works independently.
-USI can be configured to work as one of these protocols. Define all the
-USI nodes from the PERIC blocks (USI0-14), in all their possible
-configurations. These blocks have the TX/RX FIFO depth of 64 bytes.
 
-Reviewed-by: Peter Griffin <peter.griffin@linaro.org>
-Reviewed-by: Alim Akhtar <alim.akhtar@samsung.com>
-Signed-off-by: Tudor Ambarus <tudor.ambarus@linaro.org>
----
- arch/arm64/boot/dts/exynos/google/gs101.dtsi | 769 +++++++++++++++++++
- 1 file changed, 769 insertions(+)
+> +static const char deviceNumber[TASDEVICE_DSP_TAS_MAX_DEVICE] = {
+> +	1, 2, 1, 2, 1, 1, 0, 2, 4, 3, 1, 2, 3, 4
+> +};
 
-diff --git a/arch/arm64/boot/dts/exynos/google/gs101.dtsi b/arch/arm64/boot/dts/exynos/google/gs101.dtsi
-index 690deca37e4f..eddb6b326fde 100644
---- a/arch/arm64/boot/dts/exynos/google/gs101.dtsi
-+++ b/arch/arm64/boot/dts/exynos/google/gs101.dtsi
-@@ -373,6 +373,391 @@ pinctrl_peric0: pinctrl@10840000 {
- 			interrupts = <GIC_SPI 625 IRQ_TYPE_LEVEL_HIGH 0>;
- 		};
- 
-+		usi1: usi@109000c0 {
-+			compatible = "google,gs101-usi", "samsung,exynos850-usi";
-+			reg = <0x109000c0 0x20>;
-+			ranges;
-+			#address-cells = <1>;
-+			#size-cells = <1>;
-+			clocks = <&cmu_peric0 CLK_GOUT_PERIC0_PERIC0_TOP0_PCLK_0>,
-+				 <&cmu_peric0 CLK_GOUT_PERIC0_PERIC0_TOP0_IPCLK_0>;
-+			clock-names = "pclk", "ipclk";
-+			samsung,sysreg = <&sysreg_peric0 0x1000>;
-+			status = "disabled";
-+
-+			hsi2c_1: i2c@10900000 {
-+				compatible = "google,gs101-hsi2c",
-+					     "samsung,exynosautov9-hsi2c";
-+				reg = <0x10900000 0xc0>;
-+				#address-cells = <1>;
-+				#size-cells = <0>;
-+				clocks = <&cmu_peric0 CLK_GOUT_PERIC0_PERIC0_TOP0_IPCLK_0>,
-+					 <&cmu_peric0 CLK_GOUT_PERIC0_PERIC0_TOP0_PCLK_0>;
-+				clock-names = "hsi2c", "hsi2c_pclk";
-+				interrupts = <GIC_SPI 635 IRQ_TYPE_LEVEL_HIGH 0>;
-+				pinctrl-0 = <&hsi2c1_bus>;
-+				pinctrl-names = "default";
-+				status = "disabled";
-+			};
-+
-+			serial_1: serial@10900000 {
-+				compatible = "google,gs101-uart";
-+				reg = <0x10900000 0xc0>;
-+				clocks = <&cmu_peric0 CLK_GOUT_PERIC0_PERIC0_TOP0_PCLK_0>,
-+					 <&cmu_peric0 CLK_GOUT_PERIC0_PERIC0_TOP0_IPCLK_0>;
-+				clock-names = "uart", "clk_uart_baud0";
-+				interrupts = <GIC_SPI 635 IRQ_TYPE_LEVEL_HIGH 0>;
-+				pinctrl-0 = <&uart1_bus_single>;
-+				pinctrl-names = "default";
-+				samsung,uart-fifosize = <64>;
-+				status = "disabled";
-+			};
-+
-+			spi_1: spi@10900000 {
-+				compatible = "google,gs101-spi";
-+				reg = <0x10900000 0x30>;
-+				#address-cells = <1>;
-+				#size-cells = <0>;
-+				clocks = <&cmu_peric0 CLK_GOUT_PERIC0_PERIC0_TOP0_PCLK_0>,
-+					 <&cmu_peric0 CLK_GOUT_PERIC0_PERIC0_TOP0_IPCLK_0>;
-+				clock-names = "spi", "spi_busclk0";
-+				interrupts = <GIC_SPI 635 IRQ_TYPE_LEVEL_HIGH 0>;
-+				pinctrl-0 = <&spi1_bus>;
-+				pinctrl-names = "default";
-+				status = "disabled";
-+			};
-+		};
-+
-+		usi2: usi@109100c0 {
-+			compatible = "google,gs101-usi", "samsung,exynos850-usi";
-+			reg = <0x109100c0 0x20>;
-+			ranges;
-+			#address-cells = <1>;
-+			#size-cells = <1>;
-+			clocks = <&cmu_peric0 CLK_GOUT_PERIC0_PERIC0_TOP0_PCLK_1>,
-+				 <&cmu_peric0 CLK_GOUT_PERIC0_PERIC0_TOP0_IPCLK_1>;
-+			clock-names = "pclk", "ipclk";
-+			samsung,sysreg = <&sysreg_peric0 0x1004>;
-+			status = "disabled";
-+
-+			hsi2c_2: i2c@10910000 {
-+				compatible = "google,gs101-hsi2c",
-+					     "samsung,exynosautov9-hsi2c";
-+				reg = <0x10910000 0xc0>;
-+				#address-cells = <1>;
-+				#size-cells = <0>;
-+				clocks = <&cmu_peric0 CLK_GOUT_PERIC0_PERIC0_TOP0_IPCLK_1>,
-+					 <&cmu_peric0 CLK_GOUT_PERIC0_PERIC0_TOP0_PCLK_1>;
-+				clock-names = "hsi2c", "hsi2c_pclk";
-+				interrupts = <GIC_SPI 636 IRQ_TYPE_LEVEL_HIGH 0>;
-+				pinctrl-0 = <&hsi2c2_bus>;
-+				pinctrl-names = "default";
-+				status = "disabled";
-+			};
-+
-+			serial_2: serial@10910000 {
-+				compatible = "google,gs101-uart";
-+				reg = <0x10910000 0xc0>;
-+				clocks = <&cmu_peric0 CLK_GOUT_PERIC0_PERIC0_TOP0_PCLK_1>,
-+					 <&cmu_peric0 CLK_GOUT_PERIC0_PERIC0_TOP0_IPCLK_1>;
-+				clock-names = "uart", "clk_uart_baud0";
-+				interrupts = <GIC_SPI 636 IRQ_TYPE_LEVEL_HIGH 0>;
-+				pinctrl-0 = <&uart2_bus_single>;
-+				pinctrl-names = "default";
-+				samsung,uart-fifosize = <64>;
-+				status = "disabled";
-+			};
-+
-+			spi_2: spi@10910000 {
-+				compatible = "google,gs101-spi";
-+				reg = <0x10910000 0x30>;
-+				#address-cells = <1>;
-+				#size-cells = <0>;
-+				clocks = <&cmu_peric0 CLK_GOUT_PERIC0_PERIC0_TOP0_PCLK_1>,
-+					 <&cmu_peric0 CLK_GOUT_PERIC0_PERIC0_TOP0_IPCLK_1>;
-+				clock-names = "spi", "spi_busclk0";
-+				interrupts = <GIC_SPI 636 IRQ_TYPE_LEVEL_HIGH 0>;
-+				pinctrl-0 = <&spi2_bus>;
-+				pinctrl-names = "default";
-+				status = "disabled";
-+			};
-+		};
-+
-+		usi3: usi@109200c0 {
-+			compatible = "google,gs101-usi", "samsung,exynos850-usi";
-+			reg = <0x109200c0 0x20>;
-+			ranges;
-+			#address-cells = <1>;
-+			#size-cells = <1>;
-+			clocks = <&cmu_peric0 CLK_GOUT_PERIC0_PERIC0_TOP0_PCLK_2>,
-+				 <&cmu_peric0 CLK_GOUT_PERIC0_PERIC0_TOP0_IPCLK_2>;
-+			clock-names = "pclk", "ipclk";
-+			samsung,sysreg = <&sysreg_peric0 0x1008>;
-+			status = "disabled";
-+
-+			hsi2c_3: i2c@10920000 {
-+				compatible = "google,gs101-hsi2c",
-+					     "samsung,exynosautov9-hsi2c";
-+				reg = <0x10920000 0xc0>;
-+				#address-cells = <1>;
-+				#size-cells = <0>;
-+				clocks = <&cmu_peric0 CLK_GOUT_PERIC0_PERIC0_TOP0_IPCLK_2>,
-+					 <&cmu_peric0 CLK_GOUT_PERIC0_PERIC0_TOP0_PCLK_2>;
-+				clock-names = "hsi2c", "hsi2c_pclk";
-+				interrupts = <GIC_SPI 637 IRQ_TYPE_LEVEL_HIGH 0>;
-+				pinctrl-0 = <&hsi2c3_bus>;
-+				pinctrl-names = "default";
-+				status = "disabled";
-+			};
-+
-+			serial_3: serial@10920000 {
-+				compatible = "google,gs101-uart";
-+				reg = <0x10920000 0xc0>;
-+				clocks = <&cmu_peric0 CLK_GOUT_PERIC0_PERIC0_TOP0_PCLK_2>,
-+					 <&cmu_peric0 CLK_GOUT_PERIC0_PERIC0_TOP0_IPCLK_2>;
-+				clock-names = "uart", "clk_uart_baud0";
-+				interrupts = <GIC_SPI 637 IRQ_TYPE_LEVEL_HIGH 0>;
-+				pinctrl-0 = <&uart3_bus_single>;
-+				pinctrl-names = "default";
-+				samsung,uart-fifosize = <64>;
-+				status = "disabled";
-+			};
-+
-+			spi_3: spi@10920000 {
-+				compatible = "google,gs101-spi";
-+				reg = <0x10920000 0x30>;
-+				#address-cells = <1>;
-+				#size-cells = <0>;
-+				clocks = <&cmu_peric0 CLK_GOUT_PERIC0_PERIC0_TOP0_PCLK_2>,
-+					 <&cmu_peric0 CLK_GOUT_PERIC0_PERIC0_TOP0_IPCLK_2>;
-+				clock-names = "spi", "spi_busclk0";
-+				interrupts = <GIC_SPI 637 IRQ_TYPE_LEVEL_HIGH 0>;
-+				pinctrl-0 = <&spi3_bus>;
-+				pinctrl-names = "default";
-+				status = "disabled";
-+			};
-+		};
-+
-+		usi4: usi@109300c0 {
-+			compatible = "google,gs101-usi", "samsung,exynos850-usi";
-+			reg = <0x109300c0 0x20>;
-+			ranges;
-+			#address-cells = <1>;
-+			#size-cells = <1>;
-+			clocks = <&cmu_peric0 CLK_GOUT_PERIC0_PERIC0_TOP0_PCLK_3>,
-+				 <&cmu_peric0 CLK_GOUT_PERIC0_PERIC0_TOP0_IPCLK_3>;
-+			clock-names = "pclk", "ipclk";
-+			samsung,sysreg = <&sysreg_peric0 0x100c>;
-+			status = "disabled";
-+
-+			hsi2c_4: i2c@10930000 {
-+				compatible = "google,gs101-hsi2c",
-+					     "samsung,exynosautov9-hsi2c";
-+				reg = <0x10930000 0xc0>;
-+				#address-cells = <1>;
-+				#size-cells = <0>;
-+				clocks = <&cmu_peric0 CLK_GOUT_PERIC0_PERIC0_TOP0_IPCLK_3>,
-+					 <&cmu_peric0 CLK_GOUT_PERIC0_PERIC0_TOP0_PCLK_3>;
-+				clock-names = "hsi2c", "hsi2c_pclk";
-+				interrupts = <GIC_SPI 638 IRQ_TYPE_LEVEL_HIGH 0>;
-+				pinctrl-0 = <&hsi2c4_bus>;
-+				pinctrl-names = "default";
-+				status = "disabled";
-+			};
-+
-+			serial_4: serial@10930000 {
-+				compatible = "google,gs101-uart";
-+				reg = <0x10930000 0xc0>;
-+				clocks = <&cmu_peric0 CLK_GOUT_PERIC0_PERIC0_TOP0_PCLK_3>,
-+					 <&cmu_peric0 CLK_GOUT_PERIC0_PERIC0_TOP0_IPCLK_3>;
-+				clock-names = "uart", "clk_uart_baud0";
-+				interrupts = <GIC_SPI 638 IRQ_TYPE_LEVEL_HIGH 0>;
-+				pinctrl-0 = <&uart4_bus_single>;
-+				pinctrl-names = "default";
-+				samsung,uart-fifosize = <64>;
-+				status = "disabled";
-+			};
-+
-+			spi_4: spi@10930000 {
-+				compatible = "google,gs101-spi";
-+				reg = <0x10930000 0x30>;
-+				#address-cells = <1>;
-+				#size-cells = <0>;
-+				clocks = <&cmu_peric0 CLK_GOUT_PERIC0_PERIC0_TOP0_PCLK_3>,
-+					 <&cmu_peric0 CLK_GOUT_PERIC0_PERIC0_TOP0_IPCLK_3>;
-+				clock-names = "spi", "spi_busclk0";
-+				interrupts = <GIC_SPI 638 IRQ_TYPE_LEVEL_HIGH 0>;
-+				pinctrl-0 = <&spi4_bus>;
-+				pinctrl-names = "default";
-+				status = "disabled";
-+			};
-+		};
-+
-+		usi5: usi@109400c0 {
-+			compatible = "google,gs101-usi", "samsung,exynos850-usi";
-+			reg = <0x109400c0 0x20>;
-+			ranges;
-+			#address-cells = <1>;
-+			#size-cells = <1>;
-+			clocks = <&cmu_peric0 CLK_GOUT_PERIC0_PERIC0_TOP0_PCLK_4>,
-+				 <&cmu_peric0 CLK_GOUT_PERIC0_PERIC0_TOP0_IPCLK_4>;
-+			clock-names = "pclk", "ipclk";
-+			samsung,sysreg = <&sysreg_peric0 0x1010>;
-+			status = "disabled";
-+
-+			hsi2c_5: i2c@10940000 {
-+				compatible = "google,gs101-hsi2c",
-+					     "samsung,exynosautov9-hsi2c";
-+				reg = <0x10940000 0xc0>;
-+				#address-cells = <1>;
-+				#size-cells = <0>;
-+				clocks = <&cmu_peric0 CLK_GOUT_PERIC0_PERIC0_TOP0_IPCLK_4>,
-+					 <&cmu_peric0 CLK_GOUT_PERIC0_PERIC0_TOP0_PCLK_4>;
-+				clock-names = "hsi2c", "hsi2c_pclk";
-+				interrupts = <GIC_SPI 639 IRQ_TYPE_LEVEL_HIGH 0>;
-+				pinctrl-0 = <&hsi2c5_bus>;
-+				pinctrl-names = "default";
-+				status = "disabled";
-+			};
-+
-+			serial_5: serial@10940000 {
-+				compatible = "google,gs101-uart";
-+				reg = <0x10940000 0xc0>;
-+				clocks = <&cmu_peric0 CLK_GOUT_PERIC0_PERIC0_TOP0_PCLK_4>,
-+					 <&cmu_peric0 CLK_GOUT_PERIC0_PERIC0_TOP0_IPCLK_4>;
-+				clock-names = "uart", "clk_uart_baud0";
-+				interrupts = <GIC_SPI 639 IRQ_TYPE_LEVEL_HIGH 0>;
-+				pinctrl-0 = <&uart5_bus_single>;
-+				pinctrl-names = "default";
-+				samsung,uart-fifosize = <64>;
-+				status = "disabled";
-+			};
-+
-+			spi_5: spi@10940000 {
-+				compatible = "google,gs101-spi";
-+				reg = <0x10940000 0x30>;
-+				#address-cells = <1>;
-+				#size-cells = <0>;
-+				clocks = <&cmu_peric0 CLK_GOUT_PERIC0_PERIC0_TOP0_PCLK_4>,
-+					 <&cmu_peric0 CLK_GOUT_PERIC0_PERIC0_TOP0_IPCLK_4>;
-+				clock-names = "spi", "spi_busclk0";
-+				interrupts = <GIC_SPI 639 IRQ_TYPE_LEVEL_HIGH 0>;
-+				pinctrl-0 = <&spi5_bus>;
-+				pinctrl-names = "default";
-+				status = "disabled";
-+			};
-+		};
-+
-+		usi6: usi@109500c0 {
-+			compatible = "google,gs101-usi", "samsung,exynos850-usi";
-+			reg = <0x109500c0 0x20>;
-+			ranges;
-+			#address-cells = <1>;
-+			#size-cells = <1>;
-+			clocks = <&cmu_peric0 CLK_GOUT_PERIC0_PERIC0_TOP0_PCLK_5>,
-+				 <&cmu_peric0 CLK_GOUT_PERIC0_PERIC0_TOP0_IPCLK_5>;
-+			clock-names = "pclk", "ipclk";
-+			samsung,sysreg = <&sysreg_peric0 0x1014>;
-+			status = "disabled";
-+
-+			hsi2c_6: i2c@10950000 {
-+				compatible = "google,gs101-hsi2c",
-+					     "samsung,exynosautov9-hsi2c";
-+				reg = <0x10950000 0xc0>;
-+				#address-cells = <1>;
-+				#size-cells = <0>;
-+				clocks = <&cmu_peric0 CLK_GOUT_PERIC0_PERIC0_TOP0_IPCLK_5>,
-+					 <&cmu_peric0 CLK_GOUT_PERIC0_PERIC0_TOP0_PCLK_5>;
-+				clock-names = "hsi2c", "hsi2c_pclk";
-+				interrupts = <GIC_SPI 640 IRQ_TYPE_LEVEL_HIGH 0>;
-+				pinctrl-0 = <&hsi2c6_bus>;
-+				pinctrl-names = "default";
-+				status = "disabled";
-+			};
-+
-+			serial_6: serial@10950000 {
-+				compatible = "google,gs101-uart";
-+				reg = <0x10950000 0xc0>;
-+				clocks = <&cmu_peric0 CLK_GOUT_PERIC0_PERIC0_TOP0_PCLK_5>,
-+					 <&cmu_peric0 CLK_GOUT_PERIC0_PERIC0_TOP0_IPCLK_5>;
-+				clock-names = "uart", "clk_uart_baud0";
-+				interrupts = <GIC_SPI 640 IRQ_TYPE_LEVEL_HIGH 0>;
-+				pinctrl-0 = <&uart6_bus_single>;
-+				pinctrl-names = "default";
-+				samsung,uart-fifosize = <64>;
-+				status = "disabled";
-+			};
-+
-+			spi_6: spi@10950000 {
-+				compatible = "google,gs101-spi";
-+				reg = <0x10950000 0x30>;
-+				#address-cells = <1>;
-+				#size-cells = <0>;
-+				clocks = <&cmu_peric0 CLK_GOUT_PERIC0_PERIC0_TOP0_PCLK_5>,
-+					 <&cmu_peric0 CLK_GOUT_PERIC0_PERIC0_TOP0_IPCLK_5>;
-+				clock-names = "spi", "spi_busclk0";
-+				interrupts = <GIC_SPI 640 IRQ_TYPE_LEVEL_HIGH 0>;
-+				pinctrl-0 = <&spi6_bus>;
-+				pinctrl-names = "default";
-+				status = "disabled";
-+			};
-+		};
-+
-+		usi7: usi@109600c0 {
-+			compatible = "google,gs101-usi", "samsung,exynos850-usi";
-+			reg = <0x109600c0 0x20>;
-+			ranges;
-+			#address-cells = <1>;
-+			#size-cells = <1>;
-+			clocks = <&cmu_peric0 CLK_GOUT_PERIC0_PERIC0_TOP0_PCLK_6>,
-+				 <&cmu_peric0 CLK_GOUT_PERIC0_PERIC0_TOP0_IPCLK_6>;
-+			clock-names = "pclk", "ipclk";
-+			samsung,sysreg = <&sysreg_peric0 0x1018>;
-+			status = "disabled";
-+
-+			hsi2c_7: i2c@10960000 {
-+				compatible = "google,gs101-hsi2c",
-+					     "samsung,exynosautov9-hsi2c";
-+				reg = <0x10960000 0xc0>;
-+				#address-cells = <1>;
-+				#size-cells = <0>;
-+				clocks = <&cmu_peric0 CLK_GOUT_PERIC0_PERIC0_TOP0_IPCLK_6>,
-+					 <&cmu_peric0 CLK_GOUT_PERIC0_PERIC0_TOP0_PCLK_6>;
-+				clock-names = "hsi2c", "hsi2c_pclk";
-+				interrupts = <GIC_SPI 641 IRQ_TYPE_LEVEL_HIGH 0>;
-+				pinctrl-0 = <&hsi2c7_bus>;
-+				pinctrl-names = "default";
-+				status = "disabled";
-+			};
-+
-+			serial_7: serial@10960000 {
-+				compatible = "google,gs101-uart";
-+				reg = <0x10960000 0xc0>;
-+				clocks = <&cmu_peric0 CLK_GOUT_PERIC0_PERIC0_TOP0_PCLK_6>,
-+					 <&cmu_peric0 CLK_GOUT_PERIC0_PERIC0_TOP0_IPCLK_6>;
-+				clock-names = "uart", "clk_uart_baud0";
-+				interrupts = <GIC_SPI 641 IRQ_TYPE_LEVEL_HIGH 0>;
-+				pinctrl-0 = <&uart7_bus_single>;
-+				pinctrl-names = "default";
-+				samsung,uart-fifosize = <64>;
-+				status = "disabled";
-+			};
-+
-+			spi_7: spi@10960000 {
-+				compatible = "google,gs101-spi";
-+				reg = <0x10960000 0x30>;
-+				#address-cells = <1>;
-+				#size-cells = <0>;
-+				clocks = <&cmu_peric0 CLK_GOUT_PERIC0_PERIC0_TOP0_PCLK_6>,
-+					 <&cmu_peric0 CLK_GOUT_PERIC0_PERIC0_TOP0_IPCLK_6>;
-+				clock-names = "spi", "spi_busclk0";
-+				interrupts = <GIC_SPI 641 IRQ_TYPE_LEVEL_HIGH 0>;
-+				pinctrl-0 = <&spi7_bus>;
-+				pinctrl-names = "default";
-+				status = "disabled";
-+			};
-+		};
-+
- 		usi8: usi@109700c0 {
- 			compatible = "google,gs101-usi", "samsung,exynos850-usi";
- 			reg = <0x109700c0 0x20>;
-@@ -399,6 +784,33 @@ hsi2c_8: i2c@10970000 {
- 				pinctrl-names = "default";
- 				status = "disabled";
- 			};
-+
-+			serial_8: serial@10970000 {
-+				compatible = "google,gs101-uart";
-+				reg = <0x10970000 0xc0>;
-+				clocks = <&cmu_peric0 CLK_GOUT_PERIC0_PERIC0_TOP0_PCLK_7>,
-+					 <&cmu_peric0 CLK_GOUT_PERIC0_PERIC0_TOP0_IPCLK_7>;
-+				clock-names = "uart", "clk_uart_baud0";
-+				interrupts = <GIC_SPI 642 IRQ_TYPE_LEVEL_HIGH 0>;
-+				pinctrl-0 = <&uart8_bus_single>;
-+				pinctrl-names = "default";
-+				samsung,uart-fifosize = <64>;
-+				status = "disabled";
-+			};
-+
-+			spi_8: spi@10970000 {
-+				compatible = "google,gs101-spi";
-+				reg = <0x10970000 0x30>;
-+				#address-cells = <1>;
-+				#size-cells = <0>;
-+				clocks = <&cmu_peric0 CLK_GOUT_PERIC0_PERIC0_TOP0_PCLK_7>,
-+					 <&cmu_peric0 CLK_GOUT_PERIC0_PERIC0_TOP0_IPCLK_7>;
-+				clock-names = "spi", "spi_busclk0";
-+				interrupts = <GIC_SPI 642 IRQ_TYPE_LEVEL_HIGH 0>;
-+				pinctrl-0 = <&spi8_bus>;
-+				pinctrl-names = "default";
-+				status = "disabled";
-+			};
- 		};
- 
- 		usi_uart: usi@10a000c0 {
-@@ -428,6 +840,61 @@ serial_0: serial@10a00000 {
- 			};
- 		};
- 
-+		usi14: usi@10a200c0 {
-+			compatible = "google,gs101-usi", "samsung,exynos850-usi";
-+			reg = <0x10a200c0 0x20>;
-+			ranges;
-+			#address-cells = <1>;
-+			#size-cells = <1>;
-+			clocks = <&cmu_peric0 CLK_GOUT_PERIC0_PERIC0_TOP1_PCLK_2>,
-+				 <&cmu_peric0 CLK_GOUT_PERIC0_PERIC0_TOP1_IPCLK_2>;
-+			clock-names = "pclk", "ipclk";
-+			samsung,sysreg = <&sysreg_peric0 0x1028>;
-+			status = "disabled";
-+
-+			hsi2c_14: i2c@10a20000 {
-+				compatible = "google,gs101-hsi2c",
-+					     "samsung,exynosautov9-hsi2c";
-+				reg = <0x10a20000 0xc0>;
-+				#address-cells = <1>;
-+				#size-cells = <0>;
-+				clocks = <&cmu_peric0 CLK_GOUT_PERIC0_PERIC0_TOP1_IPCLK_2>,
-+					 <&cmu_peric0 CLK_GOUT_PERIC0_PERIC0_TOP1_PCLK_2>;
-+				clock-names = "hsi2c", "hsi2c_pclk";
-+				interrupts = <GIC_SPI 643 IRQ_TYPE_LEVEL_HIGH 0>;
-+				pinctrl-0 = <&hsi2c14_bus>;
-+				pinctrl-names = "default";
-+				status = "disabled";
-+			};
-+
-+			serial_14: serial@10a20000 {
-+				compatible = "google,gs101-uart";
-+				reg = <0x10a20000 0xc0>;
-+				clocks = <&cmu_peric0 CLK_GOUT_PERIC0_PERIC0_TOP1_PCLK_2>,
-+					 <&cmu_peric0 CLK_GOUT_PERIC0_PERIC0_TOP1_IPCLK_2>;
-+				clock-names = "uart", "clk_uart_baud0";
-+				interrupts = <GIC_SPI 643 IRQ_TYPE_LEVEL_HIGH 0>;
-+				pinctrl-0 = <&uart14_bus_single>;
-+				pinctrl-names = "default";
-+				samsung,uart-fifosize = <64>;
-+				status = "disabled";
-+			};
-+
-+			spi_14: spi@10a20000 {
-+				compatible = "google,gs101-spi";
-+				reg = <0x10a20000 0x30>;
-+				#address-cells = <1>;
-+				#size-cells = <0>;
-+				clocks = <&cmu_peric0 CLK_GOUT_PERIC0_PERIC0_TOP1_PCLK_2>,
-+					 <&cmu_peric0 CLK_GOUT_PERIC0_PERIC0_TOP1_IPCLK_2>;
-+				clock-names = "spi", "spi_busclk0";
-+				interrupts = <GIC_SPI 643 IRQ_TYPE_LEVEL_HIGH 0>;
-+				pinctrl-0 = <&spi14_bus>;
-+				pinctrl-names = "default";
-+				status = "disabled";
-+			};
-+		};
-+
- 		cmu_peric1: clock-controller@10c00000 {
- 			compatible = "google,gs101-cmu-peric1";
- 			reg = <0x10c00000 0x4000>;
-@@ -450,6 +917,226 @@ pinctrl_peric1: pinctrl@10c40000 {
- 			interrupts = <GIC_SPI 644 IRQ_TYPE_LEVEL_HIGH 0>;
- 		};
- 
-+		usi0: usi@10d100c0 {
-+			compatible = "google,gs101-usi", "samsung,exynos850-usi";
-+			reg = <0x10d100c0 0x20>;
-+			ranges;
-+			#address-cells = <1>;
-+			#size-cells = <1>;
-+			clocks = <&cmu_peric1 CLK_GOUT_PERIC1_PERIC1_TOP0_PCLK_1>,
-+				 <&cmu_peric1 CLK_GOUT_PERIC1_PERIC1_TOP0_IPCLK_1>;
-+			clock-names = "pclk", "ipclk";
-+			samsung,sysreg = <&sysreg_peric1 0x1000>;
-+			status = "disabled";
-+
-+			hsi2c_0: i2c@10d10000 {
-+				compatible = "google,gs101-hsi2c",
-+					     "samsung,exynosautov9-hsi2c";
-+				reg = <0x10d10000 0xc0>;
-+				#address-cells = <1>;
-+				#size-cells = <0>;
-+				clocks = <&cmu_peric1 CLK_GOUT_PERIC1_PERIC1_TOP0_IPCLK_1>,
-+					 <&cmu_peric1 CLK_GOUT_PERIC1_PERIC1_TOP0_PCLK_1>;
-+				clock-names = "hsi2c", "hsi2c_pclk";
-+				interrupts = <GIC_SPI 651 IRQ_TYPE_LEVEL_HIGH 0>;
-+				pinctrl-0 = <&hsi2c0_bus>;
-+				pinctrl-names = "default";
-+				status = "disabled";
-+			};
-+
-+			serial_usi0: serial@10d10000 {
-+				compatible = "google,gs101-uart";
-+				reg = <0x10d10000 0xc0>;
-+				clocks = <&cmu_peric1 CLK_GOUT_PERIC1_PERIC1_TOP0_PCLK_1>,
-+					 <&cmu_peric1 CLK_GOUT_PERIC1_PERIC1_TOP0_IPCLK_1>;
-+				clock-names = "uart", "clk_uart_baud0";
-+				interrupts = <GIC_SPI 651 IRQ_TYPE_LEVEL_HIGH 0>;
-+				pinctrl-0 = <&uart0_bus_single>;
-+				pinctrl-names = "default";
-+				samsung,uart-fifosize = <64>;
-+				status = "disabled";
-+			};
-+
-+			spi_0: spi@10d10000 {
-+				compatible = "google,gs101-spi";
-+				reg = <0x10d10000 0x30>;
-+				#address-cells = <1>;
-+				#size-cells = <0>;
-+				clocks = <&cmu_peric1 CLK_GOUT_PERIC1_PERIC1_TOP0_PCLK_1>,
-+					 <&cmu_peric1 CLK_GOUT_PERIC1_PERIC1_TOP0_IPCLK_1>;
-+				clock-names = "spi", "spi_busclk0";
-+				interrupts = <GIC_SPI 651 IRQ_TYPE_LEVEL_HIGH 0>;
-+				pinctrl-0 = <&spi0_bus>;
-+				pinctrl-names = "default";
-+				status = "disabled";
-+			};
-+		};
-+
-+		usi9: usi@10d200c0 {
-+			compatible = "google,gs101-usi", "samsung,exynos850-usi";
-+			reg = <0x10d200c0 0x20>;
-+			ranges;
-+			#address-cells = <1>;
-+			#size-cells = <1>;
-+			clocks = <&cmu_peric1 CLK_GOUT_PERIC1_PERIC1_TOP0_PCLK_2>,
-+				 <&cmu_peric1 CLK_GOUT_PERIC1_PERIC1_TOP0_IPCLK_2>;
-+			clock-names = "pclk", "ipclk";
-+			samsung,sysreg = <&sysreg_peric1 0x1004>;
-+			status = "disabled";
-+
-+			hsi2c_9: i2c@10d20000 {
-+				compatible = "google,gs101-hsi2c",
-+					     "samsung,exynosautov9-hsi2c";
-+				reg = <0x10d20000 0xc0>;
-+				#address-cells = <1>;
-+				#size-cells = <0>;
-+				clocks = <&cmu_peric1 CLK_GOUT_PERIC1_PERIC1_TOP0_IPCLK_2>,
-+					 <&cmu_peric1 CLK_GOUT_PERIC1_PERIC1_TOP0_PCLK_2>;
-+				clock-names = "hsi2c", "hsi2c_pclk";
-+				interrupts = <GIC_SPI 652 IRQ_TYPE_LEVEL_HIGH 0>;
-+				pinctrl-0 = <&hsi2c9_bus>;
-+				pinctrl-names = "default";
-+				status = "disabled";
-+			};
-+
-+			serial_9: serial@10d20000 {
-+				compatible = "google,gs101-uart";
-+				reg = <0x10d20000 0xc0>;
-+				clocks = <&cmu_peric1 CLK_GOUT_PERIC1_PERIC1_TOP0_PCLK_2>,
-+					 <&cmu_peric1 CLK_GOUT_PERIC1_PERIC1_TOP0_IPCLK_2>;
-+				clock-names = "uart", "clk_uart_baud0";
-+				interrupts = <GIC_SPI 652 IRQ_TYPE_LEVEL_HIGH 0>;
-+				pinctrl-0 = <&uart9_bus_single>;
-+				pinctrl-names = "default";
-+				samsung,uart-fifosize = <64>;
-+				status = "disabled";
-+			};
-+
-+			spi_9: spi@10d20000 {
-+				compatible = "google,gs101-spi";
-+				reg = <0x10d20000 0x30>;
-+				#address-cells = <1>;
-+				#size-cells = <0>;
-+				clocks = <&cmu_peric1 CLK_GOUT_PERIC1_PERIC1_TOP0_PCLK_2>,
-+					 <&cmu_peric1 CLK_GOUT_PERIC1_PERIC1_TOP0_IPCLK_2>;
-+				clock-names = "spi", "spi_busclk0";
-+				interrupts = <GIC_SPI 652 IRQ_TYPE_LEVEL_HIGH 0>;
-+				pinctrl-0 = <&spi9_bus>;
-+				pinctrl-names = "default";
-+				status = "disabled";
-+			};
-+		};
-+
-+		usi10: usi@10d300c0 {
-+			compatible = "google,gs101-usi", "samsung,exynos850-usi";
-+			reg = <0x10d300c0 0x20>;
-+			ranges;
-+			#address-cells = <1>;
-+			#size-cells = <1>;
-+			clocks = <&cmu_peric1 CLK_GOUT_PERIC1_PERIC1_TOP0_PCLK_3>,
-+				 <&cmu_peric1 CLK_GOUT_PERIC1_PERIC1_TOP0_IPCLK_3>;
-+			clock-names = "pclk", "ipclk";
-+			samsung,sysreg = <&sysreg_peric1 0x1008>;
-+			status = "disabled";
-+
-+			hsi2c_10: i2c@10d30000 {
-+				compatible = "google,gs101-hsi2c",
-+					     "samsung,exynosautov9-hsi2c";
-+				reg = <0x10d30000 0xc0>;
-+				#address-cells = <1>;
-+				#size-cells = <0>;
-+				clocks = <&cmu_peric1 CLK_GOUT_PERIC1_PERIC1_TOP0_IPCLK_3>,
-+					 <&cmu_peric1 CLK_GOUT_PERIC1_PERIC1_TOP0_PCLK_3>;
-+				clock-names = "hsi2c", "hsi2c_pclk";
-+				interrupts = <GIC_SPI 653 IRQ_TYPE_LEVEL_HIGH 0>;
-+				pinctrl-0 = <&hsi2c10_bus>;
-+				pinctrl-names = "default";
-+				status = "disabled";
-+			};
-+
-+			serial_10: serial@10d30000 {
-+				compatible = "google,gs101-uart";
-+				reg = <0x10d30000 0xc0>;
-+				clocks = <&cmu_peric1 CLK_GOUT_PERIC1_PERIC1_TOP0_PCLK_3>,
-+					 <&cmu_peric1 CLK_GOUT_PERIC1_PERIC1_TOP0_IPCLK_3>;
-+				clock-names = "uart", "clk_uart_baud0";
-+				interrupts = <GIC_SPI 653 IRQ_TYPE_LEVEL_HIGH 0>;
-+				pinctrl-0 = <&uart10_bus_single>;
-+				pinctrl-names = "default";
-+				samsung,uart-fifosize = <64>;
-+				status = "disabled";
-+			};
-+
-+			spi_10: spi@10d30000 {
-+				compatible = "google,gs101-spi";
-+				reg = <0x10d30000 0x30>;
-+				#address-cells = <1>;
-+				#size-cells = <0>;
-+				clocks = <&cmu_peric1 CLK_GOUT_PERIC1_PERIC1_TOP0_PCLK_3>,
-+					 <&cmu_peric1 CLK_GOUT_PERIC1_PERIC1_TOP0_IPCLK_3>;
-+				clock-names = "spi", "spi_busclk0";
-+				interrupts = <GIC_SPI 653 IRQ_TYPE_LEVEL_HIGH 0>;
-+				pinctrl-0 = <&spi10_bus>;
-+				pinctrl-names = "default";
-+				status = "disabled";
-+			};
-+		};
-+
-+		usi11: usi@10d400c0 {
-+			compatible = "google,gs101-usi", "samsung,exynos850-usi";
-+			reg = <0x10d400c0 0x20>;
-+			ranges;
-+			#address-cells = <1>;
-+			#size-cells = <1>;
-+			clocks = <&cmu_peric1 CLK_GOUT_PERIC1_PERIC1_TOP0_PCLK_4>,
-+				 <&cmu_peric1 CLK_GOUT_PERIC1_PERIC1_TOP0_IPCLK_4>;
-+			clock-names = "pclk", "ipclk";
-+			samsung,sysreg = <&sysreg_peric1 0x100c>;
-+			status = "disabled";
-+
-+			hsi2c_11: i2c@10d40000 {
-+				compatible = "google,gs101-hsi2c",
-+					     "samsung,exynosautov9-hsi2c";
-+				reg = <0x10d40000 0xc0>;
-+				#address-cells = <1>;
-+				#size-cells = <0>;
-+				clocks = <&cmu_peric1 CLK_GOUT_PERIC1_PERIC1_TOP0_IPCLK_4>,
-+					 <&cmu_peric1 CLK_GOUT_PERIC1_PERIC1_TOP0_PCLK_4>;
-+				clock-names = "hsi2c", "hsi2c_pclk";
-+				interrupts = <GIC_SPI 654 IRQ_TYPE_LEVEL_HIGH 0>;
-+				pinctrl-0 = <&hsi2c11_bus>;
-+				pinctrl-names = "default";
-+				status = "disabled";
-+			};
-+
-+			serial_11: serial@10d40000 {
-+				compatible = "google,gs101-uart";
-+				reg = <0x10d40000 0xc0>;
-+				clocks = <&cmu_peric1 CLK_GOUT_PERIC1_PERIC1_TOP0_PCLK_4>,
-+					 <&cmu_peric1 CLK_GOUT_PERIC1_PERIC1_TOP0_IPCLK_4>;
-+				clock-names = "uart", "clk_uart_baud0";
-+				interrupts = <GIC_SPI 654 IRQ_TYPE_LEVEL_HIGH 0>;
-+				pinctrl-0 = <&uart11_bus_single>;
-+				pinctrl-names = "default";
-+				samsung,uart-fifosize = <64>;
-+				status = "disabled";
-+			};
-+
-+			spi_11: spi@10d40000 {
-+				compatible = "google,gs101-spi";
-+				reg = <0x10d40000 0x30>;
-+				#address-cells = <1>;
-+				#size-cells = <0>;
-+				clocks = <&cmu_peric1 CLK_GOUT_PERIC1_PERIC1_TOP0_PCLK_4>,
-+					 <&cmu_peric1 CLK_GOUT_PERIC1_PERIC1_TOP0_IPCLK_4>;
-+				clock-names = "spi", "spi_busclk0";
-+				interrupts = <GIC_SPI 654 IRQ_TYPE_LEVEL_HIGH 0>;
-+				pinctrl-0 = <&spi11_bus>;
-+				pinctrl-names = "default";
-+				status = "disabled";
-+			};
-+		};
-+
- 		usi12: usi@10d500c0 {
- 			compatible = "google,gs101-usi", "samsung,exynos850-usi";
- 			reg = <0x10d500c0 0x20>;
-@@ -476,6 +1163,88 @@ hsi2c_12: i2c@10d50000 {
- 				pinctrl-names = "default";
- 				status = "disabled";
- 			};
-+
-+			serial_12: serial@10d50000 {
-+				compatible = "google,gs101-uart";
-+				reg = <0x10d50000 0xc0>;
-+				clocks = <&cmu_peric1 CLK_GOUT_PERIC1_PERIC1_TOP0_PCLK_5>,
-+					 <&cmu_peric1 CLK_GOUT_PERIC1_PERIC1_TOP0_IPCLK_5>;
-+				clock-names = "uart", "clk_uart_baud0";
-+				interrupts = <GIC_SPI 655 IRQ_TYPE_LEVEL_HIGH 0>;
-+				pinctrl-0 = <&uart12_bus_single>;
-+				pinctrl-names = "default";
-+				samsung,uart-fifosize = <64>;
-+				status = "disabled";
-+			};
-+
-+			spi_12: spi@10d50000 {
-+				compatible = "google,gs101-spi";
-+				reg = <0x10d50000 0x30>;
-+				#address-cells = <1>;
-+				#size-cells = <0>;
-+				clocks = <&cmu_peric1 CLK_GOUT_PERIC1_PERIC1_TOP0_PCLK_5>,
-+					 <&cmu_peric1 CLK_GOUT_PERIC1_PERIC1_TOP0_IPCLK_5>;
-+				clock-names = "spi", "spi_busclk0";
-+				interrupts = <GIC_SPI 655 IRQ_TYPE_LEVEL_HIGH 0>;
-+				pinctrl-0 = <&spi12_bus>;
-+				pinctrl-names = "default";
-+				status = "disabled";
-+			};
-+		};
-+
-+		usi13: usi@10d600c0 {
-+			compatible = "google,gs101-usi", "samsung,exynos850-usi";
-+			reg = <0x10d600c0 0x20>;
-+			ranges;
-+			#address-cells = <1>;
-+			#size-cells = <1>;
-+			clocks = <&cmu_peric1 CLK_GOUT_PERIC1_PERIC1_TOP0_PCLK_6>,
-+				 <&cmu_peric1 CLK_GOUT_PERIC1_PERIC1_TOP0_IPCLK_6>;
-+			clock-names = "pclk", "ipclk";
-+			samsung,sysreg = <&sysreg_peric1 0x1014>;
-+			status = "disabled";
-+
-+			hsi2c_13: i2c@10d60000 {
-+				compatible = "google,gs101-hsi2c",
-+					     "samsung,exynosautov9-hsi2c";
-+				reg = <0x10d60000 0xc0>;
-+				#address-cells = <1>;
-+				#size-cells = <0>;
-+				clocks = <&cmu_peric1 CLK_GOUT_PERIC1_PERIC1_TOP0_IPCLK_6>,
-+					 <&cmu_peric1 CLK_GOUT_PERIC1_PERIC1_TOP0_PCLK_6>;
-+				clock-names = "hsi2c", "hsi2c_pclk";
-+				interrupts = <GIC_SPI 656 IRQ_TYPE_LEVEL_HIGH 0>;
-+				pinctrl-0 = <&hsi2c13_bus>;
-+				pinctrl-names = "default";
-+				status = "disabled";
-+			};
-+
-+			serial_13: serial@10d60000 {
-+				compatible = "google,gs101-uart";
-+				reg = <0x10d60000 0xc0>;
-+				clocks = <&cmu_peric1 CLK_GOUT_PERIC1_PERIC1_TOP0_PCLK_6>,
-+					 <&cmu_peric1 CLK_GOUT_PERIC1_PERIC1_TOP0_IPCLK_6>;
-+				clock-names = "uart", "clk_uart_baud0";
-+				interrupts = <GIC_SPI 656 IRQ_TYPE_LEVEL_HIGH 0>;
-+				pinctrl-0 = <&uart13_bus_single>;
-+				pinctrl-names = "default";
-+				samsung,uart-fifosize = <64>;
-+				status = "disabled";
-+			};
-+
-+			spi_13: spi@10d60000 {
-+				compatible = "google,gs101-spi";
-+				reg = <0x10d60000 0x30>;
-+				#address-cells = <1>;
-+				#size-cells = <0>;
-+				clocks = <&cmu_peric1 CLK_GOUT_PERIC1_PERIC1_TOP0_PCLK_6>,
-+					 <&cmu_peric1 CLK_GOUT_PERIC1_PERIC1_TOP0_IPCLK_6>;
-+				clock-names = "spi", "spi_busclk0";
-+				interrupts = <GIC_SPI 656 IRQ_TYPE_LEVEL_HIGH 0>;
-+				pinctrl-0 = <&spi13_bus>;
-+				pinctrl-names = "default";
-+				status = "disabled";
-+			};
- 		};
- 
- 		pinctrl_hsi1: pinctrl@11840000 {
--- 
-2.44.0.396.g6e790dbe36-goog
+A comment on those values wouldn't hurt...
 
+> +static struct tasdevice_config_info *tasdevice_add_config(
+> +	struct tasdevice_priv *tas_priv, unsigned char *config_data,
+> +	unsigned int config_size, int *status)
+> +{
+> +	struct tasdevice_config_info *cfg_info;
+> +	struct tasdev_blk_data **bk_da;
+> +	unsigned int config_offset = 0;
+> +	unsigned int i;
+> +
+> +	/* In most projects are many audio cases, such as music, handfree,
+> +	 * receiver, games, audio-to-haptics, PMIC record, bypass mode,
+> +	 * portrait, landscape, etc. Even in multiple audios, one or
+> +	 * two of the chips will work for the special case, such as
+> +	 * ultrasonic application. In order to support these variable-numbers
+> +	 * of audio cases, flexible configs have been introduced in the
+> +	 * dsp firmware.
+> +	 */
+> +	cfg_info = kzalloc(sizeof(struct tasdevice_config_info), GFP_KERNEL);
+> +	if (!cfg_info) {
+> +		*status = -ENOMEM;
+> +		goto out;
+> +	}
+> +
+> +	if (tas_priv->rcabin.fw_hdr.binary_version_num >= 0x105) {
+> +		if (config_offset + 64 > (int)config_size) {
+> +			*status = -EINVAL;
+> +			dev_err(tas_priv->dev, "add conf: Out of boundary\n");
+> +			goto out;
+> +		}
+> +		config_offset += 64;
+> +	}
+> +
+> +	if (config_offset + 4 > (int)config_size) {
+> +		*status = -EINVAL;
+> +		dev_err(tas_priv->dev, "add config: Out of boundary\n");
+> +		goto out;
+
+memory leaks for each of those goto out;
+
+You need to use different labels and free-up what was allocated before.
+
+> +	}
+> +
+> +	/* convert data[offset], data[offset + 1], data[offset + 2] and
+> +	 * data[offset + 3] into host
+> +	 */
+> +	cfg_info->nblocks =
+> +		be32_to_cpup((__be32 *)&config_data[config_offset]);
+> +	config_offset += 4;
+> +
+> +	/* Several kinds of dsp/algorithm firmwares can run on tas2781,
+> +	 * the number and size of blk are not fixed and different among
+> +	 * these firmwares.
+> +	 */
+> +	bk_da = cfg_info->blk_data = kcalloc(cfg_info->nblocks,
+> +		sizeof(struct tasdev_blk_data *), GFP_KERNEL);
+> +	if (!bk_da) {
+> +		*status = -ENOMEM;
+> +		goto out;
+> +	}
+> +	cfg_info->real_nblocks = 0;
+> +	for (i = 0; i < cfg_info->nblocks; i++) {
+> +		if (config_offset + 12 > config_size) {
+> +			*status = -EINVAL;
+> +			dev_err(tas_priv->dev,
+> +				"%s: Out of boundary: i = %d nblocks = %u!\n",
+> +				__func__, i, cfg_info->nblocks);
+> +			break;
+> +		}
+> +		bk_da[i] = kzalloc(sizeof(struct tasdev_blk_data), GFP_KERNEL);
+> +		if (!bk_da[i]) {
+> +			*status = -ENOMEM;
+> +			break;
+> +		}
+> +
+> +		bk_da[i]->dev_idx = config_data[config_offset];
+> +		config_offset++;
+> +
+> +		bk_da[i]->block_type = config_data[config_offset];
+> +		config_offset++;
+> +
+> +		if (bk_da[i]->block_type == TASDEVICE_BIN_BLK_PRE_POWER_UP) {
+> +			if (bk_da[i]->dev_idx == 0)
+> +				cfg_info->active_dev =
+> +					(1 << tas_priv->ndev) - 1;
+> +			else
+> +				cfg_info->active_dev |= 1 <<
+> +					(bk_da[i]->dev_idx - 1);
+> +
+> +		}
+> +		bk_da[i]->yram_checksum =
+> +			be16_to_cpup((__be16 *)&config_data[config_offset]);
+> +		config_offset += 2;
+> +		bk_da[i]->block_size =
+> +			be32_to_cpup((__be32 *)&config_data[config_offset]);
+> +		config_offset += 4;
+> +
+> +		bk_da[i]->n_subblks =
+> +			be32_to_cpup((__be32 *)&config_data[config_offset]);
+> +
+> +		config_offset += 4;
+> +
+> +		if (config_offset + bk_da[i]->block_size > config_size) {
+> +			*status = -EINVAL;
+> +			dev_err(tas_priv->dev,
+> +				"%s: Out of boundary: i = %d blks = %u!\n",
+> +				__func__, i, cfg_info->nblocks);
+> +			break;
+> +		}
+> +		/* instead of kzalloc+memcpy */
+> +		bk_da[i]->regdata = kmemdup(&config_data[config_offset],
+> +			bk_da[i]->block_size, GFP_KERNEL);
+> +		if (!bk_da[i]->regdata) {
+> +			*status = -ENOMEM;
+> +			goto out;
+> +		}
+> +
+> +		config_offset += bk_da[i]->block_size;
+> +		cfg_info->real_nblocks += 1;
+> +	}
+> +
+> +out:
+> +	return cfg_info;
+
+error handling needs to be revisited/redone.
+
+> +}
+> +
+> +int tasdevice_spi_rca_parser(void *context, const struct firmware *fmw)
+> +{
+> +	struct tasdevice_priv *tas_priv = context;
+> +	struct tasdevice_config_info **cfg_info;
+> +	struct tasdevice_rca_hdr *fw_hdr;
+> +	struct tasdevice_rca *rca;
+> +	unsigned int total_config_sz = 0;
+> +	unsigned char *buf;
+> +	int offset = 0;
+> +	int ret = 0;
+> +	int i;
+> +
+> +	rca = &(tas_priv->rcabin);
+> +	fw_hdr = &(rca->fw_hdr);
+> +	if (!fmw || !fmw->data) {
+> +		dev_err(tas_priv->dev, "Failed to read %s\n",
+> +			tas_priv->rca_binaryname);
+> +		tas_priv->fw_state = TASDEVICE_DSP_FW_FAIL;
+> +		ret = -EINVAL;
+> +		goto out;
+> +	}
+> +	buf = (unsigned char *)fmw->data;
+> +
+> +	fw_hdr->img_sz = be32_to_cpup((__be32 *)&buf[offset]);
+> +	offset += 4;
+> +	if (fw_hdr->img_sz != fmw->size) {
+> +		dev_err(tas_priv->dev,
+> +			"File size not match, %d %u", (int)fmw->size,
+> +			fw_hdr->img_sz);
+> +		tas_priv->fw_state = TASDEVICE_DSP_FW_FAIL;
+> +		ret = -EINVAL;
+> +		goto out;
+> +	}
+> +
+> +	fw_hdr->checksum = be32_to_cpup((__be32 *)&buf[offset]);
+> +	offset += 4;
+> +	fw_hdr->binary_version_num = be32_to_cpup((__be32 *)&buf[offset]);
+> +	if (fw_hdr->binary_version_num < 0x103) {
+> +		dev_err(tas_priv->dev, "File version 0x%04x is too low",
+> +			fw_hdr->binary_version_num);
+> +		tas_priv->fw_state = TASDEVICE_DSP_FW_FAIL;
+> +		ret = -EINVAL;
+> +		goto out;
+> +	}
+> +	offset += 4;
+> +	fw_hdr->drv_fw_version = be32_to_cpup((__be32 *)&buf[offset]);
+> +	offset += 8;
+> +	fw_hdr->plat_type = buf[offset];
+> +	offset += 1;
+> +	fw_hdr->dev_family = buf[offset];
+> +	offset += 1;
+> +	fw_hdr->reserve = buf[offset];
+> +	offset += 1;
+> +	fw_hdr->ndev = buf[offset];
+> +	offset += 1;
+
+buf[offset++] would read better?
+
+> +	if (fw_hdr->ndev != tas_priv->ndev) {
+> +		dev_err(tas_priv->dev,
+> +			"ndev(%u) in rcabin mismatch ndev(%u) in DTS\n",
+> +			fw_hdr->ndev, tas_priv->ndev);
+> +		tas_priv->fw_state = TASDEVICE_DSP_FW_FAIL;
+> +		ret = -EINVAL;
+> +		goto out;
+> +	}
+> +	if (offset + TASDEVICE_DEVICE_SUM > fw_hdr->img_sz) {
+> +		dev_err(tas_priv->dev, "rca_ready: Out of boundary!\n");
+> +		ret = -EINVAL;
+> +		tas_priv->fw_state = TASDEVICE_DSP_FW_FAIL;
+> +		goto out;
+> +	}
+> +
+> +	for (i = 0; i < TASDEVICE_DEVICE_SUM; i++, offset++)
+> +		fw_hdr->devs[i] = buf[offset];
+> +
+> +	fw_hdr->nconfig = be32_to_cpup((__be32 *)&buf[offset]);
+> +	offset += 4;
+> +
+> +	for (i = 0; i < TASDEVICE_CONFIG_SUM; i++) {
+> +		fw_hdr->config_size[i] = be32_to_cpup((__be32 *)&buf[offset]);
+> +		offset += 4;
+> +		total_config_sz += fw_hdr->config_size[i];
+> +	}
+> +
+> +	if (fw_hdr->img_sz - total_config_sz != (unsigned int)offset) {
+> +		dev_err(tas_priv->dev, "Bin file error!\n");
+> +		ret = -EINVAL;
+> +		tas_priv->fw_state = TASDEVICE_DSP_FW_FAIL;
+> +		goto out;
+> +	}
+> +
+> +	cfg_info = kcalloc(fw_hdr->nconfig, sizeof(*cfg_info), GFP_KERNEL);
+> +	if (!cfg_info) {
+> +		ret = -ENOMEM;
+> +		tas_priv->fw_state = TASDEVICE_DSP_FW_FAIL;
+> +		goto out;
+> +	}
+> +	rca->cfg_info = cfg_info;
+> +	rca->ncfgs = 0;
+> +	for (i = 0; i < (int)fw_hdr->nconfig; i++) {
+> +		rca->ncfgs += 1;
+> +		cfg_info[i] = tasdevice_add_config(tas_priv, &buf[offset],
+> +			fw_hdr->config_size[i], &ret);
+> +		if (ret) {
+> +			tas_priv->fw_state = TASDEVICE_DSP_FW_FAIL;
+> +			goto out;
+> +		}
+> +		offset += (int)fw_hdr->config_size[i];
+> +	}
+> +out:
+> +	return ret;
+> +}
+> +EXPORT_SYMBOL_NS_GPL(tasdevice_spi_rca_parser, SND_SOC_TAS2781_FMWLIB);
+> +
+> +/* fixed m68k compiling issue: mapping table can save code field */
+> +static unsigned char map_dev_idx(struct tasdevice_fw *tas_fmw,
+> +	struct tasdev_blk *block)
+> +{
+> +
+> +	struct blktyp_devidx_map *p =
+> +		(struct blktyp_devidx_map *)non_ppc3_mapping_table;
+> +	struct tasdevice_dspfw_hdr *fw_hdr = &(tas_fmw->fw_hdr);
+> +	struct tasdevice_fw_fixed_hdr *fw_fixed_hdr = &(fw_hdr->fixed_hdr);
+> +
+> +	int i, n = ARRAY_SIZE(non_ppc3_mapping_table);
+
+useless init for n
+
+> +	unsigned char dev_idx = 0;
+> +
+> +	if (fw_fixed_hdr->ppcver >= PPC3_VERSION_TAS2781) {
+> +		p = (struct blktyp_devidx_map *)ppc3_tas2781_mapping_table;
+> +		n = ARRAY_SIZE(ppc3_tas2781_mapping_table);
+> +	} else if (fw_fixed_hdr->ppcver >= PPC3_VERSION) {
+> +		p = (struct blktyp_devidx_map *)ppc3_mapping_table;
+> +		n = ARRAY_SIZE(ppc3_mapping_table);
+> +	}
+> +
+> +	for (i = 0; i < n; i++) {
+> +		if (block->type == p[i].blktyp) {
+> +			dev_idx = p[i].dev_idx;
+> +			break;
+> +		}
+> +	}
+> +
+> +	return dev_idx;
+> +}
+
+> +
+> +static int fw_parse_variable_header_kernel(
+> +	struct tasdevice_priv *tas_priv, const struct firmware *fmw,
+> +	int offset)
+> +{
+> +	struct tasdevice_fw *tas_fmw = tas_priv->fmw;
+> +	struct tasdevice_dspfw_hdr *fw_hdr = &(tas_fmw->fw_hdr);
+> +	struct tasdevice_prog *program;
+> +	struct tasdevice_config *config;
+> +	const unsigned char *buf = fmw->data;
+> +	unsigned short max_confs;
+> +	unsigned int i;
+> +
+> +	if (offset + 12 + 4 * TASDEVICE_MAXPROGRAM_NUM_KERNEL > fmw->size) {
+> +		dev_err(tas_priv->dev, "%s: File Size error\n", __func__);
+> +		offset = -EINVAL;
+> +		goto out;
+> +	}
+> +	fw_hdr->device_family = be16_to_cpup((__be16 *)&buf[offset]);
+> +	if (fw_hdr->device_family != 0) {
+> +		dev_err(tas_priv->dev, "%s:not TAS device\n", __func__);
+> +		offset = -EINVAL;
+> +		goto out;
+> +	}
+> +	offset += 2;
+> +	fw_hdr->device = be16_to_cpup((__be16 *)&buf[offset]);
+> +	if (fw_hdr->device >= TASDEVICE_DSP_TAS_MAX_DEVICE ||> +
+> +static int fw_parse_block_data_kernel(struct tasdevice_fw *tas_fmw,
+> +	struct tasdev_blk *block, const struct firmware *fmw, int offset)
+> +{
+> +	const unsigned char *data = fmw->data;
+> +
+> +	if (offset + 16 > fmw->size) {
+> +		dev_err(tas_fmw->dev, "%s: File Size error\n", __func__);
+> +		offset = -EINVAL;
+> +		goto out;
+> +	}
+> +
+> +	/* convert data[offset], data[offset + 1], data[offset + 2] and
+> +	 * data[offset + 3] into host
+> +	 */
+> +	block->type = be32_to_cpup((__be32 *)&data[offset]);
+> +	offset += 4;
+> +
+> +	block->is_pchksum_present = data[offset];
+> +	offset++;
+> +
+> +	block->pchksum = data[offset];
+> +	offset++;
+> +
+> +	block->is_ychksum_present = data[offset];
+> +	offset++;
+> +
+> +	block->ychksum = data[offset];
+> +	offset++;
+> +
+> +	block->blk_size = be32_to_cpup((__be32 *)&data[offset]);
+> +	offset += 4;
+> +
+> +	block->nr_subblocks = be32_to_cpup((__be32 *)&data[offset]);
+> +	offset += 4;
+> +
+> +	/* fixed m68k compiling issue:
+> +	 * 1. mapping table can save code field.
+> +	 * 2. storing the dev_idx as a member of block can reduce unnecessary
+> +	 *    time and system resource comsumption of dev_idx mapping every
+> +	 *    time the block data writing to the dsp.
+> +	 */
+> +	block->dev_idx = map_dev_idx(tas_fmw, block);
+> +
+> +	if (offset + block->blk_size > fmw->size) {
+> +		dev_err(tas_fmw->dev, "%s: nSublocks error\n", __func__);
+> +		offset = -EINVAL;
+> +		goto out;
+> +	}
+> +	/* instead of kzalloc+memcpy */
+> +	block->data = kmemdup(&data[offset], block->blk_size, GFP_KERNEL);
+> +	if (!block->data) {
+> +		offset = -ENOMEM;
+> +		goto out;
+> +	}
+> +	offset += block->blk_size;
+> +
+> +out:
+> +	return offset;
+> +}
+> +
+> +static int fw_parse_data_kernel(struct tasdevice_fw *tas_fmw,
+> +	struct tasdevice_data *img_data, const struct firmware *fmw,
+> +	int offset)
+> +{
+> +	const unsigned char *data = fmw->data;
+> +	struct tasdev_blk *blk;
+> +	unsigned int i;
+> +
+> +	if (offset + 4 > fmw->size) {
+> +		dev_err(tas_fmw->dev, "%s: File Size error\n", __func__);
+> +		offset = -EINVAL;
+> +		goto out;
+> +	}
+> +	img_data->nr_blk = be32_to_cpup((__be32 *)&data[offset]);
+> +	offset += 4;
+> +
+> +	img_data->dev_blks = kcalloc(img_data->nr_blk,
+> +		sizeof(struct tasdev_blk), GFP_KERNEL);
+> +	if (!img_data->dev_blks) {
+> +		offset = -ENOMEM;
+> +		goto out;
+> +	}
+> +
+> +	for (i = 0; i < img_data->nr_blk; i++) {
+> +		blk = &(img_data->dev_blks[i]);
+> +		offset = fw_parse_block_data_kernel(tas_fmw, blk, fmw, offset);
+> +		if (offset < 0) {
+> +			offset = -EINVAL;
+> +			break;
+> +		}
+> +	}
+> +
+> +out:
+> +	return offset;
+> +}
+> +
+> +static int fw_parse_program_data_kernel(
+> +	struct tasdevice_priv *tas_priv, struct tasdevice_fw *tas_fmw,
+> +	const struct firmware *fmw, int offset)
+> +{
+> +	struct tasdevice_prog *program;
+> +	unsigned int i;
+> +
+> +	for (i = 0; i < tas_fmw->nr_programs; i++) {
+> +		program = &(tas_fmw->programs[i]);
+> +		if (offset + 72 > fmw->size) {
+> +			dev_err(tas_priv->dev, "%s: mpName error\n", __func__);
+> +			offset = -EINVAL;
+> +			goto out;
+> +		}
+> +		/*skip 72 unused byts*/
+> +		offset += 72;
+> +
+> +		offset = fw_parse_data_kernel(tas_fmw, &(program->dev_data),
+> +			fmw, offset);
+> +		if (offset < 0)
+> +			goto out;
+> +	}
+> +
+> +out:
+> +	return offset;
+> +}
+> +
+> +static int fw_parse_configuration_data_kernel(
+> +	struct tasdevice_priv *tas_priv,
+> +	struct tasdevice_fw *tas_fmw, const struct firmware *fmw, int offset)
+> +{
+> +	const unsigned char *data = fmw->data;
+> +	struct tasdevice_config *config;
+> +	unsigned int i;
+> +
+> +	for (i = 0; i < tas_fmw->nr_configurations; i++) {
+> +		config = &(tas_fmw->configs[i]);
+> +		if (offset + 80 > fmw->size) {
+> +			dev_err(tas_priv->dev, "%s: mpName error\n", __func__);
+> +			offset = -EINVAL;
+> +			goto out;
+> +		}
+> +		memcpy(config->name, &data[offset], 64);
+> +		/*skip extra 16 bytes*/
+> +		offset += 80;
+> +
+> +		offset = fw_parse_data_kernel(tas_fmw, &(config->dev_data),
+> +			fmw, offset);
+> +		if (offset < 0)
+> +			goto out;
+> +	}
+> +
+> +out:
+> +	return offset;
+> +}
+> +		fw_hdr->device == 6) {
+> +		dev_err(tas_priv->dev, "Unsupported dev %d\n", fw_hdr->device);
+> +		offset = -EINVAL;
+> +		goto out;
+> +	}
+> +	offset += 2;
+> +	fw_hdr->ndev = deviceNumber[fw_hdr->device];
+> +
+> +	if (fw_hdr->ndev != tas_priv->ndev) {
+> +		dev_err(tas_priv->dev,
+> +			"%s: ndev(%u) in dspbin mismatch ndev(%u) in DTS\n",
+> +			__func__, fw_hdr->ndev, tas_priv->ndev);
+> +		offset = -EINVAL;
+> +		goto out;
+> +	}
+> +
+> +	tas_fmw->nr_programs = be32_to_cpup((__be32 *)&buf[offset]);
+> +	offset += 4;
+> +
+> +	if (tas_fmw->nr_programs == 0 || tas_fmw->nr_programs >
+> +		TASDEVICE_MAXPROGRAM_NUM_KERNEL) {
+> +		dev_err(tas_priv->dev, "mnPrograms is invalid\n");
+> +		offset = -EINVAL;
+> +		goto out;
+> +	}
+> +
+> +	tas_fmw->programs = kcalloc(tas_fmw->nr_programs,
+> +		sizeof(struct tasdevice_prog), GFP_KERNEL);
+> +	if (!tas_fmw->programs) {
+> +		offset = -ENOMEM;
+> +		goto out;
+> +	}
+> +
+> +	for (i = 0; i < tas_fmw->nr_programs; i++) {
+> +		program = &(tas_fmw->programs[i]);
+> +		program->prog_size = be32_to_cpup((__be32 *)&buf[offset]);
+> +		offset += 4;
+> +	}
+> +
+> +	/* Skip the unused prog_size */
+> +	offset += 4 * (TASDEVICE_MAXPROGRAM_NUM_KERNEL - tas_fmw->nr_programs);
+> +
+> +	tas_fmw->nr_configurations = be32_to_cpup((__be32 *)&buf[offset]);
+> +	offset += 4;
+> +
+> +	/* The max number of config in firmware greater than 4 pieces of
+> +	 * tas2781s is different from the one lower than 4 pieces of
+> +	 * tas2781s.
+> +	 */
+> +	max_confs = (fw_hdr->ndev >= 4) ?
+> +		TASDEVICE_MAXCONFIG_NUM_KERNEL_MULTIPLE_AMPS :
+> +		TASDEVICE_MAXCONFIG_NUM_KERNEL;
+> +	if (tas_fmw->nr_configurations == 0 ||
+> +		tas_fmw->nr_configurations > max_confs) {
+> +		dev_err(tas_priv->dev, "%s: Conf is invalid\n", __func__);
+> +		offset = -EINVAL;
+> +		goto out;
+> +	}
+> +
+> +	if (offset + 4 * max_confs > fmw->size) {
+> +		dev_err(tas_priv->dev, "%s: mpConfigurations err\n", __func__);
+> +		offset = -EINVAL;
+> +		goto out;
+> +	}
+> +
+> +	tas_fmw->configs = kcalloc(tas_fmw->nr_configurations,
+> +		sizeof(struct tasdevice_config), GFP_KERNEL);
+> +	if (!tas_fmw->configs) {
+> +		offset = -ENOMEM;
+> +		goto out;
+> +	}
+> +
+> +	for (i = 0; i < tas_fmw->nr_programs; i++) {
+> +		config = &(tas_fmw->configs[i]);
+> +		config->cfg_size = be32_to_cpup((__be32 *)&buf[offset]);
+> +		offset += 4;
+> +	}
+> +
+> +	/* Skip the unused configs */
+> +	offset += 4 * (max_confs - tas_fmw->nr_programs);
+> +
+> +out:
+> +	return offset;
+
+same here, error handling is not quite right
+
+I'll stop the review here.
 
