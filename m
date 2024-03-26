@@ -1,113 +1,85 @@
-Return-Path: <linux-kernel+bounces-118296-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-118297-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id ADB7788B75B
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 03:22:15 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1225388B767
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 03:26:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C454C1C2E90B
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 02:22:14 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id BC2231F3FBC3
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 02:26:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 35E1F5A10F;
-	Tue, 26 Mar 2024 02:22:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="hMKZIuKS"
-Received: from mail-yb1-f171.google.com (mail-yb1-f171.google.com [209.85.219.171])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6B93580C1F;
+	Tue, 26 Mar 2024 02:25:51 +0000 (UTC)
+Received: from irl.hu (irl.hu [95.85.9.111])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 191F429408
-	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 02:22:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C715157314;
+	Tue, 26 Mar 2024 02:25:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.85.9.111
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711419727; cv=none; b=DCIREuWMvrNos9ly7CzekiBFxkBS9tAxGBiGIW43rMZDIoNI5MvHm7v2vQoSyhaeKVxdqAhcRbuGBwpXje6TCUHtXuAUPIjNG9YrIXTLYquBfIDfllVF+s1YfAwkd2sVE0whNc0i6uJpc6iNIDswGk93Vb7PrV3FnFSscVqzicg=
+	t=1711419951; cv=none; b=iw/iC24Yf2eDmK9eJx6jfu4cWkKEAkcG9GFQIdsycd0hz5dKKdouWemmcX/w+6hm8ebBv2qFVgopYD+ws/CrmwrkkCu/eAemJb3f2upJyTn+VrEPZ7wLzrZJQTo2mc56Lockp5uOItMlT1XNL4acGIIQf6CeLe1O2M1dbIV/WcE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711419727; c=relaxed/simple;
-	bh=oWW3styOUA5P0B+ryLw+EUTBtxFvFF46PeCkmDW7XT0=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=HtCbwb+5Q2K8SaaRqI8YY5JC4F/pT1b5p7dv2ec4qV4wKbkU9/l1JIuZFg8lZkPm3yeX2lDhcu7MgoXC8cm4n4rXT0vgtCSyt6fvejs4au1MtsmGOFRffytPgwB7y9i2LuTBpFLTIDPAQriJRFF8FKrgkqGsmapY/iGVCNWSU5A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=hMKZIuKS; arc=none smtp.client-ip=209.85.219.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-yb1-f171.google.com with SMTP id 3f1490d57ef6-d9b9adaf291so4627798276.1
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 19:22:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1711419725; x=1712024525; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=dTPjE88Kmtvbu12Qel97M6QMO/75XMfszQTW3mH8I1g=;
-        b=hMKZIuKSvfvEYKmO5+38+4qx/Ol9OMjVu8F5+1uvLirxpdPZ+nfS/Pf76ovEGfTyDf
-         ZDwLiDgi2Cxig7ZYc/tvAvDA8tFVNm1k884U8VOuSDwqYPieQyuPcgRlZWiG1kCKXqoR
-         Txr2WVX79R5Fn5S4KegGDv34AsTQ0BCuodWlUIcDfQ8epLDfuuCsTzljdsXbmGXrsQnD
-         2xyuWxeAXHs4deaVZ9y+lrBtZ8pO9hHZKtzwvow7zIjAhRwptsMVjZksovcQhsRZByhZ
-         I3FyvE3yynXYrNBkpmtzll+4P4MbSo3o7pn8ukvb+6V1yHiPM6Qo+3pINLMGkRFsKnPG
-         2Sjg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711419725; x=1712024525;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=dTPjE88Kmtvbu12Qel97M6QMO/75XMfszQTW3mH8I1g=;
-        b=eA2cgRxZdVd+faKf/iRtAzvqJvYzKJppXlwQhxMQc/AXT7kCTgKntQTh9GSBnkJoUf
-         qHT/iIwHTv9scwAzPsMHnNEJBOYlW3W9YBqoI/8S2J2jnUDe9Feq/8UmFkIxQtwXQdnT
-         hvlmFX3bwOl0ggSkxXUXYb3GjAPIMWgudM/K7CkYocKOatjAjxjCHXkNSfUmun1+nGTH
-         seIxsXvl6t9LkM0HAcAAhbIKFvpMP7+7Ho5UZ1YGvwZGGH5zNjE9g0XHmR5a9cw0IC+9
-         aL8yL3UiojGvsLST5LtPZUlJr7e8eO0w9p05LTJFcf3BDRdIZzyNWPKGt39cY4AckJuP
-         OaDg==
-X-Forwarded-Encrypted: i=1; AJvYcCUKNvMPhOjUdplUJxWNtcsWTtfASfThRkZUHHg31dWrWz2e28X6xLYMu9S1ywA0GOBg2YY8bilrzk1ak67k2ie9FjK5vUOkrPGn8yzu
-X-Gm-Message-State: AOJu0YxLHarOkaSldSZO90UYrvlkgnhr92M5b5qBJgZw5DSae/4pF4IU
-	C5oybjw3BWo1Xva/6lRBKGMh98pQzLVMCSFIWBhgT4la9XCo3R/HlytRXeybz7CIYUB0b6Gbsrq
-	RR1Sb3f5hfGb8JAxbBl58/DJbcTF82szOn4oP
-X-Google-Smtp-Source: AGHT+IHSoMSpNTzqMHCg5QsTwg1AefarF5WUToxGdaGVWfeb9A/dyetvKDSoRHbIs+FmF+hPpehXodJ2+ajME1xY9ac=
-X-Received: by 2002:a25:aa0a:0:b0:dd1:48cf:5c8 with SMTP id
- s10-20020a25aa0a000000b00dd148cf05c8mr6479203ybi.2.1711419724858; Mon, 25 Mar
- 2024 19:22:04 -0700 (PDT)
+	s=arc-20240116; t=1711419951; c=relaxed/simple;
+	bh=c0zXOdmY8yi3sVERCY67fR6S98nyjCfrCLzup/zFNXw=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=TMO5wov5foRonuwkGvWHdPo8OZjOXdPZwxB9MCTYFDrLyu4kd8vIQa3M2smKvrCYLRiP1olXDV08LGsJUMG+gIMPlTx+j5jppXu9ifoCx3lEpZJfM8tPCqhas8k0xARkUhWcliBJ3yE+FIRrwoTYMDa1Vrc4yOb8yf93xQc6HSs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=irl.hu; spf=pass smtp.mailfrom=irl.hu; arc=none smtp.client-ip=95.85.9.111
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=irl.hu
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=irl.hu
+Received: from [192.168.2.4] (51b68717.dsl.pool.telekom.hu [::ffff:81.182.135.23])
+  (AUTH: CRAM-MD5 soyer@irl.hu, )
+  by irl.hu with ESMTPSA
+  id 000000000007719D.000000006602322A.0023B604; Tue, 26 Mar 2024 03:25:46 +0100
+Message-ID: <481b31f72eea83fed618e277c62fb6a12949c525.camel@irl.hu>
+Subject: Re: [PATCH] uvcvideo: Remo OBSBOT quirk fix for incorrect relative
+ min pan/tilt/zoom speeds
+From: Gergo Koteles <soyer@irl.hu>
+To: John Bauer <john@oxt.co>
+Cc: johnebgood@securitylive.com,
+  Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+  Mauro Carvalho Chehab <mchehab@kernel.org>,
+  linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+  linh.tp.vu@gmail.com, ribalda@chromium.org
+Date: Tue, 26 Mar 2024 03:25:46 +0100
+In-Reply-To: <CAMB8T1ULcfBOB5VwZzUtvRnp4FvtBCFWxxTdb+OJK8FOpjKCXA@mail.gmail.com>
+References: 
+	<20240325-obsbot-quirk-fix-relative-ptz-speed-v1-1-0eb1387d98c7@securitylive.com>
+	 <6e6b75a15cdc6a1239edc4d49b927b187ed20054.camel@irl.hu>
+	 <CAMB8T1ULcfBOB5VwZzUtvRnp4FvtBCFWxxTdb+OJK8FOpjKCXA@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.50.4 (3.50.4-1.fc39) 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240325122504.6f46a5ae@canb.auug.org.au>
-In-Reply-To: <20240325122504.6f46a5ae@canb.auug.org.au>
-From: Suren Baghdasaryan <surenb@google.com>
-Date: Mon, 25 Mar 2024 19:21:54 -0700
-Message-ID: <CAJuCfpEHdrrym1gGHj6imzNccRYfCLH1JMaJ_ZWSkv-U5U7xOw@mail.gmail.com>
-Subject: Re: linux-next: build warning after merge of the mm tree
-To: Stephen Rothwell <sfr@canb.auug.org.au>
-Cc: Andrew Morton <akpm@linux-foundation.org>, Kent Overstreet <kent.overstreet@linux.dev>, 
-	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, 
-	Linux Next Mailing List <linux-next@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Sun, Mar 24, 2024 at 6:25=E2=80=AFPM Stephen Rothwell <sfr@canb.auug.org=
-au> wrote:
->
-> Hi all,
->
-> After merging the mm tree, today's linux-next build (htmldocs) produced
-> this warning:
->
-> Documentation/filesystems/proc.rst:958: WARNING: Title underline too shor=
-t.
->
-> allocinfo
-> ~~~~~~~
->
-> Introduced by commit
->
->   d08b311b6d49 ("lib: add allocation tagging support for memory allocatio=
-n profiling")
->
-> from the mm-unstable branch of the mm tree.
+Hi John,
 
-Thanks! I'll post a fix shortly.
+On Mon, 2024-03-25 at 20:51 -0500, John Bauer wrote:
+> I understand this patch might not be the ideal or proper solution; but it=
+ works. I don't think the UVC
+> implementation can be trusted on these cameras, just like the Windows Dir=
+ectShow implementation is off.=C2=A0
+> I put this patch out there as I have encountered many Linux users who are=
+ struggling to get proper=C2=A0
+> control of these awesome cameras. If the patch dies here for now, that's =
+OK, at least there's a possible=C2=A0
+> patch for those in need.
 
->
-> --
-> Cheers,
-> Stephen Rothwell
+Sorry, maybe I didn't phrase it well. Based on the UVC specs, I think
+your patch is good for all UVC PTZ cameras, so you don't need to use
+UVC_QUIRK_OBSBOT_MIN_SETTINGS quirk entry, just apply the quirk changes
+to all cameras.
+
+Thanks for doing this!
+
+Regards,
+Gergo
+
+
 
