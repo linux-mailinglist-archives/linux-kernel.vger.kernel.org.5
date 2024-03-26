@@ -1,115 +1,160 @@
-Return-Path: <linux-kernel+bounces-119468-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-119470-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1B8AA88C95E
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 17:32:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 2298288C96B
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 17:33:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CB5382E8807
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 16:32:27 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 473E4300318
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 16:33:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2A0651CD2D;
-	Tue, 26 Mar 2024 16:31:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8FEDA1C2AF;
+	Tue, 26 Mar 2024 16:33:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="GQCpPJWM"
-Received: from mail-io1-f51.google.com (mail-io1-f51.google.com [209.85.166.51])
+	dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b="tbx9eszl"
+Received: from mail-lj1-f180.google.com (mail-lj1-f180.google.com [209.85.208.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CDA071CD21
-	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 16:31:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B8AE210A2A
+	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 16:33:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711470698; cv=none; b=UNaClpbe79BrZGKJurcKZVObZozW9obyeIpRS/uwl9GF0yOcid45OsfDrI2Lq6+wTZOgT1NDVtX7ycBqXcthknKo4BYXb174QslzzlCAwlgsxJgBw6xFK5gKwU0vpbGKExs9lHou2cd/7aRDBKMAEaItvUgpPhQwbooM1XQjomg=
+	t=1711470790; cv=none; b=W7KfiokjIm1m6nBDUAaDlnoSOZgPaUFKz/sojp8Jtd+HAt2tfEMXHbW4+SdwjW9go8iVnRC+2+Xq6NdBJq+IH9ChKgYwJtR+oV3/d8+OZaawXD75mHJZvJKRyp9lHsMN+trHTJ7QpyBRhEf/WHxpnlD3LJPiM3JPkJ8PKRg7b64=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711470698; c=relaxed/simple;
-	bh=L8F1Vday+FWTauVFASCsmeZfL566744ShzHCrvEoawo=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=uCR114Y6ZN4pGNF3wc0PIreyLnWV45cGJCQO91kCa3pzdl5alwPaS50Y+b9CwtJPhIlIjuYE/w1rHKLTYx13LA/AMePJoendcTmUBy70gghBqEbxYEpmYufW7T3CXJgKwRmQA7P1I1yVFJ0rBz0RUcoPg1wUqa+rZCzrGcu5d34=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linuxfoundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=GQCpPJWM; arc=none smtp.client-ip=209.85.166.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linuxfoundation.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
-Received: by mail-io1-f51.google.com with SMTP id ca18e2360f4ac-7cc0e831e11so82618339f.1
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 09:31:36 -0700 (PDT)
+	s=arc-20240116; t=1711470790; c=relaxed/simple;
+	bh=lVoQMVplppCC3bZfzFJMPRwm9a5E9DObxpQyJv4ei/c=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=h9IcnUHAKA070wFM+cMWLsC1+wD2iCk8YCFs1OUTBLS3iYKU+wXmbohXrUzWxuCCEblmbJ5Mi9YJO9ZSF1fXgYkm1fnPshIrT36lwPfi8X+6piC4O2zbnADDYkzhtyZj8fzE5c7RyaokmGp/z5oqMVBnJNbhty0lTemFBYm3TIY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl; spf=none smtp.mailfrom=bgdev.pl; dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b=tbx9eszl; arc=none smtp.client-ip=209.85.208.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bgdev.pl
+Received: by mail-lj1-f180.google.com with SMTP id 38308e7fff4ca-2d4515ec3aaso44191971fa.1
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 09:33:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google; t=1711470696; x=1712075496; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=yfNkAoiSfqoBMHCXTVNDVvy9Q+IeLxX3GnUaU3hi0d4=;
-        b=GQCpPJWMQXyquPBuat2ee2x/QdutadD05F6NNONbsn16MB6fqsh/zeWjc5Y7Wrt+FV
-         eoAWi96dUTUDltJGy7XlsQpvhjZygAlCd3fligBw1E7jKni5MpD872YO8EnIYpcWBE5Y
-         QjDOTI0ggq742mbFClcrS6vemgu+KdFgCr+i4=
+        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1711470787; x=1712075587; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=eQ6jS2CUTKGhZdxpuXUPTr0agZibBpPyyI13tXK5e6s=;
+        b=tbx9eszl0cv3hSGR2z5T1MUqNEFMqOK0hvuUXK4rky/ZLiX7/ruc4w35Wa6enxWLhy
+         jqYTQ6baqOYwBEPfw8EyZsa1IaqSg7IlHG+YqWDCCA0rIkEN94Vbs5U6ww3v89vN1w1I
+         0nqGzNdcCZSF0zAp6TSiu46brej3P99kOXNi4PRIAzaw0yMELlRpmcXliW4+4QxY+LtV
+         O8xrYDYrVS4Up40ecp8dyuj/sICiqnVfBNZVkxQg6hmXUnZFDaK/qkfK7cpzxGt63mcL
+         eZAhX6x/1ghz8UjnhKhvM95t5Bgtrh5YH7RDfBvymF0vUdIjbVmyPCYnXR5AfFfD5PYR
+         BD1Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711470696; x=1712075496;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=yfNkAoiSfqoBMHCXTVNDVvy9Q+IeLxX3GnUaU3hi0d4=;
-        b=gEbHL769kuO3Bq8QkMnHsI+2CfodDz7wZN4rYycxj5nqZOCOJtDZ+gaMRfHsZ62prI
-         KNXtzSeRqux4A9+3sKSVXBW5ykInJshEROsS4u4vFQlfJdSFl10XftjH+yZ37rbFJslW
-         XVbAIz5YRPVEU4g7fxunNM8osoLepZcretKCvzeca6XpV/xTLtob8j1GekwWyYHU5tkM
-         ce5VuBb4T3JxwY3Y35/SjgNYnWQSsKJg5XwhfxtwwZBvQPTxX5vZKZHMtuhGG56YD5Nm
-         GbAnlKqAH7+rOTZAAXw9bYXAIX7gABFi5LeVhkoNmHXzy3llC+2SWvPKe1UjLIg/ikcz
-         glQw==
-X-Forwarded-Encrypted: i=1; AJvYcCUonPr+3yuXyKddnEJF2SeFZ3m3weuqS6ijjK8OMUxJBm4X+tB9M9kY/yPmq5NcXTklyAxKAxswLEGU60YNQgq4KIr3Y1f/G3qxBxqV
-X-Gm-Message-State: AOJu0Yw+zSKU6qZtlCdwJZ/faUCbEY55oZcfCFffMasamqw4BInbMuMG
-	Dytl5U/bHz9BaoOhtKqfrtoQmZfgU4yzDIjoCxQvuY33A26+Qk9fdAzkLFQkDhY=
-X-Google-Smtp-Source: AGHT+IFIOB1uF4sWL7izkguhAPjySDqnZ6uh5l39VZAdtGVMXGjChQ80uyufCBBSqdun6dbA6+2skQ==
-X-Received: by 2002:a05:6602:335a:b0:7d0:32b0:5764 with SMTP id c26-20020a056602335a00b007d032b05764mr10760573ioz.0.1711470695931;
-        Tue, 26 Mar 2024 09:31:35 -0700 (PDT)
-Received: from [192.168.1.128] ([38.175.170.29])
-        by smtp.gmail.com with ESMTPSA id dx11-20020a0566381d0b00b0047bf1cc6b42sm2782232jab.138.2024.03.26.09.31.34
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 26 Mar 2024 09:31:35 -0700 (PDT)
-Message-ID: <bede7f50-1355-4a1f-8996-04a5c3eff8ea@linuxfoundation.org>
-Date: Tue, 26 Mar 2024 10:31:34 -0600
+        d=1e100.net; s=20230601; t=1711470787; x=1712075587;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=eQ6jS2CUTKGhZdxpuXUPTr0agZibBpPyyI13tXK5e6s=;
+        b=BUR6x302dkRp6I3eHBBnn8BSJWKCU9u/LNlBM2c2tbinZV8qH8Zkaf4M8HKTUkB6V+
+         a/FZkPAYON1/ZpUmPhTAiMVsvaKUUhpHuq6fi5wDQjNJRatONL1uj12ZFjdoUy1FktuK
+         3z4a5KI7/VJe0hMnBT78IJWbgE9VDu0Oq3Z9Si3NiEnaugxG+QI1MmD22AOxqXMchuOW
+         /iV7ScoFUmDggGustroq3A1FzU2+fGX1we1QANmFAElPJKmg/0FkWqfyHx1yNoYQOrv8
+         i4t0BfGNHGfTt061cs6PxtRGv9rWCFLX2DkIAHcoSbulKsdY+XhYeBS0n+O60Nhdf8wZ
+         go6A==
+X-Forwarded-Encrypted: i=1; AJvYcCXGB61ulLeGb++4TKdapTts7pAoLtlLaAT4shQtSeBm31RFC9CIoQs12x+/J8R1AWW1l98Y/UPc8ffWvOlNG+rUBTBAebyN8dli5xfo
+X-Gm-Message-State: AOJu0YxOxR12Og04LoxKWn91K4m0bJDlBdqXmL9er5UBy/W8o4+OZPOX
+	ElkRsBLqCEzFKIGe8WlqS+7xEK8QU4xRWL+gI7cHriGVEPQUFqs+PWLSJR8WdhVw6nlqfeXXGHB
+	z36y1dzXNgMmUL/MjonFaAoQ7zjcSh2e4qrLprg==
+X-Google-Smtp-Source: AGHT+IEPlW3Mndd9DAskKl8BnO4uLoQgb2fvBGrOQCORYGpNt3ZO7pjyZJGUAGM4Jnm65aupzhhwN4AXLf4B/UzV5SQ=
+X-Received: by 2002:a05:651c:210b:b0:2d2:4477:6359 with SMTP id
+ a11-20020a05651c210b00b002d244776359mr800282ljq.7.1711470786783; Tue, 26 Mar
+ 2024 09:33:06 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 6.8 000/710] 6.8.2-rc2 review
-Content-Language: en-US
-To: Sasha Levin <sashal@kernel.org>, linux-kernel@vger.kernel.org,
- stable@vger.kernel.org
-Cc: torvalds@linux-foundation.org, akpm@linux-foundation.org,
- linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
- lkft-triage@lists.linaro.org, florian.fainelli@broadcom.com, pavel@denx.de,
- Shuah Khan <skhan@linuxfoundation.org>
-References: <20240325120018.1768449-1-sashal@kernel.org>
-From: Shuah Khan <skhan@linuxfoundation.org>
-In-Reply-To: <20240325120018.1768449-1-sashal@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+References: <20240325131624.26023-1-brgl@bgdev.pl> <20240325131624.26023-5-brgl@bgdev.pl>
+ <87r0fy8lde.fsf@kernel.org> <CAMRc=Mc2Tc8oHr5NVo=aHAADkJtGCDAVvJs+7V-19m2zGi-vbw@mail.gmail.com>
+ <87frwe8jiu.fsf@kernel.org> <CAMRc=MdCv+vTMZML-wzRQqZZavquV3DABYM4KYw-HwqS47sTyw@mail.gmail.com>
+ <874jct10yf.fsf@kernel.org>
+In-Reply-To: <874jct10yf.fsf@kernel.org>
+From: Bartosz Golaszewski <brgl@bgdev.pl>
+Date: Tue, 26 Mar 2024 17:32:55 +0100
+Message-ID: <CAMRc=Me5ef_kFDz0SyGZb4S+2Ma4i=Fek_tzwj+bYD4DGSV4mA@mail.gmail.com>
+Subject: Re: [PATCH v6 04/16] dt-bindings: net: wireless: qcom,ath11k:
+ describe the ath11k on QCA6390
+To: Kalle Valo <kvalo@kernel.org>
+Cc: Marcel Holtmann <marcel@holtmann.org>, Luiz Augusto von Dentz <luiz.dentz@gmail.com>, 
+	"David S . Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Rob Herring <robh@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
+	Bjorn Andersson <andersson@kernel.org>, Konrad Dybcio <konrad.dybcio@linaro.org>, 
+	Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, 
+	Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, 
+	Bjorn Helgaas <bhelgaas@google.com>, Saravana Kannan <saravanak@google.com>, 
+	Geert Uytterhoeven <geert+renesas@glider.be>, Arnd Bergmann <arnd@arndb.de>, 
+	Neil Armstrong <neil.armstrong@linaro.org>, Marek Szyprowski <m.szyprowski@samsung.com>, 
+	Alex Elder <elder@linaro.org>, Srini Kandagatla <srinivas.kandagatla@linaro.org>, 
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Abel Vesa <abel.vesa@linaro.org>, 
+	Manivannan Sadhasivam <mani@kernel.org>, Lukas Wunner <lukas@wunner.de>, 
+	Dmitry Baryshkov <dmitry.baryshkov@linaro.org>, linux-bluetooth@vger.kernel.org, 
+	netdev@vger.kernel.org, devicetree@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org, 
+	linux-arm-msm@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
+	linux-pci@vger.kernel.org, linux-pm@vger.kernel.org, 
+	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>, ath11k@lists.infradead.org, 
+	Johan Hovold <johan@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 3/25/24 06:00, Sasha Levin wrote:
-> 
-> This is the start of the stable review cycle for the 6.8.2 release.
-> There are 710 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Wed Mar 27 12:00:13 PM UTC 2024.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
->          https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git/patch/?id=linux-6.8.y&id2=v6.8.1
-> or in the git tree and branch at:
->          git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.8.y
-> and the diffstat can be found below.
-> 
-> Thanks,
-> Sasha
-> 
+On Tue, Mar 26, 2024 at 4:12=E2=80=AFPM Kalle Valo <kvalo@kernel.org> wrote=
+:
+>
+> Bartosz Golaszewski <brgl@bgdev.pl> writes:
+>
+> >> >> I don't know DT well enough to know what the "required:" above mean=
+s,
+> >> >> but does this take into account that there are normal "plug&play" t=
+ype
+> >> >> of QCA6390 boards as well which don't need any DT settings?
+> >> >
+> >> > Do they require a DT node though for some reason?
+> >>
+> >> You can attach the device to any PCI slot, connect the WLAN antenna an=
+d
+> >> it just works without DT nodes. I'm trying to make sure here that basi=
+c
+> >> setup still works.
+> >>
+> >
+> > Sure, definitely. I there's no DT node, then the binding doesn't apply
+> > and the driver (the platform part of it) will not probe.
+> >
+> >> Adding also Johan and ath11k list. For example, I don't know what's th=
+e
+> >> plan with Lenovo X13s, will it use this framework? I guess in theory w=
+e
+> >> could have devices which use qcom,ath11k-calibration-variant from DT b=
+ut
+> >> not any of these supply properties?
+> >>
+> >
+> > Good point. I will receive the X13s in a month from now. I do plan on
+> > upstreaming correct support for WLAN and BT for it as well.
+> >
+> > I guess we can always relax the requirements once a valid use-case appe=
+ars?
+>
+> I think we have such cases already now:
+>
+> $ git grep ath11k-calibration-variant -- arch
+> arch/arm64/boot/dts/qcom/qcm6490-fairphone-fp5.dts:     qcom,ath11k-calib=
+ration-variant =3D "Fairphone_5";
+> arch/arm64/boot/dts/qcom/sc8280xp-lenovo-thinkpad-x13s.dts:              =
+       qcom,ath11k-calibration-variant =3D "LE_X13S";
+>
+> But please do check that. I'm no DT expert :)
+>
 
-Compiled and booted on my test system. No dmesg regressions.
+You're thinking about making the required: field depend on the value
+of qcom,ath11k-calibration-variant? Am I getting this right?
 
-Tested-by: Shuah Khan <skhan@linuxfoundation.org>
-
-thanks,
--- Shuah
+Bart
 
