@@ -1,84 +1,139 @@
-Return-Path: <linux-kernel+bounces-119443-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-119444-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id A77DD88C8DE
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 17:20:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id D567A88C8E0
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 17:20:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5DA1C1F66533
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 16:20:04 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8BF1F1F8119E
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 16:20:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3115613CF95;
-	Tue, 26 Mar 2024 16:19:05 +0000 (UTC)
-Received: from irl.hu (irl.hu [95.85.9.111])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 91E6F13C9D5;
+	Tue, 26 Mar 2024 16:20:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="aytQV14L"
+Received: from mail-qt1-f169.google.com (mail-qt1-f169.google.com [209.85.160.169])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3E89C13C9DA;
-	Tue, 26 Mar 2024 16:19:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.85.9.111
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C98DB13C8E8;
+	Tue, 26 Mar 2024 16:20:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711469944; cv=none; b=FSU4xR/OHqeEk4aRMq+SPxcRZdO1WQ2N04Qqva1qd9tFuAvB/ewjgnL0dHzRgZCm02MyLPuCm+oM06YbRhL/hVLlZ3riS7PjCX/hHzUen0MSuBuDUqWtAqTL0UCcnD2fy11F7XtoHvIt/F0bkxu4Nkf3IBWxhKmO98bUQ+39zEA=
+	t=1711470023; cv=none; b=XkWwM8HwW4xpmdSKCWzxx7o609KDvhtHde6csSJjbyFotLVVFbn40mxDww4QWdFwyw+ZG+E6o1IhfcSVh3n118QgdB4K6R9gfS3i16HVZh8u4Kj8TiI+mVPjNrT/JvimJqR2xCu0tkTJ2RKdbyY0Job6hcPd0moDjVmTQfHTpaY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711469944; c=relaxed/simple;
-	bh=5aDrrnIyMvrzhrxVH1Ca2IiEhPa9yUeMCoC85ZSPPPI=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 Mime-Version:Content-Type; b=qjLW+/JP3CoxSyVfeG1p8r8WekpO1Ul5Jo9Jf3iImGggjs7E9WWB9hK+CwW4aVS5q9X2GCbe3tYI+LAjzki2Yd4gmvn6CcR5qZPVU2J45eiw4jVKiN7JUHZEHJW7jYrVQZGZQT+nWb9n9Pfw2zln3cEQUBK7FSuYtrAglE4GV08=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=irl.hu; spf=pass smtp.mailfrom=irl.hu; arc=none smtp.client-ip=95.85.9.111
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=irl.hu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=irl.hu
-Received: from fedori.lan (51b68717.dsl.pool.telekom.hu [::ffff:81.182.135.23])
-  (AUTH: CRAM-MD5 soyer@irl.hu, )
-  by irl.hu with ESMTPSA
-  id 0000000000077340.000000006602F575.0023D3CD; Tue, 26 Mar 2024 17:19:00 +0100
-From: Gergo Koteles <soyer@irl.hu>
-To: Shenghao Ding <shenghao-ding@ti.com>, Kevin Lu <kevin-lu@ti.com>,
-  Baojun Xu <baojun.xu@ti.com>, Jaroslav Kysela <perex@perex.cz>,
-  Takashi Iwai <tiwai@suse.com>
-Cc: alsa-devel@alsa-project.org, linux-sound@vger.kernel.org,
-  linux-kernel@vger.kernel.org, Gergo Koteles <soyer@irl.hu>
-Subject: [PATCH v2 4/4] ALSA: hda/tas2781: remove useless dev_dbg from playback_hook
-Date: Tue, 26 Mar 2024 17:18:48 +0100
-Message-ID: <8b9546db6c92dea4476a7247a88d56248c2ba8c2.1711469583.git.soyer@irl.hu>
-X-Mailer: git-send-email 2.44.0
-In-Reply-To: <cover.1711469583.git.soyer@irl.hu>
-References: <cover.1711469583.git.soyer@irl.hu>
+	s=arc-20240116; t=1711470023; c=relaxed/simple;
+	bh=D95Kc3TjFggL8YT1WZrh/h3Li8LRC6IjIGC7ruEV3OY=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=n554DMjz+++GtCGYUAP2fLUzVoLCtDG7PVnNcoYQy5FjVsHExo0O/rtcXXdpauYULzeVEzDf6NQIMINV7kARybtxMF/FGE1g4JS8PjQC8cAmrsI0VbBybGgR9DGNDn52kTX2x1X8elac8+p18/eHTj6tWPquR6YDlUazWycArAg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=aytQV14L; arc=none smtp.client-ip=209.85.160.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-qt1-f169.google.com with SMTP id d75a77b69052e-4316101ed5eso7256521cf.2;
+        Tue, 26 Mar 2024 09:20:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1711470021; x=1712074821; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=5IKaEl4faDXOubqbj8s61EhSq4y0/fdmoF1112F2KMY=;
+        b=aytQV14Lb0JXxOR/0GKE5r9n6/HJAIh1VUm602RPHu0BNI9aHvfH8VTo700YAIgovD
+         646hgjjNsrbRjjotLw7xj/ljoPTcMCudGQBL4dB9JT2PDcfkCUfy98Cyf8L1eT0vyPI2
+         LL8SScNK1alV1IFrTl8hHHT5fXdGYPYRtLfuqxDpW9+MjgHdyOw3h4UrtpGgiOMkaOnK
+         jjRMJUomDot8AiwDNV8Dhk/KU2tjouH99SfEoOTmXvOCib8mC+LK6fdT9CNSaSich44U
+         2HxTRZPPGjH+a8rT/DxSFRuWnLLfhbQTjb1r+VHb8Ffb5sd0IwXg6c5QRIszwtBV1b1z
+         N6yg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711470021; x=1712074821;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=5IKaEl4faDXOubqbj8s61EhSq4y0/fdmoF1112F2KMY=;
+        b=BIAk2jtx74ruxmxXQOu+N03p1CI/iWeuO8kis3v6jvxA1cWFeL0ssefoRu7fqvB0l+
+         QBjwBQpMFSq5d+T4FL/es7XkrsZq6vc4SrWNlBepzjsGwirq7QPQer0BrPdI4IlRmTv1
+         IETKsBwZGq5LqQ+vmUAXpwqH9xd5aJsg+K0BvUUJNG8JhIKmozSws7jc3zLNemYfs1jz
+         HdcWIKK/pyPMu16CERcuW2tdrnizpiiN/XlL4rYjpJ1ElrDMxcJl8S4xjc3y0VQYWQNs
+         2iGvHHYjXXVZFG5gRWuRmCxhCgBalcv0SID10+GiDQbx9t293g/ZJkzJJ/u+w0CIBTrZ
+         m6ZQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUCvvJGk59+iyI7izuKYPO3nURAw1+TNtd1X44mvAiePsOiDDI9B8fVUuELkK3OFsBXjDxLIT/Vk/KM4V5GUIntWcJxxOnI2tMUK/hnjW2sgDT11c96yUJXiJhi6KJe0ouDAwGAvYAa+w==
+X-Gm-Message-State: AOJu0YyBxaaKqgfyvAM0xCMDJBjhqwcIPpQ3/PtrF6OQxPyXp4QZgxVn
+	dfbUJ0l7qUqMd9FAVkrVvuJG9m/xiTsMqLulywmUiEl2q82jP/OUwiHn3vJk3ctymHIcNeMxNbL
+	aWzjWjkP5Txgh4qrwkY4DpF/wjPQ=
+X-Google-Smtp-Source: AGHT+IEgWiPWgP4UoqnhIOVp4j2Q6nGMB+4QzZqu9/AG9F+lszMXGkP5HHgXQTkrdrHALrwK/Ui+sOPR4x6Vn1lt4qs=
+X-Received: by 2002:a05:6214:2a46:b0:696:71fb:c66f with SMTP id
+ jf6-20020a0562142a4600b0069671fbc66fmr80542qvb.58.1711470020667; Tue, 26 Mar
+ 2024 09:20:20 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-X-Mime-Autoconverted: from 8bit to 7bit by courier 1.0
+MIME-Version: 1.0
+References: <20240325210045.153827-1-afd@ti.com> <2024032631-excursion-opposing-be36@gregkh>
+In-Reply-To: <2024032631-excursion-opposing-be36@gregkh>
+From: Robert Nelson <robertcnelson@gmail.com>
+Date: Tue, 26 Mar 2024 11:19:54 -0500
+Message-ID: <CAOCHtYjauA+BAxZJBMTaxxaMGcvipP9=ZPeWe4FiNFs_jpq6dg@mail.gmail.com>
+Subject: Re: [PATCH] uio: pruss: Deprecate use of this driver
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Jason Kridner <jkridner@beagleboard.org>, 
+	Matthijs van Duin <matthijsvanduin@gmail.com>, Drew Fustini <drew@beagleboard.org>
+Cc: Andrew Davis <afd@ti.com>, Tony Lindgren <tony@atomide.com>, linux-omap@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-The debug message "Playback action not supported: action" is not useful,
-because the action was previously printed, and the list of supported
-actions are intentional.
+On Tue, Mar 26, 2024 at 12:41=E2=80=AFAM Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> On Mon, Mar 25, 2024 at 04:00:45PM -0500, Andrew Davis wrote:
+> > This UIO driver was used to control the PRU processors found on various
+> > TI SoCs. It was created before the Remoteproc framework, but now with
+> > that we have a standard way to program and manage the PRU processors.
+> > The proper PRU Remoteproc driver should be used instead of this driver.
+> > Mark this driver deprecated.
+> >
+> > The userspace tools to use this are no longer available, so also remove
+> > those dead links from the Kconfig description.
+> >
+> > Signed-off-by: Andrew Davis <afd@ti.com>
+> > ---
+> >  drivers/uio/Kconfig | 10 ++--------
+> >  1 file changed, 2 insertions(+), 8 deletions(-)
+> >
+> > diff --git a/drivers/uio/Kconfig b/drivers/uio/Kconfig
+> > index 2e16c5338e5b1..358dc2d19b885 100644
+> > --- a/drivers/uio/Kconfig
+> > +++ b/drivers/uio/Kconfig
+> > @@ -126,19 +126,13 @@ config UIO_FSL_ELBC_GPCM_NETX5152
+> >         http://www.hilscher.com/netx
+> >
+> >  config UIO_PRUSS
+> > -     tristate "Texas Instruments PRUSS driver"
+> > +     tristate "Texas Instruments PRUSS driver (DEPRECATED)"
+>
+> This isn't going to do much, why not just delete the driver entirely if
+> no one uses it?
 
-Remove the debug statement from the default switch case.
+CC'ing Matthijs one of our BeagleBoard community members who utilizes
+and supports UIO on a number of community projects.
 
-Signed-off-by: Gergo Koteles <soyer@irl.hu>
----
- sound/pci/hda/tas2781_hda_i2c.c | 2 --
- 1 file changed, 2 deletions(-)
+We know TI and Mainline in general do not like this UIO driver as it's
+very open-ended.
 
-diff --git a/sound/pci/hda/tas2781_hda_i2c.c b/sound/pci/hda/tas2781_hda_i2c.c
-index f495caee38e1..48dae3339305 100644
---- a/sound/pci/hda/tas2781_hda_i2c.c
-+++ b/sound/pci/hda/tas2781_hda_i2c.c
-@@ -161,8 +161,6 @@ static void tas2781_hda_playback_hook(struct device *dev, int action)
- 		pm_runtime_put_autosuspend(dev);
- 		break;
- 	default:
--		dev_dbg(tas_hda->dev, "Playback action not supported: %d\n",
--			action);
- 		break;
- 	}
- }
--- 
-2.44.0
+While the remoteproc_pruss driver is now mainline (it has taken a long
+time, since 3.14.x i I think TI first started this..)
 
+There is a large user base of UIO examples that have been running
+since 3.8.x and as a community we have made sure ( mostly Matthijs )
+that these continue to operate on this driver in
+v5.x/v6.x/lts/mainline branches.
+
+We can always revert/etc..  But I'm hoping Matthijs will chime-in..
+
+Regards,
+
+--=20
+Robert Nelson
+https://rcn-ee.com/
 
