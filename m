@@ -1,133 +1,205 @@
-Return-Path: <linux-kernel+bounces-120013-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-120014-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EBD8F88D020
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 22:34:31 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id DFD4C88D024
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 22:34:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A67E6304ADF
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 21:34:30 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 512301F8157A
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 21:34:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 71A7113D88A;
-	Tue, 26 Mar 2024 21:34:23 +0000 (UTC)
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 52FBD13D881;
+	Tue, 26 Mar 2024 21:34:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="uVWgwjD4"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5FED213D617;
-	Tue, 26 Mar 2024 21:34:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 87D7B13D617;
+	Tue, 26 Mar 2024 21:34:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711488863; cv=none; b=YP1hL/vTuf3wAvx3QRl5Iw1g7qaab7jcjVrrm2W+zqe1NGoedmAkSPgc3lYkogciPh6RcDOfAwp6FaDttg+9h0rAJBqSRDwHvNG4hS9irrocVMMzkmsV0NT5oT/y/ofo2Ad+JotQbQoka6CTPg/KSRuAnjNGNVV60lA2LPiMhzQ=
+	t=1711488869; cv=none; b=T381LPqvt9p52GdLUtZ8qaYqvW82ro9uclLkx+1lMCO0ObMdAfxnn0nuywrF7QOGGyI6+tRZXI0uoS6wmSSp1qkw9BVZroFpyDyLOFposD9zsrHM1r/sMlaKiLjhcf9qwiowCgE4giVGKOGqRFh7cHsrbEhNiXv1IHSAcO+8kBk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711488863; c=relaxed/simple;
-	bh=xZP2Ji27/WUgLA4q9DMoYCa04xDn6nXu+RxVklse45A=;
-	h=From:In-Reply-To:Content-Type:References:Date:Cc:To:MIME-Version:
-	 Message-ID:Subject; b=E2bmlXYC0wtbu5GagAeZA6NdmtlaKhXTFrZr7HfZ2Hq2ws5MhDp+CWoAuQDCnYXNLUCiJK4gssco+yAijyXgkG2iEEsb3O8cChActMLrUnrX7TR7EvegngzMcMs0e66N7Ht1v2XRG+YcG4XDd40QU8jrRU2uQ82aP8ScfUABiuY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; arc=none smtp.client-ip=46.235.227.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-Received: from harlem.collaboradmins.com (harlem.collaboradmins.com [IPv6:2a01:4f8:1c0c:5936::1])
-	by madrid.collaboradmins.com (Postfix) with ESMTP id 676CC378110A;
-	Tue, 26 Mar 2024 21:34:17 +0000 (UTC)
-From: "Shreeya Patel" <shreeya.patel@collabora.com>
-In-Reply-To: <20240325120018.1768449-1-sashal@kernel.org>
-Content-Type: text/plain; charset="utf-8"
-X-Forward: 127.0.0.1
-References: <20240325120018.1768449-1-sashal@kernel.org>
-Date: Tue, 26 Mar 2024 21:34:17 +0000
-Cc: linux-kernel@vger.kernel.org, stable@vger.kernel.org, torvalds@linux-foundation.org, akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org, lkft-triage@lists.linaro.org, florian.fainelli@broadcom.com, pavel@denx.de, "Gustavo Padovan" <gustavo.padovan@collabora.com>, "kernelci-regressions mailing list" <kernelci-regressions@lists.collabora.co.uk>
-To: "Sasha Levin" <sashal@kernel.org>
+	s=arc-20240116; t=1711488869; c=relaxed/simple;
+	bh=Vp6QKMZSyuFN03oJX7Gy9S9p6P3Gg6AmCMANf0QxqRc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=pEab04GCe6qZf4qKJRRlE/zJ7PPtV2s01Vxak59MyWhvaL7plYZh16aTe1ilxdYny2fDRxgMkuswBgXaz/5SOUv9/Tn9S+31lsuif9muUSCQLxjmepMrllCWSL6NF3Mew2PkBgKLsys975ryI2b+BnXXpz6W3scyG8Xbp/NiSJ0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=uVWgwjD4; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CA317C433F1;
+	Tue, 26 Mar 2024 21:34:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1711488869;
+	bh=Vp6QKMZSyuFN03oJX7Gy9S9p6P3Gg6AmCMANf0QxqRc=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=uVWgwjD4ab3E4sy34QBQEECtoSaxU0lDFKM+AuYxrGjQDLJ7ob7m8hnlZuZNzlOol
+	 IifXx+FbxLTbKOe7YjxDiXCmf9ZBJxPrQGdDoCeLjNclIMptnMvss13kozTFYBq9Pg
+	 UDm9WJ/YA0Gr3J/h/+iLa2KcEJyTlyDn2hzrmXJM9wwXpi71SdFpP65ol8fLwYVQKU
+	 FCWo5bRsnhzupCoRb3IaRJtY0rSxTqwnlU90H3lcdjgEAbTIc9Ml4q9L2wO4ku9Phq
+	 xnGJB++507iw0UbYvg01+73b5wfIGwtjGGp28UwCJLYmrtwNIqqVmYYovJncsPRZ0p
+	 n2L9EFIFukgKQ==
+Date: Tue, 26 Mar 2024 16:34:26 -0500
+From: Rob Herring <robh@kernel.org>
+To: Tan Chun Hau <chunhau.tan@starfivetech.com>
+Cc: "David S . Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Emil Renner Berthing <kernel@esmil.dk>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+	Alexandre Torgue <alexandre.torgue@foss.st.com>,
+	Simon Horman <horms@kernel.org>,
+	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
+	Andrew Halaney <ahalaney@redhat.com>,
+	Jisheng Zhang <jszhang@kernel.org>,
+	Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>,
+	Russell King <rmk+kernel@armlinux.org.uk>,
+	Ley Foon Tan <leyfoon.tan@starfivetech.com>,
+	Jee Heng Sia <jeeheng.sia@starfivetech.com>, netdev@vger.kernel.org,
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-stm32@st-md-mailman.stormreply.com,
+	linux-arm-kernel@lists.infradead.org,
+	linux-riscv@lists.infradead.org
+Subject: Re: [PATCH v4 1/1] dt-bindings: net: starfive,jh7110-dwmac: Add
+ StarFive JH8100 support
+Message-ID: <20240326213426.GA3667606-robh@kernel.org>
+References: <20240326052505.197408-1-chunhau.tan@starfivetech.com>
+ <20240326052505.197408-2-chunhau.tan@starfivetech.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-ID: <289a17-66033f80-3-29238bc0@200611248>
-Subject: =?utf-8?q?Re=3A?= [PATCH =?utf-8?q?6=2E8?= 000/710] 
- =?utf-8?q?6=2E8=2E2-rc2?= review
-User-Agent: SOGoMail 5.10.0
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240326052505.197408-2-chunhau.tan@starfivetech.com>
 
-On Monday, March 25, 2024 17:30 IST, Sasha Levin <sashal@kernel.org> wr=
-ote:
+On Mon, Mar 25, 2024 at 10:25:05PM -0700, Tan Chun Hau wrote:
+> Add StarFive JH8100 dwmac support.
+> The JH8100 dwmac shares the same driver code as the JH7110 dwmac
+> and has only one reset signal.
+> 
+> Please refer to below:
+> 
+>   JH8100: reset-names = "stmmaceth";
+>   JH7110: reset-names = "stmmaceth", "ahb";
+>   JH7100: reset-names = "ahb";
+> 
+> Example usage of JH8100 in the device tree:
+> 
+> gmac0: ethernet@16030000 {
+>         compatible = "starfive,jh8100-dwmac",
+>                      "starfive,jh7110-dwmac",
+>                      "snps,dwmac-5.20";
+>         ...
+> };
+> 
+> Signed-off-by: Tan Chun Hau <chunhau.tan@starfivetech.com>
+> ---
+>  .../devicetree/bindings/net/snps,dwmac.yaml   |  1 +
+>  .../bindings/net/starfive,jh7110-dwmac.yaml   | 54 ++++++++++++++-----
+>  2 files changed, 41 insertions(+), 14 deletions(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/net/snps,dwmac.yaml b/Documentation/devicetree/bindings/net/snps,dwmac.yaml
+> index 6b0341a8e0ea..a6d596b7dcf4 100644
+> --- a/Documentation/devicetree/bindings/net/snps,dwmac.yaml
+> +++ b/Documentation/devicetree/bindings/net/snps,dwmac.yaml
+> @@ -97,6 +97,7 @@ properties:
+>          - snps,dwxgmac-2.10
+>          - starfive,jh7100-dwmac
+>          - starfive,jh7110-dwmac
+> +        - starfive,jh8100-dwmac
+>  
+>    reg:
+>      minItems: 1
+> diff --git a/Documentation/devicetree/bindings/net/starfive,jh7110-dwmac.yaml b/Documentation/devicetree/bindings/net/starfive,jh7110-dwmac.yaml
+> index 0d1962980f57..ce018e9768d2 100644
+> --- a/Documentation/devicetree/bindings/net/starfive,jh7110-dwmac.yaml
+> +++ b/Documentation/devicetree/bindings/net/starfive,jh7110-dwmac.yaml
+> @@ -18,6 +18,7 @@ select:
+>          enum:
+>            - starfive,jh7100-dwmac
+>            - starfive,jh7110-dwmac
+> +          - starfive,jh8100-dwmac
+>    required:
+>      - compatible
+>  
+> @@ -30,6 +31,10 @@ properties:
+>        - items:
+>            - const: starfive,jh7110-dwmac
+>            - const: snps,dwmac-5.20
+> +      - items:
+> +          - const: starfive,jh8100-dwmac
+> +          - const: starfive,jh7110-dwmac
+> +          - const: snps,dwmac-5.20
+>  
+>    reg:
+>      maxItems: 1
+> @@ -107,20 +112,41 @@ allOf:
+>            contains:
+>              const: starfive,jh7110-dwmac
+>      then:
+> -      properties:
+> -        interrupts:
+> -          minItems: 3
+> -          maxItems: 3
+> -
+> -        interrupt-names:
+> -          minItems: 3
+> -          maxItems: 3
 
->=20
-> This is the start of the stable review cycle for the 6.8.2 release.
-> There are 710 patches in this series, all will be posted as a respons=
-e
-> to this one.  If anyone has any issues with these being applied, plea=
-se
-> let me know.
->=20
-> Responses should be made by Wed Mar 27 12:00:13 PM UTC 2024.
-> Anything received after that time might be too late.
->=20
-> The whole patch series can be found in one patch at:
->         https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-=
-stable-rc.git/patch/?id=3Dlinux-6.8.y&id2=3Dv6.8.1
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-st=
-able-rc.git linux-6.8.y
-> and the diffstat can be found below.
->=20
+interrupts and interrupt-names are the same, so you can leave them here 
+instead of duplicating them as you have.
 
-KernelCI report for stable-rc/linux-6.8.y for this week :-
-
-## stable-rc HEAD for linux-6.8.y:
-Date: 2024-03-26
-https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.=
-git/log/?h=3Df44e3394ca9c2225643f2727e0949c770ef5ef8e
-
-## Build failures:
-No build failures seen for the stable-rc/linux-6.8.y commit head \o/
-
-## Boot failures:
-
-Devices failing to boot :-
-Architecture : arm
-at91sam9g20ek ( multi=5Fv5=5Fdefconfig )
-beaglebone-black ( multi=5Fv7=5Fdefconfig )
-imx6dl-udoo ( imx=5Fv6=5Fv7=5Fdefconfig )
-imx6dl-udoo ( multi=5Fv7=5Fdefconfig )
-imx6q-udoo ( imx=5Fv6=5Fv7=5Fdefconfig )
-imx6q-udoo ( multi=5Fv7=5Fdefconfig )
-qemu=5Farm-vexpress-a15 ( vexpress=5Fdefconfig )
-qemu=5Farm-vexpress-a9 ( vexpress=5Fdefconfig )
-qemu=5Farm-virt-gicv2 ( multi=5Fv7=5Fdefconfig )
-qemu=5Farm-virt-gicv2-uefi ( multi=5Fv7=5Fdefconfig )
-qemu=5Farm-virt-gicv3 ( multi=5Fv7=5Fdefconfig )
-qemu=5Farm-virt-gicv3-uefi ( multi=5Fv7=5Fdefconfig )
-stm32mp157a-dhcor-avenger96 ( multi=5Fv7=5Fdefconfig )
-sun7i-a20-cubieboard2 ( multi=5Fv7=5Fdefconfig )
-sun8i-a33-olinuxino ( multi=5Fv7=5Fdefconfig )
-sun8i-h3-orangepi-pc ( multi=5Fv7=5Fdefconfig )
-sun8i-r40-bananapi-m2-ultra ( multi=5Fv7=5Fdefconfig )
-imx6q-sabrelite ( multi=5Fv7=5Fdefconfig )
-odroid-xu3 ( multi=5Fv7=5Fdefconfig )
-kontron-kswitch-d10-mmt-6g-2gs ( multi=5Fv7=5Fdefconfig )=20
-kontron-kswitch-d10-mmt-8g ( multi=5Fv7=5Fdefconfig )
-imx6dl-riotboard ( imx=5Fv6=5Fv7=5Fdefconfig )
-imx6dl-riotboard ( multi=5Fv7=5Fdefconfig )
-imx6qp-wandboard-revd1 ( imx=5Fv6=5Fv7=5Fdefconfig )
-imx6qp-wandboard-revd1 ( multi=5Fv7=5Fdefconfig )
-rk3288-veyron-jaq ( multi=5Fv7=5Fdefconfig )
-
-Architecture : i386
-qemu=5Fi386 ( i386=5Fdefconfig )
-qemu=5Fi386-uefi ( i386=5Fdefconfig )
-
-KernelCI Dashboard Link :- https://linux.kernelci.org/test/job/stable-r=
-c/branch/linux-6.8.y/kernel/v6.8.1-707-gf44e3394ca9c2/plan/baseline/
-
-We are currently investigating this issue and will let you know if ther=
-e are any further updates.
-
-Tested-by: kernelci.org bot <bot@kernelci.org>
-
-Thanks,
-Shreeya Patel
-
+> -
+> -        resets:
+> -          minItems: 2
+> -
+> -        reset-names:
+> -          minItems: 2
+> +      if:
+> +        properties:
+> +          compatible:
+> +            contains:
+> +              const: starfive,jh8100-dwmac
+> +      then:
+> +        properties:
+> +          interrupts:
+> +            minItems: 3
+> +            maxItems: 3
+> +
+> +          interrupt-names:
+> +            minItems: 3
+> +            maxItems: 3
+> +
+> +          resets:
+> +            maxItems: 1
+> +
+> +          reset-names:
+> +            const: stmmaceth
+> +      else:
+> +        properties:
+> +          interrupts:
+> +            minItems: 3
+> +            maxItems: 3
+> +
+> +          interrupt-names:
+> +            minItems: 3
+> +            maxItems: 3
+> +
+> +          resets:
+> +            minItems: 2
+> +
+> +          reset-names:
+> +            minItems: 2
+>  
+>  unevaluatedProperties: false
+>  
+> -- 
+> 2.25.1
+> 
 
