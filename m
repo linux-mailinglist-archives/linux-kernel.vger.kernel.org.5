@@ -1,225 +1,146 @@
-Return-Path: <linux-kernel+bounces-118330-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-118331-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 737B888B857
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 04:22:01 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5EDFE88B863
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 04:24:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 05F722C7C87
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 03:22:00 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id F226C1F3A86B
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 03:24:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CB0FC1292D9;
-	Tue, 26 Mar 2024 03:21:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 480171292F2;
+	Tue, 26 Mar 2024 03:24:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="a+WcccQg"
-Received: from NAM11-BN8-obe.outbound.protection.outlook.com (mail-bn8nam11on2041.outbound.protection.outlook.com [40.107.236.41])
+	dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b="bW0lpK74"
+Received: from mailout1.samsung.com (mailout1.samsung.com [203.254.224.24])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CA0B657314
-	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 03:21:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.236.41
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711423312; cv=fail; b=dmS28d82zy6LacjmtxuXO2TNOE0WnR6ltTq7LyVpwYDtUEfNDM2Ey8tfZkM5NVa+fkuEtt3MgMsFjer1qmZSkhbwflJMGJxN/B9t9FBLE3gdrPs5C3zA5PpN1NEQH2v2Y9UVq6MakJnuMQFTiGhoCVYpmNY71NuhUKgr3/UWe+s=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711423312; c=relaxed/simple;
-	bh=aTvFEY4CFAiWn2vZxAkUSSxZY20aBO0u9pf9oT195XY=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=qOPYVV2+CKrqJWrrt+OYvIHcGLb0wb8xujQME6qrnX6Tm69w67pghHwNoBcCoR503I1V5AZIQkz/BJAqv72/XumI+aEeqspH+jnjDQx+YIZ+y/TTUu7GdSkg1BEOpT/wPMTP2KieGH0G7vn6ge7aV210hcQ+a1Rbtsvs/Xbhy5k=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=a+WcccQg; arc=fail smtp.client-ip=40.107.236.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=RXXEkn3lemGfRZ3K2vJ32ODuPTjciO7L6gqQv76oGTPHH3xk6OM1yUHcbcXQVmQovGoKrP0MdUCmRdZrEA06QzcD6mbs9eqKJhrbQLPL5JYZf5A+2yXp5iC90k+NERohicUYpOykIbwZN5GURkRALtsPxJDBf4y7H8QWo8/0Fj/yWrLtY9RYmT4pOmtdmPyawB8PpVFnCkjpTkJtZXFUUaGH3edr1Qajb60PvwlbpcONn0npwFhiPhA3YUFZP0urF8Qq4qyLJgsCTXyrzAtB3qubFn2tgqvGLXY/ztJmftY+ym2SEkoLv3ivkikgOew0yTalvZZstuafZJMXPG2r1w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=8NV7aG2a83iw/0FpRqbJ3CNrZoSTOlaRaiNBxpPPXh8=;
- b=JbNVY0Qd2JMrCRj1RFxFFOBuVWSqJWSRfaEUvpM2jr9CRqgCIH+QWVGWW3vDUODHK0c4aTwdhpl26Z35QtfJJxdhgfsXdQ0pWoRSECbMF4kRajGRCEEdPxs+FgY085nWdERyqXHn0Q22GvpgEDdIc3b/q/JrUFde3rd4vT7M9o46KG6NDfB4nzAQN6zPoEuZVp2JCESx9YW8igl4gDC0DSn8EOhDt40nNuQ8965ExOAOF2gvSKsjttIxEUunxL/MMCn0wy+oEGCMaxuljNZ1F6dEtwEtRFtIMIialsOinXuYRtjhNWPe3FrItXC70Yrfp4ccXMfCCQvfA7nUqctmdg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.117.161) smtp.rcpttodomain=infradead.org smtp.mailfrom=nvidia.com;
- dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=8NV7aG2a83iw/0FpRqbJ3CNrZoSTOlaRaiNBxpPPXh8=;
- b=a+WcccQgiAFXj2/yJYn15uEyW9yyoef99PG8CjnmgLAx+atgcf0lZRt8OFsBvRgQMDyKWfotMQloxNlyUSZrzdZjT9OHbwqh+pSVZ8zpEuBcJpcRNPo8svlZ0MrZ7wqEtWSQAI71WLhBoQkJDBRTk7kUhGScKbzaAk/WhQFE377FBWxf3oQ+nkQgmg/ncxNviXuBuJal/nubjJI2FU+/Dy7UPauwulR1CczpOOf90asew3Ei54h6SwQY4CLXb7oauRgKbOVv9CAYASGiXEnJmFXKjxen5YOZIOEf68WVnMyxRWaH0l0k2xY/Z0nkCzUdMCOsKrIdqBcIwJylx3tgOQ==
-Received: from DS7PR06CA0038.namprd06.prod.outlook.com (2603:10b6:8:54::19) by
- PH7PR12MB5710.namprd12.prod.outlook.com (2603:10b6:510:1e1::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.31; Tue, 26 Mar
- 2024 03:21:47 +0000
-Received: from CY4PEPF0000E9D9.namprd05.prod.outlook.com
- (2603:10b6:8:54:cafe::d7) by DS7PR06CA0038.outlook.office365.com
- (2603:10b6:8:54::19) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.13 via Frontend
- Transport; Tue, 26 Mar 2024 03:21:47 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.161)
- smtp.mailfrom=nvidia.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.117.161 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.117.161; helo=mail.nvidia.com; pr=C
-Received: from mail.nvidia.com (216.228.117.161) by
- CY4PEPF0000E9D9.mail.protection.outlook.com (10.167.241.77) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.7409.10 via Frontend Transport; Tue, 26 Mar 2024 03:21:47 +0000
-Received: from rnnvmail201.nvidia.com (10.129.68.8) by mail.nvidia.com
- (10.129.200.67) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41; Mon, 25 Mar
- 2024 20:21:29 -0700
-Received: from [10.110.48.28] (10.126.231.35) by rnnvmail201.nvidia.com
- (10.129.68.8) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1258.12; Mon, 25 Mar
- 2024 20:21:28 -0700
-Message-ID: <0cba949e-6c77-491a-bc4e-7f52738e0f36@nvidia.com>
-Date: Mon, 25 Mar 2024 20:21:28 -0700
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 34EFB1292DD
+	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 03:24:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.254.224.24
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1711423444; cv=none; b=oob6UQHbIFGcyd74LSY1Yssc9ivCwM2KYXn+6X5JX3UutWUZae+ajik2s7AiY/rewJfS/phZgUFzOFGgwJiHJm0As4Dn9FOrvVQITjvmP88QACmlcsHxgO7H2037XWeU0JvLxW3D05iyq+DZvLJbN7qv685iok9ioFp6bzzwjLs=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1711423444; c=relaxed/simple;
+	bh=t2hCITEJ6wxpOWXwYTCuSE28aMfvwSP99iXFbW9bDq0=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:MIME-Version:
+	 Content-Type:References; b=qypwAiR1sVkJPlw1bHNDbdZP0tDtnWisqiHue2DpbF3VRtEeVJ5KbFSfU2jF3UGuk4u40jOlHpvqM3uMPoS5T4jbG1KcylmzT7O/sDeMpL1yKyQGa6IBILOqUgT0P6znWbvccIOg5OAzeaIXHAIE3LNg6TLKM6UjyLAsJuCLLAs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com; spf=pass smtp.mailfrom=samsung.com; dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b=bW0lpK74; arc=none smtp.client-ip=203.254.224.24
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=samsung.com
+Received: from epcas5p1.samsung.com (unknown [182.195.41.39])
+	by mailout1.samsung.com (KnoxPortal) with ESMTP id 20240326032353epoutp013ab2d41c7199ff8cb88f86ede36b016c~AMoukqna71014810148epoutp01S
+	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 03:23:53 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com 20240326032353epoutp013ab2d41c7199ff8cb88f86ede36b016c~AMoukqna71014810148epoutp01S
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+	s=mail20170921; t=1711423433;
+	bh=t2hCITEJ6wxpOWXwYTCuSE28aMfvwSP99iXFbW9bDq0=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=bW0lpK74HfPlw3VSoaSVEz9l2VPBfBZM0gUUgjbZ4CRE3NaGgueiX79igkAa49f9t
+	 f1IA4KMW+JKZFfUseWvwFIWVDceH21m3nRcsGlKE4p8vUMrP+dviO6Zismatb5Nlvv
+	 B59Uf8J6xCvK8Yo15ZLAhpzvHkiAoheDwDdwkSaE=
+Received: from epsnrtp2.localdomain (unknown [182.195.42.163]) by
+	epcas5p2.samsung.com (KnoxPortal) with ESMTP id
+	20240326032352epcas5p2b86b7aea4214f4ebe795b515f00ac272~AMotq4yUf0799607996epcas5p2P;
+	Tue, 26 Mar 2024 03:23:52 +0000 (GMT)
+Received: from epsmges5p1new.samsung.com (unknown [182.195.38.180]) by
+	epsnrtp2.localdomain (Postfix) with ESMTP id 4V3Zs343nWz4x9Q3; Tue, 26 Mar
+	2024 03:23:51 +0000 (GMT)
+Received: from epcas5p2.samsung.com ( [182.195.41.40]) by
+	epsmges5p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
+	0E.01.09666.7CF32066; Tue, 26 Mar 2024 12:23:51 +0900 (KST)
+Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
+	epcas5p4.samsung.com (KnoxPortal) with ESMTPA id
+	20240326032337epcas5p4d4725729834e3fdb006293d1aab4053d~AMofbxyNC0935509355epcas5p4U;
+	Tue, 26 Mar 2024 03:23:37 +0000 (GMT)
+Received: from epsmgmc1p1new.samsung.com (unknown [182.195.42.40]) by
+	epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
+	20240326032337epsmtrp2e886086276c45637755e04674d36af91~AMofa9xQz1617016170epsmtrp2J;
+	Tue, 26 Mar 2024 03:23:37 +0000 (GMT)
+X-AuditID: b6c32a49-cefff700000025c2-6c-66023fc7ce78
+Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
+	epsmgmc1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
+	04.30.07541.9BF32066; Tue, 26 Mar 2024 12:23:37 +0900 (KST)
+Received: from testpc118124.samsungds.net (unknown [109.105.118.124]) by
+	epsmtip2.samsung.com (KnoxPortal) with ESMTPA id
+	20240326032335epsmtip2a5844b54d3515f434b559cdd286485c0~AMod6dI-R3072530725epsmtip2c;
+	Tue, 26 Mar 2024 03:23:35 +0000 (GMT)
+From: Xue <xue01.he@samsung.com>
+To: axboe@kernel.dk
+Cc: asml.silence@gmail.com, linux-kernel@vger.kernel.org,
+	io-uring@vger.kernel.org, peiwei.li@samsung.com, joshi.k@samsung.com,
+	kundan.kumar@samsung.com, anuj20.g@samsung.com, wenwen.chen@samsung.com,
+	ruyi.zhang@samsung.com, xiaobing.li@samsung.com, cliang01.li@samsung.com,
+	xue01.he@samsung.com
+Subject: Re:io_uring: releasing CPU resources when polling
+Date: Tue, 26 Mar 2024 11:23:31 +0800
+Message-Id: <20240326032331.1003213-1-xue01.he@samsung.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20240318090017.3959252-1-xue01.he@samsung.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC] mm: page-flags.h: remove the bias against tail pages
-To: Matthew Wilcox <willy@infradead.org>
-CC: Andrew Morton <akpm@linux-foundation.org>, LKML
-	<linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>, David Hildenbrand
-	<david@redhat.com>, Mike Rapoport <rppt@kernel.org>, Theodore Ts'o
-	<tytso@mit.edu>, Vishal Moola <vishal.moola@gmail.com>, Peter Collingbourne
-	<pcc@google.com>
-References: <20240325045519.222458-1-jhubbard@nvidia.com>
- <ZgEKkd9nc9rdfzCK@casper.infradead.org>
-Content-Language: en-US
-From: John Hubbard <jhubbard@nvidia.com>
-In-Reply-To: <ZgEKkd9nc9rdfzCK@casper.infradead.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: rnnvmail201.nvidia.com (10.129.68.8) To
- rnnvmail201.nvidia.com (10.129.68.8)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CY4PEPF0000E9D9:EE_|PH7PR12MB5710:EE_
-X-MS-Office365-Filtering-Correlation-Id: d14ec72d-2731-4dca-5f04-08dc4d43dea8
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	sljG1gtMTt4CoRiULjAS6QBCF2lB+AcW+FRu4bh4VFJGrbYWmgKGT+jiTrXf8yL48KxWpmFPlqUiaO0gDM6QSNPuaWvmbcv4mM3AsEomHQ3xE6tWIrPhyQDZKYj3dknbhNNynqpzgBiCp/1tJFVbRHE6RbIzCNUUvqyXDdGWJwVpvx7LL0G83geBQJ1Jzl5Tk4hRp3EDf3KrbGYug+FyRKX+sQjD0G3CpzyJM5KFY0reoLsNqueXIkVaO2ASzzHu/td+6EOBGO/b56A8csbNDwDywP5BqyXqgna2X3nIp46IKeTfDFfcAXFqvjVgVR79VPA5n4nbYziPFveqjm+HT8bIZOCVMxnGSDsWkwgg9f2AMpH8dB+SgF0R6OOgK0AmvBJ+AKnNO9cQ0wx5mBNXtV4tQQ+6fHCFDUiRxWdFAXRYayX1mNspthILKM0boiYu0r+ZxBfGjfhuJeCXrvEGB652ZLQghFaPs8jo1JK0QXIiychdO/cC307Npm0tNwB0dwslJKh1bwR4YXC318iFe9Bg31tbu1OTqPYMe5TjahnLZG5TzIH2kCPN/Pre/IOT/bMxqXl5q9dtwt/0u3jS6JgsqB1/gIbDXsoxpwUF3or0392aqi9V8SiI6rdV/G+FGb6dXykB63qf6RmvmsrAfG9c+SP5wZvbs9LxHeg3trAyJRUSUTmy4tKE12N6yUJqvn9oK0455nW7Kjo43zALb7NYDiO3oWTSpvLPB3KnKSi41AtaH0k41Clv5R459jRW
-X-Forefront-Antispam-Report:
-	CIP:216.228.117.161;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge2.nvidia.com;CAT:NONE;SFS:(13230031)(1800799015)(376005)(36860700004)(82310400014);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Mar 2024 03:21:47.2085
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: d14ec72d-2731-4dca-5f04-08dc4d43dea8
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.161];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource:
-	CY4PEPF0000E9D9.namprd05.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR12MB5710
+Content-Transfer-Encoding: 8bit
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrIJsWRmVeSWpSXmKPExsWy7bCmhu5xe6Y0g6YlkhZNE/4yW8xZtY3R
+	YvXdfjaL038fs1i8az3HYnH0/1s2i1/ddxkttn75ympxedccNotnezktvhz+zm5xdsIHVoup
+	W3YwWXS0XGa06Lpwis2B32PnrLvsHpfPlnr0bVnF6PF5k1wAS1S2TUZqYkpqkUJqXnJ+SmZe
+	uq2Sd3C8c7ypmYGhrqGlhbmSQl5ibqqtkotPgK5bZg7QnUoKZYk5pUChgMTiYiV9O5ui/NKS
+	VIWM/OISW6XUgpScApMCveLE3OLSvHS9vNQSK0MDAyNToMKE7IznR34wFdxkqvhwnLuBsZ+p
+	i5GTQ0LAROLT3gYgm4tDSGA3o8SD+UdYIZxPjBIfP55nhnC+MUosm9gL5HCAtTRuUYGI72WU
+	uHrsCFT7L0aJC5P/M4PMZRNQkDh/+DPYDhEBYYn9Ha0sIEXMAuuZJJqO3mMDSQgLWEl0TfvH
+	CmKzCKhKTJ25kR3E5hWwlrgx6yg7xIHyEvsPngUbyilgI7Hw12xWiBpBiZMzn7CA2MxANc1b
+	Z4OdKiEwk0Pi6909UN+5SJyYOgtqkLDEq+NboGwpic/v9rJB2PkSk7+vZ4SwayTWbX7HAmFb
+	S/y7socF5GVmAU2J9bv0IcKyElNPrWOC2Msn0fv7CdQqXokd82BsJYklR1ZAjZSQ+D1hESuE
+	7SHxre0ZOyS0+hkl9s5YxzKBUWEWkn9mIflnFsLqBYzMqxglUwuKc9NTi00LDPNSy+GxnJyf
+	u4kRnHa1PHcw3n3wQe8QIxMH4yFGCQ5mJRHeli8MaUK8KYmVValF+fFFpTmpxYcYTYEBPpFZ
+	SjQ5H5j480riDU0sDUzMzMxMLI3NDJXEeV+3zk0REkhPLEnNTk0tSC2C6WPi4JRqYIpbt2TB
+	zePzKi/fYDwlecNs2ycXC58FTl/uaJxPZzzplrQyV0x7dUPc7u9NU7eU59rvtQjNcRNTzH3t
+	z7j23nL3E1qZ336o2DEyHTowUYVnd/SWijnbWATSFh0W1m2SX7G35pzyw4b1HS7x6xbVzdUS
+	D/tySDh45mMfQf+pImrS/5aXxlg0llqldaV+uXvi1F32kqLnXx/f4kiLZPV4cKKs5cf/11YR
+	/H94DsT1JtvKqN2UP7Ja5sDeR70Tol+df7uqQX1xSeVCuZJzRjv+B//mXszEpSv1LFNNwdk6
+	VvD5W741stF/ffbp//vpu1dtFU/e7m+T5v45v7B/znEN1blbTTbMLz/kd2PnF+HJFSuUWIoz
+	Eg21mIuKEwGNXh8zRAQAAA==
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrOLMWRmVeSWpSXmKPExsWy7bCSvO5Oe6Y0g2uPxSyaJvxltpizahuj
+	xeq7/WwWp/8+ZrF413qOxeLo/7dsFr+67zJabP3yldXi8q45bBbP9nJafDn8nd3i7IQPrBZT
+	t+xgsuhoucxo0XXhFJsDv8fOWXfZPS6fLfXo27KK0ePzJrkAligum5TUnMyy1CJ9uwSujOdH
+	fjAV3GSq+HCcu4Gxn6mLkYNDQsBEonGLShcjF4eQwG5GiTVf2oHinEBxCYkdj/6wQtjCEiv/
+	PWeHKPrBKNH6ZCkjSIJNQEHi/OHPYA0iQEX7O1pZQIqYBfYySdze+oYZJCEsYCXRNe0f2CQW
+	AVWJqTM3soPYvALWEjdmHWWH2CAvsf/gWbB6TgEbiYW/ZoPVCwHVNEz7wQhRLyhxcuYTFhCb
+	Gai+eets5gmMArOQpGYhSS1gZFrFKJlaUJybnptsWGCYl1quV5yYW1yal66XnJ+7iREcF1oa
+	Oxjvzf+nd4iRiYPxEKMEB7OSCG/LF4Y0Id6UxMqq1KL8+KLSnNTiQ4zSHCxK4ryGM2anCAmk
+	J5akZqemFqQWwWSZODilGpjKNAst1R057977u8hM9WRc3s28BXmr09f9/6vjcGfJlzkzNjnb
+	G70oy1t1c7rin4JV1icueZx3WZqUsjM58eveunfLyqr8mUr+MO36rJeqrlRUdk90cpz91jev
+	t3zUWstmfWs5k12LqugkgTNbNjAttGbd0yUrLlthWfO/2tyzTVqyXmmOXkRK5QmHFPEDl7qV
+	eV5elUkLtToZbFIkt2ZGedynwpWTugIqGiy+PPM5yVd+pTT0wW7xwy9MV//3mKkm3HshwuN9
+	T+LBuPIZ/7+zGefxb6qb2Cq9+c2sLWtn/Jv6PGd/p+mlw2Vzre484Di89r2N+237O1HTl/oZ
+	s85uiV/woKg2SqPhpNqtugQlluKMREMt5qLiRACU8MSq+gIAAA==
+X-CMS-MailID: 20240326032337epcas5p4d4725729834e3fdb006293d1aab4053d
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: REQ_APPROVE
+CMS-TYPE: 105P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20240326032337epcas5p4d4725729834e3fdb006293d1aab4053d
+References: <20240318090017.3959252-1-xue01.he@samsung.com>
+	<CGME20240326032337epcas5p4d4725729834e3fdb006293d1aab4053d@epcas5p4.samsung.com>
 
-On 3/24/24 10:24 PM, Matthew Wilcox wrote:
-..
-> It's complicated.  On the one hand, it's "more likely" because there are
-> more tail pages than there are head pages or order-0 pages.  On the
-> other hand, a _lot_ of the time we call compound_head(), it's done with
-> a non-tail page because we tend to pass around head pages (eg,
+Hi,
 
-ah yes, that's true.
+I hope this message finds you well.
 
-> pmd_page() on hugetlbfs, or looking up a folio in the page cache and
-> passing &folio->page to some function that's not yet converted.
-> 
-> On the third hand, does the compiler really do much with the annotation?
-> 
-> Before your patch:
-> 
->      27d6:       a8 01                   test   $0x1,%al
->      27d8:       75 02                   jne    27dc <clear_refs_pte_range+0x9c>
+I'm waiting to follow up on the patch I submitted on 3.18,
+titled "io_uring: releasing CPU resources when polling".
 
-I should have thought to check this. Usually I'll see a change between je/jne
-if __builtin_expect is doing its job. Here it is, oddly, missing in action.
+I haven't received feedback yet and wondering if you had
+a chance to look at it. Any guidance or suggestions you could
+provide would be greatly appreciated.
 
-Maybe I'll look a little closer into why that is...
-
->      27da:       eb 59                   jmp    2835 <clear_refs_pte_range+0xf5>
->      27dc:       49 8b 44 24 08          mov    0x8(%r12),%rax
->      27e1:       a8 01                   test   $0x1,%al
->      27e3:       75 6f                   jne    2854 <clear_refs_pte_range+0x114>
->      27e5:       eb 73                   jmp    285a <clear_refs_pte_range+0x11a>
-> 
-> With your patch:
-> 
->      1ee6:       a8 01                   test   $0x1,%al
->      1ee8:       75 02                   jne    1eec <clear_refs_pte_range+0x9c>
->      1eea:       eb 5f                   jmp    1f4b <clear_refs_pte_range+0xfb>
->      1eec:       49 8b 44 24 08          mov    0x8(%r12),%rax
->      1ef1:       a8 01                   test   $0x1,%al
->      1ef3:       75 50                   jne    1f45 <clear_refs_pte_range+0xf5>
->      1ef5:       eb 6c                   jmp    1f63 <clear_refs_pte_range+0x113>
-> 
-> Looks pretty much the same.  bloat-o-meter says:
-> 
-> $ ./scripts/bloat-o-meter before.o after.o
-> add/remove: 0/0 grow/shrink: 2/4 up/down: 32/-48 (-16)
-> Function                                     old     new   delta
-> gather_stats.constprop                       730     753     +23
-> smaps_hugetlb_range                          635     644      +9
-> smaps_page_accumulate                        342     338      -4
-> clear_refs_pte_range                         339     328     -11
-> pagemap_hugetlb_range                        422     407     -15
-> smaps_pte_range                             1406    1388     -18
-> Total: Before=20066, After=20050, chg -0.08%
-> 
-> (I was looking at clear_refs_pte_range above).  This seems marginal.
-> The benefits of removing a call to compound_head are much less
-> ambiguous:
-> 
-> $ ./scripts/bloat-o-meter before.o .build/fs/proc/task_mmu.o
-> add/remove: 0/0 grow/shrink: 0/1 up/down: 0/-101 (-101)
-> Function                                     old     new   delta
-> clear_refs_pte_range                         339     238    -101
-> Total: Before=20066, After=19965, chg -0.50%
-> 
-> I'd describe that as replacing four calls to compound_head() with two:
-> 
-> -               page = pmd_page(*pmd);
-> +               folio = page_folio(pmd_page(*pmd));
-> 
->                  /* Clear accessed and referenced bits. */
->                  pmdp_test_and_clear_young(vma, addr, pmd);
-> -               test_and_clear_page_young(page);
-> -               ClearPageReferenced(page);
-> +               folio_test_clear_young(folio);
-> +               folio_clear_referenced(folio);
-> ...
-> -               page = vm_normal_page(vma, addr, ptent);
-> -               if (!page)
-> +               folio = vm_normal_folio(vma, addr, ptent);
-> +               if (!folio)
->                          continue;
-> 
->                  /* Clear accessed and referenced bits. */
->                  ptep_test_and_clear_young(vma, addr, pte);
-> -               test_and_clear_page_young(page);
-> -               ClearPageReferenced(page);
-> +               folio_test_clear_young(folio);
-> +               folio_clear_referenced(folio);
-> 
-> I'm not saying this patch is necessarily wrong, I just think it's
-> "not proven".
-
-I appreciate your looking at this and explaining the analysis steps
-you used!
-
-
-thanks,
--- 
-John Hubbard
-NVIDIA
-
+Thanks,
+Xue He
 
