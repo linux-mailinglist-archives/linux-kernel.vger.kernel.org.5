@@ -1,115 +1,202 @@
-Return-Path: <linux-kernel+bounces-118221-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-118222-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7FCE388B645
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 01:42:51 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id B4D1488B6D0
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 02:26:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 359172E8EC7
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 00:42:50 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 911F2B235D7
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 00:47:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A9DAB18E1E;
-	Tue, 26 Mar 2024 00:42:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 72CB91BF2B;
+	Tue, 26 Mar 2024 00:47:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=jookia.org header.i=@jookia.org header.b="P3v+DbSr"
-Received: from out-181.mta0.migadu.com (out-181.mta0.migadu.com [91.218.175.181])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="W9gbLQrB"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2463B1B285
-	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 00:42:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 087D218622
+	for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 00:47:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.8
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711413763; cv=none; b=lmCJ24nDQpWzyjjDM1oWaD4WGa6ZLm+2T25olyJNbPLNA3qC/wQcQ9m0z66F3mFDU9FaD/Cx3DjSROtiP5mBRn6SLZom0f5DyEPQYWIzTjAb4Zko9mFJCieOhDdl/fDSd/nBNVEqBqoCTkASVjiClN63VZrSXQH5JjtwQxAHWSo=
+	t=1711414056; cv=none; b=Dd8o7bZ8PDn1JM69KWnERu03G6EchksOWZKtDjjHpH6PN1PtSzHITWnTH4Sp0pKkThG76hNOMz4lPSQVnW41cIrA3+uvDFW/Dq1mwwd84zgYNQGORd1J+7O9cTtM/a4PcZ0PoQ69JicsYAMGQK01K8mY4ASzcfwvgBPxj97Ln6c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711413763; c=relaxed/simple;
-	bh=4QJ/6/jO0Ghq8D3lI04piss7UYAkTLyaKjBohqFRuak=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=PlI+CpSx0Ns95/Umjkh3ySsaSl6gPkvwVt51q8ehQNISGuiRF4Kc6TJ7vUpkjL+6h7YAGM1gp+bTTujD/QAJGOIFnV0WR1ICLN59wt/ZDcl7LMDkXVwbuXfRg9fVZQbjKCOWFG4X8jGmfAP08k7fwGJaCIbgNRnUw65g60U3Fc8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=jookia.org; spf=none smtp.mailfrom=jookia.org; dkim=pass (2048-bit key) header.d=jookia.org header.i=@jookia.org header.b=P3v+DbSr; arc=none smtp.client-ip=91.218.175.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=jookia.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=jookia.org
-Date: Tue, 26 Mar 2024 11:42:08 +1100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=jookia.org; s=key1;
-	t=1711413759;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=swCBvVxY19q5QCFoCh3CilyHYDojXjj2iBKqZTEVPTk=;
-	b=P3v+DbSrjxwcEzz5xiHAHhnXdU44P5rN3DDSC11hcYlHznJP9DLvYzk2BtIehC52iA5vYU
-	1UehtPVXzvCWfTIqLWEq2QfUOyExwWrQhJFul4/6Hvw0ajVOsU9PpMxZ7kUEd6j1CF89y0
-	fwg+VI73Atfbj3S+gw3eE4WqSXBJ7NSzQ7yBPyajg4Mmq5hkhtXdfYIGWxvnBOtTWFo3mk
-	bOTIZEuwNtWTDll7uk0WYHO1XZeKhyrc3sjapUnl2pKorq6PaV50X/JJ0BlN7EIPKfaBtL
-	V/NiQnFbJhJuIMTw7zqsGuEWg7MZ2tceTPR2W4tHiJqALMV5WIvFzw2BrxCLSg==
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: John Watts <contact@jookia.org>
-To: Saravana Kannan <saravanak@google.com>
-Cc: Rob Herring <robh+dt@kernel.org>, Frank Rowand <frowand.list@gmail.com>,
-	=?iso-8859-1?Q?Herv=E9?= Codina <herve.codina@bootlin.com>,
-	Luca Ceresoli <luca.ceresoli@bootlin.com>, kernel-team@android.com,
-	Rob Herring <robh@kernel.org>, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] of: property: fw_devlink: Fix stupid bug in
- remote-endpoint parsing
-Message-ID: <ZgIZ4LmFOqdiDJBH@titan>
-References: <20240224052436.3552333-1-saravanak@google.com>
- <ZfvN5jDrftG-YRG4@titan>
- <CAGETcx8+vw0Vr0NWzjOAvxAZ07M4U7BWPAgO9avCngW0-9e_kA@mail.gmail.com>
- <Zf7I65PiOR2wX1Uo@titan>
- <CAGETcx_=MmfgDajM16iJ4Of9Yr2Sy6ZpU=MyhYgnmOJFUTD_oA@mail.gmail.com>
+	s=arc-20240116; t=1711414056; c=relaxed/simple;
+	bh=suBjc3/LqXh81xfiV6FmBIGTzPolC/bXVQjWOjZfDH8=;
+	h=Date:From:To:Cc:Subject:Message-ID; b=pLYcP5aLg5RdXMWHJpvcbcgKOMH+y0kxgzakQrrONlcvL/dlj+i3AKek+jjbOGFjRVhlGTiECAJzhYdt8UewjZbLq4zmR9AxsSEslpljr6rzyTlz1NU1N6tBPj3O+TJfary7m4PMjoMuHo3IENdkST/UvprjH/m7Jg7l4MQdsFk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=W9gbLQrB; arc=none smtp.client-ip=192.198.163.8
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1711414055; x=1742950055;
+  h=date:from:to:cc:subject:message-id;
+  bh=suBjc3/LqXh81xfiV6FmBIGTzPolC/bXVQjWOjZfDH8=;
+  b=W9gbLQrBbiIYOYT4R9E/iExtkT5+8b0RimmTOw4MY1U1o0hAo1qQsHqd
+   AkwEgpd2v4lMDhZfgkImM6AuJsG5wkmz0x2q7I1eGV07EEZuQaFKG6KPl
+   OT9khFE/wor1IO194rqIrbTHVHH+WIDWpNR3xltXegHXTxEauVVWhaCk1
+   ligLx1rko2kjJ60vHkDDDEN7u3HSX9m34YnTyzyANcLeRFBJnkmcv2qcl
+   +Z5kjIdWcA0eXL1M65NlZfebSYVWdIjMoxF/x0BqA3xt+vv1PiFbGPcAM
+   kew7f+EexxC9OOsSJpyAel4odtyuEN+SlcIUrAaRVL81qnsDSLA9phzZb
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11024"; a="23930354"
+X-IronPort-AV: E=Sophos;i="6.07,154,1708416000"; 
+   d="scan'208";a="23930354"
+Received: from orviesa009.jf.intel.com ([10.64.159.149])
+  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Mar 2024 17:47:34 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,154,1708416000"; 
+   d="scan'208";a="15761378"
+Received: from lkp-server01.sh.intel.com (HELO b21307750695) ([10.239.97.150])
+  by orviesa009.jf.intel.com with ESMTP; 25 Mar 2024 17:47:33 -0700
+Received: from kbuild by b21307750695 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rouyQ-000Mxk-2Z;
+	Tue, 26 Mar 2024 00:47:30 +0000
+Date: Tue, 26 Mar 2024 08:46:46 +0800
+From: kernel test robot <lkp@intel.com>
+To: "x86-ml" <x86@kernel.org>
+Cc: linux-kernel@vger.kernel.org
+Subject: [tip:sched/core] BUILD SUCCESS
+ 58eeb2d79b542c678c46e245dba6b66936368a99
+Message-ID: <202403260841.sujZqknZ-lkp@intel.com>
+User-Agent: s-nail v14.9.24
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAGETcx_=MmfgDajM16iJ4Of9Yr2Sy6ZpU=MyhYgnmOJFUTD_oA@mail.gmail.com>
-X-Migadu-Flow: FLOW_OUT
 
-Hello there,
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git sched/core
+branch HEAD: 58eeb2d79b542c678c46e245dba6b66936368a99  sched/fair: Don't double balance_interval for migrate_misfit
 
-On Mon, Mar 25, 2024 at 03:49:44PM -0700, Saravana Kannan wrote:
-> Ok, I think I understand now what's going on. fw_devlink does not know
-> that "sound" device will not populate "multi" as a child device.
-> Typically in such situations, "sound" would probe as a device and add
-> its child DT nodes devices. At that point, the cycle is only between
-> "multi" and "test_codec" and fw_devlink will detect that and not
-> enforce any ordering. However, in this case, "sound" doesn't have any
-> child devices and just depends on the remote endpoints directly.
-> 
-> We already have "ports", "in-ports" and "out-ports". Is there a reason
-> none of them will work for your use case and it has to be "multi"?
-> When you use one of those 3 recognized node names, things are handled
-> correctly.
+elapsed time: 780m
 
-audio-graph-card2 uses 'multi' to define DAI links that have multiple
-endpoints. It also suports codec2codec and dpcm.
+configs tested: 114
+configs skipped: 3
 
-> I think the right fix is the use of post-init-providers. Because even
-> if you do the above, all it does is let fw_devlink see that there's a
-> cyclic dependency in DT. And it'll stop enforcing the probe and
-> suspend/resume ordering. Ideally we want to enforce a specific order
-> here. test_codec first and then sound.
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-Is there a way to do this automatically so all the existing audio-graph-card2
-device trees aren't broken? As it stands it seems like this driver is now
-broken due to this change.
+tested configs:
+alpha                             allnoconfig   gcc  
+alpha                            allyesconfig   gcc  
+alpha                               defconfig   gcc  
+arc                              allmodconfig   gcc  
+arc                               allnoconfig   gcc  
+arc                              allyesconfig   gcc  
+arc                                 defconfig   gcc  
+arm                              allmodconfig   gcc  
+arm                               allnoconfig   clang
+arm                              allyesconfig   gcc  
+arm                                 defconfig   clang
+arm                         s5pv210_defconfig   gcc  
+arm                        shmobile_defconfig   gcc  
+arm                       spear13xx_defconfig   gcc  
+arm                           spitz_defconfig   gcc  
+arm64                            allmodconfig   clang
+arm64                             allnoconfig   gcc  
+arm64                               defconfig   gcc  
+csky                             allmodconfig   gcc  
+csky                              allnoconfig   gcc  
+csky                             allyesconfig   gcc  
+csky                                defconfig   gcc  
+hexagon                          allmodconfig   clang
+hexagon                           allnoconfig   clang
+hexagon                          allyesconfig   clang
+hexagon                             defconfig   clang
+i386                             allmodconfig   gcc  
+i386                              allnoconfig   gcc  
+i386                             allyesconfig   gcc  
+i386         buildonly-randconfig-001-20240326   gcc  
+i386         buildonly-randconfig-002-20240326   clang
+i386         buildonly-randconfig-003-20240326   clang
+i386         buildonly-randconfig-004-20240326   gcc  
+i386         buildonly-randconfig-005-20240326   gcc  
+i386         buildonly-randconfig-006-20240326   gcc  
+i386                                defconfig   clang
+i386                  randconfig-001-20240326   gcc  
+i386                  randconfig-002-20240326   gcc  
+i386                  randconfig-003-20240326   gcc  
+i386                  randconfig-004-20240326   clang
+i386                  randconfig-005-20240326   gcc  
+i386                  randconfig-006-20240326   clang
+i386                  randconfig-011-20240326   clang
+i386                  randconfig-012-20240326   gcc  
+i386                  randconfig-013-20240326   clang
+i386                  randconfig-014-20240326   clang
+i386                  randconfig-015-20240326   clang
+i386                  randconfig-016-20240326   clang
+loongarch                        allmodconfig   gcc  
+loongarch                         allnoconfig   gcc  
+loongarch                           defconfig   gcc  
+m68k                             allmodconfig   gcc  
+m68k                              allnoconfig   gcc  
+m68k                             allyesconfig   gcc  
+m68k                                defconfig   gcc  
+microblaze                       allmodconfig   gcc  
+microblaze                        allnoconfig   gcc  
+microblaze                       allyesconfig   gcc  
+microblaze                          defconfig   gcc  
+mips                              allnoconfig   gcc  
+mips                             allyesconfig   gcc  
+mips                  maltasmvp_eva_defconfig   gcc  
+nios2                            allmodconfig   gcc  
+nios2                             allnoconfig   gcc  
+nios2                            allyesconfig   gcc  
+nios2                               defconfig   gcc  
+openrisc                          allnoconfig   gcc  
+openrisc                         allyesconfig   gcc  
+openrisc                            defconfig   gcc  
+openrisc                    or1ksim_defconfig   gcc  
+parisc                           allmodconfig   gcc  
+parisc                            allnoconfig   gcc  
+parisc                           allyesconfig   gcc  
+parisc                              defconfig   gcc  
+parisc64                         alldefconfig   gcc  
+parisc64                            defconfig   gcc  
+powerpc                          allmodconfig   gcc  
+powerpc                           allnoconfig   gcc  
+powerpc                          allyesconfig   clang
+powerpc                     rainier_defconfig   gcc  
+powerpc                    socrates_defconfig   gcc  
+riscv                            allmodconfig   clang
+riscv                             allnoconfig   gcc  
+riscv                            allyesconfig   clang
+riscv                               defconfig   clang
+s390                             allmodconfig   clang
+s390                              allnoconfig   clang
+s390                             allyesconfig   gcc  
+s390                                defconfig   clang
+sh                               allmodconfig   gcc  
+sh                                allnoconfig   gcc  
+sh                               allyesconfig   gcc  
+sh                        apsh4ad0a_defconfig   gcc  
+sh                                  defconfig   gcc  
+sh                           se7343_defconfig   gcc  
+sh                           se7724_defconfig   gcc  
+sparc                            allmodconfig   gcc  
+sparc                             allnoconfig   gcc  
+sparc                               defconfig   gcc  
+sparc64                          allmodconfig   gcc  
+sparc64                          allyesconfig   gcc  
+sparc64                             defconfig   gcc  
+um                               allmodconfig   clang
+um                                allnoconfig   clang
+um                               allyesconfig   gcc  
+um                                  defconfig   clang
+um                             i386_defconfig   gcc  
+um                           x86_64_defconfig   clang
+x86_64                            allnoconfig   clang
+x86_64                           allyesconfig   clang
+x86_64                              defconfig   gcc  
+x86_64                          rhel-8.3-rust   clang
+x86_64                               rhel-8.3   gcc  
+xtensa                            allnoconfig   gcc  
 
-> Maybe. But the logs would be more helpful.
-
-If you have a way for me to get more logs please tell me.
-
-> > > post-init-provider = <&multi>;
-> 
-> Did you try this? Did it help?
-> 
-> -Saravana
-
-No I haven't tried this yet. I shall try it soon. But I wouldn't consider
-this a useful fix as it requires upgrading existing device trees.
-
-John.
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
