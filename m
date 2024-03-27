@@ -1,227 +1,120 @@
-Return-Path: <linux-kernel+bounces-121780-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-121782-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 37D8088ED9C
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 19:06:49 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 50B9E88EDA1
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 19:07:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A40821F37107
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 18:06:48 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 73C431C2EAA7
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 18:07:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B9006149DE0;
-	Wed, 27 Mar 2024 18:06:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1B52B14E2E4;
+	Wed, 27 Mar 2024 18:07:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NQmy7JUC"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=jiaxyga.com header.i=@jiaxyga.com header.b="siyrYAwG";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=jiaxyga.com header.i=@jiaxyga.com header.b="Wm/sJgoO"
+Received: from fallback24.i.mail.ru (fallback24.i.mail.ru [79.137.243.78])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E15785227;
-	Wed, 27 Mar 2024 18:06:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D33FF131BCF;
+	Wed, 27 Mar 2024 18:07:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=79.137.243.78
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711562797; cv=none; b=Gh5/oAkHJzjFLiXXJYU0nDRzkhfxJiueaayFYfjMdtBSER87twIbKr4g/z4efGwAfMTL4BqNtgDRBd+fNGrhLI2qeFlrLQdLfwkg2/DWwN88RQ0MeNuaGwUCETNbdy/ua+rNq7vS3w+NazxHTSYhlcmJo7gWIF4TPXOJjoJBwOA=
+	t=1711562831; cv=none; b=jiB/mkUisQ5bP6P0WxJoV/BnhIEx1Sc9BFmDhayOuA2J+4QDPs2s5Q09urN4jIGCGLpjETUGcD35kZLoEWW11bx5aWmoI4+t/7BszTHJQFNaYqKtvKwYHdKGKfCNKyJt5EpSk07XefvGtGlMGH/FM/4i9AO16qGR2BACdQhHwUo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711562797; c=relaxed/simple;
-	bh=ELmyXwcV+FV9/p8zH/5M6gKnn4Kq8bGt1DVRV4LDDKQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=AtG4u3LJXZJrB1Z9BZFShmUwnRWY6TQnHuy6oizg2Ji7P7NgHVM3sHtvIA/RjOzwS0JyPmDhxGuaa2YzOLlRbN/ENbIco1PeFZKaxCJNWtQDhihM/5y+mtMULljNfNRbgtre5CZ09E2Q3QyLW/IhGjDzp/cK9wgc4Vg5U3Zrqoo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NQmy7JUC; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2EB0FC433C7;
-	Wed, 27 Mar 2024 18:06:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711562796;
-	bh=ELmyXwcV+FV9/p8zH/5M6gKnn4Kq8bGt1DVRV4LDDKQ=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=NQmy7JUCEZ0RxIGKKgDxesVr/zBZBlOhbpw6BuiwYqInjUm2QolaDyoi93Z/1ZIDT
-	 fXfeILsnH6JFGEkhARAkWC6/HiE8+5o5m9o69ef2b1DjI4qtlbtnt2G+4LIovO2GXr
-	 g8N9dGuVaSpcBXK61RpiAK3G9bs75gKErf40XvBIqRcumFGtD5EzKfM+JNIORC1NhX
-	 st47971wfU0D30xAqoe5lON13N9ktrWVS7ajto4z++ZpfmvSVkP6wOKqsLplbObd2/
-	 JOpORRStz3LnZXXYI+T59a1Haaiihp6vUslg8pJvBAmv3w5p1XyLystGyO8RAqQvpU
-	 XNZcGuAQYU0Pg==
-Date: Wed, 27 Mar 2024 19:06:30 +0100
-From: Niklas Cassel <cassel@kernel.org>
-To: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Cc: Lorenzo Pieralisi <lpieralisi@kernel.org>,
-	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-	Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
-	Kishon Vijay Abraham I <kishon@kernel.org>,
-	Thierry Reding <thierry.reding@gmail.com>,
-	Jonathan Hunter <jonathanh@nvidia.com>,
-	Jingoo Han <jingoohan1@gmail.com>,
-	Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
-	linux-pci@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-	linux-kernel@vger.kernel.org, mhi@lists.linux.dev,
-	linux-tegra@vger.kernel.org
-Subject: Re: [PATCH 07/11] PCI: dwc: ep: Add a generic dw_pcie_ep_linkdown()
- API to handle Link Down event
-Message-ID: <ZgRgJsOT_bzXM1wK@ryzen>
-References: <20240314-pci-epf-rework-v1-0-6134e6c1d491@linaro.org>
- <20240314-pci-epf-rework-v1-7-6134e6c1d491@linaro.org>
+	s=arc-20240116; t=1711562831; c=relaxed/simple;
+	bh=mQIQDbM97VVKGtE6f0hcV7pSxonc/xRXvuH4LyGXWQ4=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Q5ABmCCNBiScW72KuxFbltevD/e7yOPRi/QmlDawkBpGdwHYSflgNH1cUxCewPAsRztjg2hyy0GT9Ki4OwooKw7dkqmguGnftSevzzdVPqhoDkZq7i2oCXUAYcyD6381CWg1NqCZgA8GfwxNhQ5Q2VrpZTp+llLt3ZhqtWV6enU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=jiaxyga.com; spf=pass smtp.mailfrom=jiaxyga.com; dkim=pass (1024-bit key) header.d=jiaxyga.com header.i=@jiaxyga.com header.b=siyrYAwG; dkim=pass (1024-bit key) header.d=jiaxyga.com header.i=@jiaxyga.com header.b=Wm/sJgoO; arc=none smtp.client-ip=79.137.243.78
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=jiaxyga.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=jiaxyga.com
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=jiaxyga.com; s=mailru;
+	h=Content-Transfer-Encoding:MIME-Version:Message-ID:Date:Subject:Cc:To:From:From:Subject:Content-Type:Content-Transfer-Encoding:To:Cc; bh=Kl4DAfMrThUTbEpsy8OIaWRx4ECJjsEC+DZgg6JUlFE=;
+	t=1711562828;x=1711652828; 
+	b=siyrYAwG7KDQJcmlpU2fbl27nG5FgzwU/HdlHIUuZWJZbvYLCKaKNg9Y80r+Onb1XG7m3wj+1qtMNJX3PnVL9hjHBoVuLo4l8LJTCz/gW5zAbt4+yaquhmADpTocBowNQv7vdzg0bD4DIr7VkF0UC8rQifXeg+AUECvBQFfL2Lk=;
+Received: from [10.12.4.29] (port=49644 helo=smtp51.i.mail.ru)
+	by fallback24.i.mail.ru with esmtp (envelope-from <danila@jiaxyga.com>)
+	id 1rpXfx-003NBS-8n; Wed, 27 Mar 2024 21:07:01 +0300
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=jiaxyga.com
+	; s=mailru; h=Content-Transfer-Encoding:MIME-Version:Message-ID:Date:Subject:
+	Cc:To:From:From:Sender:Reply-To:To:Cc:Content-Type:Content-Transfer-Encoding:
+	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Id:
+	List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive:
+	X-Cloud-Ids:Disposition-Notification-To;
+	bh=Kl4DAfMrThUTbEpsy8OIaWRx4ECJjsEC+DZgg6JUlFE=; t=1711562821; x=1711652821; 
+	b=Wm/sJgoOemmBhF5vww4DNpEpQv+MFE3gSA7kcwzShTGwmMACHt12OrEasDilNYbXqhSIjVP5cpG
+	pgPI9K32WgsAunonTL9EKupkCgBVIwC24c2ep2Z4ZLIOqe6l4wtiFSedOmWiXNqGp6iBNZI8JraYS
+	LexoVKsoroM34gvwMgU=;
+Received: by smtp51.i.mail.ru with esmtpa (envelope-from <danila@jiaxyga.com>)
+	id 1rpXfh-0000000E2q5-0q4E; Wed, 27 Mar 2024 21:06:45 +0300
+From: Danila Tikhonov <danila@jiaxyga.com>
+To: andersson@kernel.org,
+	konrad.dybcio@linaro.org,
+	vkoul@kernel.org,
+	kishon@kernel.org,
+	robh@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org,
+	conor+dt@kernel.org
+Cc: linux-arm-msm@vger.kernel.org,
+	linux-phy@lists.infradead.org,
+	devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Danila Tikhonov <danila@jiaxyga.com>
+Subject: [PATCH 0/2] phy: qcom-qmp-ufs: Add support for SM8475
+Date: Wed, 27 Mar 2024 21:06:40 +0300
+Message-ID: <20240327180642.20146-1-danila@jiaxyga.com>
+X-Mailer: git-send-email 2.44.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240314-pci-epf-rework-v1-7-6134e6c1d491@linaro.org>
+Content-Transfer-Encoding: 8bit
+X-Mailru-Src: smtp
+X-7564579A: EEAE043A70213CC8
+X-77F55803: 4F1203BC0FB41BD92B2F338B3A1B03DBC32C72577B1B4A4B195BE4FF90B52CC2182A05F5380850404C228DA9ACA6FE27D2B3368C890E70B603ED270C30F246C5224714DC9D89A041FEB17DC202E68E303EE2A1A432EA2933
+X-7FA49CB5: FF5795518A3D127A4AD6D5ED66289B5278DA827A17800CE70043D879A87EF1BCEA1F7E6F0F101C67BD4B6F7A4D31EC0BCC500DACC3FED6E28638F802B75D45FF8AA50765F7900637C867FEFF36BCDF178638F802B75D45FF36EB9D2243A4F8B5A6FCA7DBDB1FC311F39EFFDF887939037866D6147AF826D83B0D53EBDBBEB31787CFF83901193707C9582587F0825ED9CC7F00164DA146DAFE8445B8C89999728AA50765F79006375FFD5C25497261569FA2833FD35BB23D2EF20D2F80756B5F868A13BD56FB6657A471835C12D1D977725E5C173C3A84C34964A708C60C975A117882F4460429728AD0CFFFB425014E868A13BD56FB6657D81D268191BDAD3DC09775C1D3CA48CFA281FA8EA08C6015BA3038C0950A5D36C8A9BA7A39EFB766D91E3A1F190DE8FDBA3038C0950A5D36D5E8D9A59859A8B6088EA859A876218C76E601842F6C81A1F004C906525384303E02D724532EE2C3F43C7A68FF6260569E8FC8737B5C2249957A4DEDD2346B42E827F84554CEF50127C277FBC8AE2E8BA83251EDC214901ED5E8D9A59859A8B615F38A1EB2280F99089D37D7C0E48F6C5571747095F342E88FB05168BE4CE3AF
+X-C1DE0DAB: 0D63561A33F958A572F24DCADD00AF615002B1117B3ED696A07DC1F01FB75464E772F934B9BCD185823CB91A9FED034534781492E4B8EEAD5C5DFC4BFF39B799F36E2E0160E5C55395B8A2A0B6518DF68C46860778A80D548E8926FB43031F38
+X-C8649E89: 1C3962B70DF3F0ADE00A9FD3E00BEEDF77DD89D51EBB7742D3581295AF09D3DF87807E0823442EA2ED31085941D9CD0AF7F820E7B07EA4CF962540E96D3749566F3157B2473DCC9B393CF9C2F1A5992CA52A15E792DBBD0575F3776783CA996BF212F37558E72466442710B1986103C2E5E1C781D7312E8BFB0F00F6D3F2FCEA42BF32D1DA1046D202C26D483E81D6BE72B480F99247062FEE42F474E8A1C6FD34D382445848F2F3
+X-D57D3AED: 3ZO7eAau8CL7WIMRKs4sN3D3tLDjz0dLbV79QFUyzQ2Ujvy7cMT6pYYqY16iZVKkSc3dCLJ7zSJH7+u4VD18S7Vl4ZUrpaVfd2+vE6kuoey4m4VkSEu530nj6fImhcD4MUrOEAnl0W826KZ9Q+tr5ycPtXkTV4k65bRjmOUUP8cvGozZ33TWg5HZplvhhXbhDGzqmQDTd6OAevLeAnq3Ra9uf7zvY2zzsIhlcp/Y7m53TZgf2aB4JOg4gkr2biojRawEQSF5UtvrSC67IYQ+kA==
+X-Mailru-Sender: 9EB879F2C80682A09F26F806C7394981DE6AB1E6944A41F4E693A2F4CD4B10000F9BD50AEF180468C84098C9553D294F2C62728BC403A049225EC17F3711B6CF1A6F2E8989E84EC137BFB0221605B344978139F6FA5A77F05FEEDEB644C299C0ED14614B50AE0675
+X-Mras: Ok
+X-7564579A: B8F34718100C35BD
+X-77F55803: 6242723A09DB00B469FED0CC4E03BFC3F7F23553880BB0CD60F3889908575E02049FFFDB7839CE9E088A9832E852848505BC316D8B91A368610446C7B24AE8BF0162CE7EF3E6A363
+X-7FA49CB5: 0D63561A33F958A57EDBABF2EAF213584906D23894274437BBB3F00DD3EAA9B88941B15DA834481FA18204E546F3947C68B9A68E260AC75CF6B57BC7E64490618DEB871D839B7333395957E7521B51C2DFABB839C843B9C08941B15DA834481F8AA50765F7900637DFC0370CCA7FDEF5389733CBF5DBD5E9B5C8C57E37DE458BD96E472CDF7238E0725E5C173C3A84C3F65C0D82C631A427089D37D7C0E48F6C5571747095F342E88FB05168BE4CE3AF
+X-87b9d050: 1
+X-D57D3AED: 3ZO7eAau8CL7WIMRKs4sN3D3tLDjz0dLbV79QFUyzQ2Ujvy7cMT6pYYqY16iZVKkSc3dCLJ7zSJH7+u4VD18S7Vl4ZUrpaVfd2+vE6kuoey4m4VkSEu530nj6fImhcD4MUrOEAnl0W826KZ9Q+tr5ycPtXkTV4k65bRjmOUUP8cvGozZ33TWg5HZplvhhXbhDGzqmQDTd6OAevLeAnq3Ra9uf7zvY2zzsIhlcp/Y7m53TZgf2aB4JOg4gkr2biojRawEQSF5UtujJgOAMFub9A==
+X-Mailru-MI: 8000000000000800
+X-Mras: Ok
 
-Hello Mani,
+This series adds UFS QMP support for Qualcomm SM8475 SoC.
 
-On Thu, Mar 14, 2024 at 08:53:46PM +0530, Manivannan Sadhasivam wrote:
-> As per the PCIe base spec r5.0, section 5.2, Link Down event can happen
-> under any of the following circumstances:
-> 
-> 1. Fundamental/Hot reset
-> 2. Link disable transmission by upstream component
-> 3. Moving from L2/L3 to L0
-> 
-> In those cases, Link Down causes some non-sticky DWC registers to loose the
-> state (like REBAR, etc...). So the drivers need to reinitialize them to
-> function properly once the link comes back again.
-> 
-> This is not a problem for drivers supporting PERST# IRQ, since they can
-> reinitialize the registers in the PERST# IRQ callback. But for the drivers
-> not supporting PERST#, there is no way they can reinitialize the registers
-> other than relying on Link Down IRQ received when the link goes down. So
-> let's add a DWC generic API dw_pcie_ep_linkdown() that reinitializes the
-> non-sticky registers and also notifies the EPF drivers about link going
-> down.
-> 
-> This API can also be used by the drivers supporting PERST# to handle the
-> scenario (2) mentioned above.
-> 
-> NOTE: For the sake of code organization, move the dw_pcie_ep_linkup()
-> definition just above dw_pcie_ep_linkdown().
-> 
-> Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-> ---
->  drivers/pci/controller/dwc/pcie-designware-ep.c | 93 ++++++++++++++++---------
->  drivers/pci/controller/dwc/pcie-designware.h    |  5 ++
->  2 files changed, 67 insertions(+), 31 deletions(-)
-> 
-> diff --git a/drivers/pci/controller/dwc/pcie-designware-ep.c b/drivers/pci/controller/dwc/pcie-designware-ep.c
-> index 3893a8c1a11c..5451057ca74b 100644
-> --- a/drivers/pci/controller/dwc/pcie-designware-ep.c
-> +++ b/drivers/pci/controller/dwc/pcie-designware-ep.c
-> @@ -14,18 +14,6 @@
->  #include <linux/pci-epc.h>
->  #include <linux/pci-epf.h>
->  
-> -/**
-> - * dw_pcie_ep_linkup - Notify EPF drivers about link up event
-> - * @ep: DWC EP device
-> - */
-> -void dw_pcie_ep_linkup(struct dw_pcie_ep *ep)
-> -{
-> -	struct pci_epc *epc = ep->epc;
-> -
-> -	pci_epc_linkup(epc);
-> -}
-> -EXPORT_SYMBOL_GPL(dw_pcie_ep_linkup);
-> -
->  /**
->   * dw_pcie_ep_init_notify - Notify EPF drivers about EPC initialization
->   *			    complete
-> @@ -672,6 +660,29 @@ static unsigned int dw_pcie_ep_find_ext_capability(struct dw_pcie *pci, int cap)
->  	return 0;
->  }
->  
-> +static void dw_pcie_ep_init_non_sticky_registers(struct dw_pcie *pci)
-> +{
-> +	unsigned int offset;
-> +	unsigned int nbars;
-> +	u32 reg, i;
-> +
-> +	offset = dw_pcie_ep_find_ext_capability(pci, PCI_EXT_CAP_ID_REBAR);
-> +
-> +	dw_pcie_dbi_ro_wr_en(pci);
-> +
-> +	if (offset) {
-> +		reg = dw_pcie_readl_dbi(pci, offset + PCI_REBAR_CTRL);
-> +		nbars = (reg & PCI_REBAR_CTRL_NBAR_MASK) >>
-> +			PCI_REBAR_CTRL_NBAR_SHIFT;
-> +
-> +		for (i = 0; i < nbars; i++, offset += PCI_REBAR_CTRL)
-> +			dw_pcie_writel_dbi(pci, offset + PCI_REBAR_CAP, 0x0);
-> +	}
-> +
-> +	dw_pcie_setup(pci);
-> +	dw_pcie_dbi_ro_wr_dis(pci);
-> +}
-> +
->  /**
->   * dw_pcie_ep_init_registers - Initialize DWC EP specific registers
->   * @ep: DWC EP device
-> @@ -686,13 +697,11 @@ int dw_pcie_ep_init_registers(struct dw_pcie_ep *ep)
->  	struct dw_pcie_ep_func *ep_func;
->  	struct device *dev = pci->dev;
->  	struct pci_epc *epc = ep->epc;
-> -	unsigned int offset, ptm_cap_base;
-> -	unsigned int nbars;
-> +	u32 ptm_cap_base, reg;
->  	u8 hdr_type;
->  	u8 func_no;
-> -	int i, ret;
->  	void *addr;
-> -	u32 reg;
-> +	int ret;
->  
->  	hdr_type = dw_pcie_readb_dbi(pci, PCI_HEADER_TYPE) &
->  		   PCI_HEADER_TYPE_MASK;
-> @@ -755,20 +764,8 @@ int dw_pcie_ep_init_registers(struct dw_pcie_ep *ep)
->  	if (ep->ops->init)
->  		ep->ops->init(ep);
->  
-> -	offset = dw_pcie_ep_find_ext_capability(pci, PCI_EXT_CAP_ID_REBAR);
->  	ptm_cap_base = dw_pcie_ep_find_ext_capability(pci, PCI_EXT_CAP_ID_PTM);
->  
-> -	dw_pcie_dbi_ro_wr_en(pci);
-> -
-> -	if (offset) {
-> -		reg = dw_pcie_readl_dbi(pci, offset + PCI_REBAR_CTRL);
-> -		nbars = (reg & PCI_REBAR_CTRL_NBAR_MASK) >>
-> -			PCI_REBAR_CTRL_NBAR_SHIFT;
-> -
-> -		for (i = 0; i < nbars; i++, offset += PCI_REBAR_CTRL)
-> -			dw_pcie_writel_dbi(pci, offset + PCI_REBAR_CAP, 0x0);
-> -	}
-> -
->  	/*
->  	 * PTM responder capability can be disabled only after disabling
->  	 * PTM root capability.
-> @@ -785,9 +782,6 @@ int dw_pcie_ep_init_registers(struct dw_pcie_ep *ep)
->  		dw_pcie_dbi_ro_wr_dis(pci);
->  	}
->  
-> -	dw_pcie_setup(pci);
-> -	dw_pcie_dbi_ro_wr_dis(pci);
-> -
+To: Bjorn Andersson <andersson@kernel.org>
+To: Konrad Dybcio <konrad.dybcio@linaro.org>
+To: Vinod Koul <vkoul@kernel.org>
+To: Kishon Vijay Abraham I <kishon@kernel.org>
+To: Rob Herring <robh@kernel.org>
+To: Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
+To: Conor Dooley <conor+dt@kernel.org>
+Cc: linux-arm-msm@vger.kernel.org
+Cc: linux-phy@lists.infradead.org
+Cc: devicetree@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
+Signed-off-by: Danila Tikhonov <danila@jiaxyga.com>
 
-Your previous series had:
+Danila Tikhonov (2):
+  dt-bindings: phy: Add QMP UFS PHY comptible for SM8475
+  phy: qcom-qmp-ufs: Add SM8475 support
 
--       dw_pcie_setup(pci);
--       dw_pcie_dbi_ro_wr_dis(pci);
-+       dw_pcie_ep_init_non_sticky_registers(pci);
+ .../phy/qcom,sc8280xp-qmp-ufs-phy.yaml        |  2 +
+ drivers/phy/qualcomm/phy-qcom-qmp-ufs.c       | 71 +++++++++++++++++++
+ 2 files changed, 73 insertions(+)
 
-Here.
-I tested this series, but it did not work for me (the Resizable BARs did
-not get resized) since you removed the call to
-dw_pcie_ep_init_non_sticky_registers().
+-- 
+2.44.0
 
-By readding the call to dw_pcie_ep_init_non_sticky_registers(),
-the BARs get Resized again.
-
-
-BTW do you have a git branch with both your series somewhere?
-(Possibly even rebased on
-https://lore.kernel.org/linux-pci/20240320113157.322695-1-cassel@kernel.org/T/#t
-like you suggested in your other mail.)
-
-
-Kind regards,
-Niklas
 
