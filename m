@@ -1,126 +1,162 @@
-Return-Path: <linux-kernel+bounces-121654-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-121655-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EFC7088EBB1
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 17:54:43 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id F3BD388EBBB
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 17:56:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2D8D81C2F928
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 16:54:43 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 916DB1F2DCCB
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 16:56:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BB12514D45B;
-	Wed, 27 Mar 2024 16:54:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6117514D710;
+	Wed, 27 Mar 2024 16:55:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VdznTPEg"
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="O9UtOMh9"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0233014D6FE;
-	Wed, 27 Mar 2024 16:54:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2E239130A6F;
+	Wed, 27 Mar 2024 16:55:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711558460; cv=none; b=fKOiS8djKlMkbmNnVdP2Xi2I6jzuS3e482JDPA80WthrIaAuKKhhdW/xQ+UkaAdS1pqn3U6fNYi1ibG/6bxiPoQz+JLZgIcTUMBbIsby4rdVtKFoFAfWzPd+Gnkvl8cpPNsf2IvIuS655LCGjeyK3hw/cvG6hplwfj5k04DmvsA=
+	t=1711558536; cv=none; b=uOGHYnicUHW6rF39U/IyJbaEv0EObOUXFregTx9c5mlOgUqa5Hr4K0gx+cO0xA5DYQZFdpkyPh9iD13KjV2Mxm+lrEWKMuIlGaVkFjITMpw0jz1UTbnYGRGY35nXB9sN/0TpqZpABfyC4jI2f60upJnmYbxjTxtHiMM65xyDooQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711558460; c=relaxed/simple;
-	bh=UuN+/yVlhFYfqrv1X4nW0lUiQAKVn7emAnsT71kKaNM=;
-	h=Mime-Version:Content-Type:Date:Message-Id:To:Cc:Subject:From:
-	 References:In-Reply-To; b=oF3zoFyiGhkrAMuEZVx4ZIj08HX0PJoAE6526tDGg/G3kOvgcDPF6VrMCFCskLhLASxYExQSjpkixYKCTKvUtB7jPgBocNC3+K3Oy0Fh51iVdHPcWiy46leUmTtnsVc8Fe15dOQ1RpSB16/v535Gqk2hKDoeKaZwBNJ6JeFGV40=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=VdznTPEg; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 05AFCC43141;
-	Wed, 27 Mar 2024 16:54:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711558459;
-	bh=UuN+/yVlhFYfqrv1X4nW0lUiQAKVn7emAnsT71kKaNM=;
-	h=Date:To:Cc:Subject:From:References:In-Reply-To:From;
-	b=VdznTPEgYpRW2KJZteflSdemSgEbTzuadvjOPsPxT/etXe4Tp/Mi2l9GrR9WydQ0C
-	 Vxx9DO2dr0szfSXJr+iijjnFWVPOQZyhZA55gSCfc33oIWhOPIEyWsmzTW8f1/mTDB
-	 y29tQRHZTSoxB8pZ0RO/IQBYdAL+5eqwLxrTLSeY3vwtnV4OOD22b1MIQOkBx5/Tvv
-	 FqLYdllfiSD34uHLnXph9IzqBWRVVi2ZehcMJg9bWYMjoOG2ioUk4+89PnHWjf2lgw
-	 Zxfj9ieYwF33sat6lvfafnMEqN9mKNJ2lqZjZrWOBMtBEd2jNGLoNSFCvr3Kq1FKiU
-	 i2aOUsIk5KjKw==
+	s=arc-20240116; t=1711558536; c=relaxed/simple;
+	bh=vpDkfUBtWL+UxBwjuUm5gYeL/cEacWfXEPKG81vcE0M=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=tVUCvvyh7H5EYkD1QI3uGSyjr4ez9q64CAjIvv58Baou9v6c4H+DRBtMU1+t5xKscrj6q0dEEdqG5fjCxIeFviFZahdLj00I9hOxqMFMN6Y1gB0sX0/h7PyL8QGDLextS2sgjSoKJBleZY9ULG6mJfeeYJ+DgWKUMqBvNcJ9lpU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=O9UtOMh9; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4ABDBC433C7;
+	Wed, 27 Mar 2024 16:55:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+	s=korg; t=1711558535;
+	bh=vpDkfUBtWL+UxBwjuUm5gYeL/cEacWfXEPKG81vcE0M=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=O9UtOMh9NhK8uq0mZiMXt2LKgdT1qaV4eqkqQ4OpNjzEIBfNH8AxnSa5LKMbuNnuj
+	 139SwlhRdsUzFtHFa7nm692D1Q6Maoi8Dc8aCzxaDG36oyEKDDYttLwvcqzFnSbA0P
+	 DJD28wQMsDmrT4Kh7AowzV2l5JSL5uf6ZAH6m6jc=
+Date: Wed, 27 Mar 2024 17:55:31 +0100
+From: Greg KH <gregkh@linuxfoundation.org>
+To: Allen Pais <apais@linux.microsoft.com>
+Cc: linux-kernel@vger.kernel.org, tj@kernel.org, keescook@chromium.org,
+	vkoul@kernel.org, marcan@marcan.st, sven@svenpeter.dev,
+	florian.fainelli@broadcom.com, rjui@broadcom.com,
+	sbranden@broadcom.com, paul@crapouillou.net,
+	Eugeniy.Paltsev@synopsys.com, manivannan.sadhasivam@linaro.org,
+	vireshk@kernel.org, Frank.Li@nxp.com, leoyang.li@nxp.com,
+	zw@zh-kernel.org, wangzhou1@hisilicon.com, haijie1@huawei.com,
+	shawnguo@kernel.org, s.hauer@pengutronix.de, sean.wang@mediatek.com,
+	matthias.bgg@gmail.com, angelogioacchino.delregno@collabora.com,
+	afaerber@suse.de, logang@deltatee.com, daniel@zonque.org,
+	haojian.zhuang@gmail.com, robert.jarzmik@free.fr,
+	andersson@kernel.org, konrad.dybcio@linaro.org, orsonzhai@gmail.com,
+	baolin.wang@linux.alibaba.com, zhang.lyra@gmail.com,
+	patrice.chotard@foss.st.com, linus.walleij@linaro.org,
+	wens@csie.org, jernej.skrabec@gmail.com, peter.ujfalusi@gmail.com,
+	kys@microsoft.com, haiyangz@microsoft.com, wei.liu@kernel.org,
+	decui@microsoft.com, jassisinghbrar@gmail.com, mchehab@kernel.org,
+	maintainers@bluecherrydvr.com, aubin.constans@microchip.com,
+	ulf.hansson@linaro.org, manuel.lauss@gmail.com,
+	mirq-linux@rere.qmqm.pl, jh80.chung@samsung.com, oakad@yahoo.com,
+	hayashi.kunihiko@socionext.com, mhiramat@kernel.org,
+	brucechang@via.com.tw, HaraldWelte@viatech.com, pierre@ossman.eu,
+	duncan.sands@free.fr, stern@rowland.harvard.edu, oneukum@suse.com,
+	openipmi-developer@lists.sourceforge.net, dmaengine@vger.kernel.org,
+	asahi@lists.linux.dev, linux-arm-kernel@lists.infradead.org,
+	linux-rpi-kernel@lists.infradead.org, linux-mips@vger.kernel.org,
+	imx@lists.linux.dev, linuxppc-dev@lists.ozlabs.org,
+	linux-mediatek@lists.infradead.org,
+	linux-actions@lists.infradead.org, linux-arm-msm@vger.kernel.org,
+	linux-riscv@lists.infradead.org, linux-sunxi@lists.linux.dev,
+	linux-tegra@vger.kernel.org, linux-hyperv@vger.kernel.org,
+	linux-rdma@vger.kernel.org, linux-media@vger.kernel.org,
+	linux-mmc@vger.kernel.org, linux-omap@vger.kernel.org,
+	linux-renesas-soc@vger.kernel.org, linux-s390@vger.kernel.org,
+	netdev@vger.kernel.org, linux-usb@vger.kernel.org
+Subject: Re: [PATCH 4/9] USB: Convert from tasklet to BH workqueue
+Message-ID: <2024032753-probable-blatancy-80bf@gregkh>
+References: <20240327160314.9982-1-apais@linux.microsoft.com>
+ <20240327160314.9982-5-apais@linux.microsoft.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date: Wed, 27 Mar 2024 18:54:16 +0200
-Message-Id: <D04OU424128P.22TP02GW2CJCT@kernel.org>
-To: "Mimi Zohar" <zohar@linux.ibm.com>, "Luis Chamberlain"
- <mcgrof@kernel.org>
-Cc: <linux-modules@vger.kernel.org>, <linux-integrity@vger.kernel.org>,
- "Roberto Sassu" <roberto.sassu@huawei.com>, <linux-kernel@vger.kernel.org>,
- "Ken Goldman" <kgold@linux.ibm.com>
-Subject: Re: [PATCH] ima: define an init_module critical data record
-From: "Jarkko Sakkinen" <jarkko@kernel.org>
-X-Mailer: aerc 0.17.0
-References: <20240327150019.81477-1-zohar@linux.ibm.com>
-In-Reply-To: <20240327150019.81477-1-zohar@linux.ibm.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240327160314.9982-5-apais@linux.microsoft.com>
 
-On Wed Mar 27, 2024 at 5:00 PM EET, Mimi Zohar wrote:
-> The init_module syscall loads an ELF image into kernel space without
-> measuring the buffer containing the ELF image.  To close this kernel
-> module integrity gap, define a new critical-data record which includes
-> the hash of the ELF image.
->
-> Instead of including the buffer data in the IMA measurement list,
-> include the hash of the buffer data to avoid large IMA measurement
-> list records.  The buffer data hash would be the same value as the
-> finit_module syscall file hash.
->
-> To enable measuring the init_module buffer and other critical data from
-> boot, define "ima_policy=3Dcritical_data" on the boot command line.  Sinc=
-e
-> builtin policies are not persistent, a custom IMA policy must include
-> the rule as well: measure func=3DCRITICAL_DATA label=3Dmodules
->
-> To verify the template data hash value, first convert the buffer data
-> hash to binary:
-> grep "init_module" \
-> 	/sys/kernel/security/integrity/ima/ascii_runtime_measurements | \
-> 	tail -1 | cut -d' ' -f 6 | xxd -r -p | sha256sum
->
-> Reported-by: Ken Goldman <kgold@linux.ibm.com>
-> Signed-off-by: Mimi Zohar <zohar@linux.ibm.com>
+On Wed, Mar 27, 2024 at 04:03:09PM +0000, Allen Pais wrote:
+> The only generic interface to execute asynchronously in the BH context is
+> tasklet; however, it's marked deprecated and has some design flaws. To
+> replace tasklets, BH workqueue support was recently added. A BH workqueue
+> behaves similarly to regular workqueues except that the queued work items
+> are executed in the BH context.
+> 
+> This patch converts drivers/infiniband/* from tasklet to BH workqueue.
+
+No it does not, I think your changelog is wrong :(
+
+> 
+> Based on the work done by Tejun Heo <tj@kernel.org>
+> Branch: https://git.kernel.org/pub/scm/linux/kernel/git/tj/wq.git for-6.10
+> 
+> Signed-off-by: Allen Pais <allen.lkml@gmail.com>
 > ---
->  security/integrity/ima/ima_main.c | 7 +++++++
->  1 file changed, 7 insertions(+)
->
-> diff --git a/security/integrity/ima/ima_main.c b/security/integrity/ima/i=
-ma_main.c
-> index c84e8c55333d..4b4348d681a6 100644
-> --- a/security/integrity/ima/ima_main.c
-> +++ b/security/integrity/ima/ima_main.c
-> @@ -902,6 +902,13 @@ static int ima_post_load_data(char *buf, loff_t size=
-,
->  		return 0;
->  	}
-> =20
-> +	/*
-> +	 * Measure the init_module syscall buffer containing the ELF image.
-> +	 */
-> +	if (load_id =3D=3D LOADING_MODULE)
-> +		ima_measure_critical_data("modules", "init_module",
-> +					  buf, size, true, NULL, 0);
+>  drivers/usb/atm/usbatm.c            | 55 +++++++++++++++--------------
+>  drivers/usb/atm/usbatm.h            |  3 +-
+>  drivers/usb/core/hcd.c              | 22 ++++++------
+>  drivers/usb/gadget/udc/fsl_qe_udc.c | 21 +++++------
+>  drivers/usb/gadget/udc/fsl_qe_udc.h |  4 +--
+>  drivers/usb/host/ehci-sched.c       |  2 +-
+>  drivers/usb/host/fhci-hcd.c         |  3 +-
+>  drivers/usb/host/fhci-sched.c       | 10 +++---
+>  drivers/usb/host/fhci.h             |  5 +--
+>  drivers/usb/host/xhci-dbgcap.h      |  3 +-
+>  drivers/usb/host/xhci-dbgtty.c      | 15 ++++----
+>  include/linux/usb/cdc_ncm.h         |  2 +-
+>  include/linux/usb/usbnet.h          |  2 +-
+>  13 files changed, 76 insertions(+), 71 deletions(-)
+> 
+> diff --git a/drivers/usb/atm/usbatm.c b/drivers/usb/atm/usbatm.c
+> index 2da6615fbb6f..74849f24e52e 100644
+> --- a/drivers/usb/atm/usbatm.c
+> +++ b/drivers/usb/atm/usbatm.c
+> @@ -17,7 +17,7 @@
+>   *  		- Removed the limit on the number of devices
+>   *  		- Module now autoloads on device plugin
+>   *  		- Merged relevant parts of sarlib
+> - *  		- Replaced the kernel thread with a tasklet
+> + *  		- Replaced the kernel thread with a work
 
-No reason not to ack but could be just as well (passing checkpatch):
+a "work"?
 
-	if (load_id =3D=3D LOADING_MODULE)
-		ima_measure_critical_data("modules", "init_module", buf, size, true, NULL=
-, 0);
+>   *  		- New packet transmission code
+>   *  		- Changed proc file contents
+>   *  		- Fixed all known SMP races
+> @@ -68,6 +68,7 @@
+>  #include <linux/wait.h>
+>  #include <linux/kthread.h>
+>  #include <linux/ratelimit.h>
+> +#include <linux/workqueue.h>
+>  
+>  #ifdef VERBOSE_DEBUG
+>  static int usbatm_print_packet(struct usbatm_data *instance, const unsigned char *data, int len);
+> @@ -249,7 +250,7 @@ static void usbatm_complete(struct urb *urb)
+>  	/* vdbg("%s: urb 0x%p, status %d, actual_length %d",
+>  	     __func__, urb, status, urb->actual_length); */
+>  
+> -	/* Can be invoked from task context, protect against interrupts */
+> +	/* Can be invoked from work context, protect against interrupts */
 
-< 100 characters
+"workqueue"?  This too seems wrong.
 
-> +
->  	return 0;
->  }
-> =20
+Same for other comment changes in this patch.
 
-Reviewed-by: Jarkko Sakkinen <jarkko@kernel.org>
+thanks,
 
-BR, Jarkko
+greg k-h
 
