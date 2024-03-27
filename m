@@ -1,341 +1,206 @@
-Return-Path: <linux-kernel+bounces-120377-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-120370-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id D75FB88D667
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 07:33:15 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6FC5E88D65F
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 07:31:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 670901F2A6BC
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 06:33:15 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 221F32A426E
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 06:31:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1CB6E20B0E;
-	Wed, 27 Mar 2024 06:32:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 700391DA4E;
+	Wed, 27 Mar 2024 06:31:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="h/I/nlgT"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.9])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="aFBphJX/"
+Received: from mail-wm1-f50.google.com (mail-wm1-f50.google.com [209.85.128.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 20CE922089
-	for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 06:32:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.9
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5297F8833
+	for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 06:31:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711521162; cv=none; b=kmxKQyXTkNUrIXIhOfeNrL8Z2+sjt1TsQxjck87gPj82oj5TdpQhpqcMPKNKlslSEPzY8tAIrydaPle/zqiam/y2OOX7aiHenSVN/7q9hzoRZWwYqgrWQVm7jx1htr4AJzU3hkImcy5WI3gYh2jRpl0+kPsxuFuSfCYNGHkbfQk=
+	t=1711521082; cv=none; b=sVhzn57aIUHrkjv/4sAM3KNsJFV/OFBp37gBd3P44pCkyzpTmw//9yzTSi2NIDsmQOjjIca/kh9N95IRczvsUs8sS1GpM9j/EwY8nWE3YF8HdxGqG0MRZHZNc0xzmxqtFQkLU70rHbijFhVDI45f46QKAAK73nXjXNiM28JOjWA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711521162; c=relaxed/simple;
-	bh=BsWibFsPr6AJVwQBOI/XULxd/ZV584eWufvBF+1J3Z0=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=OKhqzYzOsenRcP3liEAr7u7PSwkwMrmsq1UcSvnDgSp0YObB/+eqOW/9i3wTUgk3fMshnLgGE9ks0NvtN6zxJt2uBrruhdDLy+GEuEtIvnnW03O/jDmRQ97rUPH5KpP0hiQ/Qo9qM6OEmeZ2YOUS4sJ685QtwP1OIxO1u5hlbfI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=h/I/nlgT; arc=none smtp.client-ip=192.198.163.9
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1711521160; x=1743057160;
-  h=from:to:cc:subject:in-reply-to:references:date:
-   message-id:mime-version;
-  bh=BsWibFsPr6AJVwQBOI/XULxd/ZV584eWufvBF+1J3Z0=;
-  b=h/I/nlgTqjib5UfAJkHh1ouKzelDnwXKTGvmFruADs7PwuaXPFbrY2gi
-   m0V7FJmqgSvKPZAWd95H01Tj2QhyOxp74oiTXl/BkNQTvr3lfPEBfBu+L
-   JY9zBTB6n2qH4+THqY4wCJVO9AUFsFuR9aoYOS6T0A4d/JyDNVEs9GROg
-   gf573fd5Sbg5anCWkKGBpCmu6+3TASKrDncbs7rGjVBCtTy4G/kenQqQo
-   5Itml9GR9hC0siLlKvNWRnf2wxsBvkCvp5goeKIP9rCgVfMravxJVQKk9
-   PN/J/ag8qn30TXsGxLnm43hgqid5xB+3rXhFU7W4d+lI8+Gj8RA1XZq6e
-   w==;
-X-CSE-ConnectionGUID: zmMT9tsDSqaWCBwSyN9IOw==
-X-CSE-MsgGUID: DBNe650DSAKOKox1qTdksw==
-X-IronPort-AV: E=McAfee;i="6600,9927,11025"; a="17333446"
-X-IronPort-AV: E=Sophos;i="6.07,158,1708416000"; 
-   d="scan'208";a="17333446"
-Received: from fmviesa007.fm.intel.com ([10.60.135.147])
-  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Mar 2024 23:32:40 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,158,1708416000"; 
-   d="scan'208";a="16181127"
-Received: from yhuang6-desk2.sh.intel.com (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.238.208.55])
-  by fmviesa007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Mar 2024 23:32:35 -0700
-From: "Huang, Ying" <ying.huang@intel.com>
-To: Kairui Song <ryncsn@gmail.com>
-Cc: linux-mm@kvack.org,  Kairui Song <kasong@tencent.com>,  Chris Li
- <chrisl@kernel.org>,  Minchan Kim <minchan@kernel.org>,  Barry Song
- <v-songbaohua@oppo.com>,  Ryan Roberts <ryan.roberts@arm.com>,  Yu Zhao
- <yuzhao@google.com>,  SeongJae Park <sj@kernel.org>,  David Hildenbrand
- <david@redhat.com>,  Yosry Ahmed <yosryahmed@google.com>,  Johannes Weiner
- <hannes@cmpxchg.org>,  Matthew Wilcox <willy@infradead.org>,  Nhat Pham
- <nphamcs@gmail.com>,  Chengming Zhou <zhouchengming@bytedance.com>,
-  Andrew Morton <akpm@linux-foundation.org>,  linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH 04/10] mm/swap: remove cache bypass swapin
-In-Reply-To: <20240326185032.72159-5-ryncsn@gmail.com> (Kairui Song's message
-	of "Wed, 27 Mar 2024 02:50:26 +0800")
-References: <20240326185032.72159-1-ryncsn@gmail.com>
-	<20240326185032.72159-5-ryncsn@gmail.com>
-Date: Wed, 27 Mar 2024 14:30:42 +0800
-Message-ID: <87v858mbjh.fsf@yhuang6-desk2.ccr.corp.intel.com>
-User-Agent: Gnus/5.13 (Gnus v5.13)
+	s=arc-20240116; t=1711521082; c=relaxed/simple;
+	bh=OwKcAPpt+uqc44w5yehqNJbdlh2gso2VkyD/bvoItO0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Qp+oyqo+M01sEixPkIWqhed9kpcviuOLdfOpmCs/TxQAot9fCq9F5GGVCawWCXUguLA26Y3PrQ0Xgy7O+xFxjO8ZJC+WNcxDXfz+9UOeU15LtjPF3XCpiZBePXv2n8hYmd32aR02IFPFDWCiSgnQneNXooaBheddd+eXChS8/Bw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=aFBphJX/; arc=none smtp.client-ip=209.85.128.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-wm1-f50.google.com with SMTP id 5b1f17b1804b1-4149046e7a3so7812385e9.2
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 23:31:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1711521079; x=1712125879; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=lhpFZQpOMPEuWhNyecOS9hDFqqTSnzNsHuwPkusroyo=;
+        b=aFBphJX/dSIy7iDnAD7Cvap4BipjJruiLhZWYYyg16nVWMNMv7cChGFT3eQJb2gMnt
+         JC7agz1busnPuEo0za3oI+/9u7z/e73bkQOmdqhqiiy8nHJKktvnG4iP96h19pap3Gzi
+         UGrIsEVz3pTPqbtHJGXastLTxBJwhxxcqJuilsXi4Sn0MNz9XKYL8OU2BNcbt4Htls/L
+         rOedFwhv4/3SLCRyuzgmhyFuEwa4/d0tVKAVsObOIFAV94zEf01986ZYvcbJeYI92rgO
+         rwOHBfFmdVyuwli8QoKeXOQ8Voei39UWiMyOrC1SDPonW7i5DuVRR/Z2OdoquKEUlnuU
+         abCg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711521079; x=1712125879;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=lhpFZQpOMPEuWhNyecOS9hDFqqTSnzNsHuwPkusroyo=;
+        b=kgV9/hMecNDOPNlgkMQhCB2xSCvkwLgCTv6YarbBqXzRyy1DyMmHP2YIJ9htrKbgBc
+         ZfYss2PrimEwDlo/6CUjcoqwt2d58qReFLgCk56zerV9yb5uuiuZjNGKehtUYye4hsPK
+         llk6MTbJiunxGQBWDofaV6X6udzocCNY8qg5R91AtUcgOEuFkbu+IUNmNcPSRobE2eai
+         9c6PMvwli4PNjfUp5x8PXNNpRWcoz1rKn5nPSXQWfo7IbxK7cplu1MpJbeGLOJfLIFka
+         xHe8j9lxEMY+GlvgdDIiG1BnsADxtfTDjEmOCtqgtZfgghxCDDCGyPA2BJzPXgeYsvmu
+         hedw==
+X-Forwarded-Encrypted: i=1; AJvYcCWsqoLWy8rRbJPeFSUrscAxM0jbEAYzsfXS4HjHrY27yq46/PAmKCO/418eu0AIdJ1m0cZ9/T43iqIYzMupJq24VHLIlSQ02kmlSisQ
+X-Gm-Message-State: AOJu0Yys+2L3cpgmJsCmZk8PJkNpBZoz9jcAXi7SrsIMR6P33IylQ6Ym
+	upjTLeFVjoGlo8mDw6bhORGE1HEa0dP1sHaQPQvKFR6O+UDpmQVHENzQj+Lym9M=
+X-Google-Smtp-Source: AGHT+IFzlt3YxD5jKTZanObeHfH9d1F6xQ36M0dYqgOuDwLds1IEr9IYVmG0v4sZ/5u7ki5AQIBhhw==
+X-Received: by 2002:a05:600c:a47:b0:412:f572:5318 with SMTP id c7-20020a05600c0a4700b00412f5725318mr303758wmq.11.1711521078647;
+        Tue, 26 Mar 2024 23:31:18 -0700 (PDT)
+Received: from ?IPV6:2a10:bac0:b000:73fa:7285:c2ff:fedd:7e3a? ([2a10:bac0:b000:73fa:7285:c2ff:fedd:7e3a])
+        by smtp.gmail.com with ESMTPSA id f6-20020a05600c4e8600b004148ff6ef54sm1113036wmq.29.2024.03.26.23.31.17
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 26 Mar 2024 23:31:18 -0700 (PDT)
+Message-ID: <26803d4f-0e58-4ca8-8f09-1a5d52a67ac4@suse.com>
+Date: Wed, 27 Mar 2024 08:31:15 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ascii
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] kbuild: Disable KCSAN for autogenerated *.mod.c
+ intermediaries
+Content-Language: en-US
+To: Borislav Petkov <bp@alien8.de>, Masahiro Yamada <masahiroy@kernel.org>,
+ Nathan Chancellor <nathan@kernel.org>, Nicolas Schier <nicolas@fjasle.eu>,
+ linux-kbuild@vger.kernel.org
+Cc: Marco Elver <elver@google.com>, Josh Poimboeuf <jpoimboe@kernel.org>,
+ Paul Menzel <pmenzel@molgen.mpg.de>, Thomas Gleixner <tglx@linutronix.de>,
+ Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>,
+ Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+ LKML <linux-kernel@vger.kernel.org>, kasan-dev@googlegroups.com,
+ David Kaplan <David.Kaplan@amd.com>
+References: <0851a207-7143-417e-be31-8bf2b3afb57d@molgen.mpg.de>
+ <47e032a0-c9a0-4639-867b-cb3d67076eaf@suse.com>
+ <20240326155247.GJZgLvT_AZi3XPPpBM@fat_crate.local>
+ <80582244-8c1c-4eb4-8881-db68a1428817@suse.com>
+ <20240326191211.GKZgMeC21uxi7H16o_@fat_crate.local>
+ <CANpmjNOcKzEvLHoGGeL-boWDHJobwfwyVxUqMq2kWeka3N4tXA@mail.gmail.com>
+ <20240326202548.GLZgMvTGpPfQcs2cQ_@fat_crate.local>
+From: Nikolay Borisov <nik.borisov@suse.com>
+In-Reply-To: <20240326202548.GLZgMvTGpPfQcs2cQ_@fat_crate.local>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-Kairui Song <ryncsn@gmail.com> writes:
 
-> From: Kairui Song <kasong@tencent.com>
->
-> We used to have the cache bypass swapin path for better performance,
-> but by removing it, more optimization can be applied and have
-> an even better overall performance and less hackish.
->
-> And these optimizations are not easily doable or not doable at all
-> without this.
->
-> This patch simply removes it, and the performance will drop heavily
-> for simple swapin, things won't get this worse for real workloads
-> but still observable. Following commits will fix this and archive a
-> better performance.
->
-> Swapout/in 30G zero pages from ZRAM (This mostly measures overhead
-> of swap path itself, because zero pages are not compressed but simply
-> recorded in ZRAM, and performance drops more as SWAP device is getting
-> full):
->
-> Test result of sequential swapin/out:
->
->                Before (us)        After (us)
-> Swapout:       33619409           33624641
-> Swapin:        32393771           41614858 (-28.4%)
-> Swapout (THP): 7817909            7795530
-> Swapin (THP) : 32452387           41708471 (-28.4%)
->
-> Signed-off-by: Kairui Song <kasong@tencent.com>
+
+On 26.03.24 г. 22:25 ч., Borislav Petkov wrote:
+> On Tue, Mar 26, 2024 at 08:33:31PM +0100, Marco Elver wrote:
+>> I think just removing instrumentation from the mod.c files is very reasonable.
+> 
+> Thanks!
+> 
+> @Masahiro: pls send this to Linus now as the commit which adds the
+> warning is in 6.9 so we should make sure we release it with all issues
+> fixed.
+> 
+> Thx.
+> 
 > ---
->  mm/memory.c     | 18 ++++-------------
->  mm/swap.h       | 10 +++++-----
->  mm/swap_state.c | 53 ++++++++++---------------------------------------
->  mm/swapfile.c   | 13 ------------
->  4 files changed, 19 insertions(+), 75 deletions(-)
->
-> diff --git a/mm/memory.c b/mm/memory.c
-> index dfdb620a9123..357d239ee2f6 100644
-> --- a/mm/memory.c
-> +++ b/mm/memory.c
-> @@ -3932,7 +3932,6 @@ vm_fault_t do_swap_page(struct vm_fault *vmf)
->  	struct page *page;
->  	struct swap_info_struct *si = NULL;
->  	rmap_t rmap_flags = RMAP_NONE;
-> -	bool need_clear_cache = false;
->  	bool exclusive = false;
->  	swp_entry_t entry;
->  	pte_t pte;
-> @@ -4000,14 +3999,9 @@ vm_fault_t do_swap_page(struct vm_fault *vmf)
->  	if (!folio) {
->  		if (data_race(si->flags & SWP_SYNCHRONOUS_IO) &&
->  		    __swap_count(entry) == 1) {
-> -			/* skip swapcache and readahead */
->  			folio = swapin_direct(entry, GFP_HIGHUSER_MOVABLE, vmf);
-> -			if (PTR_ERR(folio) == -EBUSY)
-> -				goto out;
-> -			need_clear_cache = true;
->  		} else {
->  			folio = swapin_readahead(entry, GFP_HIGHUSER_MOVABLE, vmf);
-> -			swapcache = folio;
->  		}
->  
->  		if (!folio) {
-> @@ -4023,6 +4017,7 @@ vm_fault_t do_swap_page(struct vm_fault *vmf)
->  			goto unlock;
->  		}
->  
-> +		swapcache = folio;
->  		page = folio_file_page(folio, swp_offset(entry));
->  
->  		/* Had to read the page from swap area: Major fault */
-> @@ -4187,7 +4182,7 @@ vm_fault_t do_swap_page(struct vm_fault *vmf)
->  	vmf->orig_pte = pte;
->  
->  	/* ksm created a completely new copy */
-> -	if (unlikely(folio != swapcache && swapcache)) {
-> +	if (unlikely(folio != swapcache)) {
->  		folio_add_new_anon_rmap(folio, vma, vmf->address);
->  		folio_add_lru_vma(folio, vma);
->  	} else {
-> @@ -4201,7 +4196,7 @@ vm_fault_t do_swap_page(struct vm_fault *vmf)
->  	arch_do_swap_page(vma->vm_mm, vma, vmf->address, pte, vmf->orig_pte);
->  
->  	folio_unlock(folio);
-> -	if (folio != swapcache && swapcache) {
-> +	if (folio != swapcache) {
->  		/*
->  		 * Hold the lock to avoid the swap entry to be reused
->  		 * until we take the PT lock for the pte_same() check
-> @@ -4227,9 +4222,6 @@ vm_fault_t do_swap_page(struct vm_fault *vmf)
->  	if (vmf->pte)
->  		pte_unmap_unlock(vmf->pte, vmf->ptl);
->  out:
-> -	/* Clear the swap cache pin for direct swapin after PTL unlock */
-> -	if (need_clear_cache)
-> -		swapcache_clear(si, entry);
->  	if (si)
->  		put_swap_device(si);
->  	return ret;
-> @@ -4240,12 +4232,10 @@ vm_fault_t do_swap_page(struct vm_fault *vmf)
->  	folio_unlock(folio);
->  out_release:
->  	folio_put(folio);
-> -	if (folio != swapcache && swapcache) {
-> +	if (folio != swapcache) {
->  		folio_unlock(swapcache);
->  		folio_put(swapcache);
->  	}
-> -	if (need_clear_cache)
-> -		swapcache_clear(si, entry);
->  	if (si)
->  		put_swap_device(si);
->  	return ret;
-> diff --git a/mm/swap.h b/mm/swap.h
-> index aee134907a70..ac9573b03432 100644
-> --- a/mm/swap.h
-> +++ b/mm/swap.h
-> @@ -41,7 +41,6 @@ void __delete_from_swap_cache(struct folio *folio,
->  void delete_from_swap_cache(struct folio *folio);
->  void clear_shadow_from_swap_cache(int type, unsigned long begin,
->  				  unsigned long end);
-> -void swapcache_clear(struct swap_info_struct *si, swp_entry_t entry);
->  struct folio *swap_cache_get_folio(swp_entry_t entry,
->  		struct vm_area_struct *vma, unsigned long addr);
->  struct folio *filemap_get_incore_folio(struct address_space *mapping,
-> @@ -100,14 +99,15 @@ static inline struct folio *swapin_readahead(swp_entry_t swp, gfp_t gfp_mask,
->  {
->  	return NULL;
->  }
-> -
-> -static inline int swap_writepage(struct page *p, struct writeback_control *wbc)
-> +static inline struct folio *swapin_direct(swp_entry_t entry, gfp_t flag,
-> +			struct vm_fault *vmf);
->  {
-> -	return 0;
-> +	return NULL;
->  }
->  
-> -static inline void swapcache_clear(struct swap_info_struct *si, swp_entry_t entry)
-> +static inline int swap_writepage(struct page *p, struct writeback_control *wbc)
->  {
-> +	return 0;
->  }
->  
->  static inline struct folio *swap_cache_get_folio(swp_entry_t entry,
-> diff --git a/mm/swap_state.c b/mm/swap_state.c
-> index 2a9c6bdff5ea..49ef6250f676 100644
-> --- a/mm/swap_state.c
-> +++ b/mm/swap_state.c
-> @@ -880,61 +880,28 @@ static struct folio *swap_vma_readahead(swp_entry_t targ_entry, gfp_t gfp_mask,
->  }
->  
->  /**
-> - * swapin_direct - swap in folios skipping swap cache and readahead
-> + * swapin_direct - swap in folios skipping readahead
->   * @entry: swap entry of this memory
->   * @gfp_mask: memory allocation flags
->   * @vmf: fault information
->   *
-> - * Returns the struct folio for entry and addr after the swap entry is read
-> - * in.
-> + * Returns the folio for entry after it is read in.
->   */
->  struct folio *swapin_direct(swp_entry_t entry, gfp_t gfp_mask,
->  			    struct vm_fault *vmf)
->  {
-> -	struct vm_area_struct *vma = vmf->vma;
-> +	struct mempolicy *mpol;
->  	struct folio *folio;
-> -	void *shadow = NULL;
-> -
-> -	/*
-> -	 * Prevent parallel swapin from proceeding with
-> -	 * the cache flag. Otherwise, another thread may
-> -	 * finish swapin first, free the entry, and swapout
-> -	 * reusing the same entry. It's undetectable as
-> -	 * pte_same() returns true due to entry reuse.
-> -	 */
-> -	if (swapcache_prepare(entry)) {
-> -		/* Relax a bit to prevent rapid repeated page faults */
-> -		schedule_timeout_uninterruptible(1);
-> -		return ERR_PTR(-EBUSY);
-> -	}
-> -
-> -	/* skip swapcache */
-> -	folio = vma_alloc_folio(GFP_HIGHUSER_MOVABLE, 0,
-> -				vma, vmf->address, false);
-> -	if (folio) {
-> -		__folio_set_locked(folio);
-> -		__folio_set_swapbacked(folio);
-> -
-> -		if (mem_cgroup_swapin_charge_folio(folio,
-> -					vma->vm_mm, GFP_KERNEL,
-> -					entry)) {
-> -			folio_unlock(folio);
-> -			folio_put(folio);
-> -			return NULL;
-> -		}
-> -		mem_cgroup_swapin_uncharge_swap(entry);
-> -
-> -		shadow = get_shadow_from_swap_cache(entry);
-> -		if (shadow)
-> -			workingset_refault(folio, shadow);
-> +	bool page_allocated;
-> +	pgoff_t ilx;
->  
-> -		folio_add_lru(folio);
-> +	mpol = get_vma_policy(vmf->vma, vmf->address, 0, &ilx);
-> +	folio = __read_swap_cache_async(entry, gfp_mask, mpol, ilx,
-> +					&page_allocated, false);
-> +	mpol_cond_put(mpol);
->  
-> -		/* To provide entry to swap_read_folio() */
-> -		folio->swap = entry;
-> +	if (page_allocated)
->  		swap_read_folio(folio, true, NULL);
-> -		folio->private = NULL;
-> -	}
->  
->  	return folio;
->  }
+> From: "Borislav Petkov (AMD)" <bp@alien8.de>
+> Date: Tue, 26 Mar 2024 21:11:01 +0100
+> 
+> When KCSAN and CONSTRUCTORS are enabled, one can trigger the
+> 
+>    "Unpatched return thunk in use. This should not happen!"
+> 
+> catch-all warning.
+> 
+> Usually, when objtool runs on the .o objects, it does generate a section
+> .return_sites which contains all offsets in the objects to the return
+> thunks of the functions present there. Those return thunks then get
+> patched at runtime by the alternatives.
+> 
+> KCSAN and CONSTRUCTORS add this to the the object file's .text.startup
+> section:
+> 
+>    -------------------
+>    Disassembly of section .text.startup:
+> 
+>    ...
+> 
+>    0000000000000010 <_sub_I_00099_0>:
+>      10:   f3 0f 1e fa             endbr64
+>      14:   e8 00 00 00 00          call   19 <_sub_I_00099_0+0x9>
+>                            15: R_X86_64_PLT32      __tsan_init-0x4
+>      19:   e9 00 00 00 00          jmp    1e <__UNIQUE_ID___addressable_cryptd_alloc_aead349+0x6>
+>                            1a: R_X86_64_PLT32      __x86_return_thunk-0x4
+>    -------------------
+> 
+> which, if it is built as a module goes through the intermediary stage of
+> creating a <module>.mod.c file which, when translated, receives a second
+> constructor:
+> 
+>    -------------------
+>    Disassembly of section .text.startup:
+> 
+>    0000000000000010 <_sub_I_00099_0>:
+>      10:   f3 0f 1e fa             endbr64
+>      14:   e8 00 00 00 00          call   19 <_sub_I_00099_0+0x9>
+>                            15: R_X86_64_PLT32      __tsan_init-0x4
+>      19:   e9 00 00 00 00          jmp    1e <_sub_I_00099_0+0xe>
+>                            1a: R_X86_64_PLT32      __x86_return_thunk-0x4
+> 
+>    ...
+> 
+>    0000000000000030 <_sub_I_00099_0>:
+>      30:   f3 0f 1e fa             endbr64
+>      34:   e8 00 00 00 00          call   39 <_sub_I_00099_0+0x9>
+>                            35: R_X86_64_PLT32      __tsan_init-0x4
+>      39:   e9 00 00 00 00          jmp    3e <__ksymtab_cryptd_alloc_ahash+0x2>
+>                            3a: R_X86_64_PLT32      __x86_return_thunk-0x4
+>    -------------------
+> 
+> in the .ko file.
+> 
+> Objtool has run already so that second constructor's return thunk cannot
+> be added to the .return_sites section and thus the return thunk remains
+> unpatched and the warning rightfully fires.
+> 
+> Drop KCSAN flags from the mod.c generation stage as those constructors
+> do not contain data races one would be interested about.
+> 
+> Debugged together with David Kaplan <David.Kaplan@amd.com> and Nikolay
+> Borisov <nik.borisov@suse.com>.
+> 
+> Reported-by: Paul Menzel <pmenzel@molgen.mpg.de>
+> Signed-off-by: Borislav Petkov (AMD) <bp@alien8.de>
+> Link: https://lore.kernel.org/r/0851a207-7143-417e-be31-8bf2b3afb57d@molgen.mpg.de
+> ---
+>   scripts/Makefile.modfinal | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/scripts/Makefile.modfinal b/scripts/Makefile.modfinal
+> index 8568d256d6fb..79fcf2731686 100644
+> --- a/scripts/Makefile.modfinal
+> +++ b/scripts/Makefile.modfinal
+> @@ -23,7 +23,7 @@ modname = $(notdir $(@:.mod.o=))
+>   part-of-module = y
+>   
+>   quiet_cmd_cc_o_c = CC [M]  $@
+> -      cmd_cc_o_c = $(CC) $(filter-out $(CC_FLAGS_CFI) $(CFLAGS_GCOV), $(c_flags)) -c -o $@ $<
+> +      cmd_cc_o_c = $(CC) $(filter-out $(CC_FLAGS_CFI) $(CFLAGS_GCOV) $(CFLAGS_KCSAN), $(c_flags)) -c -o $@ $<
+>   
+>   %.mod.o: %.mod.c FORCE
+>   	$(call if_changed_dep,cc_o_c)
 
-This looks similar as read_swap_cache_async().  Can we merge them?
 
-And, we should avoid to readahead in swapin_readahead() or
-swap_vma_readahead() for SWP_SYNCHRONOUS_IO anyway.  So, it appears that
-we can change and use swapin_readahead() directly?
-
-> diff --git a/mm/swapfile.c b/mm/swapfile.c
-> index 4dd894395a0f..ae8d3aa05df7 100644
-> --- a/mm/swapfile.c
-> +++ b/mm/swapfile.c
-> @@ -3389,19 +3389,6 @@ int swapcache_prepare(swp_entry_t entry)
->  	return __swap_duplicate(entry, SWAP_HAS_CACHE);
->  }
->  
-> -void swapcache_clear(struct swap_info_struct *si, swp_entry_t entry)
-> -{
-> -	struct swap_cluster_info *ci;
-> -	unsigned long offset = swp_offset(entry);
-> -	unsigned char usage;
-> -
-> -	ci = lock_cluster_or_swap_info(si, offset);
-> -	usage = __swap_entry_free_locked(si, offset, SWAP_HAS_CACHE);
-> -	unlock_cluster_or_swap_info(si, ci);
-> -	if (!usage)
-> -		free_swap_slot(entry);
-> -}
-> -
->  struct swap_info_struct *swp_swap_info(swp_entry_t entry)
->  {
->  	return swap_type_to_swap_info(swp_type(entry));
-
---
-Best Regards,
-Huang, Ying
+Reviewed-by: Nikolay Borisov <nik.borisov@suse.com>
 
