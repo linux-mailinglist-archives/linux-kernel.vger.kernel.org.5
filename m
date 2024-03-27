@@ -1,126 +1,136 @@
-Return-Path: <linux-kernel+bounces-121972-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-121973-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A161288F00A
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 21:27:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id E5DF388F00E
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 21:27:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5CFAD29588D
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 20:27:10 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A01CE296BC2
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 20:27:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 522A3152501;
-	Wed, 27 Mar 2024 20:27:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ABEEF15218B;
+	Wed, 27 Mar 2024 20:27:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="K6Lgh26O"
-Received: from mail-lj1-f172.google.com (mail-lj1-f172.google.com [209.85.208.172])
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="UyyCT3Fh"
+Received: from mail-pf1-f173.google.com (mail-pf1-f173.google.com [209.85.210.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 622BA14EC63
-	for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 20:27:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7A9A914F9D7
+	for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 20:27:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711571224; cv=none; b=lxndlFmK/bQ5Al1oVo3kSRJCLpiJKHu8PfWiErXJoi9hB22r4fmmRJtf2lSG09x7A0hpf95UT0tJTAfUTbkS+2jQqbajJAiWQS2G1VYLU3WtKLWhUEFxtfzTFbYkTsgCANOh8k7XWfS2HHWCpd5YE12sZSYN1KJh8d8aWWrMt5I=
+	t=1711571265; cv=none; b=LFycM9k01nNa3tVHL/0JTd1V7707hjC8r1TYtq5NckZpHjpiFF8UvkO79MfPnajbzFlXFgcBYgzzJQAiPxsnfWijJox43F2kIRQRdRbAIWEMovy63obCfPjdXPLZ/Oewwdz4SDVBZ2TLdlhj+t3IhHRzesaA/X7N7Pz6mhFfb44=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711571224; c=relaxed/simple;
-	bh=/kMFUecOlLtZ6TruFpDnojpWw0M0AwECSE5Df/hzRSA=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=EUZkysSjAfOO7ajFBzfJ07m1P+1ScZhVUTux2HsbaLA0fpPrtAVxOf0KbfA8iXbmW3C9b4IGLXWKjvYnCsju/1weUMWgm5XvSZlhVht/xOF/8f4e5qgKnmhhiIWo1f5YQz1Idp2ugl2ar7aYYLZuX2FhGyipKjhZnALAmBNiMRM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=K6Lgh26O; arc=none smtp.client-ip=209.85.208.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
-Received: by mail-lj1-f172.google.com with SMTP id 38308e7fff4ca-2d68cf90ec4so2867761fa.1
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 13:27:02 -0700 (PDT)
+	s=arc-20240116; t=1711571265; c=relaxed/simple;
+	bh=UAlyW1XBQGh1I1s4OhUVYVSvSBWjHao81V/7b/ey64s=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=bKDnDkp0qEXqM/ivYJb1qt9Sj45PtlMfkPVhfxxWoaqexQXnF8/t5PJt13B3ULI8V+rI00NFapUkmHKyXli+mzmY6Fs/hIU4TIZYzb0zhDgUeBMP/2IxdFlE1Dfq8QY82Su+HVVy83oYMsG6amPelBmDZwaPylsuAm8hstC2oUE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=UyyCT3Fh; arc=none smtp.client-ip=209.85.210.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-pf1-f173.google.com with SMTP id d2e1a72fcca58-6e704078860so298388b3a.0
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 13:27:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1711571220; x=1712176020; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=Qa4G+rafja9Pd/ZwHhTkok07IxAnxqObZh21oazJr/A=;
-        b=K6Lgh26OKsuQMQSKa72FwWGX8iH2c4GTIdqZAr+7tqwBjqpewgO1qmmJIM/hs2+rnT
-         EnxUeukCDBDRucQjz7SdiU8cfkePiB7D9krCnSWY10iQ8oOJQgv4YUl8GkDW2QbkSiHw
-         eWC+RdAru9uyK88ZD7G5HclhlALOqTZEJdryc=
+        d=chromium.org; s=google; t=1711571264; x=1712176064; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=LCVHzKM95nxrye1cfXoHnsCw/TjZEQVmmlga0bm4uZk=;
+        b=UyyCT3FhawgJwkSzxqzkwJSvoYbqqG2Elii0u1mUyG9X3kI0kfU7NSHJImc6evsGqM
+         1i/wYv0XszdtcF4Ci4+3hvGGK4oq26rzS4Ro++CNiogjw9fejAgHB/CkOz41G+5f8Se3
+         z9V/fgPojoJqal/z6AtKEh2omcAEHzECt/Zhc=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711571220; x=1712176020;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+        d=1e100.net; s=20230601; t=1711571264; x=1712176064;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=Qa4G+rafja9Pd/ZwHhTkok07IxAnxqObZh21oazJr/A=;
-        b=HeSyJFCMxKWR7/E2VSA4HInvlbyv4n8jvc0zJ7VxHGetCjaWTysFR4ab42hkFi8O2k
-         sCLlDOjN9kxND4DI5TsSluJ3gCVeo7eV3+GhzDgNieETOjImUROYNWe81Gv1ZUhk0Vs6
-         Eweqdna5O3JTveHtYDbJcUXFm2NoAn6lm9IobUidSRvfiZBrCyHfnPGQGmPnFU/Po97p
-         U0dsZiQ0ZbH4xOH4IwfuAZqiRqmPZA6Wb9a1ZDDessH2VYNFd1KtmV1Sm96dRwYJRzuC
-         M+C+ETkuozYR1qNyxxWIDDugETu4lDRsFRxQE+sXwmgN/XaCWLZI9ytsO3abZiqQzoJR
-         Ychw==
-X-Gm-Message-State: AOJu0YxT+Suk6hmsxnuBl28H13EF4QMw+NWmpKVjwZb/f17qjt7zL5n6
-	kuEBnRPkmbuvXaqAGzM9b0uhwJ43gOX/v7X92UnPd9RWGzDH8Q68CmLCakDtyvfUtcXebYoGbvT
-	PcjWpaQ==
-X-Google-Smtp-Source: AGHT+IG1dvS1kNYBuINr3CZEewX5mYbtwoK6zdVi6n/e7f2STfNyUV1XKw3VKNR+PqGczTTMrRIvGA==
-X-Received: by 2002:a05:6512:344b:b0:513:5eea:2942 with SMTP id j11-20020a056512344b00b005135eea2942mr333195lfr.37.1711571220409;
-        Wed, 27 Mar 2024 13:27:00 -0700 (PDT)
-Received: from mail-lf1-f48.google.com (mail-lf1-f48.google.com. [209.85.167.48])
-        by smtp.gmail.com with ESMTPSA id u16-20020ac248b0000000b00513c7599f73sm1944302lfg.148.2024.03.27.13.26.59
-        for <linux-kernel@vger.kernel.org>
+        bh=LCVHzKM95nxrye1cfXoHnsCw/TjZEQVmmlga0bm4uZk=;
+        b=uZlA8vyNEZMgAa7F8M/CsMzKICkh720Jsy1/JHEE/dJkQkhJYCQ+zxyrFHmrGROcQS
+         6SKX1c4xxs/FwFIYvh+Qo7Ojhxfus2wRFvJNMgElMc5Tzs9DpAy6kujqzYMVueUr0NkM
+         v062mW0EGRSpdLksDJdcsosioSwIHsqANHWtfz5tNq7yMz8LKWudIxQGg6InX5BhfLlF
+         6usULAppA3ceZpZNFM78G6098yykfssk1LOfmoEEgPkIX3Ao9l71aMSsuITV31GF6t6V
+         OWq19cYhkZZumeo0ihAwBzpT2GkRTu2GXk050c6xE5hzUth0n+8EHCCm/H4aMvj8ML1h
+         pAag==
+X-Gm-Message-State: AOJu0YzuGIP9H169F1taiYZY0uLz5TSLSMAg3+ZHg1S6RBlejgyJ5c99
+	zcAWiSsy2VZVdLPz9vPk0Yx4YVh9BVFmSuKZPrBBHKNTcT0ulxjUXXc7EROqEA==
+X-Google-Smtp-Source: AGHT+IHA1C7H1G9I13NxUAKmeyvwBUmBLxBfdkaCF4Xl43hsabFFNBcw1oAA9mmdxMEWX6SsZ2Maiw==
+X-Received: by 2002:a05:6a20:7495:b0:1a3:683a:2cbd with SMTP id p21-20020a056a20749500b001a3683a2cbdmr1160699pzd.17.1711571263614;
+        Wed, 27 Mar 2024 13:27:43 -0700 (PDT)
+Received: from localhost (4.198.125.34.bc.googleusercontent.com. [34.125.198.4])
+        by smtp.gmail.com with UTF8SMTPSA id e3-20020aa78c43000000b006e56bf07483sm8303143pfd.77.2024.03.27.13.27.41
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 27 Mar 2024 13:26:59 -0700 (PDT)
-Received: by mail-lf1-f48.google.com with SMTP id 2adb3069b0e04-512e39226efso143119e87.0
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 13:26:59 -0700 (PDT)
-X-Received: by 2002:ac2:54b6:0:b0:513:dd66:d5ed with SMTP id
- w22-20020ac254b6000000b00513dd66d5edmr412518lfk.29.1711571219226; Wed, 27 Mar
- 2024 13:26:59 -0700 (PDT)
+        Wed, 27 Mar 2024 13:27:42 -0700 (PDT)
+From: Stephen Boyd <swboyd@chromium.org>
+To: Michael Turquette <mturquette@baylibre.com>,
+	Stephen Boyd <sboyd@kernel.org>,
+	Bjorn Andersson <andersson@kernel.org>
+Cc: linux-kernel@vger.kernel.org,
+	linux-clk@vger.kernel.org,
+	patches@lists.linux.dev,
+	linux-arm-msm@vger.kernel.org,
+	Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+	Douglas Anderson <dianders@chromium.org>,
+	Taniya Das <quic_tdas@quicinc.com>,
+	Laura Nao <laura.nao@collabora.com>
+Subject: [PATCH 0/2] Fix a black screen on sc7180 Trogdor devices
+Date: Wed, 27 Mar 2024 13:27:36 -0700
+Message-ID: <20240327202740.3075378-1-swboyd@chromium.org>
+X-Mailer: git-send-email 2.44.0.478.gd926399ef9-goog
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <Zfwv2y7P7BneKqMZ@kroah.com> <CAHk-=wjHZBziH+5tXcTJ1aGZN2tC5S5gKhkNjhiaFFO93vNqcA@mail.gmail.com>
-In-Reply-To: <CAHk-=wjHZBziH+5tXcTJ1aGZN2tC5S5gKhkNjhiaFFO93vNqcA@mail.gmail.com>
-From: Linus Torvalds <torvalds@linux-foundation.org>
-Date: Wed, 27 Mar 2024 13:26:42 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wiwOC+AJoOBYUotSsOfch80D-5k3Uioox2znozeAYnQYQ@mail.gmail.com>
-Message-ID: <CAHk-=wiwOC+AJoOBYUotSsOfch80D-5k3Uioox2znozeAYnQYQ@mail.gmail.com>
-Subject: Re: [GIT PULL] Char/Misc driver changes for 6.9-rc1
-To: Greg KH <gregkh@linuxfoundation.org>, Chris Leech <cleech@redhat.com>, 
-	Nilesh Javali <njavali@marvell.com>, Christoph Hellwig <hch@lst.de>
-Cc: linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 
-On Wed, 27 Mar 2024 at 09:56, Linus Torvalds
-<torvalds@linux-foundation.org> wrote:
->
-> I also *suspect* that using 'physaddr_t' is in itself pointless,
-> because I *think* the physical addresses are always page-aligned
-> anyway, and it would be better if the uio_mem thing just contained the
-> pfn instead. Which could just be 'unsigned long pfn'.
+This patch series fixes a black screen seen at boot on Trogdor devices.
+The details of that problem are in the second patch, but the TL;DR is
+that shared RCGs report the wrong parent to the clk framework and shared
+RCGs never get turned off if they're left force enabled out of boot,
+wedging the display GDSC causing the display bridge to fail to probe
+because it can't turn on DSI.
 
-Oddly, the uio code seems to be written to allow unaligned page buffers,
+The first patch is basically a hack. It avoids a problem where the mdss
+driver probes, turns on and off the mdp clk, and hangs the rotator clk
+because the rotator clk is using the same parent. We don't care about
+this case on sc7180, so we simply disable the clk at driver probe so it
+can't get stuck on.
 
-        actual_pages = ((idev->info->mem[mi].addr & ~PAGE_MASK)
-                        + idev->info->mem[mi].size + PAGE_SIZE -1) >>
-PAGE_SHIFT;
+The second patch fixes the shared RCG implementation so that the parent
+is properly reported and so that the force enable bit is cleared. Fixing
+the parent causes the problem that the first patch is avoiding, which is
+why that patch is first. Just applying this second patch will make it so
+that disabling the mdp clk disables the display pll that the rotator clk
+is also using, causing the rotator clk to be stuck on.
 
-but none of the mmap routines than actually allow such a mapping, and
-they all have alignment checks.
+This problem comes about because of a combination of issues. The clk
+framework doesn't handle the case where two clks share the same parent
+and are enabled at boot. The first clk to enable and disable will turn
+off the parent. The mdss driver doesn't stay out of runtime suspend
+while populating the child devices. In fact, of_platform_populate()
+triggers runtime resume and suspend of the mdss device multiple times
+while devices are being added. These patches side-step the larger issues
+here with the goal of fixing Trogdor in the short-term. Long-term we
+need to fix the clk framework and display driver so that shared parents
+aren't disabled during boot and so that mdss can't runtime suspend until
+the display pipeline/card is fully formed.
 
-Which sounds wonderful, until you find code like this duplicated in
-various uio drivers:
+Stephen Boyd (2):
+  clk: qcom: dispcc-sc7180: Force off rotator clk at probe
+  clk: qcom: Properly initialize shared RCGs upon registration
 
-                uiomem->memtype = UIO_MEM_PHYS;
-                uiomem->addr = r->start & PAGE_MASK;
-                uiomem->offs = r->start & ~PAGE_MASK;
-                uiomem->size = (uiomem->offs + resource_size(r)
-                                + PAGE_SIZE - 1) & PAGE_MASK;
+ drivers/clk/qcom/clk-rcg2.c      | 19 +++++++++++++++++++
+ drivers/clk/qcom/dispcc-sc7180.c | 14 ++++++++++++++
+ 2 files changed, 33 insertions(+)
 
-IOW, it explicitly aligns the resources to pages, so now mmap works
-again. Oh the horror.
+Cc: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Cc: Douglas Anderson <dianders@chromium.org>
+Cc: Taniya Das <quic_tdas@quicinc.com>
+Cc: Laura Nao <laura.nao@collabora.com>
 
-But yes, that physical part of 'addr' should be a pfn. Sadly, all of
-this code is such a mess that it's a horrible job to try to fix it all
-up.
+base-commit: e8f897f4afef0031fe618a8e94127a0934896aba
+-- 
+https://chromeos.dev
 
-So we may be stuck with the horrendous confusion that is the current
-uio_mem thing.
-
-                 Linus
 
