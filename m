@@ -1,55 +1,58 @@
-Return-Path: <linux-kernel+bounces-120860-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-120861-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B24AC88DF90
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 13:24:59 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 88ADD88DF9B
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 13:25:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E3A9B1C23486
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 12:24:58 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 44A1729B376
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 12:25:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 34A0913E8B1;
-	Wed, 27 Mar 2024 12:10:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7275C13F011;
+	Wed, 27 Mar 2024 12:10:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="tKFiDGH5"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Q3hKxehw"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 732D313E89A;
-	Wed, 27 Mar 2024 12:10:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B4FB013E89A;
+	Wed, 27 Mar 2024 12:10:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711541413; cv=none; b=ls02x0GsN0Q49PpHP22TItiFOh39z7jg0WAYHQW259c7mLOPZAJZnSH8WTDxkeRams0DADvWv1FnGBAXWsn+flFQ5Lb8HaeWZwkKUgRkyoCs11yR8ss3qRBrYN17PofGNEpMZo1h3qlVNeYA7CABqmRVRcXe3xJlZNMkGU6BNzc=
+	t=1711541416; cv=none; b=mITxKvVuUv8hc4ndYM9hrSnfAokr5b6Amr+whwS+EYRykUZbSOuVDlAi1ksKR0CCUZr29gSu/djBDA+5r2ViXQXh/MjVncyrYLyFZHSJTXylj1mKETIssEm85tDfCKYz3VMYxzP6eb28BoQcjbtdbzp0oU8RJNXdnIzMN+lijuk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711541413; c=relaxed/simple;
-	bh=9dIC455GMigwlHUSI1iYJ0UxBLF8LmZWAcBbGdbnmhE=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=jPFQfl4+tNrbgpYx8ouqjgJW2LNAWpi7Ak2BiEje5B8Q16y3jEA1wbw+V4SfvzCCeWYVnM2NIx9jl5K3CioQhApkBkwZEWPuAemVuJyAxIWRlRmNNCLKdL04D1j/vrHB42cnifuddpx+WK2widUavHtRIGOOrSorSGiID5KTcOU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=tKFiDGH5; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6EC21C433C7;
-	Wed, 27 Mar 2024 12:10:12 +0000 (UTC)
+	s=arc-20240116; t=1711541416; c=relaxed/simple;
+	bh=c8SN4/lCpKMitjXB3iBSLw28bk/PHz7DCX4goeT/MJo=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=L9Qrzpq0Vkfb4UPk0yDGWWQwVNPdpRhQHUvZ1tuHxgPc0HlRSAJ3/77ihbYd6LPnarQjjATdcx3Pabxk5CMiNQAdoncO03FZFbhlViRA4otdSf3maPs6v0GPMjrR3Qzaa15o6fbQx8GoiwypB78QVDegYuS/hPvwWCJx15Xx7DI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Q3hKxehw; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 23C04C43390;
+	Wed, 27 Mar 2024 12:10:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711541413;
-	bh=9dIC455GMigwlHUSI1iYJ0UxBLF8LmZWAcBbGdbnmhE=;
+	s=k20201202; t=1711541416;
+	bh=c8SN4/lCpKMitjXB3iBSLw28bk/PHz7DCX4goeT/MJo=;
 	h=From:To:Cc:Subject:Date:From;
-	b=tKFiDGH5Pjia/SN+gpr2WpHVFYM2canZPanyA6NX/3ycHyI6YXipVl2gBw8SXCAyC
-	 GivTUMYk3i7IhvaIy9nkHLFcBL4yiSyhZXaog1IluKellFLZBASlKewnUYqC2bUhSk
-	 VODsWMGW2hoTQN8DucgcOn2l/JngHBAPoSD5Rew9COHltv4UYxajVc4ea049M1mcMY
-	 UeunDcryoJMXTy1Ky0slQj3UB/o2cQ/gGXtNqCr4PdOIOc5LZXJ9/sy/YZdggEOspI
-	 lAINxKQZiYedS6xf5l7k5C4Syv/T72SRPEi3vvyIECxFoM5e7Oheu8Q5+k7Rk+guYR
-	 fb24Z/hFDUs+w==
+	b=Q3hKxehw6tgv4dOtH80hkV2Kj2+SHpxF9XIulZ9+nJw/Ncj7XYrhrcgBzMVcK8N/h
+	 7VdS+OHgAPJ9WfVjG5SGFxaGQf7Oxia6v/DbDLRO+H7IMvuUfB0C8i9qZEWns7nD3m
+	 ko9mpba2wLGPi3hPVeaR9V+E+NZizav+QQzj/Hmjj+TWVm+gOEgTrbQgSjFIAcBmhp
+	 5uYUYL8DHmBYLchAnW1SLO6Xwim7ILDy35u/lsnAaram7XuFX1pJUM/OA6VIvD/4wJ
+	 VJZrsJFA0j9oSm2R1+EeIpMuvgogn2DIYyOMNU/r5EoegbOEFeXmbixde4lUkBzBaB
+	 C2eqP6JaKczxA==
 From: Sasha Levin <sashal@kernel.org>
 To: stable@vger.kernel.org,
-	alex.williamson@redhat.com
-Cc: Diana Craciun <diana.craciun@oss.nxp.com>,
-	Kevin Tian <kevin.tian@intel.com>,
-	Eric Auger <eric.auger@redhat.com>,
-	kvm@vger.kernel.org,
+	ovidiu.bunea@amd.com
+Cc: Mario Limonciello <mario.limonciello@amd.com>,
+	Alex Deucher <alexander.deucher@amd.com>,
+	Charlene Liu <charlene.liu@amd.com>,
+	Alex Hung <alex.hung@amd.com>,
+	Daniel Wheeler <daniel.wheeler@amd.com>,
+	amd-gfx@lists.freedesktop.org,
+	dri-devel@lists.freedesktop.org,
 	linux-kernel@vger.kernel.org
-Subject: FAILED: Patch "vfio/fsl-mc: Block calling interrupt handler without trigger" failed to apply to 6.6-stable tree
-Date: Wed, 27 Mar 2024 08:10:11 -0400
-Message-ID: <20240327121011.2827657-1-sashal@kernel.org>
+Subject: FAILED: Patch "drm/amd/display: Fix DML2 watermark calculation" failed to apply to 6.6-stable tree
+Date: Wed, 27 Mar 2024 08:10:13 -0400
+Message-ID: <20240327121014.2827700-1-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -71,56 +74,55 @@ Sasha
 
 ------------------ original commit in Linus's tree ------------------
 
-From 7447d911af699a15f8d050dfcb7c680a86f87012 Mon Sep 17 00:00:00 2001
-From: Alex Williamson <alex.williamson@redhat.com>
-Date: Fri, 8 Mar 2024 16:05:28 -0700
-Subject: [PATCH] vfio/fsl-mc: Block calling interrupt handler without trigger
+From 2254ab45dab22a18fdd29fe0e471706872c00093 Mon Sep 17 00:00:00 2001
+From: Ovidiu Bunea <ovidiu.bunea@amd.com>
+Date: Mon, 18 Dec 2023 21:40:45 -0500
+Subject: [PATCH] drm/amd/display: Fix DML2 watermark calculation
 
-The eventfd_ctx trigger pointer of the vfio_fsl_mc_irq object is
-initially NULL and may become NULL if the user sets the trigger
-eventfd to -1.  The interrupt handler itself is guaranteed that
-trigger is always valid between request_irq() and free_irq(), but
-the loopback testing mechanisms to invoke the handler function
-need to test the trigger.  The triggering and setting ioctl paths
-both make use of igate and are therefore mutually exclusive.
+[Why]
+core_mode_programming in DML2 should output watermark calculations
+to locals, but it incorrectly uses mode_lib
 
-The vfio-fsl-mc driver does not make use of irqfds, nor does it
-support any sort of masking operations, therefore unlike vfio-pci
-and vfio-platform, the flow can remain essentially unchanged.
+[How]
+update code to match HW DML2
 
-Cc: Diana Craciun <diana.craciun@oss.nxp.com>
-Cc:  <stable@vger.kernel.org>
-Fixes: cc0ee20bd969 ("vfio/fsl-mc: trigger an interrupt via eventfd")
-Reviewed-by: Kevin Tian <kevin.tian@intel.com>
-Reviewed-by: Eric Auger <eric.auger@redhat.com>
-Link: https://lore.kernel.org/r/20240308230557.805580-8-alex.williamson@redhat.com
-Signed-off-by: Alex Williamson <alex.williamson@redhat.com>
+Cc: Mario Limonciello <mario.limonciello@amd.com>
+Cc: Alex Deucher <alexander.deucher@amd.com>
+Cc: stable@vger.kernel.org
+Reviewed-by: Charlene Liu <charlene.liu@amd.com>
+Acked-by: Alex Hung <alex.hung@amd.com>
+Signed-off-by: Ovidiu Bunea <ovidiu.bunea@amd.com>
+Tested-by: Daniel Wheeler <daniel.wheeler@amd.com>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 ---
- drivers/vfio/fsl-mc/vfio_fsl_mc_intr.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+ .../drm/amd/display/dc/dml2/display_mode_core.c    | 14 +++++++-------
+ 1 file changed, 7 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/vfio/fsl-mc/vfio_fsl_mc_intr.c b/drivers/vfio/fsl-mc/vfio_fsl_mc_intr.c
-index d62fbfff20b82..82b2afa9b7e31 100644
---- a/drivers/vfio/fsl-mc/vfio_fsl_mc_intr.c
-+++ b/drivers/vfio/fsl-mc/vfio_fsl_mc_intr.c
-@@ -141,13 +141,14 @@ static int vfio_fsl_mc_set_irq_trigger(struct vfio_fsl_mc_device *vdev,
- 	irq = &vdev->mc_irqs[index];
+diff --git a/drivers/gpu/drm/amd/display/dc/dml2/display_mode_core.c b/drivers/gpu/drm/amd/display/dc/dml2/display_mode_core.c
+index a6b938a12de13..9be5ebf3a8c0b 100644
+--- a/drivers/gpu/drm/amd/display/dc/dml2/display_mode_core.c
++++ b/drivers/gpu/drm/amd/display/dc/dml2/display_mode_core.c
+@@ -9446,13 +9446,13 @@ void dml_core_mode_programming(struct display_mode_lib_st *mode_lib, const struc
+ 		CalculateWatermarks_params->CompressedBufferSizeInkByte = locals->CompressedBufferSizeInkByte;
  
- 	if (flags & VFIO_IRQ_SET_DATA_NONE) {
--		vfio_fsl_mc_irq_handler(hwirq, irq);
-+		if (irq->trigger)
-+			eventfd_signal(irq->trigger);
+ 		// Output
+-		CalculateWatermarks_params->Watermark = &s->dummy_watermark; // Watermarks *Watermark
+-		CalculateWatermarks_params->DRAMClockChangeSupport = &mode_lib->ms.support.DRAMClockChangeSupport[0];
+-		CalculateWatermarks_params->MaxActiveDRAMClockChangeLatencySupported = &s->dummy_single_array[0][0]; // dml_float_t *MaxActiveDRAMClockChangeLatencySupported[]
+-		CalculateWatermarks_params->SubViewportLinesNeededInMALL = &mode_lib->ms.SubViewportLinesNeededInMALL[j]; // dml_uint_t SubViewportLinesNeededInMALL[]
+-		CalculateWatermarks_params->FCLKChangeSupport = &mode_lib->ms.support.FCLKChangeSupport[0];
+-		CalculateWatermarks_params->MaxActiveFCLKChangeLatencySupported = &s->dummy_single[0]; // dml_float_t *MaxActiveFCLKChangeLatencySupported
+-		CalculateWatermarks_params->USRRetrainingSupport = &mode_lib->ms.support.USRRetrainingSupport[0];
++		CalculateWatermarks_params->Watermark = &locals->Watermark; // Watermarks *Watermark
++		CalculateWatermarks_params->DRAMClockChangeSupport = &locals->DRAMClockChangeSupport;
++		CalculateWatermarks_params->MaxActiveDRAMClockChangeLatencySupported = locals->MaxActiveDRAMClockChangeLatencySupported; // dml_float_t *MaxActiveDRAMClockChangeLatencySupported[]
++		CalculateWatermarks_params->SubViewportLinesNeededInMALL = locals->SubViewportLinesNeededInMALL; // dml_uint_t SubViewportLinesNeededInMALL[]
++		CalculateWatermarks_params->FCLKChangeSupport = &locals->FCLKChangeSupport;
++		CalculateWatermarks_params->MaxActiveFCLKChangeLatencySupported = &locals->MaxActiveFCLKChangeLatencySupported; // dml_float_t *MaxActiveFCLKChangeLatencySupported
++		CalculateWatermarks_params->USRRetrainingSupport = &locals->USRRetrainingSupport;
  
- 	} else if (flags & VFIO_IRQ_SET_DATA_BOOL) {
- 		u8 trigger = *(u8 *)data;
- 
--		if (trigger)
--			vfio_fsl_mc_irq_handler(hwirq, irq);
-+		if (trigger && irq->trigger)
-+			eventfd_signal(irq->trigger);
- 	}
- 
- 	return 0;
+ 		CalculateWatermarksMALLUseAndDRAMSpeedChangeSupport(
+ 			&mode_lib->scratch,
 -- 
 2.43.0
 
