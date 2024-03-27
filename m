@@ -1,201 +1,148 @@
-Return-Path: <linux-kernel+bounces-122080-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-122081-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6AC0C88F19C
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 23:07:56 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id DC6C188F19E
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 23:08:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D6DFC1F2C521
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 22:07:55 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6C238B2247D
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 22:08:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 98F8315358B;
-	Wed, 27 Mar 2024 22:07:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D10D153808;
+	Wed, 27 Mar 2024 22:08:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b="HoJfIWVP"
-Received: from mail-oa1-f44.google.com (mail-oa1-f44.google.com [209.85.160.44])
+	dkim=pass (2048-bit key) header.d=sifive.com header.i=@sifive.com header.b="f41Ssa/D"
+Received: from mail-io1-f50.google.com (mail-io1-f50.google.com [209.85.166.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2A9681DDD1
-	for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 22:07:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A0EDA1DDD1
+	for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 22:08:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711577267; cv=none; b=ql9oVsjr1TWPkB4S9uxdILnahYjdk6d0iJTE5qVeIKkeK1OQqYwIhMs0X9L5r495z6tSI0jWGbXQAuKMRej2yIWvWWCm8eqhbLwiAs69SloKEUnrxbO2XAk48f+WBBcLQwut4JbRJi4tWA3j/qCltRGue/Mx9zpum9UvKgiBS/0=
+	t=1711577309; cv=none; b=lz8iSr+X5WtwdbuIggpBl+KuRhMY9tHtjBDMYkeKEpcRnjcenpNSqtmH34kTYI8UNawlCePVL+XDbanqPNNo3QvrRe3/6sBn5YpBM4uPmhSVeKMOj28nHqL6uHm3lm2dnPgtlc0isgUUyVs3LaG0lqM2coSqra254796XPUxYiQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711577267; c=relaxed/simple;
-	bh=xmsi4tssHxt114eaMgANhLSOFgLyXDTeohNPFVjpX28=;
-	h=Date:Message-ID:MIME-Version:Content-Type:Content-Disposition:
-	 From:To:Cc:Subject:References:In-Reply-To; b=R8Iaa9cAacLOYdyBsiD7oWvYa85MVgwdpbOQOq1Rf/38o9aWt0Rg3e6sRKfGQUjDBI/oWWL/uC73eoyC0CwbcFJo7FR9puhF8de/9Ea3H/4ZaHHNQ1RGNPK5PMJUX7HCYFinB3HDDGmDRFnAdvXDp4jEzHrjXLGgXkqdAxf+I1g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com; spf=pass smtp.mailfrom=paul-moore.com; dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b=HoJfIWVP; arc=none smtp.client-ip=209.85.160.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=paul-moore.com
-Received: by mail-oa1-f44.google.com with SMTP id 586e51a60fabf-221a9e5484aso214591fac.0
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 15:07:45 -0700 (PDT)
+	s=arc-20240116; t=1711577309; c=relaxed/simple;
+	bh=C0maMlcryh1cpCiza99ODbzXle0CXNALQm+Q6ihVJDA=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=DcIlUWjH+iZ9hJwBzvAILpYe0VMH0rI5GSED6d3BKpqlRJsi7QJNe9zhLSV+xSFaOimnKvcVlkhL58W+TEQN2//+d/m3AjdEpl9ZmmHk2XOUWjfFeHrUT+i3BBQPFA7p5mFPzaO5gTP8fEPGAzViAKufjfUVZEOyVVneS6Dtpw0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=sifive.com; spf=pass smtp.mailfrom=sifive.com; dkim=pass (2048-bit key) header.d=sifive.com header.i=@sifive.com header.b=f41Ssa/D; arc=none smtp.client-ip=209.85.166.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=sifive.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sifive.com
+Received: by mail-io1-f50.google.com with SMTP id ca18e2360f4ac-7d0486e3250so12610039f.1
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 15:08:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore.com; s=google; t=1711577265; x=1712182065; darn=vger.kernel.org;
-        h=in-reply-to:references:subject:cc:to:from:content-transfer-encoding
-         :content-disposition:mime-version:message-id:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=HB2DMTq4mJOSqX6vaF/OZpNWN7tzmVjhi+E2QWx9csQ=;
-        b=HoJfIWVPmekb8ZV0LQgyQluYU5+sldwZzZRc9bwHgAkccnYY4MgDDEVesXhB4keuNv
-         pWEdXT9ToSis7VQMwesjlirkJlfO7J4sfEDWafKvvUnfbLmkSEthDh0HIH98Uy+1lVmU
-         C+9EEHu/3dcIDzAoyC+TITIGVAH6hvDUCl5PR2r/b7SFY/5WZVjgFV8ZKKLVZY1jDnjC
-         6zLyznmNQ0LD5pWit1r0s/C9B3v2/0cSuwlPSS/xgfSaFxV2PMyNg+LVbA3ifIq/xdqG
-         JLzb7nHJaOy1R5BY8lMctBxaG1hFKNUilWPEo9Cw7gHHuv55lv/XOQJb4beiH7lHcOkR
-         ikHg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711577265; x=1712182065;
-        h=in-reply-to:references:subject:cc:to:from:content-transfer-encoding
-         :content-disposition:mime-version:message-id:date:x-gm-message-state
+        d=sifive.com; s=google; t=1711577306; x=1712182106; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=HB2DMTq4mJOSqX6vaF/OZpNWN7tzmVjhi+E2QWx9csQ=;
-        b=igzNkWDPoT9jc0XoFiSp9jybA9e1nlNeoefO9qHpgMSZUJ809y0rjeZPFHHAbUXdY7
-         vdmyOI8jZk8hMsMthGjAO5hVGyiaNkql6kMCefXjwoabFLsOmUxIlMQul2a+DIm5f82I
-         bRBVRp7yZPCxahr+trx0rmrIzH+aN/4x7mYC89v376BTSt35JhoMe5K4N+Uve7RFBl6C
-         sh0hbvaQynQJS6KB11kn8HM6foVi3ZhIWtL/uCk0b/Qs1Xq5hLfgKPuXu2JbhgUZrk5m
-         U6R4bpOivHGn+U1G6Q5ptMEGKjVO5kNBCZC0d09x7zMQgOVM9GNEMd+pf9H+T6/cKEIj
-         GmSQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWrgN8JiOBPRnP05E4bjpTMNlSNVEKZnDGAhapUZc6bEij2mtErSBGh2xKwtiU4l30+Kww86jcFNMswHFG7IrQRqfrEZETbgTh24N52
-X-Gm-Message-State: AOJu0YzgeULaA9NdPsGtJWj9VksLdVK2CmNO/LSeN/mlUbda4IWrmlsg
-	WQKzKYG6ym/DqitODMV0UMdQ8ebRn8h0anS2udqlAliE1m7y4hrNIAd+5j4cbw==
-X-Google-Smtp-Source: AGHT+IHKXENcqgAKprgJ7uHSgNo6K4eUY3VdATdPSVCzwulf8HbC/9B6tWMAWus21sh0IiqiGLTAwg==
-X-Received: by 2002:a05:6870:2b13:b0:22a:9e26:f372 with SMTP id ld19-20020a0568702b1300b0022a9e26f372mr897629oab.11.1711577265073;
-        Wed, 27 Mar 2024 15:07:45 -0700 (PDT)
-Received: from localhost ([70.22.175.108])
-        by smtp.gmail.com with ESMTPSA id fy21-20020a05622a5a1500b00430ea220b32sm19817qtb.71.2024.03.27.15.07.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 27 Mar 2024 15:07:44 -0700 (PDT)
-Date: Wed, 27 Mar 2024 18:07:44 -0400
-Message-ID: <66718f36ae0e8dbad8bbf74038e9e0d6@paul-moore.com>
+        bh=Bmkqc/3aYewIsupa3aI44uZjMZk6uVE6sk1O51xM5oE=;
+        b=f41Ssa/Dms3SohsgT1+3vuI3jo7NXv0o9rYx28W+IHc0bd3rxEyQeq/s0mPAdChhph
+         P+CxBDA03hmM/ldSNCG2MK66GHBeysFGaYl/EANzSmz/8EZbMva3jydlslYC31sdP/rX
+         hJPTYeWy1omTUuyXEGldTielo/0B2YNb99vRsH4EGK46A62cmyrAFlxlPd7+V0/8mvyr
+         V7dkRDLXblOGDeNzxn9LrZLltCZLU4s1Y8ndnGUDNrTor6A2WZWZWX+rmtuOPHLEztTt
+         CrHZqSTphNGtCgaNTiKnpXm5cD949Lhz8bEj0VZMzlhXpRUY23YKjXklawyhw4hDT7uZ
+         IaAg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711577306; x=1712182106;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Bmkqc/3aYewIsupa3aI44uZjMZk6uVE6sk1O51xM5oE=;
+        b=dneDaEPHdOZKEgrbGB+FfBXCmppA27c3KahP6RpM/pElLOXjJwzcjw8qMW89sFZ15O
+         kJMsNLBp3t1m7jVUK34Pj/W2zZxgg2qSIfi9WTSZ0b6b6MTjc/u1SXLus3xJFQK4wgA5
+         X1MXQaryVZFTr2xzsV68nK1RCUgXOMUp4dxYEaKcc0B+lHpx9ugBni1xgw8yW6s61T3r
+         41AnvJ/g07LBFLySYMhdgIP9Hz/QOuX+0lukSJVV405gjd5L8NyixQHIWm4JIZZW7GW4
+         DnpAYzG6I1TJGr13qBof2y6Gt7d4YF5R8enBR6LNCNwlMOzX67jaw1Wcnp00IBuc2NvO
+         Rlyg==
+X-Forwarded-Encrypted: i=1; AJvYcCVPUrV7BzFGO6ymCtKcJLDfAe5ZVJ0yxjyxD3263aO0fRGm4PN2itbwtMySih8SFHy9VcHTV4TR2KDw2pADL8LkO2B7jbeIw9rmMbM4
+X-Gm-Message-State: AOJu0YxIdIAwigKVGvBzGGBu2zV26Zrxr0afCphlai37mBFtzbOKFn6J
+	DgUUaGe8uW4B2XeubXNkzlVv9yFvsZNdj2ipW2tIDEsI8VinZsW3wKEZt3qSSsg=
+X-Google-Smtp-Source: AGHT+IGUYm3Y8wBDca1kE2cHOU4Wfjx7H338gBLx60QGaDb6jbN+3GFHHCGUs0OMGF33wA7wIsUyRw==
+X-Received: by 2002:a6b:f919:0:b0:7cb:ffd8:1546 with SMTP id j25-20020a6bf919000000b007cbffd81546mr1424618iog.19.1711577305709;
+        Wed, 27 Mar 2024 15:08:25 -0700 (PDT)
+Received: from [100.64.0.1] ([170.85.6.190])
+        by smtp.gmail.com with ESMTPSA id f12-20020a056638118c00b0047bea529fddsm2373jas.104.2024.03.27.15.08.24
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 27 Mar 2024 15:08:25 -0700 (PDT)
+Message-ID: <4d9633cd-15c4-4cc1-ac67-2592e9fc7880@sifive.com>
+Date: Wed, 27 Mar 2024 17:08:23 -0500
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0 
-Content-Type: text/plain; charset=utf-8 
-Content-Disposition: inline 
-Content-Transfer-Encoding: 8bit
-From: Paul Moore <paul@paul-moore.com>
-To: =?UTF-8?q?Christian=20G=C3=B6ttsche?= <cgzones@googlemail.com>, selinux@vger.kernel.org
-Cc: Stephen Smalley <stephen.smalley.work@gmail.com>, Ondrej Mosnacek <omosnace@redhat.com>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3] selinux: optimize ebitmap_and()
-References: <20240315181204.647182-1-cgzones@googlemail.com>
-In-Reply-To: <20240315181204.647182-1-cgzones@googlemail.com>
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 12/14] drm/amd/display: Use ARCH_HAS_KERNEL_FPU_SUPPORT
+To: Andrew Morton <akpm@linux-foundation.org>
+Cc: linux-arm-kernel@lists.infradead.org, x86@kernel.org,
+ linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
+ linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
+ Christoph Hellwig <hch@lst.de>, loongarch@lists.linux.dev,
+ amd-gfx@lists.freedesktop.org, Alex Deucher <alexander.deucher@amd.com>
+References: <20240327200157.1097089-1-samuel.holland@sifive.com>
+ <20240327200157.1097089-13-samuel.holland@sifive.com>
+ <20240327142516.e4b1f9ba6e2ec7bc300e4d58@linux-foundation.org>
+Content-Language: en-US
+From: Samuel Holland <samuel.holland@sifive.com>
+In-Reply-To: <20240327142516.e4b1f9ba6e2ec7bc300e4d58@linux-foundation.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Mar 15, 2024 =?UTF-8?q?Christian=20G=C3=B6ttsche?= <cgzones@googlemail.com> wrote:
+On 2024-03-27 4:25 PM, Andrew Morton wrote:
+> On Wed, 27 Mar 2024 13:00:43 -0700 Samuel Holland <samuel.holland@sifive.com> wrote:
 > 
-> Iterate on nodes instead of single bits to save node resolution for each
-> single bit.
+>> Now that all previously-supported architectures select
+>> ARCH_HAS_KERNEL_FPU_SUPPORT, this code can depend on that symbol instead
+>> of the existing list of architectures. It can also take advantage of the
+>> common kernel-mode FPU API and method of adjusting CFLAGS.
+>>
+>> ...
+>>
+>> @@ -87,16 +78,9 @@ void dc_fpu_begin(const char *function_name, const int line)
+>>  	WARN_ON_ONCE(!in_task());
+>>  	preempt_disable();
+>>  	depth = __this_cpu_inc_return(fpu_recursion_depth);
+>> -
+>>  	if (depth == 1) {
+>> -#if defined(CONFIG_X86) || defined(CONFIG_LOONGARCH)
+>> +		BUG_ON(!kernel_fpu_available());
+>>  		kernel_fpu_begin();
 > 
-> Similar to userspace patch efcd00814879 ("libsepol: optimize
-> ebitmap_and").
-> 
-> Signed-off-by: Christian Göttsche <cgzones@googlemail.com>
-> ---
-> v3:
->   apply format style
-> v2:
->   fix array size computation
-> ---
->  security/selinux/ss/ebitmap.c | 50 +++++++++++++++++++++++++++++------
->  1 file changed, 42 insertions(+), 8 deletions(-)
+> For some reason kernel_fpu_available() was undefined in my x86_64
+> allmodconfig build.  I just removed the statement.
 
-Some minor comments below, but do you have any performance measurements
-for this change?  I realize that ebitmap_and() isn't widely used, but
-it would be nice to understand the performance difference, and if there
-isn't much/any difference we might want to stick with the original code
-as it is much simpler.
+This is because the include guard in asm/fpu.h conflicts with the existing one
+in asm/fpu/types.h (which doesn't match its filename), so the definition of
+kernel_fpu_available() is not seen. I can fix up the include guard in
+asm/fpu/types.h in the next version:
 
-> diff --git a/security/selinux/ss/ebitmap.c b/security/selinux/ss/ebitmap.c
-> index 67c1a73cd5ee..47cb90106118 100644
-> --- a/security/selinux/ss/ebitmap.c
-> +++ b/security/selinux/ss/ebitmap.c
-> @@ -78,19 +78,53 @@ int ebitmap_cpy(struct ebitmap *dst, const struct ebitmap *src)
->  int ebitmap_and(struct ebitmap *dst, const struct ebitmap *e1,
->  		const struct ebitmap *e2)
->  {
-> -	struct ebitmap_node *n;
-> -	int bit, rc;
-> +	const struct ebitmap_node *n1, *n2;
-> +	struct ebitmap_node *new = NULL, **prev;
->  
->  	ebitmap_init(dst);
->  
-> -	ebitmap_for_each_positive_bit(e1, n, bit)
-> -	{
-> -		if (ebitmap_get_bit(e2, bit)) {
-> -			rc = ebitmap_set_bit(dst, bit, 1);
-> -			if (rc < 0)
-> -				return rc;
-> +	prev = &dst->node;
+diff --git a/arch/x86/include/asm/fpu/types.h b/arch/x86/include/asm/fpu/types.h
+index ace9aa3b78a3..75a3910d867a 100644
+--- a/arch/x86/include/asm/fpu/types.h
++++ b/arch/x86/include/asm/fpu/types.h
+@@ -2,8 +2,8 @@
+ /*
+  * FPU data structures:
+  */
+-#ifndef _ASM_X86_FPU_H
+-#define _ASM_X86_FPU_H
++#ifndef _ASM_X86_FPU_TYPES_H
++#define _ASM_X86_FPU_TYPES_H
 
-Later in this function you include parenthesis, that might be nice
-here too:
+ #include <asm/page_types.h>
 
-  prev = &(dst->node);
+@@ -596,4 +596,4 @@ struct fpu_state_config {
+ /* FPU state configuration information */
+ extern struct fpu_state_config fpu_kernel_cfg, fpu_user_cfg;
 
-> +	n1 = e1->node;
-> +	n2 = e2->node;
-> +	while (n1 && n2) {
-> +		if (n1->startbit == n2->startbit) {
-> +			unsigned long testmap[EBITMAP_UNIT_NUMS];
+-#endif /* _ASM_X86_FPU_H */
++#endif /* _ASM_X86_FPU_TY{ES_H */
 
-This is very bikeshed-y, but I much prefer "dstmaps" over "testmap".
 
-> +			unsigned int i;
-> +			bool match = false;
-> +
-> +			for (i = 0; i < ARRAY_SIZE(testmap); i++) {
-> +				testmap[i] = n1->maps[i] & n2->maps[i];
-> +				if (testmap[i] != 0)
+Regards,
+Samuel
 
-If I'm going to be nitpicky, I'd probably prefer 'if (!dstmaps[i])'.
-
-> +					match = true;
-> +			}
-> +
-> +			if (match) {
-> +				new = kmem_cache_zalloc(ebitmap_node_cachep,
-> +							GFP_ATOMIC);
-> +				if (!new) {
-> +					ebitmap_destroy(dst);
-> +					return -ENOMEM;
-> +				}
-> +				new->startbit = n1->startbit;
-> +				memcpy(new->maps, testmap, EBITMAP_SIZE / 8);
-
-Why not just use 'sizeof(dstmaps)'?
-
-  memcpy(new->maps, dstmaps, sizeof(dstmaps));
-
-> +				new->next = NULL;
-
-You shouldn't need the line above since you're doing a _zalloc().
-
-> +				*prev = new;
-> +				prev = &(new->next);
-> +			}
-> +
-> +			n1 = n1->next;
-> +			n2 = n2->next;
-> +		} else if (n1->startbit > n2->startbit) {
-> +			n2 = n2->next;
-> +		} else {
-> +			n1 = n1->next;
->  		}
->  	}
-> +
-> +	if (new)
-> +		dst->highbit = new->startbit + EBITMAP_SIZE;
-> +
->  	return 0;
->  }
->  
-> -- 
-> 2.43.0
-
---
-paul-moore.com
 
