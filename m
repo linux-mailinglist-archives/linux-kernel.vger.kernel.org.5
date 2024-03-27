@@ -1,235 +1,95 @@
-Return-Path: <linux-kernel+bounces-120516-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-120510-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 75C3888D89A
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 09:17:04 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A396D88D88D
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 09:15:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CC596B233BF
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 08:17:01 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5BE2A29E68C
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 08:15:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B85542E645;
-	Wed, 27 Mar 2024 08:16:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6B5A72D604;
+	Wed, 27 Mar 2024 08:15:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=atomide.com header.i=@atomide.com header.b="R7DTwvkJ"
-Received: from mail5.25mail.st (mail5.25mail.st [74.50.62.9])
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="uFSGxBkF"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 818422D7B8;
-	Wed, 27 Mar 2024 08:16:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.50.62.9
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B219823D7;
+	Wed, 27 Mar 2024 08:15:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711527385; cv=none; b=eOfKKBv9k/R+g2sshBeinsMaWUZVblW20GN0sQ2TdElrVFyvpy7tr9UIZD8gZxy3dCHwk1ivgj8JZ65oo94looDsU285pHF5dOH3rS9PpSBhxkuP5K64IYOmeFwQr7WCqs+Xg9xg3U7GpfFFnZQR42csAjFoknPzgqWukpQtTRg=
+	t=1711527331; cv=none; b=MbFuWBW0lYSEAgvDIn3ZrR7RdUFUahLjrvpYOwyLTlhfbXDz1f5KIPfFtKdh/wrRS+QIBdZRUW2fSJjh5umfa53cGo/TcIb3UHUCRJYA/Ul4iZJGSCxY9VvBrxPfTDBTkANv4T7qESMqDkqurQzkreQodIfT+pnma560WgoPncA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711527385; c=relaxed/simple;
-	bh=5XVLYxZnsE3IFzszPgGoCMdQGtUkTEW8giYsWGBSh3I=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=C8eBaGsySh3Ns0wk0MePQvfDgdPXJqzGjj49CabyKFl+sIKvzWmoP8/V6V6XHMy4KcSTnNmn2JR4ao0ywjhOhDakLLBKfYcxX558xAgNZkthM96V76lWSKvxd1ZNsbV2wCZdviV1dwGIQtJdBKj3c2QYC4BkTcUtIrzdmjvj8jk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=atomide.com; spf=fail smtp.mailfrom=atomide.com; dkim=pass (2048-bit key) header.d=atomide.com header.i=@atomide.com header.b=R7DTwvkJ; arc=none smtp.client-ip=74.50.62.9
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=atomide.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=atomide.com
-Received: from localhost (91-158-86-216.elisa-laajakaista.fi [91.158.86.216])
-	by mail5.25mail.st (Postfix) with ESMTPSA id 4A71260462;
-	Wed, 27 Mar 2024 08:16:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=atomide.com;
-	s=25mailst; t=1711527382;
-	bh=5XVLYxZnsE3IFzszPgGoCMdQGtUkTEW8giYsWGBSh3I=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=R7DTwvkJlHqP04o/uUpJuZQJPY3/StqC/WYALswXEh0U7V66CkVLSd0BMzx5cXkmH
-	 +oRFSsH0XiNU5MZc0rkAM/hAWlqv+mU3EK/vz0dFuiPMke+DBPawEYCFCJSYqabzmv
-	 0aWpoe9p2CZzjXg+NYgnQgSQfCEo2dwEJ4oH5gpcTC+p1oqkH7DyhGg9MYwdPIgBpa
-	 KJt+kh48IgqRLYPvYONp5GMi+HOgXMlrA9ULZdP60lkmEiMh3BF0Fc9xsnEA+uEiWc
-	 5gm+TkIY2cPdyVugAek4/xvL5rRke0qcijVd2NjY3JziCrnJyhsmbyABHdFYCPxeSh
-	 kEvxP3FQ2XUcA==
-From: Tony Lindgren <tony@atomide.com>
-To: linux-omap@vger.kernel.org
-Cc: Dhruva Gole <d-gole@ti.com>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH 5/5] bus: ti-sysc: Drop legacy idle quirk handling
-Date: Wed, 27 Mar 2024 10:15:08 +0200
-Message-ID: <20240327081508.36747-6-tony@atomide.com>
-X-Mailer: git-send-email 2.44.0
-In-Reply-To: <20240327081508.36747-1-tony@atomide.com>
-References: <20240327081508.36747-1-tony@atomide.com>
+	s=arc-20240116; t=1711527331; c=relaxed/simple;
+	bh=xVHaqZ1u760s+2uA6tdl2keH+dzuvpVmNgm8RSxlN50=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=MH5ih2EwJ9JxvxmFJGLxfJFnQVx6rVuvT0I0/9HjgY3l6BwV4zFKCjh+pEvHElcBCnObG2a4rK5vVp8wOAOLhVWNgRC8evcwgUA/PvrWMXOuIBh5K7NfdyWSpTffzOGOOn1rjwl31jI0lKwYLEX1kkv24orcvcTkMtBBL5WZ+hc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=uFSGxBkF; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F2025C433C7;
+	Wed, 27 Mar 2024 08:15:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+	s=korg; t=1711527331;
+	bh=xVHaqZ1u760s+2uA6tdl2keH+dzuvpVmNgm8RSxlN50=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=uFSGxBkFaIMIAEsa4zemQnwPcMOfoNFWZPB+2Ka9mznGd0UGAhY2D69zeimXf6RGX
+	 y5Gx28eXDgyHIrcyobJexzf4puxWw2sk840SLc+c12F6CXH2HlqI4RJk1ozhgzyGlB
+	 1N++CXZZE7EOCtBsPWCzQtOa7OidhTh3LGSxsdNc=
+Date: Wed, 27 Mar 2024 09:15:28 +0100
+From: Greg KH <gregkh@linuxfoundation.org>
+To: Norihiko Hama <norihiko.hama@alpsalpine.com>
+Cc: "stern@rowland.harvard.edu" <stern@rowland.harvard.edu>,
+	"linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
+	"usb-storage@lists.one-eyed-alien.net" <usb-storage@lists.one-eyed-alien.net>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] usb-storage: Optimize scan delay more precisely
+Message-ID: <2024032750-violator-trivial-90a3@gregkh>
+References: <20240327055130.43206-1-Norihiko.Hama@alpsalpine.com>
+ <2024032757-surcharge-grime-d3dd@gregkh>
+ <TYVPR01MB107814D7A583CB986884AD4B290342@TYVPR01MB10781.jpnprd01.prod.outlook.com>
+ <2024032745-transfer-dazzler-2e15@gregkh>
+ <TYVPR01MB10781723CBD338DC3EEB5F20590342@TYVPR01MB10781.jpnprd01.prod.outlook.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <TYVPR01MB10781723CBD338DC3EEB5F20590342@TYVPR01MB10781.jpnprd01.prod.outlook.com>
 
-There are no more users that need the legacy idle quirk so let's drop
-the legacy idle quirk handling. This simplifies the PM code to just
-sysc_pm_ops with unified handling for all the interconnect targets.
+On Wed, Mar 27, 2024 at 07:57:52AM +0000, Norihiko Hama wrote:
+> On Wed, Mar 27, 2024 at 07:39:55AM +0000, Norihiko Hama wrote:
+> > > > Sorry, but module parameters are from the 1990's, we will not go back to that if at all possible as it's not easy to maintain and will not work properly for multiple devices.
+> > > >
+> > > > I can understand wanting something between 1 and 0 seconds, but adding yet-another-option isn't probably the best way, sorry.
+> > > 1 second does not meet with performance requirement.
+> >
+> > Who is requiring such a performance requirement?  The USB specification?
+> > Or something else?
+> This is our customer requirement.
 
-Signed-off-by: Tony Lindgren <tony@atomide.com>
----
- drivers/bus/ti-sysc.c                 | 109 +-------------------------
- include/linux/platform_data/ti-sysc.h |   1 -
- 2 files changed, 2 insertions(+), 108 deletions(-)
+If it is impossible to do, why are they making you do it?  :)
 
-diff --git a/drivers/bus/ti-sysc.c b/drivers/bus/ti-sysc.c
---- a/drivers/bus/ti-sysc.c
-+++ b/drivers/bus/ti-sysc.c
-@@ -1469,8 +1469,7 @@ static int __maybe_unused sysc_noirq_suspend(struct device *dev)
- 
- 	ddata = dev_get_drvdata(dev);
- 
--	if (ddata->cfg.quirks &
--	    (SYSC_QUIRK_LEGACY_IDLE | SYSC_QUIRK_NO_IDLE))
-+	if (ddata->cfg.quirks & SYSC_QUIRK_NO_IDLE)
- 		return 0;
- 
- 	if (!ddata->enabled)
-@@ -1488,8 +1487,7 @@ static int __maybe_unused sysc_noirq_resume(struct device *dev)
- 
- 	ddata = dev_get_drvdata(dev);
- 
--	if (ddata->cfg.quirks &
--	    (SYSC_QUIRK_LEGACY_IDLE | SYSC_QUIRK_NO_IDLE))
-+	if (ddata->cfg.quirks & SYSC_QUIRK_NO_IDLE)
- 		return 0;
- 
- 	if (ddata->cfg.quirks & SYSC_QUIRK_REINIT_ON_RESUME) {
-@@ -2457,89 +2455,6 @@ static int __maybe_unused sysc_child_runtime_resume(struct device *dev)
- 	return pm_generic_runtime_resume(dev);
- }
- 
--#ifdef CONFIG_PM_SLEEP
--static int sysc_child_suspend_noirq(struct device *dev)
--{
--	struct sysc *ddata;
--	int error;
--
--	ddata = sysc_child_to_parent(dev);
--
--	dev_dbg(ddata->dev, "%s %s\n", __func__,
--		ddata->name ? ddata->name : "");
--
--	error = pm_generic_suspend_noirq(dev);
--	if (error) {
--		dev_err(dev, "%s error at %i: %i\n",
--			__func__, __LINE__, error);
--
--		return error;
--	}
--
--	if (!pm_runtime_status_suspended(dev)) {
--		error = pm_generic_runtime_suspend(dev);
--		if (error) {
--			dev_dbg(dev, "%s busy at %i: %i\n",
--				__func__, __LINE__, error);
--
--			return 0;
--		}
--
--		error = sysc_runtime_suspend(ddata->dev);
--		if (error) {
--			dev_err(dev, "%s error at %i: %i\n",
--				__func__, __LINE__, error);
--
--			return error;
--		}
--
--		ddata->child_needs_resume = true;
--	}
--
--	return 0;
--}
--
--static int sysc_child_resume_noirq(struct device *dev)
--{
--	struct sysc *ddata;
--	int error;
--
--	ddata = sysc_child_to_parent(dev);
--
--	dev_dbg(ddata->dev, "%s %s\n", __func__,
--		ddata->name ? ddata->name : "");
--
--	if (ddata->child_needs_resume) {
--		ddata->child_needs_resume = false;
--
--		error = sysc_runtime_resume(ddata->dev);
--		if (error)
--			dev_err(ddata->dev,
--				"%s runtime resume error: %i\n",
--				__func__, error);
--
--		error = pm_generic_runtime_resume(dev);
--		if (error)
--			dev_err(ddata->dev,
--				"%s generic runtime resume: %i\n",
--				__func__, error);
--	}
--
--	return pm_generic_resume_noirq(dev);
--}
--#endif
--
--static struct dev_pm_domain sysc_child_pm_domain = {
--	.ops = {
--		SET_RUNTIME_PM_OPS(sysc_child_runtime_suspend,
--				   sysc_child_runtime_resume,
--				   NULL)
--		USE_PLATFORM_PM_SLEEP_OPS
--		SET_NOIRQ_SYSTEM_SLEEP_PM_OPS(sysc_child_suspend_noirq,
--					      sysc_child_resume_noirq)
--	}
--};
--
- /* Caller needs to take list_lock if ever used outside of cpu_pm */
- static void sysc_reinit_modules(struct sysc_soc_info *soc)
- {
-@@ -2610,25 +2525,6 @@ static void sysc_add_restored(struct sysc *ddata)
- 	mutex_unlock(&sysc_soc->list_lock);
- }
- 
--/**
-- * sysc_legacy_idle_quirk - handle children in omap_device compatible way
-- * @ddata: device driver data
-- * @child: child device driver
-- *
-- * Allow idle for child devices as done with _od_runtime_suspend().
-- * Otherwise many child devices will not idle because of the permanent
-- * parent usecount set in pm_runtime_irq_safe().
-- *
-- * Note that the long term solution is to just modify the child device
-- * drivers to not set pm_runtime_irq_safe() and then this can be just
-- * dropped.
-- */
--static void sysc_legacy_idle_quirk(struct sysc *ddata, struct device *child)
--{
--	if (ddata->cfg.quirks & SYSC_QUIRK_LEGACY_IDLE)
--		dev_pm_domain_set(child, &sysc_child_pm_domain);
--}
--
- static int sysc_notifier_call(struct notifier_block *nb,
- 			      unsigned long event, void *device)
- {
-@@ -2645,7 +2541,6 @@ static int sysc_notifier_call(struct notifier_block *nb,
- 		error = sysc_child_add_clocks(ddata, dev);
- 		if (error)
- 			return error;
--		sysc_legacy_idle_quirk(ddata, dev);
- 		break;
- 	default:
- 		break;
-diff --git a/include/linux/platform_data/ti-sysc.h b/include/linux/platform_data/ti-sysc.h
---- a/include/linux/platform_data/ti-sysc.h
-+++ b/include/linux/platform_data/ti-sysc.h
-@@ -71,7 +71,6 @@ struct sysc_regbits {
- #define SYSC_QUIRK_SWSUP_SIDLE_ACT	BIT(12)
- #define SYSC_QUIRK_SWSUP_SIDLE		BIT(11)
- #define SYSC_QUIRK_EXT_OPT_CLOCK	BIT(10)
--#define SYSC_QUIRK_LEGACY_IDLE		BIT(9)
- #define SYSC_QUIRK_RESET_STATUS		BIT(8)
- #define SYSC_QUIRK_NO_IDLE		BIT(7)
- #define SYSC_QUIRK_NO_IDLE_ON_INIT	BIT(6)
--- 
-2.44.0
+> > > I have no good idea except module parameter so that we can maintain backward compatibility but be configurable out of module.
+> > > Do you have any other better solution?
+> > How long do you exactly need to wait?  Why not figure out how long the device takes and if it fails, slowly back off until the full time delay happens and then you can abort?
+> It's IOP issue and difficult to figure out because it depends on device itself.
+
+Agreed.
+
+> I know we have multiple devices with delay_use=0, but then it's recovered and detected by reset after 30s timeout, that is too long than 1 sec.
+
+So how do you know that making this smaller will help?  There are many
+many odd and broken devices out there that take a long time to spin up
+before they are able to be accessed.  That's what that option is there
+for, if you "know" you don't need to wait, you don't have to wait.
+Otherwise you HAVE to wait as you do not know how long things take.
+
+sorry,
+
+greg k-h
 
