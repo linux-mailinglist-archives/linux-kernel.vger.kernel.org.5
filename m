@@ -1,148 +1,106 @@
-Return-Path: <linux-kernel+bounces-122081-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-122082-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id DC6C188F19E
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 23:08:38 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 72A8B88F1AB
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 23:13:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6C238B2247D
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 22:08:36 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 26BFC1F2965A
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 22:13:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D10D153808;
-	Wed, 27 Mar 2024 22:08:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7277D153819;
+	Wed, 27 Mar 2024 22:13:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=sifive.com header.i=@sifive.com header.b="f41Ssa/D"
-Received: from mail-io1-f50.google.com (mail-io1-f50.google.com [209.85.166.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="ZrA1A0q6"
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A0EDA1DDD1
-	for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 22:08:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 942481DDD1;
+	Wed, 27 Mar 2024 22:13:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711577309; cv=none; b=lz8iSr+X5WtwdbuIggpBl+KuRhMY9tHtjBDMYkeKEpcRnjcenpNSqtmH34kTYI8UNawlCePVL+XDbanqPNNo3QvrRe3/6sBn5YpBM4uPmhSVeKMOj28nHqL6uHm3lm2dnPgtlc0isgUUyVs3LaG0lqM2coSqra254796XPUxYiQ=
+	t=1711577626; cv=none; b=Ow8ah59iJ3X94glSSw8DW3SGNE3AU7bP0Zy/s9URJ7LoKgxqyL2VmZ2JtLUcD+wRP2hVhVIvWK/KWzBe6heQ7cJTL0xGbDv6gDYcmXth19kEU/58x2mJ7gs3uDbhIB4G65v0ZpUqy1inYKiSwVZ7J4HyFpuToYkNHlShmNH+pgc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711577309; c=relaxed/simple;
-	bh=C0maMlcryh1cpCiza99ODbzXle0CXNALQm+Q6ihVJDA=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=DcIlUWjH+iZ9hJwBzvAILpYe0VMH0rI5GSED6d3BKpqlRJsi7QJNe9zhLSV+xSFaOimnKvcVlkhL58W+TEQN2//+d/m3AjdEpl9ZmmHk2XOUWjfFeHrUT+i3BBQPFA7p5mFPzaO5gTP8fEPGAzViAKufjfUVZEOyVVneS6Dtpw0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=sifive.com; spf=pass smtp.mailfrom=sifive.com; dkim=pass (2048-bit key) header.d=sifive.com header.i=@sifive.com header.b=f41Ssa/D; arc=none smtp.client-ip=209.85.166.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=sifive.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sifive.com
-Received: by mail-io1-f50.google.com with SMTP id ca18e2360f4ac-7d0486e3250so12610039f.1
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 15:08:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sifive.com; s=google; t=1711577306; x=1712182106; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Bmkqc/3aYewIsupa3aI44uZjMZk6uVE6sk1O51xM5oE=;
-        b=f41Ssa/Dms3SohsgT1+3vuI3jo7NXv0o9rYx28W+IHc0bd3rxEyQeq/s0mPAdChhph
-         P+CxBDA03hmM/ldSNCG2MK66GHBeysFGaYl/EANzSmz/8EZbMva3jydlslYC31sdP/rX
-         hJPTYeWy1omTUuyXEGldTielo/0B2YNb99vRsH4EGK46A62cmyrAFlxlPd7+V0/8mvyr
-         V7dkRDLXblOGDeNzxn9LrZLltCZLU4s1Y8ndnGUDNrTor6A2WZWZWX+rmtuOPHLEztTt
-         CrHZqSTphNGtCgaNTiKnpXm5cD949Lhz8bEj0VZMzlhXpRUY23YKjXklawyhw4hDT7uZ
-         IaAg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711577306; x=1712182106;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Bmkqc/3aYewIsupa3aI44uZjMZk6uVE6sk1O51xM5oE=;
-        b=dneDaEPHdOZKEgrbGB+FfBXCmppA27c3KahP6RpM/pElLOXjJwzcjw8qMW89sFZ15O
-         kJMsNLBp3t1m7jVUK34Pj/W2zZxgg2qSIfi9WTSZ0b6b6MTjc/u1SXLus3xJFQK4wgA5
-         X1MXQaryVZFTr2xzsV68nK1RCUgXOMUp4dxYEaKcc0B+lHpx9ugBni1xgw8yW6s61T3r
-         41AnvJ/g07LBFLySYMhdgIP9Hz/QOuX+0lukSJVV405gjd5L8NyixQHIWm4JIZZW7GW4
-         DnpAYzG6I1TJGr13qBof2y6Gt7d4YF5R8enBR6LNCNwlMOzX67jaw1Wcnp00IBuc2NvO
-         Rlyg==
-X-Forwarded-Encrypted: i=1; AJvYcCVPUrV7BzFGO6ymCtKcJLDfAe5ZVJ0yxjyxD3263aO0fRGm4PN2itbwtMySih8SFHy9VcHTV4TR2KDw2pADL8LkO2B7jbeIw9rmMbM4
-X-Gm-Message-State: AOJu0YxIdIAwigKVGvBzGGBu2zV26Zrxr0afCphlai37mBFtzbOKFn6J
-	DgUUaGe8uW4B2XeubXNkzlVv9yFvsZNdj2ipW2tIDEsI8VinZsW3wKEZt3qSSsg=
-X-Google-Smtp-Source: AGHT+IGUYm3Y8wBDca1kE2cHOU4Wfjx7H338gBLx60QGaDb6jbN+3GFHHCGUs0OMGF33wA7wIsUyRw==
-X-Received: by 2002:a6b:f919:0:b0:7cb:ffd8:1546 with SMTP id j25-20020a6bf919000000b007cbffd81546mr1424618iog.19.1711577305709;
-        Wed, 27 Mar 2024 15:08:25 -0700 (PDT)
-Received: from [100.64.0.1] ([170.85.6.190])
-        by smtp.gmail.com with ESMTPSA id f12-20020a056638118c00b0047bea529fddsm2373jas.104.2024.03.27.15.08.24
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 27 Mar 2024 15:08:25 -0700 (PDT)
-Message-ID: <4d9633cd-15c4-4cc1-ac67-2592e9fc7880@sifive.com>
-Date: Wed, 27 Mar 2024 17:08:23 -0500
+	s=arc-20240116; t=1711577626; c=relaxed/simple;
+	bh=Aj4ptK6nKqfO0SSSLwsSil4TNRAjcHPITdBMrnAd/co=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=lMDkt0mNFtUz+PyrRBL1aZ/rBH/Ls6JEGjfGdZcPGxLt3ZHSrpTgeKTtn+83T1XyHPhy1piDLYogddo4V5mmPiHmCh+0vW9sbhoOuEOHksRW8tDWqiCG8yzmwPQL9zlUSaWS8WHKcQLh4Izfw3m3JtFyxzAHtCFoFhi1PrLN9NM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au; spf=pass smtp.mailfrom=canb.auug.org.au; dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b=ZrA1A0q6; arc=none smtp.client-ip=150.107.74.76
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+	s=201702; t=1711577620;
+	bh=JVoVESu6RdDDGqwpOs7A7QE0ixju1ecUHMEwEy9hlno=;
+	h=Date:From:To:Cc:Subject:From;
+	b=ZrA1A0q6I0hFMCZo3rGKUAP/Q88CeHBhesdH6RJgRcCnZOQLdlge7DJZp0jlTw/nM
+	 4GBGAPEz6vsktpfifBH9vRni26rSbtukh7/RvXIOL3y9NaoBM+1w3JLfydXOIxuA6W
+	 tkZ+CAwik6apHnQeHGHSnDFDjRrW1ppVeOeXYCL9AZyavls6+ppMtdHDFCUcKB4jO7
+	 bbehpmKBjxT9A5Tx40fczh3bR7iZGQZcJm4iXv7zd3FXDGWoAQ7bP4GbkoPz99icLp
+	 Kz1TmOEVczen07uGRzNtYpwmTCHv3rubP4n0HWTojjg9Q8DXQMYj+cp8m13DXqEg8D
+	 qh338g1H6AT2A==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mail.ozlabs.org (Postfix) with ESMTPSA id 4V4gtD4K81z4wbv;
+	Thu, 28 Mar 2024 09:13:40 +1100 (AEDT)
+Date: Thu, 28 Mar 2024 09:13:37 +1100
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+To: Andrew Morton <akpm@linux-foundation.org>
+Cc: Baoquan He <bhe@redhat.com>, Linux Kernel Mailing List
+ <linux-kernel@vger.kernel.org>, Linux Next Mailing List
+ <linux-next@vger.kernel.org>
+Subject: linux-next: build warning after merge of the mm tree
+Message-ID: <20240328091337.03421187@canb.auug.org.au>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 12/14] drm/amd/display: Use ARCH_HAS_KERNEL_FPU_SUPPORT
-To: Andrew Morton <akpm@linux-foundation.org>
-Cc: linux-arm-kernel@lists.infradead.org, x86@kernel.org,
- linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
- linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
- Christoph Hellwig <hch@lst.de>, loongarch@lists.linux.dev,
- amd-gfx@lists.freedesktop.org, Alex Deucher <alexander.deucher@amd.com>
-References: <20240327200157.1097089-1-samuel.holland@sifive.com>
- <20240327200157.1097089-13-samuel.holland@sifive.com>
- <20240327142516.e4b1f9ba6e2ec7bc300e4d58@linux-foundation.org>
-Content-Language: en-US
-From: Samuel Holland <samuel.holland@sifive.com>
-In-Reply-To: <20240327142516.e4b1f9ba6e2ec7bc300e4d58@linux-foundation.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; boundary="Sig_/UbVv3PiohOhbbL2fgZafsTc";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 
-On 2024-03-27 4:25 PM, Andrew Morton wrote:
-> On Wed, 27 Mar 2024 13:00:43 -0700 Samuel Holland <samuel.holland@sifive.com> wrote:
-> 
->> Now that all previously-supported architectures select
->> ARCH_HAS_KERNEL_FPU_SUPPORT, this code can depend on that symbol instead
->> of the existing list of architectures. It can also take advantage of the
->> common kernel-mode FPU API and method of adjusting CFLAGS.
->>
->> ...
->>
->> @@ -87,16 +78,9 @@ void dc_fpu_begin(const char *function_name, const int line)
->>  	WARN_ON_ONCE(!in_task());
->>  	preempt_disable();
->>  	depth = __this_cpu_inc_return(fpu_recursion_depth);
->> -
->>  	if (depth == 1) {
->> -#if defined(CONFIG_X86) || defined(CONFIG_LOONGARCH)
->> +		BUG_ON(!kernel_fpu_available());
->>  		kernel_fpu_begin();
-> 
-> For some reason kernel_fpu_available() was undefined in my x86_64
-> allmodconfig build.  I just removed the statement.
+--Sig_/UbVv3PiohOhbbL2fgZafsTc
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-This is because the include guard in asm/fpu.h conflicts with the existing one
-in asm/fpu/types.h (which doesn't match its filename), so the definition of
-kernel_fpu_available() is not seen. I can fix up the include guard in
-asm/fpu/types.h in the next version:
+Hi all,
 
-diff --git a/arch/x86/include/asm/fpu/types.h b/arch/x86/include/asm/fpu/types.h
-index ace9aa3b78a3..75a3910d867a 100644
---- a/arch/x86/include/asm/fpu/types.h
-+++ b/arch/x86/include/asm/fpu/types.h
-@@ -2,8 +2,8 @@
- /*
-  * FPU data structures:
-  */
--#ifndef _ASM_X86_FPU_H
--#define _ASM_X86_FPU_H
-+#ifndef _ASM_X86_FPU_TYPES_H
-+#define _ASM_X86_FPU_TYPES_H
+After merging the mm tree, today's linux-next build (arm
+multi_v7_defconfig) produced this warning:
 
- #include <asm/page_types.h>
+mm/page_alloc.c: In function 'build_zonelists':
+mm/page_alloc.c:5324:13: warning: unused variable 'node' [-Wunused-variable]
+ 5324 |         int node, local_node;
+      |             ^~~~
 
-@@ -596,4 +596,4 @@ struct fpu_state_config {
- /* FPU state configuration information */
- extern struct fpu_state_config fpu_kernel_cfg, fpu_user_cfg;
+Introduced by commit
 
--#endif /* _ASM_X86_FPU_H */
-+#endif /* _ASM_X86_FPU_TY{ES_H */
+  95d0185255a3 ("mm/page_alloc.c: remove unneeded codes in !NUMA version of=
+ build_zonelists()")
 
+from the mm-unstable branch of the mm tree.
+--=20
+Cheers,
+Stephen Rothwell
 
-Regards,
-Samuel
+--Sig_/UbVv3PiohOhbbL2fgZafsTc
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmYEmhEACgkQAVBC80lX
+0GwtaQf/WJHdqIJoJkugdSgk1N5b5zFB9wUvFuOPNDB1U/VnU/AcaOLpmimKNAtw
+WsLZUeEkO6qs9hE0oHZG3smubw25WB7T5VTUWba7YqxCnvl9sfK+xsVhb37Xk0lL
+CvS2HJnDrglhhQ9Y4LOL8lKDclknhKacvGr976wOYrYvn/dg/5DuVBLL3at7sP4v
+QMUxk5rXLJzgMo+6IwKtg8HBd5/YpMAmojWrGbDb6Y1DG4ebX+cdpa2kkDOwj2L6
+nox+E4htlC0TqG5gshd7Ba7kyLM4gpWm42mI3btiyZva3O1TVaB00k+Fg5z1b2ZB
+64ZW7bpnwcx6VtnuHaSp7MQ/uOC+kQ==
+=f17s
+-----END PGP SIGNATURE-----
+
+--Sig_/UbVv3PiohOhbbL2fgZafsTc--
 
