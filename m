@@ -1,166 +1,346 @@
-Return-Path: <linux-kernel+bounces-120431-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-120433-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6558888D739
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 08:28:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id ED1B188D748
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 08:31:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9707F1C230DD
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 07:28:57 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 004051C2362B
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 07:31:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5E17D28DC3;
-	Wed, 27 Mar 2024 07:28:50 +0000 (UTC)
-Received: from dggsgout12.his.huawei.com (unknown [45.249.212.56])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8EA962262B;
+	Wed, 27 Mar 2024 07:31:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="HFUxrOZT"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 69EB523754;
-	Wed, 27 Mar 2024 07:28:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 761E31849
+	for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 07:31:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711524529; cv=none; b=atyGNzukVQnMzT9n/FJN+sAOf+EhVB7Cp5Seg6XaD3lUTnsgHUeapoidVh8gQO2dTPvNeBpSKY0fyrT6sdqSboPfxQqn7PRRue8I30RdBpbPdHiLHlvZU8jJMl9pzhWzCwI2snVo2I7Z4nyDWJ5XEwpS/w5FSceQm5OQeJAqcCg=
+	t=1711524681; cv=none; b=LD04UEwxx5Tct9EFzN5jRVgJ+8ykBM7u3muaS8QcCR68/kDEHfbTatgm5nJtZ16aVNgFIIxFfrffiMMVafqz4umC0axzb2nQuyGaWv+SRzXaer5w2vtCJxpg4uysexkV9RPR8cao8VWVNcdu8941oWT2WoBU8Kw92NM4yZfUF4c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711524529; c=relaxed/simple;
-	bh=zRPikjOVGuxUHj0iYEwFs+kVUlxAZ63d9nP1HOlrotM=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:Cc:From:
-	 In-Reply-To:Content-Type; b=ksRi3QfJYdIWNDzogKBV8m8+9DLDowMh4YDju322dLVxy4FuqDXRnKrDbaOTmeTspgz1MUmDmE+PzxsUwpkPFK/2QUjD/+aDVB+Fzh76Ymf4eVO57HT7CFXYlDul3AsHEwj5LhkW4t3sKhDsumnt6KvHwHTI0owT9a7wZpi9RNo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.235])
-	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4V4JF201Dbz4f3khv;
-	Wed, 27 Mar 2024 15:28:37 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.112])
-	by mail.maildlp.com (Postfix) with ESMTP id 389161A0568;
-	Wed, 27 Mar 2024 15:28:44 +0800 (CST)
-Received: from [10.67.109.184] (unknown [10.67.109.184])
-	by APP1 (Coremail) with SMTP id cCh0CgBngQqrygNmXjPeIA--.44585S2;
-	Wed, 27 Mar 2024 15:28:43 +0800 (CST)
-Message-ID: <bb48f1f1-70c8-4cab-86f7-91f19c00724e@huaweicloud.com>
-Date: Wed, 27 Mar 2024 15:28:43 +0800
+	s=arc-20240116; t=1711524681; c=relaxed/simple;
+	bh=jA/U0eowmhkvePD2PDKZbHPIlUMQ8vsrUVqd0Nrq2g0=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=B78juySDndU1LMqCDbJF53IOaqMcEuymArNFpXBwnJkZsIEtiN3QRTW0bhc8hgrhQY/jMIgie+JZju96/Lx8jXs3TNUBTFCHYo5U0bFG9iDeiywcO5u9bkdN+qyUdf11a43Vh23Ss8UaByL0udOzqKx3Z2mF+zEr3l2cTVeso54=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=HFUxrOZT; arc=none smtp.client-ip=198.175.65.18
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1711524679; x=1743060679;
+  h=from:to:cc:subject:in-reply-to:references:date:
+   message-id:mime-version:content-transfer-encoding;
+  bh=jA/U0eowmhkvePD2PDKZbHPIlUMQ8vsrUVqd0Nrq2g0=;
+  b=HFUxrOZTsf1CzpIPIw+1JniSfqclncfkvGjYpcXnIPN5aaAR+y19pA1H
+   tB+IoDGuE41/8d83jibKkq1vtmtf/eBRFxIow0Mr/XLAV5oMdC32vzyzd
+   log03hmXI1ZbmFj7hhNX9pkwZV6C6s+qP5asnhWeqZrzmRj18L3Vvpp2f
+   j0ZYd05OFQ51o9m44kEmM3FJ99eSUGCS3dd/SL4+LW6LGtO+sUWS7oUIk
+   aVszonDOHdB/F0ry8S6AiFrIacFAZcbaspPnI5Ls0qrbROC1LdnfNHkxw
+   GPz9zdAbmwxNwvz6zXTosMtOlpmshgRojdCaus7VeWexTzXAHdKrReAhz
+   w==;
+X-CSE-ConnectionGUID: bsGT5ve5TpaNl7qfJk5owQ==
+X-CSE-MsgGUID: Zb0eW/loTaOUbUcCPB5luA==
+X-IronPort-AV: E=McAfee;i="6600,9927,11025"; a="6739526"
+X-IronPort-AV: E=Sophos;i="6.07,158,1708416000"; 
+   d="scan'208";a="6739526"
+Received: from fmviesa008.fm.intel.com ([10.60.135.148])
+  by orvoesa110.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Mar 2024 00:31:19 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,158,1708416000"; 
+   d="scan'208";a="16305356"
+Received: from yhuang6-desk2.sh.intel.com (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.238.208.55])
+  by fmviesa008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Mar 2024 00:31:15 -0700
+From: "Huang, Ying" <ying.huang@intel.com>
+To: Kairui Song <ryncsn@gmail.com>
+Cc: linux-mm@kvack.org,  Chris Li <chrisl@kernel.org>,  Minchan Kim
+ <minchan@kernel.org>,  Barry Song <v-songbaohua@oppo.com>,  Ryan Roberts
+ <ryan.roberts@arm.com>,  Yu Zhao <yuzhao@google.com>,  SeongJae Park
+ <sj@kernel.org>,  David Hildenbrand <david@redhat.com>,  Yosry Ahmed
+ <yosryahmed@google.com>,  Johannes Weiner <hannes@cmpxchg.org>,  Matthew
+ Wilcox <willy@infradead.org>,  Nhat Pham <nphamcs@gmail.com>,  Chengming
+ Zhou <zhouchengming@bytedance.com>,  Andrew Morton
+ <akpm@linux-foundation.org>,  linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH 04/10] mm/swap: remove cache bypass swapin
+In-Reply-To: <CAMgjq7B0rDp_u37XG0JWyFci6s9NmGd3gdasOwU0RRZBYTqquw@mail.gmail.com>
+	(Kairui Song's message of "Wed, 27 Mar 2024 14:55:53 +0800")
+References: <20240326185032.72159-1-ryncsn@gmail.com>
+	<20240326185032.72159-5-ryncsn@gmail.com>
+	<87v858mbjh.fsf@yhuang6-desk2.ccr.corp.intel.com>
+	<CAMgjq7B0rDp_u37XG0JWyFci6s9NmGd3gdasOwU0RRZBYTqquw@mail.gmail.com>
+Date: Wed, 27 Mar 2024 15:29:21 +0800
+Message-ID: <87msqkm8tq.fsf@yhuang6-desk2.ccr.corp.intel.com>
+User-Agent: Gnus/5.13 (Gnus v5.13)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH bpf-next v3 2/2] bpf,riscv: Implement bpf_addr_space_cast
- instruction
-Content-Language: en-US
-To: Puranjay Mohan <puranjay12@gmail.com>
-References: <20240326224943.86912-1-puranjay12@gmail.com>
- <20240326224943.86912-3-puranjay12@gmail.com>
-Cc: Alexei Starovoitov <ast@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
- Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman
- <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
- Yonghong Song <yonghong.song@linux.dev>,
- John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
- Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>,
- Jiri Olsa <jolsa@kernel.org>, =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?=
- <bjorn@kernel.org>, Luke Nelson <luke.r.nels@gmail.com>,
- Xi Wang <xi.wang@gmail.com>, Paul Walmsley <paul.walmsley@sifive.com>,
- Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>,
- bpf@vger.kernel.org, linux-riscv@lists.infradead.org,
- linux-kernel@vger.kernel.org
-From: Pu Lehui <pulehui@huaweicloud.com>
-In-Reply-To: <20240326224943.86912-3-puranjay12@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID:cCh0CgBngQqrygNmXjPeIA--.44585S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxWw1xXr17Xw4xCw1fAry5urg_yoW5Xr1DpF
-	45GFn3CrWvqwn7XF13Ja1UWr45Ars5ua12gFy7CrW5XFsIqry8Gw1rK3W5JrZ8CFy8W3Wr
-	CFWY9rnak3s7X37anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUkjb4IE77IF4wAFF20E14v26ryj6rWUM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-	6I80ewAv7VC0I7IYx2IY67AKxVWUGVWUXwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7MxAIw28IcxkI
-	7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxV
-	Cjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVW8ZVWrXwCIc40Y0x0EwIxGrwCI42IY
-	6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6x
-	AIw20EY4v20xvaj40_Zr0_Wr1UMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIE
-	c7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07UdxhLUUUUU=
-X-CM-SenderInfo: psxovxtxl6x35dzhxuhorxvhhfrp/
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
+Kairui Song <ryncsn@gmail.com> writes:
 
-On 2024/3/27 6:49, Puranjay Mohan wrote:
-> LLVM generates bpf_addr_space_cast instruction while translating
-> pointers between native (zero) address space and
-> __attribute__((address_space(N))). The addr_space=0 is reserved as
-> bpf_arena address space.
-> 
-> rY = addr_space_cast(rX, 0, 1) is processed by the verifier and
-> converted to normal 32-bit move: wX = wY
-> 
-> rY = addr_space_cast(rX, 1, 0) has to be converted by JIT.
-> 
-> Signed-off-by: Puranjay Mohan <puranjay12@gmail.com>
-> ---
->   arch/riscv/net/bpf_jit.h        |  1 +
->   arch/riscv/net/bpf_jit_comp64.c | 14 ++++++++++++++
->   arch/riscv/net/bpf_jit_core.c   |  1 +
->   3 files changed, 16 insertions(+)
-> 
-> diff --git a/arch/riscv/net/bpf_jit.h b/arch/riscv/net/bpf_jit.h
-> index 8a47da08dd9c..5fc374ed98ea 100644
-> --- a/arch/riscv/net/bpf_jit.h
-> +++ b/arch/riscv/net/bpf_jit.h
-> @@ -82,6 +82,7 @@ struct rv_jit_context {
->   	unsigned long flags;
->   	int stack_size;
->   	u64 arena_vm_start;
-> +	u64 user_vm_start;
->   };
->   
->   /* Convert from ninsns to bytes. */
-> diff --git a/arch/riscv/net/bpf_jit_comp64.c b/arch/riscv/net/bpf_jit_comp64.c
-> index 73726f455f6b..77ea306452d4 100644
-> --- a/arch/riscv/net/bpf_jit_comp64.c
-> +++ b/arch/riscv/net/bpf_jit_comp64.c
-> @@ -1081,6 +1081,15 @@ int bpf_jit_emit_insn(const struct bpf_insn *insn, struct rv_jit_context *ctx,
->   	/* dst = src */
->   	case BPF_ALU | BPF_MOV | BPF_X:
->   	case BPF_ALU64 | BPF_MOV | BPF_X:
-> +		if (insn_is_cast_user(insn)) {
-> +			emit_mv(RV_REG_T1, rs, ctx);
-> +			emit_zextw(RV_REG_T1, RV_REG_T1, ctx);
-> +			emit_imm(rd, (ctx->user_vm_start >> 32) << 32, ctx);
-> +			emit(rv_beq(RV_REG_T1, RV_REG_ZERO, 4), ctx);
-> +			emit_or(RV_REG_T1, rd, RV_REG_T1, ctx);
-> +			emit_mv(rd, RV_REG_T1, ctx);
-> +			break;
-> +		}
->   		if (imm == 1) {
->   			/* Special mov32 for zext */
->   			emit_zextw(rd, rd, ctx);
-> @@ -2026,3 +2035,8 @@ bool bpf_jit_supports_ptr_xchg(void)
->   {
->   	return true;
->   }
-> +
-> +bool bpf_jit_supports_arena(void)
-> +{
-> +	return true;
-> +}
-> diff --git a/arch/riscv/net/bpf_jit_core.c b/arch/riscv/net/bpf_jit_core.c
-> index 9ab739b9f9a2..8a69d6d81e32 100644
-> --- a/arch/riscv/net/bpf_jit_core.c
-> +++ b/arch/riscv/net/bpf_jit_core.c
-> @@ -81,6 +81,7 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *prog)
->   	}
->   
->   	ctx->arena_vm_start = bpf_arena_get_kern_vm_start(prog->aux->arena);
-> +	ctx->user_vm_start = bpf_arena_get_user_vm_start(prog->aux->arena);
->   	ctx->prog = prog;
->   	ctx->offset = kcalloc(prog->len, sizeof(int), GFP_KERNEL);
->   	if (!ctx->offset) {
+> On Wed, Mar 27, 2024 at 2:32=E2=80=AFPM Huang, Ying <ying.huang@intel.com=
+> wrote:
+>>
+>> Kairui Song <ryncsn@gmail.com> writes:
+>>
+>> > From: Kairui Song <kasong@tencent.com>
+>> >
+>> > We used to have the cache bypass swapin path for better performance,
+>> > but by removing it, more optimization can be applied and have
+>> > an even better overall performance and less hackish.
+>> >
+>> > And these optimizations are not easily doable or not doable at all
+>> > without this.
+>> >
+>> > This patch simply removes it, and the performance will drop heavily
+>> > for simple swapin, things won't get this worse for real workloads
+>> > but still observable. Following commits will fix this and archive a
+>> > better performance.
+>> >
+>> > Swapout/in 30G zero pages from ZRAM (This mostly measures overhead
+>> > of swap path itself, because zero pages are not compressed but simply
+>> > recorded in ZRAM, and performance drops more as SWAP device is getting
+>> > full):
+>> >
+>> > Test result of sequential swapin/out:
+>> >
+>> >                Before (us)        After (us)
+>> > Swapout:       33619409           33624641
+>> > Swapin:        32393771           41614858 (-28.4%)
+>> > Swapout (THP): 7817909            7795530
+>> > Swapin (THP) : 32452387           41708471 (-28.4%)
+>> >
+>> > Signed-off-by: Kairui Song <kasong@tencent.com>
+>> > ---
+>> >  mm/memory.c     | 18 ++++-------------
+>> >  mm/swap.h       | 10 +++++-----
+>> >  mm/swap_state.c | 53 ++++++++++---------------------------------------
+>> >  mm/swapfile.c   | 13 ------------
+>> >  4 files changed, 19 insertions(+), 75 deletions(-)
+>> >
+>> > diff --git a/mm/memory.c b/mm/memory.c
+>> > index dfdb620a9123..357d239ee2f6 100644
+>> > --- a/mm/memory.c
+>> > +++ b/mm/memory.c
+>> > @@ -3932,7 +3932,6 @@ vm_fault_t do_swap_page(struct vm_fault *vmf)
+>> >       struct page *page;
+>> >       struct swap_info_struct *si =3D NULL;
+>> >       rmap_t rmap_flags =3D RMAP_NONE;
+>> > -     bool need_clear_cache =3D false;
+>> >       bool exclusive =3D false;
+>> >       swp_entry_t entry;
+>> >       pte_t pte;
+>> > @@ -4000,14 +3999,9 @@ vm_fault_t do_swap_page(struct vm_fault *vmf)
+>> >       if (!folio) {
+>> >               if (data_race(si->flags & SWP_SYNCHRONOUS_IO) &&
+>> >                   __swap_count(entry) =3D=3D 1) {
+>> > -                     /* skip swapcache and readahead */
+>> >                       folio =3D swapin_direct(entry, GFP_HIGHUSER_MOVA=
+BLE, vmf);
+>> > -                     if (PTR_ERR(folio) =3D=3D -EBUSY)
+>> > -                             goto out;
+>> > -                     need_clear_cache =3D true;
+>> >               } else {
+>> >                       folio =3D swapin_readahead(entry, GFP_HIGHUSER_M=
+OVABLE, vmf);
+>> > -                     swapcache =3D folio;
+>> >               }
+>> >
+>> >               if (!folio) {
+>> > @@ -4023,6 +4017,7 @@ vm_fault_t do_swap_page(struct vm_fault *vmf)
+>> >                       goto unlock;
+>> >               }
+>> >
+>> > +             swapcache =3D folio;
+>> >               page =3D folio_file_page(folio, swp_offset(entry));
+>> >
+>> >               /* Had to read the page from swap area: Major fault */
+>> > @@ -4187,7 +4182,7 @@ vm_fault_t do_swap_page(struct vm_fault *vmf)
+>> >       vmf->orig_pte =3D pte;
+>> >
+>> >       /* ksm created a completely new copy */
+>> > -     if (unlikely(folio !=3D swapcache && swapcache)) {
+>> > +     if (unlikely(folio !=3D swapcache)) {
+>> >               folio_add_new_anon_rmap(folio, vma, vmf->address);
+>> >               folio_add_lru_vma(folio, vma);
+>> >       } else {
+>> > @@ -4201,7 +4196,7 @@ vm_fault_t do_swap_page(struct vm_fault *vmf)
+>> >       arch_do_swap_page(vma->vm_mm, vma, vmf->address, pte, vmf->orig_=
+pte);
+>> >
+>> >       folio_unlock(folio);
+>> > -     if (folio !=3D swapcache && swapcache) {
+>> > +     if (folio !=3D swapcache) {
+>> >               /*
+>> >                * Hold the lock to avoid the swap entry to be reused
+>> >                * until we take the PT lock for the pte_same() check
+>> > @@ -4227,9 +4222,6 @@ vm_fault_t do_swap_page(struct vm_fault *vmf)
+>> >       if (vmf->pte)
+>> >               pte_unmap_unlock(vmf->pte, vmf->ptl);
+>> >  out:
+>> > -     /* Clear the swap cache pin for direct swapin after PTL unlock */
+>> > -     if (need_clear_cache)
+>> > -             swapcache_clear(si, entry);
+>> >       if (si)
+>> >               put_swap_device(si);
+>> >       return ret;
+>> > @@ -4240,12 +4232,10 @@ vm_fault_t do_swap_page(struct vm_fault *vmf)
+>> >       folio_unlock(folio);
+>> >  out_release:
+>> >       folio_put(folio);
+>> > -     if (folio !=3D swapcache && swapcache) {
+>> > +     if (folio !=3D swapcache) {
+>> >               folio_unlock(swapcache);
+>> >               folio_put(swapcache);
+>> >       }
+>> > -     if (need_clear_cache)
+>> > -             swapcache_clear(si, entry);
+>> >       if (si)
+>> >               put_swap_device(si);
+>> >       return ret;
+>> > diff --git a/mm/swap.h b/mm/swap.h
+>> > index aee134907a70..ac9573b03432 100644
+>> > --- a/mm/swap.h
+>> > +++ b/mm/swap.h
+>> > @@ -41,7 +41,6 @@ void __delete_from_swap_cache(struct folio *folio,
+>> >  void delete_from_swap_cache(struct folio *folio);
+>> >  void clear_shadow_from_swap_cache(int type, unsigned long begin,
+>> >                                 unsigned long end);
+>> > -void swapcache_clear(struct swap_info_struct *si, swp_entry_t entry);
+>> >  struct folio *swap_cache_get_folio(swp_entry_t entry,
+>> >               struct vm_area_struct *vma, unsigned long addr);
+>> >  struct folio *filemap_get_incore_folio(struct address_space *mapping,
+>> > @@ -100,14 +99,15 @@ static inline struct folio *swapin_readahead(swp_=
+entry_t swp, gfp_t gfp_mask,
+>> >  {
+>> >       return NULL;
+>> >  }
+>> > -
+>> > -static inline int swap_writepage(struct page *p, struct writeback_con=
+trol *wbc)
+>> > +static inline struct folio *swapin_direct(swp_entry_t entry, gfp_t fl=
+ag,
+>> > +                     struct vm_fault *vmf);
+>> >  {
+>> > -     return 0;
+>> > +     return NULL;
+>> >  }
+>> >
+>> > -static inline void swapcache_clear(struct swap_info_struct *si, swp_e=
+ntry_t entry)
+>> > +static inline int swap_writepage(struct page *p, struct writeback_con=
+trol *wbc)
+>> >  {
+>> > +     return 0;
+>> >  }
+>> >
+>> >  static inline struct folio *swap_cache_get_folio(swp_entry_t entry,
+>> > diff --git a/mm/swap_state.c b/mm/swap_state.c
+>> > index 2a9c6bdff5ea..49ef6250f676 100644
+>> > --- a/mm/swap_state.c
+>> > +++ b/mm/swap_state.c
+>> > @@ -880,61 +880,28 @@ static struct folio *swap_vma_readahead(swp_entr=
+y_t targ_entry, gfp_t gfp_mask,
+>> >  }
+>> >
+>> >  /**
+>> > - * swapin_direct - swap in folios skipping swap cache and readahead
+>> > + * swapin_direct - swap in folios skipping readahead
+>> >   * @entry: swap entry of this memory
+>> >   * @gfp_mask: memory allocation flags
+>> >   * @vmf: fault information
+>> >   *
+>> > - * Returns the struct folio for entry and addr after the swap entry i=
+s read
+>> > - * in.
+>> > + * Returns the folio for entry after it is read in.
+>> >   */
+>> >  struct folio *swapin_direct(swp_entry_t entry, gfp_t gfp_mask,
+>> >                           struct vm_fault *vmf)
+>> >  {
+>> > -     struct vm_area_struct *vma =3D vmf->vma;
+>> > +     struct mempolicy *mpol;
+>> >       struct folio *folio;
+>> > -     void *shadow =3D NULL;
+>> > -
+>> > -     /*
+>> > -      * Prevent parallel swapin from proceeding with
+>> > -      * the cache flag. Otherwise, another thread may
+>> > -      * finish swapin first, free the entry, and swapout
+>> > -      * reusing the same entry. It's undetectable as
+>> > -      * pte_same() returns true due to entry reuse.
+>> > -      */
+>> > -     if (swapcache_prepare(entry)) {
+>> > -             /* Relax a bit to prevent rapid repeated page faults */
+>> > -             schedule_timeout_uninterruptible(1);
+>> > -             return ERR_PTR(-EBUSY);
+>> > -     }
+>> > -
+>> > -     /* skip swapcache */
+>> > -     folio =3D vma_alloc_folio(GFP_HIGHUSER_MOVABLE, 0,
+>> > -                             vma, vmf->address, false);
+>> > -     if (folio) {
+>> > -             __folio_set_locked(folio);
+>> > -             __folio_set_swapbacked(folio);
+>> > -
+>> > -             if (mem_cgroup_swapin_charge_folio(folio,
+>> > -                                     vma->vm_mm, GFP_KERNEL,
+>> > -                                     entry)) {
+>> > -                     folio_unlock(folio);
+>> > -                     folio_put(folio);
+>> > -                     return NULL;
+>> > -             }
+>> > -             mem_cgroup_swapin_uncharge_swap(entry);
+>> > -
+>> > -             shadow =3D get_shadow_from_swap_cache(entry);
+>> > -             if (shadow)
+>> > -                     workingset_refault(folio, shadow);
+>> > +     bool page_allocated;
+>> > +     pgoff_t ilx;
+>> >
+>> > -             folio_add_lru(folio);
+>> > +     mpol =3D get_vma_policy(vmf->vma, vmf->address, 0, &ilx);
+>> > +     folio =3D __read_swap_cache_async(entry, gfp_mask, mpol, ilx,
+>> > +                                     &page_allocated, false);
+>> > +     mpol_cond_put(mpol);
+>> >
+>> > -             /* To provide entry to swap_read_folio() */
+>> > -             folio->swap =3D entry;
+>> > +     if (page_allocated)
+>> >               swap_read_folio(folio, true, NULL);
+>> > -             folio->private =3D NULL;
+>> > -     }
+>> >
+>> >       return folio;
+>> >  }
+>>
+>> This looks similar as read_swap_cache_async().  Can we merge them?
+>
+> Yes, that's doable. But I may have to split it out again for later
+> optimizations though.
+>
+>>
+>> And, we should avoid to readahead in swapin_readahead() or
+>> swap_vma_readahead() for SWP_SYNCHRONOUS_IO anyway.  So, it appears that
+>> we can change and use swapin_readahead() directly?
+>
+> Good point, SWP_SYNCHRONOUS_IO check can be extended more after this
+> series, but readahead optimization could be another series (like the
+> previous one which tried to unify readahead for shmem/anon), so I
+> thought it's better to keep it untouched for now.
 
-Reviewed-by: Pu Lehui <pulehui@huawei.com>
-Tested-by: Pu Lehui <pulehui@huawei.com>
+Just want to check whether we can reduce the special processing for
+SWP_SYNCHRONOUS_IO as much as possible.
 
+--
+Best Regards,
+Huang, Ying
 
