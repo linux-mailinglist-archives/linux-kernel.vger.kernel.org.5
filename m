@@ -1,164 +1,150 @@
-Return-Path: <linux-kernel+bounces-120202-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-120203-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id A825688D45E
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 03:06:37 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6C99B88D463
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 03:06:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 46D551F3B497
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 02:06:37 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 289E42E4BE2
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 02:06:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 92F28208BB;
-	Wed, 27 Mar 2024 02:05:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9660121A06;
+	Wed, 27 Mar 2024 02:06:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="ioBubraX"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.12])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="Kftvu67U"
+Received: from mail-pg1-f177.google.com (mail-pg1-f177.google.com [209.85.215.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7FA132033A
-	for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 02:05:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.12
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0F741219E4
+	for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 02:06:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711505116; cv=none; b=oxSD19C4LiSaJcBwR4heOZvSNoF/eMYCgyP00EBO9YYn2XXIR3/ooZ+cVx6Vc3wKTX7ysC5uIuPNMl9s9J2KaqcEPcEuVzsC/NLIrvU5yjIzkJC74rxmQcvjrun6fzaUsdkdX+C/WmNhsCYAM6a6CuLLoGe6oOxyEpSNc1nnE84=
+	t=1711505175; cv=none; b=Zh/a3uiJCjDwb5WLdOQ52TBpC7Map5XjD8t20en/YorkpOvbXja8JCVLSOP8yNmCDZlZUruNijq2qDQi2aVMUKBXBHGnb/1HBOVif8rykTpbVOkmWM179pA107k9jgErWvAgftNHLjm4vruRcfdt88HnNbCElHrK0y9lWD9uDV4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711505116; c=relaxed/simple;
-	bh=KNmTlJTRGy6Bojm7LfbS2Dlqybz3qxOHveKiVBO4lDA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=JiNNf0bLDHmYz4u+9Hc49LGXQJh4Hzjt4YzBrvSef+t47bU810fzoBnfsR2JmsnF1ijnkdysJ9OzORhyeWTNq5zAX/GS3jRirhwfmaXXpqmhl3IOsRrdV1WGxhj8Oa00jDzQZ/OhpOOIn2/77Do8prNFYeCkOjADQDcVTv5VFL0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=ioBubraX; arc=none smtp.client-ip=198.175.65.12
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1711505115; x=1743041115;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=KNmTlJTRGy6Bojm7LfbS2Dlqybz3qxOHveKiVBO4lDA=;
-  b=ioBubraXYpthJKrHlxBjpAHQUuZYlFocartKlaslOPKGrF4ShY1VsDBL
-   ufl+Djis+izmY/OVQzd1ZNb4VmjS1ty4RWyNLrSqpRYGQaQ7QbBDfQ5tV
-   TSUMwptEJoCaVPI8L3/aZstAEuKWE8JfoFfK3hPa8KCWFJ/ORnIItQnN7
-   /4POZtUxD7k4Ru7EMYUSvOFsCm5UQfWFG5UOZyAOG2HXGPIsZGKSwkzWy
-   Tp4+Ffcwc3FMmz5a5L/0TPWX2vI8H4z32Xc3i96QcBwK44m81VrJZpUpI
-   /YMMl4tBvhADEJoW5kCjkbWZFBpWobgotPFijL/d8PkozdiMF+vlX6je/
-   Q==;
-X-CSE-ConnectionGUID: AJ7n7UlgTz6O6xqEWfOmmg==
-X-CSE-MsgGUID: dJlYVp7WS5y4/UXYM+ExRQ==
-X-IronPort-AV: E=McAfee;i="6600,9927,11025"; a="18017529"
-X-IronPort-AV: E=Sophos;i="6.07,157,1708416000"; 
-   d="scan'208";a="18017529"
-Received: from fmviesa002.fm.intel.com ([10.60.135.142])
-  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Mar 2024 19:05:13 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,157,1708416000"; 
-   d="scan'208";a="39245072"
-Received: from lkp-server01.sh.intel.com (HELO be39aa325d23) ([10.239.97.150])
-  by fmviesa002.fm.intel.com with ESMTP; 26 Mar 2024 19:05:09 -0700
-Received: from kbuild by be39aa325d23 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rpIf5-0000do-2S;
-	Wed, 27 Mar 2024 02:05:07 +0000
-Date: Wed, 27 Mar 2024 10:05:04 +0800
-From: kernel test robot <lkp@intel.com>
-To: Ryan Roberts <ryan.roberts@arm.com>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Will Deacon <will@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
-	Ard Biesheuvel <ardb@kernel.org>,
-	David Hildenbrand <david@redhat.com>,
-	Donald Dutile <ddutile@redhat.com>,
-	Eric Chanudet <echanude@redhat.com>
-Cc: oe-kbuild-all@lists.linux.dev, Ryan Roberts <ryan.roberts@arm.com>,
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1 2/3] arm64: mm: Don't remap pgtables for allocate vs
- populate
-Message-ID: <202403270906.zFGZ2FXl-lkp@intel.com>
-References: <20240326101448.3453626-3-ryan.roberts@arm.com>
+	s=arc-20240116; t=1711505175; c=relaxed/simple;
+	bh=i9TQlwS4jHXsBaCog0XSG78A4Gp0vefPX1kFJMw18KI=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=eTsIc4Ln+ZLQOWXa3KqfYifd7ywDKzZ5rut+mT3QKBkOjVRYndW0y3oY4bHZlfJ49JbXpwP2ITjK0BJ51NpUSLuvOyZlWSNuB6sz4KaZEceFRzOH/9Oi+08GerMOvVcay6T9jsPZprCqR6fbuUC0FNkWvbuQJnr0gKv+TOFwpdQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com; spf=pass smtp.mailfrom=bytedance.com; dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b=Kftvu67U; arc=none smtp.client-ip=209.85.215.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bytedance.com
+Received: by mail-pg1-f177.google.com with SMTP id 41be03b00d2f7-5d862e8b163so1316942a12.1
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 19:06:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance.com; s=google; t=1711505173; x=1712109973; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=uwUOUJFev6SeeJTav481VchkFk0enH4AA6PGxDjAHGs=;
+        b=Kftvu67UI9npnD99ZX/Mh4LtelUsJoh9yClU5hJL+jy7ezcHGbDUeao7e6X3tn/jso
+         ephFbNpvmEUjvxvg+5tsdqWR34SJwrLAgZQVTpihlWX8GG2N0Chkx/reggmBIS4jhWeo
+         A7EBa0r2Bbl4kCmNOOF1/MSeHWuH+uUrGl48sKZjxCHorUy60I2qJj9KLBOHbFC7gdCY
+         k08s3yq+Zt5et3dd8R6zHM0AhFwXtZlC9O+ctxx9xr4TuRw2OiNnodyJGc238dbxAJcx
+         0YRqQyLPa5v8tr2ZBJusnRk36+0J5vYUPAYWvrZRB97tNP4Wm8C/dD4/+DR/lzGAZBbs
+         9vOw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711505173; x=1712109973;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=uwUOUJFev6SeeJTav481VchkFk0enH4AA6PGxDjAHGs=;
+        b=C7yRCTuxwSpSRQj3XBpX0GEe0CnizmbhSsn2VnGK0aloZ3Wib4AosooZRfVKjBrdNW
+         LBV1rIr0fkIf9DA7oJ0Pmpuc3H8PArOfblmlhhZdOBUF7RSncmVYaNpfp8S91Cuu6biC
+         QUflmoK9Lj82GaN2LzHMQdFABOJ5+v5VCgHZUsfgHD4b5XqUHYaJxFYuI71OCjRkLWmV
+         SG2ZTOVaqCGCfmZ/f9qaqFv3qHWCrbWA7L9PdeYHbcsNYNW5tjC7HcOmB0RD/QzNHhgd
+         YunnlRsv4Uv2bkG8ZfdrfHMJCarIF6D4ED3B9dZK8H+rOTd3tD5/t7TT3Peqw27Jxgvs
+         OxiQ==
+X-Forwarded-Encrypted: i=1; AJvYcCW6cNkElkSvrpIFx2kIGVL/7c4JajKkLncDU0uW958TtX3sZAtHYqGKLpWVLeFY9xjdIL0PG1dZx4T2rynYJ6o2NA+gwdQsycx1VEif
+X-Gm-Message-State: AOJu0YzUktz+XGHRaQvsS13HQEgFi6nzAVAQRpY2zhKHz1lBIdE13Zd6
+	Egbmeqg+GB8bNQC2kQ72nbN6zCaPOKAcs44tXVi0sY9L6C6+Hzd3eyAQALyzzCw=
+X-Google-Smtp-Source: AGHT+IGfD8kxXoqXM9ss45RtxP+teLNaG0eXEfoVNsyy2oHStpBFx81guKfPstuUlABCC6y8qf6jrQ==
+X-Received: by 2002:a05:6a20:7fa6:b0:1a3:b00a:7921 with SMTP id d38-20020a056a207fa600b001a3b00a7921mr15025519pzj.5.1711505173271;
+        Tue, 26 Mar 2024 19:06:13 -0700 (PDT)
+Received: from [10.254.105.249] ([139.177.225.230])
+        by smtp.gmail.com with ESMTPSA id ld8-20020a170902fac800b001e009717560sm7618786plb.232.2024.03.26.19.06.08
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 26 Mar 2024 19:06:12 -0700 (PDT)
+Message-ID: <d650b969-ebd7-4821-8d5a-7938ee1b7154@bytedance.com>
+Date: Wed, 27 Mar 2024 10:06:06 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240326101448.3453626-3-ryan.roberts@arm.com>
-
-Hi Ryan,
-
-kernel test robot noticed the following build errors:
-
-[auto build test ERROR on linus/master]
-[also build test ERROR on v6.9-rc1 next-20240326]
-[cannot apply to arm64/for-next/core arm-perf/for-next/perf arm/for-next arm/fixes kvmarm/next soc/for-next]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
-
-url:    https://github.com/intel-lab-lkp/linux/commits/Ryan-Roberts/arm64-mm-Don-t-remap-pgtables-per-cont-pte-pmd-block/20240326-181754
-base:   linus/master
-patch link:    https://lore.kernel.org/r/20240326101448.3453626-3-ryan.roberts%40arm.com
-patch subject: [PATCH v1 2/3] arm64: mm: Don't remap pgtables for allocate vs populate
-config: x86_64-rhel-8.3 (https://download.01.org/0day-ci/archive/20240327/202403270906.zFGZ2FXl-lkp@intel.com/config)
-compiler: gcc-12 (Ubuntu 12.3.0-9ubuntu2) 12.3.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240327/202403270906.zFGZ2FXl-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202403270906.zFGZ2FXl-lkp@intel.com/
-
-All errors (new ones prefixed by >>):
-
-   In file included from include/linux/mm.h:29,
-                    from include/linux/memcontrol.h:21,
-                    from include/linux/swap.h:9,
-                    from include/linux/suspend.h:5,
-                    from arch/x86/kernel/asm-offsets.c:14:
->> include/linux/pgtable.h:87:29: error: redefinition of 'p4d_index'
-      87 | static inline unsigned long p4d_index(unsigned long address)
-         |                             ^~~~~~~~~
-   In file included from arch/x86/include/asm/tlbflush.h:16,
-                    from arch/x86/include/asm/uaccess.h:17,
-                    from include/linux/uaccess.h:11,
-                    from include/linux/sched/task.h:13,
-                    from include/linux/sched/signal.h:9,
-                    from include/linux/rcuwait.h:6,
-                    from include/linux/percpu-rwsem.h:7,
-                    from include/linux/fs.h:33,
-                    from include/linux/compat.h:17,
-                    from arch/x86/include/asm/ia32.h:7,
-                    from arch/x86/include/asm/elf.h:10,
-                    from include/linux/elf.h:6,
-                    from include/linux/module.h:19,
-                    from include/crypto/aria.h:22,
-                    from arch/x86/kernel/asm-offsets.c:10:
-   arch/x86/include/asm/pgtable.h:1134:29: note: previous definition of 'p4d_index' with type 'long unsigned int(long unsigned int)'
-    1134 | static inline unsigned long p4d_index(unsigned long address)
-         |                             ^~~~~~~~~
-   make[3]: *** [scripts/Makefile.build:117: arch/x86/kernel/asm-offsets.s] Error 1
-   make[3]: Target 'prepare' not remade because of errors.
-   make[2]: *** [Makefile:1197: prepare0] Error 2
-   make[2]: Target 'prepare' not remade because of errors.
-   make[1]: *** [Makefile:240: __sub-make] Error 2
-   make[1]: Target 'prepare' not remade because of errors.
-   make: *** [Makefile:240: __sub-make] Error 2
-   make: Target 'prepare' not remade because of errors.
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 2/3] mm: pgtable: add missing pt_index to struct ptdesc
+Content-Language: en-US
+To: Vishal Moola <vishal.moola@gmail.com>
+Cc: akpm@linux-foundation.org, hughd@google.com, david@redhat.com,
+ rppt@kernel.org, willy@infradead.org, muchun.song@linux.dev,
+ linux-mm@kvack.org, linux-kernel@vger.kernel.org
+References: <cover.1709541697.git.zhengqi.arch@bytedance.com>
+ <283624c2af45fb2090b41a6b1b5481bb0a45bad7.1709541697.git.zhengqi.arch@bytedance.com>
+ <ZgMhEp4R7de8oeAA@fedora>
+From: Qi Zheng <zhengqi.arch@bytedance.com>
+In-Reply-To: <ZgMhEp4R7de8oeAA@fedora>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
 
-vim +/p4d_index +87 include/linux/pgtable.h
 
-    85	
-    86	#ifndef p4d_index
-  > 87	static inline unsigned long p4d_index(unsigned long address)
-    88	{
-    89		return (address >> P4D_SHIFT) & (PTRS_PER_P4D - 1);
-    90	}
-    91	#define p4d_index p4d_index
-    92	#endif
-    93	
+On 2024/3/27 03:25, Vishal Moola wrote:
+> On Mon, Mar 04, 2024 at 07:07:19PM +0800, Qi Zheng wrote:
+>> In s390, the page->index field is used for gmap (see gmap_shadow_pgt()),
+>> so add the corresponding pt_index to struct ptdesc and add a comment to
+>> clarify this.
+> 
+> Yes s390 gmap 'uses' page->index, but not for the purpose page->index is
+> supposed to hold. It's alright to have a variable here, but I'd rather
+> see it named something more appropriate to the purporse it serves.
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Make sense.
+
+> 
+> You can take look at this patch from v5 of my ptdesc conversion series
+> for more info:
+> https://lore.kernel.org/linux-mm/20230622205745.79707-3-vishal.moola@gmail.com/
+
+Oh, but it seems that this patch has not been merged?
+
+> 
+>> Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
+>> ---
+>>   include/linux/mm_types.h | 3 +++
+>>   1 file changed, 3 insertions(+)
+>>
+>> diff --git a/include/linux/mm_types.h b/include/linux/mm_types.h
+>> index 5ea77969daae..5240bd7bca33 100644
+>> --- a/include/linux/mm_types.h
+>> +++ b/include/linux/mm_types.h
+>> @@ -425,6 +425,7 @@ FOLIO_MATCH(compound_head, _head_2a);
+>>    * @_pt_pad_1:        Padding that aliases with page's compound head.
+>>    * @pmd_huge_pte:     Protected by ptdesc->ptl, used for THPs.
+>>    * @__page_mapping:   Aliases with page->mapping. Unused for page tables.
+>> + * @pt_index:         Used for s390 gmap.
+>>    * @pt_mm:            Used for x86 pgds.
+>>    * @pt_frag_refcount: For fragmented page table tracking. Powerpc only.
+>>    * @_pt_pad_2:        Padding to ensure proper alignment.
+>> @@ -450,6 +451,7 @@ struct ptdesc {
+>>   	unsigned long __page_mapping;
+>>   
+>>   	union {
+>> +		pgoff_t pt_index;
+>>   		struct mm_struct *pt_mm;
+>>   		atomic_t pt_frag_refcount;
+>>   	};
+>> @@ -475,6 +477,7 @@ TABLE_MATCH(flags, __page_flags);
+>>   TABLE_MATCH(compound_head, pt_list);
+>>   TABLE_MATCH(compound_head, _pt_pad_1);
+>>   TABLE_MATCH(mapping, __page_mapping);
+>> +TABLE_MATCH(index, pt_index);
+>>   TABLE_MATCH(rcu_head, pt_rcu_head);
+>>   TABLE_MATCH(page_type, __page_type);
+>>   TABLE_MATCH(_refcount, __page_refcount);
+>> -- 
+>> 2.30.2
+>>
 
