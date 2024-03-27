@@ -1,190 +1,108 @@
-Return-Path: <linux-kernel+bounces-120754-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-120757-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4B44988DC8E
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 12:31:37 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 24DAC88DC9B
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 12:34:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 601681C27EDC
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 11:31:36 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0E6B7B26AB1
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 11:34:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 04E2A51C5D;
-	Wed, 27 Mar 2024 11:31:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8AFF182D76;
+	Wed, 27 Mar 2024 11:33:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=proton.me header.i=@proton.me header.b="dPX6nrSl"
-Received: from mail-40134.protonmail.ch (mail-40134.protonmail.ch [185.70.40.134])
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="SwdyOGiG"
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7434B7FBD5;
-	Wed, 27 Mar 2024 11:31:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.70.40.134
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6197381ADD;
+	Wed, 27 Mar 2024 11:33:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711539090; cv=none; b=IVu+D3R5wPgll+Jgv6BtedJWTV71mnwHaTR7uDfTDT3i84+yuAcc7EXRa5mkwEhvemCtsy4q/c1EBgt7Bj/8wraZyKwaugWUyx3YgZhuEkTSbqhKs2cNimN4h3bNauYPF2fgKvWVJ92gEZbp7D7RNtQrsADETPMbIcfgobukGG0=
+	t=1711539233; cv=none; b=r33yQLDr7xAKrdfArq7Lo99cYjM4wvxlQAy5C1zcLYUDE1U4xwCzD55pm1rn/JRjZ3a7Tx3gdpW9r4dmfHRF/hKZhaGjPYvNbC7V3sLWguCBHxtecHRyzs7EztBE3IFINBGZIl7jowf2ic0zowGcFaB9CYTPtlQAeD35KjG5CWo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711539090; c=relaxed/simple;
-	bh=qlHAixuXWiIW20mFlDDIQCSWORvB+zfn/vDiVt8QhCM=;
-	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=GVQszPe3/n88OBbB7/Y7HR0U5CME9OCyEOsFe2TZZz65I1wSoNPcvsaHtsoze/qROUNpQav230yKgwwyoVOoksGra0BTybSfXCJCdrVf70u6RW+KjIM6ypwDiOI1UohYS7NWA/TwIUbgAdXodslnH19/5a9BU24NSbnXs5U2m6A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=proton.me; spf=pass smtp.mailfrom=proton.me; dkim=pass (2048-bit key) header.d=proton.me header.i=@proton.me header.b=dPX6nrSl; arc=none smtp.client-ip=185.70.40.134
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=proton.me
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=proton.me
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=proton.me;
-	s=protonmail; t=1711539086; x=1711798286;
-	bh=YemPlwTUqK2re1xP2YFxKbLQSvS96km8r51Bibx9wFw=;
-	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
-	 Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
-	 Message-ID:BIMI-Selector;
-	b=dPX6nrSltm+a/i+1Q/lgDa617BzeAJM/Fk6Ac35gz+WA539tozygRNmaGTAZ21kaO
-	 LRxTU+l43CZ5YK3ZDE/JWGlXUiQfpN7eD2E/zEjYOa9182iaaa3QQFq6sioBnFgSJw
-	 62pwp8QVYwOmB83aSuoVy+IqdLXUu8KccdnEHmfMZhVIpsUFwYQgXtjVNv4bVvDjGB
-	 6TxIJAdT7A/bxy5UHMd7WFq849eh61Ytltq2yJMmFO40XkLs4a+5oEVxSlr8eYbGmp
-	 gmt4j5iu3wjdCGoy5JkaV6PYOIrTdu9SBWEHsYRdbJwJa08wQdHZFGmT+KH2lQINkS
-	 S/V80fKuvs7dA==
-Date: Wed, 27 Mar 2024 11:31:10 +0000
-To: Boqun Feng <boqun.feng@gmail.com>
-From: Benno Lossin <benno.lossin@proton.me>
-Cc: rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>, Alice Ryhl <aliceryhl@google.com>, Miguel Ojeda <ojeda@kernel.org>, Alex Gaynor <alex.gaynor@gmail.com>, Wedson Almeida Filho <wedsonaf@gmail.com>, Gary Guo <gary@garyguo.net>, =?utf-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, Andreas Hindborg <a.hindborg@samsung.com>, John Stultz <jstultz@google.com>, Stephen Boyd <sboyd@kernel.org>, Valentin Obst <kernel@valentinobst.de>, Heghedus Razvan <heghedus.razvan@protonmail.com>, Asahi Lina <lina@asahilina.net>
-Subject: Re: [PATCH 5/5] rust: time: Add Instant::elapsed() for monotonic clocks
-Message-ID: <9EAfAZHp8DflAFFp9hRs3vo2uuwLkwdGSRUVLQiIpCMHcKvjE95lT-VnO8DzJbL7u5Tw66qe-0_R56nwJsdcpeRGeS0794WzOPPexJZR9PA=@proton.me>
-In-Reply-To: <ZgNxy70__7-x0c-8@Boquns-Mac-mini.home>
-References: <20240324223339.971934-1-boqun.feng@gmail.com> <20240324223339.971934-6-boqun.feng@gmail.com> <kZmwObXVcyEJFVR3I05Nab0WdjcccDVARoOm6U9EmXhd89fxYRjvNmEAUZsueWTUlBlHp8jpU3i2YfgN9aWCLZameta0tPT_OgQdBOWUIko=@proton.me> <ZgMNVNOjoLH4S4Fb@boqun-archlinux> <ZgNxy70__7-x0c-8@Boquns-Mac-mini.home>
-Feedback-ID: 71780778:user:proton
+	s=arc-20240116; t=1711539233; c=relaxed/simple;
+	bh=1uRX+LFK9ACG0P83mcxgeNcdbQe8Tg17DWd/NzG+6QY=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=Q1x3aEjq2Edg5mXG8VhRm9iBuungFakEEUyeHlqjCt4maVnJETclcXQssM+rTZm6KCBiM8W0bGZ7uDMYhUBxkt7i1APBiflLBo0HmDKqnr2qfj2f/DBYBy/WP4EyBUiHp+RiyQKPXn6FYTuaXeEVgc1aKH1TJTO1/O/hexokv3s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=SwdyOGiG; arc=none smtp.client-ip=205.220.168.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279865.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 42RARiEo016204;
+	Wed, 27 Mar 2024 11:33:26 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	from:to:cc:subject:date:message-id:mime-version
+	:content-transfer-encoding:content-type; s=qcppdkim1; bh=F8nnrAY
+	YD24VYxXTCTznp7ojEShAiC4FxDB9phAZKrA=; b=SwdyOGiGjpGrrRg5xTePVQP
+	arOWl7FDVcEQrI5tZbSJhpTH6ooS11h4OJXxLpA0NOZGn+qbiQX5f+ql3FcRo2A9
+	G0liKhRQLiQDUrYGZFC0wUeQ8BY8BQx1Yrl4E53svPNkDm/OVgKbMfkC2LfFXFTo
+	cRid0bvA5AW9TTeyddG6N3k1jNWQVd9IdKDuUYv4rQ+Jst7+yWJNMeCVkPDaHv46
+	WRsN33HoQamduaLqFchrsQW3Otlfd9QXJFvl4P4eezZ14j1YcwdyDL+aE8dNpK4R
+	2ZJBqNP+hoTcbvLZ8JeyWXAbc8Q9K7igVWYc7XIxMlv33+mspmsnRZKHKClupHQ=
+	=
+Received: from nasanppmta01.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3x47811jny-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 27 Mar 2024 11:33:26 +0000 (GMT)
+Received: from nasanex01c.na.qualcomm.com (nasanex01c.na.qualcomm.com [10.45.79.139])
+	by NASANPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 42RBXOLf016159
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 27 Mar 2024 11:33:24 GMT
+Received: from hu-mohs-hyd.qualcomm.com (10.80.80.8) by
+ nasanex01c.na.qualcomm.com (10.45.79.139) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.4; Wed, 27 Mar 2024 04:33:20 -0700
+From: Mohammad Rafi Shaik <quic_mohs@quicinc.com>
+To: <srinivas.kandagatla@linaro.org>, <bgoswami@quicinc.com>,
+        <broonie@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
+        <andersson@kernel.org>, <konrad.dybcio@linaro.org>,
+        <lgirdwood@gmail.com>, <tiwai@suse.com>, <quic_rohkumar@quicinc.com>,
+        <linux-kernel@vger.kernel.org>, <alsa-devel@alsa-project.org>,
+        <linux-sound@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>
+CC: Mohammad Rafi Shaik <quic_mohs@quicinc.com>
+Subject: [PATCH v1 0/2] ASoC: qcom: add support for qcm6490 machine 
+Date: Wed, 27 Mar 2024 17:02:26 +0530
+Message-ID: <20240327113228.1706975-1-quic_mohs@quicinc.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nasanex01c.na.qualcomm.com (10.45.79.139)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: Z3lhqVGDh-Q4A-UDq2D14sWQ0erGGnnZ
+X-Proofpoint-ORIG-GUID: Z3lhqVGDh-Q4A-UDq2D14sWQ0erGGnnZ
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-03-27_08,2024-03-21_02,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ impostorscore=0 suspectscore=0 clxscore=1011 adultscore=0 phishscore=0
+ spamscore=0 mlxscore=0 malwarescore=0 lowpriorityscore=0 bulkscore=0
+ mlxlogscore=976 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2403210001 definitions=main-2403270078
 
-On 27.03.24 02:09, Boqun Feng wrote:
-> On Tue, Mar 26, 2024 at 11:00:52AM -0700, Boqun Feng wrote:
->> On Tue, Mar 26, 2024 at 05:13:38PM +0000, Benno Lossin wrote:
->>> On 24.03.24 23:33, Boqun Feng wrote:
->>>> This is a convenient way to do:
->>>>
->>>> =09t1 =3D Clock::now();
->>>> =09...
->>>> =09delta =3D  Clock::now() - t1;
->>>>
->>>> Hence add it.
->>>>
->>>> Co-developed-by: Heghedus Razvan <heghedus.razvan@protonmail.com>
->>>> Signed-off-by: Heghedus Razvan <heghedus.razvan@protonmail.com>
->>>> Co-developed-by: Asahi Lina <lina@asahilina.net>
->>>> Signed-off-by: Asahi Lina <lina@asahilina.net>
->>>> Signed-off-by: Boqun Feng <boqun.feng@gmail.com>
->>>> ---
->>>>   rust/kernel/time.rs | 25 +++++++++++++++++++++++++
->>>>   1 file changed, 25 insertions(+)
->>>>
->>>> diff --git a/rust/kernel/time.rs b/rust/kernel/time.rs
->>>> index 5cd669cbea01..cd1e45169517 100644
->>>> --- a/rust/kernel/time.rs
->>>> +++ b/rust/kernel/time.rs
->>>> @@ -114,6 +114,31 @@ fn sub(self, other: Self) -> Self::Output {
->>>>       }
->>>>   }
->>>>
->>>> +impl<T: Clock + Monotonic> Instant<T> {
->>>> +    /// Returns the time elapsed since this [`Instant`].
->>>> +    ///
->>>> +    /// This provides a convenient way to calculate time elapsed sinc=
-e a previous [`Clock::now`].
->>>> +    /// Note even though the function only exists for monotonic clock=
-s, it could still return
->>>> +    /// negative [`Duration`] if the current time is earlier than the=
- time of `&self`, and this
->>>> +    /// could happen if `&self` is a timestamp generated by a [`Insta=
-nt`] + [`Duration`].
->>>
->>> But there currently is no way to add an `Instant<T>` to a `Duration`.
->>>
->>
->> This is kinda the disadvantages of "upstreaming the bits you only need",
->> we know for sure there will be a way to generate an `Instant` with an
->> addition of a `Duration`. I can of course provide that function in this
->> series. But let's settle down on "negative durations" first.
->>
->=20
-> Hmm... I'd like to propose a change here. After some thoughts, I think
-> we should have two timestamp types: `Instant` and `KTime`, where
-> `Instant` represents solely a reading of a clocksource, and `KTime` is
-> just the normal timestamp. This means the only way to get an `Instant`
-> is via `Clock::now()`, and you cannot get an `Instant` by `Instant` +
-> `Duration` (this could return a `KTime`). And a `Instant` can always
-> `into_ktime()` return a `KTime` which support add/sub a duration. But
-> again you cannot get an `Instant` from a `KTime`.
->=20
-> Having this setup means for the same monotonic clocksource,
-> `Clock::now()` is always later than any `Instant`, since any `Instant`
-> must be created by a previous `Clock::now()`. And this makes a lot of
-> sense. Moreover, I could introduce `KTime` in a later patchset, since
-> `Instant` and `Duration` can fulfill the current requirement. We still
-> need two duration types though...
+This patchset adds support for QCM6490 SoC machine driver.
 
-I also wanted to suggest this. Another name for `KTime` could be
-`Timestamp`. I think `Timedelta` is a good fit for a duration-like type
-that allows negative values.
+Mohammad Rafi Shaik (2):
+  ASoC: dt-bindings: qcom,qcm6490: Add qcm6490 snd qcs6490 sound card
+  ASoC: qcom: qcm6490: Add machine driver for qcm6490
 
-I don't remember exactly what binder needed the time stuff for, but
-given that you cannot create negative durations with this design, I
-think going for the `Duration` and `Instant` approach in this series
-should be fine, right?
-If then later you want to compute `Timedelta`s between `Timestamp`s we
-can have another series.
+ .../bindings/sound/qcom,sm8250.yaml           |   2 +
+ sound/soc/qcom/Kconfig                        |  13 ++
+ sound/soc/qcom/Makefile                       |   2 +
+ sound/soc/qcom/qcm6490.c                      | 173 ++++++++++++++++++
+ 4 files changed, 190 insertions(+)
+ create mode 100644 sound/soc/qcom/qcm6490.c
 
->=20
-> Regards,
-> Boqun
->=20
->>>> +    ///
->>>> +    /// But for typical usages, it should always return non-negative =
-[`Duration`]:
->>>> +    ///
->>>> +    /// # Examples
->>>> +    ///
->>>> +    /// ```
->>>> +    /// use kernel::time::{Clock, clock::KernelTime};
->>>> +    ///
->>>> +    /// let ts =3D KernelTime::now();
->>>> +    ///
->>>> +    /// // `KernelTime` is monotonic.
->>>> +    /// assert!(ts.elapsed().to_ns() >=3D 0);
->>>
->>> Now that I thought a bit more about the design, I think allowing
->>> negative durations is a bad idea.
->>> Do you disagree?
->>>
->>
->> So yes, I don't think allowing negative duration is really good design.
->> But as I mentioned in the cover letter, I hope to support cases where:
->>
->> =09d =3D ts2 - ts1;
->> =09ts =3D ts3 + d;
->>
->> =09(where ts1, ts2, ts3 is Instant, and d is of course Duration)
->>
->> without any branch instruction in the asm code. It's useful in the case
->> where ts1 is a old time base, and ts3 is the new one, and you want to
->> "remain" the delta between ts2 and t1 and apply that on ts3. To me there
->> are three options to achieve that: 1) allow negative durations (this
->> also mirrors what `ktime_t` represents for timedelta AKAIU), 2) have
->> a timedelta type that differs from Duration, and it can be negative, 3)
->> provide a function to do the above calculation for `Instant`. I choose
->> the first one because it's quick and simple (also easy to map to
->> `ktime_t`). But I don't have my own preference on these three options.
+-- 
+2.25.1
 
-I think that if the strongest motivation for allowing negative duration
-is "it is more performant, since we don't need as many branches", then
-the motivation for disallowing negative durations is stronger.
-
-I think having multiple types is the solution.
-
---=20
-Cheers,
-Benno
 
