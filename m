@@ -1,57 +1,58 @@
-Return-Path: <linux-kernel+bounces-121249-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-121250-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 11A6B88E45C
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 14:59:37 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1910888E45E
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 14:59:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BD6BD2A22F0
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 13:59:35 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CA5021F2E03D
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 13:59:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E930F1A0B08;
-	Wed, 27 Mar 2024 12:27:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AA90A1A0B1F;
+	Wed, 27 Mar 2024 12:27:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="alADXk+O"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="orr5+wC+"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 32BEA1A0AFA;
-	Wed, 27 Mar 2024 12:27:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F050B1A0B16;
+	Wed, 27 Mar 2024 12:27:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711542456; cv=none; b=ki2GjXaQuufWXYVncLYqTkR5D2OnE4xRs85olsyBUNMUrRjQjrvYhVZNVX2K5D5869jKjGex8Yy+Njm1ejU+OhugvdXImCT/oxBEHPmgn71mXSN5D/6qAUb3bqowpD6d6jpkEMieAMVubowysMguMBrO+WdPNPMLF7HpTqE8BXo=
+	t=1711542459; cv=none; b=E4Ikrpm0iNKQe6/7PYcYKDfxWGzwxq3+/5yR/v9tj6jki89z/yHEOgniMw12c7Ud+mv1x2osZxloJr86wbBx7u4uSg3Z5kH5j7eSDtP5F2Xkjjuo35LQNmrgRsEexyG1abphw0IYWQ3Ga+T0U2KGW+5h4JJZuJYyl8YcemDUDrQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711542456; c=relaxed/simple;
-	bh=UvaEZ5feqbKi2/n4pQkHivA0BBi/oBUDBe8PFSfJ2mk=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=uEGio3oGQFeKfuoswqM4hUVaySTTNTmG7wuW2KgV0XmzjpD3t386EwkTq4kO9X+aby2aHvdAcE2lrnISlI0xSv1xjXSpV7/Eeg9WikR1gJQEtUpArIXvYWEB4xucc4d/EzhizIpdB5VRXAW44LY10TQkPeZ0vE47IQJSj/MHT4Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=alADXk+O; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 16B03C433F1;
-	Wed, 27 Mar 2024 12:27:35 +0000 (UTC)
+	s=arc-20240116; t=1711542459; c=relaxed/simple;
+	bh=fOTqIcdEl0uxEemd1BGjjo9GaFZfDwILduLxt+fXOLc=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=unD+uCLkLum8EVpBYWABECjHuap2sYIcnfVWL0dTUtXbf1pX5wnmbGpHh9QBgxfMQeuOfvpa0e+lFE8HyJgX+QtVrG0BhTWO0Y8o78+96fFVPlWO88EVedynEnvC0/BVkVbt+gh9dfO5V1hlkpnfKffe041OXbHVB3I7b/a0e3E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=orr5+wC+; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C174EC43399;
+	Wed, 27 Mar 2024 12:27:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711542456;
-	bh=UvaEZ5feqbKi2/n4pQkHivA0BBi/oBUDBe8PFSfJ2mk=;
+	s=k20201202; t=1711542458;
+	bh=fOTqIcdEl0uxEemd1BGjjo9GaFZfDwILduLxt+fXOLc=;
 	h=From:To:Cc:Subject:Date:From;
-	b=alADXk+O4bRHHqw4a1SN6ls/W28gWz1WiXraCCDZbyV0aKHOlbc4WNRnCMsVfeDH4
-	 Yvy75CLies2BzMRkT86HQU46KpBsjmmeeZc59DZnD4aTnfmyEkS//gdf3FQYj284wI
-	 Gx4nzrjO+vIiTLvOeHBgz5gohw7FFXYZEdkEezJVI35I+uxt35Nszd+uKZ3oVtrYez
-	 1c2LRyidFC9UTkmsASz4oKcJHv5kdI58BCNDF5F0SF5L3gSonIODoB8ZwUtNKVDf/v
-	 RkDNDOfN2rBl75313RG99EZp1wHfAhXcCoOMk2EA1P0IF/c6c5bdmMIQHfVCd98QWA
-	 8pX1t/iuU/N9A==
+	b=orr5+wC+q2UqReab75mW3LQC9BRcrfKzB/fd7VXlBax/tU3cwmYOzHiBHWEYQyuFN
+	 al3ehbTBQMoBjXAciY3JZ73/qj588Z4k7kBl5o9bVEHfo7JYRLYIA5/pYV2zwYaDsz
+	 ES4vMtH3TiUc0U9s8rMVPQjuZZp3Jid+RyOPtMLkWXfacB0Ezc2tluq/V/zWx/0mgu
+	 eWFQ3hI50BU4vO6aU8gC6Rnw37Toq0LTJ/SsiDjb1ZzRvRuSGJBEddxHMIfIJW+ag8
+	 IOu2BXaDcgyGNBtbS7TY2+kFgQQJfEzU3Q3MyZBiywLK7ZTWbzNi50nMvH195UopCN
+	 XLK1de7DeEsIw==
 From: Sasha Levin <sashal@kernel.org>
 To: stable@vger.kernel.org,
-	chiahsuan.chung@amd.com
+	swapnil.patel@amd.com
 Cc: Mario Limonciello <mario.limonciello@amd.com>,
 	Alex Deucher <alexander.deucher@amd.com>,
-	Aurabindo Pillai <aurabindo.pillai@amd.com>,
+	Chaitanya Dhere <chaitanya.dhere@amd.com>,
+	Alex Hung <alex.hung@amd.com>,
 	Daniel Wheeler <daniel.wheeler@amd.com>,
 	amd-gfx@lists.freedesktop.org,
 	dri-devel@lists.freedesktop.org,
 	linux-kernel@vger.kernel.org
-Subject: FAILED: Patch "drm/amd/display: Preserve original aspect ratio in create stream" failed to apply to 4.19-stable tree
-Date: Wed, 27 Mar 2024 08:27:34 -0400
-Message-ID: <20240327122734.2842026-1-sashal@kernel.org>
+Subject: FAILED: Patch "drm/amd/display: Change default size for dummy plane in DML2" failed to apply to 4.19-stable tree
+Date: Wed, 27 Mar 2024 08:27:36 -0400
+Message-ID: <20240327122736.2842063-1-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -73,47 +74,70 @@ Sasha
 
 ------------------ original commit in Linus's tree ------------------
 
-From 79f3e38f60e5b2416ba99804d83d22e69ae592a3 Mon Sep 17 00:00:00 2001
-From: Tom Chung <chiahsuan.chung@amd.com>
-Date: Tue, 30 Jan 2024 15:34:08 +0800
-Subject: [PATCH] drm/amd/display: Preserve original aspect ratio in create
- stream
+From 75eb8f7df65c5e6eb22a5aff8deb60ce0b65de1a Mon Sep 17 00:00:00 2001
+From: Swapnil Patel <swapnil.patel@amd.com>
+Date: Tue, 13 Feb 2024 08:09:48 -0500
+Subject: [PATCH] drm/amd/display: Change default size for dummy plane in DML2
 
-[Why]
-The original picture aspect ratio in mode struct may have chance be
-overwritten with wrong aspect ratio data in create_stream_for_sink().
-It will create a different VIC output and cause HDMI compliance test
-failed.
-
-[How]
-Preserve the original picture aspect ratio data during create the
-stream.
+[WHY & HOW]
+Currently, to map dc states into dml_display_cfg,
+We create a dummy plane if the stream doesn't have any planes
+attached to it. This dummy plane uses max addersable width height.
+This results in certain mode validations failing when they shouldn't.
 
 Cc: Mario Limonciello <mario.limonciello@amd.com>
 Cc: Alex Deucher <alexander.deucher@amd.com>
 Cc: stable@vger.kernel.org
-Reviewed-by: Aurabindo Pillai <aurabindo.pillai@amd.com>
-Signed-off-by: Tom Chung <chiahsuan.chung@amd.com>
+Reviewed-by: Chaitanya Dhere <chaitanya.dhere@amd.com>
+Acked-by: Alex Hung <alex.hung@amd.com>
+Signed-off-by: Swapnil Patel <swapnil.patel@amd.com>
 Tested-by: Daniel Wheeler <daniel.wheeler@amd.com>
 Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 ---
- drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c | 2 ++
- 1 file changed, 2 insertions(+)
+ .../display/dc/dml2/dml2_translation_helper.c  | 18 +++++++++++++++---
+ 1 file changed, 15 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
-index a2220d4787fb3..4fd07c60a2ad7 100644
---- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
-+++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
-@@ -6232,7 +6232,9 @@ create_stream_for_sink(struct drm_connector *connector,
- 		if (recalculate_timing) {
- 			freesync_mode = get_highest_refresh_rate_mode(aconnector, false);
- 			drm_mode_copy(&saved_mode, &mode);
-+			saved_mode.picture_aspect_ratio = mode.picture_aspect_ratio;
- 			drm_mode_copy(&mode, freesync_mode);
-+			mode.picture_aspect_ratio = saved_mode.picture_aspect_ratio;
- 		} else {
- 			decide_crtc_timing_for_drm_display_mode(
- 					&mode, preferred_mode, scale);
+diff --git a/drivers/gpu/drm/amd/display/dc/dml2/dml2_translation_helper.c b/drivers/gpu/drm/amd/display/dc/dml2/dml2_translation_helper.c
+index 1ba6933d2b361..17a58f41fc6a8 100644
+--- a/drivers/gpu/drm/amd/display/dc/dml2/dml2_translation_helper.c
++++ b/drivers/gpu/drm/amd/display/dc/dml2/dml2_translation_helper.c
+@@ -824,13 +824,25 @@ static struct scaler_data get_scaler_data_for_plane(const struct dc_plane_state
+ 
+ static void populate_dummy_dml_plane_cfg(struct dml_plane_cfg_st *out, unsigned int location, const struct dc_stream_state *in)
+ {
++	dml_uint_t width, height;
++
++	if (in->timing.h_addressable > 3840)
++		width = 3840;
++	else
++		width = in->timing.h_addressable;	// 4K max
++
++	if (in->timing.v_addressable > 2160)
++		height = 2160;
++	else
++		height = in->timing.v_addressable;	// 4K max
++
+ 	out->CursorBPP[location] = dml_cur_32bit;
+ 	out->CursorWidth[location] = 256;
+ 
+ 	out->GPUVMMinPageSizeKBytes[location] = 256;
+ 
+-	out->ViewportWidth[location] = in->timing.h_addressable;
+-	out->ViewportHeight[location] = in->timing.v_addressable;
++	out->ViewportWidth[location] = width;
++	out->ViewportHeight[location] = height;
+ 	out->ViewportStationary[location] = false;
+ 	out->ViewportWidthChroma[location] = 0;
+ 	out->ViewportHeightChroma[location] = 0;
+@@ -849,7 +861,7 @@ static void populate_dummy_dml_plane_cfg(struct dml_plane_cfg_st *out, unsigned
+ 	out->HTapsChroma[location] = 0;
+ 	out->VTapsChroma[location] = 0;
+ 	out->SourceScan[location] = dml_rotation_0;
+-	out->ScalerRecoutWidth[location] = in->timing.h_addressable;
++	out->ScalerRecoutWidth[location] = width;
+ 
+ 	out->LBBitPerPixel[location] = 57;
+ 
 -- 
 2.43.0
 
