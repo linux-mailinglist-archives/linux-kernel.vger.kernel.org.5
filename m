@@ -1,131 +1,119 @@
-Return-Path: <linux-kernel+bounces-121550-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-121560-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6F6DA88EB86
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 17:45:00 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5819288EAC6
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 17:13:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 02665B3941E
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 15:44:42 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A83EEB3E0F7
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 15:47:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 46451131BD1;
-	Wed, 27 Mar 2024 15:41:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 217081386BF;
+	Wed, 27 Mar 2024 15:44:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="EmPtwFae"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="iz9Gw0BZ"
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 84518136E10;
-	Wed, 27 Mar 2024 15:41:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1DC15134CC0;
+	Wed, 27 Mar 2024 15:44:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711554094; cv=none; b=fS6N9IRIoqDS9dOjLkx9+fF+PKdulO1ci89rzMYR2ZC7dYALLl7w+pQ1NXDMUlt/3B3+rDMwjhITzFqA3zranS0glyOu/UArS4T/X8byUHfDyiGkILw4uISe0VsxQLZ3lnGIN5GvS1ZjiTWCBCzhq2q45Rm3BYObkilmiM/WxS8=
+	t=1711554280; cv=none; b=WV1IzF0lI0ejK2M5ZCdcSHCrEdL3BGjIlVgOoDCA+cuvP/DACHx8Ui8a2ftdITA/9Ihu6TI3S8ff1b9i6AWhmqPjUnu46nvH8JZ4WhOYQs5WVvqQ3a4MVyXDB/J2WKJjI/2KefjLeHON7tHfK23968zwqOk+FHiEfOm/H3Euvwo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711554094; c=relaxed/simple;
-	bh=LMPJEN0Q1kL6wjZR1BkihkNe0y6p24fFsF8WeVGlrIk=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=T56lUKAgHOHFTw+qBWHGxiIc0/o9js8QRXzbIBpGgFmM7mnSNJYXP/aZkiaekS3Sf0k7gpAkZnb92Vma0aYlce7fdA4B3wd4NKCBWED2xjMEBzoCYAjHOVJv1YfZ9RsrYPJWJ4oKsRPBGEpe3nfMU7dJmSkiZ9dO1bfExz9UzlU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=EmPtwFae; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2438AC43390;
-	Wed, 27 Mar 2024 15:41:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711554094;
-	bh=LMPJEN0Q1kL6wjZR1BkihkNe0y6p24fFsF8WeVGlrIk=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=EmPtwFaeaWH723l5SGWUHrp/psYuY5+YTcOTDloFhpTsyQ3UtGJyfL36Xw6gGbhz7
-	 M1kCRRJy8laFSHW6sS9/Q5TRwuboL/5+Gmxw5uwoYULVdI+yXtzSsjImqgBaeYXIJa
-	 s1cLagNzzoclapAHQzsSyGi5XIf23OFKZUUeXwcj8yrIhR30GKZY0agHuULqYFV00d
-	 SqPCXfQFBqbDApyntBX/5WHubleBY/Wpu5GpbL4dBeTdUFf8bHqJ3LNl53GZi+S50V
-	 sm1FcIqhpZdklN9X3ACfU49pcp2mtnF5pHV8UYTTvP8OpwwWRqG0WOAYd/hKM/HFmJ
-	 ZqHX4TNNPGvnA==
-Received: by mail-oo1-f48.google.com with SMTP id 006d021491bc7-5a536642635so604395eaf.0;
-        Wed, 27 Mar 2024 08:41:34 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCVVCRYFUzrMfK6p2H+7Tc3b/OqAZEcn3PUD3Nu6hOeQvxuHVL9rNXPvc/RV8PjvIGimeNgZkX9DG8+tyZH+jAX2i5LufgpcR+sv7f55w9/GUU11GYvTwtE24QTNYwAJCoDDfNUObcuzpQ==
-X-Gm-Message-State: AOJu0Ywi3gU82viPnhkOct2vGSncqZKqfgCcDsVcWepcKgim5c0bzD4f
-	+L61uzU/FH+GQkxcFlROV2XItOFlr3PE/2f+InqKbGYI5oZIsABcLF0jJCyp4DPOcaeu7QBG373
-	EyFSGQgKOcZBGO8cHttDtxHnPQMM=
-X-Google-Smtp-Source: AGHT+IHW1/QvDGhLasTLBEzBrf8gKgjH+n1OTLtNGlnZvaDmzs9gTyGz4vmxb2pMwa+y9j4jGilJTLuqCrUIXlp6v2Q=
-X-Received: by 2002:a05:6870:6715:b0:229:e46d:763a with SMTP id
- gb21-20020a056870671500b00229e46d763amr53100oab.0.1711554093467; Wed, 27 Mar
- 2024 08:41:33 -0700 (PDT)
+	s=arc-20240116; t=1711554280; c=relaxed/simple;
+	bh=8RixWcSd2JJyYLHi087rVeRA/JkQ9IP17D2hcMIULYE=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=k+iPlsZl9l5f3gZ9Hucr12CJJVV2nnfjB3ntYFqIN1mL9U2TCwmwpWlpsmBH6gqAQgJ2QwbX3tqfA8eqUoV8mBLl0r29jhcuajSG2QOXdkP1PuU8ecjRorc0qNRthKSMCYuLcLMAjAKuBauOCXBLhGg2dRx79LLWw7BcXW4BE4s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=iz9Gw0BZ; arc=none smtp.client-ip=205.220.168.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279866.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 42RAQv8N021075;
+	Wed, 27 Mar 2024 15:42:58 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=8DoMiz8HpEkPB1xE3p2eeM8oOzoz/X+6OQFWHtIe7wY=; b=iz
+	9Gw0BZH1FCzh/4v+cjUrBF3yu2dGmd6sCW2zGkJcdN++RmMIgqUfCnsYEabQvpOp
+	spjRvN7LNJKyXd3/1sbNdZUZDh0LF0xSvpWK8FOBlmNhG6EoK+G/ScQ95C0NAfBM
+	6o6dETSN7ylfYeZeuRhJ69sJd9Td3sFVrQXt2hCSG07ekvOmjGBsKCWUlkfZ1H3P
+	djK51e4W6ywekm69jkbNb8s6rlWuAY81DYXraYrdz+eUoW/VmsYP4EW2UJhz6em2
+	YZ1I9WxzUvXOPuzVoMxAm23mwapO4p9BJRVgMkQlnhcMWTaWvJH2wf9YoKHqZJ8G
+	mKlxItByWUJxwu8dZh6A==
+Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3x4etk9atv-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 27 Mar 2024 15:42:57 +0000 (GMT)
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+	by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 42RFgucx017852
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 27 Mar 2024 15:42:56 GMT
+Received: from [10.110.28.48] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Wed, 27 Mar
+ 2024 08:42:56 -0700
+Message-ID: <00b1703a-47d7-4dc1-a3cd-f07f1a24db92@quicinc.com>
+Date: Wed, 27 Mar 2024 08:42:55 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240309201310.7548-1-W_Armin@gmx.de> <CAJZ5v0hKwThcAO4jMOzi7ySqSv_jHvs_+paBB212qVsaf7LZng@mail.gmail.com>
- <2e8100b0-d87c-413e-bcb1-b91c3ce41633@gmx.de>
-In-Reply-To: <2e8100b0-d87c-413e-bcb1-b91c3ce41633@gmx.de>
-From: "Rafael J. Wysocki" <rafael@kernel.org>
-Date: Wed, 27 Mar 2024 16:41:22 +0100
-X-Gmail-Original-Message-ID: <CAJZ5v0idAkoiuXgfGYX-a9ZoNeWxw8CjOnTKCU-00BgcpCwisQ@mail.gmail.com>
-Message-ID: <CAJZ5v0idAkoiuXgfGYX-a9ZoNeWxw8CjOnTKCU-00BgcpCwisQ@mail.gmail.com>
-Subject: Re: [PATCH 0/5] ACPI: bus: _OSC fixes
-To: Armin Wolf <W_Armin@gmx.de>
-Cc: "Rafael J. Wysocki" <rafael@kernel.org>, lenb@kernel.org, linux-acpi@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] ath10k: allocate dummy net_device dynamically
+Content-Language: en-US
+To: Jakub Kicinski <kuba@kernel.org>, Breno Leitao <leitao@debian.org>
+CC: Kalle Valo <kvalo@kernel.org>, Jeff Johnson <jjohnson@kernel.org>,
+        <keescook@chromium.org>,
+        "open list:NETWORKING DRIVERS (WIRELESS)"
+	<linux-wireless@vger.kernel.org>,
+        "open list:QUALCOMM ATHEROS ATH10K WIRELESS
+ DRIVER" <ath10k@lists.infradead.org>,
+        open list
+	<linux-kernel@vger.kernel.org>
+References: <20240319104754.2535294-1-leitao@debian.org>
+ <9fcdb857-da62-4832-ae11-043fe993e4ad@quicinc.com>
+ <20240321072821.59f56757@kernel.org>
+ <5039256c-03eb-4cda-8d11-49e4561cf1ef@quicinc.com>
+ <20240321151744.246ce2d0@kernel.org> <Zf2ceu2O47lLbKU3@gmail.com>
+ <20240322082336.49f110cc@kernel.org> <ZgQvTTnMoBn2oG1K@gmail.com>
+ <20240327074516.624b7ecf@kernel.org>
+From: Jeff Johnson <quic_jjohnson@quicinc.com>
+In-Reply-To: <20240327074516.624b7ecf@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: 9t0qFKztIXR9CV8_LmGTXfCo6DyZLgh_
+X-Proofpoint-ORIG-GUID: 9t0qFKztIXR9CV8_LmGTXfCo6DyZLgh_
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-03-27_12,2024-03-27_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 adultscore=0
+ bulkscore=0 phishscore=0 spamscore=0 impostorscore=0 mlxlogscore=882
+ priorityscore=1501 clxscore=1015 suspectscore=0 lowpriorityscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2403210001 definitions=main-2403270108
 
-On Wed, Mar 13, 2024 at 11:29=E2=80=AFPM Armin Wolf <W_Armin@gmx.de> wrote:
->
-> Am 12.03.24 um 21:10 schrieb Rafael J. Wysocki:
->
-> > On Sat, Mar 9, 2024 at 9:13=E2=80=AFPM Armin Wolf <W_Armin@gmx.de> wrot=
-e:
-> >> This patch series fixes the handling of various ACPI features bits
-> >> when evaluating _OSC.
-> >>
-> >> The first three patches fix the reporting of various features supporte=
-d
-> >> by the kernel, while the fourth patch corrects the feature bit used to
-> >> indicate support for the "Generic Initiator Affinity" in SRAT.
-> >>
-> >> The last patch fixes the reporting of IRQ ResourceSource support. Unli=
-ke
-> >> the other feature bits, the ACPI specification states that this featur=
-e
-> >> bit might be used by the ACPI firmware to indicate whether or not it
-> >> supports the usage of IRQ ResourceSource:
-> >>
-> >>          "If not set, the OS may choose to ignore the ResourceSource
-> >>           parameter in the extended interrupt descriptor."
-> >>
-> >> Since the code responsible for parsing IRQ ResourceSource already chec=
-ks
-> >> if ResourceSource is present, i assumed that we can omit taking this
-> >> into account.
-> >>
-> >> All patches where tested on a Asus Prime B650-Plus and a Dell Inspiron
-> >> 3505.
-> >>
-> >> Armin Wolf (5):
-> >>    ACPI: bus: Indicate support for _TFP thru _OSC
-> >>    ACPI: bus: Indicate support for more than 16 p-states thru _OSC
-> >>    ACPI: bus: Indicate support for the Generic Event Device thru _OSC
-> >>    ACPI: Fix Generic Initiator Affinity _OSC bit
-> >>    ACPI: bus: Indicate support for IRQ ResourceSource thru _OSC
-> >>
-> >>   drivers/acpi/bus.c   | 5 +++++
-> >>   include/linux/acpi.h | 6 +++++-
-> >>   2 files changed, 10 insertions(+), 1 deletion(-)
-> >>
-> >> --
-> > All of that looks reasonable to me, but do you know about systems in
-> > the field where any of these patches actually fix functionality?
-> >
-> > If not, I'd prefer to queue them up for 6.10 as they are likely to
-> > change behavior, at least in corner cases.
-> >
-> > Thanks!
->
-> Hi,
->
-> i know no system which even queries those feature bits, so i am fine with
-> this landing in 6.10.
+On 3/27/2024 7:45 AM, Jakub Kicinski wrote:
+> On Wed, 27 Mar 2024 07:38:05 -0700 Breno Leitao wrote:
+>>   -void init_dummy_netdev(struct net_device *dev)
+>>   +void init_dummy_netdev_core(struct net_device *dev)
+> 
+> Can init_dummy_netdev_core() be a static function (and no export)?
+> alloc_netdev_dummy() is probably going to be the only user.
+> 
+> I'd also lean towards squashing the two commits into one.
 
-Now applied as 6.10 material, thanks!
+And once all of the conversions are complete, won't init_dummy_netdev() no
+longer be used and can be removed?
+
+
+
 
