@@ -1,102 +1,113 @@
-Return-Path: <linux-kernel+bounces-121624-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-121623-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7C2CB88EB10
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 17:22:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 9A52A88EAFF
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 17:22:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3696928FF82
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 16:22:46 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2EBDF28EBBB
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 16:22:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3672613173E;
-	Wed, 27 Mar 2024 16:22:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7255C130A6A;
+	Wed, 27 Mar 2024 16:22:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=free.fr header.i=@free.fr header.b="vSMCQaVH"
-Received: from smtpfb2-g21.free.fr (smtpfb2-g21.free.fr [212.27.42.10])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EACBE83A0B;
-	Wed, 27 Mar 2024 16:22:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.27.42.10
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="IavBJGsz"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AFCBA12F596
+	for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 16:22:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711556549; cv=none; b=sxcwfFNWRtw+5ePIjGoTIYPF7/Jzh8s/pJa8oVl153xykUYcCoYQpF7MzU5te9YlHsDWN6OmyjCvpuoYF5pBrQ4Mn61ZFAwmrlk6kxd/L+xqH2z4Ua04Dd0cGlFqdTD4a4BsFaS9tF0mnKlQfTfeBtc/onoRSLPVe1cjKIL6Tyo=
+	t=1711556524; cv=none; b=qCyIVoKmhyuqIcI6UVMhklMwBOaTpxK2RY/9FbrykryqlBRYUQNML7vQqq/yCHLEMumy9n4LCcQ1OIN2pFoaNQlkArMGAgTiwMixnMAHvWB72fjxvrJiQPyfzDcMNeg7I3g6J62b7SZWSXj5jEelNM89L9JSlddwRjCvlzpQQX4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711556549; c=relaxed/simple;
-	bh=g9NIYWY7Zqq4Jpe3GVuphoABvUpR98WMNlTO/PqC+cM=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=W0+VZwtK9f5Ae2J1rFarexkkZwPR1vpW8002AGfSHYDd7Xed82yj7jzhz/Di+7pHWcGWPlzlI0pbIJfaG5z4y99fRqwAKYIIplpNsaNRvbmAVUo+tiNcdRLsCwvT2nLS/09pfrz9RnXVM88O83NjtRigXMMuIhNyQT+QRzHhPL8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=free.fr; spf=pass smtp.mailfrom=free.fr; dkim=pass (2048-bit key) header.d=free.fr header.i=@free.fr header.b=vSMCQaVH; arc=none smtp.client-ip=212.27.42.10
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=free.fr
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=free.fr
-Received: from smtp5-g21.free.fr (smtp5-g21.free.fr [212.27.42.5])
-	by smtpfb2-g21.free.fr (Postfix) with ESMTP id 75DD44C8DC;
-	Wed, 27 Mar 2024 17:22:16 +0100 (CET)
-Received: from [IPV6:2a01:e0a:255:1000:f49a:79c4:c3c6:eaf3] (unknown [IPv6:2a01:e0a:255:1000:f49a:79c4:c3c6:eaf3])
-	(Authenticated sender: duncan.sands@free.fr)
-	by smtp5-g21.free.fr (Postfix) with ESMTPSA id A3A9F60142;
-	Wed, 27 Mar 2024 17:20:26 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=free.fr;
-	s=smtp-20201208; t=1711556526;
-	bh=g9NIYWY7Zqq4Jpe3GVuphoABvUpR98WMNlTO/PqC+cM=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=vSMCQaVHDvOS+MJTVx5PjO8YOXxmIEoXqqAuvBYuRC535uirpZWCAg3Zcduu9rDtt
-	 KXKCxUyreW9ES5/mQaKWuQmfTpoSpYf8IwCcPc988GMFZvS+1wbAKCcOjbSk3mXiD9
-	 ZK8Hamum4SVmsMBE1c9pxQwBG+dsyo12O4SxF8j/IiVpKDUrPYQJdtKDuV/HWRo3xL
-	 PYIWjDHKv6Iwt5jWnepwy1J7Y+fjiF4JTHXVaKfZ4ukUUftUNKj+3Aem3Jcxh8PUFu
-	 tZQKCHeE4q+71+QXSA4TwBR2eiNJVHnD/WyXCPKNPqsgcwl7VuDNvLoWg/63fz6oE5
-	 pvkLMrw2O9NMA==
-Message-ID: <7297be25-a3c8-4e8b-9a80-ff720ccddc90@free.fr>
-Date: Wed, 27 Mar 2024 17:20:26 +0100
+	s=arc-20240116; t=1711556524; c=relaxed/simple;
+	bh=/HwfEIPp2rgEplQNov6HPpeEoXKzTzryrZH4IYBxJHY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=FQSr/lk138eOTm4D5DP6CGxpzAK/owgCK3z6VTAoIyQN+vZQcuf502CIn5YLT47zzlDLH9P4F/NLV5gCOhKYhjfBLJh3AJ5voer+Ev5FTncHc9AaC5bWvk8y8DoW6bzqUdSxR8luYy1RrcmXVAdnswyp5bDxhHu6+huMPUu/XAA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=IavBJGsz; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CE561C433C7;
+	Wed, 27 Mar 2024 16:22:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1711556524;
+	bh=/HwfEIPp2rgEplQNov6HPpeEoXKzTzryrZH4IYBxJHY=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=IavBJGszFmAlc2pEn+zfe6ZTmvjuzS8OniqKBl3fq326ok4Z1/lQIFhubB5J3YlF+
+	 UJ7cH6fmsukvoIbMe+qb0s38Dpb5PZkO6MeQepUNQjTYesXIsI7Tt6Okk8maBGjSOE
+	 2ZjVJLDIGgdH9xzzcM3kKRi0rqL4LQ0EAJjGeovCvCD4A6h/kwamy8QttJ8EIgV/zp
+	 IzQAw0jKezVA3KsiiT8nk7Tn7rm+KI1haka80NRE9CgIVAe6TudWIlsqAq3Su1BT8/
+	 j2oRBxYxdj1bTB2sEPjNeWwA+TXigfhS5Lc9NBty0edAy6fDSDCpgqHNsZ1UG/5piz
+	 SSHvZMjybuQKQ==
+Date: Wed, 27 Mar 2024 18:21:20 +0200
+From: Mike Rapoport <rppt@kernel.org>
+To: Baoquan He <bhe@redhat.com>
+Cc: linux-mm@kvack.org, linux-kernel@vger.kernel.org, x86@kernel.org,
+	linuxppc-dev@lists.ozlabs.org, akpm@linux-foundation.org
+Subject: Re: [PATCH v2 5/6] mm/mm_init.c: remove unneeded calc_memmap_size()
+Message-ID: <ZgRHgL1zbQc2DJlc@kernel.org>
+References: <20240325145646.1044760-1-bhe@redhat.com>
+ <20240325145646.1044760-6-bhe@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 4/9] USB: Convert from tasklet to BH workqueue
-To: Allen Pais <apais@linux.microsoft.com>, linux-kernel@vger.kernel.org
-Cc: tj@kernel.org, keescook@chromium.org, vkoul@kernel.org, marcan@marcan.st,
- sven@svenpeter.dev, florian.fainelli@broadcom.com, rjui@broadcom.com,
- sbranden@broadcom.com, paul@crapouillou.net, Eugeniy.Paltsev@synopsys.com,
- manivannan.sadhasivam@linaro.org, vireshk@kernel.org, Frank.Li@nxp.com,
- leoyang.li@nxp.com, zw@zh-kernel.org, wangzhou1@hisilicon.com,
- haijie1@huawei.com, shawnguo@kernel.org, s.hauer@pengutronix.de,
- sean.wang@mediatek.com, matthias.bgg@gmail.com,
- angelogioacchino.delregno@collabora.com, afaerber@suse.de,
- logang@deltatee.com, daniel@zonque.org, haojian.zhuang@gmail.com,
- robert.jarzmik@free.fr, andersson@kernel.org, konrad.dybcio@linaro.org,
- orsonzhai@gmail.com, baolin.wang@linux.alibaba.com, zhang.lyra@gmail.com,
- patrice.chotard@foss.st.com, linus.walleij@linaro.org, wens@csie.org,
- jernej.skrabec@gmail.com, peter.ujfalusi@gmail.com, kys@microsoft.com,
- haiyangz@microsoft.com, wei.liu@kernel.org, decui@microsoft.com,
- jassisinghbrar@gmail.com, mchehab@kernel.org, maintainers@bluecherrydvr.com,
- aubin.constans@microchip.com, ulf.hansson@linaro.org,
- manuel.lauss@gmail.com, mirq-linux@rere.qmqm.pl, jh80.chung@samsung.com,
- oakad@yahoo.com, hayashi.kunihiko@socionext.com, mhiramat@kernel.org,
- brucechang@via.com.tw, HaraldWelte@viatech.com, pierre@ossman.eu,
- stern@rowland.harvard.edu, oneukum@suse.com,
- openipmi-developer@lists.sourceforge.net, dmaengine@vger.kernel.org,
- asahi@lists.linux.dev, linux-arm-kernel@lists.infradead.org,
- linux-rpi-kernel@lists.infradead.org, linux-mips@vger.kernel.org,
- imx@lists.linux.dev, linuxppc-dev@lists.ozlabs.org,
- linux-mediatek@lists.infradead.org, linux-actions@lists.infradead.org,
- linux-arm-msm@vger.kernel.org, linux-riscv@lists.infradead.org,
- linux-sunxi@lists.linux.dev, linux-tegra@vger.kernel.org,
- linux-hyperv@vger.kernel.org, linux-rdma@vger.kernel.org,
- linux-media@vger.kernel.org, linux-mmc@vger.kernel.org,
- linux-omap@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
- linux-s390@vger.kernel.org, netdev@vger.kernel.org, linux-usb@vger.kernel.org
-References: <20240327160314.9982-1-apais@linux.microsoft.com>
- <20240327160314.9982-5-apais@linux.microsoft.com>
-Content-Language: en-GB
-From: Duncan Sands <duncan.sands@free.fr>
-In-Reply-To: <20240327160314.9982-5-apais@linux.microsoft.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240325145646.1044760-6-bhe@redhat.com>
 
-Hi Allen, the usbatm bits look very reasonable to me.  Unfortunately I don't 
-have the hardware to test any more.  Still, for what it's worth:
+On Mon, Mar 25, 2024 at 10:56:45PM +0800, Baoquan He wrote:
+> Nobody calls calc_memmap_size() now.
+> 
+> Signed-off-by: Baoquan He <bhe@redhat.com>
 
-Signed-off-by: Duncan Sands <duncan.sands@free.fr>
+Reviewed-by: Mike Rapoport (IBM) <rppt@kernel.org>
+
+Looks like I replied to patch 6/6 twice by mistake and missed this one.
+
+> ---
+>  mm/mm_init.c | 20 --------------------
+>  1 file changed, 20 deletions(-)
+> 
+> diff --git a/mm/mm_init.c b/mm/mm_init.c
+> index 7f71e56e83f3..e269a724f70e 100644
+> --- a/mm/mm_init.c
+> +++ b/mm/mm_init.c
+> @@ -1331,26 +1331,6 @@ static void __init calculate_node_totalpages(struct pglist_data *pgdat,
+>  	pr_debug("On node %d totalpages: %lu\n", pgdat->node_id, realtotalpages);
+>  }
+>  
+> -static unsigned long __init calc_memmap_size(unsigned long spanned_pages,
+> -						unsigned long present_pages)
+> -{
+> -	unsigned long pages = spanned_pages;
+> -
+> -	/*
+> -	 * Provide a more accurate estimation if there are holes within
+> -	 * the zone and SPARSEMEM is in use. If there are holes within the
+> -	 * zone, each populated memory region may cost us one or two extra
+> -	 * memmap pages due to alignment because memmap pages for each
+> -	 * populated regions may not be naturally aligned on page boundary.
+> -	 * So the (present_pages >> 4) heuristic is a tradeoff for that.
+> -	 */
+> -	if (spanned_pages > present_pages + (present_pages >> 4) &&
+> -	    IS_ENABLED(CONFIG_SPARSEMEM))
+> -		pages = present_pages;
+> -
+> -	return PAGE_ALIGN(pages * sizeof(struct page)) >> PAGE_SHIFT;
+> -}
+> -
+>  #ifdef CONFIG_TRANSPARENT_HUGEPAGE
+>  static void pgdat_init_split_queue(struct pglist_data *pgdat)
+>  {
+> -- 
+> 2.41.0
+> 
+
+-- 
+Sincerely yours,
+Mike.
 
