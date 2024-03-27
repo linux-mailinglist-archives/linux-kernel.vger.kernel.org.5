@@ -1,146 +1,123 @@
-Return-Path: <linux-kernel+bounces-120329-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-120330-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D458888D5DA
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 06:30:29 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2E6A488D5E2
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 06:30:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 877C629B9F0
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 05:30:28 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 60B7D1C240EB
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 05:30:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CD2CD12B8B;
-	Wed, 27 Mar 2024 05:30:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C764818C3D;
+	Wed, 27 Mar 2024 05:30:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="k419Lh9f"
-Received: from mail-pf1-f174.google.com (mail-pf1-f174.google.com [209.85.210.174])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="H4dWE6S3"
+Received: from mail-yb1-f182.google.com (mail-yb1-f182.google.com [209.85.219.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BAD0363CF
-	for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 05:30:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 62F211862A
+	for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 05:30:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711517420; cv=none; b=bAwF9RGCxlVXBZJPc0x8prZs4dzibzmub3w+tNPpR6Dn0wb7raLB6POPOcdWbKpV77UCBgL6mfyPlK5eIzfLK3pO2s3bts/z/Gs8Tr+ryWc3KqS9wP7rRt7HdwwJ+R7QpiRFzkw0aL9+PzNpGI/0DaWLeWAodAUr0GpoePUhx0Q=
+	t=1711517430; cv=none; b=jUapcaGtGK8JICjKK6mMYGXzNS6s4B3yNQSQ52ub4pBbh7Zgw/4F+TWHXC5qoub1MbrYH0v4B8QwcdN9KgoX7nzCxVAijlXpnjuxI1VRrchJblUcyNiUnzC1+Gq1xBslb8ut16RfvPKK77RIXvGxgmf/zMp1SJrRdVOTaLghhRY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711517420; c=relaxed/simple;
-	bh=NQc7nRPv1d9S3Xkgl83x4eUWpFOJrO1ZnLvgPWT83h8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=HByF/jUSlNB1hL/uaJNOCwNMmSu+f38EeaWB5D3py3Z9/c5JCORoz4tpf2Sr8fopUSvwhPfAq88ugETVfnrjXFLf/lV++rdN1CI50Sov0XC9CZvZSNP8a+CfsczH2YRpLasQKw8qqzqA5jxlyfkoS5eGuQNcaZlZdx+voPK9r7s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=k419Lh9f; arc=none smtp.client-ip=209.85.210.174
+	s=arc-20240116; t=1711517430; c=relaxed/simple;
+	bh=byCnV2tPaGestbeTssXGbJuf2T1qGlLsaVMMKNfKmYE=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=jbSOuLgA1Cf5XmzJO186SMF4fTP/DS8QA3H0XDHBky7Ghbsk425BlcYxXWw9zJVrZrYNZCg8wrOwMgfpRBGBlBLSEnNb3XGfaQIRwq1Zl6DufTPWEeAxygGNInCwF8HN/uCID5gKmzKQ4OtIfcQsmBbPHma0ZDaWFAnKMDNgPDo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=H4dWE6S3; arc=none smtp.client-ip=209.85.219.182
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-pf1-f174.google.com with SMTP id d2e1a72fcca58-6e88e4c8500so4512431b3a.2
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 22:30:18 -0700 (PDT)
+Received: by mail-yb1-f182.google.com with SMTP id 3f1490d57ef6-db3a09e96daso5914615276.3
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 22:30:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1711517418; x=1712122218; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=kVMXtjqW+QAkMGD+S/kOxyuhWzew87XrBM54rG8SDqk=;
-        b=k419Lh9f2tiioctwLHMaSjGEC9861SF+kzimK+oDK+nG/hBwok+RFV1MVenzr7ug6Y
-         1gJYgDj3CT6j5ufXbnXOLhiKf4Rlzl1UntTViubQ5/Eivo3WSYAmqD6BtUffmkuhJ/33
-         heZDNFAwDQ3byHccrhnqEH1RkcRRJV37iI7YGcmOga4/E50jsyVItUvysKDKfCwIUnJk
-         9bxNBNfjNlEfWMptN2ER1QvU0LhFdP00GMauoTcYCqYtccx/KrP2r5CpJ/cydeoXrxgK
-         O8Ft+cgpevudVVZ6JKcwBoh9KibBruXhKsnaRdGx9IIbq+1wEx6V9Zk9n3BAXSrjxqWj
-         v7pA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711517418; x=1712122218;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=google.com; s=20230601; t=1711517427; x=1712122227; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=kVMXtjqW+QAkMGD+S/kOxyuhWzew87XrBM54rG8SDqk=;
-        b=FyycaVZFz2btaudv7Ci5AWwnuw2/ab8PPq+x7Gwzgzfkbvw9x3DLZPt4b43ECHcflh
-         0v6x6dNBijG2iySJCgCV7WJChC5A+/yMMupES1ECjxlq0FcHSyOWRt5nPAr/BiMpjGx6
-         sfcrmGSxljFkkINKQxti74D0AiDLgKeJKTsUsql0nfxHZ9WPAF/9omKtiJX2rgP0rUNP
-         NFR2RGlj0KqHOwK2TirWGI4x4zjay3ac7NZrhyi8wVxVjOM8Kq1XdE5ZAhnWTdM4S1bn
-         ky7c6JARbi/G7dsOzERqmTrFG/phIWHBQp3C64OF1uCV2QBe6Ze0aEIP0CfXAtZEczAZ
-         +Bpg==
-X-Forwarded-Encrypted: i=1; AJvYcCXfD2MrYlMy7xPGTpi/b3+15HAoFgSeyMz5cBbbt6t6SD8fK/KEkYpR224HeOfMS9YOJf7sfBVpkS1kaMcsQ5+9Sqnnr8VndEw6eJjy
-X-Gm-Message-State: AOJu0YzpX+iERxLjkMWbppwxdE3aQhBJDVRjJcz+RnFGf0GPMlR9Sq7a
-	HjR0HCEgqVivCVLF2dZgcbTEeQ3rU5jIoYh4Q2PQIPBUEMpXKUJSpd2fS0eHwA==
-X-Google-Smtp-Source: AGHT+IHhkks7dIOvaFXe2jmlSHjqEQtmU6xHx/LKBsOUAj+YdfH3VVrKnf/kxA0qJ5GUlcEYRTkyZw==
-X-Received: by 2002:a05:6a21:350f:b0:1a3:e297:ff17 with SMTP id zc15-20020a056a21350f00b001a3e297ff17mr1455211pzb.50.1711517417622;
-        Tue, 26 Mar 2024 22:30:17 -0700 (PDT)
-Received: from google.com (60.89.247.35.bc.googleusercontent.com. [35.247.89.60])
-        by smtp.gmail.com with ESMTPSA id d15-20020a170902cecf00b001defd404efdsm5338953plg.13.2024.03.26.22.30.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Mar 2024 22:30:16 -0700 (PDT)
-Date: Wed, 27 Mar 2024 05:30:12 +0000
-From: Mingwei Zhang <mizhang@google.com>
-To: Dapeng Mi <dapeng1.mi@linux.intel.com>
-Cc: Sean Christopherson <seanjc@google.com>,
-	Paolo Bonzini <pbonzini@redhat.com>,
-	Jim Mattson <jmattson@google.com>, kvm@vger.kernel.org,
-	linux-kernel@vger.kernel.org, Zhenyu Wang <zhenyuw@linux.intel.com>,
-	Zhang Xiong <xiong.y.zhang@intel.com>,
-	Like Xu <like.xu.linux@gmail.com>,
-	Jinrong Liang <cloudliang@tencent.com>,
-	Dapeng Mi <dapeng1.mi@intel.com>
-Subject: Re: [kvm-unit-tests Patch v3 03/11] x86: pmu: Add asserts to warn
- inconsistent fixed events and counters
-Message-ID: <ZgOu5PP2qXhbflRc@google.com>
-References: <20240103031409.2504051-1-dapeng1.mi@linux.intel.com>
- <20240103031409.2504051-4-dapeng1.mi@linux.intel.com>
+        bh=46OYyrCzIWWF/3s+Ae2ZfY3Ah+E/dlrHPDoFMxmXEao=;
+        b=H4dWE6S3Lc3hqYO1sKhYJkiR4ngLzZyvVYtVjk6tIfKr94pOSJBpX5TTFsn7qYvlqb
+         VPUk3MEbLH79NgTN4KlgF69RpOnzgt64bma8ky1bdkLKz6yRqJdo+3poLI2znug6HJ+S
+         c7lvf8mJ/TgvvdoM5IR00+p5dNOXx94t1fpD4EURBZQ13rgSyBqg2KpoRXL5EEQIPvhw
+         XnWPmRFobyuzkiu8XR3Ze9Y/2qbllEz0WZx9Qc+3ylbpajK/ppXIK7txR5jtctgzHBLE
+         oV8Zg30mKW/0y7ooBsaBI/uo3LynSKdk0OkbJddTzA7VHi8B/02eBs6O28OsMBnXvmop
+         cLhw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711517427; x=1712122227;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=46OYyrCzIWWF/3s+Ae2ZfY3Ah+E/dlrHPDoFMxmXEao=;
+        b=HFTTqE5vdu+YTdCRjR6wbXeMqXMv2KTd03BX/b8497TMwlhOHhCyv0Cx21vA1M137m
+         0NaJMytHzvGLnEjzD4baNjODCPqQYRLiFWVCW/+V40ZHGf91b+dGQSAudtKYFFan0pNT
+         TDnw+D4wBIkjIWj0hZAOWj6yoeyWD9fdev69HwSJh1b08iJkyGwJUJh+PMInvCucXUMI
+         ObGc9Rr4YxOdWLoEpPipLmJXHRWhQa3nESHiC0f3Yd4Qk4oJ/e8ERXWhK90CcX85hJ1Q
+         w5WFykgRN/8gYZzSChPEIr2PSp0xXLzhF9iDQzoRXz6JnAaxXxq61fN+FUZVBKrQcFj/
+         jPrQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVrSX8Rfl/JMoK9ly/u/XZfFxzsmgK5sw+rkH67/zPNyiacb9vcc7mXOVKRGt30m96OkmWONzbSshLGJ7rS9S+EAI6IBgYBFENglIlG
+X-Gm-Message-State: AOJu0Yx2vHGWSF8z2Oijt0v1/qtMgOYewBaEG9Hsgtm6R5Vaz+Dr2LH8
+	MNGwPVBxWJ2B088TpK2NTf7M1NsdO9+aOBvwnA32H90rjV4sZfn51LClHr4MAx6I2pO0NdpjfgP
+	KBYrJ43NqnmH5bVRsJs8tH2UdsN5sNMcu3ccN
+X-Google-Smtp-Source: AGHT+IFT6iFfr000Obf+QkmvoSbVZfaj9pcC2FQUNkJVJksAYv7Nlrl9Jv8X4rApffkwMtrulh3M2VuGxqjpuh7DHmA=
+X-Received: by 2002:a25:db42:0:b0:dc6:be64:cfd1 with SMTP id
+ g63-20020a25db42000000b00dc6be64cfd1mr104510ybf.36.1711517426957; Tue, 26 Mar
+ 2024 22:30:26 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240103031409.2504051-4-dapeng1.mi@linux.intel.com>
+References: <20240321163705.3067592-1-surenb@google.com> <20240321163705.3067592-15-surenb@google.com>
+ <ZgI9Iejn6DanJZ-9@casper.infradead.org> <CAJuCfpGvviA5H1Em=ymd8Yqz_UoBVGFOst_wbaA6AwGkvffPHg@mail.gmail.com>
+ <ZgORbAY5F0MWgX5K@casper.infradead.org>
+In-Reply-To: <ZgORbAY5F0MWgX5K@casper.infradead.org>
+From: Suren Baghdasaryan <surenb@google.com>
+Date: Tue, 26 Mar 2024 22:30:14 -0700
+Message-ID: <CAJuCfpFaiQjOr5jWiNbz_B3ycrgNTfw+Vbpyk9EHqvek4bDPsA@mail.gmail.com>
+Subject: Re: [PATCH v6 14/37] lib: introduce support for page allocation tagging
+To: Matthew Wilcox <willy@infradead.org>
+Cc: akpm@linux-foundation.org, kent.overstreet@linux.dev, mhocko@suse.com, 
+	vbabka@suse.cz, hannes@cmpxchg.org, roman.gushchin@linux.dev, mgorman@suse.de, 
+	dave@stgolabs.net, liam.howlett@oracle.com, 
+	penguin-kernel@i-love.sakura.ne.jp, corbet@lwn.net, void@manifault.com, 
+	peterz@infradead.org, juri.lelli@redhat.com, catalin.marinas@arm.com, 
+	will@kernel.org, arnd@arndb.de, tglx@linutronix.de, mingo@redhat.com, 
+	dave.hansen@linux.intel.com, x86@kernel.org, peterx@redhat.com, 
+	david@redhat.com, axboe@kernel.dk, mcgrof@kernel.org, masahiroy@kernel.org, 
+	nathan@kernel.org, dennis@kernel.org, jhubbard@nvidia.com, tj@kernel.org, 
+	muchun.song@linux.dev, rppt@kernel.org, paulmck@kernel.org, 
+	pasha.tatashin@soleen.com, yosryahmed@google.com, yuzhao@google.com, 
+	dhowells@redhat.com, hughd@google.com, andreyknvl@gmail.com, 
+	keescook@chromium.org, ndesaulniers@google.com, vvvvvv@google.com, 
+	gregkh@linuxfoundation.org, ebiggers@google.com, ytcoode@gmail.com, 
+	vincent.guittot@linaro.org, dietmar.eggemann@arm.com, rostedt@goodmis.org, 
+	bsegall@google.com, bristot@redhat.com, vschneid@redhat.com, cl@linux.com, 
+	penberg@kernel.org, iamjoonsoo.kim@lge.com, 42.hyeyoo@gmail.com, 
+	glider@google.com, elver@google.com, dvyukov@google.com, 
+	songmuchun@bytedance.com, jbaron@akamai.com, aliceryhl@google.com, 
+	rientjes@google.com, minchan@google.com, kaleshsingh@google.com, 
+	kernel-team@android.com, linux-doc@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, iommu@lists.linux.dev, 
+	linux-arch@vger.kernel.org, linux-fsdevel@vger.kernel.org, linux-mm@kvack.org, 
+	linux-modules@vger.kernel.org, kasan-dev@googlegroups.com, 
+	cgroups@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, Jan 03, 2024, Dapeng Mi wrote:
-> Current PMU code deosn't check whether PMU fixed counter number is
-> larger than pre-defined fixed events. If so, it would cause memory
-> access out of range.
-> 
-> So add assert to warn this invalid case.
-> 
-> Signed-off-by: Dapeng Mi <dapeng1.mi@linux.intel.com>
-Reviewed-by: Mingwei Zhang <mizhang@google.com>
-> ---
->  x86/pmu.c | 10 ++++++++--
->  1 file changed, 8 insertions(+), 2 deletions(-)
-> 
-> diff --git a/x86/pmu.c b/x86/pmu.c
-> index a13b8a8398c6..a42fff8d8b36 100644
-> --- a/x86/pmu.c
-> +++ b/x86/pmu.c
-> @@ -111,8 +111,12 @@ static struct pmu_event* get_counter_event(pmu_counter_t *cnt)
->  		for (i = 0; i < gp_events_size; i++)
->  			if (gp_events[i].unit_sel == (cnt->config & 0xffff))
->  				return &gp_events[i];
-> -	} else
-> -		return &fixed_events[cnt->ctr - MSR_CORE_PERF_FIXED_CTR0];
-> +	} else {
-> +		int idx = cnt->ctr - MSR_CORE_PERF_FIXED_CTR0;
-maybe unsigned int is better?
-> +
-> +		assert(idx < ARRAY_SIZE(fixed_events));
-> +		return &fixed_events[idx];
-> +	}
->  
->  	return (void*)0;
->  }
-> @@ -245,6 +249,7 @@ static void check_fixed_counters(void)
->  	};
->  	int i;
->  
-> +	assert(pmu.nr_fixed_counters <= ARRAY_SIZE(fixed_events));
->  	for (i = 0; i < pmu.nr_fixed_counters; i++) {
->  		cnt.ctr = fixed_events[i].unit_sel;
->  		measure_one(&cnt);
-> @@ -266,6 +271,7 @@ static void check_counters_many(void)
->  			gp_events[i % gp_events_size].unit_sel;
->  		n++;
->  	}
-> +	assert(pmu.nr_fixed_counters <= ARRAY_SIZE(fixed_events));
->  	for (i = 0; i < pmu.nr_fixed_counters; i++) {
->  		cnt[n].ctr = fixed_events[i].unit_sel;
->  		cnt[n].config = EVNTSEL_OS | EVNTSEL_USR;
-> -- 
-> 2.34.1
-> 
+On Tue, Mar 26, 2024 at 8:24=E2=80=AFPM Matthew Wilcox <willy@infradead.org=
+> wrote:
+>
+> On Mon, Mar 25, 2024 at 11:23:25PM -0700, Suren Baghdasaryan wrote:
+> > Ah, good eye! We probably didn't include page_ext.h before and then
+> > when we did I missed removing these declarations. I'll post a fixup.
+> > Thanks!
+>
+> Andrew's taken a patch from me to remove these two declarations as
+> part of marking them const.  No patch needed from you, just needed to
+> check there was no reason to have them.
+
+Sweet! Thank you, Matthew!
 
