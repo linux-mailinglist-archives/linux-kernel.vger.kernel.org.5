@@ -1,55 +1,54 @@
-Return-Path: <linux-kernel+bounces-121212-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-121213-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8804288E3FE
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 14:51:19 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4CF6788E400
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 14:51:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3F0B41F2ED0D
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 13:51:19 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7E6411C2B63A
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 13:51:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B03AD188A6F;
-	Wed, 27 Mar 2024 12:26:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6EF61187E6B;
+	Wed, 27 Mar 2024 12:26:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="bHQgX0Y7"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ErDgZ6ef"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ED4C0187E95;
-	Wed, 27 Mar 2024 12:25:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B0F41188A7B;
+	Wed, 27 Mar 2024 12:26:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711542360; cv=none; b=F14cTtLtiyos3ZSWu3LDD5zBKw00w5Gb43YWoK0Te9/Dwvcxaa2ets1ZggbGklSIQrZMmrDGVB2CuTInJ1ZyC2MDMZzkg8ufzQuABSlYskiH/Lb3JqGjajLol8x2oTzNPuKnbIaz58ysd58uHUMCJlJ0HVhW10ao1ja0ztnGCqs=
+	t=1711542362; cv=none; b=cRLDBcsoCGu7jeSf3lre1dZFQI2yAk2TRpJI/4+/J0Hubyi2mD4bfGPkzysLj+wu5YdzrnLI9DY5y6tQN/I+N6w85QrdfvGolzI5gN1za0i01YKtrwOFHACYvicWN+0iPG9RapOtIVm6i37KPJkIBuHTo9AV8IZD0E56mS6tlmc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711542360; c=relaxed/simple;
-	bh=Z5vUmkS8hfQIbMpayfKcdT4YraA68Xmvs3u64CLWPas=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=I2/jhkzBlp/Gh3S/TsYnTTRAcJE2LASING+4QLv6RIgwxgY/MmFcMWL8t2XLwQjk7dgyQVArEqwQ7pkIucSO7A2p9dGW4L7wtgMAmvWYJjfu1IVYZUgzzZg6VCi1z3Cy06t1SB2JHHXXb0mI5IhbJbhNLx0QbFQu3IYKseMKUeA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=bHQgX0Y7; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0C31FC433C7;
-	Wed, 27 Mar 2024 12:25:58 +0000 (UTC)
+	s=arc-20240116; t=1711542362; c=relaxed/simple;
+	bh=DMHzWxFUC1TEX6HEDYOe4zkyxWF09G1xypBMn4vEbB0=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=sj1WJ/apkFGzlyNspmbZxPjaFzywK1CmM36WakBB8kYjDik8Cd1qOErwgkzliQKyMCLUe1yQjfXpiUE+Ki5ulQ9Hc37BUeMwwEVEFgZdTbRvxwPgT/AlXI4gPQ8257HA2oewMkJK98ex7nkfWg/AQuZsd366TCE7Kw0zSwpOP7o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ErDgZ6ef; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 93A98C433C7;
+	Wed, 27 Mar 2024 12:26:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711542359;
-	bh=Z5vUmkS8hfQIbMpayfKcdT4YraA68Xmvs3u64CLWPas=;
+	s=k20201202; t=1711542362;
+	bh=DMHzWxFUC1TEX6HEDYOe4zkyxWF09G1xypBMn4vEbB0=;
 	h=From:To:Cc:Subject:Date:From;
-	b=bHQgX0Y7lKFVMu55DL8mI5dgnf27tDn/iZYwQhf5WqGROPDM8PRkn6Me7POsSDloP
-	 XkfvY+S+c7zyZ9gA4pivm2KxkGfJQl/bwQfWH13gSrkL6ezoxPS9HWEUNep2huiWH9
-	 NixG6/N1HNxzBmS6yhmcZ+J4ehybPwrFF6iIX8BwAJIr1L8i/hey5KYnr/t73rmKef
-	 R6FudNEvdnebtuUm+0260JLzEGw5aFKOarFpyIe2a91BSvjuA7i+aa3vqqQWEEozwz
-	 MyXpwK7MS6Vnstn4NB0mXodR1DH6yhBVxILBLRxZKw0VMQITTAzE9PohkqhUQUX6Dn
-	 IHvPLllv7u4aQ==
+	b=ErDgZ6efAvaYyPDvbSPZK9SoO1GA/gA/a6oF6v+CXDrfV+L9n3TSD8zeJ++CHM4N3
+	 2AB8c1z18Gae/3lwbJ+9a5g2LVCyq8TGcxgJOeiia2qtLhBo/yKgI3oErlXLeZf8Be
+	 qUAt5FysdmOJAv2XvJaxO2z4S/+ZHPyNS+bsnzSjgCJaTp3Oc1aaH4n6S/dNFinEhq
+	 iPL+lDwC1qoog5jsEeUAwuLZeuRMqoGGRQui5IGbRTaTuNzOANpMwBBVjjFfM645to
+	 P5VB6qnjuzkbfYrNuSzngu98D/bjYuK/hbuqWD1wvetyeYv53Qgwwku7ReGUIgv/+S
+	 xJYHdH9wGL1aA==
 From: Sasha Levin <sashal@kernel.org>
 To: stable@vger.kernel.org,
-	yukuai3@huawei.com
-Cc: Xiao Ni <xni@redhat.com>,
-	Mike Snitzer <snitzer@kernel.org>,
-	Song Liu <song@kernel.org>,
-	dm-devel@lists.linux.dev,
+	alexander.deucher@amd.com
+Cc: Feifei Xu <Feifei.Xu@amd.com>,
+	amd-gfx@lists.freedesktop.org,
+	dri-devel@lists.freedesktop.org,
 	linux-kernel@vger.kernel.org
-Subject: FAILED: Patch "md/dm-raid: don't call md_reap_sync_thread() directly" failed to apply to 4.19-stable tree
-Date: Wed, 27 Mar 2024 08:25:57 -0400
-Message-ID: <20240327122558.2840700-1-sashal@kernel.org>
+Subject: FAILED: Patch "drm/amdgpu/gfx10: set UNORD_DISPATCH in compute MQDs" failed to apply to 4.19-stable tree
+Date: Wed, 27 Mar 2024 08:26:00 -0400
+Message-ID: <20240327122600.2840741-1-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -71,81 +70,50 @@ Sasha
 
 ------------------ original commit in Linus's tree ------------------
 
-From cd32b27a66db8776d8b8e82ec7d7dde97a8693b0 Mon Sep 17 00:00:00 2001
-From: Yu Kuai <yukuai3@huawei.com>
-Date: Tue, 5 Mar 2024 15:23:03 +0800
-Subject: [PATCH] md/dm-raid: don't call md_reap_sync_thread() directly
+From ca01082353d4c7c316cd8cfa53879970564a9c71 Mon Sep 17 00:00:00 2001
+From: Alex Deucher <alexander.deucher@amd.com>
+Date: Fri, 19 Jan 2024 12:23:55 -0500
+Subject: [PATCH] drm/amdgpu/gfx10: set UNORD_DISPATCH in compute MQDs
 
-Currently md_reap_sync_thread() is called from raid_message() directly
-without holding 'reconfig_mutex', this is definitely unsafe because
-md_reap_sync_thread() can change many fields that is protected by
-'reconfig_mutex'.
+This needs to be set to 1 to avoid a potential deadlock in
+the GC 10.x and newer.  On GC 9.x and older, this needs
+to be set to 0.  This can lead to hangs in some mixed
+graphics and compute workloads.  Updated firmware is also
+required for AQL.
 
-However, hold 'reconfig_mutex' here is still problematic because this
-will cause deadlock, for example, commit 130443d60b1b ("md: refactor
-idle/frozen_sync_thread() to fix deadlock").
-
-Fix this problem by using stop_sync_thread() to unregister sync_thread,
-like md/raid did.
-
-Fixes: be83651f0050 ("DM RAID: Add message/status support for changing sync action")
-Cc: stable@vger.kernel.org # v6.7+
-Signed-off-by: Yu Kuai <yukuai3@huawei.com>
-Signed-off-by: Xiao Ni <xni@redhat.com>
-Acked-by: Mike Snitzer <snitzer@kernel.org>
-Signed-off-by: Song Liu <song@kernel.org>
-Link: https://lore.kernel.org/r/20240305072306.2562024-7-yukuai1@huaweicloud.com
+Reviewed-by: Feifei Xu <Feifei.Xu@amd.com>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+Cc: stable@vger.kernel.org
 ---
- drivers/md/dm-raid.c | 28 ++++++++++++++++++----------
- 1 file changed, 18 insertions(+), 10 deletions(-)
+ drivers/gpu/drm/amd/amdgpu/gfx_v10_0.c           | 2 +-
+ drivers/gpu/drm/amd/amdkfd/kfd_mqd_manager_v10.c | 1 +
+ 2 files changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/md/dm-raid.c b/drivers/md/dm-raid.c
-index e2d7a73c0f874..47c4b1b6e532a 100644
---- a/drivers/md/dm-raid.c
-+++ b/drivers/md/dm-raid.c
-@@ -3719,6 +3719,7 @@ static int raid_message(struct dm_target *ti, unsigned int argc, char **argv,
- {
- 	struct raid_set *rs = ti->private;
- 	struct mddev *mddev = &rs->md;
-+	int ret = 0;
+diff --git a/drivers/gpu/drm/amd/amdgpu/gfx_v10_0.c b/drivers/gpu/drm/amd/amdgpu/gfx_v10_0.c
+index 420c82b54650f..be4d5c1e826f3 100644
+--- a/drivers/gpu/drm/amd/amdgpu/gfx_v10_0.c
++++ b/drivers/gpu/drm/amd/amdgpu/gfx_v10_0.c
+@@ -6589,7 +6589,7 @@ static int gfx_v10_0_compute_mqd_init(struct amdgpu_device *adev, void *m,
+ #ifdef __BIG_ENDIAN
+ 	tmp = REG_SET_FIELD(tmp, CP_HQD_PQ_CONTROL, ENDIAN_SWAP, 1);
+ #endif
+-	tmp = REG_SET_FIELD(tmp, CP_HQD_PQ_CONTROL, UNORD_DISPATCH, 0);
++	tmp = REG_SET_FIELD(tmp, CP_HQD_PQ_CONTROL, UNORD_DISPATCH, 1);
+ 	tmp = REG_SET_FIELD(tmp, CP_HQD_PQ_CONTROL, TUNNEL_DISPATCH,
+ 			    prop->allow_tunneling);
+ 	tmp = REG_SET_FIELD(tmp, CP_HQD_PQ_CONTROL, PRIV_STATE, 1);
+diff --git a/drivers/gpu/drm/amd/amdkfd/kfd_mqd_manager_v10.c b/drivers/gpu/drm/amd/amdkfd/kfd_mqd_manager_v10.c
+index 8b7fed9135269..22cbfa1bdaddb 100644
+--- a/drivers/gpu/drm/amd/amdkfd/kfd_mqd_manager_v10.c
++++ b/drivers/gpu/drm/amd/amdkfd/kfd_mqd_manager_v10.c
+@@ -170,6 +170,7 @@ static void update_mqd(struct mqd_manager *mm, void *mqd,
+ 	m->cp_hqd_pq_control = 5 << CP_HQD_PQ_CONTROL__RPTR_BLOCK_SIZE__SHIFT;
+ 	m->cp_hqd_pq_control |=
+ 			ffs(q->queue_size / sizeof(unsigned int)) - 1 - 1;
++	m->cp_hqd_pq_control |= CP_HQD_PQ_CONTROL__UNORD_DISPATCH_MASK;
+ 	pr_debug("cp_hqd_pq_control 0x%x\n", m->cp_hqd_pq_control);
  
- 	if (!mddev->pers || !mddev->pers->sync_request)
- 		return -EINVAL;
-@@ -3726,17 +3727,24 @@ static int raid_message(struct dm_target *ti, unsigned int argc, char **argv,
- 	if (test_bit(RT_FLAG_RS_SUSPENDED, &rs->runtime_flags))
- 		return -EBUSY;
- 
--	if (!strcasecmp(argv[0], "frozen"))
--		set_bit(MD_RECOVERY_FROZEN, &mddev->recovery);
--	else
--		clear_bit(MD_RECOVERY_FROZEN, &mddev->recovery);
-+	if (!strcasecmp(argv[0], "frozen")) {
-+		ret = mddev_lock(mddev);
-+		if (ret)
-+			return ret;
- 
--	if (!strcasecmp(argv[0], "idle") || !strcasecmp(argv[0], "frozen")) {
--		if (mddev->sync_thread) {
--			set_bit(MD_RECOVERY_INTR, &mddev->recovery);
--			md_reap_sync_thread(mddev);
--		}
--	} else if (decipher_sync_action(mddev, mddev->recovery) != st_idle)
-+		md_frozen_sync_thread(mddev);
-+		mddev_unlock(mddev);
-+	} else if (!strcasecmp(argv[0], "idle")) {
-+		ret = mddev_lock(mddev);
-+		if (ret)
-+			return ret;
-+
-+		md_idle_sync_thread(mddev);
-+		mddev_unlock(mddev);
-+	}
-+
-+	clear_bit(MD_RECOVERY_FROZEN, &mddev->recovery);
-+	if (decipher_sync_action(mddev, mddev->recovery) != st_idle)
- 		return -EBUSY;
- 	else if (!strcasecmp(argv[0], "resync"))
- 		; /* MD_RECOVERY_NEEDED set below */
+ 	m->cp_hqd_pq_base_lo = lower_32_bits((uint64_t)q->queue_address >> 8);
 -- 
 2.43.0
 
