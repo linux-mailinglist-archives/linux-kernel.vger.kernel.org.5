@@ -1,58 +1,55 @@
-Return-Path: <linux-kernel+bounces-120982-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-120983-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7578688E169
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 14:01:45 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 509C888E160
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 14:00:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C17B6B21100
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 12:54:59 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 670F6B263E0
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 12:55:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DF1F0156247;
-	Wed, 27 Mar 2024 12:15:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D88DC156643;
+	Wed, 27 Mar 2024 12:16:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qiWn/50H"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="iov2eyRt"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2724015623F;
-	Wed, 27 Mar 2024 12:15:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2A71B156255;
+	Wed, 27 Mar 2024 12:16:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711541759; cv=none; b=PvlV7dw3rtxcomTY6fUkGg9rTcmL6Ijktbi3EKja48cfTCOZK1In33h0eRffOpUHKT01skYz65yM6WPszy1QmjOjjw0vBYmihSTydHv2ldqevCTYoruxG1h7tWhUHonyEiegehqz6TZCzMXF1OhEfSx2CnB6z8zOtxo90rrshRs=
+	t=1711541762; cv=none; b=tW63tvoHZjZ+3NPv81BQZbsmMVbXgPGtjuJVxpp/0xBACabFjLoI4Gz5W83umFu1XKidXtSUipIaQLOvfT3s4U4HnnvkOLUGFKk7phxL3umeFOo+Td4Vz8Vtdma/xjXJeprqo3KpVCME4RD192YWN5SFdAm8OCwAkaGyR9alfgQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711541759; c=relaxed/simple;
-	bh=mfbgHbPzTgNHogBsmr1pXkKJqEMKk/914rY6t3Qu7BM=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=DVWixib6lHiPdgl3RIVZaoq5Xxgz4PaWjZoPDYBoT8iSVVUIR7f4Zsje3VPHS86b29Voo9B9zcUEbZhY5d4geL7CcW4TyfbTx1a2UvkDFxlnCxF/WOtl8Ejc2QfFTGN+hiHCe75ZC8DQYPRhH8e1sbve8X4sx88afPgI2OtZIa4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qiWn/50H; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CC1B1C43390;
-	Wed, 27 Mar 2024 12:15:57 +0000 (UTC)
+	s=arc-20240116; t=1711541762; c=relaxed/simple;
+	bh=nYxfiqXAgwCuN9FhY224C7MV4EWYfSXT1YcuSPNgbUw=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=JPE+gmC7xQosOLt04HhcnfYW6CRdmNq9cf6xqIlOiOLhTJP89dlg4zWf3aadLq8fnq7cTPFwr6W68cfD4qn2eDHnCfM/iOeaYHNQNCf8JZu9hub21eK8U2rlvweMoCEc5RL3AARsW0ZgL9jus58bkJ3U5CZyeTcukkFHKcd4GCk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=iov2eyRt; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D0F24C433F1;
+	Wed, 27 Mar 2024 12:16:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711541759;
-	bh=mfbgHbPzTgNHogBsmr1pXkKJqEMKk/914rY6t3Qu7BM=;
+	s=k20201202; t=1711541761;
+	bh=nYxfiqXAgwCuN9FhY224C7MV4EWYfSXT1YcuSPNgbUw=;
 	h=From:To:Cc:Subject:Date:From;
-	b=qiWn/50HP6D6MpN+sXBofpRT6h6A8ONnLi08I12V60uwlWGsKPlC9u16M0xIwoFR2
-	 LDVy8l4nVgbMb1eWViVlDFQx4kEycDqFRNFqnf+gmdJnIl9eIUnHdUgmG6ahuIV3Fx
-	 lR9L71WMvXFw3ymY7AnbCtvBvag7YObDXcHJy7Ijtz1sBRJ3xEFri5RiSogLN9QaSP
-	 qbKGQcArM73Rew9jEyRxew52mboZV4eOIVGnR+ETWoyNA7yqJC692eBVmF5fMkEtEA
-	 f673a2NE8UFDvzNQ3ylqNpHd//VjjVg+qWZHxjQzxQu4ORjX5JuNOi+5hTViS0A2kf
-	 K0nNJGuTK0Qgw==
+	b=iov2eyRtMuW3oF3K0CFETNSnIZfX6LY7vfl/jdVhLQMpFcn8zvriq+HpK8aUiAasG
+	 JLQBYuwtObY5mTVwTHVIMdwX9hhsbNix6RkY79zBLcY9JEDo/auc0nSkgXkdFZ6YLD
+	 4hRKekz8k27c5B4QlAEK6NsCoMXMFFc31YUchvY0NNKLkZu+J/kttkCb2ENsves7WF
+	 iJ6VFypFn7LhaKqmcZA715XfnFpNqcV9voF5+oHJLC4F5GJYCHZit2HRIU1ern2U5M
+	 l8WGWpZTv3Zx1b+LUEOvOsbvF6LaANndtrbavYVXL9ums+XTjmaOgY2yg+ol2Y6kDd
+	 ZKY94KEufoa6Q==
 From: Sasha Levin <sashal@kernel.org>
 To: stable@vger.kernel.org,
-	wenjing.liu@amd.com
-Cc: Mario Limonciello <mario.limonciello@amd.com>,
-	Alex Deucher <alexander.deucher@amd.com>,
-	Alvin Lee <alvin.lee2@amd.com>,
-	Alex Hung <alex.hung@amd.com>,
-	Daniel Wheeler <daniel.wheeler@amd.com>,
-	amd-gfx@lists.freedesktop.org,
-	dri-devel@lists.freedesktop.org,
+	alex.williamson@redhat.com
+Cc: Diana Craciun <diana.craciun@oss.nxp.com>,
+	Kevin Tian <kevin.tian@intel.com>,
+	Eric Auger <eric.auger@redhat.com>,
+	kvm@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: FAILED: Patch "drm/amd/display: Lock all enabled otg pipes even with no planes" failed to apply to 5.15-stable tree
-Date: Wed, 27 Mar 2024 08:15:56 -0400
-Message-ID: <20240327121556.2832310-1-sashal@kernel.org>
+Subject: FAILED: Patch "vfio/fsl-mc: Block calling interrupt handler without trigger" failed to apply to 5.15-stable tree
+Date: Wed, 27 Mar 2024 08:15:59 -0400
+Message-ID: <20240327121559.2832347-1-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -74,92 +71,56 @@ Sasha
 
 ------------------ original commit in Linus's tree ------------------
 
-From 94040c2cbb1a872ff779da06bf034ccfee0f9cba Mon Sep 17 00:00:00 2001
-From: Wenjing Liu <wenjing.liu@amd.com>
-Date: Fri, 23 Feb 2024 15:17:39 -0500
-Subject: [PATCH] drm/amd/display: Lock all enabled otg pipes even with no
- planes
+From 7447d911af699a15f8d050dfcb7c680a86f87012 Mon Sep 17 00:00:00 2001
+From: Alex Williamson <alex.williamson@redhat.com>
+Date: Fri, 8 Mar 2024 16:05:28 -0700
+Subject: [PATCH] vfio/fsl-mc: Block calling interrupt handler without trigger
 
-[WHY]
-On DCN32 we support dynamic ODM even when OTG is blanked. When ODM
-configuration is dynamically changed and the OTG is on blank pattern,
-we will need to reprogram OPP's test pattern based on new ODM
-configuration. Therefore we need to lock the OTG pipe to avoid temporary
-corruption when we are reprogramming OPP blank patterns.
+The eventfd_ctx trigger pointer of the vfio_fsl_mc_irq object is
+initially NULL and may become NULL if the user sets the trigger
+eventfd to -1.  The interrupt handler itself is guaranteed that
+trigger is always valid between request_irq() and free_irq(), but
+the loopback testing mechanisms to invoke the handler function
+need to test the trigger.  The triggering and setting ioctl paths
+both make use of igate and are therefore mutually exclusive.
 
-[HOW]
-Add a new interdependent update lock implementation to lock all enabled
-OTG pipes even when there is no plane on the OTG for DCN32.
+The vfio-fsl-mc driver does not make use of irqfds, nor does it
+support any sort of masking operations, therefore unlike vfio-pci
+and vfio-platform, the flow can remain essentially unchanged.
 
-Cc: Mario Limonciello <mario.limonciello@amd.com>
-Cc: Alex Deucher <alexander.deucher@amd.com>
-Cc: stable@vger.kernel.org
-Reviewed-by: Alvin Lee <alvin.lee2@amd.com>
-Acked-by: Alex Hung <alex.hung@amd.com>
-Signed-off-by: Wenjing Liu <wenjing.liu@amd.com>
-Tested-by: Daniel Wheeler <daniel.wheeler@amd.com>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+Cc: Diana Craciun <diana.craciun@oss.nxp.com>
+Cc:  <stable@vger.kernel.org>
+Fixes: cc0ee20bd969 ("vfio/fsl-mc: trigger an interrupt via eventfd")
+Reviewed-by: Kevin Tian <kevin.tian@intel.com>
+Reviewed-by: Eric Auger <eric.auger@redhat.com>
+Link: https://lore.kernel.org/r/20240308230557.805580-8-alex.williamson@redhat.com
+Signed-off-by: Alex Williamson <alex.williamson@redhat.com>
 ---
- .../amd/display/dc/hwss/dcn32/dcn32_hwseq.c   | 23 +++++++++++++++++++
- .../amd/display/dc/hwss/dcn32/dcn32_hwseq.h   |  2 ++
- .../amd/display/dc/hwss/dcn32/dcn32_init.c    |  2 +-
- 3 files changed, 26 insertions(+), 1 deletion(-)
+ drivers/vfio/fsl-mc/vfio_fsl_mc_intr.c | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/gpu/drm/amd/display/dc/hwss/dcn32/dcn32_hwseq.c b/drivers/gpu/drm/amd/display/dc/hwss/dcn32/dcn32_hwseq.c
-index b890db0bfc46b..c0b526cf17865 100644
---- a/drivers/gpu/drm/amd/display/dc/hwss/dcn32/dcn32_hwseq.c
-+++ b/drivers/gpu/drm/amd/display/dc/hwss/dcn32/dcn32_hwseq.c
-@@ -1785,3 +1785,26 @@ void dcn32_prepare_bandwidth(struct dc *dc,
- 		context->bw_ctx.bw.dcn.clk.p_state_change_support = p_state_change_support;
- 	}
- }
-+
-+void dcn32_interdependent_update_lock(struct dc *dc,
-+		struct dc_state *context, bool lock)
-+{
-+	unsigned int i;
-+	struct pipe_ctx *pipe;
-+	struct timing_generator *tg;
-+
-+	for (i = 0; i < dc->res_pool->pipe_count; i++) {
-+		pipe = &context->res_ctx.pipe_ctx[i];
-+		tg = pipe->stream_res.tg;
-+
-+		if (!resource_is_pipe_type(pipe, OTG_MASTER) ||
-+				!tg->funcs->is_tg_enabled(tg) ||
-+				dc_state_get_pipe_subvp_type(context, pipe) == SUBVP_PHANTOM)
-+			continue;
-+
-+		if (lock)
-+			dc->hwss.pipe_control_lock(dc, pipe, true);
-+		else
-+			dc->hwss.pipe_control_lock(dc, pipe, false);
-+	}
-+}
-diff --git a/drivers/gpu/drm/amd/display/dc/hwss/dcn32/dcn32_hwseq.h b/drivers/gpu/drm/amd/display/dc/hwss/dcn32/dcn32_hwseq.h
-index 069e20bc87c0a..f55c11fc56ec7 100644
---- a/drivers/gpu/drm/amd/display/dc/hwss/dcn32/dcn32_hwseq.h
-+++ b/drivers/gpu/drm/amd/display/dc/hwss/dcn32/dcn32_hwseq.h
-@@ -129,4 +129,6 @@ bool dcn32_is_pipe_topology_transition_seamless(struct dc *dc,
- void dcn32_prepare_bandwidth(struct dc *dc,
- 	struct dc_state *context);
+diff --git a/drivers/vfio/fsl-mc/vfio_fsl_mc_intr.c b/drivers/vfio/fsl-mc/vfio_fsl_mc_intr.c
+index d62fbfff20b82..82b2afa9b7e31 100644
+--- a/drivers/vfio/fsl-mc/vfio_fsl_mc_intr.c
++++ b/drivers/vfio/fsl-mc/vfio_fsl_mc_intr.c
+@@ -141,13 +141,14 @@ static int vfio_fsl_mc_set_irq_trigger(struct vfio_fsl_mc_device *vdev,
+ 	irq = &vdev->mc_irqs[index];
  
-+void dcn32_interdependent_update_lock(struct dc *dc,
-+		struct dc_state *context, bool lock);
- #endif /* __DC_HWSS_DCN32_H__ */
-diff --git a/drivers/gpu/drm/amd/display/dc/hwss/dcn32/dcn32_init.c b/drivers/gpu/drm/amd/display/dc/hwss/dcn32/dcn32_init.c
-index 2b073123d3ede..67d661dbd5b7c 100644
---- a/drivers/gpu/drm/amd/display/dc/hwss/dcn32/dcn32_init.c
-+++ b/drivers/gpu/drm/amd/display/dc/hwss/dcn32/dcn32_init.c
-@@ -58,7 +58,7 @@ static const struct hw_sequencer_funcs dcn32_funcs = {
- 	.disable_plane = dcn20_disable_plane,
- 	.disable_pixel_data = dcn20_disable_pixel_data,
- 	.pipe_control_lock = dcn20_pipe_control_lock,
--	.interdependent_update_lock = dcn10_lock_all_pipes,
-+	.interdependent_update_lock = dcn32_interdependent_update_lock,
- 	.cursor_lock = dcn10_cursor_lock,
- 	.prepare_bandwidth = dcn32_prepare_bandwidth,
- 	.optimize_bandwidth = dcn20_optimize_bandwidth,
+ 	if (flags & VFIO_IRQ_SET_DATA_NONE) {
+-		vfio_fsl_mc_irq_handler(hwirq, irq);
++		if (irq->trigger)
++			eventfd_signal(irq->trigger);
+ 
+ 	} else if (flags & VFIO_IRQ_SET_DATA_BOOL) {
+ 		u8 trigger = *(u8 *)data;
+ 
+-		if (trigger)
+-			vfio_fsl_mc_irq_handler(hwirq, irq);
++		if (trigger && irq->trigger)
++			eventfd_signal(irq->trigger);
+ 	}
+ 
+ 	return 0;
 -- 
 2.43.0
 
