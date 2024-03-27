@@ -1,54 +1,54 @@
-Return-Path: <linux-kernel+bounces-121028-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-121029-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4D85E88E1A5
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 14:08:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 4CBFB88E1AA
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 14:08:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 053F41F2948A
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 13:08:07 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0535D1F2182E
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 13:08:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 22B5513A26F;
-	Wed, 27 Mar 2024 12:18:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 98E9315AD99;
+	Wed, 27 Mar 2024 12:18:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="FGUDB47Y"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Nv+GDRSs"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6553815ADAA;
-	Wed, 27 Mar 2024 12:18:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C4F4015B0F1;
+	Wed, 27 Mar 2024 12:18:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711541883; cv=none; b=Ib96CGkuPU7EmccF54an05yShj0rqBc0PY+DSQ6MpBGA+sdZhj/nJFX3bzYv3ggBTDO8Cnkk9peBG277OYGqGiE4+FIv63aNFVgZvGMXxPeZgUwppv95loCGwKT/Os2/8jPJ44qQpCYQbCZigs/VAMV0ZaHF6D/+Q47lhwixHJg=
+	t=1711541885; cv=none; b=biO7KaW5Z88iQduynRWXyraFxE6GZH6uVV7Wc3EDFzJ2YwSJd4xdNLlEjwSOCTs6EL0W7yqO21UBVyzUb/JineJSBJtIF7ixRygdEt0KTz/irNyL9gFuC1kBNdUruPynXpk2d6oW88UL6v85XjI9DwB5L0aMWvD/L3PL70UZ+0g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711541883; c=relaxed/simple;
-	bh=9Yi0T0LkSLpTnLQ/txC1nQOT89nbA/ndE+6gRJjYopY=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=NGOp+rXbHX3Y9u+ADzwfuyQLu04WSFAS6fpMvVIh0oWN+RNtjHbabh7Bpo9+Be3mbHpmY0VAzVKilDXWEXNJcG8njAO+KkXtjogouzNZ5KBrHSVaZlWhKIjReSuZtq0lJJGOkO122ZnSLuMMIOCleXUAqArE77Gvcoryzr0AxIg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=FGUDB47Y; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 88747C43390;
-	Wed, 27 Mar 2024 12:18:02 +0000 (UTC)
+	s=arc-20240116; t=1711541885; c=relaxed/simple;
+	bh=yVJlr6IIVy2A+HoDXn3iOpcjwINm8BC2DgjVpBCtXVg=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Plr8+hEt6aHgBdWBinf/GRjayXLLy/osFH73z1ScyFhilOWI8mj/DNC2ri9e6YSw/elAefZJ3QtCbA12htmA65yGhQpU9YfEtcA4c5gGFJpW3go8fMwJXddJifWS73CfStyrvZfxsQTvrx78EyslkX/AJJDxa3dWMZwIjzFk+8w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Nv+GDRSs; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id ED4CBC433C7;
+	Wed, 27 Mar 2024 12:18:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711541883;
-	bh=9Yi0T0LkSLpTnLQ/txC1nQOT89nbA/ndE+6gRJjYopY=;
+	s=k20201202; t=1711541885;
+	bh=yVJlr6IIVy2A+HoDXn3iOpcjwINm8BC2DgjVpBCtXVg=;
 	h=From:To:Cc:Subject:Date:From;
-	b=FGUDB47YoB8znILVgtFpbYkDWEIyW2nIQraYPPCLJ0LuGQRb87ShYs3CPYktrJ8tA
-	 cN47HgQN9USEF2F7Sym5+vrbnqRuORiu/TSWF+KFcfvFZ81yPPsT31aizX1dchjLgA
-	 784vrTUrtSCyOUYHbXsaShyLCbKDWK/dCWXaIaNwkdQVW6f1ur/ahiJuCqCAki+jRR
-	 jUhnkbyHV9FYhyE/Ozyzz0i9JJA40vxPnVRG+4WLuvezt++Ne3lx59txJ/V1WUdcbH
-	 H0HcGLfVzG9xo+rK1rqsLRPW9rl/MKA4zV+Uc2bq6ace2kyk8Jt5vOUU65O6Sw5bRd
-	 +52z1Ftfe89jQ==
+	b=Nv+GDRSscQImOrFskeqnCrPsLuU8cxKxitCPV7w1HAc+I2WsI4E4U3BJciEsojcfS
+	 qMNr02+B/jqKrmL+6TxZG84Mn/L55lcYTixSWQcktLoegDeki/E+1LlbeX5n2hYWve
+	 xH/KyKXmeIlNaaIJGEKRQkrfCi3sUeFFe2Y43YuN6QW0Q0dAdWvGZmyJxWo47th/gD
+	 CBPIZccxVVArPJvwVMIlF7/m6MHiFE748yZhHvoATqKxI50+CrRhNpwW7nu3yY00L8
+	 bpPtf/HiQfUP+5v5dB4LlPrI4g4hhQZg6ux7jj5WoicNrshkkg0dMPIBMDup7Cw2Xe
+	 +fBcnOD9I269Q==
 From: Sasha Levin <sashal@kernel.org>
 To: stable@vger.kernel.org,
-	alexander.deucher@amd.com
-Cc: Feifei Xu <Feifei.Xu@amd.com>,
-	amd-gfx@lists.freedesktop.org,
-	dri-devel@lists.freedesktop.org,
+	ekorenevsky@astralinux.ru
+Cc: Steve French <stfrench@microsoft.com>,
+	linux-cifs@vger.kernel.org,
+	samba-technical@lists.samba.org,
 	linux-kernel@vger.kernel.org
-Subject: FAILED: Patch "drm/amdgpu/gfx11: set UNORD_DISPATCH in compute MQDs" failed to apply to 5.10-stable tree
-Date: Wed, 27 Mar 2024 08:18:01 -0400
-Message-ID: <20240327121801.2833996-1-sashal@kernel.org>
+Subject: FAILED: Patch "cifs: open_cached_dir(): add FILE_READ_EA to desired access" failed to apply to 5.10-stable tree
+Date: Wed, 27 Mar 2024 08:18:03 -0400
+Message-ID: <20240327121804.2834033-1-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -70,50 +70,39 @@ Sasha
 
 ------------------ original commit in Linus's tree ------------------
 
-From fc8f5a29d4cf0979ac4019282c3ca5cb246969f9 Mon Sep 17 00:00:00 2001
-From: Alex Deucher <alexander.deucher@amd.com>
-Date: Fri, 19 Jan 2024 12:32:59 -0500
-Subject: [PATCH] drm/amdgpu/gfx11: set UNORD_DISPATCH in compute MQDs
+From f1b8224b4e6ed59e7e6f5c548673c67410098d8d Mon Sep 17 00:00:00 2001
+From: Eugene Korenevsky <ekorenevsky@astralinux.ru>
+Date: Fri, 1 Mar 2024 17:53:44 +0300
+Subject: [PATCH] cifs: open_cached_dir(): add FILE_READ_EA to desired access
 
-This needs to be set to 1 to avoid a potential deadlock in
-the GC 10.x and newer.  On GC 9.x and older, this needs
-to be set to 0. This can lead to hangs in some mixed
-graphics and compute workloads. Updated firmware is also
-required for AQL.
+Since smb2_query_eas() reads EA and uses cached directory,
+open_cached_dir() should request FILE_READ_EA access.
 
-Reviewed-by: Feifei Xu <Feifei.Xu@amd.com>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+Otherwise listxattr() and getxattr() will fail with EACCES
+(0xc0000022 STATUS_ACCESS_DENIED SMB status).
+
+Link: https://bugzilla.kernel.org/show_bug.cgi?id=218543
 Cc: stable@vger.kernel.org
+Signed-off-by: Eugene Korenevsky <ekorenevsky@astralinux.ru>
+Signed-off-by: Steve French <stfrench@microsoft.com>
 ---
- drivers/gpu/drm/amd/amdgpu/gfx_v11_0.c           | 2 +-
- drivers/gpu/drm/amd/amdkfd/kfd_mqd_manager_v11.c | 1 +
- 2 files changed, 2 insertions(+), 1 deletion(-)
+ fs/smb/client/cached_dir.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/amd/amdgpu/gfx_v11_0.c b/drivers/gpu/drm/amd/amdgpu/gfx_v11_0.c
-index 043eff309100f..c1e0000107608 100644
---- a/drivers/gpu/drm/amd/amdgpu/gfx_v11_0.c
-+++ b/drivers/gpu/drm/amd/amdgpu/gfx_v11_0.c
-@@ -3846,7 +3846,7 @@ static int gfx_v11_0_compute_mqd_init(struct amdgpu_device *adev, void *m,
- 			    (order_base_2(prop->queue_size / 4) - 1));
- 	tmp = REG_SET_FIELD(tmp, CP_HQD_PQ_CONTROL, RPTR_BLOCK_SIZE,
- 			    (order_base_2(AMDGPU_GPU_PAGE_SIZE / 4) - 1));
--	tmp = REG_SET_FIELD(tmp, CP_HQD_PQ_CONTROL, UNORD_DISPATCH, 0);
-+	tmp = REG_SET_FIELD(tmp, CP_HQD_PQ_CONTROL, UNORD_DISPATCH, 1);
- 	tmp = REG_SET_FIELD(tmp, CP_HQD_PQ_CONTROL, TUNNEL_DISPATCH,
- 			    prop->allow_tunneling);
- 	tmp = REG_SET_FIELD(tmp, CP_HQD_PQ_CONTROL, PRIV_STATE, 1);
-diff --git a/drivers/gpu/drm/amd/amdkfd/kfd_mqd_manager_v11.c b/drivers/gpu/drm/amd/amdkfd/kfd_mqd_manager_v11.c
-index 15277f1d5cf0a..d722cbd317834 100644
---- a/drivers/gpu/drm/amd/amdkfd/kfd_mqd_manager_v11.c
-+++ b/drivers/gpu/drm/amd/amdkfd/kfd_mqd_manager_v11.c
-@@ -224,6 +224,7 @@ static void update_mqd(struct mqd_manager *mm, void *mqd,
- 	m->cp_hqd_pq_control = 5 << CP_HQD_PQ_CONTROL__RPTR_BLOCK_SIZE__SHIFT;
- 	m->cp_hqd_pq_control |=
- 			ffs(q->queue_size / sizeof(unsigned int)) - 1 - 1;
-+	m->cp_hqd_pq_control |= CP_HQD_PQ_CONTROL__UNORD_DISPATCH_MASK;
- 	pr_debug("cp_hqd_pq_control 0x%x\n", m->cp_hqd_pq_control);
- 
- 	m->cp_hqd_pq_base_lo = lower_32_bits((uint64_t)q->queue_address >> 8);
+diff --git a/fs/smb/client/cached_dir.c b/fs/smb/client/cached_dir.c
+index 3de5047a7ff98..a0017724d5239 100644
+--- a/fs/smb/client/cached_dir.c
++++ b/fs/smb/client/cached_dir.c
+@@ -239,7 +239,8 @@ int open_cached_dir(unsigned int xid, struct cifs_tcon *tcon,
+ 		.tcon = tcon,
+ 		.path = path,
+ 		.create_options = cifs_create_options(cifs_sb, CREATE_NOT_FILE),
+-		.desired_access =  FILE_READ_DATA | FILE_READ_ATTRIBUTES,
++		.desired_access =  FILE_READ_DATA | FILE_READ_ATTRIBUTES |
++				   FILE_READ_EA,
+ 		.disposition = FILE_OPEN,
+ 		.fid = pfid,
+ 		.replay = !!(retries),
 -- 
 2.43.0
 
