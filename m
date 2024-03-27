@@ -1,53 +1,58 @@
-Return-Path: <linux-kernel+bounces-120866-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-120867-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id C485A88DFB9
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 13:26:20 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id CBA0688DFBD
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 13:26:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7E14D29E7A4
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 12:26:19 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EFDB21C26DFA
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 12:26:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9DB6E12E1DF;
-	Wed, 27 Mar 2024 12:10:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C527212E1CE;
+	Wed, 27 Mar 2024 12:10:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="I/wEybWO"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="P9mO43Jv"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D3E76140399;
-	Wed, 27 Mar 2024 12:10:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F2445140373;
+	Wed, 27 Mar 2024 12:10:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711541427; cv=none; b=G7jC0ne9ZsqfkaL/+MFQPsNpWSJxVE2r86/vCILcH9kxSLl2t/obw1Os3W/j1jJn1aZJo2Xr7cJLOiJyJaWiaSXjQXSTgWNEn4wPZ5ESJatyVQcSPy+4lDE6yqK6zhX9eI1XZ1k6yLmzWsq4lJzY12K/wfSpKDfgrelTv7of34M=
+	t=1711541431; cv=none; b=jn6gPWr9UMnoke0Xws3jqxTX2AqT6vq95Xyta7jT8zUQWkn2D1yapKGRdyt9TMNc8DIQZ0vro+dDgy/KbTMPF1UYLzMcovWYD7B5olD1f54ANVcksArLeOhatOBejGoUQvRDpsEZD54v7GUSWuupJF6vb853NLtwhTUPJ7DbZs4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711541427; c=relaxed/simple;
-	bh=Y2Z2ZR3fiSQfzSRc2diJb2S5rTn0C/g2LEO9b5VHaK4=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=pcca3YqtGkDkz/E1mwqYuEDv1mJQZj2GcWZ8kb4NbLDQZ8cabtVQ5QQAuuhCuVEhVTJfslB3+Vt/APdzTg7L3bO4SI/O2Fchn17azQDmCj0XG4m4AgDPbiyhFZ0GLCuPDnb2ecE5mn6WV+KnJlEbnrkvBrObqg/P55qYb8qZghI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=I/wEybWO; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1332BC433F1;
-	Wed, 27 Mar 2024 12:10:26 +0000 (UTC)
+	s=arc-20240116; t=1711541431; c=relaxed/simple;
+	bh=NtbVYB4B0IBPSxvIDggnYejeBfEfAmO2BohqouMeljQ=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=gT0GXQCVBETjGlEqcGUnlYraffnJWtNgs0mfh2HAlQIiLnBiBDwKpRe+FiMKViCBlaxG2wj0tt9KppLkUTTdS4o05inrqBWhO179jPbtwaYYQGqNPJGny4oJ6idkNznlAaz4ot0sfX6RpfkFCvcyBgeEt9BubFCoerxnjkSVlIk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=P9mO43Jv; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AAC53C433C7;
+	Wed, 27 Mar 2024 12:10:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711541427;
-	bh=Y2Z2ZR3fiSQfzSRc2diJb2S5rTn0C/g2LEO9b5VHaK4=;
+	s=k20201202; t=1711541430;
+	bh=NtbVYB4B0IBPSxvIDggnYejeBfEfAmO2BohqouMeljQ=;
 	h=From:To:Cc:Subject:Date:From;
-	b=I/wEybWOqSdZPsCxa3lRcujgyxTLFp0XgV89oV3g+v96ylhMFcPgVr5bBmqiSJOss
-	 PERjWNnBYRSa+EopMUwGm6AnzhMZIi8iF9Ceqc7f3xIl3UlFnAiUcO2lzeRcwUzCU2
-	 K4dFSXipBsMCVr4Du1ytr1BFLWq7fKR4giLAcGuBqidNEzAX2Fm1zxLAae5FI1ZGlg
-	 a2IbSpDTC85+XQ15hnfwyPjxUGN1tEXyz9TA1Yhcw/5himd3QNBI/RWzO2kRkvvYc1
-	 SyywQlAlARw/5dr1z6ebjNODR0Nnj4MSLTMbF/dEmW4fUCW0I+dthIbKwL40C4uDSK
-	 RmhoQDZqn2QMA==
+	b=P9mO43Jvs4fZL5WIrDh5F87/z7C6HA7L/dNyprZzcMCpbgttfzWBr5+yHKc0uMLoM
+	 AWLSigzJnip4QkkUJry8OkmWKrBWQKZ00KVKhlEWwZnnC52wHjTQVrrAZrrwEJnmzm
+	 KBNKpHnUQJN7wCVQxxzb/fZbEKqEhAm3FGzf6thna/LF3mshiPeREMn6LdDxmtkhq+
+	 Da8ExeYK8pNmv+QlsOHZ9gvR/nD9FVdfg5DdJFI0fTQtWjv1jpUsce1kfjVQquGPCo
+	 9kgQtWfMfEbQh1wrfCJKVGz6iH9cZW60QkuRv6AfCBhaLvM5txN9o+ON7uhTxgSLrW
+	 NJbKVoBqvjiVw==
 From: Sasha Levin <sashal@kernel.org>
 To: stable@vger.kernel.org,
-	faetalize@proton.me
-Cc: Takashi Iwai <tiwai@suse.de>,
-	linux-sound@vger.kernel.org,
+	wenjing.liu@amd.com
+Cc: Mario Limonciello <mario.limonciello@amd.com>,
+	Alex Deucher <alexander.deucher@amd.com>,
+	Dillon Varone <dillon.varone@amd.com>,
+	Alex Hung <alex.hung@amd.com>,
+	Daniel Wheeler <daniel.wheeler@amd.com>,
+	amd-gfx@lists.freedesktop.org,
+	dri-devel@lists.freedesktop.org,
 	linux-kernel@vger.kernel.org
-Subject: FAILED: Patch "ALSA: hda/realtek - ALC236 fix volume mute & mic mute LED on some HP models" failed to apply to 6.6-stable tree
-Date: Wed, 27 Mar 2024 08:10:25 -0400
-Message-ID: <20240327121026.2827950-1-sashal@kernel.org>
+Subject: FAILED: Patch "drm/amd/display: Update odm when ODM combine is changed on an otg master pipe with no plane" failed to apply to 6.6-stable tree
+Date: Wed, 27 Mar 2024 08:10:28 -0400
+Message-ID: <20240327121028.2827987-1-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -69,37 +74,152 @@ Sasha
 
 ------------------ original commit in Linus's tree ------------------
 
-From 300ab0dfbf3903f36b4456643d8201438e6553b1 Mon Sep 17 00:00:00 2001
-From: Valentine Altair <faetalize@proton.me>
-Date: Tue, 12 Mar 2024 14:42:00 +0000
-Subject: [PATCH] ALSA: hda/realtek - ALC236 fix volume mute & mic mute LED on
- some HP models
+From 86e9523fb0efce27095d3086473c739cce720d01 Mon Sep 17 00:00:00 2001
+From: Wenjing Liu <wenjing.liu@amd.com>
+Date: Wed, 21 Feb 2024 16:55:04 -0500
+Subject: [PATCH] drm/amd/display: Update odm when ODM combine is changed on an
+ otg master pipe with no plane
 
-Some HP laptops have received revisions that altered their board IDs
-and therefore the current patches/quirks do not apply to them.
-Specifically, for my Probook 440 G8, I have a board ID of 8a74.
-It is necessary to add a line for that specific model.
+[WHY]
+When committing an update with ODM combine change when the plane is
+removing or already removed, we fail to detect odm change in pipe
+update flags. This has caused mismatch between new dc state and the
+actual hardware state, because we missed odm programming.
 
-Signed-off-by: Valentine Altair <faetalize@proton.me>
-Cc: <stable@vger.kernel.org>
-Message-ID: <kOqXRBcxkKt6m5kciSDCkGqMORZi_HB3ZVPTX5sD3W1pKxt83Pf-WiQ1V1pgKKI8pYr4oGvsujt3vk2zsCE-DDtnUADFG6NGBlS5N3U4xgA=@proton.me>
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+[HOW]
+- Detect odm change even for otg master pipe without a plane.
+- Update odm config before calling program pipes for pipe with planes.
+
+The commit also updates blank pattern programming when odm is changed
+without plane. This is because number of OPP is changed when ODM
+combine is changed. Blank pattern is per OPP so we will need to
+reprogram OPP based on the new pipe topology.
+
+Cc: Mario Limonciello <mario.limonciello@amd.com>
+Cc: Alex Deucher <alexander.deucher@amd.com>
+Cc: stable@vger.kernel.org
+Reviewed-by: Dillon Varone <dillon.varone@amd.com>
+Acked-by: Alex Hung <alex.hung@amd.com>
+Signed-off-by: Wenjing Liu <wenjing.liu@amd.com>
+Tested-by: Daniel Wheeler <daniel.wheeler@amd.com>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 ---
- sound/pci/hda/patch_realtek.c | 1 +
- 1 file changed, 1 insertion(+)
+ .../amd/display/dc/hwss/dcn20/dcn20_hwseq.c   | 41 ++++++++++---------
+ .../amd/display/dc/hwss/dcn32/dcn32_hwseq.c   |  7 ++++
+ 2 files changed, 28 insertions(+), 20 deletions(-)
 
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index 4f92b19a58501..b6cd13b1775d9 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -9870,6 +9870,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
- 	SND_PCI_QUIRK(0x103c, 0x8a30, "HP Envy 17", ALC287_FIXUP_CS35L41_I2C_2),
- 	SND_PCI_QUIRK(0x103c, 0x8a31, "HP Envy 15", ALC287_FIXUP_CS35L41_I2C_2),
- 	SND_PCI_QUIRK(0x103c, 0x8a6e, "HP EDNA 360", ALC287_FIXUP_CS35L41_I2C_4),
-+	SND_PCI_QUIRK(0x103c, 0x8a74, "HP ProBook 440 G8 Notebook PC", ALC236_FIXUP_HP_GPIO_LED),
- 	SND_PCI_QUIRK(0x103c, 0x8a78, "HP Dev One", ALC285_FIXUP_HP_LIMIT_INT_MIC_BOOST),
- 	SND_PCI_QUIRK(0x103c, 0x8aa0, "HP ProBook 440 G9 (MB 8A9E)", ALC236_FIXUP_HP_GPIO_LED),
- 	SND_PCI_QUIRK(0x103c, 0x8aa3, "HP ProBook 450 G9 (MB 8AA1)", ALC236_FIXUP_HP_GPIO_LED),
+diff --git a/drivers/gpu/drm/amd/display/dc/hwss/dcn20/dcn20_hwseq.c b/drivers/gpu/drm/amd/display/dc/hwss/dcn20/dcn20_hwseq.c
+index c55d5155ecb9c..40098d9f70cbc 100644
+--- a/drivers/gpu/drm/amd/display/dc/hwss/dcn20/dcn20_hwseq.c
++++ b/drivers/gpu/drm/amd/display/dc/hwss/dcn20/dcn20_hwseq.c
+@@ -1498,6 +1498,11 @@ static void dcn20_detect_pipe_changes(struct dc_state *old_state,
+ 		return;
+ 	}
+ 
++	if (resource_is_pipe_type(new_pipe, OTG_MASTER) &&
++			resource_is_odm_topology_changed(new_pipe, old_pipe))
++		/* Detect odm changes */
++		new_pipe->update_flags.bits.odm = 1;
++
+ 	/* Exit on unchanged, unused pipe */
+ 	if (!old_pipe->plane_state && !new_pipe->plane_state)
+ 		return;
+@@ -1551,10 +1556,6 @@ static void dcn20_detect_pipe_changes(struct dc_state *old_state,
+ 
+ 	/* Detect top pipe only changes */
+ 	if (resource_is_pipe_type(new_pipe, OTG_MASTER)) {
+-		/* Detect odm changes */
+-		if (resource_is_odm_topology_changed(new_pipe, old_pipe))
+-			new_pipe->update_flags.bits.odm = 1;
+-
+ 		/* Detect global sync changes */
+ 		if (old_pipe->pipe_dlg_param.vready_offset != new_pipe->pipe_dlg_param.vready_offset
+ 				|| old_pipe->pipe_dlg_param.vstartup_start != new_pipe->pipe_dlg_param.vstartup_start
+@@ -1999,19 +2000,20 @@ void dcn20_program_front_end_for_ctx(
+ 	DC_LOGGER_INIT(dc->ctx->logger);
+ 	unsigned int prev_hubp_count = 0;
+ 	unsigned int hubp_count = 0;
++	struct pipe_ctx *pipe;
+ 
+ 	if (resource_is_pipe_topology_changed(dc->current_state, context))
+ 		resource_log_pipe_topology_update(dc, context);
+ 
+ 	if (dc->hwss.program_triplebuffer != NULL && dc->debug.enable_tri_buf) {
+ 		for (i = 0; i < dc->res_pool->pipe_count; i++) {
+-			struct pipe_ctx *pipe_ctx = &context->res_ctx.pipe_ctx[i];
++			pipe = &context->res_ctx.pipe_ctx[i];
+ 
+-			if (!pipe_ctx->top_pipe && !pipe_ctx->prev_odm_pipe && pipe_ctx->plane_state) {
+-				ASSERT(!pipe_ctx->plane_state->triplebuffer_flips);
++			if (!pipe->top_pipe && !pipe->prev_odm_pipe && pipe->plane_state) {
++				ASSERT(!pipe->plane_state->triplebuffer_flips);
+ 				/*turn off triple buffer for full update*/
+ 				dc->hwss.program_triplebuffer(
+-						dc, pipe_ctx, pipe_ctx->plane_state->triplebuffer_flips);
++						dc, pipe, pipe->plane_state->triplebuffer_flips);
+ 			}
+ 		}
+ 	}
+@@ -2085,12 +2087,22 @@ void dcn20_program_front_end_for_ctx(
+ 			DC_LOG_DC("Reset mpcc for pipe %d\n", dc->current_state->res_ctx.pipe_ctx[i].pipe_idx);
+ 		}
+ 
++	/* update ODM for blanked OTG master pipes */
++	for (i = 0; i < dc->res_pool->pipe_count; i++) {
++		pipe = &context->res_ctx.pipe_ctx[i];
++		if (resource_is_pipe_type(pipe, OTG_MASTER) &&
++				!resource_is_pipe_type(pipe, DPP_PIPE) &&
++				pipe->update_flags.bits.odm &&
++				hws->funcs.update_odm)
++			hws->funcs.update_odm(dc, context, pipe);
++	}
++
+ 	/*
+ 	 * Program all updated pipes, order matters for mpcc setup. Start with
+ 	 * top pipe and program all pipes that follow in order
+ 	 */
+ 	for (i = 0; i < dc->res_pool->pipe_count; i++) {
+-		struct pipe_ctx *pipe = &context->res_ctx.pipe_ctx[i];
++		pipe = &context->res_ctx.pipe_ctx[i];
+ 
+ 		if (pipe->plane_state && !pipe->top_pipe) {
+ 			while (pipe) {
+@@ -2129,17 +2141,6 @@ void dcn20_program_front_end_for_ctx(
+ 			context->stream_status[0].plane_count > 1) {
+ 			pipe->plane_res.hubp->funcs->hubp_wait_pipe_read_start(pipe->plane_res.hubp);
+ 		}
+-
+-		/* when dynamic ODM is active, pipes must be reconfigured when all planes are
+-		 * disabled, as some transitions will leave software and hardware state
+-		 * mismatched.
+-		 */
+-		if (dc->debug.enable_single_display_2to1_odm_policy &&
+-			pipe->stream &&
+-			pipe->update_flags.bits.disable &&
+-			!pipe->prev_odm_pipe &&
+-			hws->funcs.update_odm)
+-			hws->funcs.update_odm(dc, context, pipe);
+ 	}
+ }
+ 
+diff --git a/drivers/gpu/drm/amd/display/dc/hwss/dcn32/dcn32_hwseq.c b/drivers/gpu/drm/amd/display/dc/hwss/dcn32/dcn32_hwseq.c
+index aa36d7a56ca8c..b890db0bfc46b 100644
+--- a/drivers/gpu/drm/amd/display/dc/hwss/dcn32/dcn32_hwseq.c
++++ b/drivers/gpu/drm/amd/display/dc/hwss/dcn32/dcn32_hwseq.c
+@@ -1156,6 +1156,13 @@ void dcn32_update_odm(struct dc *dc, struct dc_state *context, struct pipe_ctx *
+ 			dsc->funcs->dsc_disconnect(dsc);
+ 		}
+ 	}
++
++	if (!resource_is_pipe_type(pipe_ctx, DPP_PIPE))
++		/*
++		 * blank pattern is generated by OPP, reprogram blank pattern
++		 * due to OPP count change
++		 */
++		dc->hwseq->funcs.blank_pixel_data(dc, pipe_ctx, true);
+ }
+ 
+ unsigned int dcn32_calculate_dccg_k1_k2_values(struct pipe_ctx *pipe_ctx, unsigned int *k1_div, unsigned int *k2_div)
 -- 
 2.43.0
 
