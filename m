@@ -1,139 +1,150 @@
-Return-Path: <linux-kernel+bounces-121371-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-121372-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 66DF188E705
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 15:47:26 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1ECF088E707
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 15:47:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 07B211F30121
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 14:47:26 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 423C51C2E0B2
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 14:47:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 292A313D518;
-	Wed, 27 Mar 2024 13:36:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA44213B2A7;
+	Wed, 27 Mar 2024 13:37:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="aYlHUCf2"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.15])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="CWHMtXU2"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C3F4A12E1CA;
-	Wed, 27 Mar 2024 13:36:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.15
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F34DC757E2
+	for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 13:37:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711546578; cv=none; b=ixFUssav1hTeY2Vf1YBJDG19WMCI4Hlsx8WC4sIACAE9j2V+NEKIthr43Zu0GgxcXsX8YSZz13DRAVxtZTncd05NoBuolyqj1YQRMCQmP19nm3LTHX647fshw4G1w2oUbaWCa8i+w9Fh20wUclZvcok89SJvdUjjL2iXwFhD8TY=
+	t=1711546632; cv=none; b=AWe8EnihKi4BULp1ixJo/ei8hdNf4YEUVtV03em5MXybL/V0vBBKQ/jS4ramOjrgZaaI1u3cIwZkEPFN1QPOJo6hyZnuFtsHMgWClJFNw4N+vsjGd+arsIWum6zNgwV+gWdmTlpkuUwOdY+FM9VKUC3KvBadNcgkFV/SpRKHoBg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711546578; c=relaxed/simple;
-	bh=tvpLVrhz+euw41OHiEC0NwXfQCCLWLqhiMZ7p+2r5iA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=rJXBw7B3G5zX/hiVUtgkZJRoSVSTE3+3Ih8oLw6RtN3/2AaH1UjNRduujPK2S6nLle8K+lBepBtT1Mr84h8/CP/1+PTL5c2ygneIupJ/piNEXwza450+ySXTOqw5BvgJUFnIezv9jnyvTYqoKh7oZy9KmiacFI6eh6pQUWpHGWM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=aYlHUCf2; arc=none smtp.client-ip=192.198.163.15
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1711546577; x=1743082577;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=tvpLVrhz+euw41OHiEC0NwXfQCCLWLqhiMZ7p+2r5iA=;
-  b=aYlHUCf2ccvzjIRwaRSeY6Qv3cL0zaXXsbrPT43AtesfX+CP3JegSCJ+
-   cbe9Sj+1dOCTxF7Fb2gZgD8Xf0O1QLv/cNL4VZLjn9IUJ7ohtQPrsHaXT
-   9uprZ9N13XffnQOxMXlD2AWS+mAaGcchKu//SckpbTAnHqv0kmdvyHkOG
-   Vh9CVTU1kp7DvAkWQtxcfy/IUcYWgWIGM4N/u8uaRF+0tZunESq3MBz47
-   66HVRo3zLE4H61l0DIjTwM0b05WpQMdHu92qoUlg0E04tXdLZYiZHzxEl
-   kAsaxvnOwqx3bphYfQM8HUNBfRoDAAQkthxSpIZKQwWNmGYkI7AecHlmP
-   Q==;
-X-CSE-ConnectionGUID: JyrwrfKHTxKtcyGN5usIOg==
-X-CSE-MsgGUID: bNthLcESQc2pSMkT2zhuzA==
-X-IronPort-AV: E=McAfee;i="6600,9927,11025"; a="6834547"
-X-IronPort-AV: E=Sophos;i="6.07,159,1708416000"; 
-   d="scan'208";a="6834547"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmvoesa109.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Mar 2024 06:36:16 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,11025"; a="914913420"
-X-IronPort-AV: E=Sophos;i="6.07,159,1708416000"; 
-   d="scan'208";a="914913420"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Mar 2024 06:36:11 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.97)
-	(envelope-from <andriy.shevchenko@linux.intel.com>)
-	id 1rpTRn-0000000Ge4G-2wfg;
-	Wed, 27 Mar 2024 15:36:07 +0200
-Date: Wed, 27 Mar 2024 15:36:07 +0200
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: Tony Lindgren <tony@atomide.com>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Jiri Slaby <jirislaby@kernel.org>, Jonathan Corbet <corbet@lwn.net>,
-	Petr Mladek <pmladek@suse.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	John Ogness <john.ogness@linutronix.de>,
-	Sergey Senozhatsky <senozhatsky@chromium.org>,
-	"David S . Miller" <davem@davemloft.net>,
-	Dhruva Gole <d-gole@ti.com>,
-	Ilpo =?iso-8859-1?Q?J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>,
-	Johan Hovold <johan@kernel.org>,
-	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-	Vignesh Raghavendra <vigneshr@ti.com>, linux-kernel@vger.kernel.org,
-	linux-serial@vger.kernel.org, Sebastian Reichel <sre@kernel.org>,
-	linux-doc@vger.kernel.org
-Subject: Re: [PATCH v7 1/7] printk: Save console options for
- add_preferred_console_match()
-Message-ID: <ZgQgx1uS2ugc-qPi@smile.fi.intel.com>
-References: <20240327110021.59793-1-tony@atomide.com>
- <20240327110021.59793-2-tony@atomide.com>
+	s=arc-20240116; t=1711546632; c=relaxed/simple;
+	bh=4kHnzA0Y1bG0RjYt/6IjBJD4JLhF/tyQ/ysWOdr8TTM=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=pSoi7fMVt6QYoyW1LfspRVY+A/uroxZkUAWKUTfmrUszOGSjYguo2/cXCDM8j1GeloXLjRQsHL80Qen0rpevWDLwwUmcTeO2o0A8WS9/2Bwc1RIKGNb38euKjAMaMArcfK57iJEKVt4g1vJnaTlhNtYKvOkCSwp9HVcjBF7B4dQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=CWHMtXU2; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9AEB0C43390
+	for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 13:37:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1711546631;
+	bh=4kHnzA0Y1bG0RjYt/6IjBJD4JLhF/tyQ/ysWOdr8TTM=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=CWHMtXU2B4HXGHS+6Ee9JEN2Km5g8yVGTdDS+iga/kGFktMmBB2XA0m/8X0GZu0mL
+	 MWuD35/QjRisFtZfAsZY+FMwjL07hRSqueCKpcgKWpvZ4pHwlMJ6qJyDReDlxFB3iL
+	 iTv53ZzqJ2H+l6xVpPsqTCxXWiJtQAcE376er8eIPfc61gTNefQVYN9E4DhgIoSMgO
+	 BOvIoX20KaeNMUkIZzxn8ux1Zn1MYMDs/BtuQqr0Dfbmm8rjMj1n+vELDG77fbanDU
+	 qlKMLRjDjyP4zrtf/DljLRzEO4XvjTXLgwf5r343h8y4hZKHKHcNLckvRnHKAo9wPE
+	 0tuzilvumGf6A==
+Received: by mail-lj1-f176.google.com with SMTP id 38308e7fff4ca-2d228a132acso90380331fa.0
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 06:37:11 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCV2m5r+rLzxo4r6MZFe7xw9oOZx+acOIgaUazGUawarPvi0TJ4Bs/p0WVcj54504uFNBReN28sHiiqmECkmplK5qs6TwnE5OidInKa0
+X-Gm-Message-State: AOJu0YwdRKO+7XAI0zGicLxnC5YLNCbczBeBBuj2AQ2hiG+v7bb/W98O
+	7KoCnpQKzrHT5w4zluXKTQwPdCPSMNdPFGev2+EgPzE3yOQqy8wd8pMCcHc8hHH/t7lDMIFKkBK
+	8GFdlaZQIjm06ic4reZQiRmuiBmo=
+X-Google-Smtp-Source: AGHT+IHPy1Xcev/pWnJqRHKFj89rYyteSuve3dI04GTmEZcix/SbYeGZAnwvl8cQKm40ItA9gFEIPUrZ0ZDvUd8EPsI=
+X-Received: by 2002:a2e:a7d0:0:b0:2d6:93c9:1f87 with SMTP id
+ x16-20020a2ea7d0000000b002d693c91f87mr49104ljp.4.1711546629919; Wed, 27 Mar
+ 2024 06:37:09 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240327110021.59793-2-tony@atomide.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <20240326101448.3453626-1-ryan.roberts@arm.com>
+ <CAMj1kXEEi2ZXs+1qwR97zod5Z+TerPKcKZBN8LGZ5XTRV0_-rg@mail.gmail.com> <e1078fe2-0b0b-48c6-8d24-3b2e835201b1@arm.com>
+In-Reply-To: <e1078fe2-0b0b-48c6-8d24-3b2e835201b1@arm.com>
+From: Ard Biesheuvel <ardb@kernel.org>
+Date: Wed, 27 Mar 2024 15:36:58 +0200
+X-Gmail-Original-Message-ID: <CAMj1kXGtNYce5cOwUc+X5ceyxLGzD1xUEx7JRXqg7+4XQMAORw@mail.gmail.com>
+Message-ID: <CAMj1kXGtNYce5cOwUc+X5ceyxLGzD1xUEx7JRXqg7+4XQMAORw@mail.gmail.com>
+Subject: Re: [PATCH v1 0/3] Speed up boot with faster linear map creation
+To: Ryan Roberts <ryan.roberts@arm.com>
+Cc: Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, 
+	Mark Rutland <mark.rutland@arm.com>, David Hildenbrand <david@redhat.com>, 
+	Donald Dutile <ddutile@redhat.com>, Eric Chanudet <echanude@redhat.com>, 
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-On Wed, Mar 27, 2024 at 12:59:35PM +0200, Tony Lindgren wrote:
-> Driver subsystems may need to translate the preferred console name to the
-> character device name used. We already do some of this in console_setup()
-> with a few hardcoded names, but that does not scale well.
-> 
-> The console options are parsed early in console_setup(), and the consoles
-> are added with __add_preferred_console(). At this point we don't know much
-> about the character device names and device drivers getting probed.
-> 
-> To allow driver subsystems to set up a preferred console, let's save the
-> kernel command line console options. To add a preferred console from a
-> driver subsystem with optional character device name translation, let's
-> add a new function add_preferred_console_match().
-> 
-> This allows the serial core layer to support console=DEVNAME:0.0 style
-> hardware based addressing in addition to the current console=ttyS0 style
-> naming. And we can start moving console_setup() character device parsing
-> to the driver subsystem specific code.
-> 
-> We use a separate array from the console_cmdline array as the character
-> device name and index may be unknown at the console_setup() time. And
-> eventually there's no need to call __add_preferred_console() until the
-> subsystem is ready to handle the console.
-> 
-> Adding the console name in addition to the character device name, and a
-> flag for an added console, could be added to the struct console_cmdline.
-> And the console_cmdline array handling could be modified accordingly. But
-> that complicates things compared saving the console options, and then
-> adding the consoles when the subsystems handling the consoles are ready.
-> 
-> Co-developed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+On Wed, 27 Mar 2024 at 12:43, Ryan Roberts <ryan.roberts@arm.com> wrote:
+>
+> On 27/03/2024 10:09, Ard Biesheuvel wrote:
+> > Hi Ryan,
+> >
+> > On Tue, 26 Mar 2024 at 12:15, Ryan Roberts <ryan.roberts@arm.com> wrote:
+> >>
+> >> Hi All,
+> >>
+> >> It turns out that creating the linear map can take a significant proportion of
+> >> the total boot time, especially when rodata=full. And a large portion of the
+> >> time it takes to create the linear map is issuing TLBIs. This series reworks the
+> >> kernel pgtable generation code to significantly reduce the number of TLBIs. See
+> >> each patch for details.
+> >>
+> >> The below shows the execution time of map_mem() across a couple of different
+> >> systems with different RAM configurations. We measure after applying each patch
+> >> and show the improvement relative to base (v6.9-rc1):
+> >>
+> >>                | Apple M2 VM | Ampere Altra| Ampere Altra| Ampere Altra
+> >>                | VM, 16G     | VM, 64G     | VM, 256G    | Metal, 512G
+> >> ---------------|-------------|-------------|-------------|-------------
+> >>                |   ms    (%) |   ms    (%) |   ms    (%) |    ms    (%)
+> >> ---------------|-------------|-------------|-------------|-------------
+> >> base           |  151   (0%) | 2191   (0%) | 8990   (0%) | 17443   (0%)
+> >> no-cont-remap  |   77 (-49%) |  429 (-80%) | 1753 (-80%) |  3796 (-78%)
+> >> no-alloc-remap |   77 (-49%) |  375 (-83%) | 1532 (-83%) |  3366 (-81%)
+> >> lazy-unmap     |   63 (-58%) |  330 (-85%) | 1312 (-85%) |  2929 (-83%)
+> >>
+> >> This series applies on top of v6.9-rc1. All mm selftests pass. I haven't yet
+> >> tested all VA size configs (although I don't anticipate any issues); I'll do
+> >> this as part of followup.
+> >>
+> >
+> > These are very nice results!
+> >
+> > Before digging into the details: do we still have a strong case for
+> > supporting contiguous PTEs and PMDs in these routines?
+>
+> We are currently using contptes and pmds for the linear map when rodata=[on|off]
+> IIRC?
 
-This requires my SoB as well.
+In principle, yes. In practice?
 
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> I don't see a need to remove the capability personally.
+>
 
-> Signed-off-by: Tony Lindgren <tony@atomide.com>
+Since we are making changes here, it is a relevant question to ask imho.
 
--- 
-With Best Regards,
-Andy Shevchenko
+> Also I was talking with Mark R yesterday and he suggested that an even better
+> solution might be to create a temp pgtable that maps the linear map with pmds,
+> switch to it, then create the real pgtable that maps the linear map with ptes,
+> then switch to that. The benefit being that we can avoid the fixmap entirely
+> when creating the second pgtable - we think this would likely be significantly
+> faster still.
+>
 
+If this is going to be a temporary mapping for the duration of the
+initial population of the linear map page tables, we might just as
+well use a 1:1 TTBR0 mapping here, which would be completely disjoint
+from swapper. And we'd only need to map memory that is being used for
+page tables, so on those large systems we'd need to map only a small
+slice. Maybe it's time to bring back the memblock alloc limit so we
+can manage this more easily?
 
+> My second patch adds the infrastructure to make this possible. But your changes
+> for LPA2 make it significantly more effort; since that change we are now using
+> the swapper pgtable when we populate the linear map into it - the kernel is
+> already mapped and that isn't done in paging_init() anymore. So I'm not quite
+> sure how we can easily make that work at the moment.
+>
+
+I think a mix of the fixmap approach with a 1:1 map could work here:
+- use TTBR0 to create a temp 1:1 map of DRAM
+- map page tables lazily as they are allocated but using a coarse mapping
+- avoid all TLB maintenance except at the end when tearing down the 1:1 mapping.
 
