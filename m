@@ -1,100 +1,126 @@
-Return-Path: <linux-kernel+bounces-122042-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-122043-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6245E88F11F
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 22:43:25 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id DDEB588F122
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 22:43:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BD9AB29999F
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 21:43:23 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7DF4C1F2E3A2
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 21:43:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 99BD915357A;
-	Wed, 27 Mar 2024 21:43:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7EC57153588;
+	Wed, 27 Mar 2024 21:43:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="YqyQhvyH"
-Received: from mail-wm1-f49.google.com (mail-wm1-f49.google.com [209.85.128.49])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=sipsolutions.net header.i=@sipsolutions.net header.b="tryAY9MH"
+Received: from sipsolutions.net (s3.sipsolutions.net [168.119.38.16])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 697A314D45E;
-	Wed, 27 Mar 2024 21:43:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3335F152DF0;
+	Wed, 27 Mar 2024 21:43:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=168.119.38.16
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711575794; cv=none; b=myBeQO7rx6IVSMcrXIaCesT17km0cfGHR8kwc49FIuj+Kj6j8JSy4006xSBPJaPVDZ0pNAMugKgrrJjn66hF6b0oYw3Yne2SUSGQWbrrXa5q0ZCY/0LN9pyhk/mHEYCa9u2e3WsnSlcSlgGYwrNCJhda70cHlJqGMT6Lr3Sjq5A=
+	t=1711575819; cv=none; b=kNPXEpJbIxs48a3BMvC9EpQevXGrQyAeHJhd9Jq5iJ8pmY496pvxmPBRsDMBxWl6yQnZ4BxZ0Dz3DPQJObzGScNTStLO0saapNKimmVmfcPyqqBpYFBL1Lw/uqUpZdobU8gkvU8KBKJCUqrlCaYHJTURl+R5JYcw/AnYNxl/Rvc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711575794; c=relaxed/simple;
-	bh=00RSzlRyuBe4f7ztg1Qngdt5TLEXANj7s00f5N+CVlI=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=ppuYo2Oe4ZvkmJVbBJacCQVgxRnNNbU93lxLSuYipodn72nhELrUuyGBwElwKD+DG6j+MCuifSMGw1v7KBLjK6i5r2Uzz03MlMmHEFSm0NZSHgCRbcQ8LA7Iv0UtAwFmA2J+gYVxqACZ1EMKuCONDC/MTqEnp1BGQ1ryS8rnGSQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=YqyQhvyH; arc=none smtp.client-ip=209.85.128.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f49.google.com with SMTP id 5b1f17b1804b1-414978a4a64so2030545e9.2;
-        Wed, 27 Mar 2024 14:43:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711575792; x=1712180592; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=00RSzlRyuBe4f7ztg1Qngdt5TLEXANj7s00f5N+CVlI=;
-        b=YqyQhvyHTr1+/6dThwtMKQQdZeT5j2PyGo72Gx1QqH0R2o6SCRQe2pKCFINOW1flJ6
-         LLUqvyZ2UAZXbqVzWnI4ZD6ephmERbxqLe421NiW73ehQMXN5fIn4OV9hbidvtSLBql9
-         b7bR8nBjpz5jE8oyaAhOWxY11OgGiUNfNmpdQA8c8NAEgq4kUS3eOapD0/EfUExfE4tC
-         Kzxcf6EjUzOoJsNHYWjgCPx6H+Kcd+uipOfs8nw9rboVy5LOgupNxmJAbzPgoxYVjRtO
-         v6n5UpeIXU9hm2udL66StrQpu+q6L0vReB8gRUNtQEXWZJ4cLY8vetx0vpzitm/PnTT3
-         qtaw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711575792; x=1712180592;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=00RSzlRyuBe4f7ztg1Qngdt5TLEXANj7s00f5N+CVlI=;
-        b=Wn3MurqV27Y9KZm3zEMPnr4x8o27D0ERic/XjbJTwtEWfXNRLiLYWy5K0Emxdsn0Df
-         F7O4NCkn1k/fh//ZHMC9iY46DfEnw1GR9PLXZgiY1wqdF5EzHJEgDGdSWZWg6qDS0vfC
-         vU4xHkwmu/zPV69Fp80pNvdHOCY9+FexOctGFNBeScJAT90Bsw+d4bDFsH/68h00z9qx
-         r2aYQnnbPI+KLRxDnFIqXakOC7/Ry62gAFo++mAQZl6m4nXm+O0FUEH9iX2QgmeQiyL1
-         XjAsX3T4rLKlEoFYu0sWnBBkLBGsZVXohpoj/Q4eVlNlCbyIbnQ7polQz4wvxvWIrdLX
-         AKDA==
-X-Forwarded-Encrypted: i=1; AJvYcCWmrTJhhQFcdcCMkOoQuWgseYBcjvjymqn2HiLH3MuXZbqB7e7Te2PNQAZdKEFg1O+il1jeB3Yc2gzkZi+tmJc6PGNF8onL6SWXLl8/UdmaUgfBU3k+rOuSigKiyOx0dPpc6KWrSQJ7SPcNeSZ8Hl7NUBM+kAJzg3uK
-X-Gm-Message-State: AOJu0Yw0hq3+mS1wkSDlb9Xwe5i/R+H1zjnYwmh1uW12bX23cM4VEvP7
-	gzZ2TDa9zeY/CUntgRb+p/OZ71Wi8GpCQPh8DpIuKHXpQKLsqacMf1HCpsqFG/4CPin7lTrK2qJ
-	H0GDjhEcqkN69edaOYQgqKXO/IcY=
-X-Google-Smtp-Source: AGHT+IFPz+gCdLSVgV+lge1GoS3D+048rCxF3gyiZcTy8wrV7pmSAsfHFAsGdLwWTCyYEbKwvQL5548/KMw352SiynQ=
-X-Received: by 2002:a05:600c:3b22:b0:414:102f:27b8 with SMTP id
- m34-20020a05600c3b2200b00414102f27b8mr827259wms.32.1711575791609; Wed, 27 Mar
- 2024 14:43:11 -0700 (PDT)
+	s=arc-20240116; t=1711575819; c=relaxed/simple;
+	bh=qXdwMjctvpeC4uhAfUKnHc6+D0VbmDFQ/tteFpiojL8=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=FVl/OdxyU5dlggAskj2cPvHt2/izWLVGO3sdqI+CxniNJcaosikk9fQunLa1p9WmckuUl8++5TeGlEizIalwRRHBQwKXl50HNjqOxwc3vTJ1kNiEJukpFsENyPyv/cOQCe6JM+e8+3djtXY0E9WJzkWWbl+8PEq1c37qpMn6O9E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sipsolutions.net; spf=pass smtp.mailfrom=sipsolutions.net; dkim=pass (2048-bit key) header.d=sipsolutions.net header.i=@sipsolutions.net header.b=tryAY9MH; arc=none smtp.client-ip=168.119.38.16
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sipsolutions.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sipsolutions.net
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=sipsolutions.net; s=mail; h=MIME-Version:Content-Transfer-Encoding:
+	Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender
+	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
+	Resent-Cc:Resent-Message-ID; bh=0E6XNCXe9tY4/BkqEg7TfJ6EdX6Zcqe7RrlA/oI/V+0=;
+	t=1711575818; x=1712785418; b=tryAY9MHAsL65aVTGC72ATnxbgVWvoxRTkMcDUyA5oMd4cZ
+	SVBkclQZ2SauBxQlT9ss9ZDk8kIx+MsCXgdwZuKt3Ns7wbiJIYN+RmhrlPmeOEXPCWdeFV5bqD63g
+	2honUAjmUggIEDgLYb9+LRPXH6gKDH7/TQAj0Q0I7apFJ5DYlOdmRgtKElDjLgmkTTFmgXWBv2QnQ
+	7FPrCaMI2JwTxrWNnQrvOx9Sk/2nEH57O/yeGOlgU5yEqE0E3qo3VGoX3BoIAgXs83nJrQMDf3erc
+	iUnYUDWWOdadbD14oWFs+2ukGxfKJWxAh1H5Qt4mi3oUGw5etabr4XxmwfVPXPmg==;
+Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
+	(Exim 4.97)
+	(envelope-from <johannes@sipsolutions.net>)
+	id 1rpb3W-0000000HPjO-1ApD;
+	Wed, 27 Mar 2024 22:43:34 +0100
+Message-ID: <e6fabaa541704463804f48b5931e8a43f7ee75eb.camel@sipsolutions.net>
+Subject: Re: [PATCH 0/3] using guard/__free in networking
+From: Johannes Berg <johannes@sipsolutions.net>
+To: Jakub Sitnicki <jakub@cloudflare.com>
+Cc: Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org, Peter Zijlstra
+	 <peterz@infradead.org>, linux-kernel@vger.kernel.org
+Date: Wed, 27 Mar 2024 22:43:33 +0100
+In-Reply-To: <0e7af4cb0dc19be7cc0267256284a70ceb250b38.camel@sipsolutions.net>
+References: <20240325223905.100979-5-johannes@sipsolutions.net>
+	 <20240325190957.02d74258@kernel.org>
+	 <8eeae19a0535bfe72f87ee8c74a15dd2e753c765.camel@sipsolutions.net>
+	 <20240326073722.637e8504@kernel.org>
+	 <0dc633a36a658b96f9ec98165e7db61a176c79e0.camel@sipsolutions.net>
+	 <87h6grbevf.fsf@cloudflare.com>
+	 <0e7af4cb0dc19be7cc0267256284a70ceb250b38.camel@sipsolutions.net>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.50.4 (3.50.4-1.fc39) 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <00000000000090fe770614a1ab17@google.com> <0000000000007a208d0614a9a9e0@google.com>
- <87le63bfuf.fsf@cloudflare.com>
-In-Reply-To: <87le63bfuf.fsf@cloudflare.com>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Wed, 27 Mar 2024 14:43:00 -0700
-Message-ID: <CAADnVQK7rpbNbo4XQRfX2G6v7Mx=2rZNu6D9my9KCi+jRpTUJw@mail.gmail.com>
-Subject: Re: [syzbot] [bpf?] [net?] possible deadlock in ahci_single_level_irq_intr
-To: Jakub Sitnicki <jakub@cloudflare.com>
-Cc: syzbot <syzbot+d4066896495db380182e@syzkaller.appspotmail.com>, 
-	Andrii Nakryiko <andrii@kernel.org>, Alexei Starovoitov <ast@kernel.org>, bpf <bpf@vger.kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, "David S. Miller" <davem@davemloft.net>, 
-	Eric Dumazet <edumazet@google.com>, John Fastabend <john.fastabend@gmail.com>, 
-	Jakub Kicinski <kuba@kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
-	Network Development <netdev@vger.kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
-	syzkaller-bugs <syzkaller-bugs@googlegroups.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-malware-bazaar: not-scanned
 
-On Wed, Mar 27, 2024 at 1:05=E2=80=AFPM Jakub Sitnicki <jakub@cloudflare.co=
-m> wrote:
->
-> #syz test: git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git mast=
-er
->
-> diff --git a/net/core/sock_map.c b/net/core/sock_map.c
+On Wed, 2024-03-27 at 22:28 +0100, Johannes Berg wrote:
+>=20
+> +typedef struct class_##_name##_drop##_t {				\
+> +	class_##_name##_t obj;						\
+> +	void (*destructor)(struct class_##_name##_drop##_t *);		\
+> +} class_##_name##_drop##_t;						\
 
-Great. Please submit it officially. Hopefully bpf CI also will be happy.
+No, I misread the compiler output, it does output a real destructor
+function to push it into a stack variable with this...
+
+So I guess it'd have to be
+
+void my_something(my_t *my)
+{
+..
+	named_guard(lock, mutex)(&my->mutex);
+..
+	if (foo)
+		return -EINVAL; // automatically unlocks
+..
+	// no need for lock any more
+	drop_guard(lock, mutex);
+..
+	// do other things now unlocked
+}
+
+
+instead, syntax-wise.
+
+
+Which obviously simplifies the changes:
+
+
+diff --git a/include/linux/cleanup.h b/include/linux/cleanup.h
+index c2d09bc4f976..cf39a4a3f56f 100644
+--- a/include/linux/cleanup.h
++++ b/include/linux/cleanup.h
+@@ -163,6 +163,12 @@ static inline class_##_name##_t class_##_name##ext##_c=
+onstructor(_init_args) \
+ #define guard(_name) \
+ 	CLASS(_name, __UNIQUE_ID(guard))
+=20
++#define named_guard(_name, _class) \
++	CLASS(_class, _name)
++
++#define drop_guard(_name, _class) \
++	do { class_##_class##_destructor(&_name); _name =3D NULL; } while (0)
++
+ #define __guard_ptr(_name) class_##_name##_lock_ptr
+=20
+ #define scoped_guard(_name, args...)					\
+
 
