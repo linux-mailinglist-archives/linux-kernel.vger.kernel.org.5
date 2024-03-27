@@ -1,58 +1,58 @@
-Return-Path: <linux-kernel+bounces-121129-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-121130-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id EFC2188E2AA
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 14:31:30 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8D1CD88E498
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 15:07:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A98DF28A4A3
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 13:31:29 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 69DC1B2E7E0
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 13:31:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3B2BC174973;
-	Wed, 27 Mar 2024 12:22:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9EB70174ECD;
+	Wed, 27 Mar 2024 12:22:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="H1rMvDVb"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="bhIZ0Y3k"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 56757174977;
-	Wed, 27 Mar 2024 12:22:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DB56117497F;
+	Wed, 27 Mar 2024 12:22:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711542152; cv=none; b=t3ybA1ETg2CQCKez2zs8sVKdmfakuHEajNPOHfmICy9ZncEsLpVLFy+m636NXrRvKGSv3ixOoBYt22XYHCnQQLaB332pCJuVGHXifwwP4t/o+/KoohjSDikYoRKuJ4goDoL+nNoVu0oBHbqTEDw9wbCbKyI9fHw2hbQcpUMd1MA=
+	t=1711542154; cv=none; b=QKV70KvXEoxDd+E+Y15c4ZpBfMSBJPFJfiZsAmqCqXgzREe7xsosf/aBnUnAPauq86M8shAUDzA3qcoZisV7zJVmAlUJoxNf5nMz/bvVppBhopIyBEIDTeNAcZwIYLcHSlnRmzV6DNZvVeXzYr8iLbx2Tg/5Hy9nSV5tK4IWY7E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711542152; c=relaxed/simple;
-	bh=OK+2Jyhl3Tn8LDE1CvM7vRsE6lxOEeTzYbG/u6VlYPU=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=C5jflHAF/waPsmI86xMZEAU0H0jb1OM9NzM5tJaeVPPIfvmDSsLzmQWF5gSMPkDq90hMTB3KBV7fxKbOF4Qya+KWWGp4XmD87sUXf2TFsLjDvZ+/a8rInOzkcLgLZHQETMIjInmtX4g6uC3P2FcYDJ7akvzeVf3sCYNaiScmj3Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=H1rMvDVb; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CC67CC433F1;
-	Wed, 27 Mar 2024 12:22:29 +0000 (UTC)
+	s=arc-20240116; t=1711542154; c=relaxed/simple;
+	bh=eW8v2rqK+YW7ryQK88To+Q6LwmDjw4ITv8QOonCo04E=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=YxS/LwWWUbMrNNsPxm0bHGMeeg6X5B64kE2k49xvOmZ+PdGLGHboetnfSEyqajWPZq/HxiZ2D17FcVWEla7eBlrO/6dnqLa0LHpQ7rCgAxOjOWGQ6AbUPd1tt7XTSTO/JBwSfdEhm8hrS4YgBG4lEoEa5YQuGSYicogoQfNDzBA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=bhIZ0Y3k; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A6B9AC433F1;
+	Wed, 27 Mar 2024 12:22:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711542150;
-	bh=OK+2Jyhl3Tn8LDE1CvM7vRsE6lxOEeTzYbG/u6VlYPU=;
+	s=k20201202; t=1711542153;
+	bh=eW8v2rqK+YW7ryQK88To+Q6LwmDjw4ITv8QOonCo04E=;
 	h=From:To:Cc:Subject:Date:From;
-	b=H1rMvDVbEvy+DF3joM6zqSQ39hHJNPf+mk3ySTEwKYUQiZyMFA6dI+XLLxCWXFXZ1
-	 sCzIds7hgSVgt4MVHEhPX9pXzMIElFd03DNeQWj2XPTHIcwK88VgUtKl+8JAO7Nl4S
-	 Jj9yiefHdWpK0eJu1+AMvvuc63R1fVPVCQA327BLaxznqtVHhFGyEkP4oXHmdXi6mj
-	 1oRWLnCngs4c69Af7FANUrW19B/GLUPHmVycgK5nZUPsFwAawm/8N+bSlGSvDw0JMN
-	 i2KRBUdbjPd4PJSWxgld70LDRmAPPwfuEUHx38jObzKuaHnsGY5rM4wehs8MJcf4HG
-	 pUMitl/YdtxUQ==
+	b=bhIZ0Y3kWn0YpHSlPHSoVjEDxAcEd0o/ISyzJKcqJdJZPKqKvmSj7hRWkbt7WpseG
+	 IPS5M38H3yc+Q80pixxjSXI/2PJriR6yGB1+ZksDlO00U0WVQ5Nre2La0lV9Kn6uEg
+	 H9Ipl/d29m63A+CDQUbjSXiIL7zzYv9x0T1ETW7lNgf8TKhv2DgohrhJzXr4eWgSaG
+	 G5fEz/kW/twNWJ8o/EtBaLF7jZVZ4g87ku6/wIs3TVuFqnRdA9Cnd0wMiGTEkx9Jul
+	 SiTt+XrrtcVgQpNO8VQ5S6bBykrZFspBVpL1IxDtApgoSGMzLcjpN3iP2qcKBKADp6
+	 3MJo6oDDPtpDQ==
 From: Sasha Levin <sashal@kernel.org>
 To: stable@vger.kernel.org,
-	srinivasan.shanmugam@amd.com
-Cc: Alex Hung <alex.hung@amd.com>,
-	Aurabindo Pillai <aurabindo.pillai@amd.com>,
-	Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>,
-	Hamza Mahfooz <hamza.mahfooz@amd.com>,
+	roman.li@amd.com
+Cc: Mario Limonciello <mario.limonciello@amd.com>,
 	Alex Deucher <alexander.deucher@amd.com>,
+	Nicholas Kazlauskas <nicholas.kazlauskas@amd.com>,
+	Aurabindo Pillai <aurabindo.pillai@amd.com>,
+	Daniel Wheeler <daniel.wheeler@amd.com>,
 	amd-gfx@lists.freedesktop.org,
 	dri-devel@lists.freedesktop.org,
 	linux-kernel@vger.kernel.org
-Subject: FAILED: Patch "drm/amd/display: Drop 'acrtc' and add 'new_crtc_state' NULL check for writeback requests." failed to apply to 5.4-stable tree
-Date: Wed, 27 Mar 2024 08:22:28 -0400
-Message-ID: <20240327122229.2837747-1-sashal@kernel.org>
+Subject: FAILED: Patch "drm/amd/display: Fix array-index-out-of-bounds in dcn35_clkmgr" failed to apply to 5.4-stable tree
+Date: Wed, 27 Mar 2024 08:22:31 -0400
+Message-ID: <20240327122231.2837784-1-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -74,52 +74,75 @@ Sasha
 
 ------------------ original commit in Linus's tree ------------------
 
-From b2f26f49e84bea03dddb5f37ff137c97b165107b Mon Sep 17 00:00:00 2001
-From: Srinivasan Shanmugam <srinivasan.shanmugam@amd.com>
-Date: Sat, 13 Jan 2024 14:32:27 +0530
-Subject: [PATCH] drm/amd/display: Drop 'acrtc' and add 'new_crtc_state' NULL
- check for writeback requests.
+From a8edc9cc0b14e3769bbc9b82d00e5e5fc6b5ff0a Mon Sep 17 00:00:00 2001
+From: Roman Li <roman.li@amd.com>
+Date: Tue, 30 Jan 2024 18:07:24 -0500
+Subject: [PATCH] drm/amd/display: Fix array-index-out-of-bounds in
+ dcn35_clkmgr
 
-Return value of 'to_amdgpu_crtc' which is container_of(...) can't be
-null, so it's null check 'acrtc' is dropped.
+[Why]
+There is a potential memory access violation while
+iterating through array of dcn35 clks.
 
-Fixing the below:
-drivers/gpu/drm/amd/amdgpu/../display/amdgpu_dm/amdgpu_dm.c:9302 amdgpu_dm_atomic_commit_tail() error: we previously assumed 'acrtc' could be null (see line 9299)
+[How]
+Limit iteration per array size.
 
-Added 'new_crtc_state' NULL check for function
-'drm_atomic_get_new_crtc_state' that retrieves the new state for a CRTC,
-while enabling writeback requests.
-
+Cc: Mario Limonciello <mario.limonciello@amd.com>
+Cc: Alex Deucher <alexander.deucher@amd.com>
 Cc: stable@vger.kernel.org
-Cc: Alex Hung <alex.hung@amd.com>
-Cc: Aurabindo Pillai <aurabindo.pillai@amd.com>
-Cc: Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>
-Cc: Hamza Mahfooz <hamza.mahfooz@amd.com>
-Signed-off-by: Srinivasan Shanmugam <srinivasan.shanmugam@amd.com>
-Reviewed-by: Alex Hung <alex.hung@amd.com>
+Reviewed-by: Nicholas Kazlauskas <nicholas.kazlauskas@amd.com>
+Acked-by: Aurabindo Pillai <aurabindo.pillai@amd.com>
+Signed-off-by: Roman Li <roman.li@amd.com>
+Tested-by: Daniel Wheeler <daniel.wheeler@amd.com>
 Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 ---
- drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ .../amd/display/dc/clk_mgr/dcn35/dcn35_clk_mgr.c  | 15 +++++++++++----
+ 1 file changed, 11 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
-index 36af104e7663c..8623722e954f9 100644
---- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
-+++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
-@@ -9327,10 +9327,10 @@ static void amdgpu_dm_atomic_commit_tail(struct drm_atomic_state *state)
- 		if (!new_con_state->writeback_job)
- 			continue;
+diff --git a/drivers/gpu/drm/amd/display/dc/clk_mgr/dcn35/dcn35_clk_mgr.c b/drivers/gpu/drm/amd/display/dc/clk_mgr/dcn35/dcn35_clk_mgr.c
+index 36e5bb611fb10..c378b879c76d8 100644
+--- a/drivers/gpu/drm/amd/display/dc/clk_mgr/dcn35/dcn35_clk_mgr.c
++++ b/drivers/gpu/drm/amd/display/dc/clk_mgr/dcn35/dcn35_clk_mgr.c
+@@ -658,10 +658,13 @@ static void dcn35_clk_mgr_helper_populate_bw_params(struct clk_mgr_internal *clk
+ 	struct clk_limit_table_entry def_max = bw_params->clk_table.entries[bw_params->clk_table.num_entries - 1];
+ 	uint32_t max_fclk = 0, min_pstate = 0, max_dispclk = 0, max_dppclk = 0;
+ 	uint32_t max_pstate = 0, max_dram_speed_mts = 0, min_dram_speed_mts = 0;
++	uint32_t num_memps, num_fclk, num_dcfclk;
+ 	int i;
  
--		new_crtc_state = NULL;
-+		new_crtc_state = drm_atomic_get_new_crtc_state(state, &acrtc->base);
+ 	/* Determine min/max p-state values. */
+-	for (i = 0; i < clock_table->NumMemPstatesEnabled; i++) {
++	num_memps = (clock_table->NumMemPstatesEnabled > NUM_MEM_PSTATE_LEVELS) ? NUM_MEM_PSTATE_LEVELS :
++		clock_table->NumMemPstatesEnabled;
++	for (i = 0; i < num_memps; i++) {
+ 		uint32_t dram_speed_mts = calc_dram_speed_mts(&clock_table->MemPstateTable[i]);
  
--		if (acrtc)
--			new_crtc_state = drm_atomic_get_new_crtc_state(state, &acrtc->base);
-+		if (!new_crtc_state)
-+			continue;
+ 		if (is_valid_clock_value(dram_speed_mts) && dram_speed_mts > max_dram_speed_mts) {
+@@ -673,7 +676,7 @@ static void dcn35_clk_mgr_helper_populate_bw_params(struct clk_mgr_internal *clk
+ 	min_dram_speed_mts = max_dram_speed_mts;
+ 	min_pstate = max_pstate;
  
- 		if (acrtc->wb_enabled)
- 			continue;
+-	for (i = 0; i < clock_table->NumMemPstatesEnabled; i++) {
++	for (i = 0; i < num_memps; i++) {
+ 		uint32_t dram_speed_mts = calc_dram_speed_mts(&clock_table->MemPstateTable[i]);
+ 
+ 		if (is_valid_clock_value(dram_speed_mts) && dram_speed_mts < min_dram_speed_mts) {
+@@ -702,9 +705,13 @@ static void dcn35_clk_mgr_helper_populate_bw_params(struct clk_mgr_internal *clk
+ 	/* Base the clock table on dcfclk, need at least one entry regardless of pmfw table */
+ 	ASSERT(clock_table->NumDcfClkLevelsEnabled > 0);
+ 
+-	max_fclk = find_max_clk_value(clock_table->FclkClocks_Freq, clock_table->NumFclkLevelsEnabled);
++	num_fclk = (clock_table->NumFclkLevelsEnabled > NUM_FCLK_DPM_LEVELS) ? NUM_FCLK_DPM_LEVELS :
++		clock_table->NumFclkLevelsEnabled;
++	max_fclk = find_max_clk_value(clock_table->FclkClocks_Freq, num_fclk);
+ 
+-	for (i = 0; i < clock_table->NumDcfClkLevelsEnabled; i++) {
++	num_dcfclk = (clock_table->NumFclkLevelsEnabled > NUM_DCFCLK_DPM_LEVELS) ? NUM_DCFCLK_DPM_LEVELS :
++		clock_table->NumDcfClkLevelsEnabled;
++	for (i = 0; i < num_dcfclk; i++) {
+ 		int j;
+ 
+ 		/* First search defaults for the clocks we don't read using closest lower or equal default dcfclk */
 -- 
 2.43.0
 
