@@ -1,183 +1,136 @@
-Return-Path: <linux-kernel+bounces-121986-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-121980-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4DDB888F045
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 21:39:55 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id C411F88F029
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 21:32:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F13F02961DB
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 20:39:53 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 54EC029B279
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 20:32:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D0F3F1534F2;
-	Wed, 27 Mar 2024 20:39:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 29114152DE1;
+	Wed, 27 Mar 2024 20:32:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="AsNXxNm2";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="c/+uD66h"
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="I1aKgMjR"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D73814D6EB;
-	Wed, 27 Mar 2024 20:39:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A5F5152526;
+	Wed, 27 Mar 2024 20:32:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711571986; cv=none; b=qnqJDiZTvGTZCUciQ7vCAK7HBUwMcxkvBsSbfsCl7WMH6lme1dQ3HXvi5T54ToXyiqYpZ9ofmB/OVmfW96FC6TtMkOXKHShcANt8oMmzL32iurMdG9yU7n84bt7A5Y/zMcCNLperL1FAc8JnpFEoEkcyuB71g8yeaURbhc6Ho9o=
+	t=1711571558; cv=none; b=KI9UKrIr7XLSo1AaI/jTiyG/r2+XZCi+KslOeIKMcLFcH5+3V87cI2qzYLyYCqhDnD/Lvze6boktDre2yFIvYv5Q9E1iKP2/u/hXRhrh5Y7uflEpkGwXhol/vfGmYKsSQlf0LMmJSAp5FfXdq0DkTGFEyOxtDjwyhAmpt1SdTYg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711571986; c=relaxed/simple;
-	bh=MYjXKGml4yTVTChKso7uNGqldcMcIKtOtNKtzVnHsmc=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=mcCDWvhDzJ9MJM6fFakHuLtRgVwfRL4+/qUXwVT2zMx6VVwA2RVvaghLD4SkAQbb+1hyk5SB4G9DKn3u6RUqJkcucn/gu1OxOdRV+pMZTtHIPFKf4gN0R/Kjp/k/WLZRMhXpVAugs9X3vJlxzJIiBYl3Hri09drVqRAjXMUIWOw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=AsNXxNm2; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=c/+uD66h; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:98])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id C28DE229B9;
-	Wed, 27 Mar 2024 20:39:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1711571982; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=/IKbn2oj33so0jZy+ftN03yc0feDXvMhZ5ZgHhL7tD0=;
-	b=AsNXxNm2pZNhDHZEweT6VY5xGt5B8qgWaYhOgi3bBG5zaafR12F46jEt00GqbIao/rjmlD
-	I+61S66YhhqzD3KiJvevlZNgIYI+FvHH8Ucv863V46TNpSqLnAV+yI6WyEh/4bYGcR0ma6
-	Pt8x1x+x9hNu46I3fyNTvaTdPashRj4=
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1711571981; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=/IKbn2oj33so0jZy+ftN03yc0feDXvMhZ5ZgHhL7tD0=;
-	b=c/+uD66hnaQgGXhed0gnWJzk9V5YrzEc2vxRPGrwIjSS5IypRqPeF+W0JJk5aHTtkIi9fW
-	mVQcX8hXkNCmbX5CO2twPLm5k4abgW6soisUEXyXl5oIDx+Ull2IUsI243TrNC7RWBR398
-	CQ1PSFhurU/fGpdX8PBIlEJdjnF2rh8=
-Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id B8E0613AB3;
-	Wed, 27 Mar 2024 20:39:41 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap2.dmz-prg2.suse.org with ESMTPSA
-	id IS7bLA2EBGYcFAAAn2gu4w
-	(envelope-from <dsterba@suse.com>); Wed, 27 Mar 2024 20:39:41 +0000
-From: David Sterba <dsterba@suse.com>
-To: torvalds@linux-foundation.org
-Cc: David Sterba <dsterba@suse.com>,
-	linux-btrfs@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [GIT PULL] Btrfs fixes for 6.9-rc2
-Date: Wed, 27 Mar 2024 21:32:19 +0100
-Message-ID: <cover.1711571199.git.dsterba@suse.com>
-X-Mailer: git-send-email 2.44.0
+	s=arc-20240116; t=1711571558; c=relaxed/simple;
+	bh=bUD7hRVKwVDpYh8ceARY/rXBSbxh69k1obIrokK7TR8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=RYjfx9TTba+ofvUEiaqBFjbEPDa/8bDRRbQwFKv5vZcorgp2AahaJ5UwlzCSmpD4WrmRDODQrUlNtF6sbqy8C2yPXALxSnoOs63IB9Jf4rp9TmwPQ9FZc31MpNUhUfFo2Sxb8zzKLZonvORU1enpwfpywaFdNMoEMZ01mNOpWTk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=I1aKgMjR; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 56B50C433C7;
+	Wed, 27 Mar 2024 20:32:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1711571557;
+	bh=bUD7hRVKwVDpYh8ceARY/rXBSbxh69k1obIrokK7TR8=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=I1aKgMjRz70NgKGq3kD7zdlCAncjjYgZt6draVS17IT5OqyIWMKVqHkFdF+uIiBdw
+	 wKwCAAXNnOc1SNd+WdyxcSVCn03YYTUgpJW4iCHcOVq90o8OexCDaIkYStDtPUxUBr
+	 at82lhQwaBm5ZRWywlyHGN0mh5omIQzwAzghqk5EPIqUqY5eIOxGPEb1ZALZ86PUPB
+	 CZBD9DnUhpMXBlIZRjBkzaKCm9EfqstsXrL8k0/4RY6iBVld0d/ZhxBr1dWD1oFd0F
+	 XzXaBERa6K2024PS0nriLLOIiT6+5MbTCiDKJ/8dpvnCaQQ7fxxD1j3B9refO27qTZ
+	 wTDGskEYXb1/w==
+Date: Wed, 27 Mar 2024 20:32:33 +0000
+From: Conor Dooley <conor@kernel.org>
+To: =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn@kernel.org>
+Cc: Paul Walmsley <paul.walmsley@sifive.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Albert Ou <aou@eecs.berkeley.edu>,
+	Emil Renner Berthing <kernel@esmil.dk>,
+	Samuel Holland <samuel.holland@sifive.com>,
+	Alexandre Ghiti <alexghiti@rivosinc.com>,
+	=?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn@rivosinc.com>,
+	linux-riscv@lists.infradead.org, Andy Chiu <andy.chiu@sifive.com>,
+	Jakub Kicinski <kuba@kernel.org>, linux-kernel@vger.kernel.org,
+	netdev@vger.kernel.org
+Subject: Re: RISC-V for-next/fixes (cont'd from PW sync)
+Message-ID: <20240327-irrigate-unread-d9de28174437@spud>
+References: <87ttkro3b5.fsf@all.your.base.are.belong.to.us>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Score: -1.51
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Spam-Flag: NO
-X-Spamd-Result: default: False [-1.51 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
-	 FROM_HAS_DN(0.00)[];
-	 RCPT_COUNT_THREE(0.00)[4];
-	 R_MISSING_CHARSET(2.50)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 BROKEN_CONTENT_TYPE(1.50)[];
-	 TO_DN_SOME(0.00)[];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DWL_DNSWL_MED(-2.00)[suse.com:dkim];
-	 DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	 DKIM_TRACE(0.00)[suse.com:+];
-	 MX_GOOD(-0.01)[];
-	 MID_CONTAINS_FROM(1.00)[];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:dkim];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 NEURAL_HAM_SHORT(-0.20)[-1.000];
-	 RCVD_TLS_ALL(0.00)[];
-	 BAYES_HAM(-3.00)[100.00%];
-	 RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:98:from]
-X-Spam-Level: 
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.com header.s=susede1 header.b="c/+uD66h"
-X-Rspamd-Queue-Id: C28DE229B9
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="+H3UkLQ2ywM6BKxo"
+Content-Disposition: inline
+In-Reply-To: <87ttkro3b5.fsf@all.your.base.are.belong.to.us>
 
-Hi,
 
-here's another batch of stability fixes.
+--+H3UkLQ2ywM6BKxo
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-The first fix is for the bug you also hit after 6.8-rc2 pull request [1].
-We got another report, fortunately it was reproducible and in the end we also
-got the fix.
+On Wed, Mar 27, 2024 at 08:57:50PM +0100, Bj=F6rn T=F6pel wrote:
+> Hi,
+>=20
+> I figured I'd put some words on the "how to update the RISC-V
+> for-next/fixes branches [1]" that came up on the patchwork call today.
+>=20
+> In RISC-V land, the for-next branch is used for features, and typically
+> sent as a couple of PRs to Linus when the merge window is open. The
+> fixes branch is sent as PR(s) between the RCs of a release.
+>=20
+> Today, the baseline for for-next/fixes is the CURRENT_RELEASE-rc1, and
+> features/fixes are based on that.
+>=20
+> This has IMO a couple of issues:
+>=20
+> 1. fixes is missing the non-RISC-V fixes from releases later than
+>    -rc1, which makes it harder for contributors.
+> 2. for-next does not have the fixes from RISC-V/rest of the kernel,
+>    and it's hard for contributors to test the work on for-next (buggy,
+>    no fixes, and sometime missing deps).
+>=20
+> I used to spend a whole lot of mine time in the netdev tree of the
+> kernel, and this is how they manage it (Thanks Kuba!):
+>=20
+> Netdev (here exchanged to RISC-V trees), fast-forward fixes, and then
+> cross-merge fixes into for-next -- for every -rc.
+>=20
+> E.g., say fixes is submitted for -rc2 to Linus, once he pulls, do:
+>=20
+>   git push --delete origin $SOMETAG
+>   git tag -d $SOMETAG
+>   git pull --ff-only --tags git://git.kernel.org/pub/scm/linux/kernel/git=
+/torvalds/linux.git
+>   build / test / push out.
+>=20
+> Then pull fixes into for-next:
+>=20
+>   git pull --tags git://git.kernel.org/pub/scm/linux/kernel/git/riscv/lin=
+ux.git fixes
+>=20
+>=20
+> Personally (obviously biased), I think this would be easier for
+> contributors. Any downsides from a RISC-V perspective?
 
-[1] https://lore.kernel.org/linux-btrfs/CAHk-=whNdMaN9ntZ47XRKP6DBes2E5w7fi-0U3H2+PS18p+Pzw@mail.gmail.com/
+After you left, Palmer said he'd go for merging his fixes tag into
+for-next after they got merged by Linus. At least I think it was that,
+rather than Linus' -rcs...
 
-The rest is usual mix of fixes, zoned mode, device status handling and
-error handling.
+--+H3UkLQ2ywM6BKxo
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Please pull, thanks.
+-----BEGIN PGP SIGNATURE-----
 
-- fix race when reading extent buffer and 'uptodate' status is missed by one
-  thread (introduced in 6.5)
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZgSCYQAKCRB4tDGHoIJi
+0jSXAQC9hx3TKykVdHY3TVEbOmGffTwUej+VecLBQq9NlaLEaQD8DHwblxB6xvNU
+37YujV2wcGemH2l70tsYuN6yZnL1vwg=
+=ZRKV
+-----END PGP SIGNATURE-----
 
-- do additional validation of devices using major:minor numbers
-
-- zoned mode fixes:
-  - use zone-aware super block access during scrub
-  - fix use-after-free during device replace (found by KASAN)
-  - also delete zones that are 100% unusable to reclaim space
-
-- extent unpinning fixes
-  - fix extent map leak after error handling
-  - print correct range in error message
-
-- error code and message updates
-
-----------------------------------------------------------------
-The following changes since commit 1cab1375ba6d5337a25acb346996106c12bb2dd0:
-
-  btrfs: reuse cloned extent buffer during fiemap to avoid re-allocations (2024-03-05 18:14:19 +0100)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git tags/for-6.9-rc1-tag
-
-for you to fetch changes up to ef1e68236b9153c27cb7cf29ead0c532870d4215:
-
-  btrfs: fix race in read_extent_buffer_pages() (2024-03-26 16:42:39 +0100)
-
-----------------------------------------------------------------
-Anand Jain (2):
-      btrfs: validate device maj:min during open
-      btrfs: return accurate error code on open failure in open_fs_devices()
-
-Filipe Manana (4):
-      btrfs: fix extent map leak in unexpected scenario at unpin_extent_cache()
-      btrfs: fix warning messages not printing interval at unpin_extent_range()
-      btrfs: fix message not properly printing interval when adding extent map
-      btrfs: use btrfs_warn() to log message at btrfs_add_extent_mapping()
-
-Johannes Thumshirn (3):
-      btrfs: zoned: use zone aware sb location for scrub
-      btrfs: zoned: fix use-after-free in do_zone_finish()
-      btrfs: zoned: don't skip block groups with 100% zone unusable
-
-Tavian Barnes (1):
-      btrfs: fix race in read_extent_buffer_pages()
-
- fs/btrfs/block-group.c |  3 ++-
- fs/btrfs/extent_io.c   | 13 +++++++++++++
- fs/btrfs/extent_map.c  | 16 ++++++++--------
- fs/btrfs/scrub.c       | 12 +++++++++++-
- fs/btrfs/volumes.c     | 27 ++++++++++++++++++++++-----
- fs/btrfs/zoned.c       | 14 +++++++-------
- 6 files changed, 63 insertions(+), 22 deletions(-)
+--+H3UkLQ2ywM6BKxo--
 
