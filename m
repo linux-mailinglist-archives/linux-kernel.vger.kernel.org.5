@@ -1,55 +1,59 @@
-Return-Path: <linux-kernel+bounces-120826-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-120827-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1E68A88DE7F
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 13:16:54 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5A19E88DE87
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 13:17:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CB666281638
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 12:16:52 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E29FE1F2434E
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 12:17:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E408F139566;
-	Wed, 27 Mar 2024 12:08:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 76384139594;
+	Wed, 27 Mar 2024 12:08:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="TL+goa6L"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="aLuY61H8"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0FB951386C8;
-	Wed, 27 Mar 2024 12:08:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B77DC139590;
+	Wed, 27 Mar 2024 12:08:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711541314; cv=none; b=jk9WikkQHxtcfhphnQGJpZO38c/lOsBY1CQ6c5dUBJH/UmwTYTd0gdV9qGFGzkdqge2tSLx8+lqjYpC1QZeILhtdyqP9zMeCoKj0nZGjE4P0vmOn2Y7wCzm4eU+nn13y0eYZ52+j02t3oTcNQQzvVIxPOc+b2vEgvxXpjpZ4bJ0=
+	t=1711541316; cv=none; b=eKwv9opTaGYtDkqmeE4URiiA+vkiiTVSIuqOWhRvAdnbmVDI86p+8NHCw64X/il7fy480nd/s062DqdK9TgsoRlM6U41uXdEFUG3AfcWnQ+xYkehSTwdaAJrkREmaLpaWmjUKJjmXHOi2TFYU6Il9I3D5ONhlxRZhgyrk/0bvU4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711541314; c=relaxed/simple;
-	bh=Zr46nRlYjoUsEVPBenqevJUPJNe1JhAQWxh0vKrZIDM=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=o/OE6oG9DjH44n/u/xKp3cr3xhcnfWh/PIodQPRUnauYeN1N8KDYL3Dwq+pt0zBiIBaM3qnul5fNBfneX1veMhhUK7bcO0BbHld1p6r1aChfAn2X/MK5P/niE+OxKiKJqozgHr/SIJyipDTD9Yjp3TcKToeidQfU/Et2rGwkQc0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=TL+goa6L; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A9EDEC433A6;
-	Wed, 27 Mar 2024 12:08:32 +0000 (UTC)
+	s=arc-20240116; t=1711541316; c=relaxed/simple;
+	bh=h2tgrs2uNgXzSXW5PHoTPUwhMpvafx50r23jrhrkiqE=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=ZMyliWh7aR/dGGC5OXHA3JEKzvwrSXUj5LE2mXS22R353WSzZgTGEbsW6Y0yqdQH2LpglDQh9eyhtYjoqyIqc3Gh0nvLP6EJN/n6A1h1C0HD5+ZhUFRb65dO9hGdm/41uck46Eo1HoJ+CXna0o7EjVNgFsDrC4Xv7WGoNAByF0I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=aLuY61H8; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5AFF8C43143;
+	Wed, 27 Mar 2024 12:08:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711541313;
-	bh=Zr46nRlYjoUsEVPBenqevJUPJNe1JhAQWxh0vKrZIDM=;
+	s=k20201202; t=1711541316;
+	bh=h2tgrs2uNgXzSXW5PHoTPUwhMpvafx50r23jrhrkiqE=;
 	h=From:To:Cc:Subject:Date:From;
-	b=TL+goa6Lkr4ij6SsEBWqosdnbFQBus/U4zZvWCUNSnfyb6/6L0UBPsBUBXfQBC7lW
-	 /9ESGmW+3mGKqnAuNoAfSUbMaijtVOe5232vjsgeaJxDBv2rFKCtf7IQqYl/sPsMd9
-	 9pTy7quxIcTbaITYYyUmVPKM/VAe9SYygvlXllik2LkuFh6D9yDuYiNc3JtD19LxBA
-	 5sul+3a9Yq2h9iWBXgkU5U3DvKo5UxJvELe5BU2A0XZtgRpVe+b9TvnPHpjpGrNI5h
-	 uIusAE3wTKAbNIq7FDYb1vPFzm/Y14bQygz1KIkEmVZBQzI7YoMmm2BayVF3eJSbzx
-	 8rJkWF4LV5FGA==
+	b=aLuY61H8MrDkG277bA7k2UsD9NTvge+xt1jYUzeB9Ju08in63UzS5H/Lc6dqvmsOq
+	 3xH+4XAfHb3AMJGimcTzxSUBdGqiRnN7Bd7nwE4/5YYCoFiVObpCFmcFnofshD+vB9
+	 wQy5pra0DNT70rSwQMv7JTW4MguaQ4UjFcAJc/19obn9zWQ/2/ro80DuYfSJeAfxke
+	 rwWFKpape62tCRNiQ99AJgJLFubLNSW1Wb0TPayZ0tVW/N/czc7yA1PMo4kupurrAU
+	 blBqHxvc9qX5o4g5VRA8T9FK+4B+EY9l3zCSj/lOSKYd1NEbYm9Uln3xWp5VWuUxsf
+	 n1m26mFxo40WA==
 From: Sasha Levin <sashal@kernel.org>
 To: stable@vger.kernel.org,
-	anand.jain@oracle.com
-Cc: Alex Romosan <aromosan@gmail.com>,
-	CHECK_1234543212345@protonmail.com,
-	David Sterba <dsterba@suse.com>,
-	linux-btrfs@vger.kernel.org,
+	wenjing.liu@amd.com
+Cc: Mario Limonciello <mario.limonciello@amd.com>,
+	Alex Deucher <alexander.deucher@amd.com>,
+	Chaitanya Dhere <chaitanya.dhere@amd.com>,
+	Martin Leung <martin.leung@amd.com>,
+	Wayne Lin <wayne.lin@amd.com>,
+	Daniel Wheeler <daniel.wheeler@amd.com>,
+	amd-gfx@lists.freedesktop.org,
+	dri-devel@lists.freedesktop.org,
 	linux-kernel@vger.kernel.org
-Subject: FAILED: Patch "btrfs: do not skip re-registration for the mounted device" failed to apply to 6.7-stable tree
-Date: Wed, 27 Mar 2024 08:08:31 -0400
-Message-ID: <20240327120831.2826276-1-sashal@kernel.org>
+Subject: FAILED: Patch "drm/amd/display: Revert Remove pixle rate limit for subvp" failed to apply to 6.7-stable tree
+Date: Wed, 27 Mar 2024 08:08:34 -0400
+Message-ID: <20240327120834.2826317-1-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -71,171 +75,46 @@ Sasha
 
 ------------------ original commit in Linus's tree ------------------
 
-From d565fffa68560ac540bf3d62cc79719da50d5e7a Mon Sep 17 00:00:00 2001
-From: Anand Jain <anand.jain@oracle.com>
-Date: Tue, 13 Feb 2024 09:13:56 +0800
-Subject: [PATCH] btrfs: do not skip re-registration for the mounted device
+From cf8c498694a443e28dc1222f3ab94677114a4724 Mon Sep 17 00:00:00 2001
+From: Wenjing Liu <wenjing.liu@amd.com>
+Date: Mon, 4 Mar 2024 11:20:27 -0500
+Subject: [PATCH] drm/amd/display: Revert Remove pixle rate limit for subvp
 
-There are reports that since version 6.7 update-grub fails to find the
-device of the root on systems without initrd and on a single device.
+This reverts commit 340383c734f8 ("drm/amd/display: Remove pixle rate
+limit for subvp")
 
-This looks like the device name changed in the output of
-/proc/self/mountinfo:
+[why]
+The original commit causes a regression when subvp is applied
+on ODM required 8k60hz timing. The display shows black screen
+on boot. The issue can be recovered with hotplug. It also causes
+MPO to fail. We will temprarily revert this commit and investigate
+the root cause further.
 
-6.5-rc5 working
-
-  18 1 0:16 / / rw,noatime - btrfs /dev/sda8 ...
-
-6.7 not working:
-
-  17 1 0:15 / / rw,noatime - btrfs /dev/root ...
-
-and "update-grub" shows this error:
-
-  /usr/sbin/grub-probe: error: cannot find a device for / (is /dev mounted?)
-
-This looks like it's related to the device name, but grub-probe
-recognizes the "/dev/root" path and tries to find the underlying device.
-However there's a special case for some filesystems, for btrfs in
-particular.
-
-The generic root device detection heuristic is not done and it all
-relies on reading the device infos by a btrfs specific ioctl. This ioctl
-returns the device name as it was saved at the time of device scan (in
-this case it's /dev/root).
-
-The change in 6.7 for temp_fsid to allow several single device
-filesystem to exist with the same fsid (and transparently generate a new
-UUID at mount time) was to skip caching/registering such devices.
-
-This also skipped mounted device. One step of scanning is to check if
-the device name hasn't changed, and if yes then update the cached value.
-
-This broke the grub-probe as it always read the device /dev/root and
-couldn't find it in the system. A temporary workaround is to create a
-symlink but this does not survive reboot.
-
-The right fix is to allow updating the device path of a mounted
-filesystem even if this is a single device one.
-
-In the fix, check if the device's major:minor number matches with the
-cached device. If they do, then we can allow the scan to happen so that
-device_list_add() can take care of updating the device path. The file
-descriptor remains unchanged.
-
-This does not affect the temp_fsid feature, the UUID of the mounted
-filesystem remains the same and the matching is based on device major:minor
-which is unique per mounted filesystem.
-
-This covers the path when the device (that exists for all mounted
-devices) name changes, updating /dev/root to /dev/sdx. Any other single
-device with filesystem and is not mounted is still skipped.
-
-Note that if a system is booted and initial mount is done on the
-/dev/root device, this will be the cached name of the device. Only after
-the command "btrfs device scan" it will change as it triggers the
-rename.
-
-The fix was verified by users whose systems were affected.
-
-Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=218353
-Link: https://lore.kernel.org/lkml/CAKLYgeJ1tUuqLcsquwuFqjDXPSJpEiokrWK2gisPKDZLs8Y2TQ@mail.gmail.com/
-Fixes: bc27d6f0aa0e ("btrfs: scan but don't register device on single device filesystem")
-CC: stable@vger.kernel.org # 6.7+
-Tested-by: Alex Romosan <aromosan@gmail.com>
-Tested-by: CHECK_1234543212345@protonmail.com
-Signed-off-by: Anand Jain <anand.jain@oracle.com>
-Reviewed-by: David Sterba <dsterba@suse.com>
-Signed-off-by: David Sterba <dsterba@suse.com>
+Cc: Mario Limonciello <mario.limonciello@amd.com>
+Cc: Alex Deucher <alexander.deucher@amd.com>
+Cc: stable@vger.kernel.org
+Reviewed-by: Chaitanya Dhere <chaitanya.dhere@amd.com>
+Reviewed-by: Martin Leung <martin.leung@amd.com>
+Acked-by: Wayne Lin <wayne.lin@amd.com>
+Signed-off-by: Wenjing Liu <wenjing.liu@amd.com>
+Tested-by: Daniel Wheeler <daniel.wheeler@amd.com>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 ---
- fs/btrfs/volumes.c | 58 +++++++++++++++++++++++++++++++++++++---------
- 1 file changed, 47 insertions(+), 11 deletions(-)
+ drivers/gpu/drm/amd/display/dc/dml/dcn32/dcn32_fpu.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-index a2d07fa3cfdff..1dc1f1946ae0e 100644
---- a/fs/btrfs/volumes.c
-+++ b/fs/btrfs/volumes.c
-@@ -1303,6 +1303,47 @@ int btrfs_forget_devices(dev_t devt)
- 	return ret;
- }
- 
-+static bool btrfs_skip_registration(struct btrfs_super_block *disk_super,
-+				    const char *path, dev_t devt,
-+				    bool mount_arg_dev)
-+{
-+	struct btrfs_fs_devices *fs_devices;
-+
-+	/*
-+	 * Do not skip device registration for mounted devices with matching
-+	 * maj:min but different paths. Booting without initrd relies on
-+	 * /dev/root initially, later replaced with the actual root device.
-+	 * A successful scan ensures grub2-probe selects the correct device.
-+	 */
-+	list_for_each_entry(fs_devices, &fs_uuids, fs_list) {
-+		struct btrfs_device *device;
-+
-+		mutex_lock(&fs_devices->device_list_mutex);
-+
-+		if (!fs_devices->opened) {
-+			mutex_unlock(&fs_devices->device_list_mutex);
-+			continue;
-+		}
-+
-+		list_for_each_entry(device, &fs_devices->devices, dev_list) {
-+			if (device->bdev && (device->bdev->bd_dev == devt) &&
-+			    strcmp(device->name->str, path) != 0) {
-+				mutex_unlock(&fs_devices->device_list_mutex);
-+
-+				/* Do not skip registration. */
-+				return false;
-+			}
-+		}
-+		mutex_unlock(&fs_devices->device_list_mutex);
-+	}
-+
-+	if (!mount_arg_dev && btrfs_super_num_devices(disk_super) == 1 &&
-+	    !(btrfs_super_flags(disk_super) & BTRFS_SUPER_FLAG_SEEDING))
-+		return true;
-+
-+	return false;
-+}
-+
- /*
-  * Look for a btrfs signature on a device. This may be called out of the mount path
-  * and we are not allowed to call set_blocksize during the scan. The superblock
-@@ -1320,6 +1361,7 @@ struct btrfs_device *btrfs_scan_one_device(const char *path, blk_mode_t flags,
- 	struct btrfs_device *device = NULL;
- 	struct file *bdev_file;
- 	u64 bytenr, bytenr_orig;
-+	dev_t devt;
- 	int ret;
- 
- 	lockdep_assert_held(&uuid_mutex);
-@@ -1359,19 +1401,13 @@ struct btrfs_device *btrfs_scan_one_device(const char *path, blk_mode_t flags,
- 		goto error_bdev_put;
- 	}
- 
--	if (!mount_arg_dev && btrfs_super_num_devices(disk_super) == 1 &&
--	    !(btrfs_super_flags(disk_super) & BTRFS_SUPER_FLAG_SEEDING)) {
--		dev_t devt;
-+	devt = file_bdev(bdev_file)->bd_dev;
-+	if (btrfs_skip_registration(disk_super, path, devt, mount_arg_dev)) {
-+		pr_debug("BTRFS: skip registering single non-seed device %s (%d:%d)\n",
-+			  path, MAJOR(devt), MINOR(devt));
- 
--		ret = lookup_bdev(path, &devt);
--		if (ret)
--			btrfs_warn(NULL, "lookup bdev failed for path %s: %d",
--				   path, ret);
--		else
--			btrfs_free_stale_devices(devt, NULL);
-+		btrfs_free_stale_devices(devt, NULL);
- 
--	pr_debug("BTRFS: skip registering single non-seed device %s (%d:%d)\n",
--			path, MAJOR(devt), MINOR(devt));
- 		device = NULL;
- 		goto free_disk_super;
- 	}
+diff --git a/drivers/gpu/drm/amd/display/dc/dml/dcn32/dcn32_fpu.c b/drivers/gpu/drm/amd/display/dc/dml/dcn32/dcn32_fpu.c
+index b49e1dc9d8ba5..a0a65e0991041 100644
+--- a/drivers/gpu/drm/amd/display/dc/dml/dcn32/dcn32_fpu.c
++++ b/drivers/gpu/drm/amd/display/dc/dml/dcn32/dcn32_fpu.c
+@@ -623,6 +623,7 @@ static bool dcn32_assign_subvp_pipe(struct dc *dc,
+ 		 * - Not TMZ surface
+ 		 */
+ 		if (pipe->plane_state && !pipe->top_pipe && !dcn32_is_center_timing(pipe) &&
++				!(pipe->stream->timing.pix_clk_100hz / 10000 > DCN3_2_MAX_SUBVP_PIXEL_RATE_MHZ) &&
+ 				(!dcn32_is_psr_capable(pipe) || (context->stream_count == 1 && dc->caps.dmub_caps.subvp_psr)) &&
+ 				dc_state_get_pipe_subvp_type(context, pipe) == SUBVP_NONE &&
+ 				(refresh_rate < 120 || dcn32_allow_subvp_high_refresh_rate(dc, context, pipe)) &&
 -- 
 2.43.0
 
