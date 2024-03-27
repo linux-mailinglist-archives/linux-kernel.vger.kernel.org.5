@@ -1,110 +1,121 @@
-Return-Path: <linux-kernel+bounces-120615-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-120617-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 16F7A88DA48
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 10:31:43 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 334C788DA55
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 10:33:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 48EEC1C2761A
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 09:31:42 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DBD8A1F22AED
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 09:33:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2D6C2376EE;
-	Wed, 27 Mar 2024 09:31:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C94694503B;
+	Wed, 27 Mar 2024 09:33:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="mN+OaX8U"
-Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="Ge1+4gYn";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="h8Yr/MFk"
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 654361F606;
-	Wed, 27 Mar 2024 09:31:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.19.142
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6C383383AB;
+	Wed, 27 Mar 2024 09:33:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711531896; cv=none; b=S/9hRkvPqYiabb4U+bPa7lRBlvYd9UUGbiJc1KF5ZkBs5UFY71DiZJWGgAkwerFUj+MpSLxwthABOJNyjXzwrRELQu5eIASqizkJU0hox8Kz9N2XW1UDKHZ5A4sA2HzntG9cGaNA/Ieq6UG6/pKfLqe2C/Tok17qy6HK+rqfbPE=
+	t=1711532002; cv=none; b=DiyMNx0tRcq8/0WasSlWeWH76aEoqxuvii7xINaUcVRdWLMt49ty+8isVpLogv8qidaOkzjCm8P1KrN9tGzg6CnMc3BXs798Ww2dQ5LBkZvQ8zfF1e34scEpowz7yYBJfyHfZFzs+2eQo3jrDxTpyTwyqzU/ZuYikIFUREO+iG0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711531896; c=relaxed/simple;
-	bh=LmzTj529SWaNQnWYqmZUkRoDPnws9jyPAxQhRljdGYg=;
-	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=aDNtRtbWOht2W+okBFSI5Vut+AJ/WdIEP5DxRwhwjrfnHSLCq0LGgJ8mdQ6yN9mBV2N8hDmrMXubhZY8W6v57YRjF8GTAGOWyH4S/SQcpbXHH1Lu00JTz8HzmH3GJY96Pb2monvoDOFgTcTDLEyhl7KQa5+loAkkd09p3PXN+WU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=mN+OaX8U; arc=none smtp.client-ip=198.47.19.142
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-	by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 42R9VApg033380;
-	Wed, 27 Mar 2024 04:31:10 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1711531870;
-	bh=mFIeq2rRiY8WqXVke/uUYNI4+SZR1gOPxX20+WHNUgU=;
-	h=Date:From:To:CC:Subject:References:In-Reply-To;
-	b=mN+OaX8UTonabTD9IAYNcXY0ilJxstmnMW6DJjXgo23+OYXMoo/1cMTC7MVlPz4WN
-	 DzSNuLBzlgtZak4XZLAaxhSURxCUFLQpO0pGgkUzV+8jPn8AhC92sF3pR0wsAjrqP+
-	 Ts0XdYfn2FLlPlIZ0T/jIpNRpXtXm+b3GklR098I=
-Received: from DLEE114.ent.ti.com (dlee114.ent.ti.com [157.170.170.25])
-	by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 42R9VA1f067486
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Wed, 27 Mar 2024 04:31:10 -0500
-Received: from DLEE112.ent.ti.com (157.170.170.23) by DLEE114.ent.ti.com
- (157.170.170.25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Wed, 27
- Mar 2024 04:31:10 -0500
-Received: from fllvsmtp8.itg.ti.com (10.64.41.158) by DLEE112.ent.ti.com
- (157.170.170.23) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Wed, 27 Mar 2024 04:31:10 -0500
-Received: from localhost (uda0492258.dhcp.ti.com [172.24.227.9])
-	by fllvsmtp8.itg.ti.com (8.15.2/8.15.2) with ESMTP id 42R9V9Hj001289;
-	Wed, 27 Mar 2024 04:31:09 -0500
-Date: Wed, 27 Mar 2024 15:01:08 +0530
-From: Siddharth Vadapalli <s-vadapalli@ti.com>
-To: Bjorn Helgaas <helgaas@kernel.org>
-CC: Siddharth Vadapalli <s-vadapalli@ti.com>, <lpieralisi@kernel.org>,
-        <kw@linux.com>, <robh@kernel.org>, <bhelgaas@google.com>,
-        <manivannan.sadhasivam@linaro.org>, <fancer.lancer@gmail.com>,
-        <u.kleine-koenig@pengutronix.de>, <cassel@kernel.org>,
-        <dlemoal@kernel.org>, <yoshihiro.shimoda.uh@renesas.com>,
-        <linux-pci@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, <srk@ti.com>
-Subject: Re: [PATCH v6] PCI: keystone: Fix pci_ops for AM654x SoC
-Message-ID: <49077b26-9ca3-4ef7-8b25-8c58adf95f5d@ti.com>
-References: <20240326144258.2404433-1-s-vadapalli@ti.com>
- <20240326232403.GA1502764@bhelgaas>
+	s=arc-20240116; t=1711532002; c=relaxed/simple;
+	bh=pET2BBVg0xnzMN0YLHuDfWiXk7vgjrlQsg1h1vEKJeA=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=AmXCPKbFaHk7HkM8INozW/QEmqvlkIOUr/DFo3UOhkDbfvlZzWz+/jcxqWrmu3NAka30WQc12zvuxuyu6ZyyLN+hWxmrbcMJtKW9aQm41YQOe4Wsb2sy7Yw+TaKNZGf2nKjopqaQyM+uCQ54YaYf439X83fDVVGdP4OObFjVmlc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=Ge1+4gYn; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=h8Yr/MFk; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+From: John Ogness <john.ogness@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1711531992;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=nHVXfzfNDmRZjH7QwfXLPjb1528cJfMeGmgmP9uOtP0=;
+	b=Ge1+4gYnoLjHn7A9EvbZN5FF+9/aXdVzjo2nHP0HMtL6RYdILdsu+L4e1bGWWQH0qqInFF
+	NtbTK6FCsA4NDDVIazHpMEdey5DfeafkptG5meKeRCTNnLfLvnrhfNDtAz/dvRlrH6U513
+	lSz+ZssOxIQem0qlXEZ1Sh0Gr3OuuVIJ/mNLynW6g9Ykwyd0iEZ2u/Bf7ADO0ynyerjLO0
+	oHBtltCHHjKHlFjJZ1Ya3xXSTIYIp13QJyRl0tj9RuWOLdEutx2kds7P8jN2ETvsqtXhEi
+	m7CEe30rY0ypceCd7uFF7J/40KjrC8SLAufDGeZfG1FzA+ue/gk9z2OoZtzvFQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1711531992;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=nHVXfzfNDmRZjH7QwfXLPjb1528cJfMeGmgmP9uOtP0=;
+	b=h8Yr/MFkV8yQpexcQmq9sLq5Gkh+M3rNjW8p6r8bUlAxaYugFlEtXKBVOJ+3eEIsPj/TEp
+	yyg7QfcCdPPoO2Cw==
+To: Tony Lindgren <tony@atomide.com>
+Cc: Petr Mladek <pmladek@suse.com>, Sergey Senozhatsky
+ <senozhatsky@chromium.org>, Steven Rostedt <rostedt@goodmis.org>, Thomas
+ Gleixner <tglx@linutronix.de>, linux-kernel@vger.kernel.org, Greg
+ Kroah-Hartman <gregkh@linuxfoundation.org>, Jiri Slaby
+ <jirislaby@kernel.org>, Ilpo =?utf-8?Q?J=C3=A4rvinen?=
+ <ilpo.jarvinen@linux.intel.com>,
+ Andy Shevchenko <andriy.shevchenko@linux.intel.com>, Geert Uytterhoeven
+ <geert+renesas@glider.be>, Justin Chen <justin.chen@broadcom.com>, Jiaqing
+ Zhao <jiaqing.zhao@linux.intel.com>, linux-serial@vger.kernel.org, Peter
+ Collingbourne <pcc@google.com>
+Subject: Re: [PATCH printk v2 08/26] printk: nbcon: Implement processing in
+ port->lock wrapper
+In-Reply-To: <20240322062305.GB5132@atomide.com>
+References: <87le6oy9vg.fsf@jogness.linutronix.de>
+ <87plvy31hg.fsf@jogness.linutronix.de> <20240322062305.GB5132@atomide.com>
+Date: Wed, 27 Mar 2024 10:38:15 +0106
+Message-ID: <87r0fwt3z4.fsf@jogness.linutronix.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20240326232403.GA1502764@bhelgaas>
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain
 
-On Tue, Mar 26, 2024 at 06:24:03PM -0500, Bjorn Helgaas wrote:
-> On Tue, Mar 26, 2024 at 08:12:58PM +0530, Siddharth Vadapalli wrote:
-> > In the process of converting .scan_bus() callbacks to .add_bus(), the
-> > ks_pcie_v3_65_scan_bus() function was changed to ks_pcie_v3_65_add_bus().
-> > The .scan_bus() method belonged to ks_pcie_host_ops which was specific
-> > to controller version 3.65a, while the .add_bus() method had been added
-> > to ks_pcie_ops which is shared between the controller versions 3.65a and
-> > 4.90a. Neither the older ks_pcie_v3_65_scan_bus() method, nor the newer
-> > ks_pcie_v3_65_add_bus() method is applicable to the controller version
-> > 4.90a which is present in AM654x SoCs.
-> > 
-> > Thus, as a fix, move the contents of "ks_pcie_v3_65_add_bus()" to the
-> > .msi_init callback "ks_pcie_msi_host_init()" which is specific to the
-> > 3.65a controller. Also, move the definitions of ks_pcie_set_dbi_mode()
-> > and ks_pcie_clear_dbi_mode() above ks_pcie_msi_host_init() in order to
-> > avoid forward declaration.
-> 
-> If it's possible to split this into two patches (one that strictly
-> *moves* the code without otherwise changing it, and another that makes
-> the actual fix), it would be easier to review the fix.  It's a pain to
-> have to compare the code in the old location with that in the new
-> location.
+On 2024-03-22, Tony Lindgren <tony@atomide.com> wrote:
+> * John Ogness <john.ogness@linutronix.de> [240313 09:50]:
+>> One nice thing that has risen from this is we are starting to see
+>> exactly what the console lock is needed for. At this point I would say
+>> its main function is synchronizing boot consoles with real
+>> drivers. Which means we will not be able to remove the console lock
+>> until we find a real solution to match boot consoles (which circumvent
+>> the Linux driver model) with the real drivers.
+>
+> Would it help if earlycon handles all the boot consoles?
+> Then just have the serial driver take over when it probes?
 
-Sure. I will do so and post the v7 patch.
+I think this would be very helpful. And it would also cleanup the boot
+arguments. For example, we would no longer need the
+architecture-specific arguments/options (such as "early_printk" and
+"keep"). These architecture-specific arguments can be really
+confusing. There have been so many times I see a developer cursing that
+they can't get early debugging working, when I notice they are trying to
+use "early_printk" on an arm64 system.
 
-Regards,
-Siddharth.
+Browsing through
+
+arch/x86/kernel/early_printk.c
+arch/x86/boot/early_serial_console.c
+
+you can see lots of examples of various early consoles and their special
+tricks/hacks (such as pretending not to be a boot console when it really
+is).
+
+And pretty much every architecture has these. (git grep CON_BOOT)
+
+Ideally it would be great if a console could register and say "taking
+over for console X". Maybe with a new field:
+
+struct console {
+  ...
+  struct console *console_to_replace;
+  ...
+};
+
+John Ogness
 
