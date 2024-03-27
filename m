@@ -1,135 +1,177 @@
-Return-Path: <linux-kernel+bounces-121781-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-121786-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id C8E3F88ED9E
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 19:07:10 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 30EE088EDAF
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 19:09:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F31601C2C00C
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 18:07:09 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9AFDA1F34F6B
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 18:09:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E98C283A0B;
-	Wed, 27 Mar 2024 18:07:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3584814F12A;
+	Wed, 27 Mar 2024 18:08:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="I0wk9Ph0"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Yufmib9p"
+Received: from mail-lf1-f43.google.com (mail-lf1-f43.google.com [209.85.167.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3818B14D447;
-	Wed, 27 Mar 2024 18:07:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B3B014EC63
+	for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 18:08:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711562823; cv=none; b=d0CfFefptJclNlmUKe0QER/ajR5Y5eWc4jttG4vB0e2EMvgpY6EldV/GC5+erBV15nn4AS9xQmvKg9UwUVPYpuP7JGC0y+vXgvfvinh4Yg1aZYxLhnpS5Y+m6/hU/nnrXq0eEZnGlTcwISzLVrjJo0Rk1pcXMNT3+zS40e9vAlg=
+	t=1711562929; cv=none; b=jK8Uapv1VwsM7JS2vDU9JQSk3LhwZ3oChF8h/IEqHxz1wGpoOZtyM2hOl5o4Vx0UcYWZtWr7/JjEvXGp10ZelGdqFjUILZr7g+kQ9aJj1k44SG4yu2UcYDUgPs7FX+CGhVSeu9geb23j7Qb8OBPnFGAnUHU7NpYt5UFzGgfd3e4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711562823; c=relaxed/simple;
-	bh=/bu3JpKJr0qnVs//UM1Yw62jMcXqbFvPuluMhcemfBk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=O19SciHkhazHjwB3JC2BhEfb5KL2WB6HDEUmwst2OyigoF0Ilr04WBTmLzzfp2K0t1tyUN3lsomU1OQaARj/BhmkgvTRkxQUVVxOOvuO33OW69BTcOcYvSZj3BT7T6glb+CZnTkFopaAa2XGX4K/2wr6PS5UPJ9Ux5jzfFpJU1E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=I0wk9Ph0; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B4F87C433A6;
-	Wed, 27 Mar 2024 18:07:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711562822;
-	bh=/bu3JpKJr0qnVs//UM1Yw62jMcXqbFvPuluMhcemfBk=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=I0wk9Ph0DhJ4VlgbRH0d78KXTKNFsEUmzcYHqfxk5mODxKk7rXnpm0PiYFuMIs6hI
-	 6P6HOATZW6Bh2JmaKrsjSj3pDKSmbdBuVcUpH8yO0c/nir7cEtxxg8HZob7vTKxZG0
-	 wmidW7OSGxrIHc/Bcy5+AMgTFrfbbg7+6WD/0wElzC9hW2mS90RBn9ju1xkQAJ3ll4
-	 +pXN2N7HN/hWdRj/kkTTNmgAHkD8rxhtYLOQ5GF4SCM3wajKaNUqIPkhQqugyTxqFg
-	 N8AF2GxZ4pOotjVpRSMSHfX0PR0hDYZEnWc9eqPAezpJJuoiNae5socdBEdJyus7e/
-	 fF1UJDXmbMJHQ==
-Date: Wed, 27 Mar 2024 18:06:58 +0000
-From: Conor Dooley <conor@kernel.org>
-To: Jisheng Zhang <jszhang@kernel.org>
-Cc: Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Paul Walmsley <paul.walmsley@sifive.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Albert Ou <aou@eecs.berkeley.edu>,
-	Emil Renner Berthing <kernel@esmil.dk>,
-	linux-riscv@lists.infradead.org, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 6/6] riscv: dts: starfive: add Milkv Mars board device
- tree
-Message-ID: <20240327-cotton-fang-37f6d8fde0e5@spud>
-References: <20240131132600.4067-1-jszhang@kernel.org>
- <20240131132600.4067-7-jszhang@kernel.org>
- <20240206-magma-deem-2c88e45a545a@spud>
+	s=arc-20240116; t=1711562929; c=relaxed/simple;
+	bh=5X+Zdn4J7Sx+vjlv+C+dpGZruk8KxdzwFk8UAnYkPF4=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=Guoth8f38fJa0Hp+jAfItv/hXgZYT0OVaK3yNatGVApPMVckFN68VERXbXz9xdUJTkCW0vlDsrbB+Di3IrXm7XQ/+SWzGumTzMwLJM67EiP/Nrc/cCsHETRi8fPuxFU8jaHYLluMgsG6IjUUXiIZMpCxWa5IVk5aTGswhEDVtMM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=Yufmib9p; arc=none smtp.client-ip=209.85.167.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-lf1-f43.google.com with SMTP id 2adb3069b0e04-513e6777af4so38086e87.2
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 11:08:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1711562925; x=1712167725; darn=vger.kernel.org;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=do7k3J6OUzMnWn5ao/YpVOVlw0nFNOEmqZtivosXkIA=;
+        b=Yufmib9pIfvNT2RB9COaqausn3Cp5swoANb65IGCAJvYOZ+F+4h7h63V2GI/DSdLZv
+         9O+XtTPYISjX6VFtF6hSezeAEhIzBHqpHMbhTx6CtGL3Sb0l0dclfi2JuBnZz1ZIPTNu
+         xPtuhPj+eTUXPqFTsAwdE5CasJKUGGOsTo3vX/MQ9xqcpzaaZTdzdlOkGYZfCUSXC5hl
+         KIKjEqOXMsV7Rg9OoI/ctvDHWSuNcHryORiZ3N3+QVTPbf2FPYgJxxyMkNuxnBRBx+Ph
+         FC/4V4m5p5OJ+QihFi0UwwuSgE/uTZV7GpZkGEC3AxpNZ73wWXRSaJ0w4IQAbtoljzoI
+         M68w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711562925; x=1712167725;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=do7k3J6OUzMnWn5ao/YpVOVlw0nFNOEmqZtivosXkIA=;
+        b=Kpa+p5QINaTXIhU5u+4/zZDDU/eI/mtEV2ue8omYfMj6vCxL+os2qBgMowur6aG3NQ
+         ped53TjEdNLoMgLzL0tzsYo8cBiFpTIAuN8JVYfxnnXX47D5A2VNK9SuXFQxL1L67uoT
+         Y2JV0YEKth8DumLAK1rnDLRjLfMDND4YyzbNTNFh2eFSk3g4ixULfxqpIKa+k0h3eV8T
+         wflaJ85DSEaic/Cq3OhjBjqjxRTRyAN1y5gCPYM3exCdssKnqC0zH+WMPthoGxtpx7mS
+         BhMtxSoh7dllUbCwq4GAXymRSCYi8y/vcocmdHpuXyg+bHZBBPGCPfClojeKndtEWnIi
+         x6QQ==
+X-Forwarded-Encrypted: i=1; AJvYcCV5SNwk+kc1x622JacMk5/4/QadTR/JBaUZvs1Ue0jqMuVeblydPDgtb2oE6FWBgdHPYWIGGEKyYmMiVwkGwjM0AtwTXcRxtCkmQKMj
+X-Gm-Message-State: AOJu0YyN770BCMFe4fht97ACdSQ9eebWUIZanI3aA5Qj6hKP9ZnVrUW0
+	xWrP7dcnwfbA2V7XUrZy5Qm/biQV20NF9Iw5Z2CoF0NaJ+GxowKMvbdCqf6s8dE=
+X-Google-Smtp-Source: AGHT+IGpn/tQC08ltoDLTaVOSOPnAOIJ4a0jkUhyNNQh+Sb/xS2v6hWrvFWPwQTJlIOixwmQn1hcJg==
+X-Received: by 2002:a05:6512:52b:b0:513:226c:651d with SMTP id o11-20020a056512052b00b00513226c651dmr211712lfc.2.1711562925508;
+        Wed, 27 Mar 2024 11:08:45 -0700 (PDT)
+Received: from [192.168.92.47] (078088045141.garwolin.vectranet.pl. [78.88.45.141])
+        by smtp.gmail.com with ESMTPSA id z2-20020a1709060be200b00a45f2dc6795sm5702733ejg.137.2024.03.27.11.08.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 27 Mar 2024 11:08:45 -0700 (PDT)
+From: Konrad Dybcio <konrad.dybcio@linaro.org>
+Subject: [PATCH v3 00/19] Venus cleanups
+Date: Wed, 27 Mar 2024 19:08:38 +0100
+Message-Id: <20230911-topic-mars-v3-0-79f23b81c261@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="0VltnKYIOb8VcZm1"
-Content-Disposition: inline
-In-Reply-To: <20240206-magma-deem-2c88e45a545a@spud>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAKZgBGYC/3WNywqDMBQFf0WybkoeorGr/kfpIjeJesEmktjQI
+ v57o7tCu5wDM2clyUV0iVyqlUSXMWHwBeSpImbUfnAUbWEimJCs45wuYUZDHzom6hoGIETT1Zy
+ TIoBOjkLU3oxF8c9pKuMcXY+v4+F2LzxiWkJ8H4eZ7+vPduaUUd1aqaBXLVi4Tuh1DOcQB7J3s
+ vjviuJKq42qQSlTf7vbtn0AJLJI8PYAAAA=
+To: Stanimir Varbanov <stanimir.k.varbanov@gmail.com>, 
+ Vikash Garodia <quic_vgarodia@quicinc.com>, 
+ Bryan O'Donoghue <bryan.odonoghue@linaro.org>, 
+ Andy Gross <agross@kernel.org>, Bjorn Andersson <andersson@kernel.org>, 
+ Mauro Carvalho Chehab <mchehab@kernel.org>, 
+ Dikshita Agarwal <quic_dikshita@quicinc.com>, 
+ Philipp Zabel <p.zabel@pengutronix.de>
+Cc: Marijn Suijten <marijn.suijten@somainline.org>, 
+ Stanimir Varbanov <stanimir.varbanov@linaro.org>, 
+ Mauro Carvalho Chehab <mchehab+huawei@kernel.org>, 
+ linux-media@vger.kernel.org, linux-arm-msm@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, Konrad Dybcio <konrad.dybcio@linaro.org>
+X-Mailer: b4 0.12.2
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1711562923; l=3124;
+ i=konrad.dybcio@linaro.org; s=20230215; h=from:subject:message-id;
+ bh=5X+Zdn4J7Sx+vjlv+C+dpGZruk8KxdzwFk8UAnYkPF4=;
+ b=vKUdBGHf+ENd3xkN9oa4QX3veaesQOVSsEeRFOn++rx0HaowqdxeRlSfl+H6YVr5Z57tKnCjG
+ E85RANWYhiPBUTmPzg6v8CBARh9bvqUC0chKbEFkjGFEGmCwiDaOtX1
+X-Developer-Key: i=konrad.dybcio@linaro.org; a=ed25519;
+ pk=iclgkYvtl2w05SSXO5EjjSYlhFKsJ+5OSZBjOkQuEms=
 
+With the driver supporting multiple generations of hardware, some mold
+has definitely grown over the code..
 
---0VltnKYIOb8VcZm1
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+This series attempts to amend this situation a bit by commonizing some
+code paths and fixing some bugs while at it.
 
-Yo,
+Only tested on SM8250.
 
-On Tue, Feb 06, 2024 at 07:13:48PM +0000, Conor Dooley wrote:
-> On Wed, Jan 31, 2024 at 09:26:00PM +0800, Jisheng Zhang wrote:
-> > The Milkv Mars is a development board based on the Starfive JH7110 SoC.
-> > The board features:
-> >=20
-> > - JH7110 SoC
-> > - 1/2/4/8 GiB LPDDR4 DRAM
-> > - AXP15060 PMIC
-> > - 40 pin GPIO header
-> > - 3x USB 3.0 host port
-> > - 1x USB 2.0 host port
-> > - 1x M.2 E-Key
-> > - 1x eMMC slot
-> > - 1x MicroSD slot
-> > - 1x QSPI Flash
-> > - 1x 1Gbps Ethernet port
-> > - 1x HDMI port
-> > - 1x 2-lane DSI and 1x 4-lane DSI
-> > - 1x 2-lane CSI
-> >=20
-> > Add the devicetree file describing the currently supported features,
-> > namely PMIC, UART, I2C, GPIO, SD card, QSPI Flash, eMMC and Ethernet.
-> >=20
-> > Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
->=20
-> Got a dtbs_check issue in the patchwork CI:
->=20
->   +arch/riscv/boot/dts/starfive/jh7110-milkv-mars.dtb: gmac1-rgmii-rxin-c=
-lock: 'clock-frequency' is a required property
->   +	from schema $id: http://devicetree.org/schemas/clock/fixed-clock.yaml#
->   +arch/riscv/boot/dts/starfive/jh7110-milkv-mars.dtb: gmac1-rmii-refin-c=
-lock: 'clock-frequency' is a required property
->   +	from schema $id: http://devicetree.org/schemas/clock/fixed-clock.yaml#
->=20
-> Can you fix that please? Also, I applied some patches the other day that
-> seem to conflict quite a bit with the common board dts patch. Would you
-> please do a rebase on top of that please?
+Definitely needs testing on:
 
-Been going through stuff on my todo list now that the merge window is
-closed. Could you please resend this with the rebase done?
+- SDM845 with old bindings
+- SDM845 with new bindings or 7180
+- MSM8916
+- MSM8996
 
-Thanks,
-Conor.
+Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+---
+Changes in v3:
+- Drop const within const patch
+- Pick up tags
+- Some stylistic fixes in kerneldoc
+- Link to v2: https://lore.kernel.org/r/20230911-topic-mars-v2-0-3dac84b88c4b@linaro.org
 
---0VltnKYIOb8VcZm1
-Content-Type: application/pgp-signature; name="signature.asc"
+Changes in v2:
+- Fix "set but unused" warning in "Drop cache properties in resource struct"
+- Fix modular build with "Commonize vdec_get()"
+- Rebase
+- Test again on 8250, since nobody else tested other platforms since the last
+  submission (or at least hasn't reported that), I'm assuming nobody cares
+- Needs to be tested atop [1] and similar, it's in latest -next already
+- Link to v1: https://lore.kernel.org/r/20230911-topic-mars-v1-0-a7d38bf87bdb@linaro.org
 
------BEGIN PGP SIGNATURE-----
+[1] https://git.kernel.org/pub/scm/linux/kernel/git/qcom/linux.git/commit/?h=for-next&id=d2cd22c9c384aa50c0b4530e842bd078427e6279
 
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZgRgQgAKCRB4tDGHoIJi
-0pBPAQCiBXJv2E98EL2KnrNrG4R6lov/fM6sLaACMedaJDc7uQD+L4Rwr/7Nrzcv
-3NycjRUFPZtsx0EM7+vyd1cyKFonnw4=
-=lyg8
------END PGP SIGNATURE-----
+---
+Konrad Dybcio (19):
+      media: venus: pm_helpers: Only set rate of the core clock in core_clks_enable
+      media: venus: pm_helpers: Rename core_clks_get to venus_clks_get
+      media: venus: pm_helpers: Add kerneldoc to venus_clks_get()
+      media: venus: core: Set OPP clkname in a common code path
+      media: venus: pm_helpers: Kill dead code
+      media: venus: pm_helpers: Move reset acquisition to common code
+      media: venus: core: Deduplicate OPP genpd names
+      media: venus: core: Get rid of vcodec_num
+      media: venus: core: Drop cache properties in resource struct
+      media: venus: core: Use GENMASK for dma_mask
+      media: venus: core: Remove cp_start
+      media: venus: pm_helpers: Commonize core_power
+      media: venus: pm_helpers: Remove pm_ops->core_put
+      media: venus: core: Define a pointer to core->res
+      media: venus: pm_helpers: Simplify vcodec clock handling
+      media: venus: pm_helpers: Commonize getting clocks and GenPDs
+      media: venus: pm_helpers: Commonize vdec_get()
+      media: venus: pm_helpers: Commonize venc_get()
+      media: venus: pm_helpers: Use reset_bulk API
 
---0VltnKYIOb8VcZm1--
+ drivers/media/platform/qcom/venus/core.c       | 139 ++++-------
+ drivers/media/platform/qcom/venus/core.h       |  22 +-
+ drivers/media/platform/qcom/venus/firmware.c   |   3 +-
+ drivers/media/platform/qcom/venus/hfi_venus.c  |  10 +-
+ drivers/media/platform/qcom/venus/pm_helpers.c | 323 +++++++++----------------
+ drivers/media/platform/qcom/venus/pm_helpers.h |  10 +-
+ drivers/media/platform/qcom/venus/vdec.c       |   9 +-
+ drivers/media/platform/qcom/venus/venc.c       |   9 +-
+ 8 files changed, 191 insertions(+), 334 deletions(-)
+---
+base-commit: 26074e1be23143b2388cacb36166766c235feb7c
+change-id: 20230911-topic-mars-e60bb2269411
+
+Best regards,
+-- 
+Konrad Dybcio <konrad.dybcio@linaro.org>
+
 
