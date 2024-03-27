@@ -1,53 +1,57 @@
-Return-Path: <linux-kernel+bounces-121167-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-121168-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9E45F88E30E
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 14:40:50 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1F91E88E314
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 14:41:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 59B5D298F45
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 13:40:49 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C842528E16C
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 13:41:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B1E2517AF86;
-	Wed, 27 Mar 2024 12:24:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EEBC617AFB3;
+	Wed, 27 Mar 2024 12:24:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lyf4vdzm"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VGBxeQf5"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E8C7717A92C;
-	Wed, 27 Mar 2024 12:24:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 236FF17AFA0;
+	Wed, 27 Mar 2024 12:24:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711542253; cv=none; b=ROVOngXjJdTNPFI4wJK7Bz1OPWaMk44plpdHh6LZg1gyvwkpqloMF6T64dWBHdkWyCSRKjbsD/7pb2B2vwMvgs8yZ1EhDfvNDefGQc1bivHsdI8eTvLM1uDO0bpOZEv6F34Xf8NIaTQwKzmUMFEuyDIL17QInly17MxD9haKGm8=
+	t=1711542256; cv=none; b=iBSjzGD0y3Md/hv9zBz+tsdmvZqT7YEWbkcz0Gbih8sKqXimvt8EzYegb96SdSZ0fX5ohQAKSD4GMgHKmIlZLux5p+e7iML4MN3y/N3GdD7bhpwKy49kVmAsWifcPUSlnu51RPxf3bKpYcjwRWpnjzY1VfaPTXOTcjDXkmBcBvU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711542253; c=relaxed/simple;
-	bh=zMW9hCD84j0PFOETQT30po9fz4tQTpyv4UDC4EL/t1c=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=azs/QQmWVkCr/08lwkT05YDaQ7/Lmz5kzFZKCCDEK3d9YU7dfjAU38mVqrBD73QJykarT8xj96Ym67p9yscD/NtnvQRgE/zu+blpALxs/+w0YVK39zZITkLSCoEIckJfE4TjiYfxspgprp1eK+OqGQv5+IM9VgSN8/lpj3ApCeM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lyf4vdzm; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 35853C433C7;
-	Wed, 27 Mar 2024 12:24:12 +0000 (UTC)
+	s=arc-20240116; t=1711542256; c=relaxed/simple;
+	bh=wn4MHk+IAze96yprpXXBsDAtsPgJkcajiCruKqLxTWY=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=QB4fAGFPpYo7IMsODhn1aqHOG98PcYoNeRK5IV8LhEJgyBLkEKkcv4zc0pgEwDFaPlf91XbZnPSfBWRPoO0ABQ0bAI4bEteCyAFNDqYO65RRDnBpJQAaLp7z84CC4dhvkdBWFcgwxgZ80V71F4L6IGppepjbTp0lGZEgS9+6vM8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=VGBxeQf5; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B821AC43390;
+	Wed, 27 Mar 2024 12:24:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711542252;
-	bh=zMW9hCD84j0PFOETQT30po9fz4tQTpyv4UDC4EL/t1c=;
+	s=k20201202; t=1711542255;
+	bh=wn4MHk+IAze96yprpXXBsDAtsPgJkcajiCruKqLxTWY=;
 	h=From:To:Cc:Subject:Date:From;
-	b=lyf4vdzmry05fRiKuZh4iT+BOxA/XE5ifdcI8UqdPERKKYgvkInlruTOt+2Bru5JQ
-	 dB/Qk9yrBC3Or+vsIuAX2IUtm/WCRATfUOW5rhABeTjGft3Sb9IGTatEEVoQMabjtF
-	 jf4qS9uhMb8GtvS8cdgCZg7zt7w2JMnEIKPPkabExiR6vZ3OMdhhJqZzrtbBgmLHT/
-	 jiFjDigO5WRagDV6RALSo++zGo1nxa23Nh2v++OZTdDHSAPzwwnd96lGI0Cky+pY0P
-	 zpA8qRECRUJtDwCeomh2rbquApEQClSy+kTRw5kC3O8huRHtFubkQkjkZinChNh8kS
-	 c6cEUI5KhOHDQ==
+	b=VGBxeQf5BoM9RCz6LeFKCvdJPGZvZV+zJ+5tLvxWsgkgRSH8YdkuJIZ0y7qK+FB8n
+	 0wP2bmg1Nhv/TZnx8KU41VqyAFSgLOiBW1J3q06YajsPOTeS+rpQ8jPuyJ1BEX5cQE
+	 R+6T+YZ43TdJTHvyTS4xTVw+510F2V/mWNq5AeVDEAIkS3tMjosEp9FKeMjseHrDuX
+	 gWULoSjBh7KFh+LP62gbwVynyiD9DaYBTQHyCCprB5E0/AFaM0nk2LRGSJ6uySxNk7
+	 ABGkn86qE7BACw17e6eGES+oaUHq3CJneV6HWPCQvrWxhsPrCR5D7NO6Rr42bzMqCo
+	 xg20Cx2TUB71A==
 From: Sasha Levin <sashal@kernel.org>
 To: stable@vger.kernel.org,
-	josef@toxicpanda.com
-Cc: Trond Myklebust <trond.myklebust@hammerspace.com>,
-	linux-nfs@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: FAILED: Patch "nfs: fix UAF in direct writes" failed to apply to 5.4-stable tree
-Date: Wed, 27 Mar 2024 08:24:10 -0400
-Message-ID: <20240327122411.2839189-1-sashal@kernel.org>
+	yukuai3@huawei.com
+Cc: Mikulas Patocka <mpatocka@redhat.com>,
+	Xiao Ni <xni@redhat.com>,
+	Mike Snitzer <snitzer@kernel.org>,
+	Song Liu <song@kernel.org>,
+	dm-devel@lists.linux.dev,
+	linux-kernel@vger.kernel.org,
+	linux-raid@vger.kernel.org
+Subject: FAILED: Patch "dm-raid: really frozen sync_thread during suspend" failed to apply to 5.4-stable tree
+Date: Wed, 27 Mar 2024 08:24:13 -0400
+Message-ID: <20240327122413.2839226-1-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -69,123 +73,145 @@ Sasha
 
 ------------------ original commit in Linus's tree ------------------
 
-From 17f46b803d4f23c66cacce81db35fef3adb8f2af Mon Sep 17 00:00:00 2001
-From: Josef Bacik <josef@toxicpanda.com>
-Date: Fri, 1 Mar 2024 11:49:57 -0500
-Subject: [PATCH] nfs: fix UAF in direct writes
+From 16c4770c75b1223998adbeb7286f9a15c65fba73 Mon Sep 17 00:00:00 2001
+From: Yu Kuai <yukuai3@huawei.com>
+Date: Tue, 5 Mar 2024 15:23:02 +0800
+Subject: [PATCH] dm-raid: really frozen sync_thread during suspend
 
-In production we have been hitting the following warning consistently
+1) commit f52f5c71f3d4 ("md: fix stopping sync thread") remove
+   MD_RECOVERY_FROZEN from __md_stop_writes() and doesn't realize that
+   dm-raid relies on __md_stop_writes() to frozen sync_thread
+   indirectly. Fix this problem by adding MD_RECOVERY_FROZEN in
+   md_stop_writes(), and since stop_sync_thread() is only used for
+   dm-raid in this case, also move stop_sync_thread() to
+   md_stop_writes().
+2) The flag MD_RECOVERY_FROZEN doesn't mean that sync thread is frozen,
+   it only prevent new sync_thread to start, and it can't stop the
+   running sync thread; In order to frozen sync_thread, after seting the
+   flag, stop_sync_thread() should be used.
+3) The flag MD_RECOVERY_FROZEN doesn't mean that writes are stopped, use
+   it as condition for md_stop_writes() in raid_postsuspend() doesn't
+   look correct. Consider that reentrant stop_sync_thread() do nothing,
+   always call md_stop_writes() in raid_postsuspend().
+4) raid_message can set/clear the flag MD_RECOVERY_FROZEN at anytime,
+   and if MD_RECOVERY_FROZEN is cleared while the array is suspended,
+   new sync_thread can start unexpected. Fix this by disallow
+   raid_message() to change sync_thread status during suspend.
 
-------------[ cut here ]------------
-refcount_t: underflow; use-after-free.
-WARNING: CPU: 17 PID: 1800359 at lib/refcount.c:28 refcount_warn_saturate+0x9c/0xe0
-Workqueue: nfsiod nfs_direct_write_schedule_work [nfs]
-RIP: 0010:refcount_warn_saturate+0x9c/0xe0
-PKRU: 55555554
-Call Trace:
- <TASK>
- ? __warn+0x9f/0x130
- ? refcount_warn_saturate+0x9c/0xe0
- ? report_bug+0xcc/0x150
- ? handle_bug+0x3d/0x70
- ? exc_invalid_op+0x16/0x40
- ? asm_exc_invalid_op+0x16/0x20
- ? refcount_warn_saturate+0x9c/0xe0
- nfs_direct_write_schedule_work+0x237/0x250 [nfs]
- process_one_work+0x12f/0x4a0
- worker_thread+0x14e/0x3b0
- ? ZSTD_getCParams_internal+0x220/0x220
- kthread+0xdc/0x120
- ? __btf_name_valid+0xa0/0xa0
- ret_from_fork+0x1f/0x30
+Note that after commit f52f5c71f3d4 ("md: fix stopping sync thread"), the
+test shell/lvconvert-raid-reshape.sh start to hang in stop_sync_thread(),
+and with previous fixes, the test won't hang there anymore, however, the
+test will still fail and complain that ext4 is corrupted. And with this
+patch, the test won't hang due to stop_sync_thread() or fail due to ext4
+is corrupted anymore. However, there is still a deadlock related to
+dm-raid456 that will be fixed in following patches.
 
-This is because we're completing the nfs_direct_request twice in a row.
-
-The source of this is when we have our commit requests to submit, we
-process them and send them off, and then in the completion path for the
-commit requests we have
-
-if (nfs_commit_end(cinfo.mds))
-	nfs_direct_write_complete(dreq);
-
-However since we're submitting asynchronous requests we sometimes have
-one that completes before we submit the next one, so we end up calling
-complete on the nfs_direct_request twice.
-
-The only other place we use nfs_generic_commit_list() is in
-__nfs_commit_inode, which wraps this call in a
-
-nfs_commit_begin();
-nfs_commit_end();
-
-Which is a common pattern for this style of completion handling, one
-that is also repeated in the direct code with get_dreq()/put_dreq()
-calls around where we process events as well as in the completion paths.
-
-Fix this by using the same pattern for the commit requests.
-
-Before with my 200 node rocksdb stress running this warning would pop
-every 10ish minutes.  With my patch the stress test has been running for
-several hours without popping.
-
-Signed-off-by: Josef Bacik <josef@toxicpanda.com>
-Cc: stable@vger.kernel.org
-Signed-off-by: Trond Myklebust <trond.myklebust@hammerspace.com>
+Reported-by: Mikulas Patocka <mpatocka@redhat.com>
+Closes: https://lore.kernel.org/all/e5e8afe2-e9a8-49a2-5ab0-958d4065c55e@redhat.com/
+Fixes: 1af2048a3e87 ("dm raid: fix deadlock caused by premature md_stop_writes()")
+Fixes: 9dbd1aa3a81c ("dm raid: add reshaping support to the target")
+Fixes: f52f5c71f3d4 ("md: fix stopping sync thread")
+Cc: stable@vger.kernel.org # v6.7+
+Signed-off-by: Yu Kuai <yukuai3@huawei.com>
+Signed-off-by: Xiao Ni <xni@redhat.com>
+Acked-by: Mike Snitzer <snitzer@kernel.org>
+Signed-off-by: Song Liu <song@kernel.org>
+Link: https://lore.kernel.org/r/20240305072306.2562024-6-yukuai1@huaweicloud.com
 ---
- fs/nfs/direct.c        | 11 +++++++++--
- fs/nfs/write.c         |  2 +-
- include/linux/nfs_fs.h |  1 +
- 3 files changed, 11 insertions(+), 3 deletions(-)
+ drivers/md/dm-raid.c | 25 +++++++++++++++----------
+ drivers/md/md.c      |  3 ++-
+ 2 files changed, 17 insertions(+), 11 deletions(-)
 
-diff --git a/fs/nfs/direct.c b/fs/nfs/direct.c
-index befcc167e25fe..6b8798d01e3a1 100644
---- a/fs/nfs/direct.c
-+++ b/fs/nfs/direct.c
-@@ -672,10 +672,17 @@ static void nfs_direct_commit_schedule(struct nfs_direct_req *dreq)
- 	LIST_HEAD(mds_list);
+diff --git a/drivers/md/dm-raid.c b/drivers/md/dm-raid.c
+index eb009d6bb03a1..e2d7a73c0f874 100644
+--- a/drivers/md/dm-raid.c
++++ b/drivers/md/dm-raid.c
+@@ -3240,11 +3240,12 @@ static int raid_ctr(struct dm_target *ti, unsigned int argc, char **argv)
+ 	rs->md.ro = 1;
+ 	rs->md.in_sync = 1;
  
- 	nfs_init_cinfo_from_dreq(&cinfo, dreq);
-+	nfs_commit_begin(cinfo.mds);
- 	nfs_scan_commit(dreq->inode, &mds_list, &cinfo);
- 	res = nfs_generic_commit_list(dreq->inode, &mds_list, 0, &cinfo);
--	if (res < 0) /* res == -ENOMEM */
--		nfs_direct_write_reschedule(dreq);
-+	if (res < 0) { /* res == -ENOMEM */
-+		spin_lock(&dreq->lock);
-+		if (dreq->flags == 0)
-+			dreq->flags = NFS_ODIRECT_RESCHED_WRITES;
-+		spin_unlock(&dreq->lock);
-+	}
-+	if (nfs_commit_end(cinfo.mds))
-+		nfs_direct_write_complete(dreq);
+-	/* Keep array frozen until resume. */
+-	set_bit(MD_RECOVERY_FROZEN, &rs->md.recovery);
+-
+ 	/* Has to be held on running the array */
+ 	mddev_suspend_and_lock_nointr(&rs->md);
++
++	/* Keep array frozen until resume. */
++	md_frozen_sync_thread(&rs->md);
++
+ 	r = md_run(&rs->md);
+ 	rs->md.in_sync = 0; /* Assume already marked dirty */
+ 	if (r) {
+@@ -3722,6 +3723,9 @@ static int raid_message(struct dm_target *ti, unsigned int argc, char **argv,
+ 	if (!mddev->pers || !mddev->pers->sync_request)
+ 		return -EINVAL;
+ 
++	if (test_bit(RT_FLAG_RS_SUSPENDED, &rs->runtime_flags))
++		return -EBUSY;
++
+ 	if (!strcasecmp(argv[0], "frozen"))
+ 		set_bit(MD_RECOVERY_FROZEN, &mddev->recovery);
+ 	else
+@@ -3796,10 +3800,11 @@ static void raid_postsuspend(struct dm_target *ti)
+ 	struct raid_set *rs = ti->private;
+ 
+ 	if (!test_and_set_bit(RT_FLAG_RS_SUSPENDED, &rs->runtime_flags)) {
+-		/* Writes have to be stopped before suspending to avoid deadlocks. */
+-		if (!test_bit(MD_RECOVERY_FROZEN, &rs->md.recovery))
+-			md_stop_writes(&rs->md);
+-
++		/*
++		 * sync_thread must be stopped during suspend, and writes have
++		 * to be stopped before suspending to avoid deadlocks.
++		 */
++		md_stop_writes(&rs->md);
+ 		mddev_suspend(&rs->md, false);
+ 	}
  }
+@@ -4012,8 +4017,6 @@ static int raid_preresume(struct dm_target *ti)
+ 	}
  
- static void nfs_direct_write_clear_reqs(struct nfs_direct_req *dreq)
-diff --git a/fs/nfs/write.c b/fs/nfs/write.c
-index 58adbb7709ba7..15359bbfa56bc 100644
---- a/fs/nfs/write.c
-+++ b/fs/nfs/write.c
-@@ -1646,7 +1646,7 @@ static int wait_on_commit(struct nfs_mds_commit_info *cinfo)
- 				       !atomic_read(&cinfo->rpcs_out));
+ 	/* Check for any resize/reshape on @rs and adjust/initiate */
+-	/* Be prepared for mddev_resume() in raid_resume() */
+-	set_bit(MD_RECOVERY_FROZEN, &mddev->recovery);
+ 	if (mddev->recovery_cp && mddev->recovery_cp < MaxSector) {
+ 		set_bit(MD_RECOVERY_REQUESTED, &mddev->recovery);
+ 		mddev->resync_min = mddev->recovery_cp;
+@@ -4055,10 +4058,12 @@ static void raid_resume(struct dm_target *ti)
+ 		if (mddev->delta_disks < 0)
+ 			rs_set_capacity(rs);
+ 
++		WARN_ON_ONCE(!test_bit(MD_RECOVERY_FROZEN, &mddev->recovery));
++		WARN_ON_ONCE(test_bit(MD_RECOVERY_RUNNING, &mddev->recovery));
+ 		mddev_lock_nointr(mddev);
+-		clear_bit(MD_RECOVERY_FROZEN, &mddev->recovery);
+ 		mddev->ro = 0;
+ 		mddev->in_sync = 0;
++		md_unfrozen_sync_thread(mddev);
+ 		mddev_unlock_and_resume(mddev);
+ 	}
  }
+diff --git a/drivers/md/md.c b/drivers/md/md.c
+index 55ecc05c17c65..167db77442392 100644
+--- a/drivers/md/md.c
++++ b/drivers/md/md.c
+@@ -6364,7 +6364,6 @@ static void md_clean(struct mddev *mddev)
  
--static void nfs_commit_begin(struct nfs_mds_commit_info *cinfo)
-+void nfs_commit_begin(struct nfs_mds_commit_info *cinfo)
+ static void __md_stop_writes(struct mddev *mddev)
  {
- 	atomic_inc(&cinfo->rpcs_out);
- }
-diff --git a/include/linux/nfs_fs.h b/include/linux/nfs_fs.h
-index f5ce7b1011461..d59116ac82099 100644
---- a/include/linux/nfs_fs.h
-+++ b/include/linux/nfs_fs.h
-@@ -611,6 +611,7 @@ int nfs_wb_folio_cancel(struct inode *inode, struct folio *folio);
- extern int  nfs_commit_inode(struct inode *, int);
- extern struct nfs_commit_data *nfs_commitdata_alloc(void);
- extern void nfs_commit_free(struct nfs_commit_data *data);
-+void nfs_commit_begin(struct nfs_mds_commit_info *cinfo);
- bool nfs_commit_end(struct nfs_mds_commit_info *cinfo);
+-	stop_sync_thread(mddev, true, false);
+ 	del_timer_sync(&mddev->safemode_timer);
  
- static inline bool nfs_have_writebacks(const struct inode *inode)
+ 	if (mddev->pers && mddev->pers->quiesce) {
+@@ -6389,6 +6388,8 @@ static void __md_stop_writes(struct mddev *mddev)
+ void md_stop_writes(struct mddev *mddev)
+ {
+ 	mddev_lock_nointr(mddev);
++	set_bit(MD_RECOVERY_FROZEN, &mddev->recovery);
++	stop_sync_thread(mddev, true, false);
+ 	__md_stop_writes(mddev);
+ 	mddev_unlock(mddev);
+ }
 -- 
 2.43.0
 
