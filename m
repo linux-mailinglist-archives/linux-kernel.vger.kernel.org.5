@@ -1,55 +1,57 @@
-Return-Path: <linux-kernel+bounces-120973-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-120974-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5DD4388E11E
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 13:52:38 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 967EA88E123
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 13:52:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 108091F295F3
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 12:52:38 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D752729F0A7
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 12:52:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5F9D01552F7;
-	Wed, 27 Mar 2024 12:15:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 017F7155381;
+	Wed, 27 Mar 2024 12:15:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="reG4u0Op"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZM28g1N3"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 94E0115445C;
-	Wed, 27 Mar 2024 12:15:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3242D155302;
+	Wed, 27 Mar 2024 12:15:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711541735; cv=none; b=sM/VTmS60lI5FkKWg9Tt5PDzG2ia5Z73oCll3JrgHvoBsRZaDJ6KrG7OQ6sGFzyVSCegFJNcDqfAcjv78c0DsRYtK/cJuCF1RdnU0XFAveVe5QzCtCAPO+tz1Kqz7fxzG089inmi6jgs01MqC6efoNzbXau9e5fyt4bVpSrOKOM=
+	t=1711541738; cv=none; b=ackhj9CIUV2dosZ+HEOH5jYLMU3MMl4Z2/jThDL+hA0GCfjuYNL9NWj79itFY/Sdsri5IjWWKxNQiyiX0VIVnwS2ywAxQkBLQkoNKZBCx+FPP6icw9ruSM3RogfT5easKvnhPkeOxgXxWGKkqOSIsmE7HjIOCGYfMR9QYC0WZ68=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711541735; c=relaxed/simple;
-	bh=MTjETf/HXOHB/c0QIDmTzo8luuhXe+HE16e14F5Iz3Y=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=ct7BsndQWECzIISjyl/zpvkkqdcd9mPNYWJNd2UCyqFUFKyAcwtoicF5nTklRVdcU1ZyB6JI5zc1AikYsvlggfGD6rK1QkTDrLbcHLb/rFOPJ1mkvgl5qkYB0np5agmKedy3+tv0fnJnfuAz/GX6mXMZzthDv/S3zGaUKBrbqDA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=reG4u0Op; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 43CFAC433F1;
-	Wed, 27 Mar 2024 12:15:34 +0000 (UTC)
+	s=arc-20240116; t=1711541738; c=relaxed/simple;
+	bh=lHt9D14ybf0nnCyk5lSioH5vZZl9kQOLC2vqJw8avK8=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=s75FR/UF+gW79OIcpPSWI8NSEHaaCVz8QP5ZSCp++4pFPfEAsMeepzLD9BNJ8Q24ZUD0TkKjTBGMXFn1GfC5boXZfoEPJrBHMY0ZUkWCtaxgGXnEP7BsyPzFp8ub9PZvpqznpwr8NK7KkfsK8rJkkTYtj0cFXr6C+H/XJypzEDs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ZM28g1N3; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EFB88C433F1;
+	Wed, 27 Mar 2024 12:15:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711541735;
-	bh=MTjETf/HXOHB/c0QIDmTzo8luuhXe+HE16e14F5Iz3Y=;
+	s=k20201202; t=1711541738;
+	bh=lHt9D14ybf0nnCyk5lSioH5vZZl9kQOLC2vqJw8avK8=;
 	h=From:To:Cc:Subject:Date:From;
-	b=reG4u0OpWqPKH3dTVxncTVvUyr/W4lEO3PrXXN1ETgn3ETCSCR5vLC+P+ryI7P2ip
-	 7eHrxq4eSKB2uLfcdI7Kjv/yfCOTDBLYs8nkhc7seJmz9XHfyEY8sYv4YmKR/0q/5M
-	 G9JPCcsNYYG/wFm0WT0uY65SsuaBZ/80FfU375gSub1i5erTsj03ApBX8wS0WzAEPc
-	 YBmOXf12qldGwhweFd3SkSBN0cjXmEFmeAzYmarPpjde/sLGCdUK2rFHmdDYjMZ20b
-	 qF7d5WikKjVdvblNtzXot5LGp+9hGSlENzskMQwEBrMBg9ucbxVb35u9kNto4a8CnJ
-	 lnuld8qsO+AMg==
+	b=ZM28g1N3oWXkNTB/3BP/mxDQfA1bHQPS0LsIAs0IbJUY7LPC5U6ss3aYt/MLqG8Zo
+	 grnPfZ+pwns9sShKCQTSGebRH96+2nlbVywOEnBEtcVM2b/IBF7g6Iy2SAvFuXNA0v
+	 b2ujEcFUvngQqv29FjZC5JUxl1C77WoZ5bbQ4c9GC58Lolc4o/KK1LopQRLwEoAnFp
+	 a3LpIbHpVg4XW+gK7/2hfKZ1ZtalD6OXR2mSDukIlGIXy/0HHtu0yMMWKXZzYNBXlK
+	 mAeDw/Sp6aBX9KPJCNKBV9Rr3BF+3kS8n6M8saJ18yIPG2d0+2V+ntvEA+f//5tTb2
+	 KQiWgoZB7ITRQ==
 From: Sasha Levin <sashal@kernel.org>
 To: stable@vger.kernel.org,
-	morrownr@gmail.com
-Cc: Larry Finger <Larry.Finger@lwfinger.net>,
-	Ping-Ke Shih <pkshih@realtek.com>,
-	Kalle Valo <kvalo@kernel.org>,
-	linux-wireless@vger.kernel.org,
+	mhklinux@outlook.com
+Cc: =?UTF-8?q?Krzysztof=20Wilczy=C5=84ski?= <kwilczynski@kernel.org>,
+	Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>,
+	Ilpo Jarvinen <ilpo.jarvinen@linux.intel.com>,
+	Long Li <longli@microsoft.com>,
+	linux-hyperv@vger.kernel.org,
+	linux-pci@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: FAILED: Patch "wifi: rtw88: Add missing VID/PIDs for 8811CU and 8821CU" failed to apply to 5.15-stable tree
-Date: Wed, 27 Mar 2024 08:15:33 -0400
-Message-ID: <20240327121533.2832006-1-sashal@kernel.org>
+Subject: FAILED: Patch "PCI: hv: Fix ring buffer size calculation" failed to apply to 5.15-stable tree
+Date: Wed, 27 Mar 2024 08:15:35 -0400
+Message-ID: <20240327121536.2832043-1-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -59,6 +61,7 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-Patchwork-Hint: ignore
 X-stable: review
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
 The patch below does not apply to the 5.15-stable tree.
@@ -71,86 +74,63 @@ Sasha
 
 ------------------ original commit in Linus's tree ------------------
 
-From b8a62478f3b143592d1241de1a7f5f8629ad0f49 Mon Sep 17 00:00:00 2001
-From: Nick Morrow <morrownr@gmail.com>
-Date: Tue, 27 Feb 2024 02:34:40 +0000
-Subject: [PATCH] wifi: rtw88: Add missing VID/PIDs for 8811CU and 8821CU
+From b5ff74c1ef50fe08e384026875fec660fadfaedd Mon Sep 17 00:00:00 2001
+From: Michael Kelley <mhklinux@outlook.com>
+Date: Fri, 16 Feb 2024 12:22:40 -0800
+Subject: [PATCH] PCI: hv: Fix ring buffer size calculation
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-Add VID/PIDs that are known to be missing for this driver.
+For a physical PCI device that is passed through to a Hyper-V guest VM,
+current code specifies the VMBus ring buffer size as 4 pages.  But this
+is an inappropriate dependency, since the amount of ring buffer space
+needed is unrelated to PAGE_SIZE. For example, on x86 the ring buffer
+size ends up as 16 Kbytes, while on ARM64 with 64 Kbyte pages, the ring
+size bloats to 256 Kbytes. The ring buffer for PCI pass-thru devices
+is used for only a few messages during device setup and removal, so any
+space above a few Kbytes is wasted.
 
-Removed /* 8811CU */ and /* 8821CU */ as they are redundant
-since the file is specific to those chips.
+Fix this by declaring the ring buffer size to be a fixed 16 Kbytes.
+Furthermore, use the VMBUS_RING_SIZE() macro so that the ring buffer
+header is properly accounted for, and so the size is rounded up to a
+page boundary, using the page size for which the kernel is built. While
+w/64 Kbyte pages this results in a 64 Kbyte ring buffer header plus a
+64 Kbyte ring buffer, that's the smallest possible with that page size.
+It's still 128 Kbytes better than the current code.
 
-Removed /* TOTOLINK A650UA v3 */ as the manufacturer. It has a REALTEK
-VID so it may not be specific to this adapter.
-
-Verified and tested.
-
-Cc: stable@vger.kernel.org
-Signed-off-by: Nick Morrow <morrownr@gmail.com>
-Signed-off-by: Larry Finger <Larry.Finger@lwfinger.net>
-Acked-by: Ping-Ke Shih <pkshih@realtek.com>
-Signed-off-by: Kalle Valo <kvalo@kernel.org>
-Link: https://msgid.link/4ume7mjw63u7.XlMUvUuacW2ErhOCdqlLkw2@1EHFQ.trk.elasticemail.com
+Link: https://lore.kernel.org/linux-pci/20240216202240.251818-1-mhklinux@outlook.com
+Signed-off-by: Michael Kelley <mhklinux@outlook.com>
+Signed-off-by: Krzysztof Wilczyński <kwilczynski@kernel.org>
+Reviewed-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
+Reviewed-by: Ilpo Jarvinen <ilpo.jarvinen@linux.intel.com>
+Reviewed-by: Long Li <longli@microsoft.com>
+Cc: <stable@vger.kernel.org> # 5.15.x
 ---
- .../net/wireless/realtek/rtw88/rtw8821cu.c    | 40 ++++++++++++-------
- 1 file changed, 26 insertions(+), 14 deletions(-)
+ drivers/pci/controller/pci-hyperv.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/wireless/realtek/rtw88/rtw8821cu.c b/drivers/net/wireless/realtek/rtw88/rtw8821cu.c
-index 7a5cbdc31ef79..e2c7d9f876836 100644
---- a/drivers/net/wireless/realtek/rtw88/rtw8821cu.c
-+++ b/drivers/net/wireless/realtek/rtw88/rtw8821cu.c
-@@ -9,24 +9,36 @@
- #include "usb.h"
+diff --git a/drivers/pci/controller/pci-hyperv.c b/drivers/pci/controller/pci-hyperv.c
+index 1eaffff40b8d4..5992280e8110b 100644
+--- a/drivers/pci/controller/pci-hyperv.c
++++ b/drivers/pci/controller/pci-hyperv.c
+@@ -49,6 +49,7 @@
+ #include <linux/refcount.h>
+ #include <linux/irqdomain.h>
+ #include <linux/acpi.h>
++#include <linux/sizes.h>
+ #include <asm/mshyperv.h>
  
- static const struct usb_device_id rtw_8821cu_id_table[] = {
--	{ USB_DEVICE_AND_INTERFACE_INFO(RTW_USB_VENDOR_ID_REALTEK, 0xb82b, 0xff, 0xff, 0xff),
--	  .driver_info = (kernel_ulong_t)&(rtw8821c_hw_spec) }, /* 8821CU */
-+	{ USB_DEVICE_AND_INTERFACE_INFO(RTW_USB_VENDOR_ID_REALTEK, 0x2006, 0xff, 0xff, 0xff),
-+	  .driver_info = (kernel_ulong_t)&(rtw8821c_hw_spec) },
-+	{ USB_DEVICE_AND_INTERFACE_INFO(RTW_USB_VENDOR_ID_REALTEK, 0x8731, 0xff, 0xff, 0xff),
-+	  .driver_info = (kernel_ulong_t)&(rtw8821c_hw_spec) },
-+	{ USB_DEVICE_AND_INTERFACE_INFO(RTW_USB_VENDOR_ID_REALTEK, 0x8811, 0xff, 0xff, 0xff),
-+	  .driver_info = (kernel_ulong_t)&(rtw8821c_hw_spec) },
- 	{ USB_DEVICE_AND_INTERFACE_INFO(RTW_USB_VENDOR_ID_REALTEK, 0xb820, 0xff, 0xff, 0xff),
--	  .driver_info = (kernel_ulong_t)&(rtw8821c_hw_spec) }, /* 8821CU */
--	{ USB_DEVICE_AND_INTERFACE_INFO(RTW_USB_VENDOR_ID_REALTEK, 0xc821, 0xff, 0xff, 0xff),
--	  .driver_info = (kernel_ulong_t)&(rtw8821c_hw_spec) }, /* 8821CU */
-+	  .driver_info = (kernel_ulong_t)&(rtw8821c_hw_spec) },
-+	{ USB_DEVICE_AND_INTERFACE_INFO(RTW_USB_VENDOR_ID_REALTEK, 0xb82b, 0xff, 0xff, 0xff),
-+	  .driver_info = (kernel_ulong_t)&(rtw8821c_hw_spec) },
-+	{ USB_DEVICE_AND_INTERFACE_INFO(RTW_USB_VENDOR_ID_REALTEK, 0xc80c, 0xff, 0xff, 0xff),
-+	  .driver_info = (kernel_ulong_t)&(rtw8821c_hw_spec) },
-+	{ USB_DEVICE_AND_INTERFACE_INFO(RTW_USB_VENDOR_ID_REALTEK, 0xc811, 0xff, 0xff, 0xff),
-+	  .driver_info = (kernel_ulong_t)&(rtw8821c_hw_spec) },
- 	{ USB_DEVICE_AND_INTERFACE_INFO(RTW_USB_VENDOR_ID_REALTEK, 0xc820, 0xff, 0xff, 0xff),
--	  .driver_info = (kernel_ulong_t)&(rtw8821c_hw_spec) }, /* 8821CU */
-+	  .driver_info = (kernel_ulong_t)&(rtw8821c_hw_spec) },
-+	{ USB_DEVICE_AND_INTERFACE_INFO(RTW_USB_VENDOR_ID_REALTEK, 0xc821, 0xff, 0xff, 0xff),
-+	  .driver_info = (kernel_ulong_t)&(rtw8821c_hw_spec) },
- 	{ USB_DEVICE_AND_INTERFACE_INFO(RTW_USB_VENDOR_ID_REALTEK, 0xc82a, 0xff, 0xff, 0xff),
--	  .driver_info = (kernel_ulong_t)&(rtw8821c_hw_spec) }, /* 8821CU */
-+	  .driver_info = (kernel_ulong_t)&(rtw8821c_hw_spec) },
- 	{ USB_DEVICE_AND_INTERFACE_INFO(RTW_USB_VENDOR_ID_REALTEK, 0xc82b, 0xff, 0xff, 0xff),
--	  .driver_info = (kernel_ulong_t)&(rtw8821c_hw_spec) }, /* 8821CU */
--	{ USB_DEVICE_AND_INTERFACE_INFO(RTW_USB_VENDOR_ID_REALTEK, 0xc811, 0xff, 0xff, 0xff),
--	  .driver_info = (kernel_ulong_t)&(rtw8821c_hw_spec) }, /* 8811CU */
--	{ USB_DEVICE_AND_INTERFACE_INFO(RTW_USB_VENDOR_ID_REALTEK, 0x8811, 0xff, 0xff, 0xff),
--	  .driver_info = (kernel_ulong_t)&(rtw8821c_hw_spec) }, /* 8811CU */
--	{ USB_DEVICE_AND_INTERFACE_INFO(RTW_USB_VENDOR_ID_REALTEK, 0x2006, 0xff, 0xff, 0xff),
--	  .driver_info = (kernel_ulong_t)&(rtw8821c_hw_spec) }, /* TOTOLINK A650UA v3 */
-+	  .driver_info = (kernel_ulong_t)&(rtw8821c_hw_spec) },
-+	{ USB_DEVICE_AND_INTERFACE_INFO(RTW_USB_VENDOR_ID_REALTEK, 0xc82c, 0xff, 0xff, 0xff),
-+	  .driver_info = (kernel_ulong_t)&(rtw8821c_hw_spec) },
-+	{ USB_DEVICE_AND_INTERFACE_INFO(0x2001, 0x331d, 0xff, 0xff, 0xff),
-+	  .driver_info = (kernel_ulong_t)&(rtw8821c_hw_spec) }, /* D-Link */
-+	{ USB_DEVICE_AND_INTERFACE_INFO(0x7392, 0xc811, 0xff, 0xff, 0xff),
-+	  .driver_info = (kernel_ulong_t)&(rtw8821c_hw_spec) }, /* Edimax */
-+	{ USB_DEVICE_AND_INTERFACE_INFO(0x7392, 0xd811, 0xff, 0xff, 0xff),
-+	  .driver_info = (kernel_ulong_t)&(rtw8821c_hw_spec) }, /* Edimax */
- 	{},
- };
- MODULE_DEVICE_TABLE(usb, rtw_8821cu_id_table);
+ /*
+@@ -465,7 +466,7 @@ struct pci_eject_response {
+ 	u32 status;
+ } __packed;
+ 
+-static int pci_ring_size = (4 * PAGE_SIZE);
++static int pci_ring_size = VMBUS_RING_SIZE(SZ_16K);
+ 
+ /*
+  * Driver specific state.
 -- 
 2.43.0
 
