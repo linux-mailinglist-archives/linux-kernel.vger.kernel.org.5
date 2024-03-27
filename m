@@ -1,205 +1,338 @@
-Return-Path: <linux-kernel+bounces-121599-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-121600-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id BAE6A88EAB7
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 17:10:50 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id DE03F88EAB8
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 17:11:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 486B11F2F9B1
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 16:10:50 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 575FE1F329D9
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 16:11:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A1E3F130E3F;
-	Wed, 27 Mar 2024 16:04:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 75E9C1442F0;
+	Wed, 27 Mar 2024 16:04:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=marvell.com header.i=@marvell.com header.b="IaGEHI4s"
-Received: from mx0b-0016f401.pphosted.com (mx0b-0016f401.pphosted.com [67.231.156.173])
+	dkim=pass (2048-bit key) header.d=proton.me header.i=@proton.me header.b="NZF/48Dz"
+Received: from mail-40131.protonmail.ch (mail-40131.protonmail.ch [185.70.40.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 31592130AD4;
-	Wed, 27 Mar 2024 16:04:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=67.231.156.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D3D6113C9B9
+	for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 16:04:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.70.40.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711555449; cv=none; b=FbW8wmOa43QkNnwqcjKPlvrtBZ0GWZNseasOV5ENao5//CvebW+wy/pLOLe7QbEkmS0T1GSjfiwfHmkAQ+yMEfgoql3TKC7UEzK4S9HyZCbnhh/YV643G3Cg8FniKsd+om2fR0te96LFW7OQTmNfAdmrEVQz3tgYQi2gBf30LPA=
+	t=1711555454; cv=none; b=O2JzqA/GQPxkJ2w+lgwqpKlerDjjSQIY7w5FSTPgKF36xVzAt1EBOrpKK39l/lZ+mKunpG4ZvaMqljSFb8QTofwUjW0CrptFkDnx5Y6EFSCzAY8GlZog9xlZYtE37h+8zPpq76WeJxTqqdKH0DIdxLr01HtwEOyWNwsH53sdlCs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711555449; c=relaxed/simple;
-	bh=EAl8P8Qu7HPovX2acDv9ASr+MGLmIaZBZzWZbWqy+fM=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=jaPixLc3R4cOMMIAYg1IkZfDX9WACiaB6dJa6m7+sz9PFInxGmzBfUBTLbXwaH1u21TkN4onTqoUxNO19mbWx+PXDugXWHS+Rjov7Im77oVeFkQMkZ47QvyhjtuWA50GOotu0ox1OdfdexIwtat2iKCLEvY7iPQBzcKrylVlnEk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=marvell.com; spf=pass smtp.mailfrom=marvell.com; dkim=pass (2048-bit key) header.d=marvell.com header.i=@marvell.com header.b=IaGEHI4s; arc=none smtp.client-ip=67.231.156.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=marvell.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=marvell.com
-Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
-	by mx0b-0016f401.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 42RBDJFw011638;
-	Wed, 27 Mar 2024 09:03:55 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=
-	from:to:cc:subject:date:message-id:mime-version:content-type; s=
-	pfpt0220; bh=l2wIJJIu1OyJZqHPUqPbUVIbvJ+2femMu87XHi1/E0U=; b=IaG
-	EHI4sx5+pmerEXAa/7gBfAlYIK5pg1+gQthJylZesQkCo9nohAReWbO71RjsB6m8
-	5ioEnoyOqTCaN4WU53iqRrX2sQJ8coppYJEt1A7tBz4Gu4mij0i+i8qR00Vc1Bbx
-	AbezqWYL3ILfRDmDoINs1jEbb5G9WtZB5xR3MHB9QI1MG8CWTFRqUhVy2B/cJpev
-	dknZJ2Hz1XnDCV4n/bJ7sDyJmFYGAZq7D0PJMbRTWXP3j9/wbalzkM3FltjJ+h9L
-	Fw4GgN51LR3YjVJAc4Qjn6/OjPzRvQ2saOcCQ3y0JPJqB/kM3f46bhOYfsDfYl43
-	3Q6uNAHWpyap80O7+Og==
-Received: from dc5-exch05.marvell.com ([199.233.59.128])
-	by mx0b-0016f401.pphosted.com (PPS) with ESMTPS id 3x4jd1h6jr-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 27 Mar 2024 09:03:55 -0700 (PDT)
-Received: from DC5-EXCH05.marvell.com (10.69.176.209) by
- DC5-EXCH05.marvell.com (10.69.176.209) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.4; Wed, 27 Mar 2024 09:03:53 -0700
-Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH05.marvell.com
- (10.69.176.209) with Microsoft SMTP Server id 15.2.1544.4 via Frontend
- Transport; Wed, 27 Mar 2024 09:03:53 -0700
-Received: from hyd1soter3.marvell.com (unknown [10.29.37.12])
-	by maili.marvell.com (Postfix) with ESMTP id 09BC33F70BF;
-	Wed, 27 Mar 2024 09:03:49 -0700 (PDT)
-From: Hariprasad Kelam <hkelam@marvell.com>
-To: <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-CC: <kuba@kernel.org>, <davem@davemloft.net>, <sgoutham@marvell.com>,
-        <gakula@marvell.com>, <jerinj@marvell.com>, <lcherian@marvell.com>,
-        <sbhatta@marvell.com>, <hkelam@marvell.com>, <naveenm@marvell.com>,
-        <edumazet@google.com>, <pabeni@redhat.com>
-Subject: [net-next Patch] octeontx2-af: map management port always to first PF
-Date: Wed, 27 Mar 2024 21:33:48 +0530
-Message-ID: <20240327160348.3023-1-hkelam@marvell.com>
-X-Mailer: git-send-email 2.17.1
+	s=arc-20240116; t=1711555454; c=relaxed/simple;
+	bh=EdLNzX8uuiq2CjNBfiXznOjIDyfPc5MSkqemwj47Fxc=;
+	h=Date:To:From:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=Uvli65DF/5OomxNkr27+CHo1sQbR+d/GBTzXAn5iOha30/5VdthzyOwW2Vwi4lT+88yzydnXK5lw+kYafKXKtlPJtc8wmmDEmjXPSxe89bX+cnzsP/0XTo2WEXyTL+MlmM+Jbk4OYUtCXYLCpYa+sbYfVNR7kv2IpaJM0jQLejU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=proton.me; spf=pass smtp.mailfrom=proton.me; dkim=pass (2048-bit key) header.d=proton.me header.i=@proton.me header.b=NZF/48Dz; arc=none smtp.client-ip=185.70.40.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=proton.me
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=proton.me
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=proton.me;
+	s=protonmail; t=1711555449; x=1711814649;
+	bh=Ka2xa47AQ5Q73+6JzpnFAcof+BAgDh2tkVUlnUr2JVE=;
+	h=Date:To:From:Cc:Subject:Message-ID:Feedback-ID:From:To:Cc:Date:
+	 Subject:Reply-To:Feedback-ID:Message-ID:BIMI-Selector;
+	b=NZF/48Dzz7IZFkHGpV08pk9cJ7GI15CSkz6G7ljNb8L0GFu0DXubC+dd4sdTcXM3H
+	 Xj1rhsJcVFBzolFWgok7ZIe0B05tC3TPi0SKfNy6W3AAqjJ5ygJg7e9TLl+y/gUGoB
+	 fcOo4Blj81axwFF1KJ1btZKNtSy+DycpIeyFa5YlYpwu3NZKYqHV7aHFMTJESDbjDG
+	 aLYPXQSnoT1//TjkkGBa7i43YDx3/yCsspZU62HNLzS7xhxXlFbs4YipRArvC7QJfd
+	 R7pGm6y9hFfmem6wli+vHzpyKKqo0mz/s7tc4UwJPkV6s83FKmo2/SlogR/sX1Wkg2
+	 2Ux5GFZ+Q3pww==
+Date: Wed, 27 Mar 2024 16:04:03 +0000
+To: Miguel Ojeda <ojeda@kernel.org>, Alex Gaynor <alex.gaynor@gmail.com>, Wedson Almeida Filho <wedsonaf@gmail.com>, Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>, =?utf-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, Benno Lossin <benno.lossin@proton.me>, Andreas Hindborg <a.hindborg@samsung.com>, Alice Ryhl <aliceryhl@google.com>, Martin Rodriguez Reboredo <yakoyoku@gmail.com>, Asahi Lina <lina@asahilina.net>, Eric Curtin <ecurtin@redhat.com>, Neal Gompa <neal@gompa.dev>, Thomas Bertschinger <tahbertschinger@gmail.com>, Andrea Righi <andrea.righi@canonical.com>, Sumera Priyadarsini <sylphrenadin@gmail.com>, Finn Behrens <me@kloenk.dev>, Adam Bratschi-Kaye <ark.email@gmail.com>
+From: Benno Lossin <benno.lossin@proton.me>
+Cc: stable@vger.kernel.org, Daniel Xu <dxu@dxuuu.xyz>, rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] rust: macros: fix soundness issue in `module!` macro
+Message-ID: <20240327160346.22442-1-benno.lossin@proton.me>
+Feedback-ID: 71780778:user:proton
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Proofpoint-GUID: OMJzMb6F2IwpDI-GKlpAh1G8C7BNSkGG
-X-Proofpoint-ORIG-GUID: OMJzMb6F2IwpDI-GKlpAh1G8C7BNSkGG
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-03-27_12,2024-03-27_01,2023-05-22_02
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-The user can enable or disable any MAC block or a few ports of the
-block. The management port's interface name varies depending on the
-setup of the user if its not mapped to the first pf.
+The `module!` macro creates glue code that are called by C to initialize
+the Rust modules using the `Module::init` function. Part of this glue
+code are the local functions `__init` and `__exit` that are used to
+initialize/destroy the Rust module.
+These functions are safe and also visible to the Rust mod in which the
+`module!` macro is invoked. This means that they can be called by other
+safe Rust code. But since they contain `unsafe` blocks that rely on only
+being called at the right time, this is a soundness issue.
 
-The management port mapping is now configured to always connect to the
-first PF. This patch implements this change.
+Wrap these generated functions inside of two private modules, this
+guarantees that the public functions cannot be called from the outside.
+Make the safe functions `unsafe` and add SAFETY comments.
 
-Signed-off-by: Hariprasad Kelam <hkelam@marvell.com>
-Signed-off-by: Sunil Kovvuri Goutham <sgoutham@marvell.com>
+Cc: stable@vger.kernel.org
+Closes: https://github.com/Rust-for-Linux/linux/issues/629
+Fixes: 1fbde52bde73 ("rust: add `macros` crate")
+Signed-off-by: Benno Lossin <benno.lossin@proton.me>
 ---
- .../net/ethernet/marvell/octeontx2/af/mbox.h  |  5 +-
- .../ethernet/marvell/octeontx2/af/rvu_cgx.c   | 60 +++++++++++++++----
- 2 files changed, 53 insertions(+), 12 deletions(-)
+This patch is best viewed with `git show --ignore-space-change`, since I
+also adjusted the indentation.
 
-diff --git a/drivers/net/ethernet/marvell/octeontx2/af/mbox.h b/drivers/net/ethernet/marvell/octeontx2/af/mbox.h
-index eb2a20b5a0d0..105d2e8f25df 100644
---- a/drivers/net/ethernet/marvell/octeontx2/af/mbox.h
-+++ b/drivers/net/ethernet/marvell/octeontx2/af/mbox.h
-@@ -638,7 +638,10 @@ struct cgx_lmac_fwdata_s {
- 	/* Only applicable if SFP/QSFP slot is present */
- 	struct sfp_eeprom_s sfp_eeprom;
- 	struct phy_s phy;
--#define LMAC_FWDATA_RESERVED_MEM 1021
-+	u32 lmac_type;
-+	u32 portm_idx;
-+	u64 mgmt_port:1;
-+#define LMAC_FWDATA_RESERVED_MEM 1019
- 	u64 reserved[LMAC_FWDATA_RESERVED_MEM];
- };
- 
-diff --git a/drivers/net/ethernet/marvell/octeontx2/af/rvu_cgx.c b/drivers/net/ethernet/marvell/octeontx2/af/rvu_cgx.c
-index 72e060cf6b61..446344801576 100644
---- a/drivers/net/ethernet/marvell/octeontx2/af/rvu_cgx.c
-+++ b/drivers/net/ethernet/marvell/octeontx2/af/rvu_cgx.c
-@@ -118,15 +118,40 @@ static void rvu_map_cgx_nix_block(struct rvu *rvu, int pf,
- 		pfvf->nix_blkaddr = BLKADDR_NIX1;
- }
- 
--static int rvu_map_cgx_lmac_pf(struct rvu *rvu)
-+static bool rvu_cgx_is_mgmt_port(struct rvu *rvu, int cgx_id, int lmac_id)
-+{
-+	struct cgx_lmac_fwdata_s *fwdata;
+ rust/macros/module.rs | 198 ++++++++++++++++++++++++------------------
+ 1 file changed, 112 insertions(+), 86 deletions(-)
+
+diff --git a/rust/macros/module.rs b/rust/macros/module.rs
+index 27979e582e4b..16c4921a08f2 100644
+--- a/rust/macros/module.rs
++++ b/rust/macros/module.rs
+@@ -199,103 +199,129 @@ pub(crate) fn module(ts: TokenStream) -> TokenStrea=
+m {
+             /// Used by the printing macros, e.g. [`info!`].
+             const __LOG_PREFIX: &[u8] =3D b\"{name}\\0\";
+=20
+-            /// The \"Rust loadable module\" mark.
+-            //
+-            // This may be best done another way later on, e.g. as a new m=
+odinfo
+-            // key or a new section. For the moment, keep it simple.
+-            #[cfg(MODULE)]
+-            #[doc(hidden)]
+-            #[used]
+-            static __IS_RUST_MODULE: () =3D ();
+-
+-            static mut __MOD: Option<{type_}> =3D None;
+-
+-            // SAFETY: `__this_module` is constructed by the kernel at loa=
+d time and will not be
+-            // freed until the module is unloaded.
+-            #[cfg(MODULE)]
+-            static THIS_MODULE: kernel::ThisModule =3D unsafe {{
+-                kernel::ThisModule::from_ptr(&kernel::bindings::__this_mod=
+ule as *const _ as *mut _)
+-            }};
+-            #[cfg(not(MODULE))]
+-            static THIS_MODULE: kernel::ThisModule =3D unsafe {{
+-                kernel::ThisModule::from_ptr(core::ptr::null_mut())
+-            }};
+-
+-            // Loadable modules need to export the `{{init,cleanup}}_modul=
+e` identifiers.
+-            /// # Safety
+-            ///
+-            /// This function must not be called after module initializati=
+on, because it may be
+-            /// freed after that completes.
+-            #[cfg(MODULE)]
+-            #[doc(hidden)]
+-            #[no_mangle]
+-            #[link_section =3D \".init.text\"]
+-            pub unsafe extern \"C\" fn init_module() -> core::ffi::c_int {=
+{
+-                __init()
+-            }}
++            // Double nested modules, since then nobody can access the pub=
+lic items inside.
++            mod __module_init {{
++                mod __module_init {{
++                    use super::super::{type_};
 +
-+	fwdata =  &rvu->fwdata->cgx_fw_data_usx[cgx_id][lmac_id];
-+	if (fwdata->mgmt_port)
-+		return true;
++                    /// The \"Rust loadable module\" mark.
++                    //
++                    // This may be best done another way later on, e.g. as=
+ a new modinfo
++                    // key or a new section. For the moment, keep it simpl=
+e.
++                    #[cfg(MODULE)]
++                    #[doc(hidden)]
++                    #[used]
++                    static __IS_RUST_MODULE: () =3D ();
 +
-+	return false;
-+}
++                    static mut __MOD: Option<{type_}> =3D None;
 +
-+static void __rvu_map_cgx_lmac_pf(struct rvu *rvu, int pf, int cgx, int lmac)
- {
- 	struct npc_pkind *pkind = &rvu->hw->pkind;
-+	int numvfs, hwvfs;
-+	int free_pkind;
++                    // SAFETY: `__this_module` is constructed by the kerne=
+l at load time and will not be
++                    // freed until the module is unloaded.
++                    #[cfg(MODULE)]
++                    static THIS_MODULE: kernel::ThisModule =3D unsafe {{
++                        kernel::ThisModule::from_ptr(&kernel::bindings::__=
+this_module as *const _ as *mut _)
++                    }};
++                    #[cfg(not(MODULE))]
++                    static THIS_MODULE: kernel::ThisModule =3D unsafe {{
++                        kernel::ThisModule::from_ptr(core::ptr::null_mut()=
+)
++                    }};
 +
-+	rvu->pf2cgxlmac_map[pf] = cgxlmac_id_to_bmap(cgx, lmac);
-+	rvu->cgxlmac2pf_map[CGX_OFFSET(cgx) + lmac] = 1 << pf;
-+	free_pkind = rvu_alloc_rsrc(&pkind->rsrc);
-+	pkind->pfchan_map[free_pkind] = ((pf) & 0x3F) << 16;
-+	rvu_map_cgx_nix_block(rvu, pf, cgx, lmac);
-+	rvu->cgx_mapped_pfs++;
-+	rvu_get_pf_numvfs(rvu, pf, &numvfs, &hwvfs);
-+	rvu->cgx_mapped_vfs += numvfs;
-+}
++                    // Loadable modules need to export the `{{init,cleanup=
+}}_module` identifiers.
++                    /// # Safety
++                    ///
++                    /// This function must not be called after module init=
+ialization, because it may be
++                    /// freed after that completes.
++                    #[cfg(MODULE)]
++                    #[doc(hidden)]
++                    #[no_mangle]
++                    #[link_section =3D \".init.text\"]
++                    pub unsafe extern \"C\" fn init_module() -> core::ffi:=
+:c_int {{
++                        __init()
++                    }}
+=20
+-            #[cfg(MODULE)]
+-            #[doc(hidden)]
+-            #[no_mangle]
+-            pub extern \"C\" fn cleanup_module() {{
+-                __exit()
+-            }}
++                    #[cfg(MODULE)]
++                    #[doc(hidden)]
++                    #[no_mangle]
++                    pub extern \"C\" fn cleanup_module() {{
++                        __exit()
++                    }}
+=20
+-            // Built-in modules are initialized through an initcall pointe=
+r
+-            // and the identifiers need to be unique.
+-            #[cfg(not(MODULE))]
+-            #[cfg(not(CONFIG_HAVE_ARCH_PREL32_RELOCATIONS))]
+-            #[doc(hidden)]
+-            #[link_section =3D \"{initcall_section}\"]
+-            #[used]
+-            pub static __{name}_initcall: extern \"C\" fn() -> core::ffi::=
+c_int =3D __{name}_init;
+-
+-            #[cfg(not(MODULE))]
+-            #[cfg(CONFIG_HAVE_ARCH_PREL32_RELOCATIONS)]
+-            core::arch::global_asm!(
+-                r#\".section \"{initcall_section}\", \"a\"
+-                __{name}_initcall:
+-                    .long   __{name}_init - .
+-                    .previous
+-                \"#
+-            );
++                    // Built-in modules are initialized through an initcal=
+l pointer
++                    // and the identifiers need to be unique.
++                    #[cfg(not(MODULE))]
++                    #[cfg(not(CONFIG_HAVE_ARCH_PREL32_RELOCATIONS))]
++                    #[doc(hidden)]
++                    #[link_section =3D \"{initcall_section}\"]
++                    #[used]
++                    pub static __{name}_initcall: extern \"C\" fn() -> cor=
+e::ffi::c_int =3D __{name}_init;
 +
-+static int rvu_map_cgx_lmac_pf(struct rvu *rvu)
-+{
- 	int cgx_cnt_max = rvu->cgx_cnt_max;
- 	int pf = PF_CGXMAP_BASE;
- 	unsigned long lmac_bmap;
--	int size, free_pkind;
- 	int cgx, lmac, iter;
--	int numvfs, hwvfs;
-+	int size;
- 
- 	if (!cgx_cnt_max)
- 		return 0;
-@@ -155,6 +180,24 @@ static int rvu_map_cgx_lmac_pf(struct rvu *rvu)
- 		return -ENOMEM;
- 
- 	rvu->cgx_mapped_pfs = 0;
++                    #[cfg(not(MODULE))]
++                    #[cfg(CONFIG_HAVE_ARCH_PREL32_RELOCATIONS)]
++                    core::arch::global_asm!(
++                        r#\".section \"{initcall_section}\", \"a\"
++                        __{name}_initcall:
++                            .long   __{name}_init - .
++                            .previous
++                        \"#
++                    );
 +
-+	/* Map mgmt port always to first PF */
-+	for (cgx = 0; cgx < cgx_cnt_max; cgx++) {
-+		if (!rvu_cgx_pdata(cgx, rvu))
-+			continue;
-+		lmac_bmap = cgx_get_lmac_bmap(rvu_cgx_pdata(cgx, rvu));
-+		for_each_set_bit(iter, &lmac_bmap, rvu->hw->lmac_per_cgx) {
-+			lmac = cgx_get_lmacid(rvu_cgx_pdata(cgx, rvu), iter);
-+			if (rvu_cgx_is_mgmt_port(rvu, cgx, lmac)) {
-+				__rvu_map_cgx_lmac_pf(rvu, pf, cgx, lmac);
-+				pf++;
-+				goto non_mgmtport_mapping;
-+			}
-+		}
-+	}
-+
-+non_mgmtport_mapping:
-+
- 	for (cgx = 0; cgx < cgx_cnt_max; cgx++) {
- 		if (!rvu_cgx_pdata(cgx, rvu))
- 			continue;
-@@ -162,14 +205,9 @@ static int rvu_map_cgx_lmac_pf(struct rvu *rvu)
- 		for_each_set_bit(iter, &lmac_bmap, rvu->hw->lmac_per_cgx) {
- 			lmac = cgx_get_lmacid(rvu_cgx_pdata(cgx, rvu),
- 					      iter);
--			rvu->pf2cgxlmac_map[pf] = cgxlmac_id_to_bmap(cgx, lmac);
--			rvu->cgxlmac2pf_map[CGX_OFFSET(cgx) + lmac] = 1 << pf;
--			free_pkind = rvu_alloc_rsrc(&pkind->rsrc);
--			pkind->pfchan_map[free_pkind] = ((pf) & 0x3F) << 16;
--			rvu_map_cgx_nix_block(rvu, pf, cgx, lmac);
--			rvu->cgx_mapped_pfs++;
--			rvu_get_pf_numvfs(rvu, pf, &numvfs, &hwvfs);
--			rvu->cgx_mapped_vfs += numvfs;
-+			if (rvu_cgx_is_mgmt_port(rvu, cgx, lmac))
-+				continue;
-+			__rvu_map_cgx_lmac_pf(rvu, pf, cgx, lmac);
- 			pf++;
- 		}
- 	}
--- 
-2.17.1
++                    #[cfg(not(MODULE))]
++                    #[doc(hidden)]
++                    #[no_mangle]
++                    pub extern \"C\" fn __{name}_init() -> core::ffi::c_in=
+t {{
++                        __init()
++                    }}
+=20
+-            #[cfg(not(MODULE))]
+-            #[doc(hidden)]
+-            #[no_mangle]
+-            pub extern \"C\" fn __{name}_init() -> core::ffi::c_int {{
+-                __init()
+-            }}
++                    #[cfg(not(MODULE))]
++                    #[doc(hidden)]
++                    #[no_mangle]
++                    pub extern \"C\" fn __{name}_exit() {{
++                        __exit()
++                    }}
+=20
+-            #[cfg(not(MODULE))]
+-            #[doc(hidden)]
+-            #[no_mangle]
+-            pub extern \"C\" fn __{name}_exit() {{
+-                __exit()
+-            }}
++                    /// # Safety
++                    ///
++                    /// This function must
++                    /// - only be called once,
++                    /// - not be called concurrently with `__exit`.
++                    unsafe fn __init() -> core::ffi::c_int {{
++                        match <{type_} as kernel::Module>::init(&THIS_MODU=
+LE) {{
++                            Ok(m) =3D> {{
++                                // SAFETY:
++                                // no data race, since `__MOD` can only be=
+ accessed by this module and
++                                // there only `__init` and `__exit` access=
+ it. These functions are only
++                                // called once and `__exit` cannot be call=
+ed before or during `__init`.
++                                unsafe {{
++                                    __MOD =3D Some(m);
++                                }}
++                                return 0;
++                            }}
++                            Err(e) =3D> {{
++                                return e.to_errno();
++                            }}
++                        }}
++                    }}
+=20
+-            fn __init() -> core::ffi::c_int {{
+-                match <{type_} as kernel::Module>::init(&THIS_MODULE) {{
+-                    Ok(m) =3D> {{
++                    /// # Safety
++                    ///
++                    /// This function must
++                    /// - only be called once,
++                    /// - be called after `__init`,
++                    /// - not be called concurrently with `__init`.
++                    unsafe fn __exit() {{
++                        // SAFETY:
++                        // no data race, since `__MOD` can only be accesse=
+d by this module and there
++                        // only `__init` and `__exit` access it. These fun=
+ctions are only called once
++                        // and `__init` was already called.
+                         unsafe {{
+-                            __MOD =3D Some(m);
++                            // Invokes `drop()` on `__MOD`, which should b=
+e used for cleanup.
++                            __MOD =3D None;
+                         }}
+-                        return 0;
+                     }}
+-                    Err(e) =3D> {{
+-                        return e.to_errno();
+-                    }}
+-                }}
+-            }}
+=20
+-            fn __exit() {{
+-                unsafe {{
+-                    // Invokes `drop()` on `__MOD`, which should be used f=
+or cleanup.
+-                    __MOD =3D None;
++                    {modinfo}
+                 }}
+             }}
+-
+-            {modinfo}
+         ",
+         type_ =3D info.type_,
+         name =3D info.name,
+
+base-commit: 4cece764965020c22cff7665b18a012006359095
+--=20
+2.44.0
+
 
 
