@@ -1,177 +1,147 @@
-Return-Path: <linux-kernel+bounces-121868-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-121869-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0BB2988EEC0
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 19:58:43 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 39D6388EEC1
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 19:58:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2B2A51C34185
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 18:58:42 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E95B029E20E
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 18:58:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 88E0814F134;
-	Wed, 27 Mar 2024 18:58:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D797D14F9FF;
+	Wed, 27 Mar 2024 18:58:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b="fPzpNJei"
-Received: from mail-qk1-f171.google.com (mail-qk1-f171.google.com [209.85.222.171])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="OpaxMHQy"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9A3705227
-	for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 18:58:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E6355227
+	for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 18:58:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711565915; cv=none; b=mFo5i/24gimkpb81NQqgxECnOO7J3YgDaSan+UzLnSKIFW8gqT/vHBcvqhADbSOpDIP1TpTFo4n+JXnq7ZRTygytTGQPqlgqIB7cYckTmeR6Fq+C+EAiaHOPskyq69AYOCu2qw/DCbdmVN7Y8hQy4XhsvG944/Li0fugbYaHT8k=
+	t=1711565931; cv=none; b=QU/ZvKutfMj7YO6bVc/glXGdxQIwHqyQESdNOAk5jpwkv1vJNjk8NTlhUh9kPFjdUAzM+i2Ipz4iZ9RWQTt7INTCfYw5jANwHH/TVMMj7AoI6D4nfFQKPLAsPk/QzudWWUyt6VRPJfC6l2W3Rsuyfoy7bJG9QQtDOFI6z1kwAZU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711565915; c=relaxed/simple;
-	bh=Vq/4aAEG0pcCs5YuSBmhUr/VXP4JuBuNGj1cI3MLhI8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=lMrtQSsm+31GYQTpOgJukxKYxx/vCX7Ve166F1keFR+iCkEIsOBPSql7k7cEaSg0VXZq7se6YcjfZ1dR6ep79HP05jf502YUfNnBXU1mc/MFTw0rL0ulhpvzz9GrMAk0prrKRKI/fj0oHqeN6OlH3Dp5KIUYIzsdtRjQAKRtpg8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org; spf=pass smtp.mailfrom=cmpxchg.org; dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b=fPzpNJei; arc=none smtp.client-ip=209.85.222.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cmpxchg.org
-Received: by mail-qk1-f171.google.com with SMTP id af79cd13be357-789e6f7f748so4479685a.3
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 11:58:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20230601.gappssmtp.com; s=20230601; t=1711565912; x=1712170712; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=5+6/z6Iu03sZnSDjOG6ZOICRhEOxeVPmVmqIOYHqAQQ=;
-        b=fPzpNJeijMaSylBuXJuBbXWsYN1yMQcFmRuu/wEJIGTCcfQoiRRWGM7HczgZrNqa5m
-         LrtzprrjjZD4gcMXIs9onl1MXd5DXyQMLjHMpyvX9f2D8MO72Y6h/YzIFDgHsnr7yub9
-         cTPGJoaM2vlzpLCZ4nv8owabgztTxU1rO3OLuWyucHHocmcVxhHctLGOWh389sNZA8ir
-         najc2AObJ/GH9j8oT75uvw/wzpVqXtQkvMRTtLBw/Qgx3ObaVjGObUwt0vydS1bsLGYT
-         a6a72FcO0bcyOa9pRIxSnnM5ujq0w1sMOmC07ExcTWP+FHky3qNNi9HvJikTLDy/J2dE
-         MU1g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711565912; x=1712170712;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=5+6/z6Iu03sZnSDjOG6ZOICRhEOxeVPmVmqIOYHqAQQ=;
-        b=Hur79myrXRTcky+OMevrAw6EFcJq1vaCnvP24KW7kEW6OegdKWfZ1uHHzI2ku4KoEt
-         5gZATsiRviv7dBR4mojS9kNvdpJYVniqAGWlAWjNIcH/O8bMVS8qaN0Pvt/8wB7/CkHh
-         9lPofPK4pPBYlLIEI5ote3zF4vylsbFR6QYai4Jlr/bcFqsnlHAVVYUk5KigJmHMgT8F
-         ZW+jPtc2E0ZFk8Ws4AIDYb4qSuFtYfhAtI8XPyE61/D5owtL64CkE+OrpftYe5MnOh18
-         QbxZQgh88Mk0uWUxt3JOJCy2gAeQF2imdeqTg293aBGwSu91Yj0YAYMe+sKSij5ukGRg
-         CNKg==
-X-Forwarded-Encrypted: i=1; AJvYcCWXXWcFoDhOceQkVdnBxoh7e/p08eAumcxeHm9x2eLPcfYh4QAl8GZFmSqy9d68DMdXEMu98b1lpCF/GOdI8A0bNtXyfmxsDYQCMy3f
-X-Gm-Message-State: AOJu0YyacMLvcgGPiywGGk9ABLpeRFu4bKB7s5/DeqOWoQPlnn36CtvU
-	xAedhG3tE4hLb2ZiB1snV0AZLU6vVHIb3pSsHFsrqQpacDB2WJVtSiMmQe8KUbM=
-X-Google-Smtp-Source: AGHT+IFMX86LnLj/Jckkj0IDbpKUIbE2+GQj4be5JSr0OrjfUwBsujcYelDxsMjtbJtNCeNV8Jvubg==
-X-Received: by 2002:a05:620a:44c4:b0:789:eeb7:2273 with SMTP id y4-20020a05620a44c400b00789eeb72273mr480031qkp.49.1711565912546;
-        Wed, 27 Mar 2024 11:58:32 -0700 (PDT)
-Received: from localhost (2603-7000-0c01-2716-da5e-d3ff-fee7-26e7.res6.spectrum.com. [2603:7000:c01:2716:da5e:d3ff:fee7:26e7])
-        by smtp.gmail.com with ESMTPSA id cx7-20020a05620a51c700b007884a54ffb1sm4077907qkb.135.2024.03.27.11.58.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 27 Mar 2024 11:58:32 -0700 (PDT)
-Date: Wed, 27 Mar 2024 14:58:31 -0400
-From: Johannes Weiner <hannes@cmpxchg.org>
-To: Vlastimil Babka <vbabka@suse.cz>
-Cc: Andrew Morton <akpm@linux-foundation.org>,
-	Mel Gorman <mgorman@techsingularity.net>, Zi Yan <ziy@nvidia.com>,
-	"Huang, Ying" <ying.huang@intel.com>,
-	David Hildenbrand <david@redhat.com>, linux-mm@kvack.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH 2/3] mm: page_alloc: consolidate free page accounting fix 2
-Message-ID: <20240327185831.GB7597@cmpxchg.org>
-References: <20240320180429.678181-1-hannes@cmpxchg.org>
- <20240320180429.678181-11-hannes@cmpxchg.org>
- <b5b09acc-8bca-4e8c-82d4-6542fc7e9aec@suse.cz>
+	s=arc-20240116; t=1711565931; c=relaxed/simple;
+	bh=syxSHPmUcwOxaYZQm90XUTPVxeDYZ2RFD5QSfLdCGE0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=uKVoRKJjjOdCj5sa55acGxUsTL8Y7GAoqMI5xWNLtQjJmtZBwB/zLGOhm0u2V3EuQWpFMJbUzW/zv37cQHf8Os+vk8zpgVgenlr1xDx1s8nq0amGCBJ+zhcYzZ6hcu+gd0EmbSTrXs/SMCrS1TlwZXa0HM2d3PywOlsNb85tapo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=OpaxMHQy; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1711565928;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=cAska0hL8RMpabamwQoIPg/k45FzhjCym0nLiCVueuE=;
+	b=OpaxMHQy60yJRerg17ogUDQ/YeRAt96pdWv9sta3G/qrT85mYhDaEnkFypDVGLRoCXX3of
+	sOo7y6bGhK0x6kWVYTl4oQ5GS9JhcQdRYv3vo2elVR0B4+gM60WVD+buR8J8cI60GEGK93
+	uNtMzypewmMCekjYoaAwUBkr8E3nSHs=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-48-zspy6GMCPC2cjmZ9rLFaog-1; Wed, 27 Mar 2024 14:58:44 -0400
+X-MC-Unique: zspy6GMCPC2cjmZ9rLFaog-1
+Received: from smtp.corp.redhat.com (int-mx09.intmail.prod.int.rdu2.redhat.com [10.11.54.9])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 51BEE185A784;
+	Wed, 27 Mar 2024 18:58:44 +0000 (UTC)
+Received: from [10.22.33.225] (unknown [10.22.33.225])
+	by smtp.corp.redhat.com (Postfix) with ESMTP id F3591492BC9;
+	Wed, 27 Mar 2024 18:58:43 +0000 (UTC)
+Message-ID: <de42b70a-c69c-4777-ab07-2921d34ecb85@redhat.com>
+Date: Wed, 27 Mar 2024 14:58:43 -0400
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <b5b09acc-8bca-4e8c-82d4-6542fc7e9aec@suse.cz>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2] mm/kmemleak: Don't hold kmemleak_lock when calling
+ printk()
+Content-Language: en-US
+To: Catalin Marinas <catalin.marinas@arm.com>,
+ Andrew Morton <akpm@linux-foundation.org>
+Cc: linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+ Audra Mitchell <aubaker@redhat.com>
+References: <20240307184707.961255-1-longman@redhat.com>
+ <20240307114630.32702099ac24c182b91da517@linux-foundation.org>
+ <ZgRarOvI3Zhos9Gl@arm.com>
+From: Waiman Long <longman@redhat.com>
+In-Reply-To: <ZgRarOvI3Zhos9Gl@arm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.9
 
-From d3a0b6847f8bf1ecfa6b08c758dfa5a86cfb18b8 Mon Sep 17 00:00:00 2001
-From: Johannes Weiner <hannes@cmpxchg.org>
-Date: Wed, 27 Mar 2024 12:28:41 -0400
-Subject: [PATCH 2/3] mm: page_alloc: consolidate free page accounting fix 2
+On 3/27/24 13:43, Catalin Marinas wrote:
+> On Thu, Mar 07, 2024 at 11:46:30AM -0800, Andrew Morton wrote:
+>> On Thu,  7 Mar 2024 13:47:07 -0500 Waiman Long <longman@redhat.com> wrote:
+>>> When some error conditions happen (like OOM), some kmemleak functions
+>>> call printk() to dump out some useful debugging information while holding
+>>> the kmemleak_lock. This may cause deadlock as the printk() function
+>>> may need to allocate additional memory leading to a create_object()
+>>> call acquiring kmemleak_lock again.
+>>>
+>>> An abbreviated lockdep splat is as follows:
+>>>
+>>> ...
+>>>
+>>> Fix this deadlock issue by making sure that printk() is only called
+>>> after releasing the kmemleak_lock.
+>>>
+>>> ...
+>>>
+>>> @@ -427,9 +442,19 @@ static struct kmemleak_object *__lookup_object(unsigned long ptr, int alias,
+>>>   		else if (untagged_objp == untagged_ptr || alias)
+>>>   			return object;
+>>>   		else {
+>>> +			if (!get_object(object))
+>>> +				break;
+>>> +			/*
+>>> +			 * Release kmemleak_lock temporarily to avoid deadlock
+>>> +			 * in printk(). dump_object_info() is called without
+>>> +			 * holding object->lock (race unlikely).
+>>> +			 */
+>>> +			raw_spin_unlock(&kmemleak_lock);
+>>>   			kmemleak_warn("Found object by alias at 0x%08lx\n",
+>>>   				      ptr);
+>>>   			dump_object_info(object);
+>>> +			put_object(object);
+>>> +			raw_spin_lock(&kmemleak_lock);
+>>>   			break;
+>> Please include a full description of why this is safe.  Once we've
+>> dropped that lock, the tree is in an unknown state and we shouldn't
+>> touch it again.  This consideration should be added to the relevant
+>> functions' interface documentation and the code should be reviewed to
+>> ensure that we're actually adhering to this.  Or something like that.
+>>
+>> To simply drop and reacquire a lock without supporting analysis and
+>> comments does not inspire confidence!
+> I agree it looks fragile. I think it works, the code tends to bail out
+> on those errors and doesn't expect the protected data to have remained
+> intact. But we may change it in the future and forgot about this.
+>
+> I wonder whether we can actually make things slightly easier to reason
+> about, defer the printing until unlock, store the details in some
+> per-cpu variable. Another option would be to have a per-CPU array to
+> store potential recursive kmemleak_*() callbacks during the critical
+> regions. This should be bounded since the interrupts are disabled. On
+> unlock, we'd replay the array and add those pointers.
 
-remove unused page parameter from account_freepages()
+It looks like most of the callers of __lookup_object() will bail out 
+when an error happen. So there should be no harm in temporarily 
+releasing the lock. However, I do agree that it is fragile and future 
+changes may break it. This patch certainly need more work.
 
-Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
----
- mm/page_alloc.c | 18 +++++++++---------
- 1 file changed, 9 insertions(+), 9 deletions(-)
+Cheers,
+Longman
 
-diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-index 34c84ef16b66..8987e8869f6d 100644
---- a/mm/page_alloc.c
-+++ b/mm/page_alloc.c
-@@ -643,8 +643,8 @@ compaction_capture(struct capture_control *capc, struct page *page,
- }
- #endif /* CONFIG_COMPACTION */
- 
--static inline void account_freepages(struct page *page, struct zone *zone,
--				     int nr_pages, int migratetype)
-+static inline void account_freepages(struct zone *zone, int nr_pages,
-+				     int migratetype)
- {
- 	if (is_migrate_isolate(migratetype))
- 		return;
-@@ -678,7 +678,7 @@ static inline void add_to_free_list(struct page *page, struct zone *zone,
- 				    bool tail)
- {
- 	__add_to_free_list(page, zone, order, migratetype, tail);
--	account_freepages(page, zone, 1 << order, migratetype);
-+	account_freepages(zone, 1 << order, migratetype);
- }
- 
- /*
-@@ -698,8 +698,8 @@ static inline void move_to_free_list(struct page *page, struct zone *zone,
- 
- 	list_move_tail(&page->buddy_list, &area->free_list[new_mt]);
- 
--	account_freepages(page, zone, -(1 << order), old_mt);
--	account_freepages(page, zone, 1 << order, new_mt);
-+	account_freepages(zone, -(1 << order), old_mt);
-+	account_freepages(zone, 1 << order, new_mt);
- }
- 
- static inline void __del_page_from_free_list(struct page *page, struct zone *zone,
-@@ -723,7 +723,7 @@ static inline void del_page_from_free_list(struct page *page, struct zone *zone,
- 					   unsigned int order, int migratetype)
- {
- 	__del_page_from_free_list(page, zone, order, migratetype);
--	account_freepages(page, zone, -(1 << order), migratetype);
-+	account_freepages(zone, -(1 << order), migratetype);
- }
- 
- static inline struct page *get_page_from_free_area(struct free_area *area,
-@@ -800,7 +800,7 @@ static inline void __free_one_page(struct page *page,
- 	VM_BUG_ON_PAGE(pfn & ((1 << order) - 1), page);
- 	VM_BUG_ON_PAGE(bad_range(zone, page), page);
- 
--	account_freepages(page, zone, 1 << order, migratetype);
-+	account_freepages(zone, 1 << order, migratetype);
- 
- 	while (order < MAX_PAGE_ORDER) {
- 		int buddy_mt = migratetype;
-@@ -6930,7 +6930,7 @@ static bool try_to_accept_memory_one(struct zone *zone)
- 	list_del(&page->lru);
- 	last = list_empty(&zone->unaccepted_pages);
- 
--	account_freepages(page, zone, -MAX_ORDER_NR_PAGES, MIGRATE_MOVABLE);
-+	account_freepages(zone, -MAX_ORDER_NR_PAGES, MIGRATE_MOVABLE);
- 	__mod_zone_page_state(zone, NR_UNACCEPTED, -MAX_ORDER_NR_PAGES);
- 	spin_unlock_irqrestore(&zone->lock, flags);
- 
-@@ -6982,7 +6982,7 @@ static bool __free_unaccepted(struct page *page)
- 	spin_lock_irqsave(&zone->lock, flags);
- 	first = list_empty(&zone->unaccepted_pages);
- 	list_add_tail(&page->lru, &zone->unaccepted_pages);
--	account_freepages(page, zone, MAX_ORDER_NR_PAGES, MIGRATE_MOVABLE);
-+	account_freepages(zone, MAX_ORDER_NR_PAGES, MIGRATE_MOVABLE);
- 	__mod_zone_page_state(zone, NR_UNACCEPTED, MAX_ORDER_NR_PAGES);
- 	spin_unlock_irqrestore(&zone->lock, flags);
- 
--- 
-2.44.0
+>
 
 
