@@ -1,86 +1,88 @@
-Return-Path: <linux-kernel+bounces-121667-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-121668-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A0C7A88EC11
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 18:06:44 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9DDB788EC27
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 18:09:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C4E5C1C215A7
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 17:06:43 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D6109B2775E
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 17:07:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5798614D718;
-	Wed, 27 Mar 2024 17:06:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C7FB114E2C4;
+	Wed, 27 Mar 2024 17:06:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="W7NmMz1a"
-Received: from mail-ej1-f48.google.com (mail-ej1-f48.google.com [209.85.218.48])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Bqr3Agyk"
+Received: from mail-pg1-f177.google.com (mail-pg1-f177.google.com [209.85.215.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B128014E2EE;
-	Wed, 27 Mar 2024 17:06:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4723314D6F7
+	for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 17:06:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711559166; cv=none; b=YhA5FC4jlC3m/jMcdR2xshXxDwMbJJgQPvcA1aRqyehnbyU+6iS1IIa2WzVJe2QPvMnLX6EjJ3xXRcFtx4hsacze6eVrfIzDCz45QlVhjBW9WDu39OeLqYfVoMgYVWOqCSc/VNSXYH9FtTPbLh9VdB8PlNjMLEk7ExBsyc0k2UM=
+	t=1711559178; cv=none; b=dDR/6UsJB7W5Z6Qfc2+JvGHwoEeywPjbv7p08y3nTKF7o3Pxv5SnCQ8gB1a5WSW7cLwAEtrvNID+fIJtN5/q1bj9I/QnJn5+JZQG0Af1GB6rTv8QyHwGCooAjvhqZQHzL59M0BKeqiMA8CtbKO1H9MYGXxtRI30lorMuP+jRKhc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711559166; c=relaxed/simple;
-	bh=ahZyAforUiq+wNzRyymfSb7gbzaJyiqD41A/VBDCRLs=;
+	s=arc-20240116; t=1711559178; c=relaxed/simple;
+	bh=bBSoVZNXnImm2xWp7WBBSOxsMP+tK9xNwxw0jIzelj0=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=TjdFiuI7xCaSHLHNFQFcG0fxugKTdjrCCAjBLaaQzEVAT5MB+xWlOa29GaV153bKzAm/U0Q6+u1hArY0jNlG1N9ljkgbPFUPiJyHHsI8ciOotAM5FAcn1maxjawAP+SiptYdg6a84fHq2gcpuFQjcYr63qVfZEFqg8H26oSTqak=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=W7NmMz1a; arc=none smtp.client-ip=209.85.218.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f48.google.com with SMTP id a640c23a62f3a-a46f0da1b4fso3161566b.2;
-        Wed, 27 Mar 2024 10:06:04 -0700 (PDT)
+	 Content-Type:Content-Disposition:In-Reply-To; b=ZYp/M75WsiJS502bXM5tNYpV+hCjYsFcYCb3Tf3i1u3v4a5npF5T/T4T/sSCn8qWcrVgA3pjA93wMEWWsswMM7KdZoaAmhjBgXfd1TLngey75wT3/ytbK5hRNueqfm7HpHr2ClKZTWUt7VX45c/rtbm/73Ff/VFdjbySQRKUbKY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=Bqr3Agyk; arc=none smtp.client-ip=209.85.215.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-pg1-f177.google.com with SMTP id 41be03b00d2f7-5dbf7b74402so3970134a12.0
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 10:06:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711559163; x=1712163963; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1711559177; x=1712163977; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=BUi4zEedr7KDhvHU0G0GEp0diV72wfwI5jg0UCvkAig=;
-        b=W7NmMz1adzD4xD9ZaD40hpdYRNJeP6pnvs3/osh3Ljz6zNen2HCuMXr0kvLnYE3DxC
-         diVIDBB8K0hCpu8l7lyZEnqDkEAXNBO8SLNAJifS4yi7cqiJTi46dxNhfZDqQVJv2ckI
-         Wel/BRYMQE5p/fJ+vZmxMkTKJiJlRUSI8K89ov/aVzXeDq52nNM8UsOfd9Gb523Kk9/w
-         jD3xeYyj3VjFjsHbUYw/RyWzoOSGbVpmjRo7vzkqT1XjvAuc+e1lguuR1nimrcQKURCS
-         55aMtVG5Kbg+st103pDRiDq5+h2y5K7IHgRMcmIy/hIuEkDpxjqxLc6Q5tfTwa8Umz3s
-         9gyg==
+        bh=db/vsjswu3WccKaVuM1UJ18xAjQJ5GOJeNQDmiP8KtE=;
+        b=Bqr3AgykjESSxRZ6DviXDvNZDNapHRE9QWcXBlrasJQvn4y2w4qmeEScTX3lvnYto0
+         RmREqjNn/atkKZp1geA1hmuNdtcmBCB5oaOIygC3Hipph2O1T5A0lPKlQsSoEZMdL8A7
+         ATbaryViqn3FCEn4iakJp60j3J3bkJnUnOaXdB8J+rT8rmz2n/vj6/SCsm6roFDz9c71
+         9u6xR7ZPLJzo4uvREXfsZNzSYKziRCqwPkzi44VgHbQ8kWoXg8NaoAroGl3gmswjfhve
+         ya69bJtXXHF8czQFxMOmlt4HgDo3AYWgsPWg6m/EGfatdi/A9rHgCYM7+FAecEUzaG8b
+         b9tg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711559163; x=1712163963;
+        d=1e100.net; s=20230601; t=1711559177; x=1712163977;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=BUi4zEedr7KDhvHU0G0GEp0diV72wfwI5jg0UCvkAig=;
-        b=kVIRltAugArcPs53SXx2DvGV3nvOz05ID4T+4DpLpDdYkqMb/AkFShP3eyH2h8mDrz
-         yq3vqD5EgLDJrT8KJrj65hHIZ8VQUffQobe1+9lQVK0FftVM7vLaj9b3HbbzrnR40IPK
-         gGTGRFbq1XFSSC2A0es0W/k2z9okN2NjZqOE424ZncYM/yPjN6Qk4jo3M60uIht5q/Ff
-         fn70HmdSZ0UecDQ5qS6Lq99uvyMJvSEg61aCEnMeRsmsr10H2v6qzRwn2/U2U327Xrco
-         y3u1bvSxKl7Gm2g7AK5jym5KCXNkLT0a/ZbzJiABmvZ6m8kN1NONrUmoznjJhjmkAFW4
-         IRzg==
-X-Forwarded-Encrypted: i=1; AJvYcCVlGY06RdSAPg+Vve6/Q+QTxGNfeCbhyJJS1zeO/WrItC5Q1PFftZo3o5LcN4BjV47REFks0tAg8wcehmfQU2glKNigszXv9fH2lEsQ6jU3CltdjQP5k4l0t3YEmg9ntmixYVBfO4RJyxmEScDtLrtYo4RpITQrHhn3r86abFwjMkY046FY51fyCAsFfowfjY6YC/1TGTU4VH5IbTb6SbJsmcWREPrtbw==
-X-Gm-Message-State: AOJu0YzgwNLNTaMb5EoskME7IGt2MjUt0CGik99ZDcRbs1w86D75VR6M
-	hJKKR71bndpDY+zL+bziv71eJewoSTdQkAGYl8/I5wP/aHXPAabf
-X-Google-Smtp-Source: AGHT+IE1PEKoVdAhIynLjkvyagQxfnizdEEGmUrp4CFr48Ozk0XLMxEW+3OrgIWT6Rqhttdhya5atg==
-X-Received: by 2002:a17:906:3798:b0:a46:206d:369b with SMTP id n24-20020a170906379800b00a46206d369bmr52979ejc.28.1711559162756;
-        Wed, 27 Mar 2024 10:06:02 -0700 (PDT)
-Received: from jonhaslam-mbp.dhcp.thefacebook.com ([2620:10d:c092:500::4:b63d])
-        by smtp.gmail.com with ESMTPSA id ao18-20020a170907359200b00a46aba003eesm5624401ejc.215.2024.03.27.10.06.01
+        bh=db/vsjswu3WccKaVuM1UJ18xAjQJ5GOJeNQDmiP8KtE=;
+        b=UIRuKAZBikXPYT38VyOxEveFzFffyqIwtbuojzYh1Ypb5FO7lcGROE3ozFXi025tD/
+         K8NkfjbTjwNNthh6N+DYZ4heyZVu5HmMw7Jzd9vt6cy4dQ6W2Q+VLkxZUDR16m3Hl7q3
+         HsMn77xxXhxyqmr7TGDraXMsMqqHaOOI1lt2umBh9kyVV/ieHbE2ubofssPC5E70EyX5
+         bjGvvEhgtVZDiIwpnAYhPb7TKQZYdPbrqb8kEN8+jnarTu3AJAE8qoJNtNi5ZfAbeHla
+         8yD32prOi8XoU+Lah8eyeq1m+e+HAMqD0asbihjnBlbU2L96sBaMRdOmpQiclNvBGfv1
+         qy0Q==
+X-Forwarded-Encrypted: i=1; AJvYcCUZ5gwSs7RPJMXH8PI03mUIoJdrfMu1uW92ugPvzKq01Edims5qjs4afP9OGvwNjELTRiFA9Agidozsj4bT5mNDjRCGaZY0kmYGe4bE
+X-Gm-Message-State: AOJu0Yz3Mztni+XwiZVhEz/hHQ2JgSZqfzm8pTsqJjVaNGmZ3N14aSxg
+	VabQUX769cVeKbyuOjQaIekBwspGAzvp0ceO8MSAwN7dGXrGJFOYiIRc6oh3EA==
+X-Google-Smtp-Source: AGHT+IE5JKYyE33YBvhxG3VFanPvZJOgSZ9poeectC8JcZ8V58yv85X5bfMLffVlzQyxlyIZzHatLg==
+X-Received: by 2002:a17:90a:c78f:b0:29b:33eb:1070 with SMTP id gn15-20020a17090ac78f00b0029b33eb1070mr236752pjb.14.1711559176238;
+        Wed, 27 Mar 2024 10:06:16 -0700 (PDT)
+Received: from google.com (60.89.247.35.bc.googleusercontent.com. [35.247.89.60])
+        by smtp.gmail.com with ESMTPSA id pw13-20020a17090b278d00b002a055d4d2fesm1970561pjb.56.2024.03.27.10.06.15
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 27 Mar 2024 10:06:02 -0700 (PDT)
-Date: Wed, 27 Mar 2024 17:06:01 +0000
-From: Jonthan Haslam <jonathan.haslam@gmail.com>
-To: Masami Hiramatsu <mhiramat@kernel.org>
-Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>, 
-	linux-trace-kernel@vger.kernel.org, andrii@kernel.org, bpf@vger.kernel.org, rostedt@goodmis.org, 
-	Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
-	Arnaldo Carvalho de Melo <acme@kernel.org>, Namhyung Kim <namhyung@kernel.org>, 
-	Mark Rutland <mark.rutland@arm.com>, Alexander Shishkin <alexander.shishkin@linux.intel.com>, 
-	Jiri Olsa <jolsa@kernel.org>, Ian Rogers <irogers@google.com>, 
-	Adrian Hunter <adrian.hunter@intel.com>, linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] uprobes: reduce contention on uprobes_tree access
-Message-ID: <54jakntmdyedadce7yrf6kljcjapbwyoqqt26dnllrqvs3pg7x@itra4a2ikgqw>
-References: <20240321145736.2373846-1-jonathan.haslam@gmail.com>
- <20240325120323.ec3248d330b2755e73a6571e@kernel.org>
- <CAEf4BzZS_QCsSY0oGY_3pGveGfXKK_TkVURyNq=UQXVXSqi2Fw@mail.gmail.com>
- <20240327084245.a890ae12e579f0be1902ae4a@kernel.org>
+        Wed, 27 Mar 2024 10:06:15 -0700 (PDT)
+Date: Wed, 27 Mar 2024 17:06:12 +0000
+From: Mingwei Zhang <mizhang@google.com>
+To: "Mi, Dapeng" <dapeng1.mi@linux.intel.com>
+Cc: Sean Christopherson <seanjc@google.com>,
+	Paolo Bonzini <pbonzini@redhat.com>,
+	Jim Mattson <jmattson@google.com>, kvm@vger.kernel.org,
+	linux-kernel@vger.kernel.org, Zhenyu Wang <zhenyuw@linux.intel.com>,
+	Zhang Xiong <xiong.y.zhang@intel.com>,
+	Like Xu <like.xu.linux@gmail.com>,
+	Jinrong Liang <cloudliang@tencent.com>,
+	Dapeng Mi <dapeng1.mi@intel.com>
+Subject: Re: [kvm-unit-tests Patch v3 04/11] x86: pmu: Switch instructions
+ and core cycles events sequence
+Message-ID: <ZgRSBITQNIRIgu8N@google.com>
+References: <20240103031409.2504051-1-dapeng1.mi@linux.intel.com>
+ <20240103031409.2504051-5-dapeng1.mi@linux.intel.com>
+ <ZgOwVvTVlvk3iN3x@google.com>
+ <c838c85e-c448-4f83-a79f-deb20c6aaf90@linux.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -89,133 +91,159 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240327084245.a890ae12e579f0be1902ae4a@kernel.org>
+In-Reply-To: <c838c85e-c448-4f83-a79f-deb20c6aaf90@linux.intel.com>
 
-> > Masami,
+On Wed, Mar 27, 2024, Mi, Dapeng wrote:
+> 
+> On 3/27/2024 1:36 PM, Mingwei Zhang wrote:
+> > On Wed, Jan 03, 2024, Dapeng Mi wrote:
+> > > When running pmu test on SPR, sometimes the following failure is
+> > > reported.
+> > > 
+> > > PMU version:         2
+> > > GP counters:         8
+> > > GP counter width:    48
+> > > Mask length:         8
+> > > Fixed counters:      3
+> > > Fixed counter width: 48
+> > > 1000000 <= 55109398 <= 50000000
+> > > FAIL: Intel: core cycles-0
+> > > 1000000 <= 18279571 <= 50000000
+> > > PASS: Intel: core cycles-1
+> > > 1000000 <= 12238092 <= 50000000
+> > > PASS: Intel: core cycles-2
+> > > 1000000 <= 7981727 <= 50000000
+> > > PASS: Intel: core cycles-3
+> > > 1000000 <= 6984711 <= 50000000
+> > > PASS: Intel: core cycles-4
+> > > 1000000 <= 6773673 <= 50000000
+> > > PASS: Intel: core cycles-5
+> > > 1000000 <= 6697842 <= 50000000
+> > > PASS: Intel: core cycles-6
+> > > 1000000 <= 6747947 <= 50000000
+> > > PASS: Intel: core cycles-7
+> > > 
+> > > The count of the "core cycles" on first counter would exceed the upper
+> > > boundary and leads to a failure, and then the "core cycles" count would
+> > > drop gradually and reach a stable state.
+> > > 
+> > > That looks reasonable. The "core cycles" event is defined as the 1st
+> > > event in xxx_gp_events[] array and it is always verified at first.
+> > > when the program loop() is executed at the first time it needs to warm
+> > > up the pipeline and cache, such as it has to wait for cache is filled.
+> > > All these warm-up work leads to a quite large core cycles count which
+> > > may exceeds the verification range.
+> > > 
+> > > The event "instructions" instead of "core cycles" is a good choice as
+> > > the warm-up event since it would always return a fixed count. Thus
+> > > switch instructions and core cycles events sequence in the
+> > > xxx_gp_events[] array.
+> > The observation is great. However, it is hard to agree that we fix the
+> > problem by switching the order. Maybe directly tweaking the N from 50 to
+> > a larger value makes more sense.
 > > 
-> > Given the discussion around per-cpu rw semaphore and need for
-> > (internal) batched attachment API for uprobes, do you think you can
-> > apply this patch as is for now? We can then gain initial improvements
-> > in scalability that are also easy to backport, and Jonathan will work
-> > on a more complete solution based on per-cpu RW semaphore, as
-> > suggested by Ingo.
+> > Thanks.
+> > -Mingwei
 > 
-> Yeah, it is interesting to use per-cpu rw semaphore on uprobe.
-> I would like to wait for the next version.
+> yeah, a larger upper boundary can fix the fault as well, but the question is
+> how large it would be enough. For different CPU model, the needed cycles
+> could be different for warming up. So we may have to set a quite large upper
+> boundary but a large boundary would decrease credibility of this validation.
+> Not sure which one is better. Any inputs from other ones?
+> 
 
-My initial tests show a nice improvement on the over RW spinlocks but
-significant regression in acquiring a write lock. I've got a few days
-vacation over Easter but I'll aim to get some more formalised results out
-to the thread toward the end of next week.
+Just checked with an expert from our side, so "core cycles" (0x003c)
+is affected the current CPU state/frequency, ie., its counting value
+could vary largely. In that sense, "warming" up seems reasonable.
+However, switching the order would be a terrible idea for maintanence
+since people will forget it and the problem will come back.
 
-Jon.
+From another perspective, "warming" up seems just a best effort. Nobody
+knows how warm is really warm. Besides, some systems might turn off some
+C-State and may set a cap on max turbo frequency. All of these will
+directly affect the warm-up process and the counting result of 0x003c.
 
+So, while adding a warm-up blob is reasonable, tweaking the heuristics
+seems to be same for me. Regarding the value, I think I will rely on
+your experiments and observation.
+
+Thanks.
+-Mingwei
 > 
-> Thank you,
-> 
-> > 
-> > >
-> > > BTW, how did you measure the overhead? I think spinlock overhead
-> > > will depend on how much lock contention happens.
-> > >
-> > > Thank you,
-> > >
-> > > >
-> > > > [0] https://docs.kernel.org/locking/spinlocks.html
-> > > >
-> > > > Signed-off-by: Jonathan Haslam <jonathan.haslam@gmail.com>
-> > > > ---
-> > > >  kernel/events/uprobes.c | 22 +++++++++++-----------
-> > > >  1 file changed, 11 insertions(+), 11 deletions(-)
-> > > >
-> > > > diff --git a/kernel/events/uprobes.c b/kernel/events/uprobes.c
-> > > > index 929e98c62965..42bf9b6e8bc0 100644
-> > > > --- a/kernel/events/uprobes.c
-> > > > +++ b/kernel/events/uprobes.c
-> > > > @@ -39,7 +39,7 @@ static struct rb_root uprobes_tree = RB_ROOT;
-> > > >   */
-> > > >  #define no_uprobe_events()   RB_EMPTY_ROOT(&uprobes_tree)
-> > > >
-> > > > -static DEFINE_SPINLOCK(uprobes_treelock);    /* serialize rbtree access */
-> > > > +static DEFINE_RWLOCK(uprobes_treelock);      /* serialize rbtree access */
-> > > >
-> > > >  #define UPROBES_HASH_SZ      13
-> > > >  /* serialize uprobe->pending_list */
-> > > > @@ -669,9 +669,9 @@ static struct uprobe *find_uprobe(struct inode *inode, loff_t offset)
-> > > >  {
-> > > >       struct uprobe *uprobe;
-> > > >
-> > > > -     spin_lock(&uprobes_treelock);
-> > > > +     read_lock(&uprobes_treelock);
-> > > >       uprobe = __find_uprobe(inode, offset);
-> > > > -     spin_unlock(&uprobes_treelock);
-> > > > +     read_unlock(&uprobes_treelock);
-> > > >
-> > > >       return uprobe;
-> > > >  }
-> > > > @@ -701,9 +701,9 @@ static struct uprobe *insert_uprobe(struct uprobe *uprobe)
-> > > >  {
-> > > >       struct uprobe *u;
-> > > >
-> > > > -     spin_lock(&uprobes_treelock);
-> > > > +     write_lock(&uprobes_treelock);
-> > > >       u = __insert_uprobe(uprobe);
-> > > > -     spin_unlock(&uprobes_treelock);
-> > > > +     write_unlock(&uprobes_treelock);
-> > > >
-> > > >       return u;
-> > > >  }
-> > > > @@ -935,9 +935,9 @@ static void delete_uprobe(struct uprobe *uprobe)
-> > > >       if (WARN_ON(!uprobe_is_active(uprobe)))
-> > > >               return;
-> > > >
-> > > > -     spin_lock(&uprobes_treelock);
-> > > > +     write_lock(&uprobes_treelock);
-> > > >       rb_erase(&uprobe->rb_node, &uprobes_tree);
-> > > > -     spin_unlock(&uprobes_treelock);
-> > > > +     write_unlock(&uprobes_treelock);
-> > > >       RB_CLEAR_NODE(&uprobe->rb_node); /* for uprobe_is_active() */
-> > > >       put_uprobe(uprobe);
-> > > >  }
-> > > > @@ -1298,7 +1298,7 @@ static void build_probe_list(struct inode *inode,
-> > > >       min = vaddr_to_offset(vma, start);
-> > > >       max = min + (end - start) - 1;
-> > > >
-> > > > -     spin_lock(&uprobes_treelock);
-> > > > +     read_lock(&uprobes_treelock);
-> > > >       n = find_node_in_range(inode, min, max);
-> > > >       if (n) {
-> > > >               for (t = n; t; t = rb_prev(t)) {
-> > > > @@ -1316,7 +1316,7 @@ static void build_probe_list(struct inode *inode,
-> > > >                       get_uprobe(u);
-> > > >               }
-> > > >       }
-> > > > -     spin_unlock(&uprobes_treelock);
-> > > > +     read_unlock(&uprobes_treelock);
-> > > >  }
-> > > >
-> > > >  /* @vma contains reference counter, not the probed instruction. */
-> > > > @@ -1407,9 +1407,9 @@ vma_has_uprobes(struct vm_area_struct *vma, unsigned long start, unsigned long e
-> > > >       min = vaddr_to_offset(vma, start);
-> > > >       max = min + (end - start) - 1;
-> > > >
-> > > > -     spin_lock(&uprobes_treelock);
-> > > > +     read_lock(&uprobes_treelock);
-> > > >       n = find_node_in_range(inode, min, max);
-> > > > -     spin_unlock(&uprobes_treelock);
-> > > > +     read_unlock(&uprobes_treelock);
-> > > >
-> > > >       return !!n;
-> > > >  }
-> > > > --
-> > > > 2.43.0
-> > > >
-> > >
-> > >
-> > > --
-> > > Masami Hiramatsu (Google) <mhiramat@kernel.org>
-> 
-> 
-> -- 
-> Masami Hiramatsu (Google) <mhiramat@kernel.org>
+> > > Signed-off-by: Dapeng Mi <dapeng1.mi@linux.intel.com>
+> > > ---
+> > >   x86/pmu.c | 16 ++++++++--------
+> > >   1 file changed, 8 insertions(+), 8 deletions(-)
+> > > 
+> > > diff --git a/x86/pmu.c b/x86/pmu.c
+> > > index a42fff8d8b36..67ebfbe55b49 100644
+> > > --- a/x86/pmu.c
+> > > +++ b/x86/pmu.c
+> > > @@ -31,16 +31,16 @@ struct pmu_event {
+> > >   	int min;
+> > >   	int max;
+> > >   } intel_gp_events[] = {
+> > > -	{"core cycles", 0x003c, 1*N, 50*N},
+> > >   	{"instructions", 0x00c0, 10*N, 10.2*N},
+> > > +	{"core cycles", 0x003c, 1*N, 50*N},
+> > >   	{"ref cycles", 0x013c, 1*N, 30*N},
+> > >   	{"llc references", 0x4f2e, 1, 2*N},
+> > >   	{"llc misses", 0x412e, 1, 1*N},
+> > >   	{"branches", 0x00c4, 1*N, 1.1*N},
+> > >   	{"branch misses", 0x00c5, 0, 0.1*N},
+> > >   }, amd_gp_events[] = {
+> > > -	{"core cycles", 0x0076, 1*N, 50*N},
+> > >   	{"instructions", 0x00c0, 10*N, 10.2*N},
+> > > +	{"core cycles", 0x0076, 1*N, 50*N},
+> > >   	{"branches", 0x00c2, 1*N, 1.1*N},
+> > >   	{"branch misses", 0x00c3, 0, 0.1*N},
+> > >   }, fixed_events[] = {
+> > > @@ -307,7 +307,7 @@ static void check_counter_overflow(void)
+> > >   	int i;
+> > >   	pmu_counter_t cnt = {
+> > >   		.ctr = MSR_GP_COUNTERx(0),
+> > > -		.config = EVNTSEL_OS | EVNTSEL_USR | gp_events[1].unit_sel /* instructions */,
+> > > +		.config = EVNTSEL_OS | EVNTSEL_USR | gp_events[0].unit_sel /* instructions */,
+> > >   	};
+> > >   	overflow_preset = measure_for_overflow(&cnt);
+> > > @@ -365,11 +365,11 @@ static void check_gp_counter_cmask(void)
+> > >   {
+> > >   	pmu_counter_t cnt = {
+> > >   		.ctr = MSR_GP_COUNTERx(0),
+> > > -		.config = EVNTSEL_OS | EVNTSEL_USR | gp_events[1].unit_sel /* instructions */,
+> > > +		.config = EVNTSEL_OS | EVNTSEL_USR | gp_events[0].unit_sel /* instructions */,
+> > >   	};
+> > >   	cnt.config |= (0x2 << EVNTSEL_CMASK_SHIFT);
+> > >   	measure_one(&cnt);
+> > > -	report(cnt.count < gp_events[1].min, "cmask");
+> > > +	report(cnt.count < gp_events[0].min, "cmask");
+> > >   }
+> > >   static void do_rdpmc_fast(void *ptr)
+> > > @@ -446,7 +446,7 @@ static void check_running_counter_wrmsr(void)
+> > >   	uint64_t count;
+> > >   	pmu_counter_t evt = {
+> > >   		.ctr = MSR_GP_COUNTERx(0),
+> > > -		.config = EVNTSEL_OS | EVNTSEL_USR | gp_events[1].unit_sel,
+> > > +		.config = EVNTSEL_OS | EVNTSEL_USR | gp_events[0].unit_sel,
+> > >   	};
+> > >   	report_prefix_push("running counter wrmsr");
+> > > @@ -455,7 +455,7 @@ static void check_running_counter_wrmsr(void)
+> > >   	loop();
+> > >   	wrmsr(MSR_GP_COUNTERx(0), 0);
+> > >   	stop_event(&evt);
+> > > -	report(evt.count < gp_events[1].min, "cntr");
+> > > +	report(evt.count < gp_events[0].min, "cntr");
+> > >   	/* clear status before overflow test */
+> > >   	if (this_cpu_has_perf_global_status())
+> > > @@ -493,7 +493,7 @@ static void check_emulated_instr(void)
+> > >   	pmu_counter_t instr_cnt = {
+> > >   		.ctr = MSR_GP_COUNTERx(1),
+> > >   		/* instructions */
+> > > -		.config = EVNTSEL_OS | EVNTSEL_USR | gp_events[1].unit_sel,
+> > > +		.config = EVNTSEL_OS | EVNTSEL_USR | gp_events[0].unit_sel,
+> > >   	};
+> > >   	report_prefix_push("emulated instruction");
+> > > -- 
+> > > 2.34.1
+> > > 
 
