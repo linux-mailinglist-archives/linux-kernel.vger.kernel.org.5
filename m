@@ -1,166 +1,184 @@
-Return-Path: <linux-kernel+bounces-120486-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-120487-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5C18588D83B
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 09:00:10 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id EEF7C88D83D
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 09:00:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 79E7C1C263FC
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 08:00:04 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 72E501F2AE26
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 08:00:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D92E44503D;
-	Wed, 27 Mar 2024 07:58:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3E3F84A990;
+	Wed, 27 Mar 2024 07:58:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Ab3fFdlG"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="QGeKM79S"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9D5F5383AB
-	for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 07:57:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E5C1F45954
+	for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 07:58:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711526281; cv=none; b=F9afhKn7Y2fJVpzIuzXa+K8/n+5P2U7pTPZr1ekC/Pf7aIlMVQ4oIpY+0I8G9LqZfj3o16jaw2PDwEbnDsRsdZ9ADmBGfPv4/eWak7Ro/xfIIzS60qx9G0sLRhCEs9Llt72J4y6nEEcYEdIxLBG4hu0zuyimbc50asQPFKGujx8=
+	t=1711526283; cv=none; b=ricKyfQQC3gbVeBNSj1P5oAag4m4O6f1qW11jC93mTjZRIh51AYlyyhDab7gUO3+LKpxLTHCw+sc0n/M0c1C6gcev3HTUUM9bebEwziw/Dl4YTeB4IydXV0mb0BMXxvDCW1Jc43JcrNxpLKsl54JhxmJMTcgUiOJspHaYfnU8kY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711526281; c=relaxed/simple;
-	bh=Vat65M6stqG5LA6cc3GP/buZ1IUl+hHUoX98W5OebkM=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=VhrmVka72Mw7TzsCvugkQ7BP9ydH2b5SYdRV57yw8LqF0PQzttOA5uugjtMw+HBv9VNzv1qWNl8Vswa9iC9GitFWfsmjWaknTYM9Qte6tJSVEhEyInHUEKUM1MeYiL9n/x/ahoumG1EA7uzxChkxI//qoCQB3vk6IRWghXmNfUk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Ab3fFdlG; arc=none smtp.client-ip=170.10.133.124
+	s=arc-20240116; t=1711526283; c=relaxed/simple;
+	bh=+jMhjERTTtRLM0KWZ1Ds1bG7HJxMTKBPNk0QcjknlfM=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=sLHygBdvfMVNmPy27TdG5N0zewedTi1uRsVSZpuO9+Q7Uyclw/GLmEtREj6aZedXQ2rftDYecCkvUGDogqfkbkNuxq00cC7Pm8krcYYgpKP9YnoWnmgXYcyrXz0HtJR99SlqmbMcjiDdoLysl8DpDgzy1rRZHcqo69XbrlG8DxQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=QGeKM79S; arc=none smtp.client-ip=170.10.129.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1711526278;
+	s=mimecast20190719; t=1711526281;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=C+d10wCVD+Bb8HTautm4Nb6wFglF1en0DfE0cedzY+0=;
-	b=Ab3fFdlGV6XBTLBWcyQM/L18FKS4W0D+OJ/Sn3iSgFoKBADbxocuVTkapCVdkFLg4Ja5GK
-	8naZDTbQS03WE/UzCX9glUZzf7sJOKoHHuKLS86ahvXP6n+Hh72KZbiF5RkJO+NnHs+kiG
-	aar9win2MiPwXdSS9qe+WBYLzS3eaI0=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+	bh=FvCZIXlyJ0i9W5y1NVajdFVbSmQI+ddDaK6Um2GHqYw=;
+	b=QGeKM79SYM2frmbmt2fxZHlTNPc5Oc842ZXIV9fYAHyaizqKZdm6AQwbQ2/i7sBfZ6yLBG
+	/3zjToBOF6R5v9/jolUeie+s7O0lGrLHanmRp8WfGz9AHCuTQt4iVPqe1SUqo5L+iRAxdS
+	JXhpwPhJDXSNffPjD54Q6jbnEfn3mdQ=
+Received: from mail-pg1-f197.google.com (mail-pg1-f197.google.com
+ [209.85.215.197]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-288-5Fi22-_JPOuSAlaIFpsNEQ-1; Wed, 27 Mar 2024 03:57:53 -0400
-X-MC-Unique: 5Fi22-_JPOuSAlaIFpsNEQ-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.rdu2.redhat.com [10.11.54.8])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 8B817800266;
-	Wed, 27 Mar 2024 07:57:52 +0000 (UTC)
-Received: from p1.luc.cera.cz (unknown [10.45.224.197])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id E9B65C15774;
-	Wed, 27 Mar 2024 07:57:50 +0000 (UTC)
-From: Ivan Vecera <ivecera@redhat.com>
-To: intel-wired-lan@lists.osuosl.org
-Cc: netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	mschmidt@redhat.com,
-	aleksandr.loktionov@intel.com,
-	jesse.brandeburg@intel.com,
-	anthony.l.nguyen@intel.com,
-	davem@davemloft.net,
-	edumazet@google.com,
-	kuba@kernel.org,
-	pabeni@redhat.com
-Subject: [PATCH iwl-next v2 7/7] i40e: Add and use helper to reconfigure TC for given VSI
-Date: Wed, 27 Mar 2024 08:57:33 +0100
-Message-ID: <20240327075733.8967-8-ivecera@redhat.com>
-In-Reply-To: <20240327075733.8967-1-ivecera@redhat.com>
-References: <20240327075733.8967-1-ivecera@redhat.com>
+ us-mta-613-R9b45yNHNeijrkQ2kURyKw-1; Wed, 27 Mar 2024 03:57:59 -0400
+X-MC-Unique: R9b45yNHNeijrkQ2kURyKw-1
+Received: by mail-pg1-f197.google.com with SMTP id 41be03b00d2f7-5ca4ee5b97aso3076420a12.1
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 00:57:59 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711526279; x=1712131079;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=FvCZIXlyJ0i9W5y1NVajdFVbSmQI+ddDaK6Um2GHqYw=;
+        b=Uv9XhyvHlfyzm2jyXkAD5W3NZzw4ZVIhH77RcFc+BEDrcaUBcPoart3JXIgc1y5bH5
+         YZzaBmSbfLa46bx/9FZz+wb/mwJwmo3coNtIdZzSBsbJ21BrPSL6hIg0JazxOPt347SF
+         NnjCL2izvWFwLWRXcfW0uz4NT3Pbce1XI/4DJyRZ54fJ05o9jiqGqyVeVKsEjFeszjsn
+         ZmK0fEIU0ak/RF8CI/1SQzzM6otjz30XDwALS5dkLSd9csKBls59umoAfa6DqC6M+vhN
+         7yGCOJAuRFPJUjAL/RU7WgP3EfQ8A/r56rHNTz/CYOcSM922dUi0jLIxWVqFmaJCaTnl
+         dpJA==
+X-Forwarded-Encrypted: i=1; AJvYcCVVusx8GIVAL0AznOV3yVz/Lt0TSRrQbZY7vX+5U21RKu4q+V34mV2SLbmmLtqW6k951Gb8Mx4i0HAVC5vYX6wFEveKXat7xa9lV7gN
+X-Gm-Message-State: AOJu0Yz+uqvW3eC/2T/PpMR/PlwsKw+7RZcnu6UMqLY7CSwLxzC9i16k
+	KU45GOjPtsKhdUD8MR4loSx0/A7CcRTAmr95+HcMQvDExj5GcPYF0JV95/1+MG8QE+VXLJP3qtk
+	3LGPxZO7ZkaWurkBbO7LlksBnkbkswt9Ero7jHKba022nhUvFfN4e+Omu5HXkLK47fDr++QGzaO
+	mbL0vV3u+dPwjYF2KaNaHuUrRAb9d2iCgaJUTm
+X-Received: by 2002:a05:6a21:78a1:b0:1a3:5440:520 with SMTP id bf33-20020a056a2178a100b001a354400520mr2261630pzc.1.1711526278845;
+        Wed, 27 Mar 2024 00:57:58 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IF+Q9fuG8yTs+ELOSdaWHYwqpSczYEeTI5UtBaHspHNLcfSZRVndgU5mB3Z2zq0Hcih2Q+cX9I9biaM+ykuO08=
+X-Received: by 2002:a05:6a21:78a1:b0:1a3:5440:520 with SMTP id
+ bf33-20020a056a2178a100b001a354400520mr2261613pzc.1.1711526278530; Wed, 27
+ Mar 2024 00:57:58 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.8
+References: <20240324150107.976025-1-hpa@redhat.com> <20240324150107.976025-2-hpa@redhat.com>
+ <CAHp75Ve5201KNdjvDZYq_unHTKp9wZXPWZXDgStP8y+XjtnWWg@mail.gmail.com>
+In-Reply-To: <CAHp75Ve5201KNdjvDZYq_unHTKp9wZXPWZXDgStP8y+XjtnWWg@mail.gmail.com>
+From: Kate Hsuan <hpa@redhat.com>
+Date: Wed, 27 Mar 2024 15:57:47 +0800
+Message-ID: <CAEth8oG7_qFuUrL+kX3ezNatWqKPqT-qiaO5NGY-N3F3ufQL9w@mail.gmail.com>
+Subject: Re: [PATCH v5 RESEND 1/6] platform: x86-android-tablets: other: Add
+ swnode for Xiaomi pad2 indicator LED
+To: Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc: Pavel Machek <pavel@ucw.cz>, Lee Jones <lee@kernel.org>, linux-leds@vger.kernel.org, 
+	platform-driver-x86@vger.kernel.org, Hans de Goede <hdegoede@redhat.com>, 
+	=?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>, 
+	=?UTF-8?Q?Andr=C3=A9_Apitzsch?= <git@apitzsch.eu>, 
+	linux-kernel@vger.kernel.org, Sebastian Reichel <sre@kernel.org>, linux-pm@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Add helper i40e_vsi_reconfig_tc(vsi) that configures TC
-for given VSI using previously stored TC bitmap.
+Hi Andy,
 
-Effectively replaces open-coded patterns:
+Thank you for reviewing it.
 
-enabled_tc = vsi->tc_config.enabled_tc;
-vsi->tc_config.enabled_tc = 0;
-i40e_vsi_config_tc(vsi, enabled_tc);
+On Mon, Mar 25, 2024 at 3:30=E2=80=AFAM Andy Shevchenko
+<andy.shevchenko@gmail.com> wrote:
+>
+> On Sun, Mar 24, 2024 at 5:02=E2=80=AFPM Kate Hsuan <hpa@redhat.com> wrote=
+:
+> >
+> > There is a KTD2026 LED controller to manage the indicator LED for Xiaom=
+i
+> > pad2. The ACPI for it is not properly made so the kernel can't get
+> > a correct description of it.
+> >
+> > This work add a description for this RGB LED controller and also set a
+>
+> adds
+> sets
+>
+> > trigger to indicate the chaging event (bq27520-0-charging). When it is
+>
+> charging
+>
+> > charging, the indicator LED will be turn on.
+>
+> turned
+>
+> ...
+>
+> > +/* main fwnode for ktd2026 */
+> > +static const struct software_node ktd2026_node =3D {
+> > +       .name =3D "ktd2026"
+>
+> Leave a comma, this is not a terminator.
+>
+> > +};
+>
+> When I asked about the name I relied on the fact that you have an idea
+> how it works. So, assuming my understanding is correct, this platform
+> may not have more than a single LED of this type. Dunno if we need a
+> comment about this.
 
-Reviewed-by: Michal Schmidt <mschmidt@redhat.com>
-Signed-off-by: Ivan Vecera <ivecera@redhat.com>
----
- drivers/net/ethernet/intel/i40e/i40e_main.c | 31 +++++++++++++++------
- 1 file changed, 23 insertions(+), 8 deletions(-)
+I'll make a comment to describe the configuration.
+This LED controller can be configured to an RGB LED like this. Also,
+it can be configured as three single-color (RGB) LEDs to show red,
+green, and blue only.
+I think the name can be "ktd2026-multi-color". Is it good for you?
 
-diff --git a/drivers/net/ethernet/intel/i40e/i40e_main.c b/drivers/net/ethernet/intel/i40e/i40e_main.c
-index 2e1955064abb..6c25d02ea05e 100644
---- a/drivers/net/ethernet/intel/i40e/i40e_main.c
-+++ b/drivers/net/ethernet/intel/i40e/i40e_main.c
-@@ -5924,6 +5924,27 @@ static int i40e_vsi_config_tc(struct i40e_vsi *vsi, u8 enabled_tc)
- 	return ret;
- }
- 
-+/**
-+ * i40e_vsi_reconfig_tc - Reconfigure VSI Tx Scheduler for stored TC map
-+ * @vsi: VSI to be reconfigured
-+ *
-+ * This reconfigures a particular VSI for TCs that are mapped to the
-+ * TC bitmap stored previously for the VSI.
-+ *
-+ * NOTE:
-+ * It is expected that the VSI queues have been quisced before calling
-+ * this function.
-+ **/
-+static int i40e_vsi_reconfig_tc(struct i40e_vsi *vsi)
-+{
-+	u8 enabled_tc;
-+
-+	enabled_tc = vsi->tc_config.enabled_tc;
-+	vsi->tc_config.enabled_tc = 0;
-+
-+	return i40e_vsi_config_tc(vsi, enabled_tc);
-+}
-+
- /**
-  * i40e_get_link_speed - Returns link speed for the interface
-  * @vsi: VSI to be configured
-@@ -14290,7 +14311,6 @@ static struct i40e_vsi *i40e_vsi_reinit_setup(struct i40e_vsi *vsi)
- 	struct i40e_vsi *main_vsi;
- 	u16 alloc_queue_pairs;
- 	struct i40e_pf *pf;
--	u8 enabled_tc;
- 	int ret;
- 
- 	if (!vsi)
-@@ -14323,10 +14343,8 @@ static struct i40e_vsi *i40e_vsi_reinit_setup(struct i40e_vsi *vsi)
- 	 * layout configurations.
- 	 */
- 	main_vsi = i40e_pf_get_main_vsi(pf);
--	enabled_tc = main_vsi->tc_config.enabled_tc;
--	main_vsi->tc_config.enabled_tc = 0;
- 	main_vsi->seid = pf->main_vsi_seid;
--	i40e_vsi_config_tc(main_vsi, enabled_tc);
-+	i40e_vsi_reconfig_tc(main_vsi);
- 
- 	if (vsi->type == I40E_VSI_MAIN)
- 		i40e_rm_default_mac_filter(vsi, pf->hw.mac.perm_addr);
-@@ -15085,11 +15103,8 @@ static int i40e_setup_pf_switch(struct i40e_pf *pf, bool reinit, bool lock_acqui
- 		}
- 	} else {
- 		/* force a reset of TC and queue layout configurations */
--		u8 enabled_tc = main_vsi->tc_config.enabled_tc;
--
--		main_vsi->tc_config.enabled_tc = 0;
- 		main_vsi->seid = pf->main_vsi_seid;
--		i40e_vsi_config_tc(main_vsi, enabled_tc);
-+		i40e_vsi_reconfig_tc(main_vsi);
- 	}
- 	i40e_vlan_stripping_disable(main_vsi);
- 
--- 
-2.43.0
+
+>
+> ...
+>
+> > +static int __init xiaomi_mipad2_init(void)
+> > +{
+> > +       return software_node_register_node_group(ktd2026_node_group);
+> > +}
+> > +
+> > +static void xiaomi_mipad2_exit(void)
+>
+> __exit ?
+No need.
+x86-andriod-tablet is based on platform_driver and platform_device so
+it doesn't need __exit.
+
+I put __exit and the compiler complained about the warning.
+=3D=3D=3D
+WARNING: modpost:
+drivers/platform/x86/x86-android-tablets/x86-android-tablets: section
+mismatch in reference: xiaomi_mipad2_info+0x50 (section: .init.rodata)
+-> xiaomi_mipad2_exit (section: .exit.text)
+=3D=3D=3D
+>
+> > +{
+> > +       software_node_unregister_node_group(ktd2026_node_group);
+> > +}
+>
+> --
+> With Best Regards,
+> Andy Shevchenko
+>
+
+I'll propose the v6 patch to fix them according to your comments.
+
+--
+BR,
+Kate
 
 
