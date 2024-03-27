@@ -1,74 +1,62 @@
-Return-Path: <linux-kernel+bounces-122013-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-122014-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6956088F0B5
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 22:14:30 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 162A188F0BF
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 22:18:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B487AB211B8
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 21:14:27 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1F37E1C2C8E0
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 21:18:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DB82B153578;
-	Wed, 27 Mar 2024 21:14:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AAC62153566;
+	Wed, 27 Mar 2024 21:18:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="BJhJrezr"
-Received: from mail-ed1-f49.google.com (mail-ed1-f49.google.com [209.85.208.49])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="JFTmVSZP"
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7C67A15250F
-	for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 21:14:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 40AB04CB38;
+	Wed, 27 Mar 2024 21:18:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711574058; cv=none; b=EVKaM3pVcmCJONkZQxDv+clU6WSwM5nSP8Jh+JYN6aHYLv+Yud5y2HzltFyOBVN72EZOb9ZhVObM9Q646vtFKXhLzf6g8CI5eziv/vvUBu363qHw/tr5fIThiyvytG2ELS8W1uAIVcfyDAHjK0eQjMeHiecLWMcJ9AgWKlsWSAc=
+	t=1711574306; cv=none; b=hnlS8KXiEYSA3R9GNg0U+IMcDtmyhK4rPkH3+kVqZINhOTkIeSHsPGf0V7TEy1QsabhAXWxZinCA2EzWLrh7bB/TZmmA8ySQyVRR9MFczaVW5nx6mHT0KLMoXlJe58flxIsFk3E1Tfz3vcbNLiuJF2MeVSwn/fpUgjCdEpcjd4I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711574058; c=relaxed/simple;
-	bh=n2ZUulc3Eq3AAzZI8Ftjfz81QNys3b1pF4B57iF/n3g=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=lZuBaH/uVPA1H1VQBwEv/8GGRnepBitQcbFTzzRw3561SWTVcKXgCQGazaH9jzVrdmt1nUI+Sqhimp5z5F6rz1H0POqcNJ2RMiF4tCdwBoTuAqIvDppIjbeFJNhsjh+hybzMfmfme3rHykZCLNmoIBRHTxPe13NuykI9yN3hIws=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=BJhJrezr; arc=none smtp.client-ip=209.85.208.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ed1-f49.google.com with SMTP id 4fb4d7f45d1cf-56c1922096cso348335a12.0
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 14:14:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1711574055; x=1712178855; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=n2ZUulc3Eq3AAzZI8Ftjfz81QNys3b1pF4B57iF/n3g=;
-        b=BJhJrezrdYYS1OO2DMwhrRK0/VCOK1243JgX+gqNqXK8guKqK9TuGPaRcuQGsE05oj
-         WOBpJkVf7//Hwx2famwzgYvzP85CgibefbVg01Pwf59VJDiKrhbzkszVy81LLbDWehQd
-         4TmSMXBwk+y+CNvxY/7cxM+K8m90YEnP+Oa7+Q5jPJPL54u4wwOnYKw/k2kFy9xuYDcS
-         vp5u98XUE1KD1EihEIoe99v41Hln716ZF7XmjlJm5jWhOAcvYhyPox6p56rvWQl2mw8X
-         BBDWHhIiPRTSzbsNtDkFcomvOkn66pLxDCNhhDYRoRg2WfsaCjTyIdpbD5oCNL1S0Ekn
-         Lq5w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711574055; x=1712178855;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=n2ZUulc3Eq3AAzZI8Ftjfz81QNys3b1pF4B57iF/n3g=;
-        b=HyiNL6CI2Jixu2aBUAWxYxNTsEYtQuc0SNReLinWWqxIuNLfKu8UjlnMBcLoAgdbi5
-         430vBq4aAvuI1FsQXsvAUQIt0g0nhV9bl84/+lA9qH9kifqhH92wXOoNxW06gZbtjGI7
-         werRA0pMVtFpFfmxRlRkWpEF6C2Qb6AsVcTC0ahQxHrpX1NzBrRZRw4taNnZcYuehjK8
-         1MpkWDn9mQv9egMCnuCQnQq0+KbyKV9ftUyHOhhusy0PsvP+3OaudMFgDAhEQauYSF1E
-         LP2PIxsTOL2OUdQNAihxQeXJHXr2USK7+lrVe4Z+J5OTtZo4r4qdq2ZGRGahnon5jCGA
-         5gQg==
-X-Forwarded-Encrypted: i=1; AJvYcCW/vIugjiD8gQbsenBqzuQ/lo9FJvpUg6ylEwItsULlLIFPitWXnwVJzMunn+w4FchYxsBLyXO0L9Za94TxXjQ5JDMHTWgxWAQHXl8w
-X-Gm-Message-State: AOJu0YzFxflF3Qg/sIN3FjO0ENuIIjo5iIFmMvz+u/MIShjBzVs8TYIX
-	DYTk3eQQE+MHmjKNtc9UrYHOgtxWvbyTTGEhlrfVCnhYat512+FNiKcSNfgjLD0=
-X-Google-Smtp-Source: AGHT+IE0ljPxnm4x1rpfPXYtNekRJT6Hwophjp4u4vEIGusaxfBHvkBco+v+6ad0FZuyCp//Ec9HNA==
-X-Received: by 2002:a50:cd04:0:b0:56b:9ef8:f630 with SMTP id z4-20020a50cd04000000b0056b9ef8f630mr733887edi.2.1711574054667;
-        Wed, 27 Mar 2024 14:14:14 -0700 (PDT)
-Received: from [192.168.92.47] (078088045141.garwolin.vectranet.pl. [78.88.45.141])
-        by smtp.gmail.com with ESMTPSA id j17-20020aa7de91000000b0056bfb7004basm16259edv.90.2024.03.27.14.14.12
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 27 Mar 2024 14:14:14 -0700 (PDT)
-Message-ID: <c16777bd-9f17-4d13-bba5-110e6626afb4@linaro.org>
-Date: Wed, 27 Mar 2024 22:14:11 +0100
+	s=arc-20240116; t=1711574306; c=relaxed/simple;
+	bh=ipR9hzWi9zOw+0dtltYaJnP36cAh8+wgGS76t0QXEmo=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=MOTQANzB/PTpLicc6yDwkqxIzFZ4kLvzaCXxrQMubZAI5Pp3oHltb0x4DTSBaaXx8/EjVRt8t1bnLyX5ebev31QpEs+QwKZAtbxsfj1Mf3S7vr78aDRT807cB+Lk9CC4eu9FGmp5EDhAHgd8pvEKPQCAc9czBl1M1KhRbPMRZ/s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=JFTmVSZP; arc=none smtp.client-ip=205.220.168.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279866.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 42RLEeJT013323;
+	Wed, 27 Mar 2024 21:18:21 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=5odMItVmcOfOMhCJL0bB7D3uH/Ex4aUfIXFkrQuBSoI=; b=JF
+	TmVSZPz493vFHJYMBdxskWf8HTu0AE5M/KHCEFtBaQ4bMEtGTl3aR/qzmREsZ6pm
+	SSJi4o5kpyrDR97J+rKavntKImyb7AWN+f95C92bQ+I1bI02GAf3cUaLq4jMkvBy
+	CKwQ/8jUZlnY+S16hGnKUD6w0RpkBXWr2XXbR67W79+6/Bn6BLgGVCz7jjdzwIFQ
+	1lNN1IRFV6vbSTABSXG9Ocmn2sbNdKOQbRmO8/SUaQYatvOo6ood+JE0s+kk1OZz
+	TVmQEiEQL+jp0mt1P/EIXYV/2tVmn8tgvqw3+gRNalo0B3q2E+tGHVcLGJMumw9D
+	vAMSa/EHia/Q3od4AKGA==
+Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3x4u1yr0wx-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 27 Mar 2024 21:18:21 +0000 (GMT)
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+	by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 42RLIKYc024990
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 27 Mar 2024 21:18:20 GMT
+Received: from [10.227.110.203] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Wed, 27 Mar
+ 2024 14:18:20 -0700
+Message-ID: <3670c9af-3266-4b9b-928e-e91a68db7123@quicinc.com>
+Date: Wed, 27 Mar 2024 14:18:19 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -76,69 +64,142 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 1/7] clk: qcom: gcc-sm7150: Make clk_init_data const
- and various fixes
-To: Danila Tikhonov <danila@jiaxyga.com>, andersson@kernel.org,
- mturquette@baylibre.com, sboyd@kernel.org, robh@kernel.org,
- krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
- david@mainlining.org, adrian@travitia.xyz
-Cc: linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20240321202814.59835-1-danila@jiaxyga.com>
- <20240321202814.59835-2-danila@jiaxyga.com>
+Subject: Re: [PATCH][next] wifi: cfg80211: Use __counted_by() in struct
+ wmi_start_scan_cmd and avoid -Wfamnae warning
 Content-Language: en-US
-From: Konrad Dybcio <konrad.dybcio@linaro.org>
-Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
- 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
- izWDgYvmBE8=
-In-Reply-To: <20240321202814.59835-2-danila@jiaxyga.com>
-Content-Type: text/plain; charset=UTF-8
+To: "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Kalle Valo
+	<kvalo@kernel.org>
+CC: <linux-wireless@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-hardening@vger.kernel.org>
+References: <ZgRqjGShTl3y5FFB@neat>
+From: Jeff Johnson <quic_jjohnson@quicinc.com>
+In-Reply-To: <ZgRqjGShTl3y5FFB@neat>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: avsc72lS1iUa_AjePAihMSqXGNNMmh_8
+X-Proofpoint-GUID: avsc72lS1iUa_AjePAihMSqXGNNMmh_8
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-03-27_18,2024-03-27_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 impostorscore=0
+ mlxscore=0 lowpriorityscore=0 priorityscore=1501 bulkscore=0
+ mlxlogscore=999 spamscore=0 adultscore=0 malwarescore=0 suspectscore=0
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2403210001 definitions=main-2403270151
 
-On 21.03.2024 9:28 PM, Danila Tikhonov wrote:
-> - The clk_init_data structures are never modified, make
-> them const.
-> - Add missing comma
+On 3/27/2024 11:50 AM, Gustavo A. R. Silva wrote:
+> Prepare for the coming implementation by GCC and Clang of the
+> __counted_by attribute. Flexible array members annotated with
+> __counted_by can have their accesses bounds-checked at run-time
+> via CONFIG_UBSAN_BOUNDS (for array indexing) and CONFIG_FORTIFY_SOURCE
+> (for strcpy/memcpy-family functions).
+> 
+> Also, -Wflex-array-member-not-at-end is coming in GCC-14, and we are
+> getting ready to enable it globally.
+> 
+> So, use the `DEFINE_FLEX()` helper for an on-stack definition of
+> a flexible structure where the size of the flexible-array member
+> is known at compile-time, and refactor the rest of the code,
+> accordingly.
+> 
+> So, with these changes, fix the following warning:
+> drivers/net/wireless/ath/wil6210/cfg80211.c:896:43: warning: structure containing a flexible array member is not at the end of another structure [-Wflex-array-member-not-at-end]
+> 
+> Link: https://github.com/KSPP/linux/issues/202
+> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+> ---
+>  drivers/net/wireless/ath/wil6210/cfg80211.c | 22 ++++++++++-----------
+>  drivers/net/wireless/ath/wil6210/wmi.h      |  2 +-
+>  2 files changed, 11 insertions(+), 13 deletions(-)
+> 
+> diff --git a/drivers/net/wireless/ath/wil6210/cfg80211.c b/drivers/net/wireless/ath/wil6210/cfg80211.c
+> index dbe4b3478f03..836b49954171 100644
+> --- a/drivers/net/wireless/ath/wil6210/cfg80211.c
+> +++ b/drivers/net/wireless/ath/wil6210/cfg80211.c
+> @@ -892,10 +892,8 @@ static int wil_cfg80211_scan(struct wiphy *wiphy,
+>  	struct wil6210_priv *wil = wiphy_to_wil(wiphy);
+>  	struct wireless_dev *wdev = request->wdev;
+>  	struct wil6210_vif *vif = wdev_to_vif(wil, wdev);
+> -	struct {
+> -		struct wmi_start_scan_cmd cmd;
+> -		u16 chnl[4];
+> -	} __packed cmd;
+> +	DEFINE_FLEX(struct wmi_start_scan_cmd, cmd,
+> +		    channel_list, num_channels, 4);
+>  	uint i, n;
+>  	int rc;
+>  
+> @@ -977,9 +975,9 @@ static int wil_cfg80211_scan(struct wiphy *wiphy,
+>  	vif->scan_request = request;
+>  	mod_timer(&vif->scan_timer, jiffies + WIL6210_SCAN_TO);
+>  
+> -	memset(&cmd, 0, sizeof(cmd));
+> -	cmd.cmd.scan_type = WMI_ACTIVE_SCAN;
+> -	cmd.cmd.num_channels = 0;
+> +	memset(cmd, 0, sizeof(*cmd));
 
-Highly debatable given you're not expecting to enlarge this enum
+Isn't this unnecessary since DEFINE_FLEX() logic "{ .obj.COUNTER = COUNT, }"
+should result in everything else being zeroed?
 
-> - Add dependencies on "ARM64 or COMPILE_TEST"
+And if that isn't sufficient, DEFINE_FLEX() itself says we should "Use
+__struct_size(@NAME) to get compile-time size of it afterwards"
 
-Please split this up into two patches (or if you really care about
-that comma, I won't snitch on you if you squash it together with adding
-const specifiers)
+Note the current memset won't zero the flex array and hence if the actual
+number of channels is less than 4 then kernel stack contents could be exposed
+to firmware.
 
-Konrad
+> +	cmd->scan_type = WMI_ACTIVE_SCAN;
+> +	cmd->num_channels = 0;
+>  	n = min(request->n_channels, 4U);
+>  	for (i = 0; i < n; i++) {
+>  		int ch = request->channels[i]->hw_value;
+> @@ -991,7 +989,8 @@ static int wil_cfg80211_scan(struct wiphy *wiphy,
+>  			continue;
+>  		}
+>  		/* 0-based channel indexes */
+> -		cmd.cmd.channel_list[cmd.cmd.num_channels++].channel = ch - 1;
+> +		cmd->num_channels++;
+> +		cmd->channel_list[cmd->num_channels - 1].channel = ch - 1;
+>  		wil_dbg_misc(wil, "Scan for ch %d  : %d MHz\n", ch,
+>  			     request->channels[i]->center_freq);
+>  	}
+> @@ -1007,16 +1006,15 @@ static int wil_cfg80211_scan(struct wiphy *wiphy,
+>  	if (rc)
+>  		goto out_restore;
+>  
+> -	if (wil->discovery_mode && cmd.cmd.scan_type == WMI_ACTIVE_SCAN) {
+> -		cmd.cmd.discovery_mode = 1;
+> +	if (wil->discovery_mode && cmd->scan_type == WMI_ACTIVE_SCAN) {
+> +		cmd->discovery_mode = 1;
+>  		wil_dbg_misc(wil, "active scan with discovery_mode=1\n");
+>  	}
+>  
+>  	if (vif->mid == 0)
+>  		wil->radio_wdev = wdev;
+>  	rc = wmi_send(wil, WMI_START_SCAN_CMDID, vif->mid,
+> -		      &cmd, sizeof(cmd.cmd) +
+> -		      cmd.cmd.num_channels * sizeof(cmd.cmd.channel_list[0]));
+> +		      cmd, struct_size(cmd, channel_list, cmd->num_channels));
+>  
+>  out_restore:
+>  	if (rc) {
+> diff --git a/drivers/net/wireless/ath/wil6210/wmi.h b/drivers/net/wireless/ath/wil6210/wmi.h
+> index 71bf2ae27a98..b47606d9068c 100644
+> --- a/drivers/net/wireless/ath/wil6210/wmi.h
+> +++ b/drivers/net/wireless/ath/wil6210/wmi.h
+> @@ -474,7 +474,7 @@ struct wmi_start_scan_cmd {
+>  	struct {
+>  		u8 channel;
+>  		u8 reserved;
+> -	} channel_list[];
+> +	} channel_list[] __counted_by(num_channels);
+>  } __packed;
+>  
+>  #define WMI_MAX_PNO_SSID_NUM	(16)
+
 
