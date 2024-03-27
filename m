@@ -1,50 +1,44 @@
-Return-Path: <linux-kernel+bounces-121757-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-121759-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id C5D3D88ED47
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 18:56:44 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 80D1588ED4A
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 18:57:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7AA221F32EFA
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 17:56:44 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 13CC22A551E
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 17:56:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 06507155744;
-	Wed, 27 Mar 2024 17:49:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A0DB215252E;
+	Wed, 27 Mar 2024 17:49:17 +0000 (UTC)
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 96BCE14F11E
-	for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 17:49:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 31FE514D701;
+	Wed, 27 Mar 2024 17:49:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711561742; cv=none; b=lAYo4K6eMnPMWzgR2Rt1lv4Aoezw+1K5oyZh7AI284+/y8iwmFDDpw4r4KkucuHUE5DkUswxEdW7TQu/tYCVrilJ8iccNNSuwRqhoq3se5D41/sLfbPaczX4QkDA/C2hG6DGywHVMPg2alE9lf9AdRVPPBzypAyBMie/uChYsao=
+	t=1711561757; cv=none; b=ccr7aWx3WvQn8hbhHJbSMeT/r/vXMjsQD/wpdkz9Y6W00CWwEVbOzOLcxggmMfDSf77vuoJVAKfpIq3vL+XhkDKZGVisqJMqYQ9KJxdZLnsIgLtlL4RUeFgjYApISlW9nQJAAa6ky62JybahWV9QqMK5n0NltPAg7SUxTM1cAKw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711561742; c=relaxed/simple;
-	bh=aI0fgGFWwSvGDEoc3r2vvepfyN05vjH/RcpefbQoeVY=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=isHnyHR0A3VuU9DjgmpWRpgt3NYtalsHPkCD6XuR4rt/iUhzlL93E2YlhNCAMIR4O1yo7jtuAHplJeV1FG1xZFYOeyMJyQeXd7KLjzsTd1cOdhWIWfyE+kUR9y2udNUqjxAmHeEojOmPBjx/poOb/cz8ZM8piRJXT5dpAwVJX6A=
+	s=arc-20240116; t=1711561757; c=relaxed/simple;
+	bh=xMlBPCxx67Kd23VCZ7ClsLvlUlSfPjC+64ZiDaRXLaY=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=mY3wJockNOyiKHmCEodq1KlXmtIHnfnU55N+JkOxvHKIiwJcKuhJI2UjmirVh637nDuKlczaRsvCWyAVAHfbys90OemMHRTyM58DFMuFiPT7sB7EU0bItM0rAPvvHz0LDvjbqyJ87jt1NKb/iAgFOLDjHHFa1ISuJaqElr1Qsds=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0D9F5C433F1;
-	Wed, 27 Mar 2024 17:48:58 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E0C04C43390;
+	Wed, 27 Mar 2024 17:49:13 +0000 (UTC)
 From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-To: David Lechner <david@lechnology.com>,
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-	Maxime Ripard <mripard@kernel.org>,
-	Thomas Zimmermann <tzimmermann@suse.de>,
-	David Airlie <airlied@gmail.com>,
-	Daniel Vetter <daniel@ffwll.ch>,
-	=?UTF-8?q?Noralf=20Tr=C3=B8nnes?= <noralf@tronnes.org>,
-	dri-devel@lists.freedesktop.org,
+To: Moritz Fischer <mdf@kernel.org>,
+	Wu Hao <hao.wu@intel.com>,
+	Xu Yilun <yilun.xu@intel.com>,
+	Tom Rix <trix@redhat.com>,
+	linux-fpga@vger.kernel.org,
 	linux-kernel@vger.kernel.org
 Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Subject: [PATCH 4/4] drm/tiny: st7586: drop driver owner assignment
-Date: Wed, 27 Mar 2024 18:48:42 +0100
-Message-Id: <20240327174842.519758-4-krzysztof.kozlowski@linaro.org>
+Subject: [PATCH] fpga: altera: drop driver owner assignment
+Date: Wed, 27 Mar 2024 18:49:09 +0100
+Message-Id: <20240327174909.519796-1-krzysztof.kozlowski@linaro.org>
 X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240327174842.519758-1-krzysztof.kozlowski@linaro.org>
-References: <20240327174842.519758-1-krzysztof.kozlowski@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -58,21 +52,21 @@ does not need to.
 
 Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 ---
- drivers/gpu/drm/tiny/st7586.c | 1 -
+ drivers/fpga/altera-ps-spi.c | 1 -
  1 file changed, 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/tiny/st7586.c b/drivers/gpu/drm/tiny/st7586.c
-index 7336fa1ddaed..c4ad8340180e 100644
---- a/drivers/gpu/drm/tiny/st7586.c
-+++ b/drivers/gpu/drm/tiny/st7586.c
-@@ -392,7 +392,6 @@ static void st7586_shutdown(struct spi_device *spi)
- static struct spi_driver st7586_spi_driver = {
+diff --git a/drivers/fpga/altera-ps-spi.c b/drivers/fpga/altera-ps-spi.c
+index 740980e7cef8..d0ec3539b31f 100644
+--- a/drivers/fpga/altera-ps-spi.c
++++ b/drivers/fpga/altera-ps-spi.c
+@@ -284,7 +284,6 @@ MODULE_DEVICE_TABLE(spi, altera_ps_spi_ids);
+ static struct spi_driver altera_ps_driver = {
  	.driver = {
- 		.name = "st7586",
+ 		.name = "altera-ps-spi",
 -		.owner = THIS_MODULE,
- 		.of_match_table = st7586_of_match,
+ 		.of_match_table = of_ef_match,
  	},
- 	.id_table = st7586_id,
+ 	.id_table = altera_ps_spi_ids,
 -- 
 2.34.1
 
