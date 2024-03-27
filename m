@@ -1,142 +1,145 @@
-Return-Path: <linux-kernel+bounces-122185-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-122186-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 571FD88F335
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 00:32:45 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id F13C588F337
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 00:32:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D0290B21281
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 23:32:42 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 92809B2151C
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 23:32:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9909A154423;
-	Wed, 27 Mar 2024 23:32:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 87399154BF0;
+	Wed, 27 Mar 2024 23:32:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="jY01f4+q"
-Received: from mail-qt1-f182.google.com (mail-qt1-f182.google.com [209.85.160.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=ispras.ru header.i=@ispras.ru header.b="UMI5QwJy"
+Received: from mail.ispras.ru (mail.ispras.ru [83.149.199.84])
+	(using TLSv1.2 with cipher DHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 522341534E8
-	for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 23:32:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BCD52152505;
+	Wed, 27 Mar 2024 23:32:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=83.149.199.84
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711582355; cv=none; b=B0PkRHFRToMRqDNIoZnvRB7WYKsE7tka5yrPA5HSY3tfXUN4j5Qp3xDETFNdSevPil0BhmF9q/+MqF3r8bsJSvB8vbA5yTabOW8zcrJ1ng40ZMWYZa8pFHMVZF34SKTs53wdK8HAmixgxKs1XqodbpPAs5elK8c0TqALLnjf2BQ=
+	t=1711582367; cv=none; b=L/9EQEhzcUXOTTAkGIhCrSefCkTDT/eBmyFDT5inXkuC0oXvIUPOlp5W1GiQemCZ38M7k/e7D+Y9moUUqE1VtZz/1Vr33e7KzYUeTLgdsdsKeCGIy6LGH0zHoIGXSG9wpoL2b8J6XyGv5uvf4gIcNpPQuuXqCFA0TSUDNX2C1bg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711582355; c=relaxed/simple;
-	bh=4lKPLbh212nn1J3R8IMqlEWT8QVsO3oW2MM/iClklVY=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=PCLugdIRCmo9wxl5d++hcrSyrLMDP6KdkCP9nIkAWWq5ahhZh3xa6U/mlGxb5G6s0ti2s2ravmo1luQWlriry0xx0eTLxrxkqmSJ6DlUMSh9MJL26aBqOmPEJtXHoSTLhZHhGkKJTaLa+cFZgQKwrFT2jENr8mBz6wmpovPfwrI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=jY01f4+q; arc=none smtp.client-ip=209.85.160.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-qt1-f182.google.com with SMTP id d75a77b69052e-428405a0205so85821cf.1
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 16:32:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1711582353; x=1712187153; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=tzRgd4Lzb951VCLO81xH04jUHM3EgKoI1UuVp5UFbtA=;
-        b=jY01f4+qWD71l2GInHO8UA+d9jBvS5Dvkq9nudrptIGytrtlrP1x3HPMf5orfVWAFt
-         BuG9MKrPYop/dhzxzZs7pCwkUW8kHhxh00J95EChtL5qmtVa1pbXTQNqMOZezcjZCxvC
-         2IeADjgezEj44KrFMD8MVngu1tDIKoLf/OvVwCE6BZiGPzZn6k8B54ok0zp6VYHr99a2
-         1jh0UGELxsb0VMNgxNAiaxa6wkK8RhN9IxxhxZCBBvyebFHaxIy5dDR6q41SoyjE4bdK
-         88R9TLJ/tFJTnsOleOeUXMpk21Ml2VAWvuLoYi1qZX5eJN4yNCFHxc3UwL25SoT6xDYu
-         O6NA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711582353; x=1712187153;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=tzRgd4Lzb951VCLO81xH04jUHM3EgKoI1UuVp5UFbtA=;
-        b=vEUXY1FI6g8TGz8mwk5pL4FEFIniJzcM3Wc7XHLQaUv3AQu3yTpTb49277sZPUil2M
-         e9NzRqqkAKch5KnCdQ1s4sVO7yqmAwlScFPTG55sAV/AByVvOECtKgLp0gShN2/BELNO
-         NHHTWBo8RS0gb7cYbZyvsEsP95YD0LQ57d0AHhLX22hoeyK6OstiY4mFs3o21Bqwr1cC
-         52Ds4KMhiaWGjz+D6iEIGRYjrmwaTTBoL8AlDeCuIyxVowxv9S/aXgHa0mHkoouEGMnA
-         1VXgJJtxkoqJWdhJ3M0sabx2SesY2/ZnDFPja20NJK9ZIxE5o3kYlU97e+bS5N/vfH1N
-         A9Hw==
-X-Forwarded-Encrypted: i=1; AJvYcCX/pqtTR6kqmmln/70/gvpCLb9mh0i4UVER2us/Iea9SdSkCZw48v4fc0tZBY0tkUoh26BbR8KA+FZA/OJFFCN5z08+4FNlYhewrrLl
-X-Gm-Message-State: AOJu0YwhhYFWxJdsHjpipIy67o2KCg7fEX+SVs4yTt0LaLCbCjY3vJuL
-	FF1V/NPGyU6nNwDBrAQgT2RSeyUqwyHYCnJCDavmCP81HZZ3zFq/ujakqvI6aLsFUhnGXzC24Sg
-	ywERwP1KfbZpVv7aYG7t6M9T2ZKOX4Gxb7s1p
-X-Google-Smtp-Source: AGHT+IH3l1ArfOaKqAb+rx+5i3b79wDzfvkqQHOHsJaPejnm3xgjV3o8I7pfl2e/3FeBq1yfYGAUUUedO2D5/mlX5QI=
-X-Received: by 2002:a05:622a:5c99:b0:431:5aa3:313f with SMTP id
- ge25-20020a05622a5c9900b004315aa3313fmr57222qtb.11.1711582353081; Wed, 27 Mar
- 2024 16:32:33 -0700 (PDT)
+	s=arc-20240116; t=1711582367; c=relaxed/simple;
+	bh=eHSSgsbK1rqU2YbdPmS6PWjfXAy5g8Zq7TGAJaYLS8I=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=BBkSn0YIC4v8BgX8SD5CzChfYGW7hcT4mqZUgXgh9yLiW5+ppTYcejN2kIiMN1c/BL90E40vzL4+/7p9T4bmjexhlquuXBbagN8RN2gq7cPOvd/1BcueEDI0ydtPXro3N7ojl1QYVre+C83Zx0L5jAUEBm9ZtYI90VWDcHo4qIc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ispras.ru; spf=pass smtp.mailfrom=ispras.ru; dkim=pass (1024-bit key) header.d=ispras.ru header.i=@ispras.ru header.b=UMI5QwJy; arc=none smtp.client-ip=83.149.199.84
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ispras.ru
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ispras.ru
+Received: from tundra.lovozera (unknown [178.176.72.89])
+	by mail.ispras.ru (Postfix) with ESMTPSA id 270DC4076743;
+	Wed, 27 Mar 2024 23:32:35 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mail.ispras.ru 270DC4076743
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ispras.ru;
+	s=default; t=1711582355;
+	bh=woxLEnCoTio3lIKiy9FPxfvzbuc49vi+0knM8PWIYrg=;
+	h=From:To:Cc:Subject:Date:From;
+	b=UMI5QwJyKrA0XUM7tYplkhayU8OvaHyeJaFK+Y4Rxy6cfrJo8roYbtwezferRTr4w
+	 LBjQyNgSAqngUfRhIEtUDM9I1Ob08V0Dq6LF3LvfmbptOvE3sauPu3h2zfiK1KVVhC
+	 +pdZoJPRWm3sekUHW4jEwYMoiWLD8QeBQW3BJdpA=
+From: Mikhail Kobuk <m.kobuk@ispras.ru>
+To: Andy Walls <awalls@md.metrocast.net>
+Cc: Mikhail Kobuk <m.kobuk@ispras.ru>,
+	Mauro Carvalho Chehab <mchehab@kernel.org>,
+	Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+	Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+	linux-media@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	lvc-project@linuxtesting.org,
+	Alexey Khoroshilov <khoroshilov@ispras.ru>
+Subject: [PATCH] pci: ivtv: Add check for DMA map result
+Date: Thu, 28 Mar 2024 02:32:23 +0300
+Message-ID: <20240327233226.5919-1-m.kobuk@ispras.ru>
+X-Mailer: git-send-email 2.44.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240326100740.178594-1-davidgow@google.com>
-In-Reply-To: <20240326100740.178594-1-davidgow@google.com>
-From: Rae Moar <rmoar@google.com>
-Date: Wed, 27 Mar 2024 19:32:20 -0400
-Message-ID: <CA+GJov6wuRDu2JiUsw0qtWehpbUPnxM=fK-dJxVMtOr0TejP+A@mail.gmail.com>
-Subject: Re: [PATCH] kunit: configs: Enable CONFIG_DAMON_DBGFS_DEPRECATED for --alltests
-To: David Gow <davidgow@google.com>
-Cc: SeongJae Park <sj@kernel.org>, Mark Brown <broonie@kernel.org>, 
-	Johannes Berg <johannes.berg@intel.com>, linux-kselftest@vger.kernel.org, 
-	kunit-dev@googlegroups.com, linux-kernel@vger.kernel.org, 
-	Shuah Khan <skhan@linuxfoundation.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Tue, Mar 26, 2024 at 6:07=E2=80=AFAM David Gow <davidgow@google.com> wro=
-te:
->
-> This is required, as CONFIG_DAMON_DEBUGFS is enabled, and --alltests UML
-> builds will fail due to the missing config option otherwise.
->
-> Fixes: f4cba4bf6777 ("mm/damon: rename CONFIG_DAMON_DBGFS to DAMON_DBGFS_=
-DEPRECATED")
-> Signed-off-by: David Gow <davidgow@google.com>
+In case DMA fails, 'dma->SG_length' is 0. This value is later used to
+access 'dma->SGarray[dma->SG_length - 1]', which will cause out of
+bounds access.
 
-Hello!
+Add check to return early on invalid value. Adjust warnings accordingly.
 
-This looks good to me. And it takes away the issue with
-CONFIG_DAMON_DBGFS. But since this is deprecated now, should we move
-to the DAMON sysfs tests instead in the future? No need to let that
-stall this patch though.
+Found by Linux Verification Center (linuxtesting.org) with SVACE.
 
-Reviewed-by: Rae Moar <rmoar@google.com>
+Fixes: 1932dc2f4cf6 ("media: pci/ivtv: switch from 'pci_' to 'dma_' API")
+Signed-off-by: Mikhail Kobuk <m.kobuk@ispras.ru>
+---
+ drivers/media/pci/ivtv/ivtv-udma.c | 8 ++++++++
+ drivers/media/pci/ivtv/ivtv-yuv.c  | 6 ++++++
+ drivers/media/pci/ivtv/ivtvfb.c    | 6 +++---
+ 3 files changed, 17 insertions(+), 3 deletions(-)
 
-Thanks!
--Rae
+diff --git a/drivers/media/pci/ivtv/ivtv-udma.c b/drivers/media/pci/ivtv/ivtv-udma.c
+index 99b9f55ca829..f467a00492f4 100644
+--- a/drivers/media/pci/ivtv/ivtv-udma.c
++++ b/drivers/media/pci/ivtv/ivtv-udma.c
+@@ -131,6 +131,8 @@ int ivtv_udma_setup(struct ivtv *itv, unsigned long ivtv_dest_addr,
+ 
+ 	/* Fill SG List with new values */
+ 	if (ivtv_udma_fill_sg_list(dma, &user_dma, 0) < 0) {
++		IVTV_DEBUG_WARN("%s: could not allocate bounce buffers for highmem userspace buffers\n",
++				__func__);
+ 		unpin_user_pages(dma->map, dma->page_count);
+ 		dma->page_count = 0;
+ 		return -ENOMEM;
+@@ -139,6 +141,12 @@ int ivtv_udma_setup(struct ivtv *itv, unsigned long ivtv_dest_addr,
+ 	/* Map SG List */
+ 	dma->SG_length = dma_map_sg(&itv->pdev->dev, dma->SGlist,
+ 				    dma->page_count, DMA_TO_DEVICE);
++	if (!dma->SG_length) {
++		IVTV_DEBUG_WARN("%s: DMA map error, SG_length is 0\n", __func__);
++		unpin_user_pages(dma->map, dma->page_count);
++		dma->page_count = 0;
++		return -EINVAL;
++	}
+ 
+ 	/* Fill SG Array with new values */
+ 	ivtv_udma_fill_sg_array (dma, ivtv_dest_addr, 0, -1);
+diff --git a/drivers/media/pci/ivtv/ivtv-yuv.c b/drivers/media/pci/ivtv/ivtv-yuv.c
+index 582146f8d70d..2d9274537725 100644
+--- a/drivers/media/pci/ivtv/ivtv-yuv.c
++++ b/drivers/media/pci/ivtv/ivtv-yuv.c
+@@ -114,6 +114,12 @@ static int ivtv_yuv_prep_user_dma(struct ivtv *itv, struct ivtv_user_dma *dma,
+ 	}
+ 	dma->SG_length = dma_map_sg(&itv->pdev->dev, dma->SGlist,
+ 				    dma->page_count, DMA_TO_DEVICE);
++	if (!dma->SG_length) {
++		IVTV_DEBUG_WARN("%s: DMA map error, SG_length is 0\n", __func__);
++		unpin_user_pages(dma->map, dma->page_count);
++		dma->page_count = 0;
++		return -EINVAL;
++	}
+ 
+ 	/* Fill SG Array with new values */
+ 	ivtv_udma_fill_sg_array(dma, y_buffer_offset, uv_buffer_offset, y_size);
+diff --git a/drivers/media/pci/ivtv/ivtvfb.c b/drivers/media/pci/ivtv/ivtvfb.c
+index 410477e3e621..d1ab7fee0d05 100644
+--- a/drivers/media/pci/ivtv/ivtvfb.c
++++ b/drivers/media/pci/ivtv/ivtvfb.c
+@@ -281,10 +281,10 @@ static int ivtvfb_prep_dec_dma_to_device(struct ivtv *itv,
+ 	/* Map User DMA */
+ 	if (ivtv_udma_setup(itv, ivtv_dest_addr, userbuf, size_in_bytes) <= 0) {
+ 		mutex_unlock(&itv->udma.lock);
+-		IVTVFB_WARN("ivtvfb_prep_dec_dma_to_device, Error with pin_user_pages: %d bytes, %d pages returned\n",
+-			       size_in_bytes, itv->udma.page_count);
++		IVTVFB_WARN("%s, Error in ivtv_udma_setup: %d bytes, %d pages returned\n",
++			       __func__, size_in_bytes, itv->udma.page_count);
+ 
+-		/* pin_user_pages must have failed completely */
++		/* pin_user_pages or DMA must have failed completely */
+ 		return -EIO;
+ 	}
+ 
+-- 
+2.44.0
 
-> ---
->
-> This is breaking all UML alltests builds, so we'd like to fix it sooner
-> rather than later. SeongJae, would you rather take this yourself, or can
-> we push it alongside any other KUnit fixes?
->
-> Johannes: Does this conflict with the CONFIG_NETDEVICES / CONFIG_WLAN
-> fixes to all_tests.config? I'd assume not, but I'm happy to take them
-> via KUnit if you'd prefer anyway.
->
-> Thanks,
-> -- David
->
-> ---
->  tools/testing/kunit/configs/all_tests.config | 1 +
->  1 file changed, 1 insertion(+)
->
-> diff --git a/tools/testing/kunit/configs/all_tests.config b/tools/testing=
-/kunit/configs/all_tests.config
-> index aa5ec149f96c..f388742cf266 100644
-> --- a/tools/testing/kunit/configs/all_tests.config
-> +++ b/tools/testing/kunit/configs/all_tests.config
-> @@ -38,6 +38,7 @@ CONFIG_DAMON_VADDR=3Dy
->  CONFIG_DAMON_PADDR=3Dy
->  CONFIG_DEBUG_FS=3Dy
->  CONFIG_DAMON_DBGFS=3Dy
-> +CONFIG_DAMON_DBGFS_DEPRECATED=3Dy
->
->  CONFIG_REGMAP_BUILD=3Dy
->
-> --
-> 2.44.0.396.g6e790dbe36-goog
->
 
