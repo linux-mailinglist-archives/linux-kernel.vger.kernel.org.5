@@ -1,216 +1,203 @@
-Return-Path: <linux-kernel+bounces-121617-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-121618-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id AFCF588EB11
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 17:22:53 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D5A2A88EAEB
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 17:17:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6A48FB25B54
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 16:16:59 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7FA5F29ED50
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 16:17:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 75C3412D77B;
-	Wed, 27 Mar 2024 16:16:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E260D130A51;
+	Wed, 27 Mar 2024 16:16:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="IO2SVDZj"
-Received: from mail-pj1-f49.google.com (mail-pj1-f49.google.com [209.85.216.49])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=proton.me header.i=@proton.me header.b="CmtSSXme"
+Received: from mail-4322.protonmail.ch (mail-4322.protonmail.ch [185.70.43.22])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F030E42A91;
-	Wed, 27 Mar 2024 16:16:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BC7D712F595
+	for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 16:16:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.70.43.22
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711556189; cv=none; b=Enf+hE9SyppGxdoU5Sn7sgcIPyDrBnDoiEE4dO4RUVrVw5ZTLybAtVQDmOhW3mVwBa1hj6rZfwzcw87RzoQgeklrmTurnStQSJ242PYPcxsahz21ma23vbtKWjC1VzdRbbXgQurbQGt1NuPN4S94K9n72oK0Eq2GCPjHFVKULCE=
+	t=1711556213; cv=none; b=WCoJuNlY3zOjztjWITxXBIzWRK2ywoqK3YEgnI17W2Z++Lkm2T1ooMfpI4kdOno6ORwVhdCOAoNYcqq25fxHSmfKLQVfjEdnIwgGEAbjAQp8/bvbQGKhd2kvtk4PA+BSC6xtLlyyZDBUIX6cbY3JCoHSwzK+ROhMrVBnpD3X6Cc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711556189; c=relaxed/simple;
-	bh=kfVdwdCf7B9X7O5+oO8Vigvx4JOZ1iSnjiYAU8Orp7A=;
-	h=Content-Type:Mime-Version:Subject:From:In-Reply-To:Date:Cc:
-	 Message-Id:References:To; b=pwqYQHSTqQ6DO2bcHJWmOJqr5jJ9+wNTAqAs5pdIO6ubGs/23T2pbtY2laZzbs9ML5YOvxjgtSoGDwgebgZRBWKjuLQbAssAaUzqMGY6k8n17wc9ND9Tso9HOJmA5tm1tHdCL1R+vqUMo9TjagU9NFEzybgKLJy5pbzY6g39+yE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=IO2SVDZj; arc=none smtp.client-ip=209.85.216.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f49.google.com with SMTP id 98e67ed59e1d1-29e0229d6b5so21801a91.3;
-        Wed, 27 Mar 2024 09:16:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711556186; x=1712160986; darn=vger.kernel.org;
-        h=to:references:message-id:content-transfer-encoding:cc:date
-         :in-reply-to:from:subject:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=OSCcPL9ReYBC3ieN7sRSJkCjHUDGGaoDNVjenjFddiw=;
-        b=IO2SVDZjHjZPW2836N0zwP40dW7kQoErJc3ls12qCB3GBLL/+cruxnGBWIqWI55W+/
-         rTAeZE/xIG/NdLRCfK923/dVb4ywqgrX36Nf41UNDY4mYqaWpJXe9kQkbcOGN2XMYmqo
-         33n80Vko3quEny4XazHjxUtQwDeFUJI9S3MyQNR1EAB28D/cFgAW9MeqU8kXxKHa5uYF
-         vefr5H27YGxpRGTYk4Ps13181tXpfpahUTy7rnWVlwqZqcgw7U9nEm2BYllgo3SIvzN0
-         gBg3/Z8Ux/0GYKeEaX/9v9nBs0+OIqbt6JPoOyTJUXlXMBkouO7sSnpj6QAS4J2PiquO
-         Xi6A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711556186; x=1712160986;
-        h=to:references:message-id:content-transfer-encoding:cc:date
-         :in-reply-to:from:subject:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=OSCcPL9ReYBC3ieN7sRSJkCjHUDGGaoDNVjenjFddiw=;
-        b=t6TWzwP3nMhkl9lWbplncD69DNy6Z9TIfmtUWuM/Knj0TsaXMYJeu37kXUc5UAZZD+
-         Q0CfvL9ASMuVsg5yxkCJeXEbBYEBAesjQHvVWV1XMpBtrljOX4pnHo1lrhUKhOCwOrI4
-         F+ZP6PS3ZVlRE3bGHEAzsrOn8+jh8t7yogmNyTZluE/SGE+uvbhLek8CDG+Guikrf7yn
-         /YGkLCrtfEela3Qw9u8wcDaQ2pGmX2VXLgv9eXpMxBOSk9fbhewKPmAf0blVbWQYh+nJ
-         HeYzW6PJEDEs/xg7nXICdfa82I4+mT/KzNAfn0R+8TWQ4yVIUR7ZAo8QAjUXHLn2lpVS
-         YMRg==
-X-Forwarded-Encrypted: i=1; AJvYcCWtrL4rJRo2yOOVLMBANZSBx+7aw8MQceJGU4uUHHGlaogTXXasEn9nQNEjgrQ1aXH8T4t9a99X/yad+USad44ml+2LTMnphYL/8SaRdY+/MyXhA+ie1xmPBHros/x3YdUR0DebC+OpNYuHpUn0m9gkdMDNMYNg8zFbi5GZ4SpvBkVWNCPRuTqr1sOcmUZmmLsXPkhNxQlln0XDJyww7762UuWyVFIZSA==
-X-Gm-Message-State: AOJu0YyifwLiRD4W03sQ3W17YXXXjUlkxxDQQpGK6mC+TMFLvYOKOVqp
-	1UuHQER9BFEkBZ7HK22Q9ZJ/D5K4w9hsBLOt0//dv74xniapJuHV
-X-Google-Smtp-Source: AGHT+IFb5IqfgxBvySBVcYNKgghJ48Dnwn4nEVJk9rDb4Sdzmwo0ZtCk8BBaNaurYYvMG+RdbrIyPw==
-X-Received: by 2002:a17:90b:4a44:b0:29c:7845:cba with SMTP id lb4-20020a17090b4a4400b0029c78450cbamr100758pjb.36.1711556186202;
-        Wed, 27 Mar 2024 09:16:26 -0700 (PDT)
-Received: from smtpclient.apple ([2601:647:4d7e:dba0:5840:a196:2bf3:3600])
-        by smtp.gmail.com with ESMTPSA id sl13-20020a17090b2e0d00b0029951d04dc4sm1903536pjb.54.2024.03.27.09.16.21
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 27 Mar 2024 09:16:25 -0700 (PDT)
-Content-Type: text/plain;
-	charset=utf-8
+	s=arc-20240116; t=1711556213; c=relaxed/simple;
+	bh=sT+XSyK8g3hoLB6WyZQzp0atORjqibEBbeZ/n0I3qqE=;
+	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=FEj0tZbqIqVw0WZ0vB9H0RMIktLwkan9uexEb/7K67zPUZdgk0nd8IkpbA9wbod9BF0c313GGBVflm5DUWKOS/HrKsV5YjgyUiOWSHMw8xYzQqul+qanK1TsRgaOVHj8enJy1J5xazHJny5C7p5IgBCxu/bi0s3ofF0NhZWWA/I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=proton.me; spf=pass smtp.mailfrom=proton.me; dkim=pass (2048-bit key) header.d=proton.me header.i=@proton.me header.b=CmtSSXme; arc=none smtp.client-ip=185.70.43.22
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=proton.me
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=proton.me
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=proton.me;
+	s=protonmail; t=1711556208; x=1711815408;
+	bh=G/e/npas1/bGg+7eT8JQjC5kkF+PlgUlu2xBXL7JzFM=;
+	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
+	 Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
+	 Message-ID:BIMI-Selector;
+	b=CmtSSXmeJqyCDvrxz/ujRxKklqo3n5yinfdAzeFaCpXNwM+/LouWzkuH1MMkkl4vR
+	 e1WCWozqUYgIsd2blozs0Nhfo/YmBNfhjyrulekfZxQ8lGnn5Mj20ShGWX++AujijA
+	 yuZ905Ge6s2KeqTdeH+E5vxk/afjyrI/faqnSSTey18eXQOq2sGqeroRpE0evDK+CI
+	 PlOAfYgNr/mY4C0sdz4OAIj6opFxya+hNVuIvT6wjt5Pm/LTvPrCfkZx1U+IQ2CruN
+	 er0mphtVZ8dCEGhkdhbvMKUGGtQXO+k6wUBuy5UVqUwshiZcdj/jOdUfyyjLnZ4rw+
+	 IiwujdrO/mohw==
+Date: Wed, 27 Mar 2024 16:16:33 +0000
+To: Wedson Almeida Filho <wedsonaf@gmail.com>, rust-for-linux@vger.kernel.org
+From: Benno Lossin <benno.lossin@proton.me>
+Cc: Miguel Ojeda <ojeda@kernel.org>, Alex Gaynor <alex.gaynor@gmail.com>, Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>, =?utf-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, Andreas Hindborg <a.hindborg@samsung.com>, Alice Ryhl <aliceryhl@google.com>, linux-kernel@vger.kernel.org, Wedson Almeida Filho <walmeida@microsoft.com>
+Subject: Re: [PATCH 1/2] rust: introduce `InPlaceModule`
+Message-ID: <b5ef6fdb-781f-4caf-98ac-1f2ceca9f6d0@proton.me>
+In-Reply-To: <20240327032337.188938-2-wedsonaf@gmail.com>
+References: <20240327032337.188938-1-wedsonaf@gmail.com> <20240327032337.188938-2-wedsonaf@gmail.com>
+Feedback-ID: 71780778:user:proton
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3774.500.171.1.1\))
-Subject: Re: [WIP 0/3] Memory model and atomic API in Rust
-From: comex <comexk@gmail.com>
-In-Reply-To: <CAHk-=wjwxKD9CxYsf5x+K5fJbJa_JYZh1eKB4PT5cZJq1+foGw@mail.gmail.com>
-Date: Wed, 27 Mar 2024 09:16:09 -0700
-Cc: "Dr. David Alan Gilbert" <dave@treblig.org>,
- Kent Overstreet <kent.overstreet@linux.dev>,
- Philipp Stanner <pstanner@redhat.com>,
- Boqun Feng <boqun.feng@gmail.com>,
- rust-for-linux <rust-for-linux@vger.kernel.org>,
- linux-kernel@vger.kernel.org,
- linux-arch@vger.kernel.org,
- llvm@lists.linux.dev,
- Miguel Ojeda <ojeda@kernel.org>,
- Alex Gaynor <alex.gaynor@gmail.com>,
- Wedson Almeida Filho <wedsonaf@gmail.com>,
- Gary Guo <gary@garyguo.net>,
- =?utf-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>,
- Benno Lossin <benno.lossin@proton.me>,
- Andreas Hindborg <a.hindborg@samsung.com>,
- Alice Ryhl <aliceryhl@google.com>,
- Alan Stern <stern@rowland.harvard.edu>,
- Andrea Parri <parri.andrea@gmail.com>,
- Will Deacon <will@kernel.org>,
- Peter Zijlstra <peterz@infradead.org>,
- Nicholas Piggin <npiggin@gmail.com>,
- David Howells <dhowells@redhat.com>,
- Jade Alglave <j.alglave@ucl.ac.uk>,
- Luc Maranget <luc.maranget@inria.fr>,
- "Paul E. McKenney" <paulmck@kernel.org>,
- Akira Yokosawa <akiyks@gmail.com>,
- Daniel Lustig <dlustig@nvidia.com>,
- Joel Fernandes <joel@joelfernandes.org>,
- Nathan Chancellor <nathan@kernel.org>,
- Nick Desaulniers <ndesaulniers@google.com>,
- kent.overstreet@gmail.com,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Marco Elver <elver@google.com>,
- Mark Rutland <mark.rutland@arm.com>,
- Thomas Gleixner <tglx@linutronix.de>,
- Ingo Molnar <mingo@redhat.com>,
- Borislav Petkov <bp@alien8.de>,
- Dave Hansen <dave.hansen@linux.intel.com>,
- x86@kernel.org,
- "H. Peter Anvin" <hpa@zytor.com>,
- Catalin Marinas <catalin.marinas@arm.com>,
- linux-arm-kernel@lists.infradead.org,
- linux-fsdevel@vger.kernel.org
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
-Message-Id: <160DB953-1588-418E-A490-381009CD8DE0@gmail.com>
-References: <20240322233838.868874-1-boqun.feng@gmail.com>
- <s2jeqq22n5ef5jknaps37mfdjvuqrns4w7i22qp2r7r4bzjqs2@my3eyxoa3pl3>
- <CAHk-=whY5A=S=bLwCFL=043DoR0TTgSDUmfPDx2rXhkk3KANPQ@mail.gmail.com>
- <u2suttqa4c423q4ojehbucaxsm6wguqtgouj7vudp55jmuivq3@okzfgryarwnv>
- <CAHk-=whkQk=zq5XiMcaU3xj4v69+jyoP-y6Sywhq-TvxSSvfEA@mail.gmail.com>
- <c51227c9a4103ad1de43fc3cda5396b1196c31d7.camel@redhat.com>
- <CAHk-=wjP1i014DGPKTsAC6TpByC3xeNHDjVA4E4gsnzUgJBYBQ@mail.gmail.com>
- <bu3seu56hfozsvgpdqjarbdkqo3lsjfc4lhluk5oj456xmrjc7@lfbbjxuf4rpv>
- <CAHk-=wgLGWBXvNODAkzkVHEj7zrrnTq_hzMft62nKNkaL89ZGQ@mail.gmail.com>
- <ZgIRXL5YM2AwBD0Y@gallifrey>
- <CAHk-=wjwxKD9CxYsf5x+K5fJbJa_JYZh1eKB4PT5cZJq1+foGw@mail.gmail.com>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-X-Mailer: Apple Mail (2.3774.500.171.1.1)
 
-On Mar 25, 2024, at 8:49=E2=80=AFPM, Linus Torvalds =
-<torvalds@linux-foundation.org> wrote:
-
-> But you should _start_ the design of your language memory model around
-> the unsafe "raw atomic access operations" model.
+On 27.03.24 04:23, Wedson Almeida Filho wrote:
+> From: Wedson Almeida Filho <walmeida@microsoft.com>
 >=20
-> Then you can use those strictly more powerful operations, and you
-> create an object model *around* it.
+> This allows modules to be initialised in-place in pinned memory, which
+> enables the usage of pinned types (e.g., mutexes, spinlocks, driver
+> registrations, etc.) in modules without any extra allocations.
+>=20
+> Drivers that don't need this may continue to implement `Module` without
+> any changes.
+>=20
+> Signed-off-by: Wedson Almeida Filho <walmeida@microsoft.com>
 
-To some extent Rust does this already, unlike C++.
+I have some suggestions below, with those fixed,
 
-C++ allows atomics to be implemented using locks.  Partly for this =
-reason,
-`std::atomic<T>` is documented as not necessarily having the same
-representation as `T` [1].  C++ also has strict aliasing, so even if =
-those types
-do have the same representation, you still can't cast `T *` to
-`std::atomic<T> *`.
+Reviewed-by: Benno Lossin <benno.lossin@proton.me>
 
-But Rust atomics are lower-level.  First, they are guaranteed lock-free =
-[2].
-Second, they are documented as having "the same in-memory representation =
-as the
-underlying" type [3].  (They also usually have the same alignment, =
-except on
-x86 where u64 is only 4-byte aligned but AtomicU64 of course needs to be =
-8-byte
-aligned.)  Meanwhile, Rust intentionally lacks strict aliasing.
+> ---
+>  rust/kernel/lib.rs    | 25 ++++++++++++++++++++++++-
+>  rust/macros/module.rs | 18 ++++++------------
+>  2 files changed, 30 insertions(+), 13 deletions(-)
+>=20
+> diff --git a/rust/kernel/lib.rs b/rust/kernel/lib.rs
+> index 5c641233e26d..64aee4fbc53b 100644
+> --- a/rust/kernel/lib.rs
+> +++ b/rust/kernel/lib.rs
+> @@ -62,7 +62,7 @@
+>  /// The top level entrypoint to implementing a kernel module.
+>  ///
+>  /// For any teardown or cleanup operations, your type may implement [`Dr=
+op`].
+> -pub trait Module: Sized + Sync {
+> +pub trait Module: Sized + Sync + Send {
+>      /// Called at module initialization time.
+>      ///
+>      /// Use this method to perform whatever setup or registration your m=
+odule
+> @@ -72,6 +72,29 @@ pub trait Module: Sized + Sync {
+>      fn init(module: &'static ThisModule) -> error::Result<Self>;
+>  }
+>=20
+> +/// A module that is pinned and initialised in-place.
+> +pub trait InPlaceModule: Sync + Send {
+> +    /// Creates an initialiser for the module.
+> +    ///
+> +    /// It is called when the module is loaded.
+> +    fn init(module: &'static ThisModule) -> impl init::PinInit<Self, err=
+or::Error>;
+> +}
+> +
+> +impl<T: Module> InPlaceModule for T {
+> +    fn init(module: &'static ThisModule) -> impl init::PinInit<Self, err=
+or::Error> {
+> +        let initer =3D move |slot: *mut Self| {
+> +            let m =3D <Self as Module>::init(module)?;
+> +
+> +            // SAFETY: `slot` is valid for write per the contract with `=
+pin_init_from_closure`.
+> +            unsafe { slot.write(m) };
+> +            Ok(())
+> +        };
+> +
+> +        // SAFETY: On success, `initer` always fully initialises an inst=
+ance of `Self`.
+> +        unsafe { init::pin_init_from_closure(initer) }
+> +    }
+> +}
+> +
+>  /// Equivalent to `THIS_MODULE` in the C API.
+>  ///
+>  /// C header: [`include/linux/export.h`](srctree/include/linux/export.h)
+> diff --git a/rust/macros/module.rs b/rust/macros/module.rs
+> index 27979e582e4b..0b2bb4ec2fba 100644
+> --- a/rust/macros/module.rs
+> +++ b/rust/macros/module.rs
+> @@ -208,7 +208,7 @@ pub(crate) fn module(ts: TokenStream) -> TokenStream =
+{
+>              #[used]
+>              static __IS_RUST_MODULE: () =3D ();
+>=20
+> -            static mut __MOD: Option<{type_}> =3D None;
+> +            static mut __MOD: core::mem::MaybeUninit<{type_}> =3D core::=
+mem::MaybeUninit::uninit();
 
-Combined, this means it's perfectly legal in Rust to cast e.g. `&mut =
-u32` to
-`&AtomicU32` and perform atomic accesses on it.  Or the same with =
-u64/AtomicU64
-if you know the pointer is validly aligned.  This is by design; the =
-Atomic
-types' methods are considered the official way to perform atomic =
-operations on
-arbitrary memory, making it unnecessary to also stabilize 'lower-level'
-intrinsics.
+I would prefer `::core::mem::MaybeUninit`, since that prevents
+accidentally referring to a module named `core`.
 
-That said, there *are* currently some holes in Rust's atomics model, =
-based on
-the fact that it's mostly inherited from C++.  =46rom the documentation:
+>=20
+>              // SAFETY: `__this_module` is constructed by the kernel at l=
+oad time and will not be
+>              // freed until the module is unloaded.
+> @@ -275,23 +275,17 @@ pub(crate) fn module(ts: TokenStream) -> TokenStrea=
+m {
+>              }}
+>=20
+>              fn __init() -> core::ffi::c_int {{
+> -                match <{type_} as kernel::Module>::init(&THIS_MODULE) {{
+> -                    Ok(m) =3D> {{
+> -                        unsafe {{
+> -                            __MOD =3D Some(m);
+> -                        }}
+> -                        return 0;
+> -                    }}
+> -                    Err(e) =3D> {{
+> -                        return e.to_errno();
+> -                    }}
+> +                let initer =3D <{type_} as kernel::InPlaceModule>::init(=
+&THIS_MODULE);
 
-> Since C++ does not support mixing atomic and non-atomic accesses, or
-> non-synchronized different-sized accesses to the same data, Rust does =
-not
-> support those operations either. Note that both of those restrictions =
-only
-> apply if the accesses are non-synchronized.
-https://doc.rust-lang.org/std/sync/atomic/index.html
+Ditto with `::kernel::InPlaceModule`.
 
-There are some open issues around this:
+> +                match unsafe {{ initer.__pinned_init(__MOD.as_mut_ptr())=
+ }} {{
 
-- "How can we allow read-read races between atomic and non-atomic =
-accesses?"
-  https://github.com/rust-lang/unsafe-code-guidelines/issues/483
+This requires that the `PinInit` trait is in scope, I would use:
 
-  > [..] I do think we should allow such code. However, then we have to =
-change
-  > the way we document our atomics [..]
+     match unsafe {{ ::kernel::init::PinInit::__pinned_init(initer, __MOD.a=
+s_mut_ptr()) }} {{
 
-- "What about: mixed-size atomic accesses"
-  https://github.com/rust-lang/unsafe-code-guidelines/issues/345"
+--=20
+Cheers,
+Benno
 
-  > Apparently the x86 manual says you "should" not do this [..] It is =
-unclear
-  > what "should" means (or what anything else here really means, =
-operationally
-  > speaking...)
-
-[1] https://eel.is/c++draft/atomics#types.generic.general-3
-[2] https://doc.rust-lang.org/std/sync/atomic/index.html#portability
-[3] =
-https://doc.rust-lang.org/nightly/std/sync/atomic/struct.AtomicU64.html
+> +                    Ok(m) =3D> 0,
+> +                    Err(e) =3D> e.to_errno(),
+>                  }}
+>              }}
+>=20
+>              fn __exit() {{
+>                  unsafe {{
+>                      // Invokes `drop()` on `__MOD`, which should be used=
+ for cleanup.
+> -                    __MOD =3D None;
+> +                    __MOD.assume_init_drop();
+>                  }}
+>              }}
+>=20
+> --
+> 2.34.1
+>=20
 
 
