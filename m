@@ -1,69 +1,69 @@
-Return-Path: <linux-kernel+bounces-122100-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-122102-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 365B288F1E6
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 23:30:01 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id BB08788F1EB
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 23:31:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 67BAA1C31906
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 22:30:00 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4B340B218FB
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 22:31:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3DB4D15251E;
-	Wed, 27 Mar 2024 22:29:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D02F21F5E6;
+	Wed, 27 Mar 2024 22:31:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="uPEWNJrU"
-Received: from mail-ej1-f49.google.com (mail-ej1-f49.google.com [209.85.218.49])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Yh4Edb5a"
+Received: from mail-ej1-f50.google.com (mail-ej1-f50.google.com [209.85.218.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E27AEEAE5
-	for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 22:29:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 967A018EA5
+	for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 22:31:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711578595; cv=none; b=X9Bx5JpJ2oPez2oNrHyZEN7e/oRZ/QBdZawMfPqUsJoQoOItA6q7AzlH0Rg6OChrmf4eSDlw35HM1R0300Bu6BUT/P+WLOvJ3oNuiJHY08I9uNh1RBlFvKRktu6E2Dc7tqB7Vd8ZOEo2C5bIcvpj6FArCv1HhvHZ6/2C8mNt/tc=
+	t=1711578681; cv=none; b=St75/1jCgmAOtAWGBJ3qgjRIl6uypJcmIM+8Cog9UNh5BkMFCpHoo0rtZaLidblCNPKSQeQ1unpaJjcTwIZxE24K+D6F6DeOjHfydJC4z0e4NmPsk6tfd6wh87oHBEJAUlN1rr50TWZzPPn+zO/AKpGjHR+TjIE3k+tae165uPQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711578595; c=relaxed/simple;
-	bh=uQZWf1z2g5EkDsuZ+JXF0zg9NReUumhN41xOtlzzRiQ=;
+	s=arc-20240116; t=1711578681; c=relaxed/simple;
+	bh=Ytg/i9kiK5BHBqjiLevui63Wj6zRxAXDMrT3ObPMqqA=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=P2H1LvPKpqVW1J0z1gwQrtwiBxfrFCdOr6HtxSqpp95avXyoHGy5Zw8iYVrC6EW4tGCTAyuly8Oa5M6aBBXjSUZa3Q10bBlDE7gO4Vq1+AVGWnXHq1Y+dBrTLnDhE6d37cUjLI8dkrh9X2FeE+DFnsNpGNJtKVO2O2qPWu5N4V0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=uPEWNJrU; arc=none smtp.client-ip=209.85.218.49
+	 To:Cc:Content-Type; b=g4Wdtc0dZv8AV51oKIB8/sazKt1t3J4Q9FKYxKVE1uPtYjS5P0S5TOCPqb7DZsJX5idIcRfLBTtij0CwebicYusyGUgSYsQKuZNnkic5y1kwY7Fc1tNBUS6B07iTYm71otItDTGMSD8Jd3odu4pC1IjbvCoE5c/7NQkBauNgT1U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=Yh4Edb5a; arc=none smtp.client-ip=209.85.218.50
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ej1-f49.google.com with SMTP id a640c23a62f3a-a4715d4c2cbso38754166b.1
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 15:29:53 -0700 (PDT)
+Received: by mail-ej1-f50.google.com with SMTP id a640c23a62f3a-a2f22bfb4e6so42601466b.0
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 15:31:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1711578592; x=1712183392; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1711578678; x=1712183478; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=a7hfzMDD6Cf+PT6Udlfkf6Vck2EoOCaENymKmzHzlvE=;
-        b=uPEWNJrUxtgOOBSOTfSbmkHUy347dgXIRGaH0s5lH3fPyqihKMLSqH9BbDRqIbxkdJ
-         0feRw9Xi9P+b2wxofsaPmiDPFcLSanSK962lBhnCqFskYZfWicRbG7TQioGSc0zl/snx
-         OoCfUgXMQBx/hRmZDd4PV4bSdr2fohzcYoEEFyULQqGD98t5/eTNezQar3S6OAB4hahP
-         iw9eeIn7m7PzlPcY1O9jxQ7fOjExoZwWVMWhLwTyIAJxSdZDoqw23G+WEicvNH2xDOMe
-         ZeI4Xd2rAkatbIo37W2bkRvRdvH1bH9aWXgbL0FAAENV51Xm7cTqPWp30WZ7D5v0axF2
-         kNiA==
+        bh=fhI2O+U4pkuvafY9z8tvpoCUUisn8MZxFuwrvadh8N8=;
+        b=Yh4Edb5aqP+xZiGrGmXG9DbAjisgOn4Pnfw+vmJtZqeJqg7MwhAcU3HWudt8ErBe4P
+         41GOT8BLAMkM2MKM3fKnEeQtzmrZUgXDwkN/63Q8sR4PRHys83JJNZ8QxGTbj4/XiS1N
+         VzaYgMS0ndbiMeS6f2znIbeAGRX3tQSeYUYP7mjc/1JsInO5H1I4MyHEExI7E7LiKIIY
+         zzH0xk4w//tbeXj8tyMYF7r647nShaXhUCWzLs5RBqCqdrEikCA1weFWFl/+YseaX5f9
+         9UwwBD4I9FP8cYJWuF3989Z3LpW7zYcgG10LINdAusuJgoghomu1IplP1kzNfMLXMsrb
+         ZCYA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711578592; x=1712183392;
+        d=1e100.net; s=20230601; t=1711578678; x=1712183478;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=a7hfzMDD6Cf+PT6Udlfkf6Vck2EoOCaENymKmzHzlvE=;
-        b=V4BNUGBlGeuI9Mq64O1etBT6L0acoOd5vGvX562Giy073p13e+JfLZNnN8nd5/68a2
-         XBq/0IkLFqoeVhhRI1ud8CRfMSrfRAIpIH5ZXE0ybKO64/UBpt8PaEDwNYcCOVuBh0DL
-         WZ+s39KMYh6Hmc49XApNPn4qPa6KWFr8DQ8ebtakgnvUxuhLv/rabRvrIq3VUat0peHK
-         UgydO2/5g3Twc8XnFcYj2KeHEgHpC9zvzAr2p2iNxCSU07UPg6QZP8UHdjZhR7HZpC0M
-         NWaGjQhpyqD/gRj966z7b+/eew2oaE7SskaQ/d0z21OGWufeGOSSmNh0Ej4iyWFfM2xU
-         MSbQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVgpWdR53uRfrDVPTpPciI/SpBjGf4vLPE+imtx/P0J7WONx4MuxzFQqhOuNbctScCPg4ZKFEVYDvUZgQiu2ZMO3902TeUnbgiEVQdP
-X-Gm-Message-State: AOJu0YzoFd92ge7gws/0nQt1qMxGRqDJ2pr/zG0u6aiEVXjbFW/idPOa
-	4iyafEBo1k7p5WKpwivNo2t9TYP2ozoCJ1oanSf1hd7wdpmkdrA5af9DZhnnlTjbT4vkahWi5BC
-	LbZlaJgKvVKC4xD687hRz/NCG1rEiNn7I+rfO
-X-Google-Smtp-Source: AGHT+IFFxuKwEuMQUbTJjf1TClC0l4CS1aDNxL2HTZKYktZWM3POp3FVSMhvZh8n/lYqFlEpJGoXwRu/IFonbL+rcrE=
-X-Received: by 2002:a17:906:150a:b0:a47:3469:d75a with SMTP id
- b10-20020a170906150a00b00a473469d75amr498589ejd.67.1711578591788; Wed, 27 Mar
- 2024 15:29:51 -0700 (PDT)
+        bh=fhI2O+U4pkuvafY9z8tvpoCUUisn8MZxFuwrvadh8N8=;
+        b=CFPxFNBYMJclLc/dQO66pn7XAp9RUlt3YBK+zXVOPfLqUQFkSf4aByP8JB4d7jlU9a
+         WxOl2h2DWIho2fwj1f8QDtrPh5P456UwrPXv0VX+CW5gZGfjZ5EFIincJBHla9DNAvT9
+         DsXtTnm8+dTE4Btw6Lf00fgjCYh+KngytOp29FlLVrNAF1W1CtrsAZpIu/gwBkG2xvm5
+         86bRysk8pIaRo4NlRk/H5vBHrXvfrddvpi9/SDkpGfDELxDNtWww4nGoDfU+ekXqFkMR
+         7uNvP5pY/FOgvx+fG5RZTyH/At+UNqwrEb9NEKVZe2BjxsPGEew27e9e3WSJ4D4VgKjF
+         x+8A==
+X-Forwarded-Encrypted: i=1; AJvYcCUNj4hGwqOWoNlvsofZCwVHUC7GlMMnDwCBaGPp2zFZRUHKtFfeFOchI6bskLLNxN/PieaM+QwFVx9lirqfak8g96wEZQUzg300onrJ
+X-Gm-Message-State: AOJu0Yz/+0IhpHdpznKTaDH68TuKXywzclqS3Pt9dnEda7BFsF96P4L2
+	fUrWNsN+12SaCQTUhIu0Bh/OW1JBSK0nfogQPhun/zVF5oGEL6DN8Mk8j9j78Xx6IHyWpZikg+o
+	Y9NlxkbtogQOMV1yNo8ZEAP1zfPWJdpkpSWas
+X-Google-Smtp-Source: AGHT+IHYdtFZLLM6MLjyjI3PjSwj1qBukHQZ732bf6USNfcPr28xseB+kxpPdK6MA1RL+fL1mZ5N0HQYZ0otnJPmLLM=
+X-Received: by 2002:a17:906:39c1:b0:a4c:de71:54f7 with SMTP id
+ i1-20020a17090639c100b00a4cde7154f7mr502577eje.27.1711578677866; Wed, 27 Mar
+ 2024 15:31:17 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -71,56 +71,59 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 References: <20240325235018.2028408-1-yosryahmed@google.com>
- <20240325235018.2028408-3-yosryahmed@google.com> <5e394253-4f01-4172-998e-bbf3d82de6b9@linux.dev>
-In-Reply-To: <5e394253-4f01-4172-998e-bbf3d82de6b9@linux.dev>
+ <20240325235018.2028408-4-yosryahmed@google.com> <88957a87-fe4c-448c-a22a-9052d65ab643@linux.dev>
+In-Reply-To: <88957a87-fe4c-448c-a22a-9052d65ab643@linux.dev>
 From: Yosry Ahmed <yosryahmed@google.com>
-Date: Wed, 27 Mar 2024 15:29:13 -0700
-Message-ID: <CAJD7tkaty2vE5Wz-dHRnMnnwjoSwBCaXgtxHzTqgUSJEpkSoRg@mail.gmail.com>
-Subject: Re: [RFC PATCH 2/9] mm: zswap: refactor storing to the tree out of zswap_store()
+Date: Wed, 27 Mar 2024 15:30:41 -0700
+Message-ID: <CAJD7tkbW3+4MLkkgNK=reVCZb0JY=6o7+LC_2W-gQfYdOx1PWw@mail.gmail.com>
+Subject: Re: [RFC PATCH 3/9] mm: zswap: refactor limit checking from zswap_store()
 To: Chengming Zhou <chengming.zhou@linux.dev>
 Cc: Andrew Morton <akpm@linux-foundation.org>, Johannes Weiner <hannes@cmpxchg.org>, 
 	Nhat Pham <nphamcs@gmail.com>, linux-mm@kvack.org, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Mar 26, 2024 at 7:25=E2=80=AFPM Chengming Zhou <chengming.zhou@linu=
+On Tue, Mar 26, 2024 at 7:42=E2=80=AFPM Chengming Zhou <chengming.zhou@linu=
 x.dev> wrote:
 >
 > On 2024/3/26 07:50, Yosry Ahmed wrote:
-> > Refactor the code that attempts storing to the xarray, handling erros,
-> > and freeing stale entries into a helper. This will be reused in a
-> > following patch to free other types of tree elements as well.
+> > Refactor limit and acceptance threshold checking outside of
+> > zswap_store(). This code will be moved around in a following patch, so
+> > it would be cleaner to move a function call around.
 > >
 > > Signed-off-by: Yosry Ahmed <yosryahmed@google.com>
 > > ---
-> >  mm/zswap.c | 42 ++++++++++++++++++++++++++----------------
-> >  1 file changed, 26 insertions(+), 16 deletions(-)
+> >  mm/zswap.c | 32 ++++++++++++++++----------------
+> >  1 file changed, 16 insertions(+), 16 deletions(-)
 > >
 > > diff --git a/mm/zswap.c b/mm/zswap.c
-> > index 1cf3ab4b22e64..ff1975afb7e3d 100644
+> > index ff1975afb7e3d..6b890c8590ef7 100644
 > > --- a/mm/zswap.c
 > > +++ b/mm/zswap.c
-> > @@ -827,6 +827,30 @@ static void zswap_entry_free(struct zswap_entry *e=
-ntry)
-> >       atomic_dec(&zswap_stored_pages);
+> > @@ -1415,6 +1415,21 @@ static void zswap_fill_page(void *ptr, unsigned =
+long value)
+> >       memset_l(page, value, PAGE_SIZE / sizeof(unsigned long));
 > >  }
 > >
-> > +/*********************************
-> > +* zswap tree functions
-> > +**********************************/
-> > +static int zswap_tree_store(struct xarray *tree, pgoff_t offset, void =
-*new)
+> > +static bool zswap_check_limit(void)
 > > +{
-> > +     void *old;
-> > +     int err;
+> > +     unsigned long cur_pages =3D zswap_total_pages();
+> > +     unsigned long thr =3D zswap_accept_thr_pages();
+> > +     unsigned long max_pages =3D zswap_max_pages();
 > > +
-> > +     old =3D xa_store(tree, offset, new, GFP_KERNEL);
-> > +     err =3D xa_is_err(old);
+> > +     if (cur_pages >=3D max_pages) {
+> > +             zswap_pool_limit_hit++;
+> > +             zswap_pool_reached_full =3D true;
+> > +     } else if (zswap_pool_reached_full && cur_pages <=3D thr) {
+> > +             zswap_pool_reached_full =3D false;
+> > +     }
+> > +     return !zswap_pool_reached_full;
 >
-> Seems to use xa_err() to return errno, xa_is_err() just return a bool.
+> nit: Then we use "!zswap_check_limit()" below, double negation looks comp=
+lex,
+> should we change to zswap_should_reject() or something?
 
-Good catch. It happens to work out because returning 1 would have the
-same effect as returning the errno. Will fix it in the next version.
+Good point. Will rename it in the next version.
 
 Thanks!
 
