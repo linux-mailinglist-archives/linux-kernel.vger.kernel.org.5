@@ -1,39 +1,70 @@
-Return-Path: <linux-kernel+bounces-121614-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-121615-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id E8A6788EADB
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 17:14:53 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id E3DD888EADC
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 17:15:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 888A11F33A06
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 16:14:53 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 98E971F33A7F
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 16:15:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 514D112FF6E;
-	Wed, 27 Mar 2024 16:11:13 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 18D8912F5A6
-	for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 16:11:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AB03012F392;
+	Wed, 27 Mar 2024 16:13:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="iUVo+lJ+"
+Received: from mail-il1-f171.google.com (mail-il1-f171.google.com [209.85.166.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 13FD1130AC0
+	for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 16:13:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711555872; cv=none; b=dl3DdanwimOqZjQDW5HFXmzDikSt8DbAMwAyTTobG5oPnj7sm/GQG/hlo15oSH1+Ixa/n7dXO+9yQcE5WoAB7tbAjoBNwgAJ/uvBo3wUxKwESlMe4WzVUU5PPcM7ZBHLdfXRBHjwzkRomcHzx8uGT39K6yNNAeNnMB5D+uUdMao=
+	t=1711555982; cv=none; b=dXl3GkopkegCc+0ITXV0prOpvmgJKkLI6EvS509Kmnza2UF1on3UylEhyuSIif7MytVq65mPtN4HLzQkxHAoJ1AWdvcqG3K+CTqmYbo0gGUN/GUtmp0D5cabBqnQRsFKUz+VriVvio7soP3RTCcih6TPK7nPtRlpxnK9qC2RuZs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711555872; c=relaxed/simple;
-	bh=djUaWyW3WZ1b6+xLy3zzOrIuvZR5qHIzetV6eB/S9l0=;
+	s=arc-20240116; t=1711555982; c=relaxed/simple;
+	bh=asmUPmQus7LUzQcer9/ecRHC+gd8g+NWqrc+D732lew=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=KUouL4AAij3E+o25DZoIwjg3Nw2IJCzpXmazMurtjH3t/t6c9ngugnlIK65CLNjpNb6GITpOZF1DZF1vOQj9zzoDIthdLa0hYNo82Qs7lFVthjbcC8q9jU9Q7EOh0OBlDBVbGYT+uQI0AQ5ATB3dcuQLAy/NS8sZZKcHK2EJETM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3B27F2F4;
-	Wed, 27 Mar 2024 09:11:44 -0700 (PDT)
-Received: from [10.57.72.121] (unknown [10.57.72.121])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 99C323F64C;
-	Wed, 27 Mar 2024 09:11:08 -0700 (PDT)
-Message-ID: <05cca7de-2dc1-4dae-abd5-da757dd9eaea@arm.com>
-Date: Wed, 27 Mar 2024 16:11:07 +0000
+	 In-Reply-To:Content-Type; b=rwVcH19ell3DsUv9x0eg6OyhjsEA51Qe3KauFz3FJQlPfcOEuQMpXnTuT8MhTywgSaBsXuXfsmfcRwJPsUAGdeY1RoycYHhwhjItVuCbGd+voI/K3mwHts6nksj9VsOSMnflxZhko6wlbkWwo9gkt3hCZLCQxEQSgfa5VDFRaaM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linuxfoundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=iUVo+lJ+; arc=none smtp.client-ip=209.85.166.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linuxfoundation.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
+Received: by mail-il1-f171.google.com with SMTP id e9e14a558f8ab-368539ef3dfso1645475ab.0
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 09:13:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxfoundation.org; s=google; t=1711555980; x=1712160780; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=XaFX9mxiKZDeQbSxmpDbkMXN0EZslMStzgRp5fvgfwQ=;
+        b=iUVo+lJ+OGD2dVjA9AgVl7h0S4UG+4aAyIiSfE6iyqLC8bgCmxe9jad7ekE1zr7rfr
+         AhudpwKeG46H8U6rYwaHYfRQKu2E+kFZPx+BZZOQPADz7OpXZv8jQbcuyFJBX8KzT5Gg
+         9EFgib51pz67Js9WFJUrF6vy+djB5xkFpvPTc=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711555980; x=1712160780;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=XaFX9mxiKZDeQbSxmpDbkMXN0EZslMStzgRp5fvgfwQ=;
+        b=NhZ9P+sNQE5ALnNxwM+a5h7IXv60mFptVsOLPIkV+Lw2J4O/T313BSehYg/IoU/Z6h
+         ZIu834DtJJ7s9fiZ3WigpTBretmJ341forh27bsc/xI1T2Aef+SnQb/JIO1fDcsD5iKp
+         3OaXkvKfkPSLHj5zBPFF5M1IvsRtWBEVDbboitpbVZCVARmn6TM27CrDOTLzPSjCRsMt
+         Hzep2SGE+Mjf80d6CUVYy1M514Xm25JvtLIXpnAFC5oeFV8Etyh8vO61O2xAFGLLMO7a
+         H1/Kbuvtw06kdFtavy+ricdexpUVwD35zmnO0CZ3xVe4BwVa3ufXMx6R0TtdyQC9S2KI
+         5HpQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXU7IyL82c12YzCkC5Z56LAVJT6JnKBqzJQ2GtA2BJZEhWPv/wcmOZU93Wh5pkZ/Rh4DlIDN+gH8yjmtze9GZyU+O1PmNURphQH54Lb
+X-Gm-Message-State: AOJu0YwD0lCGtTGsBGc1FlfYFgraXtR1QPyczRflFiAuz4zdwYw3jCvs
+	OkrOA+x8bNHgd9CO52qd5tVNG/jzMAaA81XB3autI7H0gFztudp4kbFE9LXFYlI=
+X-Google-Smtp-Source: AGHT+IEiXA6OtOY9zanEWliIGMGWJVj77uZLVHDmL258djEO4ZMAaUheobq2lblEoYMdKO5ZRdKtRA==
+X-Received: by 2002:a92:d08f:0:b0:366:b0bd:3a1a with SMTP id h15-20020a92d08f000000b00366b0bd3a1amr436522ilh.1.1711555979887;
+        Wed, 27 Mar 2024 09:12:59 -0700 (PDT)
+Received: from [192.168.1.128] ([38.175.170.29])
+        by smtp.gmail.com with ESMTPSA id r12-20020a92d98c000000b0036851cd6c59sm343584iln.1.2024.03.27.09.12.59
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 27 Mar 2024 09:12:59 -0700 (PDT)
+Message-ID: <3c8bcd55-3acd-4659-ab4d-567053049a7a@linuxfoundation.org>
+Date: Wed, 27 Mar 2024 10:12:58 -0600
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -41,85 +72,70 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1 0/3] Speed up boot with faster linear map creation
-Content-Language: en-GB
-To: Ard Biesheuvel <ardb@kernel.org>
-Cc: Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>,
- Mark Rutland <mark.rutland@arm.com>, David Hildenbrand <david@redhat.com>,
- Donald Dutile <ddutile@redhat.com>, Eric Chanudet <echanude@redhat.com>,
- linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20240326101448.3453626-1-ryan.roberts@arm.com>
- <CAMj1kXEEi2ZXs+1qwR97zod5Z+TerPKcKZBN8LGZ5XTRV0_-rg@mail.gmail.com>
- <e1078fe2-0b0b-48c6-8d24-3b2e835201b1@arm.com>
- <CAMj1kXGtNYce5cOwUc+X5ceyxLGzD1xUEx7JRXqg7+4XQMAORw@mail.gmail.com>
- <7f69758c-b849-48ca-b279-569469183e91@arm.com>
- <CAMj1kXGVNWrm6=sWixL3PiXr1DQN_buvm1YxQW2+zALgd3b-hA@mail.gmail.com>
-From: Ryan Roberts <ryan.roberts@arm.com>
-In-Reply-To: <CAMj1kXGVNWrm6=sWixL3PiXr1DQN_buvm1YxQW2+zALgd3b-hA@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
+Subject: Re: [PATCH v2] Add Landlock test for io_uring IORING_OP_OPENAT
+ operation
+To: Dorine Tipo <dorine.a.tipo@gmail.com>, mic@digikod.net,
+ outreachy@lists.linux.dev
+Cc: "Fabio M . De Francesco" <fabio.maria.de.francesco@linux.intel.com>,
+ Shuah Khan <skhan@linuxfoundation.org>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ "linux-kernel-mentees@lists.linuxfoundation.org"
+ <linux-kernel-mentees@lists.linuxfoundation.org>
+References: <20240327132001.30576-1-dorine.a.tipo@gmail.com>
+Content-Language: en-US
+From: Shuah Khan <skhan@linuxfoundation.org>
+In-Reply-To: <20240327132001.30576-1-dorine.a.tipo@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 
-On 27/03/2024 15:57, Ard Biesheuvel wrote:
-> On Wed, 27 Mar 2024 at 17:01, Ryan Roberts <ryan.roberts@arm.com> wrote:
->>
->> On 27/03/2024 13:36, Ard Biesheuvel wrote:
->>> On Wed, 27 Mar 2024 at 12:43, Ryan Roberts <ryan.roberts@arm.com> wrote:
->>>>
->>>> On 27/03/2024 10:09, Ard Biesheuvel wrote:
-> ...
->>>
->>> I think a mix of the fixmap approach with a 1:1 map could work here:
->>> - use TTBR0 to create a temp 1:1 map of DRAM
->>> - map page tables lazily as they are allocated but using a coarse mapping
->>> - avoid all TLB maintenance except at the end when tearing down the 1:1 mapping.
->>
->> Yes that could work I think. So to make sure I've understood:
->>
->>  - create a 1:1 map for all of DRAM using block and cont mappings where possible
->>      - use memblock_phys_alloc_*() to allocate pgtable memory
->>      - access via fixmap (should be minimal due to block mappings)
+On 3/27/24 07:20, Dorine Tipo wrote:
+> This patch expands Landlock test coverage to include io_uring operations.
+> It introduces a test for IORING_OP_OPENAT with Landlock rules, verifying
+> allowed and disallowed access. This mitigates potential security
+> vulnerabilities by ensuring Landlock controls access through io_uring.
 > 
-> Yes but you'd only need the fixmap for pages that are not in the 1:1
-> map yet, so after an initial ramp up you wouldn't need it at all,
-> assuming locality of memblock allocations and the use of PMD mappings.
-> The only tricky thing here is ensuring that we are not mapping memory
-> that we shouldn't be touching.
-
-That sounds a bit nasty though. I think it would be simpler to just reuse the
-machinery we have, doing the 1:1 map using blocks and fixmap; It should be a
-factor of 512 better than what we have, so probably not a problem at that point.
-That way, we can rely on memblock to tell us what to map. If its still
-problematic I can add a layer to support 1G mappings too.
-
+> It also updates the Makefile to include -luring in the LDLIBS.
+> This ensures the test code has access to the necessary liburing
+> library for io_uring operations.
 > 
->>  - install it in TTBR0
->>  - create all the swapper mappings as normal (no block or cont mappings)
->>      - use memblock_phys_alloc_*() to alloc pgtable memory
->>      - phys address is also virtual address due to installed 1:1 map
->>  - Remove 1:1 map from TTBR0
->>  - memblock_phys_free() all the memory associated with 1:1 map
->>
+> Signed-off-by: Dorine Tipo <dorine.a.tipo@gmail.com>
+
+You are missing linux-kselftest and linux-kernel mailing lists
+when you send kselftest patches.
+
+cc linux-kernel-metees since you are a LFX mentee
+
+Adding missing lists
+   
+> ---
+> Changes since V1:
+> V2: - Consolidated two dependent patches in the V1 series into one patch
+>        as suggested by <fabio.maria.de.francesco@linux.intel.com>
+>      - Updated the subject line to be more descriptive.
 > 
-> Indeed.
-
-One question on the state of TTBR0 at entrance to paging_init(); what is it? I
-need to know so I can set it back after.
-
-Currently I'm thinking I can do:
-
-cpu_install_ttbr0(my_dram_idmap, TCR_T0SZ(vabits_actual));
-<create swapper>
-cpu_set_reserved_ttbr0();
-local_flush_tlb_all();
-
-But is it ok to leave the reserved pdg in ttbr0, or is it expecting something else?
-
+>   tools/testing/selftests/landlock/Makefile  |   4 +-
+>   tools/testing/selftests/landlock/fs_test.c | 132 +++++++++++++++++++++
+>   2 files changed, 134 insertions(+), 2 deletions(-)
 > 
->> That sounds doable on top of the first 2 patches in this series - I'll have a
->> crack. The only missing piece is depth-first 1:1 map traversal to free the
->> tables. I'm guessing something already exists that I can repurpose?
->>
+> diff --git a/tools/testing/selftests/landlock/Makefile b/tools/testing/selftests/landlock/Makefile
+> index 348e2dbdb4e0..ab47d1dadb62 100644
+> --- a/tools/testing/selftests/landlock/Makefile
+> +++ b/tools/testing/selftests/landlock/Makefile
+> @@ -13,11 +13,11 @@ TEST_GEN_PROGS := $(src_test:.c=)
+>   TEST_GEN_PROGS_EXTENDED := true
 > 
-> Not that I am aware of, but that doesn't sound too complicated.
+>   # Short targets:
+> -$(TEST_GEN_PROGS): LDLIBS += -lcap
+> +$(TEST_GEN_PROGS): LDLIBS += -lcap -luring
 
+Check if .gitignore needs updates since you are adding
+a new executable.
+
+The rest look good to me.
+
+Acked-by: Shuah Khan <skhan@linuxfoundation.org>
+
+thanks,
+-- Shuah
 
