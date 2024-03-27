@@ -1,189 +1,247 @@
-Return-Path: <linux-kernel+bounces-120323-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-120324-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0B28E88D5C0
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 06:09:49 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B166B88D5C2
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 06:12:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8FA5F1F2B830
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 05:09:48 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D51A51C239F9
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 05:12:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 26CAAE545;
-	Wed, 27 Mar 2024 05:09:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A8ABE572;
+	Wed, 27 Mar 2024 05:12:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="ZG4Uhi6S"
-Received: from mail-ed1-f43.google.com (mail-ed1-f43.google.com [209.85.208.43])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="bfODwxVA"
+Received: from mail-ej1-f41.google.com (mail-ej1-f41.google.com [209.85.218.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 718CD4A35
-	for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 05:09:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8BAC4175AA
+	for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 05:12:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711516177; cv=none; b=stZXT5EDIBnPyF2ridNsatY0HucxcyFsbUZNg3Xsy8cOKdPDL5YvzHxv86iAEFVYbMnbYBKjcEYtkbiMwFY9cln5xGTPgtSo4igG4PDnflEeIuclNHeg4pg3nKoSAirq41H+uQjdr7pEQIG8a1HNXF7OSAV6ihFmCGAwPgRHezk=
+	t=1711516344; cv=none; b=APwOy/EaoszVfiFlshWus0rke2sYc/fCRPh0KYNx+xXRA4a4t4l4CU7ZlUVuf+baBZnrqtO5L2jii/RDZJkElEu3sO2nKTRrhPG+f3BCm3cYnYLdPcPbriWUalwJXXc4lFl6Stm+TW1ybd0AGOgLaFFUSBt9yeGMBbk4v/capuM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711516177; c=relaxed/simple;
-	bh=a8zrl6bvC04ynajeSzgKNsFW+fWZavDxlDXft7Vsj58=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=SwfPV6KtsCnHOLzi92ep28wYeqI/dKdrLc2a/37fjq+8sl5mOl4cqCnOraCjtyU5RfP88GZ1bDwBxOxtRu4uRAF7doPsp6Py8wt3YaBGZb8KKO3tfhrXULE3UdlqWdVs0Io88AlHpnkNbgsNTk08yL0e/KCu60zXIKze0oeTjwE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=ZG4Uhi6S; arc=none smtp.client-ip=209.85.208.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=broadcom.com
-Received: by mail-ed1-f43.google.com with SMTP id 4fb4d7f45d1cf-56bb22ff7baso7397783a12.3
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 22:09:35 -0700 (PDT)
+	s=arc-20240116; t=1711516344; c=relaxed/simple;
+	bh=IJHWOnTINFpZXZ9g/2/P87Myf9jBqm+cXzXz94G2KlE=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=KStyLu1G0fL8Ts3kkurj7+OOJOmcDoHsp3PH7id/qBrZbpyJQrSA6fxfoOqtWnAJLuV3oMNznHLy1ybamwHmcK/ar1FGda4T47y/C5/z5wuo2ywH8rEtg6PFzZmlxK2pfzruDwBK08+UmUGr1E5O8OHSAWvcFx9lkQ7h1+XK8cY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=bfODwxVA; arc=none smtp.client-ip=209.85.218.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ej1-f41.google.com with SMTP id a640c23a62f3a-a45f257b81fso727149966b.0
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 22:12:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1711516174; x=1712120974; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=3rhqA5cAPZXtIVnoMP3PPOIwERhogs+E2KFRso9WB7E=;
-        b=ZG4Uhi6S2yc/24Ks++FjDaEl8Tj7/WtBf1Va5nPJ8QeM0ZQagaWk2NO4CTEGNcTIqn
-         8q9a+hN5tGyOKtlJp6oXzbUGYLOvUk8H54LA0WbzLNemxAb5UyemTdfRfdY/JV0mmWeL
-         3kV+fUWLpTYBJV3wKxa6NB5IPMhD/qyr1Q+aw=
+        d=linaro.org; s=google; t=1711516341; x=1712121141; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=Dwtti/peMihUTMyAzlCIGMLulrpmjqLQzU4QpF2mNKU=;
+        b=bfODwxVA6gLQY/wRvXPxQwa9E0IzaOHTWuRX5OqVDBWTXaH+rr+xnko3IJ+KJaHnda
+         L5AfneDqzz6q2NDenZ06x68xUpar3pZaYmE0oFnRWUgpH5SVU1y3YKKEJA4hLP7iA7dW
+         tQM1s28LUDxSgTczcglAPprIqneGY70vXg5b4g3Cl+6wC8FXsJj9nW8vfXH7ocULLadT
+         6kwJhhEDzW/VXkalS+YQv5R2UhBvIFmZRlUk7ovY+E53WddIs3ZLfyEjXRI2QVEffopK
+         HWmIuXJuHP7i3MDYUDtdkcoDkbqQF7f5jheag/BiKgfZsHdgd3PUe+c1nGwWUyuSXrfF
+         QFrg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711516174; x=1712120974;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=3rhqA5cAPZXtIVnoMP3PPOIwERhogs+E2KFRso9WB7E=;
-        b=bKDOCsel6/KxJhSFnKkQQbxqolpN2V6onk1CaFOsytW07iM3iLSBi4E4jFWxycZj0/
-         YCHv8hkbta2CpvMj+Akbl9j2hMy4iB82tjErRKHzghxicccr1nd/cCU6FG79bFGGwBEG
-         gkmdSzEa3m6zgZxcRpALV97AU3Z8KLCqetOEbHgXrBlmFpkf8VKYsbS/fUMHVw6yrKQO
-         XBZwXX3FKNTm41jjhjDieu4bvTrDX9XmYNy1ngukV4Z2HF1hkferop67+TLwIw+uA12b
-         x/rjCLObu2JkbN2umfjyC/Xv3iKOSCYOX9sMqtgbINehbTTdyhTFSoP81atRU9l8mG/R
-         qJSQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWeI0G5v6GNV/LPbdRgXhI+Y/u3oKf8yprEb66mjisyRNCR8DXl3Ij7E2pWm1Y2dhQhE5vnv5hyq+YRPTH+tZ+t15eOsJ+637mTwaen
-X-Gm-Message-State: AOJu0YxG6jVAssqDVMzWWVGjuQKnshkWMfSHhDX2UR8AkiFQJp9wCEQb
-	H553pN4aHX/CZ55HLcXU1ww4tiBeIDGitE1noAnqCwOfIRSCTW3saJ4GfbfazoVff/RVFUhcY25
-	ZuC6e3dLFt53/4xqjlAomLnCuggCdKYQlNS6i
-X-Google-Smtp-Source: AGHT+IED14RwyWQ+/jS7epCR6Tlsv+DZ/9qxdoSa8oGg/uC50eAAR/2N9ygLIorM1XA7qpexgwyR3dY3vNCXWN93qA8=
-X-Received: by 2002:a50:99d6:0:b0:56b:a565:f8dd with SMTP id
- n22-20020a5099d6000000b0056ba565f8ddmr2083305edb.24.1711516173457; Tue, 26
- Mar 2024 22:09:33 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1711516341; x=1712121141;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Dwtti/peMihUTMyAzlCIGMLulrpmjqLQzU4QpF2mNKU=;
+        b=TyHa9enUaCr1eOwE1uACs7hgmPkGPst6+7AeR2DHk5AEJcSMBNImx8quCaG93VWshp
+         S73z3MKtYTmNha5ZkSwOkfblYPPzMxyMJYARUYyoTyJvwDmmBQsg0EmTwuBOoVKLBBfo
+         V1lVukzUQ586vd/i7N5xaC/UI3zKZT+u3S7Ae4t8LjzPrMvkvOt9xbqv1kvy47i/KBRG
+         xD8aoU7b53LWluhQKf4K9YgWE4MckctHaEbhJM4xxl6lEZTXb5MsOhFg/b+vf26rlvws
+         oIvt3Y3w6akZ8xY+lB9eJdgz/daUgTFKTWS6HImdeqx30COlxQ+RMIbde/UJvII2MSPr
+         BHLg==
+X-Forwarded-Encrypted: i=1; AJvYcCW2llocjZ9jCns+EGywzJE8vVKttZiDTMYIAw2iQ5H8Z1311nqxqqYwSNy+fdgxS4yXx7eBfgVQ3VayULq4DJhz7cmmPdUPpIFwf99D
+X-Gm-Message-State: AOJu0YzfUwPGa/aB7Xce+eX0z3Xpj7w1cQGqLy1TeGEnE5+oX9NJtQ6d
+	JgeHENfsWdxQIF81QlUi9yvApWGG28CtPGO05ZhPaYCQwTo7kSUTK+2sC5WoZaY=
+X-Google-Smtp-Source: AGHT+IElJpw3yCm9S4l81YiCAYTFbqQcMEaxlCe/Y/vun3hBezNkXoQkI96UNC8LRjTdHliw/4EueA==
+X-Received: by 2002:a17:906:dfd7:b0:a46:f6fc:1fda with SMTP id jt23-20020a170906dfd700b00a46f6fc1fdamr92944ejc.20.1711516340821;
+        Tue, 26 Mar 2024 22:12:20 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.222.44])
+        by smtp.gmail.com with ESMTPSA id kq1-20020a170906abc100b00a46a04d7dc4sm4957769ejb.61.2024.03.26.22.12.19
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 26 Mar 2024 22:12:20 -0700 (PDT)
+Message-ID: <16f72b4a-2aa9-49d5-a4aa-ed94eea1f32a@linaro.org>
+Date: Wed, 27 Mar 2024 06:12:18 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <CACKFLikPmtbkvVFerB0WNvLN3w=ia_vd6fUAo8iWpAqNsegMaQ@mail.gmail.com>
- <20240326183544.488242-1-kiryushin@ancud.ru> <20240327024430.GA1370891@maili.marvell.com>
- <20240326202442.6e80cf1a@kernel.org>
-In-Reply-To: <20240326202442.6e80cf1a@kernel.org>
-From: Michael Chan <michael.chan@broadcom.com>
-Date: Tue, 26 Mar 2024 22:09:21 -0700
-Message-ID: <CACKFLi=Ax0+2dYKPXMR7OEsyJsPK13ZpXY763AFzFH0OBbhHVg@mail.gmail.com>
-Subject: Re: [PATCH net-next v2] tg3: Remove residual error handling in tg3_suspend
-To: Jakub Kicinski <kuba@kernel.org>
-Cc: Ratheesh Kannoth <rkannoth@marvell.com>, Nikita Kiryushin <kiryushin@ancud.ru>, 
-	Michael Chan <mchan@broadcom.com>, Pavan Chebbi <pavan.chebbi@broadcom.com>, 
-	"David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
-	Paolo Abeni <pabeni@redhat.com>, "Rafael J. Wysocki" <rjw@rjwysocki.net>, netdev@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, lvc-project@linuxtesting.org
-Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-	boundary="000000000000969b0606149d6963"
+User-Agent: Mozilla Thunderbird
+Subject: =?UTF-8?B?UmU6IOWbnuWkjTogW1BBVENIIHYyIDEvMl0gQVNvQzogZHQtYmluZGlu?=
+ =?UTF-8?Q?gs=3A_Add_bindings_for_Cadence_I2S-MC_controller?=
+To: Xingyu Wu <xingyu.wu@starfivetech.com>,
+ Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
+ Claudiu Beznea <Claudiu.Beznea@microchip.com>,
+ Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+ Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor.dooley@microchip.com>
+Cc: "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
+ "linux-sound@vger.kernel.org" <linux-sound@vger.kernel.org>
+References: <20240320090239.168743-1-xingyu.wu@starfivetech.com>
+ <20240320090239.168743-2-xingyu.wu@starfivetech.com>
+ <9d9efb8a-0b3c-4e7a-8673-07cd3b1f5f87@linaro.org>
+ <NTZPR01MB0956BD6189974378958562D99F35A@NTZPR01MB0956.CHNPR01.prod.partner.outlook.cn>
+ <9b1a5100-8536-4b59-b2e7-d6ebd2ba9e66@linaro.org>
+ <NTZPR01MB0956230296D881F112F92D119F35A@NTZPR01MB0956.CHNPR01.prod.partner.outlook.cn>
+Content-Language: en-US
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <NTZPR01MB0956230296D881F112F92D119F35A@NTZPR01MB0956.CHNPR01.prod.partner.outlook.cn>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
---000000000000969b0606149d6963
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+On 26/03/2024 14:43, Xingyu Wu wrote:
+>>>>> +
+>>>>> +properties:
+>>>>> +  compatible:
+>>>>> +    enum:
+>>>>> +      - cdns,i2s-mc
+>>>>
+>>>> Why did this appear? Who asked for this? Usually these blocks are not
+>>>> usable on their own.
+>>>
+>>> I wonder if I should keep the original IP compatible. Do I not need it?
+>>
+>> As I said, it is not usable on its own, so unless you have other arguments then no.
+>> But my point was that no one asked for this.
+> 
+> I want to keep the original IP compatible which can distinguish from the JH8100 SoC.
+> Can I write it like this:
+> compatible:
+>    enum:
+>           - starfive,jh8100-i2s
+>    const: cdns,i2s-mc
+> 
+> and I write this in the DTS:
+> compatible = "starfive,jh8100-i2s", "cdns,i2s-mc";
 
-On Tue, Mar 26, 2024 at 8:24=E2=80=AFPM Jakub Kicinski <kuba@kernel.org> wr=
-ote:
->
-> On Wed, 27 Mar 2024 08:14:30 +0530 Ratheesh Kannoth wrote:
-> > > @@ -18090,7 +18090,6 @@ static int tg3_suspend(struct device *device)
-> > >  {
-> > Please address Michael Chan's comment to make this function return type=
- to "void"
-> > instead of "int"
->
-> It's used as a callback in SIMPLE_DEV_PM_OPS(), how would that work?
+Can you provide any rationale for this? I asked "unless you have other
+arguments", so where are the arguments?
 
-It won't work.  I only requested to change tg3_power_down_prepare() to
-void and it was done in v2:
+Nothing was explained in patch changelog. Nothing was provided in this
+email thread.
 
-https://lore.kernel.org/netdev/CACKFLinzJjqe0j4OFkcCV+FyH0JiUpnj3j2azZkGaC9=
-jfvFXrQ@mail.gmail.com/
+> 
+>>
+>>>
+>>>>
+>>>>> +      - starfive,jh8100-i2s
+>>>>> +
+>>>>> +  reg:
+>>>>> +    maxItems: 1
+>>>>> +
+>>>>> +  interrupts:
+>>>>> +    description:
+>>>>> +      The interrupt line number for the I2S controller. Add this
+>>>>> +      parameter if the I2S controller that you are using does not
+>>>>> +      using DMA.
+>>>>
+>>>> That's still wrong. You already got comment on this. Either you have interrupt
+>> or not.
+>>>> You do not add interrupts, based on your choice or not of having DMA.
+>>>> Drop the comment.
+>>>
+>>> Do I keep this property and drop this description?
+>>
+>> Drop description. Keep property, if your hardware has interrupts.
+>>
+> 
+> Will drop.
+> 
+>> ...
+>>
+>>>>
+>>>>> +  - compatible
+>>>>> +  - reg
+>>>>> +  - clocks
+>>>>> +  - clock-names
+>>>>> +  - resets
+>>>>> +
+>>>>> +oneOf:
+>>>>> +  - required:
+>>>>> +      - dmas
+>>>>> +      - dma-names
+>>>>> +  - required:
+>>>>> +      - interrupts
+>>>>
+>>>> This won't work. Provide both interrupts and dmas, and then test your DTS.
+>>>
+>>> I provided both properties in the DTS and test by dtbs_check. Then it printed
+>> that:
+>>> 'More than one condition true in one of shema: ...'
+>>
+>> Exactly. Having both properties is a correct DTS. Interrupts do not disappear just
+>> because you decide to describe DMA. It is OS choice what to use if both are
+>> provided.
+>>
+> 
+> But this I2S can only use either DMA or interrupts.
 
---000000000000969b0606149d6963
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Description: S/MIME Cryptographic Signature
+Just like many other components. DTS should reflect hardware. Hardware
+has interrupts and DMA, right?
 
-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
-OnaLEot1MoQO7BIe5S9H4AcCEXXcrJJiAtMCl47ARpyHmvQFQFFTrHgUYEd9V+9bOzY7MBIGSV1N
-/JfsT1sZw6HT0lJkSQefhPGpBniAob62DJP3qr11tu8CAwEAAaOCAdowggHWMA4GA1UdDwEB/wQE
-AwIFoDCBowYIKwYBBQUHAQEEgZYwgZMwTgYIKwYBBQUHMAKGQmh0dHA6Ly9zZWN1cmUuZ2xvYmFs
-c2lnbi5jb20vY2FjZXJ0L2dzZ2NjcjNwZXJzb25hbHNpZ24yY2EyMDIwLmNydDBBBggrBgEFBQcw
-AYY1aHR0cDovL29jc3AuZ2xvYmFsc2lnbi5jb20vZ3NnY2NyM3BlcnNvbmFsc2lnbjJjYTIwMjAw
-TQYDVR0gBEYwRDBCBgorBgEEAaAyASgKMDQwMgYIKwYBBQUHAgEWJmh0dHBzOi8vd3d3Lmdsb2Jh
-bHNpZ24uY29tL3JlcG9zaXRvcnkvMAkGA1UdEwQCMAAwSQYDVR0fBEIwQDA+oDygOoY4aHR0cDov
-L2NybC5nbG9iYWxzaWduLmNvbS9nc2djY3IzcGVyc29uYWxzaWduMmNhMjAyMC5jcmwwJAYDVR0R
-BB0wG4EZbWljaGFlbC5jaGFuQGJyb2FkY29tLmNvbTATBgNVHSUEDDAKBggrBgEFBQcDBDAfBgNV
-HSMEGDAWgBSWM9HmWBdbNHWKgVZk1b5I3qGPzzAdBgNVHQ4EFgQU31rAyTdZweIF0tJTFYwfOv2w
-L4QwDQYJKoZIhvcNAQELBQADggEBACcuyaGmk0NSZ7Kio7O7WSZ0j0f9xXcBnLbJvQXFYM7JI5uS
-kw5ozATEN5gfmNIe0AHzqwoYjAf3x8Dv2w7HgyrxWdpjTKQFv5jojxa3A5LVuM8mhPGZfR/L5jSk
-5xc3llsKqrWI4ov4JyW79p0E99gfPA6Waixoavxvv1CZBQ4Stu7N660kTu9sJrACf20E+hdKLoiU
-hd5wiQXo9B2ncm5P3jFLYLBmPltIn/uzdiYpFj+E9kS9XYDd+boBZhN1Vh0296zLQZobLfKFzClo
-E6IFyTTANonrXvCRgodKS+QJEH8Syu2jSKe023aVemkuZjzvPK7o9iU7BKkPG2pzLPgxggJtMIIC
-aQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMTEwLwYDVQQD
-EyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIwAgxeQGjDntHGb2iaQkIw
-DQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIHOhaNifXCPLZtK0RP26o44sNq3p8heX
-um0U9DQivdSzMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTI0MDMy
-NzA1MDkzNFowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJYIZIAWUDBAEWMAsGCWCG
-SAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcNAQEHMAsGCWCGSAFlAwQC
-ATANBgkqhkiG9w0BAQEFAASCAQAtto05mKCdiMhVYebjDmA+D39QbdqPo18ONxDUjkJZe6HtkSzC
-gYnozxYq9a2gGn3Y4kfpc+k4b7vHI5H698yKsdk0PRJNqY682XVIg5kWRLUCCSafrfs6dVPLG8//
-SrOmVoth+iezLtD6xTk8d0SvkdNwPd/qcDFBVW07QgbJdpgIUTjtw3+UP9VBse6d1psGpENkWMA8
-dmXdxpIGUXk6HHaMotieK/sSlou/AhKdBSjjPosIHu4PihzIWmnLtjlrRr+RZlI14poqjfCR8rJ7
-QPoIDyAXguC/nZ23YVA2jvfexiTvCNGz3k2L0em7s1QyD7l1DMHvyZIat0XLSlP9
---000000000000969b0606149d6963--
+> 
+> Can I use the config (like SND_SOC_CADENCE_I2S_MC_PCM)  to choose DMA or
+> interrupt if having both them in DTS?
+
+Don't know, I tend to focus here on bindings.
+
+Best regards,
+Krzysztof
+
 
