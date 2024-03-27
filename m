@@ -1,143 +1,100 @@
-Return-Path: <linux-kernel+bounces-122041-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-122042-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 95E5088F11C
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 22:42:10 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6245E88F11F
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 22:43:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 460671F25DD7
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 21:42:10 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BD9AB29999F
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 21:43:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 15C1215381B;
-	Wed, 27 Mar 2024 21:41:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 99BD915357A;
+	Wed, 27 Mar 2024 21:43:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="P9fz0LZ6"
-Received: from out-171.mta0.migadu.com (out-171.mta0.migadu.com [91.218.175.171])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="YqyQhvyH"
+Received: from mail-wm1-f49.google.com (mail-wm1-f49.google.com [209.85.128.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4601115359D;
-	Wed, 27 Mar 2024 21:41:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 697A314D45E;
+	Wed, 27 Mar 2024 21:43:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711575716; cv=none; b=oANa7k0tNGRTs52yyYGE4EOGW/ffk83alwdY/KLbr8JC+xlVN/i1dYJFToDXdACsXsHIAJnM+1DBqwLt5M1Ge5VR9Un/9pP91NwmY1XraSjjggiRotdoyzCxcj8WHed01DgYBdZt/tcTHS2B9cvvIbZtEBUkEwkcXf87TyuI2to=
+	t=1711575794; cv=none; b=myBeQO7rx6IVSMcrXIaCesT17km0cfGHR8kwc49FIuj+Kj6j8JSy4006xSBPJaPVDZ0pNAMugKgrrJjn66hF6b0oYw3Yne2SUSGQWbrrXa5q0ZCY/0LN9pyhk/mHEYCa9u2e3WsnSlcSlgGYwrNCJhda70cHlJqGMT6Lr3Sjq5A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711575716; c=relaxed/simple;
-	bh=Ka4yhsa8pA7IN8JWhrFeenVCI3gTYxePnH/a155TeVE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=n6JkD5zNzAxJe6z3yVu174hXuzi9ffWbD5CPwlfsYxGbR5/QQ7dDeoQBLgI0pSU5EhXNVfM8OgqEkhqgNXWljbHRnCVZRfsojX8BCE8xHqUklktSsAgKvph26AS880MO4Z1gko95XE6o7v5mIHuMkaYXlC9rCZpxXVkdA/k9DHI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=P9fz0LZ6; arc=none smtp.client-ip=91.218.175.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Wed, 27 Mar 2024 17:41:43 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1711575711;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=dfpvhmi8rKro1b2dyL3uY2Ed1/z/apHoJwqWNRmO5B4=;
-	b=P9fz0LZ6KX4HbsV78Toh0xVvAAPtEhIh/vnyagTO6/lh+tTBkoFPRjJ/AFAokCzLbmN29U
-	CulIj0vF4mNJoUBAND7yLvIraMiM91VioMqDNlE8vn0vuML+CofPaw07zpuXQQmW+GZP2G
-	68JzFd6/7l4lnSoUl7RV9RRY1Pn48F8=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: comex <comexk@gmail.com>, "Dr. David Alan Gilbert" <dave@treblig.org>, 
-	Philipp Stanner <pstanner@redhat.com>, Boqun Feng <boqun.feng@gmail.com>, 
-	rust-for-linux <rust-for-linux@vger.kernel.org>, linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org, 
-	llvm@lists.linux.dev, Miguel Ojeda <ojeda@kernel.org>, 
-	Alex Gaynor <alex.gaynor@gmail.com>, Wedson Almeida Filho <wedsonaf@gmail.com>, 
-	Gary Guo <gary@garyguo.net>, =?utf-8?B?QmrDtnJu?= Roy Baron <bjorn3_gh@protonmail.com>, 
-	Benno Lossin <benno.lossin@proton.me>, Andreas Hindborg <a.hindborg@samsung.com>, 
-	Alice Ryhl <aliceryhl@google.com>, Alan Stern <stern@rowland.harvard.edu>, 
-	Andrea Parri <parri.andrea@gmail.com>, Will Deacon <will@kernel.org>, 
-	Peter Zijlstra <peterz@infradead.org>, Nicholas Piggin <npiggin@gmail.com>, 
-	David Howells <dhowells@redhat.com>, Jade Alglave <j.alglave@ucl.ac.uk>, 
-	Luc Maranget <luc.maranget@inria.fr>, "Paul E. McKenney" <paulmck@kernel.org>, 
-	Akira Yokosawa <akiyks@gmail.com>, Daniel Lustig <dlustig@nvidia.com>, 
-	Joel Fernandes <joel@joelfernandes.org>, Nathan Chancellor <nathan@kernel.org>, 
-	Nick Desaulniers <ndesaulniers@google.com>, kent.overstreet@gmail.com, 
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Marco Elver <elver@google.com>, 
-	Mark Rutland <mark.rutland@arm.com>, Thomas Gleixner <tglx@linutronix.de>, 
-	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
-	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>, 
-	Catalin Marinas <catalin.marinas@arm.com>, linux-arm-kernel@lists.infradead.org, 
-	linux-fsdevel@vger.kernel.org
-Subject: Re: [WIP 0/3] Memory model and atomic API in Rust
-Message-ID: <psy7q3fbnjeyk7fu6wyfecpvgsaxel5vcc6cudftxgyvj4zuhf@3xhjikjjy5pn>
-References: <CAHk-=wjP1i014DGPKTsAC6TpByC3xeNHDjVA4E4gsnzUgJBYBQ@mail.gmail.com>
- <bu3seu56hfozsvgpdqjarbdkqo3lsjfc4lhluk5oj456xmrjc7@lfbbjxuf4rpv>
- <CAHk-=wgLGWBXvNODAkzkVHEj7zrrnTq_hzMft62nKNkaL89ZGQ@mail.gmail.com>
- <ZgIRXL5YM2AwBD0Y@gallifrey>
- <CAHk-=wjwxKD9CxYsf5x+K5fJbJa_JYZh1eKB4PT5cZJq1+foGw@mail.gmail.com>
- <160DB953-1588-418E-A490-381009CD8DE0@gmail.com>
- <qyjrex54hbhvhw4gmn7b6l2hr45o56bwt6fazfalykwcp5zzkx@vwt7k3d6kdwt>
- <CAHk-=wgQy+FRKjO_BvZgZN56w6-+jDO8p-Mt=X=zM70CG=CVBQ@mail.gmail.com>
- <bjorlxatlpzjlh6dfulham3u4mqsfqt7ir5wtayacaoefr2r7x@lmfcqzcobl3f>
- <CAHk-=wiSiNtf4Z=Bvfs=sGJn6SYCZ=F7hvWwsQiOX4=V0Bgp_Q@mail.gmail.com>
+	s=arc-20240116; t=1711575794; c=relaxed/simple;
+	bh=00RSzlRyuBe4f7ztg1Qngdt5TLEXANj7s00f5N+CVlI=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=ppuYo2Oe4ZvkmJVbBJacCQVgxRnNNbU93lxLSuYipodn72nhELrUuyGBwElwKD+DG6j+MCuifSMGw1v7KBLjK6i5r2Uzz03MlMmHEFSm0NZSHgCRbcQ8LA7Iv0UtAwFmA2J+gYVxqACZ1EMKuCONDC/MTqEnp1BGQ1ryS8rnGSQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=YqyQhvyH; arc=none smtp.client-ip=209.85.128.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f49.google.com with SMTP id 5b1f17b1804b1-414978a4a64so2030545e9.2;
+        Wed, 27 Mar 2024 14:43:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1711575792; x=1712180592; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=00RSzlRyuBe4f7ztg1Qngdt5TLEXANj7s00f5N+CVlI=;
+        b=YqyQhvyHTr1+/6dThwtMKQQdZeT5j2PyGo72Gx1QqH0R2o6SCRQe2pKCFINOW1flJ6
+         LLUqvyZ2UAZXbqVzWnI4ZD6ephmERbxqLe421NiW73ehQMXN5fIn4OV9hbidvtSLBql9
+         b7bR8nBjpz5jE8oyaAhOWxY11OgGiUNfNmpdQA8c8NAEgq4kUS3eOapD0/EfUExfE4tC
+         Kzxcf6EjUzOoJsNHYWjgCPx6H+Kcd+uipOfs8nw9rboVy5LOgupNxmJAbzPgoxYVjRtO
+         v6n5UpeIXU9hm2udL66StrQpu+q6L0vReB8gRUNtQEXWZJ4cLY8vetx0vpzitm/PnTT3
+         qtaw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711575792; x=1712180592;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=00RSzlRyuBe4f7ztg1Qngdt5TLEXANj7s00f5N+CVlI=;
+        b=Wn3MurqV27Y9KZm3zEMPnr4x8o27D0ERic/XjbJTwtEWfXNRLiLYWy5K0Emxdsn0Df
+         F7O4NCkn1k/fh//ZHMC9iY46DfEnw1GR9PLXZgiY1wqdF5EzHJEgDGdSWZWg6qDS0vfC
+         vU4xHkwmu/zPV69Fp80pNvdHOCY9+FexOctGFNBeScJAT90Bsw+d4bDFsH/68h00z9qx
+         r2aYQnnbPI+KLRxDnFIqXakOC7/Ry62gAFo++mAQZl6m4nXm+O0FUEH9iX2QgmeQiyL1
+         XjAsX3T4rLKlEoFYu0sWnBBkLBGsZVXohpoj/Q4eVlNlCbyIbnQ7polQz4wvxvWIrdLX
+         AKDA==
+X-Forwarded-Encrypted: i=1; AJvYcCWmrTJhhQFcdcCMkOoQuWgseYBcjvjymqn2HiLH3MuXZbqB7e7Te2PNQAZdKEFg1O+il1jeB3Yc2gzkZi+tmJc6PGNF8onL6SWXLl8/UdmaUgfBU3k+rOuSigKiyOx0dPpc6KWrSQJ7SPcNeSZ8Hl7NUBM+kAJzg3uK
+X-Gm-Message-State: AOJu0Yw0hq3+mS1wkSDlb9Xwe5i/R+H1zjnYwmh1uW12bX23cM4VEvP7
+	gzZ2TDa9zeY/CUntgRb+p/OZ71Wi8GpCQPh8DpIuKHXpQKLsqacMf1HCpsqFG/4CPin7lTrK2qJ
+	H0GDjhEcqkN69edaOYQgqKXO/IcY=
+X-Google-Smtp-Source: AGHT+IFPz+gCdLSVgV+lge1GoS3D+048rCxF3gyiZcTy8wrV7pmSAsfHFAsGdLwWTCyYEbKwvQL5548/KMw352SiynQ=
+X-Received: by 2002:a05:600c:3b22:b0:414:102f:27b8 with SMTP id
+ m34-20020a05600c3b2200b00414102f27b8mr827259wms.32.1711575791609; Wed, 27 Mar
+ 2024 14:43:11 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHk-=wiSiNtf4Z=Bvfs=sGJn6SYCZ=F7hvWwsQiOX4=V0Bgp_Q@mail.gmail.com>
-X-Migadu-Flow: FLOW_OUT
+References: <00000000000090fe770614a1ab17@google.com> <0000000000007a208d0614a9a9e0@google.com>
+ <87le63bfuf.fsf@cloudflare.com>
+In-Reply-To: <87le63bfuf.fsf@cloudflare.com>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Wed, 27 Mar 2024 14:43:00 -0700
+Message-ID: <CAADnVQK7rpbNbo4XQRfX2G6v7Mx=2rZNu6D9my9KCi+jRpTUJw@mail.gmail.com>
+Subject: Re: [syzbot] [bpf?] [net?] possible deadlock in ahci_single_level_irq_intr
+To: Jakub Sitnicki <jakub@cloudflare.com>
+Cc: syzbot <syzbot+d4066896495db380182e@syzkaller.appspotmail.com>, 
+	Andrii Nakryiko <andrii@kernel.org>, Alexei Starovoitov <ast@kernel.org>, bpf <bpf@vger.kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, "David S. Miller" <davem@davemloft.net>, 
+	Eric Dumazet <edumazet@google.com>, John Fastabend <john.fastabend@gmail.com>, 
+	Jakub Kicinski <kuba@kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
+	Network Development <netdev@vger.kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
+	syzkaller-bugs <syzkaller-bugs@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, Mar 27, 2024 at 01:45:46PM -0700, Linus Torvalds wrote:
-> On Wed, 27 Mar 2024 at 12:41, Kent Overstreet <kent.overstreet@linux.dev> wrote:
-> >
-> > _But_: the lack of any aliasing guarantees means that writing through
-> > any pointer can invalidate practically anything, and this is a real
-> > problem.
-> 
-> It's actually much less of a problem than you make it out to be.
-> 
-> A lot of common aliasing information is statically visible (offsets
-> off the same struct pointer etc).
-> 
-> The big problems tend to be
-> 
->  (a) old in-order hardware that really wants the compiler to schedule
-> memory operations
-> 
->  (b) vectorization and HPC
+On Wed, Mar 27, 2024 at 1:05=E2=80=AFPM Jakub Sitnicki <jakub@cloudflare.co=
+m> wrote:
+>
+> #syz test: git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git mast=
+er
+>
+> diff --git a/net/core/sock_map.c b/net/core/sock_map.c
 
-Yeah, I was being a bit dramatic given the current state of the world -
-OOO machines _mostly_ do a reasonable job of hiding the negative effects of
-this (although not always, when memory barriers are involved).
-
-But I think this is going to become important again in the future, for a
-couple reasons.
-
-On the hardware end, the Mill guys were pointing out years ago that
-register renaming is a big power bottleneck in modern processors; the
-actual functional units consume practically nothing compared to just
-moving data around. They never built anything, but there's at least one
-new startup I know of that's continuing their work. Yes, VLIW has been a
-bust repeatedly, but as we keep going wider and wider (because what else
-are we going to do?) I think it's going to happen eventually.
-
-On the compiler side, I'm taking the long view: it's really not just
-about a few reloads here and there, it's that you fundamentally can't do
-that much with code that's mutating arbitrary state; analysis that
-optimizations depend on is impossible. In the compiler you really want
-to be working with code that's pure functional - then all your
-optimizations are just algebra. And internally, compilers do this as
-much as they can (SSA form...), but - unrestricted pointers really put a
-limit on what they can do.
-
-The beautiful thing about Rust to me is that we finally might have a
-path out of this; the rules of Rust references constrain mutability in
-such a way that's almost as good as being purely functional, yet it's
-something we can actually do systems programming with.
-
-I think this is going to lead to substantially better code optimization
-in the future, and based on a much more sound model that means we won't
-constantly be fighting with compiler people because they're doing shady
-shit and breaking previously working code. Based on my experiences with
-writing iterator heavy code in both C and Rust, I think it already is.
+Great. Please submit it officially. Hopefully bpf CI also will be happy.
 
