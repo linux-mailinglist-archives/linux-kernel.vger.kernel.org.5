@@ -1,58 +1,58 @@
-Return-Path: <linux-kernel+bounces-121128-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-121129-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 44D0088E2A8
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 14:31:14 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id EFC2188E2AA
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 14:31:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F381C282149
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 13:31:12 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A98DF28A4A3
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 13:31:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E9C22174940;
-	Wed, 27 Mar 2024 12:22:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3B2BC174973;
+	Wed, 27 Mar 2024 12:22:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MuP6Zl7q"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="H1rMvDVb"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 36D7E13C90E;
-	Wed, 27 Mar 2024 12:22:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 56757174977;
+	Wed, 27 Mar 2024 12:22:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711542148; cv=none; b=tysLnCwmJHYWOT46tfXHeiuSh9W8YsjoCiJupkiZImnblmise2+ck0BsUiL2KrlmMGIYCG21XOAwfaPeE1KD/XvprYEqLiMgKGWAe0eyJFZ1SwUvzlHRWiXtVBqvaI8U+P2XMl3QXL7+/04qvvHEILpJXrRyPZGjC6G4fwI02gw=
+	t=1711542152; cv=none; b=t3ybA1ETg2CQCKez2zs8sVKdmfakuHEajNPOHfmICy9ZncEsLpVLFy+m636NXrRvKGSv3ixOoBYt22XYHCnQQLaB332pCJuVGHXifwwP4t/o+/KoohjSDikYoRKuJ4goDoL+nNoVu0oBHbqTEDw9wbCbKyI9fHw2hbQcpUMd1MA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711542148; c=relaxed/simple;
-	bh=LjaA+PCDzYfqK9L7/WofbPKiOd67HjBA8xxSBLeDJUU=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=KP6IgkYUMH4gWlbFfQqs5kzMaMKmg4foZUZvPG4hLwLDf0vEOYHWd9BsFGf+ZSJB/RvQsvwyJR0y0nqkiRGGfXlbJ3iEOGbH7Mlz9p9GPmwQyrCN7+GRjua8areG2lM01jMupb1u7tN/N8O41mO/erRQ8Q/dnAtVw9YDrA8o2HQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MuP6Zl7q; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 09AD0C433C7;
-	Wed, 27 Mar 2024 12:22:26 +0000 (UTC)
+	s=arc-20240116; t=1711542152; c=relaxed/simple;
+	bh=OK+2Jyhl3Tn8LDE1CvM7vRsE6lxOEeTzYbG/u6VlYPU=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=C5jflHAF/waPsmI86xMZEAU0H0jb1OM9NzM5tJaeVPPIfvmDSsLzmQWF5gSMPkDq90hMTB3KBV7fxKbOF4Qya+KWWGp4XmD87sUXf2TFsLjDvZ+/a8rInOzkcLgLZHQETMIjInmtX4g6uC3P2FcYDJ7akvzeVf3sCYNaiScmj3Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=H1rMvDVb; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CC67CC433F1;
+	Wed, 27 Mar 2024 12:22:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711542148;
-	bh=LjaA+PCDzYfqK9L7/WofbPKiOd67HjBA8xxSBLeDJUU=;
+	s=k20201202; t=1711542150;
+	bh=OK+2Jyhl3Tn8LDE1CvM7vRsE6lxOEeTzYbG/u6VlYPU=;
 	h=From:To:Cc:Subject:Date:From;
-	b=MuP6Zl7qz4G0HofWfNr76FHuLMJCoQ3jx5MJcXApp/IG0MJ3JAIW+BmgJhBfb5pVy
-	 D05nBiSX9g9h/wSE/jbb5bkWIRjVMK2gxVaWkx9iTHQeYQdLXKO9kzFhCGyJXcOZI7
-	 FdyIpSWLI+rnj1w5B1xRl2MKvgElBxVOG65iabxbsYbjmvN2ewroTmfiCWENl4iAwt
-	 mNfhvLSGmHDGK7NfLD2s06MMtMhi5lRIwxY8ELN9wOfO9zJZgPGih4luWlratw0IXW
-	 Igv3hp/bmH7pG2nJ+iiTDRYsZ5sAVR3a9r3T0cZA3G5rxO+c6F/w+eQ5qi30U4PNps
-	 A5Sr4w1kaR5rw==
+	b=H1rMvDVbEvy+DF3joM6zqSQ39hHJNPf+mk3ySTEwKYUQiZyMFA6dI+XLLxCWXFXZ1
+	 sCzIds7hgSVgt4MVHEhPX9pXzMIElFd03DNeQWj2XPTHIcwK88VgUtKl+8JAO7Nl4S
+	 Jj9yiefHdWpK0eJu1+AMvvuc63R1fVPVCQA327BLaxznqtVHhFGyEkP4oXHmdXi6mj
+	 1oRWLnCngs4c69Af7FANUrW19B/GLUPHmVycgK5nZUPsFwAawm/8N+bSlGSvDw0JMN
+	 i2KRBUdbjPd4PJSWxgld70LDRmAPPwfuEUHx38jObzKuaHnsGY5rM4wehs8MJcf4HG
+	 pUMitl/YdtxUQ==
 From: Sasha Levin <sashal@kernel.org>
 To: stable@vger.kernel.org,
-	ilya.bakoulin@amd.com
-Cc: Mario Limonciello <mario.limonciello@amd.com>,
+	srinivasan.shanmugam@amd.com
+Cc: Alex Hung <alex.hung@amd.com>,
+	Aurabindo Pillai <aurabindo.pillai@amd.com>,
+	Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>,
+	Hamza Mahfooz <hamza.mahfooz@amd.com>,
 	Alex Deucher <alexander.deucher@amd.com>,
-	Charlene Liu <charlene.liu@amd.com>,
-	Alex Hung <alex.hung@amd.com>,
-	Daniel Wheeler <daniel.wheeler@amd.com>,
 	amd-gfx@lists.freedesktop.org,
 	dri-devel@lists.freedesktop.org,
 	linux-kernel@vger.kernel.org
-Subject: FAILED: Patch "drm/amd/display: Clear OPTC mem select on disable" failed to apply to 5.4-stable tree
-Date: Wed, 27 Mar 2024 08:22:25 -0400
-Message-ID: <20240327122226.2837710-1-sashal@kernel.org>
+Subject: FAILED: Patch "drm/amd/display: Drop 'acrtc' and add 'new_crtc_state' NULL check for writeback requests." failed to apply to 5.4-stable tree
+Date: Wed, 27 Mar 2024 08:22:28 -0400
+Message-ID: <20240327122229.2837747-1-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -74,60 +74,52 @@ Sasha
 
 ------------------ original commit in Linus's tree ------------------
 
-From b4e05bb1dec53fe28c3c88425aded824498666e5 Mon Sep 17 00:00:00 2001
-From: Ilya Bakoulin <ilya.bakoulin@amd.com>
-Date: Wed, 3 Jan 2024 09:42:04 -0500
-Subject: [PATCH] drm/amd/display: Clear OPTC mem select on disable
+From b2f26f49e84bea03dddb5f37ff137c97b165107b Mon Sep 17 00:00:00 2001
+From: Srinivasan Shanmugam <srinivasan.shanmugam@amd.com>
+Date: Sat, 13 Jan 2024 14:32:27 +0530
+Subject: [PATCH] drm/amd/display: Drop 'acrtc' and add 'new_crtc_state' NULL
+ check for writeback requests.
 
-[Why]
-Not clearing the memory select bits prior to OPTC disable can cause DSC
-corruption issues when attempting to reuse a memory instance for another
-OPTC that enables ODM.
+Return value of 'to_amdgpu_crtc' which is container_of(...) can't be
+null, so it's null check 'acrtc' is dropped.
 
-[How]
-Clear the memory select bits prior to disabling an OPTC.
+Fixing the below:
+drivers/gpu/drm/amd/amdgpu/../display/amdgpu_dm/amdgpu_dm.c:9302 amdgpu_dm_atomic_commit_tail() error: we previously assumed 'acrtc' could be null (see line 9299)
 
-Cc: Mario Limonciello <mario.limonciello@amd.com>
-Cc: Alex Deucher <alexander.deucher@amd.com>
+Added 'new_crtc_state' NULL check for function
+'drm_atomic_get_new_crtc_state' that retrieves the new state for a CRTC,
+while enabling writeback requests.
+
 Cc: stable@vger.kernel.org
-Reviewed-by: Charlene Liu <charlene.liu@amd.com>
-Acked-by: Alex Hung <alex.hung@amd.com>
-Signed-off-by: Ilya Bakoulin <ilya.bakoulin@amd.com>
-Tested-by: Daniel Wheeler <daniel.wheeler@amd.com>
+Cc: Alex Hung <alex.hung@amd.com>
+Cc: Aurabindo Pillai <aurabindo.pillai@amd.com>
+Cc: Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>
+Cc: Hamza Mahfooz <hamza.mahfooz@amd.com>
+Signed-off-by: Srinivasan Shanmugam <srinivasan.shanmugam@amd.com>
+Reviewed-by: Alex Hung <alex.hung@amd.com>
 Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 ---
- drivers/gpu/drm/amd/display/dc/optc/dcn32/dcn32_optc.c | 3 +++
- drivers/gpu/drm/amd/display/dc/optc/dcn35/dcn35_optc.c | 3 +++
- 2 files changed, 6 insertions(+)
+ drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/gpu/drm/amd/display/dc/optc/dcn32/dcn32_optc.c b/drivers/gpu/drm/amd/display/dc/optc/dcn32/dcn32_optc.c
-index 1788eb29474b4..8234935433254 100644
---- a/drivers/gpu/drm/amd/display/dc/optc/dcn32/dcn32_optc.c
-+++ b/drivers/gpu/drm/amd/display/dc/optc/dcn32/dcn32_optc.c
-@@ -173,6 +173,9 @@ static bool optc32_disable_crtc(struct timing_generator *optc)
- 			OPTC_SEG3_SRC_SEL, 0xf,
- 			OPTC_NUM_OF_INPUT_SEGMENT, 0);
+diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
+index 36af104e7663c..8623722e954f9 100644
+--- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
++++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
+@@ -9327,10 +9327,10 @@ static void amdgpu_dm_atomic_commit_tail(struct drm_atomic_state *state)
+ 		if (!new_con_state->writeback_job)
+ 			continue;
  
-+	REG_UPDATE(OPTC_MEMORY_CONFIG,
-+			OPTC_MEM_SEL, 0);
-+
- 	/* disable otg request until end of the first line
- 	 * in the vertical blank region
- 	 */
-diff --git a/drivers/gpu/drm/amd/display/dc/optc/dcn35/dcn35_optc.c b/drivers/gpu/drm/amd/display/dc/optc/dcn35/dcn35_optc.c
-index 3d6c1b2c2b4d6..5b15475088503 100644
---- a/drivers/gpu/drm/amd/display/dc/optc/dcn35/dcn35_optc.c
-+++ b/drivers/gpu/drm/amd/display/dc/optc/dcn35/dcn35_optc.c
-@@ -145,6 +145,9 @@ static bool optc35_disable_crtc(struct timing_generator *optc)
- 			OPTC_SEG3_SRC_SEL, 0xf,
- 			OPTC_NUM_OF_INPUT_SEGMENT, 0);
+-		new_crtc_state = NULL;
++		new_crtc_state = drm_atomic_get_new_crtc_state(state, &acrtc->base);
  
-+	REG_UPDATE(OPTC_MEMORY_CONFIG,
-+			OPTC_MEM_SEL, 0);
-+
- 	/* disable otg request until end of the first line
- 	 * in the vertical blank region
- 	 */
+-		if (acrtc)
+-			new_crtc_state = drm_atomic_get_new_crtc_state(state, &acrtc->base);
++		if (!new_crtc_state)
++			continue;
+ 
+ 		if (acrtc->wb_enabled)
+ 			continue;
 -- 
 2.43.0
 
