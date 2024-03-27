@@ -1,56 +1,54 @@
-Return-Path: <linux-kernel+bounces-121198-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-121199-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6CD2088E3D5
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 14:48:20 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id C8C0C88E3D8
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 14:48:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2595328D75D
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 13:48:19 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 782EA1F2DF06
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 13:48:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ADC291836EF;
-	Wed, 27 Mar 2024 12:25:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1C17713F439;
+	Wed, 27 Mar 2024 12:25:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="sYKbZNc1"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="RpPFp3jA"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EEE4D1836E0;
-	Wed, 27 Mar 2024 12:25:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5BB7C184108;
+	Wed, 27 Mar 2024 12:25:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711542323; cv=none; b=p6gC08eN+UqkWNdFSdWa3w3uBV9ZpLK6BUYfvlaYCHPihwUScZTjlCRBAdyuSODnZs17XIutR4pZamNGlKn4kH1SZexgcSLTc6nJ+C/oTde3QSacGR07YFACrWl6ukRohv+ax9/cW+SSV2jWb9Tpx/SPSh86YQ7enYrk/xnKvIM=
+	t=1711542325; cv=none; b=AK7RA1Aa9t5O46vSRFZMX/wvCK4wGSaR18iRRyhF6CdBZPxQQb+OFstp4aZN1OWS208B1r4+z/F+JMLbWPqbfa43qP5cEjq0gh+RoqBqsFkM5MSJpLbihmxaIf5HwZb2ScRFU1k3Fmqrqt39x/VAZPfhmTLUTzKm44xOOcmAzBI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711542323; c=relaxed/simple;
-	bh=fNuHaD+igTEh2V9ZsL9Jv5vHw8hQvqrYp0L7YbeWvnE=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=YcYJKbQCiTPDBFtC4xZR5XEL8gEhsmhbmetQbRqIkyZIfIn4tct5U99BTrT1Pfg60oIbm+wXjfFzrMEAr298BJYrMyyDB7mQ39Xn+Bx6GoAi3kPASQiSY6IJm9uAkHklAa3trKeU+gDuVNaS+b0IfsRdS1S1GW4yzP5p1nPkSOM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=sYKbZNc1; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E6DFDC43390;
-	Wed, 27 Mar 2024 12:25:21 +0000 (UTC)
+	s=arc-20240116; t=1711542325; c=relaxed/simple;
+	bh=mJZYKMtrrTuEV8WhZd4pepdH5Oqrz6U/ELgMWFf3jmg=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=UY7wAxIlzzGXDEqPvL3zTNWZ2PMVDqdr8z+x5y6IJKi9beQ4Z60XLEYLiAZBmcvsALQfZKGf17eXsZklO1rWtD8eIE2y785bdYdrWgI+FIIGysBmrLA9nlgI5/gxRss+XwIBNBMLYPzwqAUrRMLkbhgzkYG6lXCFd1At/5ypKDk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=RpPFp3jA; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 87147C433C7;
+	Wed, 27 Mar 2024 12:25:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711542322;
-	bh=fNuHaD+igTEh2V9ZsL9Jv5vHw8hQvqrYp0L7YbeWvnE=;
+	s=k20201202; t=1711542325;
+	bh=mJZYKMtrrTuEV8WhZd4pepdH5Oqrz6U/ELgMWFf3jmg=;
 	h=From:To:Cc:Subject:Date:From;
-	b=sYKbZNc1kwYDu2T69h1K1DgDiNh8LAm4lixj4EGqle28s4RGMPNAj2WbyZnEBBf+y
-	 cAKsJoRP0caKO9GYA8ikSyvk0fvECNDsOJCphbz99M5D9HZhL9qJ+rokojp/wAxDoa
-	 C+hV06GpRf2ca6wqg8V30dYsWBqLN7NqRP6NMpcktN5lsgZNCw0bq+HJeyEXswELQu
-	 HlmwdpMN1E5QEAhONVEk6KlQlbFTpBggNk0A4igbzP/sXmMukXcAHKsjZSk1WXNdUw
-	 glpENrBH8pGmCDX1zVueRsCKXk6C0ycD0YN0EwTD5MhpQ+OC2yGGYeEo5F0bfJ0rt0
-	 plD0vaMC5bp9A==
+	b=RpPFp3jAh5Min6xIfkQvs+2WPzaIuibR7WVmd4gn/SLz9Z3yYj9/Ii1VTxOTUJ95F
+	 nJiBp6+da4E4B8VGuvB7wipyEK2iHaW9ZFl2IeKZx20guKyn0v3KhrcPVhtE58zo9m
+	 dsO/oMeM4H4d1p072WceRh4qTzvUeFjVa7KWDJjgsqRP+VQ9ZLfn9DrhRPWv78YZkL
+	 +Wwb5XZgNG+bdxrrHN23JEeJPVGarf2iGH5luiVu5VnqcsU7gPwMBuu1+HEsF6uEg7
+	 W+r2RitbZiZB7nh64TjDzedhvLY4VQl2Bd46nSAQFhsEo2BBA6tvFGN7FujCa/Bd6o
+	 dXuOFYMtCeLRg==
 From: Sasha Levin <sashal@kernel.org>
 To: stable@vger.kernel.org,
-	willy@infradead.org
-Cc: Rik van Riel <riel@surriel.com>,
-	Mel Gorman <mgorman@techsingularity.net>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Ingo Molnar <mingo@kernel.org>,
-	Andrew Morton <akpm@linux-foundation.org>,
+	ekorenevsky@astralinux.ru
+Cc: Steve French <stfrench@microsoft.com>,
+	linux-cifs@vger.kernel.org,
+	samba-technical@lists.samba.org,
 	linux-kernel@vger.kernel.org
-Subject: FAILED: Patch "bounds: support non-power-of-two CONFIG_NR_CPUS" failed to apply to 4.19-stable tree
-Date: Wed, 27 Mar 2024 08:25:20 -0400
-Message-ID: <20240327122521.2840152-1-sashal@kernel.org>
+Subject: FAILED: Patch "cifs: open_cached_dir(): add FILE_READ_EA to desired access" failed to apply to 4.19-stable tree
+Date: Wed, 27 Mar 2024 08:25:23 -0400
+Message-ID: <20240327122523.2840193-1-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -72,44 +70,39 @@ Sasha
 
 ------------------ original commit in Linus's tree ------------------
 
-From f2d5dcb48f7ba9e3ff249d58fc1fa963d374e66a Mon Sep 17 00:00:00 2001
-From: "Matthew Wilcox (Oracle)" <willy@infradead.org>
-Date: Tue, 10 Oct 2023 15:55:49 +0100
-Subject: [PATCH] bounds: support non-power-of-two CONFIG_NR_CPUS
+From f1b8224b4e6ed59e7e6f5c548673c67410098d8d Mon Sep 17 00:00:00 2001
+From: Eugene Korenevsky <ekorenevsky@astralinux.ru>
+Date: Fri, 1 Mar 2024 17:53:44 +0300
+Subject: [PATCH] cifs: open_cached_dir(): add FILE_READ_EA to desired access
 
-ilog2() rounds down, so for example when PowerPC 85xx sets CONFIG_NR_CPUS
-to 24, we will only allocate 4 bits to store the number of CPUs instead of
-5.  Use bits_per() instead, which rounds up.  Found by code inspection.
-The effect of this would probably be a misaccounting when doing NUMA
-balancing, so to a user, it would only be a performance penalty.  The
-effects may be more wide-spread; it's hard to tell.
+Since smb2_query_eas() reads EA and uses cached directory,
+open_cached_dir() should request FILE_READ_EA access.
 
-Link: https://lkml.kernel.org/r/20231010145549.1244748-1-willy@infradead.org
-Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
-Fixes: 90572890d202 ("mm: numa: Change page last {nid,pid} into {cpu,pid}")
-Reviewed-by: Rik van Riel <riel@surriel.com>
-Acked-by: Mel Gorman <mgorman@techsingularity.net>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Ingo Molnar <mingo@kernel.org>
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Otherwise listxattr() and getxattr() will fail with EACCES
+(0xc0000022 STATUS_ACCESS_DENIED SMB status).
+
+Link: https://bugzilla.kernel.org/show_bug.cgi?id=218543
+Cc: stable@vger.kernel.org
+Signed-off-by: Eugene Korenevsky <ekorenevsky@astralinux.ru>
+Signed-off-by: Steve French <stfrench@microsoft.com>
 ---
- kernel/bounds.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ fs/smb/client/cached_dir.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/kernel/bounds.c b/kernel/bounds.c
-index b529182e8b04f..c5a9fcd2d6228 100644
---- a/kernel/bounds.c
-+++ b/kernel/bounds.c
-@@ -19,7 +19,7 @@ int main(void)
- 	DEFINE(NR_PAGEFLAGS, __NR_PAGEFLAGS);
- 	DEFINE(MAX_NR_ZONES, __MAX_NR_ZONES);
- #ifdef CONFIG_SMP
--	DEFINE(NR_CPUS_BITS, ilog2(CONFIG_NR_CPUS));
-+	DEFINE(NR_CPUS_BITS, bits_per(CONFIG_NR_CPUS));
- #endif
- 	DEFINE(SPINLOCK_SIZE, sizeof(spinlock_t));
- #ifdef CONFIG_LRU_GEN
+diff --git a/fs/smb/client/cached_dir.c b/fs/smb/client/cached_dir.c
+index 3de5047a7ff98..a0017724d5239 100644
+--- a/fs/smb/client/cached_dir.c
++++ b/fs/smb/client/cached_dir.c
+@@ -239,7 +239,8 @@ int open_cached_dir(unsigned int xid, struct cifs_tcon *tcon,
+ 		.tcon = tcon,
+ 		.path = path,
+ 		.create_options = cifs_create_options(cifs_sb, CREATE_NOT_FILE),
+-		.desired_access =  FILE_READ_DATA | FILE_READ_ATTRIBUTES,
++		.desired_access =  FILE_READ_DATA | FILE_READ_ATTRIBUTES |
++				   FILE_READ_EA,
+ 		.disposition = FILE_OPEN,
+ 		.fid = pfid,
+ 		.replay = !!(retries),
 -- 
 2.43.0
 
