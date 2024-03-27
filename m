@@ -1,114 +1,125 @@
-Return-Path: <linux-kernel+bounces-120365-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-120368-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5191288D654
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 07:21:36 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3086988D659
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 07:24:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 08D201F29F4B
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 06:21:36 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 61D0B1C24A64
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 06:24:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 31C201DA5F;
-	Wed, 27 Mar 2024 06:21:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3353F1CA87;
+	Wed, 27 Mar 2024 06:24:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="G2LdcKbb"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="bszERoAk"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.15])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E6D11CA87;
-	Wed, 27 Mar 2024 06:21:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4869B17551
+	for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 06:24:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.15
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711520486; cv=none; b=t992qUxcDnTwoA2HlWy4jzOWJdLCsoPgQ/4aHoJG6JKUKd04omq0DM7CZJCylU856l2EOH5bPgqe5s6BdnWKvjvSsGxE36OX+D5zeFgjoEDEDG7+ZDYo5CdRHG3JQJv2yO86sPE26nE+wjZMQs5zapdEVNYUinK3IA/qS0i8uHs=
+	t=1711520676; cv=none; b=VDRdaf2lIhjxjFS8wQFbFUCCwbMO7CtfQa4+2/+b0jFej780/UrO2VuB3nqSfPWSk3tglpXnAvbDjX+8CGDHpJjiMQFGJ6Lx9Q5iZfD3bPbm7NSb4qa6LxK5omkj859sfSxBCjNhEJBmOHyV24q3xAku7LlixudtPMpOH8wB3W4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711520486; c=relaxed/simple;
-	bh=Q6c9wsY1u6FOsRL7X5jbUPnPFupmDKYBAc9xSo3Qfss=;
-	h=Date:Content-Type:MIME-Version:From:To:Cc:In-Reply-To:References:
-	 Message-Id:Subject; b=XbZH5J+UXbCVMsMHdZTUurHYWZomAxp361AL3BegwbY8in7wduvkrcgzMeRubRdVJOY6obWFvVdnhkIXnNpDnMnem7jg+d7twRRnmdIGDSWCadXFCLR4bXFQ3F/5/P6P1hrOrlqKZaLCoLhFlTsIv7yDlVy9FTEKrnWeYQlop7o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=G2LdcKbb; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B24E2C43390;
-	Wed, 27 Mar 2024 06:21:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711520485;
-	bh=Q6c9wsY1u6FOsRL7X5jbUPnPFupmDKYBAc9xSo3Qfss=;
-	h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
-	b=G2LdcKbbWzlXrdk59OdDLGGF5ts9yKVVZp7OO3HjTjzRgbIeaLbw58leN3Decp/Iw
-	 ZKnOxfxm5yQWxwLcs05Ui3q5U3jV0uYuZZGbqZWdQMCafSicNEVNLownxcd3HOULz8
-	 hUvGwzBKM4invS+r1Bilb69Elcq7qWyBteRYnQNCpsqpAVXLRFbvRzQhhtVfhiTxJv
-	 UxdAU0cI/NUWwSMpDooc6yK8VlHT1IcwQwZTJQhvmLgzzzk4uSk79yuQ4pOB9tamnJ
-	 FotDQDuvPwPr5cB6D5FB3UrG6WoE8GfDwYMIDye6AyBpc6x/Zu+peY6Obj58QhOEYx
-	 Ose4qIIUaGRuQ==
-Date: Wed, 27 Mar 2024 01:21:24 -0500
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+	s=arc-20240116; t=1711520676; c=relaxed/simple;
+	bh=6BxiztpmQC7WGYYfC/J1njDyZV2TGg42X2X1s7GmlQc=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=DQ9x7A1pNFiXBZDzTUFnkyhehb7zVrC54Y2b/gOohgeey9v+SJzkp81XMrWZJEcf/L994kKjmS/dcJx+VKNGN+sxRiyCauVF18OQKQqMGmnJ9lt4iuHw/NV1jt6xjQl1A9Z+XEg6MTQ9/9uvQ/AyjGEsLw3V0f/qUmE7hMWHh1s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=bszERoAk; arc=none smtp.client-ip=198.175.65.15
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1711520674; x=1743056674;
+  h=from:to:cc:subject:in-reply-to:references:date:
+   message-id:mime-version;
+  bh=6BxiztpmQC7WGYYfC/J1njDyZV2TGg42X2X1s7GmlQc=;
+  b=bszERoAk4OjTAp6sRjTUdQGAVqXUONGrQO6OkjEbaYM5lBMO9h6TSZES
+   GxQJ+PRcG+G1+rdcrFAf9S+RTACsXpltdhO2leb8Key+2BVMScrGUueGf
+   ezCUhxwB6eDqcWzrJuT+YRt9nDzPggGsgc5ia/fgMMpwoB5RLhay//Zpi
+   epVY/VKkVNvvwC/Q+u2qlITH8HaI1/RyH/2xAcqfmVo2eZijWWdjVYMkY
+   SAQPWWCmrZJN8DPrWDw9gWXWPgWFGvJEEbaqw8shkogDzJgKdTbda3ywW
+   rJEYbwUTwJAv9+iVfcNQL9OM/6eGI5Mrvw1Apdlbu1VfCen20Bl+24BcU
+   w==;
+X-CSE-ConnectionGUID: /JjkJp4cTq2j4VV+B+jPqw==
+X-CSE-MsgGUID: 3/jxtLw/QXmWpFPKfge6BA==
+X-IronPort-AV: E=McAfee;i="6600,9927,11025"; a="10404462"
+X-IronPort-AV: E=Sophos;i="6.07,158,1708416000"; 
+   d="scan'208";a="10404462"
+Received: from orviesa006.jf.intel.com ([10.64.159.146])
+  by orvoesa107.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Mar 2024 23:24:34 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,158,1708416000"; 
+   d="scan'208";a="16639174"
+Received: from yhuang6-desk2.sh.intel.com (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.238.208.55])
+  by orviesa006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Mar 2024 23:24:28 -0700
+From: "Huang, Ying" <ying.huang@intel.com>
+To: Kairui Song <ryncsn@gmail.com>
+Cc: linux-mm@kvack.org,  Kairui Song <kasong@tencent.com>,  Chris Li
+ <chrisl@kernel.org>,  Minchan Kim <minchan@kernel.org>,  Barry Song
+ <v-songbaohua@oppo.com>,  Ryan Roberts <ryan.roberts@arm.com>,  Yu Zhao
+ <yuzhao@google.com>,  SeongJae Park <sj@kernel.org>,  David Hildenbrand
+ <david@redhat.com>,  Yosry Ahmed <yosryahmed@google.com>,  Johannes Weiner
+ <hannes@cmpxchg.org>,  Matthew Wilcox <willy@infradead.org>,  Nhat Pham
+ <nphamcs@gmail.com>,  Chengming Zhou <zhouchengming@bytedance.com>,
+  Andrew Morton <akpm@linux-foundation.org>,  linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH 10/10] mm/swap: optimize synchronous swapin
+In-Reply-To: <20240326185032.72159-11-ryncsn@gmail.com> (Kairui Song's message
+	of "Wed, 27 Mar 2024 02:50:32 +0800")
+References: <20240326185032.72159-1-ryncsn@gmail.com>
+	<20240326185032.72159-11-ryncsn@gmail.com>
+Date: Wed, 27 Mar 2024 14:22:36 +0800
+Message-ID: <87zfukmbwz.fsf@yhuang6-desk2.ccr.corp.intel.com>
+User-Agent: Gnus/5.13 (Gnus v5.13)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-From: Rob Herring <robh@kernel.org>
-To: Animesh Agarwal <animeshagarwal28@gmail.com>
-Cc: Damien Le Moal <dlemoal@kernel.org>, linux-ide@vger.kernel.org, 
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
- Conor Dooley <conor+dt@kernel.org>, Rob Herring <robh+dt@kernel.org>
-In-Reply-To: <20240327054014.36864-1-animeshagarwal28@gmail.com>
-References: <20240327054014.36864-1-animeshagarwal28@gmail.com>
-Message-Id: <171152048362.993925.5771433856261368802.robh@kernel.org>
-Subject: Re: [PATCH v2] dt-bindings: ata: ahci-da850: Convert to dtschema
+Content-Type: text/plain; charset=ascii
 
+Kairui Song <ryncsn@gmail.com> writes:
 
-On Wed, 27 Mar 2024 11:10:10 +0530, Animesh Agarwal wrote:
-> Convert the ahci-da850 bindings to DT schema.
-> 
-> Signed-off-by: Animesh Agarwal <animeshagarwal28@gmail.com>
-> 
-> ---
-> Changes in v2:
-> - Added description for reg property items.
-> ---
->  .../devicetree/bindings/ata/ahci-da850.txt    | 18 ---------
->  .../bindings/ata/ti,da850-ahci.yaml           | 38 +++++++++++++++++++
->  2 files changed, 38 insertions(+), 18 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/ata/ahci-da850.txt
->  create mode 100644 Documentation/devicetree/bindings/ata/ti,da850-ahci.yaml
-> 
+> From: Kairui Song <kasong@tencent.com>
+>
+> Interestingly the major performance overhead of synchronous is actually
+> from the workingset nodes update, that's because synchronous swap in
 
-My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
-on your patch (DT_CHECKER_FLAGS is new in v5.13):
+If it's the major overhead, why not make it the first optimization?
 
-yamllint warnings/errors:
-/Documentation/devicetree/bindings/ata/ti,da850-ahci.yaml:20:111: [warning] line too long (111 > 110 characters) (line-length)
-/Documentation/devicetree/bindings/ata/ti,da850-ahci.yaml:22:3: [error] syntax error: could not find expected ':' (syntax)
+> keeps adding single folios into a xa_node, making the node no longer
+> a shadow node and have to be removed from shadow_nodes, then remove
+> the folio very shortly and making the node a shadow node again,
+> so it has to add back to the shadow_nodes.
 
-dtschema/dtc warnings/errors:
-make[2]: *** Deleting file 'Documentation/devicetree/bindings/ata/ti,da850-ahci.example.dts'
-Documentation/devicetree/bindings/ata/ti,da850-ahci.yaml:22:3: could not find expected ':'
-make[2]: *** [Documentation/devicetree/bindings/Makefile:26: Documentation/devicetree/bindings/ata/ti,da850-ahci.example.dts] Error 1
-make[2]: *** Waiting for unfinished jobs....
-/Documentation/devicetree/bindings/ata/ti,da850-ahci.yaml:22:3: could not find expected ':'
-/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/ata/ti,da850-ahci.yaml: ignoring, error parsing file
-make[1]: *** [/builds/robherring/dt-review-ci/linux/Makefile:1430: dt_binding_check] Error 2
-make: *** [Makefile:240: __sub-make] Error 2
+The folio is removed only if should_try_to_free_swap() returns true?
 
-doc reference errors (make refcheckdocs):
+> Mark synchronous swapin folio with a special bit in swap entry embedded
+> in folio->swap, as we still have some usable bits there. Skip workingset
+> node update on insertion of such folio because it will be removed very
+> quickly, and will trigger the update ensuring the workingset info is
+> eventual consensus.
 
-See https://patchwork.ozlabs.org/project/devicetree-bindings/patch/20240327054014.36864-1-animeshagarwal28@gmail.com
+Is this safe?  Is it possible for the shadow node to be reclaimed after
+the folio are added into node and before being removed?
 
-The base for the series is generally the latest rc1. A different dependency
-should be noted in *this* patch.
+If so, we may consider some other methods.  Make shadow_nodes per-cpu?
 
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure 'yamllint' is installed and dt-schema is up to
-date:
+> Test result of sequential swapin/out of 30G zero page on ZRAM:
+>
+>                Before (us)        After (us)
+> Swapout:       33853883           33886008
+> Swapin:        38336519           32465441 (+15.4%)
+> Swapout (THP): 6814619            6899938
+> Swapin (THP) : 38383367           33193479 (+13.6%)
+>
 
-pip3 install dtschema --upgrade
+[snip]
 
-Please check and re-submit after running the above command yourself. Note
-that DT_SCHEMA_FILES can be set to your schema file to speed up checking
-your schema. However, it must be unset to test all examples with your schema.
-
+--
+Best Regards,
+Huang, Ying
 
