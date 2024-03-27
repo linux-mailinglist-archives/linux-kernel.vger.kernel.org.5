@@ -1,54 +1,55 @@
-Return-Path: <linux-kernel+bounces-120972-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-120973-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6D9AA88E11A
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 13:52:20 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5DD4388E11E
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 13:52:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0F5C91F2DDA6
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 12:52:19 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 108091F295F3
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 12:52:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 56F46154C16;
-	Wed, 27 Mar 2024 12:15:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5F9D01552F7;
+	Wed, 27 Mar 2024 12:15:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gfHSqVXJ"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="reG4u0Op"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8774D154C01;
-	Wed, 27 Mar 2024 12:15:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 94E0115445C;
+	Wed, 27 Mar 2024 12:15:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711541732; cv=none; b=kIEpA27fJfz5Gycn/RXMBUAU1qxO28i6WZbV2EgP246qHp2vlZ4Bb6mZ7MdKt0IH4XoLtXEBTDRunVRjLggNJJgRvjNG11zxRQeaUNBXSSdsNAFwt8JJ0oFImdHPzgMctREAvsFP13q5H7JBQZsfqoAiJkMdJkShUPKWMcNYHTg=
+	t=1711541735; cv=none; b=sM/VTmS60lI5FkKWg9Tt5PDzG2ia5Z73oCll3JrgHvoBsRZaDJ6KrG7OQ6sGFzyVSCegFJNcDqfAcjv78c0DsRYtK/cJuCF1RdnU0XFAveVe5QzCtCAPO+tz1Kqz7fxzG089inmi6jgs01MqC6efoNzbXau9e5fyt4bVpSrOKOM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711541732; c=relaxed/simple;
-	bh=lNQbdKRflk16maW7ZwdkNbs/gGlJa9QMoMDr0oQoQFo=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=CM+SWA9TCqMY9hHWqaZiJCOGZ2UFuSfwnpXMTJNYrSMEIDlaJct4hYNMr/XcEswezplTY94+ID36mazkNs19WcxzgkIPGKiEniuizxhE8ixgS0YLjPjNB1mPx97zH9kekPMp5xIveFkS72HULbJqfK7KlH+2hpIaOZEZqDzXgRo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=gfHSqVXJ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A0F7EC433F1;
-	Wed, 27 Mar 2024 12:15:31 +0000 (UTC)
+	s=arc-20240116; t=1711541735; c=relaxed/simple;
+	bh=MTjETf/HXOHB/c0QIDmTzo8luuhXe+HE16e14F5Iz3Y=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=ct7BsndQWECzIISjyl/zpvkkqdcd9mPNYWJNd2UCyqFUFKyAcwtoicF5nTklRVdcU1ZyB6JI5zc1AikYsvlggfGD6rK1QkTDrLbcHLb/rFOPJ1mkvgl5qkYB0np5agmKedy3+tv0fnJnfuAz/GX6mXMZzthDv/S3zGaUKBrbqDA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=reG4u0Op; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 43CFAC433F1;
+	Wed, 27 Mar 2024 12:15:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711541732;
-	bh=lNQbdKRflk16maW7ZwdkNbs/gGlJa9QMoMDr0oQoQFo=;
+	s=k20201202; t=1711541735;
+	bh=MTjETf/HXOHB/c0QIDmTzo8luuhXe+HE16e14F5Iz3Y=;
 	h=From:To:Cc:Subject:Date:From;
-	b=gfHSqVXJzIAkVGeKfcvX/YlvvzZrNlxoVFKqU/R6jI6IUTU6Bc6gpCO6X0yOO0zRn
-	 fqys0Kze8PSnpPnIERFnSZncilpGJRCx+5IlnvZfSJPQ7xJpjTYyVMnY9a1ZRtF1mv
-	 BJf2lv9zdKTsyR4Q30HVJ1xMciC8EZ+lZDz3yVVPZJQCzICVPHn5pGU3+aKmKZ/4Ci
-	 ogpnOP6RtVAm5SfraB4APjrLMFeqNcbHv2/fK3thlBPdZXDcpm4KntBctJleIm1kUB
-	 3LFC6o3kJRaQh+VKJrEtDqMH7z/BE0+z76PtW/LMaYh6r5IDJF/a1Udz0lx0tuP24H
-	 mHdqVHh8JzbCQ==
+	b=reG4u0OpWqPKH3dTVxncTVvUyr/W4lEO3PrXXN1ETgn3ETCSCR5vLC+P+ryI7P2ip
+	 7eHrxq4eSKB2uLfcdI7Kjv/yfCOTDBLYs8nkhc7seJmz9XHfyEY8sYv4YmKR/0q/5M
+	 G9JPCcsNYYG/wFm0WT0uY65SsuaBZ/80FfU375gSub1i5erTsj03ApBX8wS0WzAEPc
+	 YBmOXf12qldGwhweFd3SkSBN0cjXmEFmeAzYmarPpjde/sLGCdUK2rFHmdDYjMZ20b
+	 qF7d5WikKjVdvblNtzXot5LGp+9hGSlENzskMQwEBrMBg9ucbxVb35u9kNto4a8CnJ
+	 lnuld8qsO+AMg==
 From: Sasha Levin <sashal@kernel.org>
 To: stable@vger.kernel.org,
-	ardb@kernel.org
-Cc: stable@kernel.org,
-	Radek Podgorny <radek@podgorny.cz>,
-	linux-efi@vger.kernel.org,
+	morrownr@gmail.com
+Cc: Larry Finger <Larry.Finger@lwfinger.net>,
+	Ping-Ke Shih <pkshih@realtek.com>,
+	Kalle Valo <kvalo@kernel.org>,
+	linux-wireless@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: FAILED: Patch "x86/efistub: Clear decompressor BSS in native EFI entrypoint" failed to apply to 5.15-stable tree
-Date: Wed, 27 Mar 2024 08:15:30 -0400
-Message-ID: <20240327121530.2831969-1-sashal@kernel.org>
+Subject: FAILED: Patch "wifi: rtw88: Add missing VID/PIDs for 8811CU and 8821CU" failed to apply to 5.15-stable tree
+Date: Wed, 27 Mar 2024 08:15:33 -0400
+Message-ID: <20240327121533.2832006-1-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -70,68 +71,86 @@ Sasha
 
 ------------------ original commit in Linus's tree ------------------
 
-From b3810c5a2cc4a6665f7a65bed5393c75ce3f3aa2 Mon Sep 17 00:00:00 2001
-From: Ard Biesheuvel <ardb@kernel.org>
-Date: Fri, 15 Mar 2024 16:26:16 +0100
-Subject: [PATCH] x86/efistub: Clear decompressor BSS in native EFI entrypoint
+From b8a62478f3b143592d1241de1a7f5f8629ad0f49 Mon Sep 17 00:00:00 2001
+From: Nick Morrow <morrownr@gmail.com>
+Date: Tue, 27 Feb 2024 02:34:40 +0000
+Subject: [PATCH] wifi: rtw88: Add missing VID/PIDs for 8811CU and 8821CU
 
-The EFI stub on x86 no longer invokes the decompressor as a subsequent
-boot stage, but calls into the decompression code directly while running
-in the context of the EFI boot services.
+Add VID/PIDs that are known to be missing for this driver.
 
-This means that when using the native EFI entrypoint (as opposed to the
-EFI handover protocol, which clears BSS explicitly), the firmware PE
-image loader is being relied upon to ensure that BSS is zeroed before
-the EFI stub is entered from the firmware.
+Removed /* 8811CU */ and /* 8821CU */ as they are redundant
+since the file is specific to those chips.
 
-As Radek's report proves, this is a bad idea. Not all loaders do this
-correctly, which means some global variables that should be statically
-initialized to 0x0 may have junk in them.
+Removed /* TOTOLINK A650UA v3 */ as the manufacturer. It has a REALTEK
+VID so it may not be specific to this adapter.
 
-So clear BSS explicitly when entering via efi_pe_entry(). Note that
-zeroing BSS from C code is not generally safe, but in this case, the
-following assignment and dereference of a global pointer variable
-ensures that the memset() cannot be deferred or reordered.
+Verified and tested.
 
-Cc: <stable@kernel.org> # v6.1+
-Reported-by: Radek Podgorny <radek@podgorny.cz>
-Closes: https://lore.kernel.org/all/a99a831a-8ad5-4cb0-bff9-be637311f771@podgorny.cz
-Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
+Cc: stable@vger.kernel.org
+Signed-off-by: Nick Morrow <morrownr@gmail.com>
+Signed-off-by: Larry Finger <Larry.Finger@lwfinger.net>
+Acked-by: Ping-Ke Shih <pkshih@realtek.com>
+Signed-off-by: Kalle Valo <kvalo@kernel.org>
+Link: https://msgid.link/4ume7mjw63u7.XlMUvUuacW2ErhOCdqlLkw2@1EHFQ.trk.elasticemail.com
 ---
- drivers/firmware/efi/libstub/x86-stub.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ .../net/wireless/realtek/rtw88/rtw8821cu.c    | 40 ++++++++++++-------
+ 1 file changed, 26 insertions(+), 14 deletions(-)
 
-diff --git a/drivers/firmware/efi/libstub/x86-stub.c b/drivers/firmware/efi/libstub/x86-stub.c
-index 35413c8dfc251..2096ae09438e4 100644
---- a/drivers/firmware/efi/libstub/x86-stub.c
-+++ b/drivers/firmware/efi/libstub/x86-stub.c
-@@ -21,6 +21,8 @@
- #include "efistub.h"
- #include "x86-stub.h"
+diff --git a/drivers/net/wireless/realtek/rtw88/rtw8821cu.c b/drivers/net/wireless/realtek/rtw88/rtw8821cu.c
+index 7a5cbdc31ef79..e2c7d9f876836 100644
+--- a/drivers/net/wireless/realtek/rtw88/rtw8821cu.c
++++ b/drivers/net/wireless/realtek/rtw88/rtw8821cu.c
+@@ -9,24 +9,36 @@
+ #include "usb.h"
  
-+extern char _bss[], _ebss[];
-+
- const efi_system_table_t *efi_system_table;
- const efi_dxe_services_table_t *efi_dxe_table;
- static efi_loaded_image_t *image = NULL;
-@@ -474,6 +476,8 @@ efi_status_t __efiapi efi_pe_entry(efi_handle_t handle,
- 	efi_status_t status;
- 	char *cmdline_ptr;
- 
-+	memset(_bss, 0, _ebss - _bss);
-+
- 	efi_system_table = sys_table_arg;
- 
- 	/* Check if we were booted by the EFI firmware */
-@@ -967,8 +971,6 @@ void __noreturn efi_stub_entry(efi_handle_t handle,
- void efi_handover_entry(efi_handle_t handle, efi_system_table_t *sys_table_arg,
- 			struct boot_params *boot_params)
- {
--	extern char _bss[], _ebss[];
--
- 	memset(_bss, 0, _ebss - _bss);
- 	efi_stub_entry(handle, sys_table_arg, boot_params);
- }
+ static const struct usb_device_id rtw_8821cu_id_table[] = {
+-	{ USB_DEVICE_AND_INTERFACE_INFO(RTW_USB_VENDOR_ID_REALTEK, 0xb82b, 0xff, 0xff, 0xff),
+-	  .driver_info = (kernel_ulong_t)&(rtw8821c_hw_spec) }, /* 8821CU */
++	{ USB_DEVICE_AND_INTERFACE_INFO(RTW_USB_VENDOR_ID_REALTEK, 0x2006, 0xff, 0xff, 0xff),
++	  .driver_info = (kernel_ulong_t)&(rtw8821c_hw_spec) },
++	{ USB_DEVICE_AND_INTERFACE_INFO(RTW_USB_VENDOR_ID_REALTEK, 0x8731, 0xff, 0xff, 0xff),
++	  .driver_info = (kernel_ulong_t)&(rtw8821c_hw_spec) },
++	{ USB_DEVICE_AND_INTERFACE_INFO(RTW_USB_VENDOR_ID_REALTEK, 0x8811, 0xff, 0xff, 0xff),
++	  .driver_info = (kernel_ulong_t)&(rtw8821c_hw_spec) },
+ 	{ USB_DEVICE_AND_INTERFACE_INFO(RTW_USB_VENDOR_ID_REALTEK, 0xb820, 0xff, 0xff, 0xff),
+-	  .driver_info = (kernel_ulong_t)&(rtw8821c_hw_spec) }, /* 8821CU */
+-	{ USB_DEVICE_AND_INTERFACE_INFO(RTW_USB_VENDOR_ID_REALTEK, 0xc821, 0xff, 0xff, 0xff),
+-	  .driver_info = (kernel_ulong_t)&(rtw8821c_hw_spec) }, /* 8821CU */
++	  .driver_info = (kernel_ulong_t)&(rtw8821c_hw_spec) },
++	{ USB_DEVICE_AND_INTERFACE_INFO(RTW_USB_VENDOR_ID_REALTEK, 0xb82b, 0xff, 0xff, 0xff),
++	  .driver_info = (kernel_ulong_t)&(rtw8821c_hw_spec) },
++	{ USB_DEVICE_AND_INTERFACE_INFO(RTW_USB_VENDOR_ID_REALTEK, 0xc80c, 0xff, 0xff, 0xff),
++	  .driver_info = (kernel_ulong_t)&(rtw8821c_hw_spec) },
++	{ USB_DEVICE_AND_INTERFACE_INFO(RTW_USB_VENDOR_ID_REALTEK, 0xc811, 0xff, 0xff, 0xff),
++	  .driver_info = (kernel_ulong_t)&(rtw8821c_hw_spec) },
+ 	{ USB_DEVICE_AND_INTERFACE_INFO(RTW_USB_VENDOR_ID_REALTEK, 0xc820, 0xff, 0xff, 0xff),
+-	  .driver_info = (kernel_ulong_t)&(rtw8821c_hw_spec) }, /* 8821CU */
++	  .driver_info = (kernel_ulong_t)&(rtw8821c_hw_spec) },
++	{ USB_DEVICE_AND_INTERFACE_INFO(RTW_USB_VENDOR_ID_REALTEK, 0xc821, 0xff, 0xff, 0xff),
++	  .driver_info = (kernel_ulong_t)&(rtw8821c_hw_spec) },
+ 	{ USB_DEVICE_AND_INTERFACE_INFO(RTW_USB_VENDOR_ID_REALTEK, 0xc82a, 0xff, 0xff, 0xff),
+-	  .driver_info = (kernel_ulong_t)&(rtw8821c_hw_spec) }, /* 8821CU */
++	  .driver_info = (kernel_ulong_t)&(rtw8821c_hw_spec) },
+ 	{ USB_DEVICE_AND_INTERFACE_INFO(RTW_USB_VENDOR_ID_REALTEK, 0xc82b, 0xff, 0xff, 0xff),
+-	  .driver_info = (kernel_ulong_t)&(rtw8821c_hw_spec) }, /* 8821CU */
+-	{ USB_DEVICE_AND_INTERFACE_INFO(RTW_USB_VENDOR_ID_REALTEK, 0xc811, 0xff, 0xff, 0xff),
+-	  .driver_info = (kernel_ulong_t)&(rtw8821c_hw_spec) }, /* 8811CU */
+-	{ USB_DEVICE_AND_INTERFACE_INFO(RTW_USB_VENDOR_ID_REALTEK, 0x8811, 0xff, 0xff, 0xff),
+-	  .driver_info = (kernel_ulong_t)&(rtw8821c_hw_spec) }, /* 8811CU */
+-	{ USB_DEVICE_AND_INTERFACE_INFO(RTW_USB_VENDOR_ID_REALTEK, 0x2006, 0xff, 0xff, 0xff),
+-	  .driver_info = (kernel_ulong_t)&(rtw8821c_hw_spec) }, /* TOTOLINK A650UA v3 */
++	  .driver_info = (kernel_ulong_t)&(rtw8821c_hw_spec) },
++	{ USB_DEVICE_AND_INTERFACE_INFO(RTW_USB_VENDOR_ID_REALTEK, 0xc82c, 0xff, 0xff, 0xff),
++	  .driver_info = (kernel_ulong_t)&(rtw8821c_hw_spec) },
++	{ USB_DEVICE_AND_INTERFACE_INFO(0x2001, 0x331d, 0xff, 0xff, 0xff),
++	  .driver_info = (kernel_ulong_t)&(rtw8821c_hw_spec) }, /* D-Link */
++	{ USB_DEVICE_AND_INTERFACE_INFO(0x7392, 0xc811, 0xff, 0xff, 0xff),
++	  .driver_info = (kernel_ulong_t)&(rtw8821c_hw_spec) }, /* Edimax */
++	{ USB_DEVICE_AND_INTERFACE_INFO(0x7392, 0xd811, 0xff, 0xff, 0xff),
++	  .driver_info = (kernel_ulong_t)&(rtw8821c_hw_spec) }, /* Edimax */
+ 	{},
+ };
+ MODULE_DEVICE_TABLE(usb, rtw_8821cu_id_table);
 -- 
 2.43.0
 
