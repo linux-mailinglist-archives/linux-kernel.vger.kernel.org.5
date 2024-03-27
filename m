@@ -1,153 +1,490 @@
-Return-Path: <linux-kernel+bounces-120496-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-120499-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id AEE8E88D863
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 09:08:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 99A1688D86B
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 09:09:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 220B31F29D6E
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 08:08:45 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 138B91F2A5CC
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 08:09:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8A6502C859;
-	Wed, 27 Mar 2024 08:08:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 295A82D608;
+	Wed, 27 Mar 2024 08:09:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="ONmXkiid"
-Received: from mail-ed1-f54.google.com (mail-ed1-f54.google.com [209.85.208.54])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="WIgbilYU"
+Received: from mail-vs1-f42.google.com (mail-vs1-f42.google.com [209.85.217.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0E2FD2C68E
-	for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 08:08:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9144B36123
+	for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 08:08:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.217.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711526918; cv=none; b=Sn0xJxN1srRfklp4iAcNFv+6AxZGQpj5wopCrSkq+qFpaijwXuXOoXe2xYJI0gfeGsfgiHvCy+tflTZ+l/zxSi7V5s684Egko3DnrAPoBxNMBzkUByuF0aXwYX5bXB7jcF/JiyeaeoTttEwIgHkPgqhBQAftU5tx29sYWaoBz/4=
+	t=1711526939; cv=none; b=U6tXsCRTbcML7eKEPVo7fFdhwmGDq8p++WmMCYqQifxEP/M9Mggu1cdigYsBnN1aryPX/hKlmlPWDrcV0nnlBZ/Sgn2tzliuT3D9qY0xwydInBt9WCWoqRxZ5+JlvYDVNg5kQI7Y+7OwLIzcugn5bfwACJe+n6gKUbMStji7uH4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711526918; c=relaxed/simple;
-	bh=Oc9Iv5diB5DzfcVhZ+RCWd76hDCbOkvCx734DwkPblE=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=qck9e5lumSmr/1j5UpZdTpn6iF5vYX2jmziEB18rlM9GM/ogAu6VD1qXCvDUGhG88gz1elU7S5+jzRj6cYpdVhaxMrnzdgKk36okrtXlU1fAEymcQ9jOQyWpKKiI+YVsvVVdWV7hgEkxildcvXhfJUNwXaDWHdgKhASTucIlDR4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=ONmXkiid; arc=none smtp.client-ip=209.85.208.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ed1-f54.google.com with SMTP id 4fb4d7f45d1cf-56bdf81706aso6747256a12.2
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 01:08:36 -0700 (PDT)
+	s=arc-20240116; t=1711526939; c=relaxed/simple;
+	bh=9WtPAaCqrMlfUguCz8sfyv3g4cnBfJtpq8eaLDwofDI=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=cd1qY5nUrRIQq92MrvFOVp3fZKsK5HEpPnYAhvquSpJ7hBRkD7h0rSlZErgRRIrbs/f03MrYa6WpuQeiZw2jNKR0rRwbzxGh2Y/DKMHdxHX/l1OCQy7Ia/v2zjRGysfDMtIAIsF9rqKTrecfR6TnPzfyfPdlq5NyJivTWR11UWA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=WIgbilYU; arc=none smtp.client-ip=209.85.217.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-vs1-f42.google.com with SMTP id ada2fe7eead31-4782f98ad5bso376555137.3
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 01:08:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1711526915; x=1712131715; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=obxAsZqjQz5NFCsemkq6GbW/laq9L0gPO3GCkwtXJlM=;
-        b=ONmXkiid9vq1dp6D/7yTze0vJP21KKiirpquwzzbz+BTLjgG+R4e0mHtdVqjTA8upk
-         Ypf72DKib697dBFk80r5gr+c3FnIyprh3VQKpvhfJeHs2bROdE/5HbpdLjg2TyQXihib
-         nfMn/fD3jRudBR5SUAPPuixxDSevHyaRB0xmaePpLKkUHcvSxwgPjXDrfG+3ioIk4TBf
-         934ed2gzzZPMuuRYO9QreVMDNDzu4Osja7oJdB2Nhde3FF7a2snlbUksjco+10tqkajN
-         p2gO7rPOiIilzQYpuQAmCHuYxWbhFMmdQ4ACbEyC5Ek+2ryxrYx1i/Et6Kego2/X4c9j
-         hZfg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711526915; x=1712131715;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1711526936; x=1712131736; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=obxAsZqjQz5NFCsemkq6GbW/laq9L0gPO3GCkwtXJlM=;
-        b=wj+pgM6AuJv/k7QL6pLggpSYVLmkQ8RYGuK/PG4zIsSNsawkbjdq4jFWMnyLgUaIGN
-         baocAN7WvH2AFpZ0VUUJcT5wOZxqC7SOdAJnVNaXA1X7P7KYTDJ9wy9syh/uKFNtmHPr
-         IxheVY98kR1MuebggPfvT+74BDTltXGF9bBtqRs44MdMdncNQJBM98d4HDJqJp2b2WoB
-         xt9F53PufyjasbKZd8rbZ1FfA3sl1inRn2TXI5YGll8mz1exMB3Wb/TKi1cwQzYle8ia
-         ixKhiLXFQjInnedos8Gm3Wg75zuY0+yR722oyi9cmIt/3HFrF4zu2ZHePWf2cqoemb7q
-         FUBA==
-X-Forwarded-Encrypted: i=1; AJvYcCWltbiIQPEmKNS/XTUgssX3K6KAW7E5N6DnZGtYyr7mI7wLN7lBAJtGk6SkxqP38BsNyqL+BCRqlxoaZnDPdEfGyI8/9SiYN5YD3T26
-X-Gm-Message-State: AOJu0YzhXOPsq5gouzI75qPBmTT4nkmaj+ObAkKGqPV2xP+66MrOYiXU
-	fBOTETLaiktc8LzrGJ65WGIhr58z0gwlMoKPVYNXwZD/bocnacgx40S2paS8aW0=
-X-Google-Smtp-Source: AGHT+IH9Rhol6bx4mSpOLsYkvw7rBvwEt9QkpNW/BVY05fFsQyPnFGF3f+h1lkvsoqSdr+5AAem4OQ==
-X-Received: by 2002:a50:8706:0:b0:56c:19d2:85b2 with SMTP id i6-20020a508706000000b0056c19d285b2mr2639075edb.35.1711526915427;
-        Wed, 27 Mar 2024 01:08:35 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.206.205])
-        by smtp.gmail.com with ESMTPSA id r14-20020aa7da0e000000b0056bf31fa2a3sm4996730eds.80.2024.03.27.01.08.33
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 27 Mar 2024 01:08:34 -0700 (PDT)
-Message-ID: <a3accd7e-b89f-4d26-b89b-31e5c282014f@linaro.org>
-Date: Wed, 27 Mar 2024 09:08:33 +0100
+        bh=enqHhg5eW0k8vb7HDrT1c69Ar280o1OddJk3zvWY+XI=;
+        b=WIgbilYUDAW+lDwjUQSFlpS1ftfkbBrV0g95Avkqn8tYIlIwzzyu+0+gyu+lM15Br5
+         3AX5pRLIwi3qyliUOlcx8RMuocGsb5arX/62+8iXTCtmJC16KuJHHSJUEiWBuC2hCr2r
+         JvtWwIm/6M2PgtzRoHHwC9v/3wfreyN+cnIvBwZviIIri2KrJuXyAHilhf6Fvx/1oOut
+         HW3gwQdoWeK7l7DWrJg2c8S8EtNi+8ookYB7IXs0DXSYsxYBNNXumalgD/kII2iTjW/6
+         tyXlPr9mYhgbCB8w/LuMJXG4yAmz9QsZsj03Acun4pA6EoFzsptu/f9xXJTZkQaI0Ag4
+         hBdQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711526936; x=1712131736;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=enqHhg5eW0k8vb7HDrT1c69Ar280o1OddJk3zvWY+XI=;
+        b=hUOSzhDfOjJT6PL3rf2osBRDLo5qwHdat7pgWQkq8OcQZ9E4FU6efV1QcEvg936oK1
+         nI7joyOnI5therqd+Pa5F2QpW2ZRji7MgWvtcFtB6Vt4ONLdZFXCE+CxokX6cd4aLBvg
+         U2L4HrjzltLKrs9q0+P8EJRZKB7+rJ1Z3nb2HHHU3Ynpoei6RvgqqYf14mC11SBvyYSb
+         FTVwt251Rq0VsCah8UalDHInf+D45F5PNC5EgboQuvQNTPVS/wZDq5AYsMspxyGP+geF
+         707gBq413Ef3UY4cCNdHLioutrXDSr9mc3sKF5KzPYbcwdDfdH/NHrjKQBO+1CYFZ63i
+         14nw==
+X-Forwarded-Encrypted: i=1; AJvYcCXGkUHsN3iScXJlSaWufYmNggC6dCcy0BsAuxuTvHcEswe1mie2cDfDFrln9WehW5j0DlyEltVn4thpUQT81MSHuP5qOY6tFkJXMKkI
+X-Gm-Message-State: AOJu0YyLeJq6uAfDOddrlbkbiA3NDl8Uu4e+NV7gTYfL0yblritFLBFE
+	F9ljgi8EroKTWVGrrxP0RvE7Uj25UOurYfdeTsxSBOhcltZOuyAWRORmR4TRxCcCK5wyVaqMQOa
+	Bw3p30Nr0AhjVpP81ZuSlXKjoalQ=
+X-Google-Smtp-Source: AGHT+IELyW+lGRJ+KNB6y+obMF8YncimwVaRT6NPq1WGF6FrqE+TqfZJKx3xuaYck42WT3C+RRz9B+VIlVCftIU8xsk=
+X-Received: by 2002:a67:ecda:0:b0:474:ca8c:227d with SMTP id
+ i26-20020a67ecda000000b00474ca8c227dmr4833149vsp.6.1711526936385; Wed, 27 Mar
+ 2024 01:08:56 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 4/4] dt-bindings: arm: keystone: Remove
- ti,system-reboot-controller property
-To: Andrew Davis <afd@ti.com>, Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, Santosh Shilimkar <ssantosh@kernel.org>,
- Nishanth Menon <nm@ti.com>, Vignesh Raghavendra <vigneshr@ti.com>
-Cc: devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-kernel@vger.kernel.org
-References: <20240326223730.54639-1-afd@ti.com>
- <20240326223730.54639-5-afd@ti.com>
-Content-Language: en-US
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20240326223730.54639-5-afd@ti.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <20240326185032.72159-1-ryncsn@gmail.com> <20240326185032.72159-11-ryncsn@gmail.com>
+In-Reply-To: <20240326185032.72159-11-ryncsn@gmail.com>
+From: Barry Song <21cnbao@gmail.com>
+Date: Wed, 27 Mar 2024 21:08:45 +1300
+Message-ID: <CAGsJ_4yLAYUGYzWJwe9_LmqOcCzrz8-UKhdRDjTzgVQF7Z-xZA@mail.gmail.com>
+Subject: Re: [RFC PATCH 10/10] mm/swap: optimize synchronous swapin
+To: Kairui Song <kasong@tencent.com>
+Cc: linux-mm@kvack.org, "Huang, Ying" <ying.huang@intel.com>, Chris Li <chrisl@kernel.org>, 
+	Minchan Kim <minchan@kernel.org>, Barry Song <v-songbaohua@oppo.com>, 
+	Ryan Roberts <ryan.roberts@arm.com>, Yu Zhao <yuzhao@google.com>, SeongJae Park <sj@kernel.org>, 
+	David Hildenbrand <david@redhat.com>, Yosry Ahmed <yosryahmed@google.com>, 
+	Johannes Weiner <hannes@cmpxchg.org>, Matthew Wilcox <willy@infradead.org>, Nhat Pham <nphamcs@gmail.com>, 
+	Chengming Zhou <zhouchengming@bytedance.com>, Andrew Morton <akpm@linux-foundation.org>, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 26/03/2024 23:37, Andrew Davis wrote:
-> This property was only ever used in one device. It is no longer needed as
-> what it signaled is now default. Remove this unneeded/unused property.
-> 
-> Signed-off-by: Andrew Davis <afd@ti.com>
+On Wed, Mar 27, 2024 at 8:06=E2=80=AFAM Kairui Song <ryncsn@gmail.com> wrot=
+e:
+>
+> From: Kairui Song <kasong@tencent.com>
+>
+> Interestingly the major performance overhead of synchronous is actually
+> from the workingset nodes update, that's because synchronous swap in
+> keeps adding single folios into a xa_node, making the node no longer
+> a shadow node and have to be removed from shadow_nodes, then remove
+> the folio very shortly and making the node a shadow node again,
+> so it has to add back to the shadow_nodes.
+
+Hi Kairui,
+
+Thank you for clarifying this. I'm unsure how it relates to SWP_SYNCHRONOUS=
+_IO.
+Does this observation apply universally to all instances where
+__swap_count(entry)
+=3D=3D 1, even on devices not using SYNCHRONOUS_IO?
+
+
+>
+> Mark synchronous swapin folio with a special bit in swap entry embedded
+> in folio->swap, as we still have some usable bits there. Skip workingset
+> node update on insertion of such folio because it will be removed very
+> quickly, and will trigger the update ensuring the workingset info is
+> eventual consensus.
+>
+> Test result of sequential swapin/out of 30G zero page on ZRAM:
+>
+>                Before (us)        After (us)
+> Swapout:       33853883           33886008
+> Swapin:        38336519           32465441 (+15.4%)
+> Swapout (THP): 6814619            6899938
+> Swapin (THP) : 38383367           33193479 (+13.6%)
+>
+> Signed-off-by: Kairui Song <kasong@tencent.com>
 > ---
->  Documentation/devicetree/bindings/arm/keystone/ti,sci.yaml | 5 -----
->  1 file changed, 5 deletions(-)
+>  include/linux/swapops.h |  5 +++-
+>  mm/filemap.c            | 16 +++++++++---
+>  mm/memory.c             | 34 ++++++++++++++----------
+>  mm/swap.h               | 15 +++++++++++
+>  mm/swap_state.c         | 57 ++++++++++++++++++++++++-----------------
+>  mm/vmscan.c             |  6 +++++
+>  mm/workingset.c         |  2 +-
+>  7 files changed, 92 insertions(+), 43 deletions(-)
+>
+> diff --git a/include/linux/swapops.h b/include/linux/swapops.h
+> index 48b700ba1d18..ebc0c3e4668d 100644
+> --- a/include/linux/swapops.h
+> +++ b/include/linux/swapops.h
+> @@ -25,7 +25,10 @@
+>   * swp_entry_t's are *never* stored anywhere in their arch-dependent for=
+mat.
+>   */
+>  #define SWP_TYPE_SHIFT (BITS_PER_XA_VALUE - MAX_SWAPFILES_SHIFT)
+> -#define SWP_OFFSET_MASK        ((1UL << SWP_TYPE_SHIFT) - 1)
+> +#define SWP_CACHE_FLAG_BITS    1
+> +#define SWP_CACHE_SYNCHRONOUS  BIT(SWP_TYPE_SHIFT - 1)
+> +#define SWP_OFFSET_BITS        (SWP_TYPE_SHIFT - SWP_CACHE_FLAG_BITS)
+> +#define SWP_OFFSET_MASK        (BIT(SWP_OFFSET_BITS) - 1)
+>
+>  /*
+>   * Definitions only for PFN swap entries (see is_pfn_swap_entry()).  To
+> diff --git a/mm/filemap.c b/mm/filemap.c
+> index 5e8e3fd26b8d..ac24cc65d1da 100644
+> --- a/mm/filemap.c
+> +++ b/mm/filemap.c
+> @@ -923,12 +923,20 @@ int __filemap_add_swapcache(struct address_space *m=
+apping, struct folio *folio,
+>                             pgoff_t index, gfp_t gfp, void **shadowp)
+>  {
+>         XA_STATE_ORDER(xas, &mapping->i_pages, index, folio_order(folio))=
+;
+> +       bool synchronous =3D swap_cache_test_synchronous(folio);
+>         long nr;
+>         int ret;
+>
+>         VM_BUG_ON_FOLIO(!folio_test_locked(folio), folio);
+>         VM_BUG_ON_FOLIO(!folio_test_swapcache(folio), folio);
+> -       mapping_set_update(&xas, mapping);
+> +
+> +       /*
+> +        * Skip node update for synchronous folio insertion, it will be
+> +        * updated on folio deletion very soon, avoid repeated LRU lockin=
+g.
+> +        */
+> +       if (!synchronous)
+> +               xas_set_update(&xas, workingset_update_node);
+> +       xas_set_lru(&xas, &shadow_nodes);
+>
+>         nr =3D folio_nr_pages(folio);
+>         folio_ref_add(folio, nr);
+> @@ -936,8 +944,10 @@ int __filemap_add_swapcache(struct address_space *ma=
+pping, struct folio *folio,
+>         ret =3D __filemap_lock_store(&xas, folio, index, gfp, shadowp);
+>         if (likely(!ret)) {
+>                 mapping->nrpages +=3D nr;
+> -               __node_stat_mod_folio(folio, NR_FILE_PAGES, nr);
+> -               __lruvec_stat_mod_folio(folio, NR_SWAPCACHE, nr);
+> +               if (!synchronous) {
+> +                       __node_stat_mod_folio(folio, NR_FILE_PAGES, nr);
+> +                       __lruvec_stat_mod_folio(folio, NR_SWAPCACHE, nr);
+> +               }
+>                 xas_unlock_irq(&xas);
+>         } else {
+>                 folio_put_refs(folio, nr);
+> diff --git a/mm/memory.c b/mm/memory.c
+> index 774a912eb46d..bb40202b4f29 100644
+> --- a/mm/memory.c
+> +++ b/mm/memory.c
+> @@ -3933,6 +3933,7 @@ vm_fault_t do_swap_page(struct vm_fault *vmf)
+>         struct swap_info_struct *si =3D NULL;
+>         rmap_t rmap_flags =3D RMAP_NONE;
+>         bool folio_allocated =3D false;
+> +       bool synchronous_io =3D false;
+>         bool exclusive =3D false;
+>         swp_entry_t entry;
+>         pte_t pte;
+> @@ -4032,18 +4033,19 @@ vm_fault_t do_swap_page(struct vm_fault *vmf)
+>         if (ret & VM_FAULT_RETRY)
+>                 goto out_release;
+>
+> -       if (swapcache) {
+> -               /*
+> -                * Make sure folio_free_swap() or swapoff did not release=
+ the
+> -                * swapcache from under us.  The page pin, and pte_same t=
+est
+> -                * below, are not enough to exclude that.  Even if it is =
+still
+> -                * swapcache, we need to check that the page's swap has n=
+ot
+> -                * changed.
+> -                */
+> -               if (unlikely(!folio_test_swapcache(folio) ||
+> -                            page_swap_entry(page).val !=3D entry.val))
+> -                       goto out_page;
+> +       /*
+> +        * Make sure folio_free_swap() or swapoff did not release the
+> +        * swapcache from under us.  The page pin, and pte_same test
+> +        * below, are not enough to exclude that.  Even if it is still
+> +        * swapcache, we need to check that the page's swap has not
+> +        * changed.
+> +        */
+> +       if (unlikely(!folio_test_swapcache(folio) ||
+> +                    (page_swap_entry(page).val & ~SWP_CACHE_SYNCHRONOUS)=
+ !=3D entry.val))
+> +               goto out_page;
+>
+> +       synchronous_io =3D swap_cache_test_synchronous(folio);
+> +       if (!synchronous_io) {
+>                 /*
+>                  * KSM sometimes has to copy on read faults, for example,=
+ if
+>                  * page->index of !PageKSM() pages would be nonlinear ins=
+ide the
+> @@ -4105,9 +4107,9 @@ vm_fault_t do_swap_page(struct vm_fault *vmf)
+>          */
+>         if (!folio_test_ksm(folio)) {
+>                 exclusive =3D pte_swp_exclusive(vmf->orig_pte);
+> -               if (folio !=3D swapcache) {
+> +               if (synchronous_io || folio !=3D swapcache) {
+>                         /*
+> -                        * We have a fresh page that is not exposed to th=
+e
+> +                        * We have a fresh page that is not sharable thro=
+ugh the
+>                          * swapcache -> certainly exclusive.
+>                          */
+>                         exclusive =3D true;
+> @@ -4148,7 +4150,9 @@ vm_fault_t do_swap_page(struct vm_fault *vmf)
+>          * yet.
+>          */
+>         swap_free(entry);
+> -       if (should_try_to_free_swap(folio, vma, vmf->flags))
+> +       if (synchronous_io)
+> +               delete_from_swap_cache(folio);
+> +       else if (should_try_to_free_swap(folio, vma, vmf->flags))
+>                 folio_free_swap(folio);
+>
+>         inc_mm_counter(vma->vm_mm, MM_ANONPAGES);
+> @@ -4223,6 +4227,8 @@ vm_fault_t do_swap_page(struct vm_fault *vmf)
+>  out_nomap:
+>         if (vmf->pte)
+>                 pte_unmap_unlock(vmf->pte, vmf->ptl);
+> +       if (synchronous_io)
+> +               delete_from_swap_cache(folio);
+>  out_page:
+>         folio_unlock(folio);
+>  out_release:
+> diff --git a/mm/swap.h b/mm/swap.h
+> index bd872b157950..9d106eebddbd 100644
+> --- a/mm/swap.h
+> +++ b/mm/swap.h
+> @@ -31,6 +31,21 @@ extern struct address_space *swapper_spaces[];
+>         (&swapper_spaces[swp_type(entry)][swp_offset(entry) \
+>                 >> SWAP_ADDRESS_SPACE_SHIFT])
+>
+> +static inline void swap_cache_mark_synchronous(struct folio *folio)
+> +{
+> +       folio->swap.val |=3D SWP_CACHE_SYNCHRONOUS;
+> +}
+> +
+> +static inline bool swap_cache_test_synchronous(struct folio *folio)
+> +{
+> +       return folio->swap.val & SWP_CACHE_SYNCHRONOUS;
+> +}
+> +
+> +static inline void swap_cache_clear_synchronous(struct folio *folio)
+> +{
+> +       folio->swap.val &=3D ~SWP_CACHE_SYNCHRONOUS;
+> +}
+> +
+>  void show_swap_cache_info(void);
+>  bool add_to_swap(struct folio *folio);
+>  void *get_shadow_from_swap_cache(swp_entry_t entry);
+> diff --git a/mm/swap_state.c b/mm/swap_state.c
+> index cf178dd1131a..b0b1b5391ac1 100644
+> --- a/mm/swap_state.c
+> +++ b/mm/swap_state.c
+> @@ -86,7 +86,7 @@ void *get_shadow_from_swap_cache(swp_entry_t entry)
+>   * but sets SwapCache flag and private instead of mapping and index.
+>   */
+>  static int add_to_swap_cache(struct folio *folio, swp_entry_t entry,
+> -                            gfp_t gfp, void **shadowp)
+> +                            gfp_t gfp, bool synchronous, void **shadowp)
+>  {
+>         struct address_space *address_space =3D swap_address_space(entry)=
+;
+>         pgoff_t idx =3D swp_offset(entry);
+> @@ -98,11 +98,12 @@ static int add_to_swap_cache(struct folio *folio, swp=
+_entry_t entry,
+>
+>         folio_set_swapcache(folio);
+>         folio->swap =3D entry;
+> -
+> +       if (synchronous)
+> +               swap_cache_mark_synchronous(folio);
+>         ret =3D __filemap_add_swapcache(address_space, folio, idx, gfp, s=
+hadowp);
+>         if (ret) {
+> -               folio_clear_swapcache(folio);
+>                 folio->swap.val =3D 0;
+> +               folio_clear_swapcache(folio);
+>         }
+>
+>         return ret;
+> @@ -129,11 +130,13 @@ void __delete_from_swap_cache(struct folio *folio,
+>         xas_set_order(&xas, idx, folio_order(folio));
+>         xas_store(&xas, shadow);
+>
+> -       folio->swap.val =3D 0;
+>         folio_clear_swapcache(folio);
+>         address_space->nrpages -=3D nr;
+> -       __node_stat_mod_folio(folio, NR_FILE_PAGES, -nr);
+> -       __lruvec_stat_mod_folio(folio, NR_SWAPCACHE, -nr);
+> +       if (!swap_cache_test_synchronous(folio)) {
+> +               __node_stat_mod_folio(folio, NR_FILE_PAGES, -nr);
+> +               __lruvec_stat_mod_folio(folio, NR_SWAPCACHE, -nr);
+> +       }
+> +       folio->swap.val =3D 0;
+>  }
+>
+>  /**
+> @@ -393,7 +396,7 @@ struct folio *filemap_get_incore_folio(struct address=
+_space *mapping,
+>   * else or hitting OOM.
+>   */
+>  static struct folio *swap_cache_add_or_get(struct folio *folio,
+> -               swp_entry_t entry, gfp_t gfp_mask)
+> +               swp_entry_t entry, gfp_t gfp_mask, bool synchronous)
+>  {
+>         int ret =3D 0;
+>         void *shadow =3D NULL;
+> @@ -403,7 +406,7 @@ static struct folio *swap_cache_add_or_get(struct fol=
+io *folio,
+>         if (folio) {
+>                 __folio_set_locked(folio);
+>                 __folio_set_swapbacked(folio);
+> -               ret =3D add_to_swap_cache(folio, entry, gfp_mask, &shadow=
+);
+> +               ret =3D add_to_swap_cache(folio, entry, gfp_mask, synchro=
+nous, &shadow);
+>                 if (ret)
+>                         __folio_clear_locked(folio);
+>         }
+> @@ -460,7 +463,7 @@ int swap_cache_add_wait(struct folio *folio, swp_entr=
+y_t entry, gfp_t gfp)
+>         struct folio *wait_folio;
+>
+>         for (;;) {
+> -               ret =3D add_to_swap_cache(folio, entry, gfp, NULL);
+> +               ret =3D add_to_swap_cache(folio, entry, gfp, false, NULL)=
+;
+>                 if (ret !=3D -EEXIST)
+>                         break;
+>                 wait_folio =3D filemap_get_folio(swap_address_space(entry=
+),
+> @@ -493,7 +496,7 @@ struct folio *swap_cache_alloc_or_get(swp_entry_t ent=
+ry, gfp_t gfp_mask,
+>         /* We are very likely the first user, alloc and try add to the sw=
+apcache. */
+>         folio =3D (struct folio *)alloc_pages_mpol(gfp_mask, 0, mpol, ilx=
+,
+>                                                  numa_node_id());
+> -       swapcache =3D swap_cache_add_or_get(folio, entry, gfp_mask);
+> +       swapcache =3D swap_cache_add_or_get(folio, entry, gfp_mask, false=
+);
+>         if (swapcache !=3D folio) {
+>                 folio_put(folio);
+>                 goto out_no_alloc;
+> @@ -875,21 +878,27 @@ static struct folio *swap_vma_readahead(swp_entry_t=
+ targ_entry, gfp_t gfp_mask,
+>  struct folio *swapin_direct(swp_entry_t entry, gfp_t gfp_mask,
+>                             struct vm_fault *vmf, bool *folio_allocated)
+>  {
+> -       struct mempolicy *mpol;
+> -       struct folio *folio;
+> -       pgoff_t ilx;
+> -
+> -       mpol =3D get_vma_policy(vmf->vma, vmf->address, 0, &ilx);
+> -       folio =3D swap_cache_alloc_or_get(entry, gfp_mask, mpol, ilx,
+> -                                       folio_allocated);
+> -       mpol_cond_put(mpol);
+> -
+> -       if (*folio_allocated)
+> +       struct folio *folio =3D NULL, *swapcache;
+> +       /* First do a racy check if cache is already loaded. */
+> +       swapcache =3D swap_cache_try_get(entry);
+> +       if (unlikely(swapcache))
+> +               goto out;
+> +       folio =3D vma_alloc_folio(gfp_mask, 0, vmf->vma, vmf->address, fa=
+lse);
+> +       swapcache =3D swap_cache_add_or_get(folio, entry, gfp_mask, true)=
+;
+> +       if (!swapcache)
+> +               goto out_nocache;
+> +       if (swapcache =3D=3D folio) {
+>                 swap_read_folio(folio, true, NULL);
+> -       else if (folio)
+> -               swap_cache_update_ra(folio, vmf->vma, vmf->address);
+> -
+> -       return folio;
+> +               *folio_allocated =3D true;
+> +               return folio;
+> +       }
+> +out:
+> +       swap_cache_update_ra(swapcache, vmf->vma, vmf->address);
+> +out_nocache:
+> +       if (folio)
+> +               folio_put(folio);
+> +       *folio_allocated =3D false;
+> +       return swapcache;
+>  }
+>
+>  /**
+> diff --git a/mm/vmscan.c b/mm/vmscan.c
+> index c3db39393428..e71b049fee01 100644
+> --- a/mm/vmscan.c
+> +++ b/mm/vmscan.c
+> @@ -1228,6 +1228,12 @@ static unsigned int shrink_folio_list(struct list_=
+head *folio_list,
+>                                         if (!add_to_swap(folio))
+>                                                 goto activate_locked_spli=
+t;
+>                                 }
+> +                       } else if (swap_cache_test_synchronous(folio)) {
+> +                               /*
+> +                                * We see a folio being swapped in but no=
+t activated either
+> +                                * due to missing shadow or lived too sho=
+rt, active it.
+> +                                */
+> +                               goto activate_locked;
+>                         }
+>                 } else if (folio_test_swapbacked(folio) &&
+>                            folio_test_large(folio)) {
+> diff --git a/mm/workingset.c b/mm/workingset.c
+> index f2a0ecaf708d..83a0b409be0f 100644
+> --- a/mm/workingset.c
+> +++ b/mm/workingset.c
+> @@ -753,7 +753,7 @@ static enum lru_status shadow_lru_isolate(struct list=
+_head *item,
+>          */
+>         if (WARN_ON_ONCE(!node->nr_values))
+>                 goto out_invalid;
+> -       if (WARN_ON_ONCE(node->count !=3D node->nr_values))
+> +       if (WARN_ON_ONCE(node->count !=3D node->nr_values && mapping->hos=
+t !=3D NULL))
+>                 goto out_invalid;
+>         xa_delete_node(node, workingset_update_node);
+>         __inc_lruvec_kmem_state(node, WORKINGSET_NODERECLAIM);
+> --
+> 2.43.0
+>
+>
 
-Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-
-Best regards,
-Krzysztof
-
+Thanks
+Barry
 
