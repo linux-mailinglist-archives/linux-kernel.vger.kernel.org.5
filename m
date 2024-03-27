@@ -1,120 +1,131 @@
-Return-Path: <linux-kernel+bounces-120964-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-120967-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0261788E105
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 13:50:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 8246088E10D
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 13:50:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id ADCC61F2F0BC
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 12:50:07 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3968E1F24FE1
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 12:50:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4E888137906;
-	Wed, 27 Mar 2024 12:15:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1A4AD153BD3;
+	Wed, 27 Mar 2024 12:15:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="pFCt8Nw2"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="U5+IoVyL"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.12])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 953C415358E;
-	Wed, 27 Mar 2024 12:15:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 344EE153817;
+	Wed, 27 Mar 2024 12:15:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.12
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711541712; cv=none; b=BsGSiyACtN5ZFjw7i9pSjOli4Lo39ZKy/BS2Xh+rOkx6XQVo5pbaL6DBEuVeAuyzlolyKuDKU4hGx+8LdHt1d194+K8dmMDnM65dL14gZXHccxLp1Z+1QEgbvtzE3juWrptfsvAN4+4NiIvDfUFs4wycCS0StnJxIn06VqJ2CIM=
+	t=1711541721; cv=none; b=QZiHyLQ4bgNZxk7MtMy8j9WOXeKXKJWmTdDuWZQ62l9k3uZJGK+ds/btd5eGueC0nKgKZ6IYXxCHndF2SD3gs3LMpQrt9am6YWZH/MbWCtzxhVpPLdGOemGZTvtr90+dDg8P5m+NHEfeNFsUhUt9lJaj/eLFCcpRpfhRsEl4HKw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711541712; c=relaxed/simple;
-	bh=Hfp089yn9i2MdiSv3nIbonNUEeAoAI4FMH2N2rlxcDs=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=aAgetQe+qyaBS+y5vyChRO1GoT5dZFLBjCeQK9fZsXDzNOpLUBqCdHv5KI0RmK/V9tZuGsEx5Tgue1uxfjwCrp7UkRoRWwqPkhNzpaoi+O7RcW/kE+2lQYSq0hDPPiwgV/9YZUI/js1tr8gebyryoNRqiWSUlg8houolwNjY4Xo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=pFCt8Nw2; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 48CE6C43390;
-	Wed, 27 Mar 2024 12:15:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711541712;
-	bh=Hfp089yn9i2MdiSv3nIbonNUEeAoAI4FMH2N2rlxcDs=;
-	h=From:To:Cc:Subject:Date:From;
-	b=pFCt8Nw2hvvhtW9WnRdA+bsvG7HlO27PWHxke857oxmcW83olIYFeV8UBOmhywTx0
-	 o9kgIHdAOaJNMsNAmXm2DZRkNWgwqLUeUhVk94b2LMLY27229rzPoquWpN1sLG2rls
-	 0JousyHLjhINLKkjQt/aT3sC77sYWRfhU7NT29uWk2PrrJAWHVN1HiVD01MW53iDVG
-	 IjWZfcPLp4IBsrAjQgy3Kv5zCnflvNE+Q412TuLwQYiQUNQTmMfUH5Zfr6//N4o+EM
-	 5UX5P9+b9VReFX/D83V53zcP00mT5VtvJoxmNht4dlRVOTePo9VI68+tayDf34YwI1
-	 Dy4h5U698ozgQ==
-From: Sasha Levin <sashal@kernel.org>
-To: stable@vger.kernel.org,
-	dillon.varone@amd.com
-Cc: Mario Limonciello <mario.limonciello@amd.com>,
-	Alex Deucher <alexander.deucher@amd.com>,
-	Martin Leung <martin.leung@amd.com>,
-	Alex Hung <alex.hung@amd.com>,
-	Daniel Wheeler <daniel.wheeler@amd.com>,
-	amd-gfx@lists.freedesktop.org,
-	dri-devel@lists.freedesktop.org,
-	linux-kernel@vger.kernel.org
-Subject: FAILED: Patch "drm/amd/display: Init link enc resources in dc_state only if res_pool presents" failed to apply to 5.15-stable tree
-Date: Wed, 27 Mar 2024 08:15:10 -0400
-Message-ID: <20240327121510.2831696-1-sashal@kernel.org>
-X-Mailer: git-send-email 2.43.0
+	s=arc-20240116; t=1711541721; c=relaxed/simple;
+	bh=l1FCJiDrafS1WbsKl/A/tt3LYg6Mw6bdZbLD376WIhk=;
+	h=From:Date:To:cc:Subject:In-Reply-To:Message-ID:References:
+	 MIME-Version:Content-Type; b=ufylvMw7P5I/HkmEW6GeEO/S2nexrZKwBkS2e4X/UerGuOd9m83XsGM1pJgfRM0gPNITbBrmcb2HjyLCZ8DZKVOzK5cdN6apulJQXYx98G6YZqE8TWvDbHiAEuJrNU1ZDXyVPt9845XvZQqQTCH61AzXS3A5EdiXt0tp5ce+QXk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=U5+IoVyL; arc=none smtp.client-ip=198.175.65.12
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1711541719; x=1743077719;
+  h=from:date:to:cc:subject:in-reply-to:message-id:
+   references:mime-version;
+  bh=l1FCJiDrafS1WbsKl/A/tt3LYg6Mw6bdZbLD376WIhk=;
+  b=U5+IoVyLOHpKnXHwiw582lZArLIRIpCSPKLSJ5Ufd7Hp4jRfxhYDyO4v
+   kN3/jBM4lnSzDrFrLMxK32gJghUKqEr6nyvWcNtLAtnvM2zIk6vo3dDzs
+   MrqzQP+QNK8w0EB9VKQXaLdThngS8qeUc7ZNudfzBWwFlqs/5KsITR1iL
+   O/HmKup4V01v1JIDmCF/MyRE6he6ODMGzGn1MaM9Asz8DK7Vb6OPtKfQO
+   /6eTT44rSl24rYLYwYOUGF3BZd/O7CpOGSm+Xb4XMRPbEFRGpdB/RpUdj
+   dtaXSfl9to9i3wwI/2Z7I4P28FxKwq3bNHOYohHo2X/4YyIfnQTGz2f07
+   Q==;
+X-CSE-ConnectionGUID: 2fg0gIkhRlugBhxZ70RkOg==
+X-CSE-MsgGUID: v8jxIV6GSS29bUqLPR/FzA==
+X-IronPort-AV: E=McAfee;i="6600,9927,11025"; a="18068663"
+X-IronPort-AV: E=Sophos;i="6.07,158,1708416000"; 
+   d="scan'208";a="18068663"
+Received: from orviesa001.jf.intel.com ([10.64.159.141])
+  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Mar 2024 05:15:19 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,158,1708416000"; 
+   d="scan'208";a="53754611"
+Received: from ijarvine-desk1.ger.corp.intel.com (HELO localhost) ([10.245.247.21])
+  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Mar 2024 05:15:16 -0700
+From: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
+Date: Wed, 27 Mar 2024 14:15:12 +0200 (EET)
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+cc: naveenkrishna.chatradhi@amd.com, LKML <linux-kernel@vger.kernel.org>, 
+    Carlos Bilbao <carlos.bilbao@amd.com>, Hans de Goede <hdegoede@redhat.com>, 
+    platform-driver-x86@vger.kernel.org
+Subject: Re: [PATCH v3] platform/x86/amd/hsmp: switch to use
+ device_add_groups()
+In-Reply-To: <2024032732-thigh-smite-f5dd@gregkh>
+Message-ID: <ee89e9ec-e0d2-96d5-fba1-6259146e5dca@linux.intel.com>
+References: <2024032732-thigh-smite-f5dd@gregkh>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Patchwork-Hint: ignore
-X-stable: review
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/mixed; boundary="8323328-1326726891-1711541712=:3296"
 
-The patch below does not apply to the 5.15-stable tree.
-If someone wants it applied there, or to any other stable or longterm
-tree, then please email the backport, including the original git commit
-id to <stable@vger.kernel.org>.
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
 
-Thanks,
-Sasha
+--8323328-1326726891-1711541712=:3296
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 
------------------- original commit in Linus's tree ------------------
+On Wed, 27 Mar 2024, Greg Kroah-Hartman wrote:
 
-From ca25a2b5f841f991e472e2dde7f5e2d337dbea08 Mon Sep 17 00:00:00 2001
-From: Dillon Varone <dillon.varone@amd.com>
-Date: Thu, 28 Dec 2023 21:36:39 -0500
-Subject: [PATCH] drm/amd/display: Init link enc resources in dc_state only if
- res_pool presents
+> devm_device_add_groups() is being removed from the kernel, so move the
+> hsmp driver to use device_add_groups() instead.  The logic is identical,
+> when the device is removed the driver core will properly clean up and
+> remove the groups, and the memory used by the attribute groups will be
+> freed because it was created with dev_* calls, so this is functionally
+> identical overall.
+>=20
+> Cc: Naveen Krishna Chatradhi <naveenkrishna.chatradhi@amd.com>
+> Cc: Carlos Bilbao <carlos.bilbao@amd.com>
+> Cc: Hans de Goede <hdegoede@redhat.com>
+> Cc: "Ilpo J=C3=A4rvinen" <ilpo.jarvinen@linux.intel.com>
+> Cc: platform-driver-x86@vger.kernel.org
+> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> ---
+> v3: change the changelog text to reflect that this change is identical
+>     to the current code.  Rebase against 6.9-rc1
+> v2: rebased against platform/for-next
+>=20
+>  drivers/platform/x86/amd/hsmp.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>=20
+> diff --git a/drivers/platform/x86/amd/hsmp.c b/drivers/platform/x86/amd/h=
+smp.c
+> index 1927be901108..d84ea66eecc6 100644
+> --- a/drivers/platform/x86/amd/hsmp.c
+> +++ b/drivers/platform/x86/amd/hsmp.c
+> @@ -693,7 +693,7 @@ static int hsmp_create_non_acpi_sysfs_if(struct devic=
+e *dev)
+>  =09=09hsmp_create_attr_list(attr_grp, dev, i);
+>  =09}
+> =20
+> -=09return devm_device_add_groups(dev, hsmp_attr_grps);
+> +=09return device_add_groups(dev, hsmp_attr_grps);
+>  }
+> =20
+>  static int hsmp_create_acpi_sysfs_if(struct device *dev)
 
-[Why & How]
-res_pool is not initialized in all situations such as virtual
-environments, and therefore link encoder resources should not be
-initialized if res_pool is NULL.
+Thanks for the update.
 
-Cc: Mario Limonciello <mario.limonciello@amd.com>
-Cc: Alex Deucher <alexander.deucher@amd.com>
-Cc: stable@vger.kernel.org
-Reviewed-by: Martin Leung <martin.leung@amd.com>
-Acked-by: Alex Hung <alex.hung@amd.com>
-Signed-off-by: Dillon Varone <dillon.varone@amd.com>
-Tested-by: Daniel Wheeler <daniel.wheeler@amd.com>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
----
- drivers/gpu/drm/amd/display/dc/core/dc_state.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+Reviewed-by: Ilpo J=C3=A4rvinen <ilpo.jarvinen@linux.intel.com>
 
-diff --git a/drivers/gpu/drm/amd/display/dc/core/dc_state.c b/drivers/gpu/drm/amd/display/dc/core/dc_state.c
-index 460a8010c79fe..56feee0ff01b1 100644
---- a/drivers/gpu/drm/amd/display/dc/core/dc_state.c
-+++ b/drivers/gpu/drm/amd/display/dc/core/dc_state.c
-@@ -267,7 +267,8 @@ void dc_state_construct(struct dc *dc, struct dc_state *state)
- 	state->clk_mgr = dc->clk_mgr;
- 
- 	/* Initialise DIG link encoder resource tracking variables. */
--	link_enc_cfg_init(dc, state);
-+	if (dc->res_pool)
-+		link_enc_cfg_init(dc, state);
- }
- 
- void dc_state_destruct(struct dc_state *state)
--- 
-2.43.0
+--=20
+ i.
 
-
-
-
+--8323328-1326726891-1711541712=:3296--
 
