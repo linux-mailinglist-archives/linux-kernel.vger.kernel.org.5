@@ -1,130 +1,162 @@
-Return-Path: <linux-kernel+bounces-121948-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-121950-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id CDDFA88EFCB
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 21:05:26 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id E971A88EFCF
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 21:05:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0BA6C1C33478
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 20:05:26 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 899A9B2753E
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 20:05:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B03D152517;
-	Wed, 27 Mar 2024 20:03:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A2EB81534FB;
+	Wed, 27 Mar 2024 20:04:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="RQGNM0bk"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="A6L4lj6h"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.12])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0CC5314F9E6
-	for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 20:03:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E383E152165
+	for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 20:04:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.12
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711569831; cv=none; b=k+yWvKSaKccJumUAfXMmIxxowPoJfhcFbiw8WNcIEE0yA0PUbKN5XwaACU4Nc86NKKEhP41xMTnZvRBPwzasETBUcshrhQP8gYc/QtV2EaQkdZslZyVe76b312N+LWNt0pooBEYw+uvTdqrNb3ig7bn6+H5CZYcLjV2q1InFLBk=
+	t=1711569845; cv=none; b=bUKgx84vwtK1m+aoz4S4Lt7bXz4apoU4NuvEezwESCo6jGDJI5BYudzA0W13LQ8z55Dpc7//TZ0vtSwx1PvVFwR3h1M9LO7D802JhZa8DEeHJLscddLIPZSXgNA/wVwe2+TxLeZeS2VEG96NY0JWmxG8XAwAYstiyovUBfRVAYM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711569831; c=relaxed/simple;
-	bh=t12owULa2Uk3B4uxPPmsB4a79oGho0TYNcWr/T2cVIU=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=iQwUbvRMpk/xvmOEO9l2+zRlEURl+/NpSvWm7dHQ35SZN23MBkj0i+Ms7O6yEq5k1w/6irK7EOJa9JAFyqnyI5hiPD6aQobajAw7xMW72SizHch3agx3xfbI0Q9D2+rColHPKvVjQkhJSUH92Q525b9TVHtyOJfkgDS/WKX8TzM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=RQGNM0bk; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1711569825;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=m5gtlylC0qzrEzSYUPIkmlPoES5wXwK/DFLxhK4lKIc=;
-	b=RQGNM0bkrdgzQc2v7fFvxEeX55IjbQ063oy1W3wKyP249hYzvDVUj/bGRLeqNkbXokI/GY
-	XxH1u6C/jnYLRQ0I/ZTJJ4T/85iwDtWcLK2+P3Rhv+O1uyw+OW5/ZjBJ/vvicX8iecgsLO
-	y8TwydpkfeCDgV33jhFm6vs7lj+4LM8=
-Received: from mail-lf1-f71.google.com (mail-lf1-f71.google.com
- [209.85.167.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-114-FcaLx51aPdq3QKZiU3rxLQ-1; Wed, 27 Mar 2024 16:03:41 -0400
-X-MC-Unique: FcaLx51aPdq3QKZiU3rxLQ-1
-Received: by mail-lf1-f71.google.com with SMTP id 2adb3069b0e04-513e31aef6cso93610e87.1
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 13:03:41 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711569820; x=1712174620;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=m5gtlylC0qzrEzSYUPIkmlPoES5wXwK/DFLxhK4lKIc=;
-        b=Uw1aFT/YQbQm36z5EPNrH90LrJ96fSa+/nyS/7xnFTA4YM7KdYbtMTsXa3xM8IiLzI
-         BKrp8Wehzc7H4vpwT/mbZfBRf4ZxDcv1p6LspRSTXNEcY1xTrxfc3NX91vDeY62jN+Qd
-         fDpn6MLfIcJQYK/DhCvLMBDIUtZ0+JUrlGcjAQmwK+Se+JtvAPfu4e5iEY22vb9jirDb
-         P9GqbjW3uHWp+gGceG0gsIGrXS163uRArEX2suvlgVxAjHx0DhwrQlXDnK0Gq19lCC8x
-         rGyNm2lXV8DuwSyuZ7eUmpUEcM6bleq12p2AoF7R/I65uDY4ArUF64OwpyxmfRbcHlBZ
-         SXHg==
-X-Forwarded-Encrypted: i=1; AJvYcCXmKzINFSeSyNxPE9zjTYC+J+L+Uy8aufSi9BnEJnejgWFHyjd2ouSv4r8CZIGNMKhRa+KnRNzjWbXDkBfHXVJs5jzNnPZrEJF+WpWn
-X-Gm-Message-State: AOJu0Yyy416YIzptUNl9R4azGjEseFXtAM6mPB62w4/aTk14n9lJCz2Q
-	7pf6UojRqWz1xwW13P7Cxrn/0+2AXigAdG3rNO3JBvheVx48T/px4YIDky7zvjqtzbZPHA9jp5T
-	GNP49tbyy9l830Xd+lnwAGS3kjPF74ozqkzeVYE4dSP/eSm28NDqDhFbIA7PmBQ==
-X-Received: by 2002:a05:6512:52b:b0:513:226c:651d with SMTP id o11-20020a056512052b00b00513226c651dmr448050lfc.2.1711569820061;
-        Wed, 27 Mar 2024 13:03:40 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IFgOaSquNs/XdTRHz1ZCegoSjmGEMwnfQhgHJRMfn2tZOUBOK1WoIRggVRj1OyU/ET5d7bPfQ==
-X-Received: by 2002:a05:6512:52b:b0:513:226c:651d with SMTP id o11-20020a056512052b00b00513226c651dmr448028lfc.2.1711569819620;
-        Wed, 27 Mar 2024 13:03:39 -0700 (PDT)
-Received: from ?IPV6:2001:1c00:c32:7800:5bfa:a036:83f0:f9ec? (2001-1c00-0c32-7800-5bfa-a036-83f0-f9ec.cable.dynamic.v6.ziggo.nl. [2001:1c00:c32:7800:5bfa:a036:83f0:f9ec])
-        by smtp.gmail.com with ESMTPSA id q2-20020a17090609a200b00a3efa4e033asm5796770eje.151.2024.03.27.13.03.39
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 27 Mar 2024 13:03:39 -0700 (PDT)
-Message-ID: <4b6aa3ef-82f1-43d4-9544-89f591f49e41@redhat.com>
-Date: Wed, 27 Mar 2024 21:03:38 +0100
+	s=arc-20240116; t=1711569845; c=relaxed/simple;
+	bh=pBizMv20GnHsHVh+QUTcQ98Oq3o4gF4fbolEI/aBnQI=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=b1otUuacvWgsYMKTpauoVC7cuC7Sql/Dtuq+T9kLDDgyuQ+8L78Sk0lwQYhjkfoCriFJgS9JWV3VYX6NYj9mvkbsgThZjK/2I3fPSng++SdIIfaEIPqk4vDUuOYV/18kPhqj+YepjWwtDzoUPZJgTPQlVOL8A/x/UVKNcTOWCBM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=A6L4lj6h; arc=none smtp.client-ip=198.175.65.12
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1711569843; x=1743105843;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=pBizMv20GnHsHVh+QUTcQ98Oq3o4gF4fbolEI/aBnQI=;
+  b=A6L4lj6hrCZnKrMT6ckeqEFppn1w0PcmsV2JlBThNOd0PTymJUSsLfun
+   pyF63SNfXPwUtOxQ5EgTo+Md7YGqOttTCYdn7uHQLy+wyLr9LNcqabGsz
+   /Rw2Tor1OPjgB96C1j3IuWDwGpX5GFxacDDMFpy9pfO/mpbpTfJFYb5Zp
+   1z2iUnMQKQtwmgI/YPmWYO8NmIs/laulf+tEe9SVPJ8rNSglSDTpLxpbW
+   QL+7yTJR1FyDOkmeixJ6CgjrB+LpwXanKqIXTIkt6lYczwLD99/AKj61I
+   87ocwpe7OZ4kTdMNKXsy2VkMvVksXHz/rZnMzooAEus1ZBrrWz49n+tL1
+   g==;
+X-CSE-ConnectionGUID: 2HxSOf7+Q2uKfH9yjSuOQg==
+X-CSE-MsgGUID: AS1yb8j4RKmwp1m1QctyGw==
+X-IronPort-AV: E=McAfee;i="6600,9927,11026"; a="18132959"
+X-IronPort-AV: E=Sophos;i="6.07,159,1708416000"; 
+   d="scan'208";a="18132959"
+Received: from orviesa010.jf.intel.com ([10.64.159.150])
+  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Mar 2024 13:04:01 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,159,1708416000"; 
+   d="scan'208";a="16246094"
+Received: from agluck-desk3.sc.intel.com ([172.25.222.105])
+  by orviesa010-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Mar 2024 13:04:01 -0700
+From: Tony Luck <tony.luck@intel.com>
+To: Fenghua Yu <fenghua.yu@intel.com>,
+	Reinette Chatre <reinette.chatre@intel.com>,
+	Maciej Wieczor-Retman <maciej.wieczor-retman@intel.com>,
+	Peter Newman <peternewman@google.com>,
+	James Morse <james.morse@arm.com>,
+	Babu Moger <babu.moger@amd.com>,
+	Drew Fustini <dfustini@baylibre.com>
+Cc: x86@kernel.org,
+	linux-kernel@vger.kernel.org,
+	patches@lists.linux.dev,
+	Tony Luck <tony.luck@intel.com>
+Subject: [PATCH 00/10] Add support for Sub-NUMA cluster (SNC) systems
+Date: Wed, 27 Mar 2024 13:03:42 -0700
+Message-ID: <20240327200352.236835-1-tony.luck@intel.com>
+X-Mailer: git-send-email 2.44.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v11] platform/x86: add lenovo wmi camera button driver
-Content-Language: en-US, nl
-To: Andy Shevchenko <andriy.shevchenko@intel.com>
-Cc: =?UTF-8?B?6Im+6LaF?= <aichao@kylinos.cn>,
- "ilpo.jarvinen" <ilpo.jarvinen@linux.intel.com>,
- linux-kernel <linux-kernel@vger.kernel.org>,
- platform-driver-x86 <platform-driver-x86@vger.kernel.org>
-References: <je8phmmtfz-je9zfg1v9s@nsmail7.0.0--kylin--1>
- <030beaf8-12e1-400a-b064-f17384e32714@redhat.com>
- <ZgQbz5pBTuY64pNF@smile.fi.intel.com>
-From: Hans de Goede <hdegoede@redhat.com>
-In-Reply-To: <ZgQbz5pBTuY64pNF@smile.fi.intel.com>
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-Hi,
+This series on top of v6.9-rc1 plus these two patches:
 
-On 3/27/24 2:14 PM, Andy Shevchenko wrote:
-> On Wed, Mar 27, 2024 at 11:54:55AM +0100, Hans de Goede wrote:
->> On 3/26/24 3:54 AM, 艾超 wrote:
-> 
-> ...
-> 
->>>>> +config LENOVO_WMI_CAMERA
->>>>> + tristate "Lenovo WMI Camera Button driver"
->>>>> + depends on ACPI_WMI
->>>>> + depends on INPUT
->>>
->>>> No COMPILE_TEST?
->>>
->>> I compile this driver and used Evtest tool to test it on lenovo A70.
-> 
-> What I meant here is to add respective COMPILE_TEST to the dependency(ies).
+Link: https://lore.kernel.org/all/20240308213846.77075-1-tony.luck@intel.com/
 
-Neither include/linux/input.h nor include/linux/wmi.h offer
-stubs when disabled so this will not work.
+The Sub-NUMA cluster feature on some Intel processors partitions the CPUs
+that share an L3 cache into two or more sets. This plays havoc with the
+Resource Director Technology (RDT) monitoring features.  Prior to this
+patch Intel has advised that SNC and RDT are incompatible.
 
-Besides x86 has a lot of compile test coverage in general,
-so I don't see much value in adding || COMPILE_TEST to
-dependencies.
+Some of these CPU support an MSR that can partition the RMID counters in
+the same way. This allows monitoring features to be used. With the caveat
+that users must be aware that Linux may migrate tasks more frequently
+between SNC nodes than between "regular" NUMA nodes, so reading counters
+from all SNC nodes may be needed to get a complete picture of activity
+for tasks.
 
-Regards,
+Cache and memory bandwidth allocation features continue to operate at
+the scope of the L3 cache.
 
-Hans
+This is a new approach triggered by the discussions that started with
+"How can users tell that SNC is enabled?" but then drifted into
+whether users of the legacy interface would really get what they
+expected when reading from monitor files in the mon_L3_* directories.
 
+During that discussion I'd mentioned providing monitor values for both
+the L3 level, and also for each SNC node. That would provide full ABI
+compatibility while also giving the finer grained reporting from each
+SNC node.
+
+Implementation sets up a new rdt_resource to track monitor resources
+with domains for each SNC node. This resource is only used when SNC
+mode is detected.
+
+On SNC systems there is a parent-child relationship between the
+old L3 resource and the new SUBL3 resource. Reading from legacy
+files like mon_data/mon_L3_00/llc_occupancy reads and sums the RMID
+counters from all "child" domains in the SUBL3 resource. E.g. on
+an SNC3 system:
+
+$ grep . mon_L3_01/llc_occupancy mon_L3_01/*/llc_occupancy
+mon_L3_01/llc_occupancy:413097984
+mon_L3_01/mon_SUBL3_03/llc_occupancy:141484032
+mon_L3_01/mon_SUBL3_04/llc_occupancy:135659520
+mon_L3_01/mon_SUBL3_05/llc_occupancy:135954432
+
+So the L3 occupancy shows the total L3 occupancy which is
+the sum of the cache occupancy on each of the SNC nodes
+that share that L3 cache instance.
+
+Patch 0001 has been salvaged from the previous postings.
+All the rest are new.
+
+Signed-off-by: Tony Luck <tony.luck@intel.com>
+
+Tony Luck (10):
+  x86/resctrl: Prepare for new domain scope
+  x86/resctrl: Add new rdt_resource for sub-node monitoring
+  x86/resctrl: Add new "enabled" state for monitor resources
+  x86/resctrl: Add pointer to enabled monitor resource
+  x86/resctrl: Add parent/child information to rdt_resource and
+    rdt_domain
+  x86/resctrl: Update mkdir_mondata_subdir() for Sub-NUMA domains
+  x86/resctrl: Update rmdir_mondata_subdir_allrdtgrp() for Sub-NUMA
+    domains
+  x86/resctrl: Mark L3 monitor files with summation flag.
+  x86/resctrl: Update __mon_event_count() for Sub-NUMA domains
+  x86/resctrl: Determine Sub-NUMA configuration
+
+ include/linux/resctrl.h                   |  20 ++-
+ arch/x86/include/asm/msr-index.h          |   1 +
+ arch/x86/kernel/cpu/resctrl/internal.h    |  23 ++-
+ arch/x86/kernel/cpu/resctrl/core.c        |  76 +++++++---
+ arch/x86/kernel/cpu/resctrl/ctrlmondata.c |   3 +-
+ arch/x86/kernel/cpu/resctrl/monitor.c     | 136 +++++++++++++++--
+ arch/x86/kernel/cpu/resctrl/pseudo_lock.c |   6 +-
+ arch/x86/kernel/cpu/resctrl/rdtgroup.c    | 170 +++++++++++++++++-----
+ 8 files changed, 364 insertions(+), 71 deletions(-)
+
+-- 
+2.44.0
 
 
