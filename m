@@ -1,59 +1,60 @@
-Return-Path: <linux-kernel+bounces-121586-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-121587-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8D0FD88EA2A
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 17:03:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 9052088EA2D
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 17:03:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3D18328E437
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 16:03:14 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 436B6286ABD
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 16:03:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BF54812FB18;
-	Wed, 27 Mar 2024 16:03:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4BEE1130A43;
+	Wed, 27 Mar 2024 16:03:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="0CSMZKmv"
-Received: from NAM10-MW2-obe.outbound.protection.outlook.com (mail-mw2nam10on2088.outbound.protection.outlook.com [40.107.94.88])
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="tZ0PZlXl"
+Received: from NAM04-DM6-obe.outbound.protection.outlook.com (mail-dm6nam04on2073.outbound.protection.outlook.com [40.107.102.73])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CADC42D627
-	for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 16:03:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.94.88
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 31EF712FB3F
+	for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 16:03:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.102.73
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711555387; cv=fail; b=onT6c0GM7zh0PEk+rDBy1nEj5hkDQ/m6g9T1BkNE2y7p5tC2qUMXO6QuzWKUsQ8t2JgNkARYOx2rPrBs+htePTl82C65fIKjr8kdkOcxjUrbQ7WL0KijnxUJhBMnb/LDrqRroZ45FALwc7g2pmWdat5H5nx4hhfdG4JZwWG4M5U=
+	t=1711555392; cv=fail; b=rTAlkYs2nLlLQpjBCU8DdALuoQMrZNsps2BiPvLtCdt50l7yg6i+Fyr7wsULYs0LDSp2dRWo/89zpv5pgOT0ACF+K1rMHUVHXRNrYB/9hyMBNJGxRlTcfZ+Kt7O60X3M8MBK7B/wWcX9X/mFblYoiE2Nz7juLUnqjNWYfT6WWK0=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711555387; c=relaxed/simple;
-	bh=NJROWRGBCYF9DJe6MqUGLclV+T95+pArQdycXKSpZ3s=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=QsjLhHIMpVJA0UDT3ToggYd7Sja2XUkZmgZIt+YysswSWOO9gmAi3yI5hFvH7KyBF7N3+H9g5N4ICSV+VKlw9IQiaYPUnpvXJxxQtWd1S+c9BH95Dw3vowLeWQ8pDORiZaIg6GJh0xBtSx9khIUSbArGqtemZcZrM/ruH+qxxk0=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=0CSMZKmv; arc=fail smtp.client-ip=40.107.94.88
+	s=arc-20240116; t=1711555392; c=relaxed/simple;
+	bh=rWcnmNxdSuIWB7RDTOgF8JwEsPaXMpNpJNDDHc8J6/M=;
+	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=tUWl/P4T/cBdh8E0k6pocBbyuA2E6BLsl2R1CDalUCcG0/GZp42HmCVob0oSLcpwNsh8Mlw0HnkMeKYezQZ+3Db8cjIkD22O2WzxD+6RWO/BisJtVvlbz43tNZVT4D9YBZeTnrnKzs+1QYEWChmVXGFAX0SebBzuCX1s/4N4I74=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=tZ0PZlXl; arc=fail smtp.client-ip=40.107.102.73
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ns+jgFK2sQEQTRe2BGiUIhDDrj+UBZBtcOi8xWmT6VxwUCKe1YxfyVANQOIS/O6E3brLQG7CWtAne/TRg7BC60UJZlju5wDdIY1dYpCeau+dsqKny8/6DPV89AxIz9Zexs3oaHETE4elEM0XzVVjVj+eQCJ2saHUZzM9VQaDvKTVRLV9TfI93ps+hOIDjrzpFjeZnjRsQgz15lORTMyQpj4UR0vsgCf/kOYYD4H+WlmV9zQkMf0N65CjZvinJxWhjZuVHxXlvm3GlaInJjb1g/y6aEdw3Wu4S6KfpF8O+Vf3LH6DQc8Vwtjb/SMilKXSRlGnj2rYLbmJZZqDpmR2SQ==
+ b=HcNaBmyjFDboQEOLiQaHNvqeUIKErtyGaKugJAXbyXKU68F0sC92gHy0rptnC2TKcaekgUNWQLAwyQgr94Oxrll6TbihytKi0LrAFPCVjUPu5y07CpMtajzHjDqxBabWKqZmeQA8fEi7ZQmH1JEjGxiLux37JT/7pfjDSBZSRGe0smrUDmzwyLBqNDc5e+U2XnUIhFqrqOMCpd9y6j7eqUY4jmiF1imhiG/XY7xwD25jfQgWrag9W4bHQVt1bOUsTY9EaOTrZqdfG600F10PqCOHjD2veJGzbLliAXw6vSsV6ykwmI0SE2sc9D4ch/NwLIw0+LwIWQTdJf3xaXau0g==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=LnX7WaU7PCcNz1hM6L0cFdUzON11JJcThZ8p/lRYjWI=;
- b=QVlTaHMvxLB8ljhebO9Qu5PiB434bwYkaionRpqDRV9vGmbkjijuIbY8qHzpnFIEmnVBf20i0MY0s5cXfSE3biTx516Ey5gkeG30n9L/4RdyehFYcU6DRqB9vJYy6uBK/qQtEKPfnINMsRgF6sVQlZ2jIhlA+5VxulT0bX9Q5SIGMJEqR7Tt6is2Om1FQi7mDHnaqaJi+Brurd58AaidF8RSPtV5Kp09dWqsay8DLUBzA5FKDQrk+mcv+tdnBMnXBRbRkCSaX5uVfvY/4AUniIK0tBy+ANwdNZTj76+JwEtcfBs6/5ROp/0tkkbr/YksWfM6O9Aqu6Z4utia3kWsGw==
+ bh=2AUXEFoq/QmHSSeo/GLYanz16736yol9UJ6K9AoaAGA=;
+ b=mLc9DFKjrlluCYRjvw+uymZ1xMovkfrQQSLYgzsNa70VhlmRf470xNrIrCLkhJhdPncQSe8CEvkI3/Qd8ZwAFVbZWWmv0agNwIT3ORI2obKtJqPYOJhRnBtxXeBIv7awUWS0KzFoW55X5uWCLTjOHr4rPURCe5QD69zE+ZbV0RRszx2ezefM8cOfVT0FNhSjCA4XLGzf/6GLzcatPnT4hzVQaM4VD99SO/EJbdOrbqxZmI/9nZcD8LrkXNh4FP6idWaow6m0w3NuBhWmNiIXCD4bSQ+wzstkqWw+Uy9f+c24vVKSALKEwyEPwpyB9kEaAA3YqkbxuXcDQMz1Q8sK3w==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
  165.204.84.17) smtp.rcpttodomain=kvack.org smtp.mailfrom=amd.com; dmarc=pass
  (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
  dkim=none (message not signed); arc=none (0)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=LnX7WaU7PCcNz1hM6L0cFdUzON11JJcThZ8p/lRYjWI=;
- b=0CSMZKmvoTB0xLeMI4t31wdjBSGf94sVG5BgQy+2P+aOEWWBJDkXOcUgGGhlyYZs/qMLhktyCYZn8HTovwQ549/DuP01JSoAH/DdatOZU7KyeDJ5wVpfzqZ/xu+FK4m5WDguNF8X+O6OhS6RbCzrBaJNyEZR372l5OJMsKp9u+o=
-Received: from BN8PR04CA0058.namprd04.prod.outlook.com (2603:10b6:408:d4::32)
- by SA0PR12MB4432.namprd12.prod.outlook.com (2603:10b6:806:98::16) with
+ bh=2AUXEFoq/QmHSSeo/GLYanz16736yol9UJ6K9AoaAGA=;
+ b=tZ0PZlXlalmlTYtbpsOAGtD2hYNYxWI84Q8hBsr+R3nhlUxgFiHbzcTsLj+A58ITmgrNkAKil+tbRmTDN02ZC4XsvyiewPF8h5sbvTSESOTnEuzXkUckLEGMgXrGWfT1KZY+gh79JizTeOvqEycX9ichTF7aSyJg0xis6fkjQgU=
+Received: from BN8PR04CA0059.namprd04.prod.outlook.com (2603:10b6:408:d4::33)
+ by MN0PR12MB5859.namprd12.prod.outlook.com (2603:10b6:208:37a::17) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.32; Wed, 27 Mar
- 2024 16:03:03 +0000
+ 2024 16:03:07 +0000
 Received: from BN3PEPF0000B070.namprd21.prod.outlook.com
- (2603:10b6:408:d4:cafe::58) by BN8PR04CA0058.outlook.office365.com
- (2603:10b6:408:d4::32) with Microsoft SMTP Server (version=TLS1_2,
+ (2603:10b6:408:d4:cafe::8) by BN8PR04CA0059.outlook.office365.com
+ (2603:10b6:408:d4::33) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.13 via Frontend
- Transport; Wed, 27 Mar 2024 16:03:03 +0000
+ Transport; Wed, 27 Mar 2024 16:03:07 +0000
 X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
  smtp.mailfrom=amd.com; dkim=none (message not signed)
  header.d=none;dmarc=pass action=none header.from=amd.com;
@@ -63,11 +64,11 @@ Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
 Received: from SATLEXMB04.amd.com (165.204.84.17) by
  BN3PEPF0000B070.mail.protection.outlook.com (10.167.243.75) with Microsoft
  SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.7452.0 via Frontend Transport; Wed, 27 Mar 2024 16:03:02 +0000
+ 15.20.7452.0 via Frontend Transport; Wed, 27 Mar 2024 16:03:06 +0000
 Received: from BLR-5CG1133937.amd.com (10.180.168.240) by SATLEXMB04.amd.com
  (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Wed, 27 Mar
- 2024 11:02:58 -0500
+ 2024 11:03:02 -0500
 From: Bharata B Rao <bharata@amd.com>
 To: <linux-mm@kvack.org>
 CC: <linux-kernel@vger.kernel.org>, <akpm@linux-foundation.org>,
@@ -75,10 +76,12 @@ CC: <linux-kernel@vger.kernel.org>, <akpm@linux-foundation.org>,
 	<raghavendra.kt@amd.com>, <ying.huang@intel.com>,
 	<dave.hansen@linux.intel.com>, <hannes@cmpxchg.org>, Bharata B Rao
 	<bharata@amd.com>
-Subject: [RFC PATCH 0/2] Hot page promotion optimization for large address space
-Date: Wed, 27 Mar 2024 21:32:35 +0530
-Message-ID: <20240327160237.2355-1-bharata@amd.com>
+Subject: [RFC PATCH 1/2] sched/numa: Fault count based NUMA hint fault latency
+Date: Wed, 27 Mar 2024 21:32:36 +0530
+Message-ID: <20240327160237.2355-2-bharata@amd.com>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20240327160237.2355-1-bharata@amd.com>
+References: <20240327160237.2355-1-bharata@amd.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -91,163 +94,319 @@ X-ClientProxiedBy: SATLEXMB04.amd.com (10.181.40.145) To SATLEXMB04.amd.com
  (10.181.40.145)
 X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BN3PEPF0000B070:EE_|SA0PR12MB4432:EE_
-X-MS-Office365-Filtering-Correlation-Id: 45aaa59f-fab2-49b7-cfce-08dc4e7761e2
+X-MS-TrafficTypeDiagnostic: BN3PEPF0000B070:EE_|MN0PR12MB5859:EE_
+X-MS-Office365-Filtering-Correlation-Id: 2827f9d1-2fc9-4dae-f3e2-08dc4e776449
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
 X-Microsoft-Antispam-Message-Info:
-	sNx3JR7vSgv8UpslFUpOJc2S4o6sU0UEv55LdDbjk+3OXDy7jYYFAvPHrWgKokZoOLdWKcYKnCRKm3JAJE6U3dnDh6EO4x8Zdn//8LU781uJQSXzsHY4LTudSPSipFCHvkeG7B65Lm62SirJ6Vf3ruwMeS7EcH0I8FU8E7FtFUEg+y8SXUkd8ENqhXLNAKzJiCUkB8+4DmKgF7QuIUTRh5/idL9sZ29iV1v+DqZbzqPIpgCyKs/S6Xu/xwczuo3ZtC6LQBQxKLph+Fg0LaETa8iSWKzWZH4mWSCMAndouRA/4Tkh5SSBbxV4NaHDt1J5THDx33ckAcoFn/S2NfVhXUlG3uWUc7tPVTI1+Ycnt/V0Gj0vou90FVP7WHcv2BOalpgpYBF5hqsJmNx/gzshMPJSFyKcPpjU5zJBwMHCP1Xxye6p84Wva+9dVyj3lSkjShe76sTbrTURb8Zi+320Dn63wKsEWNy7z7Z70XErzv/d2P8VMww5nv2wLV38kDjMQChtWnoLspC0dxnmB5nSEVraw1zTa1XXmIAuskfGVUXsz8unWlETulNSjKVcH+O66iTLlLduIaqOBmR+evOkhsr75tSanYAViIB9c6O/MgwazTw6kzBSkECQ6UUbPdaFXRauUZum+GslUv9BAdu+m5oTIGqQsFYjCCAxjXB/OQz1uaPsjUpFijdnuugL1GC5zK+k8IM3MBdTJBRaoHb1tJzrEPTLtX4JSh26c5+wG/wDf1vFMV3vkL7351Odvgh2
+	ehGtlpiB3Err3B7iveBbR0QE4YwYn9Kr1YsgjLKbh5Ir1LM9mUZ1WxC1sszw5c0UolEDNtLF1jPlSK6FUOVs4Q08VGyisCfdPZ+lkF8FBmBBqtNEpPPdHCXYFzvNA64L4JzkUxK3NP3wn0JABUK192GTmSdZH9Uhe2dtwHwQGoxSZDNwVkJsidO9Rpkwe7lzHinTju7vXfOUZJ91ZMUhjho28xtL0O22ZIj/7tx4zEYCDnSA0tXPNHPxk02KgXaO4uJjstZQFvn61Wk1r4vlqMksJ9/7xk0Zk4dbRoZGPuE7UTGLxZ1SMJbxdqZH+vsu3Cpk5oVaQZBL9LV6jmoRP92TVGRb3DHZ/4220xaf/wWgCwMn71tLYRktKcjBZY29pz+JMEzRl2a/kxhjFDZmBWpBOHMUJkCCuowyiwInxnyhpjayp2bexmm3N6DlGEm7acrhgTKQ0fiE0zYvCTH7IGTZxz8IEZN5Lzb86O11FJ1L59YyBKjQE+HSYpMUf82fTRB4f80nuGTmh5z5Ol4AHTfXD7lwZrXXmv/FZy/2qDd/3hNGUI5+HusTA9ESm1px541owhAAIHAPFhGZ80OlPrTnMHzc42RkuwHswuH1XbrMrQyjuEHTBXMoJhpXuQXHSlTqtT3y+kQCK5rOlPVpM7E2QwLnHkzpaCRJGz92KU9nfzub6/GMqNuIXRBXYoeesDxb04HqCxTHW7XyvMZehj2Up84Y28H6Bc0b52z0WMXWUlej0/5U3yafAAaaPG6m
 X-Forefront-Antispam-Report:
-	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(82310400014)(36860700004)(376005)(1800799015);DIR:OUT;SFP:1101;
+	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(376005)(82310400014)(36860700004)(1800799015);DIR:OUT;SFP:1101;
 X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Mar 2024 16:03:02.9628
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Mar 2024 16:03:06.9940
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 45aaa59f-fab2-49b7-cfce-08dc4e7761e2
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2827f9d1-2fc9-4dae-f3e2-08dc4e776449
 X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
 X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
 X-MS-Exchange-CrossTenant-AuthSource:
 	BN3PEPF0000B070.namprd21.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Anonymous
 X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA0PR12MB4432
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN0PR12MB5859
 
-In order to check how efficiently the existing NUMA balancing
-based hot page promotion mechanism can detect hot regions and
-promote pages for workloads with large memory footprints, I
-wrote and tested a program that allocates huge amount of
-memory but routinely touches only small parts of it.
+For memory tiering mode, the hint fault latency determines
+if the page is considered hot enough to be promoted. This
+latency value depends on absolute time and is the difference
+between the scanning time and the fault time. The default
+value of the threshold used to categorize the page as hot
+is 1s.
 
-This microbenchmark provisions memory both on DRAM node and CXL node.
-It then divides the entire allocated memory into chunks of smaller
-size and randomly choses a chunk for generating memory accesses.
-Each chunk is then accessed for a fixed number of iterations to
-create the notion of hotness. Within each chunk, the individual
-pages at 4K granularity are again accessed in random fashion.
+When the address space is huge, pages may not be accessed
+right after they are scanned. Hence the hint fault latency
+is found to be, most of the times, way beyond the current
+threshold thereby resulting in a very low number of page
+promotions.
 
-When a chunk is taken up for access in this manner, its pages
-can either be residing on DRAM or CXL. In the latter case, the NUMA
-balancing driven hot page promotion logic is expected to detect and
-promote the hot pages that reside on CXL.
+To address this problem, convert the absolute time based hint
+fault latency in to a relative metric based. Use the number
+of hint faults that have occurred between the scan time and
+the page's fault time as the threshold.
 
-The experiment was conducted on a 2P AMD Bergamo system that has
-CXL as the 3rd node.
+TODO: The existing threshold adjustment logic, which is based
+on time based hint fault latency has been removed for now.
 
-$ numactl -H
-available: 3 nodes (0-2)
-node 0 cpus: 0-127,256-383
-node 0 size: 128054 MB
-node 1 cpus: 128-255,384-511
-node 1 size: 128880 MB
-node 2 cpus:
-node 2 size: 129024 MB
-node distances:
-node   0   1   2 
-  0:  10  32  60 
-  1:  32  10  50 
-  2:  255  255  10
-
-It is seen that number of pages that get promoted is really low and
-the reason for it happens to be that the NUMA hint fault latency turns
-out to be much higher than the hot threshold most of the times. Here
-are a few latency and threshold sample values captured from
-should_numa_migrate_memory() routine when the benchmark was run:
-
-latency	threshold (in ms)
-20620	1125
-56185	1125
-98710	1250
-148871	1375
-182891	1625
-369415	1875
-630745	2000
-
-The NUMA hint fault latency metric, which is based on absolute time
-difference between scanning time and fault time may not be suitable
-for applications that have large amounts of memory. If the time
-difference between the scan time PTE update and the subsequent access
-(hint fault) is more, the existing logic in should_numa_migrate_memory()
-to determine if the page needs to be migrated, will exclude more
-pages than it selects pages for promotion.
-
-To address this problem, this RFC converts the absolute time based
-hint fault latency in to a relative metric. The number of hint faults
-that have occurred between the scan time and the page's fault time
-is used as the threshold.
-
-This is quite an experimental work and there are things to take
-care of still. While more testing needs to be conducted with different
-benchmarks, I am posting the patchset here to just get early feedback.
-
-Microbenchmark
-==============
-Total allocation is 192G which initially occupies full of Node 1 (DRAM)
-and half of Node 2 (CXL)
-Chunk size is 1G
-
-			Default		Patched
-
-Benchmark score (us)	637,787,351	571,350,410 (-10.41%)
-(Lesser is better)
-
-numa_pte_updates	29,834,747	29,275,489
-numa_hint_faults	12,512,736	12,080,772
-numa_hint_faults_local	0		0
-numa_pages_migrated	1,804,583	6,709,580
-pgpromote_success	1,804,500	6,709,526
-pgpromote_candidate	1,916,720	7,523,345
-pgdemote_kswapd		5,358,119	9,438,006
-pgdemote_direct		0		0
-
-				Default		Patched
-Number of times
-should_numa_migrate_memory()
-was invoked:			12,512,736	12,080,772
-
-Number of times the migration
-request was rejected due to
-hint fault latency being
-higher than threshold: 		10,595,933	4,557,401
-
-Redis-memtier
-=============
-memtier_benchmark -t 512 -n 25000 --ratio 1:1 -c 20 -x 1 --key-pattern R:R
---hide-histogram --distinct-client-seed -d 20000 --pipeline=1000
-
-			Default		Patched
-
-Ops/sec			51,921.16	52,694.55
-Hits/sec		21,908.72	22,235.03
-Misses/sec		4051.86		4112.24
-Avg. Latency		867.51710	591.27561 (-31.84%)
-p50 Latency		876.54300	708.60700 (-19.15%)
-p99 Latency		1044.47900	1044.47900
-p99.9 Latency		1048.57500	1048.57500
-KB/sec			937,330.19	951,291.76
-
-numa_pte_updates	66,628,064	72,125,512
-numa_hint_faults	57,093,369	63,369,538
-numa_hint_faults_local	0		0
-numa_pages_migrated	799,128		3,634,114
-pgpromote_success	798,974		3,633,672
-pgpromote_candidate	33,884,196	23,143,552
-pgdemote_kswapd		13,321,784	11,948,894
-pgdemote_direct		257		57,147
-
-Bharata B Rao (2):
-  sched/numa: Fault count based NUMA hint fault latency
-  mm: Update hint fault count for pages that are skipped during scanning
-
+Signed-off-by: Bharata B Rao <bharata@amd.com>
+---
  include/linux/mm.h       | 23 ++++---------
  include/linux/mm_types.h |  3 ++
  kernel/sched/debug.c     |  2 +-
  kernel/sched/fair.c      | 73 +++++++++++-----------------------------
  kernel/sched/sched.h     |  1 +
- mm/huge_memory.c         | 10 +++---
+ mm/huge_memory.c         |  3 +-
  mm/memory.c              |  2 ++
- mm/mprotect.c            | 14 ++++----
- 8 files changed, 46 insertions(+), 82 deletions(-)
+ mm/mprotect.c            |  5 +--
+ 8 files changed, 37 insertions(+), 75 deletions(-)
 
+diff --git a/include/linux/mm.h b/include/linux/mm.h
+index f5a97dec5169..cb1e79f2920b 100644
+--- a/include/linux/mm.h
++++ b/include/linux/mm.h
+@@ -1656,17 +1656,7 @@ static inline int folio_nid(const struct folio *folio)
+ }
+ 
+ #ifdef CONFIG_NUMA_BALANCING
+-/* page access time bits needs to hold at least 4 seconds */
+-#define PAGE_ACCESS_TIME_MIN_BITS	12
+-#if LAST_CPUPID_SHIFT < PAGE_ACCESS_TIME_MIN_BITS
+-#define PAGE_ACCESS_TIME_BUCKETS				\
+-	(PAGE_ACCESS_TIME_MIN_BITS - LAST_CPUPID_SHIFT)
+-#else
+-#define PAGE_ACCESS_TIME_BUCKETS	0
+-#endif
+-
+-#define PAGE_ACCESS_TIME_MASK				\
+-	(LAST_CPUPID_MASK << PAGE_ACCESS_TIME_BUCKETS)
++#define PAGE_FAULT_COUNT_BUCKETS	16
+ 
+ static inline int cpu_pid_to_cpupid(int cpu, int pid)
+ {
+@@ -1732,13 +1722,12 @@ static inline void page_cpupid_reset_last(struct page *page)
+ }
+ #endif /* LAST_CPUPID_NOT_IN_PAGE_FLAGS */
+ 
+-static inline int folio_xchg_access_time(struct folio *folio, int time)
++static inline int folio_xchg_fault_count(struct folio *folio, int count)
+ {
+-	int last_time;
++	int last_count;
+ 
+-	last_time = folio_xchg_last_cpupid(folio,
+-					   time >> PAGE_ACCESS_TIME_BUCKETS);
+-	return last_time << PAGE_ACCESS_TIME_BUCKETS;
++	last_count = folio_xchg_last_cpupid(folio, count >> PAGE_FAULT_COUNT_BUCKETS);
++	return last_count << PAGE_FAULT_COUNT_BUCKETS;
+ }
+ 
+ static inline void vma_set_access_pid_bit(struct vm_area_struct *vma)
+@@ -1756,7 +1745,7 @@ static inline int folio_xchg_last_cpupid(struct folio *folio, int cpupid)
+ 	return folio_nid(folio); /* XXX */
+ }
+ 
+-static inline int folio_xchg_access_time(struct folio *folio, int time)
++static inline int folio_xchg_fault_count(struct folio *folio, int time)
+ {
+ 	return 0;
+ }
+diff --git a/include/linux/mm_types.h b/include/linux/mm_types.h
+index 8b611e13153e..280043a08f25 100644
+--- a/include/linux/mm_types.h
++++ b/include/linux/mm_types.h
+@@ -922,6 +922,9 @@ struct mm_struct {
+ 
+ 		/* numa_scan_seq prevents two threads remapping PTEs. */
+ 		int numa_scan_seq;
++
++		/* Accummulated number of hint faults */
++		atomic_t hint_faults;
+ #endif
+ 		/*
+ 		 * An operation with batched TLB flushing is going on. Anything
+diff --git a/kernel/sched/debug.c b/kernel/sched/debug.c
+index 8d5d98a5834d..cd6367cef6cb 100644
+--- a/kernel/sched/debug.c
++++ b/kernel/sched/debug.c
+@@ -369,7 +369,7 @@ static __init int sched_init_debug(void)
+ 	debugfs_create_u32("scan_period_min_ms", 0644, numa, &sysctl_numa_balancing_scan_period_min);
+ 	debugfs_create_u32("scan_period_max_ms", 0644, numa, &sysctl_numa_balancing_scan_period_max);
+ 	debugfs_create_u32("scan_size_mb", 0644, numa, &sysctl_numa_balancing_scan_size);
+-	debugfs_create_u32("hot_threshold_ms", 0644, numa, &sysctl_numa_balancing_hot_threshold);
++	debugfs_create_u32("fault_count_threshold", 0644, numa, &sysctl_numa_balancing_fault_count_threshold);
+ #endif
+ 
+ 	debugfs_create_file("debug", 0444, debugfs_sched, NULL, &sched_debug_fops);
+diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+index 6a16129f9a5c..977584683f5f 100644
+--- a/kernel/sched/fair.c
++++ b/kernel/sched/fair.c
+@@ -1364,8 +1364,11 @@ unsigned int sysctl_numa_balancing_scan_size = 256;
+ /* Scan @scan_size MB every @scan_period after an initial @scan_delay in ms */
+ unsigned int sysctl_numa_balancing_scan_delay = 1000;
+ 
+-/* The page with hint page fault latency < threshold in ms is considered hot */
+-unsigned int sysctl_numa_balancing_hot_threshold = MSEC_PER_SEC;
++/*
++ * Page is considered hot if the number of hint faults between scan time and
++ * the page's fault time is less than this threshold.
++ */
++unsigned int sysctl_numa_balancing_fault_count_threshold = 1000000;
+ 
+ struct numa_group {
+ 	refcount_t refcount;
+@@ -1750,25 +1753,20 @@ static bool pgdat_free_space_enough(struct pglist_data *pgdat)
+ }
+ 
+ /*
+- * For memory tiering mode, when page tables are scanned, the scan
+- * time will be recorded in struct page in addition to make page
+- * PROT_NONE for slow memory page.  So when the page is accessed, in
+- * hint page fault handler, the hint page fault latency is calculated
+- * via,
++ * For memory tiering mode, when page tables are scanned, the current
++ * hint fault count will be recorded in struct page in addition to
++ * make page PROT_NONE for slow memory page.  So when the page is
++ * accessed, in hint page fault handler, the hint page fault latency is
++ * calculated via,
+  *
+- *	hint page fault latency = hint page fault time - scan time
++ * hint page fault latency = current hint fault count - fault count at scan time
+  *
+  * The smaller the hint page fault latency, the higher the possibility
+  * for the page to be hot.
+  */
+-static int numa_hint_fault_latency(struct folio *folio)
++static inline int numa_hint_fault_latency(struct folio *folio, int count)
+ {
+-	int last_time, time;
+-
+-	time = jiffies_to_msecs(jiffies);
+-	last_time = folio_xchg_access_time(folio, time);
+-
+-	return (time - last_time) & PAGE_ACCESS_TIME_MASK;
++	return count - folio_xchg_fault_count(folio, count);
+ }
+ 
+ /*
+@@ -1794,35 +1792,6 @@ static bool numa_promotion_rate_limit(struct pglist_data *pgdat,
+ 	return false;
+ }
+ 
+-#define NUMA_MIGRATION_ADJUST_STEPS	16
+-
+-static void numa_promotion_adjust_threshold(struct pglist_data *pgdat,
+-					    unsigned long rate_limit,
+-					    unsigned int ref_th)
+-{
+-	unsigned int now, start, th_period, unit_th, th;
+-	unsigned long nr_cand, ref_cand, diff_cand;
+-
+-	now = jiffies_to_msecs(jiffies);
+-	th_period = sysctl_numa_balancing_scan_period_max;
+-	start = pgdat->nbp_th_start;
+-	if (now - start > th_period &&
+-	    cmpxchg(&pgdat->nbp_th_start, start, now) == start) {
+-		ref_cand = rate_limit *
+-			sysctl_numa_balancing_scan_period_max / MSEC_PER_SEC;
+-		nr_cand = node_page_state(pgdat, PGPROMOTE_CANDIDATE);
+-		diff_cand = nr_cand - pgdat->nbp_th_nr_cand;
+-		unit_th = ref_th * 2 / NUMA_MIGRATION_ADJUST_STEPS;
+-		th = pgdat->nbp_threshold ? : ref_th;
+-		if (diff_cand > ref_cand * 11 / 10)
+-			th = max(th - unit_th, unit_th);
+-		else if (diff_cand < ref_cand * 9 / 10)
+-			th = min(th + unit_th, ref_th * 2);
+-		pgdat->nbp_th_nr_cand = nr_cand;
+-		pgdat->nbp_threshold = th;
+-	}
+-}
+-
+ bool should_numa_migrate_memory(struct task_struct *p, struct folio *folio,
+ 				int src_nid, int dst_cpu)
+ {
+@@ -1838,7 +1807,7 @@ bool should_numa_migrate_memory(struct task_struct *p, struct folio *folio,
+ 	    !node_is_toptier(src_nid)) {
+ 		struct pglist_data *pgdat;
+ 		unsigned long rate_limit;
+-		unsigned int latency, th, def_th;
++		unsigned int latency;
+ 
+ 		pgdat = NODE_DATA(dst_nid);
+ 		if (pgdat_free_space_enough(pgdat)) {
+@@ -1847,16 +1816,13 @@ bool should_numa_migrate_memory(struct task_struct *p, struct folio *folio,
+ 			return true;
+ 		}
+ 
+-		def_th = sysctl_numa_balancing_hot_threshold;
+-		rate_limit = sysctl_numa_balancing_promote_rate_limit << \
+-			(20 - PAGE_SHIFT);
+-		numa_promotion_adjust_threshold(pgdat, rate_limit, def_th);
+-
+-		th = pgdat->nbp_threshold ? : def_th;
+-		latency = numa_hint_fault_latency(folio);
+-		if (latency >= th)
++		latency = numa_hint_fault_latency(folio,
++						  atomic_read(&p->mm->hint_faults));
++		if (latency >= sysctl_numa_balancing_fault_count_threshold)
+ 			return false;
+ 
++		rate_limit = sysctl_numa_balancing_promote_rate_limit << \
++			(20 - PAGE_SHIFT);
+ 		return !numa_promotion_rate_limit(pgdat, rate_limit,
+ 						  folio_nr_pages(folio));
+ 	}
+@@ -3444,6 +3410,7 @@ void init_numa_balancing(unsigned long clone_flags, struct task_struct *p)
+ 			mm->numa_next_scan = jiffies + msecs_to_jiffies(sysctl_numa_balancing_scan_delay);
+ 			mm->numa_scan_seq = 0;
+ 		}
++		atomic_set(&mm->hint_faults, 0);
+ 	}
+ 	p->node_stamp			= 0;
+ 	p->numa_scan_seq		= mm ? mm->numa_scan_seq : 0;
+diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
+index d2242679239e..f975d643fa6a 100644
+--- a/kernel/sched/sched.h
++++ b/kernel/sched/sched.h
+@@ -2564,6 +2564,7 @@ extern unsigned int sysctl_numa_balancing_scan_period_min;
+ extern unsigned int sysctl_numa_balancing_scan_period_max;
+ extern unsigned int sysctl_numa_balancing_scan_size;
+ extern unsigned int sysctl_numa_balancing_hot_threshold;
++extern unsigned int sysctl_numa_balancing_fault_count_threshold;
+ #endif
+ 
+ #ifdef CONFIG_SCHED_HRTICK
+diff --git a/mm/huge_memory.c b/mm/huge_memory.c
+index 94c958f7ebb5..7e62c3c2bbcb 100644
+--- a/mm/huge_memory.c
++++ b/mm/huge_memory.c
+@@ -2101,8 +2101,7 @@ int change_huge_pmd(struct mmu_gather *tlb, struct vm_area_struct *vma,
+ 
+ 		if (sysctl_numa_balancing_mode & NUMA_BALANCING_MEMORY_TIERING &&
+ 		    !toptier)
+-			folio_xchg_access_time(folio,
+-					       jiffies_to_msecs(jiffies));
++			folio_xchg_fault_count(folio, atomic_read(&mm->hint_faults));
+ 	}
+ 	/*
+ 	 * In case prot_numa, we are under mmap_read_lock(mm). It's critical
+diff --git a/mm/memory.c b/mm/memory.c
+index 0bfc8b007c01..43a6358e6d31 100644
+--- a/mm/memory.c
++++ b/mm/memory.c
+@@ -4927,6 +4927,8 @@ static vm_fault_t do_numa_page(struct vm_fault *vmf)
+ 	pte_t pte, old_pte;
+ 	int flags = 0;
+ 
++	atomic_inc(&vma->vm_mm->hint_faults);
++
+ 	/*
+ 	 * The "pte" at this point cannot be used safely without
+ 	 * validation through pte_unmap_same(). It's of NUMA type but
+diff --git a/mm/mprotect.c b/mm/mprotect.c
+index 81991102f785..30118fd492f4 100644
+--- a/mm/mprotect.c
++++ b/mm/mprotect.c
+@@ -159,8 +159,9 @@ static long change_pte_range(struct mmu_gather *tlb,
+ 					continue;
+ 				if (sysctl_numa_balancing_mode & NUMA_BALANCING_MEMORY_TIERING &&
+ 				    !toptier)
+-					folio_xchg_access_time(folio,
+-						jiffies_to_msecs(jiffies));
++					folio_xchg_fault_count(folio,
++							atomic_read(&vma->vm_mm->hint_faults));
++
+ 			}
+ 
+ 			oldpte = ptep_modify_prot_start(vma, addr, pte);
 -- 
 2.25.1
 
