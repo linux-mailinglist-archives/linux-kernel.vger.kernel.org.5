@@ -1,113 +1,113 @@
-Return-Path: <linux-kernel+bounces-121878-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-121879-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id B2B4288EEE0
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 20:09:56 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 67F8888EEE1
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 20:10:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EAC4B1C3368A
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 19:09:55 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1B5C91F26492
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 19:10:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F36851509AE;
-	Wed, 27 Mar 2024 19:09:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA75E1509A2;
+	Wed, 27 Mar 2024 19:10:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=embeddedor.com header.i=@embeddedor.com header.b="qGdsfb5n"
-Received: from omta36.uswest2.a.cloudfilter.net (omta36.uswest2.a.cloudfilter.net [35.89.44.35])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PVorGGRW"
+Received: from mail-qv1-f49.google.com (mail-qv1-f49.google.com [209.85.219.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E0F17131BC0
-	for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 19:09:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=35.89.44.35
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9A83B15099A
+	for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 19:10:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711566589; cv=none; b=QGO1WpsgqRSVQKGjqe8JaHhRYB9Qvwh3RMbLG8UN9LOxm+ubRJEewIx7eFLNTHKCC1G1tmRWej/1399tX+wcpZ8tOHlalMBdGb1KIZtBZq7lOLb71XLtF5h47W0O57kR3pvoSc/TBKfKko+ZGTezHZqCBeltq2CQ4NJzqWIRD/k=
+	t=1711566614; cv=none; b=WU1m7Og2i15/kx0Et6sw5NDVHf0+9Y3JUIVuRUEBiPcbkNvxBv9tS/EdNdj+souIIJo3QSxl5lMV3HflLdWthABCNyLzZJG7tei5nw79BUw34aYQiYA0XCSqWHnEuMNe4eTQqqV7tipWusNXg4LhBaFJPwLy9uAXSHPt/q4/Dfg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711566589; c=relaxed/simple;
-	bh=VuFdCUTeCOnad4gk6omCYrg21NlNNqeSLBu5rRtqVXc=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=p6wgoCnYIIJQQNXA3+WiVxS1MyPc110ZL1rdJHbZRvxoH5HWPP571bob+J3h1cW8hkeg0I9FqWqSu/NFExAPhlkiiMqGxz2QX6UjCgKaSTf9y+Qd9bM9SdMIbX/oU/sVvckZefFOB2e85I1Rzvg47o1q1J4D7DUYuvdSyZcjM0g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=embeddedor.com; spf=pass smtp.mailfrom=embeddedor.com; dkim=pass (2048-bit key) header.d=embeddedor.com header.i=@embeddedor.com header.b=qGdsfb5n; arc=none smtp.client-ip=35.89.44.35
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=embeddedor.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=embeddedor.com
-Received: from eig-obgw-6010a.ext.cloudfilter.net ([10.0.30.248])
-	by cmsmtp with ESMTPS
-	id pWKkrLIEGtf2QpYehr430H; Wed, 27 Mar 2024 19:09:47 +0000
-Received: from gator4166.hostgator.com ([108.167.133.22])
-	by cmsmtp with ESMTPS
-	id pYegrqKI8QufZpYehrvOzC; Wed, 27 Mar 2024 19:09:47 +0000
-X-Authority-Analysis: v=2.4 cv=eK4Vjmp1 c=1 sm=1 tr=0 ts=66046efb
- a=1YbLdUo/zbTtOZ3uB5T3HA==:117 a=zXgy4KOrraTBHT4+ULisNA==:17
- a=IkcTkHD0fZMA:10 a=K6JAEmCyrfEA:10 a=wYkD_t78qR0A:10
- a=jgUHHrBZrz3db-_ODY8A:9 a=QEXdDO2ut3YA:10
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
-	In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
-	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-	List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=agm2AiH62BDQPh9qtko/Ix12J6Yxy9RCLO/4NODZzQU=; b=qGdsfb5n3srrLy6Jbt0CD1F9Ay
-	CnkPWga/hrZcYJpakf7dMoa5k7jGT+aNsEAUb9q8H8wv2wRB8l+jOC/zR3JZdFkYcX5gf5buskJII
-	fwRfy6b9HE5BEiN9J9FneDQ3xFEvzPSByG2S2NTmZ30Fy3w7zX7gp2GdcAeS6tKGEUFdtniyvh9zr
-	n2nFX1hsQ5fk+hxRnY03QzzhlcSYShxZsjpLDMw3axJVvdEXbnBzDC8dJMG48ltyuS3pEdVOyTbBw
-	fcl38+ziLh8h9ZnAxMBBLsYyc2fNQPjOrr40I1N4cZ3TRv9XzfI7rrJQzDPF5+PF7feKalGZHSFGF
-	itV6vdGg==;
-Received: from [201.172.173.147] (port=55016 helo=[192.168.15.10])
-	by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-	(Exim 4.96.2)
-	(envelope-from <gustavo@embeddedor.com>)
-	id 1rpYeg-003lvN-10;
-	Wed, 27 Mar 2024 14:09:46 -0500
-Message-ID: <62d3dd2c-ef46-4931-a9d6-8455b7b60870@embeddedor.com>
-Date: Wed, 27 Mar 2024 13:09:44 -0600
+	s=arc-20240116; t=1711566614; c=relaxed/simple;
+	bh=8dmOsKq57IuaVaer0JOPg69UA1GcaPAsLPAfsZhZQiI=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=qaIQfKSmmDir9JEbRpicETPjqmtvorlbsQvqb4pE6Q3kGfPPo2otqjOaPbCNHLFaAlBdI8cpfJcDyh2FWyYbknJlIdP0fF6XBzRBQKDiB2Im829Hhk41UmOnb5BCi0IBE/6royAYjTpQaDoBZ6X3dTqcFjzb7fYVs6n6ARzu48Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=PVorGGRW; arc=none smtp.client-ip=209.85.219.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-qv1-f49.google.com with SMTP id 6a1803df08f44-690be110d0dso1163936d6.3
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 12:10:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1711566611; x=1712171411; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=I+9nQ7dH6WY9yuVDU973sw8jAti2zGpoo5WiLa9bEuI=;
+        b=PVorGGRWZzilMQ9Z5p0E/Ne6tl2ID2X1MOdviNTkvjWSN4WN3Y9dNNLY8MeeCqNlr4
+         FPeOsUqoqLTWmlBtFKDdv3ApwM1h5M3T5giisY+/Rtkja2qmsPv9EMfBr2f+tddi8WnA
+         HVPIgf2KSVYyFp3NTF8UqwLilGJuEoMPEFAgOvBy9S1EyCRvSvG5LTdbBHUXsnJr7KR5
+         9x3t5TmrmJIHBTT9esoI4Q7CUmgqJzwzZ4pZeDE+fUls8foJGPno3oEEFbFNN5MW8tUY
+         zrv6Vf8YXw0lwEGp1ouwVYfW92iS0rW4ew99L0fb6O7jlSndJLOwCHgBIuXeEsx7bRb2
+         Pubg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711566611; x=1712171411;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=I+9nQ7dH6WY9yuVDU973sw8jAti2zGpoo5WiLa9bEuI=;
+        b=hk5t9xONwCBf9PC/J6p0IEsX4dGGEG3DqXkzeKu4pv4/c8mat0qKOXpF9DC/7+OYCZ
+         TBjfHGuq5Yq+Vw8blf8ijmGraz2fLy7hEE9YsNSxGrX1QC9BX3Fw7Z2z8kMpTf59oZx9
+         aqGYbzgnoTcqBcV9aB687hj7zdxyXynHsyA40KYJGpE2FfUQa/OOxNo929Wv6kLAXkIQ
+         NK8faFhfPz5sz4Ln8uEs2/R/ZPp3EmpELznYZZdWXnZbPFf3Fuh55MDr+fIOGIHHeY/J
+         CfhVFxto+qBycwFg++pziEZcz2CkqHvbE2SmmKAgRTcfINAfGdOGjKEWqjaE1iLKbsGi
+         KdAg==
+X-Forwarded-Encrypted: i=1; AJvYcCVyVnaFvMlmK1da9fh4WEoONSij7D/KwiyC06ZIiGqsmpqdKtXuJVGGXRVGRaUpCtzXMz9+FOMp0KHO4p2KtndRU0lrCWURUx4fhab4
+X-Gm-Message-State: AOJu0YzqnvVL8SmpIjSGK51d7JPcLacs79mr/gMLpm51rpCqskoEc4pW
+	b6OIuK8EM1uYQ68RMxeIkggspAd3daG3DnkAFdki88q+JGkpA4RGddYb7PL0
+X-Google-Smtp-Source: AGHT+IHu6MivQFc8ofw8fRsMfLJUOt76eUOv6nrLY3cbrB7L0u8GES2dWHFYcbnketG5FUlT0uUWcQ==
+X-Received: by 2002:ad4:4e10:0:b0:696:a0e8:8f2a with SMTP id dl16-20020ad44e10000000b00696a0e88f2amr442653qvb.44.1711566611666;
+        Wed, 27 Mar 2024 12:10:11 -0700 (PDT)
+Received: from YOGA.local ([2a06:c701:736b:f200:f38a:32d3:e6f6:959])
+        by smtp.gmail.com with ESMTPSA id 10-20020a05621420ea00b00696a1f5dd18sm1784789qvk.116.2024.03.27.12.10.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 27 Mar 2024 12:10:11 -0700 (PDT)
+From: Shahar Avidar <ikobh7@gmail.com>
+To: gregkh@linuxfoundation.org,
+	elder@linaro.org,
+	andriy.shevchenko@linux.intel.com,
+	robh@kernel.org,
+	parthiban.veerasooran@microchip.com
+Cc: linux-staging@lists.linux.dev,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH v3 0/3] staging: pi433: Fix includes, comments & macros.
+Date: Wed, 27 Mar 2024 21:10:01 +0200
+Message-Id: <20240327191004.619748-1-ikobh7@gmail.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH][next] wifi: cfg80211: Use __counted_by() in struct
- wmi_start_scan_cmd and avoid -Wfamnae warning
-Content-Language: en-US
-To: Kalle Valo <kvalo@kernel.org>, "Gustavo A. R. Silva"
- <gustavoars@kernel.org>
-Cc: Jeff Johnson <quic_jjohnson@quicinc.com>, linux-wireless@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
-References: <ZgRqjGShTl3y5FFB@neat> <87edbv7b9z.fsf@kernel.org>
-From: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-In-Reply-To: <87edbv7b9z.fsf@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - embeddedor.com
-X-BWhitelist: no
-X-Source-IP: 201.172.173.147
-X-Source-L: No
-X-Exim-ID: 1rpYeg-003lvN-10
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: ([192.168.15.10]) [201.172.173.147]:55016
-X-Source-Auth: gustavo@embeddedor.com
-X-Email-Count: 7
-X-Org: HG=hgshared;ORG=hostgator;
-X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
-X-Local-Domain: yes
-X-CMAE-Envelope: MS4xfAEcBxiMwUExBa3UFLhNSlM2OeUYKj8NOaAg6wQ3TwtTlUDxaslV5tMUZCj09y8EAbGPblN3g8JQfBbot/Hx/J/RxfDMStaBvB+8Ex+AgCY47EA+iwyf
- gc9OgfuOalcaxiudMnbDfmdMGPfPyMcFTl4Mm+fAwwbhlaBvUeWFKpMvauYemKxve/HtydlB2s2ChMdp8dM2HrqyrrWGVgq3Qu/XjatTADhOumXhqrM/J9Yr
+Content-Transfer-Encoding: 8bit
+
+This patchset continues with some cleanups:
+
+1. Untangle include hierarchy.
+2. Delete a misleading comment.
+3. Make use of general macro instead of magic number.
+
+v2->v1:
+        Undo macro update. Remove its inaccurate comment instead.
+v2->v3:
+        Restore Reviewed-by tag, previously omitted from patches 1 & 3.
+
+Shahar Avidar (3):
+  staging: pi433: Use headers in appropriate files.
+  staging: pi433: Remove an inaccurate comment.
+  staging: pi433: Make use of spi mode macro instead of magic number.
+
+ drivers/staging/pi433/pi433_if.c | 5 +++--
+ drivers/staging/pi433/rf69.c     | 1 +
+ drivers/staging/pi433/rf69.h     | 1 -
+ 3 files changed, 4 insertions(+), 3 deletions(-)
 
 
-> The subject should being with "wifi: wil6210:", I can fix that. (Didn't
-> review the rest yet.)
-> 
+base-commit: 20952655235dd9b1447829591774f1d8561f7c6a
+-- 
+2.34.1
 
-It seems I got it right in a subsequent patch. :)
-
-Thanks, Kalle.
---
-Gustavo
 
