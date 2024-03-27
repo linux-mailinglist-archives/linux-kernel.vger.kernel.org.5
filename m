@@ -1,182 +1,171 @@
-Return-Path: <linux-kernel+bounces-120440-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-120442-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4BF9F88D77A
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 08:40:39 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1925488D785
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 08:42:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 05D78299F38
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 07:40:38 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C65C01F282D1
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 07:42:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CA1C22C69D;
-	Wed, 27 Mar 2024 07:40:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 500892C692;
+	Wed, 27 Mar 2024 07:42:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="d6Ekj9b6";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="g6A4UAyx";
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="d6Ekj9b6";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="g6A4UAyx"
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qDLB564J"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5F36F2C1AA;
-	Wed, 27 Mar 2024 07:40:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8B8C12C1A6
+	for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 07:42:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711525230; cv=none; b=hrnBvGWjLN7YghrjMeXqhGWvFHS3X6s6nRVof3psox6osK/H/PR5XPX7GcUbLU20kv8d+QDaUdbkw7dsTn+9LItfr5yqllgLmIqCOqjhw6tTI7NULnIZuLG/4My0N57H+F9fcvJU7+Ng9ZuInA7PBxDscAtS+IwAILNfToEc114=
+	t=1711525350; cv=none; b=BRSOyESUz5hkp46PvKcz7J2U2CY/lYQhjEI2bslZ8yOJReE3cMkxH4gzk1GDXyKCcSUARR2tEX7Z6v/oVhBq/2Y/ahU8t0tXtSkkzsFkOl5gz24D8+zFyEOb+k4fqA9fCMxBnpaaZ1OlvDjpsUJ+YRmQuAjR/c/IlRaC1ofGsEo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711525230; c=relaxed/simple;
-	bh=nn2BDOr2BCIekUSUO9oL3jzqNlqdrqYPxziN82NCkrs=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=b1zyfsIaEv80jorXs5I9ACIjvGEfNP+YxKEo62ADMeglnBUdCTokDyia2Z2EaPB1xrACWQTpT7gHuPRc8F5Z4Uev0Ojm+9GPzySaZOjEsuJLNGa3HiIl+BRuNelnFNP0pldi/TFir2sUDH7lgeX9S9TkXHP8s8QwNkCPU0OvLPs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=d6Ekj9b6; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=g6A4UAyx; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=d6Ekj9b6; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=g6A4UAyx; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id B8A8D60010;
-	Wed, 27 Mar 2024 07:40:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1711525226; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=thcqS+vw6Usq7MYZ7czl11khcu2wqBEm+Lcfikv4tgs=;
-	b=d6Ekj9b6oB4yrYj3hmvCy7RpYniA8W6bBY7viSSwSp33vzrqUqFLbNrNqEUZoQGRmj0D/Y
-	qqh88zp/T2M+7NAIZiuiVSfI0jp5OVb7RR6h/o+o8yR+2iN9nc36P586HPDDaySFeFoh3c
-	mQSH+iosB44feCz9zRfOFMSz4fUiSZs=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1711525226;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=thcqS+vw6Usq7MYZ7czl11khcu2wqBEm+Lcfikv4tgs=;
-	b=g6A4UAyxG5rVoaC7eyoPyfcwedap2u1OoO4C1B1XWk9zUzJ+xwvwlit02AOLHnfZptL851
-	6O+Cmw3MCK0KBtDw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1711525226; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=thcqS+vw6Usq7MYZ7czl11khcu2wqBEm+Lcfikv4tgs=;
-	b=d6Ekj9b6oB4yrYj3hmvCy7RpYniA8W6bBY7viSSwSp33vzrqUqFLbNrNqEUZoQGRmj0D/Y
-	qqh88zp/T2M+7NAIZiuiVSfI0jp5OVb7RR6h/o+o8yR+2iN9nc36P586HPDDaySFeFoh3c
-	mQSH+iosB44feCz9zRfOFMSz4fUiSZs=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1711525226;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=thcqS+vw6Usq7MYZ7czl11khcu2wqBEm+Lcfikv4tgs=;
-	b=g6A4UAyxG5rVoaC7eyoPyfcwedap2u1OoO4C1B1XWk9zUzJ+xwvwlit02AOLHnfZptL851
-	6O+Cmw3MCK0KBtDw==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 245101369F;
-	Wed, 27 Mar 2024 07:40:24 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id 6TiVNmjNA2aZfQAAD6G6ig
-	(envelope-from <hare@suse.de>); Wed, 27 Mar 2024 07:40:24 +0000
-Message-ID: <65576638-2d23-4916-8e2a-84f949d360c1@suse.de>
-Date: Wed, 27 Mar 2024 08:40:23 +0100
+	s=arc-20240116; t=1711525350; c=relaxed/simple;
+	bh=TD71V4olm06QmOSssnupFr6nfPYdbww3XJe4yFkCmgU=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=mpIF48XdAJqjhry87X6g20tCtOqZqxTS2b0FQumtN/8J442Vbi4ZVOELl3ZNeoVrznjh/+ADdjLi94GmD4DBf4MQjmnOhxSuZixR+VAirprgGrYc4glVfeyTHm8yUkMg3D0h6unam4BBdsoAMsCN/SeGKY6ohUH4YDhokNuiKjk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qDLB564J; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 84F45C433F1;
+	Wed, 27 Mar 2024 07:42:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1711525350;
+	bh=TD71V4olm06QmOSssnupFr6nfPYdbww3XJe4yFkCmgU=;
+	h=From:To:Cc:Subject:Date:From;
+	b=qDLB564J1OPwdwaFjSwzPzdcxFpNkqvpBadoGyDILaGBfDQtBKe/wBFp6J7UZRqe4
+	 3B4IhdXATZKPWzkkeNGod/WFIl34byKVQo9bQp4Y5uN0anx0XaluWog960yH453uj7
+	 clvqPz2bXb6vZ1f4GZAvNFJyT7hefXy7eaN8tpnGzOLQLQXEV68PFZzRf7SdSD0+ho
+	 IRg7DAtqPwDnygmq9gNwQ/rxsX5x8rB4si4+3UHSCLKHiGrhDG/mBb19qzjPr/FCRo
+	 x7yWe4cey05PBTvVRXUpto7GmnUjZH6scZvsl7ifQGcj1t/U/thHhQFIS+bYPxVKqn
+	 q8EeEn2uWvZtA==
+From: Chao Yu <chao@kernel.org>
+To: jaegeuk@kernel.org
+Cc: linux-f2fs-devel@lists.sourceforge.net,
+	linux-kernel@vger.kernel.org,
+	Chao Yu <chao@kernel.org>,
+	Yi Zhang <yi.zhang@redhat.com>,
+	Shin'ichiro Kawasaki <shinichiro.kawasaki@wdc.com>
+Subject: [PATCH v2] f2fs: multidev: fix to recognize valid zero block address
+Date: Wed, 27 Mar 2024 15:42:23 +0800
+Message-Id: <20240327074223.2216487-1-chao@kernel.org>
+X-Mailer: git-send-email 2.40.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 7/9] scsi: mylex: fix sysfs buffer lengths
-Content-Language: en-US
-To: Arnd Bergmann <arnd@kernel.org>, llvm@lists.linux.dev,
- Hannes Reinecke <hare@kernel.org>, "James E.J. Bottomley"
- <jejb@linux.ibm.com>, "Martin K. Petersen" <martin.petersen@oracle.com>
-Cc: Arnd Bergmann <arnd@arndb.de>, Nathan Chancellor <nathan@kernel.org>,
- Nick Desaulniers <ndesaulniers@google.com>, Bill Wendling
- <morbo@google.com>, Justin Stitt <justinstitt@google.com>,
- linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20240326223825.4084412-1-arnd@kernel.org>
- <20240326223825.4084412-8-arnd@kernel.org>
-From: Hannes Reinecke <hare@suse.de>
-In-Reply-To: <20240326223825.4084412-8-arnd@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Level: 
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.de header.s=susede2_rsa header.b=d6Ekj9b6;
-	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=g6A4UAyx
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-5.50 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	 XM_UA_NO_VERSION(0.01)[];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 BAYES_HAM(-3.00)[100.00%];
-	 MIME_GOOD(-0.10)[text/plain];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 DWL_DNSWL_LOW(-1.00)[suse.de:dkim];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	 DKIM_TRACE(0.00)[suse.de:+];
-	 MX_GOOD(-0.01)[];
-	 RCPT_COUNT_TWELVE(0.00)[12];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:dkim,suse.de:email];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 NEURAL_HAM_SHORT(-0.20)[-1.000];
-	 RCVD_TLS_ALL(0.00)[];
-	 MID_RHS_MATCH_FROM(0.00)[]
-X-Spam-Score: -5.50
-X-Rspamd-Queue-Id: B8A8D60010
-X-Spam-Flag: NO
 
-On 3/26/24 23:38, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
-> 
-> The myrb and myrs drivers use an odd way of implementing their sysfs files,
-> calling snprintf() with a fixed length of 32 bytes to print into a page
-> sized buffer. One of the strings is actually longer than 32 bytes, which
-> clang can warn about:
-> 
-> drivers/scsi/myrb.c:1906:10: error: 'snprintf' will always be truncated; specified size is 32, but format string expands to at least 34 [-Werror,-Wformat-truncation]
-> drivers/scsi/myrs.c:1089:10: error: 'snprintf' will always be truncated; specified size is 32, but format string expands to at least 34 [-Werror,-Wformat-truncation]
-> 
-> These could all be plain sprintf() without a length as the buffer is
-> always long enough. On the other hand, sysfs files should not be overly
-> long either, so just double the length to make sure the longest strings
-> don't get truncated here.
-> 
-> Fixes: 77266186397c ("scsi: myrs: Add Mylex RAID controller (SCSI interface)")
-> Fixes: 081ff398c56c ("scsi: myrb: Add Mylex RAID controller (block interface)")
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> ---
->   drivers/scsi/myrb.c | 20 ++++++++++----------
->   drivers/scsi/myrs.c | 24 ++++++++++++------------
->   2 files changed, 22 insertions(+), 22 deletions(-)
-> 
-Yeah, counting is hard ...
+As reported by Yi Zhang in mailing list [1], kernel warning was catched
+during zbd/010 test as below:
 
-Reviewed-by: Hannes Reinecke <hare@suse.de>
+/check zbd/010
+zbd/010 (test gap zone support with F2FS)                    [failed]
+    runtime    ...  3.752s
+    something found in dmesg:
+    [ 4378.146781] run blktests zbd/010 at 2024-02-18 11:31:13
+    [ 4378.192349] null_blk: module loaded
+    [ 4378.209860] null_blk: disk nullb0 created
+    [ 4378.413285] scsi_debug:sdebug_driver_probe: scsi_debug: trim
+poll_queues to 0. poll_q/nr_hw = (0/1)
+    [ 4378.422334] scsi host15: scsi_debug: version 0191 [20210520]
+                     dev_size_mb=1024, opts=0x0, submit_queues=1, statistics=0
+    [ 4378.434922] scsi 15:0:0:0: Direct-Access-ZBC Linux
+scsi_debug       0191 PQ: 0 ANSI: 7
+    [ 4378.443343] scsi 15:0:0:0: Power-on or device reset occurred
+    [ 4378.449371] sd 15:0:0:0: Attached scsi generic sg5 type 20
+    [ 4378.449418] sd 15:0:0:0: [sdf] Host-managed zoned block device
+    ...
+    (See '/mnt/tests/gitlab.com/api/v4/projects/19168116/repository/archive.zip/storage/blktests/blk/blktests/results/nodev/zbd/010.dmesg'
 
-Cheers,
+WARNING: CPU: 22 PID: 44011 at fs/iomap/iter.c:51
+CPU: 22 PID: 44011 Comm: fio Not tainted 6.8.0-rc3+ #1
+RIP: 0010:iomap_iter+0x32b/0x350
+Call Trace:
+ <TASK>
+ __iomap_dio_rw+0x1df/0x830
+ f2fs_file_read_iter+0x156/0x3d0 [f2fs]
+ aio_read+0x138/0x210
+ io_submit_one+0x188/0x8c0
+ __x64_sys_io_submit+0x8c/0x1a0
+ do_syscall_64+0x86/0x170
+ entry_SYSCALL_64_after_hwframe+0x6e/0x76
 
-Hannes
+Shinichiro Kawasaki helps to analyse this issue and proposes a potential
+fixing patch in [2].
+
+Quoted from reply of Shinichiro Kawasaki:
+
+"I confirmed that the trigger commit is dbf8e63f48af as Yi reported. I took a
+look in the commit, but it looks fine to me. So I thought the cause is not
+in the commit diff.
+
+I found the WARN is printed when the f2fs is set up with multiple devices,
+and read requests are mapped to the very first block of the second device in the
+direct read path. In this case, f2fs_map_blocks() and f2fs_map_blocks_cached()
+modify map->m_pblk as the physical block address from each block device. It
+becomes zero when it is mapped to the first block of the device. However,
+f2fs_iomap_begin() assumes that map->m_pblk is the physical block address of the
+whole f2fs, across the all block devices. It compares map->m_pblk against
+NULL_ADDR == 0, then go into the unexpected branch and sets the invalid
+iomap->length. The WARN catches the invalid iomap->length.
+
+This WARN is printed even for non-zoned block devices, by following steps.
+
+ - Create two (non-zoned) null_blk devices memory backed with 128MB size each:
+   nullb0 and nullb1.
+ # mkfs.f2fs /dev/nullb0 -c /dev/nullb1
+ # mount -t f2fs /dev/nullb0 "${mount_dir}"
+ # dd if=/dev/zero of="${mount_dir}/test.dat" bs=1M count=192
+ # dd if="${mount_dir}/test.dat" of=/dev/null bs=1M count=192 iflag=direct
+
+.."
+
+So, the root cause of this issue is: when multi-devices feature is on,
+f2fs_map_blocks() may return zero blkaddr in non-primary device, which is
+a verified valid block address, however, f2fs_iomap_begin() treats it as
+an invalid block address, and then it triggers the warning in iomap
+framework code.
+
+Finally, as discussed, we decide to use a more simple and direct way that
+checking (map.m_flags & F2FS_MAP_MAPPED) condition instead of
+(map.m_pblk != NULL_ADDR) to fix this issue.
+
+Thanks a lot for the effort of Yi Zhang and Shinichiro Kawasaki on this
+issue.
+
+[1] https://lore.kernel.org/linux-f2fs-devel/CAHj4cs-kfojYC9i0G73PRkYzcxCTex=-vugRFeP40g_URGvnfQ@mail.gmail.com/
+[2] https://lore.kernel.org/linux-f2fs-devel/gngdj77k4picagsfdtiaa7gpgnup6fsgwzsltx6milmhegmjff@iax2n4wvrqye/
+
+Reported-by: Yi Zhang <yi.zhang@redhat.com>
+Closes: https://lore.kernel.org/linux-f2fs-devel/CAHj4cs-kfojYC9i0G73PRkYzcxCTex=-vugRFeP40g_URGvnfQ@mail.gmail.com/
+Tested-by: Shin'ichiro Kawasaki <shinichiro.kawasaki@wdc.com>
+Tested-by: Yi Zhang <yi.zhang@redhat.com>
+Fixes: 1517c1a7a445 ("f2fs: implement iomap operations")
+Fixes: 8d3c1fa3fa5e ("f2fs: don't rely on F2FS_MAP_* in f2fs_iomap_begin")
+Signed-off-by: Chao Yu <chao@kernel.org>
+---
+v2:
+- add Tested-by tag of Yi Zhang.
+ fs/f2fs/data.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/fs/f2fs/data.c b/fs/f2fs/data.c
+index 08815394223a..fa5398ac4505 100644
+--- a/fs/f2fs/data.c
++++ b/fs/f2fs/data.c
+@@ -4196,7 +4196,7 @@ static int f2fs_iomap_begin(struct inode *inode, loff_t offset, loff_t length,
+ 	if (WARN_ON_ONCE(map.m_pblk == COMPRESS_ADDR))
+ 		return -EINVAL;
+ 
+-	if (map.m_pblk != NULL_ADDR) {
++	if (map.m_flags & F2FS_MAP_MAPPED) {
+ 		iomap->length = blks_to_bytes(inode, map.m_len);
+ 		iomap->type = IOMAP_MAPPED;
+ 		iomap->flags |= IOMAP_F_MERGED;
 -- 
-Dr. Hannes Reinecke                  Kernel Storage Architect
-hare@suse.de                                +49 911 74053 688
-SUSE Software Solutions GmbH, Frankenstr. 146, 90461 Nürnberg
-HRB 36809 (AG Nürnberg), GF: I. Totev, A. McDonald, W. Knoblich
+2.40.1
 
 
