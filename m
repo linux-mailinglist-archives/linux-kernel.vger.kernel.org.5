@@ -1,149 +1,227 @@
-Return-Path: <linux-kernel+bounces-121779-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-121780-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7CA5288ED93
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 19:04:41 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 37D8088ED9C
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 19:06:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3442C2A2CB8
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 18:04:40 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A40821F37107
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 18:06:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 36D0D14F126;
-	Wed, 27 Mar 2024 18:03:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B9006149DE0;
+	Wed, 27 Mar 2024 18:06:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="UbKfIGdy"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NQmy7JUC"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7013214386C;
-	Wed, 27 Mar 2024 18:03:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E15785227;
+	Wed, 27 Mar 2024 18:06:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711562597; cv=none; b=QAQqHLa4+VkF+Xgnd7M5kqAJQzTvCabp+VpPcskPFS3R2mrMTqQGJ0e0h/vAiwxAcGM4ohEsEWAHW0u3Elvufs8nPUGcq6Jb7GQ6yVTXfy47EyTGo93ieGOQH1So7/TN6AweyP5lgzJ0vNDCJYBW3v+zRamieV82aZR3cqTTvMc=
+	t=1711562797; cv=none; b=Gh5/oAkHJzjFLiXXJYU0nDRzkhfxJiueaayFYfjMdtBSER87twIbKr4g/z4efGwAfMTL4BqNtgDRBd+fNGrhLI2qeFlrLQdLfwkg2/DWwN88RQ0MeNuaGwUCETNbdy/ua+rNq7vS3w+NazxHTSYhlcmJo7gWIF4TPXOJjoJBwOA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711562597; c=relaxed/simple;
-	bh=0O8XCY11WB9l5WV+H/o+LxwXGJuiHlEDHBA2DM0WnNM=;
+	s=arc-20240116; t=1711562797; c=relaxed/simple;
+	bh=ELmyXwcV+FV9/p8zH/5M6gKnn4Kq8bGt1DVRV4LDDKQ=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=PUVKRIvecp1N1UzE8GckzsGTd19H4K1ud1Uaciina12o+CEHSzjYQSXTgrJ/JvZ0ebJHRw7AMAqqM5t+VL7RGRxOCSpy6dm3uo8o1WoJg0k5IYRDrthEFvSBBbshST5Gu6/kUbf8DzKyQj1syYnUIWBKH1Knoy1MlnJsBAPhqio=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=UbKfIGdy; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DD8FBC433C7;
-	Wed, 27 Mar 2024 18:03:13 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=AtG4u3LJXZJrB1Z9BZFShmUwnRWY6TQnHuy6oizg2Ji7P7NgHVM3sHtvIA/RjOzwS0JyPmDhxGuaa2YzOLlRbN/ENbIco1PeFZKaxCJNWtQDhihM/5y+mtMULljNfNRbgtre5CZ09E2Q3QyLW/IhGjDzp/cK9wgc4Vg5U3Zrqoo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NQmy7JUC; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2EB0FC433C7;
+	Wed, 27 Mar 2024 18:06:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711562596;
-	bh=0O8XCY11WB9l5WV+H/o+LxwXGJuiHlEDHBA2DM0WnNM=;
+	s=k20201202; t=1711562796;
+	bh=ELmyXwcV+FV9/p8zH/5M6gKnn4Kq8bGt1DVRV4LDDKQ=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=UbKfIGdymFcXCV4gfFbDa95Uq9FJ5xB6pOYGVLZYOn9MoYlCbWkgzyyTMaWGK+Jmu
-	 lWXVTGJ0TCUHbYf0uJimJ0scqKUxYXJ/jdb08X5UeYV0iUpkj9+0Tjbwir1SIO+LhY
-	 N6+9aH5PaTWhHaLZo4DNHBy1a70e9zt9dHYIUuYfJTjpri8nOjcYRgW6VhJOSLVTCJ
-	 sJymvBS9NJVlVdRkuedfQtYogCa9EQC4ISQlkI0zJvRwi0WwcTxo287SBxGCMPuDdq
-	 vaAB6IfTkgxrdaRK0nXMCQ7en/W/YXaE3lRkALcV48jwu0bpeOfizgnFFa5b8TxRxI
-	 yEqVCvdk1Fotw==
-Date: Wed, 27 Mar 2024 18:03:11 +0000
-From: Conor Dooley <conor@kernel.org>
-To: Changhuang Liang <changhuang.liang@starfivetech.com>
-Cc: Conor Dooley <conor.dooley@microchip.com>,
-	Mauro Carvalho Chehab <mchehab@kernel.org>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Emil Renner Berthing <kernel@esmil.dk>,
-	Paul Walmsley <paul.walmsley@sifive.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Albert Ou <aou@eecs.berkeley.edu>,
-	Jack Zhu <jack.zhu@starfivetech.com>,
-	"linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
-	"devicetree@vger.kernel.org" <devicetree@vger.kernel.org>
-Subject: Re: =?utf-8?B?5Zue5aSNOiDlm57lpI06IFtQQVRD?=
- =?utf-8?Q?H_v1_1=2F2=5D_dt-bindings?= =?utf-8?Q?=3A?= media: starfive: Match
- driver and yaml property names
-Message-ID: <20240327-unlucky-bulge-2bf99a8649be@spud>
-References: <20240119100639.84029-1-changhuang.liang@starfivetech.com>
- <20240119100639.84029-2-changhuang.liang@starfivetech.com>
- <20240119-despair-festival-59ab2d4d896b@wendy>
- <SHXPR01MB0671E2150D9A2707F12E0901F270A@SHXPR01MB0671.CHNPR01.prod.partner.outlook.cn>
- <20240119-preamble-calm-7724e17fcebc@wendy>
- <BJXPR01MB0662E6EEEEF888BD90A1FCE5F275A@BJXPR01MB0662.CHNPR01.prod.partner.outlook.cn>
- <20240122-uncivil-almost-631137081fd9@spud>
+	b=NQmy7JUCEZ0RxIGKKgDxesVr/zBZBlOhbpw6BuiwYqInjUm2QolaDyoi93Z/1ZIDT
+	 fXfeILsnH6JFGEkhARAkWC6/HiE8+5o5m9o69ef2b1DjI4qtlbtnt2G+4LIovO2GXr
+	 g8N9dGuVaSpcBXK61RpiAK3G9bs75gKErf40XvBIqRcumFGtD5EzKfM+JNIORC1NhX
+	 st47971wfU0D30xAqoe5lON13N9ktrWVS7ajto4z++ZpfmvSVkP6wOKqsLplbObd2/
+	 JOpORRStz3LnZXXYI+T59a1Haaiihp6vUslg8pJvBAmv3w5p1XyLystGyO8RAqQvpU
+	 XNZcGuAQYU0Pg==
+Date: Wed, 27 Mar 2024 19:06:30 +0100
+From: Niklas Cassel <cassel@kernel.org>
+To: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Cc: Lorenzo Pieralisi <lpieralisi@kernel.org>,
+	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+	Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
+	Kishon Vijay Abraham I <kishon@kernel.org>,
+	Thierry Reding <thierry.reding@gmail.com>,
+	Jonathan Hunter <jonathanh@nvidia.com>,
+	Jingoo Han <jingoohan1@gmail.com>,
+	Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
+	linux-pci@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+	linux-kernel@vger.kernel.org, mhi@lists.linux.dev,
+	linux-tegra@vger.kernel.org
+Subject: Re: [PATCH 07/11] PCI: dwc: ep: Add a generic dw_pcie_ep_linkdown()
+ API to handle Link Down event
+Message-ID: <ZgRgJsOT_bzXM1wK@ryzen>
+References: <20240314-pci-epf-rework-v1-0-6134e6c1d491@linaro.org>
+ <20240314-pci-epf-rework-v1-7-6134e6c1d491@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="zzCqoLyA9q69ODhP"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240122-uncivil-almost-631137081fd9@spud>
+In-Reply-To: <20240314-pci-epf-rework-v1-7-6134e6c1d491@linaro.org>
+
+Hello Mani,
+
+On Thu, Mar 14, 2024 at 08:53:46PM +0530, Manivannan Sadhasivam wrote:
+> As per the PCIe base spec r5.0, section 5.2, Link Down event can happen
+> under any of the following circumstances:
+> 
+> 1. Fundamental/Hot reset
+> 2. Link disable transmission by upstream component
+> 3. Moving from L2/L3 to L0
+> 
+> In those cases, Link Down causes some non-sticky DWC registers to loose the
+> state (like REBAR, etc...). So the drivers need to reinitialize them to
+> function properly once the link comes back again.
+> 
+> This is not a problem for drivers supporting PERST# IRQ, since they can
+> reinitialize the registers in the PERST# IRQ callback. But for the drivers
+> not supporting PERST#, there is no way they can reinitialize the registers
+> other than relying on Link Down IRQ received when the link goes down. So
+> let's add a DWC generic API dw_pcie_ep_linkdown() that reinitializes the
+> non-sticky registers and also notifies the EPF drivers about link going
+> down.
+> 
+> This API can also be used by the drivers supporting PERST# to handle the
+> scenario (2) mentioned above.
+> 
+> NOTE: For the sake of code organization, move the dw_pcie_ep_linkup()
+> definition just above dw_pcie_ep_linkdown().
+> 
+> Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+> ---
+>  drivers/pci/controller/dwc/pcie-designware-ep.c | 93 ++++++++++++++++---------
+>  drivers/pci/controller/dwc/pcie-designware.h    |  5 ++
+>  2 files changed, 67 insertions(+), 31 deletions(-)
+> 
+> diff --git a/drivers/pci/controller/dwc/pcie-designware-ep.c b/drivers/pci/controller/dwc/pcie-designware-ep.c
+> index 3893a8c1a11c..5451057ca74b 100644
+> --- a/drivers/pci/controller/dwc/pcie-designware-ep.c
+> +++ b/drivers/pci/controller/dwc/pcie-designware-ep.c
+> @@ -14,18 +14,6 @@
+>  #include <linux/pci-epc.h>
+>  #include <linux/pci-epf.h>
+>  
+> -/**
+> - * dw_pcie_ep_linkup - Notify EPF drivers about link up event
+> - * @ep: DWC EP device
+> - */
+> -void dw_pcie_ep_linkup(struct dw_pcie_ep *ep)
+> -{
+> -	struct pci_epc *epc = ep->epc;
+> -
+> -	pci_epc_linkup(epc);
+> -}
+> -EXPORT_SYMBOL_GPL(dw_pcie_ep_linkup);
+> -
+>  /**
+>   * dw_pcie_ep_init_notify - Notify EPF drivers about EPC initialization
+>   *			    complete
+> @@ -672,6 +660,29 @@ static unsigned int dw_pcie_ep_find_ext_capability(struct dw_pcie *pci, int cap)
+>  	return 0;
+>  }
+>  
+> +static void dw_pcie_ep_init_non_sticky_registers(struct dw_pcie *pci)
+> +{
+> +	unsigned int offset;
+> +	unsigned int nbars;
+> +	u32 reg, i;
+> +
+> +	offset = dw_pcie_ep_find_ext_capability(pci, PCI_EXT_CAP_ID_REBAR);
+> +
+> +	dw_pcie_dbi_ro_wr_en(pci);
+> +
+> +	if (offset) {
+> +		reg = dw_pcie_readl_dbi(pci, offset + PCI_REBAR_CTRL);
+> +		nbars = (reg & PCI_REBAR_CTRL_NBAR_MASK) >>
+> +			PCI_REBAR_CTRL_NBAR_SHIFT;
+> +
+> +		for (i = 0; i < nbars; i++, offset += PCI_REBAR_CTRL)
+> +			dw_pcie_writel_dbi(pci, offset + PCI_REBAR_CAP, 0x0);
+> +	}
+> +
+> +	dw_pcie_setup(pci);
+> +	dw_pcie_dbi_ro_wr_dis(pci);
+> +}
+> +
+>  /**
+>   * dw_pcie_ep_init_registers - Initialize DWC EP specific registers
+>   * @ep: DWC EP device
+> @@ -686,13 +697,11 @@ int dw_pcie_ep_init_registers(struct dw_pcie_ep *ep)
+>  	struct dw_pcie_ep_func *ep_func;
+>  	struct device *dev = pci->dev;
+>  	struct pci_epc *epc = ep->epc;
+> -	unsigned int offset, ptm_cap_base;
+> -	unsigned int nbars;
+> +	u32 ptm_cap_base, reg;
+>  	u8 hdr_type;
+>  	u8 func_no;
+> -	int i, ret;
+>  	void *addr;
+> -	u32 reg;
+> +	int ret;
+>  
+>  	hdr_type = dw_pcie_readb_dbi(pci, PCI_HEADER_TYPE) &
+>  		   PCI_HEADER_TYPE_MASK;
+> @@ -755,20 +764,8 @@ int dw_pcie_ep_init_registers(struct dw_pcie_ep *ep)
+>  	if (ep->ops->init)
+>  		ep->ops->init(ep);
+>  
+> -	offset = dw_pcie_ep_find_ext_capability(pci, PCI_EXT_CAP_ID_REBAR);
+>  	ptm_cap_base = dw_pcie_ep_find_ext_capability(pci, PCI_EXT_CAP_ID_PTM);
+>  
+> -	dw_pcie_dbi_ro_wr_en(pci);
+> -
+> -	if (offset) {
+> -		reg = dw_pcie_readl_dbi(pci, offset + PCI_REBAR_CTRL);
+> -		nbars = (reg & PCI_REBAR_CTRL_NBAR_MASK) >>
+> -			PCI_REBAR_CTRL_NBAR_SHIFT;
+> -
+> -		for (i = 0; i < nbars; i++, offset += PCI_REBAR_CTRL)
+> -			dw_pcie_writel_dbi(pci, offset + PCI_REBAR_CAP, 0x0);
+> -	}
+> -
+>  	/*
+>  	 * PTM responder capability can be disabled only after disabling
+>  	 * PTM root capability.
+> @@ -785,9 +782,6 @@ int dw_pcie_ep_init_registers(struct dw_pcie_ep *ep)
+>  		dw_pcie_dbi_ro_wr_dis(pci);
+>  	}
+>  
+> -	dw_pcie_setup(pci);
+> -	dw_pcie_dbi_ro_wr_dis(pci);
+> -
+
+Your previous series had:
+
+-       dw_pcie_setup(pci);
+-       dw_pcie_dbi_ro_wr_dis(pci);
++       dw_pcie_ep_init_non_sticky_registers(pci);
+
+Here.
+I tested this series, but it did not work for me (the Resizable BARs did
+not get resized) since you removed the call to
+dw_pcie_ep_init_non_sticky_registers().
+
+By readding the call to dw_pcie_ep_init_non_sticky_registers(),
+the BARs get Resized again.
 
 
---zzCqoLyA9q69ODhP
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+BTW do you have a git branch with both your series somewhere?
+(Possibly even rebased on
+https://lore.kernel.org/linux-pci/20240320113157.322695-1-cassel@kernel.org/T/#t
+like you suggested in your other mail.)
 
-On Mon, Jan 22, 2024 at 08:24:51AM +0000, Conor Dooley wrote:
-> On Mon, Jan 22, 2024 at 01:33:56AM +0000, Changhuang Liang wrote:
-> >=20
-> > > On Fri, Jan 19, 2024 at 12:57:22PM +0000, Changhuang Liang wrote:
-> > > > EXTERNAL EMAIL: Do not click links or open attachments unless you k=
-now
-> > > > the content is safe
-> > > >
-> > > > Hi , Conor
-> > > >
-> > > > > =E4=B8=BB=E9=A2=98: Re: [PATCH v1 1/2] dt-bindings: media: starfi=
-ve: Match driver
-> > > > > and yaml property names
-> > > > >
-> > > > > On Fri, Jan 19, 2024 at 02:06:38AM -0800, Changhuang Liang wrote:
-> > > > > > Drop some unused properties for clocks, resets and interrupts f=
-or
-> > > > > > StarFive JH7110 camera subsystem.
-> > > > >
-> > > > > What do you mean "unused"?
-> > > > >
-> > > > > Do these clocks etc exist but are not used by the driver?
-> > > > >
-> > > > > Or do they not exist at all?
-> > > > >
-> > > > > The two are very different!
-> > >=20
-> > > > These clocks etc exist but are not used by the driver.
-> > >=20
-> > > That's not an acceptable reason for removing them from the binding. I=
-f they
-> > > exist, they should be documented, regardless of whether the driver ma=
-kes use
-> > > of them. NAK.
-> >=20
-> > If so, how to avoid the warning of dtbs_check.
->=20
-> By also adding the clocks, resets and interrupts to the dts.
 
-Going through patchwork stuff now that the merge window is done. I'm
-gonna mark the dts patch as changes requeted. The binding (and dts)
-should describe all of the clocks the hardware has, whether or not you
-choose to use them all in software does not matter. Can you please
-resend the dts patch, with all of the clocks, resets and interrupts
-present?
-
-Thanks,
-Conor.
-
---zzCqoLyA9q69ODhP
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZgRfXwAKCRB4tDGHoIJi
-0qQXAQDfBiXwvtzOzuvMjituCroQrHpvVV9xsdNonK911KyCSwEA799G/wBfPBYb
-V3sbl2B9KISp0AvY5FbPCNrcFvvq8Qg=
-=gcwu
------END PGP SIGNATURE-----
-
---zzCqoLyA9q69ODhP--
+Kind regards,
+Niklas
 
