@@ -1,56 +1,54 @@
-Return-Path: <linux-kernel+bounces-121190-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-121191-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 33D0088E34C
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 14:46:37 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 64D6688E34E
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 14:46:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E13A42A3FBF
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 13:46:35 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A55A21F233B3
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 13:46:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B51AB18132D;
-	Wed, 27 Mar 2024 12:25:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3C6F618130E;
+	Wed, 27 Mar 2024 12:25:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="QxM0JQ5x"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="LTpJCld9"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 004F618130E;
-	Wed, 27 Mar 2024 12:25:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7AEB818146B;
+	Wed, 27 Mar 2024 12:25:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711542310; cv=none; b=RT8Vc7K6InTUAAPfTcVN8dfPMJ/KiZf+CF7hGbI5RgccvoypRY/xHQ+4yJboGwcs0XlP+msAMK0ZEREvxlwKn00LXz8QdYtcTdMWbSBbbeeziqqVJWU5xfA1YEV4eOqoazKMJhtxYR6eplE46clgSHQ1H7pj0ZWhj0hLP/xE9lQ=
+	t=1711542312; cv=none; b=dgNclMaRZmNeH6DnF0GA0JHcOdHukUluICEWU4zahy/EsWkm+jrgVcB72y8M6Fmur77Zvfp3TbJJIyKkFJn87N4PL9baTqOLWUrjBpyId00P74YocTf7Oi0qDQvybYaDo7T8Ai7dmWqj+iQF1S0JjGMhQrd/u+dlJoq1Gy40bow=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711542310; c=relaxed/simple;
-	bh=tQOdbfRc0uu9USqlT0ZH22KXVG2u9wYpVV+XI4OZdkY=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=n/ngrnw7wNaukmGPlk1enARSaWb9uwUEHZ9/pAR3eDPTMbsOtCQE5+UaD0blOIyk2eOONF2sIYJmxobJ52uvMu+i8SBWNCvC+zFeR21tgyVZgqFigqsiAV0UD+0eqlYKOLu6UHghQJ7Vrx/kCke7dYUh8XJzgTIE/9Cj93db8EQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=QxM0JQ5x; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F2AFBC43390;
-	Wed, 27 Mar 2024 12:25:08 +0000 (UTC)
+	s=arc-20240116; t=1711542312; c=relaxed/simple;
+	bh=lVwiLUFk1Ajwy3htFqot2nLyqDukULMSp8fVXddhUz8=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=E5VHAp/oDTDrbQtwpjjjr8vjbi6RVRkx2vacxCqA70MyFatGq8pHLoRuKTniRQ0VckV162y9Ybg2DKRgSmUf/D948g+KecQReJ8Q5mveZ4vpMElPjqbTvFXNGfDgpvpMYLxpmVKz+fyUutWOBSvanJJGWXTX+hcJVxJoS2MdctU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=LTpJCld9; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A9BE7C433F1;
+	Wed, 27 Mar 2024 12:25:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711542309;
-	bh=tQOdbfRc0uu9USqlT0ZH22KXVG2u9wYpVV+XI4OZdkY=;
+	s=k20201202; t=1711542312;
+	bh=lVwiLUFk1Ajwy3htFqot2nLyqDukULMSp8fVXddhUz8=;
 	h=From:To:Cc:Subject:Date:From;
-	b=QxM0JQ5x48rsAOWhahTtzTy0vnnzWLCo640LJfpFw8aGudttKkJuGuZkviR2lvYot
-	 Rt/ZPjZ3zXAQ1Q4b58Uf7ZoyJuaaRCUf8gED2K9OcTEj5fvrQRN+mbNxcRb4bk52V8
-	 FNHPKekQoWt4ID9JFUlCVuMULNesm5zCtTfiLU+vwexq7q1E9ScwvyWV/HnJKvvp/y
-	 Hudu0iQ6po2l+KYQ/4oxkfDEMT5WUvPxrTozBGwDjhvmWEeCtmU88ttRTVMZaRmCeJ
-	 HhJYM0kP3zCOYi9zEBo5iVa1vcbRlhtguz9hSFxfLWYY8Dp08lmTkAc0Gpu2uoh5ZA
-	 HhvG98iLIsjWA==
+	b=LTpJCld9u8OHjBWcNTC0P4+qlXQhQJOTc0G0iQnGumGDKRAKuNj6a/aqIcP6lBWRu
+	 T1bikdCCcTLeyktq9iTV4K7OT3mWEIm8dhhbjGdcM2IgYo+TvJ1wAFZ0AHKD/9vpNH
+	 Vqa60wPJB9HNal5XmZhrYuGRZnPmv8gjF5GgdGlVWGHDuIfy31IYVR02pv20TTBPpi
+	 d2LSB+GWw5xPsiA5L7tGO5dUR02hBKf2Rp7hRxK1a5/FqfOpFvlIScA8YXn0XBoHyE
+	 U3eFQlcFpriPy/m8oQ/0Q0G7+ImxUzs0hSseAJzlm47QveLvz/hykXh++J8r9RXtRj
+	 qkCsbcrIdXNxg==
 From: Sasha Levin <sashal@kernel.org>
 To: stable@vger.kernel.org,
-	wangyuli@uniontech.com
-Cc: WANG Xuerui <git@xen0n.name>,
-	Wentao Guan <guanwentao@uniontech.com>,
-	Huacai Chen <chenhuacai@loongson.cn>,
-	linux-crypto@vger.kernel.org,
-	loongarch@lists.linux.dev,
+	alex.williamson@redhat.com
+Cc: Kevin Tian <kevin.tian@intel.com>,
+	Eric Auger <eric.auger@redhat.com>,
+	kvm@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: FAILED: Patch "LoongArch/crypto: Clean up useless assignment operations" failed to apply to 4.19-stable tree
-Date: Wed, 27 Mar 2024 08:25:07 -0400
-Message-ID: <20240327122508.2839963-1-sashal@kernel.org>
+Subject: FAILED: Patch "vfio/pci: Disable auto-enable of exclusive INTx IRQ" failed to apply to 4.19-stable tree
+Date: Wed, 27 Mar 2024 08:25:10 -0400
+Message-ID: <20240327122510.2840000-1-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -72,48 +70,69 @@ Sasha
 
 ------------------ original commit in Linus's tree ------------------
 
-From fea1c949f6ca5059e12de00d0483645debc5b206 Mon Sep 17 00:00:00 2001
-From: Yuli Wang <wangyuli@uniontech.com>
-Date: Tue, 19 Mar 2024 15:50:34 +0800
-Subject: [PATCH] LoongArch/crypto: Clean up useless assignment operations
+From fe9a7082684eb059b925c535682e68c34d487d43 Mon Sep 17 00:00:00 2001
+From: Alex Williamson <alex.williamson@redhat.com>
+Date: Fri, 8 Mar 2024 16:05:22 -0700
+Subject: [PATCH] vfio/pci: Disable auto-enable of exclusive INTx IRQ
 
-The LoongArch CRC32 hw acceleration is based on arch/mips/crypto/
-crc32-mips.c. While the MIPS code supports both MIPS32 and MIPS64,
-but LoongArch32 lacks the CRC instruction. As a result, the line
-"len -= sizeof(u32)" is unnecessary.
+Currently for devices requiring masking at the irqchip for INTx, ie.
+devices without DisINTx support, the IRQ is enabled in request_irq()
+and subsequently disabled as necessary to align with the masked status
+flag.  This presents a window where the interrupt could fire between
+these events, resulting in the IRQ incrementing the disable depth twice.
+This would be unrecoverable for a user since the masked flag prevents
+nested enables through vfio.
 
-Removing it can make context code style more unified and improve
-code readability.
+Instead, invert the logic using IRQF_NO_AUTOEN such that exclusive INTx
+is never auto-enabled, then unmask as required.
 
-Cc: stable@vger.kernel.org
-Reviewed-by: WANG Xuerui <git@xen0n.name>
-Suggested-by: Wentao Guan <guanwentao@uniontech.com>
-Signed-off-by: Yuli Wang <wangyuli@uniontech.com>
-Signed-off-by: Huacai Chen <chenhuacai@loongson.cn>
+Cc:  <stable@vger.kernel.org>
+Fixes: 89e1f7d4c66d ("vfio: Add PCI device driver")
+Reviewed-by: Kevin Tian <kevin.tian@intel.com>
+Reviewed-by: Eric Auger <eric.auger@redhat.com>
+Link: https://lore.kernel.org/r/20240308230557.805580-2-alex.williamson@redhat.com
+Signed-off-by: Alex Williamson <alex.williamson@redhat.com>
 ---
- arch/loongarch/crypto/crc32-loongarch.c | 2 --
- 1 file changed, 2 deletions(-)
+ drivers/vfio/pci/vfio_pci_intrs.c | 17 ++++++++++-------
+ 1 file changed, 10 insertions(+), 7 deletions(-)
 
-diff --git a/arch/loongarch/crypto/crc32-loongarch.c b/arch/loongarch/crypto/crc32-loongarch.c
-index a49e507af38c0..3eebea3a7b478 100644
---- a/arch/loongarch/crypto/crc32-loongarch.c
-+++ b/arch/loongarch/crypto/crc32-loongarch.c
-@@ -44,7 +44,6 @@ static u32 crc32_loongarch_hw(u32 crc_, const u8 *p, unsigned int len)
+diff --git a/drivers/vfio/pci/vfio_pci_intrs.c b/drivers/vfio/pci/vfio_pci_intrs.c
+index 237beac838097..136101179fcbd 100644
+--- a/drivers/vfio/pci/vfio_pci_intrs.c
++++ b/drivers/vfio/pci/vfio_pci_intrs.c
+@@ -296,8 +296,15 @@ static int vfio_intx_set_signal(struct vfio_pci_core_device *vdev, int fd)
  
- 		CRC32(crc, value, w);
- 		p += sizeof(u32);
--		len -= sizeof(u32);
+ 	ctx->trigger = trigger;
+ 
++	/*
++	 * Devices without DisINTx support require an exclusive interrupt,
++	 * IRQ masking is performed at the IRQ chip.  The masked status is
++	 * protected by vdev->irqlock. Setup the IRQ without auto-enable and
++	 * unmask as necessary below under lock.  DisINTx is unmodified by
++	 * the IRQ configuration and may therefore use auto-enable.
++	 */
+ 	if (!vdev->pci_2_3)
+-		irqflags = 0;
++		irqflags = IRQF_NO_AUTOEN;
+ 
+ 	ret = request_irq(pdev->irq, vfio_intx_handler,
+ 			  irqflags, ctx->name, vdev);
+@@ -308,13 +315,9 @@ static int vfio_intx_set_signal(struct vfio_pci_core_device *vdev, int fd)
+ 		return ret;
  	}
  
- 	if (len & sizeof(u16)) {
-@@ -80,7 +79,6 @@ static u32 crc32c_loongarch_hw(u32 crc_, const u8 *p, unsigned int len)
+-	/*
+-	 * INTx disable will stick across the new irq setup,
+-	 * disable_irq won't.
+-	 */
+ 	spin_lock_irqsave(&vdev->irqlock, flags);
+-	if (!vdev->pci_2_3 && ctx->masked)
+-		disable_irq_nosync(pdev->irq);
++	if (!vdev->pci_2_3 && !ctx->masked)
++		enable_irq(pdev->irq);
+ 	spin_unlock_irqrestore(&vdev->irqlock, flags);
  
- 		CRC32C(crc, value, w);
- 		p += sizeof(u32);
--		len -= sizeof(u32);
- 	}
- 
- 	if (len & sizeof(u16)) {
+ 	return 0;
 -- 
 2.43.0
 
