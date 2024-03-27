@@ -1,219 +1,177 @@
-Return-Path: <linux-kernel+bounces-120814-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-120818-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id C7A5C88DE1C
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 13:13:54 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3F35F88DE38
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 13:14:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 72E5828AEE0
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 12:13:53 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 70FC01C277C0
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 12:14:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 612C912D77D;
-	Wed, 27 Mar 2024 12:08:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D144D137744;
+	Wed, 27 Mar 2024 12:08:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="g0G43IGT"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="gdKI/vtX"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 83DDE134CD3;
-	Wed, 27 Mar 2024 12:08:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 67903136E23
+	for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 12:08:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711541280; cv=none; b=Pg6n7N4eo1DmruySAY+xHGpw5tiL7cjD0f/oU5pPbiReK7px3pMW0cFHrLdznDaF2ZOftoN8mDmanBejOb+PYLl9F49sTk4KcM+8F5g3UIc0V/1skqU/izMwAU5e19vQbwlWx6ImhWBhkXI6m0EQj0Vlrsj/BlslgEQJ1eyw91U=
+	t=1711541292; cv=none; b=Syk2gRoUWNAka5VlhSX3bPSgYPhJww1Bq+qGNP4vSwmJfKB6/zQtZo1lUlaB2MWnMu44JkGL3nXYUN0sN9qc2HtbJtoyUMCJ//N6JAJ6r2mDmbI9eiVxPZzxgBDr/EirWSr5WOWaxPKRugmcnO9P6OHyIacFuRPKp69t7JDkEfc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711541280; c=relaxed/simple;
-	bh=4qFhr1I6nsrTVTR45fEiijDXQsLNyF63gQIWgwVY7Y4=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=QhJohjmRB0BOkK+Y1cPB6Z9t/MZiPmCZhnslEPCtN0ryTPyEJ1qbZR0PS7SspaBBQ0oYm2vP0+Ob/HzNupBxF9J9wDAV8wKfgKRUAE/cdO3ZWjIbNIfpgcsOHJqMdrBeX/jTUjlTgpuVm9tcaace60QrDBkJXhl8sjPp4qjOhjU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=g0G43IGT; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 39C89C43399;
-	Wed, 27 Mar 2024 12:07:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711541280;
-	bh=4qFhr1I6nsrTVTR45fEiijDXQsLNyF63gQIWgwVY7Y4=;
-	h=From:To:Cc:Subject:Date:From;
-	b=g0G43IGT7RrP7uteZZOScyPGstqI5Rp3zHma+QakcrwfAjSWIt5wrzcN7GvbVwM5E
-	 h2uOyrm4h/91zdPb/mUJOoEijaYk8fsw89cxRMzNY4cV3IDXs4t/tizzCCMLzodR72
-	 YVGKysmYrn1TMZdqqJ7D1GSb24B8FtadomSkX/PwHvg151Mh7f6ydHpX9aWcivK0pk
-	 CypoS0e0YsPpUjWxYItko9M+KfUve/N0Xi7dwUwRvtdNW69DFmJIl2df9l2GKoz7Rn
-	 roaFZM2RHf/WWVNiNLhh281vTqzggd7fw9vGK49r/Z8V/ulsO8aYB86DFQlIW24hcc
-	 BzNq5oOWNWEiQ==
-From: Sasha Levin <sashal@kernel.org>
-To: stable@vger.kernel.org,
-	lewis.huang@amd.com
-Cc: Mario Limonciello <mario.limonciello@amd.com>,
-	Anthony Koo <anthony.koo@amd.com>,
-	Rodrigo Siqueira <rodrigo.siqueira@amd.com>,
-	Daniel Wheeler <daniel.wheeler@amd.com>,
-	Alex Deucher <alexander.deucher@amd.com>,
-	amd-gfx@lists.freedesktop.org,
-	dri-devel@lists.freedesktop.org,
-	linux-kernel@vger.kernel.org
-Subject: FAILED: Patch "drm/amd/display: Only allow dig mapping to pwrseq in new asic" failed to apply to 6.8-stable tree
-Date: Wed, 27 Mar 2024 08:07:57 -0400
-Message-ID: <20240327120758.2825841-1-sashal@kernel.org>
-X-Mailer: git-send-email 2.43.0
+	s=arc-20240116; t=1711541292; c=relaxed/simple;
+	bh=lKLG3UiaMdK6ulFJvlHav6o8D9DIxUzc0+qtoqM54VM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Lu9rVwQ8LEhiT2lbM3yiPrbOqG/RlOJwVvPO/rCt6OYuGhHFmb+L63wVIzkjCt3DIL/3njV/aX7DoLD5G3nmD34wtfw7gEIZWKaMpcoj13EEQHdYKSTUiERnhAeAoFX4kWNjv/HCGQD8+7qxB8rtu07dsKWYEKcZwsCqXJFHuT0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=gdKI/vtX; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1711541289;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=bi+ZQnYSyNBVd43PK67DW5yA3+DYZIo1uqQGHuPLUr4=;
+	b=gdKI/vtXNdsI3E7mAPUDDOPoD/GKcLdm8ZZz2lBq9UKwSD4W4T1pKmxTRIJuOXhL7f8b6O
+	pHz9634JY7Ulwt8y0J5lnnqk+XLNy+4a1PKjy52+dwFkjnH1/BT/HM1UGmnTBQr9ZDWyj/
+	+x00QlbGWNlHTM//2AV/zzE2kHL4x1s=
+Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
+ [209.85.128.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-82-7GoXqCoIOHemIBzDgUYfWQ-1; Wed, 27 Mar 2024 08:08:08 -0400
+X-MC-Unique: 7GoXqCoIOHemIBzDgUYfWQ-1
+Received: by mail-wm1-f69.google.com with SMTP id 5b1f17b1804b1-4148a697e35so13057175e9.1
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 05:08:07 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711541287; x=1712146087;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=bi+ZQnYSyNBVd43PK67DW5yA3+DYZIo1uqQGHuPLUr4=;
+        b=B/+dC2ff7Zf/U//UVo+rljKp610JMXmUgPDu2no6SArV+OICnDV743DODHJS7Yt9rE
+         tiLVvZFfVS35fvN2E4iN1sBtgg1badmwjdj5Ovy4N3xwwe+CWMcLILhrr7wppTF49isN
+         3ZNMhsCZLP8KVOi8SLyZFPmyxGCUhY4Pz/e/sL4oLkAiv1vqg79HcQmY0sCPrOt+5t/5
+         jhLunx9Vb5anMnlJmaitd9wnptDSNR3FgPYQzF4gkSTCULGssDSZS9TzawAj4F0phPIu
+         Y8Ibp7b9kn3JeXe8gsHKeCYyoq8xaYFY67TYGrKGGpVTCM0ptswNfmjXO9y7M/cp8lof
+         Mmbw==
+X-Forwarded-Encrypted: i=1; AJvYcCVW8BPYm7aANJOQKKEgNnlm5BE4diog6X+evq46H47oJi2LIiXRj1wtTFXkaZz4iu4638DlGXkQHQxv0iZa7V83VP7BND/zxLBoIXWB
+X-Gm-Message-State: AOJu0YxKi2n6xsUTCky4XObvWMfRACYGrWObpPXTp9K2jEjOE5p2Pllg
+	uf0Gggf/4Mk/KU04cL7LspISOPeLVCkjQuYmImvgHJfc6XXLDFBmJp457tyEI3pcH2SakJllHx0
+	qe11kJlfCwV79efLmwDbJ18im8ngbAUZcwuj+gWahCybNCEgAAErEvjRtBZp33Q==
+X-Received: by 2002:a05:600c:5716:b0:413:f7c4:f4fc with SMTP id jv22-20020a05600c571600b00413f7c4f4fcmr1708273wmb.15.1711541286787;
+        Wed, 27 Mar 2024 05:08:06 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IHrGIPFjXov8faB+sPfLv/7odN1taQWiMTqh1DDC2SOAY/ynb3YOFq7GV+r4op9aeSbHg+BTA==
+X-Received: by 2002:a05:600c:5716:b0:413:f7c4:f4fc with SMTP id jv22-20020a05600c571600b00413f7c4f4fcmr1708253wmb.15.1711541286235;
+        Wed, 27 Mar 2024 05:08:06 -0700 (PDT)
+Received: from redhat.com ([2.52.20.36])
+        by smtp.gmail.com with ESMTPSA id z18-20020a05600c0a1200b00414928360bbsm2000995wmp.6.2024.03.27.05.08.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 27 Mar 2024 05:08:05 -0700 (PDT)
+Date: Wed, 27 Mar 2024 08:07:59 -0400
+From: "Michael S. Tsirkin" <mst@redhat.com>
+To: Gavin Shan <gshan@redhat.com>
+Cc: virtualization@lists.linux.dev, linux-kernel@vger.kernel.org,
+	jasowang@redhat.com, davem@davemloft.net, stefanha@redhat.com,
+	sgarzare@redhat.com, keirf@google.com, yihyu@redhat.com,
+	shan.gavin@gmail.com
+Subject: Re: [PATCH v2 1/2] vhost: Add smp_rmb() in vhost_vq_avail_empty()
+Message-ID: <20240327075940-mutt-send-email-mst@kernel.org>
+References: <20240326233846.1086253-1-gshan@redhat.com>
+ <20240326233846.1086253-2-gshan@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Patchwork-Hint: ignore
-X-stable: review
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240326233846.1086253-2-gshan@redhat.com>
 
-The patch below does not apply to the 6.8-stable tree.
-If someone wants it applied there, or to any other stable or longterm
-tree, then please email the backport, including the original git commit
-id to <stable@vger.kernel.org>.
+On Wed, Mar 27, 2024 at 09:38:45AM +1000, Gavin Shan wrote:
+> A smp_rmb() has been missed in vhost_vq_avail_empty(), spotted by
+> Will Deacon <will@kernel.org>. Otherwise, it's not ensured the
+> available ring entries pushed by guest can be observed by vhost
+> in time, leading to stale available ring entries fetched by vhost
+> in vhost_get_vq_desc(), as reported by Yihuang Yu on NVidia's
+> grace-hopper (ARM64) platform.
+> 
+>   /home/gavin/sandbox/qemu.main/build/qemu-system-aarch64      \
+>   -accel kvm -machine virt,gic-version=host -cpu host          \
+>   -smp maxcpus=1,cpus=1,sockets=1,clusters=1,cores=1,threads=1 \
+>   -m 4096M,slots=16,maxmem=64G                                 \
+>   -object memory-backend-ram,id=mem0,size=4096M                \
+>    :                                                           \
+>   -netdev tap,id=vnet0,vhost=true                              \
+>   -device virtio-net-pci,bus=pcie.8,netdev=vnet0,mac=52:54:00:f1:26:b0
+>    :
+>   guest# netperf -H 10.26.1.81 -l 60 -C -c -t UDP_STREAM
+>   virtio_net virtio0: output.0:id 100 is not a head!
+> 
+> Add the missed smp_rmb() in vhost_vq_avail_empty(). Note that it
+> should be safe until vq->avail_idx is changed by commit 275bf960ac697
+> ("vhost: better detection of available buffers").
+> 
+> Fixes: 275bf960ac697 ("vhost: better detection of available buffers")
+> Cc: <stable@kernel.org> # v4.11+
+> Reported-by: Yihuang Yu <yihyu@redhat.com>
+> Signed-off-by: Gavin Shan <gshan@redhat.com>
+> ---
+>  drivers/vhost/vhost.c | 11 ++++++++++-
+>  1 file changed, 10 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/vhost/vhost.c b/drivers/vhost/vhost.c
+> index 045f666b4f12..00445ab172b3 100644
+> --- a/drivers/vhost/vhost.c
+> +++ b/drivers/vhost/vhost.c
+> @@ -2799,9 +2799,18 @@ bool vhost_vq_avail_empty(struct vhost_dev *dev, struct vhost_virtqueue *vq)
+>  	r = vhost_get_avail_idx(vq, &avail_idx);
+>  	if (unlikely(r))
+>  		return false;
+> +
+>  	vq->avail_idx = vhost16_to_cpu(vq, avail_idx);
+> +	if (vq->avail_idx != vq->last_avail_idx) {
+> +		/* Similar to what's done in vhost_get_vq_desc(), we need
+> +		 * to ensure the available ring entries have been exposed
+> +		 * by guest.
+> +		 */
 
-Thanks,
-Sasha
+A slightly clearer comment:
 
------------------- original commit in Linus's tree ------------------
+/* Since we have updated avail_idx, the following call to
+ * vhost_get_vq_desc will read available ring entries.
+ * Make sure that read happens after the avail_idx read.
+ */
 
-From 4af4d2c275aeb667bc2bca0d2135b825e931a55a Mon Sep 17 00:00:00 2001
-From: Lewis Huang <lewis.huang@amd.com>
-Date: Wed, 31 Jan 2024 17:20:17 +0800
-Subject: [PATCH] drm/amd/display: Only allow dig mapping to pwrseq in new asic
+Pls repost with that, and I will apply.
 
-[Why]
-The old asic only have 1 pwrseq hw.
-We don't need to map the diginst to pwrseq inst in old asic.
+Also add suggested-by for will.
 
-[How]
-1. Only mapping dig to pwrseq for new asic.
-2. Move mapping function into dcn specific panel control component
 
-Cc: Stable <stable@vger.kernel.org> # v6.6+
-Cc: Mario Limonciello <mario.limonciello@amd.com>
-Link: https://gitlab.freedesktop.org/drm/amd/-/issues/3122
-Reviewed-by: Anthony Koo <anthony.koo@amd.com>
-Acked-by: Rodrigo Siqueira <rodrigo.siqueira@amd.com>
-Tested-by: Daniel Wheeler <daniel.wheeler@amd.com>
-Signed-off-by: Lewis Huang <lewis.huang@amd.com>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
----
- .../drm/amd/display/dc/dce/dce_panel_cntl.c   |  1 +
- .../amd/display/dc/dcn301/dcn301_panel_cntl.c |  1 +
- .../amd/display/dc/dcn31/dcn31_panel_cntl.c   | 18 ++++++++++++-
- .../drm/amd/display/dc/inc/hw/panel_cntl.h    |  2 +-
- .../drm/amd/display/dc/link/link_factory.c    | 26 +------------------
- 5 files changed, 21 insertions(+), 27 deletions(-)
+> +		smp_rmb();
+> +		return false;
+> +	}
+>  
+> -	return vq->avail_idx == vq->last_avail_idx;
+> +	return true;
+>  }
+>  EXPORT_SYMBOL_GPL(vhost_vq_avail_empty);
 
-diff --git a/drivers/gpu/drm/amd/display/dc/dce/dce_panel_cntl.c b/drivers/gpu/drm/amd/display/dc/dce/dce_panel_cntl.c
-index e8570060d007b..5bca67407c5b1 100644
---- a/drivers/gpu/drm/amd/display/dc/dce/dce_panel_cntl.c
-+++ b/drivers/gpu/drm/amd/display/dc/dce/dce_panel_cntl.c
-@@ -290,4 +290,5 @@ void dce_panel_cntl_construct(
- 	dce_panel_cntl->base.funcs = &dce_link_panel_cntl_funcs;
- 	dce_panel_cntl->base.ctx = init_data->ctx;
- 	dce_panel_cntl->base.inst = init_data->inst;
-+	dce_panel_cntl->base.pwrseq_inst = 0;
- }
-diff --git a/drivers/gpu/drm/amd/display/dc/dcn301/dcn301_panel_cntl.c b/drivers/gpu/drm/amd/display/dc/dcn301/dcn301_panel_cntl.c
-index ad0df1a72a90a..9e96a3ace2077 100644
---- a/drivers/gpu/drm/amd/display/dc/dcn301/dcn301_panel_cntl.c
-+++ b/drivers/gpu/drm/amd/display/dc/dcn301/dcn301_panel_cntl.c
-@@ -215,4 +215,5 @@ void dcn301_panel_cntl_construct(
- 	dcn301_panel_cntl->base.funcs = &dcn301_link_panel_cntl_funcs;
- 	dcn301_panel_cntl->base.ctx = init_data->ctx;
- 	dcn301_panel_cntl->base.inst = init_data->inst;
-+	dcn301_panel_cntl->base.pwrseq_inst = 0;
- }
-diff --git a/drivers/gpu/drm/amd/display/dc/dcn31/dcn31_panel_cntl.c b/drivers/gpu/drm/amd/display/dc/dcn31/dcn31_panel_cntl.c
-index 03248422d6ffd..281be20b1a107 100644
---- a/drivers/gpu/drm/amd/display/dc/dcn31/dcn31_panel_cntl.c
-+++ b/drivers/gpu/drm/amd/display/dc/dcn31/dcn31_panel_cntl.c
-@@ -154,8 +154,24 @@ void dcn31_panel_cntl_construct(
- 	struct dcn31_panel_cntl *dcn31_panel_cntl,
- 	const struct panel_cntl_init_data *init_data)
- {
-+	uint8_t pwrseq_inst = 0xF;
-+
- 	dcn31_panel_cntl->base.funcs = &dcn31_link_panel_cntl_funcs;
- 	dcn31_panel_cntl->base.ctx = init_data->ctx;
- 	dcn31_panel_cntl->base.inst = init_data->inst;
--	dcn31_panel_cntl->base.pwrseq_inst = init_data->pwrseq_inst;
-+
-+	switch (init_data->eng_id) {
-+	case ENGINE_ID_DIGA:
-+		pwrseq_inst = 0;
-+		break;
-+	case ENGINE_ID_DIGB:
-+		pwrseq_inst = 1;
-+		break;
-+	default:
-+		DC_LOG_WARNING("Unsupported pwrseq engine id: %d!\n", init_data->eng_id);
-+		ASSERT(false);
-+		break;
-+	}
-+
-+	dcn31_panel_cntl->base.pwrseq_inst = pwrseq_inst;
- }
-diff --git a/drivers/gpu/drm/amd/display/dc/inc/hw/panel_cntl.h b/drivers/gpu/drm/amd/display/dc/inc/hw/panel_cntl.h
-index 5dcbaa2db964a..e97d964a1791c 100644
---- a/drivers/gpu/drm/amd/display/dc/inc/hw/panel_cntl.h
-+++ b/drivers/gpu/drm/amd/display/dc/inc/hw/panel_cntl.h
-@@ -57,7 +57,7 @@ struct panel_cntl_funcs {
- struct panel_cntl_init_data {
- 	struct dc_context *ctx;
- 	uint32_t inst;
--	uint32_t pwrseq_inst;
-+	uint32_t eng_id;
- };
- 
- struct panel_cntl {
-diff --git a/drivers/gpu/drm/amd/display/dc/link/link_factory.c b/drivers/gpu/drm/amd/display/dc/link/link_factory.c
-index 37d3027c32dcb..cf22b8f28ba6c 100644
---- a/drivers/gpu/drm/amd/display/dc/link/link_factory.c
-+++ b/drivers/gpu/drm/amd/display/dc/link/link_factory.c
-@@ -370,30 +370,6 @@ static enum transmitter translate_encoder_to_transmitter(
- 	}
- }
- 
--static uint8_t translate_dig_inst_to_pwrseq_inst(struct dc_link *link)
--{
--	uint8_t pwrseq_inst = 0xF;
--	struct dc_context *dc_ctx = link->dc->ctx;
--
--	DC_LOGGER_INIT(dc_ctx->logger);
--
--	switch (link->eng_id) {
--	case ENGINE_ID_DIGA:
--		pwrseq_inst = 0;
--		break;
--	case ENGINE_ID_DIGB:
--		pwrseq_inst = 1;
--		break;
--	default:
--		DC_LOG_WARNING("Unsupported pwrseq engine id: %d!\n", link->eng_id);
--		ASSERT(false);
--		break;
--	}
--
--	return pwrseq_inst;
--}
--
--
- static void link_destruct(struct dc_link *link)
- {
- 	int i;
-@@ -657,7 +633,7 @@ static bool construct_phy(struct dc_link *link,
- 			link->link_id.id == CONNECTOR_ID_LVDS)) {
- 		panel_cntl_init_data.ctx = dc_ctx;
- 		panel_cntl_init_data.inst = panel_cntl_init_data.ctx->dc_edp_id_count;
--		panel_cntl_init_data.pwrseq_inst = translate_dig_inst_to_pwrseq_inst(link);
-+		panel_cntl_init_data.eng_id = link->eng_id;
- 		link->panel_cntl =
- 			link->dc->res_pool->funcs->panel_cntl_create(
- 								&panel_cntl_init_data);
--- 
-2.43.0
+As a follow-up patch, we should clean out code duplication that
+accumulated with 3 places reading avail idx in essentially
+the same way - this duplication is what causes the mess in
+the 1st place.
 
 
 
+
+
+
+> -- 
+> 2.44.0
 
 
