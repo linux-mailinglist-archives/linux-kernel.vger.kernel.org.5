@@ -1,118 +1,216 @@
-Return-Path: <linux-kernel+bounces-121768-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-121769-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 38BA888EDB5
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 19:09:34 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id EAC8588ED69
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 19:00:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6F889B2918B
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 18:00:04 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6D6F91F3473A
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 18:00:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D55E1509A2;
-	Wed, 27 Mar 2024 17:55:05 +0000 (UTC)
-Received: from netrider.rowland.org (netrider.rowland.org [192.131.102.5])
-	by smtp.subspace.kernel.org (Postfix) with SMTP id E9A341509A5
-	for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 17:55:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.131.102.5
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0943215217B;
+	Wed, 27 Mar 2024 17:56:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="BsqsimYB"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 61E321514D8
+	for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 17:55:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711562104; cv=none; b=s9oAOWECBvOqsfD0XdjObLGBeXscK6IR0wndx0NKqYevOZKJZ7bdTxc024iv6nVgZtBAugy4lB7ovUYPPVfrbsIk3/ie3AD4Pb+xjucHszgdSBCDKRtEcFRtAPcZpWYsrTJR3dCy+O7fkSisDuMQTEfNZ1r1FLFg5t/YuSvlTGU=
+	t=1711562160; cv=none; b=omHfFAjHn5/fe+WHr4T0GVD9RMqDGMJayNVuyQwVtViEUMP+JnWWCrw9f8RsJuUl1y2vEQEpqoHMVZCyDoqnqSl9lz4/axZp9o4ePshG/gurouwGTnuoojpwz/7BLf7LOHQBzeasEesHH+FqGX2OWEyHujIiNWQ8H1tgBI31V1E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711562104; c=relaxed/simple;
-	bh=2em/62sKNa2uOySIrx3SPAGa+oAkz9sarrrAbR/FclA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=WSIdXesAT9qBkd/yjHYph32Wi780h6VpLP3yH3NtnaJ2q1tpmQxweojTpOmMTczfDtiMt8TXqRvRLJPfSrIgvGtGmI545ugDC+mCXQcfrUTT14dUHsp+hHeLnpgi2g6OB16zimTQzZc0NK05r7PnfHwXfSrdz+0IHyYd3gQcTqE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=rowland.harvard.edu; spf=pass smtp.mailfrom=netrider.rowland.org; arc=none smtp.client-ip=192.131.102.5
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=rowland.harvard.edu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netrider.rowland.org
-Received: (qmail 935614 invoked by uid 1000); 27 Mar 2024 13:55:00 -0400
-Date: Wed, 27 Mar 2024 13:55:00 -0400
-From: Alan Stern <stern@rowland.harvard.edu>
-To: Allen Pais <apais@linux.microsoft.com>
-Cc: linux-kernel@vger.kernel.org, tj@kernel.org, keescook@chromium.org,
-  vkoul@kernel.org, marcan@marcan.st, sven@svenpeter.dev,
-  florian.fainelli@broadcom.com, rjui@broadcom.com, sbranden@broadcom.com,
-  paul@crapouillou.net, Eugeniy.Paltsev@synopsys.com,
-  manivannan.sadhasivam@linaro.org, vireshk@kernel.org, Frank.Li@nxp.com,
-  leoyang.li@nxp.com, zw@zh-kernel.org, wangzhou1@hisilicon.com,
-  haijie1@huawei.com, shawnguo@kernel.org, s.hauer@pengutronix.de,
-  sean.wang@mediatek.com, matthias.bgg@gmail.com,
-  angelogioacchino.delregno@collabora.com, afaerber@suse.de,
-  logang@deltatee.com, daniel@zonque.org, haojian.zhuang@gmail.com,
-  robert.jarzmik@free.fr, andersson@kernel.org, konrad.dybcio@linaro.org,
-  orsonzhai@gmail.com, baolin.wang@linux.alibaba.com, zhang.lyra@gmail.com,
-  patrice.chotard@foss.st.com, linus.walleij@linaro.org, wens@csie.org,
-  jernej.skrabec@gmail.com, peter.ujfalusi@gmail.com, kys@microsoft.com,
-  haiyangz@microsoft.com, wei.liu@kernel.org, decui@microsoft.com,
-  jassisinghbrar@gmail.com, mchehab@kernel.org, maintainers@bluecherrydvr.com,
-  aubin.constans@microchip.com, ulf.hansson@linaro.org,
-  manuel.lauss@gmail.com, mirq-linux@rere.qmqm.pl, jh80.chung@samsung.com,
-  oakad@yahoo.com, hayashi.kunihiko@socionext.com, mhiramat@kernel.org,
-  brucechang@via.com.tw, HaraldWelte@viatech.com, pierre@ossman.eu,
-  duncan.sands@free.fr, oneukum@suse.com,
-  openipmi-developer@lists.sourceforge.net, dmaengine@vger.kernel.org,
-  asahi@lists.linux.dev, linux-arm-kernel@lists.infradead.org,
-  linux-rpi-kernel@lists.infradead.org, linux-mips@vger.kernel.org,
-  imx@lists.linux.dev, linuxppc-dev@lists.ozlabs.org,
-  linux-mediatek@lists.infradead.org, linux-actions@lists.infradead.org,
-  linux-arm-msm@vger.kernel.org, linux-riscv@lists.infradead.org,
-  linux-sunxi@lists.linux.dev, linux-tegra@vger.kernel.org,
-  linux-hyperv@vger.kernel.org, linux-rdma@vger.kernel.org,
-  linux-media@vger.kernel.org, linux-mmc@vger.kernel.org,
-  linux-omap@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
-  linux-s390@vger.kernel.org, netdev@vger.kernel.org,
-  linux-usb@vger.kernel.org
-Subject: Re: [PATCH 4/9] USB: Convert from tasklet to BH workqueue
-Message-ID: <42c445b4-a156-4c43-bf98-bd2a9ac7a4fa@rowland.harvard.edu>
-References: <20240327160314.9982-1-apais@linux.microsoft.com>
- <20240327160314.9982-5-apais@linux.microsoft.com>
+	s=arc-20240116; t=1711562160; c=relaxed/simple;
+	bh=NPhvozRKEg9kfHBXKt48lnApC6KVUGFOSrrqbu9Hq/8=;
+	h=From:In-Reply-To:References:To:Cc:Subject:MIME-Version:
+	 Content-Type:Date:Message-ID; b=uutz6umMunyrpIyGHWSx4bRg/xSEQwUbIH3MFANziwKP+i+Pr6Nz3YOpiqHZR+gBnB3JKuaKR+CR+Q0rSrPHwSxslSYehfjbdhqG4u130dPKw6RFz+Z7dR4pXKGeJH9tXnU/Lulg/K+34PUPhsB2Hsw5RxYLPiETuSmnBj1owBw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=BsqsimYB; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1711562157;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=SuhewvNUfoJvZQzmhzwfMCeMaHKTh082FqaMnijMnf4=;
+	b=BsqsimYBv1UAbll3H/FQAD2IrIGdXXYtNFnpuI+z2yXqJS6dgNaJvu7Ib4+NBJzPCFkb3k
+	MI7vSuriTV4Jxgm4y6cxVfnNQSsLyBS0vgrO/q2wZPA2MkDs/3jYsglNTiPgpy9JtEEH+G
+	7Fn8VitYzbxaXuKv5bCGvuRyNARL7ps=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-187-3HLvNSycN1CY-_0DA3XqSg-1; Wed, 27 Mar 2024 13:55:53 -0400
+X-MC-Unique: 3HLvNSycN1CY-_0DA3XqSg-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.rdu2.redhat.com [10.11.54.4])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 440148007A2;
+	Wed, 27 Mar 2024 17:55:52 +0000 (UTC)
+Received: from warthog.procyon.org.uk (unknown [10.42.28.146])
+	by smtp.corp.redhat.com (Postfix) with ESMTP id F0D7F2024517;
+	Wed, 27 Mar 2024 17:55:49 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+	Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+	Kingdom.
+	Registered in England and Wales under Company Registration No. 3798903
+From: David Howells <dhowells@redhat.com>
+In-Reply-To: <2318298.1711551844@warthog.procyon.org.uk>
+References: <2318298.1711551844@warthog.procyon.org.uk>
+To: dhowells@redhat.com
+Cc: Matthew Wilcox <willy@infradead.org>,
+    Miklos Szeredi <miklos@szeredi.hu>,
+    Trond Myklebust <trond.myklebust@hammerspace.com>,
+    Christoph Hellwig <hch@lst.de>,
+    Andrew Morton <akpm@linux-foundation.org>,
+    Alexander Viro <viro@zeniv.linux.org.uk>,
+    Christian Brauner <brauner@kernel.org>,
+    Jeff Layton <jlayton@kernel.org>, linux-mm@kvack.org,
+    linux-fsdevel@vger.kernel.org, netfs@lists.linux.dev,
+    v9fs@lists.linux.dev, linux-afs@lists.infradead.org,
+    ceph-devel@vger.kernel.org, linux-cifs@vger.kernel.org,
+    linux-nfs@vger.kernel.org, devel@lists.orangefs.org,
+    linux-kernel@vger.kernel.org
+Subject: [RFC PATCH v2] mm, netfs: Provide a means of invalidation without using launder_folio
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240327160314.9982-5-apais@linux.microsoft.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <2506006.1711562145.1@warthog.procyon.org.uk>
+Content-Transfer-Encoding: quoted-printable
+Date: Wed, 27 Mar 2024 17:55:45 +0000
+Message-ID: <2506007.1711562145@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.4
 
-On Wed, Mar 27, 2024 at 04:03:09PM +0000, Allen Pais wrote:
-> The only generic interface to execute asynchronously in the BH context is
-> tasklet; however, it's marked deprecated and has some design flaws. To
-> replace tasklets, BH workqueue support was recently added. A BH workqueue
-> behaves similarly to regular workqueues except that the queued work items
-> are executed in the BH context.
-> 
-> This patch converts drivers/infiniband/* from tasklet to BH workqueue.
-> 
-> Based on the work done by Tejun Heo <tj@kernel.org>
-> Branch: https://git.kernel.org/pub/scm/linux/kernel/git/tj/wq.git for-6.10
-> 
-> Signed-off-by: Allen Pais <allen.lkml@gmail.com>
-> ---
+mm, netfs: Provide a means of invalidation without using launder_folio
 
-> diff --git a/drivers/usb/core/hcd.c b/drivers/usb/core/hcd.c
-> index c0e005670d67..88d8e1c366cd 100644
-> --- a/drivers/usb/core/hcd.c
-> +++ b/drivers/usb/core/hcd.c
+Implement a replacement for launder_folio.  The key feature of
+invalidate_inode_pages2() is that it locks each folio individually, unmaps
+it to prevent mmap'd accesses interfering and calls the ->launder_folio()
+address_space op to flush it.  This has problems: firstly, each folio is
+written individually as one or more small writes; secondly, adjacent folio=
+s
+cannot be added so easily into the laundry; thirdly, it's yet another op t=
+o
+implement.
 
-> @@ -1662,10 +1663,9 @@ static void __usb_hcd_giveback_urb(struct urb *urb)
->  	usb_put_urb(urb);
->  }
->  
-> -static void usb_giveback_urb_bh(struct work_struct *work)
-> +static void usb_giveback_urb_bh(struct work_struct *t)
->  {
-> -	struct giveback_urb_bh *bh =
-> -		container_of(work, struct giveback_urb_bh, bh);
-> +	struct giveback_urb_bh *bh = from_work(bh, t, bh);
->  	struct list_head local_list;
->  
->  	spin_lock_irq(&bh->lock);
+Instead, use the invalidate lock to cause anyone wanting to add a folio to
+the inode to wait, then unmap all the folios if we have mmaps, then,
+conditionally, use ->writepages() to flush any dirty data back and then
+discard all pages.
 
-Is there any reason for this apparently pointless change of a local
-variable's name?
+The invalidate lock prevents ->read_iter(), ->write_iter() and faulting
+through mmap all from adding pages for the duration.
 
-Alan Stern
+Signed-off-by: David Howells <dhowells@redhat.com>
+cc: Matthew Wilcox <willy@infradead.org>
+cc: Miklos Szeredi <miklos@szeredi.hu>
+cc: Trond Myklebust <trond.myklebust@hammerspace.com>
+cc: Christoph Hellwig <hch@lst.de>
+cc: Andrew Morton <akpm@linux-foundation.org>
+cc: Alexander Viro <viro@zeniv.linux.org.uk>
+cc: Christian Brauner <brauner@kernel.org>
+cc: Jeff Layton <jlayton@kernel.org>
+cc: linux-mm@kvack.org
+cc: linux-fsdevel@vger.kernel.org
+cc: netfs@lists.linux.dev
+cc: v9fs@lists.linux.dev
+cc: linux-afs@lists.infradead.org
+cc: ceph-devel@vger.kernel.org
+cc: linux-cifs@vger.kernel.org
+cc: linux-nfs@vger.kernel.org
+cc: devel@lists.orangefs.org
+---
+ include/linux/pagemap.h |    1 +
+ mm/filemap.c            |   48 ++++++++++++++++++++++++++++++++++++++++++=
+++++++
+ 2 files changed, 49 insertions(+)
+
+diff --git a/include/linux/pagemap.h b/include/linux/pagemap.h
+index 2df35e65557d..4eb3d4177a53 100644
+--- a/include/linux/pagemap.h
++++ b/include/linux/pagemap.h
+@@ -40,6 +40,7 @@ int filemap_fdatawait_keep_errors(struct address_space *=
+mapping);
+ int filemap_fdatawait_range(struct address_space *, loff_t lstart, loff_t=
+ lend);
+ int filemap_fdatawait_range_keep_errors(struct address_space *mapping,
+ 		loff_t start_byte, loff_t end_byte);
++int filemap_invalidate_inode(struct inode *inode, bool flush);
+ =
+
+ static inline int filemap_fdatawait(struct address_space *mapping)
+ {
+diff --git a/mm/filemap.c b/mm/filemap.c
+index 25983f0f96e3..98f439bedb44 100644
+--- a/mm/filemap.c
++++ b/mm/filemap.c
+@@ -4134,6 +4134,54 @@ bool filemap_release_folio(struct folio *folio, gfp=
+_t gfp)
+ }
+ EXPORT_SYMBOL(filemap_release_folio);
+ =
+
++/**
++ * filemap_invalidate_inode - Invalidate/forcibly write back an inode's p=
+agecache
++ * @inode: The inode to flush
++ * @flush: Set to write back rather than simply invalidate.
++ *
++ * Invalidate all the folios on an inode, possibly writing them back firs=
+t.
++ * Whilst the operation is undertaken, the invalidate lock is held to pre=
+vent
++ * new folios from being installed.
++ */
++int filemap_invalidate_inode(struct inode *inode, bool flush)
++{
++	struct address_space *mapping =3D inode->i_mapping;
++
++	if (!mapping || !mapping->nrpages)
++		goto out;
++
++	/* Prevent new folios from being added to the inode. */
++	filemap_invalidate_lock(mapping);
++
++	if (!mapping->nrpages)
++		goto unlock;
++
++	/* Assume there are probably PTEs only if there are mmaps. */
++	if (unlikely(!RB_EMPTY_ROOT(&mapping->i_mmap.rb_root)))
++		unmap_mapping_pages(mapping, 0, ULONG_MAX, false);
++
++	/* Write back the data if we're asked to. */
++	if (flush) {
++		struct writeback_control wbc =3D {
++			.sync_mode	=3D WB_SYNC_ALL,
++			.nr_to_write	=3D LONG_MAX,
++			.range_start	=3D 0,
++			.range_end	=3D LLONG_MAX,
++		};
++
++		filemap_fdatawrite_wbc(mapping, &wbc);
++	}
++
++	/* Wait for writeback to complete on all folios and discard. */
++	truncate_inode_pages_range(mapping, 0, LLONG_MAX);
++
++unlock:
++	filemap_invalidate_unlock(mapping);
++out:
++	return filemap_check_errors(mapping);
++}
++EXPORT_SYMBOL(filemap_invalidate_inode);
++
+ #ifdef CONFIG_CACHESTAT_SYSCALL
+ /**
+  * filemap_cachestat() - compute the page cache statistics of a mapping
+
 
