@@ -1,147 +1,209 @@
-Return-Path: <linux-kernel+bounces-121869-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-121871-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 39D6388EEC1
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 19:58:56 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id A174788EEC9
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 20:00:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E95B029E20E
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 18:58:54 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2E9551F333EB
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 19:00:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D797D14F9FF;
-	Wed, 27 Mar 2024 18:58:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 88B6B1509BC;
+	Wed, 27 Mar 2024 19:00:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="OpaxMHQy"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CeiqN3GL"
+Received: from mail-vk1-f178.google.com (mail-vk1-f178.google.com [209.85.221.178])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E6355227
-	for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 18:58:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4F00914F9CC;
+	Wed, 27 Mar 2024 19:00:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711565931; cv=none; b=QU/ZvKutfMj7YO6bVc/glXGdxQIwHqyQESdNOAk5jpwkv1vJNjk8NTlhUh9kPFjdUAzM+i2Ipz4iZ9RWQTt7INTCfYw5jANwHH/TVMMj7AoI6D4nfFQKPLAsPk/QzudWWUyt6VRPJfC6l2W3Rsuyfoy7bJG9QQtDOFI6z1kwAZU=
+	t=1711566044; cv=none; b=DglguzQ2TCXF9Agl9ljH3choP2sUZz5uLVSPYHLit+zMnxS1WH0P0YstkO/lZLZZmhpyDjuDjqosCYC1SXW1PUOl2JGBOT+pBdehUc2DIWIgfnHWHLZkhLnTR4rVe4+m9scic+Ea8HOHUc1z3WfOrVU71M6a47O/8/lnAgxhXVQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711565931; c=relaxed/simple;
-	bh=syxSHPmUcwOxaYZQm90XUTPVxeDYZ2RFD5QSfLdCGE0=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=uKVoRKJjjOdCj5sa55acGxUsTL8Y7GAoqMI5xWNLtQjJmtZBwB/zLGOhm0u2V3EuQWpFMJbUzW/zv37cQHf8Os+vk8zpgVgenlr1xDx1s8nq0amGCBJ+zhcYzZ6hcu+gd0EmbSTrXs/SMCrS1TlwZXa0HM2d3PywOlsNb85tapo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=OpaxMHQy; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1711565928;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=cAska0hL8RMpabamwQoIPg/k45FzhjCym0nLiCVueuE=;
-	b=OpaxMHQy60yJRerg17ogUDQ/YeRAt96pdWv9sta3G/qrT85mYhDaEnkFypDVGLRoCXX3of
-	sOo7y6bGhK0x6kWVYTl4oQ5GS9JhcQdRYv3vo2elVR0B4+gM60WVD+buR8J8cI60GEGK93
-	uNtMzypewmMCekjYoaAwUBkr8E3nSHs=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-48-zspy6GMCPC2cjmZ9rLFaog-1; Wed, 27 Mar 2024 14:58:44 -0400
-X-MC-Unique: zspy6GMCPC2cjmZ9rLFaog-1
-Received: from smtp.corp.redhat.com (int-mx09.intmail.prod.int.rdu2.redhat.com [10.11.54.9])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 51BEE185A784;
-	Wed, 27 Mar 2024 18:58:44 +0000 (UTC)
-Received: from [10.22.33.225] (unknown [10.22.33.225])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id F3591492BC9;
-	Wed, 27 Mar 2024 18:58:43 +0000 (UTC)
-Message-ID: <de42b70a-c69c-4777-ab07-2921d34ecb85@redhat.com>
-Date: Wed, 27 Mar 2024 14:58:43 -0400
+	s=arc-20240116; t=1711566044; c=relaxed/simple;
+	bh=tFY3qsvVbT0Zq995oHAN6t96RnHL9EvsVFbgj+YDy+g=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=S3DcemRbkJ3GH0pQHQce3u2ONGGJ7oQFx/6Bw46rSpqg2NULnGmMtJEgXXNa4TbOqDBgJYP075spOphQOw6tsKb07gAvG4+ib/VeGz5jFbV0Q/RiwFb/FE3+0dGKgFcinbHgnOKfvYKDe/H6HNWYMlAEdfqtvo4qzcMlLo0alRk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=CeiqN3GL; arc=none smtp.client-ip=209.85.221.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-vk1-f178.google.com with SMTP id 71dfb90a1353d-4d42ea640f0so60802e0c.3;
+        Wed, 27 Mar 2024 12:00:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1711566038; x=1712170838; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Hins2IPDwZVL8ICx6pFRq72ob96M45mjuvu0W81u9V0=;
+        b=CeiqN3GLsRsUOJK4+aLf49cMo4cKcat9ifWoiivgMElMSzsMIHxPT9A6vgiPp/gL8D
+         60OuqrRRhiIARL8A6ZYviCQF+J5TeJETNCoqzffV4VW/zer+mgdlL+3AXc/i40RBQcOu
+         NzG7S5+tCA+bsyyTaThSsDUawT2C47gdjtLDBWSldiY8nhr9bE/CqIYx0Ykpi9tMAf4X
+         CyNaOA0jTZPzXFeoMKnipOMGYlsAn2mXzKja7zebAnOcjsCeBjMMrp3NzNomk/v6rAiZ
+         WQl9Yb2546CRWqGm8/DXkynMye5UP/vcmdqZf0VFWHqGzYnP3YEgvHE8VZ8cgLIPbBLP
+         H5ww==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711566038; x=1712170838;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Hins2IPDwZVL8ICx6pFRq72ob96M45mjuvu0W81u9V0=;
+        b=cIbvya408KtjwiLTo1nM7ggVJdHfQH6J+NdtXbgcfzOklf+ynh+rlZkZkjb0O5jvmD
+         uE6mGCgjjNWBh2oWw58IjeXuDL78XEhNH3TAgtfR6EyMf81z8+A067L7K65gh2QJjHIW
+         cPbulpbo6/B4cScHP0XTyk+7UZzrLcbDKx3GjfQ5K7KHb6gyqFdCTT/LdR5fDHva7kFz
+         jOztUGdhp31Pdy+2x55/1jhBwZOKJAKyajZL6COgpsRqj4dlGx/0XINxvjHc7TLKcKRX
+         ugKQFSC/bLPjhWM+m53LGW0jTQHY3I7IwiW+WmiR4aQ1d8XUG06oCC0g6/6w7NjrqfJI
+         5VgA==
+X-Forwarded-Encrypted: i=1; AJvYcCVcHhoYzM5hT6FQeZvim50X92GqHKGDRXt/UiT6H0ycL4a79Zzwpa9ilmHtdajBWnQPSmbhMeXzyC6TWkWPzI8cF/eJJKrOZya/SS5qO1XFEYBxuzqjtGeFGwIwgd70ruWJvazzGg6nQkCAJw0rpcU2FTIzORRTm6oSlR+yXUCxwH70Rh6EgK3Z/V08SSM5dMlok4kJ8o6oHBpuqhHaDpKYdLUfxFz9hg==
+X-Gm-Message-State: AOJu0YyCSKoaVOvzx/u+4w5akD5I7oqjrvrkK2tXv3h5eGccu45fljx7
+	D0CXUzrutzCljjeonWim7BdKgn6vWAOt8amiH29y+Ctnpn/V7xIrXm/GTDorSrzNSaO6bIwtyYX
+	oijGwnDFNapDAlCsvhTu8Me0CWa4=
+X-Google-Smtp-Source: AGHT+IHWbdqtpnoguZT9P+DnYXrJ3uP4UXxPjR/3Aad87Vu+DiiH0+DFP6s2lN+TdFl78boCV7iVbRem4fBppekeuj0=
+X-Received: by 2002:a05:6122:4595:b0:4c0:2d32:612f with SMTP id
+ de21-20020a056122459500b004c02d32612fmr1018877vkb.15.1711566036698; Wed, 27
+ Mar 2024 12:00:36 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] mm/kmemleak: Don't hold kmemleak_lock when calling
- printk()
-Content-Language: en-US
-To: Catalin Marinas <catalin.marinas@arm.com>,
- Andrew Morton <akpm@linux-foundation.org>
-Cc: linux-mm@kvack.org, linux-kernel@vger.kernel.org,
- Audra Mitchell <aubaker@redhat.com>
-References: <20240307184707.961255-1-longman@redhat.com>
- <20240307114630.32702099ac24c182b91da517@linux-foundation.org>
- <ZgRarOvI3Zhos9Gl@arm.com>
-From: Waiman Long <longman@redhat.com>
-In-Reply-To: <ZgRarOvI3Zhos9Gl@arm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.9
+References: <20240326222844.1422948-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+ <20240326222844.1422948-3-prabhakar.mahadev-lad.rj@bp.renesas.com> <20240327172439.GA3664500-robh@kernel.org>
+In-Reply-To: <20240327172439.GA3664500-robh@kernel.org>
+From: "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
+Date: Wed, 27 Mar 2024 18:58:53 +0000
+Message-ID: <CA+V-a8t5KyDZ3FCP2GqYwK8AY_x0++HB471KxQgAbPdLTVHzGw@mail.gmail.com>
+Subject: Re: [RFC PATCH 02/13] dt-bindings: pinctrl: renesas: Document
+ RZ/V2H(P) SoC
+To: Rob Herring <robh@kernel.org>
+Cc: Geert Uytterhoeven <geert+renesas@glider.be>, Linus Walleij <linus.walleij@linaro.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
+	Magnus Damm <magnus.damm@gmail.com>, linux-renesas-soc@vger.kernel.org, 
+	linux-gpio@vger.kernel.org, devicetree@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, 
+	Fabrizio Castro <fabrizio.castro.jz@renesas.com>, 
+	Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 3/27/24 13:43, Catalin Marinas wrote:
-> On Thu, Mar 07, 2024 at 11:46:30AM -0800, Andrew Morton wrote:
->> On Thu,  7 Mar 2024 13:47:07 -0500 Waiman Long <longman@redhat.com> wrote:
->>> When some error conditions happen (like OOM), some kmemleak functions
->>> call printk() to dump out some useful debugging information while holding
->>> the kmemleak_lock. This may cause deadlock as the printk() function
->>> may need to allocate additional memory leading to a create_object()
->>> call acquiring kmemleak_lock again.
->>>
->>> An abbreviated lockdep splat is as follows:
->>>
->>> ...
->>>
->>> Fix this deadlock issue by making sure that printk() is only called
->>> after releasing the kmemleak_lock.
->>>
->>> ...
->>>
->>> @@ -427,9 +442,19 @@ static struct kmemleak_object *__lookup_object(unsigned long ptr, int alias,
->>>   		else if (untagged_objp == untagged_ptr || alias)
->>>   			return object;
->>>   		else {
->>> +			if (!get_object(object))
->>> +				break;
->>> +			/*
->>> +			 * Release kmemleak_lock temporarily to avoid deadlock
->>> +			 * in printk(). dump_object_info() is called without
->>> +			 * holding object->lock (race unlikely).
->>> +			 */
->>> +			raw_spin_unlock(&kmemleak_lock);
->>>   			kmemleak_warn("Found object by alias at 0x%08lx\n",
->>>   				      ptr);
->>>   			dump_object_info(object);
->>> +			put_object(object);
->>> +			raw_spin_lock(&kmemleak_lock);
->>>   			break;
->> Please include a full description of why this is safe.  Once we've
->> dropped that lock, the tree is in an unknown state and we shouldn't
->> touch it again.  This consideration should be added to the relevant
->> functions' interface documentation and the code should be reviewed to
->> ensure that we're actually adhering to this.  Or something like that.
->>
->> To simply drop and reacquire a lock without supporting analysis and
->> comments does not inspire confidence!
-> I agree it looks fragile. I think it works, the code tends to bail out
-> on those errors and doesn't expect the protected data to have remained
-> intact. But we may change it in the future and forgot about this.
+Hi Rob,
+
+Thank you for the review.
+
+On Wed, Mar 27, 2024 at 5:24=E2=80=AFPM Rob Herring <robh@kernel.org> wrote=
+:
 >
-> I wonder whether we can actually make things slightly easier to reason
-> about, defer the printing until unlock, store the details in some
-> per-cpu variable. Another option would be to have a per-CPU array to
-> store potential recursive kmemleak_*() callbacks during the critical
-> regions. This should be bounded since the interrupts are disabled. On
-> unlock, we'd replay the array and add those pointers.
+> On Tue, Mar 26, 2024 at 10:28:33PM +0000, Prabhakar wrote:
+> > From: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+> >
+> > Add documentation for the pin controller found on the Renesas RZ/V2H(P)
+> > (R9A09G057) SoC. Compared to RZ/G2L family of SoCs there are slight
+> > differences on the RZ/V2H(P) SoC for pinmuxing.
+> >
+> > Also add 'renesas-rzv2h,output-impedance' property. Drive strength
+> > setting on RZ/V2H(P) depends on the different power rails which are
+> > coming out from the PMIC (connected via i2c). These power rails
+> > (required for drive strength) can be 1.2/1.8/3.3V.
+> >
+> > Pin are grouped into 4 groups,
+> >
+> > Group1: Impedance
+> > - 150/75/38/25 ohms (at 3.3 V)
+> > - 130/65/33/22 ohms (at 1.8 V)
+> >
+> > Group2: Impedance
+> > - 50/40/33/25 ohms (at 1.8 V)
+> >
+> > Group3: Impedance
+> > - 150/75/37.5/25 ohms (at 3.3 V)
+> > - 130/65/33/22 ohms (at 1.8 V)
+> >
+> > Group4: Impedance
+> > - 110/55/30/20 ohms (at 1.8 V)
+> > - 150/75/38/25 ohms (at 1.2 V)
+> >
+> > 'renesas-rzv2h,output-impedance' property as documented which can be
+> > [1, 2, 4, 6] indicates x Value strength.
+>
+> Looks like the values are x1, x1.5, x3ish, x6...
+>
+> >
+> > As the power rail information cannot be available very early in the
+> > boot process as 'renesas-rzv2h,output-impedance' property is added
+> > instead of reusing output-impedance-ohms property.
+> >
+> > Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+> > ---
+> >  .../pinctrl/renesas,rzg2l-pinctrl.yaml        | 22 +++++++++++++++----
+> >  1 file changed, 18 insertions(+), 4 deletions(-)
+> >
+> > diff --git a/Documentation/devicetree/bindings/pinctrl/renesas,rzg2l-pi=
+nctrl.yaml b/Documentation/devicetree/bindings/pinctrl/renesas,rzg2l-pinctr=
+l.yaml
+> > index 881e992adca3..77f4fc7f4a21 100644
+> > --- a/Documentation/devicetree/bindings/pinctrl/renesas,rzg2l-pinctrl.y=
+aml
+> > +++ b/Documentation/devicetree/bindings/pinctrl/renesas,rzg2l-pinctrl.y=
+aml
+> > @@ -26,6 +26,7 @@ properties:
+> >                - renesas,r9a07g043-pinctrl # RZ/G2UL{Type-1,Type-2} and=
+ RZ/Five
+> >                - renesas,r9a07g044-pinctrl # RZ/G2{L,LC}
+> >                - renesas,r9a08g045-pinctrl # RZ/G3S
+> > +              - renesas,r9a09g057-pinctrl # RZ/V2H(P)
+> >
+> >        - items:
+> >            - enum:
+> > @@ -66,10 +67,14 @@ properties:
+> >      maxItems: 1
+> >
+> >    resets:
+> > -    items:
+> > -      - description: GPIO_RSTN signal
+> > -      - description: GPIO_PORT_RESETN signal
+> > -      - description: GPIO_SPARE_RESETN signal
+> > +    oneOf:
+> > +      - items:
+> > +          - description: GPIO_RSTN signal
+> > +          - description: GPIO_PORT_RESETN signal
+> > +          - description: GPIO_SPARE_RESETN signal
+> > +      - items:
+> > +          - description: PFC main reset
+> > +          - description: Reset for the control register related to WDT=
+UDFCA and WDTUDFFCM pins
+> >
+> >  additionalProperties:
+> >    anyOf:
+> > @@ -111,6 +116,15 @@ additionalProperties:
+> >          output-high: true
+> >          output-low: true
+> >          line-name: true
+> > +        renesas-rzv2h,output-impedance:
+>
+> 'renesas-rzv2h' is not a vendor.
+>
+I will update this to "renesas,output-impedance".
 
-It looks like most of the callers of __lookup_object() will bail out 
-when an error happen. So there should be no harm in temporarily 
-releasing the lock. However, I do agree that it is fragile and future 
-changes may break it. This patch certainly need more work.
+> That should give you a warning if you actually used this somewhere.
+>
+I did run dtbs_check with this property in the DTS and haven't seen
+any warning. Also now I included this property in the example node in
+the binding doc and seen no warnings reported by dt_binding_check too.
+
+> > +          description: |
+> > +            Output impedance for pins on RZ/V2H(P) SoC.
+> > +            x1: Corresponds to 0 in IOLH register.
+> > +            x2: Corresponds to 1 in IOLH register.
+> > +            x4: Corresponds to 2 in IOLH register.
+> > +            x6: Corresponds to 3 in IOLH register.
+>
+> Why not just use 0-3 for the values?
+>
+Fine by me. I'll update this in the next version.
 
 Cheers,
-Longman
-
->
-
+Prabhakar
 
