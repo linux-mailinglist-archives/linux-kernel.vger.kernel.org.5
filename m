@@ -1,59 +1,54 @@
-Return-Path: <linux-kernel+bounces-120946-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-120947-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id CC39B88E0DB
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 13:46:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id F19C388E0D9
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 13:46:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AE17FB2970F
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 12:45:03 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 04223B29F1F
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 12:45:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 24852136E0A;
-	Wed, 27 Mar 2024 12:14:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C53A512F370;
+	Wed, 27 Mar 2024 12:14:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="DXLaMEbh"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MzXIwb55"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2312C12F370;
-	Wed, 27 Mar 2024 12:14:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ACE45136E0C;
+	Wed, 27 Mar 2024 12:14:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711541664; cv=none; b=sA5Q4LEee3QnOVKxa9XJJ7CXnqR3xC5vvjaRoEOFY46atz3s8NBCTED+R8K3u5O5s9Cr3JDLEASjhIYWTEFhk7RtjtKo0f6ThtbA6d3BvXdpp7Puwch5TmtQ8pijSTnFYFI40PxpsuCPYtAMM2VJrqsBapUMbP01vnltWRqanxU=
+	t=1711541667; cv=none; b=SJZEiikvcg8M1RAJjEk6DBJSrukzMsH7hT3dLRVsQrwzlvnSkxPkWkQkn/GrNTA33qn5Chq8ZnEuzYsUiLV6+lZUXYcgLhAEDvTH4uMwErL2js5xPeYZCpYS1wKwCYyY7NGARiEuVlKH8IsQVLa84QFT3KbWymkgdDugwdJTZ8U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711541664; c=relaxed/simple;
-	bh=aHyIDZrGWvyf3V5VYHEkQlI6nSM/RGOAmI2GhomSIHY=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=WRZ9rF7f1sdVKiPsnAJO/G8X6Qqa5Los+yyCKJQfQf9gcap9mY75LdNH+CShH/2bfx7EK/SW2+3KUVujdZ2QGxFRQoosuwbxZYmLCgAeT20K/bkLbPEmVLqa5jB/kXclF8eyW0tPlcH1Aq6Lmk3aqurJIM5/5fTq6yb+EF8QlC8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=DXLaMEbh; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B3889C433C7;
-	Wed, 27 Mar 2024 12:14:22 +0000 (UTC)
+	s=arc-20240116; t=1711541667; c=relaxed/simple;
+	bh=+I43Hq9Vbx8lwPWoD6kceiVvgtYxkQnfiYzCgPyuJ8M=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=SfgiBjKB++wrUcMpM3XZbF2ROpkY9RoP4zJeZjpena5Fx41gkBXMQB63xkf8kJ5voJy6ZnIHGqtZr+tl+kt9LmyFZAx5kxXK36tqCJcnPd7VeTcwxtjFIu8ea1vEGAZzvE+9GhbrPTifkhbX/sKSeiFAG7DSi2KcewOzaNDyyeg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MzXIwb55; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 829F9C433A6;
+	Wed, 27 Mar 2024 12:14:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711541664;
-	bh=aHyIDZrGWvyf3V5VYHEkQlI6nSM/RGOAmI2GhomSIHY=;
+	s=k20201202; t=1711541667;
+	bh=+I43Hq9Vbx8lwPWoD6kceiVvgtYxkQnfiYzCgPyuJ8M=;
 	h=From:To:Cc:Subject:Date:From;
-	b=DXLaMEbhPYWdKu1fDHj00FcMzPfsZR7isBpKR7RabZCgG9USW2q05Ff9piHKu+1sa
-	 0pwG/615QEQ1kUQE2Km88M8Qvkv2BQ/p3rNuygiD8A4MngizXyjN/LEAlyY7aitJ0c
-	 iyLpST/y8lON6MM21YM9YBRliMgVUlJgx9mpbbJtM/s3L5Lxs4bSPEQqHfpLR1J4j7
-	 3DCjOj89vWAnI1wBQR/tNlJ+WGWGTfhbmVpQPHjpMZOT111KTYhQPVL7pTUf1pAzJ3
-	 r82qCCuizi+DF3XHXKFEUNChZN+aQKs+f/rIZ29MoKz0dSNpc8yeEKvCIDHxcJ1Qg8
-	 kcoIwouSsky+g==
+	b=MzXIwb55/wowM3MQu7xSsih+cGh4lltXumJq1NW+9lu+/oaQZizuvJQqxEGHcrM/d
+	 C6c+dVViQIlgE6hh4JXI0NwK8IjmhbY5xDkFMyQ0UJBs+3sPljJUGhw6jtPYiFl9Wf
+	 Wrti0ZN2WJQMamXwlDYHF9vq/Sof+HnaHrJJ3DqLU4lwOli1Z/uteuaoH5OJ1cqo3z
+	 HZe8WhzZ2+8m/FXJ59RnrnA+m7mAiabXb2A551wiru0vkd7VP/kpx+jk9nnL/5Na9l
+	 EFyb475vZYYHYEgIMpH6X1aNPmGhw2OWSUh6tuzURXbT/5qQdAX3Hh7G9C1e3aITAR
+	 5EKQSdECYJRGw==
 From: Sasha Levin <sashal@kernel.org>
 To: stable@vger.kernel.org,
-	rostedt@goodmis.org
-Cc: Masami Hiramatsu <mhiramat@kernel.org>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Linus Torvalds <torvalds@linux-foundation.org>,
-	linke li <lilinke99@qq.com>,
-	Rabin Vincent <rabin@rab.in>,
-	linux-kernel@vger.kernel.org,
-	linux-trace-kernel@vger.kernel.org
-Subject: FAILED: Patch "tracing/ring-buffer: Fix wait_on_pipe() race" failed to apply to 6.1-stable tree
-Date: Wed, 27 Mar 2024 08:14:21 -0400
-Message-ID: <20240327121421.2831033-1-sashal@kernel.org>
+	ardb@kernel.org
+Cc: Kevin Loughlin <kevinloughlin@google.com>,
+	Borislav Petkov <bp@alien8.de>,
+	stable@kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: FAILED: Patch "x86/sev: Fix position dependent variable references in startup code" failed to apply to 6.1-stable tree
+Date: Wed, 27 Mar 2024 08:14:24 -0400
+Message-ID: <20240327121425.2831075-1-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -75,255 +70,295 @@ Sasha
 
 ------------------ original commit in Linus's tree ------------------
 
-From 2aa043a55b9a764c9cbde5a8c654eeaaffe224cf Mon Sep 17 00:00:00 2001
-From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
-Date: Tue, 12 Mar 2024 08:15:08 -0400
-Subject: [PATCH] tracing/ring-buffer: Fix wait_on_pipe() race
+From 1c811d403afd73f04bde82b83b24c754011bd0e8 Mon Sep 17 00:00:00 2001
+From: Ard Biesheuvel <ardb@kernel.org>
+Date: Sat, 3 Feb 2024 13:53:06 +0100
+Subject: [PATCH] x86/sev: Fix position dependent variable references in
+ startup code
 
-When the trace_pipe_raw file is closed, there should be no new readers on
-the file descriptor. This is mostly handled with the waking and wait_index
-fields of the iterator. But there's still a slight race.
+The early startup code executes from a 1:1 mapping of memory, which
+differs from the mapping that the code was linked and/or relocated to
+run at. The latter mapping is not active yet at this point, and so
+symbol references that rely on it will fault.
 
-     CPU 0                              CPU 1
-     -----                              -----
-                                   wait_index++;
-   index = wait_index;
-                                   ring_buffer_wake_waiters();
-   wait_on_pipe()
-     ring_buffer_wait();
+Given that the core kernel is built without -fPIC, symbol references are
+typically emitted as absolute, and so any such references occuring in
+the early startup code will therefore crash the kernel.
 
-The ring_buffer_wait() will miss the wakeup from CPU 1. The problem is
-that the ring_buffer_wait() needs the logic of:
+While an attempt was made to work around this for the early SEV/SME
+startup code, by forcing RIP-relative addressing for certain global
+SEV/SME variables via inline assembly (see snp_cpuid_get_table() for
+example), RIP-relative addressing must be pervasively enforced for
+SEV/SME global variables when accessed prior to page table fixups.
 
-        prepare_to_wait();
-        if (!condition)
-                schedule();
+__startup_64() already handles this issue for select non-SEV/SME global
+variables using fixup_pointer(), which adjusts the pointer relative to a
+`physaddr` argument. To avoid having to pass around this `physaddr`
+argument across all functions needing to apply pointer fixups, introduce
+a macro RIP_RELATIVE_REF() which generates a RIP-relative reference to
+a given global variable. It is used where necessary to force
+RIP-relative accesses to global variables.
 
-Where the missing condition check is the iter->wait_index update.
+For backporting purposes, this patch makes no attempt at cleaning up
+other occurrences of this pattern, involving either inline asm or
+fixup_pointer(). Those will be addressed later.
 
-Have the ring_buffer_wait() take a conditional callback function and a
-data parameter that can be used within the wait_event_interruptible() of
-the ring_buffer_wait() function.
+  [ bp: Call it "rip_rel_ref" everywhere like other code shortens
+    "rIP-relative reference" and make the asm wrapper __always_inline. ]
 
-In wait_on_pipe(), pass a condition function that will check if the
-wait_index has been updated, if it has, it will return true to break out
-of the wait_event_interruptible() loop.
-
-Create a new field "closed" in the trace_iterator and set it in the
-flush() callback before calling ring_buffer_wake_waiters().
-This will keep any new readers from waiting on a closed file descriptor.
-
-Have the wait_on_pipe() condition callback also check the closed field.
-
-Change the wait_index field of the trace_iterator to atomic_t. There's no
-reason it needs to be 'long' and making it atomic and using
-atomic_read_acquire() and atomic_fetch_inc_release() will provide the
-necessary memory barriers.
-
-Add a "woken" flag to tracing_buffers_splice_read() to exit the loop after
-one more try to fetch data. That is, if it waited for data and something
-woke it up, it should try to collect any new data and then exit back to
-user space.
-
-Link: https://lore.kernel.org/linux-trace-kernel/CAHk-=wgsNgewHFxZAJiAQznwPMqEtQmi1waeS2O1v6L4c_Um5A@mail.gmail.com/
-Link: https://lore.kernel.org/linux-trace-kernel/20240312121703.557950713@goodmis.org
-
-Cc: stable@vger.kernel.org
-Cc: Masami Hiramatsu <mhiramat@kernel.org>
-Cc: Mark Rutland <mark.rutland@arm.com>
-Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: linke li <lilinke99@qq.com>
-Cc: Rabin Vincent <rabin@rab.in>
-Fixes: f3ddb74ad0790 ("tracing: Wake up ring buffer waiters on closing of the file")
-Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
+Co-developed-by: Kevin Loughlin <kevinloughlin@google.com>
+Signed-off-by: Kevin Loughlin <kevinloughlin@google.com>
+Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
+Signed-off-by: Borislav Petkov (AMD) <bp@alien8.de>
+Cc: <stable@kernel.org>
+Link: https://lore.kernel.org/all/20240130220845.1978329-1-kevinloughlin@google.com
 ---
- include/linux/ring_buffer.h  |  3 ++-
- include/linux/trace_events.h |  5 ++++-
- kernel/trace/ring_buffer.c   | 13 ++++++-----
- kernel/trace/trace.c         | 43 ++++++++++++++++++++++++++----------
- 4 files changed, 45 insertions(+), 19 deletions(-)
+ arch/x86/coco/core.c               |  7 +------
+ arch/x86/include/asm/asm.h         | 14 ++++++++++++++
+ arch/x86/include/asm/coco.h        |  8 +++++++-
+ arch/x86/include/asm/mem_encrypt.h | 15 +++++++++------
+ arch/x86/kernel/sev-shared.c       | 12 ++++++------
+ arch/x86/kernel/sev.c              |  4 ++--
+ arch/x86/mm/mem_encrypt_identity.c | 27 ++++++++++++---------------
+ 7 files changed, 51 insertions(+), 36 deletions(-)
 
-diff --git a/include/linux/ring_buffer.h b/include/linux/ring_buffer.h
-index 338a33db1577e..dc5ae4e96aee0 100644
---- a/include/linux/ring_buffer.h
-+++ b/include/linux/ring_buffer.h
-@@ -99,7 +99,8 @@ __ring_buffer_alloc(unsigned long size, unsigned flags, struct lock_class_key *k
- })
+diff --git a/arch/x86/coco/core.c b/arch/x86/coco/core.c
+index eeec9986570ed..d07be9d05cd03 100644
+--- a/arch/x86/coco/core.c
++++ b/arch/x86/coco/core.c
+@@ -14,7 +14,7 @@
+ #include <asm/processor.h>
  
- typedef bool (*ring_buffer_cond_fn)(void *data);
--int ring_buffer_wait(struct trace_buffer *buffer, int cpu, int full);
-+int ring_buffer_wait(struct trace_buffer *buffer, int cpu, int full,
-+		     ring_buffer_cond_fn cond, void *data);
- __poll_t ring_buffer_poll_wait(struct trace_buffer *buffer, int cpu,
- 			  struct file *filp, poll_table *poll_table, int full);
- void ring_buffer_wake_waiters(struct trace_buffer *buffer, int cpu);
-diff --git a/include/linux/trace_events.h b/include/linux/trace_events.h
-index d68ff9b1247f9..fc6d0af56bb17 100644
---- a/include/linux/trace_events.h
-+++ b/include/linux/trace_events.h
-@@ -103,13 +103,16 @@ struct trace_iterator {
- 	unsigned int		temp_size;
- 	char			*fmt;	/* modified format holder */
- 	unsigned int		fmt_size;
--	long			wait_index;
-+	atomic_t		wait_index;
+ enum cc_vendor cc_vendor __ro_after_init = CC_VENDOR_NONE;
+-static u64 cc_mask __ro_after_init;
++u64 cc_mask __ro_after_init;
  
- 	/* trace_seq for __print_flags() and __print_symbolic() etc. */
- 	struct trace_seq	tmp_seq;
- 
- 	cpumask_var_t		started;
- 
-+	/* Set when the file is closed to prevent new waiters */
-+	bool			closed;
-+
- 	/* it's true when current open file is snapshot */
- 	bool			snapshot;
- 
-diff --git a/kernel/trace/ring_buffer.c b/kernel/trace/ring_buffer.c
-index f4c34b7c7e1e7..350607cce8694 100644
---- a/kernel/trace/ring_buffer.c
-+++ b/kernel/trace/ring_buffer.c
-@@ -902,23 +902,26 @@ static bool rb_wait_once(void *data)
-  * @buffer: buffer to wait on
-  * @cpu: the cpu buffer to wait on
-  * @full: wait until the percentage of pages are available, if @cpu != RING_BUFFER_ALL_CPUS
-+ * @cond: condition function to break out of wait (NULL to run once)
-+ * @data: the data to pass to @cond.
-  *
-  * If @cpu == RING_BUFFER_ALL_CPUS then the task will wake up as soon
-  * as data is added to any of the @buffer's cpu buffers. Otherwise
-  * it will wait for data to be added to a specific cpu buffer.
-  */
--int ring_buffer_wait(struct trace_buffer *buffer, int cpu, int full)
-+int ring_buffer_wait(struct trace_buffer *buffer, int cpu, int full,
-+		     ring_buffer_cond_fn cond, void *data)
+ static bool noinstr intel_cc_platform_has(enum cc_attr attr)
  {
- 	struct ring_buffer_per_cpu *cpu_buffer;
- 	struct wait_queue_head *waitq;
--	ring_buffer_cond_fn cond;
- 	struct rb_irq_work *rbwork;
--	void *data;
- 	long once = 0;
- 	int ret = 0;
+@@ -148,8 +148,3 @@ u64 cc_mkdec(u64 val)
+ 	}
+ }
+ EXPORT_SYMBOL_GPL(cc_mkdec);
+-
+-__init void cc_set_mask(u64 mask)
+-{
+-	cc_mask = mask;
+-}
+diff --git a/arch/x86/include/asm/asm.h b/arch/x86/include/asm/asm.h
+index fbcfec4dc4ccd..ca8eed1d496ab 100644
+--- a/arch/x86/include/asm/asm.h
++++ b/arch/x86/include/asm/asm.h
+@@ -113,6 +113,20 @@
  
--	cond = rb_wait_once;
--	data = &once;
-+	if (!cond) {
-+		cond = rb_wait_once;
-+		data = &once;
-+	}
+ #endif
  
- 	/*
- 	 * Depending on what the caller is waiting for, either any
-diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
-index c9c8983073485..d390fea3a6a52 100644
---- a/kernel/trace/trace.c
-+++ b/kernel/trace/trace.c
-@@ -1955,15 +1955,36 @@ update_max_tr_single(struct trace_array *tr, struct task_struct *tsk, int cpu)
- 
- #endif /* CONFIG_TRACER_MAX_TRACE */
- 
-+struct pipe_wait {
-+	struct trace_iterator		*iter;
-+	int				wait_index;
-+};
-+
-+static bool wait_pipe_cond(void *data)
++#ifndef __ASSEMBLY__
++#ifndef __pic__
++static __always_inline __pure void *rip_rel_ptr(void *p)
 +{
-+	struct pipe_wait *pwait = data;
-+	struct trace_iterator *iter = pwait->iter;
++	asm("leaq %c1(%%rip), %0" : "=r"(p) : "i"(p));
 +
-+	if (atomic_read_acquire(&iter->wait_index) != pwait->wait_index)
-+		return true;
++	return p;
++}
++#define RIP_REL_REF(var)	(*(typeof(&(var)))rip_rel_ptr(&(var)))
++#else
++#define RIP_REL_REF(var)	(var)
++#endif
++#endif
 +
-+	return iter->closed;
+ /*
+  * Macros to generate condition code outputs from inline assembly,
+  * The output operand must be type "bool".
+diff --git a/arch/x86/include/asm/coco.h b/arch/x86/include/asm/coco.h
+index 6ae2d16a7613b..21940ef8d2904 100644
+--- a/arch/x86/include/asm/coco.h
++++ b/arch/x86/include/asm/coco.h
+@@ -2,6 +2,7 @@
+ #ifndef _ASM_X86_COCO_H
+ #define _ASM_X86_COCO_H
+ 
++#include <asm/asm.h>
+ #include <asm/types.h>
+ 
+ enum cc_vendor {
+@@ -11,9 +12,14 @@ enum cc_vendor {
+ };
+ 
+ extern enum cc_vendor cc_vendor;
++extern u64 cc_mask;
+ 
+ #ifdef CONFIG_ARCH_HAS_CC_PLATFORM
+-void cc_set_mask(u64 mask);
++static inline void cc_set_mask(u64 mask)
++{
++	RIP_REL_REF(cc_mask) = mask;
 +}
 +
- static int wait_on_pipe(struct trace_iterator *iter, int full)
- {
-+	struct pipe_wait pwait;
- 	int ret;
+ u64 cc_mkenc(u64 val);
+ u64 cc_mkdec(u64 val);
+ #else
+diff --git a/arch/x86/include/asm/mem_encrypt.h b/arch/x86/include/asm/mem_encrypt.h
+index 359ada486fa92..b31eb9fd59544 100644
+--- a/arch/x86/include/asm/mem_encrypt.h
++++ b/arch/x86/include/asm/mem_encrypt.h
+@@ -15,7 +15,8 @@
+ #include <linux/init.h>
+ #include <linux/cc_platform.h>
  
- 	/* Iterators are static, they should be filled or empty */
- 	if (trace_buffer_iter(iter, iter->cpu_file))
- 		return 0;
+-#include <asm/bootparam.h>
++#include <asm/asm.h>
++struct boot_params;
  
--	ret = ring_buffer_wait(iter->array_buffer->buffer, iter->cpu_file, full);
-+	pwait.wait_index = atomic_read_acquire(&iter->wait_index);
-+	pwait.iter = iter;
+ #ifdef CONFIG_X86_MEM_ENCRYPT
+ void __init mem_encrypt_init(void);
+@@ -58,6 +59,11 @@ void __init mem_encrypt_free_decrypted_mem(void);
+ 
+ void __init sev_es_init_vc_handling(void);
+ 
++static inline u64 sme_get_me_mask(void)
++{
++	return RIP_REL_REF(sme_me_mask);
++}
 +
-+	ret = ring_buffer_wait(iter->array_buffer->buffer, iter->cpu_file, full,
-+			       wait_pipe_cond, &pwait);
+ #define __bss_decrypted __section(".bss..decrypted")
  
- #ifdef CONFIG_TRACER_MAX_TRACE
- 	/*
-@@ -8398,9 +8419,9 @@ static int tracing_buffers_flush(struct file *file, fl_owner_t id)
- 	struct ftrace_buffer_info *info = file->private_data;
- 	struct trace_iterator *iter = &info->iter;
+ #else	/* !CONFIG_AMD_MEM_ENCRYPT */
+@@ -89,6 +95,8 @@ early_set_mem_enc_dec_hypercall(unsigned long vaddr, unsigned long size, bool en
  
--	iter->wait_index++;
-+	iter->closed = true;
- 	/* Make sure the waiters see the new wait_index */
--	smp_wmb();
-+	(void)atomic_fetch_inc_release(&iter->wait_index);
+ static inline void mem_encrypt_free_decrypted_mem(void) { }
  
- 	ring_buffer_wake_waiters(iter->array_buffer->buffer, iter->cpu_file);
- 
-@@ -8500,6 +8521,7 @@ tracing_buffers_splice_read(struct file *file, loff_t *ppos,
- 		.spd_release	= buffer_spd_release,
- 	};
- 	struct buffer_ref *ref;
-+	bool woken = false;
- 	int page_size;
- 	int entries, i;
- 	ssize_t ret = 0;
-@@ -8573,17 +8595,17 @@ tracing_buffers_splice_read(struct file *file, loff_t *ppos,
- 
- 	/* did we read anything? */
- 	if (!spd.nr_pages) {
--		long wait_index;
- 
- 		if (ret)
- 			goto out;
- 
-+		if (woken)
-+			goto out;
++static inline u64 sme_get_me_mask(void) { return 0; }
 +
- 		ret = -EAGAIN;
- 		if ((file->f_flags & O_NONBLOCK) || (flags & SPLICE_F_NONBLOCK))
- 			goto out;
+ #define __bss_decrypted
  
--		wait_index = READ_ONCE(iter->wait_index);
+ #endif	/* CONFIG_AMD_MEM_ENCRYPT */
+@@ -106,11 +114,6 @@ void add_encrypt_protection_map(void);
+ 
+ extern char __start_bss_decrypted[], __end_bss_decrypted[], __start_bss_decrypted_unused[];
+ 
+-static inline u64 sme_get_me_mask(void)
+-{
+-	return sme_me_mask;
+-}
 -
- 		ret = wait_on_pipe(iter, iter->snapshot ? 0 : iter->tr->buffer_percent);
- 		if (ret)
- 			goto out;
-@@ -8592,10 +8614,8 @@ tracing_buffers_splice_read(struct file *file, loff_t *ppos,
- 		if (!tracer_tracing_is_on(iter->tr))
- 			goto out;
+ #endif	/* __ASSEMBLY__ */
  
--		/* Make sure we see the new wait_index */
--		smp_rmb();
--		if (wait_index != iter->wait_index)
--			goto out;
-+		/* Iterate one more time to collect any new data then exit */
-+		woken = true;
+ #endif	/* __X86_MEM_ENCRYPT_H__ */
+diff --git a/arch/x86/kernel/sev-shared.c b/arch/x86/kernel/sev-shared.c
+index 5db24d0fc557c..ae79f9505298d 100644
+--- a/arch/x86/kernel/sev-shared.c
++++ b/arch/x86/kernel/sev-shared.c
+@@ -560,9 +560,9 @@ static int snp_cpuid(struct ghcb *ghcb, struct es_em_ctxt *ctxt, struct cpuid_le
+ 		leaf->eax = leaf->ebx = leaf->ecx = leaf->edx = 0;
  
- 		goto again;
+ 		/* Skip post-processing for out-of-range zero leafs. */
+-		if (!(leaf->fn <= cpuid_std_range_max ||
+-		      (leaf->fn >= 0x40000000 && leaf->fn <= cpuid_hyp_range_max) ||
+-		      (leaf->fn >= 0x80000000 && leaf->fn <= cpuid_ext_range_max)))
++		if (!(leaf->fn <= RIP_REL_REF(cpuid_std_range_max) ||
++		      (leaf->fn >= 0x40000000 && leaf->fn <= RIP_REL_REF(cpuid_hyp_range_max)) ||
++		      (leaf->fn >= 0x80000000 && leaf->fn <= RIP_REL_REF(cpuid_ext_range_max))))
+ 			return 0;
  	}
-@@ -8618,9 +8638,8 @@ static long tracing_buffers_ioctl(struct file *file, unsigned int cmd, unsigned
  
- 	mutex_lock(&trace_types_lock);
+@@ -1072,11 +1072,11 @@ static void __init setup_cpuid_table(const struct cc_blob_sev_info *cc_info)
+ 		const struct snp_cpuid_fn *fn = &cpuid_table->fn[i];
  
--	iter->wait_index++;
- 	/* Make sure the waiters see the new wait_index */
--	smp_wmb();
-+	(void)atomic_fetch_inc_release(&iter->wait_index);
+ 		if (fn->eax_in == 0x0)
+-			cpuid_std_range_max = fn->eax;
++			RIP_REL_REF(cpuid_std_range_max) = fn->eax;
+ 		else if (fn->eax_in == 0x40000000)
+-			cpuid_hyp_range_max = fn->eax;
++			RIP_REL_REF(cpuid_hyp_range_max) = fn->eax;
+ 		else if (fn->eax_in == 0x80000000)
+-			cpuid_ext_range_max = fn->eax;
++			RIP_REL_REF(cpuid_ext_range_max) = fn->eax;
+ 	}
+ }
  
- 	ring_buffer_wake_waiters(iter->array_buffer->buffer, iter->cpu_file);
+diff --git a/arch/x86/kernel/sev.c b/arch/x86/kernel/sev.c
+index 002af6c30601b..1ef7ae806a01b 100644
+--- a/arch/x86/kernel/sev.c
++++ b/arch/x86/kernel/sev.c
+@@ -748,7 +748,7 @@ void __init early_snp_set_memory_private(unsigned long vaddr, unsigned long padd
+ 	 * This eliminates worries about jump tables or checking boot_cpu_data
+ 	 * in the cc_platform_has() function.
+ 	 */
+-	if (!(sev_status & MSR_AMD64_SEV_SNP_ENABLED))
++	if (!(RIP_REL_REF(sev_status) & MSR_AMD64_SEV_SNP_ENABLED))
+ 		return;
  
+ 	 /*
+@@ -767,7 +767,7 @@ void __init early_snp_set_memory_shared(unsigned long vaddr, unsigned long paddr
+ 	 * This eliminates worries about jump tables or checking boot_cpu_data
+ 	 * in the cc_platform_has() function.
+ 	 */
+-	if (!(sev_status & MSR_AMD64_SEV_SNP_ENABLED))
++	if (!(RIP_REL_REF(sev_status) & MSR_AMD64_SEV_SNP_ENABLED))
+ 		return;
+ 
+ 	 /* Ask hypervisor to mark the memory pages shared in the RMP table. */
+diff --git a/arch/x86/mm/mem_encrypt_identity.c b/arch/x86/mm/mem_encrypt_identity.c
+index efe9f217fcf99..0166ab1780ccb 100644
+--- a/arch/x86/mm/mem_encrypt_identity.c
++++ b/arch/x86/mm/mem_encrypt_identity.c
+@@ -304,7 +304,8 @@ void __init sme_encrypt_kernel(struct boot_params *bp)
+ 	 * instrumentation or checking boot_cpu_data in the cc_platform_has()
+ 	 * function.
+ 	 */
+-	if (!sme_get_me_mask() || sev_status & MSR_AMD64_SEV_ENABLED)
++	if (!sme_get_me_mask() ||
++	    RIP_REL_REF(sev_status) & MSR_AMD64_SEV_ENABLED)
+ 		return;
+ 
+ 	/*
+@@ -541,11 +542,11 @@ void __init sme_enable(struct boot_params *bp)
+ 	me_mask = 1UL << (ebx & 0x3f);
+ 
+ 	/* Check the SEV MSR whether SEV or SME is enabled */
+-	sev_status   = __rdmsr(MSR_AMD64_SEV);
+-	feature_mask = (sev_status & MSR_AMD64_SEV_ENABLED) ? AMD_SEV_BIT : AMD_SME_BIT;
++	RIP_REL_REF(sev_status) = msr = __rdmsr(MSR_AMD64_SEV);
++	feature_mask = (msr & MSR_AMD64_SEV_ENABLED) ? AMD_SEV_BIT : AMD_SME_BIT;
+ 
+ 	/* The SEV-SNP CC blob should never be present unless SEV-SNP is enabled. */
+-	if (snp && !(sev_status & MSR_AMD64_SEV_SNP_ENABLED))
++	if (snp && !(msr & MSR_AMD64_SEV_SNP_ENABLED))
+ 		snp_abort();
+ 
+ 	/* Check if memory encryption is enabled */
+@@ -571,7 +572,6 @@ void __init sme_enable(struct boot_params *bp)
+ 			return;
+ 	} else {
+ 		/* SEV state cannot be controlled by a command line option */
+-		sme_me_mask = me_mask;
+ 		goto out;
+ 	}
+ 
+@@ -590,16 +590,13 @@ void __init sme_enable(struct boot_params *bp)
+ 	cmdline_ptr = (const char *)((u64)bp->hdr.cmd_line_ptr |
+ 				     ((u64)bp->ext_cmd_line_ptr << 32));
+ 
+-	if (cmdline_find_option(cmdline_ptr, cmdline_arg, buffer, sizeof(buffer)) < 0)
+-		goto out;
+-
+-	if (!strncmp(buffer, cmdline_on, sizeof(buffer)))
+-		sme_me_mask = me_mask;
++	if (cmdline_find_option(cmdline_ptr, cmdline_arg, buffer, sizeof(buffer)) < 0 ||
++	    strncmp(buffer, cmdline_on, sizeof(buffer)))
++		return;
+ 
+ out:
+-	if (sme_me_mask) {
+-		physical_mask &= ~sme_me_mask;
+-		cc_vendor = CC_VENDOR_AMD;
+-		cc_set_mask(sme_me_mask);
+-	}
++	RIP_REL_REF(sme_me_mask) = me_mask;
++	physical_mask &= ~me_mask;
++	cc_vendor = CC_VENDOR_AMD;
++	cc_set_mask(me_mask);
+ }
 -- 
 2.43.0
 
