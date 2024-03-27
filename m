@@ -1,161 +1,132 @@
-Return-Path: <linux-kernel+bounces-122011-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-122012-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 193DE88F0A7
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 22:11:09 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C453388F0AA
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 22:11:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 97EA91F2C779
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 21:11:08 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7F85C294F6B
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 21:11:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1C0D6153561;
-	Wed, 27 Mar 2024 21:10:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5AF17153575;
+	Wed, 27 Mar 2024 21:11:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="zCC4+8dH"
-Received: from mail-yw1-f201.google.com (mail-yw1-f201.google.com [209.85.128.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="bQtccIVw"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 65ECB1514D9
-	for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 21:10:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7BDA7152E07;
+	Wed, 27 Mar 2024 21:11:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711573858; cv=none; b=lz2dGHzY4dS0zilM/o8URsSrY2fMSPCG9hgr6xTGxfLdUEtAtH06mMn0VT/TvFm8kTFLKDxn1l1iwNlXr0eu36FEbpcj1Ge/AX+mJxXFh4duF7NFbkZALrTORdGjNUGQVnSAEu55wDWhj8iWwrEeZTkOTaKcTiy4/vFUCc9ljDQ=
+	t=1711573883; cv=none; b=qKrGMOPHukVMIJ78FqQ1j4UNMTbcRTt/ulRhDPQIJ/gLiVSJ+TuHEbnuuhdW06GZtlwaXtSz9nO7GBtfADm1iYhF4FMYtqQc1xX3K0DIr1lB/8KEuYAhjmRUyK6CYF5e6ym0YgjUKGJBLxHJiVYzBR7CwE0fTwtvVipik5mEB08=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711573858; c=relaxed/simple;
-	bh=c05JlIhAAX9+Wj5KD5xjyuKpqsfoj6wU7p1hNY3Smz4=;
-	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=IjWZj0SQ0yBCyBr3lWAft3SH2fdfwLexNqMLu1nYVkAGBd6Cd9yjYr39O2jo1yISwlOxSieJ/MBLUKOEPuCZTJSQum5eJzx17iqeL2B+Xo9Hvb6phsF1JWqIy+snxtGiY/VVbORDXJBCwZ5BqPT/SvsuIJvQDsgopZUiYGqegrY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--justinstitt.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=zCC4+8dH; arc=none smtp.client-ip=209.85.128.201
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--justinstitt.bounces.google.com
-Received: by mail-yw1-f201.google.com with SMTP id 00721157ae682-60ccc3cfa39so4672657b3.2
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 14:10:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1711573854; x=1712178654; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=+lkMVelOezh/ZlXJ0pLzE+PWawOJ1uDpRCeivCwpFfI=;
-        b=zCC4+8dHmu7g+yxnAfrpQsbDO5BHPpXJUZ/FK2Ram9W0bPkgiy6lD/F8KpefMF9lSy
-         h+v9xECyTVaZpsgaKtt5OUDBdU6rmh9dM8aioG/g1oMTuBMCAAunVmijbTgBRZ/B0pII
-         xZJ29flVen8ogc1E3pr3oGyMs5YIOm8qAk8t82nyaOHcVsdV0mmMrFKz/T9yrDdxRSuB
-         ZyFkoXxuVP21iK5fK+vQVMEbD3QBsVQ0eTjhe8b47waFEp0kwjd6O1mIt+lUa04D+w1z
-         +79sCD06feWD7N8ghE+r2f5QwbkybVfcjaMJkIhWum3pAi58UjHzoQ/1qaldiDJ0KxX6
-         OR5Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711573854; x=1712178654;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=+lkMVelOezh/ZlXJ0pLzE+PWawOJ1uDpRCeivCwpFfI=;
-        b=hPr5QKP1wB8MkPOa+2IU/TN7qvOwa6wH+6y09qUAdelu3MmiIZN8FxaHTTJSxqE7wZ
-         ip+l0aGO9FUavN+i52ziQPLvnkHGG/W5VD187zVStUvO70sWzk11Hs/VgX9bm7kdOjmv
-         UsJ+kLGrABgI2e6DGSLIN74ildQaGOak7kS57O+1llWrjLNjP+VpvQ9Pa2rkTxRZJXxj
-         1hgwIY+rESg9ihRyU9S3MH9JujTxSuNHRJp9eFaIMmWVc4J/f8ZfCYPCABigq9oetz/t
-         9GZURd8M/G1MHekBfKwPnE9P3ykM5Vji+jUn+8kCY+s6MkObg/OBBBxsjjk2sAWDdjCt
-         kZCw==
-X-Forwarded-Encrypted: i=1; AJvYcCUkoMUCpmj1w9sYFxsusbndNjoI5QStRH/d3tOTVfFuVOtiawkJQc066yBi2qiMFSI0vgzBIMv0h1Jzqv9R3nbjMVPOe/3CGm+8FuwC
-X-Gm-Message-State: AOJu0YySkx6Rt+WHMV1I0mUKT3a3nrE/zwnf6NOnRctvibZnOElnOl3r
-	jpSSHIEk5L31SHBMdCJw4tUztbIejXppxLKJuimMYTY+Zbe9fJg0fAEZ1q6D3ZqFHwNtbLO8aT4
-	2DuOq88sU94oTqgLc0wAdxg==
-X-Google-Smtp-Source: AGHT+IF2W4CfyY1W2KI8dpvyaTKLJ22XNKhwxs5DcbfYiSRg/rNYQ2xBm+UlXjsQKvrjcxKStDc5WbID/PhFU2jObA==
-X-Received: from jstitt-linux1.c.googlers.com ([fda3:e722:ac3:cc00:2b:ff92:c0a8:23b5])
- (user=justinstitt job=sendgmr) by 2002:a05:6902:1009:b0:dc6:ff2b:7e1b with
- SMTP id w9-20020a056902100900b00dc6ff2b7e1bmr325202ybt.4.1711573854514; Wed,
- 27 Mar 2024 14:10:54 -0700 (PDT)
-Date: Wed, 27 Mar 2024 21:10:52 +0000
+	s=arc-20240116; t=1711573883; c=relaxed/simple;
+	bh=oTnKlubl3uH5wFO9lV+FBwfsUlprxdrKnXH/rfzlnLM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=lFtLEbz+WH7n5NyaH2RdrWcRqzZ+6f86Itah+sUg/02X+mgtloxFZ/EQU0JdHtRc7/jhf+6t9qFTjnG7VBaVXlQ+/N+mN7AsuQNc4sc3hIvXqq0H7e/edgl8RuTeWLXW2TaooajKDL9B5D12JyTt2hV2qb5cx24cIDYpRG1b7OM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=bQtccIVw; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C1D8CC433F1;
+	Wed, 27 Mar 2024 21:11:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1711573883;
+	bh=oTnKlubl3uH5wFO9lV+FBwfsUlprxdrKnXH/rfzlnLM=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=bQtccIVw6KLhkY+o8OPOmg33CFVXRvxtmB5iGdfkvI6x5TLhcqnXobL87VcKGWCoo
+	 hEEA7hQlDV+PoOK9UDjQGbf9PAcUE2drNEg1YzxLOhGt/QZavwWBLEkrTL8TxdrzwA
+	 +RJFIymXP24phYo/Rf/tHf+0LzfLng+MsLaecKnG7PmHFH+3lS0t4px3K8lJeRw8Ps
+	 HdDur5qq4oZrAh+Jyrc6GEwcE5piRdb5yyPAScMBtrvkxLVbGZGpk8ULYPOSH0j7Gf
+	 5lDPdySI/picQyOuLaVcE3TNNAu+2AMyoMIswnmGuMnwXXXBElSlWi4AKt6ejrPEap
+	 rWSWUF8K0gBWg==
+Date: Wed, 27 Mar 2024 21:11:19 +0000
+From: Simon Horman <horms@kernel.org>
+To: Johannes Berg <johannes@sipsolutions.net>
+Cc: linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+	netdev@vger.kernel.org, linux-wireless@vger.kernel.org,
+	Johannes Berg <johannes.berg@intel.com>
+Subject: Re: [RFC PATCH v2 1/4] tracing: add __print_sym() to replace
+ __print_symbolic()
+Message-ID: <20240327211119.GW403975@kernel.org>
+References: <20240326192131.438648-6-johannes@sipsolutions.net>
+ <20240326202131.9d261d5bb667.I9bd2617499f0d170df58471bc51379742190f92d@changeid>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-X-B4-Tracking: v=1; b=H4sIAFuLBGYC/x3MwQqDMAyA4VeRnA3YTqb4KuLBxXTLYW1JpCjiu
- 6/s+B3+/wJjFTaYmguUi5ikWOHaBuizxjejbNXgO993Dz+g7RopnxgMsybC8qWkjIQvN27D0wV eOUDNs3KQ47+el/v+AZI+IAhqAAAA
-X-Developer-Key: i=justinstitt@google.com; a=ed25519; pk=tC3hNkJQTpNX/gLKxTNQKDmiQl6QjBNCGKJINqAdJsE=
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1711573853; l=2631;
- i=justinstitt@google.com; s=20230717; h=from:subject:message-id;
- bh=c05JlIhAAX9+Wj5KD5xjyuKpqsfoj6wU7p1hNY3Smz4=; b=dvoo077PNzidPJkbn13FOfdETuWck8T+nbUCWDn79wP+pUbOIiqdMGPeDBqCc5kqKPcrChbca
- T5lNI9lENkhAMdr88HffzjhBqJSvVobkKfzQHKHkcprOU1eF+49l098
-X-Mailer: b4 0.12.3
-Message-ID: <20240327-strncpy-fs-proc-vmcore-c-v1-1-e025ed08b1b0@google.com>
-Subject: [PATCH] vmcore: replace strncpy with strtomem
-From: Justin Stitt <justinstitt@google.com>
-To: Baoquan He <bhe@redhat.com>, Vivek Goyal <vgoyal@redhat.com>, Dave Young <dyoung@redhat.com>
-Cc: kexec@lists.infradead.org, linux-kernel@vger.kernel.org, 
-	linux-fsdevel@vger.kernel.org, linux-hardening@vger.kernel.org, 
-	Justin Stitt <justinstitt@google.com>
-Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240326202131.9d261d5bb667.I9bd2617499f0d170df58471bc51379742190f92d@changeid>
 
-strncpy() is in the process of being replaced as it is deprecated in
-some situations [1]. While the specific use of strncpy that this patch
-targets is not exactly deprecated, the real mission is to rid the kernel
-of all its uses.
+On Tue, Mar 26, 2024 at 08:15:56PM +0100, Johannes Berg wrote:
+> From: Johannes Berg <johannes.berg@intel.com>
+> 
+> The way __print_symbolic() works is limited and inefficient
+> in multiple ways:
+>  - you can only use it with a static list of symbols, but
+>    e.g. the SKB dropreasons are now a dynamic list
+> 
+>  - it builds the list in memory _three_ times, so it takes
+>    a lot of memory:
+>    - The print_fmt contains the list (since it's passed to
+>      the macro there). This actually contains the names
+>      _twice_, which is fixed up at runtime.
+>    - TRACE_DEFINE_ENUM() puts a 24-byte struct trace_eval_map
+>      for every entry, plus the string pointed to by it, which
+>      cannot be deduplicated with the strings in the print_fmt
+>    - The in-kernel symbolic printing creates yet another list
+>      of struct trace_print_flags for trace_print_symbols_seq()
+> 
+>  - it also requires runtime fixup during init, which is a lot
+>    of string parsing due to the print_fmt fixup
+> 
+> Introduce __print_sym() to - over time - replace the old one.
+> We can easily extend this also to __print_flags later, but I
+> cared only about the SKB dropreasons for now, which has only
+> __print_symbolic().
+> 
+> This new __print_sym() requires only a single list of items,
+> created by TRACE_DEFINE_SYM_LIST(), or can even use another
+> already existing list by using TRACE_DEFINE_SYM_FNS() with
+> lookup and show methods.
+> 
+> Then, instead of doing an init-time fixup, just do this at the
+> time when userspace reads the print_fmt. This way, dynamically
+> updated lists are possible.
+> 
+> For userspace, nothing actually changes, because the print_fmt
+> is shown exactly the same way the old __print_symbolic() was.
+> 
+> This adds about 4k .text in my test builds, but that'll be
+> more than paid for by the actual conversions.
+> 
+> Signed-off-by: Johannes Berg <johannes.berg@intel.com>
 
-Looking at vmcoredd_header's definition:
-|	struct vmcoredd_header {
-|		__u32 n_namesz; /* Name size */
-|		__u32 n_descsz; /* Content size */
-|		__u32 n_type;   /* NT_VMCOREDD */
-|		__u8 name[8];   /* LINUX\0\0\0 */
-|		__u8 dump_name[VMCOREDD_MAX_NAME_BYTES]; /* Device dump's name */
-|	};
-.. we can see that both `name` and `dump_name` are u8s. It seems `name`
-wants to be NUL-padded (based on the comment above), but for the sake of
-symmetry lets NUL-pad both of these.
+Hi Johannes,
 
-Mark these buffers as __nonstring and use strtomem_pad.
+I'm seeing some allmodconfig build problems with this applied on top of
+net-next.
 
-Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings [1]
-Link: https://github.com/KSPP/linux/issues/90
-Cc: linux-hardening@vger.kernel.org
-Signed-off-by: Justin Stitt <justinstitt@google.com>
----
-Note: build-tested only.
-
-Found with: $ rg "strncpy\("
----
- fs/proc/vmcore.c            | 5 ++---
- include/uapi/linux/vmcore.h | 4 ++--
- 2 files changed, 4 insertions(+), 5 deletions(-)
-
-diff --git a/fs/proc/vmcore.c b/fs/proc/vmcore.c
-index 1fb213f379a5..5d7ecf3b75e8 100644
---- a/fs/proc/vmcore.c
-+++ b/fs/proc/vmcore.c
-@@ -1370,9 +1370,8 @@ static void vmcoredd_write_header(void *buf, struct vmcoredd_data *data,
- 	vdd_hdr->n_descsz = size + sizeof(vdd_hdr->dump_name);
- 	vdd_hdr->n_type = NT_VMCOREDD;
- 
--	strncpy((char *)vdd_hdr->name, VMCOREDD_NOTE_NAME,
--		sizeof(vdd_hdr->name));
--	memcpy(vdd_hdr->dump_name, data->dump_name, sizeof(vdd_hdr->dump_name));
-+	strtomem_pad(vdd_hdr->name, VMCOREDD_NOTE_NAME, 0);
-+	strtomem_pad(vdd_hdr->dump_name, data->dump_name, 0);
- }
- 
- /**
-diff --git a/include/uapi/linux/vmcore.h b/include/uapi/linux/vmcore.h
-index 3e9da91866ff..7053e2b62fa0 100644
---- a/include/uapi/linux/vmcore.h
-+++ b/include/uapi/linux/vmcore.h
-@@ -11,8 +11,8 @@ struct vmcoredd_header {
- 	__u32 n_namesz; /* Name size */
- 	__u32 n_descsz; /* Content size */
- 	__u32 n_type;   /* NT_VMCOREDD */
--	__u8 name[8];   /* LINUX\0\0\0 */
--	__u8 dump_name[VMCOREDD_MAX_NAME_BYTES]; /* Device dump's name */
-+	__u8 name[8] __nonstring;   /* LINUX\0\0\0 */
-+	__u8 dump_name[VMCOREDD_MAX_NAME_BYTES] __nonstring; /* Device dump's name */
- };
- 
- #endif /* _UAPI_VMCORE_H */
-
----
-base-commit: 928a87efa42302a23bb9554be081a28058495f22
-change-id: 20240327-strncpy-fs-proc-vmcore-c-b18d761feaef
-
-Best regards,
---
-Justin Stitt <justinstitt@google.com>
+In file included from ./include/trace/trace_events.h:27,
+                 from ./include/trace/define_trace.h:102,
+                 from ./include/trace/events/module.h:134,
+                 from kernel/module/main.c:64:
+/include/trace/stages/init.h:30: warning: "TRACE_DEFINE_SYM_FNS" redefined
+   30 | #define TRACE_DEFINE_SYM_FNS(_symbol_id, _lookup, _show)                \
+      |
+In file included from ./include/linux/trace_events.h:11,
+                 from kernel/module/main.c:14:
+/include/linux/tracepoint.h:130: note: this is the location of the previous definition
+  130 | #define TRACE_DEFINE_SYM_FNS(...)
+      |
+/include/trace/stages/init.h:54: warning: "TRACE_DEFINE_SYM_LIST" redefined
+   54 | #define TRACE_DEFINE_SYM_LIST(_symbol_id, ...)                          \
+      |
+/include/linux/tracepoint.h:131: note: this is the location of the previous definition
+  131 | #define TRACE_DEFINE_SYM_LIST(...)
+      |
 
 
