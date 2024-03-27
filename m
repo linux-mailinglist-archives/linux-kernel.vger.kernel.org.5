@@ -1,57 +1,59 @@
-Return-Path: <linux-kernel+bounces-120892-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-120893-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C007A88E03D
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 13:31:50 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0C62988E03F
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 13:32:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D49C71C291D9
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 12:31:49 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B9FEE29FB92
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 12:32:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5CA5C145359;
-	Wed, 27 Mar 2024 12:11:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A4951145FED;
+	Wed, 27 Mar 2024 12:11:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ftNAL1ii"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YfRjn+jr"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9A6D3145B25;
-	Wed, 27 Mar 2024 12:11:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C8D2E145FE6;
+	Wed, 27 Mar 2024 12:11:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711541509; cv=none; b=qVUNXUaF9+ACzePWw+IEyTX6FBQPf5REekR6Dk+ZPBxYSQcsqtBIwnl2QtFv07NYzk0B01UGakhmIgTxO1wvlUQb7rbbK1SfGj45Yx+2a14hMJAMSA1ehUQhh8G1Uq2vHT63FhawP10+Rdj5SCKEAoM2wromFWdBpmhTP3j43P8=
+	t=1711541512; cv=none; b=oGS9QHsyKLZ5GvVv1zrPtAml+MaBafcymcDVJNPbyjCD4YnjuQr2Gfc4whfnLsyKGiat8LucSl6dxj4OuluSVEHgdvj7F3VoCHZ2l3DS0DYBcUITXrfcykUV8cbwiBJ4GWfK6LK3W/2g8T7EgZKiWaDu0v6A77Vj3Z9rM0UqQ5g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711541509; c=relaxed/simple;
-	bh=zXBG6WccgNTjvCYFSdQ51M2mQr1CH5mEKup6YbzhBug=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=D+zEEX3ZHGmAFZmbqMJbzsKZH1nwGilAP5dfLDDZcLMdzVN0ObBxWLblXrfcKnuSL17Uc0aX4IkqPvs9U1SUNVkbiUU4sPK0zBxAGa3RHrT8APiN2mR0sxxsIFU6mlzlr8m0cFTWupLJ/fEEcsJSyq4GkqkNOp3Dlb5XsVbTKpw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ftNAL1ii; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 60C2CC433F1;
-	Wed, 27 Mar 2024 12:11:48 +0000 (UTC)
+	s=arc-20240116; t=1711541512; c=relaxed/simple;
+	bh=2Kr8PTdAZyAl58wBKC1+WWzJyamt4mSFZhFb+FpEWKI=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=IxqQd9q1tG7B6tS2mrSpL2XCeJU9F7KC0hL08kvdKt70zOtnXfHRtEjoKjMAL7pWg9f9BsCW1VzbF/bXyPGHhxbVIF34dtuV/IdiZhzLjYfmibmYm3d6eZ6VnAcTw/3aie5MVIwQcRzOLXXOB3qLriqwfCuSoIho1oSSeHP3oHE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=YfRjn+jr; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 59971C433C7;
+	Wed, 27 Mar 2024 12:11:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711541509;
-	bh=zXBG6WccgNTjvCYFSdQ51M2mQr1CH5mEKup6YbzhBug=;
+	s=k20201202; t=1711541512;
+	bh=2Kr8PTdAZyAl58wBKC1+WWzJyamt4mSFZhFb+FpEWKI=;
 	h=From:To:Cc:Subject:Date:From;
-	b=ftNAL1iinqBGKRhl31/xAINBu/lMOJcPCZdxLxg8ZB7VFQb+ub5pXccuNoz+q0HVl
-	 u3MCc6Ferci5tBmiKEz/pVuh9m1PBVtlEiDAcEoUhmahTCd+NY0Q8QsPKyxu5Wu3Hl
-	 IS9j1SK5HEGeqUD16C4L9UwLyzzSseTGkSlpEiGID0nbO+RUIN4dfwJfNMBLZFpJy4
-	 OvgubLun4tJPl+5du6rxM1NYmaa74h/ngKfJxS/rhyS1GKxKeiWG+Be0paQyNVCX7a
-	 eLy6b1HRt1E7ki8DsM3BzwwL8LuJhYrU8VobimdCf9TfFMOIdZgWQUOCP3wXADOslJ
-	 n36KHat7bmlYg==
+	b=YfRjn+jrmTR5PgZG5ojtgO2Sk9HLJ/pNWc1xlMVxMQ+0IQXt4Wqf7YM2YZaEIKGE1
+	 S30WJIOB29xAckDIMF4wPCyIJxbGlV8genrEHtM1vcOm3f8q1+1NUkI9u39kv7p3Jw
+	 x0BE/raI8h/s7nGjbtL8gpx2GVFUYmUi4mLKFxLhV3E2bt6k7RxQZ5nMS/qTbJV2yi
+	 EKNyncfXNmhm5sQ6W1WMZtbdnLVWVo2/XKvzVhg3XPvY/DN5YNkFP2SJVb1R0O+S0N
+	 JkkOcCYq7bfJp0xaewkPbxz9o6hpznYmmyPMQ6iaNRgU/21VGpx0zhVgLAvIuQh8xl
+	 vkLypcrfk5Kpw==
 From: Sasha Levin <sashal@kernel.org>
 To: stable@vger.kernel.org,
-	nirmoy.das@intel.com
-Cc: Andi Shyti <andi.shyti@linux.intel.com>,
-	Shawn Lee <shawn.c.lee@intel.com>,
-	Rodrigo Vivi <rodrigo.vivi@intel.com>,
-	Tvrtko Ursulin <tvrtko.ursulin@intel.com>,
-	intel-gfx@lists.freedesktop.org,
+	wenjing.liu@amd.com
+Cc: Mario Limonciello <mario.limonciello@amd.com>,
+	Alex Deucher <alexander.deucher@amd.com>,
+	Chaitanya Dhere <chaitanya.dhere@amd.com>,
+	Martin Leung <martin.leung@amd.com>,
+	Wayne Lin <wayne.lin@amd.com>,
+	Daniel Wheeler <daniel.wheeler@amd.com>,
+	amd-gfx@lists.freedesktop.org,
 	dri-devel@lists.freedesktop.org,
 	linux-kernel@vger.kernel.org
-Subject: FAILED: Patch "drm/i915: Check before removing mm notifier" failed to apply to 6.1-stable tree
-Date: Wed, 27 Mar 2024 08:11:47 -0400
-Message-ID: <20240327121147.2829006-1-sashal@kernel.org>
+Subject: FAILED: Patch "drm/amd/display: Revert Remove pixle rate limit for subvp" failed to apply to 6.1-stable tree
+Date: Wed, 27 Mar 2024 08:11:50 -0400
+Message-ID: <20240327121150.2829047-1-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -73,41 +75,46 @@ Sasha
 
 ------------------ original commit in Linus's tree ------------------
 
-From db7bbd13f08774cde0332c705f042e327fe21e73 Mon Sep 17 00:00:00 2001
-From: Nirmoy Das <nirmoy.das@intel.com>
-Date: Mon, 19 Feb 2024 13:50:47 +0100
-Subject: [PATCH] drm/i915: Check before removing mm notifier
+From cf8c498694a443e28dc1222f3ab94677114a4724 Mon Sep 17 00:00:00 2001
+From: Wenjing Liu <wenjing.liu@amd.com>
+Date: Mon, 4 Mar 2024 11:20:27 -0500
+Subject: [PATCH] drm/amd/display: Revert Remove pixle rate limit for subvp
 
-Error in mmu_interval_notifier_insert() can leave a NULL
-notifier.mm pointer. Catch that and return early.
+This reverts commit 340383c734f8 ("drm/amd/display: Remove pixle rate
+limit for subvp")
 
-Fixes: ed29c2691188 ("drm/i915: Fix userptr so we do not have to worry about obj->mm.lock, v7.")
-Cc: <stable@vger.kernel.org> # v5.13+
-[tursulin: Added Fixes and cc stable.]
-Cc: Andi Shyti <andi.shyti@linux.intel.com>
-Cc: Shawn Lee <shawn.c.lee@intel.com>
-Signed-off-by: Nirmoy Das <nirmoy.das@intel.com>
-Reviewed-by: Rodrigo Vivi <rodrigo.vivi@intel.com>
-Link: https://patchwork.freedesktop.org/patch/msgid/20240219125047.28906-1-nirmoy.das@intel.com
-Signed-off-by: Tvrtko Ursulin <tvrtko.ursulin@intel.com>
+[why]
+The original commit causes a regression when subvp is applied
+on ODM required 8k60hz timing. The display shows black screen
+on boot. The issue can be recovered with hotplug. It also causes
+MPO to fail. We will temprarily revert this commit and investigate
+the root cause further.
+
+Cc: Mario Limonciello <mario.limonciello@amd.com>
+Cc: Alex Deucher <alexander.deucher@amd.com>
+Cc: stable@vger.kernel.org
+Reviewed-by: Chaitanya Dhere <chaitanya.dhere@amd.com>
+Reviewed-by: Martin Leung <martin.leung@amd.com>
+Acked-by: Wayne Lin <wayne.lin@amd.com>
+Signed-off-by: Wenjing Liu <wenjing.liu@amd.com>
+Tested-by: Daniel Wheeler <daniel.wheeler@amd.com>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 ---
- drivers/gpu/drm/i915/gem/i915_gem_userptr.c | 3 +++
- 1 file changed, 3 insertions(+)
+ drivers/gpu/drm/amd/display/dc/dml/dcn32/dcn32_fpu.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/gpu/drm/i915/gem/i915_gem_userptr.c b/drivers/gpu/drm/i915/gem/i915_gem_userptr.c
-index 0e21ce9d3e5ac..61abfb505766d 100644
---- a/drivers/gpu/drm/i915/gem/i915_gem_userptr.c
-+++ b/drivers/gpu/drm/i915/gem/i915_gem_userptr.c
-@@ -349,6 +349,9 @@ i915_gem_userptr_release(struct drm_i915_gem_object *obj)
- {
- 	GEM_WARN_ON(obj->userptr.page_ref);
- 
-+	if (!obj->userptr.notifier.mm)
-+		return;
-+
- 	mmu_interval_notifier_remove(&obj->userptr.notifier);
- 	obj->userptr.notifier.mm = NULL;
- }
+diff --git a/drivers/gpu/drm/amd/display/dc/dml/dcn32/dcn32_fpu.c b/drivers/gpu/drm/amd/display/dc/dml/dcn32/dcn32_fpu.c
+index b49e1dc9d8ba5..a0a65e0991041 100644
+--- a/drivers/gpu/drm/amd/display/dc/dml/dcn32/dcn32_fpu.c
++++ b/drivers/gpu/drm/amd/display/dc/dml/dcn32/dcn32_fpu.c
+@@ -623,6 +623,7 @@ static bool dcn32_assign_subvp_pipe(struct dc *dc,
+ 		 * - Not TMZ surface
+ 		 */
+ 		if (pipe->plane_state && !pipe->top_pipe && !dcn32_is_center_timing(pipe) &&
++				!(pipe->stream->timing.pix_clk_100hz / 10000 > DCN3_2_MAX_SUBVP_PIXEL_RATE_MHZ) &&
+ 				(!dcn32_is_psr_capable(pipe) || (context->stream_count == 1 && dc->caps.dmub_caps.subvp_psr)) &&
+ 				dc_state_get_pipe_subvp_type(context, pipe) == SUBVP_NONE &&
+ 				(refresh_rate < 120 || dcn32_allow_subvp_high_refresh_rate(dc, context, pipe)) &&
 -- 
 2.43.0
 
