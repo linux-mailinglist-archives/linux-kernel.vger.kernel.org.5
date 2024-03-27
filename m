@@ -1,55 +1,57 @@
-Return-Path: <linux-kernel+bounces-120870-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-120871-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id E2A0588DFD6
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 13:27:13 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8031688DFDE
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 13:27:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 95DB529A8E6
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 12:27:12 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 10A161F2DCE3
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 12:27:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E3BC3130A5E;
-	Wed, 27 Mar 2024 12:10:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F2E401422C4;
+	Wed, 27 Mar 2024 12:10:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="KuvKf409"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hQpjjGtV"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E2BA81420A6;
-	Wed, 27 Mar 2024 12:10:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D00E130AC2;
+	Wed, 27 Mar 2024 12:10:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711541440; cv=none; b=nE/qTzkAwdIThDpkIBcOgQhxVyjIVJAimJ61Q3STIb0E9eKkld2TpOsBpmALN1LfUoqHpdA1hWSHFYeAefckyZw54jNRZVBA4F7KIPBzg2X0FSe+PfYJS+IfXZjn0RaSpneYR/OQnP8v9ZPp/YcQ74CxX/Lfve6C+M3SZZc4Xg4=
+	t=1711541443; cv=none; b=saD98Zk7nAabfp4JGi1IiCAZJ8moYOka8/8YWMJOQH5uGglTlfJHXme75zm96GdSoIUd8MeVWScJodJk/KTe6x+EuyYIPuaHz+VFeia6tced6d8nUtR/x/NEq6jI1rr5JCWR7Gs2EpB4tAN75stDcKGEM3JMlV+NOdHgvAwu1K4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711541440; c=relaxed/simple;
-	bh=g1khBGcJtFAK9LA+pFUBjfH1Q+AG/1VGt9ZyEtBHpPw=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=n5HPo8iS+D6ZOo3r7V4pXgXI4hTb5jwaZoWuNdpZPEYRmAlYf8z+8zmyhgg5UxOyvgg4vWJ0ZxhR2L9NcWuwMktN/LLbji7W/rCfJ9FvHbj2pxbu2EcMeJMllaC6nidlO9YJGArCKF4Mv2+i346712vDlaDkpbpAHorRzNY3wcE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=KuvKf409; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E80A4C433C7;
-	Wed, 27 Mar 2024 12:10:38 +0000 (UTC)
+	s=arc-20240116; t=1711541443; c=relaxed/simple;
+	bh=eFoo9Oj9LB1MSpTOBkNnCmt0ODh5N7H0yYe3/LDuVC4=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=WCIIPPZYMrrJPueBLVpG2u9RzXAhyzaasI5Rt7cyWsuZIEgHoD1/vqv/kDwAd7B85KmeJbo6ClFFVkxiIsKveVDWSfg+VMdtdX+m+vHJItru201VnhpHKaI92QrQ91bw5w9CR7ECL5958a06E6Ty/13I3yY19bbBJUja2wJt8zc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=hQpjjGtV; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CE537C433F1;
+	Wed, 27 Mar 2024 12:10:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711541439;
-	bh=g1khBGcJtFAK9LA+pFUBjfH1Q+AG/1VGt9ZyEtBHpPw=;
+	s=k20201202; t=1711541442;
+	bh=eFoo9Oj9LB1MSpTOBkNnCmt0ODh5N7H0yYe3/LDuVC4=;
 	h=From:To:Cc:Subject:Date:From;
-	b=KuvKf409g+zDmozJKMxn+9ThcklxMvJUkBKeBJ+gPnbS/PkpQnX/AxOBkwSwfTE5d
-	 nz3ukESjfcYGQhDthVzfyuDMBgYeTai8Ydav1jiOyW5dmQMGw5UQTnCYQiugW4dNP9
-	 Xy85FnYDUpyHAciqinvaSkgzms8/j41fl/yacvcTI4LXcSl119fAhoecV8dHnodlNq
-	 AJP20ZQc+CmPOrymjbodwqalOnCO6sOpQNKG9+/WmZ+s3MGl6Bl6nFtrGtfSt+SSY1
-	 6VOmxSfNboFTaR9wczLYrjECD591pdpHblarYYwzXWZWwU1dqt+F5ApT7J805Oprrs
-	 b20hjWZYZiH5Q==
+	b=hQpjjGtVN6iCLYf4Xclx8LpVXOmu+tENb22Xw45jSrAFLbbzfhvMhmdrCzNTkF0ZM
+	 OjAHLi+SdFgw7nljeDZitNIqIiv9PQGM/2iRI+RbzhIhOj2nqwTVyohUz3Gr67VdHq
+	 0IvXb0S7b6dqMvI6iSdey6ykuvGGM294MSK7uxiRtgxDMrjWQW6A+Sb0K75mMjiCt6
+	 T501rfvJS+mOhd6NoLSi0qK0+vHz2wpjNPuQbjsd7H+Reo655zK1aksGHLde4UHqcD
+	 ahaiYYqE71W7Ew+XYCSdQN3V/oKWRZjukSEH9Cz0BuIqhH0lecOhbCNXz1+BmDLNS/
+	 vSlyRaymFc/eg==
 From: Sasha Levin <sashal@kernel.org>
 To: stable@vger.kernel.org,
-	alex.williamson@redhat.com
-Cc: Reinette Chatre <reinette.chatre@intel.com>,
-	Kevin Tian <kevin.tian@intel.com>,
-	Eric Auger <eric.auger@redhat.com>,
-	kvm@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: FAILED: Patch "vfio/pci: Create persistent INTx handler" failed to apply to 6.6-stable tree
-Date: Wed, 27 Mar 2024 08:10:37 -0400
-Message-ID: <20240327121038.2828101-1-sashal@kernel.org>
+	yukuai3@huawei.com
+Cc: Mikulas Patocka <mpatocka@redhat.com>,
+	Xiao Ni <xni@redhat.com>,
+	Mike Snitzer <snitzer@kernel.org>,
+	Song Liu <song@kernel.org>,
+	dm-devel@lists.linux.dev,
+	linux-kernel@vger.kernel.org,
+	linux-raid@vger.kernel.org
+Subject: FAILED: Patch "dm-raid: really frozen sync_thread during suspend" failed to apply to 6.6-stable tree
+Date: Wed, 27 Mar 2024 08:10:40 -0400
+Message-ID: <20240327121040.2828143-1-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -71,269 +73,145 @@ Sasha
 
 ------------------ original commit in Linus's tree ------------------
 
-From 18c198c96a815c962adc2b9b77909eec0be7df4d Mon Sep 17 00:00:00 2001
-From: Alex Williamson <alex.williamson@redhat.com>
-Date: Fri, 8 Mar 2024 16:05:25 -0700
-Subject: [PATCH] vfio/pci: Create persistent INTx handler
+From 16c4770c75b1223998adbeb7286f9a15c65fba73 Mon Sep 17 00:00:00 2001
+From: Yu Kuai <yukuai3@huawei.com>
+Date: Tue, 5 Mar 2024 15:23:02 +0800
+Subject: [PATCH] dm-raid: really frozen sync_thread during suspend
 
-A vulnerability exists where the eventfd for INTx signaling can be
-deconfigured, which unregisters the IRQ handler but still allows
-eventfds to be signaled with a NULL context through the SET_IRQS ioctl
-or through unmask irqfd if the device interrupt is pending.
+1) commit f52f5c71f3d4 ("md: fix stopping sync thread") remove
+   MD_RECOVERY_FROZEN from __md_stop_writes() and doesn't realize that
+   dm-raid relies on __md_stop_writes() to frozen sync_thread
+   indirectly. Fix this problem by adding MD_RECOVERY_FROZEN in
+   md_stop_writes(), and since stop_sync_thread() is only used for
+   dm-raid in this case, also move stop_sync_thread() to
+   md_stop_writes().
+2) The flag MD_RECOVERY_FROZEN doesn't mean that sync thread is frozen,
+   it only prevent new sync_thread to start, and it can't stop the
+   running sync thread; In order to frozen sync_thread, after seting the
+   flag, stop_sync_thread() should be used.
+3) The flag MD_RECOVERY_FROZEN doesn't mean that writes are stopped, use
+   it as condition for md_stop_writes() in raid_postsuspend() doesn't
+   look correct. Consider that reentrant stop_sync_thread() do nothing,
+   always call md_stop_writes() in raid_postsuspend().
+4) raid_message can set/clear the flag MD_RECOVERY_FROZEN at anytime,
+   and if MD_RECOVERY_FROZEN is cleared while the array is suspended,
+   new sync_thread can start unexpected. Fix this by disallow
+   raid_message() to change sync_thread status during suspend.
 
-Ideally this could be solved with some additional locking; the igate
-mutex serializes the ioctl and config space accesses, and the interrupt
-handler is unregistered relative to the trigger, but the irqfd path
-runs asynchronous to those.  The igate mutex cannot be acquired from the
-atomic context of the eventfd wake function.  Disabling the irqfd
-relative to the eventfd registration is potentially incompatible with
-existing userspace.
+Note that after commit f52f5c71f3d4 ("md: fix stopping sync thread"), the
+test shell/lvconvert-raid-reshape.sh start to hang in stop_sync_thread(),
+and with previous fixes, the test won't hang there anymore, however, the
+test will still fail and complain that ext4 is corrupted. And with this
+patch, the test won't hang due to stop_sync_thread() or fail due to ext4
+is corrupted anymore. However, there is still a deadlock related to
+dm-raid456 that will be fixed in following patches.
 
-As a result, the solution implemented here moves configuration of the
-INTx interrupt handler to track the lifetime of the INTx context object
-and irq_type configuration, rather than registration of a particular
-trigger eventfd.  Synchronization is added between the ioctl path and
-eventfd_signal() wrapper such that the eventfd trigger can be
-dynamically updated relative to in-flight interrupts or irqfd callbacks.
-
-Cc:  <stable@vger.kernel.org>
-Fixes: 89e1f7d4c66d ("vfio: Add PCI device driver")
-Reported-by: Reinette Chatre <reinette.chatre@intel.com>
-Reviewed-by: Kevin Tian <kevin.tian@intel.com>
-Reviewed-by: Reinette Chatre <reinette.chatre@intel.com>
-Reviewed-by: Eric Auger <eric.auger@redhat.com>
-Link: https://lore.kernel.org/r/20240308230557.805580-5-alex.williamson@redhat.com
-Signed-off-by: Alex Williamson <alex.williamson@redhat.com>
+Reported-by: Mikulas Patocka <mpatocka@redhat.com>
+Closes: https://lore.kernel.org/all/e5e8afe2-e9a8-49a2-5ab0-958d4065c55e@redhat.com/
+Fixes: 1af2048a3e87 ("dm raid: fix deadlock caused by premature md_stop_writes()")
+Fixes: 9dbd1aa3a81c ("dm raid: add reshaping support to the target")
+Fixes: f52f5c71f3d4 ("md: fix stopping sync thread")
+Cc: stable@vger.kernel.org # v6.7+
+Signed-off-by: Yu Kuai <yukuai3@huawei.com>
+Signed-off-by: Xiao Ni <xni@redhat.com>
+Acked-by: Mike Snitzer <snitzer@kernel.org>
+Signed-off-by: Song Liu <song@kernel.org>
+Link: https://lore.kernel.org/r/20240305072306.2562024-6-yukuai1@huaweicloud.com
 ---
- drivers/vfio/pci/vfio_pci_intrs.c | 145 ++++++++++++++++--------------
- 1 file changed, 78 insertions(+), 67 deletions(-)
+ drivers/md/dm-raid.c | 25 +++++++++++++++----------
+ drivers/md/md.c      |  3 ++-
+ 2 files changed, 17 insertions(+), 11 deletions(-)
 
-diff --git a/drivers/vfio/pci/vfio_pci_intrs.c b/drivers/vfio/pci/vfio_pci_intrs.c
-index 75c85eec21b3c..fb5392b749fff 100644
---- a/drivers/vfio/pci/vfio_pci_intrs.c
-+++ b/drivers/vfio/pci/vfio_pci_intrs.c
-@@ -90,11 +90,15 @@ static void vfio_send_intx_eventfd(void *opaque, void *unused)
+diff --git a/drivers/md/dm-raid.c b/drivers/md/dm-raid.c
+index eb009d6bb03a1..e2d7a73c0f874 100644
+--- a/drivers/md/dm-raid.c
++++ b/drivers/md/dm-raid.c
+@@ -3240,11 +3240,12 @@ static int raid_ctr(struct dm_target *ti, unsigned int argc, char **argv)
+ 	rs->md.ro = 1;
+ 	rs->md.in_sync = 1;
  
- 	if (likely(is_intx(vdev) && !vdev->virq_disabled)) {
- 		struct vfio_pci_irq_ctx *ctx;
-+		struct eventfd_ctx *trigger;
- 
- 		ctx = vfio_irq_ctx_get(vdev, 0);
- 		if (WARN_ON_ONCE(!ctx))
- 			return;
--		eventfd_signal(ctx->trigger);
+-	/* Keep array frozen until resume. */
+-	set_bit(MD_RECOVERY_FROZEN, &rs->md.recovery);
+-
+ 	/* Has to be held on running the array */
+ 	mddev_suspend_and_lock_nointr(&rs->md);
 +
-+		trigger = READ_ONCE(ctx->trigger);
-+		if (likely(trigger))
-+			eventfd_signal(trigger);
- 	}
- }
- 
-@@ -253,100 +257,100 @@ static irqreturn_t vfio_intx_handler(int irq, void *dev_id)
- 	return ret;
- }
- 
--static int vfio_intx_enable(struct vfio_pci_core_device *vdev)
-+static int vfio_intx_enable(struct vfio_pci_core_device *vdev,
-+			    struct eventfd_ctx *trigger)
- {
-+	struct pci_dev *pdev = vdev->pdev;
- 	struct vfio_pci_irq_ctx *ctx;
-+	unsigned long irqflags;
-+	char *name;
-+	int ret;
- 
- 	if (!is_irq_none(vdev))
++	/* Keep array frozen until resume. */
++	md_frozen_sync_thread(&rs->md);
++
+ 	r = md_run(&rs->md);
+ 	rs->md.in_sync = 0; /* Assume already marked dirty */
+ 	if (r) {
+@@ -3722,6 +3723,9 @@ static int raid_message(struct dm_target *ti, unsigned int argc, char **argv,
+ 	if (!mddev->pers || !mddev->pers->sync_request)
  		return -EINVAL;
  
--	if (!vdev->pdev->irq)
-+	if (!pdev->irq)
- 		return -ENODEV;
- 
-+	name = kasprintf(GFP_KERNEL_ACCOUNT, "vfio-intx(%s)", pci_name(pdev));
-+	if (!name)
-+		return -ENOMEM;
++	if (test_bit(RT_FLAG_RS_SUSPENDED, &rs->runtime_flags))
++		return -EBUSY;
 +
- 	ctx = vfio_irq_ctx_alloc(vdev, 0);
- 	if (!ctx)
- 		return -ENOMEM;
+ 	if (!strcasecmp(argv[0], "frozen"))
+ 		set_bit(MD_RECOVERY_FROZEN, &mddev->recovery);
+ 	else
+@@ -3796,10 +3800,11 @@ static void raid_postsuspend(struct dm_target *ti)
+ 	struct raid_set *rs = ti->private;
  
-+	ctx->name = name;
-+	ctx->trigger = trigger;
-+
- 	/*
--	 * If the virtual interrupt is masked, restore it.  Devices
--	 * supporting DisINTx can be masked at the hardware level
--	 * here, non-PCI-2.3 devices will have to wait until the
--	 * interrupt is enabled.
-+	 * Fill the initial masked state based on virq_disabled.  After
-+	 * enable, changing the DisINTx bit in vconfig directly changes INTx
-+	 * masking.  igate prevents races during setup, once running masked
-+	 * is protected via irqlock.
-+	 *
-+	 * Devices supporting DisINTx also reflect the current mask state in
-+	 * the physical DisINTx bit, which is not affected during IRQ setup.
-+	 *
-+	 * Devices without DisINTx support require an exclusive interrupt.
-+	 * IRQ masking is performed at the IRQ chip.  Again, igate protects
-+	 * against races during setup and IRQ handlers and irqfds are not
-+	 * yet active, therefore masked is stable and can be used to
-+	 * conditionally auto-enable the IRQ.
-+	 *
-+	 * irq_type must be stable while the IRQ handler is registered,
-+	 * therefore it must be set before request_irq().
- 	 */
- 	ctx->masked = vdev->virq_disabled;
--	if (vdev->pci_2_3)
--		pci_intx(vdev->pdev, !ctx->masked);
-+	if (vdev->pci_2_3) {
-+		pci_intx(pdev, !ctx->masked);
-+		irqflags = IRQF_SHARED;
-+	} else {
-+		irqflags = ctx->masked ? IRQF_NO_AUTOEN : 0;
-+	}
- 
- 	vdev->irq_type = VFIO_PCI_INTX_IRQ_INDEX;
- 
-+	ret = request_irq(pdev->irq, vfio_intx_handler,
-+			  irqflags, ctx->name, vdev);
-+	if (ret) {
-+		vdev->irq_type = VFIO_PCI_NUM_IRQS;
-+		kfree(name);
-+		vfio_irq_ctx_free(vdev, ctx, 0);
-+		return ret;
-+	}
-+
- 	return 0;
+ 	if (!test_and_set_bit(RT_FLAG_RS_SUSPENDED, &rs->runtime_flags)) {
+-		/* Writes have to be stopped before suspending to avoid deadlocks. */
+-		if (!test_bit(MD_RECOVERY_FROZEN, &rs->md.recovery))
+-			md_stop_writes(&rs->md);
+-
++		/*
++		 * sync_thread must be stopped during suspend, and writes have
++		 * to be stopped before suspending to avoid deadlocks.
++		 */
++		md_stop_writes(&rs->md);
+ 		mddev_suspend(&rs->md, false);
+ 	}
  }
+@@ -4012,8 +4017,6 @@ static int raid_preresume(struct dm_target *ti)
+ 	}
  
--static int vfio_intx_set_signal(struct vfio_pci_core_device *vdev, int fd)
-+static int vfio_intx_set_signal(struct vfio_pci_core_device *vdev,
-+				struct eventfd_ctx *trigger)
+ 	/* Check for any resize/reshape on @rs and adjust/initiate */
+-	/* Be prepared for mddev_resume() in raid_resume() */
+-	set_bit(MD_RECOVERY_FROZEN, &mddev->recovery);
+ 	if (mddev->recovery_cp && mddev->recovery_cp < MaxSector) {
+ 		set_bit(MD_RECOVERY_REQUESTED, &mddev->recovery);
+ 		mddev->resync_min = mddev->recovery_cp;
+@@ -4055,10 +4058,12 @@ static void raid_resume(struct dm_target *ti)
+ 		if (mddev->delta_disks < 0)
+ 			rs_set_capacity(rs);
+ 
++		WARN_ON_ONCE(!test_bit(MD_RECOVERY_FROZEN, &mddev->recovery));
++		WARN_ON_ONCE(test_bit(MD_RECOVERY_RUNNING, &mddev->recovery));
+ 		mddev_lock_nointr(mddev);
+-		clear_bit(MD_RECOVERY_FROZEN, &mddev->recovery);
+ 		mddev->ro = 0;
+ 		mddev->in_sync = 0;
++		md_unfrozen_sync_thread(mddev);
+ 		mddev_unlock_and_resume(mddev);
+ 	}
+ }
+diff --git a/drivers/md/md.c b/drivers/md/md.c
+index 55ecc05c17c65..167db77442392 100644
+--- a/drivers/md/md.c
++++ b/drivers/md/md.c
+@@ -6364,7 +6364,6 @@ static void md_clean(struct mddev *mddev)
+ 
+ static void __md_stop_writes(struct mddev *mddev)
  {
- 	struct pci_dev *pdev = vdev->pdev;
--	unsigned long irqflags = IRQF_SHARED;
- 	struct vfio_pci_irq_ctx *ctx;
--	struct eventfd_ctx *trigger;
--	unsigned long flags;
--	int ret;
-+	struct eventfd_ctx *old;
+-	stop_sync_thread(mddev, true, false);
+ 	del_timer_sync(&mddev->safemode_timer);
  
- 	ctx = vfio_irq_ctx_get(vdev, 0);
- 	if (WARN_ON_ONCE(!ctx))
- 		return -EINVAL;
- 
--	if (ctx->trigger) {
--		free_irq(pdev->irq, vdev);
--		kfree(ctx->name);
--		eventfd_ctx_put(ctx->trigger);
--		ctx->trigger = NULL;
--	}
--
--	if (fd < 0) /* Disable only */
--		return 0;
--
--	ctx->name = kasprintf(GFP_KERNEL_ACCOUNT, "vfio-intx(%s)",
--			      pci_name(pdev));
--	if (!ctx->name)
--		return -ENOMEM;
--
--	trigger = eventfd_ctx_fdget(fd);
--	if (IS_ERR(trigger)) {
--		kfree(ctx->name);
--		return PTR_ERR(trigger);
--	}
-+	old = ctx->trigger;
- 
--	ctx->trigger = trigger;
-+	WRITE_ONCE(ctx->trigger, trigger);
- 
--	/*
--	 * Devices without DisINTx support require an exclusive interrupt,
--	 * IRQ masking is performed at the IRQ chip.  The masked status is
--	 * protected by vdev->irqlock. Setup the IRQ without auto-enable and
--	 * unmask as necessary below under lock.  DisINTx is unmodified by
--	 * the IRQ configuration and may therefore use auto-enable.
--	 */
--	if (!vdev->pci_2_3)
--		irqflags = IRQF_NO_AUTOEN;
--
--	ret = request_irq(pdev->irq, vfio_intx_handler,
--			  irqflags, ctx->name, vdev);
--	if (ret) {
--		ctx->trigger = NULL;
--		kfree(ctx->name);
--		eventfd_ctx_put(trigger);
--		return ret;
-+	/* Releasing an old ctx requires synchronizing in-flight users */
-+	if (old) {
-+		synchronize_irq(pdev->irq);
-+		vfio_virqfd_flush_thread(&ctx->unmask);
-+		eventfd_ctx_put(old);
- 	}
- 
--	spin_lock_irqsave(&vdev->irqlock, flags);
--	if (!vdev->pci_2_3 && !ctx->masked)
--		enable_irq(pdev->irq);
--	spin_unlock_irqrestore(&vdev->irqlock, flags);
--
- 	return 0;
- }
- 
- static void vfio_intx_disable(struct vfio_pci_core_device *vdev)
+ 	if (mddev->pers && mddev->pers->quiesce) {
+@@ -6389,6 +6388,8 @@ static void __md_stop_writes(struct mddev *mddev)
+ void md_stop_writes(struct mddev *mddev)
  {
-+	struct pci_dev *pdev = vdev->pdev;
- 	struct vfio_pci_irq_ctx *ctx;
- 
- 	ctx = vfio_irq_ctx_get(vdev, 0);
-@@ -354,10 +358,13 @@ static void vfio_intx_disable(struct vfio_pci_core_device *vdev)
- 	if (ctx) {
- 		vfio_virqfd_disable(&ctx->unmask);
- 		vfio_virqfd_disable(&ctx->mask);
-+		free_irq(pdev->irq, vdev);
-+		if (ctx->trigger)
-+			eventfd_ctx_put(ctx->trigger);
-+		kfree(ctx->name);
-+		vfio_irq_ctx_free(vdev, ctx, 0);
- 	}
--	vfio_intx_set_signal(vdev, -1);
- 	vdev->irq_type = VFIO_PCI_NUM_IRQS;
--	vfio_irq_ctx_free(vdev, ctx, 0);
+ 	mddev_lock_nointr(mddev);
++	set_bit(MD_RECOVERY_FROZEN, &mddev->recovery);
++	stop_sync_thread(mddev, true, false);
+ 	__md_stop_writes(mddev);
+ 	mddev_unlock(mddev);
  }
- 
- /*
-@@ -641,19 +648,23 @@ static int vfio_pci_set_intx_trigger(struct vfio_pci_core_device *vdev,
- 		return -EINVAL;
- 
- 	if (flags & VFIO_IRQ_SET_DATA_EVENTFD) {
-+		struct eventfd_ctx *trigger = NULL;
- 		int32_t fd = *(int32_t *)data;
- 		int ret;
- 
--		if (is_intx(vdev))
--			return vfio_intx_set_signal(vdev, fd);
-+		if (fd >= 0) {
-+			trigger = eventfd_ctx_fdget(fd);
-+			if (IS_ERR(trigger))
-+				return PTR_ERR(trigger);
-+		}
- 
--		ret = vfio_intx_enable(vdev);
--		if (ret)
--			return ret;
-+		if (is_intx(vdev))
-+			ret = vfio_intx_set_signal(vdev, trigger);
-+		else
-+			ret = vfio_intx_enable(vdev, trigger);
- 
--		ret = vfio_intx_set_signal(vdev, fd);
--		if (ret)
--			vfio_intx_disable(vdev);
-+		if (ret && trigger)
-+			eventfd_ctx_put(trigger);
- 
- 		return ret;
- 	}
 -- 
 2.43.0
 
