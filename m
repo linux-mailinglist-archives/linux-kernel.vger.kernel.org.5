@@ -1,59 +1,57 @@
-Return-Path: <linux-kernel+bounces-121121-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-121122-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 66AA788E291
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 14:29:28 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id F216F88E296
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 14:29:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 066831F2816F
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 13:29:28 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A52822912B4
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 13:29:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 95BA4173339;
-	Wed, 27 Mar 2024 12:22:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 111A1173357;
+	Wed, 27 Mar 2024 12:22:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="IyKNWJWI"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="UpOHT3CU"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CABC1173325;
-	Wed, 27 Mar 2024 12:22:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4547617334A;
+	Wed, 27 Mar 2024 12:22:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711542132; cv=none; b=V25dVImInTlufhO6oJRWIbu9FizTSVMNqlpydowi2GiEC13TvEB+GQhD/0JzVKW3xd+2BeLVea0OPyv62FJ6u4pRZOowuqAaMz+z6PL3EFqvnz2Cntin6oPbpGb/p8pzXKXYet4HKNzT+uApMtLsCgb5augRWyTfnMELU98jqyE=
+	t=1711542135; cv=none; b=YHjivLcYq8Wiw9y+lNvw67mBz2YS9GBNTY2gHdcGwVA4+EUfpTqfydGtkuDdXisMkmO9Z14ixtYsP6dZmdP/8GHxUWR7TJQ8Erj3Vfhr+5oRX9aXhyassGGB2FNUgyD+hLVQV5JEz2SVKJ69LDkaW0wLomdad0ZOfll1hkZhzQs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711542132; c=relaxed/simple;
-	bh=xKwE2INfWzRggp/kxSxXal9blj+vpWlWTqyI0zRLyl0=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=jdZhFneFkqfGJgWTAQfdt1Y2Uk77XRFhwNDXKEL6nuep5i57ly7F3LPR8naoFqlT4AKY9rsLQIknW6FEeL4PV38xWesghdN3wuFa9J5SWgY4+KYrzE3HIyPfNrE7FL4+RWvjTayb+rR/dOhbz9rRUjWcb63EQcsLCDRR3pZbQFU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=IyKNWJWI; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 45A4DC433C7;
-	Wed, 27 Mar 2024 12:22:11 +0000 (UTC)
+	s=arc-20240116; t=1711542135; c=relaxed/simple;
+	bh=aDxsv+D/Va7J7spxn9v8usSvI+cYbXKI/Uuv+S5nK68=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=PKDvtNAiQWXNlDM3lpcJNsfEWwnkFTF4ls2TdCSvlVf7+nZmATxk/4NHjz4m8uihJfX3I2Ib+Bu60fCYtYuZvhxer+6x4uUNhyXbSJUh2mrJLXl92sJSqywD1maWi0XvGFVQ8Kx+I9xyzrqCnmTvwPTtpWvBqLQCz3KPygo/fF0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=UpOHT3CU; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2CB2AC433F1;
+	Wed, 27 Mar 2024 12:22:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711542132;
-	bh=xKwE2INfWzRggp/kxSxXal9blj+vpWlWTqyI0zRLyl0=;
+	s=k20201202; t=1711542135;
+	bh=aDxsv+D/Va7J7spxn9v8usSvI+cYbXKI/Uuv+S5nK68=;
 	h=From:To:Cc:Subject:Date:From;
-	b=IyKNWJWIlnnugQvpgVATmIqiPrEA8tV6QJpPNzAgUx9dbs16fukw9ah/I76irlgIk
-	 GL9fc6/3CCT8oYMK4xnI0wIStYHutNCxAWQKMMjdJc5MbWXD1tzq82iUuEUkbnxvI2
-	 e2ttWlClhCs/aSJv++M7TToS5QknmRybvEJULMu8+9NyY2TZ57iSUa0bNLkwrE4Lby
-	 8bCOl1oOwtyoPcIbar4kYjXu3wlAZSUg2R3LLoiujFwdvRACaMvWbUQAQATXYZvjqd
-	 CEu+pwLJUL/h7Vq2xhJTS28dYPmFgJ/f+TvllsR+/lUOichs51BzWyyrEqpLwI9RdV
-	 HeyKNUtvr7Aog==
+	b=UpOHT3CUyUbdQG7b/JqQ6n9VfpuaEHP1MUW4UIUURr756VoAy5D/j2Qf2CRjrInGX
+	 coqlXRZ0opR8S+kGGNpNefPVH8cJ7ZY/dXFQOqcxQxb4GLQcoXY/dTxoIJTcTI5FhC
+	 2Jf6VI4HLNdr6UfhOn8DiLPk+EkTD0epXJtEW2QXJKtu1E69BUb7C8QjND5M3MwTQ4
+	 F30w4ABXmnkYLyfa5HoGqKZCanuRQ3fLjcrH/Xjw/N+g7nuFlmFqpO2g/DD2GaejTx
+	 L13olGWvXmUxO/AEU/KQuC7M0Zkjpipi8muwJ85dbggtA3qsJD8DhCPQmuw9RszOjJ
+	 hPUfD4ibKkavA==
 From: Sasha Levin <sashal@kernel.org>
 To: stable@vger.kernel.org,
-	chenhuacai@kernel.org
-Cc: Xiaotian Wu <wuxiaotian@loongson.cn>,
-	Miao Wang <shankerwangmiao@gmail.com>,
-	Xing Li <lixing@loongson.cn>,
-	Hongchen Zhang <zhanghongchen@loongson.cn>,
-	Rui Wang <wangrui@loongson.cn>,
-	Huacai Chen <chenhuacai@loongson.cn>,
-	linux-mm@kvack.org,
-	loongarch@lists.linux.dev,
+	wayne.lin@amd.com
+Cc: Aurabindo Pillai <aurabindo.pillai@amd.com>,
+	Rodrigo Siqueira <rodrigo.siqueira@amd.com>,
+	Daniel Wheeler <daniel.wheeler@amd.com>,
+	Alex Deucher <alexander.deucher@amd.com>,
+	amd-gfx@lists.freedesktop.org,
+	dri-devel@lists.freedesktop.org,
 	linux-kernel@vger.kernel.org
-Subject: FAILED: Patch "LoongArch: Change __my_cpu_offset definition to avoid mis-optimization" failed to apply to 5.4-stable tree
-Date: Wed, 27 Mar 2024 08:22:10 -0400
-Message-ID: <20240327122210.2837487-1-sashal@kernel.org>
+Subject: FAILED: Patch "drm/amd/display: adjust few initialization order in dm" failed to apply to 5.4-stable tree
+Date: Wed, 27 Mar 2024 08:22:13 -0400
+Message-ID: <20240327122213.2837525-1-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -75,56 +73,110 @@ Sasha
 
 ------------------ original commit in Linus's tree ------------------
 
-From c87e12e0e8c1241410e758e181ca6bf23efa5b5b Mon Sep 17 00:00:00 2001
-From: Huacai Chen <chenhuacai@loongson.cn>
-Date: Tue, 19 Mar 2024 15:50:34 +0800
-Subject: [PATCH] LoongArch: Change __my_cpu_offset definition to avoid
- mis-optimization
+From c9aef4f6c6d7cdc92a64ffe761c6921ec85157ae Mon Sep 17 00:00:00 2001
+From: Wayne Lin <wayne.lin@amd.com>
+Date: Fri, 2 Feb 2024 17:34:11 +0800
+Subject: [PATCH] drm/amd/display: adjust few initialization order in dm
 
-From GCC commit 3f13154553f8546a ("df-scan: remove ad-hoc handling of
-global regs in asms"), global registers will no longer be forced to add
-to the def-use chain. Then current_thread_info(), current_stack_pointer
-and __my_cpu_offset may be lifted out of the loop because they are no
-longer treated as "volatile variables".
+[Why]
+Observe error message "Can't retrieve aconnector in hpd_rx_irq_offload_work"
+when boot up with a mst tbt4 dock connected. After analyzing, there are few
+parts needed to be adjusted:
 
-This optimization is still correct for the current_thread_info() and
-current_stack_pointer usages because they are associated to a thread.
-However it is wrong for __my_cpu_offset because it is associated to a
-CPU rather than a thread: if the thread migrates to a different CPU in
-the loop, __my_cpu_offset should be changed.
+1. hpd_rx_offload_wq[].aconnector is not initialzed before the dmub outbox
+hpd_irq handler get registered which causes the error message.
 
-Change __my_cpu_offset definition to treat it as a "volatile variable",
-in order to avoid such a mis-optimization.
+2. registeration of hpd and hpd_rx_irq event for usb4 dp tunneling is not
+aligned with legacy interface sequence
 
-Cc: stable@vger.kernel.org
-Reported-by: Xiaotian Wu <wuxiaotian@loongson.cn>
-Reported-by: Miao Wang <shankerwangmiao@gmail.com>
-Signed-off-by: Xing Li <lixing@loongson.cn>
-Signed-off-by: Hongchen Zhang <zhanghongchen@loongson.cn>
-Signed-off-by: Rui Wang <wangrui@loongson.cn>
-Signed-off-by: Huacai Chen <chenhuacai@loongson.cn>
+[How]
+Put DMUB_NOTIFICATION_HPD and DMUB_NOTIFICATION_HPD_IRQ handler
+registration into register_hpd_handlers() to align other interfaces and
+get hpd_rx_offload_wq[].aconnector initialized earlier than that.
+
+Leave DMUB_NOTIFICATION_AUX_REPLY registered as it was since we need that
+while calling dc_link_detect(). USB4 connection status will be proactively
+detected by dc_link_detect_connection_type() in amdgpu_dm_initialize_drm_device()
+
+Cc: Stable <stable@vger.kernel.org>
+Reviewed-by: Aurabindo Pillai <aurabindo.pillai@amd.com>
+Acked-by: Rodrigo Siqueira <rodrigo.siqueira@amd.com>
+Tested-by: Daniel Wheeler <daniel.wheeler@amd.com>
+Signed-off-by: Wayne Lin <wayne.lin@amd.com>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 ---
- arch/loongarch/include/asm/percpu.h | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
+ .../gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c | 37 +++++++++----------
+ 1 file changed, 18 insertions(+), 19 deletions(-)
 
-diff --git a/arch/loongarch/include/asm/percpu.h b/arch/loongarch/include/asm/percpu.h
-index 9b36ac003f890..8f290e5546cf7 100644
---- a/arch/loongarch/include/asm/percpu.h
-+++ b/arch/loongarch/include/asm/percpu.h
-@@ -29,7 +29,12 @@ static inline void set_my_cpu_offset(unsigned long off)
- 	__my_cpu_offset = off;
- 	csr_write64(off, PERCPU_BASE_KS);
- }
--#define __my_cpu_offset __my_cpu_offset
-+
-+#define __my_cpu_offset					\
-+({							\
-+	__asm__ __volatile__("":"+r"(__my_cpu_offset));	\
-+	__my_cpu_offset;				\
-+})
+diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
+index 985137b51372d..8b13cb334b366 100644
+--- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
++++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
+@@ -1844,21 +1844,12 @@ static int amdgpu_dm_init(struct amdgpu_device *adev)
+ 			DRM_ERROR("amdgpu: fail to register dmub aux callback");
+ 			goto error;
+ 		}
+-		if (!register_dmub_notify_callback(adev, DMUB_NOTIFICATION_HPD, dmub_hpd_callback, true)) {
+-			DRM_ERROR("amdgpu: fail to register dmub hpd callback");
+-			goto error;
+-		}
+-		if (!register_dmub_notify_callback(adev, DMUB_NOTIFICATION_HPD_IRQ, dmub_hpd_callback, true)) {
+-			DRM_ERROR("amdgpu: fail to register dmub hpd callback");
+-			goto error;
+-		}
+-	}
+-
+-	/* Enable outbox notification only after IRQ handlers are registered and DMUB is alive.
+-	 * It is expected that DMUB will resend any pending notifications at this point, for
+-	 * example HPD from DPIA.
+-	 */
+-	if (dc_is_dmub_outbox_supported(adev->dm.dc)) {
++		/* Enable outbox notification only after IRQ handlers are registered and DMUB is alive.
++		 * It is expected that DMUB will resend any pending notifications at this point. Note
++		 * that hpd and hpd_irq handler registration are deferred to register_hpd_handlers() to
++		 * align legacy interface initialization sequence. Connection status will be proactivly
++		 * detected once in the amdgpu_dm_initialize_drm_device.
++		 */
+ 		dc_enable_dmub_outbox(adev->dm.dc);
  
- #define PERCPU_OP(op, asm_op, c_op)					\
- static __always_inline unsigned long __percpu_##op(void *ptr,		\
+ 		/* DPIA trace goes to dmesg logs only if outbox is enabled */
+@@ -3547,6 +3538,14 @@ static void register_hpd_handlers(struct amdgpu_device *adev)
+ 	int_params.requested_polarity = INTERRUPT_POLARITY_DEFAULT;
+ 	int_params.current_polarity = INTERRUPT_POLARITY_DEFAULT;
+ 
++	if (dc_is_dmub_outbox_supported(adev->dm.dc)) {
++		if (!register_dmub_notify_callback(adev, DMUB_NOTIFICATION_HPD, dmub_hpd_callback, true))
++			DRM_ERROR("amdgpu: fail to register dmub hpd callback");
++
++		if (!register_dmub_notify_callback(adev, DMUB_NOTIFICATION_HPD_IRQ, dmub_hpd_callback, true))
++			DRM_ERROR("amdgpu: fail to register dmub hpd callback");
++	}
++
+ 	list_for_each_entry(connector,
+ 			&dev->mode_config.connector_list, head)	{
+ 
+@@ -3575,10 +3574,6 @@ static void register_hpd_handlers(struct amdgpu_device *adev)
+ 					handle_hpd_rx_irq,
+ 					(void *) aconnector);
+ 		}
+-
+-		if (adev->dm.hpd_rx_offload_wq)
+-			adev->dm.hpd_rx_offload_wq[connector->index].aconnector =
+-				aconnector;
+ 	}
+ }
+ 
+@@ -4590,6 +4585,10 @@ static int amdgpu_dm_initialize_drm_device(struct amdgpu_device *adev)
+ 			goto fail;
+ 		}
+ 
++		if (dm->hpd_rx_offload_wq)
++			dm->hpd_rx_offload_wq[aconnector->base.index].aconnector =
++				aconnector;
++
+ 		if (!dc_link_detect_connection_type(link, &new_connection_type))
+ 			DRM_ERROR("KMS: Failed to detect connector\n");
+ 
 -- 
 2.43.0
 
