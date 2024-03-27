@@ -1,89 +1,183 @@
-Return-Path: <linux-kernel+bounces-121979-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-121986-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AE64E88F026
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 21:32:25 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4DDB888F045
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 21:39:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C42BA1C2C457
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 20:32:24 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F13F02961DB
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 20:39:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A21FF1534EC;
-	Wed, 27 Mar 2024 20:32:05 +0000 (UTC)
-Received: from mail-io1-f71.google.com (mail-io1-f71.google.com [209.85.166.71])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D0F3F1534F2;
+	Wed, 27 Mar 2024 20:39:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="AsNXxNm2";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="c/+uD66h"
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CF9EE152E12
-	for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 20:32:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.71
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D73814D6EB;
+	Wed, 27 Mar 2024 20:39:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711571525; cv=none; b=kb1KxFWk1dazrpV31DQmtBYrcBPUcwOuIQKr5YjA4zs+2Hd97vlkk9Qdt2e2gi0YQwuUK/UKsZk2Ydo0VDNW5kR9Ly5fuOqh/GvBXV8jAmFMzMlyspwbWqajWaRI55z55psFOj5bgCTRUX36XdBD2wtQQIWKucW74VXppF3hR1o=
+	t=1711571986; cv=none; b=qnqJDiZTvGTZCUciQ7vCAK7HBUwMcxkvBsSbfsCl7WMH6lme1dQ3HXvi5T54ToXyiqYpZ9ofmB/OVmfW96FC6TtMkOXKHShcANt8oMmzL32iurMdG9yU7n84bt7A5Y/zMcCNLperL1FAc8JnpFEoEkcyuB71g8yeaURbhc6Ho9o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711571525; c=relaxed/simple;
-	bh=nRwlE/hA+5kIdWWS/56V+tZqn6E78CxeZd1m1w7AwQ4=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=NUY4uuF0lEdO8fVCjiGETWHWrZHZOYCxNFenEISyGoH2qdbl/zoqbO5CjCy6wNhgbW5DHm0J3NFRMrCMtc4x60+u+RzK3tvvG+HsFzu6q9lrCQfrlrJxatIiG7EJka+J3OXvWFZRkTQvAboqJ3MAfgZnC8L4dmAUlYD6DExhmmE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.71
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f71.google.com with SMTP id ca18e2360f4ac-7cc0a422d43so23714639f.2
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 13:32:03 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711571523; x=1712176323;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=GrIQKBS2v/d7YU14An08GRjqL5ZRUdHZeXnpNFfQdUk=;
-        b=icMuBb7K5F1xjovTxQUYmiblK2Ms5fSswmWeclUFnbUfTQ3GqBkt0YEuAyYWVEutUJ
-         KIY0ccfyoaK7cbLoNbWhkb/xn+1ljaGBB3vX76C1YzAdb+wtuaWeLjPT7YTKIhdlNJVD
-         uSaDN+xkT+BnIXIkF2s9Vje7YMbovgHS2zel0vlPHgyQKSsJRaBvM3z9+DoOdCN9uY0L
-         8kccWx20RO56kzcAqdWo+Fzg4heQhKzpZjlSvc4el1zatHIY5/alVieEtfUAm6mcCi6b
-         ZdoineelfxctuesTxsPW4o+BYUUaNqpd4n7g+dkr3N/ixNLAS1eowbGsezzwgsB+KiqB
-         M3HQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXaO2C2oDqFsNe+5WnMRGrhmJhENlRd7ON/Ge2JSOASuOwYdPPOmuTzQJDJzN7I3diLkUepTmU5yCtR0u+rVEy9ScL2+REsbx4z/mF2
-X-Gm-Message-State: AOJu0YyhvCtLKlbtvjtmyoO9I5DI/+x63994SNdhY6dNoo+IPtG4K6KR
-	8gLEbQnZzlvIB+uTE7JCn9MpmrxmHQNVG7hUGTRE8wkQYqNVHm8TFXXHRD7Z7k7nvHdcuw4bsd2
-	aP5E9uTcYz0oRnRO4kFOXloiTNHQxPilsXexh9ottxBGXu/tkjW4P9h4=
-X-Google-Smtp-Source: AGHT+IEv1GS0F1bIQIoueTKC7US/um1YmwFLw785Q/O0DHu40YUikpwnw4dFaz1J6Vc+zuxa3ZZur/MOvmSybjnXmQSPHjqMWXYb
+	s=arc-20240116; t=1711571986; c=relaxed/simple;
+	bh=MYjXKGml4yTVTChKso7uNGqldcMcIKtOtNKtzVnHsmc=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=mcCDWvhDzJ9MJM6fFakHuLtRgVwfRL4+/qUXwVT2zMx6VVwA2RVvaghLD4SkAQbb+1hyk5SB4G9DKn3u6RUqJkcucn/gu1OxOdRV+pMZTtHIPFKf4gN0R/Kjp/k/WLZRMhXpVAugs9X3vJlxzJIiBYl3Hri09drVqRAjXMUIWOw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=AsNXxNm2; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=c/+uD66h; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:98])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id C28DE229B9;
+	Wed, 27 Mar 2024 20:39:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1711571982; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=/IKbn2oj33so0jZy+ftN03yc0feDXvMhZ5ZgHhL7tD0=;
+	b=AsNXxNm2pZNhDHZEweT6VY5xGt5B8qgWaYhOgi3bBG5zaafR12F46jEt00GqbIao/rjmlD
+	I+61S66YhhqzD3KiJvevlZNgIYI+FvHH8Ucv863V46TNpSqLnAV+yI6WyEh/4bYGcR0ma6
+	Pt8x1x+x9hNu46I3fyNTvaTdPashRj4=
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1711571981; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=/IKbn2oj33so0jZy+ftN03yc0feDXvMhZ5ZgHhL7tD0=;
+	b=c/+uD66hnaQgGXhed0gnWJzk9V5YrzEc2vxRPGrwIjSS5IypRqPeF+W0JJk5aHTtkIi9fW
+	mVQcX8hXkNCmbX5CO2twPLm5k4abgW6soisUEXyXl5oIDx+Ull2IUsI243TrNC7RWBR398
+	CQ1PSFhurU/fGpdX8PBIlEJdjnF2rh8=
+Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id B8E0613AB3;
+	Wed, 27 Mar 2024 20:39:41 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+	by imap2.dmz-prg2.suse.org with ESMTPSA
+	id IS7bLA2EBGYcFAAAn2gu4w
+	(envelope-from <dsterba@suse.com>); Wed, 27 Mar 2024 20:39:41 +0000
+From: David Sterba <dsterba@suse.com>
+To: torvalds@linux-foundation.org
+Cc: David Sterba <dsterba@suse.com>,
+	linux-btrfs@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [GIT PULL] Btrfs fixes for 6.9-rc2
+Date: Wed, 27 Mar 2024 21:32:19 +0100
+Message-ID: <cover.1711571199.git.dsterba@suse.com>
+X-Mailer: git-send-email 2.44.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6602:2d81:b0:7c8:c7ec:2b71 with SMTP id
- k1-20020a0566022d8100b007c8c7ec2b71mr4702iow.3.1711571523139; Wed, 27 Mar
- 2024 13:32:03 -0700 (PDT)
-Date: Wed, 27 Mar 2024 13:32:03 -0700
-In-Reply-To: <87le63bfuf.fsf@cloudflare.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000a50cbd0614aa4ceb@google.com>
-Subject: Re: [syzbot] [bpf?] [net?] possible deadlock in ahci_single_level_irq_intr
-From: syzbot <syzbot+d4066896495db380182e@syzkaller.appspotmail.com>
-To: andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org, 
-	daniel@iogearbox.net, davem@davemloft.net, edumazet@google.com, 
-	jakub@cloudflare.com, john.fastabend@gmail.com, kuba@kernel.org, 
-	linux-kernel@vger.kernel.org, netdev@vger.kernel.org, pabeni@redhat.com, 
-	syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Spam-Score: -1.51
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Spam-Flag: NO
+X-Spamd-Result: default: False [-1.51 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
+	 FROM_HAS_DN(0.00)[];
+	 RCPT_COUNT_THREE(0.00)[4];
+	 R_MISSING_CHARSET(2.50)[];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 BROKEN_CONTENT_TYPE(1.50)[];
+	 TO_DN_SOME(0.00)[];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DWL_DNSWL_MED(-2.00)[suse.com:dkim];
+	 DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	 DKIM_TRACE(0.00)[suse.com:+];
+	 MX_GOOD(-0.01)[];
+	 MID_CONTAINS_FROM(1.00)[];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:dkim];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 NEURAL_HAM_SHORT(-0.20)[-1.000];
+	 RCVD_TLS_ALL(0.00)[];
+	 BAYES_HAM(-3.00)[100.00%];
+	 RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:98:from]
+X-Spam-Level: 
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.com header.s=susede1 header.b="c/+uD66h"
+X-Rspamd-Queue-Id: C28DE229B9
 
-Hello,
+Hi,
 
-syzbot has tested the proposed patch and the reproducer did not trigger any issue:
+here's another batch of stability fixes.
 
-Reported-and-tested-by: syzbot+d4066896495db380182e@syzkaller.appspotmail.com
+The first fix is for the bug you also hit after 6.8-rc2 pull request [1].
+We got another report, fortunately it was reproducible and in the end we also
+got the fix.
 
-Tested on:
+[1] https://lore.kernel.org/linux-btrfs/CAHk-=whNdMaN9ntZ47XRKP6DBes2E5w7fi-0U3H2+PS18p+Pzw@mail.gmail.com/
 
-commit:         4dd65107 bpf: update BPF LSM designated reviewer list
-git tree:       bpf
-console output: https://syzkaller.appspot.com/x/log.txt?x=116d23e6180000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=5826764df8e788a7
-dashboard link: https://syzkaller.appspot.com/bug?extid=d4066896495db380182e
-compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-patch:          https://syzkaller.appspot.com/x/patch.diff?x=1593c145180000
+The rest is usual mix of fixes, zoned mode, device status handling and
+error handling.
 
-Note: testing is done by a robot and is best-effort only.
+Please pull, thanks.
+
+- fix race when reading extent buffer and 'uptodate' status is missed by one
+  thread (introduced in 6.5)
+
+- do additional validation of devices using major:minor numbers
+
+- zoned mode fixes:
+  - use zone-aware super block access during scrub
+  - fix use-after-free during device replace (found by KASAN)
+  - also delete zones that are 100% unusable to reclaim space
+
+- extent unpinning fixes
+  - fix extent map leak after error handling
+  - print correct range in error message
+
+- error code and message updates
+
+----------------------------------------------------------------
+The following changes since commit 1cab1375ba6d5337a25acb346996106c12bb2dd0:
+
+  btrfs: reuse cloned extent buffer during fiemap to avoid re-allocations (2024-03-05 18:14:19 +0100)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git tags/for-6.9-rc1-tag
+
+for you to fetch changes up to ef1e68236b9153c27cb7cf29ead0c532870d4215:
+
+  btrfs: fix race in read_extent_buffer_pages() (2024-03-26 16:42:39 +0100)
+
+----------------------------------------------------------------
+Anand Jain (2):
+      btrfs: validate device maj:min during open
+      btrfs: return accurate error code on open failure in open_fs_devices()
+
+Filipe Manana (4):
+      btrfs: fix extent map leak in unexpected scenario at unpin_extent_cache()
+      btrfs: fix warning messages not printing interval at unpin_extent_range()
+      btrfs: fix message not properly printing interval when adding extent map
+      btrfs: use btrfs_warn() to log message at btrfs_add_extent_mapping()
+
+Johannes Thumshirn (3):
+      btrfs: zoned: use zone aware sb location for scrub
+      btrfs: zoned: fix use-after-free in do_zone_finish()
+      btrfs: zoned: don't skip block groups with 100% zone unusable
+
+Tavian Barnes (1):
+      btrfs: fix race in read_extent_buffer_pages()
+
+ fs/btrfs/block-group.c |  3 ++-
+ fs/btrfs/extent_io.c   | 13 +++++++++++++
+ fs/btrfs/extent_map.c  | 16 ++++++++--------
+ fs/btrfs/scrub.c       | 12 +++++++++++-
+ fs/btrfs/volumes.c     | 27 ++++++++++++++++++++++-----
+ fs/btrfs/zoned.c       | 14 +++++++-------
+ 6 files changed, 63 insertions(+), 22 deletions(-)
 
