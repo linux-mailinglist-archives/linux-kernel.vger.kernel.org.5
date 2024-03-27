@@ -1,138 +1,124 @@
-Return-Path: <linux-kernel+bounces-121961-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-121962-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 558EF88EFE3
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 21:08:13 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id E6ED788EFE7
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 21:08:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 873061C35238
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 20:08:12 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A162E2990C6
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 20:08:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D13A2154454;
-	Wed, 27 Mar 2024 20:04:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E51FF152DF7;
+	Wed, 27 Mar 2024 20:05:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=alu.unizg.hr header.i=@alu.unizg.hr header.b="PC2+GKS7";
-	dkim=pass (2048-bit key) header.d=alu.unizg.hr header.i=@alu.unizg.hr header.b="lWFJtavM"
-Received: from domac.alu.hr (domac.alu.unizg.hr [161.53.235.3])
+	dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b="RphAf+5/"
+Received: from mail-lf1-f52.google.com (mail-lf1-f52.google.com [209.85.167.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C09AE154443;
-	Wed, 27 Mar 2024 20:04:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=161.53.235.3
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7C5B914F112
+	for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 20:05:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711569871; cv=none; b=iQIROD4On3zzX1jJf/kohZV4lh08VMuKUkbMViYhj+3RmHb4TtBQUrcBBgA0n/qaFkk0G50h5IeOCBH0UnfRDWAizLv9UJssBV1T8lnzD9DllaRCu11Vhsc3jOjKEpYE1zNDxm9c5tELSUQWqQv9/neFlfPsjzORiHkmzHGu1is=
+	t=1711569934; cv=none; b=PYzkekrDF/4PTrDOK+FgQokB7k1D0cA5MWD2BMZ3g+ddYwYP11/GVWbvhFLdyMiaW9V10kNmGkoZOHUy0Zj6djmYso8x2MZ9w7C10jH84MJcHf7UKN9tcyvbkpvdXwZ/liESqOUSFrNT4JQhhbtMCM5DgvtBfwJQL1dCRD/15As=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711569871; c=relaxed/simple;
-	bh=Ld6HrLqtuw7crMLsCyP8gsr/CSuqB+o5MzFpyBX3MuU=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=sMopCdejrgjrcz6nEYJp4hOXMWEOpv4n4wwIysYl0A4oVB0fYzXhZhtfoOyKP045bQK8Q7Lq6Yfr+LNampo5ujNIhDfMc8qKDWmBsnoOKHpIuKnMpaJq+vtupvYwZTQMeIsvxioOfN25IbOZ23HZ7S++z0y/2fPxet2rzwOVxRU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alu.unizg.hr; spf=pass smtp.mailfrom=alu.unizg.hr; dkim=pass (2048-bit key) header.d=alu.unizg.hr header.i=@alu.unizg.hr header.b=PC2+GKS7; dkim=pass (2048-bit key) header.d=alu.unizg.hr header.i=@alu.unizg.hr header.b=lWFJtavM; arc=none smtp.client-ip=161.53.235.3
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alu.unizg.hr
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alu.unizg.hr
-Received: from localhost (localhost [127.0.0.1])
-	by domac.alu.hr (Postfix) with ESMTP id CF2436015E;
-	Wed, 27 Mar 2024 21:04:17 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=alu.unizg.hr; s=mail;
-	t=1711569857; bh=Ld6HrLqtuw7crMLsCyP8gsr/CSuqB+o5MzFpyBX3MuU=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=PC2+GKS7Ac4kwpM4fTB41Rare2g71xW+I3p+wGU1pvbY0zx269WaEIvMJH7wiPOSp
-	 trSdOquY9FRFfy20rezD4w4lg+TyDCXGLeUJ6LpdHfXJ1ueQhSUJaDv1R2NYSFoAZG
-	 y997SVPUiBp/SgPCzuNweTTfpLJJ660YE7bT1SxXFEjEbwMs53G5sJnRzgCWFROVvO
-	 /bz1XnXn1Ay7RUGZlDPw0eF4+/DeqTO1Ai5sdOl3zjjlL2l1iFUVxHx2UwzBO7Rkev
-	 v10R1r6tl26bKhVhWSJVp5iGbSro6e0Ushwp6KfLXaFc7D+oSvlAAiMBR4nVkK1z4s
-	 JV9KzKOM8wt+A==
-X-Virus-Scanned: Debian amavisd-new at domac.alu.hr
-Received: from domac.alu.hr ([127.0.0.1])
-	by localhost (domac.alu.hr [127.0.0.1]) (amavisd-new, port 10024)
-	with ESMTP id VXsdPIWA-2IT; Wed, 27 Mar 2024 21:04:15 +0100 (CET)
-Received: from [192.168.178.20] (dh207-41-201.xnet.hr [88.207.41.201])
-	by domac.alu.hr (Postfix) with ESMTPSA id 24FA16015F;
-	Wed, 27 Mar 2024 21:04:15 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=alu.unizg.hr; s=mail;
-	t=1711569855; bh=Ld6HrLqtuw7crMLsCyP8gsr/CSuqB+o5MzFpyBX3MuU=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=lWFJtavMe5WgV7tBQiIC1mIUZqOAeFey4enMQD67L6kMIQHtRpxRrxbe5iiFWxBMI
-	 sRMBZfOkZxK6k+ngBYIzOJ1G26WZCqKwWP4P1Vxv0Jh+W+ieFsLIVfFtFrPFweWXZO
-	 86jVFYXA2E+UFXtfYKvQCaBfxw02AJbulwUqxnX8TvYmRHY0RHA9GwoenhOanO1l1T
-	 yg0sCh/Nseo9VcT/lMlKVJeXeDUtwcGFwBmu0/foy2pdgK2iDQJmk6HnYhHTQHiqVC
-	 kGUYA69hOnoQCKiH0qR2d71matlP7QdjzNY27qh/idLGkNnCUv3iy2ysSC7RdxLPaI
-	 NjChKfqX7c9Cg==
-Message-ID: <08a13b79-e94a-4f80-96e9-ce223d928b3e@alu.unizg.hr>
-Date: Wed, 27 Mar 2024 21:04:10 +0100
+	s=arc-20240116; t=1711569934; c=relaxed/simple;
+	bh=vEqW1DgEW62eOOy14MyVRf55lhpBDCMsX9Ci6MBuZh0=;
+	h=References:From:To:Cc:Subject:Date:In-reply-to:Message-ID:
+	 MIME-Version:Content-Type; b=eiKoxCaVEhnTbHawzn5+kPuggmMUpyJ+hxVvkJ1TQSAX2MHWUJvDQU17wpr3N1UPXRbuLsqHEDTmdMHCaPFVPHuOrlkJm3M9ij28t9ho0DwXDWZlz+55IVJkn6VlWJISOKu1HsXHEBKh/XRF5kB+4r8BuJO62/l2Iuti829g2yQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com; spf=pass smtp.mailfrom=cloudflare.com; dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b=RphAf+5/; arc=none smtp.client-ip=209.85.167.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cloudflare.com
+Received: by mail-lf1-f52.google.com with SMTP id 2adb3069b0e04-515a68d45faso130059e87.3
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 13:05:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloudflare.com; s=google09082023; t=1711569931; x=1712174731; darn=vger.kernel.org;
+        h=mime-version:message-id:in-reply-to:date:subject:cc:to:from
+         :user-agent:references:from:to:cc:subject:date:message-id:reply-to;
+        bh=b2UM2vsGB2GKXA0Y54jKwuEcNzrtJZ7/0VEz1DmAe7I=;
+        b=RphAf+5/lB1G6vMvCsx1B8vPCs9oU5BEy5y4VLcvYP62BaDJyKweVKsAjuhpbrFo6g
+         Bf/co8jrPLd9w8Re4+F6jDrQ34UuXX8RUrU/NIXFakh4k8e0YWXm2jBlPT6vCLW+Ituf
+         QZ26VYrypgtS/5d0nuNsJrZ/6xl0r+EczBaXztKamED6ZS4iD9Hq0mx9EZoe/KiP0CWm
+         p7hlNih+RY7b4DBLIhr+J3Xw+XmJOzy6adiqJYZ6oxe9daxRRYg81S4nCzXolkmJHTEG
+         WDs3/SlpIPFTyeOiHXmWrTivVHHOJtvEfB30/6/TkBDi8JzBKqW5Gs+QyoBSAKpAA78P
+         tJww==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711569931; x=1712174731;
+        h=mime-version:message-id:in-reply-to:date:subject:cc:to:from
+         :user-agent:references:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=b2UM2vsGB2GKXA0Y54jKwuEcNzrtJZ7/0VEz1DmAe7I=;
+        b=ZF7uNALhqgg19exzcmcHlI3KO3Dg5GtkFAcocY8IZglEZ4GEy8huE6/HtAuugS2Scb
+         Gke9FmnutM6x3DdcxalelQ0//gwV0J9pezML32VkfVjasc+jygCmkZJD9alqp4HD8dfN
+         CeGBn5m+ktl488sR/Eb6yY6jyBI1FYt1+DjO/K9GvVR3YvUIJupH1IqRRcsYpdxmupaD
+         YQ9saDr48iqVQPcIVgfhP4PRkA9jayjgEnbqrjcKeN6x38OhGNcR7Njy3w1KA4D+7kL1
+         g2SsOBuFgKPNX8Owrh2ZRbgDscMMFeQ2sZdKLCml/MpQOqqOAkpbXY7tmeieTGNr9Q1H
+         jxyA==
+X-Forwarded-Encrypted: i=1; AJvYcCX3E5ubjuGyLPykb6Sc7dTEkQbdkQ4oz5c6y1CCVgjDAUGa8NvL0tuiKV0ZdbziqC7fyuZ9Ddruc4nQGIUEBbZXy3uXJQf27v4zqsdd
+X-Gm-Message-State: AOJu0Ywpb0DrQXmdTr/lFDuVdIwbVDP5d4ZlSANIklllUaDoxql2C900
+	CqJraPr0B9qvE5nhRThgtAOnOSKRQPxDwpHrI36zl8zfRFJqCKJWeAysnP/OKAE7ya7X0MmE5nB
+	r
+X-Google-Smtp-Source: AGHT+IHrkNFl1ffopNxKTETahIleS+aShL7P58PRcF7paaJk0m/WuLamCzDi5i0y3x8TPSw6eSx/Fg==
+X-Received: by 2002:ac2:4c34:0:b0:515:a670:3a6c with SMTP id u20-20020ac24c34000000b00515a6703a6cmr369582lfq.23.1711569930579;
+        Wed, 27 Mar 2024 13:05:30 -0700 (PDT)
+Received: from cloudflare.com ([2a09:bac5:5064:2dc::49:159])
+        by smtp.gmail.com with ESMTPSA id x20-20020a170906b09400b00a469e55767dsm5797266ejy.214.2024.03.27.13.05.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 27 Mar 2024 13:05:29 -0700 (PDT)
+References: <00000000000090fe770614a1ab17@google.com>
+ <0000000000007a208d0614a9a9e0@google.com>
+User-agent: mu4e 1.6.10; emacs 29.2
+From: Jakub Sitnicki <jakub@cloudflare.com>
+To: syzbot <syzbot+d4066896495db380182e@syzkaller.appspotmail.com>
+Cc: andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
+ daniel@iogearbox.net, davem@davemloft.net, edumazet@google.com,
+ john.fastabend@gmail.com, kuba@kernel.org, linux-kernel@vger.kernel.org,
+ netdev@vger.kernel.org, pabeni@redhat.com, syzkaller-bugs@googlegroups.com
+Subject: Re: [syzbot] [bpf?] [net?] possible deadlock in
+ ahci_single_level_irq_intr
+Date: Wed, 27 Mar 2024 21:04:14 +0100
+In-reply-to: <0000000000007a208d0614a9a9e0@google.com>
+Message-ID: <87le63bfuf.fsf@cloudflare.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [BUG] seltests/iommu: runaway ./iommufd consuming 99% CPU after a
- failed assert()
-To: Joao Martins <joao.m.martins@oracle.com>, Jason Gunthorpe <jgg@nvidia.com>
-Cc: iommu@lists.linux.dev, Kevin Tian <kevin.tian@intel.com>,
- Shuah Khan <shuah@kernel.org>, linux-kselftest@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <0d5c3b29-fc5b-41d9-9556-5ce94262dac8@alu.unizg.hr>
- <20240319135852.GA393211@nvidia.com>
- <a692d5d7-11d5-4c1b-9abc-208d2194ccde@alu.unizg.hr>
- <cdc9c46b-1bad-41cd-8f98-38cc2171186a@oracle.com>
- <20240325135207.GC6245@nvidia.com>
- <f8e03425-98cf-4076-8959-d85eda846bab@oracle.com>
-Content-Language: en-US
-From: Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>
-In-Reply-To: <f8e03425-98cf-4076-8959-d85eda846bab@oracle.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 
+#syz test: git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git master
 
-
-On 3/27/24 11:41, Joao Martins wrote:
-> On 25/03/2024 13:52, Jason Gunthorpe wrote:
->> On Mon, Mar 25, 2024 at 12:17:28PM +0000, Joao Martins wrote:
->>>> However, I am not smart enough to figure out why ...
->>>>
->>>> Apparently, from the source, mmap() fails to allocate pages on the desired address:
->>>>
->>>>    1746         assert((uintptr_t)self->buffer % HUGEPAGE_SIZE == 0);
->>>>    1747         vrc = mmap(self->buffer, variant->buffer_size, PROT_READ |
->>>> PROT_WRITE,
->>>>    1748                    mmap_flags, -1, 0);
->>>> → 1749         assert(vrc == self->buffer);
->>>>    1750
->>>>
->>>> But I am not that deep into the source to figure our what was intended and what
->>>> went
->>>> wrong :-/
->>>
->>> I can SKIP() the test rather assert() in here if it helps. Though there are
->>> other tests that fail if no hugetlb pages are reserved.
->>>
->>> But I am not sure if this is problem here as the initial bug email had an
->>> enterily different set of failures? Maybe all you need is an assert() and it
->>> gets into this state?
->>
->> I feel like there is something wrong with the kselftest framework,
->> there should be some way to fail the setup/teardown operations without
->> triggering an infinite loop :(
-> 
-> I am now wondering if the problem is the fact that we have an assert() in the
-> middle of FIXTURE_{TEST,SETUP} whereby we should be having ASSERT_TRUE() (or any
-> other kselftest macro that). The expect/assert macros from kselftest() don't do
-> asserts and it looks like we are failing mid tests in the assert().
-> 
-> Maybe it is OK for setup_sizes(), but maybe not OK for the rest (i.e. during the
-> actual setup / tests). I can throw a patch there to see if this helps Mirsad.
-
-Well, we are in the job of making the kernel better and as bug free as we can.
-
-Maybe we should not delve too much into detail: is this a kernel bug, or the kselftest
-program bug?
-
-Some people already mentioned that I might have sysctl variable problems. I don't see
-what the mmap() HUGEPAGE allocation at fixed address was meant to prove?
-
-Thanks,
-Mirsad
+diff --git a/net/core/sock_map.c b/net/core/sock_map.c
+index 27d733c0f65e..3692f7256dd6 100644
+--- a/net/core/sock_map.c
++++ b/net/core/sock_map.c
+@@ -907,6 +907,7 @@ static void sock_hash_delete_from_link(struct bpf_map *map, struct sock *sk,
+ 	struct bpf_shtab_elem *elem_probe, *elem = link_raw;
+ 	struct bpf_shtab_bucket *bucket;
+ 
++	WARN_ON_ONCE(irqs_disabled());
+ 	WARN_ON_ONCE(!rcu_read_lock_held());
+ 	bucket = sock_hash_select_bucket(htab, elem->hash);
+ 
+@@ -933,6 +934,10 @@ static long sock_hash_delete_elem(struct bpf_map *map, void *key)
+ 	struct bpf_shtab_elem *elem;
+ 	int ret = -ENOENT;
+ 
++	/* Can't run. We don't to play nice with hardirq-safe locks. */
++	if (irqs_disabled())
++		return -EOPNOTSUPP;
++
+ 	hash = sock_hash_bucket_hash(key, key_size);
+ 	bucket = sock_hash_select_bucket(htab, hash);
+ 
+@@ -986,6 +991,7 @@ static int sock_hash_update_common(struct bpf_map *map, void *key,
+ 	struct sk_psock *psock;
+ 	int ret;
+ 
++	WARN_ON_ONCE(irqs_disabled());
+ 	WARN_ON_ONCE(!rcu_read_lock_held());
+ 	if (unlikely(flags > BPF_EXIST))
+ 		return -EINVAL;
 
