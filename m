@@ -1,124 +1,130 @@
-Return-Path: <linux-kernel+bounces-121491-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-121492-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 47A8988E8EC
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 16:26:34 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id C2B7C88E8F0
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 16:26:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F3025306B80
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 15:26:32 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 71FBD1F33B37
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 15:26:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B2360131193;
-	Wed, 27 Mar 2024 15:21:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2381B131743;
+	Wed, 27 Mar 2024 15:21:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="J5nwcoT1"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="a8VDp2WD"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 02CFD12A157;
-	Wed, 27 Mar 2024 15:21:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B410A131735
+	for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 15:21:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711552873; cv=none; b=fMsFstV/0kTL5esus9/QHIwajpW+SsrL9H9xnwaF04yPlF3buyl3IrsILUNE/0Sgcj6ysRtavhfGX7jo/9ZMKyZjnREBkN8fXd5FWS6wNK8CelcFxHTAdy6pDHFxbi2Q5R6w5gZ9X04Eq7WL72eKF9cQ0SipiYT8mUCY5c2iYgw=
+	t=1711552908; cv=none; b=QAm9FxZ3KmoRYhUpbHDquUngIclPd5pfQnt2SVxPs9iqfzRPkgCCeDzhOcFKDHsZ/Ts4zGC891KSmYLdJY8GGwjLcFbkVz695LLBfMDMV/kJw7SRP3KeTNKw1LYf/nFZ35PdiKkf4d1mjOWpQ5wv/ufPlkMpEnr6akFYeNhub64=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711552873; c=relaxed/simple;
-	bh=+BBgCBKAcE2KgM8BGSw6ott7/P3FQP78mzVrz2NJbf8=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=FCFQ1g9y6K46yJ1KO5b3/saedj68QYtKHYg0WyXEP7ONgK9m5TmjQT7IKCP56oPcldS0b3oQXP+cEHuFIeS7pbe1C+cOXGzFBf76aZsuV7TV3c9b6+j5M3ytdWJ4SJugFs7w8SVefJb1uU8RWz2uV+0sZsKWJsPlIo5ciUo5T7k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=J5nwcoT1; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 83D75C433F1;
-	Wed, 27 Mar 2024 15:21:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711552872;
-	bh=+BBgCBKAcE2KgM8BGSw6ott7/P3FQP78mzVrz2NJbf8=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=J5nwcoT1YanR4O5GM2S8VVguk+BEhGu4BBK8HEyRpuXi82S1d9IdQtgHngs+ZHy7V
-	 Hd2tbJFXYLVXK4/axEuCwqwrjO1+syZw2H0iPkuztR9IMMWr4e/xwbVXvakhlqlW1I
-	 Ox2qCa0qcfPlKv6dWYSnzC17K6CvNZguCXhsmM14TqxLM00U7ww23t2nQmoQ9dvE12
-	 +od0lxKDuf7tVjEZRKdpk73X3JJMF+pD2g3ZKfcnatSCVk2gGgPwnX286uV6kDcBxS
-	 wEbTGTNuNRwPpcVJP9aeQ+BKZxCW61YLk5uaPdTDSc4SaECSdEWrEkbqUHF2yF/Wjv
-	 9ugccWFAqmUtw==
-Received: by mail-oo1-f41.google.com with SMTP id 006d021491bc7-5a47a3786dbso2047211eaf.0;
-        Wed, 27 Mar 2024 08:21:12 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCUxQrQaQCUIMcbN2HChetuVetYGButGY9RwUgzOeIMZ6V59hgRogbwdnEdnsEikx/4LCUbcJ+GUsvQO1+noY/lGfHRnta0sAIicM2+rWwVpYZ/Zv0eo4nCs5nEv/vVnKEVIVBw0d6c=
-X-Gm-Message-State: AOJu0Yw4SOtGJFk/yE6jlCNK4BzdH9a4LyRoYeisEN3pS9LjgzjCr6Bq
-	ksY6QuGO7Sszx1RSx9994l5KRtJL3ZaD0OtI01YaTQ+p5ywvVq6y3hwusNgUEtGWcA6vPNq934X
-	nYPuVEJ/cXF5a0cfJIAz468E00NQ=
-X-Google-Smtp-Source: AGHT+IHAV8gu9ogawpJfevwkO10TLVfwFoptoS2oOFVfjVBj5oRzlz9TZVUDtn8iD/tLLmsphZrnyMh3hv6Vs1KK6As=
-X-Received: by 2002:a05:6870:a453:b0:22a:5205:6993 with SMTP id
- n19-20020a056870a45300b0022a52056993mr7893457oal.5.1711552871766; Wed, 27 Mar
- 2024 08:21:11 -0700 (PDT)
+	s=arc-20240116; t=1711552908; c=relaxed/simple;
+	bh=mhfoA8jCv1DDC516BG+AAL5xuYfKBZbFsPJx+Vnzofw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=B4jMwf8QeD4MV/1/I1jJLaQfm1y+7qnDoD2NMRYAPi7ih5tlL5Cc3wTHbwInZLKfOw8krP+eEL8yMeFKSxaN6K367oa5lB6ZzRAU7qdrfOxaF6iKEq3O9CXTQqVULJ103O30hRimgZMSahQxdlbFw7N1U0oNwDLL9AH6penUPHg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=a8VDp2WD; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1711552905;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=4RJOr7EzuI0DVaYxx+XjeXTwjAi2iT7d0lhMZ/VIsjg=;
+	b=a8VDp2WDVgyboA8qBtWpRsUNHVKyVsc8ecB42vWPaCxi7L2I6aLlzUsd12wEni6Bz/IF9e
+	0DXN5FhKemqb74DMpAYYLlKJHsHzh215527tymhMbeAWXwr+MxbzPf1WY3DZBqtdywpvhG
+	TRGFzUEXQPGmKnzuovOS49QyXr5qhPA=
+Received: from mail-ot1-f69.google.com (mail-ot1-f69.google.com
+ [209.85.210.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-557-OU_ktSm0PJyNlEldTXC3Ww-1; Wed, 27 Mar 2024 11:21:44 -0400
+X-MC-Unique: OU_ktSm0PJyNlEldTXC3Ww-1
+Received: by mail-ot1-f69.google.com with SMTP id 46e09a7af769-6e4fe655c93so2425756a34.1
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 08:21:44 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711552903; x=1712157703;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=4RJOr7EzuI0DVaYxx+XjeXTwjAi2iT7d0lhMZ/VIsjg=;
+        b=EUxK8g2hRPOPdfDjLyptjBOPvTr2vdrPzcZ/CoQoKpeQ50Y85AW2S8pqdOEJZZ/mJU
+         GNv/N+wb0kcj3yMuoDkktBKIcU+0d9KOkbC81rWbY4tNyyruEiA0AXYLrYn95ZqQbEI6
+         Q77xCpK8/XWpI8AqMSI5NlYHZDC4KDZZqJwmctePwrKS8qwycYlyrREMTpeBJ/HNB0es
+         81S71JKhNlPunMAo9PlAoswbqem2w3U2RgbAuP75MGZvVMJ62ipd47Ydm+wbT23oXMKi
+         dFtSzOeM8kS/wxDLsXBiTmbOr6IDJKxIj/Pz0j758UafylepB5JCXL3+feDnZtc3Vi1k
+         LA5w==
+X-Gm-Message-State: AOJu0YxZl9KzFrrckjXS624YG+bqlF1I3qO4V+zjgIsuB+53ZXmEk0rm
+	bGisbLEcOWTjSiFjWNveSQLDOcIrqtWrn6x++oUlzNYqydR4Ka1d4xpjor/HYQU9UNLoXHYRaGk
+	cJwOn+UxZ/QuuonHhnI/nPJpI7B2wHT7okYU3J6p7K+6kUv80wAb02m+QUw24/A==
+X-Received: by 2002:a05:6808:128a:b0:3c3:d729:1d56 with SMTP id a10-20020a056808128a00b003c3d7291d56mr316748oiw.0.1711552903439;
+        Wed, 27 Mar 2024 08:21:43 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IGxT5qAZWntttFMbBHTXwtvywmg90pV0zoL9F4zS7SQ4GsHwDy+Ru4KfcRdtRpsXZfeVg5bqg==
+X-Received: by 2002:a05:6808:128a:b0:3c3:d729:1d56 with SMTP id a10-20020a056808128a00b003c3d7291d56mr316719oiw.0.1711552902921;
+        Wed, 27 Mar 2024 08:21:42 -0700 (PDT)
+Received: from x1n ([99.254.121.117])
+        by smtp.gmail.com with ESMTPSA id r15-20020a056214212f00b0069698528727sm2350243qvc.90.2024.03.27.08.21.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 27 Mar 2024 08:21:42 -0700 (PDT)
+Date: Wed, 27 Mar 2024 11:21:40 -0400
+From: Peter Xu <peterx@redhat.com>
+To: David Hildenbrand <david@redhat.com>
+Cc: linux-kernel@vger.kernel.org, Andrew Morton <akpm@linux-foundation.org>,
+	Mike Rapoport <rppt@kernel.org>, Jason Gunthorpe <jgg@nvidia.com>,
+	John Hubbard <jhubbard@nvidia.com>,
+	linux-arm-kernel@lists.infradead.org, loongarch@lists.linux.dev,
+	linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+	linux-s390@vger.kernel.org, linux-sh@vger.kernel.org,
+	linux-mm@kvack.org, linux-perf-users@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org, x86@kernel.org
+Subject: Re: [PATCH RFC 0/3] mm/gup: consistently call it GUP-fast
+Message-ID: <ZgQ5hNltQ2DHQXps@x1n>
+References: <20240327130538.680256-1-david@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240319080153.3263-1-xuewen.yan@unisoc.com> <20240320032056.2noz6lu3k2utcpid@vireshk-i7>
-In-Reply-To: <20240320032056.2noz6lu3k2utcpid@vireshk-i7>
-From: "Rafael J. Wysocki" <rafael@kernel.org>
-Date: Wed, 27 Mar 2024 16:21:00 +0100
-X-Gmail-Original-Message-ID: <CAJZ5v0hy=Ak1JynF2fuQ74GNRAQt-mWqnrM+tsJvoU2jgY3FoQ@mail.gmail.com>
-Message-ID: <CAJZ5v0hy=Ak1JynF2fuQ74GNRAQt-mWqnrM+tsJvoU2jgY3FoQ@mail.gmail.com>
-Subject: Re: [PATCH] cpufreq: Use a smaller freq for the policy->max when verify
-To: Viresh Kumar <viresh.kumar@linaro.org>, Xuewen Yan <xuewen.yan@unisoc.com>
-Cc: ke.wang@unisoc.com, linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	xuewen.yan94@gmail.com, di.shen@unisoc.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20240327130538.680256-1-david@redhat.com>
 
-On Wed, Mar 20, 2024 at 4:21=E2=80=AFAM Viresh Kumar <viresh.kumar@linaro.o=
-rg> wrote:
->
-> On 19-03-24, 16:01, Xuewen Yan wrote:
-> > When driver use the cpufreq_frequency_table_verify() as the
-> > cpufreq_driver->verify's callback. It may cause the policy->max
-> > bigger than the freq_qos's max freq.
-> >
-> > Just as follow:
-> >
-> > unisoc:/sys/devices/system/cpu/cpufreq/policy0 # cat scaling_available_=
-frequencies
-> > 614400 768000 988000 1228800 1469000 1586000 1690000 1833000 2002000 20=
-93000
-> >
-> > unisoc:/sys/devices/system/cpu/cpufreq/policy0 # echo 1900000 > scaling=
-_max_freq
-> > unisoc:/sys/devices/system/cpu/cpufreq/policy0 # echo 1900000 > scaling=
-_min_freq
-> > unisoc:/sys/devices/system/cpu/cpufreq/policy0 # cat scaling_max_freq
-> > 2002000
-> > unisoc:/sys/devices/system/cpu/cpufreq/policy0 # cat scaling_min_freq
-> > 2002000
-> >
-> > When user set the qos_min and qos_max as the same value, and the value
-> > is not in the freq-table, the above scenario will occur.
-> >
-> > This is because in cpufreq_frequency_table_verify() func, when it can n=
-ot
-> > find the freq in table, it will change the policy->max to be a bigger f=
-req,
-> > as above, because there is no 1.9G in the freq-table, the policy->max w=
-ould
-> > be set to 2.002G. As a result, the cpufreq_policy->max is bigger than t=
-he
-> > user's qos_max. This is unreasonable.
-> >
-> > So use a smaller freq when can not find the freq in fre-table, to preve=
-nt
->
->                                                       freq-table
->
-> > the policy->max exceed the qos's max freq.
-> >
-> > Signed-off-by: Xuewen Yan <xuewen.yan@unisoc.com>
-> > ---
-> >  drivers/cpufreq/freq_table.c | 8 ++++----
-> >  1 file changed, 4 insertions(+), 4 deletions(-)
->
-> Acked-by: Viresh Kumar <viresh.kumar@linaro.org>
+On Wed, Mar 27, 2024 at 02:05:35PM +0100, David Hildenbrand wrote:
+> Some cleanups around function names, comments and the config option of
+> "GUP-fast" -- GUP without "lock" safety belts on.
+> 
+> With this cleanup it's easy to judge which functions are GUP-fast specific.
+> We now consistently call it "GUP-fast", avoiding mixing it with "fast GUP",
+> "lockless", or simply "gup" (which I always considered confusing in the
+> ode).
+> 
+> So the magic now happens in functions that contain "gup_fast", whereby
+> gup_fast() is the entry point into that magic. Comments consistently
+> reference either "GUP-fast" or "gup_fast()".
+> 
+> Based on mm-unstable from today. I won't CC arch maintainers, but only
+> arch mailing lists, to reduce noise.
+> 
+> Tested on x86_64, cross compiled on a bunch of archs, whereby some of them
+> don't properly even compile on mm-unstable anymore in my usual setup
+> (alpha, arc, parisc64, sh) ... maybe the cross compilers are outdated,
+> but there are no new ones around. Hm.
 
-Applied as 6.10 material, thanks!
+I'm not sure what config you tried there; as I am doing some build tests
+recently, I found turning off CONFIG_SAMPLES + CONFIG_GCC_PLUGINS could
+avoid a lot of issues, I think it's due to libc missing.  But maybe not the
+case there.
+
+The series makes sense to me, the naming is confusing.  Btw, thanks for
+posting this as RFC. This definitely has a conflict with the other gup
+series that I had; I'll post v4 of that shortly.
+
+-- 
+Peter Xu
+
 
