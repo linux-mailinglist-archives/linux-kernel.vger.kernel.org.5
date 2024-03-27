@@ -1,386 +1,154 @@
-Return-Path: <linux-kernel+bounces-121925-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-121926-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 435DF88EF83
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 20:50:03 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1386888EF87
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 20:50:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C5AF1298760
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 19:50:01 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6DBA5B25FB9
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 19:50:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 10EFF1534E6;
-	Wed, 27 Mar 2024 19:49:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E591415252A;
+	Wed, 27 Mar 2024 19:50:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="pLJVJQIO"
-Received: from mail-lf1-f41.google.com (mail-lf1-f41.google.com [209.85.167.41])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="gNbpt7vF"
+Received: from mail-ej1-f51.google.com (mail-ej1-f51.google.com [209.85.218.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DF3D3152DEA
-	for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 19:49:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 746C21509B1
+	for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 19:50:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711568965; cv=none; b=fSTG+6S8VNZgKb7KR3XD0bcXBtMjmQNIMEZ1k1Fwwp90+bPdjHni3+59oFufOyKfzgDlc8Z9CFwYOapLPiqwLQpr3ivkLKXFSbdla3icv3bG/LeO3sj9W5E2OweL6Z8FrIVdu1LvOr9QN2sSbNhtxnTXkgpPU5HYDZMl/j98U5o=
+	t=1711569013; cv=none; b=ImzSLxtL+hIltu+nlmCSDlUqDkmPwKBgqA6m5r4OY1b02oyN53leFRq827TgbVDp9Coisfmtgt1rvEqhG8BJkleeqJDYIs0mz1J2zlupmoxRRzEpKn2h5JYksqMeva8BO08teyaj2ERzxZx7vkYK6Rj+lBnaC5nXSCBXX+8fFOY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711568965; c=relaxed/simple;
-	bh=1S6D/JY3KLoJmr8wGe/Dmw5boyY+i2H88C3gEZ34OCs=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=eKVncHBnIhCC9sahm8Y0s4qVAnvyWqheQlN/5DUagMtjU/bzEDtH2d9YD1sw4PenU7724jZhO8Ldx2TlXEUHaqnbfHvOe5p3+09aihd7Riojq9bZJfPmHVRFVjgV0Eo8u2dorR2xBkLkhYD9j7M0rTSgmEQ7ai6JDvClZJxgesI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=pLJVJQIO; arc=none smtp.client-ip=209.85.167.41
+	s=arc-20240116; t=1711569013; c=relaxed/simple;
+	bh=wuxCCv8VQBgulT0IC8qi8fq3uXjMWvgWTlKCDOY8Ffw=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=jIgrSEgpet//3ipImQ2g76hg0HBvewRKnvAhBEaToxppicWR81PnTNn/MpeyQYtiPdIBqewTCf6rkG3tseVxUkGeF676DC+VHiwkCe6wZuBXE6nyCvBxh0sIEkxdaslc2DrAsSMRUJjmAjrEjR+9e+edsJs2pSdvKewisW4HCEA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=gNbpt7vF; arc=none smtp.client-ip=209.85.218.51
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-lf1-f41.google.com with SMTP id 2adb3069b0e04-515a68d45faso114613e87.3
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 12:49:22 -0700 (PDT)
+Received: by mail-ej1-f51.google.com with SMTP id a640c23a62f3a-a466fc8fcccso25126666b.1
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 12:50:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1711568961; x=1712173761; darn=vger.kernel.org;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=0eDPJyDX8czhPyAaXOvjbQyQlZrq8DHkycEJC9OJrp0=;
-        b=pLJVJQIOPrTRUf3LKRdRusOKfaedz4X3TPURdZK0i6GFWQdlkGhqZBplY2JxxH/A15
-         XPt3izRX25RLxjLIqqB+tjTj6CWAml02p8VCFvVJRJehEyR88oHe1cFTXK+a1TZm+GA4
-         AO3qlDN80P8ryjVOozLg8DYAdr2t3ZM6Y6sCoLENB5V1CM/EfjBkxzGO+q0r6zSHQi4W
-         bLqrZY6VTHnbAEexg3LrLcxj11pO0+tFdwcZcAnJh4lOYu3bsrbcwjFIq76cpq+/JAln
-         7HhRc1cLWwAL7VVwkxW3zGhfSE7krO+vGRRDJkRdQYTMrrqe2eGJZ5KFTW0W/XC0CShV
-         wkBw==
+        d=linaro.org; s=google; t=1711569010; x=1712173810; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=+bMAqCJ8t7P3InP0WP0DeRsP6LlfPzKdNMqUuNEm/4E=;
+        b=gNbpt7vF6Lp7b1WE+806lp21l16X8JpQKm9TyOC95a//5gvRvfOayyyEYXPkwukkHN
+         HTm/pwT+/VAxZ/W3dWlWIqFix4pdANMkIKCn0O87whZhbDXENo7vptE+ST+I6qBq8h/u
+         GDLqHI7pKtNKAhSnhlsPWnsCw/ld6wpTrm3MaasqZik13sD9AolXmFHjoXJV+dSC4FXK
+         tyOdeArf5Uzy1r6eSrdxBUGPJ+W347rs9p1PYzypMqREkvV9dbm786ULDvL1HmdA1fM3
+         VpAx5HmCuavm4e4g9XN0k/sAA2wZ3x2XcTZU2+N8nLWLx7skwuSWvV4B2vKgUJ3Gl/VE
+         FAow==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711568961; x=1712173761;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=0eDPJyDX8czhPyAaXOvjbQyQlZrq8DHkycEJC9OJrp0=;
-        b=hBQcae/80sbVG1xRXAC8T6M20Ds0Z4Fhlbuouj8tfSSuH5GLgx7xjuQ+4QufrSMs9L
-         YDVA3yb+MvhDDryWNLUzZkEM2akbwgZxbKzRn33/+vC8LcIIHYq8ReMk8q/3Nv3LDStT
-         BOeMXRuF+w32q6jP90mWnAyWuiL9606o2hp8mDkg4CfaeDv5FEkjHWUTTbD28T2LbRvK
-         NICpc9HXTJIJqOpHzFTx2kR2K8/1hImlD6gZp+VBTgiIWuyYmj9Cmtq3f5qOCebhNXim
-         zaE5dHYA9ba+rYjE4lxllBw21oBTdEHnhOvAASRR/w2RlNKFH0I+0GKp+eqlVTU42N4S
-         bE+A==
-X-Forwarded-Encrypted: i=1; AJvYcCWwnN9DCCmN1OwOp111B9dyUZZIf5eA6oxSOaj8W9MmWI3kYSgLFQowYFHurV86cz1tBQ5cYhz+/I7S5lL2cGL83ypFq4CFjiTgvUAq
-X-Gm-Message-State: AOJu0YwkWYVwrMjZUz3nNyCs+9NOhh/Umw/QxMEnXfYIFNLMTRIT5i1l
-	CJEGGMwBtJc0nZk45apzVf6SrxDFUD8Ly4YBZ39L0puBuWm0k204hKkP0HNFba8=
-X-Google-Smtp-Source: AGHT+IGhyLIDzblCUi77Pa5S3zbnC8ng8y/OaVOZkt/XQHkFAft9znKQeGVgOn7u9hJgI6ytgH1XIg==
-X-Received: by 2002:a19:4359:0:b0:512:b0a7:2943 with SMTP id m25-20020a194359000000b00512b0a72943mr342514lfj.5.1711568960890;
-        Wed, 27 Mar 2024 12:49:20 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1711569010; x=1712173810;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=+bMAqCJ8t7P3InP0WP0DeRsP6LlfPzKdNMqUuNEm/4E=;
+        b=QKLdvj+7+Mcdu4xiFH8BEwDIJDogbHcRbaR+5xpfC8ExkxL3exC6+VWHnJZtki9fEs
+         2XTITZvgIvqLbYEtulWnmF2yEmfxRSVk6Ybxl1Y4wSX8YeYKDsbjS5O4BVqUrzIL+830
+         IZmBKqOqHjLYVHuQv0AlVLmCgrxQIx6via3OQvczfLdjlJd7HrjEyM7AUb49E6Es9Bl8
+         k4FJj3GOm9c4X9LmhmvS+oywYX91X9VI5G3UfjiwQBbgDWvo+Fk+/uqbrJHUcLaQU884
+         2Kym7ipjNdxm9DL54UPRwN8l0gMKs+7eEicRRz7RyE5BjXuUHGqs/82rSe9klwYu0h8e
+         OOig==
+X-Forwarded-Encrypted: i=1; AJvYcCUsWSYRqzqhpDJ5XWu/KraZQhRwEKAoXxIep3tkD5GelUuOmqlHQ9ys5dRLhDmGum11ac26ouSP4+it9bUJLh1qi3R9ImcJUAZG4TYF
+X-Gm-Message-State: AOJu0YxeRhJHY1PJJ4MTrrjcmsEXZUJG621TUhP27209dld5vwnVw9IK
+	PkipyShDJ1n72gMYU2QhgKpPc51wTc1YRzTadfPtNi8GGOBLBKIFPG5Mf/gxy3A=
+X-Google-Smtp-Source: AGHT+IEK1FEdv++g2vsCy21f89ME56VjBd3DO8jXMfxko/7+tJDQKxkB0s3d5Wy0ekpNPimPsqDxwQ==
+X-Received: by 2002:a17:906:2a0c:b0:a47:3c66:b396 with SMTP id j12-20020a1709062a0c00b00a473c66b396mr294393eje.64.1711569009863;
+        Wed, 27 Mar 2024 12:50:09 -0700 (PDT)
 Received: from [192.168.92.47] (078088045141.garwolin.vectranet.pl. [78.88.45.141])
-        by smtp.gmail.com with ESMTPSA id jw22-20020a170906e95600b00a4e0ce293cfsm582147ejb.41.2024.03.27.12.49.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 27 Mar 2024 12:49:20 -0700 (PDT)
-From: Konrad Dybcio <konrad.dybcio@linaro.org>
-Date: Wed, 27 Mar 2024 20:49:09 +0100
-Subject: [PATCH v3 2/2] PCI: qcom: properly implement RC shutdown/power up
+        by smtp.gmail.com with ESMTPSA id z15-20020a170906270f00b00a46b8cd9b51sm5834772ejc.185.2024.03.27.12.50.08
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 27 Mar 2024 12:50:09 -0700 (PDT)
+Message-ID: <60428572-a611-4c43-a185-a850ef69d2de@linaro.org>
+Date: Wed, 27 Mar 2024 20:50:07 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 2/2] ARM: dts: qcom: Add support for Motorola Moto G
+ (2013)
+To: Stanislav Jakubek <stano.jakubek@gmail.com>,
+ Bjorn Andersson <andersson@kernel.org>, Rob Herring <robh@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>
+Cc: linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, phone-devel@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <32c507337ab80c550fb1df08f7014d1e31eb4c32.1711454680.git.stano.jakubek@gmail.com>
+ <8c605fb9cff8364ea6ac321b5a3fc265c5686def.1711454680.git.stano.jakubek@gmail.com>
+Content-Language: en-US
+From: Konrad Dybcio <konrad.dybcio@linaro.org>
+Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
+ 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
+ izWDgYvmBE8=
+In-Reply-To: <8c605fb9cff8364ea6ac321b5a3fc265c5686def.1711454680.git.stano.jakubek@gmail.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-Message-Id: <20240210-topic-8280_pcie-v3-2-ee7af6f892a0@linaro.org>
-References: <20240210-topic-8280_pcie-v3-0-ee7af6f892a0@linaro.org>
-In-Reply-To: <20240210-topic-8280_pcie-v3-0-ee7af6f892a0@linaro.org>
-To: Bjorn Andersson <andersson@kernel.org>, 
- Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>, 
- Lorenzo Pieralisi <lpieralisi@kernel.org>, 
- =?utf-8?q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>, 
- Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>, 
- Philipp Zabel <p.zabel@pengutronix.de>
-Cc: linux-arm-msm@vger.kernel.org, linux-pci@vger.kernel.org, 
- linux-kernel@vger.kernel.org, Johan Hovold <johan+linaro@kernel.org>, 
- Marijn Suijten <marijn.suijten@somainline.org>, 
- Konrad Dybcio <konrad.dybcio@linaro.org>, 
- Bjorn Andersson <quic_bjorande@quicinc.com>
-X-Mailer: b4 0.12.2
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1711568954; l=8480;
- i=konrad.dybcio@linaro.org; s=20230215; h=from:subject:message-id;
- bh=1S6D/JY3KLoJmr8wGe/Dmw5boyY+i2H88C3gEZ34OCs=;
- b=zKoXnvvVFOZPsGWDxzU2b+5Yg2oSt1zdlkrciUMhfPFWCm5Bso6eVBh9HXumdqeJFbxSn2KAF
- vXEBN3ML5JvCOM1s6IY8IkpnN4hZJShWwbXBLltoygvmOaD/DJy48i2
-X-Developer-Key: i=konrad.dybcio@linaro.org; a=ed25519;
- pk=iclgkYvtl2w05SSXO5EjjSYlhFKsJ+5OSZBjOkQuEms=
 
-Currently, we've only been minimizing the power draw while keeping the
-RC up at all times. This is suboptimal, as it draws a whole lot of power
-and prevents the SoC from power collapsing.
+On 26.03.2024 1:11 PM, Stanislav Jakubek wrote:
+> Add a device tree for the Motorola Moto G (2013) smartphone based
+> on the Qualcomm MSM8226 SoC.
+> 
+> Initially supported features:
+>   - Buttons (Volume Down/Up, Power)
+>   - eMMC
+>   - Hall Effect Sensor
+>   - SimpleFB display
+>   - TMP108 temperature sensor
+>   - Vibrator
+> 
+> Note: the dhob and shob reserved-memory regions are seemingly a part of some
+> Motorola specific (firmware?) mechanism, see [1].
+> 
+> [1] https://github.com/LineageOS/android_kernel_motorola_msm8226/blob/cm-14.1/Documentation/devicetree/bindings/misc/hob_ram.txt
+> 
+> Signed-off-by: Stanislav Jakubek <stano.jakubek@gmail.com>
+> ---
 
-Implement full shutdown and re-initialization to allow for powering off
-the controller.
+Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
 
-This is mainly intended for SC8280XP with a broken power rail setup,
-which requires a full RC shutdown/reinit in order to reach SoC-wide
-power collapse, but sleeping is generally better than not sleeping and
-less destructive suspend can be implemented later for platforms that
-support it.
-
-Co-developed-by: Bjorn Andersson <quic_bjorande@quicinc.com>
-Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
----
- drivers/pci/controller/dwc/Kconfig     |   1 +
- drivers/pci/controller/dwc/pcie-qcom.c | 158 ++++++++++++++++++++++++++-------
- 2 files changed, 125 insertions(+), 34 deletions(-)
-
-diff --git a/drivers/pci/controller/dwc/Kconfig b/drivers/pci/controller/dwc/Kconfig
-index 8afacc90c63b..4ce266951cb6 100644
---- a/drivers/pci/controller/dwc/Kconfig
-+++ b/drivers/pci/controller/dwc/Kconfig
-@@ -268,6 +268,7 @@ config PCIE_DW_PLAT_EP
- config PCIE_QCOM
- 	bool "Qualcomm PCIe controller (host mode)"
- 	depends on OF && (ARCH_QCOM || COMPILE_TEST)
-+	depends on QCOM_COMMAND_DB || QCOM_COMMAND_DB=n
- 	depends on PCI_MSI
- 	select PCIE_DW_HOST
- 	select CRC8
-diff --git a/drivers/pci/controller/dwc/pcie-qcom.c b/drivers/pci/controller/dwc/pcie-qcom.c
-index d875a9b2b7be..8fb3532f4651 100644
---- a/drivers/pci/controller/dwc/pcie-qcom.c
-+++ b/drivers/pci/controller/dwc/pcie-qcom.c
-@@ -30,13 +30,17 @@
- #include <linux/reset.h>
- #include <linux/slab.h>
- #include <linux/types.h>
-+#include <soc/qcom/cmd-db.h>
- 
- #include "../../pci.h"
- #include "pcie-designware.h"
- 
-+#include <dt-bindings/interconnect/qcom,icc.h>
-+
- /* PARF registers */
- #define PARF_SYS_CTRL				0x00
- #define PARF_PM_CTRL				0x20
-+#define PARF_PM_STTS				0x24
- #define PARF_PCS_DEEMPH				0x34
- #define PARF_PCS_SWING				0x38
- #define PARF_PHY_CTRL				0x40
-@@ -81,7 +85,10 @@
- #define L1_CLK_RMV_DIS				BIT(1)
- 
- /* PARF_PM_CTRL register fields */
--#define REQ_NOT_ENTR_L1				BIT(5)
-+#define REQ_NOT_ENTR_L1				BIT(5) /* "Prevent L0->L1" */
-+
-+/* PARF_PM_STTS register fields */
-+#define PM_ENTER_L23				BIT(5)
- 
- /* PARF_PCS_DEEMPH register fields */
- #define PCS_DEEMPH_TX_DEEMPH_GEN1(x)		FIELD_PREP(GENMASK(21, 16), x)
-@@ -126,6 +133,7 @@
- 
- /* ELBI_SYS_CTRL register fields */
- #define ELBI_SYS_CTRL_LT_ENABLE			BIT(0)
-+#define ELBI_SYS_CTRL_PME_TURNOFF_MSG		BIT(4)
- 
- /* AXI_MSTR_RESP_COMP_CTRL0 register fields */
- #define CFG_REMOTE_RD_REQ_BRIDGE_SIZE_2K	0x4
-@@ -248,6 +256,7 @@ struct qcom_pcie {
- 	const struct qcom_pcie_cfg *cfg;
- 	struct dentry *debugfs;
- 	bool suspended;
-+	bool soc_is_rpmh;
- };
- 
- #define to_qcom_pcie(x)		dev_get_drvdata((x)->dev)
-@@ -277,6 +286,24 @@ static int qcom_pcie_start_link(struct dw_pcie *pci)
- 	return 0;
- }
- 
-+static int qcom_pcie_stop_link(struct dw_pcie *pci)
-+{
-+	struct qcom_pcie *pcie = to_qcom_pcie(pci);
-+	u32 ret_l23, val;
-+
-+	writel(ELBI_SYS_CTRL_PME_TURNOFF_MSG, pcie->elbi + ELBI_SYS_CTRL);
-+	readl(pcie->elbi + ELBI_SYS_CTRL);
-+
-+	ret_l23 = readl_poll_timeout(pcie->parf + PARF_PM_STTS, val,
-+				     val & PM_ENTER_L23, 10000, 100000);
-+	if (ret_l23) {
-+		dev_err(pci->dev, "Failed to enter L2/L3\n");
-+		return -ETIMEDOUT;
-+	}
-+
-+	return 0;
-+}
-+
- static void qcom_pcie_clear_aspm_l0s(struct dw_pcie *pci)
- {
- 	struct qcom_pcie *pcie = to_qcom_pcie(pci);
-@@ -1012,9 +1039,19 @@ static void qcom_pcie_host_post_init_2_7_0(struct qcom_pcie *pcie)
- static void qcom_pcie_deinit_2_7_0(struct qcom_pcie *pcie)
- {
- 	struct qcom_pcie_resources_2_7_0 *res = &pcie->res.v2_7_0;
-+	u32 val;
-+
-+	/* Disable PCIe clocks and resets */
-+	val = readl(pcie->parf + PARF_PHY_CTRL);
-+	val |= PHY_TEST_PWR_DOWN;
-+	writel(val, pcie->parf + PARF_PHY_CTRL);
-+	readl(pcie->parf + PARF_PHY_CTRL);
- 
- 	clk_bulk_disable_unprepare(res->num_clks, res->clks);
- 
-+	reset_control_assert(res->rst);
-+	usleep_range(2000, 2500);
-+
- 	regulator_bulk_disable(ARRAY_SIZE(res->supplies), res->supplies);
- }
- 
-@@ -1581,6 +1618,9 @@ static int qcom_pcie_probe(struct platform_device *pdev)
- 		goto err_phy_exit;
- 	}
- 
-+	/* If the soc features RPMh, cmd_db must have been prepared by now */
-+	pcie->soc_is_rpmh = !cmd_db_ready();
-+
- 	qcom_pcie_icc_update(pcie);
- 
- 	if (pcie->mhi)
-@@ -1597,58 +1637,108 @@ static int qcom_pcie_probe(struct platform_device *pdev)
- 	return ret;
- }
- 
--static int qcom_pcie_suspend_noirq(struct device *dev)
-+static int qcom_pcie_resume_noirq(struct device *dev)
- {
- 	struct qcom_pcie *pcie = dev_get_drvdata(dev);
- 	int ret;
- 
--	/*
--	 * Set minimum bandwidth required to keep data path functional during
--	 * suspend.
--	 */
--	ret = icc_set_bw(pcie->icc_mem, 0, kBps_to_icc(1));
--	if (ret) {
--		dev_err(dev, "Failed to set interconnect bandwidth: %d\n", ret);
--		return ret;
-+	if (pcie->soc_is_rpmh) {
-+		/*
-+		 * Undo the tag change from qcom_pcie_suspend_noirq first in
-+		 * case RPMh spontaneously decides to power collapse the
-+		 * platform based on other inputs.
-+		 */
-+		icc_set_tag(pcie->icc_mem, QCOM_ICC_TAG_ALWAYS);
-+
-+		/* Flush the tag change */
-+		ret = icc_enable(pcie->icc_mem);
-+		if (ret) {
-+			dev_err(pcie->pci->dev, "failed to icc_enable: %d", ret);
-+			return ret;
-+		}
- 	}
- 
--	/*
--	 * Turn OFF the resources only for controllers without active PCIe
--	 * devices. For controllers with active devices, the resources are kept
--	 * ON and the link is expected to be in L0/L1 (sub)states.
--	 *
--	 * Turning OFF the resources for controllers with active PCIe devices
--	 * will trigger access violation during the end of the suspend cycle,
--	 * as kernel tries to access the PCIe devices config space for masking
--	 * MSIs.
--	 *
--	 * Also, it is not desirable to put the link into L2/L3 state as that
--	 * implies VDD supply will be removed and the devices may go into
--	 * powerdown state. This will affect the lifetime of the storage devices
--	 * like NVMe.
--	 */
--	if (!dw_pcie_link_up(pcie->pci)) {
--		qcom_pcie_host_deinit(&pcie->pci->pp);
--		pcie->suspended = true;
--	}
-+	/* Only check this now to make sure the icc tag has been set. */
-+	if (!pcie->suspended)
-+		return 0;
-+
-+	ret = qcom_pcie_host_init(&pcie->pci->pp);
-+	if (ret)
-+		goto revert_icc_tag;
-+
-+	dw_pcie_setup_rc(&pcie->pci->pp);
-+
-+	ret = qcom_pcie_start_link(pcie->pci);
-+	if (ret)
-+		goto deinit_host;
-+
-+	/* Ignore the retval, the devices may come up later. */
-+	dw_pcie_wait_for_link(pcie->pci);
-+
-+	qcom_pcie_icc_update(pcie);
-+
-+	pcie->suspended = false;
- 
- 	return 0;
-+
-+deinit_host:
-+	qcom_pcie_host_deinit(&pcie->pci->pp);
-+revert_icc_tag:
-+	if (pcie->soc_is_rpmh) {
-+		icc_set_tag(pcie->icc_mem, QCOM_ICC_TAG_WAKE);
-+
-+		/* Ignore the retval, failing here would be tragic anyway.. */
-+		icc_enable(pcie->icc_mem);
-+	}
-+
-+	return ret;
- }
- 
--static int qcom_pcie_resume_noirq(struct device *dev)
-+static int qcom_pcie_suspend_noirq(struct device *dev)
- {
- 	struct qcom_pcie *pcie = dev_get_drvdata(dev);
- 	int ret;
- 
--	if (pcie->suspended) {
--		ret = qcom_pcie_host_init(&pcie->pci->pp);
-+	if (pcie->suspended)
-+		return 0;
-+
-+	if (dw_pcie_link_up(pcie->pci)) {
-+		ret = qcom_pcie_stop_link(pcie->pci);
- 		if (ret)
- 			return ret;
-+	}
- 
--		pcie->suspended = false;
-+	qcom_pcie_host_deinit(&pcie->pci->pp);
-+
-+	if (pcie->soc_is_rpmh) {
-+		/*
-+		 * The PCIe RC may be covertly accessed by the secure firmware
-+		 * on sleep exit. Use the WAKE bucket to let RPMh pull the plug
-+		 * on PCIe in sleep, but guarantee it comes back up for resume.
-+		 */
-+		icc_set_tag(pcie->icc_mem, QCOM_ICC_TAG_WAKE);
-+
-+		/* Flush the tag change */
-+		ret = icc_enable(pcie->icc_mem);
-+		if (ret) {
-+			dev_err(pcie->pci->dev, "failed to icc_enable %d\n", ret);
-+
-+			/* Revert everything and pray icc calls succeed */
-+			return qcom_pcie_resume_noirq(dev);
-+		}
-+	} else {
-+		/*
-+		 * Set minimum bandwidth required to keep data path functional
-+		 * during suspend.
-+		 */
-+		ret = icc_set_bw(pcie->icc_mem, 0, kBps_to_icc(1));
-+		if (ret) {
-+			dev_err(dev, "Failed to set interconnect bandwidth: %d\n", ret);
-+			return ret;
-+		}
- 	}
- 
--	qcom_pcie_icc_update(pcie);
-+	pcie->suspended = true;
- 
- 	return 0;
- }
-
--- 
-2.44.0
-
+Konrad
 
