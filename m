@@ -1,52 +1,55 @@
-Return-Path: <linux-kernel+bounces-120961-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-120962-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6AE4B88E11B
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 13:52:28 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 542AC88E100
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 13:49:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DEA0FB22D89
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 12:49:19 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0F29F2A2E1D
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 12:49:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DA1E7153505;
-	Wed, 27 Mar 2024 12:15:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A6046137776;
+	Wed, 27 Mar 2024 12:15:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="e8BCPyel"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="H0/2QGOk"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2A7231534EF;
-	Wed, 27 Mar 2024 12:15:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E7D0D153514;
+	Wed, 27 Mar 2024 12:15:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711541704; cv=none; b=aK8mjKJon3eLdJlYyRd0vMSeJfUm3WTdRsObqP/R8T8Q/BlGlTqXO2EVxvqjJ6TQa6mkNlp+ygWlOaXjDOzh0GI+Mki/hVZbfKZfLGm3KBz+NPP/tP5s8etRxUN0wewcKEquDcPfWu4/IUpScb+ZXE7YmCy0TTWHqZp2ZwpF7j0=
+	t=1711541707; cv=none; b=Zf02aWG72LfRxnRdy7OAV/NNOMjzG0XNIq7MNNandvH7g1EcjcDTHvtpeOMLE+rmfExWOGeF18Xup3CWSzXzO7Mq9LzMSPRL6e1LdXLI/AgPfbf6VuGnhvwYkoSF8NWL3DwQ2N90dVo02agFwqAjNRo54cBgz5bmJSiGCJS8Jqo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711541704; c=relaxed/simple;
-	bh=yBgtll2R35jg4g9LRLSIQ7jhmiQAONoPIbNT67VptA4=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=dX9lb0ppTT9E7K+pnlI6A89INV3Y2jE2PYSjZ6g+MvVihige2H2JViplRaKXKQP6BfNP8oVjnGJ02xssKI4QQo+CcL+Q0zKvAaNfdYTy4U2dEndStekKRCgw2J0uTCPORVY6TPYcgz35M2zmYPjpHPTCx8zhFTVhtrtPxnzGx38=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=e8BCPyel; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 751ECC433C7;
-	Wed, 27 Mar 2024 12:15:03 +0000 (UTC)
+	s=arc-20240116; t=1711541707; c=relaxed/simple;
+	bh=IoyHV9A31KteztCOjpzqwRdcBhAxntX9w1rJ63hGATw=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=XVqibTlbiuWD9Q59vvT0AYGLDQmNHZJaSmrYqLCf3uvv15hSVgHZJvX3fPpTUpV3X4S8JbVRu2l59Z/p6mz/F0gvhXjxK65JD70K0zGa7DVFUUAygcRXQtV4XHawTH/R00/ceV+lVax48Ve+9DICRsRSTurmP1CFnl2KOySboXY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=H0/2QGOk; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E01F4C433C7;
+	Wed, 27 Mar 2024 12:15:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711541704;
-	bh=yBgtll2R35jg4g9LRLSIQ7jhmiQAONoPIbNT67VptA4=;
+	s=k20201202; t=1711541706;
+	bh=IoyHV9A31KteztCOjpzqwRdcBhAxntX9w1rJ63hGATw=;
 	h=From:To:Cc:Subject:Date:From;
-	b=e8BCPyelJtz9H8nJykttAU4R74Pc4iBm5K+rC92iHQNDAuz0EToadDWBaIAEqrSE4
-	 /lXfO16oGr6WDWo5noVMwnq4T+BE2HEeIebOLKalLMwpHOiAOwxr4tgnbkf2iXpSVX
-	 FYSZmcnlmpo0/3lafhMvlAZSrPV7HLzJvOYs8RxnzbLLudMmhvQWpfKMC0Z8tDIaqe
-	 bXOPQZEZuw6PXMsEh8BEIN95I2G5gRRA4U68xF0tJZjNk6Kula41MBaLtCLKiqTcAD
-	 O9AIBVNEUaiQyuIk79mbgOa8Y0z+Fb0bkH/qeX9fJHwiwo6CDH8vmKfBrqKU8d7r6j
-	 xzbFhsKEGNKrA==
+	b=H0/2QGOk+6q09Rt7zzqT7B2JQYhDkyR9oJurR3mG8vh2/RztLJj9BHjREP23I2yX+
+	 EKtxeDjIEhGolvTzvDQP4Ji+kRgaGUNhtbTRflIEgLJBJ3upDneBDG1RUexJIl7I4l
+	 0vBz3rHZEuWGXyNgBExNf91Vk5e4AhOQKoGBFFigMallijoEkT73Te4dB2OCNjnSkx
+	 nJnc5SANTUPTZWyV1gdQ6nJJHlKP348IVW0OlcxJSIWnoFS2UxeuJWEDTwA0LZMK2e
+	 eoQMq/XPqO0g1DM+ivSRqas6gEkaCfRUcEQDkfdC5UhmvlVSBEwg8tYFML2Uf4X+QJ
+	 PeQSl8+TM7TPA==
 From: Sasha Levin <sashal@kernel.org>
 To: stable@vger.kernel.org,
-	ardb@kernel.org
-Cc: stable@kernel.org,
+	yukuai3@huawei.com
+Cc: Xiao Ni <xni@redhat.com>,
+	Mike Snitzer <snitzer@kernel.org>,
+	Song Liu <song@kernel.org>,
+	dm-devel@lists.linux.dev,
 	linux-kernel@vger.kernel.org
-Subject: FAILED: Patch "x86/efistub: Call mixed mode boot services on the firmware's stack" failed to apply to 5.15-stable tree
-Date: Wed, 27 Mar 2024 08:15:02 -0400
-Message-ID: <20240327121502.2831571-1-sashal@kernel.org>
+Subject: FAILED: Patch "md/dm-raid: don't call md_reap_sync_thread() directly" failed to apply to 5.15-stable tree
+Date: Wed, 27 Mar 2024 08:15:04 -0400
+Message-ID: <20240327121504.2831608-1-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -68,81 +71,81 @@ Sasha
 
 ------------------ original commit in Linus's tree ------------------
 
-From cefcd4fe2e3aaf792c14c9e56dab89e3d7a65d02 Mon Sep 17 00:00:00 2001
-From: Ard Biesheuvel <ardb@kernel.org>
-Date: Fri, 22 Mar 2024 17:03:58 +0200
-Subject: [PATCH] x86/efistub: Call mixed mode boot services on the firmware's
- stack
+From cd32b27a66db8776d8b8e82ec7d7dde97a8693b0 Mon Sep 17 00:00:00 2001
+From: Yu Kuai <yukuai3@huawei.com>
+Date: Tue, 5 Mar 2024 15:23:03 +0800
+Subject: [PATCH] md/dm-raid: don't call md_reap_sync_thread() directly
 
-Normally, the EFI stub calls into the EFI boot services using the stack
-that was live when the stub was entered. According to the UEFI spec,
-this stack needs to be at least 128k in size - this might seem large but
-all asynchronous processing and event handling in EFI runs from the same
-stack and so quite a lot of space may be used in practice.
+Currently md_reap_sync_thread() is called from raid_message() directly
+without holding 'reconfig_mutex', this is definitely unsafe because
+md_reap_sync_thread() can change many fields that is protected by
+'reconfig_mutex'.
 
-In mixed mode, the situation is a bit different: the bootloader calls
-the 32-bit EFI stub entry point, which calls the decompressor's 32-bit
-entry point, where the boot stack is set up, using a fixed allocation
-of 16k. This stack is still in use when the EFI stub is started in
-64-bit mode, and so all calls back into the EFI firmware will be using
-the decompressor's limited boot stack.
+However, hold 'reconfig_mutex' here is still problematic because this
+will cause deadlock, for example, commit 130443d60b1b ("md: refactor
+idle/frozen_sync_thread() to fix deadlock").
 
-Due to the placement of the boot stack right after the boot heap, any
-stack overruns have gone unnoticed. However, commit
+Fix this problem by using stop_sync_thread() to unregister sync_thread,
+like md/raid did.
 
-  5c4feadb0011983b ("x86/decompressor: Move global symbol references to C code")
-
-moved the definition of the boot heap into C code, and now the boot
-stack is placed right at the base of BSS, where any overruns will
-corrupt the end of the .data section.
-
-While it would be possible to work around this by increasing the size of
-the boot stack, doing so would affect all x86 systems, and mixed mode
-systems are a tiny (and shrinking) fraction of the x86 installed base.
-
-So instead, record the firmware stack pointer value when entering from
-the 32-bit firmware, and switch to this stack every time a EFI boot
-service call is made.
-
-Cc: <stable@kernel.org> # v6.1+
-Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
+Fixes: be83651f0050 ("DM RAID: Add message/status support for changing sync action")
+Cc: stable@vger.kernel.org # v6.7+
+Signed-off-by: Yu Kuai <yukuai3@huawei.com>
+Signed-off-by: Xiao Ni <xni@redhat.com>
+Acked-by: Mike Snitzer <snitzer@kernel.org>
+Signed-off-by: Song Liu <song@kernel.org>
+Link: https://lore.kernel.org/r/20240305072306.2562024-7-yukuai1@huaweicloud.com
 ---
- arch/x86/boot/compressed/efi_mixed.S | 9 +++++++++
- 1 file changed, 9 insertions(+)
+ drivers/md/dm-raid.c | 28 ++++++++++++++++++----------
+ 1 file changed, 18 insertions(+), 10 deletions(-)
 
-diff --git a/arch/x86/boot/compressed/efi_mixed.S b/arch/x86/boot/compressed/efi_mixed.S
-index f4e22ef774ab6..719e939050cbf 100644
---- a/arch/x86/boot/compressed/efi_mixed.S
-+++ b/arch/x86/boot/compressed/efi_mixed.S
-@@ -49,6 +49,11 @@ SYM_FUNC_START(startup_64_mixed_mode)
- 	lea	efi32_boot_args(%rip), %rdx
- 	mov	0(%rdx), %edi
- 	mov	4(%rdx), %esi
-+
-+	/* Switch to the firmware's stack */
-+	movl	efi32_boot_sp(%rip), %esp
-+	andl	$~7, %esp
-+
- #ifdef CONFIG_EFI_HANDOVER_PROTOCOL
- 	mov	8(%rdx), %edx		// saved bootparams pointer
- 	test	%edx, %edx
-@@ -254,6 +259,9 @@ SYM_FUNC_START_LOCAL(efi32_entry)
- 	/* Store firmware IDT descriptor */
- 	sidtl	(efi32_boot_idt - 1b)(%ebx)
+diff --git a/drivers/md/dm-raid.c b/drivers/md/dm-raid.c
+index e2d7a73c0f874..47c4b1b6e532a 100644
+--- a/drivers/md/dm-raid.c
++++ b/drivers/md/dm-raid.c
+@@ -3719,6 +3719,7 @@ static int raid_message(struct dm_target *ti, unsigned int argc, char **argv,
+ {
+ 	struct raid_set *rs = ti->private;
+ 	struct mddev *mddev = &rs->md;
++	int ret = 0;
  
-+	/* Store firmware stack pointer */
-+	movl	%esp, (efi32_boot_sp - 1b)(%ebx)
-+
- 	/* Store boot arguments */
- 	leal	(efi32_boot_args - 1b)(%ebx), %ebx
- 	movl	%ecx, 0(%ebx)
-@@ -318,5 +326,6 @@ SYM_DATA_END(efi32_boot_idt)
+ 	if (!mddev->pers || !mddev->pers->sync_request)
+ 		return -EINVAL;
+@@ -3726,17 +3727,24 @@ static int raid_message(struct dm_target *ti, unsigned int argc, char **argv,
+ 	if (test_bit(RT_FLAG_RS_SUSPENDED, &rs->runtime_flags))
+ 		return -EBUSY;
  
- SYM_DATA_LOCAL(efi32_boot_cs, .word 0)
- SYM_DATA_LOCAL(efi32_boot_ds, .word 0)
-+SYM_DATA_LOCAL(efi32_boot_sp, .long 0)
- SYM_DATA_LOCAL(efi32_boot_args, .long 0, 0, 0)
- SYM_DATA(efi_is64, .byte 1)
+-	if (!strcasecmp(argv[0], "frozen"))
+-		set_bit(MD_RECOVERY_FROZEN, &mddev->recovery);
+-	else
+-		clear_bit(MD_RECOVERY_FROZEN, &mddev->recovery);
++	if (!strcasecmp(argv[0], "frozen")) {
++		ret = mddev_lock(mddev);
++		if (ret)
++			return ret;
+ 
+-	if (!strcasecmp(argv[0], "idle") || !strcasecmp(argv[0], "frozen")) {
+-		if (mddev->sync_thread) {
+-			set_bit(MD_RECOVERY_INTR, &mddev->recovery);
+-			md_reap_sync_thread(mddev);
+-		}
+-	} else if (decipher_sync_action(mddev, mddev->recovery) != st_idle)
++		md_frozen_sync_thread(mddev);
++		mddev_unlock(mddev);
++	} else if (!strcasecmp(argv[0], "idle")) {
++		ret = mddev_lock(mddev);
++		if (ret)
++			return ret;
++
++		md_idle_sync_thread(mddev);
++		mddev_unlock(mddev);
++	}
++
++	clear_bit(MD_RECOVERY_FROZEN, &mddev->recovery);
++	if (decipher_sync_action(mddev, mddev->recovery) != st_idle)
+ 		return -EBUSY;
+ 	else if (!strcasecmp(argv[0], "resync"))
+ 		; /* MD_RECOVERY_NEEDED set below */
 -- 
 2.43.0
 
