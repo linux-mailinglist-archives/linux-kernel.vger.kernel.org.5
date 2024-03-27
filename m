@@ -1,91 +1,117 @@
-Return-Path: <linux-kernel+bounces-121700-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-121709-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 97FFC88ECB3
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 18:32:43 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id BCC9D88ECCF
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 18:40:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 27EEC2A330B
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 17:32:42 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 728E21F28D53
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 17:40:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ADBA614D45F;
-	Wed, 27 Mar 2024 17:32:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 305E914D2B4;
+	Wed, 27 Mar 2024 17:40:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Qwe7dwQ8"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="j1liQETL"
+Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EA88C12A14B;
-	Wed, 27 Mar 2024 17:32:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD4AB14A60E;
+	Wed, 27 Mar 2024 17:40:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711560755; cv=none; b=Z3Of6hwfuv2OTcS03LZzW9frP4SWiEjzpCqVhZOO+bXmbZVX1KyBetG1niQ6sZe4Tg/Qx3lvV4BVXz4NWCwb5wJ/a5WCHEp6fkpOuI4165y6co0P/LrmiiQJlxuXjNuDnrgtoC0v+jr0/qW6ql3q7Nppvy3d+gLwg9/vrWfbgDs=
+	t=1711561242; cv=none; b=hT1h3bemIsj5f7fj8pptLwXeGsB+YEIFE0VJtV5vFxNI37a9PaFS4i5umqjrJch0l2tjXKczn+/kxjA+J60/IxBnUhw1cYvW35M8Wiw6HsNFirsD4DKuZbtJQpuvdvM1jKQ8Qy/Kr7XHvqC7ABuqlXKxeJvH5HeQeLcrid7Z97o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711560755; c=relaxed/simple;
-	bh=3+VqtmATpJblwRQt9MVkGbCCHJ4KeR0YviYHYv4LBC4=;
+	s=arc-20240116; t=1711561242; c=relaxed/simple;
+	bh=srgctdpBr0p3tnZe1+I+kGnQ9airdU7dZhtChNsf194=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=FFHddDgc0R9/g7g6xLbno/28ZrBbMJkSY84zN3NTxCkw0c4Z2ltnOnFiutwARtBcFtUX5HZDybSEMspq+JclLGGYH+/IdsIG8U0YC1JjyQIrLzVwYRbLhUIU66G9Don00tDU/uVivXBKT0xT9l9Kjrx9Xg2JBNiRF507UNvnBEM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Qwe7dwQ8; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 396A4C433C7;
-	Wed, 27 Mar 2024 17:32:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711560754;
-	bh=3+VqtmATpJblwRQt9MVkGbCCHJ4KeR0YviYHYv4LBC4=;
+	 Content-Type:Content-Disposition:In-Reply-To; b=fvduotWDjY4kRtAeq6YPVufNoUp0Z9heIO3CMan8NPLuV6vwInFu4fDAz/8WDYdA+cXB57eFJMEhTm00T8xIYOFiaiVOcSFd8hmB5q/9NFu6GExuPuoFt1X/k/KdRbpHlMuMeb/6v8mP36QlIKqgSN+xGoJbQkBqr+SQiptagDc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=j1liQETL; arc=none smtp.client-ip=65.109.113.108
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
+Received: from localhost (localhost.localdomain [127.0.0.1])
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 2506940E024C;
+	Wed, 27 Mar 2024 17:33:19 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
+	header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id NEGRHPZY1Udy; Wed, 27 Mar 2024 17:33:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+	t=1711560795; bh=7hJcNztbvoltbNYuqLlcZ4eKB+PYom08C1n5dtPK9ic=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Qwe7dwQ8aexSMGFGOq7jVjNjV18DghOH/LISpBbFjJI7UDK92aWvKB2T6oE3fIWis
-	 mYvWLE5AeVmBAeh7UjBQOFOtmIDfxEH3xfOO6U0abqnePrtntxaI+rrQiOPfen8cOf
-	 e/AAkjtKPpJERDcVkSR2RanVewGdjaleblntoazWlO0qzV+O7IyJkYIclSCmISFM1F
-	 TcKfgCS/rcH+Tdp8tGQ30ucgET8pnsJP3Qv+dWVXmEtkceaVOTo0N3XXk1KMxY1J6G
-	 r0ZC/OhRhLj6ChfuLhqQt3ToSpBf+eRhIjwPRlO4cK3q12k7M7IkUqgDuHDm1X9N/d
-	 6mCWkSHWO+gGA==
-Date: Wed, 27 Mar 2024 12:32:32 -0500
-From: Rob Herring <robh@kernel.org>
-To: Seven Lee <wtli@nuvoton.com>
-Cc: supercraig0719@gmail.com, conor+dt@kernel.org, YHCHuang@nuvoton.com,
-	linux-kernel@vger.kernel.org, krzysztof.kozlowski+dt@linaro.org,
-	SJLIN0@nuvoton.com, scott6986@gmail.com, perex@perex.cz,
-	tiwai@suse.com, robh+dt@kernel.org, broonie@kernel.org,
-	alsa-devel@alsa-project.org, lgirdwood@gmail.com,
-	dardar923@gmail.com, devicetree@vger.kernel.org, CTLIN0@nuvoton.com,
-	linux-sound@vger.kernel.org, KCHSU0@nuvoton.com
-Subject: Re: [PATCH v5 1/2] ASoC: dt-bindings: Added schema for
- "nuvoton,nau8325"
-Message-ID: <171156075147.3680539.3171999562825718335.robh@kernel.org>
-References: <20240327075755.3410381-1-wtli@nuvoton.com>
- <20240327075755.3410381-2-wtli@nuvoton.com>
+	b=j1liQETLuNzbUZlMOehHIkqvcM36uSsIEz0qIYPLwz1LbPguT7XuBKfkQf9Ru3SX4
+	 F0hT16k3/m42OBUpKM8wvfmxs1rteeSEvO//NHexUdyUv8dU/g60vZpVZLnU8j75+d
+	 mo+KYYwTKsoSq7bgIpxQB+4See5S4BFVBXzV++BDOUy+1fIgfhIEgeFHWO6ryoaFel
+	 THmDopG604QqctncHRO3kHX/bAXpfAJY9yLTbu6jsmknQzNj+mABleokKcMVyGCiWp
+	 uI+8RgPWjuEnjHdblwtjo8aNuNQ7q/LLig1yPyjQgapTwXk7+WOiTBVL8j9/X7R/wq
+	 tvkgn2VfSsNfrzMBb07IP9AgIzkwWO8HJGe98cFbDyJUBYDdkkLqoQkvyf2BnXmYBS
+	 lrxpqbvD5c5Aqnpww+oGWFHHFb505nnDXExvSI6UkdL01C5cfgL0vRmbYiro+EX92q
+	 4goMCwx0e0F8uLKswzFS35E6L0rlaT0goFGyAHztVd5ByXn7jwx1BS+p+CF5tWcfMw
+	 rhQPE+KvUpIhy6cCrQBaL9XRlDKuHXdLHk06469C562e3fUInsClQIXOa6XXVB5Wgp
+	 1suToznxeCdRprNsMhOX7YgIWco2HEPOfL6zc70I7rjY6BiE6xpbi7UCaZvppLMNjH
+	 4KNy9KDl6A8BK85o5QhAu0jk=
+Received: from zn.tnic (p5de8ecf7.dip0.t-ipconnect.de [93.232.236.247])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+	(No client certificate requested)
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 4318140E0028;
+	Wed, 27 Mar 2024 17:32:52 +0000 (UTC)
+Date: Wed, 27 Mar 2024 18:32:45 +0100
+From: Borislav Petkov <bp@alien8.de>
+To: "Jiri Slaby (SUSE)" <jirislaby@kernel.org>
+Cc: linux-kernel@vger.kernel.org, Andre Przywara <andre.przywara@arm.com>,
+	Bjorn Andersson <andersson@kernel.org>,
+	Dinh Nguyen <dinguyen@kernel.org>,
+	Douglas Thompson <dougthompson@xmission.com>,
+	James Morse <james.morse@arm.com>, Jan Luebbe <jlu@pengutronix.de>,
+	Johannes Thumshirn <morbidrsa@gmail.com>,
+	Khuong Dinh <khuong@os.amperecomputing.com>,
+	Konrad Dybcio <konrad.dybcio@linaro.org>,
+	linux-edac@vger.kernel.org,
+	Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+	Mauro Carvalho Chehab <mchehab@kernel.org>,
+	Michal Simek <michal.simek@amd.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Paul Walmsley <paul.walmsley@sifive.com>,
+	Ralf Baechle <ralf@linux-mips.org>,
+	Robert Richter <rric@kernel.org>,
+	Sai Krishna Potthuri <sai.krishna.potthuri@amd.com>,
+	Shubhrajyoti Datta <shubhrajyoti.datta@amd.com>,
+	Tony Luck <tony.luck@intel.com>,
+	Yazen Ghannam <yazen.ghannam@amd.com>
+Subject: Re: [PATCH 0/7] EDAC: remove unused structure members
+Message-ID: <20240327173245.GFZgRYPTetxzmNZFAV@fat_crate.local>
+References: <20240213112051.27715-1-jirislaby@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20240327075755.3410381-2-wtli@nuvoton.com>
+In-Reply-To: <20240213112051.27715-1-jirislaby@kernel.org>
 
+On Tue, Feb 13, 2024 at 12:20:44PM +0100, Jiri Slaby (SUSE) wrote:
+> Jiri Slaby (SUSE) (7):
+>   EDAC/amd64: Remove amd64_pvt::ext_nbcfg
+>   EDAC/device: Remove edac_dev_sysfs_block_attribute::{block,value}
+>   EDAC/device: Remove edac_dev_sysfs_block_attribute::store()
+>   EDAC: Remove dynamic attributes from edac_device_alloc_ctl_info()
+>   EDAC: Remove edac_pci_ctl_info::edac_subsys
+>   EDAC: Remove edac_pci_ctl_info::complete
+>   EDAC: Remove edac_device_ctl_info::removal_complete
 
-On Wed, 27 Mar 2024 15:57:54 +0800, Seven Lee wrote:
-> Add a DT schema for describing nau8325 audio amplifiers. The key features
-> are as follows:
->   - Low SPK_VDD Quiescent Current
->   - Gain Setting with 2-wire interface
->   - Powerful Stereo Class-D Amplifier
->   - Low Output Noise
->   - Low Current Shutdown Mode
->   - Click-and Pop Suppression
-> 
-> More resources :
-> https://www.nuvoton.com/products/smart-home-audio/audio-amplifiers/class-d-series/nau8325yg/
-> 
-> Signed-off-by: Seven Lee <wtli@nuvoton.com>
-> ---
->  .../bindings/sound/nuvoton,nau8325.yaml       | 80 +++++++++++++++++++
->  1 file changed, 80 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/sound/nuvoton,nau8325.yaml
-> 
+All applied, the last three squashed into one patch.
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+Thx.
 
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
 
