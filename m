@@ -1,118 +1,104 @@
-Return-Path: <linux-kernel+bounces-121894-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-121895-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7F94C88EF07
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 20:14:10 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6EA7088EF08
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 20:14:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B162C1C34858
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 19:14:09 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0F5B81F36653
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 19:14:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 89459152508;
-	Wed, 27 Mar 2024 19:13:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DA6CE152525;
+	Wed, 27 Mar 2024 19:13:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="iDGCHKto"
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="C8oGhhGj"
+Received: from mail-oi1-f174.google.com (mail-oi1-f174.google.com [209.85.167.174])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4BECC14F116;
-	Wed, 27 Mar 2024 19:13:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C492814F138
+	for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 19:13:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711566808; cv=none; b=GDDnZhMI3Dta07ih4qDnZbUcrYcMjLCFaOv9OYsRKKF7VExuICM0p8pSqb6CYPP4BiOEzsyMjYzvtsye4gJbDK0UraWXIut753jwsNK1QNH5JGmtimwcseAMiAg5olNizVOWbnqWrpyV9/FKae6ioaCe/uk2+ikXzcMJASrmIc8=
+	t=1711566810; cv=none; b=eJ+tgPtJDMeyiYV2JXuFVJikqZxtmoxl2hADmp8/Z5JOOT2pjZmFPN9+d5EbZd8QGKKRc212N0nFFTFxpeozGMVNxmSlqjzIoY9Z0SQQ65sRAkFEKjeR+LnX+rTKcFL5OFlw2fm7FfWojNZEagHEr/TW/rlYamalLWDoWox81ro=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711566808; c=relaxed/simple;
-	bh=GiBvZGM5d+MJ9nL+XKeF311lIglVFwLbNL8+lh9qVog=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=JKS2LKAYGN8gN1DYiMwjQz16oTYqObbM5Vrz7E6YBBtauZCwZHOIzAApUf/PoMad0gtLi0ZstFX7r/RCEIS4ZOFuoyywjFmfeEwJHDJQEfmtFBINiLi5CmTEgjfh0YPlMbsMBdVmrtxK/5r4XdH4RA7XtHNFTJk7NNGYbqTTHvU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=iDGCHKto; arc=none smtp.client-ip=46.235.227.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1711566805;
-	bh=GiBvZGM5d+MJ9nL+XKeF311lIglVFwLbNL8+lh9qVog=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=iDGCHKtoN/WGgRDfzhPHfQ4Ets+5rW/KMANIGd5fysyNxdDG2QsMcP2sePtGKV6YV
-	 XlFr7T/MqmMppB/BJkHWfepXlTbO62dzdCe88ikh//Ou8Cpti44rhNCTRtCQDfwe3B
-	 LgDfSrYUNRgLfwjRvuHhCoOs8BWYy/kEzQF95ArUrOsN5oZqPr3pzWiBFES46Bmjni
-	 /CNOqNQdiA9RGI5PG6u5jh0pX95XZMQ+8bnsqRQOb51r1H7fHn2NALag+47FVGZPwS
-	 90tIc7EqcwTuPEtoB5SqqUbYKyH8IM/W9hqUavyDsjKA9ZBK68Ab0FkuUpkCEx+a4m
-	 QBZEvOllLL8oQ==
-Received: from mercury (cola.collaboradmins.com [195.201.22.229])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: sre)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 9270B3782112;
-	Wed, 27 Mar 2024 19:13:25 +0000 (UTC)
-Received: by mercury (Postfix, from userid 1000)
-	id 091EE10608D9; Wed, 27 Mar 2024 20:13:24 +0100 (CET)
-Date: Wed, 27 Mar 2024 20:13:24 +0100
-From: Sebastian Reichel <sebastian.reichel@collabora.com>
-To: Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <linux@weissschuh.net>
-Cc: Hans de Goede <hdegoede@redhat.com>, 
-	Konrad Dybcio <konradybcio@kernel.org>, linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3] power: supply: test-power: implement charge_behaviour
- property
-Message-ID: <awrqnnmesuzhfowt5ewnur4snndcrhroymgb74wc2tfdwn7bdi@pwohlf77vcko>
-References: <20240306-power_supply-charge_behaviour_prop-v3-1-d04cf1f5f0af@weissschuh.net>
- <171148264419.185695.14027540198251584096.b4-ty@collabora.com>
- <6f0761a6-5f49-42e2-9b79-3e04c9d259a4@redhat.com>
- <9fe3d7a6-3b34-4c96-bd9f-510b41f9ab0d@redhat.com>
- <daactalkmzucga47cmncjkgnxyppouqnrj3vtsz34d5edrkmzu@p32ylpv3nqwx>
- <2e4f42b3-fe64-43f2-a55b-c745a6903ddc@redhat.com>
- <8661d581-838d-4bcd-96df-2ae4b7572c82@t-8ch.de>
+	s=arc-20240116; t=1711566810; c=relaxed/simple;
+	bh=AOr5jmDe+7IUVT1JcnkAgfe0iSFoQ6Rm98g8VbVUXJo=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=FdKAuVtHu26WQQLlqVmv+gYBG0hYO76eE70PWdx5is4HzC7JAXrTpTckBndr7/52/d9+nAUThZCfd5axNcGLRpVOt7iukXCnCQlvv67RC7c30Psa2+4cqF8+IYPMxXpHogpMseWknFDWChpcu8vykKRhiNHaL5ZABHALR9Cg1qY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=C8oGhhGj; arc=none smtp.client-ip=209.85.167.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oi1-f174.google.com with SMTP id 5614622812f47-3bbc649c275so127089b6e.0
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 12:13:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1711566808; x=1712171608; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=ApXXhv3UWIeELY0teQK//GdogJ+SWaFmwt8VGFJJU9o=;
+        b=C8oGhhGjJBdeVKj7vjYitprnS0LVnbuxfegUk8FqR36G//GU6qAPZCz7rUnSIRj62a
+         j1ay/OvFNqJTqUyX6IMmA8GWzdJJFZDzK27tBDrJXrGXlt30SF2GhqS/2G+DZ5iP3i/3
+         9JiSmTbWv6o0xcVRaQgLAnYkHh9XMMBywsclkDaHxMQFfTfnbAse6eGWPWIJNrRLXRQ2
+         nE3H3JBEhBoloT68iAYtmk34+VkkaSbfljwEjXzesGZl9OrWVB3kXGXmKLzSvTcIQAGF
+         6XgyfBqUGNG2T1DZv5udpUzucVzzS3KBh6HOJ6YeQ0GwhTIZg6MOIYpGiK2J17PqVJRk
+         eQ5A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711566808; x=1712171608;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=ApXXhv3UWIeELY0teQK//GdogJ+SWaFmwt8VGFJJU9o=;
+        b=kX37bEY+Cqo8u4F2gL9AR6L+B4dsu90599J/c6pTlpv9kro/L/tjtSlQEmY3uJ9akO
+         ekg+Bu0OyZmna0o7GPukinHv3z+iSE1yOniLpuhXaewZI6EhK6uSSvSchTY4LJos/9dG
+         wuBEickYllhKfUctXw69stu03ezz/BhLVexUqaeVofOtnjboV+PFL2bwIh65oIPSZ0kr
+         Jym/C/tNkZoO/et24nQV8rewRgzXfgnFzKDDrYxuK/OQw2crf2I+7mV5mrVENfndKw4N
+         +nV+l5NtLbqv/TBCrcfr4Y7jiYbYp62vMwk/hql7Hd5ZxbEdcmIIazcULPv6RLyGJBg+
+         c5OQ==
+X-Forwarded-Encrypted: i=1; AJvYcCW5WLpp8jJhkgwer4NpgWtJ2r15imlj4mUOS8Ci+IvV7lYzJoCGL7G/tck0q4wrpo/cVA4NZQUoq0afCJVHds3sZupMmgR+pt0BuC1u
+X-Gm-Message-State: AOJu0YxJqPg7IRU/BjHzTk05GGpqV5ElEoChBbqV34HbQbVBHH1hS7Ew
+	sAtL3rtNHjn5wFQbrUgoiLYxnp5BGMskZCnnQIRagBoNNA+c8RpP
+X-Google-Smtp-Source: AGHT+IF+UlL5cdcNCyTgQlp270nnJnrfc5qgK3T7ZwYqc54hifRqCipV//l+Fc1hXqndAT6VS1TCGw==
+X-Received: by 2002:a05:6808:8fc:b0:3c3:d48e:ca9a with SMTP id d28-20020a05680808fc00b003c3d48eca9amr761410oic.51.1711566807948;
+        Wed, 27 Mar 2024 12:13:27 -0700 (PDT)
+Received: from ?IPV6:2a06:c701:736b:f200:f38a:32d3:e6f6:959? ([2a06:c701:736b:f200:f38a:32d3:e6f6:959])
+        by smtp.gmail.com with ESMTPSA id gd14-20020a05622a5c0e00b0042f21fe66f7sm5071744qtb.73.2024.03.27.12.13.26
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 27 Mar 2024 12:13:27 -0700 (PDT)
+Message-ID: <c5c3fe31-2c68-4eec-9f4a-0c0bc8428461@gmail.com>
+Date: Wed, 27 Mar 2024 21:13:24 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="z4ongljrh52uqxfz"
-Content-Disposition: inline
-In-Reply-To: <8661d581-838d-4bcd-96df-2ae4b7572c82@t-8ch.de>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 0/3] staging: pi433: Fix includes, comments & macros.
+To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc: gregkh@linuxfoundation.org, elder@linaro.org, robh@kernel.org,
+ parthiban.veerasooran@microchip.com, linux-staging@lists.linux.dev,
+ linux-kernel@vger.kernel.org
+References: <20240327063156.96307-1-ikobh7@gmail.com>
+ <ZgQavKRkO0gt6Qdt@smile.fi.intel.com>
+Content-Language: en-US
+From: Shahar Avidar <ikobh7@gmail.com>
+In-Reply-To: <ZgQavKRkO0gt6Qdt@smile.fi.intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
+On 27/03/2024 15:10, Andy Shevchenko wrote:
+> It's your responsibility to carry on the given tags for unchanged patches.
+> I believe I gave a tag to two out of three patches.
 
---z4ongljrh52uqxfz
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Sure.
+Thank you again for your time.
+V3 was just sent with the reviewed-by tag.
 
-Hi,
+-- 
+Regards,
 
-On Wed, Mar 27, 2024 at 07:30:03PM +0100, Thomas Wei=DFschuh wrote:
-> On 2024-03-27 14:34:00+0100, Hans de Goede wrote:
-> > Thomas, can you do a follow-up patch with the simplifications
-> > which I suggested in my review of patch v2 3/4?
->=20
-> Will do!
+Shahar
 
-Thanks for taking care of it!
-
--- Sebastian
-
---z4ongljrh52uqxfz
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAmYEb9QACgkQ2O7X88g7
-+poyMRAAou7HlyNM793s56EBLVDdIgq4gVdEp8RykZ4rwst+Koe0p3u0whI425Pn
-QfK17m/nJaIpLkeMO7zOO+1ncsCXKi2OxpwJkyD/BpoqQl4KjTZoJcI5txHELlyT
-4g5VvH+rKQhwMfku2+rx8rcBlBYRXlYSVa8VyxGAqMl5/1068MsNal2McAuCjHGE
-wjcr+9yZhoa31TkjBs+zZpK2gtp4nPA3gWg0soxSqWNI/cR/bcZXo5JZA/6Tzh6a
-FBiTAFe5zX+E+oyWrV54xjWi3aQ60oA38V37eu6W01XSjJwz8VA8g4+Prc8QufaO
-/q6Dqq4yHzk9U0HLL5svCMV+5a27ZGySNrScZ4sZ1G/2To4YEoFd9XSYDxK7YwDL
-ubdgkyv8+7nmsbg899u7de5L6DiNRwega5Kf3abqe15z7fncBcCj9vWd1GcrD+fe
-uZQy9Cfr+E7+v61g+UHqPSYxa9a9zDYGEk5h3Q3EV48elYhsTit+KIxlj/9ezYnz
-XzHw9C71g8V5AuB4E7Bo1khitYnz+cm99WYbL24/7m3rcleWFZiBTSFtz5xTwDeC
-2rNspqo7wp3bEL4TnH27Q1bBzWwIMS+0Ddg2NPT6VP9GIrK/7yazKVFVW7LGVBTK
-aFY+otEvrI2c7LgtfzrsrqJ018R7MXPA2aLYYKw5QonojAyOM5M=
-=77mQ
------END PGP SIGNATURE-----
-
---z4ongljrh52uqxfz--
 
