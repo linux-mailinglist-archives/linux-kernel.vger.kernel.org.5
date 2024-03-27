@@ -1,603 +1,258 @@
-Return-Path: <linux-kernel+bounces-120425-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-120426-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9E74A88D725
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 08:21:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 5108288D72B
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 08:23:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0120E29985B
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 07:21:40 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 048CC29CE42
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 07:23:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1CF79652;
-	Wed, 27 Mar 2024 07:21:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CE16728DA5;
+	Wed, 27 Mar 2024 07:23:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=marvell.com header.i=@marvell.com header.b="E1ht/+SQ"
-Received: from mx0b-0016f401.pphosted.com (mx0a-0016f401.pphosted.com [67.231.148.174])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="lfwdH+fo"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1745E28DD3
-	for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 07:21:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=67.231.148.174
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711524093; cv=none; b=sEQkip2y8yCZL9wyc1Kqbnn80y9NYiLtchQhaB8MFJbI34rBhkMKkqxMPJWc2/Xhv6fOZxCy7n0yicw5eH0cvXw3vN6j9jDFXY79+6c/Jfju92KP1cmty+c4Rqn/3CleHSwy2ThSnGrqy1IKpE6uho3qIZiGhLLaIN21cB9PGDw=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711524093; c=relaxed/simple;
-	bh=svJ8doLT2AQdgyIKlvrkMHsN3B7MU3sRe807nvD36VE=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=VxjBdi99n2zpfkK/xQA6WArDegybS6YHGmBzAorWya3EhuYL/RDd1WolHA7I0tddOilZSdXZhXIfg5Fs8M4VO8cUHbb9fAPD7cnoxk2TrB50uej7HwGxKx29A9MQIy+p6UvK7vyMY7Pk+Mzx5zTEOw59gqrOl5hIwP8LUeVqYLg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=marvell.com; spf=pass smtp.mailfrom=marvell.com; dkim=pass (2048-bit key) header.d=marvell.com header.i=@marvell.com header.b=E1ht/+SQ; arc=none smtp.client-ip=67.231.148.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=marvell.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=marvell.com
-Received: from pps.filterd (m0045849.ppops.net [127.0.0.1])
-	by mx0a-0016f401.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 42R2RQ8l001605;
-	Wed, 27 Mar 2024 00:21:23 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=
-	from:to:cc:subject:date:message-id:mime-version
-	:content-transfer-encoding:content-type; s=pfpt0220; bh=WfbsJj9v
-	GZtx0SxZOrGBC6pyDj7Ubie1UW9/TisA3Sc=; b=E1ht/+SQ6rA5So2nZiKhCOyH
-	8kCyk2x9Zg6efW+sHYiQuyk3tdGMgrNOJUomEX4n16VWOHHuwgjgYWt+nI9hwk0U
-	wXdqFMlq4UaQx6g8LkZoXiD28EdymPh7nAntsd72UOrAqnEjxlsODZAt14hrMbCZ
-	4qSGnU693jF4MS6lfGQHGvWT112sY2P1nv2VUG8hpljRSG5m7E4XBFuyv2s6f+yg
-	sthWJKHLD3sDq2T4wLHsfvZfdrVy44ntjmgoI6y4wPNFdldT6Bf34CbzTD09khnj
-	nFKYE2YTVRRsVixw5tAPfKURhJ4NllZUJWT/6TkqDVnD5LVnF8OWUghQIQZRHQ==
-Received: from dc5-exch05.marvell.com ([199.233.59.128])
-	by mx0a-0016f401.pphosted.com (PPS) with ESMTPS id 3x4ap80wye-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 27 Mar 2024 00:21:23 -0700 (PDT)
-Received: from DC5-EXCH05.marvell.com (10.69.176.209) by
- DC5-EXCH05.marvell.com (10.69.176.209) with Microsoft SMTP Server
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9EF4C16427
+	for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 07:23:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=198.175.65.18
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1711524209; cv=fail; b=u9yRpl4EQcfWe++zdoLSHKuE6aXRj1cTINYnjVQmTVP31SAUvFIp6DxapPjmhy011cVULXRalStJF/MGqwOYvQtIb95GD6SiCriiHa/zU3+s2dr/gULOD5UoCVGxaeLER7B1gI20DwmQwRjwjooYKP1S61/vEYl/jeCEVx2FrEA=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1711524209; c=relaxed/simple;
+	bh=pk1nTs/zfKmDq1d6QmoxTa/Xa2s7LhivS1k3hPAhqMs=;
+	h=Message-ID:Date:Subject:To:CC:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=fICoflSEchXcH45qwbFytMnhK1t93ED5ljROfi2AGvwVwZJC8U9hToN2vsZr3GZJeqqG4Vh4ClG+B/UkM6Je44vnoi2cFp0XIJClq2SkileNpaxgih1KJ2VsD5H6xhE6W5sBTzSzf2hkKWwAwzrgyUi1uYZnsJ0xiSugsZ927j4=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=lfwdH+fo; arc=fail smtp.client-ip=198.175.65.18
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1711524207; x=1743060207;
+  h=message-id:date:subject:to:cc:references:from:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=pk1nTs/zfKmDq1d6QmoxTa/Xa2s7LhivS1k3hPAhqMs=;
+  b=lfwdH+foG6/NkcmuuVKJPLSmzxVWUqkjg3enVnyU5sijfVBBz/xaP2bO
+   3sCSox/+pyyzJDFq412X63hxnklMZuYA1xS0g40NIcvYJiFln9wj8Ht3s
+   JHMMLXdqD2udaht8trq0oXcfH/GjtA1f28g/ePspHKjMSAWyq5ln+CjNo
+   Xsy4qRSWUOXSLg8R/II2VUQHnnD1w8fsf7fgfXOBCA7TCOuaofn1VZsbK
+   IMiLyRlSQSsnNAbP8ggMHc2ByZhi3t8oe1fJVtTB5C9/xjsrDhnswqPTB
+   Lo0ljtSAgBs8op7Ts2Wt2bp1gPemSeONO9fzGnDKsUuKJK8yxTLyyrPvL
+   A==;
+X-CSE-ConnectionGUID: 8LTg+6n8SySs9Rr2kuid8A==
+X-CSE-MsgGUID: mqvpY0VeQGiS27qYuCe4tA==
+X-IronPort-AV: E=McAfee;i="6600,9927,11025"; a="6738888"
+X-IronPort-AV: E=Sophos;i="6.07,158,1708416000"; 
+   d="scan'208";a="6738888"
+Received: from fmviesa008.fm.intel.com ([10.60.135.148])
+  by orvoesa110.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Mar 2024 00:23:26 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,158,1708416000"; 
+   d="scan'208";a="16304377"
+Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
+  by fmviesa008.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 27 Mar 2024 00:23:26 -0700
+Received: from fmsmsx602.amr.corp.intel.com (10.18.126.82) by
+ fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Wed, 27 Mar 2024 00:23:25 -0700
+Received: from fmsedg601.ED.cps.intel.com (10.1.192.135) by
+ fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35 via Frontend Transport; Wed, 27 Mar 2024 00:23:25 -0700
+Received: from NAM04-DM6-obe.outbound.protection.outlook.com (104.47.73.41) by
+ edgegateway.intel.com (192.55.55.70) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.4; Wed, 27 Mar 2024 00:21:22 -0700
-Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH05.marvell.com
- (10.69.176.209) with Microsoft SMTP Server id 15.2.1544.4 via Frontend
- Transport; Wed, 27 Mar 2024 00:21:22 -0700
-Received: from IPBU-BLR-SERVER1.marvell.com (IPBU-BLR-SERVER1.marvell.com [10.28.8.41])
-	by maili.marvell.com (Postfix) with ESMTP id D4E6C3F70C1;
-	Wed, 27 Mar 2024 00:21:19 -0700 (PDT)
-From: Gowthami Thiagarajan <gthiagarajan@marvell.com>
-To: <will@kernel.org>, <mark.rutland@arm.com>,
-        <linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>
-CC: <sgoutham@marvell.com>, <gcherian@marvell.com>, <lcherian@marvell.com>,
-        Gowthami Thiagarajan <gthiagarajan@marvell.com>
-Subject: [RESEND PATCH v3] perf/marvell: Marvell PEM performance monitor support
-Date: Wed, 27 Mar 2024 12:51:17 +0530
-Message-ID: <20240327072117.1556653-1-gthiagarajan@marvell.com>
-X-Mailer: git-send-email 2.25.1
+ 15.1.2507.35; Wed, 27 Mar 2024 00:23:25 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=MhUyg/cTpi7ZZ1WnjKPCqePw98KPD/1ZxoAhp1QUccfyXPCKT2ZcnVgizilYqqv+iV5eTTKGWDKOyQFcn0E1gHjQNB3AB0qnJNdw8PCKCfSrSZy0TBmi+8BXsd/q493MJHNkBRg/oeyjgH40eQpUDMzwaBJbDI9otGtlqKcTr2XasU9BzViCQAKMTV6S/I2wRHcjZzGtpDiUKSdppHpP1IDy7dk+58jMGczqGGu5Q5ChGE+c7ZWABz77yiX2fLm1tFYgh/3ulpOTcEmJjghS+KniRdVXKrxUWSdvF8NyH9P2TGGx4c+oefUeKvJ8tceNroX/jDUVD76lKShmtscdAg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=BBdXvE3wRSBplABmuOmzS/nTE1Rw3lhDWj4CkMW6YDQ=;
+ b=LRupf0kPZI6lb3laaus9bTnGlNf/VTUNIoN8ZEKQGi/rA9sKYRZxh8g2zFHS6E4+F+VdHh/soXuQLVg6pzoLZ2cBFg4QlQoDaeP2Godhiiwv7ddvBOL5SKeCCdcpzfMvIk9wEZQMB73nlTKb4rWmbJ3VZ7UOKQf35jM8j0XxopAFNQvq6DkIEgQ4bvN4t7tZoCqEVYZhWrjGHOvs9I2/cm7lgWOAJ2cLCMuiMKnK3wM/faQSBx1MD7f8gamWo4E4xrUoaFXQ3C3CvFY6XXiKezTxopFLzVR8GPMG3da0gT/TQptDa/AHlft+rKG6SDcUr9qIUhWC2Wvq2Y+Yh1TMXg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from MN6PR11MB8102.namprd11.prod.outlook.com (2603:10b6:208:46d::9)
+ by PH7PR11MB7100.namprd11.prod.outlook.com (2603:10b6:510:20f::7) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.32; Wed, 27 Mar
+ 2024 07:23:18 +0000
+Received: from MN6PR11MB8102.namprd11.prod.outlook.com
+ ([fe80::618b:b1ee:1f99:76ea]) by MN6PR11MB8102.namprd11.prod.outlook.com
+ ([fe80::618b:b1ee:1f99:76ea%5]) with mapi id 15.20.7409.031; Wed, 27 Mar 2024
+ 07:23:18 +0000
+Message-ID: <b4f73aa3-1d47-47c9-993f-43a7a7f27d7e@intel.com>
+Date: Wed, 27 Mar 2024 08:23:12 +0100
+User-Agent: Mozilla Thunderbird
+Subject: Re: Re [patch RFC] mm/slab: introduce KZALLOC_FREE() cleanup-ed
+ allocation macro
+Content-Language: en-US
+To: Dan Williams <dan.j.williams@intel.com>, <jiri@resnulli.us>
+CC: <42.hyeyoo@gmail.com>, <akpm@linux-foundation.org>, <cl@linux.com>,
+	<danielj@nvidia.com>, <iamjoonsoo.kim@lge.com>,
+	<linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>, <mingo@kernel.org>,
+	<penberg@kernel.org>, <peterz@infradead.org>, <rientjes@google.com>,
+	<roman.gushchin@linux.dev>, <vbabka@suse.cz>, <torvalds@linux-foundation.org>
+References: <20240315132249.2515468-1-jiri@resnulli.us>
+ <20240321162648.23693-1-przemyslaw.kitszel@intel.com>
+ <6601c9e161df3_2690d294e5@dwillia2-mobl3.amr.corp.intel.com.notmuch>
+From: Przemek Kitszel <przemyslaw.kitszel@intel.com>
+In-Reply-To: <6601c9e161df3_2690d294e5@dwillia2-mobl3.amr.corp.intel.com.notmuch>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: MI0P293CA0009.ITAP293.PROD.OUTLOOK.COM
+ (2603:10a6:290:44::6) To MN6PR11MB8102.namprd11.prod.outlook.com
+ (2603:10b6:208:46d::9)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-GUID: iTIx23jzOZU0Hc5dPUqtDZ1HdjLiwvGz
-X-Proofpoint-ORIG-GUID: iTIx23jzOZU0Hc5dPUqtDZ1HdjLiwvGz
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-03-27_04,2024-03-21_02,2023-05-22_02
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: MN6PR11MB8102:EE_|PH7PR11MB7100:EE_
+X-MS-Office365-Filtering-Correlation-Id: 9f62f67a-39cd-45c6-615e-08dc4e2ec61f
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: KPlPVbXes5BDcBQjAOcMroBLxwGH1T9JoqWEZtMc4cnVSTgxQx3IcCF0JrGD9Qa99qHZ5bT/2GOYQ8NCTuwy9YS9GS2WphANZ3bzJhaSUGBhzFnkLHTK079Sn/LmwT5C8li8T/ufCzfrwp4L/9r+iz1VI7ec5CskN1+ddy3m+eFF7P8O0joHzKPfl+2ub1nDd3JQimM+p9U/Yyh5stAM3DJOKTde1iqVYrrD2RYzANU1ZvmrkS/P2QboUJeG8uQHPN66dW3dxM580gBXOUxF6DGh4PZy5gqiKmhQ/I1tUz3WnVZZlh0fOck5OWCruCEVWrz9c9YpkiI/BDRTcKwrn4rh5plG2jfx+xmKK4LlalKg4IFoze2O2y1cgZbkqCsmn/suKcuj+3p8KaT3CSCk1VgmpHrtNxF9l7VPNjGeXTcOhOQmPbAeAWiIR4I2RSoo0sDAf1uvw6k3lbA+cnFKw+4fk7NSBoyypGGV+dD3CO+Sobnu76CLOHVX7G1D8P3aA3cVwnq28bl/G+T9/EH/41fpHh6pLHEch4c/lyayApflbl1undZbJ4LSyTykxVe8+ZaTz8mMJQTGIfUrO/WUEJuse/UMIt/suPt19t5iWvBpv17+k/wKib056JanpKG6
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN6PR11MB8102.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366007)(376005)(7416005)(1800799015);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?R1I5eUFzR1RZekVEOTZLeDNUMGhTeXQ5YmJERk9xNmtXNmlXR09reERXOWI2?=
+ =?utf-8?B?NlJ6MllvVmN2emVCSGw4YnViWFYvYmozQWpkLzVQejZHUVRibEs4d3g1aTNa?=
+ =?utf-8?B?dTFyMGtJdkFBdkpIOTBWeFZXcHR4YTB5dW9uUFlDeER6bi9pRXJ2enpJS0Nz?=
+ =?utf-8?B?STkvQXpiOXdLM0lnRkNvQVFwQzRjb05LRTVtQjFKOGFseFdOUzhQdXNxUW1G?=
+ =?utf-8?B?S1ZvTndmSG01UTBUK0hvYlg1d3BzL0FFcHp6Zk5TZTJ4Y0tORjd3cWtYakNw?=
+ =?utf-8?B?QXdEanZJeS9EeWxSbFlxOVdQakRSOWluN0hSRHF3YnVWMFl2MmdoNjFLSndD?=
+ =?utf-8?B?ekdiSmtGaFRiS2NJeWNPTHg1V2tiWDM4dzZsS2RRbWUwajBvOTBpOUk3c1dw?=
+ =?utf-8?B?SldNWmxLcy9VQjlrdTU5RVI4bXE3NXlYc2wwY3loMFV1dnRLckNxVVQybVJn?=
+ =?utf-8?B?ZCtWUXk2SGxKbFBxUlYrNTNSbmI3b3lwdWtyOWgwTEY3VlNzQ24wclc2eVRZ?=
+ =?utf-8?B?djVZaEZRQ1daL1JzV1FHWGpLZFRESFBDczgzS1A3QWlCdU9wVTBTWHY4ckVl?=
+ =?utf-8?B?eGlPVUtrY3pPdE5ZV2lBRERJa1hSZUhraEZVSjA1a2ZsZmRjbU5EWFpYSitH?=
+ =?utf-8?B?OFkyQ0Y1U3NmbVVNakJSaXhQR2IvYi8yYTB1Uk1KOTNmS2tHRWl0M2ZDT09R?=
+ =?utf-8?B?bStwTGRjV3d5YWdYb28zUjRhQUQra0NZSzBWRnkyQjhtdEtuMkF3N20xN0ZT?=
+ =?utf-8?B?dVg2Q0RqMUkyMmdhNjhkYVg3YXRyMkVpY1NVcCt3c2x6Tm5nd0J2WEJLWW95?=
+ =?utf-8?B?bitsb0dKaUZmUEw4WWNSa3hBb0FQSkJ1d0JpbzljMXAyNURhM2FDdWtiQzVs?=
+ =?utf-8?B?M2dDK1daQitNcHJIdzRFY0ZzSEFHTmQrMStIVzRyTlBvRFRKZnZoUFE1V2hD?=
+ =?utf-8?B?WmNFUDdKOG9OTnNwazdIOSs1a3RONmpGbWdnbTFLQUVaL3JhY0IzQUJDMElm?=
+ =?utf-8?B?Z3RDK1FsYjF0enpDOGdmYVd3UzI5c1ZkQWFUUmZjR3NoS2xUNUloeTJZbWow?=
+ =?utf-8?B?b1lWMFc0Vld6b1RjRGF3WXNsYm43bjJ1aEtjOEcyV2JqSE9MVWVDeHVBQWMv?=
+ =?utf-8?B?RkFLalhpS0k2OC9BaUNqekprWThZbWtGNnNqcTRBYmhmZWlrSGFqQ0FFWSsz?=
+ =?utf-8?B?ekcveWE4VjhpVVNrTm1MWUprOXEzSUEwSWF0c29pNlEwcDZZS2VXdWV6RnRS?=
+ =?utf-8?B?WEVDaSs0Q1lISFpRSnJ3bGp6V1R3VXduaUdZY3dSdi92MitTWC9CckZKM1ov?=
+ =?utf-8?B?VC9XS3g1cjhqK3BNTHlPKzkybldlQ2xtY3JscWhhbTRLQVMyWk5OdGEyQzRV?=
+ =?utf-8?B?dDdySGl6eCtTN3JKNjZ4MUNja1h6VXJBa3V1SktVUU11dFB3WWZGZjJCaVdw?=
+ =?utf-8?B?eElFeEJTMnRDR1RISHQ4YjRoREpPSWtraFNiYk5XKzFkK2hvMzRCcVV1NjFK?=
+ =?utf-8?B?MWVlVFA3QmIwS0d0aE9pTmNCZFFBRzdiQ05pWVJZRHVJWWdFSWZxbjBwbUFS?=
+ =?utf-8?B?T0luSzNNTmQrajNweUNVZ3dnVG1WSi9ud0ZiakpvSEMzNHJSUDBVeGNDamI0?=
+ =?utf-8?B?dHFyeFo1ZTJDYVJwQTdjUjlQcjhJREIxTzN0cDhxbjJ4YVJKcXFJdGQxMFZh?=
+ =?utf-8?B?LzNGek1tTFVtWHNHRUNTRFNCcWhHL2dWTGt2NlNhdVhZc1hmV3hWdDdUUkFE?=
+ =?utf-8?B?WlJoYnBjVmVUZzFvdk9HaFcxRWt2cDJRQVlZbXRhMk53eG9uT1NmU0oyUjZv?=
+ =?utf-8?B?RGR5T2FOaFNzL0QxOTU3aGxiYmpzbHFJazlCZlhkTVJNVmlsb3hIY0NFTTdE?=
+ =?utf-8?B?OHNHTXBva3dMZmRxTlBjRGdhbldpZllxVzlXVFl2YndtVForNlg5S3RnMFRU?=
+ =?utf-8?B?c1JjN0FHTURSd0FUVi9FN3dVR09aQ20xZUlVN045SGw4VUpXaUM1YzRTQTNy?=
+ =?utf-8?B?a2JDcnQ2YTZjRll6SmNFZzNocFVNKy91bEwzZmFsN2ozejE5YjdjaVgzWit1?=
+ =?utf-8?B?RE11K1I1V21xamkxZXlNUkR6RVNuQ21YR0tzSTVhdjlDc3VyL3B6NVYwbjdK?=
+ =?utf-8?B?dFhFTlRvak9aN2xoR2UzZm1NSW5PVGFJcm9MbGhsanFoeGxYN1JWVkw5ZUdz?=
+ =?utf-8?B?L1E9PQ==?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9f62f67a-39cd-45c6-615e-08dc4e2ec61f
+X-MS-Exchange-CrossTenant-AuthSource: MN6PR11MB8102.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Mar 2024 07:23:18.1088
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 5WCA4MrhoGzIWZwESJhKe7b0RpEoX6VHWEDR/zU/8ja87uRCbSuWZ0vAlacp0WrMe9iL/BXdS2Zzt9JNlydUIsnEIoAmzlw1/qHM61ubrNM=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR11MB7100
+X-OriginatorOrg: intel.com
 
-PCI Express Interface PMU includes various performance counters
-to monitor the data that is transmitted over the PCIe link. The
-counters track various inbound and outbound transactions which
-includes separate counters for posted/non-posted/completion TLPs.
-Also, inbound and outbound memory read requests along with their
-latencies can also be monitored. Address Translation Services(ATS)events
-such as ATS Translation, ATS Page Request, ATS Invalidation along with
-their corresponding latencies are also supported.
+On 3/25/24 20:00, Dan Williams wrote:
+> Przemek Kitszel wrote:
+>>> From: Jiri Pirko <jiri@nvidia.com>
+>>>
+>>> With introduction of __free() macro using cleanup infrastructure, it
+>>> will very likely become quite common to see following pattern:
+>>> 	type *var __free(kfree) = kzalloc(sizeof(*var), GFP_KERNEL);
+>>>
+>>> To follow the CLASS() flow from cleanup.h, introduce a simple macro
+>>> KZALLOC_FREE() to wrap this over and allow the same flow.
+>>>
+>>> Show an example usage in gpio-sim driver.
+>>>
+>>> Signed-off-by: Jiri Pirko <jiri@nvidia.com>
+>>> ---
+>>>   drivers/gpio/gpio-sim.c | 3 +--
+>>>   include/linux/slab.h    | 3 +++
+>>>   2 files changed, 4 insertions(+), 2 deletions(-)
+>>>
+>>> diff --git a/drivers/gpio/gpio-sim.c b/drivers/gpio/gpio-sim.c
+>>> index c4106e37e6db..997237b3d80c 100644
+>>> --- a/drivers/gpio/gpio-sim.c
+>>> +++ b/drivers/gpio/gpio-sim.c
+>>> @@ -1496,8 +1496,7 @@ gpio_sim_config_make_device_group(struct config_group *group, const char *name)
+>>>   {
+>>>   	int id;
+>>>   
+>>> -	struct gpio_sim_device *dev __free(kfree) = kzalloc(sizeof(*dev),
+>>> -							    GFP_KERNEL);
+>>> +	KZALLOC_FREE(struct gpio_sim_device *, dev, GFP_KERNEL);
+>>>   	if (!dev)
+>>>   		return ERR_PTR(-ENOMEM);
+>>>   
+>>> diff --git a/include/linux/slab.h b/include/linux/slab.h
+>>> index b5f5ee8308d0..baee6acd58d3 100644
+>>> --- a/include/linux/slab.h
+>>> +++ b/include/linux/slab.h
+>>> @@ -711,6 +711,9 @@ static inline __alloc_size(1) void *kzalloc(size_t size, gfp_t flags)
+>>>   	return kmalloc(size, flags | __GFP_ZERO);
+>>>   }
+>>>   
+>>> +#define KZALLOC_FREE(_type, var, _gfp_t)				\
+>>> +	_type var __free(kfree) = kzalloc(sizeof(*var), _gfp_t)
+>>> +
+>>
+>> Nice, but I would rather see this wrapper in the cleanup.h file, that have all
+>> of the rest of related stuff.
+>>
+>> On top of that, I want to propose also a wrapper that is simpler in that it
+>> does not allocate but just assigns null, with that in mind `_FREE` part of your
+>> proposed name does not sound right.
+> 
+> No, do not hide assignments within macros
 
-The performance counters are 64 bits wide.
+As most general advice I agree, but here we have a specific case:
+declare variable via macro; and that, (given the macro name would be
+clearer), is expected to have assignment (or default (un)init).
+I would even go one step further and remove also the asterisk from the
+call site (and *hide* it in the macro definition).
 
-For instance,
-perf stat -e ib_tlp_pr <workload>
-tracks the inbound posted TLPs for the workload.
+See _DEFINE_FLEX() as example:
+(there we change on-stack instead $this_thread on-heap-autofree)
+https://elixir.bootlin.com/linux/v6.9-rc1/source/include/linux/overflow.h#L401 
 
-Signed-off-by: Gowthami Thiagarajan <gthiagarajan@marvell.com>
----
-v2->v3 changes:
-- Dropped device tree support as the acpi table based probing is used.
 
- MAINTAINERS                    |   6 +
- drivers/perf/Kconfig           |   7 +
- drivers/perf/Makefile          |   1 +
- drivers/perf/marvell_pem_pmu.c | 428 +++++++++++++++++++++++++++++++++
- include/linux/cpuhotplug.h     |   1 +
- 5 files changed, 443 insertions(+)
- create mode 100644 drivers/perf/marvell_pem_pmu.c
+> 
+> http://lore.kernel.org/r/CAHk-=whYxkfLVtBW_B-PgNqhKOAThTbfoH5CxtOTkwOB6VOt6w@mail.gmail.com
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index dd5de540ec0b..50c11e128a98 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -12759,6 +12759,12 @@ S:	Supported
- F:	Documentation/networking/device_drivers/ethernet/marvell/octeontx2.rst
- F:	drivers/net/ethernet/marvell/octeontx2/af/
- 
-+MARVELL PEM PMU DRIVER
-+M:	Linu Cherian <lcherian@marvell.com>
-+M:	Gowthami Thiagarajan <gthiagarajan@marvell.com>
-+S:	Supported
-+F:	drivers/perf/marvell_pem_pmu.c
-+
- MARVELL PRESTERA ETHERNET SWITCH DRIVER
- M:	Taras Chornyi <taras.chornyi@plvision.eu>
- S:	Supported
-diff --git a/drivers/perf/Kconfig b/drivers/perf/Kconfig
-index 273d67ecf6d2..12ac8409263a 100644
---- a/drivers/perf/Kconfig
-+++ b/drivers/perf/Kconfig
-@@ -234,4 +234,11 @@ config CXL_PMU
- 
- 	  If unsure say 'm'.
- 
-+config MARVELL_PEM_PMU
-+	tristate "MARVELL PEM PMU Support"
-+	depends on ARCH_THUNDER || (COMPILE_TEST && 64BIT)
-+	help
-+	  Enable support for PCIe Interface performance monitoring
-+	  on Marvell platform.
-+
- endmenu
-diff --git a/drivers/perf/Makefile b/drivers/perf/Makefile
-index 16b3ec4db916..db3c473cc5c7 100644
---- a/drivers/perf/Makefile
-+++ b/drivers/perf/Makefile
-@@ -21,6 +21,7 @@ obj-$(CONFIG_ARM_SPE_PMU) += arm_spe_pmu.o
- obj-$(CONFIG_ARM_DMC620_PMU) += arm_dmc620_pmu.o
- obj-$(CONFIG_MARVELL_CN10K_TAD_PMU) += marvell_cn10k_tad_pmu.o
- obj-$(CONFIG_MARVELL_CN10K_DDR_PMU) += marvell_cn10k_ddr_pmu.o
-+obj-$(CONFIG_MARVELL_PEM_PMU) += marvell_pem_pmu.o
- obj-$(CONFIG_APPLE_M1_CPU_PMU) += apple_m1_cpu_pmu.o
- obj-$(CONFIG_ALIBABA_UNCORE_DRW_PMU) += alibaba_uncore_drw_pmu.o
- obj-$(CONFIG_ARM_CORESIGHT_PMU_ARCH_SYSTEM_PMU) += arm_cspmu/
-diff --git a/drivers/perf/marvell_pem_pmu.c b/drivers/perf/marvell_pem_pmu.c
-new file mode 100644
-index 000000000000..d4175483b982
---- /dev/null
-+++ b/drivers/perf/marvell_pem_pmu.c
-@@ -0,0 +1,428 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Marvell PEM(PCIe RC) Performance Monitor Driver
-+ *
-+ * Copyright (C) 2024 Marvell.
-+ */
-+
-+#include <linux/acpi.h>
-+#include <linux/init.h>
-+#include <linux/io.h>
-+#include <linux/module.h>
-+#include <linux/of.h>
-+#include <linux/of_address.h>
-+#include <linux/of_device.h>
-+#include <linux/perf_event.h>
-+
-+/*
-+ * Each of these events maps to a free running 64 bit counter
-+ * with no event control, but can be reset.
-+ *
-+ */
-+enum pem_events {
-+	IB_TLP_NPR,
-+	IB_TLP_PR,
-+	IB_TLP_CPL,
-+	IB_TLP_DWORDS_NPR,
-+	IB_TLP_DWORDS_PR,
-+	IB_TLP_DWORDS_CPL,
-+	IB_INFLIGHT,
-+	IB_READS,
-+	IB_REQ_NO_RO_NCB,
-+	IB_REQ_NO_RO_EBUS,
-+	OB_TLP_NPR,
-+	OB_TLP_PR,
-+	OB_TLP_CPL,
-+	OB_TLP_DWORDS_NPR,
-+	OB_TLP_DWORDS_PR,
-+	OB_TLP_DWORDS_CPL,
-+	OB_INFLIGHT,
-+	OB_READS,
-+	OB_MERGES_NPR,
-+	OB_MERGES_PR,
-+	OB_MERGES_CPL,
-+	ATS_TRANS,
-+	ATS_TRANS_LATENCY,
-+	ATS_PRI,
-+	ATS_PRI_LATENCY,
-+	ATS_INV,
-+	ATS_INV_LATENCY,
-+	PEM_EVENTIDS_MAX,
-+};
-+
-+static u64 eventid_to_offset_table[] = {
-+	[IB_TLP_NPR]	     = 0x0,
-+	[IB_TLP_PR]	     = 0x8,
-+	[IB_TLP_CPL]	     = 0x10,
-+	[IB_TLP_DWORDS_NPR]  = 0x100,
-+	[IB_TLP_DWORDS_PR]   = 0x108,
-+	[IB_TLP_DWORDS_CPL]  = 0x110,
-+	[IB_INFLIGHT]	     = 0x200,
-+	[IB_READS]	     = 0x300,
-+	[IB_REQ_NO_RO_NCB]   = 0x400,
-+	[IB_REQ_NO_RO_EBUS]  = 0x408,
-+	[OB_TLP_NPR]         = 0x500,
-+	[OB_TLP_PR]          = 0x508,
-+	[OB_TLP_CPL]         = 0x510,
-+	[OB_TLP_DWORDS_NPR]  = 0x600,
-+	[OB_TLP_DWORDS_PR]   = 0x608,
-+	[OB_TLP_DWORDS_CPL]  = 0x610,
-+	[OB_INFLIGHT]        = 0x700,
-+	[OB_READS]	     = 0x800,
-+	[OB_MERGES_NPR]      = 0x900,
-+	[OB_MERGES_PR]       = 0x908,
-+	[OB_MERGES_CPL]      = 0x910,
-+	[ATS_TRANS]          = 0x2D18,
-+	[ATS_TRANS_LATENCY]  = 0x2D20,
-+	[ATS_PRI]            = 0x2D28,
-+	[ATS_PRI_LATENCY]    = 0x2D30,
-+	[ATS_INV]            = 0x2D38,
-+	[ATS_INV_LATENCY]    = 0x2D40,
-+};
-+
-+struct pem_pmu {
-+	struct pmu pmu;
-+	void __iomem *base;
-+	unsigned int cpu;
-+	struct	device *dev;
-+	struct hlist_node node;
-+};
-+
-+#define to_pem_pmu(p)	container_of(p, struct pem_pmu, pmu)
-+
-+static int eventid_to_offset(int eventid)
-+{
-+	return eventid_to_offset_table[eventid];
-+}
-+
-+/* Events */
-+static ssize_t pem_pmu_event_show(struct device *dev,
-+				  struct device_attribute *attr,
-+				  char *page)
-+{
-+	struct perf_pmu_events_attr *pmu_attr;
-+
-+	pmu_attr = container_of(attr, struct perf_pmu_events_attr, attr);
-+	return sysfs_emit(page, "event=0x%02llx\n", pmu_attr->id);
-+}
-+
-+#define PEM_EVENT_ATTR(_name, _id)					\
-+	(&((struct perf_pmu_events_attr[]) {				\
-+	{ .attr = __ATTR(_name, 0444, pem_pmu_event_show, NULL),	\
-+		.id = _id, }						\
-+	})[0].attr.attr)
-+
-+static struct attribute *pem_perf_events_attrs[] = {
-+	PEM_EVENT_ATTR(ib_tlp_npr, IB_TLP_NPR),
-+	PEM_EVENT_ATTR(ib_tlp_pr, IB_TLP_PR),
-+	PEM_EVENT_ATTR(ib_tlp_cpl_partid, IB_TLP_CPL),
-+	PEM_EVENT_ATTR(ib_tlp_dwords_npr, IB_TLP_DWORDS_NPR),
-+	PEM_EVENT_ATTR(ib_tlp_dwords_pr, IB_TLP_DWORDS_PR),
-+	PEM_EVENT_ATTR(ib_tlp_dwords_cpl_partid, IB_TLP_DWORDS_CPL),
-+	PEM_EVENT_ATTR(ib_inflight, IB_INFLIGHT),
-+	PEM_EVENT_ATTR(ib_reads, IB_READS),
-+	PEM_EVENT_ATTR(ib_req_no_ro_ncb, IB_REQ_NO_RO_NCB),
-+	PEM_EVENT_ATTR(ib_req_no_ro_ebus, IB_REQ_NO_RO_EBUS),
-+	PEM_EVENT_ATTR(ob_tlp_npr_partid, OB_TLP_NPR),
-+	PEM_EVENT_ATTR(ob_tlp_pr_partid, OB_TLP_PR),
-+	PEM_EVENT_ATTR(ob_tlp_cpl_partid, OB_TLP_CPL),
-+	PEM_EVENT_ATTR(ob_tlp_dwords_npr_partid, OB_TLP_DWORDS_NPR),
-+	PEM_EVENT_ATTR(ob_tlp_dwords_pr_partid, OB_TLP_DWORDS_PR),
-+	PEM_EVENT_ATTR(ob_tlp_dwords_cpl_partid, OB_TLP_DWORDS_CPL),
-+	PEM_EVENT_ATTR(ob_inflight_partid, OB_INFLIGHT),
-+	PEM_EVENT_ATTR(ob_reads_partid, OB_READS),
-+	PEM_EVENT_ATTR(ob_merges_npr_partid, OB_MERGES_NPR),
-+	PEM_EVENT_ATTR(ob_merges_pr_partid, OB_MERGES_PR),
-+	PEM_EVENT_ATTR(ob_merges_cpl_partid, OB_MERGES_CPL),
-+	PEM_EVENT_ATTR(ats_trans, ATS_TRANS),
-+	PEM_EVENT_ATTR(ats_trans_latency, ATS_TRANS_LATENCY),
-+	PEM_EVENT_ATTR(ats_pri, ATS_PRI),
-+	PEM_EVENT_ATTR(ats_pri_latency, ATS_PRI_LATENCY),
-+	PEM_EVENT_ATTR(ats_inv, ATS_INV),
-+	PEM_EVENT_ATTR(ats_inv_latency, ATS_INV_LATENCY),
-+	NULL
-+};
-+
-+static struct attribute_group pem_perf_events_attr_group = {
-+	.name = "events",
-+	.attrs = pem_perf_events_attrs,
-+};
-+
-+PMU_FORMAT_ATTR(event, "config:0-5");
-+
-+static struct attribute *pem_perf_format_attrs[] = {
-+	&format_attr_event.attr,
-+	NULL
-+};
-+
-+static struct attribute_group pem_perf_format_attr_group = {
-+	.name = "format",
-+	.attrs = pem_perf_format_attrs,
-+};
-+
-+/* cpumask */
-+static ssize_t pem_perf_cpumask_show(struct device *dev,
-+				     struct device_attribute *attr,
-+				     char *buf)
-+{
-+	struct pem_pmu *pmu = dev_get_drvdata(dev);
-+
-+	return cpumap_print_to_pagebuf(true, buf, cpumask_of(pmu->cpu));
-+}
-+
-+static struct device_attribute pem_perf_cpumask_attr =
-+	__ATTR(cpumask, 0444, pem_perf_cpumask_show, NULL);
-+
-+static struct attribute *pem_perf_cpumask_attrs[] = {
-+	&pem_perf_cpumask_attr.attr,
-+	NULL
-+};
-+
-+static struct attribute_group pem_perf_cpumask_attr_group = {
-+	.attrs = pem_perf_cpumask_attrs,
-+};
-+
-+static const struct attribute_group *pem_perf_attr_groups[] = {
-+	&pem_perf_events_attr_group,
-+	&pem_perf_cpumask_attr_group,
-+	&pem_perf_format_attr_group,
-+	NULL
-+};
-+
-+static int pem_perf_event_init(struct perf_event *event)
-+{
-+	struct pem_pmu *pmu = to_pem_pmu(event->pmu);
-+	struct hw_perf_event *hwc = &event->hw;
-+
-+	if (event->attr.type != event->pmu->type)
-+		return -ENOENT;
-+
-+	if (is_sampling_event(event) ||
-+	    event->attach_state & PERF_ATTACH_TASK) {
-+		return -EOPNOTSUPP;
-+	}
-+
-+	if (event->cpu < 0)
-+		return -EOPNOTSUPP;
-+
-+	/*  We must NOT create groups containing mixed PMUs */
-+	if (event->group_leader->pmu != event->pmu &&
-+	    !is_software_event(event->group_leader))
-+		return -EINVAL;
-+
-+	/*
-+	 * Set ownership of event to one CPU, same event can not be observed
-+	 * on multiple cpus at same time.
-+	 */
-+	event->cpu = pmu->cpu;
-+	hwc->idx = -1;
-+	return 0;
-+}
-+
-+static void pem_perf_counter_reset(struct pem_pmu *pmu,
-+				   struct perf_event *event, int eventid)
-+{
-+	writeq_relaxed(0x0, pmu->base + eventid_to_offset(eventid));
-+}
-+
-+static u64 pem_perf_read_counter(struct pem_pmu *pmu,
-+				 struct perf_event *event, int eventid)
-+{
-+	return readq_relaxed(pmu->base + eventid_to_offset(eventid));
-+}
-+
-+static void pem_perf_event_update(struct perf_event *event)
-+{
-+	struct pem_pmu *pmu = to_pem_pmu(event->pmu);
-+	struct hw_perf_event *hwc = &event->hw;
-+	u64 prev_count, new_count;
-+
-+	do {
-+		prev_count = local64_read(&hwc->prev_count);
-+		new_count = pem_perf_read_counter(pmu, event, hwc->idx);
-+	} while (local64_xchg(&hwc->prev_count, new_count) != prev_count);
-+
-+	local64_add((new_count - prev_count), &event->count);
-+}
-+
-+static void pem_perf_event_start(struct perf_event *event, int flags)
-+{
-+	struct pem_pmu *pmu = to_pem_pmu(event->pmu);
-+	struct hw_perf_event *hwc = &event->hw;
-+	int eventid = hwc->idx;
-+
-+	local64_set(&hwc->prev_count, 0);
-+
-+	pem_perf_counter_reset(pmu, event, eventid);
-+
-+	hwc->state = 0;
-+}
-+
-+static int pem_perf_event_add(struct perf_event *event, int flags)
-+{
-+	struct hw_perf_event *hwc = &event->hw;
-+
-+	hwc->idx = event->attr.config;
-+	if (hwc->idx >= PEM_EVENTIDS_MAX)
-+		return -EINVAL;
-+	hwc->state |= PERF_HES_STOPPED;
-+
-+	if (flags & PERF_EF_START)
-+		pem_perf_event_start(event, flags);
-+
-+	return 0;
-+}
-+
-+static void pem_perf_event_stop(struct perf_event *event, int flags)
-+{
-+	struct hw_perf_event *hwc = &event->hw;
-+
-+	if (flags & PERF_EF_UPDATE)
-+		pem_perf_event_update(event);
-+
-+	hwc->state |= PERF_HES_STOPPED;
-+}
-+
-+static void pem_perf_event_del(struct perf_event *event, int flags)
-+{
-+	struct hw_perf_event *hwc = &event->hw;
-+
-+	pem_perf_event_stop(event, PERF_EF_UPDATE);
-+	hwc->idx = -1;
-+}
-+
-+static int pem_pmu_offline_cpu(unsigned int cpu, struct hlist_node *node)
-+{
-+	struct pem_pmu *pmu = hlist_entry_safe(node, struct pem_pmu,
-+					       node);
-+	unsigned int target;
-+
-+	if (cpu != pmu->cpu)
-+		return 0;
-+
-+	target = cpumask_any_but(cpu_online_mask, cpu);
-+	if (target >= nr_cpu_ids)
-+		return 0;
-+
-+	perf_pmu_migrate_context(&pmu->pmu, cpu, target);
-+	pmu->cpu = target;
-+	return 0;
-+}
-+
-+static int pem_perf_probe(struct platform_device *pdev)
-+{
-+	struct pem_pmu *pem_pmu;
-+	struct resource *res;
-+	void __iomem *base;
-+	char *name;
-+	int ret;
-+
-+	pem_pmu = devm_kzalloc(&pdev->dev, sizeof(*pem_pmu), GFP_KERNEL);
-+	if (!pem_pmu)
-+		return -ENOMEM;
-+
-+	pem_pmu->dev = &pdev->dev;
-+	platform_set_drvdata(pdev, pem_pmu);
-+
-+	base = devm_platform_get_and_ioremap_resource(pdev, 0, &res);
-+	if (IS_ERR(base))
-+		return PTR_ERR(base);
-+
-+	pem_pmu->base = base;
-+
-+	pem_pmu->pmu = (struct pmu) {
-+		.module	      = THIS_MODULE,
-+		.capabilities = PERF_PMU_CAP_NO_EXCLUDE,
-+		.task_ctx_nr = perf_invalid_context,
-+		.attr_groups = pem_perf_attr_groups,
-+		.event_init  = pem_perf_event_init,
-+		.add	     = pem_perf_event_add,
-+		.del	     = pem_perf_event_del,
-+		.start	     = pem_perf_event_start,
-+		.stop	     = pem_perf_event_stop,
-+		.read	     = pem_perf_event_update,
-+	};
-+
-+	/* Choose this cpu to collect perf data */
-+	pem_pmu->cpu = raw_smp_processor_id();
-+
-+	name = devm_kasprintf(pem_pmu->dev, GFP_KERNEL, "mrvl_pcie_rc_pmu_%llx",
-+			      res->start);
-+	if (!name)
-+		return -ENOMEM;
-+
-+	cpuhp_state_add_instance_nocalls
-+			(CPUHP_AP_PERF_ARM_MARVELL_PEM_ONLINE,
-+			 &pem_pmu->node);
-+
-+	ret = perf_pmu_register(&pem_pmu->pmu, name, -1);
-+	if (ret)
-+		goto error;
-+
-+	pr_info("Marvell PEM(PCIe RC) PMU Driver for pem@%llx\n", res->start);
-+	return 0;
-+error:
-+	cpuhp_state_remove_instance_nocalls
-+			(CPUHP_AP_PERF_ARM_MARVELL_PEM_ONLINE,
-+			 &pem_pmu->node);
-+	return ret;
-+}
-+
-+static int pem_perf_remove(struct platform_device *pdev)
-+{
-+	struct pem_pmu *pem_pmu = platform_get_drvdata(pdev);
-+
-+	cpuhp_state_remove_instance_nocalls
-+			(CPUHP_AP_PERF_ARM_MARVELL_PEM_ONLINE,
-+			 &pem_pmu->node);
-+
-+	perf_pmu_unregister(&pem_pmu->pmu);
-+	return 0;
-+}
-+
-+#ifdef CONFIG_ACPI
-+static const struct acpi_device_id pem_pmu_acpi_match[] = {
-+	{"MRVL000E", 0},
-+	{},
-+};
-+MODULE_DEVICE_TABLE(acpi, pem_pmu_acpi_match);
-+#endif
-+
-+static struct platform_driver pem_pmu_driver = {
-+	.driver	= {
-+		.name   = "pem-pmu",
-+		.acpi_match_table = ACPI_PTR(pem_pmu_acpi_match),
-+		.suppress_bind_attrs = true,
-+	},
-+	.probe		= pem_perf_probe,
-+	.remove		= pem_perf_remove,
-+};
-+
-+static int __init pem_pmu_init(void)
-+{
-+	int ret;
-+
-+	ret = cpuhp_setup_state_multi(CPUHP_AP_PERF_ARM_MARVELL_PEM_ONLINE,
-+				      "perf/marvell/pem:online", NULL,
-+				       pem_pmu_offline_cpu);
-+	if (ret)
-+		return ret;
-+
-+	ret = platform_driver_register(&pem_pmu_driver);
-+	if (ret)
-+		cpuhp_remove_multi_state(CPUHP_AP_PERF_ARM_MARVELL_PEM_ONLINE);
-+	return ret;
-+}
-+
-+static void __exit pem_pmu_exit(void)
-+{
-+	platform_driver_unregister(&pem_pmu_driver);
-+	cpuhp_remove_multi_state(CPUHP_AP_PERF_ARM_MARVELL_PEM_ONLINE);
-+}
-+
-+module_init(pem_pmu_init);
-+module_exit(pem_pmu_exit);
-+
-+MODULE_DESCRIPTION("Marvell PEM Perf driver");
-+MODULE_AUTHOR("Linu Cherian <lcherian@marvell.com>");
-+MODULE_LICENSE("GPL");
-diff --git a/include/linux/cpuhotplug.h b/include/linux/cpuhotplug.h
-index 624d4a38c358..9bf34f66e5f5 100644
---- a/include/linux/cpuhotplug.h
-+++ b/include/linux/cpuhotplug.h
-@@ -238,6 +238,7 @@ enum cpuhp_state {
- 	CPUHP_AP_PERF_ARM_APM_XGENE_ONLINE,
- 	CPUHP_AP_PERF_ARM_CAVIUM_TX2_UNCORE_ONLINE,
- 	CPUHP_AP_PERF_ARM_MARVELL_CN10K_DDR_ONLINE,
-+	CPUHP_AP_PERF_ARM_MARVELL_PEM_ONLINE,
- 	CPUHP_AP_PERF_POWERPC_NEST_IMC_ONLINE,
- 	CPUHP_AP_PERF_POWERPC_CORE_IMC_ONLINE,
- 	CPUHP_AP_PERF_POWERPC_THREAD_IMC_ONLINE,
--- 
-2.25.1
+Your thread is a more complex thing to what we have here.
+And BTW, your original proposed solution is nice, and even if it hides
+flow inside, it's almost obvious (the `return -EINTR` statement
+is verbatim at call site). Allowing `else return -EINTR;` solution
+proposed by @Linus is nicer, makes a good idiom, but is less obvious:
+Imagine two developers that don't know the API (well), one writes:
+`scoped_cond_guard(args);` and forgets to handle the error case,
+the other by just looking at the code have no idea to append
+`else handle_err();`.
 
+> 
+> I.e. the amount of incremenal cleverness that include/linux/cleanup.h
+> will tolerate is low. Any helper should look like typical C
 
