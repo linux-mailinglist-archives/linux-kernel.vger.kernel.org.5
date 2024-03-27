@@ -1,127 +1,161 @@
-Return-Path: <linux-kernel+bounces-121391-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-121392-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8A04088E9BC
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 16:48:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id D138A88E917
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 16:31:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DDD03B34754
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 14:54:47 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EE446B30643
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 14:55:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 50AE615D5A7;
-	Wed, 27 Mar 2024 13:51:32 +0000 (UTC)
-Received: from mail-ej1-f46.google.com (mail-ej1-f46.google.com [209.85.218.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8C64A140394;
+	Wed, 27 Mar 2024 13:52:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="SxYzWUVK"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 05B0215CD6A;
-	Wed, 27 Mar 2024 13:51:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BBBDF12DD9A;
+	Wed, 27 Mar 2024 13:52:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711547491; cv=none; b=hdTIU3GwX407XHOL/CHxRglODzWJt05tZYw0HlutnQtT8JcO0++N3eYaAseWfboxniLFJnxvbUvyORUS3KzZMkmsvC+fMNSjwKhG+kAQ0BBMFvUDrIFopFBQeVKHqNpF4GtyjrMCkHLkk+zt7+CJuus9/gj1YR8amq3c6YDUys8=
+	t=1711547546; cv=none; b=UR5gZykShg7OMaEak3Lk1NpwwGrIcWKxBFeQRylqypm8Vwyz+8DShu4OmqLY4dbGyYzCp2UJCthcNz7omdVLU5SXDyEiNEziiGeaCzB3gUrntDi9rH5SRaWt4oGdd0oGTFWQ2rbnZWN6fmAqKtllC/Nmdhr3ivB2Tttq1pL9saY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711547491; c=relaxed/simple;
-	bh=LRh020dt3JvCw/r0YCn85ScWnAbwueBpSbcIgI27W8c=;
+	s=arc-20240116; t=1711547546; c=relaxed/simple;
+	bh=jg9FTT393fzAorP20OTFEHk2bAT7VNUxgdh7vcxybxg=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Fz95Gv3/08iTmqvr99mY3+BsB5QVhoTiTsYQJ/W8Cbu4K05UXADwhMNzhs8UdQ7PpJOsM9LnykV1+a5pskDAr0yYHc3kHLLAHhuNlPbgwzrxJV8be/E5VxmWqAvYrqCLYQV/XXFCz/DpOu9El2WqQpZgue4QOfWHXDtrln8bYss=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.218.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f46.google.com with SMTP id a640c23a62f3a-a4a3a5e47baso423368766b.2;
-        Wed, 27 Mar 2024 06:51:29 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711547488; x=1712152288;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=FcKm7eRThoxP9DS6Fq9W4RWZhYw3k695B/yck6NlVFk=;
-        b=ACd6FqcedO5j5Sf2JS7eVB9RN1wMt2v7Zul2vOPBrHHHWcYuR0NnxCTnz56KcecEL8
-         X4umlsTluLtdu2XNopQJrl1AV6O9LYnis0LIzkxAjXG+oeSGE1T3ejei09BlCM9lNYQ8
-         p6VIjx4py9HZabJ2Uc+Q3D0iUKNXaVJbBFDt57kr50UAut92nQ4A2WHIyQHEJm6vjyTE
-         p824dtgajCyI8zmESqw+sIKOjWYFZuE+kt5dgI1R8pwciTygbWeDzagp7qtPOk2lqdwW
-         hHihYFacNimf5VnoI255vWkjR9H0ezr19NFkXUYwtM260zdvokac8lokgnKU8m6H4Rt3
-         gwOw==
-X-Forwarded-Encrypted: i=1; AJvYcCWVviFUbHWnIs+YuOta4CWyuyLRFPYOkhjClzsXHjCPeJM4JzFPSohqa+v0u+hNf0WXmvtPMdyefwyJrz9l6lV/gIVJY8cwFnrsiLY2f3w7l0WB79auofChG8ATOPrJ7hpf87KT
-X-Gm-Message-State: AOJu0YyP3YOQGivWMAL4Y2faHIuyAVD2Lj35jrwUd21brsrnaeRnWqAJ
-	1lld5OQrM2FIps5F6xpcyv2IWRx2PQ2xbPGcVFI/Ghl+ePKWVyQF
-X-Google-Smtp-Source: AGHT+IFhjYnrjdbXw7KmaYA4ypD1xuTa8d1VPV3peiZKf+9ZHYiqQFI4Rd7Plj+NeUPbD/snQmEOZA==
-X-Received: by 2002:a17:906:8415:b0:a46:22a3:479f with SMTP id n21-20020a170906841500b00a4622a3479fmr1138312ejx.21.1711547488000;
-        Wed, 27 Mar 2024 06:51:28 -0700 (PDT)
-Received: from gmail.com (fwdproxy-lla-003.fbsv.net. [2a03:2880:30ff:3::face:b00c])
-        by smtp.gmail.com with ESMTPSA id wr12-20020a170907700c00b00a474c3c2f9dsm4597296ejb.38.2024.03.27.06.51.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 27 Mar 2024 06:51:27 -0700 (PDT)
-Date: Wed, 27 Mar 2024 06:51:25 -0700
-From: Breno Leitao <leitao@debian.org>
-To: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-Cc: rbc@meta.com, riel@surriel.com,
-	"open list:VIRTIO CORE AND NET DRIVERS" <virtualization@lists.linux.dev>,
-	"open list:NETWORKING DRIVERS" <netdev@vger.kernel.org>,
-	open list <linux-kernel@vger.kernel.org>, hengqi@linux.alibaba.com,
-	"Michael S. Tsirkin" <mst@redhat.com>,
-	Jason Wang <jasowang@redhat.com>,
+	 Content-Type:Content-Disposition:In-Reply-To; b=rcbbPwOZ1HNgNjJ50rJ5psYWoWbnUL4mKBLsdoHlxzbhR4hN1DpTNf1Z6Jj0Cuv6AXJznCAqgnyTAD4Om6rH1o2APiW/zlByVJQ0uDYnZS84V3WoXOzCLXcavdioZN+k/IqE5jo5mpA/jHnboQryica1/mS5QAczBLn4NxCZv2Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=SxYzWUVK; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8C12FC433C7;
+	Wed, 27 Mar 2024 13:52:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1711547546;
+	bh=jg9FTT393fzAorP20OTFEHk2bAT7VNUxgdh7vcxybxg=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=SxYzWUVKxN3HfmJqWxnCgfbNgZ4su3KNRtLDhEnrX8GQQg7fgFHlC5zoNPpiSR12l
+	 sP63xQXkwN/qTlnII6IUVEGjX4GBQqH3+bJW4HplRajrLLuqN96gra49LlTey09tZP
+	 8ESn5Sp7uQpFZQ/SdOaM642XFGMzSSwcGTHuuj2yf8jwfK8BLMNhpeFpPbh/FH0di4
+	 ZOzSrXQwnz6JZ3rWxYBqtyjjiZR9JqsjN28lX7auj1NWhAcRR6zXfYE7HIoBiGXk35
+	 5ZxQFOQUmfwJs8Ybd3gaw8jhgQ9s4VdGLLPFP/2FRQpt8cZHzd5smr7kZarenBAMP2
+	 po2pvvejb9Ctg==
+Date: Wed, 27 Mar 2024 13:52:21 +0000
+From: Simon Horman <horms@kernel.org>
+To: =?utf-8?Q?Asbj=C3=B8rn_Sloth_T=C3=B8nnesen?= <ast@fiberby.net>
+Cc: Jamal Hadi Salim <jhs@mojatatu.com>,
+	Cong Wang <xiyou.wangcong@gmail.com>, Jiri Pirko <jiri@resnulli.us>,
+	Daniel Borkmann <daniel@iogearbox.net>,
 	"David S. Miller" <davem@davemloft.net>,
 	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>
-Subject: Re: [PATCH net v2 1/2] virtio_net: Do not set rss_indir if RSS is
- not supported
-Message-ID: <ZgQkXfMd6GIEndXm@gmail.com>
-References: <20240326151911.2155689-1-leitao@debian.org>
- <1711503463.632461-1-xuanzhuo@linux.alibaba.com>
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Vlad Buslov <vladbu@nvidia.com>,
+	Marcelo Ricardo Leitner <mleitner@redhat.com>,
+	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+	llu@fiberby.dk
+Subject: Re: [PATCH net-next v4 3/3] net: sched: make skip_sw actually skip
+ software
+Message-ID: <20240327135221.GG403975@kernel.org>
+References: <20240325204740.1393349-1-ast@fiberby.net>
+ <20240325204740.1393349-4-ast@fiberby.net>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <1711503463.632461-1-xuanzhuo@linux.alibaba.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240325204740.1393349-4-ast@fiberby.net>
 
-Hello Xuan,
-
-On Wed, Mar 27, 2024 at 09:37:43AM +0800, Xuan Zhuo wrote:
-> On Tue, 26 Mar 2024 08:19:08 -0700, Breno Leitao <leitao@debian.org> wrote:
-> > Do not set virtnet_info->rss_indir_table_size if RSS is not available
-> > for the device.
-> >
-> > Currently, rss_indir_table_size is set if either has_rss or
-> > has_rss_hash_report is available, but, it should only be set if has_rss
-> > is set.
-> >
-> > On the virtnet_set_rxfh(), return an invalid command if the request has
-> > indirection table set, but virtnet does not support RSS.
-> >
-> > Suggested-by: Heng Qi <hengqi@linux.alibaba.com>
-> > Signed-off-by: Breno Leitao <leitao@debian.org>
-> > ---
-> >  drivers/net/virtio_net.c | 9 +++++++--
-> >  1 file changed, 7 insertions(+), 2 deletions(-)
-> >
-> > diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
-> > index c22d1118a133..c640fdf28fc5 100644
-> > --- a/drivers/net/virtio_net.c
-> > +++ b/drivers/net/virtio_net.c
-> > @@ -3813,6 +3813,9 @@ static int virtnet_set_rxfh(struct net_device *dev,
-> >  	    rxfh->hfunc != ETH_RSS_HASH_TOP)
-> >  		return -EOPNOTSUPP;
-> >
-> > +	if (rxfh->indir && !vi->has_rss)
-> > +		return -EINVAL;
-> > +
-> >  	if (rxfh->indir) {
+On Mon, Mar 25, 2024 at 08:47:36PM +0000, Asbjørn Sloth Tønnesen wrote:
+> TC filters come in 3 variants:
+> - no flag (try to process in hardware, but fallback to software))
+> - skip_hw (do not process filter by hardware)
+> - skip_sw (do not process filter by software)
 > 
-> Put !vi->has_rss here?
+> However skip_sw is implemented so that the skip_sw
+> flag can first be checked, after it has been matched.
+> 
+> IMHO it's common when using skip_sw, to use it on all rules.
+> 
+> So if all filters in a block is skip_sw filters, then
+> we can bail early, we can thus avoid having to match
+> the filters, just to check for the skip_sw flag.
+> 
+> This patch adds a bypass, for when only TC skip_sw rules
+> are used. The bypass is guarded by a static key, to avoid
+> harming other workloads.
+> 
+> There are 3 ways that a packet from a skip_sw ruleset, can
+> end up in the kernel path. Although the send packets to a
+> non-existent chain way is only improved a few percents, then
+> I believe it's worth optimizing the trap and fall-though
+> use-cases.
+> 
+>  +----------------------------+--------+--------+--------+
+>  | Test description           | Pre-   | Post-  | Rel.   |
+>  |                            | kpps   | kpps   | chg.   |
+>  +----------------------------+--------+--------+--------+
+>  | basic forwarding + notrack | 3589.3 | 3587.9 |  1.00x |
+>  | switch to eswitch mode     | 3081.8 | 3094.7 |  1.00x |
+>  | add ingress qdisc          | 3042.9 | 3063.6 |  1.01x |
+>  | tc forward in hw / skip_sw |37024.7 |37028.4 |  1.00x |
+>  | tc forward in sw / skip_hw | 3245.0 | 3245.3 |  1.00x |
+>  +----------------------------+--------+--------+--------+
+>  | tests with only skip_sw rules below:                  |
+>  +----------------------------+--------+--------+--------+
+>  | 1 non-matching rule        | 2694.7 | 3058.7 |  1.14x |
+>  | 1 n-m rule, match trap     | 2611.2 | 3323.1 |  1.27x |
+>  | 1 n-m rule, goto non-chain | 2886.8 | 2945.9 |  1.02x |
+>  | 5 non-matching rules       | 1958.2 | 3061.3 |  1.56x |
+>  | 5 n-m rules, match trap    | 1911.9 | 3327.0 |  1.74x |
+>  | 5 n-m rules, goto non-chain| 2883.1 | 2947.5 |  1.02x |
+>  | 10 non-matching rules      | 1466.3 | 3062.8 |  2.09x |
+>  | 10 n-m rules, match trap   | 1444.3 | 3317.9 |  2.30x |
+>  | 10 n-m rules,goto non-chain| 2883.1 | 2939.5 |  1.02x |
+>  | 25 non-matching rules      |  838.5 | 3058.9 |  3.65x |
+>  | 25 n-m rules, match trap   |  824.5 | 3323.0 |  4.03x |
+>  | 25 n-m rules,goto non-chain| 2875.8 | 2944.7 |  1.02x |
+>  | 50 non-matching rules      |  488.1 | 3054.7 |  6.26x |
+>  | 50 n-m rules, match trap   |  484.9 | 3318.5 |  6.84x |
+>  | 50 n-m rules,goto non-chain| 2884.1 | 2939.7 |  1.02x |
+>  +----------------------------+--------+--------+--------+
+> 
+> perf top (25 n-m skip_sw rules - pre patch):
+>   20.39%  [kernel]  [k] __skb_flow_dissect
+>   16.43%  [kernel]  [k] rhashtable_jhash2
+>   10.58%  [kernel]  [k] fl_classify
+>   10.23%  [kernel]  [k] fl_mask_lookup
+>    4.79%  [kernel]  [k] memset_orig
+>    2.58%  [kernel]  [k] tcf_classify
+>    1.47%  [kernel]  [k] __x86_indirect_thunk_rax
+>    1.42%  [kernel]  [k] __dev_queue_xmit
+>    1.36%  [kernel]  [k] nft_do_chain
+>    1.21%  [kernel]  [k] __rcu_read_lock
+> 
+> perf top (25 n-m skip_sw rules - post patch):
+>    5.12%  [kernel]  [k] __dev_queue_xmit
+>    4.77%  [kernel]  [k] nft_do_chain
+>    3.65%  [kernel]  [k] dev_gro_receive
+>    3.41%  [kernel]  [k] check_preemption_disabled
+>    3.14%  [kernel]  [k] mlx5e_skb_from_cqe_mpwrq_nonlinear
+>    2.88%  [kernel]  [k] __netif_receive_skb_core.constprop.0
+>    2.49%  [kernel]  [k] mlx5e_xmit
+>    2.15%  [kernel]  [k] ip_forward
+>    1.95%  [kernel]  [k] mlx5e_tc_restore_tunnel
+>    1.92%  [kernel]  [k] vlan_gro_receive
+> 
+> Test setup:
+>  DUT: Intel Xeon D-1518 (2.20GHz) w/ Nvidia/Mellanox ConnectX-6 Dx 2x100G
+>  Data rate measured on switch (Extreme X690), and DUT connected as
+>  a router on a stick, with pktgen and pktsink as VLANs.
+>  Pktgen-dpdk was in range 36.6-37.7 Mpps 64B packets across all tests.
+>  Full test data at https://files.fiberby.net/ast/2024/tc_skip_sw/v2_tests/
+> 
+> Signed-off-by: Asbjørn Sloth Tønnesen <ast@fiberby.net>
 
-I am not sure I understand the suggestion. Where do you suggest we have
-!vi->has_rss?
+Reviewed-by: Simon Horman <horms@kernel.org>
 
-If we got this far, we either have:
-
-a) rxfh->indir set and vi->has_rss is also set
-b) rxfh->indir not set. (vi->has_rss could be set or not).
-
-Thanks for the review,
-Breno
 
