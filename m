@@ -1,104 +1,145 @@
-Return-Path: <linux-kernel+bounces-121692-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-121693-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 374EE88EC86
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 18:22:40 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 73E8088EC8A
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 18:23:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E1BCC1F22268
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 17:22:39 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A2B9A1C2E70B
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 17:23:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 05C2014D426;
-	Wed, 27 Mar 2024 17:22:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EF42114D45F;
+	Wed, 27 Mar 2024 17:23:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="UBh/RaK+"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.13])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="XloCsd3H"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 030521304A6;
-	Wed, 27 Mar 2024 17:22:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.13
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 34D6B1304A6;
+	Wed, 27 Mar 2024 17:23:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711560151; cv=none; b=CWPJ2sEHeNdbO/aSV6q68S7LzMGycLn3yeq7rxrNS1r+t9V+0Kl2AB+z1N8vIKEmHYY+AdLOo7xRIM8KKL6mWRYonJ1lheTyXRj5b9UCrqtArmzrzTqjhdInJmmnlvzBmDOQH/JQhIMWo6XupPwH1D99nQ/TBXyta3nfwvPWrCI=
+	t=1711560213; cv=none; b=MwGS8B7BQo1LdZY0nvO4NlFyf+uvWQRq1CkV8ACTPx6oUoo2FxL3z30q5jgZFC61t4g/GhzBxK7J6Ue3h5FkObKN2hcjpbay4Jtd5JuAkGRy0ghvesQm52wCiNW2y0TOCNawGCg43JW1MJZY8o6rspxHIHbYGuwStj2fuO5eioA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711560151; c=relaxed/simple;
-	bh=jYWITuVZk3q0yW/62whpMi2Vl5VxwGRyqXLkV6raZ/k=;
+	s=arc-20240116; t=1711560213; c=relaxed/simple;
+	bh=IVW7vlTiLrTDILy6sOFcmkVPU3+mDVNBvceJINH+rOM=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=M9nBZzw5Lwb/PxFiWL1N9XSe2bT9zGbuTmpM+yrj6PFAEoFXppFu788Gz0yhMl5n2ZdM5i9JIf66sFGJTvMZA5hXJVimdGYGlWjXw/IQ+kEzFBArXkzWxk6sPxVhvsppYXpqu7KUh/hm/qHcLoufBX5zjpaNKAS3GtdEvWNtVP0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=UBh/RaK+; arc=none smtp.client-ip=192.198.163.13
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1711560149; x=1743096149;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=jYWITuVZk3q0yW/62whpMi2Vl5VxwGRyqXLkV6raZ/k=;
-  b=UBh/RaK+XUynvJQYN+VgB/PQOoD1hobCpl0ipzpGWj5VezMc37x50DqK
-   vmgcc27IbK7q1Jn2oILM1NlSRIZxvwxR8waSSW82ndmd7HB4p5BvxS7do
-   x4SGSB4zVV8fuQSV63Eik4VHxwJKihz71jnCGyanA45Kr0Jb2w6aUMelg
-   inyYEPW8V7pvP/IqW2XVY8bFj/d34zNugzfitpga6ZfIl3sNl9RaSurLe
-   J9Disurdnd8eWn+CMhMTp74MXlxVqh19x1GUCSKdUykUIl6gsqxU2138r
-   kMp2ibf7Z6XQCOXW8ITT6GboSneJPzzGxH1FKvHopVyiOSE5mS7I7JBQx
-   g==;
-X-CSE-ConnectionGUID: 2ZwJajQ0S++Kc/ZkVNJJRw==
-X-CSE-MsgGUID: 8e5X35IFSLW2vvB5UDJLGA==
-X-IronPort-AV: E=McAfee;i="6600,9927,11026"; a="9639798"
-X-IronPort-AV: E=Sophos;i="6.07,159,1708416000"; 
-   d="scan'208";a="9639798"
-Received: from orviesa008.jf.intel.com ([10.64.159.148])
-  by fmvoesa107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Mar 2024 10:22:28 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,159,1708416000"; 
-   d="scan'208";a="16993278"
-Received: from ls.sc.intel.com (HELO localhost) ([172.25.112.31])
-  by orviesa008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Mar 2024 10:22:27 -0700
-Date: Wed, 27 Mar 2024 10:22:27 -0700
-From: Isaku Yamahata <isaku.yamahata@intel.com>
-To: "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>
-Cc: "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"Yamahata, Isaku" <isaku.yamahata@intel.com>,
-	"Zhang, Tina" <tina.zhang@intel.com>,
-	"Gao, Chao" <chao.gao@intel.com>,
-	"seanjc@google.com" <seanjc@google.com>,
-	"Yuan, Hang" <hang.yuan@intel.com>,
-	"Huang, Kai" <kai.huang@intel.com>, "Chen, Bo2" <chen.bo@intel.com>,
-	"sagis@google.com" <sagis@google.com>,
-	"isaku.yamahata@gmail.com" <isaku.yamahata@gmail.com>,
-	"Aktas, Erdem" <erdemaktas@google.com>,
-	"pbonzini@redhat.com" <pbonzini@redhat.com>,
-	isaku.yamahata@linux.intel.com
-Subject: Re: [PATCH v19 018/130] KVM: x86/mmu: Assume guest MMIOs are shared
-Message-ID: <20240327172227.GE2444378@ls.amr.corp.intel.com>
-References: <cover.1708933498.git.isaku.yamahata@intel.com>
- <b2e5c92fd66a0113b472dd602220346d3d435732.1708933498.git.isaku.yamahata@intel.com>
- <3c51ec38e523db291ecc914805e0a51208e9ca9f.camel@intel.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=Tw2w7YuD+QQtrPFVaHi3BnF7jq5XDb4BO9wFCAVTLoI2b3P43Nk49qml3zmCpqpuWM20oXUUUiQWCY94WN6s+BggVVqTvYuiFLNrAG6tyXtS+Prh2+d/nij7ZnIORdlYf6T4EiwssZsvTGa45vUHx23Y0xtfvIMpnCwEHPPqbvM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=XloCsd3H; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3FA95C433C7;
+	Wed, 27 Mar 2024 17:23:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1711560212;
+	bh=IVW7vlTiLrTDILy6sOFcmkVPU3+mDVNBvceJINH+rOM=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=XloCsd3HB0EhyIQa5CzYWfgKyeewc6Oqo0by9UfFEbxWZIexiepINomz0U7NH5PpD
+	 F7bO68lQDu8aBGYCYKPh66JaFzTlN2DyebgDzfYB4hNllLQDTQQJxjeyQ5rsGCWop3
+	 NY2JuvbsjVzpVoLUX2m4D3n/TPYD45DL2vRUvg0QtaVGIeoGYg/860IfICZRzrBHmW
+	 swdOfcf5VB1xJkpsYGQ4LUKJzG0fsn5jzUqOvxKvJVukcS+rdwwTX6aVBmNFHsvWrP
+	 UykPBL0SCRFrQXScdsu6Vh8CVXQmMixz4lSY0QfeN8TIFNjWADxiNWPKZsetBKIVXd
+	 wUw//P4t3xOXQ==
+Date: Wed, 27 Mar 2024 17:23:26 +0000
+From: Conor Dooley <conor@kernel.org>
+To: Emmanuel Gil Peyrot <linkmauve@linkmauve.fr>
+Cc: linux-kernel@vger.kernel.org,
+	Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>,
+	Philipp Zabel <p.zabel@pengutronix.de>,
+	Mauro Carvalho Chehab <mchehab@kernel.org>,
+	Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Heiko Stuebner <heiko@sntech.de>, Joerg Roedel <joro@8bytes.org>,
+	Will Deacon <will@kernel.org>, Robin Murphy <robin.murphy@arm.com>,
+	Sebastian Reichel <sebastian.reichel@collabora.com>,
+	Cristian Ciocaltea <cristian.ciocaltea@collabora.com>,
+	Dragan Simic <dsimic@manjaro.org>,
+	Shreeya Patel <shreeya.patel@collabora.com>,
+	Chris Morgan <macromorgan@hotmail.com>,
+	Andy Yan <andy.yan@rock-chips.com>,
+	Nicolas Frattaroli <frattaroli.nicolas@gmail.com>,
+	linux-media@vger.kernel.org, linux-rockchip@lists.infradead.org,
+	devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	iommu@lists.linux.dev
+Subject: Re: [PATCH v2 1/2] media: =?utf-8?Q?dt-bin?=
+ =?utf-8?Q?ding=3A_media=3A_Document_rk3588=E2=80=99s?= VEPU121
+Message-ID: <20240327-doze-uncheck-475f3feaee57@spud>
+References: <20240327134115.424846-1-linkmauve@linkmauve.fr>
+ <20240327134115.424846-2-linkmauve@linkmauve.fr>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="4zuSRA0OEooBf1eF"
 Content-Disposition: inline
-In-Reply-To: <3c51ec38e523db291ecc914805e0a51208e9ca9f.camel@intel.com>
+In-Reply-To: <20240327134115.424846-2-linkmauve@linkmauve.fr>
 
-On Mon, Mar 25, 2024 at 11:41:56PM +0000,
-"Edgecombe, Rick P" <rick.p.edgecombe@intel.com> wrote:
 
-> On Mon, 2024-02-26 at 00:25 -0800, isaku.yamahata@intel.com wrote:
-> > From: Chao Gao <chao.gao@intel.com>
-> > 
-> > TODO: Drop this patch once the common patch is merged.
-> 
-> What is this TODO talking about?
+--4zuSRA0OEooBf1eF
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-https://lore.kernel.org/all/ZcUO5sFEAIH68JIA@google.com/
+On Wed, Mar 27, 2024 at 02:41:11PM +0100, Emmanuel Gil Peyrot wrote:
+> This encoder-only device is present four times on this SoC, and should
+> support everything the rk3568 vepu supports (so JPEG, H.264 and VP8
+> encoding).
+>=20
+> According to the TRM[1], there is also the VEPU580 encoder which
+> supports H.264 and H.265, and various VDPU* decoders, of which only the
+> VDPU981 is currently supported.  This patch describes only the VEPU121.
+>=20
+> [1] https://github.com/FanX-Tek/rk3588-TRM-and-Datasheet
+>=20
+> Signed-off-by: Emmanuel Gil Peyrot <linkmauve@linkmauve.fr>
 
-This patch was shot down and need to fix it in guest side. TDVF.
--- 
-Isaku Yamahata <isaku.yamahata@intel.com>
+Acked-by: Conor Dooley <conor.dooley@microchip.com>
+
+Thanks,
+Conor.
+
+> ---
+>  .../devicetree/bindings/media/rockchip,rk3568-vepu.yaml   | 8 ++++++--
+>  1 file changed, 6 insertions(+), 2 deletions(-)
+>=20
+> diff --git a/Documentation/devicetree/bindings/media/rockchip,rk3568-vepu=
+=2Eyaml b/Documentation/devicetree/bindings/media/rockchip,rk3568-vepu.yaml
+> index 9d90d8d0565a..4c6cb21da041 100644
+> --- a/Documentation/devicetree/bindings/media/rockchip,rk3568-vepu.yaml
+> +++ b/Documentation/devicetree/bindings/media/rockchip,rk3568-vepu.yaml
+> @@ -15,8 +15,12 @@ description:
+> =20
+>  properties:
+>    compatible:
+> -    enum:
+> -      - rockchip,rk3568-vepu
+> +    oneOf:
+> +      - const: rockchip,rk3568-vepu
+> +      - items:
+> +          - enum:
+> +              - rockchip,rk3588-vepu121
+> +          - const: rockchip,rk3568-vepu
+> =20
+>    reg:
+>      maxItems: 1
+> --=20
+> 2.44.0
+>=20
+
+--4zuSRA0OEooBf1eF
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZgRWDgAKCRB4tDGHoIJi
+0lutAP9RUO+UBR6Pi5FROQ2xaLNqi5TaQoaK43MSDUy1PTIC0AEA7wsfYNyJUltg
+R8OsUeBnoheFQXxeCQ5knEZaXqMNKQ0=
+=eiO7
+-----END PGP SIGNATURE-----
+
+--4zuSRA0OEooBf1eF--
 
