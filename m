@@ -1,71 +1,71 @@
-Return-Path: <linux-kernel+bounces-122162-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-122163-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 61DAA88F2F1
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 00:21:32 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5F39888F2F4
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 00:21:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CCEA51F29E40
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 23:21:31 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DB8DB1F2B4B6
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 23:21:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AA7F615688B;
-	Wed, 27 Mar 2024 23:19:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D077E15697A;
+	Wed, 27 Mar 2024 23:19:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b="AZe/5H+P"
-Received: from mail-oa1-f47.google.com (mail-oa1-f47.google.com [209.85.160.47])
+	dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b="eAqfAphT"
+Received: from mail-oa1-f50.google.com (mail-oa1-f50.google.com [209.85.160.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 95EE91552E2
-	for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 23:19:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8B6EA156643
+	for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 23:19:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711581553; cv=none; b=OkfIN9c6paO2+A+zIortI4kcUSWbu9CYCnrx1FSv52PxfZps7OzH9I2KpyAgELD46uNfvWzRhwfFVZhEL7tWxPU0K5dznMQLaDwB/kHj/xRFD/ytKOagnDS6ir/LdK3Bxr78XcM55xR13NlgYs1yQLGgNF4r3CCUO9LAjeQJbz8=
+	t=1711581554; cv=none; b=tFQUToOv2rEPYPw5u7ukvkaV5wEIMTDtAiCqnlAM+g0sRPYWOniRjawn08Lf6ot8XIDY/40n5ju/YrXIPYwlnsu9RFCyOaLGl/Rh3QAJsnPUrlYLDh3AB+ljASdjgMEPRAawzRIeqm504Uhwo1qNpbEwzDS1uVlQ7m5UW6Sz1FU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711581553; c=relaxed/simple;
-	bh=xlOFHnY+VUAHimj0/6CI3uzJ6CONg5CROD3tFFJ2TF4=;
+	s=arc-20240116; t=1711581554; c=relaxed/simple;
+	bh=h9SozZx07F/ieSA3Tkw6/3vSYWM+YqSBRP3PPQIUB78=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=rP6Tv3YMTA/9tXdFC781T3mjnk/Wclm32jgm7inJZ3wY9qLnAj+aW5TydohA4rKmqLpMpfII/+n2Udt5p0buSFkllOD3xXCx2KIDTP/XAmYUQLI+BeKl6ldpIjnlsyL1RDGVCh5ivyD/08DQ3Z3ZP7orQHYoiRhkiRax0RlZ4SI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b=AZe/5H+P; arc=none smtp.client-ip=209.85.160.47
+	 MIME-Version:Content-Type; b=hHN1+cir6c4J+HK7F+4KAhsBta4arsF4ldmVRJ36BM3bJYt0EQy4pJeGHCM6tG3iagFMaKxWuSxodfpkdODVTvfdI7hBUEEi3gaSR0wZexQdwDtJFVzTnVFTFcu0t7vpELGSSGlarFhZBMzErWg5ze+/+wVIpTJH0ks5OM36Q9Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b=eAqfAphT; arc=none smtp.client-ip=209.85.160.50
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baylibre.com
-Received: by mail-oa1-f47.google.com with SMTP id 586e51a60fabf-22215ccbafeso260714fac.0
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 16:19:10 -0700 (PDT)
+Received: by mail-oa1-f50.google.com with SMTP id 586e51a60fabf-229cbc52318so225219fac.2
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 16:19:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1711581549; x=1712186349; darn=vger.kernel.org;
+        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1711581550; x=1712186350; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=CBx5yqCcIG/deXybWASqoKrfUt47GVVbdT7E/yXEMkE=;
-        b=AZe/5H+Pjy5tCOeoAALOzNVLm6n1Q05iv9SH37MheVT1+g0TMz85zs6kL0vLUX5hRI
-         gkaVoES9vc1z7jptM736If8A1nvpdcEZJb3ylbLRrEBcGud7KoJoDk6rPvt61ysRhnKb
-         bKczNZLbrIb07MnkGyjqTJB7Q5+iT+PAxDnNA/AYFSNU8P8CR7Kkkwnn7y3eG9VoyJbZ
-         Z1FzV9DRwmCFD+ccxbCVFv6cxwpJz6Cvl5PqQLZS3ch5H7fQm2jzuTTS1ylPJXX9BKTH
-         qCwFjwoPgkRFzZS23CN9bn5BfO5lXQrGT0gyO94Lll+G1k3THkzdh0dGAFF6QxnGMKTz
-         Og/Q==
+        bh=CJZsj0mH5Na8/6xZVfDNraoADX8hsL14D7DbLT7TMPI=;
+        b=eAqfAphTCe5xMLO7IDsfaBpiCj4b/x+7v8ccb8ODULuM2G7hkEN25kFJncN2sx/fvG
+         QqUtlTjU4y695H2BTg3WTXcN767DuqbeSF6kh71SM1I0HU3UoyK8Q8jlsJwuNGAUdaqX
+         v3y9v/LDcuEfFDJ4KrGbQzJPSwxGrC0/1sCznd7hZFChgt5v4WDZzdU2UoIMUeDGcrs/
+         PvpmycHNdqEKepsxWgg5WbEUrtho04hZf5xJ9rtPoZYW5V2jgvQTNy3hKTKqqAXl9uw2
+         AZCTB49zFOmtYTVDnDYwbARUFzNRGtTcij9x4iAXUwJ5fZatOfL/jouVCMKin9BmsZnq
+         WBCw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711581549; x=1712186349;
+        d=1e100.net; s=20230601; t=1711581550; x=1712186350;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=CBx5yqCcIG/deXybWASqoKrfUt47GVVbdT7E/yXEMkE=;
-        b=GciV0eZdRSiJ6nzas43QpkneXjOAqHCfimg1OaojBtxxwQDjrCHvDtxR3Zbfrl9o7y
-         7VNREWrfD7rjlVuwqEkfNQ8o/cyDbUZrZgnzMOyPPuFeYV4lPpCuOOaVxNMfcRM6AHzc
-         s93NISfufVayF8wAUDyvYb51tpfwwqix88urgWZfsViPvBs55MYplvsR/VZwZhWSew52
-         t/m0JKUp4WuSZ31yZh6TpmWYwD5DVQpibn2TItIgjIBz3Sidtt5rXT+El+Rj8izL+O3w
-         WfKVagLeLMO9edkuKdRJnZ+tqwbyieS0YQ6LRyAgkMH1ta6TcUA+QDDZzbhl+9/kdMji
-         lr8w==
-X-Forwarded-Encrypted: i=1; AJvYcCW+LfPgzka66pov5XdB/4skvf0UV0dtr7R9eKWq5pRbLh2AsGyJQJa5bRyb7TzvF1pR94r1k+8UZdAIu4VBkVVcOaIPV++dUBNMWd5C
-X-Gm-Message-State: AOJu0Yzr9RuaHcxu5IPv/z+fA6X+7kZe+BqGjSOXZanvagGrVEiRzNnP
-	IEtw6+5FKPlO2dT8UKu06k0Fxi5ZkOteLGrm+i8tUtLUQUQHuGvGkYG+N3TzSxc=
-X-Google-Smtp-Source: AGHT+IFXU8zmzWmrbkxOxvW7wtT9Hq/b5rbtfGnHI6ZuQs2D4otmJCIrbq7hVTyLaL9P54g4uvOwbQ==
-X-Received: by 2002:a05:6870:b14b:b0:229:fa5a:2fec with SMTP id a11-20020a056870b14b00b00229fa5a2fecmr1265617oal.54.1711581549199;
-        Wed, 27 Mar 2024 16:19:09 -0700 (PDT)
+        bh=CJZsj0mH5Na8/6xZVfDNraoADX8hsL14D7DbLT7TMPI=;
+        b=wm/+jOKTrdvI2yEwuhvc+e9VzB2f38kRDFSmcXYqrR4dxOdA7xGfU+4Qr7N80xSgv/
+         GI1ZDleorXDro+JDNXWYKrPBNXCP0+cP28cBpN7AB+Zr8KTC90M/H/wLoICech5VQP3G
+         o8IJnx7Wks7PHYocTGRVzYpzf7GvBuF8Ga11eMEPEixH9srNmsz/boq8Cu98Zqap/SQi
+         8+Z4OrPddff3hk8TERuLXenoyBwRIoFsMdFEZ5nyTAUS0lhsLXyCYp6wk6u2SEZGKvfm
+         7henSbFzkrdLNbZSMbHx0ViNJPc3nrrNJrY3lOSZw6Wf5P1RJj2kFTqAQWOzlFaL9Q/A
+         AYmw==
+X-Forwarded-Encrypted: i=1; AJvYcCXgjxtZN5MRYOYtElO4xnqgm+Mb7IoZoRqtaKXw+yIa4JjU92eNIW1fv1Kc5py8hjt30fYLRIkS1TKugD4LaAgsd/SPbymFKBESC+ZN
+X-Gm-Message-State: AOJu0Yxb8lS1VMXeSJcOt7W8wa8I4sDgXyOe6rQldzfLQ+SaAGmpJedR
+	bIp5oWDNtPR4jqVy4d6cmnh7V7HCr7oFG10w4XcRjPmeeI7QsIGtN2lDZlUFQXU=
+X-Google-Smtp-Source: AGHT+IFF6sA3ju+9mCH35rHh1zhgVOle14esmb64OwmiwIjcccCZ+Gff/k0HvFE6jlRCad9wpwZTGw==
+X-Received: by 2002:a05:6871:3a14:b0:221:9013:d783 with SMTP id pu20-20020a0568713a1400b002219013d783mr1213589oac.34.1711581550253;
+        Wed, 27 Mar 2024 16:19:10 -0700 (PDT)
 Received: from freyr.lechnology.com (ip98-183-112-25.ok.ok.cox.net. [98.183.112.25])
-        by smtp.gmail.com with ESMTPSA id js3-20020a056870bac300b0022a0519183csm81381oab.2.2024.03.27.16.19.08
+        by smtp.gmail.com with ESMTPSA id js3-20020a056870bac300b0022a0519183csm81381oab.2.2024.03.27.16.19.09
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 27 Mar 2024 16:19:08 -0700 (PDT)
+        Wed, 27 Mar 2024 16:19:09 -0700 (PDT)
 From: David Lechner <dlechner@baylibre.com>
 To: Jonathan Corbet <corbet@lwn.net>,
 	Liam Girdwood <lgirdwood@gmail.com>,
@@ -87,9 +87,9 @@ Cc: David Lechner <dlechner@baylibre.com>,
 	linux-iio@vger.kernel.org,
 	linux-staging@lists.linux.dev,
 	linux-input@vger.kernel.org
-Subject: [PATCH RFC 6/7] staging: iio: impedance-analyzer: admv1013: Use devm_regulator_get_enable_get_voltage()
-Date: Wed, 27 Mar 2024 18:18:55 -0500
-Message-ID: <20240327-regulator-get-enable-get-votlage-v1-6-5f4517faa059@baylibre.com>
+Subject: [PATCH RFC 7/7] Input: mpr121: Use devm_regulator_get_enable_get_voltage()
+Date: Wed, 27 Mar 2024 18:18:56 -0500
+Message-ID: <20240327-regulator-get-enable-get-votlage-v1-7-5f4517faa059@baylibre.com>
 X-Mailer: git-send-email 2.43.2
 In-Reply-To: <20240327-regulator-get-enable-get-votlage-v1-0-5f4517faa059@baylibre.com>
 References: <20240327-regulator-get-enable-get-votlage-v1-0-5f4517faa059@baylibre.com>
@@ -108,58 +108,79 @@ devm_regulator_get_enable_get_voltage().
 
 Signed-off-by: David Lechner <dlechner@baylibre.com>
 ---
- drivers/staging/iio/impedance-analyzer/ad5933.c | 24 +-----------------------
- 1 file changed, 1 insertion(+), 23 deletions(-)
+ drivers/input/keyboard/mpr121_touchkey.c | 45 +++-----------------------------
+ 1 file changed, 3 insertions(+), 42 deletions(-)
 
-diff --git a/drivers/staging/iio/impedance-analyzer/ad5933.c b/drivers/staging/iio/impedance-analyzer/ad5933.c
-index 9149d41fe65b..e4942833b793 100644
---- a/drivers/staging/iio/impedance-analyzer/ad5933.c
-+++ b/drivers/staging/iio/impedance-analyzer/ad5933.c
-@@ -84,7 +84,6 @@
+diff --git a/drivers/input/keyboard/mpr121_touchkey.c b/drivers/input/keyboard/mpr121_touchkey.c
+index d434753afab1..c59e7451f3cd 100644
+--- a/drivers/input/keyboard/mpr121_touchkey.c
++++ b/drivers/input/keyboard/mpr121_touchkey.c
+@@ -82,42 +82,6 @@ static const struct mpr121_init_register init_reg_table[] = {
+ 	{ AUTO_CONFIG_CTRL_ADDR, 0x0b },
+ };
  
- struct ad5933_state {
- 	struct i2c_client		*client;
--	struct regulator		*reg;
- 	struct clk			*mclk;
- 	struct delayed_work		work;
- 	struct mutex			lock; /* Protect sensor state */
-@@ -660,13 +659,6 @@ static void ad5933_work(struct work_struct *work)
- 	}
- }
- 
--static void ad5933_reg_disable(void *data)
+-static void mpr121_vdd_supply_disable(void *data)
 -{
--	struct ad5933_state *st = data;
+-	struct regulator *vdd_supply = data;
 -
--	regulator_disable(st->reg);
+-	regulator_disable(vdd_supply);
 -}
 -
- static int ad5933_probe(struct i2c_client *client)
- {
- 	const struct i2c_device_id *id = i2c_client_get_device_id(client);
-@@ -685,21 +677,7 @@ static int ad5933_probe(struct i2c_client *client)
- 
- 	mutex_init(&st->lock);
- 
--	st->reg = devm_regulator_get(&client->dev, "vdd");
--	if (IS_ERR(st->reg))
--		return PTR_ERR(st->reg);
+-static struct regulator *mpr121_vdd_supply_init(struct device *dev)
+-{
+-	struct regulator *vdd_supply;
+-	int err;
 -
--	ret = regulator_enable(st->reg);
--	if (ret) {
--		dev_err(&client->dev, "Failed to enable specified VDD supply\n");
--		return ret;
+-	vdd_supply = devm_regulator_get(dev, "vdd");
+-	if (IS_ERR(vdd_supply)) {
+-		dev_err(dev, "failed to get vdd regulator: %ld\n",
+-			PTR_ERR(vdd_supply));
+-		return vdd_supply;
 -	}
 -
--	ret = devm_add_action_or_reset(&client->dev, ad5933_reg_disable, st);
--	if (ret)
--		return ret;
+-	err = regulator_enable(vdd_supply);
+-	if (err) {
+-		dev_err(dev, "failed to enable vdd regulator: %d\n", err);
+-		return ERR_PTR(err);
+-	}
 -
--	ret = regulator_get_voltage(st->reg);
-+	ret = devm_regulator_get_enable_get_voltage(&client->dev, "vdd");
- 	if (ret < 0)
- 		return ret;
+-	err = devm_add_action_or_reset(dev, mpr121_vdd_supply_disable,
+-				       vdd_supply);
+-	if (err) {
+-		dev_err(dev, "failed to add disable regulator action: %d\n",
+-			err);
+-		return ERR_PTR(err);
+-	}
+-
+-	return vdd_supply;
+-}
+-
+ static void mpr_touchkey_report(struct input_dev *dev)
+ {
+ 	struct mpr121_touchkey *mpr121 = input_get_drvdata(dev);
+@@ -233,7 +197,6 @@ static int mpr121_phys_init(struct mpr121_touchkey *mpr121,
+ static int mpr_touchkey_probe(struct i2c_client *client)
+ {
+ 	struct device *dev = &client->dev;
+-	struct regulator *vdd_supply;
+ 	int vdd_uv;
+ 	struct mpr121_touchkey *mpr121;
+ 	struct input_dev *input_dev;
+@@ -241,11 +204,9 @@ static int mpr_touchkey_probe(struct i2c_client *client)
+ 	int error;
+ 	int i;
  
+-	vdd_supply = mpr121_vdd_supply_init(dev);
+-	if (IS_ERR(vdd_supply))
+-		return PTR_ERR(vdd_supply);
+-
+-	vdd_uv = regulator_get_voltage(vdd_supply);
++	vdd_uv = devm_regulator_get_enable_get_voltage(dev, "vdd");
++	if (vdd_uv < 0)
++		return vdd_uv;
+ 
+ 	mpr121 = devm_kzalloc(dev, sizeof(*mpr121), GFP_KERNEL);
+ 	if (!mpr121)
 
 -- 
 2.43.2
