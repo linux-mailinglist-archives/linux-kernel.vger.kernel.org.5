@@ -1,189 +1,197 @@
-Return-Path: <linux-kernel+bounces-120244-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-120251-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id DF0E688D4CA
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 03:50:47 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id A677D88D4DE
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 04:05:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5988D1F30DE3
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 02:50:47 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 360D21F31640
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 03:05:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 62F2B22087;
-	Wed, 27 Mar 2024 02:50:40 +0000 (UTC)
-Received: from CHN02-BJS-obe.outbound.protection.partner.outlook.cn (mail-bjschn02on2096.outbound.protection.partner.outlook.cn [139.219.17.96])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B180021A04;
+	Wed, 27 Mar 2024 03:04:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="K13lhMkH"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.20])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5F51817BA6;
-	Wed, 27 Mar 2024 02:50:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=139.219.17.96
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711507839; cv=fail; b=k2Nmnwyi3Ddd84JDfznQGudhXFS6omHBBzV5ml1g3VWknw+LfLYdLozrKHzvy2Su0ZZIGmUzPxC4Sq+FVxjRViiJcwj5PWE/bYlJrlo/UP5/hC17kNLTAiKgQ7uMhYFup6DiaQTxEYx/EnaqI64RdGC4zdQtK+/7AxskbZtzbSE=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711507839; c=relaxed/simple;
-	bh=vFPdxktJQvKv601CZsD1nIshoRhsS56TxR0fwJaRfcM=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=rzy6fs6btp/exn4KQsxtW6FdWj70Wa7WZ34UJ0qYiAQrDcM3M8W3HBy0+kBTlsK3rdJZkjZdoEamDdva2O28QH9K6SBZCoqzi6hroM7702sCJVte9aKLH+s2h8hNC3iH04ojdk7qwEe3R75Ks9U3KuKfKvPm/jYKaIE14GdGvyE=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=starfivetech.com; spf=pass smtp.mailfrom=starfivetech.com; arc=fail smtp.client-ip=139.219.17.96
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=starfivetech.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=starfivetech.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=KTg/oEjQqsSO3FLfz7qDXZkH1qRRP7sX3hjz7WxEy4ZAThOuHIF/TSyH8/pWJLF4ML/x3vsrOEarJAus7A43JMKero8rpJ6emnWOi9vHwfJi7wZOTXxfumkpYs2+VL0hMeZ4T1XWjr0w8yEXc/Z/75t3KJgnbpOpwrJLDZHv3pPTVJLjcJXBR71d/JRBMLBCCMN37xWA/4ITqpeAR9uwTwkRWh1gM6TgSew5yLadpQFe8LfCgmCxdSDfpYDiGeoqY66YuYd6MkQksX7+DwS9nwDYdetQrgkM3y8NjBfMgxPuh2sWNiLyA9Nn/QNtkALIGu7actjp3sjMX3+wlUi1dA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=BtVK3a7P7VP7BP4Xrh/hvM9yQxZocloCz/3AwYhv5XY=;
- b=S+9a9jyNUbXGw10IZE2hqbWJXXh3vTsPdfrtP8pGP+weM2hmiNMcMHey439DJ0hTcwnKsGKBciIEj7UD8+aXsxIlr6uCgY9Esky2ydiX9fI6RqL7u1Wn9K9T1GPhrkDiu50UJ722eF/3HjUcVl3WMuU3iNR7DlrQ2DiKF75AYc2cCu2QYBIKkvOfEAz1p0js/EvmMXVMe/1LlaeExO4ogvP3IJkpWiakwbJ0XKd2K1UO2xNjJMoKGkgA9RtnS2t6zPzOJUN0H/iupK3dPOKckLsfCCl+yMKTpxt1myoD6Cb3sT6pWq7LxNMcpP87mGj3JdZ0Cx6vrUc6xotSG/35ww==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=starfivetech.com; dmarc=pass action=none
- header.from=starfivetech.com; dkim=pass header.d=starfivetech.com; arc=none
-Received: from BJSPR01MB0595.CHNPR01.prod.partner.outlook.cn
- (2406:e500:c211:e::20) by BJSPR01MB0547.CHNPR01.prod.partner.outlook.cn
- (2406:e500:c211:e::19) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.33; Wed, 27 Mar
- 2024 02:50:32 +0000
-Received: from BJSPR01MB0595.CHNPR01.prod.partner.outlook.cn
- ([fe80::d0cf:5e2e:fd40:4aef]) by
- BJSPR01MB0595.CHNPR01.prod.partner.outlook.cn ([fe80::d0cf:5e2e:fd40:4aef%4])
- with mapi id 15.20.7409.031; Wed, 27 Mar 2024 02:50:32 +0000
-From: ChunHau Tan <chunhau.tan@starfivetech.com>
-To: Conor Dooley <conor@kernel.org>
-CC: Eugeniy Paltsev <Eugeniy.Paltsev@synopsys.com>, Vinod Koul
-	<vkoul@kernel.org>, Rob Herring <robh@kernel.org>, Krzysztof Kozlowski
-	<krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>,
-	Leyfoon Tan <leyfoon.tan@starfivetech.com>, JeeHeng Sia
-	<jeeheng.sia@starfivetech.com>, "dmaengine@vger.kernel.org"
-	<dmaengine@vger.kernel.org>, "devicetree@vger.kernel.org"
-	<devicetree@vger.kernel.org>, "linux-kernel@vger.kernel.org"
-	<linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH 1/2] dt-bindings: dma: snps,dw-axi-dmac: Add JH8100
- support
-Thread-Topic: [PATCH 1/2] dt-bindings: dma: snps,dw-axi-dmac: Add JH8100
- support
-Thread-Index: AQHaf2Ox5nUOkqHZ30+sw9x0qtoLj7FKWS6AgACLBgA=
-Date: Wed, 27 Mar 2024 02:50:32 +0000
-Message-ID:
- <BJSPR01MB059504FC203190B95D9D1C549E34A@BJSPR01MB0595.CHNPR01.prod.partner.outlook.cn>
-References: <20240326095457.201572-1-chunhau.tan@starfivetech.com>
- <20240326095457.201572-2-chunhau.tan@starfivetech.com>
- <20240326-maternity-alive-6cb8f6b2e037@spud>
-In-Reply-To: <20240326-maternity-alive-6cb8f6b2e037@spud>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=starfivetech.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: BJSPR01MB0595:EE_|BJSPR01MB0547:EE_
-x-ms-office365-filtering-correlation-id: b0b3e791-1897-42e3-4f59-08dc4e08ab94
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info:
- wRCQrkuBNZQ9BrRqR+5tkZp95juHOwXTt95gFzUNT+OmG1RUh9JLqBghKMIO7CQ/DVIMT3v+tjPl1V21tSOHhtrawdXSggX4fKH/WfJVoI1WeKeOyt3r+mXiNgsq5UFgKCMtvIH6XX+5XzIn3TXwppOOcogIXDp8VHUO3+zFcYjue0E8MEXQqxqFt5ZvVNK3BDlwdTalIPa+eO+GEaaGXo+WvwDRil3d1OtQHkxFfcCQcDaBOpVKU4GdpeOkrfrY69el1dHfNK/zUGvarJBuVNOKaKtEB4p+76qiLiYKVhyCgbevkqnzANJfbZOuOhnz7PNnS6WYoSVScGe193J067lLzSXF+4P7ihr+dE78TxukXQkzqSMBsqa4r4kZgpTNjdyNirPOFAJbNHf+dBp5cbsBQTRzkHzSC1IfMNaBfOELu6xIv0fX0jmYAlC9Ei8VtyFMjlpkIq1vSShIEVdaMltAunozhlXRoMhjNhM9hQjL8wqajXee6Z4pr+DgUlLF9oDoUil+BIiDFnVYLPjNYfXxSvZxo9q943u/sAYPF4zJccvMod/OnjkR7rcoDwUxDtWrG6+dF+O6ERiKk4NUjOLH/zf1htcasRmSsBmU4EsvUh6C8f4dSrnLtP0Se023
-x-forefront-antispam-report:
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BJSPR01MB0595.CHNPR01.prod.partner.outlook.cn;PTR:;CAT:NONE;SFS:(13230031)(1800799015)(41320700004)(366007)(38070700009);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?us-ascii?Q?v9vvQh4F6sKtE236U5J4C/URcbsRsh2jzICVzD4WVs5dq7B+dVNbFSmWGym3?=
- =?us-ascii?Q?cZTk7mdjExESabYJ/ehybOidLklOwcumqJZNEoGIE/jDTu7LJpbPm/VBlxFM?=
- =?us-ascii?Q?QZzFHbrgGRxHHvp0GVK/OLOWJdTMUcmcTfLqfxyM5tcEnbnoY7u7lhSwYBvm?=
- =?us-ascii?Q?5evJufOKUIQLJKLIVOvjIZyTkegBtfzHOdCGKkURaFni+RPSYdpWP0/HCRQg?=
- =?us-ascii?Q?rvInUrOLSn3zLyVQramPRAsYuoHp6F+eLKYMwjAFaDXbe6txICugIGPdW66I?=
- =?us-ascii?Q?8d0CNAx2xdkrapFC6dfJ0xtSIHEf/Ae4yGH0WOX1pjUS0HeEriKmqn3dJ74V?=
- =?us-ascii?Q?9g67FDt9w1EXfx+rtfKaTq6T/RPGJpTqbpYR51Bn8CrfT/HkLLIrCTv/zeWh?=
- =?us-ascii?Q?4SpU0syri6zlrSKz5rYP/TtznfGSP6pHEWm4E8SUVgwMyIv8boi655c2SrTr?=
- =?us-ascii?Q?wiHU+jFA5+jdoDK33uVt0ui9ZBQnkK1wdyF82kKlnywtsyXpmArbZvK01pbk?=
- =?us-ascii?Q?q2YtJPpFd2kcMH6YIw+fwPZzPVKHCuCYKlqsV5nqTYiXSlSCVc2nKmDIJ5Km?=
- =?us-ascii?Q?hh9a5fNtcd2IcloEnqrL0D30KGhTWFYfbuQuFxk57v8mF1MSyJvplkXibsQl?=
- =?us-ascii?Q?mjf4D1YrgVA7LmMniTIcwH8z7oiHqCKRdNnXgL2PH2K948YKnYI5f+X/abis?=
- =?us-ascii?Q?xyskLAjQnYlxlAfjLH4udiUfqt9PNhTCsI8fagb0BWCS8Q/JThh1+7AONg0I?=
- =?us-ascii?Q?9SSlhYWbBx7bcmAb84/qutv+yehxK+Wdv6TmM9IZKDgKcr60GmGi4sSaV1Rn?=
- =?us-ascii?Q?WJ3nKlAhZBPfDjeZITW+9wVUTYN4OgVv3qlmOC69mthFk6SV/nIZSFmPxSla?=
- =?us-ascii?Q?mIB1HQzKks1oQhaUkki6I8phvUyzTHECKklbgeHOaWNkZjhIxDAFuZtNnVBB?=
- =?us-ascii?Q?9Tps//4OV4VgVMBC21sWBSVz7QWyet9eg4QtYRwqR8HvMhf+3wegPU3YLPW3?=
- =?us-ascii?Q?6oIgT+lqVJRANsvrFyxe8UgKr5D5cQcY8lWukHRjIhfN6jiDOWh4snzpsF1P?=
- =?us-ascii?Q?opX/FZhQqkh/JfHnjE/v4Rmc23yqvbF4eZGDpN0vgRl9zZg9A9D9KlT+vo++?=
- =?us-ascii?Q?9s/9WkptQMQCFZDbYHvcHMLsj9tuMmijpDPr7cM2DGXmilhhCNWrfOyDKLLk?=
- =?us-ascii?Q?FlKIHBq8EZ6h3fJP3143HUrtCoJvNt+3HZAELyVos8+o2CiKu+k+14oIVPxP?=
- =?us-ascii?Q?+cJVy38hunDfsK4JWH9aZVr4IDxpUpEXRqBEdEj0ag5c1ORLtEGT7Pp0PurA?=
- =?us-ascii?Q?n/zirxoX9rAMjjMZpf626Ku/F6y6hu9lh10VVL/nCMlyaDmPNsRZV/NcmVBV?=
- =?us-ascii?Q?AOXjKt+Y1eQ4EBVob7iaRWkavlc/NYhuv8rzfMJgra6Z2tMg3TLpc92Y3m0U?=
- =?us-ascii?Q?UB535Gn5HtprWNtjUxeQHzyrc0M864tjwW34ezafNYJRrzjH8EwHD8dtIqA9?=
- =?us-ascii?Q?LMMcOB84bfF89gazTd+vIhQx4n7itIx//3ZwDewKpVAk0IurMoKBbL+WUscT?=
- =?us-ascii?Q?DEhZD0qJm8nzIENXuNRZQzAIreHCVHIRSQacsAO4Ki3W7s0OEbxWF2Uq8z1M?=
- =?us-ascii?Q?ZT7biMFmJksdPJQHNOXkhucHimmoa256AyzCM0O6KnihB6W22QtV/4V9TnUo?=
- =?us-ascii?Q?6ZaDBA=3D=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4D23C3DAC10
+	for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 03:04:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.20
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1711508698; cv=none; b=a58hPUkT+mJxuTn1cHWFNlswvIpbBPzs/gHTeVYMLuv2IwZOYQ1ZtKEe/9vh+bCqaKsa388LEIse8skzAhZo5EmS2239Ze9xMqE22Z4Z4Ie0xw/Ic/xG6uw5fnpAbCaliU8qO18zd+NXo525SzySEAhVDXF53S2xT0D2TMb09jg=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1711508698; c=relaxed/simple;
+	bh=kR8fUxWXM+3ENmSr00PtrCkEV5zpvYvRMSKTX82LZjM=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=IkTCiLlRdBZfwKun1EaLpZVX7hU1bALpdYCW80aBA2nzYcmK7nUOG7nSCo1STWyLfGqSoIqyl0cZaitCol92Xe7D0M5W9P91OSOSR73iEO/f2bHyNyTWfjDbNTruDnzg2hnbPqCJWruFwfoveb+PJndNNY0Crw+q2v+VM7kvi3I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=K13lhMkH; arc=none smtp.client-ip=198.175.65.20
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1711508697; x=1743044697;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=kR8fUxWXM+3ENmSr00PtrCkEV5zpvYvRMSKTX82LZjM=;
+  b=K13lhMkHqghrKgNytf3JX8wv8Xa84gMZHnzn/4oLne5P2QAJwH0Ge1yt
+   GPM2WIap2+7uX2zQzUJs2yBsW+7jEWAB4xpofkBnCLQeaJLKjYPi1kWOj
+   ISs9YaYe5eUFsFPIsWlKpAlzIB70kYpnNDh1wMw0ChdfRVzjEDsIY4k0F
+   96MAk/4JpBWpAEIQUwUroHdmMk4C0NMDCtjJlVsossu68C4i7Qd3Trojz
+   1pcRsl0k1WATD8VTVlN/ZKl4RaOKx6+BPvc6tfdQW7zV7INcXNjNQ9ysk
+   PJhq9Kzu4Fs0I/qjFlq5D63aUnfUSEsoWxYhgVvctjPeEwczwDnujDO0t
+   Q==;
+X-CSE-ConnectionGUID: p61hJh50RNe2f6Cq6M8HFA==
+X-CSE-MsgGUID: dpacHrKbQWGary+/XeqwKA==
+X-IronPort-AV: E=McAfee;i="6600,9927,11025"; a="6485185"
+X-IronPort-AV: E=Sophos;i="6.07,157,1708416000"; 
+   d="scan'208";a="6485185"
+Received: from fmviesa003.fm.intel.com ([10.60.135.143])
+  by orvoesa112.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Mar 2024 20:04:56 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,157,1708416000"; 
+   d="scan'208";a="20707443"
+Received: from feng-clx.sh.intel.com ([10.239.159.50])
+  by fmviesa003.fm.intel.com with ESMTP; 26 Mar 2024 20:04:51 -0700
+From: Feng Tang <feng.tang@intel.com>
+To: Thomas Gleixner <tglx@linutronix.de>,
+	Ingo Molnar <mingo@redhat.com>,
+	Borislav Petkov <bp@alien8.de>,
+	Dave Hansen <dave.hansen@intel.com>,
+	"H . Peter Anvin" <hpa@zytor.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	x86@kernel.org,
+	paulmck@kernel.org,
+	rui.zhang@intel.com,
+	Waiman Long <longman@redhat.com>,
+	linux-kernel@vger.kernel.org
+Cc: Feng Tang <feng.tang@intel.com>,
+	Dave Hansen <dave.hansen@linux.intel.com>
+Subject: [PATCH v3] x86/tsc: Use topology_max_packages() to get package number
+Date: Wed, 27 Mar 2024 10:51:05 +0800
+Message-Id: <20240327025105.2861341-1-feng.tang@intel.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-OriginatorOrg: starfivetech.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BJSPR01MB0595.CHNPR01.prod.partner.outlook.cn
-X-MS-Exchange-CrossTenant-Network-Message-Id: b0b3e791-1897-42e3-4f59-08dc4e08ab94
-X-MS-Exchange-CrossTenant-originalarrivaltime: 27 Mar 2024 02:50:32.4727
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 06fe3fa3-1221-43d3-861b-5a4ee687a85c
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: QA4Wqmf37vIKbPDZQUsOTm+MWKvkCOOkrzM5pmLOAm/J6EWdMqPA7GKwioN1IPt+fbrWgBNT0GJdHXDPXsKnSOwN1xg9i3Pz0WWZwtmr1EE=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BJSPR01MB0547
+Content-Transfer-Encoding: 8bit
+
+Commit b50db7095fe0 ("x86/tsc: Disable clocksource watchdog for TSC
+on qualified platorms") was introduced to solve problem that
+sometimes TSC clocksource is wrongly judged as unstable by watchdog
+like 'jiffies', HPET, etc.
+
+In it, the hardware package number is a key factor for judging whether
+to disable the watchdog for TSC, and 'nr_online_nodes' was chosen due
+to it is available in early boot phase before registering 'tsc-early'
+clocksource, where all non-boot CPUs are not brought up yet.
+
+Dave and Rui pointed out there are many cases in which 'nr_online_nodes'
+is cheated and not accurate, like:
+
+* numa emulation (numa=fake=8 etc.)
+* numa=off
+* platforms with CPU-less HBM nodes, CPU-less Optane memory nodes.
+* SNC (sub-numa cluster) mode enabled
+* 'maxcpus=' cmdline setup, where chopped CPUs could be onlined later
+* 'nr_cpus=', 'possible_cpus=' cmdline setup, where chopped CPUs can
+  not be onlined after boot
+
+Thomas' recent patchset of refactoring x86 topology code improves
+topology_max_packages(), by making it more accurate and available in
+early boot phase, which works well in most of the above cases.
+
+The only exceptions are 'nr_cpus=' and 'possible_cpus=' setup.  And
+the reason is, during topology setup, the boot CPU iterates through
+all enumerated APIC ids and either accepts or rejects the APIC id.
+For accepted ids, it figures out which bits of the id map to the
+package number.  It tracks which package numbers have been seen in a
+bitmap.  topology_max_packages() just returns the number of bits set
+in that bitmap.
+
+'nr_cpus=' and 'possible_cpus=' can cause more APIC ids to be rejected
+and can artificially lower the number of bits in the package bitmap
+and thus topology_max_packages().  This means that, for example, a
+system with 8 physical packages might reject all the CPUs on 6 of those
+packages and be left with only 2 packages and 2 bits set in the package
+bitmap. It needs the TSC watchdog, but would disable it anyway.  This
+isn't ideal, but this only happens for debug-oriented options. This is
+fixable by tracking the package numbers for rejected CPUs.  But it's
+not worth the trouble for debugging.
+
+So use topology_max_packages() to replace nr_online_nodes().
+
+Reported-by: Dave Hansen <dave.hansen@linux.intel.com>
+Closes: https://lore.kernel.org/lkml/a4860054-0f16-6513-f121-501048431086@intel.com/
+Signed-off-by: Feng Tang <feng.tang@intel.com>
+---
+
+Hi all,
+
+For warning about possible compromise due to 'nr_cpus=' and 'possible_cpus=',
+one alternative is to check whether these has been setup in cmdline inside
+tsc.c and warn there.
+
+Changelog:
+
+  Since v2:
+  * Use 'pr_info' to replace 'pr_warn' which could panic system
+    if 'panic_on_warn=1' kcmdline parameter is on (Waiman)
+
+  Since v1:
+  * Use Dave's detailed elaboration about 'nr_cpus=', 'possible_cpus='
+    possibly compromising '__max_logical_packages' in commit log
+  * Fix typos and inaccuracy (Rui and Longman)
 
 
+ arch/x86/kernel/cpu/topology.c | 5 ++++-
+ arch/x86/kernel/tsc.c          | 7 ++-----
+ 2 files changed, 6 insertions(+), 6 deletions(-)
 
-> -----Original Message-----
-> From: Conor Dooley <conor@kernel.org>
-> Sent: Wednesday, 27 March, 2024 2:33 AM
-> To: ChunHau Tan <chunhau.tan@starfivetech.com>
-> Cc: Eugeniy Paltsev <Eugeniy.Paltsev@synopsys.com>; Vinod Koul
-> <vkoul@kernel.org>; Rob Herring <robh@kernel.org>; Krzysztof Kozlowski
-> <krzysztof.kozlowski+dt@linaro.org>; Conor Dooley <conor+dt@kernel.org>;
-> Leyfoon Tan <leyfoon.tan@starfivetech.com>; JeeHeng Sia
-> <jeeheng.sia@starfivetech.com>; dmaengine@vger.kernel.org;
-> devicetree@vger.kernel.org; linux-kernel@vger.kernel.org
-> Subject: Re: [PATCH 1/2] dt-bindings: dma: snps,dw-axi-dmac: Add JH8100
-> support
->=20
-> On Tue, Mar 26, 2024 at 02:54:56AM -0700, Tan Chun Hau wrote:
-> > Add support for StarFive JH8100 SoC in Sysnopsys Designware AXI DMA
-> > controller.
->=20
-> Your commit message should explain what makes this incompatible with exis=
-ting
-> devices. That inforatiion does appear to be in the driver patch, but shou=
-ld also be
-> here. Otherwise,
-> Acked-by: Conor Dooley <conor.dooley@microchip.com>
+diff --git a/arch/x86/kernel/cpu/topology.c b/arch/x86/kernel/cpu/topology.c
+index 3259b1d4fefe..9db66597388e 100644
+--- a/arch/x86/kernel/cpu/topology.c
++++ b/arch/x86/kernel/cpu/topology.c
+@@ -460,8 +460,11 @@ void __init topology_init_possible_cpus(void)
+ 	pr_info("Num. threads per package: %3u\n", __num_threads_per_package);
+ 
+ 	pr_info("Allowing %u present CPUs plus %u hotplug CPUs\n", assigned, disabled);
+-	if (topo_info.nr_rejected_cpus)
++	if (topo_info.nr_rejected_cpus) {
+ 		pr_info("Rejected CPUs %u\n", topo_info.nr_rejected_cpus);
++		if (__max_logical_packages <= 4)
++			pr_info("TSC might be buggered due to the rejected CPUs\n");
++	}
+ 
+ 	init_cpu_present(cpumask_of(0));
+ 	init_cpu_possible(cpumask_of(0));
+diff --git a/arch/x86/kernel/tsc.c b/arch/x86/kernel/tsc.c
+index 5a69a49acc96..d00f88f16eb1 100644
+--- a/arch/x86/kernel/tsc.c
++++ b/arch/x86/kernel/tsc.c
+@@ -1252,15 +1252,12 @@ static void __init check_system_tsc_reliable(void)
+ 	 *  - TSC which does not stop in C-States
+ 	 *  - the TSC_ADJUST register which allows to detect even minimal
+ 	 *    modifications
+-	 *  - not more than two sockets. As the number of sockets cannot be
+-	 *    evaluated at the early boot stage where this has to be
+-	 *    invoked, check the number of online memory nodes as a
+-	 *    fallback solution which is an reasonable estimate.
++	 *  - not more than four packages
+ 	 */
+ 	if (boot_cpu_has(X86_FEATURE_CONSTANT_TSC) &&
+ 	    boot_cpu_has(X86_FEATURE_NONSTOP_TSC) &&
+ 	    boot_cpu_has(X86_FEATURE_TSC_ADJUST) &&
+-	    nr_online_nodes <= 4)
++	    topology_max_packages() <= 4)
+ 		tsc_disable_clocksource_watchdog();
+ }
+ 
+-- 
+2.34.1
 
-Okay, thank you for the feedback.
->=20
-> >
-> > Signed-off-by: Tan Chun Hau <chunhau.tan@starfivetech.com>
-> > ---
-> >  Documentation/devicetree/bindings/dma/snps,dw-axi-dmac.yaml | 1 +
-> >  1 file changed, 1 insertion(+)
-> >
-> > diff --git
-> > a/Documentation/devicetree/bindings/dma/snps,dw-axi-dmac.yaml
-> > b/Documentation/devicetree/bindings/dma/snps,dw-axi-dmac.yaml
-> > index 363cf8bd150d..525f5f3932f5 100644
-> > --- a/Documentation/devicetree/bindings/dma/snps,dw-axi-dmac.yaml
-> > +++ b/Documentation/devicetree/bindings/dma/snps,dw-axi-dmac.yaml
-> > @@ -21,6 +21,7 @@ properties:
-> >        - snps,axi-dma-1.01a
-> >        - intel,kmb-axi-dma
-> >        - starfive,jh7110-axi-dma
-> > +      - starfive,jh8100-axi-dma
-> >
-> >    reg:
-> >      minItems: 1
-> > --
-> > 2.25.1
-> >
 
