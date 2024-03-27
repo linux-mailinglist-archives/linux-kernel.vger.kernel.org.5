@@ -1,55 +1,53 @@
-Return-Path: <linux-kernel+bounces-121257-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-121258-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D2F6588E46C
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 15:01:54 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id B2BB588E5F9
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 15:30:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7CCAD2A2C5B
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 14:01:53 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 09BAEB305D0
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 14:02:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 113F71B2507;
-	Wed, 27 Mar 2024 12:27:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1F6231B488F;
+	Wed, 27 Mar 2024 12:28:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="q24pxf1F"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="R1GJ4eu9"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 181F81B2503;
-	Wed, 27 Mar 2024 12:27:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 511FD1B251B;
+	Wed, 27 Mar 2024 12:28:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711542478; cv=none; b=jSy8R2ruNquaruteo44ossYqL8zrYPQ8txI8C/GXH8X1jdcL7hSKrqhAAN6lqy69PpOuYQ5nVSkAShSxYTWW9E8EeXwdQMpvrT7+UsHLfl2mXDN3byfLuU8P3n18HMIjXNipYXZVOp6mJnh4Eu9/SBBD2msNv1q8kpv40xZR/00=
+	t=1711542480; cv=none; b=TShlxkpwtdlj497BoSs9mR8inAa0st3lNg2m2Y+SICybGWr9Pakh4FKWT/+5H2S/DPeIhQmm+Kx/0DSOjfaoT8Gb6Eon3ylBF36P/j8AJW4SO+rvDdVOVFHBErBlQihO97ITWzInItdkzjnNUvWp79k0hJnYbYXQcpzekCbXPSo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711542478; c=relaxed/simple;
-	bh=wId63z4xt5tI0Q/XhQnSoUIgz3whS/tXQHP81a+ujSo=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=TW/+1nL0LZ+4S7TsWadmEfy4TIbOHcNHfksSwlllbSVt7vbZrebYWuLUk1byfrcSOmOxval53Dw2vdUH//eZl8RR77+6WadIYdhbARWz4UwOqt2cE9BJmrAm5o1NO8ae/duyXVxsqWAorNHsg8aCuI2Mv3UMc3Ox3BspXXMxPdI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=q24pxf1F; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A0C7DC433C7;
-	Wed, 27 Mar 2024 12:27:56 +0000 (UTC)
+	s=arc-20240116; t=1711542480; c=relaxed/simple;
+	bh=HUcsWSpf/xLT+7CgewDsql3u5zsmcfHjjRl7AnCuMOA=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=BcqB0ubxuwwZztBYCSoa1nOszynbjzwGnhO4MzlGK8tpUO/YoOVV0uB7DwMr2SmrANmjSnLbRqWkRmAZZbh7AhJUeaLT2LN9T8rJdPA9p06zA2C2ZXx8fqj43m1yZp8nTnHaI3TW+JslMkSm0ojf+WfSebY3sT/LfB7G6RJkXvA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=R1GJ4eu9; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 87918C433F1;
+	Wed, 27 Mar 2024 12:27:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711542477;
-	bh=wId63z4xt5tI0Q/XhQnSoUIgz3whS/tXQHP81a+ujSo=;
+	s=k20201202; t=1711542480;
+	bh=HUcsWSpf/xLT+7CgewDsql3u5zsmcfHjjRl7AnCuMOA=;
 	h=From:To:Cc:Subject:Date:From;
-	b=q24pxf1FibOrrzg9WG30WmSSzHnC/3yNPHKygXEc3TGnJnjGifrVUQZ2S4n+FNIKb
-	 w6r87M8SlgySjdqiw73XG4HySw9UgENp3N07c48sEJrLoxIkfNZrVzTPvUcKqEtmkG
-	 PNs+/bJsxJQAGPLtZ/G3zy2VuhLInjUTmtnHylkX3FDbMy2WXisajeCDfM/AcvaPnC
-	 h37TTLmt9GjM1WAMYClorJTrquAOnN7t1kMiaUeG+VbEkzx1WKYnm6o5B9ImdAA/hr
-	 FfrjUbLbhvs6uQgdu0QagWSKFHnmwvHdtRC5ZbJRZEcsltc/bgVqcMgxk7eZYm7VCP
-	 rXGaOl3m/L1VQ==
+	b=R1GJ4eu9qfJiwEF//j4S6QYjps0v3TR+YRrFMUQ73Qjn2fbz8WqXsZlUC4HgWZLVi
+	 ZEsT+T1ASKhkJq1fiqzTbsaTiD6+uBae58cOE5ppqhPFqB70acNlqvy+HKCTDkHh+d
+	 LZErubwieTUyn7eag9GJGiTnk4FICH+qlhSNlKdmMQ0bBQJo4M1e+VSJg/197w7FoC
+	 Xu+LLHbd96ydTehbe8Frnt96Ul52TfCG3nurTBI2oE0K5WnSHkJs8ZD3tj36ZlT4BZ
+	 N2GKPiB41L+sfjCGpN3r7zzSyZ6UoYVQ/J93ELeifpOjPsUxoFFEc0BaBza612Q1dl
+	 Q0TulcVg+qvXA==
 From: Sasha Levin <sashal@kernel.org>
 To: stable@vger.kernel.org,
-	alex.williamson@redhat.com
-Cc: Reinette Chatre <reinette.chatre@intel.com>,
-	Kevin Tian <kevin.tian@intel.com>,
-	Eric Auger <eric.auger@redhat.com>,
-	kvm@vger.kernel.org,
+	josef@toxicpanda.com
+Cc: Trond Myklebust <trond.myklebust@hammerspace.com>,
+	linux-nfs@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: FAILED: Patch "vfio/pci: Create persistent INTx handler" failed to apply to 4.19-stable tree
-Date: Wed, 27 Mar 2024 08:27:55 -0400
-Message-ID: <20240327122755.2842328-1-sashal@kernel.org>
+Subject: FAILED: Patch "nfs: fix UAF in direct writes" failed to apply to 4.19-stable tree
+Date: Wed, 27 Mar 2024 08:27:58 -0400
+Message-ID: <20240327122758.2842369-1-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -71,269 +69,123 @@ Sasha
 
 ------------------ original commit in Linus's tree ------------------
 
-From 18c198c96a815c962adc2b9b77909eec0be7df4d Mon Sep 17 00:00:00 2001
-From: Alex Williamson <alex.williamson@redhat.com>
-Date: Fri, 8 Mar 2024 16:05:25 -0700
-Subject: [PATCH] vfio/pci: Create persistent INTx handler
+From 17f46b803d4f23c66cacce81db35fef3adb8f2af Mon Sep 17 00:00:00 2001
+From: Josef Bacik <josef@toxicpanda.com>
+Date: Fri, 1 Mar 2024 11:49:57 -0500
+Subject: [PATCH] nfs: fix UAF in direct writes
 
-A vulnerability exists where the eventfd for INTx signaling can be
-deconfigured, which unregisters the IRQ handler but still allows
-eventfds to be signaled with a NULL context through the SET_IRQS ioctl
-or through unmask irqfd if the device interrupt is pending.
+In production we have been hitting the following warning consistently
 
-Ideally this could be solved with some additional locking; the igate
-mutex serializes the ioctl and config space accesses, and the interrupt
-handler is unregistered relative to the trigger, but the irqfd path
-runs asynchronous to those.  The igate mutex cannot be acquired from the
-atomic context of the eventfd wake function.  Disabling the irqfd
-relative to the eventfd registration is potentially incompatible with
-existing userspace.
+------------[ cut here ]------------
+refcount_t: underflow; use-after-free.
+WARNING: CPU: 17 PID: 1800359 at lib/refcount.c:28 refcount_warn_saturate+0x9c/0xe0
+Workqueue: nfsiod nfs_direct_write_schedule_work [nfs]
+RIP: 0010:refcount_warn_saturate+0x9c/0xe0
+PKRU: 55555554
+Call Trace:
+ <TASK>
+ ? __warn+0x9f/0x130
+ ? refcount_warn_saturate+0x9c/0xe0
+ ? report_bug+0xcc/0x150
+ ? handle_bug+0x3d/0x70
+ ? exc_invalid_op+0x16/0x40
+ ? asm_exc_invalid_op+0x16/0x20
+ ? refcount_warn_saturate+0x9c/0xe0
+ nfs_direct_write_schedule_work+0x237/0x250 [nfs]
+ process_one_work+0x12f/0x4a0
+ worker_thread+0x14e/0x3b0
+ ? ZSTD_getCParams_internal+0x220/0x220
+ kthread+0xdc/0x120
+ ? __btf_name_valid+0xa0/0xa0
+ ret_from_fork+0x1f/0x30
 
-As a result, the solution implemented here moves configuration of the
-INTx interrupt handler to track the lifetime of the INTx context object
-and irq_type configuration, rather than registration of a particular
-trigger eventfd.  Synchronization is added between the ioctl path and
-eventfd_signal() wrapper such that the eventfd trigger can be
-dynamically updated relative to in-flight interrupts or irqfd callbacks.
+This is because we're completing the nfs_direct_request twice in a row.
 
-Cc:  <stable@vger.kernel.org>
-Fixes: 89e1f7d4c66d ("vfio: Add PCI device driver")
-Reported-by: Reinette Chatre <reinette.chatre@intel.com>
-Reviewed-by: Kevin Tian <kevin.tian@intel.com>
-Reviewed-by: Reinette Chatre <reinette.chatre@intel.com>
-Reviewed-by: Eric Auger <eric.auger@redhat.com>
-Link: https://lore.kernel.org/r/20240308230557.805580-5-alex.williamson@redhat.com
-Signed-off-by: Alex Williamson <alex.williamson@redhat.com>
+The source of this is when we have our commit requests to submit, we
+process them and send them off, and then in the completion path for the
+commit requests we have
+
+if (nfs_commit_end(cinfo.mds))
+	nfs_direct_write_complete(dreq);
+
+However since we're submitting asynchronous requests we sometimes have
+one that completes before we submit the next one, so we end up calling
+complete on the nfs_direct_request twice.
+
+The only other place we use nfs_generic_commit_list() is in
+__nfs_commit_inode, which wraps this call in a
+
+nfs_commit_begin();
+nfs_commit_end();
+
+Which is a common pattern for this style of completion handling, one
+that is also repeated in the direct code with get_dreq()/put_dreq()
+calls around where we process events as well as in the completion paths.
+
+Fix this by using the same pattern for the commit requests.
+
+Before with my 200 node rocksdb stress running this warning would pop
+every 10ish minutes.  With my patch the stress test has been running for
+several hours without popping.
+
+Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+Cc: stable@vger.kernel.org
+Signed-off-by: Trond Myklebust <trond.myklebust@hammerspace.com>
 ---
- drivers/vfio/pci/vfio_pci_intrs.c | 145 ++++++++++++++++--------------
- 1 file changed, 78 insertions(+), 67 deletions(-)
+ fs/nfs/direct.c        | 11 +++++++++--
+ fs/nfs/write.c         |  2 +-
+ include/linux/nfs_fs.h |  1 +
+ 3 files changed, 11 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/vfio/pci/vfio_pci_intrs.c b/drivers/vfio/pci/vfio_pci_intrs.c
-index 75c85eec21b3c..fb5392b749fff 100644
---- a/drivers/vfio/pci/vfio_pci_intrs.c
-+++ b/drivers/vfio/pci/vfio_pci_intrs.c
-@@ -90,11 +90,15 @@ static void vfio_send_intx_eventfd(void *opaque, void *unused)
+diff --git a/fs/nfs/direct.c b/fs/nfs/direct.c
+index befcc167e25fe..6b8798d01e3a1 100644
+--- a/fs/nfs/direct.c
++++ b/fs/nfs/direct.c
+@@ -672,10 +672,17 @@ static void nfs_direct_commit_schedule(struct nfs_direct_req *dreq)
+ 	LIST_HEAD(mds_list);
  
- 	if (likely(is_intx(vdev) && !vdev->virq_disabled)) {
- 		struct vfio_pci_irq_ctx *ctx;
-+		struct eventfd_ctx *trigger;
- 
- 		ctx = vfio_irq_ctx_get(vdev, 0);
- 		if (WARN_ON_ONCE(!ctx))
- 			return;
--		eventfd_signal(ctx->trigger);
-+
-+		trigger = READ_ONCE(ctx->trigger);
-+		if (likely(trigger))
-+			eventfd_signal(trigger);
- 	}
- }
- 
-@@ -253,100 +257,100 @@ static irqreturn_t vfio_intx_handler(int irq, void *dev_id)
- 	return ret;
- }
- 
--static int vfio_intx_enable(struct vfio_pci_core_device *vdev)
-+static int vfio_intx_enable(struct vfio_pci_core_device *vdev,
-+			    struct eventfd_ctx *trigger)
- {
-+	struct pci_dev *pdev = vdev->pdev;
- 	struct vfio_pci_irq_ctx *ctx;
-+	unsigned long irqflags;
-+	char *name;
-+	int ret;
- 
- 	if (!is_irq_none(vdev))
- 		return -EINVAL;
- 
--	if (!vdev->pdev->irq)
-+	if (!pdev->irq)
- 		return -ENODEV;
- 
-+	name = kasprintf(GFP_KERNEL_ACCOUNT, "vfio-intx(%s)", pci_name(pdev));
-+	if (!name)
-+		return -ENOMEM;
-+
- 	ctx = vfio_irq_ctx_alloc(vdev, 0);
- 	if (!ctx)
- 		return -ENOMEM;
- 
-+	ctx->name = name;
-+	ctx->trigger = trigger;
-+
- 	/*
--	 * If the virtual interrupt is masked, restore it.  Devices
--	 * supporting DisINTx can be masked at the hardware level
--	 * here, non-PCI-2.3 devices will have to wait until the
--	 * interrupt is enabled.
-+	 * Fill the initial masked state based on virq_disabled.  After
-+	 * enable, changing the DisINTx bit in vconfig directly changes INTx
-+	 * masking.  igate prevents races during setup, once running masked
-+	 * is protected via irqlock.
-+	 *
-+	 * Devices supporting DisINTx also reflect the current mask state in
-+	 * the physical DisINTx bit, which is not affected during IRQ setup.
-+	 *
-+	 * Devices without DisINTx support require an exclusive interrupt.
-+	 * IRQ masking is performed at the IRQ chip.  Again, igate protects
-+	 * against races during setup and IRQ handlers and irqfds are not
-+	 * yet active, therefore masked is stable and can be used to
-+	 * conditionally auto-enable the IRQ.
-+	 *
-+	 * irq_type must be stable while the IRQ handler is registered,
-+	 * therefore it must be set before request_irq().
- 	 */
- 	ctx->masked = vdev->virq_disabled;
--	if (vdev->pci_2_3)
--		pci_intx(vdev->pdev, !ctx->masked);
-+	if (vdev->pci_2_3) {
-+		pci_intx(pdev, !ctx->masked);
-+		irqflags = IRQF_SHARED;
-+	} else {
-+		irqflags = ctx->masked ? IRQF_NO_AUTOEN : 0;
+ 	nfs_init_cinfo_from_dreq(&cinfo, dreq);
++	nfs_commit_begin(cinfo.mds);
+ 	nfs_scan_commit(dreq->inode, &mds_list, &cinfo);
+ 	res = nfs_generic_commit_list(dreq->inode, &mds_list, 0, &cinfo);
+-	if (res < 0) /* res == -ENOMEM */
+-		nfs_direct_write_reschedule(dreq);
++	if (res < 0) { /* res == -ENOMEM */
++		spin_lock(&dreq->lock);
++		if (dreq->flags == 0)
++			dreq->flags = NFS_ODIRECT_RESCHED_WRITES;
++		spin_unlock(&dreq->lock);
 +	}
- 
- 	vdev->irq_type = VFIO_PCI_INTX_IRQ_INDEX;
- 
-+	ret = request_irq(pdev->irq, vfio_intx_handler,
-+			  irqflags, ctx->name, vdev);
-+	if (ret) {
-+		vdev->irq_type = VFIO_PCI_NUM_IRQS;
-+		kfree(name);
-+		vfio_irq_ctx_free(vdev, ctx, 0);
-+		return ret;
-+	}
-+
- 	return 0;
++	if (nfs_commit_end(cinfo.mds))
++		nfs_direct_write_complete(dreq);
  }
  
--static int vfio_intx_set_signal(struct vfio_pci_core_device *vdev, int fd)
-+static int vfio_intx_set_signal(struct vfio_pci_core_device *vdev,
-+				struct eventfd_ctx *trigger)
+ static void nfs_direct_write_clear_reqs(struct nfs_direct_req *dreq)
+diff --git a/fs/nfs/write.c b/fs/nfs/write.c
+index 58adbb7709ba7..15359bbfa56bc 100644
+--- a/fs/nfs/write.c
++++ b/fs/nfs/write.c
+@@ -1646,7 +1646,7 @@ static int wait_on_commit(struct nfs_mds_commit_info *cinfo)
+ 				       !atomic_read(&cinfo->rpcs_out));
+ }
+ 
+-static void nfs_commit_begin(struct nfs_mds_commit_info *cinfo)
++void nfs_commit_begin(struct nfs_mds_commit_info *cinfo)
  {
- 	struct pci_dev *pdev = vdev->pdev;
--	unsigned long irqflags = IRQF_SHARED;
- 	struct vfio_pci_irq_ctx *ctx;
--	struct eventfd_ctx *trigger;
--	unsigned long flags;
--	int ret;
-+	struct eventfd_ctx *old;
- 
- 	ctx = vfio_irq_ctx_get(vdev, 0);
- 	if (WARN_ON_ONCE(!ctx))
- 		return -EINVAL;
- 
--	if (ctx->trigger) {
--		free_irq(pdev->irq, vdev);
--		kfree(ctx->name);
--		eventfd_ctx_put(ctx->trigger);
--		ctx->trigger = NULL;
--	}
--
--	if (fd < 0) /* Disable only */
--		return 0;
--
--	ctx->name = kasprintf(GFP_KERNEL_ACCOUNT, "vfio-intx(%s)",
--			      pci_name(pdev));
--	if (!ctx->name)
--		return -ENOMEM;
--
--	trigger = eventfd_ctx_fdget(fd);
--	if (IS_ERR(trigger)) {
--		kfree(ctx->name);
--		return PTR_ERR(trigger);
--	}
-+	old = ctx->trigger;
- 
--	ctx->trigger = trigger;
-+	WRITE_ONCE(ctx->trigger, trigger);
- 
--	/*
--	 * Devices without DisINTx support require an exclusive interrupt,
--	 * IRQ masking is performed at the IRQ chip.  The masked status is
--	 * protected by vdev->irqlock. Setup the IRQ without auto-enable and
--	 * unmask as necessary below under lock.  DisINTx is unmodified by
--	 * the IRQ configuration and may therefore use auto-enable.
--	 */
--	if (!vdev->pci_2_3)
--		irqflags = IRQF_NO_AUTOEN;
--
--	ret = request_irq(pdev->irq, vfio_intx_handler,
--			  irqflags, ctx->name, vdev);
--	if (ret) {
--		ctx->trigger = NULL;
--		kfree(ctx->name);
--		eventfd_ctx_put(trigger);
--		return ret;
-+	/* Releasing an old ctx requires synchronizing in-flight users */
-+	if (old) {
-+		synchronize_irq(pdev->irq);
-+		vfio_virqfd_flush_thread(&ctx->unmask);
-+		eventfd_ctx_put(old);
- 	}
- 
--	spin_lock_irqsave(&vdev->irqlock, flags);
--	if (!vdev->pci_2_3 && !ctx->masked)
--		enable_irq(pdev->irq);
--	spin_unlock_irqrestore(&vdev->irqlock, flags);
--
- 	return 0;
+ 	atomic_inc(&cinfo->rpcs_out);
  }
+diff --git a/include/linux/nfs_fs.h b/include/linux/nfs_fs.h
+index f5ce7b1011461..d59116ac82099 100644
+--- a/include/linux/nfs_fs.h
++++ b/include/linux/nfs_fs.h
+@@ -611,6 +611,7 @@ int nfs_wb_folio_cancel(struct inode *inode, struct folio *folio);
+ extern int  nfs_commit_inode(struct inode *, int);
+ extern struct nfs_commit_data *nfs_commitdata_alloc(void);
+ extern void nfs_commit_free(struct nfs_commit_data *data);
++void nfs_commit_begin(struct nfs_mds_commit_info *cinfo);
+ bool nfs_commit_end(struct nfs_mds_commit_info *cinfo);
  
- static void vfio_intx_disable(struct vfio_pci_core_device *vdev)
- {
-+	struct pci_dev *pdev = vdev->pdev;
- 	struct vfio_pci_irq_ctx *ctx;
- 
- 	ctx = vfio_irq_ctx_get(vdev, 0);
-@@ -354,10 +358,13 @@ static void vfio_intx_disable(struct vfio_pci_core_device *vdev)
- 	if (ctx) {
- 		vfio_virqfd_disable(&ctx->unmask);
- 		vfio_virqfd_disable(&ctx->mask);
-+		free_irq(pdev->irq, vdev);
-+		if (ctx->trigger)
-+			eventfd_ctx_put(ctx->trigger);
-+		kfree(ctx->name);
-+		vfio_irq_ctx_free(vdev, ctx, 0);
- 	}
--	vfio_intx_set_signal(vdev, -1);
- 	vdev->irq_type = VFIO_PCI_NUM_IRQS;
--	vfio_irq_ctx_free(vdev, ctx, 0);
- }
- 
- /*
-@@ -641,19 +648,23 @@ static int vfio_pci_set_intx_trigger(struct vfio_pci_core_device *vdev,
- 		return -EINVAL;
- 
- 	if (flags & VFIO_IRQ_SET_DATA_EVENTFD) {
-+		struct eventfd_ctx *trigger = NULL;
- 		int32_t fd = *(int32_t *)data;
- 		int ret;
- 
--		if (is_intx(vdev))
--			return vfio_intx_set_signal(vdev, fd);
-+		if (fd >= 0) {
-+			trigger = eventfd_ctx_fdget(fd);
-+			if (IS_ERR(trigger))
-+				return PTR_ERR(trigger);
-+		}
- 
--		ret = vfio_intx_enable(vdev);
--		if (ret)
--			return ret;
-+		if (is_intx(vdev))
-+			ret = vfio_intx_set_signal(vdev, trigger);
-+		else
-+			ret = vfio_intx_enable(vdev, trigger);
- 
--		ret = vfio_intx_set_signal(vdev, fd);
--		if (ret)
--			vfio_intx_disable(vdev);
-+		if (ret && trigger)
-+			eventfd_ctx_put(trigger);
- 
- 		return ret;
- 	}
+ static inline bool nfs_have_writebacks(const struct inode *inode)
 -- 
 2.43.0
 
