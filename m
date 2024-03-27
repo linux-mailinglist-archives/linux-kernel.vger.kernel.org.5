@@ -1,180 +1,113 @@
-Return-Path: <linux-kernel+bounces-121421-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-121423-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4171288E7BD
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 16:03:24 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 139C388E7C4
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 16:04:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E7B2C292FDB
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 15:03:22 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 36DBA2A5EA7
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 15:04:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8D325145FE4;
-	Wed, 27 Mar 2024 14:23:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C52DE1465BB;
+	Wed, 27 Mar 2024 14:23:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=sifive.com header.i=@sifive.com header.b="kRfupJzc"
-Received: from mail-yb1-f169.google.com (mail-yb1-f169.google.com [209.85.219.169])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Zip2nYae"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.21])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E2949145353
-	for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 14:23:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B0B8914535D
+	for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 14:23:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.21
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711549401; cv=none; b=gVdQUxJjdGP/g9T8RaiZhTbNftd6NgZ9nVuIxrvR/oT/dW+pivtRS9O8AMWU34OwYDUCzF01ozJtLERNLxaP2gkbWhpUoZlFVie7j29dvrpDlPYheRDPk710ib6ImD9QsMFb6+ISnmvyxMIe1QDk+S+fWgo1096aSuXOHJ3g9gU=
+	t=1711549413; cv=none; b=qdeUgcYH2iEEOUhqTFULIPWD55syW6RPSvRu3b4yiu5G6CUY8lLWDhTw5EtmjQJ3qVUUoEpEmRMy787KOQnvWPe4PYtQoFRfVtMZEAyHHHQmCjlm7smAA1rlmbdVe03renYv0il/eMSHC8bwil1OXpFbJMZjuzHFWeOgNAPsapg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711549401; c=relaxed/simple;
-	bh=TzGy4Nl10hTAM+7MIbRlkwoszFQuQWnX5BlJd7Ogg8k=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=ByxWsOETIJ8IbPIWaCMHNrFJb9wdpOu/TwxVRRsPxi0JQQDDCK7nk78wTHDCfaenF5TRQkn89TLnK/SYPLCpMBpwn1Okjcn1qrem1AV1svCVI7WZsWC6f2XEDai6azSE3zzyX/DDtldKHcyCcX2hqu5dg6mjFsm6U/SJ2N2OGLs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=sifive.com; spf=pass smtp.mailfrom=sifive.com; dkim=pass (2048-bit key) header.d=sifive.com header.i=@sifive.com header.b=kRfupJzc; arc=none smtp.client-ip=209.85.219.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=sifive.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sifive.com
-Received: by mail-yb1-f169.google.com with SMTP id 3f1490d57ef6-dccb1421bdeso6261676276.1
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 07:23:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sifive.com; s=google; t=1711549399; x=1712154199; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=gRFvGQGfmRLMn0TkT6BKRAVaaKQN9JenEnS46fWKpus=;
-        b=kRfupJzcZI3m1CplUeO63CC/YZihfvZrHkoZchKtYj4KZWqgSIaTSL9ydMUaAO9LHh
-         Dh//7AEKDxWeK2jtENF8c2Zh+n4r7n3XZg89877MLzN/Vsk7IymUXG4vPXOrsZVeNM2G
-         C2MGBfJFNIG4/htTSd85PgQvDxbbM7GJNdlf/rQ0oeeHgWyIxipKSonKhxX1pYacMCRr
-         HcooN6Fz9B+hK8+bvfJIes46/728t17aC87ztrR315hI3tElOBP78VTrZvZcf5G4Z4ix
-         95FzU121ovcl7pyUCipSqSEgfz+0Dy2/DjPMIKCdFr9hxa8unlqegqstwX5A554fexCN
-         p3Fw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711549399; x=1712154199;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=gRFvGQGfmRLMn0TkT6BKRAVaaKQN9JenEnS46fWKpus=;
-        b=nQj1oJVSEvSnPegWb2x2ZaQ6DUejQD8syIzLwvcrxPF6e5lkRb6o5fZOu1ychIzU0Y
-         f7Jcf8wwDGkkdTYY7HjYsxMX8CM8zsQuR3qOj7Qe3Pu2Fe8m+AlpQBOW+/+3wpbGkP30
-         zL4Y1D2RX9F3BEiDnYdzAgQjeRw/Zbfwnz3FQvYNcgJHQg6rg3abpxFQqkwUxjMZDH7s
-         VWHw1SaKWhbtFZiVifrQ1zgy/1UKA+eSAgyhRCnXEEDzPPSzFwc3JBcC4GNzb9pG5zHM
-         m5AtSm2nZhUqeh/gsrr2J0bigK3LTSEh0jFi8JNUpfkbfQOOIdxVqcxj35YTcV1yQ37q
-         v4Cw==
-X-Forwarded-Encrypted: i=1; AJvYcCVFnRE/mT499sB4O8lFowewAVJnalmVU0wCbULOBevg5S0kR+AquLasOjO0Ec8FUftihotz3C/XPgukOIQF9XP1P+mLQ3T6k6mgXRxm
-X-Gm-Message-State: AOJu0YxAUuK9LDde6UIU7dzi6+Uoi1qSESK+ueGxCHgvE5xYy0TctWYU
-	gvJdbvBnsvoIrS77YaH6myZtIy6j7bsTmsoc43EGrex+DvNWXg7TqETlbdh8NxSPZpUXd2v5q3r
-	LgGI1bExSg+VB2jRbIeoqpLeKT2DtWnljIcOBbw==
-X-Google-Smtp-Source: AGHT+IGYxBizN2LWi9Q0EujC00wGP+OXjEg8ECCcaoV2+WotPGFiM/+Sna09HESRfbDarEimOdKSDh0zNwdww7Nkw9M=
-X-Received: by 2002:a25:7284:0:b0:dcb:e462:6e10 with SMTP id
- n126-20020a257284000000b00dcbe4626e10mr1148689ybc.58.1711549398808; Wed, 27
- Mar 2024 07:23:18 -0700 (PDT)
+	s=arc-20240116; t=1711549413; c=relaxed/simple;
+	bh=978Ys2NHTIo9kyqZglKr1qHAlExbEvvvunWm5NCUUPM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=qqG/9ZRPVmrs7JOrB0amC71piAiMokKL/zSpzjlGXFhL9qOH6MoYMusyvyBVjySRNlNO13fBK1YbM4WnGevhG5R4npS9R7E7hv8rbBmdQ8kLBW6VDErfqMDNEo1og1qCCzZVyTs9whgWfQBxAW1NiQbPuf/vYZdeaEpVt7WK+bk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Zip2nYae; arc=none smtp.client-ip=198.175.65.21
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1711549411; x=1743085411;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=978Ys2NHTIo9kyqZglKr1qHAlExbEvvvunWm5NCUUPM=;
+  b=Zip2nYaejpXEOWT9CKj3OF42dWY7Lti70jw2KMrWuPzBkW36oqVyQuJ7
+   XbCUN+JaaHBBkoAKZ3CRgVLqaDZplI7sgS1SN54FSWYX/3I/+XUiF2trZ
+   ++E0Yi44E77UM4Dses7Y83qSjPb6Mz0b16u5hc+Ld9SgRLlO39T3AMBRg
+   J5USh26T5Ngr/bSf7IzRfpMD60xWnyDQ7u4zAupRBYZsSC60g+az/P5Fz
+   vJSNruwEVF1mtm71gk5i39ankEpfnFsQSiPAT8YwiSSU2afS7UZcDgFnv
+   DxsweivVTLuvl1nYAwwYrE22pJB4iUtsYG54WQ6Cea1tLbYiN5OnrTlbb
+   Q==;
+X-CSE-ConnectionGUID: X0JcHqL7T52fKyhnL0m6gg==
+X-CSE-MsgGUID: gNrCzXBDTVSmSv6mvotsNg==
+X-IronPort-AV: E=McAfee;i="6600,9927,11026"; a="6592562"
+X-IronPort-AV: E=Sophos;i="6.07,159,1708416000"; 
+   d="scan'208";a="6592562"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orvoesa113.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Mar 2024 07:23:30 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,11026"; a="914914548"
+X-IronPort-AV: E=Sophos;i="6.07,159,1708416000"; 
+   d="scan'208";a="914914548"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Mar 2024 07:23:29 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.97)
+	(envelope-from <andriy.shevchenko@linux.intel.com>)
+	id 1rpUBb-0000000Geo3-13as;
+	Wed, 27 Mar 2024 16:23:27 +0200
+Date: Wed, 27 Mar 2024 16:23:26 +0200
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: Lee Jones <lee@kernel.org>
+Cc: Mateusz K <mateusz.kaduk@gmail.com>, Bjorn Helgaas <helgaas@kernel.org>,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1 1/1] mfd: intel-lpss: Switch over to MSI interrupts
+Message-ID: <ZgQr3sU_BIYv-Ynv@smile.fi.intel.com>
+References: <20240312165905.1764507-1-andriy.shevchenko@linux.intel.com>
+ <20240325211915.GA1449994@bhelgaas>
+ <CAPf=4Rc2vQrWqcs=-ND3iOZFJyKE7FdPoqU9w6DKjoSaJo6KaQ@mail.gmail.com>
+ <ZgLefFQanbq-ozKM@smile.fi.intel.com>
+ <ZgLooJa1JVKEMOtf@smile.fi.intel.com>
+ <20240327131711.GR13211@google.com>
+ <ZgQeKfsFy9i0h4Kj@smile.fi.intel.com>
+ <20240327141229.GS13211@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240326203017.310422-1-alexghiti@rivosinc.com> <20240326203017.310422-2-alexghiti@rivosinc.com>
-In-Reply-To: <20240326203017.310422-2-alexghiti@rivosinc.com>
-From: Andy Chiu <andy.chiu@sifive.com>
-Date: Wed, 27 Mar 2024 22:23:08 +0800
-Message-ID: <CABgGipV1SaAxX6vL6CFdb-ctQtV2oA1=dE0zGZrrh2qbxDgkwQ@mail.gmail.com>
-Subject: Re: [PATCH 1/2] riscv: Fix warning by declaring arch_cpu_idle() as noinstr
-To: Alexandre Ghiti <alexghiti@rivosinc.com>
-Cc: Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, 
-	Albert Ou <aou@eecs.berkeley.edu>, Jisheng Zhang <jszhang@kernel.org>, 
-	=?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>, 
-	Pu Lehui <pulehui@huawei.com>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Puranjay Mohan <puranjay12@gmail.com>, Zong Li <zong.li@sifive.com>, 
-	Masami Hiramatsu <mhiramat@kernel.org>, linux-riscv@lists.infradead.org, 
-	linux-kernel@vger.kernel.org, Evgenii Shatokhin <e.shatokhin@yadro.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240327141229.GS13211@google.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 
-On Wed, Mar 27, 2024 at 4:33=E2=80=AFAM Alexandre Ghiti <alexghiti@rivosinc=
-com> wrote:
->
-> The following warning appears when using ftrace:
->
-> [89855.443413] RCU not on for: arch_cpu_idle+0x0/0x1c
-> [89855.445640] WARNING: CPU: 5 PID: 0 at include/linux/trace_recursion.h:=
-162 arch_ftrace_ops_list_func+0x208/0x228
-> [89855.445824] Modules linked in: xt_conntrack(E) nft_chain_nat(E) xt_MAS=
-QUERADE(E) nf_conntrack_netlink(E) xt_addrtype(E) nft_compat(E) nf_tables(E=
-) nfnetlink(E) br_netfilter(E) cfg80211(E) nls_iso8859_1(E) ofpart(E) redbo=
-ot(E) cmdlinepart(E) cfi_cmdset_0001(E) virtio_net(E) cfi_probe(E) cfi_util=
-(E) 9pnet_virtio(E) gen_probe(E) net_failover(E) virtio_rng(E) failover(E) =
-9pnet(E) physmap(E) map_funcs(E) chipreg(E) mtd(E) uio_pdrv_genirq(E) uio(E=
-) dm_multipath(E) scsi_dh_rdac(E) scsi_dh_emc(E) scsi_dh_alua(E) drm(E) efi=
-_pstore(E) backlight(E) ip_tables(E) x_tables(E) raid10(E) raid456(E) async=
-_raid6_recov(E) async_memcpy(E) async_pq(E) async_xor(E) xor(E) async_tx(E)=
- raid6_pq(E) raid1(E) raid0(E) virtio_blk(E)
-> [89855.451563] CPU: 5 PID: 0 Comm: swapper/5 Tainted: G            E     =
- 6.8.0-rc6ubuntu-defconfig #2
-> [89855.451726] Hardware name: riscv-virtio,qemu (DT)
-> [89855.451899] epc : arch_ftrace_ops_list_func+0x208/0x228
-> [89855.452016]  ra : arch_ftrace_ops_list_func+0x208/0x228
-> [89855.452119] epc : ffffffff8016b216 ra : ffffffff8016b216 sp : ffffaf80=
-8090fdb0
-> [89855.452171]  gp : ffffffff827c7680 tp : ffffaf808089ad40 t0 : ffffffff=
-800c0dd8
-> [89855.452216]  t1 : 0000000000000001 t2 : 0000000000000000 s0 : ffffaf80=
-8090fe30
-> [89855.452306]  s1 : 0000000000000000 a0 : 0000000000000026 a1 : ffffffff=
-82cd6ac8
-> [89855.452423]  a2 : ffffffff800458c8 a3 : ffffaf80b1870640 a4 : 00000000=
-00000000
-> [89855.452646]  a5 : 0000000000000000 a6 : 00000000ffffffff a7 : ffffffff=
-ffffffff
-> [89855.452698]  s2 : ffffffff82766872 s3 : ffffffff80004caa s4 : ffffffff=
-80ebea90
-> [89855.452743]  s5 : ffffaf808089bd40 s6 : 8000000a00006e00 s7 : 00000000=
-00000008
-> [89855.452787]  s8 : 0000000000002000 s9 : 0000000080043700 s10: 00000000=
-00000000
-> [89855.452831]  s11: 0000000000000000 t3 : 0000000000100000 t4 : 00000000=
-00000064
-> [89855.452874]  t5 : 000000000000000c t6 : ffffaf80b182dbfc
-> [89855.452929] status: 0000000200000100 badaddr: 0000000000000000 cause: =
-0000000000000003
-> [89855.453053] [<ffffffff8016b216>] arch_ftrace_ops_list_func+0x208/0x228
-> [89855.453191] [<ffffffff8000e082>] ftrace_call+0x8/0x22
-> [89855.453265] [<ffffffff800a149c>] do_idle+0x24c/0x2ca
-> [89855.453357] [<ffffffff8000da54>] return_to_handler+0x0/0x26
-> [89855.453429] [<ffffffff8000b716>] smp_callin+0x92/0xb6
-> [89855.453785] ---[ end trace 0000000000000000 ]---
->
-> To fix this, mark arch_cpu_idle() as noinstr, like it is done in commit
-> a9cbc1b471d2 ("s390/idle: mark arch_cpu_idle() noinstr").
->
-> Reported-by: Evgenii Shatokhin <e.shatokhin@yadro.com>
-> Closes: https://lore.kernel.org/linux-riscv/51f21b87-ebed-4411-afbc-c00d3=
-dea2bab@yadro.com/
-> Fixes: cfbc4f81c9d0 ("riscv: Select ARCH_WANTS_NO_INSTR")
-> Signed-off-by: Alexandre Ghiti <alexghiti@rivosinc.com>
+On Wed, Mar 27, 2024 at 02:12:29PM +0000, Lee Jones wrote:
+> On Wed, 27 Mar 2024, Andy Shevchenko wrote:
+> > On Wed, Mar 27, 2024 at 01:17:11PM +0000, Lee Jones wrote:
+> > > On Tue, 26 Mar 2024, Andy Shevchenko wrote:
+> > > > On Tue, Mar 26, 2024 at 04:41:01PM +0200, Andy Shevchenko wrote:
 
-Reviewed-by: Andy Chiu <andy.chiu@sifive.com>
-Tested-by: Andy Chiu <andy.chiu@sifive.com>
+..
 
-> ---
->  arch/riscv/kernel/process.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/arch/riscv/kernel/process.c b/arch/riscv/kernel/process.c
-> index 92922dbd5b5c..6abeecbfc51d 100644
-> --- a/arch/riscv/kernel/process.c
-> +++ b/arch/riscv/kernel/process.c
-> @@ -37,7 +37,7 @@ EXPORT_SYMBOL(__stack_chk_guard);
->
->  extern asmlinkage void ret_from_fork(void);
->
-> -void arch_cpu_idle(void)
-> +void noinstr arch_cpu_idle(void)
->  {
->         cpu_do_idle();
->  }
-> --
-> 2.39.2
->
->
-> _______________________________________________
-> linux-riscv mailing list
-> linux-riscv@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-riscv
+> > > > Hold on, but IIUC this is the report about new hardware that never had
+> > > > a support by Linux before.
+> > > 
+> > > So a revert is no longer required?
+> > 
+> > No, it seems an old issue unrelated to this patch.
+> 
+> Very well, consider it *not* done. :)
+
+Thank you!
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
+
 
