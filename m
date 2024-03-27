@@ -1,126 +1,191 @@
-Return-Path: <linux-kernel+bounces-120623-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-120624-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E6D7588DA6C
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 10:42:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 2152888DA6F
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 10:42:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A037F295DFF
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 09:42:02 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C7A5229565C
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 09:42:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E3170250F8;
-	Wed, 27 Mar 2024 09:41:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 92DD9383BB;
+	Wed, 27 Mar 2024 09:42:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="P0GWQbgn"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="lolKwOzN"
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 195FC23773;
-	Wed, 27 Mar 2024 09:41:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 45FF43BBE5;
+	Wed, 27 Mar 2024 09:42:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711532511; cv=none; b=cMmGQH+l0m41uW2iEQVSHFKjsgj7mvIDXU6Y699w85X/FKUpJqzpYyqTjgPxn7ik/oZMRzeRhvx0yJmmUIlZkBr7shE6GzuWZsR543bOsc6SsKwGxs+5jXMEcqJ4C0UfuWFht1R3brq/1zjCO1YNJKnDqpFKc7mG9HEiIGNADlw=
+	t=1711532527; cv=none; b=DRZnqiYudlvP+OgPcfYT7nLR9l3MSDdAlweFM7ZLEqxfToadKoc94mgGM7ztPvGYlzO2EXWdySpMu8BT8mhdtguORG1PrY9zsg3slFlkyIhnhnM/97oSDN5CPjzGb6vFNpoVnLb3udFP1UjNj6AgiXDdeBXg4QWFova3cGWMoKU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711532511; c=relaxed/simple;
-	bh=L3MDabzqy52UiiTpotcbYr/fCovWNhX/kTom1rvfcLE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=R39TkLNgQ0YoqCsa0N2SS3QpON7h4f1b1pgcMf00mfY3k2Zq0UTyt8OzdNhv6AcZyWaPv29Q9GLufy+xFWoM3OjGE6WHqv/G+Fzheuy4ag8slAuwN6g2Gd7XuQl2bQkwQ/ET1YU2PiAz1KPWglB9Py0TJ/KSF3hfxrF6woCI8ZQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=P0GWQbgn; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A5A4DC433C7;
-	Wed, 27 Mar 2024 09:41:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711532510;
-	bh=L3MDabzqy52UiiTpotcbYr/fCovWNhX/kTom1rvfcLE=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=P0GWQbgnIHTf/G5uy23E/x7ykvt/PdbjSQBxEDrAG8933x7u7LE+eSEfWzro38F6g
-	 QTeiC5ZrZDZQ0mxGSlCSjQnsqn1y49orZqEvDjAoGZZ9q0gIPbo+M7I3xt9HttPI8H
-	 0ObzP0rjgPRbxin+sZBZNp2rk832mLKAM7p1KnRhq9wZ0yPDRMP+wMo10ULBHkQC6j
-	 nG/B8CNKwie/6nXS6vLuQK2zBFa0RG4KiXbKOPr8QLv3RiNxkDJkl/eA9FSn3FwgFv
-	 Mv/vFRKgxrFAhrljpIyeoQrajgkpwvQXIcl2ucpka2zQMo91uLTc1IlOSqgvlN9q6x
-	 IIHd3CkrbewBw==
-Date: Wed, 27 Mar 2024 10:41:39 +0100
-From: Niklas Cassel <cassel@kernel.org>
-To: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Cc: Jingoo Han <jingoohan1@gmail.com>,
-	Lorenzo Pieralisi <lpieralisi@kernel.org>,
-	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-	Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
-	Marek Vasut <marek.vasut+renesas@gmail.com>,
-	Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
-	Thierry Reding <thierry.reding@gmail.com>,
-	Jonathan Hunter <jonathanh@nvidia.com>,
-	Vidya Sagar <vidyas@nvidia.com>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	Richard Zhu <hongxing.zhu@nxp.com>,
-	Lucas Stach <l.stach@pengutronix.de>,
-	Shawn Guo <shawnguo@kernel.org>,
-	Sascha Hauer <s.hauer@pengutronix.de>,
-	Pengutronix Kernel Team <kernel@pengutronix.de>,
-	Fabio Estevam <festevam@gmail.com>,
-	NXP Linux Team <linux-imx@nxp.com>,
-	Minghuan Lian <minghuan.Lian@nxp.com>,
-	Mingkai Hu <mingkai.hu@nxp.com>, Roy Zang <roy.zang@nxp.com>,
-	Kunihiko Hayashi <hayashi.kunihiko@socionext.com>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	Kishon Vijay Abraham I <kishon@kernel.org>,
-	Jesper Nilsson <jesper.nilsson@axis.com>,
-	Srikanth Thokala <srikanth.thokala@intel.com>,
-	Shawn Lin <shawn.lin@rock-chips.com>,
-	Heiko Stuebner <heiko@sntech.de>, linux-pci@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
-	linux-arm-msm@vger.kernel.org, linux-tegra@vger.kernel.org,
-	linux-omap@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-	linuxppc-dev@lists.ozlabs.org, linux-arm-kernel@axis.com,
-	linux-rockchip@lists.infradead.org
-Subject: Re: [PATCH v12 8/8] PCI: endpoint: Remove "core_init_notifier" flag
-Message-ID: <ZgPp020vefFw3pGk@ryzen>
-References: <20240327-pci-dbi-rework-v12-0-082625472414@linaro.org>
- <20240327-pci-dbi-rework-v12-8-082625472414@linaro.org>
+	s=arc-20240116; t=1711532527; c=relaxed/simple;
+	bh=hWUAK11CpJBnVKM2jEGkjru0rPyl94fH4NidPC8K7EI=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=Nl+JXvGdRpRo3kamPz0BoIkJackmbS7qzNfLPL3zjrOmOLt2HjiaTcBZCwcRyLtpP8rEAv0XcoAbAFR7vGPUliWmF74BxSkI0rNo05nYeK6t6aImH7oZ+IwTxGv0CvjcsA77tk3SnjN2h7qOR1IxczHGM0v1tunCHbjoUQyZcXo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=lolKwOzN; arc=none smtp.client-ip=205.220.168.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279866.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 42R8N50V017995;
+	Wed, 27 Mar 2024 09:41:55 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=RHgqAYWuH0ztZm81QykXQjA6jmRzc17bFBveiiOIgZg=; b=lo
+	lKwOzNPXyqzCZzhU2JDSz0RPh+OIePEDydpptilcRzEEv8/KWpay6mdIEQiOdkmk
+	JMEcMvyc4B37umrfFpm+egjqs420gqMxRcXejmc3oDaZZKEC8OQVKuU5MBSdvIVr
+	Ewd3pHKmtBhrsw0+/XEfT7J01x5Vx4OM35fBRNuMVD08vQAo9niJMOhG0Z+5UTEs
+	RNVj0zLKAe7ycS9/Hp94lBJ6KmJRq+PZ2aRqCUZdQ8uhX2d6bl6pBT07FloOdql+
+	6Im2GQ9lsHAiWKn00i5/sCUShKxW0aeWNlQ3G1xebgeHeQquPlPD+pjz/HTh8bYt
+	7xKq92JWGIlGuYXbaiuw==
+Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3x4etk8am9-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 27 Mar 2024 09:41:55 +0000 (GMT)
+Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
+	by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 42R9fsQm000651
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 27 Mar 2024 09:41:54 GMT
+Received: from [10.218.47.125] (10.80.80.8) by nalasex01b.na.qualcomm.com
+ (10.47.209.197) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Wed, 27 Mar
+ 2024 02:41:50 -0700
+Message-ID: <05d95845-85ce-bf83-57a7-135265a7508d@quicinc.com>
+Date: Wed, 27 Mar 2024 15:11:47 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240327-pci-dbi-rework-v12-8-082625472414@linaro.org>
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.10.1
+Subject: Re: [PATCH v4] thermal/drivers/tsens: Add suspend to RAM support for
+ tsens
+Content-Language: en-US
+To: Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Amit Kucheria
+	<amitk@kernel.org>,
+        Thara Gopinath <thara.gopinath@gmail.com>,
+        "Bjorn
+ Andersson" <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        Zhang Rui <rui.zhang@intel.com>, Lukasz Luba <lukasz.luba@arm.com>,
+        <linux-pm@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+CC: <quic_manafm@quicinc.com>
+References: <20240326074033.17002-1-quic_priyjain@quicinc.com>
+ <9bea167d-edcf-4d66-8ec7-051e97c8dffd@linaro.org>
+From: Priyansh Jain <quic_priyjain@quicinc.com>
+In-Reply-To: <9bea167d-edcf-4d66-8ec7-051e97c8dffd@linaro.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01b.na.qualcomm.com (10.47.209.197)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: 1iZRwThsh78bXt1gyKQhA617x7F5brAa
+X-Proofpoint-ORIG-GUID: 1iZRwThsh78bXt1gyKQhA617x7F5brAa
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-03-27_05,2024-03-21_02,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 adultscore=0
+ bulkscore=0 phishscore=0 spamscore=0 impostorscore=0 mlxlogscore=999
+ priorityscore=1501 clxscore=1015 suspectscore=0 lowpriorityscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2403210001 definitions=main-2403270065
 
-On Wed, Mar 27, 2024 at 02:43:37PM +0530, Manivannan Sadhasivam wrote:
-> "core_init_notifier" flag is set by the glue drivers requiring refclk from
-> the host to complete the DWC core initialization. Also, those drivers will
-> send a notification to the EPF drivers once the initialization is fully
-> completed using the pci_epc_init_notify() API. Only then, the EPF drivers
-> will start functioning.
-> 
-> For the rest of the drivers generating refclk locally, EPF drivers will
-> start functioning post binding with them. EPF drivers rely on the
-> 'core_init_notifier' flag to differentiate between the drivers.
-> Unfortunately, this creates two different flows for the EPF drivers.
-> 
-> So to avoid that, let's get rid of the "core_init_notifier" flag and follow
-> a single initialization flow for the EPF drivers. This is done by calling
-> the dw_pcie_ep_init_notify() from all glue drivers after the completion of
-> dw_pcie_ep_init_registers() API. This will allow all the glue drivers to
-> send the notification to the EPF drivers once the initialization is fully
-> completed.
-> 
-> Only difference here is that, the drivers requiring refclk from host will
-> send the notification once refclk is received, while others will send it
-> during probe time itself.
-> 
-> But this also requires the EPC core driver to deliver the notification
-> after EPF driver bind. Because, the glue driver can send the notification
-> before the EPF drivers bind() and in those cases the EPF drivers will miss
-> the event. To accommodate this, EPC core is now caching the state of the
-> EPC initialization in 'init_complete' flag and pci-ep-cfs driver sends the
-> notification to EPF drivers based on that after each EPF driver bind.
-> 
-> Tested-by: Niklas Cassel <cassel@kernel.org>
-> Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-> ---
 
-Reviewed-by: Niklas Cassel <cassel@kernel.org>
+
+On 3/26/2024 4:30 PM, Daniel Lezcano wrote:
+> On 26/03/2024 08:40, Priyansh Jain wrote:
+>> As part of suspend to RAM, tsens hardware will be turned off.
+>> While resume callback, re-initialize tsens hardware.
+>>
+>> Signed-off-by: Priyansh Jain <quic_priyjain@quicinc.com>
+>> ---
+>> V3 -> V4: Make tsens_reinit function specific to tsens v2. Add
+>> NULL resume callback support for platform whose versions < ver_2_x
+>> in tsens ops.
+>> V2 -> V3: Remove suspend callback & interrupt enablement part from
+>> resume callback.
+>> V1 -> V2: Update commit text to explain the necessity of this patch
+>>
+>>   drivers/thermal/qcom/tsens-v0_1.c |  6 +++++
+>>   drivers/thermal/qcom/tsens-v1.c   |  3 +++
+>>   drivers/thermal/qcom/tsens-v2.c   |  1 +
+>>   drivers/thermal/qcom/tsens.c      | 37 +++++++++++++++++++++++++++++++
+>>   drivers/thermal/qcom/tsens.h      |  5 +++++
+>>   5 files changed, 52 insertions(+)
+>>
+>> diff --git a/drivers/thermal/qcom/tsens-v0_1.c 
+>> b/drivers/thermal/qcom/tsens-v0_1.c
+>> index 32d2d3e33287..7ed85379247b 100644
+>> --- a/drivers/thermal/qcom/tsens-v0_1.c
+>> +++ b/drivers/thermal/qcom/tsens-v0_1.c
+>> @@ -329,6 +329,7 @@ static const struct tsens_ops ops_8226 = {
+>>       .init        = init_8226,
+>>       .calibrate    = tsens_calibrate_common,
+>>       .get_temp    = get_temp_common,
+>> +    .resume        = NULL,
+> 
+> As a static variable it is already set to NULL. Why do you need to 
+> explicitly set them everywhere ?
+> 
+It was asked in last version to explicitly add (.resume = NULL). So 
+added this for all the tsens platforms for which resume callback is not
+validated.
+
+> [ ... ]
+> 
+>> +#ifdef CONFIG_SUSPEND
+>> +static int tsens_reinit(struct tsens_priv *priv)
+>> +{
+>> +    unsigned long flags;
+>> +
+>> +    spin_lock_irqsave(&priv->ul_lock, flags);
+> 
+> What this lock is protecting ?
+> 
+Yes this lock can be removed, will remove this in next patch.
+
+>> +    if (tsens_version(priv) >= VER_2_X) {
+> 
+> May be move this test before the lock ?
+> 
+>> +        /*
+>> +         * Re-enable the watchdog, unmask the bark.
+>> +         * Disable cycle completion monitoring
+>> +         */
+>> +        if (priv->feat->has_watchdog) {
+>> +            regmap_field_write(priv->rf[WDOG_BARK_MASK], 0);
+>> +            regmap_field_write(priv->rf[CC_MON_MASK], 1);
+>> +        }
+>> +
+>> +        /* Re-enable interrupts */
+>> +        tsens_enable_irq(priv);
+>> +    }
+>> +
+>> +    spin_unlock_irqrestore(&priv->ul_lock, flags);
+>> +
+>> +    return 0;
+>> +}
+>> +
+>> +int tsens_resume_common(struct tsens_priv *priv)
+>> +{
+>> +    if (pm_suspend_target_state == PM_SUSPEND_MEM)
+>> +        tsens_reinit(priv);
+>> +
+>> +    return 0;
+>> +}
+>> +
+>> +#endif /* !CONFIG_SUSPEND */
+> 
+> 
 
