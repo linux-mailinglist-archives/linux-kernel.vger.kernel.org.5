@@ -1,159 +1,110 @@
-Return-Path: <linux-kernel+bounces-121740-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-121741-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1483888ED26
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 18:52:11 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8068388ED33
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 18:53:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4603A1C26717
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 17:52:10 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0E171B25224
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 17:52:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 59059153833;
-	Wed, 27 Mar 2024 17:46:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 51F20150982;
+	Wed, 27 Mar 2024 17:47:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jbVTnNry"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="HDfwRf3f"
+Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9E19914F9F1
-	for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 17:46:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F6CC153835;
+	Wed, 27 Mar 2024 17:46:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711561616; cv=none; b=KtN/29+24K6QeJUOue2WY46t9jQ9/1E66ro3Ugc5N495ktg3IUPrernjAwmQ3uhvVCTUelukTCTyiVmN6PzVK9pvWp0cf7vYcVJBZJl+vTeGV/ejLj3/ljakMLLJ77fTs0OG3T4rrj6SV9n7MLJZxRP7oqIGE15O2mf7OI50eEY=
+	t=1711561619; cv=none; b=fcIVv9som0VasUTHzjYoHyABLWKqOlbDQ5/mGu5EuHXdTWXOE9gsj2mKlMgISy4FFfam60mP5Qt/l1CXT82D/rCs6P0Nh6qZPny8ngr/o+9QH72c/He4aqxV2fNKGHIntmXy49lYGRLsjMTbnBMOys4uTwi9p13JsTFrXDMSvgQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711561616; c=relaxed/simple;
-	bh=+JLGX36YP90VROvvA1SVh8R1mRHl0Ghl/7lpEVb6bo0=;
-	h=Mime-Version:Content-Type:Date:Message-Id:From:To:Cc:Subject:
-	 References:In-Reply-To; b=eXrDun6d1wgI4i9Dpy/8bq97vO8qRMOwnorappqMTmaCDftkU/F1uOrKmAjm0rlSXrn+sgJxrpZN9e4GyrUWZANUgZ8gQ3/3+RAQnanJK8+k9VMroLizzDz798zoqGhN4cvO6EbKrvXkYn4CkX3t3U55W26KOedoyx0f5W4UbrM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=jbVTnNry; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0C063C433C7;
-	Wed, 27 Mar 2024 17:46:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711561616;
-	bh=+JLGX36YP90VROvvA1SVh8R1mRHl0Ghl/7lpEVb6bo0=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=jbVTnNryCOCvZ0IKvA3CTaFuKaG//yheGiNyp7ASv2D6PEhQi3q9LxNZbbShnm8MO
-	 sZdyp4MdS4nTGIy1KXIGiROGocQpc61GKmJYSb3j47b2VoIOTIoHMjz9OG4Ft0dV9c
-	 VhOeFDQStAaK/z4wUv8tPETLT41Af9SRMwkllKIdGZ70o+lZt16ibupYK3/+EbIv01
-	 DTZWIYZHRo+tUsQZu1jJ7R5kq4/r0566Qrw09MD4+qR1udomiyigb0sLWPu0ebGyvr
-	 hkCmbstnM7u49tESQQzyL94fdAL5JYujU3ZzS5RFhfUymvplvreuHx8KxeIRL2pAPQ
-	 nRPIOumYqKH3g==
+	s=arc-20240116; t=1711561619; c=relaxed/simple;
+	bh=uB7kpus4vivNVZYNNT9/+H7DMP6DSIa06ehGi6L+8KQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=aXyzba1tB1xYP1jQDtHkqi3qAIDYzLwFYQdxW2jAOG4yWIDu7xyMLXVzaFLnxwRFCJreBBQvuCGLk9Lex37VJ8mJ/aCg6Mz3tkjNqaznlr+uboEfHZTcNSIEDpOknXp7QbQYVD7ehg4qRIK9FYA+ztfslFt0X9Ww06VpKluiIY8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=HDfwRf3f; arc=none smtp.client-ip=90.155.50.34
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Transfer-Encoding:
+	Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
+	Sender:Reply-To:Content-ID:Content-Description;
+	bh=7rtlcMvAOZqMG91SbLLXeao498bSKZqxUrAUPkW+pUQ=; b=HDfwRf3f9ZX9fBrm5LQIxQEnEx
+	zRji8K6f9jOwKJMzW0ps8UWVTIQ+DpE6EenLKh7kpWOjyp1cwkxzOxyFit8ikVRetjY0m6pdQbBmo
+	cgRxegFCABQRAW0DoxZGjzAkXHWyQ8Qmyj6CVD1YFeBKrD5iLZk6kTMWAayIaAP9Lzo6/VDogbCIw
+	I4hGSVwSGmsWotZ1Zr4n+AFwFE4oQRDQGICi9aX+P7JaGn85ZYew742acjLnQAuTdTVaOz8/p8DI2
+	T+g+iD9V0hpVxiLJQNRFLTuRuHOzcCeZdKqbtUWm1QZEg6DXI3wqVnfZvFZ0K8MIQUyAAVjHTnfgm
+	veRKIGKQ==;
+Received: from willy by casper.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1rpXMS-00000004NZT-3R3f;
+	Wed, 27 Mar 2024 17:46:52 +0000
+Date: Wed, 27 Mar 2024 17:46:52 +0000
+From: Matthew Wilcox <willy@infradead.org>
+To: Trond Myklebust <trondmy@hammerspace.com>
+Cc: "hch@lst.de" <hch@lst.de>, "miklos@szeredi.hu" <miklos@szeredi.hu>,
+	"dhowells@redhat.com" <dhowells@redhat.com>,
+	"ceph-devel@vger.kernel.org" <ceph-devel@vger.kernel.org>,
+	"linux-cifs@vger.kernel.org" <linux-cifs@vger.kernel.org>,
+	"brauner@kernel.org" <brauner@kernel.org>,
+	"linux-mm@kvack.org" <linux-mm@kvack.org>,
+	"linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+	"akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+	"v9fs@lists.linux.dev" <v9fs@lists.linux.dev>,
+	"netfs@lists.linux.dev" <netfs@lists.linux.dev>,
+	"jlayton@kernel.org" <jlayton@kernel.org>,
+	"viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
+	"linux-nfs@vger.kernel.org" <linux-nfs@vger.kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"devel@lists.orangefs.org" <devel@lists.orangefs.org>,
+	"linux-afs@lists.infradead.org" <linux-afs@lists.infradead.org>
+Subject: Re: [RFC PATCH] mm, netfs: Provide a means of invalidation without
+ using launder_folio
+Message-ID: <ZgRbjAn-d3_SAaQJ@casper.infradead.org>
+References: <2318298.1711551844@warthog.procyon.org.uk>
+ <37514eae34c02cefb11fc4c6d3f4ae2296fb6ab5.camel@hammerspace.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date: Wed, 27 Mar 2024 19:46:50 +0200
-Message-Id: <D04PYD185FIK.WABP6RZDCC06@kernel.org>
-From: "Jarkko Sakkinen" <jarkko@kernel.org>
-To: "Masami Hiramatsu" <mhiramat@kernel.org>, "Mark Rutland"
- <mark.rutland@arm.com>
-Cc: <linux-kernel@vger.kernel.org>, <agordeev@linux.ibm.com>,
- <anil.s.keshavamurthy@intel.com>, <aou@eecs.berkeley.edu>, <bp@alien8.de>,
- <catalin.marinas@arm.com>, <dave.hansen@linux.intel.com>,
- <davem@davemloft.net>, <gor@linux.ibm.com>, <hca@linux.ibm.com>,
- <jcalvinowens@gmail.com>, <linux-arm-kernel@lists.infradead.org>,
- <mingo@redhat.com>, <mpe@ellerman.id.au>, <naveen.n.rao@linux.ibm.com>,
- <palmer@dabbelt.com>, <paul.walmsley@sifive.com>, <tglx@linutronix.de>,
- <will@kernel.org>
-Subject: Re: [PATCH 4/4] kprobes: Remove core dependency on modules
-X-Mailer: aerc 0.17.0
-References: <20240326163624.3253157-1-mark.rutland@arm.com>
- <20240326163624.3253157-5-mark.rutland@arm.com>
- <D03UMKC71414.2D6NN1BIWD5TZ@kernel.org>
- <ZgMICo-dZJgVklc4@FVFF77S0Q05N.cambridge.arm.com>
- <20240327090155.873f1ed32700dbdb75f8eada@kernel.org>
-In-Reply-To: <20240327090155.873f1ed32700dbdb75f8eada@kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <37514eae34c02cefb11fc4c6d3f4ae2296fb6ab5.camel@hammerspace.com>
 
-On Wed Mar 27, 2024 at 2:01 AM EET, Masami Hiramatsu (Google) wrote:
-> On Tue, 26 Mar 2024 17:38:18 +0000
-> Mark Rutland <mark.rutland@arm.com> wrote:
->
-> > On Tue, Mar 26, 2024 at 07:13:51PM +0200, Jarkko Sakkinen wrote:
-> > > On Tue Mar 26, 2024 at 6:36 PM EET, Mark Rutland wrote:
-> >=20
-> > > > +#ifdef CONFIG_MODULES
-> > > >  	/* Check if 'p' is probing a module. */
-> > > >  	*probed_mod =3D __module_text_address((unsigned long) p->addr);
-> > > >  	if (*probed_mod) {
-> > > > @@ -1605,6 +1606,8 @@ static int check_kprobe_address_safe(struct k=
-probe *p,
-> > > >  			ret =3D -ENOENT;
-> > > >  		}
-> > > >  	}
-> > > > +#endif
-> > >=20
-> > > This can be scoped a bit more (see v7 of my patch set).
-> >=20
-> > > > +#ifdef CONFIG_MODULES
-> > > >  static nokprobe_inline bool trace_kprobe_module_exist(struct trace=
-_kprobe *tk)
-> > > >  {
-> > > >  	char *p;
-> > > > @@ -129,6 +130,9 @@ static nokprobe_inline bool trace_kprobe_module=
-_exist(struct trace_kprobe *tk)
-> > > > =20
-> > > >  	return ret;
-> > > >  }
-> > > > +#else
-> > > > +#define trace_kprobe_module_exist(tk) false /* aka a module never =
-exists */
-> > > > +#endif /* CONFIG_MODULES */
-> > > > =20
-> > > >  static bool trace_kprobe_is_busy(struct dyn_event *ev)
-> > > >  {
-> > > > @@ -670,6 +674,7 @@ static int register_trace_kprobe(struct trace_k=
-probe *tk)
-> > > >  	return ret;
-> > > >  }
-> > > > =20
-> > > > +#ifdef CONFIG_MODULES
-> > > >  /* Module notifier call back, checking event on the module */
-> > > >  static int trace_kprobe_module_callback(struct notifier_block *nb,
-> > > >  				       unsigned long val, void *data)
-> > > > @@ -699,6 +704,9 @@ static int trace_kprobe_module_callback(struct =
-notifier_block *nb,
-> > > > =20
-> > > >  	return NOTIFY_DONE;
-> > > >  }
-> > > > +#else
-> > > > +#define trace_kprobe_module_callback (NULL)
-> > > > +#endif /* CONFIG_MODULES */
-> > >=20
-> > > The last two CONFIG_MODULES sections could be combined. This was also=
- in
-> > > v7.
-> >=20
-> > > Other than lgtm.
-> >=20
-> > Great! I've folded your v7 changes in, and pushed that out to:
-> >=20
-> >   https://git.kernel.org/pub/scm/linux/kernel/git/mark/linux.git/log/?h=
-=3Dkprobes/without-modules
-> >=20
-> > I'll hold off sending that out to the list until other folk have had a =
-chance
-> > to comment.
->
-> Yeah, the updated one looks good to me too.
->
-> Thanks!
+On Wed, Mar 27, 2024 at 03:56:50PM +0000, Trond Myklebust wrote:
+> On Wed, 2024-03-27 at 15:04 +0000, David Howells wrote:
+> > Implement a replacement for launder_folio[1].  The key feature of
+> > invalidate_inode_pages2() is that it locks each folio individually,
+> > unmaps
+> > it to prevent mmap'd accesses interfering and calls the -
+> > >launder_folio()
+> > address_space op to flush it.  This has problems: firstly, each folio
+> > is
+> > written individually as one or more small writes; secondly, adjacent
+> > folios
+> > cannot be added so easily into the laundry; thirdly, it's yet another
+> > op to
+> > implement.
+> 
+> This is hardly a drop-in replacement for launder_page. The whole point
+> of using invalidate_inode_pages2() was that it only requires taking the
+> page locks, allowing us to use it in contexts such as
+> nfs_release_file().
+> 
+> The above use of truncate_inode_pages_range() will require any caller
+> to grab several locks in order to prevent data loss through races with
+> write system calls.
 
-As for RISC-V:
-
-Tested-by: Jarkko Sakkinen <jarkko@kernel.org> # arch/riscv
-
-I'm fine with adding to all patches because it would be hard
-to place tested-by to any specific patch (e.g. if this was a
-syscall I would give tested-by just for that patch).
-
-Just adding disclaimer because depending on subsystem people
-are more or less strict with this tag :-)
-
-BR, Jarkko
+I don't understand why you need launder_folio now
+that you have a page_mkwrite implementation (your commit
+e3db7691e9f3dff3289f64e3d98583e28afe03db used this as justification).
+Other filesystems (except the network filesystems that copied the NFS
+implementation) don't implement launder_folio.
 
