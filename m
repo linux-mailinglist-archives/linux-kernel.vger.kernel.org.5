@@ -1,174 +1,149 @@
-Return-Path: <linux-kernel+bounces-121574-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-121575-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id ABA0B88EB65
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 17:35:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 8A28E88EB72
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 17:39:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 48DF1B36ECE
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 15:51:11 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 699D9B29E2C
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 15:53:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3E46B12CD98;
-	Wed, 27 Mar 2024 15:51:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7356412FB29;
+	Wed, 27 Mar 2024 15:52:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b="pIenkUfc"
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [78.32.30.218])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="GM6fiX/K"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E0A2559B71;
-	Wed, 27 Mar 2024 15:51:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=78.32.30.218
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C32F812DD84;
+	Wed, 27 Mar 2024 15:52:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711554664; cv=none; b=durauT5tyERe5J+NU5Su1tSKzz/a+qyAApWng1yXu/SsKhWTf9nWNemZeLkrk9m9MEYLU4rq6kt6KcPbHloFwb1ehB34Ovuvr01LKg5PBDkaw3bkSr7Av0ZSWTlZShRnMosrTdoVZKpSk7Om034smgZK+7IBH5+mgHXeP2mVCP8=
+	t=1711554763; cv=none; b=es30UiAs5kVqrN9pCy/7d+uA4uUTTt59+vTsOPKUChWglAYDrAFUj9D3BY8Hwh6f6rsBAu8YTQEemy2lyUuWJs2aZCMT8EtkV/1pX1RquEYCH5mze3kXXeCafeDcpUR+LwL+/zaz8wDqxVPBkd6ZlJEh4pP0xdF1RaMaYghLkzg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711554664; c=relaxed/simple;
-	bh=AW16EC2aEa0IebRO+qULBwtga1dRcMAePpBtTF1Cz4I=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Ofn93WgKCICcPBa7LVFN2B1oUXz6SgVZe0rcUX8WaekLKXvjJ9urP+bnBd+iV6+b5nhCehXT1HPGGW/hkRgTTSHxpToJZAZviKz6Fhygs5E0EJi2icNKwUxCCeSjU6tjRXRKvj4gBW74MBY/sJzUCS3EKsuw6SQrqY0mi9oBRxA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk; spf=none smtp.mailfrom=armlinux.org.uk; dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b=pIenkUfc; arc=none smtp.client-ip=78.32.30.218
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=armlinux.org.uk
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:
-	Content-Transfer-Encoding:Content-Type:MIME-Version:References:Message-ID:
-	Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-	List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=v8Zo+lpGmEYMzAiuqKIM8OssQvdryZbCI6NC3RlvDLc=; b=pIenkUfc6gIEUz1zTSvCVoy95W
-	tG+Pc5hVuecUgQGIPOcmluq+nOW/noQ3qiVIO3xP+tcxUES0f47sFzfHK5vlPsJP3B2vcHG+tzUYH
-	/4Hc33aOH8Ff+mRWIm1nyCysVWjLjEDBVTgtFdVB/qPPBLugAVfKXTtp0xI7VH581NXCqHnP7Wtlo
-	MV9S2txg5yF539UdMvjJRv0Jbj5x3RJxLtE/xB0ohtFR+Z4tqQaARb2gnyCAl2YPgi1qKRF/tYR1i
-	09DfcdIzM2VaySFd+Z6bSiU9lwqZlOWswkcn39wQC5MrM9BzTfHUMbQywbIsCNrhZEgGQOeQ4PLtl
-	LSJUDBpA==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:53940)
-	by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <linux@armlinux.org.uk>)
-	id 1rpVXq-0007DS-20;
-	Wed, 27 Mar 2024 15:50:30 +0000
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
-	(envelope-from <linux@shell.armlinux.org.uk>)
-	id 1rpVXk-000100-VR; Wed, 27 Mar 2024 15:50:25 +0000
-Date: Wed, 27 Mar 2024 15:50:24 +0000
-From: "Russell King (Oracle)" <linux@armlinux.org.uk>
-To: =?utf-8?B?QXLEsW7DpyDDnE5BTA==?= <arinc.unal@arinc9.com>
-Cc: Paolo Abeni <pabeni@redhat.com>, Daniel Golle <daniel@makrotopia.org>,
-	DENG Qingfang <dqfext@gmail.com>,
-	Sean Wang <sean.wang@mediatek.com>, Andrew Lunn <andrew@lunn.ch>,
-	Florian Fainelli <f.fainelli@gmail.com>,
-	Vladimir Oltean <olteanv@gmail.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Matthias Brugger <matthias.bgg@gmail.com>,
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
-	=?iso-8859-1?Q?Ren=E9?= van Dorst <opensource@vdorst.com>,
-	SkyLake Huang <SkyLake.Huang@mediatek.com>,
-	Heiner Kallweit <hkallweit1@gmail.com>,
-	Bartel Eerdekens <bartel.eerdekens@constell8.be>,
-	mithat.guner@xeront.com, erkin.bozoglu@xeront.com,
-	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-mediatek@lists.infradead.org
-Subject: Re: [PATCH net v2 2/2] net: dsa: mt7530: fix disabling EEE on
- failure on MT7531 and MT7988
-Message-ID: <ZgRAQFfKWR1skCMo@shell.armlinux.org.uk>
-References: <20240321-for-net-mt7530-fix-eee-for-mt7531-mt7988-v2-0-9af9d5041bfe@arinc9.com>
- <20240321-for-net-mt7530-fix-eee-for-mt7531-mt7988-v2-2-9af9d5041bfe@arinc9.com>
- <799572b672ea8b4756236b14068aef7c8fa726a6.camel@redhat.com>
- <d65f4c45-e616-4157-a769-c285cbad575c@arinc9.com>
+	s=arc-20240116; t=1711554763; c=relaxed/simple;
+	bh=qW/fd5BsHMv42OERGvBEWgfMs2nJ8WYa2Q4ev1Mj2bE=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=tSM5gF62V7CSYQRYuXDGgTTvwBEEWG7z9dfRN6FkcaNE+1YtVExnwjObJ+poR6ZryFUTyMnY4xnEhHR+v9rbmm0CBUNDdNnkH4OiPMHXca1v7VuvuHzskFIalyF2MCoYgx8Wn8tF4I5KA3fGnggFwji9xWU/n8IulrSEv8U9oK0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=GM6fiX/K; arc=none smtp.client-ip=192.198.163.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1711554762; x=1743090762;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=qW/fd5BsHMv42OERGvBEWgfMs2nJ8WYa2Q4ev1Mj2bE=;
+  b=GM6fiX/KWb2SvgMdZ06xGUflF/tlwS7KtbZr6bBL1KJnJPA5KZgxl5ym
+   4Lq9Ga9Rxhox/VQfjRLd24Mpyr+vEbwnvBoMSPR1T84fGYLv+XvZSdnks
+   /m3yt31ccAgLylJBkXlfh2A07QrqsfBXyrvhPpLE0SPxS7jbRh0bKDqHJ
+   XqNoO8BJGCrg8vaX+yc1kw4rMB6u28ej+8gsb0ptbZ9ZmOErYKQ2vC97V
+   h+NMmo5CQ2DGM8rNMxvWWCKNTRo4UL5HaRAFY1P9y6h/Z4hOZxMcGZbiR
+   ax2nhnuGsp3bLKHoKQy4d+wjNGvOGIu5svNAxNZJoyCDeVd6th/g3oLYx
+   w==;
+X-CSE-ConnectionGUID: ElgAeAEUSH+ywKyS6Nmj5A==
+X-CSE-MsgGUID: qWe1ytXnTmmEDhuGSNCj8g==
+X-IronPort-AV: E=McAfee;i="6600,9927,11026"; a="17302203"
+X-IronPort-AV: E=Sophos;i="6.07,159,1708416000"; 
+   d="scan'208";a="17302203"
+Received: from fmviesa005.fm.intel.com ([10.60.135.145])
+  by fmvoesa105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Mar 2024 08:52:40 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,159,1708416000"; 
+   d="scan'208";a="20816491"
+Received: from djiang5-mobl3.amr.corp.intel.com (HELO [10.212.56.222]) ([10.212.56.222])
+  by fmviesa005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Mar 2024 08:52:37 -0700
+Message-ID: <2757205c-8a58-4619-bed1-d511812d5a18@intel.com>
+Date: Wed, 27 Mar 2024 08:52:35 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <d65f4c45-e616-4157-a769-c285cbad575c@arinc9.com>
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 18/22] nvdimm: virtio_pmem: drop owner assignment
+Content-Language: en-US
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+ "Michael S. Tsirkin" <mst@redhat.com>, Jason Wang <jasowang@redhat.com>,
+ Xuan Zhuo <xuanzhuo@linux.alibaba.com>, Richard Weinberger <richard@nod.at>,
+ Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+ Johannes Berg <johannes@sipsolutions.net>,
+ Paolo Bonzini <pbonzini@redhat.com>, Stefan Hajnoczi <stefanha@redhat.com>,
+ Jens Axboe <axboe@kernel.dk>, Marcel Holtmann <marcel@holtmann.org>,
+ Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+ Olivia Mackall <olivia@selenic.com>, Herbert Xu
+ <herbert@gondor.apana.org.au>, Amit Shah <amit@kernel.org>,
+ Arnd Bergmann <arnd@arndb.de>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Gonglei <arei.gonglei@huawei.com>, "David S. Miller" <davem@davemloft.net>,
+ Viresh Kumar <vireshk@kernel.org>, Linus Walleij <linus.walleij@linaro.org>,
+ Bartosz Golaszewski <brgl@bgdev.pl>, David Airlie <airlied@redhat.com>,
+ Gerd Hoffmann <kraxel@redhat.com>,
+ Gurchetan Singh <gurchetansingh@chromium.org>, Chia-I Wu
+ <olvaffe@gmail.com>, Jean-Philippe Brucker <jean-philippe@linaro.org>,
+ Joerg Roedel <joro@8bytes.org>, Alexander Graf <graf@amazon.com>,
+ Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
+ Paolo Abeni <pabeni@redhat.com>, Eric Van Hensbergen <ericvh@kernel.org>,
+ Latchesar Ionkov <lucho@ionkov.net>,
+ Dominique Martinet <asmadeus@codewreck.org>,
+ Christian Schoenebeck <linux_oss@crudebyte.com>,
+ Stefano Garzarella <sgarzare@redhat.com>, Kalle Valo <kvalo@kernel.org>,
+ Dan Williams <dan.j.williams@intel.com>,
+ Vishal Verma <vishal.l.verma@intel.com>, Ira Weiny <ira.weiny@intel.com>,
+ Pankaj Gupta <pankaj.gupta.linux@gmail.com>,
+ Bjorn Andersson <andersson@kernel.org>,
+ Mathieu Poirier <mathieu.poirier@linaro.org>,
+ "Martin K. Petersen" <martin.petersen@oracle.com>,
+ Vivek Goyal <vgoyal@redhat.com>, Miklos Szeredi <miklos@szeredi.hu>,
+ Anton Yakovlev <anton.yakovlev@opensynergy.com>,
+ Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+Cc: virtualization@lists.linux.dev, linux-doc@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-um@lists.infradead.org,
+ linux-block@vger.kernel.org, linux-bluetooth@vger.kernel.org,
+ linux-crypto@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-gpio@vger.kernel.org, dri-devel@lists.freedesktop.org,
+ iommu@lists.linux.dev, netdev@vger.kernel.org, v9fs@lists.linux.dev,
+ kvm@vger.kernel.org, linux-wireless@vger.kernel.org, nvdimm@lists.linux.dev,
+ linux-remoteproc@vger.kernel.org, linux-scsi@vger.kernel.org,
+ linux-fsdevel@vger.kernel.org, alsa-devel@alsa-project.org,
+ linux-sound@vger.kernel.org
+References: <20240327-module-owner-virtio-v1-0-0feffab77d99@linaro.org>
+ <20240327-module-owner-virtio-v1-18-0feffab77d99@linaro.org>
+From: Dave Jiang <dave.jiang@intel.com>
+In-Reply-To: <20240327-module-owner-virtio-v1-18-0feffab77d99@linaro.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Tue, Mar 26, 2024 at 12:19:40PM +0300, Arınç ÜNAL wrote:
-> On 26.03.2024 12:02, Paolo Abeni wrote:
-> > On Thu, 2024-03-21 at 19:29 +0300, Arınç ÜNAL via B4 Relay wrote:
-> > > From: Arınç ÜNAL <arinc.unal@arinc9.com>
-> > > 
-> > > The MT7531_FORCE_EEE1G and MT7531_FORCE_EEE100 bits let the
-> > > PMCR_FORCE_EEE1G and PMCR_FORCE_EEE100 bits determine the 1G/100 EEE
-> > > abilities of the MAC. If MT7531_FORCE_EEE1G and MT7531_FORCE_EEE100 are
-> > > unset, the abilities are left to be determined by PHY auto polling.
-> > > 
-> > > The commit 40b5d2f15c09 ("net: dsa: mt7530: Add support for EEE features")
-> > > made it so that the PMCR_FORCE_EEE1G and PMCR_FORCE_EEE100 bits are set on
-> > > mt753x_phylink_mac_link_up(). But it did not set the MT7531_FORCE_EEE1G and
-> > > MT7531_FORCE_EEE100 bits. Because of this, EEE will be enabled on the
-> > > switch MACs by polling the PHY, regardless of the result of phy_init_eee().
-> > > 
-> > > Define these bits and add them to MT7531_FORCE_MODE which is being used by
-> > > the subdriver. With this, EEE will be prevented from being enabled on the
-> > > switch MACs when phy_init_eee() fails.
-> > > 
-> > > Fixes: 40b5d2f15c09 ("net: dsa: mt7530: Add support for EEE features")
-> > > Signed-off-by: Arınç ÜNAL <arinc.unal@arinc9.com>
-> > 
-> > If I read the past discussion correctly, this is a potential issue
-> > found by code inspection and never producing problem in practice, am I
-> > correct?
-> > 
-> > If so I think it will deserve a 3rd party tested-by tag or similar to
-> > go in.
-> > 
-> > If nobody could provide such feedback in a little time, I suggest to
-> > drop this patch and apply only 1/2.
+
+
+On 3/27/24 5:41 AM, Krzysztof Kozlowski wrote:
+> virtio core already sets the .owner, so driver does not need to.
 > 
-> Whether a problem would happen in practice depends on when phy_init_eee()
-> fails, meaning it returns a negative non-zero code. I requested Russell to
-> review this patch to shed light on when phy_init_eee() would return a
-> negative non-zero code so we have an idea whether this patch actually fixes
-> a problem.
+> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
-Urgh, so I need to read the code and report back?
-
-Well, looking at phy_init_eee(), it could return a negative vallue when:
-
-1. phydev->drv is NULL
-2. if genphy_c45_eee_is_active() returns negative
-3. if genphy_c45_eee_is_active() returns zero, it returns
-   -EPROTONOSUPPORT
-4. if phy_set_bits_mmd() fails (e.g. communication error with the PHY)
-
-If we then look at genphy_c45_eee_is_active(), then:
-
-genphy_c45_read_eee_adv() and genphy_c45_read_eee_lpa() propagate their
-non-zero return values, otherwise this function returns zero or positive
-integer.
-
-If we then look at genphy_c45_read_eee_adv(), then a failure of
-phy_read_mmd() would cause a negative value to be returned.
-
-Looking at genphy_c45_read_eee_lpa(), the same is true.
-
-So, it can be summarised as:
-
-- phydev->drv is NULL
-- there is a communication error accessing the PHY
-- EEE is not active
-
-otherwise, it returns zero on success.
-
-If one wishes to determine whether an error occurred vs EEE not being
-supported through negotiation for the negotiated speed, if it returns
--EPROTONOSUPPORT in the latter case. Other error codes mean either the
-driver has been unloaded or communication error.
-
-This has been expertly determined by reading the code, which only a
-phylib maintainer has the capability of doing. Thank you for using this
-service.
-
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
+Acked-by: Dave Jiang <dave.jiang@intel.com>
+> 
+> ---
+> 
+> Depends on the first patch.
+> ---
+>  drivers/nvdimm/virtio_pmem.c | 1 -
+>  1 file changed, 1 deletion(-)
+> 
+> diff --git a/drivers/nvdimm/virtio_pmem.c b/drivers/nvdimm/virtio_pmem.c
+> index 4ceced5cefcf..c9b97aeabf85 100644
+> --- a/drivers/nvdimm/virtio_pmem.c
+> +++ b/drivers/nvdimm/virtio_pmem.c
+> @@ -151,7 +151,6 @@ static struct virtio_driver virtio_pmem_driver = {
+>  	.feature_table		= features,
+>  	.feature_table_size	= ARRAY_SIZE(features),
+>  	.driver.name		= KBUILD_MODNAME,
+> -	.driver.owner		= THIS_MODULE,
+>  	.id_table		= id_table,
+>  	.validate		= virtio_pmem_validate,
+>  	.probe			= virtio_pmem_probe,
+> 
 
