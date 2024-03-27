@@ -1,143 +1,125 @@
-Return-Path: <linux-kernel+bounces-120672-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-120673-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8553C88DB4E
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 11:35:00 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BFE0A88DB50
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 11:36:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 91FA71C276F6
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 10:34:59 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7890129BAEB
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 10:36:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F3C6537710;
-	Wed, 27 Mar 2024 10:34:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1B6032EAE6;
+	Wed, 27 Mar 2024 10:36:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="MljacT9E"
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="d+l9uXIP"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B1684125DB;
-	Wed, 27 Mar 2024 10:34:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E063718C31
+	for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 10:36:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711535691; cv=none; b=MVE+h8n67dxBT5YPeyV5zmm9RTTEB5aPji2igsTRU2ayJ8JBg3ZEyAkIgCxf5yHsHoL7nT0/oJdqrivM6WT0dCLjeg2wANuen5ElAseghryKsyXhXlwdDILUYibjh5FC96t7NxlVW1zhKaCYnJhiiko7trDW5N7EpwjpUV3g9F0=
+	t=1711535769; cv=none; b=F42TSNC5ShzMQGaNhWH3UkfGbUxWuhP2wbLcVuS2LmFayzcWOapwRVM1GsF677X6de6Pl+8bcQTW+kBtHwRpI1SzfwLKJ2DiUx0MH8DDUMjfeCMSdmMx2uVVvFWjwBcwCYJhd+DfKG3N34au/Zm2Cm9EoniWBVMs7kjxE62pkfE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711535691; c=relaxed/simple;
-	bh=4jje5NEtLbfC42GRy88kRZdlH+ujdSL7a1ZYybJ+xVk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=N0EZmSy9x2gHaTsKZv5e3bWQA/V1B/eQzkfuNYeqD/tj49+bZ3fgQbdh4I8LfPVk44NIDmiQC4VhYABVbqChw+wfMVaSCAik4uYfB8Ng+TEOmJ88XmwzMNT6fHxL5h3i7hVTqklRHoZOa9qEx7f6xQ471hAM9puaPKSPOhSLcsE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=MljacT9E; arc=none smtp.client-ip=46.235.227.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1711535688;
-	bh=4jje5NEtLbfC42GRy88kRZdlH+ujdSL7a1ZYybJ+xVk=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=MljacT9E0tWaqvup30MvFhY8+rt5/zDUTgxDEpHJjq2yArIDDq42p01ILR09Jt3PG
-	 LIwQ1/DsOMRwUA30cOGJ9zlcUoYp9OTZPNLHkwwtQe4LCPOX0iiCubQUoKngX9zCXt
-	 Zcsnw2yQU2ZnpsR7Ln99G5lqVzVwRZMG1Iu796lxRsxzoZ4FXQwQ9CekIRsu5jaQ+G
-	 H1vpyQm0w+H2Mr29YFKNczMJR8HJRQ2S+TTw4NucovOGQrs4LCC/RHPj/w+cDBFi4v
-	 JtgFVCJUWXXd+ApZZ7jhbpQEobz1+BFFs5ygHgW0/LnGxD1IftQe/JYkECu36APBc4
-	 vQhV1KuLal3tA==
-Received: from localhost (cola.collaboradmins.com [195.201.22.229])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: sebastianfricke)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id B72BC37820A3;
-	Wed, 27 Mar 2024 10:34:47 +0000 (UTC)
-Date: Wed, 27 Mar 2024 11:34:46 +0100
-From: Sebastian Fricke <sebastian.fricke@collabora.com>
-To: coolrrsh@gmail.com
-Cc: slongerbeam@gmail.com, p.zabel@pengutronix.de, mchehab@kernel.org,
-	gregkh@linuxfoundation.org, shawnguo@kernel.org,
-	s.hauer@pengutronix.de, kernel@pengutronix.de, festevam@gmail.com,
-	linux-imx@nxp.com, linux-media@vger.kernel.org,
-	linux-staging@lists.linux.dev, linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	linux-kernel-mentees@lists.linuxfoundation.org
-Subject: Re: [PATCH v3] staging: media: remove duplicate line
-Message-ID: <20240327103446.45lw5zjghwwcu27h@basti-XPS-13-9310>
-References: <20240327023340.3710-1-coolrrsh@gmail.com>
+	s=arc-20240116; t=1711535769; c=relaxed/simple;
+	bh=xqorqSSQcCa57WDHswkGBO57lmShWDt+11TKMdzLhfY=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=ndrKR8fqwgCtK2+zNyGdgF7p9N7nLRygqI3zPrhi45+Q2E8Z8w0ToUXldHVcMz1JJru8dvm5IbwO4QDl4h3CiY3l8X9tuD/b5PXBjxgQdtFGzocar2pu83JCKsNixKxnFkTx6twD2dQXVJ+WcWAGUwyyyA+JyRFHAANkKR+GcRc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=d+l9uXIP; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1711535766;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=kf0Xa0I3oo6j0q/YyccFGyxt0Y4pFFj4J4v02xp8sgw=;
+	b=d+l9uXIPx93qI1HoSfquy2ayx8QUQN9EQNE0xFm1A4SeN6SUX1kudrkHgEsCPVPCztO7Tw
+	m8qPzG7jmcS40opMaNi8dPYPjaoOPc3vdOolreMrsXg6/8TkJz6e11TOL7qNcf+LI5Pe4s
+	hhHTvHD0JjQuAG8yqfVmA78muYFrPxY=
+Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
+ [209.85.218.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-231-TEw-IpXsMs6subDpi0717g-1; Wed, 27 Mar 2024 06:36:04 -0400
+X-MC-Unique: TEw-IpXsMs6subDpi0717g-1
+Received: by mail-ej1-f71.google.com with SMTP id a640c23a62f3a-a4e03687359so32850866b.3
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 03:36:04 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711535763; x=1712140563;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=kf0Xa0I3oo6j0q/YyccFGyxt0Y4pFFj4J4v02xp8sgw=;
+        b=cI016eqw7vhNYI/9LgclmFUMPrICu9mJsaAjNUOJK7He4YID0ZNhEZWnHnDuhaZ8IP
+         mLVHpaF1fMhHva3kFDEtTbIIfEpxzg9F8nb8X1HdjLt6cOGCa4eVOuYvxTozNGN5g3WX
+         rcXGTxHhokx8r8J0gPpsdXAFhZdEXNybJtaVBr66X9bjgSqgf2M5AdN71DUrnSOAoqx5
+         lI+bvzWWD3mTnrUI9fR/quXars83nZPIa3mhy0BH2EJy5hIm0xnwfKNbpqqkCpU32DeE
+         TTGEgX2TInfDc1BNBxw+G/Z7AJ0vRGhaVmy84+3omaEtTzzwrZpCvXAflCF9AamBQOQK
+         8tUg==
+X-Forwarded-Encrypted: i=1; AJvYcCX/2ha/0xwSMflgIYvbKG5ndE2wonhqZcveNxk+WwGyOOt/N6ENhWMzID48HhivzQ8Eq5zDknlE2eNPHC3jR0cgoyLkWDmWVr8CSgfu
+X-Gm-Message-State: AOJu0YzENuwAkpIpbrn3cwn7C30dML9ow0AKYr2ulJ4soa8n5Foj79Ne
+	imJShVkSTVGAr7EMveOG5tLfjd+PmwNW5IHTHowSaKE/4S9yyU2r/DMrcGo9yUYbIHVPgmakIj9
+	o7nXxKepTc8L9Sjei32C2uXiphkCUIH/2IcOUTcaDETvEyAt0iCSGHAUAIf57IQ==
+X-Received: by 2002:a17:906:6b13:b0:a47:340b:df71 with SMTP id q19-20020a1709066b1300b00a47340bdf71mr1670497ejr.2.1711535763756;
+        Wed, 27 Mar 2024 03:36:03 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IEXIJnfqBe48JPS7KAJBUSmGXBW5NQxks56Wy5f+VzFBwfzkgubS3ihGGHzdYeX4eRBxnJSdw==
+X-Received: by 2002:a17:906:6b13:b0:a47:340b:df71 with SMTP id q19-20020a1709066b1300b00a47340bdf71mr1670485ejr.2.1711535763405;
+        Wed, 27 Mar 2024 03:36:03 -0700 (PDT)
+Received: from ?IPV6:2001:1c00:c32:7800:5bfa:a036:83f0:f9ec? (2001-1c00-0c32-7800-5bfa-a036-83f0-f9ec.cable.dynamic.v6.ziggo.nl. [2001:1c00:c32:7800:5bfa:a036:83f0:f9ec])
+        by smtp.gmail.com with ESMTPSA id ch12-20020a170906c2cc00b00a44180ab871sm5258891ejb.50.2024.03.27.03.36.02
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 27 Mar 2024 03:36:02 -0700 (PDT)
+Message-ID: <6f0761a6-5f49-42e2-9b79-3e04c9d259a4@redhat.com>
+Date: Wed, 27 Mar 2024 11:36:02 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Disposition: inline
-In-Reply-To: <20240327023340.3710-1-coolrrsh@gmail.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3] power: supply: test-power: implement charge_behaviour
+ property
+Content-Language: en-US, nl
+To: Sebastian Reichel <sebastian.reichel@collabora.com>,
+ Sebastian Reichel <sre@kernel.org>, Konrad Dybcio <konradybcio@kernel.org>,
+ =?UTF-8?Q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>
+Cc: linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20240306-power_supply-charge_behaviour_prop-v3-1-d04cf1f5f0af@weissschuh.net>
+ <171148264419.185695.14027540198251584096.b4-ty@collabora.com>
+From: Hans de Goede <hdegoede@redhat.com>
+In-Reply-To: <171148264419.185695.14027540198251584096.b4-ty@collabora.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-Hey Rajeshwar,
+Hi Sebastian,
 
-On 27.03.2024 08:03, coolrrsh@gmail.com wrote:
->From: Rajeshwar R Shinde <coolrrsh@gmail.com>
->
->The kernel configuration VIDEO_DEV is defined twice in Kconfig.
->Thus, the redundant code is removed.
->
->Signed-off-by: Rajeshwar R Shinde <coolrrsh@gmail.com>
->
->---
->v1->v2
->changed the commit message
->v2->v3
->changed the subject
+On 3/26/24 8:50 PM, Sebastian Reichel wrote:
+> 
+> On Wed, 06 Mar 2024 20:37:04 +0100, Thomas Weißschuh wrote:
+>> To validate the special formatting of the "charge_behaviour" sysfs
+>> property add it to the example driver.
+>>
+>>
+> 
+> Applied, thanks!
+> 
+> [1/1] power: supply: test-power: implement charge_behaviour property
+>       commit: 070c1470ae24317e7b19bd3882b300b6d69922a4
 
-The subject line isn't any better than before. Lets look at some
-accepted examples together:
+Does this mean that you've also applied patches 1-3 of:
+"[PATCH v2 0/4] power: supply: core: align charge_behaviour format with docs" ?
 
-24d9cb143013 media: staging: imx: controls are from another device, mark this
-67673ed55084 media: staging/imx: rearrange group id to take in account IPU
-483fe862488f9 staging: media: imx: Merge VIDEO_IMX_CSI into VIDEO_IMX_MEDIA
-9958d30f38b96 media: Kconfig: cleanup VIDEO_DEV dependencies
+Because this is a new version of 4/4 of that series and I think
+that the new test may depend on the fixes from patches 1-3
+of that series (which I'm reviewing now).
 
-How did I find these? Simply by running git blame on one or more of the
-files in the driver at drivers/staging/media/imx
+Regards,
 
-As you can see there are slight variations on the first three but the
-general theme is the same, the subject line describes to you that the
-driver is found in staging/media and it tells you that the folder of the
-driver is 'imx'. Generally, `staging: media: imx` would be preferred
-however.
-The 4th case shows you an example with a more general subject line and
-it is justified in this case as the patch does changes on multiple files
-on the whole subsystem (the media subsystem consists of all files found
-in drivers/media, drivers/staging/media, Documentation/admin-guide/media
-and a few header files).
+Hans
 
-Now if we take this into account for your subject line. You only change
-a single driver, thus you need staging: media: imx:, and you to make
-your subject a bit less ambigious you could call the whole thing:
 
-staging: media: imx: Remove duplicate Kconfig dependency
-
-I hope this helps.
-
-Greetings,
-Sebastian
-
->
->---
-> drivers/staging/media/imx/Kconfig | 1 -
-> 1 file changed, 1 deletion(-)
->
->diff --git a/drivers/staging/media/imx/Kconfig b/drivers/staging/media/imx/Kconfig
->index 21fd79515042..772f49b1fe52 100644
->--- a/drivers/staging/media/imx/Kconfig
->+++ b/drivers/staging/media/imx/Kconfig
->@@ -4,7 +4,6 @@ config VIDEO_IMX_MEDIA
-> 	depends on ARCH_MXC || COMPILE_TEST
-> 	depends on HAS_DMA
-> 	depends on VIDEO_DEV
->-	depends on VIDEO_DEV
-> 	select MEDIA_CONTROLLER
-> 	select V4L2_FWNODE
-> 	select V4L2_MEM2MEM_DEV
->-- 
->2.25.1
->
->
 
