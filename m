@@ -1,188 +1,76 @@
-Return-Path: <linux-kernel+bounces-120745-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-120747-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id B128488DC6C
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 12:22:22 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DAA6488DC79
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 12:25:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 690E01F2D145
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 11:22:22 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E3A411C23ECB
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 11:25:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2ACE35D498;
-	Wed, 27 Mar 2024 11:22:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="jtI81To/"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.9])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 16ECC29CF8;
-	Wed, 27 Mar 2024 11:22:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.9
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6F58271741;
+	Wed, 27 Mar 2024 11:25:01 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BAF266EB6D
+	for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 11:24:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711538531; cv=none; b=pNj0KCK3CYYI8K28aXLlxH/dV5L3dAGEyoCauHxUg69foVigdAg5Kv5qzL5Qr7LPk49kKdtJL/n1H4zz4hK7nU7swoG35W3lK/duZBdufU1QsVO7dwZQ0GRCPJrgmgOdYUX6Duca415nGkOyFumkDE01KMVuihLfik0KoC6MgT4=
+	t=1711538701; cv=none; b=PtFFH9nIGYMdfEHYzV+FMV144olNmciTHXMZcmRXPd1lUL8l/DkfMi83A6otcPuP4YMBIOUiZeMwTr//btMSyO93WKqYK29fxYRKo1n9zI6xDIYnP1zlYzINKQv0dlh2xZbPC8ZgBZEk03VFy7Ltvy5qxYbYJvUUKuSy4ScV1JU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711538531; c=relaxed/simple;
-	bh=J7zAHuGREnCdBItMrYt7Dp5Z+38Lf4Gu8Jhy9frF4P4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Rb3G10UqDpHde7d646buLMqhgg7+gV5w6OUReVpwLNeM8EotwBKqlyRcrWbjqOOcCgbMou+cAsDPl5i+QrhmCarPIbjEpgmFTwyBc5A0eP1DNBZr7jG9z7eM3UF3yMIovJDQAg1DKgrTM4FlcHuU9R6bqEm3jPZ1mVpji1cBRR4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=jtI81To/; arc=none smtp.client-ip=192.198.163.9
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1711538529; x=1743074529;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=J7zAHuGREnCdBItMrYt7Dp5Z+38Lf4Gu8Jhy9frF4P4=;
-  b=jtI81To/3Js3GMJZvuBSs/taLJz/t2cRUhaI+QznGDjoiIPrRlgb/QFY
-   fPuX31iG5gU8+B6j10yPFTEeufVqsZpas92cFKZYtfhuIT1Yww2St7cwJ
-   gnxrC+Le3xpcoyyHX790j2kNYGnj68GyOeRQ97To0Q78leHGyZiAN9tBB
-   NLs8Ac++4ikUkyy0JuVjg+g48nh0l44qGNeymRjfjEbQ+nBW0n6S7+4X0
-   O7gdm0Z5nFP//RIz26QzJ+A3je8oZ2yKcK3FIR297saJxjLKRmgqK+rsv
-   x/IIyD/E/9j+k5v0HziLfD9Ud9RJ2uDa6Opz+4rog9J8HCZEQE7L3WrRB
-   g==;
-X-CSE-ConnectionGUID: LzhkCbZiSLWIqoufyptVtg==
-X-CSE-MsgGUID: I5fP53PpREOCAoV5JOIiwA==
-X-IronPort-AV: E=McAfee;i="6600,9927,11025"; a="17361966"
-X-IronPort-AV: E=Sophos;i="6.07,158,1708416000"; 
-   d="scan'208";a="17361966"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Mar 2024 04:22:08 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,11025"; a="937074467"
-X-IronPort-AV: E=Sophos;i="6.07,158,1708416000"; 
-   d="scan'208";a="937074467"
-Received: from kuha.fi.intel.com ([10.237.72.185])
-  by fmsmga001.fm.intel.com with SMTP; 27 Mar 2024 04:22:05 -0700
-Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Wed, 27 Mar 2024 13:22:04 +0200
-Date: Wed, 27 Mar 2024 13:22:04 +0200
-From: Heikki Krogerus <heikki.krogerus@linux.intel.com>
-To: Pavan Holla <pholla@chromium.org>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Benson Leung <bleung@chromium.org>,
-	Tzung-Bi Shih <tzungbi@kernel.org>,
-	Guenter Roeck <groeck@chromium.org>, linux-kernel@vger.kernel.org,
-	linux-usb@vger.kernel.org,
-	Abhishek Pandit-Subedi <abhishekpandit@chromium.org>,
-	chrome-platform@lists.linux.dev
-Subject: Re: [PATCH v2 2/3] usb: typec: ucsi: Import interface for UCSI
- transport
-Message-ID: <ZgQBXFzuZLJcmH4h@kuha.fi.intel.com>
-References: <20240325-public-ucsi-h-v2-0-a6d716968bb1@chromium.org>
- <20240325-public-ucsi-h-v2-2-a6d716968bb1@chromium.org>
+	s=arc-20240116; t=1711538701; c=relaxed/simple;
+	bh=T+moCp9amPEcwG51Nwb9zHrIinA3U9QwdTdPkdNNDmY=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=LiJ4c7KYIZqv6Pfq2gpUZh13qF7WAAvn6w9kMjs6JSYWWRi5zhN2p/NilSk2XbvRTnbRv165EMx1ZkrYVqH4CGFB6MvkKr4V3MOG36BXtjiA9+7NNXuQLoTHW9S4W008Co3TzxW/9bRr5PNkG4bslkO24hIBz8iUL6I3ch5Y+Wc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id CFE0C2F4;
+	Wed, 27 Mar 2024 04:25:31 -0700 (PDT)
+Received: from e122027.arm.com (unknown [10.57.14.133])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 672333F694;
+	Wed, 27 Mar 2024 04:24:56 -0700 (PDT)
+From: Steven Price <steven.price@arm.com>
+To: Catalin Marinas <catalin.marinas@arm.com>,
+	Will Deacon <will@kernel.org>
+Cc: Steven Price <steven.price@arm.com>,
+	linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] arm64: remove redundant 'extern'
+Date: Wed, 27 Mar 2024 11:24:39 +0000
+Message-Id: <20240327112439.200455-1-steven.price@arm.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240325-public-ucsi-h-v2-2-a6d716968bb1@chromium.org>
+Content-Transfer-Encoding: 8bit
 
-On Mon, Mar 25, 2024 at 11:42:26PM +0000, Pavan Holla wrote:
-> Import include/linux/usb/ucsi.h and remove any duplicate declarations.
-> 
-> Signed-off-by: Pavan Holla <pholla@chromium.org>
-> ---
->  drivers/usb/typec/ucsi/ucsi.h | 54 +------------------------------------------
->  1 file changed, 1 insertion(+), 53 deletions(-)
+It isn't necessary to mark function definitions extern and goes against
+the kernel coding style. Remove the redundant extern keyword.
 
-I'm pretty sure somebody already told you to merge this into 1/3, so
-why haven't you done that?
+Signed-off-by: Steven Price <steven.price@arm.com>
+---
+ arch/arm64/include/asm/fixmap.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-
-> diff --git a/drivers/usb/typec/ucsi/ucsi.h b/drivers/usb/typec/ucsi/ucsi.h
-> index 32daf5f58650..167951538030 100644
-> --- a/drivers/usb/typec/ucsi/ucsi.h
-> +++ b/drivers/usb/typec/ucsi/ucsi.h
-> @@ -10,22 +10,13 @@
->  #include <linux/usb/typec.h>
->  #include <linux/usb/pd.h>
->  #include <linux/usb/role.h>
-> +#include <linux/usb/ucsi.h>
->  #include <asm/unaligned.h>
->  
->  /* -------------------------------------------------------------------------- */
->  
-> -struct ucsi;
-> -struct ucsi_altmode;
->  struct dentry;
->  
-> -/* UCSI offsets (Bytes) */
-> -#define UCSI_VERSION			0
-> -#define UCSI_CCI			4
-> -#define UCSI_CONTROL			8
-> -#define UCSI_MESSAGE_IN			16
-> -#define UCSI_MESSAGE_OUT		32
-> -#define UCSIv2_MESSAGE_OUT		272
-> -
->  /* UCSI versions */
->  #define UCSI_VERSION_1_2	0x0120
->  #define UCSI_VERSION_2_0	0x0200
-> @@ -42,48 +33,6 @@ struct dentry;
->   */
->  #define UCSI_SPEC_REVISION_TO_BCD(_v_)  (((_v_) + 1) << 8)
->  
-> -/* Command Status and Connector Change Indication (CCI) bits */
-> -#define UCSI_CCI_CONNECTOR(_c_)		(((_c_) & GENMASK(7, 1)) >> 1)
-> -#define UCSI_CCI_LENGTH(_c_)		(((_c_) & GENMASK(15, 8)) >> 8)
-> -#define UCSI_CCI_NOT_SUPPORTED		BIT(25)
-> -#define UCSI_CCI_CANCEL_COMPLETE	BIT(26)
-> -#define UCSI_CCI_RESET_COMPLETE		BIT(27)
-> -#define UCSI_CCI_BUSY			BIT(28)
-> -#define UCSI_CCI_ACK_COMPLETE		BIT(29)
-> -#define UCSI_CCI_ERROR			BIT(30)
-> -#define UCSI_CCI_COMMAND_COMPLETE	BIT(31)
-> -
-> -/**
-> - * struct ucsi_operations - UCSI I/O operations
-> - * @read: Read operation
-> - * @sync_write: Blocking write operation
-> - * @async_write: Non-blocking write operation
-> - * @update_altmodes: Squashes duplicate DP altmodes
-> - *
-> - * Read and write routines for UCSI interface. @sync_write must wait for the
-> - * Command Completion Event from the PPM before returning, and @async_write must
-> - * return immediately after sending the data to the PPM.
-> - */
-> -struct ucsi_operations {
-> -	int (*read)(struct ucsi *ucsi, unsigned int offset,
-> -		    void *val, size_t val_len);
-> -	int (*sync_write)(struct ucsi *ucsi, unsigned int offset,
-> -			  const void *val, size_t val_len);
-> -	int (*async_write)(struct ucsi *ucsi, unsigned int offset,
-> -			   const void *val, size_t val_len);
-> -	bool (*update_altmodes)(struct ucsi *ucsi, struct ucsi_altmode *orig,
-> -				struct ucsi_altmode *updated);
-> -};
-> -
-> -struct ucsi *ucsi_create(struct device *dev, const struct ucsi_operations *ops);
-> -void ucsi_destroy(struct ucsi *ucsi);
-> -int ucsi_register(struct ucsi *ucsi);
-> -void ucsi_unregister(struct ucsi *ucsi);
-> -void *ucsi_get_drvdata(struct ucsi *ucsi);
-> -void ucsi_set_drvdata(struct ucsi *ucsi, void *data);
-> -
-> -void ucsi_connector_change(struct ucsi *ucsi, u8 num);
-> -
->  /* -------------------------------------------------------------------------- */
->  
->  /* Commands */
-> @@ -465,7 +414,6 @@ int ucsi_send_command(struct ucsi *ucsi, u64 command,
->  		      void *retval, size_t size);
->  
->  void ucsi_altmode_update_active(struct ucsi_connector *con);
-> -int ucsi_resume(struct ucsi *ucsi);
->  
->  #if IS_ENABLED(CONFIG_POWER_SUPPLY)
->  int ucsi_register_port_psy(struct ucsi_connector *con);
-> 
-> -- 
-> 2.44.0.396.g6e790dbe36-goog
-
+diff --git a/arch/arm64/include/asm/fixmap.h b/arch/arm64/include/asm/fixmap.h
+index 87e307804b99..75b22b89db1a 100644
+--- a/arch/arm64/include/asm/fixmap.h
++++ b/arch/arm64/include/asm/fixmap.h
+@@ -107,7 +107,7 @@ void __init early_fixmap_init(void);
+ #define __late_set_fixmap __set_fixmap
+ #define __late_clear_fixmap(idx) __set_fixmap((idx), 0, FIXMAP_PAGE_CLEAR)
+ 
+-extern void __set_fixmap(enum fixed_addresses idx, phys_addr_t phys, pgprot_t prot);
++void __set_fixmap(enum fixed_addresses idx, phys_addr_t phys, pgprot_t prot);
+ 
+ #include <asm-generic/fixmap.h>
+ 
 -- 
-heikki
+2.34.1
+
 
