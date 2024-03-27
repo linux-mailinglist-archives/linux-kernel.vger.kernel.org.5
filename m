@@ -1,112 +1,130 @@
-Return-Path: <linux-kernel+bounces-120491-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-120493-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C7F2788D84A
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 09:01:14 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3E92088D84F
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 09:01:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 050C31C2653C
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 08:01:14 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E90772A37AE
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 08:01:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 472272D622;
-	Wed, 27 Mar 2024 07:58:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 851F02D61B;
+	Wed, 27 Mar 2024 07:59:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="bky9xrGB"
-Received: from mail-ej1-f50.google.com (mail-ej1-f50.google.com [209.85.218.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Di0d0Yt+"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A1BA34EB2C
-	for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 07:58:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B7E1D2C699;
+	Wed, 27 Mar 2024 07:59:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711526292; cv=none; b=oK76D/1PR/dhnQ3DhMcgJo5WAR8VcjYaYq+xKAmE17rSLI5uLTyW7smuLTy7j/L57UbkuMO6bzsB3wsBgXUDF/h/XvUZMu35MMeCCPC9KwvIUKl7OhFNFIQT8/DDTaWfGlbvoy7KSKUT59AOfxikkwP9TtfLirWx1rPWvs6Y3fo=
+	t=1711526345; cv=none; b=YXK5EZ3uP5LL/mhGDtxmrGuuveM44kfQEWJsMDXu4LP409PlNzsgqheUMdajj/KJed4NF16nGJKfjTjye9RVKv9ybr0Sm+7q6MjpSv5KQaCaOQGcoXI2JfQCji2ZO+xmxZPW38tjri0gaCFXq9QQNVf4TZnqGpHTvqYqNFyo56A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711526292; c=relaxed/simple;
-	bh=AdvzqVk7O5Om9zYVogxzKc5FzxJiG73Lmt6jW0x/4ZA=;
+	s=arc-20240116; t=1711526345; c=relaxed/simple;
+	bh=3Vch1QVVKz9oQdQipI2bgreZmQt1j9KfA9zuNaGttL4=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ILtd5DI6Sl3LKtc5kf2Nhe4+0Fo4gho9hndcxW7kVfQY4lr08a4h7zmL6dy9I2/LOj8XXOu36KpG1y9HLXS8P06maSiWbgqteOYaYL/wr31xpvTYrNcKxXDpP1X754YXd2sFB1E5Zw7vgSR2QFJ4ESMIVbWrv0gxg6Py4wjs4TE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=bky9xrGB; arc=none smtp.client-ip=209.85.218.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ej1-f50.google.com with SMTP id a640c23a62f3a-a4715d4c2cbso810903266b.1
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 00:58:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1711526289; x=1712131089; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=TDy5Illrx70H+5XvK63d5lpudD3g0VrV2VxsSwir7fI=;
-        b=bky9xrGBNrfAkhg94g5H1u4pD7IqEDFi9mCnPvfnoXbHGRxw78DK3o1tBOpZuWBApd
-         faaMRakLX79o71Vz8dzusuZ02cfxpMp4B7sGgmoJjvTxxu2XF6bQZma0gcU1EkyWhV0v
-         IqB927ZYr+sz3ZTE7J+PnIQmKpDNiAUUeCqOzTWOwiQ305ZvbbnbgJtlT+D1OEuSKN5x
-         IAgRzhWu/pEqFXPV6029rCr1ilkJp2s552UWlfmzDIQK89rZt9scULBjgqZtRY+3U6yQ
-         D2U1cCjQgrRvwf+M6/5rqDI7MpPdG8n6HKViDz7h8fDo97mpOdFXHC28HRZQU/1NTmSt
-         3VJQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711526289; x=1712131089;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=TDy5Illrx70H+5XvK63d5lpudD3g0VrV2VxsSwir7fI=;
-        b=ennDNN17pbcLF0ggq6gLK9FykfDvDGrVkjaq3eaFtYhDUJ2zxPeqydJZBW1UutOASa
-         GYFV09lT6qfr72II9AflhFCU+n1RlmipY+J3SAZlmVfXwfYI2LBBXI+/QmpP3jCZ4sQc
-         5jDvbEEW4TfDUa69Oh1M2ROQUCz6kusmRo8jaCRH8djGU26NwHfftKs275YbdNdNcSAE
-         U2A7NIrXalkN5qIVRkuhga6SIYJ9s/4xVHGQ2LySkML8t0roPpXTC+59TymdJ1MTolbA
-         XCbEec2D5WTxz13Zr3UUrKvAeCPL4eZBa5XaDjwIu/xhQGccPdH8rPaPeox/QNqbPVvD
-         WVoA==
-X-Forwarded-Encrypted: i=1; AJvYcCVw/PFZtdBPknUzHqmuEe8wIr5RLpu2HBkZt3fNfGurLd4eccEstyphZF/pSmtqCMuX01zGHn2/uAFUFkE624rBaEWR3452koi7IniR
-X-Gm-Message-State: AOJu0YxsIHJOEd5ZyM41m/P3ClWIrvbwhNYG626+ikebVURUl8FCgk+/
-	LpPU7Up0VAu4MlVHX0tSXyIJ/kAKqNHIZj2b2/n4aQk6xfNfkL6+yAlyg47OrN8=
-X-Google-Smtp-Source: AGHT+IGysvCehLKTeF+GjCKTXRvqk8xpwQLSopHP/oRxr76MQGD8YVIJzklfhmT5jk0MinBjuPZBbg==
-X-Received: by 2002:a17:906:3c8:b0:a4d:fc15:4e36 with SMTP id c8-20020a17090603c800b00a4dfc154e36mr1365984eja.16.1711526288645;
-        Wed, 27 Mar 2024 00:58:08 -0700 (PDT)
-Received: from localhost ([102.222.70.76])
-        by smtp.gmail.com with ESMTPSA id kz18-20020a17090777d200b00a46bdc6278csm5050261ejc.71.2024.03.27.00.58.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 27 Mar 2024 00:58:08 -0700 (PDT)
-Date: Wed, 27 Mar 2024 10:58:03 +0300
-From: Dan Carpenter <dan.carpenter@linaro.org>
-To: Prabhakar <prabhakar.csengg@gmail.com>
-Cc: Geert Uytterhoeven <geert+renesas@glider.be>,
-	Linus Walleij <linus.walleij@linaro.org>,
-	Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Magnus Damm <magnus.damm@gmail.com>,
-	linux-renesas-soc@vger.kernel.org, linux-gpio@vger.kernel.org,
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Fabrizio Castro <fabrizio.castro.jz@renesas.com>,
-	Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Subject: Re: [RFC PATCH 07/13] pinctrl: renesas: pinctrl-rzg2l: Validate
- power registers for SD and ETH
-Message-ID: <a0d7e6f4-5f4d-4601-857a-c485cceffe3b@moroto.mountain>
-References: <20240326222844.1422948-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <20240326222844.1422948-8-prabhakar.mahadev-lad.rj@bp.renesas.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=fgfXJnLQhESxjaCPNC/W5slBJ7bMaKqT8cjHOSfcnwxU0k8jcA8PQAgxxk5KclXjuRiCKxF9C0Idn02GxfLfkwE0z3YuInTwWdf/5nJ3KbPAC9Ym2wAdkE8aTqZRrrtTkiYfQ7Qsbcm6BUnMkt6tZPl4ut3L+wxGSbP2MjwWPWc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Di0d0Yt+; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2D0C3C433C7;
+	Wed, 27 Mar 2024 07:59:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1711526345;
+	bh=3Vch1QVVKz9oQdQipI2bgreZmQt1j9KfA9zuNaGttL4=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=Di0d0Yt+kulV0SFZXj34A8yHfdbrIl/RQIlgdOWmOgu0vU93q7/uZcKNfJbM19Owo
+	 +BZ42uXnvBbs2aNMWX2zEVxEyEJJPMwojzQAd/oOuGc6hsuzo9sjEfue92kS5s1+tL
+	 +X0T/IGlGpYESHZQDwjrSGM0goF1hyFWvEyWXrPg1ad4hI7cP4+ovYoM/hTgx8fCb/
+	 EZkqiKMKRqfh12FvgojNrxLdXU0BvomFMfwgXagDQybevdkNVgP/cLwVpzGTfko6us
+	 yqkf2Kn+Jp3UowrzesRfAiXd+8e3L1KqUh1f6QDNw2jNEHTy88aStfZfM1dI3aIme8
+	 Qz+9AY3eVnZ4w==
+Date: Wed, 27 Mar 2024 08:59:02 +0100
+From: Maxime Ripard <mripard@kernel.org>
+To: Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Cc: Dave Airlie <airlied@redhat.com>, Gerd Hoffmann <kraxel@redhat.com>, 
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, Thomas Zimmermann <tzimmermann@suse.de>, 
+	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, virtualization@lists.linux.dev, 
+	spice-devel@lists.freedesktop.org, dri-devel <dri-devel@lists.freedesktop.org>, 
+	linux-kernel <linux-kernel@vger.kernel.org>
+Subject: Re: drivers/gpu/drm/qxl/qxl_cmd.c:424:6: error: variable 'count' set
+ but not used
+Message-ID: <20240327-magnetic-nonchalant-hare-bbe8d2@houat>
+References: <CANiq72mbsAYmR_dRPpQQ=9-NWhTtp0TWiOz0v=V-0AvwYbWw4A@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha384;
+	protocol="application/pgp-signature"; boundary="6rt63sq2kbvenrzj"
+Content-Disposition: inline
+In-Reply-To: <CANiq72mbsAYmR_dRPpQQ=9-NWhTtp0TWiOz0v=V-0AvwYbWw4A@mail.gmail.com>
+
+
+--6rt63sq2kbvenrzj
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240326222844.1422948-8-prabhakar.mahadev-lad.rj@bp.renesas.com>
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, Mar 26, 2024 at 10:28:38PM +0000, Prabhakar wrote:
-> From: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-> 
-> On RZ/V2H(P) SoC, the power registers for SD and ETH do not exist,
-> resulting in invalid register offsets. Ensure that the register offsets
-> are valid before any read/write operations are performed. If the power
-                                                            ^^^^^^^^^^^^
-> registers are not available, both SD and ETH will be set to -EINVAL.
-  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-Where does this happen?  It doesn't seem to be a part of this patchset.
--EINVAL seems weird here, but it's hard to judge without actually seeing
-it.
+Hi Miguel,
 
-regards,
-dan carpenter
+On Tue, Mar 26, 2024 at 07:04:34PM +0100, Miguel Ojeda wrote:
+> Hi,
+>=20
+> In today's next, I got:
+>=20
+>     drivers/gpu/drm/qxl/qxl_cmd.c:424:6: error: variable 'count' set
+> but not used [-Werror,-Wunused-but-set-variable]
+>=20
+> `count` seems to be there since commit f64122c1f6ad ("drm: add new QXL
+> driver. (v1.4)").
+>=20
+> Untested diff below -- if you want a formal patch, please let me know.
+>=20
+> Cheers,
+> Miguel
+>=20
+> diff --git a/drivers/gpu/drm/qxl/qxl_cmd.c b/drivers/gpu/drm/qxl/qxl_cmd.c
+> index 281edab518cd..d6ea01f3797b 100644
+> --- a/drivers/gpu/drm/qxl/qxl_cmd.c
+> +++ b/drivers/gpu/drm/qxl/qxl_cmd.c
+> @@ -421,7 +421,6 @@ int qxl_surface_id_alloc(struct qxl_device *qdev,
+>  {
+>         uint32_t handle;
+>         int idr_ret;
+> -       int count =3D 0;
+>  again:
+>         idr_preload(GFP_ATOMIC);
+>         spin_lock(&qdev->surf_id_idr_lock);
+> @@ -433,7 +432,6 @@ int qxl_surface_id_alloc(struct qxl_device *qdev,
+>         handle =3D idr_ret;
+>=20
+>         if (handle >=3D qdev->rom->n_surfaces) {
+> -               count++;
+>                 spin_lock(&qdev->surf_id_idr_lock);
+>                 idr_remove(&qdev->surf_id_idr, handle);
+>                 spin_unlock(&qdev->surf_id_idr_lock);
+>=20
 
+It looks reasonable to me, can you send a formal patch?
+
+Thanks!
+Maxime
+
+--6rt63sq2kbvenrzj
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iJUEABMJAB0WIQTkHFbLp4ejekA/qfgnX84Zoj2+dgUCZgPRxgAKCRAnX84Zoj2+
+duBCAYCkWAxADritRMIdxuo60bi8gMXg3ORzEQ+Re/8bjBZRbnoR6xSqWL/e9li6
+7QpWXHEBewR48AANqEfzQxPcmpLpFROyX8u8HAbDv9hKJuo8mvAnbhPYLB2LBIbR
+B2ivQmRB1A==
+=ZxYE
+-----END PGP SIGNATURE-----
+
+--6rt63sq2kbvenrzj--
 
