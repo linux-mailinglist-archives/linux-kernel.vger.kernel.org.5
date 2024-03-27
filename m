@@ -1,56 +1,55 @@
-Return-Path: <linux-kernel+bounces-120886-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-120887-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id D66B688E030
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 13:30:35 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id B022788E032
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 13:30:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 13D141C2915D
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 12:30:35 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4E449B284FD
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 12:30:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A88C9144D06;
-	Wed, 27 Mar 2024 12:11:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A5721144D27;
+	Wed, 27 Mar 2024 12:11:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="DUB87MNe"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GcNd72D6"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E82951448F2;
-	Wed, 27 Mar 2024 12:11:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DA50F144D1D;
+	Wed, 27 Mar 2024 12:11:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711541492; cv=none; b=QhXem+Miw4bfzc9/uUO5zzP0w6UsitZdN+w6PKNpQ5EtNIjfNN395EoJZUh6+gooZ6H0XQ87Z38rwKirLhwmFC2mkb8+Bf5KWmJ+Wsuk2uS1U49tXMfFd3BuOzVNg39DbT7CZUngjVveMupHj2/0Z6OELAHQNIERrOGgfWcaXCE=
+	t=1711541494; cv=none; b=r+b7Va+rUugZ44to+Ea0NMYP6G3n2mxo2DcgOdEvrgSkbuOrTu4pRhVE5xKKmni18kEvb+EIKdKQQ8gdYLRZ/8dkxwmxfIAF78uv4bObmadmk0XpJEgefMkgGLsBhxnDvjQ1Eq2oHthfbtzZhrIQhkAtX/t2wXPjf+jsn+1eWrM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711541492; c=relaxed/simple;
-	bh=8HKvH2ZmRNAoMNTGQiDhZZWKlMb08XtUGwUod/1FeTU=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=AZ52nORKPTY2XV/mvFRA+XmBTArkC+zD+WmHQ8D4fESUVSdmDoqhDj/vBjmSboLOTo834f6rOWn0eR2/nhwLWziLfYZc+NOSTwapC+IZtiADNjoO4En4L2sKqnOnG+PMxx4MSX2uWhfUrIfu+IaZ7UQvET9i6O8h+7Fm4KvBNdM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=DUB87MNe; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CE430C433F1;
-	Wed, 27 Mar 2024 12:11:30 +0000 (UTC)
+	s=arc-20240116; t=1711541494; c=relaxed/simple;
+	bh=sMoRzrMXtN6KmG5zpGvT1Uc4g39UKqcylpjppasQI8k=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=QgbeN/OCJtmxwreCOww7G8q5BKPCXjKTrN1GxDDzneZgQYKG4vOkY8/VnSXAW7N6eIQScXENLhXrQc/op7ft3H6PFoFgEMgOcyZn/7pg4WL09huOFJjtm1mULyupt2vWtMkqlXPlYOG4W1RgJ8YZmHCADhhqCR9ahAN5r+ReIWQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=GcNd72D6; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D8F20C433C7;
+	Wed, 27 Mar 2024 12:11:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711541491;
-	bh=8HKvH2ZmRNAoMNTGQiDhZZWKlMb08XtUGwUod/1FeTU=;
+	s=k20201202; t=1711541494;
+	bh=sMoRzrMXtN6KmG5zpGvT1Uc4g39UKqcylpjppasQI8k=;
 	h=From:To:Cc:Subject:Date:From;
-	b=DUB87MNexWr/B6y1mYCgbMqhl7Bb+34h9WrjNqGS8lsMhR6MSeU4o7SvoB0NVBYPP
-	 Ep+2izkyzLk7+p7m+cXtFNSOIyLW6QOno2qVz5S3oBp0xqCwmB3mvhw9o0D9o0IwS1
-	 7kzHhyWQbRvGSIQ3u3+YiaO2RLHTCRjPutHIngo/TeZrn93wmzyoRUE7u92D/3Ih6K
-	 gD/1eoLsVrGK/m4Vqi/h2s1McaaP64o4POo9hpz5koEOjaao1qYndAGIhDrUvdCkMD
-	 ntZ4rbFHnkJr67YfqWV+GYp4Kn4OIkuA1t5xPxfPK6H5VYXYqoS2CePGShYNUMTWFF
-	 5BYyPJ4OMXkyA==
+	b=GcNd72D6R7AiWWZk8lVvERMHYa+JOUbxrmr8uwHe0Oe1haSVrB4xCG1/0ZOIlbynV
+	 4mpaeMLABh0qGpHheDSeesBJaTT1B5CwUsOObs6dvcC6mdKI2zjbbpJiISaSnAI+3C
+	 1yHmb9BE6uWEfSm7DZ5G7srewuxkSDK4t6NDitwmTD+J4RIkScyG50jiKZJrEXcuY6
+	 53Ajod1BuGbslNoSO2oKi/DOWNev8xqDuULmYNeyVYB2Y3gYKpyc2qRKxsdMpK+nuB
+	 MvTwDbmzY3XM0TS9lyfsG9iDUJprqkOD/fbRPK41n3VLmpNtkxcaU+KJCrDVJZROSq
+	 cOIUAW4V4Aq7A==
 From: Sasha Levin <sashal@kernel.org>
 To: stable@vger.kernel.org,
-	wangyuli@uniontech.com
-Cc: WANG Xuerui <git@xen0n.name>,
-	Wentao Guan <guanwentao@uniontech.com>,
-	Huacai Chen <chenhuacai@loongson.cn>,
-	linux-crypto@vger.kernel.org,
-	loongarch@lists.linux.dev,
+	hamza.mahfooz@amd.com
+Cc: Mario Limonciello <mario.limonciello@amd.com>,
+	Alex Deucher <alexander.deucher@amd.com>,
+	amd-gfx@lists.freedesktop.org,
+	dri-devel@lists.freedesktop.org,
 	linux-kernel@vger.kernel.org
-Subject: FAILED: Patch "LoongArch/crypto: Clean up useless assignment operations" failed to apply to 6.1-stable tree
-Date: Wed, 27 Mar 2024 08:11:29 -0400
-Message-ID: <20240327121129.2828782-1-sashal@kernel.org>
+Subject: FAILED: Patch "drm/amdgpu: make damage clips support configurable" failed to apply to 6.1-stable tree
+Date: Wed, 27 Mar 2024 08:11:32 -0400
+Message-ID: <20240327121132.2828819-1-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -72,48 +71,101 @@ Sasha
 
 ------------------ original commit in Linus's tree ------------------
 
-From fea1c949f6ca5059e12de00d0483645debc5b206 Mon Sep 17 00:00:00 2001
-From: Yuli Wang <wangyuli@uniontech.com>
-Date: Tue, 19 Mar 2024 15:50:34 +0800
-Subject: [PATCH] LoongArch/crypto: Clean up useless assignment operations
+From fc184dbe9fd99ad2dfb197b6fe18768bae1774b1 Mon Sep 17 00:00:00 2001
+From: Hamza Mahfooz <hamza.mahfooz@amd.com>
+Date: Thu, 8 Feb 2024 16:23:29 -0500
+Subject: [PATCH] drm/amdgpu: make damage clips support configurable
 
-The LoongArch CRC32 hw acceleration is based on arch/mips/crypto/
-crc32-mips.c. While the MIPS code supports both MIPS32 and MIPS64,
-but LoongArch32 lacks the CRC instruction. As a result, the line
-"len -= sizeof(u32)" is unnecessary.
-
-Removing it can make context code style more unified and improve
-code readability.
+We have observed that there are quite a number of PSR-SU panels on the
+market that are unable to keep up with what user space throws at them,
+resulting in hangs and random black screens. So, make damage clips
+support configurable and disable it by default for PSR-SU displays.
 
 Cc: stable@vger.kernel.org
-Reviewed-by: WANG Xuerui <git@xen0n.name>
-Suggested-by: Wentao Guan <guanwentao@uniontech.com>
-Signed-off-by: Yuli Wang <wangyuli@uniontech.com>
-Signed-off-by: Huacai Chen <chenhuacai@loongson.cn>
+Reviewed-by: Mario Limonciello <mario.limonciello@amd.com>
+Signed-off-by: Hamza Mahfooz <hamza.mahfooz@amd.com>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 ---
- arch/loongarch/crypto/crc32-loongarch.c | 2 --
- 1 file changed, 2 deletions(-)
+ drivers/gpu/drm/amd/amdgpu/amdgpu.h               |  1 +
+ drivers/gpu/drm/amd/amdgpu/amdgpu_drv.c           | 13 +++++++++++++
+ drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c |  7 +++++++
+ 3 files changed, 21 insertions(+)
 
-diff --git a/arch/loongarch/crypto/crc32-loongarch.c b/arch/loongarch/crypto/crc32-loongarch.c
-index a49e507af38c0..3eebea3a7b478 100644
---- a/arch/loongarch/crypto/crc32-loongarch.c
-+++ b/arch/loongarch/crypto/crc32-loongarch.c
-@@ -44,7 +44,6 @@ static u32 crc32_loongarch_hw(u32 crc_, const u8 *p, unsigned int len)
+diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu.h b/drivers/gpu/drm/amd/amdgpu/amdgpu.h
+index 312dfaec7b4a7..1291b8eb9dffa 100644
+--- a/drivers/gpu/drm/amd/amdgpu/amdgpu.h
++++ b/drivers/gpu/drm/amd/amdgpu/amdgpu.h
+@@ -198,6 +198,7 @@ extern uint amdgpu_dc_debug_mask;
+ extern uint amdgpu_dc_visual_confirm;
+ extern uint amdgpu_dm_abm_level;
+ extern int amdgpu_backlight;
++extern int amdgpu_damage_clips;
+ extern struct amdgpu_mgpu_info mgpu_info;
+ extern int amdgpu_ras_enable;
+ extern uint amdgpu_ras_mask;
+diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_drv.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_drv.c
+index 161ecf9b41747..6ef7f22c1152c 100644
+--- a/drivers/gpu/drm/amd/amdgpu/amdgpu_drv.c
++++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_drv.c
+@@ -211,6 +211,7 @@ int amdgpu_seamless = -1; /* auto */
+ uint amdgpu_debug_mask;
+ int amdgpu_agp = -1; /* auto */
+ int amdgpu_wbrf = -1;
++int amdgpu_damage_clips = -1; /* auto */
  
- 		CRC32(crc, value, w);
- 		p += sizeof(u32);
--		len -= sizeof(u32);
- 	}
+ static void amdgpu_drv_delayed_reset_work_handler(struct work_struct *work);
  
- 	if (len & sizeof(u16)) {
-@@ -80,7 +79,6 @@ static u32 crc32c_loongarch_hw(u32 crc_, const u8 *p, unsigned int len)
+@@ -859,6 +860,18 @@ int amdgpu_backlight = -1;
+ MODULE_PARM_DESC(backlight, "Backlight control (0 = pwm, 1 = aux, -1 auto (default))");
+ module_param_named(backlight, amdgpu_backlight, bint, 0444);
  
- 		CRC32C(crc, value, w);
- 		p += sizeof(u32);
--		len -= sizeof(u32);
- 	}
++/**
++ * DOC: damageclips (int)
++ * Enable or disable damage clips support. If damage clips support is disabled,
++ * we will force full frame updates, irrespective of what user space sends to
++ * us.
++ *
++ * Defaults to -1 (where it is enabled unless a PSR-SU display is detected).
++ */
++MODULE_PARM_DESC(damageclips,
++		 "Damage clips support (0 = disable, 1 = enable, -1 auto (default))");
++module_param_named(damageclips, amdgpu_damage_clips, int, 0444);
++
+ /**
+  * DOC: tmz (int)
+  * Trusted Memory Zone (TMZ) is a method to protect data being written
+diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
+index b7a717c3682f9..f9a7a16f1ec21 100644
+--- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
++++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
+@@ -5254,6 +5254,7 @@ static void fill_dc_dirty_rects(struct drm_plane *plane,
+ 				struct drm_plane_state *new_plane_state,
+ 				struct drm_crtc_state *crtc_state,
+ 				struct dc_flip_addrs *flip_addrs,
++				bool is_psr_su,
+ 				bool *dirty_regions_changed)
+ {
+ 	struct dm_crtc_state *dm_crtc_state = to_dm_crtc_state(crtc_state);
+@@ -5278,6 +5279,10 @@ static void fill_dc_dirty_rects(struct drm_plane *plane,
+ 	num_clips = drm_plane_get_damage_clips_count(new_plane_state);
+ 	clips = drm_plane_get_damage_clips(new_plane_state);
  
- 	if (len & sizeof(u16)) {
++	if (num_clips && (!amdgpu_damage_clips || (amdgpu_damage_clips < 0 &&
++						   is_psr_su)))
++		goto ffu;
++
+ 	if (!dm_crtc_state->mpo_requested) {
+ 		if (!num_clips || num_clips > DC_MAX_DIRTY_RECTS)
+ 			goto ffu;
+@@ -8412,6 +8417,8 @@ static void amdgpu_dm_commit_planes(struct drm_atomic_state *state,
+ 			fill_dc_dirty_rects(plane, old_plane_state,
+ 					    new_plane_state, new_crtc_state,
+ 					    &bundle->flip_addrs[planes_count],
++					    acrtc_state->stream->link->psr_settings.psr_version ==
++					    DC_PSR_VERSION_SU_1,
+ 					    &dirty_rects_changed);
+ 
+ 			/*
 -- 
 2.43.0
 
