@@ -1,184 +1,175 @@
-Return-Path: <linux-kernel+bounces-120487-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-120485-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id EEF7C88D83D
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 09:00:24 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 069E288D839
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 08:59:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 72E501F2AE26
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 08:00:24 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3660CB21899
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 07:59:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3E3F84A990;
-	Wed, 27 Mar 2024 07:58:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 271B938382;
+	Wed, 27 Mar 2024 07:57:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="QGeKM79S"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	dkim=pass (2048-bit key) header.d=alpsalpine.com header.i=@alpsalpine.com header.b="SrXbSmLb"
+Received: from JPN01-OS0-obe.outbound.protection.outlook.com (mail-os0jpn01on2051.outbound.protection.outlook.com [40.107.113.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E5C1F45954
-	for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 07:58:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711526283; cv=none; b=ricKyfQQC3gbVeBNSj1P5oAag4m4O6f1qW11jC93mTjZRIh51AYlyyhDab7gUO3+LKpxLTHCw+sc0n/M0c1C6gcev3HTUUM9bebEwziw/Dl4YTeB4IydXV0mb0BMXxvDCW1Jc43JcrNxpLKsl54JhxmJMTcgUiOJspHaYfnU8kY=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711526283; c=relaxed/simple;
-	bh=+jMhjERTTtRLM0KWZ1Ds1bG7HJxMTKBPNk0QcjknlfM=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=sLHygBdvfMVNmPy27TdG5N0zewedTi1uRsVSZpuO9+Q7Uyclw/GLmEtREj6aZedXQ2rftDYecCkvUGDogqfkbkNuxq00cC7Pm8krcYYgpKP9YnoWnmgXYcyrXz0HtJR99SlqmbMcjiDdoLysl8DpDgzy1rRZHcqo69XbrlG8DxQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=QGeKM79S; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1711526281;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=FvCZIXlyJ0i9W5y1NVajdFVbSmQI+ddDaK6Um2GHqYw=;
-	b=QGeKM79SYM2frmbmt2fxZHlTNPc5Oc842ZXIV9fYAHyaizqKZdm6AQwbQ2/i7sBfZ6yLBG
-	/3zjToBOF6R5v9/jolUeie+s7O0lGrLHanmRp8WfGz9AHCuTQt4iVPqe1SUqo5L+iRAxdS
-	JXhpwPhJDXSNffPjD54Q6jbnEfn3mdQ=
-Received: from mail-pg1-f197.google.com (mail-pg1-f197.google.com
- [209.85.215.197]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-613-R9b45yNHNeijrkQ2kURyKw-1; Wed, 27 Mar 2024 03:57:59 -0400
-X-MC-Unique: R9b45yNHNeijrkQ2kURyKw-1
-Received: by mail-pg1-f197.google.com with SMTP id 41be03b00d2f7-5ca4ee5b97aso3076420a12.1
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 00:57:59 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711526279; x=1712131079;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=FvCZIXlyJ0i9W5y1NVajdFVbSmQI+ddDaK6Um2GHqYw=;
-        b=Uv9XhyvHlfyzm2jyXkAD5W3NZzw4ZVIhH77RcFc+BEDrcaUBcPoart3JXIgc1y5bH5
-         YZzaBmSbfLa46bx/9FZz+wb/mwJwmo3coNtIdZzSBsbJ21BrPSL6hIg0JazxOPt347SF
-         NnjCL2izvWFwLWRXcfW0uz4NT3Pbce1XI/4DJyRZ54fJ05o9jiqGqyVeVKsEjFeszjsn
-         ZmK0fEIU0ak/RF8CI/1SQzzM6otjz30XDwALS5dkLSd9csKBls59umoAfa6DqC6M+vhN
-         7yGCOJAuRFPJUjAL/RU7WgP3EfQ8A/r56rHNTz/CYOcSM922dUi0jLIxWVqFmaJCaTnl
-         dpJA==
-X-Forwarded-Encrypted: i=1; AJvYcCVVusx8GIVAL0AznOV3yVz/Lt0TSRrQbZY7vX+5U21RKu4q+V34mV2SLbmmLtqW6k951Gb8Mx4i0HAVC5vYX6wFEveKXat7xa9lV7gN
-X-Gm-Message-State: AOJu0Yz+uqvW3eC/2T/PpMR/PlwsKw+7RZcnu6UMqLY7CSwLxzC9i16k
-	KU45GOjPtsKhdUD8MR4loSx0/A7CcRTAmr95+HcMQvDExj5GcPYF0JV95/1+MG8QE+VXLJP3qtk
-	3LGPxZO7ZkaWurkBbO7LlksBnkbkswt9Ero7jHKba022nhUvFfN4e+Omu5HXkLK47fDr++QGzaO
-	mbL0vV3u+dPwjYF2KaNaHuUrRAb9d2iCgaJUTm
-X-Received: by 2002:a05:6a21:78a1:b0:1a3:5440:520 with SMTP id bf33-20020a056a2178a100b001a354400520mr2261630pzc.1.1711526278845;
-        Wed, 27 Mar 2024 00:57:58 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IF+Q9fuG8yTs+ELOSdaWHYwqpSczYEeTI5UtBaHspHNLcfSZRVndgU5mB3Z2zq0Hcih2Q+cX9I9biaM+ykuO08=
-X-Received: by 2002:a05:6a21:78a1:b0:1a3:5440:520 with SMTP id
- bf33-20020a056a2178a100b001a354400520mr2261613pzc.1.1711526278530; Wed, 27
- Mar 2024 00:57:58 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F0C2237140;
+	Wed, 27 Mar 2024 07:57:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.113.51
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1711526278; cv=fail; b=utYy5fgBWZl6+1/OkYEYZHuFS9Q2c+Wn73sq7Gd3k94sZxlwJISpY9fPvpBvBj3Y9bKlFFr2SXAX6jyWmX1sp51oV7S1lkuI89SVDI65sW0ul/nTwuH02jlLXZVhekA3Kg2Ss+HaldJRsMxaXG8B0Ys/8PSpb5Cyiq4O/JKMr5Q=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1711526278; c=relaxed/simple;
+	bh=0WhJBLt5dEv3QOkGYNnlpAl0Ww5Sk3sBEx0nDMrXrIM=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=mwze6zLzP6LODk/GMEY5cwQjk+aAUB7E5i2VKYGYjHrxPvX5uuzhiCWp3hWVAz4QN78HWixHbNcS08/UuCHHByI2dj/2ZAZEc2UYNf88DxkViR2WpW+d8boJYPKnkN7TLsshKJmkhNH8/Qfgj+1uVMwCG8TTA0If4vmxTMQ+KdA=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=alpsalpine.com; spf=pass smtp.mailfrom=alpsalpine.com; dkim=pass (2048-bit key) header.d=alpsalpine.com header.i=@alpsalpine.com header.b=SrXbSmLb; arc=fail smtp.client-ip=40.107.113.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=alpsalpine.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alpsalpine.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=kOYy+WIBPQGm2soXDbublHGD7khZzUPnWVLFW+0T5FzgwC0hU9zOddDs16w9uM+R5CahWrZW9qJaft/mlv+ygXDZpv9gq4DtDwinyhATnQw6yzmcKmgCSHZiGr+8wtlnO3AnQvC06YDgSqkr1RMPCSXdMkKD+VDoETZr9bWKtUYK+gV5sPiTcyI0aUZMtPwJ+GkFfYwP0p6TNReU5pJ3rdPJibymgzuul4ZWaBcgW3OUKhUbVihfRUElawLk0rADk9Ffaug9hwPRUEEiFQi5OeCV4mZVta6KTPOrCeG1ICArqOxLgZwoHE78kLk78Gm0YVDURtVhl3u/3axWHuu+3w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=nUnY80AUxnZ/SEHOshOFlSNKDOPCX0MdUNrtcVIJwFo=;
+ b=RyifpvFY4UAW9Xyhm+DMDeL7iGjD0k31mNe09J7VxghUazC6fYe4qmzScRIER5nZ1Hi9yQpp8LUrg30bfthztSB+1OfsQS7kIpiNDQDJ0o0uoLZS/kJp4dbmisyOqRkGmuTeplyCxVsfDu8CBmtlXoHISMCwWMW8OOZHuoLboxNHfRBtXUk1a/+Py4LRdidNk2PxbV7K4HnRubn+DdbODgwcPrVdvx64xr/PMA9JtZ+iOz78LHaWcFJj68FnbNTOa6Ia/vG2kSCNQl+uGS5HGntxl6xzhbHyCC3XcTn1bA/kKkSXo6IkYGaxOWMmjie4LUa22v7YGAIisU5z87EQCA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=alpsalpine.com; dmarc=pass action=none
+ header.from=alpsalpine.com; dkim=pass header.d=alpsalpine.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alpsalpine.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=nUnY80AUxnZ/SEHOshOFlSNKDOPCX0MdUNrtcVIJwFo=;
+ b=SrXbSmLbrmvu7tmujNvPu4OfQJ5aJwJEd/yrf3Mp2SjB5oMvLXlBUbdlAmuLizRbeAMIt6tmLPBwRsWez3eX/3bfNMOMVFbdqcJu9zZ2U00ewa9ncByurK2iKxnaCc37ppiYaj15DP37kqIO6lTEHo9q68Zp33IVOMN29rcrS6SwbzlPQZ0gU/UzZUfQRRLFV5JSVlKsAmlFyKZ+6WEuOwGwAL3WOVw/jZ3o1/QW9Jvz4n53+RX3cneCMUHps6yC4ySZEXhVsnSwl2sA5spgBGz/q8NfoIKZSipBCf+Tz/DHANxB7NQXtW1VjH1cdO+QFQ+mazdHF0qg6jdsot3f8w==
+Received: from TYVPR01MB10781.jpnprd01.prod.outlook.com
+ (2603:1096:400:2ae::14) by TY3PR01MB10191.jpnprd01.prod.outlook.com
+ (2603:1096:400:1d8::12) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.33; Wed, 27 Mar
+ 2024 07:57:52 +0000
+Received: from TYVPR01MB10781.jpnprd01.prod.outlook.com
+ ([fe80::b541:f53c:6306:6e2b]) by TYVPR01MB10781.jpnprd01.prod.outlook.com
+ ([fe80::b541:f53c:6306:6e2b%4]) with mapi id 15.20.7409.031; Wed, 27 Mar 2024
+ 07:57:52 +0000
+From: Norihiko Hama <norihiko.hama@alpsalpine.com>
+To: Greg KH <gregkh@linuxfoundation.org>
+CC: "stern@rowland.harvard.edu" <stern@rowland.harvard.edu>,
+	"linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
+	"usb-storage@lists.one-eyed-alien.net"
+	<usb-storage@lists.one-eyed-alien.net>, "linux-kernel@vger.kernel.org"
+	<linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH] usb-storage: Optimize scan delay more precisely
+Thread-Topic: [PATCH] usb-storage: Optimize scan delay more precisely
+Thread-Index: AQHagAnskZ+PrXZ1a0CyN6BGkMIiXrFLFjOAgAAcfLCAAAKHgIAAAT8g
+Date: Wed, 27 Mar 2024 07:57:52 +0000
+Message-ID:
+ <TYVPR01MB10781723CBD338DC3EEB5F20590342@TYVPR01MB10781.jpnprd01.prod.outlook.com>
+References: <20240327055130.43206-1-Norihiko.Hama@alpsalpine.com>
+ <2024032757-surcharge-grime-d3dd@gregkh>
+ <TYVPR01MB107814D7A583CB986884AD4B290342@TYVPR01MB10781.jpnprd01.prod.outlook.com>
+ <2024032745-transfer-dazzler-2e15@gregkh>
+In-Reply-To: <2024032745-transfer-dazzler-2e15@gregkh>
+Accept-Language: ja-JP, en-US
+Content-Language: ja-JP
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=alpsalpine.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: TYVPR01MB10781:EE_|TY3PR01MB10191:EE_
+x-ms-office365-filtering-correlation-id: 60c2d1fd-55e5-474a-1f21-08dc4e339ac2
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info:
+ rAaip505sk1A37Af8lujYVEUSipPbYbY1h7ushptBr8tNI6exQ7WGXaW2Nr7XLZiqyDiMLZyDJN9qIN0I2c9WJLcdZ/sJtpkGIma67FbM9cNUDZmq0AkTVSQJnAVLgFHVLrv7ShEDqx6ADnYZwok6I9vSvQEv+/XXzPFpZ33fwjVJjhTJ+kGw5MAb6iAgX8lcaLNV3fRGwqrOO82krTZ0LVJIP6BBQUQGvglIQbuLpSu/d78qLfpb1zgX+llk4+nWs3MfuQeoKOgG/7Ki9LKiby1q1gBhu4Pp48EyuwAHAZdApQvTu9BdZGkbsDkLDBSXjXFp4xVRQ8OrbewzCh9y7GErguwPgemW6jygIihW6binA7AhjeGyfGsbehePY2waH5/Dj8y8SOJr8K7EJLZWwoy3uBroEHshRcumHDnft/I9Rl1kuh4to0OIPpxVQWaSZyHDSy00sJNfg9gnytRrwGLHQ9TAS8FBobZj5UT6rJ1jFpA6hwRLFN2DC9pq6Rlk90psp8HxBmbTf5sW0JesE4dlt03OTKjE+9pfrr4VLCImjuyJDU5Q4YsQ3Kb4tG7Mp82o9rPDPNwwA9jqP+R9aKbYGEZpvxwjfd02gP6LpIbqpl61hw9SBjZUbxn8gomJoGRw9ijOTcpCwt1fyWdxVpVPrqGz3TBMNNVhIXYCRuY1UPZOydvBCPBTHp1OYAbAbG3VaH8bYMsEcKvoGcOFAXRIC7NHlBXNnc70wPyNUU=
+x-forefront-antispam-report:
+ CIP:255.255.255.255;CTRY:;LANG:ja;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:TYVPR01MB10781.jpnprd01.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(1800799015)(366007)(38070700009);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0:
+ =?utf-7?B?aU50clphZUhLSGxrcEVqelJ6bGVHTkRTRVROMHduc0RxemJVTG5HY2pXNmw0?=
+ =?utf-7?B?Z2FqRm1YVzhWTlcrLWdjWVBidVVQWlliTnppeTM3LzdmUVBUYXY1L1FGRUlp?=
+ =?utf-7?B?amFVVWx3YmIvNVpqWEUzOW15L1pIN3E5YjlLa0o4b0hTdXBVemlVbldXWEdp?=
+ =?utf-7?B?SjBQVUtNN2NvdnFFQ1hHNFJpeXdJaGd0MGhJVDNRdml2MWxwakN2dy9zb21F?=
+ =?utf-7?B?TG1IWjhuSTZiSWhtT0EyUFR4S3pPTUJIcEY0UEpKcGtnNFQ4NHRsU29oMVBL?=
+ =?utf-7?B?S1NOaVlyKy1ZTFYzeldYc1pkU0llWXNTKy1NbG4yL0hGaUNhN3dwcCstUVR6?=
+ =?utf-7?B?VjZremIxbDA1dVAyLzJCZTNyRzRSVklZeXJ5VnN5MjNuVERBVm9rbmRENmM4?=
+ =?utf-7?B?T3FPcTdNZDlleFRMdVlnRHVSOTFJMmFmNFg4U3lJV2o0Q2V1UHJvaUcvMWZw?=
+ =?utf-7?B?a2s5UzVmc21aTnVhVGgrLWlKMk54TVhEVVBJcTRzTWM1UUFOQU9wVDBNZGdi?=
+ =?utf-7?B?aEtwWGRSMHVZcHpSNEs3Z21oTklvWnBSYk85NWZ3OVFXbll5RzUxdystTHZm?=
+ =?utf-7?B?eXlmcWhQdU51aDU0ZEFYKy1FZzBFVGtBcXQrLW1oWVNYdDd2WlI1YUtFYnRB?=
+ =?utf-7?B?WUt3bjFZTElaMkV0ZUF4a3hFWjdKcUFyNFRWRmZDbk5wRXN0TE5TMFh6NkI2?=
+ =?utf-7?B?YS95MlZRbzVMT2lSSHNjaE5vZzdSd1hCeEpUODdRVFo5UjczVThLSGZHRk1l?=
+ =?utf-7?B?bGhvR0ZwNGpocWRLRFFtVkZQSGg0dkxFeFM3M2ZuRWNDOGxXWXlqcktDVnN1?=
+ =?utf-7?B?UERhdTRucVI5a1lNRDNRNTU4U1Q5b0NOdFQzSGd6YzlSYUpXZ1lUQktqS2NU?=
+ =?utf-7?B?bjdQdjNxck1RaHNDVmhpa2VFQ25IdnVoRFJrY3F0Z0NsTjVBNFFRNmd0RHBT?=
+ =?utf-7?B?UWx6UzZLcFN5b25nMVNVVk0zRmRwbTRRN3BGVENCcjJBRUZLWG82U3RpeFM2?=
+ =?utf-7?B?SjhuNXBRV2Z1WnExNlhldDM4SU0yZmg4RWNHNjFBRENLeWp4b215T3QyaFB3?=
+ =?utf-7?B?Ky1GN1hFd3ZuKy1wNEw4RzI4WFJTaTlCTURMUUpWRWtDVlBPMWJnQWFGNmFm?=
+ =?utf-7?B?MXFUZ2c1QW1BOEp4Y3E5QWd6ZlVQanhoVGkyYlNhWXlneFlnQWZoZnJ4ZEF3?=
+ =?utf-7?B?cGhKSG1jeUl4UnlBYVdDNk42VEFhRDhHYnZGeFFLZmhiRklGeEFzMHV6V1lF?=
+ =?utf-7?B?SVNVMTRjZUZZN2NpeVVsdkx4WmF4MEVWeTZlby9PcmdQNCstM0x6Q3hNc0Fk?=
+ =?utf-7?B?VmI5aFFPTFphMEJidGRCWW1ZL2VYNkhyeWlGTEZTODNsY0J0VUVjUzFUVjZI?=
+ =?utf-7?B?YzIxbzY4SmRPcldSVVJTNTJXWTVvME1mVistUkFieTcySUNscmdGNFBGZHFR?=
+ =?utf-7?B?Zmd5T2hxQUEwOVpkR05xL2NYUjg2NWN3bjR4ZEcvR2EzSzlLc2xtVWhJdExk?=
+ =?utf-7?B?WW02RDd4Z1lObm1rL3V1ZzJKZ1JYOFY0TnNFVTVZcEZXTkNiNkQ1bWhqY3dq?=
+ =?utf-7?B?MWFBT2tRL3ArLVlQTzM2dXBNM2NBeUtVaWJ6eml6b3pONGlXNmtjb0pIdnlq?=
+ =?utf-7?B?OFNoRkNSLzNldEFQQmk5aE02VzJwcDdIQTNwYlJvaEZPMnplWGs0N2hmSGtL?=
+ =?utf-7?B?WHVUeFpGWXJYTFFZVzFGY0tzTTRzSm5EbnpwT3JVd2xVeGZNZ0xRaEh3NXdk?=
+ =?utf-7?B?RlhqYXZXZnlkTmkrLUFjNDMrLWNzQUI4L0pnWHNKb01GajVaL0lPa0poTVhV?=
+ =?utf-7?B?SWZBOU1UaFJLb29OS2srLTlxOTdFY3kvZmxpdU9ibystZjh6bmxOZ0t0NjBv?=
+ =?utf-7?B?c09GYy9WUFJ3eDdhTmZYNmxKQ1dSb1gvV0YvNHZGM0JodFZ5Ky15NlVuOG93?=
+ =?utf-7?B?VU8vSzJ6VFJ3clVzeFk3djFUZXdkcnhJTEczdjdsalBBYSstb1lpQmR5MnpX?=
+ =?utf-7?B?UG13Vm9EUThRU3FseVdnWlh4MThKamlGanM0Q2VkY3lnNkpsdDQ1TjlZZmVa?=
+ =?utf-7?B?aEk2Ymk0T3E5SUJzVkVEc3dpSlVRbDFIaUoxdUdlMk9ScGY4clJSKy1PS3dp?=
+ =?utf-7?B?OWVnQjVJTTltSTlFWndzb3NWNmcrLVNYS1BkekNBOWZTR2o1SkUyMEJHMGE4?=
+ =?utf-7?B?Ug==?=
+Content-Type: text/plain; charset="utf-7"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240324150107.976025-1-hpa@redhat.com> <20240324150107.976025-2-hpa@redhat.com>
- <CAHp75Ve5201KNdjvDZYq_unHTKp9wZXPWZXDgStP8y+XjtnWWg@mail.gmail.com>
-In-Reply-To: <CAHp75Ve5201KNdjvDZYq_unHTKp9wZXPWZXDgStP8y+XjtnWWg@mail.gmail.com>
-From: Kate Hsuan <hpa@redhat.com>
-Date: Wed, 27 Mar 2024 15:57:47 +0800
-Message-ID: <CAEth8oG7_qFuUrL+kX3ezNatWqKPqT-qiaO5NGY-N3F3ufQL9w@mail.gmail.com>
-Subject: Re: [PATCH v5 RESEND 1/6] platform: x86-android-tablets: other: Add
- swnode for Xiaomi pad2 indicator LED
-To: Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc: Pavel Machek <pavel@ucw.cz>, Lee Jones <lee@kernel.org>, linux-leds@vger.kernel.org, 
-	platform-driver-x86@vger.kernel.org, Hans de Goede <hdegoede@redhat.com>, 
-	=?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>, 
-	=?UTF-8?Q?Andr=C3=A9_Apitzsch?= <git@apitzsch.eu>, 
-	linux-kernel@vger.kernel.org, Sebastian Reichel <sre@kernel.org>, linux-pm@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-OriginatorOrg: alpsalpine.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: TYVPR01MB10781.jpnprd01.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 60c2d1fd-55e5-474a-1f21-08dc4e339ac2
+X-MS-Exchange-CrossTenant-originalarrivaltime: 27 Mar 2024 07:57:52.6197
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 57e76998-77bd-4b82-a424-198f46eb2254
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: kg5hXeOcwW8pdPxIvwkc7tBgNHG1d/Vc94MUsI/B+gPKfE81e5U4uoaiwzJgN5oxYaQvg7cVtwpZw7M7BbsHJQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: TY3PR01MB10191
 
-Hi Andy,
+On Wed, Mar 27, 2024 at 07:39:55AM +-0000, Norihiko Hama wrote:
++AD4- +AD4- +AD4- Sorry, but module parameters are from the 1990's, we will=
+ not go back to that if at all possible as it's not easy to maintain and wi=
+ll not work properly for multiple devices.
++AD4- +AD4- +AD4-
++AD4- +AD4- +AD4- I can understand wanting something between 1 and 0 second=
+s, but adding yet-another-option isn't probably the best way, sorry.
++AD4- +AD4- 1 second does not meet with performance requirement.
++AD4-
++AD4- Who is requiring such a performance requirement?  The USB specificati=
+on?
++AD4- Or something else?
+This is our customer requirement.
 
-Thank you for reviewing it.
-
-On Mon, Mar 25, 2024 at 3:30=E2=80=AFAM Andy Shevchenko
-<andy.shevchenko@gmail.com> wrote:
->
-> On Sun, Mar 24, 2024 at 5:02=E2=80=AFPM Kate Hsuan <hpa@redhat.com> wrote=
-:
-> >
-> > There is a KTD2026 LED controller to manage the indicator LED for Xiaom=
-i
-> > pad2. The ACPI for it is not properly made so the kernel can't get
-> > a correct description of it.
-> >
-> > This work add a description for this RGB LED controller and also set a
->
-> adds
-> sets
->
-> > trigger to indicate the chaging event (bq27520-0-charging). When it is
->
-> charging
->
-> > charging, the indicator LED will be turn on.
->
-> turned
->
-> ...
->
-> > +/* main fwnode for ktd2026 */
-> > +static const struct software_node ktd2026_node =3D {
-> > +       .name =3D "ktd2026"
->
-> Leave a comma, this is not a terminator.
->
-> > +};
->
-> When I asked about the name I relied on the fact that you have an idea
-> how it works. So, assuming my understanding is correct, this platform
-> may not have more than a single LED of this type. Dunno if we need a
-> comment about this.
-
-I'll make a comment to describe the configuration.
-This LED controller can be configured to an RGB LED like this. Also,
-it can be configured as three single-color (RGB) LEDs to show red,
-green, and blue only.
-I think the name can be "ktd2026-multi-color". Is it good for you?
-
-
->
-> ...
->
-> > +static int __init xiaomi_mipad2_init(void)
-> > +{
-> > +       return software_node_register_node_group(ktd2026_node_group);
-> > +}
-> > +
-> > +static void xiaomi_mipad2_exit(void)
->
-> __exit ?
-No need.
-x86-andriod-tablet is based on platform_driver and platform_device so
-it doesn't need __exit.
-
-I put __exit and the compiler complained about the warning.
-=3D=3D=3D
-WARNING: modpost:
-drivers/platform/x86/x86-android-tablets/x86-android-tablets: section
-mismatch in reference: xiaomi_mipad2_info+0x50 (section: .init.rodata)
--> xiaomi_mipad2_exit (section: .exit.text)
-=3D=3D=3D
->
-> > +{
-> > +       software_node_unregister_node_group(ktd2026_node_group);
-> > +}
->
-> --
-> With Best Regards,
-> Andy Shevchenko
->
-
-I'll propose the v6 patch to fix them according to your comments.
-
---
-BR,
-Kate
-
++AD4- +AD4- I have no good idea except module parameter so that we can main=
+tain backward compatibility but be configurable out of module.
++AD4- +AD4- Do you have any other better solution?
++AD4- How long do you exactly need to wait?  Why not figure out how long th=
+e device takes and if it fails, slowly back off until the full time delay h=
+appens and then you can abort?
+It's IOP issue and difficult to figure out because it depends on device its=
+elf.
+I know we have multiple devices with delay+AF8-use+AD0-0, but then it's rec=
+overed and detected by reset after 30s timeout, that is too long than 1 sec=
+.
 
