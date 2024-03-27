@@ -1,91 +1,95 @@
-Return-Path: <linux-kernel+bounces-121815-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-121816-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8771388EE1B
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 19:18:22 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2B4BC88EE1E
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 19:18:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9EA7A1C2DAB5
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 18:18:21 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D98722A2977
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 18:18:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A851514EC73;
-	Wed, 27 Mar 2024 18:17:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B42CA14D71E;
+	Wed, 27 Mar 2024 18:18:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="RkxWd7fx"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=jmoon.dev header.i=@jmoon.dev header.b="PfRN27M5"
+Received: from mail-4323.proton.ch (mail-4323.proton.ch [185.70.43.23])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E1B6C130A63;
-	Wed, 27 Mar 2024 18:17:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0281D12FF9A
+	for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 18:18:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.70.43.23
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711563463; cv=none; b=KNSdfrj3qdm3WB4VO4w7otPFDA6KbIkv2YwYM98Vc3zXBBS/nf33YzENmouuAA4bvH8GPmRaYoe6cKGXBQhX2Es9CkE4qZXtl5yldu4Iq3Z7Mwldd43EOrwW/KSFpKsRjlfDHQ/ukPFuOsx/ujv6wPqkHdx4+wf6P+hYlDIy9Wo=
+	t=1711563486; cv=none; b=KoLmbZ0yh4yH/UE4CcBdYhXm+ZgVs7VPxbVNk3zKSDtf1BwCVNOU3jGz0OODdv6mOSvHi0Jw3eUNh+5lfJYJdyn4Yula1AvYYwoK4wkfc0LaiDZIrqFcIbavaroikRsTbrfrORyUV1dmWDKDkJm7ka5US4XhqdLK47mTd90faMQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711563463; c=relaxed/simple;
-	bh=cuOPfgYarGsg6xpTgF2yo+uJ/Cd9/PbvYrZtfzWIAWA=;
-	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
-	 Mime-Version:Content-Type; b=pz5VT01FaeJh7nPWl99os+j8lz9tJh7uTJr1Fa5+RpgcjCm6qf6NK3DO0jnu5Usnh35hV7vthK/MKOXCYwsOsysHKAkJDkd7MneDS3WzGCna9L4CV+bZZz3OFCVXxOXVy2OYX05yqENksSFJLASWGku/olzB9Aj6s2XC1/Vx24E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=RkxWd7fx; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 680A4C43390;
-	Wed, 27 Mar 2024 18:17:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-	s=korg; t=1711563462;
-	bh=cuOPfgYarGsg6xpTgF2yo+uJ/Cd9/PbvYrZtfzWIAWA=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=RkxWd7fxszjbkBAhnxMMmGIe1h9FKHAVl8O+/y4E+OyVKiv7IRTOoVWnBexJe9Qi9
-	 +TAsEnYgru/VQSeepmbuUfEprBv2RQg5xWifJm48Tf7YU36SeMA36iZubYcx/pS1In
-	 9D8kpe1b6ypL+O0tgl7HcF34HzDsZeDajYeDtxlE=
-Date: Wed, 27 Mar 2024 11:17:40 -0700
-From: Andrew Morton <akpm@linux-foundation.org>
-To: Huang Shijie <shijie@os.amperecomputing.com>
-Cc: gregkh@linuxfoundation.org, patches@amperecomputing.com,
- rafael@kernel.org, paul.walmsley@sifive.com, palmer@dabbelt.com,
- aou@eecs.berkeley.edu, yury.norov@gmail.com, kuba@kernel.org,
- vschneid@redhat.com, mingo@kernel.org, vbabka@suse.cz, rppt@kernel.org,
- tglx@linutronix.de, jpoimboe@kernel.org, ndesaulniers@google.com,
- mikelley@microsoft.com, mhiramat@kernel.org, arnd@arndb.de,
- linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
- linux-arm-kernel@lists.infradead.org, catalin.marinas@arm.com,
- will@kernel.org, mark.rutland@arm.com, mpe@ellerman.id.au,
- linuxppc-dev@lists.ozlabs.org, chenhuacai@kernel.org,
- jiaxun.yang@flygoat.com, linux-mips@vger.kernel.org,
- cl@os.amperecomputing.com
-Subject: Re: [PATCH v3] NUMA: Early use of cpu_to_node() returns 0 instead
- of the correct node id
-Message-Id: <20240327111740.f8d3802b0eae15bcb8727e04@linux-foundation.org>
-In-Reply-To: <20240126064451.5465-1-shijie@os.amperecomputing.com>
-References: <20240126064451.5465-1-shijie@os.amperecomputing.com>
-X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1711563486; c=relaxed/simple;
+	bh=VAyUWNYNPMX4OP1b9CFLlH6ZChBVF3mzA8JMTJaUOj4=;
+	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=Chdf5F+9gAR4QZ35W4i820/xcPKmqnhtDOYbMZQrlunPIQPqxT28Yx/ok4C9ZMLC5tBUK6iGy++6lUij8od4VTnYAmBmi9SS/L4T3KImlXVVH3hHclUy8E6XfQx7h+JMPU/F1BStaDCD1msZhWLX1EdXOVi8oDXe8GUof3Nt7AU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=permerror header.from=jmoon.dev; spf=pass smtp.mailfrom=jmoon.dev; dkim=pass (2048-bit key) header.d=jmoon.dev header.i=@jmoon.dev header.b=PfRN27M5; arc=none smtp.client-ip=185.70.43.23
+Authentication-Results: smtp.subspace.kernel.org; dmarc=permerror header.from=jmoon.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=jmoon.dev
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=jmoon.dev;
+	s=protonmail3; t=1711563474; x=1711822674;
+	bh=n0sCsQWUGk8m/rGNztaZpyJM+gFbxgaWYiByS+llbD4=;
+	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
+	 Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
+	 Message-ID:BIMI-Selector;
+	b=PfRN27M5cH66kxlwMm8gcLuWpAiZWGFZLoC29EZOwKQOx9ITTox9cyxCsjVw94D8z
+	 v3clP8AgFjquzSwJjsaJ6oxyDLPRv8RXT9wUPFP/EF6aqQEtpGQCsfRxjP0pP+4lQC
+	 5z6BSDGZJ2XKBCH2YEThVziRT1q8ruMR5wl4koFhqxHbJp0IsCTjg9UbNlbM6bmaSc
+	 S73RMsEODWrua1baR+Y2y4aD8QdE2xYOq1ldJHx0qMhd4yhv7updD7+TlszbqNBu5M
+	 iIWW8pn633xKrvNoeVMmjU11/IgY58LvGHXTj4UY4v0MClLlfQ5p9vH8G1L9DuWoIB
+	 HuuieGUvvxNKg==
+Date: Wed, 27 Mar 2024 18:17:48 +0000
+To: Jackie Liu <liuyun01@kylinos.cn>, masahiroy@kernel.org
+From: John Moon <john@jmoon.dev>
+Cc: linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] check-uapi: added arm64 support
+Message-ID: <D04QMF0IN7CH.2DPU99RSEZJDM@jmoon.dev>
+In-Reply-To: <20240327103547.25695-1-liuyun01@kylinos.cn>
+References: <20240327103547.25695-1-liuyun01@kylinos.cn>
+Feedback-ID: 18069581:user:proton
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, 26 Jan 2024 14:44:51 +0800 Huang Shijie <shijie@os.amperecomputing.com> wrote:
+On Wed Mar 27, 2024 at 3:35 AM PDT, Jackie Liu wrote:
+> By default, `uname -m` of arm64 will return aarch64, and the correct sour=
+ce code
+> directory cannot be obtained when the script is executed. In order to sol=
+ve this
+> problem, it is necessary to correct ARCH=3Darm64 when aarch64.
+>
+> Signed-off-by: Jackie Liu <liuyun01@kylinos.cn>
+> ---
+>  scripts/check-uapi.sh | 2 ++
+>  1 file changed, 2 insertions(+)
+>
+> diff --git a/scripts/check-uapi.sh b/scripts/check-uapi.sh
+> index 955581735cb3..1c39d13b90b8 100755
+> --- a/scripts/check-uapi.sh
+> +++ b/scripts/check-uapi.sh
+> @@ -408,6 +408,8 @@ check_deps() {
+>  =09ARCH=3D"${ARCH:-$(uname -m)}"
+>  =09if [ "$ARCH" =3D "x86_64" ]; then
+>  =09=09ARCH=3D"x86"
+> +=09elif [ "$ARCH" =3D "aarch64" ]; then
+> +=09=09ARCH=3D"arm64"
+>  =09fi
+>
+>  =09local -r abidiff_min_version=3D"2.4"
+> --
+> 2.33.0
 
-> During the kernel booting, the generic cpu_to_node() is called too early in
-> arm64, powerpc and riscv when CONFIG_NUMA is enabled.
-> 
-> There are at least four places in the common code where
-> the generic cpu_to_node() is called before it is initialized:
-> 	   1.) early_trace_init()         in kernel/trace/trace.c
-> 	   2.) sched_init()               in kernel/sched/core.c
-> 	   3.) init_sched_fair_class()    in kernel/sched/fair.c
-> 	   4.) workqueue_init_early()     in kernel/workqueue.c
-> 
-> In order to fix the bug, the patch introduces early_numa_node_init()
-> which is called after smp_prepare_boot_cpu() in start_kernel.
-> early_numa_node_init will initialize the "numa_node" as soon as
-> the early_cpu_to_node() is ready, before the cpu_to_node() is called
-> at the first time.
+Good catch. Looks good to me!
 
-What are the userspace-visible runtime effects of this bug?
-
+Reviewed-by: John Moon <john@jmoon.dev>
 
 
