@@ -1,230 +1,325 @@
-Return-Path: <linux-kernel+bounces-120979-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-120989-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0A32A88E12B
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 13:54:03 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id E135B88E14F
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 13:58:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8EE121F2D2D8
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 12:54:02 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3C0A6B2C5CA
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 12:57:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5E25E15574A;
-	Wed, 27 Mar 2024 12:15:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2782B156982;
+	Wed, 27 Mar 2024 12:16:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="T+wUnklq"
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="JA2ma3Hk"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BDB9115572A;
-	Wed, 27 Mar 2024 12:15:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3BCC9156983;
+	Wed, 27 Mar 2024 12:16:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711541750; cv=none; b=onqtpLX3WkgiCQlVIv+Pil/otxt0JTmzCIa3YRfARJnVoHcPSpFaCBmIdGBJO1W+kCYdj0Q7XY7wxnq9zqSexf96/K0VqvDhBLYllFHeYcK1K9PPWP8EnGQ5L9AKRE34u6zwh2xC/4I1lYlVcRnR0RzniiZps949BqE/7PpphHo=
+	t=1711541778; cv=none; b=mdgDlMuzcS9mSDwDiUCD77phvfoar0tP9QTSwNCg0rDJfyud4nQQUXLYjWRHpG1jNy4rAEwuGwsxMtPS/ZyIguQeqTPadafHmaHUqalLhVkNYJ2JFN3Et+2mESjBBV3u1gH/DQWxF5gSdjeJtRisYIi5+RsFYfeTg0RcNIh7wr4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711541750; c=relaxed/simple;
-	bh=k0NLiHpCEzJ5lJ8XZ06wUsWMe4rbmWJ5Hehw3aKgT14=;
-	h=Message-ID:Date:MIME-Version:Cc:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=ZIbRps9anZB2gAjLvBEOERcYJaItQENjiglpFQkLkkX09N1EMhtVqfAXok/4CmHHYSk7Z9gOTwrl8DgfmPqvkuilGPpBi5aLpFvKpwTsPH4z1AH3NJeLxfuF7d2o35UELn7mXZHFSvkuaH+z1ciTGn85d26HVE7e/y9ciSnWKfY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=T+wUnklq; arc=none smtp.client-ip=46.235.227.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1711541747;
-	bh=k0NLiHpCEzJ5lJ8XZ06wUsWMe4rbmWJ5Hehw3aKgT14=;
-	h=Date:Cc:Subject:To:References:From:In-Reply-To:From;
-	b=T+wUnklqoqOfGP13G/JdBdrKyWYUuvPwp78XkUWc9qIE1DWZBXKYmXMfQ75E6CBgM
-	 RYo5TTqCeAzc1D7EFv3zx3N9vHNILPt3RTUoxPbIZ8QBdI15x37JR4JUoI92/cMVI1
-	 x9H9o8OJoGxMWB6VgS7BcTKrKWeQ+B2lKGyeXEfPlkgJ8SYGCdVDA9HjrIIxIupfvu
-	 gRa5UELl/MW2YeI3fK6entdNqjs/I3oT85DH+W4LPamr55CozhVeyvLcixi22wBwPi
-	 N0rBqfYD05Z8IMsF7Hm4S/WFxvWmtu7gqYyluqQ1wZTKnzeST22UbaIPYPihnou/gu
-	 nV33NpBg1A0CA==
-Received: from [100.113.15.66] (ec2-34-240-57-77.eu-west-1.compute.amazonaws.com [34.240.57.77])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: usama.anjum)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 698C937820E4;
-	Wed, 27 Mar 2024 12:15:43 +0000 (UTC)
-Message-ID: <0dacf491-29ec-4c24-927e-978056177648@collabora.com>
-Date: Wed, 27 Mar 2024 17:16:14 +0500
+	s=arc-20240116; t=1711541778; c=relaxed/simple;
+	bh=OJjaGxWgsTN2/YoXy26ieVqg7aWOy2agEtwCnHDFf8s=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=gYO/afzTegzoYVwcWO3Qqf6KrtMo9UQC10gL1QIHbW9xSzYP2vZ7d+ZZji5ALbdT0ZVVOqsaOwwEQ6pLlzvmMl29GWjhrZPV+v2FxsBkvqXUWK5HX5KyE2LUuK0SUfv0mm9NFy7WX26r66bTfDoJVr1VrwyU2rpT2fLQT3GHCgs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=JA2ma3Hk; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EFD87C43394;
+	Wed, 27 Mar 2024 12:16:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1711541777;
+	bh=OJjaGxWgsTN2/YoXy26ieVqg7aWOy2agEtwCnHDFf8s=;
+	h=From:To:Cc:Subject:Date:From;
+	b=JA2ma3HkkCxjSqLjfbaP4Y+yLWewHhASUONVhk7hnX+Lc2Zl/hidqJ0IwlpeVC0/O
+	 xQ5u4lSgqD5Ylw4Iw8b0k4GqIQPS0DXvxxMwhy2hY/F0OVkpiRbmo5ZGMqlIYSBx0A
+	 8NszS822iSZF+oKaOcLW6u0NPSZ/PSgdgmr5z3JrFDi3NlCvZp3KIlWAkLsLMdGgaZ
+	 beDEnh3gdLftX6TMj/MvZBCuJFsTx9hWGUcHy99NruLVQfvMAjokcC1jOxVUDUk8Hm
+	 MuPzHQQIOvDwdYJX+704Nzz6G86JGduMqe1vcaDyImEpv8vFnqw81HHhsXRZDRBeir
+	 KLKZ9tuT1adnA==
+From: Sasha Levin <sashal@kernel.org>
+To: stable@vger.kernel.org,
+	alex.williamson@redhat.com
+Cc: Eric Auger <eric.auger@redhat.com>,
+	Kevin Tian <kevin.tian@intel.com>,
+	kvm@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: FAILED: Patch "vfio/platform: Create persistent IRQ handlers" failed to apply to 5.15-stable tree
+Date: Wed, 27 Mar 2024 08:16:15 -0400
+Message-ID: <20240327121616.2832578-1-sashal@kernel.org>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Cc: Muhammad Usama Anjum <usama.anjum@collabora.com>, kernel@collabora.com,
- linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] selftests: x86: test_vsyscall: conform test to TAP
- format output
-Content-Language: en-US
-To: Shuah Khan <skhan@linuxfoundation.org>, Shuah Khan <shuah@kernel.org>
-References: <20240314103216.286603-1-usama.anjum@collabora.com>
- <a1a6f5dd-80ab-4d53-90de-eb003c996cc1@linuxfoundation.org>
-From: Muhammad Usama Anjum <usama.anjum@collabora.com>
-In-Reply-To: <a1a6f5dd-80ab-4d53-90de-eb003c996cc1@linuxfoundation.org>
-Content-Type: text/plain; charset=UTF-8
+X-Patchwork-Hint: ignore
+X-stable: review
 Content-Transfer-Encoding: 8bit
 
-On 3/27/24 1:00 AM, Shuah Khan wrote:
-> On 3/14/24 04:32, Muhammad Usama Anjum wrote:
->> Conform the layout, informational and status messages to TAP. No
->> functional change is intended other than the layout of output messages.
->> Without using TAP messages, the passed/failed/skip test names cannot be
->> found.
->>
->> Signed-off-by: Muhammad Usama Anjum <usama.anjum@collabora.com>
->> ---
-> 
-> 
-> I am seeing lot more changes than conform and formatting changes.
-Counting total number of tests based on architecture was really difficult
-until the code needed to be moved around. I'll split this patch into 2. The
-first part would just simplify the test by moving functions around and use
-#ifdef precisely. The seconds part would convert it to the TAP.
+The patch below does not apply to the 5.15-stable tree.
+If someone wants it applied there, or to any other stable or longterm
+tree, then please email the backport, including the original git commit
+id to <stable@vger.kernel.org>.
 
-> 
->>   tools/testing/selftests/x86/test_vsyscall.c | 506 +++++++++-----------
->>   1 file changed, 238 insertions(+), 268 deletions(-)
->>
->> diff --git a/tools/testing/selftests/x86/test_vsyscall.c
->> b/tools/testing/selftests/x86/test_vsyscall.c
->> index 47cab972807c4..d4c8e8d79d389 100644
->> --- a/tools/testing/selftests/x86/test_vsyscall.c
->> +++ b/tools/testing/selftests/x86/test_vsyscall.c
->> @@ -21,6 +21,13 @@
->>   #include <sys/uio.h>
->>     #include "helpers.h"
->> +#include "../kselftest.h"
->> +
->> +#ifdef __x86_64__
->> +#define TOTAL_TESTS 13
->> +#else
->> +#define TOTAL_TESTS 8
->> +#endif
->>     #ifdef __x86_64__
->>   # define VSYS(x) (x)
->> @@ -39,18 +46,6 @@
->>   /* max length of lines in /proc/self/maps - anything longer is skipped
->> here */
->>   #define MAPS_LINE_LEN 128
->>   -static void sethandler(int sig, void (*handler)(int, siginfo_t *, void
->> *),
->> -               int flags)
->> -{
->> -    struct sigaction sa;
->> -    memset(&sa, 0, sizeof(sa));
->> -    sa.sa_sigaction = handler;
->> -    sa.sa_flags = SA_SIGINFO | flags;
->> -    sigemptyset(&sa.sa_mask);
->> -    if (sigaction(sig, &sa, 0))
->> -        err(1, "sigaction");
->> -}
->> -
-> 
-> Why is this deleted?
-> 
->>   /* vsyscalls and vDSO */
->>   bool vsyscall_map_r = false, vsyscall_map_x = false;
->>   @@ -75,83 +70,25 @@ static void init_vdso(void)
->>       if (!vdso)
->>           vdso = dlopen("linux-gate.so.1", RTLD_LAZY | RTLD_LOCAL |
->> RTLD_NOLOAD);
->>       if (!vdso) {
->> -        printf("[WARN]\tfailed to find vDSO\n");
->> +        ksft_print_msg("[WARN] failed to find vDSO\n");
->>           return;
->>       }
->>         vdso_gtod = (gtod_t)dlsym(vdso, "__vdso_gettimeofday");
->>       if (!vdso_gtod)
->> -        printf("[WARN]\tfailed to find gettimeofday in vDSO\n");
->> +        ksft_print_msg("[WARN] failed to find gettimeofday in vDSO\n");
->>         vdso_gettime = (vgettime_t)dlsym(vdso, "__vdso_clock_gettime");
->>       if (!vdso_gettime)
->> -        printf("[WARN]\tfailed to find clock_gettime in vDSO\n");
->> +        ksft_print_msg("[WARN] failed to find clock_gettime in vDSO\n");
->>         vdso_time = (time_func_t)dlsym(vdso, "__vdso_time");
->>       if (!vdso_time)
->> -        printf("[WARN]\tfailed to find time in vDSO\n");
->> +        ksft_print_msg("[WARN] failed to find time in vDSO\n");
->>         vdso_getcpu = (getcpu_t)dlsym(vdso, "__vdso_getcpu");
->>       if (!vdso_getcpu)
->> -        printf("[WARN]\tfailed to find getcpu in vDSO\n");
->> -}
->> -
->> -static int init_vsys(void)
->> -{
->> -#ifdef __x86_64__
->> -    int nerrs = 0;
->> -    FILE *maps;
->> -    char line[MAPS_LINE_LEN];
->> -    bool found = false;
->> -
->> -    maps = fopen("/proc/self/maps", "r");
->> -    if (!maps) {
->> -        printf("[WARN]\tCould not open /proc/self/maps -- assuming
->> vsyscall is r-x\n");
->> -        vsyscall_map_r = true;
->> -        return 0;
->> -    }
->> -
->> -    while (fgets(line, MAPS_LINE_LEN, maps)) {
->> -        char r, x;
->> -        void *start, *end;
->> -        char name[MAPS_LINE_LEN];
->> -
->> -        /* sscanf() is safe here as strlen(name) >= strlen(line) */
->> -        if (sscanf(line, "%p-%p %c-%cp %*x %*x:%*x %*u %s",
->> -               &start, &end, &r, &x, name) != 5)
->> -            continue;
->> -
->> -        if (strcmp(name, "[vsyscall]"))
->> -            continue;
->> -
->> -        printf("\tvsyscall map: %s", line);
->> -
->> -        if (start != (void *)0xffffffffff600000 ||
->> -            end != (void *)0xffffffffff601000) {
->> -            printf("[FAIL]\taddress range is nonsense\n");
->> -            nerrs++;
->> -        }
->> -
->> -        printf("\tvsyscall permissions are %c-%c\n", r, x);
->> -        vsyscall_map_r = (r == 'r');
->> -        vsyscall_map_x = (x == 'x');
->> -
->> -        found = true;
->> -        break;
->> -    }
->> -
->> -    fclose(maps);
->> -
->> -    if (!found) {
->> -        printf("\tno vsyscall map in /proc/self/maps\n");
->> -        vsyscall_map_r = false;
->> -        vsyscall_map_x = false;
->> -    }
->> -
->> -    return nerrs;
->> -#else
->> -    return 0;
->> -#endif
->> +        ksft_print_msg("[WARN] failed to find getcpu in vDSO\n");
->>   }
->>   
-> 
-> What's going on here?
-> 
-> These changes are more extensive than the changelog indicates.
-> Additional explanation is needed before I can accept this>
-> thanks,
-> -- Shuah
-> 
+Thanks,
+Sasha
 
+------------------ original commit in Linus's tree ------------------
+
+From 675daf435e9f8e5a5eab140a9864dfad6668b375 Mon Sep 17 00:00:00 2001
+From: Alex Williamson <alex.williamson@redhat.com>
+Date: Fri, 8 Mar 2024 16:05:27 -0700
+Subject: [PATCH] vfio/platform: Create persistent IRQ handlers
+
+The vfio-platform SET_IRQS ioctl currently allows loopback triggering of
+an interrupt before a signaling eventfd has been configured by the user,
+which thereby allows a NULL pointer dereference.
+
+Rather than register the IRQ relative to a valid trigger, register all
+IRQs in a disabled state in the device open path.  This allows mask
+operations on the IRQ to nest within the overall enable state governed
+by a valid eventfd signal.  This decouples @masked, protected by the
+@locked spinlock from @trigger, protected via the @igate mutex.
+
+In doing so, it's guaranteed that changes to @trigger cannot race the
+IRQ handlers because the IRQ handler is synchronously disabled before
+modifying the trigger, and loopback triggering of the IRQ via ioctl is
+safe due to serialization with trigger changes via igate.
+
+For compatibility, request_irq() failures are maintained to be local to
+the SET_IRQS ioctl rather than a fatal error in the open device path.
+This allows, for example, a userspace driver with polling mode support
+to continue to work regardless of moving the request_irq() call site.
+This necessarily blocks all SET_IRQS access to the failed index.
+
+Cc: Eric Auger <eric.auger@redhat.com>
+Cc:  <stable@vger.kernel.org>
+Fixes: 57f972e2b341 ("vfio/platform: trigger an interrupt via eventfd")
+Reviewed-by: Kevin Tian <kevin.tian@intel.com>
+Reviewed-by: Eric Auger <eric.auger@redhat.com>
+Link: https://lore.kernel.org/r/20240308230557.805580-7-alex.williamson@redhat.com
+Signed-off-by: Alex Williamson <alex.williamson@redhat.com>
+---
+ drivers/vfio/platform/vfio_platform_irq.c | 100 +++++++++++++++-------
+ 1 file changed, 68 insertions(+), 32 deletions(-)
+
+diff --git a/drivers/vfio/platform/vfio_platform_irq.c b/drivers/vfio/platform/vfio_platform_irq.c
+index e5dcada9e86c4..ef41ecef83af1 100644
+--- a/drivers/vfio/platform/vfio_platform_irq.c
++++ b/drivers/vfio/platform/vfio_platform_irq.c
+@@ -136,6 +136,16 @@ static int vfio_platform_set_irq_unmask(struct vfio_platform_device *vdev,
+ 	return 0;
+ }
+ 
++/*
++ * The trigger eventfd is guaranteed valid in the interrupt path
++ * and protected by the igate mutex when triggered via ioctl.
++ */
++static void vfio_send_eventfd(struct vfio_platform_irq *irq_ctx)
++{
++	if (likely(irq_ctx->trigger))
++		eventfd_signal(irq_ctx->trigger);
++}
++
+ static irqreturn_t vfio_automasked_irq_handler(int irq, void *dev_id)
+ {
+ 	struct vfio_platform_irq *irq_ctx = dev_id;
+@@ -155,7 +165,7 @@ static irqreturn_t vfio_automasked_irq_handler(int irq, void *dev_id)
+ 	spin_unlock_irqrestore(&irq_ctx->lock, flags);
+ 
+ 	if (ret == IRQ_HANDLED)
+-		eventfd_signal(irq_ctx->trigger);
++		vfio_send_eventfd(irq_ctx);
+ 
+ 	return ret;
+ }
+@@ -164,52 +174,40 @@ static irqreturn_t vfio_irq_handler(int irq, void *dev_id)
+ {
+ 	struct vfio_platform_irq *irq_ctx = dev_id;
+ 
+-	eventfd_signal(irq_ctx->trigger);
++	vfio_send_eventfd(irq_ctx);
+ 
+ 	return IRQ_HANDLED;
+ }
+ 
+ static int vfio_set_trigger(struct vfio_platform_device *vdev, int index,
+-			    int fd, irq_handler_t handler)
++			    int fd)
+ {
+ 	struct vfio_platform_irq *irq = &vdev->irqs[index];
+ 	struct eventfd_ctx *trigger;
+-	int ret;
+ 
+ 	if (irq->trigger) {
+-		irq_clear_status_flags(irq->hwirq, IRQ_NOAUTOEN);
+-		free_irq(irq->hwirq, irq);
+-		kfree(irq->name);
++		disable_irq(irq->hwirq);
+ 		eventfd_ctx_put(irq->trigger);
+ 		irq->trigger = NULL;
+ 	}
+ 
+ 	if (fd < 0) /* Disable only */
+ 		return 0;
+-	irq->name = kasprintf(GFP_KERNEL_ACCOUNT, "vfio-irq[%d](%s)",
+-			      irq->hwirq, vdev->name);
+-	if (!irq->name)
+-		return -ENOMEM;
+ 
+ 	trigger = eventfd_ctx_fdget(fd);
+-	if (IS_ERR(trigger)) {
+-		kfree(irq->name);
++	if (IS_ERR(trigger))
+ 		return PTR_ERR(trigger);
+-	}
+ 
+ 	irq->trigger = trigger;
+ 
+-	irq_set_status_flags(irq->hwirq, IRQ_NOAUTOEN);
+-	ret = request_irq(irq->hwirq, handler, 0, irq->name, irq);
+-	if (ret) {
+-		kfree(irq->name);
+-		eventfd_ctx_put(trigger);
+-		irq->trigger = NULL;
+-		return ret;
+-	}
+-
+-	if (!irq->masked)
+-		enable_irq(irq->hwirq);
++	/*
++	 * irq->masked effectively provides nested disables within the overall
++	 * enable relative to trigger.  Specifically request_irq() is called
++	 * with NO_AUTOEN, therefore the IRQ is initially disabled.  The user
++	 * may only further disable the IRQ with a MASK operations because
++	 * irq->masked is initially false.
++	 */
++	enable_irq(irq->hwirq);
+ 
+ 	return 0;
+ }
+@@ -228,7 +226,7 @@ static int vfio_platform_set_irq_trigger(struct vfio_platform_device *vdev,
+ 		handler = vfio_irq_handler;
+ 
+ 	if (!count && (flags & VFIO_IRQ_SET_DATA_NONE))
+-		return vfio_set_trigger(vdev, index, -1, handler);
++		return vfio_set_trigger(vdev, index, -1);
+ 
+ 	if (start != 0 || count != 1)
+ 		return -EINVAL;
+@@ -236,7 +234,7 @@ static int vfio_platform_set_irq_trigger(struct vfio_platform_device *vdev,
+ 	if (flags & VFIO_IRQ_SET_DATA_EVENTFD) {
+ 		int32_t fd = *(int32_t *)data;
+ 
+-		return vfio_set_trigger(vdev, index, fd, handler);
++		return vfio_set_trigger(vdev, index, fd);
+ 	}
+ 
+ 	if (flags & VFIO_IRQ_SET_DATA_NONE) {
+@@ -260,6 +258,14 @@ int vfio_platform_set_irqs_ioctl(struct vfio_platform_device *vdev,
+ 		    unsigned start, unsigned count, uint32_t flags,
+ 		    void *data) = NULL;
+ 
++	/*
++	 * For compatibility, errors from request_irq() are local to the
++	 * SET_IRQS path and reflected in the name pointer.  This allows,
++	 * for example, polling mode fallback for an exclusive IRQ failure.
++	 */
++	if (IS_ERR(vdev->irqs[index].name))
++		return PTR_ERR(vdev->irqs[index].name);
++
+ 	switch (flags & VFIO_IRQ_SET_ACTION_TYPE_MASK) {
+ 	case VFIO_IRQ_SET_ACTION_MASK:
+ 		func = vfio_platform_set_irq_mask;
+@@ -280,7 +286,7 @@ int vfio_platform_set_irqs_ioctl(struct vfio_platform_device *vdev,
+ 
+ int vfio_platform_irq_init(struct vfio_platform_device *vdev)
+ {
+-	int cnt = 0, i;
++	int cnt = 0, i, ret = 0;
+ 
+ 	while (vdev->get_irq(vdev, cnt) >= 0)
+ 		cnt++;
+@@ -292,29 +298,54 @@ int vfio_platform_irq_init(struct vfio_platform_device *vdev)
+ 
+ 	for (i = 0; i < cnt; i++) {
+ 		int hwirq = vdev->get_irq(vdev, i);
++		irq_handler_t handler = vfio_irq_handler;
+ 
+-		if (hwirq < 0)
++		if (hwirq < 0) {
++			ret = -EINVAL;
+ 			goto err;
++		}
+ 
+ 		spin_lock_init(&vdev->irqs[i].lock);
+ 
+ 		vdev->irqs[i].flags = VFIO_IRQ_INFO_EVENTFD;
+ 
+-		if (irq_get_trigger_type(hwirq) & IRQ_TYPE_LEVEL_MASK)
++		if (irq_get_trigger_type(hwirq) & IRQ_TYPE_LEVEL_MASK) {
+ 			vdev->irqs[i].flags |= VFIO_IRQ_INFO_MASKABLE
+ 						| VFIO_IRQ_INFO_AUTOMASKED;
++			handler = vfio_automasked_irq_handler;
++		}
+ 
+ 		vdev->irqs[i].count = 1;
+ 		vdev->irqs[i].hwirq = hwirq;
+ 		vdev->irqs[i].masked = false;
++		vdev->irqs[i].name = kasprintf(GFP_KERNEL_ACCOUNT,
++					       "vfio-irq[%d](%s)", hwirq,
++					       vdev->name);
++		if (!vdev->irqs[i].name) {
++			ret = -ENOMEM;
++			goto err;
++		}
++
++		ret = request_irq(hwirq, handler, IRQF_NO_AUTOEN,
++				  vdev->irqs[i].name, &vdev->irqs[i]);
++		if (ret) {
++			kfree(vdev->irqs[i].name);
++			vdev->irqs[i].name = ERR_PTR(ret);
++		}
+ 	}
+ 
+ 	vdev->num_irqs = cnt;
+ 
+ 	return 0;
+ err:
++	for (--i; i >= 0; i--) {
++		if (!IS_ERR(vdev->irqs[i].name)) {
++			free_irq(vdev->irqs[i].hwirq, &vdev->irqs[i]);
++			kfree(vdev->irqs[i].name);
++		}
++	}
+ 	kfree(vdev->irqs);
+-	return -EINVAL;
++	return ret;
+ }
+ 
+ void vfio_platform_irq_cleanup(struct vfio_platform_device *vdev)
+@@ -324,7 +355,12 @@ void vfio_platform_irq_cleanup(struct vfio_platform_device *vdev)
+ 	for (i = 0; i < vdev->num_irqs; i++) {
+ 		vfio_virqfd_disable(&vdev->irqs[i].mask);
+ 		vfio_virqfd_disable(&vdev->irqs[i].unmask);
+-		vfio_set_trigger(vdev, i, -1, NULL);
++		if (!IS_ERR(vdev->irqs[i].name)) {
++			free_irq(vdev->irqs[i].hwirq, &vdev->irqs[i]);
++			if (vdev->irqs[i].trigger)
++				eventfd_ctx_put(vdev->irqs[i].trigger);
++			kfree(vdev->irqs[i].name);
++		}
+ 	}
+ 
+ 	vdev->num_irqs = 0;
 -- 
-BR,
-Muhammad Usama Anjum
+2.43.0
+
+
+
+
 
