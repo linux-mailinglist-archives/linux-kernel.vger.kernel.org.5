@@ -1,375 +1,231 @@
-Return-Path: <linux-kernel+bounces-121634-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-121630-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6910E88EB52
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 17:31:02 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 16D5388EB48
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 17:30:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8CBDD1C32175
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 16:31:01 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9892A1F304B5
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 16:30:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A2138136E2C;
-	Wed, 27 Mar 2024 16:30:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 84DB2130A59;
+	Wed, 27 Mar 2024 16:29:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CBGT8Vu0"
-Received: from mail-ed1-f53.google.com (mail-ed1-f53.google.com [209.85.208.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="grXSKXef"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D03501DFCB;
-	Wed, 27 Mar 2024 16:30:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D9A8626AC5
+	for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 16:29:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711557026; cv=none; b=Uc7tpnIbw9MHHeqG1upHdTZcV8K8nFu+2tFxSEkEJWPTDntFV5GTk3TK40M6Tk5z4KpaSYpYWY6snGh+esTgcCNnhUUYsgLj5lYDsr6i3sbxqdzkMgwSRC5SVj5cAa0FMtZBYu2TnxsZT8cIEpsAuam2HzGgcv2GDhWRIuL/z18=
+	t=1711556997; cv=none; b=FpM63bp5BoffQT7NslcaUFGfVOjuFj3El7L5yqhQs1iRGIHXwLeZhIv8xu36OdZP/iHsaveE2Z9lJqYwme+ZLOdKxkKgiy28pxo5+GWMx5dafWwSMadoh4PcRozaPaUy6uvLbH8wsZNrf0HN6evmsshJXMYRSPIzkvfKljZ9ttI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711557026; c=relaxed/simple;
-	bh=yLBQ7Q0YxRU1ROEH3J+Qzg6pfT50iqbp/WPyQNCl1FQ=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=gLu0OFhTRaPGZxHH5Rj0M/9Xix1QAXxSTXNAWmQ1k5Qvy2zNjjpq18HooGm2ZeF4eCHrS7WOY1ilm+a/fm21O3DTu7h1Y/SOOstPj199opD1VMQCZFdWV2BGcC4n0M73fyrnLO1t6XAahTast6pim2gghHL7Vqo3fYlQBy9yCFY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=CBGT8Vu0; arc=none smtp.client-ip=209.85.208.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f53.google.com with SMTP id 4fb4d7f45d1cf-55a179f5fa1so39536a12.0;
-        Wed, 27 Mar 2024 09:30:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711557023; x=1712161823; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Qa3Xe54wxRB8ay5mVcTPHoXbgX743k6R3tOiAM+3u94=;
-        b=CBGT8Vu0OyvQ1gmWXOTogOSx+m77ohPdojE0a4ZzeGSCKPUrGskKiBlYZoFPLbS8K/
-         OAowX9AXIQf2yNskR6LPMZY/jd86/4n5ACXgNeB2ZNaCrseFzLiAk2+G7kq93JHnjgsz
-         0JPd3FM62tEI5CimXXBYDzeia5Na/BTJFGxLoNsEZzpXWuGIXH9iPqB/rQuqXZ0u8Hky
-         uzmp1Kk4nmz4wignM5iDz9Vk8U6QWw/oNKNqyRk9jRF16mBtrRXVJE5droEF4XP2El0N
-         Q0NZxmcg0bypzS55KZoUWQsah1RXlyVj/GYfYKuCe1eRInNkKrBSG93kzym3aoQPjsbd
-         8F6w==
+	s=arc-20240116; t=1711556997; c=relaxed/simple;
+	bh=RGEswW5Ce6vNo5M85hhGX5qXpWrqs+b9fbLWpHzi4Bo=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=sBz6nQsdKoIuUmkBid+2sgY3wdmvYnlRJcXsAJzCUriuTuSyGOphuUkOr7vw/N0q5xWsIxk0d4BuiPoftR4+rGxzjTVXgBsD6fv2Z6/yz5SUmdJ9xHE24H2e2pIroC5+Td1o7w6ljVD9xmEV78WpnAGq9ctXKzKsbN4jvTctHiM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=grXSKXef; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1711556994;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=M4rxMpnXMLbpb7ThAdJkaBiDjEcFmPFeT+FHTkLwy/4=;
+	b=grXSKXef4HSvcf5jsaTwbxOWAe20HvsHXW7iPWpU3YsWjMOgj71icldjeANO1TnazlvUDk
+	01wB4Hdh/eLuCwsWzw+PkG15L3L7KSBURG+oHHsSghHk3Ktjb5cCQjJgLEFdPS8IQexibu
+	GmC/6yV1cjVASjCVp/kVnzqKEbDR4KM=
+Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
+ [209.85.128.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-687-DRUTmFIRPqiw-vKIvQKKRQ-1; Wed, 27 Mar 2024 12:29:53 -0400
+X-MC-Unique: DRUTmFIRPqiw-vKIvQKKRQ-1
+Received: by mail-wm1-f69.google.com with SMTP id 5b1f17b1804b1-40e4478a3afso209575e9.1
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 09:29:53 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711557023; x=1712161823;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Qa3Xe54wxRB8ay5mVcTPHoXbgX743k6R3tOiAM+3u94=;
-        b=sCBhQVh7CzFo5aZQpBk/uJfTYQ//UiCNTv6P6KqAT+KEyLtHv4wzefs9THuUHU0uMO
-         bsl0c+eV4lHl8WMWx4Ow8FMukdn1s8n6iyK+aoxqennvJmHecAgVLM0DDCVwD3Noszsn
-         I10/lZ4059dJxPmzJ+lmexGXAmREfdQROKLV2h2t9nuYIayzU1qgGNccegFlheqwZJmk
-         EP2IRgBJwZuWZdtJLlZPKXd0KiY38ZAun40yPEUdseZbcCZUqbHyeP3peSdDMt/Vcc/x
-         ONNENxyXi60JYx3tm1W+2YwaOsfXP6kmEqq0wM7I8mrm9CphrVSXg4y7KY1C9li3/V0z
-         dYvQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVcuXm3rMsiYhSBRVp/OLKrL+KDZ78Jl4EGvRcNS8zLImLk2ZmFn34RDMber5b8qJ8oXGFXlfoPBvBqFKp2Ajs4sT+9yyayA+f9tM0x
-X-Gm-Message-State: AOJu0YzHkZtmwB6CuCqpgrVzcGwIg6t0Aj+aQFyK4HhwMTSK4dkRaXw5
-	D5fcb3ASpYEJa6pjb9dB2Dr7czkFrMtIOaUHIRvsjbEapO43J8z+S2aq5t3gXiA=
-X-Google-Smtp-Source: AGHT+IH835/ycakfmCVtZ2zbHRsV0/xC3B1kH3VCrc/cYQSM/XP1PT2dLQdjHygS7IdpZ5eQtyR8IA==
-X-Received: by 2002:a17:906:1358:b0:a47:df55:cf6c with SMTP id x24-20020a170906135800b00a47df55cf6cmr1355175ejb.63.1711557022477;
-        Wed, 27 Mar 2024 09:30:22 -0700 (PDT)
-Received: from WBEC325.dom.lan ([185.188.71.122])
-        by smtp.gmail.com with ESMTPSA id o9-20020a170906774900b00a46a2ac0dbasm5609385ejn.197.2024.03.27.09.30.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 27 Mar 2024 09:30:22 -0700 (PDT)
-From: Pawel Dembicki <paweldembicki@gmail.com>
-To: netdev@vger.kernel.org
-Cc: Pawel Dembicki <paweldembicki@gmail.com>,
-	Andrew Lunn <andrew@lunn.ch>,
-	Heiner Kallweit <hkallweit1@gmail.com>,
-	Russell King <linux@armlinux.org.uk>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	Stefan Eichenberger <eichest@gmail.com>,
-	Dimitri Fedrau <dima.fedrau@gmail.com>,
-	Kory Maincent <kory.maincent@bootlin.com>,
-	Maxime Chevallier <maxime.chevallier@bootlin.com>,
-	David Ahern <dsahern@kernel.org>,
-	Shay Agroskin <shayagr@amazon.com>,
-	Ahmed Zaki <ahmed.zaki@intel.com>,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH net-next v2 3/3] net: phy: marvell: implement cable-test for 88E308X/88E609X family
-Date: Wed, 27 Mar 2024 17:29:14 +0100
-Message-Id: <20240327162918.2426792-3-paweldembicki@gmail.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240327162918.2426792-1-paweldembicki@gmail.com>
-References: <20240327162918.2426792-1-paweldembicki@gmail.com>
+        d=1e100.net; s=20230601; t=1711556992; x=1712161792;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt:from
+         :references:cc:to:content-language:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=M4rxMpnXMLbpb7ThAdJkaBiDjEcFmPFeT+FHTkLwy/4=;
+        b=wdPQc6UfWz4PlzLOGpLiBLzxwwW7w4DWbJdWe8ZWg4srbUZ1QVBbYDtDA1n+Aar3YI
+         GNF0HaXIzwpQHPWhGkWa8NTpSECQCB0sM+GzRIGGXHzTfLvqWcMQZY2QtYenxU4iTcKS
+         b0g4yS+3/qFhmgaGZj2SWem6bglRkYCkvbk3Eveoy9lIv1A3Of7+Q7PNArV+sk0wglTT
+         wxZRm2y1iBx4qcNlzIpg06N3OI6Aerm8dS6Y8uAg2ryLVSCRLZd4yaxSdzm6fBeZ4TWd
+         D6I10yspFTR6yCH5Bz2T8AuKrnhDzOeAudRxEAu0FyntkaD3KbPoV8bwaApHlWKWV2t0
+         Pj9g==
+X-Forwarded-Encrypted: i=1; AJvYcCX+nYQOm4qEvXYAugb5WgJihqowZqou2gm6AmQT7PgHRrWhV0cZfyV3p6Ng9uMhZbrkfZmtwuY32qx0T98ySTb3iKEnmeOtxdw2rkRK
+X-Gm-Message-State: AOJu0YwsGZWm+SXot4QFQpVy7nfI6TRmiwvShMxLk4m9LSFJb6U+xKHO
+	MA3Llvw8aviyPZFJ/yOZeLapZXGj9geFNy59M6tZw59Mqnzd5MLDqCrZhe5XOMlHSRnct0r5+5A
+	NnFn0PjBetHXJt+MLv5uI4QQNHDlRhzBOmT4RJ2Hwc8ipui8knCG2IBAqrlDx1w==
+X-Received: by 2002:a05:600c:470b:b0:414:5e9b:804b with SMTP id v11-20020a05600c470b00b004145e9b804bmr74167wmo.10.1711556992191;
+        Wed, 27 Mar 2024 09:29:52 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IHSCXZ53JROr0nCITgw1WUov2ckvtk7AUci8w0b/kf7R2Msj3EdctXAR1ScBqukw9FowgXiRw==
+X-Received: by 2002:a05:600c:470b:b0:414:5e9b:804b with SMTP id v11-20020a05600c470b00b004145e9b804bmr74140wmo.10.1711556991728;
+        Wed, 27 Mar 2024 09:29:51 -0700 (PDT)
+Received: from ?IPV6:2003:cb:c708:8a00:362b:7e34:a3bc:9ddf? (p200300cbc7088a00362b7e34a3bc9ddf.dip0.t-ipconnect.de. [2003:cb:c708:8a00:362b:7e34:a3bc:9ddf])
+        by smtp.gmail.com with ESMTPSA id h11-20020a05600c314b00b0041490467febsm2607327wmo.38.2024.03.27.09.29.50
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 27 Mar 2024 09:29:51 -0700 (PDT)
+Message-ID: <b34e01dd-1c30-4f90-95b3-d58ef68b6ed1@redhat.com>
+Date: Wed, 27 Mar 2024 17:29:50 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v6] mm/migrate: split source folio if it is on deferred
+ split list
+Content-Language: en-US
+To: Zi Yan <ziy@nvidia.com>, linux-mm@kvack.org
+Cc: Andrew Morton <akpm@linux-foundation.org>,
+ "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+ Yang Shi <shy828301@gmail.com>, Huang Ying <ying.huang@intel.com>,
+ "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+ Ryan Roberts <ryan.roberts@arm.com>,
+ Baolin Wang <baolin.wang@linux.alibaba.com>,
+ "Yin, Fengwei" <fengwei.yin@intel.com>, SeongJae Park <sj@kernel.org>,
+ linux-kernel@vger.kernel.org
+References: <20240326150031.569387-1-zi.yan@sent.com>
+From: David Hildenbrand <david@redhat.com>
+Autocrypt: addr=david@redhat.com; keydata=
+ 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
+ WNyWQQ==
+Organization: Red Hat
+In-Reply-To: <20240326150031.569387-1-zi.yan@sent.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-This commit implements VCT in 88E308X/88E609X Family.
+On 26.03.24 16:00, Zi Yan wrote:
+> From: Zi Yan <ziy@nvidia.com>
+> 
+> If the source folio is on deferred split list, it is likely some subpages
+> are not used. Split it before migration to avoid migrating unused subpages.
+> 
+> Commit 616b8371539a6 ("mm: thp: enable thp migration in generic path")
+> did not check if a THP is on deferred split list before migration, thus,
+> the destination THP is never put on deferred split list even if the source
+> THP might be. The opportunity of reclaiming free pages in a partially
+> mapped THP during deferred list scanning is lost, but no other harmful
+> consequence is present[1].
+> 
+>  From v5:
+> 1. Fixed an error in migrate_misplaced_folio() reported by Baolin Wang[3].
+> 
+>  From v4:
+> 1. Simplify _deferred_list check without locking and do not count as
+>     migration failures. (per Matthew Wilcox)
+> 
+>  From v3:
+> 1. Guarded deferred list code behind CONFIG_TRANSPARENT_HUGEPAGE to avoid
+>     compilation error (per SeongJae Park).
+> 
+>  From v2:
+> 1. Split the source folio instead of migrating it (per Matthew Wilcox)[2].
+> 
+>  From v1:
+> 1. Used dst to get correct deferred split list after migration
+>     (per Ryan Roberts).
+> 
+> [1]: https://lore.kernel.org/linux-mm/03CE3A00-917C-48CC-8E1C-6A98713C817C@nvidia.com/
+> [2]: https://lore.kernel.org/linux-mm/Ze_P6xagdTbcu1Kz@casper.infradead.org/
+> [3]: https://lore.kernel.org/linux-mm/df9a644c-a007-46ac-98e3-61d4014fcfff@linux.alibaba.com/
+> 
+> Fixes: 616b8371539a ("mm: thp: enable thp migration in generic path")
+> Signed-off-by: Zi Yan <ziy@nvidia.com>
+> ---
+>   mm/migrate.c | 23 +++++++++++++++++++++++
+>   1 file changed, 23 insertions(+)
+> 
+> diff --git a/mm/migrate.c b/mm/migrate.c
+> index 1dbe5bd927de..a31aa75d223d 100644
+> --- a/mm/migrate.c
+> +++ b/mm/migrate.c
+> @@ -1652,6 +1652,29 @@ static int migrate_pages_batch(struct list_head *from,
+>   
+>   			cond_resched();
+>   
+> +			/*
+> +			 * The rare folio on the deferred split list should
+> +			 * be split now. It should not count as a failure.
+> +			 * Only check it without removing it from the list.
+> +			 * Since the folio can be on deferred_split_scan()
+> +			 * local list and removing it can cause the local list
+> +			 * corruption. Folio split process below can handle it
+> +			 * with the help of folio_ref_freeze().
+> +			 *
+> +			 * nr_pages > 2 is needed to avoid checking order-1
+> +			 * page cache folios. They exist, in contrast to
+> +			 * non-existent order-1 anonymous folios, and do not
+> +			 * use _deferred_list.
+> +			 */
+> +			if (nr_pages > 2 &&
+> +			   !list_empty(&folio->_deferred_list)) {
+> +				if (try_split_folio(folio, split_folios) == 0) {
+> +					stats->nr_thp_split += is_thp;
+> +					stats->nr_split++;
+> +					continue;
+> +				}
+> +			}
+> +
+>   			/*
+>   			 * Large folio migration might be unsupported or
+>   			 * the allocation might be failed so we should retry
 
-It require two workarounds with some magic configuration.
-Regular use require only one register configuration. But Open Circuit
-require second workaround.
-It cause implementation two phases for fault length measuring.
+Acked-by: David Hildenbrand <david@redhat.com>
 
-Fast Ethernet PHY have implemented very simple version of VCT. It's
-complitley different than vct5 or vct7.
-
-Signed-off-by: Pawel Dembicki <paweldembicki@gmail.com>
-
----
-v2:
-  - change 'm88e3082_vct_distrfln_2_cm' to static
-  - simplify 'm88e3082_vct_cable_test_get_status'
-  - replace magic numbers in MII_BMCR configuration
-  - remove unnecessary backup of MII_BMCR register
-  - use ETHTOOL_A_CABLE_RESULT_CODE_IMPEDANCE_MISMATCH for impedance
-    mismatch
-
- drivers/net/phy/marvell.c | 208 ++++++++++++++++++++++++++++++++++++++
- 1 file changed, 208 insertions(+)
-
-diff --git a/drivers/net/phy/marvell.c b/drivers/net/phy/marvell.c
-index fae7eb57ee2c..7c00f47e4ded 100644
---- a/drivers/net/phy/marvell.c
-+++ b/drivers/net/phy/marvell.c
-@@ -279,6 +279,23 @@
- #define MII_VCT7_CTRL_METERS			BIT(10)
- #define MII_VCT7_CTRL_CENTIMETERS		0
- 
-+#define MII_VCT_TXPINS			0x1A
-+#define MII_VCT_RXPINS			0x1B
-+#define MII_VCT_TXPINS_ENVCT		BIT(15)
-+#define MII_VCT_TXRXPINS_VCTTST		GENMASK(14, 13)
-+#define MII_VCT_TXRXPINS_VCTTST_SHIFT	13
-+#define MII_VCT_TXRXPINS_VCTTST_OK	0
-+#define MII_VCT_TXRXPINS_VCTTST_SHORT	1
-+#define MII_VCT_TXRXPINS_VCTTST_OPEN	2
-+#define MII_VCT_TXRXPINS_VCTTST_FAIL	3
-+#define MII_VCT_TXRXPINS_AMPRFLN	GENMASK(12, 8)
-+#define MII_VCT_TXRXPINS_AMPRFLN_SHIFT	8
-+#define MII_VCT_TXRXPINS_DISTRFLN	GENMASK(7, 0)
-+#define MII_VCT_TXRXPINS_DISTRFLN_MAX	0xff
-+
-+#define M88E3082_PAIR_A		BIT(0)
-+#define M88E3082_PAIR_B		BIT(1)
-+
- #define LPA_PAUSE_FIBER		0x180
- #define LPA_PAUSE_ASYM_FIBER	0x100
- 
-@@ -301,6 +318,12 @@ static struct marvell_hw_stat marvell_hw_stats[] = {
- 	{ "phy_receive_errors_fiber", 1, 21, 16},
- };
- 
-+enum {
-+	M88E3082_VCT_OFF,
-+	M88E3082_VCT_PHASE1,
-+	M88E3082_VCT_PHASE2,
-+};
-+
- struct marvell_priv {
- 	u64 stats[ARRAY_SIZE(marvell_hw_stats)];
- 	char *hwmon_name;
-@@ -310,6 +333,7 @@ struct marvell_priv {
- 	u32 last;
- 	u32 step;
- 	s8 pair;
-+	u8 vct_phase;
- };
- 
- static int marvell_read_page(struct phy_device *phydev)
-@@ -2417,6 +2441,188 @@ static int marvell_vct7_cable_test_get_status(struct phy_device *phydev,
- 	return 0;
- }
- 
-+static int m88e3082_vct_cable_test_start(struct phy_device *phydev)
-+{
-+	struct marvell_priv *priv = phydev->priv;
-+	int ret;
-+
-+	/* It needs some magic workarounds described in VCT manual for this PHY.
-+	 */
-+	ret = phy_write(phydev, 29, 0x0003);
-+	if (ret < 0)
-+		return ret;
-+
-+	ret = phy_write(phydev, 30, 0x6440);
-+	if (ret < 0)
-+		return ret;
-+
-+	if (priv->vct_phase == M88E3082_VCT_PHASE1) {
-+		ret = phy_write(phydev, 29, 0x000a);
-+		if (ret < 0)
-+			return ret;
-+
-+		ret = phy_write(phydev, 30, 0x0002);
-+		if (ret < 0)
-+			return ret;
-+	}
-+
-+	ret = phy_write(phydev, MII_BMCR,
-+			BMCR_RESET | BMCR_SPEED100 | BMCR_FULLDPLX);
-+	if (ret < 0)
-+		return ret;
-+
-+	ret = phy_write(phydev, MII_VCT_TXPINS, MII_VCT_TXPINS_ENVCT);
-+	if (ret < 0)
-+		return ret;
-+
-+	ret = phy_write(phydev, 29, 0x0003);
-+	if (ret < 0)
-+		return ret;
-+
-+	ret = phy_write(phydev, 30, 0x0);
-+	if (ret < 0)
-+		return ret;
-+
-+	if (priv->vct_phase == M88E3082_VCT_OFF) {
-+		priv->vct_phase = M88E3082_VCT_PHASE1;
-+		priv->pair = 0;
-+
-+		return 0;
-+	}
-+
-+	ret = phy_write(phydev, 29, 0x000a);
-+	if (ret < 0)
-+		return ret;
-+
-+	ret = phy_write(phydev, 30, 0x0);
-+	if (ret < 0)
-+		return ret;
-+
-+	priv->vct_phase = M88E3082_VCT_PHASE2;
-+
-+	return 0;
-+}
-+
-+static int m88e3082_vct_cable_test_report_trans(int result, u8 distance)
-+{
-+	switch (result) {
-+	case MII_VCT_TXRXPINS_VCTTST_OK:
-+		if (distance == MII_VCT_TXRXPINS_DISTRFLN_MAX)
-+			return ETHTOOL_A_CABLE_RESULT_CODE_OK;
-+		return ETHTOOL_A_CABLE_RESULT_CODE_IMPEDANCE_MISMATCH;
-+	case MII_VCT_TXRXPINS_VCTTST_SHORT:
-+		return ETHTOOL_A_CABLE_RESULT_CODE_SAME_SHORT;
-+	case MII_VCT_TXRXPINS_VCTTST_OPEN:
-+		return ETHTOOL_A_CABLE_RESULT_CODE_OPEN;
-+	default:
-+		return ETHTOOL_A_CABLE_RESULT_CODE_UNSPEC;
-+	}
-+}
-+
-+static u32 m88e3082_vct_distrfln_2_cm(u8 distrfln)
-+{
-+	if (distrfln < 24)
-+		return 0;
-+
-+	/* Original function for meters: y = 0.7861x - 18.862 */
-+	return (7861 * distrfln - 188620) / 100;
-+}
-+
-+static int m88e3082_vct_cable_test_get_status(struct phy_device *phydev,
-+					      bool *finished)
-+{
-+	u8 tx_vcttst_res, rx_vcttst_res, tx_distrfln, rx_distrfln;
-+	struct marvell_priv *priv = phydev->priv;
-+	int ret, tx_result, rx_result;
-+	bool done_phase = true;
-+
-+	*finished = false;
-+
-+	ret = phy_read(phydev, MII_VCT_TXPINS);
-+	if (ret < 0)
-+		return ret;
-+	else if (ret & MII_VCT_TXPINS_ENVCT)
-+		return 0;
-+
-+	tx_distrfln = ret & MII_VCT_TXRXPINS_DISTRFLN;
-+	tx_vcttst_res = (ret & MII_VCT_TXRXPINS_VCTTST) >>
-+			MII_VCT_TXRXPINS_VCTTST_SHIFT;
-+
-+	ret = phy_read(phydev, MII_VCT_RXPINS);
-+	if (ret < 0)
-+		return ret;
-+
-+	rx_distrfln = ret & MII_VCT_TXRXPINS_DISTRFLN;
-+	rx_vcttst_res = (ret & MII_VCT_TXRXPINS_VCTTST) >>
-+			MII_VCT_TXRXPINS_VCTTST_SHIFT;
-+
-+	*finished = true;
-+
-+	switch (priv->vct_phase) {
-+	case M88E3082_VCT_PHASE1:
-+		tx_result = m88e3082_vct_cable_test_report_trans(tx_vcttst_res,
-+								 tx_distrfln);
-+		rx_result = m88e3082_vct_cable_test_report_trans(rx_vcttst_res,
-+								 rx_distrfln);
-+
-+		ethnl_cable_test_result(phydev, ETHTOOL_A_CABLE_PAIR_A,
-+					tx_result);
-+		ethnl_cable_test_result(phydev, ETHTOOL_A_CABLE_PAIR_B,
-+					rx_result);
-+
-+		if (tx_vcttst_res == MII_VCT_TXRXPINS_VCTTST_OPEN) {
-+			done_phase = false;
-+			priv->pair |= M88E3082_PAIR_A;
-+		} else if (tx_distrfln < MII_VCT_TXRXPINS_DISTRFLN_MAX) {
-+			u8 pair = ETHTOOL_A_CABLE_PAIR_A;
-+			u32 cm = m88e3082_vct_distrfln_2_cm(tx_distrfln);
-+
-+			ethnl_cable_test_fault_length(phydev, pair, cm);
-+		}
-+
-+		if (rx_vcttst_res == MII_VCT_TXRXPINS_VCTTST_OPEN) {
-+			done_phase = false;
-+			priv->pair |= M88E3082_PAIR_B;
-+		} else if (rx_distrfln < MII_VCT_TXRXPINS_DISTRFLN_MAX) {
-+			u8 pair = ETHTOOL_A_CABLE_PAIR_B;
-+			u32 cm = m88e3082_vct_distrfln_2_cm(rx_distrfln);
-+
-+			ethnl_cable_test_fault_length(phydev, pair, cm);
-+		}
-+
-+		break;
-+	case M88E3082_VCT_PHASE2:
-+		if (priv->pair & M88E3082_PAIR_A &&
-+		    tx_vcttst_res == MII_VCT_TXRXPINS_VCTTST_OPEN &&
-+		    tx_distrfln < MII_VCT_TXRXPINS_DISTRFLN_MAX) {
-+			u8 pair = ETHTOOL_A_CABLE_PAIR_A;
-+			u32 cm = m88e3082_vct_distrfln_2_cm(tx_distrfln);
-+
-+			ethnl_cable_test_fault_length(phydev, pair, cm);
-+		}
-+		if (priv->pair & M88E3082_PAIR_B &&
-+		    rx_vcttst_res == MII_VCT_TXRXPINS_VCTTST_OPEN &&
-+		    rx_distrfln < MII_VCT_TXRXPINS_DISTRFLN_MAX) {
-+			u8 pair = ETHTOOL_A_CABLE_PAIR_B;
-+			u32 cm = m88e3082_vct_distrfln_2_cm(rx_distrfln);
-+
-+			ethnl_cable_test_fault_length(phydev, pair, cm);
-+		}
-+
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	if (!done_phase) {
-+		*finished = false;
-+		return m88e3082_vct_cable_test_start(phydev);
-+	}
-+	if (*finished)
-+		priv->vct_phase = M88E3082_VCT_OFF;
-+	return 0;
-+}
-+
- #ifdef CONFIG_HWMON
- struct marvell_hwmon_ops {
- 	int (*config)(struct phy_device *phydev);
-@@ -3300,6 +3506,8 @@ static struct phy_driver marvell_drivers[] = {
- 		.read_status = marvell_read_status,
- 		.resume = genphy_resume,
- 		.suspend = genphy_suspend,
-+		.cable_test_start = m88e3082_vct_cable_test_start,
-+		.cable_test_get_status = m88e3082_vct_cable_test_get_status,
- 	},
- 	{
- 		.phy_id = MARVELL_PHY_ID_88E1112,
 -- 
-2.25.1
+Cheers,
+
+David / dhildenb
 
 
