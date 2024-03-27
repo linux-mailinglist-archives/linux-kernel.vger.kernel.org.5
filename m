@@ -1,197 +1,144 @@
-Return-Path: <linux-kernel+bounces-120251-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-120327-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id A677D88D4DE
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 04:05:04 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 08A7588D5D5
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 06:25:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 360D21F31640
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 03:05:04 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4E733B23664
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 05:25:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B180021A04;
-	Wed, 27 Mar 2024 03:04:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="K13lhMkH"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.20])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 289D5125C9;
+	Wed, 27 Mar 2024 05:25:15 +0000 (UTC)
+Received: from CHN02-BJS-obe.outbound.protection.partner.outlook.cn (mail-bjschn02on2094.outbound.protection.partner.outlook.cn [139.219.17.94])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4D23C3DAC10
-	for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 03:04:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.20
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711508698; cv=none; b=a58hPUkT+mJxuTn1cHWFNlswvIpbBPzs/gHTeVYMLuv2IwZOYQ1ZtKEe/9vh+bCqaKsa388LEIse8skzAhZo5EmS2239Ze9xMqE22Z4Z4Ie0xw/Ic/xG6uw5fnpAbCaliU8qO18zd+NXo525SzySEAhVDXF53S2xT0D2TMb09jg=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711508698; c=relaxed/simple;
-	bh=kR8fUxWXM+3ENmSr00PtrCkEV5zpvYvRMSKTX82LZjM=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=IkTCiLlRdBZfwKun1EaLpZVX7hU1bALpdYCW80aBA2nzYcmK7nUOG7nSCo1STWyLfGqSoIqyl0cZaitCol92Xe7D0M5W9P91OSOSR73iEO/f2bHyNyTWfjDbNTruDnzg2hnbPqCJWruFwfoveb+PJndNNY0Crw+q2v+VM7kvi3I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=K13lhMkH; arc=none smtp.client-ip=198.175.65.20
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1711508697; x=1743044697;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=kR8fUxWXM+3ENmSr00PtrCkEV5zpvYvRMSKTX82LZjM=;
-  b=K13lhMkHqghrKgNytf3JX8wv8Xa84gMZHnzn/4oLne5P2QAJwH0Ge1yt
-   GPM2WIap2+7uX2zQzUJs2yBsW+7jEWAB4xpofkBnCLQeaJLKjYPi1kWOj
-   ISs9YaYe5eUFsFPIsWlKpAlzIB70kYpnNDh1wMw0ChdfRVzjEDsIY4k0F
-   96MAk/4JpBWpAEIQUwUroHdmMk4C0NMDCtjJlVsossu68C4i7Qd3Trojz
-   1pcRsl0k1WATD8VTVlN/ZKl4RaOKx6+BPvc6tfdQW7zV7INcXNjNQ9ysk
-   PJhq9Kzu4Fs0I/qjFlq5D63aUnfUSEsoWxYhgVvctjPeEwczwDnujDO0t
-   Q==;
-X-CSE-ConnectionGUID: p61hJh50RNe2f6Cq6M8HFA==
-X-CSE-MsgGUID: dpacHrKbQWGary+/XeqwKA==
-X-IronPort-AV: E=McAfee;i="6600,9927,11025"; a="6485185"
-X-IronPort-AV: E=Sophos;i="6.07,157,1708416000"; 
-   d="scan'208";a="6485185"
-Received: from fmviesa003.fm.intel.com ([10.60.135.143])
-  by orvoesa112.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Mar 2024 20:04:56 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,157,1708416000"; 
-   d="scan'208";a="20707443"
-Received: from feng-clx.sh.intel.com ([10.239.159.50])
-  by fmviesa003.fm.intel.com with ESMTP; 26 Mar 2024 20:04:51 -0700
-From: Feng Tang <feng.tang@intel.com>
-To: Thomas Gleixner <tglx@linutronix.de>,
-	Ingo Molnar <mingo@redhat.com>,
-	Borislav Petkov <bp@alien8.de>,
-	Dave Hansen <dave.hansen@intel.com>,
-	"H . Peter Anvin" <hpa@zytor.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	x86@kernel.org,
-	paulmck@kernel.org,
-	rui.zhang@intel.com,
-	Waiman Long <longman@redhat.com>,
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B91E6610C;
+	Wed, 27 Mar 2024 05:25:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=139.219.17.94
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1711517114; cv=fail; b=DFqebHTFSr4jHsII37NW8OIENfEG7gjamk7Sv3pEtFSDG9ojtNKTwuqbqKqH2XwSpb4o9FLZPa57DSN9ZSD1k3chYZUWsshZDC4EYK4FjQTuctn/8ME9KgOyJ3UbPrGVkGEbjVqc99kk4qgkENUf4PwdmdOuzBUl0NsfXeQvBxI=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1711517114; c=relaxed/simple;
+	bh=rrLnxM/gpFcY9H0ewugC0wbFDTsBX5O00JU6pb/+qYE=;
+	h=From:To:Cc:Subject:Date:Message-Id:Content-Type:MIME-Version; b=l8neGdtXbBnau6GSKDMPxJjP3v0lFMr0qTKS66R19km3p10Zv5ZDlD3BA28C95+VOHgLpxgcsQZS0/fSiHqJZ5Nm6q0+xEe9TdYk9W+MgBX80NB1tSzQQwJJmTvXK8IavWVeJraGjncE5t4pQ6u1/wkE3P1W2lm/RoO4xLGKRds=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=starfivetech.com; spf=pass smtp.mailfrom=starfivetech.com; arc=fail smtp.client-ip=139.219.17.94
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=starfivetech.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=starfivetech.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=jKH7gc6cY+Gf/l56eVxACCXY4Dg1DVmrxCO6O7TM4vPNqQtHuU7lYw1vM89rPIR+SYUFioOpkiJUl+EJU4n+EGQjjsQLAmAysacotjhByODzqSRNFMT+TpV/yWgvBhibDxy2HSArzpjdbL3z0r79eg2me0Zh+yXFGWxEZi7kVis1CdCOQL+SCcYEbIAWKOpF5AGefgpEeFD8c4Py11DI4bBuSjM0MwtWTp195PPu9cJgScSYFtg3BdbjPf0PPVdna1yEAMf2w/ozNz8wriBa+IK5bvbj/NcJZbWfSVijl17ZQjYNU6DlVfdQS0Ddj1yA59iAldLrc4jSpCYrhcHYRA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=BiLOffbc2JK/tnsUVTf5pujCs4c+oNK/8mF0XjODiwA=;
+ b=L8n4IpUZOpFSW/1Qmq7NRb9yTEh6hqRA3CuhM+7ZPIWPCrz0ca9qzsgMPBsIxsfoKTSKMZS5p4THjzP/BebFc5n4tT7uRBLJo+HJi9x6Gdwj6itTiCZKRwbuB0CgjLX6aGuDBkDsIfplok5OFlpSM1VfwyMh2XWVaRYUPy186KKPhXkCX+P5yIfG8om50GqpG03bSCduq0MZrecOHN42HEX3QtXcV3c20IRLATZNbq1mZqszk9UHnBGoHDQt5mprTdXvymyz0IKcz2O6kd38MDAYvifwxdtem+9BK4VN7tBbG30jW0Ri5MJloZahNryrxboDv2nT/+HpCLC2wNKheg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=starfivetech.com; dmarc=pass action=none
+ header.from=starfivetech.com; dkim=pass header.d=starfivetech.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=starfivetech.com;
+Received: from BJSPR01MB0595.CHNPR01.prod.partner.outlook.cn
+ (2406:e500:c211:e::20) by BJSPR01MB0547.CHNPR01.prod.partner.outlook.cn
+ (2406:e500:c211:e::19) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.33; Wed, 27 Mar
+ 2024 02:51:39 +0000
+Received: from BJSPR01MB0595.CHNPR01.prod.partner.outlook.cn
+ ([fe80::d0cf:5e2e:fd40:4aef]) by
+ BJSPR01MB0595.CHNPR01.prod.partner.outlook.cn ([fe80::d0cf:5e2e:fd40:4aef%4])
+ with mapi id 15.20.7409.031; Wed, 27 Mar 2024 02:51:39 +0000
+From: Tan Chun Hau <chunhau.tan@starfivetech.com>
+To: Eugeniy Paltsev <Eugeniy.Paltsev@synopsys.com>,
+	Vinod Koul <vkoul@kernel.org>,
+	Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>
+Cc: Ley Foon Tan <leyfoon.tan@starfivetech.com>,
+	Jee Heng Sia <jeeheng.sia@starfivetech.com>,
+	dmaengine@vger.kernel.org,
+	devicetree@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Cc: Feng Tang <feng.tang@intel.com>,
-	Dave Hansen <dave.hansen@linux.intel.com>
-Subject: [PATCH v3] x86/tsc: Use topology_max_packages() to get package number
-Date: Wed, 27 Mar 2024 10:51:05 +0800
-Message-Id: <20240327025105.2861341-1-feng.tang@intel.com>
-X-Mailer: git-send-email 2.34.1
+Subject: [PATCH v2 0/2] Add JH8100 support for snps,dw-axi-dmac
+Date: Tue, 26 Mar 2024 19:51:24 -0700
+Message-Id: <20240327025126.229475-1-chunhau.tan@starfivetech.com>
+X-Mailer: git-send-email 2.25.1
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: NT0PR01CA0025.CHNPR01.prod.partner.outlook.cn
+ (2406:e500:c510:c::7) To BJSPR01MB0595.CHNPR01.prod.partner.outlook.cn
+ (2406:e500:c211:e::20)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BJSPR01MB0595:EE_|BJSPR01MB0547:EE_
+X-MS-Office365-Filtering-Correlation-Id: 584904d4-5531-4bb6-0481-08dc4e08d38f
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	C4togV+OzCAygjp8LH+ocAHwM8VWoK56dyHW3f4x4MEAskAqGMXfpJV5YkQ20+ATpMdwXUiKXkIkGXnHhWjtLlXW9tonGiRc4MGIWqW9tVkVkUnRTumrZNzM5EfZvr8XKOQmCslbcFnHpbUAIyAf+Y97c1iA4LFc23o53mgKcV8A2kbh0oEebT8YIQPMI37D9O6rzAzU59pENXEb5A0VQ9hl0UgFjgMyZERMvK+fNDE1/1BzHseWFF/X0+4K8Cr8N6fDB+bWEGoTc+F2LPdR/gl16KU191Jlvq6tvobXpVl77cUKHJCRUhrGpK3MThmnSuJAM5A4oiGJI109BGdgV+K5aJMI99B04mB+1ggZ92XKOAwEU9lxSsHA0JHwfN85pYeAZ2Gv4c+/A/N7sn6aioBFt8Tjazx5fKn1PIYHXWepzfeB2UyfxI5M4URsxOKlBkBuGRZRHfONCwFi8YAvy7Bqc8Z4tRqOq2b8OwAz+teohsN8rhgjHL8eutMO9icEO/bmOEQK7c05uYlmEy+FMGreFK6hmj036Z45QW4oXYP2RW9K7ZU8Ax/yFpRveFWDlg3MPRtlgW68TlIcXYwCzWmNtDeB9zO1ePMSpVxJ2mM1aL89jdqb428+GxnlHc3R
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BJSPR01MB0595.CHNPR01.prod.partner.outlook.cn;PTR:;CAT:NONE;SFS:(13230031)(1800799015)(52116005)(41320700004)(366007)(38350700005);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?cTyepiLVhGVrzsXUEomRZatQho9qKpoaNXcrdDVrlU5cvfbk6ko3sTK1Q2Ao?=
+ =?us-ascii?Q?wFW5xno107YQH1iiZ/SLdJkUFiStoA52lOdGsYXymLobr0so+kcMK9jWpd1n?=
+ =?us-ascii?Q?1ixKz+gIpFv27cj1/C2JVRPdzoiTl/Zsk2SbQdZpmRXlOlfwtFdNwEaEBIJs?=
+ =?us-ascii?Q?QnMEDZDf84fR7qpUWbv1GobYkgEVGxsLe15xTvj3rr33K1IErv2edJ50gVFK?=
+ =?us-ascii?Q?WPVApk2PrZ1fcnxQbu3es19CFR/xJStyE45EYTUZ2LEJVhJ9SWLs3nwi9ZoL?=
+ =?us-ascii?Q?g6e+aHaNtTgbOziV2XHzzo5s+FC1yjX6ycL61fTiyYc66WCxtY3n1yL5N6vI?=
+ =?us-ascii?Q?zRctdTtI7QZHxFdC3NkWcygrs0PmGSLeP8srLylsdCNgkxEn9nzt9SXxe93f?=
+ =?us-ascii?Q?rhmBrwupQqOqIwZhAJCGJOW0eQL5zy7I1qRy8L0ameP65B+mKoWdIXJoVRh4?=
+ =?us-ascii?Q?/pL/iRGAQwFDzzPxaL+LUXL6yOM9yAxxNhXXo/3kbRXNTwfjGdGjZH15j1w0?=
+ =?us-ascii?Q?d6H1w3PBd2iHzBtT01TOdpNYnpy+FM7co0/j9hUgN1nZGcrVKleZ0wZdhUvI?=
+ =?us-ascii?Q?9XxuDPBm3w4+NHko9ItJXYKpYEMi5SGXRqft7QxIQUiBmL5cCV6D3tdHChIG?=
+ =?us-ascii?Q?wothD5TW1QSMokYAbMm/bsI+y5bMsMOQv8EpApD+JNtRv/0ckQ5zEXaU7THl?=
+ =?us-ascii?Q?kb7xdGxL5NvPyUFLY71dA+NLMhzL5BrSKoobrs+k/GE4RRrG3RIFt6ifFhk5?=
+ =?us-ascii?Q?T2jNhcWgbDuD5goncMfmSFfoXccdcQVziHFdGfC8uvDWX+1j5nTOiH2KkW4u?=
+ =?us-ascii?Q?WP/tI47wXzMcJksGP32iN0ZdBdQ7s0aHrktGxnpk4ITD/DZsCDh4BcudjHdG?=
+ =?us-ascii?Q?Kk0jjJVz4kpPmU6B9DtzthRJsd3D1ZLFH5VkX1Ws6nwtdj/zICG7DaWOLqLF?=
+ =?us-ascii?Q?2oTf7hlMzjkrKCi0ZZOfb+IeYNYLAbYfEJATKHwQO7+PTtq8u68UVLqdkk06?=
+ =?us-ascii?Q?tZL+2yCbjDu8VCMD/xkFbNa1MlE0hN83VJFc0bf49CKh8PB66Q2jd2dvSZd6?=
+ =?us-ascii?Q?CK1phcjHww57NfMmCEouVPK7NLl3piIbCXOP7WvcqimWUVcXmS4ONJL2lKbN?=
+ =?us-ascii?Q?OuRKs5kHMBBzNuDHdOxSOuGn6KKKovjpZ6VmvOfnwZh/6OXDC6og+0m4EEtI?=
+ =?us-ascii?Q?ItvgLoW/CynttUryDmIOKEfUZA4Ru4WtlWboIL0c9hTRlp02LE5/1KXUOAq1?=
+ =?us-ascii?Q?uYEpimUoooQ7djFDpfBA+0qLzLxMcnE3of7mcV2Hn1m4ZA02ImrV6Gk4cGeN?=
+ =?us-ascii?Q?FjRXiBEPNSB9gMad0xZlzNgAMVk8jkqnwLWIKBIfH4+XzDASYsh5OAa2U2TW?=
+ =?us-ascii?Q?AYZLaVuFSLG6fqbnMOyDpis2JuMAzXx5Y2U4EiFnf9/QaWONCBIM+wJY178u?=
+ =?us-ascii?Q?8H/OREmO00lyXTiuT4kbPBaKPJBJd1tnUNV5zBNRMiYxCe8K5nU8GuzYkvGH?=
+ =?us-ascii?Q?zJa+UsU0fgpH60U6xorMdj7lXlOgW3FbACcQeZ4kA5kybf0mPTtR8QxQq3IF?=
+ =?us-ascii?Q?4iPtur0j+Ndop/fs1jYCI6ktCh4+jb0297Z8kkWP2X4Dwbqwp1KmCPXWurZr?=
+ =?us-ascii?Q?Vw=3D=3D?=
+X-OriginatorOrg: starfivetech.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 584904d4-5531-4bb6-0481-08dc4e08d38f
+X-MS-Exchange-CrossTenant-AuthSource: BJSPR01MB0595.CHNPR01.prod.partner.outlook.cn
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Mar 2024 02:51:39.8284
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 06fe3fa3-1221-43d3-861b-5a4ee687a85c
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: EdlZhnRn83gLZvW59hDn/xaFRiOUkmIJLVBm1/LLUoPGzXdbu51cm0QH868NPDvP7X1Wfw1GlNqkqX+xXw0wWnb6j4CoJJBR0N115AXlFUs=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BJSPR01MB0547
 
-Commit b50db7095fe0 ("x86/tsc: Disable clocksource watchdog for TSC
-on qualified platorms") was introduced to solve problem that
-sometimes TSC clocksource is wrongly judged as unstable by watchdog
-like 'jiffies', HPET, etc.
+Add StarFive JH8100 DMA support.
 
-In it, the hardware package number is a key factor for judging whether
-to disable the watchdog for TSC, and 'nr_online_nodes' was chosen due
-to it is available in early boot phase before registering 'tsc-early'
-clocksource, where all non-boot CPUs are not brought up yet.
+Changes in v2:
+- Amended commit message according to feedback.
 
-Dave and Rui pointed out there are many cases in which 'nr_online_nodes'
-is cheated and not accurate, like:
+Tan Chun Hau (2):
+  dt-bindings: dma: snps,dw-axi-dmac: Add JH8100 support
+  dmaengine: dw-axi-dmac: Add support for StarFive JH8100 DMA
 
-* numa emulation (numa=fake=8 etc.)
-* numa=off
-* platforms with CPU-less HBM nodes, CPU-less Optane memory nodes.
-* SNC (sub-numa cluster) mode enabled
-* 'maxcpus=' cmdline setup, where chopped CPUs could be onlined later
-* 'nr_cpus=', 'possible_cpus=' cmdline setup, where chopped CPUs can
-  not be onlined after boot
+ Documentation/devicetree/bindings/dma/snps,dw-axi-dmac.yaml | 1 +
+ drivers/dma/dw-axi-dmac/dw-axi-dmac-platform.c              | 3 +++
+ 2 files changed, 4 insertions(+)
 
-Thomas' recent patchset of refactoring x86 topology code improves
-topology_max_packages(), by making it more accurate and available in
-early boot phase, which works well in most of the above cases.
-
-The only exceptions are 'nr_cpus=' and 'possible_cpus=' setup.  And
-the reason is, during topology setup, the boot CPU iterates through
-all enumerated APIC ids and either accepts or rejects the APIC id.
-For accepted ids, it figures out which bits of the id map to the
-package number.  It tracks which package numbers have been seen in a
-bitmap.  topology_max_packages() just returns the number of bits set
-in that bitmap.
-
-'nr_cpus=' and 'possible_cpus=' can cause more APIC ids to be rejected
-and can artificially lower the number of bits in the package bitmap
-and thus topology_max_packages().  This means that, for example, a
-system with 8 physical packages might reject all the CPUs on 6 of those
-packages and be left with only 2 packages and 2 bits set in the package
-bitmap. It needs the TSC watchdog, but would disable it anyway.  This
-isn't ideal, but this only happens for debug-oriented options. This is
-fixable by tracking the package numbers for rejected CPUs.  But it's
-not worth the trouble for debugging.
-
-So use topology_max_packages() to replace nr_online_nodes().
-
-Reported-by: Dave Hansen <dave.hansen@linux.intel.com>
-Closes: https://lore.kernel.org/lkml/a4860054-0f16-6513-f121-501048431086@intel.com/
-Signed-off-by: Feng Tang <feng.tang@intel.com>
----
-
-Hi all,
-
-For warning about possible compromise due to 'nr_cpus=' and 'possible_cpus=',
-one alternative is to check whether these has been setup in cmdline inside
-tsc.c and warn there.
-
-Changelog:
-
-  Since v2:
-  * Use 'pr_info' to replace 'pr_warn' which could panic system
-    if 'panic_on_warn=1' kcmdline parameter is on (Waiman)
-
-  Since v1:
-  * Use Dave's detailed elaboration about 'nr_cpus=', 'possible_cpus='
-    possibly compromising '__max_logical_packages' in commit log
-  * Fix typos and inaccuracy (Rui and Longman)
-
-
- arch/x86/kernel/cpu/topology.c | 5 ++++-
- arch/x86/kernel/tsc.c          | 7 ++-----
- 2 files changed, 6 insertions(+), 6 deletions(-)
-
-diff --git a/arch/x86/kernel/cpu/topology.c b/arch/x86/kernel/cpu/topology.c
-index 3259b1d4fefe..9db66597388e 100644
---- a/arch/x86/kernel/cpu/topology.c
-+++ b/arch/x86/kernel/cpu/topology.c
-@@ -460,8 +460,11 @@ void __init topology_init_possible_cpus(void)
- 	pr_info("Num. threads per package: %3u\n", __num_threads_per_package);
- 
- 	pr_info("Allowing %u present CPUs plus %u hotplug CPUs\n", assigned, disabled);
--	if (topo_info.nr_rejected_cpus)
-+	if (topo_info.nr_rejected_cpus) {
- 		pr_info("Rejected CPUs %u\n", topo_info.nr_rejected_cpus);
-+		if (__max_logical_packages <= 4)
-+			pr_info("TSC might be buggered due to the rejected CPUs\n");
-+	}
- 
- 	init_cpu_present(cpumask_of(0));
- 	init_cpu_possible(cpumask_of(0));
-diff --git a/arch/x86/kernel/tsc.c b/arch/x86/kernel/tsc.c
-index 5a69a49acc96..d00f88f16eb1 100644
---- a/arch/x86/kernel/tsc.c
-+++ b/arch/x86/kernel/tsc.c
-@@ -1252,15 +1252,12 @@ static void __init check_system_tsc_reliable(void)
- 	 *  - TSC which does not stop in C-States
- 	 *  - the TSC_ADJUST register which allows to detect even minimal
- 	 *    modifications
--	 *  - not more than two sockets. As the number of sockets cannot be
--	 *    evaluated at the early boot stage where this has to be
--	 *    invoked, check the number of online memory nodes as a
--	 *    fallback solution which is an reasonable estimate.
-+	 *  - not more than four packages
- 	 */
- 	if (boot_cpu_has(X86_FEATURE_CONSTANT_TSC) &&
- 	    boot_cpu_has(X86_FEATURE_NONSTOP_TSC) &&
- 	    boot_cpu_has(X86_FEATURE_TSC_ADJUST) &&
--	    nr_online_nodes <= 4)
-+	    topology_max_packages() <= 4)
- 		tsc_disable_clocksource_watchdog();
- }
- 
 -- 
-2.34.1
+2.25.1
 
 
