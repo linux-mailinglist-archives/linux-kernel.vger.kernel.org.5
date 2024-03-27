@@ -1,58 +1,55 @@
-Return-Path: <linux-kernel+bounces-120869-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-120870-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2D5A188DFD0
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 13:27:01 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id E2A0588DFD6
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 13:27:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A46DBB22347
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 12:26:58 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 95DB529A8E6
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 12:27:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E670A130A74;
-	Wed, 27 Mar 2024 12:10:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E3BC3130A5E;
+	Wed, 27 Mar 2024 12:10:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kIoltMBT"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="KuvKf409"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 290B31411FD;
-	Wed, 27 Mar 2024 12:10:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E2BA81420A6;
+	Wed, 27 Mar 2024 12:10:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711541437; cv=none; b=o2LTYGfQO91gP9apq/vljJR34e8AlKd5OUBvqQPicO3JquWdR6DQJH6pxrN13SFS0KtnzJW/LUp4/hn4NfSkFe7aAwbOAIbhPR5uLfJKpyEB9cPRDhBJDPpJZlgZ2vZh5wXjc8KAj8D6FlGE90j4HYn5IfUTWBDjuM25W2kZBAU=
+	t=1711541440; cv=none; b=nE/qTzkAwdIThDpkIBcOgQhxVyjIVJAimJ61Q3STIb0E9eKkld2TpOsBpmALN1LfUoqHpdA1hWSHFYeAefckyZw54jNRZVBA4F7KIPBzg2X0FSe+PfYJS+IfXZjn0RaSpneYR/OQnP8v9ZPp/YcQ74CxX/Lfve6C+M3SZZc4Xg4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711541437; c=relaxed/simple;
-	bh=973BjNaEfoc4WksJE7g+5Gek4K2dQ/b3ekPtSZXKHug=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=MkfA8v+wvcQeHncYfIuegUQ0R1amTn+9+HsuYG61aWQuNf5jiiNDNKeVaN/3djz8Hx+XCHXuvVXh0+yTpe+QrZIuHP1QxJxl9wCZjkpxmP5EhvRipD32gx7MVfsF0HDzm0DbjEBxJg05Q+UtDe9JFMXE+g54r0TSeRYkVbLGL3Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kIoltMBT; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D01DCC43390;
-	Wed, 27 Mar 2024 12:10:35 +0000 (UTC)
+	s=arc-20240116; t=1711541440; c=relaxed/simple;
+	bh=g1khBGcJtFAK9LA+pFUBjfH1Q+AG/1VGt9ZyEtBHpPw=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=n5HPo8iS+D6ZOo3r7V4pXgXI4hTb5jwaZoWuNdpZPEYRmAlYf8z+8zmyhgg5UxOyvgg4vWJ0ZxhR2L9NcWuwMktN/LLbji7W/rCfJ9FvHbj2pxbu2EcMeJMllaC6nidlO9YJGArCKF4Mv2+i346712vDlaDkpbpAHorRzNY3wcE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=KuvKf409; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E80A4C433C7;
+	Wed, 27 Mar 2024 12:10:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711541437;
-	bh=973BjNaEfoc4WksJE7g+5Gek4K2dQ/b3ekPtSZXKHug=;
+	s=k20201202; t=1711541439;
+	bh=g1khBGcJtFAK9LA+pFUBjfH1Q+AG/1VGt9ZyEtBHpPw=;
 	h=From:To:Cc:Subject:Date:From;
-	b=kIoltMBTKSi4U5K0yTKsgZV8iuoF1MVgVXTWHr3PoYcDIyJVjDXwg7DdixFSV4KEY
-	 TcRKu6Et6jpeJ5o8YMqGLwaup0sA2ercFdfDA/htTrCf4h9X7HC+Q5xQo9T9V2sfoJ
-	 jIwroyry3CjJC+s8lpbSH+0auzSpoPRWi+BdcHXoOla49exay1cgyiPwrmy2aW+eW2
-	 Hs9XgcPbgdBBzcQiJ+HjoWjzB44NfZ3JYH9fT56Z2caY1CpTZ8BCHTMQ09H8k7SiA4
-	 LPXJYFOeO5NW/8AD6/IFjhmrNi/NBIDyEHELrCmw87U522VpS5V3xcq5yLTsGDOjQV
-	 DOjKjfQgXN/Ag==
+	b=KuvKf409g+zDmozJKMxn+9ThcklxMvJUkBKeBJ+gPnbS/PkpQnX/AxOBkwSwfTE5d
+	 nz3ukESjfcYGQhDthVzfyuDMBgYeTai8Ydav1jiOyW5dmQMGw5UQTnCYQiugW4dNP9
+	 Xy85FnYDUpyHAciqinvaSkgzms8/j41fl/yacvcTI4LXcSl119fAhoecV8dHnodlNq
+	 AJP20ZQc+CmPOrymjbodwqalOnCO6sOpQNKG9+/WmZ+s3MGl6Bl6nFtrGtfSt+SSY1
+	 6VOmxSfNboFTaR9wczLYrjECD591pdpHblarYYwzXWZWwU1dqt+F5ApT7J805Oprrs
+	 b20hjWZYZiH5Q==
 From: Sasha Levin <sashal@kernel.org>
 To: stable@vger.kernel.org,
-	sohaib.nadeem@amd.com
-Cc: Mario Limonciello <mario.limonciello@amd.com>,
-	Alex Deucher <alexander.deucher@amd.com>,
-	Alvin Lee <alvin.lee2@amd.com>,
-	Alex Hung <alex.hung@amd.com>,
-	Daniel Wheeler <daniel.wheeler@amd.com>,
-	amd-gfx@lists.freedesktop.org,
-	dri-devel@lists.freedesktop.org,
+	alex.williamson@redhat.com
+Cc: Reinette Chatre <reinette.chatre@intel.com>,
+	Kevin Tian <kevin.tian@intel.com>,
+	Eric Auger <eric.auger@redhat.com>,
+	kvm@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: FAILED: Patch "drm/amd/display: Override min required DCFCLK in dml1_validate" failed to apply to 6.6-stable tree
-Date: Wed, 27 Mar 2024 08:10:34 -0400
-Message-ID: <20240327121034.2828064-1-sashal@kernel.org>
+Subject: FAILED: Patch "vfio/pci: Create persistent INTx handler" failed to apply to 6.6-stable tree
+Date: Wed, 27 Mar 2024 08:10:37 -0400
+Message-ID: <20240327121038.2828101-1-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -74,81 +71,269 @@ Sasha
 
 ------------------ original commit in Linus's tree ------------------
 
-From 26fbcb3da77efc77bd7327b7916338d773cca484 Mon Sep 17 00:00:00 2001
-From: Sohaib Nadeem <sohaib.nadeem@amd.com>
-Date: Wed, 14 Feb 2024 13:51:16 -0500
-Subject: [PATCH] drm/amd/display: Override min required DCFCLK in
- dml1_validate
+From 18c198c96a815c962adc2b9b77909eec0be7df4d Mon Sep 17 00:00:00 2001
+From: Alex Williamson <alex.williamson@redhat.com>
+Date: Fri, 8 Mar 2024 16:05:25 -0700
+Subject: [PATCH] vfio/pci: Create persistent INTx handler
 
-[WHY]:
-Increasing min DCFCLK addresses underflow issues that occur when phantom
-pipe is turned on for some Sub-Viewport configs
+A vulnerability exists where the eventfd for INTx signaling can be
+deconfigured, which unregisters the IRQ handler but still allows
+eventfds to be signaled with a NULL context through the SET_IRQS ioctl
+or through unmask irqfd if the device interrupt is pending.
 
-[HOW]:
-dcn32_override_min_req_dcfclk is added to override DCFCLK value in
-dml1_validate when subviewport is being used.
+Ideally this could be solved with some additional locking; the igate
+mutex serializes the ioctl and config space accesses, and the interrupt
+handler is unregistered relative to the trigger, but the irqfd path
+runs asynchronous to those.  The igate mutex cannot be acquired from the
+atomic context of the eventfd wake function.  Disabling the irqfd
+relative to the eventfd registration is potentially incompatible with
+existing userspace.
 
-Cc: Mario Limonciello <mario.limonciello@amd.com>
-Cc: Alex Deucher <alexander.deucher@amd.com>
-Cc: stable@vger.kernel.org
-Reviewed-by: Alvin Lee <alvin.lee2@amd.com>
-Acked-by: Alex Hung <alex.hung@amd.com>
-Signed-off-by: Sohaib Nadeem <sohaib.nadeem@amd.com>
-Tested-by: Daniel Wheeler <daniel.wheeler@amd.com>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+As a result, the solution implemented here moves configuration of the
+INTx interrupt handler to track the lifetime of the INTx context object
+and irq_type configuration, rather than registration of a particular
+trigger eventfd.  Synchronization is added between the ioctl path and
+eventfd_signal() wrapper such that the eventfd trigger can be
+dynamically updated relative to in-flight interrupts or irqfd callbacks.
+
+Cc:  <stable@vger.kernel.org>
+Fixes: 89e1f7d4c66d ("vfio: Add PCI device driver")
+Reported-by: Reinette Chatre <reinette.chatre@intel.com>
+Reviewed-by: Kevin Tian <kevin.tian@intel.com>
+Reviewed-by: Reinette Chatre <reinette.chatre@intel.com>
+Reviewed-by: Eric Auger <eric.auger@redhat.com>
+Link: https://lore.kernel.org/r/20240308230557.805580-5-alex.williamson@redhat.com
+Signed-off-by: Alex Williamson <alex.williamson@redhat.com>
 ---
- .../gpu/drm/amd/display/dc/dcn32/dcn32_resource_helpers.c   | 6 ++++++
- .../gpu/drm/amd/display/dc/resource/dcn32/dcn32_resource.c  | 1 +
- .../gpu/drm/amd/display/dc/resource/dcn32/dcn32_resource.h  | 3 +++
- 3 files changed, 10 insertions(+)
+ drivers/vfio/pci/vfio_pci_intrs.c | 145 ++++++++++++++++--------------
+ 1 file changed, 78 insertions(+), 67 deletions(-)
 
-diff --git a/drivers/gpu/drm/amd/display/dc/dcn32/dcn32_resource_helpers.c b/drivers/gpu/drm/amd/display/dc/dcn32/dcn32_resource_helpers.c
-index 87760600e154d..f98def6c8c2d2 100644
---- a/drivers/gpu/drm/amd/display/dc/dcn32/dcn32_resource_helpers.c
-+++ b/drivers/gpu/drm/amd/display/dc/dcn32/dcn32_resource_helpers.c
-@@ -782,3 +782,9 @@ void dcn32_update_dml_pipes_odm_policy_based_on_context(struct dc *dc, struct dc
- 		pipe_cnt++;
+diff --git a/drivers/vfio/pci/vfio_pci_intrs.c b/drivers/vfio/pci/vfio_pci_intrs.c
+index 75c85eec21b3c..fb5392b749fff 100644
+--- a/drivers/vfio/pci/vfio_pci_intrs.c
++++ b/drivers/vfio/pci/vfio_pci_intrs.c
+@@ -90,11 +90,15 @@ static void vfio_send_intx_eventfd(void *opaque, void *unused)
+ 
+ 	if (likely(is_intx(vdev) && !vdev->virq_disabled)) {
+ 		struct vfio_pci_irq_ctx *ctx;
++		struct eventfd_ctx *trigger;
+ 
+ 		ctx = vfio_irq_ctx_get(vdev, 0);
+ 		if (WARN_ON_ONCE(!ctx))
+ 			return;
+-		eventfd_signal(ctx->trigger);
++
++		trigger = READ_ONCE(ctx->trigger);
++		if (likely(trigger))
++			eventfd_signal(trigger);
  	}
  }
+ 
+@@ -253,100 +257,100 @@ static irqreturn_t vfio_intx_handler(int irq, void *dev_id)
+ 	return ret;
+ }
+ 
+-static int vfio_intx_enable(struct vfio_pci_core_device *vdev)
++static int vfio_intx_enable(struct vfio_pci_core_device *vdev,
++			    struct eventfd_ctx *trigger)
+ {
++	struct pci_dev *pdev = vdev->pdev;
+ 	struct vfio_pci_irq_ctx *ctx;
++	unsigned long irqflags;
++	char *name;
++	int ret;
+ 
+ 	if (!is_irq_none(vdev))
+ 		return -EINVAL;
+ 
+-	if (!vdev->pdev->irq)
++	if (!pdev->irq)
+ 		return -ENODEV;
+ 
++	name = kasprintf(GFP_KERNEL_ACCOUNT, "vfio-intx(%s)", pci_name(pdev));
++	if (!name)
++		return -ENOMEM;
 +
-+void dcn32_override_min_req_dcfclk(struct dc *dc, struct dc_state *context)
-+{
-+	if (dcn32_subvp_in_use(dc, context) && context->bw_ctx.bw.dcn.clk.dcfclk_khz <= MIN_SUBVP_DCFCLK_KHZ)
-+		context->bw_ctx.bw.dcn.clk.dcfclk_khz = MIN_SUBVP_DCFCLK_KHZ;
-+}
-diff --git a/drivers/gpu/drm/amd/display/dc/resource/dcn32/dcn32_resource.c b/drivers/gpu/drm/amd/display/dc/resource/dcn32/dcn32_resource.c
-index 3f3951f3ba983..f844f57ecc49b 100644
---- a/drivers/gpu/drm/amd/display/dc/resource/dcn32/dcn32_resource.c
-+++ b/drivers/gpu/drm/amd/display/dc/resource/dcn32/dcn32_resource.c
-@@ -1771,6 +1771,7 @@ static bool dml1_validate(struct dc *dc, struct dc_state *context, bool fast_val
- 	dc->res_pool->funcs->calculate_wm_and_dlg(dc, context, pipes, pipe_cnt, vlevel);
+ 	ctx = vfio_irq_ctx_alloc(vdev, 0);
+ 	if (!ctx)
+ 		return -ENOMEM;
  
- 	dcn32_override_min_req_memclk(dc, context);
-+	dcn32_override_min_req_dcfclk(dc, context);
- 
- 	BW_VAL_TRACE_END_WATERMARKS();
- 
-diff --git a/drivers/gpu/drm/amd/display/dc/resource/dcn32/dcn32_resource.h b/drivers/gpu/drm/amd/display/dc/resource/dcn32/dcn32_resource.h
-index 0c87b0fabba7d..2258c5c7212d8 100644
---- a/drivers/gpu/drm/amd/display/dc/resource/dcn32/dcn32_resource.h
-+++ b/drivers/gpu/drm/amd/display/dc/resource/dcn32/dcn32_resource.h
-@@ -42,6 +42,7 @@
- #define SUBVP_ACTIVE_MARGIN_LIST_LEN 2
- #define DCN3_2_MAX_SUBVP_PIXEL_RATE_MHZ 1800
- #define DCN3_2_VMIN_DISPCLK_HZ 717000000
-+#define MIN_SUBVP_DCFCLK_KHZ 400000
- 
- #define TO_DCN32_RES_POOL(pool)\
- 	container_of(pool, struct dcn32_resource_pool, base)
-@@ -181,6 +182,8 @@ bool dcn32_subvp_vblank_admissable(struct dc *dc, struct dc_state *context, int
- 
- void dcn32_update_dml_pipes_odm_policy_based_on_context(struct dc *dc, struct dc_state *context, display_e2e_pipe_params_st *pipes);
- 
-+void dcn32_override_min_req_dcfclk(struct dc *dc, struct dc_state *context);
++	ctx->name = name;
++	ctx->trigger = trigger;
 +
- /* definitions for run time init of reg offsets */
+ 	/*
+-	 * If the virtual interrupt is masked, restore it.  Devices
+-	 * supporting DisINTx can be masked at the hardware level
+-	 * here, non-PCI-2.3 devices will have to wait until the
+-	 * interrupt is enabled.
++	 * Fill the initial masked state based on virq_disabled.  After
++	 * enable, changing the DisINTx bit in vconfig directly changes INTx
++	 * masking.  igate prevents races during setup, once running masked
++	 * is protected via irqlock.
++	 *
++	 * Devices supporting DisINTx also reflect the current mask state in
++	 * the physical DisINTx bit, which is not affected during IRQ setup.
++	 *
++	 * Devices without DisINTx support require an exclusive interrupt.
++	 * IRQ masking is performed at the IRQ chip.  Again, igate protects
++	 * against races during setup and IRQ handlers and irqfds are not
++	 * yet active, therefore masked is stable and can be used to
++	 * conditionally auto-enable the IRQ.
++	 *
++	 * irq_type must be stable while the IRQ handler is registered,
++	 * therefore it must be set before request_irq().
+ 	 */
+ 	ctx->masked = vdev->virq_disabled;
+-	if (vdev->pci_2_3)
+-		pci_intx(vdev->pdev, !ctx->masked);
++	if (vdev->pci_2_3) {
++		pci_intx(pdev, !ctx->masked);
++		irqflags = IRQF_SHARED;
++	} else {
++		irqflags = ctx->masked ? IRQF_NO_AUTOEN : 0;
++	}
  
- /* CLK SRC */
+ 	vdev->irq_type = VFIO_PCI_INTX_IRQ_INDEX;
+ 
++	ret = request_irq(pdev->irq, vfio_intx_handler,
++			  irqflags, ctx->name, vdev);
++	if (ret) {
++		vdev->irq_type = VFIO_PCI_NUM_IRQS;
++		kfree(name);
++		vfio_irq_ctx_free(vdev, ctx, 0);
++		return ret;
++	}
++
+ 	return 0;
+ }
+ 
+-static int vfio_intx_set_signal(struct vfio_pci_core_device *vdev, int fd)
++static int vfio_intx_set_signal(struct vfio_pci_core_device *vdev,
++				struct eventfd_ctx *trigger)
+ {
+ 	struct pci_dev *pdev = vdev->pdev;
+-	unsigned long irqflags = IRQF_SHARED;
+ 	struct vfio_pci_irq_ctx *ctx;
+-	struct eventfd_ctx *trigger;
+-	unsigned long flags;
+-	int ret;
++	struct eventfd_ctx *old;
+ 
+ 	ctx = vfio_irq_ctx_get(vdev, 0);
+ 	if (WARN_ON_ONCE(!ctx))
+ 		return -EINVAL;
+ 
+-	if (ctx->trigger) {
+-		free_irq(pdev->irq, vdev);
+-		kfree(ctx->name);
+-		eventfd_ctx_put(ctx->trigger);
+-		ctx->trigger = NULL;
+-	}
+-
+-	if (fd < 0) /* Disable only */
+-		return 0;
+-
+-	ctx->name = kasprintf(GFP_KERNEL_ACCOUNT, "vfio-intx(%s)",
+-			      pci_name(pdev));
+-	if (!ctx->name)
+-		return -ENOMEM;
+-
+-	trigger = eventfd_ctx_fdget(fd);
+-	if (IS_ERR(trigger)) {
+-		kfree(ctx->name);
+-		return PTR_ERR(trigger);
+-	}
++	old = ctx->trigger;
+ 
+-	ctx->trigger = trigger;
++	WRITE_ONCE(ctx->trigger, trigger);
+ 
+-	/*
+-	 * Devices without DisINTx support require an exclusive interrupt,
+-	 * IRQ masking is performed at the IRQ chip.  The masked status is
+-	 * protected by vdev->irqlock. Setup the IRQ without auto-enable and
+-	 * unmask as necessary below under lock.  DisINTx is unmodified by
+-	 * the IRQ configuration and may therefore use auto-enable.
+-	 */
+-	if (!vdev->pci_2_3)
+-		irqflags = IRQF_NO_AUTOEN;
+-
+-	ret = request_irq(pdev->irq, vfio_intx_handler,
+-			  irqflags, ctx->name, vdev);
+-	if (ret) {
+-		ctx->trigger = NULL;
+-		kfree(ctx->name);
+-		eventfd_ctx_put(trigger);
+-		return ret;
++	/* Releasing an old ctx requires synchronizing in-flight users */
++	if (old) {
++		synchronize_irq(pdev->irq);
++		vfio_virqfd_flush_thread(&ctx->unmask);
++		eventfd_ctx_put(old);
+ 	}
+ 
+-	spin_lock_irqsave(&vdev->irqlock, flags);
+-	if (!vdev->pci_2_3 && !ctx->masked)
+-		enable_irq(pdev->irq);
+-	spin_unlock_irqrestore(&vdev->irqlock, flags);
+-
+ 	return 0;
+ }
+ 
+ static void vfio_intx_disable(struct vfio_pci_core_device *vdev)
+ {
++	struct pci_dev *pdev = vdev->pdev;
+ 	struct vfio_pci_irq_ctx *ctx;
+ 
+ 	ctx = vfio_irq_ctx_get(vdev, 0);
+@@ -354,10 +358,13 @@ static void vfio_intx_disable(struct vfio_pci_core_device *vdev)
+ 	if (ctx) {
+ 		vfio_virqfd_disable(&ctx->unmask);
+ 		vfio_virqfd_disable(&ctx->mask);
++		free_irq(pdev->irq, vdev);
++		if (ctx->trigger)
++			eventfd_ctx_put(ctx->trigger);
++		kfree(ctx->name);
++		vfio_irq_ctx_free(vdev, ctx, 0);
+ 	}
+-	vfio_intx_set_signal(vdev, -1);
+ 	vdev->irq_type = VFIO_PCI_NUM_IRQS;
+-	vfio_irq_ctx_free(vdev, ctx, 0);
+ }
+ 
+ /*
+@@ -641,19 +648,23 @@ static int vfio_pci_set_intx_trigger(struct vfio_pci_core_device *vdev,
+ 		return -EINVAL;
+ 
+ 	if (flags & VFIO_IRQ_SET_DATA_EVENTFD) {
++		struct eventfd_ctx *trigger = NULL;
+ 		int32_t fd = *(int32_t *)data;
+ 		int ret;
+ 
+-		if (is_intx(vdev))
+-			return vfio_intx_set_signal(vdev, fd);
++		if (fd >= 0) {
++			trigger = eventfd_ctx_fdget(fd);
++			if (IS_ERR(trigger))
++				return PTR_ERR(trigger);
++		}
+ 
+-		ret = vfio_intx_enable(vdev);
+-		if (ret)
+-			return ret;
++		if (is_intx(vdev))
++			ret = vfio_intx_set_signal(vdev, trigger);
++		else
++			ret = vfio_intx_enable(vdev, trigger);
+ 
+-		ret = vfio_intx_set_signal(vdev, fd);
+-		if (ret)
+-			vfio_intx_disable(vdev);
++		if (ret && trigger)
++			eventfd_ctx_put(trigger);
+ 
+ 		return ret;
+ 	}
 -- 
 2.43.0
 
