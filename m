@@ -1,103 +1,128 @@
-Return-Path: <linux-kernel+bounces-120266-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-120267-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8F4DD88D518
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 04:40:47 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id A893B88D51A
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 04:40:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C25C7B22A98
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 03:40:44 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DAB3B1C23A40
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 03:40:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 28E9D22F02;
-	Wed, 27 Mar 2024 03:40:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 56A0923775;
+	Wed, 27 Mar 2024 03:40:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="acQVVFBE"
-Received: from mail-vs1-f41.google.com (mail-vs1-f41.google.com [209.85.217.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F0B8E225D6
-	for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 03:40:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.217.41
+	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="KH+PR2NJ"
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2024F23763;
+	Wed, 27 Mar 2024 03:40:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711510835; cv=none; b=gZvQut4WHJxqaADQU7s4vllXDYYaj6hwZ5/NSQIAJNBfqAHtOH71KdeHHJgqavkSV2RvbVImaAs0AdkUsudbm/yH7SAs50xfZ24nHrDBNa5tCW545nL7+7BnMGZNaMzJo+ojzmAsMncjU8X00yp19zdTU84EWU6Tb4dzXqqYRfs=
+	t=1711510839; cv=none; b=SYoyMloI0rnB1J9Lum4wAKiKCHm9S42ntqiPenID/RlYEnA9+JOQopZxHeCwtEkvHrB1QzgHHZiRTBoms4Ng9p0TSxqKAv10aqvt8sNS2CyvbD5sA0UZjan75857WepcYy3Jr85iw7h87jM5CZPu+QiOmOC3YaUc8PTdqETyE8U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711510835; c=relaxed/simple;
-	bh=xd68Irl7FMjiKDIsBgFShbHmbskF4+/kOHVxexB+nws=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=L/ShWgeEIPQVnAkpclVzd5uyg5oZ/zbQR5BIh8cf9vgsmsf0p9DHzsP/EslBBv4ngZcEoCZloHYYuLYXI4rYIzw3AtsbanPoE8nTbHuJOsWpbaV0YX7cQwic7G3Vn12PkdagfceB3MxMIDV+e9bbrnE5PUSSP8VE01Ma/whAPPg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=acQVVFBE; arc=none smtp.client-ip=209.85.217.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-vs1-f41.google.com with SMTP id ada2fe7eead31-47651248841so2380902137.2
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 20:40:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1711510833; x=1712115633; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=xd68Irl7FMjiKDIsBgFShbHmbskF4+/kOHVxexB+nws=;
-        b=acQVVFBEWn0RSwHrj4H12T2aWbOtW+7zWecBLgI/f2An9AVs9A49kRRoco8PsRWwcL
-         oybQQGbPgsoa9UqAMZuNHwgfsFExm56H4CBYQ/PuXuMhmgTkubA6MyD8IEt6Gj9yYP2S
-         HfWPngnuutuTH8trcTb8S/sHhQlfsa3pvmEWk=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711510833; x=1712115633;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=xd68Irl7FMjiKDIsBgFShbHmbskF4+/kOHVxexB+nws=;
-        b=lAjbGFP/o+qakqu1vXLvbgzOYeEyMLHLdTYW3mj+NS90DRwJMLzbl8SRXHP/uRCwOc
-         kjwJeChfvQMnEjnrvlgEnbb5R6kTZUoArJy8BhIFvARHQLgHVps6CGOAY2Y668KkyS+v
-         E0q3NorRKYFFK/SmGoav3C9WaQQyTEmR9Uj7Sr1sbDWs5f4RBp90wmT4oX3zG6aGFVFo
-         CP9/beNnnU3Au3sACwlK4e2+HqkewUBADwQXfyzLtIScLW/Y6ymyTK72FXbqvnMpEgIg
-         ZXSQn3boNOY6qD8FTHAaspC9sA19rU89wnXQWgPjMpslr4PQs+5cdvwmT45L7vH3x4dG
-         J3iA==
-X-Forwarded-Encrypted: i=1; AJvYcCWXwVKQcXQzsc99DWQEH0SLiEkcWFN229qG/ExVbN45af6m8npvyx39Mb/QTkqhaCti8VLJktYXNohzMiG2ak5RxXLIIF2lrsJpPGPR
-X-Gm-Message-State: AOJu0YwCG85S/o74PN6PTE+yGKVBSYePiS5zGeUGrrLtVpb/3+Ud674b
-	bdiDpjFcOu962GSnBaCTYrvZfkQv/v355fjIX5E9BrrLnFpfyrlJU9qGX/NTQlnFnZECLRp7YyC
-	H4XJH6Lm5yyBYksWUKDR020t0V2PoYL6d/TyL
-X-Google-Smtp-Source: AGHT+IHGCiSeNt+YDldU30wn4bEUUkwnwRNEFj9Oa4heTmCMtNShSI/XEU8q4wWwhvcP+br+a93tjCv/SBIw00jIxIU=
-X-Received: by 2002:a05:6102:510c:b0:476:db9b:c60e with SMTP id
- bm12-20020a056102510c00b00476db9bc60emr3593266vsb.24.1711510832875; Tue, 26
- Mar 2024 20:40:32 -0700 (PDT)
+	s=arc-20240116; t=1711510839; c=relaxed/simple;
+	bh=Qy9jNwoADlloXLB/O/YDSRWz34f2X4WLlvwpB0CLSKQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=psiGWiuv74xW2BcisIbYtPkwLI+L8H4DbjlO8pjl+N4SIFNMbXF72mez0VOmkPkRtYsqpHZb7lSIjslPu53VrBBFMkBYFYoSjpZsiXirq2rsBDyiz7ujpCXbWcKtMOaF/rk5qmlaW9fz8e3atlfO/bIVsu/esQ6GmnYOGg94et8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=KH+PR2NJ; arc=none smtp.client-ip=13.77.154.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
+Received: by linux.microsoft.com (Postfix, from userid 1127)
+	id 820E7208444F; Tue, 26 Mar 2024 20:40:37 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 820E7208444F
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+	s=default; t=1711510837;
+	bh=4WwOkF9QcocRskGPQZaISh5gvanICY1Ewo+yRt6ITI4=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=KH+PR2NJT9MAI9WHMxn7DG+mfgYB4OiJWsDUCRNM/0e1hq7N/Q9iYajobG1DJH04m
+	 x7zHhawGfqygZbnDkrYZB8OAnz63zhnSRkeodlvJ/Nf/CWNlcTUMUlBBqseJanUmJw
+	 hyOo4nLVdBVKIkPnXe9B+FgpZZqYFFFlCLUsw7NM=
+Date: Tue, 26 Mar 2024 20:40:37 -0700
+From: Saurabh Singh Sengar <ssengar@linux.microsoft.com>
+To: Long Li <longli@microsoft.com>
+Cc: KY Srinivasan <kys@microsoft.com>,
+	Haiyang Zhang <haiyangz@microsoft.com>,
+	"wei.liu@kernel.org" <wei.liu@kernel.org>,
+	Dexuan Cui <decui@microsoft.com>,
+	"gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
+	Saurabh Singh Sengar <ssengar@microsoft.com>
+Subject: Re: [PATCH v2 5/7] tools: hv: Add new fcopy application based on uio
+ driver
+Message-ID: <20240327034037.GA22340@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
+References: <1710930584-31180-1-git-send-email-ssengar@linux.microsoft.com>
+ <1710930584-31180-6-git-send-email-ssengar@linux.microsoft.com>
+ <SJ1PR21MB3457E5B4D852A914CD691E53CE322@SJ1PR21MB3457.namprd21.prod.outlook.com>
+ <20240321180705.GA12387@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240325-public-ucsi-h-v2-0-a6d716968bb1@chromium.org>
- <20240325-public-ucsi-h-v2-3-a6d716968bb1@chromium.org> <62b2c29f-ca1a-4131-910b-7b9b62a5577e@kernel.org>
-In-Reply-To: <62b2c29f-ca1a-4131-910b-7b9b62a5577e@kernel.org>
-From: Pavan Holla <pholla@chromium.org>
-Date: Tue, 26 Mar 2024 20:39:57 -0700
-Message-ID: <CAB2FV=7fqsdDuuxZb4dte+Nm4-Pijk20hGzbT8uvzQKsAfup3g@mail.gmail.com>
-Subject: Re: [PATCH v2 3/3] platform/chrome: cros_ec_ucsi: Implement UCSI PDC driver
-To: Krzysztof Kozlowski <krzk@kernel.org>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
-	Heikki Krogerus <heikki.krogerus@linux.intel.com>, Benson Leung <bleung@chromium.org>, 
-	Tzung-Bi Shih <tzungbi@kernel.org>, Guenter Roeck <groeck@chromium.org>, linux-kernel@vger.kernel.org, 
-	linux-usb@vger.kernel.org, 
-	Abhishek Pandit-Subedi <abhishekpandit@chromium.org>, chrome-platform@lists.linux.dev
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240321180705.GA12387@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
+User-Agent: Mutt/1.5.21 (2010-09-15)
 
-Hi Krzysztof,
+On Thu, Mar 21, 2024 at 11:07:06AM -0700, Saurabh Singh Sengar wrote:
+> On Thu, Mar 21, 2024 at 04:42:44PM +0000, Long Li wrote:
+> > > Subject: [PATCH v2 5/7] tools: hv: Add new fcopy application based on uio driver
+> > > 
+> > > New fcopy application using uio_hv_generic driver. This application copies file
+> > > from Hyper-V host to guest VM.
+> > > 
+> > > A big part of this code is copied from tools/hv/hv_fcopy_daemon.c which this new
+> > > application is replacing.
+> > > 
+> > > Signed-off-by: Saurabh Sengar <ssengar@linux.microsoft.com>
+> > > ---
+> > > [V2]
+> > > - Improve commit message.
+> > > - Change (4 * 4096) to 0x4000 for ring buffer size
+> > > - Removed some unnecessary type casting.
+> > > - Mentioned in file copy right header that this code is copied.
+> > > - Changed the print from "Registration failed" to "Signal to host failed".
+> > > - Fixed mask for rx buffer interrupt to 0 before waiting for interrupt.
+> > > 
+> > >  tools/hv/Build                 |   3 +-
+> > >  tools/hv/Makefile              |  10 +-
+> > >  tools/hv/hv_fcopy_uio_daemon.c | 490
+> > > +++++++++++++++++++++++++++++++++
+> > >  3 files changed, 497 insertions(+), 6 deletions(-)  create mode 100644
+> > > tools/hv/hv_fcopy_uio_daemon.c
+> > > 
+> > > diff --git a/tools/hv/Build b/tools/hv/Build index 6cf51fa4b306..7d1f1698069b
+> > > 100644
+> > > --- a/tools/hv/Build
+> > > +++ b/tools/hv/Build
+> > > @@ -1,3 +1,4 @@
+> > >  hv_kvp_daemon-y += hv_kvp_daemon.o
+> > >  hv_vss_daemon-y += hv_vss_daemon.o
+> > > -hv_fcopy_daemon-y += hv_fcopy_daemon.o
+> > > +hv_fcopy_uio_daemon-y += hv_fcopy_uio_daemon.o hv_fcopy_uio_daemon-y
+> > > +=
+> > > +vmbus_bufring.o
+> > > diff --git a/tools/hv/Makefile b/tools/hv/Makefile index
+> > > fe770e679ae8..944180cf916e 100644
+> > > --- a/tools/hv/Makefile
+> > > +++ b/tools/hv/Makefile
+> > 
+> > I'm not sure if vmbus_bufring will compile on ARM.
+> > If it's not supported, can use some flags in Makefile to not build this.
+> 
+> You are right, this is not supported on ARM64. I can query uname in Makefile
+> and compile this only for arch != aarch64.
+> I will add this info in commit message as well.
+> 
+> - Saurabh
 
-Thanks for the review.
+Greg/Long,
 
-On Tue, Mar 26, 2024 at 1:47=E2=80=AFAM Krzysztof Kozlowski <krzk@kernel.or=
-g> wrote:
-> Nothing improved.
+I will be sending the V3 fixing above comment. Hope there are no
+further comments.
 
-Yes. I only added maintainers of drivers/platform/chrome in v2. I am
-still investigating why MODULE_ALIAS() is required.
-
-> One patchset per 24h. Allow people to actually review your code.
-
-Thanks for letting me know. I will throttle future patch uploads.
-
-Best regards,
-Pavan
+- Saurabh
 
