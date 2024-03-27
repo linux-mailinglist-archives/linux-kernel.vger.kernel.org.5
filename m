@@ -1,55 +1,58 @@
-Return-Path: <linux-kernel+bounces-120849-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-120850-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id C4C2D88DF35
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 13:22:17 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7F9BE88DF39
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 13:22:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 71ED61F2F26E
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 12:22:17 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B0CA41C20885
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 12:22:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B780213C3C1;
-	Wed, 27 Mar 2024 12:09:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B2B3112FF7E;
+	Wed, 27 Mar 2024 12:09:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MF++7WEE"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MJGdDyUL"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0161713BC2B;
-	Wed, 27 Mar 2024 12:09:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EE5F013C67E;
+	Wed, 27 Mar 2024 12:09:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711541381; cv=none; b=eO1CbYDOzFGYBw/BU3+HibjHNb6nu49u6PoSWZxyHdmYRA9OSr5GPzMwGMo07tUFyPzcaOB0yQd7Rcxm0MM3XG6jlL/pLCQiOS+trlG2z/D2nmpPeoJL8+lUnlaa0am41818QTG4QnsKOKokma8z3qgJN1Ru9nW9x47p9YXlCJk=
+	t=1711541384; cv=none; b=WFh0IN9bzho9AQhEarvIqsL04WeWwK7TKm7KEZA8VUmVm5IZWjmfugy2YE8cbZqMa52OpuZAPz1seD9TIhlZxL1dHf4IAwKXUrolLY47A3S7izQP7A1uDEd1pqhaU0wKo8I5pvGFGo0DtrU2Ud//hKlQLb4EgI7JazOJYICEDSM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711541381; c=relaxed/simple;
-	bh=gVhn9JUAUMIcvMXAcG9o4Me/bPxoru9v/JWEEIU5Xks=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Z/6UlQ9j+BSt+CAjMMmnwA3YWuqmziuEMgVHW9vAtqdyvpD3BxLkRgxhZKSbZ3hm8XsyJKNAmw3Iv7sm55KhxWShMjDMX9w2YVwexsEOaRnSyenEkyOBSAhqP4vlY2DO9PMPDy286ltV/ytY4PlYmpplJ8GREhUACuNylr8iYik=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MF++7WEE; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EF455C433F1;
-	Wed, 27 Mar 2024 12:09:39 +0000 (UTC)
+	s=arc-20240116; t=1711541384; c=relaxed/simple;
+	bh=PdO3QTWWXdtXH/faSHBeGBKz4oXryRW19An/VRbluwU=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=ZKDETUDjW+GtXgQfH7igEoQfVOEULJ3VIckqNSD7CFRiv2/ff0bT9QmVJT9JG8J6GwB77rASIrKwPirxW84TEzEvs6wDmoRH7zs+fcDQ7ZsxVmcUP8t7Ftww9EBbz+97JCF1a1I3Kj8jMuARhEmOz1Rli8ZPvh9FWVvu/jnwRiM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MJGdDyUL; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A5E5EC433F1;
+	Wed, 27 Mar 2024 12:09:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711541380;
-	bh=gVhn9JUAUMIcvMXAcG9o4Me/bPxoru9v/JWEEIU5Xks=;
+	s=k20201202; t=1711541383;
+	bh=PdO3QTWWXdtXH/faSHBeGBKz4oXryRW19An/VRbluwU=;
 	h=From:To:Cc:Subject:Date:From;
-	b=MF++7WEE3JSHqMHtA1XYLmiHoXl72b5RVimk8qUvfPdnu5X8phIYDd11iwxBZ3VTm
-	 MyQM3eiSrODtdLhvZx6oPXYgmG16jFmkNGf38Grlgq3joCQ9wtREku96zc2LIssMPB
-	 f2WS8ytU6qMmyrpWq8ZIXjiPlz3AU3f87hCYUrllELeqIU1Q4YQ3V64Tp9NcTQEoMF
-	 Qo0bTW9y+sh23/Y8s1fUJ8uHkepF8fPO25o1txsF043+0CUlVS6Zt2iWYeF5HTaerg
-	 at3byUHv3cuHGT4PGo02wC0Tb+1U4O90p/AQVbw6HAVuwvA1ecYahYglbP6bXnq+jx
-	 UpXBKiedVDcyQ==
+	b=MJGdDyULZm4P7Ke0AyCO4eMSILW9OPiJU4jCMgBNpuZVXjziw6X0B/Wkl27dL11Zh
+	 Kb+H1ADfhAJ0ioc/wtZzTtA4jSFGeggffP7UuJJXUoZ/N3mzhFp0Xyn7ntaCNpcFtz
+	 LaeJ76dmDlmrz7WLbc2lhjtQxdCZ0aqLgGKMm3lxor9/XdlLpOVakJnjciIxvB1FTc
+	 82ZepGQ1VukU1YvfoHbah39PA7vWtQiBg+uMm6p704fYRYNca2h9zIR7OcWGH78U50
+	 oLppYtxRv8EqrBWMWZxSx7gWNEXoVE2Ii0aYnRrNmPik5d3dS5UEjuZyAVA79pjqkg
+	 tGAAi+H0I7VEA==
 From: Sasha Levin <sashal@kernel.org>
 To: stable@vger.kernel.org,
-	yukuai3@huawei.com
-Cc: Xiao Ni <xni@redhat.com>,
-	Mike Snitzer <snitzer@kernel.org>,
-	Song Liu <song@kernel.org>,
-	dm-devel@lists.linux.dev,
+	dillon.varone@amd.com
+Cc: Mario Limonciello <mario.limonciello@amd.com>,
+	Alex Deucher <alexander.deucher@amd.com>,
+	Martin Leung <martin.leung@amd.com>,
+	Alex Hung <alex.hung@amd.com>,
+	Daniel Wheeler <daniel.wheeler@amd.com>,
+	amd-gfx@lists.freedesktop.org,
+	dri-devel@lists.freedesktop.org,
 	linux-kernel@vger.kernel.org
-Subject: FAILED: Patch "md/dm-raid: don't call md_reap_sync_thread() directly" failed to apply to 6.6-stable tree
-Date: Wed, 27 Mar 2024 08:09:38 -0400
-Message-ID: <20240327120939.2827235-1-sashal@kernel.org>
+Subject: FAILED: Patch "drm/amd/display: Init link enc resources in dc_state only if res_pool presents" failed to apply to 6.6-stable tree
+Date: Wed, 27 Mar 2024 08:09:41 -0400
+Message-ID: <20240327120941.2827276-1-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -71,81 +74,43 @@ Sasha
 
 ------------------ original commit in Linus's tree ------------------
 
-From cd32b27a66db8776d8b8e82ec7d7dde97a8693b0 Mon Sep 17 00:00:00 2001
-From: Yu Kuai <yukuai3@huawei.com>
-Date: Tue, 5 Mar 2024 15:23:03 +0800
-Subject: [PATCH] md/dm-raid: don't call md_reap_sync_thread() directly
+From ca25a2b5f841f991e472e2dde7f5e2d337dbea08 Mon Sep 17 00:00:00 2001
+From: Dillon Varone <dillon.varone@amd.com>
+Date: Thu, 28 Dec 2023 21:36:39 -0500
+Subject: [PATCH] drm/amd/display: Init link enc resources in dc_state only if
+ res_pool presents
 
-Currently md_reap_sync_thread() is called from raid_message() directly
-without holding 'reconfig_mutex', this is definitely unsafe because
-md_reap_sync_thread() can change many fields that is protected by
-'reconfig_mutex'.
+[Why & How]
+res_pool is not initialized in all situations such as virtual
+environments, and therefore link encoder resources should not be
+initialized if res_pool is NULL.
 
-However, hold 'reconfig_mutex' here is still problematic because this
-will cause deadlock, for example, commit 130443d60b1b ("md: refactor
-idle/frozen_sync_thread() to fix deadlock").
-
-Fix this problem by using stop_sync_thread() to unregister sync_thread,
-like md/raid did.
-
-Fixes: be83651f0050 ("DM RAID: Add message/status support for changing sync action")
-Cc: stable@vger.kernel.org # v6.7+
-Signed-off-by: Yu Kuai <yukuai3@huawei.com>
-Signed-off-by: Xiao Ni <xni@redhat.com>
-Acked-by: Mike Snitzer <snitzer@kernel.org>
-Signed-off-by: Song Liu <song@kernel.org>
-Link: https://lore.kernel.org/r/20240305072306.2562024-7-yukuai1@huaweicloud.com
+Cc: Mario Limonciello <mario.limonciello@amd.com>
+Cc: Alex Deucher <alexander.deucher@amd.com>
+Cc: stable@vger.kernel.org
+Reviewed-by: Martin Leung <martin.leung@amd.com>
+Acked-by: Alex Hung <alex.hung@amd.com>
+Signed-off-by: Dillon Varone <dillon.varone@amd.com>
+Tested-by: Daniel Wheeler <daniel.wheeler@amd.com>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 ---
- drivers/md/dm-raid.c | 28 ++++++++++++++++++----------
- 1 file changed, 18 insertions(+), 10 deletions(-)
+ drivers/gpu/drm/amd/display/dc/core/dc_state.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/md/dm-raid.c b/drivers/md/dm-raid.c
-index e2d7a73c0f874..47c4b1b6e532a 100644
---- a/drivers/md/dm-raid.c
-+++ b/drivers/md/dm-raid.c
-@@ -3719,6 +3719,7 @@ static int raid_message(struct dm_target *ti, unsigned int argc, char **argv,
- {
- 	struct raid_set *rs = ti->private;
- 	struct mddev *mddev = &rs->md;
-+	int ret = 0;
+diff --git a/drivers/gpu/drm/amd/display/dc/core/dc_state.c b/drivers/gpu/drm/amd/display/dc/core/dc_state.c
+index 460a8010c79fe..56feee0ff01b1 100644
+--- a/drivers/gpu/drm/amd/display/dc/core/dc_state.c
++++ b/drivers/gpu/drm/amd/display/dc/core/dc_state.c
+@@ -267,7 +267,8 @@ void dc_state_construct(struct dc *dc, struct dc_state *state)
+ 	state->clk_mgr = dc->clk_mgr;
  
- 	if (!mddev->pers || !mddev->pers->sync_request)
- 		return -EINVAL;
-@@ -3726,17 +3727,24 @@ static int raid_message(struct dm_target *ti, unsigned int argc, char **argv,
- 	if (test_bit(RT_FLAG_RS_SUSPENDED, &rs->runtime_flags))
- 		return -EBUSY;
+ 	/* Initialise DIG link encoder resource tracking variables. */
+-	link_enc_cfg_init(dc, state);
++	if (dc->res_pool)
++		link_enc_cfg_init(dc, state);
+ }
  
--	if (!strcasecmp(argv[0], "frozen"))
--		set_bit(MD_RECOVERY_FROZEN, &mddev->recovery);
--	else
--		clear_bit(MD_RECOVERY_FROZEN, &mddev->recovery);
-+	if (!strcasecmp(argv[0], "frozen")) {
-+		ret = mddev_lock(mddev);
-+		if (ret)
-+			return ret;
- 
--	if (!strcasecmp(argv[0], "idle") || !strcasecmp(argv[0], "frozen")) {
--		if (mddev->sync_thread) {
--			set_bit(MD_RECOVERY_INTR, &mddev->recovery);
--			md_reap_sync_thread(mddev);
--		}
--	} else if (decipher_sync_action(mddev, mddev->recovery) != st_idle)
-+		md_frozen_sync_thread(mddev);
-+		mddev_unlock(mddev);
-+	} else if (!strcasecmp(argv[0], "idle")) {
-+		ret = mddev_lock(mddev);
-+		if (ret)
-+			return ret;
-+
-+		md_idle_sync_thread(mddev);
-+		mddev_unlock(mddev);
-+	}
-+
-+	clear_bit(MD_RECOVERY_FROZEN, &mddev->recovery);
-+	if (decipher_sync_action(mddev, mddev->recovery) != st_idle)
- 		return -EBUSY;
- 	else if (!strcasecmp(argv[0], "resync"))
- 		; /* MD_RECOVERY_NEEDED set below */
+ void dc_state_destruct(struct dc_state *state)
 -- 
 2.43.0
 
