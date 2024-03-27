@@ -1,139 +1,118 @@
-Return-Path: <linux-kernel+bounces-121357-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-121358-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4DA6788E6EB
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 15:45:56 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 346C288E6B1
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 15:42:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7CC2AB289C1
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 14:41:50 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E50D82C8CF9
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 14:42:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA6A9158201;
-	Wed, 27 Mar 2024 13:17:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CA69A12FB16;
+	Wed, 27 Mar 2024 13:17:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="DzuINk43"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hZa5clA5"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DA08B13AD07;
-	Wed, 27 Mar 2024 13:16:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2033112CD98
+	for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 13:17:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711545420; cv=none; b=YWYLcBe8pMXQsMtdkJL0Je5I4UGRo0bCsC/bbI/QsDJUQWNPbIERGO5Kx9LVZrTIKb2ZYnHZLHQfl2uv5dmo16t43NuWvvZ71fzT3EDD440hs+TMWl/Pb9v9k8rV7+kHvhit7vk9RrxN7K5ZviJjdxJ+jNU3JdQ1BFYQOKUQsqc=
+	t=1711545436; cv=none; b=khI5BrbFeHuIMJEXsSNV36lq/A2GmdWfB/f5GjV9Zwsl4Plg1kjSo8cWfKef3vfrKznMaje3N804464neJ0ws/yA7XoxNyR+4/72GiD+DqO+sw2n4V24kzBmDf5bW3eiNjcDNvnXhp77311Q5z0vFmGWDQJ4SytNP0/GybTe1TE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711545420; c=relaxed/simple;
-	bh=KB772K6yfcU4hKXW7HSRS4muGDBCrt9ntzx2TSR19P8=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=SsoSf4c8xSfBx798rTa5le0MnNu/A/B59SlZlLzOd4dBldy24k4r+2vUAofD69UpquMe5nfepm1bsa2T1MFGn/Guwi8x6S8xN0g9KSOXGNBv/w776rf5ZYabYxkgNima1wOQ/AMkHKREmd7Q4I4LkB45U0dkyIY9RGKzvls5aoQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=DzuINk43; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6F66BC43141;
-	Wed, 27 Mar 2024 13:16:59 +0000 (UTC)
+	s=arc-20240116; t=1711545436; c=relaxed/simple;
+	bh=EgGwsr1jWaZ3/tn3jhVBCdIu5Zv7AE9Le1ze+dVFpKM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=SWwEnOC7PhUBsS1v/5fw/Y1Kq7BBvDbYgAY8PBaSmsJwi7io1pi2eQ/oKIhtte8MPYxwEitKS3Dbe83gIlJ/DF3v+sXj0KXEVNxmp479vrB2xcFXC4hdlkg2JTFMq8UB7u9/cQ9cBLpp+4qASJSSOxReliM6zE/OpLAMub2hgmE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=hZa5clA5; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EC207C433C7;
+	Wed, 27 Mar 2024 13:17:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711545419;
-	bh=KB772K6yfcU4hKXW7HSRS4muGDBCrt9ntzx2TSR19P8=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=DzuINk43Tn1Mu46vGyloK0RcIZjT/o1tO37IhMTw3vGuY8iuvQbfC1d2wuhVGcsvu
-	 11L2zxwsTwcE7XYQee6vDMJHq4r9cM8rR8tK68KarEE8Ls8MlaUQuo7iFtWeq4/4cm
-	 vN7xbALw3d3LM7cP291/Wb2Iyn/8gooXL9HkTTf5SU72EIMtgU2ssAT51bz/1X0cGC
-	 l3MOS7g4HXtAMKtJKR287UtUghHwkIv48hVcpsuz5cisQC2vkKx2Jv20NpVrjH03kF
-	 /hRoBnhHkVLj/0Sx5qOGUttptO1hRrQRB0i++C/FWqVIh+128a+cZj7paJ2AKb6Fwp
-	 Xy9pZb7E7FGnA==
-Received: by mail-ot1-f54.google.com with SMTP id 46e09a7af769-6e447c39525so77621a34.0;
-        Wed, 27 Mar 2024 06:16:59 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCU/Zpw9U9pU55sehhvw0QccjCcGXkFRFuiKO6PrOrtXJ6v6OOcYe7R6RDkxjozZVkjiM1kTCeqiqaez6WxRdjPgWio2eH4BvRwVl1156q+qHQ+EWnYXZMlTdpo9CKty57s3QB88XeR3kbJdTmUICit9Wczskd0xygh9Tx78kBAWfwEUcJE8Dyx8qnwo3dsWHTLYgZUvxTLIAJ5R+NJ6Tnf9YycnkjIjGSJMVJ1sqRnOa5lNUPXRpzR7NJ8mJmngZSb6YA==
-X-Gm-Message-State: AOJu0YxnMJwnMEeIF4/yTCOp3BQ0FRzgF3m4pk67FBnVrPTGLxoYSlzZ
-	3jmzb+Sjjr01gwbyCyzfi353WKs47H4G7RL09Wmv3z3GymC5iskCyRA3bZQYsgaOXUKXmpGlsNU
-	xegFZpBMr1O6rJ3JsZD0xbIlIdUg=
-X-Google-Smtp-Source: AGHT+IHTd8oEHRAH3g6srEsbWrNzFluzIX84L1KgTi5gMkKVrAYaOe8Cp3nobmnxM/cXjJi/h1wt0g2XfJgmb7R2UWU=
-X-Received: by 2002:a05:6870:b156:b0:221:399e:959a with SMTP id
- a22-20020a056870b15600b00221399e959amr13119078oal.0.1711545418629; Wed, 27
- Mar 2024 06:16:58 -0700 (PDT)
+	s=k20201202; t=1711545436;
+	bh=EgGwsr1jWaZ3/tn3jhVBCdIu5Zv7AE9Le1ze+dVFpKM=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=hZa5clA5oSe9ER3hZCEFG65OMupx2BoQMqS7RixS7YRWiYLXCJw5Go90/s3nH0J/k
+	 TRaQsFCOzU826/qMteSuzE7B2U2SzuljYSlQYT2x86ur9XbNAh26Gi7UsDZ2DyRIxb
+	 t8fvOanIcy475vfiYNUPDVdGYdD49BLFDKObRxoOUjICTJCNvkNnQP+tHLMIpNWmDQ
+	 f8thN/h/4DFNYkDSX2QFtfqvZCjbEow+AIIUmB57/NfWawfuq8iW1FEd5NDwk1T85S
+	 QgAkpAQz5kjUoZNpY1WKj6u2wLxB91EEY5VsRyHrDBWOkNmoDBULiJ3RPxDRdR11pZ
+	 Pvxf5RX7sxBFA==
+Date: Wed, 27 Mar 2024 13:17:11 +0000
+From: Lee Jones <lee@kernel.org>
+To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc: Mateusz K <mateusz.kaduk@gmail.com>, Bjorn Helgaas <helgaas@kernel.org>,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1 1/1] mfd: intel-lpss: Switch over to MSI interrupts
+Message-ID: <20240327131711.GR13211@google.com>
+References: <20240312165905.1764507-1-andriy.shevchenko@linux.intel.com>
+ <20240325211915.GA1449994@bhelgaas>
+ <CAPf=4Rc2vQrWqcs=-ND3iOZFJyKE7FdPoqU9w6DKjoSaJo6KaQ@mail.gmail.com>
+ <ZgLefFQanbq-ozKM@smile.fi.intel.com>
+ <ZgLooJa1JVKEMOtf@smile.fi.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240327-b4-module-owner-acpi-v1-0-725241a2d224@linaro.org>
-In-Reply-To: <20240327-b4-module-owner-acpi-v1-0-725241a2d224@linaro.org>
-From: "Rafael J. Wysocki" <rafael@kernel.org>
-Date: Wed, 27 Mar 2024 14:16:46 +0100
-X-Gmail-Original-Message-ID: <CAJZ5v0hEiKJJWn-TVoyL6DEbCcMpL39_q+HLG_YZyjf9g29CXA@mail.gmail.com>
-Message-ID: <CAJZ5v0hEiKJJWn-TVoyL6DEbCcMpL39_q+HLG_YZyjf9g29CXA@mail.gmail.com>
-Subject: Re: [PATCH 00/19] ACPI: store owner from modules with acpi_bus_register_driver()
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc: "Rafael J. Wysocki" <rafael@kernel.org>, Len Brown <lenb@kernel.org>, 
-	Robert Moore <robert.moore@intel.com>, Dmitry Torokhov <dmitry.torokhov@gmail.com>, 
-	"David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Benson Leung <bleung@chromium.org>, 
-	Tzung-Bi Shih <tzungbi@kernel.org>, Corentin Chary <corentin.chary@gmail.com>, 
-	"Luke D. Jones" <luke@ljones.dev>, Hans de Goede <hdegoede@redhat.com>, 
-	=?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>, 
-	Thadeu Lima de Souza Cascardo <cascardo@holoscopio.com>, Daniel Oliveira Nascimento <don@syst.com.br>, 
-	=?UTF-8?Q?Pali_Roh=C3=A1r?= <pali@kernel.org>, 
-	Matan Ziv-Av <matan@svgalib.org>, Mattia Dongili <malattia@linux.it>, 
-	Azael Avalos <coproscefalo@gmail.com>, Richard Cochran <richardcochran@gmail.com>, 
-	Jeff Sipek <jsipek@vmware.com>, Ajay Kaher <akaher@vmware.com>, 
-	Alexey Makhalov <amakhalov@vmware.com>, VMware PV-Drivers Reviewers <pv-drivers@vmware.com>, 
-	"Theodore Ts'o" <tytso@mit.edu>, "Jason A. Donenfeld" <Jason@zx2c4.com>, 
-	"Rafael J. Wysocki" <rafael.j.wysocki@intel.com>, linux-acpi@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, acpica-devel@lists.linux.dev, 
-	linux-input@vger.kernel.org, netdev@vger.kernel.org, 
-	chrome-platform@lists.linux.dev, platform-driver-x86@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <ZgLooJa1JVKEMOtf@smile.fi.intel.com>
 
-On Wed, Mar 27, 2024 at 8:44=E2=80=AFAM Krzysztof Kozlowski
-<krzysztof.kozlowski@linaro.org> wrote:
->
-> Merging
-> =3D=3D=3D=3D=3D=3D=3D
-> All further patches depend on the first amba patch, therefore please ack
-> and this should go via one tree: ACPI?
->
-> Description
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> Modules registering driver with acpi_bus_register_driver() often forget t=
-o
-> set .owner field.
->
-> Solve the problem by moving this task away from the drivers to the core
-> amba bus code, just like we did for platform_driver in commit
-> 9447057eaff8 ("platform_device: use a macro instead of
-> platform_driver_register").
->
-> Best regards,
-> Krzysztof
->
-> ---
-> Krzysztof Kozlowski (19):
->       ACPI: store owner from modules with acpi_bus_register_driver()
->       Input: atlas: - drop owner assignment
->       net: fjes: drop owner assignment
->       platform: chrome: drop owner assignment
->       platform: asus-laptop: drop owner assignment
->       platform: classmate-laptop: drop owner assignment
->       platform/x86/dell: drop owner assignment
->       platform/x86/eeepc: drop owner assignment
->       platform/x86/intel/rst: drop owner assignment
->       platform/x86/intel/smartconnect: drop owner assignment
->       platform/x86/lg-laptop: drop owner assignment
->       platform/x86/sony-laptop: drop owner assignment
->       platform/x86/toshiba_acpi: drop owner assignment
->       platform/x86/toshiba_bluetooth: drop owner assignment
->       platform/x86/toshiba_haps: drop owner assignment
->       platform/x86/wireless-hotkey: drop owner assignment
->       ptp: vmw: drop owner assignment
->       virt: vmgenid: drop owner assignment
->       ACPI: drop redundant owner from acpi_driver
+On Tue, 26 Mar 2024, Andy Shevchenko wrote:
 
-I definitely like this, so
+> On Tue, Mar 26, 2024 at 04:41:01PM +0200, Andy Shevchenko wrote:
+> > On Tue, Mar 26, 2024 at 11:06:38AM +0100, Mateusz K wrote:
+> > > I tried the patch that changes PCI_IRQ_LEGACY into PCI_IRQ_ALL_TYPES
+> > > and it seems I get some other error now
+> > > 
+> > > [    1.477341] intel-lpss 0000:00:15.0: enabling device (0004 -> 0006)
+> > > [    1.477466] intel-lpss 0000:00:15.0: can't derive routing for PCI INT A
+> > > [    1.477468] intel-lpss 0000:00:15.0: PCI INT A: not connected
+> > > [    1.477488] intel-lpss 0000:00:15.0: probe with driver intel-lpss
+> > > failed with error -2147483648
+> > > [    1.489572] intel-lpss 0000:00:15.2: enabling device (0004 -> 0006)
+> > > [    1.489688] intel-lpss 0000:00:15.2: can't derive routing for PCI INT C
+> > > [    1.489689] intel-lpss 0000:00:15.2: PCI INT C: not connected
+> > > [    1.489715] intel-lpss 0000:00:15.2: probe with driver intel-lpss
+> > > failed with error -2147483648
+> > > [    1.501886] intel-lpss 0000:00:19.0: enabling device (0004 -> 0006)
+> > > [    1.502034] intel-lpss 0000:00:19.0: can't derive routing for PCI INT A
+> > > [    1.502036] intel-lpss 0000:00:19.0: PCI INT A: not connected
+> > > [    1.502067] intel-lpss 0000:00:19.0: probe with driver intel-lpss
+> > > failed with error -2147483648
+> > > [    1.514288] intel-lpss 0000:00:19.1: enabling device (0004 -> 0006)
+> > > [    1.514535] intel-lpss 0000:00:19.1: can't derive routing for PCI INT B
+> > > [    1.514538] intel-lpss 0000:00:19.1: PCI INT B: not connected
+> > > [    1.514570] intel-lpss 0000:00:19.1: probe with driver intel-lpss
+> > > failed with error -2147483648
+> > > [    1.526291] intel-lpss 0000:00:1e.0: enabling device (0004 -> 0006)
+> > > [    1.526555] intel-lpss 0000:00:1e.0: can't derive routing for PCI INT A
+> > > [    1.526557] intel-lpss 0000:00:1e.0: PCI INT A: not connected
+> > > [    1.526604] intel-lpss 0000:00:1e.0: probe with driver intel-lpss
+> > > failed with error -2147483648
+> > > [    1.538130] intel-lpss 0000:00:1e.3: enabling device (0004 -> 0006)
+> > > [    1.538233] intel-lpss 0000:00:1e.3: can't derive routing for PCI INT D
+> > > [    1.538235] intel-lpss 0000:00:1e.3: PCI INT D: not connected
+> > > [    1.538253] intel-lpss 0000:00:1e.3: probe with driver intel-lpss
+> > > failed with error -2147483648
+> > 
+> > Hmm... I have a unique board to test :-)
+> > Let's revert it then.
+> > 
+> > Bjorn, in such case your tree should keep conversion one.
+> > 
+> > Lee, do you prefer a revert or can you simply drop this from the queue?
+> 
+> Hold on, but IIUC this is the report about new hardware that never had
+> a support by Linux before.
 
-Acked-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+So a revert is no longer required?
 
-for the series and I can pick it up if people agree.
-
-Thanks!
+-- 
+Lee Jones [李琼斯]
 
