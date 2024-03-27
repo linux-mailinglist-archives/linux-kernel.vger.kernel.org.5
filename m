@@ -1,136 +1,160 @@
-Return-Path: <linux-kernel+bounces-122164-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-122144-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 17B9588F2F5
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 00:22:27 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 70BA188F2AA
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 00:15:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C23B21F253C3
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 23:22:26 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7A9601C260FE
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 23:15:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A2A8D154BFA;
-	Wed, 27 Mar 2024 23:20:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D8C1E15445D;
+	Wed, 27 Mar 2024 23:15:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=lechnology.com header.i=@lechnology.com header.b="Gb8Umenx"
-Received: from vern.gendns.com (vern.gendns.com [98.142.107.122])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="IjSowuaV"
+Received: from mail-qt1-f173.google.com (mail-qt1-f173.google.com [209.85.160.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3FFC714C5B1
-	for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 23:20:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=98.142.107.122
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A0B95153BF3
+	for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 23:15:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711581627; cv=none; b=CUP8rbZ+u0rpKAal8h3eqO6DLTCGWq6dzFtux+4zC5c6h27OFaSkHGWEklQxiPm24Wl2MPOFO8isWRU3qIeg6Nu6ooPwoD89OSiBNFIpSFVjREiu9J5YxMxFV3EpxcmxgH4gybes3ZKG7eOxDpQvYexKeKCqmu+npL08u5EFaMA=
+	t=1711581332; cv=none; b=X887dxBVbc4ljdp5u73eSg9/d9DtjxtyPgdRc8Aq5PkUMmKaRRHGlY9da8fBsrozA/+asqmZOZOsl4fxHw4rokDnqcFH/P2y0lWIHXFznlu2mBsTgEb9dGPnIHLVWQ/eVasNnBYfZNrt0qoxaoJELHKZ5BXO+yg4dXy1z4I89wE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711581627; c=relaxed/simple;
-	bh=GqRS/t2xV6jc5khiwR5ot3NzbiCZobtJ+/179aX9kts=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=Kjufng4k8IC359iw4RDa1ixk6g8YQ2b8YecIOOkPDPVChnkxdUiQNzwYbBhO8nbThxfIeyv9/0dh/8t5/8mZH+SWITPVKDchIU0VF/l+xfLDJSZ1g4kfSVMLFMLngZUwiKB4YJb/6KWQXb8FY/MHndRSJB5DH9aXN55xGqNYThQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=lechnology.com; spf=pass smtp.mailfrom=lechnology.com; dkim=pass (2048-bit key) header.d=lechnology.com header.i=@lechnology.com header.b=Gb8Umenx; arc=none smtp.client-ip=98.142.107.122
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=lechnology.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lechnology.com
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lechnology.com; s=default; h=Content-Transfer-Encoding:Content-Type:
-	In-Reply-To:From:References:To:Subject:MIME-Version:Date:Message-ID:Sender:
-	Reply-To:Cc:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-	List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=GqRS/t2xV6jc5khiwR5ot3NzbiCZobtJ+/179aX9kts=; b=Gb8UmenxOdRBJWALOOtlLBiJR8
-	kIl9ql22arklLvrU5yjgRH3dl+hncG0KnlK9wh55bCdoM9j4EmtecAOMgrWzo0xV8H6QKnuvxsF+N
-	Rw62mlB+of/JYc7QC4gvtDkKFKGxJbDwuLFc5+N8fa/jnVD4MVf6B4gsnC5OwjZhGWKorziErazhe
-	aZ8RmUAUF+JlW9wtOgCMQQPlAI3ICsmjgrnxYVEeNxddHR2W4SYMTHtVVwN5bgtVhxZQMty9PgGFH
-	+B9p7tMQl0Gtuaor8VD2ZCSJSy/0KPQStz5Q3ACEm0/2sW6MiXT0jAreYXUQYB200Ka4c6I/E7ylW
-	myKnAqMA==;
-Received: from ip98-183-112-25.ok.ok.cox.net ([98.183.112.25]:44708 helo=[192.168.0.142])
-	by vern.gendns.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-	(Exim 4.96.2)
-	(envelope-from <david@lechnology.com>)
-	id 1rpcVm-0004r2-2p;
-	Wed, 27 Mar 2024 19:14:28 -0400
-Message-ID: <b44e62bf-59c4-4e57-b40f-3ce8a091ba2c@lechnology.com>
-Date: Wed, 27 Mar 2024 18:14:25 -0500
+	s=arc-20240116; t=1711581332; c=relaxed/simple;
+	bh=PVsIBbS/rVjbM+PQ2VfYAeNu95/w0E+U1IrDu2iuKSs=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=SQZM1qwbgHKYlcMYJAX7DjI9FKc7tv/OKkZpDUtgbcPlXmmKZlTAGKA/DIv2Hhrbl2UOcbgn+gBmMRLrXljnRNjM0/5DTwvVdHH/gO9a9SMKHAAqJlFn/KktXKyWnbrjERpVWsgUVtonHR8MlG9aqITggW0MESUFOH/AAzsFH68=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=IjSowuaV; arc=none smtp.client-ip=209.85.160.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-qt1-f173.google.com with SMTP id d75a77b69052e-431347c6c99so68521cf.0
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 16:15:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1711581329; x=1712186129; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=zL0pxl1ZeYttqRQTvgIv4r0vTY3Iq9/o2liSDPlmKoQ=;
+        b=IjSowuaVEsbEjVP8/gJiAbWGaEJvUZt4tSKtZBJMgdOGVnAqDyqCXwweKueYV/2DfP
+         F4jWUQhwLrYYyC3cHQX4XixEY8ursYq2X9YmLzaLcCOqePj7lxCgmr/yg+KoagknmPM2
+         bBHW57eedlwBPMM8n07AaM38qe6VuvbNSNVefUk8uUiPlRTc3bf259zhDjA92B5pjIgM
+         89thU0HWeIact2dBE3SHoMZxkkvMvBHf9HjvKwHebTkEvPiOfSfwRy1UX9nHLUHf8uH+
+         bhaSsuTlc0rkfzbATzoq7IuOp9j/k1WGbNJx4igfDCKRX8AIWgu5Y/WFj3luziWUoxCI
+         t7aQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711581329; x=1712186129;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=zL0pxl1ZeYttqRQTvgIv4r0vTY3Iq9/o2liSDPlmKoQ=;
+        b=iYKnOLz58lTf98xC81VkNwD6siw5Fmd0+1twdQRZGlpyrReNSSumzPndnjPKSggzEY
+         5UYzQCp2+nLVK4+hznN27C1DcQJE4Ul48supVNQC/snyjMz5/46ByxbL/hA987OtVWVN
+         /Rza427o0PlkyNMGz5h+fItTjSqS/74+kwqxNOzTexYeSWhWLBRouDXF7+YM/Cs2z6xp
+         nRDdYvx1MsHhm3nf48ueMxVxVpU3bIYOUbL6aeLynYjDwu6hIIb3qM8BIR+wd5XMYtBl
+         6lzFD6Z+VB0ZTsemPrCBV3JTXE0ViETHBgfe+Btzuqm3OsKy7KvtiKj+/C0kUOiGJ5fF
+         IBLw==
+X-Forwarded-Encrypted: i=1; AJvYcCVQcxF5CfyS20O6TiLWa/rF0yZ57lrlpGZfMGRq+21pGWaHSynd1IIhhbe9eWfARSvqoOudlTZ8hwN5Cp7DgAPfWAiuYzW6u8x2E1yf
+X-Gm-Message-State: AOJu0YyQhiS/bcYGa2qpzHWVfUUDU9q98/fLM9YnyX6GLuWmJRlEwARu
+	Dor+BPkkG2d39olf+El4ccCZ7ZE91AfO+52/WHnECtnWAGNg+jyF+tMq2HYKHee/j07ZutEgFEu
+	OtNAYEsTuUeOjz0uM1PURO/gI2wFjkhvskOBo
+X-Google-Smtp-Source: AGHT+IEHULaSt2yDU1vRh+RDTO5EMUamnNYAAYP3E+spcC25hRmXtBGbEZWqmHKqDhaq8Z06M7w2aIPsiKX2nepTBV0=
+X-Received: by 2002:a05:622a:608d:b0:431:ffb2:eb7c with SMTP id
+ hf13-20020a05622a608d00b00431ffb2eb7cmr101515qtb.14.1711581329361; Wed, 27
+ Mar 2024 16:15:29 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/4] drm/tiny: ili9225: drop driver owner assignment
-Content-Language: en-US
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
- Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
- Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
- David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
- =?UTF-8?Q?Noralf_Tr=C3=B8nnes?= <noralf@tronnes.org>,
- dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-References: <20240327174842.519758-1-krzysztof.kozlowski@linaro.org>
-From: David Lechner <david@lechnology.com>
-Autocrypt: addr=david@lechnology.com; keydata=
- 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
-In-Reply-To: <20240327174842.519758-1-krzysztof.kozlowski@linaro.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - vern.gendns.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - lechnology.com
-X-Get-Message-Sender-Via: vern.gendns.com: authenticated_id: davidmain+lechnology.com/only user confirmed/virtual account not confirmed
-X-Authenticated-Sender: vern.gendns.com: davidmain@lechnology.com
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
+References: <20240322214801.319975-1-robdclark@gmail.com> <CABUrSUAykXUoX0y6jzCw1s=E=E08Z54Ygo1TvBm49_iT88oDFg@mail.gmail.com>
+ <CAF6AEGvK7fBhh36rQyqiHf_qVvsCJhHZjoyOqGqxRPcMZ3dzjw@mail.gmail.com>
+In-Reply-To: <CAF6AEGvK7fBhh36rQyqiHf_qVvsCJhHZjoyOqGqxRPcMZ3dzjw@mail.gmail.com>
+From: Dominik Behr <dbehr@google.com>
+Date: Wed, 27 Mar 2024 16:15:16 -0700
+Message-ID: <CABUrSUAykWDFKjLdiL4KrLmY3ztKnZdNNaP7g4U1ZmSs0d1haA@mail.gmail.com>
+Subject: Re: [PATCH] drm/prime: Unbreak virtgpu dma-buf export
+To: Rob Clark <robdclark@gmail.com>
+Cc: Dominik Behr <dbehr@chromium.org>, dri-devel@lists.freedesktop.org, 
+	Rob Clark <robdclark@chromium.org>, 
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>, 
+	Thomas Zimmermann <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, 
+	Sumit Semwal <sumit.semwal@linaro.org>, =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>, 
+	Simon Ser <contact@emersion.fr>, open list <linux-kernel@vger.kernel.org>, 
+	"open list:DMA BUFFER SHARING FRAMEWORK:Keyword:bdma_(?:buf|fence|resv)b" <linux-media@vger.kernel.org>, 
+	"moderated list:DMA BUFFER SHARING FRAMEWORK:Keyword:bdma_(?:buf|fence|resv)b" <linaro-mm-sig@lists.linaro.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 3/27/24 12:48 PM, Krzysztof Kozlowski wrote:
-> Core in spi_register_driver() already sets the .owner, so driver
-> does not need to.
+It is mapped, via iommu interface (vfio-iommu) when map_dma is called.
+--
+Dominik
+
+On Mon, Mar 25, 2024 at 7:38=E2=80=AFPM Rob Clark <robdclark@gmail.com> wro=
+te:
 >
-> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-> ---
-
-Acked-by: David Lechner <david@lechnology.com>
-
-
+> This is actually a bit concerning.. importing a host page backed
+> buffer without guest mapping into a passthru device probably doesn't
+> work and should be rejected earlier.
+>
+> I do think we should relax the restriction (either taking my patch or
+> reverting the commit it fixes) until we work this out properly
+> (because the original patch is a regression), but importing a buffer
+> without guest pages into a passthru device can't possibly work
+> properly.  Maybe it works by chance if the host buffer is mapped to
+> the guest, but that is not guaranteed.
+>
+> BR,
+> -R
+>
+> On Mon, Mar 25, 2024 at 3:35=E2=80=AFPM Dominik Behr <dbehr@chromium.org>=
+ wrote:
+> >
+> > It also fixes importing virtgpu blobs into real hardware, for instance =
+amdgpu for DRI_PRIME rendering.
+> >
+> > On Fri, Mar 22, 2024 at 2:48=E2=80=AFPM Rob Clark <robdclark@gmail.com>=
+ wrote:
+> >>
+> >> From: Rob Clark <robdclark@chromium.org>
+> >>
+> >> virtgpu "vram" GEM objects do not implement obj->get_sg_table().  But
+> >> they also don't use drm_gem_map_dma_buf().  In fact they may not even
+> >> have guest visible pages.  But it is perfectly fine to export and shar=
+e
+> >> with other virtual devices.
+> >>
+> >> Reported-by: Dominik Behr <dbehr@chromium.org>
+> >> Fixes: 207395da5a97 ("drm/prime: reject DMA-BUF attach when get_sg_tab=
+le is missing")
+> >> Signed-off-by: Rob Clark <robdclark@chromium.org>
+> >> ---
+> >>  drivers/gpu/drm/drm_prime.c | 7 ++++++-
+> >>  1 file changed, 6 insertions(+), 1 deletion(-)
+> >>
+> >> diff --git a/drivers/gpu/drm/drm_prime.c b/drivers/gpu/drm/drm_prime.c
+> >> index 7352bde299d5..64dd6276e828 100644
+> >> --- a/drivers/gpu/drm/drm_prime.c
+> >> +++ b/drivers/gpu/drm/drm_prime.c
+> >> @@ -582,7 +582,12 @@ int drm_gem_map_attach(struct dma_buf *dma_buf,
+> >>  {
+> >>         struct drm_gem_object *obj =3D dma_buf->priv;
+> >>
+> >> -       if (!obj->funcs->get_sg_table)
+> >> +       /*
+> >> +        * drm_gem_map_dma_buf() requires obj->get_sg_table(), but dri=
+vers
+> >> +        * that implement their own ->map_dma_buf() do not.
+> >> +        */
+> >> +       if ((dma_buf->ops->map_dma_buf =3D=3D drm_gem_map_dma_buf) &&
+> >> +           !obj->funcs->get_sg_table)
+> >>                 return -ENOSYS;
+> >>
+> >>         return drm_gem_pin(obj);
+> >> --
+> >> 2.44.0
+> >>
 
