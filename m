@@ -1,165 +1,177 @@
-Return-Path: <linux-kernel+bounces-121819-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-121820-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 096A988EE2D
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 19:21:01 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 216E588EE35
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 19:22:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3AC951C32BC6
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 18:21:00 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7CD6A29E3E6
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 18:22:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3619014EC70;
-	Wed, 27 Mar 2024 18:20:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7B04814F13F;
+	Wed, 27 Mar 2024 18:22:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b="o+7sWy4q"
-Received: from mail-oa1-f42.google.com (mail-oa1-f42.google.com [209.85.160.42])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="MAF+mCFs"
+Received: from mail-ed1-f53.google.com (mail-ed1-f53.google.com [209.85.208.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5A9BB14C5BC
-	for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 18:20:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CDA1414A08D
+	for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 18:22:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711563654; cv=none; b=GZEhGL34AoahV4ZmBVngMM2bqVhv8XJkpyhpzlnRJtrSghDO9ENxjxoLoejj/olotOrnLfFrkBEPSeXCQSl+xCg3VzEKqlki+l+q4569sLE1xMsXNneMNarOpAUcnn8gbF+r/jqA31XPK8vxGV+sZ/mw05kgxxQGzKGugniPE0I=
+	t=1711563749; cv=none; b=rFyiGVbgeqG1/UdG0MpuKVeBj9tFfE4smGZhFHPpIaEsxmAe1RSIGhyySO5VLRP56JZji03THFL8t/9ng6dqpMPFT30Leo4mUACtrryM0GxMlfEssXja2fCh0gvDiFjq8yHk/FW23h4rl9aaFa2OmEXKuRX8LjA5GTcOUPIFelQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711563654; c=relaxed/simple;
-	bh=OPBDvQItJX4Hsvo8moNWtE2pEEwwXpr13o6Pqef6OaY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=kbiyrthzE7iXQ9vFGNG0EyTBbscA42YGpGCQw9ZSHgBLN53xThfJk2UMzyrt0yYf/CwBecoxfPfy7NQznI+35ImOVo9ZyhNTICbPYHBBg5jjCiL82Cmci59AGLg+UmAhFCVDK4W39MmDuDc4kSinTBlfdwOaZMroqeGzov2wcoY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca; spf=pass smtp.mailfrom=ziepe.ca; dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b=o+7sWy4q; arc=none smtp.client-ip=209.85.160.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ziepe.ca
-Received: by mail-oa1-f42.google.com with SMTP id 586e51a60fabf-2282597eff5so123655fac.3
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 11:20:52 -0700 (PDT)
+	s=arc-20240116; t=1711563749; c=relaxed/simple;
+	bh=wVYxyQVR8mtlZr5ihim1B7+DvYq0RUT3sqdfTEjMoVQ=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=WMoCODm8Y2oIXAYKHpgcEEzQOdrivdZVRZnGtHvi4c6FCYlWYR7iuqrSpcFBke1wsaXj/xDUC8NOqkJtsRkvCDVp+Bx8CSDYYuBcp3MHhIh6cetHDrA9qgXx5oY4t2TfI1TP0U48be3yVlXel/q8HyT5OSwEtubsCcuVcUZRe/I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=MAF+mCFs; arc=none smtp.client-ip=209.85.208.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ed1-f53.google.com with SMTP id 4fb4d7f45d1cf-56b0af675deso156197a12.1
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 11:22:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google; t=1711563651; x=1712168451; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=r1XPHV72zhMXJ02AuGc5L64s8C1sqQEkTen4d+KPBBI=;
-        b=o+7sWy4qzBUQ9IimGD582uGTlZgGps4knRneJpd40/mxrSd5w5bXFXS8m9HklTT8B3
-         FRMbOaDVaYurxMBjLuLD4pGUjozE4/zbQRRny5UO9ccI/hosrZH+wBbWoQxdhDge09Ho
-         xuRrasJrQhWviCtnFK7UzqXKVd0w4F/wXy+rsvJTTw9kxaj2MA0/Dt+gF02sLiwJ5OaB
-         nMYzXUYIJfQKh2qBtvToQ9uL/ZNZAXmLP4Uu1pbwaGeKDmV9PDolZfSOSfeflWG5g4gH
-         ZHkeZbuGXfehOZxZ6zg2PuMhg7sAFyv7d71a5d7iEm5DOpCgQQnCfhDd9BX/xRUPRMI8
-         EYQg==
+        d=linaro.org; s=google; t=1711563746; x=1712168546; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=bOTsu8eVvDkC2j4CAjWkil+ck6bJgUrbe5YJNGpqDAE=;
+        b=MAF+mCFsPfIQLc/SO9Yu5Bny4to+VxJ3t1MjQQAUrhwj/y8iCZb6knwCjFnllE52o8
+         9CT4PwtcVyE7xIF+5wz4AdKzmQA8RWTwYJJGJxYKALwJ+dsJhvUofpD8LYblAX9ohimm
+         u8YwssLs2dfwJPKR6i31EFN7m3ylQSS/bLYsvxfSzDK0BX3s+xwO896Agod5uYT3XCXj
+         rAaZ8+S9Dkqy+EWSXwwfDnDt7EOaASJ013tpDf/dlu3zYm1nod3JzRW424imEKrJo2Hf
+         l+aYCHcxAIO8C1bXnwZHY4RN/gfOE9u4Ts1JoCzRjLI+4pi3OY4uAX/iFLdEiwJ5mLIQ
+         jDAw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711563651; x=1712168451;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=1e100.net; s=20230601; t=1711563746; x=1712168546;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=r1XPHV72zhMXJ02AuGc5L64s8C1sqQEkTen4d+KPBBI=;
-        b=CvVl9XCWoJvSHAHLBelH3QeCwMcCnmWR0mzc82qHEitk72s4eLPf4px+ni/JZT8hyX
-         Rkp2/5ga71zilywnCxLVxH6eaFjXxqDz+XlfdzAnXTH/jnu3TvdZy+xsg5AFDbaQ4G9T
-         qy+A4VDyFdfgEjsvDsy3LMpLkw2nmB/WtUq/1a3rSM/CnzCOIZocr0CEUf/MvT7lTuvR
-         zFrxHX8SOpPOoWgVfKXTrEJe3UUF8f3w7qd/iS8aB/6Yn94AGYD9mDrHD5noF2Xe9U7u
-         iHM5LD8ZO3GrIqIeoXXcL2ZjGeXVon3yv+bK1KqHBAtKs9pdo2Zlfa8eYW2z9dFvHYS5
-         6u/w==
-X-Forwarded-Encrypted: i=1; AJvYcCUizqUj1zXx6fwKthc3Gi6bLM9atbQDtR1frWDpOfp/e5jWkjeicrM0/zOZVlGLCInM5IGQRg+ubvXZm+RVfbgOQNyzJwqS05o7ueI2
-X-Gm-Message-State: AOJu0Yxk/Xa6Hy+kLaamVplBZf6E2zE12tUMrw+ztnxOSPCDygXSExI8
-	4wS638n1YpsHSTqWPasppbsYgmxHMO5/ZxLeSSRud1bF58JehXPMg7sPv28SojE=
-X-Google-Smtp-Source: AGHT+IGlQgJN+JO9e8sS/bsKvnN/YrOMwN05dTpPaEA23DiNm5LU+yVmVBI9B2EsLHVZQZQjT85IeQ==
-X-Received: by 2002:a05:6871:4199:b0:220:be34:7ee2 with SMTP id lc25-20020a056871419900b00220be347ee2mr593358oab.26.1711563651410;
-        Wed, 27 Mar 2024 11:20:51 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-142-68-80-239.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.80.239])
-        by smtp.gmail.com with ESMTPSA id bs8-20020ac86f08000000b004317485a4e9sm1682338qtb.66.2024.03.27.11.20.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 27 Mar 2024 11:20:50 -0700 (PDT)
-Received: from jgg by wakko with local (Exim 4.95)
-	(envelope-from <jgg@ziepe.ca>)
-	id 1rpXtK-005ior-EV;
-	Wed, 27 Mar 2024 15:20:50 -0300
-Date: Wed, 27 Mar 2024 15:20:50 -0300
-From: Jason Gunthorpe <jgg@ziepe.ca>
-To: Joao Martins <joao.m.martins@oracle.com>
-Cc: Muhammad Usama Anjum <usama.anjum@collabora.com>,
-	Nicolin Chen <nicolinc@nvidia.com>, kernel@collabora.com,
-	iommu@lists.linux.dev, linux-kselftest@vger.kernel.org,
-	linux-kernel@vger.kernel.org, Kevin Tian <kevin.tian@intel.com>,
-	Shuah Khan <shuah@kernel.org>
-Subject: Re: [PATCH] selftests: iommu: add config needed for iommufd_fail_nth
-Message-ID: <20240327182050.GA1363414@ziepe.ca>
-References: <20240325090048.1423908-1-usama.anjum@collabora.com>
- <31fcc276-acd6-4277-bd6c-4a871c7fb28a@collabora.com>
- <20240326150340.GE8419@ziepe.ca>
- <56cc8b9e-c1cf-4520-ba45-b1237e8b7b64@collabora.com>
- <20240327114958.GG8419@ziepe.ca>
- <51f493a9-08e7-44d8-ae4a-58b2994ea276@oracle.com>
- <f78b685d-a147-4b59-beb2-cde9d34ce22a@collabora.com>
- <e9cb60bf-5035-4fed-9b36-ca2edf048fe8@oracle.com>
+        bh=bOTsu8eVvDkC2j4CAjWkil+ck6bJgUrbe5YJNGpqDAE=;
+        b=XUz2ztPkzz0D3KjoYWj6NFTJ067h7oxOqducPkfKtrpn3OBkNQx8UL4/T7ufRSL8pi
+         wAI5WJLJsyC2TprNA+d6xUkujqLrS1QQV2n7sePJ8ljY1jGSW58AOX4x1nCmOFfXjnHr
+         fgvo3/+ZqEXjjEIcFWSlrFfmvpx/IKmjJXEPrCALMOAw/4QvdWa8G56DiQ7pNn7Okoli
+         t4fm5TQBF1Gr0lOQSmACfY24A970zCbsxcGAOKMcA4W2rqmDbNMJgZNbSiRR+9DfSqUT
+         djcyggXapT6G5su4nDMici2M8OnvrPi6KPyM+bsB6UeW0J+360HFecqJJLLoKJldZkSB
+         3N5Q==
+X-Forwarded-Encrypted: i=1; AJvYcCVwdZAEQnPCVP+G3tsBI66zlMb8IkpXLOAleUXajaPwB0uIAgXUvNK+SC+TpOBx16tBj33jwzVKFTm/7bZGRjJ/wknHlvE9Ip953Is3
+X-Gm-Message-State: AOJu0YzoX7xd8RrgqlrkThjx53RQV0m4pduMWrkhYaWSehaBEBskYn9h
+	UDJy1E0cEQB7ocBk9aqgAPL0P4xI7eqDLHR1WpB3RjVMWdVD4DXvStJ+dIBhBlc=
+X-Google-Smtp-Source: AGHT+IEx7e5pd5jO5ldxKsMajWDNvjuGU+JA8gLuG8FZADkZP3yYHqmrFWj82RF8LIAHK1YrK4WKEg==
+X-Received: by 2002:a50:d787:0:b0:568:b498:ce49 with SMTP id w7-20020a50d787000000b00568b498ce49mr504017edi.3.1711563746196;
+        Wed, 27 Mar 2024 11:22:26 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.206.205])
+        by smtp.gmail.com with ESMTPSA id fd20-20020a056402389400b0056be0d1cd83sm5526150edb.97.2024.03.27.11.21.38
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 27 Mar 2024 11:22:25 -0700 (PDT)
+Message-ID: <14a6e3c4-a3f4-422f-98db-729af57893c7@linaro.org>
+Date: Wed, 27 Mar 2024 19:21:25 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <e9cb60bf-5035-4fed-9b36-ca2edf048fe8@oracle.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v6 05/16] dt-bindings: net: wireless: describe the ath12k
+ PCI module
+To: Bartosz Golaszewski <brgl@bgdev.pl>, Marcel Holtmann
+ <marcel@holtmann.org>, Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+ "David S . Miller" <davem@davemloft.net>, Eric Dumazet
+ <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
+ Paolo Abeni <pabeni@redhat.com>, Rob Herring <robh@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>, Kalle Valo <kvalo@kernel.org>,
+ Bjorn Andersson <andersson@kernel.org>,
+ Konrad Dybcio <konrad.dybcio@linaro.org>, Liam Girdwood
+ <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
+ Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>,
+ Bjorn Helgaas <bhelgaas@google.com>, Saravana Kannan <saravanak@google.com>,
+ Geert Uytterhoeven <geert+renesas@glider.be>, Arnd Bergmann <arnd@arndb.de>,
+ Neil Armstrong <neil.armstrong@linaro.org>,
+ Marek Szyprowski <m.szyprowski@samsung.com>, Alex Elder <elder@linaro.org>,
+ Srini Kandagatla <srinivas.kandagatla@linaro.org>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Abel Vesa <abel.vesa@linaro.org>, Manivannan Sadhasivam <mani@kernel.org>,
+ Lukas Wunner <lukas@wunner.de>,
+ Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Cc: linux-bluetooth@vger.kernel.org, netdev@vger.kernel.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-wireless@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-pci@vger.kernel.org,
+ linux-pm@vger.kernel.org,
+ Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+References: <20240325131624.26023-1-brgl@bgdev.pl>
+ <20240325131624.26023-6-brgl@bgdev.pl>
+Content-Language: en-US
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <20240325131624.26023-6-brgl@bgdev.pl>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Wed, Mar 27, 2024 at 06:09:37PM +0000, Joao Martins wrote:
-> On 27/03/2024 17:49, Muhammad Usama Anjum wrote:
-> > On 3/27/24 7:59 PM, Joao Martins wrote:
-> >> On 27/03/2024 11:49, Jason Gunthorpe wrote:
-> >>> On Wed, Mar 27, 2024 at 03:14:25PM +0500, Muhammad Usama Anjum wrote:
-> >>>> On 3/26/24 8:03 PM, Jason Gunthorpe wrote:
-> >>>>> On Tue, Mar 26, 2024 at 06:09:34PM +0500, Muhammad Usama Anjum wrote:
-> >>>>>> Even after applying this config patch and following snippet (which doesn't
-> >>>>>> terminate the program if mmap doesn't allocate exactly as the hint), I'm
-> >>>>>> finding failed tests.
-> >>>>>>
-> >>>>>> @@ -1746,7 +1748,7 @@ FIXTURE_SETUP(iommufd_dirty_tracking)
-> >>>>>>         assert((uintptr_t)self->buffer % HUGEPAGE_SIZE == 0);
-> >>>>>>         vrc = mmap(self->buffer, variant->buffer_size, PROT_READ | PROT_WRITE,
-> >>>>>>                    mmap_flags, -1, 0);
-> >>>>>> -       assert(vrc == self->buffer);
-> >>>>>> +       assert(vrc == self->buffer);// ???
-> >>>>>>
-> >>>>>> On x86:
-> >>>>>> # Totals: pass:176 fail:4 xfail:0 xpass:0 skip:0 error:0
-> >>>>>> On ARM64:
-> >>>>>> # Totals: pass:166 fail:14 xfail:0 xpass:0 skip:0 error:0
-> >>>>>>
-> >>>>>> The log files are attached.
-> >>>>>
-> >>>>> You probably don't have enough transparent huge pages available to the process
-> >>>>>
-> >>>>>       echo 1024 > /proc/sys/vm/nr_hugepages
-> >>>> After making huge pages available, the iommufd test always passed on x86.
-> >>>> But there are still failures on arm64. I'm looking into the failures.
-> >>>
-> >>> Oh that is really strange. Joao? Nicolin?
-> >>>
-> >> Definitely strange, I'll have a look.
-> >>
-> >> So it set the expected number of dirty bits as that assert doesn't fail, but it
-> >> is failing when we check that even bits are set but not odd ones. Like it's
-> >> hasn't set those bits.
-> >>
-> >> For mock tests there should be no difference between x86 and ARM assuming the
-> >> typical 4K page-size. Maybe this is 64k base pages in ARM? That's the only thing
-> >> that I can think of that affected mock domain.
-> > The config is attached. The defaults are being used i.e., 4k page.
+On 25/03/2024 14:16, Bartosz Golaszewski wrote:
+> From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
 > 
-> Looks like CONFIG_IOMMUFD_DRIVER is not defined :(
+> Add device-tree bindings for the ATH12K module found in the WCN7850
+> package.
 > 
-> Thus no bits are being set.
+> Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+> ---
+>  .../bindings/net/wireless/qcom,ath12k.yaml    | 100 ++++++++++++++++++
+>  1 file changed, 100 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/net/wireless/qcom,ath12k.yaml
+> 
 
-Oh! 
+Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
---- a/drivers/iommu/iommufd/Kconfig
-+++ b/drivers/iommu/iommufd/Kconfig
-@@ -37,6 +37,7 @@ config IOMMUFD_TEST
-        depends on DEBUG_KERNEL
-        depends on FAULT_INJECTION
-        depends on RUNTIME_TESTING_MENU
-+       select IOMMUFD_DRIVER
-        default n
-        help
-          This is dangerous, do not enable unless running
+Best regards,
+Krzysztof
 
-
-???
-
-Jason
 
