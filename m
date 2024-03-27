@@ -1,137 +1,120 @@
-Return-Path: <linux-kernel+bounces-120521-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-120523-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9C76C88D8B2
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 09:21:20 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id AAAE188D8B9
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 09:23:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3FBBA1F2A8E9
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 08:21:20 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D63AC1C22E31
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 08:23:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 34E232DF9D;
-	Wed, 27 Mar 2024 08:20:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DAE1D2D627;
+	Wed, 27 Mar 2024 08:23:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="EZKG8rPL"
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="bzECDQ3H"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.15])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 068D02D61A;
-	Wed, 27 Mar 2024 08:20:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 80FBD2D608
+	for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 08:23:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.15
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711527631; cv=none; b=MgtntcXwOYuK3o5zvsKn4GKuLn9nto1g0D7re9KxKlXG5Uiev8w5XO93ZWShliL/xpkOEzTiEpcie1FBV49SHTxm+uaN/ROQWhMoxONudheUVUcGekQrDZ82Kiut4lHQPuRvYd/XdlVaP6MnleTsf8zEm/VCVilXAnkfkfpurLc=
+	t=1711527784; cv=none; b=LZhhoL63w98oYvr1Coht8ES0PXEhQCP4sfBoTZ8mE8zNs9SVWQQEqkCEEhwyv5XMvDatysi9m3jsfd/FW3mr5SB4VNWTM96cEcdabqnF/cBBP8gBVMc3xIvrfG9WX6X2gCp+djrxlxb9kDbsCyqCrw9xjw6CDhsk3vdoB02J5+0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711527631; c=relaxed/simple;
-	bh=lnS95bunV/EH9UhcF3G/sCrMeEzpcJBQkovuEjBYQDA=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=qKN6NuoESRvkGOLyrTbFqf3j11SAdASPtBWjFsyoCxwttNeuOD5MOGCNCYOzfJwRsgYO+t5H50PQgf8Qk1A7XccLQ2wbXf/7r4albrtr/nc6/SkKLVtGFW++1PuyGEmoZqQZGY79FLNZ1SPmfnE4TRUKTU49zxWVSpTupu+dS48=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=EZKG8rPL; arc=none smtp.client-ip=205.220.180.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279872.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 42R7k2FK024010;
-	Wed, 27 Mar 2024 08:20:26 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	from:to:cc:subject:date:message-id:in-reply-to:references
-	:mime-version:content-transfer-encoding:content-type; s=
-	qcppdkim1; bh=9CHl93Q8DRAjWAYjiISTKY13GhosV9C3yA+9XS3PrZ8=; b=EZ
-	KG8rPLV39Wwo23cM07nVMNZ+rxtvHA2IymKIbiYjO4i7EUkv4LfXFCuhMLMLLDaH
-	NWowdbOKRzbf37D8BH/Cos5XGKgAMvhW61gwZ7QYjULpcExQwV+GhjDmcVK95QUo
-	bgqYHemYpVlwgDkyz3r07u4pMb2F9CplXQ//q42gmytHwLq94X8SKl0ds90JJDeJ
-	Cwiw+iT/cwPzrjCDXoi7gcyFd7851stZn7oeEq0iFAwBBlxgBMxk9+k3mcpdkfjg
-	Bxxouk57qGoxOGS2tIkgduzsnK5VaYW93TJYKhMrn1Pk6UB2kYsFWNnwV3I6CsIv
-	noR1aKtf9tEJWekSSjQA==
-Received: from nasanppmta01.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3x4fbq82nn-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 27 Mar 2024 08:20:26 +0000 (GMT)
-Received: from nasanex01b.na.qualcomm.com (nasanex01b.na.qualcomm.com [10.46.141.250])
-	by NASANPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 42R8KOcP003681
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 27 Mar 2024 08:20:24 GMT
-Received: from hu-varada-blr.qualcomm.com (10.80.80.8) by
- nasanex01b.na.qualcomm.com (10.46.141.250) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Wed, 27 Mar 2024 01:20:20 -0700
-From: Varadarajan Narayanan <quic_varada@quicinc.com>
-To: <andersson@kernel.org>, <konrad.dybcio@linaro.org>,
-        <mturquette@baylibre.com>, <sboyd@kernel.org>, <robh@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
-        <djakov@kernel.org>, <quic_anusha@quicinc.com>,
-        <linux-arm-msm@vger.kernel.org>, <linux-clk@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-pm@vger.kernel.org>
-CC: Varadarajan Narayanan <quic_varada@quicinc.com>
-Subject: [PATCH v4 3/3] arm64: dts: qcom: ipq9574: Add icc provider ability to gcc
-Date: Wed, 27 Mar 2024 13:48:50 +0530
-Message-ID: <20240327081850.2924870-4-quic_varada@quicinc.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240327081850.2924870-1-quic_varada@quicinc.com>
-References: <20240327081850.2924870-1-quic_varada@quicinc.com>
+	s=arc-20240116; t=1711527784; c=relaxed/simple;
+	bh=0wxrOxqIYdf4MXJwwuzvImG2e/us/u6zEDSUjxq+9KY=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=nmSXeWALktGKwVWI77oLZGWYtSGtiNdv16AWPrrJVla0iFEw2cSEktJxs8mrNqFai+czi2h+hy7L/DdtkjJe3chzU7I9Mg5AtmZ2oGL0uua7ffqec9XYxjjIU9YZGqiqdef8EXGTXq5uJRmNkkwXGLjyomnatfhpJmmquhxJ0w4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=bzECDQ3H; arc=none smtp.client-ip=198.175.65.15
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1711527782; x=1743063782;
+  h=from:to:cc:subject:in-reply-to:references:date:
+   message-id:mime-version;
+  bh=0wxrOxqIYdf4MXJwwuzvImG2e/us/u6zEDSUjxq+9KY=;
+  b=bzECDQ3Hb3Ae4AcrXS4SHoK2b4uZhwrklFXCm46fIZZeFSAOj0bifG5E
+   bWOA9HTL2G7izhPedEZeDQwVL5Mcq2n0Xb8gu5/y4FZ1le9RcqvbZdViU
+   jpYw/WBjLOJ+mExzQngCFXYTEU6sg+giY+fCsUYKsqBhz66qc1HpUU7kA
+   mufQaZaor9Ni6gy2HXZcmbeHiexWsnKjxyRLDByqzAfIYNjUwOI7/Sbe5
+   gopJmteTjKLxDe+iLWT+maZDhK3lQ8wQHaB/9g3iYI7fxa3wEGMGqOdxN
+   ar6T19RnZ2ZD0CTk7XzAeZSgvcCXKUsGxieDS2R8ilyYbu6gbI0gumTet
+   g==;
+X-CSE-ConnectionGUID: qOiXfiPsRtGSe4QMvnR/fw==
+X-CSE-MsgGUID: MuKYe+aeT0Susyg+fMvhUw==
+X-IronPort-AV: E=McAfee;i="6600,9927,11025"; a="10415497"
+X-IronPort-AV: E=Sophos;i="6.07,158,1708416000"; 
+   d="scan'208";a="10415497"
+Received: from fmviesa002.fm.intel.com ([10.60.135.142])
+  by orvoesa107.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Mar 2024 01:23:02 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,158,1708416000"; 
+   d="scan'208";a="39333337"
+Received: from yhuang6-desk2.sh.intel.com (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.238.208.55])
+  by fmviesa002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Mar 2024 01:22:59 -0700
+From: "Huang, Ying" <ying.huang@intel.com>
+To: Baolin Wang <baolin.wang@linux.alibaba.com>
+Cc: <akpm@linux-foundation.org>,  <david@redhat.com>,
+  <mgorman@techsingularity.net>,  <wangkefeng.wang@huawei.com>,
+  <jhubbard@nvidia.com>,  <21cnbao@gmail.com>,  <ryan.roberts@arm.com>,
+  <linux-mm@kvack.org>,  <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 2/2] mm: support multi-size THP numa balancing
+In-Reply-To: <bc671388-f398-4776-af15-c144f2c39d78@linux.alibaba.com> (Baolin
+	Wang's message of "Wed, 27 Mar 2024 16:09:23 +0800")
+References: <cover.1711453317.git.baolin.wang@linux.alibaba.com>
+	<dee4268f1797f31c6bb6bdab30f8ad3df9053d3d.1711453317.git.baolin.wang@linux.alibaba.com>
+	<87cyrgo2ez.fsf@yhuang6-desk2.ccr.corp.intel.com>
+	<bc671388-f398-4776-af15-c144f2c39d78@linux.alibaba.com>
+Date: Wed, 27 Mar 2024 16:21:06 +0800
+Message-ID: <87edbwm6fh.fsf@yhuang6-desk2.ccr.corp.intel.com>
+User-Agent: Gnus/5.13 (Gnus v5.13)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nasanex01b.na.qualcomm.com (10.46.141.250)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: JAnLCydGNJFcpprV6smV67DN3eHbwZKh
-X-Proofpoint-ORIG-GUID: JAnLCydGNJFcpprV6smV67DN3eHbwZKh
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-03-27_04,2024-03-21_02,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 impostorscore=0
- phishscore=0 lowpriorityscore=0 mlxscore=0 malwarescore=0
- priorityscore=1501 clxscore=1015 mlxlogscore=999 bulkscore=0 adultscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2403210001 definitions=main-2403270054
+Content-Type: text/plain; charset=ascii
 
-IPQ SoCs dont involve RPM in managing NoC related clocks and
-there is no NoC scaling. Linux itself handles these clocks.
-However, these should not be exposed as just clocks and align
-with other Qualcomm SoCs that handle these clocks from a
-interconnect provider.
+Baolin Wang <baolin.wang@linux.alibaba.com> writes:
 
-Hence include icc provider capability to the gcc node so that
-peripherals can use the interconnect facility to enable these
-clocks.
+> On 2024/3/27 10:04, Huang, Ying wrote:
+>> Baolin Wang <baolin.wang@linux.alibaba.com> writes:
+>> 
+>>> Now the anonymous page allocation already supports multi-size THP (mTHP),
+>>> but the numa balancing still prohibits mTHP migration even though it is an
+>>> exclusive mapping, which is unreasonable.
+>>>
+>>> Allow scanning mTHP:
+>>> Commit 859d4adc3415 ("mm: numa: do not trap faults on shared data section
+>>> pages") skips shared CoW pages' NUMA page migration to avoid shared data
+>>> segment migration. In addition, commit 80d47f5de5e3 ("mm: don't try to
+>>> NUMA-migrate COW pages that have other uses") change to use page_count()
+>>> to avoid GUP pages migration, that will also skip the mTHP numa scaning.
+>>> Theoretically, we can use folio_maybe_dma_pinned() to detect the GUP
+>>> issue, although there is still a GUP race, the issue seems to have been
+>>> resolved by commit 80d47f5de5e3. Meanwhile, use the folio_likely_mapped_shared()
+>>> to skip shared CoW pages though this is not a precise sharers count. To
+>>> check if the folio is shared, ideally we want to make sure every page is
+>>> mapped to the same process, but doing that seems expensive and using
+>>> the estimated mapcount seems can work when running autonuma benchmark.
+>> Because now we can deal with shared mTHP, it appears even possible
+>> to
+>> remove folio_likely_mapped_shared() check?
+>
+> IMO, the issue solved by commit 859d4adc3415 is about shared CoW
+> mapping, and I prefer to measure it in another patch:)
 
-Signed-off-by: Varadarajan Narayanan <quic_varada@quicinc.com>
----
-v2: Fix include file order
-    Move to separate patch
----
- arch/arm64/boot/dts/qcom/ipq9574.dtsi | 2 ++
- 1 file changed, 2 insertions(+)
+I mean we can deal with shared mTHP (by multiple threads or multiple
+processes) with this patch.  Right?
 
-diff --git a/arch/arm64/boot/dts/qcom/ipq9574.dtsi b/arch/arm64/boot/dts/qcom/ipq9574.dtsi
-index 7f2e5cbf3bbb..5b3e69379b1f 100644
---- a/arch/arm64/boot/dts/qcom/ipq9574.dtsi
-+++ b/arch/arm64/boot/dts/qcom/ipq9574.dtsi
-@@ -8,6 +8,7 @@
- 
- #include <dt-bindings/clock/qcom,apss-ipq.h>
- #include <dt-bindings/clock/qcom,ipq9574-gcc.h>
-+#include <dt-bindings/interconnect/qcom,ipq9574.h>
- #include <dt-bindings/interrupt-controller/arm-gic.h>
- #include <dt-bindings/reset/qcom,ipq9574-gcc.h>
- #include <dt-bindings/thermal/thermal.h>
-@@ -306,6 +307,7 @@ gcc: clock-controller@1800000 {
- 			#clock-cells = <1>;
- 			#reset-cells = <1>;
- 			#power-domain-cells = <1>;
-+			#interconnect-cells = <1>;
- 		};
- 
- 		tcsr_mutex: hwlock@1905000 {
--- 
-2.34.1
+[snip]
+
+--
+Best Regards,
+Huang, Ying
 
 
