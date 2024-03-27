@@ -1,95 +1,137 @@
-Return-Path: <linux-kernel+bounces-121816-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-121814-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2B4BC88EE1E
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 19:18:33 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8CF8A88EE18
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 19:18:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D98722A2977
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 18:18:31 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2BF081F392FD
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 18:18:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B42CA14D71E;
-	Wed, 27 Mar 2024 18:18:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4209515098A;
+	Wed, 27 Mar 2024 18:17:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=jmoon.dev header.i=@jmoon.dev header.b="PfRN27M5"
-Received: from mail-4323.proton.ch (mail-4323.proton.ch [185.70.43.23])
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="QUrx88yE"
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0281D12FF9A
-	for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 18:18:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.70.43.23
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC34214F112;
+	Wed, 27 Mar 2024 18:17:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711563486; cv=none; b=KoLmbZ0yh4yH/UE4CcBdYhXm+ZgVs7VPxbVNk3zKSDtf1BwCVNOU3jGz0OODdv6mOSvHi0Jw3eUNh+5lfJYJdyn4Yula1AvYYwoK4wkfc0LaiDZIrqFcIbavaroikRsTbrfrORyUV1dmWDKDkJm7ka5US4XhqdLK47mTd90faMQ=
+	t=1711563457; cv=none; b=Ks2w1pArU1/cV+SI2S2RxWgiA+QrSP2huqMWbI+SCBd6Eg55SF5J9d7ATcq3ebA1IeVkThqnivqEedv7dg+xFQMj9JRl/9vA/o+ZWSJXeywi0nYPnVIbOMMZm6uRSdfI/gs1JKUREwab3n1fc2UwxSxIdQIDrMuQCqV8RTHLyYs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711563486; c=relaxed/simple;
-	bh=VAyUWNYNPMX4OP1b9CFLlH6ZChBVF3mzA8JMTJaUOj4=;
-	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=Chdf5F+9gAR4QZ35W4i820/xcPKmqnhtDOYbMZQrlunPIQPqxT28Yx/ok4C9ZMLC5tBUK6iGy++6lUij8od4VTnYAmBmi9SS/L4T3KImlXVVH3hHclUy8E6XfQx7h+JMPU/F1BStaDCD1msZhWLX1EdXOVi8oDXe8GUof3Nt7AU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=permerror header.from=jmoon.dev; spf=pass smtp.mailfrom=jmoon.dev; dkim=pass (2048-bit key) header.d=jmoon.dev header.i=@jmoon.dev header.b=PfRN27M5; arc=none smtp.client-ip=185.70.43.23
-Authentication-Results: smtp.subspace.kernel.org; dmarc=permerror header.from=jmoon.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=jmoon.dev
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=jmoon.dev;
-	s=protonmail3; t=1711563474; x=1711822674;
-	bh=n0sCsQWUGk8m/rGNztaZpyJM+gFbxgaWYiByS+llbD4=;
-	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
-	 Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
-	 Message-ID:BIMI-Selector;
-	b=PfRN27M5cH66kxlwMm8gcLuWpAiZWGFZLoC29EZOwKQOx9ITTox9cyxCsjVw94D8z
-	 v3clP8AgFjquzSwJjsaJ6oxyDLPRv8RXT9wUPFP/EF6aqQEtpGQCsfRxjP0pP+4lQC
-	 5z6BSDGZJ2XKBCH2YEThVziRT1q8ruMR5wl4koFhqxHbJp0IsCTjg9UbNlbM6bmaSc
-	 S73RMsEODWrua1baR+Y2y4aD8QdE2xYOq1ldJHx0qMhd4yhv7updD7+TlszbqNBu5M
-	 iIWW8pn633xKrvNoeVMmjU11/IgY58LvGHXTj4UY4v0MClLlfQ5p9vH8G1L9DuWoIB
-	 HuuieGUvvxNKg==
-Date: Wed, 27 Mar 2024 18:17:48 +0000
-To: Jackie Liu <liuyun01@kylinos.cn>, masahiroy@kernel.org
-From: John Moon <john@jmoon.dev>
-Cc: linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] check-uapi: added arm64 support
-Message-ID: <D04QMF0IN7CH.2DPU99RSEZJDM@jmoon.dev>
-In-Reply-To: <20240327103547.25695-1-liuyun01@kylinos.cn>
-References: <20240327103547.25695-1-liuyun01@kylinos.cn>
-Feedback-ID: 18069581:user:proton
+	s=arc-20240116; t=1711563457; c=relaxed/simple;
+	bh=1xI/k4F3DwHGNvZeAI5LuANOPogXIptxcRHXwYg+HR8=;
+	h=Message-ID:Date:MIME-Version:Cc:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=SWEw0NvXaX5Z0g34JmnfVbYhu5Xq5J3zstw47vr9YDAucdrndM9YR+qJ4nMa0SDdDA0k2Dc7/vk0S2HeiQzrbilCs0D6TOqdxryjlwhdnFA5l8XcC3vnlm9YwZlL4HD1HK6JZqgilMlnRGK4/y76Qtytcxd8p7zxM23yCa+JfgY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=QUrx88yE; arc=none smtp.client-ip=46.235.227.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1711563454;
+	bh=1xI/k4F3DwHGNvZeAI5LuANOPogXIptxcRHXwYg+HR8=;
+	h=Date:Cc:Subject:To:References:From:In-Reply-To:From;
+	b=QUrx88yE6OlfbSxvc+hdbHwtishdRDuUOjdDlUklHw2zOZCtOQi91Pe85Y0xW27c+
+	 kJyHyJQMpwLpdryXlYFYoePwhtoljcEgrl5//OfUK0l+l5eTJSCiWFwFWyxif4qTPC
+	 ndVaREuKWsvMEEzOzGn/wHPqgEpw1mAqlNDkFLw7N4yDRlBz2AK2Uew6wAabuw7Jby
+	 mSp/rAQLjZx46UBZg0TrZ6HecEnhBWDwqbZnzl7mH+9k7jsNHqI3O0zU3Z6u4abd6f
+	 sZ9Q8bUSW7Ikzn6RpFaEy1LWFxcRcQfHNTgs2xgdngtv2uWHl3BAOWPjmL/goqcMao
+	 Y+2b5lmivO86Q==
+Received: from [100.113.15.66] (ec2-34-240-57-77.eu-west-1.compute.amazonaws.com [34.240.57.77])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: usama.anjum)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 71AC637820A3;
+	Wed, 27 Mar 2024 18:17:29 +0000 (UTC)
+Message-ID: <b05610de-f102-46d2-abe2-4e9ecbcd42eb@collabora.com>
+Date: Wed, 27 Mar 2024 23:17:58 +0500
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Cc: Muhammad Usama Anjum <usama.anjum@collabora.com>, kernel@collabora.com,
+ iommu@lists.linux.dev, linux-kselftest@vger.kernel.org,
+ linux-kernel@vger.kernel.org, Kevin Tian <kevin.tian@intel.com>,
+ Shuah Khan <shuah@kernel.org>
+Subject: Re: [PATCH] selftests: iommu: add config needed for iommufd_fail_nth
+Content-Language: en-US
+To: Joao Martins <joao.m.martins@oracle.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+ Nicolin Chen <nicolinc@nvidia.com>
+References: <20240325090048.1423908-1-usama.anjum@collabora.com>
+ <31fcc276-acd6-4277-bd6c-4a871c7fb28a@collabora.com>
+ <20240326150340.GE8419@ziepe.ca>
+ <56cc8b9e-c1cf-4520-ba45-b1237e8b7b64@collabora.com>
+ <20240327114958.GG8419@ziepe.ca>
+ <51f493a9-08e7-44d8-ae4a-58b2994ea276@oracle.com>
+ <f78b685d-a147-4b59-beb2-cde9d34ce22a@collabora.com>
+ <e9cb60bf-5035-4fed-9b36-ca2edf048fe8@oracle.com>
+From: Muhammad Usama Anjum <usama.anjum@collabora.com>
+In-Reply-To: <e9cb60bf-5035-4fed-9b36-ca2edf048fe8@oracle.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Wed Mar 27, 2024 at 3:35 AM PDT, Jackie Liu wrote:
-> By default, `uname -m` of arm64 will return aarch64, and the correct sour=
-ce code
-> directory cannot be obtained when the script is executed. In order to sol=
-ve this
-> problem, it is necessary to correct ARCH=3Darm64 when aarch64.
->
-> Signed-off-by: Jackie Liu <liuyun01@kylinos.cn>
-> ---
->  scripts/check-uapi.sh | 2 ++
->  1 file changed, 2 insertions(+)
->
-> diff --git a/scripts/check-uapi.sh b/scripts/check-uapi.sh
-> index 955581735cb3..1c39d13b90b8 100755
-> --- a/scripts/check-uapi.sh
-> +++ b/scripts/check-uapi.sh
-> @@ -408,6 +408,8 @@ check_deps() {
->  =09ARCH=3D"${ARCH:-$(uname -m)}"
->  =09if [ "$ARCH" =3D "x86_64" ]; then
->  =09=09ARCH=3D"x86"
-> +=09elif [ "$ARCH" =3D "aarch64" ]; then
-> +=09=09ARCH=3D"arm64"
->  =09fi
->
->  =09local -r abidiff_min_version=3D"2.4"
-> --
-> 2.33.0
+On 3/27/24 11:09 PM, Joao Martins wrote:
+> On 27/03/2024 17:49, Muhammad Usama Anjum wrote:
+>> On 3/27/24 7:59 PM, Joao Martins wrote:
+>>> On 27/03/2024 11:49, Jason Gunthorpe wrote:
+>>>> On Wed, Mar 27, 2024 at 03:14:25PM +0500, Muhammad Usama Anjum wrote:
+>>>>> On 3/26/24 8:03 PM, Jason Gunthorpe wrote:
+>>>>>> On Tue, Mar 26, 2024 at 06:09:34PM +0500, Muhammad Usama Anjum wrote:
+>>>>>>> Even after applying this config patch and following snippet (which doesn't
+>>>>>>> terminate the program if mmap doesn't allocate exactly as the hint), I'm
+>>>>>>> finding failed tests.
+>>>>>>>
+>>>>>>> @@ -1746,7 +1748,7 @@ FIXTURE_SETUP(iommufd_dirty_tracking)
+>>>>>>>         assert((uintptr_t)self->buffer % HUGEPAGE_SIZE == 0);
+>>>>>>>         vrc = mmap(self->buffer, variant->buffer_size, PROT_READ | PROT_WRITE,
+>>>>>>>                    mmap_flags, -1, 0);
+>>>>>>> -       assert(vrc == self->buffer);
+>>>>>>> +       assert(vrc == self->buffer);// ???
+>>>>>>>
+>>>>>>> On x86:
+>>>>>>> # Totals: pass:176 fail:4 xfail:0 xpass:0 skip:0 error:0
+>>>>>>> On ARM64:
+>>>>>>> # Totals: pass:166 fail:14 xfail:0 xpass:0 skip:0 error:0
+>>>>>>>
+>>>>>>> The log files are attached.
+>>>>>>
+>>>>>> You probably don't have enough transparent huge pages available to the process
+>>>>>>
+>>>>>>       echo 1024 > /proc/sys/vm/nr_hugepages
+>>>>> After making huge pages available, the iommufd test always passed on x86.
+>>>>> But there are still failures on arm64. I'm looking into the failures.
+>>>>
+>>>> Oh that is really strange. Joao? Nicolin?
+>>>>
+>>> Definitely strange, I'll have a look.
+>>>
+>>> So it set the expected number of dirty bits as that assert doesn't fail, but it
+>>> is failing when we check that even bits are set but not odd ones. Like it's
+>>> hasn't set those bits.
+>>>
+>>> For mock tests there should be no difference between x86 and ARM assuming the
+>>> typical 4K page-size. Maybe this is 64k base pages in ARM? That's the only thing
+>>> that I can think of that affected mock domain.
+>> The config is attached. The defaults are being used i.e., 4k page.
+> 
+> Looks like CONFIG_IOMMUFD_DRIVER is not defined :(
+I'll retest with this config and update the patch to include it in the
+config fragment needed for this test. Once we add all required config
+options in config fragment, the test should never fail. Somehow this gets
+included in the x86, but not on ARM.
 
-Good catch. Looks good to me!
+> 
+> Thus no bits are being set.
+> 
 
-Reviewed-by: John Moon <john@jmoon.dev>
-
+-- 
+BR,
+Muhammad Usama Anjum
 
