@@ -1,168 +1,238 @@
-Return-Path: <linux-kernel+bounces-120471-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-120472-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 248AE88D80B
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 08:54:35 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 48F6888D80E
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 08:54:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 75D491F2A86C
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 07:54:33 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6BD0E1C260ED
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 07:54:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 84AE32EAE5;
-	Wed, 27 Mar 2024 07:49:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0534B3B18D;
+	Wed, 27 Mar 2024 07:50:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="XHsgI99P"
-Received: from mail-ed1-f45.google.com (mail-ed1-f45.google.com [209.85.208.45])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="mBdwjkqw"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.19])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DF57B2E644
-	for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 07:49:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CE5A82E651;
+	Wed, 27 Mar 2024 07:50:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.19
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711525798; cv=none; b=DHZcBqTna2TiiKfuEp8/IOhxGrKbTcRwk7oTvv5s1ZT8Zd4HGzAUmGXW4rHa6p5QjJQZHyYi7Is1oy7tLe6ll/DXYdtqVlyceGmmIf0FtWHiElRrCUR5n5HTuI1aad8J93eS7cYjqFKVPgIdW03NVXk0hccAfu0q6oD/8M9Q/Ms=
+	t=1711525819; cv=none; b=fb7DIMoEfXcy8viV0fgq66QCFvxrq6+3AWcCynza4hqULrPrVdy5bJQU1OB3TKcoLHXKt/8bQgUUiXHEgrbTeXp842qjtP0+4QcYE2uMhwAmPKc7PTcUWzuwbXHKsrKddukXKOKk1WDKgp0Wc+miQsRyQDcIUoyGG6him+fI2Wc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711525798; c=relaxed/simple;
-	bh=GM9BpoUWcbYyoAcEOa+rbmGHOnvQx76KgAHPgy41po0=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=KVkueaAFnpHvjggQ0IpOCUf/YXqDdTAG/PUnyKPswxkoI2wOfyTKPXO14+6qbOt7AcmyoQcs4AMIllNy2NEq7R0ylr/6jFtKtTqGNEBYjphjml5rpFUGQFF/a0b6qDXOrWm5hLwaxRq5XmNMzFsge2qylGqcuKFK01x22s9KoWA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=XHsgI99P; arc=none smtp.client-ip=209.85.208.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ed1-f45.google.com with SMTP id 4fb4d7f45d1cf-56c3689ad2cso1257953a12.1
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 00:49:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1711525795; x=1712130595; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=Cr1FZIPfvhn093V6NefDTSMgfWzRn4pZnTIjfZktnNk=;
-        b=XHsgI99P88I4xyVMNR1aLR5j8zXcDcw9rB+WdZXxWVUjpXFOpkq/Ygz0UHfUeexQwE
-         vk4yBk1j4OnLywzZcB4ntw3kH6kTOu5OnAwV9CSX6N8vJFzDp4ShM92EopbW38yZ5V0Z
-         P6CDx/57jxrkxEGJA9zKerZNgbxUyQ4hiaJVZzrhks6nY7z+mRZJb9qFJyAkt12Ybekc
-         5/SjRPb2gOv9U+6vhxKIgKLmvapHVwpzZMrNujht3DxWS+mV/gfbZt8RGgi7hZvRaYpU
-         TAWTwCjBbsPNKQKig1/gUc/th+B+M3JhHuHwZEyOKriH8RqvhHv4LTnhuueN7yctbCMH
-         be2w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711525795; x=1712130595;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Cr1FZIPfvhn093V6NefDTSMgfWzRn4pZnTIjfZktnNk=;
-        b=GGorOICbOpou1RYm4EPE71IUuAfWcJBV4nqCzgEUhVQ5ul5WN6Qx93htN85wZIaHR0
-         Aw9fQfBG+NfM+Z+Td5/c85Ai4wFSzPfXaU6y8sTIy6ULh6pYBOHq+lJQTHp3kDtXPxZx
-         R2XMmOIRXGrDf+vfWiqTJQeu+uG/6u0zDDO16ks255dPiCNkXkeHm9TicPp7hJ9YTSdP
-         1t9qBXhl8+rWkLK4VvDoNUHadMuVnTYJwh3ijfZTkFqXJ+gDBAr+WZUazv9yZ3n5wKsW
-         XC8gAV/nqFspqYzNRlw9FKhRMyHKINb+WziJ/w1dfqwOD0GTMU2W7eypBvXo6ok0HQ4r
-         ABdA==
-X-Forwarded-Encrypted: i=1; AJvYcCX+8F3F5czIgt9NugpJftVcjad0JP3HHFOb33TTkqUzyty3OamtBnQE/RJLaxjB+zSa5ocxVWR8rWg0bOUYsi8JpJlWzgwbCHBFNGmn
-X-Gm-Message-State: AOJu0YxvBO0XakHGQMkZvaEBkAN/t/5JzQJN4U7RPTYN+KJSaFaSpM0i
-	A8azwPg9V7Kgx4k6omSvyOTVjHVpBlwbhRTRHYNblqMipvmL2mjx1YNJNofH4Wg=
-X-Google-Smtp-Source: AGHT+IE8f15vr7vtWQgi4zQ9E2uZEveKZojH/4uBIdaCRuV3W09e3mO3Mcqnlw4qGBs/ytZP7XwnKw==
-X-Received: by 2002:a50:bae2:0:b0:568:b702:e0d3 with SMTP id x89-20020a50bae2000000b00568b702e0d3mr3362808ede.21.1711525795252;
-        Wed, 27 Mar 2024 00:49:55 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.206.205])
-        by smtp.gmail.com with ESMTPSA id p29-20020a056402501d00b0056c051e59bfsm4116711eda.9.2024.03.27.00.49.53
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 27 Mar 2024 00:49:54 -0700 (PDT)
-Message-ID: <6533503e-18e1-4957-96cc-db091e9c46c9@linaro.org>
-Date: Wed, 27 Mar 2024 08:49:52 +0100
+	s=arc-20240116; t=1711525819; c=relaxed/simple;
+	bh=+I0dUNOdZGkwtBeC0T1EU1TrsDrWBxEiMA9XkoJPZrg=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=A6Ghz/AYm4Zg5LvKYaDlxauccQlV19cW/f1PCDce9tXxt88rgc5sAFIpg2e5/RSWORcPVHXXNBklREqVuthV4OeUus1AXjCGFDFL44UYwglYys9FL1Maae666IZ+uYqC+hH6G5Z55Jj5kjYHPyLQ/tnKIk3rOU9+tjd+ogmA6ts=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=mBdwjkqw; arc=none smtp.client-ip=198.175.65.19
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1711525817; x=1743061817;
+  h=from:to:cc:subject:in-reply-to:references:date:
+   message-id:mime-version;
+  bh=+I0dUNOdZGkwtBeC0T1EU1TrsDrWBxEiMA9XkoJPZrg=;
+  b=mBdwjkqwAsAxs3oi7apG/3ZtBkcnGikAWzoehoPZOkbTYpetrxHWvsfX
+   +eph1azzxHrFfNAOe6p3LmfchINcPPToWi/uSzbVnwVpruMnB9sCEFaLe
+   6Vtjlt2UVeYpyuHgis9/Bamdy7vhl6jo6xfrokuGIgi5DF76sHeH3ViIA
+   0CyFfaC5yKldgVT8vTWq1tQLAx7V1Zzt5Qh37mN1+jSMm7ppYAORBtgoZ
+   CvpJr8zEtA9Lw8dPHV/iPBMlmZCOWcE7GDpphatxEOVFPHAUqnLxZNonI
+   wQEAoOq8KpfgzUnoQhZbRHqTqka+psUEpRumluka9xe1SnEhxqH4FODgt
+   Q==;
+X-CSE-ConnectionGUID: MsyQbz5AQHy8y68fVaLnuQ==
+X-CSE-MsgGUID: hocw4mZkQ2y001r8rNwlqA==
+X-IronPort-AV: E=McAfee;i="6600,9927,11025"; a="6467190"
+X-IronPort-AV: E=Sophos;i="6.07,158,1708416000"; 
+   d="scan'208";a="6467190"
+Received: from fmviesa009.fm.intel.com ([10.60.135.149])
+  by orvoesa111.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Mar 2024 00:50:16 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,158,1708416000"; 
+   d="scan'208";a="16277502"
+Received: from mmazilu-mobl1.ger.corp.intel.com (HELO localhost) ([10.252.56.43])
+  by fmviesa009-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Mar 2024 00:50:08 -0700
+From: Jani Nikula <jani.nikula@linux.intel.com>
+To: Arnd Bergmann <arnd@arndb.de>, Arnd Bergmann <arnd@kernel.org>,
+ linux-kbuild@vger.kernel.org, Masahiro Yamada <masahiroy@kernel.org>,
+ Harry Wentland <harry.wentland@amd.com>, Alex Deucher
+ <alexander.deucher@amd.com>, Christian =?utf-8?Q?K=C3=B6nig?=
+ <christian.koenig@amd.com>,
+ Lucas De Marchi <lucas.demarchi@intel.com>, Oded Gabbay
+ <ogabbay@kernel.org>, Maarten Lankhorst
+ <maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>,
+ Thomas Zimmermann <tzimmermann@suse.de>, Jakub Kicinski <kuba@kernel.org>,
+ Paolo Abeni <pabeni@redhat.com>, Andrew Jeffery
+ <andrew@codeconstruct.com.au>, Linus Walleij <linus.walleij@linaro.org>,
+ Joel Stanley <joel@jms.id.au>, Alexei Starovoitov <ast@kernel.org>, Daniel
+ Borkmann <daniel@iogearbox.net>, Andrew Morton
+ <akpm@linux-foundation.org>, Nathan Chancellor <nathan@kernel.org>
+Cc: Nicolas Schier <nicolas@fjasle.eu>, dri-devel@lists.freedesktop.org,
+ linux-kernel@vger.kernel.org, Netdev <netdev@vger.kernel.org>,
+ linux-mm@kvack.org, llvm@lists.linux.dev
+Subject: Re: [PATCH 01/12] kbuild: make -Woverride-init warnings more
+ consistent
+In-Reply-To: <cb853762-06d4-401c-a1c8-07a0c031b499@app.fastmail.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <20240326144741.3094687-1-arnd@kernel.org>
+ <20240326144741.3094687-2-arnd@kernel.org> <87jzlohhbc.fsf@intel.com>
+ <cb853762-06d4-401c-a1c8-07a0c031b499@app.fastmail.com>
+Date: Wed, 27 Mar 2024 09:50:05 +0200
+Message-ID: <87edbwglle.fsf@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 1/2] dt-bindings: dma: snps,dw-axi-dmac: Add JH8100
- support
-To: Tan Chun Hau <chunhau.tan@starfivetech.com>,
- Eugeniy Paltsev <Eugeniy.Paltsev@synopsys.com>, Vinod Koul
- <vkoul@kernel.org>, Rob Herring <robh@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>
-Cc: Ley Foon Tan <leyfoon.tan@starfivetech.com>,
- Jee Heng Sia <jeeheng.sia@starfivetech.com>, dmaengine@vger.kernel.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20240327025126.229475-1-chunhau.tan@starfivetech.com>
- <20240327025126.229475-2-chunhau.tan@starfivetech.com>
-Content-Language: en-US
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20240327025126.229475-2-chunhau.tan@starfivetech.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 
-On 27/03/2024 03:51, Tan Chun Hau wrote:
-> Add support for StarFive JH8100 SoC in Sysnopsys Designware AXI DMA
-> controller.
-> 
-> Both JH8100 and JH7110 require reset operation in device probe.
-> However, JH8100 doesn't need to apply different configuration on
-> CH_CFG registers.
+On Tue, 26 Mar 2024, "Arnd Bergmann" <arnd@arndb.de> wrote:
+> On Tue, Mar 26, 2024, at 21:24, Jani Nikula wrote:
+>> On Tue, 26 Mar 2024, Arnd Bergmann <arnd@kernel.org> wrote:
+>>> From: Arnd Bergmann <arnd@arndb.de>
+>>> index 475e1e8c1d35..0786eb0da391 100644
+>>> --- a/drivers/net/ethernet/renesas/sh_eth.c
+>>> +++ b/drivers/net/ethernet/renesas/sh_eth.c
+>>> @@ -50,7 +50,7 @@
+>>>   * the macros available to do this only define GCC 8.
+>>>   */
+>>>  __diag_push();
+>>> -__diag_ignore(GCC, 8, "-Woverride-init",
+>>> +__diag_ignore_all("-Woverride-init",
+>>>  	      "logic to initialize all and then override some is OK");
+>>
+>> This is nice because it's more localized than the per-file
+>> disable. However, we tried to do this in i915, but this doesn't work for
+>> GCC versions < 8, and some defconfigs enabling -Werror forced us to
+>> revert. See commit 290d16104575 ("Revert "drm/i915: use localized
+>> __diag_ignore_all() instead of per file"").
+>
+> It works now.
+>
+> The original __diag_ignore_all() only did it for gcc-8 and above
+> because that was initially needed to suppress warnings that
+> got added in that version, but this was always a mistake.
+>
+> 689b097a06ba ("compiler-gcc: Suppress -Wmissing-prototypes
+> warning for all supported GCC") made it work correctly.
 
-This is a friendly reminder during the review process.
+Oh, nice! Then I think we'd like to go back to __diag_ignore_all() in
+i915 and xe.
 
-It looks like you received a tag and forgot to add it.
+The diff is below. I'm fine with you squashing it to your patch, or if
+you want me to turn it into a proper patch for you to pick up in your
+series, that's fine too. Just let me know.
 
-If you do not know the process, here is a short explanation:
-Please add Acked-by/Reviewed-by/Tested-by tags when posting new
-versions, under or above your Signed-off-by tag. Tag is "received", when
-provided in a message replied to you on the mailing list. Tools like b4
-can help here. However, there's no need to repost patches *only* to add
-the tags. The upstream maintainer will do that for tags received on the
-version they apply.
+BR,
+Jani.
 
-https://elixir.bootlin.com/linux/v6.5-rc3/source/Documentation/process/submitting-patches.rst#L577
+Signed-off-by: Jani Nikula <jani.nikula@intel.com>
 
-If a tag was not added on purpose, please state why and what changed.
 
-Best regards,
-Krzysztof
+diff --git a/drivers/gpu/drm/i915/Makefile b/drivers/gpu/drm/i915/Makefile
+index 3ef6ed41e62b..87d6ba8d2341 100644
+--- a/drivers/gpu/drm/i915/Makefile
++++ b/drivers/gpu/drm/i915/Makefile
+@@ -32,11 +32,6 @@ endif
+ # Enable -Werror in CI and development
+ subdir-ccflags-$(CONFIG_DRM_I915_WERROR) += -Werror
+ 
+-# Fine grained warnings disable
+-CFLAGS_i915_pci.o = $(call cc-disable-warning, override-init)
+-CFLAGS_display/intel_display_device.o = $(call cc-disable-warning, override-init)
+-CFLAGS_display/intel_fbdev.o = $(call cc-disable-warning, override-init)
+-
+ # Support compiling the display code separately for both i915 and xe
+ # drivers. Define I915 when building i915.
+ subdir-ccflags-y += -DI915
+diff --git a/drivers/gpu/drm/i915/display/intel_display_device.c b/drivers/gpu/drm/i915/display/intel_display_device.c
+index c02d79b50006..b8903bd0e82a 100644
+--- a/drivers/gpu/drm/i915/display/intel_display_device.c
++++ b/drivers/gpu/drm/i915/display/intel_display_device.c
+@@ -17,6 +17,9 @@
+ #include "intel_display_reg_defs.h"
+ #include "intel_fbc.h"
+ 
++__diag_push();
++__diag_ignore_all("-Woverride-init", "Allow field initialization overrides for display info");
++
+ static const struct intel_display_device_info no_display = {};
+ 
+ #define PIPE_A_OFFSET		0x70000
+@@ -768,6 +771,8 @@ static const struct intel_display_device_info xe2_lpd_display = {
+ 		BIT(INTEL_FBC_C) | BIT(INTEL_FBC_D),
+ };
+ 
++__diag_pop();
++
+ /*
+  * Separate detection for no display cases to keep the display id array simple.
+  *
+diff --git a/drivers/gpu/drm/i915/display/intel_fbdev.c b/drivers/gpu/drm/i915/display/intel_fbdev.c
+index 99894a855ef0..43855c6c3509 100644
+--- a/drivers/gpu/drm/i915/display/intel_fbdev.c
++++ b/drivers/gpu/drm/i915/display/intel_fbdev.c
+@@ -135,6 +135,9 @@ static int intel_fbdev_mmap(struct fb_info *info, struct vm_area_struct *vma)
+ 	return i915_gem_fb_mmap(obj, vma);
+ }
+ 
++__diag_push();
++__diag_ignore_all("-Woverride-init", "Allow field initialization overrides for fb ops");
++
+ static const struct fb_ops intelfb_ops = {
+ 	.owner = THIS_MODULE,
+ 	__FB_DEFAULT_DEFERRED_OPS_RDWR(intel_fbdev),
+@@ -146,6 +149,8 @@ static const struct fb_ops intelfb_ops = {
+ 	.fb_mmap = intel_fbdev_mmap,
+ };
+ 
++__diag_pop();
++
+ static int intelfb_create(struct drm_fb_helper *helper,
+ 			  struct drm_fb_helper_surface_size *sizes)
+ {
+diff --git a/drivers/gpu/drm/i915/i915_pci.c b/drivers/gpu/drm/i915/i915_pci.c
+index 1e69783ae4fd..405ca17a990b 100644
+--- a/drivers/gpu/drm/i915/i915_pci.c
++++ b/drivers/gpu/drm/i915/i915_pci.c
+@@ -38,6 +38,9 @@
+ #include "i915_reg.h"
+ #include "intel_pci_config.h"
+ 
++__diag_push();
++__diag_ignore_all("-Woverride-init", "Allow field initialization overrides for device info");
++
+ #define PLATFORM(x) .platform = (x)
+ #define GEN(x) \
+ 	.__runtime.graphics.ip.ver = (x), \
+@@ -785,6 +788,8 @@ static const struct intel_device_info mtl_info = {
+ 
+ #undef PLATFORM
+ 
++__diag_pop();
++
+ /*
+  * Make sure any device matches here are from most specific to most
+  * general.  For example, since the Quanta match is based on the subsystem
+diff --git a/drivers/gpu/drm/xe/Makefile b/drivers/gpu/drm/xe/Makefile
+index 3c3e67885559..2f58faf0a79a 100644
+--- a/drivers/gpu/drm/xe/Makefile
++++ b/drivers/gpu/drm/xe/Makefile
+@@ -172,9 +172,6 @@ subdir-ccflags-$(CONFIG_DRM_XE_DISPLAY) += \
+ 	-Ddrm_i915_gem_object=xe_bo \
+ 	-Ddrm_i915_private=xe_device
+ 
+-CFLAGS_i915-display/intel_fbdev.o = $(call cc-disable-warning, override-init)
+-CFLAGS_i915-display/intel_display_device.o = $(call cc-disable-warning, override-init)
+-
+ # Rule to build SOC code shared with i915
+ $(obj)/i915-soc/%.o: $(srctree)/drivers/gpu/drm/i915/soc/%.c FORCE
+ 	$(call cmd,force_checksrc)
 
+-- 
+Jani Nikula, Intel
 
