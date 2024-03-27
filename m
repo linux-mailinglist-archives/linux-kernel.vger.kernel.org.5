@@ -1,66 +1,47 @@
-Return-Path: <linux-kernel+bounces-121841-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-121842-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B472B88EE65
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 19:40:05 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id AA33488EE69
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 19:41:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5E1A129FDA9
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 18:40:04 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 68A191F31300
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 18:41:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9234C15099A;
-	Wed, 27 Mar 2024 18:40:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C57541509A2;
+	Wed, 27 Mar 2024 18:41:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=embeddedor.com header.i=@embeddedor.com header.b="nxDsV4CO"
-Received: from omta038.useast.a.cloudfilter.net (omta038.useast.a.cloudfilter.net [44.202.169.37])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="pj81pryz"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4179F14D28C
-	for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 18:39:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=44.202.169.37
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 07B0732189;
+	Wed, 27 Mar 2024 18:41:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711564799; cv=none; b=aeUcTtdqYrvFOCztF2renEp6aSTQX7QZoWsNjRpeU4OLDsSZ5Bmt8cEop2563Dc3fhAnV5PVL3Uvfzsk19+DpYWq/aK30EugJ0qAX7FJPwPTNM/lrCB8bilE5EVn0oSEyLooucxfTSUPetjRLhlbAT3A4TKl6KhiKwZvW8sCdBc=
+	t=1711564863; cv=none; b=Lt7KOBrUh5vthv7JcrBOyO0xoERNp2WQhVoE4G4JfQkEy4wdQeyaKpGizk3+3Edr5/tpMZuC1e9V5nUcZgynOnLVv5HEG399Gdp0B+wnN4go8afk2xig7e+uMzvLa5cQYUP4y/cGVUO089oouYvhz0quUlxSnMZvV3D4eWPq594=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711564799; c=relaxed/simple;
-	bh=wWGHjeDpZavQDjtU7nfyce/8Gzr5lFSubbp9E1BsPb4=;
-	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
-	 In-Reply-To:Content-Type; b=iZbVdNqPI7gMOyfYojiA9u9MU02Ae1AsG6f8tK/CLlaCfEUM9EPYmZyy0Ih1BJ9C0lLSEqHptW80jS8b2/GhVixuQubxYiyD+1RDcj+RfuvU+rN3rcw3dRsY+CnJRtQogk3wDSHLxINbIAN5bYKbmeVEpsHzAiO+SvkrpwhKUTY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=embeddedor.com; spf=pass smtp.mailfrom=embeddedor.com; dkim=pass (2048-bit key) header.d=embeddedor.com header.i=@embeddedor.com header.b=nxDsV4CO; arc=none smtp.client-ip=44.202.169.37
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=embeddedor.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=embeddedor.com
-Received: from eig-obgw-5008a.ext.cloudfilter.net ([10.0.29.246])
-	by cmsmtp with ESMTPS
-	id pWKlrzz3sQr4SpYBpriOG6; Wed, 27 Mar 2024 18:39:57 +0000
-Received: from gator4166.hostgator.com ([108.167.133.22])
-	by cmsmtp with ESMTPS
-	id pYBnr3dmdiDnepYBorbllG; Wed, 27 Mar 2024 18:39:56 +0000
-X-Authority-Analysis: v=2.4 cv=Cd4O5qrl c=1 sm=1 tr=0 ts=660467fc
- a=1YbLdUo/zbTtOZ3uB5T3HA==:117 a=zXgy4KOrraTBHT4+ULisNA==:17
- a=IkcTkHD0fZMA:10 a=K6JAEmCyrfEA:10 a=wYkD_t78qR0A:10 a=VwQbUJbxAAAA:8
- a=v8LEnFnaCG9JqxBWnZgA:9 a=3ZKOabzyN94A:10 a=QEXdDO2ut3YA:10
- a=AjGcO6oz07-iQ99wixmX:22
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
-	In-Reply-To:References:Cc:To:From:Subject:MIME-Version:Date:Message-ID:Sender
-	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-	List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=FhDtWBwKqrP+NfoVTgkUPYrjUuTaeWvHamIeomR7TP8=; b=nxDsV4COKwzy/QvEUoQXdXPYYa
-	B2ZhbypKNVqUDaJzVjIe4F6zqVBrrfR2TVf5cRu5p2foSZh9qpfii0BAUzyoXr21OnTzhVCJCACW5
-	/RpePPrhJwvz7DstKvZfD9oqJh38oK7Lpa6yulSGhmEiKhwmXTmNvvss3uWswDiCcFSNW2EcSNHbJ
-	fyCFs2YIaFBX4ELZklgIoekEV9bzy7GgKT49bm0qF9uHU3GhygN1YolFobABcHKSdZgC4qLYzQ5nd
-	5BA6s9z+w/E2OCqBusMSSQEVBjToo+3IJEkUMqw168R1CuKZTe1cijlv57+GqnuKil0fh3PUm8SqR
-	e5qTmU1w==;
-Received: from [201.172.173.147] (port=49700 helo=[192.168.15.10])
-	by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-	(Exim 4.96.2)
-	(envelope-from <gustavo@embeddedor.com>)
-	id 1rpYBn-003LDL-1K;
-	Wed, 27 Mar 2024 13:39:55 -0500
-Message-ID: <4e1261a7-25a9-4193-a9e9-9bc137893f08@embeddedor.com>
-Date: Wed, 27 Mar 2024 12:39:54 -0600
+	s=arc-20240116; t=1711564863; c=relaxed/simple;
+	bh=TZ4Ulkq08cyhbUI/jnfti4CmHEbiymxV7WOwc0rr1uI=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=My4VF6Veq6G9h9v0uj+Yt6mvWELEfBE5bxQpELyZU3l0UOlv2pO+ce9PJou1yP/ZB9oflV2jG2yHI5eDvz368tSEGQRo+tcH+ZxBdYjG6eFM5aG1Cgvcx07Vv2g98MRRqgSS60ZrCy/k0iAMQ0bGjLlGc7+qcE0yG/h5GYztxss=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=pj81pryz; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9B6ECC433F1;
+	Wed, 27 Mar 2024 18:40:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1711564862;
+	bh=TZ4Ulkq08cyhbUI/jnfti4CmHEbiymxV7WOwc0rr1uI=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=pj81pryzKZm3enDLIqHOLc6rQPmEYuKD0TaNSte22QKi2P6ILqMI0C+w5gL9gjHtW
+	 kFN2LV58M0YGeHooivyaRQYM8EybaNc0vmCAGdwOmMWg0ZSY97/6RrkA4EjbMmWYzW
+	 Kr6AWTRJzLcuWAVzLsoM6UIGlvEwrSnrPC2Mo16dISa3Inav/EL0XN/NgpsOnOEV97
+	 ssnn0H6SlTVwLER1CmKpJS2YbpjF9rzKeAxs+BK8o1RgnAeXb4MR4PDiA+7AasvBSZ
+	 HktjMckhTFReV4UuSTfOGPhxXn9Hza6q0ABCRimtg+e6HbxMPhY+0xCmxrgYlzkUm5
+	 quTAbc8NCrt5w==
+Message-ID: <f30daa5c-1002-40f0-885e-265104a98525@kernel.org>
+Date: Wed, 27 Mar 2024 19:40:54 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -68,91 +49,90 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2][next] wifi: wil6210: Annotate a couple of structs with
- __counted_by()
+Subject: Re: [PATCH RESEND v6 1/5] dt-bindings: spmi: Add X1E80100 SPMI PMIC
+ ARB schema
+To: Abel Vesa <abel.vesa@linaro.org>, Stephen Boyd <sboyd@kernel.org>,
+ Matthias Brugger <matthias.bgg@gmail.com>,
+ Bjorn Andersson <andersson@kernel.org>,
+ Konrad Dybcio <konrad.dybcio@linaro.org>,
+ Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+ Neil Armstrong <neil.armstrong@linaro.org>,
+ AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+ Rob Herring <robh@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>
+Cc: Srini Kandagatla <srinivas.kandagatla@linaro.org>,
+ Johan Hovold <johan@kernel.org>, linux-kernel@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-arm-msm@vger.kernel.org,
+ linux-mediatek@lists.infradead.org, devicetree@vger.kernel.org
+References: <20240326-spmi-multi-master-support-v6-0-1c87d8306c5b@linaro.org>
+ <20240326-spmi-multi-master-support-v6-1-1c87d8306c5b@linaro.org>
 Content-Language: en-US
-From: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-To: Jeff Johnson <quic_jjohnson@quicinc.com>,
- "Gustavo A. R. Silva" <gustavoars@kernel.org>, Kalle Valo <kvalo@kernel.org>
-Cc: linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-hardening@vger.kernel.org
-References: <ZgRayuCJ0gQinMvr@neat>
- <3f19627e-4472-4ed1-9e2e-b0b427682910@quicinc.com>
- <5a6bdbc6-b37e-4c6b-9bff-470fd560663b@embeddedor.com>
-In-Reply-To: <5a6bdbc6-b37e-4c6b-9bff-470fd560663b@embeddedor.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - embeddedor.com
-X-BWhitelist: no
-X-Source-IP: 201.172.173.147
-X-Source-L: No
-X-Exim-ID: 1rpYBn-003LDL-1K
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: ([192.168.15.10]) [201.172.173.147]:49700
-X-Source-Auth: gustavo@embeddedor.com
-X-Email-Count: 8
-X-Org: HG=hgshared;ORG=hostgator;
-X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
-X-Local-Domain: yes
-X-CMAE-Envelope: MS4xfFxXe9VsPKLGHCrxLbJiyjrSoH1ztG8e57vzOmoOAj7lOMVSHbf4cBY6We6+c/oUcIcvbXW1EOs4vk+xmSXcEvvbWbEWtwhYLyQsgO2PXagnlntl+Btm
- wJWPTQvs4EkfCLrnsWFiGnanrXRB1/4DeWVi1XI5dBFEABZg2e3LqgR/FAAigUeZ7ADDOakgYwBRCubh+y44BHHQynMLl6O/VYOcqjMgBmgiMqrAZDWzM25K
+From: Krzysztof Kozlowski <krzk@kernel.org>
+Autocrypt: addr=krzk@kernel.org; keydata=
+ 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 fv0=
+In-Reply-To: <20240326-spmi-multi-master-support-v6-1-1c87d8306c5b@linaro.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+
+On 26/03/2024 17:28, Abel Vesa wrote:
+> +  qcom,channel:
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +    minimum: 0
+> +    maximum: 5
+> +    description: >
+> +      which of the PMIC Arb provided channels to use for accesses
+> +
+> +patternProperties:
+> +  "spmi@[a-f0-9]+$":
+
+Missing '^' in the pattern. I did not notice it earlier because only
+since ~2 weeks I have lei filter for ABI based on node names. And your
+driver created ABI based on node names, so this must be fixed. Sorry. :(
 
 
->>>   #define WMI_MAX_PNO_SSID_NUM    (16)
->>> @@ -3320,7 +3320,7 @@ struct wmi_set_link_monitor_cmd {
->>>       u8 rssi_hyst;
->>>       u8 reserved[12];
->>>       u8 rssi_thresholds_list_size;
->>> -    s8 rssi_thresholds_list[];
->>> +    s8 rssi_thresholds_list[] __counted_by(rssi_thresholds_list_size);
->>>   } __packed;
->>
->> this looks ok to me, although I think there is another issue associated with
->> this, namely the way the code populates the rssi_thresholds_list is by
->> defining a separate anonymous struct:
->>     struct {
->>         struct wmi_set_link_monitor_cmd cmd;
->>         s8 rssi_thold;
->>     } __packed cmd = {
->>         .cmd = {
->>             .rssi_hyst = rssi_hyst,
->>             .rssi_thresholds_list_size = 1,
->>         },
->>         .rssi_thold = rssi_thold,
->>     };
->>
->> I would expect gcc and clang to both complain about that s8 rssi_thold comes
->> after a flexible array (even though its purpose is to be the value of
->> rssi_thresholds_list[0])
->>
+Best regards,
+Krzysztof
 
-I will merge these two patches together:
-
-https://lore.kernel.org/linux-hardening/ZgODZOB4fOBvKl7R@neat/
-https://lore.kernel.org/linux-hardening/ZgOEoCWguq3n1OqQ@neat/
-
-and send these changes together with the DEFINE_FLEX() transformation
-in drivers/net/wireless/ath/wil6210/cfg80211.c
-
-diff --git a/drivers/net/wireless/ath/wil6210/wmi.h b/drivers/net/wireless/ath/wil6210/wmi.h
-index 71bf2ae27a98..38f64524019e 100644
---- a/drivers/net/wireless/ath/wil6210/wmi.h
-+++ b/drivers/net/wireless/ath/wil6210/wmi.h
-@@ -474,7 +474,7 @@ struct wmi_start_scan_cmd {
-       struct {
-           u8 channel;
-           u8 reserved;
--    } channel_list[];
-+    } channel_list[] __counted_by(num_channels);
-   } __packed;
-
-Thanks
---
-Gustavo
 
