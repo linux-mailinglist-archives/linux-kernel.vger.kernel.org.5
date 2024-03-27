@@ -1,175 +1,139 @@
-Return-Path: <linux-kernel+bounces-121505-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-121494-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id D18C788E907
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 16:29:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 5C96188E8F8
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 16:27:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0FA561C305F9
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 15:29:34 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8E0DB1C2EC7E
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 15:27:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5A95113DB98;
-	Wed, 27 Mar 2024 15:24:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B375621342;
+	Wed, 27 Mar 2024 15:23:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="aZBUUQ1t"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="O4I/BuHF"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0ADAF137752
-	for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 15:23:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 01D822557E;
+	Wed, 27 Mar 2024 15:23:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711553039; cv=none; b=YqCpySA/mlQGxZUkicLpSy/T/DDPbw6dnEvmngreFk7R+vrPENSf4yMGpqKZxKQQeOEPFHyaeB10TMKA0FQ9EUacWkPc4/iuVdWv4jYXvoiHG5SFSsbOUvkLUV/+4A8eoTCDVtsUxlvkFp5etzaThxJXJhxWjJ0dLEmH49nP1mc=
+	t=1711553012; cv=none; b=VEn40nRgzcESJz/j5jJ+We94A+eJq7La4I8BgNLcKcboeuy7OSwX1QfHvoWNFXnFjnAGDn88xEEm23AXbTiPn2g5Uf7Fap2XEkKGiTSoZCQnu9WyOLCF0I6qmqzxCVY1mFBuPZ6V+AhWkGI788I43DSJhZq0Z10FH0uuApekn98=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711553039; c=relaxed/simple;
-	bh=LP9xY+SfzwUZk4UYjL/cCTlaLX0S30RgPNe581NajRk=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=JlRRoqHZ+lvoOlXS+7+6zKwHQ/BAyTxLiLBnuM7kq0Dddx3jAssEkm5DJ04tWO0h33li7QMmh6s8oBGy7STzs826DdI77WY7XVhuKSHkypM0WYOLNUXyj6x+UK7mPacY+js0QOgVpTffQ/T07r6XfeA8NampkNNNc+xA8WPxTzQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=aZBUUQ1t; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1711553037;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=0ClTZB7edrSwahK3rulsC63VROBcD1QOdNuRXa61Ddg=;
-	b=aZBUUQ1t2WyqGMCB1eDYk4LhLIOErL3VlhjBF+hPJsf1aQ0zyOtLRjOewKJf3tbRDUz6mm
-	Dypys88NPWOGGlxUF6ZPLs+cNCAr7GR1oSaJaDTbESR1p7QCtjNdq+YcAMft90qb5YcPXg
-	WybX8dM2meYZGojN4LfLIFtymK6byyQ=
-Received: from mail-qv1-f71.google.com (mail-qv1-f71.google.com
- [209.85.219.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-651--WrbOiAMO2qgV8Da5Fpnbw-1; Wed, 27 Mar 2024 11:23:55 -0400
-X-MC-Unique: -WrbOiAMO2qgV8Da5Fpnbw-1
-Received: by mail-qv1-f71.google.com with SMTP id 6a1803df08f44-696a5972507so4146906d6.0
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 08:23:55 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711553035; x=1712157835;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=0ClTZB7edrSwahK3rulsC63VROBcD1QOdNuRXa61Ddg=;
-        b=srzPHnZW/RYPYPjACLBfBlr3SnMEd90siHWamjwpZmIlxoYr29jiRe74Oo6VqVKWQC
-         6wS+sTAoLZSYnEvS5UUyjk3AbFBS+nJZIRaDKaV4Aapz7LFYFTO7jaMnXiov+0ph4tFf
-         LrYCdfw5MBvkBrk5W8A5Lw53vvctgdnzoI3O/Z42Uetgjre8WilBBm2sJYXavINCT9uI
-         W7uVKB1ESqA9UOa5nJScYufySpdV1O+z09P7DzHNOlznEW5zesTrQK06D/8Qpjin7FPc
-         QMXfg6NdvzunPHS9ksaZaKdbQ+OaM7HoFjcKzRvioXJ4CW5+dsuNIy7e/fKVv0VAj10X
-         tGFA==
-X-Forwarded-Encrypted: i=1; AJvYcCWy1Xg6CZFHhtIeisZDG0etjKxP+XOqmSQETkTPaOb3bHNjMP6nv+JScXdhANs/x38+2ow4lUtdc/3u7yHiA2sSX7ZNhTPOtP8WIbxg
-X-Gm-Message-State: AOJu0YynjHxBbqXr0y9EA4GosDoFIY4WQZa+5zClc0sX4UvT2DOFss/r
-	vkeooCezabuekJaKuZRU77jxoBtPnH4dwH4SYf0cZizN+24C+0lA2lGdH3+J3lt7mtD9AxuX0Rf
-	Z8HIbnlf2ZuWkiM1FVyJQKKAdCmu5e/BYQZyng1bFMdUfHOQRCv6RZ8CE0o3yjA==
-X-Received: by 2002:a05:6214:3d8c:b0:696:1892:c19f with SMTP id om12-20020a0562143d8c00b006961892c19fmr15035536qvb.3.1711553035007;
-        Wed, 27 Mar 2024 08:23:55 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IFT3GjlhPAIM0f0tWP3PNax9bFYBunh5winrPqMP8FazkZOSJ/P00xdKeX4lX2Up3S+10Z8OQ==
-X-Received: by 2002:a05:6214:3d8c:b0:696:1892:c19f with SMTP id om12-20020a0562143d8c00b006961892c19fmr15035509qvb.3.1711553034516;
-        Wed, 27 Mar 2024 08:23:54 -0700 (PDT)
-Received: from x1n.redhat.com ([99.254.121.117])
-        by smtp.gmail.com with ESMTPSA id hu4-20020a056214234400b00690dd47a41csm6412639qvb.86.2024.03.27.08.23.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 27 Mar 2024 08:23:54 -0700 (PDT)
-From: peterx@redhat.com
-To: linux-mm@kvack.org,
-	linux-kernel@vger.kernel.org
-Cc: Yang Shi <shy828301@gmail.com>,
-	"Kirill A . Shutemov" <kirill@shutemov.name>,
-	Mike Kravetz <mike.kravetz@oracle.com>,
-	John Hubbard <jhubbard@nvidia.com>,
-	Michael Ellerman <mpe@ellerman.id.au>,
-	peterx@redhat.com,
-	Andrew Jones <andrew.jones@linux.dev>,
-	Muchun Song <muchun.song@linux.dev>,
-	linux-riscv@lists.infradead.org,
-	linuxppc-dev@lists.ozlabs.org,
-	Christophe Leroy <christophe.leroy@csgroup.eu>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Christoph Hellwig <hch@infradead.org>,
-	Lorenzo Stoakes <lstoakes@gmail.com>,
-	Matthew Wilcox <willy@infradead.org>,
-	Rik van Riel <riel@surriel.com>,
-	linux-arm-kernel@lists.infradead.org,
-	Andrea Arcangeli <aarcange@redhat.com>,
-	David Hildenbrand <david@redhat.com>,
-	"Aneesh Kumar K . V" <aneesh.kumar@kernel.org>,
-	Vlastimil Babka <vbabka@suse.cz>,
-	James Houghton <jthoughton@google.com>,
-	Jason Gunthorpe <jgg@nvidia.com>,
-	Mike Rapoport <rppt@kernel.org>,
-	Axel Rasmussen <axelrasmussen@google.com>
-Subject: [PATCH v4 09/13] mm/gup: Cache *pudp in follow_pud_mask()
-Date: Wed, 27 Mar 2024 11:23:28 -0400
-Message-ID: <20240327152332.950956-10-peterx@redhat.com>
-X-Mailer: git-send-email 2.44.0
-In-Reply-To: <20240327152332.950956-1-peterx@redhat.com>
-References: <20240327152332.950956-1-peterx@redhat.com>
+	s=arc-20240116; t=1711553012; c=relaxed/simple;
+	bh=rMv9zxTLOc2gGvdPWGvZBa+aQKrI/aFqAI1di8hyPQw=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition:In-Reply-To; b=idO9ycIoWQ2HzKMYsekE8aBNp/aPYjirj4H/K7o0i3yTzQ500KA8HX2xG4HMbZb59K+ybOk3VW/Zekd71YTNGeyE/6NTtWQd25EbKWljv/EImkEd4Ol5pQ+PpKmEs/sXcBT4unxuIRxVOmSljpwRTIVDMrvHCF+I7HA46sH5+sk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=O4I/BuHF; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 91063C433A6;
+	Wed, 27 Mar 2024 15:23:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1711553011;
+	bh=rMv9zxTLOc2gGvdPWGvZBa+aQKrI/aFqAI1di8hyPQw=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:From;
+	b=O4I/BuHF490WGur6hj5s8qbEij6Vu/xefRx3Pyhni6+LsfYGaZfW3nPTgP0r7OM6A
+	 4nMvSHfuaGAJYusAVP4Nlohpk+FgMGiFegJX7o1dEDkcRSJqnoTHZJ5YUZ+pTXpzh6
+	 aU5D+Ql/lbKdFFRdw/x4Was5dUMa0oSJ5mcZ5lFcfy5R5ufKGcmvOoUkcxJBKv48uL
+	 pqWsWxPw+KPEYpQKC2dpv+1rSBqAnaCpJePtwyOjtXouLguEM684QgLpFLS+hpvt9P
+	 WBYTKlV2tJ5m256ffDvs0Mw50yTMAALhp+W6H9b63vY2N0hqA8sypxb2NywF96YlEZ
+	 8lTlFNZdhpF1A==
+Date: Wed, 27 Mar 2024 10:23:29 -0500
+From: Bjorn Helgaas <helgaas@kernel.org>
+To: Kai-Heng Feng <kai.heng.feng@canonical.com>
+Cc: bhelgaas@google.com, linux-pci@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Victor Shih <victor.shih@genesyslogic.com.tw>,
+	Ben Chuang <benchuanggli@gmail.com>
+Subject: Re: [PATCH v3] PCI: Mask replay timer timeout of GL975x's rootport
+Message-ID: <20240327152329.GA1523226@bhelgaas>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240327024509.1071189-1-kai.heng.feng@canonical.com>
 
-From: Peter Xu <peterx@redhat.com>
+On Wed, Mar 27, 2024 at 10:45:09AM +0800, Kai-Heng Feng wrote:
+> Any access to GL975x's config space, like `lspci -vv` or
+> pci_save_state(), can still trigger the replay timer timeout error even
+> after commit 015c9cbcf0ad ("mmc: sdhci-pci-gli: GL9750: Mask the replay
+> timer timeout of AER"), albeit with a lower reproduce rate.
+> 
+> The AER interrupt can prevent the system from suspending, or can flood
+> the kernel message. So mask the replay timer timeout to resolve the
+> issue.
+> 
+> Cc: Victor Shih <victor.shih@genesyslogic.com.tw>
+> Cc: Ben Chuang <benchuanggli@gmail.com>
+> Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
 
-Introduce "pud_t pud" in the function, so the code won't dereference *pudp
-multiple time.  Not only because that looks less straightforward, but also
-because if the dereference really happened, it's not clear whether there
-can be race to see different *pudp values if it's being modified at the
-same time.
+Applied as below to pci/aer for v6.10, thanks!
 
-Acked-by: James Houghton <jthoughton@google.com>
-Reviewed-by: Jason Gunthorpe <jgg@nvidia.com>
-Signed-off-by: Peter Xu <peterx@redhat.com>
----
- mm/gup.c | 17 +++++++++--------
- 1 file changed, 9 insertions(+), 8 deletions(-)
+commit eeee3b5e6d0b ("PCI: Mask Replay Timer Timeout errors for Genesys GL975x SD host controller")
+Author: Kai-Heng Feng <kai.heng.feng@canonical.com>
+Date:   Wed Mar 27 10:45:09 2024 +0800
 
-diff --git a/mm/gup.c b/mm/gup.c
-index ef46a7053e16..26b8cca24077 100644
---- a/mm/gup.c
-+++ b/mm/gup.c
-@@ -753,26 +753,27 @@ static struct page *follow_pud_mask(struct vm_area_struct *vma,
- 				    unsigned int flags,
- 				    struct follow_page_context *ctx)
- {
--	pud_t *pud;
-+	pud_t *pudp, pud;
- 	spinlock_t *ptl;
- 	struct page *page;
- 	struct mm_struct *mm = vma->vm_mm;
- 
--	pud = pud_offset(p4dp, address);
--	if (pud_none(*pud))
-+	pudp = pud_offset(p4dp, address);
-+	pud = READ_ONCE(*pudp);
-+	if (pud_none(pud))
- 		return no_page_table(vma, flags, address);
--	if (pud_devmap(*pud)) {
--		ptl = pud_lock(mm, pud);
--		page = follow_devmap_pud(vma, address, pud, flags, &ctx->pgmap);
-+	if (pud_devmap(pud)) {
-+		ptl = pud_lock(mm, pudp);
-+		page = follow_devmap_pud(vma, address, pudp, flags, &ctx->pgmap);
- 		spin_unlock(ptl);
- 		if (page)
- 			return page;
- 		return no_page_table(vma, flags, address);
- 	}
--	if (unlikely(pud_bad(*pud)))
-+	if (unlikely(pud_bad(pud)))
- 		return no_page_table(vma, flags, address);
- 
--	return follow_pmd_mask(vma, address, pud, flags, ctx);
-+	return follow_pmd_mask(vma, address, pudp, flags, ctx);
+    PCI: Mask Replay Timer Timeout errors for Genesys GL975x SD host controller
+    
+    Due to a hardware defect in GL975x, config accesses when ASPM is enabled
+    frequently cause Replay Timer Timeouts in the Port leading to the device.
+    
+    These are Correctable Errors, so the Downstream Port logs it in its AER
+    Correctable Error Status register and, when the error is not masked, sends
+    an ERR_COR message upstream.  The message terminates at a Root Port, which
+    may generate an AER interrupt so the OS can log it.
+    
+    The Correctable Error logging is an annoyance but not a major issue itself.
+    But when the AER interrupt happens during suspend, it can prevent the
+    system from suspending.
+    
+    015c9cbcf0ad ("mmc: sdhci-pci-gli: GL9750: Mask the replay timer timeout of
+    AER") masked these errors in the GL975x itself.
+    
+    Mask these errors in the Port leading to GL975x as well.  Note that Replay
+    Timer Timeouts will still be logged in the AER Correctable Error Status
+    register, but they will not cause AER interrupts.
+    
+    Link: https://lore.kernel.org/r/20240327024509.1071189-1-kai.heng.feng@canonical.com
+    Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+    [bhelgaas: commit log, update dmesg note]
+    Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
+    Cc: Victor Shih <victor.shih@genesyslogic.com.tw>
+    Cc: Ben Chuang <benchuanggli@gmail.com>
+
+
+diff --git a/drivers/pci/quirks.c b/drivers/pci/quirks.c
+index bf4833221816..5cb0f7fae3b8 100644
+--- a/drivers/pci/quirks.c
++++ b/drivers/pci/quirks.c
+@@ -6261,3 +6261,23 @@ static void pci_fixup_d3cold_delay_1sec(struct pci_dev *pdev)
+ 	pdev->d3cold_delay = 1000;
  }
- 
- static struct page *follow_p4d_mask(struct vm_area_struct *vma,
--- 
-2.44.0
-
+ DECLARE_PCI_FIXUP_FINAL(0x5555, 0x0004, pci_fixup_d3cold_delay_1sec);
++
++#ifdef CONFIG_PCIEAER
++static void pci_mask_replay_timer_timeout(struct pci_dev *pdev)
++{
++	struct pci_dev *parent = pci_upstream_bridge(pdev);
++	u32 val;
++
++	if (!parent || !parent->aer_cap)
++		return;
++
++	pci_info(parent, "mask Replay Timer Timeout Correctable Errors due to %s hardware defect",
++		 pci_name(pdev));
++
++	pci_read_config_dword(parent, parent->aer_cap + PCI_ERR_COR_MASK, &val);
++	val |= PCI_ERR_COR_REP_TIMER;
++	pci_write_config_dword(parent, parent->aer_cap + PCI_ERR_COR_MASK, val);
++}
++DECLARE_PCI_FIXUP_FINAL(PCI_VENDOR_ID_GLI, 0x9750, pci_mask_replay_timer_timeout);
++DECLARE_PCI_FIXUP_FINAL(PCI_VENDOR_ID_GLI, 0x9755, pci_mask_replay_timer_timeout);
++#endif
 
