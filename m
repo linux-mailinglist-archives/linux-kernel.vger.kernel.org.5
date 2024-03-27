@@ -1,135 +1,171 @@
-Return-Path: <linux-kernel+bounces-121873-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-121874-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2878988EECF
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 20:02:36 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8C0C988EED0
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 20:02:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D21531F35079
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 19:02:35 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4703A29E2B5
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 19:02:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 73B2E1514F7;
-	Wed, 27 Mar 2024 19:02:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B96DA15218B;
+	Wed, 27 Mar 2024 19:02:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="UYHPGXJ3"
-Received: from mail-wr1-f41.google.com (mail-wr1-f41.google.com [209.85.221.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=embeddedor.com header.i=@embeddedor.com header.b="o6i/ckCN"
+Received: from omta040.useast.a.cloudfilter.net (omta040.useast.a.cloudfilter.net [44.202.169.39])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 35D9812EBC4;
-	Wed, 27 Mar 2024 19:02:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6210A1514F1
+	for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 19:02:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=44.202.169.39
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711566142; cv=none; b=TJC2zj12O4ThTg00v4SI9PNDiWiO+qUeHB0Fi9rGhskmx0aWBk78FKV8mORJuBjurXx+Baq7fOFiimy/iXtuWESlSPTDTpuqoqXxWIpHfPD3bEL6H7lWA5rwVg3igWAhEXATxou16X5q353Z8cjGbc9idzmEgSGVeLmw6f1/WTo=
+	t=1711566145; cv=none; b=UTKBwo+D8QuYRxf1dIuCgLKaGmaDi7C9KoAm7azEgHU2quyq57fmQbmELJuqa51TD58F+IMrRbAvAUnmZZSnIEJj4fMCypkDGlFeGQhEpdfqVwmeYyk2PyyajrhzRyi9X/qz+f1S3jPv4hp1HYi6wDsypcl3biP8+UvEsjUy8SQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711566142; c=relaxed/simple;
-	bh=Mkjkay7Z0Vj+E8vwdVGwj0OsZgK9nBJ7enE6cPyGExw=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=mdewmW++iMtfjVPAyJYu/P0E+ZyUHOwIf+D7U4gBM+AbbJd6jxiSocCsWHWMXTTSYos0vUHxLPvg9/OPnG/MjJc+pXUZi72uzzxj7pSieGxI7C7ZoVW8/koYrFEB+k+2WACaXYXq0cqyxyE9OUwDfGGXiPc/KPmHz74tAOX56wI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=UYHPGXJ3; arc=none smtp.client-ip=209.85.221.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f41.google.com with SMTP id ffacd0b85a97d-33fd8a2a407so61157f8f.2;
-        Wed, 27 Mar 2024 12:02:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711566139; x=1712170939; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=G43Y9I+3uus2Fv/YCLNGCC6IN7NsddtveLn+lJcwAXE=;
-        b=UYHPGXJ3PPkqIeKVia220JRIT2Mq5ZI9ahYFTwPWE6QsdixEs6MV0i/+rtxhe9prLh
-         /JWeed8ZDDmU5px4kx1jf6pgqxGa3/vwdSlxmIODqjTwIdl91IIo5WfLcR66eQxGYfOM
-         5VcdRh1jqGyDEAST+7nqacKRrcZyiP80qvPVDSYZql6ZZyFhhSsPMISHXOVxMe37t0q5
-         73nJwoX6McszcNwbP1CUXXrZRzh3qai8Hc11f7hkprwLNXbzU+D2mNLJmvIO1nQjlkRo
-         lBTH/hIh7JKon2iPflrEZw8k1N5ctVl8Ar/RS+37D3iDi7J1WEqZ25nfnYlDc/W6SKMJ
-         Y7SA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711566139; x=1712170939;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=G43Y9I+3uus2Fv/YCLNGCC6IN7NsddtveLn+lJcwAXE=;
-        b=Dv9p5/FMr/rgf67WB86azqkrrmZDfAlqHe8BbmUUfA2UKVuAXV4mFR2hxx+H/cd7K7
-         hIxEZFmQa4x5xKT+fEp4fH7NRrZ8jkf8wwVlDvWeGCbYZZr3XMhsHMpBNpSt5cytA+Vj
-         ksKCb4xpt6iaWWEQqwI/+JFmKfH/+I3/Ne6pgIjcMUJ67PW0TvC2gw7YgXYMmRGnWZP4
-         2LnBnjJgk3qT11Nq6Q5OP8nhEbxUYX6WVBcBUTEFmoPDBDwyA81Wp5ETFOHVtIzHxmMP
-         zTHv3DjGp/O28Q4qI7iOiVlpTnJl9GwNJyROCI4zxpvoZdKM9Is/oCAliGBxbtk1JaOR
-         /PFQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVhIDoa0MX9FFtcR9MV8S2zWQzPfW+MChouNEH9perUpWZ0RVL2FIuUzYXPuVYnSRLcU5K0VMwgnaNZdsIKQmaQiyaX0EgdoN+nEXAIRmZZUeTu/TDYh9TjjtB6EYCV4m9DhlG5s98/136mnpygcEHEhSE/sTLVJa+bQ+jkWeNfVTkVVjmwEqiD5aNXlhKnZLYSvTrza3KMpg==
-X-Gm-Message-State: AOJu0YzmXagCvwkmEN3FLd9NZeTBX1nr7oS9XZH3+yx2qiPgaHSZSsjN
-	U0WrMdDofkCmDmwP2lyoU3FGireASSr7PfK26s5Y4Ojuei/TpcB8RMxrDUYkkVb5/WSDIu1n8oc
-	NIVN6AalzvB3c6VztWOinUz7AVrI=
-X-Google-Smtp-Source: AGHT+IF3uK8BNj55j5GBkzVOsoRtME4sRuRyuXZ1Yo73eCITL53hu+yrnhHrXwg4fZIQHBJexfPsMc5dhyeUKDaRz0g=
-X-Received: by 2002:a5d:6e0d:0:b0:33e:7896:a9d7 with SMTP id
- h13-20020a5d6e0d000000b0033e7896a9d7mr601323wrz.67.1711566139396; Wed, 27 Mar
- 2024 12:02:19 -0700 (PDT)
+	s=arc-20240116; t=1711566145; c=relaxed/simple;
+	bh=tY/kYlCKTZM1U9At1f8pcyF1C2M3Gx00Kx1VbgRTDBE=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=hevJJR2k/GXUwcS2AzQzexR2ojrWJbtCfNKpk77O+JCM/j3Im9fLVWLf+J1K3b72iUqif4QMux6slfiScN75LiT8xhA4pv9On6LgzhNPxmSrGP+hkHKl7aqyQ53mlu9w2Ufc3rLOS2gOZDzFxtwRlBh2lSzdQ4v1pk/4IXgpF0E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=embeddedor.com; spf=pass smtp.mailfrom=embeddedor.com; dkim=pass (2048-bit key) header.d=embeddedor.com header.i=@embeddedor.com header.b=o6i/ckCN; arc=none smtp.client-ip=44.202.169.39
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=embeddedor.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=embeddedor.com
+Received: from eig-obgw-5003a.ext.cloudfilter.net ([10.0.29.159])
+	by cmsmtp with ESMTPS
+	id pWKlrI1CJl9dRpYXWrjzhF; Wed, 27 Mar 2024 19:02:22 +0000
+Received: from gator4166.hostgator.com ([108.167.133.22])
+	by cmsmtp with ESMTPS
+	id pYXVrtFv3sT9BpYXVro2Vk; Wed, 27 Mar 2024 19:02:21 +0000
+X-Authority-Analysis: v=2.4 cv=LIutQ4W9 c=1 sm=1 tr=0 ts=66046d3d
+ a=1YbLdUo/zbTtOZ3uB5T3HA==:117 a=zXgy4KOrraTBHT4+ULisNA==:17
+ a=IkcTkHD0fZMA:10 a=K6JAEmCyrfEA:10 a=wYkD_t78qR0A:10 a=VwQbUJbxAAAA:8
+ a=NEAV23lmAAAA:8 a=ne6NSq1Het56kcJAOLIA:9 a=QEXdDO2ut3YA:10
+ a=AjGcO6oz07-iQ99wixmX:22
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
+	In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
+	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+	List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=eTo6rPqoE3ht4O7ovAkyYWoWGnFdaNMGQPNuK9WIyCE=; b=o6i/ckCNzyuwFrbMgNPhUV/iIK
+	3PM/clgmp92OTK7km9UWKK3UqAH4hrt0zx3XEjFdYpYEzsTUFIGpyaKdCQjAVv6bva63+teWqnhJu
+	EqhtVByQ8opkoxvV8VUDOJzxjOcK3voxKJIVhB24rVrVtFxXGvPCibvIf57k521jiBgy6fK+jAK3Z
+	PuWiqTAcBnkQSx19vahiRxSAxWW/3xnVciMPfGXJ4+N3+kkI0Aai4sfkGZ2AIzdIA5XXRYz/T+dmj
+	9I36Qcxjft97TligGxtyiww4umuSa1NyaE7DSpOpi3TMaFp05MzOkMf4UxAgGVTzi3Ly/3IiNP6RB
+	IsZNowbw==;
+Received: from [201.172.173.147] (port=58918 helo=[192.168.15.10])
+	by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+	(Exim 4.96.2)
+	(envelope-from <gustavo@embeddedor.com>)
+	id 1rpYXU-003fPc-23;
+	Wed, 27 Mar 2024 14:02:20 -0500
+Message-ID: <29be66cd-e752-4c5e-a660-7b668e49ff9e@embeddedor.com>
+Date: Wed, 27 Mar 2024 13:02:19 -0600
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <00000000000055ecb906105ed669@google.com> <20240202121531.2550018-1-lizhi.xu@windriver.com>
- <ZeXGZS1-X8_CYCUz@codewreck.org> <20240321182824.6f303e38@kernel.org>
- <ada13e85bf2ceed91052fa20adb02c4815953e26@linux.dev> <20240322081312.2a8a4908@kernel.org>
- <20240327115328.22c5b5a3@kernel.org>
-In-Reply-To: <20240327115328.22c5b5a3@kernel.org>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Wed, 27 Mar 2024 12:02:08 -0700
-Message-ID: <CAADnVQJ2SyJq25wvV2kf8Mepic_rYyGNYh7KpdGerFi6a-jQJw@mail.gmail.com>
-Subject: Re: [PATCH next] fs/9p: fix uaf in in v9fs_stat2inode_dotl
-To: Jakub Kicinski <kuba@kernel.org>
-Cc: Eric Van Hensbergen <eric.vanhensbergen@linux.dev>, asmadeus@codewreck.org, 
-	Lizhi Xu <lizhi.xu@windriver.com>, 
-	syzbot+7a3d75905ea1a830dbe5@syzkaller.appspotmail.com, 
-	Linux-Fsdevel <linux-fsdevel@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
-	linux_oss@crudebyte.com, lucho@ionkov.net, 
-	syzkaller-bugs <syzkaller-bugs@googlegroups.com>, v9fs@lists.linux.dev, 
-	Linux Regressions <regressions@lists.linux.dev>, Network Development <netdev@vger.kernel.org>, 
-	Alexei Starovoitov <ast@kernel.org>, bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH][next] wifi: wil6210: Avoid -Wflex-array-member-not-at-end
+ warning
+Content-Language: en-US
+To: "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+ Kalle Valo <kvalo@kernel.org>
+Cc: linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-hardening@vger.kernel.org
+References: <ZgOEoCWguq3n1OqQ@neat>
+From: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+In-Reply-To: <ZgOEoCWguq3n1OqQ@neat>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - embeddedor.com
+X-BWhitelist: no
+X-Source-IP: 201.172.173.147
+X-Source-L: No
+X-Exim-ID: 1rpYXU-003fPc-23
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: ([192.168.15.10]) [201.172.173.147]:58918
+X-Source-Auth: gustavo@embeddedor.com
+X-Email-Count: 2
+X-Org: HG=hgshared;ORG=hostgator;
+X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
+X-Local-Domain: yes
+X-CMAE-Envelope: MS4xfDlG9KzOxS/T3FjuXP9yj4v7hixWDRVPia/0Xs0dmCpU/HaVhYASIR56rdfdoXd2O2uham6qH+XMZaTMxS5k+SNj+zx9xc7PSffA5r50FqvU4T2MwFun
+ SJDNUbbDmf0LnoJSGzT0KF0UhPUW87FV4taMIa6051lEaxxxhh4vREIvf5rSuM9IfUUbIqNoioWHo9xL01CGE4mw3fQm8r5240P8P1W+8LtnGHM1jtf7L3QT
 
-On Wed, Mar 27, 2024 at 11:53=E2=80=AFAM Jakub Kicinski <kuba@kernel.org> w=
-rote:
->
-> On Fri, 22 Mar 2024 08:13:12 -0700 Jakub Kicinski wrote:
-> > On Fri, 22 Mar 2024 14:26:07 +0000 Eric Van Hensbergen wrote:
-> > > Patch is in the unapplied portion of my for-next tree along with
-> > > another one.  I was hoping to hear some feedback on the other one
-> > > before i did a pull request and was torn on whether or not I wait on
-> > > -rc1 to send since we are so close.
-> >
-> > My guess would be that quite a few folks use 9p for in-VM kernel
-> > testing. Real question is how many actually update their work tree
-> > before -rc1 or even -rc2, given the anticipated merge window code
-> > instability.. so maybe there's no extreme urgency?
-> >
-> > From netdev's perspective, FWIW, it'd be great if the fix reached
-> > Linux before Thursday, which is when we will forward our tree again.
->
-> Any progress on getting the fix to Linus? I didn't spot it getting
-> merged.
->
-> I'm a bit surprised there aren't more people complaining TBH
-> I'd have thought any CI setup with KASAN enabled has a good
-> chance of hitting this..
+Hi all,
 
-The proposed fix is no brainer:
-https://lore.kernel.org/all/20240202121531.2550018-1-lizhi.xu@windriver.com=
-/
+Please, drop this.
 
-+ v9fs_stat2inode_dotl(st, inode, 0);
-  kfree(st);
-  if (retval)
-    goto error;
+The following patch replaces it:
 
-- v9fs_stat2inode_dotl(st, inode, 0);
+https://lore.kernel.org/linux-hardening/ZgRsn72WkHzfCUsa@neat/
 
-Please ship it to Linus asap.
-I'm surprised this bug slipped through.
+Thanks
+--
+Gustavo
 
-It does affect bpf developers and our CI, since we run with KASAN and use 9=
-P.
+On 3/26/24 20:29, Gustavo A. R. Silva wrote:
+> Use the `DEFINE_FLEX()` helper for an on-stack definition of
+> a flexible structure where the size of the flexible-array member
+> is known at compile-time, and refactor the rest of the code,
+> accordingly.
+> 
+> So, with these changes, fix the following warning:
+> drivers/net/wireless/ath/wil6210/wmi.c:4018:49: warning: structure containing a flexible array member is not at the end of another structure [-Wflex-array-member-not-at-end]
+> 
+> Link: https://github.com/KSPP/linux/issues/202
+> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+> ---
+>   drivers/net/wireless/ath/wil6210/wmi.c | 19 +++++++------------
+>   1 file changed, 7 insertions(+), 12 deletions(-)
+> 
+> diff --git a/drivers/net/wireless/ath/wil6210/wmi.c b/drivers/net/wireless/ath/wil6210/wmi.c
+> index 6fdb77d4c59e..cc0ad70f0d01 100644
+> --- a/drivers/net/wireless/ath/wil6210/wmi.c
+> +++ b/drivers/net/wireless/ath/wil6210/wmi.c
+> @@ -4014,28 +4014,23 @@ int wmi_set_cqm_rssi_config(struct wil6210_priv *wil,
+>   	struct net_device *ndev = wil->main_ndev;
+>   	struct wil6210_vif *vif = ndev_to_vif(ndev);
+>   	int rc;
+> -	struct {
+> -		struct wmi_set_link_monitor_cmd cmd;
+> -		s8 rssi_thold;
+> -	} __packed cmd = {
+> -		.cmd = {
+> -			.rssi_hyst = rssi_hyst,
+> -			.rssi_thresholds_list_size = 1,
+> -		},
+> -		.rssi_thold = rssi_thold,
+> -	};
+>   	struct {
+>   		struct wmi_cmd_hdr hdr;
+>   		struct wmi_set_link_monitor_event evt;
+>   	} __packed reply = {
+>   		.evt = {.status = WMI_FW_STATUS_FAILURE},
+>   	};
+> +	DEFINE_FLEX(struct wmi_set_link_monitor_cmd, cmd,
+> +		    rssi_thresholds_list, rssi_thresholds_list_size, 1);
+> +
+> +	cmd->rssi_hyst = rssi_hyst;
+> +	cmd->rssi_thresholds_list[0] = rssi_thold;
+>   
+>   	if (rssi_thold > S8_MAX || rssi_thold < S8_MIN || rssi_hyst > U8_MAX)
+>   		return -EINVAL;
+>   
+> -	rc = wmi_call(wil, WMI_SET_LINK_MONITOR_CMDID, vif->mid, &cmd,
+> -		      sizeof(cmd), WMI_SET_LINK_MONITOR_EVENTID,
+> +	rc = wmi_call(wil, WMI_SET_LINK_MONITOR_CMDID, vif->mid, cmd,
+> +		      sizeof(*cmd), WMI_SET_LINK_MONITOR_EVENTID,
+>   		      &reply, sizeof(reply), WIL_WMI_CALL_GENERAL_TO_MS);
+>   	if (rc) {
+>   		wil_err(wil, "WMI_SET_LINK_MONITOR_CMDID failed, rc %d\n", rc);
 
