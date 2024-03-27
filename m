@@ -1,140 +1,113 @@
-Return-Path: <linux-kernel+bounces-121541-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-121542-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2A8C988E96D
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 16:41:15 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 19E8D88EA87
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 17:07:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D5E5E1F31ECE
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 15:41:14 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7933BB2DEFB
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 15:41:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5D2D512F380;
-	Wed, 27 Mar 2024 15:34:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6AB451384BC;
+	Wed, 27 Mar 2024 15:35:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b="JnmygjQ3";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="L5St7XrR"
-Received: from fout3-smtp.messagingengine.com (fout3-smtp.messagingengine.com [103.168.172.146])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Pwfkdvz/"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 40A424F5F8;
-	Wed, 27 Mar 2024 15:34:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.146
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AFABF12FF74;
+	Wed, 27 Mar 2024 15:35:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711553695; cv=none; b=feE3EWea2sSctiX4ahyCgn5GoKXKjoREEPUJ6iJTCrZU/4SjarwHbUjLet9CMa6DDdixnB7HDTAp9nsOIEbQUMcsSvEgJdnOpTyOXymrk6CtMjZ8scMVSKk6wjBe3pDJLelCSKq5Z83rgVFB/2xHAI2tyvnZRI3EespGLRttrVA=
+	t=1711553707; cv=none; b=tsQ74LYvIwLvPUoaeZn0HXGma23kFD/hT2K/5cmiPecipf8xsv4z9OqDLj2gT0C9pgxYZIdO+OSNhZJ6xVJAtrpHw+CABezH0R1IL2a3ONGdog5GpkLVud/UZDgRgtVn6GgWxF7qmcejRn8MJ4usKEpo7GLwojyZKCpDmXqKc9A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711553695; c=relaxed/simple;
-	bh=lUHWRBpXKfmP0a3SvWBrN/BSuWtzBTXtGgk7O5R0Pz8=;
-	h=MIME-Version:Message-Id:In-Reply-To:References:Date:From:To:Cc:
-	 Subject:Content-Type; b=IKckvJZvS1Hxc4/6vB9kkUUFitoPtKgTv+dehR3/KOMcKiGjFeoTWQfMl8Cz8hxSdKz4cXdac8taqa2+p2hCE+f9OOI8VDjpqHJMN9Rqpr7WfVRb4APShi/COUw3bqfRAiUtCtDj+dGgkScBsHyaV83OxShOxC64iKKu2LAGQQg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de; spf=pass smtp.mailfrom=arndb.de; dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b=JnmygjQ3; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=L5St7XrR; arc=none smtp.client-ip=103.168.172.146
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arndb.de
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-	by mailfout.nyi.internal (Postfix) with ESMTP id 4EE5A1380090;
-	Wed, 27 Mar 2024 11:34:52 -0400 (EDT)
-Received: from imap51 ([10.202.2.101])
-  by compute5.internal (MEProxy); Wed, 27 Mar 2024 11:34:52 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
-	:cc:content-type:content-type:date:date:from:from:in-reply-to
-	:in-reply-to:message-id:mime-version:references:reply-to:subject
-	:subject:to:to; s=fm1; t=1711553692; x=1711640092; bh=gJ7Xh4n4V5
-	9XATJeqHFzpnTJe2/5ypdcmW4oC7ig2Jw=; b=JnmygjQ3q8nH17VFO7y4ypXObv
-	H5QudRFgGDXD3iPOWTOhnrfraaE2jEe2ZuERyQqkAvzguzWvrw9Xbrl0BgYPsuM1
-	GQ91t4Eis0L2+PN6k9VKMgJbLNAEAnTipnubkg4/slYpNAUjCl+7dl3rILjuauvY
-	aYFmTGt9RAfZ5TxlObNwaJ+oNo8mE5Z20aV/t6095L8EmaBbAODemR5brQFz0I/m
-	fuM0RyeEluV2vMB/1pEl0KkawNa/6R5bW15G4adjuaejW5wrxm8e4nDLNXKnA27p
-	mnrmYFcBXYCaLlIpAzZ6XvBjrkwnGXvILz+PNvwuHH/zrAULDefFEz5MxgAA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-	fm2; t=1711553692; x=1711640092; bh=gJ7Xh4n4V59XATJeqHFzpnTJe2/5
-	ypdcmW4oC7ig2Jw=; b=L5St7XrR3/MAPQEbqvRF4QviegIL+Af8tRM+ibhX+Aae
-	E8zvBhoh6gXO0RvQC22z/HNJk0FQWX9oin4ojBOoC43Iif/1ukDnl7LtyhzQe/O7
-	WVmcp2VK6YD4xl8NARuAKzSaeCa01c5F4RffS1sQeaHJ9lGp/CPWI6d4lgHwzBmd
-	i6tYyXQtIEvPGQzUOhKL5jfH44+kvvAA2DsBR2jzM1LiIrFRBvuUERZuU+fmuqta
-	0T/1W/EkmLWLaeSkC0IG3JOGUbQIijCPQRq3t1CPyFBv+2H6eO79zC97SXw1SDbH
-	2q9WhEDNMb0UjKsxgbNa+Wb/wiOnjmuOw+ITwsaFkg==
-X-ME-Sender: <xms:mzwEZu78CN3xb6AsalWwSx4P7qfguZ-yv_lPNT-uYwb7STNBkAP1Uw>
-    <xme:mzwEZtKOeM70KUmof9Q-MtZ1_K8bRjZu_8gkqVVkOaDajHM8x87vxc2pZrw7qr1j7
-    KMh3oJk2VhR0tMLne0>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrudduiedgheegucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepofgfggfkjghffffhvfevufgtsehttdertderredtnecuhfhrohhmpedftehr
-    nhguuceuvghrghhmrghnnhdfuceorghrnhgusegrrhhnuggsrdguvgeqnecuggftrfgrth
-    htvghrnhepffehueegteeihfegtefhjefgtdeugfegjeelheejueethfefgeeghfektdek
-    teffnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheprg
-    hrnhgusegrrhhnuggsrdguvg
-X-ME-Proxy: <xmx:mzwEZvIa0ddXl7H1YeHdrSnPfbrS8lvG4dT2BrK5nfhSj4O6_NpDqQ>
-    <xmx:mzwEZjXbnqlH0QatGBlS6dFGkxorexklKNvm0yv3OwPZ5AOc7vVdrw>
-    <xmx:mzwEZpg8SyT9WSa8Ms_UCnN7MkzF4THhZf2o4VbSH6enMQBuAemUFQ>
-    <xmx:mzwEZm_aX6I356Aj0Po9_lJmRoa91EnBg2JiPYlouwvd42KNhHzBQw>
-    <xmx:nDwEZl4kWE5_OcwQPWec-d7QUMWV-jF7kzVebwQYJFkfSPeQ_ERQCg>
-Feedback-ID: i56a14606:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-	id 7F4F4B60098; Wed, 27 Mar 2024 11:34:51 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.11.0-alpha0-328-gc998c829b7-fm-20240325.002-gc998c829
+	s=arc-20240116; t=1711553707; c=relaxed/simple;
+	bh=OKOBRjWUmEBgIQQoauzyn2lJtxsFxD/jNHsmS6fQ4YE=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=rMw3F4Zkr7Cwb7WUf0z7kjSv798Aw+wlyx8ZcGAqlFIWb98zEgzyNeNULdYnDeIJfoNt8UcZyXTnTWrs0hCNn7tIaCfA+Oi8MEZdcib68QH7qtvT+dVS7ToHBmj/TtXwjLF+n9zGv22Ha98r8GTkElzPKow526gCvbnYy6LHT8M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Pwfkdvz/; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 39A80C43394;
+	Wed, 27 Mar 2024 15:35:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1711553707;
+	bh=OKOBRjWUmEBgIQQoauzyn2lJtxsFxD/jNHsmS6fQ4YE=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=Pwfkdvz/X7rr2mAqpGmZvB0B8ecBq9LHLmAmpa00j0QbemDCmmS0o68hVnoPkJ9Gk
+	 YPpwqZg/c+2xzVZcp2YJasyjcwOmFSmUNyKAFf4wzn6TwKGSx0+0cA/f2W8USgjkMR
+	 7CVqMA4M/IcqiLyAD8vS+2ezbkmezvMF1CFZ3Ir50RXjc+lH1an5NtCUdR0YfFaNLI
+	 jSrF662YW7otBMatSWokKC+8H7ORA+qaxSPEt4RgOhnNL+9xU54Ew1OPnQb3vzzh2G
+	 IWICpt93yvvr+u/vDtdUdoF43nng3X+9t01NeWfmZ5KT9wvfrG7/OcuFYn5lgAfJ4e
+	 K9fb39sNUn9gQ==
+Received: by mail-oo1-f54.google.com with SMTP id 006d021491bc7-5a46b30857bso1715306eaf.1;
+        Wed, 27 Mar 2024 08:35:07 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCXxsm5TrY2rETOHYftjK3buFSPc+oVJp3jJtAaoT24A0wwS7ySFQXEI0q5Bw090mbBQAR8oOay2mN4Y8ix5ZcbF0cyLCfVUWhX4Qoqv3sJLsDeBXlcsgKtkZpREkpNzCB5ejuuWRX6scg==
+X-Gm-Message-State: AOJu0YyGM2PCVbrD7R7g++N3ChbwiT/4rhq1ZjKy/9ZKj2J8556qww/e
+	tIteKM4TApMHJj5/NjoRWgh66IT4ycNEW2cKPXG0tRptgD4r043jVP6feaR1Y45qTynKKzfk8eQ
+	fwdwsdLpIchzz5k0W0NqH6EUrg/8=
+X-Google-Smtp-Source: AGHT+IFBVjTHKN2OSbd29nBi1LmoTNb/CDz2t7Lc0cIWDApE6Zrrwq/1vp73kdOXVecYtj2lL221LJZ21VkZUIVKeyk=
+X-Received: by 2002:a05:6871:b0a:b0:221:399e:959a with SMTP id
+ fq10-20020a0568710b0a00b00221399e959amr24851oab.0.1711553706522; Wed, 27 Mar
+ 2024 08:35:06 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-Id: <6242198a-8559-4465-918a-36442ea03e32@app.fastmail.com>
-In-Reply-To: 
- <CO1PR18MB4666DF3B7684D340C3A3646DA1342@CO1PR18MB4666.namprd18.prod.outlook.com>
-References: <20240326223825.4084412-1-arnd@kernel.org>
- <20240326223825.4084412-4-arnd@kernel.org>
- <CO1PR18MB4666DF3B7684D340C3A3646DA1342@CO1PR18MB4666.namprd18.prod.outlook.com>
-Date: Wed, 27 Mar 2024 16:34:31 +0100
-From: "Arnd Bergmann" <arnd@arndb.de>
-To: "Subbaraya Sundeep Bhatta" <sbhatta@marvell.com>,
- "Arnd Bergmann" <arnd@kernel.org>,
- "llvm@lists.linux.dev" <llvm@lists.linux.dev>,
- "Ariel Elior" <aelior@marvell.com>, "Manish Chopra" <manishc@marvell.com>
-Cc: "David S . Miller" <davem@davemloft.net>,
- "Eric Dumazet" <edumazet@google.com>, "Jakub Kicinski" <kuba@kernel.org>,
- "Paolo Abeni" <pabeni@redhat.com>, "Nathan Chancellor" <nathan@kernel.org>,
- "Nick Desaulniers" <ndesaulniers@google.com>,
- "Bill Wendling" <morbo@google.com>, "Justin Stitt" <justinstitt@google.com>,
- "Simon Horman" <horms@kernel.org>,
- "Konstantin Khorenko" <khorenko@virtuozzo.com>,
- "Sudarsana Reddy Kalluru" <sudarsana.kalluru@cavium.com>,
- Netdev <netdev@vger.kernel.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [EXTERNAL] [PATCH 3/9] qed: avoid truncating work queue length
-Content-Type: text/plain
+References: <SY4P282MB3063EE2CC37BD0EF2318B746C5362@SY4P282MB3063.AUSP282.PROD.OUTLOOK.COM>
+In-Reply-To: <SY4P282MB3063EE2CC37BD0EF2318B746C5362@SY4P282MB3063.AUSP282.PROD.OUTLOOK.COM>
+From: "Rafael J. Wysocki" <rafael@kernel.org>
+Date: Wed, 27 Mar 2024 16:34:55 +0100
+X-Gmail-Original-Message-ID: <CAJZ5v0iogogd+AxL5ZPU-80Nj-nQz4avkymaPRPa4SiJdvBfjg@mail.gmail.com>
+Message-ID: <CAJZ5v0iogogd+AxL5ZPU-80Nj-nQz4avkymaPRPa4SiJdvBfjg@mail.gmail.com>
+Subject: Re: [PATCH] ACPI: thermal_lib: Continue registering thermal zones
+ even if trip points fail validation
+To: Stephen Horvath <s.horvath@outlook.com.au>
+Cc: "Rafael J. Wysocki" <rafael@kernel.org>, Zhang Rui <rui.zhang@intel.com>, Len Brown <lenb@kernel.org>, 
+	linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, Mar 27, 2024, at 15:04, Subbaraya Sundeep Bhatta wrote:
-
->>-		snprintf(name, NAME_SIZE, "slowpath-%02x:%02x.%02x",
->>-			 cdev->pdev->bus->number,
->>-			 PCI_SLOT(cdev->pdev->devfn), hwfn->abs_pf_id);
->>+		hwfn->slowpath_wq = alloc_workqueue("slowpath-
->>%02x:%02x.%02x",
->>+					 0, 0, cdev->pdev->bus->number,
->>+					 PCI_SLOT(cdev->pdev->devfn),
->>+					 hwfn->abs_pf_id);
+On Mon, Mar 25, 2024 at 5:44=E2=80=AFAM Stephen Horvath
+<s.horvath@outlook.com.au> wrote:
 >
-> Confused. This should be alloc_workqueue("slowpath-%02x:%02x.%02x",  
-> cdev->pdev->bus->number, PCI_SLOT(cdev->pdev->devfn), hwfn->abs_pf_id, 
-> 0, 0);
-> Right?
+> Some laptops where the thermal control is handled by the EC may
+> provide trip points that fail the kernels new validation, but still have
+> working temperature sensors. An example of this is the Framework 13 AMD.
 
-I still think my version is the right one here, see the
-prototype:
+I believe that this is a regression introduced recently, so would it
+be possible to provide a pointer to the commit that introduced it?
 
-__printf(1, 4) struct workqueue_struct *
-alloc_workqueue(const char *fmt, unsigned int flags, int max_active, ...);
+> This patch allows the thermal zone to still be registered without trip
+> points if the trip points fail validation, allowing the temperature
+> sensor to be viewed and used by the user.
+>
+> Signed-off-by: Stephen Horvath <s.horvath@outlook.com.au>
+> ---
+>  drivers/acpi/thermal.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+>
+> diff --git a/drivers/acpi/thermal.c b/drivers/acpi/thermal.c
+> index 302dce0b2b50..fd59e41037ec 100644
+> --- a/drivers/acpi/thermal.c
+> +++ b/drivers/acpi/thermal.c
+> @@ -903,8 +903,8 @@ static int acpi_thermal_add(struct acpi_device *devic=
+e)
+>
+>         if (trip =3D=3D trip_table) {
+>                 pr_warn(FW_BUG "No valid trip points!\n");
+> -               result =3D -ENODEV;
+> -               goto free_memory;
+> +               /* Effectively disable polling since it is not needed */
+> +               tz->polling_frequency =3D 0;
 
-so the first argument in the format, while the printf arguments
-start after the flags and max_active arguments that are still both
-set to zero.
+Because the thermal zone becomes effectively tripless, it should be
+registered with thermal_tripless_zone_device_register().
 
-      Arnd
+>         }
+>
+>         result =3D acpi_thermal_register_thermal_zone(tz, trip_table,
+> --
 
