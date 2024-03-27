@@ -1,113 +1,90 @@
-Return-Path: <linux-kernel+bounces-121423-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-121426-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 139C388E7C4
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 16:04:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 7695D88E7D1
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 16:05:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 36DBA2A5EA7
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 15:04:02 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 72F192C576A
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 15:04:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C52DE1465BB;
-	Wed, 27 Mar 2024 14:23:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Zip2nYae"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.21])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BF0A4146D5E;
+	Wed, 27 Mar 2024 14:23:45 +0000 (UTC)
+Received: from szxga05-in.huawei.com (szxga05-in.huawei.com [45.249.212.191])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B0B8914535D
-	for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 14:23:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.21
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1BC1E14535D;
+	Wed, 27 Mar 2024 14:23:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.191
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711549413; cv=none; b=qdeUgcYH2iEEOUhqTFULIPWD55syW6RPSvRu3b4yiu5G6CUY8lLWDhTw5EtmjQJ3qVUUoEpEmRMy787KOQnvWPe4PYtQoFRfVtMZEAyHHHQmCjlm7smAA1rlmbdVe03renYv0il/eMSHC8bwil1OXpFbJMZjuzHFWeOgNAPsapg=
+	t=1711549425; cv=none; b=LYuPFJ45VvJyIYiRjACcTj4XWDfLbZsG8FASYwUsFpYMMPar1Zd7pFNDvxjAP6y43glRo0fpZcu2P5tz1BADkDS8Y+1MnKIfhKW2v/RMMrYF+HdVdLXNsRI94kHFvIByb2T452nCPMj4OAohhYl4MRdXk2zEa5WPAL6tWyOC6eo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711549413; c=relaxed/simple;
-	bh=978Ys2NHTIo9kyqZglKr1qHAlExbEvvvunWm5NCUUPM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=qqG/9ZRPVmrs7JOrB0amC71piAiMokKL/zSpzjlGXFhL9qOH6MoYMusyvyBVjySRNlNO13fBK1YbM4WnGevhG5R4npS9R7E7hv8rbBmdQ8kLBW6VDErfqMDNEo1og1qCCzZVyTs9whgWfQBxAW1NiQbPuf/vYZdeaEpVt7WK+bk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Zip2nYae; arc=none smtp.client-ip=198.175.65.21
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1711549411; x=1743085411;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=978Ys2NHTIo9kyqZglKr1qHAlExbEvvvunWm5NCUUPM=;
-  b=Zip2nYaejpXEOWT9CKj3OF42dWY7Lti70jw2KMrWuPzBkW36oqVyQuJ7
-   XbCUN+JaaHBBkoAKZ3CRgVLqaDZplI7sgS1SN54FSWYX/3I/+XUiF2trZ
-   ++E0Yi44E77UM4Dses7Y83qSjPb6Mz0b16u5hc+Ld9SgRLlO39T3AMBRg
-   J5USh26T5Ngr/bSf7IzRfpMD60xWnyDQ7u4zAupRBYZsSC60g+az/P5Fz
-   vJSNruwEVF1mtm71gk5i39ankEpfnFsQSiPAT8YwiSSU2afS7UZcDgFnv
-   DxsweivVTLuvl1nYAwwYrE22pJB4iUtsYG54WQ6Cea1tLbYiN5OnrTlbb
-   Q==;
-X-CSE-ConnectionGUID: X0JcHqL7T52fKyhnL0m6gg==
-X-CSE-MsgGUID: gNrCzXBDTVSmSv6mvotsNg==
-X-IronPort-AV: E=McAfee;i="6600,9927,11026"; a="6592562"
-X-IronPort-AV: E=Sophos;i="6.07,159,1708416000"; 
-   d="scan'208";a="6592562"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orvoesa113.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Mar 2024 07:23:30 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,11026"; a="914914548"
-X-IronPort-AV: E=Sophos;i="6.07,159,1708416000"; 
-   d="scan'208";a="914914548"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Mar 2024 07:23:29 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.97)
-	(envelope-from <andriy.shevchenko@linux.intel.com>)
-	id 1rpUBb-0000000Geo3-13as;
-	Wed, 27 Mar 2024 16:23:27 +0200
-Date: Wed, 27 Mar 2024 16:23:26 +0200
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: Lee Jones <lee@kernel.org>
-Cc: Mateusz K <mateusz.kaduk@gmail.com>, Bjorn Helgaas <helgaas@kernel.org>,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1 1/1] mfd: intel-lpss: Switch over to MSI interrupts
-Message-ID: <ZgQr3sU_BIYv-Ynv@smile.fi.intel.com>
-References: <20240312165905.1764507-1-andriy.shevchenko@linux.intel.com>
- <20240325211915.GA1449994@bhelgaas>
- <CAPf=4Rc2vQrWqcs=-ND3iOZFJyKE7FdPoqU9w6DKjoSaJo6KaQ@mail.gmail.com>
- <ZgLefFQanbq-ozKM@smile.fi.intel.com>
- <ZgLooJa1JVKEMOtf@smile.fi.intel.com>
- <20240327131711.GR13211@google.com>
- <ZgQeKfsFy9i0h4Kj@smile.fi.intel.com>
- <20240327141229.GS13211@google.com>
+	s=arc-20240116; t=1711549425; c=relaxed/simple;
+	bh=S2tOvnXnLBWrNcDCTWsN+3QjTxjM5oG6sC2mw1nYkFc=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=g3/gyK7qSS8YD4k8dPlfqvSh1XFdSYRsV1njTrHomUYssBpz8rqnmBAlLzusHA+FuzN4YBF3iokCWsNkFcpFWmf58DF1I5yBbCCW1fjRDiCd7IxT9cbQGXiCy8LhgSolsQZP3udYdhlGLzOt6xYmMGJellDZAvPciIU7STLItcI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.191
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.163.17])
+	by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4V4TRK37pRz1GCtg;
+	Wed, 27 Mar 2024 22:23:09 +0800 (CST)
+Received: from kwepemm600007.china.huawei.com (unknown [7.193.23.208])
+	by mail.maildlp.com (Postfix) with ESMTPS id 74CCB1A0188;
+	Wed, 27 Mar 2024 22:23:40 +0800 (CST)
+Received: from DESKTOP-8RFUVS3.china.huawei.com (10.174.185.179) by
+ kwepemm600007.china.huawei.com (7.193.23.208) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Wed, 27 Mar 2024 22:23:39 +0800
+From: Zenghui Yu <yuzenghui@huawei.com>
+To: <linux-mips@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+CC: <tglx@linutronix.de>, <maz@kernel.org>, <wanghaibin.wang@huawei.com>,
+	Zenghui Yu <yuzenghui@huawei.com>, Huacai Chen <chenhuacai@kernel.org>,
+	Jiaxun Yang <jiaxun.yang@flygoat.com>
+Subject: [PATCH] irqchip/loongson-pch-msi: Fix off-by-one on allocation error path
+Date: Wed, 27 Mar 2024 22:23:34 +0800
+Message-ID: <20240327142334.1098-1-yuzenghui@huawei.com>
+X-Mailer: git-send-email 2.23.0.windows.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240327141229.GS13211@google.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ kwepemm600007.china.huawei.com (7.193.23.208)
 
-On Wed, Mar 27, 2024 at 02:12:29PM +0000, Lee Jones wrote:
-> On Wed, 27 Mar 2024, Andy Shevchenko wrote:
-> > On Wed, Mar 27, 2024 at 01:17:11PM +0000, Lee Jones wrote:
-> > > On Tue, 26 Mar 2024, Andy Shevchenko wrote:
-> > > > On Tue, Mar 26, 2024 at 04:41:01PM +0200, Andy Shevchenko wrote:
+When pch_msi_parent_domain_alloc() returns an error, there is an off-by-one
+in the number of IRQs to be freed.
 
-..
+Fix it by passing the number of successfully allocated IRQs, instead of the
+relative index of the last allocated one.
 
-> > > > Hold on, but IIUC this is the report about new hardware that never had
-> > > > a support by Linux before.
-> > > 
-> > > So a revert is no longer required?
-> > 
-> > No, it seems an old issue unrelated to this patch.
-> 
-> Very well, consider it *not* done. :)
+Fixes: 632dcc2c75ef ("irqchip: Add Loongson PCH MSI controller")
+Cc: Huacai Chen <chenhuacai@kernel.org>
+Cc: Jiaxun Yang <jiaxun.yang@flygoat.com>
+Signed-off-by: Zenghui Yu <yuzenghui@huawei.com>
+---
+ drivers/irqchip/irq-loongson-pch-msi.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Thank you!
-
+diff --git a/drivers/irqchip/irq-loongson-pch-msi.c b/drivers/irqchip/irq-loongson-pch-msi.c
+index 6e1e1f011bb2..dd4d699170f4 100644
+--- a/drivers/irqchip/irq-loongson-pch-msi.c
++++ b/drivers/irqchip/irq-loongson-pch-msi.c
+@@ -136,7 +136,7 @@ static int pch_msi_middle_domain_alloc(struct irq_domain *domain,
+ 
+ err_hwirq:
+ 	pch_msi_free_hwirq(priv, hwirq, nr_irqs);
+-	irq_domain_free_irqs_parent(domain, virq, i - 1);
++	irq_domain_free_irqs_parent(domain, virq, i);
+ 
+ 	return err;
+ }
 -- 
-With Best Regards,
-Andy Shevchenko
-
+2.33.0
 
 
