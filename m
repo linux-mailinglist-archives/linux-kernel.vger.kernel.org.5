@@ -1,55 +1,59 @@
-Return-Path: <linux-kernel+bounces-120798-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-120799-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CC42288DDA0
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 13:10:10 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id B9D4A88DDA9
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 13:10:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7EC3D28F5B2
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 12:10:09 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 412521F28FB3
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 12:10:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3FA021304B8;
-	Wed, 27 Mar 2024 12:07:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C01CD130A55;
+	Wed, 27 Mar 2024 12:07:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kusuduHC"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="UaSBeBc3"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 73ED812E1CE;
-	Wed, 27 Mar 2024 12:07:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0F171130A43;
+	Wed, 27 Mar 2024 12:07:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711541232; cv=none; b=sTcvoF4mBuY1c/vd28/NCklpz1Nr3zWSwWyvN82seOdVHmPugdrZAz4iTdz/SUSZYgBv39CujejFQTPpO9JJzWeJXoQF3UejpGES1MoR2WqxzID74mNdnvMmC2dXaDi6B/MhD5uZbuXqzKPF0zBJJqmZPJ+yN9WqUX1HDFZLCOQ=
+	t=1711541235; cv=none; b=T9rngUfMF/K26XDCDy29Ae1RzCzldZbuh06uCYx5Oy8+VLC8Leet6s8DhjhWShnsLBvx3ae98y98CVuxuDCB1uSimkehlHuJ5zQ1VOOLEhzUaaNGwVoyCbrw9wIvqcUaVlessx2RBgFwfKQeCB6a63c8wyzyx9At9s3x572LWr0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711541232; c=relaxed/simple;
-	bh=CoSnL3qPQEJOccnboM8Yx9diAo3ePi4BoTAGB2yAXic=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=qRvhJ01oDNgKEgPwGMjXO58pajDUqiGYtastNjJ19fuvzklDn1PVFWr5INHU/fj+5nnHLen+YGGalq8eNUnyf3Eo9xEGjucTPq22QbCju5hlgShn6HqH775HCptwEMI5DenNQHRv9130n9OU66j9gj558G8p0s6yvoKtbCPFF30=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kusuduHC; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 369F2C433F1;
-	Wed, 27 Mar 2024 12:07:11 +0000 (UTC)
+	s=arc-20240116; t=1711541235; c=relaxed/simple;
+	bh=6Ox5DYyl2t+2FPWYSXR6ueq1egkwhGJJ/amF216+lRU=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=VM9JdM91De3zC1jlG48s8ngy0vaGoAA1h2q5WSB+Y2vQqKxhzuNFwwXzsZvJMpTIqsa5i+6yL4wldpAsFgGqI6ib3+z8ZdRyQ60cpbVDFeJra9hVxN2WrHlp6ahwSQjxzMYBSEwKFrC55cDalZOVRt0/KDNMkjjNo3nwPKl7PLM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=UaSBeBc3; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BAC5CC433C7;
+	Wed, 27 Mar 2024 12:07:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711541232;
-	bh=CoSnL3qPQEJOccnboM8Yx9diAo3ePi4BoTAGB2yAXic=;
+	s=k20201202; t=1711541234;
+	bh=6Ox5DYyl2t+2FPWYSXR6ueq1egkwhGJJ/amF216+lRU=;
 	h=From:To:Cc:Subject:Date:From;
-	b=kusuduHCFxJ2UTor5ojALVKldcK3CkkUOAGYBHYYY5APRWeU5S2a0qni1b11ZM9VQ
-	 arBY6xHXhA9nZlPabBJhR9QTNMbRFLAu0oZcY+S6Zn5qbjOHxAmRTWN4aoB/tQPkp/
-	 /N5RQBgCNwNBcHjjmRi/qHLg7gTG8+Yb1mjb3OPj+dARjNoT0tYNpIgceiVMhz19Jx
-	 cgTM9SHzReK+iOLkgoqBs59PWHbZiCUAOaDDqJojmXWoZg8gy6k+M0nLKBn+Ovt6GC
-	 VMJLplhH/QjcbpglpVlnNpqQxkjovhRVAy1iZfocGPLuFUO8vt8lcGJPnpSmUM/GLK
-	 7SX1tdzRbbJyA==
+	b=UaSBeBc3qytCyLE+jWaI9YP3lRnuF3yFllGDq0lzFfwBZXcAMoVcdlCA2Ydp6CaeR
+	 iww1wwzNPUe8Pc/hx7dN7SRiaMA22I6djEFH/8fsUdElBc864+A+V70c1N2D9WK9wv
+	 J0ZgQl4NsAibuVG3EMXzDz4N9X4IQ+0xh7S3gpTg80E1r8ykwxZg2pH8Q9+GQP9lU3
+	 Q7M/dA8p7FbDKnacSGFW+uh9Zdcbg4PZIgwBAJtI4+vhqD71CHiZ8/+veROlgBo2y/
+	 HA1ujzMQ7n782SkjuaCH8OBb9aTf/OKBZyp5wRBxyVLT97/s8PScgOH/S4SeHF3uX+
+	 doT/uJZMJ75Ww==
 From: Sasha Levin <sashal@kernel.org>
 To: stable@vger.kernel.org,
-	nathan@kernel.org
-Cc: Alex Deucher <alexander.deucher@amd.com>,
+	srinivasan.shanmugam@amd.com
+Cc: Aurabindo Pillai <aurabindo.pillai@amd.com>,
+	Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>,
+	Hamza Mahfooz <hamza.mahfooz@amd.com>,
+	Wenjing Liu <wenjing.liu@amd.com>,
+	Qingqing Zhuo <qingqing.zhuo@amd.com>,
+	Alex Deucher <alexander.deucher@amd.com>,
 	amd-gfx@lists.freedesktop.org,
 	dri-devel@lists.freedesktop.org,
-	linux-kernel@vger.kernel.org,
-	llvm@lists.linux.dev
-Subject: FAILED: Patch "drm/amd/display: Increase frame-larger-than for all display_mode_vba files" failed to apply to 6.8-stable tree
-Date: Wed, 27 Mar 2024 08:07:10 -0400
-Message-ID: <20240327120710.2825195-1-sashal@kernel.org>
+	linux-kernel@vger.kernel.org
+Subject: FAILED: Patch "drm/amd/display: Fix late derefrence 'dsc' check in 'link_set_dsc_pps_packet()'" failed to apply to 6.8-stable tree
+Date: Wed, 27 Mar 2024 08:07:12 -0400
+Message-ID: <20240327120712.2825234-1-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -71,68 +75,54 @@ Sasha
 
 ------------------ original commit in Linus's tree ------------------
 
-From 321036db915bc647d04750337eb002022c912857 Mon Sep 17 00:00:00 2001
-From: Nathan Chancellor <nathan@kernel.org>
-Date: Mon, 5 Feb 2024 14:54:05 -0700
-Subject: [PATCH] drm/amd/display: Increase frame-larger-than for all
- display_mode_vba files
+From 166225e79ccc3d02c4c46e1b3c09d03eb91473ca Mon Sep 17 00:00:00 2001
+From: Srinivasan Shanmugam <srinivasan.shanmugam@amd.com>
+Date: Wed, 10 Jan 2024 20:58:35 +0530
+Subject: [PATCH] drm/amd/display: Fix late derefrence 'dsc' check in
+ 'link_set_dsc_pps_packet()'
 
-After a recent change in LLVM, allmodconfig (which has CONFIG_KCSAN=y
-and CONFIG_WERROR=y enabled) has a few new instances of
--Wframe-larger-than for the mode support and system configuration
-functions:
+In link_set_dsc_pps_packet(), 'struct display_stream_compressor *dsc'
+was dereferenced in a DC_LOGGER_INIT(dsc->ctx->logger); before the 'dsc'
+NULL pointer check.
 
-  drivers/gpu/drm/amd/amdgpu/../display/dc/dml/dcn20/display_mode_vba_20v2.c:3393:6: error: stack frame size (2144) exceeds limit (2048) in 'dml20v2_ModeSupportAndSystemConfigurationFull' [-Werror,-Wframe-larger-than]
-   3393 | void dml20v2_ModeSupportAndSystemConfigurationFull(struct display_mode_lib *mode_lib)
-        |      ^
-  1 error generated.
-
-  drivers/gpu/drm/amd/amdgpu/../display/dc/dml/dcn21/display_mode_vba_21.c:3520:6: error: stack frame size (2192) exceeds limit (2048) in 'dml21_ModeSupportAndSystemConfigurationFull' [-Werror,-Wframe-larger-than]
-   3520 | void dml21_ModeSupportAndSystemConfigurationFull(struct display_mode_lib *mode_lib)
-        |      ^
-  1 error generated.
-
-  drivers/gpu/drm/amd/amdgpu/../display/dc/dml/dcn20/display_mode_vba_20.c:3286:6: error: stack frame size (2128) exceeds limit (2048) in 'dml20_ModeSupportAndSystemConfigurationFull' [-Werror,-Wframe-larger-than]
-   3286 | void dml20_ModeSupportAndSystemConfigurationFull(struct display_mode_lib *mode_lib)
-        |      ^
-  1 error generated.
-
-Without the sanitizers enabled, there are no warnings.
-
-This was the catalyst for commit 6740ec97bcdb ("drm/amd/display:
-Increase frame warning limit with KASAN or KCSAN in dml2") and that same
-change was made to dml in commit 5b750b22530f ("drm/amd/display:
-Increase frame warning limit with KASAN or KCSAN in dml") but the
-frame_warn_flag variable was not applied to all files. Do so now to
-clear up the warnings and make all these files consistent.
+Fixes the below:
+drivers/gpu/drm/amd/amdgpu/../display/dc/link/link_dpms.c:905 link_set_dsc_pps_packet() warn: variable dereferenced before check 'dsc' (see line 903)
 
 Cc: stable@vger.kernel.org
-Closes: https://github.com/ClangBuiltLinux/linux/issue/1990
-Signed-off-by: Nathan Chancellor <nathan@kernel.org>
+Cc: Aurabindo Pillai <aurabindo.pillai@amd.com>
+Cc: Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>
+Cc: Hamza Mahfooz <hamza.mahfooz@amd.com>
+Cc: Wenjing Liu <wenjing.liu@amd.com>
+Cc: Qingqing Zhuo <qingqing.zhuo@amd.com>
+Signed-off-by: Srinivasan Shanmugam <srinivasan.shanmugam@amd.com>
+Reviewed-by: Aurabindo Pillai <aurabindo.pillai@amd.com>
 Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 ---
- drivers/gpu/drm/amd/display/dc/dml/Makefile | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ drivers/gpu/drm/amd/display/dc/link/link_dpms.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/gpu/drm/amd/display/dc/dml/Makefile b/drivers/gpu/drm/amd/display/dc/dml/Makefile
-index 6042a5a6a44f8..59ade76ffb18d 100644
---- a/drivers/gpu/drm/amd/display/dc/dml/Makefile
-+++ b/drivers/gpu/drm/amd/display/dc/dml/Makefile
-@@ -72,11 +72,11 @@ CFLAGS_$(AMDDALPATH)/dc/dml/display_mode_lib.o := $(dml_ccflags)
- CFLAGS_$(AMDDALPATH)/dc/dml/display_mode_vba.o := $(dml_ccflags)
- CFLAGS_$(AMDDALPATH)/dc/dml/dcn10/dcn10_fpu.o := $(dml_ccflags)
- CFLAGS_$(AMDDALPATH)/dc/dml/dcn20/dcn20_fpu.o := $(dml_ccflags)
--CFLAGS_$(AMDDALPATH)/dc/dml/dcn20/display_mode_vba_20.o := $(dml_ccflags)
-+CFLAGS_$(AMDDALPATH)/dc/dml/dcn20/display_mode_vba_20.o := $(dml_ccflags) $(frame_warn_flag)
- CFLAGS_$(AMDDALPATH)/dc/dml/dcn20/display_rq_dlg_calc_20.o := $(dml_ccflags)
--CFLAGS_$(AMDDALPATH)/dc/dml/dcn20/display_mode_vba_20v2.o := $(dml_ccflags)
-+CFLAGS_$(AMDDALPATH)/dc/dml/dcn20/display_mode_vba_20v2.o := $(dml_ccflags) $(frame_warn_flag)
- CFLAGS_$(AMDDALPATH)/dc/dml/dcn20/display_rq_dlg_calc_20v2.o := $(dml_ccflags)
--CFLAGS_$(AMDDALPATH)/dc/dml/dcn21/display_mode_vba_21.o := $(dml_ccflags)
-+CFLAGS_$(AMDDALPATH)/dc/dml/dcn21/display_mode_vba_21.o := $(dml_ccflags) $(frame_warn_flag)
- CFLAGS_$(AMDDALPATH)/dc/dml/dcn21/display_rq_dlg_calc_21.o := $(dml_ccflags)
- CFLAGS_$(AMDDALPATH)/dc/dml/dcn30/display_mode_vba_30.o := $(dml_ccflags) $(frame_warn_flag)
- CFLAGS_$(AMDDALPATH)/dc/dml/dcn30/display_rq_dlg_calc_30.o := $(dml_ccflags)
+diff --git a/drivers/gpu/drm/amd/display/dc/link/link_dpms.c b/drivers/gpu/drm/amd/display/dc/link/link_dpms.c
+index 3de148004c066..3cbfbf8d107e9 100644
+--- a/drivers/gpu/drm/amd/display/dc/link/link_dpms.c
++++ b/drivers/gpu/drm/amd/display/dc/link/link_dpms.c
+@@ -900,11 +900,15 @@ bool link_set_dsc_pps_packet(struct pipe_ctx *pipe_ctx, bool enable, bool immedi
+ {
+ 	struct display_stream_compressor *dsc = pipe_ctx->stream_res.dsc;
+ 	struct dc_stream_state *stream = pipe_ctx->stream;
+-	DC_LOGGER_INIT(dsc->ctx->logger);
+ 
+-	if (!pipe_ctx->stream->timing.flags.DSC || !dsc)
++	if (!pipe_ctx->stream->timing.flags.DSC)
+ 		return false;
+ 
++	if (!dsc)
++		return false;
++
++	DC_LOGGER_INIT(dsc->ctx->logger);
++
+ 	if (enable) {
+ 		struct dsc_config dsc_cfg;
+ 		uint8_t dsc_packed_pps[128];
 -- 
 2.43.0
 
