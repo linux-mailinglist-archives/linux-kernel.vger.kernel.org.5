@@ -1,59 +1,52 @@
-Return-Path: <linux-kernel+bounces-120960-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-120961-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3F9EE88E0FB
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 13:49:05 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6AE4B88E11B
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 13:52:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E922B1F2D94C
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 12:49:04 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DEA0FB22D89
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 12:49:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 79229137769;
-	Wed, 27 Mar 2024 12:15:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DA1E7153505;
+	Wed, 27 Mar 2024 12:15:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="P261RMMr"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="e8BCPyel"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B7619137767;
-	Wed, 27 Mar 2024 12:15:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2A7231534EF;
+	Wed, 27 Mar 2024 12:15:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711541701; cv=none; b=ma+9g70wur0glDMHSjSXPCBtSYopmkPt+dHlwOfzoQk+/PrSHogNJxOE4KNTPslArepZWspa0ZWTOO9Jig13uvXgks/IpBdQlVmHGXd05btxWnDbuKMUjruykcDb0crUcouVUC2b8SAA6S8wb9sG7YoUma40sIngJB58OnPfNi4=
+	t=1711541704; cv=none; b=aK8mjKJon3eLdJlYyRd0vMSeJfUm3WTdRsObqP/R8T8Q/BlGlTqXO2EVxvqjJ6TQa6mkNlp+ygWlOaXjDOzh0GI+Mki/hVZbfKZfLGm3KBz+NPP/tP5s8etRxUN0wewcKEquDcPfWu4/IUpScb+ZXE7YmCy0TTWHqZp2ZwpF7j0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711541701; c=relaxed/simple;
-	bh=wHbQ6OzJI+cq5Zfhqiz2zMNZDTWFONw5ajEppfHkq8s=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Ez9vmFAIauN0nouz1G0zmxXwxbtkqJ7+4G0PQO3c5UfFzyxi1GuCc8Hu4Yo0cGs9CrKEzFeV+pcrbTwCWeBic1fjie5HW29+gPjwvQ6eEKbW1CVADTnzMk4kYY2FDlfD0vKUpPsnZ+NwBDNbwI+Prg5ic9GQbv5a/7DPNAcO9p4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=P261RMMr; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5A866C43390;
-	Wed, 27 Mar 2024 12:15:00 +0000 (UTC)
+	s=arc-20240116; t=1711541704; c=relaxed/simple;
+	bh=yBgtll2R35jg4g9LRLSIQ7jhmiQAONoPIbNT67VptA4=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=dX9lb0ppTT9E7K+pnlI6A89INV3Y2jE2PYSjZ6g+MvVihige2H2JViplRaKXKQP6BfNP8oVjnGJ02xssKI4QQo+CcL+Q0zKvAaNfdYTy4U2dEndStekKRCgw2J0uTCPORVY6TPYcgz35M2zmYPjpHPTCx8zhFTVhtrtPxnzGx38=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=e8BCPyel; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 751ECC433C7;
+	Wed, 27 Mar 2024 12:15:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711541701;
-	bh=wHbQ6OzJI+cq5Zfhqiz2zMNZDTWFONw5ajEppfHkq8s=;
+	s=k20201202; t=1711541704;
+	bh=yBgtll2R35jg4g9LRLSIQ7jhmiQAONoPIbNT67VptA4=;
 	h=From:To:Cc:Subject:Date:From;
-	b=P261RMMrLdkgr1u60R4tsI0Dgur9JdooCkO7UOQ/l8JB101/B4seyBCeN9XOyHLQE
-	 aLCgIWWxwi5PaNBVWERGO53c4cZ4+mBUOzC5DAno1dkEiTmIjqNF24f+jUOr6BjakF
-	 wqCu88YYrXEfTrpIPs9oZz/tc8HsWVYLpwc5jcucnddcCXnd3dRIl1RyoHUzhG7f8H
-	 yZYq7yIMgYo9RfjsVyeeno9mUhIReda3EfuSFGX4QXsu5DMuoBgBsvSXBbN/izgHLs
-	 ArzPvHymShxiNgVIcZUKiwit1V9863F54YIe1nlSO6cFi0+OZT1+cHELhPSU1lZBE4
-	 H7X/eIUwGBrsw==
+	b=e8BCPyelJtz9H8nJykttAU4R74Pc4iBm5K+rC92iHQNDAuz0EToadDWBaIAEqrSE4
+	 /lXfO16oGr6WDWo5noVMwnq4T+BE2HEeIebOLKalLMwpHOiAOwxr4tgnbkf2iXpSVX
+	 FYSZmcnlmpo0/3lafhMvlAZSrPV7HLzJvOYs8RxnzbLLudMmhvQWpfKMC0Z8tDIaqe
+	 bXOPQZEZuw6PXMsEh8BEIN95I2G5gRRA4U68xF0tJZjNk6Kula41MBaLtCLKiqTcAD
+	 O9AIBVNEUaiQyuIk79mbgOa8Y0z+Fb0bkH/qeX9fJHwiwo6CDH8vmKfBrqKU8d7r6j
+	 xzbFhsKEGNKrA==
 From: Sasha Levin <sashal@kernel.org>
 To: stable@vger.kernel.org,
-	wenjing.liu@amd.com
-Cc: Mario Limonciello <mario.limonciello@amd.com>,
-	Alex Deucher <alexander.deucher@amd.com>,
-	Chaitanya Dhere <chaitanya.dhere@amd.com>,
-	Martin Leung <martin.leung@amd.com>,
-	Wayne Lin <wayne.lin@amd.com>,
-	Daniel Wheeler <daniel.wheeler@amd.com>,
-	amd-gfx@lists.freedesktop.org,
-	dri-devel@lists.freedesktop.org,
+	ardb@kernel.org
+Cc: stable@kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: FAILED: Patch "drm/amd/display: Revert Remove pixle rate limit for subvp" failed to apply to 5.15-stable tree
-Date: Wed, 27 Mar 2024 08:14:59 -0400
-Message-ID: <20240327121459.2831534-1-sashal@kernel.org>
+Subject: FAILED: Patch "x86/efistub: Call mixed mode boot services on the firmware's stack" failed to apply to 5.15-stable tree
+Date: Wed, 27 Mar 2024 08:15:02 -0400
+Message-ID: <20240327121502.2831571-1-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -75,46 +68,81 @@ Sasha
 
 ------------------ original commit in Linus's tree ------------------
 
-From cf8c498694a443e28dc1222f3ab94677114a4724 Mon Sep 17 00:00:00 2001
-From: Wenjing Liu <wenjing.liu@amd.com>
-Date: Mon, 4 Mar 2024 11:20:27 -0500
-Subject: [PATCH] drm/amd/display: Revert Remove pixle rate limit for subvp
+From cefcd4fe2e3aaf792c14c9e56dab89e3d7a65d02 Mon Sep 17 00:00:00 2001
+From: Ard Biesheuvel <ardb@kernel.org>
+Date: Fri, 22 Mar 2024 17:03:58 +0200
+Subject: [PATCH] x86/efistub: Call mixed mode boot services on the firmware's
+ stack
 
-This reverts commit 340383c734f8 ("drm/amd/display: Remove pixle rate
-limit for subvp")
+Normally, the EFI stub calls into the EFI boot services using the stack
+that was live when the stub was entered. According to the UEFI spec,
+this stack needs to be at least 128k in size - this might seem large but
+all asynchronous processing and event handling in EFI runs from the same
+stack and so quite a lot of space may be used in practice.
 
-[why]
-The original commit causes a regression when subvp is applied
-on ODM required 8k60hz timing. The display shows black screen
-on boot. The issue can be recovered with hotplug. It also causes
-MPO to fail. We will temprarily revert this commit and investigate
-the root cause further.
+In mixed mode, the situation is a bit different: the bootloader calls
+the 32-bit EFI stub entry point, which calls the decompressor's 32-bit
+entry point, where the boot stack is set up, using a fixed allocation
+of 16k. This stack is still in use when the EFI stub is started in
+64-bit mode, and so all calls back into the EFI firmware will be using
+the decompressor's limited boot stack.
 
-Cc: Mario Limonciello <mario.limonciello@amd.com>
-Cc: Alex Deucher <alexander.deucher@amd.com>
-Cc: stable@vger.kernel.org
-Reviewed-by: Chaitanya Dhere <chaitanya.dhere@amd.com>
-Reviewed-by: Martin Leung <martin.leung@amd.com>
-Acked-by: Wayne Lin <wayne.lin@amd.com>
-Signed-off-by: Wenjing Liu <wenjing.liu@amd.com>
-Tested-by: Daniel Wheeler <daniel.wheeler@amd.com>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+Due to the placement of the boot stack right after the boot heap, any
+stack overruns have gone unnoticed. However, commit
+
+  5c4feadb0011983b ("x86/decompressor: Move global symbol references to C code")
+
+moved the definition of the boot heap into C code, and now the boot
+stack is placed right at the base of BSS, where any overruns will
+corrupt the end of the .data section.
+
+While it would be possible to work around this by increasing the size of
+the boot stack, doing so would affect all x86 systems, and mixed mode
+systems are a tiny (and shrinking) fraction of the x86 installed base.
+
+So instead, record the firmware stack pointer value when entering from
+the 32-bit firmware, and switch to this stack every time a EFI boot
+service call is made.
+
+Cc: <stable@kernel.org> # v6.1+
+Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
 ---
- drivers/gpu/drm/amd/display/dc/dml/dcn32/dcn32_fpu.c | 1 +
- 1 file changed, 1 insertion(+)
+ arch/x86/boot/compressed/efi_mixed.S | 9 +++++++++
+ 1 file changed, 9 insertions(+)
 
-diff --git a/drivers/gpu/drm/amd/display/dc/dml/dcn32/dcn32_fpu.c b/drivers/gpu/drm/amd/display/dc/dml/dcn32/dcn32_fpu.c
-index b49e1dc9d8ba5..a0a65e0991041 100644
---- a/drivers/gpu/drm/amd/display/dc/dml/dcn32/dcn32_fpu.c
-+++ b/drivers/gpu/drm/amd/display/dc/dml/dcn32/dcn32_fpu.c
-@@ -623,6 +623,7 @@ static bool dcn32_assign_subvp_pipe(struct dc *dc,
- 		 * - Not TMZ surface
- 		 */
- 		if (pipe->plane_state && !pipe->top_pipe && !dcn32_is_center_timing(pipe) &&
-+				!(pipe->stream->timing.pix_clk_100hz / 10000 > DCN3_2_MAX_SUBVP_PIXEL_RATE_MHZ) &&
- 				(!dcn32_is_psr_capable(pipe) || (context->stream_count == 1 && dc->caps.dmub_caps.subvp_psr)) &&
- 				dc_state_get_pipe_subvp_type(context, pipe) == SUBVP_NONE &&
- 				(refresh_rate < 120 || dcn32_allow_subvp_high_refresh_rate(dc, context, pipe)) &&
+diff --git a/arch/x86/boot/compressed/efi_mixed.S b/arch/x86/boot/compressed/efi_mixed.S
+index f4e22ef774ab6..719e939050cbf 100644
+--- a/arch/x86/boot/compressed/efi_mixed.S
++++ b/arch/x86/boot/compressed/efi_mixed.S
+@@ -49,6 +49,11 @@ SYM_FUNC_START(startup_64_mixed_mode)
+ 	lea	efi32_boot_args(%rip), %rdx
+ 	mov	0(%rdx), %edi
+ 	mov	4(%rdx), %esi
++
++	/* Switch to the firmware's stack */
++	movl	efi32_boot_sp(%rip), %esp
++	andl	$~7, %esp
++
+ #ifdef CONFIG_EFI_HANDOVER_PROTOCOL
+ 	mov	8(%rdx), %edx		// saved bootparams pointer
+ 	test	%edx, %edx
+@@ -254,6 +259,9 @@ SYM_FUNC_START_LOCAL(efi32_entry)
+ 	/* Store firmware IDT descriptor */
+ 	sidtl	(efi32_boot_idt - 1b)(%ebx)
+ 
++	/* Store firmware stack pointer */
++	movl	%esp, (efi32_boot_sp - 1b)(%ebx)
++
+ 	/* Store boot arguments */
+ 	leal	(efi32_boot_args - 1b)(%ebx), %ebx
+ 	movl	%ecx, 0(%ebx)
+@@ -318,5 +326,6 @@ SYM_DATA_END(efi32_boot_idt)
+ 
+ SYM_DATA_LOCAL(efi32_boot_cs, .word 0)
+ SYM_DATA_LOCAL(efi32_boot_ds, .word 0)
++SYM_DATA_LOCAL(efi32_boot_sp, .long 0)
+ SYM_DATA_LOCAL(efi32_boot_args, .long 0, 0, 0)
+ SYM_DATA(efi_is64, .byte 1)
 -- 
 2.43.0
 
