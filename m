@@ -1,95 +1,189 @@
-Return-Path: <linux-kernel+bounces-120243-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-120244-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id D81DB88D4C4
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 03:46:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id DF0E688D4CA
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 03:50:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 262261F31020
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 02:46:27 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5988D1F30DE3
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 02:50:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0478021A06;
-	Wed, 27 Mar 2024 02:46:20 +0000 (UTC)
-Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 62F2B22087;
+	Wed, 27 Mar 2024 02:50:40 +0000 (UTC)
+Received: from CHN02-BJS-obe.outbound.protection.partner.outlook.cn (mail-bjschn02on2096.outbound.protection.partner.outlook.cn [139.219.17.96])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB1C117BA6;
-	Wed, 27 Mar 2024 02:46:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=211.75.126.72
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711507579; cv=none; b=rBuFRLkP9Vkjaf3tXkHdlw9nBCjBGPRcl2loHtEGLU0ihYPbbRMMmABYlxZYCybf0WCS75q529j/HNcVbVkI3zjD9F013FXqBuxA1N1+WEOX+hYk6JuuTfP1LrOVcuH+pfrvGPyV7HaxoUktKEmWpVesdBlHZc8ujaPhjMqojKE=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711507579; c=relaxed/simple;
-	bh=azgjSy85/wUZ8NadfZuqevl4MalJBeHpf6RNHzPsmSo=;
-	h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type; b=K3VQrN8yev9YcbePnndTlbyj9tB9bevfslrkICq7TdATxR6HNXd799D0IpLAVnNf/p58iT8qV+pOnNOvGoaD2xsCEiZPR+2Kg81P+GyHyB4rJ9hvBKJsisivrpY3ObfHseGK01nSn+QRA8ZK2F63httDUV+WPAmNpA0JPSAogBM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=realtek.com; spf=pass smtp.mailfrom=realtek.com; arc=none smtp.client-ip=211.75.126.72
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=realtek.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=realtek.com
-X-SpamFilter-By: ArmorX SpamTrap 5.78 with qID 42R2jqAP3307072, This message is accepted by code: ctloc85258
-Received: from mail.realtek.com (rtexh36505.realtek.com.tw[172.21.6.25])
-	by rtits2.realtek.com.tw (8.15.2/2.95/5.92) with ESMTPS id 42R2jqAP3307072
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Wed, 27 Mar 2024 10:45:52 +0800
-Received: from RTEXMBS01.realtek.com.tw (172.21.6.94) by
- RTEXH36505.realtek.com.tw (172.21.6.25) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Wed, 27 Mar 2024 10:45:52 +0800
-Received: from localhost (172.22.81.102) by RTEXMBS01.realtek.com.tw
- (172.21.6.94) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.35; Wed, 27 Mar
- 2024 10:45:52 +0800
-From: Ricky Wu <ricky_wu@realtek.com>
-To: <ulf.hansson@linaro.org>, <ricky_wu@realtek.com>,
-        <wenchao.chen@unisoc.com>, <ricardo@marliere.net>, <marex@denx.de>,
-        <linux-mmc@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH] mmc: core: resume not check card exist before powerup
-Date: Wed, 27 Mar 2024 10:45:45 +0800
-Message-ID: <20240327024545.138351-1-ricky_wu@realtek.com>
-X-Mailer: git-send-email 2.25.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5F51817BA6;
+	Wed, 27 Mar 2024 02:50:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=139.219.17.96
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1711507839; cv=fail; b=k2Nmnwyi3Ddd84JDfznQGudhXFS6omHBBzV5ml1g3VWknw+LfLYdLozrKHzvy2Su0ZZIGmUzPxC4Sq+FVxjRViiJcwj5PWE/bYlJrlo/UP5/hC17kNLTAiKgQ7uMhYFup6DiaQTxEYx/EnaqI64RdGC4zdQtK+/7AxskbZtzbSE=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1711507839; c=relaxed/simple;
+	bh=vFPdxktJQvKv601CZsD1nIshoRhsS56TxR0fwJaRfcM=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=rzy6fs6btp/exn4KQsxtW6FdWj70Wa7WZ34UJ0qYiAQrDcM3M8W3HBy0+kBTlsK3rdJZkjZdoEamDdva2O28QH9K6SBZCoqzi6hroM7702sCJVte9aKLH+s2h8hNC3iH04ojdk7qwEe3R75Ks9U3KuKfKvPm/jYKaIE14GdGvyE=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=starfivetech.com; spf=pass smtp.mailfrom=starfivetech.com; arc=fail smtp.client-ip=139.219.17.96
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=starfivetech.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=starfivetech.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=KTg/oEjQqsSO3FLfz7qDXZkH1qRRP7sX3hjz7WxEy4ZAThOuHIF/TSyH8/pWJLF4ML/x3vsrOEarJAus7A43JMKero8rpJ6emnWOi9vHwfJi7wZOTXxfumkpYs2+VL0hMeZ4T1XWjr0w8yEXc/Z/75t3KJgnbpOpwrJLDZHv3pPTVJLjcJXBR71d/JRBMLBCCMN37xWA/4ITqpeAR9uwTwkRWh1gM6TgSew5yLadpQFe8LfCgmCxdSDfpYDiGeoqY66YuYd6MkQksX7+DwS9nwDYdetQrgkM3y8NjBfMgxPuh2sWNiLyA9Nn/QNtkALIGu7actjp3sjMX3+wlUi1dA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=BtVK3a7P7VP7BP4Xrh/hvM9yQxZocloCz/3AwYhv5XY=;
+ b=S+9a9jyNUbXGw10IZE2hqbWJXXh3vTsPdfrtP8pGP+weM2hmiNMcMHey439DJ0hTcwnKsGKBciIEj7UD8+aXsxIlr6uCgY9Esky2ydiX9fI6RqL7u1Wn9K9T1GPhrkDiu50UJ722eF/3HjUcVl3WMuU3iNR7DlrQ2DiKF75AYc2cCu2QYBIKkvOfEAz1p0js/EvmMXVMe/1LlaeExO4ogvP3IJkpWiakwbJ0XKd2K1UO2xNjJMoKGkgA9RtnS2t6zPzOJUN0H/iupK3dPOKckLsfCCl+yMKTpxt1myoD6Cb3sT6pWq7LxNMcpP87mGj3JdZ0Cx6vrUc6xotSG/35ww==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=starfivetech.com; dmarc=pass action=none
+ header.from=starfivetech.com; dkim=pass header.d=starfivetech.com; arc=none
+Received: from BJSPR01MB0595.CHNPR01.prod.partner.outlook.cn
+ (2406:e500:c211:e::20) by BJSPR01MB0547.CHNPR01.prod.partner.outlook.cn
+ (2406:e500:c211:e::19) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.33; Wed, 27 Mar
+ 2024 02:50:32 +0000
+Received: from BJSPR01MB0595.CHNPR01.prod.partner.outlook.cn
+ ([fe80::d0cf:5e2e:fd40:4aef]) by
+ BJSPR01MB0595.CHNPR01.prod.partner.outlook.cn ([fe80::d0cf:5e2e:fd40:4aef%4])
+ with mapi id 15.20.7409.031; Wed, 27 Mar 2024 02:50:32 +0000
+From: ChunHau Tan <chunhau.tan@starfivetech.com>
+To: Conor Dooley <conor@kernel.org>
+CC: Eugeniy Paltsev <Eugeniy.Paltsev@synopsys.com>, Vinod Koul
+	<vkoul@kernel.org>, Rob Herring <robh@kernel.org>, Krzysztof Kozlowski
+	<krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>,
+	Leyfoon Tan <leyfoon.tan@starfivetech.com>, JeeHeng Sia
+	<jeeheng.sia@starfivetech.com>, "dmaengine@vger.kernel.org"
+	<dmaengine@vger.kernel.org>, "devicetree@vger.kernel.org"
+	<devicetree@vger.kernel.org>, "linux-kernel@vger.kernel.org"
+	<linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH 1/2] dt-bindings: dma: snps,dw-axi-dmac: Add JH8100
+ support
+Thread-Topic: [PATCH 1/2] dt-bindings: dma: snps,dw-axi-dmac: Add JH8100
+ support
+Thread-Index: AQHaf2Ox5nUOkqHZ30+sw9x0qtoLj7FKWS6AgACLBgA=
+Date: Wed, 27 Mar 2024 02:50:32 +0000
+Message-ID:
+ <BJSPR01MB059504FC203190B95D9D1C549E34A@BJSPR01MB0595.CHNPR01.prod.partner.outlook.cn>
+References: <20240326095457.201572-1-chunhau.tan@starfivetech.com>
+ <20240326095457.201572-2-chunhau.tan@starfivetech.com>
+ <20240326-maternity-alive-6cb8f6b2e037@spud>
+In-Reply-To: <20240326-maternity-alive-6cb8f6b2e037@spud>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=starfivetech.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: BJSPR01MB0595:EE_|BJSPR01MB0547:EE_
+x-ms-office365-filtering-correlation-id: b0b3e791-1897-42e3-4f59-08dc4e08ab94
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info:
+ wRCQrkuBNZQ9BrRqR+5tkZp95juHOwXTt95gFzUNT+OmG1RUh9JLqBghKMIO7CQ/DVIMT3v+tjPl1V21tSOHhtrawdXSggX4fKH/WfJVoI1WeKeOyt3r+mXiNgsq5UFgKCMtvIH6XX+5XzIn3TXwppOOcogIXDp8VHUO3+zFcYjue0E8MEXQqxqFt5ZvVNK3BDlwdTalIPa+eO+GEaaGXo+WvwDRil3d1OtQHkxFfcCQcDaBOpVKU4GdpeOkrfrY69el1dHfNK/zUGvarJBuVNOKaKtEB4p+76qiLiYKVhyCgbevkqnzANJfbZOuOhnz7PNnS6WYoSVScGe193J067lLzSXF+4P7ihr+dE78TxukXQkzqSMBsqa4r4kZgpTNjdyNirPOFAJbNHf+dBp5cbsBQTRzkHzSC1IfMNaBfOELu6xIv0fX0jmYAlC9Ei8VtyFMjlpkIq1vSShIEVdaMltAunozhlXRoMhjNhM9hQjL8wqajXee6Z4pr+DgUlLF9oDoUil+BIiDFnVYLPjNYfXxSvZxo9q943u/sAYPF4zJccvMod/OnjkR7rcoDwUxDtWrG6+dF+O6ERiKk4NUjOLH/zf1htcasRmSsBmU4EsvUh6C8f4dSrnLtP0Se023
+x-forefront-antispam-report:
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BJSPR01MB0595.CHNPR01.prod.partner.outlook.cn;PTR:;CAT:NONE;SFS:(13230031)(1800799015)(41320700004)(366007)(38070700009);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0:
+ =?us-ascii?Q?v9vvQh4F6sKtE236U5J4C/URcbsRsh2jzICVzD4WVs5dq7B+dVNbFSmWGym3?=
+ =?us-ascii?Q?cZTk7mdjExESabYJ/ehybOidLklOwcumqJZNEoGIE/jDTu7LJpbPm/VBlxFM?=
+ =?us-ascii?Q?QZzFHbrgGRxHHvp0GVK/OLOWJdTMUcmcTfLqfxyM5tcEnbnoY7u7lhSwYBvm?=
+ =?us-ascii?Q?5evJufOKUIQLJKLIVOvjIZyTkegBtfzHOdCGKkURaFni+RPSYdpWP0/HCRQg?=
+ =?us-ascii?Q?rvInUrOLSn3zLyVQramPRAsYuoHp6F+eLKYMwjAFaDXbe6txICugIGPdW66I?=
+ =?us-ascii?Q?8d0CNAx2xdkrapFC6dfJ0xtSIHEf/Ae4yGH0WOX1pjUS0HeEriKmqn3dJ74V?=
+ =?us-ascii?Q?9g67FDt9w1EXfx+rtfKaTq6T/RPGJpTqbpYR51Bn8CrfT/HkLLIrCTv/zeWh?=
+ =?us-ascii?Q?4SpU0syri6zlrSKz5rYP/TtznfGSP6pHEWm4E8SUVgwMyIv8boi655c2SrTr?=
+ =?us-ascii?Q?wiHU+jFA5+jdoDK33uVt0ui9ZBQnkK1wdyF82kKlnywtsyXpmArbZvK01pbk?=
+ =?us-ascii?Q?q2YtJPpFd2kcMH6YIw+fwPZzPVKHCuCYKlqsV5nqTYiXSlSCVc2nKmDIJ5Km?=
+ =?us-ascii?Q?hh9a5fNtcd2IcloEnqrL0D30KGhTWFYfbuQuFxk57v8mF1MSyJvplkXibsQl?=
+ =?us-ascii?Q?mjf4D1YrgVA7LmMniTIcwH8z7oiHqCKRdNnXgL2PH2K948YKnYI5f+X/abis?=
+ =?us-ascii?Q?xyskLAjQnYlxlAfjLH4udiUfqt9PNhTCsI8fagb0BWCS8Q/JThh1+7AONg0I?=
+ =?us-ascii?Q?9SSlhYWbBx7bcmAb84/qutv+yehxK+Wdv6TmM9IZKDgKcr60GmGi4sSaV1Rn?=
+ =?us-ascii?Q?WJ3nKlAhZBPfDjeZITW+9wVUTYN4OgVv3qlmOC69mthFk6SV/nIZSFmPxSla?=
+ =?us-ascii?Q?mIB1HQzKks1oQhaUkki6I8phvUyzTHECKklbgeHOaWNkZjhIxDAFuZtNnVBB?=
+ =?us-ascii?Q?9Tps//4OV4VgVMBC21sWBSVz7QWyet9eg4QtYRwqR8HvMhf+3wegPU3YLPW3?=
+ =?us-ascii?Q?6oIgT+lqVJRANsvrFyxe8UgKr5D5cQcY8lWukHRjIhfN6jiDOWh4snzpsF1P?=
+ =?us-ascii?Q?opX/FZhQqkh/JfHnjE/v4Rmc23yqvbF4eZGDpN0vgRl9zZg9A9D9KlT+vo++?=
+ =?us-ascii?Q?9s/9WkptQMQCFZDbYHvcHMLsj9tuMmijpDPr7cM2DGXmilhhCNWrfOyDKLLk?=
+ =?us-ascii?Q?FlKIHBq8EZ6h3fJP3143HUrtCoJvNt+3HZAELyVos8+o2CiKu+k+14oIVPxP?=
+ =?us-ascii?Q?+cJVy38hunDfsK4JWH9aZVr4IDxpUpEXRqBEdEj0ag5c1ORLtEGT7Pp0PurA?=
+ =?us-ascii?Q?n/zirxoX9rAMjjMZpf626Ku/F6y6hu9lh10VVL/nCMlyaDmPNsRZV/NcmVBV?=
+ =?us-ascii?Q?AOXjKt+Y1eQ4EBVob7iaRWkavlc/NYhuv8rzfMJgra6Z2tMg3TLpc92Y3m0U?=
+ =?us-ascii?Q?UB535Gn5HtprWNtjUxeQHzyrc0M864tjwW34ezafNYJRrzjH8EwHD8dtIqA9?=
+ =?us-ascii?Q?LMMcOB84bfF89gazTd+vIhQx4n7itIx//3ZwDewKpVAk0IurMoKBbL+WUscT?=
+ =?us-ascii?Q?DEhZD0qJm8nzIENXuNRZQzAIreHCVHIRSQacsAO4Ki3W7s0OEbxWF2Uq8z1M?=
+ =?us-ascii?Q?ZT7biMFmJksdPJQHNOXkhucHimmoa256AyzCM0O6KnihB6W22QtV/4V9TnUo?=
+ =?us-ascii?Q?6ZaDBA=3D=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: RTEXH36506.realtek.com.tw (172.21.6.27) To
- RTEXMBS01.realtek.com.tw (172.21.6.94)
-X-KSE-ServerInfo: RTEXMBS01.realtek.com.tw, 9
-X-KSE-AntiSpam-Interceptor-Info: fallback
-X-KSE-Antivirus-Interceptor-Info: fallback
-X-KSE-AntiSpam-Interceptor-Info: fallback
-X-KSE-ServerInfo: RTEXH36505.realtek.com.tw, 9
-X-KSE-AntiSpam-Interceptor-Info: fallback
-X-KSE-Antivirus-Interceptor-Info: fallback
-X-KSE-AntiSpam-Interceptor-Info: fallback
+X-OriginatorOrg: starfivetech.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BJSPR01MB0595.CHNPR01.prod.partner.outlook.cn
+X-MS-Exchange-CrossTenant-Network-Message-Id: b0b3e791-1897-42e3-4f59-08dc4e08ab94
+X-MS-Exchange-CrossTenant-originalarrivaltime: 27 Mar 2024 02:50:32.4727
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 06fe3fa3-1221-43d3-861b-5a4ee687a85c
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: QA4Wqmf37vIKbPDZQUsOTm+MWKvkCOOkrzM5pmLOAm/J6EWdMqPA7GKwioN1IPt+fbrWgBNT0GJdHXDPXsKnSOwN1xg9i3Pz0WWZwtmr1EE=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BJSPR01MB0547
 
-_mmc_sd_resume
-add get_cd before call powerup, make sure the card exist
 
-Signed-off-by: Ricky Wu <ricky_wu@realtek.com>
----
- drivers/mmc/core/sd.c | 3 +++
- 1 file changed, 3 insertions(+)
 
-diff --git a/drivers/mmc/core/sd.c b/drivers/mmc/core/sd.c
-index 1c8148cdda50..35e036672cfb 100644
---- a/drivers/mmc/core/sd.c
-+++ b/drivers/mmc/core/sd.c
-@@ -1750,6 +1750,9 @@ static int _mmc_sd_resume(struct mmc_host *host)
- 	if (!mmc_card_suspended(host->card))
- 		goto out;
- 
-+	if (host->ops->get_cd && !host->ops->get_cd(host))
-+		goto out;
-+
- 	mmc_power_up(host, host->card->ocr);
- 	err = mmc_sd_init_card(host, host->card->ocr, host->card);
- 	mmc_card_clr_suspended(host->card);
--- 
-2.25.1
+> -----Original Message-----
+> From: Conor Dooley <conor@kernel.org>
+> Sent: Wednesday, 27 March, 2024 2:33 AM
+> To: ChunHau Tan <chunhau.tan@starfivetech.com>
+> Cc: Eugeniy Paltsev <Eugeniy.Paltsev@synopsys.com>; Vinod Koul
+> <vkoul@kernel.org>; Rob Herring <robh@kernel.org>; Krzysztof Kozlowski
+> <krzysztof.kozlowski+dt@linaro.org>; Conor Dooley <conor+dt@kernel.org>;
+> Leyfoon Tan <leyfoon.tan@starfivetech.com>; JeeHeng Sia
+> <jeeheng.sia@starfivetech.com>; dmaengine@vger.kernel.org;
+> devicetree@vger.kernel.org; linux-kernel@vger.kernel.org
+> Subject: Re: [PATCH 1/2] dt-bindings: dma: snps,dw-axi-dmac: Add JH8100
+> support
+>=20
+> On Tue, Mar 26, 2024 at 02:54:56AM -0700, Tan Chun Hau wrote:
+> > Add support for StarFive JH8100 SoC in Sysnopsys Designware AXI DMA
+> > controller.
+>=20
+> Your commit message should explain what makes this incompatible with exis=
+ting
+> devices. That inforatiion does appear to be in the driver patch, but shou=
+ld also be
+> here. Otherwise,
+> Acked-by: Conor Dooley <conor.dooley@microchip.com>
 
+Okay, thank you for the feedback.
+>=20
+> >
+> > Signed-off-by: Tan Chun Hau <chunhau.tan@starfivetech.com>
+> > ---
+> >  Documentation/devicetree/bindings/dma/snps,dw-axi-dmac.yaml | 1 +
+> >  1 file changed, 1 insertion(+)
+> >
+> > diff --git
+> > a/Documentation/devicetree/bindings/dma/snps,dw-axi-dmac.yaml
+> > b/Documentation/devicetree/bindings/dma/snps,dw-axi-dmac.yaml
+> > index 363cf8bd150d..525f5f3932f5 100644
+> > --- a/Documentation/devicetree/bindings/dma/snps,dw-axi-dmac.yaml
+> > +++ b/Documentation/devicetree/bindings/dma/snps,dw-axi-dmac.yaml
+> > @@ -21,6 +21,7 @@ properties:
+> >        - snps,axi-dma-1.01a
+> >        - intel,kmb-axi-dma
+> >        - starfive,jh7110-axi-dma
+> > +      - starfive,jh8100-axi-dma
+> >
+> >    reg:
+> >      minItems: 1
+> > --
+> > 2.25.1
+> >
 
