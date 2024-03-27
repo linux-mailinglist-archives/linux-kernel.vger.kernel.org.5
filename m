@@ -1,155 +1,108 @@
-Return-Path: <linux-kernel+bounces-121453-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-121454-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id A5CFC88E81F
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 16:12:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 6EEDF88E822
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 16:13:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C95EC1C2F8AC
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 15:12:55 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A063B1C2F9B5
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 15:13:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B8D5A1386DA;
-	Wed, 27 Mar 2024 14:41:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A25CA12AAC3;
+	Wed, 27 Mar 2024 14:44:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="FlEEP/1e"
-Received: from mail-wr1-f45.google.com (mail-wr1-f45.google.com [209.85.221.45])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HXboqwKN"
+Received: from mail-pf1-f173.google.com (mail-pf1-f173.google.com [209.85.210.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B5FB131186;
-	Wed, 27 Mar 2024 14:41:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A6424127B56
+	for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 14:44:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711550515; cv=none; b=tp6+BkkGzr7n7MSNSYreFBC+cXP4HVOfBhcA9S5vDpzoHijllKooUD6bfAk4pMQHEgL8TYZnW8mEthnfA26Z6Uyk40EKx8ecj7dAOFUtJoNLrvqPCMyQX0PomDa/1Mtcve9UMVH/xQ4GnAjKxVu7092QIAfev2xJApXLI4od79I=
+	t=1711550664; cv=none; b=RdqxiqnCqNtPbio8iS6XqTUuoYVKSBBVqt9T761shTKxvdZNryq4AXFndR+w1fhkfoPCDRrw1HXP6r7uKGDrzRKhYeTtfuf5ZwRT+HNqHNOYvcK+xG788wRqTLcVVOoYnztdQMmdJsvyfdSBEJPeBf/gnfcUW66HptkrAOg1zPQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711550515; c=relaxed/simple;
-	bh=wmmiPcNi9/L0mLdH/UYICeW1I3Q9ziHtN+YyCKad0tU=;
-	h=Message-ID:Date:From:To:Cc:Subject:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=TOAlxkzfTlgsK7uPPjS9nD8CxZdzHYLE11MnRIrCOPGdjarKMJMOwpvdiw2cQOhlZIki4X/SHGGY0qmxeXVWmzxJN8OpiPbo9tryPNkSoJ+Itbt7xfpafooVZR5t0KE3lLHSyu2wdEn3ldavkWByl+wHtuiuat5DCR0vSuNq1vo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=FlEEP/1e; arc=none smtp.client-ip=209.85.221.45
+	s=arc-20240116; t=1711550664; c=relaxed/simple;
+	bh=T5JrzvQt69iNjL4/EANWsxT3z20iGSHRmfedO6EBr8E=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=kfIt91FPzghstPtKh5vjSZtFXHh94PretBp1y1ZacMMn0nKKAlEz90sDFBXKv88ZHCBtsSaj0Gj1Dewmbod8UHAqNibmyrGm0d0hZQo1SH9VI4oSFUQyKfv8Qgj72xo2KMvv9aeowyrPrKRTC5hPLCe5D7HXhjASp0ktOLl2N5k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=HXboqwKN; arc=none smtp.client-ip=209.85.210.173
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f45.google.com with SMTP id ffacd0b85a97d-33eee0258abso3328563f8f.3;
-        Wed, 27 Mar 2024 07:41:52 -0700 (PDT)
+Received: by mail-pf1-f173.google.com with SMTP id d2e1a72fcca58-6e8f51d0bf0so5496208b3a.3
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 07:44:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711550511; x=1712155311; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:subject:cc
-         :to:from:date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=OUrGaFOTm3HIgbVg/3+q83JkWLVUBaXqcSW9xQP09cY=;
-        b=FlEEP/1eWxLqqfIfldKpfaCzPVm3dz0FUL+dJHUAuwHM1NCS9x2GWJg49at6SHVGKh
-         u4+tJE0sgbrfRkrQyQXvNbU292J5aog1kwvzeB+n8FR6LtFkDwP8fw44XgbZ2CPJ4INA
-         y3CUKy7Ibt7bJsAu5f/iPjcPvjQbte1IpC+CgzO6PpHeqXi4RtE6HDRuuXx0QYIJpFk8
-         smzcIjtfcU//RJtFKxTo4d3EV5qAmoxL6yoLOc/cjpG8ydqRYsgeZvMhfF1MlfnK/HgP
-         Mytu1xrNPOR6TsFRHkMh9MKvOvLpgE704Uxwp8jjQpLeRTm3BctfgTdBnstxv5FWBEZr
-         A5tA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711550511; x=1712155311;
-        h=in-reply-to:content-disposition:mime-version:references:subject:cc
-         :to:from:date:message-id:x-gm-message-state:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1711550663; x=1712155463; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=OUrGaFOTm3HIgbVg/3+q83JkWLVUBaXqcSW9xQP09cY=;
-        b=IGF+1cHeeweKbLRfk0+in4vIcXs/J3Z4zZg1+QvK6Av+O65kpvamtVl37tajFaqpRU
-         txSULvNw6AUHUUZxN4dshSCCQtksrLAoNX/GdOZSRpdR3tomztr6PkcifYOybkSnF+V9
-         U3wSdhg38qxgLiDzXnqyHyqHgIIsEBN1zZwvUkBrwiCSbqvrXa81Gz/MGLACOIK7l3Vz
-         34Oj3vgtYC6wRNvLo26w8suVPQhLryeSx9pfsTliaKcxoNbLJxXOOIbql/OTnt7SEcZY
-         Irief5yGqCynC0uBUfA3UA1wtsKncBvd357wc4xBxNLseKMP99bfnIYYzqqm+rV4e0M0
-         pbbg==
-X-Forwarded-Encrypted: i=1; AJvYcCUkZLL+5w1Y/J9tEro/xlxHXqY9SHSxgukpnd49pClq7iBcaknL389peBYUQXvDJaAehdRLD9YKs/XwV4YHvi2Qh1depP/iYtqfTHjkX0LygY/tZH5rCqEdKVd8T8PA+2Q3Fi++qpZP3rO5Vly0K4bdyh8ErJwucsoLlqvXmW1hfzCrLQ==
-X-Gm-Message-State: AOJu0Yw9dL4t/VTM2CDpkZA3Odmv7DEuBrN4aJ/G4ltr+jawx/16sxpi
-	/jE/aZh35Iq/d2TrKgwM+1EEX3jyGRyPO5K4vdRVaYKQAFp6QkmdtGCciKAI
-X-Google-Smtp-Source: AGHT+IH3hhBbBOaJyytCArqO8u63fzWZ9+iCxdRQaBCRR2VKg2JV+sT8K3SotUOm+F1TlR488dD7JA==
-X-Received: by 2002:adf:b31c:0:b0:341:bf39:9f8 with SMTP id j28-20020adfb31c000000b00341bf3909f8mr139952wrd.6.1711550511199;
-        Wed, 27 Mar 2024 07:41:51 -0700 (PDT)
-Received: from Ansuel-XPS. (host-95-247-253-192.retail.telecomitalia.it. [95.247.253.192])
-        by smtp.gmail.com with ESMTPSA id v16-20020a5d5910000000b003418364032asm15087444wrd.112.2024.03.27.07.41.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 27 Mar 2024 07:41:50 -0700 (PDT)
-Message-ID: <6604302e.5d0a0220.bdb64.4077@mx.google.com>
-X-Google-Original-Message-ID: <ZgQwK7kh_MUDUbQb@Ansuel-XPS.>
-Date: Wed, 27 Mar 2024 15:41:47 +0100
-From: Christian Marangi <ansuelsmth@gmail.com>
-To: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Cc: Miquel Raynal <miquel.raynal@bootlin.com>,
-	Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	Md Sadre Alam <quic_mdalam@quicinc.com>,
-	Sricharan Ramabadhran <quic_srichara@quicinc.com>,
-	linux-mtd@lists.infradead.org, linux-arm-msm@vger.kernel.org,
-	linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Subject: Re: [PATCH v2 1/2] mtd: rawnand: qcom: Fix broken erase in
- misc_cmd_type in exec_op
-References: <20240325103053.24408-1-ansuelsmth@gmail.com>
- <20240326072512.GA8436@thinkpad>
- <20240326073947.GA9565@thinkpad>
+        bh=7q2C6v07RAOGYu2hu4GY7euXWF8ETU7ffxo3I9AlpmE=;
+        b=HXboqwKNPllksNoXo++jpdJAzBJLajKwaeeBYQjNnA7FgahulwVVS9lZrpINGTr1pa
+         L3qkuaRExDpEx3ylME/ggc/prcvMH1Btayrqd8OcApJM6jhZj3o/bs3dwTEVy4GInmqh
+         VayOWabSsUfjOHw7NU+v32m+DwT0rjgNJtQIt3SVoqWTadbX4NKZ6b0fkFFvUl5ySkAA
+         kL6PtXeFNrxBdxX0lbZWFJ2zogFPMIPTKSv/b+NDIuBcSc6QK13ZlKf2TBcjjsh1EmiK
+         aRSPDdc4eiFKGUrq/jg7d6bBcNVVMeh9Vada/RfgkaqMZ+DK/IvWXlGQoAUeQZ47XhPz
+         RZew==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711550663; x=1712155463;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=7q2C6v07RAOGYu2hu4GY7euXWF8ETU7ffxo3I9AlpmE=;
+        b=vn7RkxNB3Px65zKhnTR+XjZQuKqhGd//Gq2pYnGrQV4h7lvB2V6SvPpOQCOhrusoJk
+         zE8MTbAiDO5iKx/ydtPFOg7nbOiceHD4LMQxRsX6hI8Wu+DBiE2C5/V6/Vc2VPWj4TQF
+         3Sxm+JqCjjZDaGxnVaDiZ7Lq2gS/v6YolSxLsikrAlDHu/QFxOY43xzRAtP3dtE2eFX5
+         BZ52c93CH8awmhcUD0YYrJlDjpCe244gQ4gnTX5fcA6rvkJ8yFFgFrpuqdQd7YENWV1F
+         1qCJeN1IOZ4GJyePuPrfiwu2U5NiYEm4aSgdeou8SdNagyKrMUPWv+4cZ8DKcUoiKDub
+         pkoQ==
+X-Forwarded-Encrypted: i=1; AJvYcCW/Hc2rC7yZn0XT3BMQGfhRzLyeo2XvpjD+wk+AXdWm4S6YY7nD7FADIWuPyNk88J+PoBxsmA+3biWwo2mvCR9POYBLrR/ypb0/tteK
+X-Gm-Message-State: AOJu0YxxpJx2eya5B63rd7OQ0lgs9tFL/cMJSlGzTyipFXn8SQrOVFBb
+	es1nwJqAkRCTBzrwiQ/oaNZb+ZYZlan8Mo0JJlO7zTQ+uoCoRLakUTpJAUFVvJZvCYzu6+EIKw5
+	+9Rbu1Z18qLH1rerXToNxauWD9J8=
+X-Google-Smtp-Source: AGHT+IE1qaXoQhFdrtV7QT8MND6FcMTo2zAxmPDuHTiYsb86YGvn9Hfou3VfjATjJrHui3jRqwzdKYDjQpt/iPCMqrw=
+X-Received: by 2002:a05:6a20:7a9a:b0:1a3:69e9:63a9 with SMTP id
+ u26-20020a056a207a9a00b001a369e963a9mr56558pzh.18.1711550663028; Wed, 27 Mar
+ 2024 07:44:23 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240326073947.GA9565@thinkpad>
+References: <CANiq72mbsAYmR_dRPpQQ=9-NWhTtp0TWiOz0v=V-0AvwYbWw4A@mail.gmail.com>
+ <20240327-magnetic-nonchalant-hare-bbe8d2@houat>
+In-Reply-To: <20240327-magnetic-nonchalant-hare-bbe8d2@houat>
+From: Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Date: Wed, 27 Mar 2024 15:43:55 +0100
+Message-ID: <CANiq72kqqQfUxLkHJYqeBAhpc6YcX7bfR96gmmbF=j8hEOykqw@mail.gmail.com>
+Subject: Re: drivers/gpu/drm/qxl/qxl_cmd.c:424:6: error: variable 'count' set
+ but not used
+To: Maxime Ripard <mripard@kernel.org>
+Cc: Dave Airlie <airlied@redhat.com>, Gerd Hoffmann <kraxel@redhat.com>, 
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, Thomas Zimmermann <tzimmermann@suse.de>, 
+	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, virtualization@lists.linux.dev, 
+	spice-devel@lists.freedesktop.org, 
+	dri-devel <dri-devel@lists.freedesktop.org>, 
+	linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, Mar 26, 2024 at 01:09:47PM +0530, Manivannan Sadhasivam wrote:
-> On Tue, Mar 26, 2024 at 12:55:19PM +0530, Manivannan Sadhasivam wrote:
-> > On Mon, Mar 25, 2024 at 11:30:47AM +0100, Christian Marangi wrote:
-> > > misc_cmd_type in exec_op have multiple problems. With commit a82990c8a409
-> > > ("mtd: rawnand: qcom: Add read/read_start ops in exec_op path") it was
-> > > reworked and generalized but actually broke the handling of the
-> > > ERASE_BLOCK command.
-> > > 
-> > > Additional logic was added to the erase command cycle without clear
-> > > explaination causing the erase command to be broken on testing it on
-> > > a ipq806x nandc.
-> > > 
-> > > Fix the erase command by reverting the additional logic and only adding
-> > > the NAND_DEV0_CFG0 additional call (required for erase command).
-> > > 
-> > > Fixes: a82990c8a409 ("mtd: rawnand: qcom: Add read/read_start ops in exec_op path")
-> > > Cc: stable@vger.kernel.org
-> > > Signed-off-by: Christian Marangi <ansuelsmth@gmail.com>
-> > > ---
-> > > Changes v2:
-> > > - Split this and rework commit description and title
-> > > 
-> > >  drivers/mtd/nand/raw/qcom_nandc.c | 5 ++---
-> > >  1 file changed, 2 insertions(+), 3 deletions(-)
-> > > 
-> > > diff --git a/drivers/mtd/nand/raw/qcom_nandc.c b/drivers/mtd/nand/raw/qcom_nandc.c
-> > > index b079605c84d3..19d76e345a49 100644
-> > > --- a/drivers/mtd/nand/raw/qcom_nandc.c
-> > > +++ b/drivers/mtd/nand/raw/qcom_nandc.c
-> > > @@ -2830,9 +2830,8 @@ static int qcom_misc_cmd_type_exec(struct nand_chip *chip, const struct nand_sub
-> > >  	nandc_set_reg(chip, NAND_EXEC_CMD, 1);
-> > >  
-> > >  	write_reg_dma(nandc, NAND_FLASH_CMD, instrs, NAND_BAM_NEXT_SGL);
-> > > -	(q_op.cmd_reg == OP_BLOCK_ERASE) ? write_reg_dma(nandc, NAND_DEV0_CFG0,
-> > > -	2, NAND_BAM_NEXT_SGL) : read_reg_dma(nandc,
-> > > -	NAND_FLASH_STATUS, 1, NAND_BAM_NEXT_SGL);
-> > > +	if (q_op.cmd_reg == OP_BLOCK_ERASE)
-> > > +		write_reg_dma(nandc, NAND_DEV0_CFG0, 2, NAND_BAM_NEXT_SGL);
-> > 
-> > So this only avoids the call to, 'read_reg_dma(nandc, NAND_FLASH_STATUS, 1,
-> > NAND_BAM_NEXT_SGL)' if q_op.cmd_reg != OP_BLOCK_ERASE. But for q_op.cmd_reg ==
-> > OP_BLOCK_ERASE, the result is the same.
-> > 
-> > I'm wondering how it results in fixing the OP_BLOCK_ERASE command.
-> > 
-> 
-> Perhaps you are trying to fix the OP_RESET_DEVICE command altogether?
+On Wed, Mar 27, 2024 at 8:59=E2=80=AFAM Maxime Ripard <mripard@kernel.org> =
+wrote:
 >
+> It looks reasonable to me, can you send a formal patch?
 
-Well with this only patch correct working of nandc on ipq806x is
-restored. I'm still very confused how since the misc command currently
-works only with the PROGRAM_PAGE and the BLOCK_ERASE (from ERASE1 and
-ERASE2)
+Will do -- I found another one when running the CI with the above one fixed=
+:
 
-Still the extra read was added with no explaination and I couldn't find
-this command cycle in any of the previous legacy function and the one
-introduced after the parser rework.
+    drivers/gpu/drm/qxl/qxl_ioctl.c:148:14: error: variable
+'num_relocs' set but not used [-Werror,-Wunused-but-set-variable]
 
--- 
-	Ansuel
+I will send you one for that too then.
+
+Thanks!
+
+Cheers,
+Miguel
 
