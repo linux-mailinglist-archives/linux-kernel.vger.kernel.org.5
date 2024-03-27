@@ -1,54 +1,58 @@
-Return-Path: <linux-kernel+bounces-120925-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-120926-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C912088E091
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 13:39:36 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id AB7B688E093
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 13:39:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 80E8129C63F
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 12:39:35 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5F9EF299F04
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 12:39:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2858014AD05;
-	Wed, 27 Mar 2024 12:13:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7FA8E14AD2C;
+	Wed, 27 Mar 2024 12:13:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="imeZS9Qo"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="AkT/HJ3l"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B2A714A637;
-	Wed, 27 Mar 2024 12:13:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 940A514AD29;
+	Wed, 27 Mar 2024 12:13:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711541599; cv=none; b=RXliQjKXO7N55ZEfD14CTUsb1pgch+wGCzjKF08p4RfA8mUqxoUitsbIkEAv4pnvbhcBxoGPxpYEEi2V+XCzzXF9wmqmjZ6hUAdzrDKRQBDNwaVqorPMTEnmbOcYj5fv3Qd+rDW+I+B/1wlo+EYxCD7e0n6rbuDMJ/GnhJV4v4w=
+	t=1711541602; cv=none; b=pasZbgtkeQRBryiTCtS1bWQmM/NgCy6qHPSkTYxwou0qY/oMVkl+u9HjWfK/e49ltzZi3CKT7p1fp6HEzCfPjH1reK5GjRg3Fz+waC48Lvp+p0X3Hy6UwrXDB41VtXn2ryuoauJxOlZDS8tKE671xeZLBOoYG1acYHpe9CDMkQY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711541599; c=relaxed/simple;
-	bh=ScNfL9x9hQoopRAdWDsu44QosypT8c50jbdIzq1t/Yw=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=b9oZ2I81c5QHbKd1GHYWk1SKfhR4RS20UAK7VAM1kqQXgfGgu06CKSklhHVClhXV2UHDrG4mP+h/svHCKetV/kWh2nQwdTFLDmZTfm1ceKUBqjl0jK2Zpx8K/6G1DuBS5h6B8/s1zIuk6rm9U1rimbybDSDbdP27fL/PMMSyCWk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=imeZS9Qo; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 84F3EC433F1;
-	Wed, 27 Mar 2024 12:13:18 +0000 (UTC)
+	s=arc-20240116; t=1711541602; c=relaxed/simple;
+	bh=nTTYaWXrG10v6nwJ+JBCk2YPABn7JNGqqxEe6uL27yQ=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=sE2+ipFmzZ/VzP5OYSaHA/KmV/4fFAd3TmYxw1zvzPhxNPDXnSApBypsUgLICHZN0pBPElBsV+0yk3U585U3bSq23t61/p6RTEt1MGkojQbfePZVhUzJQU3bwi5xt4rAP94jaGme8POlGG9e9lB/DQF1SrUTchubg2VZJswxNg8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=AkT/HJ3l; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 419B0C433C7;
+	Wed, 27 Mar 2024 12:13:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711541599;
-	bh=ScNfL9x9hQoopRAdWDsu44QosypT8c50jbdIzq1t/Yw=;
+	s=k20201202; t=1711541602;
+	bh=nTTYaWXrG10v6nwJ+JBCk2YPABn7JNGqqxEe6uL27yQ=;
 	h=From:To:Cc:Subject:Date:From;
-	b=imeZS9QoPiCxkK/4aUdzS+LscvCXyIus55GnS/MuvEW13z7p9GMfnvuozJC3E/FE/
-	 Iyh71qirXPSI0U+fz5nINtNwlgud9dWKtxv2MUCVI16dksik4+9jd72kC037DfzsE8
-	 6TLGE1XVnsj1aoi5NflqAqitkYIA9RRTqQg6ADpYpPXy/McCh0T2I4QJgAAeN8zww+
-	 Qvt/3IhuX9+NABRLuHAv6BCJn7Hin4H9NyJAuguK77w8wO9W6RLuR6wS+a/GjtrJXM
-	 J0B6Wqqi2MMY0TE4Hn17XteEGV7M8s6iKyAt0qTTlkodSIEWvb1+qtNeRp/tLCRbac
-	 20PU765Aj881Q==
+	b=AkT/HJ3lQS9SCd98j16jwab8GHZtelIfvOavXaslfc1k46WhsPMxnoVW1Peq6dCjS
+	 EfOFZSJeoZ3vELQP64O+w1Wcr3j0sfWiep3TDEK9Vg1v3guTMOcsibp+sOsrGw2Lxm
+	 qC7ogC7nMjiV+M1Nh634mv7359EynDwuLAvTraQNbjtINnTFD/BDRSt9A+AVL+10qD
+	 9aSCoysnrQdXS+We/xtOqxFAjB8LJf68ZaBxtR8RKmdJ2OA4bt4sMzjtEsB4FdybX9
+	 X1iKg/sN33Ronnv3ZrhOmMFbWvRO9ZsdYlBVz8qeEywKmnnxbZg0NCQgE4VGTUH6cY
+	 eJ2mI4EAiWznQ==
 From: Sasha Levin <sashal@kernel.org>
 To: stable@vger.kernel.org,
-	jani.nikula@intel.com
-Cc: Adrien Grassein <adrien.grassein@gmail.com>,
-	Thomas Zimmermann <tzimmermann@suse.de>,
+	wenjing.liu@amd.com
+Cc: Mario Limonciello <mario.limonciello@amd.com>,
+	Alex Deucher <alexander.deucher@amd.com>,
+	Dillon Varone <dillon.varone@amd.com>,
+	Alex Hung <alex.hung@amd.com>,
+	Daniel Wheeler <daniel.wheeler@amd.com>,
+	amd-gfx@lists.freedesktop.org,
 	dri-devel@lists.freedesktop.org,
 	linux-kernel@vger.kernel.org
-Subject: FAILED: Patch "drm/bridge: lt8912b: do not return negative values from .get_modes()" failed to apply to 6.1-stable tree
-Date: Wed, 27 Mar 2024 08:13:17 -0400
-Message-ID: <20240327121317.2830201-1-sashal@kernel.org>
+Subject: FAILED: Patch "drm/amd/display: Update odm when ODM combine is changed on an otg master pipe with no plane" failed to apply to 6.1-stable tree
+Date: Wed, 27 Mar 2024 08:13:19 -0400
+Message-ID: <20240327121320.2830238-1-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -70,59 +74,152 @@ Sasha
 
 ------------------ original commit in Linus's tree ------------------
 
-From 171b711b26cce208bb628526b1b368aeec7b6fa4 Mon Sep 17 00:00:00 2001
-From: Jani Nikula <jani.nikula@intel.com>
-Date: Fri, 8 Mar 2024 18:03:42 +0200
-Subject: [PATCH] drm/bridge: lt8912b: do not return negative values from
- .get_modes()
+From 86e9523fb0efce27095d3086473c739cce720d01 Mon Sep 17 00:00:00 2001
+From: Wenjing Liu <wenjing.liu@amd.com>
+Date: Wed, 21 Feb 2024 16:55:04 -0500
+Subject: [PATCH] drm/amd/display: Update odm when ODM combine is changed on an
+ otg master pipe with no plane
 
-The .get_modes() hooks aren't supposed to return negative error
-codes. Return 0 for no modes, whatever the reason.
+[WHY]
+When committing an update with ODM combine change when the plane is
+removing or already removed, we fail to detect odm change in pipe
+update flags. This has caused mismatch between new dc state and the
+actual hardware state, because we missed odm programming.
 
-Cc: Adrien Grassein <adrien.grassein@gmail.com>
+[HOW]
+- Detect odm change even for otg master pipe without a plane.
+- Update odm config before calling program pipes for pipe with planes.
+
+The commit also updates blank pattern programming when odm is changed
+without plane. This is because number of OPP is changed when ODM
+combine is changed. Blank pattern is per OPP so we will need to
+reprogram OPP based on the new pipe topology.
+
+Cc: Mario Limonciello <mario.limonciello@amd.com>
+Cc: Alex Deucher <alexander.deucher@amd.com>
 Cc: stable@vger.kernel.org
-Acked-by: Thomas Zimmermann <tzimmermann@suse.de>
-Link: https://patchwork.freedesktop.org/patch/msgid/dcdddcbcb64b6f6cdc55022ee50c10dee8ddbc3d.1709913674.git.jani.nikula@intel.com
-Signed-off-by: Jani Nikula <jani.nikula@intel.com>
+Reviewed-by: Dillon Varone <dillon.varone@amd.com>
+Acked-by: Alex Hung <alex.hung@amd.com>
+Signed-off-by: Wenjing Liu <wenjing.liu@amd.com>
+Tested-by: Daniel Wheeler <daniel.wheeler@amd.com>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 ---
- drivers/gpu/drm/bridge/lontium-lt8912b.c | 16 +++++++---------
- 1 file changed, 7 insertions(+), 9 deletions(-)
+ .../amd/display/dc/hwss/dcn20/dcn20_hwseq.c   | 41 ++++++++++---------
+ .../amd/display/dc/hwss/dcn32/dcn32_hwseq.c   |  7 ++++
+ 2 files changed, 28 insertions(+), 20 deletions(-)
 
-diff --git a/drivers/gpu/drm/bridge/lontium-lt8912b.c b/drivers/gpu/drm/bridge/lontium-lt8912b.c
-index e7c4bef74aa46..4b2ae27f0a57f 100644
---- a/drivers/gpu/drm/bridge/lontium-lt8912b.c
-+++ b/drivers/gpu/drm/bridge/lontium-lt8912b.c
-@@ -441,23 +441,21 @@ lt8912_connector_mode_valid(struct drm_connector *connector,
- static int lt8912_connector_get_modes(struct drm_connector *connector)
- {
- 	const struct drm_edid *drm_edid;
--	int ret = -1;
--	int num = 0;
- 	struct lt8912 *lt = connector_to_lt8912(connector);
- 	u32 bus_format = MEDIA_BUS_FMT_RGB888_1X24;
-+	int ret, num;
+diff --git a/drivers/gpu/drm/amd/display/dc/hwss/dcn20/dcn20_hwseq.c b/drivers/gpu/drm/amd/display/dc/hwss/dcn20/dcn20_hwseq.c
+index c55d5155ecb9c..40098d9f70cbc 100644
+--- a/drivers/gpu/drm/amd/display/dc/hwss/dcn20/dcn20_hwseq.c
++++ b/drivers/gpu/drm/amd/display/dc/hwss/dcn20/dcn20_hwseq.c
+@@ -1498,6 +1498,11 @@ static void dcn20_detect_pipe_changes(struct dc_state *old_state,
+ 		return;
+ 	}
  
- 	drm_edid = drm_bridge_edid_read(lt->hdmi_port, connector);
- 	drm_edid_connector_update(connector, drm_edid);
--	if (drm_edid) {
--		num = drm_edid_connector_add_modes(connector);
--	} else {
--		return ret;
--	}
-+	if (!drm_edid)
-+		return 0;
++	if (resource_is_pipe_type(new_pipe, OTG_MASTER) &&
++			resource_is_odm_topology_changed(new_pipe, old_pipe))
++		/* Detect odm changes */
++		new_pipe->update_flags.bits.odm = 1;
 +
-+	num = drm_edid_connector_add_modes(connector);
+ 	/* Exit on unchanged, unused pipe */
+ 	if (!old_pipe->plane_state && !new_pipe->plane_state)
+ 		return;
+@@ -1551,10 +1556,6 @@ static void dcn20_detect_pipe_changes(struct dc_state *old_state,
  
- 	ret = drm_display_info_set_bus_formats(&connector->display_info,
- 					       &bus_format, 1);
--	if (ret)
--		num = ret;
-+	if (ret < 0)
-+		num = 0;
+ 	/* Detect top pipe only changes */
+ 	if (resource_is_pipe_type(new_pipe, OTG_MASTER)) {
+-		/* Detect odm changes */
+-		if (resource_is_odm_topology_changed(new_pipe, old_pipe))
+-			new_pipe->update_flags.bits.odm = 1;
+-
+ 		/* Detect global sync changes */
+ 		if (old_pipe->pipe_dlg_param.vready_offset != new_pipe->pipe_dlg_param.vready_offset
+ 				|| old_pipe->pipe_dlg_param.vstartup_start != new_pipe->pipe_dlg_param.vstartup_start
+@@ -1999,19 +2000,20 @@ void dcn20_program_front_end_for_ctx(
+ 	DC_LOGGER_INIT(dc->ctx->logger);
+ 	unsigned int prev_hubp_count = 0;
+ 	unsigned int hubp_count = 0;
++	struct pipe_ctx *pipe;
  
- 	drm_edid_free(drm_edid);
- 	return num;
+ 	if (resource_is_pipe_topology_changed(dc->current_state, context))
+ 		resource_log_pipe_topology_update(dc, context);
+ 
+ 	if (dc->hwss.program_triplebuffer != NULL && dc->debug.enable_tri_buf) {
+ 		for (i = 0; i < dc->res_pool->pipe_count; i++) {
+-			struct pipe_ctx *pipe_ctx = &context->res_ctx.pipe_ctx[i];
++			pipe = &context->res_ctx.pipe_ctx[i];
+ 
+-			if (!pipe_ctx->top_pipe && !pipe_ctx->prev_odm_pipe && pipe_ctx->plane_state) {
+-				ASSERT(!pipe_ctx->plane_state->triplebuffer_flips);
++			if (!pipe->top_pipe && !pipe->prev_odm_pipe && pipe->plane_state) {
++				ASSERT(!pipe->plane_state->triplebuffer_flips);
+ 				/*turn off triple buffer for full update*/
+ 				dc->hwss.program_triplebuffer(
+-						dc, pipe_ctx, pipe_ctx->plane_state->triplebuffer_flips);
++						dc, pipe, pipe->plane_state->triplebuffer_flips);
+ 			}
+ 		}
+ 	}
+@@ -2085,12 +2087,22 @@ void dcn20_program_front_end_for_ctx(
+ 			DC_LOG_DC("Reset mpcc for pipe %d\n", dc->current_state->res_ctx.pipe_ctx[i].pipe_idx);
+ 		}
+ 
++	/* update ODM for blanked OTG master pipes */
++	for (i = 0; i < dc->res_pool->pipe_count; i++) {
++		pipe = &context->res_ctx.pipe_ctx[i];
++		if (resource_is_pipe_type(pipe, OTG_MASTER) &&
++				!resource_is_pipe_type(pipe, DPP_PIPE) &&
++				pipe->update_flags.bits.odm &&
++				hws->funcs.update_odm)
++			hws->funcs.update_odm(dc, context, pipe);
++	}
++
+ 	/*
+ 	 * Program all updated pipes, order matters for mpcc setup. Start with
+ 	 * top pipe and program all pipes that follow in order
+ 	 */
+ 	for (i = 0; i < dc->res_pool->pipe_count; i++) {
+-		struct pipe_ctx *pipe = &context->res_ctx.pipe_ctx[i];
++		pipe = &context->res_ctx.pipe_ctx[i];
+ 
+ 		if (pipe->plane_state && !pipe->top_pipe) {
+ 			while (pipe) {
+@@ -2129,17 +2141,6 @@ void dcn20_program_front_end_for_ctx(
+ 			context->stream_status[0].plane_count > 1) {
+ 			pipe->plane_res.hubp->funcs->hubp_wait_pipe_read_start(pipe->plane_res.hubp);
+ 		}
+-
+-		/* when dynamic ODM is active, pipes must be reconfigured when all planes are
+-		 * disabled, as some transitions will leave software and hardware state
+-		 * mismatched.
+-		 */
+-		if (dc->debug.enable_single_display_2to1_odm_policy &&
+-			pipe->stream &&
+-			pipe->update_flags.bits.disable &&
+-			!pipe->prev_odm_pipe &&
+-			hws->funcs.update_odm)
+-			hws->funcs.update_odm(dc, context, pipe);
+ 	}
+ }
+ 
+diff --git a/drivers/gpu/drm/amd/display/dc/hwss/dcn32/dcn32_hwseq.c b/drivers/gpu/drm/amd/display/dc/hwss/dcn32/dcn32_hwseq.c
+index aa36d7a56ca8c..b890db0bfc46b 100644
+--- a/drivers/gpu/drm/amd/display/dc/hwss/dcn32/dcn32_hwseq.c
++++ b/drivers/gpu/drm/amd/display/dc/hwss/dcn32/dcn32_hwseq.c
+@@ -1156,6 +1156,13 @@ void dcn32_update_odm(struct dc *dc, struct dc_state *context, struct pipe_ctx *
+ 			dsc->funcs->dsc_disconnect(dsc);
+ 		}
+ 	}
++
++	if (!resource_is_pipe_type(pipe_ctx, DPP_PIPE))
++		/*
++		 * blank pattern is generated by OPP, reprogram blank pattern
++		 * due to OPP count change
++		 */
++		dc->hwseq->funcs.blank_pixel_data(dc, pipe_ctx, true);
+ }
+ 
+ unsigned int dcn32_calculate_dccg_k1_k2_values(struct pipe_ctx *pipe_ctx, unsigned int *k1_div, unsigned int *k2_div)
 -- 
 2.43.0
 
