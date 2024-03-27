@@ -1,146 +1,122 @@
-Return-Path: <linux-kernel+bounces-121351-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-121352-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 43DD988E699
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 15:40:26 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id AAF8688E69B
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 15:40:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E7F5A2C4BF6
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 14:40:24 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 607F729E21C
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 14:40:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 24F59157A66;
-	Wed, 27 Mar 2024 13:12:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2BF09157A68;
+	Wed, 27 Mar 2024 13:12:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="YIoyDyqR"
-Received: from mail-ed1-f44.google.com (mail-ed1-f44.google.com [209.85.208.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="eW1OVAqp"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.21])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 13108157A42
-	for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 13:12:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 10C7D13A876;
+	Wed, 27 Mar 2024 13:12:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.21
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711545141; cv=none; b=oP00CqefAYxLfaHGPcw9xHbRBxl6jrC5Vip0Zy7yDh+BC8wmvUaE0BNSOWFrhyBI2szH74F4kjx6XUI9+TJLX0VbvDhLuAxyILmTpnsLBPt/1yqQOCuuyhCbEekqAneEislKU+q+6be945RjqXiHDhw3/UwBq9oeryost4718/M=
+	t=1711545162; cv=none; b=t7rlkWBfs/7HCZLYdIWbqq8h3NnyjsqMEnsmndOwyM8ttml4mVy16NN3+KJrPGubxfBVAsoCMLUL0x2mUfh2tR6/MaCOaaPyPG+V2KwIF0fWfKUFyfaK1rlP96cZJtMGvO5wluce2w90ft4ohl7G05rM+5WHYFYCb0mIvTKCxPw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711545141; c=relaxed/simple;
-	bh=EZD9R7kQPOleNH6dfp89r0J0EVvWnkBrQ3luSyujP4s=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=VSh6bflqXaqJ/btdj9mUbBA5RdTgcoJYAqm4gN3H5qUDESSLyfuZmCFYGsI6DFET/Fl12PGEQ1uOMnZJJOJWIH4F5d1Wa3P+HETidaD9JXEX2ygDEaibfcng7JUpz2Cy9hAG6G3qT06iw7P37Il4087sYppyRpvaOgy23NSobQw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=YIoyDyqR; arc=none smtp.client-ip=209.85.208.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ed1-f44.google.com with SMTP id 4fb4d7f45d1cf-56c2cfdd728so9103a12.1
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 06:12:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1711545135; x=1712149935; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Lh0qAZ9DGKUKt/wTT7PZWIc64SA1BHl18Bv9aAtPYd8=;
-        b=YIoyDyqROZM5KzgcfOAxrBhJsgvWqGYsSExNrnvgi3SkyrB26dGEJqQlURWJMVPv6v
-         KgWM3YTVmBf1uoyUAU0M6AwhHFLqHEHyptqR9vMvTSF/WCjbxGQqCv6/5D4F5Qwo3GkQ
-         oZoygEStJ0yC/wBtBj37glD5S8I9ldHZkYJRdeUWSFAQzWllA82pvVvXDOvW0/VJSy/r
-         6BVCJ9xgnziX+pRoapNxTfAVrMTqaTthluds/pzkv9/+4XovGauONKGGKQ2KZUlPOMo/
-         Gm5OSRdkkIF/Y3uf0xzxSckk99biiQe4NTXVlL73uvu0p59waCkaSaioivfj9QVhAPZQ
-         ji2w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711545135; x=1712149935;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Lh0qAZ9DGKUKt/wTT7PZWIc64SA1BHl18Bv9aAtPYd8=;
-        b=qbIHdAlvnycxM0EshIxoW2BlOG3YnBytl0e85NSBhi/Enu4RWbXZzi8I6aTlD9P//H
-         u+JhfMrgBZzjtgDi2Lw73z12c+Wwrei7+TPLhbZd1r+EgVH8d0KYdtC3U+SJuQtifY2J
-         R0fa1PAuGnAEYCUrW0ISOXq7/SCqAi/wy/uDmYSNfmbmXrHPq1O4CAwDrM/7DVtq9Pym
-         DQCsVCtlIU/vFvqKyzcWABO0cBPnkAok9GsmJ7NcX8CaXbxmFkhMUFNQcQ9sUjAlerlT
-         NTA9nCtItbMYItC4p+z0wnLAYmxVEUYnGmWgVFrkKFVykPnkApjdn3rQXy9pmX1SB9/F
-         NUIg==
-X-Forwarded-Encrypted: i=1; AJvYcCXBOvy7LDIDZNq2JOdamXABMQvd9BaK7J4/3UQ/hAYo9O2IYDBIyyBwZm/n61V2YRdhuG9OOBgNbnpT6nVteHrxU6ZG3WJ3aPzeQO3h
-X-Gm-Message-State: AOJu0YznEgxJj5M/iAeL7YwkNWycp086kyrsQogVn0l59HPOJFBNvk5R
-	+f0rAc5gbTPbE+zC8QrrJPp5cK3xBWOqTGk8RzqgH3sBwbmE6U4Ha5zJJSDp9vYzTsfF90LECCh
-	bvzWajsPp4NP6ghQjdmfzLgYfwti3mNaGWLIK
-X-Google-Smtp-Source: AGHT+IEXMaD8KKZ3q3120e6KG9qOf73GrC9gddy36kNW4t7F75Lwbo97LNYeyJwa97KmVaiaP1kaYiovo6xodOGckQE=
-X-Received: by 2002:aa7:c0c6:0:b0:56c:5dc:ed7 with SMTP id j6-20020aa7c0c6000000b0056c05dc0ed7mr91414edp.4.1711545135114;
- Wed, 27 Mar 2024 06:12:15 -0700 (PDT)
+	s=arc-20240116; t=1711545162; c=relaxed/simple;
+	bh=IvPK6ON9KEhuTWpwCUnz/lO5Eb9diKRyDkkg+71RXhY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=YNrcviIReubia/WnP6WNX8nFVX0FKSn2v3v4w3fmRpCiMzgMad3O8s8Qbpd8J0C42/8We58xNedUG8Yl/7UI+/VLhSz7sLO/NF9FVVPXbJpzaMm1e1cEbZGFwjrHNtMQi3uEtgJhkrHvMcAJp7ktAdds0Za9poP0I1dltYQfeag=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=eW1OVAqp; arc=none smtp.client-ip=198.175.65.21
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1711545162; x=1743081162;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=IvPK6ON9KEhuTWpwCUnz/lO5Eb9diKRyDkkg+71RXhY=;
+  b=eW1OVAqpj8VDc3JWyo9KMAkgkM5M8fuA/Iswt0tCyugz/Xxa1kLCiqPV
+   kQVaOiOPiEmxnmevj+u814TxSR4uhwYpCt4sSxI0ts0FOX6iiK21ZVXRY
+   iibw/R/ZtdNSyl9sOxmviRXitc2lFz1cwkD7tyK28ebw5j6b3WDdaQ39Q
+   bsJuZjqkmmea8L+XA9/OWQtvepIzUB3l1lyL9HeyX+DfuF7PfXBRwCm49
+   emo53gA0Fs2OjqkGEiYsWk31IQGqb9QosMP9BGu3/SsQIY6/YDwWnL/l5
+   jXXqv1XmFTLOmam8UBmmsaRVhDGm2YYHMBxtcCO4c5T5pHZMD+QX1HpLb
+   Q==;
+X-CSE-ConnectionGUID: BHCDtHv/Sj2es2we1/f0nQ==
+X-CSE-MsgGUID: txK54sFEQ7mk+wP5EMckgw==
+X-IronPort-AV: E=McAfee;i="6600,9927,11025"; a="6581471"
+X-IronPort-AV: E=Sophos;i="6.07,158,1708416000"; 
+   d="scan'208";a="6581471"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orvoesa113.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Mar 2024 06:12:41 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,11025"; a="914912994"
+X-IronPort-AV: E=Sophos;i="6.07,158,1708416000"; 
+   d="scan'208";a="914912994"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Mar 2024 06:12:36 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.97)
+	(envelope-from <andriy.shevchenko@linux.intel.com>)
+	id 1rpT4z-0000000GdkI-2zqD;
+	Wed, 27 Mar 2024 15:12:33 +0200
+Date: Wed, 27 Mar 2024 15:12:33 +0200
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: John Ogness <john.ogness@linutronix.de>
+Cc: Tony Lindgren <tony@atomide.com>, Petr Mladek <pmladek@suse.com>,
+	Sergey Senozhatsky <senozhatsky@chromium.org>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Thomas Gleixner <tglx@linutronix.de>, linux-kernel@vger.kernel.org,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Jiri Slaby <jirislaby@kernel.org>,
+	Ilpo =?iso-8859-1?Q?J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>,
+	Geert Uytterhoeven <geert+renesas@glider.be>,
+	Justin Chen <justin.chen@broadcom.com>,
+	Jiaqing Zhao <jiaqing.zhao@linux.intel.com>,
+	linux-serial@vger.kernel.org, Peter Collingbourne <pcc@google.com>
+Subject: Re: [PATCH printk v2 08/26] printk: nbcon: Implement processing in
+ port->lock wrapper
+Message-ID: <ZgQbQaNyIcuKnPqm@smile.fi.intel.com>
+References: <87le6oy9vg.fsf@jogness.linutronix.de>
+ <87plvy31hg.fsf@jogness.linutronix.de>
+ <20240322062305.GB5132@atomide.com>
+ <87r0fwt3z4.fsf@jogness.linutronix.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240103031409.2504051-1-dapeng1.mi@linux.intel.com> <20240103031409.2504051-4-dapeng1.mi@linux.intel.com>
-In-Reply-To: <20240103031409.2504051-4-dapeng1.mi@linux.intel.com>
-From: Jim Mattson <jmattson@google.com>
-Date: Wed, 27 Mar 2024 06:11:59 -0700
-Message-ID: <CALMp9eRLVJrGORS5RrXefLOiMkhvbSAMgHLcPHM1Y0sLbQ4MmA@mail.gmail.com>
-Subject: Re: [kvm-unit-tests Patch v3 03/11] x86: pmu: Add asserts to warn
- inconsistent fixed events and counters
-To: Dapeng Mi <dapeng1.mi@linux.intel.com>
-Cc: Sean Christopherson <seanjc@google.com>, Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, Zhenyu Wang <zhenyuw@linux.intel.com>, 
-	Zhang Xiong <xiong.y.zhang@intel.com>, Mingwei Zhang <mizhang@google.com>, 
-	Like Xu <like.xu.linux@gmail.com>, Jinrong Liang <cloudliang@tencent.com>, 
-	Dapeng Mi <dapeng1.mi@intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87r0fwt3z4.fsf@jogness.linutronix.de>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 
-On Tue, Jan 2, 2024 at 7:09=E2=80=AFPM Dapeng Mi <dapeng1.mi@linux.intel.co=
-m> wrote:
->
-> Current PMU code deosn't check whether PMU fixed counter number is
-> larger than pre-defined fixed events. If so, it would cause memory
-> access out of range.
->
-> So add assert to warn this invalid case.
->
-> Signed-off-by: Dapeng Mi <dapeng1.mi@linux.intel.com>
-> ---
->  x86/pmu.c | 10 ++++++++--
->  1 file changed, 8 insertions(+), 2 deletions(-)
->
-> diff --git a/x86/pmu.c b/x86/pmu.c
-> index a13b8a8398c6..a42fff8d8b36 100644
-> --- a/x86/pmu.c
-> +++ b/x86/pmu.c
-> @@ -111,8 +111,12 @@ static struct pmu_event* get_counter_event(pmu_count=
-er_t *cnt)
->                 for (i =3D 0; i < gp_events_size; i++)
->                         if (gp_events[i].unit_sel =3D=3D (cnt->config & 0=
-xffff))
->                                 return &gp_events[i];
-> -       } else
-> -               return &fixed_events[cnt->ctr - MSR_CORE_PERF_FIXED_CTR0]=
-;
-> +       } else {
-> +               int idx =3D cnt->ctr - MSR_CORE_PERF_FIXED_CTR0;
-> +
-> +               assert(idx < ARRAY_SIZE(fixed_events));
-> +               return &fixed_events[idx];
-> +       }
->
->         return (void*)0;
->  }
-> @@ -245,6 +249,7 @@ static void check_fixed_counters(void)
->         };
->         int i;
->
-> +       assert(pmu.nr_fixed_counters <=3D ARRAY_SIZE(fixed_events));
->         for (i =3D 0; i < pmu.nr_fixed_counters; i++) {
->                 cnt.ctr =3D fixed_events[i].unit_sel;
->                 measure_one(&cnt);
-> @@ -266,6 +271,7 @@ static void check_counters_many(void)
->                         gp_events[i % gp_events_size].unit_sel;
->                 n++;
->         }
-> +       assert(pmu.nr_fixed_counters <=3D ARRAY_SIZE(fixed_events));
+On Wed, Mar 27, 2024 at 10:38:15AM +0106, John Ogness wrote:
+> On 2024-03-22, Tony Lindgren <tony@atomide.com> wrote:
+> > * John Ogness <john.ogness@linutronix.de> [240313 09:50]:
+> >> One nice thing that has risen from this is we are starting to see
+> >> exactly what the console lock is needed for. At this point I would say
+> >> its main function is synchronizing boot consoles with real
+> >> drivers. Which means we will not be able to remove the console lock
+> >> until we find a real solution to match boot consoles (which circumvent
+> >> the Linux driver model) with the real drivers.
+> >
+> > Would it help if earlycon handles all the boot consoles?
+> > Then just have the serial driver take over when it probes?
+> 
+> I think this would be very helpful. And it would also cleanup the boot
+> arguments. For example, we would no longer need the
+> architecture-specific arguments/options (such as "early_printk" and
+> "keep"). These architecture-specific arguments can be really
+> confusing.
 
-Can we assert this just once, in main()?
+You may not get rid of earlyprintk as it affects *very* early at boot,
+earlycon is simply not and may not be available at these stages.
 
->         for (i =3D 0; i < pmu.nr_fixed_counters; i++) {
->                 cnt[n].ctr =3D fixed_events[i].unit_sel;
->                 cnt[n].config =3D EVNTSEL_OS | EVNTSEL_USR;
-> --
-> 2.34.1
->
+-- 
+With Best Regards,
+Andy Shevchenko
+
+
 
