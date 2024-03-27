@@ -1,58 +1,53 @@
-Return-Path: <linux-kernel+bounces-121243-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-121244-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id AC61F88E44E
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 14:57:59 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DBE4B88E44F
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 14:58:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6321C1F25B53
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 13:57:59 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1740E1C2BB41
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 13:58:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 34BFA19DF4F;
-	Wed, 27 Mar 2024 12:27:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8D92719DF6B;
+	Wed, 27 Mar 2024 12:27:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="sBxL0SrR"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="uK6gPo2S"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7A2AE19DF48;
-	Wed, 27 Mar 2024 12:27:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC05A19DF59;
+	Wed, 27 Mar 2024 12:27:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711542440; cv=none; b=a2EEaL02G2RxT2cCjmNzsqjUbhkPiXey6GIwXpe3UEaj0xZuteHzx+lMtWXU1oRZ1Lt1vGCb96tl3cPi87F8GuA5YNTNdwU2wZpIOtBs/LxtljxKmitiSRZ84oioNmCO1UTl4mSq/phORzcniTDxDUleIWkJChwMU5NwbgO4LJo=
+	t=1711542442; cv=none; b=AHtuNL0Mllq9Xzle3e1ahUAqfvctDxrLxT1pklXSuSIqZyY03xUTLCLTAw32XjTHSNR00K+aeEIGL4WjUI4dGe2a0N1N70OhbMLS7XD6EZrB39AxNz5NejKSmj5yHheuoYK9uxxkCo+rX2FbHuB4PIyo2SOiia7fV4wSkYEPIz8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711542440; c=relaxed/simple;
-	bh=/xMPmw1QyAvIhaJcCnfVI75oQjfJszgTsbsj7toRqKE=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Xp2doN7EFjly7sQ37UZqvN2/CZ53yCS6LR8dQcvJ4C6lUH6SyUg7ltk1WlVGyuCkcz8g/JTB/skz9Dovnj3Rwwp5MT9FbGOlmIM8Q5tB+M+TWN4I9QOgW0Bs/j8m2AQ2uLRkAZkfoLmUp2MK9UHDM/chON+AJvqHpM+iGsvEXlc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=sBxL0SrR; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 49BBCC433F1;
-	Wed, 27 Mar 2024 12:27:19 +0000 (UTC)
+	s=arc-20240116; t=1711542442; c=relaxed/simple;
+	bh=Gn+vM6BQxB2iA0NwgqPio1ogV5o5mQWfZw1zXWJ7ZpM=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=WIgRRYK2NMivFsw7lFWy0SI5N7zMAl/+RZMNLjdD2PsFtmberh52RrbtA9+I0+RZg8Bdf5IF9KnNYeetQvDJA0MWMNa8eYG4J23Mol+23znEkQiboI7Me15wnQIBRfw9jfWAO/2FfekKo3hgUqFKwjDKnHLo4H9YvKhcttXN8P8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=uK6gPo2S; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 12136C433C7;
+	Wed, 27 Mar 2024 12:27:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711542440;
-	bh=/xMPmw1QyAvIhaJcCnfVI75oQjfJszgTsbsj7toRqKE=;
+	s=k20201202; t=1711542442;
+	bh=Gn+vM6BQxB2iA0NwgqPio1ogV5o5mQWfZw1zXWJ7ZpM=;
 	h=From:To:Cc:Subject:Date:From;
-	b=sBxL0SrRT4uSKUs7/ssesE1qwQHdjkdqRmCOyWIcdQDaCtBbdvKTMBE5/kOXQXqUm
-	 RQfrqOLAzAePSX/4kwAaLm1Ycc+EWWiKeI1LTkjbsrvld1jKVFnbnm0jYpk48AMN60
-	 juySe0hx6V4R0a+6UrFOFnDT3xven760EAMLWIi2AOSCD2TeOd1tJbcbdXxDDW9Wj9
-	 wiVni2PbtDCg22EMWR329F5Ay/aeotjlMHR87u8WTyp1t4rXQvsw6AZiATN29yl2bR
-	 RrLSvKAw7rLnBOfBAr63RK8JY3iRJb+YMXR52wY+P/9YlTUgFMLAIEiVrebC6kKCsv
-	 UUMBYRS9gd0mg==
+	b=uK6gPo2SreNzBn+/2NFy5ppXwNXDFq31n//C28DPtaswcKA68XIa3BFkecLBJ5/ir
+	 sYzdX6I5ttE7nwqFuxWzhTuuW8FQnurq4I3d4pwyGy0SIpgPgUtGmGmVs/KOD+r++R
+	 AM5JlHzSlpGOl3z9lZF7gXoqs8FK8iZaeRIZWy4z68JI/+51ZtSyH3fXEbE5zt2fuG
+	 CpRPp5AzROzhUo86as/3GY6ZzdE81zVcM5CED4Do5wcdSr3IbjTseM0FbtMgVix8xF
+	 9lITy26+061rKp+cFsvUbmvRAjzseZWSNs+FqdRei2QeWvLj6u4xqGvoEX6SK6bCXf
+	 m/rBC9Xx4L7CQ==
 From: Sasha Levin <sashal@kernel.org>
 To: stable@vger.kernel.org,
-	allen.pan@amd.com
-Cc: Mario Limonciello <mario.limonciello@amd.com>,
-	Alex Deucher <alexander.deucher@amd.com>,
-	Charlene Liu <charlene.liu@amd.com>,
-	Alex Hung <alex.hung@amd.com>,
-	Daniel Wheeler <daniel.wheeler@amd.com>,
-	amd-gfx@lists.freedesktop.org,
-	dri-devel@lists.freedesktop.org,
+	faetalize@proton.me
+Cc: Takashi Iwai <tiwai@suse.de>,
+	linux-sound@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: FAILED: Patch "drm/amd/display: Add a dc_state NULL check in dc_state_release" failed to apply to 4.19-stable tree
-Date: Wed, 27 Mar 2024 08:27:18 -0400
-Message-ID: <20240327122718.2841800-1-sashal@kernel.org>
+Subject: FAILED: Patch "ALSA: hda/realtek - ALC236 fix volume mute & mic mute LED on some HP models" failed to apply to 4.19-stable tree
+Date: Wed, 27 Mar 2024 08:27:21 -0400
+Message-ID: <20240327122721.2841837-1-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -74,41 +69,37 @@ Sasha
 
 ------------------ original commit in Linus's tree ------------------
 
-From 334b56cea5d9df5989be6cf1a5898114fa70ad98 Mon Sep 17 00:00:00 2001
-From: Allen Pan <allen.pan@amd.com>
-Date: Fri, 23 Feb 2024 18:20:16 -0500
-Subject: [PATCH] drm/amd/display: Add a dc_state NULL check in
- dc_state_release
+From 300ab0dfbf3903f36b4456643d8201438e6553b1 Mon Sep 17 00:00:00 2001
+From: Valentine Altair <faetalize@proton.me>
+Date: Tue, 12 Mar 2024 14:42:00 +0000
+Subject: [PATCH] ALSA: hda/realtek - ALC236 fix volume mute & mic mute LED on
+ some HP models
 
-[How]
-Check wheather state is NULL before releasing it.
+Some HP laptops have received revisions that altered their board IDs
+and therefore the current patches/quirks do not apply to them.
+Specifically, for my Probook 440 G8, I have a board ID of 8a74.
+It is necessary to add a line for that specific model.
 
-Cc: Mario Limonciello <mario.limonciello@amd.com>
-Cc: Alex Deucher <alexander.deucher@amd.com>
-Cc: stable@vger.kernel.org
-Reviewed-by: Charlene Liu <charlene.liu@amd.com>
-Acked-by: Alex Hung <alex.hung@amd.com>
-Signed-off-by: Allen Pan <allen.pan@amd.com>
-Tested-by: Daniel Wheeler <daniel.wheeler@amd.com>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+Signed-off-by: Valentine Altair <faetalize@proton.me>
+Cc: <stable@vger.kernel.org>
+Message-ID: <kOqXRBcxkKt6m5kciSDCkGqMORZi_HB3ZVPTX5sD3W1pKxt83Pf-WiQ1V1pgKKI8pYr4oGvsujt3vk2zsCE-DDtnUADFG6NGBlS5N3U4xgA=@proton.me>
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- drivers/gpu/drm/amd/display/dc/core/dc_state.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ sound/pci/hda/patch_realtek.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/gpu/drm/amd/display/dc/core/dc_state.c b/drivers/gpu/drm/amd/display/dc/core/dc_state.c
-index 180ac47868c22..5cc7f8da209c5 100644
---- a/drivers/gpu/drm/amd/display/dc/core/dc_state.c
-+++ b/drivers/gpu/drm/amd/display/dc/core/dc_state.c
-@@ -334,7 +334,8 @@ static void dc_state_free(struct kref *kref)
- 
- void dc_state_release(struct dc_state *state)
- {
--	kref_put(&state->refcount, dc_state_free);
-+	if (state != NULL)
-+		kref_put(&state->refcount, dc_state_free);
- }
- /*
-  * dc_state_add_stream() - Add a new dc_stream_state to a dc_state.
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index 4f92b19a58501..b6cd13b1775d9 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -9870,6 +9870,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+ 	SND_PCI_QUIRK(0x103c, 0x8a30, "HP Envy 17", ALC287_FIXUP_CS35L41_I2C_2),
+ 	SND_PCI_QUIRK(0x103c, 0x8a31, "HP Envy 15", ALC287_FIXUP_CS35L41_I2C_2),
+ 	SND_PCI_QUIRK(0x103c, 0x8a6e, "HP EDNA 360", ALC287_FIXUP_CS35L41_I2C_4),
++	SND_PCI_QUIRK(0x103c, 0x8a74, "HP ProBook 440 G8 Notebook PC", ALC236_FIXUP_HP_GPIO_LED),
+ 	SND_PCI_QUIRK(0x103c, 0x8a78, "HP Dev One", ALC285_FIXUP_HP_LIMIT_INT_MIC_BOOST),
+ 	SND_PCI_QUIRK(0x103c, 0x8aa0, "HP ProBook 440 G9 (MB 8A9E)", ALC236_FIXUP_HP_GPIO_LED),
+ 	SND_PCI_QUIRK(0x103c, 0x8aa3, "HP ProBook 450 G9 (MB 8AA1)", ALC236_FIXUP_HP_GPIO_LED),
 -- 
 2.43.0
 
