@@ -1,133 +1,292 @@
-Return-Path: <linux-kernel+bounces-120206-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-120208-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id E233388D472
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 03:11:29 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B8D6E88D478
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 03:13:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 121511C2458F
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 02:11:29 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1A9ED2A805D
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 02:13:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BBA641F60A;
-	Wed, 27 Mar 2024 02:11:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 04F9920B34;
+	Wed, 27 Mar 2024 02:13:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="JxRsfOQn"
-Received: from mail-pj1-f42.google.com (mail-pj1-f42.google.com [209.85.216.42])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jspFnXuh"
+Received: from mail-yw1-f172.google.com (mail-yw1-f172.google.com [209.85.128.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 39795219EB
-	for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 02:11:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 663B51CF92;
+	Wed, 27 Mar 2024 02:13:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711505482; cv=none; b=MAaeqEyvfTXGXLgKyWjqe0V6nhlZmCJuZDY7H1uTpo3CZb4WtnC8AbsBW09ny1S92f2QqJkIUHEKrAVanWF8DcxL+pfZkpaktrWvUX4+/2a1t8rBlM12hstfzH9/m9xFbAkcLJooL5WLl/eWy+Rm0qjVIvqsR3Fa94PKXMkFDgY=
+	t=1711505626; cv=none; b=thnbf2qzK+ASSkFqtVIveE5r2sxIC0HCYhyshb1iI3AEAKEXyFYsuOuXcZ7gR9VRpr/P9IJ0ySy+3Xr0OeWHn9l/ia9IjUYbZqCAC2UqNsDlncSsNG0r9VOJlPkR3w2V027HSHPNebDHn4YKbSSN4TqcZ/1Nq54sMd0jaEXwaYA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711505482; c=relaxed/simple;
-	bh=y2aifghtI/Ja4XD7u2NtI6N6MTi5BLIEicHNNSMA6SA=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=tZLLOa+m2y2P3Senv1H/OzAglok8nNkmvb7OPviRXzNCevBZaR7+d0H99SMhkS6vi/UpNsiEpxl30Dymq/U+SI5f1plKgQrnbyhwGUbWCYUAgwcTKI6PWZ93umFbOlgXQCVtJBShkM/hrjU/2FHxCHrpTWeDSY464JR/d+FIFlE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com; spf=pass smtp.mailfrom=bytedance.com; dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b=JxRsfOQn; arc=none smtp.client-ip=209.85.216.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bytedance.com
-Received: by mail-pj1-f42.google.com with SMTP id 98e67ed59e1d1-29f8403166aso1058048a91.1
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 19:11:21 -0700 (PDT)
+	s=arc-20240116; t=1711505626; c=relaxed/simple;
+	bh=cghJFaDJi3tVEoWnhyy48O7Q2I14v2c+PP+Czgubb8w=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=WkGEGw698lEQSv67LOqTuYYIMMIfi9yulGs8mHJrQMQOtMV9EMssuk8LgN+cehoUXRTUnMvAEzu4iOYF9DZecY35H5cR2mKEIpmnZM0fGgPH9T0xHedmo0qLsCByo2RvJ+iYDIAVv10hB0v854O1L4WUJf9X8UTKA6g808IgWcY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=jspFnXuh; arc=none smtp.client-ip=209.85.128.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yw1-f172.google.com with SMTP id 00721157ae682-611450d7f95so29104147b3.2;
+        Tue, 26 Mar 2024 19:13:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1711505480; x=1712110280; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=VKgEZz3gqT/qrPZJxtA6ePPIz6oGvyMPjM3uA1fFlqE=;
-        b=JxRsfOQn8gPSjir6TbrBjWXbK/PJp4ZBSwKtWzwl58PgosmH2htE9+JnrFwfbnzQ2G
-         /qa55/418mac0pI1hfo5vRwTNvgu60YzGuXXTWbPdw4xSCbU9P28mRYteMbrcz9qhLMx
-         fFGwlRPa9ESvMcE90yEh8E3G8fD3dm/8iyo6Cnmor6/SsdhSPMMVI0G/c080B2KXbSsJ
-         95pGqI7L+x9Fw3E6nJNoAc7GSEbX+N1sOw/7QDH9RCfJYh387NdNn+ocZ9vI757IaxX+
-         3OQeXlXkwK+CZSWR1+VNrrJC4rkxeNAlNhGjmxE6yE4ylVRFrSEZiQfYLqdseXO/8ud7
-         F5Ng==
+        d=gmail.com; s=20230601; t=1711505623; x=1712110423; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=jlUvQiiNtk2fTE/O8KLe3aAEMKSav8q/gh3Fim9cODY=;
+        b=jspFnXuhlwGm9dip/7Sl+z9jvN2h3UJgs51kkIekIDSkezhNGZfnJebBF6I6s2g85L
+         Qy2Xpw8TI0LQd+kGaq5lss2luG9mp9O6wOqOcq14Brarjo/9dgIjYUATt2z4oZrbiLCu
+         OXo7pWlSkUt7ZaCCueED9cSXKyuqUx2MZjZdp9zXKn0VX1S8JPjOrLgf4yYRiJ9e4Llj
+         oz4rImZkjbqxAKIoDQzN76Vv+eSzEmL9V4usvugok0oC6nlD8eC0zMG/odnIni58YJpj
+         tQFHyR72pjvgPT/a4ARSh/tyaPWPeZ9UYDD6Zi+78JETh5oljaB7bDsziyGIr+CfVGJ1
+         SAjw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711505480; x=1712110280;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=VKgEZz3gqT/qrPZJxtA6ePPIz6oGvyMPjM3uA1fFlqE=;
-        b=JaCIsiHHX0cDbO8oBD2ekWQNgGNACwPF/B1XOcEk5NKUV9I47ZOIf/dwwTHldg1+IT
-         lYLmbg5Kcn4fMV5jwHwaml/4BOgMSQ+YjIFkAtwRx4OWQdLHKE4EpMduWqrxnzawL76v
-         jXszv9e/ZLFaehTW7wVf6QgIUAWcn8YxYN/4htv0oHQ5DLxg45eIAdS+t2xWnlphd/nB
-         k4zciJd7/BQnc1XBh7+iRVAcCjqq916wYNme59QMuOSWAufFc4BhrDac8Q+mmhCrGVD5
-         5x5uI4Qi8S3G07K7BaHACxLDrhfbY6DVxXc3hEtt/mGnnVhPto/u1o5OQGk35eL8vfjY
-         ul8w==
-X-Forwarded-Encrypted: i=1; AJvYcCV1hQuPLotEgwm5TGdB78ua7LoK9TrQv20ojDaFU5eAUD+VdQb/OKO/1clta7gRnn0JUR+jVW1nf8p+TT5mF7Vj1uc24ZDBEa6LgfVC
-X-Gm-Message-State: AOJu0YzxIXzBhrem/1XVHClzgCN/uvN/mUg308FC1P1lWfnihcnY6gQC
-	28RVtyDouDfjbm74RMG1zeWJaTVRLmI0g1dvTYUobShp/4rio7xXOosnu74PSZQ=
-X-Google-Smtp-Source: AGHT+IHOxzsYzXYb2U6hVOGVogL6FmVfZp9EHnweMdH3lzP+3KV1JbtDB3TMm+JsCmDJCYsexHcneA==
-X-Received: by 2002:a17:90a:9f8b:b0:29b:fab2:8a24 with SMTP id o11-20020a17090a9f8b00b0029bfab28a24mr10290068pjp.3.1711505480542;
-        Tue, 26 Mar 2024 19:11:20 -0700 (PDT)
-Received: from [10.254.105.249] ([139.177.225.230])
-        by smtp.gmail.com with ESMTPSA id q5-20020a17090ac10500b0029becfcb97esm335753pjt.22.2024.03.26.19.11.15
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 26 Mar 2024 19:11:20 -0700 (PDT)
-Message-ID: <7258d29d-0d4b-4463-8685-e3f21d426d2d@bytedance.com>
-Date: Wed, 27 Mar 2024 10:11:13 +0800
+        d=1e100.net; s=20230601; t=1711505623; x=1712110423;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=jlUvQiiNtk2fTE/O8KLe3aAEMKSav8q/gh3Fim9cODY=;
+        b=Q/OfG2r4t+Ckimy5+l+2uVEDE7AfomxSEm5X6zVCXQmaTuBQ/Vh97hfcHMHlp4ichE
+         Z/qDAlTbWw0hFabPq+5FwwL+GrWb2DS9H/dT6+WmFstmyHLkngxy6jclz/UqEjzWYJSB
+         KxnAtPb1VswYNZ4tITong3gvFhct3BDMcZgb7SdM9C/oBprLEb25qVAnRW5MKpMHfChH
+         3WzfOR++h3kyjEPbUe2vwSTiTRVKtjdZT8R9icLuHoQC8N918tnb4JVM2u0B9yHqe5iQ
+         gfKIFy6VYEXvdXwAhZt4hBvb1SwOL3Qb/tDdawfQoankPfWg5BTJvxqH+bumy+5LvUJe
+         F+TA==
+X-Forwarded-Encrypted: i=1; AJvYcCVcyoUP8ZAGxI7gZ5MdhhNOWYtZ9YuN4ln4Xm7CW696DxuEDVooMikaqXoX0FxOplgZSuqF0BJwlIl1tQkMkmIlqGmlMNL6m8pdG0LN
+X-Gm-Message-State: AOJu0Yy153l4E4nCyaGzLpH7AUR46JnH/sJWaZ+n+Yn3Ux9wHIblSdg6
+	L7cipT3AYwDiACbHroa9OFvYQ23TFDLcTdo3G4JbjVe3uafrfkIKa4FZ/oRNLPjr9UABisqpfFK
+	iZIsvGu/PnG15neIa56o94cpkhMY=
+X-Google-Smtp-Source: AGHT+IEYeHUwrMHm+chW0aH9JpSQHDu9bWiSh0Mj5xkENQJMTFI1fBFrnpURIszqEsEXL7qpjSOCxQoiCfF6kfylY3E=
+X-Received: by 2002:a81:7385:0:b0:60a:c510:89f1 with SMTP id
+ o127-20020a817385000000b0060ac51089f1mr2790281ywc.19.1711505623201; Tue, 26
+ Mar 2024 19:13:43 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 3/3] s390: supplement for ptdesc conversion
-Content-Language: en-US
-To: Vishal Moola <vishal.moola@gmail.com>
-Cc: akpm@linux-foundation.org, hughd@google.com, david@redhat.com,
- rppt@kernel.org, willy@infradead.org, muchun.song@linux.dev,
- linux-mm@kvack.org, linux-kernel@vger.kernel.org,
- Christian Borntraeger <borntraeger@linux.ibm.com>,
- Janosch Frank <frankja@linux.ibm.com>,
- Claudio Imbrenda <imbrenda@linux.ibm.com>, kvm@vger.kernel.org,
- linux-s390@vger.kernel.org
-References: <cover.1709541697.git.zhengqi.arch@bytedance.com>
- <04beaf3255056ffe131a5ea595736066c1e84756.1709541697.git.zhengqi.arch@bytedance.com>
- <ZgMmec2paNA0GFwY@fedora>
-From: Qi Zheng <zhengqi.arch@bytedance.com>
-In-Reply-To: <ZgMmec2paNA0GFwY@fedora>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+References: <20240325195418.166013-1-wedsonaf@gmail.com> <20240325195418.166013-11-wedsonaf@gmail.com>
+ <0LNSiT6NSGVXUXFMn80Z2GCSdjCmJfd1idFp6dTgEf4hfDyjNHq59jLZD9U6BcWVCo1QVvRvHb5Pjr7DOUlqnHabGeOAhmLguV0kGcruqS4=@proton.me>
+In-Reply-To: <0LNSiT6NSGVXUXFMn80Z2GCSdjCmJfd1idFp6dTgEf4hfDyjNHq59jLZD9U6BcWVCo1QVvRvHb5Pjr7DOUlqnHabGeOAhmLguV0kGcruqS4=@proton.me>
+From: Wedson Almeida Filho <wedsonaf@gmail.com>
+Date: Tue, 26 Mar 2024 23:13:32 -0300
+Message-ID: <CANeycqpCz=3Ab=K0JRFu6v0YvEU66ikK2B8KZbjC+sDd1BoqTA@mail.gmail.com>
+Subject: Re: [PATCH 10/10] rust: kernel: remove usage of `allocator_api`
+ unstable feature
+To: Benno Lossin <benno.lossin@proton.me>
+Cc: rust-for-linux@vger.kernel.org, Miguel Ojeda <ojeda@kernel.org>, 
+	Alex Gaynor <alex.gaynor@gmail.com>, Boqun Feng <boqun.feng@gmail.com>, 
+	Gary Guo <gary@garyguo.net>, =?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, 
+	Andreas Hindborg <a.hindborg@samsung.com>, Alice Ryhl <aliceryhl@google.com>, 
+	linux-kernel@vger.kernel.org, Wedson Almeida Filho <walmeida@microsoft.com>
+Content-Type: text/plain; charset="UTF-8"
 
+On Tue, 26 Mar 2024 at 12:27, Benno Lossin <benno.lossin@proton.me> wrote:
+>
+> On 25.03.24 20:54, Wedson Almeida Filho wrote:
+> > From: Wedson Almeida Filho <walmeida@microsoft.com>
+> >
+> > With the adoption of `BoxExt` and `VecExt`, we don't need the functions
+> > provided by this feature (namely the methods prefixed with `try_` and
+> > different allocator per collection instance).
+> >
+> > We do need `AllocError`, but we define our own as it is a trivial empty
+> > struct.
+> >
+> > Signed-off-by: Wedson Almeida Filho <walmeida@microsoft.com>
+> > ---
+> >  rust/kernel/alloc.rs        |  3 +++
+> >  rust/kernel/alloc/boxext.rs |  3 +--
+> >  rust/kernel/alloc/vecext.rs |  4 ++--
+> >  rust/kernel/error.rs        | 13 ++-----------
+> >  rust/kernel/init.rs         |  3 +--
+> >  rust/kernel/lib.rs          |  1 -
+> >  rust/kernel/str.rs          |  3 +--
+> >  rust/kernel/sync/arc.rs     |  4 ++--
+> >  rust/kernel/workqueue.rs    |  3 +--
+> >  9 files changed, 13 insertions(+), 24 deletions(-)
+> >
+> > diff --git a/rust/kernel/alloc.rs b/rust/kernel/alloc.rs
+> > index 5712c81b1308..f17f48130f13 100644
+> > --- a/rust/kernel/alloc.rs
+> > +++ b/rust/kernel/alloc.rs
+> > @@ -8,6 +8,9 @@
+> >  pub mod boxext;
+> >  pub mod vecext;
+> >
+> > +/// Indicates an allocation error.
+> > +pub struct AllocError;
+>
+> I think it would be sensible to add this now:
+>     #[derive(Copy, Clone, PartialEq, Eq, Debug)]
 
+Agreed. Will add in v2.
 
-On 2024/3/27 03:48, Vishal Moola wrote:
-> On Mon, Mar 04, 2024 at 07:07:20PM +0800, Qi Zheng wrote:
->> --- a/arch/s390/mm/gmap.c
->> +++ b/arch/s390/mm/gmap.c
->> @@ -206,9 +206,11 @@ static void gmap_free(struct gmap *gmap)
->>   
->>   	/* Free additional data for a shadow gmap */
->>   	if (gmap_is_shadow(gmap)) {
->> +		struct ptdesc *ptdesc;
->> +
->>   		/* Free all page tables. */
->> -		list_for_each_entry_safe(page, next, &gmap->pt_list, lru)
->> -			page_table_free_pgste(page);
->> +		list_for_each_entry_safe(ptdesc, next, &gmap->pt_list, pt_list)
->> +			page_table_free_pgste(ptdesc);
-> 
-> An important note: ptdesc allocation/freeing is different than the
-> standard alloc_pages()/free_pages() routines architectures are used to.
-> Are we sure we don't have memory leaks here?
-> 
-> We always allocate and free ptdescs as compound pages; for page table
-> struct pages, most archictectures do not. s390 has CRST_ALLOC_ORDER
-> pagetables, meaning if we free anything using the ptdesc api, we better
-> be sure it was allocated using the ptdesc api as well.
+> > +
+> >  /// Flags to be used when allocating memory.
+> >  ///
+> >  /// They can be combined with the operators `|`, `&`, and `!`.
+> > diff --git a/rust/kernel/alloc/boxext.rs b/rust/kernel/alloc/boxext.rs
+> > index 26a918df7acf..3cdda0f635a3 100644
+> > --- a/rust/kernel/alloc/boxext.rs
+> > +++ b/rust/kernel/alloc/boxext.rs
+> > @@ -2,9 +2,8 @@
+> >
+> >  //! Extensions to [`Box`] for fallible allocations.
+> >
+> > -use super::Flags;
+> > +use super::{AllocError, Flags};
+> >  use alloc::boxed::Box;
+> > -use core::alloc::AllocError;
+> >  use core::mem::MaybeUninit;
+> >  use core::result::Result;
+> >
+> > diff --git a/rust/kernel/alloc/vecext.rs b/rust/kernel/alloc/vecext.rs
+> > index 1d4d51b45a49..85ca6a6db6de 100644
+> > --- a/rust/kernel/alloc/vecext.rs
+> > +++ b/rust/kernel/alloc/vecext.rs
+> > @@ -2,8 +2,8 @@
+> >
+> >  //! Extensions to [`Vec`] for fallible allocations.
+> >
+> > -use super::Flags;
+> > -use alloc::{alloc::AllocError, vec::Vec};
+> > +use super::{AllocError, Flags};
+> > +use alloc::vec::Vec;
+> >  use core::{mem::ManuallyDrop, result::Result};
+> >
+> >  /// Extensions to [`Vec`].
+> > diff --git a/rust/kernel/error.rs b/rust/kernel/error.rs
+> > index 4786d3ee1e92..fc986bc24c6d 100644
+> > --- a/rust/kernel/error.rs
+> > +++ b/rust/kernel/error.rs
+> > @@ -4,12 +4,9 @@
+> >  //!
+> >  //! C header: [`include/uapi/asm-generic/errno-base.h`](srctree/include/uapi/asm-generic/errno-base.h)
+> >
+> > -use crate::str::CStr;
+> > +use crate::{alloc::AllocError, str::CStr};
+> >
+> > -use alloc::{
+> > -    alloc::{AllocError, LayoutError},
+> > -    collections::TryReserveError,
+> > -};
+> > +use alloc::alloc::LayoutError;
+> >
+> >  use core::convert::From;
+> >  use core::fmt;
+> > @@ -192,12 +189,6 @@ fn from(_: Utf8Error) -> Error {
+> >      }
+> >  }
+> >
+> > -impl From<TryReserveError> for Error {
+> > -    fn from(_: TryReserveError) -> Error {
+> > -        code::ENOMEM
+> > -    }
+> > -}
+> > -
+>
+> Why are you removing this?
 
-According to the code inspection, all ptdescs added to the pmap->pt_list
-are allocated via page_table_alloc_pgste().
+We don't use `TryReserveError` anymore. I'll move this chunk to the
+patch 7 in v2, which is where we remove the use of this error.
 
-> 
-> Like you, I don't have a s390 to test on, so hopefully some s390 expert
-> can chime in to let us know if we need a fix for this.
-
-Yes, hope so!
-
-
+>
+> --
+> Cheers,
+> Benno
+>
+> >  impl From<LayoutError> for Error {
+> >      fn from(_: LayoutError) -> Error {
+> >          code::ENOMEM
+> > diff --git a/rust/kernel/init.rs b/rust/kernel/init.rs
+> > index 1a8b0464db0c..1f7a6b5892ac 100644
+> > --- a/rust/kernel/init.rs
+> > +++ b/rust/kernel/init.rs
+> > @@ -211,14 +211,13 @@
+> >  //! [`pin_init!`]: crate::pin_init!
+> >
+> >  use crate::{
+> > -    alloc::{boxext::BoxExt, Flags},
+> > +    alloc::{boxext::BoxExt, AllocError, Flags},
+> >      error::{self, Error},
+> >      sync::UniqueArc,
+> >      types::{Opaque, ScopeGuard},
+> >  };
+> >  use alloc::boxed::Box;
+> >  use core::{
+> > -    alloc::AllocError,
+> >      cell::UnsafeCell,
+> >      convert::Infallible,
+> >      marker::PhantomData,
+> > diff --git a/rust/kernel/lib.rs b/rust/kernel/lib.rs
+> > index 51f30e55bd00..5c641233e26d 100644
+> > --- a/rust/kernel/lib.rs
+> > +++ b/rust/kernel/lib.rs
+> > @@ -12,7 +12,6 @@
+> >  //! do so first instead of bypassing this crate.
+> >
+> >  #![no_std]
+> > -#![feature(allocator_api)]
+> >  #![feature(coerce_unsized)]
+> >  #![feature(dispatch_from_dyn)]
+> >  #![feature(new_uninit)]
+> > diff --git a/rust/kernel/str.rs b/rust/kernel/str.rs
+> > index 34dbc85b5220..5206b18f882b 100644
+> > --- a/rust/kernel/str.rs
+> > +++ b/rust/kernel/str.rs
+> > @@ -2,8 +2,7 @@
+> >
+> >  //! String representations.
+> >
+> > -use crate::alloc::{flags::*, vecext::VecExt};
+> > -use alloc::alloc::AllocError;
+> > +use crate::alloc::{flags::*, vecext::VecExt, AllocError};
+> >  use alloc::vec::Vec;
+> >  use core::fmt::{self, Write};
+> >  use core::ops::{self, Deref, Index};
+> > diff --git a/rust/kernel/sync/arc.rs b/rust/kernel/sync/arc.rs
+> > index af539c5eb4bc..8db25f73b37f 100644
+> > --- a/rust/kernel/sync/arc.rs
+> > +++ b/rust/kernel/sync/arc.rs
+> > @@ -16,7 +16,7 @@
+> >  //! [`Arc`]: https://doc.rust-lang.org/std/sync/struct.Arc.html
+> >
+> >  use crate::{
+> > -    alloc::{boxext::BoxExt, Flags},
+> > +    alloc::{boxext::BoxExt, AllocError, Flags},
+> >      bindings,
+> >      error::{self, Error},
+> >      init::{self, InPlaceInit, Init, PinInit},
+> > @@ -25,7 +25,7 @@
+> >  };
+> >  use alloc::boxed::Box;
+> >  use core::{
+> > -    alloc::{AllocError, Layout},
+> > +    alloc::Layout,
+> >      fmt,
+> >      marker::{PhantomData, Unsize},
+> >      mem::{ManuallyDrop, MaybeUninit},
+> > diff --git a/rust/kernel/workqueue.rs b/rust/kernel/workqueue.rs
+> > index 09a0f158ff1b..50837e56efc7 100644
+> > --- a/rust/kernel/workqueue.rs
+> > +++ b/rust/kernel/workqueue.rs
+> > @@ -132,9 +132,8 @@
+> >  //!
+> >  //! C header: [`include/linux/workqueue.h`](srctree/include/linux/workqueue.h)
+> >
+> > -use crate::alloc::Flags;
+> > +use crate::alloc::{AllocError, Flags};
+> >  use crate::{bindings, prelude::*, sync::Arc, sync::LockClassKey, types::Opaque};
+> > -use alloc::alloc::AllocError;
+> >  use alloc::boxed::Box;
+> >  use core::marker::PhantomData;
+> >  use core::pin::Pin;
+> > --
+> > 2.34.1
+> >
 
