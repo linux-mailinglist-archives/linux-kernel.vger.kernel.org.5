@@ -1,113 +1,101 @@
-Return-Path: <linux-kernel+bounces-122094-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-122088-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6EF9388F1D8
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 23:27:30 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0B6A388F1C2
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 23:25:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A05761C278DF
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 22:27:29 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3D51B1C27C92
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 22:25:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E76FB155397;
-	Wed, 27 Mar 2024 22:26:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B1EE015383A;
+	Wed, 27 Mar 2024 22:25:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=toblux-com.20230601.gappssmtp.com header.i=@toblux-com.20230601.gappssmtp.com header.b="0/rHPNp2"
-Received: from mail-wm1-f43.google.com (mail-wm1-f43.google.com [209.85.128.43])
+	dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b="f+QJukT0"
+Received: from mail-qv1-f41.google.com (mail-qv1-f41.google.com [209.85.219.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 98ADA153BCA
-	for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 22:26:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B5C46153591
+	for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 22:25:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711578380; cv=none; b=synzM0LTLeD9O3RMEYxvWm3JROAR7N5fGANqwbXGH0OC4wlahXn5F2zDzJglzJVrIU0n6LO9T1UGNV/UTsra1SReYgSAeZa+HwzH1+iKhNt8YRL9+RLyaSAKAOwoTgGt6MDkIJEbqpHj87SOeIkldGkag94o6S7mNs25MJ4O10g=
+	t=1711578321; cv=none; b=LN3cqbWAOm8g0v++RhKcQPK3bAepGBakeQrC+qAXDAr9Rsdlxee7RhEwuuikPUcST/RqHPSCLpnmsJ0hMUIBT+fYUQgUAU8zhYNAK4ZNl1shaIfhRimQijsBbr5vU3NfmAmB8W2lX3cCRyxX9Hz0jz3CvNWAgJumZ/z2f0kpBAE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711578380; c=relaxed/simple;
-	bh=IpFdxipUZyLZ1WGndAkgbYxrgUnIpmiqCPmPgoQjeak=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=APd8m6/QkOQhuGli0+ZhE3Akt+z2YgWxOTGB00FOeHFo+hnaXdyYMRwjBvR8JjabbArBi7m5KSs/JF8DvTFxMJbTs73RAVvBJ1ScbOAj04jHAp9sRIxLbkIgOv1aU/Pi7bkugYi4DWw5QI+OdxN0G5/FeQr5WmnmQbuuiXg7Nqg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toblux.com; spf=none smtp.mailfrom=toblux.com; dkim=pass (2048-bit key) header.d=toblux-com.20230601.gappssmtp.com header.i=@toblux-com.20230601.gappssmtp.com header.b=0/rHPNp2; arc=none smtp.client-ip=209.85.128.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toblux.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=toblux.com
-Received: by mail-wm1-f43.google.com with SMTP id 5b1f17b1804b1-41497adae1eso2168005e9.3
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 15:26:17 -0700 (PDT)
+	s=arc-20240116; t=1711578321; c=relaxed/simple;
+	bh=zvblnRjqyr9T+Xx2ZmU4DdKOyZ8u5C7pMHb7A/mXvSs=;
+	h=Date:Message-ID:MIME-Version:Content-Type:Content-Disposition:
+	 From:To:Cc:Subject:References:In-Reply-To; b=B8LT3XX7DiIHxXY4H/fhPokt1n7SI+EqIvssUBcCyxg2CoINZ6VKLOdkSzeXU1i6/6f8u+gYoGnNw307pNSMSupfF+TjfqBzus+8bYlpZBtMc53czY4nVfauczVHJEEhBRgMLp6DA8bCixXA7DmsgnA0JqWdz+MEFVoCUM1kPJQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com; spf=pass smtp.mailfrom=paul-moore.com; dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b=f+QJukT0; arc=none smtp.client-ip=209.85.219.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=paul-moore.com
+Received: by mail-qv1-f41.google.com with SMTP id 6a1803df08f44-696315c9da5so2394136d6.2
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 15:25:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toblux-com.20230601.gappssmtp.com; s=20230601; t=1711578376; x=1712183176; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=Jc/kebwJfSc9In02r4D75fEwv6vQMObeE/5ZkpkXrTQ=;
-        b=0/rHPNp2PG3YSSyg3i/Z7nSAkPEyb0wtVIr1Bd64nIBXoswvKUu60vXe8pZGTDEf0L
-         /qoZkQhmGC0YTlwWhPLh6I0FSTnK/4THPJbhgyIZmAqVotF+4tmxBsROSAaislUr7WTO
-         ls/1PVKhlQuh77EumOXhDE4Np/cLSiVg+YlqF8CPpZHYTzXQFc1UpMuYkIpGNpmEHskB
-         vOhWQJ77qxUvlwTfIcEcPIVQApQNYmrk0LKwzDqdmU0agYXVwKFKY6clRK1iUOREXcXE
-         PgVy2eq988AkC5xClpoanmj6YGawXV7/uFE3roXPBQRh3CKpeVbgi8ynSX8FHGs4qg5S
-         TjVA==
+        d=paul-moore.com; s=google; t=1711578317; x=1712183117; darn=vger.kernel.org;
+        h=in-reply-to:references:subject:cc:to:from:content-transfer-encoding
+         :content-disposition:mime-version:message-id:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=lJ3wjFaeU9Ztiyd+gJSW6nXLmVJwkYytMN2nUftxCkU=;
+        b=f+QJukT0jAngv/wLvWrZEm9Tk64blPq02R1Vk1PdvmYqtilE/L4ngpmMJf0q1Okjvp
+         HSpyKX43ScrDYCZiWSt9o+yLkKwasOFewwr9+4Ullrb7713SDlfmFC4eAiH4/3URqkX8
+         xh/3qJ+Dcx176AEFolsGV8OvH/dwBf8wENIAJ4iIfXXh+1UHfB9k9iAyhF5FL7sL706q
+         gKpyp53YkPwmiQ43/PWJZJQ3OLxBj94C7oqoBHe0MzvhqwJB8SBVJYk/tcYDmS/m4tx9
+         M5J0ooSyGwKoi9BbeXm7LZBRajhsHRECp8Qy5zm/OJs+po/Egten2KN2eBSZ6iuAfWwf
+         JYBg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711578376; x=1712183176;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Jc/kebwJfSc9In02r4D75fEwv6vQMObeE/5ZkpkXrTQ=;
-        b=uDlZVW2xNbzQ2O/h77CY5q82jrawL+ivdXlPO58Zbu+lFyPMvlXtB+QnkjHRGpXvMB
-         rr/6LZlaNUFKPtyOnrbLBmynwNth1ANzWPrJZHyQNtjTAC60LfZxnOU1YiDgyflDF9Tv
-         F1qqcANY/1x9fWSrprrcicZOV9jDMDhbfeskiq73GLdLUdTnf5H0jdqEgQoUsBmLNWfN
-         4vXzV4kwBolbKXNm6+mmyH6/gF1oin2utYzY9I9Mg3kiztzKLeUJctK6ybw+RFlTuAg8
-         R0K4V/8x2D6HSDK/aIXDUdvUa7huyD9v+7ev/15COKBDNviB8GfS0jLndkZ4E9SpaQnI
-         bkOA==
-X-Forwarded-Encrypted: i=1; AJvYcCUS64wQ4bFoXLdMGsrcr6u3U2pir6jrtJJDbNdlxyTePiJe54Xe58ZGp3R4jwz2Ax0jYPTI+CFybCJnsLmW9ylhGaI+HLA162jjBU7C
-X-Gm-Message-State: AOJu0YzKu3SGQBsmedg/nUNi0uhnU4nWqmZjWVBt1ycgNghb8paqJzst
-	pTPIw6ta6Vlibrw7msf5agatpLXR4XPqh/m/cNdp7UVi4W7U5bbO3zTYK3CaQo0=
-X-Google-Smtp-Source: AGHT+IFwNhiusV4dv7iZPuOpk/UITq2tStkbzgluwVYTIG7ZthGgEhWlZHDMpFJQMLFh/fxwUE2peg==
-X-Received: by 2002:a05:600c:22d7:b0:414:8889:5a65 with SMTP id 23-20020a05600c22d700b0041488895a65mr1177566wmg.30.1711578375898;
-        Wed, 27 Mar 2024 15:26:15 -0700 (PDT)
-Received: from fedora.fritz.box (aftr-82-135-80-212.dynamic.mnet-online.de. [82.135.80.212])
-        by smtp.gmail.com with ESMTPSA id l20-20020a05600c1d1400b004146a304863sm3390089wms.34.2024.03.27.15.26.14
+        d=1e100.net; s=20230601; t=1711578317; x=1712183117;
+        h=in-reply-to:references:subject:cc:to:from:content-transfer-encoding
+         :content-disposition:mime-version:message-id:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=lJ3wjFaeU9Ztiyd+gJSW6nXLmVJwkYytMN2nUftxCkU=;
+        b=mQRfYEjumIQEbXOLenoB8lO8+xGn1NkWOJXsYdcoOL5Bw7LHyQgHhpaKzVz0pUFAF6
+         PfATsXdXpli+ABTF/bM/kov29/iPuDGb5NGhCzYgh+hYlEv7Iv+OnKAzXruKl2dq5ib+
+         ywfgS7re3HkjWicupXK0fs6fFwqlvZF3xmO7Y7MMmIL1SsuCuRd1x2qqU/YBbVNRaY+9
+         5tqVCmZ3+VUuJYB00KDuHKYLCqt4jLj3BTGry9SDj5RVv2wJaVoMlB19R5lZ13SP64rv
+         ap7LStUtLu9ws9bAinz0taKNmUmsAjGTAqk4AOVChGG5JRcp2eY6cWRxA8z4fvIIZULU
+         qCag==
+X-Forwarded-Encrypted: i=1; AJvYcCXfzR4wnZLAt3sAvsYinGdUTWtB3/RRg0aKS694nbSreW+Rxw8WZZVrlmlEy+SPVaAxm4mecf7qHN0mXXtihYsvNM9tygRahT3j6pMh
+X-Gm-Message-State: AOJu0Yw/uJaBHubPD/bWx2mBHsDV/eMfjbvu2tpN/oBI5cLoakUe66T0
+	PQMLtNnQt1WnGtuiWfp8c0xhWhFRbPZHxV211KvThYjd+HN7ksLtQHxmh+Qb4g==
+X-Google-Smtp-Source: AGHT+IEB1EtlYhSzjbkFAJS6d1yVX/gJOyNrRi/7DgIyCMvcLad2G6ZK7a6iGO+wA6rZSHqS0SZcJw==
+X-Received: by 2002:a0c:f847:0:b0:690:f1e3:ca7c with SMTP id g7-20020a0cf847000000b00690f1e3ca7cmr990364qvo.16.1711578317661;
+        Wed, 27 Mar 2024 15:25:17 -0700 (PDT)
+Received: from localhost ([70.22.175.108])
+        by smtp.gmail.com with ESMTPSA id js5-20020a0562142aa500b0069686d63c1esm44265qvb.69.2024.03.27.15.25.17
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 27 Mar 2024 15:26:15 -0700 (PDT)
-From: Thorsten Blum <thorsten.blum@toblux.com>
-To: Herbert Xu <herbert@gondor.apana.org.au>,
-	"David S. Miller" <davem@davemloft.net>
-Cc: linux-crypto@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Thorsten Blum <thorsten.blum@toblux.com>
-Subject: [PATCH] crypto: jitter - Use kvfree_sensitive() to fix Coccinelle warning
-Date: Wed, 27 Mar 2024 23:25:09 +0100
-Message-ID: <20240327222507.42731-3-thorsten.blum@toblux.com>
-X-Mailer: git-send-email 2.44.0
+        Wed, 27 Mar 2024 15:25:17 -0700 (PDT)
+Date: Wed, 27 Mar 2024 18:25:16 -0400
+Message-ID: <5da09fb04d92d9a4a9d7d5cc1ab14ebd@paul-moore.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
+MIME-Version: 1.0 
+Content-Type: text/plain; charset=utf-8 
+Content-Disposition: inline 
 Content-Transfer-Encoding: 8bit
+From: Paul Moore <paul@paul-moore.com>
+To: =?UTF-8?q?Christian=20G=C3=B6ttsche?= <cgzones@googlemail.com>, selinux@vger.kernel.org
+Cc: Stephen Smalley <stephen.smalley.work@gmail.com>, Ondrej Mosnacek <omosnace@redhat.com>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/2] selinux: make more use of current_sid()
+References: <20240315173105.636749-1-cgzones@googlemail.com>
+In-Reply-To: <20240315173105.636749-1-cgzones@googlemail.com>
 
-Replace memzero_explicit() and kvfree() with kvfree_sensitive() to fix
-the following Coccinelle/coccicheck warning reported by
-kfree_sensitive.cocci:
+On Mar 15, 2024 =?UTF-8?q?Christian=20G=C3=B6ttsche?= <cgzones@googlemail.com> wrote:
+> 
+> Use the internal helper current_sid() where applicable.
+> 
+> Signed-off-by: Christian Göttsche <cgzones@googlemail.com>
+> ---
+>  security/selinux/hooks.c | 22 ++++++----------------
+>  security/selinux/xfrm.c  |  7 ++-----
+>  2 files changed, 8 insertions(+), 21 deletions(-)
 
-	WARNING opportunity for kfree_sensitive/kvfree_sensitive
+Merged into selinux/dev, thanks.
 
-Signed-off-by: Thorsten Blum <thorsten.blum@toblux.com>
----
- crypto/jitterentropy-kcapi.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
-
-diff --git a/crypto/jitterentropy-kcapi.c b/crypto/jitterentropy-kcapi.c
-index 76edbf8af0ac..c24d4ff2b4a8 100644
---- a/crypto/jitterentropy-kcapi.c
-+++ b/crypto/jitterentropy-kcapi.c
-@@ -61,8 +61,7 @@ void *jent_kvzalloc(unsigned int len)
- 
- void jent_kvzfree(void *ptr, unsigned int len)
- {
--	memzero_explicit(ptr, len);
--	kvfree(ptr);
-+	kvfree_sensitive(ptr, len);
- }
- 
- void *jent_zalloc(unsigned int len)
--- 
-2.44.0
-
+--
+paul-moore.com
 
