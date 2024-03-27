@@ -1,63 +1,190 @@
-Return-Path: <linux-kernel+bounces-121404-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-121405-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9FC7888E9B6
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 16:48:23 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 16B6288E989
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 16:43:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8AE82B26574
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 14:59:00 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 80700B2C347
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 14:59:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C74A8131BAD;
-	Wed, 27 Mar 2024 14:10:28 +0000 (UTC)
-Received: from netrider.rowland.org (netrider.rowland.org [192.131.102.5])
-	by smtp.subspace.kernel.org (Postfix) with SMTP id 94A77131BB5
-	for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 14:10:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.131.102.5
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7335913E03C;
+	Wed, 27 Mar 2024 14:10:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=free.fr header.i=@free.fr header.b="bhVSI2E9"
+Received: from smtp2-g21.free.fr (smtp2-g21.free.fr [212.27.42.2])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6F30079E5
+	for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 14:10:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.27.42.2
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711548628; cv=none; b=UI2RAIV52dCsLZpKtVD0Bvf307/H5MXP5+tCMSDLbkCFE0BRQHGVYAz6N+3X8iOyd9shklXXyg0rnTYSsiLqIYu88RX9f6Hq6dRvILD5UAlS7pZvjoKSvKMhimlMuae8BPXU3CxIvB5Eg6sRxezglrdFj+tDYhsaWahqUvkspo4=
+	t=1711548634; cv=none; b=JRvDSenhEaXK4ynnHpj7x23Styapm31ZhMnCHIFHYdEQfUOrG6MZDwULWi00/pI8xyPJ2muKhFNCXWJTwd+BYdM/aXYTmltiR/MvV2OQjvynYYdLdRUOoagzFHoiOkFWykGPEanvRQTmYclnKg0TkaQBPnH2sfgyR4AXwv7fxnQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711548628; c=relaxed/simple;
-	bh=1aPizB982gPdQOZuvTieUnxfnfhAfZhPTIgVFH6+2WM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ArahqbRw0KIpop1gJPLA3idS+ikRcmBdJGAEmXK5qd5cK/cTvJdJdKkvS6V5RRBYEDBTvcRnpQiRA38eljzfmTx0BuVx9PBie/AY2Oz2ldFPXFu4cEtqL9Ve/VgW066esCajvHXKDiSkpajyQzj8luTwCHpX7bP78YLXn2sYUJw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=rowland.harvard.edu; spf=pass smtp.mailfrom=netrider.rowland.org; arc=none smtp.client-ip=192.131.102.5
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=rowland.harvard.edu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netrider.rowland.org
-Received: (qmail 926866 invoked by uid 1000); 27 Mar 2024 10:10:25 -0400
-Date: Wed, 27 Mar 2024 10:10:25 -0400
-From: Alan Stern <stern@rowland.harvard.edu>
-To: Norihiko Hama <norihiko.hama@alpsalpine.com>
-Cc: Greg KH <gregkh@linuxfoundation.org>,
-  "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
-  "usb-storage@lists.one-eyed-alien.net" <usb-storage@lists.one-eyed-alien.net>,
-  "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] usb-storage: Optimize scan delay more precisely
-Message-ID: <a446cdf4-3a9b-43d8-b22b-78c20cce2b4f@rowland.harvard.edu>
-References: <20240327055130.43206-1-Norihiko.Hama@alpsalpine.com>
- <2024032757-surcharge-grime-d3dd@gregkh>
- <TYVPR01MB107814D7A583CB986884AD4B290342@TYVPR01MB10781.jpnprd01.prod.outlook.com>
+	s=arc-20240116; t=1711548634; c=relaxed/simple;
+	bh=ugUIYmrMolRFcTuQ+ekKGcgrmplLTv71Z2epUtWgkDQ=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=IJUJQ5vtyu7KO44xUaLi+cQi3JwRRRkr0De/FepuD0sfALlWw2O8X28eL5dIBVB8c1QZHKu+4c/RZPeRTGAuklKl+xw5LZ0WmEOXXSZh/25Cmq74sz3vKFQwshZ5ySTZ27b/cvMcVNRO9rp3x6BzDibLubCf1Q5qDxx5bKrtov4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=free.fr; spf=pass smtp.mailfrom=free.fr; dkim=pass (2048-bit key) header.d=free.fr header.i=@free.fr header.b=bhVSI2E9; arc=none smtp.client-ip=212.27.42.2
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=free.fr
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=free.fr
+Received: from [IPV6:2a01:cb08:8dcf:1a00:16f6:d8ff:fe12:3306] (unknown [IPv6:2a01:cb08:8dcf:1a00:16f6:d8ff:fe12:3306])
+	(Authenticated sender: eric.valette@free.fr)
+	by smtp2-g21.free.fr (Postfix) with ESMTPSA id 7485220039C;
+	Wed, 27 Mar 2024 15:10:28 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=free.fr;
+	s=smtp-20201208; t=1711548630;
+	bh=ugUIYmrMolRFcTuQ+ekKGcgrmplLTv71Z2epUtWgkDQ=;
+	h=Date:Reply-To:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=bhVSI2E9smClZAcBrmyKgunSj+7qyVt2MKW0upe5tdHsvkKdkTDjlRvk+ADMh5Njk
+	 PW6+cEGDrRO2vXODCVR6gNU+pzfx+Vp7r0/jltIlLWafzqpLpIPLGhGlmIN2f/vZi4
+	 UTt/Qe0sgTOl9Iv/cr+F5Qu5SxE+ZxwL0nurQ6yO5N+Hj8dmuFOkLVH+67O8rTNu+U
+	 DM+OS5oorClSNeRMxstHlgDimaqN4h6LbE8fY7JmXilUSPKGOqYIRZj9Kpzh7i5qC5
+	 jreBWLP/785wL3Lz7m14ogh6WuzQ/nffVIwW/d5hwm5jxOl+6SwwQVxTs0dx46X1ib
+	 sz1/5hLGUmjJA==
+Message-ID: <4f0de5c3-8e33-4f2a-a39a-c7efe528fa04@free.fr>
+Date: Wed, 27 Mar 2024 15:10:28 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <TYVPR01MB107814D7A583CB986884AD4B290342@TYVPR01MB10781.jpnprd01.prod.outlook.com>
+User-Agent: Mozilla Thunderbird
+Reply-To: eric.valette@free.fr
+Subject: Re: your recently submitted patch to fix BT RIP error shall be
+ applied to 6.6 stable (I have a systematic crash on reboot in 6.6.23)
+To: "Von Dentz, Luiz" <luiz.von.dentz@intel.com>
+Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <878ae145-ad1f-4b48-abe3-2966a1c9a0da@free.fr>
+ <PH0PR11MB512628ED33CB0EC120ECC08AD3342@PH0PR11MB5126.namprd11.prod.outlook.com>
+ <8a6d3251-f7ae-4b10-956c-7d24a45464f5@free.fr>
+ <608ed80b-89dd-4815-84ed-5a03abc19c17@free.fr>
+ <PH0PR11MB5126D61336DDE016C3607997D3342@PH0PR11MB5126.namprd11.prod.outlook.com>
+Content-Language: fr, en-US
+From: Eric Valette <eric.valette@free.fr>
+Autocrypt: addr=eric.valette@free.fr; keydata=
+ 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
+ wycNoa755G2xgOMORgXEMg==
+In-Reply-To: <PH0PR11MB5126D61336DDE016C3607997D3342@PH0PR11MB5126.namprd11.prod.outlook.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Wed, Mar 27, 2024 at 07:39:55AM +0000, Norihiko Hama wrote:
-> > Sorry, but module parameters are from the 1990's, we will not go back to that if at all possible as it's not easy to maintain and will not work properly for multiple devices.
-> >
-> > I can understand wanting something between 1 and 0 seconds, but adding yet-another-option isn't probably the best way, sorry.
-> 1 second does not meet with performance requirement.
-> I have no good idea except module parameter so that we can maintain backward compatibility but be configurable out of module.
-> Do you have any other better solution?
+On 27/03/2024 15:01, Von Dentz, Luiz wrote:
+> Hi Eric,
+> 
+> Then it must have been backported, which is kind of odd given that it was just merged for an -rc release that is still not consider stable, anyway the real culprit might actually be the following:
+> 
+> https://patchwork.kernel.org/project/bluetooth/patch/20240327140855.896095-1-kiran.k@intel.com/
 
-Can you accomplish what you want with a quirk flag?
 
-Alan Stern
+Reading the patch, I'm afraid, if I apply the patch bt will then not 
+work if I reboot which is not what I want (I suspect  the firmware is 
+probably not unloaded when rebooting). Or am I making wrong assumptions?
+
+NB: I may try to be sure...
+
+--eric
+
+
+
+  ________________________________
+> From: Eric Valette <eric.valette@free.fr>
+> Sent: Wednesday, March 27, 2024 9:46 AM
+> To: Von Dentz, Luiz <luiz.von.dentz@intel.com>
+> Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+> Subject: Re: your recently submitted patch to fix BT RIP error shall be applied to 6.6 stable (I have a systematic crash on reboot in 6.6.23)
+> 
+> On 27/03/2024 14:41, Eric Valette wrote:
+>> On 27/03/2024 14:36, Von Dentz, Luiz wrote:
+>>> Hi Eric,
+>>>
+>>> This shouldn't apply to 6.6 kernel, the regression was introduced with:
+>>>
+>>> commit 711c35949648ba19f54bce27b49ced0ad90b19b9
+>>> Author: Luiz Augusto von Dentz <luiz.von.dentz@intel.com>
+>>> Date:   Tue Jan 9 13:45:40 2024 -0500
+>>>
+>>>       Bluetooth: hci_core: Cancel request on command timeout
+>>>
+>>> So, you only really need that fix if you were using 6.9-rc1
+>>
+>> Well I get the same error message and with the fix it works again.
+>>
+>> Will check the 6.6.22 6.6.23 patch.
+>>
+>> Could you point me to the problematic patch via adiff that I could
+>> easilly check?
+> 
+> Found it. The patch adds the function hci_send_cmd_sync and I have it in
+> my 6.6.23 kernel tree.
+> 
+> grep hci_send_cmd_sync net/bluetooth/hci_core.c
+> static void hci_send_cmd_sync(struct hci_dev *hdev, struct sk_buff *skb)
+>                   hci_send_cmd_sync(hdev, skb);
+> 
+> more Makefile
+> # SPDX-License-Identifier: GPL-2.0
+> VERSION = 6
+> PATCHLEVEL = 6
+> SUBLEVEL = 23
+> EXTRAVERSION =
+> 
+> -- eric
+> 
+> 
+> 
+
 
