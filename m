@@ -1,71 +1,71 @@
-Return-Path: <linux-kernel+bounces-120669-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-120670-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id AA5D988DB46
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 11:31:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id AD3A788DB47
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 11:32:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3B3691F2A175
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 10:31:50 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 659471F29C03
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 10:32:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 019163EA7B;
-	Wed, 27 Mar 2024 10:31:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 384E04F1E1;
+	Wed, 27 Mar 2024 10:31:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=vrull.eu header.i=@vrull.eu header.b="F49AGDMe"
-Received: from mail-ed1-f46.google.com (mail-ed1-f46.google.com [209.85.208.46])
+	dkim=pass (2048-bit key) header.d=vrull.eu header.i=@vrull.eu header.b="UEV5VsL6"
+Received: from mail-ed1-f48.google.com (mail-ed1-f48.google.com [209.85.208.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 769781C32
-	for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 10:31:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CFF111BDE2
+	for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 10:31:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711535498; cv=none; b=PB8gUrLAvblfDRGSTbh8ubAHPh+Ob1jnZDRHglzZQ85nMw04KXMw6KjXeiefqcjZlAyNsAKO0XhEQF/eex4TjdBOzLHQOm6dEPYwjO9ouzefnsoswBE+1jBSLBgeW/p+1r8R5A9Lf7Rl5ByII18LQVj1y/RvzGMr8a0OwzA81F8=
+	t=1711535499; cv=none; b=OT/N7nPBp3t4fICl9UKH9/7lR8RV/QQBH2BjJNdFVyGbLtny/o1Lx0G8Mpg2tOH80D3NEWeeaPsH0SqFmzjgJ/xU86YHe2Tl/AlxporRVkfMum9Qgp4c5YkPgKI7z0x2t4ZRTpgh4DY3Pzfnb5CK0hefEDu5vZKjX38yhlRB5o8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711535498; c=relaxed/simple;
-	bh=yD9gMfFxCFOf87qA7aDCq+KNVtkVotiVL/nqF6nQSEM=;
+	s=arc-20240116; t=1711535499; c=relaxed/simple;
+	bh=5zk6kq3UFGadP+2Yq4Dm+tPe0GlFy4sAWp32ibDLS0c=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=f5AGGPVaF5MYR4jUVuX8BnwyYEHN1g6JF0eMjidB3eU/Rpz6kuiLpvvJIzvMz9dYR33gwNA1MZDfoknuwEk0COnm95ciqwjVjeuKLBUUMtfoDA2AH70u2P8HwsWjr/lKqDfDmtuUjHVilg0SsMWkCtVNIwBATA2uQQ53OyzZAHI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=vrull.eu; spf=pass smtp.mailfrom=vrull.eu; dkim=pass (2048-bit key) header.d=vrull.eu header.i=@vrull.eu header.b=F49AGDMe; arc=none smtp.client-ip=209.85.208.46
+	 MIME-Version:Content-Type; b=pymuWZCRxrVKJl062apC17B67G/Js0BVMQx0fyY9bg8W+ng3tQ7iVEDZw49kdzW2e5BEZPBthe2dL8bzVsdcIVpaiq5xCJ6hBvrR5I7+qXQ0LjDGJmEx0Kqdgu2ktwnPmYRQEuLM7ei4bhLKfV3hz1obVwD178hfVI1yf9od8Lk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=vrull.eu; spf=pass smtp.mailfrom=vrull.eu; dkim=pass (2048-bit key) header.d=vrull.eu header.i=@vrull.eu header.b=UEV5VsL6; arc=none smtp.client-ip=209.85.208.48
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=vrull.eu
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=vrull.eu
-Received: by mail-ed1-f46.google.com with SMTP id 4fb4d7f45d1cf-56b8e4f38a2so8378635a12.3
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 03:31:36 -0700 (PDT)
+Received: by mail-ed1-f48.google.com with SMTP id 4fb4d7f45d1cf-56bf6591865so6259368a12.0
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 03:31:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=vrull.eu; s=google; t=1711535495; x=1712140295; darn=vger.kernel.org;
+        d=vrull.eu; s=google; t=1711535496; x=1712140296; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=qFFjWbcETbPCVovmbM8tpReuGu8aZixvMHFh/xJCQ5U=;
-        b=F49AGDMeCuDw9QobfUsUKtaecu7Vw1B6RvkpUu6JVVDDJF6tftX2AxERmGMsGYy0kZ
-         dL4LujeHb+8MQpJ3BcYjkDFhWR1kCCFERGF7Ob5RRyQL2Ejr8F9EEldqH8kTBHcFTn4i
-         0Fdy1mU6Gu+nczdqvq53K/mxRDaG/Sxtb0wze3fXqE8NkdPer74KPWUFj6VF+wVAfXpl
-         zjfuDF75FXQEbBdtKKAmayjuENWec2Y/3sV+3kyxcJkiiUz2exgQx52SFZrpgmrC6veO
-         3GA5cglnnAX0jAJ65JgSAkvLII2ITAD1melKlqbEqkX2ls4e1eZZiiOIK1vTJ4deMX39
-         39RA==
+        bh=NSJ+UjWyV6VDqHK474kxHesTXDBqeer09Qi3VieNTqM=;
+        b=UEV5VsL6Pzq6GZpzN/ArTyAtdDh5efa6ZSv4Rx6GhjNsLVDxDn/H7EVZW0hU+cRYHs
+         RCGdSJYwxvPpA72S0PpdZL0ntDyxqaby37ZToyI8ntmJIwMdkP/kn7grSxF3zu1PVGcj
+         1xl7OZpHGlr5w9sFd8OX+8sMi3JoFBXpsqnRf0L+hOPC/xGpi4POFMcxE197kmAnODJX
+         7ua3WI2bslhLx2y6cgIfD3PAH9lU/whgOorvzz/1PLH7cjz5GvLXxzyeoUQkPB+2O9FA
+         6A/0V+7bOaSyq5zAn163nyS7DsXDIlSV/3DieZRuANLeKCikq1oTZzvunpy/KDUFf+sP
+         xIag==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711535495; x=1712140295;
+        d=1e100.net; s=20230601; t=1711535496; x=1712140296;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=qFFjWbcETbPCVovmbM8tpReuGu8aZixvMHFh/xJCQ5U=;
-        b=drOFJSOsJCfKwrmaYrDgwTy6y/zWfjvC4TnP+iyNEAQj9I2XerzGHJsyl4SLYCqmhV
-         Bqk8uOP6wUD05CxcjagYLpI0R3ydp53hoNpNiVDk0NdXMSxQroPU4/yypc4+YJPRG52k
-         CDZDvnZ6I29lGot9SEexsyfNhZlsRWe9xsWH6S3q215YnELfCa01REJHHSZEY0GH8XqP
-         ZMwFUPxjhz8ojOp/NA6KMJBu9PLCalbF+dY2bZ7Obq3kZuso9ZjCzjy8Vm7orhGEFO2s
-         wiZsUYLyDPiCq/ABJHJ+QKZYWzOrpcfbc6g8aHKlU7xjagGV9Fz2YHLRi7WKqqYMu8KR
-         0zNQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXWDdgOztHIUCG0rRNXrdDIbMxklOaRIn3zRn3BJwZg5I6HN0p7YM7jwLDHb9GI+zsWAYddeTIiqaQxULMNAZqUd1X2B2f0mmXSFZCo
-X-Gm-Message-State: AOJu0YwhjVNOZnTjbZavw10Y3Jic3xU3jXDlLIBBShkLQidfGrVBiCgF
-	9CMNfSvZEY7kwEkNnt5EM7qcqDxT8Y43MxpmRg6PtYuQ0MADmWtdWl8tq1ktcp4=
-X-Google-Smtp-Source: AGHT+IFpb/VYghvSGRAZv/KSjYVbhAxxbRz3wD8nc7CPHRDPIyI0sKYTxchYPDN6RU4YBfPXV3vdmA==
-X-Received: by 2002:a17:906:d7ae:b0:a44:4c9e:8809 with SMTP id pk14-20020a170906d7ae00b00a444c9e8809mr2772060ejb.32.1711535494767;
-        Wed, 27 Mar 2024 03:31:34 -0700 (PDT)
+        bh=NSJ+UjWyV6VDqHK474kxHesTXDBqeer09Qi3VieNTqM=;
+        b=ZMPNceEQ6XOVAcdxwEN7EuBbcqcX0K/JTCrqyeSVlpnL/Q1l7ASJ7v4PGBWVJqHhZG
+         q9E05eGUCmdTy6nDOWelGaWkyCormsYYcUmZkAut5iHZkxFoBR7VCK3GV9/n4PTyQs2s
+         3lOqL03FyrWDac6cHtBSoAd3VLkUO8Y5dZ8zSDmN6SJEtd69Yy06AwAYAR55Nu2GbDHg
+         w8kqj3tQZZ7jKVzb3KXUmny0oYUvGCVZY64GvcTLqBnG3Au6YtfjI4tXbCX6DMvRx+zE
+         +CNZYXGS9Ui0oiKtVVXSHRBLMdTLkeqSQU76ulwE1vzefB1bfdXeRntyDvbLZjZc4CEb
+         UCxg==
+X-Forwarded-Encrypted: i=1; AJvYcCULBPfVj+XgpZdI7kMqSPIIsfsqv/cazSTyOowSxIKScrVetqtIErfWhWWmcrmly4h3IDJt0XGbwrK08hLAHsXhRfM2JQG0MWt6I40x
+X-Gm-Message-State: AOJu0YwN/ox4fGgOq+rNJsDqDnOOsdub2GVws3x6O/+Yj4Ohb75YmOlD
+	BSnEtWKb9LN/RVoF0y48WWTBWArgWgK3yr6g+7xBhbMeIz5wVAgv1YMJKB4vmhk=
+X-Google-Smtp-Source: AGHT+IGVZKrHhMNC1CQHMp/4kkiEfUCOZuadD93YT7eU77ZwO7kZVT2ezcq9jl6faw5E8GtW+3460A==
+X-Received: by 2002:a17:906:6b8e:b0:a46:e595:f357 with SMTP id l14-20020a1709066b8e00b00a46e595f357mr2781223ejr.9.1711535496207;
+        Wed, 27 Mar 2024 03:31:36 -0700 (PDT)
 Received: from antares.fritz.box (62-178-148-172.cable.dynamic.surfer.at. [62.178.148.172])
-        by smtp.gmail.com with ESMTPSA id z15-20020a170906270f00b00a46b8cd9b51sm5294078ejc.185.2024.03.27.03.31.33
+        by smtp.gmail.com with ESMTPSA id z15-20020a170906270f00b00a46b8cd9b51sm5294078ejc.185.2024.03.27.03.31.34
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 27 Mar 2024 03:31:34 -0700 (PDT)
+        Wed, 27 Mar 2024 03:31:35 -0700 (PDT)
 From: =?UTF-8?q?Christoph=20M=C3=BCllner?= <christoph.muellner@vrull.eu>
 To: linux-riscv@lists.infradead.org,
 	linux-kernel@vger.kernel.org,
@@ -83,9 +83,9 @@ To: linux-riscv@lists.infradead.org,
 	Andrew Jones <ajones@ventanamicro.com>,
 	Conor Dooley <conor@kernel.org>
 Cc: =?UTF-8?q?Christoph=20M=C3=BCllner?= <christoph.muellner@vrull.eu>
-Subject: [PATCH 1/2] riscv: thead: Rename T-Head PBMT to MAEE
-Date: Wed, 27 Mar 2024 11:31:29 +0100
-Message-ID: <20240327103130.3651950-2-christoph.muellner@vrull.eu>
+Subject: [PATCH 2/2] riscv: T-Head: Test availability bit before enabling MAEE errata
+Date: Wed, 27 Mar 2024 11:31:30 +0100
+Message-ID: <20240327103130.3651950-3-christoph.muellner@vrull.eu>
 X-Mailer: git-send-email 2.44.0
 In-Reply-To: <20240327103130.3651950-1-christoph.muellner@vrull.eu>
 References: <20240327103130.3651950-1-christoph.muellner@vrull.eu>
@@ -98,126 +98,60 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-T-Head's vendor extension to set page attributes has the name
-MAEE (MMU address attribute extension).
-Let's rename it, so it is clear what this referes to.
+T-Head's MAEE mechanism (non-compatible equivalent of RVI's Svpbmt)
+is currently assumed for all T-Head harts. However, QEMU recently
+decided to drop acceptance of guests that write reserved bits in PTEs.
+As MAEE uses reserved bits in PTEs and Linux applies the MAEE errata
+for all T-Head harts, this broke the Linux startup on QEMU emulations
+of the C906 emulation.
 
-See also:
-  https://github.com/T-head-Semi/thead-extension-spec/blob/master/xtheadmaee.adoc
+This patch attempts to address this issue by testing the MAEE bit
+in TH_MXSTATUS CSR. As the TH_MXSTATUS CSR is only accessible in M-mode
+this patch depends on M-mode firmware that handles this for us
+transparently.
+
+As this patch breaks Linux bootup on all C9xx machines with MAEE,
+which don't have M-mode firmware that handles the access to the
+TH_MXSTATUS CSR, this patch is marked as RFC.
 
 Signed-off-by: Christoph Müllner <christoph.muellner@vrull.eu>
 ---
- arch/riscv/Kconfig.errata            |  8 ++++----
- arch/riscv/errata/thead/errata.c     |  8 ++++----
- arch/riscv/include/asm/errata_list.h | 20 ++++++++++----------
- 3 files changed, 18 insertions(+), 18 deletions(-)
+ arch/riscv/errata/thead/errata.c | 14 ++++++++++----
+ 1 file changed, 10 insertions(+), 4 deletions(-)
 
-diff --git a/arch/riscv/Kconfig.errata b/arch/riscv/Kconfig.errata
-index 910ba8837add..2c24bef7e112 100644
---- a/arch/riscv/Kconfig.errata
-+++ b/arch/riscv/Kconfig.errata
-@@ -82,14 +82,14 @@ config ERRATA_THEAD
- 
- 	  Otherwise, please say "N" here to avoid unnecessary overhead.
- 
--config ERRATA_THEAD_PBMT
--	bool "Apply T-Head memory type errata"
-+config ERRATA_THEAD_MAEE
-+	bool "Apply T-Head's MMU address attribute (MAEE)"
- 	depends on ERRATA_THEAD && 64BIT && MMU
- 	select RISCV_ALTERNATIVE_EARLY
- 	default y
- 	help
--	  This will apply the memory type errata to handle the non-standard
--	  memory type bits in page-table-entries on T-Head SoCs.
-+	  This will apply the memory type errata to handle T-Head's MMU address
-+	  attribute extension (MAEE).
- 
- 	  If you don't know what to do here, say "Y".
- 
 diff --git a/arch/riscv/errata/thead/errata.c b/arch/riscv/errata/thead/errata.c
-index b1c410bbc1ae..8c8a8a4b0421 100644
+index 8c8a8a4b0421..dd7bf6c62a35 100644
 --- a/arch/riscv/errata/thead/errata.c
 +++ b/arch/riscv/errata/thead/errata.c
-@@ -19,10 +19,10 @@
+@@ -19,6 +19,9 @@
  #include <asm/patch.h>
  #include <asm/vendorid_list.h>
  
--static bool errata_probe_pbmt(unsigned int stage,
-+static bool errata_probe_maee(unsigned int stage,
++#define CSR_TH_MXSTATUS		0x7c0
++#define MXSTATUS_MAEE		_AC(0x200000, UL)
++
+ static bool errata_probe_maee(unsigned int stage,
  			      unsigned long arch_id, unsigned long impid)
  {
--	if (!IS_ENABLED(CONFIG_ERRATA_THEAD_PBMT))
-+	if (!IS_ENABLED(CONFIG_ERRATA_THEAD_MAEE))
+@@ -28,11 +31,14 @@ static bool errata_probe_maee(unsigned int stage,
+ 	if (arch_id != 0 || impid != 0)
  		return false;
  
- 	if (arch_id != 0 || impid != 0)
-@@ -140,8 +140,8 @@ static u32 thead_errata_probe(unsigned int stage,
- {
- 	u32 cpu_req_errata = 0;
+-	if (stage == RISCV_ALTERNATIVES_EARLY_BOOT ||
+-	    stage == RISCV_ALTERNATIVES_MODULE)
+-		return true;
++	if (stage != RISCV_ALTERNATIVES_EARLY_BOOT &&
++	    stage != RISCV_ALTERNATIVES_MODULE)
++		return false;
  
--	if (errata_probe_pbmt(stage, archid, impid))
--		cpu_req_errata |= BIT(ERRATA_THEAD_PBMT);
-+	if (errata_probe_maee(stage, archid, impid))
-+		cpu_req_errata |= BIT(ERRATA_THEAD_MAEE);
+-	return false;
++	if (!(csr_read(CSR_TH_MXSTATUS) & MXSTATUS_MAEE))
++		return false;
++
++	return true;
+ }
  
- 	errata_probe_cmo(stage, archid, impid);
- 
-diff --git a/arch/riscv/include/asm/errata_list.h b/arch/riscv/include/asm/errata_list.h
-index ea33288f8a25..7c377e137b41 100644
---- a/arch/riscv/include/asm/errata_list.h
-+++ b/arch/riscv/include/asm/errata_list.h
-@@ -23,7 +23,7 @@
- #endif
- 
- #ifdef CONFIG_ERRATA_THEAD
--#define	ERRATA_THEAD_PBMT 0
-+#define	ERRATA_THEAD_MAEE 0
- #define	ERRATA_THEAD_PMU 1
- #define	ERRATA_THEAD_NUMBER 2
- #endif
-@@ -53,20 +53,20 @@ asm(ALTERNATIVE("sfence.vma %0", "sfence.vma", SIFIVE_VENDOR_ID,	\
-  * in the default case.
-  */
- #define ALT_SVPBMT_SHIFT 61
--#define ALT_THEAD_PBMT_SHIFT 59
-+#define ALT_THEAD_MAEE_SHIFT 59
- #define ALT_SVPBMT(_val, prot)						\
- asm(ALTERNATIVE_2("li %0, 0\t\nnop",					\
- 		  "li %0, %1\t\nslli %0,%0,%3", 0,			\
- 			RISCV_ISA_EXT_SVPBMT, CONFIG_RISCV_ISA_SVPBMT,	\
- 		  "li %0, %2\t\nslli %0,%0,%4", THEAD_VENDOR_ID,	\
--			ERRATA_THEAD_PBMT, CONFIG_ERRATA_THEAD_PBMT)	\
-+			ERRATA_THEAD_MAEE, CONFIG_ERRATA_THEAD_MAEE)	\
- 		: "=r"(_val)						\
- 		: "I"(prot##_SVPBMT >> ALT_SVPBMT_SHIFT),		\
--		  "I"(prot##_THEAD >> ALT_THEAD_PBMT_SHIFT),		\
-+		  "I"(prot##_THEAD >> ALT_THEAD_MAEE_SHIFT),		\
- 		  "I"(ALT_SVPBMT_SHIFT),				\
--		  "I"(ALT_THEAD_PBMT_SHIFT))
-+		  "I"(ALT_THEAD_MAEE_SHIFT))
- 
--#ifdef CONFIG_ERRATA_THEAD_PBMT
-+#ifdef CONFIG_ERRATA_THEAD_MAEE
  /*
-  * IO/NOCACHE memory types are handled together with svpbmt,
-  * so on T-Head chips, check if no other memory type is set,
-@@ -83,11 +83,11 @@ asm volatile(ALTERNATIVE(						\
- 	"slli    t3, t3, %3\n\t"					\
- 	"or      %0, %0, t3\n\t"					\
- 	"2:",  THEAD_VENDOR_ID,						\
--		ERRATA_THEAD_PBMT, CONFIG_ERRATA_THEAD_PBMT)		\
-+		ERRATA_THEAD_MAEE, CONFIG_ERRATA_THEAD_MAEE)		\
- 	: "+r"(_val)							\
--	: "I"(_PAGE_MTMASK_THEAD >> ALT_THEAD_PBMT_SHIFT),		\
--	  "I"(_PAGE_PMA_THEAD >> ALT_THEAD_PBMT_SHIFT),			\
--	  "I"(ALT_THEAD_PBMT_SHIFT)					\
-+	: "I"(_PAGE_MTMASK_THEAD >> ALT_THEAD_MAEE_SHIFT),		\
-+	  "I"(_PAGE_PMA_THEAD >> ALT_THEAD_MAEE_SHIFT),			\
-+	  "I"(ALT_THEAD_MAEE_SHIFT)					\
- 	: "t3")
- #else
- #define ALT_THEAD_PMA(_val)
 -- 
 2.44.0
 
