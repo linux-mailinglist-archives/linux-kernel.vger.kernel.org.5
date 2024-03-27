@@ -1,117 +1,97 @@
-Return-Path: <linux-kernel+bounces-121709-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-121701-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id BCC9D88ECCF
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 18:40:49 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0463088ECB7
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 18:33:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 728E21F28D53
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 17:40:49 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DD17DB21B5C
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 17:33:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 305E914D2B4;
-	Wed, 27 Mar 2024 17:40:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EB15014E2CB;
+	Wed, 27 Mar 2024 17:33:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="j1liQETL"
-Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="HswMO7Dh"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD4AB14A60E;
-	Wed, 27 Mar 2024 17:40:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 34B901304A6;
+	Wed, 27 Mar 2024 17:33:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711561242; cv=none; b=hT1h3bemIsj5f7fj8pptLwXeGsB+YEIFE0VJtV5vFxNI37a9PaFS4i5umqjrJch0l2tjXKczn+/kxjA+J60/IxBnUhw1cYvW35M8Wiw6HsNFirsD4DKuZbtJQpuvdvM1jKQ8Qy/Kr7XHvqC7ABuqlXKxeJvH5HeQeLcrid7Z97o=
+	t=1711560811; cv=none; b=uIKRGhGd7cI2l7qiJs831VMiegvf4AeyDlNUwZSyGFVI2RJ5pjm4k1tiW0limgUq0+kfmt/ZKQ6VMZ8BHVEjSBcBC0h3eOu+DZQEFvYRTZVsYdYno1ylbW5QyTRCyWZ3rKLp0G6sR1tU3cD8QxP9qskWvpyhtPUUuTAaJus4fRI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711561242; c=relaxed/simple;
-	bh=srgctdpBr0p3tnZe1+I+kGnQ9airdU7dZhtChNsf194=;
+	s=arc-20240116; t=1711560811; c=relaxed/simple;
+	bh=XcISWJmiP1jYqJUIUhyT8r1VsuUqiY1gK8gvy6LLjU4=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=fvduotWDjY4kRtAeq6YPVufNoUp0Z9heIO3CMan8NPLuV6vwInFu4fDAz/8WDYdA+cXB57eFJMEhTm00T8xIYOFiaiVOcSFd8hmB5q/9NFu6GExuPuoFt1X/k/KdRbpHlMuMeb/6v8mP36QlIKqgSN+xGoJbQkBqr+SQiptagDc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=j1liQETL; arc=none smtp.client-ip=65.109.113.108
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
-Received: from localhost (localhost.localdomain [127.0.0.1])
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 2506940E024C;
-	Wed, 27 Mar 2024 17:33:19 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-	header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-	with ESMTP id NEGRHPZY1Udy; Wed, 27 Mar 2024 17:33:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-	t=1711560795; bh=7hJcNztbvoltbNYuqLlcZ4eKB+PYom08C1n5dtPK9ic=;
+	 Content-Type:Content-Disposition:In-Reply-To; b=kqbKV+bNEdwIJ0gRhvReZmTtE8/WCtRV8pVEhncl6MA3yPHiABWq/VMZpE6pAnFslSTkfhxszPav2AU6pPNo1GZi3EpASO32OOray41Zrr1oryfmZRDdUyWD7so4+iXpPwr+KBd491K6/gIGKFIH7IZjftUyFnGIZThyLaf7Yyw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=HswMO7Dh; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C1591C433F1;
+	Wed, 27 Mar 2024 17:33:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1711560811;
+	bh=XcISWJmiP1jYqJUIUhyT8r1VsuUqiY1gK8gvy6LLjU4=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=j1liQETLuNzbUZlMOehHIkqvcM36uSsIEz0qIYPLwz1LbPguT7XuBKfkQf9Ru3SX4
-	 F0hT16k3/m42OBUpKM8wvfmxs1rteeSEvO//NHexUdyUv8dU/g60vZpVZLnU8j75+d
-	 mo+KYYwTKsoSq7bgIpxQB+4See5S4BFVBXzV++BDOUy+1fIgfhIEgeFHWO6ryoaFel
-	 THmDopG604QqctncHRO3kHX/bAXpfAJY9yLTbu6jsmknQzNj+mABleokKcMVyGCiWp
-	 uI+8RgPWjuEnjHdblwtjo8aNuNQ7q/LLig1yPyjQgapTwXk7+WOiTBVL8j9/X7R/wq
-	 tvkgn2VfSsNfrzMBb07IP9AgIzkwWO8HJGe98cFbDyJUBYDdkkLqoQkvyf2BnXmYBS
-	 lrxpqbvD5c5Aqnpww+oGWFHHFb505nnDXExvSI6UkdL01C5cfgL0vRmbYiro+EX92q
-	 4goMCwx0e0F8uLKswzFS35E6L0rlaT0goFGyAHztVd5ByXn7jwx1BS+p+CF5tWcfMw
-	 rhQPE+KvUpIhy6cCrQBaL9XRlDKuHXdLHk06469C562e3fUInsClQIXOa6XXVB5Wgp
-	 1suToznxeCdRprNsMhOX7YgIWco2HEPOfL6zc70I7rjY6BiE6xpbi7UCaZvppLMNjH
-	 4KNy9KDl6A8BK85o5QhAu0jk=
-Received: from zn.tnic (p5de8ecf7.dip0.t-ipconnect.de [93.232.236.247])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-	(No client certificate requested)
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 4318140E0028;
-	Wed, 27 Mar 2024 17:32:52 +0000 (UTC)
-Date: Wed, 27 Mar 2024 18:32:45 +0100
-From: Borislav Petkov <bp@alien8.de>
-To: "Jiri Slaby (SUSE)" <jirislaby@kernel.org>
-Cc: linux-kernel@vger.kernel.org, Andre Przywara <andre.przywara@arm.com>,
-	Bjorn Andersson <andersson@kernel.org>,
-	Dinh Nguyen <dinguyen@kernel.org>,
-	Douglas Thompson <dougthompson@xmission.com>,
-	James Morse <james.morse@arm.com>, Jan Luebbe <jlu@pengutronix.de>,
-	Johannes Thumshirn <morbidrsa@gmail.com>,
-	Khuong Dinh <khuong@os.amperecomputing.com>,
-	Konrad Dybcio <konrad.dybcio@linaro.org>,
-	linux-edac@vger.kernel.org,
-	Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-	Mauro Carvalho Chehab <mchehab@kernel.org>,
-	Michal Simek <michal.simek@amd.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Paul Walmsley <paul.walmsley@sifive.com>,
-	Ralf Baechle <ralf@linux-mips.org>,
-	Robert Richter <rric@kernel.org>,
-	Sai Krishna Potthuri <sai.krishna.potthuri@amd.com>,
-	Shubhrajyoti Datta <shubhrajyoti.datta@amd.com>,
-	Tony Luck <tony.luck@intel.com>,
-	Yazen Ghannam <yazen.ghannam@amd.com>
-Subject: Re: [PATCH 0/7] EDAC: remove unused structure members
-Message-ID: <20240327173245.GFZgRYPTetxzmNZFAV@fat_crate.local>
-References: <20240213112051.27715-1-jirislaby@kernel.org>
+	b=HswMO7Dh++iQsFShyRLIWJ8dAKKMGV9SwB+Zkp8RfWzkNV/aksMVeBechXf6+yGAm
+	 nxGO0uBjsWVRcTYD4w8T9aZ0/R4ofuWlkdzJIVwV5Q1R4wmIZbSTD/hslco8t0e8Pe
+	 jqsFrYGwleZia8Fx8QlspHSX1UpTvNstm7AG3DHR5cbsttX4HsjURyOUZkwAyaq4uy
+	 Lqc3qeSOQ5j+vwXRSB1tF43QFM4pqIgJn2YyHJZ3+ul1fs3N8KR6/8oA6eAKs/YYg7
+	 0MddWO3+wbOq1nkQUsg9FCDZqrIUvK+ABoLxABGS3sFLIaRNywvYbNXTRZnovtKbMF
+	 8Z6VdhHo1N2Jg==
+Date: Wed, 27 Mar 2024 12:33:28 -0500
+From: Rob Herring <robh@kernel.org>
+To: Chen-Yu Tsai <wenst@chromium.org>
+Cc: Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	dri-devel@lists.freedesktop.org, Maxime Ripard <mripard@kernel.org>,
+	Neil Armstrong <neil.armstrong@linaro.org>,
+	Daniel Vetter <daniel@ffwll.ch>, Robert Foss <rfoss@kernel.org>,
+	Rob Herring <robh+dt@kernel.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Thomas Zimmermann <tzimmermann@suse.de>,
+	David Airlie <airlied@gmail.com>, linux-kernel@vger.kernel.org,
+	devicetree@vger.kernel.org, Jonas Karlman <jonas@kwiboo.se>,
+	Andrzej Hajda <andrzej.hajda@intel.com>,
+	Jernej Skrabec <jernej.skrabec@gmail.com>,
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
+Subject: Re: [PATCH v2] dt-bindings: display: bridge: it6505: Add
+ #sound-dai-cells
+Message-ID: <171156080808.3681700.13600868771478432605.robh@kernel.org>
+References: <20240327085250.3427496-1-wenst@chromium.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240213112051.27715-1-jirislaby@kernel.org>
+In-Reply-To: <20240327085250.3427496-1-wenst@chromium.org>
 
-On Tue, Feb 13, 2024 at 12:20:44PM +0100, Jiri Slaby (SUSE) wrote:
-> Jiri Slaby (SUSE) (7):
->   EDAC/amd64: Remove amd64_pvt::ext_nbcfg
->   EDAC/device: Remove edac_dev_sysfs_block_attribute::{block,value}
->   EDAC/device: Remove edac_dev_sysfs_block_attribute::store()
->   EDAC: Remove dynamic attributes from edac_device_alloc_ctl_info()
->   EDAC: Remove edac_pci_ctl_info::edac_subsys
->   EDAC: Remove edac_pci_ctl_info::complete
->   EDAC: Remove edac_device_ctl_info::removal_complete
 
-All applied, the last three squashed into one patch.
+On Wed, 27 Mar 2024 16:52:48 +0800, Chen-Yu Tsai wrote:
+> The ITE IT6505 display bridge can take one I2S input and transmit it
+> over the DisplayPort link.
+> 
+> Add #sound-dai-cells (= 0) to the binding for it.
+> 
+> Signed-off-by: Chen-Yu Tsai <wenst@chromium.org>
+> ---
+> Changes since v1 [1]:
+> - Reference /schemas/sound/dai-common.yaml
+> - Change "additionalProperties: false" to "unevaluatedProperties: false"
+> 
+> The driver side changes [2] are still being worked on.
+> 
+> [1] https://lore.kernel.org/dri-devel/20240126073511.2708574-1-wenst@chromium.org/
+> [2] https://lore.kernel.org/linux-arm-kernel/20230730180803.22570-4-jiaxin.yu@mediatek.com/
+> ---
+>  .../devicetree/bindings/display/bridge/ite,it6505.yaml    | 8 +++++++-
+>  1 file changed, 7 insertions(+), 1 deletion(-)
+> 
 
-Thx.
+Reviewed-by: Rob Herring <robh@kernel.org>
 
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
 
