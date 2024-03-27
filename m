@@ -1,110 +1,101 @@
-Return-Path: <linux-kernel+bounces-121557-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-121552-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id D0A3188E9AD
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 16:46:59 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3BE3988EA22
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 17:00:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0DE871C2DC21
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 15:46:59 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0EE17B3DF35
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 15:45:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E9BB8131BD9;
-	Wed, 27 Mar 2024 15:44:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1847D12EBCE;
+	Wed, 27 Mar 2024 15:43:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="ENKyI+AX"
-Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="V1ETZVaO"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2F3C5131BA0;
-	Wed, 27 Mar 2024 15:44:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5A3DB12DDA6;
+	Wed, 27 Mar 2024 15:43:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711554247; cv=none; b=MclVkbK91WUb92cOeNkWaHTi2wVM0t1zk3UfxLRiTkfRtmX31P5eToY0d/om3yX+yhtdSzQLNNgX31tJVbni31ZkZGauHuQCq5e6gkBA658nwsC+IHQFowre/nHee2YxB24OXUnk4lJnBRMPsNtjwcFr1qA3JjVWslHdPyOdoyI=
+	t=1711554199; cv=none; b=mjCTqzsAjzdiRCIAN7kqbqNvQdLKPgEoGc4r9iAoDKyk+1vU6MrlV4yO1mC7cf/HAXrICMoPzBXUFjWEi0xqNhhRrATZbuXvF5OrZgYrDojNGarYTgy9MSUnKJiha20dU9UPfL6SeuY73kiCgimNEni7e2ELyyD2Oo1qaxvqJpI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711554247; c=relaxed/simple;
-	bh=D6+E5uoJQ6G7TKgRsAZMZJr80d9n1W6yZjC95dfWkNk=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=GI6wjYnkEK87i/HSurIIdQer6lN9sjFCrb8FJORXFAiYFsD3UF7osL/yIQIvaHsASix+L6XY8cK5OXW+grN9VUHAHg7wEvSqSnQj0AkeQX7T3/2VabAKSdjhuCsAn7b2mEl/Ms9jdOF4ZYeRR7iP5IKAItZA3ld5pFoUfWTW/HI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=fail (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=ENKyI+AX reason="signature verification failed"; arc=none smtp.client-ip=65.109.113.108
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
-Received: from localhost (localhost.localdomain [127.0.0.1])
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 1DBA740E02A9;
-	Wed, 27 Mar 2024 15:44:03 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-	with ESMTP id 3w9bjIk7266G; Wed, 27 Mar 2024 15:44:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-	t=1711554239; bh=jmK0cjraSrwkY9e375az1GRBwh22aHXiWu6RP3/ODdQ=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=ENKyI+AXk+a1wYEWMCqFdvXEWkqNUgbzfLZ/p5UPHOld29ytRqDKuuqryPIBDCYq5
-	 m2JzEPSF+IIrlejpRcIhUThBUc4IpIIv09bRFwdoF6GLiwklzC4xEB2s+hpgG6KkxB
-	 CjR259QW1ZX6GWRskXHhKNpmHUdAjRszprfpjuu5E/kmqvSChH0mXjU7d0/XUuWdPH
-	 lX3bxmv2G0noZw/Y12i4T6rhwdNPY14BgsWeZH8AhIh8HD0jkYYLucjiNOFJcJ6DU0
-	 EcCL5q+0hSSJ5aLn6+sL5+CfE49TFJOqwMdTaxy4GyeTO4TbZVrbx3MQ3qX9MiMXDu
-	 ExmxVfMKFpVDQUMk73dE9w8cPfFwhAc7j9DlhE90wQ7ixw6VgICNHV9StxEe0JQYYw
-	 NUypYpz4PfJT3ra3oP8DCQmecGFCSi0QRzUTeBcEnT66aCOUCTYJF0YGJLKnlsQL1q
-	 kLbCkuJet8tpTYzLBUokjmIhuwN/D6cnc5tL2swxEATPtyuugMk/MxE9XCUJGSCSwC
-	 U5y7fjObOjVMkbGrQadYDxflbdqWvys/Yfhovh2mRcQEsVfDvA4I4OG4F1XN8RqfWG
-	 zAoRAme/vOMUbm6u20BsBYvWB+H1m55H6BZBLuB6vew30d1eLb4YdxAju8hkO0tDAR
-	 Wb59weSD6O1W1fnUKmGIlXhE=
-Received: from zn.tnic (p5de8ecf7.dip0.t-ipconnect.de [93.232.236.247])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-	(No client certificate requested)
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id A430C40E0028;
-	Wed, 27 Mar 2024 15:43:52 +0000 (UTC)
-From: Borislav Petkov <bp@alien8.de>
-To: X86 ML <x86@kernel.org>
-Cc: LKML <linux-kernel@vger.kernel.org>,
-	KVM <kvm@vger.kernel.org>,
-	Ashish Kalra <ashish.kalra@amd.com>,
-	Joerg Roedel <joro@8bytes.org>,
-	Michael Roth <michael.roth@amd.com>,
-	Tom Lendacky <thomas.lendacky@amd.com>
-Subject: [PATCH 3/5] x86/kvm/Kconfig: Have KVM_AMD_SEV select ARCH_HAS_CC_PLATFORM
-Date: Wed, 27 Mar 2024 16:43:15 +0100
-Message-ID: <20240327154317.29909-4-bp@alien8.de>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240327154317.29909-1-bp@alien8.de>
-References: <20240327154317.29909-1-bp@alien8.de>
+	s=arc-20240116; t=1711554199; c=relaxed/simple;
+	bh=aBbxarP4jaK4Vd3GsndlzhtjPh19wImbPPVLqBPo3Zc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=L6O7TfMYRFNMHTc6inPIFc3z9mT6azMMuyK2gwfMms58hja5iq5M/kUEBaDu6IjY/rANWrbqt2DfXMuvsPOvT5p4EI376f+c21FwTXK9JVkh3VmMTCmJUmaz5yTyWkGCHNdQ9VwGWl88QFXpTwsqi8UCmCv2f/TMTwfMaCgdFWg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=V1ETZVaO; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AEEE2C4166A;
+	Wed, 27 Mar 2024 15:43:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1711554198;
+	bh=aBbxarP4jaK4Vd3GsndlzhtjPh19wImbPPVLqBPo3Zc=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=V1ETZVaOGmLgyK6y5BEngFQ7ogBt81FdTsOEwzKmc+Z6S7n2IMIb04Oqx4EEsellz
+	 TleDgc+tLzLHY2Dqb8AjQygzL0RPVJ4hNknke0FDWVQHVTkbv1jmR/IFad4Wjd6LE1
+	 wudwH2HdkvVWozDsCxoypt6vwZ71yHa5FozIppzux2irppfwjQcPdQniivxasEmx65
+	 fnw3hxCNdlcfxSEN4AxjbFRpj3L8VSwbMDs1SqUgqAWmM85nRNhqMldIg0K1WnpXqh
+	 PKUk+WLuQj2+XOQVxNuaEYhO3bMKbey8Vw2pnki3yu9QX8z7a3Wqb3qJFQS9gQU6bF
+	 kVxdD0sGNFKnQ==
+Date: Wed, 27 Mar 2024 10:43:16 -0500
+From: Rob Herring <robh@kernel.org>
+To: Raymond Hackley <raymondhackley@protonmail.com>
+Cc: linux-kernel@vger.kernel.org, Bjorn Andersson <andersson@kernel.org>,
+	Konrad Dybcio <konrad.dybcio@linaro.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Stephan Gerhold <stephan@gerhold.net>,
+	Nikita Travkin <nikita@trvn.ru>, linux-arm-msm@vger.kernel.org,
+	devicetree@vger.kernel.org, ~postmarketos/upstreaming@lists.sr.ht
+Subject: Re: [PATCH 2/2] dt-bindings: qcom: Document samsung,fortuna
+Message-ID: <20240327154316.GA3453016-robh@kernel.org>
+References: <20240326141222.200452-1-raymondhackley@protonmail.com>
+ <20240326141222.200452-3-raymondhackley@protonmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240326141222.200452-3-raymondhackley@protonmail.com>
 
-From: "Borislav Petkov (AMD)" <bp@alien8.de>
+On Tue, Mar 26, 2024 at 02:12:58PM +0000, Raymond Hackley wrote:
+> Document common binding samsung,fortuna used by the following
+> Samsung Galaxy Grand Prime devices below:
+> - SM-G530FZ (msm8916-samsung-grandprimelte)
+> - SM-G530H  (msm8216-samsung-fortuna3g)
+> - SM-G530W  (msm8916-gprimeltecan)
 
-The functionality to load SEV-SNP guests by the host will soon rely on
-cc_platform* helpers because the cpu_feature* API with the early
-patching is insufficient when SNP support needs to be disabled late.
+Commit messages should answer "why?". Why do you need this?
 
-Therefore, pull that functionality in.
+Please test this binding change against your dts changes. I think you 
+will find it fails.
 
-Signed-off-by: Borislav Petkov (AMD) <bp@alien8.de>
----
- arch/x86/kvm/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/arch/x86/kvm/Kconfig b/arch/x86/kvm/Kconfig
-index 3aaf7e86a859..0ebdd088f28b 100644
---- a/arch/x86/kvm/Kconfig
-+++ b/arch/x86/kvm/Kconfig
-@@ -122,6 +122,7 @@ config KVM_AMD_SEV
- 	default y
- 	depends on KVM_AMD && X86_64
- 	depends on CRYPTO_DEV_SP_PSP && !(KVM_AMD=3Dy && CRYPTO_DEV_CCP_DD=3Dm)
-+	select ARCH_HAS_CC_PLATFORM
- 	help
- 	  Provides support for launching Encrypted VMs (SEV) and Encrypted VMs
- 	  with Encrypted State (SEV-ES) on AMD processors.
---=20
-2.43.0
-
+> 
+> Signed-off-by: Raymond Hackley <raymondhackley@protonmail.com>
+> ---
+>  Documentation/devicetree/bindings/arm/qcom.yaml | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/arm/qcom.yaml b/Documentation/devicetree/bindings/arm/qcom.yaml
+> index 66beaac60e1d..2db776d78d22 100644
+> --- a/Documentation/devicetree/bindings/arm/qcom.yaml
+> +++ b/Documentation/devicetree/bindings/arm/qcom.yaml
+> @@ -204,6 +204,7 @@ properties:
+>                - samsung,a5u-eur
+>                - samsung,e5
+>                - samsung,e7
+> +              - samsung,fortuna
+>                - samsung,fortuna3g
+>                - samsung,gprimeltecan
+>                - samsung,grandmax
+> -- 
+> 2.39.2
+> 
+> 
 
