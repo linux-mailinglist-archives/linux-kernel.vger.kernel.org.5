@@ -1,57 +1,59 @@
-Return-Path: <linux-kernel+bounces-120750-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-120751-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C662988DC81
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 12:29:32 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9DAF588DC84
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 12:29:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2041DB22339
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 11:29:30 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1BB8B1F26714
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 11:29:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 79964768E5;
-	Wed, 27 Mar 2024 11:29:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 95DE6768E0;
+	Wed, 27 Mar 2024 11:29:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="EKI6l2e4"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="OnsabbbZ"
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 518055F869
-	for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 11:29:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9D65D7EF05
+	for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 11:29:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711538964; cv=none; b=bnUKmezvFhwRIoDJkn73WfbKcXrdpukjeK8KVCQPBP2j8PKsp01jWp7RIusmxZGOSvyjBB4EfESsCuiVUtml/g4FdkGamHabk2w+g6oOuqw6smwkk75ME1tjQyTOEkCXJar16W1qWlyqQl/r9IQpHS5pXDIhFEGXFN3K+3ahQrY=
+	t=1711538968; cv=none; b=ImVd0/J5zJZVn7riRSzCH4sLfENHXqZBvsEkItbDbn33ckWbB6Bont7LAbbLJ8KG/GB3sB0I1CxcvgKFdW1vlnI5YUMp7SHG4ZeazPIOEzJWxGnQSDjFw05DHZqttPXB4la78YtGrlpO0lpfEy6Jagzo5bBvlrzKEbw6/FYl5rw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711538964; c=relaxed/simple;
-	bh=nsw/Rlm6QWYLk+qz4DJpNeS9tub8iDz1dJCAyezYlIY=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=A/bl0IpbdQdPQU8vjSfI6UKDi3DSd+/sqN+gsrKzvmp3q13vw7MnZJoO2QtFn4L6r1GFAHtK8IStsneF7Kz1F3H2CC5vg5NUisyNNde3gNHI/DYSeiYNUf487i1oN7qYuAHDXDXZkep47Px7fj7Pvtuw19K8J9/KNbtGPPqLrAE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=EKI6l2e4; arc=none smtp.client-ip=170.10.133.124
+	s=arc-20240116; t=1711538968; c=relaxed/simple;
+	bh=zJC6Fi8RX7Q1mj0rbuAMokMhkfYSUJeFUVHxXu4xS6c=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=aXc0cJoXWhjtaim6v1Uyw3MgS/ik7mNR6hEz6HYTG5a62VX0tLsxkRg5YEgb/HVw/peX+qEYP7ngtzbQkwyqXwuXF3VW77NlM0FuVFdCLYNXVWQBWr9DMNwojwFLWXbAVgIPZIe7s4RxKShpbuqXe4qPL7zAZM+q8Wq0YLgs8YI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=OnsabbbZ; arc=none smtp.client-ip=170.10.133.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1711538962;
+	s=mimecast20190719; t=1711538965;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=lZqOgaNlUICmRrTLGBar/YHxoUMuvE6lugicHc7KuaA=;
-	b=EKI6l2e4aFWwXfZoRSVB89l+tzkz27IbpFU0Cx6CIfYqgJd4qguo9o627hAReTF0r2hcZb
-	W5wCmT+vLzFH9pe77jNUHifruqPCpCHxLLvb6Y1r9IZFpbCSMsqiBbRL7YPI5t+VR5Wvpx
-	UW+kmewkhtRcgGP0okqt+3+Wzkpm38I=
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=5vtIGiW/761u5u6dWFg63bmfLkJ5QZDUbW7u7igykf0=;
+	b=OnsabbbZSzBMIZqJeDE8HBGCfc+32Ms45RVKw/Y5tAbsGsXFE1tpMsGkspEZ1wZ9sFrfRr
+	FJBIlp3x8tr3kKcBKCNLk3UosN8NLgo7fbMdivsq2LUbq7yBlhdfSh+rjKyletT+l/NXC5
+	gwPqk2BIDfQ4EIx4HX8VROrC4IF7bfM=
 Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
  [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-186-q9tstAjEN1-lvFNkJk7hnA-1; Wed, 27 Mar 2024 07:29:17 -0400
-X-MC-Unique: q9tstAjEN1-lvFNkJk7hnA-1
+ us-mta-480-hNKDEi75O4qDXJZ6ctwhsA-1; Wed, 27 Mar 2024 07:29:20 -0400
+X-MC-Unique: hNKDEi75O4qDXJZ6ctwhsA-1
 Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.rdu2.redhat.com [10.11.54.4])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id E7CE082248C;
-	Wed, 27 Mar 2024 11:29:16 +0000 (UTC)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 87129800264;
+	Wed, 27 Mar 2024 11:29:19 +0000 (UTC)
 Received: from vschneid-thinkpadt14sgen2i.remote.csb (unknown [10.39.193.36])
-	by smtp.corp.redhat.com (Postfix) with ESMTPS id 3626D2024517;
-	Wed, 27 Mar 2024 11:29:14 +0000 (UTC)
+	by smtp.corp.redhat.com (Postfix) with ESMTPS id 3BAC92022C1E;
+	Wed, 27 Mar 2024 11:29:17 +0000 (UTC)
 From: Valentin Schneider <vschneid@redhat.com>
 To: rcu@vger.kernel.org,
 	linux-kernel@vger.kernel.org
@@ -66,9 +68,11 @@ Cc: Frederic Weisbecker <frederic@kernel.org>,
 	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
 	Lai Jiangshan <jiangshanlai@gmail.com>,
 	Zqiang <qiang.zhang1211@gmail.com>
-Subject: [PATCH 0/2] context_tracking, rcu: Standardize naming related to contex_tracking.state
-Date: Wed, 27 Mar 2024 12:29:00 +0100
-Message-ID: <20240327112902.1184822-1-vschneid@redhat.com>
+Subject: [PATCH 1/2] treewide: context_tracking: Rename CONTEXT_FOO to CT_STATE_FOO
+Date: Wed, 27 Mar 2024 12:29:01 +0100
+Message-ID: <20240327112902.1184822-2-vschneid@redhat.com>
+In-Reply-To: <20240327112902.1184822-1-vschneid@redhat.com>
+References: <20240327112902.1184822-1-vschneid@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -78,38 +82,357 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.4
 
-Hi folks,
+Context tracking state related symbols currently use a mix of the
+CONTEXT_ (e.g. CONTEXT_KERNEL) and CT_SATE_ (e.g. CT_STATE_MASK) prefixes.
 
-As I'm working on respinning [1] I'm trying to send standalone things
-separately, and this is one of them.
+Clean up the naming and make the ctx_state enum use the CT_STATE_ prefix.
 
-No code change, just enum/const renaming, see [2].
-
-[1]: https://lore.kernel.org/lkml/20230720163056.2564824-1-vschneid@redhat.com/
-[2]: https://lore.kernel.org/lkml/ZL6QI4mV-NKlh4Ox@localhost.localdomain/#t
-
-Cheers,
-Valentin
-
-Valentin Schneider (2):
-  treewide: context_tracking: Rename CONTEXT_FOO to CT_STATE_FOO
-  context_tracking, rcu: Rename RCU_DYNTICKS_IDX to CT_DYNTICKS_IDX
-
+Suggested-by: Frederic Weisbecker <frederic@kernel.org>
+Signed-off-by: Valentin Schneider <vschneid@redhat.com>
+---
  arch/Kconfig                           |  2 +-
  arch/arm64/kernel/entry-common.c       |  2 +-
  arch/powerpc/include/asm/interrupt.h   |  6 +++---
  arch/powerpc/kernel/interrupt.c        |  6 +++---
  arch/powerpc/kernel/syscall.c          |  2 +-
  arch/x86/entry/common.c                |  2 +-
- include/linux/context_tracking.h       | 22 +++++++++----------
- include/linux/context_tracking_state.h | 20 ++++++++---------
+ include/linux/context_tracking.h       | 16 ++++++++--------
+ include/linux/context_tracking_state.h | 20 ++++++++++----------
  include/linux/entry-common.h           |  2 +-
- kernel/context_tracking.c              | 30 +++++++++++++-------------
+ kernel/context_tracking.c              | 12 ++++++------
  kernel/entry/common.c                  |  2 +-
- kernel/rcu/tree.c                      | 12 +++++------
  kernel/sched/core.c                    |  4 ++--
- 13 files changed, 56 insertions(+), 56 deletions(-)
+ 12 files changed, 38 insertions(+), 38 deletions(-)
 
+diff --git a/arch/Kconfig b/arch/Kconfig
+index 9f066785bb71d..b0fb7182648a2 100644
+--- a/arch/Kconfig
++++ b/arch/Kconfig
+@@ -845,7 +845,7 @@ config HAVE_CONTEXT_TRACKING_USER_OFFSTACK
+ 	  Architecture neither relies on exception_enter()/exception_exit()
+ 	  nor on schedule_user(). Also preempt_schedule_notrace() and
+ 	  preempt_schedule_irq() can't be called in a preemptible section
+-	  while context tracking is CONTEXT_USER. This feature reflects a sane
++	  while context tracking is CT_STATE_USER. This feature reflects a sane
+ 	  entry implementation where the following requirements are met on
+ 	  critical entry code, ie: before user_exit() or after user_enter():
+ 
+diff --git a/arch/arm64/kernel/entry-common.c b/arch/arm64/kernel/entry-common.c
+index b77a15955f28b..3fcd9d080bf2a 100644
+--- a/arch/arm64/kernel/entry-common.c
++++ b/arch/arm64/kernel/entry-common.c
+@@ -103,7 +103,7 @@ static void noinstr exit_to_kernel_mode(struct pt_regs *regs)
+ static __always_inline void __enter_from_user_mode(void)
+ {
+ 	lockdep_hardirqs_off(CALLER_ADDR0);
+-	CT_WARN_ON(ct_state() != CONTEXT_USER);
++	CT_WARN_ON(ct_state() != CT_STATE_USER);
+ 	user_exit_irqoff();
+ 	trace_hardirqs_off_finish();
+ 	mte_disable_tco_entry(current);
+diff --git a/arch/powerpc/include/asm/interrupt.h b/arch/powerpc/include/asm/interrupt.h
+index 7b610864b3645..dcb4bd8529f68 100644
+--- a/arch/powerpc/include/asm/interrupt.h
++++ b/arch/powerpc/include/asm/interrupt.h
+@@ -177,7 +177,7 @@ static inline void interrupt_enter_prepare(struct pt_regs *regs)
+ 
+ 	if (user_mode(regs)) {
+ 		kuap_lock();
+-		CT_WARN_ON(ct_state() != CONTEXT_USER);
++		CT_WARN_ON(ct_state() != CT_STATE_USER);
+ 		user_exit_irqoff();
+ 
+ 		account_cpu_user_entry();
+@@ -189,8 +189,8 @@ static inline void interrupt_enter_prepare(struct pt_regs *regs)
+ 		 * so avoid recursion.
+ 		 */
+ 		if (TRAP(regs) != INTERRUPT_PROGRAM)
+-			CT_WARN_ON(ct_state() != CONTEXT_KERNEL &&
+-				   ct_state() != CONTEXT_IDLE);
++			CT_WARN_ON(ct_state() != CT_STATE_KERNEL &&
++				   ct_state() != CT_STATE_IDLE);
+ 		INT_SOFT_MASK_BUG_ON(regs, is_implicit_soft_masked(regs));
+ 		INT_SOFT_MASK_BUG_ON(regs, arch_irq_disabled_regs(regs) &&
+ 					   search_kernel_restart_table(regs->nip));
+diff --git a/arch/powerpc/kernel/interrupt.c b/arch/powerpc/kernel/interrupt.c
+index eca293794a1e8..af62ec974b970 100644
+--- a/arch/powerpc/kernel/interrupt.c
++++ b/arch/powerpc/kernel/interrupt.c
+@@ -266,7 +266,7 @@ notrace unsigned long syscall_exit_prepare(unsigned long r3,
+ 	unsigned long ret = 0;
+ 	bool is_not_scv = !IS_ENABLED(CONFIG_PPC_BOOK3S_64) || !scv;
+ 
+-	CT_WARN_ON(ct_state() == CONTEXT_USER);
++	CT_WARN_ON(ct_state() == CT_STATE_USER);
+ 
+ 	kuap_assert_locked();
+ 
+@@ -344,7 +344,7 @@ notrace unsigned long interrupt_exit_user_prepare(struct pt_regs *regs)
+ 
+ 	BUG_ON(regs_is_unrecoverable(regs));
+ 	BUG_ON(arch_irq_disabled_regs(regs));
+-	CT_WARN_ON(ct_state() == CONTEXT_USER);
++	CT_WARN_ON(ct_state() == CT_STATE_USER);
+ 
+ 	/*
+ 	 * We don't need to restore AMR on the way back to userspace for KUAP.
+@@ -386,7 +386,7 @@ notrace unsigned long interrupt_exit_kernel_prepare(struct pt_regs *regs)
+ 	if (!IS_ENABLED(CONFIG_PPC_BOOK3E_64) &&
+ 	    TRAP(regs) != INTERRUPT_PROGRAM &&
+ 	    TRAP(regs) != INTERRUPT_PERFMON)
+-		CT_WARN_ON(ct_state() == CONTEXT_USER);
++		CT_WARN_ON(ct_state() == CT_STATE_USER);
+ 
+ 	kuap = kuap_get_and_assert_locked();
+ 
+diff --git a/arch/powerpc/kernel/syscall.c b/arch/powerpc/kernel/syscall.c
+index f6f868e817e63..be159ad4b77bd 100644
+--- a/arch/powerpc/kernel/syscall.c
++++ b/arch/powerpc/kernel/syscall.c
+@@ -27,7 +27,7 @@ notrace long system_call_exception(struct pt_regs *regs, unsigned long r0)
+ 
+ 	trace_hardirqs_off(); /* finish reconciling */
+ 
+-	CT_WARN_ON(ct_state() == CONTEXT_KERNEL);
++	CT_WARN_ON(ct_state() == CT_STATE_KERNEL);
+ 	user_exit_irqoff();
+ 
+ 	BUG_ON(regs_is_unrecoverable(regs));
+diff --git a/arch/x86/entry/common.c b/arch/x86/entry/common.c
+index 6356060caaf31..f42a125093e54 100644
+--- a/arch/x86/entry/common.c
++++ b/arch/x86/entry/common.c
+@@ -150,7 +150,7 @@ early_param("ia32_emulation", ia32_emulation_override_cmdline);
+ #endif
+ 
+ /*
+- * Invoke a 32-bit syscall.  Called with IRQs on in CONTEXT_KERNEL.
++ * Invoke a 32-bit syscall.  Called with IRQs on in CT_STATE_KERNEL.
+  */
+ static __always_inline void do_syscall_32_irqs_on(struct pt_regs *regs, int nr)
+ {
+diff --git a/include/linux/context_tracking.h b/include/linux/context_tracking.h
+index 6e76b9dba00e7..28fcfa1849032 100644
+--- a/include/linux/context_tracking.h
++++ b/include/linux/context_tracking.h
+@@ -26,26 +26,26 @@ extern void user_exit_callable(void);
+ static inline void user_enter(void)
+ {
+ 	if (context_tracking_enabled())
+-		ct_user_enter(CONTEXT_USER);
++		ct_user_enter(CT_STATE_USER);
+ 
+ }
+ static inline void user_exit(void)
+ {
+ 	if (context_tracking_enabled())
+-		ct_user_exit(CONTEXT_USER);
++		ct_user_exit(CT_STATE_USER);
+ }
+ 
+ /* Called with interrupts disabled.  */
+ static __always_inline void user_enter_irqoff(void)
+ {
+ 	if (context_tracking_enabled())
+-		__ct_user_enter(CONTEXT_USER);
++		__ct_user_enter(CT_STATE_USER);
+ 
+ }
+ static __always_inline void user_exit_irqoff(void)
+ {
+ 	if (context_tracking_enabled())
+-		__ct_user_exit(CONTEXT_USER);
++		__ct_user_exit(CT_STATE_USER);
+ }
+ 
+ static inline enum ctx_state exception_enter(void)
+@@ -57,7 +57,7 @@ static inline enum ctx_state exception_enter(void)
+ 		return 0;
+ 
+ 	prev_ctx = __ct_state();
+-	if (prev_ctx != CONTEXT_KERNEL)
++	if (prev_ctx != CT_STATE_KERNEL)
+ 		ct_user_exit(prev_ctx);
+ 
+ 	return prev_ctx;
+@@ -67,7 +67,7 @@ static inline void exception_exit(enum ctx_state prev_ctx)
+ {
+ 	if (!IS_ENABLED(CONFIG_HAVE_CONTEXT_TRACKING_USER_OFFSTACK) &&
+ 	    context_tracking_enabled()) {
+-		if (prev_ctx != CONTEXT_KERNEL)
++		if (prev_ctx != CT_STATE_KERNEL)
+ 			ct_user_enter(prev_ctx);
+ 	}
+ }
+@@ -75,7 +75,7 @@ static inline void exception_exit(enum ctx_state prev_ctx)
+ static __always_inline bool context_tracking_guest_enter(void)
+ {
+ 	if (context_tracking_enabled())
+-		__ct_user_enter(CONTEXT_GUEST);
++		__ct_user_enter(CT_STATE_GUEST);
+ 
+ 	return context_tracking_enabled_this_cpu();
+ }
+@@ -83,7 +83,7 @@ static __always_inline bool context_tracking_guest_enter(void)
+ static __always_inline void context_tracking_guest_exit(void)
+ {
+ 	if (context_tracking_enabled())
+-		__ct_user_exit(CONTEXT_GUEST);
++		__ct_user_exit(CT_STATE_GUEST);
+ }
+ 
+ #define CT_WARN_ON(cond) WARN_ON(context_tracking_enabled() && (cond))
+diff --git a/include/linux/context_tracking_state.h b/include/linux/context_tracking_state.h
+index bbff5f7f88030..f1c53125edee2 100644
+--- a/include/linux/context_tracking_state.h
++++ b/include/linux/context_tracking_state.h
+@@ -10,18 +10,18 @@
+ #define DYNTICK_IRQ_NONIDLE	((LONG_MAX / 2) + 1)
+ 
+ enum ctx_state {
+-	CONTEXT_DISABLED	= -1,	/* returned by ct_state() if unknown */
+-	CONTEXT_KERNEL		= 0,
+-	CONTEXT_IDLE		= 1,
+-	CONTEXT_USER		= 2,
+-	CONTEXT_GUEST		= 3,
+-	CONTEXT_MAX		= 4,
++	CT_STATE_DISABLED	= -1,	/* returned by ct_state() if unknown */
++	CT_STATE_KERNEL		= 0,
++	CT_STATE_IDLE		= 1,
++	CT_STATE_USER		= 2,
++	CT_STATE_GUEST		= 3,
++	CT_STATE_MAX		= 4,
+ };
+ 
+ /* Even value for idle, else odd. */
+-#define RCU_DYNTICKS_IDX CONTEXT_MAX
++#define RCU_DYNTICKS_IDX CT_STATE_MAX
+ 
+-#define CT_STATE_MASK (CONTEXT_MAX - 1)
++#define CT_STATE_MASK (CT_STATE_MAX - 1)
+ #define CT_DYNTICKS_MASK (~CT_STATE_MASK)
+ 
+ struct context_tracking {
+@@ -123,14 +123,14 @@ static inline bool context_tracking_enabled_this_cpu(void)
+  *
+  * Returns the current cpu's context tracking state if context tracking
+  * is enabled.  If context tracking is disabled, returns
+- * CONTEXT_DISABLED.  This should be used primarily for debugging.
++ * CT_STATE_DISABLED.  This should be used primarily for debugging.
+  */
+ static __always_inline int ct_state(void)
+ {
+ 	int ret;
+ 
+ 	if (!context_tracking_enabled())
+-		return CONTEXT_DISABLED;
++		return CT_STATE_DISABLED;
+ 
+ 	preempt_disable();
+ 	ret = __ct_state();
+diff --git a/include/linux/entry-common.h b/include/linux/entry-common.h
+index b0fb775a600d9..1e50cdb83ae50 100644
+--- a/include/linux/entry-common.h
++++ b/include/linux/entry-common.h
+@@ -108,7 +108,7 @@ static __always_inline void enter_from_user_mode(struct pt_regs *regs)
+ 	arch_enter_from_user_mode(regs);
+ 	lockdep_hardirqs_off(CALLER_ADDR0);
+ 
+-	CT_WARN_ON(__ct_state() != CONTEXT_USER);
++	CT_WARN_ON(__ct_state() != CT_STATE_USER);
+ 	user_exit_irqoff();
+ 
+ 	instrumentation_begin();
+diff --git a/kernel/context_tracking.c b/kernel/context_tracking.c
+index 70ae70d038233..21f2cf90ed0bf 100644
+--- a/kernel/context_tracking.c
++++ b/kernel/context_tracking.c
+@@ -317,7 +317,7 @@ void noinstr ct_nmi_enter(void)
+ void noinstr ct_idle_enter(void)
+ {
+ 	WARN_ON_ONCE(IS_ENABLED(CONFIG_RCU_EQS_DEBUG) && !raw_irqs_disabled());
+-	ct_kernel_exit(false, RCU_DYNTICKS_IDX + CONTEXT_IDLE);
++	ct_kernel_exit(false, RCU_DYNTICKS_IDX + CT_STATE_IDLE);
+ }
+ EXPORT_SYMBOL_GPL(ct_idle_enter);
+ 
+@@ -335,7 +335,7 @@ void noinstr ct_idle_exit(void)
+ 	unsigned long flags;
+ 
+ 	raw_local_irq_save(flags);
+-	ct_kernel_enter(false, RCU_DYNTICKS_IDX - CONTEXT_IDLE);
++	ct_kernel_enter(false, RCU_DYNTICKS_IDX - CT_STATE_IDLE);
+ 	raw_local_irq_restore(flags);
+ }
+ EXPORT_SYMBOL_GPL(ct_idle_exit);
+@@ -485,7 +485,7 @@ void noinstr __ct_user_enter(enum ctx_state state)
+ 			 * user_exit() or ct_irq_enter(). Let's remove RCU's dependency
+ 			 * on the tick.
+ 			 */
+-			if (state == CONTEXT_USER) {
++			if (state == CT_STATE_USER) {
+ 				instrumentation_begin();
+ 				trace_user_enter(0);
+ 				vtime_user_enter(current);
+@@ -621,7 +621,7 @@ void noinstr __ct_user_exit(enum ctx_state state)
+ 			 * run a RCU read side critical section anytime.
+ 			 */
+ 			ct_kernel_enter(true, RCU_DYNTICKS_IDX - state);
+-			if (state == CONTEXT_USER) {
++			if (state == CT_STATE_USER) {
+ 				instrumentation_begin();
+ 				vtime_user_exit(current);
+ 				trace_user_exit(0);
+@@ -634,12 +634,12 @@ void noinstr __ct_user_exit(enum ctx_state state)
+ 			 * In this we case we don't care about any concurrency/ordering.
+ 			 */
+ 			if (!IS_ENABLED(CONFIG_CONTEXT_TRACKING_IDLE))
+-				raw_atomic_set(&ct->state, CONTEXT_KERNEL);
++				raw_atomic_set(&ct->state, CT_STATE_KERNEL);
+ 
+ 		} else {
+ 			if (!IS_ENABLED(CONFIG_CONTEXT_TRACKING_IDLE)) {
+ 				/* Tracking for vtime only, no concurrent RCU EQS accounting */
+-				raw_atomic_set(&ct->state, CONTEXT_KERNEL);
++				raw_atomic_set(&ct->state, CT_STATE_KERNEL);
+ 			} else {
+ 				/*
+ 				 * Tracking for vtime and RCU EQS. Make sure we don't race
+diff --git a/kernel/entry/common.c b/kernel/entry/common.c
+index 90843cc385880..5b6934e23c21d 100644
+--- a/kernel/entry/common.c
++++ b/kernel/entry/common.c
+@@ -182,7 +182,7 @@ static void syscall_exit_to_user_mode_prepare(struct pt_regs *regs)
+ 	unsigned long work = READ_ONCE(current_thread_info()->syscall_work);
+ 	unsigned long nr = syscall_get_nr(current, regs);
+ 
+-	CT_WARN_ON(ct_state() != CONTEXT_KERNEL);
++	CT_WARN_ON(ct_state() != CT_STATE_KERNEL);
+ 
+ 	if (IS_ENABLED(CONFIG_PROVE_LOCKING)) {
+ 		if (WARN(irqs_disabled(), "syscall %lu left IRQs disabled", nr))
+diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+index 7019a40457a6d..35dd462a55abe 100644
+--- a/kernel/sched/core.c
++++ b/kernel/sched/core.c
+@@ -5980,7 +5980,7 @@ static inline void schedule_debug(struct task_struct *prev, bool preempt)
+ 		preempt_count_set(PREEMPT_DISABLED);
+ 	}
+ 	rcu_sleep_check();
+-	SCHED_WARN_ON(ct_state() == CONTEXT_USER);
++	SCHED_WARN_ON(ct_state() == CT_STATE_USER);
+ 
+ 	profile_hit(SCHED_PROFILING, __builtin_return_address(0));
+ 
+@@ -6875,7 +6875,7 @@ asmlinkage __visible void __sched schedule_user(void)
+ 	 * we find a better solution.
+ 	 *
+ 	 * NB: There are buggy callers of this function.  Ideally we
+-	 * should warn if prev_state != CONTEXT_USER, but that will trigger
++	 * should warn if prev_state != CT_STATE_USER, but that will trigger
+ 	 * too frequently to make sense yet.
+ 	 */
+ 	enum ctx_state prev_state = exception_enter();
 -- 
 2.43.0
 
