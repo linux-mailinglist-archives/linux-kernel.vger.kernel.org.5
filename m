@@ -1,53 +1,55 @@
-Return-Path: <linux-kernel+bounces-120901-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-120902-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0520388E053
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 13:33:40 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 309A088E057
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 13:33:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7F3221F35DFB
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 12:33:39 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 612FF1C23485
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 12:33:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 48719146D72;
-	Wed, 27 Mar 2024 12:12:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0A01E1474C4;
+	Wed, 27 Mar 2024 12:12:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Ir3NHM1q"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZhQ4Irik"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 74736146D67;
-	Wed, 27 Mar 2024 12:12:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 371491474A8;
+	Wed, 27 Mar 2024 12:12:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711541535; cv=none; b=jmTIhKcLLzbVbiPTLa72kgDe8vw+LjkHYFwUiqzDP0MgAy7pNTGhRdJzmJSHMygCkVwI0PW0WMKTkLLZMERLFxr+McUWGYTURJ4B047TfNRoqf0dqcUouMPMBVaFwtcYmlIELm3jIgaJm+BMPn3sL9L+giG4Dvu9/9kxMotnIhY=
+	t=1711541538; cv=none; b=REZdRITa8ClGrra9P5y/JGaRHLQpXk1nzQG1gaTLV+h55VHSPr2Y4wiOQiARvTOk24xFDS9dVljVfIlDWjcoTwEQvE0TXEpeHr7qCdaNytACslSsOchwhSvxTGIkhFU6qqyjKRRgK6AsSj/M2LyeSJOhBF1IYDUYZf1wrkm2Lik=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711541535; c=relaxed/simple;
-	bh=5gbfUVWgskd76UUB/SaNJ2tip+qkInOd6L+8vdd3MKY=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=G8A9j6uB9yLlQxIoaNmLBZJhleAiuLOtheO7kuu/brmoLC1i1xL/OfD9ExARhUR7r7Vx6Q8Zgk20emywzYFeEsnKxUh/t5W/j3unndiRp0gyymza35H8rwxZF/x0fBlh757wQGYO6q2gjyMvV4q1fQFZCrf4f9TfDoWgpzoDrXc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Ir3NHM1q; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A6F37C433C7;
-	Wed, 27 Mar 2024 12:12:14 +0000 (UTC)
+	s=arc-20240116; t=1711541538; c=relaxed/simple;
+	bh=x7Od7Ej++ypZ/c2dRwQta2AbGRkonXYXpVhHLHC0VSQ=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=QYAlR+3zOR8axf0EIx1lW5wohTwz6qjbLG38WgRiaEi7QRktUN8LClrEtXMwOjI8myqQOlW4XGqbcR0UjZhV23b2wBNdanDWHSV2yBkgthxE9NmI2ib25qzmNMe3j60txkope0KPiFSsE2Vm3wJzMNDObVtGQuBzS6tFjoB5I9k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ZhQ4Irik; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 29A70C43390;
+	Wed, 27 Mar 2024 12:12:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711541535;
-	bh=5gbfUVWgskd76UUB/SaNJ2tip+qkInOd6L+8vdd3MKY=;
+	s=k20201202; t=1711541538;
+	bh=x7Od7Ej++ypZ/c2dRwQta2AbGRkonXYXpVhHLHC0VSQ=;
 	h=From:To:Cc:Subject:Date:From;
-	b=Ir3NHM1qU5odlJkzQv7s4xaFqAf0aeAk1gQcC5WbGLRL8EkBAMPTjz2u+3Lzmh5Al
-	 DXxqcJ/PEAdQshy0QR31J5hiXIX/g7llpqj4RBCu1Kt7W7E29lxsFFCH6bZpS6kMtW
-	 o+T8BrkF2Mz8Faai/BLHFAJ+1Djm9c3PgsaGfpvRPcvOiCDmow9Hm6ykO5XboKXgIt
-	 TOWHxfE7LSz7iX6wXpOOThs5OX5A6W3cVMlJ0OIqUb7Xx2ZK8hdFlZT/NjiOt7d9vP
-	 JHtPt0wRpNrdxWyUy4lpMcLz3KMU4RVnjQkkkSFA4y53Yzi5wMJav8hRleVzW4q2QT
-	 bWfdX2ggWw3WQ==
+	b=ZhQ4IrikOXjlRLjCXgRjkHYx0BmdToxDf5QcT+CJabDNAEJoemBNTz6nb6oM0MgLp
+	 kbZMUw2y3xGbpxbpmcBpkLjP+VGlUjMcTyJsP65YAIXLdlk1WzB3XT+YDGkjYOw2YC
+	 V+MpfqaRCkLz4i9icnsBqvsdu05pJUHw2X8/wMNygOQN2rpQ6pL5lOkZsXgbWBmF6P
+	 pjvdzJTGLH3VbxvAXaF/I3pLmTlQQPGYuIpzFB05vvbBUjLIrOXFFohuVwq1UpIIuV
+	 C1ug7ujcAj7STn9yLgXqTGpGx5M+fyqhVzIwFaBvT8QMKvTUA3A39U9iVYzjgMcBy+
+	 49ij/O1qOgscw==
 From: Sasha Levin <sashal@kernel.org>
 To: stable@vger.kernel.org,
-	stfrench@microsoft.com
-Cc: linux-cifs@vger.kernel.org,
-	samba-technical@lists.samba.org,
+	morrownr@gmail.com
+Cc: Larry Finger <Larry.Finger@lwfinger.net>,
+	Ping-Ke Shih <pkshih@realtek.com>,
+	Kalle Valo <kvalo@kernel.org>,
+	linux-wireless@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: FAILED: Patch "cifs: allow changing password during remount" failed to apply to 6.1-stable tree
-Date: Wed, 27 Mar 2024 08:12:13 -0400
-Message-ID: <20240327121213.2829353-1-sashal@kernel.org>
+Subject: FAILED: Patch "wifi: rtw88: Add missing VID/PIDs for 8811CU and 8821CU" failed to apply to 6.1-stable tree
+Date: Wed, 27 Mar 2024 08:12:16 -0400
+Message-ID: <20240327121216.2829390-1-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -69,136 +71,86 @@ Sasha
 
 ------------------ original commit in Linus's tree ------------------
 
-From c1eb537bf4560b3ad4df606c266c665624f3b502 Mon Sep 17 00:00:00 2001
-From: Steve French <stfrench@microsoft.com>
-Date: Tue, 13 Feb 2024 00:40:01 -0600
-Subject: [PATCH] cifs: allow changing password during remount
+From b8a62478f3b143592d1241de1a7f5f8629ad0f49 Mon Sep 17 00:00:00 2001
+From: Nick Morrow <morrownr@gmail.com>
+Date: Tue, 27 Feb 2024 02:34:40 +0000
+Subject: [PATCH] wifi: rtw88: Add missing VID/PIDs for 8811CU and 8821CU
 
-There are cases where a session is disconnected and password has changed
-on the server (or expired) for this user and this currently can not
-be fixed without unmount and mounting again.  This patch allows
-remount to change the password (for the non Kerberos case, Kerberos
-ticket refresh is handled differently) when the session is disconnected
-and the user can not reconnect due to still using old password.
+Add VID/PIDs that are known to be missing for this driver.
 
-Future patches should also allow us to setup the keyring (cifscreds)
-to have an "alternate password" so we would be able to change
-the password before the session drops (without the risk of races
-between when the password changes and the disconnect occurs -
-ie cases where the old password is still needed because the new
-password has not fully rolled out to all servers yet).
+Removed /* 8811CU */ and /* 8821CU */ as they are redundant
+since the file is specific to those chips.
+
+Removed /* TOTOLINK A650UA v3 */ as the manufacturer. It has a REALTEK
+VID so it may not be specific to this adapter.
+
+Verified and tested.
 
 Cc: stable@vger.kernel.org
-Signed-off-by: Steve French <stfrench@microsoft.com>
+Signed-off-by: Nick Morrow <morrownr@gmail.com>
+Signed-off-by: Larry Finger <Larry.Finger@lwfinger.net>
+Acked-by: Ping-Ke Shih <pkshih@realtek.com>
+Signed-off-by: Kalle Valo <kvalo@kernel.org>
+Link: https://msgid.link/4ume7mjw63u7.XlMUvUuacW2ErhOCdqlLkw2@1EHFQ.trk.elasticemail.com
 ---
- fs/smb/client/cifs_debug.c |  2 ++
- fs/smb/client/cifsglob.h   |  1 +
- fs/smb/client/fs_context.c | 27 ++++++++++++++++++++++-----
- fs/smb/client/smb2pdu.c    |  5 +++++
- 4 files changed, 30 insertions(+), 5 deletions(-)
+ .../net/wireless/realtek/rtw88/rtw8821cu.c    | 40 ++++++++++++-------
+ 1 file changed, 26 insertions(+), 14 deletions(-)
 
-diff --git a/fs/smb/client/cifs_debug.c b/fs/smb/client/cifs_debug.c
-index 3e4209f41c18f..23d2622b969f0 100644
---- a/fs/smb/client/cifs_debug.c
-+++ b/fs/smb/client/cifs_debug.c
-@@ -488,6 +488,8 @@ static int cifs_debug_data_proc_show(struct seq_file *m, void *v)
- 				ses->ses_count, ses->serverOS, ses->serverNOS,
- 				ses->capabilities, ses->ses_status);
- 			}
-+			if (ses->expired_pwd)
-+				seq_puts(m, "password no longer valid ");
- 			spin_unlock(&ses->ses_lock);
+diff --git a/drivers/net/wireless/realtek/rtw88/rtw8821cu.c b/drivers/net/wireless/realtek/rtw88/rtw8821cu.c
+index 7a5cbdc31ef79..e2c7d9f876836 100644
+--- a/drivers/net/wireless/realtek/rtw88/rtw8821cu.c
++++ b/drivers/net/wireless/realtek/rtw88/rtw8821cu.c
+@@ -9,24 +9,36 @@
+ #include "usb.h"
  
- 			seq_printf(m, "\n\tSecurity type: %s ",
-diff --git a/fs/smb/client/cifsglob.h b/fs/smb/client/cifsglob.h
-index 53c75cfb33ab9..ec9a26bd05a12 100644
---- a/fs/smb/client/cifsglob.h
-+++ b/fs/smb/client/cifsglob.h
-@@ -1066,6 +1066,7 @@ struct cifs_ses {
- 	enum securityEnum sectype; /* what security flavor was specified? */
- 	bool sign;		/* is signing required? */
- 	bool domainAuto:1;
-+	bool expired_pwd;  /* track if access denied or expired pwd so can know if need to update */
- 	unsigned int flags;
- 	__u16 session_flags;
- 	__u8 smb3signingkey[SMB3_SIGN_KEY_SIZE];
-diff --git a/fs/smb/client/fs_context.c b/fs/smb/client/fs_context.c
-index 4b2f5aa2ea0e1..415e87635d5aa 100644
---- a/fs/smb/client/fs_context.c
-+++ b/fs/smb/client/fs_context.c
-@@ -772,7 +772,7 @@ static void smb3_fs_context_free(struct fs_context *fc)
-  */
- static int smb3_verify_reconfigure_ctx(struct fs_context *fc,
- 				       struct smb3_fs_context *new_ctx,
--				       struct smb3_fs_context *old_ctx)
-+				       struct smb3_fs_context *old_ctx, bool need_recon)
- {
- 	if (new_ctx->posix_paths != old_ctx->posix_paths) {
- 		cifs_errorf(fc, "can not change posixpaths during remount\n");
-@@ -798,8 +798,15 @@ static int smb3_verify_reconfigure_ctx(struct fs_context *fc,
- 	}
- 	if (new_ctx->password &&
- 	    (!old_ctx->password || strcmp(new_ctx->password, old_ctx->password))) {
--		cifs_errorf(fc, "can not change password during remount\n");
--		return -EINVAL;
-+		if (need_recon == false) {
-+			cifs_errorf(fc,
-+				    "can not change password of active session during remount\n");
-+			return -EINVAL;
-+		} else if (old_ctx->sectype == Kerberos) {
-+			cifs_errorf(fc,
-+				    "can not change password for Kerberos via remount\n");
-+			return -EINVAL;
-+		}
- 	}
- 	if (new_ctx->domainname &&
- 	    (!old_ctx->domainname || strcmp(new_ctx->domainname, old_ctx->domainname))) {
-@@ -843,9 +850,14 @@ static int smb3_reconfigure(struct fs_context *fc)
- 	struct smb3_fs_context *ctx = smb3_fc2context(fc);
- 	struct dentry *root = fc->root;
- 	struct cifs_sb_info *cifs_sb = CIFS_SB(root->d_sb);
-+	struct cifs_ses *ses = cifs_sb_master_tcon(cifs_sb)->ses;
-+	bool need_recon = false;
- 	int rc;
- 
--	rc = smb3_verify_reconfigure_ctx(fc, ctx, cifs_sb->ctx);
-+	if (ses->expired_pwd)
-+		need_recon = true;
-+
-+	rc = smb3_verify_reconfigure_ctx(fc, ctx, cifs_sb->ctx, need_recon);
- 	if (rc)
- 		return rc;
- 
-@@ -858,7 +870,12 @@ static int smb3_reconfigure(struct fs_context *fc)
- 	STEAL_STRING(cifs_sb, ctx, UNC);
- 	STEAL_STRING(cifs_sb, ctx, source);
- 	STEAL_STRING(cifs_sb, ctx, username);
--	STEAL_STRING_SENSITIVE(cifs_sb, ctx, password);
-+	if (need_recon == false)
-+		STEAL_STRING_SENSITIVE(cifs_sb, ctx, password);
-+	else  {
-+		kfree_sensitive(ses->password);
-+		ses->password = kstrdup(ctx->password, GFP_KERNEL);
-+	}
- 	STEAL_STRING(cifs_sb, ctx, domainname);
- 	STEAL_STRING(cifs_sb, ctx, nodename);
- 	STEAL_STRING(cifs_sb, ctx, iocharset);
-diff --git a/fs/smb/client/smb2pdu.c b/fs/smb/client/smb2pdu.c
-index 608ee05491e26..a500380d1b2e9 100644
---- a/fs/smb/client/smb2pdu.c
-+++ b/fs/smb/client/smb2pdu.c
-@@ -1536,6 +1536,11 @@ SMB2_sess_sendreceive(struct SMB2_sess_data *sess_data)
- 			    &sess_data->buf0_type,
- 			    CIFS_LOG_ERROR | CIFS_SESS_OP, &rsp_iov);
- 	cifs_small_buf_release(sess_data->iov[0].iov_base);
-+	if (rc == 0)
-+		sess_data->ses->expired_pwd = false;
-+	else if ((rc == -EACCES) || (rc == -EKEYEXPIRED) || (rc == -EKEYREVOKED))
-+		sess_data->ses->expired_pwd = true;
-+
- 	memcpy(&sess_data->iov[0], &rsp_iov, sizeof(struct kvec));
- 
- 	return rc;
+ static const struct usb_device_id rtw_8821cu_id_table[] = {
+-	{ USB_DEVICE_AND_INTERFACE_INFO(RTW_USB_VENDOR_ID_REALTEK, 0xb82b, 0xff, 0xff, 0xff),
+-	  .driver_info = (kernel_ulong_t)&(rtw8821c_hw_spec) }, /* 8821CU */
++	{ USB_DEVICE_AND_INTERFACE_INFO(RTW_USB_VENDOR_ID_REALTEK, 0x2006, 0xff, 0xff, 0xff),
++	  .driver_info = (kernel_ulong_t)&(rtw8821c_hw_spec) },
++	{ USB_DEVICE_AND_INTERFACE_INFO(RTW_USB_VENDOR_ID_REALTEK, 0x8731, 0xff, 0xff, 0xff),
++	  .driver_info = (kernel_ulong_t)&(rtw8821c_hw_spec) },
++	{ USB_DEVICE_AND_INTERFACE_INFO(RTW_USB_VENDOR_ID_REALTEK, 0x8811, 0xff, 0xff, 0xff),
++	  .driver_info = (kernel_ulong_t)&(rtw8821c_hw_spec) },
+ 	{ USB_DEVICE_AND_INTERFACE_INFO(RTW_USB_VENDOR_ID_REALTEK, 0xb820, 0xff, 0xff, 0xff),
+-	  .driver_info = (kernel_ulong_t)&(rtw8821c_hw_spec) }, /* 8821CU */
+-	{ USB_DEVICE_AND_INTERFACE_INFO(RTW_USB_VENDOR_ID_REALTEK, 0xc821, 0xff, 0xff, 0xff),
+-	  .driver_info = (kernel_ulong_t)&(rtw8821c_hw_spec) }, /* 8821CU */
++	  .driver_info = (kernel_ulong_t)&(rtw8821c_hw_spec) },
++	{ USB_DEVICE_AND_INTERFACE_INFO(RTW_USB_VENDOR_ID_REALTEK, 0xb82b, 0xff, 0xff, 0xff),
++	  .driver_info = (kernel_ulong_t)&(rtw8821c_hw_spec) },
++	{ USB_DEVICE_AND_INTERFACE_INFO(RTW_USB_VENDOR_ID_REALTEK, 0xc80c, 0xff, 0xff, 0xff),
++	  .driver_info = (kernel_ulong_t)&(rtw8821c_hw_spec) },
++	{ USB_DEVICE_AND_INTERFACE_INFO(RTW_USB_VENDOR_ID_REALTEK, 0xc811, 0xff, 0xff, 0xff),
++	  .driver_info = (kernel_ulong_t)&(rtw8821c_hw_spec) },
+ 	{ USB_DEVICE_AND_INTERFACE_INFO(RTW_USB_VENDOR_ID_REALTEK, 0xc820, 0xff, 0xff, 0xff),
+-	  .driver_info = (kernel_ulong_t)&(rtw8821c_hw_spec) }, /* 8821CU */
++	  .driver_info = (kernel_ulong_t)&(rtw8821c_hw_spec) },
++	{ USB_DEVICE_AND_INTERFACE_INFO(RTW_USB_VENDOR_ID_REALTEK, 0xc821, 0xff, 0xff, 0xff),
++	  .driver_info = (kernel_ulong_t)&(rtw8821c_hw_spec) },
+ 	{ USB_DEVICE_AND_INTERFACE_INFO(RTW_USB_VENDOR_ID_REALTEK, 0xc82a, 0xff, 0xff, 0xff),
+-	  .driver_info = (kernel_ulong_t)&(rtw8821c_hw_spec) }, /* 8821CU */
++	  .driver_info = (kernel_ulong_t)&(rtw8821c_hw_spec) },
+ 	{ USB_DEVICE_AND_INTERFACE_INFO(RTW_USB_VENDOR_ID_REALTEK, 0xc82b, 0xff, 0xff, 0xff),
+-	  .driver_info = (kernel_ulong_t)&(rtw8821c_hw_spec) }, /* 8821CU */
+-	{ USB_DEVICE_AND_INTERFACE_INFO(RTW_USB_VENDOR_ID_REALTEK, 0xc811, 0xff, 0xff, 0xff),
+-	  .driver_info = (kernel_ulong_t)&(rtw8821c_hw_spec) }, /* 8811CU */
+-	{ USB_DEVICE_AND_INTERFACE_INFO(RTW_USB_VENDOR_ID_REALTEK, 0x8811, 0xff, 0xff, 0xff),
+-	  .driver_info = (kernel_ulong_t)&(rtw8821c_hw_spec) }, /* 8811CU */
+-	{ USB_DEVICE_AND_INTERFACE_INFO(RTW_USB_VENDOR_ID_REALTEK, 0x2006, 0xff, 0xff, 0xff),
+-	  .driver_info = (kernel_ulong_t)&(rtw8821c_hw_spec) }, /* TOTOLINK A650UA v3 */
++	  .driver_info = (kernel_ulong_t)&(rtw8821c_hw_spec) },
++	{ USB_DEVICE_AND_INTERFACE_INFO(RTW_USB_VENDOR_ID_REALTEK, 0xc82c, 0xff, 0xff, 0xff),
++	  .driver_info = (kernel_ulong_t)&(rtw8821c_hw_spec) },
++	{ USB_DEVICE_AND_INTERFACE_INFO(0x2001, 0x331d, 0xff, 0xff, 0xff),
++	  .driver_info = (kernel_ulong_t)&(rtw8821c_hw_spec) }, /* D-Link */
++	{ USB_DEVICE_AND_INTERFACE_INFO(0x7392, 0xc811, 0xff, 0xff, 0xff),
++	  .driver_info = (kernel_ulong_t)&(rtw8821c_hw_spec) }, /* Edimax */
++	{ USB_DEVICE_AND_INTERFACE_INFO(0x7392, 0xd811, 0xff, 0xff, 0xff),
++	  .driver_info = (kernel_ulong_t)&(rtw8821c_hw_spec) }, /* Edimax */
+ 	{},
+ };
+ MODULE_DEVICE_TABLE(usb, rtw_8821cu_id_table);
 -- 
 2.43.0
 
