@@ -1,57 +1,55 @@
-Return-Path: <linux-kernel+bounces-121006-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-121007-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 40EEE88E16E
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 14:02:04 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9F22888E183
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 14:05:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5E0061C2161A
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 13:02:03 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 50D33B2DDE0
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 13:02:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 657DC158869;
-	Wed, 27 Mar 2024 12:17:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 50D66158A08;
+	Wed, 27 Mar 2024 12:17:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hkFB11Jj"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="i8s3WCjk"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 85E1313957F;
-	Wed, 27 Mar 2024 12:17:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 50401158878;
+	Wed, 27 Mar 2024 12:17:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711541820; cv=none; b=YkyaO/HzGH91Xq/oniTzM5LwYK0M/zuOuoS3I6fanPB2w7a4wJ5zjrABamt7KIml/o2OpbIqbSWPznbW7U9oYj4JDG8Z5CkvWgAOysQcQtQxFGMrcPtTfHudmLA/VySquevsYeS5GkA3uloJ/1B8InHnUVVAEKtuhVFlPbUHo5A=
+	t=1711541823; cv=none; b=oJVpmx3nVoDZ5XQbOdMV7u7Vsh0OU1AZd9hx0pg8pY/f8PZocHamdVNkK7qwdakCQWd5OWFD5nbaMtkfccs93vfgWydRftDd/mJl0GNI3nNAKCPDiItcZRYSqqd9Z5aYaOZE9ZyYgfzJlumOrCnO01+k9S8ofrTWL81U51pQMRQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711541820; c=relaxed/simple;
-	bh=gFclWQQy2qU592yUIE21ncs+34jwN5g1pp6P/E+SSFc=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=KHvoqiK9zZcSCdyZdgxQnRB9uV99S5f14rk/xzjO9t67gEjWGPKQRRJbqde08mCJVTC11s2G5zrQkbIRq1QJVLoyAb1+qwje0bO95plHtdxHmkzQ7meoCnmX9ZmRytaanzEcbXkfbp1dBd1JxwJSBPS0xx9ZVrAry7GuMlC2Z/Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=hkFB11Jj; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 263DBC433C7;
-	Wed, 27 Mar 2024 12:16:59 +0000 (UTC)
+	s=arc-20240116; t=1711541823; c=relaxed/simple;
+	bh=1DASy7axL7AEYovmREkmlZOUWT3RSUFBIs65kyk8KbQ=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=gDKDxFag9Jx3qapoHk3z5YDX0lOB6kkW7tV1dYEYBum5fEpkwwEV01Pny+EYofhVAuQKYwJIBaxrN/8xrUJa5irISZqEkFXNpcTno8x0nALRg10Co+zdapKQROt4ce6bbvqMR3ERupXjJjEOz0J/9u8LWM0C0m7wgfOz1VQkFuo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=i8s3WCjk; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1D4D9C43390;
+	Wed, 27 Mar 2024 12:17:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711541820;
-	bh=gFclWQQy2qU592yUIE21ncs+34jwN5g1pp6P/E+SSFc=;
+	s=k20201202; t=1711541822;
+	bh=1DASy7axL7AEYovmREkmlZOUWT3RSUFBIs65kyk8KbQ=;
 	h=From:To:Cc:Subject:Date:From;
-	b=hkFB11JjhFfl1AJB6e8UIdVyqNKuv7elGKRr/1tn37yVUb7ItrdiDfBMQ7PGCUmyD
-	 4snaqZDiqOKjTvBM9KyHXT/lQZoHLpKCG8YCboukrbgEPt2hsEIgbadZ2Np/mbs7o7
-	 lAZ82sv7gZOb50eX8uAb+/iBrqdHyGHMHYYCkFGb3GB2KWw/n19pxPfPz6WeWbvj/E
-	 8WtwI0rBEWiMQ7Oog1qeOPF2SRF2sdLotvyEyggHI65fF1BVEv1OGtRC0eoofM6Tg9
-	 IWsvBOCyOKWsdHx+sM/FDaGGQEzz9EZslUAb37lgfMAivDNnU0/LNEKDfUMMVDrbYz
-	 u3FqcEbMeslQA==
+	b=i8s3WCjk5Gw9CJHbHqhKC8DYYCZsxwskXgQKwgya4rSu63dP12RUcRY5od/7+N7Dr
+	 CrshJ1drBJ1jNgUUX7WJX3yVXjid//meT5Jo3z37VxavZhYcYOseI9g97M+yzj44JB
+	 f2pZHQVtCBzmys2cRVBCSf4HdU1jQvIE7yjA+sfnD9DYU44X6f4y7pVadcJF1bNG8+
+	 ByU+JbW80VHMIzdOW3IjS+qfCG4G2sUODPc5WmWZD82iYZXKF+RiWWdrO3976aBYcM
+	 HOgU1lQWRKMs/lyuTtsqGUIwWqFbGVlnpDMt2a2iEeIAU1R8CJeLWZiwND8/kTQhXL
+	 Tygnc9jM3PTEw==
 From: Sasha Levin <sashal@kernel.org>
 To: stable@vger.kernel.org,
-	yukuai3@huawei.com
-Cc: Mikulas Patocka <mpatocka@redhat.com>,
-	Xiao Ni <xni@redhat.com>,
-	Mike Snitzer <snitzer@kernel.org>,
-	Song Liu <song@kernel.org>,
-	dm-devel@lists.linux.dev,
-	linux-kernel@vger.kernel.org,
-	linux-raid@vger.kernel.org
-Subject: FAILED: Patch "dm-raid: really frozen sync_thread during suspend" failed to apply to 5.15-stable tree
-Date: Wed, 27 Mar 2024 08:16:57 -0400
-Message-ID: <20240327121658.2833151-1-sashal@kernel.org>
+	sprasad@microsoft.com
+Cc: =?UTF-8?q?Jan=20=C4=8Cerm=C3=A1k?= <sairon@sairon.cz>,
+	Steve French <stfrench@microsoft.com>,
+	linux-cifs@vger.kernel.org,
+	samba-technical@lists.samba.org,
+	linux-kernel@vger.kernel.org
+Subject: FAILED: Patch "cifs: reduce warning log level for server not advertising interfaces" failed to apply to 5.15-stable tree
+Date: Wed, 27 Mar 2024 08:17:00 -0400
+Message-ID: <20240327121701.2833201-1-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -61,6 +59,7 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-Patchwork-Hint: ignore
 X-stable: review
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
 The patch below does not apply to the 5.15-stable tree.
@@ -73,145 +72,54 @@ Sasha
 
 ------------------ original commit in Linus's tree ------------------
 
-From 16c4770c75b1223998adbeb7286f9a15c65fba73 Mon Sep 17 00:00:00 2001
-From: Yu Kuai <yukuai3@huawei.com>
-Date: Tue, 5 Mar 2024 15:23:02 +0800
-Subject: [PATCH] dm-raid: really frozen sync_thread during suspend
+From 16a57d7681110b25708c7042688412238e6f73a9 Mon Sep 17 00:00:00 2001
+From: Shyam Prasad N <sprasad@microsoft.com>
+Date: Wed, 13 Mar 2024 10:40:40 +0000
+Subject: [PATCH] cifs: reduce warning log level for server not advertising
+ interfaces
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-1) commit f52f5c71f3d4 ("md: fix stopping sync thread") remove
-   MD_RECOVERY_FROZEN from __md_stop_writes() and doesn't realize that
-   dm-raid relies on __md_stop_writes() to frozen sync_thread
-   indirectly. Fix this problem by adding MD_RECOVERY_FROZEN in
-   md_stop_writes(), and since stop_sync_thread() is only used for
-   dm-raid in this case, also move stop_sync_thread() to
-   md_stop_writes().
-2) The flag MD_RECOVERY_FROZEN doesn't mean that sync thread is frozen,
-   it only prevent new sync_thread to start, and it can't stop the
-   running sync thread; In order to frozen sync_thread, after seting the
-   flag, stop_sync_thread() should be used.
-3) The flag MD_RECOVERY_FROZEN doesn't mean that writes are stopped, use
-   it as condition for md_stop_writes() in raid_postsuspend() doesn't
-   look correct. Consider that reentrant stop_sync_thread() do nothing,
-   always call md_stop_writes() in raid_postsuspend().
-4) raid_message can set/clear the flag MD_RECOVERY_FROZEN at anytime,
-   and if MD_RECOVERY_FROZEN is cleared while the array is suspended,
-   new sync_thread can start unexpected. Fix this by disallow
-   raid_message() to change sync_thread status during suspend.
+Several users have reported this log getting dumped too regularly to
+kernel log. The likely root cause has been identified, and it suggests
+that this situation is expected for some configurations
+(for example SMB2.1).
 
-Note that after commit f52f5c71f3d4 ("md: fix stopping sync thread"), the
-test shell/lvconvert-raid-reshape.sh start to hang in stop_sync_thread(),
-and with previous fixes, the test won't hang there anymore, however, the
-test will still fail and complain that ext4 is corrupted. And with this
-patch, the test won't hang due to stop_sync_thread() or fail due to ext4
-is corrupted anymore. However, there is still a deadlock related to
-dm-raid456 that will be fixed in following patches.
+Since the function returns appropriately even for such cases, it is
+fairly harmless to make this a debug log. When needed, the verbosity
+can be increased to capture this log.
 
-Reported-by: Mikulas Patocka <mpatocka@redhat.com>
-Closes: https://lore.kernel.org/all/e5e8afe2-e9a8-49a2-5ab0-958d4065c55e@redhat.com/
-Fixes: 1af2048a3e87 ("dm raid: fix deadlock caused by premature md_stop_writes()")
-Fixes: 9dbd1aa3a81c ("dm raid: add reshaping support to the target")
-Fixes: f52f5c71f3d4 ("md: fix stopping sync thread")
-Cc: stable@vger.kernel.org # v6.7+
-Signed-off-by: Yu Kuai <yukuai3@huawei.com>
-Signed-off-by: Xiao Ni <xni@redhat.com>
-Acked-by: Mike Snitzer <snitzer@kernel.org>
-Signed-off-by: Song Liu <song@kernel.org>
-Link: https://lore.kernel.org/r/20240305072306.2562024-6-yukuai1@huaweicloud.com
+Cc: stable@vger.kernel.org
+Reported-by: Jan Čermák <sairon@sairon.cz>
+Signed-off-by: Shyam Prasad N <sprasad@microsoft.com>
+Signed-off-by: Steve French <stfrench@microsoft.com>
 ---
- drivers/md/dm-raid.c | 25 +++++++++++++++----------
- drivers/md/md.c      |  3 ++-
- 2 files changed, 17 insertions(+), 11 deletions(-)
+ fs/smb/client/sess.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/md/dm-raid.c b/drivers/md/dm-raid.c
-index eb009d6bb03a1..e2d7a73c0f874 100644
---- a/drivers/md/dm-raid.c
-+++ b/drivers/md/dm-raid.c
-@@ -3240,11 +3240,12 @@ static int raid_ctr(struct dm_target *ti, unsigned int argc, char **argv)
- 	rs->md.ro = 1;
- 	rs->md.in_sync = 1;
- 
--	/* Keep array frozen until resume. */
--	set_bit(MD_RECOVERY_FROZEN, &rs->md.recovery);
--
- 	/* Has to be held on running the array */
- 	mddev_suspend_and_lock_nointr(&rs->md);
-+
-+	/* Keep array frozen until resume. */
-+	md_frozen_sync_thread(&rs->md);
-+
- 	r = md_run(&rs->md);
- 	rs->md.in_sync = 0; /* Assume already marked dirty */
- 	if (r) {
-@@ -3722,6 +3723,9 @@ static int raid_message(struct dm_target *ti, unsigned int argc, char **argv,
- 	if (!mddev->pers || !mddev->pers->sync_request)
- 		return -EINVAL;
- 
-+	if (test_bit(RT_FLAG_RS_SUSPENDED, &rs->runtime_flags))
-+		return -EBUSY;
-+
- 	if (!strcasecmp(argv[0], "frozen"))
- 		set_bit(MD_RECOVERY_FROZEN, &mddev->recovery);
- 	else
-@@ -3796,10 +3800,11 @@ static void raid_postsuspend(struct dm_target *ti)
- 	struct raid_set *rs = ti->private;
- 
- 	if (!test_and_set_bit(RT_FLAG_RS_SUSPENDED, &rs->runtime_flags)) {
--		/* Writes have to be stopped before suspending to avoid deadlocks. */
--		if (!test_bit(MD_RECOVERY_FROZEN, &rs->md.recovery))
--			md_stop_writes(&rs->md);
--
-+		/*
-+		 * sync_thread must be stopped during suspend, and writes have
-+		 * to be stopped before suspending to avoid deadlocks.
-+		 */
-+		md_stop_writes(&rs->md);
- 		mddev_suspend(&rs->md, false);
- 	}
- }
-@@ -4012,8 +4017,6 @@ static int raid_preresume(struct dm_target *ti)
+diff --git a/fs/smb/client/sess.c b/fs/smb/client/sess.c
+index 8f37373fd3334..3216f786908fb 100644
+--- a/fs/smb/client/sess.c
++++ b/fs/smb/client/sess.c
+@@ -230,7 +230,7 @@ int cifs_try_adding_channels(struct cifs_ses *ses)
+ 		spin_lock(&ses->iface_lock);
+ 		if (!ses->iface_count) {
+ 			spin_unlock(&ses->iface_lock);
+-			cifs_dbg(VFS, "server %s does not advertise interfaces\n",
++			cifs_dbg(ONCE, "server %s does not advertise interfaces\n",
+ 				      ses->server->hostname);
+ 			break;
+ 		}
+@@ -396,7 +396,7 @@ cifs_chan_update_iface(struct cifs_ses *ses, struct TCP_Server_Info *server)
+ 	spin_lock(&ses->iface_lock);
+ 	if (!ses->iface_count) {
+ 		spin_unlock(&ses->iface_lock);
+-		cifs_dbg(VFS, "server %s does not advertise interfaces\n", ses->server->hostname);
++		cifs_dbg(ONCE, "server %s does not advertise interfaces\n", ses->server->hostname);
+ 		return;
  	}
  
- 	/* Check for any resize/reshape on @rs and adjust/initiate */
--	/* Be prepared for mddev_resume() in raid_resume() */
--	set_bit(MD_RECOVERY_FROZEN, &mddev->recovery);
- 	if (mddev->recovery_cp && mddev->recovery_cp < MaxSector) {
- 		set_bit(MD_RECOVERY_REQUESTED, &mddev->recovery);
- 		mddev->resync_min = mddev->recovery_cp;
-@@ -4055,10 +4058,12 @@ static void raid_resume(struct dm_target *ti)
- 		if (mddev->delta_disks < 0)
- 			rs_set_capacity(rs);
- 
-+		WARN_ON_ONCE(!test_bit(MD_RECOVERY_FROZEN, &mddev->recovery));
-+		WARN_ON_ONCE(test_bit(MD_RECOVERY_RUNNING, &mddev->recovery));
- 		mddev_lock_nointr(mddev);
--		clear_bit(MD_RECOVERY_FROZEN, &mddev->recovery);
- 		mddev->ro = 0;
- 		mddev->in_sync = 0;
-+		md_unfrozen_sync_thread(mddev);
- 		mddev_unlock_and_resume(mddev);
- 	}
- }
-diff --git a/drivers/md/md.c b/drivers/md/md.c
-index 55ecc05c17c65..167db77442392 100644
---- a/drivers/md/md.c
-+++ b/drivers/md/md.c
-@@ -6364,7 +6364,6 @@ static void md_clean(struct mddev *mddev)
- 
- static void __md_stop_writes(struct mddev *mddev)
- {
--	stop_sync_thread(mddev, true, false);
- 	del_timer_sync(&mddev->safemode_timer);
- 
- 	if (mddev->pers && mddev->pers->quiesce) {
-@@ -6389,6 +6388,8 @@ static void __md_stop_writes(struct mddev *mddev)
- void md_stop_writes(struct mddev *mddev)
- {
- 	mddev_lock_nointr(mddev);
-+	set_bit(MD_RECOVERY_FROZEN, &mddev->recovery);
-+	stop_sync_thread(mddev, true, false);
- 	__md_stop_writes(mddev);
- 	mddev_unlock(mddev);
- }
 -- 
 2.43.0
 
