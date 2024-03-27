@@ -1,58 +1,55 @@
-Return-Path: <linux-kernel+bounces-120986-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-120987-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id AF5A088E13D
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 13:56:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 3423888E141
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 13:56:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E158F1C2A209
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 12:56:05 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 55DDF1C2A346
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 12:56:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EE0BB13848D;
-	Wed, 27 Mar 2024 12:16:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 966DB15689E;
+	Wed, 27 Mar 2024 12:16:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qoM7Xf93"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="tYzQ1n+Z"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2364F156669;
-	Wed, 27 Mar 2024 12:16:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C94C5156861;
+	Wed, 27 Mar 2024 12:16:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711541770; cv=none; b=B+qxy8BNJFtPFqY6J6C+pdU5fj5BaVolw6tgtJAr7rw1f9XLYCW745vCN7pEc9obtKKuwaHtRHF7PjBvWTHQwl7XrvGKWBoAdHID+JzjtaC+60mrmkpz2USNddgYKTmWPgwa0HghyDu8SOESVU3JT7w/6DZhYic/NOYDIyCEFNg=
+	t=1711541772; cv=none; b=miNsx6Mc92sRALM2+9lzSnjysB26/tdj/vHIh/zho47VQoDEcv1Y3cjteQ3Cf5AUrFrGOo5arDV+sbqfibtvEpX/HOPNmNtMMew2WdxymU19Qj0hzZdC94asty5lrKB1EsE8sfzZQQy5beVYm0LpiNFSR7JyIkgZEmRmrhpFkdc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711541770; c=relaxed/simple;
-	bh=4eeXtnHEzLlp3KZRhr9CCl4o8WKNflKELunwkfEG/Bg=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=V4Wx4OYSdfCh80cs0VYSjYoCatnv+Pc0Cz6EtDOPba7ccxhAbY7yhDo6Yofp3C1XwkZ/hzgPUVjMeZ7tEbgFQ7n4ilsiExHUeL3MLm3dz2YMpIAq6C1wcnwzKSfWWUra7SOi2IE0U/IMRI6K2mvfe5tnvwbhTcmnOsNkk/bMOp4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qoM7Xf93; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CDBA7C43390;
-	Wed, 27 Mar 2024 12:16:08 +0000 (UTC)
+	s=arc-20240116; t=1711541772; c=relaxed/simple;
+	bh=9RyTMMwBIF8uAtriar+c5TuJAZDF70y2ckZWzIn2edE=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=hVSdeVEo/aV+5ZW2EKnsSmIlBnSDOofhbwdCF5syWohrQQUejxBo5ojoZ5rJKENGSmFYVAxwxMadcJWvWqv6xEBuVzk/ZroBDx5EDrTm0NF0c0TnxbCjI4Tn6c6nGuRAjJWbupzp4/6/5pIOu+Py2yD1bvhWd4DAW2jG2rTDLFw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=tYzQ1n+Z; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CE871C433F1;
+	Wed, 27 Mar 2024 12:16:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711541770;
-	bh=4eeXtnHEzLlp3KZRhr9CCl4o8WKNflKELunwkfEG/Bg=;
+	s=k20201202; t=1711541772;
+	bh=9RyTMMwBIF8uAtriar+c5TuJAZDF70y2ckZWzIn2edE=;
 	h=From:To:Cc:Subject:Date:From;
-	b=qoM7Xf93ZqCu/DGIFzdsXYcWmXZQj/zlN5gGQ+P1/uynu9Rs5YWrREHjKl9iA88jG
-	 y6Ql14iy/qJ7XWTN3iKljVFvIS671eugQNrmBYv1O0+NFbxxhGoK9G2yKr8yYZYX92
-	 GfSWhJKBzuwpriL1mdvSALHNwBygc2KUxnPz8Z3FUaLYxFzyEy3PDmMce4T48kJYUv
-	 iCRxGnZl14zmELwg/aQK4GB7oOJbVG7AZSqQpwUT9mHX4vTMnqPtP9/0YO/aCVngzo
-	 ZQTnXp+M9f/jTgoYua7s3zw+tFoG249d2Q3JQKHME+1wrV/TCRj6in2Be14/sL2lOO
-	 tU6qp5Z4ApKMA==
+	b=tYzQ1n+Z2zbMNEZNUcKJ+ivw9hMQokaBMROedsZgNvXs6ticRB8c14iyUSnHXk09E
+	 se4OJqoFKMbTzH8EusiMCdMk/7OeoRg7aktPaJp9sxm8OuBTf8J+qT3+KtQuqm29Nd
+	 Fk7xM/npgqwfMJSw4/dTueJCB+qDl18+cJvt9IKlSyPFId9CUzGb8XMQ2aRuh7P7Ph
+	 iyGc21CZxkZroCVxulM7ly1yaBIpRPzJhP5qLq1467KmhUJ4cf2o/X4EGc4kzzTCTO
+	 oK9m4ohYqjwnSO61WVIhy6vTtV+FWX0+vcx2knVZG/97022cu6AFcxfcH4s+5X86/R
+	 CZJqi9MJpyHzQ==
 From: Sasha Levin <sashal@kernel.org>
 To: stable@vger.kernel.org,
-	ovidiu.bunea@amd.com
-Cc: Mario Limonciello <mario.limonciello@amd.com>,
-	Alex Deucher <alexander.deucher@amd.com>,
-	Charlene Liu <charlene.liu@amd.com>,
-	Alex Hung <alex.hung@amd.com>,
-	Daniel Wheeler <daniel.wheeler@amd.com>,
-	amd-gfx@lists.freedesktop.org,
-	dri-devel@lists.freedesktop.org,
+	alex.williamson@redhat.com
+Cc: Reinette Chatre <reinette.chatre@intel.com>,
+	Kevin Tian <kevin.tian@intel.com>,
+	Eric Auger <eric.auger@redhat.com>,
+	kvm@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: FAILED: Patch "drm/amd/display: Fix DML2 watermark calculation" failed to apply to 5.15-stable tree
-Date: Wed, 27 Mar 2024 08:16:07 -0400
-Message-ID: <20240327121607.2832462-1-sashal@kernel.org>
+Subject: FAILED: Patch "vfio/pci: Lock external INTx masking ops" failed to apply to 5.15-stable tree
+Date: Wed, 27 Mar 2024 08:16:10 -0400
+Message-ID: <20240327121610.2832499-1-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -74,55 +71,126 @@ Sasha
 
 ------------------ original commit in Linus's tree ------------------
 
-From 2254ab45dab22a18fdd29fe0e471706872c00093 Mon Sep 17 00:00:00 2001
-From: Ovidiu Bunea <ovidiu.bunea@amd.com>
-Date: Mon, 18 Dec 2023 21:40:45 -0500
-Subject: [PATCH] drm/amd/display: Fix DML2 watermark calculation
+From 810cd4bb53456d0503cc4e7934e063835152c1b7 Mon Sep 17 00:00:00 2001
+From: Alex Williamson <alex.williamson@redhat.com>
+Date: Fri, 8 Mar 2024 16:05:23 -0700
+Subject: [PATCH] vfio/pci: Lock external INTx masking ops
 
-[Why]
-core_mode_programming in DML2 should output watermark calculations
-to locals, but it incorrectly uses mode_lib
+Mask operations through config space changes to DisINTx may race INTx
+configuration changes via ioctl.  Create wrappers that add locking for
+paths outside of the core interrupt code.
 
-[How]
-update code to match HW DML2
+In particular, irq_type is updated holding igate, therefore testing
+is_intx() requires holding igate.  For example clearing DisINTx from
+config space can otherwise race changes of the interrupt configuration.
 
-Cc: Mario Limonciello <mario.limonciello@amd.com>
-Cc: Alex Deucher <alexander.deucher@amd.com>
-Cc: stable@vger.kernel.org
-Reviewed-by: Charlene Liu <charlene.liu@amd.com>
-Acked-by: Alex Hung <alex.hung@amd.com>
-Signed-off-by: Ovidiu Bunea <ovidiu.bunea@amd.com>
-Tested-by: Daniel Wheeler <daniel.wheeler@amd.com>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+This aligns interfaces which may trigger the INTx eventfd into two
+camps, one side serialized by igate and the other only enabled while
+INTx is configured.  A subsequent patch introduces synchronization for
+the latter flows.
+
+Cc:  <stable@vger.kernel.org>
+Fixes: 89e1f7d4c66d ("vfio: Add PCI device driver")
+Reported-by: Reinette Chatre <reinette.chatre@intel.com>
+Reviewed-by: Kevin Tian <kevin.tian@intel.com>
+Reviewed-by: Reinette Chatre <reinette.chatre@intel.com>
+Reviewed-by: Eric Auger <eric.auger@redhat.com>
+Link: https://lore.kernel.org/r/20240308230557.805580-3-alex.williamson@redhat.com
+Signed-off-by: Alex Williamson <alex.williamson@redhat.com>
 ---
- .../drm/amd/display/dc/dml2/display_mode_core.c    | 14 +++++++-------
- 1 file changed, 7 insertions(+), 7 deletions(-)
+ drivers/vfio/pci/vfio_pci_intrs.c | 34 +++++++++++++++++++++++++------
+ 1 file changed, 28 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/gpu/drm/amd/display/dc/dml2/display_mode_core.c b/drivers/gpu/drm/amd/display/dc/dml2/display_mode_core.c
-index a6b938a12de13..9be5ebf3a8c0b 100644
---- a/drivers/gpu/drm/amd/display/dc/dml2/display_mode_core.c
-+++ b/drivers/gpu/drm/amd/display/dc/dml2/display_mode_core.c
-@@ -9446,13 +9446,13 @@ void dml_core_mode_programming(struct display_mode_lib_st *mode_lib, const struc
- 		CalculateWatermarks_params->CompressedBufferSizeInkByte = locals->CompressedBufferSizeInkByte;
+diff --git a/drivers/vfio/pci/vfio_pci_intrs.c b/drivers/vfio/pci/vfio_pci_intrs.c
+index 136101179fcbd..75c85eec21b3c 100644
+--- a/drivers/vfio/pci/vfio_pci_intrs.c
++++ b/drivers/vfio/pci/vfio_pci_intrs.c
+@@ -99,13 +99,15 @@ static void vfio_send_intx_eventfd(void *opaque, void *unused)
+ }
  
- 		// Output
--		CalculateWatermarks_params->Watermark = &s->dummy_watermark; // Watermarks *Watermark
--		CalculateWatermarks_params->DRAMClockChangeSupport = &mode_lib->ms.support.DRAMClockChangeSupport[0];
--		CalculateWatermarks_params->MaxActiveDRAMClockChangeLatencySupported = &s->dummy_single_array[0][0]; // dml_float_t *MaxActiveDRAMClockChangeLatencySupported[]
--		CalculateWatermarks_params->SubViewportLinesNeededInMALL = &mode_lib->ms.SubViewportLinesNeededInMALL[j]; // dml_uint_t SubViewportLinesNeededInMALL[]
--		CalculateWatermarks_params->FCLKChangeSupport = &mode_lib->ms.support.FCLKChangeSupport[0];
--		CalculateWatermarks_params->MaxActiveFCLKChangeLatencySupported = &s->dummy_single[0]; // dml_float_t *MaxActiveFCLKChangeLatencySupported
--		CalculateWatermarks_params->USRRetrainingSupport = &mode_lib->ms.support.USRRetrainingSupport[0];
-+		CalculateWatermarks_params->Watermark = &locals->Watermark; // Watermarks *Watermark
-+		CalculateWatermarks_params->DRAMClockChangeSupport = &locals->DRAMClockChangeSupport;
-+		CalculateWatermarks_params->MaxActiveDRAMClockChangeLatencySupported = locals->MaxActiveDRAMClockChangeLatencySupported; // dml_float_t *MaxActiveDRAMClockChangeLatencySupported[]
-+		CalculateWatermarks_params->SubViewportLinesNeededInMALL = locals->SubViewportLinesNeededInMALL; // dml_uint_t SubViewportLinesNeededInMALL[]
-+		CalculateWatermarks_params->FCLKChangeSupport = &locals->FCLKChangeSupport;
-+		CalculateWatermarks_params->MaxActiveFCLKChangeLatencySupported = &locals->MaxActiveFCLKChangeLatencySupported; // dml_float_t *MaxActiveFCLKChangeLatencySupported
-+		CalculateWatermarks_params->USRRetrainingSupport = &locals->USRRetrainingSupport;
+ /* Returns true if the INTx vfio_pci_irq_ctx.masked value is changed. */
+-bool vfio_pci_intx_mask(struct vfio_pci_core_device *vdev)
++static bool __vfio_pci_intx_mask(struct vfio_pci_core_device *vdev)
+ {
+ 	struct pci_dev *pdev = vdev->pdev;
+ 	struct vfio_pci_irq_ctx *ctx;
+ 	unsigned long flags;
+ 	bool masked_changed = false;
  
- 		CalculateWatermarksMALLUseAndDRAMSpeedChangeSupport(
- 			&mode_lib->scratch,
++	lockdep_assert_held(&vdev->igate);
++
+ 	spin_lock_irqsave(&vdev->irqlock, flags);
+ 
+ 	/*
+@@ -143,6 +145,17 @@ bool vfio_pci_intx_mask(struct vfio_pci_core_device *vdev)
+ 	return masked_changed;
+ }
+ 
++bool vfio_pci_intx_mask(struct vfio_pci_core_device *vdev)
++{
++	bool mask_changed;
++
++	mutex_lock(&vdev->igate);
++	mask_changed = __vfio_pci_intx_mask(vdev);
++	mutex_unlock(&vdev->igate);
++
++	return mask_changed;
++}
++
+ /*
+  * If this is triggered by an eventfd, we can't call eventfd_signal
+  * or else we'll deadlock on the eventfd wait queue.  Return >0 when
+@@ -194,12 +207,21 @@ static int vfio_pci_intx_unmask_handler(void *opaque, void *unused)
+ 	return ret;
+ }
+ 
+-void vfio_pci_intx_unmask(struct vfio_pci_core_device *vdev)
++static void __vfio_pci_intx_unmask(struct vfio_pci_core_device *vdev)
+ {
++	lockdep_assert_held(&vdev->igate);
++
+ 	if (vfio_pci_intx_unmask_handler(vdev, NULL) > 0)
+ 		vfio_send_intx_eventfd(vdev, NULL);
+ }
+ 
++void vfio_pci_intx_unmask(struct vfio_pci_core_device *vdev)
++{
++	mutex_lock(&vdev->igate);
++	__vfio_pci_intx_unmask(vdev);
++	mutex_unlock(&vdev->igate);
++}
++
+ static irqreturn_t vfio_intx_handler(int irq, void *dev_id)
+ {
+ 	struct vfio_pci_core_device *vdev = dev_id;
+@@ -563,11 +585,11 @@ static int vfio_pci_set_intx_unmask(struct vfio_pci_core_device *vdev,
+ 		return -EINVAL;
+ 
+ 	if (flags & VFIO_IRQ_SET_DATA_NONE) {
+-		vfio_pci_intx_unmask(vdev);
++		__vfio_pci_intx_unmask(vdev);
+ 	} else if (flags & VFIO_IRQ_SET_DATA_BOOL) {
+ 		uint8_t unmask = *(uint8_t *)data;
+ 		if (unmask)
+-			vfio_pci_intx_unmask(vdev);
++			__vfio_pci_intx_unmask(vdev);
+ 	} else if (flags & VFIO_IRQ_SET_DATA_EVENTFD) {
+ 		struct vfio_pci_irq_ctx *ctx = vfio_irq_ctx_get(vdev, 0);
+ 		int32_t fd = *(int32_t *)data;
+@@ -594,11 +616,11 @@ static int vfio_pci_set_intx_mask(struct vfio_pci_core_device *vdev,
+ 		return -EINVAL;
+ 
+ 	if (flags & VFIO_IRQ_SET_DATA_NONE) {
+-		vfio_pci_intx_mask(vdev);
++		__vfio_pci_intx_mask(vdev);
+ 	} else if (flags & VFIO_IRQ_SET_DATA_BOOL) {
+ 		uint8_t mask = *(uint8_t *)data;
+ 		if (mask)
+-			vfio_pci_intx_mask(vdev);
++			__vfio_pci_intx_mask(vdev);
+ 	} else if (flags & VFIO_IRQ_SET_DATA_EVENTFD) {
+ 		return -ENOTTY; /* XXX implement me */
+ 	}
 -- 
 2.43.0
 
