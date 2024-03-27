@@ -1,177 +1,142 @@
-Return-Path: <linux-kernel+bounces-120818-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-120815-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3F35F88DE38
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 13:14:49 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5359988DE22
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 13:14:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 70FC01C277C0
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 12:14:48 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E88581F2AC1C
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 12:14:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D144D137744;
-	Wed, 27 Mar 2024 12:08:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A7072136998;
+	Wed, 27 Mar 2024 12:08:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="gdKI/vtX"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="j/w80+RU"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 67903136E23
-	for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 12:08:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DD8531353E1;
+	Wed, 27 Mar 2024 12:08:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711541292; cv=none; b=Syk2gRoUWNAka5VlhSX3bPSgYPhJww1Bq+qGNP4vSwmJfKB6/zQtZo1lUlaB2MWnMu44JkGL3nXYUN0sN9qc2HtbJtoyUMCJ//N6JAJ6r2mDmbI9eiVxPZzxgBDr/EirWSr5WOWaxPKRugmcnO9P6OHyIacFuRPKp69t7JDkEfc=
+	t=1711541284; cv=none; b=Ca7v3ijsgpKbFBRrbnpe8idH/v5tUQqk58PGnWRjFk8azbXp5uqjAHbZy00HAYw1+701SZ8VDu4QL6aWfQb5SmUy+7xaMc+aydxbvoEB5attqc4AwjCUKcWcA7xwFdH9CJNM5UqqOvY5cCWUnvTZL8fAgUQKnEHBhCHk1VPe0Ck=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711541292; c=relaxed/simple;
-	bh=lKLG3UiaMdK6ulFJvlHav6o8D9DIxUzc0+qtoqM54VM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Lu9rVwQ8LEhiT2lbM3yiPrbOqG/RlOJwVvPO/rCt6OYuGhHFmb+L63wVIzkjCt3DIL/3njV/aX7DoLD5G3nmD34wtfw7gEIZWKaMpcoj13EEQHdYKSTUiERnhAeAoFX4kWNjv/HCGQD8+7qxB8rtu07dsKWYEKcZwsCqXJFHuT0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=gdKI/vtX; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1711541289;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=bi+ZQnYSyNBVd43PK67DW5yA3+DYZIo1uqQGHuPLUr4=;
-	b=gdKI/vtXNdsI3E7mAPUDDOPoD/GKcLdm8ZZz2lBq9UKwSD4W4T1pKmxTRIJuOXhL7f8b6O
-	pHz9634JY7Ulwt8y0J5lnnqk+XLNy+4a1PKjy52+dwFkjnH1/BT/HM1UGmnTBQr9ZDWyj/
-	+x00QlbGWNlHTM//2AV/zzE2kHL4x1s=
-Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
- [209.85.128.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-82-7GoXqCoIOHemIBzDgUYfWQ-1; Wed, 27 Mar 2024 08:08:08 -0400
-X-MC-Unique: 7GoXqCoIOHemIBzDgUYfWQ-1
-Received: by mail-wm1-f69.google.com with SMTP id 5b1f17b1804b1-4148a697e35so13057175e9.1
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 05:08:07 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711541287; x=1712146087;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=bi+ZQnYSyNBVd43PK67DW5yA3+DYZIo1uqQGHuPLUr4=;
-        b=B/+dC2ff7Zf/U//UVo+rljKp610JMXmUgPDu2no6SArV+OICnDV743DODHJS7Yt9rE
-         tiLVvZFfVS35fvN2E4iN1sBtgg1badmwjdj5Ovy4N3xwwe+CWMcLILhrr7wppTF49isN
-         3ZNMhsCZLP8KVOi8SLyZFPmyxGCUhY4Pz/e/sL4oLkAiv1vqg79HcQmY0sCPrOt+5t/5
-         jhLunx9Vb5anMnlJmaitd9wnptDSNR3FgPYQzF4gkSTCULGssDSZS9TzawAj4F0phPIu
-         Y8Ibp7b9kn3JeXe8gsHKeCYyoq8xaYFY67TYGrKGGpVTCM0ptswNfmjXO9y7M/cp8lof
-         Mmbw==
-X-Forwarded-Encrypted: i=1; AJvYcCVW8BPYm7aANJOQKKEgNnlm5BE4diog6X+evq46H47oJi2LIiXRj1wtTFXkaZz4iu4638DlGXkQHQxv0iZa7V83VP7BND/zxLBoIXWB
-X-Gm-Message-State: AOJu0YxKi2n6xsUTCky4XObvWMfRACYGrWObpPXTp9K2jEjOE5p2Pllg
-	uf0Gggf/4Mk/KU04cL7LspISOPeLVCkjQuYmImvgHJfc6XXLDFBmJp457tyEI3pcH2SakJllHx0
-	qe11kJlfCwV79efLmwDbJ18im8ngbAUZcwuj+gWahCybNCEgAAErEvjRtBZp33Q==
-X-Received: by 2002:a05:600c:5716:b0:413:f7c4:f4fc with SMTP id jv22-20020a05600c571600b00413f7c4f4fcmr1708273wmb.15.1711541286787;
-        Wed, 27 Mar 2024 05:08:06 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IHrGIPFjXov8faB+sPfLv/7odN1taQWiMTqh1DDC2SOAY/ynb3YOFq7GV+r4op9aeSbHg+BTA==
-X-Received: by 2002:a05:600c:5716:b0:413:f7c4:f4fc with SMTP id jv22-20020a05600c571600b00413f7c4f4fcmr1708253wmb.15.1711541286235;
-        Wed, 27 Mar 2024 05:08:06 -0700 (PDT)
-Received: from redhat.com ([2.52.20.36])
-        by smtp.gmail.com with ESMTPSA id z18-20020a05600c0a1200b00414928360bbsm2000995wmp.6.2024.03.27.05.08.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 27 Mar 2024 05:08:05 -0700 (PDT)
-Date: Wed, 27 Mar 2024 08:07:59 -0400
-From: "Michael S. Tsirkin" <mst@redhat.com>
-To: Gavin Shan <gshan@redhat.com>
-Cc: virtualization@lists.linux.dev, linux-kernel@vger.kernel.org,
-	jasowang@redhat.com, davem@davemloft.net, stefanha@redhat.com,
-	sgarzare@redhat.com, keirf@google.com, yihyu@redhat.com,
-	shan.gavin@gmail.com
-Subject: Re: [PATCH v2 1/2] vhost: Add smp_rmb() in vhost_vq_avail_empty()
-Message-ID: <20240327075940-mutt-send-email-mst@kernel.org>
-References: <20240326233846.1086253-1-gshan@redhat.com>
- <20240326233846.1086253-2-gshan@redhat.com>
+	s=arc-20240116; t=1711541284; c=relaxed/simple;
+	bh=LQJvW/5F5pb6y3BD3VeOnlXzajsSx47no9m9Wu8BeVE=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=f7CUKGAU4fo4E3nkvRr1SxrqRHmc1JOduGPDU7UI3jWA36avTHtKSjW3qdO4gIXMOLbFxPScAyZH6JkDx4WZXBEJjJ97wCQ/kOa8rwCAEr1Qqwin0NcT961qk2mkFXAJKVih/2KCL/mMv7kpuBonmGceiCOwguFuN4Lq/+k+764=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=j/w80+RU; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 36ED2C433C7;
+	Wed, 27 Mar 2024 12:08:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1711541283;
+	bh=LQJvW/5F5pb6y3BD3VeOnlXzajsSx47no9m9Wu8BeVE=;
+	h=From:To:Cc:Subject:Date:From;
+	b=j/w80+RUeIjw1xFQWgMvXPruO13CrBfnrhsRETmDXQgH2K0hM3TLh7EVB5fjNgzZd
+	 i48QDoCMhZ2hQnxpeVFfY7aN3piUMUElE/kNd4HToSmtPUA9Ly4QwCnmob0iiV5eRI
+	 O+SRe8AEgdA30WTuS0LWcYan/WCJovKLxpgtxkSQz3LnIid+fCtOoTn53SkWpdzQH1
+	 WBvHjST+XEffysP3PgvxI8ZxyDe21y2MhadPti4o7jBoh0NtJlt/UFeTZofSxp+EFD
+	 e9eP0jVt6mQPzXKN9FEBwlQQhAmWafuxP4m23/JQMSZIpg4rHVl9bdh92HNGKtgNfl
+	 mhRARjF7+QjVA==
+From: Sasha Levin <sashal@kernel.org>
+To: stable@vger.kernel.org,
+	tsung-hua.lin@amd.com
+Cc: Mario Limonciello <mario.limonciello@amd.com>,
+	Alex Deucher <alexander.deucher@amd.com>,
+	Chris Chi <moukong.chi@amd.com>,
+	Wayne Lin <wayne.lin@amd.com>,
+	Alex Hung <alex.hung@amd.com>,
+	Daniel Wheeler <daniel.wheeler@amd.com>,
+	amd-gfx@lists.freedesktop.org,
+	dri-devel@lists.freedesktop.org,
+	linux-kernel@vger.kernel.org
+Subject: FAILED: Patch "drm/amd/display: Add monitor patch for specific eDP" failed to apply to 6.8-stable tree
+Date: Wed, 27 Mar 2024 08:08:01 -0400
+Message-ID: <20240327120801.2825878-1-sashal@kernel.org>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240326233846.1086253-2-gshan@redhat.com>
+X-Patchwork-Hint: ignore
+X-stable: review
+Content-Transfer-Encoding: 8bit
 
-On Wed, Mar 27, 2024 at 09:38:45AM +1000, Gavin Shan wrote:
-> A smp_rmb() has been missed in vhost_vq_avail_empty(), spotted by
-> Will Deacon <will@kernel.org>. Otherwise, it's not ensured the
-> available ring entries pushed by guest can be observed by vhost
-> in time, leading to stale available ring entries fetched by vhost
-> in vhost_get_vq_desc(), as reported by Yihuang Yu on NVidia's
-> grace-hopper (ARM64) platform.
-> 
->   /home/gavin/sandbox/qemu.main/build/qemu-system-aarch64      \
->   -accel kvm -machine virt,gic-version=host -cpu host          \
->   -smp maxcpus=1,cpus=1,sockets=1,clusters=1,cores=1,threads=1 \
->   -m 4096M,slots=16,maxmem=64G                                 \
->   -object memory-backend-ram,id=mem0,size=4096M                \
->    :                                                           \
->   -netdev tap,id=vnet0,vhost=true                              \
->   -device virtio-net-pci,bus=pcie.8,netdev=vnet0,mac=52:54:00:f1:26:b0
->    :
->   guest# netperf -H 10.26.1.81 -l 60 -C -c -t UDP_STREAM
->   virtio_net virtio0: output.0:id 100 is not a head!
-> 
-> Add the missed smp_rmb() in vhost_vq_avail_empty(). Note that it
-> should be safe until vq->avail_idx is changed by commit 275bf960ac697
-> ("vhost: better detection of available buffers").
-> 
-> Fixes: 275bf960ac697 ("vhost: better detection of available buffers")
-> Cc: <stable@kernel.org> # v4.11+
-> Reported-by: Yihuang Yu <yihyu@redhat.com>
-> Signed-off-by: Gavin Shan <gshan@redhat.com>
-> ---
->  drivers/vhost/vhost.c | 11 ++++++++++-
->  1 file changed, 10 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/vhost/vhost.c b/drivers/vhost/vhost.c
-> index 045f666b4f12..00445ab172b3 100644
-> --- a/drivers/vhost/vhost.c
-> +++ b/drivers/vhost/vhost.c
-> @@ -2799,9 +2799,18 @@ bool vhost_vq_avail_empty(struct vhost_dev *dev, struct vhost_virtqueue *vq)
->  	r = vhost_get_avail_idx(vq, &avail_idx);
->  	if (unlikely(r))
->  		return false;
-> +
->  	vq->avail_idx = vhost16_to_cpu(vq, avail_idx);
-> +	if (vq->avail_idx != vq->last_avail_idx) {
-> +		/* Similar to what's done in vhost_get_vq_desc(), we need
-> +		 * to ensure the available ring entries have been exposed
-> +		 * by guest.
-> +		 */
+The patch below does not apply to the 6.8-stable tree.
+If someone wants it applied there, or to any other stable or longterm
+tree, then please email the backport, including the original git commit
+id to <stable@vger.kernel.org>.
 
-A slightly clearer comment:
+Thanks,
+Sasha
 
-/* Since we have updated avail_idx, the following call to
- * vhost_get_vq_desc will read available ring entries.
- * Make sure that read happens after the avail_idx read.
- */
+------------------ original commit in Linus's tree ------------------
 
-Pls repost with that, and I will apply.
+From 04a59c54757567f19dff4571ff7338476ec0f604 Mon Sep 17 00:00:00 2001
+From: Ryan Lin <tsung-hua.lin@amd.com>
+Date: Wed, 21 Feb 2024 19:10:27 +0800
+Subject: [PATCH] drm/amd/display: Add monitor patch for specific eDP
 
-Also add suggested-by for will.
+[WHY]
+Some eDP panels' ext caps don't write initial values. The value of
+dpcd_addr (0x317) can be random and the backlight control interface
+will be incorrect.
 
+[HOW]
+Add new panel patches to remove sink ext caps.
 
-> +		smp_rmb();
-> +		return false;
-> +	}
->  
-> -	return vq->avail_idx == vq->last_avail_idx;
-> +	return true;
->  }
->  EXPORT_SYMBOL_GPL(vhost_vq_avail_empty);
+Cc: Mario Limonciello <mario.limonciello@amd.com>
+Cc: Alex Deucher <alexander.deucher@amd.com>
+Cc: stable@vger.kernel.org # 6.5.x
+Cc: Tsung-hua Lin <tsung-hua.lin@amd.com>
+Cc: Chris Chi <moukong.chi@amd.com>
+Reviewed-by: Wayne Lin <wayne.lin@amd.com>
+Acked-by: Alex Hung <alex.hung@amd.com>
+Signed-off-by: Ryan Lin <tsung-hua.lin@amd.com>
+Tested-by: Daniel Wheeler <daniel.wheeler@amd.com>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+---
+ drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_helpers.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-As a follow-up patch, we should clean out code duplication that
-accumulated with 3 places reading avail idx in essentially
-the same way - this duplication is what causes the mess in
-the 1st place.
+diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_helpers.c b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_helpers.c
+index 85b7f58a7f35a..c27063305a134 100644
+--- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_helpers.c
++++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_helpers.c
+@@ -67,6 +67,8 @@ static void apply_edid_quirks(struct edid *edid, struct dc_edid_caps *edid_caps)
+ 	/* Workaround for some monitors that do not clear DPCD 0x317 if FreeSync is unsupported */
+ 	case drm_edid_encode_panel_id('A', 'U', 'O', 0xA7AB):
+ 	case drm_edid_encode_panel_id('A', 'U', 'O', 0xE69B):
++	case drm_edid_encode_panel_id('B', 'O', 'E', 0x092A):
++	case drm_edid_encode_panel_id('L', 'G', 'D', 0x06D1):
+ 		DRM_DEBUG_DRIVER("Clearing DPCD 0x317 on monitor with panel id %X\n", panel_id);
+ 		edid_caps->panel_patch.remove_sink_ext_caps = true;
+ 		break;
+@@ -120,6 +122,8 @@ enum dc_edid_status dm_helpers_parse_edid_caps(
+ 
+ 	edid_caps->edid_hdmi = connector->display_info.is_hdmi;
+ 
++	apply_edid_quirks(edid_buf, edid_caps);
++
+ 	sad_count = drm_edid_to_sad((struct edid *) edid->raw_edid, &sads);
+ 	if (sad_count <= 0)
+ 		return result;
+@@ -146,8 +150,6 @@ enum dc_edid_status dm_helpers_parse_edid_caps(
+ 	else
+ 		edid_caps->speaker_flags = DEFAULT_SPEAKER_LOCATION;
+ 
+-	apply_edid_quirks(edid_buf, edid_caps);
+-
+ 	kfree(sads);
+ 	kfree(sadb);
+ 
+-- 
+2.43.0
 
 
 
-
-
-
-> -- 
-> 2.44.0
 
 
