@@ -1,54 +1,54 @@
-Return-Path: <linux-kernel+bounces-121073-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-121074-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 22A4B88E3F6
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 14:50:41 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6BA1F88E216
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 14:19:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 15AF4B21EC6
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 13:19:03 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2471D29C846
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 13:19:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A2A5816A1C5;
-	Wed, 27 Mar 2024 12:20:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1EDC416A1E1;
+	Wed, 27 Mar 2024 12:20:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YO9Dj8uO"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="S7E9xN0n"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E5AA612FB21;
-	Wed, 27 Mar 2024 12:20:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5D8F316A1D1;
+	Wed, 27 Mar 2024 12:20:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711542007; cv=none; b=jhaAmwM60S2GDD3VaCldspkQH7n2ROwRDy4ds2iIKTC58ngFq8Q/JOrpSBzvoraT+BA6tBf7sIRDd1p5C9RBJByVDoNC5o6tC+rM6UZ6KfJqP62yVf3vpGq+dDk5wxax7/c9KxihlnGd7zFFECIm5R/6b/1OS3Crrhsi6k1uAq4=
+	t=1711542009; cv=none; b=lpsYvBOW9uLMCWAzADtSyhEsIgVMMr/VZ3hp4uVm/gCVNNYLnoQn+IxscSW2bNg/Kv84OSSEAopGMglWfhAoFpo8jwxn7hvkOPbhny0T7Cv7SMemYQy5Tuh3FH9THA+hU0z/zHKhjyr6DX6yDnf16D570HjI4rc8efxNbpYkTMU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711542007; c=relaxed/simple;
-	bh=UAovb1tUKDYKJTTGmzPWs+KbevUb2jUSi3ga78rj5PA=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=TPY5Vu4f+JWfG26PC6663kkiL6BzQNX+2wmpCy5k8s69c4IhFzu8gmU/Oiy9q5Wj0M1f4Wb1GyClz0rjM6BItpXjIMt0YLe+MHyQlrogC/HHP00dyeo5ZRr7JvT5WZ0xeKEUE9Rr6ZGMw380Iq2xyormPtA6Df7VA1KR6fcTrBA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=YO9Dj8uO; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1A900C43390;
-	Wed, 27 Mar 2024 12:20:06 +0000 (UTC)
+	s=arc-20240116; t=1711542009; c=relaxed/simple;
+	bh=ufK/g3GX9r3mWLjejioZqTZhpQp3PSOo4bubJdqFO2A=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=cZT247bZHvfG026P4vRu3WzEozK3PkFJqG3u8A1zMsAIn0kWLujknJlSStDI9auwHkEppPxtrUS3wWttVo5s+sQ2J/N4fHzISGEC1FraqMSGgndfxFKyYzZ0ekn/Gvp27C8lcVlyc8FHBl2OLarSaHe/H9f8NBClGFbI98U2WO4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=S7E9xN0n; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 81342C43330;
+	Wed, 27 Mar 2024 12:20:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711542006;
-	bh=UAovb1tUKDYKJTTGmzPWs+KbevUb2jUSi3ga78rj5PA=;
+	s=k20201202; t=1711542009;
+	bh=ufK/g3GX9r3mWLjejioZqTZhpQp3PSOo4bubJdqFO2A=;
 	h=From:To:Cc:Subject:Date:From;
-	b=YO9Dj8uOujNbklPfHtvUWDZxlRdocbNa7yusWhl5JrQtuSt5gpKuZ7uiU/HQstmLR
-	 3HXmsOXtNq3/VWkkH/4oCgKAVKSo18cOswobfe48pE6oWZSJu7d6nyDGXWoDr16AW/
-	 KV2Q4jz3Z56dxrgpjrqUfHF20Cjxi86Rutc5muP35ua987uia3S0MvF/JVL2H69qwJ
-	 Qy/x89P/47+r7t/FSq3RzhLToK4qSUMHCnpCG/VPrnpvbPUkJ6gYPJVMShdptgtYUX
-	 2vJ0NfSWQO0lXw6Cwz0XKB1wwaI/wLr/fRUYQaM3YnzX5GzL+8bGZ/yKTLcRmspurn
-	 Vovs2jg4s1/6A==
+	b=S7E9xN0n5bLST7rfZvB5XGIT4mgB5D0C3XuVsi/nk2XSSp2VgjiLL1+jzs1TmVQJN
+	 a/P5fe3KB/xpoG/hpiS9rlei73OVnhOesNqDD11ahb/lcdaVl9unNQQgyfuYyNrN2n
+	 yMEe3VvILa3VZz890fzL5lPEZWClNr4oAGSiI58WQZcUZykeMDwEK/b6v/5T6N0wVk
+	 MEDLBQyzf0TOSdfzsnsf8gZfRDmOQgfO+JHq3lipCR/5GaADY5x1I5FpmPJ11t3UHa
+	 q3YaICxI7bk83Kz0PTb9W7gRnp+3vIe1Lx9JY7OfGRxZZHPi7qq9lCw/OBU7o+2+en
+	 +wS40vIubp/fQ==
 From: Sasha Levin <sashal@kernel.org>
 To: stable@vger.kernel.org,
-	tonyb@cybernetics.com
-Cc: Greg Edwards <gedwards@ddn.com>,
-	Jens Axboe <axboe@kernel.dk>,
-	linux-block@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: FAILED: Patch "block: Fix page refcounts for unaligned buffers in __bio_release_pages()" failed to apply to 5.10-stable tree
-Date: Wed, 27 Mar 2024 08:20:05 -0400
-Message-ID: <20240327122005.2835722-1-sashal@kernel.org>
+	nathan@kernel.org
+Cc: Michael Ellerman <mpe@ellerman.id.au>,
+	linuxppc-dev@lists.ozlabs.org,
+	linux-kernel@vger.kernel.org,
+	llvm@lists.linux.dev
+Subject: FAILED: Patch "powerpc: xor_vmx: Add '-mhard-float' to CFLAGS" failed to apply to 5.10-stable tree
+Date: Wed, 27 Mar 2024 08:20:07 -0400
+Message-ID: <20240327122007.2835763-1-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -70,52 +70,46 @@ Sasha
 
 ------------------ original commit in Linus's tree ------------------
 
-From 38b43539d64b2fa020b3b9a752a986769f87f7a6 Mon Sep 17 00:00:00 2001
-From: Tony Battersby <tonyb@cybernetics.com>
-Date: Thu, 29 Feb 2024 13:08:09 -0500
-Subject: [PATCH] block: Fix page refcounts for unaligned buffers in
- __bio_release_pages()
+From 35f20786c481d5ced9283ff42de5c69b65e5ed13 Mon Sep 17 00:00:00 2001
+From: Nathan Chancellor <nathan@kernel.org>
+Date: Sat, 27 Jan 2024 11:07:43 -0700
+Subject: [PATCH] powerpc: xor_vmx: Add '-mhard-float' to CFLAGS
 
-Fix an incorrect number of pages being released for buffers that do not
-start at the beginning of a page.
+arch/powerpc/lib/xor_vmx.o is built with '-msoft-float' (from the main
+powerpc Makefile) and '-maltivec' (from its CFLAGS), which causes an
+error when building with clang after a recent change in main:
 
-Fixes: 1b151e2435fc ("block: Remove special-casing of compound pages")
+  error: option '-msoft-float' cannot be specified with '-maltivec'
+  make[6]: *** [scripts/Makefile.build:243: arch/powerpc/lib/xor_vmx.o] Error 1
+
+Explicitly add '-mhard-float' before '-maltivec' in xor_vmx.o's CFLAGS
+to override the previous inclusion of '-msoft-float' (as the last option
+wins), which matches how other areas of the kernel use '-maltivec', such
+as AMDGPU.
+
 Cc: stable@vger.kernel.org
-Signed-off-by: Tony Battersby <tonyb@cybernetics.com>
-Tested-by: Greg Edwards <gedwards@ddn.com>
-Link: https://lore.kernel.org/r/86e592a9-98d4-4cff-a646-0c0084328356@cybernetics.com
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
+Closes: https://github.com/ClangBuiltLinux/linux/issues/1986
+Link: https://github.com/llvm/llvm-project/commit/4792f912b232141ecba4cbae538873be3c28556c
+Signed-off-by: Nathan Chancellor <nathan@kernel.org>
+Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+Link: https://msgid.link/20240127-ppc-xor_vmx-drop-msoft-float-v1-1-f24140e81376@kernel.org
 ---
- block/bio.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+ arch/powerpc/lib/Makefile | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/block/bio.c b/block/bio.c
-index 496867b51609f..a8b6919400270 100644
---- a/block/bio.c
-+++ b/block/bio.c
-@@ -1153,7 +1153,7 @@ void __bio_release_pages(struct bio *bio, bool mark_dirty)
+diff --git a/arch/powerpc/lib/Makefile b/arch/powerpc/lib/Makefile
+index 6eac63e79a899..0ab65eeb93ee3 100644
+--- a/arch/powerpc/lib/Makefile
++++ b/arch/powerpc/lib/Makefile
+@@ -76,7 +76,7 @@ obj-$(CONFIG_PPC_LIB_RHEAP) += rheap.o
+ obj-$(CONFIG_FTR_FIXUP_SELFTEST) += feature-fixups-test.o
  
- 	bio_for_each_folio_all(fi, bio) {
- 		struct page *page;
--		size_t done = 0;
-+		size_t nr_pages;
+ obj-$(CONFIG_ALTIVEC)	+= xor_vmx.o xor_vmx_glue.o
+-CFLAGS_xor_vmx.o += -maltivec $(call cc-option,-mabi=altivec)
++CFLAGS_xor_vmx.o += -mhard-float -maltivec $(call cc-option,-mabi=altivec)
+ # Enable <altivec.h>
+ CFLAGS_xor_vmx.o += -isystem $(shell $(CC) -print-file-name=include)
  
- 		if (mark_dirty) {
- 			folio_lock(fi.folio);
-@@ -1161,10 +1161,11 @@ void __bio_release_pages(struct bio *bio, bool mark_dirty)
- 			folio_unlock(fi.folio);
- 		}
- 		page = folio_page(fi.folio, fi.offset / PAGE_SIZE);
-+		nr_pages = (fi.offset + fi.length - 1) / PAGE_SIZE -
-+			   fi.offset / PAGE_SIZE + 1;
- 		do {
- 			bio_release_page(bio, page++);
--			done += PAGE_SIZE;
--		} while (done < fi.length);
-+		} while (--nr_pages != 0);
- 	}
- }
- EXPORT_SYMBOL_GPL(__bio_release_pages);
 -- 
 2.43.0
 
