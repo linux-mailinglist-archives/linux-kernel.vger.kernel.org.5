@@ -1,149 +1,203 @@
-Return-Path: <linux-kernel+bounces-120362-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-120363-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0749788D646
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 07:16:24 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0D0E988D64A
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 07:18:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 89F65B21856
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 06:16:21 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 29D141C24112
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 06:18:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 503751BF35;
-	Wed, 27 Mar 2024 06:16:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2F68F1CAAF;
+	Wed, 27 Mar 2024 06:18:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="Xo7vTBJi"
-Received: from mail-oa1-f50.google.com (mail-oa1-f50.google.com [209.85.160.50])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="BpAs1eki"
+Received: from mail-pl1-f174.google.com (mail-pl1-f174.google.com [209.85.214.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E06FE171CC
-	for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 06:16:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BDEA71CA9C
+	for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 06:18:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711520174; cv=none; b=jYROhqtVorZwJnzYJ26Ubuini4vIw5oOpk3b6SEcGeqFD/gaioGJkNtDueYTHw5zLyTf/qH3zxqKub7OQZm6wfImgUtiZY0T+UbnnSkRv0x0vK7fsL14qk+Q1bSLNcix2eqEKejViy+91p7cV8zYeD96Ln/LhSDK1XRrrfNibVk=
+	t=1711520314; cv=none; b=ZOOEwHxWdeqFzgFuusXUOqgO9IcqX90xr37b1Sei64sQ36LxbNDRP1PpEkZVCWHQKvD5u1yc6T23emN47EMO3IxW8uuVMQ0KMn4BgFiKf0/vrD2Vz+i71s9FbNN0BlEQEjzkyIgJkMAYnf8kQgcibHj8k+4pW4gEBFIWe7OCq4I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711520174; c=relaxed/simple;
-	bh=YyCynSucS6U+XPV2fYpF5SbSkiOgoxVK7j+SNkVIXVY=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=vBe2iqxK+3vHkM6nTZj162zbhyJbfkCQYauIGIRa8CnFE76jrKlOLsm/n9XcRNBCQux5CfDhxnrBJ+J+55RcmuUxFlgF7WGT1HjHrYlCKhOAMCdmHUhAS3HuLHoji3SS2YVqxAGezdX3ed6Ph2gZPNos4sDAp28YJpf6k/PwcA4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com; spf=pass smtp.mailfrom=bytedance.com; dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b=Xo7vTBJi; arc=none smtp.client-ip=209.85.160.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bytedance.com
-Received: by mail-oa1-f50.google.com with SMTP id 586e51a60fabf-21e45ece781so4061310fac.0
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 23:16:11 -0700 (PDT)
+	s=arc-20240116; t=1711520314; c=relaxed/simple;
+	bh=QSWOd5QSD/Mwb0i+vtxbpmvy9IlXp1/N645iLIzqlgI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=SwB+xf9EOSdnzKZ8bFUmYKlsnqa7hnEVYw5wwjHOPh5+eYtGg0GzcBl7Q++CjMZmktgSsi87TpYBE7Vhg6XVmt+diLhmllQchApRvI9gfxYwS8AWyAkc89LAZJ+g4RVEwe7ZUOXjYE8yfwEb6p7Bl+0jPJB/gcnZN+3hR0aJXKQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=BpAs1eki; arc=none smtp.client-ip=209.85.214.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-pl1-f174.google.com with SMTP id d9443c01a7336-1e0511a4383so47392285ad.2
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 23:18:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1711520171; x=1712124971; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=3kGrOBgnau6vlPoQysPMrILfu8WUrfgT3mQotZjW+mc=;
-        b=Xo7vTBJiMIrDouqFE+FKsMNW6/GGYMWnBCJIkYBkCVZGf3ChDpEoLWVKVZydY40yYM
-         I8ZN4t/UXJoRW45dH2HeQksFe6XLhJa5f/adLc8Vo53dkiXb7Cg/i1Ixz8IklkFc1gfz
-         jDngskszo85sjPdTp2izVlwC6DdU4YSi2p7UYJy1hO1wqaV5lr6brSSGYs+lWLnFNslx
-         0gxRZHUIVVCPB7nduFX6aHNFj2FsF6yPPVmoc9JcV+lQMJkOOnX1Cbxiz8mv2SbIOi7L
-         C9bKK6w40Bd53mLpSjn1XfkvrwLncokb2zp1WEGda7pHCRuc/zDhd3uIq4al2TRK+krk
-         5PKw==
+        d=linaro.org; s=google; t=1711520312; x=1712125112; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=o0gjg83GHJ5iMw1grXSKgZDAg4bzhxIcgbatUtZtL1w=;
+        b=BpAs1eki9UcYrHbYskq6BTJRGnVazUjcNoYWEcquZ4go4y217O2heUBhTAbAlfzi63
+         hcoyCJ3Oby3LR2S9jIX3VYjp5dAS678VcM5fHkGB+lnQkCjXBAA4eXyMvNcXfxq7LuXc
+         NnfTzf31USr8FlizdgP65bvOVRkRpAgZinQHTC245Q3qTKcrikksDiSPvK045vWwjxK4
+         92JGmLIRGiN+D0dmWpeJe/hiBereYxVFb2Yu3Y3Xt+uETckXSMGCpGxeLRdjX9K1tuKY
+         jx8Fn6wx9TckYgbZJN3GtHIh+siE8ohRialiOjTJCSZuvdXDKMvuRKWEJz/vsVmHqAUu
+         0oPQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711520171; x=1712124971;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=3kGrOBgnau6vlPoQysPMrILfu8WUrfgT3mQotZjW+mc=;
-        b=fmu67u+mKq7wSpihvHAWSqQy9ofQI1sPBEecY+2qbjn+I1eGnZruyd5JnBVNRTMN0J
-         /51aBe9+wQ8STk9GNjDRN8itqH48aXbXtezIce8lAICrbp2rjrhofmyayD9cN5UZqZxT
-         QMK7ALZSzubHBF5mozU+gdXFa7+G+FLDn1hJJQBnRe2BDahd4lTemZrnaUwBxI6AfXk+
-         ErWv4s5AktdSuebpJZWL2S9HxwCoWfHFpoAuE5uxr3GprhLrZUetrhObr8aIjjlKy5PT
-         ZluS6/8gv3L0hXrr6gYJF2X1caDQSPV43NnvTHyIrIFV7F4FLRimo4db9MV9pdAFYRy1
-         wASA==
-X-Forwarded-Encrypted: i=1; AJvYcCWyWwu6CLNN46ScfGCDay+h/AJKnZGbVC52WN0udLHzReW6OQy2y47Lv/TDC4zBavKwMw7jzmxnS9gIBh+BYId1zlo/bbHp4VjeWXjc
-X-Gm-Message-State: AOJu0YzzOtDdrfw4k5ub1LkvFhylLN40PsR8tKL8LgZdZu6BXltLhtBN
-	DVbQR25qsg7TIB0Dg+DFipvS/y4yhIcQ1MMF9a6mVZ4swVzuvqI6J2gSAAVpiyYAPbpDQFfwG7C
-	asZdIduKzeyqXhga5wCLRdkmqdqjXPL751jBZ7w==
-X-Google-Smtp-Source: AGHT+IFMN4eguJVk3/hsOcDrMysDAHcROyUhqeIkyR5+eDOdU7O92ItiCwYebfMEfrCeDl/m8weQrCQAFQsrwiKAFBg=
-X-Received: by 2002:a05:6870:c0c4:b0:229:ec0e:7361 with SMTP id
- e4-20020a056870c0c400b00229ec0e7361mr1762070oad.29.1711520171010; Tue, 26 Mar
- 2024 23:16:11 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1711520312; x=1712125112;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=o0gjg83GHJ5iMw1grXSKgZDAg4bzhxIcgbatUtZtL1w=;
+        b=nILBpeKfLzu87ekkFVkn1U1hvAcVcYgLEAjZ52ddMLe4QKjjioAv07OBbySpEXGBBe
+         zMia+5qE9h0riafRROrccj+VhRi3SqIrLltimFcVBeOTwUwR+yv2HvRWWVfPNQcEUfvc
+         ft4hT2C282+eKUz87jka59lsE32ss2TrG1zrsMjBqI7wV1Uv1CusNeO0alJyfIvuMuTN
+         QuLDxC5BFOO+lKaZoHh9aOjbCTVUWrzU1G81EmZOkQVeMhjEbmvGjtlC8dXp7ygKRIIl
+         nHhE2h6zAHiqHSrovrqXvMNZQzKbam+F76EgjS+SwGoGOcgJSXnIbYgOSrmPgCk0rXCD
+         SCXA==
+X-Forwarded-Encrypted: i=1; AJvYcCWOhZ9cH9z+A5QFzmfqoXoySh1AplY/aNAcAahdBON1TdzPVV0QiLPg3pc3SXvOqH1ciQ8bZJrHuwTjdlABa2wasx6IOCqhTuPBH9ql
+X-Gm-Message-State: AOJu0YyU53E5sYMfjW00z3sQoZQSLXQNsDe2xSuaIkJYI9vYlGdWLjbo
+	eG7I2+YS3MfVNcsuRP6mxv8PAyvhXFgtbXhVp3DhoUVC2jBsWoaFyj7+GaUqYQ==
+X-Google-Smtp-Source: AGHT+IHji7g8cihtAriwVgPqznOHJahJLJB2a+jqLM2ts6GNSuhe4SxcmmyVioUmpWFcQTqU1N0vyg==
+X-Received: by 2002:a17:902:ecc5:b0:1e0:342b:af6f with SMTP id a5-20020a170902ecc500b001e0342baf6fmr3668522plh.16.1711520311993;
+        Tue, 26 Mar 2024 23:18:31 -0700 (PDT)
+Received: from thinkpad ([117.207.28.168])
+        by smtp.gmail.com with ESMTPSA id h10-20020a170902f54a00b001e02875930asm8003160plf.25.2024.03.26.23.18.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 26 Mar 2024 23:18:31 -0700 (PDT)
+Date: Wed, 27 Mar 2024 11:48:19 +0530
+From: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To: Niklas Cassel <cassel@kernel.org>
+Cc: Lorenzo Pieralisi <lpieralisi@kernel.org>,
+	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+	Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
+	Kishon Vijay Abraham I <kishon@kernel.org>,
+	Thierry Reding <thierry.reding@gmail.com>,
+	Jonathan Hunter <jonathanh@nvidia.com>,
+	Jingoo Han <jingoohan1@gmail.com>,
+	Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
+	linux-pci@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+	linux-kernel@vger.kernel.org, mhi@lists.linux.dev,
+	linux-tegra@vger.kernel.org
+Subject: Re: [PATCH 05/11] PCI: epf-{mhi/test}: Move DMA initialization to
+ EPC init callback
+Message-ID: <20240327055457.GA2742@thinkpad>
+References: <20240314-pci-epf-rework-v1-0-6134e6c1d491@linaro.org>
+ <20240314-pci-epf-rework-v1-5-6134e6c1d491@linaro.org>
+ <Zf2tXgKo-gc3qy1D@ryzen>
+ <20240326082636.GG9565@thinkpad>
+ <ZgKsBoTvPWWhPO9e@ryzen>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240327045035.368512-1-samuel.holland@sifive.com> <20240327045035.368512-6-samuel.holland@sifive.com>
-In-Reply-To: <20240327045035.368512-6-samuel.holland@sifive.com>
-From: yunhui cui <cuiyunhui@bytedance.com>
-Date: Wed, 27 Mar 2024 14:16:00 +0800
-Message-ID: <CAEEQ3wm4SoC6rvv2qtVdP+4ZF1q41EEHUpwnagNgFwxkG5iw_w@mail.gmail.com>
-Subject: Re: [External] [PATCH v6 05/13] riscv: Only send remote fences when
- some other CPU is online
-To: Samuel Holland <samuel.holland@sifive.com>
-Cc: Palmer Dabbelt <palmer@dabbelt.com>, linux-riscv@lists.infradead.org, 
-	linux-kernel@vger.kernel.org, linux-mm@kvack.org, 
-	Alexandre Ghiti <alexghiti@rivosinc.com>, Jisheng Zhang <jszhang@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <ZgKsBoTvPWWhPO9e@ryzen>
 
-Hi Samuel,
+On Tue, Mar 26, 2024 at 12:05:42PM +0100, Niklas Cassel wrote:
+> On Tue, Mar 26, 2024 at 01:56:36PM +0530, Manivannan Sadhasivam wrote:
+> > On Fri, Mar 22, 2024 at 05:10:06PM +0100, Niklas Cassel wrote:
+> > > On Thu, Mar 14, 2024 at 08:53:44PM +0530, Manivannan Sadhasivam wrote:
+> > > > To maintain uniformity across EPF drivers, let's move the DMA
+> > > > initialization to EPC init callback. This will also allow us to deinit DMA
+> > > > during PERST# assert in the further commits.
+> > > > 
+> > > > For EPC drivers without PERST#, DMA deinit will only happen during driver
+> > > > unbind.
+> > > > 
+> > > > Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+> > > > ---
+> > > 
+> > > Reviewed-by: Niklas Cassel <cassel@kernel.org>
+> > > 
+> > > 
+> > > For the record, I was debugging a problem related to EPF DMA recently
+> > > and was dumping the DMA mask for the struct device of the epf driver.
+> > > I was a bit confused to see it as 32-bits, even though the EPC driver
+> > > has it set to 64-bits.
+> > > 
+> > > The current code works, because e.g., pci_epf_test_write(), etc,
+> > > does:
+> > > struct device *dma_dev = epf->epc->dev.parent;
+> > > dma_map_single(dma_dev, ...);
+> > > 
+> > > but it also means that all EPF drivers will do this uglyness.
+> > > 
+> > 
+> > This ugliness is required as long as the dmaengine is associated only with the
+> > EPC.
+> > 
+> > > 
+> > > 
+> > > However, if a EPF driver does e.g.
+> > > dma_alloc_coherent(), and sends in the struct *device for the EPF,
+> > > which is the most logical thing to do IMO, it will use the wrong DMA
+> > > mask.
+> > > 
+> > > Perhaps EPF or EPC code should make sure that the struct *device
+> > > for the EPF will get the same DMA mask as epf->epc->dev.parent,
+> > > so that EPF driver developer can use the struct *epf when calling
+> > > e.g. dma_alloc_coherent().
+> > > 
+> > 
+> > Makes sense. I think it can be done during bind() in the EPC core. Feel free to
+> > submit a patch if you like, otherwise I'll keep it in my todo list.
+> 
+> So we still want to test:
+> -DMA API using the eDMA
+> -DMA API using the "dummy" memcpy dma-channel.
+> 
 
-On Wed, Mar 27, 2024 at 12:50=E2=80=AFPM Samuel Holland
-<samuel.holland@sifive.com> wrote:
->
-> If no other CPU is online, a local cache or TLB flush is sufficient.
-> These checks can be constant-folded when SMP is disabled.
->
-> Signed-off-by: Samuel Holland <samuel.holland@sifive.com>
-> ---
->
-> (no changes since v4)
->
-> Changes in v4:
->  - New patch for v4
->
->  arch/riscv/mm/cacheflush.c | 4 +++-
->  arch/riscv/mm/tlbflush.c   | 4 +++-
->  2 files changed, 6 insertions(+), 2 deletions(-)
->
-> diff --git a/arch/riscv/mm/cacheflush.c b/arch/riscv/mm/cacheflush.c
-> index d76fc73e594b..f5be1fec8191 100644
-> --- a/arch/riscv/mm/cacheflush.c
-> +++ b/arch/riscv/mm/cacheflush.c
-> @@ -21,7 +21,9 @@ void flush_icache_all(void)
->  {
->         local_flush_icache_all();
->
-> -       if (riscv_use_sbi_for_rfence())
-> +       if (num_online_cpus() < 2)
-> +               return;
-> +       else if (riscv_use_sbi_for_rfence())
->                 sbi_remote_fence_i(NULL);
->         else
->                 on_each_cpu(ipi_remote_fence_i, NULL, 1);
-> diff --git a/arch/riscv/mm/tlbflush.c b/arch/riscv/mm/tlbflush.c
-> index da821315d43e..0901aa47b58f 100644
-> --- a/arch/riscv/mm/tlbflush.c
-> +++ b/arch/riscv/mm/tlbflush.c
-> @@ -79,7 +79,9 @@ static void __ipi_flush_tlb_all(void *info)
->
->  void flush_tlb_all(void)
->  {
-> -       if (riscv_use_sbi_for_rfence())
-> +       if (num_online_cpus() < 2)
-> +               local_flush_tlb_all();
-> +       else if (riscv_use_sbi_for_rfence())
->                 sbi_remote_sfence_vma_asid(NULL, 0, FLUSH_TLB_MAX_SIZE, F=
-LUSH_TLB_NO_ASID);
->         else
->                 on_each_cpu(__ipi_flush_tlb_all, NULL, 1);
-> --
-> 2.43.1
->
+IMO, the test driver should just test one form of data transfer. Either CPU
+memcpy (using iATU or something similar) or DMA. But I think the motive behind
+using DMA memcpy is that to support platforms that do not pass DMA slave
+channels in devicetree.
 
-From a perceptual point of view, the modification here is not
-necessary. There is such logic in on_each_cpu(). Can you share your
-test data?
+It is applicable to test driver but not to MHI driver since all DMA supported
+MHI platforms will pass the DMA slave channels in devicetree.
 
+> However, it seems like both pci-epf-mhi.c and pci-epf-test.c
+> do either:
+> -Use DMA API
+> or
+> -Use memcpy_fromio()/memcpy_toio() instead of DMA API
+> 
+> 
+> To me, it seems like we should always be able to use
+> DMA API (using either a eDMA or "dummy" memcpy).
+> 
 
-Thanks,
-Yunhui
+No, there are platforms that don't support DMA at all. Like Qcom SDX55, so we
+still need to do CPU memcpy.
+
+> I don't really see the need to have the path that does:
+> memcpy_fromio()/memcpy_toio().
+> 
+> I know that for DWC, when using memcpy (and this also
+> memcpy via DMA API), we need to map the address using
+> iATU first.
+> 
+> But that could probably be done using another flag,
+> perhaps rename that flag FLAG_USE_DMA to NEEDS_MAP or
+> something.
+> (Such that we can change these drivers to only have a
+> code path that uses DMA API.)
+> (...and making sure that inheriting the DMA mask does
+> not affect the DMA mask for DMA_MEMCPY.)
+> 
+> But perhaps I am missing something... and DMA_MEMCPY is
+> not always available?
+> 
+
+Yes.
+
+- Mani
+
+-- 
+மணிவண்ணன் சதாசிவம்
 
