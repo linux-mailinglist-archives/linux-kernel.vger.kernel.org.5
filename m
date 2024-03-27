@@ -1,144 +1,103 @@
-Return-Path: <linux-kernel+bounces-120346-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-120348-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 68EA688D614
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 06:52:35 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 786C988D61A
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 06:54:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C4889B22B27
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 05:52:32 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 24CEF2A6D09
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 05:54:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A884C18032;
-	Wed, 27 Mar 2024 05:52:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 519571CA9C;
+	Wed, 27 Mar 2024 05:53:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="TeXiLPXo"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.15])
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="JfDBQGop"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 261231EB3A;
-	Wed, 27 Mar 2024 05:52:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.15
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1928518036;
+	Wed, 27 Mar 2024 05:53:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711518746; cv=none; b=roj7EElc2lFD/YgjY0WtqklD2io26XcOqUKbldoUcmnN7WLLNvYPA3MAmn3uXQ24OLHswv3O4n4yP0yMBsC45dPDQHGfCoEs3jZM4FttGiP0dodu4P8So4QHQ0YBM4BzoMfrEnkXQZKWj4X0r04W0fS3wlu3ri49aRBqr9FGEp0=
+	t=1711518833; cv=none; b=MyS5qZohiTD2c198WOghR9rcgrrJccX4k5vCL5BTAMsu/K97IPcxGfS35vSFau+5aanULQ0IX2kuuAFC0ZsMbOm4L4In0302TU6yxvWO232GNSBCKXFGxNvEteTAT+QvCjCtgtwTNoCheIBX31H6k/ea0HeNCSKCKkdgVA0pJxM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711518746; c=relaxed/simple;
-	bh=DUYsEBhufHuKKK6bUgS5bqEt21XUzht90M0sAt1R+Mo=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=A51WMIr6OPMPY5XPH/zH3c0byN4ZmLCsM3Ucz0A+WZ7i0SvC2CZ5ieqcxksGqpfGDmihkcURo2o1rBS6hBzR6QYN8ladodChbweatrQdmaIPwsdRW9vJnQsXUt8W8eOoAtErebIfpxogcRkjieTSFOp4+G7oq70kXePWPgSOgiw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=TeXiLPXo; arc=none smtp.client-ip=192.198.163.15
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1711518743; x=1743054743;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=DUYsEBhufHuKKK6bUgS5bqEt21XUzht90M0sAt1R+Mo=;
-  b=TeXiLPXoofhobFd2nlvewQ2n2qOzKpd88xnePb/yM2t8SB1AOB6mRssK
-   3XvFOHj7y740DcK8hgfwZdQRNvzDkrykOKSBYnaC/0TuFMpK6LlTZ7Zdd
-   TOq1zc0V52u3nYpjXzKmCsnXxc/ypkRQHRzCYN91kO57F/tTqvR7Kk7Bu
-   9BfE/sSiZ44/0bUgNoBFE1eZBHRK0/8yWUw/ULP+M04hgRZ92yoYTQaYq
-   3Bsfzzac/PeTj1evjrUuj5iGWqrkz2eEiZJlCSIWFIHhV0QeZbQzut/E7
-   h+mDGvf5a73CPz34G/uE9vwKdtehQe01dV2P+MY0u6oI7RvC3SUBOM/ct
-   Q==;
-X-CSE-ConnectionGUID: xG6sBxwRSUGtmVG8uaWXig==
-X-CSE-MsgGUID: qyD6Y8h1RuCgRGY+OFqL8A==
-X-IronPort-AV: E=McAfee;i="6600,9927,11025"; a="6788885"
-X-IronPort-AV: E=Sophos;i="6.07,157,1708416000"; 
-   d="scan'208";a="6788885"
-Received: from fmviesa005.fm.intel.com ([10.60.135.145])
-  by fmvoesa109.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Mar 2024 22:52:23 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,157,1708416000"; 
-   d="scan'208";a="20669682"
-Received: from yungchua-ws.ostc.intel.com (HELO yungchua-ws.intel.com) ([10.54.69.90])
-  by fmviesa005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Mar 2024 22:52:22 -0700
-From: Bard Liao <yung-chuan.liao@linux.intel.com>
-To: linux-sound@vger.kernel.org,
-	vkoul@kernel.org
-Cc: vinod.koul@linaro.org,
-	linux-kernel@vger.kernel.org,
-	pierre-louis.bossart@linux.intel.com,
-	bard.liao@intel.com
-Subject: [PATCH] soundwire: intel: add intel_free_stream() back
-Date: Wed, 27 Mar 2024 05:52:15 +0000
-Message-Id: <20240327055215.1097559-1-yung-chuan.liao@linux.intel.com>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1711518833; c=relaxed/simple;
+	bh=jm8w/V3SRkIIXkR8cniqTifgycQ08yMrZo71mqWFRWo=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=BKFg3UOY+O/0eCOwM/aHHJD8x9AHfMTZcOX5etXfXZ05MWJA1qsVB/4/Oe1XCeJuvLVbzMxZojXF5Cp9+RfoxLS0Sqm1WEGVbRoU1B1wRfWsKO/EsVNWL7Z5QFaBKz6ERXuSk43agbY2F9unzJmCMVjEN0Xq1XNBr+g7O2gFW4Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=JfDBQGop; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3DE97C433C7;
+	Wed, 27 Mar 2024 05:53:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+	s=korg; t=1711518832;
+	bh=jm8w/V3SRkIIXkR8cniqTifgycQ08yMrZo71mqWFRWo=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=JfDBQGop0i5Qj1l/7QiqKbUALQQMlEedhujs5sQDWjSNg3ANUNlMUYGWKJV74Og5y
+	 LLyXGDqXCMz7YALV6zZ/uU96L1B0RVc9nCkirA39PVWNwhe8A8mz3S5DqscI5usDFD
+	 b8aPUEmL7q70UILQhWUZfQtqGb0o4nqE7JJg2y1Q=
+Date: Wed, 27 Mar 2024 06:53:49 +0100
+From: Greg KH <gregkh@linuxfoundation.org>
+To: Norihiko Hama <Norihiko.Hama@alpsalpine.com>
+Cc: stern@rowland.harvard.edu, linux-usb@vger.kernel.org,
+	usb-storage@lists.one-eyed-alien.net, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] usb-storage: Optimize scan delay more precisely
+Message-ID: <2024032757-surcharge-grime-d3dd@gregkh>
+References: <20240327055130.43206-1-Norihiko.Hama@alpsalpine.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240327055130.43206-1-Norihiko.Hama@alpsalpine.com>
 
-From: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+On Wed, Mar 27, 2024 at 02:51:30PM +0900, Norihiko Hama wrote:
+> Current storage scan delay is reduced by the following old commit.
+> 
+> a4a47bc03fe5 ("Lower USB storage settling delay to something more reasonable")
+> 
+> It means that delay is at least 'one second', or zero with delay_use=0.
+> 'one second' is still long delay especially for embedded system but
+> when delay_use is set to 0 (no delay), error still observed on some USB drives.
+> 
+> So delay_use should not be set to 0 but 'one second' is quite long.
+> 
+> This patch optimizes scan delay more precisely
+> to minimize delay time but not to have any problems on USB drives
+> by adding module parameter 'delay_scale' of delay-time divisor.
+> By default, delay time is 'one second' for backward compatibility.
+> For example, it seems to be good by changing delay_scale=100,
+> that is 100 millisecond delay.
+> 
+> Signed-off-by: Norihiko Hama <Norihiko.Hama@alpsalpine.com>
+> ---
+>  drivers/usb/storage/usb.c | 5 ++++-
+>  1 file changed, 4 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/usb/storage/usb.c b/drivers/usb/storage/usb.c
+> index 90aa9c12ffac..f4a755e364da 100644
+> --- a/drivers/usb/storage/usb.c
+> +++ b/drivers/usb/storage/usb.c
+> @@ -70,6 +70,9 @@ MODULE_LICENSE("GPL");
+>  static unsigned int delay_use = 1;
+>  module_param(delay_use, uint, S_IRUGO | S_IWUSR);
+>  MODULE_PARM_DESC(delay_use, "seconds to delay before using a new device");
+> +static unsigned int delay_scale = MSEC_PER_SEC;
+> +module_param(delay_scale, uint, 0644);
+> +MODULE_PARM_DESC(delay_scale, "time scale of delay_use");
 
-Add the intel_free_stream() callback to deal with the change in IPC that
-requires additional steps to be done to clear the gateway node_id.
+Sorry, but module parameters are from the 1990's, we will not go back to
+that if at all possible as it's not easy to maintain and will not work
+properly for multiple devices.
 
-Signed-off-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Reviewed-by: Rander Wang <rander.wang@intel.com>
-Reviewed-by: Péter Ujfalusi <peter.ujfalusi@linux.intel.com>
-Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
----
- drivers/soundwire/intel.c | 25 +++++++++++++++++++++++++
- 1 file changed, 25 insertions(+)
+I can understand wanting something between 1 and 0 seconds, but adding
+yet-another-option isn't probably the best way, sorry.
 
-diff --git a/drivers/soundwire/intel.c b/drivers/soundwire/intel.c
-index e15666962fe4..01e1a0f3ec39 100644
---- a/drivers/soundwire/intel.c
-+++ b/drivers/soundwire/intel.c
-@@ -700,6 +700,24 @@ static int intel_params_stream(struct sdw_intel *sdw,
-  * DAI routines
-  */
- 
-+static int intel_free_stream(struct sdw_intel *sdw,
-+			     struct snd_pcm_substream *substream,
-+			     struct snd_soc_dai *dai,
-+			     int link_id)
-+{
-+	struct sdw_intel_link_res *res = sdw->link_res;
-+	struct sdw_intel_stream_free_data free_data;
-+
-+	free_data.substream = substream;
-+	free_data.dai = dai;
-+	free_data.link_id = link_id;
-+
-+	if (res->ops && res->ops->free_stream && res->dev)
-+		return res->ops->free_stream(res->dev, &free_data);
-+
-+	return 0;
-+}
-+
- static int intel_hw_params(struct snd_pcm_substream *substream,
- 			   struct snd_pcm_hw_params *params,
- 			   struct snd_soc_dai *dai)
-@@ -831,6 +849,7 @@ static int
- intel_hw_free(struct snd_pcm_substream *substream, struct snd_soc_dai *dai)
- {
- 	struct sdw_cdns *cdns = snd_soc_dai_get_drvdata(dai);
-+	struct sdw_intel *sdw = cdns_to_intel(cdns);
- 	struct sdw_cdns_dai_runtime *dai_runtime;
- 	int ret;
- 
-@@ -851,6 +870,12 @@ intel_hw_free(struct snd_pcm_substream *substream, struct snd_soc_dai *dai)
- 		return ret;
- 	}
- 
-+	ret = intel_free_stream(sdw, substream, dai, sdw->instance);
-+	if (ret < 0) {
-+		dev_err(dai->dev, "intel_free_stream: failed %d\n", ret);
-+		return ret;
-+	}
-+
- 	dai_runtime->pdi = NULL;
- 
- 	return 0;
--- 
-2.34.1
+thanks,
 
+greg k-h
 
