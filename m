@@ -1,258 +1,269 @@
-Return-Path: <linux-kernel+bounces-120590-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-120594-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9245288D9C7
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 10:09:29 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DCB4A88D9D7
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 10:14:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 03D741F29EE5
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 09:09:29 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 938FF29ACCF
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 09:14:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E50BF3770B;
-	Wed, 27 Mar 2024 09:09:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 42EA4381AB;
+	Wed, 27 Mar 2024 09:14:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="LOAfzCuq"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="IcKPRZhz"
+Received: from mail-ot1-f52.google.com (mail-ot1-f52.google.com [209.85.210.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5EE4D364D6
-	for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 09:09:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 529A5376E1
+	for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 09:14:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711530554; cv=none; b=dsXHSm3rRPIESCoXq8KG8chclGtrtOZI+0Kkjr67Tn+mcmKYzwJmQteSLnZ3MHYmAz+FImU+njzCBcDzcDIolKdT8eetTpjIXv+8LMniX5H7riI+mWSt/23L8Cw/AQrPFFwTiC7M3pvsYuMuyADMmeAOaQF8FMTGg60sXf/98XA=
+	t=1711530842; cv=none; b=EHOKyL+P1IZD7f1ZDwTX7dnsgbvFCWPc4mht/kFYkUWt+1SDyEtc0GKPFo/l0me9/nuZoo9/sMKeFFSmJmOP4X6KhZOadgw2YAupUKtdoTt2zrmamyL+ox1a+gbzGXzn/FPvdPLPkvRXsFYiSxrUC1YSqLDYTaa9slcW6xORDsQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711530554; c=relaxed/simple;
-	bh=oycWeHZoc4HFDl3X6OSlh68zAovOinIaWcnaZm5TJ7Y=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=WfCmZAn8jnv31iAUfpzA6ktkNOuqFwyN5uqSJ43VyKGj/ab+MAyaNFXFYnh8glt8b8WO4zYyVx6hkCVpOZUvIitfB3idK8uZmUtiC4R0hU2J80vJEfbjByo/xlKiT9vedxPKNWkY6hcM9K/OpeS+zlPe/ZRPrWbaw0BnxGQlh+0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=LOAfzCuq; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1711530551;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=PiUO7iPSPavIkRv/nSLB+20MvgfvmGJfy8IPlO0GJ2M=;
-	b=LOAfzCuqbVbx0FZRm83PgdS2+6ujQd5M0SqGyeCr33lzmcBgBAGTrl+/pBRPM/NhN8MynT
-	5XM78VN+VG4eG55iaqaE4hBHRY9tgheeEKiReT1aeZUiZDooKUHyOHaDmXfTUnbjO/5/Qu
-	rcNEH7ZLWLUMrN97Ql9DiMJNDWoLGgQ=
-Received: from mail-pg1-f198.google.com (mail-pg1-f198.google.com
- [209.85.215.198]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-100-7CZYyJX0MACIpcD6gvP6qw-1; Wed, 27 Mar 2024 05:09:09 -0400
-X-MC-Unique: 7CZYyJX0MACIpcD6gvP6qw-1
-Received: by mail-pg1-f198.google.com with SMTP id 41be03b00d2f7-5dc992f8c8aso4767321a12.3
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 02:09:09 -0700 (PDT)
+	s=arc-20240116; t=1711530842; c=relaxed/simple;
+	bh=iO9oNvG+QPX6EBHlzWrbZgkGzqEkhIYMPjFQURkQp1E=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=tpKlEEJ7wo/eE23ZPWvLYZsMML8u509n/iNzMAyaC5B04DgjyS8bWlJo+QUnUxAVkmcgghIEkr8jHZ2keomkvK5WF4tDxykDJF4cX9GSIfPvzjWcQFqWhSyhzwLpmOk1/qMn6iiKUeJvVgg317QeZgJOA8hRXEGAC9C/0AdE0oQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=IcKPRZhz; arc=none smtp.client-ip=209.85.210.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ot1-f52.google.com with SMTP id 46e09a7af769-6e6888358dfso2898772a34.2
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 02:14:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1711530839; x=1712135639; darn=vger.kernel.org;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=m7YoevRtWoIrX5inKpmhV/jNINZnpRhSbmQj7YxoH3s=;
+        b=IcKPRZhzBxsVoMKJCIFCqtYXft62VqgsDo8rX1MvH6oBHhTuLS3xMgKEdynu1A4WE3
+         YO5M4nVvUH/f0BsbbrTEeyYFj8XA8YRSEiKRnaECszKP5pG7LllZMgmYl7oZazfsAr+5
+         axK5c9ZrBRYH1P6aoZe9Q8Lj9MRLBCUZASOO9bpvDVs1zHmL6DSqRxN6f5JIiEeiJ5GE
+         DD13rMf+8klJXI2fKrc5b4gbYazwVm6ixS+1T+RUEODP8he5ltvtYvudzxhGBMnszKfX
+         tE5pSuTCBFt+MuWvJHAXon08m1/2Prb6686QGZxybQfI4BfsVDblcyUx13IyZKaANxMy
+         nx6w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711530548; x=1712135348;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=PiUO7iPSPavIkRv/nSLB+20MvgfvmGJfy8IPlO0GJ2M=;
-        b=cJSQdwoTbMDtoGOdjvDdbyVzY59ZbN/aHXuGVmNOciCGTsLfsq5ZZD65il3zNnVj38
-         JuCDaPhOVOM4wXXQCp4KuvGLG8/GrPcUYcJKdhPHsg5rvmBnLY5hBuSasSDxW8sQZXPa
-         M/TPdEpR9CNnTY3pDwEhGTo7TM5KVSNNL7S7meDxfzNFRqTfINd9yerjZSOJH4kqZcIC
-         fpE7rDyhPdJHWWHVI2RGJ0fVFyMZaph8o5kIFdWXUqM9x93TGrDfYkBa4xLk/jVD8QGe
-         b9A0WL0RuBJkT/SWrz5hQrhnXqdkSTuP2y2Cq04j98DZlhYXMrIj/p5BZF693CtUmMYp
-         JmtA==
-X-Forwarded-Encrypted: i=1; AJvYcCV8toAonDU39AjFYVOfVZkniBUjJ/xCXuY1WUX13raCcSw/89Nz2j3eh/oHuGsx83ma/Aazs7ptoFLUJOm9SBFyInjpOKe0loz5QGwV
-X-Gm-Message-State: AOJu0YzNz0bR8+Jd8vip94ROtN4hNau0oBZrqFYM+M52HjRQr1xqG6NS
-	58KCa5FpVy3KpTHhqzDhmo4vj75lfS79GWyHSYrA/XgMFzI3A9vcRldFcgSGU8WE9x/JAC8CxoC
-	QIn1LIzNwnQZ8boH721TFpScIVZ78nFkvc6/pDrFD579ZZj5vWrpS6IfKtkufgU9XS2W+T6PxDu
-	gix2la8068KIpq40U32MFderOZsBL450vvgDOa
-X-Received: by 2002:a17:90a:6581:b0:2a0:4c3b:2c39 with SMTP id k1-20020a17090a658100b002a04c3b2c39mr3854626pjj.23.1711530548359;
-        Wed, 27 Mar 2024 02:09:08 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IG7tW6F7qZe1Du7rhci+GrM9/pq6pNY9ImSzOjZdt98cUB1LtGctHbGEdhdQAtSqBjEaTzuTsGNpS1MIZsG1uo=
-X-Received: by 2002:a17:90a:6581:b0:2a0:4c3b:2c39 with SMTP id
- k1-20020a17090a658100b002a04c3b2c39mr3854612pjj.23.1711530548014; Wed, 27 Mar
- 2024 02:09:08 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1711530839; x=1712135639;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=m7YoevRtWoIrX5inKpmhV/jNINZnpRhSbmQj7YxoH3s=;
+        b=UfDqGHUdOBvXGwCMtSerk+I64vsO5BfRD9vcTdhkoFmcaUsO+nIvXUafbtwraWROo7
+         mgEiRKyGZzLYKh/EYkitCICXORTmEOykr0g8VKlkshY5i/Z4AN8ojRRVJcHOVHzFGCFg
+         2PNPT1av64D5XkX2Tbj6ArVAHOG5wCuJyhQA/F0FrxjD65Y27UrcAJ+4m+5356SZvumn
+         nnRxK7KPj28ylxCqW2Z9h6oJ5sNtaxFflOYUfSxzC/cMEv1q/HErzvd82mwUX8z8B9nD
+         ySv4nZMdGj+P2awDrmsDFFZgt0TdjAGS2xnDud6S0sQjRZBOnFQjJZyKUWS4t/tiEIf/
+         K0rA==
+X-Forwarded-Encrypted: i=1; AJvYcCUJGTVELzoyulOzn8stlcMEGqyvxJCtNYr2zTVYUeO9fB1aivgwX7uqjt2qFNIIfvZE59X2JamowqcAFzfW0mzvyOJGcR8okcyYzbVo
+X-Gm-Message-State: AOJu0YzYsbP/eJhM8uvNedeWAPLrvWLI9AKfwiqQNMi6P3nEPzbABi0S
+	azQLFclEre17q0iZX3sdQCJLMmo3bmZkxwo/5HZYc5dpq5Ocq8fknQvFdEB25A==
+X-Google-Smtp-Source: AGHT+IHLrC+cElHqEJHgQI6bNudg5V3T5UyMpSvlDNp0VTqd68nwYnF3OIdtHfvbZn/Wx5NtZMwQqQ==
+X-Received: by 2002:a9d:4f07:0:b0:6e6:ded0:8a69 with SMTP id d7-20020a9d4f07000000b006e6ded08a69mr5193012otl.31.1711530839288;
+        Wed, 27 Mar 2024 02:13:59 -0700 (PDT)
+Received: from [127.0.1.1] ([120.60.52.77])
+        by smtp.gmail.com with ESMTPSA id h190-20020a6383c7000000b005dc4fc80b21sm8673871pge.70.2024.03.27.02.13.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 27 Mar 2024 02:13:58 -0700 (PDT)
+From: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Subject: [PATCH v12 0/8] PCI: dwc: ep: Fix DBI access failure for drivers
+ requiring refclk from host
+Date: Wed, 27 Mar 2024 14:43:29 +0530
+Message-Id: <20240327-pci-dbi-rework-v12-0-082625472414@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240320101912.28210-1-w_angrong@163.com> <20240321025920-mutt-send-email-mst@kernel.org>
-In-Reply-To: <20240321025920-mutt-send-email-mst@kernel.org>
-From: Jason Wang <jasowang@redhat.com>
-Date: Wed, 27 Mar 2024 17:08:57 +0800
-Message-ID: <CACGkMEuHRf0ZfBiAYxyNHB3pxuzz=QCWt5VyHPLz-+-+LM=+bg@mail.gmail.com>
-Subject: Re: [PATCH v3] vhost/vdpa: Add MSI translation tables to iommu for
- software-managed MSI
-To: "Michael S. Tsirkin" <mst@redhat.com>
-Cc: Wang Rong <w_angrong@163.com>, kvm@vger.kernel.org, virtualization@lists.linux.dev, 
-	netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIADnjA2YC/3XPS2oDMQyA4asEr+Mgy56Huuo9SheOLSeiYRw8Z
+ doS5u71ZNME06UE/yd0UzMX4Vm97G6q8CKz5KkOBvc7Fc5+OrGWWBcKAR0gOn0NouNRdOGvXD7
+ 0EZnI90gWgqrRtXCS77v49l7ns8yfufzcDyzjtv2XWkYNundhSBFC4t69XmTyJR9yOanNWuivt
+ 9D2VHuk6KyNRCH6pjfwAJgWMFAF47zrQufJjtwK5kHAoRXM9kPqsKNE0A/2SVjX9ReJR8rQcgE
+ AAA==
+To: Jingoo Han <jingoohan1@gmail.com>, 
+ Lorenzo Pieralisi <lpieralisi@kernel.org>, 
+ =?utf-8?q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>, 
+ Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>, 
+ Marek Vasut <marek.vasut+renesas@gmail.com>, 
+ Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>, 
+ Thierry Reding <thierry.reding@gmail.com>, 
+ Jonathan Hunter <jonathanh@nvidia.com>, Vidya Sagar <vidyas@nvidia.com>, 
+ Vignesh Raghavendra <vigneshr@ti.com>, Richard Zhu <hongxing.zhu@nxp.com>, 
+ Lucas Stach <l.stach@pengutronix.de>, Shawn Guo <shawnguo@kernel.org>, 
+ Sascha Hauer <s.hauer@pengutronix.de>, 
+ Pengutronix Kernel Team <kernel@pengutronix.de>, 
+ Fabio Estevam <festevam@gmail.com>, NXP Linux Team <linux-imx@nxp.com>, 
+ Minghuan Lian <minghuan.Lian@nxp.com>, Mingkai Hu <mingkai.hu@nxp.com>, 
+ Roy Zang <roy.zang@nxp.com>, 
+ Kunihiko Hayashi <hayashi.kunihiko@socionext.com>, 
+ Masami Hiramatsu <mhiramat@kernel.org>, 
+ Kishon Vijay Abraham I <kishon@kernel.org>, 
+ Jesper Nilsson <jesper.nilsson@axis.com>, 
+ Srikanth Thokala <srikanth.thokala@intel.com>, 
+ Shawn Lin <shawn.lin@rock-chips.com>, Heiko Stuebner <heiko@sntech.de>, 
+ Kishon Vijay Abraham I <kishon@kernel.org>
+Cc: linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ linux-renesas-soc@vger.kernel.org, linux-arm-msm@vger.kernel.org, 
+ linux-tegra@vger.kernel.org, linux-omap@vger.kernel.org, 
+ linux-arm-kernel@lists.infradead.org, linuxppc-dev@lists.ozlabs.org, 
+ Niklas Cassel <cassel@kernel.org>, linux-arm-kernel@axis.com, 
+ linux-rockchip@lists.infradead.org, 
+ Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>, 
+ Frank Li <Frank.Li@nxp.com>
+X-Mailer: b4 0.12.4
+X-Developer-Signature: v=1; a=openpgp-sha256; l=6302;
+ i=manivannan.sadhasivam@linaro.org; h=from:subject:message-id;
+ bh=iO9oNvG+QPX6EBHlzWrbZgkGzqEkhIYMPjFQURkQp1E=;
+ b=owEBbQGS/pANAwAKAVWfEeb+kc71AcsmYgBmA+NIo/FDU1Qzm8K9RhxHEI8Jtmbq4KExhILxr
+ h8EcXGlx0SJATMEAAEKAB0WIQRnpUMqgUjL2KRYJ5dVnxHm/pHO9QUCZgPjSAAKCRBVnxHm/pHO
+ 9XMZB/9ZVvwo9sSG/E7aVel5CSG/nMG/jLxOi0rHJgyMN7yji8HK5ajSrTKUXs0jT4mdCTclZ8j
+ yGj4IxADoOnlwcHIjiz7NfE8eueVtUlnoWSzqXxWV9FrLNUtwYp98RXIOc3UvpMlvG/0QgbH3uv
+ K7YTyqGd4NsP7zM3fHjaWXkw0pB60QsEos4YQLk9lBpRKQxz40KLuAET6DwRV5ZNfua1ew+4L65
+ zr+NXa5ghbAqbrbm05gK3xe5iivUEFGH7lu9dMy5+yyytQgKM7Qf1VrUGShOtJKMAPZ0TB5p/5R
+ pFm/tz8l8TQYBVCiCxd0wAYH21S9gVFyCpuDBh/w4ikx2xHy
+X-Developer-Key: i=manivannan.sadhasivam@linaro.org; a=openpgp;
+ fpr=C668AEC3C3188E4C611465E7488550E901166008
 
-On Thu, Mar 21, 2024 at 3:00=E2=80=AFPM Michael S. Tsirkin <mst@redhat.com>=
- wrote:
->
-> On Wed, Mar 20, 2024 at 06:19:12PM +0800, Wang Rong wrote:
-> > From: Rong Wang <w_angrong@163.com>
-> >
-> > Once enable iommu domain for one device, the MSI
-> > translation tables have to be there for software-managed MSI.
-> > Otherwise, platform with software-managed MSI without an
-> > irq bypass function, can not get a correct memory write event
-> > from pcie, will not get irqs.
-> > The solution is to obtain the MSI phy base address from
-> > iommu reserved region, and set it to iommu MSI cookie,
-> > then translation tables will be created while request irq.
-> >
-> > Change log
-> > ----------
-> >
-> > v1->v2:
-> > - add resv iotlb to avoid overlap mapping.
-> > v2->v3:
-> > - there is no need to export the iommu symbol anymore.
-> >
-> > Signed-off-by: Rong Wang <w_angrong@163.com>
->
-> There's in interest to keep extending vhost iotlb -
-> we should just switch over to iommufd which supports
-> this already.
+Hello,
 
-IOMMUFD is good but VFIO supports this before IOMMUFD. This patch
-makes vDPA run without a backporting of full IOMMUFD in the production
-environment. I think it's worth.
+This series is the continuation of previous work by Vidya Sagar [1] to fix the
+issues related to accessing DBI register space before completing the core
+initialization in some EP platforms like Tegra194/234 and Qcom EP.
 
-If you worry about the extension, we can just use the vhost iotlb
-existing facility to do this.
+Since Vidya is busy, I took over the series based on his consent (off-list
+discussion).
 
-Thanks
+NOTE
+====
 
->
-> > ---
-> >  drivers/vhost/vdpa.c | 59 +++++++++++++++++++++++++++++++++++++++++---
-> >  1 file changed, 56 insertions(+), 3 deletions(-)
-> >
-> > diff --git a/drivers/vhost/vdpa.c b/drivers/vhost/vdpa.c
-> > index ba52d128aeb7..28b56b10372b 100644
-> > --- a/drivers/vhost/vdpa.c
-> > +++ b/drivers/vhost/vdpa.c
-> > @@ -49,6 +49,7 @@ struct vhost_vdpa {
-> >       struct completion completion;
-> >       struct vdpa_device *vdpa;
-> >       struct hlist_head as[VHOST_VDPA_IOTLB_BUCKETS];
-> > +     struct vhost_iotlb resv_iotlb;
-> >       struct device dev;
-> >       struct cdev cdev;
-> >       atomic_t opened;
-> > @@ -247,6 +248,7 @@ static int _compat_vdpa_reset(struct vhost_vdpa *v)
-> >  static int vhost_vdpa_reset(struct vhost_vdpa *v)
-> >  {
-> >       v->in_batch =3D 0;
-> > +     vhost_iotlb_reset(&v->resv_iotlb);
-> >       return _compat_vdpa_reset(v);
-> >  }
-> >
-> > @@ -1219,10 +1221,15 @@ static int vhost_vdpa_process_iotlb_update(stru=
-ct vhost_vdpa *v,
-> >           msg->iova + msg->size - 1 > v->range.last)
-> >               return -EINVAL;
-> >
-> > +     if (vhost_iotlb_itree_first(&v->resv_iotlb, msg->iova,
-> > +                                     msg->iova + msg->size - 1))
-> > +             return -EINVAL;
-> > +
-> >       if (vhost_iotlb_itree_first(iotlb, msg->iova,
-> >                                   msg->iova + msg->size - 1))
-> >               return -EEXIST;
-> >
-> > +
-> >       if (vdpa->use_va)
-> >               return vhost_vdpa_va_map(v, iotlb, msg->iova, msg->size,
-> >                                        msg->uaddr, msg->perm);
-> > @@ -1307,6 +1314,45 @@ static ssize_t vhost_vdpa_chr_write_iter(struct =
-kiocb *iocb,
-> >       return vhost_chr_write_iter(dev, from);
-> >  }
-> >
-> > +static int vhost_vdpa_resv_iommu_region(struct iommu_domain *domain, s=
-truct device *dma_dev,
-> > +     struct vhost_iotlb *resv_iotlb)
-> > +{
-> > +     struct list_head dev_resv_regions;
-> > +     phys_addr_t resv_msi_base =3D 0;
-> > +     struct iommu_resv_region *region;
-> > +     int ret =3D 0;
-> > +     bool with_sw_msi =3D false;
-> > +     bool with_hw_msi =3D false;
-> > +
-> > +     INIT_LIST_HEAD(&dev_resv_regions);
-> > +     iommu_get_resv_regions(dma_dev, &dev_resv_regions);
-> > +
-> > +     list_for_each_entry(region, &dev_resv_regions, list) {
-> > +             ret =3D vhost_iotlb_add_range_ctx(resv_iotlb, region->sta=
-rt,
-> > +                             region->start + region->length - 1,
-> > +                             0, 0, NULL);
-> > +             if (ret) {
-> > +                     vhost_iotlb_reset(resv_iotlb);
-> > +                     break;
-> > +             }
-> > +
-> > +             if (region->type =3D=3D IOMMU_RESV_MSI)
-> > +                     with_hw_msi =3D true;
-> > +
-> > +             if (region->type =3D=3D IOMMU_RESV_SW_MSI) {
-> > +                     resv_msi_base =3D region->start;
-> > +                     with_sw_msi =3D true;
-> > +             }
-> > +     }
-> > +
-> > +     if (!ret && !with_hw_msi && with_sw_msi)
-> > +             ret =3D iommu_get_msi_cookie(domain, resv_msi_base);
-> > +
-> > +     iommu_put_resv_regions(dma_dev, &dev_resv_regions);
-> > +
-> > +     return ret;
-> > +}
-> > +
-> >  static int vhost_vdpa_alloc_domain(struct vhost_vdpa *v)
-> >  {
-> >       struct vdpa_device *vdpa =3D v->vdpa;
-> > @@ -1335,11 +1381,16 @@ static int vhost_vdpa_alloc_domain(struct vhost=
-_vdpa *v)
-> >
-> >       ret =3D iommu_attach_device(v->domain, dma_dev);
-> >       if (ret)
-> > -             goto err_attach;
-> > +             goto err_alloc_domain;
-> >
-> > -     return 0;
-> > +     ret =3D vhost_vdpa_resv_iommu_region(v->domain, dma_dev, &v->resv=
-_iotlb);
-> > +     if (ret)
-> > +             goto err_attach_device;
-> >
-> > -err_attach:
-> > +     return 0;
-> > +err_attach_device:
-> > +     iommu_detach_device(v->domain, dma_dev);
-> > +err_alloc_domain:
-> >       iommu_domain_free(v->domain);
-> >       v->domain =3D NULL;
-> >       return ret;
-> > @@ -1595,6 +1646,8 @@ static int vhost_vdpa_probe(struct vdpa_device *v=
-dpa)
-> >               goto err;
-> >       }
-> >
-> > +     vhost_iotlb_init(&v->resv_iotlb, 0, 0);
-> > +
-> >       r =3D dev_set_name(&v->dev, "vhost-vdpa-%u", minor);
-> >       if (r)
-> >               goto err;
-> > --
-> > 2.27.0
-> >
->
+Based on the comments received in v7 [2], I've heavily modified the series
+to fix several other issues reported by Bjorn and Niklas. One noticeable
+change is getting rid of the 'core_init_notifer' flag added to differentiate
+between glue drivers requiring refclk from host and drivers getting refclk
+locally.
+
+By getting rid of this flag, now both the DWC EP driver and the EPF drivers
+can use a single flow and need not distinguish between the glue drivers.
+
+We can also get rid of the 'link_up_notifier' flag in the future by following
+the same convention.
+
+Testing
+=======
+
+I've tested the series on Qcom SM8450 based dev board that depends on refclk
+from host with EPF_MHI driver. It'd be good to test this series on platforms
+that generate refclk locally and also with EPF_TEST driver.
+
+- Mani
+
+[1] https://lore.kernel.org/linux-pci/20221013175712.7539-1-vidyas@nvidia.com/
+[2] https://lore.kernel.org/linux-pci/20231120084014.108274-1-manivannan.sadhasivam@linaro.org/
+
+Changes in v12:
+- Fixed the init_notify() API used in non-dwc drivers (thanks Niklas)
+- Dropped Gustavo from CC since his email is bouncing
+- Link to v11: https://lore.kernel.org/r/20240327-pci-dbi-rework-v11-0-6f5259f90673@linaro.org
+
+Changes in v11:
+- Minor cleanups reported by Niklas
+- 'epc->init_complete = false' is set in dw_pcie_ep_cleanup() to avoid
+  triggering init complete notification before refclk. This will be moved to EPC
+  core in the following series adding deinit notifier.
+- Collected review tags.
+- Link to v10: https://lore.kernel.org/r/20240314-pci-dbi-rework-v10-0-14a45c5a938e@linaro.org
+
+Changes in v10:
+- Reordered the commits by moving the independent fixes/cleanups first (Niklas)
+- Addressed several comments from Niklas
+- Moved PTM register setting out of dw_pcie_ep_init_non_sticky_registers() (Niklas)
+- Addressed the issue that EPF drivers were missing init notification after the
+  removal of core_init_notifier (Niklas)
+- Dropped a few cleanup patches to be clubbed with the follow up series
+- Collected review tags
+- Dropped the review tags for patch 8/8 as it got changed
+- Link to v9: https://lore.kernel.org/r/20240304-pci-dbi-rework-v9-0-29d433d99cda@linaro.org
+
+Changes in v9:
+- Incorporated changes for missing drivers (Niklas)
+- Reworded the dw_pcie_ep_cleanup() API kdoc (Niklas)
+- Reworded the description of patch 6/10 (Frank)
+- Collected reviews
+- Link to v8: https://lore.kernel.org/r/20240224-pci-dbi-rework-v8-0-64c7fd0cfe64@linaro.org
+
+Changes in v8:
+
+- Rebased on top of v6.8-rc1
+- Removed the deinit callback from struct dw_pcie_ep_ops
+- Renamed dw_pcie_ep_exit() to dw_pcie_ep_deinit()
+- Introduced dw_pcie_ep_cleanup() API for drivers supporting PERST#
+- Renamed dw_pcie_ep_init_complete() to dw_pcie_ep_init_registers()
+- Called dw_pcie_ep_init_registers() API directly from all glue drivers
+- Removed "core_init_notifier" flag
+- Added a generic dw_pcie_ep_linkdown() API to handle LINK_DOWN event and used
+  it in qcom driver
+- Added Kernel-doc comments for DWC EP APIs
+
+Changes in v7:
+
+- Rebased on top of v6.7-rc1
+- Kept the current dw_pcie_ep_init_complete() API instead of renaming it to
+  dw_pcie_ep_init_late(), since changing the name causes a slight ambiguity.
+- Splitted the change that moves pci_epc_init_notify() inside
+  dw_pcie_ep_init_notify() to help bisecting and also to avoid build issue.
+- Added a new patch that moves pci_epc_init_notify() inside
+  dw_pcie_ep_init_notify().
+- Took over the authorship and dropped the previous Ack as the patches are
+  heavily modified.
+
+Changes in v6:
+
+- Rebased on top of pci/next (6e2fca71e187)
+- removed ep_init_late() callback as it is no longer necessary
+
+For previous changelog, please refer [1].
+
+Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+---
+Manivannan Sadhasivam (8):
+      PCI: dwc: ep: Fix DBI access failure for drivers requiring refclk from host
+      PCI: dwc: ep: Add Kernel-doc comments for APIs
+      PCI: dwc: ep: Remove deinit() callback from struct dw_pcie_ep_ops
+      PCI: dwc: ep: Rename dw_pcie_ep_exit() to dw_pcie_ep_deinit()
+      PCI: dwc: ep: Introduce dw_pcie_ep_cleanup() API for drivers supporting PERST#
+      PCI: dwc: ep: Rename dw_pcie_ep_init_complete() to dw_pcie_ep_init_registers()
+      PCI: dwc: ep: Call dw_pcie_ep_init_registers() API directly from all glue drivers
+      PCI: endpoint: Remove "core_init_notifier" flag
+
+ drivers/pci/controller/cadence/pcie-cadence-ep.c  |   2 +
+ drivers/pci/controller/dwc/pci-dra7xx.c           |   9 +
+ drivers/pci/controller/dwc/pci-imx6.c             |  10 +
+ drivers/pci/controller/dwc/pci-keystone.c         |  11 +
+ drivers/pci/controller/dwc/pci-layerscape-ep.c    |   9 +
+ drivers/pci/controller/dwc/pcie-artpec6.c         |  15 +-
+ drivers/pci/controller/dwc/pcie-designware-ep.c   | 238 +++++++++++++++-------
+ drivers/pci/controller/dwc/pcie-designware-plat.c |  11 +
+ drivers/pci/controller/dwc/pcie-designware.h      |  14 +-
+ drivers/pci/controller/dwc/pcie-keembay.c         |  18 +-
+ drivers/pci/controller/dwc/pcie-qcom-ep.c         |   4 +-
+ drivers/pci/controller/dwc/pcie-rcar-gen4.c       |  28 ++-
+ drivers/pci/controller/dwc/pcie-tegra194.c        |   5 +-
+ drivers/pci/controller/dwc/pcie-uniphier-ep.c     |  15 +-
+ drivers/pci/controller/pcie-rcar-ep.c             |   2 +
+ drivers/pci/controller/pcie-rockchip-ep.c         |   2 +
+ drivers/pci/endpoint/functions/pci-epf-test.c     |  18 +-
+ drivers/pci/endpoint/pci-ep-cfs.c                 |   9 +
+ drivers/pci/endpoint/pci-epc-core.c               |  22 ++
+ include/linux/pci-epc.h                           |   7 +-
+ 20 files changed, 338 insertions(+), 111 deletions(-)
+---
+base-commit: 4cece764965020c22cff7665b18a012006359095
+change-id: 20240224-pci-dbi-rework-b2e99a62930c
+
+Best regards,
+-- 
+Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
 
 
