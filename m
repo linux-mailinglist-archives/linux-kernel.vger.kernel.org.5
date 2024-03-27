@@ -1,51 +1,61 @@
-Return-Path: <linux-kernel+bounces-121474-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-121476-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id EF71A88E866
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 16:20:17 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id DEAD588E871
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 16:21:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 927C41F33E09
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 15:20:17 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2D1242C687A
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 15:21:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0CF8F131724;
-	Wed, 27 Mar 2024 15:01:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EEA27132813;
+	Wed, 27 Mar 2024 15:03:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="bo77l+r0"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="n3XRX+do"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A93112DD8C;
-	Wed, 27 Mar 2024 15:01:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 22ED2132482;
+	Wed, 27 Mar 2024 15:03:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711551681; cv=none; b=bUQFzOFVW4PjbkZPEMkCNB+9ASelrGEAjQryuB87FbcJsDUY5MsbZ3wjX5kEmBYOuIodgSyGrUD/4Pxt6H+o6OdTVwVe6xjRM4ALN9fr3clhpc+P7UMydQ0TkRXenBo9z3/6Yl6UarBQ3BO9FAXYJiwlmaI+xI0rhN+A80eOHOo=
+	t=1711551806; cv=none; b=WhMg5bB5zi1OLwqHXpNZ3Y1bLE1nYiDXsgJmqQ/p7qr6e9qryftvv8YXV3XCJFsB1Jqq7ViLStBFv4GXZ/C5AaebLVBF6EOARgd6TYRqzgg4xnkGK5lxMv03XxLIJXYkIztRXLEkBnw7OMQf5TEe2tv4gYmt80nXbHOfAkrFq3w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711551681; c=relaxed/simple;
-	bh=J1IG8WkI6niRQrYbH+CydZSlvMPIcnN9NC49WgCaKEw=;
-	h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition:In-Reply-To; b=sIENnrYZbudch08Y6YLDYKVOAHrEdE7DFHUnMPI8REgiaq0aTTgSdBeu3OBVpvvF0MrJdYWOasiedwPGGzdHEW0xy/mV6rZJXL54SFta1xsvK28D526fO0nHqHs9us7IE35EP2JzRQ+F3qr1B8pRwgbMhIOEFg2YgeBUhlcgT30=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=bo77l+r0; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D73B7C433C7;
-	Wed, 27 Mar 2024 15:01:20 +0000 (UTC)
+	s=arc-20240116; t=1711551806; c=relaxed/simple;
+	bh=7eEcZmvTzb8VSbNdQfoe1CbrQJGiq8lc7tQjpI5gzrI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=k1IR5m2922QycAV92PfWtzSXU8Sa087KUrbXHjj8p8kYf3dknnAsvcAcID5Qvx+N180+qgrK7NaOjuBPjMGuUk85HwkEwHEfhWfohs7oSVe394+z7V7GSxGfXdBP5P5FipEYxENGVFymRrhp1TUb6FVCuhSAvwgYB/V0E45yQW0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=n3XRX+do; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B2115C433F1;
+	Wed, 27 Mar 2024 15:03:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711551681;
-	bh=J1IG8WkI6niRQrYbH+CydZSlvMPIcnN9NC49WgCaKEw=;
-	h=Date:From:To:Subject:In-Reply-To:From;
-	b=bo77l+r08VyDZusL1lvJnpzTbDKMRv9t4X1x1fCDXF46NEQyN+IYLIMUCNyueHvI5
-	 MJzQOpz592+f8p7AkgJHyedVolLcSTVW1rlbd4c2xdqkLN/1hUPNgz5k6E31J4f0dR
-	 3wA0Ikqadfq/CFtSAKlsj0vVrJ1Znhs+8aP07qRJNhpBG8mQYhlxtZbCdX2WMOHDU1
-	 dLObMKbsv8ZHgqdgncISiemEknX8SLgv59zuxPyt7SzZh3dr2VvC/eIB669gge5i4G
-	 mmSkX67k0fqpWC46zqBAtBYftCYEfgLhyblyADWKH+IjTwDNeUfUUFiokFyjZUib/R
-	 anoC4aWasDf5A==
-Date: Wed, 27 Mar 2024 10:01:19 -0500
-From: Bjorn Helgaas <helgaas@kernel.org>
-To: linux1394-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org,
-	linux-pci@vger.kernel.org, edmund.raile@proton.me
-Subject: Re: [PATCH v2] PCI: Mark LSI FW643 to avoid bus reset
-Message-ID: <20240327150119.GA1502858@bhelgaas>
+	s=k20201202; t=1711551804;
+	bh=7eEcZmvTzb8VSbNdQfoe1CbrQJGiq8lc7tQjpI5gzrI=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=n3XRX+dorHzwJYR0nkw+/2S37Z3avXPbnL3l4xeBZaO1cOokPn4Sn8Hl3ZgYqaHK4
+	 0kubFaY2NZBNaaFz+7fdRscWPnZxRPDlZVhYImbvdRTPeKaN4OyaH/sOSgLmtAlYUt
+	 Py3S4E8DHYrdpnkfbALpT6mXIVFFYENSMqZFE0nVREpzuBagIQiXz1haBQlKTeyGMO
+	 Mfmoclvn7X/CefsCt75iA8cIawPUlLgToUoGLqqiCWhn5GdaVUMHMMRhSW1z+TYvQM
+	 Zpuu3oMbg25Sp08D4ejJN4eErkxISgRYvHfEgaYTvQunVgbodg7kui6XhwXKZ/DNsl
+	 sUZGhIwYQm2GQ==
+Date: Wed, 27 Mar 2024 17:02:38 +0200
+From: Mike Rapoport <rppt@kernel.org>
+To: David Hildenbrand <david@redhat.com>
+Cc: linux-kernel@vger.kernel.org, Andrew Morton <akpm@linux-foundation.org>,
+	Jason Gunthorpe <jgg@nvidia.com>,
+	John Hubbard <jhubbard@nvidia.com>, Peter Xu <peterx@redhat.com>,
+	linux-arm-kernel@lists.infradead.org, loongarch@lists.linux.dev,
+	linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+	linux-s390@vger.kernel.org, linux-sh@vger.kernel.org,
+	linux-mm@kvack.org, linux-perf-users@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org, x86@kernel.org
+Subject: Re: [PATCH RFC 2/3] mm/treewide: rename CONFIG_HAVE_FAST_GUP to
+ CONFIG_HAVE_GUP_FAST
+Message-ID: <ZgQ1Dh2KZ3JvevX_@kernel.org>
+References: <20240327130538.680256-1-david@redhat.com>
+ <20240327130538.680256-3-david@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -54,32 +64,33 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240326131858.GA140624@workstation.local>
+In-Reply-To: <20240327130538.680256-3-david@redhat.com>
 
-On Tue, Mar 26, 2024 at 10:18:58PM +0900, Takashi Sakamoto wrote:
-> On Mon, Mar 25, 2024 at 09:41:49AM -0500, Bjorn Helgaas wrote:
-> > So even without this patch, you are able to pass the FW643 to a VM
-> > with VFIO, and you don't see any issues caused by VFIO resetting the
-> > device?
->  
-> Absolutely yes, at least in my VM, for recent years to maintain Linux
-> FireWire subsystem and ALSA firewire stack.
+On Wed, Mar 27, 2024 at 02:05:37PM +0100, David Hildenbrand wrote:
+> Nowadays, we call it "GUP-fast", the external interface includes
+> functions like "get_user_pages_fast()", and we renamed all internal
+> functions to reflect that as well.
+> 
+> Let's make the config option reflect that.
+> 
+> Signed-off-by: David Hildenbrand <david@redhat.com>
 
-So there must be something different between your system and Edmund's.
-Maybe we can refine the quirk so it avoids the SBR on Edmund's system
-but not yours.
+Reviewed-by: Mike Rapoport (IBM) <rppt@kernel.org>
 
-Can you both collect the output of "sudo lspci -vvv" so we can try to
-figure out the difference?  Also a complete dmesg log would be helpful
-and would contain DMI information that we might need if this is
-firmware dependent.
-
-> > Can you collect the output of:
-> > 
-> >   $ find /sys/devices -name reset_method | xargs grep .
-
-Edmund, could you run this command, too?
-
-Thanks,
-  Bjorn
+> ---
+>  arch/arm/Kconfig       | 2 +-
+>  arch/arm64/Kconfig     | 2 +-
+>  arch/loongarch/Kconfig | 2 +-
+>  arch/mips/Kconfig      | 2 +-
+>  arch/powerpc/Kconfig   | 2 +-
+>  arch/s390/Kconfig      | 2 +-
+>  arch/sh/Kconfig        | 2 +-
+>  arch/x86/Kconfig       | 2 +-
+>  include/linux/rmap.h   | 8 ++++----
+>  kernel/events/core.c   | 4 ++--
+>  mm/Kconfig             | 2 +-
+>  mm/gup.c               | 6 +++---
+>  mm/internal.h          | 2 +-
+>  13 files changed, 19 insertions(+), 19 deletions(-)
+> 
 
