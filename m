@@ -1,171 +1,264 @@
-Return-Path: <linux-kernel+bounces-120442-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-120443-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1925488D785
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 08:42:37 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 09F5E88D788
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 08:43:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C65C01F282D1
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 07:42:36 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B40AC29A914
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 07:43:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 500892C692;
-	Wed, 27 Mar 2024 07:42:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 319C7208A8;
+	Wed, 27 Mar 2024 07:43:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qDLB564J"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="e67VcMg2"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8B8C12C1A6
-	for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 07:42:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A132F2C1A2
+	for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 07:43:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711525350; cv=none; b=BRSOyESUz5hkp46PvKcz7J2U2CY/lYQhjEI2bslZ8yOJReE3cMkxH4gzk1GDXyKCcSUARR2tEX7Z6v/oVhBq/2Y/ahU8t0tXtSkkzsFkOl5gz24D8+zFyEOb+k4fqA9fCMxBnpaaZ1OlvDjpsUJ+YRmQuAjR/c/IlRaC1ofGsEo=
+	t=1711525384; cv=none; b=e/kOratfFHwG9Zg91cNSSSoyIXotAHXUKZfNKA7t7A3EZ5vDYwwPy2YAmHJCtAM+lMh7xBkY1MkQYRqfMjUNaBFOITnBmiKpgfE0jA5uKB7VWkSP0fxJIf5tFIgUtJ8+oCrTYUGIwOWmDTFHIKYrxGFzt2506dw5irHPppg1fvQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711525350; c=relaxed/simple;
-	bh=TD71V4olm06QmOSssnupFr6nfPYdbww3XJe4yFkCmgU=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=mpIF48XdAJqjhry87X6g20tCtOqZqxTS2b0FQumtN/8J442Vbi4ZVOELl3ZNeoVrznjh/+ADdjLi94GmD4DBf4MQjmnOhxSuZixR+VAirprgGrYc4glVfeyTHm8yUkMg3D0h6unam4BBdsoAMsCN/SeGKY6ohUH4YDhokNuiKjk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qDLB564J; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 84F45C433F1;
-	Wed, 27 Mar 2024 07:42:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711525350;
-	bh=TD71V4olm06QmOSssnupFr6nfPYdbww3XJe4yFkCmgU=;
-	h=From:To:Cc:Subject:Date:From;
-	b=qDLB564J1OPwdwaFjSwzPzdcxFpNkqvpBadoGyDILaGBfDQtBKe/wBFp6J7UZRqe4
-	 3B4IhdXATZKPWzkkeNGod/WFIl34byKVQo9bQp4Y5uN0anx0XaluWog960yH453uj7
-	 clvqPz2bXb6vZ1f4GZAvNFJyT7hefXy7eaN8tpnGzOLQLQXEV68PFZzRf7SdSD0+ho
-	 IRg7DAtqPwDnygmq9gNwQ/rxsX5x8rB4si4+3UHSCLKHiGrhDG/mBb19qzjPr/FCRo
-	 x7yWe4cey05PBTvVRXUpto7GmnUjZH6scZvsl7ifQGcj1t/U/thHhQFIS+bYPxVKqn
-	 q8EeEn2uWvZtA==
-From: Chao Yu <chao@kernel.org>
-To: jaegeuk@kernel.org
-Cc: linux-f2fs-devel@lists.sourceforge.net,
-	linux-kernel@vger.kernel.org,
-	Chao Yu <chao@kernel.org>,
-	Yi Zhang <yi.zhang@redhat.com>,
-	Shin'ichiro Kawasaki <shinichiro.kawasaki@wdc.com>
-Subject: [PATCH v2] f2fs: multidev: fix to recognize valid zero block address
-Date: Wed, 27 Mar 2024 15:42:23 +0800
-Message-Id: <20240327074223.2216487-1-chao@kernel.org>
-X-Mailer: git-send-email 2.40.1
+	s=arc-20240116; t=1711525384; c=relaxed/simple;
+	bh=7EA/daWGnv/NVXm5JJhuA1mge+UvdPLgSdjgIcWOrrY=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=YRe/QcgL882ahMDng/yeddbbTMlP5w4Fmt02/jpI4vmIV+xbuV0NfP21/PiMHZ5zgKzWcDHcXjVmwuqefFxR6fVfaQhqH6ld0vgJXMUgCFp++MqVhNJ+zEHTpdPesg72Fiq49x0/SQpLsL9dCKNRR/lGBQ7tdB3TE6/e3nUIRNo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=e67VcMg2; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1711525381;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=UeymL4z1bCM8IDHscCswoY62GKtZkRs0NUbQj9gofho=;
+	b=e67VcMg2fLWmHPQ3LX6vZVn/imgdBzYUICMZj/MkycOpZmMAT/pd3u/GPn0uBNwWRuPjOK
+	Lq5/+wjwFLcFzKbXSGSBCgIOPKv5FgIYRSN3jH3xAtU3gCcHKhgtt3ZOi9zDusl4DjeOn1
+	KkbKWsFFteUoGepjmGkiykOh5AXsyEQ=
+Received: from mail-pf1-f199.google.com (mail-pf1-f199.google.com
+ [209.85.210.199]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-339-Sa3G_OvwMvCEIDtm7PNZcw-1; Wed, 27 Mar 2024 03:42:58 -0400
+X-MC-Unique: Sa3G_OvwMvCEIDtm7PNZcw-1
+Received: by mail-pf1-f199.google.com with SMTP id d2e1a72fcca58-6e6a1625e4bso6315997b3a.1
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 00:42:58 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711525378; x=1712130178;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=UeymL4z1bCM8IDHscCswoY62GKtZkRs0NUbQj9gofho=;
+        b=Jx2/4PcdGXGeRnWS1HZThZQ9hvHSE4c899zFkSt5keCXylHgMc8eJgzb9l+opwultq
+         MC7JDUsUz8iF6YhvysO+H92ilBWiT39/gtNGtUqGTg+OHl1xVnLEDeHOGb4o+KhDsUYH
+         WxhK/+FUsK602g4aw5r072tF2aegBcpI3VvtDgQuLluzdmEH017s6t+iliGLu+lwu/Jr
+         wIpX2iJjb02MZv9aT6V2W03LdEAXS6wM7k8pLciYaC0RIHAj8s4re2Khox9d78dju7+d
+         lO8FMgEEuARn1faFkj9DoM8BX1raTMubIWDa2f+xuW2XsNNDKiN0fbOth0cLNosPodOp
+         fNNQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUxwALfT77dRHd1JoGHhaZZ5hUVZtvXl89tg9AJrgBhGNzxZgfawstU2lnNz6/OpkLH+oadsIbBX0urobk1qNeNqONOCPBnwdimmG1v
+X-Gm-Message-State: AOJu0YxGBHjK8cyKBnJmH3jXm9YgmHfkJ7bdCiJsqPHVkCEgJxHFa6gI
+	ptYsljXzmSCT/AMZ2iON4rw2LtttKnN5jTDdfCI9DIN4BxTroKfkvdolrAwyYzsS9JHw2njl+tB
+	yj6699qogKtfJZldAA2dEjArRCrp6aeuXPBdsnp8EEdcumvJkcBeXRFVM8e6T6GEy0Vr56P9+qz
+	UwIUprECMn5udA9GrYbUrw/uA1V9osrQ+jY6br
+X-Received: by 2002:a05:6a00:2e08:b0:6ea:c501:b264 with SMTP id fc8-20020a056a002e0800b006eac501b264mr2452230pfb.18.1711525377856;
+        Wed, 27 Mar 2024 00:42:57 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IEu6ZrhHFFU/cNQY2rKmeyFgQw7ULvu/SaNtvr064DrJO0UAnP2duZ3DsY8To+OPgMrQxcia5r8O2F8LO0SWDY=
+X-Received: by 2002:a05:6a00:2e08:b0:6ea:c501:b264 with SMTP id
+ fc8-20020a056a002e0800b006eac501b264mr2452204pfb.18.1711525377513; Wed, 27
+ Mar 2024 00:42:57 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20240326233846.1086253-1-gshan@redhat.com> <20240326233846.1086253-2-gshan@redhat.com>
+ <CACGkMEtyEo2QQSEh0ZnZDUJSXMMhzeO97Jp0wF4_rhzUBGk4Zg@mail.gmail.com>
+ <CACGkMEtUdgDr_M-F8-gdFkJp+29Xuw9DCib2-diFmJxFxDN2Bw@mail.gmail.com>
+ <b6f4e8c1-bdd1-496e-aa1a-68349674671c@redhat.com> <92ac171a-0004-45ef-a6c8-01b1c135a8ca@redhat.com>
+In-Reply-To: <92ac171a-0004-45ef-a6c8-01b1c135a8ca@redhat.com>
+From: Jason Wang <jasowang@redhat.com>
+Date: Wed, 27 Mar 2024 15:42:45 +0800
+Message-ID: <CACGkMEti3xtqHxhM-DGcquP6UncELUzrNeVor45wfGRCBkkZrg@mail.gmail.com>
+Subject: Re: [PATCH v2 1/2] vhost: Add smp_rmb() in vhost_vq_avail_empty()
+To: Gavin Shan <gshan@redhat.com>
+Cc: virtualization@lists.linux.dev, linux-kernel@vger.kernel.org, 
+	mst@redhat.com, davem@davemloft.net, stefanha@redhat.com, sgarzare@redhat.com, 
+	keirf@google.com, yihyu@redhat.com, shan.gavin@gmail.com, 
+	Will Deacon <will@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-As reported by Yi Zhang in mailing list [1], kernel warning was catched
-during zbd/010 test as below:
+On Wed, Mar 27, 2024 at 3:35=E2=80=AFPM Gavin Shan <gshan@redhat.com> wrote=
+:
+>
+> On 3/27/24 14:08, Gavin Shan wrote:
+> > On 3/27/24 12:44, Jason Wang wrote:
+> >> On Wed, Mar 27, 2024 at 10:34=E2=80=AFAM Jason Wang <jasowang@redhat.c=
+om> wrote:
+> >>> On Wed, Mar 27, 2024 at 7:39=E2=80=AFAM Gavin Shan <gshan@redhat.com>=
+ wrote:
+> >>>>
+> >>>> A smp_rmb() has been missed in vhost_vq_avail_empty(), spotted by
+> >>>> Will Deacon <will@kernel.org>. Otherwise, it's not ensured the
+> >>>> available ring entries pushed by guest can be observed by vhost
+> >>>> in time, leading to stale available ring entries fetched by vhost
+> >>>> in vhost_get_vq_desc(), as reported by Yihuang Yu on NVidia's
+> >>>> grace-hopper (ARM64) platform.
+> >>>>
+> >>>>    /home/gavin/sandbox/qemu.main/build/qemu-system-aarch64      \
+> >>>>    -accel kvm -machine virt,gic-version=3Dhost -cpu host          \
+> >>>>    -smp maxcpus=3D1,cpus=3D1,sockets=3D1,clusters=3D1,cores=3D1,thre=
+ads=3D1 \
+> >>>>    -m 4096M,slots=3D16,maxmem=3D64G                                 =
+\
+> >>>>    -object memory-backend-ram,id=3Dmem0,size=3D4096M                =
+\
+> >>>>     :                                                           \
+> >>>>    -netdev tap,id=3Dvnet0,vhost=3Dtrue                              =
+\
+> >>>>    -device virtio-net-pci,bus=3Dpcie.8,netdev=3Dvnet0,mac=3D52:54:00=
+:f1:26:b0
+> >>>>     :
+> >>>>    guest# netperf -H 10.26.1.81 -l 60 -C -c -t UDP_STREAM
+> >>>>    virtio_net virtio0: output.0:id 100 is not a head!
+> >>>>
+> >>>> Add the missed smp_rmb() in vhost_vq_avail_empty(). Note that it
+> >>>> should be safe until vq->avail_idx is changed by commit 275bf960ac69=
+7
+> >>>> ("vhost: better detection of available buffers").
+> >>>>
+> >>>> Fixes: 275bf960ac697 ("vhost: better detection of available buffers"=
+)
+> >>>> Cc: <stable@kernel.org> # v4.11+
+> >>>> Reported-by: Yihuang Yu <yihyu@redhat.com>
+> >>>> Signed-off-by: Gavin Shan <gshan@redhat.com>
+> >>>> ---
+> >>>>   drivers/vhost/vhost.c | 11 ++++++++++-
+> >>>>   1 file changed, 10 insertions(+), 1 deletion(-)
+> >>>>
+> >>>> diff --git a/drivers/vhost/vhost.c b/drivers/vhost/vhost.c
+> >>>> index 045f666b4f12..00445ab172b3 100644
+> >>>> --- a/drivers/vhost/vhost.c
+> >>>> +++ b/drivers/vhost/vhost.c
+> >>>> @@ -2799,9 +2799,18 @@ bool vhost_vq_avail_empty(struct vhost_dev *d=
+ev, struct vhost_virtqueue *vq)
+> >>>>          r =3D vhost_get_avail_idx(vq, &avail_idx);
+> >>>>          if (unlikely(r))
+> >>>>                  return false;
+> >>>> +
+> >>>>          vq->avail_idx =3D vhost16_to_cpu(vq, avail_idx);
+> >>>> +       if (vq->avail_idx !=3D vq->last_avail_idx) {
+> >>>> +               /* Similar to what's done in vhost_get_vq_desc(), we=
+ need
+> >>>> +                * to ensure the available ring entries have been ex=
+posed
+> >>>> +                * by guest.
+> >>>> +                */
+> >>>
+> >>> We need to be more verbose here. For example, which load needs to be
+> >>> ordered with which load.
+> >>>
+> >>> The rmb in vhost_get_vq_desc() is used to order the load of avail idx
+> >>> and the load of head. It is paired with e.g virtio_wmb() in
+> >>> virtqueue_add_split().
+> >>>
+> >>> vhost_vq_avail_empty() are mostly used as a hint in
+> >>> vhost_net_busy_poll() which is under the protection of the vq mutex.
+> >>>
+> >>> An exception is the tx_can_batch(), but in that case it doesn't even
+> >>> want to read the head.
+> >>
+> >> Ok, if it is needed only in that path, maybe we can move the barriers =
+there.
+> >>
+> >
+> > [cc Will Deacon]
+> >
+> > Jason, appreciate for your review and comments. I think PATCH[1/2] is
+> > the fix for the hypothesis, meaning PATCH[2/2] is the real fix. However=
+,
+> > it would be nice to fix all of them in one shoot. I will try with PATCH=
+[2/2]
+> > only to see if our issue will disappear or not. However, the issue stil=
+l
+> > exists if PATCH[2/2] is missed.
+> >
+>
+> Jason, PATCH[2/2] is sufficient to fix our current issue. I tried with PA=
+TCH[2/2]
+> only and unable to hit the issue. However, PATCH[1/2] may be needed by ot=
+her scenarios.
+> So it would be nice to fix them in one shoot.
 
-/check zbd/010
-zbd/010 (test gap zone support with F2FS)                    [failed]
-    runtime    ...  3.752s
-    something found in dmesg:
-    [ 4378.146781] run blktests zbd/010 at 2024-02-18 11:31:13
-    [ 4378.192349] null_blk: module loaded
-    [ 4378.209860] null_blk: disk nullb0 created
-    [ 4378.413285] scsi_debug:sdebug_driver_probe: scsi_debug: trim
-poll_queues to 0. poll_q/nr_hw = (0/1)
-    [ 4378.422334] scsi host15: scsi_debug: version 0191 [20210520]
-                     dev_size_mb=1024, opts=0x0, submit_queues=1, statistics=0
-    [ 4378.434922] scsi 15:0:0:0: Direct-Access-ZBC Linux
-scsi_debug       0191 PQ: 0 ANSI: 7
-    [ 4378.443343] scsi 15:0:0:0: Power-on or device reset occurred
-    [ 4378.449371] sd 15:0:0:0: Attached scsi generic sg5 type 20
-    [ 4378.449418] sd 15:0:0:0: [sdf] Host-managed zoned block device
-    ...
-    (See '/mnt/tests/gitlab.com/api/v4/projects/19168116/repository/archive.zip/storage/blktests/blk/blktests/results/nodev/zbd/010.dmesg'
+Yes, see below.
 
-WARNING: CPU: 22 PID: 44011 at fs/iomap/iter.c:51
-CPU: 22 PID: 44011 Comm: fio Not tainted 6.8.0-rc3+ #1
-RIP: 0010:iomap_iter+0x32b/0x350
-Call Trace:
- <TASK>
- __iomap_dio_rw+0x1df/0x830
- f2fs_file_read_iter+0x156/0x3d0 [f2fs]
- aio_read+0x138/0x210
- io_submit_one+0x188/0x8c0
- __x64_sys_io_submit+0x8c/0x1a0
- do_syscall_64+0x86/0x170
- entry_SYSCALL_64_after_hwframe+0x6e/0x76
+>
+>
+> > Firstly, We were failing on the transmit queue and {tvq, rvq}->busyloop=
+_timeout
+> > =3D=3D false if I remember correctly. So the added smp_rmb() in vhost_v=
+q_avail_empty()
+> > is only a concern to tx_can_batch(). A mutex isn't enough to ensure the=
+ order
+> > for the available index and available ring entry (head). For example, v=
+host_vq_avail_empty()
+> > called by tx_can_batch() can see next available index, but its correspo=
+nding
+> > available ring entry (head) may not be seen by vhost yet if smp_rmb() i=
+s missed.
+> > The next call to get_tx_bufs(), where the available ring entry (head) d=
+oesn't
+> > arrived yet, leading to stale available ring entry (head) being fetched=
+.
+> >
+> >    handle_tx_copy
+> >      get_tx_bufs                 // smp_rmb() won't be executed when vq=
+->avail_idx !=3D vq->last_avail_idx
+> >      tx_can_batch
+> >        vhost_vq_avail_empty      // vq->avail_idx is updated from vq->a=
+vail->idx
+> >
+> > The reason why I added smp_rmb() to vhost_vq_avail_empty() is because t=
+he function
+> > is a exposed API, even it's only used by drivers/vhost/net.c at present=
+ It means
+> > the API has been broken internally. So it seems more appropriate to fix=
+ it up in
+> > vhost_vq_avail_empty() so that the API's users needn't worry about the =
+memory access
+> > order.
 
-Shinichiro Kawasaki helps to analyse this issue and proposes a potential
-fixing patch in [2].
+When tx_can_batch returns true it means there's still pending tx
+buffers. Since it might read indices so it still can bypass the
+smp_rmb() in the vhost_get_vq_desc().
 
-Quoted from reply of Shinichiro Kawasaki:
+I'd suggest adding those above to change log.
 
-"I confirmed that the trigger commit is dbf8e63f48af as Yi reported. I took a
-look in the commit, but it looks fine to me. So I thought the cause is not
-in the commit diff.
+With this,
 
-I found the WARN is printed when the f2fs is set up with multiple devices,
-and read requests are mapped to the very first block of the second device in the
-direct read path. In this case, f2fs_map_blocks() and f2fs_map_blocks_cached()
-modify map->m_pblk as the physical block address from each block device. It
-becomes zero when it is mapped to the first block of the device. However,
-f2fs_iomap_begin() assumes that map->m_pblk is the physical block address of the
-whole f2fs, across the all block devices. It compares map->m_pblk against
-NULL_ADDR == 0, then go into the unexpected branch and sets the invalid
-iomap->length. The WARN catches the invalid iomap->length.
+Acked-by: Jason Wang <jasowang@redhat.com>
 
-This WARN is printed even for non-zoned block devices, by following steps.
+Thanks
 
- - Create two (non-zoned) null_blk devices memory backed with 128MB size each:
-   nullb0 and nullb1.
- # mkfs.f2fs /dev/nullb0 -c /dev/nullb1
- # mount -t f2fs /dev/nullb0 "${mount_dir}"
- # dd if=/dev/zero of="${mount_dir}/test.dat" bs=1M count=192
- # dd if="${mount_dir}/test.dat" of=/dev/null bs=1M count=192 iflag=direct
-
-.."
-
-So, the root cause of this issue is: when multi-devices feature is on,
-f2fs_map_blocks() may return zero blkaddr in non-primary device, which is
-a verified valid block address, however, f2fs_iomap_begin() treats it as
-an invalid block address, and then it triggers the warning in iomap
-framework code.
-
-Finally, as discussed, we decide to use a more simple and direct way that
-checking (map.m_flags & F2FS_MAP_MAPPED) condition instead of
-(map.m_pblk != NULL_ADDR) to fix this issue.
-
-Thanks a lot for the effort of Yi Zhang and Shinichiro Kawasaki on this
-issue.
-
-[1] https://lore.kernel.org/linux-f2fs-devel/CAHj4cs-kfojYC9i0G73PRkYzcxCTex=-vugRFeP40g_URGvnfQ@mail.gmail.com/
-[2] https://lore.kernel.org/linux-f2fs-devel/gngdj77k4picagsfdtiaa7gpgnup6fsgwzsltx6milmhegmjff@iax2n4wvrqye/
-
-Reported-by: Yi Zhang <yi.zhang@redhat.com>
-Closes: https://lore.kernel.org/linux-f2fs-devel/CAHj4cs-kfojYC9i0G73PRkYzcxCTex=-vugRFeP40g_URGvnfQ@mail.gmail.com/
-Tested-by: Shin'ichiro Kawasaki <shinichiro.kawasaki@wdc.com>
-Tested-by: Yi Zhang <yi.zhang@redhat.com>
-Fixes: 1517c1a7a445 ("f2fs: implement iomap operations")
-Fixes: 8d3c1fa3fa5e ("f2fs: don't rely on F2FS_MAP_* in f2fs_iomap_begin")
-Signed-off-by: Chao Yu <chao@kernel.org>
----
-v2:
-- add Tested-by tag of Yi Zhang.
- fs/f2fs/data.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/fs/f2fs/data.c b/fs/f2fs/data.c
-index 08815394223a..fa5398ac4505 100644
---- a/fs/f2fs/data.c
-+++ b/fs/f2fs/data.c
-@@ -4196,7 +4196,7 @@ static int f2fs_iomap_begin(struct inode *inode, loff_t offset, loff_t length,
- 	if (WARN_ON_ONCE(map.m_pblk == COMPRESS_ADDR))
- 		return -EINVAL;
- 
--	if (map.m_pblk != NULL_ADDR) {
-+	if (map.m_flags & F2FS_MAP_MAPPED) {
- 		iomap->length = blks_to_bytes(inode, map.m_len);
- 		iomap->type = IOMAP_MAPPED;
- 		iomap->flags |= IOMAP_F_MERGED;
--- 
-2.40.1
+> >
+> >>>
+> >>>
+> >>>> +               smp_rmb();
+> >>>> +               return false;
+> >>>> +       }
+> >>>>
+> >>>> -       return vq->avail_idx =3D=3D vq->last_avail_idx;
+> >>>> +       return true;
+> >>>>   }
+> >>>>   EXPORT_SYMBOL_GPL(vhost_vq_avail_empty);
+>
+> Thanks,
+> Gavin
+>
 
 
