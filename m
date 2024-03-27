@@ -1,185 +1,191 @@
-Return-Path: <linux-kernel+bounces-121366-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-121367-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7B28B88E6DA
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 15:44:34 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 754DE88E7BA
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 16:03:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 05CCF2E30C2
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 14:44:33 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A5F12B334D6
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 14:44:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1D1D01384A9;
-	Wed, 27 Mar 2024 13:32:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 86BD413CC52;
+	Wed, 27 Mar 2024 13:33:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="TeVx6oJr"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Wrm9m3dJ"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.12])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7967413CC60
-	for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 13:32:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7718212A144;
+	Wed, 27 Mar 2024 13:33:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.12
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711546335; cv=none; b=tROWsvB8cESYpg3QAwtMx1diR+8G0iSZGSQ8fVHwLCpnj0zVMLfJHEenqg2aIg4RlzQYs4GA+4y+FK9D279CX9b2tnR0QYzjXY1QZF1FTdOwnxb3N2r74dtdvpRwyOSSujinESxVoDdj10SrCLN8ubfFwf7KLt1TQ3kcNWEadX8=
+	t=1711546402; cv=none; b=drvwTzrqgA4rKcdOV1vyTe95xQy3PuWc6LqquoNHM07zBs9DCrA+zZfc0jkz4pm2ucZKXy3GjWYFS8QeVVUPjXYVvTzYOM+92iKBBdajauK9nPwpWSJMVBJB166LfaK/AgOKxLbJARwimVGwUmxUluN2LKSk+ByvLSc1PUXbnrw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711546335; c=relaxed/simple;
-	bh=K0UVZINUhSSLxdNU4wwBE/T+FEz46ODAQKkZL3ADYrU=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=GTC3M5QaeXMeQ+OtYLTrAgw4OWLHvZY0AM8tY/42oEl84rLvI9DVfUy9+9NbDUJQACKWLyXCzR7CQ3BJyB0am5AUr9vysQGr4RcHYZRzXpo/DwDcX8OvlsZxQ9rJsj/KXs1oalmjqDkocJxoQX7RRF2YxMsu9DehWIArOfQLyTM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=TeVx6oJr; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1711546332;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=jD3Utmle+bis7mmdPw9AquqAmC1o8mQyHmUQiw/WEzk=;
-	b=TeVx6oJrdcxngD0SLYrh9tmY+tExo+cZMhrFV/j+RhcWX+gfCDCZVwTmmnAq0HJACHI+Zk
-	4Lb3KFOENlpQ08AVwZMgICMr/VWLxXhhchUw079RkTwe5VZQH0d2Xa7g/00kVvCp08sY9N
-	B3S53xrrJgstk5p773FrzHlWSG+n+6U=
-Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
- [209.85.218.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-632-rQFHYYqjNLKMszQsKdGI6Q-1; Wed, 27 Mar 2024 09:32:10 -0400
-X-MC-Unique: rQFHYYqjNLKMszQsKdGI6Q-1
-Received: by mail-ej1-f69.google.com with SMTP id a640c23a62f3a-a45acc7f07cso375502766b.2
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 06:32:09 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711546329; x=1712151129;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=jD3Utmle+bis7mmdPw9AquqAmC1o8mQyHmUQiw/WEzk=;
-        b=BFXnTaxPuwx+Tx4A6xd+DDK7q8BjmB1krvS0MOrerj1wtpUo2/uIAHtpqRJBvT/9Su
-         cIPR1WlclX10LqW6QfrstWKrMGC9172BB2JTX0siWT1Jz+5Tns54VKBjIT9a6XEtyyoZ
-         Kum+012F09/1QJ8f66D0heAxBQrumI4X5FWGJSbivHZ4VOxMsEcMdS5PqRLdHdLnFZdO
-         xZ3VzoV667SXmCBsbKEdok8fWd8YNTVG9BpFNx73NtfnFDGsWpHPTArMqnUrWdUVonoz
-         5ClgnXgy1Jb5Vy7rQ5oVkGfGxYA7XCdkBNUppmuO2Y17aP8YKyynem/mELDFpaeCqBhY
-         9xVw==
-X-Forwarded-Encrypted: i=1; AJvYcCXol/CcZ3koYjoXshyTMJ4PXe+z+ExTOkX1KUY+1VnmIpNxbytLw33ubQCtBURpNQ3VXDlx4aD8YNyJ6HXfgRPlo0/UPGabHa+H1ETf
-X-Gm-Message-State: AOJu0Yy+7T6otOMBAX9vNZLJcEDsptp9IChz0eygBqLhnIrvLxdcmKt3
-	4y9bPeNhcioQOT+JBYgS9VFzWyxlDCQr599/c1AoXNmXoZFSyaAiM/HmB8/z/m46qkzoC03qm8I
-	QU+7xqk4v0/4WddpomMYrzCXXVhXu/qk2CEVp1Z5pgNlqnyECtaoxcKXSQTQumg==
-X-Received: by 2002:a17:907:7206:b0:a4d:fe2f:a70b with SMTP id dr6-20020a170907720600b00a4dfe2fa70bmr2448973ejc.41.1711546329056;
-        Wed, 27 Mar 2024 06:32:09 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IGGdhqFLAf1gKN0Y/NZQvk+kIH5rUrJ00j88K5l/PrX7PEX8pYP+EIH8Lg2tXiyjUb+BEqFQQ==
-X-Received: by 2002:a17:907:7206:b0:a4d:fe2f:a70b with SMTP id dr6-20020a170907720600b00a4dfe2fa70bmr2448827ejc.41.1711546326567;
-        Wed, 27 Mar 2024 06:32:06 -0700 (PDT)
-Received: from ?IPV6:2001:1c00:c32:7800:5bfa:a036:83f0:f9ec? (2001-1c00-0c32-7800-5bfa-a036-83f0-f9ec.cable.dynamic.v6.ziggo.nl. [2001:1c00:c32:7800:5bfa:a036:83f0:f9ec])
-        by smtp.gmail.com with ESMTPSA id q2-20020a1709060e4200b00a4674ad8ab9sm5383406eji.211.2024.03.27.06.32.05
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 27 Mar 2024 06:32:06 -0700 (PDT)
-Message-ID: <cbd6cf18-cdfe-409f-82f0-de46d2fe08ca@redhat.com>
-Date: Wed, 27 Mar 2024 14:32:05 +0100
+	s=arc-20240116; t=1711546402; c=relaxed/simple;
+	bh=ARtS+/GoVBY96qRYfTiri1+GreyI66aUneS6w1eDG9M=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=syj0Xo18WH1oDevfe7JYBcRNH0Vkd05Kt6omg6h1Mihc1mDxB/5Ur9vMs3/z8R/3nkCqfvXyBswR2jHEzcAScLSxO8H8kg9PrdXrTTX8c9hO1VgMF2c/WV5LM4MIZOVH527QNsXx8G7KYCGlUX9M9GsBYp3fhIhpMkdCO0r9jOI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Wrm9m3dJ; arc=none smtp.client-ip=192.198.163.12
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1711546401; x=1743082401;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=ARtS+/GoVBY96qRYfTiri1+GreyI66aUneS6w1eDG9M=;
+  b=Wrm9m3dJM1fWXRRgTe3/z32t+8RR2RXzMRqYZ0l9SvgjhKURCMO+QzHZ
+   ZXkyi1Ng6FWcWI3QMeDqZ9IvjwME/X4Flkj/F5/5yaoK+RxAD90q/6qJE
+   MXcfXIZiamXMYYRcax38Npk5IIqXv7eMbgP+YfI4lmuZN1FnQvO6NmHdE
+   uyp4bfNBYCUQ0CaY5hyMBBuelJcrWqBrlvhJh7Rix1P08v3gKqcLpefrV
+   d7Cs6xyNw4SjjgKR+v9nSJDULar6PnPXd0NodpHpEqYejzY368+xT5G3A
+   Ya4+nPWycw6haBE4wekh53oOOpr3tqA2V7F8UpgmeSgFEJ+rATtWEZBWs
+   g==;
+X-CSE-ConnectionGUID: P6StHuWPSnyPyBeE5LpmUw==
+X-CSE-MsgGUID: XLZpTOGYTR2DeCsBLsc6pQ==
+X-IronPort-AV: E=McAfee;i="6600,9927,11025"; a="10428513"
+X-IronPort-AV: E=Sophos;i="6.07,159,1708416000"; 
+   d="scan'208";a="10428513"
+Received: from orviesa004.jf.intel.com ([10.64.159.144])
+  by fmvoesa106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Mar 2024 06:32:49 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,158,1708416000"; 
+   d="scan'208";a="21006970"
+Received: from turnipsi.fi.intel.com (HELO kekkonen.fi.intel.com) ([10.237.72.44])
+  by orviesa004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Mar 2024 06:32:47 -0700
+Received: from kekkonen.localdomain (localhost [127.0.0.1])
+	by kekkonen.fi.intel.com (Postfix) with SMTP id 6A6AD11F8EA;
+	Wed, 27 Mar 2024 15:32:44 +0200 (EET)
+Date: Wed, 27 Mar 2024 13:32:44 +0000
+From: Sakari Ailus <sakari.ailus@linux.intel.com>
+To: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+Cc: Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+	Mauro Carvalho Chehab <mchehab@kernel.org>,
+	Hans Verkuil <hverkuil@xs4all.nl>,
+	Umang Jain <umang.jain@ideasonboard.com>,
+	linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] media: v4l2-subdev: Support enable/disable_streams for
+ single-pad subdevs
+Message-ID: <ZgQf_LX1ohYykGjv@kekkonen.localdomain>
+References: <20240325-single-pad-enable-streams-v1-1-142e19896a72@ideasonboard.com>
+ <20240325125055.GC23988@pendragon.ideasonboard.com>
+ <ZgF10EVLrfF7cl57@kekkonen.localdomain>
+ <0ad9841d-bb51-4512-9388-f9ce36372677@ideasonboard.com>
+ <ZgG5xt07XQ7DJ1_W@kekkonen.localdomain>
+ <e497a7a2-a973-4059-8981-1ea83ea3dd30@ideasonboard.com>
+ <ZgP5A0sN9FCoIoPs@kekkonen.localdomain>
+ <44e3f07f-9374-414e-a6db-a744127477b1@ideasonboard.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 00/19] ACPI: store owner from modules with
- acpi_bus_register_driver()
-Content-Language: en-US, nl
-To: "Rafael J. Wysocki" <rafael@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc: Len Brown <lenb@kernel.org>, Robert Moore <robert.moore@intel.com>,
- Dmitry Torokhov <dmitry.torokhov@gmail.com>,
- "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
- Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
- Benson Leung <bleung@chromium.org>, Tzung-Bi Shih <tzungbi@kernel.org>,
- Corentin Chary <corentin.chary@gmail.com>, "Luke D. Jones"
- <luke@ljones.dev>, =?UTF-8?Q?Ilpo_J=C3=A4rvinen?=
- <ilpo.jarvinen@linux.intel.com>,
- Thadeu Lima de Souza Cascardo <cascardo@holoscopio.com>,
- Daniel Oliveira Nascimento <don@syst.com.br>, =?UTF-8?Q?Pali_Roh=C3=A1r?=
- <pali@kernel.org>, Matan Ziv-Av <matan@svgalib.org>,
- Mattia Dongili <malattia@linux.it>, Azael Avalos <coproscefalo@gmail.com>,
- Richard Cochran <richardcochran@gmail.com>, Jeff Sipek <jsipek@vmware.com>,
- Ajay Kaher <akaher@vmware.com>, Alexey Makhalov <amakhalov@vmware.com>,
- VMware PV-Drivers Reviewers <pv-drivers@vmware.com>,
- Theodore Ts'o <tytso@mit.edu>, "Jason A. Donenfeld" <Jason@zx2c4.com>,
- "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
- linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
- acpica-devel@lists.linux.dev, linux-input@vger.kernel.org,
- netdev@vger.kernel.org, chrome-platform@lists.linux.dev,
- platform-driver-x86@vger.kernel.org
-References: <20240327-b4-module-owner-acpi-v1-0-725241a2d224@linaro.org>
- <CAJZ5v0hEiKJJWn-TVoyL6DEbCcMpL39_q+HLG_YZyjf9g29CXA@mail.gmail.com>
-From: Hans de Goede <hdegoede@redhat.com>
-In-Reply-To: <CAJZ5v0hEiKJJWn-TVoyL6DEbCcMpL39_q+HLG_YZyjf9g29CXA@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <44e3f07f-9374-414e-a6db-a744127477b1@ideasonboard.com>
 
-Hi,
+Heissulivei,
 
-<sorry for the empty previous reply, my bad>
-
-On 3/27/24 2:16 PM, Rafael J. Wysocki wrote:
-> On Wed, Mar 27, 2024 at 8:44 AM Krzysztof Kozlowski
-> <krzysztof.kozlowski@linaro.org> wrote:
->>
->> Merging
->> =======
->> All further patches depend on the first amba patch, therefore please ack
->> and this should go via one tree: ACPI?
->>
->> Description
->> ===========
->> Modules registering driver with acpi_bus_register_driver() often forget to
->> set .owner field.
->>
->> Solve the problem by moving this task away from the drivers to the core
->> amba bus code, just like we did for platform_driver in commit
->> 9447057eaff8 ("platform_device: use a macro instead of
->> platform_driver_register").
->>
->> Best regards,
->> Krzysztof
->>
->> ---
->> Krzysztof Kozlowski (19):
->>       ACPI: store owner from modules with acpi_bus_register_driver()
->>       Input: atlas: - drop owner assignment
->>       net: fjes: drop owner assignment
->>       platform: chrome: drop owner assignment
->>       platform: asus-laptop: drop owner assignment
->>       platform: classmate-laptop: drop owner assignment
->>       platform/x86/dell: drop owner assignment
->>       platform/x86/eeepc: drop owner assignment
->>       platform/x86/intel/rst: drop owner assignment
->>       platform/x86/intel/smartconnect: drop owner assignment
->>       platform/x86/lg-laptop: drop owner assignment
->>       platform/x86/sony-laptop: drop owner assignment
->>       platform/x86/toshiba_acpi: drop owner assignment
->>       platform/x86/toshiba_bluetooth: drop owner assignment
->>       platform/x86/toshiba_haps: drop owner assignment
->>       platform/x86/wireless-hotkey: drop owner assignment
->>       ptp: vmw: drop owner assignment
->>       virt: vmgenid: drop owner assignment
->>       ACPI: drop redundant owner from acpi_driver
+On Wed, Mar 27, 2024 at 01:06:42PM +0200, Tomi Valkeinen wrote:
+> On 27/03/2024 12:46, Sakari Ailus wrote:
+> > Heippa,
+> > 
+> > On Mon, Mar 25, 2024 at 07:56:46PM +0200, Tomi Valkeinen wrote:
+> > > On 25/03/2024 19:52, Sakari Ailus wrote:
+> > > > Moi,
+> > > > 
+> > > > On Mon, Mar 25, 2024 at 03:43:01PM +0200, Tomi Valkeinen wrote:
+> > > > > On 25/03/2024 15:02, Sakari Ailus wrote:
+> > > > > > Moi,
+> > > > > > 
+> > > > > > Thanks for the patch.
+> > > > > > 
+> > > > > > On Mon, Mar 25, 2024 at 02:50:55PM +0200, Laurent Pinchart wrote:
+> > > > > > > Hi Tomi,
+> > > > > > > 
+> > > > > > > On Mon, Mar 25, 2024 at 02:43:23PM +0200, Tomi Valkeinen wrote:
+> > > > > > > > Currently a subdevice with a single pad, e.g. a sensor subdevice, must
+> > > > > > > > use the v4l2_subdev_video_ops.s_stream op, instead of
+> > > > > > > > v4l2_subdev_pad_ops.enable/disable_streams. This is because the
+> > > > > > > > enable/disable_streams machinery requires a routing table which a subdev
+> > > > > > > > cannot have with a single pad.
+> > > > > > > > 
+> > > > > > > > Implement enable/disable_streams support for these single-pad subdevices
+> > > > > > > > by assuming an implicit stream 0 when the subdevice has only one pad.
+> > > > > > > > 
+> > > > > > > > Signed-off-by: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+> > > > > > > > ---
+> > > > > > > > Even though I did send this patch, I'm not sure if this is necessary.
+> > > > > > > > s_stream works fine for the subdevs with a single pad. With the upcoming
+> > > > > > > > internal pads, adding an internal pad to the subdev will create a
+> > > > > > > > routing table, and enable/disable_streams would get "fixed" that way.
+> > > > > > 
+> > > > > > I'd like to get rid of a redundant way to control streaming.
+> > > > > 
+> > > > > We can't get rid of it anyway, can we? We're not going to convert old
+> > > > > drivers to streams.
+> > > > 
+> > > > I'd expect to do that but it'd take a long time. That being said, I think
+> > > > we need to consider devices without pads (VCMs) so it may well be this
+> > > > would remain after all.
+> > > > 
+> > > > > 
+> > > > > For new drivers, yes, we shouldn't use s_stream. But is the answer for new
+> > > > > sensor drivers this patch, or requiring an internal pad?
+> > > > 
+> > > > For new drivers I'd like to see an internal pad in fact.
+> > > > {enable,disable}_streams is still internal to the kernel.
+> > > 
+> > > So, you think this patch should be dropped?
+> > 
+> > No, no. Not all sub-device drivers with pads are camera sensor drivers. :-)
 > 
-> I definitely like this, so
+> Hmm, alright. So we want to support enable/disable_streams for sub-devices
+> with multiple source pads but no routing (so probably no sink pads)?
+
+That should be allowed indeed, in order to move from s_stream() to
+{enable,disable}_streams().
+
 > 
-> Acked-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> > > > > > > > So perhaps the question is, do we want to support single-pad subdevs in
+> > > > > > > > the future, in which case something like this patch is necessary, or
+> > > > > > > > will all modern source subdev drivers have internal pads, in which
+> > > > > > > > case this is not needed...
+> > > > > > > 
+> > > > > > > I think the latter would be best. I however can't guarantee we won't
+> > > > > > > have valid use cases for (enable|disable)_streams on single-pad subdevs
+> > > > > > > though, so you patch could still be interesting.
+> > > > > > 
+> > > > > > Instead of the number of pads, could we use instead the
+> > > > > > V4L2_SUBDEV_FL_STREAMS flag or whether g_routing op is supported to
+> > > > > > determine the need for this?
+> > > > > 
+> > > > > Maybe, but are they better? Do you see some issue with checking for the
+> > > > > number of pads? I considered a few options, but then thought that the most
+> > > > > safest test for this case is 1) one pad 2) enable/disable_streams
+> > > > > implemented.
+> > > > 
+> > > > I think I'd actually prefer {enable,disable}_streams in fact.
+> > > 
+> > > Hmm, sorry, now I'm confused =). What do you mean with that?
+> > 
+> > I'd use V4L2_SUBDEV_FL_STREAMS flag instead of the number of pads. The
+> > number of pads is less related to routing.
 > 
-> for the series and I can pick it up if people agree.
+> Well, with one pad you cannot have routing =).
+> 
+> In this patch I used sd->enabled_streams to track the enabled streams, but
+> if we need to support multiple pads, I'll have to invent something new for
+> that.
 
-Thanks all the drivers/platform/x86/* change look good
-to me:
+What exactly do you think needs to be changed? This is just about starting
+and stopping streaming using a different sent of callbacks, right?
 
-Acked-by: Hans de Goede <hdegoede@redhat.com>
+-- 
+Terveisin,
 
-And I'm fine with merging these through the linux-pm /
-ACPI tree.
-
-Regards,
-
-Hans
-
-
-
+Sakari Ailus
 
