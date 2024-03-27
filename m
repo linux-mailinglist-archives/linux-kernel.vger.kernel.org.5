@@ -1,161 +1,173 @@
-Return-Path: <linux-kernel+bounces-121386-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-121387-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3715E88E748
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 15:52:46 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4583688E74A
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 15:53:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E470E1F261F7
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 14:52:45 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CF6AE1F2C878
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 14:53:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 33E3B13EFFF;
-	Wed, 27 Mar 2024 13:46:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7131D15B97D;
+	Wed, 27 Mar 2024 13:47:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=free.fr header.i=@free.fr header.b="sOUQ/6RC"
-Received: from smtp2-g21.free.fr (smtp2-g21.free.fr [212.27.42.2])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dKHr4LUf"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D81EF74436
-	for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 13:46:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.27.42.2
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E2FA15B961;
+	Wed, 27 Mar 2024 13:47:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711547214; cv=none; b=GWV6vs4Xc+Wnh5fOiTDNi3U3immZF86uNyJ8cQYATa2P8jPpHMN/ZwLEG594OcBGxMxtaoBkkNjEKL2AsPYGPbg+/wQs2c3790X5MKDcI+vMEY/zXVD2qf++a69Q1JF6lGLh11MQ4iPvSo8+S1fVzPW/2gxN/OZ5xwMJyDp78Y8=
+	t=1711547227; cv=none; b=Jco140NsvPvpyb9rDfBePwi+ikEMzCnJA86q8d+pBpnSZ9aTmc7hbIMJK87VGxtxc8Ct5zktKFKnR1RHAKXjGc9OtwvslhTa1JvSurDJFPRoZPN1EgX969ZIYAuS7JqAYSdJ2q67qpnszwfGBL1qe9Ti+MiiwhhQTmErE6wkgKY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711547214; c=relaxed/simple;
-	bh=p9pIK4VCXkeB/JMFbgcasYYVcZbs5nie9ag4kvmva94=;
-	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
-	 In-Reply-To:Content-Type; b=sRZAbVftxm1fk7xx5e7CCjUCjcoeCwLjmdiESbsMFwKFKTFdK3dIMqVOGd+qmW/wLnj9YPoULY5eQemrSmgMWm7xH9bemV6yfIjAjbAVQ+psMqe0RxKRAN6Dzmac+1Hjm5Fxe3OXT9YQfcNHKaG2k4QkjPHEP9Gl2iPjtGWXiqY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=free.fr; spf=pass smtp.mailfrom=free.fr; dkim=pass (2048-bit key) header.d=free.fr header.i=@free.fr header.b=sOUQ/6RC; arc=none smtp.client-ip=212.27.42.2
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=free.fr
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=free.fr
-Received: from [IPV6:2a01:cb08:8dcf:1a00:16f6:d8ff:fe12:3306] (unknown [IPv6:2a01:cb08:8dcf:1a00:16f6:d8ff:fe12:3306])
-	(Authenticated sender: eric.valette@free.fr)
-	by smtp2-g21.free.fr (Postfix) with ESMTPSA id D1DC62003C3;
-	Wed, 27 Mar 2024 14:46:47 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=free.fr;
-	s=smtp-20201208; t=1711547210;
-	bh=p9pIK4VCXkeB/JMFbgcasYYVcZbs5nie9ag4kvmva94=;
-	h=Date:Reply-To:Subject:From:To:Cc:References:In-Reply-To:From;
-	b=sOUQ/6RCbKbYt0179aOfImHWlzMKeQyWqm8PBIJAvWXXF7DwPvjE6i6Q9NXMnUKRH
-	 XAmkNHRJkZrc2tBsTZLfouo3J81CdLS2wa8/fjya8FwqcC0RKwUHBBEMPR2cS0Gfx9
-	 CK/x6gI1KEpm8WUzpG5I2kLqUMZ95Iw/ehOLcwsNst6bQ5KggZlsE4XlK3BP+uQQAw
-	 0yMD1VE8kXCV9zGacpwgRtLNKio+vLRsog23eK2ISWaZY5Yv+T5FXztqheaQLsmy9c
-	 PbRb2jo6hObje4ISNPtWE2rJLxe+/3P0apKvWFt9jKR5q/yAHGxia/aDNcPUuA12Xx
-	 HB2AiSJWxB6gQ==
-Message-ID: <608ed80b-89dd-4815-84ed-5a03abc19c17@free.fr>
-Date: Wed, 27 Mar 2024 14:46:47 +0100
+	s=arc-20240116; t=1711547227; c=relaxed/simple;
+	bh=1eB8oXfA/ZkwLQuDw2m7qbWkGH3gt/447Jo6EbXy3GA=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=qyWTF803Ij7xm/FuJlE6uBcfpE3yaswEXKV6f7BaTEkf0rYfoftIw3vw3iorceTXriIG1AJEGs8b+oRoqWyXweqpqrQ79REwiS1yZs9fCPBmfbbaxSvGwazSMCr44nzkQJuv4NVd9WXhz0Xp0J6uCGLfgMHNLcYew2RRG7fGkvI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dKHr4LUf; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E4354C433F1;
+	Wed, 27 Mar 2024 13:47:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1711547226;
+	bh=1eB8oXfA/ZkwLQuDw2m7qbWkGH3gt/447Jo6EbXy3GA=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=dKHr4LUf21jdENlRjDOMss3RjPG5WC0PZ8DxYBKyhGbQFgSZscTSmGh1Rk5v5ORbT
+	 +TYUUUCU4WJ3exBeKD4OxuIw5aGObuZAPm8B/c5zIVeUZ7uhhICRP44CBW12nTnXJl
+	 Tik46vI47piaBm8w4/3AdnVaF7S/5CH4goYJjGcm14Bygk42rtfNOsiMbd1XpQ6cIx
+	 H5a9JVpyBEiEpVViL62GZFQy//W8a+1FTLHx/Sk/MfGPNtjrq4gJ6evN+5OcGTovfS
+	 cKY4HcL82kuj9DzpYpOBpIAWsfxrHLjwob3em5tQR1G4SsRpH/uAVCF0+hauhMW1lg
+	 x40uoQeQ8RVDA==
+Received: by mail-lj1-f178.google.com with SMTP id 38308e7fff4ca-2d24a727f78so76834741fa.0;
+        Wed, 27 Mar 2024 06:47:06 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCUZsKN+oFOmyqjVrWVFGf7lKP9NBc0QH0iK+0LQx31pSllsqvWu6EK4cYFgSM3pMZ1Ry0bxtJpdahgviZKb5V24TW99tvH5XMfBZDVC
+X-Gm-Message-State: AOJu0Yz8R6SdUOjGs5bJLXxxPa3Tbwta4ntV/9Y2MdwQxsyi0fzkwvVd
+	IOYaQzn79Ylhgk5urNNG3VPmqbwvoD4NGTj3Ms+7XAE5Nwi0jtiTRXVDCtRfoGSyd8WuchRzsCn
+	j/A+IwWSRwO1LBiuGjSSHMtCDZ6Y=
+X-Google-Smtp-Source: AGHT+IHtpzTO6RedN1MRU921u58m6lNsoX3kibUtvcdxoL65sg3A5LV+wJng8cc6Rf2gGLE0cC6dcwNLd0Pyt2lc8M0=
+X-Received: by 2002:a19:7707:0:b0:513:a73f:c0ed with SMTP id
+ s7-20020a197707000000b00513a73fc0edmr4008623lfc.51.1711547225320; Wed, 27 Mar
+ 2024 06:47:05 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Reply-To: eric.valette@free.fr
-Subject: Re: your recently submitted patch to fix BT RIP error shall be
- applied to 6.6 stable (I have a systematic crash on reboot in 6.6.23)
-From: Eric Valette <eric.valette@free.fr>
-To: "Von Dentz, Luiz" <luiz.von.dentz@intel.com>
-Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-References: <878ae145-ad1f-4b48-abe3-2966a1c9a0da@free.fr>
- <PH0PR11MB512628ED33CB0EC120ECC08AD3342@PH0PR11MB5126.namprd11.prod.outlook.com>
- <8a6d3251-f7ae-4b10-956c-7d24a45464f5@free.fr>
-Content-Language: fr
-Autocrypt: addr=eric.valette@free.fr; keydata=
- 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
- wycNoa755G2xgOMORgXEMg==
-In-Reply-To: <8a6d3251-f7ae-4b10-956c-7d24a45464f5@free.fr>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+References: <20240327120643.2824712-1-sashal@kernel.org>
+In-Reply-To: <20240327120643.2824712-1-sashal@kernel.org>
+From: Ard Biesheuvel <ardb@kernel.org>
+Date: Wed, 27 Mar 2024 15:46:53 +0200
+X-Gmail-Original-Message-ID: <CAMj1kXH8n4-8VHSVygUyEc4Zne-4gE0uijAkDe-Ufu6hUnFU+g@mail.gmail.com>
+Message-ID: <CAMj1kXH8n4-8VHSVygUyEc4Zne-4gE0uijAkDe-Ufu6hUnFU+g@mail.gmail.com>
+Subject: Re: FAILED: Patch "x86/efistub: Call mixed mode boot services on the
+ firmware's stack" failed to apply to 6.8-stable tree
+To: Sasha Levin <sashal@kernel.org>
+Cc: stable@vger.kernel.org, stable@kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-On 27/03/2024 14:41, Eric Valette wrote:
-> On 27/03/2024 14:36, Von Dentz, Luiz wrote:
->> Hi Eric,
->>
->> This shouldn't apply to 6.6 kernel, the regression was introduced with:
->>
->> commit 711c35949648ba19f54bce27b49ced0ad90b19b9
->> Author: Luiz Augusto von Dentz <luiz.von.dentz@intel.com>
->> Date:   Tue Jan 9 13:45:40 2024 -0500
->>
->>      Bluetooth: hci_core: Cancel request on command timeout
->>
->> So, you only really need that fix if you were using 6.9-rc1
-> 
-> Well I get the same error message and with the fix it works again.
-> 
-> Will check the 6.6.22 6.6.23 patch.
-> 
-> Could you point me to the problematic patch via adiff that I could 
-> easilly check?
+On Wed, 27 Mar 2024 at 14:06, Sasha Levin <sashal@kernel.org> wrote:
+>
+> The patch below does not apply to the 6.8-stable tree.
+> If someone wants it applied there, or to any other stable or longterm
+> tree, then please email the backport, including the original git commit
+> id to <stable@vger.kernel.org>.
+>
 
-Found it. The patch adds the function hci_send_cmd_sync and I have it in 
-my 6.6.23 kernel tree.
+This applies fine on top of 6.8.2, 6.7.11 and 6.6.23.
 
-grep hci_send_cmd_sync net/bluetooth/hci_core.c
-static void hci_send_cmd_sync(struct hci_dev *hdev, struct sk_buff *skb)
-                 hci_send_cmd_sync(hdev, skb);
+On 6.1.83, it gave me a warning
 
-more Makefile
-# SPDX-License-Identifier: GPL-2.0
-VERSION = 6
-PATCHLEVEL = 6
-SUBLEVEL = 23
-EXTRAVERSION =
+  Auto-merging arch/x86/boot/compressed/efi_mixed.S
 
--- eric
+but the change still applied without problems.
+
+Not sure what is going on here .....
 
 
+> ------------------ original commit in Linus's tree ------------------
+>
+> From cefcd4fe2e3aaf792c14c9e56dab89e3d7a65d02 Mon Sep 17 00:00:00 2001
+> From: Ard Biesheuvel <ardb@kernel.org>
+> Date: Fri, 22 Mar 2024 17:03:58 +0200
+> Subject: [PATCH] x86/efistub: Call mixed mode boot services on the firmware's
+>  stack
+>
+> Normally, the EFI stub calls into the EFI boot services using the stack
+> that was live when the stub was entered. According to the UEFI spec,
+> this stack needs to be at least 128k in size - this might seem large but
+> all asynchronous processing and event handling in EFI runs from the same
+> stack and so quite a lot of space may be used in practice.
+>
+> In mixed mode, the situation is a bit different: the bootloader calls
+> the 32-bit EFI stub entry point, which calls the decompressor's 32-bit
+> entry point, where the boot stack is set up, using a fixed allocation
+> of 16k. This stack is still in use when the EFI stub is started in
+> 64-bit mode, and so all calls back into the EFI firmware will be using
+> the decompressor's limited boot stack.
+>
+> Due to the placement of the boot stack right after the boot heap, any
+> stack overruns have gone unnoticed. However, commit
+>
+>   5c4feadb0011983b ("x86/decompressor: Move global symbol references to C code")
+>
+> moved the definition of the boot heap into C code, and now the boot
+> stack is placed right at the base of BSS, where any overruns will
+> corrupt the end of the .data section.
+>
+> While it would be possible to work around this by increasing the size of
+> the boot stack, doing so would affect all x86 systems, and mixed mode
+> systems are a tiny (and shrinking) fraction of the x86 installed base.
+>
+> So instead, record the firmware stack pointer value when entering from
+> the 32-bit firmware, and switch to this stack every time a EFI boot
+> service call is made.
+>
+> Cc: <stable@kernel.org> # v6.1+
+> Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
+> ---
+>  arch/x86/boot/compressed/efi_mixed.S | 9 +++++++++
+>  1 file changed, 9 insertions(+)
+>
+> diff --git a/arch/x86/boot/compressed/efi_mixed.S b/arch/x86/boot/compressed/efi_mixed.S
+> index f4e22ef774ab6..719e939050cbf 100644
+> --- a/arch/x86/boot/compressed/efi_mixed.S
+> +++ b/arch/x86/boot/compressed/efi_mixed.S
+> @@ -49,6 +49,11 @@ SYM_FUNC_START(startup_64_mixed_mode)
+>         lea     efi32_boot_args(%rip), %rdx
+>         mov     0(%rdx), %edi
+>         mov     4(%rdx), %esi
+> +
+> +       /* Switch to the firmware's stack */
+> +       movl    efi32_boot_sp(%rip), %esp
+> +       andl    $~7, %esp
+> +
+>  #ifdef CONFIG_EFI_HANDOVER_PROTOCOL
+>         mov     8(%rdx), %edx           // saved bootparams pointer
+>         test    %edx, %edx
+> @@ -254,6 +259,9 @@ SYM_FUNC_START_LOCAL(efi32_entry)
+>         /* Store firmware IDT descriptor */
+>         sidtl   (efi32_boot_idt - 1b)(%ebx)
+>
+> +       /* Store firmware stack pointer */
+> +       movl    %esp, (efi32_boot_sp - 1b)(%ebx)
+> +
+>         /* Store boot arguments */
+>         leal    (efi32_boot_args - 1b)(%ebx), %ebx
+>         movl    %ecx, 0(%ebx)
+> @@ -318,5 +326,6 @@ SYM_DATA_END(efi32_boot_idt)
+>
+>  SYM_DATA_LOCAL(efi32_boot_cs, .word 0)
+>  SYM_DATA_LOCAL(efi32_boot_ds, .word 0)
+> +SYM_DATA_LOCAL(efi32_boot_sp, .long 0)
+>  SYM_DATA_LOCAL(efi32_boot_args, .long 0, 0, 0)
+>  SYM_DATA(efi_is64, .byte 1)
+> --
+> 2.43.0
+>
+>
+>
+>
 
