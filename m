@@ -1,141 +1,219 @@
-Return-Path: <linux-kernel+bounces-121615-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-121616-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id E3DD888EADC
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 17:15:07 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 944B688EAE8
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 17:16:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 98E971F33A7F
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 16:15:07 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 23BB8294909
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 16:16:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AB03012F392;
-	Wed, 27 Mar 2024 16:13:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 631D01304BF;
+	Wed, 27 Mar 2024 16:16:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="iUVo+lJ+"
-Received: from mail-il1-f171.google.com (mail-il1-f171.google.com [209.85.166.171])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="afq6nzfs"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 13FD1130AC0
-	for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 16:13:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B1CE42A91;
+	Wed, 27 Mar 2024 16:16:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711555982; cv=none; b=dXl3GkopkegCc+0ITXV0prOpvmgJKkLI6EvS509Kmnza2UF1on3UylEhyuSIif7MytVq65mPtN4HLzQkxHAoJ1AWdvcqG3K+CTqmYbo0gGUN/GUtmp0D5cabBqnQRsFKUz+VriVvio7soP3RTCcih6TPK7nPtRlpxnK9qC2RuZs=
+	t=1711556177; cv=none; b=lO5vQ9Owg8p3Hvs72DSZ2x9lICrOs3YR8ckJc2bP73d1q4/bllIw7U1Ui0ZVxzoXQoreGubZEKA2QLXh2+mrzc2TFV76RiZDYFX+pkXUkE22JxgrmF4LcO6S6yo5br8RgePjGBe6ArrBQtyKLGnAekRgQqyyEhB7/L7PXyJqDp0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711555982; c=relaxed/simple;
-	bh=asmUPmQus7LUzQcer9/ecRHC+gd8g+NWqrc+D732lew=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=rwVcH19ell3DsUv9x0eg6OyhjsEA51Qe3KauFz3FJQlPfcOEuQMpXnTuT8MhTywgSaBsXuXfsmfcRwJPsUAGdeY1RoycYHhwhjItVuCbGd+voI/K3mwHts6nksj9VsOSMnflxZhko6wlbkWwo9gkt3hCZLCQxEQSgfa5VDFRaaM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linuxfoundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=iUVo+lJ+; arc=none smtp.client-ip=209.85.166.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linuxfoundation.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
-Received: by mail-il1-f171.google.com with SMTP id e9e14a558f8ab-368539ef3dfso1645475ab.0
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 09:13:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google; t=1711555980; x=1712160780; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=XaFX9mxiKZDeQbSxmpDbkMXN0EZslMStzgRp5fvgfwQ=;
-        b=iUVo+lJ+OGD2dVjA9AgVl7h0S4UG+4aAyIiSfE6iyqLC8bgCmxe9jad7ekE1zr7rfr
-         AhudpwKeG46H8U6rYwaHYfRQKu2E+kFZPx+BZZOQPADz7OpXZv8jQbcuyFJBX8KzT5Gg
-         9EFgib51pz67Js9WFJUrF6vy+djB5xkFpvPTc=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711555980; x=1712160780;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=XaFX9mxiKZDeQbSxmpDbkMXN0EZslMStzgRp5fvgfwQ=;
-        b=NhZ9P+sNQE5ALnNxwM+a5h7IXv60mFptVsOLPIkV+Lw2J4O/T313BSehYg/IoU/Z6h
-         ZIu834DtJJ7s9fiZ3WigpTBretmJ341forh27bsc/xI1T2Aef+SnQb/JIO1fDcsD5iKp
-         3OaXkvKfkPSLHj5zBPFF5M1IvsRtWBEVDbboitpbVZCVARmn6TM27CrDOTLzPSjCRsMt
-         Hzep2SGE+Mjf80d6CUVYy1M514Xm25JvtLIXpnAFC5oeFV8Etyh8vO61O2xAFGLLMO7a
-         H1/Kbuvtw06kdFtavy+ricdexpUVwD35zmnO0CZ3xVe4BwVa3ufXMx6R0TtdyQC9S2KI
-         5HpQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXU7IyL82c12YzCkC5Z56LAVJT6JnKBqzJQ2GtA2BJZEhWPv/wcmOZU93Wh5pkZ/Rh4DlIDN+gH8yjmtze9GZyU+O1PmNURphQH54Lb
-X-Gm-Message-State: AOJu0YwD0lCGtTGsBGc1FlfYFgraXtR1QPyczRflFiAuz4zdwYw3jCvs
-	OkrOA+x8bNHgd9CO52qd5tVNG/jzMAaA81XB3autI7H0gFztudp4kbFE9LXFYlI=
-X-Google-Smtp-Source: AGHT+IEiXA6OtOY9zanEWliIGMGWJVj77uZLVHDmL258djEO4ZMAaUheobq2lblEoYMdKO5ZRdKtRA==
-X-Received: by 2002:a92:d08f:0:b0:366:b0bd:3a1a with SMTP id h15-20020a92d08f000000b00366b0bd3a1amr436522ilh.1.1711555979887;
-        Wed, 27 Mar 2024 09:12:59 -0700 (PDT)
-Received: from [192.168.1.128] ([38.175.170.29])
-        by smtp.gmail.com with ESMTPSA id r12-20020a92d98c000000b0036851cd6c59sm343584iln.1.2024.03.27.09.12.59
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 27 Mar 2024 09:12:59 -0700 (PDT)
-Message-ID: <3c8bcd55-3acd-4659-ab4d-567053049a7a@linuxfoundation.org>
-Date: Wed, 27 Mar 2024 10:12:58 -0600
+	s=arc-20240116; t=1711556177; c=relaxed/simple;
+	bh=On495Vosho8yghuPe/ZcVehrvgix78EySfxCo6i6kY8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Z+opMG5L+mMnnm9+EZpVPLYvhXkM+TZ/Oov3Wea/FE2H7hUd1ojdSGt5v8+H6bwfVo3t/puUXt43JPM+5EDVaLj9maqkM70U2YpEhaLpcRItvHrvrKsGJqNFGJVleo0Lg3jcwUWewKJJ4kARuqSHbt6p3IIsE1imUxEmbZhM2zM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=afq6nzfs; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D5CADC433C7;
+	Wed, 27 Mar 2024 16:16:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1711556177;
+	bh=On495Vosho8yghuPe/ZcVehrvgix78EySfxCo6i6kY8=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=afq6nzfsTajwNl8LvbUonLyvoZy88ahtEF+Fkmr8Gp55VWkjLs02RvASLRTcGlPw9
+	 A3k0+c1v5Oru+8yj3BFHimVUIVe4OlixbdFKebF2ujjugw6eNhDo/O9u9W8H8tIN3l
+	 YydxW0Vv+8AEQLXDLSm04PLqYwyGSDe6yaspn7eTWUW80gV+PCVCEWC7il7Ul4mNrY
+	 SwqO6F0OkjmS2ihwcJsLxTCZShaQsiShwljjoSa214PxaVDT/DjdHpGCmWS9dlAORe
+	 v7dPwEHLncbOl4VOkta++OzMHyOOBBuAXEiCm2WRsWW2f74aR42cEmKBCqEIFLKCDP
+	 Q2VEXR1vc5xmg==
+Date: Wed, 27 Mar 2024 16:16:07 +0000
+From: Simon Horman <horms@kernel.org>
+To: Bartosz Golaszewski <brgl@bgdev.pl>
+Cc: Marcel Holtmann <marcel@holtmann.org>,
+	Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+	"David S . Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>, Kalle Valo <kvalo@kernel.org>,
+	Bjorn Andersson <andersson@kernel.org>,
+	Konrad Dybcio <konrad.dybcio@linaro.org>,
+	Liam Girdwood <lgirdwood@gmail.com>,
+	Mark Brown <broonie@kernel.org>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Will Deacon <will@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
+	Saravana Kannan <saravanak@google.com>,
+	Geert Uytterhoeven <geert+renesas@glider.be>,
+	Arnd Bergmann <arnd@arndb.de>,
+	Neil Armstrong <neil.armstrong@linaro.org>,
+	Marek Szyprowski <m.szyprowski@samsung.com>,
+	Alex Elder <elder@linaro.org>,
+	Srini Kandagatla <srinivas.kandagatla@linaro.org>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Abel Vesa <abel.vesa@linaro.org>,
+	Manivannan Sadhasivam <mani@kernel.org>,
+	Lukas Wunner <lukas@wunner.de>,
+	Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+	linux-bluetooth@vger.kernel.org, netdev@vger.kernel.org,
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-wireless@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org, linux-pci@vger.kernel.org,
+	linux-pm@vger.kernel.org,
+	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Subject: Re: [PATCH v6 12/16] PCI/pwrctl: add PCI power control core code
+Message-ID: <20240327161607.GQ403975@kernel.org>
+References: <20240325131624.26023-1-brgl@bgdev.pl>
+ <20240325131624.26023-13-brgl@bgdev.pl>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] Add Landlock test for io_uring IORING_OP_OPENAT
- operation
-To: Dorine Tipo <dorine.a.tipo@gmail.com>, mic@digikod.net,
- outreachy@lists.linux.dev
-Cc: "Fabio M . De Francesco" <fabio.maria.de.francesco@linux.intel.com>,
- Shuah Khan <skhan@linuxfoundation.org>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- "linux-kernel-mentees@lists.linuxfoundation.org"
- <linux-kernel-mentees@lists.linuxfoundation.org>
-References: <20240327132001.30576-1-dorine.a.tipo@gmail.com>
-Content-Language: en-US
-From: Shuah Khan <skhan@linuxfoundation.org>
-In-Reply-To: <20240327132001.30576-1-dorine.a.tipo@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240325131624.26023-13-brgl@bgdev.pl>
 
-On 3/27/24 07:20, Dorine Tipo wrote:
-> This patch expands Landlock test coverage to include io_uring operations.
-> It introduces a test for IORING_OP_OPENAT with Landlock rules, verifying
-> allowed and disallowed access. This mitigates potential security
-> vulnerabilities by ensuring Landlock controls access through io_uring.
+On Mon, Mar 25, 2024 at 02:16:20PM +0100, Bartosz Golaszewski wrote:
+> From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
 > 
-> It also updates the Makefile to include -luring in the LDLIBS.
-> This ensures the test code has access to the necessary liburing
-> library for io_uring operations.
+> Some PCI devices must be powered-on before they can be detected on the
+> bus. Introduce a simple framework reusing the existing PCI OF
+> infrastructure.
 > 
-> Signed-off-by: Dorine Tipo <dorine.a.tipo@gmail.com>
-
-You are missing linux-kselftest and linux-kernel mailing lists
-when you send kselftest patches.
-
-cc linux-kernel-metees since you are a LFX mentee
-
-Adding missing lists
-   
-> ---
-> Changes since V1:
-> V2: - Consolidated two dependent patches in the V1 series into one patch
->        as suggested by <fabio.maria.de.francesco@linux.intel.com>
->      - Updated the subject line to be more descriptive.
+> The way this works is: a DT node representing a PCI device connected to
+> the port can be matched against its power control platform driver. If
+> the match succeeds, the driver is responsible for powering-up the device
+> and calling pcie_pwrctl_device_set_ready() which will trigger a PCI bus
+> rescan as well as subscribe to PCI bus notifications.
 > 
->   tools/testing/selftests/landlock/Makefile  |   4 +-
->   tools/testing/selftests/landlock/fs_test.c | 132 +++++++++++++++++++++
->   2 files changed, 134 insertions(+), 2 deletions(-)
+> When the device is detected and created, we'll make it consume the same
+> DT node that the platform device did. When the device is bound, we'll
+> create a device link between it and the parent power control device.
 > 
-> diff --git a/tools/testing/selftests/landlock/Makefile b/tools/testing/selftests/landlock/Makefile
-> index 348e2dbdb4e0..ab47d1dadb62 100644
-> --- a/tools/testing/selftests/landlock/Makefile
-> +++ b/tools/testing/selftests/landlock/Makefile
-> @@ -13,11 +13,11 @@ TEST_GEN_PROGS := $(src_test:.c=)
->   TEST_GEN_PROGS_EXTENDED := true
+> Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+
+Hi Bartosz,
+
+some minor Kernel doc nits from my side.
+
+..
+
+> diff --git a/drivers/pci/pwrctl/core.c b/drivers/pci/pwrctl/core.c
+
+..
+
+> +/**
+> + * devm_pci_pwrctl_device_set_ready - Managed variant of
+> + * pci_pwrctl_device_set_ready().
+> + *
+
+nit: @dev should be documented here
+
+> + * @pwrctl: PCI power control data
+> + *
+> + * Returns:
+> + * 0 on success, negative error number on error.
+> + */
+> +int devm_pci_pwrctl_device_set_ready(struct device *dev,
+> +				     struct pci_pwrctl *pwrctl)
+> +{
+> +	int ret;
+> +
+> +	ret = pci_pwrctl_device_set_ready(pwrctl);
+> +	if (ret)
+> +		return ret;
+> +
+> +	return devm_add_action_or_reset(dev,
+> +					devm_pci_pwrctl_device_unset_ready,
+> +					pwrctl);
+> +}
+> +EXPORT_SYMBOL_GPL(devm_pci_pwrctl_device_set_ready);
+> +
+> +MODULE_AUTHOR("Bartosz Golaszewski <bartosz.golaszewski@linaro.org>");
+> +MODULE_DESCRIPTION("PCI Device Power Control core driver");
+> +MODULE_LICENSE("GPL");
+> diff --git a/include/linux/pci-pwrctl.h b/include/linux/pci-pwrctl.h
+> new file mode 100644
+> index 000000000000..ae8324ea7eeb
+> --- /dev/null
+> +++ b/include/linux/pci-pwrctl.h
+> @@ -0,0 +1,51 @@
+> +/* SPDX-License-Identifier: GPL-2.0-only */
+> +/*
+> + * Copyright (C) 2024 Linaro Ltd.
+> + */
+> +
+> +#ifndef __PCI_PWRCTL_H__
+> +#define __PCI_PWRCTL_H__
+> +
+> +#include <linux/notifier.h>
+> +
+> +struct device;
+> +struct device_link;
+> +
+> +/*
+> + * This is a simple framework for solving the issue of PCI devices that require
+> + * certain resources (regulators, GPIOs, clocks) to be enabled before the
+> + * device can actually be detected on the PCI bus.
+> + *
+> + * The idea is to reuse the platform bus to populate OF nodes describing the
+> + * PCI device and its resources, let these platform devices probe and enable
+> + * relevant resources and then trigger a rescan of the PCI bus allowing for the
+> + * same device (with a second associated struct device) to be registered with
+> + * the PCI subsystem.
+> + *
+> + * To preserve a correct hierarchy for PCI power management and device reset,
+> + * we create a device link between the power control platform device (parent)
+> + * and the supplied PCI device (child).
+> + */
+> +
+> +/**
+> + * struct pci_pwrctl - PCI device power control context.
+> + * @dev - Address of the power controlling device.
+
+nit: I think this should be "@dev: " rather than "@dev - "
+     As is, "./scripts/kernel-doc -none" complains.
+> + *
+> + * An object of this type must be allocated by the PCI power control device and
+> + * passed to the pwrctl subsystem to trigger a bus rescan and setup a device
+> + * link with the device once it's up.
+> + */
+> +struct pci_pwrctl {
+> +	struct device *dev;
+> +
+> +	/* Private, don't use. */
+
+I think Private needs to be followed by a ':' rather than a ',' to keep
+kernel-doc happy.
+
+> +	struct notifier_block nb;
+> +	struct device_link *link;
+> +};
+> +
+> +int pci_pwrctl_device_set_ready(struct pci_pwrctl *pwrctl);
+> +void pci_pwrctl_device_unset_ready(struct pci_pwrctl *pwrctl);
+> +int devm_pci_pwrctl_device_set_ready(struct device *dev,
+> +				     struct pci_pwrctl *pwrctl);
+> +
+> +#endif /* __PCI_PWRCTL_H__ */
+> -- 
+> 2.40.1
 > 
->   # Short targets:
-> -$(TEST_GEN_PROGS): LDLIBS += -lcap
-> +$(TEST_GEN_PROGS): LDLIBS += -lcap -luring
-
-Check if .gitignore needs updates since you are adding
-a new executable.
-
-The rest look good to me.
-
-Acked-by: Shuah Khan <skhan@linuxfoundation.org>
-
-thanks,
--- Shuah
+> 
 
