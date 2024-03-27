@@ -1,137 +1,152 @@
-Return-Path: <linux-kernel+bounces-120906-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-120894-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0AB9188E05F
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 13:34:42 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id B9E0188E040
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 13:32:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 345D31C29333
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 12:34:41 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6F4AA1F349E1
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 12:32:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CD3E31482E6;
-	Wed, 27 Mar 2024 12:12:30 +0000 (UTC)
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3AE1712E1F6;
+	Wed, 27 Mar 2024 12:11:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="r/XL/rtA"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A1114147C8B
-	for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 12:12:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 81322146000;
+	Wed, 27 Mar 2024 12:11:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711541550; cv=none; b=fhz50NPQkLHGzJje9RA6ovp7jUQkf6YaSDKx0FJHw0W2iXnOCvxsFAYT7fJWuGmvrqtqvnwHJgrJj7NFzqEplQGaNcPgAF0C8f3AA6tiSBI7hFqZL+YMUGkmBkH/NTxrXxSU4/OURP5y4Ij47abqMI4wtyf+wsJYXoZBjdfjGr8=
+	t=1711541515; cv=none; b=B6p7pa3UT7U1vZ4kVQFbv72/FVmvIqAEpWsx8JlWbcz/bBdBdr56/lTFt5D3Q9loKpH8Txr7Q2NHanUP8daYPyC0y8N4Be2E04l4sMWoylzmNyGs0plcU92ESiO+NQ4eZnoV7Y4s3w2wPD9DTT4ygFCnjyCuyq7NY7LFsjCYgPQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711541550; c=relaxed/simple;
-	bh=DiOWFNV13xwUAoCXem0V1LNeUxUEOlVmeRbu6TsGaME=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=GWzXhcZMCyTdFNdcLcYD+h4UI0743xySlunjNMGjsl2IK6RbIzNbKLo/eoTyReeWDEoqyYMrvjqe3vso5qx2Kuv3xuGnQ92phWPo2InU9h6Y3JPIH+wQ9x5Xk8XgVujaNjTKy8tYit9xbYTFN/kCQCWDnyZcgQ7WRHYds+bMbI0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <p.zabel@pengutronix.de>)
-	id 1rpS8K-0004ds-Ci; Wed, 27 Mar 2024 13:11:56 +0100
-Received: from [2a0a:edc0:0:900:1d::4e] (helo=lupine)
-	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <p.zabel@pengutronix.de>)
-	id 1rpS8I-008nwn-4g; Wed, 27 Mar 2024 13:11:54 +0100
-Received: from pza by lupine with local (Exim 4.96)
-	(envelope-from <p.zabel@pengutronix.de>)
-	id 1rpS8I-0007xg-0D;
-	Wed, 27 Mar 2024 13:11:54 +0100
-Message-ID: <5f6ab3804baa87f6e2299f668d2ab41be3a13f13.camel@pengutronix.de>
-Subject: Re: [PATCH v5 11/16] drm/vkms: Add YUV support
-From: Philipp Zabel <p.zabel@pengutronix.de>
-To: Louis Chauvet <louis.chauvet@bootlin.com>, Rodrigo Siqueira
- <rodrigosiqueiramelo@gmail.com>, Melissa Wen <melissa.srw@gmail.com>, 
- =?ISO-8859-1?Q?Ma=EDra?= Canal <mairacanal@riseup.net>, Haneen Mohammed
- <hamohammed.sa@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, Maarten
- Lankhorst <maarten.lankhorst@linux.intel.com>, Maxime Ripard
- <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>, David Airlie
- <airlied@gmail.com>, arthurgrillo@riseup.net, Jonathan Corbet
- <corbet@lwn.net>,  pekka.paalanen@haloniitty.fi
-Cc: dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org, 
-	jeremie.dautheribes@bootlin.com, miquel.raynal@bootlin.com, 
-	thomas.petazzoni@bootlin.com, seanpaul@google.com, marcheu@google.com, 
-	nicolejadeyee@google.com
-Date: Wed, 27 Mar 2024 13:11:53 +0100
-In-Reply-To: <20240313-yuv-v5-11-e610cbd03f52@bootlin.com>
-References: <20240313-yuv-v5-0-e610cbd03f52@bootlin.com>
-	 <20240313-yuv-v5-11-e610cbd03f52@bootlin.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.46.4-2 
+	s=arc-20240116; t=1711541515; c=relaxed/simple;
+	bh=VKUEaI86C90QPhR8vO9HiTJiMk0iFqcB/5Q0TT1Wfcg=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=QITHb5fFDbumPWRn5Gy0QPBuLrB+cavGTCo+9r3coxkO2C263C9K40tcJKRT+7mnhzLAurh3LkCzrfrTdGMx442nTwURFhwLKBYbpuOXMJIy65uukcQXFC2RWffI6RPbtBXFYrH2praWVibEPdEIpHYna+Ky8Si6EIhVBMDVaFA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=r/XL/rtA; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7B40AC433C7;
+	Wed, 27 Mar 2024 12:11:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1711541515;
+	bh=VKUEaI86C90QPhR8vO9HiTJiMk0iFqcB/5Q0TT1Wfcg=;
+	h=From:To:Cc:Subject:Date:From;
+	b=r/XL/rtA8EIIFpx5XWIIz8gvsJFYogO9SBqugKhSrL3wJFh5wLSFdTkMrn3VXBCdF
+	 vBh65D6P7H5kiH9IwWInoYwytDg68/RmK1W3sPEh4Or1BSmAY/Viogdmb2yFmSKv5S
+	 i6lWd8pKz2Pa1qM8KSW8RMuGSGh/7ZNDrEGQyJY97hxGOi+gY1NSyvc2JH41iKY1WN
+	 NhO8Q4T4abCrO+ISAbV2lF7dljHqik/T2cTvAzusHqsgByojDscdwUHm1Z0rG3hNGK
+	 +uKE615SEYnanIRHHMCJE+v9FCOvb9TnP/z59vKf5zrAwwj8VI8gRhZe9SK1nd0oF0
+	 7r0/lPo1oVf2A==
+From: Sasha Levin <sashal@kernel.org>
+To: stable@vger.kernel.org,
+	ardb@kernel.org
+Cc: stable@kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: FAILED: Patch "x86/efistub: Call mixed mode boot services on the firmware's stack" failed to apply to 6.1-stable tree
+Date: Wed, 27 Mar 2024 08:11:53 -0400
+Message-ID: <20240327121153.2829084-1-sashal@kernel.org>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: p.zabel@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+X-Patchwork-Hint: ignore
+X-stable: review
+Content-Transfer-Encoding: 8bit
 
-Hi Louis,
+The patch below does not apply to the 6.1-stable tree.
+If someone wants it applied there, or to any other stable or longterm
+tree, then please email the backport, including the original git commit
+id to <stable@vger.kernel.org>.
 
-On Mi, 2024-03-13 at 18:45 +0100, Louis Chauvet wrote:
-> From: Arthur Grillo <arthurgrillo@riseup.net>
->=20
-> Add support to the YUV formats bellow:
->=20
-> - NV12/NV16/NV24
-> - NV21/NV61/NV42
-> - YUV420/YUV422/YUV444
-> - YVU420/YVU422/YVU444
->=20
-> The conversion from yuv to rgb is done with fixed-point arithmetic, using
-> 32.32 floats and the drm_fixed helpers.
+Thanks,
+Sasha
 
-s/floats/fixed-point numbers/
+------------------ original commit in Linus's tree ------------------
 
-Nothing floating here, the point is fixed.
+From cefcd4fe2e3aaf792c14c9e56dab89e3d7a65d02 Mon Sep 17 00:00:00 2001
+From: Ard Biesheuvel <ardb@kernel.org>
+Date: Fri, 22 Mar 2024 17:03:58 +0200
+Subject: [PATCH] x86/efistub: Call mixed mode boot services on the firmware's
+ stack
 
-[...]
-> diff --git a/drivers/gpu/drm/vkms/vkms_drv.h b/drivers/gpu/drm/vkms/vkms_=
-drv.h
-> index 23e1d247468d..f3116084de5a 100644
-> --- a/drivers/gpu/drm/vkms/vkms_drv.h
-> +++ b/drivers/gpu/drm/vkms/vkms_drv.h
-> @@ -99,6 +99,27 @@ typedef void (*pixel_read_line_t)(const struct vkms_pl=
-ane_state *plane, int x_st
->  				  int y_start, enum pixel_read_direction direction, int count,
->  				  struct pixel_argb_u16 out_pixel[]);
-> =20
-> +/**
-> + * CONVERSION_MATRIX_FLOAT_DEPTH - Number of digits after the point for =
-conversion matrix values
+Normally, the EFI stub calls into the EFI boot services using the stack
+that was live when the stub was entered. According to the UEFI spec,
+this stack needs to be at least 128k in size - this might seem large but
+all asynchronous processing and event handling in EFI runs from the same
+stack and so quite a lot of space may be used in practice.
 
-s/CONVERSION_MATRIX_FLOAT_DEPTH/CONVERSION_MATRIX_FRACTIONAL_BITS/
+In mixed mode, the situation is a bit different: the bootloader calls
+the 32-bit EFI stub entry point, which calls the decompressor's 32-bit
+entry point, where the boot stack is set up, using a fixed allocation
+of 16k. This stack is still in use when the EFI stub is started in
+64-bit mode, and so all calls back into the EFI firmware will be using
+the decompressor's limited boot stack.
 
-Just a suggestion, maybe there are better terms, but using "FLOAT" here
-is confusing.
+Due to the placement of the boot stack right after the boot heap, any
+stack overruns have gone unnoticed. However, commit
 
-> + */
-> +#define CONVERSION_MATRIX_FLOAT_DEPTH 32
-> +
-> +/**
-> + * struct conversion_matrix - Matrix to use for a specific encoding and =
-range
-> + *
-> + * @matrix: Conversion matrix from yuv to rgb. The matrix is stored in a=
- row-major manner and is
-> + * used to compute rgb values from yuv values:
-> + *     [[r],[g],[b]] =3D @matrix * [[y],[u],[v]]
-> + *   OR for yvu formats:
-> + *     [[r],[g],[b]] =3D @matrix * [[y],[v],[u]]
-> + *  The values of the matrix are fixed floats, 32.CONVERSION_MATRIX_FLOA=
-T_DEPTH
+  5c4feadb0011983b ("x86/decompressor: Move global symbol references to C code")
 
-s/fixed floats/fixed-point numbers/
+moved the definition of the boot heap into C code, and now the boot
+stack is placed right at the base of BSS, where any overruns will
+corrupt the end of the .data section.
 
-regards
-Philipp
+While it would be possible to work around this by increasing the size of
+the boot stack, doing so would affect all x86 systems, and mixed mode
+systems are a tiny (and shrinking) fraction of the x86 installed base.
+
+So instead, record the firmware stack pointer value when entering from
+the 32-bit firmware, and switch to this stack every time a EFI boot
+service call is made.
+
+Cc: <stable@kernel.org> # v6.1+
+Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
+---
+ arch/x86/boot/compressed/efi_mixed.S | 9 +++++++++
+ 1 file changed, 9 insertions(+)
+
+diff --git a/arch/x86/boot/compressed/efi_mixed.S b/arch/x86/boot/compressed/efi_mixed.S
+index f4e22ef774ab6..719e939050cbf 100644
+--- a/arch/x86/boot/compressed/efi_mixed.S
++++ b/arch/x86/boot/compressed/efi_mixed.S
+@@ -49,6 +49,11 @@ SYM_FUNC_START(startup_64_mixed_mode)
+ 	lea	efi32_boot_args(%rip), %rdx
+ 	mov	0(%rdx), %edi
+ 	mov	4(%rdx), %esi
++
++	/* Switch to the firmware's stack */
++	movl	efi32_boot_sp(%rip), %esp
++	andl	$~7, %esp
++
+ #ifdef CONFIG_EFI_HANDOVER_PROTOCOL
+ 	mov	8(%rdx), %edx		// saved bootparams pointer
+ 	test	%edx, %edx
+@@ -254,6 +259,9 @@ SYM_FUNC_START_LOCAL(efi32_entry)
+ 	/* Store firmware IDT descriptor */
+ 	sidtl	(efi32_boot_idt - 1b)(%ebx)
+ 
++	/* Store firmware stack pointer */
++	movl	%esp, (efi32_boot_sp - 1b)(%ebx)
++
+ 	/* Store boot arguments */
+ 	leal	(efi32_boot_args - 1b)(%ebx), %ebx
+ 	movl	%ecx, 0(%ebx)
+@@ -318,5 +326,6 @@ SYM_DATA_END(efi32_boot_idt)
+ 
+ SYM_DATA_LOCAL(efi32_boot_cs, .word 0)
+ SYM_DATA_LOCAL(efi32_boot_ds, .word 0)
++SYM_DATA_LOCAL(efi32_boot_sp, .long 0)
+ SYM_DATA_LOCAL(efi32_boot_args, .long 0, 0, 0)
+ SYM_DATA(efi_is64, .byte 1)
+-- 
+2.43.0
+
+
+
+
 
