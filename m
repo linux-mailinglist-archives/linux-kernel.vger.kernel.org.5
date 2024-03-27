@@ -1,134 +1,111 @@
-Return-Path: <linux-kernel+bounces-122083-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-122104-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id D523588F1AE
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 23:15:19 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1D00D88F1ED
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 23:33:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 746481F29BCA
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 22:15:19 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4B7381C2FAA0
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 22:33:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A2CEC153837;
-	Wed, 27 Mar 2024 22:15:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Mywy/MLX"
-Received: from mail-wm1-f42.google.com (mail-wm1-f42.google.com [209.85.128.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 94E26152E1B;
+	Wed, 27 Mar 2024 22:33:20 +0000 (UTC)
+Received: from 2.mo560.mail-out.ovh.net (2.mo560.mail-out.ovh.net [188.165.53.149])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 63648150982;
-	Wed, 27 Mar 2024 22:15:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3E0932376A
+	for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 22:33:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=188.165.53.149
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711577710; cv=none; b=G87xTNC68QF1JGe3dTjhdnNL4p719HWxoybEtShdY6zsPOoGGI0USYeKNutrrUdt75yjgFKIuBeLCRJZtvmvFIHlm0wEhS9Xugi0Cjg68UkjZg3DZD7EUisLfqqz2PBWHLwbalX+gGBcOxoHOZasYqoWxV7u1oVS/g7B7gYcz5I=
+	t=1711578800; cv=none; b=cy+GARi5Mww0LMApk44CAiL4LS4h1djFU4B1/Bsl6xI2yJ13sXiqtJqazxI+quVIl9yJE/XOhwrSXu41R/6YSq91ghYHOc56vijdvS6uC3NlSmoqFFr6MPSMJ1/HDdQBEGaKhFgdYDwWrhsqFiq3K8WyN+H1VmZ2XjxGMPF6/e4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711577710; c=relaxed/simple;
-	bh=EmGfbaHPm+aFTlR4ccslw1IMrcCRecczkG1J6vjkS7g=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=PrTBiUMHPzInL6bEd9zoHVVznw5/TvynGNRvZcUmHNs4Aa0bQTbPS23FNLI3gWNq6SpPyBhEhJ+yqqYbuClk1aZ+z9RyGCacwP+4z+SXx27HJUlZWNTfyJFAOstiqGBKsvl8IDsD2LwZ6bGT2RjaK2qo8DkA02XW5fyZPILPDzs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Mywy/MLX; arc=none smtp.client-ip=209.85.128.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f42.google.com with SMTP id 5b1f17b1804b1-4149532da36so2732015e9.0;
-        Wed, 27 Mar 2024 15:15:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711577707; x=1712182507; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Auzs3g7lc20T4kV1ZR58p05peuhuFlI73ot3Pl+s/Hg=;
-        b=Mywy/MLXMHi2DoQEw4S7+FSMyxsoSOOaF7Vf3RyrC2+0kuZRDyJGzIwGEqCBk5NgYV
-         L0vray300PchH4TqdTS0CKRECbfHCrD83MSI11qzMf6DjfMkDhvCPlDbvSBtBaVimLqW
-         Qdt1zGoAfgBe1h8jWyZ8m4OvKSSlz6Zxd01lio8MTOBA07R2IRgo5j07wfXlTmqWF9CE
-         IiQbn6kWLyRPDoBRqxsLe8WCTfSyVTZKISvgCjZ0w/RrUYFp+VgXiqQUBT7A8P1hgL8B
-         /pq8EecS03UklkYKiBM1qiPWCol1tKmEhF/CDZzuUs28obf+No7k94kZL/yJDbTWIsKw
-         fkVw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711577707; x=1712182507;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Auzs3g7lc20T4kV1ZR58p05peuhuFlI73ot3Pl+s/Hg=;
-        b=ATN+RDsKLh9u5k+Lj0ylnivBoGx0qj4snyX8Rw1IizP0n7aao5Bd35qwVXxNwpDZhy
-         AYO2MHFWIk1g0mitLEsQ0z/+5KSollkL7iiBsB8ryA2QgdBlGpkZFR7xi5NN6k43+tNh
-         ZR+Dtcgi6CWiaOBd8B0+BkvHp/9Q5w0thxPzK+OpjRJw2ZT5+oByQIrZzjf7ixGWLgDK
-         gO9AnQSs+LGlh5BFyrvkCcNewjy7qSZ9AvnEhDOUpghw9cVXlgFKhvVEEchiwtzu7k1e
-         rV0aBE2/k5jqRswi5bmjB5PY1FAqF4PkPJdgGyQgGQd/yzuPRjjHuif9EqEn+AmsEKbt
-         WvIA==
-X-Forwarded-Encrypted: i=1; AJvYcCVsnRjdhfqfvjwOKbPE62UsvAJjPKvQXfQ7rCmucMZKNFB6LaBhX3yumSHK7yeJMTLr0tE5PDuOYnD/ja16Nd5bo8MHW2p9dLKY3x31/Tb4oGuzljh7eOyGREF8PWbxKQx/
-X-Gm-Message-State: AOJu0YwDewqkmj1uiFGxkPNMAPYoP5L6E3wy7yWWslvqe7gU82504U32
-	kMPuAjpM0PhYfx8Pb6wNsbRvac57GT/yiUMr+S1r0DyjZm1lYL2eUzQs2ySfcILUhdf5r86+C98
-	Vhqkb00mSlwnXZWAiK2P2NgFtdCQ=
-X-Google-Smtp-Source: AGHT+IEpvuMiIiuE5X2OxxBkqw+arGCfXvVvpYJ504Na3WVmQ8g8bHXmvyvm636hSMCK6hYsO3XBOKMLXeSaHnXc6lQ=
-X-Received: by 2002:a05:600c:35cb:b0:414:910c:450b with SMTP id
- r11-20020a05600c35cb00b00414910c450bmr881775wmq.4.1711577704932; Wed, 27 Mar
- 2024 15:15:04 -0700 (PDT)
+	s=arc-20240116; t=1711578800; c=relaxed/simple;
+	bh=uubMJfEGsx1wHMfNv8O85cjpX0Z4oxTc9ge4GrdhcKE=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=O3qVHDR52x3cNqCevnhfZjJHePaqsQSQNoI9T3otS0UD7rimozn59lDOy8V2nk82q/U2IowM7qBdwCw6KIbxQrq1QOGaDrrnS/l8sj1Ues/zgHhTrrX2RsJOogV79EW7WDEJQNBE9GyhRVl+9rw9GlJrC0yVrgx7h60u8xc9zRE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=milecki.pl; spf=pass smtp.mailfrom=milecki.pl; arc=none smtp.client-ip=188.165.53.149
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=milecki.pl
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=milecki.pl
+Received: from director9.ghost.mail-out.ovh.net (unknown [10.109.176.162])
+	by mo560.mail-out.ovh.net (Postfix) with ESMTP id 4V4gvv0d45z1JMc
+	for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 22:15:07 +0000 (UTC)
+Received: from ghost-submission-6684bf9d7b-xfkn4 (unknown [10.110.178.52])
+	by director9.ghost.mail-out.ovh.net (Postfix) with ESMTPS id E1CF91FD2C;
+	Wed, 27 Mar 2024 22:15:03 +0000 (UTC)
+Received: from milecki.pl ([37.59.142.107])
+	by ghost-submission-6684bf9d7b-xfkn4 with ESMTPSA
+	id gjE7MWeaBGY6QxIAbVqslg
+	(envelope-from <rafal@milecki.pl>); Wed, 27 Mar 2024 22:15:03 +0000
+Authentication-Results:garm.ovh; auth=pass (GARM-107S0012491a7f4-335c-4194-8bbd-5f1ada98fd90,
+                    AD8588E3BB83D84E59DEA8CE8674EAB20989D6B2) smtp.auth=rafal@milecki.pl
+X-OVh-ClientIp:31.11.218.106
+Message-ID: <30bc0d38-b610-4397-ba42-46819d5507fc@milecki.pl>
+Date: Wed, 27 Mar 2024 23:15:02 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240326003832.102750-1-cam.alvarez.i@gmail.com>
-In-Reply-To: <20240326003832.102750-1-cam.alvarez.i@gmail.com>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Wed, 27 Mar 2024 15:14:53 -0700
-Message-ID: <CAADnVQLfo0m+j6g03epR5Or46AycWbFb7yER2R9RNCT6-6Tx1A@mail.gmail.com>
-Subject: Re: [PATCH] fix array-index-out-of-bounds in bpf_prog_select_runtime
-To: Camila Alvarez <cam.alvarez.i@gmail.com>
-Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, bpf <bpf@vger.kernel.org>, 
-	LKML <linux-kernel@vger.kernel.org>, 
-	syzbot+d2a2c639d03ac200a4f1@syzkaller.appspotmail.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3] mtd: limit OTP NVMEM Cell parse to non Nand devices
+Content-Language: en-US
+To: Christian Marangi <ansuelsmth@gmail.com>,
+ Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+ Jernej Skrabec <jernej.skrabec@gmail.com>,
+ Claudiu Beznea <claudiu.beznea@tuxon.dev>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc: stable@vger.kernel.org
+References: <20240322040951.16680-1-ansuelsmth@gmail.com>
+From: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>
+In-Reply-To: <20240322040951.16680-1-ansuelsmth@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Ovh-Tracer-Id: 11126987304968301369
+X-VR-SPAMSTATE: OK
+X-VR-SPAMSCORE: -100
+X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvledrudduiedgudefgecutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfqggfjpdevjffgvefmvefgnecuuegrihhlohhuthemucehtddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefkffggfgfuvfevfhfhjggtgfesthejredttddvjeenucfhrhhomheptfgrfhgrlhcuofhilhgvtghkihcuoehrrghfrghlsehmihhlvggtkhhirdhplheqnecuggftrfgrthhtvghrnhepgeekvdfgleeuteeludfghfduvdffjeekhfehteefvefggeelheeludeuiedvueejnecukfhppeduvdejrddtrddtrddupdefuddruddurddvudekrddutdeipdefjedrheelrddugedvrddutdejnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehinhgvthepuddvjedrtddrtddruddpmhgrihhlfhhrohhmpehrrghfrghlsehmihhlvggtkhhirdhplhdpnhgspghrtghpthhtohepuddprhgtphhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrghdpoffvtefjohhsthepmhhoheeitddpmhhouggvpehsmhhtphhouhht
 
-On Mon, Mar 25, 2024 at 5:41=E2=80=AFPM Camila Alvarez <cam.alvarez.i@gmail=
-com> wrote:
->
-> BPF documentation specifies that the maximum stack depth for a BPF
-> program is 512 bytes. This is not enforced when selecting a bpf
-> interpreter, thus casuing an index out of bounds error when trying to
-> obtain an interpreter with a bigger stack size.
->
-> This patch enforces the stack size to be not bigger than
-> 512.
->
-> Reported-by: syzbot+d2a2c639d03ac200a4f1@syzkaller.appspotmail.com
-> Signed-off-by: Camila Alvarez <cam.alvarez.i@gmail.com>
-> ---
->  kernel/bpf/core.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
->
-> diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
-> index 696bc55de8e8..8167b3a721e9 100644
-> --- a/kernel/bpf/core.c
-> +++ b/kernel/bpf/core.c
-> @@ -2196,7 +2196,7 @@ static u64 ___bpf_prog_run(u64 *regs, const struct =
-bpf_insn *insn)
->                 BUG_ON(1);
->                 return 0;
->  }
-> -
-> +#define BPF_MAX_STACK_SIZE 512
->  #define PROG_NAME(stack_size) __bpf_prog_run##stack_size
->  #define DEFINE_BPF_PROG_RUN(stack_size) \
->  static unsigned int PROG_NAME(stack_size)(const void *ctx, const struct =
-bpf_insn *insn) \
-> @@ -2345,7 +2345,7 @@ static void bpf_prog_select_func(struct bpf_prog *f=
-p)
->  {
->  #ifndef CONFIG_BPF_JIT_ALWAYS_ON
->         u32 stack_depth =3D max_t(u32, fp->aux->stack_depth, 1);
-> -
-> +       stack_depth =3D min_t(u32, stack_depth, BPF_MAX_STACK_SIZE);
->         fp->bpf_func =3D interpreters[(round_up(stack_depth, 32) / 32) - =
-1];
+On 22.03.2024 05:09, Christian Marangi wrote:
+> diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
+> index 5887feb347a4..0de87bc63840 100644
+> --- a/drivers/mtd/mtdcore.c
+> +++ b/drivers/mtd/mtdcore.c
+> @@ -900,7 +900,7 @@ static struct nvmem_device *mtd_otp_nvmem_register(struct mtd_info *mtd,
+>   	config.name = compatible;
+>   	config.id = NVMEM_DEVID_AUTO;
+>   	config.owner = THIS_MODULE;
+> -	config.add_legacy_fixed_of_cells = true;
+> +	config.add_legacy_fixed_of_cells = !mtd_type_is_nand(mtd);
+>   	config.type = NVMEM_TYPE_OTP;
+>   	config.root_only = true;
+>   	config.ignore_wp = true;
 
-That's not the root cause of the issue.
-syzbot is saying: index 16 is out of range for type '<unknown> *[16]'
+I think there may be even more unwanted behaviour here. If
+mtd_otp_nvmem_register() fails to find node with "user-otp" /
+"factory-otp" compatible then it sets "config.of_node" to NULL but that
+means NVMEM core still looks for NVMEM cells in device's "of_node".
 
-somehow stack depth got bigger than 512.
-The bug is somewhere in the verifier.
-Please debug it further.
+I believe we should not look for OTP NVMEM cells out of the "user-otp" /
+"factory-otp" compatible nodes.
+
+So maybe what we need in the first place is just:
+config.add_legacy_fixed_of_cells = !!np;
+?
+
+Any extra limitation of .add_legacy_fixed_of_cells should probably be
+used only if we want to prevent new users of the legacy syntax. The
+problem is that mtd.yaml binding allowed "user-otp" and "factory-otp"
+with old syntax cells. It means every MTD device was allowed to have
+them.
+
+No in-kernel DTS even used "user-otp" or "factory-otp" with NVMEM legacy
+cells but I'm not sure about downstream DTS files. Ideally we would do
+config.add_legacy_fixed_of_cells = false;
+but that could break compatibility with some downstream DTS files.
 
