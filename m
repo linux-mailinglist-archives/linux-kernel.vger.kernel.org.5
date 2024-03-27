@@ -1,480 +1,665 @@
-Return-Path: <linux-kernel+bounces-122187-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-122188-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 16FEB88F339
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 00:34:06 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7DCF988F33D
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 00:34:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8F8ED1F2CC0E
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 23:34:05 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 953BC1C2A544
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 23:34:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8BDF4154C15;
-	Wed, 27 Mar 2024 23:33:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E552A14D45B;
+	Wed, 27 Mar 2024 23:34:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel.com header.i=@intel.com header.b="FBraSjmP"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.11])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="GdxfbouW"
+Received: from mail-wr1-f53.google.com (mail-wr1-f53.google.com [209.85.221.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C9CEC1DA4E;
-	Wed, 27 Mar 2024 23:33:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=198.175.65.11
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711582433; cv=fail; b=eb0xBlZn22b5lhZKEKkG/g3ZjfVDsor4xmqKcOZmzIs2VZohkK6NKtH9m/4bLWtMnazVPju0Ljbbr2wa1oaUU7rr3pvOEdsJYwmFIkY6evFX3ES90PVJk48ALm9JrkDrhemKvTuVCeKIazdDMiWwIg1u4SaRn3zgtpngJWlSl2M=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711582433; c=relaxed/simple;
-	bh=n+RNfFEdYbmXjoVZpEtpkLkPLSrzAr/Bnvsck0825mA=;
-	h=Message-ID:Date:Subject:To:CC:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=i6XrQ7VT4KVbht8BNNTEIaEdKu4c93JSz1wOCw7pF6gxKeHszfv+BV0Ks25mPOao33FaqlBNbdYX4AaegP+hHMaYsMKYGUXy/dhZEpqKRHo3lwDAlyd1yNAtU+AOsM0qBqShWGWVFh5ROc/z8fpwep2BsyjB6Tg9lGNQV5Dv3mc=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=FBraSjmP; arc=fail smtp.client-ip=198.175.65.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1711582430; x=1743118430;
-  h=message-id:date:subject:to:cc:references:from:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=n+RNfFEdYbmXjoVZpEtpkLkPLSrzAr/Bnvsck0825mA=;
-  b=FBraSjmPcG1GN0LKWUc24M5ieZaOd1NFK/qD4srCuRB4LsQuuVljR5ri
-   /4CKCrFnndCNI1XO0G/9Mn7rUo3xebjciInbEDI7AQB3aADkdNP2mlmav
-   VcSP4XJp8OcVI9n2GBF7Kyd38SCMP4QFlB6bTV8Xev3vw6YC3VLRoTQc7
-   kvozVrGvzIk8DR58J2VyM41zV9aZlAAt9+fL7eS2nUMCyHAIsWiXvyZs2
-   4h2CRkvElYyaye3PYDRu9x2sHtZPU04fbsZxmwLKJ+dnKYkwo06zzK1gg
-   GhYfg4BJte4kvWe6DQoCM8PGkORQTh4YHx6VAFJ6xFcM2RhnxG8TZO8L7
-   g==;
-X-CSE-ConnectionGUID: pVoUdPQ7TWSB6YQEnLLkTA==
-X-CSE-MsgGUID: TSn7V8h3To6XpDbCEwDGXQ==
-X-IronPort-AV: E=McAfee;i="6600,9927,11026"; a="17269472"
-X-IronPort-AV: E=Sophos;i="6.07,160,1708416000"; 
-   d="scan'208";a="17269472"
-Received: from fmviesa004.fm.intel.com ([10.60.135.144])
-  by orvoesa103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Mar 2024 16:33:49 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,160,1708416000"; 
-   d="scan'208";a="21115286"
-Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
-  by fmviesa004.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 27 Mar 2024 16:33:50 -0700
-Received: from fmsmsx611.amr.corp.intel.com (10.18.126.91) by
- fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Wed, 27 Mar 2024 16:33:49 -0700
-Received: from fmsedg602.ED.cps.intel.com (10.1.192.136) by
- fmsmsx611.amr.corp.intel.com (10.18.126.91) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35 via Frontend Transport; Wed, 27 Mar 2024 16:33:49 -0700
-Received: from NAM04-BN8-obe.outbound.protection.outlook.com (104.47.74.40) by
- edgegateway.intel.com (192.55.55.71) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Wed, 27 Mar 2024 16:33:48 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=eLTjx4cIMSrHCJ3r1rXgaoXYo5ceQHG6t8tA51b/UFyCQJtJtoy0dguxhJFJQ/9ksl4u7dht44yOsj5GGRMLYgCQnZ9IA4TnDT4QID+9cBxSAbcJ18vI0vIYdQIPnU3M/k0be5rWxvDi8nRMCFODnCrHwkKwFSldgSHGUcQC5W3d1LsXfSND5aIlEkJKwydtwxvDpmeaZnxD7C7qDSx6k1iocsSnX+3P5M0JcXDshP4GwidIv0AzOTrur1ygwkuX8S/rM/BWDtFpAou63JpGrUOwjBFT9YVFKswbiy0khE5A1BxFBGpQauJ+ZBD4+ZC5wi2vEgtw8igHwjkPfbLuqw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=zea5smxVW65dhD2PaXA3/cWYFctwxxL2R+PK7yzwNqA=;
- b=ZWTLx6SuqmhkjkRIgwKfnClAoR/qgfprg3w5IsL6iu2uJ6WhltRf4rFr1X0BIUcmBZgl91UDsNu3lcRiIsrrXxzm7NSYrU/9acJbB6w/JZn4TcGf1sYAVLuUAa0RXWMoLyXIqVZpuST/6qtBamxXrWazZMwotzTuQsWP2EJTJm3DhGJ6aXpfd8lvH1V1tCPE8N3wEEHgj6OUs5IOWSaCvyNZiG2EG/8FcgQp6yFMn66CpGPFlM+9fa/bC2wPCqmpd9ibgthzxY5Gi+FIr6mqVjbFBXH9zw6RamO6EZbQonbnmfXIXurlGfYnjtamFQUUCmqUPd3lAd6z6mQVSuwaoQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from BL1PR11MB5978.namprd11.prod.outlook.com (2603:10b6:208:385::18)
- by DS0PR11MB7971.namprd11.prod.outlook.com (2603:10b6:8:122::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.33; Wed, 27 Mar
- 2024 23:33:46 +0000
-Received: from BL1PR11MB5978.namprd11.prod.outlook.com
- ([fe80::ef2c:d500:3461:9b92]) by BL1PR11MB5978.namprd11.prod.outlook.com
- ([fe80::ef2c:d500:3461:9b92%4]) with mapi id 15.20.7409.031; Wed, 27 Mar 2024
- 23:33:46 +0000
-Message-ID: <9f5c6259-78e1-4470-a013-91392bf3cea5@intel.com>
-Date: Thu, 28 Mar 2024 12:33:35 +1300
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v19 038/130] KVM: TDX: create/destroy VM structure
-To: <isaku.yamahata@intel.com>, <kvm@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>
-CC: <isaku.yamahata@gmail.com>, Paolo Bonzini <pbonzini@redhat.com>,
-	<erdemaktas@google.com>, Sean Christopherson <seanjc@google.com>, Sagi Shahar
-	<sagis@google.com>, <chen.bo@intel.com>, <hang.yuan@intel.com>,
-	<tina.zhang@intel.com>, Sean Christopherson <sean.j.christopherson@intel.com>
-References: <cover.1708933498.git.isaku.yamahata@intel.com>
- <7a508f88e8c8b5199da85b7a9959882ddf390796.1708933498.git.isaku.yamahata@intel.com>
-Content-Language: en-US
-From: "Huang, Kai" <kai.huang@intel.com>
-In-Reply-To: <7a508f88e8c8b5199da85b7a9959882ddf390796.1708933498.git.isaku.yamahata@intel.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: MW4PR03CA0148.namprd03.prod.outlook.com
- (2603:10b6:303:8c::33) To BL1PR11MB5978.namprd11.prod.outlook.com
- (2603:10b6:208:385::18)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 572D8152512
+	for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 23:34:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.53
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1711582464; cv=none; b=aIh6Vz2z8u2lyEJSG8M3n/qbMc3Bu7SPowe/oyNVebFbDmtsRURNEdfxnMH0nwqAj5d2UV9vXRj6L5bdGUCsa3w1bn1IVPBFgx2EjZy0J1aZVAgmMCOVzPssrKzPli6pCmd7dbe0cO31wu+u246l2Hx8C/Y8BQ1MX2MvdGeYHRo=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1711582464; c=relaxed/simple;
+	bh=Xdmn8kxtpGQrMytnpS0hffNzJXaB4hlvFyrsQCAEIWo=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=mDY8wenB8fskPOKUd5lGUyALoY0WLGmGg0jG2o51zvvE6GhiN13R9esK+YwZ6MJPqlCVra40hkm2wHyUk80cumfRi3WzI0Vav69oDo9J7pL6I6ytaCaT1b2Si8lmzb2IViXqxRbvSoqHs5E56uGeloXEgEJWpNHZLd6EybnVY4Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=GdxfbouW; arc=none smtp.client-ip=209.85.221.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wr1-f53.google.com with SMTP id ffacd0b85a97d-33ed6078884so816082f8f.1
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 16:34:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1711582461; x=1712187261; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=qpQNTzpqpQNsXHWiISaDLd5pfdQAhJ8rv/TtHBp8H00=;
+        b=GdxfbouWeyij8w4eGSH5RGoXAWfCcV0Di0Qy8N+TyMDNcyx9wbqc7WmGDN+WU9C+gq
+         67EiSulXD1+tAiq3R1YIbrN92Ugc6zjQZu8Xyu6tPDCOSgS9QWCVZdyKiSUrhwlkPkQ4
+         OqdSHSxySAkAdnWJSnNXa1qKKKMnWNPFD/VdJ61coYCXQHwAhSqV8qoJv7WxK3zFfe2a
+         IBVC1rXAE8E9DIHW3gA++H/A0xfA9eC78jFsDN0Uzh439Smw5cyQgGed77onfTDyT/At
+         kyhFXHJe+yuMuYtREj8mO7ysJvPFabbVZMQoIE5GXJzU5joKASlNNs1ZfuU7ZdH/WK3g
+         QqVw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711582461; x=1712187261;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=qpQNTzpqpQNsXHWiISaDLd5pfdQAhJ8rv/TtHBp8H00=;
+        b=jYJupsepbF+qJqZX8meJn7EsjHLvdm83Kt4og3MTaZZxDmSqy3+qflcZ6leep0nS6E
+         FtSOi9j5LTvTUofprTNuVdfx0xmEqJBGOI+/bbz5Sgwby+IT1Y8/ntvWrsJDmWtqj09s
+         19RuhbJw90ix554aPkcYNZmE5Gfrix3B2f4ihRduKVhnq+AYZhMtmNLJvipgBqrXMhaC
+         RhGWWNRcZtsMjVcKri7B5G0jmPnYoVLej1gIx0my8EiNZhNhZ3aFm58sJhmcUe226yw4
+         X5hHz4PghuS1K7IacrQORka6sBONh/6nURofYaKdCj6qKakGtDrFaR+vyEb6+d/GRBxd
+         1b/g==
+X-Forwarded-Encrypted: i=1; AJvYcCWFb72lQ2uZGOXMmf4tVosfynNh9qOw6PESIHFkO/yEwoMu+j2n+u/ErdEZJXVQqfNxMuTKfHlje5OpyhywusfMfpCgUOGlLV/TABya
+X-Gm-Message-State: AOJu0Yyhbe2TV1iX8RAVMwl6yvAgSYjVJYkybEhtnmVdS7e2+Vy60SnJ
+	Vx+v2eYGaaMkWFRuwwcVt7lpQIi8Lof6xqW/JGSVrzfi4MYNB5KeaO41Iqns3CU=
+X-Google-Smtp-Source: AGHT+IEeIf/3/FHsBI1zcOab7trroHshGJ5Adye4F9/OF8b/kn8oA9vIVmBvgyVTc2TpKOeOYQvr6w==
+X-Received: by 2002:a5d:5606:0:b0:341:bf1e:45a3 with SMTP id l6-20020a5d5606000000b00341bf1e45a3mr496444wrv.27.1711582460513;
+        Wed, 27 Mar 2024 16:34:20 -0700 (PDT)
+Received: from [192.168.1.78] (host-92-17-96-232.as13285.net. [92.17.96.232])
+        by smtp.gmail.com with ESMTPSA id dn2-20020a0560000c0200b0033e25c39ac3sm205276wrb.80.2024.03.27.16.34.19
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 27 Mar 2024 16:34:20 -0700 (PDT)
+Message-ID: <90cc2e33-ae1a-4452-ab19-dbd30de3f02e@linaro.org>
+Date: Wed, 27 Mar 2024 23:34:19 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BL1PR11MB5978:EE_|DS0PR11MB7971:EE_
-X-MS-Office365-Filtering-Correlation-Id: e1dc620c-cbf2-4b76-bb65-08dc4eb6589f
-X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: JlinF8WjIkjvmBljjM83sb4Ijcuy8Q1I/zoFdGohiMz0W29Q6y+8WXVaK59gJUrZeOe9pRCDG3Z7Z0mAav2iDv8KVruFxd3jC5OTrwLkcvBJxsxW/SwCCU82q2kKrlQgRNQiX4PWFCGxi6dsyjgAY9mslTBxhoSK3SYkl2HAvNFPUWGGJEq8uQuYOk9/ePTgh8G/pQJ07IGDj26BRZtho/SOr6iFJQE5g8KEJSXaewOc+m3B1NNrWvCcr84at2R/vTS7XhuHo3fScO1ppVJZpK7yJ/h3KwoWArBFp90/wBw1H+z7Mv5hhuwYmUyO59+gPra1dnf3InlpF7JQJk4ITujCBZDAL1OGG3l+sTytciBtv3th12SDpzOURuPfSFjUE8zTVOdyDl/z+AcQ5rQt3tYPiMzZQ3CFyV+EIkRX45RIpb0lUqL5G17QRFA+s90EVYDmfparvEKPblNXDFUtbbc9xhoWqkaZuXJBwHlkb6ObEX+qTcGGm3WH10CybHmCzHyYsSQruHiW9E7HfUfdYA9S/idVC3G6t3XtjkN26Lz3BoOaS7h8/UTjhcFEoyQnnkgzR5tdHix+IP4tgfSQXwvcia8Dzv0kggChwAM7/PQ5roqQP0XohSWuLYv1/et3dOimA1NS0XrdZcpTgTxORMLOL1kof941cJNTIAAs4Ds=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL1PR11MB5978.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(366007)(1800799015);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?MlY0OUNnSlBvU1QzNE9DWmF5bVd0U1JXS0JNek9HZ1ZWcVlwem1qZzVtWFFk?=
- =?utf-8?B?RC9mNWNjUlJNS3k2ejJkWllVWFlML1hRYktJSDlGckQ2WDNwaU05NHhmTUR6?=
- =?utf-8?B?cWVRTHpjL1g1R3BhSk10TkkrZWRXeG5BcG1oQUlUN2hQY0IxZm8yWXhPanYw?=
- =?utf-8?B?RGRETHEzUmZTN0pkMGpvUXIyUTljVGpmWnIzajRIamU5dDZSSUJmY3lubTA3?=
- =?utf-8?B?cGVnOURKemJWMmE0bDcyVFp6bFJDVHB6ZzhsdnhqRW9yZU1HSFNpQmxPYWpO?=
- =?utf-8?B?eFZ1Z081d0JwaFpaU0Z0MWgwUEFuZ3QzRllhdUd6WEhaeXA2WWRHWXFEb1pC?=
- =?utf-8?B?dHE3ZkFQRnpWVHVHTzFRbStCSnBhY3JCa3h6QStOekYwM0l5WXNMbWcvZTVq?=
- =?utf-8?B?eHBsYmlmaUZFcVVOcDllSlhEc29BY0RQQUdKNXdnY3IyRkJvMnR6SENmQTNw?=
- =?utf-8?B?bTBZdUNPVFdLVml6SEVDK01oVUZ1UEd1bURVQW9GTnkwaFBXd0o5YWRhTHg0?=
- =?utf-8?B?NHl5aHVZWldFYkZrRnZNam1QQy9raEQ3Y3JEd3N2WnI0QUhTL0NZK2tQYTNK?=
- =?utf-8?B?MEpyZGZRY0c4K1YrejJTWTBzZTkwWFRLaXZra3crVU9zSnYreVRxcEYrSXdx?=
- =?utf-8?B?MDl2Mm5TRnRSNzUxdVpkblRHWGFKMS9wT0lxR0drNDRZb0tkd241dTNTdHFl?=
- =?utf-8?B?L1g4aGErQUhFK3NwT3FpU0tFL3JjUTFUY1orVm9JUUJSWUhxa2kzY1g1aEF1?=
- =?utf-8?B?MHVmWjVpODNmdHc3bGVOb3ZQTmxEemFzSkgwV0JnVm5kRHk2V2FxUXpuR0pw?=
- =?utf-8?B?aEt4Y3lTK1R4YzQwRGZTQ3YxODhQZHl6amJBZGVsMEpoZWM5Z2pqWU8yTUpa?=
- =?utf-8?B?WlNORk1yUkdFWTNDbVNZWDRuQTBkOWNmQlpWbE83RFBtMXN5bnh2UjBGVHox?=
- =?utf-8?B?K2h6TWlwN3ZWQVp1T1laS2h5Y2dmUnBHckg0ZDRlNnlxUEJ4b3JucFhMVXkx?=
- =?utf-8?B?MTQzMUZVUnE3L0xlZVo0VVY0T1pHa285TVo3V0hsMFVac0l2YXlpdFMxMjBj?=
- =?utf-8?B?Z2NDcmpmMTE2M05RQzduUjZyVUxBVzRhbGZhTXpUMlc3WmJLczdqa25Bd1Bq?=
- =?utf-8?B?QVFIZUZQQXZXVUlZcGZUblYrV2Y5ZHFlc1pGWEkrcUUzeTVrb0FkMkpaRkpu?=
- =?utf-8?B?MnRQUUtRcHNUdHAwanBOQkJxL0lmTXZJVGdzZGI5aVZKWVMxd29VUzVpN0NY?=
- =?utf-8?B?ekNxY0JCaVFSQmt5WmF0MjNmaW91MXNsM1lKc3FJd0hMZHBKUlIwblpEOTVJ?=
- =?utf-8?B?VTZLam5JL2tQd25XWkozV1RSSVFxUVByc2I3YVpMdVFVcnhhZWhxU2pPYmd6?=
- =?utf-8?B?bGFJUFhzclBWMFk2UGdnUjlzUk5PUktyUVRrMWFjaXJlcjM2YkZhYmVnc1RE?=
- =?utf-8?B?L3BMdVdjRDIvQis0NWptR05FdW5tZmpMdUVVT25xZHdmaDVwU0xXSlpFZENl?=
- =?utf-8?B?VmdQYnY4TmcvL3M4NVBzZjIvVW1MWjBHUW0yU1NoUGJQSTBmSjdPUmM0Um1B?=
- =?utf-8?B?YXdablNSWS92eXI2Y2tLSllxYUZETEVjUUFncXNsblJ3ZGI0V2NxUVZsNVVC?=
- =?utf-8?B?QkZPdnhOS3MvWTk3QXdnTWIxVzF0MVhxT3pJc29UUW9GeldHS0JocDlxQUxP?=
- =?utf-8?B?cjlmb3ZxdGVXOXZocDZZOTB0REtJS3ZIK2xGZkZoa3kxSUUvcmhFMjBXTVNE?=
- =?utf-8?B?a21ySkF2VEZ5Vkx0aFVqMEdIK1RsaXdoTUUvcnYzS3h0WDFoZTl3c0Z1MjBG?=
- =?utf-8?B?dFdveTlwWTJYLzg0aWkvb3J5U1IycFo4bjc2V1BXSzNKVzlFVDhpOWYxQXgy?=
- =?utf-8?B?aWlqLzZCbFlvaXpUdUMvSFBLeUlaVG0yZVBJaC9FNDlkSWRBcEM5YWxRc2Mr?=
- =?utf-8?B?MmRtSlpSNFMvS1dhZktScmtkTFF6RE9ldUl6WFJjdGNzMVIrZllBK3kzM2M2?=
- =?utf-8?B?N2l1NE1VMitRT3Q1OTNJdEZxTU1UY1M5NlR4NDF2SFRXWS9IMlBLb1FaY28z?=
- =?utf-8?B?dlFmcFA0eGdNbUhibXdnNnhuOGNsLytqSG5qUHpiN3NyKzlhNTN4ZUJONHhj?=
- =?utf-8?Q?0NoB3mcTzyqX+yKTf1duzAaOH?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: e1dc620c-cbf2-4b76-bb65-08dc4eb6589f
-X-MS-Exchange-CrossTenant-AuthSource: BL1PR11MB5978.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Mar 2024 23:33:45.9402
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: JzPTlLzFlEQ1ynSdzx1qR0/2qLiabuMIWiV+Jc39SziHOwS6MLiBIl4JTceQ7uDxHh7iCKnonu+tMz4BRO6E2A==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR11MB7971
-X-OriginatorOrg: intel.com
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4 3/3] arm64: dts: qcom: apq8016: Add Schneider HMIBSC
+ board DTS
+Content-Language: en-US
+To: Stephan Gerhold <stephan@gerhold.net>, Sumit Garg <sumit.garg@linaro.org>
+Cc: linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+ andersson@kernel.org, konrad.dybcio@linaro.org, robh+dt@kernel.org,
+ krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+ neil.armstrong@linaro.org, dmitry.baryshkov@linaro.org,
+ laetitia.mariottini@se.com, pascal.eberhard@se.com, abdou.saker@se.com,
+ jimmy.lalande@se.com, benjamin.missey@non.se.com,
+ daniel.thompson@linaro.org, linux-kernel@vger.kernel.org,
+ Jagdish Gediya <jagdish.gediya@linaro.org>
+References: <20240327063734.3236117-1-sumit.garg@linaro.org>
+ <20240327063734.3236117-4-sumit.garg@linaro.org>
+ <ZgRvNxnms9fbz0Hk@gerhold.net>
+From: Caleb Connolly <caleb.connolly@linaro.org>
+In-Reply-To: <ZgRvNxnms9fbz0Hk@gerhold.net>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-.. to continue the previous review ...
 
->   
-> +static int __tdx_td_init(struct kvm *kvm)
-> +{
-> +	struct kvm_tdx *kvm_tdx = to_kvm_tdx(kvm);
-> +	cpumask_var_t packages;
-> +	unsigned long *tdcs_pa = NULL;
-> +	unsigned long tdr_pa = 0;
-> +	unsigned long va;
-> +	int ret, i;
-> +	u64 err;
-> +
-> +	ret = tdx_guest_keyid_alloc();
-> +	if (ret < 0)
-> +		return ret;
-> +	kvm_tdx->hkid = ret;
-> +
-> +	va = __get_free_page(GFP_KERNEL_ACCOUNT);
-> +	if (!va)
-> +		goto free_hkid;
-> +	tdr_pa = __pa(va);
-> +
-> +	tdcs_pa = kcalloc(tdx_info->nr_tdcs_pages, sizeof(*kvm_tdx->tdcs_pa),
-> +			  GFP_KERNEL_ACCOUNT | __GFP_ZERO);
-> +	if (!tdcs_pa)
-> +		goto free_tdr;
 
-Empty line.
+On 27/03/2024 19:10, Stephan Gerhold wrote:
+> On Wed, Mar 27, 2024 at 12:07:34PM +0530, Sumit Garg wrote:
+>> Add Schneider Electric HMIBSC board DTS. The HMIBSC board is an IIoT Edge
+>> Box Core board based on the Qualcomm APQ8016E SoC.
+>>
+>> Support for Schneider Electric HMIBSC. Features:
+>> - Qualcomm Snapdragon 410C SoC - APQ8016 (4xCortex A53, Adreno 306)
+>> - 1GiB RAM
+>> - 8GiB eMMC, SD slot
+>> - WiFi and Bluetooth
+>> - 2x Host, 1x Device USB port
+>> - HDMI
+>> - Discrete TPM2 chip over SPI
+>> - USB ethernet adaptors (soldered)
+>>
+>> Co-developed-by: Jagdish Gediya <jagdish.gediya@linaro.org>
+>> Signed-off-by: Jagdish Gediya <jagdish.gediya@linaro.org>
+>> Reviewed-by: Caleb Connolly <caleb.connolly@linaro.org>
+>> Signed-off-by: Sumit Garg <sumit.garg@linaro.org>
+> 
+> This looks good to me now. Thanks for making all the changes!
+> 
+> Reviewed-by: Stephan Gerhold <stephan@gerhold.net>
+> 
+> Please drop the tag again in case you send another version with any
+> larger changes. I'm happy to look at the patch again then. Not sure if
+> Caleb's R-b is still valid now after all the changes you made.
 
-> +	for (i = 0; i < tdx_info->nr_tdcs_pages; i++) {
-> +		va = __get_free_page(GFP_KERNEL_ACCOUNT);
-> +		if (!va)
-> +			goto free_tdcs;
-> +		tdcs_pa[i] = __pa(va);
-> +	}
-> +
-> +	if (!zalloc_cpumask_var(&packages, GFP_KERNEL)) {
-> +		ret = -ENOMEM;
-> +		goto free_tdcs;
-> +	}
+I appreciate the review and the re-submission. I would have rather given
+it again explicitly -- but no doubt I'll make the same mistake 1000 times :P
 
-Empty line.
+Cheers, really happy that we can have Qualcomm boards land their DT
+upstream and gain first-class U-Boot support as a result :D thanks for
+all your work on this Sumit.
+> 
+> I found one more nitpick below, but it also exists in apq8016-sbc.dts.
+> Feel free to leave it as-is, I can fix it up for both sometime later.
+> 
+> Thanks,
+> Stephan
+> 
+>> ---
+>>  arch/arm64/boot/dts/qcom/Makefile             |   1 +
+>>  .../dts/qcom/apq8016-schneider-hmibsc.dts     | 490 ++++++++++++++++++
+>>  2 files changed, 491 insertions(+)
+>>  create mode 100644 arch/arm64/boot/dts/qcom/apq8016-schneider-hmibsc.dts
+>>
+>> diff --git a/arch/arm64/boot/dts/qcom/Makefile b/arch/arm64/boot/dts/qcom/Makefile
+>> index 39889d5f8e12..ad55e52e950b 100644
+>> --- a/arch/arm64/boot/dts/qcom/Makefile
+>> +++ b/arch/arm64/boot/dts/qcom/Makefile
+>> @@ -5,6 +5,7 @@ apq8016-sbc-usb-host-dtbs	:= apq8016-sbc.dtb apq8016-sbc-usb-host.dtbo
+>>  
+>>  dtb-$(CONFIG_ARCH_QCOM)	+= apq8016-sbc-usb-host.dtb
+>>  dtb-$(CONFIG_ARCH_QCOM)	+= apq8016-sbc-d3-camera-mezzanine.dtb
+>> +dtb-$(CONFIG_ARCH_QCOM)	+= apq8016-schneider-hmibsc.dtb
+>>  dtb-$(CONFIG_ARCH_QCOM)	+= apq8039-t2.dtb
+>>  dtb-$(CONFIG_ARCH_QCOM)	+= apq8094-sony-xperia-kitakami-karin_windy.dtb
+>>  dtb-$(CONFIG_ARCH_QCOM)	+= apq8096-db820c.dtb
+>> diff --git a/arch/arm64/boot/dts/qcom/apq8016-schneider-hmibsc.dts b/arch/arm64/boot/dts/qcom/apq8016-schneider-hmibsc.dts
+>> new file mode 100644
+>> index 000000000000..62ce862ff5c0
+>> --- /dev/null
+>> +++ b/arch/arm64/boot/dts/qcom/apq8016-schneider-hmibsc.dts
+>> @@ -0,0 +1,490 @@
+>> +// SPDX-License-Identifier: GPL-2.0-only
+>> +/*
+>> + * Copyright (c) 2015, The Linux Foundation. All rights reserved.
+>> + * Copyright (c) 2024, Linaro Ltd.
+>> + */
+>> +
+>> +/dts-v1/;
+>> +
+>> +#include "msm8916-pm8916.dtsi"
+>> +#include <dt-bindings/gpio/gpio.h>
+>> +#include <dt-bindings/input/input.h>
+>> +#include <dt-bindings/leds/common.h>
+>> +#include <dt-bindings/pinctrl/qcom,pmic-gpio.h>
+>> +#include <dt-bindings/pinctrl/qcom,pmic-mpp.h>
+>> +#include <dt-bindings/sound/apq8016-lpass.h>
+>> +
+>> +/ {
+>> +	model = "Schneider Electric HMIBSC Board";
+>> +	compatible = "schneider,apq8016-hmibsc", "qcom,apq8016";
+>> +
+>> +	aliases {
+>> +		i2c1 = &blsp_i2c6;
+>> +		i2c3 = &blsp_i2c4;
+>> +		i2c4 = &blsp_i2c3;
+>> +		mmc0 = &sdhc_1; /* eMMC */
+>> +		mmc1 = &sdhc_2; /* SD card */
+>> +		serial0 = &blsp_uart1;
+>> +		serial1 = &blsp_uart2;
+>> +		spi0 = &blsp_spi5;
+>> +		usid0 = &pm8916_0;
+>> +	};
+>> +
+>> +	chosen {
+>> +		stdout-path = "serial0";
+>> +	};
+>> +
+>> +	hdmi-out {
+>> +		compatible = "hdmi-connector";
+>> +		type = "a";
+>> +
+>> +		port {
+>> +			hdmi_con: endpoint {
+>> +				remote-endpoint = <&adv7533_out>;
+>> +			};
+>> +		};
+>> +	};
+>> +
+>> +	gpio-keys {
+>> +		compatible = "gpio-keys";
+>> +		autorepeat;
+>> +		pinctrl-0 = <&msm_key_volp_n_default>;
+>> +		pinctrl-names = "default";
+>> +
+>> +		button {
+>> +			label = "Volume Up";
+>> +			linux,code = <KEY_VOLUMEUP>;
+>> +			gpios = <&tlmm 107 GPIO_ACTIVE_LOW>;
+>> +		};
+>> +	};
+>> +
+>> +	leds {
+>> +		compatible = "gpio-leds";
+>> +		pinctrl-0 = <&pm8916_mpps_leds>;
+>> +		pinctrl-names = "default";
+>> +
+>> +		led-1 {
+>> +			function = LED_FUNCTION_WLAN;
+>> +			color = <LED_COLOR_ID_YELLOW>;
+>> +			gpios = <&pm8916_mpps 2 GPIO_ACTIVE_HIGH>;
+>> +			linux,default-trigger = "phy0tx";
+>> +			default-state = "off";
+>> +		};
+>> +
+>> +		led-2 {
+>> +			function = LED_FUNCTION_BLUETOOTH;
+>> +			color = <LED_COLOR_ID_BLUE>;
+>> +			gpios = <&pm8916_mpps 3 GPIO_ACTIVE_HIGH>;
+>> +			linux,default-trigger = "bluetooth-power";
+>> +			default-state = "off";
+>> +		};
+>> +	};
+>> +
+>> +	memory@80000000 {
+>> +		reg = <0 0x80000000 0 0x40000000>;
+>> +	};
+>> +
+>> +	reserved-memory {
+>> +		ramoops@bff00000 {
+>> +			compatible = "ramoops";
+>> +			reg = <0x0 0xbff00000 0x0 0x100000>;
+>> +			record-size = <0x20000>;
+>> +			console-size = <0x20000>;
+>> +			ftrace-size = <0x20000>;
+>> +			ecc-size = <16>;
+>> +		};
+>> +	};
+>> +
+>> +	usb-hub {
+>> +		compatible = "smsc,usb3503";
+>> +		reset-gpios = <&pm8916_gpios 1 GPIO_ACTIVE_LOW>;
+>> +		initial-mode = <1>;
+>> +	};
+>> +
+>> +	usb_id: usb-id {
+>> +		compatible = "linux,extcon-usb-gpio";
+>> +		id-gpios = <&tlmm 110 GPIO_ACTIVE_HIGH>;
+>> +		pinctrl-0 = <&usb_id_default>;
+>> +		pinctrl-names = "default";
+>> +	};
+>> +};
+>> +
+>> +&blsp_i2c3 {
+>> +	status = "okay";
+>> +
+>> +	eeprom@50 {
+>> +		compatible = "atmel,24c32";
+>> +		reg = <0x50>;
+>> +	};
+>> +};
+>> +
+>> +&blsp_i2c4 {
+>> +	status = "okay";
+>> +
+>> +	adv_bridge: bridge@39 {
+>> +		compatible = "adi,adv7533";
+>> +		reg = <0x39>;
+>> +		interrupts-extended = <&tlmm 31 IRQ_TYPE_EDGE_FALLING>;
+>> +
+>> +		adi,dsi-lanes = <4>;
+>> +		clocks = <&rpmcc RPM_SMD_BB_CLK2>;
+>> +		clock-names = "cec";
+>> +		pd-gpios = <&tlmm 32 GPIO_ACTIVE_HIGH>;
+>> +
+>> +		avdd-supply = <&pm8916_l6>;
+>> +		a2vdd-supply = <&pm8916_l6>;
+>> +		dvdd-supply = <&pm8916_l6>;
+>> +		pvdd-supply = <&pm8916_l6>;
+>> +		v1p2-supply = <&pm8916_l6>;
+>> +		v3p3-supply = <&pm8916_l17>;
+>> +
+>> +		pinctrl-0 = <&adv7533_int_active &adv7533_switch_active>;
+>> +		pinctrl-1 = <&adv7533_int_suspend &adv7533_switch_suspend>;
+>> +		pinctrl-names = "default","sleep";
+>> +		#sound-dai-cells = <0>;
+>> +
+>> +		ports {
+>> +			#address-cells = <1>;
+>> +			#size-cells = <0>;
+>> +
+>> +			port@0 {
+>> +				reg = <0>;
+>> +				adv7533_in: endpoint {
+>> +					remote-endpoint = <&mdss_dsi0_out>;
+>> +				};
+>> +			};
+>> +
+>> +			port@1 {
+>> +				reg = <1>;
+>> +				adv7533_out: endpoint {
+>> +					remote-endpoint = <&hdmi_con>;
+>> +				};
+>> +			};
+>> +		};
+>> +	};
+>> +};
+>> +
+>> +&blsp_i2c6 {
+>> +	status = "okay";
+>> +
+>> +	rtc@30 {
+>> +		compatible = "sii,s35390a";
+>> +		reg = <0x30>;
+>> +	};
+>> +
+>> +	eeprom@50 {
+>> +		compatible = "atmel,24c256";
+>> +		reg = <0x50>;
+>> +	};
+>> +};
+>> +
+>> +&blsp_spi5 {
+>> +	cs-gpios = <&tlmm 18 GPIO_ACTIVE_LOW>;
+>> +	status = "okay";
+>> +
+>> +	tpm@0 {
+>> +		compatible = "infineon,slb9670", "tcg,tpm_tis-spi";
+>> +		reg = <0>;
+>> +		spi-max-frequency = <500000>;
+>> +	};
+>> +};
+>> +
+>> +&blsp_uart1 {
+>> +	label = "UART0";
+>> +	status = "okay";
+>> +};
+>> +
+>> +&blsp_uart2 {
+>> +	label = "UART1";
+>> +	status = "okay";
+>> +};
+>> +
+>> +&lpass {
+>> +	status = "okay";
+>> +};
+>> +
+>> +&mdss {
+>> +	status = "okay";
+>> +};
+>> +
+>> +&mdss_dsi0_out {
+>> +	data-lanes = <0 1 2 3>;
+>> +	remote-endpoint = <&adv7533_in>;
+>> +};
+>> +
+>> +&pm8916_codec {
+>> +	qcom,mbhc-vthreshold-low = <75 150 237 450 500>;
+>> +	qcom,mbhc-vthreshold-high = <75 150 237 450 500>;
+>> +	status = "okay";
+>> +};
+>> +
+>> +&pm8916_gpios {
+>> +	gpio-line-names =
+>> +		"USB_HUB_RESET_N_PM",
+>> +		"USB_SW_SEL_PM",
+>> +		"NC",
+>> +		"NC";
+>> +
+>> +	usb_hub_reset_pm: usb-hub-reset-pm-state {
+>> +		pins = "gpio1";
+>> +		function = PMIC_GPIO_FUNC_NORMAL;
+>> +		input-disable;
+>> +		output-high;
+>> +	};
+>> +
+>> +	usb_hub_reset_pm_device: usb-hub-reset-pm-device-state {
+>> +		pins = "gpio1";
+>> +		function = PMIC_GPIO_FUNC_NORMAL;
+>> +		output-low;
+>> +	};
+>> +
+> 
+> Nitpick: &usb_hub_reset_pm has input-disable (and the two others below),
+> but this one doesn't.
+> 
+>> +	usb_sw_sel_pm: usb-sw-sel-pm-state {
+>> +		pins = "gpio2";
+>> +		function = PMIC_GPIO_FUNC_NORMAL;
+>> +		power-source = <PM8916_GPIO_VPH>;
+>> +		input-disable;
+>> +		output-high;
+>> +	};
+>> +
+>> +	usb_sw_sel_pm_device: usb-sw-sel-pm-device-state {
+>> +		pins = "gpio2";
+>> +		function = PMIC_GPIO_FUNC_NORMAL;
+>> +		power-source = <PM8916_GPIO_VPH>;
+>> +		input-disable;
+>> +		output-low;
+>> +	};
+>> +};
+>> +
+>> +&pm8916_mpps {
+>> +	gpio-line-names =
+>> +		"NC",
+>> +		"WLAN_LED_CTRL",
+>> +		"BT_LED_CTRL",
+>> +		"NC";
+>> +
+>> +	pm8916_mpps_leds: pm8916-mpps-state {
+>> +		pins = "mpp2", "mpp3";
+>> +		function = "digital";
+>> +		output-low;
+>> +	};
+>> +};
+>> +
+>> +&pm8916_resin {
+>> +	linux,code = <KEY_POWER>;
+>> +	status = "okay";
+>> +};
+>> +
+>> +&pm8916_rpm_regulators {
+>> +	pm8916_l17: l17 {
+>> +		regulator-min-microvolt = <3300000>;
+>> +		regulator-max-microvolt = <3300000>;
+>> +	};
+>> +};
+>> +
+>> +&sdhc_1 {
+>> +	status = "okay";
+>> +};
+>> +
+>> +&sdhc_2 {
+>> +	pinctrl-0 = <&sdc2_default &sdc2_cd_default>;
+>> +	pinctrl-1 = <&sdc2_sleep &sdc2_cd_default>;
+>> +	pinctrl-names = "default", "sleep";
+>> +	cd-gpios = <&tlmm 38 GPIO_ACTIVE_LOW>;
+>> +	status = "okay";
+>> +};
+>> +
+>> +&sound {
+>> +	pinctrl-0 = <&cdc_pdm_default &sec_mi2s_default>;
+>> +	pinctrl-1 = <&cdc_pdm_sleep &sec_mi2s_sleep>;
+>> +	pinctrl-names = "default", "sleep";
+>> +	model = "HMIBSC";
+>> +	audio-routing =
+>> +		"AMIC2", "MIC BIAS Internal2",
+>> +		"AMIC3", "MIC BIAS External1";
+>> +	status = "okay";
+>> +
+>> +	quaternary-dai-link {
+>> +		link-name = "ADV7533";
+>> +		cpu {
+>> +			sound-dai = <&lpass MI2S_QUATERNARY>;
+>> +		};
+>> +		codec {
+>> +			sound-dai = <&adv_bridge 0>;
+>> +		};
+>> +	};
+>> +
+>> +	primary-dai-link {
+>> +		link-name = "WCD";
+>> +		cpu {
+>> +			sound-dai = <&lpass MI2S_PRIMARY>;
+>> +		};
+>> +		codec {
+>> +			sound-dai = <&lpass_codec 0>, <&pm8916_codec 0>;
+>> +		};
+>> +	};
+>> +
+>> +	tertiary-dai-link {
+>> +		link-name = "WCD-Capture";
+>> +		cpu {
+>> +			sound-dai = <&lpass MI2S_TERTIARY>;
+>> +		};
+>> +		codec {
+>> +			sound-dai = <&lpass_codec 1>, <&pm8916_codec 1>;
+>> +		};
+>> +	};
+>> +};
+>> +
+>> +&tlmm {
+>> +	pinctrl-0 = <&uart1_mux0_rs232_high &uart1_mux1_rs232_low>;
+>> +	pinctrl-names = "default";
+>> +
+>> +	adv7533_int_active: adv533-int-active-state {
+>> +		pins = "gpio31";
+>> +		function = "gpio";
+>> +		drive-strength = <16>;
+>> +		bias-disable;
+>> +	};
+>> +
+>> +	adv7533_int_suspend: adv7533-int-suspend-state {
+>> +		pins = "gpio31";
+>> +		function = "gpio";
+>> +		drive-strength = <2>;
+>> +		bias-disable;
+>> +	};
+>> +
+>> +	adv7533_switch_active: adv7533-switch-active-state {
+>> +		pins = "gpio32";
+>> +		function = "gpio";
+>> +		drive-strength = <16>;
+>> +		bias-disable;
+>> +	};
+>> +
+>> +	adv7533_switch_suspend: adv7533-switch-suspend-state {
+>> +		pins = "gpio32";
+>> +		function = "gpio";
+>> +		drive-strength = <2>;
+>> +		bias-disable;
+>> +	};
+>> +
+>> +	msm_key_volp_n_default: msm-key-volp-n-default-state {
+>> +		pins = "gpio107";
+>> +		function = "gpio";
+>> +		drive-strength = <8>;
+>> +		bias-pull-up;
+>> +	};
+>> +
+>> +	sdc2_cd_default: sdc2-cd-default-state {
+>> +		pins = "gpio38";
+>> +		function = "gpio";
+>> +		drive-strength = <2>;
+>> +		bias-disable;
+>> +	};
+>> +
+>> +	/*
+>> +	 * UART1 being the debug console supports various modes of
+>> +	 * operation (RS-232/485/422) controlled via GPIOs configured
+>> +	 * mux as follows:
+>> +	 *
+>> +	 *   gpio100    gpio99    UART mode
+>> +	 *   0          0         loopback
+>> +	 *   0          1         RS-232
+>> +	 *   1          0         RS-485
+>> +	 *   1          1         RS-422
+>> +	 *
+>> +	 * The default mode configured here is RS-232 mode.
+>> +	 */
+>> +	uart1_mux0_rs232_high: uart1-mux0-rs232-state {
+>> +		bootph-all;
+>> +		pins = "gpio99";
+>> +		function = "gpio";
+>> +		drive-strength = <16>;
+>> +		bias-disable;
+>> +		output-high;
+>> +	};
+>> +
+>> +	uart1_mux1_rs232_low: uart1-mux1-rs232-state {
+>> +		bootph-all;
+>> +		pins = "gpio100";
+>> +		function = "gpio";
+>> +		drive-strength = <16>;
+>> +		bias-disable;
+>> +		output-low;
+>> +	};
+>> +
+>> +	usb_id_default: usb-id-default-state {
+>> +		pins = "gpio110";
+>> +		function = "gpio";
+>> +		drive-strength = <8>;
+>> +		bias-pull-up;
+>> +	};
+>> +};
+>> +
+>> +&usb {
+>> +	extcon = <&usb_id>, <&usb_id>;
+>> +	pinctrl-0 = <&usb_sw_sel_pm &usb_hub_reset_pm>;
+>> +	pinctrl-1 = <&usb_sw_sel_pm_device &usb_hub_reset_pm_device>;
+>> +	pinctrl-names = "default", "device";
+>> +	status = "okay";
+>> +};
+>> +
+>> +&usb_hs_phy {
+>> +	extcon = <&usb_id>;
+>> +};
+>> +
+>> +&wcnss {
+>> +	firmware-name = "qcom/apq8016/wcnss.mbn";
+>> +	status = "okay";
+>> +};
+>> +
+>> +&wcnss_ctrl {
+>> +	firmware-name = "qcom/apq8016/WCNSS_qcom_wlan_nv_sbc.bin";
+>> +};
+>> +
+>> +&wcnss_iris {
+>> +	compatible = "qcom,wcn3620";
+>> +};
+>> +
+>> +&wcnss_mem {
+>> +	status = "okay";
+>> +};
+>> +
+>> +/* PINCTRL - additions to nodes defined in msm8916.dtsi */
+>> +
+>> +/*
+>> + * 2mA drive strength is not enough when connecting multiple
+>> + * I2C devices with different pull up resistors.
+>> + */
+>> +&blsp_i2c4_default {
+>> +	drive-strength = <16>;
+>> +};
+>> +
+>> +&blsp_i2c6_default {
+>> +	drive-strength = <16>;
+>> +};
+>> +
+>> +&blsp_uart1_default {
+>> +	bootph-all;
+>> +};
+>> +
+>> +/* Enable CoreSight */
+>> +&cti0 { status = "okay"; };
+>> +&cti1 { status = "okay"; };
+>> +&cti12 { status = "okay"; };
+>> +&cti13 { status = "okay"; };
+>> +&cti14 { status = "okay"; };
+>> +&cti15 { status = "okay"; };
+>> +&debug0 { status = "okay"; };
+>> +&debug1 { status = "okay"; };
+>> +&debug2 { status = "okay"; };
+>> +&debug3 { status = "okay"; };
+>> +&etf { status = "okay"; };
+>> +&etm0 { status = "okay"; };
+>> +&etm1 { status = "okay"; };
+>> +&etm2 { status = "okay"; };
+>> +&etm3 { status = "okay"; };
+>> +&etr { status = "okay"; };
+>> +&funnel0 { status = "okay"; };
+>> +&funnel1 { status = "okay"; };
+>> +&replicator { status = "okay"; };
+>> +&stm { status = "okay"; };
+>> +&tpiu { status = "okay"; };
+>> -- 
+>> 2.34.1
+>>
 
-> +	cpus_read_lock();
-> +	/*
-> +	 * Need at least one CPU of the package to be online in order to
-> +	 * program all packages for host key id.  Check it.
-> +	 */
-> +	for_each_present_cpu(i)
-> +		cpumask_set_cpu(topology_physical_package_id(i), packages);
-> +	for_each_online_cpu(i)
-> +		cpumask_clear_cpu(topology_physical_package_id(i), packages);
-> +	if (!cpumask_empty(packages)) {
-> +		ret = -EIO;
-> +		/*
-> +		 * Because it's hard for human operator to figure out the
-> +		 * reason, warn it.
-> +		 */
-> +#define MSG_ALLPKG	"All packages need to have online CPU to create TD. Online CPU and retry.\n"
-> +		pr_warn_ratelimited(MSG_ALLPKG);
-> +		goto free_packages;
-> +	}
-> +
-> +	/*
-> +	 * Acquire global lock to avoid TDX_OPERAND_BUSY:
-> +	 * TDH.MNG.CREATE and other APIs try to lock the global Key Owner
-> +	 * Table (KOT) to track the assigned TDX private HKID.  It doesn't spin
-> +	 * to acquire the lock, returns TDX_OPERAND_BUSY instead, and let the
-> +	 * caller to handle the contention.  This is because of time limitation
-> +	 * usable inside the TDX module and OS/VMM knows better about process
-> +	 * scheduling.
-> +	 *
-> +	 * APIs to acquire the lock of KOT:
-> +	 * TDH.MNG.CREATE, TDH.MNG.KEY.FREEID, TDH.MNG.VPFLUSHDONE, and
-> +	 * TDH.PHYMEM.CACHE.WB. > +	 */
-
-Don't need to mention all SEAMCALLs here, but put a comment where 
-appliciable, i.e., where they are used.
-
-	/*
-	 * TDH.MNG.CREATE tries to grab the global TDX module and fails
-	 * with TDX_OPERAND_BUSY when it fails to grab.  Take the global
-	 * lock to prevent it from failure.
-	 */
-> +	mutex_lock(&tdx_lock);
-> +	err = tdh_mng_create(tdr_pa, kvm_tdx->hkid);
-> +	mutex_unlock(&tdx_lock);
-
-Empty line.
-
-> +	if (err == TDX_RND_NO_ENTROPY) {
-> +		ret = -EAGAIN;
-> +		goto free_packages;
-> +	}
-> +	if (WARN_ON_ONCE(err)) {
-> +		pr_tdx_error(TDH_MNG_CREATE, err, NULL);
-> +		ret = -EIO;
-> +		goto free_packages;
-> +	}
-
-I would prefer more empty lines.
-
-> +	kvm_tdx->tdr_pa = tdr_pa;
-> +
-> +	for_each_online_cpu(i) {
-> +		int pkg = topology_physical_package_id(i);
-> +
-> +		if (cpumask_test_and_set_cpu(pkg, packages))
-> +			continue;
-> +
-> +		/*
-> +		 * Program the memory controller in the package with an
-> +		 * encryption key associated to a TDX private host key id
-> +		 * assigned to this TDR.  Concurrent operations on same memory
-> +		 * controller results in TDX_OPERAND_BUSY.  Avoid this race by
-> +		 * mutex.
-> +		 */
-
-IIUC the race can only happen when you are creating multiple TDX guests 
-simulatenously?  Please clarify this in the comment.
-
-And I even don't think you need all these TDX module details:
-
-		/*
-		 * Concurrent run of TDH.MNG.KEY.CONFIG on the same
-		 * package resluts in TDX_OPERAND_BUSY.  When creating
-		 * multiple TDX guests simultaneously this can run
-		 * concurrently.  Take the per-package lock to
-		 * serialize.
-		 */
-> +		mutex_lock(&tdx_mng_key_config_lock[pkg]);
-> +		ret = smp_call_on_cpu(i, tdx_do_tdh_mng_key_config,
-> +				      &kvm_tdx->tdr_pa, true);
-> +		mutex_unlock(&tdx_mng_key_config_lock[pkg]);
-> +		if (ret)
-> +			break;
-> +	}
-> +	cpus_read_unlock();
-> +	free_cpumask_var(packages);
-> +	if (ret) {
-> +		i = 0;
-> +		goto teardown;
-> +	}
-> +
-> +	kvm_tdx->tdcs_pa = tdcs_pa;
-> +	for (i = 0; i < tdx_info->nr_tdcs_pages; i++) {
-> +		err = tdh_mng_addcx(kvm_tdx->tdr_pa, tdcs_pa[i]);
-> +		if (err == TDX_RND_NO_ENTROPY) {
-> +			/* Here it's hard to allow userspace to retry. */
-> +			ret = -EBUSY;
-> +			goto teardown;
-> +		}
-> +		if (WARN_ON_ONCE(err)) {
-> +			pr_tdx_error(TDH_MNG_ADDCX, err, NULL);
-> +			ret = -EIO;
-> +			goto teardown;
-> +		}
-> +	}
-> +
-> +	/*
-> +	 * Note, TDH_MNG_INIT cannot be invoked here.  TDH_MNG_INIT requires a dedicated
-> +	 * ioctl() to define the configure CPUID values for the TD.
-> +	 */
-
-Then, how about renaming this function to __tdx_td_create()?
-
-> +	return 0;
-> +
-> +	/*
-> +	 * The sequence for freeing resources from a partially initialized TD
-> +	 * varies based on where in the initialization flow failure occurred.
-> +	 * Simply use the full teardown and destroy, which naturally play nice
-> +	 * with partial initialization.
-> +	 */
-> +teardown:
-> +	for (; i < tdx_info->nr_tdcs_pages; i++) {
-> +		if (tdcs_pa[i]) {
-> +			free_page((unsigned long)__va(tdcs_pa[i]));
-> +			tdcs_pa[i] = 0;
-> +		}
-> +	}
-> +	if (!kvm_tdx->tdcs_pa)
-> +		kfree(tdcs_pa);
-
-The code to "free TDCS pages in a loop and free the array" is done below 
-with duplicated code.  I am wondering whether we have way to eliminate one.
-
-But I have lost track here, so perhaps we can review again after we 
-split the patch to smaller pieces.
-
-> +	tdx_mmu_release_hkid(kvm);
-> +	tdx_vm_free(kvm);
-> +	return ret;
-> +
-> +free_packages:
-> +	cpus_read_unlock();
-> +	free_cpumask_var(packages);
-> +free_tdcs:
-> +	for (i = 0; i < tdx_info->nr_tdcs_pages; i++) {
-> +		if (tdcs_pa[i])
-> +			free_page((unsigned long)__va(tdcs_pa[i]));
-> +	}
-> +	kfree(tdcs_pa);
-> +	kvm_tdx->tdcs_pa = NULL;
-> +
-> +free_tdr:
-> +	if (tdr_pa)
-> +		free_page((unsigned long)__va(tdr_pa));
-> +	kvm_tdx->tdr_pa = 0;
-> +free_hkid:
-> +	if (is_hkid_assigned(kvm_tdx))
-> +		tdx_hkid_free(kvm_tdx);
-> +	return ret;
-> +}
-> +
->   int tdx_vm_ioctl(struct kvm *kvm, void __user *argp)
->   {
->   	struct kvm_tdx_cmd tdx_cmd;
-> @@ -215,12 +664,13 @@ static int tdx_md_read(struct tdx_md_map *maps, int nr_maps)
->   
->   static int __init tdx_module_setup(void)
->   {
-> -	u16 num_cpuid_config;
-> +	u16 num_cpuid_config, tdcs_base_size;
->   	int ret;
->   	u32 i;
->   
->   	struct tdx_md_map mds[] = {
->   		TDX_MD_MAP(NUM_CPUID_CONFIG, &num_cpuid_config),
-> +		TDX_MD_MAP(TDCS_BASE_SIZE, &tdcs_base_size),
->   	};
->   
->   	struct tdx_metadata_field_mapping fields[] = {
-> @@ -273,6 +723,8 @@ static int __init tdx_module_setup(void)
->   		c->edx = ecx_edx >> 32;
->   	}
->   
-> +	tdx_info->nr_tdcs_pages = tdcs_base_size / PAGE_SIZE;
-> +
-
-Round up the 'tdcs_base_size' to make sure you have enough room, or put 
-a WARN() here if not page aligned?
-
->   	return 0;
->   
->   error_out:
-> @@ -319,13 +771,27 @@ int __init tdx_hardware_setup(struct kvm_x86_ops *x86_ops)
->   	struct tdx_enabled enable = {
->   		.err = ATOMIC_INIT(0),
->   	};
-> +	int max_pkgs;
->   	int r = 0;
-> +	int i;
-
-Nit: you can put the 3 into one line.
-
->   
-> +	if (!cpu_feature_enabled(X86_FEATURE_MOVDIR64B)) {
-> +		pr_warn("MOVDIR64B is reqiured for TDX\n");
-
-It's better to make it more clear:
-
-"Disable TDX: MOVDIR64B is not supported or disabled by the kernel."
-
-Or, to match below:
-
-"Cannot enable TDX w/o MOVDIR64B".
-
-> +		return -EOPNOTSUPP;
-> +	}
->   	if (!enable_ept) {
->   		pr_warn("Cannot enable TDX with EPT disabled\n");
->   		return -EINVAL;
->   	}
->   
-> +	max_pkgs = topology_max_packages();
-> +	tdx_mng_key_config_lock = kcalloc(max_pkgs, sizeof(*tdx_mng_key_config_lock),
-> +				   GFP_KERNEL);
-> +	if (!tdx_mng_key_config_lock)
-> +		return -ENOMEM;
-> +	for (i = 0; i < max_pkgs; i++)
-> +		mutex_init(&tdx_mng_key_config_lock[i]);
-> +
-
-Using a per-socket lock looks a little bit overkill to me.  I don't know 
-whether we need to do in the initial version.  Will leave to others.
-
-Please at least add a comment to explain this is for better performance 
-when creating multiple TDX guests IIUC?
-
->   	if (!zalloc_cpumask_var(&enable.enabled, GFP_KERNEL)) {
->   		r = -ENOMEM;
->   		goto out;
-> @@ -350,4 +816,5 @@ int __init tdx_hardware_setup(struct kvm_x86_ops *x86_ops)
->   void tdx_hardware_unsetup(void)
->   {
->   	kfree(tdx_info);
-> +	kfree(tdx_mng_key_config_lock);
-
-The kernel actually has a mutex_destroy().  It is empty when 
-CONFIG_DEBUG_LOCK_ALLOC is off, but I think it should be standard 
-proceedure to also mutex_destory()?
-
-[...]
+-- 
+// Caleb (they/them)
 
