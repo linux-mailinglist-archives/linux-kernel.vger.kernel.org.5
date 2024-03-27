@@ -1,164 +1,103 @@
-Return-Path: <linux-kernel+bounces-121177-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-121192-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E9DBF88E329
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 14:43:31 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3976D88E353
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 14:47:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 273FA1C2874D
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 13:43:31 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6F0C429FB9B
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 13:47:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C1DF413E6DF;
-	Wed, 27 Mar 2024 12:24:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BE8E1181B84;
+	Wed, 27 Mar 2024 12:25:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="CtPx5/xo"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Kwr1lYv2"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B38213E6DA;
-	Wed, 27 Mar 2024 12:24:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E44F818148F;
+	Wed, 27 Mar 2024 12:25:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711542282; cv=none; b=Xd5tcvdB4pwwuImuXGmrjPwbr2M1B8jJAz+MwHdM/EjotgCHD2Y23k4dvc4aSUH+Rq1YspkSc5C0PkE/0DLENWbjrzEoWNb7RvNMfm+c9YzRxqUWX7Pd3NfWuT78qX/7zBCQfjysM0FYGXTh31yrIJsk9qfOjdbz+OEjHqXAqhU=
+	t=1711542314; cv=none; b=NannlXB46Tx+Kywwx60Zmc6f6MwAL2o70MZnBuwcolJeXGXDc6zXQ9IJAjFZ8XPkfjD4GtpiC/eKA1PwUTnKgMLVdpf8j7La+cUuftA/oVKUHFYDOH2Y8kPu/1ikZweO0KGwWfHrudbra8S6LRL0M9xt7TOZ7KTDye4K1qNqdtM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711542282; c=relaxed/simple;
-	bh=C2d6GD0TWS1CsTBKcGIMBMZTIFDag7H2/LZ3G281QpY=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=jN6K2+sXbxpae77ZSPvQvOI8/+rOCtn0iMIrLEonjRSRyPfDTtt21eNrZaY8CiwDgQd50KfyS2snJnaHo9b+6u3I5k5UV0ai/Q22Rit9inZDdoiJQ16tVE+gZ9LznM0j+qVLbhkVPMHoijukBN1tKcfLTCl+hNC0GfSATJsK6jQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=CtPx5/xo; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B713CC433C7;
-	Wed, 27 Mar 2024 12:24:39 +0000 (UTC)
+	s=arc-20240116; t=1711542314; c=relaxed/simple;
+	bh=038VBIDo7wOXasBPUdMTZ8PLRSWfD0Ugbh34YKcaqAw=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=ii19KBDOEH7YAYN2vV+X0tWKB8Jqr/aaBuqcOXNrcnDMDA9s9z24vvP3/YVDFs5S3NQ41KYm5NGDiXsdRO/2QUJ+RKXIMTg56k2vyqcgYFu7O2yPtK31yJBNubtwcpqMmXny6hUSozQfEjz4mgH6A+5OjIXkTuoHnyBxeqt+Qls=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Kwr1lYv2; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 23145C43399;
+	Wed, 27 Mar 2024 12:25:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711542280;
-	bh=C2d6GD0TWS1CsTBKcGIMBMZTIFDag7H2/LZ3G281QpY=;
-	h=From:To:Cc:Subject:Date:From;
-	b=CtPx5/xo4fSbQdeMb6EE2cM0Z5kMHVJ0ubJNTwBAx25ljHhiemIkbAZiAMckXq6zX
-	 saLPbHYBeyzs1JF/wESKTTf+3gin3SFEUJAGQw4RbVOpJ6hc18UcDiJrGEspy6ftaz
-	 wqGN87T7H039movQGw7YmJvbY0D4CgHLq+rvCTWBt2WzQgP5NxYGEAqdB+bLcyK6r8
-	 1Vz/0FpiDBrlIyzpUFa4DbLpaD9hvjkP8BWqxSSff/+nie9HNnoBs9LB/0obWIn1hg
-	 Nn8HzdbdKM+PxTlVQLDF7EPtIC/6SmcdAsHXK+cUVVAxcqUPnR31vWBV3wXlrH93lj
-	 MQHHFB789NSMg==
-From: Sasha Levin <sashal@kernel.org>
-To: stable@vger.kernel.org,
-	nicholas.kazlauskas@amd.com
-Cc: Mario Limonciello <mario.limonciello@amd.com>,
-	Alex Deucher <alexander.deucher@amd.com>,
-	Charlene Liu <charlene.liu@amd.com>,
-	Alex Hung <alex.hung@amd.com>,
-	Daniel Wheeler <daniel.wheeler@amd.com>,
-	amd-gfx@lists.freedesktop.org,
-	dri-devel@lists.freedesktop.org,
-	linux-kernel@vger.kernel.org
-Subject: FAILED: Patch "drm/amd/display: Port DENTIST hang and TDR fixes to OTG disable W/A" failed to apply to 5.4-stable tree
-Date: Wed, 27 Mar 2024 08:24:38 -0400
-Message-ID: <20240327122438.2839579-1-sashal@kernel.org>
+	s=k20201202; t=1711542313;
+	bh=038VBIDo7wOXasBPUdMTZ8PLRSWfD0Ugbh34YKcaqAw=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=Kwr1lYv2X1QC6vcz5l+zu2KW28jKDMcUCckfHzTia2WHhQHNUkkqzcxlIhuH8bH0V
+	 oHRouwHNl91AZtFpfS8uSq4B8BjUJgT486AJqQp4NaDGbAoH+TEFEEZWT4AZusOaye
+	 ZNM0LetAPWIAXXHZHwqm7me/VV/2c/Mrj3fM3pvBRJkG7thwftZ8ovy/oN874gGMNa
+	 Ya4K0P3ZAtuGs68/oELfhLaGSxxvqRF3HHkpASq14EzDDMcOoNNu2QpGaPK3yNH8+q
+	 gZl+bRFZmz7AaPGs47pDBXEfvJz7WJebsBOGGgbXxhsynKneIAdK3NkdTNVFQ4ijgr
+	 at8b6J9qN8j7w==
+From: Conor Dooley <conor@kernel.org>
+To: linux-riscv@lists.infradead.org
+Cc: conor@kernel.org,
+	Conor Dooley <conor.dooley@microchip.com>,
+	Daire McNamara <daire.mcnamara@microchip.com>,
+	Jamie Gibbons <jamie.gibbons@microchip.com>,
+	Valentina Fernandez <valentina.fernandezalanis@microchip.com>,
+	Linus Walleij <linus.walleij@linaro.org>,
+	Bartosz Golaszewski <brgl@bgdev.pl>,
+	Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Lorenzo Pieralisi <lpieralisi@kernel.org>,
+	=?UTF-8?q?Krzysztof=20Wilczy=C5=84ski?= <kw@linux.com>,
+	Bjorn Helgaas <bhelgaas@google.com>,
+	linux-gpio@vger.kernel.org,
+	devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-pci@vger.kernel.org
+Subject: [PATCH v1 3/5] dt-bindings: gpio: mpfs: allow gpio-line-names
+Date: Wed, 27 Mar 2024 12:24:38 +0000
+Message-ID: <20240327-overrate-overuse-1e32abccd001@spud>
 X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20240327-parkway-dodgy-f0fe1fa20892@spud>
+References: <20240327-parkway-dodgy-f0fe1fa20892@spud>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Patchwork-Hint: ignore
-X-stable: review
+X-Developer-Signature: v=1; a=openpgp-sha256; l=815; i=conor.dooley@microchip.com; h=from:subject:message-id; bh=DQ/xOk1TKoK84RFxAr9nUQRMqrU2scD4cxuVi4j2DRs=; b=owGbwMvMwCFWscWwfUFT0iXG02pJDGksAqyTq1tfxFl23mh4eOftRUHLExaKZ7ubjEPOpDEK3 2X0bLvVUcrCIMbBICumyJJ4u69Fav0flx3OPW9h5rAygQxh4OIUgIk08TEyXHq56IBz2p6VonO0 3HTV9HW9zr01q1DPEmzO9hK6UpOUxcjwbcfUFsHNTqqXMqcvmMXHE3Zk3bklDh+7eJ8t2SI0c4Y FPwA=
+X-Developer-Key: i=conor.dooley@microchip.com; a=openpgp; fpr=F9ECA03CF54F12CD01F1655722E2C55B37CF380C
 Content-Transfer-Encoding: 8bit
 
-The patch below does not apply to the 5.4-stable tree.
-If someone wants it applied there, or to any other stable or longterm
-tree, then please email the backport, including the original git commit
-id to <stable@vger.kernel.org>.
+From: Jamie Gibbons <jamie.gibbons@microchip.com>
 
-Thanks,
-Sasha
+The BeagleV Fire devicetree will make use of gpio-line-names, allow it
+in the binding.
 
------------------- original commit in Linus's tree ------------------
-
-From 6c605f44086af24d7ac1867245aa10bb3360c5bf Mon Sep 17 00:00:00 2001
-From: Nicholas Kazlauskas <nicholas.kazlauskas@amd.com>
-Date: Fri, 15 Dec 2023 11:01:42 -0500
-Subject: [PATCH] drm/amd/display: Port DENTIST hang and TDR fixes to OTG
- disable W/A
-
-[Why]
-We can experience DENTIST hangs during optimize_bandwidth or TDRs if
-FIFO is toggled and hangs.
-
-[How]
-Port the DCN35 fixes to DCN314.
-
-Cc: Mario Limonciello <mario.limonciello@amd.com>
-Cc: Alex Deucher <alexander.deucher@amd.com>
-Cc: stable@vger.kernel.org
-Reviewed-by: Charlene Liu <charlene.liu@amd.com>
-Acked-by: Alex Hung <alex.hung@amd.com>
-Signed-off-by: Nicholas Kazlauskas <nicholas.kazlauskas@amd.com>
-Tested-by: Daniel Wheeler <daniel.wheeler@amd.com>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+Signed-off-by: Jamie Gibbons <jamie.gibbons@microchip.com>
+Signed-off-by: Conor Dooley <conor.dooley@microchip.com>
 ---
- .../dc/clk_mgr/dcn314/dcn314_clk_mgr.c        | 21 ++++++++-----------
- 1 file changed, 9 insertions(+), 12 deletions(-)
+ Documentation/devicetree/bindings/gpio/microchip,mpfs-gpio.yaml | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/gpu/drm/amd/display/dc/clk_mgr/dcn314/dcn314_clk_mgr.c b/drivers/gpu/drm/amd/display/dc/clk_mgr/dcn314/dcn314_clk_mgr.c
-index 878c0e7b78abd..a84f1e376dee4 100644
---- a/drivers/gpu/drm/amd/display/dc/clk_mgr/dcn314/dcn314_clk_mgr.c
-+++ b/drivers/gpu/drm/amd/display/dc/clk_mgr/dcn314/dcn314_clk_mgr.c
-@@ -145,30 +145,27 @@ static int dcn314_get_active_display_cnt_wa(
- 	return display_count;
- }
+diff --git a/Documentation/devicetree/bindings/gpio/microchip,mpfs-gpio.yaml b/Documentation/devicetree/bindings/gpio/microchip,mpfs-gpio.yaml
+index 6884dacb2865..d61569b3f15b 100644
+--- a/Documentation/devicetree/bindings/gpio/microchip,mpfs-gpio.yaml
++++ b/Documentation/devicetree/bindings/gpio/microchip,mpfs-gpio.yaml
+@@ -44,6 +44,7 @@ properties:
+     default: 32
  
--static void dcn314_disable_otg_wa(struct clk_mgr *clk_mgr_base, struct dc_state *context, bool disable)
-+static void dcn314_disable_otg_wa(struct clk_mgr *clk_mgr_base, struct dc_state *context,
-+				  bool safe_to_lower, bool disable)
- {
- 	struct dc *dc = clk_mgr_base->ctx->dc;
- 	int i;
+   gpio-controller: true
++  gpio-line-names: true
  
- 	for (i = 0; i < dc->res_pool->pipe_count; ++i) {
--		struct pipe_ctx *pipe = &dc->current_state->res_ctx.pipe_ctx[i];
-+		struct pipe_ctx *pipe = safe_to_lower
-+			? &context->res_ctx.pipe_ctx[i]
-+			: &dc->current_state->res_ctx.pipe_ctx[i];
- 
- 		if (pipe->top_pipe || pipe->prev_odm_pipe)
- 			continue;
- 		if (pipe->stream && (pipe->stream->dpms_off || dc_is_virtual_signal(pipe->stream->signal))) {
--			struct stream_encoder *stream_enc = pipe->stream_res.stream_enc;
--
- 			if (disable) {
--				if (stream_enc && stream_enc->funcs->disable_fifo)
--					pipe->stream_res.stream_enc->funcs->disable_fifo(stream_enc);
-+				if (pipe->stream_res.tg && pipe->stream_res.tg->funcs->immediate_disable_crtc)
-+					pipe->stream_res.tg->funcs->immediate_disable_crtc(pipe->stream_res.tg);
- 
--				pipe->stream_res.tg->funcs->immediate_disable_crtc(pipe->stream_res.tg);
- 				reset_sync_context_for_pipe(dc, context, i);
- 			} else {
- 				pipe->stream_res.tg->funcs->enable_crtc(pipe->stream_res.tg);
--
--				if (stream_enc && stream_enc->funcs->enable_fifo)
--					pipe->stream_res.stream_enc->funcs->enable_fifo(stream_enc);
- 			}
- 		}
- 	}
-@@ -297,11 +294,11 @@ void dcn314_update_clocks(struct clk_mgr *clk_mgr_base,
- 	}
- 
- 	if (should_set_clock(safe_to_lower, new_clocks->dispclk_khz, clk_mgr_base->clks.dispclk_khz)) {
--		dcn314_disable_otg_wa(clk_mgr_base, context, true);
-+		dcn314_disable_otg_wa(clk_mgr_base, context, safe_to_lower, true);
- 
- 		clk_mgr_base->clks.dispclk_khz = new_clocks->dispclk_khz;
- 		dcn314_smu_set_dispclk(clk_mgr, clk_mgr_base->clks.dispclk_khz);
--		dcn314_disable_otg_wa(clk_mgr_base, context, false);
-+		dcn314_disable_otg_wa(clk_mgr_base, context, safe_to_lower, false);
- 
- 		update_dispclk = true;
- 	}
+ patternProperties:
+   "^.+-hog(-[0-9]+)?$":
 -- 
 2.43.0
-
-
-
 
 
