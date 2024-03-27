@@ -1,57 +1,55 @@
-Return-Path: <linux-kernel+bounces-120931-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-120932-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1D0E188E09E
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 13:41:09 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5460588E0A1
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 13:41:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7419FB249C9
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 12:41:06 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C35631F2EB26
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 12:41:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 556B2132C04;
-	Wed, 27 Mar 2024 12:13:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3021B14C597;
+	Wed, 27 Mar 2024 12:13:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="s/qGINWX"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="AzgSQrqq"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9DA8014BFA2;
-	Wed, 27 Mar 2024 12:13:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1EA9B14BFBE;
+	Wed, 27 Mar 2024 12:13:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711541617; cv=none; b=hYcJMiHET/vyCZe5Do4fB+Sd4lT2Igj/YAMCsaE9N9ow4MNWSz1MhUveME4UFwWroygAWSEniUNRoFKWAgfM1aNYvIBA7/+8pp++ewblA05OhcBDvxkKb/jWiVuxvHxIvwdJ08OlgE549ftXNX4j1LtIGumrBrgryPgY3spWc9E=
+	t=1711541620; cv=none; b=UM3k2Tw2KYcswf+edWFbIA74G4LnI38x5+DsJnV0lNqzljslz8jazbd7PIwB8Nj/MyGrdDgvDdEPj8dVOfP/40EeONAR8eFXagB2Ep+uY1O5xYYD9KEQl6V4QIfVexApxc3dwrvz3TYt19W/bOzH+BV0O0Qy+4RxHWfr0fY5Yb8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711541617; c=relaxed/simple;
-	bh=JL1Ec2pyhihlH7jM2YIqtmu/xgXiNxrEUFxvYNMiYw0=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=BQZILJdwhHN7325vcm8RRzC4O+zPAHxCq9ef0n7BOM2rjUJDTMmaq3yxHTQZLDdmiCwij0WtRR4LDnOWvnfs1DluovtfscOKiJtuExE7H2YR8MmgpUdfCXgXqvpsMZzGKVC+M6uEoJFdn+MWnFg8eAIIUvwUrlSYJlTdvznyo/I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=s/qGINWX; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 22DB6C433F1;
-	Wed, 27 Mar 2024 12:13:36 +0000 (UTC)
+	s=arc-20240116; t=1711541620; c=relaxed/simple;
+	bh=jQEK5DDmtCZ1Qsk7fN5fWXqcxf385lU9xRmJE8BeuOs=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=HM1xiDl2MsJeI/Y0zBMb74l4s6UufKfKE13CVvYk0776q3bs0y1bocrUUTErum8LLraagLq2hPwsSkfF/+pmiMdRN5SfRhT2HKOWoYNc6sWIF47X0may6tSN1mETqmcLOxDCa6IceZWEnULR/M4VcjffRBDUvbZUwfbgJxLv6ic=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=AzgSQrqq; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 23BC6C433C7;
+	Wed, 27 Mar 2024 12:13:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711541617;
-	bh=JL1Ec2pyhihlH7jM2YIqtmu/xgXiNxrEUFxvYNMiYw0=;
+	s=k20201202; t=1711541620;
+	bh=jQEK5DDmtCZ1Qsk7fN5fWXqcxf385lU9xRmJE8BeuOs=;
 	h=From:To:Cc:Subject:Date:From;
-	b=s/qGINWXxA+La/f8mAXU3BmGEK0EmlGqKQb3vrctTqG3p8BR6gxGGwvUtediLjMOe
-	 wLDvnO5T8BGK4xrdSvam+8XTSC4ZtpEw9CdhBfObLQoGQWQi0P+Y997RSFOY37YQRl
-	 jAlxKaqAyZYu/Y0j/KbnqEiKwl7/Irczc2YjB0QwKFq5SEjeo9BO3FSc6eyMiBc142
-	 oitxmZv3y0U8TyJ5W+gXExL6dq7oW7myZ8U+VzYl2C+RJqoTZtoNEbSt9ol1mHlcy7
-	 SZ5QMY2YWHNHhLNYGz+5nSJ2uGtyLtLTgbq2Mw5I4WBNxvjknQhLR5CM4hmhpWJuaF
-	 0XX4VakXOJ+6A==
+	b=AzgSQrqqszuLKU9b0nKcY5Dn8nwVUz/gZxJfrsvsv3jEG4gJZ6WZaCmMu5G37CfbA
+	 UTFXanL63NyCqUACzWt2A1JdPSnq6clOyb5XIKmLV2UQkTvfPFZxiN5sAp3k1yN8hF
+	 wz0lbdgrNLtiixGxgPd8QOkMJ0ICXZyoDsn37KxqDJaHgvqPt85onhYYUY2YwkvT+/
+	 QBPMFxUaxFF6/YqQfy4jV7eH8+2j8xn0dJaY4VwHlLmj9HyZXMR4ZSp1bOVCu7l/mT
+	 OI2498dWqqYUCQV5VdQTobHQDTrQfIZ2v2K6HLHMZ7ttQ0dI2yczqPRaVt/Xsnzwa2
+	 hjTpRi1V9Br9w==
 From: Sasha Levin <sashal@kernel.org>
 To: stable@vger.kernel.org,
-	ivlipski@amd.com
-Cc: Daniel Wheeler <daniel.wheeler@amd.com>,
-	Sun peng Li <sunpeng.li@amd.com>,
-	Rodrigo Siqueira <rodrigo.siqueira@amd.com>,
-	Alex Deucher <alexander.deucher@amd.com>,
-	amd-gfx@lists.freedesktop.org,
-	dri-devel@lists.freedesktop.org,
+	alex.williamson@redhat.com
+Cc: Reinette Chatre <reinette.chatre@intel.com>,
+	Kevin Tian <kevin.tian@intel.com>,
+	Eric Auger <eric.auger@redhat.com>,
+	kvm@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: FAILED: Patch "drm/amd/display: Add monitor patch for specific eDP" failed to apply to 6.1-stable tree
-Date: Wed, 27 Mar 2024 08:13:34 -0400
-Message-ID: <20240327121335.2830456-1-sashal@kernel.org>
+Subject: FAILED: Patch "vfio/pci: Create persistent INTx handler" failed to apply to 6.1-stable tree
+Date: Wed, 27 Mar 2024 08:13:37 -0400
+Message-ID: <20240327121338.2830493-1-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -73,45 +71,268 @@ Sasha
 
 ------------------ original commit in Linus's tree ------------------
 
-From 21afc872fbc29cd68cfde816d1df4d55848c3f61 Mon Sep 17 00:00:00 2001
-From: Ivan Lipski <ivlipski@amd.com>
-Date: Fri, 1 Dec 2023 06:25:16 -0700
-Subject: [PATCH] drm/amd/display: Add monitor patch for specific eDP
+From 18c198c96a815c962adc2b9b77909eec0be7df4d Mon Sep 17 00:00:00 2001
+From: Alex Williamson <alex.williamson@redhat.com>
+Date: Fri, 8 Mar 2024 16:05:25 -0700
+Subject: [PATCH] vfio/pci: Create persistent INTx handler
 
-[WHY]
-Some eDP panels's ext caps don't write initial value cause the value of
-dpcd_addr(0x317) is random.  It means that sometimes the eDP will
-clarify it is OLED, miniLED...etc cause the backlight control interface
-is incorrect.
+A vulnerability exists where the eventfd for INTx signaling can be
+deconfigured, which unregisters the IRQ handler but still allows
+eventfds to be signaled with a NULL context through the SET_IRQS ioctl
+or through unmask irqfd if the device interrupt is pending.
 
-[HOW]
-Add a new panel patch to remove sink ext caps(HDR,OLED...etc)
+Ideally this could be solved with some additional locking; the igate
+mutex serializes the ioctl and config space accesses, and the interrupt
+handler is unregistered relative to the trigger, but the irqfd path
+runs asynchronous to those.  The igate mutex cannot be acquired from the
+atomic context of the eventfd wake function.  Disabling the irqfd
+relative to the eventfd registration is potentially incompatible with
+existing userspace.
 
-Tested-by: Daniel Wheeler <daniel.wheeler@amd.com>
-Reviewed-by: Sun peng Li <sunpeng.li@amd.com>
-Acked-by: Rodrigo Siqueira <rodrigo.siqueira@amd.com>
-Signed-off-by: Ivan Lipski <ivlipski@amd.com>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+As a result, the solution implemented here moves configuration of the
+INTx interrupt handler to track the lifetime of the INTx context object
+and irq_type configuration, rather than registration of a particular
+trigger eventfd.  Synchronization is added between the ioctl path and
+eventfd_signal() wrapper such that the eventfd trigger can be
+dynamically updated relative to in-flight interrupts or irqfd callbacks.
+
+Cc:  <stable@vger.kernel.org>
+Fixes: 89e1f7d4c66d ("vfio: Add PCI device driver")
+Reported-by: Reinette Chatre <reinette.chatre@intel.com>
+Reviewed-by: Kevin Tian <kevin.tian@intel.com>
+Reviewed-by: Reinette Chatre <reinette.chatre@intel.com>
+Reviewed-by: Eric Auger <eric.auger@redhat.com>
+Link: https://lore.kernel.org/r/20240308230557.805580-5-alex.williamson@redhat.com
+Signed-off-by: Alex Williamson <alex.williamson@redhat.com>
 ---
- drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_helpers.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+ drivers/vfio/pci/vfio_pci_intrs.c | 145 ++++++++++++++++--------------
+ 1 file changed, 78 insertions(+), 67 deletions(-)
 
-diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_helpers.c b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_helpers.c
-index b4696ec621c45..eaf8d9f482446 100644
---- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_helpers.c
-+++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_helpers.c
-@@ -64,6 +64,12 @@ static void apply_edid_quirks(struct edid *edid, struct dc_edid_caps *edid_caps)
- 		DRM_DEBUG_DRIVER("Disabling FAMS on monitor with panel id %X\n", panel_id);
- 		edid_caps->panel_patch.disable_fams = true;
- 		break;
-+	/* Workaround for some monitors that do not clear DPCD 0x317 if FreeSync is unsupported */
-+	case drm_edid_encode_panel_id('A', 'U', 'O', 0xA7AB):
-+	case drm_edid_encode_panel_id('A', 'U', 'O', 0xE69B):
-+		DRM_DEBUG_DRIVER("Clearing DPCD 0x317 on monitor with panel id %X\n", panel_id);
-+		edid_caps->panel_patch.remove_sink_ext_caps = true;
-+		break;
- 	default:
- 		return;
+diff --git a/drivers/vfio/pci/vfio_pci_intrs.c b/drivers/vfio/pci/vfio_pci_intrs.c
+index 75c85eec21b3c..fb5392b749fff 100644
+--- a/drivers/vfio/pci/vfio_pci_intrs.c
++++ b/drivers/vfio/pci/vfio_pci_intrs.c
+@@ -90,11 +90,15 @@ static void vfio_send_intx_eventfd(void *opaque, void *unused)
+ 
+ 	if (likely(is_intx(vdev) && !vdev->virq_disabled)) {
+ 		struct vfio_pci_irq_ctx *ctx;
++		struct eventfd_ctx *trigger;
+ 
+ 		ctx = vfio_irq_ctx_get(vdev, 0);
+ 		if (WARN_ON_ONCE(!ctx))
+ 			return;
+-		eventfd_signal(ctx->trigger);
++
++		trigger = READ_ONCE(ctx->trigger);
++		if (likely(trigger))
++			eventfd_signal(trigger);
+ 	}
+ }
+ 
+@@ -253,100 +257,100 @@ static irqreturn_t vfio_intx_handler(int irq, void *dev_id)
+ 	return ret;
+ }
+ 
+-static int vfio_intx_enable(struct vfio_pci_core_device *vdev)
++static int vfio_intx_enable(struct vfio_pci_core_device *vdev,
++			    struct eventfd_ctx *trigger)
+ {
++	struct pci_dev *pdev = vdev->pdev;
+ 	struct vfio_pci_irq_ctx *ctx;
++	unsigned long irqflags;
++	char *name;
++	int ret;
+ 
+ 	if (!is_irq_none(vdev))
+ 		return -EINVAL;
+ 
+-	if (!vdev->pdev->irq)
++	if (!pdev->irq)
+ 		return -ENODEV;
+ 
++	name = kasprintf(GFP_KERNEL_ACCOUNT, "vfio-intx(%s)", pci_name(pdev));
++	if (!name)
++		return -ENOMEM;
++
+ 	ctx = vfio_irq_ctx_alloc(vdev, 0);
+ 	if (!ctx)
+ 		return -ENOMEM;
+ 
++	ctx->name = name;
++	ctx->trigger = trigger;
++
+ 	/*
+-	 * If the virtual interrupt is masked, restore it.  Devices
+-	 * supporting DisINTx can be masked at the hardware level
+-	 * here, non-PCI-2.3 devices will have to wait until the
+-	 * interrupt is enabled.
++	 * Fill the initial masked state based on virq_disabled.  After
++	 * enable, changing the DisINTx bit in vconfig directly changes INTx
++	 * masking.  igate prevents races during setup, once running masked
++	 * is protected via irqlock.
++	 *
++	 * Devices supporting DisINTx also reflect the current mask state in
++	 * the physical DisINTx bit, which is not affected during IRQ setup.
++	 *
++	 * Devices without DisINTx support require an exclusive interrupt.
++	 * IRQ masking is performed at the IRQ chip.  Again, igate protects
++	 * against races during setup and IRQ handlers and irqfds are not
++	 * yet active, therefore masked is stable and can be used to
++	 * conditionally auto-enable the IRQ.
++	 *
++	 * irq_type must be stable while the IRQ handler is registered,
++	 * therefore it must be set before request_irq().
+ 	 */
+ 	ctx->masked = vdev->virq_disabled;
+-	if (vdev->pci_2_3)
+-		pci_intx(vdev->pdev, !ctx->masked);
++	if (vdev->pci_2_3) {
++		pci_intx(pdev, !ctx->masked);
++		irqflags = IRQF_SHARED;
++	} else {
++		irqflags = ctx->masked ? IRQF_NO_AUTOEN : 0;
++	}
+ 
+ 	vdev->irq_type = VFIO_PCI_INTX_IRQ_INDEX;
+ 
++	ret = request_irq(pdev->irq, vfio_intx_handler,
++			  irqflags, ctx->name, vdev);
++	if (ret) {
++		vdev->irq_type = VFIO_PCI_NUM_IRQS;
++		kfree(name);
++		vfio_irq_ctx_free(vdev, ctx, 0);
++		return ret;
++	}
++
+ 	return 0;
+ }
+ 
+-static int vfio_intx_set_signal(struct vfio_pci_core_device *vdev, int fd)
++static int vfio_intx_set_signal(struct vfio_pci_core_device *vdev,
++				struct eventfd_ctx *trigger)
+ {
+ 	struct pci_dev *pdev = vdev->pdev;
+-	unsigned long irqflags = IRQF_SHARED;
+ 	struct vfio_pci_irq_ctx *ctx;
+-	struct eventfd_ctx *trigger;
+-	unsigned long flags;
+-	int ret;
++	struct eventfd_ctx *old;
+ 
+ 	ctx = vfio_irq_ctx_get(vdev, 0);
+ 	if (WARN_ON_ONCE(!ctx))
+ 		return -EINVAL;
+ 
+-	if (ctx->trigger) {
+-		free_irq(pdev->irq, vdev);
+-		kfree(ctx->name);
+-		eventfd_ctx_put(ctx->trigger);
+-		ctx->trigger = NULL;
+-	}
+-
+-	if (fd < 0) /* Disable only */
+-		return 0;
+-
+-	ctx->name = kasprintf(GFP_KERNEL_ACCOUNT, "vfio-intx(%s)",
+-			      pci_name(pdev));
+-	if (!ctx->name)
+-		return -ENOMEM;
+-
+-	trigger = eventfd_ctx_fdget(fd);
+-	if (IS_ERR(trigger)) {
+-		kfree(ctx->name);
+-		return PTR_ERR(trigger);
+-	}
++	old = ctx->trigger;
+ 
+-	ctx->trigger = trigger;
++	WRITE_ONCE(ctx->trigger, trigger);
+ 
+-	/*
+-	 * Devices without DisINTx support require an exclusive interrupt,
+-	 * IRQ masking is performed at the IRQ chip.  The masked status is
+-	 * protected by vdev->irqlock. Setup the IRQ without auto-enable and
+-	 * unmask as necessary below under lock.  DisINTx is unmodified by
+-	 * the IRQ configuration and may therefore use auto-enable.
+-	 */
+-	if (!vdev->pci_2_3)
+-		irqflags = IRQF_NO_AUTOEN;
+-
+-	ret = request_irq(pdev->irq, vfio_intx_handler,
+-			  irqflags, ctx->name, vdev);
+-	if (ret) {
+-		ctx->trigger = NULL;
+-		kfree(ctx->name);
+-		eventfd_ctx_put(trigger);
+-		return ret;
++	/* Releasing an old ctx requires synchronizing in-flight users */
++	if (old) {
++		synchronize_irq(pdev->irq);
++		vfio_virqfd_flush_thread(&ctx->unmask);
++		eventfd_ctx_put(old);
+ 	}
+ 
+-	spin_lock_irqsave(&vdev->irqlock, flags);
+-	if (!vdev->pci_2_3 && !ctx->masked)
+-		enable_irq(pdev->irq);
+-	spin_unlock_irqrestore(&vdev->irqlock, flags);
+-
+ 	return 0;
+ }
+ 
+ static void vfio_intx_disable(struct vfio_pci_core_device *vdev)
+ {
++	struct pci_dev *pdev = vdev->pdev;
+ 	struct vfio_pci_irq_ctx *ctx;
+ 
+ 	ctx = vfio_irq_ctx_get(vdev, 0);
+@@ -354,10 +358,13 @@ static void vfio_intx_disable(struct vfio_pci_core_device *vdev)
+ 	if (ctx) {
+ 		vfio_virqfd_disable(&ctx->unmask);
+ 		vfio_virqfd_disable(&ctx->mask);
++		free_irq(pdev->irq, vdev);
++		if (ctx->trigger)
++			eventfd_ctx_put(ctx->trigger);
++		kfree(ctx->name);
++		vfio_irq_ctx_free(vdev, ctx, 0);
+ 	}
+-	vfio_intx_set_signal(vdev, -1);
+ 	vdev->irq_type = VFIO_PCI_NUM_IRQS;
+-	vfio_irq_ctx_free(vdev, ctx, 0);
+ }
+ 
+ /*
+@@ -641,19 +648,23 @@ static int vfio_pci_set_intx_trigger(struct vfio_pci_core_device *vdev,
+ 		return -EINVAL;
+ 
+ 	if (flags & VFIO_IRQ_SET_DATA_EVENTFD) {
++		struct eventfd_ctx *trigger = NULL;
+ 		int32_t fd = *(int32_t *)data;
+ 		int ret;
+ 
+-		if (is_intx(vdev))
+-			return vfio_intx_set_signal(vdev, fd);
++		if (fd >= 0) {
++			trigger = eventfd_ctx_fdget(fd);
++			if (IS_ERR(trigger))
++				return PTR_ERR(trigger);
++		}
+ 
+-		ret = vfio_intx_enable(vdev);
+-		if (ret)
+-			return ret;
++		if (is_intx(vdev))
++			ret = vfio_intx_set_signal(vdev, trigger);
++		else
++			ret = vfio_intx_enable(vdev, trigger);
+ 
+-		ret = vfio_intx_set_signal(vdev, fd);
+-		if (ret)
+-			vfio_intx_disable(vdev);
++		if (ret && trigger)
++			eventfd_ctx_put(trigger);
+ 
+ 		return ret;
  	}
 -- 
 2.43.0
