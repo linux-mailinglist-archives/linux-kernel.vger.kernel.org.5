@@ -1,52 +1,52 @@
-Return-Path: <linux-kernel+bounces-122117-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-122118-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id CCC7288F20B
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 23:52:16 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3D00088F210
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 23:52:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0A22B1C26E8B
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 22:52:16 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CFC4F1F223D3
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 22:52:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1812D53360;
-	Wed, 27 Mar 2024 22:52:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0F789153BFF;
+	Wed, 27 Mar 2024 22:52:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="cycSnOYF"
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="E+1FsCRf"
 Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D0AC9153814;
-	Wed, 27 Mar 2024 22:51:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D8AABEED8;
+	Wed, 27 Mar 2024 22:52:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711579921; cv=none; b=tcqLEhQ+BUQ5+iQRR+6GORy2J9WNWgQB4jq6sCUhdsm+2TYAimBhFV+P+ofagWoL1fpt2cH4selF46wxtRbEQ6eSe1ao5rwN+DHkmqV0fqpO8/X9bXGmjMtnGfgC1crFFD9Hb2ZTHNGDx55N+7ResZAcVHaSwoZAqIE40SaF8cA=
+	t=1711579933; cv=none; b=WRe3tf5q8hIxwya1iuqFeEHTkoLQUNkJ+g9NoN/DxzrxbI5jAzw5HCIaXbWkTN1Ia/muDNIRaaFt65hbBq4PBOTV7NHw25zDP38wzMkzE9eUjjmdWCFPep6KU7aV/NdmVvTUxmkigyo5BsX+2LrWo32zdi8fZ3MQKgLrsh6fWPg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711579921; c=relaxed/simple;
-	bh=4dKqvMz6d2W8NZgGdx/xyiuPz/8oQS2caUKeGMM634A=;
+	s=arc-20240116; t=1711579933; c=relaxed/simple;
+	bh=mimGJEfki4mtm2qPfFyJ0LOrcCBSCnrWzU3LB53JbTw=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=kFX16GRyQLf8Di6NEyEb/Qa8eVDRXqUmibXnWn7fbFTgVqzJ+BCCPP5/frQ90d+wLYLR8fvqXO/1Vrt4EhqDi7LUW8E+lLcZTLF+n+wQ1ibtti9jAFmiN+DDN4NtoKPJdAMqwiMOUhS4sTCgUnf9T72sUHG1SyqXdtS8eY11ym0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=cycSnOYF; arc=none smtp.client-ip=46.235.227.194
+	 MIME-Version; b=YGFDXlX9Zya75g7lRRP4HIk+Xr5VB1VoNno86Qt3m6uHe7OI70ABQoPLloWrCm3+oVXJySA4mDRI6D3y0kKbC3Baf6mOZkNkT25Pd72GK3CcqwkD5D1QswEVAZWNg/cj8drWPClz0DxtO+9Qv8DksA8zOnov3wduDtCk/gRR7bE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=E+1FsCRf; arc=none smtp.client-ip=46.235.227.194
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1711579918;
-	bh=4dKqvMz6d2W8NZgGdx/xyiuPz/8oQS2caUKeGMM634A=;
+	s=mail; t=1711579930;
+	bh=mimGJEfki4mtm2qPfFyJ0LOrcCBSCnrWzU3LB53JbTw=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=cycSnOYFwQ20Mz2mz1Kkud/3Vy+/wpn2KIxWNaCZjmqATSIrTw+aerA+uXxySMQie
-	 nzSNEUWGwtNPSWeXIFHjy9ghW9oVkzttyj8aRWTGIDggrghLFiTNdt6+W+bHtfbFtd
-	 RS8YehfJJtZ9leWtbnQwfOEGMqbZZp8hYLpk/jjOqnLGhs9odLMwcgsaCDl9zZt2Po
-	 lK8I3qcT9eIf68X4XvpG3yIe6PI7yNWfHiYFojt+pj08w5ngASxV80YZgPCWwZ8ReO
-	 JGODuAlfDm4CH82iS3PnwVmNAXM0SHphDAMbAMklaw4P67qe9XnF4PF9RGsJYye88f
-	 NAPL1yBwuTtBw==
+	b=E+1FsCRfFV/qR7blPt1lojTNF4l9vPAkUvKMdTc/iTdDyvYFsDoZ4gPyYED187Aas
+	 oDNkAt8ccyEdtDTzXecLWuZ8eTlm9nZT6m6IKVsc/EEJ8W+ovMt66eIkOSmzWBhOVY
+	 PY991SytXX5R7wGCN0LGgZODKLvGdbXP5EQJeFS3IbHWCqGKKB6EgD7YitIMzQ8lae
+	 sTf9NvHpCp6CzvLJGGk19QF7zSKvjOog+fGdtiaeK3rjqeveRbeIymf0cW2l/P39mu
+	 YBKvj4mfHZ9Eg/oTP5LysAlu4sW5/20077z4uKpUGACDEaSh7qF0Eqe65B5qgfcaBk
+	 59vCq49X44QBg==
 Received: from shreeya.shreeya (ec2-34-240-57-77.eu-west-1.compute.amazonaws.com [34.240.57.77])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
 	(Authenticated sender: shreeya)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 2B6C33782112;
-	Wed, 27 Mar 2024 22:51:49 +0000 (UTC)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 8DA943782111;
+	Wed, 27 Mar 2024 22:52:00 +0000 (UTC)
 From: Shreeya Patel <shreeya.patel@collabora.com>
 To: heiko@sntech.de,
 	mchehab@kernel.org,
@@ -73,9 +73,9 @@ Cc: kernel@collabora.com,
 	linux-clk@vger.kernel.org,
 	linux-arm@lists.infradead.org,
 	Shreeya Patel <shreeya.patel@collabora.com>
-Subject: [PATCH v3 1/6] dt-bindings: reset: Define reset id used for HDMI Receiver
-Date: Thu, 28 Mar 2024 04:20:52 +0530
-Message-Id: <20240327225057.672304-2-shreeya.patel@collabora.com>
+Subject: [PATCH v3 2/6] clk: rockchip: rst-rk3588: Add reset line for HDMI Receiver
+Date: Thu, 28 Mar 2024 04:20:53 +0530
+Message-Id: <20240327225057.672304-3-shreeya.patel@collabora.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20240327225057.672304-1-shreeya.patel@collabora.com>
 References: <20240327225057.672304-1-shreeya.patel@collabora.com>
@@ -87,32 +87,32 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Add reset id used for HDMI Receiver in RK3588 SoCs
+Export hdmirx_biu reset line required by the Synopsys
+DesignWare HDMIRX Controller.
 
-Acked-by: Rob Herring <robh@kernel.org>
 Signed-off-by: Shreeya Patel <shreeya.patel@collabora.com>
 ---
 Changes in v3 :-
-  - Add an Acked-by
+  - No change
 
 Changes in v2 :-
-  - Move the dt-binding include file changes in a separate patch
-  - Improve the subject and commit message description
+  - Improve the subject line and commit message description.
 
- include/dt-bindings/reset/rockchip,rk3588-cru.h | 2 ++
- 1 file changed, 2 insertions(+)
+ drivers/clk/rockchip/rst-rk3588.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/include/dt-bindings/reset/rockchip,rk3588-cru.h b/include/dt-bindings/reset/rockchip,rk3588-cru.h
-index d4264db2a07f..e2fe4bd5f7f0 100644
---- a/include/dt-bindings/reset/rockchip,rk3588-cru.h
-+++ b/include/dt-bindings/reset/rockchip,rk3588-cru.h
-@@ -751,4 +751,6 @@
- #define SRST_P_TRNG_CHK			658
- #define SRST_TRNG_S			659
+diff --git a/drivers/clk/rockchip/rst-rk3588.c b/drivers/clk/rockchip/rst-rk3588.c
+index e855bb8d5413..c4ebc01f1c9c 100644
+--- a/drivers/clk/rockchip/rst-rk3588.c
++++ b/drivers/clk/rockchip/rst-rk3588.c
+@@ -577,6 +577,7 @@ static const int rk3588_register_offset[] = {
  
-+#define SRST_A_HDMIRX_BIU		660
-+
- #endif
+ 	/* SOFTRST_CON59 */
+ 	RK3588_CRU_RESET_OFFSET(SRST_A_HDCP1_BIU, 59, 6),
++	RK3588_CRU_RESET_OFFSET(SRST_A_HDMIRX_BIU, 59, 7),
+ 	RK3588_CRU_RESET_OFFSET(SRST_A_VO1_BIU, 59, 8),
+ 	RK3588_CRU_RESET_OFFSET(SRST_H_VOP1_BIU, 59, 9),
+ 	RK3588_CRU_RESET_OFFSET(SRST_H_VOP1_S_BIU, 59, 10),
 -- 
 2.39.2
 
