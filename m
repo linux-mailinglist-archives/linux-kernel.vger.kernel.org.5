@@ -1,431 +1,525 @@
-Return-Path: <linux-kernel+bounces-122130-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-122123-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 93BB988F23D
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 23:56:21 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8164588F223
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 23:54:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EE912B235AA
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 22:56:18 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A5D8D1C286D5
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 22:54:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3C476154455;
-	Wed, 27 Mar 2024 22:55:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2EFB6154444;
+	Wed, 27 Mar 2024 22:53:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="C/Zjr4l+"
-Received: from mail-wr1-f46.google.com (mail-wr1-f46.google.com [209.85.221.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="MIG180wm"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.15])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4B8A6153BED;
-	Wed, 27 Mar 2024 22:55:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C3581154430;
+	Wed, 27 Mar 2024 22:53:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.15
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711580134; cv=none; b=pUuf9B3m9q5HZyudtmB+WqL4PJEjzbemyEtAVhUJhj5tKXdpUNzQE8MQ0zIeWWnJCsVT+LS3zy4v8H54nwm/A7DAq/Nnb70cyVvmehyd9AH21p2nXSST+BYOgu5UnFYNY50nStb7I6Wmkdp2dZA6VLxarBTru9dLDuRhRxfUJXg=
+	t=1711580023; cv=none; b=RvUBy39oYoW5obEd351Wjnb+4BFM4sO+Ivo/2/54JO0Qlw8WfHtOIBceaLzy2oQS+dUIlYT7r+uRRz/S8oxI8vXEoZ7l56HDHlWgVUUJXWJVwHeHNGwJ+EXTifixyc8y5VE+D7v+k9HXAdTTiUF8PZbvoJFxzcGFrqyAqHpGxpQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711580134; c=relaxed/simple;
-	bh=VUW8SqAA/+2sHQhA2ammk2FQgHtxhgRr3LE1tD2/QzQ=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=JslUuwivjy5PvuZC8/MCIyzTNw3GwX278ugCJofTsKHzHeUbyUtGhMV+SnhMbxHcxgxsSZ0y9Bt/BdivQtqYswTKkyI66XpYHuyhlPSDrqfABjIZP9yzTrbViG90vrgw/kZu5/dG+qiN/Z4mU7Go0CZpMGeyQ7iKkbDAQM1NKmI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=C/Zjr4l+; arc=none smtp.client-ip=209.85.221.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f46.google.com with SMTP id ffacd0b85a97d-341b01dbebbso225149f8f.0;
-        Wed, 27 Mar 2024 15:55:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711580131; x=1712184931; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=KP36tHqP7P+dmRhIwVHlpSLJhJGKUjScQFwDQs5TYi4=;
-        b=C/Zjr4l+ZoGJCbtUKuI6eEVuWw7ytQwA85B7OqHbm+1IJENhsToM8Q/YmKGUp8YNBI
-         /dlbd3a4I8oPTbTRBC/oB1hk1PzxF4xJMXdhPYx6lNwR5tYZykJS0JmayosHJBdOsPZ0
-         9cOhzZL/ADQCxjkw7rhAaBNWAOA6iz0UGjpx4FjRQ+FQqFHM/iYkmg2R4F5vcReFOsfz
-         O81I2usonFRDvDGw4tsB9F+h4ZbQ2cQ7tVwIhxi5G8oQER+m10QmNU5vuBYjUAEMPrOt
-         QUz0bZPi8iIWIqBjh2hWwf8xcEtbArdfzm3/j9hfj0WSbC3axiJlGg13Xu5KEYEQdZzV
-         bxaw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711580131; x=1712184931;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=KP36tHqP7P+dmRhIwVHlpSLJhJGKUjScQFwDQs5TYi4=;
-        b=Nreev+sZ6A/mUJHZ5Vq1d3TJpRp+0fYfXDYOIlA/i2JlC1UQBhjWmG0+L2c4Hk9+tB
-         hKLsDmZQeZqIdXC4UWwpt8sOAdolIdoOBiTAgyfqWnh49NZLXJmpNYVu1e7v7vNpQySw
-         QKttZuJdM0yxadXVxAV7dK2ws/LDJtfGwsTWHokN0n0z3R4W+JiO2wcrvbVAFuIv8Oh1
-         W5DISwj5k9e+orjBWINZTuvHrH7pNV8ZJn69tzb7SbyySt0l1550fvIZuuIaBWyQr/td
-         DB0FUP5EhVGWShygzln2obOkvZTlES3qFyRJxPOa3K8DL+DQMLxcePWeu4atwqmt/cOP
-         nk2w==
-X-Forwarded-Encrypted: i=1; AJvYcCXL5RmUvIVqR/IBt00Ew1BKiCGSdjwVQmMrx9WNGNxrYEf3zDWedp++pTbsxRcLuMkqgo4/M67mnEeREAO4IoeRLTJ+pL7xUcE2mUNzWaFMkX/RI6GPLGbvj6lhZbMpNLaM4UIBnOd1qOiSHjJMk/wKuyX0NPhsK2H2ZlKCur8d5Jw9FjflNR4/Kvs81o821N2Dfd9fJrdOleaB4A==
-X-Gm-Message-State: AOJu0Yw+jlk351tRu/fYMADJ2C1jE9uR847o1Y5FE72QGbyffAJwVphR
-	2ZZTEiywoUL/PPGqjsSoIAmRKX7xU/HrN2yFmcKddMoXI1YMPTmL
-X-Google-Smtp-Source: AGHT+IH7e2g0Y7KVgrgTneD3KILz2Xw+4uPpn/4EBcTEadHjIlt00UCW1BykdWehFemRxO7De3P+fw==
-X-Received: by 2002:a5d:59a8:0:b0:341:e5d1:d353 with SMTP id p8-20020a5d59a8000000b00341e5d1d353mr1355183wrr.14.1711580130666;
-        Wed, 27 Mar 2024 15:55:30 -0700 (PDT)
-Received: from rorona-tty.. ([154.121.114.3])
-        by smtp.googlemail.com with ESMTPSA id cc7-20020a5d5c07000000b0033e75e5f280sm152348wrb.113.2024.03.27.15.55.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 27 Mar 2024 15:55:30 -0700 (PDT)
-From: Djalal Harouni <tixxdz@gmail.com>
-To: tixxdz@gmail.com
-Cc: Tejun Heo <tj@kernel.org>,
-	Zefan Li <lizefan.x@bytedance.com>,
-	Johannes Weiner <hannes@cmpxchg.org>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Eduard Zingerman <eddyz87@gmail.com>,
-	Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>,
-	Stanislav Fomichev <sdf@google.com>,
-	Hao Luo <haoluo@google.com>,
-	Jiri Olsa <jolsa@kernel.org>,
-	Mykola Lysenko <mykolal@fb.com>,
-	Shuah Khan <shuah@kernel.org>,
-	linux-kernel@vger.kernel.org,
-	cgroups@vger.kernel.org,
-	bpf@vger.kernel.org,
-	linux-kselftest@vger.kernel.org
-Subject: [RFC PATCH bpf-next 3/3] selftests/bpf: add selftest for bpf_task_freeze_cgroup
-Date: Wed, 27 Mar 2024 23:53:25 +0100
-Message-Id: <20240327225334.58474-4-tixxdz@gmail.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240327225334.58474-1-tixxdz@gmail.com>
-References: <20240327-ccb56fc7a6e80136db80876c@djalal>
- <20240327225334.58474-1-tixxdz@gmail.com>
+	s=arc-20240116; t=1711580023; c=relaxed/simple;
+	bh=pGS6XRKRkwNcNdiGrNzGelAPGlvj+qQ18x69yBkIU5Q=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=sYS2uPbGZLGRJLiLjmcYMDsoEKHB+OBc8TPtxDSO2c7T0UT1kdQIohgwX4NZz6CrTiWbUpVAUeeLpD1Z3tRL8XM70+Z9jeFAzXShHbjJNDJYwlIxaeqe4aLfMnLOp7UX3MsHXyvY+N/Lo1qxAFGxwb0ivUHP3blTrOl84iY+2b8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=MIG180wm; arc=none smtp.client-ip=192.198.163.15
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1711580019; x=1743116019;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=pGS6XRKRkwNcNdiGrNzGelAPGlvj+qQ18x69yBkIU5Q=;
+  b=MIG180wmg/ij59bk0WXVhoMgF33n686yQ8Jp2vmVqz1RBBHbqO/zD4YH
+   vkZEBhTnh9cpPSGQ0+yRVHGhTREA+iaMH1h0YAxXPJVULP/Jpsk6qnlBp
+   jjWjiGgYQ3xp//34CxetUaJtvfqS95qlq75UnnHZgxzR765K8jmRjqbQP
+   k3D6dMkSTNHyCAy5jRudNiaRX8TL9DcOR001J0o9S4BynLGEBhtuYbaFi
+   aTJNIXTQqqE9gDD7cBpAZi8Zr6fX9Jr79Bine5bUZ1aCgCx6ogEPwaejv
+   RplW7HPW5WSLkFcq/cAB+fY0MbllkEwjTHkXQJF2bzdQm5yJjUqAPngX9
+   A==;
+X-CSE-ConnectionGUID: sjLY3w8OSkuJsr+7VFNWnQ==
+X-CSE-MsgGUID: e4c+U5gvT+iGq0LEoQkfog==
+X-IronPort-AV: E=McAfee;i="6600,9927,11026"; a="6903581"
+X-IronPort-AV: E=Sophos;i="6.07,160,1708416000"; 
+   d="scan'208";a="6903581"
+Received: from fmviesa009.fm.intel.com ([10.60.135.149])
+  by fmvoesa109.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Mar 2024 15:53:38 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,160,1708416000"; 
+   d="scan'208";a="16474920"
+Received: from ls.sc.intel.com (HELO localhost) ([172.25.112.31])
+  by fmviesa009-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Mar 2024 15:53:39 -0700
+Date: Wed, 27 Mar 2024 15:53:37 -0700
+From: Isaku Yamahata <isaku.yamahata@intel.com>
+To: "Huang, Kai" <kai.huang@intel.com>
+Cc: "Yamahata, Isaku" <isaku.yamahata@intel.com>,
+	"kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"isaku.yamahata@gmail.com" <isaku.yamahata@gmail.com>,
+	Paolo Bonzini <pbonzini@redhat.com>,
+	"Aktas, Erdem" <erdemaktas@google.com>,
+	Sean Christopherson <seanjc@google.com>,
+	Sagi Shahar <sagis@google.com>, "Chen, Bo2" <chen.bo@intel.com>,
+	"Yuan, Hang" <hang.yuan@intel.com>,
+	"Zhang, Tina" <tina.zhang@intel.com>,
+	Sean Christopherson <sean.j.christopherson@intel.com>,
+	isaku.yamahata@linux.intel.com
+Subject: Re: [PATCH v19 038/130] KVM: TDX: create/destroy VM structure
+Message-ID: <20240327225337.GF2444378@ls.amr.corp.intel.com>
+References: <cover.1708933498.git.isaku.yamahata@intel.com>
+ <7a508f88e8c8b5199da85b7a9959882ddf390796.1708933498.git.isaku.yamahata@intel.com>
+ <a0627c0f-5c2d-4403-807f-fc800b43fd3b@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <a0627c0f-5c2d-4403-807f-fc800b43fd3b@intel.com>
 
-This adds a selftest for `bpf_task_freeze_cgroup` kfunc. The test works
-by forking a child then:
+On Tue, Mar 26, 2024 at 02:43:54PM +1300,
+"Huang, Kai" <kai.huang@intel.com> wrote:
 
-1. Child:
- - Migrate to a new cgroup
- - Loads bpf programs
- - Trigger the 'lsm_freeze_cgroup' bpf program so it freeze itself.
-   by calling "bpf_task_freeze_cgroup(child, 1)"
+> ... continue the previous review ...
+> 
+> > +
+> > +static void tdx_reclaim_control_page(unsigned long td_page_pa)
+> > +{
+> > +	WARN_ON_ONCE(!td_page_pa);
+> 
+> From the name 'td_page_pa' we cannot tell whether it is a control page, but
+> this function is only intended for control page AFAICT, so perhaps a more
+> specific name.
+> 
+> > +
+> > +	/*
+> > +	 * TDCX are being reclaimed.  TDX module maps TDCX with HKID
+> 
+> "are" -> "is".
+> 
+> Are you sure it is TDCX, but not TDCS?
+> 
+> AFAICT TDCX is the control structure for 'vcpu', but here you are handling
+> the control structure for the VM.
 
-   <- wait for parent to unthaw
+TDCS, TDVPR, and TDCX.  Will update the comment.
 
- - On unthaw it continues, forks another process and triggers the
-   'tp_newchild' bpf program to set some monitored pids of the new
-   process, that are asserted at user space, to ensure that we
-   resumed correctly.
+> 
+> > +	 * assigned to the TD.  Here the cache associated to the TD
+> > +	 * was already flushed by TDH.PHYMEM.CACHE.WB before here, So
+> > +	 * cache doesn't need to be flushed again.
+> > +	 */
+> 
+> How about put this part as the comment for this function?
+> 
+> /*
+>  * Reclaim <name of control page> page(s) which are crypto-protected
+>  * by TDX guest's private KeyID.  Assume the cache associated with the
+>  * TDX private KeyID has been flushed.
+>  */
+> > +	if (tdx_reclaim_page(td_page_pa))
+> > +		/*
+> > +		 * Leak the page on failure:
+> > +		 * tdx_reclaim_page() returns an error if and only if there's an
+> > +		 * unexpected, fatal error, e.g. a SEAMCALL with bad params,
+> > +		 * incorrect concurrency in KVM, a TDX Module bug, etc.
+> > +		 * Retrying at a later point is highly unlikely to be
+> > +		 * successful.
+> > +		 * No log here as tdx_reclaim_page() already did.
+> 
+> IMHO can be simplified to below, and nothing else matters.
+> 
+> 	/*
+> 	 * Leak the page if the kernel failed to reclaim the page.
+> 	 * The krenel cannot use it safely anymore.
+> 	 */
+> 
+> And you can put this comment above the 'if (tdx_reclaim_page())' statement.
 
-2. Parent:
- - Keeps reading the 'cgroup.freeze' file of the child cgroup until
-   it prints 1 which means the child cgroup is frozen
- - Attaches the sample 'lsm_task_free' so it triggers the bpf program
-   and then calls "bpf_task_freeze_cgroup(task, 0);" on the child task
-   to unthaw its cgroup.
- - Then waits for a clean exit of the child process.
+Sure.
 
-The scenario allows to test both: freeze and unthaw a task cgroup.
 
-Signed-off-by: Djalal Harouni <tixxdz@gmail.com>
----
- .../bpf/prog_tests/task_freeze_cgroup.c       | 165 ++++++++++++++++++
- .../bpf/progs/test_task_freeze_cgroup.c       | 110 ++++++++++++
- 2 files changed, 275 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/task_freeze_cgroup.c
- create mode 100644 tools/testing/selftests/bpf/progs/test_task_freeze_cgroup.c
+> > +		 */
+> > +		return;
+> 
+> Empty line.
+> 
+> > +	free_page((unsigned long)__va(td_page_pa));
+> > +}
+> > +
+> > +static void tdx_do_tdh_phymem_cache_wb(void *unused)
+> 
+> Better to make the name explicit that it is a smp_func, and you don't need
+> the "tdx_" prefix for all the 'static' functions here:
+> 
+> 	static void smp_func_do_phymem_cache_wb(void *unused)
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/task_freeze_cgroup.c b/tools/testing/selftests/bpf/prog_tests/task_freeze_cgroup.c
-new file mode 100644
-index 000000000000..afb7d46194c5
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/task_freeze_cgroup.c
-@@ -0,0 +1,165 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2024 Isovalent */
-+
-+#include <sys/syscall.h>
-+#include <test_progs.h>
-+#include <cgroup_helpers.h>
-+#include <unistd.h>
-+#include "test_task_freeze_cgroup.skel.h"
-+
-+#define FOO	"/test-task-freeze-cgroup"
-+
-+static int bpf_sleepable(struct test_task_freeze_cgroup *skel)
-+{
-+	int err, foo;
-+	pid_t pid;
-+
-+	foo = test__join_cgroup(FOO);
-+	if (!ASSERT_OK(foo < 0, "cgroup_join_foo"))
-+		return -errno;
-+
-+	skel = test_task_freeze_cgroup__open();
-+	if (!ASSERT_OK_PTR(skel, "test_task_freeze_cgroup__open"))
-+		return -errno;
-+
-+	skel->rodata->parent_pid = getppid();
-+	skel->rodata->monitor_pid = getpid();
-+	skel->rodata->cgid = get_cgroup_id(FOO);
-+	skel->bss->new_pid = getpid();
-+	skel->bss->freeze = 1;
-+
-+	err = test_task_freeze_cgroup__load(skel);
-+	if (!ASSERT_OK(err, "test_task_freeze_cgroup__load"))
-+		goto cleanup;
-+
-+	/* First, attach the LSM program, and then it will be triggered when the
-+	 * TP_BTF program is attached.
-+	 */
-+	skel->links.lsm_freeze_cgroup =
-+		bpf_program__attach_lsm(skel->progs.lsm_freeze_cgroup);
-+	if (!ASSERT_OK_PTR(skel->links.lsm_freeze_cgroup, "attach_lsm")) {
-+		err = -errno;
-+		goto cleanup;
-+	}
-+
-+	/* This will fail */
-+	skel->links.tp_newchild =
-+		bpf_program__attach_trace(skel->progs.tp_newchild);
-+	if (!ASSERT_EQ(errno, EPERM, "attach_trace")) {
-+		err = -EINVAL;
-+		goto cleanup;
-+	}
-+
-+	/* Try again now */
-+	skel->links.tp_newchild =
-+		bpf_program__attach_trace(skel->progs.tp_newchild);
-+	if (!ASSERT_OK_PTR(skel->links.tp_newchild, "attach_trace")) {
-+		err = -EINVAL;
-+		goto cleanup;
-+	}
-+
-+	/* Trigger a new child and assert unfrozen state */
-+	pid = fork();
-+	if (pid == 0)
-+		exit(0);
-+
-+	err = (pid == -1);
-+	if (ASSERT_OK(err, "fork process"))
-+		wait(NULL);
-+
-+	/* Now we should continue, assert that new_pid reflects child */
-+	ASSERT_NEQ(skel->rodata->monitor_pid, skel->bss->new_pid,
-+		   "test task_freeze_cgroup failed  at monitor_pid != new_pid");
-+	ASSERT_NEQ(0, skel->bss->new_pid,
-+		   "test task_freeze_cgroup failed  at remote_pid != 0");
-+
-+	/* Assert that bpf set new_pid to new forked child pid */
-+	ASSERT_EQ(pid, skel->bss->new_pid,
-+		   "test task_freeze_cgroup failed  at pid == new_pid");
-+
-+	test_task_freeze_cgroup__detach(skel);
-+
-+cleanup:
-+	test_task_freeze_cgroup__destroy(skel);
-+	close(foo);
-+	return err;
-+}
-+
-+void test_task_freeze_cgroup(void)
-+{
-+	pid_t pid, result;
-+	char buf[512] = {0};
-+	char path[PATH_MAX] = {0};
-+	int ret, status, attempts, frozen = 0;
-+	struct test_task_freeze_cgroup *skel = NULL;
-+
-+	pid = fork();
-+	ret = (pid == -1);
-+	if (!ASSERT_OK(ret, "fork process"))
-+		return;
-+
-+	if (pid == 0) {
-+		ret = bpf_sleepable(skel);
-+		ASSERT_EQ(0, ret, "bpf_sleepable failed");
-+		exit(ret);
-+	}
-+
-+	skel = test_task_freeze_cgroup__open();
-+	if (!ASSERT_OK_PTR(skel, "test_task_freeze_cgroup__open"))
-+		goto out;
-+
-+	snprintf(path, sizeof(path),
-+		 "/sys/fs/cgroup/cgroup-test-work-dir%d%s/cgroup.freeze",
-+		 pid, FOO);
-+
-+	for (attempts = 5; attempts >= 0; attempts--) {
-+		ret = 0;
-+		int fd = open(path, O_RDONLY);
-+		if (fd > 0)
-+			ret = read(fd, buf, sizeof(buf) - 1);
-+		if (ret > 0) {
-+			errno = 0;
-+			frozen = strtol(buf, NULL, 10);
-+			if (errno)
-+				frozen = 0;
-+		}
-+
-+		close(fd);
-+		if (frozen)
-+			break;
-+		sleep(1);
-+	}
-+
-+	/* Assert that child cgroup is frozen */
-+	if (!ASSERT_EQ(1, frozen, "child cgroup not frozen"))
-+		goto out;
-+
-+	ret = test_task_freeze_cgroup__load(skel);
-+	if (!ASSERT_OK(ret, "test_task_freeze_cgroup__load"))
-+		goto out;
-+
-+	/* Unthaw child cgroup from parent */
-+	skel->links.lsm_task_free =
-+		bpf_program__attach_lsm(skel->progs.lsm_task_free);
-+	if (!ASSERT_OK_PTR(skel->links.lsm_task_free, "attach_lsm"))
-+		goto out;
-+
-+	result = waitpid(pid, &status, WUNTRACED);
-+	if (!ASSERT_NEQ(result, -1, "waitpid"))
-+		goto detach;
-+
-+	result = WIFEXITED(status);
-+	if (!ASSERT_EQ(result, 1, "forked process did not terminate normally"))
-+		goto detach;
-+
-+	result = WEXITSTATUS(status);
-+	if (!ASSERT_EQ(result, 0, "forked process did not exit successfully"))
-+		goto detach;
-+
-+detach:
-+	test_task_freeze_cgroup__detach(skel);
-+
-+out:
-+	if (skel)
-+		test_task_freeze_cgroup__destroy(skel);
-+}
-diff --git a/tools/testing/selftests/bpf/progs/test_task_freeze_cgroup.c b/tools/testing/selftests/bpf/progs/test_task_freeze_cgroup.c
-new file mode 100644
-index 000000000000..dbd2d60f464e
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/test_task_freeze_cgroup.c
-@@ -0,0 +1,110 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2024 Isovalent */
-+
-+#include <vmlinux.h>
-+#include <bpf/bpf_tracing.h>
-+#include <bpf/bpf_helpers.h>
-+#include <errno.h>
-+#include "bpf_misc.h"
-+
-+struct cgroup *bpf_cgroup_from_id(u64 cgid) __ksym;
-+long bpf_task_under_cgroup(struct task_struct *task, struct cgroup *ancestor) __ksym;
-+void bpf_cgroup_release(struct cgroup *p) __ksym;
-+struct task_struct *bpf_task_from_pid(s32 pid) __ksym;
-+struct task_struct *bpf_task_acquire(struct task_struct *p) __ksym;
-+void bpf_task_release(struct task_struct *p) __ksym;
-+
-+int bpf_task_freeze_cgroup(struct task_struct *task, int freeze) __ksym;
-+
-+const volatile int parent_pid;
-+const volatile int monitor_pid;
-+const volatile __u64 cgid;
-+int new_pid;
-+int freeze;
-+
-+SEC("tp_btf/task_newtask")
-+int BPF_PROG(tp_newchild, struct task_struct *task, u64 clone_flags)
-+{
-+	struct cgroup *cgrp = NULL;
-+	struct task_struct *acquired;
-+
-+	if (monitor_pid != (bpf_get_current_pid_tgid() >> 32))
-+		return 0;
-+
-+	acquired = bpf_task_acquire(task);
-+	if (!acquired)
-+		return 0;
-+
-+	cgrp = bpf_cgroup_from_id(cgid);
-+	if (!cgrp)
-+		goto out;
-+
-+	if (bpf_task_under_cgroup(acquired, cgrp))
-+		new_pid = acquired->tgid;
-+
-+out:
-+	if (cgrp)
-+		bpf_cgroup_release(cgrp);
-+	bpf_task_release(acquired);
-+
-+	return 0;
-+}
-+
-+/* This is attached from parent to trigger the bpf lsm hook, so parent
-+ * can unthaw the child.
-+ */
-+SEC("lsm/task_free")
-+int BPF_PROG(lsm_task_free, struct task_struct *task)
-+{
-+	return 0;
-+}
-+
-+SEC("lsm.s/bpf")
-+int BPF_PROG(lsm_freeze_cgroup, int cmd, union bpf_attr *attr, unsigned int size)
-+{
-+	int ret = 0;
-+	struct cgroup *cgrp = NULL;
-+	struct task_struct *task;
-+
-+	if (cmd != BPF_LINK_CREATE)
-+		return ret;
-+
-+	task = bpf_get_current_task_btf();
-+	if (parent_pid == task->pid) {
-+		/* Unthaw child from parent */
-+		task = bpf_task_from_pid(monitor_pid);
-+		if (!task)
-+			return -ENOENT;
-+
-+		ret = bpf_task_freeze_cgroup(task, 0);
-+		bpf_task_release(task);
-+		return ret;
-+	}
-+
-+	if (monitor_pid != task->pid)
-+		return 0;
-+
-+	/* Freeze the child cgroup from its context */
-+	cgrp = bpf_cgroup_from_id(cgid);
-+	if (!cgrp)
-+		goto out;
-+
-+	if (!bpf_task_under_cgroup(task, cgrp))
-+		goto out;
-+
-+	if (freeze) {
-+		/* Schedule freeze task and return -EPERM */
-+		ret = bpf_task_freeze_cgroup(task, 1);
-+		if (!ret) {
-+			ret = -EPERM;
-+			/* reset for next call */
-+			freeze = 0;
-+		}
-+	}
-+out:
-+	if (cgrp)
-+		bpf_cgroup_release(cgrp);
-+	return ret;
-+}
-+
-+char _license[] SEC("license") = "GPL";
+Ok, will rename it.
+
+
+> > +{
+> > +	u64 err = 0;
+> > +
+> > +	do {
+> > +		err = tdh_phymem_cache_wb(!!err);
+> 
+> 		bool resume = !!err;
+> 
+> 		err = tdh_phymem_cache_wb(resume);
+> 
+> So that we don't need to jump to the tdh_phymem_cache_wb() to see what does
+> !!err mean.
+
+Ok.
+
+
+> > +	} while (err == TDX_INTERRUPTED_RESUMABLE);
+> 
+> Add a comment before the do {} while():
+> 
+> 	/*
+> 	 * TDH.PHYMEM.CACHE.WB flushes caches associated with _ANY_
+> 	 * TDX private KeyID on the package (or logical cpu?) where
+> 	 * it is called on.  The TDX module may not finish the cache
+> 	 * flush but return TDX_INTERRUPTED_RESUMEABLE instead.  The
+> 	 * kernel should retry it until it returns success w/o
+> 	 * rescheduling.
+> 	 */
+
+Ok.
+
+
+> > +
+> > +	/* Other thread may have done for us. */
+> > +	if (err == TDX_NO_HKID_READY_TO_WBCACHE)
+> > +		err = TDX_SUCCESS;
+> 
+> Empty line.
+> 
+> > +	if (WARN_ON_ONCE(err))
+> > +		pr_tdx_error(TDH_PHYMEM_CACHE_WB, err, NULL);
+> > +}
+> > +
+> > +void tdx_mmu_release_hkid(struct kvm *kvm)
+> > +{
+> > +	bool packages_allocated, targets_allocated;
+> > +	struct kvm_tdx *kvm_tdx = to_kvm_tdx(kvm);
+> > +	cpumask_var_t packages, targets;
+> > +	u64 err;
+> > +	int i;
+> > +
+> > +	if (!is_hkid_assigned(kvm_tdx))
+> > +		return;
+> > +
+> > +	if (!is_td_created(kvm_tdx)) {
+> > +		tdx_hkid_free(kvm_tdx);
+> > +		return;
+> > +	}
+> 
+> I lost tracking what does "td_created()" mean.
+> 
+> I guess it means: KeyID has been allocated to the TDX guest, but not yet
+> programmed/configured.
+> 
+> Perhaps add a comment to remind the reviewer?
+
+As Chao suggested, will introduce state machine for vm and vcpu.
+
+https://lore.kernel.org/kvm/ZfvI8t7SlfIsxbmT@chao-email/
+
+> > +
+> > +	packages_allocated = zalloc_cpumask_var(&packages, GFP_KERNEL);
+> > +	targets_allocated = zalloc_cpumask_var(&targets, GFP_KERNEL);
+> > +	cpus_read_lock();
+> > +
+> > +	/*
+> > +	 * We can destroy multiple guest TDs simultaneously.  Prevent
+> > +	 * tdh_phymem_cache_wb from returning TDX_BUSY by serialization.
+> > +	 */
+> 
+> IMHO it's better to remind people that TDH.PHYMEM.CACHE.WB tries to grab the
+> global TDX module lock:
+> 
+> 	/*
+> 	 * TDH.PHYMEM.CACHE.WB tries to acquire the TDX module global
+> 	 * lock and can fail with TDX_OPERAND_BUSY when it fails to
+> 	 * grab.  Multiple TDX guests can be destroyed simultaneously.
+> 	 * Take the mutex to prevent it from getting error.
+> 	 */
+> > +	mutex_lock(&tdx_lock);
+> > +
+> > +	/*
+> > +	 * Go through multiple TDX HKID state transitions with three SEAMCALLs
+> > +	 * to make TDH.PHYMEM.PAGE.RECLAIM() usable.
+> 
+> 
+> What is "TDX HKID state transitions"?  Not mentioned before, so needs
+> explanation _if_ you want to say this.
+
+Ok.
+> And what are the three "SEAMCALLs"?  Where are they?  The only _two_
+> SEAMCALLs that I can see here are: TDH.PHYMEM.CACHE.WB and
+> TDH.MNG.KEY.FREEID.
+
+tdh_mng_vpflushdone(). I'll those three in the comment.  It may not seem
+to hkid state machine, though.
+
+
+> 
+>  Make the transition atomic
+> > +	 * to other functions to operate private pages and Secure-EPT pages.
+> 
+> What's the consequence to "other functions" if we don't make it atomic here?
+
+Other thread can be removing pages from TD.  If the HKID is freed, other
+thread in loop to remove pages can get error.
+
+TDH.MEM.SEPT.REMOVE(), TDH.MEM.PAGE.REMOVE() can fail with
+TDX_OP_STATE_INCORRECT when HKID is not assigned.
+
+When HKID is freed, we need to use TDH.PHYMEM.PAGE.RECLAIM().
+TDH.PHYMEM.PAGE.RECLAIM() fails with TDX_LIECYCLE_STATE_INCORRECT when
+HKID isn't freed.
+
+How about this?
+
+/*
+ * We need three SEAMCALLs, TDH.MNG.VPFLUSHDONE(), TDH.PHYMEM.CACHE.WB(), and
+ * TDH.MNG.KEY.FREEID() to free the HKID.
+ * Other threads can remove pages from TD.  When the HKID is assigned, we need
+ * to use TDH.MEM.SEPT.REMOVE() or TDH.MEM.PAGE.REMOVE().
+ * TDH.PHYMEM.PAGE.RECLAIM() is needed when the HKID is free.  Get lock to not
+ * present transient state of HKID.
+ */
+
+
+> > +	 *
+> > +	 * Avoid race for kvm_gmem_release() to call kvm_mmu_unmap_gfn_range().
+> > +	 * This function is called via mmu notifier, mmu_release().
+> > +	 * kvm_gmem_release() is called via fput() on process exit.
+> > +	 */
+> > +	write_lock(&kvm->mmu_lock);
+> 
+> I don't fully get the race here, but it seems strange that this function is
+> called via mmu notifier.
+> 
+> IIUC, this function is "supposedly" only be called when we tear down the VM,
+
+That's correct.  The hook when destroying the VM is mmu notifier mmu_release().
+It's called on the behalf of mmput().  Because other component like vhost-net
+can increment the reference, mmu_release mmu notifier can be triggered by
+a thread other than the guest VM.
+
+
+> so I don't know why there's such race.
+
+When guest_memfd is released, the private memory is unmapped.  
+the thread of guest VM can issue exit to closes guest_memfd and
+other thread can trigger mmu notifier of the guest VM.
+
+Also, if we have multiple fds for the same guest_memfd, the last file closure
+can be done in the context of the guest VM or other process.
+
+
+> > +
+> > +	for_each_online_cpu(i) {
+> > +		if (packages_allocated &&
+> > +		    cpumask_test_and_set_cpu(topology_physical_package_id(i),
+> > +					     packages))
+> > +			continue;
+> > +		if (targets_allocated)
+> > +			cpumask_set_cpu(i, targets);
+> > +	}
+> > +	if (targets_allocated)
+> > +		on_each_cpu_mask(targets, tdx_do_tdh_phymem_cache_wb, NULL, true);
+> > +	else
+> > +		on_each_cpu(tdx_do_tdh_phymem_cache_wb, NULL, true);
+> 
+> I don't understand the logic here -- no comments whatever.
+> 
+> But I am 99% sure the logic here could be simplified.
+
+Yes, as Chao suggested, I'll use global variable for those cpumasks.
+https://lore.kernel.org/kvm/ZfpwIespKy8qxWWE@chao-email/
+
+
+> > +	/*
+> > +	 * In the case of error in tdx_do_tdh_phymem_cache_wb(), the following
+> > +	 * tdh_mng_key_freeid() will fail.
+> > +	 */
+> > +	err = tdh_mng_key_freeid(kvm_tdx->tdr_pa);
+> > +	if (WARN_ON_ONCE(err)) {
+> 
+> I see KVM_BUG_ON() is normally used for SEAMCALL error.  Why this uses
+> WARN_ON_ONCE() here?
+
+Because vm_free() hook is (one of) the final steps to free struct kvm.  No one
+else touches this kvm.  Because it doesn't harm to use KVM_BUG_ON() here,
+I'll change it for consistency.
+
+
+> > +		pr_tdx_error(TDH_MNG_KEY_FREEID, err, NULL);
+> > +		pr_err("tdh_mng_key_freeid() failed. HKID %d is leaked.\n",
+> > +		       kvm_tdx->hkid);
+> > +	} else
+> > +		tdx_hkid_free(kvm_tdx);
+> > +
+> > +	write_unlock(&kvm->mmu_lock);
+> > +	mutex_unlock(&tdx_lock);
+> > +	cpus_read_unlock();
+> > +	free_cpumask_var(targets);
+> > +	free_cpumask_var(packages);
+> > +}
+> > +
+> > +void tdx_vm_free(struct kvm *kvm)
+> > +{
+> > +	struct kvm_tdx *kvm_tdx = to_kvm_tdx(kvm);
+> > +	u64 err;
+> > +	int i;
+> > +
+> > +	/*
+> > +	 * tdx_mmu_release_hkid() failed to reclaim HKID.  Something went wrong
+> > +	 * heavily with TDX module.  Give up freeing TD pages.  As the function
+> > +	 * already warned, don't warn it again.
+> > +	 */
+> > +	if (is_hkid_assigned(kvm_tdx))
+> > +		return;
+> > +
+> > +	if (kvm_tdx->tdcs_pa) {
+> > +		for (i = 0; i < tdx_info->nr_tdcs_pages; i++) {
+> > +			if (kvm_tdx->tdcs_pa[i])
+> > +				tdx_reclaim_control_page(kvm_tdx->tdcs_pa[i]);
+> 
+> AFAICT, here tdcs_pa[i] cannot be NULL, right?  How about:
+
+If tdh_mng_addcx() fails in the middle of 0 < i < nr_tdcs_pages, tdcs_pa[i] can
+be NULL.  The current allocation/free code is unnecessarily convoluted. I'll
+clean them up.
+
+
+> 			if (!WARN_ON_ONCE(!kvm_tdx->tdcs_pa[i]))
+> 				continue;
+> 			
+> 			tdx_reclaim_control_page(...);
+> 
+> which at least saves you some indent.
+> 
+> Btw, does it make sense to stop if any tdx_reclaim_control_page() fails?
+
+It doesn't matter much in practice because it's unlikely to hit error for some
+of TDCS pages.  So I chose to make it return void to skip error check by the
+caller.
+
+
+> It's OK to continue, but perhaps worth to add a comment to point out:
+> 
+> 			/*
+> 			 * Continue to reclaim other control pages and
+> 			 * TDR page, even failed to reclaim one control
+> 			 * page.  Do the best to reclaim these TDX
+> 			 * private pages.
+> 			 */
+> 			tdx_reclaim_control_page();
+
+Sure, it will make the intention clear.
+
+
+> > +		}
+> > +		kfree(kvm_tdx->tdcs_pa);
+> > +		kvm_tdx->tdcs_pa = NULL;
+> > +	}
+> > +
+> > +	if (!kvm_tdx->tdr_pa)
+> > +		return;
+> > +	if (__tdx_reclaim_page(kvm_tdx->tdr_pa))
+> > +		return;
+> > +	/*
+> > +	 * TDX module maps TDR with TDX global HKID.  TDX module may access TDR
+> > +	 * while operating on TD (Especially reclaiming TDCS).  Cache flush with > +	 * TDX global HKID is needed.
+> > +	 */
+> 
+> "Especially reclaiming TDCS" -> "especially when it is reclaiming TDCS".
+> 
+> Use imperative mode to describe your change:
+> 
+> Use the SEAMCALL to ask the TDX module to flush the cache of it using the
+> global KeyID.
+> 
+> > +	err = tdh_phymem_page_wbinvd(set_hkid_to_hpa(kvm_tdx->tdr_pa,
+> > +						     tdx_global_keyid));
+> > +	if (WARN_ON_ONCE(err)) {
+> 
+> Again, KVM_BUG_ON()?
+> 
+> Should't matter, though.
+
+Ok, let's use KVM_BUG_ON() consistently.
+
+
+
+> > +		pr_tdx_error(TDH_PHYMEM_PAGE_WBINVD, err, NULL);
+> > +		return;
+> > +	}
+> > +	tdx_clear_page(kvm_tdx->tdr_pa);
+> > +
+> > +	free_page((unsigned long)__va(kvm_tdx->tdr_pa));
+> > +	kvm_tdx->tdr_pa = 0;
+> > +}
+> > +
+> > +static int tdx_do_tdh_mng_key_config(void *param)
+> > +{
+> > +	hpa_t *tdr_p = param;
+> > +	u64 err;
+> > +
+> > +	do {
+> > +		err = tdh_mng_key_config(*tdr_p);
+> > +
+> > +		/*
+> > +		 * If it failed to generate a random key, retry it because this
+> > +		 * is typically caused by an entropy error of the CPU's random
+> > +		 * number generator.
+> > +		 */
+> > +	} while (err == TDX_KEY_GENERATION_FAILED);
+> 
+> If you want to handle TDX_KEY_GENERTION_FAILED, it's better to have a retry
+> limit similar to the TDX host code does.
+
+Ok, although it would complicates the error recovery path, let me update it.
+
+
+> > +
+> > +	if (WARN_ON_ONCE(err)) {
+> 
+> KVM_BUG_ON()?
+> 
+> > +		pr_tdx_error(TDH_MNG_KEY_CONFIG, err, NULL);
+> > +		return -EIO;
+> > +	}
+> > +
+> > +	return 0;
+> > +}
+> > +
+> > +static int __tdx_td_init(struct kvm *kvm);
+> > +
+> > +int tdx_vm_init(struct kvm *kvm)
+> > +{
+> > +	/*
+> > +	 * TDX has its own limit of the number of vcpus in addition to
+> > +	 * KVM_MAX_VCPUS.
+> > +	 */
+> > +	kvm->max_vcpus = min(kvm->max_vcpus, TDX_MAX_VCPUS);
+> 
+> I believe this should be part of the patch that handles KVM_CAP_MAX_VCPUS.
+
+Ok.
 -- 
-2.34.1
-
+Isaku Yamahata <isaku.yamahata@intel.com>
 
