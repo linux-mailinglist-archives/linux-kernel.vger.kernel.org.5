@@ -1,113 +1,105 @@
-Return-Path: <linux-kernel+bounces-121485-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-121486-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7908688E9E4
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 16:52:54 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1F6C888E8BB
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 16:24:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 484F1B2B37D
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 15:24:28 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B6C621F2F970
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 15:24:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 241ED13A3F9;
-	Wed, 27 Mar 2024 15:12:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=sifive.com header.i=@sifive.com header.b="ZqwBLxsr"
-Received: from mail-io1-f41.google.com (mail-io1-f41.google.com [209.85.166.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 47E44147C7D;
+	Wed, 27 Mar 2024 15:15:18 +0000 (UTC)
+Received: from mx01.omp.ru (mx01.omp.ru [90.154.21.10])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1739313A3EF
-	for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 15:12:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1C35C13BC10
+	for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 15:15:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.154.21.10
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711552358; cv=none; b=DPHzPK4NMntRX5y+i0r59Nna26Stv9krjjW6GgDsKhc4sqWIKX9ToC1hMpkljOO9UL5sTUOfnz4Fqt80h1yHPr6TF9oFk0NObf/9N1gwd5at6Np5lBLPZN4ku8lnkIo+R49sRFZ+7AZF9C2UJPwtBf6gQGj9d0viFJlzwvnp6Gg=
+	t=1711552517; cv=none; b=Oc995ZUeGzZhXN4oHLi+4EjtUTHj1tG75ylu8X7CNz8NVBmilX4QR3NIY0Ou8xF8pKlQAOUK1J45vRFK2BqK6BoAePr1xS0VoMcQJlVZBbmoLw67HgKuVJ/n5HjndBL6131nPTqjO6zf+44jcSHMXsSGROfzjPXqyuEuETee2wY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711552358; c=relaxed/simple;
-	bh=bk6V3Tph/BTikIMlnsHClFRVc8U6mY/3tucdVLV08Lg=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=N7afMgX2Z0DnewZb39fdJMwmJHXcbJVN2C4e2i1LZPAxpWoWp34cxfZbuZ8PxOXBbyX0/Avo0+FOvWD8IyGV4VC8qgdI8uLf/EJPhTwGWqx5DfXi0jmhj7JCe2Inu/KkkdQZLHTc5SdOalSc+Cv9OEMRtUG/C6j4b6JRPgyJrKc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=sifive.com; spf=pass smtp.mailfrom=sifive.com; dkim=pass (2048-bit key) header.d=sifive.com header.i=@sifive.com header.b=ZqwBLxsr; arc=none smtp.client-ip=209.85.166.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=sifive.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sifive.com
-Received: by mail-io1-f41.google.com with SMTP id ca18e2360f4ac-7c8ad87b2acso184683439f.3
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 08:12:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sifive.com; s=google; t=1711552356; x=1712157156; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=UuoTzi8rOFJ87iK0QDMAtmZ0NUzmHRlY2Wibz55w4qg=;
-        b=ZqwBLxsrjFDOHipeXM8xoNGRg0mjQlJK8aiBHCLjEUbFmckaCcA8KiBNn+ddUBkWLK
-         dHBlzXwRQsWCZL7QmB2pHeK3BgBSRVSzIBkV3Uox4rKf/ulCFlsJi1tqE8NEgBIZEVCO
-         kiLdbdn0cd/P2hbxLlwmybe87f9PA2j8WQn0ejNKGNyyu5Eqclk6QMOWvRePausWoIZN
-         vpi7+7zA3f9bydC0VyyPetTuGbb8RKlcm8SqE6sQZ05vh5rIJqXc/1+HPhltSwaCODy1
-         Cr+imflIBNStjMoTlnOq4UaLKaTrfvENkT2Wzi1MSX1QoWFsT6P1kSfkWttgR+p2+Pml
-         Uc5A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711552356; x=1712157156;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=UuoTzi8rOFJ87iK0QDMAtmZ0NUzmHRlY2Wibz55w4qg=;
-        b=ctn4hx2S4f5QB+dKGN5+fNRaXJP1WtpdEVRY/oGAJO2TEtk/2DqBMJxnpfbbNCgThT
-         z7+fntNFXk/DHLfwmH7LffrdWtrm2LV3F89eV4ra863g/Sf9EmIUAuoRcL53ueJNl+3X
-         zu+KBmDVqJlB4aHJ7u1XForVWaNzpUuLCccYFEDMh+lI0VEq3rjgNK6/WzLi4gjTKbA8
-         TDBXTOqHPRGqPpNZSLAkUjjeHTAexP+kFeM5xoKexbmMCwzY/LmzNtCGTqv1P/tlcTIz
-         biADmZD60G8qv56ByBWpmSHd8C7wMi4YDigFzrlr3OGV7eaCUO887wcpQ4WCGQ93mzAn
-         riRQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVaX1olrtqDfcWL2nBuzaFYMAv3jdSwhB6fDSVRg5Nm50VQsPdWC1zkAcPB7cR47ebuHn+9pOAlgzdwtRxovdLJ3yy7cH2uLY+ZlCuA
-X-Gm-Message-State: AOJu0YwZwM9b4Z6B6cqc7/+s138JU4WNd47tqrmNakzSEbWZ6ZbVagSG
-	ZCfHrFog6CG8tGXm3csdlmq6KbxL+JQT8RJ0TruZrJMZsLvojV+I77XsO6gin/o=
-X-Google-Smtp-Source: AGHT+IGqFH7jy6vdiT/UHr/bx2+JznqAw0ftyUqt4N09oQx6Vx2n3f1L96q65Y0mwHXiMutMid6ZNQ==
-X-Received: by 2002:a5e:9903:0:b0:7d0:676a:d0ec with SMTP id t3-20020a5e9903000000b007d0676ad0ecmr486405ioj.0.1711552356161;
-        Wed, 27 Mar 2024 08:12:36 -0700 (PDT)
-Received: from [100.64.0.1] ([170.85.6.190])
-        by smtp.gmail.com with ESMTPSA id n15-20020a6b410f000000b007d0445ac470sm2603214ioa.29.2024.03.27.08.12.35
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 27 Mar 2024 08:12:35 -0700 (PDT)
-Message-ID: <198af54d-10da-4320-9623-85dfb102f5de@sifive.com>
-Date: Wed, 27 Mar 2024 10:12:34 -0500
+	s=arc-20240116; t=1711552517; c=relaxed/simple;
+	bh=FB9KijKmhBySPWMwoOs2QzeggUljSCO/bu79JB0xETo=;
+	h=Subject:To:CC:References:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=Hxc0qLFw0Ze1Srx6by7pDQ4tfkKEFhEekK8Mcg0U3vrwHCondns6yzoZVdFnhNaJIJZMHFv3wtw7AuMsYo5+NXpRy4BRlO1tbkN1tlzLXjCbPgSgzlnk8iI0x4qKeycA3k/tXLLVCxG+S+J3iywjXcJLAXlXneWzIhoZRZD7Od4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=omp.ru; spf=pass smtp.mailfrom=omp.ru; arc=none smtp.client-ip=90.154.21.10
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=omp.ru
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=omp.ru
+Received: from [192.168.1.105] (31.173.86.12) by msexch01.omp.ru (10.188.4.12)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.2.1258.12; Wed, 27 Mar
+ 2024 18:15:09 +0300
+Subject: Re: [PATCH v2] udf: udftime: prevent overflow in
+ udf_disk_stamp_to_time()
+To: Roman Smirnov <r.smirnov@omp.ru>, Jan Kara <jack@suse.com>
+CC: <linux-kernel@vger.kernel.org>, <lvc-project@linuxtesting.org>, Jan Kara
+	<jack@suse.cz>
+References: <20240327132755.13945-1-r.smirnov@omp.ru>
+From: Sergey Shtylyov <s.shtylyov@omp.ru>
+Organization: Open Mobile Platform
+Message-ID: <703e52b1-82f0-13fb-94b8-2d6ff16598e8@omp.ru>
+Date: Wed, 27 Mar 2024 18:15:08 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 4/7] riscv: Simplify text patching loops
-To: David Laight <David.Laight@ACULAB.COM>
-Cc: "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- =?UTF-8?B?J0Jqw7ZybiBUw7ZwZWwn?= <bjorn@kernel.org>,
- Palmer Dabbelt <palmer@dabbelt.com>
-References: <20240212025529.1971876-1-samuel.holland@sifive.com>
- <20240212025529.1971876-5-samuel.holland@sifive.com>
- <874je4fvxl.fsf@all.your.base.are.belong.to.us>
- <cb89b03b34d6403685297f95924524a7@AcuMS.aculab.com>
+In-Reply-To: <20240327132755.13945-1-r.smirnov@omp.ru>
+Content-Type: text/plain; charset="utf-8"
 Content-Language: en-US
-From: Samuel Holland <samuel.holland@sifive.com>
-In-Reply-To: <cb89b03b34d6403685297f95924524a7@AcuMS.aculab.com>
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: msexch01.omp.ru (10.188.4.12) To msexch01.omp.ru
+ (10.188.4.12)
+X-KSE-ServerInfo: msexch01.omp.ru, 9
+X-KSE-AntiSpam-Interceptor-Info: scan successful
+X-KSE-AntiSpam-Version: 6.1.0, Database issued on: 03/27/2024 14:57:27
+X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
+X-KSE-AntiSpam-Method: none
+X-KSE-AntiSpam-Rate: 0
+X-KSE-AntiSpam-Info: Lua profiles 184448 [Mar 27 2024]
+X-KSE-AntiSpam-Info: Version: 6.1.0.4
+X-KSE-AntiSpam-Info: Envelope from: s.shtylyov@omp.ru
+X-KSE-AntiSpam-Info: LuaCore: 13 0.3.13
+ 9d58e50253d512f89cb08f71c87c671a2d0a1bca
+X-KSE-AntiSpam-Info: {rep_avail}
+X-KSE-AntiSpam-Info:
+	omp.ru:7.1.1;127.0.0.199:7.1.2;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1
+X-KSE-AntiSpam-Info: ApMailHostAddress: 31.173.86.12
+X-KSE-AntiSpam-Info: Rate: 0
+X-KSE-AntiSpam-Info: Status: not_detected
+X-KSE-AntiSpam-Info: Method: none
+X-KSE-AntiSpam-Info: Auth:dmarc=temperror header.from=omp.ru;spf=temperror
+ smtp.mailfrom=omp.ru;dkim=none
+X-KSE-Antiphishing-Info: Clean
+X-KSE-Antiphishing-ScanningType: Heuristic
+X-KSE-Antiphishing-Method: None
+X-KSE-Antiphishing-Bases: 03/27/2024 15:01:00
+X-KSE-Antivirus-Interceptor-Info: scan successful
+X-KSE-Antivirus-Info: Clean, bases: 3/27/2024 10:50:00 AM
+X-KSE-Attachment-Filter-Triggered-Rules: Clean
+X-KSE-Attachment-Filter-Triggered-Filters: Clean
+X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
 
-Hi David,
+On 3/27/24 4:27 PM, Roman Smirnov wrote:
 
-On 2024-02-19 4:13 PM, David Laight wrote:
-> ...
->>> -	while (patched < len && !ret) {
->>> -		size = min_t(size_t, PAGE_SIZE * 2 - offset_in_page(addr + patched), len - patched);
->>> -		ret = __patch_insn_set(addr + patched, c, size);
->>> +	while (len && !ret) {
->>> +		size = min_t(size_t, PAGE_SIZE * 2 - offset_in_page(addr), len);
+> An overflow can occur in a situation where src.centiseconds
+> takes the value of 255. This situation is unlikely, but there
+> is no validation check anywere in the code.
 > 
-> Does that need to be min_t()?
-> Both arguments seem to be unsigned.
-> (Did it even ever need to be?)
+> Found by Linux Verification Center (linuxtesting.org) with Svace.
+> 
+> Suggested-by: Jan Kara <jack@suse.cz>
+> Signed-off-by: Roman Smirnov <r.smirnov@omp.ru>
 
-You're right, this never needed min_t(). I'll update this for v2.
+Reviewed-by: Sergey Shtylyov <s.shtylyov@omp.ru>
 
-Regards,
-Samuel
+[...]
 
+MBR, Sergey
 
