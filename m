@@ -1,60 +1,60 @@
-Return-Path: <linux-kernel+bounces-121526-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-121529-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id F04AE88EA5F
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 17:05:42 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id F10F188E93D
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 16:36:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7A6FEB3CB6B
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 15:36:16 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1F2B11C2E0A5
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 15:36:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8EFA5149C71;
-	Wed, 27 Mar 2024 15:25:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9A19F149C48;
+	Wed, 27 Mar 2024 15:25:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="CBWxC/xD"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="ae729x8m"
 Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E44B4149C48;
-	Wed, 27 Mar 2024 15:25:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 523561304A7;
+	Wed, 27 Mar 2024 15:25:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.19
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711553130; cv=none; b=uYfPI9TM2zZnxEx/H4rMrxnOSWB/vmlWzfieTRJZvLA/ZpIbCAoNHhMyXQ0uyDzK/zcgtv5ZqMoELwlE+gD3iqf/yqmserJ+wsTRfBk6lHr5jwoWjSjoGV7YSYMJd2loHgE0XF7MpcaGjinqBy7+akUnd/b+zPvh3uVjm5awDcI=
+	t=1711553134; cv=none; b=WAuXQ0Um0uhz56UOaDa1KJxwyz9WXRPXkkPkg4D/H/c5shd9YVJ4ntWkVKNKhmv3bt5LXWwMTLjU5hvGbdJkD1laxidveMMPK8/IoJmWgP7My0afkriAulkGDSHY7Yb9bsDK/rt63cu318AXZTraOu/au17Xs4HfVRE+f018AOU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711553130; c=relaxed/simple;
-	bh=XijAiJr8ED45Yq86XEpAzxGAIQnSHo95M8Ili6sTQNI=;
+	s=arc-20240116; t=1711553134; c=relaxed/simple;
+	bh=SM/Y4i2PvzK59BicbBlf0+j7v97Q3/Neb7MphCaY43s=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=jardtW56yejaIQxrtJ5pEkD+aEoOSmK6mOBNKtSPxtQ8sgqN3ZmmA3gG4MfEW+rT7ZpRhssG8MCl97ev9s5diAjaq5/7hguTpxwosH3HHp4gUv3DZ8zT8Cf5KrDzAVJWcGrGPLbDsVY55Iu/JOq0xrfR5nOk5WU7OmHGbuaXMKw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=CBWxC/xD; arc=none smtp.client-ip=198.175.65.19
+	 MIME-Version; b=d+ocB5N6c2lRWaN3Ik4KiCnYXSRcvJY5otNE4o2FCZf9a/LEL5cOs2TpxM5BoXsqIUMgHbNesCTN98or+DuiPjuyPkSazJ/m/A+tXKI/j9raSjoffTX+g+D0CNV26iAawa4u9X9p5K4+Sydc32lEqLHWoAlJ6dZWudEYcRBmaOw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=ae729x8m; arc=none smtp.client-ip=198.175.65.19
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1711553129; x=1743089129;
+  t=1711553132; x=1743089132;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=XijAiJr8ED45Yq86XEpAzxGAIQnSHo95M8Ili6sTQNI=;
-  b=CBWxC/xDrlTTMmosu2xRLBt1P7zEjG5hqGTSPLYkspm90AiUy6gvv8Ht
-   I/IximDzP234q9/aHul03INRSLONdWI5BoHKX23QJIG0EdMZqzjO0NJYA
-   7hk5khbmhSvl7zgS4mblxsf0aUszroej8Ktzn8JNfM911vv+GIIaMq1jD
-   WmAsyKUADiKYAfuJajhD3zxrOcFVQEXsQgXeqpsmI6WvFaUARQbdO80L7
-   shYovtuncrEFaDsoKsMJ/VRVGyZVcSYZQF5wU3xnzMJFNsDgnNdrg3+CK
-   278F2TA1ITixlCAR18volwKnDegQQnJ0NllMiFOaG0MySLoG2sYhW0BlE
-   A==;
-X-CSE-ConnectionGUID: tllghLzJSkqi2IorGlpmbw==
-X-CSE-MsgGUID: 3lTRd0mlQsy80MLcRsnC0A==
-X-IronPort-AV: E=McAfee;i="6600,9927,11026"; a="6518262"
+  bh=SM/Y4i2PvzK59BicbBlf0+j7v97Q3/Neb7MphCaY43s=;
+  b=ae729x8m7kcDGmGXTqYryDUs/WgfmxPo/emTUGP7FC2Zg+b7U4LRXPuz
+   ZUkDocYgDK/SPnmeXTDuKlUhL9EU238aiTQJFV+rEhzjcmRCx/U+drdbE
+   84dI5Fbe78Cb5V7OwCeKjESd4BTdJY98uuS+dqTJQ7HuQNvlVnBR9WLWm
+   zcG6W989NlhY+8hIrHx+uccOde5Cc2+woCpqg7YJowCuQ2WMS7c3rUyh7
+   9zqIQt6rNUaaWFc4G4lVb7Pc1YmpI7lD7HTbvNY1ucke7s7GYn9I3r3BV
+   nydtceLx7Z9BKj/dTfPlDznj6seXuMDwPPrS7fADtPYE5NObZR918swjS
+   Q==;
+X-CSE-ConnectionGUID: 6MimCK4BQnmJLMkQa4FpnA==
+X-CSE-MsgGUID: 8ddXyaymQrKYOSWfpk9EbA==
+X-IronPort-AV: E=McAfee;i="6600,9927,11026"; a="6518277"
 X-IronPort-AV: E=Sophos;i="6.07,159,1708416000"; 
-   d="scan'208";a="6518262"
+   d="scan'208";a="6518277"
 Received: from fmviesa008.fm.intel.com ([10.60.135.148])
-  by orvoesa111.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Mar 2024 08:25:28 -0700
+  by orvoesa111.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Mar 2024 08:25:31 -0700
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.07,159,1708416000"; 
-   d="scan'208";a="16414381"
+   d="scan'208";a="16414395"
 Received: from newjersey.igk.intel.com ([10.102.20.203])
-  by fmviesa008.fm.intel.com with ESMTP; 27 Mar 2024 08:25:25 -0700
+  by fmviesa008.fm.intel.com with ESMTP; 27 Mar 2024 08:25:28 -0700
 From: Alexander Lobakin <aleksander.lobakin@intel.com>
 To: "David S. Miller" <davem@davemloft.net>,
 	Eric Dumazet <edumazet@google.com>,
@@ -66,10 +66,13 @@ Cc: Alexander Lobakin <aleksander.lobakin@intel.com>,
 	nex.sw.ncis.osdt.itp.upstreaming@intel.com,
 	intel-wired-lan@lists.osuosl.org,
 	netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH net-next v6 17/21] net: net_test: add tests for IP tunnel flags conversion helpers
-Date: Wed, 27 Mar 2024 16:23:54 +0100
-Message-ID: <20240327152358.2368467-18-aleksander.lobakin@intel.com>
+	linux-kernel@vger.kernel.org,
+	Wojciech Drewek <wojciech.drewek@intel.com>,
+	Marcin Szycik <marcin.szycik@linux.intel.com>,
+	Simon Horman <horms@kernel.org>
+Subject: [PATCH net-next v6 18/21] pfcp: add PFCP module
+Date: Wed, 27 Mar 2024 16:23:55 +0100
+Message-ID: <20240327152358.2368467-19-aleksander.lobakin@intel.com>
 X-Mailer: git-send-email 2.44.0
 In-Reply-To: <20240327152358.2368467-1-aleksander.lobakin@intel.com>
 References: <20240327152358.2368467-1-aleksander.lobakin@intel.com>
@@ -81,199 +84,332 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Now that there are helpers for converting IP tunnel flags between the
-old __be16 format and the bitmap format, make sure they work as expected
-by adding a couple of tests to the networking testing suite. The helpers
-are all inline, so no dependencies on the related CONFIG_* (or a
-standalone module) are needed.
+From: Wojciech Drewek <wojciech.drewek@intel.com>
 
-Cover three possible cases:
+Packet Forwarding Control Protocol (PFCP) is a 3GPP Protocol
+used between the control plane and the user plane function.
+It is specified in TS 29.244[1].
 
-1. No bits past BIT(15) are set, VTI/SIT bits are not set. This
-   conversion is almost a direct assignment.
-2. No bits past BIT(15) are set, but VTI/SIT bit is set. During the
-   conversion, it must be transformed into BIT(16) in the bitmap,
-   but still compatible with the __be16 format.
-3. The bitmap has bits past BIT(15) set (not the VTI/SIT one). The
-   result will be truncated.
-   Note that currently __IP_TUNNEL_FLAG_NUM is 17 (incl. special),
-   which means that the result of this case is currently
-   semi-false-positive. When BIT(17) is finally here, it will be
-   adjusted accordingly.
+Note that this module is not designed to support this Protocol
+in the kernel space. There is no support for parsing any PFCP messages.
+There is no API that could be used by any userspace daemon.
+Basically it does not support PFCP. This protocol is sophisticated
+and there is no need for implementing it in the kernel. The purpose
+of this module is to allow users to setup software and hardware offload
+of PFCP packets using tc tool.
 
+When user requests to create a PFCP device, a new socket is created.
+The socket is set up with port number 8805 which is specific for
+PFCP [29.244 4.2.2]. This allow to receive PFCP request messages,
+response messages use other ports.
+
+Note that only one PFCP netdev can be created.
+
+Only IPv4 is supported at this time.
+
+[1] https://portal.3gpp.org/desktopmodules/Specifications/SpecificationDetails.aspx?specificationId=3111
+
+Signed-off-by: Wojciech Drewek <wojciech.drewek@intel.com>
+Signed-off-by: Marcin Szycik <marcin.szycik@linux.intel.com>
+Reviewed-by: Simon Horman <horms@kernel.org>
 Signed-off-by: Alexander Lobakin <aleksander.lobakin@intel.com>
 ---
- net/core/Makefile                   |   2 +-
- net/core/{gso_test.c => net_test.c} | 132 ++++++++++++++++++++++++++--
- 2 files changed, 125 insertions(+), 9 deletions(-)
- rename net/core/{gso_test.c => net_test.c} (67%)
+ drivers/net/Kconfig  |  13 +++
+ drivers/net/Makefile |   1 +
+ include/net/pfcp.h   |  17 ++++
+ drivers/net/pfcp.c   | 223 +++++++++++++++++++++++++++++++++++++++++++
+ 4 files changed, 254 insertions(+)
+ create mode 100644 include/net/pfcp.h
+ create mode 100644 drivers/net/pfcp.c
 
-diff --git a/net/core/Makefile b/net/core/Makefile
-index 6e6548011fae..21d6fbc7e884 100644
---- a/net/core/Makefile
-+++ b/net/core/Makefile
-@@ -41,4 +41,4 @@ obj-$(CONFIG_NET_SOCK_MSG) += skmsg.o
- obj-$(CONFIG_BPF_SYSCALL) += sock_map.o
- obj-$(CONFIG_BPF_SYSCALL) += bpf_sk_storage.o
- obj-$(CONFIG_OF)	+= of_net.o
--obj-$(CONFIG_NET_TEST) += gso_test.o
-+obj-$(CONFIG_NET_TEST) += net_test.o
-diff --git a/net/core/gso_test.c b/net/core/net_test.c
-similarity index 67%
-rename from net/core/gso_test.c
-rename to net/core/net_test.c
-index 358c44680d91..30062b9621e4 100644
---- a/net/core/gso_test.c
-+++ b/net/core/net_test.c
-@@ -1,6 +1,9 @@
- // SPDX-License-Identifier: GPL-2.0-or-later
+diff --git a/drivers/net/Kconfig b/drivers/net/Kconfig
+index 8ca0bc223b30..172d84e39129 100644
+--- a/drivers/net/Kconfig
++++ b/drivers/net/Kconfig
+@@ -290,6 +290,19 @@ config GTP
+ 	  To compile this drivers as a module, choose M here: the module
+ 	  will be called gtp.
  
- #include <kunit/test.h>
++config PFCP
++	tristate "Packet Forwarding Control Protocol (PFCP)"
++	depends on INET
++	select NET_UDP_TUNNEL
++	help
++	  This allows one to create PFCP virtual interfaces that allows to
++	  set up software and hardware offload of PFCP packets.
++	  Note that this module does not support PFCP protocol in the kernel space.
++	  There is no support for parsing any PFCP messages.
 +
-+/* GSO */
++	  To compile this drivers as a module, choose M here: the module
++	  will be called pfcp.
 +
- #include <linux/skbuff.h>
- 
- static const char hdr[] = "abcdefgh";
-@@ -258,17 +261,130 @@ static void gso_test_func(struct kunit *test)
- 	consume_skb(skb);
- }
- 
--static struct kunit_case gso_test_cases[] = {
--	KUNIT_CASE_PARAM(gso_test_func, gso_test_gen_params),
--	{}
-+/* IP tunnel flags */
+ config AMT
+ 	tristate "Automatic Multicast Tunneling (AMT)"
+ 	depends on INET && IP_MULTICAST
+diff --git a/drivers/net/Makefile b/drivers/net/Makefile
+index 7cab36f94782..9c053673d6b2 100644
+--- a/drivers/net/Makefile
++++ b/drivers/net/Makefile
+@@ -38,6 +38,7 @@ obj-$(CONFIG_GENEVE) += geneve.o
+ obj-$(CONFIG_BAREUDP) += bareudp.o
+ obj-$(CONFIG_GTP) += gtp.o
+ obj-$(CONFIG_NLMON) += nlmon.o
++obj-$(CONFIG_PFCP) += pfcp.o
+ obj-$(CONFIG_NET_VRF) += vrf.o
+ obj-$(CONFIG_VSOCKMON) += vsockmon.o
+ obj-$(CONFIG_MHI_NET) += mhi_net.o
+diff --git a/include/net/pfcp.h b/include/net/pfcp.h
+new file mode 100644
+index 000000000000..3f9ebf27a8ff
+--- /dev/null
++++ b/include/net/pfcp.h
+@@ -0,0 +1,17 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++#ifndef _PFCP_H_
++#define _PFCP_H_
 +
-+#include <net/ip_tunnels.h>
++#include <linux/netdevice.h>
++#include <linux/string.h>
++#include <linux/types.h>
 +
-+struct ip_tunnel_flags_test {
-+	const char	*name;
++#define PFCP_PORT 8805
 +
-+	const u16	*src_bits;
-+	const u16	*exp_bits;
-+	u8		src_num;
-+	u8		exp_num;
-+
-+	__be16		exp_val;
-+	bool		exp_comp;
-+};
-+
-+#define IP_TUNNEL_FLAGS_TEST(n, src, comp, eval, exp) {	\
-+	.name		= (n),				\
-+	.src_bits	= (src),			\
-+	.src_num	= ARRAY_SIZE(src),		\
-+	.exp_comp	= (comp),			\
-+	.exp_val	= (eval),			\
-+	.exp_bits	= (exp),			\
-+	.exp_num	= ARRAY_SIZE(exp),		\
++static inline bool netif_is_pfcp(const struct net_device *dev)
++{
++	return dev->rtnl_link_ops &&
++	       !strcmp(dev->rtnl_link_ops->kind, "pfcp");
 +}
 +
-+/* These are __be16-compatible and can be compared as is */
-+static const u16 ip_tunnel_flags_1[] = {
-+	IP_TUNNEL_KEY_BIT,
-+	IP_TUNNEL_STRICT_BIT,
-+	IP_TUNNEL_ERSPAN_OPT_BIT,
-+};
-+
-+/* Due to the previous flags design limitation, setting either
-+ * ``IP_TUNNEL_CSUM_BIT`` (on Big Endian) or ``IP_TUNNEL_DONT_FRAGMENT_BIT``
-+ * (on Little) also sets VTI/ISATAP bit. In the bitmap implementation, they
-+ * correspond to ``BIT(16)``, which is bigger than ``U16_MAX``, but still is
-+ * backward-compatible.
-+ */
-+#ifdef __LITTLE_ENDIAN
-+#define IP_TUNNEL_CONFLICT_BIT	IP_TUNNEL_DONT_FRAGMENT_BIT
-+#else
-+#define IP_TUNNEL_CONFLICT_BIT	IP_TUNNEL_CSUM_BIT
 +#endif
+diff --git a/drivers/net/pfcp.c b/drivers/net/pfcp.c
+new file mode 100644
+index 000000000000..3f1ee0ae7111
+--- /dev/null
++++ b/drivers/net/pfcp.c
+@@ -0,0 +1,223 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * PFCP according to 3GPP TS 29.244
++ *
++ * Copyright (C) 2022, Intel Corporation.
++ */
 +
-+static const u16 ip_tunnel_flags_2_src[] = {
-+	IP_TUNNEL_CONFLICT_BIT,
++#include <linux/module.h>
++#include <linux/netdevice.h>
++#include <linux/rculist.h>
++#include <linux/skbuff.h>
++#include <linux/types.h>
++
++#include <net/udp.h>
++#include <net/udp_tunnel.h>
++#include <net/pfcp.h>
++
++struct pfcp_dev {
++	struct list_head	list;
++
++	struct socket		*sock;
++	struct net_device	*dev;
++	struct net		*net;
 +};
 +
-+static const u16 ip_tunnel_flags_2_exp[] = {
-+	IP_TUNNEL_CONFLICT_BIT,
-+	IP_TUNNEL_SIT_ISATAP_BIT,
- };
- 
--static struct kunit_suite gso_test_suite = {
--	.name = "net_core_gso",
--	.test_cases = gso_test_cases,
-+/* Bits 17 and higher are not compatible with __be16 flags */
-+static const u16 ip_tunnel_flags_3_src[] = {
-+	IP_TUNNEL_VXLAN_OPT_BIT,
-+	17,
-+	18,
-+	20,
- };
- 
--kunit_test_suite(gso_test_suite);
-+static const u16 ip_tunnel_flags_3_exp[] = {
-+	IP_TUNNEL_VXLAN_OPT_BIT,
++static unsigned int pfcp_net_id __read_mostly;
++
++struct pfcp_net {
++	struct list_head	pfcp_dev_list;
 +};
 +
-+static const struct ip_tunnel_flags_test ip_tunnel_flags_test[] = {
-+	IP_TUNNEL_FLAGS_TEST("compat", ip_tunnel_flags_1, true,
-+			     cpu_to_be16(BIT(IP_TUNNEL_KEY_BIT) |
-+					 BIT(IP_TUNNEL_STRICT_BIT) |
-+					 BIT(IP_TUNNEL_ERSPAN_OPT_BIT)),
-+			     ip_tunnel_flags_1),
-+	IP_TUNNEL_FLAGS_TEST("conflict", ip_tunnel_flags_2_src, true,
-+			     VTI_ISVTI, ip_tunnel_flags_2_exp),
-+	IP_TUNNEL_FLAGS_TEST("new", ip_tunnel_flags_3_src,
-+			     /* This must be set to ``false`` once
-+			      * ``__IP_TUNNEL_FLAG_NUM`` goes above 17.
-+			      */
-+			     true, cpu_to_be16(BIT(IP_TUNNEL_VXLAN_OPT_BIT)),
-+			     ip_tunnel_flags_3_exp),
-+};
-+
-+static void
-+ip_tunnel_flags_test_case_to_desc(const struct ip_tunnel_flags_test *t,
-+				  char *desc)
++static void pfcp_del_sock(struct pfcp_dev *pfcp)
 +{
-+	strscpy(desc, t->name, KUNIT_PARAM_DESC_SIZE);
-+}
-+KUNIT_ARRAY_PARAM(ip_tunnel_flags_test, ip_tunnel_flags_test,
-+		  ip_tunnel_flags_test_case_to_desc);
-+
-+static void ip_tunnel_flags_test_run(struct kunit *test)
-+{
-+	const struct ip_tunnel_flags_test *t = test->param_value;
-+	IP_TUNNEL_DECLARE_FLAGS(src) = { };
-+	IP_TUNNEL_DECLARE_FLAGS(exp) = { };
-+	IP_TUNNEL_DECLARE_FLAGS(out);
-+
-+	for (u32 j = 0; j < t->src_num; j++)
-+		__set_bit(t->src_bits[j], src);
-+	for (u32 j = 0; j < t->exp_num; j++)
-+		__set_bit(t->exp_bits[j], exp);
-+
-+	KUNIT_ASSERT_EQ(test, t->exp_comp,
-+			ip_tunnel_flags_is_be16_compat(src));
-+	KUNIT_ASSERT_EQ(test, (__force u16)t->exp_val,
-+			(__force u16)ip_tunnel_flags_to_be16(src));
-+
-+	ip_tunnel_flags_from_be16(out, t->exp_val);
-+	KUNIT_ASSERT_TRUE(test, __ipt_flag_op(bitmap_equal, exp, out));
++	udp_tunnel_sock_release(pfcp->sock);
++	pfcp->sock = NULL;
 +}
 +
-+static struct kunit_case net_test_cases[] = {
-+	KUNIT_CASE_PARAM(gso_test_func, gso_test_gen_params),
-+	KUNIT_CASE_PARAM(ip_tunnel_flags_test_run,
-+			 ip_tunnel_flags_test_gen_params),
-+	{ },
++static void pfcp_dev_uninit(struct net_device *dev)
++{
++	struct pfcp_dev *pfcp = netdev_priv(dev);
++
++	pfcp_del_sock(pfcp);
++}
++
++static int pfcp_dev_init(struct net_device *dev)
++{
++	struct pfcp_dev *pfcp = netdev_priv(dev);
++
++	pfcp->dev = dev;
++
++	return 0;
++}
++
++static const struct net_device_ops pfcp_netdev_ops = {
++	.ndo_init		= pfcp_dev_init,
++	.ndo_uninit		= pfcp_dev_uninit,
++	.ndo_get_stats64	= dev_get_tstats64,
 +};
 +
-+static struct kunit_suite net_test_suite = {
-+	.name		= "net_core",
-+	.test_cases	= net_test_cases,
++static const struct device_type pfcp_type = {
++	.name = "pfcp",
 +};
-+kunit_test_suite(net_test_suite);
- 
-+MODULE_DESCRIPTION("KUnit tests for networking core");
- MODULE_LICENSE("GPL");
--MODULE_DESCRIPTION("KUnit tests for segmentation offload");
++
++static void pfcp_link_setup(struct net_device *dev)
++{
++	dev->netdev_ops = &pfcp_netdev_ops;
++	dev->needs_free_netdev = true;
++	SET_NETDEV_DEVTYPE(dev, &pfcp_type);
++
++	dev->hard_header_len = 0;
++	dev->addr_len = 0;
++
++	dev->type = ARPHRD_NONE;
++	dev->flags = IFF_POINTOPOINT | IFF_NOARP | IFF_MULTICAST;
++	dev->priv_flags |= IFF_NO_QUEUE;
++
++	netif_keep_dst(dev);
++}
++
++static struct socket *pfcp_create_sock(struct pfcp_dev *pfcp)
++{
++	struct udp_tunnel_sock_cfg tuncfg = {};
++	struct udp_port_cfg udp_conf = {
++		.local_ip.s_addr	= htonl(INADDR_ANY),
++		.family			= AF_INET,
++	};
++	struct net *net = pfcp->net;
++	struct socket *sock;
++	int err;
++
++	udp_conf.local_udp_port = htons(PFCP_PORT);
++
++	err = udp_sock_create(net, &udp_conf, &sock);
++	if (err)
++		return ERR_PTR(err);
++
++	setup_udp_tunnel_sock(net, sock, &tuncfg);
++
++	return sock;
++}
++
++static int pfcp_add_sock(struct pfcp_dev *pfcp)
++{
++	pfcp->sock = pfcp_create_sock(pfcp);
++
++	return PTR_ERR_OR_ZERO(pfcp->sock);
++}
++
++static int pfcp_newlink(struct net *net, struct net_device *dev,
++			struct nlattr *tb[], struct nlattr *data[],
++			struct netlink_ext_ack *extack)
++{
++	struct pfcp_dev *pfcp = netdev_priv(dev);
++	struct pfcp_net *pn;
++	int err;
++
++	pfcp->net = net;
++
++	err = pfcp_add_sock(pfcp);
++	if (err) {
++		netdev_dbg(dev, "failed to add pfcp socket %d\n", err);
++		goto exit_err;
++	}
++
++	err = register_netdevice(dev);
++	if (err) {
++		netdev_dbg(dev, "failed to register pfcp netdev %d\n", err);
++		goto exit_del_pfcp_sock;
++	}
++
++	pn = net_generic(dev_net(dev), pfcp_net_id);
++	list_add_rcu(&pfcp->list, &pn->pfcp_dev_list);
++
++	netdev_dbg(dev, "registered new PFCP interface\n");
++
++	return 0;
++
++exit_del_pfcp_sock:
++	pfcp_del_sock(pfcp);
++exit_err:
++	pfcp->net = NULL;
++	return err;
++}
++
++static void pfcp_dellink(struct net_device *dev, struct list_head *head)
++{
++	struct pfcp_dev *pfcp = netdev_priv(dev);
++
++	list_del_rcu(&pfcp->list);
++	unregister_netdevice_queue(dev, head);
++}
++
++static struct rtnl_link_ops pfcp_link_ops __read_mostly = {
++	.kind		= "pfcp",
++	.priv_size	= sizeof(struct pfcp_dev),
++	.setup		= pfcp_link_setup,
++	.newlink	= pfcp_newlink,
++	.dellink	= pfcp_dellink,
++};
++
++static int __net_init pfcp_net_init(struct net *net)
++{
++	struct pfcp_net *pn = net_generic(net, pfcp_net_id);
++
++	INIT_LIST_HEAD(&pn->pfcp_dev_list);
++	return 0;
++}
++
++static void __net_exit pfcp_net_exit(struct net *net)
++{
++	struct pfcp_net *pn = net_generic(net, pfcp_net_id);
++	struct pfcp_dev *pfcp;
++	LIST_HEAD(list);
++
++	rtnl_lock();
++	list_for_each_entry(pfcp, &pn->pfcp_dev_list, list)
++		pfcp_dellink(pfcp->dev, &list);
++
++	unregister_netdevice_many(&list);
++	rtnl_unlock();
++}
++
++static struct pernet_operations pfcp_net_ops = {
++	.init	= pfcp_net_init,
++	.exit	= pfcp_net_exit,
++	.id	= &pfcp_net_id,
++	.size	= sizeof(struct pfcp_net),
++};
++
++static int __init pfcp_init(void)
++{
++	int err;
++
++	err = register_pernet_subsys(&pfcp_net_ops);
++	if (err)
++		goto exit_err;
++
++	err = rtnl_link_register(&pfcp_link_ops);
++	if (err)
++		goto exit_unregister_subsys;
++	return 0;
++
++exit_unregister_subsys:
++	unregister_pernet_subsys(&pfcp_net_ops);
++exit_err:
++	pr_err("loading PFCP module failed: err %d\n", err);
++	return err;
++}
++late_initcall(pfcp_init);
++
++static void __exit pfcp_exit(void)
++{
++	rtnl_link_unregister(&pfcp_link_ops);
++	unregister_pernet_subsys(&pfcp_net_ops);
++
++	pr_info("PFCP module unloaded\n");
++}
++module_exit(pfcp_exit);
++
++MODULE_LICENSE("GPL");
++MODULE_AUTHOR("Wojciech Drewek <wojciech.drewek@intel.com>");
++MODULE_DESCRIPTION("Interface driver for PFCP encapsulated traffic");
++MODULE_ALIAS_RTNL_LINK("pfcp");
 -- 
 2.44.0
 
