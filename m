@@ -1,105 +1,142 @@
-Return-Path: <linux-kernel+bounces-121486-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-121487-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1F6C888E8BB
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 16:24:43 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 631F588E8BD
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 16:24:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B6C621F2F970
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 15:24:42 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 94FB31C30164
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 15:24:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 47E44147C7D;
-	Wed, 27 Mar 2024 15:15:18 +0000 (UTC)
-Received: from mx01.omp.ru (mx01.omp.ru [90.154.21.10])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B409413C3D7;
+	Wed, 27 Mar 2024 15:16:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Xjdniq+W"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1C35C13BC10
-	for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 15:15:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.154.21.10
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E632A13BC25;
+	Wed, 27 Mar 2024 15:16:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711552517; cv=none; b=Oc995ZUeGzZhXN4oHLi+4EjtUTHj1tG75ylu8X7CNz8NVBmilX4QR3NIY0Ou8xF8pKlQAOUK1J45vRFK2BqK6BoAePr1xS0VoMcQJlVZBbmoLw67HgKuVJ/n5HjndBL6131nPTqjO6zf+44jcSHMXsSGROfzjPXqyuEuETee2wY=
+	t=1711552576; cv=none; b=lU6Ly4AfGGz8YQbEHvkvwzZi4jc5ZDVV/rftP9Fbjq4DjV2h8bWQmEpGM+otDY4uv1Gynt3ie8N1HekB+4MofZIOpyC1ncsgPtN/1Y+DoBfcneON8RnNSa7Qy2HDm6HHsH5kaY8rOoOVeRPkbcSFSJBryyFJG3D19eIFWFjhw4k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711552517; c=relaxed/simple;
-	bh=FB9KijKmhBySPWMwoOs2QzeggUljSCO/bu79JB0xETo=;
-	h=Subject:To:CC:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=Hxc0qLFw0Ze1Srx6by7pDQ4tfkKEFhEekK8Mcg0U3vrwHCondns6yzoZVdFnhNaJIJZMHFv3wtw7AuMsYo5+NXpRy4BRlO1tbkN1tlzLXjCbPgSgzlnk8iI0x4qKeycA3k/tXLLVCxG+S+J3iywjXcJLAXlXneWzIhoZRZD7Od4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=omp.ru; spf=pass smtp.mailfrom=omp.ru; arc=none smtp.client-ip=90.154.21.10
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=omp.ru
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=omp.ru
-Received: from [192.168.1.105] (31.173.86.12) by msexch01.omp.ru (10.188.4.12)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.2.1258.12; Wed, 27 Mar
- 2024 18:15:09 +0300
-Subject: Re: [PATCH v2] udf: udftime: prevent overflow in
- udf_disk_stamp_to_time()
-To: Roman Smirnov <r.smirnov@omp.ru>, Jan Kara <jack@suse.com>
-CC: <linux-kernel@vger.kernel.org>, <lvc-project@linuxtesting.org>, Jan Kara
-	<jack@suse.cz>
-References: <20240327132755.13945-1-r.smirnov@omp.ru>
-From: Sergey Shtylyov <s.shtylyov@omp.ru>
-Organization: Open Mobile Platform
-Message-ID: <703e52b1-82f0-13fb-94b8-2d6ff16598e8@omp.ru>
-Date: Wed, 27 Mar 2024 18:15:08 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+	s=arc-20240116; t=1711552576; c=relaxed/simple;
+	bh=3mjqSFARTqJWeXDaQOm2tUVu0IHBSuFehHS5Hx4/O2g=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=BrUtkw5g/i1HTzLEqUKP1aJZSAXlsje9N4JGEa96dHiVe1DI4JE3+pr9CK/26Qoclrr0W27MMMUHWwXZlDksnWHFmYf9cva6iKfWpD33AmRwLwiTgFuyKgCj3pFinLejdc2Kjxc3AUEYUhpSALUAFbfKwSba36su5WQjQwh5iSw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Xjdniq+W; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0DE84C433C7;
+	Wed, 27 Mar 2024 15:16:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1711552575;
+	bh=3mjqSFARTqJWeXDaQOm2tUVu0IHBSuFehHS5Hx4/O2g=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=Xjdniq+WJyCdYl8RowcIqwQ+T6OKOC/ulCvVN9gyybhgXcn86gpxQbusTXDQ3EY2U
+	 l0sJhJymwqZsW+4//00COrtoR+EQjGupyH9/kRDW3LY7ec+/vvm6oWrP3oYHh2EbRu
+	 8ovFliBkwALW0cngJy36sVFunwwca1mC+J7VLbtJhZM7CBHzBYinh2Fd4/W9trBrc3
+	 1EOJlqIqKEyrWRpt0yogqJlSghIRJ4E8Tptj0GFagIY6OIR4AGTkzQ6kNs+Mo+voGh
+	 3jb9txE1vb4iHsWrcRZT44FWAqVPD3+QW+QVADCgWLWJOuPWpNpf5eBwTz0gGWOrbO
+	 R3dmQRj6Ct5eA==
+Date: Wed, 27 Mar 2024 08:16:13 -0700
+From: Nathan Chancellor <nathan@kernel.org>
+To: Sasha Levin <sashal@kernel.org>
+Cc: stable@vger.kernel.org, Michael Ellerman <mpe@ellerman.id.au>,
+	linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+	llvm@lists.linux.dev
+Subject: Re: FAILED: Patch "powerpc: xor_vmx: Add '-mhard-float' to CFLAGS"
+ failed to apply to 5.10-stable tree
+Message-ID: <20240327151613.GA1153323@dev-arch.thelio-3990X>
+References: <20240327122007.2835763-1-sashal@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20240327132755.13945-1-r.smirnov@omp.ru>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: msexch01.omp.ru (10.188.4.12) To msexch01.omp.ru
- (10.188.4.12)
-X-KSE-ServerInfo: msexch01.omp.ru, 9
-X-KSE-AntiSpam-Interceptor-Info: scan successful
-X-KSE-AntiSpam-Version: 6.1.0, Database issued on: 03/27/2024 14:57:27
-X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
-X-KSE-AntiSpam-Method: none
-X-KSE-AntiSpam-Rate: 0
-X-KSE-AntiSpam-Info: Lua profiles 184448 [Mar 27 2024]
-X-KSE-AntiSpam-Info: Version: 6.1.0.4
-X-KSE-AntiSpam-Info: Envelope from: s.shtylyov@omp.ru
-X-KSE-AntiSpam-Info: LuaCore: 13 0.3.13
- 9d58e50253d512f89cb08f71c87c671a2d0a1bca
-X-KSE-AntiSpam-Info: {rep_avail}
-X-KSE-AntiSpam-Info:
-	omp.ru:7.1.1;127.0.0.199:7.1.2;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1
-X-KSE-AntiSpam-Info: ApMailHostAddress: 31.173.86.12
-X-KSE-AntiSpam-Info: Rate: 0
-X-KSE-AntiSpam-Info: Status: not_detected
-X-KSE-AntiSpam-Info: Method: none
-X-KSE-AntiSpam-Info: Auth:dmarc=temperror header.from=omp.ru;spf=temperror
- smtp.mailfrom=omp.ru;dkim=none
-X-KSE-Antiphishing-Info: Clean
-X-KSE-Antiphishing-ScanningType: Heuristic
-X-KSE-Antiphishing-Method: None
-X-KSE-Antiphishing-Bases: 03/27/2024 15:01:00
-X-KSE-Antivirus-Interceptor-Info: scan successful
-X-KSE-Antivirus-Info: Clean, bases: 3/27/2024 10:50:00 AM
-X-KSE-Attachment-Filter-Triggered-Rules: Clean
-X-KSE-Attachment-Filter-Triggered-Filters: Clean
-X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
+Content-Type: multipart/mixed; boundary="YKLJLOt2Iod++WF+"
+Content-Disposition: inline
+In-Reply-To: <20240327122007.2835763-1-sashal@kernel.org>
 
-On 3/27/24 4:27 PM, Roman Smirnov wrote:
 
-> An overflow can occur in a situation where src.centiseconds
-> takes the value of 255. This situation is unlikely, but there
-> is no validation check anywere in the code.
+--YKLJLOt2Iod++WF+
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Wed, Mar 27, 2024 at 08:20:07AM -0400, Sasha Levin wrote:
+> The patch below does not apply to the 5.10-stable tree.
+> If someone wants it applied there, or to any other stable or longterm
+> tree, then please email the backport, including the original git commit
+> id to <stable@vger.kernel.org>.
+..
+> ------------------ original commit in Linus's tree ------------------
 > 
-> Found by Linux Verification Center (linuxtesting.org) with Svace.
-> 
-> Suggested-by: Jan Kara <jack@suse.cz>
-> Signed-off-by: Roman Smirnov <r.smirnov@omp.ru>
+> From 35f20786c481d5ced9283ff42de5c69b65e5ed13 Mon Sep 17 00:00:00 2001
+> From: Nathan Chancellor <nathan@kernel.org>
+> Date: Sat, 27 Jan 2024 11:07:43 -0700
+> Subject: [PATCH] powerpc: xor_vmx: Add '-mhard-float' to CFLAGS
 
-Reviewed-by: Sergey Shtylyov <s.shtylyov@omp.ru>
+I have attached a backport that will work for 5.15 and earlier. I think
+you worked around this conflict in 5.15 by taking 04e85bbf71c9 but I am
+not sure that is a smart idea. I think it might just be better to drop
+that dependency and apply this version in 5.15.
 
-[...]
+Cheers,
+Nathan
 
-MBR, Sergey
+--YKLJLOt2Iod++WF+
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: attachment;
+	filename="0001-powerpc-xor_vmx-Add-mhard-float-to-CFLAGS.patch"
+
+From c6cb80d94871cbb4ff151f7eb2586cadeb364ef7 Mon Sep 17 00:00:00 2001
+From: Nathan Chancellor <nathan@kernel.org>
+Date: Sat, 27 Jan 2024 11:07:43 -0700
+Subject: [PATCH 4.19 to 5.15] powerpc: xor_vmx: Add '-mhard-float' to CFLAGS
+
+commit 35f20786c481d5ced9283ff42de5c69b65e5ed13 upstream.
+
+arch/powerpc/lib/xor_vmx.o is built with '-msoft-float' (from the main
+powerpc Makefile) and '-maltivec' (from its CFLAGS), which causes an
+error when building with clang after a recent change in main:
+
+  error: option '-msoft-float' cannot be specified with '-maltivec'
+  make[6]: *** [scripts/Makefile.build:243: arch/powerpc/lib/xor_vmx.o] Error 1
+
+Explicitly add '-mhard-float' before '-maltivec' in xor_vmx.o's CFLAGS
+to override the previous inclusion of '-msoft-float' (as the last option
+wins), which matches how other areas of the kernel use '-maltivec', such
+as AMDGPU.
+
+Cc: stable@vger.kernel.org
+Closes: https://github.com/ClangBuiltLinux/linux/issues/1986
+Link: https://github.com/llvm/llvm-project/commit/4792f912b232141ecba4cbae538873be3c28556c
+Signed-off-by: Nathan Chancellor <nathan@kernel.org>
+Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+Link: https://msgid.link/20240127-ppc-xor_vmx-drop-msoft-float-v1-1-f24140e81376@kernel.org
+[nathan: Fixed conflicts due to lack of 04e85bbf71c9 in older trees]
+Signed-off-by: Nathan Chancellor <nathan@kernel.org>
+---
+ arch/powerpc/lib/Makefile | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/arch/powerpc/lib/Makefile b/arch/powerpc/lib/Makefile
+index 321cab5c3ea0..bd5012aa94e3 100644
+--- a/arch/powerpc/lib/Makefile
++++ b/arch/powerpc/lib/Makefile
+@@ -67,6 +67,6 @@ obj-$(CONFIG_PPC_LIB_RHEAP) += rheap.o
+ obj-$(CONFIG_FTR_FIXUP_SELFTEST) += feature-fixups-test.o
+ 
+ obj-$(CONFIG_ALTIVEC)	+= xor_vmx.o xor_vmx_glue.o
+-CFLAGS_xor_vmx.o += -maltivec $(call cc-option,-mabi=altivec)
++CFLAGS_xor_vmx.o += -mhard-float -maltivec $(call cc-option,-mabi=altivec)
+ 
+ obj-$(CONFIG_PPC64) += $(obj64-y)
+-- 
+2.44.0
+
+
+--YKLJLOt2Iod++WF+--
 
