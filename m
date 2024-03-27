@@ -1,245 +1,167 @@
-Return-Path: <linux-kernel+bounces-120423-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-120424-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 43F8D88D71F
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 08:20:36 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2BFE688D722
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 08:20:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 676B01C25192
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 07:20:35 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8C152B225CD
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 07:20:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AB90D2C195;
-	Wed, 27 Mar 2024 07:20:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9338C28DD5;
+	Wed, 27 Mar 2024 07:20:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=marvell.com header.i=@marvell.com header.b="M7SGFJYk"
-Received: from mx0b-0016f401.pphosted.com (mx0a-0016f401.pphosted.com [67.231.148.174])
+	dkim=pass (2048-bit key) header.d=ziswiler.com header.i=marcel@ziswiler.com header.b="B+dGVDVn"
+Received: from mout.perfora.net (mout.perfora.net [74.208.4.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 66F4B2C694
-	for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 07:20:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=67.231.148.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BB8D6225D9;
+	Wed, 27 Mar 2024 07:20:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.208.4.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711524007; cv=none; b=ehOJVWntZHCzfozQtmsRvI+7HU6zUMIKkY5nUzRArIsjad92Y/hEPV4Tog7Q9m8o48tXttx/2Fyqz7EprjOUBzg81nUWSuDjSEx9pBrXno+pWf23YOEBuWM2tjCZtJn/z1uu9oZMRwhgVuw9oXOZ31iAn7bKGmYlS81IOw4uWXI=
+	t=1711524048; cv=none; b=qjdV3cgWQGi5mEgBLDChkjmQY6gaPEJpbpvzdSAquU2hmm6/RXE/14hNf/9YEbXnlxLCJQ3abIt0wOmqdV/XRy6qfx6rXaW8B9E/maDPw+4tdP7OiN01GWbOIC4MLQY5eh0YgX4Y1fkYJuZ+Ls2LSu7tNRXpOcpbTcZSyj8IW+4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711524007; c=relaxed/simple;
-	bh=ZTq+4qNtCP1azUpNOB0zEmq/9GajT6vQsmv20g0qWQA=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=UScqfV7pEe7A5si7DGgkD5xdvuJVl93/Kz6sQ/qKqPPf9hXR0i9DQTFoBHMMEzF/Zjz+bBObS+jqoWR12nEbxxOh0uj+doEvjPRa+PvdoxbD+xV13KABz/pBG2sfq2IbhMupzm5/mQKN2SddrJwRnAUrWKJSngv25u7+tH+leCM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=marvell.com; spf=pass smtp.mailfrom=marvell.com; dkim=pass (2048-bit key) header.d=marvell.com header.i=@marvell.com header.b=M7SGFJYk; arc=none smtp.client-ip=67.231.148.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=marvell.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=marvell.com
-Received: from pps.filterd (m0045849.ppops.net [127.0.0.1])
-	by mx0a-0016f401.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 42R2R1Sl000794;
-	Wed, 27 Mar 2024 00:19:41 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=
-	from:to:cc:subject:date:message-id:in-reply-to:references
-	:mime-version:content-transfer-encoding:content-type; s=
-	pfpt0220; bh=Z/l/HMo+rs1PzPxqk7ImSDlkM44RFvo9y6uaZ84wbUw=; b=M7S
-	GFJYkQhEEpFZV//M1gm4xcL0WWo9xvBwRA4CrafCKG6Y3IL97VT6Hj66QvEcj6z1
-	kc7hXYTFqYzmaNsEE81f1uG95C6Jn205M6YibLpaAIa30PdYwhERz0RAiYamaxWk
-	dGuhfFDAg7bUmG1K9lEyoWHxzhW9HPrGcx4Mm6HFdRV60cRfSFU/KORgvSh0rdhO
-	C9JwjqN6T04Utf9NZX6zZFfTvHxI6q+0p7ZmEgJiC10fgzmP5mpUz9hw3kV8nzsY
-	cw11aIHci2QwlSVqYQ96ocihzWeBrIsB3XS73Dnfnzxw2sOvaU/cIGtxwDNEtWX5
-	peuxsIVcpOw+qS+yo6Q==
-Received: from dc6wp-exch02.marvell.com ([4.21.29.225])
-	by mx0a-0016f401.pphosted.com (PPS) with ESMTPS id 3x4ap80wum-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 27 Mar 2024 00:19:41 -0700 (PDT)
-Received: from DC6WP-EXCH02.marvell.com (10.76.176.209) by
- DC6WP-EXCH02.marvell.com (10.76.176.209) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.4; Wed, 27 Mar 2024 00:19:40 -0700
-Received: from maili.marvell.com (10.69.176.80) by DC6WP-EXCH02.marvell.com
- (10.76.176.209) with Microsoft SMTP Server id 15.2.1544.4 via Frontend
- Transport; Wed, 27 Mar 2024 00:19:40 -0700
-Received: from IPBU-BLR-SERVER1.marvell.com (IPBU-BLR-SERVER1.marvell.com [10.28.8.41])
-	by maili.marvell.com (Postfix) with ESMTP id B1EDE3F70BF;
-	Wed, 27 Mar 2024 00:19:17 -0700 (PDT)
-From: Gowthami Thiagarajan <gthiagarajan@marvell.com>
-To: <will@kernel.org>, <mark.rutland@arm.com>,
-        <linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>
-CC: <sgoutham@marvell.com>, <bbhushan2@marvell.com>, <gcherian@marvell.com>,
-        Gowthami Thiagarajan <gthiagarajan@marvell.com>
-Subject: [RESEND PATCH v4 3/3] perf/marvell : Odyssey LLC-TAD performance monitor
-Date: Wed, 27 Mar 2024 12:48:32 +0530
-Message-ID: <20240327071832.1556576-4-gthiagarajan@marvell.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20240327071832.1556576-1-gthiagarajan@marvell.com>
-References: <20240327071832.1556576-1-gthiagarajan@marvell.com>
+	s=arc-20240116; t=1711524048; c=relaxed/simple;
+	bh=0mw3Z0iuLK/Oy5qllO5ABVscdcllvCYUuXhvUv08Jv4=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=cHz931wdOigztEtkTBwus3e3dwAII9FkCYa60fErt1ptdK9Leotk08Eo2aSqt0e8/Cha07gHN7vclOpb72duK6FQshbLwmCWLnFg1HLbU9C/nDR2OUPaFNMvUUE0p5uMjBSdsWSYQb/fnUHihRTuQbrpfyrCEXf4PhyuEQ51qRk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziswiler.com; spf=pass smtp.mailfrom=ziswiler.com; dkim=pass (2048-bit key) header.d=ziswiler.com header.i=marcel@ziswiler.com header.b=B+dGVDVn; arc=none smtp.client-ip=74.208.4.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziswiler.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ziswiler.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ziswiler.com;
+	s=s1-ionos; t=1711524005; x=1712128805; i=marcel@ziswiler.com;
+	bh=wnNVEOncldO1On7KO8fAvEAupvlzSNB7wVXjAeDRXl8=;
+	h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
+	b=B+dGVDVnTFoO4u/IWt9pIZKnBjwU3o/Sn78+04Q3wr3UDgNoZmLYJPzCaa31iYTF
+	 PvVYMcBVryIIPFI1dO7QbcHZuzdPG0RUGOI+T/c7CrrwvMsaYcLOVDKr45PSIDTnY
+	 7WI662hjcCHUbauBAHMBaaHdqcI9dpHqC3nSfhnSeWeqgjhhR/s31JFQrC2eXPeMn
+	 3JxvZiIWvTYy2t8tE792StegeSHOImTcJtKANLv+YFKY18Erp5tkvx3eRhy8IBn7I
+	 OvNgPjTGe1S/skQxK79vuFWsD0MDWfckTOj7Eq+99zQdpdSV2VznpwOFVvskoJdtV
+	 tY+od10URcnvELY6aw==
+X-UI-Sender-Class: 55c96926-9e95-11ee-ae09-1f7a4046a0f6
+Received: from localhost.localdomain ([213.55.224.253]) by mrelay.perfora.net
+ (mreueus002 [74.208.5.2]) with ESMTPSA (Nemesis) id 0MVen3-1sMdNT3wFD-00OqWK;
+ Wed, 27 Mar 2024 08:20:05 +0100
+From: Marcel Ziswiler <marcel@ziswiler.com>
+To: linux-phy@lists.infradead.org
+Cc: linux-imx@nxp.com,
+	linux-kernel@vger.kernel.org,
+	kernel@pengutronix.de,
+	Richard Zhu <hongxing.zhu@nxp.com>,
+	Lucas Stach <l.stach@pengutronix.de>,
+	linux-arm-kernel@lists.infradead.org,
+	stable@vger.kernel.org,
+	Marcel Ziswiler <marcel.ziswiler@toradex.com>,
+	Fabio Estevam <festevam@gmail.com>,
+	Heiko Stuebner <heiko@sntech.de>,
+	Kishon Vijay Abraham I <kishon@kernel.org>,
+	Rob Herring <robh@kernel.org>,
+	Sascha Hauer <s.hauer@pengutronix.de>,
+	Sergio Paracuellos <sergio.paracuellos@gmail.com>,
+	Shawn Guo <shawnguo@kernel.org>,
+	Tim Harvey <tharvey@gateworks.com>,
+	Vinod Koul <vkoul@kernel.org>,
+	Yang Li <yang.lee@linux.alibaba.com>,
+	imx@lists.linux.dev
+Subject: [PATCH v2] phy: freescale: imx8m-pcie: fix pcie link-up instability
+Date: Wed, 27 Mar 2024 08:19:37 +0100
+Message-ID: <20240327071946.8869-1-marcel@ziswiler.com>
+X-Mailer: git-send-email 2.44.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-GUID: RgNVzhONDei-Vo2_dyxPJ48RLMZVCjSD
-X-Proofpoint-ORIG-GUID: RgNVzhONDei-Vo2_dyxPJ48RLMZVCjSD
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-03-27_04,2024-03-21_02,2023-05-22_02
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:lbH4shU1mJFfwL/g76O9vJC4HBEY1pkPhgwYOBwWvJviKC6wYBk
+ eSgVNuWN7mq68FVIVZu8Ignbe3vMNcizoCe9oBipJoJlfDe7Jctbka4ZbAcMVtjeDzkQDg8
+ HZRospSzMu7DDOIz6yqf37LI/j1T5QUmEZQpvmr7fLyj128cxl6RnwoRuSkU5PIdMLG6ucU
+ SY9JIMQnO60+H5A2M4pJw==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:CIxx/7qf/R8=;cr8oAoSV4b4/HSUiSremUO3fQ1n
+ GZac4UIL79J6yAl89goDCpau85ZNY6AprrHuSrxuBINAhNjtX9j+gQLbd0CReMXyvY8slULHt
+ RnvU8jAd/OLNLUo5dzTNBqulw3FKD3pKS21x2e0HB3j3dHvuDSb57IpIpOCIBMdJORUIFGLUN
+ viPumuf2NyBMt+keg41XiY826R+ycUSnT94TFZHhPSyTPYSY5ByJbsFA5jlK0C+bX3tDZBglK
+ XsudkDcuQIsOw2Cnbt90nctrOe5Y0+PTvO3DbNA8ByKfdn4m4VTvYJM2ZOy9D7hVD36ui1pVQ
+ wRRWgTyY02hb5QCYXr8yrmmCO0cuT8ogBxxNPjcX8zW36Gsr2KnmgIc7E0+xwAPNGZceN8cwT
+ hWocNhGrijq46m/nE6qjY22woNc37GP5ucuPxS/eBsOMwh23dtzG7KQ6KzXZfGFNKhzl88C+r
+ 6jPAvm84oDavTj7X/r7G7tMCaJgrcS1v2us0CzW1LbUpGiz/ibNLPxuy3KB6dfAQ0K7pK+zce
+ DJ1qfM8Azr1iiwCwm1wCQQBnx0JBtFf7xbduYQZ+WQbohbOAc3jYLBnQdJm5+oksFAYjgyjCN
+ qR8irzH/IQdhkaXIBg7RA/RztGUP9oNlCsRKsHo2QTiHFmD3IEOntuQQu/Zc6Zm8cQAAMm2eR
+ pAUxJ7kzQLxQfvQVIADTRuGuUm0MGOmGN3rG070Hn3oO1o2WSpSLqhjkn1BiOfHq9mt2aWOHR
+ Ujiu6Q+vXMtEZFAGVCQrTIKTi56sv8rrI7xqMw1JZUnAddE68YCgXY=
 
-Each TAD provides eight 64-bit counters for monitoring
-cache behavior.The driver always configures the same counter for
-all the TADs. The user would end up effectively reserving one of
-eight counters in every TAD to look across all TADs.
-The occurrences of events are aggregated and presented to the user
-at the end of running the workload. The driver does not provide a
-way for the user to partition TADs so that different TADs are used for
-different applications.
+From: Marcel Ziswiler <marcel.ziswiler@toradex.com>
 
-The performance events reflect various internal or interface activities.
-By combining the values from multiple performance counters, cache
-performance can be measured in terms such as: cache miss rate, cache
-allocations, interface retry rate, internal resource occupancy, etc.
+On the i.MX 8M Mini, the AUX_PLL_REFCLK_SEL has to be left at its reset
+default of AUX_IN (PLL clock).
 
-Each supported counter's event and formatting information is exposed
-to sysfs at /sys/devices/tad/. Use perf tool stat command to measure
-the pmu events. For instance:
+Background Information:
+In our automated testing setup, we use Delock Mini-PCIe SATA cards [1].
+While this setup has proven very stable overall we noticed upstream on
+the i.MX 8M Mini fails quite regularly (about 50/50) to bring up the
+PCIe link while with NXP's downstream BSP 5.15.71_2.2.2 it always works.
+As that old downstream stuff was quite different, I first also tried
+NXP's latest downstream BSP 6.1.55_2.2.0 which from a PCIe point of view
+is fairly vanilla, however, also there the PCIe link-up was not stable.
+Comparing and debugging I noticed that upstream explicitly configures
+the AUX_PLL_REFCLK_SEL to I_PLL_REFCLK_FROM_SYSPLL while working
+downstream [2] leaving it at reset defaults of AUX_IN (PLL clock).
+Unfortunately, the TRM does not mention any further details about this
+register (both for the i.MX 8M Mini as well as the Plus).
+NXP confirmed their validation codes for the i.MX8MM PCIe doesn't
+configure cmn_reg063 (offset: 0x18C).
+BTW: On the i.MX 8M Plus we have not seen any issues with PCIe with the
+exact same setup which is why I left it unchanged.
 
-perf stat -e tad_hit_ltg,tad_hit_dtg <workload>
+[1] https://www.delock.com/produkt/95233/merkmale.html
+[2] https://github.com/nxp-imx/linux-imx/blob/lf-5.15.71-2.2.0/drivers/pci=
+/controller/dwc/pci-imx6.c#L1548
 
-Signed-off-by: Gowthami Thiagarajan <gthiagarajan@marvell.com>
----
- drivers/perf/marvell_cn10k_tad_pmu.c | 62 ++++++++++++++++++++++++++--
- 1 file changed, 59 insertions(+), 3 deletions(-)
+Fixes: 1aa97b002258 ("phy: freescale: pcie: Initialize the imx8 pcie stand=
+alone phy driver")
 
-diff --git a/drivers/perf/marvell_cn10k_tad_pmu.c b/drivers/perf/marvell_cn10k_tad_pmu.c
-index fec8e82edb95..df6569f7a06f 100644
---- a/drivers/perf/marvell_cn10k_tad_pmu.c
-+++ b/drivers/perf/marvell_cn10k_tad_pmu.c
-@@ -37,6 +37,15 @@ struct tad_pmu {
- 	DECLARE_BITMAP(counters_map, TAD_MAX_COUNTERS);
- };
- 
-+enum mrvl_tad_pmu_version {
-+	TAD_PMU_V1 = 1,
-+	TAD_PMU_V2,
-+};
-+
-+struct tad_pmu_data {
-+	int id;
-+};
-+
- static int tad_pmu_cpuhp_state;
- 
- static void tad_pmu_event_counter_read(struct perf_event *event)
-@@ -214,6 +223,24 @@ static const struct attribute_group tad_pmu_events_attr_group = {
- 	.attrs = tad_pmu_event_attrs,
- };
- 
-+static struct attribute *ody_tad_pmu_event_attrs[] = {
-+	TAD_PMU_EVENT_ATTR(tad_req_msh_in_exlmn, 0x3),
-+	TAD_PMU_EVENT_ATTR(tad_alloc_dtg, 0x1a),
-+	TAD_PMU_EVENT_ATTR(tad_alloc_ltg, 0x1b),
-+	TAD_PMU_EVENT_ATTR(tad_alloc_any, 0x1c),
-+	TAD_PMU_EVENT_ATTR(tad_hit_dtg, 0x1d),
-+	TAD_PMU_EVENT_ATTR(tad_hit_ltg, 0x1e),
-+	TAD_PMU_EVENT_ATTR(tad_hit_any, 0x1f),
-+	TAD_PMU_EVENT_ATTR(tad_tag_rd, 0x20),
-+	TAD_PMU_EVENT_ATTR(tad_tot_cycle, 0xFF),
-+	NULL
-+};
-+
-+static const struct attribute_group ody_tad_pmu_events_attr_group = {
-+	.name = "events",
-+	.attrs = ody_tad_pmu_event_attrs,
-+};
-+
- PMU_FORMAT_ATTR(event, "config:0-7");
- 
- static struct attribute *tad_pmu_format_attrs[] = {
-@@ -252,8 +279,16 @@ static const struct attribute_group *tad_pmu_attr_groups[] = {
- 	NULL
- };
- 
-+static const struct attribute_group *ody_tad_pmu_attr_groups[] = {
-+	&ody_tad_pmu_events_attr_group,
-+	&tad_pmu_format_attr_group,
-+	&tad_pmu_cpumask_attr_group,
-+	NULL
-+};
-+
- static int tad_pmu_probe(struct platform_device *pdev)
- {
-+	const struct tad_pmu_data *dev_data;
- 	struct device *dev = &pdev->dev;
- 	struct tad_region *regions;
- 	struct tad_pmu *tad_pmu;
-@@ -261,6 +296,7 @@ static int tad_pmu_probe(struct platform_device *pdev)
- 	u32 tad_pmu_page_size;
- 	u32 tad_page_size;
- 	u32 tad_cnt;
-+	int version;
- 	int i, ret;
- 	char *name;
- 
-@@ -270,6 +306,13 @@ static int tad_pmu_probe(struct platform_device *pdev)
- 
- 	platform_set_drvdata(pdev, tad_pmu);
- 
-+	dev_data = device_get_match_data(&pdev->dev);
-+	if (!dev_data) {
-+		dev_err(&pdev->dev, "Error: No device match data found\n");
-+		return -ENODEV;
-+	}
-+	version = dev_data->id;
-+
- 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
- 	if (!res) {
- 		dev_err(&pdev->dev, "Mem resource not found\n");
-@@ -319,7 +362,6 @@ static int tad_pmu_probe(struct platform_device *pdev)
- 	tad_pmu->pmu = (struct pmu) {
- 
- 		.module		= THIS_MODULE,
--		.attr_groups	= tad_pmu_attr_groups,
- 		.capabilities	= PERF_PMU_CAP_NO_EXCLUDE |
- 				  PERF_PMU_CAP_NO_INTERRUPT,
- 		.task_ctx_nr	= perf_invalid_context,
-@@ -332,6 +374,11 @@ static int tad_pmu_probe(struct platform_device *pdev)
- 		.read		= tad_pmu_event_counter_read,
- 	};
- 
-+	if (version == TAD_PMU_V1)
-+		tad_pmu->pmu.attr_groups = tad_pmu_attr_groups;
-+	else
-+		tad_pmu->pmu.attr_groups = ody_tad_pmu_attr_groups;
-+
- 	tad_pmu->cpu = raw_smp_processor_id();
- 
- 	/* Register pmu instance for cpu hotplug */
-@@ -362,16 +409,25 @@ static int tad_pmu_remove(struct platform_device *pdev)
- 	return 0;
- }
- 
-+static const struct tad_pmu_data tad_pmu_data = {
-+	.id   = TAD_PMU_V1,
-+};
-+
-+static const struct tad_pmu_data tad_pmu_v2_data = {
-+	.id   = TAD_PMU_V2,
-+};
-+
- #ifdef CONFIG_OF
- static const struct of_device_id tad_pmu_of_match[] = {
--	{ .compatible = "marvell,cn10k-tad-pmu", },
-+	{ .compatible = "marvell,cn10k-tad-pmu", .data = &tad_pmu_data },
- 	{},
- };
- #endif
- 
- #ifdef CONFIG_ACPI
- static const struct acpi_device_id tad_pmu_acpi_match[] = {
--	{"MRVL000B", 0},
-+	{"MRVL000B", (kernel_ulong_t)&tad_pmu_data},
-+	{"MRVL000D", (kernel_ulong_t)&tad_pmu_v2_data},
- 	{},
- };
- MODULE_DEVICE_TABLE(acpi, tad_pmu_acpi_match);
--- 
-2.25.1
+Cc: stable@vger.kernel.org # 6.1.x: ca679c49: phy: freescale: imx8m-pcie: =
+Refine i.MX8MM PCIe PHY driver
+Cc: stable@vger.kernel.org # 6.1.x
+Signed-off-by: Marcel Ziswiler <marcel.ziswiler@toradex.com>
+Reviewed-by: Richard Zhu <hongxing.zhu@nxp.com>
+Link: https://lore.kernel.org/all/AS8PR04MB867661386FEA07649771FBE18C362@A=
+S8PR04MB8676.eurprd04.prod.outlook.com
+
+=2D--
+
+Changes in v2:
+- Reword the commmit message.
+- Meld the background information from the cover letter into the commit
+  message as suggested by Fabio. Thanks!
+- Document NXP's confirmation from their validation codes and add
+  Richard Zhu's reviewed-by. Thanks!
+
+ drivers/phy/freescale/phy-fsl-imx8m-pcie.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/phy/freescale/phy-fsl-imx8m-pcie.c b/drivers/phy/free=
+scale/phy-fsl-imx8m-pcie.c
+index b700f52b7b67..11fcb1867118 100644
+=2D-- a/drivers/phy/freescale/phy-fsl-imx8m-pcie.c
++++ b/drivers/phy/freescale/phy-fsl-imx8m-pcie.c
+@@ -110,8 +110,10 @@ static int imx8_pcie_phy_power_on(struct phy *phy)
+ 		/* Source clock from SoC internal PLL */
+ 		writel(ANA_PLL_CLK_OUT_TO_EXT_IO_SEL,
+ 		       imx8_phy->base + IMX8MM_PCIE_PHY_CMN_REG062);
+-		writel(AUX_PLL_REFCLK_SEL_SYS_PLL,
+-		       imx8_phy->base + IMX8MM_PCIE_PHY_CMN_REG063);
++		if (imx8_phy->drvdata->variant !=3D IMX8MM) {
++			writel(AUX_PLL_REFCLK_SEL_SYS_PLL,
++			       imx8_phy->base + IMX8MM_PCIE_PHY_CMN_REG063);
++		}
+ 		val =3D ANA_AUX_RX_TX_SEL_TX | ANA_AUX_TX_TERM;
+ 		writel(val | ANA_AUX_RX_TERM_GND_EN,
+ 		       imx8_phy->base + IMX8MM_PCIE_PHY_CMN_REG064);
+=2D-
+2.44.0
 
 
