@@ -1,54 +1,58 @@
-Return-Path: <linux-kernel+bounces-121254-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-121255-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 18C3588E466
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 15:01:01 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id D294688E468
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 15:01:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B4DD329C35C
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 14:00:59 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F12371C2BCE1
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 14:01:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DEA451B04BC;
-	Wed, 27 Mar 2024 12:27:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 392B714264F;
+	Wed, 27 Mar 2024 12:27:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="S50GLx+O"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="rJSuPMyI"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 24A7D1422DE;
-	Wed, 27 Mar 2024 12:27:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 729EC130AD9;
+	Wed, 27 Mar 2024 12:27:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711542469; cv=none; b=pdMg9WZKl19OEU1ZR2ifxiocblCn33gAUA0PKx5+whTN77Mm3tRAoBIO6/hGkfSk9MZP8CW6TsI63CwzZCPtvN55kGnjZyTurhmUkqugyc0iwsHftMbDuiDjW0TYAnf6PEstjwBlboSvS7dHwW6wIkvEMg9Rx2urmjliAKCXvFE=
+	t=1711542472; cv=none; b=UynDWvNim4NSZVZcZkfNgGtdeZZw5uNgxneC8mhplWarFLgnlRJeIVCGMhAz/FWh5IH8UwpWhjdrAPOoJjJV4sJQxVJtX+uSnurzAbSU9dxF+CyAwMN/4Z9kWNNWwIrFWA1LBOsdkoAY2tn8bR9l0xKY1+9HWOP2LnmPEJYtnK0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711542469; c=relaxed/simple;
-	bh=GuThiu88jslfOpu4M5qOFs7lY97oECR5vktwUGjQj1c=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=lyri6sAM+WnYupYqhWsSpXHst6JGy/cLuJIG18t38eyAuy/bgY9KXFCvfLu72E1RGgAj7/abm4wHx4WUGcp3N40FpEsL61mLqvb+FcytFPIlpSErfP1nh0akaH3Ihej7zVNXVcn7Yb1WBxyoSJtpWRUkoFaEbMKnGbaYTAK33Qo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=S50GLx+O; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 44587C433F1;
-	Wed, 27 Mar 2024 12:27:48 +0000 (UTC)
+	s=arc-20240116; t=1711542472; c=relaxed/simple;
+	bh=4j7xOyFIOAoBexVjx0vKlpN7tyhmAHrYlqfIm6sy5n4=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=SSykLh0oxZwR+Huk07NMe+SC0LqxD4qU8fe4TLPUAV39fuNVXgnSfxywMUXEsFOWuLKuE8fCWqCKal+uym6wm5ZoMAzoPU44RsIR50x79nVE+rRMN2KIcYGJrLqmCMyPTRFLp6+FDhgcM/K4QySjSs/fpgmIiUeARpj1+0oXNNQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=rJSuPMyI; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D7D92C43394;
+	Wed, 27 Mar 2024 12:27:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711542469;
-	bh=GuThiu88jslfOpu4M5qOFs7lY97oECR5vktwUGjQj1c=;
+	s=k20201202; t=1711542471;
+	bh=4j7xOyFIOAoBexVjx0vKlpN7tyhmAHrYlqfIm6sy5n4=;
 	h=From:To:Cc:Subject:Date:From;
-	b=S50GLx+OTGXKLfCMC8kuRBMiIIesFsOHWcHdDUtM1prXFRoNEwxn1rD6OKlenFabt
-	 IgInOnDU2W/OHa9kFuqwXtoFP54pMZRKkPPxTd03edzeV7JYeAkKj92/kEA8L+7lSU
-	 bK5SopYgpcGlNXvmUpTZXqQp3SVkk1vR0xkHoXzcsIVGylNf2HcfaRHWc88EIIjN0f
-	 xUndpY86KhMecvYHvRMtjuSl9AizGHdBv4lKCTEoZQyAUNJkdf7kz5I15wc9qaK7NQ
-	 2ewEvi9vPzKApNumvHBvmY56IwlSBB3D2sgA8rrfY1touqNc4CvqR8Qs2YzDCucEPu
-	 8QHSQnwHY2zuQ==
+	b=rJSuPMyIYFPgQr9pP1A8j/AIdR+/31uBKL0EGv+oc08IEvyh3+xJniaWxTMM6R15i
+	 wp4YUOaQtMSDdQ1kkOd6vbjYUF2LkDk+bDXd5gbNz09aXhWJaS4iKBJX6B9uHldKBh
+	 04/tgi1Fe9L/TuHBbsx/BgY3Zh98aE6RZjsCwB7QjauAivf3Moh91L8LlEJYNW1Gm+
+	 8CUp0u6IVW2XG/Juxc/JEO18wJx5Q59lBcMlXDKCOO9nieKN+lCeNiUjmPMCJ0moqx
+	 k2IVEEGXzbAvR6GzAxxtTLP/St5jOElmyfklCYlq1hKBsnzyU5OCy1e3wjXI5y/L63
+	 VWeMRS1oegVZQ==
 From: Sasha Levin <sashal@kernel.org>
 To: stable@vger.kernel.org,
-	mmakassikis@freebox.fr
-Cc: Namjae Jeon <linkinjeon@kernel.org>,
-	Steve French <stfrench@microsoft.com>,
-	linux-cifs@vger.kernel.org,
+	sohaib.nadeem@amd.com
+Cc: Mario Limonciello <mario.limonciello@amd.com>,
+	Alex Deucher <alexander.deucher@amd.com>,
+	Alvin Lee <alvin.lee2@amd.com>,
+	Alex Hung <alex.hung@amd.com>,
+	Daniel Wheeler <daniel.wheeler@amd.com>,
+	amd-gfx@lists.freedesktop.org,
+	dri-devel@lists.freedesktop.org,
 	linux-kernel@vger.kernel.org
-Subject: FAILED: Patch "ksmbd: retrieve number of blocks using vfs_getattr in set_file_allocation_info" failed to apply to 4.19-stable tree
-Date: Wed, 27 Mar 2024 08:27:47 -0400
-Message-ID: <20240327122747.2842216-1-sashal@kernel.org>
+Subject: FAILED: Patch "drm/amd/display: Override min required DCFCLK in dml1_validate" failed to apply to 4.19-stable tree
+Date: Wed, 27 Mar 2024 08:27:49 -0400
+Message-ID: <20240327122750.2842254-1-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -70,59 +74,81 @@ Sasha
 
 ------------------ original commit in Linus's tree ------------------
 
-From 34cd86b6632718b7df3999d96f51e63de41c5e4f Mon Sep 17 00:00:00 2001
-From: Marios Makassikis <mmakassikis@freebox.fr>
-Date: Thu, 22 Feb 2024 10:58:21 +0100
-Subject: [PATCH] ksmbd: retrieve number of blocks using vfs_getattr in
- set_file_allocation_info
+From 26fbcb3da77efc77bd7327b7916338d773cca484 Mon Sep 17 00:00:00 2001
+From: Sohaib Nadeem <sohaib.nadeem@amd.com>
+Date: Wed, 14 Feb 2024 13:51:16 -0500
+Subject: [PATCH] drm/amd/display: Override min required DCFCLK in
+ dml1_validate
 
-Use vfs_getattr() to retrieve stat information, rather than make
-assumptions about how a filesystem fills inode structs.
+[WHY]:
+Increasing min DCFCLK addresses underflow issues that occur when phantom
+pipe is turned on for some Sub-Viewport configs
 
+[HOW]:
+dcn32_override_min_req_dcfclk is added to override DCFCLK value in
+dml1_validate when subviewport is being used.
+
+Cc: Mario Limonciello <mario.limonciello@amd.com>
+Cc: Alex Deucher <alexander.deucher@amd.com>
 Cc: stable@vger.kernel.org
-Signed-off-by: Marios Makassikis <mmakassikis@freebox.fr>
-Acked-by: Namjae Jeon <linkinjeon@kernel.org>
-Signed-off-by: Steve French <stfrench@microsoft.com>
+Reviewed-by: Alvin Lee <alvin.lee2@amd.com>
+Acked-by: Alex Hung <alex.hung@amd.com>
+Signed-off-by: Sohaib Nadeem <sohaib.nadeem@amd.com>
+Tested-by: Daniel Wheeler <daniel.wheeler@amd.com>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 ---
- fs/smb/server/smb2pdu.c | 10 ++++++++--
- 1 file changed, 8 insertions(+), 2 deletions(-)
+ .../gpu/drm/amd/display/dc/dcn32/dcn32_resource_helpers.c   | 6 ++++++
+ .../gpu/drm/amd/display/dc/resource/dcn32/dcn32_resource.c  | 1 +
+ .../gpu/drm/amd/display/dc/resource/dcn32/dcn32_resource.h  | 3 +++
+ 3 files changed, 10 insertions(+)
 
-diff --git a/fs/smb/server/smb2pdu.c b/fs/smb/server/smb2pdu.c
-index f6cc5d2730ffb..199c31c275e5b 100644
---- a/fs/smb/server/smb2pdu.c
-+++ b/fs/smb/server/smb2pdu.c
-@@ -5809,15 +5809,21 @@ static int set_file_allocation_info(struct ksmbd_work *work,
- 
- 	loff_t alloc_blks;
- 	struct inode *inode;
-+	struct kstat stat;
- 	int rc;
- 
- 	if (!(fp->daccess & FILE_WRITE_DATA_LE))
- 		return -EACCES;
- 
-+	rc = vfs_getattr(&fp->filp->f_path, &stat, STATX_BASIC_STATS,
-+			 AT_STATX_SYNC_AS_STAT);
-+	if (rc)
-+		return rc;
+diff --git a/drivers/gpu/drm/amd/display/dc/dcn32/dcn32_resource_helpers.c b/drivers/gpu/drm/amd/display/dc/dcn32/dcn32_resource_helpers.c
+index 87760600e154d..f98def6c8c2d2 100644
+--- a/drivers/gpu/drm/amd/display/dc/dcn32/dcn32_resource_helpers.c
++++ b/drivers/gpu/drm/amd/display/dc/dcn32/dcn32_resource_helpers.c
+@@ -782,3 +782,9 @@ void dcn32_update_dml_pipes_odm_policy_based_on_context(struct dc *dc, struct dc
+ 		pipe_cnt++;
+ 	}
+ }
 +
- 	alloc_blks = (le64_to_cpu(file_alloc_info->AllocationSize) + 511) >> 9;
- 	inode = file_inode(fp->filp);
++void dcn32_override_min_req_dcfclk(struct dc *dc, struct dc_state *context)
++{
++	if (dcn32_subvp_in_use(dc, context) && context->bw_ctx.bw.dcn.clk.dcfclk_khz <= MIN_SUBVP_DCFCLK_KHZ)
++		context->bw_ctx.bw.dcn.clk.dcfclk_khz = MIN_SUBVP_DCFCLK_KHZ;
++}
+diff --git a/drivers/gpu/drm/amd/display/dc/resource/dcn32/dcn32_resource.c b/drivers/gpu/drm/amd/display/dc/resource/dcn32/dcn32_resource.c
+index 3f3951f3ba983..f844f57ecc49b 100644
+--- a/drivers/gpu/drm/amd/display/dc/resource/dcn32/dcn32_resource.c
++++ b/drivers/gpu/drm/amd/display/dc/resource/dcn32/dcn32_resource.c
+@@ -1771,6 +1771,7 @@ static bool dml1_validate(struct dc *dc, struct dc_state *context, bool fast_val
+ 	dc->res_pool->funcs->calculate_wm_and_dlg(dc, context, pipes, pipe_cnt, vlevel);
  
--	if (alloc_blks > inode->i_blocks) {
-+	if (alloc_blks > stat.blocks) {
- 		smb_break_all_levII_oplock(work, fp, 1);
- 		rc = vfs_fallocate(fp->filp, FALLOC_FL_KEEP_SIZE, 0,
- 				   alloc_blks * 512);
-@@ -5825,7 +5831,7 @@ static int set_file_allocation_info(struct ksmbd_work *work,
- 			pr_err("vfs_fallocate is failed : %d\n", rc);
- 			return rc;
- 		}
--	} else if (alloc_blks < inode->i_blocks) {
-+	} else if (alloc_blks < stat.blocks) {
- 		loff_t size;
+ 	dcn32_override_min_req_memclk(dc, context);
++	dcn32_override_min_req_dcfclk(dc, context);
  
- 		/*
+ 	BW_VAL_TRACE_END_WATERMARKS();
+ 
+diff --git a/drivers/gpu/drm/amd/display/dc/resource/dcn32/dcn32_resource.h b/drivers/gpu/drm/amd/display/dc/resource/dcn32/dcn32_resource.h
+index 0c87b0fabba7d..2258c5c7212d8 100644
+--- a/drivers/gpu/drm/amd/display/dc/resource/dcn32/dcn32_resource.h
++++ b/drivers/gpu/drm/amd/display/dc/resource/dcn32/dcn32_resource.h
+@@ -42,6 +42,7 @@
+ #define SUBVP_ACTIVE_MARGIN_LIST_LEN 2
+ #define DCN3_2_MAX_SUBVP_PIXEL_RATE_MHZ 1800
+ #define DCN3_2_VMIN_DISPCLK_HZ 717000000
++#define MIN_SUBVP_DCFCLK_KHZ 400000
+ 
+ #define TO_DCN32_RES_POOL(pool)\
+ 	container_of(pool, struct dcn32_resource_pool, base)
+@@ -181,6 +182,8 @@ bool dcn32_subvp_vblank_admissable(struct dc *dc, struct dc_state *context, int
+ 
+ void dcn32_update_dml_pipes_odm_policy_based_on_context(struct dc *dc, struct dc_state *context, display_e2e_pipe_params_st *pipes);
+ 
++void dcn32_override_min_req_dcfclk(struct dc *dc, struct dc_state *context);
++
+ /* definitions for run time init of reg offsets */
+ 
+ /* CLK SRC */
 -- 
 2.43.0
 
