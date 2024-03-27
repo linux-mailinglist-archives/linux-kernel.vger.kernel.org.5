@@ -1,114 +1,123 @@
-Return-Path: <linux-kernel+bounces-121828-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-121829-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AF59088EE47
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 19:30:23 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id D0E3688EE49
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 19:31:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E1E3E1C2F2D7
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 18:30:22 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8CEC7294DB6
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 18:31:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2DE8E14D6E0;
-	Wed, 27 Mar 2024 18:30:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 799BD14F12A;
+	Wed, 27 Mar 2024 18:31:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=weissschuh.net header.i=@weissschuh.net header.b="CYUc2OW0"
-Received: from todd.t-8ch.de (todd.t-8ch.de [159.69.126.157])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="XGCb8wxt"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A5C8114A634;
-	Wed, 27 Mar 2024 18:30:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=159.69.126.157
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD5B61DDC5;
+	Wed, 27 Mar 2024 18:31:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711564217; cv=none; b=aMknRbYVNJuxgLqJzkngK5rQD+nmqf9uOnBk2Vh+BqxE7xjnKEr/8/hWsXNV3RctLqK5RkdVyySRD0e8OOd+i9/ObOWyQQKCA7iIki9KUeR/LMJaz4yL2TNXxvBqjkZ/sAFLS7cWx1J56zHXqHgD8oPtTQ4EmbuP3ecdTWefWYE=
+	t=1711564262; cv=none; b=lXhpzik7AAw9ytAE0ahhbMgUEGHKJNNDoNufMr6UKLUki0CaDpLw2SutBCC9+R43PaJ9/+DzFlGqV67jDyBfkoD6Tl3YDEGOfIZ3QMg6xbV8/ldnRdKjgzd6b65r+JXKeKY+tSSv84QUmI4S1KQw1rv0JJs3LdKhXHigj+8fy+8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711564217; c=relaxed/simple;
-	bh=0TKqOpubxbHl9foZydLNsR931Tn1b4JgToZMrqb2qYs=;
+	s=arc-20240116; t=1711564262; c=relaxed/simple;
+	bh=KIaSMUnW8rnBI0ZsI+wibi1QfFtAfAE6yQr36OYF10g=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=txzPtDk7tjgDTW9gj2yeq++Vdfi0mjJ3OsK6NHQ3SxGUMiEnuVVh7NDk2NalNQmfCMMLa2W0vuc8xrYiw0J7I4FUDN1Ez+grQUBxCYTt3aW0GE0EL1XfIDB5mXdogysWoLy0QRw1b+9MLAGslESbiTJuQ3S1W6gg2A62oXX+EDw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=weissschuh.net; spf=pass smtp.mailfrom=weissschuh.net; dkim=pass (1024-bit key) header.d=weissschuh.net header.i=@weissschuh.net header.b=CYUc2OW0; arc=none smtp.client-ip=159.69.126.157
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=weissschuh.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=weissschuh.net
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=weissschuh.net;
-	s=mail; t=1711564204;
-	bh=0TKqOpubxbHl9foZydLNsR931Tn1b4JgToZMrqb2qYs=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=CYUc2OW0X6Rl8GYW+v3Qev0z/IAJwmRzWttL8z3UOja0Y0it2bav0/a2Hmr5szkJG
-	 SAd6/uJ5hNiSQGp/cqyQtCArmS7SPCyYbHYJRR15hzprGrkWjNt8pPQEauq0WjRrYC
-	 CJRAJEW8V1IfZNvGFRn/GwO2eXtp45iLAMxn7V8Q=
-Date: Wed, 27 Mar 2024 19:30:03 +0100
-From: Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <linux@weissschuh.net>
-To: Hans de Goede <hdegoede@redhat.com>
-Cc: Sebastian Reichel <sebastian.reichel@collabora.com>, 
-	Konrad Dybcio <konradybcio@kernel.org>, linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3] power: supply: test-power: implement charge_behaviour
- property
-Message-ID: <8661d581-838d-4bcd-96df-2ae4b7572c82@t-8ch.de>
-References: <20240306-power_supply-charge_behaviour_prop-v3-1-d04cf1f5f0af@weissschuh.net>
- <171148264419.185695.14027540198251584096.b4-ty@collabora.com>
- <6f0761a6-5f49-42e2-9b79-3e04c9d259a4@redhat.com>
- <9fe3d7a6-3b34-4c96-bd9f-510b41f9ab0d@redhat.com>
- <daactalkmzucga47cmncjkgnxyppouqnrj3vtsz34d5edrkmzu@p32ylpv3nqwx>
- <2e4f42b3-fe64-43f2-a55b-c745a6903ddc@redhat.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=RxsVlGGwRQIYRJ/Srvk/+Sk1yNs08LHulGSCYsdybx808awX5OmktemhU+0ZfGcg5Evzf6wRIaoWZmIAKbs3UhMyeUQ+hMpusirc6kmy+6fjjDjbJ9I+v+Uyd5RfzNQ4+26AAzngg1oHTwUVL2zWaAe/40+r2s3rknyibLoMpxk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=XGCb8wxt; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 47ECFC433C7;
+	Wed, 27 Mar 2024 18:31:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1711564262;
+	bh=KIaSMUnW8rnBI0ZsI+wibi1QfFtAfAE6yQr36OYF10g=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+	b=XGCb8wxtLQ6y/bMpoHSbYA3F63dRC7ZDp5r+YYijYSbfwiahowf5EY6l2Vls5k0E0
+	 6orcNieM1xvgbnogAcO+xCj0AIASE1sPHZljzRmLEOyo+P+DJqAK4DMHbrJiO7d9TL
+	 wfYy639xHhO9Jh/XJW6QxvNnQ/lPztfMgaNubL39IKIznPuP8kbyQPkvGVYx8H0tZN
+	 iFi8FaNMQ4DLPj4+D9PxiYEUMvhg8j1ZVt4Yzf3q6UbNWd5sJ8tuL8e3MWUJ+SWC6J
+	 VCFgiAvX6A4HkQGMem4BA/eF1N3ICBJXX+d+wCz7pD1dq4jlTPKConrZX2+GfrW0VV
+	 cWM96I1pdeDOg==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+	id BC4EFCE0D67; Wed, 27 Mar 2024 11:31:01 -0700 (PDT)
+Date: Wed, 27 Mar 2024 11:31:01 -0700
+From: "Paul E. McKenney" <paulmck@kernel.org>
+To: Steven Rostedt <rostedt@goodmis.org>
+Cc: Nikita Kiryushin <kiryushin@ancud.ru>,
+	Frederic Weisbecker <frederic@kernel.org>,
+	Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+	Joel Fernandes <joel@joelfernandes.org>,
+	Josh Triplett <josh@joshtriplett.org>,
+	Boqun Feng <boqun.feng@gmail.com>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Lai Jiangshan <jiangshanlai@gmail.com>,
+	Zqiang <qiang.zhang1211@gmail.com>, rcu@vger.kernel.org,
+	linux-kernel@vger.kernel.org, lvc-project@linuxtesting.org
+Subject: Re: [PATCH v4] rcu-tasks: Fix show_rcu_tasks_trace_gp_kthread buffer
+ overflow
+Message-ID: <608b2ed9-a7fa-482d-b1e5-e5c2ad5849c7@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <20240327125132.600d62a3@gandalf.local.home>
+ <20240327174747.612002-1-kiryushin@ancud.ru>
+ <20240327135246.54cdb58e@gandalf.local.home>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <2e4f42b3-fe64-43f2-a55b-c745a6903ddc@redhat.com>
+In-Reply-To: <20240327135246.54cdb58e@gandalf.local.home>
 
-Hi,
-
-On 2024-03-27 14:34:00+0100, Hans de Goede wrote:
-> On 3/27/24 2:25 PM, Sebastian Reichel wrote:
-> > Hello Hans,
-> > 
-> > On Wed, Mar 27, 2024 at 11:44:41AM +0100, Hans de Goede wrote:
-> >> On 3/27/24 11:36 AM, Hans de Goede wrote:
-> >>> On 3/26/24 8:50 PM, Sebastian Reichel wrote:
-> >>>> On Wed, 06 Mar 2024 20:37:04 +0100, Thomas Weißschuh wrote:
-> >>>>> To validate the special formatting of the "charge_behaviour" sysfs
-> >>>>> property add it to the example driver.
-> >>>>
-> >>>> Applied, thanks!
-> >>>>
-> >>>> [1/1] power: supply: test-power: implement charge_behaviour property
-> >>>>       commit: 070c1470ae24317e7b19bd3882b300b6d69922a4
-> >>>
-> >>> Does this mean that you've also applied patches 1-3 of:
-> >>> "[PATCH v2 0/4] power: supply: core: align charge_behaviour format with docs" ?
-> >>>
-> >>> Because this is a new version of 4/4 of that series and I think
-> >>> that the new test may depend on the fixes from patches 1-3
-> >>> of that series (which I'm reviewing now).
-> >>
-> >> Ok, I have some not entirely trivial comments on patch 3/4 of that series.
-> >> I guess you (Sebastian) could address those while merging, or wait for
-> >> a v3 of the series.
-> > 
-> > I can't. Patches 1-3 are already in 6.9-rc1. It looks you did not
-> > get my replies, but they certainly have been captured by lore and
-> > obviously Thomas got them since he send a v3 with just the last
-> > patch:
-> > 
-> > https://lore.kernel.org/all/20240303-power_supply-charge_behaviour_prop-v2-0-8ebb0a7c2409@weissschuh.net/
-> > 
-> > Anyways, I think your suggestions for further simplifications in
-> > patch 3 are sensible. They just require doing an extra patch now
-> > instead of being squashed.
+On Wed, Mar 27, 2024 at 01:52:46PM -0400, Steven Rostedt wrote:
+> On Wed, 27 Mar 2024 20:47:47 +0300
+> Nikita Kiryushin <kiryushin@ancud.ru> wrote:
 > 
-> Ah I see that is fine too :)
+> > There is a possibility of buffer overflow in
+> > show_rcu_tasks_trace_gp_kthread() if counters, passed
+> > to sprintf() are huge. Counter numbers, needed for this
+> > are unrealistically high, but buffer overflow is still
+> > possible.
+> > 
+> > Use snprintf() with buffer size instead of sprintf().
+> > 
 > 
-> Thomas, can you do a follow-up patch with the simplifications
-> which I suggested in my review of patch v2 3/4 ?
+> Reviewed-by: Steven Rostedt (Google) <rostedt@goodmis.org>
 
-Will do!
+Queued and pushed, thank you both!
 
+							Thanx, Paul
 
-Thomas
+> -- Steve
+> 
+> > Found by Linux Verification Center (linuxtesting.org) with SVACE.
+> > 
+> > Fixes: edf3775f0ad6 ("rcu-tasks: Add count for idle tasks on offline CPUs")
+> > Signed-off-by: Nikita Kiryushin <kiryushin@ancud.ru>
+> > ---
+> > v4: Change ARRAY_SIZE to sizeof() as more idiomatic
+> > as Steven Rostedt <rostedt@goodmis.org> suggested
+> > v3: Fixed commit message
+> > v2: Use snprintf() as
+> > Steven Rostedt <rostedt@goodmis.org> suggested.
+> >  kernel/rcu/tasks.h | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > 
+> > diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
+> > index 147b5945d67a..2a453de9f3d9 100644
+> > --- a/kernel/rcu/tasks.h
+> > +++ b/kernel/rcu/tasks.h
+> > @@ -1994,7 +1994,7 @@ void show_rcu_tasks_trace_gp_kthread(void)
+> >  {
+> >  	char buf[64];
+> >  
+> > -	sprintf(buf, "N%lu h:%lu/%lu/%lu",
+> > +	snprintf(buf, sizeof(buf), "N%lu h:%lu/%lu/%lu",
+> >  		data_race(n_trc_holdouts),
+> >  		data_race(n_heavy_reader_ofl_updates),
+> >  		data_race(n_heavy_reader_updates),
+> 
 
