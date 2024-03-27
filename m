@@ -1,70 +1,52 @@
-Return-Path: <linux-kernel+bounces-121622-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-121624-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9CEDE88EAFA
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 17:19:29 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7C2CB88EB10
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 17:22:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B2F901C31B70
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 16:19:28 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3696928FF82
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 16:22:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AFFE9130A51;
-	Wed, 27 Mar 2024 16:19:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3672613173E;
+	Wed, 27 Mar 2024 16:22:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="gZhVMWfq"
-Received: from mail-io1-f51.google.com (mail-io1-f51.google.com [209.85.166.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 817F212F392
-	for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 16:19:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.51
+	dkim=pass (2048-bit key) header.d=free.fr header.i=@free.fr header.b="vSMCQaVH"
+Received: from smtpfb2-g21.free.fr (smtpfb2-g21.free.fr [212.27.42.10])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EACBE83A0B;
+	Wed, 27 Mar 2024 16:22:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.27.42.10
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711556363; cv=none; b=Yhl61b3oPZliHydZabEwWvEbHV53tFGW92hZbeBRlXaKsYkIzFcazUG5rHqPaeed9v+SRR2AGAEXPL3p4or/sKLela39PVHEsLNHRrkmxspq4ZwXwdl1ar3WFMPeO1OcWmekhQeE1GTTVl5gjij/3ztL/oXXiLpmaznWHZpXNJQ=
+	t=1711556549; cv=none; b=sxcwfFNWRtw+5ePIjGoTIYPF7/Jzh8s/pJa8oVl153xykUYcCoYQpF7MzU5te9YlHsDWN6OmyjCvpuoYF5pBrQ4Mn61ZFAwmrlk6kxd/L+xqH2z4Ua04Dd0cGlFqdTD4a4BsFaS9tF0mnKlQfTfeBtc/onoRSLPVe1cjKIL6Tyo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711556363; c=relaxed/simple;
-	bh=OrY2sRkMGUSl5qS4bbQVcCvtD+x52pQ3Jvu2+0Cf6vg=;
+	s=arc-20240116; t=1711556549; c=relaxed/simple;
+	bh=g9NIYWY7Zqq4Jpe3GVuphoABvUpR98WMNlTO/PqC+cM=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=nx3Ep3ob4tm/tYinklGa48WfKIROY2rwiQF26Jf1wq4afCm8qyxHg16stu5Rs2m5cadIgSn/CzqweQ5pmhH7fW4EcrLccm0/l4drShF6nu6GL9yI3yu9Nzn5uNVZ3Svi3YWTDKj+qpTyPZDdoTh29k/N4FhhOIh4v+c/FNidTp8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linuxfoundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=gZhVMWfq; arc=none smtp.client-ip=209.85.166.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linuxfoundation.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
-Received: by mail-io1-f51.google.com with SMTP id ca18e2360f4ac-7d0772bb5ffso22282639f.0
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 09:19:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google; t=1711556361; x=1712161161; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=H+EwpnV1TovlT/K7a9fk3BdjFCSuIGfXvPuki/X3eHY=;
-        b=gZhVMWfq39SffqUOh9P6lBRApIrh8XpYkurdi2D+KF3nEw7MBy51+59j0MvYKOePJc
-         H2YUxrE25zne1efGXlWgibB405807+6BjNjnPKLdyZTXkhKNenMQZPFGpA33yeaQb2Bt
-         anGyHmi7kCo/YVSVVKUUl+9Olcs0i6KF2ys5Y=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711556361; x=1712161161;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=H+EwpnV1TovlT/K7a9fk3BdjFCSuIGfXvPuki/X3eHY=;
-        b=lug7JDpq8GohYA+XTqEAg82BiOiax8uivdQBode59LKyrVZ+2FdLJwz2M3ghG7Svvl
-         S47Ux/Bzkb4AHe5FA6t8+QS3kPxJQRHI77XWp02VKkkajL5g1aJEQmllJ2G2l+KosA/l
-         0nDEwh+ne+2usyzJTa39xhQWsysA9/F4VzWgsZwxixujcofDOdOrBFhaVOeFtFoe5uPe
-         eVOPlrwBqUH8PKF/vaVLdAkCALukZcFruK1GsjDAYLNigxjnBTJ6wFr7Fjht8I8rqMb0
-         b4tfSeoeNbmoTqCz+SpNuA+aF/MKrq6DUurY3yfToPqiUsRXzLRMclt/Jj08Ar8oMeIk
-         6krw==
-X-Forwarded-Encrypted: i=1; AJvYcCUcJuKUR07rPOJkjdFl/l/zYciqu5D7/P+my+odj3rPWIiOfIRHKfUZKhZKK+FuYVc6bpqErhnxwtPr2KC5f3l/RJcQVpjHwoyiTAEZ
-X-Gm-Message-State: AOJu0YydpBSFN8seKFJ6NWziSSmER2pkMKhrnzS5K3I0RpQNUSNRGY8f
-	JBvqCWHxi6hInfnbSvSWHx7N8SE6UfbZHu2i+OHR+tV3p2rVRFfgWBKO5Bn84KU=
-X-Google-Smtp-Source: AGHT+IGFTq5dd597zpcFVDKJzVe2QfZkJrAeL8dZzhpz4JfDnNyVSDojkp6US9cbLAxZzL7lqBXjxg==
-X-Received: by 2002:a5e:9402:0:b0:7d0:3d2c:5987 with SMTP id q2-20020a5e9402000000b007d03d2c5987mr672625ioj.0.1711556360742;
-        Wed, 27 Mar 2024 09:19:20 -0700 (PDT)
-Received: from [192.168.1.128] ([38.175.170.29])
-        by smtp.gmail.com with ESMTPSA id q16-20020a02c8d0000000b0047c17c664fbsm2007031jao.115.2024.03.27.09.19.19
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 27 Mar 2024 09:19:20 -0700 (PDT)
-Message-ID: <cfa1ee01-1480-4869-9ea8-daaff0ce3ac9@linuxfoundation.org>
-Date: Wed, 27 Mar 2024 10:19:19 -0600
+	 In-Reply-To:Content-Type; b=W0+VZwtK9f5Ae2J1rFarexkkZwPR1vpW8002AGfSHYDd7Xed82yj7jzhz/Di+7pHWcGWPlzlI0pbIJfaG5z4y99fRqwAKYIIplpNsaNRvbmAVUo+tiNcdRLsCwvT2nLS/09pfrz9RnXVM88O83NjtRigXMMuIhNyQT+QRzHhPL8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=free.fr; spf=pass smtp.mailfrom=free.fr; dkim=pass (2048-bit key) header.d=free.fr header.i=@free.fr header.b=vSMCQaVH; arc=none smtp.client-ip=212.27.42.10
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=free.fr
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=free.fr
+Received: from smtp5-g21.free.fr (smtp5-g21.free.fr [212.27.42.5])
+	by smtpfb2-g21.free.fr (Postfix) with ESMTP id 75DD44C8DC;
+	Wed, 27 Mar 2024 17:22:16 +0100 (CET)
+Received: from [IPV6:2a01:e0a:255:1000:f49a:79c4:c3c6:eaf3] (unknown [IPv6:2a01:e0a:255:1000:f49a:79c4:c3c6:eaf3])
+	(Authenticated sender: duncan.sands@free.fr)
+	by smtp5-g21.free.fr (Postfix) with ESMTPSA id A3A9F60142;
+	Wed, 27 Mar 2024 17:20:26 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=free.fr;
+	s=smtp-20201208; t=1711556526;
+	bh=g9NIYWY7Zqq4Jpe3GVuphoABvUpR98WMNlTO/PqC+cM=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=vSMCQaVHDvOS+MJTVx5PjO8YOXxmIEoXqqAuvBYuRC535uirpZWCAg3Zcduu9rDtt
+	 KXKCxUyreW9ES5/mQaKWuQmfTpoSpYf8IwCcPc988GMFZvS+1wbAKCcOjbSk3mXiD9
+	 ZK8Hamum4SVmsMBE1c9pxQwBG+dsyo12O4SxF8j/IiVpKDUrPYQJdtKDuV/HWRo3xL
+	 PYIWjDHKv6Iwt5jWnepwy1J7Y+fjiF4JTHXVaKfZ4ukUUftUNKj+3Aem3Jcxh8PUFu
+	 tZQKCHeE4q+71+QXSA4TwBR2eiNJVHnD/WyXCPKNPqsgcwl7VuDNvLoWg/63fz6oE5
+	 pvkLMrw2O9NMA==
+Message-ID: <7297be25-a3c8-4e8b-9a80-ff720ccddc90@free.fr>
+Date: Wed, 27 Mar 2024 17:20:26 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -72,49 +54,49 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] selftests/exec: execveat: Improve debug reporting
-To: Kees Cook <keescook@chromium.org>
-Cc: Muhammad Usama Anjum <usama.anjum@collabora.com>,
- Eric Biederman <ebiederm@xmission.com>, Shuah Khan <shuah@kernel.org>,
- Mark Brown <broonie@kernel.org>, linux-mm@kvack.org,
- linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-hardening@vger.kernel.org, Shuah Khan <skhan@linuxfoundation.org>
-References: <20240313185606.work.073-kees@kernel.org>
- <1dd87e89-2306-4669-844f-ffe9e56523b6@collabora.com>
- <fa109cff-5326-4f94-aa3b-d83827d5f968@linuxfoundation.org>
- <202403261540.8F0D7A0@keescook>
-Content-Language: en-US
-From: Shuah Khan <skhan@linuxfoundation.org>
-In-Reply-To: <202403261540.8F0D7A0@keescook>
+Subject: Re: [PATCH 4/9] USB: Convert from tasklet to BH workqueue
+To: Allen Pais <apais@linux.microsoft.com>, linux-kernel@vger.kernel.org
+Cc: tj@kernel.org, keescook@chromium.org, vkoul@kernel.org, marcan@marcan.st,
+ sven@svenpeter.dev, florian.fainelli@broadcom.com, rjui@broadcom.com,
+ sbranden@broadcom.com, paul@crapouillou.net, Eugeniy.Paltsev@synopsys.com,
+ manivannan.sadhasivam@linaro.org, vireshk@kernel.org, Frank.Li@nxp.com,
+ leoyang.li@nxp.com, zw@zh-kernel.org, wangzhou1@hisilicon.com,
+ haijie1@huawei.com, shawnguo@kernel.org, s.hauer@pengutronix.de,
+ sean.wang@mediatek.com, matthias.bgg@gmail.com,
+ angelogioacchino.delregno@collabora.com, afaerber@suse.de,
+ logang@deltatee.com, daniel@zonque.org, haojian.zhuang@gmail.com,
+ robert.jarzmik@free.fr, andersson@kernel.org, konrad.dybcio@linaro.org,
+ orsonzhai@gmail.com, baolin.wang@linux.alibaba.com, zhang.lyra@gmail.com,
+ patrice.chotard@foss.st.com, linus.walleij@linaro.org, wens@csie.org,
+ jernej.skrabec@gmail.com, peter.ujfalusi@gmail.com, kys@microsoft.com,
+ haiyangz@microsoft.com, wei.liu@kernel.org, decui@microsoft.com,
+ jassisinghbrar@gmail.com, mchehab@kernel.org, maintainers@bluecherrydvr.com,
+ aubin.constans@microchip.com, ulf.hansson@linaro.org,
+ manuel.lauss@gmail.com, mirq-linux@rere.qmqm.pl, jh80.chung@samsung.com,
+ oakad@yahoo.com, hayashi.kunihiko@socionext.com, mhiramat@kernel.org,
+ brucechang@via.com.tw, HaraldWelte@viatech.com, pierre@ossman.eu,
+ stern@rowland.harvard.edu, oneukum@suse.com,
+ openipmi-developer@lists.sourceforge.net, dmaengine@vger.kernel.org,
+ asahi@lists.linux.dev, linux-arm-kernel@lists.infradead.org,
+ linux-rpi-kernel@lists.infradead.org, linux-mips@vger.kernel.org,
+ imx@lists.linux.dev, linuxppc-dev@lists.ozlabs.org,
+ linux-mediatek@lists.infradead.org, linux-actions@lists.infradead.org,
+ linux-arm-msm@vger.kernel.org, linux-riscv@lists.infradead.org,
+ linux-sunxi@lists.linux.dev, linux-tegra@vger.kernel.org,
+ linux-hyperv@vger.kernel.org, linux-rdma@vger.kernel.org,
+ linux-media@vger.kernel.org, linux-mmc@vger.kernel.org,
+ linux-omap@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+ linux-s390@vger.kernel.org, netdev@vger.kernel.org, linux-usb@vger.kernel.org
+References: <20240327160314.9982-1-apais@linux.microsoft.com>
+ <20240327160314.9982-5-apais@linux.microsoft.com>
+Content-Language: en-GB
+From: Duncan Sands <duncan.sands@free.fr>
+In-Reply-To: <20240327160314.9982-5-apais@linux.microsoft.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 
-On 3/26/24 16:40, Kees Cook wrote:
-> On Tue, Mar 26, 2024 at 02:46:02PM -0600, Shuah Khan wrote:
->> On 3/14/24 02:54, Muhammad Usama Anjum wrote:
->>> On 3/13/24 11:56 PM, Kees Cook wrote:
->>>> Children processes were reporting their status, duplicating the
->>>> parent's. Remove that, and add some additional details about the test
->>>> execution.
->>>>
->>>> Signed-off-by: Kees Cook <keescook@chromium.org>
->>>> ---
->>>> Cc: Eric Biederman <ebiederm@xmission.com>
->>>> Cc: Shuah Khan <shuah@kernel.org>
->>>> Cc: Mark Brown <broonie@kernel.org>
->>>> Cc: Muhammad Usama Anjum <usama.anjum@collabora.com>
->>>> Cc: linux-mm@kvack.org
->>>> Cc: linux-kselftest@vger.kernel.org
->>> Reviewed-by: Muhammad Usama Anjum <usama.anjum@collabora.com>
->>>
->>
->> Applied to linux-kselftest fixes for the next rc.
-> 
-> This is already part of the execve tree...
-> 
+Hi Allen, the usbatm bits look very reasonable to me.  Unfortunately I don't 
+have the hardware to test any more.  Still, for what it's worth:
 
-Thanks. I will go drop it.
-
-thanks,
--- Shuah
+Signed-off-by: Duncan Sands <duncan.sands@free.fr>
 
