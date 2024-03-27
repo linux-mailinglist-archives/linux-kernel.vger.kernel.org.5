@@ -1,133 +1,136 @@
-Return-Path: <linux-kernel+bounces-120559-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-120560-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B9F6088D959
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 09:43:52 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 71B7F88D95C
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 09:44:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4FD552947E4
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 08:43:51 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A389D1C27145
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 08:44:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 54AE235881;
-	Wed, 27 Mar 2024 08:43:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E578136B1D;
+	Wed, 27 Mar 2024 08:43:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="M1AY9JwD"
-Received: from mail-oo1-f51.google.com (mail-oo1-f51.google.com [209.85.161.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="ZO5BfdhX"
+Received: from relay9-d.mail.gandi.net (relay9-d.mail.gandi.net [217.70.183.199])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C7CB376E1
-	for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 08:43:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0BE502E85D;
+	Wed, 27 Mar 2024 08:43:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.199
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711529026; cv=none; b=Zn5LoBrEi9W3GX8+Y0uxuVGWW/6e+imBUArmh1PRP9+KnfIaYIAyLMyX8Iz+5RzOGlBY2tSbcX3qR5+Rr57ntyRSnkCmdd4tzDGMdzhjPXXND/RVYZkeszUZkIP/o5K7BzQPCY9G/8q8WqKo19hUbLjbuJbz97zDNBBJSZFF+as=
+	t=1711529029; cv=none; b=Bf6K5oXf7afDhpE589j14pKZ/DMXch6fJlgUBL6bv9qFfqfvdhORroSsUgKnlG4GC3ZcAIUf/k9TQtv6lrzuNDT/H6ThvkofDneuKM/vTa7p6tbj18zZ2r5EHW0tTyjrdPCdfMgCVX7CNDOKL79S+WYsjrKntm4X6lCMU5SPbKg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711529026; c=relaxed/simple;
-	bh=tiOBYI4uQ/tfAymgid6wgWcwD+Wap/TYidDqRJDu9us=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=kiJ5iXxreGnT+0Jo3OeX4uZ5kXt1xwEmqeO4KeJIGBA3EBnTVQ06cn3ffFV9hNPbp44Wil9kfUh6jSXWcCdqdptrfnjMiWSySFlBPo3DROCuRBp3giHKWqmmDUgFgskaTO4mCa2FOfD/UoC8KHd/ID1Sqt0/WjiqXeVdIcETkkg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com; spf=pass smtp.mailfrom=bytedance.com; dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b=M1AY9JwD; arc=none smtp.client-ip=209.85.161.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bytedance.com
-Received: by mail-oo1-f51.google.com with SMTP id 006d021491bc7-5a492093073so283362eaf.0
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 01:43:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1711529022; x=1712133822; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=G3qO0JEdl7yey5VJivO7+ugI6ufutpwhPOlblQnG63I=;
-        b=M1AY9JwD4T7PWp5CvKn3MMQ0XPxvYzZRPjDP9VpVTeEGDb/XAS9iyJpFmOXLst+QsG
-         kjeDvuSt4Crv788Ojgmau/14Vwb4hzUHb1KFDEpmgI9BR4f7AobCr8dBRDn3Z1SzKZqN
-         pjoDbJfOBZW0PTvlxlmyaJjGKO5vmyMVitZXG/ck3sYNgVLaFPlY57ypDClIFSkOpR/s
-         wpKiwajoVpDXhWVdY447ZGKxNeN88UXmvOBioEQmTCeMJqZhN9aoFNaFJxpQDWvNzA1W
-         q5TD+eGb3tyjwujqRCy1+/kxUQrRLhKjWFI3gy7xoGGcdIg587pSZZFItzANXW5F+q4D
-         GSrA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711529022; x=1712133822;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=G3qO0JEdl7yey5VJivO7+ugI6ufutpwhPOlblQnG63I=;
-        b=eWJnVCDIoJIU0ZuNybaBGTu2qGnRE91uLfZKEDIS6vCho+HqIiouuYO64HnWuj9CFC
-         W6BFQ3xxq0bXnA36W1ISkRdRfgp4xVoy141b0MNR/g5QvqI0flEH2qRkIu/r4umtfSAO
-         Vc+pmUz5XSsfry/0UkOeOlDiNTYH7zKqJSqVKQd6zRdo7Opw48uWafN+ntIL5rQvNWNo
-         fKnW7/97ZaZXAPIR7rBgTLEExjxRj3yExRStFv9JmwG8vVFUZbJWC4nlREdl1GbDEZtP
-         Xz4AU/Y3our1EuLQhBsREZF47I0qqBHqhN3f9dBD0/gPOWbTHOr/PtgDo9406BuiIDPU
-         hTxg==
-X-Forwarded-Encrypted: i=1; AJvYcCWU94gs5EVXeu1wZ0qucDnwpyjhOiH4dHL6lTNcUPoGjUscO4tG1XF/xbGUvsxtcnbLkNv7YFzhAcdFV7CiP9oMRdNdwBzq3kRlSs+e
-X-Gm-Message-State: AOJu0YyYSZgoC0H3e1HWfwPJE/CRUuYxeJia9ntifN8Fc4o4EDbQj9VS
-	Wdr0TAzNFso2HyFE1sHh0nzJQALYqfuKGX5Mg2kKeZiNqopkaAGNSNl4njk3C0MAcBY4e6fOh4P
-	XwUidEE3rkf93qVqaV89mhzxlcoPUY1sjQFqZ1Q==
-X-Google-Smtp-Source: AGHT+IGkPnqj9OAHDB4ILzxWBgIirYzZWguS0X+Pc8OG1EelaK0HdCGJm3in13IBnzJdHiWHjq/npy//nSX6h+p9k0g=
-X-Received: by 2002:a05:6870:9713:b0:22a:7541:d9d6 with SMTP id
- n19-20020a056870971300b0022a7541d9d6mr1132397oaq.3.1711529022761; Wed, 27 Mar
- 2024 01:43:42 -0700 (PDT)
+	s=arc-20240116; t=1711529029; c=relaxed/simple;
+	bh=Be4IEMfgO+NQg96KLT0RH17FuIbGLM/+Ly84HY6myDo=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=QQrndv7XHBXqKOOTHjIVt1ZEuMYDXGnrnWz/gJdy8Gf1RHdfUZPCtfSg5Ss6SQRQXi66+JqETLgWFUAIVGWzYgTNdMdywciPhFC+fOjLzIAt7+XOQ2SSjLV9i1syuFgM1LEatliAMssrOAmdwms+3QjBGAewHwwGSyqvm5N1Oec=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=ZO5BfdhX; arc=none smtp.client-ip=217.70.183.199
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 6F331FF803;
+	Wed, 27 Mar 2024 08:43:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1711529024;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=i89OkT3P+4nNC4N0ixmTN+nbvd6Z0Vz30h4VrjrK+ZY=;
+	b=ZO5BfdhXUTtz034fILAk2e8gSpW4pJqYWrIiRgzhypuo0klMWW63VTrLvOjbYTRaFler6M
+	5m4BR+PMnojDrpRkBNbtdUqtaZxaSn7LX72eESNjTq1AJBuayH56PhOZBeDVfXL1WrzunB
+	Z2lXvTUJnDT72qzL2wdPhngwTfPpniYSUJBNbvU2avLnveplvi1L4TCz1f1WQW47q+yRS9
+	f3xGr6Yp/v4mZ23pqU7BrtR4PJ804hTKD0mQfP4QGOL5tVidbw7Zwd7mx/0jrBX4jaG6+U
+	xPqO7120ohaQNqJS69JEp0RG8GQB8hnqgtOhVfVAB7QdnH5fhjYMSXe1rpKxVQ==
+From: Louis Chauvet <louis.chauvet@bootlin.com>
+Subject: [PATCH v3 0/3] Add multi mode support for omap-mcspi
+Date: Wed, 27 Mar 2024 09:43:35 +0100
+Message-Id: <20240327-spi-omap2-mcspi-multi-mode-v3-0-c4ac329dd5a2@bootlin.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240327061258.2370291-1-sorear@fastmail.com>
-In-Reply-To: <20240327061258.2370291-1-sorear@fastmail.com>
-From: yunhui cui <cuiyunhui@bytedance.com>
-Date: Wed, 27 Mar 2024 16:43:31 +0800
-Message-ID: <CAEEQ3w=yNEktgUucmKuUvqfwDYYztVX+jofi5Q7hG-yQWcLbTA@mail.gmail.com>
-Subject: Re: [External] [PATCH] riscv: process: Fix kernel gp leakage
-To: "Stefan O'Rear" <sorear@fastmail.com>
-Cc: linux-riscv@lists.infradead.org, Paul Walmsley <paul.walmsley@sifive.com>, 
-	Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIADfcA2YC/42Oyw7CIBBFf8WwFgMD9uHK/zAueAyWpIUG2kZj+
+ u9SN8aNcTOZexfnnifJmDxmcto9ScLFZx9DCWK/I6ZT4YbU25IJMJCMQ0Xz6Gkc1Ah0MNs/zP1
+ UbrRIsQJXNbpulBWkALTKSHVSwXQFEea+L+WY0Pn7e/FyLbnzeYrp8RZY+Nb+tbVwyqjjRyehN
+ rZVzVnHOPU+HEwctvG/IZZLYYVwzCH7gmx2C3yMAMRPGBSYcthKWVe6NeIbtq7rC99ttdFtAQA
+ A
+To: Mark Brown <broonie@kernel.org>
+Cc: linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ thomas.petazzoni@bootlin.com, Miquel Raynal <miquel.raynal@bootlin.com>, 
+ yen-mei.goh@keysight.com, koon-kee.lie@keysight.com, 
+ jeremie.dautheribes@bootlin.com, Louis Chauvet <louis.chauvet@bootlin.com>
+X-Mailer: b4 0.13.0
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2080;
+ i=louis.chauvet@bootlin.com; h=from:subject:message-id;
+ bh=Be4IEMfgO+NQg96KLT0RH17FuIbGLM/+Ly84HY6myDo=;
+ b=owEBbQKS/ZANAwAIASCtLsZbECziAcsmYgBmA9w/c9Cnfvrqqq1MDDNUKvNAz41Dvk9GITU1loRj
+ A8OVKIiJAjMEAAEIAB0WIQRPj7g/vng8MQxQWQQgrS7GWxAs4gUCZgPcPwAKCRAgrS7GWxAs4ihlD/
+ 4/Q5DgfZ1iSI4FrQZ7Pf67vcWlI1/96ahnk+N+PMw8Pbtm3itcncI96DPxrwr5edOaCPF7pom0C93J
+ byF/fwZYNBa/oZq0JHO8D5fY9jnmgyGLsOqyOOMhR+ihypn7aKXQkAq/rd50d7LGAgIELRZfoK5Tlj
+ 29Vi7pbp6t1sBWSXRAtXrkh53QoPA6TJvZF7PBfmPdpWcw7riIcvApkoIeOV02HV24DSLdxC8oaVEQ
+ A38s6HuYbb/qb6AG72cYJALK9w9sbUcFGQYT9senwHMJhJT0AeluyhHiNZam+RoYoOTvBSmpTPNqh0
+ fjkoJ/tHq+Dt6n4l466vrW+0dz/zHUekO7AEkCG/PcS3xaNod2uxg5Oj2EBiU0eGPlZ4iGIQ+RF5MG
+ JzFa9dKFM9y4kd2IAKN3f5W6PsyniueCsk1CLatn5B/hMG2pOnN1jcOEErkhfiumgBsRhStg58LqH7
+ xu6VMWYD0VuUGWEF20ebJ7YQz82YgL7xdkhf5M9dyffItGlwFHFY3+gVZVZa6oqFIQBqbCgMGtE9rH
+ L2mVk02Go5eD6Qv4CWBGTB3IwxcLuLpUCx81taJqrB+ISBcsoUlebzAJNb7cCt55aGQT/c4KcZTwDz
+ DAvtBEOj6tgmVGQHdKSkg5a1OX1+709/NaexU1Qm/gxIG2ugo4uq1dN3Osug==
+X-Developer-Key: i=louis.chauvet@bootlin.com; a=openpgp;
+ fpr=8B7104AE9A272D6693F527F2EC1883F55E0B40A5
+X-GND-Sasl: louis.chauvet@bootlin.com
 
-Hi Stefan,
+This series adds the support for the omap-mcspi multi mode which allows
+sending SPI messages with a shorter delay between CS and the message.
 
-On Wed, Mar 27, 2024 at 2:14=E2=80=AFPM Stefan O'Rear <sorear@fastmail.com>=
- wrote:
->
-> childregs represents the registers which are active for the new thread
-> in user context. For a kernel thread, childregs->gp is never used since
-> the kernel gp is not touched by switch_to. For a user mode helper, the
-> gp value can be observed in user space after execve or possibly by other
-> means.
->
-> Fixes: 7db91e57a0ac ("RISC-V: Task implementation")
-> Signed-off-by: Stefan O'Rear <sorear@fastmail.com>
-> ---
->  arch/riscv/kernel/process.c | 3 ---
->  1 file changed, 3 deletions(-)
->
-> diff --git a/arch/riscv/kernel/process.c b/arch/riscv/kernel/process.c
-> index 92922dbd5b5c..51042f48da17 100644
-> --- a/arch/riscv/kernel/process.c
-> +++ b/arch/riscv/kernel/process.c
-> @@ -27,8 +27,6 @@
->  #include <asm/vector.h>
->  #include <asm/cpufeature.h>
->
-> -register unsigned long gp_in_global __asm__("gp");
-> -
->  #if defined(CONFIG_STACKPROTECTOR) && !defined(CONFIG_STACKPROTECTOR_PER=
-_TASK)
->  #include <linux/stackprotector.h>
->  unsigned long __stack_chk_guard __read_mostly;
-> @@ -207,7 +205,6 @@ int copy_thread(struct task_struct *p, const struct k=
-ernel_clone_args *args)
->         if (unlikely(args->fn)) {
->                 /* Kernel thread */
->                 memset(childregs, 0, sizeof(struct pt_regs));
-> -               childregs->gp =3D gp_in_global;
->                 /* Supervisor/Machine, irqs on: */
->                 childregs->status =3D SR_PP | SR_PIE;
->
-> --
-> 2.40.1
->
->
-Can you help express in more detail what the problem was before fixing it?
+One drawback of the multi-mode is that the CS is raised between each word, 
+so it can only be used with messages containing 1 word transfers and 
+asking for cs_change. Few devices, like FPGAs, may easily workaround this 
+limitation.
 
-Thanks,
-Yunhui
+The first patch removes the current implementation, which is working, but 
+don't comply with what is asked in the spi transfer (The CS is raised by 
+the hardware regardless of cs_change state). No drivers or board file use this 
+implementation upstream.
+
+The second patch adds the implementation of the multi-mode, which complies 
+with what is asked in the SPI message.
+
+The third patch is the suggested optimization for using MULTI mode in more 
+situations.
+
+Signed-off-by: Louis Chauvet <louis.chauvet@bootlin.com>
+---
+Changes in v3:
+- Fix compilation warnings found with allmodconfig
+- Link to v2: https://lore.kernel.org/r/20240223-spi-omap2-mcspi-multi-mode-v2-0-afe94476b9c3@bootlin.com
+
+Changes in v2:
+- Updated the commit line for the first patch to use the correct format;
+- Updated the commit message for the second patch, adding precision on how
+  the controler works;
+- Added the suggestion from Mark Brown to merge multiple transfers word 
+  into one when applicable;
+- Link to v1: https://lore.kernel.org/r/20240126-spi-omap2-mcspi-multi-mode-v1-0-d143d33f0fe0@bootlin.com
+
+---
+Louis Chauvet (3):
+      spi: spi-omap2-mcspi.c: revert "Toggle CS after each word"
+      spi: omap2-mcspi: Add support for MULTI-mode
+      spi: omap2-mcpsi: Enable MULTI-mode in more situations
+
+ drivers/spi/spi-omap2-mcspi.c                 | 95 +++++++++++++++++++++------
+ include/linux/platform_data/spi-omap2-mcspi.h |  3 -
+ 2 files changed, 74 insertions(+), 24 deletions(-)
+---
+base-commit: 4cece764965020c22cff7665b18a012006359095
+change-id: 20240126-spi-omap2-mcspi-multi-mode-e62f68b78ad3
+
+Best regards,
+-- 
+Louis Chauvet <louis.chauvet@bootlin.com>
+
 
