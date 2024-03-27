@@ -1,99 +1,154 @@
-Return-Path: <linux-kernel+bounces-120415-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-120422-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1313088D711
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 08:17:27 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id CAE2B88D71E
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 08:20:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2A20A1C23ED6
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 07:17:26 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0E1FE1C24DEB
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 07:20:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 33EA028DA5;
-	Wed, 27 Mar 2024 07:17:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="DprLV1YL"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E10992C19A;
+	Wed, 27 Mar 2024 07:20:04 +0000 (UTC)
+Received: from psrserver (unknown [123.150.8.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 76AA72561B
-	for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 07:17:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 866122C195;
+	Wed, 27 Mar 2024 07:19:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=123.150.8.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711523841; cv=none; b=C4omFIpquAkU/BWuOH0ShawV7GAa79Cpi+y2sLS9VjtgcxQQG30FU+Y8Y7bcD4kNrt2nQLRy0S5e6KClGP7/aNWIoHM0ksUpwI3u2uFV5kdA6o+nxPFJsMbuXWDjJgTAB/2QJelfKSRW+z4gldYtmkekf9lyZPFrfa1dA4bmpnQ=
+	t=1711524004; cv=none; b=mSuVNqn2LiqZUDH8NhwvOZw9xwEkJm0Fhm0Wbj+apmlGUBRIUecGvkBraBwRD24wbjnLHadR+yA9vyOpTNif/thybqtpanQ/rWTpBd/bRETnzrnTW4dXEHWZBhQBURVCToQLsYq0mTSCRsYZPqZOMV+mad9lT/1f0OHVmoN7q34=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711523841; c=relaxed/simple;
-	bh=xyQ3ZK+hiMYuRYnTpsz6pSIKbB4/60zOWfr6MnQ/X8I=;
+	s=arc-20240116; t=1711524004; c=relaxed/simple;
+	bh=XdXqg1NMdLPRiYnEaHoa7eE9SN69+UZWfnYpjYCbwCg=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Wo+ovUXsuaYtFrniDrp1MwImMM9nDJ/w3oQ53zmGxdF/mGxzNwM8Ut7EXpBDKUq/5sIZrW4b3WBwDxztxvnQuWN0mVws1iX4Zif9LR9bmGzr2IqTSgXB0uz0qADfQeksPVTAsSVe5G63tgtsiG6mo9H1iUrT01uw1tFFjyqFmLA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=DprLV1YL; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DABC6C433F1;
-	Wed, 27 Mar 2024 07:17:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711523841;
-	bh=xyQ3ZK+hiMYuRYnTpsz6pSIKbB4/60zOWfr6MnQ/X8I=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=DprLV1YLawP0EOlRt7GxEvJwPKI3F0zNLQGKZDH7o2CYgPJm+l1Hs9/w3pEgga0Oq
-	 bcmEtWTLQsQIrHiFEv4Gvuvs2aN/Yc2OrriUFNzDRqlCYx6c4Ns431RPsFiSfTgchL
-	 DzXStZ1t86IcWM816wNw9G6K0XeXcqMwn2J1kb5E+3Ah53Ks+AfZ+UL5Ptl4AgAbe/
-	 rPsiOpCGcdNNUTzEOBl/AXnObjgiHlxclOatbS3I5Z6cRGu5gj694fIJIyZAX9d2Z9
-	 y7fC9OPF/XaIWENxEyLrqu57LbbVcRDhuSOD+aqhhFUjY2Dbg8BfVGz8eH80/RgM9B
-	 lGnpP8HcyZy7A==
-Date: Wed, 27 Mar 2024 15:04:05 +0800
-From: Jisheng Zhang <jszhang@kernel.org>
-To: Samuel Holland <samuel.holland@sifive.com>
-Cc: Palmer Dabbelt <palmer@dabbelt.com>, linux-riscv@lists.infradead.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/4] riscv: Fix TASK_SIZE on 64-bit NOMMU
-Message-ID: <ZgPE5e7FzB5H4MnK@xhacker>
-References: <20240227003630.3634533-1-samuel.holland@sifive.com>
- <20240227003630.3634533-2-samuel.holland@sifive.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=alumOLqX9Om3FE5FXkfwf0243jYC1WlA9CPJCZLRpWJU+BwFr3Nac3IxfKKpQUhk2F0w+ZO81mXcxPR8tf7Ibsn0fwA1xzEct81uev/iG3svnck8ZgERPsVrjf9x1rmhIdQ0YfXyyq5uh2+MYHxrf8yYN6Q4ssou3rYZUsY5v68=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=phytium.com.cn; spf=fail smtp.mailfrom=phytium.com.cn; arc=none smtp.client-ip=123.150.8.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=phytium.com.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=phytium.com.cn
+Received: by psrserver (Postfix, from userid 1000)
+	id 802AB32190E; Wed, 27 Mar 2024 15:10:15 +0800 (CST)
+Date: Wed, 27 Mar 2024 15:10:15 +0800
+From: Yuquan Wang <wangyuquan1236@phytium.com.cn>
+To: Dan Williams <dan.j.williams@intel.com>, jonathan.cameron@huawei.com
+Cc: linux-cxl@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: Questions about CXL device (type 3 memory) hotplug
+Message-ID: <ZgPEfJSWreRo1OdZ@psrserver>
+Reply-To: 646c04bbbd96_33fb32944b@dwillia2-xfh.jf.intel.com.notmuch
+References: <TYWPR01MB10082116669BA002263DF132A90439@TYWPR01MB10082.jpnprd01.prod.outlook.com>
+ <646c04bbbd96_33fb32944b@dwillia2-xfh.jf.intel.com.notmuch>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240227003630.3634533-2-samuel.holland@sifive.com>
+In-Reply-To: <646c04bbbd96_33fb32944b@dwillia2-xfh.jf.intel.com.notmuch>
 
-On Mon, Feb 26, 2024 at 04:34:46PM -0800, Samuel Holland wrote:
-> On NOMMU, userspace memory can come from anywhere in physical RAM. The
-> current definition of TASK_SIZE is wrong if any RAM exists above 4G,
-> causing spurious failures in the userspace access routines.
-> 
-> Fixes: 6bd33e1ece52 ("riscv: add nommu support")
-> Fixes: c3f896dcf1e4 ("mm: switch the test_vmalloc module to use __vmalloc_node")
-> Signed-off-by: Samuel Holland <samuel.holland@sifive.com>
+On Mon, May 22, 2023 at 05:11:39PM -0700, Dan Williams wrote:
+> Yasunori Gotou (Fujitsu) wrote:
+[...]
 
-Reviewed-by: Jisheng Zhang <jszhang@kernel.org>
+Hi, 
 
-> ---
+There was some confusions about CXL device hotplug when I recently
+tried to use Qemu to emulate CXL device hotplug and verify the relevant
+functions of kernel.
+
+> > Q1) Can PCIe hotplug driver detect and call CXL driver?
+
+[...]
+
 > 
->  arch/riscv/include/asm/pgtable.h | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> Yes.
 > 
-> diff --git a/arch/riscv/include/asm/pgtable.h b/arch/riscv/include/asm/pgtable.h
-> index 0c94260b5d0c..a564a39e5676 100644
-> --- a/arch/riscv/include/asm/pgtable.h
-> +++ b/arch/riscv/include/asm/pgtable.h
-> @@ -882,7 +882,7 @@ static inline pte_t pte_swp_clear_exclusive(pte_t pte)
->  #define PAGE_SHARED		__pgprot(0)
->  #define PAGE_KERNEL		__pgprot(0)
->  #define swapper_pg_dir		NULL
-> -#define TASK_SIZE		0xffffffffUL
-> +#define TASK_SIZE		_AC(-1, UL)
->  #define VMALLOC_START		_AC(0, UL)
->  #define VMALLOC_END		TASK_SIZE
->  
-> -- 
-> 2.43.0
+> The cxl_pci driver (drivers/cxl/pci.c) is just a typical PCI driver as
+> far as the PCI hotplug driver is concerned. So add/remove events of a
+> CXL card get turned into probe()/remove() events on the driver.
 > 
+
+1. Can we divide steps of CXL device hotplug into two parts(PCI hotplug & Memory Hotplug)?
+
+PCI Hotplug: the same as the native PCIe hotplug, including initializing cxl.io,
+             assigning PCIe BARs, allocating interrupts, etc. And the cxl_pci driver
+                         is responsible for this part.
+
+Memory Hotplug: focusing on enabling CXL memory including discovering and Configuring HDM,
+                extracting NUMA info from device, notifying memory management, etc.
+
+> > 
+> > Q2) Can QEMU/KVM emulate CXL device hotplug?
+> > 
+> >    I heard that QEMU/KVM has PCIe device hotplug emulation, but I'm not sure
+> >    it can hotplug CXL device.
 > 
-> _______________________________________________
-> linux-riscv mailing list
-> linux-riscv@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-riscv
+> It can, but as far as the driver is concerned you can achieve the same
+> by:
+> 
+> echo $devname > /sys/bus/pci/drivers/cxl_pci/unbind
+> 
+> ...that exercises the same software flows as physical unplug.
+>
+
+2. What is the difference between "echo $devname > /sys/bus/pci/drivers/cxl_pci/unbind" and
+"(qemu) device_del cxl-mem0" ?
+
+According to the test, I found that "(qemu) device_del cxl-mem0" would directly
+unplug the device and cause the interrupts on the cxl root port. It seems like this
+operation would not only trigger cxl_pci driver but also pcieport driver.
+
+The kernel dmesg is like below:
+
+(qemu) device_del cxl-mem0
+# dmesg
+[  699.057907] pcieport 0000:0c:00.0: pciehp: pending interrupts 0x0001 from Slot Status
+[  699.058929] pcieport 0000:0c:00.0: pciehp: Slot(0): Button press: will power off in 5 sec
+[  699.059986] pcieport 0000:0c:00.0: pciehp: pending interrupts 0x0010 from Slot Status
+[  699.060099] pcieport 0000:0c:00.0: pciehp: pciehp_set_indicators: SLOTCTRL 90 write cmd 2c0
+
+Then I also tried "echo $devname > /sys/bus/pci/drivers/cxl_pci/unbind"
+to check the behaviour of kernel. The kernel dmesg is like below:
+
+# echo 0000:0d:00.0 > /sys/bus/pci/drivers/cxl_pci/unbind
+# dmesg
+[70387.978931] cxl_pci 0000:0d:00.0: vgaarb: pci_notify
+[70388.021476] cxl_mem mem0: disconnect mem0 from port1
+[70388.033099] pci 0000:0d:00.0: vgaarb: pci_notify
+
+It seems like this operation would just unbind the cxl_pci driver from the cxl device.
+
+Is my understanding about these two method correct?
+
+3) Can I just use "ndctl/test/cxl-topology.sh" to test the cxl hotplug functions of kernel?
+
+   IIUC, cxl-topology.sh would utilize cxl_test (tools/testing/cxl) which is for regression
+   testing the kernel-user ABI.
+
+PS: My qemu command line:
+qemu-system-x86_64 \
+-M q35,nvdimm=on,cxl=on \
+-m 4G \
+-smp 4 \
+-object memory-backend-ram,size=2G,id=mem0 \
+-numa node,nodeid=0,cpus=0-1,memdev=mem0 \
+-object memory-backend-ram,size=2G,id=mem1 \
+-numa node,nodeid=1,cpus=2-3,memdev=mem1 \
+-object memory-backend-ram,size=256M,id=cxl-mem0 \
+-device pxb-cxl,bus_nr=12,bus=pcie.0,id=cxl.1 \
+-device cxl-rp,port=0,bus=cxl.1,id=root_port0,chassis=0,slot=0 \
+-device cxl-type3,bus=root_port0,volatile-memdev=cxl-mem0,id=cxl-mem0 \
+-M cxl-fmw.0.targets.0=cxl.1,cxl-fmw.0.size=4G,cxl-fmw.0.interleave-granularity=4k \
+-hda ../disk/ubuntu_x86_test_new.qcow2 \
+-nographic \
+
+Qemu version: 8.2.50, the lastest commit of branch cxl-2024-03-05 in "https://gitlab.com/jic23/qemu"
+Kernel version: 6.8.0-rc6
+
+
+Many thanks
+Yuquan
 
