@@ -1,157 +1,135 @@
-Return-Path: <linux-kernel+bounces-121872-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-121873-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 382DD88EECA
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 20:01:22 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2878988EECF
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 20:02:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C38FB1F33E66
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 19:01:21 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D21531F35079
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 19:02:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DF04814F9FF;
-	Wed, 27 Mar 2024 19:01:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 73B2E1514F7;
+	Wed, 27 Mar 2024 19:02:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b="Dkmp2OPr"
-Received: from mail-qt1-f172.google.com (mail-qt1-f172.google.com [209.85.160.172])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="UYHPGXJ3"
+Received: from mail-wr1-f41.google.com (mail-wr1-f41.google.com [209.85.221.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2A67B137C2A
-	for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 19:01:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 35D9812EBC4;
+	Wed, 27 Mar 2024 19:02:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711566076; cv=none; b=Rg5ubYmiLQXsTeM5HGduiZGII6gKvgP4jYUM2xDaC5HVVTlQ4TNHUQYlaxgJ7dP+ur2YfFZ5yVR5a0ESfwUKpCe+wUPK9Iis4U55NtVq8Fj8Tgij/7Yhk8FkXVjSVw04v13Km1qXcLWWPo+gXAkHCB+/iDq+fOsXPaaZwaXjPuo=
+	t=1711566142; cv=none; b=TJC2zj12O4ThTg00v4SI9PNDiWiO+qUeHB0Fi9rGhskmx0aWBk78FKV8mORJuBjurXx+Baq7fOFiimy/iXtuWESlSPTDTpuqoqXxWIpHfPD3bEL6H7lWA5rwVg3igWAhEXATxou16X5q353Z8cjGbc9idzmEgSGVeLmw6f1/WTo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711566076; c=relaxed/simple;
-	bh=0xDg5IGU2fptrvRGCEYpwmMvi+bDQMQ2MpEW+h2oemg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=mx1egpGFWjSyQ4ty6uKpnN66+l3QTA17q6l29CaC5/TFqSwZzTPdQ9X7VueXnev4AgUkqM462fXcoZgzmYYs76kr3C+OaTXPd6rHE3g/lXfupCnUfrZqcLRriGWA0RlYeAm1XN115Wy/5+KbtaV7mwWvTOsZNePTDn+oysdUhyw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org; spf=pass smtp.mailfrom=cmpxchg.org; dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b=Dkmp2OPr; arc=none smtp.client-ip=209.85.160.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cmpxchg.org
-Received: by mail-qt1-f172.google.com with SMTP id d75a77b69052e-42f2d02fbdeso546461cf.1
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 12:01:13 -0700 (PDT)
+	s=arc-20240116; t=1711566142; c=relaxed/simple;
+	bh=Mkjkay7Z0Vj+E8vwdVGwj0OsZgK9nBJ7enE6cPyGExw=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=mdewmW++iMtfjVPAyJYu/P0E+ZyUHOwIf+D7U4gBM+AbbJd6jxiSocCsWHWMXTTSYos0vUHxLPvg9/OPnG/MjJc+pXUZi72uzzxj7pSieGxI7C7ZoVW8/koYrFEB+k+2WACaXYXq0cqyxyE9OUwDfGGXiPc/KPmHz74tAOX56wI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=UYHPGXJ3; arc=none smtp.client-ip=209.85.221.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f41.google.com with SMTP id ffacd0b85a97d-33fd8a2a407so61157f8f.2;
+        Wed, 27 Mar 2024 12:02:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20230601.gappssmtp.com; s=20230601; t=1711566073; x=1712170873; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=8GxQ/m2i2KHb6JEyfIRJnzrg7z0UGo5xSQekII3ANKE=;
-        b=Dkmp2OPrfVlMpBownJn590M/pOiTyrJCvBGvNrgQ4CsZTgCpCdfMMpsCBWjSVudNvB
-         wptOaFKHye1DAmUY+VLmPuB9riWZmQ3sDY98YQ/MrarGdPRywrpZx9qGJV0MnGaNJFiB
-         ZqeNjdSZSWXLvbtTDn/cYsXnkTJlmvGrq+3M0Sk9v3PgyEgKoBO8ILAygyw5EGj1SyH5
-         P/WYomzED5rqLYG+G8iQrKbJawJses3HZSYAqSxXk1ZlFsX8kRwVPzdFyVIF9IExJ5+m
-         kAz64j2dJWxxwrI7hQWlQFPlYmEmN4p6OryOO1I9TEXjCDd0iqqAzISUTLN5C8yhVpy/
-         aisA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711566073; x=1712170873;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1711566139; x=1712170939; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=8GxQ/m2i2KHb6JEyfIRJnzrg7z0UGo5xSQekII3ANKE=;
-        b=DFJ+oBCZ2lBVWmZYQKBwEIn8cyCOMWqr8C2lxelyRRTDrgpZ0zreHQ/pxnGyFP0EYA
-         szbpOETxbTQpuNLfdMeVharJzalmg+ZYA4hBRXmDT/qT4YqoRriIvK3+9yjYdelMCGui
-         ELgg2YkPOD5QZuvHLrvF4SoMUO8PluDAmIQP2UWnWlOLzozg1JTphSIqOp7P5B3ICfsf
-         5h14+lZ1jrxXVi/GhwekCpTO6li8QS0mIqkM5IbVwdgKy5LaC0TGxyXDl9q8McjpSGyv
-         a2YCfHvcgreZGVuVfv28Zw3vb+zwZ0uLTKQozX/+K02fDrVZqxk/jHMQQlRjwTE+4aP/
-         NAOw==
-X-Forwarded-Encrypted: i=1; AJvYcCW4peG6jtMcQMQm2dRVAUZYaxc2hhGwbXWELXNDtT0Wa6/+7NKv4YmQQSdM5h3S7SHXuBuHo7zBVzju09TMGGy1SawD7wQ0NNzEMzKp
-X-Gm-Message-State: AOJu0Yx44zTYFTIFuFQzQ8K59tFbZa6E6wmHckXVi5/XSsbR75dA2Dfm
-	RnURMK51o3s3o2OzR7QKjNDpj0dUzSJNL7/q3TujA6Yru3jhxFIGAtXa29eHLxo=
-X-Google-Smtp-Source: AGHT+IEMWc0z3NWlQR8No9ANDoskQvZ+0Bj532IQLCTNjDCCjXJTlv4aoJ+acHAsX68VVMDqZgNiCg==
-X-Received: by 2002:a0c:f085:0:b0:690:734e:50c9 with SMTP id g5-20020a0cf085000000b00690734e50c9mr540594qvk.24.1711566073038;
-        Wed, 27 Mar 2024 12:01:13 -0700 (PDT)
-Received: from localhost (2603-7000-0c01-2716-da5e-d3ff-fee7-26e7.res6.spectrum.com. [2603:7000:c01:2716:da5e:d3ff:fee7:26e7])
-        by smtp.gmail.com with ESMTPSA id 2-20020a0562140d6200b0069778761fb4sm154033qvs.73.2024.03.27.12.01.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 27 Mar 2024 12:01:12 -0700 (PDT)
-Date: Wed, 27 Mar 2024 15:01:11 -0400
-From: Johannes Weiner <hannes@cmpxchg.org>
-To: Vlastimil Babka <vbabka@suse.cz>
-Cc: Andrew Morton <akpm@linux-foundation.org>,
-	Mel Gorman <mgorman@techsingularity.net>, Zi Yan <ziy@nvidia.com>,
-	"Huang, Ying" <ying.huang@intel.com>,
-	David Hildenbrand <david@redhat.com>, linux-mm@kvack.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH 3/3] mm: page_alloc: batch vmstat updates in expand()
-Message-ID: <20240327190111.GC7597@cmpxchg.org>
-References: <20240320180429.678181-1-hannes@cmpxchg.org>
- <20240320180429.678181-11-hannes@cmpxchg.org>
- <b5b09acc-8bca-4e8c-82d4-6542fc7e9aec@suse.cz>
+        bh=G43Y9I+3uus2Fv/YCLNGCC6IN7NsddtveLn+lJcwAXE=;
+        b=UYHPGXJ3PPkqIeKVia220JRIT2Mq5ZI9ahYFTwPWE6QsdixEs6MV0i/+rtxhe9prLh
+         /JWeed8ZDDmU5px4kx1jf6pgqxGa3/vwdSlxmIODqjTwIdl91IIo5WfLcR66eQxGYfOM
+         5VcdRh1jqGyDEAST+7nqacKRrcZyiP80qvPVDSYZql6ZZyFhhSsPMISHXOVxMe37t0q5
+         73nJwoX6McszcNwbP1CUXXrZRzh3qai8Hc11f7hkprwLNXbzU+D2mNLJmvIO1nQjlkRo
+         lBTH/hIh7JKon2iPflrEZw8k1N5ctVl8Ar/RS+37D3iDi7J1WEqZ25nfnYlDc/W6SKMJ
+         Y7SA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711566139; x=1712170939;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=G43Y9I+3uus2Fv/YCLNGCC6IN7NsddtveLn+lJcwAXE=;
+        b=Dv9p5/FMr/rgf67WB86azqkrrmZDfAlqHe8BbmUUfA2UKVuAXV4mFR2hxx+H/cd7K7
+         hIxEZFmQa4x5xKT+fEp4fH7NRrZ8jkf8wwVlDvWeGCbYZZr3XMhsHMpBNpSt5cytA+Vj
+         ksKCb4xpt6iaWWEQqwI/+JFmKfH/+I3/Ne6pgIjcMUJ67PW0TvC2gw7YgXYMmRGnWZP4
+         2LnBnjJgk3qT11Nq6Q5OP8nhEbxUYX6WVBcBUTEFmoPDBDwyA81Wp5ETFOHVtIzHxmMP
+         zTHv3DjGp/O28Q4qI7iOiVlpTnJl9GwNJyROCI4zxpvoZdKM9Is/oCAliGBxbtk1JaOR
+         /PFQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVhIDoa0MX9FFtcR9MV8S2zWQzPfW+MChouNEH9perUpWZ0RVL2FIuUzYXPuVYnSRLcU5K0VMwgnaNZdsIKQmaQiyaX0EgdoN+nEXAIRmZZUeTu/TDYh9TjjtB6EYCV4m9DhlG5s98/136mnpygcEHEhSE/sTLVJa+bQ+jkWeNfVTkVVjmwEqiD5aNXlhKnZLYSvTrza3KMpg==
+X-Gm-Message-State: AOJu0YzmXagCvwkmEN3FLd9NZeTBX1nr7oS9XZH3+yx2qiPgaHSZSsjN
+	U0WrMdDofkCmDmwP2lyoU3FGireASSr7PfK26s5Y4Ojuei/TpcB8RMxrDUYkkVb5/WSDIu1n8oc
+	NIVN6AalzvB3c6VztWOinUz7AVrI=
+X-Google-Smtp-Source: AGHT+IF3uK8BNj55j5GBkzVOsoRtME4sRuRyuXZ1Yo73eCITL53hu+yrnhHrXwg4fZIQHBJexfPsMc5dhyeUKDaRz0g=
+X-Received: by 2002:a5d:6e0d:0:b0:33e:7896:a9d7 with SMTP id
+ h13-20020a5d6e0d000000b0033e7896a9d7mr601323wrz.67.1711566139396; Wed, 27 Mar
+ 2024 12:02:19 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <b5b09acc-8bca-4e8c-82d4-6542fc7e9aec@suse.cz>
+References: <00000000000055ecb906105ed669@google.com> <20240202121531.2550018-1-lizhi.xu@windriver.com>
+ <ZeXGZS1-X8_CYCUz@codewreck.org> <20240321182824.6f303e38@kernel.org>
+ <ada13e85bf2ceed91052fa20adb02c4815953e26@linux.dev> <20240322081312.2a8a4908@kernel.org>
+ <20240327115328.22c5b5a3@kernel.org>
+In-Reply-To: <20240327115328.22c5b5a3@kernel.org>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Wed, 27 Mar 2024 12:02:08 -0700
+Message-ID: <CAADnVQJ2SyJq25wvV2kf8Mepic_rYyGNYh7KpdGerFi6a-jQJw@mail.gmail.com>
+Subject: Re: [PATCH next] fs/9p: fix uaf in in v9fs_stat2inode_dotl
+To: Jakub Kicinski <kuba@kernel.org>
+Cc: Eric Van Hensbergen <eric.vanhensbergen@linux.dev>, asmadeus@codewreck.org, 
+	Lizhi Xu <lizhi.xu@windriver.com>, 
+	syzbot+7a3d75905ea1a830dbe5@syzkaller.appspotmail.com, 
+	Linux-Fsdevel <linux-fsdevel@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
+	linux_oss@crudebyte.com, lucho@ionkov.net, 
+	syzkaller-bugs <syzkaller-bugs@googlegroups.com>, v9fs@lists.linux.dev, 
+	Linux Regressions <regressions@lists.linux.dev>, Network Development <netdev@vger.kernel.org>, 
+	Alexei Starovoitov <ast@kernel.org>, bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, Mar 27, 2024 at 09:54:01AM +0100, Vlastimil Babka wrote:
-> > @@ -1314,10 +1349,10 @@ static inline void expand(struct zone *zone, struct page *page,
-> >  		 * Corresponding page table entries will not be touched,
-> >  		 * pages will stay not present in virtual address space
-> >  		 */
-> > -		if (set_page_guard(zone, &page[size], high, migratetype))
-> > +		if (set_page_guard(zone, &page[size], high))
-> >  			continue;
-> >  
-> > -		add_to_free_list(&page[size], zone, high, migratetype);
-> > +		add_to_free_list(&page[size], zone, high, migratetype, false);
-> 
-> This is account_freepages() in the hot loop, what if we instead used
-> __add_to_free_list(), sum up nr_pages and called account_freepages() once
-> outside of the loop?
+On Wed, Mar 27, 2024 at 11:53=E2=80=AFAM Jakub Kicinski <kuba@kernel.org> w=
+rote:
+>
+> On Fri, 22 Mar 2024 08:13:12 -0700 Jakub Kicinski wrote:
+> > On Fri, 22 Mar 2024 14:26:07 +0000 Eric Van Hensbergen wrote:
+> > > Patch is in the unapplied portion of my for-next tree along with
+> > > another one.  I was hoping to hear some feedback on the other one
+> > > before i did a pull request and was torn on whether or not I wait on
+> > > -rc1 to send since we are so close.
+> >
+> > My guess would be that quite a few folks use 9p for in-VM kernel
+> > testing. Real question is how many actually update their work tree
+> > before -rc1 or even -rc2, given the anticipated merge window code
+> > instability.. so maybe there's no extreme urgency?
+> >
+> > From netdev's perspective, FWIW, it'd be great if the fix reached
+> > Linux before Thursday, which is when we will forward our tree again.
+>
+> Any progress on getting the fix to Linus? I didn't spot it getting
+> merged.
+>
+> I'm a bit surprised there aren't more people complaining TBH
+> I'd have thought any CI setup with KASAN enabled has a good
+> chance of hitting this..
 
-How about this on top of the series? Could be folded into
-mm-page_alloc-consolidate-free-page-accounting, but for credit and
-bisectability (just in case) I think stand-alone makes sense.
+The proposed fix is no brainer:
+https://lore.kernel.org/all/20240202121531.2550018-1-lizhi.xu@windriver.com=
+/
 
----
++ v9fs_stat2inode_dotl(st, inode, 0);
+  kfree(st);
+  if (retval)
+    goto error;
 
-From 361f5df28183d85c7718fe0b579438d3d58777be Mon Sep 17 00:00:00 2001
-From: Johannes Weiner <hannes@cmpxchg.org>
-Date: Wed, 27 Mar 2024 12:29:25 -0400
-Subject: [PATCH 3/3] mm: page_alloc: batch vmstat updates in expand()
+- v9fs_stat2inode_dotl(st, inode, 0);
 
-expand() currently updates vmstat for every subpage. This is
-unnecessary, since they're all of the same zone and migratetype.
+Please ship it to Linus asap.
+I'm surprised this bug slipped through.
 
-Count added pages locally, then do a single vmstat update.
-
-Suggested-by: Vlastimil Babka <vbabka@suse.cz>
-Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
----
- mm/page_alloc.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
-
-diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-index 8987e8869f6d..13fe5c612fbe 100644
---- a/mm/page_alloc.c
-+++ b/mm/page_alloc.c
-@@ -1341,6 +1341,7 @@ static inline void expand(struct zone *zone, struct page *page,
- 	int low, int high, int migratetype)
- {
- 	unsigned long size = 1 << high;
-+	unsigned long nr_added = 0;
- 
- 	while (high > low) {
- 		high--;
-@@ -1356,9 +1357,11 @@ static inline void expand(struct zone *zone, struct page *page,
- 		if (set_page_guard(zone, &page[size], high))
- 			continue;
- 
--		add_to_free_list(&page[size], zone, high, migratetype, false);
-+		__add_to_free_list(&page[size], zone, high, migratetype, false);
- 		set_buddy_order(&page[size], high);
-+		nr_added += size;
- 	}
-+	account_freepages(zone, nr_added, migratetype);
- }
- 
- static void check_new_page_bad(struct page *page)
--- 
-2.44.0
-
+It does affect bpf developers and our CI, since we run with KASAN and use 9=
+P.
 
