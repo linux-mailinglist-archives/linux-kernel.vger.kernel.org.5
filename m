@@ -1,53 +1,54 @@
-Return-Path: <linux-kernel+bounces-120970-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-120971-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9789888E115
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 13:51:41 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5367E88E136
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 13:55:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 24BC61F2C319
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 12:51:41 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EC0D1B26B7A
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 12:52:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1CBF5154449;
-	Wed, 27 Mar 2024 12:15:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0AA5F154BF6;
+	Wed, 27 Mar 2024 12:15:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="oqHwtAQq"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="M+UqjwJH"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 47D64137938;
-	Wed, 27 Mar 2024 12:15:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 449BB15445C;
+	Wed, 27 Mar 2024 12:15:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711541727; cv=none; b=PgvB8KDIVs1GK+/e3Ild4buXuQ2i9g7RLUryt4p33TD0YPwwfDl2fHX0WCbK87rrdKW+qAGsfDSdbPiSayKr2Otpi86SZsMki/tx2z3VSOhck8vAQDe/1pm1PNc+KuaNxMWFpKrisY11do9LGjxDxB+oG+VCis+KP7sqn3J0zvY=
+	t=1711541730; cv=none; b=nRFcEZp0ZEKRJKcR7rAZg6d/pXpLgon8POGER/ZsFKKSKYVChbbcxp72L9Z3uTC542g27FOOUDqcwEuN0lWFCImISi8H7iR0AodofJ+f+M7JpdX5nf23lLp5mWn/cYiftOqCvlDw6tCxMVKQeFventLa6uuDYxUTbm4RqvcTSVw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711541727; c=relaxed/simple;
-	bh=miJPVW60Iyc0ec7hBghPOy+6Bai4TkpejHwIykr/3eQ=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Cvm3l283AE3akC+EKW0PCK5NDZD177rgd5k7fLu5tN+NIODKQWfvMuYLyae0Jnn7soEBdHtT8k2gblF5bg81GK1gRE7dI1UpDe+bvizqgPJHumMvPN94rUcknILwZfb3Nbzn4QSzDWmses1ct6/0FgThS1dQTEUYVG2g+phs10E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=oqHwtAQq; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7858EC433C7;
-	Wed, 27 Mar 2024 12:15:26 +0000 (UTC)
+	s=arc-20240116; t=1711541730; c=relaxed/simple;
+	bh=wrZTQbrVj9b5R7s1P6kRnjBvlV5rKs/bx6EK5CO82fg=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=ABizjUbQzQohPv8zOwVPlY2TPg0k5TCqaoTK7QhpXHN1mYPxGFzKYC7bPeAcTaP0zBR7whcMeXS9AjKjbIM/yGWmWhsUOpuvirLao4SqWwmZhpNbXPWZaa4gz5F9+n9//gunIKiZ4WvNJMNUbw6eKHCoVsuyreEDPkGON2dJGVk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=M+UqjwJH; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0E355C433C7;
+	Wed, 27 Mar 2024 12:15:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711541727;
-	bh=miJPVW60Iyc0ec7hBghPOy+6Bai4TkpejHwIykr/3eQ=;
+	s=k20201202; t=1711541729;
+	bh=wrZTQbrVj9b5R7s1P6kRnjBvlV5rKs/bx6EK5CO82fg=;
 	h=From:To:Cc:Subject:Date:From;
-	b=oqHwtAQq3MPty8RW50ZnmLu8GjlA9LRY8WdvBDfEh3JNVsX4KnoS92nbSz5Caz6RZ
-	 ucKKqkxBjRCaS+2nlkT7DtXI9ZXTiu4t6Xs6SoFZyZL5g2p508WPqjDuw3XABIcBI7
-	 SNkrXWqqz25C9qdPjz9OnggH8/4ATMku4VKDRjI3asPfDmHc7f0DOgONDGfwqRf2rH
-	 lro3hio41OkeVdHdXxk7cYtl7QgSE0P50cevMO+N5uNhoXQeiVEzXD3NocM8mIG2Be
-	 b4zYq1vt+caVeer6debu6S+E7Fo9WxIO5EH27HQTiPiZIT7pM6QZmkFYIucNH2VxQw
-	 Bb3U4pqRm912w==
+	b=M+UqjwJHPPAYFkskYEovVioP7ZwwITe52sgL1MdEwugkHvHfaJ8cKP+6mUPwzFkMD
+	 6wFtOnu5O6itfHZ5tt6fkobaUmFv8gzKQA4K5QxGC3+cArb1aTl34lF/UMFve1MSwG
+	 vQc3NPVH5ItmazqcShSC17oKNkj2BLG/Y8F3XmVU3MHJuPi+C0kn6jR5DpjU1XC3I0
+	 KnWvmNl/YAmLPaY3e1rHY7VdT2E0ElhzdLDow77WtsXpQ43MHt0xCzeFIhIYKYERvb
+	 Vld7DFMQt6CJcha+Q6pEeVmBol0QVmfhscV4A1OjEouWvtJtwQt9UYDLFFo95oqlxf
+	 d+Wm2Ci0DZpFA==
 From: Sasha Levin <sashal@kernel.org>
 To: stable@vger.kernel.org,
-	stfrench@microsoft.com
-Cc: linux-cifs@vger.kernel.org,
-	samba-technical@lists.samba.org,
+	manivannan.sadhasivam@linaro.org
+Cc: =?UTF-8?q?Krzysztof=20Wilczy=C5=84ski?= <kwilczynski@kernel.org>,
+	linux-pci@vger.kernel.org,
+	linux-arm-msm@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: FAILED: Patch "cifs: allow changing password during remount" failed to apply to 5.15-stable tree
-Date: Wed, 27 Mar 2024 08:15:25 -0400
-Message-ID: <20240327121525.2831889-1-sashal@kernel.org>
+Subject: FAILED: Patch "PCI: qcom: Enable BDF to SID translation properly" failed to apply to 5.15-stable tree
+Date: Wed, 27 Mar 2024 08:15:27 -0400
+Message-ID: <20240327121528.2831926-1-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -57,6 +58,7 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-Patchwork-Hint: ignore
 X-stable: review
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
 The patch below does not apply to the 5.15-stable tree.
@@ -69,136 +71,96 @@ Sasha
 
 ------------------ original commit in Linus's tree ------------------
 
-From c1eb537bf4560b3ad4df606c266c665624f3b502 Mon Sep 17 00:00:00 2001
-From: Steve French <stfrench@microsoft.com>
-Date: Tue, 13 Feb 2024 00:40:01 -0600
-Subject: [PATCH] cifs: allow changing password during remount
+From bf79e33cdd89db498e00a6131e937259de5f2705 Mon Sep 17 00:00:00 2001
+From: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Date: Thu, 7 Mar 2024 16:35:15 +0530
+Subject: [PATCH] PCI: qcom: Enable BDF to SID translation properly
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-There are cases where a session is disconnected and password has changed
-on the server (or expired) for this user and this currently can not
-be fixed without unmount and mounting again.  This patch allows
-remount to change the password (for the non Kerberos case, Kerberos
-ticket refresh is handled differently) when the session is disconnected
-and the user can not reconnect due to still using old password.
+Qcom SoCs making use of ARM SMMU require BDF to SID translation table in
+the driver to properly map the SID for the PCIe devices based on their BDF
+identifier. This is currently achieved with the help of
+qcom_pcie_config_sid_1_9_0() function for SoCs supporting the 1_9_0 config.
 
-Future patches should also allow us to setup the keyring (cifscreds)
-to have an "alternate password" so we would be able to change
-the password before the session drops (without the risk of races
-between when the password changes and the disconnect occurs -
-ie cases where the old password is still needed because the new
-password has not fully rolled out to all servers yet).
+But With newer Qcom SoCs starting from SM8450, BDF to SID translation is
+set to bypass mode by default in hardware. Due to this, the translation
+table that is set in the qcom_pcie_config_sid_1_9_0() is essentially
+unused and the default SID is used for all endpoints in SoCs starting from
+SM8450.
 
-Cc: stable@vger.kernel.org
-Signed-off-by: Steve French <stfrench@microsoft.com>
+This is a security concern and also warrants swapping the DeviceID in DT
+while using the GIC ITS to handle MSIs from endpoints. The swapping is
+currently done like below in DT when using GIC ITS:
+
+      /*
+	* MSIs for BDF (1:0.0) only works with Device ID 0x5980.
+	* Hence, the IDs are swapped.
+	*/
+      msi-map = <0x0 &gic_its 0x5981 0x1>,
+		<0x100 &gic_its 0x5980 0x1>;
+
+Here, swapping of the DeviceIDs ensure that the endpoint with BDF (1:0.0)
+gets the DeviceID 0x5980 which is associated with the default SID as per
+the iommu mapping in DT. So MSIs were delivered with IDs swapped so far.
+But this also means the Root Port (0:0.0) won't receive any MSIs (for PME,
+AER etc...)
+
+So let's fix these issues by clearing the BDF to SID bypass mode for all
+SoCs making use of the 1_9_0 config. This allows the PCIe devices to use
+the correct SID, thus avoiding the DeviceID swapping hack in DT and also
+achieving the isolation between devices.
+
+Fixes: 4c9398822106 ("PCI: qcom: Add support for configuring BDF to SID mapping for SM8250")
+Link: https://lore.kernel.org/linux-pci/20240307-pci-bdf-sid-fix-v1-1-9423a7e2d63c@linaro.org
+Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Signed-off-by: Krzysztof Wilczyński <kwilczynski@kernel.org>
+Cc: stable@vger.kernel.org # 5.11
 ---
- fs/smb/client/cifs_debug.c |  2 ++
- fs/smb/client/cifsglob.h   |  1 +
- fs/smb/client/fs_context.c | 27 ++++++++++++++++++++++-----
- fs/smb/client/smb2pdu.c    |  5 +++++
- 4 files changed, 30 insertions(+), 5 deletions(-)
+ drivers/pci/controller/dwc/pcie-qcom.c | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
-diff --git a/fs/smb/client/cifs_debug.c b/fs/smb/client/cifs_debug.c
-index 3e4209f41c18f..23d2622b969f0 100644
---- a/fs/smb/client/cifs_debug.c
-+++ b/fs/smb/client/cifs_debug.c
-@@ -488,6 +488,8 @@ static int cifs_debug_data_proc_show(struct seq_file *m, void *v)
- 				ses->ses_count, ses->serverOS, ses->serverNOS,
- 				ses->capabilities, ses->ses_status);
- 			}
-+			if (ses->expired_pwd)
-+				seq_puts(m, "password no longer valid ");
- 			spin_unlock(&ses->ses_lock);
+diff --git a/drivers/pci/controller/dwc/pcie-qcom.c b/drivers/pci/controller/dwc/pcie-qcom.c
+index 8554482debe86..02bfe415c7ac8 100644
+--- a/drivers/pci/controller/dwc/pcie-qcom.c
++++ b/drivers/pci/controller/dwc/pcie-qcom.c
+@@ -53,6 +53,7 @@
+ #define PARF_SLV_ADDR_SPACE_SIZE		0x358
+ #define PARF_DEVICE_TYPE			0x1000
+ #define PARF_BDF_TO_SID_TABLE_N			0x2000
++#define PARF_BDF_TO_SID_CFG			0x2c00
  
- 			seq_printf(m, "\n\tSecurity type: %s ",
-diff --git a/fs/smb/client/cifsglob.h b/fs/smb/client/cifsglob.h
-index 53c75cfb33ab9..ec9a26bd05a12 100644
---- a/fs/smb/client/cifsglob.h
-+++ b/fs/smb/client/cifsglob.h
-@@ -1066,6 +1066,7 @@ struct cifs_ses {
- 	enum securityEnum sectype; /* what security flavor was specified? */
- 	bool sign;		/* is signing required? */
- 	bool domainAuto:1;
-+	bool expired_pwd;  /* track if access denied or expired pwd so can know if need to update */
- 	unsigned int flags;
- 	__u16 session_flags;
- 	__u8 smb3signingkey[SMB3_SIGN_KEY_SIZE];
-diff --git a/fs/smb/client/fs_context.c b/fs/smb/client/fs_context.c
-index 4b2f5aa2ea0e1..415e87635d5aa 100644
---- a/fs/smb/client/fs_context.c
-+++ b/fs/smb/client/fs_context.c
-@@ -772,7 +772,7 @@ static void smb3_fs_context_free(struct fs_context *fc)
-  */
- static int smb3_verify_reconfigure_ctx(struct fs_context *fc,
- 				       struct smb3_fs_context *new_ctx,
--				       struct smb3_fs_context *old_ctx)
-+				       struct smb3_fs_context *old_ctx, bool need_recon)
- {
- 	if (new_ctx->posix_paths != old_ctx->posix_paths) {
- 		cifs_errorf(fc, "can not change posixpaths during remount\n");
-@@ -798,8 +798,15 @@ static int smb3_verify_reconfigure_ctx(struct fs_context *fc,
- 	}
- 	if (new_ctx->password &&
- 	    (!old_ctx->password || strcmp(new_ctx->password, old_ctx->password))) {
--		cifs_errorf(fc, "can not change password during remount\n");
--		return -EINVAL;
-+		if (need_recon == false) {
-+			cifs_errorf(fc,
-+				    "can not change password of active session during remount\n");
-+			return -EINVAL;
-+		} else if (old_ctx->sectype == Kerberos) {
-+			cifs_errorf(fc,
-+				    "can not change password for Kerberos via remount\n");
-+			return -EINVAL;
-+		}
- 	}
- 	if (new_ctx->domainname &&
- 	    (!old_ctx->domainname || strcmp(new_ctx->domainname, old_ctx->domainname))) {
-@@ -843,9 +850,14 @@ static int smb3_reconfigure(struct fs_context *fc)
- 	struct smb3_fs_context *ctx = smb3_fc2context(fc);
- 	struct dentry *root = fc->root;
- 	struct cifs_sb_info *cifs_sb = CIFS_SB(root->d_sb);
-+	struct cifs_ses *ses = cifs_sb_master_tcon(cifs_sb)->ses;
-+	bool need_recon = false;
- 	int rc;
+ /* ELBI registers */
+ #define ELBI_SYS_CTRL				0x04
+@@ -120,6 +121,9 @@
+ /* PARF_DEVICE_TYPE register fields */
+ #define DEVICE_TYPE_RC				0x4
  
--	rc = smb3_verify_reconfigure_ctx(fc, ctx, cifs_sb->ctx);
-+	if (ses->expired_pwd)
-+		need_recon = true;
++/* PARF_BDF_TO_SID_CFG fields */
++#define BDF_TO_SID_BYPASS			BIT(0)
 +
-+	rc = smb3_verify_reconfigure_ctx(fc, ctx, cifs_sb->ctx, need_recon);
- 	if (rc)
- 		return rc;
+ /* ELBI_SYS_CTRL register fields */
+ #define ELBI_SYS_CTRL_LT_ENABLE			BIT(0)
  
-@@ -858,7 +870,12 @@ static int smb3_reconfigure(struct fs_context *fc)
- 	STEAL_STRING(cifs_sb, ctx, UNC);
- 	STEAL_STRING(cifs_sb, ctx, source);
- 	STEAL_STRING(cifs_sb, ctx, username);
--	STEAL_STRING_SENSITIVE(cifs_sb, ctx, password);
-+	if (need_recon == false)
-+		STEAL_STRING_SENSITIVE(cifs_sb, ctx, password);
-+	else  {
-+		kfree_sensitive(ses->password);
-+		ses->password = kstrdup(ctx->password, GFP_KERNEL);
-+	}
- 	STEAL_STRING(cifs_sb, ctx, domainname);
- 	STEAL_STRING(cifs_sb, ctx, nodename);
- 	STEAL_STRING(cifs_sb, ctx, iocharset);
-diff --git a/fs/smb/client/smb2pdu.c b/fs/smb/client/smb2pdu.c
-index 608ee05491e26..a500380d1b2e9 100644
---- a/fs/smb/client/smb2pdu.c
-+++ b/fs/smb/client/smb2pdu.c
-@@ -1536,6 +1536,11 @@ SMB2_sess_sendreceive(struct SMB2_sess_data *sess_data)
- 			    &sess_data->buf0_type,
- 			    CIFS_LOG_ERROR | CIFS_SESS_OP, &rsp_iov);
- 	cifs_small_buf_release(sess_data->iov[0].iov_base);
-+	if (rc == 0)
-+		sess_data->ses->expired_pwd = false;
-+	else if ((rc == -EACCES) || (rc == -EKEYEXPIRED) || (rc == -EKEYREVOKED))
-+		sess_data->ses->expired_pwd = true;
+@@ -1030,11 +1034,17 @@ static int qcom_pcie_config_sid_1_9_0(struct qcom_pcie *pcie)
+ 	u8 qcom_pcie_crc8_table[CRC8_TABLE_SIZE];
+ 	int i, nr_map, size = 0;
+ 	u32 smmu_sid_base;
++	u32 val;
+ 
+ 	of_get_property(dev->of_node, "iommu-map", &size);
+ 	if (!size)
+ 		return 0;
+ 
++	/* Enable BDF to SID translation by disabling bypass mode (default) */
++	val = readl(pcie->parf + PARF_BDF_TO_SID_CFG);
++	val &= ~BDF_TO_SID_BYPASS;
++	writel(val, pcie->parf + PARF_BDF_TO_SID_CFG);
 +
- 	memcpy(&sess_data->iov[0], &rsp_iov, sizeof(struct kvec));
- 
- 	return rc;
+ 	map = kzalloc(size, GFP_KERNEL);
+ 	if (!map)
+ 		return -ENOMEM;
 -- 
 2.43.0
 
