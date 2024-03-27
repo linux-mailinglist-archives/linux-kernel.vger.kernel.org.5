@@ -1,269 +1,206 @@
-Return-Path: <linux-kernel+bounces-121959-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-121960-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B759C88EFDB
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 21:07:21 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7557488EFE1
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 21:08:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DA4161C20CAD
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 20:07:20 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2B82C29A2FD
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 20:07:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DBE331534E4;
-	Wed, 27 Mar 2024 20:04:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CE23615575C;
+	Wed, 27 Mar 2024 20:04:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="KtktXxvn"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.12])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="WZZEQSN5"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ED1F0153823
-	for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 20:04:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.12
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A380155730
+	for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 20:04:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711569851; cv=none; b=rHXX84RqWXvK9LaxSG7fIag7j6CFXj0XbLHpm9ZOVsOIIbgs9DlurG1wZ22gpn09LtzfzBlRJYCO9AduvWLcZfZQnRGR9hNC3DjABT+ex4Cn3qsDj4ZF5qHDURrZ2b7jG6fmRlPmFho7AhGAYnaO8Qmkvr3zwIeBlVAMPdEPsSs=
+	t=1711569856; cv=none; b=cVAdKVVuyZl7rDYFzvRrSklXgPV0Cx1qQ43Vm4TPtkOkKcmm20hWkDuHaIiFeEQxK+mE87YUQG5IAoeytUlnrHikJerwJ9R2/Fl4HcsgGE+cv5Cbwnxk2xWDi3HFzsXkjswCaVSup6kkOF8xwAOzTq7isLzM8mHCkdvK1wP/dBQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711569851; c=relaxed/simple;
-	bh=jnjYRbh/fPxftA3RtGXzv9UpX5enrkyZvcYUhq10uNg=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=kOymHdHF6kcnbbAT6wY7GoxM4BL69lEZtdsPmnbwKnrY0lJqnTmswT0nLP39hM/r6N85D+wel6yA1oWh3aArDB8+YK5I7Ibzys/WQrzK1gTa1SauIPGEb5RdKEijX7Jv3R3X5HYIDnuo+xyTtywGDRqw8eYROWHqeg5E6siKj0g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=KtktXxvn; arc=none smtp.client-ip=198.175.65.12
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1711569850; x=1743105850;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=jnjYRbh/fPxftA3RtGXzv9UpX5enrkyZvcYUhq10uNg=;
-  b=KtktXxvnxwcv6XGt8VLiYSSI9Rvh4ShVWSnyzu+iuefD2n4NP70LPEOJ
-   ZWkslgBwq96mBXu+DpYfgZb0/f/+jrshWYPv3nNJu3UrJl0ZLKGVoNGcn
-   3K9H9H6sLJbm7aaHf2t6MpCirnSqu74PDHMCFrrTUwhNxWZ4RBLu7+KkZ
-   JZ3pzpsb5BLyUPfetaFBsnhz4VlhIrhKoo1CM4+/ufl/Stl4N8sugtKJm
-   3cTFtHZ33I5KUjhvdHjwe+IAdOX3MlsXucpCRl6QJOPz7G/aiLBytWjOF
-   IBch43duRtiVepAUQCvJNGgqFYdhHBZmqIGXOUfbhj7IR1SxTF9Z0DJU5
-   Q==;
-X-CSE-ConnectionGUID: W8wRhlIrS0O910ukY8U+vQ==
-X-CSE-MsgGUID: sxEC4Ze1Q6qH83+uwQe2mQ==
-X-IronPort-AV: E=McAfee;i="6600,9927,11026"; a="18133030"
-X-IronPort-AV: E=Sophos;i="6.07,159,1708416000"; 
-   d="scan'208";a="18133030"
-Received: from orviesa010.jf.intel.com ([10.64.159.150])
-  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Mar 2024 13:04:04 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,159,1708416000"; 
-   d="scan'208";a="16246150"
-Received: from agluck-desk3.sc.intel.com ([172.25.222.105])
-  by orviesa010-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Mar 2024 13:04:04 -0700
-From: Tony Luck <tony.luck@intel.com>
-To: Fenghua Yu <fenghua.yu@intel.com>,
-	Reinette Chatre <reinette.chatre@intel.com>,
-	Maciej Wieczor-Retman <maciej.wieczor-retman@intel.com>,
-	Peter Newman <peternewman@google.com>,
-	James Morse <james.morse@arm.com>,
-	Babu Moger <babu.moger@amd.com>,
-	Drew Fustini <dfustini@baylibre.com>
-Cc: x86@kernel.org,
-	linux-kernel@vger.kernel.org,
-	patches@lists.linux.dev,
-	Tony Luck <tony.luck@intel.com>
-Subject: [PATCH 10/10] x86/resctrl: Determine Sub-NUMA configuration
-Date: Wed, 27 Mar 2024 13:03:52 -0700
-Message-ID: <20240327200352.236835-11-tony.luck@intel.com>
-X-Mailer: git-send-email 2.44.0
-In-Reply-To: <20240327200352.236835-1-tony.luck@intel.com>
-References: <20240327200352.236835-1-tony.luck@intel.com>
+	s=arc-20240116; t=1711569856; c=relaxed/simple;
+	bh=pgMb9uGoyAIyFbF9znVIz68QYrW0g+ex10ZFvjS1k8Y=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ebk9wMjTg+YOghc4BHg1fBOHwyoROxxE03/eQaV1U23YjQ2fMZp5J9XzZMEdMc/SuawGOb6KsKYKsLl09fnU5/1NcEY0aQXylFR+Do0Wx5yQX25z5gq81WK117V0ot1DI4/BsYHngQl8ILlxh+VRhQWNZzog8y15D4aBfjdQvNI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=WZZEQSN5; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1711569853;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=2pUwkeyxpCIgmMVeDahMru1IGnRUaXTuK4+0dNpSIAI=;
+	b=WZZEQSN5rc1UcMOZvYCV9fx+UC0YARbbZ6OvGdQnqimfC/zUByXJSq8Og+2e5q1FalTYFF
+	q/m1lopvjTvOoqq/xXej9IMLsXPJFWUJ3E7GXm+OZpLAn0dAYw0DxhuSrx+fqCGxeSqA5J
+	yCd6hemDOdqa6RcjGwpcgToNHrnaodU=
+Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
+ [209.85.221.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-473-oZupqZTGPfOent5Y9qZCuw-1; Wed, 27 Mar 2024 16:04:09 -0400
+X-MC-Unique: oZupqZTGPfOent5Y9qZCuw-1
+Received: by mail-wr1-f69.google.com with SMTP id ffacd0b85a97d-33ecf15c037so85923f8f.3
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 13:04:09 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711569848; x=1712174648;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=2pUwkeyxpCIgmMVeDahMru1IGnRUaXTuK4+0dNpSIAI=;
+        b=GU+Jaxb5kUM9Zj9AfVRJwevimMX0VCTUlpeUIoYSnH5RwBNeVqtsONerw5//zwtfkN
+         BnO6jvAzutuh9kWSsOxX89aBmkcIHepmGvIXSBDi7o2btg9paziDAFWrzpePNpaVrDdT
+         yAnFI/dwXSVpmTXqjSkBqpFnMO11Mx/bCA2iE3sEVodwcUQCOQKhWvrEK70F76lNcoXO
+         ABVvNkWlJ9Qjm2DdvTR9G454UGLSbyZiPCgvylkufjdHtgJ2h8Z/YZcOWuEyxt4rVFzC
+         e+tVwB6DKL/YmceVlnIJbfXQJ5Magvu2gIqYmVWiwKCVhLcq1OsAKZRAmthvkKNMf2Oe
+         Q6Rg==
+X-Gm-Message-State: AOJu0YxdKeNxCuDOKqoYvksHqIJ1FlBhF2v8ZNwd4QD042sgLmEIuECj
+	AEvC6ApsYy5OIXlvLPmpKBNOlhQHfC2mKp3yc/xn4oHd3wihSFp1VTvSzv7BjzJSU+LpmK4W0YO
+	WbfZGLtxeI7FuBCQVKOpcCuDnAf+Y+eHTdGJnxKCV8a0svI0FJAJH0HKN+Z/CqgtawhJspw==
+X-Received: by 2002:adf:a4d0:0:b0:33e:737f:2f2b with SMTP id h16-20020adfa4d0000000b0033e737f2f2bmr855575wrb.53.1711569847982;
+        Wed, 27 Mar 2024 13:04:07 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IGTklukmtRKY9zEEGC4iwvdgrZ6nHRSYn8IS9kk7sn2RF5Cfz9P+w2Hhw3wmG5duVPhRlleig==
+X-Received: by 2002:adf:a4d0:0:b0:33e:737f:2f2b with SMTP id h16-20020adfa4d0000000b0033e737f2f2bmr855554wrb.53.1711569847214;
+        Wed, 27 Mar 2024 13:04:07 -0700 (PDT)
+Received: from redhat.com ([2.52.20.36])
+        by smtp.gmail.com with ESMTPSA id ck19-20020a5d5e93000000b00341c6440c36sm11892032wrb.74.2024.03.27.13.04.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 27 Mar 2024 13:04:06 -0700 (PDT)
+Date: Wed, 27 Mar 2024 16:04:01 -0400
+From: "Michael S. Tsirkin" <mst@redhat.com>
+To: Will Deacon <will@kernel.org>
+Cc: linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+	Gavin Shan <gshan@redhat.com>, Jason Wang <jasowang@redhat.com>,
+	Stefano Garzarella <sgarzare@redhat.com>,
+	Eugenio =?iso-8859-1?Q?P=E9rez?= <eperezma@redhat.com>,
+	Stefan Hajnoczi <stefanha@redhat.com>,
+	"David S. Miller" <davem@davemloft.net>, kvm@vger.kernel.org,
+	virtualization@lists.linux.dev, netdev@vger.kernel.org
+Subject: Re: [PATCH untested] vhost: order avail ring reads after index
+ updates
+Message-ID: <20240327155750-mutt-send-email-mst@kernel.org>
+References: <f7be6f4ed4bc5405e9a6b848e5ac3dd1f9955c2a.1711560268.git.mst@redhat.com>
+ <20240327195202.GB12000@willie-the-truck>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240327195202.GB12000@willie-the-truck>
 
-There isn't an explicit enumeration of Sub-NUMA cluster mode. Use
-the ratio of the number of CPUs that share an L3 cache instance with
-CPU 0 against the number of CPUs that share a node with CPU0.
+On Wed, Mar 27, 2024 at 07:52:02PM +0000, Will Deacon wrote:
+> On Wed, Mar 27, 2024 at 01:26:23PM -0400, Michael S. Tsirkin wrote:
+> > vhost_get_vq_desc (correctly) uses smp_rmb to order
+> > avail ring reads after index reads.
+> > However, over time we added two more places that read the
+> > index and do not bother with barriers.
+> > Since vhost_get_vq_desc when it was written assumed it is the
+> > only reader when it sees a new index value is cached
+> > it does not bother with a barrier either, as a result,
+> > on the nvidia-gracehopper platform (arm64) available ring
+> > entry reads have been observed bypassing ring reads, causing
+> > a ring corruption.
+> > 
+> > To fix, factor out the correct index access code from vhost_get_vq_desc.
+> > As a side benefit, we also validate the index on all paths now, which
+> > will hopefully help catch future errors earlier.
+> > 
+> > Note: current code is inconsistent in how it handles errors:
+> > some places treat it as an empty ring, others - non empty.
+> > This patch does not attempt to change the existing behaviour.
+> > 
+> > Cc: stable@vger.kernel.org
+> > Reported-by: Gavin Shan <gshan@redhat.com>
+> > Reported-by: Will Deacon <will@kernel.org>
+> > Suggested-by: Will Deacon <will@kernel.org>
+> > Fixes: 275bf960ac69 ("vhost: better detection of available buffers")
+> > Cc: "Jason Wang" <jasowang@redhat.com>
+> > Fixes: d3bb267bbdcb ("vhost: cache avail index in vhost_enable_notify()")
+> > Cc: "Stefano Garzarella" <sgarzare@redhat.com>
+> > Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
+> > ---
+> > 
+> > I think it's better to bite the bullet and clean up the code.
+> > Note: this is still only built, not tested.
+> > Gavin could you help test please?
+> > Especially on the arm platform you have?
+> > 
+> > Will thanks so much for finding this race!
+> 
+> No problem, and I was also hoping that the smp_rmb() could be
+> consolidated into a single helper like you've done here.
+> 
+> One minor comment below:
+> 
+> >  drivers/vhost/vhost.c | 80 +++++++++++++++++++++++--------------------
+> >  1 file changed, 42 insertions(+), 38 deletions(-)
+> > 
+> > diff --git a/drivers/vhost/vhost.c b/drivers/vhost/vhost.c
+> > index 045f666b4f12..26b70b1fd9ff 100644
+> > --- a/drivers/vhost/vhost.c
+> > +++ b/drivers/vhost/vhost.c
+> > @@ -1290,10 +1290,38 @@ static void vhost_dev_unlock_vqs(struct vhost_dev *d)
+> >  		mutex_unlock(&d->vqs[i]->mutex);
+> >  }
+> >  
+> > -static inline int vhost_get_avail_idx(struct vhost_virtqueue *vq,
+> > -				      __virtio16 *idx)
+> > +static inline int vhost_get_avail_idx(struct vhost_virtqueue *vq)
+> >  {
+> > -	return vhost_get_avail(vq, *idx, &vq->avail->idx);
+> > +	__virtio16 idx;
+> > +	u16 avail_idx;
+> > +	int r = vhost_get_avail(vq, idx, &vq->avail->idx);
+> > +
+> > +	if (unlikely(r < 0)) {
+> > +		vq_err(vq, "Failed to access avail idx at %p: %d\n",
+> > +		       &vq->avail->idx, r);
+> > +		return -EFAULT;
+> > +	}
+> > +
+> > +	avail_idx = vhost16_to_cpu(vq, idx);
+> > +
+> > +	/* Check it isn't doing very strange things with descriptor numbers. */
+> > +	if (unlikely((u16)(avail_idx - vq->last_avail_idx) > vq->num)) {
+> > +		vq_err(vq, "Guest moved used index from %u to %u",
+> > +		       vq->last_avail_idx, vq->avail_idx);
+> > +		return -EFAULT;
+> > +	}
+> > +
+> > +	/* Nothing new? We are done. */
+> > +	if (avail_idx == vq->avail_idx)
+> > +		return 0;
+> > +
+> > +	vq->avail_idx = avail_idx;
+> > +
+> > +	/* We updated vq->avail_idx so we need a memory barrier between
+> > +	 * the index read above and the caller reading avail ring entries.
+> > +	 */
+> > +	smp_rmb();
+> 
+> I think you could use smp_acquire__after_ctrl_dep() if you're feeling
+> brave, but to be honest I'd prefer we went in the opposite direction
+> and used READ/WRITE_ONCE + smp_load_acquire()/smp_store_release() across
+> the board. It's just a thankless, error-prone task to get there :(
 
-When Sub-NUMA cluster mode is enabled, adjust the number of RMIDs,
-the sclaing factor, and setup the parent/child pointers in the
-L3 and SUBL3 rdt_resource structures, etc.
+Let's just say that's a separate patch, I tried hard to make this one
+a bugfix only, no other functional changes at all.
 
-As each Sub-NUMA domain is brought online, update the MSR_RMID_SNC_CONFIG
-to remap RMID counters.
-
-Signed-off-by: Tony Luck <tony.luck@intel.com>
----
- arch/x86/include/asm/msr-index.h       |  1 +
- arch/x86/kernel/cpu/resctrl/monitor.c  | 68 ++++++++++++++++++++++++--
- arch/x86/kernel/cpu/resctrl/rdtgroup.c | 26 ++++++++++
- 3 files changed, 91 insertions(+), 4 deletions(-)
-
-diff --git a/arch/x86/include/asm/msr-index.h b/arch/x86/include/asm/msr-index.h
-index 05956bd8bacf..b54c26016c93 100644
---- a/arch/x86/include/asm/msr-index.h
-+++ b/arch/x86/include/asm/msr-index.h
-@@ -1158,6 +1158,7 @@
- #define MSR_IA32_QM_CTR			0xc8e
- #define MSR_IA32_PQR_ASSOC		0xc8f
- #define MSR_IA32_L3_CBM_BASE		0xc90
-+#define MSR_RMID_SNC_CONFIG		0xca0
- #define MSR_IA32_L2_CBM_BASE		0xd10
- #define MSR_IA32_MBA_THRTL_BASE		0xd50
- 
-diff --git a/arch/x86/kernel/cpu/resctrl/monitor.c b/arch/x86/kernel/cpu/resctrl/monitor.c
-index 1ba40d5f5d77..757d475158a3 100644
---- a/arch/x86/kernel/cpu/resctrl/monitor.c
-+++ b/arch/x86/kernel/cpu/resctrl/monitor.c
-@@ -17,6 +17,7 @@
- 
- #include <linux/cpu.h>
- #include <linux/module.h>
-+#include <linux/cacheinfo.h>
- #include <linux/sizes.h>
- #include <linux/slab.h>
- 
-@@ -1051,16 +1052,59 @@ static void l3_mon_evt_init(struct rdt_resource *r)
- 		list_add_tail(&mbm_local_event.list, &r->evt_list);
- }
- 
-+/* CPU models that support MSR_RMID_SNC_CONFIG */
-+static const struct x86_cpu_id snc_cpu_ids[] __initconst = {
-+	X86_MATCH_INTEL_FAM6_MODEL(ICELAKE_X, 0),
-+	X86_MATCH_INTEL_FAM6_MODEL(SAPPHIRERAPIDS_X, 0),
-+	X86_MATCH_INTEL_FAM6_MODEL(EMERALDRAPIDS_X, 0),
-+	X86_MATCH_INTEL_FAM6_MODEL(GRANITERAPIDS_X, 0),
-+	X86_MATCH_INTEL_FAM6_MODEL(ATOM_CRESTMONT_X, 0),
-+	{}
-+};
-+
-+static __init int snc_get_config(void)
-+{
-+	struct cpu_cacheinfo *ci = get_cpu_cacheinfo(0);
-+	cpumask_t *l3_cpumask = NULL;
-+	const cpumask_t	*node0_cpumask;
-+	int i;
-+
-+	if (!x86_match_cpu(snc_cpu_ids))
-+		return 1;
-+
-+	for (i = 0; i < ci->num_leaves; i++) {
-+		if (ci->info_list[i].level == 3) {
-+			if (ci->info_list[i].attributes & CACHE_ID) {
-+				l3_cpumask = &ci->info_list[i].shared_cpu_map;
-+				break;
-+			}
-+		}
-+	}
-+	if (!l3_cpumask) {
-+		pr_info("can't get CPU0 L3 mask\n");
-+		return 1;
-+	}
-+
-+	node0_cpumask = cpumask_of_node(cpu_to_node(0));
-+
-+	return bitmap_weight(cpumask_bits(l3_cpumask), nr_cpu_ids) /
-+	       bitmap_weight(cpumask_bits(node0_cpumask), nr_cpu_ids);
-+}
-+
- int __init rdt_get_mon_l3_config(struct rdt_resource *r)
- {
- 	unsigned int mbm_offset = boot_cpu_data.x86_cache_mbm_width_offset;
- 	struct rdt_hw_resource *hw_res = resctrl_to_arch_res(r);
- 	unsigned int threshold;
-+	int snc_ways;
- 	int ret;
- 
-+	snc_ways = snc_get_config();
-+	if (snc_ways > 1)
-+		pr_info("Sub-NUMA cluster detected with %d nodes per L3 cache\n", snc_ways);
- 	resctrl_rmid_realloc_limit = boot_cpu_data.x86_cache_size * 1024;
--	hw_res->mon_scale = boot_cpu_data.x86_cache_occ_scale;
--	r->num_rmid = boot_cpu_data.x86_cache_max_rmid + 1;
-+	hw_res->mon_scale = boot_cpu_data.x86_cache_occ_scale / snc_ways;
-+	r->num_rmid = (boot_cpu_data.x86_cache_max_rmid + 1) / snc_ways;
- 	hw_res->mbm_width = MBM_CNTR_WIDTH_BASE;
- 
- 	if (mbm_offset > 0 && mbm_offset <= MBM_CNTR_WIDTH_OFFSET_MAX)
-@@ -1084,8 +1128,23 @@ int __init rdt_get_mon_l3_config(struct rdt_resource *r)
- 	 */
- 	resctrl_rmid_realloc_threshold = resctrl_arch_round_mon_val(threshold);
- 
--	r->num_siblings = 1;
--	rdt_l3_mon_resource = r;
-+	if (snc_ways > 1) {
-+		struct rdt_hw_resource *shw_res;
-+
-+		rdt_l3_mon_resource = &rdt_resources_all[RDT_RESOURCE_SUBL3].r_resctrl;
-+		rdt_l3_mon_resource->num_rmid = r->num_rmid;
-+		rdt_l3_mon_resource->num_siblings = snc_ways;
-+
-+		shw_res = resctrl_to_arch_res(rdt_l3_mon_resource);
-+		shw_res->mon_scale = hw_res->mon_scale;
-+		shw_res->mbm_width = hw_res->mbm_width;
-+
-+		r->child = rdt_l3_mon_resource;
-+		rdt_l3_mon_resource->parent = r;
-+	} else {
-+		r->num_siblings = 1;
-+		rdt_l3_mon_resource = r;
-+	}
- 
- 	ret = dom_data_init(rdt_l3_mon_resource);
- 	if (ret)
-@@ -1110,6 +1169,7 @@ int __init rdt_get_mon_l3_config(struct rdt_resource *r)
- 
- 	l3_mon_evt_init(rdt_l3_mon_resource);
- 
-+	r->mon_capable = true;
- 	rdt_l3_mon_resource->mon_capable = true;
- 	rdt_l3_mon_resource->mon_enabled = true;
- 
-diff --git a/arch/x86/kernel/cpu/resctrl/rdtgroup.c b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
-index 3e7f2e36b71e..b1f79fafa333 100644
---- a/arch/x86/kernel/cpu/resctrl/rdtgroup.c
-+++ b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
-@@ -4067,6 +4067,29 @@ static int domain_setup_mon_state(struct rdt_resource *r, struct rdt_domain *d)
- 	return 0;
- }
- 
-+/*
-+ * The power-on reset value of MSR_RMID_SNC_CONFIG is 0x1
-+ * which indicates that RMIDs are configured in legacy mode.
-+ * This mode is incompatible with Linux resctrl semantics
-+ * as RMIDs are partitioned between SNC nodes, which requires
-+ * a user to know which RMID is allocated to a task.
-+ * Clearing bit 0 reconfigures the RMID counters for use
-+ * in Sub NUMA Cluster mode. This mode is better for Linux.
-+ * The RMID space is divided between all SNC nodes with the
-+ * RMIDs renumbered to start from zero in each node when
-+ * couning operations from tasks. Code to read the counters
-+ * must adjust RMID counter numbers based on SNC node. See
-+ * __rmid_read() for code that does this.
-+ */
-+static void snc_remap_rmids(void)
-+{
-+	u64 val;
-+
-+	rdmsrl(MSR_RMID_SNC_CONFIG, val);
-+	val &= ~BIT_ULL(0);
-+	wrmsrl(MSR_RMID_SNC_CONFIG, val);
-+}
-+
- int resctrl_online_domain(struct rdt_resource *r, struct rdt_domain *d)
- {
- 	int err = 0;
-@@ -4082,6 +4105,9 @@ int resctrl_online_domain(struct rdt_resource *r, struct rdt_domain *d)
- 	if (!r->mon_enabled)
- 		goto out_unlock;
- 
-+	if (r->num_siblings > 1)
-+		snc_remap_rmids();
-+
- 	err = domain_setup_mon_state(r, d);
- 	if (err)
- 		goto out_unlock;
--- 
-2.44.0
+> So, for the patch as-is:
+> 
+> Acked-by: Will Deacon <will@kernel.org>
+> 
+> (I've not tested it either though, so definitely wait for Gavin on that!)
+> 
+> Cheers,
+> 
+> Will
 
 
