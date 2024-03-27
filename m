@@ -1,152 +1,160 @@
-Return-Path: <linux-kernel+bounces-121580-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-121582-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6EA1188EA18
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 16:58:43 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 62A7188EA21
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 17:00:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0EEF11F34D33
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 15:58:43 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1E5782888A5
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 16:00:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E62012F5A2;
-	Wed, 27 Mar 2024 15:58:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 00C8412F585;
+	Wed, 27 Mar 2024 16:00:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b="IIWlnOIa"
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [78.32.30.218])
+	dkim=pass (1024-bit key) header.d=xry111.site header.i=@xry111.site header.b="U881pNV/"
+Received: from xry111.site (xry111.site [89.208.246.23])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7BD2912DDBB;
-	Wed, 27 Mar 2024 15:58:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=78.32.30.218
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 32D8112E1EE
+	for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 16:00:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=89.208.246.23
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711555115; cv=none; b=BCd9+g1EGvQQd+2l/7XcuWf4lU6K2EZxDSHJM0q/BTKLSVieUsmnmV3Xqux2nu+0eTH5GoQZE2l1mJ1OvPnLOgbWABkT1wDx2FMQvpTbNCnpvDBegW/rHheGhFsoPzT54Z7NzgJ/TqGcr9tVcX+feoxUKMvdAeru+YL3MRelDRM=
+	t=1711555221; cv=none; b=tf/4YNjpRslAuMEKd30L65kVOFBuiF6A/r1WDhowor37gwszKfGalrbsyc7BtOKB6RzocAFjGDXZWp8fuM/Jw/NxVHl6V3uPA6qxMPtjMuciYlGy8T3tSXwu+HIz8EImG3shHtoQ8ppFxPsG0X6o865eY2cMZhom9S3BOBGZaqc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711555115; c=relaxed/simple;
-	bh=UMIuwVFcciDm4ej4SVG68Q7FVNTRdUcHqyw4oAuyTVs=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=C6+mfP4OBiuDfC40bIQSnxtwatn1ae4R4fVKXRshD0sUlMzKE+IBHbyzyfQ8m1Q3RwnGnQJMeE2Cx4tZbbOTdtDNjwLN7pMnKl+5qrnhnZT808HR+4FleW6dfn1j0rosxKrTts+lzAQUTaYtLKrlKzH7bRt22kF+Vch3c57KlJ0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk; spf=none smtp.mailfrom=armlinux.org.uk; dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b=IIWlnOIa; arc=none smtp.client-ip=78.32.30.218
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=armlinux.org.uk
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:
-	Content-Transfer-Encoding:Content-Type:MIME-Version:References:Message-ID:
-	Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-	List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=HKuUY8oYVWK3ibGLu4p+RahdQ08L6ev0YrXnh1poFUA=; b=IIWlnOIabH1NmHfb9fNpV1Ddgl
-	o18yM5tKlrmhkDUkvWpPIQkBFS9NA9LWXK9y+jGiVUVifXFBnWSObSx5Y7AZVJn9u70BXGBCKWN2a
-	8wmpaL9GM6TsAUa7e5NQ2SAqei9sSIo95jgiU/izJt6Bl/qT6/MBuXgHWa1cBeR5k/rsjpBSZ1do/
-	p+HiC3qK9yBuROvdIoc1vCjMe2pDzw4je2dtz1gE0+8CcwVwULtcPGC1MUd5DixWVXnTpARiJVkdg
-	ophN+HaUMCjTKr3MD6SihOz0VZTGpA4NLzC6RJ9FR1cEpboAbXQZhO/8yV0TIlSfLJcpgg6cBIqRm
-	j/h3b91g==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:44886)
-	by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <linux@armlinux.org.uk>)
-	id 1rpVfL-0007E7-1F;
-	Wed, 27 Mar 2024 15:58:15 +0000
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
-	(envelope-from <linux@shell.armlinux.org.uk>)
-	id 1rpVfJ-000109-94; Wed, 27 Mar 2024 15:58:13 +0000
-Date: Wed, 27 Mar 2024 15:58:13 +0000
-From: "Russell King (Oracle)" <linux@armlinux.org.uk>
-To: arinc.unal@arinc9.com
-Cc: Paolo Abeni <pabeni@redhat.com>, Daniel Golle <daniel@makrotopia.org>,
-	DENG Qingfang <dqfext@gmail.com>,
-	Sean Wang <sean.wang@mediatek.com>, Andrew Lunn <andrew@lunn.ch>,
-	Florian Fainelli <f.fainelli@gmail.com>,
-	Vladimir Oltean <olteanv@gmail.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Matthias Brugger <matthias.bgg@gmail.com>,
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
-	=?iso-8859-1?Q?Ren=E9?= van Dorst <opensource@vdorst.com>,
-	SkyLake Huang <SkyLake.Huang@mediatek.com>,
-	Heiner Kallweit <hkallweit1@gmail.com>,
-	Bartel Eerdekens <bartel.eerdekens@constell8.be>,
-	mithat.guner@xeront.com, erkin.bozoglu@xeront.com,
-	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-mediatek@lists.infradead.org
-Subject: Re: [PATCH net v2 2/2] net: dsa: mt7530: fix disabling EEE on
- failure on MT7531 and MT7988
-Message-ID: <ZgRCFZBFvNSZ1a2U@shell.armlinux.org.uk>
-References: <20240321-for-net-mt7530-fix-eee-for-mt7531-mt7988-v2-0-9af9d5041bfe@arinc9.com>
- <20240321-for-net-mt7530-fix-eee-for-mt7531-mt7988-v2-2-9af9d5041bfe@arinc9.com>
- <799572b672ea8b4756236b14068aef7c8fa726a6.camel@redhat.com>
- <d65f4c45-e616-4157-a769-c285cbad575c@arinc9.com>
- <530da7c1-c058-44ef-84fd-86ff58f1501b@arinc9.com>
+	s=arc-20240116; t=1711555221; c=relaxed/simple;
+	bh=ULF32yPW5VnzXst8UpUYLUXbeHy7gDOzCHLEwUn1sWo=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=tCOTbT+pkXNOEW1KPwKAU8hHVMOmzTielhei1GXzCGDFKyZbcTAK/7UpntBiFd6RaMlQBDyJ/BALeiXOldHD2Fmwbic0xnwMigjoTg37+gfhTTNaCeG7Xb8QMiJdbcKv31CVOcUPApQK39YxTamgTmbBW2T0kqiiOx8jYZ2Bvrw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=xry111.site; spf=pass smtp.mailfrom=xry111.site; dkim=pass (1024-bit key) header.d=xry111.site header.i=@xry111.site header.b=U881pNV/; arc=none smtp.client-ip=89.208.246.23
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=xry111.site
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=xry111.site
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=xry111.site;
+	s=default; t=1711555209;
+	bh=ULF32yPW5VnzXst8UpUYLUXbeHy7gDOzCHLEwUn1sWo=;
+	h=From:To:Cc:Subject:Date:From;
+	b=U881pNV/w+uDEY6kIYq5vU47bg01Pi/X3tOGuDGXmJ5aUo0nDPKA+pTkHxAMUzJVC
+	 M37nvyyGkmbqKRWPfSNke8BPfswVhSh2dCWIaqdELgzVb/rGnbF5i6P5hpmlf7c/Vz
+	 tTaQH9sGwuMJk3XVksWVFbmyO4nusIsuQ3Mibdhg=
+Received: from stargazer.. (unknown [IPv6:240e:358:111f:6100:dc73:854d:832e:8])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
+	(Client did not present a certificate)
+	(Authenticated sender: xry111@xry111.site)
+	by xry111.site (Postfix) with ESMTPSA id 6C0571A4005;
+	Wed, 27 Mar 2024 12:00:01 -0400 (EDT)
+From: Xi Ruoyao <xry111@xry111.site>
+To: Dave Hansen <dave.hansen@linux.intel.com>,
+	Michael Kelley <mhklinux@outlook.com>,
+	Pawan Gupta <pawan.kumar.gupta@linux.intel.com>
+Cc: Andy Lutomirski <luto@kernel.org>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Ingo Molnar <mingo@redhat.com>,
+	Borislav Petkov <bp@alien8.de>,
+	"H. Peter Anvin" <hpa@zytor.com>,
+	x86@kernel.org,
+	linux-kernel@vger.kernel.org,
+	Xi Ruoyao <xry111@xry111.site>
+Subject: [PATCH v5] x86/mm: Don't disable INVLPG if "incomplete Global INVLPG flushes" is fixed by microcode
+Date: Wed, 27 Mar 2024 23:59:20 +0800
+Message-ID: <20240327155920.7026-1-xry111@xry111.site>
+X-Mailer: git-send-email 2.44.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <530da7c1-c058-44ef-84fd-86ff58f1501b@arinc9.com>
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
 
-On Wed, Mar 27, 2024 at 11:46:19AM +0300, arinc.unal@arinc9.com wrote:
-> On 26.03.2024 12:19, Arınç ÜNAL wrote:
-> > On 26.03.2024 12:02, Paolo Abeni wrote:
-> > > If I read the past discussion correctly, this is a potential issue
-> > > found by code inspection and never producing problem in practice, am I
-> > > correct?
-> > > 
-> > > If so I think it will deserve a 3rd party tested-by tag or similar to
-> > > go in.
-> > > 
-> > > If nobody could provide such feedback in a little time, I suggest to
-> > > drop this patch and apply only 1/2.
-> > 
-> > Whether a problem would happen in practice depends on when
-> > phy_init_eee()
-> > fails, meaning it returns a negative non-zero code. I requested Russell
-> > to
-> > review this patch to shed light on when phy_init_eee() would return a
-> > negative non-zero code so we have an idea whether this patch actually
-> > fixes
-> > a problem.
-> 
-> I don't suppose Russell is going to review the patch at this point. I will
-> submit this to net-next then. If someone actually reports a problem in
-> practice, I can always submit it to the stable trees.
+Per the "Processor Specification Update" documentations referred by the
+intel-microcode-20240312 release note, this microcode release has fixed
+the issue for all affected models.
 
-So the fact that I only saw your request this morning to look at
-phy_init_eee(), and to review this patch... because... I work for
-Oracle, and I've been looking at backporting Arm64 KVM patches to
-our kernel, been testing and debugging that effort... and the
-act that less than 24 hours had passed since you made the original
-request... yea, sorry, it's clearly my fault for not jumping on this
-the moment you sent the email.
+So don't disable INVLPG if the microcode is new enough.  The precise
+minimum microcode revision fixing the issue is provided by engineer from
+Intel.
 
-I get _so_ much email that incorrectly has me in the To: header. I
-also get _so_ much email that fails to list me in the To: header
-when the author wants me to respond. I don't have time to read every
-email as it comes in. I certainly don't have time to read every
-email in any case. I do the best I can, which varies considerably
-with my workload.
+Cc: Dave Hansen <dave.hansen@linux.intel.com>
+Link: https://lore.kernel.org/all/168436059559.404.13934972543631851306.tip-bot2@tip-bot2/
+Link: https://github.com/intel/Intel-Linux-Processor-Microcode-Data-Files/releases/tag/microcode-20240312
+Link: https://cdrdv2.intel.com/v1/dl/getContent/740518 # RPL042, rev. 13
+Link: https://cdrdv2.intel.com/v1/dl/getContent/682436 # ADL063, rev. 24
+Link: https://lore.kernel.org/all/20240325231300.qrltbzf6twm43ftb@desk/
+Reviewed-by: Michael Kelley <mhklinux@outlook.com>
+Reviewed-by: Pawan Gupta <pawan.kumar.gupta@linux.intel.com>
+Signed-off-by: Xi Ruoyao <xry111@xry111.site>
+---
+ arch/x86/mm/init.c | 39 +++++++++++++++++++++++++++------------
+ 1 file changed, 27 insertions(+), 12 deletions(-)
 
-I already find that being single, fitting everything in during the
-day (paid work, chores, feeding oneself) is quite a mammoth task.
-There is no one else to do the laundry. There is no one else to get
-the shopping. There is no one else to do the washing up. There is no
-one else to take the rubbish out. All this I do myself, and serially
-because there is only one of me, and it all takes time away from
-sitting here reading every damn email as it comes in.
-
-And then when I end up doing something that _you_ very well could do
-(reading the phy_init_eee() code to find out when it might return a
-negative number) and then you send an email like this... yea... that
-really gets my goat.
-
+diff --git a/arch/x86/mm/init.c b/arch/x86/mm/init.c
+index 679893ea5e68..476eb39db09a 100644
+--- a/arch/x86/mm/init.c
++++ b/arch/x86/mm/init.c
+@@ -261,33 +261,48 @@ static void __init probe_page_size_mask(void)
+ 	}
+ }
+ 
+-#define INTEL_MATCH(_model) { .vendor  = X86_VENDOR_INTEL,	\
+-			      .family  = 6,			\
+-			      .model = _model,			\
+-			    }
++#define INTEL_MATCH(_model, _fixed_microcode)	\
++	{					\
++	  .vendor	= X86_VENDOR_INTEL,	\
++	  .family	= 6,			\
++	  .model	= _model,		\
++	  .driver_data	= _fixed_microcode,	\
++	}
++
+ /*
+  * INVLPG may not properly flush Global entries
+- * on these CPUs when PCIDs are enabled.
++ * on these CPUs when PCIDs are enabled and the
++ * microcode is not updated to fix the issue.
+  */
+ static const struct x86_cpu_id invlpg_miss_ids[] = {
+-	INTEL_MATCH(INTEL_FAM6_ALDERLAKE   ),
+-	INTEL_MATCH(INTEL_FAM6_ALDERLAKE_L ),
+-	INTEL_MATCH(INTEL_FAM6_ATOM_GRACEMONT ),
+-	INTEL_MATCH(INTEL_FAM6_RAPTORLAKE  ),
+-	INTEL_MATCH(INTEL_FAM6_RAPTORLAKE_P),
+-	INTEL_MATCH(INTEL_FAM6_RAPTORLAKE_S),
++	INTEL_MATCH(INTEL_FAM6_ALDERLAKE,	0x2e),
++	INTEL_MATCH(INTEL_FAM6_ALDERLAKE_L,	0x42c),
++	INTEL_MATCH(INTEL_FAM6_ATOM_GRACEMONT,	0x11),
++	INTEL_MATCH(INTEL_FAM6_RAPTORLAKE,	0x118),
++	INTEL_MATCH(INTEL_FAM6_RAPTORLAKE_P,	0x4117),
++	INTEL_MATCH(INTEL_FAM6_RAPTORLAKE_S,	0x2e),
+ 	{}
+ };
+ 
+ static void setup_pcid(void)
+ {
++	const struct x86_cpu_id *invlpg_miss_match;
++
+ 	if (!IS_ENABLED(CONFIG_X86_64))
+ 		return;
+ 
+ 	if (!boot_cpu_has(X86_FEATURE_PCID))
+ 		return;
+ 
+-	if (x86_match_cpu(invlpg_miss_ids)) {
++	invlpg_miss_match = x86_match_cpu(invlpg_miss_ids);
++
++	/*
++	 * The hypervisor may lie about the microcode revision, conservatively
++	 * consider the microcode not updated.
++	 */
++	if (invlpg_miss_match &&
++	    (boot_cpu_has(X86_FEATURE_HYPERVISOR) ||
++	     boot_cpu_data.microcode < invlpg_miss_match->driver_data)) {
+ 		pr_info("Incomplete global flushes, disabling PCID");
+ 		setup_clear_cpu_cap(X86_FEATURE_PCID);
+ 		return;
 -- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
+2.44.0
+
 
