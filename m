@@ -1,71 +1,71 @@
-Return-Path: <linux-kernel+bounces-120230-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-120231-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D38FF88D49E
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 03:37:52 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id B4D7588D49F
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 03:38:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 02DF01C249CA
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 02:37:52 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 299A11F305FC
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 02:38:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A874E28E26;
-	Wed, 27 Mar 2024 02:36:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 27F7A28DAB;
+	Wed, 27 Mar 2024 02:36:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HYY9XVvD"
-Received: from mail-pj1-f50.google.com (mail-pj1-f50.google.com [209.85.216.50])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QuGXho7T"
+Received: from mail-pg1-f177.google.com (mail-pg1-f177.google.com [209.85.215.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EFD9A28DC8;
-	Wed, 27 Mar 2024 02:36:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D6FD32C18F;
+	Wed, 27 Mar 2024 02:36:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711506991; cv=none; b=u8DWCrRcPYQT2zBg4qP5wQSasIBPrxAruvC7tNpgtRspHTyGuC9vBQ+yIeXOOF1OFGxAIdn533oZwVXS2sj8dRFBcMaDw15QYnPdfZpX3aI4PO9B6KV8z8NLUGCWKTriFkKmhwzpvybXhvsUZhzWTPQqT/Cib6DAyYsgIB/RRqA=
+	t=1711506995; cv=none; b=s3pe3AocUQFRSlOzFlmw2Oq7SSTxBvYvjqoOg3eTAP8b72RNIqxcFEcpi70W5m51UIa8Oya5HU2AteiaAehQvt6nAKdAyxX95x74PhuDUTz6HxY4L//jXCCld+ZfggmCXgmvhN+NI1BRPCHtYWW3f/vwuP5x+u05sqarumFfFMQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711506991; c=relaxed/simple;
-	bh=OnxJM8MtT6hmngjXVSsX0B92HW9GjGkLdfZieFHBEZo=;
+	s=arc-20240116; t=1711506995; c=relaxed/simple;
+	bh=/MFiKpIHCX/TkC4eO2Idl1URX2vUkxWYKlY4WkmGVbI=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=dC68jv+x+9L8M/4LTT6Wf/3Uu/zieqIhqs7tjJjfkEGW57Hl/p4HCrxrIRBbGRDi0hF0QM5RS+5Zb9UB7PIieu9RLVaJgcqt5h01JfSTvbEuz8KuExLBTX2pyMnBIzWVZxHQIPhgW1l0hqNGZhDN5iwNi0v7DtTxyHpRNkptS6E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=HYY9XVvD; arc=none smtp.client-ip=209.85.216.50
+	 MIME-Version; b=tw7pqh24Z8+/QPFp7DEbOx6TI1aLGI7XWmLKGMRQx5Cem8V6iVC0U43vekHJr6zmxQG0gDRZY3VdGmH1h49Oz4RG1lUNDic8a5X7AJKjokuZ+S5frQsUCxO+z412wUl/hfWmdqQ0i7F4ES/B7qMWCTcdWp4kJmNOsumAvd4HFPQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=QuGXho7T; arc=none smtp.client-ip=209.85.215.177
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f50.google.com with SMTP id 98e67ed59e1d1-29df3333d30so4419059a91.1;
-        Tue, 26 Mar 2024 19:36:29 -0700 (PDT)
+Received: by mail-pg1-f177.google.com with SMTP id 41be03b00d2f7-5ca29c131ebso3732303a12.0;
+        Tue, 26 Mar 2024 19:36:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711506989; x=1712111789; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1711506993; x=1712111793; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=OiOTxVpWX5GSU2dn6Y9lba1ybxkK7QhwN/uNuJH9fCw=;
-        b=HYY9XVvD6+0ndtE63KgXFUf5iq9OWEbFYYR6LZ1v8PfhiE6eke6z9oDRNAgH7ZJnDB
-         Y7nsy1ikj5iVh57QX/AdLkQol+3/ljgarcJPnDsplP3NMFEf/BpU+DDOC/CgUo4iBSX7
-         tWwLMrQUzA5paVQwLKKGT/MebcEAL2F+GxmwGUf6qHUobg5aK34piGveju4F05rOpw9E
-         1Aa/lByXaVA1739kt1D+9N8BybXTSOX4nyL0SqIUOGZWmkXIbHJd0RL7ZLBkjMp3StPm
-         Rk+3neFg2ihCl060bB78ykZjqLS7Z+WURVVvLM6YKMKaPN91czu+0ooT3Z3kYvvX/ClD
-         QnIw==
+        bh=Su9TUxcyqp7E1w4G+ImqP9H/NVO5bEAfpZ37dB62GOI=;
+        b=QuGXho7TMarZkBnf5ZgEumtUTWgXKI6YQI7VoLAcJxmhgqyrhaVhkKEqyR0d2aog9P
+         FYSmznPLQoyteXxwrSMZU4Op5DWaZ6T3EOzD2xwlkIO8DcxRJWsyMRhe+tHFp3zEzpN5
+         Ni97CMGAiPVeNd8okIpXVBl3ju0hdBLcMHIb28hCgyFsQ3GQddbclAn7RUqxsPt4ak0t
+         wHQKXHz+q/7s1fy9L/pxP1eQizxJXjRUkMLowXr+qazE6yCjiNWedAFaTXpt+1iKYljK
+         RGN3Cr8c3QG+RhLVyECy6p5yFzT9NSjUmXA8PKvKL0c4KnorRq7B7eC7vP+BiXc6a27T
+         Zv5A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711506989; x=1712111789;
+        d=1e100.net; s=20230601; t=1711506993; x=1712111793;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=OiOTxVpWX5GSU2dn6Y9lba1ybxkK7QhwN/uNuJH9fCw=;
-        b=QVgvVZ8U/PolAlyHecrHF8tZruHmnBztaLH/oSzEW4TjPPjT0wdlslsMTCHNXktokt
-         4SpUB5qTgPCt6ncAURvT6VRkwoZJZCgIltNzzTdw4OYYZpJmAeMHAp658pT+diraU1xu
-         /TyjIX39KOdTSzpCwTk2MgJvD69zM0jo6sJB4NdTzuNYROcAO+pPDZQh/aGNLzaTa6Jn
-         whE4IrJa/7+4pdDHjURPtGheWhj7jQKTsOxMAnKh0NdMfHWWl7AkFlxdvJ+okJfQXypU
-         OAuxINHHMAeiI/gAvV09PMcouL+yUAv+U/WBWcbCHM0n9f3wswtByq2X/+ImR8PXd/lN
-         0o3w==
-X-Forwarded-Encrypted: i=1; AJvYcCWNbbogYKg8zol41LBs09yDMaUd3VvsxiIXo8N02gBB/lekhk5QqlAmBc7OnO+MSTfELsz/lkX5S1xMwX4uGP70wTmfEQp1CaFXquXB
-X-Gm-Message-State: AOJu0YxsIQAMeNXXKWhBZMBIWPt0X9QbZrWzy7hP8WMFX+b2/HqMTDms
-	RiWoM4OgqfnCPR1fZfo4DTePPVa9l3WSD682Qa26fR9dBX0Ms2z0m5GKSMIv
-X-Google-Smtp-Source: AGHT+IH+kP/Y8k1yZ43DmMLTxzGkzSTDl7vIb7SfQRbkXeffuQf6g0tnqkrkxQ5d8U9f6pE2ZpmS/A==
-X-Received: by 2002:a17:90a:f3c2:b0:2a0:7601:d50a with SMTP id ha2-20020a17090af3c200b002a07601d50amr1775473pjb.0.1711506989157;
-        Tue, 26 Mar 2024 19:36:29 -0700 (PDT)
+        bh=Su9TUxcyqp7E1w4G+ImqP9H/NVO5bEAfpZ37dB62GOI=;
+        b=p1t/tAXQ20EmXIqTh0e0r7WxiQWab256oPcEajV7ra5wQvZrSfLk98XFtoQoPeFLtK
+         z+fjYY0grvOWCUnyFZMhD8LMYpFqtgTvCDPyW+LmZqT3ShxwXy3bXL4ggB3hdJjFnXel
+         +HMuG85Qz3+WrVY1BmtQrfk+2N5vfovQqWx2v8C69JyKTPE1DZVnYwgm3dhzyQtRYd4u
+         EZ6ZsKcl05DkDkPzovD5v+cu46j6LyGqAfzzJg717JW4ycl2MeZLjwdWZ8Qj5QCaKDAK
+         lz9823o86MvraZGFAt9eflbRsEnkf4+UJWKqjh6c9kJjmsBFGiR5U2IewhII2/P/nfpz
+         UR6g==
+X-Forwarded-Encrypted: i=1; AJvYcCX69a+micJMTutlgn1qv/FRtfzgx/OhDq4VqPri1ddfaufhbaLnPUttKAA04SuiV2A0CTH76sJFI/YQ8V1I5gNEbBQHbNq+uJw6vaY0
+X-Gm-Message-State: AOJu0Yzv7f8D/LHDTgLh17+0NidT66bQIlgIDZJSSEfYEKT6Vc2qnPcu
+	wX7HuJjpzwLDtgjACPwRxmjMQjY67wOQruVYyUc4nyWCSd+5IGpC8iXBvrgv
+X-Google-Smtp-Source: AGHT+IFPGnalkjt3Eo31tDVBROAL6FTPPNvqSU1vfmb+ndT88rEQxfjrp3qgOYaTQr2xmA6ArM1t4Q==
+X-Received: by 2002:a05:6a20:1587:b0:1a3:7285:a63 with SMTP id h7-20020a056a20158700b001a372850a63mr1624045pzj.55.1711506993031;
+        Tue, 26 Mar 2024 19:36:33 -0700 (PDT)
 Received: from wedsonaf-dev.home.lan ([189.124.190.154])
-        by smtp.googlemail.com with ESMTPSA id l20-20020a17090a409400b0029b2e5bc1b9sm347441pjg.23.2024.03.26.19.36.25
+        by smtp.googlemail.com with ESMTPSA id l20-20020a17090a409400b0029b2e5bc1b9sm347441pjg.23.2024.03.26.19.36.29
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Mar 2024 19:36:28 -0700 (PDT)
+        Tue, 26 Mar 2024 19:36:32 -0700 (PDT)
 From: Wedson Almeida Filho <wedsonaf@gmail.com>
 To: rust-for-linux@vger.kernel.org
 Cc: Miguel Ojeda <ojeda@kernel.org>,
@@ -78,9 +78,9 @@ Cc: Miguel Ojeda <ojeda@kernel.org>,
 	Alice Ryhl <aliceryhl@google.com>,
 	linux-kernel@vger.kernel.org,
 	Wedson Almeida Filho <walmeida@microsoft.com>
-Subject: [PATCH v2 08/10] rust: sync: update `Arc` and `UniqueArc` to take allocation flags
-Date: Tue, 26 Mar 2024 23:35:29 -0300
-Message-Id: <20240327023531.187880-9-wedsonaf@gmail.com>
+Subject: [PATCH v2 09/10] rust: init: update `init` module to take allocation flags
+Date: Tue, 26 Mar 2024 23:35:30 -0300
+Message-Id: <20240327023531.187880-10-wedsonaf@gmail.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240327023531.187880-1-wedsonaf@gmail.com>
 References: <20240327023531.187880-1-wedsonaf@gmail.com>
@@ -94,179 +94,359 @@ Content-Transfer-Encoding: 8bit
 
 From: Wedson Almeida Filho <walmeida@microsoft.com>
 
-We also remove the `try_` prefix to align with how `Box` and `Vec` are
-providing methods now.
-
-`init` is temporarily updated with uses of GFP_KERNEL. These will be
-updated in a subsequent patch to take flags as well.
+This is the last component in the conversion for allocators to take
+allocation flags as parameters.
 
 Reviewed-by: Benno Lossin <benno.lossin@proton.me>
 Signed-off-by: Wedson Almeida Filho <walmeida@microsoft.com>
 ---
- rust/kernel/init.rs        |  4 ++--
- rust/kernel/sync/arc.rs    | 28 ++++++++++++++--------------
- samples/rust/rust_print.rs |  4 ++--
- 3 files changed, 18 insertions(+), 18 deletions(-)
+ rust/kernel/init.rs               | 49 ++++++++++++++++---------------
+ rust/kernel/sync/arc.rs           | 23 ++++++++-------
+ rust/kernel/sync/condvar.rs       |  2 +-
+ rust/kernel/sync/lock/mutex.rs    |  2 +-
+ rust/kernel/sync/lock/spinlock.rs |  2 +-
+ rust/kernel/workqueue.rs          | 13 +++++---
+ 6 files changed, 50 insertions(+), 41 deletions(-)
 
 diff --git a/rust/kernel/init.rs b/rust/kernel/init.rs
-index 9c798cffc8e4..a5911fec428b 100644
+index a5911fec428b..fec47b274ec3 100644
 --- a/rust/kernel/init.rs
 +++ b/rust/kernel/init.rs
-@@ -1189,7 +1189,7 @@ fn try_pin_init<E>(init: impl PinInit<T, E>) -> Result<Pin<Self>, E>
-     where
-         E: From<AllocError>,
-     {
--        let mut this = UniqueArc::try_new_uninit()?;
-+        let mut this = UniqueArc::new_uninit(GFP_KERNEL)?;
-         let slot = this.as_mut_ptr();
-         // SAFETY: When init errors/panics, slot will get deallocated but not dropped,
-         // slot is valid and will not be moved, because we pin it later.
-@@ -1203,7 +1203,7 @@ fn try_init<E>(init: impl Init<T, E>) -> Result<Self, E>
-     where
-         E: From<AllocError>,
-     {
--        let mut this = UniqueArc::try_new_uninit()?;
-+        let mut this = UniqueArc::new_uninit(GFP_KERNEL)?;
-         let slot = this.as_mut_ptr();
-         // SAFETY: When init errors/panics, slot will get deallocated but not dropped,
-         // slot is valid.
-diff --git a/rust/kernel/sync/arc.rs b/rust/kernel/sync/arc.rs
-index 1252a1b630ed..b67bb876ddf7 100644
---- a/rust/kernel/sync/arc.rs
-+++ b/rust/kernel/sync/arc.rs
-@@ -16,7 +16,7 @@
- //! [`Arc`]: https://doc.rust-lang.org/std/sync/struct.Arc.html
+@@ -68,7 +68,7 @@
+ //! #     a <- new_mutex!(42, "Foo::a"),
+ //! #     b: 24,
+ //! # });
+-//! let foo: Result<Pin<Box<Foo>>> = Box::pin_init(foo);
++//! let foo: Result<Pin<Box<Foo>>> = Box::pin_init(foo, GFP_KERNEL);
+ //! ```
+ //!
+ //! For more information see the [`pin_init!`] macro.
+@@ -80,7 +80,8 @@
+ //!
+ //! ```rust
+ //! # use kernel::sync::{new_mutex, Arc, Mutex};
+-//! let mtx: Result<Arc<Mutex<usize>>> = Arc::pin_init(new_mutex!(42, "example::mtx"));
++//! let mtx: Result<Arc<Mutex<usize>>> =
++//!     Arc::pin_init(new_mutex!(42, "example::mtx"), GFP_KERNEL);
+ //! ```
+ //!
+ //! To declare an init macro/function you just return an [`impl PinInit<T, E>`]:
+@@ -99,7 +100,7 @@
+ //!     fn new() -> impl PinInit<Self, Error> {
+ //!         try_pin_init!(Self {
+ //!             status <- new_mutex!(0, "DriverData::status"),
+-//!             buffer: Box::init(kernel::init::zeroed())?,
++//!             buffer: Box::init(kernel::init::zeroed(), GFP_KERNEL)?,
+ //!         })
+ //!     }
+ //! }
+@@ -210,7 +211,7 @@
+ //! [`pin_init!`]: crate::pin_init!
  
  use crate::{
 -    alloc::{box_ext::BoxExt, flags::*},
 +    alloc::{box_ext::BoxExt, Flags},
-     bindings,
      error::{self, Error},
-     init::{self, InPlaceInit, Init, PinInit},
-@@ -58,7 +58,7 @@
- /// }
- ///
- /// // Create a refcounted instance of `Example`.
--/// let obj = Arc::try_new(Example { a: 10, b: 20 })?;
-+/// let obj = Arc::new(Example { a: 10, b: 20 }, GFP_KERNEL)?;
- ///
- /// // Get a new pointer to `obj` and increment the refcount.
- /// let cloned = obj.clone();
-@@ -97,7 +97,7 @@
- ///     }
- /// }
- ///
--/// let obj = Arc::try_new(Example { a: 10, b: 20 })?;
-+/// let obj = Arc::new(Example { a: 10, b: 20 }, GFP_KERNEL)?;
- /// obj.use_reference();
- /// obj.take_over();
- /// # Ok::<(), Error>(())
-@@ -120,7 +120,7 @@
- /// impl MyTrait for Example {}
- ///
- /// // `obj` has type `Arc<Example>`.
--/// let obj: Arc<Example> = Arc::try_new(Example)?;
-+/// let obj: Arc<Example> = Arc::new(Example, GFP_KERNEL)?;
- ///
- /// // `coerced` has type `Arc<dyn MyTrait>`.
- /// let coerced: Arc<dyn MyTrait> = obj;
-@@ -163,7 +163,7 @@ unsafe impl<T: ?Sized + Sync + Send> Sync for Arc<T> {}
- 
- impl<T> Arc<T> {
-     /// Constructs a new reference counted instance of `T`.
--    pub fn try_new(contents: T) -> Result<Self, AllocError> {
-+    pub fn new(contents: T, flags: Flags) -> Result<Self, AllocError> {
-         // INVARIANT: The refcount is initialised to a non-zero value.
-         let value = ArcInner {
-             // SAFETY: There are no safety requirements for this FFI call.
-@@ -171,7 +171,7 @@ pub fn try_new(contents: T) -> Result<Self, AllocError> {
-             data: contents,
-         };
- 
--        let inner = <Box<_> as BoxExt<_>>::new(value, GFP_KERNEL)?;
-+        let inner = <Box<_> as BoxExt<_>>::new(value, flags)?;
- 
-         // SAFETY: We just created `inner` with a reference count of 1, which is owned by the new
-         // `Arc` object.
-@@ -388,7 +388,7 @@ fn from(item: Pin<UniqueArc<T>>) -> Self {
- ///     e.into()
- /// }
- ///
--/// let obj = Arc::try_new(Example)?;
-+/// let obj = Arc::new(Example, GFP_KERNEL)?;
- /// let cloned = do_something(obj.as_arc_borrow());
- ///
- /// // Assert that both `obj` and `cloned` point to the same underlying object.
-@@ -412,7 +412,7 @@ fn from(item: Pin<UniqueArc<T>>) -> Self {
- ///     }
- /// }
- ///
--/// let obj = Arc::try_new(Example { a: 10, b: 20 })?;
-+/// let obj = Arc::new(Example { a: 10, b: 20 }, GFP_KERNEL)?;
- /// obj.as_arc_borrow().use_reference();
- /// # Ok::<(), Error>(())
+     sync::UniqueArc,
+     types::{Opaque, ScopeGuard},
+@@ -391,7 +392,7 @@ macro_rules! stack_try_pin_init {
+ ///     },
+ /// });
+ /// # initializer }
+-/// # Box::pin_init(demo()).unwrap();
++/// # Box::pin_init(demo(), GFP_KERNEL).unwrap();
  /// ```
-@@ -500,7 +500,7 @@ fn deref(&self) -> &Self::Target {
- /// }
  ///
- /// fn test() -> Result<Arc<Example>> {
--///     let mut x = UniqueArc::try_new(Example { a: 10, b: 20 })?;
-+///     let mut x = UniqueArc::new(Example { a: 10, b: 20 }, GFP_KERNEL)?;
- ///     x.a += 1;
- ///     x.b += 1;
- ///     Ok(x.into())
-@@ -523,7 +523,7 @@ fn deref(&self) -> &Self::Target {
- /// }
+ /// Arbitrary Rust expressions can be used to set the value of a variable.
+@@ -461,7 +462,7 @@ macro_rules! stack_try_pin_init {
+ /// #         })
+ /// #     }
+ /// # }
+-/// let foo = Box::pin_init(Foo::new());
++/// let foo = Box::pin_init(Foo::new(), GFP_KERNEL);
+ /// ```
  ///
- /// fn test() -> Result<Arc<Example>> {
--///     let x = UniqueArc::try_new_uninit()?;
-+///     let x = UniqueArc::new_uninit(GFP_KERNEL)?;
- ///     Ok(x.write(Example { a: 10, b: 20 }).into())
- /// }
+ /// They can also easily embed it into their own `struct`s:
+@@ -601,7 +602,7 @@ macro_rules! pin_init {
+ /// impl BigBuf {
+ ///     fn new() -> impl PinInit<Self, Error> {
+ ///         try_pin_init!(Self {
+-///             big: Box::init(init::zeroed())?,
++///             big: Box::init(init::zeroed(), GFP_KERNEL)?,
+ ///             small: [0; 1024 * 1024],
+ ///             ptr: core::ptr::null_mut(),
+ ///         }? Error)
+@@ -702,7 +703,7 @@ macro_rules! init {
+ /// impl BigBuf {
+ ///     fn new() -> impl Init<Self, Error> {
+ ///         try_init!(Self {
+-///             big: Box::init(zeroed())?,
++///             big: Box::init(zeroed(), GFP_KERNEL)?,
+ ///             small: [0; 1024 * 1024],
+ ///         }? Error)
+ ///     }
+@@ -1014,7 +1015,7 @@ pub fn uninit<T, E>() -> impl Init<MaybeUninit<T>, E> {
  ///
-@@ -543,7 +543,7 @@ fn deref(&self) -> &Self::Target {
- /// }
- ///
- /// fn test() -> Result<Arc<Example>> {
--///     let mut pinned = Pin::from(UniqueArc::try_new(Example { a: 10, b: 20 })?);
-+///     let mut pinned = Pin::from(UniqueArc::new(Example { a: 10, b: 20 }, GFP_KERNEL)?);
- ///     // We can modify `pinned` because it is `Unpin`.
- ///     pinned.as_mut().a += 1;
- ///     Ok(pinned.into())
-@@ -557,15 +557,15 @@ pub struct UniqueArc<T: ?Sized> {
+ /// ```rust
+ /// use kernel::{error::Error, init::init_array_from_fn};
+-/// let array: Box<[usize; 1_000]> = Box::init::<Error>(init_array_from_fn(|i| i)).unwrap();
++/// let array: Box<[usize; 1_000]> = Box::init::<Error>(init_array_from_fn(|i| i), GFP_KERNEL).unwrap();
+ /// assert_eq!(array.len(), 1_000);
+ /// ```
+ pub fn init_array_from_fn<I, const N: usize, T, E>(
+@@ -1058,7 +1059,7 @@ pub fn init_array_from_fn<I, const N: usize, T, E>(
+ /// ```rust
+ /// use kernel::{sync::{Arc, Mutex}, init::pin_init_array_from_fn, new_mutex};
+ /// let array: Arc<[Mutex<usize>; 1_000]> =
+-///     Arc::pin_init(pin_init_array_from_fn(|i| new_mutex!(i))).unwrap();
++///     Arc::pin_init(pin_init_array_from_fn(|i| new_mutex!(i)), GFP_KERNEL).unwrap();
+ /// assert_eq!(array.len(), 1_000);
+ /// ```
+ pub fn pin_init_array_from_fn<I, const N: usize, T, E>(
+@@ -1116,7 +1117,7 @@ pub trait InPlaceInit<T>: Sized {
+     /// type.
+     ///
+     /// If `T: !Unpin` it will not be able to move afterwards.
+-    fn try_pin_init<E>(init: impl PinInit<T, E>) -> Result<Pin<Self>, E>
++    fn try_pin_init<E>(init: impl PinInit<T, E>, flags: Flags) -> Result<Pin<Self>, E>
+     where
+         E: From<AllocError>;
  
- impl<T> UniqueArc<T> {
-     /// Tries to allocate a new [`UniqueArc`] instance.
--    pub fn try_new(value: T) -> Result<Self, AllocError> {
-+    pub fn new(value: T, flags: Flags) -> Result<Self, AllocError> {
-         Ok(Self {
-             // INVARIANT: The newly-created object has a refcount of 1.
--            inner: Arc::try_new(value)?,
-+            inner: Arc::new(value, flags)?,
-         })
+@@ -1124,7 +1125,7 @@ fn try_pin_init<E>(init: impl PinInit<T, E>) -> Result<Pin<Self>, E>
+     /// type.
+     ///
+     /// If `T: !Unpin` it will not be able to move afterwards.
+-    fn pin_init<E>(init: impl PinInit<T, E>) -> error::Result<Pin<Self>>
++    fn pin_init<E>(init: impl PinInit<T, E>, flags: Flags) -> error::Result<Pin<Self>>
+     where
+         Error: From<E>,
+     {
+@@ -1132,16 +1133,16 @@ fn pin_init<E>(init: impl PinInit<T, E>) -> error::Result<Pin<Self>>
+         let init = unsafe {
+             pin_init_from_closure(|slot| init.__pinned_init(slot).map_err(|e| Error::from(e)))
+         };
+-        Self::try_pin_init(init)
++        Self::try_pin_init(init, flags)
+     }
+ 
+     /// Use the given initializer to in-place initialize a `T`.
+-    fn try_init<E>(init: impl Init<T, E>) -> Result<Self, E>
++    fn try_init<E>(init: impl Init<T, E>, flags: Flags) -> Result<Self, E>
+     where
+         E: From<AllocError>;
+ 
+     /// Use the given initializer to in-place initialize a `T`.
+-    fn init<E>(init: impl Init<T, E>) -> error::Result<Self>
++    fn init<E>(init: impl Init<T, E>, flags: Flags) -> error::Result<Self>
+     where
+         Error: From<E>,
+     {
+@@ -1149,17 +1150,17 @@ fn init<E>(init: impl Init<T, E>) -> error::Result<Self>
+         let init = unsafe {
+             init_from_closure(|slot| init.__pinned_init(slot).map_err(|e| Error::from(e)))
+         };
+-        Self::try_init(init)
++        Self::try_init(init, flags)
+     }
+ }
+ 
+ impl<T> InPlaceInit<T> for Box<T> {
+     #[inline]
+-    fn try_pin_init<E>(init: impl PinInit<T, E>) -> Result<Pin<Self>, E>
++    fn try_pin_init<E>(init: impl PinInit<T, E>, flags: Flags) -> Result<Pin<Self>, E>
+     where
+         E: From<AllocError>,
+     {
+-        let mut this = <Box<_> as BoxExt<_>>::new_uninit(GFP_KERNEL)?;
++        let mut this = <Box<_> as BoxExt<_>>::new_uninit(flags)?;
+         let slot = this.as_mut_ptr();
+         // SAFETY: When init errors/panics, slot will get deallocated but not dropped,
+         // slot is valid and will not be moved, because we pin it later.
+@@ -1169,11 +1170,11 @@ fn try_pin_init<E>(init: impl PinInit<T, E>) -> Result<Pin<Self>, E>
+     }
+ 
+     #[inline]
+-    fn try_init<E>(init: impl Init<T, E>) -> Result<Self, E>
++    fn try_init<E>(init: impl Init<T, E>, flags: Flags) -> Result<Self, E>
+     where
+         E: From<AllocError>,
+     {
+-        let mut this = <Box<_> as BoxExt<_>>::new_uninit(GFP_KERNEL)?;
++        let mut this = <Box<_> as BoxExt<_>>::new_uninit(flags)?;
+         let slot = this.as_mut_ptr();
+         // SAFETY: When init errors/panics, slot will get deallocated but not dropped,
+         // slot is valid.
+@@ -1185,11 +1186,11 @@ fn try_init<E>(init: impl Init<T, E>) -> Result<Self, E>
+ 
+ impl<T> InPlaceInit<T> for UniqueArc<T> {
+     #[inline]
+-    fn try_pin_init<E>(init: impl PinInit<T, E>) -> Result<Pin<Self>, E>
++    fn try_pin_init<E>(init: impl PinInit<T, E>, flags: Flags) -> Result<Pin<Self>, E>
+     where
+         E: From<AllocError>,
+     {
+-        let mut this = UniqueArc::new_uninit(GFP_KERNEL)?;
++        let mut this = UniqueArc::new_uninit(flags)?;
+         let slot = this.as_mut_ptr();
+         // SAFETY: When init errors/panics, slot will get deallocated but not dropped,
+         // slot is valid and will not be moved, because we pin it later.
+@@ -1199,11 +1200,11 @@ fn try_pin_init<E>(init: impl PinInit<T, E>) -> Result<Pin<Self>, E>
+     }
+ 
+     #[inline]
+-    fn try_init<E>(init: impl Init<T, E>) -> Result<Self, E>
++    fn try_init<E>(init: impl Init<T, E>, flags: Flags) -> Result<Self, E>
+     where
+         E: From<AllocError>,
+     {
+-        let mut this = UniqueArc::new_uninit(GFP_KERNEL)?;
++        let mut this = UniqueArc::new_uninit(flags)?;
+         let slot = this.as_mut_ptr();
+         // SAFETY: When init errors/panics, slot will get deallocated but not dropped,
+         // slot is valid.
+diff --git a/rust/kernel/sync/arc.rs b/rust/kernel/sync/arc.rs
+index b67bb876ddf7..0866378f1360 100644
+--- a/rust/kernel/sync/arc.rs
++++ b/rust/kernel/sync/arc.rs
+@@ -182,22 +182,22 @@ pub fn new(contents: T, flags: Flags) -> Result<Self, AllocError> {
+     ///
+     /// If `T: !Unpin` it will not be able to move afterwards.
+     #[inline]
+-    pub fn pin_init<E>(init: impl PinInit<T, E>) -> error::Result<Self>
++    pub fn pin_init<E>(init: impl PinInit<T, E>, flags: Flags) -> error::Result<Self>
+     where
+         Error: From<E>,
+     {
+-        UniqueArc::pin_init(init).map(|u| u.into())
++        UniqueArc::pin_init(init, flags).map(|u| u.into())
+     }
+ 
+     /// Use the given initializer to in-place initialize a `T`.
+     ///
+     /// This is equivalent to [`Arc<T>::pin_init`], since an [`Arc`] is always pinned.
+     #[inline]
+-    pub fn init<E>(init: impl Init<T, E>) -> error::Result<Self>
++    pub fn init<E>(init: impl Init<T, E>, flags: Flags) -> error::Result<Self>
+     where
+         Error: From<E>,
+     {
+-        UniqueArc::init(init).map(|u| u.into())
++        UniqueArc::init(init, flags).map(|u| u.into())
+     }
+ }
+ 
+@@ -565,13 +565,16 @@ pub fn new(value: T, flags: Flags) -> Result<Self, AllocError> {
      }
  
      /// Tries to allocate a new [`UniqueArc`] instance whose contents are not initialised yet.
--    pub fn try_new_uninit() -> Result<UniqueArc<MaybeUninit<T>>, AllocError> {
-+    pub fn new_uninit(_flags: Flags) -> Result<UniqueArc<MaybeUninit<T>>, AllocError> {
+-    pub fn new_uninit(_flags: Flags) -> Result<UniqueArc<MaybeUninit<T>>, AllocError> {
++    pub fn new_uninit(flags: Flags) -> Result<UniqueArc<MaybeUninit<T>>, AllocError> {
          // INVARIANT: The refcount is initialised to a non-zero value.
-         let inner = Box::try_init::<AllocError>(try_init!(ArcInner {
-             // SAFETY: There are no safety requirements for this FFI call.
-diff --git a/samples/rust/rust_print.rs b/samples/rust/rust_print.rs
-index 67ed8ebf8e8e..6eabb0d79ea3 100644
---- a/samples/rust/rust_print.rs
-+++ b/samples/rust/rust_print.rs
-@@ -18,8 +18,8 @@
- fn arc_print() -> Result {
-     use kernel::sync::*;
+-        let inner = Box::try_init::<AllocError>(try_init!(ArcInner {
+-            // SAFETY: There are no safety requirements for this FFI call.
+-            refcount: Opaque::new(unsafe { bindings::REFCOUNT_INIT(1) }),
+-            data <- init::uninit::<T, AllocError>(),
+-        }? AllocError))?;
++        let inner = Box::try_init::<AllocError>(
++            try_init!(ArcInner {
++                // SAFETY: There are no safety requirements for this FFI call.
++                refcount: Opaque::new(unsafe { bindings::REFCOUNT_INIT(1) }),
++                data <- init::uninit::<T, AllocError>(),
++            }? AllocError),
++            flags,
++        )?;
+         Ok(UniqueArc {
+             // INVARIANT: The newly-created object has a refcount of 1.
+             // SAFETY: The pointer from the `Box` is valid.
+diff --git a/rust/kernel/sync/condvar.rs b/rust/kernel/sync/condvar.rs
+index 0c3671caffeb..ef6ffef0aa88 100644
+--- a/rust/kernel/sync/condvar.rs
++++ b/rust/kernel/sync/condvar.rs
+@@ -75,7 +75,7 @@ macro_rules! new_condvar {
+ ///     Box::pin_init(pin_init!(Example {
+ ///         value <- new_mutex!(0),
+ ///         value_changed <- new_condvar!(),
+-///     }))
++///     }), GFP_KERNEL)
+ /// }
+ /// ```
+ ///
+diff --git a/rust/kernel/sync/lock/mutex.rs b/rust/kernel/sync/lock/mutex.rs
+index ef4c4634d294..93e1c982facf 100644
+--- a/rust/kernel/sync/lock/mutex.rs
++++ b/rust/kernel/sync/lock/mutex.rs
+@@ -60,7 +60,7 @@ macro_rules! new_mutex {
+ /// }
+ ///
+ /// // Allocate a boxed `Example`.
+-/// let e = Box::pin_init(Example::new())?;
++/// let e = Box::pin_init(Example::new(), GFP_KERNEL)?;
+ /// assert_eq!(e.c, 10);
+ /// assert_eq!(e.d.lock().a, 20);
+ /// assert_eq!(e.d.lock().b, 30);
+diff --git a/rust/kernel/sync/lock/spinlock.rs b/rust/kernel/sync/lock/spinlock.rs
+index 0b22c635634f..6e900807d3b7 100644
+--- a/rust/kernel/sync/lock/spinlock.rs
++++ b/rust/kernel/sync/lock/spinlock.rs
+@@ -58,7 +58,7 @@ macro_rules! new_spinlock {
+ /// }
+ ///
+ /// // Allocate a boxed `Example`.
+-/// let e = Box::pin_init(Example::new())?;
++/// let e = Box::pin_init(Example::new(), GFP_KERNEL)?;
+ /// assert_eq!(e.c, 10);
+ /// assert_eq!(e.d.lock().a, 20);
+ /// assert_eq!(e.d.lock().b, 30);
+diff --git a/rust/kernel/workqueue.rs b/rust/kernel/workqueue.rs
+index 544f0c51f1b7..09a0f158ff1b 100644
+--- a/rust/kernel/workqueue.rs
++++ b/rust/kernel/workqueue.rs
+@@ -53,7 +53,7 @@
+ //!         Arc::pin_init(pin_init!(MyStruct {
+ //!             value,
+ //!             work <- new_work!("MyStruct::work"),
+-//!         }))
++//!         }), GFP_KERNEL)
+ //!     }
+ //! }
+ //!
+@@ -101,7 +101,7 @@
+ //!             value_2,
+ //!             work_1 <- new_work!("MyStruct::work_1"),
+ //!             work_2 <- new_work!("MyStruct::work_2"),
+-//!         }))
++//!         }), GFP_KERNEL)
+ //!     }
+ //! }
+ //!
+@@ -132,6 +132,7 @@
+ //!
+ //! C header: [`include/linux/workqueue.h`](srctree/include/linux/workqueue.h)
  
--    let a = Arc::try_new(1)?;
--    let b = UniqueArc::try_new("hello, world")?;
-+    let a = Arc::new(1, GFP_KERNEL)?;
-+    let b = UniqueArc::new("hello, world", GFP_KERNEL)?;
++use crate::alloc::Flags;
+ use crate::{bindings, prelude::*, sync::Arc, sync::LockClassKey, types::Opaque};
+ use alloc::alloc::AllocError;
+ use alloc::boxed::Box;
+@@ -206,13 +207,17 @@ pub fn enqueue<W, const ID: u64>(&self, w: W) -> W::EnqueueOutput
+     /// Tries to spawn the given function or closure as a work item.
+     ///
+     /// This method can fail because it allocates memory to store the work item.
+-    pub fn try_spawn<T: 'static + Send + FnOnce()>(&self, func: T) -> Result<(), AllocError> {
++    pub fn try_spawn<T: 'static + Send + FnOnce()>(
++        &self,
++        flags: Flags,
++        func: T,
++    ) -> Result<(), AllocError> {
+         let init = pin_init!(ClosureWork {
+             work <- new_work!("Queue::try_spawn"),
+             func: Some(func),
+         });
  
-     // Prints the value of data in `a`.
-     pr_info!("{}", a);
+-        self.enqueue(Box::pin_init(init).map_err(|_| AllocError)?);
++        self.enqueue(Box::pin_init(init, flags).map_err(|_| AllocError)?);
+         Ok(())
+     }
+ }
 -- 
 2.34.1
 
