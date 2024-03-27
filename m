@@ -1,137 +1,144 @@
-Return-Path: <linux-kernel+bounces-120730-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-120731-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6601B88DC1C
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 12:10:16 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id D418088DC1D
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 12:10:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 983551C26BA1
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 11:10:15 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8F6152A27A5
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 11:10:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 22BCA54BFF;
-	Wed, 27 Mar 2024 11:10:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="ZdCXmf4G"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.9])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 71C9B4EB4F;
-	Wed, 27 Mar 2024 11:10:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.9
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8414B5475D;
+	Wed, 27 Mar 2024 11:10:34 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DF9894EB4F
+	for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 11:10:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711537808; cv=none; b=DMH7bpG33pQw6ofjo/tRYyEn4v8EtEVP/CmPWLFfCdi+8dv9Ol1+zF3SmGNZgydfogHk0VGWDJMMqw0tOar4SjkswNJd/pmjyfArPkCgPBIDMHr0ak69MqzznhjwaPGuTqehwXC/5gGBom+KQPdxfnpsSwp8ZKZre6V7+PHoulc=
+	t=1711537834; cv=none; b=jd0jm7zUQZGPXKpAq9HSAbQABLShC+P1eZlkg0Swt0PYWSOVpFRocDag2AXsiyEm361fpemws7pGLR2Ds2V233Kvtlpgl1zO6iylpidY8fA4jc2lnO98xv4m8u4lhgZJL84qMaI6Sg/0UZk8pP2Twn9UImxsiCk9XE/gBxaIG1w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711537808; c=relaxed/simple;
-	bh=YQXxdHYf5ZUqRCsSk4Vy+9QKTvmMBfJYYDknysNlH7s=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=BiudNP0YXPfrhCQWwDus5eVUUDMKwEKWp/3VaWNvDeelzAVofYXZqmAcqqJ0zIy4VvFbmwdLFUdVdoVI5PbSdP0INF+oixQDEBLQsZQ1EPhMnMRe5ozVLXKSY8T3JEMsp78kWV0Xx4Aw7lYniEnOesO0TOUhCWPrXVt//aRg/v0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=ZdCXmf4G; arc=none smtp.client-ip=192.198.163.9
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1711537807; x=1743073807;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=YQXxdHYf5ZUqRCsSk4Vy+9QKTvmMBfJYYDknysNlH7s=;
-  b=ZdCXmf4GNAmD71F1ytlWlR6s4VkM626ZZyv5P8emTSkgf3A8Fx+sud/g
-   tpEJvgHXG3GPsJgbCq5cBo4qd5QtbLMObyhii0QmYyKYhXy9/SjM5Dj05
-   AV3W21rkLUdeHoaXrkksqkL9Mx595Qpv7jWQktEBWvcGQqBna7q6b8jm2
-   8PhrgY7LZ3gQb3GMYdFZ5phn89FhCvvyqEsm42/r4sUD+S0IdbW8SBQfB
-   ACFthNyVYNlxszLfgXXoDim2qPQuqvs3VKK39rKM8lLyMPRMNW2DJkQL+
-   D0krrwz/aVNeUSWmNRXKEvgMHQ1N6Pg8hAKfAg3oqNzEO4KKbPt5ACIIv
-   A==;
-X-CSE-ConnectionGUID: mX/BMoAMSUG7edqLzVPoBA==
-X-CSE-MsgGUID: cVSMfy1aRGmxTdCIwRzPzg==
-X-IronPort-AV: E=McAfee;i="6600,9927,11025"; a="17360782"
-X-IronPort-AV: E=Sophos;i="6.07,158,1708416000"; 
-   d="scan'208";a="17360782"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Mar 2024 04:10:05 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,11025"; a="937074456"
-X-IronPort-AV: E=Sophos;i="6.07,158,1708416000"; 
-   d="scan'208";a="937074456"
-Received: from kuha.fi.intel.com ([10.237.72.185])
-  by fmsmga001.fm.intel.com with SMTP; 27 Mar 2024 04:10:02 -0700
-Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Wed, 27 Mar 2024 13:10:02 +0200
-Date: Wed, 27 Mar 2024 13:10:02 +0200
-From: Heikki Krogerus <heikki.krogerus@linux.intel.com>
-To: Kyle Tso <kyletso@google.com>
-Cc: linux@roeck-us.net, gregkh@linuxfoundation.org, badhri@google.com,
-	linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
-	stable@vger.kernel.org
-Subject: Re: [PATCH v2] usb: typec: tcpm: Correct the PDO counting in pd_set
-Message-ID: <ZgP+ih7CuXa2S2zb@kuha.fi.intel.com>
-References: <20240326151909.440275-1-kyletso@google.com>
+	s=arc-20240116; t=1711537834; c=relaxed/simple;
+	bh=424D7nE7uOxj3knbxc/ZbegJctB7xbdQzrHXRBGEUwM=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=IwWzseh+3ZsGRNmpc0+vHclIZltiY4tqiy8iGaih5DECRXBimrt5W8Fnki/AtNlEfqhkj/URbu4G/fYYR32VLdc8q2thWeMDiczSpeqydE7rM5YHxDc7vC07M7NcADSIEUHaipJQGeYszWdliXA9nHpwEFatlIxy4JWnSH3F6Fs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D0D432F4;
+	Wed, 27 Mar 2024 04:11:04 -0700 (PDT)
+Received: from [10.57.72.121] (unknown [10.57.72.121])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 69F913F694;
+	Wed, 27 Mar 2024 04:10:28 -0700 (PDT)
+Message-ID: <2a19f555-56db-403f-a774-65a1e9381a78@arm.com>
+Date: Wed, 27 Mar 2024 11:10:26 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240326151909.440275-1-kyletso@google.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v1 0/3] Speed up boot with faster linear map creation
+Content-Language: en-GB
+To: Itaru Kitayama <itaru.kitayama@linux.dev>
+Cc: Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>,
+ Mark Rutland <mark.rutland@arm.com>, Ard Biesheuvel <ardb@kernel.org>,
+ David Hildenbrand <david@redhat.com>, Donald Dutile <ddutile@redhat.com>,
+ Eric Chanudet <echanude@redhat.com>, linux-arm-kernel@lists.infradead.org,
+ linux-kernel@vger.kernel.org
+References: <20240326101448.3453626-1-ryan.roberts@arm.com>
+ <ZgP9zfHz2NfiQqSZ@vm3>
+From: Ryan Roberts <ryan.roberts@arm.com>
+In-Reply-To: <ZgP9zfHz2NfiQqSZ@vm3>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Tue, Mar 26, 2024 at 11:19:09PM +0800, Kyle Tso wrote:
-> Off-by-one errors happen because nr_snk_pdo and nr_src_pdo are
-> incorrectly added one. The index of the loop is equal to the number of
-> PDOs to be updated when leaving the loop and it doesn't need to be added
-> one.
+On 27/03/2024 11:06, Itaru Kitayama wrote:
+> On Tue, Mar 26, 2024 at 10:14:45AM +0000, Ryan Roberts wrote:
+>> Hi All,
+>>
+>> It turns out that creating the linear map can take a significant proportion of
+>> the total boot time, especially when rodata=full. And a large portion of the
+>> time it takes to create the linear map is issuing TLBIs. This series reworks the
+>> kernel pgtable generation code to significantly reduce the number of TLBIs. See
+>> each patch for details.
+>>
+>> The below shows the execution time of map_mem() across a couple of different
+>> systems with different RAM configurations. We measure after applying each patch
+>> and show the improvement relative to base (v6.9-rc1):
+>>
+>>                | Apple M2 VM | Ampere Altra| Ampere Altra| Ampere Altra
+>>                | VM, 16G     | VM, 64G     | VM, 256G    | Metal, 512G
+>> ---------------|-------------|-------------|-------------|-------------
+>>                |   ms    (%) |   ms    (%) |   ms    (%) |    ms    (%)
+>> ---------------|-------------|-------------|-------------|-------------
+>> base           |  151   (0%) | 2191   (0%) | 8990   (0%) | 17443   (0%)
+>> no-cont-remap  |   77 (-49%) |  429 (-80%) | 1753 (-80%) |  3796 (-78%)
+>> no-alloc-remap |   77 (-49%) |  375 (-83%) | 1532 (-83%) |  3366 (-81%)
+>> lazy-unmap     |   63 (-58%) |  330 (-85%) | 1312 (-85%) |  2929 (-83%)
+>>
+>> This series applies on top of v6.9-rc1. All mm selftests pass. I haven't yet
+>> tested all VA size configs (although I don't anticipate any issues); I'll do
+>> this as part of followup.
 > 
-> When doing the power negotiation, TCPM relies on the "nr_snk_pdo" as
-> the size of the local sink PDO array to match the Source capabilities
-> of the partner port. If the off-by-one overflow occurs, a wrong RDO
-> might be sent and unexpected power transfer might happen such as over
-> voltage or over current (than expected).
+> The series was applied cleanly on top of v6.9-rc1+ of Linus's master
+> branch, and boots fine on M1 VM with 14GB of memory.
 > 
-> "nr_src_pdo" is used to set the Rp level when the port is in Source
-> role. It is also the array size of the local Source capabilities when
-> filling up the buffer which will be sent as the Source PDOs (such as
-> in Power Negotiation). If the off-by-one overflow occurs, a wrong Rp
-> level might be set and wrong Source PDOs will be sent to the partner
-> port. This could potentially cause over current or port resets.
-> 
-> Fixes: cd099cde4ed2 ("usb: typec: tcpm: Support multiple capabilities")
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Kyle Tso <kyletso@google.com>
+> Just out of curiosity, how did you measure the boot time and obtain the
+> breakdown of the execution times of each phase?
 
-Reviewed-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+diff --git a/arch/arm64/mm/mmu.c b/arch/arm64/mm/mmu.c
+index 495b732d5af3..8a9d47115784 100644
+--- a/arch/arm64/mm/mmu.c
++++ b/arch/arm64/mm/mmu.c
+@@ -792,7 +792,14 @@ static void __init create_idmap(void)
 
-> ---
-> v1 -> v2:
-> - update the commit message (adding the problems this patch solves)
-> 
->  drivers/usb/typec/tcpm/tcpm.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/usb/typec/tcpm/tcpm.c b/drivers/usb/typec/tcpm/tcpm.c
-> index ae2b6c94482d..2464710ea0c8 100644
-> --- a/drivers/usb/typec/tcpm/tcpm.c
-> +++ b/drivers/usb/typec/tcpm/tcpm.c
-> @@ -6855,14 +6855,14 @@ static int tcpm_pd_set(struct typec_port *p, struct usb_power_delivery *pd)
->  	if (data->sink_desc.pdo[0]) {
->  		for (i = 0; i < PDO_MAX_OBJECTS && data->sink_desc.pdo[i]; i++)
->  			port->snk_pdo[i] = data->sink_desc.pdo[i];
-> -		port->nr_snk_pdo = i + 1;
-> +		port->nr_snk_pdo = i;
->  		port->operating_snk_mw = data->operating_snk_mw;
->  	}
->  
->  	if (data->source_desc.pdo[0]) {
->  		for (i = 0; i < PDO_MAX_OBJECTS && data->source_desc.pdo[i]; i++)
->  			port->snk_pdo[i] = data->source_desc.pdo[i];
-> -		port->nr_src_pdo = i + 1;
-> +		port->nr_src_pdo = i;
->  	}
->  
->  	switch (port->state) {
-> -- 
-> 2.44.0.396.g6e790dbe36-goog
+ void __init paging_init(void)
+ {
++       u64 start, end;
++
++       start = __arch_counter_get_cntvct();
+        map_mem(swapper_pg_dir);
++       end = __arch_counter_get_cntvct();
++
++       pr_err("map_mem: time=%llu us\n",
++               ((end - start) * 1000000) / arch_timer_get_cntfrq());
 
--- 
-heikki
+        memblock_allow_resize();
+
+> 
+> Tested-by: Itaru Kitayama <itaru.kitayama@fujitsu.com>
+
+Thanks!
+
+> 
+> Thanks,
+> Itaru.
+> 
+>>
+>> Thanks,
+>> Ryan
+>>
+>>
+>> Ryan Roberts (3):
+>>   arm64: mm: Don't remap pgtables per- cont(pte|pmd) block
+>>   arm64: mm: Don't remap pgtables for allocate vs populate
+>>   arm64: mm: Lazily clear pte table mappings from fixmap
+>>
+>>  arch/arm64/include/asm/fixmap.h  |   5 +-
+>>  arch/arm64/include/asm/mmu.h     |   8 +
+>>  arch/arm64/include/asm/pgtable.h |   4 -
+>>  arch/arm64/kernel/cpufeature.c   |  10 +-
+>>  arch/arm64/mm/fixmap.c           |  11 +
+>>  arch/arm64/mm/mmu.c              | 364 +++++++++++++++++++++++--------
+>>  include/linux/pgtable.h          |   8 +
+>>  7 files changed, 307 insertions(+), 103 deletions(-)
+>>
+>> --
+>> 2.25.1
+>>
+
 
