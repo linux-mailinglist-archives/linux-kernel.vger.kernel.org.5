@@ -1,54 +1,55 @@
-Return-Path: <linux-kernel+bounces-120957-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-120958-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id C2C8788E0F4
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 13:48:12 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 170A988E0F6
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 13:48:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EC8421C2981D
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 12:48:11 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 486511C29C27
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 12:48:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3353D15252C;
-	Wed, 27 Mar 2024 12:14:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7EA69152DE4;
+	Wed, 27 Mar 2024 12:14:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lLoglpx0"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="iNdSsX+g"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 626D5152517;
-	Wed, 27 Mar 2024 12:14:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B5AA6152534;
+	Wed, 27 Mar 2024 12:14:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711541693; cv=none; b=uUKTu8Vok2WtXpvy3BjiKpxJ8vZk7j4ZBQFbhpGsjlJwDYSp33aYa4DiudImJT8nCB7ZUacxCKXPyox+Xs45ngwX5zEtv8xToTdks4OXdAbXbYgk6lVNgiQ3M78Bvql5vDdst2rEMzbWnPRHfwoa6MWzpZY/ls6g36vGOexhIpA=
+	t=1711541695; cv=none; b=E6gU5T8r37lYKHrDSS/B5311uKinSE/U+HfoZRPxqKFb+gxVPwOinRqEncwPBxLlszKdhgfpC2e6IDCNBj/uEyaELAiOFLsr+tNWLRe/QTBa/x5cY8K2mbMovf+YzK2rjQw6EkJySkb9WaACy2XdRZyA1UlASwgh2OcK76xk+Pw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711541693; c=relaxed/simple;
-	bh=InLTL0BiJSyESEr0O1Y1zmUS5HNnDKY4umz7iqnxKL8=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=gehiwA//YXVb3sqzFWfEE00QFG1V2H+DgT6hjooNaWYdxZSDJps5cngybIYx6gYQuW5CPI/L/cSxzLgLuV9P/mEzlLS9bIJjJV8P5qvOs0tGUdR0lNTfpOBlK9fQH8BmRED5M9C7iP3GoEkQj5jJ3NXdjcxOyF5eqL/kHdkOhHQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lLoglpx0; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 21299C433F1;
-	Wed, 27 Mar 2024 12:14:52 +0000 (UTC)
+	s=arc-20240116; t=1711541695; c=relaxed/simple;
+	bh=adS4NT7dwm+RwEctOu/i/yUbUk/YnAlaEoIXWazAZOA=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=ZPXsXU9pvqPr4rW+T0Uwpmf8mMeOJeEglrl74XVUZ63hRnVW7Q/d3ibytv1YjgFnxueZjD6g4H+vJE/qqL2hcwOOrJRCcawAP1fAbcrMlq+4Inxm2DC+wGfodjbsdR7uwckUOnUAWaeMktFnCnstFwNMd/yDpy/x0Op234cMROI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=iNdSsX+g; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B895CC433B1;
+	Wed, 27 Mar 2024 12:14:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711541692;
-	bh=InLTL0BiJSyESEr0O1Y1zmUS5HNnDKY4umz7iqnxKL8=;
+	s=k20201202; t=1711541695;
+	bh=adS4NT7dwm+RwEctOu/i/yUbUk/YnAlaEoIXWazAZOA=;
 	h=From:To:Cc:Subject:Date:From;
-	b=lLoglpx0sD9YAtACcppNuuxBF1hSUgy84gacn6lE4F3uRgIFaaPhUpgGe1zUiQ5bX
-	 77tROhRT45+v7XLXJqCkBZEI9DtMhAjenvvTzOg5gdXa5nC3Q/tMOpgi9NggMC6JzH
-	 mAlPnzxCY2G/pb6jZVAH+teYFCtEb2loHit312TSHxMpsCMOO93yPAxl83mJLO59EN
-	 SMYmqMj/SixLC2gWujNXkvsbs1cnl7ObzTb5uOML+H06JAb/LXqDW6zevqpCqsppf2
-	 D1FtBiWpkM9EXag9pH787E1BsTKzw4NT2xH3ADxrOhw0/NCcmFmsEjSVT7y576JKR7
-	 vooD9vrC0tjBw==
+	b=iNdSsX+grBNTwV9VN4V4riawND9yc+z8WLvLQSSntWct8G5O+JCQMgqp35n/1z3S+
+	 mvsZkYBEsMXi1c0XzyECOB8McCnaxc7Gyd9IFHUXIFQe+4Nij8xl3G+GVG50qnrEwl
+	 tSviworxJDGxsCQHUu6VPJy5XXLjRqDY9N0E5ZCOOzx8BDZhg2orwmf86Ubukw0ul7
+	 qMOn8jafOFYtbrNqj1uxedz4dg/V5YbCH0NBcsei491MVdOVnR4xu+DG+5mIih6UCh
+	 Yzv4aup1A2wmKFi5Cdld+kT+nUh/h0UorHJoHYVfpcYmZ7vDxfFp8KuG7ZhNubiQl8
+	 tiEOgbbklQi/w==
 From: Sasha Levin <sashal@kernel.org>
 To: stable@vger.kernel.org,
-	2045gemini@gmail.com
-Cc: Yu Kuai <yukuai3@huawei.com>,
-	Song Liu <song@kernel.org>,
-	linux-raid@vger.kernel.org,
+	ville.syrjala@linux.intel.com
+Cc: Jani Nikula <jani.nikula@intel.com>,
+	intel-gfx@lists.freedesktop.org,
+	intel-xe@lists.freedesktop.org,
+	dri-devel@lists.freedesktop.org,
 	linux-kernel@vger.kernel.org
-Subject: FAILED: Patch "md/raid5: fix atomicity violation in raid5_cache_count" failed to apply to 5.15-stable tree
-Date: Wed, 27 Mar 2024 08:14:50 -0400
-Message-ID: <20240327121451.2831412-1-sashal@kernel.org>
+Subject: FAILED: Patch "Revert "drm/i915/dsi: Do display on sequence later on icl+"" failed to apply to 5.15-stable tree
+Date: Wed, 27 Mar 2024 08:14:53 -0400
+Message-ID: <20240327121453.2831453-1-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -58,6 +59,7 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-Patchwork-Hint: ignore
 X-stable: review
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
 The patch below does not apply to the 5.15-stable tree.
@@ -70,117 +72,64 @@ Sasha
 
 ------------------ original commit in Linus's tree ------------------
 
-From dfd2bf436709b2bccb78c2dda550dde93700efa7 Mon Sep 17 00:00:00 2001
-From: Gui-Dong Han <2045gemini@gmail.com>
-Date: Fri, 12 Jan 2024 15:10:17 +0800
-Subject: [PATCH] md/raid5: fix atomicity violation in raid5_cache_count
+From dc524d05974f615b145404191fcf91b478950499 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Ville=20Syrj=C3=A4l=C3=A4?= <ville.syrjala@linux.intel.com>
+Date: Tue, 16 Jan 2024 23:08:21 +0200
+Subject: [PATCH] Revert "drm/i915/dsi: Do display on sequence later on icl+"
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-In raid5_cache_count():
-    if (conf->max_nr_stripes < conf->min_nr_stripes)
-        return 0;
-    return conf->max_nr_stripes - conf->min_nr_stripes;
-The current check is ineffective, as the values could change immediately
-after being checked.
+This reverts commit 88b065943cb583e890324d618e8d4b23460d51a3.
 
-In raid5_set_cache_size():
-    ...
-    conf->min_nr_stripes = size;
-    ...
-    while (size > conf->max_nr_stripes)
-        conf->min_nr_stripes = conf->max_nr_stripes;
-    ...
+Lenovo 82TQ is unhappy if we do the display on sequence this
+late. The display output shows severe corruption.
 
-Due to intermediate value updates in raid5_set_cache_size(), concurrent
-execution of raid5_cache_count() and raid5_set_cache_size() may lead to
-inconsistent reads of conf->max_nr_stripes and conf->min_nr_stripes.
-The current checks are ineffective as values could change immediately
-after being checked, raising the risk of conf->min_nr_stripes exceeding
-conf->max_nr_stripes and potentially causing an integer overflow.
+It's unclear if this is a failure on our part (perhaps
+something to do with sending commands in LP mode after HS
+/video mode transmission has been started? Though the backlight
+on command at least seems to work) or simply that there are
+some commands in the sequence that are needed to be done
+earlier (eg. could be some DSC init stuff?). If the latter
+then I don't think the current Windows code would work
+either, but maybe this was originally tested with an older
+driver, who knows.
 
-This possible bug is found by an experimental static analysis tool
-developed by our team. This tool analyzes the locking APIs to extract
-function pairs that can be concurrently executed, and then analyzes the
-instructions in the paired functions to identify possible concurrency bugs
-including data races and atomicity violations. The above possible bug is
-reported when our tool analyzes the source code of Linux 6.2.
+Root causing this fully would likely require a lot of
+experimentation which isn't really feasible without direct
+access to the machine, so let's just accept failure and
+go back to the original sequence.
 
-To resolve this issue, it is suggested to introduce local variables
-'min_stripes' and 'max_stripes' in raid5_cache_count() to ensure the
-values remain stable throughout the check. Adding locks in
-raid5_cache_count() fails to resolve atomicity violations, as
-raid5_set_cache_size() may hold intermediate values of
-conf->min_nr_stripes while unlocked. With this patch applied, our tool no
-longer reports the bug, with the kernel configuration allyesconfig for
-x86_64. Due to the lack of associated hardware, we cannot test the patch
-in runtime testing, and just verify it according to the code logic.
-
-Fixes: edbe83ab4c27 ("md/raid5: allow the stripe_cache to grow and shrink.")
 Cc: stable@vger.kernel.org
-Signed-off-by: Gui-Dong Han <2045gemini@gmail.com>
-Reviewed-by: Yu Kuai <yukuai3@huawei.com>
-Signed-off-by: Song Liu <song@kernel.org>
-Link: https://lore.kernel.org/r/20240112071017.16313-1-2045gemini@gmail.com
-Signed-off-by: Song Liu <song@kernel.org>
+Closes: https://gitlab.freedesktop.org/drm/intel/-/issues/10071
+Signed-off-by: Ville Syrjälä <ville.syrjala@linux.intel.com>
+Link: https://patchwork.freedesktop.org/patch/msgid/20240116210821.30194-1-ville.syrjala@linux.intel.com
+Acked-by: Jani Nikula <jani.nikula@intel.com>
 ---
- drivers/md/raid5.c | 14 ++++++++------
- 1 file changed, 8 insertions(+), 6 deletions(-)
+ drivers/gpu/drm/i915/display/icl_dsi.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/drivers/md/raid5.c b/drivers/md/raid5.c
-index 14f2cf75abbd7..7ec445f49f1c3 100644
---- a/drivers/md/raid5.c
-+++ b/drivers/md/raid5.c
-@@ -2412,7 +2412,7 @@ static int grow_one_stripe(struct r5conf *conf, gfp_t gfp)
- 	atomic_inc(&conf->active_stripes);
+diff --git a/drivers/gpu/drm/i915/display/icl_dsi.c b/drivers/gpu/drm/i915/display/icl_dsi.c
+index ac456a2275dba..eda4a8b885904 100644
+--- a/drivers/gpu/drm/i915/display/icl_dsi.c
++++ b/drivers/gpu/drm/i915/display/icl_dsi.c
+@@ -1155,6 +1155,7 @@ static void gen11_dsi_powerup_panel(struct intel_encoder *encoder)
+ 	}
  
- 	raid5_release_stripe(sh);
--	conf->max_nr_stripes++;
-+	WRITE_ONCE(conf->max_nr_stripes, conf->max_nr_stripes + 1);
- 	return 1;
- }
+ 	intel_dsi_vbt_exec_sequence(intel_dsi, MIPI_SEQ_INIT_OTP);
++	intel_dsi_vbt_exec_sequence(intel_dsi, MIPI_SEQ_DISPLAY_ON);
  
-@@ -2707,7 +2707,7 @@ static int drop_one_stripe(struct r5conf *conf)
- 	shrink_buffers(sh);
- 	free_stripe(conf->slab_cache, sh);
- 	atomic_dec(&conf->active_stripes);
--	conf->max_nr_stripes--;
-+	WRITE_ONCE(conf->max_nr_stripes, conf->max_nr_stripes - 1);
- 	return 1;
- }
+ 	/* ensure all panel commands dispatched before enabling transcoder */
+ 	wait_for_cmds_dispatched_to_panel(encoder);
+@@ -1255,8 +1256,6 @@ static void gen11_dsi_enable(struct intel_atomic_state *state,
+ 	/* step6d: enable dsi transcoder */
+ 	gen11_dsi_enable_transcoder(encoder);
  
-@@ -6820,7 +6820,7 @@ raid5_set_cache_size(struct mddev *mddev, int size)
- 	if (size <= 16 || size > 32768)
- 		return -EINVAL;
- 
--	conf->min_nr_stripes = size;
-+	WRITE_ONCE(conf->min_nr_stripes, size);
- 	mutex_lock(&conf->cache_size_mutex);
- 	while (size < conf->max_nr_stripes &&
- 	       drop_one_stripe(conf))
-@@ -6832,7 +6832,7 @@ raid5_set_cache_size(struct mddev *mddev, int size)
- 	mutex_lock(&conf->cache_size_mutex);
- 	while (size > conf->max_nr_stripes)
- 		if (!grow_one_stripe(conf, GFP_KERNEL)) {
--			conf->min_nr_stripes = conf->max_nr_stripes;
-+			WRITE_ONCE(conf->min_nr_stripes, conf->max_nr_stripes);
- 			result = -ENOMEM;
- 			break;
- 		}
-@@ -7388,11 +7388,13 @@ static unsigned long raid5_cache_count(struct shrinker *shrink,
- 				       struct shrink_control *sc)
- {
- 	struct r5conf *conf = shrink->private_data;
-+	int max_stripes = READ_ONCE(conf->max_nr_stripes);
-+	int min_stripes = READ_ONCE(conf->min_nr_stripes);
- 
--	if (conf->max_nr_stripes < conf->min_nr_stripes)
-+	if (max_stripes < min_stripes)
- 		/* unlikely, but not impossible */
- 		return 0;
--	return conf->max_nr_stripes - conf->min_nr_stripes;
-+	return max_stripes - min_stripes;
- }
- 
- static struct r5conf *setup_conf(struct mddev *mddev)
+-	intel_dsi_vbt_exec_sequence(intel_dsi, MIPI_SEQ_DISPLAY_ON);
+-
+ 	/* step7: enable backlight */
+ 	intel_backlight_enable(crtc_state, conn_state);
+ 	intel_dsi_vbt_exec_sequence(intel_dsi, MIPI_SEQ_BACKLIGHT_ON);
 -- 
 2.43.0
 
