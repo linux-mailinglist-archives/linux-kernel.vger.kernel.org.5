@@ -1,155 +1,95 @@
-Return-Path: <linux-kernel+bounces-121713-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-121721-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 351FF88ECDA
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 18:44:57 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id DBFAF88ECF8
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 18:47:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D6FB41F2EEF0
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 17:44:56 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7AE3E1F2A57F
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 17:47:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0BCA314E2D9;
-	Wed, 27 Mar 2024 17:44:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="d8ARsdob"
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DC51814EC54;
+	Wed, 27 Mar 2024 17:45:28 +0000 (UTC)
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C173B14D281;
-	Wed, 27 Mar 2024 17:44:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6AF7C14E2FA;
+	Wed, 27 Mar 2024 17:45:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711561485; cv=none; b=tgLHOz1Z+QY7KVfUpxyjSZPPHA5RIE+Zqjph3BSD7vLQNIPF643AkMy6yB7+zeP9Wxytw6cRjPpYrjtxllXqUEq8cce9IMH9pPVdOVzL+sh8GiyrWfGo+JA1P9/PxJTMVeiXB2NVRA0PngP/LxFROAtEvvYGmPRIkwPErnfSTxY=
+	t=1711561528; cv=none; b=k3QikWtBGKPHlqTG1jk00CsHliRPKg2RKWf990Ht11ZBP1FkWmHoW/noJeBaCjdqnseLRGkRc05V3PxVbW9yh5vnJ18BLwE5n0tsbZ8IijSX3y7ShqslsmD00rofAC1BYEmBwghmhvlPNxPBHeDZJOaaflkTVcSKzfjFoMQyJDM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711561485; c=relaxed/simple;
-	bh=CXkByOqBPbKZe9eVXPJpPOkJ1DM+X1hSruvjT3Mg1VE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=TlCDFghDvvIBlZdHWKms3tTTuLUhahY53wsaw+kDYlb2N4J4eaSrfUYv60+EyeXU1E2i+HTEe2J5pXnoUQ2A/qHjKTVI3273+EKwbrX/pf8Ol20Jy8p6KdoJcx1uCiGCidD8cVhkt13VSEXtrqaDmVYiey4Z8rA+2niF8sesBcM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=d8ARsdob; arc=none smtp.client-ip=46.235.227.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1711561481;
-	bh=CXkByOqBPbKZe9eVXPJpPOkJ1DM+X1hSruvjT3Mg1VE=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=d8ARsdobC7J6xJrdjCncvaR+KU/sXFNu6mJhI5mDtxctuZu9QudjRK2BmK8ZtnH7T
-	 p0Q3c8kSjTVaeWztANfGa5XdFaEaIoB6UK1Oe3Tsg7BUl5qTTkpcXneyDBBRGQzNHr
-	 kwAr6/51FLy9NKOdXxDZhgNvhDjv/rRWVnPpmbHbczYs6r+HRP3N2TEfe50ivZkXq2
-	 v86WUfr46Sin8Jwe3Hew/vIfpapkgAL0M1DNL8NI0S9I6QRYF7bBva+Aj4TgP2MZSr
-	 OQbvV/jG5Iv1UymaCsE9/lLxhkA//H2quyB5y4DrD+jZrceJO0VZVp1cfs8WQj5mrz
-	 bS2sRQVe8YVbA==
-Received: from mercury (cola.collaboradmins.com [195.201.22.229])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: sre)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id C206F3780C13;
-	Wed, 27 Mar 2024 17:44:41 +0000 (UTC)
-Received: by mercury (Postfix, from userid 1000)
-	id 61A9810608D9; Wed, 27 Mar 2024 18:44:41 +0100 (CET)
+	s=arc-20240116; t=1711561528; c=relaxed/simple;
+	bh=RnVSD59YYhDiquPHZBqeUmKCnPtQzl1iOsxOnR+gGD4=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
+	 In-Reply-To:To:Cc; b=TlIUpQv4or67uEqK0u909NsuLZMCWeyfU/bzBtf+/CnjQFVj6HPcTFvmPqQM5ENbGFkmT8f/2txlg9NHm2UTZN9/j3j4khiz57H5KyU4tz0Uw8bc64EgKfBvudWnBF8YPQ7MQNv4GOY3qIK/MvyMc/wo1vBCp4qdqUiRxbkO7FI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1B266C433C7;
+	Wed, 27 Mar 2024 17:45:24 +0000 (UTC)
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Date: Wed, 27 Mar 2024 18:44:41 +0100
-From: Sebastian Reichel <sebastian.reichel@collabora.com>
-To: Emmanuel Gil Peyrot <linkmauve@linkmauve.fr>
-Cc: linux-kernel@vger.kernel.org, 
-	Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>, Philipp Zabel <p.zabel@pengutronix.de>, 
-	Mauro Carvalho Chehab <mchehab@kernel.org>, Rob Herring <robh@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Heiko Stuebner <heiko@sntech.de>, Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>, 
-	Robin Murphy <robin.murphy@arm.com>, Cristian Ciocaltea <cristian.ciocaltea@collabora.com>, 
-	Dragan Simic <dsimic@manjaro.org>, Shreeya Patel <shreeya.patel@collabora.com>, 
-	Chris Morgan <macromorgan@hotmail.com>, Andy Yan <andy.yan@rock-chips.com>, 
-	Nicolas Frattaroli <frattaroli.nicolas@gmail.com>, linux-media@vger.kernel.org, linux-rockchip@lists.infradead.org, 
-	devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org, iommu@lists.linux.dev
-Subject: Re: [PATCH v2 1/2] media: dt-binding: media: Document =?utf-8?Q?r?=
- =?utf-8?B?azM1ODjigJlz?= VEPU121
-Message-ID: <slcatcuemy67vzpffpkfae3nl6cspl2i552reg5kfb2kiqizph@6mizgczdxaoq>
-References: <20240327134115.424846-1-linkmauve@linkmauve.fr>
- <20240327134115.424846-2-linkmauve@linkmauve.fr>
+Subject: [PATCH 06/18] ASoC: rt1308-sdw: drop driver owner assignment
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="mtzkc6b6fd7hw3mr"
-Content-Disposition: inline
-In-Reply-To: <20240327134115.424846-2-linkmauve@linkmauve.fr>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20240327-module-owner-var-v1-6-86d5002ba6dc@linaro.org>
+References: <20240327-module-owner-var-v1-0-86d5002ba6dc@linaro.org>
+In-Reply-To: <20240327-module-owner-var-v1-0-86d5002ba6dc@linaro.org>
+To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, 
+ Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, 
+ Shenghao Ding <shenghao-ding@ti.com>, Kevin Lu <kevin-lu@ti.com>, 
+ Baojun Xu <baojun.xu@ti.com>, Oder Chiou <oder_chiou@realtek.com>
+Cc: linux-sound@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ alsa-devel@alsa-project.org, 
+ Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+X-Mailer: b4 0.13.0
+X-Developer-Signature: v=1; a=openpgp-sha256; l=675;
+ i=krzysztof.kozlowski@linaro.org; h=from:subject:message-id;
+ bh=RnVSD59YYhDiquPHZBqeUmKCnPtQzl1iOsxOnR+gGD4=;
+ b=owEBbQKS/ZANAwAKAcE3ZuaGi4PXAcsmYgBmBFsRlUsJoVFHMbWvmig9FH7sOGUyjca3O+TkI
+ 0tJ+a+BqNqJAjMEAAEKAB0WIQTd0mIoPREbIztuuKjBN2bmhouD1wUCZgRbEQAKCRDBN2bmhouD
+ 13JcEACX8uKRocqQsjeeQUak3bmhYYz2LV2f/ss4Lo30G8GkBOnS0DpJMIUrPxSkLEr8CHgHbEZ
+ Aj/rDm4n7vH26JJ5xCYwNSV9gi+06QXyIm7TkVSjXZMgu1wbCYChsfRg3JxwS0YMid6AXRGm3OO
+ J827AEEBIOy6JT0E6jqJg9CbOZVewNdhCWOHkI/UJG25SXE6eFo4zHWDYKbPyScI7LuSze1RjVR
+ yWjO8J4Nnxc6o6BCAm9oKOLwaJGJt6+DsboA1TnXPYCYl4g8YERHIrRG0ZIs7hRHIRG5IqtjTFB
+ QRYtDULsGjzio0BgmREAXkOosdmihDgEZZQD6svPyqomDdY0iZMkEydw1FL0D5NTXzRcW5UEG31
+ SKO+ILgaqQL/GJbe7G2p+AsfqKd6ibhZK3k71NrW3Fe2mFtwdkxiT5RDwsu2c6z76jQLicqc2Lz
+ zK1TfzR2Yh6Bk1ZyS33B+7Odp3tNhFyht3cxy2uIKHPEW6zhx2NmkTmskknvzLb4L83MVOAhYlt
+ ZzK9v6W8h1VFj3Vh0/dN8rXiCcEYfLhxQEAnMlWzcyVm3TtQlbHDIGkhSMc7z2Y8drhqHO0oomA
+ a/IJyid/FIhAq5nepdp7WdmLOod3evCK5d34od6d4TIpK6KIgJmlTfnWnzE41hbkOV3FKPY//Xc
+ uLjNm5LTD1COC1A==
+X-Developer-Key: i=krzysztof.kozlowski@linaro.org; a=openpgp;
+ fpr=9BD07E0E0C51F8D59677B7541B93437D3B41629B
 
+Core in sdw_register_driver() already sets the .owner, so driver does
+not need to.
 
---mtzkc6b6fd7hw3mr
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+---
+ sound/soc/codecs/rt1308-sdw.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-Hi,
+diff --git a/sound/soc/codecs/rt1308-sdw.c b/sound/soc/codecs/rt1308-sdw.c
+index 63d4abf964d4..563df483a466 100644
+--- a/sound/soc/codecs/rt1308-sdw.c
++++ b/sound/soc/codecs/rt1308-sdw.c
+@@ -804,7 +804,6 @@ static const struct dev_pm_ops rt1308_pm = {
+ static struct sdw_driver rt1308_sdw_driver = {
+ 	.driver = {
+ 		.name = "rt1308",
+-		.owner = THIS_MODULE,
+ 		.pm = &rt1308_pm,
+ 	},
+ 	.probe = rt1308_sdw_probe,
 
-On Wed, Mar 27, 2024 at 02:41:11PM +0100, Emmanuel Gil Peyrot wrote:
-> This encoder-only device is present four times on this SoC, and should
-> support everything the rk3568 vepu supports (so JPEG, H.264 and VP8
-> encoding).
->=20
-> According to the TRM[1], there is also the VEPU580 encoder which
-> supports H.264 and H.265, and various VDPU* decoders, of which only the
-> VDPU981 is currently supported.  This patch describes only the VEPU121.
->=20
-> [1] https://github.com/FanX-Tek/rk3588-TRM-and-Datasheet
->=20
-> Signed-off-by: Emmanuel Gil Peyrot <linkmauve@linkmauve.fr>
-> ---
+-- 
+2.34.1
 
-Reviewed-by: Sebastian Reichel <sebastian.reichel@collabora.com>
-
--- Sebastian
-
->  .../devicetree/bindings/media/rockchip,rk3568-vepu.yaml   | 8 ++++++--
->  1 file changed, 6 insertions(+), 2 deletions(-)
->=20
-> diff --git a/Documentation/devicetree/bindings/media/rockchip,rk3568-vepu=
-=2Eyaml b/Documentation/devicetree/bindings/media/rockchip,rk3568-vepu.yaml
-> index 9d90d8d0565a..4c6cb21da041 100644
-> --- a/Documentation/devicetree/bindings/media/rockchip,rk3568-vepu.yaml
-> +++ b/Documentation/devicetree/bindings/media/rockchip,rk3568-vepu.yaml
-> @@ -15,8 +15,12 @@ description:
-> =20
->  properties:
->    compatible:
-> -    enum:
-> -      - rockchip,rk3568-vepu
-> +    oneOf:
-> +      - const: rockchip,rk3568-vepu
-> +      - items:
-> +          - enum:
-> +              - rockchip,rk3588-vepu121
-> +          - const: rockchip,rk3568-vepu
-> =20
->    reg:
->      maxItems: 1
-> --=20
-> 2.44.0
->=20
-
---mtzkc6b6fd7hw3mr
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAmYEWwEACgkQ2O7X88g7
-+ppeUw/7BmJGGQaOaqtdWI5UfDshWNPMP1M3soxWvm414UxmhcM70ho2GpVfXy5H
-d3d9z6cviDdZpV/n5/jKxIX6V3HQRfiErMOuRuXNucF5xhclurKvjEPAOlHF7iJD
-wc1JGWXHTNeIiQTHQrXy5xtXoNOPkasAZlJhl94HTCdwWCUPTMzIT/XRHZctHw76
-gl7XK72P+Zf0a01iwoeMuT7mRwc2GPq7wG/tHCHKH9b5rjc4PsIIbCTvZqFnNvGT
-XaSLv51JJrv4r1L5h90ztEPfpzmSJzjT8nCMRaCardIVyWmBVZqRyRvu6XBZBuTn
-AwpevquLQ0K8ic73rmR0jSRJkYVG9pCuH4gtk9F39+Qe3f3p9oT6ZBi33cdpGdgh
-nD28w6nH2QETds93j8EzMiBeZnTClEz+xgmaxYFCEk4Nuaok8qWfzIzg5iFvKIDw
-rOxHoozydZvj9eQvt7lVUeuTzedT+JAZkn3XTSw9QudfzvY+TRE4nY4aJnUpxUEe
-D0VFzsVn45/zBTsxTUFLw8XFYyW5KEujj5m+vRbACQpYfhk53Vf5r/jZzHKjB9gZ
-AIUH3rEuDo82oAnYPrYhjGOKbNNSX74lpOCienrfJu2OjLE/4suGKRGkW7TbFU8C
-9Qqv38fDYHS5BEMbLzY790wtqJBYL5NDDEtTncDqR4HcllE12m0=
-=2t0W
------END PGP SIGNATURE-----
-
---mtzkc6b6fd7hw3mr--
 
