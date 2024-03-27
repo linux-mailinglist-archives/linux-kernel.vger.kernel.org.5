@@ -1,58 +1,57 @@
-Return-Path: <linux-kernel+bounces-120803-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-120804-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 684CA88DDC9
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 13:11:16 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4A60B88DDD3
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 13:11:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 183FB1F29F54
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 12:11:16 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EC70628EAE7
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 12:11:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0D619130E3C;
-	Wed, 27 Mar 2024 12:07:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 807D213118B;
+	Wed, 27 Mar 2024 12:07:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NR0kUem8"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="JcwMLm96"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4AC49130E2A;
-	Wed, 27 Mar 2024 12:07:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA332130E38;
+	Wed, 27 Mar 2024 12:07:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711541247; cv=none; b=HjpOTiwAIVckBiGKntrNOeUq2QWjH4OZKNFKi0Jo+SE6jfG/XW28ZW0LM9kYbeGH0BH7quCTungbQh+pQe3ZqVbzbvlgVRhF6mNq8jjFz++Mzz8Mtsp7Nh+YruWP6EzSOmwGX5auVuGi1VtxwOozl9soVuAGBU6ICIrYsdP6FIc=
+	t=1711541249; cv=none; b=jr2U6Pdgtoqx9xsMMZ0hfbscPwRYaBfpcOYcY2ei0iV1H2QNnglbGLYLKvJr/PcvUClGLJpp1keJdY68Kn65EEqm+wIs9N4pW1eA2PZiS0Wni3YRTHAkQYC8jbhckOtM5pOz6WGfGzHkCGu6dBv/PGHLLl8TnvnNQkzmmVPbJmM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711541247; c=relaxed/simple;
-	bh=6s5uEWEPs9kmgBcCZZb7E6e5mydDPmBE6k8E5OOrCjs=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=IGRU5mBP7zBLo/d+PrnQkjos8YqShFJQ98v2lZmKLe9v/N7dDYT6ueqRqULPAPbsezFNHEpCWPMK6+hrCfOc4A8uQtngSjxX3RTGPYqYGBydpwjyYzBdNtSovCpzExEdQlkv5zI7oIhixJczN1jec9rigDF39VwEnvP1CZn43BM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NR0kUem8; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BF9AAC43399;
-	Wed, 27 Mar 2024 12:07:25 +0000 (UTC)
+	s=arc-20240116; t=1711541249; c=relaxed/simple;
+	bh=i7c1+qba0ObGp6CT2p/tivHqp96gllnbdFSkQpkJ02Q=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Vl4avIi7ZZGPwmYqqaiTbP459bXZtcghLQqfak5zbRF3QoLdDhSGKmKgudehOdEe1Q+dShAi/zQHzZbaHE4B7p92Df0ED+0DeLnUsCjbfgwDgsF2TixNS+RHJqpm5hCv0e6UQVE7qh3jV/vaqjw8rGcfl0ddI4xgbRpmzF68nHo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=JcwMLm96; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 91816C433F1;
+	Wed, 27 Mar 2024 12:07:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711541246;
-	bh=6s5uEWEPs9kmgBcCZZb7E6e5mydDPmBE6k8E5OOrCjs=;
+	s=k20201202; t=1711541249;
+	bh=i7c1+qba0ObGp6CT2p/tivHqp96gllnbdFSkQpkJ02Q=;
 	h=From:To:Cc:Subject:Date:From;
-	b=NR0kUem8Tz4mQBL1Be8PP3cIXrQw78z9R6V5rdaawqufLdn535LEnbUxpLqOR5qoz
-	 ZPsNkzq6zcCS0PZw0zjOXlJdWhJH7/WLKLUh/lYXhtMGC6ok5YeeL+rPdrF28AMNcZ
-	 cLlPLsWcxTc/8LaQHxbKtkUtgjpCsYOR/Y74bxmtpYNPLOFx71AYu869XJFiHMyjAQ
-	 DvKsEut+FY2sQ4EIPNeYUPTBUOAYuE3JhL3R0TkqFpDUAMWF14j6GIUdiKgg707tj3
-	 gq/qsXJyExaUKSbwdWc8CZPyguoqetRE5q1ZIpr8w5KA9L46L8vuw8pzBS1p/ZavB6
-	 nzLMSf+k5Fjtw==
+	b=JcwMLm96wNEsZKZRa7ZzeMiygmTVehM5U//BGH7GexHljaKYovHQfBINTlgj2Awvd
+	 FLfS9zRZbRI2s83owEqg5hzXZfOVHjrtnPgBjfDN2QyPn7yjtsM7APzX8TkSwVZ46S
+	 khmKqtXzjXr/Eyi9go17WQomiXnDx8uyq3ADHj5cuM3VcK6oknvmwb5784TYRpejKz
+	 WJ7apsjyP07zpplQZBz5jQ8XVJOIDGVI3iEFqKxo1t3sHSl5kqRvu98lSoK4qj234b
+	 Cnb0/AV1MilzYCT39deJZAf2M5OOr/06yJVPtXP+LgqaVTSDqcMMOdJ+eRqhjvt+RN
+	 PNgOAv/o3iRbA==
 From: Sasha Levin <sashal@kernel.org>
 To: stable@vger.kernel.org,
-	ovidiu.bunea@amd.com
-Cc: Mario Limonciello <mario.limonciello@amd.com>,
-	Alex Deucher <alexander.deucher@amd.com>,
-	Charlene Liu <charlene.liu@amd.com>,
-	Alex Hung <alex.hung@amd.com>,
-	Daniel Wheeler <daniel.wheeler@amd.com>,
-	amd-gfx@lists.freedesktop.org,
-	dri-devel@lists.freedesktop.org,
+	vegard.nossum@oracle.com
+Cc: Justin Forbes <jforbes@fedoraproject.org>,
+	Salvatore Bonaccorso <carnil@debian.org>,
+	Jani Nikula <jani.nikula@intel.com>,
+	Mauro Carvalho Chehab <mchehab@kernel.org>,
+	Jonathan Corbet <corbet@lwn.net>,
+	linux-doc@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: FAILED: Patch "drm/amd/display: Fix DML2 watermark calculation" failed to apply to 6.8-stable tree
-Date: Wed, 27 Mar 2024 08:07:24 -0400
-Message-ID: <20240327120724.2825398-1-sashal@kernel.org>
+Subject: FAILED: Patch "docs: kernel_feat.py: fix build error for missing files" failed to apply to 6.8-stable tree
+Date: Wed, 27 Mar 2024 08:07:27 -0400
+Message-ID: <20240327120727.2825435-1-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -74,55 +73,53 @@ Sasha
 
 ------------------ original commit in Linus's tree ------------------
 
-From 2254ab45dab22a18fdd29fe0e471706872c00093 Mon Sep 17 00:00:00 2001
-From: Ovidiu Bunea <ovidiu.bunea@amd.com>
-Date: Mon, 18 Dec 2023 21:40:45 -0500
-Subject: [PATCH] drm/amd/display: Fix DML2 watermark calculation
+From 983e20cfdcb6e08b3560071a147169f3a1be4391 Mon Sep 17 00:00:00 2001
+From: Vegard Nossum <vegard.nossum@oracle.com>
+Date: Mon, 5 Feb 2024 18:51:26 +0100
+Subject: [PATCH] docs: kernel_feat.py: fix build error for missing files
 
-[Why]
-core_mode_programming in DML2 should output watermark calculations
-to locals, but it incorrectly uses mode_lib
+If the directory passed to the '.. kernel-feat::' directive does not
+exist or the get_feat.pl script does not find any files to extract
+features from, Sphinx will report the following error:
 
-[How]
-update code to match HW DML2
+    Sphinx parallel build error:
+    UnboundLocalError: local variable 'fname' referenced before assignment
+    make[2]: *** [Documentation/Makefile:102: htmldocs] Error 2
 
-Cc: Mario Limonciello <mario.limonciello@amd.com>
-Cc: Alex Deucher <alexander.deucher@amd.com>
+This is due to how I changed the script in c48a7c44a1d0 ("docs:
+kernel_feat.py: fix potential command injection"). Before that, the
+filename passed along to self.nestedParse() in this case was weirdly
+just the whole get_feat.pl invocation.
+
+We can fix it by doing what kernel_abi.py does -- just pass
+self.arguments[0] as 'fname'.
+
+Fixes: c48a7c44a1d0 ("docs: kernel_feat.py: fix potential command injection")
+Cc: Justin Forbes <jforbes@fedoraproject.org>
+Cc: Salvatore Bonaccorso <carnil@debian.org>
+Cc: Jani Nikula <jani.nikula@intel.com>
+Cc: Mauro Carvalho Chehab <mchehab@kernel.org>
 Cc: stable@vger.kernel.org
-Reviewed-by: Charlene Liu <charlene.liu@amd.com>
-Acked-by: Alex Hung <alex.hung@amd.com>
-Signed-off-by: Ovidiu Bunea <ovidiu.bunea@amd.com>
-Tested-by: Daniel Wheeler <daniel.wheeler@amd.com>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+Signed-off-by: Vegard Nossum <vegard.nossum@oracle.com>
+Link: https://lore.kernel.org/r/20240205175133.774271-2-vegard.nossum@oracle.com
+Signed-off-by: Jonathan Corbet <corbet@lwn.net>
 ---
- .../drm/amd/display/dc/dml2/display_mode_core.c    | 14 +++++++-------
- 1 file changed, 7 insertions(+), 7 deletions(-)
+ Documentation/sphinx/kernel_feat.py | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/amd/display/dc/dml2/display_mode_core.c b/drivers/gpu/drm/amd/display/dc/dml2/display_mode_core.c
-index a6b938a12de13..9be5ebf3a8c0b 100644
---- a/drivers/gpu/drm/amd/display/dc/dml2/display_mode_core.c
-+++ b/drivers/gpu/drm/amd/display/dc/dml2/display_mode_core.c
-@@ -9446,13 +9446,13 @@ void dml_core_mode_programming(struct display_mode_lib_st *mode_lib, const struc
- 		CalculateWatermarks_params->CompressedBufferSizeInkByte = locals->CompressedBufferSizeInkByte;
+diff --git a/Documentation/sphinx/kernel_feat.py b/Documentation/sphinx/kernel_feat.py
+index b9df61eb45013..03ace5f01b5c0 100644
+--- a/Documentation/sphinx/kernel_feat.py
++++ b/Documentation/sphinx/kernel_feat.py
+@@ -109,7 +109,7 @@ class KernelFeat(Directive):
+             else:
+                 out_lines += line + "\n"
  
- 		// Output
--		CalculateWatermarks_params->Watermark = &s->dummy_watermark; // Watermarks *Watermark
--		CalculateWatermarks_params->DRAMClockChangeSupport = &mode_lib->ms.support.DRAMClockChangeSupport[0];
--		CalculateWatermarks_params->MaxActiveDRAMClockChangeLatencySupported = &s->dummy_single_array[0][0]; // dml_float_t *MaxActiveDRAMClockChangeLatencySupported[]
--		CalculateWatermarks_params->SubViewportLinesNeededInMALL = &mode_lib->ms.SubViewportLinesNeededInMALL[j]; // dml_uint_t SubViewportLinesNeededInMALL[]
--		CalculateWatermarks_params->FCLKChangeSupport = &mode_lib->ms.support.FCLKChangeSupport[0];
--		CalculateWatermarks_params->MaxActiveFCLKChangeLatencySupported = &s->dummy_single[0]; // dml_float_t *MaxActiveFCLKChangeLatencySupported
--		CalculateWatermarks_params->USRRetrainingSupport = &mode_lib->ms.support.USRRetrainingSupport[0];
-+		CalculateWatermarks_params->Watermark = &locals->Watermark; // Watermarks *Watermark
-+		CalculateWatermarks_params->DRAMClockChangeSupport = &locals->DRAMClockChangeSupport;
-+		CalculateWatermarks_params->MaxActiveDRAMClockChangeLatencySupported = locals->MaxActiveDRAMClockChangeLatencySupported; // dml_float_t *MaxActiveDRAMClockChangeLatencySupported[]
-+		CalculateWatermarks_params->SubViewportLinesNeededInMALL = locals->SubViewportLinesNeededInMALL; // dml_uint_t SubViewportLinesNeededInMALL[]
-+		CalculateWatermarks_params->FCLKChangeSupport = &locals->FCLKChangeSupport;
-+		CalculateWatermarks_params->MaxActiveFCLKChangeLatencySupported = &locals->MaxActiveFCLKChangeLatencySupported; // dml_float_t *MaxActiveFCLKChangeLatencySupported
-+		CalculateWatermarks_params->USRRetrainingSupport = &locals->USRRetrainingSupport;
+-        nodeList = self.nestedParse(out_lines, fname)
++        nodeList = self.nestedParse(out_lines, self.arguments[0])
+         return nodeList
  
- 		CalculateWatermarksMALLUseAndDRAMSpeedChangeSupport(
- 			&mode_lib->scratch,
+     def nestedParse(self, lines, fname):
 -- 
 2.43.0
 
