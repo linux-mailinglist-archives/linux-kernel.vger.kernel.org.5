@@ -1,55 +1,54 @@
-Return-Path: <linux-kernel+bounces-121100-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-121101-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9CC9F88E258
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 14:24:44 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 826AB88E25A
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 14:24:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id ADF2D1C2AAE7
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 13:24:43 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3B4AD292A2E
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 13:24:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 403FF16F910;
-	Wed, 27 Mar 2024 12:21:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BF2FE16FF2A;
+	Wed, 27 Mar 2024 12:21:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="FbgA6Fv5"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="oG1e2Cso"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 73D6816F8FD;
-	Wed, 27 Mar 2024 12:21:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0351516F917;
+	Wed, 27 Mar 2024 12:21:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711542079; cv=none; b=VJNMWUJq09zSFlVwuyHNYcRqVk2TpMAmjGS0u3kaMkSO7L925n5TMxkcmQP6R6s25yAPdHaCaa97xwBohGo8ahOQzsw0QkzgVdpxWcYL/M90Smzr3xCLcrTq/ynrQoijhp47/j2hxmXmBzTKc1f0NdlxkhH+C1+8YGszuw9SMP0=
+	t=1711542082; cv=none; b=HIxZKo59I195kfZLompxfYvZ2r7Rp2YA6WqK3j/+1OgcsqLL8pcmJfaYIy9UCG34lb9O9ca9jVYhARpUuCJU6nlJB3mJc4H6+/OcvIabyU7k2VYSxflXLoUlceSdXOg18lYxXOVCgHkp5MDQH5h9MfM0srGNB5h8ldgzBWE538w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711542079; c=relaxed/simple;
-	bh=am7fzPsTqEjjtPz24D0s363dCS6Xi5HtAsAPPfECoxo=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=ATkodwPHZqCa1cH/J00mdO9bgCJ4xtgp3wOg5dXsr3CAx8VrvspvEAQ4o/9Dp9noA44zFaZbVXlVU8RjOZTSGQ+QYDli8YnMzXCVS5/TZ59knzCkNoTSyHfiUW1l03CsYSoVxqKkPfgRWrKpFIX5PmtNwc3Itt+kPsQ3lbNQr4A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=FbgA6Fv5; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8A1CAC433C7;
-	Wed, 27 Mar 2024 12:21:18 +0000 (UTC)
+	s=arc-20240116; t=1711542082; c=relaxed/simple;
+	bh=pM5VrG/QjiTFoQxqIbmJmqFrXIt3s8YHfV9nSWyJWnY=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=sxpq4BspM92oqk6UuPFPam2Y0PziUKin0cKQ7gFlGdFMPHoWI+meFb2FAxGKDm4Keh/hYEa8hlRdlGQFyNNaKe5Cj5brdHqr5017HyzwoJhAuDwWgiTjnqLohKQIFaRIh2J89/AE8V7Qtg0IrkCxdgSUq9jnr6j6nz0u4Zqz020=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=oG1e2Cso; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2B00BC433F1;
+	Wed, 27 Mar 2024 12:21:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711542079;
-	bh=am7fzPsTqEjjtPz24D0s363dCS6Xi5HtAsAPPfECoxo=;
+	s=k20201202; t=1711542081;
+	bh=pM5VrG/QjiTFoQxqIbmJmqFrXIt3s8YHfV9nSWyJWnY=;
 	h=From:To:Cc:Subject:Date:From;
-	b=FbgA6Fv5lwHfTQskK1v33LcSkJd6p25qHGrDdwfJuypYb0I9SAH7HhN1e/LynLyNv
-	 XGKBGzvjdV+jcovHmC0LG7v6T+9sXx5Fg2a750jBFvhsDfJhg4Kna3tlABYaqgOwCv
-	 lyONRKRzMNRGWQQCXJWJeYn4FB8DB5Sn3wi6IXiL+VoDNKSfpIBtxibIIZLsSk1EXL
-	 mQxa3kx7/wqLjzWq1dqItVc65XHRxyoN0QmXozzdloKWYxgh/MkWXY2f+r1b+j/9zf
-	 Bjzs+UESZeA7HFgVu3xaC8yLcf7tbDMFTMc0QOq8+luMSafhBx1xXa43QOfMFruuZl
-	 AZH8fEzfuPxjw==
+	b=oG1e2CsoMOuX/ryNLLUuf8Kdlga2aDYqPWXIZAvDQSWDtuj+Ghde1+s4JGYjyhWRW
+	 NXjWlDdc0sGcVViWkmbfN5pzRMIjExfXWfaBz7t7rdtY4ZS/Kf04WE78A+/LtD0WL1
+	 uVzkSCpkopE3zoRbcR9lSlv4mX6coaHaYP1YthzFUfLPOEvkqaJ3XSWxa5wQBI5fKv
+	 TuRmyJ7MMYe/Y29BPnXfODS1hKgeQy9BaCyHSgvNwRu9EuL/YbBeMkTArf3YLmoGjt
+	 mnvFXs2QJMQ/fJ5vtsYpQlX2mvWdj9dEtrVewC10BiZaXFbiGSfMqieliQYieyp63c
+	 tLIXM31xK0YjA==
 From: Sasha Levin <sashal@kernel.org>
 To: stable@vger.kernel.org,
-	hamza.mahfooz@amd.com
-Cc: Mario Limonciello <mario.limonciello@amd.com>,
-	Alex Deucher <alexander.deucher@amd.com>,
+	alexander.deucher@amd.com
+Cc: Feifei Xu <Feifei.Xu@amd.com>,
 	amd-gfx@lists.freedesktop.org,
 	dri-devel@lists.freedesktop.org,
 	linux-kernel@vger.kernel.org
-Subject: FAILED: Patch "drm/amdgpu: make damage clips support configurable" failed to apply to 5.4-stable tree
-Date: Wed, 27 Mar 2024 08:21:17 -0400
-Message-ID: <20240327122117.2836717-1-sashal@kernel.org>
+Subject: FAILED: Patch "drm/amdgpu/gfx11: set UNORD_DISPATCH in compute MQDs" failed to apply to 5.4-stable tree
+Date: Wed, 27 Mar 2024 08:21:19 -0400
+Message-ID: <20240327122120.2836754-1-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -71,101 +70,50 @@ Sasha
 
 ------------------ original commit in Linus's tree ------------------
 
-From fc184dbe9fd99ad2dfb197b6fe18768bae1774b1 Mon Sep 17 00:00:00 2001
-From: Hamza Mahfooz <hamza.mahfooz@amd.com>
-Date: Thu, 8 Feb 2024 16:23:29 -0500
-Subject: [PATCH] drm/amdgpu: make damage clips support configurable
+From fc8f5a29d4cf0979ac4019282c3ca5cb246969f9 Mon Sep 17 00:00:00 2001
+From: Alex Deucher <alexander.deucher@amd.com>
+Date: Fri, 19 Jan 2024 12:32:59 -0500
+Subject: [PATCH] drm/amdgpu/gfx11: set UNORD_DISPATCH in compute MQDs
 
-We have observed that there are quite a number of PSR-SU panels on the
-market that are unable to keep up with what user space throws at them,
-resulting in hangs and random black screens. So, make damage clips
-support configurable and disable it by default for PSR-SU displays.
+This needs to be set to 1 to avoid a potential deadlock in
+the GC 10.x and newer.  On GC 9.x and older, this needs
+to be set to 0. This can lead to hangs in some mixed
+graphics and compute workloads. Updated firmware is also
+required for AQL.
 
-Cc: stable@vger.kernel.org
-Reviewed-by: Mario Limonciello <mario.limonciello@amd.com>
-Signed-off-by: Hamza Mahfooz <hamza.mahfooz@amd.com>
+Reviewed-by: Feifei Xu <Feifei.Xu@amd.com>
 Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+Cc: stable@vger.kernel.org
 ---
- drivers/gpu/drm/amd/amdgpu/amdgpu.h               |  1 +
- drivers/gpu/drm/amd/amdgpu/amdgpu_drv.c           | 13 +++++++++++++
- drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c |  7 +++++++
- 3 files changed, 21 insertions(+)
+ drivers/gpu/drm/amd/amdgpu/gfx_v11_0.c           | 2 +-
+ drivers/gpu/drm/amd/amdkfd/kfd_mqd_manager_v11.c | 1 +
+ 2 files changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu.h b/drivers/gpu/drm/amd/amdgpu/amdgpu.h
-index 312dfaec7b4a7..1291b8eb9dffa 100644
---- a/drivers/gpu/drm/amd/amdgpu/amdgpu.h
-+++ b/drivers/gpu/drm/amd/amdgpu/amdgpu.h
-@@ -198,6 +198,7 @@ extern uint amdgpu_dc_debug_mask;
- extern uint amdgpu_dc_visual_confirm;
- extern uint amdgpu_dm_abm_level;
- extern int amdgpu_backlight;
-+extern int amdgpu_damage_clips;
- extern struct amdgpu_mgpu_info mgpu_info;
- extern int amdgpu_ras_enable;
- extern uint amdgpu_ras_mask;
-diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_drv.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_drv.c
-index 161ecf9b41747..6ef7f22c1152c 100644
---- a/drivers/gpu/drm/amd/amdgpu/amdgpu_drv.c
-+++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_drv.c
-@@ -211,6 +211,7 @@ int amdgpu_seamless = -1; /* auto */
- uint amdgpu_debug_mask;
- int amdgpu_agp = -1; /* auto */
- int amdgpu_wbrf = -1;
-+int amdgpu_damage_clips = -1; /* auto */
+diff --git a/drivers/gpu/drm/amd/amdgpu/gfx_v11_0.c b/drivers/gpu/drm/amd/amdgpu/gfx_v11_0.c
+index 043eff309100f..c1e0000107608 100644
+--- a/drivers/gpu/drm/amd/amdgpu/gfx_v11_0.c
++++ b/drivers/gpu/drm/amd/amdgpu/gfx_v11_0.c
+@@ -3846,7 +3846,7 @@ static int gfx_v11_0_compute_mqd_init(struct amdgpu_device *adev, void *m,
+ 			    (order_base_2(prop->queue_size / 4) - 1));
+ 	tmp = REG_SET_FIELD(tmp, CP_HQD_PQ_CONTROL, RPTR_BLOCK_SIZE,
+ 			    (order_base_2(AMDGPU_GPU_PAGE_SIZE / 4) - 1));
+-	tmp = REG_SET_FIELD(tmp, CP_HQD_PQ_CONTROL, UNORD_DISPATCH, 0);
++	tmp = REG_SET_FIELD(tmp, CP_HQD_PQ_CONTROL, UNORD_DISPATCH, 1);
+ 	tmp = REG_SET_FIELD(tmp, CP_HQD_PQ_CONTROL, TUNNEL_DISPATCH,
+ 			    prop->allow_tunneling);
+ 	tmp = REG_SET_FIELD(tmp, CP_HQD_PQ_CONTROL, PRIV_STATE, 1);
+diff --git a/drivers/gpu/drm/amd/amdkfd/kfd_mqd_manager_v11.c b/drivers/gpu/drm/amd/amdkfd/kfd_mqd_manager_v11.c
+index 15277f1d5cf0a..d722cbd317834 100644
+--- a/drivers/gpu/drm/amd/amdkfd/kfd_mqd_manager_v11.c
++++ b/drivers/gpu/drm/amd/amdkfd/kfd_mqd_manager_v11.c
+@@ -224,6 +224,7 @@ static void update_mqd(struct mqd_manager *mm, void *mqd,
+ 	m->cp_hqd_pq_control = 5 << CP_HQD_PQ_CONTROL__RPTR_BLOCK_SIZE__SHIFT;
+ 	m->cp_hqd_pq_control |=
+ 			ffs(q->queue_size / sizeof(unsigned int)) - 1 - 1;
++	m->cp_hqd_pq_control |= CP_HQD_PQ_CONTROL__UNORD_DISPATCH_MASK;
+ 	pr_debug("cp_hqd_pq_control 0x%x\n", m->cp_hqd_pq_control);
  
- static void amdgpu_drv_delayed_reset_work_handler(struct work_struct *work);
- 
-@@ -859,6 +860,18 @@ int amdgpu_backlight = -1;
- MODULE_PARM_DESC(backlight, "Backlight control (0 = pwm, 1 = aux, -1 auto (default))");
- module_param_named(backlight, amdgpu_backlight, bint, 0444);
- 
-+/**
-+ * DOC: damageclips (int)
-+ * Enable or disable damage clips support. If damage clips support is disabled,
-+ * we will force full frame updates, irrespective of what user space sends to
-+ * us.
-+ *
-+ * Defaults to -1 (where it is enabled unless a PSR-SU display is detected).
-+ */
-+MODULE_PARM_DESC(damageclips,
-+		 "Damage clips support (0 = disable, 1 = enable, -1 auto (default))");
-+module_param_named(damageclips, amdgpu_damage_clips, int, 0444);
-+
- /**
-  * DOC: tmz (int)
-  * Trusted Memory Zone (TMZ) is a method to protect data being written
-diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
-index b7a717c3682f9..f9a7a16f1ec21 100644
---- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
-+++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
-@@ -5254,6 +5254,7 @@ static void fill_dc_dirty_rects(struct drm_plane *plane,
- 				struct drm_plane_state *new_plane_state,
- 				struct drm_crtc_state *crtc_state,
- 				struct dc_flip_addrs *flip_addrs,
-+				bool is_psr_su,
- 				bool *dirty_regions_changed)
- {
- 	struct dm_crtc_state *dm_crtc_state = to_dm_crtc_state(crtc_state);
-@@ -5278,6 +5279,10 @@ static void fill_dc_dirty_rects(struct drm_plane *plane,
- 	num_clips = drm_plane_get_damage_clips_count(new_plane_state);
- 	clips = drm_plane_get_damage_clips(new_plane_state);
- 
-+	if (num_clips && (!amdgpu_damage_clips || (amdgpu_damage_clips < 0 &&
-+						   is_psr_su)))
-+		goto ffu;
-+
- 	if (!dm_crtc_state->mpo_requested) {
- 		if (!num_clips || num_clips > DC_MAX_DIRTY_RECTS)
- 			goto ffu;
-@@ -8412,6 +8417,8 @@ static void amdgpu_dm_commit_planes(struct drm_atomic_state *state,
- 			fill_dc_dirty_rects(plane, old_plane_state,
- 					    new_plane_state, new_crtc_state,
- 					    &bundle->flip_addrs[planes_count],
-+					    acrtc_state->stream->link->psr_settings.psr_version ==
-+					    DC_PSR_VERSION_SU_1,
- 					    &dirty_rects_changed);
- 
- 			/*
+ 	m->cp_hqd_pq_base_lo = lower_32_bits((uint64_t)q->queue_address >> 8);
 -- 
 2.43.0
 
