@@ -1,58 +1,53 @@
-Return-Path: <linux-kernel+bounces-121171-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-121172-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D96DF88E31B
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 14:42:03 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id D774D88E31E
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 14:42:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1709A1C23E93
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 13:42:03 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 14DAC1C26E4D
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 13:42:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED08417BB06;
-	Wed, 27 Mar 2024 12:24:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D1FB917BB25;
+	Wed, 27 Mar 2024 12:24:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="squHc9Id"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="bWRML9tp"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3701B17B516;
-	Wed, 27 Mar 2024 12:24:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DA44B17BB16;
+	Wed, 27 Mar 2024 12:24:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711542264; cv=none; b=RSBodR2AYDeRxyLppt/XiNx6vpRJmc1K0bhQM3calij2MaNNtv4+zzNR27ZjkRBxyrNO+HDCjUeXOb0sjDJSwbb48nj2AKZtQbZcfzRBj8Jxs3gVQKVHphU1b57osxKRbUEHi3DQMk9VF+XLTOEHR7WCelItJJ2VesYzTIxtpR8=
+	t=1711542266; cv=none; b=E+TMmOlfQBbo8HsxC6BVHmzjZGT4E8BpM9juYStMdCyfX5t4D4jH54tRhOqzCT99iRE+5UJhekJ13h/BKZNtszu/ArxD+y0TUQYTnUkuGjDvdF1yqHTt0SVFzjXB+sdYEM2NzjVKjK/p3p/RdupUB/xeb1PJ3aKt6z/Z+1GYrpY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711542264; c=relaxed/simple;
-	bh=gy4WXB35sp3fKwpgMCxRtYEoja6KLUZWH8meEUVY4Tg=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=SGGvI4k3HaeHWJurMz5PlGT5yCJ40XqotcaARnXY06dp6qhbxv5QvkGpNPDcxUQsZjWAz64u66fC1P15OUKqb0tYoBxgYUXyumQa38nztAp/VV+OLMdFeWnpd87gPSqr4FEElLp/HAQKq9Ovg+SF45VRyoQYELci2hISS4z/VzM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=squHc9Id; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 082EFC433F1;
-	Wed, 27 Mar 2024 12:24:22 +0000 (UTC)
+	s=arc-20240116; t=1711542266; c=relaxed/simple;
+	bh=8wwl9iaffk+ItBx7Dye4ifkhiDxHj7nROvvb57MzG5I=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Q7eADynNYqpwBqgezX0b2U3EgkvPNCe7oUs2aJ5awgDRyzLFfS/5YppL/U/rvfx+a8/JzyUgyCFk4gwk8NFP2QO8BHFPKkfOzXa/vSltpIq1Oj+SXshuH41XMW6UFa3RI+MbYiKhXxgL6fx+as0uLHMx0o8Ob1hKnW6PVG+9maw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=bWRML9tp; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1966EC433F1;
+	Wed, 27 Mar 2024 12:24:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711542264;
-	bh=gy4WXB35sp3fKwpgMCxRtYEoja6KLUZWH8meEUVY4Tg=;
+	s=k20201202; t=1711542266;
+	bh=8wwl9iaffk+ItBx7Dye4ifkhiDxHj7nROvvb57MzG5I=;
 	h=From:To:Cc:Subject:Date:From;
-	b=squHc9IdXVF8geFMlD7k6usNBOQcJZT6ZkKIDcjIQx/h3huFpjHZaau5xn1h4SM1p
-	 55gIwn64s22Dj7oKXaYzlta2qiHhnjaBpyizxiJkKI1ayz/6Il1e2R8MVmx/6tNxkR
-	 PiZkh3n+JRxJPYpS9bR4PJYsHVjmvTx07Rldm+0yj6O5SiNu4OIa0P47qkH9KE6Bf6
-	 NQQKZrytb4JQL5FgPwoUzQGdaKxzCGPRaIn+FPXblKPbFuac2g4xAOF6ZkcwBSvzva
-	 dxiHY+LwfnOnOCRs0Q3Lu96SXHCZcQg1GscnjoJvCV7u61Rbywcy7mDm3p/RJMYy0F
-	 UQ7UCD7oL35Vg==
+	b=bWRML9tp54JGMCy1TFm1QVFBoRH08PimQ4c7lUqOSqRfsM5mCpCcsKmuCP42DgjsQ
+	 gWxD3H5cg81UJ4gjZ2kkXLQL+7FMORQ9Z+hLtkpmi4U8MuZuwLpnYxuF7y6JA5zYDo
+	 SrIfR6LLbbjfCvAd+fQdblQmfBvQvUT6DzZ3CkNjr3i4AXNheks79S4FRfaWHQQuCR
+	 hmFGduVKfdoQXkwcp1eH0nJQjlG76on9yZY1/qrpUp974VJNs0vJXgirriLaj3Uv0F
+	 US/NV6Blb6PH14yjDi570cN3dtNZ5k6sxfTy+hS25ZAhasJRMS6rpn7Yj7Yay5WD63
+	 sHfcSNPPVjbKQ==
 From: Sasha Levin <sashal@kernel.org>
 To: stable@vger.kernel.org,
-	charlene.liu@amd.com
-Cc: Mario Limonciello <mario.limonciello@amd.com>,
-	Alex Deucher <alexander.deucher@amd.com>,
-	Sung joon Kim <sungjoon.kim@amd.com>,
-	Alex Hung <alex.hung@amd.com>,
-	Daniel Wheeler <daniel.wheeler@amd.com>,
-	amd-gfx@lists.freedesktop.org,
-	dri-devel@lists.freedesktop.org,
+	chenhuacai@kernel.org
+Cc: Huacai Chen <chenhuacai@loongson.cn>,
+	loongarch@lists.linux.dev,
 	linux-kernel@vger.kernel.org
-Subject: FAILED: Patch "drm/amd/display: Add logging resource checks" failed to apply to 5.4-stable tree
-Date: Wed, 27 Mar 2024 08:24:21 -0400
-Message-ID: <20240327122422.2839355-1-sashal@kernel.org>
+Subject: FAILED: Patch "LoongArch: Define the __io_aw() hook as mmiowb()" failed to apply to 5.4-stable tree
+Date: Wed, 27 Mar 2024 08:24:24 -0400
+Message-ID: <20240327122425.2839392-1-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -74,81 +69,115 @@ Sasha
 
 ------------------ original commit in Linus's tree ------------------
 
-From 012fe0674af0753e71424b638960adbfb7f3db5a Mon Sep 17 00:00:00 2001
-From: Charlene Liu <charlene.liu@amd.com>
-Date: Thu, 28 Dec 2023 13:19:33 -0500
-Subject: [PATCH] drm/amd/display: Add logging resource checks
+From 9c68ece8b2a5c5ff9b2fcaea923dd73efeb174cd Mon Sep 17 00:00:00 2001
+From: Huacai Chen <chenhuacai@loongson.cn>
+Date: Tue, 19 Mar 2024 15:50:34 +0800
+Subject: [PATCH] LoongArch: Define the __io_aw() hook as mmiowb()
 
-[Why]
-When mapping resources, resources could be unavailable.
+Commit fb24ea52f78e0d595852e ("drivers: Remove explicit invocations of
+mmiowb()") remove all mmiowb() in drivers, but it says:
 
-Cc: Mario Limonciello <mario.limonciello@amd.com>
-Cc: Alex Deucher <alexander.deucher@amd.com>
+"NOTE: mmiowb() has only ever guaranteed ordering in conjunction with
+spin_unlock(). However, pairing each mmiowb() removal in this patch with
+the corresponding call to spin_unlock() is not at all trivial, so there
+is a small chance that this change may regress any drivers incorrectly
+relying on mmiowb() to order MMIO writes between CPUs using lock-free
+synchronisation."
+
+The mmio in radeon_ring_commit() is protected by a mutex rather than a
+spinlock, but in the mutex fastpath it behaves similar to spinlock. We
+can add mmiowb() calls in the radeon driver but the maintainer says he
+doesn't like such a workaround, and radeon is not the only example of
+mutex protected mmio.
+
+So we should extend the mmiowb tracking system from spinlock to mutex,
+and maybe other locking primitives. This is not easy and error prone, so
+we solve it in the architectural code, by simply defining the __io_aw()
+hook as mmiowb(). And we no longer need to override queued_spin_unlock()
+so use the generic definition.
+
+Without this, we get such an error when run 'glxgears' on weak ordering
+architectures such as LoongArch:
+
+radeon 0000:04:00.0: ring 0 stalled for more than 10324msec
+radeon 0000:04:00.0: ring 3 stalled for more than 10240msec
+radeon 0000:04:00.0: GPU lockup (current fence id 0x000000000001f412 last fence id 0x000000000001f414 on ring 3)
+radeon 0000:04:00.0: GPU lockup (current fence id 0x000000000000f940 last fence id 0x000000000000f941 on ring 0)
+radeon 0000:04:00.0: scheduling IB failed (-35).
+[drm:radeon_gem_va_ioctl [radeon]] *ERROR* Couldn't update BO_VA (-35)
+radeon 0000:04:00.0: scheduling IB failed (-35).
+[drm:radeon_gem_va_ioctl [radeon]] *ERROR* Couldn't update BO_VA (-35)
+radeon 0000:04:00.0: scheduling IB failed (-35).
+[drm:radeon_gem_va_ioctl [radeon]] *ERROR* Couldn't update BO_VA (-35)
+radeon 0000:04:00.0: scheduling IB failed (-35).
+[drm:radeon_gem_va_ioctl [radeon]] *ERROR* Couldn't update BO_VA (-35)
+radeon 0000:04:00.0: scheduling IB failed (-35).
+[drm:radeon_gem_va_ioctl [radeon]] *ERROR* Couldn't update BO_VA (-35)
+radeon 0000:04:00.0: scheduling IB failed (-35).
+[drm:radeon_gem_va_ioctl [radeon]] *ERROR* Couldn't update BO_VA (-35)
+radeon 0000:04:00.0: scheduling IB failed (-35).
+[drm:radeon_gem_va_ioctl [radeon]] *ERROR* Couldn't update BO_VA (-35)
+
+Link: https://lore.kernel.org/dri-devel/29df7e26-d7a8-4f67-b988-44353c4270ac@amd.com/T/#t
+Link: https://lore.kernel.org/linux-arch/20240301130532.3953167-1-chenhuacai@loongson.cn/T/#t
 Cc: stable@vger.kernel.org
-Reviewed-by: Sung joon Kim <sungjoon.kim@amd.com>
-Acked-by: Alex Hung <alex.hung@amd.com>
-Signed-off-by: Charlene Liu <charlene.liu@amd.com>
-Tested-by: Daniel Wheeler <daniel.wheeler@amd.com>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+Signed-off-by: Huacai Chen <chenhuacai@loongson.cn>
 ---
- drivers/gpu/drm/amd/display/dc/core/dc.c          | 4 +++-
- drivers/gpu/drm/amd/display/dc/core/dc_resource.c | 4 ++++
- drivers/gpu/drm/amd/display/dc/core/dc_state.c    | 5 +++--
- 3 files changed, 10 insertions(+), 3 deletions(-)
+ arch/loongarch/include/asm/Kbuild      |  1 +
+ arch/loongarch/include/asm/io.h        |  2 ++
+ arch/loongarch/include/asm/qspinlock.h | 18 ------------------
+ 3 files changed, 3 insertions(+), 18 deletions(-)
+ delete mode 100644 arch/loongarch/include/asm/qspinlock.h
 
-diff --git a/drivers/gpu/drm/amd/display/dc/core/dc.c b/drivers/gpu/drm/amd/display/dc/core/dc.c
-index 69e726630241d..aa7c02ba948e9 100644
---- a/drivers/gpu/drm/amd/display/dc/core/dc.c
-+++ b/drivers/gpu/drm/amd/display/dc/core/dc.c
-@@ -3522,7 +3522,7 @@ static void commit_planes_for_stream(struct dc *dc,
- 	top_pipe_to_program = resource_get_otg_master_for_stream(
- 				&context->res_ctx,
- 				stream);
+diff --git a/arch/loongarch/include/asm/Kbuild b/arch/loongarch/include/asm/Kbuild
+index a97c0edbb866a..2dbec7853ae86 100644
+--- a/arch/loongarch/include/asm/Kbuild
++++ b/arch/loongarch/include/asm/Kbuild
+@@ -6,6 +6,7 @@ generic-y += mcs_spinlock.h
+ generic-y += parport.h
+ generic-y += early_ioremap.h
+ generic-y += qrwlock.h
++generic-y += qspinlock.h
+ generic-y += rwsem.h
+ generic-y += segment.h
+ generic-y += user.h
+diff --git a/arch/loongarch/include/asm/io.h b/arch/loongarch/include/asm/io.h
+index c486c2341b662..4a8adcca329b8 100644
+--- a/arch/loongarch/include/asm/io.h
++++ b/arch/loongarch/include/asm/io.h
+@@ -71,6 +71,8 @@ extern void __memcpy_fromio(void *to, const volatile void __iomem *from, size_t
+ #define memcpy_fromio(a, c, l) __memcpy_fromio((a), (c), (l))
+ #define memcpy_toio(c, a, l)   __memcpy_toio((c), (a), (l))
+ 
++#define __io_aw() mmiowb()
++
+ #include <asm-generic/io.h>
+ 
+ #define ARCH_HAS_VALID_PHYS_ADDR_RANGE
+diff --git a/arch/loongarch/include/asm/qspinlock.h b/arch/loongarch/include/asm/qspinlock.h
+deleted file mode 100644
+index 34f43f8ad5912..0000000000000
+--- a/arch/loongarch/include/asm/qspinlock.h
++++ /dev/null
+@@ -1,18 +0,0 @@
+-/* SPDX-License-Identifier: GPL-2.0 */
+-#ifndef _ASM_QSPINLOCK_H
+-#define _ASM_QSPINLOCK_H
 -
-+	ASSERT(top_pipe_to_program != NULL);
- 	for (i = 0; i < dc->res_pool->pipe_count; i++) {
- 		struct pipe_ctx *old_pipe = &dc->current_state->res_ctx.pipe_ctx[i];
- 
-@@ -4345,6 +4345,8 @@ static bool should_commit_minimal_transition_for_windowed_mpo_odm(struct dc *dc,
- 
- 	cur_pipe = resource_get_otg_master_for_stream(&dc->current_state->res_ctx, stream);
- 	new_pipe = resource_get_otg_master_for_stream(&context->res_ctx, stream);
-+	if (!cur_pipe || !new_pipe)
-+		return false;
- 	cur_is_odm_in_use = resource_get_odm_slice_count(cur_pipe) > 1;
- 	new_is_odm_in_use = resource_get_odm_slice_count(new_pipe) > 1;
- 	if (cur_is_odm_in_use == new_is_odm_in_use)
-diff --git a/drivers/gpu/drm/amd/display/dc/core/dc_resource.c b/drivers/gpu/drm/amd/display/dc/core/dc_resource.c
-index f2abc1096ffb6..9fbdb09697fd5 100644
---- a/drivers/gpu/drm/amd/display/dc/core/dc_resource.c
-+++ b/drivers/gpu/drm/amd/display/dc/core/dc_resource.c
-@@ -2194,6 +2194,10 @@ void resource_log_pipe_topology_update(struct dc *dc, struct dc_state *state)
- 	for (stream_idx = 0; stream_idx < state->stream_count; stream_idx++) {
- 		otg_master = resource_get_otg_master_for_stream(
- 				&state->res_ctx, state->streams[stream_idx]);
-+		if (!otg_master	|| otg_master->stream_res.tg == NULL) {
-+			DC_LOG_DC("topology update: otg_master NULL stream_idx %d!\n", stream_idx);
-+			return;
-+		}
- 		slice_count = resource_get_opp_heads_for_otg_master(otg_master,
- 				&state->res_ctx, opp_heads);
- 		for (slice_idx = 0; slice_idx < slice_count; slice_idx++) {
-diff --git a/drivers/gpu/drm/amd/display/dc/core/dc_state.c b/drivers/gpu/drm/amd/display/dc/core/dc_state.c
-index 56feee0ff01b1..88c6436b28b69 100644
---- a/drivers/gpu/drm/amd/display/dc/core/dc_state.c
-+++ b/drivers/gpu/drm/amd/display/dc/core/dc_state.c
-@@ -434,8 +434,9 @@ bool dc_state_add_plane(
- 
- 	otg_master_pipe = resource_get_otg_master_for_stream(
- 			&state->res_ctx, stream);
--	added = resource_append_dpp_pipes_for_plane_composition(state,
--			dc->current_state, pool, otg_master_pipe, plane_state);
-+	if (otg_master_pipe)
-+		added = resource_append_dpp_pipes_for_plane_composition(state,
-+				dc->current_state, pool, otg_master_pipe, plane_state);
- 
- 	if (added) {
- 		stream_status->plane_states[stream_status->plane_count] =
+-#include <asm-generic/qspinlock_types.h>
+-
+-#define queued_spin_unlock queued_spin_unlock
+-
+-static inline void queued_spin_unlock(struct qspinlock *lock)
+-{
+-	compiletime_assert_atomic_type(lock->locked);
+-	c_sync();
+-	WRITE_ONCE(lock->locked, 0);
+-}
+-
+-#include <asm-generic/qspinlock.h>
+-
+-#endif /* _ASM_QSPINLOCK_H */
 -- 
 2.43.0
 
