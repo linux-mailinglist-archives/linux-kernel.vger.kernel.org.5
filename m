@@ -1,158 +1,306 @@
-Return-Path: <linux-kernel+bounces-121581-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-121585-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7197E88EA20
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 17:00:00 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7DA1B88EA27
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 17:01:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2741A285378
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 15:59:59 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 978051C2E88D
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 16:01:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0229E12F5A4;
-	Wed, 27 Mar 2024 15:59:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9061712F5A4;
+	Wed, 27 Mar 2024 16:01:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b="ueCJTHB3"
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [78.32.30.218])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="cb96jY4f"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 596764E1DC;
-	Wed, 27 Mar 2024 15:59:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=78.32.30.218
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA8F75024E
+	for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 16:01:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711555189; cv=none; b=ZukB1hiwX2mRZEj36uhYOTQjB3Fl74R2EnTEhzwEUZWGQoICRa/Q44zzWx1YyPD4GFL9ka7ns8dc1/4vmC/vR8+vIiC0NQQbmzj7+XLI1BQqOgRimiJhbMGzEYD8N8Wlm9oNOuahDfQV8dbBn63bVUJPV1pvG8vcGJyPemJJrq8=
+	t=1711555307; cv=none; b=qXxIaw76IQ21Bs7HqAwdyiklx/exRGM6xqC0BuH6XI7P8ISs6PvfnMnbno6qmjBMChLWzb/gY/yU2aH9zjN82xXTB/z8pHDLw4jaYXWtHpt78LEshXrpJluCWoL8xGrTRlH1WbG045T/ZiJeAKmqSoLCv9B6SaBORBeg48f6lhk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711555189; c=relaxed/simple;
-	bh=ahlK969iEtBfPy2ESYo1kBB+dg89mMeSvLfKzLWoLLc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=BnNiDsei7hZyyyI8nxpzqCVxJU7g/1OALi4U5e4HE8zH8nZ9JK8vZRKS/OwhAow3ubPvj23FSkvUroSElTSpkhNG0+yHHP47od7LYzDvHBmatHI1G6iGdjYh8WeONcYvHP9458azCbPEvbNo5XdhF71MbnyLE3II/Ji27+qcepk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk; spf=none smtp.mailfrom=armlinux.org.uk; dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b=ueCJTHB3; arc=none smtp.client-ip=78.32.30.218
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=armlinux.org.uk
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:
-	Content-Transfer-Encoding:Content-Type:MIME-Version:References:Message-ID:
-	Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-	List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=9Hvf1kcJmMZrkquYolDkUWZ6BPu0lUrFynvcvJG0xU4=; b=ueCJTHB3QmDBFaPEuyAeiwiH/E
-	Q/8fENuaqGIo59TZdVSa80uVHGnoY4pzx49BZD0ZJ/lDi8k+v0s4lAPIlUKsjjPW2RxTi0s+IVQIs
-	QTd9qIh4CrTdxEVcLqwXXrRQs5MuvqhSD0FoLQxxuDD5El7u6Ei7h03LPrxS+An1OcRwh744WYsm0
-	87egy56dFPwRgzwnV98KXH67J6F3Q4s2qzGbtAwsnYq9jMbztNdN+6wPwYkpi/Rp6CDBIqAnISr69
-	hBosEtc27jhOWJNMHBDbHuakbdknuuoj8l/+ucRcOzSqLbAUs9CLWckom+zs9+bPcxt/K3OiorJOl
-	LEL47uUQ==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:47908)
-	by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <linux@armlinux.org.uk>)
-	id 1rpVgc-0007Ef-1h;
-	Wed, 27 Mar 2024 15:59:34 +0000
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
-	(envelope-from <linux@shell.armlinux.org.uk>)
-	id 1rpVgb-00010G-Qi; Wed, 27 Mar 2024 15:59:33 +0000
-Date: Wed, 27 Mar 2024 15:59:33 +0000
-From: "Russell King (Oracle)" <linux@armlinux.org.uk>
-To: arinc.unal@arinc9.com
-Cc: Paolo Abeni <pabeni@redhat.com>, Daniel Golle <daniel@makrotopia.org>,
-	DENG Qingfang <dqfext@gmail.com>,
-	Sean Wang <sean.wang@mediatek.com>, Andrew Lunn <andrew@lunn.ch>,
-	Florian Fainelli <f.fainelli@gmail.com>,
-	Vladimir Oltean <olteanv@gmail.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Matthias Brugger <matthias.bgg@gmail.com>,
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
-	=?iso-8859-1?Q?Ren=E9?= van Dorst <opensource@vdorst.com>,
-	SkyLake Huang <SkyLake.Huang@mediatek.com>,
-	Heiner Kallweit <hkallweit1@gmail.com>,
-	Bartel Eerdekens <bartel.eerdekens@constell8.be>,
-	mithat.guner@xeront.com, erkin.bozoglu@xeront.com,
-	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-mediatek@lists.infradead.org
-Subject: Re: [PATCH net v2 2/2] net: dsa: mt7530: fix disabling EEE on
- failure on MT7531 and MT7988
-Message-ID: <ZgRCZSBniraUCuT2@shell.armlinux.org.uk>
-References: <20240321-for-net-mt7530-fix-eee-for-mt7531-mt7988-v2-0-9af9d5041bfe@arinc9.com>
- <20240321-for-net-mt7530-fix-eee-for-mt7531-mt7988-v2-2-9af9d5041bfe@arinc9.com>
- <799572b672ea8b4756236b14068aef7c8fa726a6.camel@redhat.com>
- <d65f4c45-e616-4157-a769-c285cbad575c@arinc9.com>
- <530da7c1-c058-44ef-84fd-86ff58f1501b@arinc9.com>
- <ZgRCFZBFvNSZ1a2U@shell.armlinux.org.uk>
+	s=arc-20240116; t=1711555307; c=relaxed/simple;
+	bh=sCzNGZzazf+KJukAXuHWhrhnZJ5Xtoa9qDS9guDzCUA=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=ftdnYB3TLY44EwvjLPpVxoeZOXj96Qr9Vm2/jmNFcH1RI7OacYLjPoITwOvwHbU6NOCUiA1ISW7gTRxaSh+ojGXP1B8MWcIN+p7tOWLLxry/GEXrQ/OzoQ18cM1DvHRKEc8nn7n2x3A5HwZvgQi1HaoXhYk1DE2Xk2LpJ58HDe0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=cb96jY4f; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1711555304;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=sV/lZgwkhea3I+lgwlHmyuTZ7NXsG6CjPnVg+nnNBQ8=;
+	b=cb96jY4fLWHzY+GVMZec0xKRqvvvuyhZhBR7SSQm5DOxhOJuxJPuGRtvk6KQE4ggHwV+iH
+	MG8xNShlpggahuxospxkBSW0D7WPASDROq1snsRm6fo2WVUOzCWCfOz07/51TqsHfeIwmI
+	V2MxlpNaqa9nMNw9HiR2EWlukzj6CnQ=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-687-1Kb6HNrCM7GadN3r-yznEQ-1; Wed, 27 Mar 2024 12:01:42 -0400
+X-MC-Unique: 1Kb6HNrCM7GadN3r-yznEQ-1
+Received: by mail-wr1-f72.google.com with SMTP id ffacd0b85a97d-3418f237c0bso3514308f8f.3
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 09:01:42 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711555302; x=1712160102;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=sV/lZgwkhea3I+lgwlHmyuTZ7NXsG6CjPnVg+nnNBQ8=;
+        b=kYBC/fec05al34E6lZFIriOGbg44KM7h8G8/lp4QR6/4Vu8bgxaU3KQOM4NsVOFwkb
+         NH5HP+T2TOMSnafYVBla1xdp5X0A6Wz1JQqS+6XM2/UPwYSkWoWkllzIUTSNoVWhEzr9
+         puDTQrQxhEz7hB4KglhPgHxeZHqlZe6k0g71/oiGRsFvetZHouUAzcRYvB5tZ4lxvtUN
+         NOR+NKKHLB4ZQDjhlMRBPSevX/EfiqZfw07GY0VL4UulkGDw+5rjDNYgkJi4Yn/RZ1Mv
+         IxUyo/I7qwA+RIwTG4yhmRCPIHO9mOo60N4FAdxVncHtheDi2hkFM1xPUgT13Yf2ysHr
+         tXig==
+X-Forwarded-Encrypted: i=1; AJvYcCWDizb4z18SMXaAckY6YwCl7L39bt+mcx/ROmaqfqYcsUMejJ/y/yqdlavOnXdAe789dN1l4gVoCLg73mEj6J8GO2K8lowUB/gCdvg+
+X-Gm-Message-State: AOJu0YxOnxdfzFHrD6ZMrw2aOTLxLjE9q3DpDBXVcV2zZ8o6DqPVNNmQ
+	FxWvZ1D8NUh8WDOl0tVxafUfebizvLBJ8a/cfxOqYBUoGEVzzGe1tRKx2CIPKzP9Znf695xJ5cZ
+	73MZcb/HbeAH2Kr14SvYScD1CfqOdg12XZuAqOcAQz+V9+HBKK4QfYaVPlDfY
+X-Received: by 2002:a05:6000:188a:b0:33e:8b95:b351 with SMTP id a10-20020a056000188a00b0033e8b95b351mr325961wri.9.1711555301600;
+        Wed, 27 Mar 2024 09:01:41 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IFMHzSy070bVLduzjetNQIXt6kHnR1+LnSFRxpL9zxKrA3nP/E66ofJjxLjiEBU6orzyjofKw==
+X-Received: by 2002:a05:6000:188a:b0:33e:8b95:b351 with SMTP id a10-20020a056000188a00b0033e8b95b351mr325938wri.9.1711555301136;
+        Wed, 27 Mar 2024 09:01:41 -0700 (PDT)
+Received: from klayman.redhat.com (net-2-34-30-89.cust.vodafonedsl.it. [2.34.30.89])
+        by smtp.gmail.com with ESMTPSA id x3-20020adfcc03000000b0033e41e1ad93sm15114709wrh.57.2024.03.27.09.01.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 27 Mar 2024 09:01:40 -0700 (PDT)
+From: Marco Pagani <marpagan@redhat.com>
+To: Moritz Fischer <mdf@kernel.org>,
+	Wu Hao <hao.wu@intel.com>,
+	Xu Yilun <yilun.xu@intel.com>,
+	Tom Rix <trix@redhat.com>,
+	Jonathan Corbet <corbet@lwn.net>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Alan Tull <atull@opensource.altera.com>
+Cc: Marco Pagani <marpagan@redhat.com>,
+	linux-fpga@vger.kernel.org,
+	linux-doc@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH v2] fpga: region: add owner module and take its refcount
+Date: Wed, 27 Mar 2024 17:00:20 +0100
+Message-ID: <20240327160022.202934-1-marpagan@redhat.com>
+X-Mailer: git-send-email 2.44.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <ZgRCFZBFvNSZ1a2U@shell.armlinux.org.uk>
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
 
-On Wed, Mar 27, 2024 at 03:58:13PM +0000, Russell King (Oracle) wrote:
-> On Wed, Mar 27, 2024 at 11:46:19AM +0300, arinc.unal@arinc9.com wrote:
-> > On 26.03.2024 12:19, Arınç ÜNAL wrote:
-> > > On 26.03.2024 12:02, Paolo Abeni wrote:
-> > > > If I read the past discussion correctly, this is a potential issue
-> > > > found by code inspection and never producing problem in practice, am I
-> > > > correct?
-> > > > 
-> > > > If so I think it will deserve a 3rd party tested-by tag or similar to
-> > > > go in.
-> > > > 
-> > > > If nobody could provide such feedback in a little time, I suggest to
-> > > > drop this patch and apply only 1/2.
-> > > 
-> > > Whether a problem would happen in practice depends on when
-> > > phy_init_eee()
-> > > fails, meaning it returns a negative non-zero code. I requested Russell
-> > > to
-> > > review this patch to shed light on when phy_init_eee() would return a
-> > > negative non-zero code so we have an idea whether this patch actually
-> > > fixes
-> > > a problem.
-> > 
-> > I don't suppose Russell is going to review the patch at this point. I will
-> > submit this to net-next then. If someone actually reports a problem in
-> > practice, I can always submit it to the stable trees.
-> 
-> So the fact that I only saw your request this morning to look at
-> phy_init_eee(), and to review this patch... because... I work for
-> Oracle, and I've been looking at backporting Arm64 KVM patches to
-> our kernel, been testing and debugging that effort... and the
-> act that less than 24 hours had passed since you made the original
-> request... yea, sorry, it's clearly my fault for not jumping on this
-> the moment you sent the email.
-> 
-> I get _so_ much email that incorrectly has me in the To: header. I
-> also get _so_ much email that fails to list me in the To: header
-> when the author wants me to respond. I don't have time to read every
-> email as it comes in. I certainly don't have time to read every
-> email in any case. I do the best I can, which varies considerably
-> with my workload.
-> 
-> I already find that being single, fitting everything in during the
-> day (paid work, chores, feeding oneself) is quite a mammoth task.
-> There is no one else to do the laundry. There is no one else to get
-> the shopping. There is no one else to do the washing up. There is no
-> one else to take the rubbish out. All this I do myself, and serially
-> because there is only one of me, and it all takes time away from
-> sitting here reading every damn email as it comes in.
-> 
-> And then when I end up doing something that _you_ very well could do
-> (reading the phy_init_eee() code to find out when it might return a
-> negative number) and then you send an email like this... yea... that
-> really gets my goat.
+The current implementation of the fpga region assumes that the low-level
+module registers a driver for the parent device and uses its owner pointer
+to take the module's refcount. This approach is problematic since it can
+lead to a null pointer dereference while attempting to get the region
+during programming if the parent device does not have a driver.
 
-.. and now I have a 1:1 with my manager for the next 30-60 minutes.
-Is it okay by you for me to be offline for that period of time while
-I have a chat with him?
+To address this problem, add a module owner pointer to the fpga_region
+struct and use it to take the module's refcount. Modify the functions for
+registering a region to take an additional owner module parameter and
+rename them to avoid conflicts. Use the old function names for helper
+macros that automatically set the module that registers the region as the
+owner. This ensures compatibility with existing low-level control modules
+and reduces the chances of registering a region without setting the owner.
 
+Also, update the documentation to keep it consistent with the new interface
+for registering an fpga region.
+
+Other changes: unlock the mutex before calling put_device() in
+fpga_region_put() to avoid potential use after release issues.
+
+Fixes: 0fa20cdfcc1f ("fpga: fpga-region: device tree control for FPGA")
+Suggested-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Suggested-by: Xu Yilun <yilun.xu@intel.com>
+Signed-off-by: Marco Pagani <marpagan@redhat.com>
+---
+
+v2:
+- Fixed typo in the documentation sets -> set
+- Renamed owner pointer get_br_owner -> br_owner
+---
+ Documentation/driver-api/fpga/fpga-region.rst | 13 ++++++----
+ drivers/fpga/fpga-region.c                    | 26 +++++++++++--------
+ include/linux/fpga/fpga-region.h              | 13 +++++++---
+ 3 files changed, 33 insertions(+), 19 deletions(-)
+
+diff --git a/Documentation/driver-api/fpga/fpga-region.rst b/Documentation/driver-api/fpga/fpga-region.rst
+index dc55d60a0b4a..77190a5ef330 100644
+--- a/Documentation/driver-api/fpga/fpga-region.rst
++++ b/Documentation/driver-api/fpga/fpga-region.rst
+@@ -46,13 +46,16 @@ API to add a new FPGA region
+ ----------------------------
+ 
+ * struct fpga_region - The FPGA region struct
+-* struct fpga_region_info - Parameter structure for fpga_region_register_full()
+-* fpga_region_register_full() -  Create and register an FPGA region using the
++* struct fpga_region_info - Parameter structure for __fpga_region_register_full()
++* __fpga_region_register_full() -  Create and register an FPGA region using the
+   fpga_region_info structure to provide the full flexibility of options
+-* fpga_region_register() -  Create and register an FPGA region using standard
++* __fpga_region_register() -  Create and register an FPGA region using standard
+   arguments
+ * fpga_region_unregister() -  Unregister an FPGA region
+ 
++Helper macros ``fpga_region_register()`` and ``fpga_region_register_full()``
++automatically set the module that registers the FPGA region as the owner.
++
+ The FPGA region's probe function will need to get a reference to the FPGA
+ Manager it will be using to do the programming.  This usually would happen
+ during the region's probe function.
+@@ -82,10 +85,10 @@ following APIs to handle building or tearing down that list.
+    :functions: fpga_region_info
+ 
+ .. kernel-doc:: drivers/fpga/fpga-region.c
+-   :functions: fpga_region_register_full
++   :functions: __fpga_region_register
+ 
+ .. kernel-doc:: drivers/fpga/fpga-region.c
+-   :functions: fpga_region_register
++   :functions: __fpga_region_register_full
+ 
+ .. kernel-doc:: drivers/fpga/fpga-region.c
+    :functions: fpga_region_unregister
+diff --git a/drivers/fpga/fpga-region.c b/drivers/fpga/fpga-region.c
+index b364a929425c..1beb7415c2dc 100644
+--- a/drivers/fpga/fpga-region.c
++++ b/drivers/fpga/fpga-region.c
+@@ -53,7 +53,7 @@ static struct fpga_region *fpga_region_get(struct fpga_region *region)
+ 	}
+ 
+ 	get_device(dev);
+-	if (!try_module_get(dev->parent->driver->owner)) {
++	if (!try_module_get(region->br_owner)) {
+ 		put_device(dev);
+ 		mutex_unlock(&region->mutex);
+ 		return ERR_PTR(-ENODEV);
+@@ -75,9 +75,9 @@ static void fpga_region_put(struct fpga_region *region)
+ 
+ 	dev_dbg(dev, "put\n");
+ 
+-	module_put(dev->parent->driver->owner);
+-	put_device(dev);
++	module_put(region->br_owner);
+ 	mutex_unlock(&region->mutex);
++	put_device(dev);
+ }
+ 
+ /**
+@@ -181,14 +181,16 @@ static struct attribute *fpga_region_attrs[] = {
+ ATTRIBUTE_GROUPS(fpga_region);
+ 
+ /**
+- * fpga_region_register_full - create and register an FPGA Region device
++ * __fpga_region_register_full - create and register an FPGA Region device
+  * @parent: device parent
+  * @info: parameters for FPGA Region
++ * @owner: owner module containing the get_bridges function
+  *
+  * Return: struct fpga_region or ERR_PTR()
+  */
+ struct fpga_region *
+-fpga_region_register_full(struct device *parent, const struct fpga_region_info *info)
++__fpga_region_register_full(struct device *parent, const struct fpga_region_info *info,
++			    struct module *owner)
+ {
+ 	struct fpga_region *region;
+ 	int id, ret = 0;
+@@ -213,6 +215,7 @@ fpga_region_register_full(struct device *parent, const struct fpga_region_info *
+ 	region->compat_id = info->compat_id;
+ 	region->priv = info->priv;
+ 	region->get_bridges = info->get_bridges;
++	region->br_owner = owner;
+ 
+ 	mutex_init(&region->mutex);
+ 	INIT_LIST_HEAD(&region->bridge_list);
+@@ -241,13 +244,14 @@ fpga_region_register_full(struct device *parent, const struct fpga_region_info *
+ 
+ 	return ERR_PTR(ret);
+ }
+-EXPORT_SYMBOL_GPL(fpga_region_register_full);
++EXPORT_SYMBOL_GPL(__fpga_region_register_full);
+ 
+ /**
+- * fpga_region_register - create and register an FPGA Region device
++ * __fpga_region_register - create and register an FPGA Region device
+  * @parent: device parent
+  * @mgr: manager that programs this region
+  * @get_bridges: optional function to get bridges to a list
++ * @owner: owner module containing get_bridges function
+  *
+  * This simple version of the register function should be sufficient for most users.
+  * The fpga_region_register_full() function is available for users that need to
+@@ -256,17 +260,17 @@ EXPORT_SYMBOL_GPL(fpga_region_register_full);
+  * Return: struct fpga_region or ERR_PTR()
+  */
+ struct fpga_region *
+-fpga_region_register(struct device *parent, struct fpga_manager *mgr,
+-		     int (*get_bridges)(struct fpga_region *))
++__fpga_region_register(struct device *parent, struct fpga_manager *mgr,
++		       int (*get_bridges)(struct fpga_region *), struct module *owner)
+ {
+ 	struct fpga_region_info info = { 0 };
+ 
+ 	info.mgr = mgr;
+ 	info.get_bridges = get_bridges;
+ 
+-	return fpga_region_register_full(parent, &info);
++	return __fpga_region_register_full(parent, &info, owner);
+ }
+-EXPORT_SYMBOL_GPL(fpga_region_register);
++EXPORT_SYMBOL_GPL(__fpga_region_register);
+ 
+ /**
+  * fpga_region_unregister - unregister an FPGA region
+diff --git a/include/linux/fpga/fpga-region.h b/include/linux/fpga/fpga-region.h
+index 9d4d32909340..d175babc3d68 100644
+--- a/include/linux/fpga/fpga-region.h
++++ b/include/linux/fpga/fpga-region.h
+@@ -36,6 +36,7 @@ struct fpga_region_info {
+  * @mgr: FPGA manager
+  * @info: FPGA image info
+  * @compat_id: FPGA region id for compatibility check.
++ * @br_owner: module containing the get_bridges function
+  * @priv: private data
+  * @get_bridges: optional function to get bridges to a list
+  */
+@@ -46,6 +47,7 @@ struct fpga_region {
+ 	struct fpga_manager *mgr;
+ 	struct fpga_image_info *info;
+ 	struct fpga_compat_id *compat_id;
++	struct module *br_owner;
+ 	void *priv;
+ 	int (*get_bridges)(struct fpga_region *region);
+ };
+@@ -58,12 +60,17 @@ fpga_region_class_find(struct device *start, const void *data,
+ 
+ int fpga_region_program_fpga(struct fpga_region *region);
+ 
++#define fpga_region_register_full(parent, info) \
++	__fpga_region_register_full(parent, info, THIS_MODULE)
+ struct fpga_region *
+-fpga_region_register_full(struct device *parent, const struct fpga_region_info *info);
++__fpga_region_register_full(struct device *parent, const struct fpga_region_info *info,
++			    struct module *owner);
+ 
++#define fpga_region_register(parent, mgr, get_bridges) \
++	__fpga_region_register(parent, mgr, get_bridges, THIS_MODULE)
+ struct fpga_region *
+-fpga_region_register(struct device *parent, struct fpga_manager *mgr,
+-		     int (*get_bridges)(struct fpga_region *));
++__fpga_region_register(struct device *parent, struct fpga_manager *mgr,
++		       int (*get_bridges)(struct fpga_region *), struct module *owner);
+ void fpga_region_unregister(struct fpga_region *region);
+ 
+ #endif /* _FPGA_REGION_H */
+
+base-commit: b1a91ca25f15b6d7b311de4465854a5981dee3d3
 -- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
+2.44.0
+
 
