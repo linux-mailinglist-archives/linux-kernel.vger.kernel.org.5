@@ -1,119 +1,139 @@
-Return-Path: <linux-kernel+bounces-120723-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-120705-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7A49A88DC01
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 12:06:28 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 83D1188DBBF
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 12:00:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 31F2C1F2CEFC
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 11:06:28 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B8B482939F6
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 11:00:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1BF8452F93;
-	Wed, 27 Mar 2024 11:06:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9F229535B2;
+	Wed, 27 Mar 2024 11:00:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=atomide.com header.i=@atomide.com header.b="r7A/g2cc"
-Received: from mail5.25mail.st (mail5.25mail.st [74.50.62.9])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="eRRxfm6U"
+Received: from mail-ej1-f49.google.com (mail-ej1-f49.google.com [209.85.218.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4B2CB1CA87;
-	Wed, 27 Mar 2024 11:06:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.50.62.9
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4C200535A0;
+	Wed, 27 Mar 2024 11:00:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711537580; cv=none; b=Ie/0EdTwjTlr+ZrKNiuEaLWHd0DHmtjC4DAzlCOccT1LHHnKSyggRHjAFBarO9/W2+Q8HLA2cFBTgCXEirtgkCeGpQtBAT+OeI2U4l4I7S3s8XVwhiDMqMOjckpa134XNBuoNt9I4n8xnTSoOhV5005mE7bUTl/3acXwJdnmvcg=
+	t=1711537228; cv=none; b=bfmYehkuRglLB+xTS4i6cACdNrwgE603voAQWRwvrA5N31UzkVgETrEeUvvg1DQnQpxfiTLceQbgibjXp3dtl7asjIcb0h1sEifw7cKW74aSGMmMir7UmLeol8TKbkH6XHSY2ffi1CqfOE7ReBuBSzsrlOsXaN8y7L0bjqzpce0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711537580; c=relaxed/simple;
-	bh=hZErjMhbMur3G6+yLs7/2PSHAumNUkNnSGgGasOMYD8=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=n11SqeeqS1YKfXBJ+CCVb6kEEUxC/+n9z/csT82VZXttD0sG09kRDvcGF/eMX9tL6hRiMb+WwthHS5wE3UXsX602OnxJDJ5RH1YLNsna88KACGTCsMfAqvAlazdfpHSe4cZUodcR0jD9pzsPmCe8z0qWns8sRS+hEZFlACW6cDw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=atomide.com; spf=fail smtp.mailfrom=atomide.com; dkim=pass (2048-bit key) header.d=atomide.com header.i=@atomide.com header.b=r7A/g2cc; arc=none smtp.client-ip=74.50.62.9
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=atomide.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=atomide.com
-Received: from localhost (91-158-86-216.elisa-laajakaista.fi [91.158.86.216])
-	by mail5.25mail.st (Postfix) with ESMTPSA id 5C986604C8;
-	Wed, 27 Mar 2024 11:05:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=atomide.com;
-	s=25mailst; t=1711537577;
-	bh=hZErjMhbMur3G6+yLs7/2PSHAumNUkNnSGgGasOMYD8=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=r7A/g2ccUWCSqiKzLQs+I7VY2TayELWt2El9JI+6jUY943RhaHZdMz02xhMAjihkJ
-	 ZVtTvGaTcJejjJfM+anyF4yeBOFC1OltUMv+bgbYpa0v2ynvX1kbk1gNIx4LEEWUWd
-	 QI4ceyB2ytp+AZBjdv4h+FlBV58ZbuLxPj6Z4e7W//nZHqeN1siNTGNO8fipPZO4D5
-	 AkAgruKQWGmN0zQMhQJ0p2+eMd1J/30u2kOt00rLkoFqlKh8X6ZpciLbO20HuggUST
-	 wjrpshtGzhzCCEC6+5jAAOiSlKm+6L8mbJuqwbpfVq4EebtJBWTF+QW9KSnQhWEz0y
-	 GJe8AIIOQQDvA==
-From: Tony Lindgren <tony@atomide.com>
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Jiri Slaby <jirislaby@kernel.org>,
-	Jonathan Corbet <corbet@lwn.net>,
-	Petr Mladek <pmladek@suse.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	John Ogness <john.ogness@linutronix.de>,
-	Sergey Senozhatsky <senozhatsky@chromium.org>
-Cc: "David S . Miller" <davem@davemloft.net>,
-	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-	Dhruva Gole <d-gole@ti.com>,
-	=?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
-	Johan Hovold <johan@kernel.org>,
-	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	linux-kernel@vger.kernel.org,
-	linux-serial@vger.kernel.org,
-	Sebastian Reichel <sre@kernel.org>,
-	linux-doc@vger.kernel.org
-Subject: [PATCH v7 7/7] Documentation: kernel-parameters: Add DEVNAME:0.0 format for serial ports
-Date: Wed, 27 Mar 2024 12:59:41 +0200
-Message-ID: <20240327110021.59793-8-tony@atomide.com>
-X-Mailer: git-send-email 2.44.0
-In-Reply-To: <20240327110021.59793-1-tony@atomide.com>
-References: <20240327110021.59793-1-tony@atomide.com>
+	s=arc-20240116; t=1711537228; c=relaxed/simple;
+	bh=Ju32kgFLniZCS7dOELnk78OlOgWmgFWMWc/+6Cau/QE=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=iKIFWkquiivFLKjFyw/v2sL8+K5CyRUue/32R+6ZPI+1aeeZCiYEfGRpa/DoNIAzahdTXBfqY+SI8u3m2GndxSKU6qoYsBcbn3qOMMva7m2APedx0vaMVHYlv1GDAFTSfNwr2ZcyW8QZFih2bWDeM/HXSvZyIgei4t6Kf5+Yr/A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=eRRxfm6U; arc=none smtp.client-ip=209.85.218.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f49.google.com with SMTP id a640c23a62f3a-a4702457ccbso836072666b.3;
+        Wed, 27 Mar 2024 04:00:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1711537225; x=1712142025; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Ju32kgFLniZCS7dOELnk78OlOgWmgFWMWc/+6Cau/QE=;
+        b=eRRxfm6ULxXicwNpUD4yD25kTvEweHiT/Q8W5sFaTIwC9pvEKcpccYAsxglQ00rjtU
+         4XCUJuGZW+LMrxDdCMAQ+aT8K0znkduayMLOge8pH0kufFVYPNR84nz66sgmoCtKQPvn
+         9cw/XQzCL+5wqP2WZEi3p9j+MreeGsFpLIwmjCAvH34jR2AWxARItZ1gibRdCHGITZ+B
+         jGypmhoPkNxkK5OEu6B9ajYv5tyjAivlf7FcHxd9YZG0dTHjrjKmuRbzMoA4rlAPJ+Br
+         n/AtqK6CDmnTIErZgvx4edG64YieBo2iN0nxvoUxkVw8PnHt1Q4cCeaNJKhpG4NA3ftx
+         Z++g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711537225; x=1712142025;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Ju32kgFLniZCS7dOELnk78OlOgWmgFWMWc/+6Cau/QE=;
+        b=MWjPYLsja431Jh9WJk3g3ZH2/NYmx36uuSvZW0xGGqmBiai7KifAKKbXrAe8ospOzQ
+         eBLEz9f0VSKrXWGkISWPdQrR0DsE7PCs+H4y+UD7Dc97cyXiwzT6M6j9dLqTngxKaZxq
+         0KTHpgLDpOtEY8AKXkmkS/JwnZrfAUs9NV8+Hrez5uFhNR91qvnQxP68LnY5VGXTNdYY
+         5RmJppfagpo0c3FwGm7n2WFmhdRhSjB6ER4N1mPl28GHstT2647MeBn7620Vme02oeVG
+         AkEfj1NjMcYrBNLqqSdnuk4TqsXCfvQhgD0D4al2wN0DmwIXngn0Mk4dfykXY6+sghwe
+         ccPA==
+X-Forwarded-Encrypted: i=1; AJvYcCX2vuGUhFcUU31sEHQLwaikBQSe0rLjNsEwFGwBOOwIaZDJZQdPcNbe46TNfq0G528FiFSGoMgU0CimtEHKB+6jCWRPWrCp5sRK9UT5HdsaU1tYdnVH7bsTluw98ntH0RZcqRcPsUohbilSFqPRsFmEMFTNiXCEz/0XDhpiGMX8uLkoCPGv67ez3rqpFM4/j8uJPyIrApTAT2SLSbt5H8JnUVMPDlmyGK+mRyLWF4/iM8cMwwMv9DITnuBqf19zQ3aVv0a/VAQvCLpo1SVRoA168vYG+wQhjERKEEVnsXT7hiWTcRfjEN+aWFbwPGEkT+Tzo7rHVs7nWNW00Qnmx5DvXAv940NyNBHrLL1E9bk/W8/1tEJO6aZbs68v+GlGg1+i4BcLCk0aXIu980hC5Iiw8Y808TAC7rNVHbORsPpgqmESugKDuvKxnghpRaCY9d05kZJrdgrk/6BKPNN4gebsekUAA41isaXqgp9fLd+xUGljSKgBgOvH1Z2cD8a4NQ8zStssHyKx9J/MD5PHsdg7JvRykIUEbg==
+X-Gm-Message-State: AOJu0YyHbhkLC5p5YmSwAjMSsLyUSprRWOHKsmNw4LNPzh4vwqYLC9U3
+	Yf54EpplH/u/TcDgrzlvaiD8qG1N1iFrAugyWNcF+S3KnNWUGl2WTQnqreY0weC8JNfOab1CP34
+	LvSgUGQiALjN0g9xlV9Pzp7gn79M=
+X-Google-Smtp-Source: AGHT+IFELlWWydcIPiZzRfNkNJ0aiBtjYHAQu2rRkgw6Ipxw5ipMsk32+2Jcyp9P3eYXGgeptSDoDh0kCNzfCJ8MD0U=
+X-Received: by 2002:a17:906:2998:b0:a49:dfe7:834f with SMTP id
+ x24-20020a170906299800b00a49dfe7834fmr616671eje.59.1711537225336; Wed, 27 Mar
+ 2024 04:00:25 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20240326-ep93xx-v9-0-156e2ae5dfc8@maquefel.me>
+ <dc3e2cb4-f631-4611-8814-0dc04c5502f0@linaro.org> <ZgLgY11N8dkpTZJB@smile.fi.intel.com>
+ <a16f45c9-747c-4a19-98a3-aa5f47ee5c4d@linaro.org>
+In-Reply-To: <a16f45c9-747c-4a19-98a3-aa5f47ee5c4d@linaro.org>
+From: Andy Shevchenko <andy.shevchenko@gmail.com>
+Date: Wed, 27 Mar 2024 12:59:49 +0200
+Message-ID: <CAHp75VfdsRkGiJCUsiTj0p7SMaSkJqQeojNWT3tGz2W7JhwMmQ@mail.gmail.com>
+Subject: Re: [PATCH v9 00/38] ep93xx device tree conversion
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc: Andy Shevchenko <andy@kernel.org>, nikita.shubin@maquefel.me, 
+	Hartley Sweeten <hsweeten@visionengravers.com>, 
+	Alexander Sverdlin <alexander.sverdlin@gmail.com>, Russell King <linux@armlinux.org.uk>, 
+	Lukasz Majewski <lukma@denx.de>, Linus Walleij <linus.walleij@linaro.org>, 
+	Bartosz Golaszewski <brgl@bgdev.pl>, Michael Turquette <mturquette@baylibre.com>, Stephen Boyd <sboyd@kernel.org>, 
+	Sebastian Reichel <sre@kernel.org>, Rob Herring <robh+dt@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
+	Vinod Koul <vkoul@kernel.org>, Wim Van Sebroeck <wim@linux-watchdog.org>, 
+	Guenter Roeck <linux@roeck-us.net>, Thierry Reding <thierry.reding@gmail.com>, 
+	=?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= <u.kleine-koenig@pengutronix.de>, 
+	Mark Brown <broonie@kernel.org>, "David S. Miller" <davem@davemloft.net>, 
+	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
+	Miquel Raynal <miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>, 
+	Vignesh Raghavendra <vigneshr@ti.com>, Damien Le Moal <dlemoal@kernel.org>, 
+	Sergey Shtylyov <s.shtylyov@omp.ru>, Dmitry Torokhov <dmitry.torokhov@gmail.com>, 
+	Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, 
+	Ralf Baechle <ralf@linux-mips.org>, "Wu, Aaron" <Aaron.Wu@analog.com>, Lee Jones <lee@kernel.org>, 
+	Olof Johansson <olof@lixom.net>, Niklas Cassel <cassel@kernel.org>, linux-arm-kernel@lists.infradead.org, 
+	linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org, 
+	linux-clk@vger.kernel.org, linux-pm@vger.kernel.org, 
+	devicetree@vger.kernel.org, dmaengine@vger.kernel.org, 
+	linux-watchdog@vger.kernel.org, linux-pwm@vger.kernel.org, 
+	linux-spi@vger.kernel.org, netdev@vger.kernel.org, 
+	linux-mtd@lists.infradead.org, linux-ide@vger.kernel.org, 
+	linux-input@vger.kernel.org, linux-sound@vger.kernel.org, 
+	Arnd Bergmann <arnd@arndb.de>, Bartosz Golaszewski <bartosz.golaszewski@linaro.org>, 
+	Andrew Lunn <andrew@lunn.ch>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Document the console option for DEVNAME:0.0 style addressing for serial
-ports.
+On Wed, Mar 27, 2024 at 7:07=E2=80=AFAM Krzysztof Kozlowski
+<krzysztof.kozlowski@linaro.org> wrote:
+> On 26/03/2024 15:49, Andy Shevchenko wrote:
+> > On Tue, Mar 26, 2024 at 11:19:54AM +0100, Krzysztof Kozlowski wrote:
+> >> On 26/03/2024 10:18, Nikita Shubin via B4 Relay wrote:
 
-Suggested-by: Sebastian Reichel <sre@kernel.org>
-Signed-off-by: Tony Lindgren <tony@atomide.com>
----
- .../admin-guide/kernel-parameters.txt         | 19 +++++++++++++++++++
- 1 file changed, 19 insertions(+)
+..
 
-diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
---- a/Documentation/admin-guide/kernel-parameters.txt
-+++ b/Documentation/admin-guide/kernel-parameters.txt
-@@ -785,6 +785,25 @@
- 			Documentation/networking/netconsole.rst for an
- 			alternative.
- 
-+		<DEVNAME>:<n>.<n>[,options]
-+			Use the specified serial port on the serial core bus.
-+			The addressing uses DEVNAME of the physical serial port
-+			device, followed by the serial core controller instance,
-+			and the serial port instance. The options are the same
-+			as documented for the ttyS addressing above.
-+
-+			The mapping of the serial ports to the tty instances
-+			can be viewed with:
-+
-+			$ ls -d /sys/bus/serial-base/devices/*:*.*/tty/*
-+			/sys/bus/serial-base/devices/00:04:0.0/tty/ttyS0
-+
-+			In the above example, the console can be addressed with
-+			console=00:04:0.0. Note that a console addressed this
-+			way will only get added when the related device driver
-+			is ready. The use of an earlycon parameter in addition to
-+			the console may be desired for console output early on.
-+
- 		uart[8250],io,<addr>[,options]
- 		uart[8250],mmio,<addr>[,options]
- 		uart[8250],mmio16,<addr>[,options]
--- 
-2.44.0
+> >> A lot of this could have been already merged if you split it... Just
+> >> saying...
+> >
+> > But you able to apply DT schema patches if you wish.
+> > Just doing? :-)
+>
+> Me? Why? DT bindings are supposed to go via subsystem maintainers, not
+> DT tree.
+
+Okay, I never remembered this rule, thank you for clarifying.
+
+> Plus, I do not apply any bindings patches, except for managed
+> subsystems and none of them are touched here.
+
+Good to know!
+
+--=20
+With Best Regards,
+Andy Shevchenko
 
