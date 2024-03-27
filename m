@@ -1,58 +1,55 @@
-Return-Path: <linux-kernel+bounces-120955-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-120956-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EBBDF88E0EE
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 13:47:38 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3329088E0F2
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 13:47:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1691D1C2911B
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 12:47:38 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9DB221F28416
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 12:47:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A6C615218F;
-	Wed, 27 Mar 2024 12:14:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 655F4152510;
+	Wed, 27 Mar 2024 12:14:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="KticD+Y/"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fFdyqitj"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5C61C152166;
-	Wed, 27 Mar 2024 12:14:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 67A3015219D;
+	Wed, 27 Mar 2024 12:14:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711541687; cv=none; b=ME/PXb61vEXBxS9oUvnrORLf0f8wA6NUrpWMOuBfYwq+My0z17I1eqMgXNlTBZwve7FmcQIWP1JT91O2nDFV7g6oMunehkpWelrXZRzSfDRUMIQuKctp444jZy6i8i4htX22D7QzQ2o9M2Zfczq8H7yt4f7gaP3sKZ7mcizdKXE=
+	t=1711541690; cv=none; b=pehEFnCewzPLdP3feVLGXQliVrywsW1f2NnVU3pnc8TV9g/UZgw4mBNRl/FoamdZi8zZz+fw5Dej2KiEVi/H49VsdeVah81gDAC0y1CVEDTDPazdQxZ7QB7gd6fuAvA0tQjbvor+Nrkx4OXHmN0gNvPCXdH3Fh1ga4cubkjJlY8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711541687; c=relaxed/simple;
-	bh=qwnHR1G6kYcWPQfPSXZLmHr6Qjnp1aDv31H613p0o9o=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=HnzQvTOA0v0zmipKyNwK+XLZUxktjaaprsLryFNC8FTAupPv+l4lVz+yScwHXwBAyAD+pIqbo3mBPOg5twdykpld4NcQtYtdqWp9IyzkNB3yhVeFFSuUrx0RbhpCQUr1LkUtlNSrSXa4JsREpS9RDzXTCeCCI+HOvH991+hb/Gg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=KticD+Y/; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 14769C433C7;
-	Wed, 27 Mar 2024 12:14:45 +0000 (UTC)
+	s=arc-20240116; t=1711541690; c=relaxed/simple;
+	bh=0sPBcFnE5vZkf0Qhj5W4AyG/7WAm/5udhCmy+iZOIFI=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Nex9w0hC2jIIwg1C8uFIX0v904detCfF+64TCTW3IpXTXbvjdUiN9xjdF5aKQ9W5vmy/G5IpuThM8SO0PV140fkg77ueEc2Vgq3ud8FU8S2hb22AScoYKo3JFS8oEf/nlJShdmnuOocYnykkFZCGir/Av7U5KLvOqpTDVbYnz5g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fFdyqitj; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 60108C433F1;
+	Wed, 27 Mar 2024 12:14:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711541687;
-	bh=qwnHR1G6kYcWPQfPSXZLmHr6Qjnp1aDv31H613p0o9o=;
+	s=k20201202; t=1711541690;
+	bh=0sPBcFnE5vZkf0Qhj5W4AyG/7WAm/5udhCmy+iZOIFI=;
 	h=From:To:Cc:Subject:Date:From;
-	b=KticD+Y/9YGeOblQFpMEYeUao6Ncf2polreZI2ZGRuxxXbuPQQiMNfMKmMDKZ2Lps
-	 aayqkWvRejr/ZsmwIACUWiyzopgPzOEzJjVaZCvvB4mHI36KLhZ8F70ZEskZxzJmpx
-	 wuCuqizFTrsLC7WFya0WtOkkXbMQcBo9xBklpCz2aim+C0GbjBqZyY/V1FqQ9Rq6Ch
-	 JYxgsp2wdv7x26l70EasvdZUTEOGcTa80QlNwbDWyHwKjbXQ2pAvRH7mLN0rUS2cEb
-	 LZ7vlboWZtkAtH4TSKrFU3n5eKW23Mggu8zpWFq9sbYL2QuMulz8+pkhfaW+jENx90
-	 NUJFs8P5+qBrw==
+	b=fFdyqitjzL9saixBx59BdlSJc4/vzST/IDkdJ0AZTH84osWGGx5YVqoolDlIxywl3
+	 ejU2vbmV8Cfz5dz2nX06HXaSn7oFqsq2ILN4qL5hYlejoDIi99FINEcM0Qq0BdLbpp
+	 JbbYigXh7OiprksMZT9vTIE0IzbaVdPqnejh+XO8qdTcLZywsHWXOiUPZSlDdtHA6S
+	 wqZObfNZOjxSnK5yKzz6ylf1hO1w12Uai6l5gKCOLPXkPe2xoBuL4O+XkfdzmP5pQ1
+	 wPd3lDfoevv3H2jcqtdHv5yAgz7atDq8xlXJntyw7O0OeyU3S4v9sOjlXgc3VQGqgl
+	 1C06dc3tgJTXg==
 From: Sasha Levin <sashal@kernel.org>
 To: stable@vger.kernel.org,
-	george.shen@amd.com
-Cc: Mario Limonciello <mario.limonciello@amd.com>,
-	Alex Deucher <alexander.deucher@amd.com>,
-	Martin Leung <martin.leung@amd.com>,
-	Aurabindo Pillai <aurabindo.pillai@amd.com>,
-	Daniel Wheeler <daniel.wheeler@amd.com>,
-	amd-gfx@lists.freedesktop.org,
-	dri-devel@lists.freedesktop.org,
+	bharathsm@microsoft.com
+Cc: Shyam Prasad N <sprasad@microsoft.com>,
+	Steve French <stfrench@microsoft.com>,
+	linux-cifs@vger.kernel.org,
+	samba-technical@lists.samba.org,
 	linux-kernel@vger.kernel.org
-Subject: FAILED: Patch "Revert "drm/amd/display: Add left edge pixel for YCbCr422/420 + ODM pipe split"" failed to apply to 5.15-stable tree
-Date: Wed, 27 Mar 2024 08:14:44 -0400
-Message-ID: <20240327121445.2831338-1-sashal@kernel.org>
+Subject: FAILED: Patch "cifs: prevent updating file size from server if we have a read/write lease" failed to apply to 5.15-stable tree
+Date: Wed, 27 Mar 2024 08:14:47 -0400
+Message-ID: <20240327121448.2831375-1-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -74,168 +71,167 @@ Sasha
 
 ------------------ original commit in Linus's tree ------------------
 
-From e9e1abb397e550aec86a6d9eb7c6f8ed4271d742 Mon Sep 17 00:00:00 2001
-From: George Shen <george.shen@amd.com>
-Date: Fri, 2 Feb 2024 17:45:32 -0500
-Subject: [PATCH] Revert "drm/amd/display: Add left edge pixel for YCbCr422/420
- + ODM pipe split"
+From e4b61f3b1c67f5068590965f64ea6e8d5d5bd961 Mon Sep 17 00:00:00 2001
+From: Bharath SM <bharathsm@microsoft.com>
+Date: Thu, 29 Feb 2024 23:09:52 +0530
+Subject: [PATCH] cifs: prevent updating file size from server if we have a
+ read/write lease
 
-[Why/How]
-A regression was identified with the change to add left edge pixel for
-YCbCr422/420 + ODM combine cases.
+In cases of large directories, the readdir operation may span multiple
+round trips to retrieve contents. This introduces a potential race
+condition in case of concurrent write and readdir operations. If the
+readdir operation initiates before a write has been processed by the
+server, it may update the file size attribute to an older value.
+Address this issue by avoiding file size updates from readdir when we
+have read/write lease.
 
-This reverts commit 288c0254a0b0c9980dba9df7d5afadf27280b99c
+Scenario:
+1) process1: open dir xyz
+2) process1: readdir instance 1 on xyz
+3) process2: create file.txt for write
+4) process2: write x bytes to file.txt
+5) process2: close file.txt
+6) process2: open file.txt for read
+7) process1: readdir 2 - overwrites file.txt inode size to 0
+8) process2: read contents of file.txt - bug, short read with 0 bytes
 
-Cc: Mario Limonciello <mario.limonciello@amd.com>
-Cc: Alex Deucher <alexander.deucher@amd.com>
 Cc: stable@vger.kernel.org
-Reviewed-by: Martin Leung <martin.leung@amd.com>
-Acked-by: Aurabindo Pillai <aurabindo.pillai@amd.com>
-Signed-off-by: George Shen <george.shen@amd.com>
-Tested-by: Daniel Wheeler <daniel.wheeler@amd.com>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+Reviewed-by: Shyam Prasad N <sprasad@microsoft.com>
+Signed-off-by: Bharath SM <bharathsm@microsoft.com>
+Signed-off-by: Steve French <stfrench@microsoft.com>
 ---
- drivers/gpu/drm/amd/display/dc/core/dc.c      |  4 --
- .../gpu/drm/amd/display/dc/core/dc_resource.c | 37 -------------------
- .../amd/display/dc/hwss/dcn20/dcn20_hwseq.c   |  7 +---
- .../gpu/drm/amd/display/dc/inc/core_types.h   |  2 -
- drivers/gpu/drm/amd/display/dc/inc/resource.h |  4 --
- 5 files changed, 1 insertion(+), 53 deletions(-)
+ fs/smb/client/cifsproto.h |  6 ++++--
+ fs/smb/client/file.c      |  8 +++++---
+ fs/smb/client/inode.c     | 13 +++++++------
+ fs/smb/client/readdir.c   |  2 +-
+ 4 files changed, 17 insertions(+), 12 deletions(-)
 
-diff --git a/drivers/gpu/drm/amd/display/dc/core/dc.c b/drivers/gpu/drm/amd/display/dc/core/dc.c
-index 1d0fd69cc7bd1..4d5194293dbd5 100644
---- a/drivers/gpu/drm/amd/display/dc/core/dc.c
-+++ b/drivers/gpu/drm/amd/display/dc/core/dc.c
-@@ -3098,10 +3098,6 @@ static bool update_planes_and_stream_state(struct dc *dc,
+diff --git a/fs/smb/client/cifsproto.h b/fs/smb/client/cifsproto.h
+index a841bf4967fa4..58cfbd450a55e 100644
+--- a/fs/smb/client/cifsproto.h
++++ b/fs/smb/client/cifsproto.h
+@@ -144,7 +144,8 @@ extern int cifs_reconnect(struct TCP_Server_Info *server,
+ extern int checkSMB(char *buf, unsigned int len, struct TCP_Server_Info *srvr);
+ extern bool is_valid_oplock_break(char *, struct TCP_Server_Info *);
+ extern bool backup_cred(struct cifs_sb_info *);
+-extern bool is_size_safe_to_change(struct cifsInodeInfo *, __u64 eof);
++extern bool is_size_safe_to_change(struct cifsInodeInfo *cifsInode, __u64 eof,
++				   bool from_readdir);
+ extern void cifs_update_eof(struct cifsInodeInfo *cifsi, loff_t offset,
+ 			    unsigned int bytes_written);
+ extern struct cifsFileInfo *find_writable_file(struct cifsInodeInfo *, int);
+@@ -201,7 +202,8 @@ extern void cifs_unix_basic_to_fattr(struct cifs_fattr *fattr,
+ 				     struct cifs_sb_info *cifs_sb);
+ extern void cifs_dir_info_to_fattr(struct cifs_fattr *, FILE_DIRECTORY_INFO *,
+ 					struct cifs_sb_info *);
+-extern int cifs_fattr_to_inode(struct inode *inode, struct cifs_fattr *fattr);
++extern int cifs_fattr_to_inode(struct inode *inode, struct cifs_fattr *fattr,
++			       bool from_readdir);
+ extern struct inode *cifs_iget(struct super_block *sb,
+ 			       struct cifs_fattr *fattr);
  
- 			if (otg_master && otg_master->stream->test_pattern.type != DP_TEST_PATTERN_VIDEO_MODE)
- 				resource_build_test_pattern_params(&context->res_ctx, otg_master);
--
--			if (otg_master && (otg_master->stream->timing.pixel_encoding == PIXEL_ENCODING_YCBCR422 ||
--					otg_master->stream->timing.pixel_encoding == PIXEL_ENCODING_YCBCR420))
--				resource_build_subsampling_params(&context->res_ctx, otg_master);
+diff --git a/fs/smb/client/file.c b/fs/smb/client/file.c
+index f391c9b803d84..9cff5f7dc062e 100644
+--- a/fs/smb/client/file.c
++++ b/fs/smb/client/file.c
+@@ -329,7 +329,7 @@ int cifs_posix_open(const char *full_path, struct inode **pinode,
  		}
+ 	} else {
+ 		cifs_revalidate_mapping(*pinode);
+-		rc = cifs_fattr_to_inode(*pinode, &fattr);
++		rc = cifs_fattr_to_inode(*pinode, &fattr, false);
  	}
  
-diff --git a/drivers/gpu/drm/amd/display/dc/core/dc_resource.c b/drivers/gpu/drm/amd/display/dc/core/dc_resource.c
-index 96ea283bd1690..1b7765bc5e5ef 100644
---- a/drivers/gpu/drm/amd/display/dc/core/dc_resource.c
-+++ b/drivers/gpu/drm/amd/display/dc/core/dc_resource.c
-@@ -822,16 +822,6 @@ static struct rect calculate_odm_slice_in_timing_active(struct pipe_ctx *pipe_ct
- 			stream->timing.v_border_bottom +
- 			stream->timing.v_border_top;
- 
--	/* Recout for ODM slices after the first slice need one extra left edge pixel
--	 * for 3-tap chroma subsampling.
--	 */
--	if (odm_slice_idx > 0 &&
--			(pipe_ctx->stream->timing.pixel_encoding == PIXEL_ENCODING_YCBCR422 ||
--				pipe_ctx->stream->timing.pixel_encoding == PIXEL_ENCODING_YCBCR420)) {
--		odm_rec.x -= 1;
--		odm_rec.width += 1;
--	}
--
- 	return odm_rec;
- }
- 
-@@ -1448,7 +1438,6 @@ void resource_build_test_pattern_params(struct resource_context *res_ctx,
- 	enum controller_dp_test_pattern controller_test_pattern;
- 	enum controller_dp_color_space controller_color_space;
- 	enum dc_color_depth color_depth = otg_master->stream->timing.display_color_depth;
--	enum dc_pixel_encoding pixel_encoding = otg_master->stream->timing.pixel_encoding;
- 	int h_active = otg_master->stream->timing.h_addressable +
- 		otg_master->stream->timing.h_border_left +
- 		otg_master->stream->timing.h_border_right;
-@@ -1480,36 +1469,10 @@ void resource_build_test_pattern_params(struct resource_context *res_ctx,
- 		else
- 			params->width = last_odm_slice_width;
- 
--		/* Extra left edge pixel is required for 3-tap chroma subsampling. */
--		if (i != 0 && (pixel_encoding == PIXEL_ENCODING_YCBCR422 ||
--				pixel_encoding == PIXEL_ENCODING_YCBCR420)) {
--			params->offset -= 1;
--			params->width += 1;
--		}
--
- 		offset += odm_slice_width;
- 	}
- }
- 
--void resource_build_subsampling_params(struct resource_context *res_ctx,
--	struct pipe_ctx *otg_master)
--{
--	struct pipe_ctx *opp_heads[MAX_PIPES];
--	int odm_cnt = 1;
--	int i;
--
--	odm_cnt = resource_get_opp_heads_for_otg_master(otg_master, res_ctx, opp_heads);
--
--	/* For ODM slices after the first slice, extra left edge pixel is required
--	 * for 3-tap chroma subsampling.
--	 */
--	if (otg_master->stream->timing.pixel_encoding == PIXEL_ENCODING_YCBCR422 ||
--			otg_master->stream->timing.pixel_encoding == PIXEL_ENCODING_YCBCR420) {
--		for (i = 0; i < odm_cnt; i++)
--			opp_heads[i]->stream_res.left_edge_extra_pixel = (i == 0) ? false : true;
--	}
--}
--
- bool resource_build_scaling_params(struct pipe_ctx *pipe_ctx)
+ posix_open_ret:
+@@ -4738,12 +4738,14 @@ static int is_inode_writable(struct cifsInodeInfo *cifs_inode)
+    refreshing the inode only on increases in the file size
+    but this is tricky to do without racing with writebehind
+    page caching in the current Linux kernel design */
+-bool is_size_safe_to_change(struct cifsInodeInfo *cifsInode, __u64 end_of_file)
++bool is_size_safe_to_change(struct cifsInodeInfo *cifsInode, __u64 end_of_file,
++			    bool from_readdir)
  {
- 	const struct dc_plane_state *plane_state = pipe_ctx->plane_state;
-diff --git a/drivers/gpu/drm/amd/display/dc/hwss/dcn20/dcn20_hwseq.c b/drivers/gpu/drm/amd/display/dc/hwss/dcn20/dcn20_hwseq.c
-index f15ba7335336a..c55d5155ecb9c 100644
---- a/drivers/gpu/drm/amd/display/dc/hwss/dcn20/dcn20_hwseq.c
-+++ b/drivers/gpu/drm/amd/display/dc/hwss/dcn20/dcn20_hwseq.c
-@@ -1573,8 +1573,7 @@ static void dcn20_detect_pipe_changes(struct dc_state *old_state,
- 	 * makes this assumption at the moment with how hubp reset is matched to
- 	 * same index mpcc reset.
+ 	if (!cifsInode)
+ 		return true;
+ 
+-	if (is_inode_writable(cifsInode)) {
++	if (is_inode_writable(cifsInode) ||
++		((cifsInode->oplock & CIFS_CACHE_RW_FLG) != 0 && from_readdir)) {
+ 		/* This inode is open for write at least once */
+ 		struct cifs_sb_info *cifs_sb;
+ 
+diff --git a/fs/smb/client/inode.c b/fs/smb/client/inode.c
+index d02f8ba29cb5b..7f28edf4b20f3 100644
+--- a/fs/smb/client/inode.c
++++ b/fs/smb/client/inode.c
+@@ -147,7 +147,8 @@ cifs_nlink_fattr_to_inode(struct inode *inode, struct cifs_fattr *fattr)
+ 
+ /* populate an inode with info from a cifs_fattr struct */
+ int
+-cifs_fattr_to_inode(struct inode *inode, struct cifs_fattr *fattr)
++cifs_fattr_to_inode(struct inode *inode, struct cifs_fattr *fattr,
++		    bool from_readdir)
+ {
+ 	struct cifsInodeInfo *cifs_i = CIFS_I(inode);
+ 	struct cifs_sb_info *cifs_sb = CIFS_SB(inode->i_sb);
+@@ -199,7 +200,7 @@ cifs_fattr_to_inode(struct inode *inode, struct cifs_fattr *fattr)
+ 	 * Can't safely change the file size here if the client is writing to
+ 	 * it due to potential races.
  	 */
--	if (old_pipe->stream_res.opp != new_pipe->stream_res.opp ||
--			old_pipe->stream_res.left_edge_extra_pixel != new_pipe->stream_res.left_edge_extra_pixel)
-+	if (old_pipe->stream_res.opp != new_pipe->stream_res.opp)
- 		new_pipe->update_flags.bits.opp_changed = 1;
- 	if (old_pipe->stream_res.tg != new_pipe->stream_res.tg)
- 		new_pipe->update_flags.bits.tg_changed = 1;
-@@ -1962,10 +1961,6 @@ static void dcn20_program_pipe(
- 			pipe_ctx->stream_res.opp,
- 			&pipe_ctx->stream->bit_depth_params,
- 			&pipe_ctx->stream->clamping);
--
--		pipe_ctx->stream_res.opp->funcs->opp_program_left_edge_extra_pixel(
--			pipe_ctx->stream_res.opp,
--			pipe_ctx->stream_res.left_edge_extra_pixel);
+-	if (is_size_safe_to_change(cifs_i, fattr->cf_eof)) {
++	if (is_size_safe_to_change(cifs_i, fattr->cf_eof, from_readdir)) {
+ 		i_size_write(inode, fattr->cf_eof);
+ 
+ 		/*
+@@ -368,7 +369,7 @@ static int update_inode_info(struct super_block *sb,
+ 		CIFS_I(*inode)->time = 0; /* force reval */
+ 		return -ESTALE;
  	}
+-	return cifs_fattr_to_inode(*inode, fattr);
++	return cifs_fattr_to_inode(*inode, fattr, false);
+ }
  
- 	/* Set ABM pipe after other pipe configurations done */
-diff --git a/drivers/gpu/drm/amd/display/dc/inc/core_types.h b/drivers/gpu/drm/amd/display/dc/inc/core_types.h
-index ebb659c327e06..3a6bf77a68732 100644
---- a/drivers/gpu/drm/amd/display/dc/inc/core_types.h
-+++ b/drivers/gpu/drm/amd/display/dc/inc/core_types.h
-@@ -333,8 +333,6 @@ struct stream_resource {
- 	uint8_t gsl_group;
+ #ifdef CONFIG_CIFS_ALLOW_INSECURE_LEGACY
+@@ -403,7 +404,7 @@ cifs_get_file_info_unix(struct file *filp)
+ 	} else
+ 		goto cifs_gfiunix_out;
  
- 	struct test_pattern_params test_pattern_params;
--
--	bool left_edge_extra_pixel;
- };
+-	rc = cifs_fattr_to_inode(inode, &fattr);
++	rc = cifs_fattr_to_inode(inode, &fattr, false);
  
- struct plane_resource {
-diff --git a/drivers/gpu/drm/amd/display/dc/inc/resource.h b/drivers/gpu/drm/amd/display/dc/inc/resource.h
-index b14d52e52fa2f..77a60aa9f27bb 100644
---- a/drivers/gpu/drm/amd/display/dc/inc/resource.h
-+++ b/drivers/gpu/drm/amd/display/dc/inc/resource.h
-@@ -107,10 +107,6 @@ void resource_build_test_pattern_params(
- 		struct resource_context *res_ctx,
- 		struct pipe_ctx *pipe_ctx);
+ cifs_gfiunix_out:
+ 	free_xid(xid);
+@@ -934,7 +935,7 @@ cifs_get_file_info(struct file *filp)
+ 	fattr.cf_uniqueid = CIFS_I(inode)->uniqueid;
+ 	fattr.cf_flags |= CIFS_FATTR_NEED_REVAL;
+ 	/* if filetype is different, return error */
+-	rc = cifs_fattr_to_inode(inode, &fattr);
++	rc = cifs_fattr_to_inode(inode, &fattr, false);
+ cgfi_exit:
+ 	cifs_free_open_info(&data);
+ 	free_xid(xid);
+@@ -1491,7 +1492,7 @@ cifs_iget(struct super_block *sb, struct cifs_fattr *fattr)
+ 		}
  
--void resource_build_subsampling_params(
--		struct resource_context *res_ctx,
--		struct pipe_ctx *pipe_ctx);
--
- bool resource_build_scaling_params(struct pipe_ctx *pipe_ctx);
- 
- enum dc_status resource_build_scaling_params_for_context(
+ 		/* can't fail - see cifs_find_inode() */
+-		cifs_fattr_to_inode(inode, fattr);
++		cifs_fattr_to_inode(inode, fattr, false);
+ 		if (sb->s_flags & SB_NOATIME)
+ 			inode->i_flags |= S_NOATIME | S_NOCMTIME;
+ 		if (inode->i_state & I_NEW) {
+diff --git a/fs/smb/client/readdir.c b/fs/smb/client/readdir.c
+index b520eea7bfce8..132ae7d884a97 100644
+--- a/fs/smb/client/readdir.c
++++ b/fs/smb/client/readdir.c
+@@ -148,7 +148,7 @@ cifs_prime_dcache(struct dentry *parent, struct qstr *name,
+ 						rc = -ESTALE;
+ 					}
+ 				}
+-				if (!rc && !cifs_fattr_to_inode(inode, fattr)) {
++				if (!rc && !cifs_fattr_to_inode(inode, fattr, true)) {
+ 					dput(dentry);
+ 					return;
+ 				}
 -- 
 2.43.0
 
