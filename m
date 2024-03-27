@@ -1,136 +1,158 @@
-Return-Path: <linux-kernel+bounces-120383-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-120384-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id DEFF288D68E
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 07:38:53 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 77BC888D690
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 07:38:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6EE3BB224CD
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 06:38:51 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E67681F2ADD5
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 06:38:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8ED7D2C877;
-	Wed, 27 Mar 2024 06:37:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 01B942CCDF;
+	Wed, 27 Mar 2024 06:37:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QE3JGv1a"
-Received: from mail-lj1-f170.google.com (mail-lj1-f170.google.com [209.85.208.170])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="rX9hFqzA"
+Received: from mail-pg1-f176.google.com (mail-pg1-f176.google.com [209.85.215.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C0E821F606
-	for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 06:37:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8867628DC1
+	for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 06:37:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711521467; cv=none; b=n6NtNJwMy3ro+36DX3HlJp7bzMNP3sc+zj/28AfAkSQ9KYMvYCRvLGLCSjzp1xAGV6I5TCUm4WrbAHomDAJW8j0bWC9Ic7t5h/H1MEJocsoThvQNKCGa5kvTEWCYzwpeFHCbSjM+kZCWNufLdYSxWpn8iYrUGzB+16C/2DZGbJk=
+	t=1711521468; cv=none; b=Fk3N1UUBD3NMxifUbYjKrGkMBOjaKvf5g4Ni+MKbrge1dV/JYgH/xyxtI7Esp8LzI8GizgJTwCtwtEZZce8RpMOhg3/MGsfuK0qDOAl119NJLeRVfeys29W3a3SVWeYUka1XeJZ9DF2/V+C767gN1MPe7OxR9hMZr1GcvIa2EdM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711521467; c=relaxed/simple;
-	bh=YbTWH1ZEgnojQO0lu/RJHGC/KsAwMHzIuPpPakpg8oQ=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=f0/9XDBUDf0vJi211CXN6hUwTCJvYGE1gB6eyvvkNtpkljtzV0pOp23bTb4yiuL7e2zbhLA+w2gKgU0OohQL40qUL1Fdr59fAXLGA6fEavPZ2mZvl6PMbwsRwlR7GZj9lSGK3/T/hZAgYFDcyMujVVg7QXZL4hEmlAx+39BXDEk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=QE3JGv1a; arc=none smtp.client-ip=209.85.208.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f170.google.com with SMTP id 38308e7fff4ca-2d68c6a4630so74387401fa.3
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 23:37:45 -0700 (PDT)
+	s=arc-20240116; t=1711521468; c=relaxed/simple;
+	bh=rHzJlIlLylwF2nmSrco5JVWmgNdr4kVMvEWqhj8ugyA=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=gsaP70YAS84T7Y83RXaUG6eWcpA9BucSR0MDmihNl6TmyVv3VdsQh5WsHcW4Nv7Xvt1WvE/PvGoK4i5sZnYaL9dELa3MwfDogde+vI7gmYat59XaMr34qR5XDbnTRpWN642xr3uu88MhkDPAaVvSBfHGAHUqs0pE9wducVSINyo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=rX9hFqzA; arc=none smtp.client-ip=209.85.215.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-pg1-f176.google.com with SMTP id 41be03b00d2f7-5d3907ff128so4798201a12.3
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 23:37:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711521464; x=1712126264; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=9xRCZV/DoCsl1IXRPXRF8ryJxeBYrzLKPPE0aKQ6Epg=;
-        b=QE3JGv1a7lYuYn+hFtgqV+7TlAMbF93oGLSEXlqNmOw5vS6zlxKJLTZpIRlyN/d99C
-         JCaNUw/1PCk0exOJEQOSKkcLUy3oCEgC7PS0QePJULSocuGrmJ6Q5WMt5HeO4LUj4bd/
-         5eZqZtWTeNFCn3s0ftpGdrNh1f9FF++MICYfF2tYyw3w6mmm3deRcDL/nivHUiDnG33y
-         zMOhwkhDNTMfxIh5Pg62kkWoiN3I6YJxw8Z7pPEIvD5wkZ4yJ1Lnnz67qc6OhxG6f0pL
-         GkKVImT7jPIIHZyLK8EYp2N45oWfgsDuAcJXeCBsKXW7l4KYE8FTl0e1XRVPgjDkg1Lz
-         iGVQ==
+        d=linaro.org; s=google; t=1711521466; x=1712126266; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=gzuMc6uiawWNsZVdxOPIQ004/Qe4UA9WjkrGBwQagnU=;
+        b=rX9hFqzA3KNQdqmisJGZjtllNaaYI0q+xqp484gX9uNFIANXH1vEDOOnsJkYWV4w6z
+         ws0GWK9vmiwBhMkEPIZjbqWGzJTn8Tne12PmEjrrzwwMIJCykcAkVDKImDb0TGyggxS2
+         MSovjVrDuHwlHAvG1+E8U1DlUSahI43XF9aHKV251D5bPQZ3DOC/RPdzJeokwFAssCIo
+         MTO4S38D1ryFppuEPHknjnsxN/gnXK9sHStJndYJSR+SxuvoIUsAR9nf/kJdVD6nWYlu
+         7g00TptFTvjIlvYBBm6A1i5LWK7dP5JN2ulhEM4u5CLhbnsJspNpttIej9bbGd+Nyf1l
+         fPdA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711521464; x=1712126264;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=9xRCZV/DoCsl1IXRPXRF8ryJxeBYrzLKPPE0aKQ6Epg=;
-        b=OZyN8JYHIYsdp/o4v6WfU1gfb+Vt0YIRlbfboJN+7mSLJZZBq5JlayOA8XAyx5bsp6
-         gmDyKZbmpaLuMFOaQRJ/Pqc7UBHr+gTzUP042zmBaHtSdrqeuu259f0WVjiEKH/KpuP3
-         bpu+wg4vJrsiOBD/9z4H9yytsOIskNFakPIuO/guGsFUoVFpY/r88Js/QOZLyjdW9vBL
-         g6xITsK2J2xmIJkXgrsgtu4LTxZpkws1ST7Egy4s4yrYeSnIvMgrupHp3gRzypOl0S5l
-         YRDX8KtjuLDWzbyTaFVzj6W+CE4rHWdEIeBIv94uWhn5Mn2UIEGTsMsvzHXd1AJb5m28
-         MVTw==
-X-Forwarded-Encrypted: i=1; AJvYcCWKTdOFbE6k8ji0OAQ5EZk1VNErgGpO0ib7sQH0B3tMw68ysGDmg3t0cFRnCH1z0c3tU0nQClPSVQIVbD6gDNG00up5FKW4zK1P50lI
-X-Gm-Message-State: AOJu0YxDN9DvOJNxZIhjropW0e8Bhm8NhyWYladdXboJ9AfMixQlqyF7
-	SVo9gsTl/uaUUTciPYhnSGePPr5QydO7LrNYroQiAkF+aZhJgdKVEjTk+yJNi464MPaaZ9b5+bm
-	brSAmN2u2aNAOhWETp5YBMxHirWo=
-X-Google-Smtp-Source: AGHT+IFP36X0x7Y4uIxFOLg/TPs4cMecmv/NsfNrKV01BYoqzbIV2D9iVtA+gZVp9VkMB8P0uScAIOQQksOhARs8EhE=
-X-Received: by 2002:a2e:9f0b:0:b0:2d4:aae0:1d71 with SMTP id
- u11-20020a2e9f0b000000b002d4aae01d71mr226051ljk.43.1711521463657; Tue, 26 Mar
- 2024 23:37:43 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1711521466; x=1712126266;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=gzuMc6uiawWNsZVdxOPIQ004/Qe4UA9WjkrGBwQagnU=;
+        b=Fe27McsybALhzWkB5wXYQBr5/a9OepxsKw1MsZ+Zu0d/1MYlxS1Cam4zukMOd0kUcM
+         aFrmr50eeuyICP71fBXWj+ot8tCZVsc3FOqgjW8822zp0tnXT/jFNFVlQn7Zk89jabGi
+         JO83WtRVyPZFxEdlvrJmM8q1ndrDQ+pFWOgf0n8aWHP8H5P89K1ChjC824Vdf95xHH/K
+         1P7keOuTYlBN4mq/qmpdj8y7Ik6/5CDeTmlOLtE6Zzua2uk9UguI2zETeYaJIJd6dila
+         S/NICvHVMfcYVjNxufe+/a3nGRp0ppGNpZEHFiGIRTNQcnYP2vVkYP017uYQLN2vr4MU
+         mR7Q==
+X-Forwarded-Encrypted: i=1; AJvYcCUeVegTxmEPbnPe3CVCzT23jgEHgwJbRkQokhAgLVGBb9x8m0BCKVVrnZ9abLFtuekzaFSoh5SV20VqJHuSmP+6U0ZmsRT9IgrT+Iq3
+X-Gm-Message-State: AOJu0YxQj/zkY5s1m0ERbXgGbBKKdiujmPbw95o3lvvhuhPeTKMhfkLh
+	w8feQdnIMMXCqUVcxx+gaDMHXnawjMcMzD853px68noJlIWuf3feQ4tQuy87Ris=
+X-Google-Smtp-Source: AGHT+IHDZNJIq84rIv9rwKxSPynuDT6jjzNUSdTtzlAokI3z2Kh/GRaTg9R2aeEuG6JCyWM9cRMVHA==
+X-Received: by 2002:a05:6a20:7da3:b0:1a3:b642:5fc3 with SMTP id v35-20020a056a207da300b001a3b6425fc3mr393219pzj.41.1711521465737;
+        Tue, 26 Mar 2024 23:37:45 -0700 (PDT)
+Received: from sumit-X1.. ([223.178.208.127])
+        by smtp.gmail.com with ESMTPSA id qd5-20020a17090b3cc500b002a02f8d350fsm772765pjb.53.2024.03.26.23.37.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 26 Mar 2024 23:37:45 -0700 (PDT)
+From: Sumit Garg <sumit.garg@linaro.org>
+To: linux-arm-msm@vger.kernel.org,
+	devicetree@vger.kernel.org
+Cc: andersson@kernel.org,
+	konrad.dybcio@linaro.org,
+	robh+dt@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org,
+	conor+dt@kernel.org,
+	stephan@gerhold.net,
+	caleb.connolly@linaro.org,
+	neil.armstrong@linaro.org,
+	dmitry.baryshkov@linaro.org,
+	laetitia.mariottini@se.com,
+	pascal.eberhard@se.com,
+	abdou.saker@se.com,
+	jimmy.lalande@se.com,
+	benjamin.missey@non.se.com,
+	daniel.thompson@linaro.org,
+	linux-kernel@vger.kernel.org,
+	Sumit Garg <sumit.garg@linaro.org>
+Subject: [PATCH v4 0/3] arm64: dts: qcom: apq8016: Add Schneider HMIBSC board DTS
+Date: Wed, 27 Mar 2024 12:07:31 +0530
+Message-Id: <20240327063734.3236117-1-sumit.garg@linaro.org>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240326185032.72159-1-ryncsn@gmail.com> <20240326185032.72159-11-ryncsn@gmail.com>
- <87zfukmbwz.fsf@yhuang6-desk2.ccr.corp.intel.com>
-In-Reply-To: <87zfukmbwz.fsf@yhuang6-desk2.ccr.corp.intel.com>
-From: Kairui Song <ryncsn@gmail.com>
-Date: Wed, 27 Mar 2024 14:37:27 +0800
-Message-ID: <CAMgjq7A-TxWkNKz0wwjaf0C-KZgps-VdPG+QcpY9tMmBY04TNA@mail.gmail.com>
-Subject: Re: [RFC PATCH 10/10] mm/swap: optimize synchronous swapin
-To: "Huang, Ying" <ying.huang@intel.com>
-Cc: linux-mm@kvack.org, Chris Li <chrisl@kernel.org>, Minchan Kim <minchan@kernel.org>, 
-	Barry Song <v-songbaohua@oppo.com>, Ryan Roberts <ryan.roberts@arm.com>, 
-	Yu Zhao <yuzhao@google.com>, SeongJae Park <sj@kernel.org>, David Hildenbrand <david@redhat.com>, 
-	Yosry Ahmed <yosryahmed@google.com>, Johannes Weiner <hannes@cmpxchg.org>, 
-	Matthew Wilcox <willy@infradead.org>, Nhat Pham <nphamcs@gmail.com>, 
-	Chengming Zhou <zhouchengming@bytedance.com>, Andrew Morton <akpm@linux-foundation.org>, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Wed, Mar 27, 2024 at 2:24=E2=80=AFPM Huang, Ying <ying.huang@intel.com> =
-wrote:
->
-> Kairui Song <ryncsn@gmail.com> writes:
->
-> > From: Kairui Song <kasong@tencent.com>
-> >
-> > Interestingly the major performance overhead of synchronous is actually
-> > from the workingset nodes update, that's because synchronous swap in
->
-> If it's the major overhead, why not make it the first optimization?
+Add Schneider Electric HMIBSC board DTS. The HMIBSC board is an IIoT Edge
+Box Core board based on the Qualcomm APQ8016E SoC. For more information
+refer to the product page [1].
 
-This performance issue became much more obvious after doing other
-optimizations, and other optimizations are for general swapin not only
-for synchronous swapin, that's also how I optimized things step by
-step, so I kept my patch order...
+One of the major difference from db410c is serial port where HMIBSC board
+uses UART1 as the debug console with a default RS232 mode (UART1 mode mux
+configured via gpio99 and gpio100).
 
-And it is easier to do this after Patch 8/10 which introduces the new
-interface for swap cache.
+Support for Schneider Electric HMIBSC. Features:
+- Qualcomm Snapdragon 410C SoC - APQ8016 (4xCortex A53, Adreno 306)
+- 1GiB RAM
+- 8GiB eMMC, SD slot
+- WiFi and Bluetooth
+- 2x Host, 1x Device USB port
+- HDMI
+- Discrete TPM2 chip over SPI
+- USB ethernet adaptors (soldered)
 
->
-> > keeps adding single folios into a xa_node, making the node no longer
-> > a shadow node and have to be removed from shadow_nodes, then remove
-> > the folio very shortly and making the node a shadow node again,
-> > so it has to add back to the shadow_nodes.
->
-> The folio is removed only if should_try_to_free_swap() returns true?
->
-> > Mark synchronous swapin folio with a special bit in swap entry embedded
-> > in folio->swap, as we still have some usable bits there. Skip workingse=
-t
-> > node update on insertion of such folio because it will be removed very
-> > quickly, and will trigger the update ensuring the workingset info is
-> > eventual consensus.
->
-> Is this safe?  Is it possible for the shadow node to be reclaimed after
-> the folio are added into node and before being removed?
+This series is a v2 since v1 of this DTS file has been reviewed on the
+U-Boot mailing list [2].
 
-If a xa node contains any non-shadow entry, it can't be reclaimed,
-shadow_lru_isolate will check and skip such nodes in case of race.
+Changes in v4:
+- Dropped IRQ_TYPE_EDGE_FALLING for pm8916_resin given the expectations
+  of Linux kernel driver. Instead depend on systemd workaround suggested
+  by Caleb to get expected HMIBSC reset behaviour.
+- Incorporated further DT coding style comments from Stephen.
+- Warnings reported by Rob's DT check bot aren't related to HMIBSC
+  board DTS but rather they are due to msm8916.dtsi or extcon-usb-gpio.txt
+  still not converted to YAML format.
 
->
-> If so, we may consider some other methods.  Make shadow_nodes per-cpu?
+Changes in v3:
+- Picked up tags.
+- Fixed further DT schema warnings.
+- Configure resin/power button interrupt as falling edge.
+- Incorporate DTS coding style comments from Krzysztof and Konrad.
 
-That's also an alternative solution if there are other risks.
+Changes in v2:
+- Fix DT schema warnings.
+- Incorporate suggestions from Stephan.
+- Document UART1 mode GPIOs based mux.
+
+[1] https://www.se.com/us/en/product/HMIBSCEA53D1L0T/iiot-edge-box-core-harmony-ipc-emmc-dc-linux-tpm/
+[2] https://patchwork.ozlabs.org/project/uboot/patch/20240311111027.44577-6-sumit.garg@linaro.org/
+
+Sumit Garg (3):
+  dt-bindings: vendor-prefixes: Add Schneider Electric
+  dt-bindings: arm: qcom: Add Schneider Electric HMIBSC board
+  arm64: dts: qcom: apq8016: Add Schneider HMIBSC board DTS
+
+ .../devicetree/bindings/arm/qcom.yaml         |   1 +
+ .../devicetree/bindings/vendor-prefixes.yaml  |   2 +
+ arch/arm64/boot/dts/qcom/Makefile             |   1 +
+ .../dts/qcom/apq8016-schneider-hmibsc.dts     | 490 ++++++++++++++++++
+ 4 files changed, 494 insertions(+)
+ create mode 100644 arch/arm64/boot/dts/qcom/apq8016-schneider-hmibsc.dts
+
+-- 
+2.34.1
+
 
