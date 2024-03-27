@@ -1,555 +1,204 @@
-Return-Path: <linux-kernel+bounces-120602-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-120603-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id BE29288DA0F
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 10:17:15 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id E9FF788DA13
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 10:18:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E04A31C2385C
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 09:17:14 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 76B4C1F2C30B
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 09:18:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F127A36AFC;
-	Wed, 27 Mar 2024 09:16:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9726137710;
+	Wed, 27 Mar 2024 09:18:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="VIfIrerl"
-Received: from mail-pf1-f173.google.com (mail-pf1-f173.google.com [209.85.210.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="LKB0gRBk"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.12])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0BB67487B4
-	for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 09:16:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2DCC6125C9;
+	Wed, 27 Mar 2024 09:18:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.12
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711530967; cv=none; b=MgKw64+qd1O3G6OT3rDqS8kD23JllIC0iqvjcdFkMcrp2pdabzWVl2xIBze75t7TUcwhbrZ4b4HMUtLOYT7XjYmjOPmRwTi5oONiOWo91e6fDG4T8XygWob+3+kurwSrLrw2sBPp9I0YYR9W0OZpOURkvA15DkE5pqEgj9fooNs=
+	t=1711531088; cv=none; b=itZoT91uVLtU+n42fZn5C+373qmVJSVAN2nCdd0CliYqz3B3lkwgmQ/4HmUj1KMSEW4/6mli2PLJDe5ARLapQ4I02kbgDb9fbxhReMzfkRRvhbjDQpCJgU7fZROawKlJL9GO6JaU/0v+dE1OOdJQzHJuR+mJ40uMKJHNrZyk04E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711530967; c=relaxed/simple;
-	bh=1TPivoyLy6dKjHctlsWhQVyy7Lj27Gkdto44xO0wB3g=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=CbvHM/ED899BFGdEtthfeSjbuFabXVzfI8FOcUZjZ+BHVxFm0fkz8obfMS36vuuoZbHh0bxSYKBr1zkEweQqfRnwlc9OiOAEs+F4TyUoVydQI1x4JovYPgjRNn643UNfwWklDIsyrI/lkDY1oNKZdikNdsJYtMQG43Hm8u88ZX8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=VIfIrerl; arc=none smtp.client-ip=209.85.210.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-pf1-f173.google.com with SMTP id d2e1a72fcca58-6e6b729669bso5399900b3a.3
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 02:16:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1711530964; x=1712135764; darn=vger.kernel.org;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=GNqX2SjhSgztYn0lGAQahb+nFNmGhCh0QDLrHhBZd44=;
-        b=VIfIrerltlU04eY138Gc2fJrSIEPZgFrqGBTRJBGEYF2lH+b2SBerIYmM34Kyva+x6
-         cCajJ/JLOljuuCNn5IeVuYlY9qEG7YDUCJc8rukQ61RTEvT/yJ0ZGeFuetGzAfI83ZPi
-         LFRZVay1KbcvBYJ2U3+8ZUwv/QXgTO8OscyTvtfX/N/wyehFIyyOG1linvXA/5B8uZlO
-         Y+77/BUWl8YJLp9o67FPxnzEDhvCJ9Bucahr3rmBbgM4xmd/Q4dP1xjrS7Fm/kTnZrA1
-         EX9BYHvzP2/FbO/iHQRRhdzYIikBAW9xe83nwuIi+nzDP3ld3iTfXGe760Zoe9uTVdXD
-         5hvA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711530964; x=1712135764;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=GNqX2SjhSgztYn0lGAQahb+nFNmGhCh0QDLrHhBZd44=;
-        b=OYq9MrvdJnnEWbc8PRnYxqTE83ZuwAXY7fDIM2NZtsfOko/JBPFRQKIWje8DSjHQUL
-         z6jyI8FmZ2pJtBSNuIvdXNaFan09gnKn1krAhxWyVRB+qK+1qcGvvtubzaDxQ8KRwIuV
-         0nNzITEL2gt04j2nJTutQVb2tEShtXE+5Os4Jz5Ob7eYTVeMVHZWnxmfTpKG631PNP9+
-         L4AZtK7/aIz0vqPzc1dZ57gYeXk+MsAwn4w78uwhQ8Qw6VsVZgcldwIzt489uHg2yash
-         ekczO5J8WqzuXydj3ikdLiXbKEs3bi/7nkYT3eHySWpqzy29u/b+INGyubj0/Zr1gtZm
-         O/UA==
-X-Forwarded-Encrypted: i=1; AJvYcCVL9DN1jKA4ysgmqpWaiBwdTQUIsGASyDyRHHqSQMBfW3gYRyG/CDcQ1jX+pH3gg1YgYJkp8qVfcopiGMoNJvbz+Ae6O83W+mvsJ0vy
-X-Gm-Message-State: AOJu0YwVQgezOI6XcY8O0J9HZJZOnKP3xH6eqcJMwVXy2s/DyQjPQ0A2
-	zX4oMzqBU/Em1o0nwA0Vb3AF5HPhW9+0ls039MoIxg+eY/Dc53qpyTID4Hsnew==
-X-Google-Smtp-Source: AGHT+IHKlpHw70lFKCYQiFYdhlzQ/9Qh0LIBfnLm9+kAgkrnMGOpIA7n+sSFXHDJJ9vk7iSUHB9MTQ==
-X-Received: by 2002:a05:6a00:228a:b0:6e6:88c3:8b7d with SMTP id f10-20020a056a00228a00b006e688c38b7dmr866997pfe.10.1711530964136;
-        Wed, 27 Mar 2024 02:16:04 -0700 (PDT)
-Received: from [127.0.1.1] ([120.60.52.77])
-        by smtp.gmail.com with ESMTPSA id h190-20020a6383c7000000b005dc4fc80b21sm8673871pge.70.2024.03.27.02.15.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 27 Mar 2024 02:16:03 -0700 (PDT)
-From: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Date: Wed, 27 Mar 2024 14:43:37 +0530
-Subject: [PATCH v12 8/8] PCI: endpoint: Remove "core_init_notifier" flag
+	s=arc-20240116; t=1711531088; c=relaxed/simple;
+	bh=16NSvZdjDhZssZn34ASsBck8iCwqCtaIPiOBnRnFI8g=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=c4qrmwxLLQjniUjHHIUSDTZtzclfoi4bI4ycO8Npcl2egIs9+PIT0xD8jDttikwpK5Wu0uZ7Gz2PGXmQSP4YESNOkL4sp3P55VJ3RuxlgGs9+zdmfAP4OH6oEjOv9wAkhknbQYWol88XMXZ3YezXG91EU0D4fnBchzacArpmc2g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=LKB0gRBk; arc=none smtp.client-ip=198.175.65.12
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1711531087; x=1743067087;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=16NSvZdjDhZssZn34ASsBck8iCwqCtaIPiOBnRnFI8g=;
+  b=LKB0gRBkxNMBW/N/s9fFW7OdjruP8Cu187O9lu/lc8ymjT8IZFuI5e1K
+   +/PS4+hJJsGyC+nRBz87pN2SigNt+a2pMxZI2pY0rN3sbmDdfqsq+wM9E
+   IRvtOdLM8LMfdr/Kj/eLe5F+PyrNvIFwSx24Q5m3qdrgzlRwDI//Lg+dh
+   COsJFsACS/bwMXr0Uql4gIXG0zxZ6xTMQFoG5K6BY31Pn1d6AZ93BV/rc
+   fBLhsdzApaQle/xb/+PxYGQzFRsI222D1LJZLWQYX0HFNumdyFQw8WHJB
+   jygTKAqtBLp9F6g/M0xYwcJQAvfiuAfmqmiiQlpMrh8hm3hMfpnkvviRU
+   w==;
+X-CSE-ConnectionGUID: oIUY4h0BTUSiIZ2cbJSSyA==
+X-CSE-MsgGUID: WNO4d+2mSaeFcTUi0gM5fg==
+X-IronPort-AV: E=McAfee;i="6600,9927,11025"; a="18051305"
+X-IronPort-AV: E=Sophos;i="6.07,158,1708416000"; 
+   d="scan'208";a="18051305"
+Received: from orviesa005.jf.intel.com ([10.64.159.145])
+  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Mar 2024 02:18:07 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,158,1708416000"; 
+   d="scan'208";a="20940718"
+Received: from dapengmi-mobl1.ccr.corp.intel.com (HELO [10.125.242.198]) ([10.125.242.198])
+  by orviesa005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Mar 2024 02:18:03 -0700
+Message-ID: <b204b992-8ad4-48d6-a0dd-d297ae23a5a2@linux.intel.com>
+Date: Wed, 27 Mar 2024 17:18:01 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [kvm-unit-tests Patch v3 09/11] x86: pmu: Improve LLC misses
+ event verification
+Content-Language: en-US
+To: Mingwei Zhang <mizhang@google.com>
+Cc: Sean Christopherson <seanjc@google.com>,
+ Paolo Bonzini <pbonzini@redhat.com>, Jim Mattson <jmattson@google.com>,
+ kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+ Zhenyu Wang <zhenyuw@linux.intel.com>, Zhang Xiong
+ <xiong.y.zhang@intel.com>, Like Xu <like.xu.linux@gmail.com>,
+ Jinrong Liang <cloudliang@tencent.com>, Dapeng Mi <dapeng1.mi@intel.com>
+References: <20240103031409.2504051-1-dapeng1.mi@linux.intel.com>
+ <20240103031409.2504051-10-dapeng1.mi@linux.intel.com>
+ <ZgO7Wr0URLc_ru1S@google.com>
+From: "Mi, Dapeng" <dapeng1.mi@linux.intel.com>
+In-Reply-To: <ZgO7Wr0URLc_ru1S@google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-Message-Id: <20240327-pci-dbi-rework-v12-8-082625472414@linaro.org>
-References: <20240327-pci-dbi-rework-v12-0-082625472414@linaro.org>
-In-Reply-To: <20240327-pci-dbi-rework-v12-0-082625472414@linaro.org>
-To: Jingoo Han <jingoohan1@gmail.com>, 
- Lorenzo Pieralisi <lpieralisi@kernel.org>, 
- =?utf-8?q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>, 
- Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>, 
- Marek Vasut <marek.vasut+renesas@gmail.com>, 
- Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>, 
- Thierry Reding <thierry.reding@gmail.com>, 
- Jonathan Hunter <jonathanh@nvidia.com>, Vidya Sagar <vidyas@nvidia.com>, 
- Vignesh Raghavendra <vigneshr@ti.com>, Richard Zhu <hongxing.zhu@nxp.com>, 
- Lucas Stach <l.stach@pengutronix.de>, Shawn Guo <shawnguo@kernel.org>, 
- Sascha Hauer <s.hauer@pengutronix.de>, 
- Pengutronix Kernel Team <kernel@pengutronix.de>, 
- Fabio Estevam <festevam@gmail.com>, NXP Linux Team <linux-imx@nxp.com>, 
- Minghuan Lian <minghuan.Lian@nxp.com>, Mingkai Hu <mingkai.hu@nxp.com>, 
- Roy Zang <roy.zang@nxp.com>, 
- Kunihiko Hayashi <hayashi.kunihiko@socionext.com>, 
- Masami Hiramatsu <mhiramat@kernel.org>, 
- Kishon Vijay Abraham I <kishon@kernel.org>, 
- Jesper Nilsson <jesper.nilsson@axis.com>, 
- Srikanth Thokala <srikanth.thokala@intel.com>, 
- Shawn Lin <shawn.lin@rock-chips.com>, Heiko Stuebner <heiko@sntech.de>, 
- Kishon Vijay Abraham I <kishon@kernel.org>
-Cc: linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org, 
- linux-renesas-soc@vger.kernel.org, linux-arm-msm@vger.kernel.org, 
- linux-tegra@vger.kernel.org, linux-omap@vger.kernel.org, 
- linux-arm-kernel@lists.infradead.org, linuxppc-dev@lists.ozlabs.org, 
- Niklas Cassel <cassel@kernel.org>, linux-arm-kernel@axis.com, 
- linux-rockchip@lists.infradead.org, 
- Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-X-Mailer: b4 0.12.4
-X-Developer-Signature: v=1; a=openpgp-sha256; l=16286;
- i=manivannan.sadhasivam@linaro.org; h=from:subject:message-id;
- bh=1TPivoyLy6dKjHctlsWhQVyy7Lj27Gkdto44xO0wB3g=;
- b=owEBbQGS/pANAwAKAVWfEeb+kc71AcsmYgBmA+NKBjXrWIxxRWCDSkna7Dpacsbup+jfRhOYC
- XYZg+WnNLqJATMEAAEKAB0WIQRnpUMqgUjL2KRYJ5dVnxHm/pHO9QUCZgPjSgAKCRBVnxHm/pHO
- 9e0lB/9urdXsUcp5ZrvjukoGyjJvi4jR3Sl1zOSUEX3XeYsebnJXSRgoAC2SnjI4ysysmU4or/x
- ogvqN8Gv9afY/xDi1CntblUIyUdbu9BA4Rhv45kwfIjuC2XCwbRgEikk3Uggk9BDD9p1/Mh+B0K
- EATpiJ8DQ19jvKLNvxS5IsqkCVjKqj2T7LciNL8nvJKBPbRGX0CS90XagQYmfbhPWtI6qzTc1U9
- 1FRsX+8udlQz9QCxfocjNEyhIyovxvL2Ja7Qw6VkRSA8eWbRzIhxvYkfGunzYeyuy4RHYahJ7cv
- Ll4RBnsWD7h7K2RhmcCE8orSBo9woDL4ZMLk7d3jMj6qGDat
-X-Developer-Key: i=manivannan.sadhasivam@linaro.org; a=openpgp;
- fpr=C668AEC3C3188E4C611465E7488550E901166008
 
-"core_init_notifier" flag is set by the glue drivers requiring refclk from
-the host to complete the DWC core initialization. Also, those drivers will
-send a notification to the EPF drivers once the initialization is fully
-completed using the pci_epc_init_notify() API. Only then, the EPF drivers
-will start functioning.
 
-For the rest of the drivers generating refclk locally, EPF drivers will
-start functioning post binding with them. EPF drivers rely on the
-'core_init_notifier' flag to differentiate between the drivers.
-Unfortunately, this creates two different flows for the EPF drivers.
+On 3/27/2024 2:23 PM, Mingwei Zhang wrote:
+> On Wed, Jan 03, 2024, Dapeng Mi wrote:
+>> When running pmu test on SPR, sometimes the following failure is
+>> reported.
+>>
+>> 1 <= 0 <= 1000000
+>> FAIL: Intel: llc misses-4
+>>
+>> Currently The LLC misses occurring only depends on probability. It's
+>> possible that there is no LLC misses happened in the whole loop(),
+>> especially along with processors have larger and larger cache size just
+>> like what we observed on SPR.
+>>
+>> Thus, add clflush instruction into the loop() asm blob and ensure once
+>> LLC miss is triggered at least.
+>>
+>> Suggested-by: Jim Mattson <jmattson@google.com>
+>> Signed-off-by: Dapeng Mi <dapeng1.mi@linux.intel.com>
+> I wonder if we can skip all LLC tests if CPU does not have
+> clflush/clflushopt properties?
 
-So to avoid that, let's get rid of the "core_init_notifier" flag and follow
-a single initialization flow for the EPF drivers. This is done by calling
-the dw_pcie_ep_init_notify() from all glue drivers after the completion of
-dw_pcie_ep_init_registers() API. This will allow all the glue drivers to
-send the notification to the EPF drivers once the initialization is fully
-completed.
+Looks reasonable, the LLC miss event should be skipped at least if 
+clflush/clflushopt are not supported since the validation can't grantee 
+the correctness. But for LLC reference event, I think we can keep it 
+since the asm_loop() would always 1 LLC reference at least.
 
-Only difference here is that, the drivers requiring refclk from host will
-send the notification once refclk is received, while others will send it
-during probe time itself.
+If no disapproval, I would change code to skip LLC miss event if 
+clflush/clflushopt are not supported in next version. Thanks.
 
-But this also requires the EPC core driver to deliver the notification
-after EPF driver bind. Because, the glue driver can send the notification
-before the EPF drivers bind() and in those cases the EPF drivers will miss
-the event. To accommodate this, EPC core is now caching the state of the
-EPC initialization in 'init_complete' flag and pci-ep-cfs driver sends the
-notification to EPF drivers based on that after each EPF driver bind.
 
-Tested-by: Niklas Cassel <cassel@kernel.org>
-Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
----
- drivers/pci/controller/cadence/pcie-cadence-ep.c  |  2 ++
- drivers/pci/controller/dwc/pci-dra7xx.c           |  2 ++
- drivers/pci/controller/dwc/pci-imx6.c             |  2 ++
- drivers/pci/controller/dwc/pci-keystone.c         |  2 ++
- drivers/pci/controller/dwc/pci-layerscape-ep.c    |  2 ++
- drivers/pci/controller/dwc/pcie-artpec6.c         |  2 ++
- drivers/pci/controller/dwc/pcie-designware-ep.c   |  1 +
- drivers/pci/controller/dwc/pcie-designware-plat.c |  2 ++
- drivers/pci/controller/dwc/pcie-keembay.c         |  2 ++
- drivers/pci/controller/dwc/pcie-qcom-ep.c         |  1 -
- drivers/pci/controller/dwc/pcie-rcar-gen4.c       |  2 ++
- drivers/pci/controller/dwc/pcie-tegra194.c        |  1 -
- drivers/pci/controller/dwc/pcie-uniphier-ep.c     |  2 ++
- drivers/pci/controller/pcie-rcar-ep.c             |  2 ++
- drivers/pci/controller/pcie-rockchip-ep.c         |  2 ++
- drivers/pci/endpoint/functions/pci-epf-test.c     | 18 +++++-------------
- drivers/pci/endpoint/pci-ep-cfs.c                 |  9 +++++++++
- drivers/pci/endpoint/pci-epc-core.c               | 22 ++++++++++++++++++++++
- include/linux/pci-epc.h                           |  7 ++++---
- 19 files changed, 65 insertions(+), 18 deletions(-)
-
-diff --git a/drivers/pci/controller/cadence/pcie-cadence-ep.c b/drivers/pci/controller/cadence/pcie-cadence-ep.c
-index 81c50dc64da9..55c42ca2b777 100644
---- a/drivers/pci/controller/cadence/pcie-cadence-ep.c
-+++ b/drivers/pci/controller/cadence/pcie-cadence-ep.c
-@@ -746,6 +746,8 @@ int cdns_pcie_ep_setup(struct cdns_pcie_ep *ep)
- 
- 	spin_lock_init(&ep->lock);
- 
-+	pci_epc_init_notify(epc);
-+
- 	return 0;
- 
-  free_epc_mem:
-diff --git a/drivers/pci/controller/dwc/pci-dra7xx.c b/drivers/pci/controller/dwc/pci-dra7xx.c
-index 395042b29ffc..d2d17d37d3e0 100644
---- a/drivers/pci/controller/dwc/pci-dra7xx.c
-+++ b/drivers/pci/controller/dwc/pci-dra7xx.c
-@@ -474,6 +474,8 @@ static int dra7xx_add_pcie_ep(struct dra7xx_pcie *dra7xx,
- 		return ret;
- 	}
- 
-+	dw_pcie_ep_init_notify(ep);
-+
- 	return 0;
- }
- 
-diff --git a/drivers/pci/controller/dwc/pci-imx6.c b/drivers/pci/controller/dwc/pci-imx6.c
-index 8d28ecc381bc..917c69edee1d 100644
---- a/drivers/pci/controller/dwc/pci-imx6.c
-+++ b/drivers/pci/controller/dwc/pci-imx6.c
-@@ -1131,6 +1131,8 @@ static int imx6_add_pcie_ep(struct imx6_pcie *imx6_pcie,
- 		return ret;
- 	}
- 
-+	dw_pcie_ep_init_notify(ep);
-+
- 	/* Start LTSSM. */
- 	imx6_pcie_ltssm_enable(dev);
- 
-diff --git a/drivers/pci/controller/dwc/pci-keystone.c b/drivers/pci/controller/dwc/pci-keystone.c
-index 81ebac520650..d3a7d14ee685 100644
---- a/drivers/pci/controller/dwc/pci-keystone.c
-+++ b/drivers/pci/controller/dwc/pci-keystone.c
-@@ -1293,6 +1293,8 @@ static int ks_pcie_probe(struct platform_device *pdev)
- 			goto err_ep_init;
- 		}
- 
-+		dw_pcie_ep_init_notify(&pci->ep);
-+
- 		break;
- 	default:
- 		dev_err(dev, "INVALID device type %d\n", mode);
-diff --git a/drivers/pci/controller/dwc/pci-layerscape-ep.c b/drivers/pci/controller/dwc/pci-layerscape-ep.c
-index 9eb2233e3d7f..7dde6d5fa4d8 100644
---- a/drivers/pci/controller/dwc/pci-layerscape-ep.c
-+++ b/drivers/pci/controller/dwc/pci-layerscape-ep.c
-@@ -286,6 +286,8 @@ static int __init ls_pcie_ep_probe(struct platform_device *pdev)
- 		return ret;
- 	}
- 
-+	dw_pcie_ep_init_notify(&pci->ep);
-+
- 	return ls_pcie_ep_interrupt_init(pcie, pdev);
- }
- 
-diff --git a/drivers/pci/controller/dwc/pcie-artpec6.c b/drivers/pci/controller/dwc/pcie-artpec6.c
-index a6095561db4a..a4630b92489b 100644
---- a/drivers/pci/controller/dwc/pcie-artpec6.c
-+++ b/drivers/pci/controller/dwc/pcie-artpec6.c
-@@ -452,6 +452,8 @@ static int artpec6_pcie_probe(struct platform_device *pdev)
- 			return ret;
- 		}
- 
-+		dw_pcie_ep_init_notify(&pci->ep);
-+
- 		break;
- 	default:
- 		dev_err(dev, "INVALID device type %d\n", artpec6_pcie->mode);
-diff --git a/drivers/pci/controller/dwc/pcie-designware-ep.c b/drivers/pci/controller/dwc/pcie-designware-ep.c
-index 2063cf2049e5..47391d7d3a73 100644
---- a/drivers/pci/controller/dwc/pcie-designware-ep.c
-+++ b/drivers/pci/controller/dwc/pcie-designware-ep.c
-@@ -632,6 +632,7 @@ void dw_pcie_ep_cleanup(struct dw_pcie_ep *ep)
- 	struct dw_pcie *pci = to_dw_pcie_from_ep(ep);
- 
- 	dw_pcie_edma_remove(pci);
-+	ep->epc->init_complete = false;
- }
- EXPORT_SYMBOL_GPL(dw_pcie_ep_cleanup);
- 
-diff --git a/drivers/pci/controller/dwc/pcie-designware-plat.c b/drivers/pci/controller/dwc/pcie-designware-plat.c
-index ca9b22e654cd..8490c5d6ff9f 100644
---- a/drivers/pci/controller/dwc/pcie-designware-plat.c
-+++ b/drivers/pci/controller/dwc/pcie-designware-plat.c
-@@ -154,6 +154,8 @@ static int dw_plat_pcie_probe(struct platform_device *pdev)
- 			dw_pcie_ep_deinit(&pci->ep);
- 		}
- 
-+		dw_pcie_ep_init_notify(&pci->ep);
-+
- 		break;
- 	default:
- 		dev_err(dev, "INVALID device type %d\n", dw_plat_pcie->mode);
-diff --git a/drivers/pci/controller/dwc/pcie-keembay.c b/drivers/pci/controller/dwc/pcie-keembay.c
-index b2556dbcffb5..98bbc83182b4 100644
---- a/drivers/pci/controller/dwc/pcie-keembay.c
-+++ b/drivers/pci/controller/dwc/pcie-keembay.c
-@@ -442,6 +442,8 @@ static int keembay_pcie_probe(struct platform_device *pdev)
- 			return ret;
- 		}
- 
-+		dw_pcie_ep_init_notify(&pci->ep);
-+
- 		break;
- 	default:
- 		dev_err(dev, "Invalid device type %d\n", pcie->mode);
-diff --git a/drivers/pci/controller/dwc/pcie-qcom-ep.c b/drivers/pci/controller/dwc/pcie-qcom-ep.c
-index 3697b4a944cc..2fb8c15e7a91 100644
---- a/drivers/pci/controller/dwc/pcie-qcom-ep.c
-+++ b/drivers/pci/controller/dwc/pcie-qcom-ep.c
-@@ -775,7 +775,6 @@ static void qcom_pcie_ep_init_debugfs(struct qcom_pcie_ep *pcie_ep)
- 
- static const struct pci_epc_features qcom_pcie_epc_features = {
- 	.linkup_notifier = true,
--	.core_init_notifier = true,
- 	.msi_capable = true,
- 	.msix_capable = false,
- 	.align = SZ_4K,
-diff --git a/drivers/pci/controller/dwc/pcie-rcar-gen4.c b/drivers/pci/controller/dwc/pcie-rcar-gen4.c
-index e155a905fb4f..cfeccc2f9ee1 100644
---- a/drivers/pci/controller/dwc/pcie-rcar-gen4.c
-+++ b/drivers/pci/controller/dwc/pcie-rcar-gen4.c
-@@ -437,6 +437,8 @@ static int rcar_gen4_add_dw_pcie_ep(struct rcar_gen4_pcie *rcar)
- 		rcar_gen4_pcie_ep_deinit(rcar);
- 	}
- 
-+	dw_pcie_ep_init_notify(ep);
-+
- 	return ret;
- }
- 
-diff --git a/drivers/pci/controller/dwc/pcie-tegra194.c b/drivers/pci/controller/dwc/pcie-tegra194.c
-index db043f579fbe..ddc23602eca7 100644
---- a/drivers/pci/controller/dwc/pcie-tegra194.c
-+++ b/drivers/pci/controller/dwc/pcie-tegra194.c
-@@ -2006,7 +2006,6 @@ static int tegra_pcie_ep_raise_irq(struct dw_pcie_ep *ep, u8 func_no,
- 
- static const struct pci_epc_features tegra_pcie_epc_features = {
- 	.linkup_notifier = true,
--	.core_init_notifier = true,
- 	.msi_capable = false,
- 	.msix_capable = false,
- 	.bar[BAR_0] = { .type = BAR_FIXED, .fixed_size = SZ_1M,
-diff --git a/drivers/pci/controller/dwc/pcie-uniphier-ep.c b/drivers/pci/controller/dwc/pcie-uniphier-ep.c
-index 0e5e7344de48..a2b844268e28 100644
---- a/drivers/pci/controller/dwc/pcie-uniphier-ep.c
-+++ b/drivers/pci/controller/dwc/pcie-uniphier-ep.c
-@@ -410,6 +410,8 @@ static int uniphier_pcie_ep_probe(struct platform_device *pdev)
- 		return ret;
- 	}
- 
-+	dw_pcie_ep_init_notify(&priv->pci.ep);
-+
- 	return 0;
- }
- 
-diff --git a/drivers/pci/controller/pcie-rcar-ep.c b/drivers/pci/controller/pcie-rcar-ep.c
-index 05967c6c0b42..047e2cef5afc 100644
---- a/drivers/pci/controller/pcie-rcar-ep.c
-+++ b/drivers/pci/controller/pcie-rcar-ep.c
-@@ -542,6 +542,8 @@ static int rcar_pcie_ep_probe(struct platform_device *pdev)
- 		goto err_pm_put;
- 	}
- 
-+	pci_epc_init_notify(epc);
-+
- 	return 0;
- 
- err_pm_put:
-diff --git a/drivers/pci/controller/pcie-rockchip-ep.c b/drivers/pci/controller/pcie-rockchip-ep.c
-index c9046e97a1d2..8613df8184df 100644
---- a/drivers/pci/controller/pcie-rockchip-ep.c
-+++ b/drivers/pci/controller/pcie-rockchip-ep.c
-@@ -609,6 +609,8 @@ static int rockchip_pcie_ep_probe(struct platform_device *pdev)
- 	rockchip_pcie_write(rockchip, PCIE_CLIENT_CONF_ENABLE,
- 			    PCIE_CLIENT_CONFIG);
- 
-+	pci_epc_init_notify(epc);
-+
- 	return 0;
- err_epc_mem_exit:
- 	pci_epc_mem_exit(epc);
-diff --git a/drivers/pci/endpoint/functions/pci-epf-test.c b/drivers/pci/endpoint/functions/pci-epf-test.c
-index cd4ffb39dcdc..212fc303fb63 100644
---- a/drivers/pci/endpoint/functions/pci-epf-test.c
-+++ b/drivers/pci/endpoint/functions/pci-epf-test.c
-@@ -753,6 +753,7 @@ static int pci_epf_test_core_init(struct pci_epf *epf)
- 	const struct pci_epc_features *epc_features;
- 	struct pci_epc *epc = epf->epc;
- 	struct device *dev = &epf->dev;
-+	bool linkup_notifier = false;
- 	bool msix_capable = false;
- 	bool msi_capable = true;
- 	int ret;
-@@ -795,6 +796,10 @@ static int pci_epf_test_core_init(struct pci_epf *epf)
- 		}
- 	}
- 
-+	linkup_notifier = epc_features->linkup_notifier;
-+	if (!linkup_notifier)
-+		queue_work(kpcitest_workqueue, &epf_test->cmd_handler.work);
-+
- 	return 0;
- }
- 
-@@ -890,8 +895,6 @@ static int pci_epf_test_bind(struct pci_epf *epf)
- 	const struct pci_epc_features *epc_features;
- 	enum pci_barno test_reg_bar = BAR_0;
- 	struct pci_epc *epc = epf->epc;
--	bool linkup_notifier = false;
--	bool core_init_notifier = false;
- 
- 	if (WARN_ON_ONCE(!epc))
- 		return -EINVAL;
-@@ -902,8 +905,6 @@ static int pci_epf_test_bind(struct pci_epf *epf)
- 		return -EOPNOTSUPP;
- 	}
- 
--	linkup_notifier = epc_features->linkup_notifier;
--	core_init_notifier = epc_features->core_init_notifier;
- 	test_reg_bar = pci_epc_get_first_free_bar(epc_features);
- 	if (test_reg_bar < 0)
- 		return -EINVAL;
-@@ -916,21 +917,12 @@ static int pci_epf_test_bind(struct pci_epf *epf)
- 	if (ret)
- 		return ret;
- 
--	if (!core_init_notifier) {
--		ret = pci_epf_test_core_init(epf);
--		if (ret)
--			return ret;
--	}
--
- 	epf_test->dma_supported = true;
- 
- 	ret = pci_epf_test_init_dma_chan(epf_test);
- 	if (ret)
- 		epf_test->dma_supported = false;
- 
--	if (!linkup_notifier && !core_init_notifier)
--		queue_work(kpcitest_workqueue, &epf_test->cmd_handler.work);
--
- 	return 0;
- }
- 
-diff --git a/drivers/pci/endpoint/pci-ep-cfs.c b/drivers/pci/endpoint/pci-ep-cfs.c
-index 0ea64e24ed61..3b21e28f9b59 100644
---- a/drivers/pci/endpoint/pci-ep-cfs.c
-+++ b/drivers/pci/endpoint/pci-ep-cfs.c
-@@ -64,6 +64,9 @@ static int pci_secondary_epc_epf_link(struct config_item *epf_item,
- 		return ret;
- 	}
- 
-+	/* Send any pending EPC initialization complete to the EPF driver */
-+	pci_epc_notify_pending_init(epc, epf);
-+
- 	return 0;
- }
- 
-@@ -125,6 +128,9 @@ static int pci_primary_epc_epf_link(struct config_item *epf_item,
- 		return ret;
- 	}
- 
-+	/* Send any pending EPC initialization complete to the EPF driver */
-+	pci_epc_notify_pending_init(epc, epf);
-+
- 	return 0;
- }
- 
-@@ -230,6 +236,9 @@ static int pci_epc_epf_link(struct config_item *epc_item,
- 		return ret;
- 	}
- 
-+	/* Send any pending EPC initialization complete to the EPF driver */
-+	pci_epc_notify_pending_init(epc, epf);
-+
- 	return 0;
- }
- 
-diff --git a/drivers/pci/endpoint/pci-epc-core.c b/drivers/pci/endpoint/pci-epc-core.c
-index da3fc0795b0b..47d27ec7439d 100644
---- a/drivers/pci/endpoint/pci-epc-core.c
-+++ b/drivers/pci/endpoint/pci-epc-core.c
-@@ -748,10 +748,32 @@ void pci_epc_init_notify(struct pci_epc *epc)
- 			epf->event_ops->core_init(epf);
- 		mutex_unlock(&epf->lock);
- 	}
-+	epc->init_complete = true;
- 	mutex_unlock(&epc->list_lock);
- }
- EXPORT_SYMBOL_GPL(pci_epc_init_notify);
- 
-+/**
-+ * pci_epc_notify_pending_init() - Notify the pending EPC device initialization
-+ *                                 complete to the EPF device
-+ * @epc: the EPC device whose core initialization is pending to be notified
-+ * @epf: the EPF device to be notified
-+ *
-+ * Invoke to notify the pending EPC device initialization complete to the EPF
-+ * device. This is used to deliver the notification if the EPC initialization
-+ * got completed before the EPF driver bind.
-+ */
-+void pci_epc_notify_pending_init(struct pci_epc *epc, struct pci_epf *epf)
-+{
-+	if (epc->init_complete) {
-+		mutex_lock(&epf->lock);
-+		if (epf->event_ops && epf->event_ops->core_init)
-+			epf->event_ops->core_init(epf);
-+		mutex_unlock(&epf->lock);
-+	}
-+}
-+EXPORT_SYMBOL_GPL(pci_epc_notify_pending_init);
-+
- /**
-  * pci_epc_bme_notify() - Notify the EPF device that the EPC device has received
-  *			  the BME event from the Root complex
-diff --git a/include/linux/pci-epc.h b/include/linux/pci-epc.h
-index cc2f70d061c8..acc5f96161fe 100644
---- a/include/linux/pci-epc.h
-+++ b/include/linux/pci-epc.h
-@@ -128,6 +128,8 @@ struct pci_epc_mem {
-  * @group: configfs group representing the PCI EPC device
-  * @lock: mutex to protect pci_epc ops
-  * @function_num_map: bitmap to manage physical function number
-+ * @init_complete: flag to indicate whether the EPC initialization is complete
-+ *                 or not
-  */
- struct pci_epc {
- 	struct device			dev;
-@@ -143,6 +145,7 @@ struct pci_epc {
- 	/* mutex to protect against concurrent access of EP controller */
- 	struct mutex			lock;
- 	unsigned long			function_num_map;
-+	bool				init_complete;
- };
- 
- /**
-@@ -179,8 +182,6 @@ struct pci_epc_bar_desc {
- /**
-  * struct pci_epc_features - features supported by a EPC device per function
-  * @linkup_notifier: indicate if the EPC device can notify EPF driver on link up
-- * @core_init_notifier: indicate cores that can notify about their availability
-- *			for initialization
-  * @msi_capable: indicate if the endpoint function has MSI capability
-  * @msix_capable: indicate if the endpoint function has MSI-X capability
-  * @bar: array specifying the hardware description for each BAR
-@@ -188,7 +189,6 @@ struct pci_epc_bar_desc {
-  */
- struct pci_epc_features {
- 	unsigned int	linkup_notifier : 1;
--	unsigned int	core_init_notifier : 1;
- 	unsigned int	msi_capable : 1;
- 	unsigned int	msix_capable : 1;
- 	struct	pci_epc_bar_desc bar[PCI_STD_NUM_BARS];
-@@ -225,6 +225,7 @@ int pci_epc_add_epf(struct pci_epc *epc, struct pci_epf *epf,
- void pci_epc_linkup(struct pci_epc *epc);
- void pci_epc_linkdown(struct pci_epc *epc);
- void pci_epc_init_notify(struct pci_epc *epc);
-+void pci_epc_notify_pending_init(struct pci_epc *epc, struct pci_epf *epf);
- void pci_epc_bme_notify(struct pci_epc *epc);
- void pci_epc_remove_epf(struct pci_epc *epc, struct pci_epf *epf,
- 			enum pci_epc_interface_type type);
-
--- 
-2.25.1
-
+>> ---
+>>   x86/pmu.c | 43 ++++++++++++++++++++++++++++++-------------
+>>   1 file changed, 30 insertions(+), 13 deletions(-)
+>>
+>> diff --git a/x86/pmu.c b/x86/pmu.c
+>> index b764827c1c3d..8fd3db0fbf81 100644
+>> --- a/x86/pmu.c
+>> +++ b/x86/pmu.c
+>> @@ -20,19 +20,21 @@
+>>   
+>>   // Instrustion number of LOOP_ASM code
+>>   #define LOOP_INSTRNS	10
+>> -#define LOOP_ASM					\
+>> +#define LOOP_ASM(_clflush)				\
+>> +	_clflush "\n\t"                                 \
+>> +	"mfence;\n\t"                                   \
+>>   	"1: mov (%1), %2; add $64, %1;\n\t"		\
+>>   	"nop; nop; nop; nop; nop; nop; nop;\n\t"	\
+>>   	"loop 1b;\n\t"
+>>   
+>> -/*Enable GLOBAL_CTRL + disable GLOBAL_CTRL instructions */
+>> -#define PRECISE_EXTRA_INSTRNS  (2 + 4)
+>> +/*Enable GLOBAL_CTRL + disable GLOBAL_CTRL + clflush/mfence instructions */
+>> +#define PRECISE_EXTRA_INSTRNS  (2 + 4 + 2)
+>>   #define PRECISE_LOOP_INSTRNS   (N * LOOP_INSTRNS + PRECISE_EXTRA_INSTRNS)
+>>   #define PRECISE_LOOP_BRANCHES  (N)
+>> -#define PRECISE_LOOP_ASM						\
+>> +#define PRECISE_LOOP_ASM(_clflush)					\
+>>   	"wrmsr;\n\t"							\
+>>   	"mov %%ecx, %%edi; mov %%ebx, %%ecx;\n\t"			\
+>> -	LOOP_ASM							\
+>> +	LOOP_ASM(_clflush)						\
+>>   	"mov %%edi, %%ecx; xor %%eax, %%eax; xor %%edx, %%edx;\n\t"	\
+>>   	"wrmsr;\n\t"
+>>   
+>> @@ -72,14 +74,30 @@ char *buf;
+>>   static struct pmu_event *gp_events;
+>>   static unsigned int gp_events_size;
+>>   
+>> +#define _loop_asm(_clflush)					\
+>> +do {								\
+>> +	asm volatile(LOOP_ASM(_clflush)				\
+>> +		     : "=c"(tmp), "=r"(tmp2), "=r"(tmp3)	\
+>> +		     : "0"(N), "1"(buf));			\
+>> +} while (0)
+>> +
+>> +#define _precise_loop_asm(_clflush)				\
+>> +do {								\
+>> +	asm volatile(PRECISE_LOOP_ASM(_clflush)			\
+>> +		     : "=b"(tmp), "=r"(tmp2), "=r"(tmp3)	\
+>> +		     : "a"(eax), "d"(edx), "c"(global_ctl),	\
+>> +		       "0"(N), "1"(buf)				\
+>> +		     : "edi");					\
+>> +} while (0)
+>>   
+>>   static inline void __loop(void)
+>>   {
+>>   	unsigned long tmp, tmp2, tmp3;
+>>   
+>> -	asm volatile(LOOP_ASM
+>> -		     : "=c"(tmp), "=r"(tmp2), "=r"(tmp3)
+>> -		     : "0"(N), "1"(buf));
+>> +	if (this_cpu_has(X86_FEATURE_CLFLUSH))
+>> +		_loop_asm("clflush (%1)");
+>> +	else
+>> +		_loop_asm("nop");
+>>   }
+>>   
+>>   /*
+>> @@ -96,11 +114,10 @@ static inline void __precise_count_loop(u64 cntrs)
+>>   	u32 eax = cntrs & (BIT_ULL(32) - 1);
+>>   	u32 edx = cntrs >> 32;
+>>   
+>> -	asm volatile(PRECISE_LOOP_ASM
+>> -		     : "=b"(tmp), "=r"(tmp2), "=r"(tmp3)
+>> -		     : "a"(eax), "d"(edx), "c"(global_ctl),
+>> -		       "0"(N), "1"(buf)
+>> -		     : "edi");
+>> +	if (this_cpu_has(X86_FEATURE_CLFLUSH))
+>> +		_precise_loop_asm("clflush (%1)");
+>> +	else
+>> +		_precise_loop_asm("nop");
+>>   }
+>>   
+>>   static inline void loop(u64 cntrs)
+>> -- 
+>> 2.34.1
+>>
 
