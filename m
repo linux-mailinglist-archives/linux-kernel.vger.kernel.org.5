@@ -1,156 +1,160 @@
-Return-Path: <linux-kernel+bounces-120694-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-120695-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B5DA888DB84
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 11:47:36 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 590CE88DB8B
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 11:49:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0D34EB231E8
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 10:47:34 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7C9921C2693A
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 10:49:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E7084524C7;
-	Wed, 27 Mar 2024 10:47:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1C00851C47;
+	Wed, 27 Mar 2024 10:49:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="cR94cfvH"
-Received: from NAM11-BN8-obe.outbound.protection.outlook.com (mail-bn8nam11on2041.outbound.protection.outlook.com [40.107.236.41])
+	dkim=pass (2048-bit key) header.d=synopsys.com header.i=@synopsys.com header.b="khhjnn3B";
+	dkim=pass (2048-bit key) header.d=synopsys.com header.i=@synopsys.com header.b="LLnlVQQJ"
+Received: from mx0a-00230701.pphosted.com (mx0a-00230701.pphosted.com [148.163.156.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8FB1A225D9;
-	Wed, 27 Mar 2024 10:47:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.236.41
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711536439; cv=fail; b=oZQpP4ZOZRhDjEDgcAC4hZvbYdSaRdprenbH8fzV6l75heh7keY2yVD9owNU4Vae+7pN47ZJT2c5U+Tut28hjeLKCzFyBhkEmbhHXoQcd1cmOuNCFC9BDJby+uNIUyFOqF94oeByrNW249OqNtLS9hMF/72k9HY4ZPu6yyOE56w=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711536439; c=relaxed/simple;
-	bh=kcDtUXGx/vvG8BTczu+tXo8vEF1TtyaYITSj4nK4DoU=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=a87XH3J4mkXfvzFYjLtPCN+lSVWL6BWgmAlXp/Tne5RnyC0PKVvXY8q3Rd5hlLSVOONC1E2KKpv6TgU1SGW6SXAw1TukTWRuSiE9GNhZ+7xRCg4oAXs90iGVCRcOkM6wVH7QkwBDnDibwwjaNGO16iuOPbxZfq6G7IcHQaXMsZw=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=cR94cfvH; arc=fail smtp.client-ip=40.107.236.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=OXEFYJt1iVjfdb7Qlzb5ItAYqEPLIDckcLlKPxAR9YNKs+7paUagZixx/qJRBCGBRe2SG/BOPs71383X2j1qEz82KptoQ76S48PQMrqPq9k1R/ulj4Gn35Ec0oUGstXMD58HHrZeKC4itTkSC8buvPVlTtqXAg2LAp8SAN3NTZ2vuzoZL+waMSh1ZC72bPzfFkx+BpLFzqxeGSsSjdFhmYhh7OJr/Ql2K7/5Fr2r7U/mTDmNkLk3kIkl3RAx1BadHRNthbC6gqUw922RP9OYxt6poUsZ+KIPqMu3OdeL7Z3v1JAjGAdWXSAWOzYPxWI/09CCT04lLbpiuZa3XznMwA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=ARXyt6CQVAqAqbC7vnIrk0sXfPRuGtY+EkgiIgVNxEM=;
- b=ZWwF4elVE7f8lMV/EdNI6eoMl5HXNU/hUhHSD2qbw3x4zzNMvw3i7i0FCPbhj8Viv7Iy0EvbZNzrSe6MWHDVgSQ9RIAFe5/kL8Sqp6pEiTp5pVoSKTPu8rneL1Dq2T2t9hi3zRUi/phDPIzdZrH6SvlJZDq8FtCCQYqDnZSAaXrmhHZZg8gBUBhiWz1QVe5vTH8Ttm4vx9tafXYeJGo0E+MKuyRyWqJN89bnWthd159o8aBZ2L42NM+2sTPzC16gxk4ZbmVtjjx7bufwYwziZztosNuKj8I2gZs/fmFrlMZ+OxuFdBFHN+GUOLzw9wNT2sN8XU3ujxkEg3NpKyxVsA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=kernel.org smtp.mailfrom=amd.com; dmarc=pass
- (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
- dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ARXyt6CQVAqAqbC7vnIrk0sXfPRuGtY+EkgiIgVNxEM=;
- b=cR94cfvH5FB0K5NFHS519h8lmbXsPJEJi7E/M+eDRp1ni12IsIiqTNkizY+OXKLt34HOPzSNMDe6lG8OVc7iUa9ieWtYyMI/xz5zIY+w/Dsl1U+y5tSxih1eNUh/dLbN0n0GMZQaH4TCYNeIuvud2smDnzPPfD+ZhmctUt/XSDQ=
-Received: from BLAPR05CA0036.namprd05.prod.outlook.com (2603:10b6:208:335::17)
- by DS7PR12MB8370.namprd12.prod.outlook.com (2603:10b6:8:eb::22) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.31; Wed, 27 Mar
- 2024 10:47:14 +0000
-Received: from MN1PEPF0000F0E5.namprd04.prod.outlook.com
- (2603:10b6:208:335:cafe::dc) by BLAPR05CA0036.outlook.office365.com
- (2603:10b6:208:335::17) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.12 via Frontend
- Transport; Wed, 27 Mar 2024 10:47:14 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB03.amd.com; pr=C
-Received: from SATLEXMB03.amd.com (165.204.84.17) by
- MN1PEPF0000F0E5.mail.protection.outlook.com (10.167.242.43) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.7409.10 via Frontend Transport; Wed, 27 Mar 2024 10:47:14 +0000
-Received: from SATLEXMB04.amd.com (10.181.40.145) by SATLEXMB03.amd.com
- (10.181.40.144) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Wed, 27 Mar
- 2024 05:47:13 -0500
-Received: from vijendar-X570-GAMING-X.amd.com (10.180.168.240) by
- SATLEXMB04.amd.com (10.181.40.145) with Microsoft SMTP Server id 15.1.2507.35
- via Frontend Transport; Wed, 27 Mar 2024 05:47:10 -0500
-From: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
-To: <broonie@kernel.org>
-CC: <alsa-devel@alsa-project.org>, <venkataprasad.potturu@amd.com>,
-	<Basavaraj.Hiregoudar@amd.com>, <Sunil-kumar.Dommati@amd.com>, "Vijendar
- Mukunda" <Vijendar.Mukunda@amd.com>, Liam Girdwood <lgirdwood@gmail.com>,
-	Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, "Syed Saba
- Kareem" <Syed.SabaKareem@amd.com>, Claudiu Beznea <claudiu.beznea@tuxon.dev>,
-	Jarkko Nikula <jarkko.nikula@bitmer.com>, "open list:SOUND - SOC LAYER /
- DYNAMIC AUDIO POWER MANAGEM..." <linux-sound@vger.kernel.org>, open list
-	<linux-kernel@vger.kernel.org>
-Subject: [PATCH 2/2] ASoC: amd: acp: fix for acp pdm configuration check
-Date: Wed, 27 Mar 2024 16:16:53 +0530
-Message-ID: <20240327104657.3537664-2-Vijendar.Mukunda@amd.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240327104657.3537664-1-Vijendar.Mukunda@amd.com>
-References: <20240327104657.3537664-1-Vijendar.Mukunda@amd.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 52B093DABF0;
+	Wed, 27 Mar 2024 10:49:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.19
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1711536584; cv=none; b=FrKJeEfr9ikZWE0BzJpqB4M508P2PeWqROSyug++O2bYei8wx21K/8keoAWNuO5o2TcaY3o2CDeeExNYiblYN1aSEkC57gCZdD7lti+DwrQuzla4seMk/MhGBUiCapmO7TifNIRBYdDTyzw4BaEfCkVEiPLhJW26MTA1HDf9DSI=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1711536584; c=relaxed/simple;
+	bh=CQySag7xm2muRwM/T32TWtIU0dCJiXAtitG8wW/6ZwE=;
+	h=From:To:Cc:Subject:Date:Message-Id; b=Fd9Yix07RIa+o8o11b2GDx/+p5QW3JNyx0foDXipjTcyTbNb+pKvddCpklhyWzCfWZGiQEHC56LlII5d8CMh6lTtEfO1up6DUhgYStFGVvKWJfD6+6e4oBPQNxevT/PFPKjKpnpWUgvhqUUoKVWDjsSbG0R0NmDTFXYnfDMQV4w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=synopsys.com; spf=pass smtp.mailfrom=synopsys.com; dkim=pass (2048-bit key) header.d=synopsys.com header.i=@synopsys.com header.b=khhjnn3B; dkim=pass (2048-bit key) header.d=synopsys.com header.i=@synopsys.com header.b=LLnlVQQJ; arc=none smtp.client-ip=148.163.156.19
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=synopsys.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=synopsys.com
+Received: from pps.filterd (m0098571.ppops.net [127.0.0.1])
+	by mx0a-00230701.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 42R7StDo012814;
+	Wed, 27 Mar 2024 03:49:40 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=synopsys.com; h=
+	from:to:cc:subject:date:message-id; s=pfptdkimsnps; bh=xwEnEgNmd
+	ia2OaQNO3Qw1uAkOGxJ+2PH6QxnIB8iPco=; b=khhjnn3BniMVNhfpzV8VdqAnw
+	zcGGic5fvRagVYAs9CRoBkkL8wxXYiKBOwIZIy6LWTVqUNPlBE5SyFmnl9zoaArQ
+	DY/bR+RnZtI/MUaUX6hEdIWtXw6GAlRf04pwAGXCPrF63t0hpssdewzPSgzo1utH
+	EaPF8LNDmJZIAugT8/1xg5KGm8SquJ6HKift2hWns4hydh5yT7vEerBjvQexlKIp
+	ccaCXb0NLaswUmRHZ/z0VOUdpAn1aeIdNLGrE54Gn6l5rsvwQQbD49Dx42SHGlfb
+	D7SEINWt3DJMuIP+OIdeY5DeMfKJL8OOGof6IIkX3Ju81FdKvQJEPUSxjXjLw==
+Received: from smtprelay-out1.synopsys.com (smtprelay-out1.synopsys.com [149.117.87.133])
+	by mx0a-00230701.pphosted.com (PPS) with ESMTPS id 3x3b6e5a8e-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 27 Mar 2024 03:49:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=synopsys.com; s=mail;
+	t=1711536574; bh=CQySag7xm2muRwM/T32TWtIU0dCJiXAtitG8wW/6ZwE=;
+	h=From:To:Cc:Subject:Date:From;
+	b=LLnlVQQJvhMNkzAdTotUz6l2eI5rE9TgL5y4v2DV45SjjoDxq3ePpoI29CWDxmp23
+	 OrUcp/l3M8Hk+0slQJ/5ej9slyPGjSmrDUhgxzPX+9ErPAQqAqdsP0Ccp83SKwYOo7
+	 MA9Ndr/s/BTEx3cASc+QVwgvABi5i5qIw2pk3I3TFieNW052F1+K41sJGCnJpKEelt
+	 LmUZD6Cvh+aXyLmpnNSFEen0KJEGv87n4ImpX8V9c+BMS4EYBvRFSrLCRYQBOKHni/
+	 qXMZYHJc6hYxkL0vrPwRj5Ps0E4O8ooPlCsnh6/ZyRXGnTnzYbKbmqS7qU94ISmrKo
+	 7HgxEJARfSCKQ==
+Received: from mailhost.synopsys.com (badc-mailhost1.synopsys.com [10.192.0.17])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits)
+	 client-signature RSA-PSS (2048 bits))
+	(Client CN "mailhost.synopsys.com", Issuer "SNPSica2" (verified OK))
+	by smtprelay-out1.synopsys.com (Postfix) with ESMTPS id E3BE340467;
+	Wed, 27 Mar 2024 10:49:33 +0000 (UTC)
+Received: from us01odcvde44181.internal.synopsys.com (us01odcvde44181.internal.synopsys.com [10.192.159.204])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(Client did not present a certificate)
+	by mailhost.synopsys.com (Postfix) with ESMTPSA id 9547AA008A;
+	Wed, 27 Mar 2024 10:49:33 +0000 (UTC)
+X-SNPS-Relay: synopsys.com
+From: Joao Pinto <Joao.Pinto@synopsys.com>
+To: Eugeniy.Paltsev@synopsys.com, dmaengine@vger.kernel.org
+Cc: Joao.Pinto@synopsys.com, Martin.McKenny@synopsys.com,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH RESEND] Avoid hw_desc array overrun in dw-axi-dmac
+Date: Wed, 27 Mar 2024 10:49:24 +0000
+Message-Id: <1711536564-12919-1-git-send-email-jpinto@synopsys.com>
+X-Mailer: git-send-email 2.6.3
+X-Proofpoint-GUID: KGZr8mQD7piZvRf0pyeCg_q8imALXnQg
+X-Proofpoint-ORIG-GUID: KGZr8mQD7piZvRf0pyeCg_q8imALXnQg
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-03-27_07,2024-03-21_02,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_active_cloned_notspam policy=outbound_active_cloned score=0
+ adultscore=0 lowpriorityscore=0 mlxlogscore=999 bulkscore=0 mlxscore=0
+ suspectscore=0 spamscore=0 malwarescore=0 priorityscore=1501
+ impostorscore=0 phishscore=0 clxscore=1015 classifier=spam adjust=0
+ reason=mlx scancount=1 engine=8.19.0-2403210001
+ definitions=main-2403270074
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-Received-SPF: None (SATLEXMB03.amd.com: Vijendar.Mukunda@amd.com does not
- designate permitted sender hosts)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: MN1PEPF0000F0E5:EE_|DS7PR12MB8370:EE_
-X-MS-Office365-Filtering-Correlation-Id: c4d7adf3-c516-472e-83a3-08dc4e4b43a3
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	gkL8QZIY0tAuvqgeHE27MkClNrzEn9PARuJ+lyN2NAYRRK190I2BSVGyth1DbykzRZDllQFno84lZYd6zWqHS5CowJOXcjaWGJb+P0RrDSnxOG21QbtsaG1CXg6RQkE8MHtzeSht4O4aTSTY2m41Poiudiwzlmaz561HIVxXVc2AzP4UY628OZbqXEul/f8c1Qv2OFukLnIBJdijUMAEZX4n1GyYCCfOtuNL7UDkrSlBGHe2LyWNCUjpsLK0LLJedOCLppXyv5S9yD10rO9cQKS/Wn7PZKjAtWNoXTjy4490ytzNPuckjrYiYE+PhBr70qBJ2JBfNy5M3xG90+LslTf6uULgl7HMwzBswLCzOxr6WAemGP49THtmTrwI5mkm3epuloo4TuDouyWKcqJf9Ns1021EA4+Mx6WwPopqHOcy6vg2bjp91y1XUHy+hsoGC5AVBeoSVWYz714H1cKAtCvHoRKvZfEiZ/PVecbEdqAJzyPXiJgdAHbJ+wHUl9mMctQC0el8jt6ycvUsSjZrlgGQXzkp/kFhdkaz6wSNHBd04X6QU2Ku72AJ7VJGsSs7lGLb4RZRzhAKFdhXxCqbxqcR7kXbFy5+dYrQfrdBb9FrQBVU8n83+t8SBeYrpi4Z6nS3Lz2sGAE+YUudF2FauQZ1CnoEfgsViaEkMduiy8WMciyajCg4NIvTXwHRxCLw0vyFACuTjxM8BJZ06u4/vjnzvpEQeXKsPdjZTtXGIB455D0E9zas/ek6w8UFaO3I
-X-Forefront-Antispam-Report:
-	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB03.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(1800799015)(36860700004)(376005)(82310400014);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Mar 2024 10:47:14.3602
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: c4d7adf3-c516-472e-83a3-08dc4e4b43a3
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB03.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource:
-	MN1PEPF0000F0E5.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS7PR12MB8370
 
-ACP PDM configuration has to be verified for all combinations.
-Remove FLAG_AMD_LEGACY_ONLY_DMIC check.
+I have a use case where nr_buffers = 3 and in which each descriptor is composed by 3
+segments, resulting in the DMA channel descs_allocated to be 9. Since axi_desc_put()
+handles the hw_desc considering the descs_allocated, this scenario would result in a
+kernel panic (hw_desc array will be overrun).
 
-Fixes: 3a94c8ad0aae ("ASoC: amd: acp: add code for scanning acp pdm controller")
+To fix this, the proposal is to add a new member to the axi_dma_desc structure,
+where we keep the number of allocated hw_descs (axi_desc_alloc()) and use it in
+axi_desc_put() to handle the hw_desc array correctly.
 
-Signed-off-by: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
+Additionally I propose to remove the axi_chan_start_first_queued() call after completing
+the transfer, since it was identified that unbalance can occur (started descriptors can
+be interrupted and transfer ignored due to DMA channel not being enabled).
+
+Signed-off-by: Joao Pinto <jpinto@synopsys.com>
 ---
- sound/soc/amd/acp/acp-pci.c | 8 +++-----
- 1 file changed, 3 insertions(+), 5 deletions(-)
+ drivers/dma/dw-axi-dmac/dw-axi-dmac-platform.c | 7 ++-----
+ drivers/dma/dw-axi-dmac/dw-axi-dmac.h          | 1 +
+ 2 files changed, 3 insertions(+), 5 deletions(-)
 
-diff --git a/sound/soc/amd/acp/acp-pci.c b/sound/soc/amd/acp/acp-pci.c
-index c1d4140f0746..21574cfaa136 100644
---- a/sound/soc/amd/acp/acp-pci.c
-+++ b/sound/soc/amd/acp/acp-pci.c
-@@ -136,11 +136,9 @@ static int acp_pci_probe(struct pci_dev *pci, const struct pci_device_id *pci_id
- 		}
+diff --git a/drivers/dma/dw-axi-dmac/dw-axi-dmac-platform.c b/drivers/dma/dw-axi-dmac/dw-axi-dmac-platform.c
+index a86a81f..b39f37a 100644
+--- a/drivers/dma/dw-axi-dmac/dw-axi-dmac-platform.c
++++ b/drivers/dma/dw-axi-dmac/dw-axi-dmac-platform.c
+@@ -302,6 +302,7 @@ static struct axi_dma_desc *axi_desc_alloc(u32 num)
+ 		kfree(desc);
+ 		return NULL;
+ 	}
++	desc->nr_hw_descs = num;
+ 
+ 	return desc;
+ }
+@@ -328,7 +329,7 @@ static struct axi_dma_lli *axi_desc_get(struct axi_dma_chan *chan,
+ static void axi_desc_put(struct axi_dma_desc *desc)
+ {
+ 	struct axi_dma_chan *chan = desc->chan;
+-	int count = atomic_read(&chan->descs_allocated);
++	int count = desc->nr_hw_descs;
+ 	struct axi_dma_hw_desc *hw_desc;
+ 	int descs_put;
+ 
+@@ -1139,9 +1139,6 @@ static void axi_chan_block_xfer_complete(struct axi_dma_chan *chan)
+ 		/* Remove the completed descriptor from issued list before completing */
+ 		list_del(&vd->node);
+ 		vchan_cookie_complete(vd);
+-
+-		/* Submit queued descriptors after processing the completed ones */
+-		axi_chan_start_first_queued(chan);
  	}
  
--	if (flag == FLAG_AMD_LEGACY_ONLY_DMIC) {
--		ret = check_acp_pdm(pci, chip);
--		if (ret < 0)
--			goto skip_pdev_creation;
--	}
-+	ret = check_acp_pdm(pci, chip);
-+	if (ret < 0)
-+		goto skip_pdev_creation;
+ out:
+diff --git a/drivers/dma/dw-axi-dmac/dw-axi-dmac.h b/drivers/dma/dw-axi-dmac/dw-axi-dmac.h
+index 454904d..ac571b4 100644
+--- a/drivers/dma/dw-axi-dmac/dw-axi-dmac.h
++++ b/drivers/dma/dw-axi-dmac/dw-axi-dmac.h
+@@ -104,6 +104,7 @@ struct axi_dma_desc {
+ 	u32				completed_blocks;
+ 	u32				length;
+ 	u32				period_len;
++	u32				nr_hw_descs;
+ };
  
- 	chip->flag = flag;
- 	memset(&pdevinfo, 0, sizeof(pdevinfo));
+ struct axi_dma_chan_config {
 -- 
-2.34.1
+1.8.3.1
 
 
