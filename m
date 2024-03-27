@@ -1,338 +1,126 @@
-Return-Path: <linux-kernel+bounces-121600-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-121601-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id DE03F88EAB8
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 17:11:11 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 44FDF88EABC
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 17:11:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 575FE1F329D9
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 16:11:11 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 76BE51C31A92
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 16:11:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 75E9C1442F0;
-	Wed, 27 Mar 2024 16:04:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 96662130497;
+	Wed, 27 Mar 2024 16:05:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=proton.me header.i=@proton.me header.b="NZF/48Dz"
-Received: from mail-40131.protonmail.ch (mail-40131.protonmail.ch [185.70.40.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=sifive.com header.i=@sifive.com header.b="kj55+KDY"
+Received: from mail-pl1-f179.google.com (mail-pl1-f179.google.com [209.85.214.179])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D3D6113C9B9
-	for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 16:04:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.70.40.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 816C912EBC6
+	for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 16:05:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711555454; cv=none; b=O2JzqA/GQPxkJ2w+lgwqpKlerDjjSQIY7w5FSTPgKF36xVzAt1EBOrpKK39l/lZ+mKunpG4ZvaMqljSFb8QTofwUjW0CrptFkDnx5Y6EFSCzAY8GlZog9xlZYtE37h+8zPpq76WeJxTqqdKH0DIdxLr01HtwEOyWNwsH53sdlCs=
+	t=1711555523; cv=none; b=MqZNS/lfe6VNAmP4Fjb+cC5soKerxs/29dDBd4eyr/JhIUH7zXyk8pLim3dyGyLfIvY6738AbVvbuKlGqMZBuNv2LTb0Md1UVEdefGf0f/RU+f3Xcgu7jd8+mgA+rbBxyWjyRtw8OSLAeL82JdymZbf1q27sYqR3nv5K2LJZc0w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711555454; c=relaxed/simple;
-	bh=EdLNzX8uuiq2CjNBfiXznOjIDyfPc5MSkqemwj47Fxc=;
-	h=Date:To:From:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=Uvli65DF/5OomxNkr27+CHo1sQbR+d/GBTzXAn5iOha30/5VdthzyOwW2Vwi4lT+88yzydnXK5lw+kYafKXKtlPJtc8wmmDEmjXPSxe89bX+cnzsP/0XTo2WEXyTL+MlmM+Jbk4OYUtCXYLCpYa+sbYfVNR7kv2IpaJM0jQLejU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=proton.me; spf=pass smtp.mailfrom=proton.me; dkim=pass (2048-bit key) header.d=proton.me header.i=@proton.me header.b=NZF/48Dz; arc=none smtp.client-ip=185.70.40.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=proton.me
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=proton.me
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=proton.me;
-	s=protonmail; t=1711555449; x=1711814649;
-	bh=Ka2xa47AQ5Q73+6JzpnFAcof+BAgDh2tkVUlnUr2JVE=;
-	h=Date:To:From:Cc:Subject:Message-ID:Feedback-ID:From:To:Cc:Date:
-	 Subject:Reply-To:Feedback-ID:Message-ID:BIMI-Selector;
-	b=NZF/48Dzz7IZFkHGpV08pk9cJ7GI15CSkz6G7ljNb8L0GFu0DXubC+dd4sdTcXM3H
-	 Xj1rhsJcVFBzolFWgok7ZIe0B05tC3TPi0SKfNy6W3AAqjJ5ygJg7e9TLl+y/gUGoB
-	 fcOo4Blj81axwFF1KJ1btZKNtSy+DycpIeyFa5YlYpwu3NZKYqHV7aHFMTJESDbjDG
-	 aLYPXQSnoT1//TjkkGBa7i43YDx3/yCsspZU62HNLzS7xhxXlFbs4YipRArvC7QJfd
-	 R7pGm6y9hFfmem6wli+vHzpyKKqo0mz/s7tc4UwJPkV6s83FKmo2/SlogR/sX1Wkg2
-	 2Ux5GFZ+Q3pww==
-Date: Wed, 27 Mar 2024 16:04:03 +0000
-To: Miguel Ojeda <ojeda@kernel.org>, Alex Gaynor <alex.gaynor@gmail.com>, Wedson Almeida Filho <wedsonaf@gmail.com>, Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>, =?utf-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, Benno Lossin <benno.lossin@proton.me>, Andreas Hindborg <a.hindborg@samsung.com>, Alice Ryhl <aliceryhl@google.com>, Martin Rodriguez Reboredo <yakoyoku@gmail.com>, Asahi Lina <lina@asahilina.net>, Eric Curtin <ecurtin@redhat.com>, Neal Gompa <neal@gompa.dev>, Thomas Bertschinger <tahbertschinger@gmail.com>, Andrea Righi <andrea.righi@canonical.com>, Sumera Priyadarsini <sylphrenadin@gmail.com>, Finn Behrens <me@kloenk.dev>, Adam Bratschi-Kaye <ark.email@gmail.com>
-From: Benno Lossin <benno.lossin@proton.me>
-Cc: stable@vger.kernel.org, Daniel Xu <dxu@dxuuu.xyz>, rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] rust: macros: fix soundness issue in `module!` macro
-Message-ID: <20240327160346.22442-1-benno.lossin@proton.me>
-Feedback-ID: 71780778:user:proton
+	s=arc-20240116; t=1711555523; c=relaxed/simple;
+	bh=EXr7t5ZyXFX9wXSbTzc9vLveFmblL3BI0CqEVyK8kVA=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=I6xaMJlwFcvrRC4SXznkAD4hbK8l424bRRxIGRyozoUSXHAH3KbZSSZxR4zUPmgaxhMbAmnggm9fJjraVBd4lzpBn2JnlyfD67F7CYylkvWSt86iWUHO5SsTlJt9QEbMtzxzFdhykBdyvnrG9kVSxI9ysDK82cwkMJYydYQtixA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=sifive.com; spf=pass smtp.mailfrom=sifive.com; dkim=pass (2048-bit key) header.d=sifive.com header.i=@sifive.com header.b=kj55+KDY; arc=none smtp.client-ip=209.85.214.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=sifive.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sifive.com
+Received: by mail-pl1-f179.google.com with SMTP id d9443c01a7336-1e04ac4209eso61626955ad.1
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 09:05:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=sifive.com; s=google; t=1711555522; x=1712160322; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=Kwbw8Bfq5TVdPAVwgD2UahVCoOXtlyfhsdDWXgrrMaI=;
+        b=kj55+KDYAdr/AEgfzPfnFh6UmQT/rKlyrwHbKWZ4X6VwcJIRS+hJV5AXAhl4N0mCne
+         VpZveojmj0F1gKUuaVIAwjWXOeMeWLcU/7Uw3glu4EaUluKq0wskuKFZWQpuvsVRxwft
+         2AltJBTF7rj2Fr8EG4f8xuwyNmhMvpTYB4Ey6Lge6Z7NpNi1/7IR632D36BiALXER0ku
+         Cn2YZKqHdx/iAWjHvdEraAdAsDwVBRcCuaNMilVWCD/ftA1+/jzYmoiusSLuTStULuAu
+         GqriH9sBOPgucTtm/kBs6ehYNfXLpUCn8e4/1WnqaGswaTGutMZ6KYlxlHdo+fme7CQ4
+         xB7Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711555522; x=1712160322;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Kwbw8Bfq5TVdPAVwgD2UahVCoOXtlyfhsdDWXgrrMaI=;
+        b=Fh4QTPL/s9R5XoN0ztKttqaSk754XT2GbJ+e943t0t6z8YTAGntWaCc2YB9DAC6MVn
+         BfcI8xwNH02VdJn+pYv91z7wWIKmS3L9sN3w1O5xRDK0Dnmaf/CHnXhTn0OGVrs5zkhT
+         o+XdcLiRYJ9VGdgn3oF/cxsgQu3ajr0PFfA34j49gPRezOdmuh7TJNetlWU2iYTaMIY1
+         MJQtn4nvdamWL+OdaQu2MmQpY+TQ9He7HVwKoe37dOh+qX+tVPfq9NCLcNlE5bIdhS8Z
+         ezuHfQ8xZz0behenM3YU4hvaOLvtywvF7GAtNKpXMaMn1mYT2C3h5il0AhfrJH2QEuhM
+         8wsg==
+X-Forwarded-Encrypted: i=1; AJvYcCVhojIaeONP40Nkl5NaCC6MPZ5zvxS2J7PtrHS6t1PUH5p1j/SHs+1pWNidf94OQuVOA53I0qPGq+giATkyNJxbsXkxnx/EIRfDkOhp
+X-Gm-Message-State: AOJu0YxTV9zGZ0X1j05HZjClQkf/lIZi0ZfKg4IdwhggaDQzY/2oOoEy
+	nyhaSH5EYsPOc43c+faist0uPWF73EXoVNGJqf8TaCDBkoKY0N9p3N16zlfX280=
+X-Google-Smtp-Source: AGHT+IHrHUQx8CTOsGUx7d9I0wuSaSBLdTL7D/z7DZEE6/9Njp7t/Ngzy8GHegWFTHCH7uUVnbidfQ==
+X-Received: by 2002:a17:903:11c4:b0:1de:ff9f:aee9 with SMTP id q4-20020a17090311c400b001deff9faee9mr138103plh.11.1711555521786;
+        Wed, 27 Mar 2024 09:05:21 -0700 (PDT)
+Received: from sw06.internal.sifive.com ([4.53.31.132])
+        by smtp.gmail.com with ESMTPSA id bf4-20020a170902b90400b001e14807f9cesm1718226plb.125.2024.03.27.09.05.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 27 Mar 2024 09:05:21 -0700 (PDT)
+From: Samuel Holland <samuel.holland@sifive.com>
+To: Palmer Dabbelt <palmer@dabbelt.com>
+Cc: =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn@rivosinc.com>,
+	linux-riscv@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	Samuel Holland <samuel.holland@sifive.com>,
+	Ard Biesheuvel <ardb@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Jason Baron <jbaron@akamai.com>,
+	Josh Poimboeuf <jpoimboe@kernel.org>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	bpf@vger.kernel.org
+Subject: [PATCH v2 0/7] riscv: Various text patching improvements
+Date: Wed, 27 Mar 2024 09:04:39 -0700
+Message-ID: <20240327160520.791322-1-samuel.holland@sifive.com>
+X-Mailer: git-send-email 2.43.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-The `module!` macro creates glue code that are called by C to initialize
-the Rust modules using the `Module::init` function. Part of this glue
-code are the local functions `__init` and `__exit` that are used to
-initialize/destroy the Rust module.
-These functions are safe and also visible to the Rust mod in which the
-`module!` macro is invoked. This means that they can be called by other
-safe Rust code. But since they contain `unsafe` blocks that rely on only
-being called at the right time, this is a soundness issue.
+Here are a few changes to minimize calls to stop_machine() and
+flush_icache_*() in the various text patching functions, as well as
+to simplify the code.
 
-Wrap these generated functions inside of two private modules, this
-guarantees that the public functions cannot be called from the outside.
-Make the safe functions `unsafe` and add SAFETY comments.
+This series is based on "[PATCH v3 0/2] riscv: fix patching with IPI"[1].
 
-Cc: stable@vger.kernel.org
-Closes: https://github.com/Rust-for-Linux/linux/issues/629
-Fixes: 1fbde52bde73 ("rust: add `macros` crate")
-Signed-off-by: Benno Lossin <benno.lossin@proton.me>
----
-This patch is best viewed with `git show --ignore-space-change`, since I
-also adjusted the indentation.
+[1]: https://lore.kernel.org/linux-riscv/20240229121056.203419-1-alexghiti@rivosinc.com/
 
- rust/macros/module.rs | 198 ++++++++++++++++++++++++------------------
- 1 file changed, 112 insertions(+), 86 deletions(-)
+Changes in v2:
+ - Remove unnecessary line wrapping
+ - Further simplify patch_insn_set()/patch_insn_write() loop conditions
+ - Use min() instead of min_t() since both sides are unsigned long
 
-diff --git a/rust/macros/module.rs b/rust/macros/module.rs
-index 27979e582e4b..16c4921a08f2 100644
---- a/rust/macros/module.rs
-+++ b/rust/macros/module.rs
-@@ -199,103 +199,129 @@ pub(crate) fn module(ts: TokenStream) -> TokenStrea=
-m {
-             /// Used by the printing macros, e.g. [`info!`].
-             const __LOG_PREFIX: &[u8] =3D b\"{name}\\0\";
-=20
--            /// The \"Rust loadable module\" mark.
--            //
--            // This may be best done another way later on, e.g. as a new m=
-odinfo
--            // key or a new section. For the moment, keep it simple.
--            #[cfg(MODULE)]
--            #[doc(hidden)]
--            #[used]
--            static __IS_RUST_MODULE: () =3D ();
--
--            static mut __MOD: Option<{type_}> =3D None;
--
--            // SAFETY: `__this_module` is constructed by the kernel at loa=
-d time and will not be
--            // freed until the module is unloaded.
--            #[cfg(MODULE)]
--            static THIS_MODULE: kernel::ThisModule =3D unsafe {{
--                kernel::ThisModule::from_ptr(&kernel::bindings::__this_mod=
-ule as *const _ as *mut _)
--            }};
--            #[cfg(not(MODULE))]
--            static THIS_MODULE: kernel::ThisModule =3D unsafe {{
--                kernel::ThisModule::from_ptr(core::ptr::null_mut())
--            }};
--
--            // Loadable modules need to export the `{{init,cleanup}}_modul=
-e` identifiers.
--            /// # Safety
--            ///
--            /// This function must not be called after module initializati=
-on, because it may be
--            /// freed after that completes.
--            #[cfg(MODULE)]
--            #[doc(hidden)]
--            #[no_mangle]
--            #[link_section =3D \".init.text\"]
--            pub unsafe extern \"C\" fn init_module() -> core::ffi::c_int {=
-{
--                __init()
--            }}
-+            // Double nested modules, since then nobody can access the pub=
-lic items inside.
-+            mod __module_init {{
-+                mod __module_init {{
-+                    use super::super::{type_};
-+
-+                    /// The \"Rust loadable module\" mark.
-+                    //
-+                    // This may be best done another way later on, e.g. as=
- a new modinfo
-+                    // key or a new section. For the moment, keep it simpl=
-e.
-+                    #[cfg(MODULE)]
-+                    #[doc(hidden)]
-+                    #[used]
-+                    static __IS_RUST_MODULE: () =3D ();
-+
-+                    static mut __MOD: Option<{type_}> =3D None;
-+
-+                    // SAFETY: `__this_module` is constructed by the kerne=
-l at load time and will not be
-+                    // freed until the module is unloaded.
-+                    #[cfg(MODULE)]
-+                    static THIS_MODULE: kernel::ThisModule =3D unsafe {{
-+                        kernel::ThisModule::from_ptr(&kernel::bindings::__=
-this_module as *const _ as *mut _)
-+                    }};
-+                    #[cfg(not(MODULE))]
-+                    static THIS_MODULE: kernel::ThisModule =3D unsafe {{
-+                        kernel::ThisModule::from_ptr(core::ptr::null_mut()=
-)
-+                    }};
-+
-+                    // Loadable modules need to export the `{{init,cleanup=
-}}_module` identifiers.
-+                    /// # Safety
-+                    ///
-+                    /// This function must not be called after module init=
-ialization, because it may be
-+                    /// freed after that completes.
-+                    #[cfg(MODULE)]
-+                    #[doc(hidden)]
-+                    #[no_mangle]
-+                    #[link_section =3D \".init.text\"]
-+                    pub unsafe extern \"C\" fn init_module() -> core::ffi:=
-:c_int {{
-+                        __init()
-+                    }}
-=20
--            #[cfg(MODULE)]
--            #[doc(hidden)]
--            #[no_mangle]
--            pub extern \"C\" fn cleanup_module() {{
--                __exit()
--            }}
-+                    #[cfg(MODULE)]
-+                    #[doc(hidden)]
-+                    #[no_mangle]
-+                    pub extern \"C\" fn cleanup_module() {{
-+                        __exit()
-+                    }}
-=20
--            // Built-in modules are initialized through an initcall pointe=
-r
--            // and the identifiers need to be unique.
--            #[cfg(not(MODULE))]
--            #[cfg(not(CONFIG_HAVE_ARCH_PREL32_RELOCATIONS))]
--            #[doc(hidden)]
--            #[link_section =3D \"{initcall_section}\"]
--            #[used]
--            pub static __{name}_initcall: extern \"C\" fn() -> core::ffi::=
-c_int =3D __{name}_init;
--
--            #[cfg(not(MODULE))]
--            #[cfg(CONFIG_HAVE_ARCH_PREL32_RELOCATIONS)]
--            core::arch::global_asm!(
--                r#\".section \"{initcall_section}\", \"a\"
--                __{name}_initcall:
--                    .long   __{name}_init - .
--                    .previous
--                \"#
--            );
-+                    // Built-in modules are initialized through an initcal=
-l pointer
-+                    // and the identifiers need to be unique.
-+                    #[cfg(not(MODULE))]
-+                    #[cfg(not(CONFIG_HAVE_ARCH_PREL32_RELOCATIONS))]
-+                    #[doc(hidden)]
-+                    #[link_section =3D \"{initcall_section}\"]
-+                    #[used]
-+                    pub static __{name}_initcall: extern \"C\" fn() -> cor=
-e::ffi::c_int =3D __{name}_init;
-+
-+                    #[cfg(not(MODULE))]
-+                    #[cfg(CONFIG_HAVE_ARCH_PREL32_RELOCATIONS)]
-+                    core::arch::global_asm!(
-+                        r#\".section \"{initcall_section}\", \"a\"
-+                        __{name}_initcall:
-+                            .long   __{name}_init - .
-+                            .previous
-+                        \"#
-+                    );
-+
-+                    #[cfg(not(MODULE))]
-+                    #[doc(hidden)]
-+                    #[no_mangle]
-+                    pub extern \"C\" fn __{name}_init() -> core::ffi::c_in=
-t {{
-+                        __init()
-+                    }}
-=20
--            #[cfg(not(MODULE))]
--            #[doc(hidden)]
--            #[no_mangle]
--            pub extern \"C\" fn __{name}_init() -> core::ffi::c_int {{
--                __init()
--            }}
-+                    #[cfg(not(MODULE))]
-+                    #[doc(hidden)]
-+                    #[no_mangle]
-+                    pub extern \"C\" fn __{name}_exit() {{
-+                        __exit()
-+                    }}
-=20
--            #[cfg(not(MODULE))]
--            #[doc(hidden)]
--            #[no_mangle]
--            pub extern \"C\" fn __{name}_exit() {{
--                __exit()
--            }}
-+                    /// # Safety
-+                    ///
-+                    /// This function must
-+                    /// - only be called once,
-+                    /// - not be called concurrently with `__exit`.
-+                    unsafe fn __init() -> core::ffi::c_int {{
-+                        match <{type_} as kernel::Module>::init(&THIS_MODU=
-LE) {{
-+                            Ok(m) =3D> {{
-+                                // SAFETY:
-+                                // no data race, since `__MOD` can only be=
- accessed by this module and
-+                                // there only `__init` and `__exit` access=
- it. These functions are only
-+                                // called once and `__exit` cannot be call=
-ed before or during `__init`.
-+                                unsafe {{
-+                                    __MOD =3D Some(m);
-+                                }}
-+                                return 0;
-+                            }}
-+                            Err(e) =3D> {{
-+                                return e.to_errno();
-+                            }}
-+                        }}
-+                    }}
-=20
--            fn __init() -> core::ffi::c_int {{
--                match <{type_} as kernel::Module>::init(&THIS_MODULE) {{
--                    Ok(m) =3D> {{
-+                    /// # Safety
-+                    ///
-+                    /// This function must
-+                    /// - only be called once,
-+                    /// - be called after `__init`,
-+                    /// - not be called concurrently with `__init`.
-+                    unsafe fn __exit() {{
-+                        // SAFETY:
-+                        // no data race, since `__MOD` can only be accesse=
-d by this module and there
-+                        // only `__init` and `__exit` access it. These fun=
-ctions are only called once
-+                        // and `__init` was already called.
-                         unsafe {{
--                            __MOD =3D Some(m);
-+                            // Invokes `drop()` on `__MOD`, which should b=
-e used for cleanup.
-+                            __MOD =3D None;
-                         }}
--                        return 0;
-                     }}
--                    Err(e) =3D> {{
--                        return e.to_errno();
--                    }}
--                }}
--            }}
-=20
--            fn __exit() {{
--                unsafe {{
--                    // Invokes `drop()` on `__MOD`, which should be used f=
-or cleanup.
--                    __MOD =3D None;
-+                    {modinfo}
-                 }}
-             }}
--
--            {modinfo}
-         ",
-         type_ =3D info.type_,
-         name =3D info.name,
+Samuel Holland (7):
+  riscv: jump_label: Batch icache maintenance
+  riscv: jump_label: Simplify assembly syntax
+  riscv: kprobes: Use patch_text_nosync() for insn slots
+  riscv: Simplify text patching loops
+  riscv: Pass patch_text() the length in bytes
+  riscv: Use offset_in_page() in text patching functions
+  riscv: Remove extra variable in patch_text_nosync()
 
-base-commit: 4cece764965020c22cff7665b18a012006359095
---=20
-2.44.0
+ arch/riscv/include/asm/jump_label.h |  4 +-
+ arch/riscv/include/asm/patch.h      |  2 +-
+ arch/riscv/kernel/jump_label.c      | 16 +++++--
+ arch/riscv/kernel/patch.c           | 69 ++++++++++++++---------------
+ arch/riscv/kernel/probes/kprobes.c  | 19 ++++----
+ arch/riscv/net/bpf_jit_comp64.c     |  7 +--
+ 6 files changed, 63 insertions(+), 54 deletions(-)
 
+-- 
+2.43.1
 
 
