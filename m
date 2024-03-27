@@ -1,54 +1,73 @@
-Return-Path: <linux-kernel+bounces-121965-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-121966-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DFB4488EFF7
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 21:13:33 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id AD75588EFFA
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 21:14:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9AD0829A77E
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 20:13:32 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4B4841F2FA00
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 20:14:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0DFA6152538;
-	Wed, 27 Mar 2024 20:13:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1F0B4152520;
+	Wed, 27 Mar 2024 20:14:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="XWV3o/On"
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=sifive.com header.i=@sifive.com header.b="EmQs82/6"
+Received: from mail-io1-f51.google.com (mail-io1-f51.google.com [209.85.166.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5C93214E2DB;
-	Wed, 27 Mar 2024 20:13:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D7C15137764
+	for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 20:14:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711570408; cv=none; b=VN9Jk2rwdZ2Emyju4APnUxIiKF4L7azPlotqqwK6aB2TzY11ivhRQuu1K2SR/Jd+hjuWf+8BH6jXWEx2vsRugzNU8VowvyXexw98vZ8p/Mh7dlMlIoTxzXyzkupbivTuZftFOsHQ+cZXSIjtc1CI2jiQuUgG9+NGB+rTK1yzEYw=
+	t=1711570486; cv=none; b=lnMS3wsoLJeU79jqm/cd+/PADm8IIZHr1hdvoW2Ew2RZK6YoBGF3zQIMFfUH5xS5kd/Z4HJJ/e6g82vxCeqtdiVILBY51lkq/oFlDYQK0mKFyXuCMaKwod0LtA7pPQQ4r0qbXp0LdP3Uklhio1JIjTOVeS5mubUa9ouvZjQtS1I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711570408; c=relaxed/simple;
-	bh=kH3qgcziafB9PRru5e9dw4ePUTKVWnjog4AJOkah2g4=;
-	h=Message-ID:Date:MIME-Version:Cc:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=GPlMfgfXwz0R1hpM/C1KuKfcgwOwYMNO9SEVm9EfVvb4AW0Ip5wztnJg7fRdtuVoq9y+rUkg9jmm0EKAWmg8Pi8ocFVDRmqLeIn+Jdm36YOclrmuonwOOCkEQPXfzgnWVWP3gVyX1dOf8f7XJRr79RPiPqCrQqdPamo2M3ejgIE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=XWV3o/On; arc=none smtp.client-ip=46.235.227.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1711570398;
-	bh=kH3qgcziafB9PRru5e9dw4ePUTKVWnjog4AJOkah2g4=;
-	h=Date:Cc:Subject:To:References:From:In-Reply-To:From;
-	b=XWV3o/On0ufZZmO+RH7OA6H6e8GKH/ZyKQo5NhDZerpcWmifTveYtnO7AThQZRBQV
-	 S6tdjM01n0q6SnwzERfKs1BsrNfx1+vziFeA7HkXACoNEHNFygqtNIK00nTaBMWDIX
-	 EQ4Oyt91zto1I/k4xLYiWHBYPoOs1BxN1dJa2d9iP9XKhGQ1MJvjFqMG2OPmDuf1+G
-	 tE/sjT+fWPNuqIQ6qRGUtZfqslgImvJOvjexHi5grB7xtq//Ao8pAZTb/6Yuyimusy
-	 kNn5he9tI1mdmLVtIz9tbQFxrVYaJ6+d2Km05H6Usn7x6WUoO66p4R1eHPfqdGDm/x
-	 x2qs2PZ0TqbXA==
-Received: from [100.113.15.66] (ec2-34-240-57-77.eu-west-1.compute.amazonaws.com [34.240.57.77])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: usama.anjum)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 6D0E437804B2;
-	Wed, 27 Mar 2024 20:13:15 +0000 (UTC)
-Message-ID: <ccab9229-c0de-4c38-bb5c-7f32cbd7fa2b@collabora.com>
-Date: Thu, 28 Mar 2024 01:13:45 +0500
+	s=arc-20240116; t=1711570486; c=relaxed/simple;
+	bh=neQf4eKiBF6fjnhAkZORZQaKoNsXJqfl8RdUdwaGnjA=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=TzOUQkhSELunGONm60wgK0tAnpUUtTvT1a7NrHaGhpfvNJ0UJz/NbzsqAYLeEif/1DzdnaLcgznxnmFrNzQcsB4ycf0BILWKDkDsna89AERcf4HRe/SJf0/FHAu4XCFt0yqwutqPsQyUEVtawOon9CjIRqJojVBQHerukXBixpk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=sifive.com; spf=pass smtp.mailfrom=sifive.com; dkim=pass (2048-bit key) header.d=sifive.com header.i=@sifive.com header.b=EmQs82/6; arc=none smtp.client-ip=209.85.166.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=sifive.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sifive.com
+Received: by mail-io1-f51.google.com with SMTP id ca18e2360f4ac-7cc77e74b5cso9668339f.2
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 13:14:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=sifive.com; s=google; t=1711570484; x=1712175284; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=NCYK7bXPxC3buWagK44KXlYoaMMqT9xkSSzlJu6d89E=;
+        b=EmQs82/6Armje5j3LNcur5raGfMx5qSvGFQU0P1z9XUUl3bKndGfeaUusVJUBEws4c
+         bBr7ZHBMTafSqmMcFuanSlOgkNF53XqL9ZiVmm/5IheFGYX5ZzF0b/bvGp/TNclXNbRc
+         JFHXmtJVDooKNW6iuBGi10gJfZa25yS2XxzTFZDIsh8KzOOUcrmkyjIMdmEv5Wf/OHOe
+         W7amXAosOxRXSsVhYh+37Z75vgRm6Ew+tU0sXJZ97fFt2Ypo/ptbmT7I5I2vm9vZ4fhU
+         UIYzViC50dVi7tTLFP7YDVKcYY4o9hrvLs8mvKNQGQBMj2AubhD5tSxoYi6gqaCPTFt3
+         NvUw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711570484; x=1712175284;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=NCYK7bXPxC3buWagK44KXlYoaMMqT9xkSSzlJu6d89E=;
+        b=YQdcuYmujRLP2SxbcAbY0HPQ/mR7XvpmQvVUxGoW46zvDq0RzVAxRWu1maXAhrRO5h
+         /IglWTY8J8Jwalf3qdeoTsxZMQ/RnlRa8UDva3Ty2v5FX0QyYeSQJzhuaAUl9+V3YRWg
+         XQIYf8GVSVN9LdAD+TBwIXFIYKBwsyycJGc5zl3yc0vRF5iZ/c8WAxEm9iVeo6oFx26J
+         TrCArA5/lv35vH0q54/SvPbQiZAUDkhW3S/YPMn0OPMWgnZweu6CzSYA9p1P0UqgUbDV
+         jbP2lA/uXqKURDXqcsLZY3WHG4q1MGmGxRv+Qf42nAqiddsvjxl4jsQtmv2wS/4Dc/wH
+         0m5w==
+X-Forwarded-Encrypted: i=1; AJvYcCV7jw8rQvgjuWL09G/NWKQIGbwO03d1e5n5WOvsFoCmCVEBn0hmvoHN6cLEFageIdVPt968PJdf3s1of+nngDIEiaqg5tc5A/67pIQB
+X-Gm-Message-State: AOJu0YxdNku6LX4jDnBooCtqlVJKIdDkynP6CNqfWlYUfC4O5P30s2tV
+	SZgI7Lofv+lQwSLpMzqVjIny6TfkA7tgIas4WqxJVXYz96JGYpvv8AfLGcvfNWM=
+X-Google-Smtp-Source: AGHT+IGrYJKauK6ZcJyKJz7JlCwCofgjda6+JxtqTQ2saoYuavom2kgtDdRJaPeiZoY+65A1na55Lg==
+X-Received: by 2002:a6b:7311:0:b0:7c8:4c27:810e with SMTP id e17-20020a6b7311000000b007c84c27810emr520564ioh.18.1711570483944;
+        Wed, 27 Mar 2024 13:14:43 -0700 (PDT)
+Received: from [100.64.0.1] ([170.85.6.190])
+        by smtp.gmail.com with ESMTPSA id g8-20020a02b708000000b0047469b04c35sm3465108jam.65.2024.03.27.13.14.42
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 27 Mar 2024 13:14:43 -0700 (PDT)
+Message-ID: <e409d77b-0dad-45c2-a507-a8b697ff4702@sifive.com>
+Date: Wed, 27 Mar 2024 15:14:41 -0500
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -56,101 +75,88 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Cc: Muhammad Usama Anjum <usama.anjum@collabora.com>,
- Nicolin Chen <nicolinc@nvidia.com>, kernel@collabora.com,
- iommu@lists.linux.dev, linux-kselftest@vger.kernel.org,
- linux-kernel@vger.kernel.org, Kevin Tian <kevin.tian@intel.com>,
- Shuah Khan <shuah@kernel.org>
-Subject: Re: [PATCH] selftests: iommu: add config needed for iommufd_fail_nth
+Subject: Re: [External] [PATCH v6 05/13] riscv: Only send remote fences when
+ some other CPU is online
+To: yunhui cui <cuiyunhui@bytedance.com>
+Cc: Palmer Dabbelt <palmer@dabbelt.com>, linux-riscv@lists.infradead.org,
+ linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+ Alexandre Ghiti <alexghiti@rivosinc.com>, Jisheng Zhang <jszhang@kernel.org>
+References: <20240327045035.368512-1-samuel.holland@sifive.com>
+ <20240327045035.368512-6-samuel.holland@sifive.com>
+ <CAEEQ3wm4SoC6rvv2qtVdP+4ZF1q41EEHUpwnagNgFwxkG5iw_w@mail.gmail.com>
 Content-Language: en-US
-To: Jason Gunthorpe <jgg@ziepe.ca>, Joao Martins <joao.m.martins@oracle.com>
-References: <20240325090048.1423908-1-usama.anjum@collabora.com>
- <31fcc276-acd6-4277-bd6c-4a871c7fb28a@collabora.com>
- <20240326150340.GE8419@ziepe.ca>
- <56cc8b9e-c1cf-4520-ba45-b1237e8b7b64@collabora.com>
- <20240327114958.GG8419@ziepe.ca>
- <51f493a9-08e7-44d8-ae4a-58b2994ea276@oracle.com>
- <f78b685d-a147-4b59-beb2-cde9d34ce22a@collabora.com>
- <e9cb60bf-5035-4fed-9b36-ca2edf048fe8@oracle.com>
- <20240327182050.GA1363414@ziepe.ca>
-From: Muhammad Usama Anjum <usama.anjum@collabora.com>
-In-Reply-To: <20240327182050.GA1363414@ziepe.ca>
+From: Samuel Holland <samuel.holland@sifive.com>
+In-Reply-To: <CAEEQ3wm4SoC6rvv2qtVdP+4ZF1q41EEHUpwnagNgFwxkG5iw_w@mail.gmail.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-On 3/27/24 11:20 PM, Jason Gunthorpe wrote:
-> On Wed, Mar 27, 2024 at 06:09:37PM +0000, Joao Martins wrote:
->> On 27/03/2024 17:49, Muhammad Usama Anjum wrote:
->>> On 3/27/24 7:59 PM, Joao Martins wrote:
->>>> On 27/03/2024 11:49, Jason Gunthorpe wrote:
->>>>> On Wed, Mar 27, 2024 at 03:14:25PM +0500, Muhammad Usama Anjum wrote:
->>>>>> On 3/26/24 8:03 PM, Jason Gunthorpe wrote:
->>>>>>> On Tue, Mar 26, 2024 at 06:09:34PM +0500, Muhammad Usama Anjum wrote:
->>>>>>>> Even after applying this config patch and following snippet (which doesn't
->>>>>>>> terminate the program if mmap doesn't allocate exactly as the hint), I'm
->>>>>>>> finding failed tests.
->>>>>>>>
->>>>>>>> @@ -1746,7 +1748,7 @@ FIXTURE_SETUP(iommufd_dirty_tracking)
->>>>>>>>         assert((uintptr_t)self->buffer % HUGEPAGE_SIZE == 0);
->>>>>>>>         vrc = mmap(self->buffer, variant->buffer_size, PROT_READ | PROT_WRITE,
->>>>>>>>                    mmap_flags, -1, 0);
->>>>>>>> -       assert(vrc == self->buffer);
->>>>>>>> +       assert(vrc == self->buffer);// ???
->>>>>>>>
->>>>>>>> On x86:
->>>>>>>> # Totals: pass:176 fail:4 xfail:0 xpass:0 skip:0 error:0
->>>>>>>> On ARM64:
->>>>>>>> # Totals: pass:166 fail:14 xfail:0 xpass:0 skip:0 error:0
->>>>>>>>
->>>>>>>> The log files are attached.
->>>>>>>
->>>>>>> You probably don't have enough transparent huge pages available to the process
->>>>>>>
->>>>>>>       echo 1024 > /proc/sys/vm/nr_hugepages
->>>>>> After making huge pages available, the iommufd test always passed on x86.
->>>>>> But there are still failures on arm64. I'm looking into the failures.
->>>>>
->>>>> Oh that is really strange. Joao? Nicolin?
->>>>>
->>>> Definitely strange, I'll have a look.
->>>>
->>>> So it set the expected number of dirty bits as that assert doesn't fail, but it
->>>> is failing when we check that even bits are set but not odd ones. Like it's
->>>> hasn't set those bits.
->>>>
->>>> For mock tests there should be no difference between x86 and ARM assuming the
->>>> typical 4K page-size. Maybe this is 64k base pages in ARM? That's the only thing
->>>> that I can think of that affected mock domain.
->>> The config is attached. The defaults are being used i.e., 4k page.
+Hi Yunhui,
+
+On 2024-03-27 1:16 AM, yunhui cui wrote:
+> On Wed, Mar 27, 2024 at 12:50 PM Samuel Holland
+> <samuel.holland@sifive.com> wrote:
 >>
->> Looks like CONFIG_IOMMUFD_DRIVER is not defined :(
+>> If no other CPU is online, a local cache or TLB flush is sufficient.
+>> These checks can be constant-folded when SMP is disabled.
 >>
->> Thus no bits are being set.
+>> Signed-off-by: Samuel Holland <samuel.holland@sifive.com>
+>> ---
+>>
+>> (no changes since v4)
+>>
+>> Changes in v4:
+>>  - New patch for v4
+>>
+>>  arch/riscv/mm/cacheflush.c | 4 +++-
+>>  arch/riscv/mm/tlbflush.c   | 4 +++-
+>>  2 files changed, 6 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/arch/riscv/mm/cacheflush.c b/arch/riscv/mm/cacheflush.c
+>> index d76fc73e594b..f5be1fec8191 100644
+>> --- a/arch/riscv/mm/cacheflush.c
+>> +++ b/arch/riscv/mm/cacheflush.c
+>> @@ -21,7 +21,9 @@ void flush_icache_all(void)
+>>  {
+>>         local_flush_icache_all();
+>>
+>> -       if (riscv_use_sbi_for_rfence())
+>> +       if (num_online_cpus() < 2)
+>> +               return;
+>> +       else if (riscv_use_sbi_for_rfence())
+>>                 sbi_remote_fence_i(NULL);
+>>         else
+>>                 on_each_cpu(ipi_remote_fence_i, NULL, 1);
+>> diff --git a/arch/riscv/mm/tlbflush.c b/arch/riscv/mm/tlbflush.c
+>> index da821315d43e..0901aa47b58f 100644
+>> --- a/arch/riscv/mm/tlbflush.c
+>> +++ b/arch/riscv/mm/tlbflush.c
+>> @@ -79,7 +79,9 @@ static void __ipi_flush_tlb_all(void *info)
+>>
+>>  void flush_tlb_all(void)
+>>  {
+>> -       if (riscv_use_sbi_for_rfence())
+>> +       if (num_online_cpus() < 2)
+>> +               local_flush_tlb_all();
+>> +       else if (riscv_use_sbi_for_rfence())
+>>                 sbi_remote_sfence_vma_asid(NULL, 0, FLUSH_TLB_MAX_SIZE, FLUSH_TLB_NO_ASID);
+>>         else
+>>                 on_each_cpu(__ipi_flush_tlb_all, NULL, 1);
+>> --
+>> 2.43.1
+>>
 > 
-> Oh! 
-> 
-> --- a/drivers/iommu/iommufd/Kconfig
-> +++ b/drivers/iommu/iommufd/Kconfig
-> @@ -37,6 +37,7 @@ config IOMMUFD_TEST
->         depends on DEBUG_KERNEL
->         depends on FAULT_INJECTION
->         depends on RUNTIME_TESTING_MENU
-> +       select IOMMUFD_DRIVER
->         default n
->         help
->           This is dangerous, do not enable unless running
-> 
-Tested this patch on my system and it fixes all issues for ARM64. Please
-add tag for this Kconfig patch:
-Tested by: Muhammad Usama Anjum <usama.anjum@collabora.com>
+> From a perceptual point of view, the modification here is not
+> necessary. There is such logic in on_each_cpu(). Can you share your
+> test data?
 
-Also please accept the patch in this current series.
-> 
-> ???
-> 
-> Jason
+The logic in on_each_cpu() doesn't apply when riscv_use_sbi_for_rfence() is
+true, so we would make unnecessary SBI calls, and cannot be oppimized out when
+CONFIG_SMP=n. The cover letter includes benchmarks for a representative
+single-core system (D1). There was no measurable performance impact from this
+portion of the series on multi-core systems. If there are specific benchmarks
+you think I should run, please let me know.
 
--- 
-BR,
-Muhammad Usama Anjum
+Regards,
+Samuel
+
 
