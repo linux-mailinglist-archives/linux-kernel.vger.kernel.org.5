@@ -1,144 +1,183 @@
-Return-Path: <linux-kernel+bounces-121537-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-121538-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5786C88E957
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 16:39:49 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2165988E95B
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 16:40:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 000BE29F85F
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 15:39:47 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B64261F31743
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 15:40:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 26FC513280E;
-	Wed, 27 Mar 2024 15:30:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1CE5E136E35;
+	Wed, 27 Mar 2024 15:31:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="RTuEzTHR"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="cPPCoECH"
+Received: from relay9-d.mail.gandi.net (relay9-d.mail.gandi.net [217.70.183.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4C47A132468;
-	Wed, 27 Mar 2024 15:30:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6BD90130A62;
+	Wed, 27 Mar 2024 15:31:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.199
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711553437; cv=none; b=Qb5n7EX1uLs+WSoLhrsCyHBkpQmCNmNRiraxCLkQEmn9f2r+EV87VlND+rwqn7sddcKnj6igG6Ydvgs+vrBoycMF+MVRLUysG4e0H89WiMVN4yGYo/IzXlho+2zUzF5JR6HaOBp1jdKH0+tA0vf6VUCcvu78sO654ug4cXpnJKc=
+	t=1711553499; cv=none; b=PnLYImQ2Qb53EpynzHMMQYwYzSQNXUXXcO3ywsUeEnYqHIxZzKQNbBPo6ydylyDWXNIRbE6tADULS1WapNvfHd8WzmDguXWmgr+tP8UnXG18NRBT7b1VK0pr/idXTXO1MjHpmu/h1H6S8W4tcE5N977bVtalJmJaTIj3SEBzYfU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711553437; c=relaxed/simple;
-	bh=5lCcbaEaSY7dHdLxssGWY/edPLmaKRsRypjga0DHgRQ=;
-	h=Mime-Version:Content-Type:Date:Message-Id:Cc:Subject:From:To:
-	 References:In-Reply-To; b=VpYfu6yJBHV0y5EGBvwRSkswtD/v3k8s+C8ta8tPPgPwqmsLUhXoqcAeTSZoacJsRN6NiOYbCU1qqPfU2C4uhO7a6WqTM7cSDKiVjG2if2KF8T+ry9/511gFyZsNScSZSpOHOCKSobTCgAjs7h/QR0UQnD9o9qzOoyU0EMJwodc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=RTuEzTHR; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E79D6C43390;
-	Wed, 27 Mar 2024 15:30:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711553437;
-	bh=5lCcbaEaSY7dHdLxssGWY/edPLmaKRsRypjga0DHgRQ=;
-	h=Date:Cc:Subject:From:To:References:In-Reply-To:From;
-	b=RTuEzTHRdnapeyHjFoSR9jpteDd+sibEeJ/TWAKFfDzLI0TGODFCO0FYHFmGf5jXd
-	 gJP06SupWUPkeX9f2NqvMFnh/5pF5WdSBz02QBFMBOsChwWBKpQeAwghpwvPjTKcNx
-	 qX7yFkfnKOzbrqD88EI9ZwWbLB44onO1bS2aW8XU5ovW1eC20mdyXhQxVVw+WO1hw4
-	 8KsfaqtigS4ksoNpvDRc/bTF9/ZZq86lRjq+cesllGxvGyEwMYZkdioWBuVj6b9BZR
-	 yPmwzaC1F2nJzklX2JxaGzDF/qlDtVpd9AKHkWUzM9sCIkzPEsKSRUOHiLD9veqwUu
-	 7/DoYQC0k8Q5A==
+	s=arc-20240116; t=1711553499; c=relaxed/simple;
+	bh=mwBtGNUxblz9ELVnWjEHwmx52TCyk02n4EbsLnuDYgc=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=gXgMf2zOR9BbF4gprJ/Lw8bV4VlbxaGECzJPNgRfpe//0YYTMdihWStplnePGl+dzMRL4/Wtkj5GRpy81HwnT57oQ66Tqsdg88xi6VtUdOJcW++ApE4erXbUzARAuqXG9/GhlYTDnfOLF3RQ3zgp5F6Lq6ch5pwj8TAVnkuRDq4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=cPPCoECH; arc=none smtp.client-ip=217.70.183.199
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id BF062FF809;
+	Wed, 27 Mar 2024 15:31:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1711553493;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=VySvFsifEsIDAGTx3NtOD1CADKRHQHcUpOrA/JHfJXk=;
+	b=cPPCoECHUD0yWRxW4YsnY6oyJsXwz3S5Gqsfi+BiUdivVYD2vZziEMGIfN11gla5LpiCC0
+	C8M1tr64RcRH+thLzpb/QCiuZs6f0ALnsJyEY8bjHY9rt0Dc+tAzKPtxcQOPBvTjdTLMbh
+	vdoHPiMjKgDASsHox8/XbYbeDnYRPrBoCtgiicRETwau9ux19FCn58FodkQtGThMbnmKFm
+	Pjv9ISJ77YpmRPCE+t+yyklKh6M9XICSjiMX0p+ONo+PUwyAUl6bHRbuJ/nDQP6zNTRupG
+	hekIkUtuo/UfRcVHmtEeFwsxppvzDz2NCxqZX+t4UX6S/QZGomonTnKZAnf1gA==
+Date: Wed, 27 Mar 2024 16:31:29 +0100
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Christian Marangi <ansuelsmth@gmail.com>
+Cc: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>, Richard Weinberger
+ <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, Jernej Skrabec
+ <jernej.skrabec@gmail.com>, Claudiu Beznea <claudiu.beznea@tuxon.dev>, Greg
+ Kroah-Hartman <gregkh@linuxfoundation.org>, Srinivas Kandagatla
+ <srinivas.kandagatla@linaro.org>, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Subject: Re: [PATCH v3] mtd: limit OTP NVMEM Cell parse to non Nand devices
+Message-ID: <20240327163129.18c95cfe@xps-13>
+In-Reply-To: <66042f0a.050a0220.374bd.5e4a@mx.google.com>
+References: <20240322040951.16680-1-ansuelsmth@gmail.com>
+	<44a377b11208ff33045f12f260b667dd@milecki.pl>
+	<66042f0a.050a0220.374bd.5e4a@mx.google.com>
+Organization: Bootlin
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
-Date: Wed, 27 Mar 2024 17:30:28 +0200
-Message-Id: <D04N1YLIAJQT.1WM3WVEU7R60G@kernel.org>
-Cc: "Shawn Guo" <shawnguo@kernel.org>, "Jonathan Corbet" <corbet@lwn.net>,
- "Sascha Hauer" <s.hauer@pengutronix.de>, "Pengutronix Kernel Team"
- <kernel@pengutronix.de>, "Fabio Estevam" <festevam@gmail.com>, "NXP Linux
- Team" <linux-imx@nxp.com>, "Ahmad Fatoum" <a.fatoum@pengutronix.de>, "sigma
- star Kernel Team" <upstream+dcp@sigma-star.at>, "David Howells"
- <dhowells@redhat.com>, "Li Yang" <leoyang.li@nxp.com>, "Paul Moore"
- <paul@paul-moore.com>, "James Morris" <jmorris@namei.org>, "Serge E.
- Hallyn" <serge@hallyn.com>, "Paul E. McKenney" <paulmck@kernel.org>, "Randy
- Dunlap" <rdunlap@infradead.org>, "Catalin Marinas"
- <catalin.marinas@arm.com>, "Rafael J. Wysocki"
- <rafael.j.wysocki@intel.com>, "Tejun Heo" <tj@kernel.org>, "Steven Rostedt
- (Google)" <rostedt@goodmis.org>, <linux-doc@vger.kernel.org>,
- <linux-kernel@vger.kernel.org>, <linux-integrity@vger.kernel.org>,
- <keyrings@vger.kernel.org>, <linux-crypto@vger.kernel.org>,
- <linux-arm-kernel@lists.infradead.org>, <linuxppc-dev@lists.ozlabs.org>,
- <linux-security-module@vger.kernel.org>
-Subject: Re: [PATCH v7 2/6] KEYS: trusted: improve scalability of trust
- source config
-From: "Jarkko Sakkinen" <jarkko@kernel.org>
-To: "David Gstir" <david@sigma-star.at>, "Mimi Zohar" <zohar@linux.ibm.com>,
- "James Bottomley" <jejb@linux.ibm.com>, "Herbert Xu"
- <herbert@gondor.apana.org.au>, "David S. Miller" <davem@davemloft.net>
-X-Mailer: aerc 0.17.0
-References: <20240327082454.13729-1-david@sigma-star.at>
- <20240327082454.13729-3-david@sigma-star.at>
-In-Reply-To: <20240327082454.13729-3-david@sigma-star.at>
+Content-Transfer-Encoding: quoted-printable
+X-GND-Sasl: miquel.raynal@bootlin.com
 
-On Wed Mar 27, 2024 at 10:24 AM EET, David Gstir wrote:
-> Enabling trusted keys requires at least one trust source implementation
-> (currently TPM, TEE or CAAM) to be enabled. Currently, this is
-> done by checking each trust source's config option individually.
-> This does not scale when more trust sources like the one for DCP
-> are added, because the condition will get long and hard to read.
->
-> Add config HAVE_TRUSTED_KEYS which is set to true by each trust source
-> once its enabled and adapt the check for having at least one active trust
-> source to use this option. Whenever a new trust source is added, it now
-> needs to select HAVE_TRUSTED_KEYS.
->
-> Signed-off-by: David Gstir <david@sigma-star.at>
-> ---
->  security/keys/trusted-keys/Kconfig | 10 ++++++++--
->  1 file changed, 8 insertions(+), 2 deletions(-)
->
-> diff --git a/security/keys/trusted-keys/Kconfig b/security/keys/trusted-k=
-eys/Kconfig
-> index dbfdd8536468..553dc117f385 100644
-> --- a/security/keys/trusted-keys/Kconfig
-> +++ b/security/keys/trusted-keys/Kconfig
-> @@ -1,3 +1,6 @@
-> +config HAVE_TRUSTED_KEYS
-> +	bool
-> +
->  config TRUSTED_KEYS_TPM
->  	bool "TPM-based trusted keys"
->  	depends on TCG_TPM >=3D TRUSTED_KEYS
-> @@ -9,6 +12,7 @@ config TRUSTED_KEYS_TPM
->  	select ASN1_ENCODER
->  	select OID_REGISTRY
->  	select ASN1
-> +	select HAVE_TRUSTED_KEYS
->  	help
->  	  Enable use of the Trusted Platform Module (TPM) as trusted key
->  	  backend. Trusted keys are random number symmetric keys,
-> @@ -20,6 +24,7 @@ config TRUSTED_KEYS_TEE
->  	bool "TEE-based trusted keys"
->  	depends on TEE >=3D TRUSTED_KEYS
->  	default y
-> +	select HAVE_TRUSTED_KEYS
->  	help
->  	  Enable use of the Trusted Execution Environment (TEE) as trusted
->  	  key backend.
-> @@ -29,10 +34,11 @@ config TRUSTED_KEYS_CAAM
->  	depends on CRYPTO_DEV_FSL_CAAM_JR >=3D TRUSTED_KEYS
->  	select CRYPTO_DEV_FSL_CAAM_BLOB_GEN
->  	default y
-> +	select HAVE_TRUSTED_KEYS
->  	help
->  	  Enable use of NXP's Cryptographic Accelerator and Assurance Module
->  	  (CAAM) as trusted key backend.
-> =20
-> -if !TRUSTED_KEYS_TPM && !TRUSTED_KEYS_TEE && !TRUSTED_KEYS_CAAM
-> -comment "No trust source selected!"
-> +if !HAVE_TRUSTED_KEYS
-> +	comment "No trust source selected!"
->  endif
+Hi Christian,
 
-Tested-by: Jarkko Sakkinen <jarkko@kernel.org> # for TRUSTED_KEYS_TPM
-Reviewed-by: Jarkko Sakkinen <jarkko@kernel.org>
+ansuelsmth@gmail.com wrote on Wed, 27 Mar 2024 15:36:54 +0100:
 
-BR, Jarkko
+> On Wed, Mar 27, 2024 at 03:26:55PM +0100, Rafa=C5=82 Mi=C5=82ecki wrote:
+> > On 2024-03-22 05:09, Christian Marangi wrote: =20
+> > > MTD OTP logic is very fragile and can be problematic with some specif=
+ic
+> > > kind of devices.
+> > >=20
+> > > NVMEM across the years had various iteration on how Cells could be
+> > > declared in DT and MTD OTP probably was left behind and
+> > > add_legacy_fixed_of_cells was enabled without thinking of the
+> > > consequences. =20
+> >=20
+> > Er... thank you?
+> > =20
+>=20
+> Probably made some bad assumption and sorry for it!
+
+Well, "not thinking about all consequences" seems always legitimate to
+me, we are not robots. Anyway, I agree we should drop this sentence.
+
+> > > That option enables NVMEM to scan the provided of_node and treat each
+> > > child as a NVMEM Cell, this was to support legacy NVMEM implementation
+> > > and don't cause regression.
+> > >=20
+> > > This is problematic if we have devices like Nand where the OTP is
+> > > triggered by setting a special mode in the flash. In this context real
+> > > partitions declared in the Nand node are registered as OTP Cells and
+> > > this cause probe fail with -EINVAL error.
+> > >=20
+> > > This was never notice due to the fact that till now, no Nand supported
+> > > the OTP feature. With commit e87161321a40 ("mtd: rawnand: macronix: O=
+TP
+> > > access for MX30LFxG18AC") this changed and coincidentally this Nand is
+> > > used on an FritzBox 7530 supported on OpenWrt. =20
+> >=20
+> > So as you noticed this problem was *exposed* by adding OTP support for
+> > Macronix NAND chips.
+> >=20
+> >  =20
+> > > Alternative and more robust way to declare OTP Cells are already
+> > > prossible by using the fixed-layout node or by declaring a child node
+> > > with the compatible set to "otp-user" or "otp-factory".
+> > >=20
+> > > To fix this and limit any regression with other MTD that makes use of
+> > > declaring OTP as direct child of the dev node, disable
+> > > add_legacy_fixed_of_cells if we detect the MTD type is Nand.
+> > >=20
+> > > With the following logic, the OTP NVMEM entry is correctly created wi=
+th
+> > > no Cells and the MTD Nand is correctly probed and partitions are
+> > > correctly exposed.
+> > >=20
+> > > Fixes: 2cc3b37f5b6d ("nvmem: add explicit config option to read old
+> > > syntax fixed OF cells") =20
+> >=20
+> > It's not that commit however that introduced the problem. Introducing
+> > "add_legacy_fixed_of_cells" just added a clean way of enabling parsing
+> > of old cells syntax. Even before my commit NVMEM subsystem was looking
+> > for NVMEM cells in NAND devices.
+> >=20
+> > I booted kernel 6.6 which has commit e87161321a40 ("mtd: rawnand:
+> > macronix: OTP > access for MX30LFxG18AC") but does NOT have commit
+> > 2cc3b37f5b6d ("nvmem: add explicit config option to read old syntax
+> > fixed OF cells").
+> >=20
+> > Look at this log from Broadcom Northstar (Linux 6.6):
+> > [    0.410107] nand: device found, Manufacturer ID: 0xc2, Chip ID: 0xdc
+> > [    0.416531] nand: Macronix MX30LF4G18AC
+> > [    0.420409] nand: 512 MiB, SLC, erase size: 128 KiB, page size: 2048=
+, OOB
+> > size: 64
+> > [    0.428022] iproc_nand 18028000.nand-controller: detected 512MiB tot=
+al,
+> > 128KiB blocks, 2KiB pages, 16B OOB, 8-bit, BCH-8
+> > [    0.438991] Scanning device for bad blocks
+> > [    0.873598] Bad eraseblock 738 at 0x000005c40000
+> > [    1.030279] random: crng init done
+> > [    1.854895] Bad eraseblock 2414 at 0x000012dc0000
+> > [    2.657354] Bad eraseblock 3783 at 0x00001d8e0000
+> > [    2.662967] Bad eraseblock 3785 at 0x00001d920000
+> > [    2.848418] nvmem user-otp1: nvmem: invalid reg on
+> > /nand-controller@18028000/nand@0
+> > [    2.856126] iproc_nand 18028000.nand-controller: error -EINVAL: Fail=
+ed to
+> > register OTP NVMEM device
+> >=20
+> > So to summary it up:
+> > 1. Problem exists since much earlier and wasn't introduced by 2cc3b37f5=
+b6d
+> > 2. Commit 2cc3b37f5b6d just gives you a clean way of solving this issue
+> > 3. Problem was exposed by commit e87161321a40
+> > 4. We miss fix for v6.6 which doesn't have 2cc3b37f5b6d (it hit v6.7)
+> >  =20
+>=20
+> So the thing was broken all along? Maybe the regression was introduced
+> when OF support for NVMEM cell was introduced? (and OF scan was enabled
+> by default?)
+>=20
+> Anyway Sorry for adding the wrong fixes, maybe Miquel can remote the
+> commit from mtd/fixes and fix the problematic fixes tag?
+
+Yes, please send a v4 (with the sentence above updated) and I will drop
+v3.
+
+Thanks,
+Miqu=C3=A8l
 
