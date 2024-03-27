@@ -1,53 +1,58 @@
-Return-Path: <linux-kernel+bounces-121083-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-121084-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EA3A188E307
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 14:40:26 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5617788E231
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 14:21:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6D1D8B22982
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 13:21:15 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0854D2969AB
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 13:21:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B70E416D329;
-	Wed, 27 Mar 2024 12:20:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 248F913B58A;
+	Wed, 27 Mar 2024 12:20:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MSyYrmfH"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ltudVkJn"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DEE6516D31A;
-	Wed, 27 Mar 2024 12:20:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4325F16D336;
+	Wed, 27 Mar 2024 12:20:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711542034; cv=none; b=pyB3rAS0FqMjzT1u2Gr6lqXOI3HHfd7fpIPEugcIiykOxG9AwSNJc8N21VbOfwkDJjEdUuB8kUhrpJphuIEab/Ilr/OT14FCC5s4FdAEaULlYyuOUQO8BMUK7f7D1nTXfUNahLkF36+9IBJiVbDAke4sKswSJt4eDq/skLpRcpQ=
+	t=1711542037; cv=none; b=QouIQITf0TQvrCAg29iLmofWW8x5qRcdiyWWS9DHEx306K1Kj16N7qbKScuRm9tYV0ueOfZ5nIfBXo5216sDIKAJBvCdKc9d6YQHIeqlmikPWOz9HiaXopDZtAxIRzAYxQiN4Ae635QVKEnHMJDzi4/H5Z1bxS70vQ2tSpJq7ig=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711542034; c=relaxed/simple;
-	bh=IdWLthWxUzEQ23ZE4yjF997vSGpqu22S+rDnFxolAZk=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=kekq52Wr4BeKvfJvDUtux3uKnxs9zA2AGAZHOcgyN2i6hoZ/gamilVJ4d2U/biquot0Z/peijkHai2f9fFlcsm3jWPb5dTTZrDA0ca7Q/gXK3L2mBNRWzFBIJBsB1v9rzFUmTbnfMrnVxBZdMncyN+S5jAJM2o2f9hes5jd7Ojs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MSyYrmfH; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2E521C433C7;
-	Wed, 27 Mar 2024 12:20:33 +0000 (UTC)
+	s=arc-20240116; t=1711542037; c=relaxed/simple;
+	bh=Yyx07+pHhAm0xCWyVCyoDMAiZUS1MgVuXwXcfwACso8=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=eroD9nq6ijKLa5NhaG0mIBihSENG5pUu4KKwwjCeM6kfzdKblJCwBlVbBAnnC1DT3SskLEIFHImxe2+rr0kyhU+2oV6J4Pc3CFX3T7RZNSiH08CVF4R4pYKpLGsCWxIyjTnZYu3cK+NRrNfCTdHuwnRiiNqnQO2z4rIULFezlyg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ltudVkJn; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 13747C433F1;
+	Wed, 27 Mar 2024 12:20:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711542033;
-	bh=IdWLthWxUzEQ23ZE4yjF997vSGpqu22S+rDnFxolAZk=;
+	s=k20201202; t=1711542037;
+	bh=Yyx07+pHhAm0xCWyVCyoDMAiZUS1MgVuXwXcfwACso8=;
 	h=From:To:Cc:Subject:Date:From;
-	b=MSyYrmfHmCqqDiKrLCtDKMDkUXl47dUejp9ukVmHJdx2LJFQX862PqM6C7sVLtu24
-	 6fQAIck/tkuy2XHcIThxd4UIDqCtNhcM1YqamVZTIrcltwC6FzGLSXWj9qPvoIIz15
-	 NbAWCvBic/dXr0KlbH6FD9ltNvlEni8OY0dF0HwDbCBStGTLQueewOozcXkid23jGi
-	 5lwDUkZhLZ8umdRNVaSAqDBcXP8dWluW1kmATcGMshTTCOBtYFOKRmmjSxTn6rZPh5
-	 qE0pIWSCsvWsKteokJWryScZDC0Jm2U43qcGqbk/ziCzEc6lStJKVnymm7rLxjyU6C
-	 SkSJdbIoIHDxw==
+	b=ltudVkJnD/rFiVEWqHwyPWDUc4cYN0skkXidnWbZYjzh1gXF1hb+SG7NbLOu2E/tz
+	 xz/eq8JV/IX0C/ItBz9LyuXdNypNYSko1TCXqx/XiUtYrcZssMwB5QmwzQ4636FakV
+	 j3JaVBV6lsz2qUgi/xFmEE3+x/LvdUNRhhfThsBY72x9Vl+BOGX8p3hEGA+7ju2Po+
+	 OBYEU6gwI6H1dTydTGPRZHgwXjlywZKu6Pi5W12Os5A1fOxDGiUTStoUPD0y9sgo/3
+	 fKldN8/f5SYS1Ej0K5iweC0l6jijB94ApLksEETuXC2CaTWf4Mms5Tb6zGPa4R8J6a
+	 hWAt1L5hrXehw==
 From: Sasha Levin <sashal@kernel.org>
 To: stable@vger.kernel.org,
-	chenhuacai@kernel.org
-Cc: Huacai Chen <chenhuacai@loongson.cn>,
-	loongarch@lists.linux.dev,
+	chuntao.tso@amd.com
+Cc: Mario Limonciello <mario.limonciello@amd.com>,
+	Alex Deucher <alexander.deucher@amd.com>,
+	Alvin Lee <alvin.lee2@amd.com>,
+	Alex Hung <alex.hung@amd.com>,
+	Daniel Wheeler <daniel.wheeler@amd.com>,
+	amd-gfx@lists.freedesktop.org,
+	dri-devel@lists.freedesktop.org,
 	linux-kernel@vger.kernel.org
-Subject: FAILED: Patch "LoongArch: Define the __io_aw() hook as mmiowb()" failed to apply to 5.10-stable tree
-Date: Wed, 27 Mar 2024 08:20:31 -0400
-Message-ID: <20240327122032.2836118-1-sashal@kernel.org>
+Subject: FAILED: Patch "drm/amd/display: Amend coasting vtotal for replay low hz" failed to apply to 5.10-stable tree
+Date: Wed, 27 Mar 2024 08:20:34 -0400
+Message-ID: <20240327122035.2836155-1-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -69,115 +74,157 @@ Sasha
 
 ------------------ original commit in Linus's tree ------------------
 
-From 9c68ece8b2a5c5ff9b2fcaea923dd73efeb174cd Mon Sep 17 00:00:00 2001
-From: Huacai Chen <chenhuacai@loongson.cn>
-Date: Tue, 19 Mar 2024 15:50:34 +0800
-Subject: [PATCH] LoongArch: Define the __io_aw() hook as mmiowb()
+From 8e054b0f1e71531762b8ded7f66c1b4af734671b Mon Sep 17 00:00:00 2001
+From: ChunTao Tso <chuntao.tso@amd.com>
+Date: Tue, 20 Feb 2024 17:08:39 +0800
+Subject: [PATCH] drm/amd/display: Amend coasting vtotal for replay low hz
 
-Commit fb24ea52f78e0d595852e ("drivers: Remove explicit invocations of
-mmiowb()") remove all mmiowb() in drivers, but it says:
+[WHY]
+The original coasting vtotal is 2 bytes, and it need to
+be amended to 4 bytes because low hz case.
 
-"NOTE: mmiowb() has only ever guaranteed ordering in conjunction with
-spin_unlock(). However, pairing each mmiowb() removal in this patch with
-the corresponding call to spin_unlock() is not at all trivial, so there
-is a small chance that this change may regress any drivers incorrectly
-relying on mmiowb() to order MMIO writes between CPUs using lock-free
-synchronisation."
+[HOW]
+Amend coasting vtotal from 2 bytes to 4 bytes.
 
-The mmio in radeon_ring_commit() is protected by a mutex rather than a
-spinlock, but in the mutex fastpath it behaves similar to spinlock. We
-can add mmiowb() calls in the radeon driver but the maintainer says he
-doesn't like such a workaround, and radeon is not the only example of
-mutex protected mmio.
-
-So we should extend the mmiowb tracking system from spinlock to mutex,
-and maybe other locking primitives. This is not easy and error prone, so
-we solve it in the architectural code, by simply defining the __io_aw()
-hook as mmiowb(). And we no longer need to override queued_spin_unlock()
-so use the generic definition.
-
-Without this, we get such an error when run 'glxgears' on weak ordering
-architectures such as LoongArch:
-
-radeon 0000:04:00.0: ring 0 stalled for more than 10324msec
-radeon 0000:04:00.0: ring 3 stalled for more than 10240msec
-radeon 0000:04:00.0: GPU lockup (current fence id 0x000000000001f412 last fence id 0x000000000001f414 on ring 3)
-radeon 0000:04:00.0: GPU lockup (current fence id 0x000000000000f940 last fence id 0x000000000000f941 on ring 0)
-radeon 0000:04:00.0: scheduling IB failed (-35).
-[drm:radeon_gem_va_ioctl [radeon]] *ERROR* Couldn't update BO_VA (-35)
-radeon 0000:04:00.0: scheduling IB failed (-35).
-[drm:radeon_gem_va_ioctl [radeon]] *ERROR* Couldn't update BO_VA (-35)
-radeon 0000:04:00.0: scheduling IB failed (-35).
-[drm:radeon_gem_va_ioctl [radeon]] *ERROR* Couldn't update BO_VA (-35)
-radeon 0000:04:00.0: scheduling IB failed (-35).
-[drm:radeon_gem_va_ioctl [radeon]] *ERROR* Couldn't update BO_VA (-35)
-radeon 0000:04:00.0: scheduling IB failed (-35).
-[drm:radeon_gem_va_ioctl [radeon]] *ERROR* Couldn't update BO_VA (-35)
-radeon 0000:04:00.0: scheduling IB failed (-35).
-[drm:radeon_gem_va_ioctl [radeon]] *ERROR* Couldn't update BO_VA (-35)
-radeon 0000:04:00.0: scheduling IB failed (-35).
-[drm:radeon_gem_va_ioctl [radeon]] *ERROR* Couldn't update BO_VA (-35)
-
-Link: https://lore.kernel.org/dri-devel/29df7e26-d7a8-4f67-b988-44353c4270ac@amd.com/T/#t
-Link: https://lore.kernel.org/linux-arch/20240301130532.3953167-1-chenhuacai@loongson.cn/T/#t
+Cc: Mario Limonciello <mario.limonciello@amd.com>
+Cc: Alex Deucher <alexander.deucher@amd.com>
 Cc: stable@vger.kernel.org
-Signed-off-by: Huacai Chen <chenhuacai@loongson.cn>
+Reviewed-by: Alvin Lee <alvin.lee2@amd.com>
+Acked-by: Alex Hung <alex.hung@amd.com>
+Signed-off-by: ChunTao Tso <chuntao.tso@amd.com>
+Tested-by: Daniel Wheeler <daniel.wheeler@amd.com>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 ---
- arch/loongarch/include/asm/Kbuild      |  1 +
- arch/loongarch/include/asm/io.h        |  2 ++
- arch/loongarch/include/asm/qspinlock.h | 18 ------------------
- 3 files changed, 3 insertions(+), 18 deletions(-)
- delete mode 100644 arch/loongarch/include/asm/qspinlock.h
+ drivers/gpu/drm/amd/display/dc/dc_types.h                 | 4 ++--
+ drivers/gpu/drm/amd/display/dc/inc/link.h                 | 4 ++--
+ .../display/dc/link/protocols/link_edp_panel_control.c    | 4 ++--
+ .../display/dc/link/protocols/link_edp_panel_control.h    | 4 ++--
+ drivers/gpu/drm/amd/display/dmub/inc/dmub_cmd.h           | 8 ++++++++
+ drivers/gpu/drm/amd/display/modules/power/power_helpers.c | 2 +-
+ drivers/gpu/drm/amd/display/modules/power/power_helpers.h | 2 +-
+ 7 files changed, 18 insertions(+), 10 deletions(-)
 
-diff --git a/arch/loongarch/include/asm/Kbuild b/arch/loongarch/include/asm/Kbuild
-index a97c0edbb866a..2dbec7853ae86 100644
---- a/arch/loongarch/include/asm/Kbuild
-+++ b/arch/loongarch/include/asm/Kbuild
-@@ -6,6 +6,7 @@ generic-y += mcs_spinlock.h
- generic-y += parport.h
- generic-y += early_ioremap.h
- generic-y += qrwlock.h
-+generic-y += qspinlock.h
- generic-y += rwsem.h
- generic-y += segment.h
- generic-y += user.h
-diff --git a/arch/loongarch/include/asm/io.h b/arch/loongarch/include/asm/io.h
-index c486c2341b662..4a8adcca329b8 100644
---- a/arch/loongarch/include/asm/io.h
-+++ b/arch/loongarch/include/asm/io.h
-@@ -71,6 +71,8 @@ extern void __memcpy_fromio(void *to, const volatile void __iomem *from, size_t
- #define memcpy_fromio(a, c, l) __memcpy_fromio((a), (c), (l))
- #define memcpy_toio(c, a, l)   __memcpy_toio((c), (a), (l))
+diff --git a/drivers/gpu/drm/amd/display/dc/dc_types.h b/drivers/gpu/drm/amd/display/dc/dc_types.h
+index 9900dda2eef5c..be2ac5c442a48 100644
+--- a/drivers/gpu/drm/amd/display/dc/dc_types.h
++++ b/drivers/gpu/drm/amd/display/dc/dc_types.h
+@@ -1085,9 +1085,9 @@ struct replay_settings {
+ 	/* SMU optimization is enabled */
+ 	bool replay_smu_opt_enable;
+ 	/* Current Coasting vtotal */
+-	uint16_t coasting_vtotal;
++	uint32_t coasting_vtotal;
+ 	/* Coasting vtotal table */
+-	uint16_t coasting_vtotal_table[PR_COASTING_TYPE_NUM];
++	uint32_t coasting_vtotal_table[PR_COASTING_TYPE_NUM];
+ 	/* Maximum link off frame count */
+ 	enum replay_link_off_frame_count_level link_off_frame_count_level;
+ 	/* Replay pseudo vtotal for abm + ips on full screen video which can improve ips residency */
+diff --git a/drivers/gpu/drm/amd/display/dc/inc/link.h b/drivers/gpu/drm/amd/display/dc/inc/link.h
+index 26fe81f213da5..bf29fc58ea6a6 100644
+--- a/drivers/gpu/drm/amd/display/dc/inc/link.h
++++ b/drivers/gpu/drm/amd/display/dc/inc/link.h
+@@ -285,12 +285,12 @@ struct link_service {
+ 			enum replay_FW_Message_type msg,
+ 			union dmub_replay_cmd_set *cmd_data);
+ 	bool (*edp_set_coasting_vtotal)(
+-			struct dc_link *link, uint16_t coasting_vtotal);
++			struct dc_link *link, uint32_t coasting_vtotal);
+ 	bool (*edp_replay_residency)(const struct dc_link *link,
+ 			unsigned int *residency, const bool is_start,
+ 			const bool is_alpm);
+ 	bool (*edp_set_replay_power_opt_and_coasting_vtotal)(struct dc_link *link,
+-			const unsigned int *power_opts, uint16_t coasting_vtotal);
++			const unsigned int *power_opts, uint32_t coasting_vtotal);
  
-+#define __io_aw() mmiowb()
-+
- #include <asm-generic/io.h>
+ 	bool (*edp_wait_for_t12)(struct dc_link *link);
+ 	bool (*edp_is_ilr_optimization_required)(struct dc_link *link,
+diff --git a/drivers/gpu/drm/amd/display/dc/link/protocols/link_edp_panel_control.c b/drivers/gpu/drm/amd/display/dc/link/protocols/link_edp_panel_control.c
+index acfbbc638cc64..3baa2bdd6dd65 100644
+--- a/drivers/gpu/drm/amd/display/dc/link/protocols/link_edp_panel_control.c
++++ b/drivers/gpu/drm/amd/display/dc/link/protocols/link_edp_panel_control.c
+@@ -1034,7 +1034,7 @@ bool edp_send_replay_cmd(struct dc_link *link,
+ 	return true;
+ }
  
- #define ARCH_HAS_VALID_PHYS_ADDR_RANGE
-diff --git a/arch/loongarch/include/asm/qspinlock.h b/arch/loongarch/include/asm/qspinlock.h
-deleted file mode 100644
-index 34f43f8ad5912..0000000000000
---- a/arch/loongarch/include/asm/qspinlock.h
-+++ /dev/null
-@@ -1,18 +0,0 @@
--/* SPDX-License-Identifier: GPL-2.0 */
--#ifndef _ASM_QSPINLOCK_H
--#define _ASM_QSPINLOCK_H
--
--#include <asm-generic/qspinlock_types.h>
--
--#define queued_spin_unlock queued_spin_unlock
--
--static inline void queued_spin_unlock(struct qspinlock *lock)
--{
--	compiletime_assert_atomic_type(lock->locked);
--	c_sync();
--	WRITE_ONCE(lock->locked, 0);
--}
--
--#include <asm-generic/qspinlock.h>
--
--#endif /* _ASM_QSPINLOCK_H */
+-bool edp_set_coasting_vtotal(struct dc_link *link, uint16_t coasting_vtotal)
++bool edp_set_coasting_vtotal(struct dc_link *link, uint32_t coasting_vtotal)
+ {
+ 	struct dc *dc = link->ctx->dc;
+ 	struct dmub_replay *replay = dc->res_pool->replay;
+@@ -1073,7 +1073,7 @@ bool edp_replay_residency(const struct dc_link *link,
+ }
+ 
+ bool edp_set_replay_power_opt_and_coasting_vtotal(struct dc_link *link,
+-	const unsigned int *power_opts, uint16_t coasting_vtotal)
++	const unsigned int *power_opts, uint32_t coasting_vtotal)
+ {
+ 	struct dc  *dc = link->ctx->dc;
+ 	struct dmub_replay *replay = dc->res_pool->replay;
+diff --git a/drivers/gpu/drm/amd/display/dc/link/protocols/link_edp_panel_control.h b/drivers/gpu/drm/amd/display/dc/link/protocols/link_edp_panel_control.h
+index 34e521af7bb48..a158c6234d422 100644
+--- a/drivers/gpu/drm/amd/display/dc/link/protocols/link_edp_panel_control.h
++++ b/drivers/gpu/drm/amd/display/dc/link/protocols/link_edp_panel_control.h
+@@ -59,12 +59,12 @@ bool edp_setup_replay(struct dc_link *link,
+ bool edp_send_replay_cmd(struct dc_link *link,
+ 			enum replay_FW_Message_type msg,
+ 			union dmub_replay_cmd_set *cmd_data);
+-bool edp_set_coasting_vtotal(struct dc_link *link, uint16_t coasting_vtotal);
++bool edp_set_coasting_vtotal(struct dc_link *link, uint32_t coasting_vtotal);
+ bool edp_replay_residency(const struct dc_link *link,
+ 	unsigned int *residency, const bool is_start, const bool is_alpm);
+ bool edp_get_replay_state(const struct dc_link *link, uint64_t *state);
+ bool edp_set_replay_power_opt_and_coasting_vtotal(struct dc_link *link,
+-	const unsigned int *power_opts, uint16_t coasting_vtotal);
++	const unsigned int *power_opts, uint32_t coasting_vtotal);
+ bool edp_wait_for_t12(struct dc_link *link);
+ bool edp_is_ilr_optimization_required(struct dc_link *link,
+        struct dc_crtc_timing *crtc_timing);
+diff --git a/drivers/gpu/drm/amd/display/dmub/inc/dmub_cmd.h b/drivers/gpu/drm/amd/display/dmub/inc/dmub_cmd.h
+index a529e369b2ace..af3fe8bb0728b 100644
+--- a/drivers/gpu/drm/amd/display/dmub/inc/dmub_cmd.h
++++ b/drivers/gpu/drm/amd/display/dmub/inc/dmub_cmd.h
+@@ -3238,6 +3238,14 @@ struct dmub_cmd_replay_set_coasting_vtotal_data {
+ 	 * Currently the support is only for 0 or 1
+ 	 */
+ 	uint8_t panel_inst;
++	/**
++	 * 16-bit value dicated by driver that indicates the coasting vtotal high byte part.
++	 */
++	uint16_t coasting_vtotal_high;
++	/**
++	 * Explicit padding to 4 byte boundary.
++	 */
++	uint8_t pad[2];
+ };
+ 
+ /**
+diff --git a/drivers/gpu/drm/amd/display/modules/power/power_helpers.c b/drivers/gpu/drm/amd/display/modules/power/power_helpers.c
+index e304e8435fb8f..2a3698fd2dc24 100644
+--- a/drivers/gpu/drm/amd/display/modules/power/power_helpers.c
++++ b/drivers/gpu/drm/amd/display/modules/power/power_helpers.c
+@@ -975,7 +975,7 @@ bool psr_su_set_dsc_slice_height(struct dc *dc, struct dc_link *link,
+ 
+ void set_replay_coasting_vtotal(struct dc_link *link,
+ 	enum replay_coasting_vtotal_type type,
+-	uint16_t vtotal)
++	uint32_t vtotal)
+ {
+ 	link->replay_settings.coasting_vtotal_table[type] = vtotal;
+ }
+diff --git a/drivers/gpu/drm/amd/display/modules/power/power_helpers.h b/drivers/gpu/drm/amd/display/modules/power/power_helpers.h
+index bef4815e1703d..ff7e6f3cd6be2 100644
+--- a/drivers/gpu/drm/amd/display/modules/power/power_helpers.h
++++ b/drivers/gpu/drm/amd/display/modules/power/power_helpers.h
+@@ -56,7 +56,7 @@ bool dmub_init_abm_config(struct resource_pool *res_pool,
+ void init_replay_config(struct dc_link *link, struct replay_config *pr_config);
+ void set_replay_coasting_vtotal(struct dc_link *link,
+ 	enum replay_coasting_vtotal_type type,
+-	uint16_t vtotal);
++	uint32_t vtotal);
+ void set_replay_ips_full_screen_video_src_vtotal(struct dc_link *link, uint16_t vtotal);
+ void calculate_replay_link_off_frame_count(struct dc_link *link,
+ 	uint16_t vtotal, uint16_t htotal);
 -- 
 2.43.0
 
