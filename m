@@ -1,296 +1,130 @@
-Return-Path: <linux-kernel+bounces-121657-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-121658-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6830488EBC8
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 17:56:57 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AA8F488EBCA
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 17:57:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8A92E1C2A4F6
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 16:56:56 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id ACF951C2718F
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 16:57:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6B14614C5A7;
-	Wed, 27 Mar 2024 16:56:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2459914D422;
+	Wed, 27 Mar 2024 16:57:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="o6pyTYKO"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="d0vjn7kN"
+Received: from mail-ej1-f48.google.com (mail-ej1-f48.google.com [209.85.218.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E447131BA9;
-	Wed, 27 Mar 2024 16:56:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0189614D29E
+	for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 16:57:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711558602; cv=none; b=mgPtx9dMz3zsy8B22hioTEszSH6sA7kgfSJF8Vz4gEQ2ArW/sO4hcjE2tlaTO63l/SexWFY88H0sJMYz8VYLj0Q6tqbaYYND1ra5t40ExR/5ySiSeoexO9fACa8gvDmstaRiXc26JlQPA6TF4/GUrvq5ya1cIqK7CZ0axGPnqcI=
+	t=1711558625; cv=none; b=n3hmmqZPBn9Xpm4Cm18OBsXyMIHJEEHqZbp9vqDU7MHJHAt47OtO9o7G9EFSfUI5rjx+ZBfgw4ZFdF35nl80IqUvn9ZgL/ggnl8raK74XahIs3MY21mcbpbiwzFOE9xZD6q9shgtAvdpMDrEZlxleqdX4sD57hHXZS/NHc2pa2I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711558602; c=relaxed/simple;
-	bh=HiC7BqQmXRl4D1EayBeDeK4Ew6tPWv+jQqStxIpWhnA=;
-	h=Mime-Version:Content-Type:Date:Message-Id:To:Cc:Subject:From:
-	 References:In-Reply-To; b=OAtefInDIXmztGFHXwwRc4k+32acnxdhOn74VmxL/zckoOa4WfM1Fs9DbIy+CDhJlZQQ7mrMvAHO8GnrrrC7nQp7kWy9pcj90zRZsytMuoKw1TvMEIT8bttnwNCLnYNz9yCmQm87+WEaVLImdcI7koStt13t+bO0t+VZw2Z9HvU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=o6pyTYKO; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AA65EC433C7;
-	Wed, 27 Mar 2024 16:56:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711558602;
-	bh=HiC7BqQmXRl4D1EayBeDeK4Ew6tPWv+jQqStxIpWhnA=;
-	h=Date:To:Cc:Subject:From:References:In-Reply-To:From;
-	b=o6pyTYKOEe4k9F7njyxnfRWaWV9MNmMYgiSCZOSS4yBnWHtx2obvkRNWTtslRKW6Z
-	 9xCW1hohxto6fo0mneEXy9QMFXMFOFb0l4MDpdNvKTVyTD73d/Gj0O5zlPY2dkGd25
-	 SJIuMREuOoCgzcB5de7wr2h6WljLMPh1SMk535CfxNyBct8DiWlQh2oj6UIY5I0fId
-	 oahrSrYb3MDX4DUd4DLYsmX3mzCTeUqphjCGB1aElOZabmsm1/z8c5k8TCYojQuACJ
-	 e8Skt9W714Y5j0wUwcLxKMfV0PDtOPjFa6WIGcpEWXsGepl5N3lG/ky5b9LCSB/M4Y
-	 Tqs0/XTdRqTbA==
+	s=arc-20240116; t=1711558625; c=relaxed/simple;
+	bh=tmLpSzyxJf1bump+PTd5PHsMrvseHbupr6ZAVdaKn2U=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=K+7OeqpK/yEpLEcqrPTag2BDpxCt5dYWkwkrfbTa9MLiHalp+i7uXE+tZFdN9Krk9b+kzYRf2/YrZYKuBwd2dOYLjiZG67byi/qUYNszpQeY2QKxAk71ixa77xluIAbfXzwrwUPEg5t0W/kgkSZv03e1z+3XRSFTWKhFLpwYxyI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=d0vjn7kN; arc=none smtp.client-ip=209.85.218.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
+Received: by mail-ej1-f48.google.com with SMTP id a640c23a62f3a-a46d0a8399aso191573966b.1
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 09:57:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google; t=1711558621; x=1712163421; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=a4rZuSF+pi31EXHxuJfITjpENhO2rcyue7XuCH9Tj1c=;
+        b=d0vjn7kN+CM3THj/wegX8qJ/M925ME1KJI9p1eTJyleZ8cWflivYrjSd4e3WnAjRw9
+         5ziwjSbmmwVVQ2IPVJ8hYRnzJ5YRn/wB7hS2H1Yk10ELsGCGgTEISXF5C4iB+spntdYI
+         h2WMEwKU/rsVBfMiSdjmq581Az+YM0iUxnCxg=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711558621; x=1712163421;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=a4rZuSF+pi31EXHxuJfITjpENhO2rcyue7XuCH9Tj1c=;
+        b=C0YQfEFuzBmkzQ8PDxumZajkIfOqOdl92Spg/+85DxsEDPWTbqwD0W5TjS93tJeAPg
+         mMpavwN7xS1vXRFP7oHt+rV6hi1uh55X9ICQIGDJu9seE96ZxpuN+0EUYGYeGttaxKXc
+         paVLV3mSMCUBvUp207pHb26AuSKd67ppq2o2095eo6PqMPT9266bqZnbMpQoumvHNgyg
+         t3fzr0DJ2mF+GGh4+sGIxWQhgyjzi06DfljR0RPEHYMrD2ufGqbz1haFmvVJ608wZe9t
+         rUShyYxmXFzfsUxTJGFA0xxHyKKS5NmYFG+f733mUibu6wNhq+dB9jIX2UF4ZxIgRKaN
+         PApQ==
+X-Gm-Message-State: AOJu0YxnCsHhsRDrd8+8K/bfkNC1SqEULZ8L2o0MnTx134y3o+lMG5uQ
+	Yr5t/oI37Pp0czCfDb36uxrQ60eYhtqZcj+u6hmsN5Bd8znPw5vHOnKjIaCW4WX0ivfXKHwBR4I
+	4fu4=
+X-Google-Smtp-Source: AGHT+IGKzay4OILiqlXhoR+7CaeMC8r4HauP1XaX79x0Siu8vpshsLx/NIT6r3Y5nFYFUqvGDiIsqw==
+X-Received: by 2002:a17:906:f754:b0:a4e:fab:ec5f with SMTP id jp20-20020a170906f75400b00a4e0fabec5fmr135104ejb.23.1711558621004;
+        Wed, 27 Mar 2024 09:57:01 -0700 (PDT)
+Received: from mail-ed1-f51.google.com (mail-ed1-f51.google.com. [209.85.208.51])
+        by smtp.gmail.com with ESMTPSA id b17-20020a170906709100b00a46a9c38b16sm5601421ejk.138.2024.03.27.09.57.00
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 27 Mar 2024 09:57:00 -0700 (PDT)
+Received: by mail-ed1-f51.google.com with SMTP id 4fb4d7f45d1cf-56c36f8f932so2049899a12.0
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 09:57:00 -0700 (PDT)
+X-Received: by 2002:a17:906:f18b:b0:a47:3cd5:b3f1 with SMTP id
+ gs11-20020a170906f18b00b00a473cd5b3f1mr106976ejb.35.1711558620065; Wed, 27
+ Mar 2024 09:57:00 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date: Wed, 27 Mar 2024 18:56:35 +0200
-Message-Id: <D04OVW6I8MUA.1OAIHFQ8943SM@kernel.org>
-To: "Jarkko Sakkinen" <jarkko@kernel.org>, "Haitao Huang"
- <haitao.huang@linux.intel.com>, <dave.hansen@linux.intel.com>,
- <tj@kernel.org>, <mkoutny@suse.com>, <linux-kernel@vger.kernel.org>,
- <linux-sgx@vger.kernel.org>, <x86@kernel.org>, <cgroups@vger.kernel.org>,
- <tglx@linutronix.de>, <mingo@redhat.com>, <bp@alien8.de>, <hpa@zytor.com>,
- <sohil.mehta@intel.com>, <tim.c.chen@linux.intel.com>
-Cc: <zhiquan1.li@intel.com>, <kristen@linux.intel.com>, <seanjc@google.com>,
- <zhanb@microsoft.com>, <anakrish@microsoft.com>,
- <mikko.ylinen@linux.intel.com>, <yangjie@microsoft.com>,
- <chrisyan@microsoft.com>
-Subject: Re: [PATCH v9 15/15] selftests/sgx: Add scripts for EPC cgroup
- testing
-From: "Jarkko Sakkinen" <jarkko@kernel.org>
-X-Mailer: aerc 0.17.0
-References: <20240205210638.157741-1-haitao.huang@linux.intel.com>
- <20240205210638.157741-16-haitao.huang@linux.intel.com>
- <4be7b291010973c203ed8c7bcd25b626c1290231.camel@kernel.org>
-In-Reply-To: <4be7b291010973c203ed8c7bcd25b626c1290231.camel@kernel.org>
+MIME-Version: 1.0
+References: <Zfwv2y7P7BneKqMZ@kroah.com>
+In-Reply-To: <Zfwv2y7P7BneKqMZ@kroah.com>
+From: Linus Torvalds <torvalds@linux-foundation.org>
+Date: Wed, 27 Mar 2024 09:56:43 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wjHZBziH+5tXcTJ1aGZN2tC5S5gKhkNjhiaFFO93vNqcA@mail.gmail.com>
+Message-ID: <CAHk-=wjHZBziH+5tXcTJ1aGZN2tC5S5gKhkNjhiaFFO93vNqcA@mail.gmail.com>
+Subject: Re: [GIT PULL] Char/Misc driver changes for 6.9-rc1
+To: Greg KH <gregkh@linuxfoundation.org>, Chris Leech <cleech@redhat.com>, 
+	Nilesh Javali <njavali@marvell.com>, Christoph Hellwig <hch@lst.de>
+Cc: linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-On Wed Mar 27, 2024 at 2:55 PM EET, Jarkko Sakkinen wrote:
-> On Mon, 2024-02-05 at 13:06 -0800, Haitao Huang wrote:
-> > The scripts rely on cgroup-tools package from libcgroup [1].
-> >=20
-> > To run selftests for epc cgroup:
-> >=20
-> > sudo ./run_epc_cg_selftests.sh
-> >=20
-> > To watch misc cgroup 'current' changes during testing, run this in a
-> > separate terminal:
-> >=20
-> > ./watch_misc_for_tests.sh current
-> >=20
-> > With different cgroups, the script starts one or multiple concurrent
-> > SGX
-> > selftests, each to run one unclobbered_vdso_oversubscribed test.=C2=A0
-> > Each
-> > of such test tries to load an enclave of EPC size equal to the EPC
-> > capacity available on the platform. The script checks results against
-> > the expectation set for each cgroup and reports success or failure.
-> >=20
-> > The script creates 3 different cgroups at the beginning with
-> > following
-> > expectations:
-> >=20
-> > 1) SMALL - intentionally small enough to fail the test loading an
-> > enclave of size equal to the capacity.
-> > 2) LARGE - large enough to run up to 4 concurrent tests but fail some
-> > if
-> > more than 4 concurrent tests are run. The script starts 4 expecting
-> > at
-> > least one test to pass, and then starts 5 expecting at least one test
-> > to fail.
-> > 3) LARGER - limit is the same as the capacity, large enough to run
-> > lots of
-> > concurrent tests. The script starts 8 of them and expects all pass.
-> > Then it reruns the same test with one process randomly killed and
-> > usage checked to be zero after all process exit.
-> >=20
-> > The script also includes a test with low mem_cg limit and LARGE
-> > sgx_epc
-> > limit to verify that the RAM used for per-cgroup reclamation is
-> > charged
-> > to a proper mem_cg.
-> >=20
-> > [1] https://github.com/libcgroup/libcgroup/blob/main/README
-> >=20
-> > Signed-off-by: Haitao Huang <haitao.huang@linux.intel.com>
-> > ---
-> > V7:
-> > - Added memcontrol test.
-> >=20
-> > V5:
-> > - Added script with automatic results checking, remove the
-> > interactive
-> > script.
-> > - The script can run independent from the series below.
-> > ---
-> > =C2=A0.../selftests/sgx/run_epc_cg_selftests.sh=C2=A0=C2=A0=C2=A0=C2=A0=
- | 246
-> > ++++++++++++++++++
-> > =C2=A0.../selftests/sgx/watch_misc_for_tests.sh=C2=A0=C2=A0=C2=A0=C2=A0=
- |=C2=A0 13 +
-> > =C2=A02 files changed, 259 insertions(+)
-> > =C2=A0create mode 100755
-> > tools/testing/selftests/sgx/run_epc_cg_selftests.sh
-> > =C2=A0create mode 100755
-> > tools/testing/selftests/sgx/watch_misc_for_tests.sh
-> >=20
-> > diff --git a/tools/testing/selftests/sgx/run_epc_cg_selftests.sh
-> > b/tools/testing/selftests/sgx/run_epc_cg_selftests.sh
-> > new file mode 100755
-> > index 000000000000..e027bf39f005
-> > --- /dev/null
-> > +++ b/tools/testing/selftests/sgx/run_epc_cg_selftests.sh
-> > @@ -0,0 +1,246 @@
-> > +#!/bin/bash
+On Thu, 21 Mar 2024 at 06:02, Greg KH <gregkh@linuxfoundation.org> wrote:
 >
-> This is not portable and neither does hold in the wild.
->
-> It does not even often hold as it is not uncommon to place bash
-> to the path /usr/bin/bash. If I recall correctly, e.g. NixOS has
-> a path that is neither of those two.
->
-> Should be #!/usr/bin/env bash
->
-> That is POSIX compatible form.
->
-> Just got around trying to test this in NUC7 so looking into this in
-> more detail.
->
-> That said can you make the script work with just "#!/usr/bin/env sh"
-> and make sure that it is busybox ash compatible?
->
-> I don't see any necessity to make this bash only and it adds to the
-> compilation time of the image. Otherwise lot of this could be tested
-> just with qemu+bzImage+busybox(inside initramfs).
->
-> Now you are adding fully glibc shenanigans for the sake of syntax
-> sugar.
->
-> > +# SPDX-License-Identifier: GPL-2.0
-> > +# Copyright(c) 2023 Intel Corporation.
-> > +
-> > +TEST_ROOT_CG=3Dselftest
-> > +cgcreate -g misc:$TEST_ROOT_CG
->
-> How do you know that cgcreate exists? It is used a lot in the script
-> with no check for the existence. Please fix e.g. with "command -v
-> cgreate".
->
-> > +if [ $? -ne 0 ]; then
-> > +=C2=A0=C2=A0=C2=A0 echo "# Please make sure cgroup-tools is installed,=
- and misc
-> > cgroup is mounted."
-> > +=C2=A0=C2=A0=C2=A0 exit 1
-> > +fi
->
-> And please do not do it this way. Also, please remove the advice for
-> "cgroups-tool". This is not meant to be debian only. Better would be
-> to e.g. point out the URL of the upstream project.
->
-> And yeah the whole message should be based on "command -v", not like
-> this.
->
-> > +TEST_CG_SUB1=3D$TEST_ROOT_CG/test1
-> > +TEST_CG_SUB2=3D$TEST_ROOT_CG/test2
-> > +# We will only set limit in test1 and run tests in test3
-> > +TEST_CG_SUB3=3D$TEST_ROOT_CG/test1/test3
-> > +TEST_CG_SUB4=3D$TEST_ROOT_CG/test4
-> > +
-> > +cgcreate -g misc:$TEST_CG_SUB1
->
->
->
-> > +cgcreate -g misc:$TEST_CG_SUB2
-> > +cgcreate -g misc:$TEST_CG_SUB3
-> > +cgcreate -g misc:$TEST_CG_SUB4
-> > +
-> > +# Default to V2
-> > +CG_MISC_ROOT=3D/sys/fs/cgroup
-> > +CG_MEM_ROOT=3D/sys/fs/cgroup
-> > +CG_V1=3D0
-> > +if [ ! -d "/sys/fs/cgroup/misc" ]; then
-> > +=C2=A0=C2=A0=C2=A0 echo "# cgroup V2 is in use."
-> > +else
-> > +=C2=A0=C2=A0=C2=A0 echo "# cgroup V1 is in use."
->
-> Is "#" prefix a standard for kselftest? I don't know this, thus asking.
->
-> > +=C2=A0=C2=A0=C2=A0 CG_MISC_ROOT=3D/sys/fs/cgroup/misc
-> > +=C2=A0=C2=A0=C2=A0 CG_MEM_ROOT=3D/sys/fs/cgroup/memory
-> > +=C2=A0=C2=A0=C2=A0 CG_V1=3D1
->
-> Have you checked what is the indentation policy for bash scripts inside
-> kernel tree. I don't know what it is. That's why I'm asking.
->
-> > +fi
-> > +
-> > +CAPACITY=3D$(grep "sgx_epc" "$CG_MISC_ROOT/misc.capacity" | awk
-> > '{print $2}')
-> > +# This is below number of VA pages needed for enclave of capacity
-> > size. So
-> > +# should fail oversubscribed cases
-> > +SMALL=3D$(( CAPACITY / 512 ))
-> > +
-> > +# At least load one enclave of capacity size successfully, maybe up
-> > to 4.
-> > +# But some may fail if we run more than 4 concurrent enclaves of
-> > capacity size.
-> > +LARGE=3D$(( SMALL * 4 ))
-> > +
-> > +# Load lots of enclaves
-> > +LARGER=3D$CAPACITY
-> > +echo "# Setting up limits."
-> > +echo "sgx_epc $SMALL" > $CG_MISC_ROOT/$TEST_CG_SUB1/misc.max
-> > +echo "sgx_epc $LARGE" >=C2=A0 $CG_MISC_ROOT/$TEST_CG_SUB2/misc.max
-> > +echo "sgx_epc $LARGER" > $CG_MISC_ROOT/$TEST_CG_SUB4/misc.max
-> > +
-> > +timestamp=3D$(date +%Y%m%d_%H%M%S)
-> > +
-> > +test_cmd=3D"./test_sgx -t unclobbered_vdso_oversubscribed"
-> > +
-> > +wait_check_process_status() {
-> > +=C2=A0=C2=A0=C2=A0 local pid=3D$1
-> > +=C2=A0=C2=A0=C2=A0 local check_for_success=3D$2=C2=A0 # If 1, check fo=
-r success;
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 # If 0, check for failure
-> > +=C2=A0=C2=A0=C2=A0 wait "$pid"
-> > +=C2=A0=C2=A0=C2=A0 local status=3D$?
-> > +
-> > +=C2=A0=C2=A0=C2=A0 if [[ $check_for_success -eq 1 && $status -eq 0 ]];=
- then
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 echo "# Process $pid succee=
-ded."
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return 0
-> > +=C2=A0=C2=A0=C2=A0 elif [[ $check_for_success -eq 0 && $status -ne 0 ]=
-]; then
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 echo "# Process $pid return=
-ed failure."
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return 0
-> > +=C2=A0=C2=A0=C2=A0 fi
-> > +=C2=A0=C2=A0=C2=A0 return 1
-> > +}
-> > +
-> > +wai
-> > wait_and_detect_for_any() {
->
-> what is "any"?
->
-> Maybe for some key functions could have short documentation what they
-> are and for what test uses them. I cannot possibly remember all of this
-> just by hints such as "this waits for Any" ;-)
->
-> I don't think there is actual kernel guideline to engineer the script
-> to work with just ash but at least for me that would inevitably
-> increase my motivation to test this patch set more rather than less.
+> Char/Misc and other driver subsystem updates for 6.9-rc1
+[...]
+> Chris Leech (4):
+>       uio: introduce UIO_MEM_DMA_COHERENT type
+>       cnic,bnx2,bnx2x: use UIO_MEM_DMA_COHERENT
+>       uio_pruss: UIO_MEM_DMA_COHERENT conversion
+>       uio_dmem_genirq: UIO_MEM_DMA_COHERENT conversion
 
-I also wonder is cgroup-tools dependency absolutely required or could
-you just have a function that would interact with sysfs?
+So this was all broken, and doesn't even build on 32-bit architectures
+with 64-bit physical addresses as reported by at least Guenter.
+Notably that includes i386 allmodconfig.
 
-BR, Jarkko
+I fixed up the build, but I did it the mindless way. I noted in the
+commit message that I think the correct fix is likely to make
+'uio_mem.mem' be a union of 'physaddr_t' and 'void *' and just always
+use the right member. UIO_MEM_LOGICAL and UIO_MEM_VIRTUAL should
+probably use the pointer thing too.
+
+I also *suspect* that using 'physaddr_t' is in itself pointless,
+because I *think* the physical addresses are always page-aligned
+anyway, and it would be better if the uio_mem thing just contained the
+pfn instead. Which could just be 'unsigned long pfn'.
+
+So there are proper cleanups that could be done in that area.
+
+That's not what I did, though. I just fixed up the bad casts.
+
+There may be other fixes pending out there, but I didn't want to delay
+the 32-bit build fixes any more.
+
+It turns out that the cnic,bnx2,bnx2x conversion avoided the problems,
+almost by accident. That driver had used UIO_MEM_LOGICAL before and
+had existing casts. That doesn't make it good, but at least it made it
+not fail to build.
+
+See commit 498e47cd1d1f ("Fix build errors due to new
+UIO_MEM_DMA_COHERENT mess")
+
+                    Linus
 
