@@ -1,57 +1,56 @@
-Return-Path: <linux-kernel+bounces-120885-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-120886-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id DC1F488E02D
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 13:30:22 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id D66B688E030
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 13:30:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6AFF41F33282
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 12:30:22 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 13D141C2915D
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 12:30:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 51FF51448E4;
-	Wed, 27 Mar 2024 12:11:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A88C9144D06;
+	Wed, 27 Mar 2024 12:11:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="sYs/jSdF"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="DUB87MNe"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E6691448D0;
-	Wed, 27 Mar 2024 12:11:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E82951448F2;
+	Wed, 27 Mar 2024 12:11:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711541489; cv=none; b=Cz8yrkovV0dNz8fPxY93TrFPo/OKG6fasZeJx1UHiF2LL97FWdTyIHtnVPKbLe8OIxVE6ZS31DtHWBQA6yJhXv/rr/jYfOsbYmCd7I0bNkgJULhrdT5s35MUdCPn7S55zRnxgKB7ShT1RAFwdi9h4rlGe+hOjObo0Mo7uDLIvjM=
+	t=1711541492; cv=none; b=QhXem+Miw4bfzc9/uUO5zzP0w6UsitZdN+w6PKNpQ5EtNIjfNN395EoJZUh6+gooZ6H0XQ87Z38rwKirLhwmFC2mkb8+Bf5KWmJ+Wsuk2uS1U49tXMfFd3BuOzVNg39DbT7CZUngjVveMupHj2/0Z6OELAHQNIERrOGgfWcaXCE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711541489; c=relaxed/simple;
-	bh=GazfdXS/9CEX8H0nsRFjh900LQV+XJ9wWXg0rZuCEkg=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=NavBfoeWcjmwNgxbnWC+v1hAcVKzpA+XzILzBOZo18Tfaa9/MLEL2tZRV30zAEUHZ1xCTMkB5zlbE0r3NpCd38ysVIiUmlFYO76aMmpaACXHErc74By/c3gkDLPjmDC/TM+ADUW2t1eEsPBhb0Xt8tguxepKzjHydNWlVZ1kpUo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=sYs/jSdF; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E2C8CC433C7;
-	Wed, 27 Mar 2024 12:11:27 +0000 (UTC)
+	s=arc-20240116; t=1711541492; c=relaxed/simple;
+	bh=8HKvH2ZmRNAoMNTGQiDhZZWKlMb08XtUGwUod/1FeTU=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=AZ52nORKPTY2XV/mvFRA+XmBTArkC+zD+WmHQ8D4fESUVSdmDoqhDj/vBjmSboLOTo834f6rOWn0eR2/nhwLWziLfYZc+NOSTwapC+IZtiADNjoO4En4L2sKqnOnG+PMxx4MSX2uWhfUrIfu+IaZ7UQvET9i6O8h+7Fm4KvBNdM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=DUB87MNe; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CE430C433F1;
+	Wed, 27 Mar 2024 12:11:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711541489;
-	bh=GazfdXS/9CEX8H0nsRFjh900LQV+XJ9wWXg0rZuCEkg=;
+	s=k20201202; t=1711541491;
+	bh=8HKvH2ZmRNAoMNTGQiDhZZWKlMb08XtUGwUod/1FeTU=;
 	h=From:To:Cc:Subject:Date:From;
-	b=sYs/jSdFZChfvwUvXO4a6Mhl0NMiItPoHqWYKkwkfVEK0195HzBoVkP0vV7ch16dF
-	 Gp9lxFds/i4wAGeGDG3XBS/ocIJjIB7MdEwOeOdVVRPWSQLecwtbtosB3f58V3y1vo
-	 RAVrEvn0GRVdRgaPzsQXbTOVQ7ptze7HcJStUpgKmAoOaARDVBCrNddtkyfK1hAsCX
-	 kfmwzcBKreaYn3/OsyeKppiA4G1LBrchapK37+AEGr7gCNisO3/XwWNUC4BfNoMTNT
-	 jgmc1R8EtYNijM6bLvSPoEqiSe7sQVsyiTerkj57dCS7ycDe22NysyEjPJXngvyRQq
-	 SQWppGgOvL0jg==
+	b=DUB87MNexWr/B6y1mYCgbMqhl7Bb+34h9WrjNqGS8lsMhR6MSeU4o7SvoB0NVBYPP
+	 Ep+2izkyzLk7+p7m+cXtFNSOIyLW6QOno2qVz5S3oBp0xqCwmB3mvhw9o0D9o0IwS1
+	 7kzHhyWQbRvGSIQ3u3+YiaO2RLHTCRjPutHIngo/TeZrn93wmzyoRUE7u92D/3Ih6K
+	 gD/1eoLsVrGK/m4Vqi/h2s1McaaP64o4POo9hpz5koEOjaao1qYndAGIhDrUvdCkMD
+	 ntZ4rbFHnkJr67YfqWV+GYp4Kn4OIkuA1t5xPxfPK6H5VYXYqoS2CePGShYNUMTWFF
+	 5BYyPJ4OMXkyA==
 From: Sasha Levin <sashal@kernel.org>
 To: stable@vger.kernel.org,
-	wenjing.liu@amd.com
-Cc: Chaitanya Dhere <chaitanya.dhere@amd.com>,
-	Alvin Lee <alvin.lee2@amd.com>,
-	Hamza Mahfooz <hamza.mahfooz@amd.com>,
-	Alex Deucher <alexander.deucher@amd.com>,
-	amd-gfx@lists.freedesktop.org,
-	dri-devel@lists.freedesktop.org,
+	wangyuli@uniontech.com
+Cc: WANG Xuerui <git@xen0n.name>,
+	Wentao Guan <guanwentao@uniontech.com>,
+	Huacai Chen <chenhuacai@loongson.cn>,
+	linux-crypto@vger.kernel.org,
+	loongarch@lists.linux.dev,
 	linux-kernel@vger.kernel.org
-Subject: FAILED: Patch "drm/amd/display: set odm_combine_policy based on context in dcn32 resource" failed to apply to 6.6-stable tree
-Date: Wed, 27 Mar 2024 08:11:26 -0400
-Message-ID: <20240327121127.2828745-1-sashal@kernel.org>
+Subject: FAILED: Patch "LoongArch/crypto: Clean up useless assignment operations" failed to apply to 6.1-stable tree
+Date: Wed, 27 Mar 2024 08:11:29 -0400
+Message-ID: <20240327121129.2828782-1-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -63,7 +62,7 @@ X-Patchwork-Hint: ignore
 X-stable: review
 Content-Transfer-Encoding: 8bit
 
-The patch below does not apply to the 6.6-stable tree.
+The patch below does not apply to the 6.1-stable tree.
 If someone wants it applied there, or to any other stable or longterm
 tree, then please email the backport, including the original git commit
 id to <stable@vger.kernel.org>.
@@ -73,159 +72,48 @@ Sasha
 
 ------------------ original commit in Linus's tree ------------------
 
-From 0a5fd7811a17af708cefdaab93af86838353002d Mon Sep 17 00:00:00 2001
-From: Wenjing Liu <wenjing.liu@amd.com>
-Date: Thu, 18 Jan 2024 18:12:15 -0500
-Subject: [PATCH] drm/amd/display: set odm_combine_policy based on context in
- dcn32 resource
+From fea1c949f6ca5059e12de00d0483645debc5b206 Mon Sep 17 00:00:00 2001
+From: Yuli Wang <wangyuli@uniontech.com>
+Date: Tue, 19 Mar 2024 15:50:34 +0800
+Subject: [PATCH] LoongArch/crypto: Clean up useless assignment operations
 
-[why]
-When populating dml pipes, odm combine policy should be assigned based
-on the pipe topology of the context passed in. DML pipes could be
-repopulated multiple times during single validate bandwidth attempt. We
-need to make sure that whenever we repopulate the dml pipes it is always
-aligned with the updated context. There is a case where DML pipes get
-repopulated during FPO optimization after ODM combine policy is changed.
-Since in the current code we reinitlaize ODM combine policy, even though
-the current context has ODM combine enabled, we overwrite it despite the
-pipes are already split. This causes DML to think that MPC combine is
-used so we mistakenly enable MPC combine because we apply pipe split
-with ODM combine policy reset. This issue doesn't impact non windowed
-MPO with ODM case because the legacy policy has restricted use cases. We
-don't encounter the case where both ODM and FPO optimizations are
-enabled together. So we decide to leave it as is because it is about to
-be replaced anyway.
+The LoongArch CRC32 hw acceleration is based on arch/mips/crypto/
+crc32-mips.c. While the MIPS code supports both MIPS32 and MIPS64,
+but LoongArch32 lacks the CRC instruction. As a result, the line
+"len -= sizeof(u32)" is unnecessary.
 
-Cc: stable@vger.kernel.org # 6.6+
-Reviewed-by: Chaitanya Dhere <chaitanya.dhere@amd.com>
-Reviewed-by: Alvin Lee <alvin.lee2@amd.com>
-Acked-by: Hamza Mahfooz <hamza.mahfooz@amd.com>
-Signed-off-by: Wenjing Liu <wenjing.liu@amd.com>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+Removing it can make context code style more unified and improve
+code readability.
+
+Cc: stable@vger.kernel.org
+Reviewed-by: WANG Xuerui <git@xen0n.name>
+Suggested-by: Wentao Guan <guanwentao@uniontech.com>
+Signed-off-by: Yuli Wang <wangyuli@uniontech.com>
+Signed-off-by: Huacai Chen <chenhuacai@loongson.cn>
 ---
- .../drm/amd/display/dc/dml/dcn32/dcn32_fpu.c  | 15 ++++++++++----
- drivers/gpu/drm/amd/display/dc/inc/resource.h | 20 ++++++++-----------
- .../dc/resource/dcn32/dcn32_resource.c        | 16 ++++++++++++++-
- 3 files changed, 34 insertions(+), 17 deletions(-)
+ arch/loongarch/crypto/crc32-loongarch.c | 2 --
+ 1 file changed, 2 deletions(-)
 
-diff --git a/drivers/gpu/drm/amd/display/dc/dml/dcn32/dcn32_fpu.c b/drivers/gpu/drm/amd/display/dc/dml/dcn32/dcn32_fpu.c
-index a7981a0c4158f..4edf7df4c6aad 100644
---- a/drivers/gpu/drm/amd/display/dc/dml/dcn32/dcn32_fpu.c
-+++ b/drivers/gpu/drm/amd/display/dc/dml/dcn32/dcn32_fpu.c
-@@ -1289,7 +1289,7 @@ static bool update_pipes_with_split_flags(struct dc *dc, struct dc_state *contex
- 	return updated;
- }
+diff --git a/arch/loongarch/crypto/crc32-loongarch.c b/arch/loongarch/crypto/crc32-loongarch.c
+index a49e507af38c0..3eebea3a7b478 100644
+--- a/arch/loongarch/crypto/crc32-loongarch.c
++++ b/arch/loongarch/crypto/crc32-loongarch.c
+@@ -44,7 +44,6 @@ static u32 crc32_loongarch_hw(u32 crc_, const u8 *p, unsigned int len)
  
--static bool should_allow_odm_power_optimization(struct dc *dc,
-+static bool should_apply_odm_power_optimization(struct dc *dc,
- 		struct dc_state *context, struct vba_vars_st *v, int *split,
- 		bool *merge)
- {
-@@ -1393,9 +1393,12 @@ static void try_odm_power_optimization_and_revalidate(
- {
- 	int i;
- 	unsigned int new_vlevel;
-+	unsigned int cur_policy[MAX_PIPES];
- 
--	for (i = 0; i < pipe_cnt; i++)
-+	for (i = 0; i < pipe_cnt; i++) {
-+		cur_policy[i] = pipes[i].pipe.dest.odm_combine_policy;
- 		pipes[i].pipe.dest.odm_combine_policy = dm_odm_combine_policy_2to1;
-+	}
- 
- 	new_vlevel = dml_get_voltage_level(&context->bw_ctx.dml, pipes, pipe_cnt);
- 
-@@ -1404,6 +1407,9 @@ static void try_odm_power_optimization_and_revalidate(
- 		memset(merge, 0, MAX_PIPES * sizeof(bool));
- 		*vlevel = dcn20_validate_apply_pipe_split_flags(dc, context, new_vlevel, split, merge);
- 		context->bw_ctx.dml.vba.VoltageLevel = *vlevel;
-+	} else {
-+		for (i = 0; i < pipe_cnt; i++)
-+			pipes[i].pipe.dest.odm_combine_policy = cur_policy[i];
- 	}
- }
- 
-@@ -1581,7 +1587,7 @@ static void dcn32_full_validate_bw_helper(struct dc *dc,
- 		}
+ 		CRC32(crc, value, w);
+ 		p += sizeof(u32);
+-		len -= sizeof(u32);
  	}
  
--	if (should_allow_odm_power_optimization(dc, context, vba, split, merge))
-+	if (should_apply_odm_power_optimization(dc, context, vba, split, merge))
- 		try_odm_power_optimization_and_revalidate(
- 				dc, context, pipes, split, merge, vlevel, *pipe_cnt);
+ 	if (len & sizeof(u16)) {
+@@ -80,7 +79,6 @@ static u32 crc32c_loongarch_hw(u32 crc_, const u8 *p, unsigned int len)
  
-@@ -2210,7 +2216,8 @@ bool dcn32_internal_validate_bw(struct dc *dc,
- 		int i;
+ 		CRC32C(crc, value, w);
+ 		p += sizeof(u32);
+-		len -= sizeof(u32);
+ 	}
  
- 		pipe_cnt = dc->res_pool->funcs->populate_dml_pipes(dc, context, pipes, fast_validate);
--		dcn32_update_dml_pipes_odm_policy_based_on_context(dc, context, pipes);
-+		if (!dc->config.enable_windowed_mpo_odm)
-+			dcn32_update_dml_pipes_odm_policy_based_on_context(dc, context, pipes);
- 
- 		/* repopulate_pipes = 1 means the pipes were either split or merged. In this case
- 		 * we have to re-calculate the DET allocation and run through DML once more to
-diff --git a/drivers/gpu/drm/amd/display/dc/inc/resource.h b/drivers/gpu/drm/amd/display/dc/inc/resource.h
-index 1d51fed12e200..2eae2f3e846d8 100644
---- a/drivers/gpu/drm/amd/display/dc/inc/resource.h
-+++ b/drivers/gpu/drm/amd/display/dc/inc/resource.h
-@@ -427,22 +427,18 @@ struct pipe_ctx *resource_get_primary_dpp_pipe(const struct pipe_ctx *dpp_pipe);
- int resource_get_mpc_slice_index(const struct pipe_ctx *dpp_pipe);
- 
- /*
-- * Get number of MPC "cuts" of the plane associated with the pipe. MPC slice
-- * count is equal to MPC splits + 1. For example if a plane is cut 3 times, it
-- * will have 4 pieces of slice.
-- * return - 0 if pipe is not used for a plane with MPCC combine. otherwise
-- * the number of MPC "cuts" for the plane.
-+ * Get the number of MPC slices associated with the pipe.
-+ * The function returns 0 if the pipe is not associated with an MPC combine
-+ * pipe topology.
-  */
--int resource_get_mpc_slice_count(const struct pipe_ctx *opp_head);
-+int resource_get_mpc_slice_count(const struct pipe_ctx *pipe);
- 
- /*
-- * Get number of ODM "cuts" of the timing associated with the pipe. ODM slice
-- * count is equal to ODM splits + 1. For example if a timing is cut 3 times, it
-- * will have 4 pieces of slice.
-- * return - 0 if pipe is not used for ODM combine. otherwise
-- * the number of ODM "cuts" for the timing.
-+ * Get the number of ODM slices associated with the pipe.
-+ * The function returns 0 if the pipe is not associated with an ODM combine
-+ * pipe topology.
-  */
--int resource_get_odm_slice_count(const struct pipe_ctx *otg_master);
-+int resource_get_odm_slice_count(const struct pipe_ctx *pipe);
- 
- /* Get the ODM slice index counting from 0 from left most slice */
- int resource_get_odm_slice_index(const struct pipe_ctx *opp_head);
-diff --git a/drivers/gpu/drm/amd/display/dc/resource/dcn32/dcn32_resource.c b/drivers/gpu/drm/amd/display/dc/resource/dcn32/dcn32_resource.c
-index ac04a9c9a3d86..71cd20618bfe0 100644
---- a/drivers/gpu/drm/amd/display/dc/resource/dcn32/dcn32_resource.c
-+++ b/drivers/gpu/drm/amd/display/dc/resource/dcn32/dcn32_resource.c
-@@ -1829,7 +1829,21 @@ int dcn32_populate_dml_pipes_from_context(
- 		dcn32_zero_pipe_dcc_fraction(pipes, pipe_cnt);
- 		DC_FP_END();
- 		pipes[pipe_cnt].pipe.dest.vfront_porch = timing->v_front_porch;
--		pipes[pipe_cnt].pipe.dest.odm_combine_policy = dm_odm_combine_policy_dal;
-+		if (dc->config.enable_windowed_mpo_odm &&
-+				dc->debug.enable_single_display_2to1_odm_policy) {
-+			switch (resource_get_odm_slice_count(pipe)) {
-+			case 2:
-+				pipes[pipe_cnt].pipe.dest.odm_combine_policy = dm_odm_combine_policy_2to1;
-+				break;
-+			case 4:
-+				pipes[pipe_cnt].pipe.dest.odm_combine_policy = dm_odm_combine_policy_4to1;
-+				break;
-+			default:
-+				pipes[pipe_cnt].pipe.dest.odm_combine_policy = dm_odm_combine_policy_dal;
-+			}
-+		} else {
-+			pipes[pipe_cnt].pipe.dest.odm_combine_policy = dm_odm_combine_policy_dal;
-+		}
- 		pipes[pipe_cnt].pipe.src.gpuvm_min_page_size_kbytes = 256; // according to spreadsheet
- 		pipes[pipe_cnt].pipe.src.unbounded_req_mode = false;
- 		pipes[pipe_cnt].pipe.scale_ratio_depth.lb_depth = dm_lb_19;
+ 	if (len & sizeof(u16)) {
 -- 
 2.43.0
 
