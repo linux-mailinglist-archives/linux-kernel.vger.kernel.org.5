@@ -1,44 +1,40 @@
-Return-Path: <linux-kernel+bounces-121742-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-121743-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id A7BCF88ED2D
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 18:52:57 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 28FB388ED2F
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 18:53:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5CF781F32905
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 17:52:57 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5A1CA1C32217
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 17:53:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 71BAD154431;
-	Wed, 27 Mar 2024 17:47:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B7A77150993;
+	Wed, 27 Mar 2024 17:47:11 +0000 (UTC)
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E2CF8153BCB;
-	Wed, 27 Mar 2024 17:47:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E4AB1487E9;
+	Wed, 27 Mar 2024 17:47:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711561622; cv=none; b=ZnWQGIiuYNhEB+nanOD0BBaLstd/S/kumkWg240Eow/xDs2v1XgF7vaS/IBHXMlk173rJNDZqddUgyxAP2Eh03TiMdLDjuN4h9clrzG+6W6DtLLx4wgKhog4c7ds2QI9M1dAHHSPv9ZEnP46ZU1LcCC2ELm2cnO0dyGzq0pNHt8=
+	t=1711561631; cv=none; b=cpyBBUjIFpNYeEP0zSOVWRXQQkCNwKdEV8FaZabP1CqezfcKezzF7WstSyTOzCHFPZ/OgHa3PW6/TxNNNSV+pSR0nK/CusSnQN/ne5gRlHY3oNkZ09Wsz9AbC4hNORzHtw+b9Z/NESA4SAaWYfGNt7RLttFVkfVRGRI2/8cWJGA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711561622; c=relaxed/simple;
-	bh=c1Yr8cxUu6FlQv/VNuwEY7Asv2sj0ZG5bn+tuaa7ilk=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=c/2in0FvSVi98oUxgtYHz6L9brlQ7BETfPbMdjDN4oHj6G9RnCW/OiA9UM4iJPm3NU8VePpBfJ4HjDqWT9dCNOwTonw90Hev65X76kGkJFiJcLTBP5OsjioqVdJ0bMNM1cWptzGxi5ZyvKFqpan2XkJcbHHwYPOVJKEJ2WwNguo=
+	s=arc-20240116; t=1711561631; c=relaxed/simple;
+	bh=ftACfzTk9Usno0HfT+4cbMwKmq05Nj9un0NkopgUgBc=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=ILf+hQbkOi6Iookplz8BRxOV9xi1jZrm14daSimb6HaZNENJTwGEBPnLA+Si3AuwQpePJPcu4BCABiHVURKv8Wsam1BlomgKBaxqJJkIP8LXOTzYPFgvDcptl58qfd7f1avwEpqLeB9MDSIe+JqHyF48v2IT4ijBwON8GlBDGHk=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D5F4BC43399;
-	Wed, 27 Mar 2024 17:46:59 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6879BC433F1;
+	Wed, 27 Mar 2024 17:47:09 +0000 (UTC)
 From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-To: Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-	Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-	Alexandre Torgue <alexandre.torgue@foss.st.com>,
-	linux-input@vger.kernel.org,
-	linux-stm32@st-md-mailman.stormreply.com,
-	linux-arm-kernel@lists.infradead.org,
+To: Andi Shyti <andi.shyti@kernel.org>,
+	linux-i2c@vger.kernel.org,
 	linux-kernel@vger.kernel.org
 Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Subject: [PATCH] Input: stmpe - drop driver owner assignment
-Date: Wed, 27 Mar 2024 18:46:55 +0100
-Message-Id: <20240327174655.519503-1-krzysztof.kozlowski@linaro.org>
+Subject: [PATCH] i2c: viperboard: drop driver owner assignment
+Date: Wed, 27 Mar 2024 18:47:05 +0100
+Message-Id: <20240327174705.519535-1-krzysztof.kozlowski@linaro.org>
 X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -53,20 +49,20 @@ does not need to.
 
 Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 ---
- drivers/input/keyboard/stmpe-keypad.c | 1 -
+ drivers/i2c/busses/i2c-viperboard.c | 1 -
  1 file changed, 1 deletion(-)
 
-diff --git a/drivers/input/keyboard/stmpe-keypad.c b/drivers/input/keyboard/stmpe-keypad.c
-index 2013c0afd0c3..ef2f44027894 100644
---- a/drivers/input/keyboard/stmpe-keypad.c
-+++ b/drivers/input/keyboard/stmpe-keypad.c
-@@ -413,7 +413,6 @@ static void stmpe_keypad_remove(struct platform_device *pdev)
+diff --git a/drivers/i2c/busses/i2c-viperboard.c b/drivers/i2c/busses/i2c-viperboard.c
+index 9e153b5b0e8e..3784b07f5371 100644
+--- a/drivers/i2c/busses/i2c-viperboard.c
++++ b/drivers/i2c/busses/i2c-viperboard.c
+@@ -416,7 +416,6 @@ static void vprbrd_i2c_remove(struct platform_device *pdev)
  
- static struct platform_driver stmpe_keypad_driver = {
- 	.driver.name	= "stmpe-keypad",
+ static struct platform_driver vprbrd_i2c_driver = {
+ 	.driver.name	= "viperboard-i2c",
 -	.driver.owner	= THIS_MODULE,
- 	.probe		= stmpe_keypad_probe,
- 	.remove_new	= stmpe_keypad_remove,
+ 	.probe		= vprbrd_i2c_probe,
+ 	.remove_new	= vprbrd_i2c_remove,
  };
 -- 
 2.34.1
