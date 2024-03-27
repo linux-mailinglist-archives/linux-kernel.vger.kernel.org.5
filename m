@@ -1,188 +1,264 @@
-Return-Path: <linux-kernel+bounces-120262-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-120188-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DBFD988D50C
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 04:27:50 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3F0AD88D40F
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 02:56:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 48F88B22C5C
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 03:27:46 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 631F91C24B44
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 01:56:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9B3312263E;
-	Wed, 27 Mar 2024 03:27:36 +0000 (UTC)
-Received: from CHN02-SH0-obe.outbound.protection.partner.outlook.cn (mail-sh0chn02on2120.outbound.protection.partner.outlook.cn [139.219.146.120])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 599FF20313;
+	Wed, 27 Mar 2024 01:55:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hcdnjaOY"
+Received: from mail-yw1-f170.google.com (mail-yw1-f170.google.com [209.85.128.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 560B620DD0;
-	Wed, 27 Mar 2024 03:27:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=139.219.146.120
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711510056; cv=fail; b=r7/04S3WLHbrh8o//C95mu+sZdevWKWABTtLxq/8PPaemAu4J0MWRiq3iowrw9J9lGjAvRRsqKfpQDAmxb4QrqwWN6QJ1ak/LpP3mwaiYbFXJBkCfZ24amMxTSApe2O+BXEx6F8IKxPZpW3Tt+O7S9CuGSH38Jidh1UAwopgdQc=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711510056; c=relaxed/simple;
-	bh=6mNI4TS/DXPa4QYaZCp3GnabEiUkexi5OhQrqeGJcd0=;
-	h=From:To:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=tOTaEN+epgS0ZUsVRWzIw/KrAUUh7cg7jS5/QIosaeKSGFE/TzKpZ6M2y2iGDo0QQtEq9qMD2iZki3r6EN6KbUhusl9Ez7mmSHCk6+mIMplYPSaEfdGX3R3BLgBYbswcsT5qWfDpnzVNy66qPvH5/rB6xv5hwLBKf8RrmF21jzo=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=starfivetech.com; spf=pass smtp.mailfrom=starfivetech.com; arc=fail smtp.client-ip=139.219.146.120
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=starfivetech.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=starfivetech.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=nuAEATmEazILeycjeKlXV3UfxGnVI0L0hkXOBmR2wf1tObMUIDb+co+xVrsrMARDvfNp7As2KfxRLTVjw9Zf2RUhMhjDo4Si0eH8quPEG+9ozhQWjkNhUVqOEuqE4HzoMd+skcVw83+c8cmtMMgtt6qKeNko/7A8h99itWxwxhN0tyRcasLsDUGxnHjX30kbMzTwAmYSa5IIE/S/WkEyUX5/Uc1nvmfkK/HLmN+58Z0htEsd9Z+12LFadT+0V3v4F0+kzjrKpaxwz8n7UHpM8Z7T4FNjAD+/XAVOk/wMthXdDXYmlvKzU6IaAmkrQO6E/xQImT2mAeuEfa4CKSYdig==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=IdcMCIcERo7vykoimDGDFyaeHTetpEMbQv7DVusPsTg=;
- b=PE6iihaZYjjAQFa1GUduJ8x8EWaohpZJTlUTun9zEI7gzus4VK+Vxd6bxbVpE2aDofKE1eR1wbWlu7j5b8653yoZh/rJmnRK8L5gTBLPUHLnlPY0ybyOush1rg1LNwyHngZ+bseR98cyLmBMSX33FIwsnSjJpCRE0bl41RDHD1PR46gWInS4NstVSUd/QX0fZeFKK0HHBERKyBL0B+6u2VoC5MqcvnTopveoKvUfqromk5xWtBdrW+TeAZULeErImw5FJ/m3s1+UmfrLnQAr26K5FYqowaea+SIHJhHxIm1wP2EZn74J19uC459SDqgX4dKs8Mco952L6fmAht25iA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=starfivetech.com; dmarc=pass action=none
- header.from=starfivetech.com; dkim=pass header.d=starfivetech.com; arc=none
-Received: from NT0PR01MB1182.CHNPR01.prod.partner.outlook.cn
- (2406:e500:c510:10::10) by NT0PR01MB1264.CHNPR01.prod.partner.outlook.cn
- (2406:e500:c510:12::9) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.33; Wed, 27 Mar
- 2024 01:55:04 +0000
-Received: from NT0PR01MB1182.CHNPR01.prod.partner.outlook.cn
- ([fe80::3dc9:e0c9:9a09:3bb7]) by
- NT0PR01MB1182.CHNPR01.prod.partner.outlook.cn ([fe80::3dc9:e0c9:9a09:3bb7%4])
- with mapi id 15.20.7409.031; Wed, 27 Mar 2024 01:55:04 +0000
-From: JiaJie Ho <jiajie.ho@starfivetech.com>
-To: 'Herbert Xu' <herbert@gondor.apana.org.au>, "'David S . Miller'"
-	<davem@davemloft.net>, 'Rob Herring' <robh+dt@kernel.org>, 'Krzysztof
- Kozlowski' <krzysztof.kozlowski+dt@linaro.org>, 'Conor Dooley'
-	<conor+dt@kernel.org>, 'Eugeniy Paltsev' <Eugeniy.Paltsev@synopsys.com>,
-	'Vinod Koul' <vkoul@kernel.org>, "'linux-crypto@vger.kernel.org'"
-	<linux-crypto@vger.kernel.org>, "'devicetree@vger.kernel.org'"
-	<devicetree@vger.kernel.org>, "'linux-kernel@vger.kernel.org'"
-	<linux-kernel@vger.kernel.org>, "'dmaengine@vger.kernel.org'"
-	<dmaengine@vger.kernel.org>
-Subject: RE: [PATCH v4 0/7] crypto: starfive: Add support for JH8100
-Thread-Topic: [PATCH v4 0/7] crypto: starfive: Add support for JH8100
-Thread-Index: AQHabswuRP6vmqtmzUiwGSiP4uQyCbFK9DVg
-Date: Wed, 27 Mar 2024 01:55:04 +0000
-Message-ID:
- <NT0PR01MB1182C3CD53AA7CB251BDD99D8A34A@NT0PR01MB1182.CHNPR01.prod.partner.outlook.cn>
-References: <20240305071006.2181158-1-jiajie.ho@starfivetech.com>
-In-Reply-To: <20240305071006.2181158-1-jiajie.ho@starfivetech.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=starfivetech.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: NT0PR01MB1182:EE_|NT0PR01MB1264:EE_
-x-ms-office365-filtering-correlation-id: 6a58d795-5fa5-4a36-b113-08dc4e00ebf1
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info:
- FyyoNmpx69xw9V6F3Jt920pD7QvFM+ZMzpIQdv6ykNn0D6skwysQRH4YvpstdfPsihqRitHVDbvlV9qqFXCHdjVG48wXRDhdVmcHLEYyZB+mwVnZ4Bl9Y8lPMq6syCzkrZSBB1wB3usSPiZN3vqa+gjD4nh72sHPhXEzaq9/M9v/lUDQF1NKICCacqRRpp80cVEeaXURxFVBcB+fHXUTv+hjpJYQW10DI/KP/h11zdcCnfuJWZSHWazjY/oI8WCEjASPp7RumyxzcTQFNAcpA8N1vWjYQrF+mIAdDbFlU9DsWx1Fq4IeYA/pKUmMmPKfhqxWv6PGow65OJqwBuVRqY22VtcGinau7qVEjK2Wg7CEtLudYCv2K7EB/jcAkQgTT0JWJGNKNEPaasmueARwHLh2HGHAw7XdIrTXghMdibhrQaDt/IcD7ubAJmLy9ZIMjicskxl6l+e2oa5VeFm0NLi14kIMlVUsi7SMdIP+r7KpY094W6H6NpeayYBCi6jlzgPMMS3ogbbdjRYlG9kjA2q+oh9Dd6cP9AnEeRibLgI89hbsv5cWQyyZ0bPiETmy7ixFoYz43pykDb9M7COqPe0sqIP+ekMHjjWLC/FTqb1XUic/9xln20/FMCQs+RmU/fbgbuYoScoNzg7dbAClfw==
-x-forefront-antispam-report:
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:NT0PR01MB1182.CHNPR01.prod.partner.outlook.cn;PTR:;CAT:NONE;SFS:(13230031)(7416005)(41320700004)(1800799015)(366007)(38070700009)(921011);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?us-ascii?Q?0qffVL/8J822Ra1K1k0+YVG8qTDkWO0Nx2xGdQanPSsVTL3TgN46tpWGnAD0?=
- =?us-ascii?Q?p6Kt+n4Y5Ou4SwMwdvQ3Z5RNcDUzgN0OaykSiOVdIPLL8n8TNbvg5vV+pEBz?=
- =?us-ascii?Q?mC46CThCr3XmFH+/Zh4Q8vdgsueO6hFVxvKnRrrjvj7wJhskhkH5EBRUwESc?=
- =?us-ascii?Q?gxCCFnigREePZW6MtEkYOn0fSG6vYdOVYFz7azy66ANFZfLX6TEwpTK7jBkR?=
- =?us-ascii?Q?ombdvLNDwyyWbmHajbCpJIpQWw2nbSCByUv+5vJXk3j/wl1wf8ed5/J0BLDO?=
- =?us-ascii?Q?3TFGSMpUf+bKbtsSrrwKuUHpuQmHf+Nx5gTXL2BFdAoN+l4RxOkzbqsqXCpN?=
- =?us-ascii?Q?kTxL0AUlA2GcKxD7N4VPEGauxGd1a01WbyiMHSy3+nv6YvuaiLusyLr083WM?=
- =?us-ascii?Q?Xej7RuyBgIkCHNt+3unAy2am5ZqcJO1SyxEoMkgiE1K6p9cilDR9a7mvsXOg?=
- =?us-ascii?Q?LhoK8sjXPLQr/LruH5Puf3RBu6AihKH6Qlhs71pIH05dlNoPjgZlKHN9LmZH?=
- =?us-ascii?Q?1y2ywn+YULz9SZUF8xC43D2StkJjdxEhsouQUGE3L2NKqkZuxJRfRf7tGXHc?=
- =?us-ascii?Q?97MQZ74uEloU9a8ko5TuMwg8OVnES4XrLGitXK5olVqmLK4lCyIAY+wxmqNM?=
- =?us-ascii?Q?eGrAat5NWaw4VTK3UzoajFQvgtaihUABVzaj3laPHx8KaBrnGiwU50Ace8gO?=
- =?us-ascii?Q?I2Rp+CDepmctahLm/lTV0irjJ2Npf6OcCsZApjG+U/BTomCuS1roGjgzj9jp?=
- =?us-ascii?Q?rdkdB34oK69r0LobGzxTCb3ol0a79GHpfdquo+cz3Zbk1TZRLOtYCRQJdA6d?=
- =?us-ascii?Q?DBNvuu0TOvzJplUJQrSGhRLlcOQhIU96Mzpynn2oqniBU5VNotIwrT8xROxa?=
- =?us-ascii?Q?A0z50/OgHF1nj4yUjL3ybe1VHf496FcBJc5RbTMxLyZho4xi4eP5o3iH2a9L?=
- =?us-ascii?Q?+7ht62Lq3eDTWx3ORlLdkm9NvxPizyJSbRTY5vttf09Y5bUav5MDyOlGI4E4?=
- =?us-ascii?Q?pAcIZC6p71s7D2VzQIXJP5Uv0RjnTkw2+unLPB8shJbAx2xj9/aU6CQAlKCL?=
- =?us-ascii?Q?1tOLKXr1LNUA0/kbGz7pcWHG6n1Jtye8JWBg8SCZ5cYoDVu+psR6tnuBU2bo?=
- =?us-ascii?Q?DyPobTDcgBTQYfirzftuO2y8MOTQuxZfXUBPIHrbsI8Weix+nH6quQFaOO+h?=
- =?us-ascii?Q?8dDF02qlDQPQ3zG7K0LWA5BvAC2AmhGOeGPfWFergFmOCyHHHwLY1cXgFffG?=
- =?us-ascii?Q?SQFBDEpjZH2qwWUW5ntx9eVf9bWPMISdyA7+/87yCq0T3nTpfUwROqWD2AW4?=
- =?us-ascii?Q?/NMYGg/cEg7kaj3GopAc8G+yTzGpb6eJvqic2fv/NErtJYr9fEHiSjv3tyFv?=
- =?us-ascii?Q?XbBRgktGXeF7frmAh9q9e6UvbbvD6uaQ4EX+soNErO8FMrfyaRMWV1NEDec9?=
- =?us-ascii?Q?tn7dYwpPj60TWPU5axo94r2d1AzVISA/2KHmf+F3cIjVUbrV8eTpCxZO5qUg?=
- =?us-ascii?Q?qhTDF81FCwiX+J2SXxZlCLIAnPOVqGL1g27upDwbrl12HQ2nbqxuMR/arwGG?=
- =?us-ascii?Q?8MhOFkJ4fqjcSoEmaneJHCIr+cBxZ/oe9dsQvHr7?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BB6611D558;
+	Wed, 27 Mar 2024 01:55:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.170
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1711504557; cv=none; b=lUeHtADCt3dkF1ytYKh19LVsCbdp7Kctlkng+sUSmgZgEQqXAcZZ/PNl0/Gfwqc80/VG49e5xdDJO43nuIttPDpD+z5Qki6aIHoqo+f6Qnuotk2Mt5rlEmSRs56drj/Sz2ywBpK/kgrY5Pb+kbmCak7kGbZBpZSZyd8pBx7bx24=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1711504557; c=relaxed/simple;
+	bh=UycgFYJkC6B+eNaf0pABfiDLaxalrtUXiws4fyinvfE=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Apdmy3EvOCQ9T/twy/LWNy9CnlU1IxilS38kN8CXcduhFtsQRi4kzb9ibdbYXuCT7usczCzcngMz5ZysIACH5P7+C1QEbyMP/vEkGMAImyqcGIpJTFlbU1qWtkMJBlOPEc4hD99kSIShTY2EGu1F4Tn5Wpze3aF+DD+YhwYaDuE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=hcdnjaOY; arc=none smtp.client-ip=209.85.128.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yw1-f170.google.com with SMTP id 00721157ae682-609f4155b76so66445877b3.1;
+        Tue, 26 Mar 2024 18:55:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1711504555; x=1712109355; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=Kvb2heaB5MlFNklb0U8+GEqGfobjRGt+M5eC5wBBXm8=;
+        b=hcdnjaOYAbtzYRRk8hC57L8l529MF7hqw0upxUjobSZv6ruOxx0MHVRliRiiKOtCNm
+         HfR/FGiI86L5KYlwCQsdflFjtTn6fePJ+tQyRPaPYsFieIjFXnLbv+mS6lyzLlgjj5+m
+         cliJiS1K1uKne5HLnTmQXrHjnTw0+viwdgPySdJmxqFCEBDgV36vZ4mlIbYbgnPLg/q0
+         IJGOD6y8ZIGcuFx4wQGo6Rg7RsEnEWeDazSKvfgVXkdvP9y0E9G4Vci+/4dCqoChDxWf
+         BUTTa8cEdM4Rm4Plz7ip9GIkAT/a7+xZHxjOz3/1tmkt5+0iu+zIrhPGoRZ5m7h//mJC
+         52vg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711504555; x=1712109355;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Kvb2heaB5MlFNklb0U8+GEqGfobjRGt+M5eC5wBBXm8=;
+        b=AJHD+hHGRb/BxVfET0J/AfnkCXm1WKXmCYNejs6eU5w5gafGTW7phx+qrSZ9LB5QtC
+         Sd5NK1FTFhj8rs5jUty7cgLo6sGvaDk445YVifnn//wRESxb3FeBwjHWg9RI7Sx/mWEd
+         S7djAKTVjkSQUF/1S2vbaAFwGkO235WcZDuatPKYvdi7TItkOjPqyE9VtdAPxPwplr58
+         i8Umvx2kdpGRt+7isFDpDK07hDaX7WaPKBwedoVerySY7u4kK3fsDvJV6ZqA+oEUfszX
+         SDdMSjAnXgy7shTzo8iu5OvGsGPdH1JGnmXwzUN6WnREqQu6cn7rnqaRl21+9vYxezyn
+         OGKQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVwZcRo7OvccOz7hq6VoF8Hji7DjXraITPox9TG9HhugcGNaKo/9EMhleX3Tv6ioN2ot2pRdNeBrHbwg0D56V0+3vZBWzNh4BGvEBWZ
+X-Gm-Message-State: AOJu0YwM63mCAFXnT9McrDFIzLUCAEZwgdRQ1Q7+Y2tDgkwbSGDiYDb7
+	6yKmkQHpEkbiBi9q8sUvJgz9/joafBb2DUfF7QTkOkQfxWLraQ3zsQ9RRypTCPys6CGIYxL5fy7
+	gVQlhwzO4gex1Xt2/k+9fBGUeRc4=
+X-Google-Smtp-Source: AGHT+IHQs2HjZ0BJmwhBo4wwhQSLy5dFnitSXqQXKBq4Ri2owY3hVtVth7HRqrQYXKO3Yzj/+tIbiNHUJWBhEUCRxv0=
+X-Received: by 2002:a05:690c:3184:b0:608:d673:f7c3 with SMTP id
+ fd4-20020a05690c318400b00608d673f7c3mr8192498ywb.49.1711504554732; Tue, 26
+ Mar 2024 18:55:54 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-OriginatorOrg: starfivetech.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: NT0PR01MB1182.CHNPR01.prod.partner.outlook.cn
-X-MS-Exchange-CrossTenant-Network-Message-Id: 6a58d795-5fa5-4a36-b113-08dc4e00ebf1
-X-MS-Exchange-CrossTenant-originalarrivaltime: 27 Mar 2024 01:55:04.4909
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 06fe3fa3-1221-43d3-861b-5a4ee687a85c
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: Dq5uJF/FrrP6BPyhFIA0I7tE6GQgaxqQnhJErKpXE/mwm64px77vsxj4kqjM0dlkf0O9EM4YvwGHb08yPeyVjtzZw0nEaB3GBJ/oMO/C2eY=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: NT0PR01MB1264
+References: <20240325195418.166013-1-wedsonaf@gmail.com> <20240325195418.166013-7-wedsonaf@gmail.com>
+ <9AmQ4moOGHvMXp-MH65qG1fS7v14hypIjEwsPlYLdLJD2NMVOQFwFvzpETrxHSSMt-Y6Gz_TZfwXgROJys72ZIpB-Je4obAuZ2knpT9R3yo=@proton.me>
+ <CANeycqrbuzDwDhUjz+rZv2Q_peK54L1yPG6A1L6-PwjyLKiSAw@mail.gmail.com> <4HXcIXSpP2nHdpuTb2aAIwspZ8Az9XYU3KUp18oUlsi3yIqXNPvbe80x57P0hLIYHrlf67DUCxD96blhqCsGmR3oecopCnaZA6kRlvKCl5g=@proton.me>
+In-Reply-To: <4HXcIXSpP2nHdpuTb2aAIwspZ8Az9XYU3KUp18oUlsi3yIqXNPvbe80x57P0hLIYHrlf67DUCxD96blhqCsGmR3oecopCnaZA6kRlvKCl5g=@proton.me>
+From: Wedson Almeida Filho <wedsonaf@gmail.com>
+Date: Tue, 26 Mar 2024 22:55:44 -0300
+Message-ID: <CANeycqpCGPHpEyXxtmPcOHewdmdXj-X8K0WAndPqQGomeyQRpg@mail.gmail.com>
+Subject: Re: [PATCH 06/10] rust: alloc: introduce the `BoxExt` trait
+To: Benno Lossin <benno.lossin@proton.me>
+Cc: rust-for-linux@vger.kernel.org, Miguel Ojeda <ojeda@kernel.org>, 
+	Alex Gaynor <alex.gaynor@gmail.com>, Boqun Feng <boqun.feng@gmail.com>, 
+	Gary Guo <gary@garyguo.net>, =?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, 
+	Andreas Hindborg <a.hindborg@samsung.com>, Alice Ryhl <aliceryhl@google.com>, 
+	linux-kernel@vger.kernel.org, Wedson Almeida Filho <walmeida@microsoft.com>
+Content-Type: text/plain; charset="UTF-8"
 
-> This patch series add driver support for StarFive JH8100 SoC crypto engin=
-e.
-> Patch 1 adds compatible string and update irq descriptions for
-> JH8100 device. Subsequent patches update current driver implementations t=
-o
-> support both 7110 and 8100 variants.
->=20
-> v3->v4:
-> - Updated interrupts descriptions for jh8100-crypto compatible. (Rob)
-> - Added patch 3 to skip unneeded key freeing for RSA module.
->=20
-> v2->v3:
-> - Use of device data instead of #ifdef CONFIG_ for different device
->   variants.
-> - Updated dt bindings compatible and interrupts descriptions.
-> - Added patch 4 to support hardware quirks for dw-axi-dmac driver.
->=20
-> v1->v2:
-> - Resolved build warnings reported by kernel test robot
->   https://lore.kernel.org/oe-kbuild-all/202312170614.24rtwf9x-
-> lkp@intel.com/
->=20
-> Jia Jie Ho (7):
->   dt-bindings: crypto: starfive: Add jh8100 support
->   crypto: starfive: Update hash dma usage
->   crypto: starfive: Skip unneeded key free
->   crypto: starfive: Use dma for aes requests
->   dmaengine: dw-axi-dmac: Support hardware quirks
->   crypto: starfive: Add sm3 support for JH8100
->   crypto: starfive: Add sm4 support for JH8100
->=20
->  .../crypto/starfive,jh7110-crypto.yaml        |   30 +-
->  drivers/crypto/starfive/Kconfig               |   30 +-
->  drivers/crypto/starfive/Makefile              |    5 +-
->  drivers/crypto/starfive/jh7110-aes.c          |  592 ++++++---
->  drivers/crypto/starfive/jh7110-cryp.c         |   77 +-
->  drivers/crypto/starfive/jh7110-cryp.h         |  114 +-
->  drivers/crypto/starfive/jh7110-hash.c         |  316 +++--
->  drivers/crypto/starfive/jh7110-rsa.c          |    3 +
->  drivers/crypto/starfive/jh8100-sm3.c          |  544 ++++++++
->  drivers/crypto/starfive/jh8100-sm4.c          | 1119 +++++++++++++++++
->  .../dma/dw-axi-dmac/dw-axi-dmac-platform.c    |   32 +-
->  drivers/dma/dw-axi-dmac/dw-axi-dmac.h         |    2 +
->  include/linux/dma/dw_axi.h                    |   11 +
->  13 files changed, 2437 insertions(+), 438 deletions(-)  create mode 1006=
-44
-> drivers/crypto/starfive/jh8100-sm3.c
->  create mode 100644 drivers/crypto/starfive/jh8100-sm4.c
->  create mode 100644 include/linux/dma/dw_axi.h
->=20
+On Tue, 26 Mar 2024 at 10:30, Benno Lossin <benno.lossin@proton.me> wrote:
+>
+> On 26.03.24 01:17, Wedson Almeida Filho wrote:
+> > On Mon, 25 Mar 2024 at 19:37, Benno Lossin <benno.lossin@proton.me> wrote:
+> >>
+> >> On 25.03.24 20:54, Wedson Almeida Filho wrote:
+> >>> From: Wedson Almeida Filho <walmeida@microsoft.com>
+> >>>
+> >>> Make fallible versions of `new` and `new_uninit` methods available in
+> >>> `Box` even though it doesn't implement them because we build `alloc`
+> >>> with the `no_global_oom_handling` config.
+> >>>
+> >>> They also have an extra `flags` parameter that allows callers to pass
+> >>> flags to the allocator.
+> >>>
+> >>> Signed-off-by: Wedson Almeida Filho <walmeida@microsoft.com>
+> >>> ---
+> >>>    rust/kernel/alloc.rs           |  1 +
+> >>>    rust/kernel/alloc/allocator.rs |  6 +++-
+> >>>    rust/kernel/alloc/boxext.rs    | 61 ++++++++++++++++++++++++++++++++++
+> >>>    rust/kernel/init.rs            | 13 ++++----
+> >>>    rust/kernel/prelude.rs         |  2 +-
+> >>>    rust/kernel/sync/arc.rs        |  3 +-
+> >>>    6 files changed, 77 insertions(+), 9 deletions(-)
+> >>>    create mode 100644 rust/kernel/alloc/boxext.rs
+> >>>
+> >>> diff --git a/rust/kernel/alloc.rs b/rust/kernel/alloc.rs
+> >>> index ad48ac8dc13d..5712c81b1308 100644
+> >>> --- a/rust/kernel/alloc.rs
+> >>> +++ b/rust/kernel/alloc.rs
+> >>> @@ -5,6 +5,7 @@
+> >>>    #[cfg(not(test))]
+> >>>    #[cfg(not(testlib))]
+> >>>    mod allocator;
+> >>> +pub mod boxext;
+> >>>    pub mod vecext;
+>
+> One thing I forgot to say: I think these modules should be named
+> `box_ext` and `vec_ext`. It fits better with the usual style.
+>
+> >>>
+> >>>    /// Flags to be used when allocating memory.
+> >>> diff --git a/rust/kernel/alloc/allocator.rs b/rust/kernel/alloc/allocator.rs
+> >>> index 01ad139e19bc..fc0439455faa 100644
+> >>> --- a/rust/kernel/alloc/allocator.rs
+> >>> +++ b/rust/kernel/alloc/allocator.rs
+> >>> @@ -15,7 +15,11 @@
+> >>>    ///
+> >>>    /// - `ptr` can be either null or a pointer which has been allocated by this allocator.
+> >>>    /// - `new_layout` must have a non-zero size.
+> >>> -unsafe fn krealloc_aligned(ptr: *mut u8, new_layout: Layout, flags: bindings::gfp_t) -> *mut u8 {
+> >>> +pub(crate) unsafe fn krealloc_aligned(
+> >>> +    ptr: *mut u8,
+> >>> +    new_layout: Layout,
+> >>> +    flags: bindings::gfp_t,
+> >>> +) -> *mut u8 {
+> >>>        // Customized layouts from `Layout::from_size_align()` can have size < align, so pad first.
+> >>>        let layout = new_layout.pad_to_align();
+> >>>
+> >>> diff --git a/rust/kernel/alloc/boxext.rs b/rust/kernel/alloc/boxext.rs
+> >>> new file mode 100644
+> >>> index 000000000000..26a918df7acf
+> >>> --- /dev/null
+> >>> +++ b/rust/kernel/alloc/boxext.rs
+> >>> @@ -0,0 +1,61 @@
+> >>> +// SPDX-License-Identifier: GPL-2.0
+> >>> +
+> >>> +//! Extensions to [`Box`] for fallible allocations.
+> >>> +
+> >>> +use super::Flags;
+> >>> +use alloc::boxed::Box;
+> >>> +use core::alloc::AllocError;
+> >>> +use core::mem::MaybeUninit;
+> >>> +use core::result::Result;
+> >>> +
+> >>> +/// Extensions to [`Box`].
+> >>> +pub trait BoxExt<T>: Sized {
+> >>> +    /// Allocates a new box.
+> >>> +    ///
+> >>> +    /// The allocation may fail, in which case an error is returned.
+> >>> +    fn new(x: T, flags: Flags) -> Result<Self, AllocError>;
+> >>> +
+> >>> +    /// Allocates a new uninitialised box.
+> >>> +    ///
+> >>> +    /// The allocation may fail, in which case an error is returned.
+> >>> +    fn new_uninit(flags: Flags) -> Result<Box<MaybeUninit<T>>, AllocError>;
+> >>> +}
+> >>> +
+> >>> +impl<T> BoxExt<T> for Box<T> {
+> >>> +    #[cfg(any(test, testlib))]
+> >>> +    fn new(x: T, _flags: Flags) -> Result<Self, AllocError> {
+> >>> +        Ok(Box::new(x))
+> >>> +    }
+> >>
+> >> When running under `cfg(test)`, are we using the normal standard
+> >> library? Or why is this needed?
+> >
+> > Because it uses 34 other crates that rely on `Box::new` and friends.
+> >
+> > I discussed this with Miguel recently and once he's done with the
+> > build system changes, he will think about what to do with tests. It
+> > may be that we abandon the current method of running standalone tests
+> > and run everything in kunit, or perhaps we'll find a way to exclude
+> > code that won't run in standalone tests anyway...
+>
+> Ah I see, I think it would be nice to not need this. Let's see what the
+> new build system can do here.
+>
+> >
+> >>> +
+> >>> +    #[cfg(not(any(test, testlib)))]
+> >>> +    fn new(x: T, flags: Flags) -> Result<Self, AllocError> {
+> >>> +        let ptr = if core::mem::size_of::<T>() == 0 {
+> >>> +            core::ptr::NonNull::<T>::dangling().as_ptr()
+> >>> +        } else {
+> >>> +            let layout = core::alloc::Layout::new::<T>();
+> >>> +
+> >>> +            // SAFETY: Memory is being allocated (first arg is null). The only other source of
+> >>> +            // safety issues is sleeping on atomic context, which is addressed by klint.
+> >>
+> >> The `krealloc_aligned` function states:
+> >>
+> >> /// # Safety
+> >> ///
+> >> /// - `ptr` can be either null or a pointer which has been allocated by this allocator.
+> >> /// - `new_layout` must have a non-zero size.
+> >>
+> >> So it should also mention that you checked for `layout.size() > 0`
+> >> above.
+> >
+> > Good point. I mentioned this in the VecExt version but not here. I
+> > will update this for v2.
+> >
+> >>> +            let ptr = unsafe {
+> >>> +                super::allocator::krealloc_aligned(core::ptr::null_mut(), layout, flags.0)
+> >>> +            };
+> >>> +            if ptr.is_null() {
+> >>> +                return Err(AllocError);
+> >>> +            }
+> >>> +
+> >>> +            let ptr = ptr.cast::<T>();
+> >>> +
+> >>> +            // SAFETY: We just allocated the memory above, it is valid for write.
+> >>> +            unsafe { ptr.write(x) };
+> >>> +            ptr
+> >>> +        };
+> >>> +
+> >>> +        // SAFETY: For non-zero-sized types, we allocate above using the global allocator. For
+> >>> +        // zero-sized types, we use `NonNull::dangling`.
+> >>> +        Ok(unsafe { Box::from_raw(ptr) })
+> >>> +    }
+> >>> +
+> >>> +    fn new_uninit(flags: Flags) -> Result<Box<MaybeUninit<T>>, AllocError> {
+> >>> +        <Box<_> as BoxExt<_>>::new(MaybeUninit::<T>::uninit(), flags)
+> >>
+> >> Why do you use the extended syntax? I tried to use `Box::new` and it
+> >> compiled.
+> >
+> > It works when compiling the kernel but fails when compiling for
+> > userspace with regular (no_global_oom_handling disabled) `alloc` when
+> > running `make rusttest`. In the latter case, it chooses the inherent
+> > version of `Box::new` which is infallible and doesn't take flags so it
+> > fails to compile.
+> >
+> > Using the extended syntax allows it always pick the right version,
+> > regardless of how `alloc` is compiled.
+> >
+> > There are 5 places in existing code that required this change and this
+> > is limited to the kernel crate (e.g., drivers, samples and
+> > documentation examples can continue to use `Box::new`). So we thought
+> > it was ok until Miguel figures out what we want to do with tests.
+>
+> Thanks for the explanation, again it would be nice to be able to just
+> write `Box::new`.
 
-Hi Herbert,
-Could you please help review this patch series?
-
-Thanks,
-Jia Jie
+Indeed, that's what I had originally but we don't want to break rusttest.
 
