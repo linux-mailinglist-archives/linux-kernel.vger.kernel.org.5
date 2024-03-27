@@ -1,156 +1,106 @@
-Return-Path: <linux-kernel+bounces-121360-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-121361-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CA90688E6B7
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 15:42:31 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0FBFA88E6BB
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 15:42:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 84E5F2C95BD
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 14:42:30 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 922982C9CE1
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 14:42:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 469681386DF;
-	Wed, 27 Mar 2024 13:23:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 82B5E13B5AB;
+	Wed, 27 Mar 2024 13:25:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Z+b05JUj"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Vx8pGiyn"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.21])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 80E9A127B5F
-	for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 13:23:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4190C13B5A2
+	for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 13:25:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.21
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711545810; cv=none; b=hpB1m+s8yfREsPmC9eYj8qxqZ952JZ+WyJ/uuxnpzPTFpfiOMiO8leN99rVeoGo5XGGHhj1PczgNCAcsPYCujHcD92lxnUENtvhjanqm3XmEKGzQ/ge5+lIx3jSms75xCvJJXu+g5/By9EWOmRgWELR3lj9iPnyYJWHRsFYO1B4=
+	t=1711545903; cv=none; b=nEyqFSXlXpKVSzeUq/xRszeAu1oQDxKX6WtfGJg2xWWYmTSIwxM+6Yh11w+MXsKdjSzALFPVqGAMGZqLNYUxuubLTzwO5Iysok531OEOdDloe/J6J8cfo2oD78hU6RgPlqOG0yfI/T2CsYxJQ4GmogMIyBnqutyzbUoVJ2OlMzw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711545810; c=relaxed/simple;
-	bh=U7abAYA8MCl0AIbIYaTfhg3/P08q63VTWwI22U1GpRo=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=lU99OqbN0bLmmaY7A2in8p3ALNbM8eZX2d66Smmr7rLNFR/363OKIYAn6BbQNsmS3f7edNpLtc/vFOYGavFASp/CpOYt6Zui2rUK5D8/NvITNUU+20fXjgQhvWd/mVEPyfT/+BEGM2YCxy2+Z/PaQPj0YQ32Q0+TtrIF1gdS3zw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Z+b05JUj; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3A6AAC43394;
-	Wed, 27 Mar 2024 13:23:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711545810;
-	bh=U7abAYA8MCl0AIbIYaTfhg3/P08q63VTWwI22U1GpRo=;
-	h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-	b=Z+b05JUje7LfkVLWp2X/on6sDdqTF4W2g/f4omGVP4ZosDCiI3xVXCdCEClOLvID7
-	 KLVVoNUWBnDIhjDIHxZtuIj2ZOjUOz1tElMOQIu1VuSt5Ky6nWuDbVGthZHXHmsxrE
-	 eqtaKq1V2ABFMCS/OfnPQOPMp2IpfLPX0NFOJWSZ+yn/9kPaW6UZYyDE3s3WdXVyfE
-	 FEKeg0OIodQL7NKr3+KwJbOduoWiciKPsUfDCuADvVppCjAz2l7KWel9y5Plpfa2yq
-	 wjsxnN9rtfXsrAXII+73GJ9Ja0NLXgCHTuYyESt4y5wT2wFbB5M8TAGiuIaWU2/HL4
-	 i/kiwtdft8dAA==
-Message-ID: <fb1d34b54d00fce340c1c7e20e6d8590293f3513.camel@kernel.org>
-Subject: Re: [PATCH 4/4] kprobes: Remove core dependency on modules
-From: Jarkko Sakkinen <jarkko@kernel.org>
-To: Masami Hiramatsu <mhiramat@kernel.org>, Mark Rutland
- <mark.rutland@arm.com>
-Cc: linux-kernel@vger.kernel.org, agordeev@linux.ibm.com, 
- anil.s.keshavamurthy@intel.com, aou@eecs.berkeley.edu, bp@alien8.de, 
- catalin.marinas@arm.com, dave.hansen@linux.intel.com, davem@davemloft.net, 
- gor@linux.ibm.com, hca@linux.ibm.com, jcalvinowens@gmail.com, 
- linux-arm-kernel@lists.infradead.org, mingo@redhat.com, mpe@ellerman.id.au,
-  naveen.n.rao@linux.ibm.com, palmer@dabbelt.com, paul.walmsley@sifive.com, 
- tglx@linutronix.de, will@kernel.org
-Date: Wed, 27 Mar 2024 15:23:24 +0200
-In-Reply-To: <20240327090155.873f1ed32700dbdb75f8eada@kernel.org>
-References: <20240326163624.3253157-1-mark.rutland@arm.com>
-	 <20240326163624.3253157-5-mark.rutland@arm.com>
-	 <D03UMKC71414.2D6NN1BIWD5TZ@kernel.org>
-	 <ZgMICo-dZJgVklc4@FVFF77S0Q05N.cambridge.arm.com>
-	 <20240327090155.873f1ed32700dbdb75f8eada@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.52.0 
+	s=arc-20240116; t=1711545903; c=relaxed/simple;
+	bh=i9F5RVjjdXSXnNca9EoASKUAH+ZHNQI+HhjNJfYHmmk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=UpEjd7Wb0d1UbEFH1MqgDTskT7OUQPoOdD0b+N/teb/ym/BT3VaJ0+7pd2H8GGJb/AVSANqe8OeQVTtmC6D790BG2c4twwKQMO3PGY1/aSrskX2o2ZzxsU/2nKitRV3h1cTVx17mgsPr8cTPw3Ah5L7ht+NOEhSrfIxpzbrzUaQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Vx8pGiyn; arc=none smtp.client-ip=198.175.65.21
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1711545902; x=1743081902;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=i9F5RVjjdXSXnNca9EoASKUAH+ZHNQI+HhjNJfYHmmk=;
+  b=Vx8pGiynyfInpT8VDE2dyWcfly7nxQWaX/G52yibvADrFBnuJIzdmLqJ
+   uwAZ6tvQpKH2Bq61DbR153Bzz4+568orAk8LN2P+fqwltHrZzzcb1o0se
+   zAsIj+Y12s9I83KWWN5JG5/ApRfzUHPrkUC0MvuQ/YcmFOtUbsdIyDItp
+   Bo+gkNkJ2GDULFBOyfVWkGrnM4/z1M7jK5Jvre5/crN4Z57FRKz/IILi+
+   xL0+Ig7KaRPXL9EcHjuOYdZuiWivvcUiyGnk8AxhMFCK61T/vN879yACf
+   rhsjxa/RYIUeG1mTS8vZZtSmVMMqpIswCsiTX6+lvmw9/MGdhvIzwmz5l
+   w==;
+X-CSE-ConnectionGUID: Zz9sQcM2S6iNq5oOTZLWZw==
+X-CSE-MsgGUID: kJdOSVcjSkG/lkGKCUnTEQ==
+X-IronPort-AV: E=McAfee;i="6600,9927,11025"; a="6583521"
+X-IronPort-AV: E=Sophos;i="6.07,158,1708416000"; 
+   d="scan'208";a="6583521"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orvoesa113.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Mar 2024 06:25:01 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,11025"; a="914913226"
+X-IronPort-AV: E=Sophos;i="6.07,158,1708416000"; 
+   d="scan'208";a="914913226"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Mar 2024 06:25:00 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.97)
+	(envelope-from <andriy.shevchenko@linux.intel.com>)
+	id 1rpTH0-0000000Gdvg-0K2t;
+	Wed, 27 Mar 2024 15:24:58 +0200
+Date: Wed, 27 Mar 2024 15:24:57 +0200
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: Lee Jones <lee@kernel.org>
+Cc: Mateusz K <mateusz.kaduk@gmail.com>, Bjorn Helgaas <helgaas@kernel.org>,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1 1/1] mfd: intel-lpss: Switch over to MSI interrupts
+Message-ID: <ZgQeKfsFy9i0h4Kj@smile.fi.intel.com>
+References: <20240312165905.1764507-1-andriy.shevchenko@linux.intel.com>
+ <20240325211915.GA1449994@bhelgaas>
+ <CAPf=4Rc2vQrWqcs=-ND3iOZFJyKE7FdPoqU9w6DKjoSaJo6KaQ@mail.gmail.com>
+ <ZgLefFQanbq-ozKM@smile.fi.intel.com>
+ <ZgLooJa1JVKEMOtf@smile.fi.intel.com>
+ <20240327131711.GR13211@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240327131711.GR13211@google.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 
-On Wed, 2024-03-27 at 09:01 +0900, Masami Hiramatsu wrote:
-> On Tue, 26 Mar 2024 17:38:18 +0000
-> Mark Rutland <mark.rutland@arm.com> wrote:
->=20
-> > On Tue, Mar 26, 2024 at 07:13:51PM +0200, Jarkko Sakkinen wrote:
-> > > On Tue Mar 26, 2024 at 6:36 PM EET, Mark Rutland wrote:
-> >=20
-> > > > +#ifdef CONFIG_MODULES
-> > > > =C2=A0	/* Check if 'p' is probing a module. */
-> > > > =C2=A0	*probed_mod =3D __module_text_address((unsigned long) p-
-> > > > >addr);
-> > > > =C2=A0	if (*probed_mod) {
-> > > > @@ -1605,6 +1606,8 @@ static int
-> > > > check_kprobe_address_safe(struct kprobe *p,
-> > > > =C2=A0			ret =3D -ENOENT;
-> > > > =C2=A0		}
-> > > > =C2=A0	}
-> > > > +#endif
-> > >=20
-> > > This can be scoped a bit more (see v7 of my patch set).
-> >=20
-> > > > +#ifdef CONFIG_MODULES
-> > > > =C2=A0static nokprobe_inline bool trace_kprobe_module_exist(struct
-> > > > trace_kprobe *tk)
-> > > > =C2=A0{
-> > > > =C2=A0	char *p;
-> > > > @@ -129,6 +130,9 @@ static nokprobe_inline bool
-> > > > trace_kprobe_module_exist(struct trace_kprobe *tk)
-> > > > =C2=A0
-> > > > =C2=A0	return ret;
-> > > > =C2=A0}
-> > > > +#else
-> > > > +#define trace_kprobe_module_exist(tk) false /* aka a module
-> > > > never exists */
-> > > > +#endif /* CONFIG_MODULES */
-> > > > =C2=A0
-> > > > =C2=A0static bool trace_kprobe_is_busy(struct dyn_event *ev)
-> > > > =C2=A0{
-> > > > @@ -670,6 +674,7 @@ static int register_trace_kprobe(struct
-> > > > trace_kprobe *tk)
-> > > > =C2=A0	return ret;
-> > > > =C2=A0}
-> > > > =C2=A0
-> > > > +#ifdef CONFIG_MODULES
-> > > > =C2=A0/* Module notifier call back, checking event on the module */
-> > > > =C2=A0static int trace_kprobe_module_callback(struct notifier_block
-> > > > *nb,
-> > > > =C2=A0				=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 unsigned long val, v=
-oid
-> > > > *data)
-> > > > @@ -699,6 +704,9 @@ static int
-> > > > trace_kprobe_module_callback(struct notifier_block *nb,
-> > > > =C2=A0
-> > > > =C2=A0	return NOTIFY_DONE;
-> > > > =C2=A0}
-> > > > +#else
-> > > > +#define trace_kprobe_module_callback (NULL)
-> > > > +#endif /* CONFIG_MODULES */
-> > >=20
-> > > The last two CONFIG_MODULES sections could be combined. This was
-> > > also in
-> > > v7.
-> >=20
-> > > Other than lgtm.
-> >=20
-> > Great! I've folded your v7 changes in, and pushed that out to:
-> >=20
-> > =C2=A0
-> > https://git.kernel.org/pub/scm/linux/kernel/git/mark/linux.git/log/?h=
-=3Dkprobes/without-modules
-> >=20
-> > I'll hold off sending that out to the list until other folk have
-> > had a chance
-> > to comment.
->=20
-> Yeah, the updated one looks good to me too.
->=20
-> Thanks!
+On Wed, Mar 27, 2024 at 01:17:11PM +0000, Lee Jones wrote:
+> On Tue, 26 Mar 2024, Andy Shevchenko wrote:
+> > On Tue, Mar 26, 2024 at 04:41:01PM +0200, Andy Shevchenko wrote:
 
-Yeah, I'm also planning to test this with x86 instrumenting sgx_* calls
-as I need to test the cgroups support for it so can help with the
-coverage both RISC-V and x86 (as I find a good time slot).
+..
 
-BR, Jarkko
+> > Hold on, but IIUC this is the report about new hardware that never had
+> > a support by Linux before.
+> 
+> So a revert is no longer required?
+
+No, it seems an old issue unrelated to this patch.
+
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
+
 
