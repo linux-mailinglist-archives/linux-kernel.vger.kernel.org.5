@@ -1,77 +1,77 @@
-Return-Path: <linux-kernel+bounces-121496-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-121497-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BAFB488E8FD
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 16:27:45 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id DB29688E8FE
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 16:27:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7525A30875D
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 15:27:44 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 560351F23FF1
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 15:27:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D2DFF12FB08;
-	Wed, 27 Mar 2024 15:23:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9958A131BAF;
+	Wed, 27 Mar 2024 15:23:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="BGDahIFo"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Cp7mpPh6"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A95C312EBC6
-	for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 15:23:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4398912F594
+	for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 15:23:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711553024; cv=none; b=TQptzZrcxwDmhGVoZJ+qmVikYf+oQhZagQDNsw2RTa+hm4fHk+B3E6AihoOTBUfScfz+LYTCb6i7AK//Fn4MjSblPrI8ZKds2EvnIk/DHeXD0yBT2QMCaY4IcEWE8sq35UUPG9RvfMsikBaQi7kipFHjcKwOSBYG+1KS+FS1jW4=
+	t=1711553025; cv=none; b=FfYrBRgboXHzvlwT9CwEljsMg8LuQ3H5jO+23Ekkge3DX10FkPN0Jro9ew6N7a5RgtElZ/A5ZLtMZCxTsf/7qSWNDJbYan6Axn+LCOWjei2kfl0IVrqJ2ZaURP03z9YtlFzaHimexkiVHcOvROUEDwtgnvy0c/a2vdjMsn9RFeA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711553024; c=relaxed/simple;
-	bh=aHfZvZI3hblnvK7sGliw4vracY8c0yNtRNBxsmY5Mag=;
+	s=arc-20240116; t=1711553025; c=relaxed/simple;
+	bh=dgfgLZsqOn9isp9ediyDcsNww/iiopRn8l8/GuMNoJQ=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Fvl/1KB1OZZbrEn+atZu6QtODCrRa06qJZUYLtzFXvkdnlQC32QC8aQ5hT64DxANOoWHYNU75AVOgzGaOShEgNjP5KkOZwlj6xF+Knc2NPNreeglwCJgPWq5UjfOUaXoT3/N/TqPCm8nSj2hFQ+W8aQSMtMHBtvNaqSZi2z6/es=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=BGDahIFo; arc=none smtp.client-ip=170.10.129.124
+	 MIME-Version; b=ky7/ggGPr/fAVrzJHp+LZriJNwoucYv/AFRZovYKYC4rRZli9pWMltGQxrp/nrvh+0MQ/IBqaOV/L+YLIwRq+tK+UkGmtioWoeEvdJUlVu9lo/ra0PrJQTKapa/cwqbkw4nvvQlpNUeC9ypmBm/plL3+MPTWJwr/Cw0aKLpmYaU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Cp7mpPh6; arc=none smtp.client-ip=170.10.133.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1711553021;
+	s=mimecast20190719; t=1711553023;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=bzTkuuEUZ2f7C9YouF2ORWZwnTLSeJ8Y5AJhy7kkISQ=;
-	b=BGDahIFoPuVsn+WJw7MzPr1lguopRuaJIGufIPvhfVq/Cb24W6PZK4i0AXEsGc/tFb4kd0
-	kdlPqae/xmnF0i36Db1WSh3T8rCN8hMBxoDaaXQ0/Z43gpZ2SLy/ga6vuR4tTS8Vq6knLO
-	yeEqVUqAG+nOz3aSGttl6cThtIbMByY=
-Received: from mail-qv1-f69.google.com (mail-qv1-f69.google.com
- [209.85.219.69]) by relay.mimecast.com with ESMTP with STARTTLS
+	bh=/DKy2rskdC2Yvy4b+7pXCefd1yMSUUO/lg/gxYCRDGA=;
+	b=Cp7mpPh6xxs6pt5wlZ+QY+OxLxoAx+TdcecAKJMlPYwPopXAEvCYavFclAkp28rF4UGjOh
+	VH6AfqUh0yMCtVAnRIKg9jW2obEq+wXidjBGallu7KOJNEqNlLSCkPy2LvMV5MZE0P5ZYg
+	I8+X2Bl+OCDrwrsX4Dz7NS+XIp7bhZw=
+Received: from mail-oi1-f197.google.com (mail-oi1-f197.google.com
+ [209.85.167.197]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-675-aEx9VzKFM6qBASRHlOTsow-1; Wed, 27 Mar 2024 11:23:38 -0400
-X-MC-Unique: aEx9VzKFM6qBASRHlOTsow-1
-Received: by mail-qv1-f69.google.com with SMTP id 6a1803df08f44-69152af7760so25772106d6.1
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 08:23:38 -0700 (PDT)
+ us-mta-152-rPk8VRtrNNK0YtsW2bQyQg-1; Wed, 27 Mar 2024 11:23:42 -0400
+X-MC-Unique: rPk8VRtrNNK0YtsW2bQyQg-1
+Received: by mail-oi1-f197.google.com with SMTP id 5614622812f47-3c377528ca3so585631b6e.1
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 08:23:40 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711553017; x=1712157817;
+        d=1e100.net; s=20230601; t=1711553020; x=1712157820;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=bzTkuuEUZ2f7C9YouF2ORWZwnTLSeJ8Y5AJhy7kkISQ=;
-        b=cygjNSyVT56ddR2hV8AQqsZJ/irXhjRMnpynvghABPAy8i5V5XlJdR5DU3mjDVAVNd
-         PGzGHciCXyjE3tfS/W/7EiOXk7xtwQP/oqOI89W5ZjC7W47+XhjqlAXKEAQ/9X0l5zos
-         jvGKdYjp/65WmfPceRkAJxhKtn6GB6oaI2205F+dI2AvgbRuiUXL7+Dj+zd0WNrUAGay
-         Q7SmlBhxFSk5PBcJdkYqvnkqHCUwaI2Sjz+OQ//BofxDfn9BgIBNvI4JbaSsb+sJy30H
-         T3+priIyl336N8nV8c9GasW81/8ah3STwAkjn7ra7U38VGiNJHHDGXepd5IjQ/ewsvDR
-         UpqA==
-X-Forwarded-Encrypted: i=1; AJvYcCUwt5cJpRxElktue7NXHfjcxCMn5jCKPG0Y3C48KRGzWA6EVrDupWNLtZ3TOtYAWO8H0EVfnr19JDmf/FxIg/3B2YCSV4wUDAelUfYr
-X-Gm-Message-State: AOJu0YwsIubhBNGZKy8D51lXhCl0haRs5tEnD7IjTTh23B0IFrbOVSiv
-	AvM42Zp9mK5i9oXnOo0yJlBKWZraEEeaadr4B/vMgepyxkyyuP4dbcZEyYpAYEFFPIISh0w7rEe
-	x97C2eys2lqDzOHkaIX48OlSG/wFgW/5P9q+digBm2EJF5pJzRyPZPz0hvgJXLA==
-X-Received: by 2002:a05:6214:5d11:b0:690:3c85:c5b with SMTP id me17-20020a0562145d1100b006903c850c5bmr14918731qvb.3.1711553017580;
-        Wed, 27 Mar 2024 08:23:37 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IFplzIHsd2VycAjj5oUNWAa5qW9RFPqJwKtRaT5aqzv2S9fkhcwA1AKc/2h1PXS7yh/3x/6aw==
-X-Received: by 2002:a05:6214:5d11:b0:690:3c85:c5b with SMTP id me17-20020a0562145d1100b006903c850c5bmr14918682qvb.3.1711553016992;
-        Wed, 27 Mar 2024 08:23:36 -0700 (PDT)
+        bh=/DKy2rskdC2Yvy4b+7pXCefd1yMSUUO/lg/gxYCRDGA=;
+        b=U2QVv77VIxv7i2Z5UTpeopK1CH5J/nl7EEqxsHV2UUp9L6x470exs+6KTkg2LLb6gX
+         nOqP+eg/o9M/2a+Ci5oausTlTB8OfSuuJf2IJN1pFbD/BcVv2yfXyJsqMPdKn+CI5D22
+         pVugqfUpRbpjM9o9pQBwQgJRnbdQ0jECtJ39m8KFapsUCO4T5dqknJabsOl0Fd9j1wIa
+         hp9LX8MiFx+CXyUh70Cmalp2P5I4xW48ZPefhmnKOPnQVkMAKtMRhgE258NJa2I18zIw
+         mmXLKgUKY07ZFFbqXI0VweKje4So8TYeC79l58mJXull9ji2lj4ctEMGIIjAqFV5r7Yz
+         HZxg==
+X-Forwarded-Encrypted: i=1; AJvYcCVP383nVmgI2CjyJejceCpspVm6IBi7Cc55I5zuKxkMqTbwYCfwblCZsHCZA3/p7gJOLyi0RWKkq7aJXzCLwp0HzJIdxOCdduN613uT
+X-Gm-Message-State: AOJu0YwQKF/r1mF5JEoLKH9zsoYMOCdK9EzKigOygVvF8b7lQ//MtCrQ
+	aVSdUMVDEuvfrIS0AK6+Pl6NuF5XzzW1SqkjbPLXPswn+lrWQio1ABLmXgoMu/L1zSphyEtkxs5
+	Jx2D8LNkQBI5B4pK13DvhJMtQ5z0ZUpSWE1QhT6inaZGQ1hxHaeYMc8WAxqV8Mw==
+X-Received: by 2002:a05:6808:1814:b0:3c3:d28a:b1a8 with SMTP id bh20-20020a056808181400b003c3d28ab1a8mr370352oib.0.1711553020019;
+        Wed, 27 Mar 2024 08:23:40 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IEUSCRMAKzeIW51sHYtQ4kGfBJ1LCcy7xm5bPm4kr5W7dAQlFQDGhJMDaaF/OcaFnro9iqkpQ==
+X-Received: by 2002:a05:6808:1814:b0:3c3:d28a:b1a8 with SMTP id bh20-20020a056808181400b003c3d28ab1a8mr370311oib.0.1711553019443;
+        Wed, 27 Mar 2024 08:23:39 -0700 (PDT)
 Received: from x1n.redhat.com ([99.254.121.117])
-        by smtp.gmail.com with ESMTPSA id hu4-20020a056214234400b00690dd47a41csm6412639qvb.86.2024.03.27.08.23.35
+        by smtp.gmail.com with ESMTPSA id hu4-20020a056214234400b00690dd47a41csm6412639qvb.86.2024.03.27.08.23.37
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 27 Mar 2024 08:23:36 -0700 (PDT)
+        Wed, 27 Mar 2024 08:23:38 -0700 (PDT)
 From: peterx@redhat.com
 To: linux-mm@kvack.org,
 	linux-kernel@vger.kernel.org
@@ -100,9 +100,9 @@ Cc: Yang Shi <shy828301@gmail.com>,
 	Jason Gunthorpe <jgg@nvidia.com>,
 	Mike Rapoport <rppt@kernel.org>,
 	Axel Rasmussen <axelrasmussen@google.com>
-Subject: [PATCH v4 01/13] mm/Kconfig: CONFIG_PGTABLE_HAS_HUGE_LEAVES
-Date: Wed, 27 Mar 2024 11:23:20 -0400
-Message-ID: <20240327152332.950956-2-peterx@redhat.com>
+Subject: [PATCH v4 02/13] mm/hugetlb: Declare hugetlbfs_pagecache_present() non-static
+Date: Wed, 27 Mar 2024 11:23:21 -0400
+Message-ID: <20240327152332.950956-3-peterx@redhat.com>
 X-Mailer: git-send-email 2.44.0
 In-Reply-To: <20240327152332.950956-1-peterx@redhat.com>
 References: <20240327152332.950956-1-peterx@redhat.com>
@@ -116,34 +116,56 @@ Content-Transfer-Encoding: 8bit
 
 From: Peter Xu <peterx@redhat.com>
 
-Introduce a config option that will be selected as long as huge leaves are
-involved in pgtable (thp or hugetlbfs).  It would be useful to mark any
-code with this new config that can process either hugetlb or thp pages in
-any level that is higher than pte level.
+It will be used outside hugetlb.c soon.
 
-Reviewed-by: Jason Gunthorpe <jgg@nvidia.com>
 Signed-off-by: Peter Xu <peterx@redhat.com>
 ---
- mm/Kconfig | 6 ++++++
- 1 file changed, 6 insertions(+)
+ include/linux/hugetlb.h | 9 +++++++++
+ mm/hugetlb.c            | 4 ++--
+ 2 files changed, 11 insertions(+), 2 deletions(-)
 
-diff --git a/mm/Kconfig b/mm/Kconfig
-index b924f4a5a3ef..497cdf4d8ebf 100644
---- a/mm/Kconfig
-+++ b/mm/Kconfig
-@@ -850,6 +850,12 @@ config READ_ONLY_THP_FOR_FS
+diff --git a/include/linux/hugetlb.h b/include/linux/hugetlb.h
+index d748628efc5e..294c78b3549f 100644
+--- a/include/linux/hugetlb.h
++++ b/include/linux/hugetlb.h
+@@ -174,6 +174,9 @@ u32 hugetlb_fault_mutex_hash(struct address_space *mapping, pgoff_t idx);
  
- endif # TRANSPARENT_HUGEPAGE
+ pte_t *huge_pmd_share(struct mm_struct *mm, struct vm_area_struct *vma,
+ 		      unsigned long addr, pud_t *pud);
++bool hugetlbfs_pagecache_present(struct hstate *h,
++				 struct vm_area_struct *vma,
++				 unsigned long address);
  
-+#
-+# The architecture supports pgtable leaves that is larger than PAGE_SIZE
-+#
-+config PGTABLE_HAS_HUGE_LEAVES
-+	def_bool TRANSPARENT_HUGEPAGE || HUGETLB_PAGE
+ struct address_space *hugetlb_page_mapping_lock_write(struct page *hpage);
+ 
+@@ -1228,6 +1231,12 @@ static inline void hugetlb_register_node(struct node *node)
+ static inline void hugetlb_unregister_node(struct node *node)
+ {
+ }
 +
- #
- # UP and nommu archs use km based percpu allocator
- #
++static inline bool hugetlbfs_pagecache_present(
++    struct hstate *h, struct vm_area_struct *vma, unsigned long address)
++{
++	return false;
++}
+ #endif	/* CONFIG_HUGETLB_PAGE */
+ 
+ static inline spinlock_t *huge_pte_lock(struct hstate *h,
+diff --git a/mm/hugetlb.c b/mm/hugetlb.c
+index f9640a81226e..65b9c9a48fd2 100644
+--- a/mm/hugetlb.c
++++ b/mm/hugetlb.c
+@@ -6110,8 +6110,8 @@ static vm_fault_t hugetlb_wp(struct mm_struct *mm, struct vm_area_struct *vma,
+ /*
+  * Return whether there is a pagecache page to back given address within VMA.
+  */
+-static bool hugetlbfs_pagecache_present(struct hstate *h,
+-			struct vm_area_struct *vma, unsigned long address)
++bool hugetlbfs_pagecache_present(struct hstate *h,
++				 struct vm_area_struct *vma, unsigned long address)
+ {
+ 	struct address_space *mapping = vma->vm_file->f_mapping;
+ 	pgoff_t idx = linear_page_index(vma, address);
 -- 
 2.44.0
 
