@@ -1,75 +1,75 @@
-Return-Path: <linux-kernel+bounces-121788-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-121789-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 591E988EDB7
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 19:09:42 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id ACF0688EDDB
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 19:12:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E91451F37A37
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 18:09:41 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CD12BB24D84
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 18:10:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8AE3D15099E;
-	Wed, 27 Mar 2024 18:08:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D9FC91514D4;
+	Wed, 27 Mar 2024 18:08:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="ID10q6LU"
-Received: from mail-wm1-f47.google.com (mail-wm1-f47.google.com [209.85.128.47])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="QRHSIiZz"
+Received: from mail-ej1-f47.google.com (mail-ej1-f47.google.com [209.85.218.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1C88814F9C1
-	for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 18:08:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 502A415099A
+	for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 18:08:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711562932; cv=none; b=YiebWjv+u+PAcC5zYknO9H9xqRtOAjrQWuSAVaNlRNf+Mu3CXra21Rkvu2s+0G/M7lOOzp+x3kqKBCKnWL+PYam3ZjrrE+Pcg8cTRTDAJDDNID708NCkyTZaiCWJ+NTl3JZ6RZczJxSnDPXxNeZQmBcxT4KBSxdecVLLF29xpCA=
+	t=1711562935; cv=none; b=Nf/vKg40Uhc/Im1Ow9v0ESVlPhdlp6xz9/JBSzdfyVWff4LLQA0WpixLOWz8ZmdGjKoUb6+V7c9V6KuBt9nlvn+5S9fyV5snF7Qtikf/OpjKyLJ5MXv8zINJj/eHVpsgFowwY048gf1wgWTYsdrqxH+Y32+HKMlUADEGW/oU9Cw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711562932; c=relaxed/simple;
-	bh=2J4GFcJEb/ok1nMNM2COXn5TmyzEayEQndQUNkB4dqo=;
+	s=arc-20240116; t=1711562935; c=relaxed/simple;
+	bh=0FsCQVaaR6mlZkTyREXWtukXCjlINsoRv31QgmDTlf4=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=YZh8BvFWJ9ED5cMSqZGlV3YyiYHUJBAgHroGAgSetNDHK0reI0Yt2rpXOw84FneohtsLFwQ/PGekVePgELqg2Q9zdW0iR2HuZGmrUZS5FDDx32ipqPlVJOmY/uEtGz5tvjtQkHyVnUgk8GxyCrzaFdXCx2Xpxc6L6mf4lMsWV6A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=ID10q6LU; arc=none smtp.client-ip=209.85.128.47
+	 In-Reply-To:To:Cc; b=jDh9p6/egJVOF3cBRtBtFE+A6M3fDT02BxXUgTIcNs8rwPBb/ozpA1GQIz3h5eNx6K8m2olpQIE9L4vqpWe5JQM/msqEfc7Jnhs09XO1uCUgL/R8qKqg8nR/TPiM4JgbSEZVdLiy6u2ye86rWo+zBlBnb9gH7MFuNFYQhmb4scc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=QRHSIiZz; arc=none smtp.client-ip=209.85.218.47
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wm1-f47.google.com with SMTP id 5b1f17b1804b1-41495430387so1147265e9.0
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 11:08:50 -0700 (PDT)
+Received: by mail-ej1-f47.google.com with SMTP id a640c23a62f3a-a466fc8fcccso15442266b.1
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 11:08:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1711562929; x=1712167729; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1711562931; x=1712167731; darn=vger.kernel.org;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=yKtma1geY0OQRnHtThKspHVPEwvhLZRJr0GFmraQ2AM=;
-        b=ID10q6LU1ckyZB31C81axJhTEpxxDrxTzEY1LFFSo794UBXhXggRBWA9KhevGFSu7r
-         FQxYgWJfo4VM3ou4aGovieHYZUwv7kdzJxQU42yOIUOqI6gKBL8m6AxnvpnsyPO14V+L
-         ogRAv3DQTvb+yLO3BgwcgaZ+HV5ZEo1F6WerghIImikunto2NTKSkSu7ENNVyKzdyovY
-         W1dO9pianpovlizjjTK2iVKKFw6wPxuuxlYveHWGMuLgJme+O6F3LCr4HJVmYp3rpWzc
-         3jXSrvXE3hUFle0HXec9PkTZw4F+AOVGs+xbBWtvs0+YM2JzXFK6tU+1dSHxW3rECpNT
-         v5Ew==
+        bh=Cpiy05x6+KmwppdZDoeFtIMDjcMCWVRc+LYx5JwTOaY=;
+        b=QRHSIiZzE9NdURx5SjtD2dmOvBjQioEuGVTBX7DeV8JvcMS36dFt6WbNlw8iS38QVA
+         sBsEayhr0WjumwsEPah0fzq5/uL6qMa/XAz4Cdg8hD6zWi2vAIeENlrXstjaQCxikax7
+         O9iIjhBYVFxbwUWaXHwXirXCkqzUPAttS+E71MbVlX62GuKqG9bu95tnPb0Vnz0Fsjyz
+         kNlFTBKUgM6ir0ssAepSYW0F5Rfh7oD8bKLZPihrqhvOyROTyd2dj9P6Q/VbXdx0z9VE
+         430Le/SH3rK1BGZfs1f0Pg7iojQbTeVwBLftdpqZJ+Q1e0ElFXbkjcKTrnQZLriCzsLr
+         REnw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711562929; x=1712167729;
+        d=1e100.net; s=20230601; t=1711562931; x=1712167731;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=yKtma1geY0OQRnHtThKspHVPEwvhLZRJr0GFmraQ2AM=;
-        b=m5hQKXBmgItY2cCLQUQJa5XWU5i1am9fzSs8VAIGhymbsIFlH/0eBKiZ4RG48UMiFr
-         /DPgfQyQ4Tm8jr5R8NOjd/S6uu7ZwewYpAXxyKJeWlGpT8MWeUp/s2NTA6dPn2VZDfvV
-         lYPBqHxPJLZFErwb+YrjRZUtNyOw0zJpfiYFInViFbDhiqHOXSzT+ZWGYc+VwWQogIUg
-         qT0WtxaHTVBUqftQjpxhM5M7ZO7InbtvxQQfAvqCYa5QmpQ5IHnmoSOjOzPrYkJVAXcf
-         wuUk9IBPhdnuQJlgKVWGS+E91yrZgW9wTfXZiaXkCleF3nCRXBbuKrzx048FIvsi2KKM
-         +Yjg==
-X-Forwarded-Encrypted: i=1; AJvYcCWs6kJd5djzyrd07+6FGOASTsSYFJ87X4qhggUMojugVH+RT0ZRsGuL3BsWaMUG/Poq8oHx6qmx5lKlx2B5dVspvFFx/Boph1zgX9QC
-X-Gm-Message-State: AOJu0YzvduntxElEg8Y1D1jDXGxKNVvik5pVkw9J5acZr587UyBbbB13
-	dd1M5JFrfTD+1JzDjymVF5TAY+hS750GsJaq7d/oeWpRW8jHcBpg6fPB3aSM1v4=
-X-Google-Smtp-Source: AGHT+IHsB3GLxgP5XIxcW+UPWTDprzqykwmuw33rABaQFAjPbcDfqcHvD3oXaa7/QCIBqaYiG6I5CA==
-X-Received: by 2002:a5d:6a92:0:b0:341:bd4e:68f5 with SMTP id s18-20020a5d6a92000000b00341bd4e68f5mr713223wru.5.1711562929578;
-        Wed, 27 Mar 2024 11:08:49 -0700 (PDT)
+        bh=Cpiy05x6+KmwppdZDoeFtIMDjcMCWVRc+LYx5JwTOaY=;
+        b=asBIO89AERsuWE7hgNE2KO3afwpS6cChVgrDhHKKgV84sXggYcRP1aEaBbLQzUIBqS
+         +u7pEinfWsOMu1CbI7hZTLx6/KShThTuT346UpxG//lDBligvAiOgTxMGk6JqMJGP3Ht
+         Xn1nzC3pHONrmI80hUdnMW+kpIORlIk9PjTzyNI9Nr1310fxTdF7hSfSC1itT7oVApiG
+         iFLcBWSc1/v0VB9OFULDVXn8jXlDcQKVg3Ho+JCle9nXazf3zhY4TXuSulH+sOmZChjD
+         KG+dblgrQccmxtipNzyv157LrNZLl5cfhH0Q/8iPvLInzuyCoCRFdUKvwP+F2r5AGgf+
+         KByQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVDOQRzxC4tyKEtmxEufr17/gfMlzmRmrB3ewCocUqmYHs3xwyFxYBgmiCQ0fCIj6/PWf1UhCoIRykp2rihdothhGP4fpRbGG9lt8F3
+X-Gm-Message-State: AOJu0YxhZH66qW4jEEtreri/kT14cup2mCojMq7M/njxxcgEXcP2OgTB
+	GM4yhAJSsDplQDlIN/AsZihH1bPlzGgviLy2peKfUU8EcX80augHcCg0mr5x8H4=
+X-Google-Smtp-Source: AGHT+IHydqg0ryKTowRqgPPxpikjTmMXrNDLePw6z1aW3FjnX1XIQsJWSdcaJJk1RsmEiO76VwqCHw==
+X-Received: by 2002:a17:906:e209:b0:a47:29ef:f3ca with SMTP id gf9-20020a170906e20900b00a4729eff3camr165767ejb.31.1711562931607;
+        Wed, 27 Mar 2024 11:08:51 -0700 (PDT)
 Received: from [192.168.92.47] (078088045141.garwolin.vectranet.pl. [78.88.45.141])
-        by smtp.gmail.com with ESMTPSA id z2-20020a1709060be200b00a45f2dc6795sm5702733ejg.137.2024.03.27.11.08.47
+        by smtp.gmail.com with ESMTPSA id z2-20020a1709060be200b00a45f2dc6795sm5702733ejg.137.2024.03.27.11.08.49
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 27 Mar 2024 11:08:49 -0700 (PDT)
+        Wed, 27 Mar 2024 11:08:51 -0700 (PDT)
 From: Konrad Dybcio <konrad.dybcio@linaro.org>
-Date: Wed, 27 Mar 2024 19:08:40 +0100
-Subject: [PATCH v3 02/19] media: venus: pm_helpers: Rename core_clks_get to
- venus_clks_get
+Date: Wed, 27 Mar 2024 19:08:41 +0100
+Subject: [PATCH v3 03/19] media: venus: pm_helpers: Add kerneldoc to
+ venus_clks_get()
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -78,7 +78,7 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20230911-topic-mars-v3-2-79f23b81c261@linaro.org>
+Message-Id: <20230911-topic-mars-v3-3-79f23b81c261@linaro.org>
 References: <20230911-topic-mars-v3-0-79f23b81c261@linaro.org>
 In-Reply-To: <20230911-topic-mars-v3-0-79f23b81c261@linaro.org>
 To: Stanimir Varbanov <stanimir.k.varbanov@gmail.com>, 
@@ -94,53 +94,62 @@ Cc: Marijn Suijten <marijn.suijten@somainline.org>,
  linux-media@vger.kernel.org, linux-arm-msm@vger.kernel.org, 
  linux-kernel@vger.kernel.org, Konrad Dybcio <konrad.dybcio@linaro.org>
 X-Mailer: b4 0.12.2
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1711562923; l=1211;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1711562923; l=2193;
  i=konrad.dybcio@linaro.org; s=20230215; h=from:subject:message-id;
- bh=2J4GFcJEb/ok1nMNM2COXn5TmyzEayEQndQUNkB4dqo=;
- b=rWV62J+CudHYBsig6BzDDpFCVZyvMzuo7cNi9KQPbqPsoeQ1YAY48CyGpCanimW3iJhftI1OC
- uZeNr0vPJoDBcjrFoVPEbLo4EKqjQaQoXYnESFn6PBHgNv8cGSOOaD8
+ bh=0FsCQVaaR6mlZkTyREXWtukXCjlINsoRv31QgmDTlf4=;
+ b=XnknYN2sPi2dJ+IqyT2Vfoq8/8onJ2qiUbiRyC6uKY00P0GSoy+wFqTEbOhtzn8LOy+0HBZBn
+ bddAPSiXr86AVYTi8xNlIi7MUuDCciF+i/4xzPBAPKg+681HKPrZD3/
 X-Developer-Key: i=konrad.dybcio@linaro.org; a=ed25519;
  pk=iclgkYvtl2w05SSXO5EjjSYlhFKsJ+5OSZBjOkQuEms=
 
-"core" is used in multiple contexts when talking about Venus, rename
-the function to save on confusion.
+To make it easier to understand the various clock requirements within
+this driver, add kerneldoc to venus_clk_get() explaining the fluff.
 
+Reviewed-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
 Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
 ---
- drivers/media/platform/qcom/venus/pm_helpers.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ drivers/media/platform/qcom/venus/pm_helpers.c | 28 ++++++++++++++++++++++++++
+ 1 file changed, 28 insertions(+)
 
 diff --git a/drivers/media/platform/qcom/venus/pm_helpers.c b/drivers/media/platform/qcom/venus/pm_helpers.c
-index 8bd0ce4ce69d..ac7c83404c6e 100644
+index ac7c83404c6e..cf91f50a33aa 100644
 --- a/drivers/media/platform/qcom/venus/pm_helpers.c
 +++ b/drivers/media/platform/qcom/venus/pm_helpers.c
-@@ -23,7 +23,7 @@
+@@ -23,6 +23,34 @@
  
  static bool legacy_binding;
  
--static int core_clks_get(struct venus_core *core)
-+static int venus_clks_get(struct venus_core *core)
++/**
++ * venus_clks_get() - Get Venus clocks that are not bound to a vcodec
++ * @core: A pointer to the venus core resource
++ *
++ * The Venus block (depending on the generation) can be split into a couple
++ * of clock domains: one for main logic and one for each video core (0-2 instances).
++ *
++ * MSM8916 (and possibly other HFIv1 users) only feature the "main logic"
++ * domain, so this function is the only kind if clk_get necessary there.
++ *
++ * MSM8996 (and other HFIv3 users) feature two video cores, with core0 being
++ * statically defined a decoder and core1 an encoder, with both having
++ * their own clock domains.
++ *
++ * SDM845 features two video cores, each one of which may or may not be
++ * subdivided into two encoder/decoder threads.
++ *
++ * Other SoCs either feature a single video core (with its own clock domain)
++ * or one video core and one CVP (Computer Vision Processor) core. In both cases
++ * we treat it the same way (CVP only happens to live near-by Venus on the SoC).
++ *
++ * Due to unfortunate developments in the past, we need to support legacy
++ * bindings (MSM8996, SDM660, SDM845) that require specifying the clocks and
++ * power-domains associated with a video core domain in a bogus sub-node,
++ * which means that additional fluff is necessary..
++ *
++ * Return: 0 on success, negative errno on failure.
++ */
+ static int venus_clks_get(struct venus_core *core)
  {
  	const struct venus_resources *res = core->res;
- 	struct device *dev = core->dev;
-@@ -294,7 +294,7 @@ static int core_get_v1(struct venus_core *core)
- {
- 	int ret;
- 
--	ret = core_clks_get(core);
-+	ret = venus_clks_get(core);
- 	if (ret)
- 		return ret;
- 
-@@ -961,7 +961,7 @@ static int core_get_v4(struct venus_core *core)
- 	const struct venus_resources *res = core->res;
- 	int ret;
- 
--	ret = core_clks_get(core);
-+	ret = venus_clks_get(core);
- 	if (ret)
- 		return ret;
- 
 
 -- 
 2.44.0
