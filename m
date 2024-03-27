@@ -1,58 +1,54 @@
-Return-Path: <linux-kernel+bounces-121157-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-121158-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6FBDE88E2F3
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 14:38:21 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2F38D88E2F7
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 14:38:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 25AF1296BCC
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 13:38:20 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DC49C1F215FA
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 13:38:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7043113E03D;
-	Wed, 27 Mar 2024 12:23:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BB5201791F0;
+	Wed, 27 Mar 2024 12:23:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="LN+V8PsQ"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="mjWF3CSw"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B2208178CE7;
-	Wed, 27 Mar 2024 12:23:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EBDFD13E045;
+	Wed, 27 Mar 2024 12:23:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711542229; cv=none; b=abS56DwI+9T8pk/zS+SIhl8tO/nquMy3VPL6VAfWEZFWP2kO2BDqekezikxUt9V8jeB1xqv3XXnxTKVy76VEc/NA86JhE/jEwDjYc2KEfQfqF2l+ssQpLn/lfILbs761znERF3zuwF/jCjphT465ZSLPLOM6pvyWZciI6Ef23Yc=
+	t=1711542232; cv=none; b=QjVyu9fwBWCydsAx/E5DZwKh0bCmoBc3UJU3yLwnGpBKCETPNSrqeKTlAiocGb668UpxPLU/02BS3WGIlC6slvH7RcPAowcSRAm+yRQC5O/ySz08czf8VGZ5I8/KaWFU+bczn2Q5IWBF7cze/up8gT58SonzlpMr8h/gLHuLf88=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711542229; c=relaxed/simple;
-	bh=DoQnaQT+t8MTyyH1rCn641sboskSEeo4a4QMaq1sHDA=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=csohW8IFd40yCrEgx5DgOiXsmKyouOj6uFok39R1EnC+eRfS2VLEnL0oDPi7WiZFpA4xUJm/oDTXTKlPgpsMbWmA8F0ECmbJ1hBxIN3F9VT4gzhJfm4CzfQbDXZFQiCaawC46geexUDPFvfe2AXql38ltx/xmycJ5ESZzrOfTAc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=LN+V8PsQ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3FA31C433F1;
-	Wed, 27 Mar 2024 12:23:48 +0000 (UTC)
+	s=arc-20240116; t=1711542232; c=relaxed/simple;
+	bh=7LsQtJB4z2+a3oJU3PiQpdmEENnD8QrniYyGYXqfMn8=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=NWBA2qaw5xsuisJR4tcUir7IE/NC9a4IYfj383LIpIFLV4eKsrsXyMgrTlpDoiJQ17sn9vNUkg0nctmMmXGaf4ws3HbHndIHfbSc97HYMyPkDSSLweIqfPX7wyj8WjBWNTJsSzooWt1SsNbXKP+PkD2wgn+GSCAygHO1XiwAXCU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=mjWF3CSw; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 14DDCC433C7;
+	Wed, 27 Mar 2024 12:23:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711542229;
-	bh=DoQnaQT+t8MTyyH1rCn641sboskSEeo4a4QMaq1sHDA=;
+	s=k20201202; t=1711542231;
+	bh=7LsQtJB4z2+a3oJU3PiQpdmEENnD8QrniYyGYXqfMn8=;
 	h=From:To:Cc:Subject:Date:From;
-	b=LN+V8PsQ6rybJhM6WYoTHcL5uwbWBU32I988gKtUAR5lvR4SZ+HgiLE28cJimshVA
-	 bhAUFnTvSBgyNGnz/bGyGhh6abRIISvLsZgLOWvXCFeIXy6EWgSQ3dAjqRjXfzESB2
-	 7pQshrRJpXZVRdidEmTST26wCQGTsxF0HKS8ONMyh0kzF4W2rCXf6lFO2VCSdCjAUD
-	 YIhRhJFBL2OjUr/+FHFkS5/1ARiLgcdCnKB8LtoLTMQah8r70z3I831n+Vbg/AURzA
-	 y0nWn7iNwBr2CYwLVRKZh5IEpw50fOYmSFRr9T9AbECwgYnsJGeZKT0obXSN5mw71e
-	 lnLf4zBiQtA7Q==
+	b=mjWF3CSwLdc7rqLpi5mxLtmlHWyArBg1n0IKMrG9/adB8mT498cTk6FK/mLuduuw/
+	 2wZ7rg/VPxo+4o8QrdQzhwSdR3Q1p7Otb4+EV2X4ksZYZLSZgOKXNIg8YLOdGnwmsP
+	 9gcPh4F8D/D/h9IXnrvbwXhvIGMzHnUKt0XU9t0aYaIsmY/Vu/Too/B4DcegT7Hxkw
+	 P5xiDj/4ElOlX0/tR6H4IDie8n2UTMCxfPlTGlspwidtb8ZS9rc6R0fhwh59F786oA
+	 RuhMXGuDoi1uJ+ms4N8WnuStuYMQ5zBLvzMx/RMKDj6Y2IxWwRHX1Aen2o6qtH9xrw
+	 HGaTBFY1iLrcw==
 From: Sasha Levin <sashal@kernel.org>
 To: stable@vger.kernel.org,
-	swapnil.patel@amd.com
-Cc: Mario Limonciello <mario.limonciello@amd.com>,
-	Alex Deucher <alexander.deucher@amd.com>,
-	Chaitanya Dhere <chaitanya.dhere@amd.com>,
-	Alex Hung <alex.hung@amd.com>,
-	Daniel Wheeler <daniel.wheeler@amd.com>,
-	amd-gfx@lists.freedesktop.org,
-	dri-devel@lists.freedesktop.org,
+	cassel@kernel.org
+Cc: =?UTF-8?q?Krzysztof=20Wilczy=C5=84ski?= <kwilczynski@kernel.org>,
+	Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+	linux-pci@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: FAILED: Patch "drm/amd/display: Change default size for dummy plane in DML2" failed to apply to 5.4-stable tree
-Date: Wed, 27 Mar 2024 08:23:47 -0400
-Message-ID: <20240327122347.2838841-1-sashal@kernel.org>
+Subject: FAILED: Patch "PCI: dwc: endpoint: Fix advertised resizable BAR size" failed to apply to 5.4-stable tree
+Date: Wed, 27 Mar 2024 08:23:49 -0400
+Message-ID: <20240327122350.2838878-1-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -62,6 +58,7 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-Patchwork-Hint: ignore
 X-stable: review
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
 The patch below does not apply to the 5.4-stable tree.
@@ -74,70 +71,73 @@ Sasha
 
 ------------------ original commit in Linus's tree ------------------
 
-From 75eb8f7df65c5e6eb22a5aff8deb60ce0b65de1a Mon Sep 17 00:00:00 2001
-From: Swapnil Patel <swapnil.patel@amd.com>
-Date: Tue, 13 Feb 2024 08:09:48 -0500
-Subject: [PATCH] drm/amd/display: Change default size for dummy plane in DML2
+From 72e34b8593e08a0ee759b7a038e0b178418ea6f8 Mon Sep 17 00:00:00 2001
+From: Niklas Cassel <cassel@kernel.org>
+Date: Thu, 7 Mar 2024 12:15:20 +0100
+Subject: [PATCH] PCI: dwc: endpoint: Fix advertised resizable BAR size
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-[WHY & HOW]
-Currently, to map dc states into dml_display_cfg,
-We create a dummy plane if the stream doesn't have any planes
-attached to it. This dummy plane uses max addersable width height.
-This results in certain mode validations failing when they shouldn't.
+The commit message in commit fc9a77040b04 ("PCI: designware-ep: Configure
+Resizable BAR cap to advertise the smallest size") claims that it modifies
+the Resizable BAR capability to only advertise support for 1 MB size BARs.
 
-Cc: Mario Limonciello <mario.limonciello@amd.com>
-Cc: Alex Deucher <alexander.deucher@amd.com>
-Cc: stable@vger.kernel.org
-Reviewed-by: Chaitanya Dhere <chaitanya.dhere@amd.com>
-Acked-by: Alex Hung <alex.hung@amd.com>
-Signed-off-by: Swapnil Patel <swapnil.patel@amd.com>
-Tested-by: Daniel Wheeler <daniel.wheeler@amd.com>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+However, the commit writes all zeroes to PCI_REBAR_CAP (the register which
+contains the possible BAR sizes that a BAR be resized to).
+
+According to the spec, it is illegal to not have a bit set in
+PCI_REBAR_CAP, and 1 MB is the smallest size allowed.
+
+Set bit 4 in PCI_REBAR_CAP, so that we actually advertise support for a
+1 MB BAR size.
+
+Before:
+        Capabilities: [2e8 v1] Physical Resizable BAR
+                BAR 0: current size: 1MB
+                BAR 1: current size: 1MB
+                BAR 2: current size: 1MB
+                BAR 3: current size: 1MB
+                BAR 4: current size: 1MB
+                BAR 5: current size: 1MB
+After:
+        Capabilities: [2e8 v1] Physical Resizable BAR
+                BAR 0: current size: 1MB, supported: 1MB
+                BAR 1: current size: 1MB, supported: 1MB
+                BAR 2: current size: 1MB, supported: 1MB
+                BAR 3: current size: 1MB, supported: 1MB
+                BAR 4: current size: 1MB, supported: 1MB
+                BAR 5: current size: 1MB, supported: 1MB
+
+Fixes: fc9a77040b04 ("PCI: designware-ep: Configure Resizable BAR cap to advertise the smallest size")
+Link: https://lore.kernel.org/linux-pci/20240307111520.3303774-1-cassel@kernel.org
+Signed-off-by: Niklas Cassel <cassel@kernel.org>
+Signed-off-by: Krzysztof Wilczyński <kwilczynski@kernel.org>
+Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Cc: <stable@vger.kernel.org> # 5.2
 ---
- .../display/dc/dml2/dml2_translation_helper.c  | 18 +++++++++++++++---
- 1 file changed, 15 insertions(+), 3 deletions(-)
+ drivers/pci/controller/dwc/pcie-designware-ep.c | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/amd/display/dc/dml2/dml2_translation_helper.c b/drivers/gpu/drm/amd/display/dc/dml2/dml2_translation_helper.c
-index 1ba6933d2b361..17a58f41fc6a8 100644
---- a/drivers/gpu/drm/amd/display/dc/dml2/dml2_translation_helper.c
-+++ b/drivers/gpu/drm/amd/display/dc/dml2/dml2_translation_helper.c
-@@ -824,13 +824,25 @@ static struct scaler_data get_scaler_data_for_plane(const struct dc_plane_state
+diff --git a/drivers/pci/controller/dwc/pcie-designware-ep.c b/drivers/pci/controller/dwc/pcie-designware-ep.c
+index 5befed2dc02b7..389daebc43161 100644
+--- a/drivers/pci/controller/dwc/pcie-designware-ep.c
++++ b/drivers/pci/controller/dwc/pcie-designware-ep.c
+@@ -627,8 +627,13 @@ int dw_pcie_ep_init_complete(struct dw_pcie_ep *ep)
+ 		nbars = (reg & PCI_REBAR_CTRL_NBAR_MASK) >>
+ 			PCI_REBAR_CTRL_NBAR_SHIFT;
  
- static void populate_dummy_dml_plane_cfg(struct dml_plane_cfg_st *out, unsigned int location, const struct dc_stream_state *in)
- {
-+	dml_uint_t width, height;
-+
-+	if (in->timing.h_addressable > 3840)
-+		width = 3840;
-+	else
-+		width = in->timing.h_addressable;	// 4K max
-+
-+	if (in->timing.v_addressable > 2160)
-+		height = 2160;
-+	else
-+		height = in->timing.v_addressable;	// 4K max
-+
- 	out->CursorBPP[location] = dml_cur_32bit;
- 	out->CursorWidth[location] = 256;
++		/*
++		 * PCIe r6.0, sec 7.8.6.2 require us to support at least one
++		 * size in the range from 1 MB to 512 GB. Advertise support
++		 * for 1 MB BAR size only.
++		 */
+ 		for (i = 0; i < nbars; i++, offset += PCI_REBAR_CTRL)
+-			dw_pcie_writel_dbi(pci, offset + PCI_REBAR_CAP, 0x0);
++			dw_pcie_writel_dbi(pci, offset + PCI_REBAR_CAP, BIT(4));
+ 	}
  
- 	out->GPUVMMinPageSizeKBytes[location] = 256;
- 
--	out->ViewportWidth[location] = in->timing.h_addressable;
--	out->ViewportHeight[location] = in->timing.v_addressable;
-+	out->ViewportWidth[location] = width;
-+	out->ViewportHeight[location] = height;
- 	out->ViewportStationary[location] = false;
- 	out->ViewportWidthChroma[location] = 0;
- 	out->ViewportHeightChroma[location] = 0;
-@@ -849,7 +861,7 @@ static void populate_dummy_dml_plane_cfg(struct dml_plane_cfg_st *out, unsigned
- 	out->HTapsChroma[location] = 0;
- 	out->VTapsChroma[location] = 0;
- 	out->SourceScan[location] = dml_rotation_0;
--	out->ScalerRecoutWidth[location] = in->timing.h_addressable;
-+	out->ScalerRecoutWidth[location] = width;
- 
- 	out->LBBitPerPixel[location] = 57;
- 
+ 	/*
 -- 
 2.43.0
 
