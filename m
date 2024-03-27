@@ -1,52 +1,54 @@
-Return-Path: <linux-kernel+bounces-121144-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-121145-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7A88F88E2DA
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 14:35:10 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3380288E48C
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 15:06:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 879A41C2A91E
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 13:35:09 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2A9D7B335A7
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 13:35:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B61A5176FDE;
-	Wed, 27 Mar 2024 12:23:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2D76D1779A3;
+	Wed, 27 Mar 2024 12:23:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dM5pT+c4"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="j39GwaqW"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 045C97641B;
-	Wed, 27 Mar 2024 12:23:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6F960176FDB;
+	Wed, 27 Mar 2024 12:23:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711542195; cv=none; b=pT0NZbS5vFyxt1w7FIdOGnA1hmSHdb9xJ4b5L5xkwNfxnf2QDLPmxmrxgcHO6DcB2KtQS8cN6kJP84Z1FG39Si7e2dZwqx1etccStXJ8ANtLs6AL0SJWNf8/hkOb/j+o+jZA2nPtUUuvz2QlA//nIkzIJZEa5991qOo31UhUK48=
+	t=1711542197; cv=none; b=OwmjKBc5JiPkHf+ft4oxnfxu4mTB6C1e2FDLBLQLRv9SwFBkn9N+HjmT/1NzAnoAhNBLnkFv7CzBZIAYRTxGH8SBXZFFcTUWlWFQO0aCv52ct7RSYDjrr1rj94GITFPfDbPXR4M+i/tCWwfOgS2YzUonmPUicVtOLoFERSWcfa8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711542195; c=relaxed/simple;
-	bh=9ZItdATIGM0losrcIOR5Cm0pmyfUPs2WpbOAFhoPJrI=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=B2LeVfxRr476N2uL4eCCSeU2seKwstTQk9NuaDXhTmr2VBKq75Y+hiV7ubAikwE1eaOKiQYpieEtdg6rXRAe5BcZE7ka2BkQukdmh1GrlDOjcb+F37CZXmfd94aFfeHP3Gm64kS425Y0dkpFho/T9pAuwdz8YNpGiCO0Jpeqyco=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dM5pT+c4; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 05F72C433F1;
-	Wed, 27 Mar 2024 12:23:13 +0000 (UTC)
+	s=arc-20240116; t=1711542197; c=relaxed/simple;
+	bh=RwigAQmafhkqcfjzheZMcdBby7iXvnOAGJQb4topJtw=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=G8+aDjljdElIbfEp8Sv0hjYON8B5r/VPTzrUkzkPZ192r7/a+KYK8F2LBJvYPCAG0NeWpm4VhvrqYRiTrqWCEN2tpDbhQgiWh7Bq7T+VGuUexiDTOAbZErT7U3k80ave8Leu5lr8AUhSlX//eTvcWdVSO3YqfcODt0ZPBHIMZKI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=j39GwaqW; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 515E9C433F1;
+	Wed, 27 Mar 2024 12:23:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711542194;
-	bh=9ZItdATIGM0losrcIOR5Cm0pmyfUPs2WpbOAFhoPJrI=;
+	s=k20201202; t=1711542197;
+	bh=RwigAQmafhkqcfjzheZMcdBby7iXvnOAGJQb4topJtw=;
 	h=From:To:Cc:Subject:Date:From;
-	b=dM5pT+c4/QxaWzOeCdiKHDuuGFOhkrdkodnjNVaQEPA8oJQohr91B3X8cUaJ8ANEM
-	 1uDJwjY/Mvc4PPDPUctxUdsy+2kOXzRRr9QRK1rN65q8Wap/Y0biawUbJOa1QQrglI
-	 n0k+Sl5qi3q4mNzeC4mHA3u50ObwzMhIFDM5OgyNt/H2dFwAkjybj3qnNSkSHPqkfn
-	 L2E4wn19792KwGboUYW8kZnokmIk2Z3HwMC9DBKDfgRqFLxnxKxwx2RAIFFikEPEM5
-	 A8UdC4hPC/m/Fjt5qd+JQKcwPeI16Vg9KUTMlQ9F/ZIuDWMUjWuxce78A0E56HXaEA
-	 V88FbLvY56+xQ==
+	b=j39GwaqWNwuCMxbqBCeCZRzofWcJbM16RykA5LzgBd4FQuANjTrc0iH/uKXSUw5Yw
+	 P4QS9Jg8EPbZfnEDqp5lPanVH0Mr7grh+fzIBNOcmeQLxK6HGgSllikbwkR3EG+L7+
+	 zjD2oVSw15ja8+QjYaa6IKjnoztOxFhCL7ZqEqS3CFZO/S3qhe+rvEVOKQtSzoDF+6
+	 Th3isEn9BX2uvdKlHBc6wsRNYGyYYQNLNvvO6UME+TEXP5NyUvxHrkZIhiY1LHKMZL
+	 Zi0Ct9kRseG0/EwFhoia+2Uq6JO9RGZe6mkwmkV0jHzMk7RjE+Vx9ZMNHEAYQt+C6i
+	 E3vaC9Qw1EKaw==
 From: Sasha Levin <sashal@kernel.org>
 To: stable@vger.kernel.org,
-	mpe@ellerman.id.au
-Cc: linuxppc-dev@lists.ozlabs.org,
-	linux-kernel@vger.kernel.org
-Subject: FAILED: Patch "powerpc/smp: Increase nr_cpu_ids to include the boot CPU" failed to apply to 5.4-stable tree
-Date: Wed, 27 Mar 2024 08:23:12 -0400
-Message-ID: <20240327122313.2838323-1-sashal@kernel.org>
+	rostedt@goodmis.org
+Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	linux-kernel@vger.kernel.org,
+	linux-trace-kernel@vger.kernel.org
+Subject: FAILED: Patch "ring-buffer: Do not set shortest_full when full target is hit" failed to apply to 5.4-stable tree
+Date: Wed, 27 Mar 2024 08:23:15 -0400
+Message-ID: <20240327122315.2838361-1-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -68,39 +70,52 @@ Sasha
 
 ------------------ original commit in Linus's tree ------------------
 
-From 777f81f0a9c780a6443bcf2c7785f0cc2e87c1ef Mon Sep 17 00:00:00 2001
-From: Michael Ellerman <mpe@ellerman.id.au>
-Date: Thu, 15 Feb 2024 00:14:04 +1100
-Subject: [PATCH] powerpc/smp: Increase nr_cpu_ids to include the boot CPU
+From 761d9473e27f0c8782895013a3e7b52a37c8bcfc Mon Sep 17 00:00:00 2001
+From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
+Date: Tue, 12 Mar 2024 11:56:41 -0400
+Subject: [PATCH] ring-buffer: Do not set shortest_full when full target is hit
 
-If nr_cpu_ids is too low to include the boot CPU adjust nr_cpu_ids
-upward. Otherwise the kernel will BUG when trying to allocate a paca
-for the boot CPU and fail to boot.
+The rb_watermark_hit() checks if the amount of data in the ring buffer is
+above the percentage level passed in by the "full" variable. If it is, it
+returns true.
+
+But it also sets the "shortest_full" field of the cpu_buffer that informs
+writers that it needs to call the irq_work if the amount of data on the
+ring buffer is above the requested amount.
+
+The rb_watermark_hit() always sets the shortest_full even if the amount in
+the ring buffer is what it wants. As it is not going to wait, because it
+has what it wants, there's no reason to set shortest_full.
+
+Link: https://lore.kernel.org/linux-trace-kernel/20240312115641.6aa8ba08@gandalf.local.home
 
 Cc: stable@vger.kernel.org
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://msgid.link/20231229120107.2281153-2-mpe@ellerman.id.au
+Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Fixes: 42fb0a1e84ff5 ("tracing/ring-buffer: Have polling block on watermark")
+Reviewed-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
 ---
- arch/powerpc/kernel/prom.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+ kernel/trace/ring_buffer.c | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
-diff --git a/arch/powerpc/kernel/prom.c b/arch/powerpc/kernel/prom.c
-index 58e80076bed5c..77364729a1b61 100644
---- a/arch/powerpc/kernel/prom.c
-+++ b/arch/powerpc/kernel/prom.c
-@@ -381,6 +381,12 @@ static int __init early_init_dt_scan_cpus(unsigned long node,
- 			nr_cpu_ids);
- 	}
+diff --git a/kernel/trace/ring_buffer.c b/kernel/trace/ring_buffer.c
+index aa332ace108b1..6ffbccb9bcf00 100644
+--- a/kernel/trace/ring_buffer.c
++++ b/kernel/trace/ring_buffer.c
+@@ -834,9 +834,10 @@ static bool rb_watermark_hit(struct trace_buffer *buffer, int cpu, int full)
+ 		pagebusy = cpu_buffer->reader_page == cpu_buffer->commit_page;
+ 		ret = !pagebusy && full_hit(buffer, cpu, full);
  
-+	if (boot_cpuid >= nr_cpu_ids) {
-+		set_nr_cpu_ids(min(CONFIG_NR_CPUS, ALIGN(boot_cpuid + 1, nthreads)));
-+		pr_warn("Boot CPU %d >= nr_cpu_ids, adjusted nr_cpu_ids to %d\n",
-+			boot_cpuid, nr_cpu_ids);
-+	}
-+
- 	/*
- 	 * PAPR defines "logical" PVR values for cpus that
- 	 * meet various levels of the architecture:
+-		if (!cpu_buffer->shortest_full ||
+-		    cpu_buffer->shortest_full > full)
+-			cpu_buffer->shortest_full = full;
++		if (!ret && (!cpu_buffer->shortest_full ||
++			     cpu_buffer->shortest_full > full)) {
++		    cpu_buffer->shortest_full = full;
++		}
+ 		raw_spin_unlock_irqrestore(&cpu_buffer->reader_lock, flags);
+ 	}
+ 	return ret;
 -- 
 2.43.0
 
