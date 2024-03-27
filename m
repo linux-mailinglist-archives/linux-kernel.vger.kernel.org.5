@@ -1,54 +1,54 @@
-Return-Path: <linux-kernel+bounces-122151-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-122174-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 536FA88F2C3
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 00:19:17 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id BFEB688F310
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 00:24:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 080101F29E0A
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 23:19:17 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F1E1D1C2ECBA
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 23:24:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6AB0B155750;
-	Wed, 27 Mar 2024 23:18:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2BCFE15625D;
+	Wed, 27 Mar 2024 23:23:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=luigi311.com header.i=@luigi311.com header.b="djhh2rrX"
-Received: from mail-108-mta81.mxroute.com (mail-108-mta81.mxroute.com [136.175.108.81])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=luigi311.com header.i=@luigi311.com header.b="BGA5xBr7"
+Received: from mail-108-mta166.mxroute.com (mail-108-mta166.mxroute.com [136.175.108.166])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3E8F215539D
-	for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 23:18:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=136.175.108.81
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AAC5A15539F
+	for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 23:23:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=136.175.108.166
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711581497; cv=none; b=maIfgxe75ulyqC9SiLBpHbJNU4Dql3EigaEhV1rNvrVrR+QK0w55E/E3O4IXZfKX0Z2Ihl8w36Q3ec3JK34gArWM6BrcNRhQ1Piujs26HbrcLAJleoEl/Y83E3PGKGDjE741HtmIBrNSjJ5XkS7BtyLyoczu6pI3U3mIp/hyi7g=
+	t=1711581802; cv=none; b=aJvWFhVjw092hecxgRqKFzeQEzzQscBdQ5lYH0fze8G9oS3/MqREOLJJ0m2kH5e3HWk654gdUwnlfetHMpV2Ri9fXGz20F1/fpTyuyjsnVK28/sQ7ltokX6ASe4zqmTrwBBJqX0E3qNrPIAd4iCjG0fcmxIdqQngXNfEawCcY6I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711581497; c=relaxed/simple;
-	bh=9hZyUhA7ALR2iNhCG6D4FOZenGSfNB9notOMRAjuHdc=;
+	s=arc-20240116; t=1711581802; c=relaxed/simple;
+	bh=cA+a4yuqQVkS/8K8gNj/TEvJEub7ZleI9BN5eH1wpf4=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=bScq6aP5Kl3FtAx1mkTFbSLk/HmH/uFXgj+MhsbEpz08w/ekKJFLx9sDeXQ2SfTI1hdm/g2uKteAakNXoo0FkabtzlzdVo66MoCe8WEEmV5qdbthPrT3EXQKiZlm7gnXYYparqTbnbrBsSSvU+f9BWBXqiyZ93GCXaepP+MfWI8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=luigi311.com; spf=pass smtp.mailfrom=luigi311.com; dkim=pass (2048-bit key) header.d=luigi311.com header.i=@luigi311.com header.b=djhh2rrX; arc=none smtp.client-ip=136.175.108.81
+	 MIME-Version; b=GAXJVWeir+OM7xUKX5Fez/PCqZtar9YTKVe5CgZyb8sxqW85GKK0JcVTdcI76WwtZYAVJFSpeYB2+Hugn3PvFci+MEEK+DMukRmFkeJwkEVASNytgT7M2Tli0sGAWl/0rvXhbInbf7eSarogPZjP+kA/fymlRiEfHBn4ANsP4Qs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=luigi311.com; spf=pass smtp.mailfrom=luigi311.com; dkim=pass (2048-bit key) header.d=luigi311.com header.i=@luigi311.com header.b=BGA5xBr7; arc=none smtp.client-ip=136.175.108.166
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=luigi311.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=luigi311.com
 Received: from filter006.mxroute.com ([136.175.111.2] filter006.mxroute.com)
  (Authenticated sender: mN4UYu2MZsgR)
- by mail-108-mta81.mxroute.com (ZoneMTA) with ESMTPSA id 18e823479e90003bea.00f
+ by mail-108-mta166.mxroute.com (ZoneMTA) with ESMTPSA id 18e823480f30003bea.00f
  for <linux-kernel@vger.kernel.org>
  (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384);
- Wed, 27 Mar 2024 23:17:40 +0000
-X-Zone-Loop: 3cde56e13237a5f5359452be11b54f74e61c57de1d91
+ Wed, 27 Mar 2024 23:17:42 +0000
+X-Zone-Loop: c62c6f4eca7f154990d8251e3ea88f5e9a155d942377
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=luigi311.com; s=x; h=Content-Transfer-Encoding:MIME-Version:References:
 	In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
 	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
 	Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
 	List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=tzcV6O++Ljt/ASIa7w8Ii7uMMQ256AACbEeevdXTGDg=; b=djhh2rrX3hxdfDjlQEENfp23cx
-	zokz16x08OytLp/F1wdlcqU2RMg/d6ljHM9/UscMtrhOQH3XMvFqh3EdW/chepAH+ap4f5irAuv0K
-	tvA31jQwWZWGyHcuzZspjStuLSqejaIsMtFJM8i3vHgxZelEm0Tp4kAM45hPYl0nuE8vralmqQdfc
-	MPooWcU9DOPe5tZ6K6FnqEWVdb1HaR9M1HTY8Kx3Sg77LKiSCPoqBxGcShT3B2RELa/JIID+Q5FV0
-	xH2QuutihoPfJWdDSKUU5nPif9uuElSX/qtUpZlUzEX7M4keU8PDGvF+a+XGsvrIKoSUK2ynMDePa
-	Y7G5zxHw==;
+	bh=8VAPtDzgGszeDreMGf3K+a0lokdNPZGj6/qmTj7fPpc=; b=BGA5xBr7spbPlohctMY2ikBX6L
+	nYRFBgh7yjBoSbZiHv/G47ylGySSOIMFla4COvMGL6MJSHaJjUCx/1m/qJ+eLh540Mlgv/4qpKGMv
+	6z4Cq3laUoNYklfCNQ2cbpOj0nH45RMB6baefLdk8hNbuJ+5lZX4aKiaQii8/9cH79Wr5xV/Cz6n4
+	PbzyeUZJRIFxra7CSRWmCdKMWWGJYqxBkAVLZunU0Y7F25JV4MgjYs2PoWkmBNN1EguIH1cKlaR88
+	5SfpUGzk9WlkzU/oeZXh+zr4xJIzglaQmvL1YUBZC08KCt+JISN+4Ml0hHKZDcEUo1Y4CnKbdzXGC
+	oAT7MTKw==;
 From: git@luigi311.com
 To: linux-media@vger.kernel.org
 Cc: dave.stevenson@raspberrypi.com,
@@ -66,9 +66,9 @@ Cc: dave.stevenson@raspberrypi.com,
 	imx@lists.linux.dev,
 	linux-arm-kernel@lists.infradead.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH 12/23] media: i2c: imx258: Allow configuration of clock lane behaviour
-Date: Wed, 27 Mar 2024 17:16:58 -0600
-Message-ID: <20240327231710.53188-13-git@luigi311.com>
+Subject: [PATCH 13/23] media: i2c: imx258: Correct max FRM_LENGTH_LINES value
+Date: Wed, 27 Mar 2024 17:16:59 -0600
+Message-ID: <20240327231710.53188-14-git@luigi311.com>
 In-Reply-To: <20240327231710.53188-1-git@luigi311.com>
 References: <20240327231710.53188-1-git@luigi311.com>
 Precedence: bulk
@@ -82,62 +82,28 @@ X-Authenticated-Id: personal@luigi311.com
 
 From: Dave Stevenson <dave.stevenson@raspberrypi.com>
 
-The sensor supports the clock lane either remaining in HS mode
-during frame blanking, or dropping to LP11.
-
-Add configuration of the mode via V4L2_MBUS_CSI2_NONCONTINUOUS_CLOCK.
+The data sheet states that the maximum value for registers
+0x0340/0x0341 FRM_LENGTH_LINES is 65525(decimal), not the
+0xFFFF defined in this driver. Correct this limit.
 
 Signed-off-by: Dave Stevenson <dave.stevenson@raspberrypi.com>
 Reviewed-by: Jacopo Mondi <jacopo.mondi@ideasonboard.com>
 ---
- drivers/media/i2c/imx258.c | 14 ++++++++++++++
- 1 file changed, 14 insertions(+)
+ drivers/media/i2c/imx258.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/drivers/media/i2c/imx258.c b/drivers/media/i2c/imx258.c
-index 979ac7872249..85c2f1ccaea1 100644
+index 85c2f1ccaea1..c2c5e819ddc0 100644
 --- a/drivers/media/i2c/imx258.c
 +++ b/drivers/media/i2c/imx258.c
-@@ -72,6 +72,8 @@
- /* Test Pattern Control */
- #define IMX258_REG_TEST_PATTERN		0x0600
+@@ -28,7 +28,7 @@
+ #define IMX258_VTS_30FPS		0x0c50
+ #define IMX258_VTS_30FPS_2K		0x0638
+ #define IMX258_VTS_30FPS_VGA		0x034c
+-#define IMX258_VTS_MAX			0xffff
++#define IMX258_VTS_MAX			65525
  
-+#define IMX258_CLK_BLANK_STOP		0x4040
-+
- /* Orientation */
- #define REG_MIRROR_FLIP_CONTROL		0x0101
- #define REG_CONFIG_MIRROR_FLIP		0x03
-@@ -639,6 +641,7 @@ struct imx258 {
- 	const struct imx258_link_freq_config *link_freq_configs;
- 	const s64 *link_freq_menu_items;
- 	unsigned int nlanes;
-+	unsigned int csi2_flags;
- 
- 	/*
- 	 * Mutex for serialized access:
-@@ -1073,6 +1076,15 @@ static int imx258_start_streaming(struct imx258 *imx258)
- 		return ret;
- 	}
- 
-+	ret = imx258_write_reg(imx258, IMX258_CLK_BLANK_STOP,
-+			       IMX258_REG_VALUE_08BIT,
-+			       imx258->csi2_flags & V4L2_MBUS_CSI2_NONCONTINUOUS_CLOCK ?
-+			       1 : 0);
-+	if (ret) {
-+		dev_err(&client->dev, "%s failed to set clock lane mode\n", __func__);
-+		return ret;
-+	}
-+
- 	/* Apply default values of current mode */
- 	reg_list = &imx258->cur_mode->reg_list;
- 	ret = imx258_write_regs(imx258, reg_list->regs, reg_list->num_of_regs);
-@@ -1445,6 +1457,8 @@ static int imx258_probe(struct i2c_client *client)
- 		goto error_endpoint_free;
- 	}
- 
-+	imx258->csi2_flags = ep.bus.mipi_csi2.flags;
-+
- 	/* Initialize subdev */
- 	v4l2_i2c_subdev_init(&imx258->sd, client, &imx258_subdev_ops);
+ #define IMX258_REG_VTS			0x0340
  
 -- 
 2.42.0
