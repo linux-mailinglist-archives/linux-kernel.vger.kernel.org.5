@@ -1,202 +1,217 @@
-Return-Path: <linux-kernel+bounces-120366-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-120367-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4FB5B88D656
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 07:23:39 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id D193F88D658
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 07:24:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C05D41F2A165
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 06:23:38 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 018021C24796
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 06:24:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 127C91EB3A;
-	Wed, 27 Mar 2024 06:23:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 85EDF1DA24;
+	Wed, 27 Mar 2024 06:24:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="I4nJrXK2"
-Received: from mail-pf1-f179.google.com (mail-pf1-f179.google.com [209.85.210.179])
+	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="Lep/P1gP"
+Received: from mail-ot1-f44.google.com (mail-ot1-f44.google.com [209.85.210.44])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D351C171C4
-	for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 06:23:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EAB8D17551
+	for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 06:24:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711520609; cv=none; b=hWfRO2Uig1N+Bq647PiKGnSbgmSfLYhEMOmtoFt8PopuCp9PNg1ZjWAQrplPKwGI3dvf8Ug9ni967II6t2da5G2m68CgFiGQGwaB7NFKoct3+8mB5EGElwWSiuFq4yGB2/ylRP9N5nC9kDEpQ2Kw1AFoolLsCdH2PLcyDX2WurY=
+	t=1711520649; cv=none; b=Y4HThmtWUG6CmLiYKe0oqCVeRBbd1jCrz7ttclP8sIAY5KKLMw8z4YKDP2VYKXRmCmiymATFFdKC0QJs53fhl8yTMRI/dfbxl27cTSSQ1C2wpF2wYC5SbpVqflLOpoMIm0PeLq8nERpNSeaFufHG+NXpQ8iDEwHai+iH1a0djVs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711520609; c=relaxed/simple;
-	bh=0i2kC23zVuArs9RpNNp6dBE7+7F68jiyLEw1IczmYjQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=dvRzDiGlDctmwwRhQNHNQZxiLmVLAxawWLLyMZbhQG9VI82Py3nKeUPWmoSMZorHp0N6roXw5q2Qdhyko0XcDo+rB/3pWS2N+lyGdfW/FjViHqLN7DHIsfyIMVOSE4z4gV04EzlmiyXvqQQ6EbDVjtbL/AAtSpLRZYwV+ZjU09Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=I4nJrXK2; arc=none smtp.client-ip=209.85.210.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-pf1-f179.google.com with SMTP id d2e1a72fcca58-6ea9a605ca7so420959b3a.0
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 23:23:27 -0700 (PDT)
+	s=arc-20240116; t=1711520649; c=relaxed/simple;
+	bh=ga9bfBr31Esbeh5JU8UkHQ8sBr/NkIwCdZHwCMcn5ww=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=S/Qk+842lAynW/m+vozIiLaVqCcakJXtg56gdASzuli37MibaY9OzB46qmPhdUxKxow9Fg3N0Dtdc1KmperHACOHGu5/wOD4WZh1uNFvthsYc7Df4LohwluQgXjlje+mURVZO6XgXI8McFH2xBEMfZUfS9i55V8NKlvQiAvc824=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com; spf=pass smtp.mailfrom=bytedance.com; dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b=Lep/P1gP; arc=none smtp.client-ip=209.85.210.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bytedance.com
+Received: by mail-ot1-f44.google.com with SMTP id 46e09a7af769-6e67d42422aso3823579a34.0
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 23:24:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1711520607; x=1712125407; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=O66PNVnF+NAj9JzaNCaQDZNthEAigIUk1c4UjwhWiQI=;
-        b=I4nJrXK2cI/PKcoqNc59u2DLbmEKQiRxVutvO8xrLDPGKtu+MejaQ2YLJDJeP3P4FD
-         QCYMURO8FQ+mjctHHWsYBDoWb4oE4ze48jf2vAg3h0oOxYD0XIM2N1CaMfIjNnCqmo9L
-         1RbFfJc9VIGrTsth+opIkMSu4rVxtsSfgLewtZFW6fGWcT79CiRHcqCJucNftY54NX7X
-         2bqP9HXwxvELrPXBKHxC8dLCsB3hE3XDGcZ1MB2evyVx1ia1Uhn7Gqz60ztFGGBzbRAm
-         W8Xo9Muu3YCGdriO0yiB/Ckgh2T5dGiiRHe/8trusn2VLbT/h+74Nkgh8CSkW17eA4vv
-         GINg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711520607; x=1712125407;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=bytedance.com; s=google; t=1711520647; x=1712125447; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=O66PNVnF+NAj9JzaNCaQDZNthEAigIUk1c4UjwhWiQI=;
-        b=sWfkrmfNbJfdA5T+SAkyq3NVAm7x/KvCwdVQIu+T5SvkurdKxpZvf6PtStkD1lkEnd
-         L3CwfC4sh1g1J+HiiLPU+8V1UT12KpETt1P7247JQW7UcYEExrd08Tr+su97MyGqRs2U
-         VFjtCg/6dtsqwuXdsHczYg6ad+NsaLm+hOsZ+QjlRIS+ymgbQKcuKEeC3cI/AITSfQ82
-         NFYHeGmsSzRDGpoPpoZiNRfw4xVsB3sgy0O8XzlRYwh5qUOPN4J5YEDGo8BML/QnXIxB
-         lfyQc39UrRjbhA5iDTswri7fFA+TxVeTclkWd3jprTnOir5aMg8MQQ3qXSD4YvPh/1WF
-         IQjg==
-X-Forwarded-Encrypted: i=1; AJvYcCX/lAVaepyeEHqvubbS2OKoRr7qNFJJVDTr/EVPtz6k7anuHZ74L6N7ZesHvimp0iRxQL7xxbNvcP8c+Ggf9Ib8hQireeP9PEJDr2rx
-X-Gm-Message-State: AOJu0Yy2VEwIrmJsNkk4+sSD07dhewme0rhPnDUVmSRO77cTpDyG6rQP
-	pMekMPfTTsS/CfA9k0ypg8zVboDybtqwcWgbDngi6XswiI0qgf3I6zVPywEVVQ==
-X-Google-Smtp-Source: AGHT+IFCckXKABUAWUGStYZCpEnS/af5chIzlaoQQySUuDkZ3MN4ob/4/Q5ohgOiBqFwo9wSZjXwQg==
-X-Received: by 2002:a05:6a00:8917:b0:6ea:c767:4699 with SMTP id hw23-20020a056a00891700b006eac7674699mr1677491pfb.13.1711520606896;
-        Tue, 26 Mar 2024 23:23:26 -0700 (PDT)
-Received: from google.com (60.89.247.35.bc.googleusercontent.com. [35.247.89.60])
-        by smtp.gmail.com with ESMTPSA id c17-20020aa781d1000000b006e6bfff6085sm7316210pfn.143.2024.03.26.23.23.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Mar 2024 23:23:26 -0700 (PDT)
-Date: Wed, 27 Mar 2024 06:23:22 +0000
-From: Mingwei Zhang <mizhang@google.com>
-To: Dapeng Mi <dapeng1.mi@linux.intel.com>
-Cc: Sean Christopherson <seanjc@google.com>,
-	Paolo Bonzini <pbonzini@redhat.com>,
-	Jim Mattson <jmattson@google.com>, kvm@vger.kernel.org,
-	linux-kernel@vger.kernel.org, Zhenyu Wang <zhenyuw@linux.intel.com>,
-	Zhang Xiong <xiong.y.zhang@intel.com>,
-	Like Xu <like.xu.linux@gmail.com>,
-	Jinrong Liang <cloudliang@tencent.com>,
-	Dapeng Mi <dapeng1.mi@intel.com>
-Subject: Re: [kvm-unit-tests Patch v3 09/11] x86: pmu: Improve LLC misses
- event verification
-Message-ID: <ZgO7Wr0URLc_ru1S@google.com>
-References: <20240103031409.2504051-1-dapeng1.mi@linux.intel.com>
- <20240103031409.2504051-10-dapeng1.mi@linux.intel.com>
+        bh=8oWEwBijHMiAPbYhHlQ1tO5hUF/k22snxI3OcFkt4Sg=;
+        b=Lep/P1gPMmhh1UONcBLTaZQ4zay7i+C6TL6CiGA7fOwa4WLzpyo9TnU5QljrjrTmeh
+         /pTPitlnlgT1IzkD/4wNW0CEkHCHaJcbxoCDLG08G+SdReFoJpMUBI7iL/YCFIsut2Ro
+         U0PIApEL4TOVSZiNrfekDkL1aBmsU61OVfPevs+1LWcrXuqPuvpixODSKQob4+p3731c
+         nYsGS4cz+MDnhii4msblmrqcj5Ue7SLqU8gksqTa3Cbenq0EUB4b7sonnCWh8dUyvnSv
+         1lFnjBpvn4D7aydLLTXtU7OlT+XpRdPzxqK6u7f+Z6lochRzSJHRPb2k97rxrN4kqUPS
+         vwRA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711520647; x=1712125447;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=8oWEwBijHMiAPbYhHlQ1tO5hUF/k22snxI3OcFkt4Sg=;
+        b=IeVHNa7D8sky0xL0vyjXR7sGxo0olOjXV7EuzGXClbj/Hyoh0bW/itMseaxKWhY8og
+         ZWlMG0qDx0RgXvKXoA0HtOxVjN5nL1Hts+eLpVY/E/0g5RPN/kCW/2f48eXKzsk43SA8
+         yzsL/IAEwJiHUdAI0dsX1awfh913TJjCY9JQXgkhvSYNYJ4POm1iPaBkyd//ycQ4gfqE
+         Ok0LSkgPWcLTHYXHMrwcYOpNd/pLeAF5rTWJg3jv+ykQpRi94QjaCPTXW7mVoxdZn7ZG
+         vYOMFaApLtUMhgC8swYHyc68FLTaHAARj5El9yeH+a8mIgGhIfDZjGkiF9xqIBWqomyo
+         wbmQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWNcEHxNJLX2mJg344qUXTka1nzEr7cL3m8yiCtvulz7N+4JVYp2tL2wt17wtbK83ZNDVubNxnzb9nhwLAoHTXjOPFddZsZ5mkgqzh1
+X-Gm-Message-State: AOJu0Yz8fPjYFkAstONM3zW5cV8qTEIDGdxsBVmT+3HLjkQ98LOTKRkX
+	xPXu/IIB/+zRUFF1EyIPlKVOJzEzsuu54E3F+BjcsupwDUY5cI97shwvRoRiaV2htrVDCY1Pd+/
+	nDhBDHsjKnF8Rg6fSdII1MmYVKoAxqP/wC6JD2g==
+X-Google-Smtp-Source: AGHT+IFhEeq410DvQa9oQZkS0m0EYwn1s+oHwhpUn2R8jvumRu2oImrFD/ysHx9vuZwjm+EIqRm8Kd2Z30d1RvDrk8A=
+X-Received: by 2002:a05:6870:788c:b0:22a:107c:4dd6 with SMTP id
+ hc12-20020a056870788c00b0022a107c4dd6mr3948186oab.40.1711520646891; Tue, 26
+ Mar 2024 23:24:06 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240103031409.2504051-10-dapeng1.mi@linux.intel.com>
+References: <20240327045035.368512-1-samuel.holland@sifive.com> <20240327045035.368512-7-samuel.holland@sifive.com>
+In-Reply-To: <20240327045035.368512-7-samuel.holland@sifive.com>
+From: yunhui cui <cuiyunhui@bytedance.com>
+Date: Wed, 27 Mar 2024 14:23:56 +0800
+Message-ID: <CAEEQ3wk=0+_vofamg=UWoxFXbH5wZ722vcm5+QuwSdUT6998yw@mail.gmail.com>
+Subject: Re: [External] [PATCH v6 06/13] riscv: mm: Combine the SMP and UP TLB
+ flush code
+To: Samuel Holland <samuel.holland@sifive.com>
+Cc: Palmer Dabbelt <palmer@dabbelt.com>, linux-riscv@lists.infradead.org, 
+	linux-kernel@vger.kernel.org, linux-mm@kvack.org, 
+	Alexandre Ghiti <alexghiti@rivosinc.com>, Jisheng Zhang <jszhang@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, Jan 03, 2024, Dapeng Mi wrote:
-> When running pmu test on SPR, sometimes the following failure is
-> reported.
-> 
-> 1 <= 0 <= 1000000
-> FAIL: Intel: llc misses-4
-> 
-> Currently The LLC misses occurring only depends on probability. It's
-> possible that there is no LLC misses happened in the whole loop(),
-> especially along with processors have larger and larger cache size just
-> like what we observed on SPR.
-> 
-> Thus, add clflush instruction into the loop() asm blob and ensure once
-> LLC miss is triggered at least.
-> 
-> Suggested-by: Jim Mattson <jmattson@google.com>
-> Signed-off-by: Dapeng Mi <dapeng1.mi@linux.intel.com>
+Hi Samuel,
 
-I wonder if we can skip all LLC tests if CPU does not have
-clflush/clflushopt properties?
+On Wed, Mar 27, 2024 at 12:51=E2=80=AFPM Samuel Holland
+<samuel.holland@sifive.com> wrote:
+>
+> In SMP configurations, all TLB flushing narrower than flush_tlb_all()
+> goes through __flush_tlb_range(). Do the same in UP configurations.
+>
+> This allows UP configurations to take advantage of recent improvements
+> to the code in tlbflush.c, such as support for huge pages and flushing
+> multiple-page ranges.
+>
+> Reviewed-by: Alexandre Ghiti <alexghiti@rivosinc.com>
+> Signed-off-by: Samuel Holland <samuel.holland@sifive.com>
 > ---
->  x86/pmu.c | 43 ++++++++++++++++++++++++++++++-------------
->  1 file changed, 30 insertions(+), 13 deletions(-)
-> 
-> diff --git a/x86/pmu.c b/x86/pmu.c
-> index b764827c1c3d..8fd3db0fbf81 100644
-> --- a/x86/pmu.c
-> +++ b/x86/pmu.c
-> @@ -20,19 +20,21 @@
->  
->  // Instrustion number of LOOP_ASM code
->  #define LOOP_INSTRNS	10
-> -#define LOOP_ASM					\
-> +#define LOOP_ASM(_clflush)				\
-> +	_clflush "\n\t"                                 \
-> +	"mfence;\n\t"                                   \
->  	"1: mov (%1), %2; add $64, %1;\n\t"		\
->  	"nop; nop; nop; nop; nop; nop; nop;\n\t"	\
->  	"loop 1b;\n\t"
->  
-> -/*Enable GLOBAL_CTRL + disable GLOBAL_CTRL instructions */
-> -#define PRECISE_EXTRA_INSTRNS  (2 + 4)
-> +/*Enable GLOBAL_CTRL + disable GLOBAL_CTRL + clflush/mfence instructions */
-> +#define PRECISE_EXTRA_INSTRNS  (2 + 4 + 2)
->  #define PRECISE_LOOP_INSTRNS   (N * LOOP_INSTRNS + PRECISE_EXTRA_INSTRNS)
->  #define PRECISE_LOOP_BRANCHES  (N)
-> -#define PRECISE_LOOP_ASM						\
-> +#define PRECISE_LOOP_ASM(_clflush)					\
->  	"wrmsr;\n\t"							\
->  	"mov %%ecx, %%edi; mov %%ebx, %%ecx;\n\t"			\
-> -	LOOP_ASM							\
-> +	LOOP_ASM(_clflush)						\
->  	"mov %%edi, %%ecx; xor %%eax, %%eax; xor %%edx, %%edx;\n\t"	\
->  	"wrmsr;\n\t"
->  
-> @@ -72,14 +74,30 @@ char *buf;
->  static struct pmu_event *gp_events;
->  static unsigned int gp_events_size;
->  
-> +#define _loop_asm(_clflush)					\
-> +do {								\
-> +	asm volatile(LOOP_ASM(_clflush)				\
-> +		     : "=c"(tmp), "=r"(tmp2), "=r"(tmp3)	\
-> +		     : "0"(N), "1"(buf));			\
-> +} while (0)
-> +
-> +#define _precise_loop_asm(_clflush)				\
-> +do {								\
-> +	asm volatile(PRECISE_LOOP_ASM(_clflush)			\
-> +		     : "=b"(tmp), "=r"(tmp2), "=r"(tmp3)	\
-> +		     : "a"(eax), "d"(edx), "c"(global_ctl),	\
-> +		       "0"(N), "1"(buf)				\
-> +		     : "edi");					\
-> +} while (0)
->  
->  static inline void __loop(void)
+>
+> (no changes since v4)
+>
+> Changes in v4:
+>  - Merge the two copies of __flush_tlb_range() and rely on the compiler
+>    to optimize out the broadcast path (both clang and gcc do this)
+>  - Merge the two copies of flush_tlb_all() and rely on constant folding
+>
+> Changes in v2:
+>  - Move the SMP/UP merge earlier in the series to avoid build issues
+>  - Make a copy of __flush_tlb_range() instead of adding ifdefs inside
+>  - local_flush_tlb_all() is the only function used on !MMU (smpboot.c)
+>
+>  arch/riscv/Kconfig                |  2 +-
+>  arch/riscv/include/asm/tlbflush.h | 31 +++----------------------------
+>  arch/riscv/mm/Makefile            |  5 +----
+>  3 files changed, 5 insertions(+), 33 deletions(-)
+>
+> diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
+> index be09c8836d56..442532819a44 100644
+> --- a/arch/riscv/Kconfig
+> +++ b/arch/riscv/Kconfig
+> @@ -60,7 +60,7 @@ config RISCV
+>         select ARCH_USE_MEMTEST
+>         select ARCH_USE_QUEUED_RWLOCKS
+>         select ARCH_USES_CFI_TRAPS if CFI_CLANG
+> -       select ARCH_WANT_BATCHED_UNMAP_TLB_FLUSH if SMP && MMU
+> +       select ARCH_WANT_BATCHED_UNMAP_TLB_FLUSH if MMU
+>         select ARCH_WANT_DEFAULT_TOPDOWN_MMAP_LAYOUT if MMU
+>         select ARCH_WANT_FRAME_POINTERS
+>         select ARCH_WANT_GENERAL_HUGETLB if !RISCV_ISA_SVNAPOT
+> diff --git a/arch/riscv/include/asm/tlbflush.h b/arch/riscv/include/asm/t=
+lbflush.h
+> index 4112cc8d1d69..4f86424b1ba5 100644
+> --- a/arch/riscv/include/asm/tlbflush.h
+> +++ b/arch/riscv/include/asm/tlbflush.h
+> @@ -27,12 +27,7 @@ static inline void local_flush_tlb_page(unsigned long =
+addr)
 >  {
->  	unsigned long tmp, tmp2, tmp3;
->  
-> -	asm volatile(LOOP_ASM
-> -		     : "=c"(tmp), "=r"(tmp2), "=r"(tmp3)
-> -		     : "0"(N), "1"(buf));
-> +	if (this_cpu_has(X86_FEATURE_CLFLUSH))
-> +		_loop_asm("clflush (%1)");
-> +	else
-> +		_loop_asm("nop");
+>         ALT_FLUSH_TLB_PAGE(__asm__ __volatile__ ("sfence.vma %0" : : "r" =
+(addr) : "memory"));
 >  }
->  
->  /*
-> @@ -96,11 +114,10 @@ static inline void __precise_count_loop(u64 cntrs)
->  	u32 eax = cntrs & (BIT_ULL(32) - 1);
->  	u32 edx = cntrs >> 32;
->  
-> -	asm volatile(PRECISE_LOOP_ASM
-> -		     : "=b"(tmp), "=r"(tmp2), "=r"(tmp3)
-> -		     : "a"(eax), "d"(edx), "c"(global_ctl),
-> -		       "0"(N), "1"(buf)
-> -		     : "edi");
-> +	if (this_cpu_has(X86_FEATURE_CLFLUSH))
-> +		_precise_loop_asm("clflush (%1)");
-> +	else
-> +		_precise_loop_asm("nop");
->  }
->  
->  static inline void loop(u64 cntrs)
-> -- 
-> 2.34.1
-> 
+> -#else /* CONFIG_MMU */
+> -#define local_flush_tlb_all()                  do { } while (0)
+> -#define local_flush_tlb_page(addr)             do { } while (0)
+> -#endif /* CONFIG_MMU */
+>
+> -#if defined(CONFIG_SMP) && defined(CONFIG_MMU)
+>  void flush_tlb_all(void);
+>  void flush_tlb_mm(struct mm_struct *mm);
+>  void flush_tlb_mm_range(struct mm_struct *mm, unsigned long start,
+> @@ -54,28 +49,8 @@ void arch_tlbbatch_add_pending(struct arch_tlbflush_un=
+map_batch *batch,
+>                                unsigned long uaddr);
+>  void arch_flush_tlb_batched_pending(struct mm_struct *mm);
+>  void arch_tlbbatch_flush(struct arch_tlbflush_unmap_batch *batch);
+> -
+> -#else /* CONFIG_SMP && CONFIG_MMU */
+> -
+> -#define flush_tlb_all() local_flush_tlb_all()
+> -#define flush_tlb_page(vma, addr) local_flush_tlb_page(addr)
+> -
+> -static inline void flush_tlb_range(struct vm_area_struct *vma,
+> -               unsigned long start, unsigned long end)
+> -{
+> -       local_flush_tlb_all();
+> -}
+> -
+> -/* Flush a range of kernel pages */
+> -static inline void flush_tlb_kernel_range(unsigned long start,
+> -       unsigned long end)
+> -{
+> -       local_flush_tlb_all();
+> -}
+> -
+> -#define flush_tlb_mm(mm) flush_tlb_all()
+> -#define flush_tlb_mm_range(mm, start, end, page_size) flush_tlb_all()
+> -#define local_flush_tlb_kernel_range(start, end) flush_tlb_all()
+> -#endif /* !CONFIG_SMP || !CONFIG_MMU */
+> +#else /* CONFIG_MMU */
+> +#define local_flush_tlb_all()                  do { } while (0)
+> +#endif /* CONFIG_MMU */
+>
+>  #endif /* _ASM_RISCV_TLBFLUSH_H */
+> diff --git a/arch/riscv/mm/Makefile b/arch/riscv/mm/Makefile
+> index 2c869f8026a8..cbe4d775ef56 100644
+> --- a/arch/riscv/mm/Makefile
+> +++ b/arch/riscv/mm/Makefile
+> @@ -13,14 +13,11 @@ endif
+>  KCOV_INSTRUMENT_init.o :=3D n
+>
+>  obj-y +=3D init.o
+> -obj-$(CONFIG_MMU) +=3D extable.o fault.o pageattr.o pgtable.o
+> +obj-$(CONFIG_MMU) +=3D extable.o fault.o pageattr.o pgtable.o tlbflush.o
+>  obj-y +=3D cacheflush.o
+>  obj-y +=3D context.o
+>  obj-y +=3D pmem.o
+>
+> -ifeq ($(CONFIG_MMU),y)
+> -obj-$(CONFIG_SMP) +=3D tlbflush.o
+> -endif
+>  obj-$(CONFIG_HUGETLB_PAGE) +=3D hugetlbpage.o
+>  obj-$(CONFIG_PTDUMP_CORE) +=3D ptdump.o
+>  obj-$(CONFIG_KASAN)   +=3D kasan_init.o
+> --
+> 2.43.1
+>
+
+This is cleaner than my previous modification to support UP __flush_tlb_ran=
+ge.
+So:
+Reviewed-by: Yunhui Cui <cuiyunhui@bytedance.com>
+
+Thanks,
+Yunhui
 
