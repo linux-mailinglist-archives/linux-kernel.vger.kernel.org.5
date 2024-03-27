@@ -1,155 +1,307 @@
-Return-Path: <linux-kernel+bounces-120328-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-120246-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 501E588D5D8
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 06:26:55 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 275BF88D4CF
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 03:54:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7C952B22B27
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 05:26:52 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D193C2A6302
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 02:54:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8880D175BE;
-	Wed, 27 Mar 2024 05:26:44 +0000 (UTC)
-Received: from CHN02-BJS-obe.outbound.protection.partner.outlook.cn (mail-bjschn02on2096.outbound.protection.partner.outlook.cn [139.219.17.96])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 310B3219F6;
+	Wed, 27 Mar 2024 02:54:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="XNTUa3eo"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.15])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7F5B53DAC14;
-	Wed, 27 Mar 2024 05:26:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=139.219.17.96
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711517204; cv=fail; b=n95OnhnNsJQjij7RxboxLqTwXNDAcR/0/IVQh/A8j780WKCkPLWfX5XKr50NzoSk2EiMWuY8pfA6GVtgNpGWQiDLBNdUXEpejjyOJPVtDvmoHhsLL7fS75EiliS/ge2zHsPluBnpLv2+0UJ+Q63Hu21pcKBOyzG0vfh48zJ9Cfk=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711517204; c=relaxed/simple;
-	bh=4EfzZ+J3LtUadzufIba+d9vEgSQTSbnen8UI4pvu0qk=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=jakhfCj07wiKUUhHov/TkLg89jUDDksoPM8O1SCN4q1mKQNx8tK2opGnzOsmL+1XY8KLdHw8KRfotoL1jpMiS3LT1QLmslgGxJng271UblwVMj7q4Rql/+OTbE5z3rx8+ZpsYjxZcHD7NWcHTspzViY0I9WlTDWPIfh8pMPGNRA=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=starfivetech.com; spf=pass smtp.mailfrom=starfivetech.com; arc=fail smtp.client-ip=139.219.17.96
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=starfivetech.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=starfivetech.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=J0DBr66auWS8Yk+OexvKKwvfix2LDbtcmLuZSyFGTuyhdYRcm+X84B3aELyC8DIE7NkmgLEpq1ztFabbraFiRElD1oBa3w8F4V6sTiQmzvxY519nDSTYu4nT/HufhM6G1p7/B1qaGjQZwYRBVol/vb0yALEk2Y9YX1obdbmHotS+gFSldYdgW0IgnodU8DNjcBIqj2sTrnB1EK30cot370MO/hqJRsJUqwnGBIbYOUPSlPCo7EOAOi9DU8lrWJu6NzaLv9Ek54tH/COiGBxGw85LaK5Gopq0S6Sq0JoRooD51v5yrWHshbkGjKuM9lsLaMEmq+j3KFbI1OvT/pMYnQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=EGFwBRqR0Ubnr6Qww0efT6ERK3Tj0upKezJN+tJoDus=;
- b=kg8ix1cWs3dakmnvvFeVSFINY6Px0rCCAqaCETudnzXK0ZrsOFvKMEqxxrNrIHmpj/WfVurk1yhNqviCj+MYMlzmy63teeIz/NShoim+SNKY72FCS1veqdbNCVYzLHaSLVrXBUjNVcauyNcscYdKkad8otu2iOqKp0hBWQ89DP+152w1NgEEArAHIEmYH2bz1onGYAe03x7p0BpVUceccB/Lz25utbKZpB48FStMMm+xCe7x77n4tvoWbrp6Iifh2Y3Q63a4DMUB9UePzp8mv3oLtSnDop+MDmBts4+LVs/1E2Fl4vLT+vRTUPmd7hbJHfa4ATJM/M5PHSb7GJaOzw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=starfivetech.com; dmarc=pass action=none
- header.from=starfivetech.com; dkim=pass header.d=starfivetech.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=starfivetech.com;
-Received: from BJSPR01MB0595.CHNPR01.prod.partner.outlook.cn
- (2406:e500:c211:e::20) by BJSPR01MB0547.CHNPR01.prod.partner.outlook.cn
- (2406:e500:c211:e::19) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.33; Wed, 27 Mar
- 2024 02:51:44 +0000
-Received: from BJSPR01MB0595.CHNPR01.prod.partner.outlook.cn
- ([fe80::d0cf:5e2e:fd40:4aef]) by
- BJSPR01MB0595.CHNPR01.prod.partner.outlook.cn ([fe80::d0cf:5e2e:fd40:4aef%4])
- with mapi id 15.20.7409.031; Wed, 27 Mar 2024 02:51:44 +0000
-From: Tan Chun Hau <chunhau.tan@starfivetech.com>
-To: Eugeniy Paltsev <Eugeniy.Paltsev@synopsys.com>,
-	Vinod Koul <vkoul@kernel.org>,
-	Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>
-Cc: Ley Foon Tan <leyfoon.tan@starfivetech.com>,
-	Jee Heng Sia <jeeheng.sia@starfivetech.com>,
-	dmaengine@vger.kernel.org,
-	devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH v2 2/2] dmaengine: dw-axi-dmac: Add support for StarFive JH8100 DMA
-Date: Tue, 26 Mar 2024 19:51:26 -0700
-Message-Id: <20240327025126.229475-3-chunhau.tan@starfivetech.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20240327025126.229475-1-chunhau.tan@starfivetech.com>
-References: <20240327025126.229475-1-chunhau.tan@starfivetech.com>
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: NT0PR01CA0025.CHNPR01.prod.partner.outlook.cn
- (2406:e500:c510:c::7) To BJSPR01MB0595.CHNPR01.prod.partner.outlook.cn
- (2406:e500:c211:e::20)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C26DD2262B
+	for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 02:54:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.15
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1711508067; cv=none; b=b7fMNxjNOBlgtZh8PJmYLiMSjqRBtRB6M7qbDKeyKMpnDfIx/EbCnWuxz6uyZCyWxbwvKLUqoHDckAjdMDqwdgdFdsYR03qAoQ2WsuMvDgjPZ9vyrd8Dsh5lhAColeM067XFSLlZxH3zEkWzrqkAjVevLJw5TAE/JVWyDKliNog=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1711508067; c=relaxed/simple;
+	bh=YxNB/+KVg3sJySwSmzUJhuJT2OVZcJaWVmnZNq1sfzU=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=PBbPVxcAkkk8TJnPfhEOmM8vC30/4ibZEO6/P+KDJYmMy6egwseVO6XuNITlT4vNXa0qk2lLJRIKexIPyeB4QbqmE0ZICNLvvhykGCNSovL9EnAkUvKQ2+rdTB/a58oF2vr/jZitqWVOQyRkANSEujz7JhW+oow4xFN/Vz42344=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=XNTUa3eo; arc=none smtp.client-ip=198.175.65.15
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1711508065; x=1743044065;
+  h=from:to:cc:subject:in-reply-to:references:date:
+   message-id:mime-version;
+  bh=YxNB/+KVg3sJySwSmzUJhuJT2OVZcJaWVmnZNq1sfzU=;
+  b=XNTUa3eo5WV6p66zRWbQcbKjqLg1e1Wl+u0/GKvSXu0Q7BR1XTI9OQ9+
+   7qRkMZQFdoggvKh33uL1RaFmU1IXHz4ZDM5U+V1+83wAyh9DSzckZu1zl
+   bPR/8zu132reBOIybGbPfvc3ZMVTU/Riwidn8RfVGCEp7fcfoEye7bXh3
+   q5pZNzdeD6anWOY0nMG1NHi1ppVrfuyADZ78kiegSakSMO6WO+YH1VQJC
+   FqhBUjBU42VtZy9AqW6nSnpq8sbnOyNCdw1RD+AJQ6iqa4Qqf/2mnMp5q
+   5USoJn0Y7uhc5bHv+T+dJEiVXx0DYD8mTWJo0wBCd6uMojBgzmFhRIR2M
+   w==;
+X-CSE-ConnectionGUID: QW6r9s8kR2KrB9N+nC6ZwA==
+X-CSE-MsgGUID: qeiFLMy2SRGVD74NxaS91Q==
+X-IronPort-AV: E=McAfee;i="6600,9927,11025"; a="10389187"
+X-IronPort-AV: E=Sophos;i="6.07,157,1708416000"; 
+   d="scan'208";a="10389187"
+Received: from orviesa003.jf.intel.com ([10.64.159.143])
+  by orvoesa107.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Mar 2024 19:54:25 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,157,1708416000"; 
+   d="scan'208";a="20805218"
+Received: from yhuang6-desk2.sh.intel.com (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.238.208.55])
+  by ORVIESA003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Mar 2024 19:54:21 -0700
+From: "Huang, Ying" <ying.huang@intel.com>
+To: Kairui Song <ryncsn@gmail.com>
+Cc: linux-mm@kvack.org,  Kairui Song <kasong@tencent.com>,  Chris Li
+ <chrisl@kernel.org>,  Minchan Kim <minchan@kernel.org>,  Barry Song
+ <v-songbaohua@oppo.com>,  Ryan Roberts <ryan.roberts@arm.com>,  Yu Zhao
+ <yuzhao@google.com>,  SeongJae Park <sj@kernel.org>,  David Hildenbrand
+ <david@redhat.com>,  Yosry Ahmed <yosryahmed@google.com>,  Johannes Weiner
+ <hannes@cmpxchg.org>,  Matthew Wilcox <willy@infradead.org>,  Nhat Pham
+ <nphamcs@gmail.com>,  Chengming Zhou <zhouchengming@bytedance.com>,
+  Andrew Morton <akpm@linux-foundation.org>,  linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH 00/10] mm/swap: always use swap cache for
+ synchronization
+In-Reply-To: <20240326185032.72159-1-ryncsn@gmail.com> (Kairui Song's message
+	of "Wed, 27 Mar 2024 02:50:22 +0800")
+References: <20240326185032.72159-1-ryncsn@gmail.com>
+Date: Wed, 27 Mar 2024 10:52:26 +0800
+Message-ID: <878r24o07p.fsf@yhuang6-desk2.ccr.corp.intel.com>
+User-Agent: Gnus/5.13 (Gnus v5.13)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BJSPR01MB0595:EE_|BJSPR01MB0547:EE_
-X-MS-Office365-Filtering-Correlation-Id: 0447202d-c34c-42a1-0e94-08dc4e08d646
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	GYNl5/SHBiKMF2CkcFon/t8JSAj/1fP/YsDXj9bXkyckl0lC+ImBYSLj4ZzrdoqU5PktEsOgfBd5+cSvcm9bBDTZXqpenEXb9l/vDITcoB7u4LH0flrJHkwtNgcq7hkvAP71ankCJ5Smo/sj+rvq/afie1Cce1VDts+phqx1us+is5VCwi8G3TbXtz1BZ1m6EXdpND2tAMxHPxPcBu/+j5ZuvGO7fqy3PsWXhZwCPb99ozi9t7jdu40SSYRd2kFxDeyhh/i0NDhTO+wqaY+hzxaUZxyrB/kPAXTBCKTjuoP/PZt8Dz4Nz0xTWnRPJGGg92enJ1VsV1zl0dihv6VaEebcH3ODOaWyIJlqkn3vwHqf12P4aRERjwx9cA/B8Gy1TGyywk7iIaEmDtOThOsrWWy4l5tjH2Q/qbXEYdGjw9iGf+RZZYKAGFcLYm+J+JIaurNpycTdfxhcySr8GT7QuSXkq6YhHnMq8M1M0JN6jskKSpLBnStBqJ/2xSFr2r+cB2kSrUjoNOzJVOYiEOwExbKPfba1M3yjIZDCROW5s+xjsYmyj19sxaBKpCwCs+qOvQw9/pF1Z11+njez9OCCd5pvT2CHDHt6KOiwYcFpwSpkbhes3pgvNen2wSG+1Trk
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BJSPR01MB0595.CHNPR01.prod.partner.outlook.cn;PTR:;CAT:NONE;SFS:(13230031)(1800799015)(52116005)(41320700004)(366007)(38350700005);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?WsDfCM6dnmYqbzNdOmj4wgKeU1jzrLlvkmSxYieubIlskfdDkKNm256hcW+9?=
- =?us-ascii?Q?qb6C3nedyjJnWlaaFf2E/n6q4k2iMcIEkEMRc3iO71jPP8P/cgbCpzjJlmXB?=
- =?us-ascii?Q?h2AGAnkm6mCSFVa3lk1j6skKgJQ0dVBu+L1Cn+tC+HlJk4RVRkU4EwjW8fv7?=
- =?us-ascii?Q?khTMFwP5eCwWZLkYbixAPV5KpfYPwQcZPxPLBAvIjQlOvxVQgZu4ckZbRllA?=
- =?us-ascii?Q?5oSOQffGRl59ryN6ljjZ18t8QEU95oXDL04s4KXG0UuMPCPbfmJFpmzOxLXl?=
- =?us-ascii?Q?lMIuBikO0cXuHJzdynxEO4P4lT0USXjaOyKJdYUgR3aWCsAzjYvRlD4uMarj?=
- =?us-ascii?Q?cecO/N9EklcE9mcuNQ4mt8rBb0rnDtw4Bvb2ogTLWQIT2O1lMfr1wqBH3AfB?=
- =?us-ascii?Q?4FENRBFgfckzPIyECAUrtzwH2lJSIDd97WbcIR5QcvUragDwoNEsE0KNSoUX?=
- =?us-ascii?Q?63YOfja2+EGBMRgcx3kPtMAlLB8e6Tsm25ItFkOGYKlzzwoBdEKhTuqhTs/z?=
- =?us-ascii?Q?aEu9ie4TiZFY86Iz/+zwcbk8o1pDfSGGn1ztJmJMwKZnMsn1ge4OJF6mxJWs?=
- =?us-ascii?Q?BFOZbZaXNn/bsvki6PZS6O3u7U1n893LDWitYhtlTLxqnpfiN0VLp168FsQj?=
- =?us-ascii?Q?n+o+G/viXOKrz5xUPAvNhdcVr/J2ZnH8q+4uc2WP90j0cli2dxbp+52FOFSs?=
- =?us-ascii?Q?2JMrD0GkELqEj2rXErIuMUd+cLoXvEhQ+nTJeGrC1Jow7h8Ymyms3GGJBkAo?=
- =?us-ascii?Q?ePojCO6DGgwy26JHkVwzJ27KOO/V5jm3N2S0JEaxNGPeEfKrs5mZ8+UKyqoY?=
- =?us-ascii?Q?lqXvipCRKkO5oqGGqhwSBvkcHsjtV+TukwS1ECeYkpE+meeu72NpBH1HREMD?=
- =?us-ascii?Q?U8qFXroZwqhugScGl1Pt5x6ypNHa8qk81P+S+8QXb0LrEsjHckTAfEu3+RUl?=
- =?us-ascii?Q?vUwUrREU2J+2Ldk8aeddu8xJnT27u/IUIbMkOERtVhdF/kVG2KZBz2R9W9Tl?=
- =?us-ascii?Q?Q/LiLqnw9iWaUGr9rABGTPN31XQ2zvJ/lNM6bQ1kr9dzjJDptq6alOExRNTW?=
- =?us-ascii?Q?W1wJI9a4UC9pvK5HhH5XgEmJiLIxBXZIxfX6faDKkAXH2iwuZBtumUp0GKrV?=
- =?us-ascii?Q?+a6A5ty0Egcf1ifaNIEQgRKdkNy1O6iOrs6FH7fA8+DljMFMXA3T4mfAcvp5?=
- =?us-ascii?Q?q3/drMu/gRmAJafkGfgkFpPBCztUEVfKqlGhImC/TQdlciTc6ugjsxJ7ayEN?=
- =?us-ascii?Q?/YVeVP/v/gdT3hRqsz2dHfRWPT76p4ev21cj4/292app3B+tcH97ZaLbtdko?=
- =?us-ascii?Q?U/AKQlkzswFaCBVDMyjRHoPLjcaWifdYr6KDoNwb1VG/Th3M47KBYKSn0MQV?=
- =?us-ascii?Q?50rvRDoaXNpGTygKEQont00yvajZRhwEl7G3Fomyg1AnjzfbFW22ZNG7StN7?=
- =?us-ascii?Q?AojTCq6O9i9SS/YwuzxyxkMho4UvG5SWcZF/rblXsi5vyjv/q+6iZ6547gVs?=
- =?us-ascii?Q?Ccns08eoDPvVAzg0B5MxgSbB+qBbbx1JvHafAY4VrdBVOM8gMLPbzYB7Dql7?=
- =?us-ascii?Q?42CUmNV0uDIOTG3NvcBdALR/DrchcDpl5ybTWY+79tBcX2PGSclcZpzZ7/t6?=
- =?us-ascii?Q?ow=3D=3D?=
-X-OriginatorOrg: starfivetech.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0447202d-c34c-42a1-0e94-08dc4e08d646
-X-MS-Exchange-CrossTenant-AuthSource: BJSPR01MB0595.CHNPR01.prod.partner.outlook.cn
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Mar 2024 02:51:44.3773
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 06fe3fa3-1221-43d3-861b-5a4ee687a85c
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: yO9xjQN/EehhluFKYgQUU6Jrlagr38ESUJfpRqgfcfpcxiCyxJpg+DD4oP+w0jye0oY7qNCPNB8TQfBTerC2i7nMnzRS4yX7yCFAPnCCUhk=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BJSPR01MB0547
+Content-Type: text/plain; charset=ascii
 
-JH8100 requires reset operation only in device probe.
+Hi, Kairui,
 
-Signed-off-by: Tan Chun Hau <chunhau.tan@starfivetech.com>
----
- drivers/dma/dw-axi-dmac/dw-axi-dmac-platform.c | 3 +++
- 1 file changed, 3 insertions(+)
+Kairui Song <ryncsn@gmail.com> writes:
 
-diff --git a/drivers/dma/dw-axi-dmac/dw-axi-dmac-platform.c b/drivers/dma/dw-axi-dmac/dw-axi-dmac-platform.c
-index a86a81ff0caa..abb3523ba8ab 100644
---- a/drivers/dma/dw-axi-dmac/dw-axi-dmac-platform.c
-+++ b/drivers/dma/dw-axi-dmac/dw-axi-dmac-platform.c
-@@ -1653,6 +1653,9 @@ static const struct of_device_id dw_dma_of_id_table[] = {
- 	}, {
- 		.compatible = "starfive,jh7110-axi-dma",
- 		.data = (void *)(AXI_DMA_FLAG_HAS_RESETS | AXI_DMA_FLAG_USE_CFG2),
-+	}, {
-+		.compatible = "starfive,jh8100-axi-dma",
-+		.data = (void *)AXI_DMA_FLAG_HAS_RESETS,
- 	},
- 	{}
- };
--- 
-2.25.1
+> From: Kairui Song <kasong@tencent.com>
+>
+> A month ago a bug was fixed for SWP_SYNCHRONOUS_IO swapin (swap cache
+> bypass swapin):
+> https://lore.kernel.org/linux-mm/20240219082040.7495-1-ryncsn@gmail.com/
+>
+> Because we have to spin on the swap map on race, and swap map is too small
+> to contain more usable info, an ugly schedule_timeout_uninterruptible(1)
+> is added. It's not the first time a hackish workaround was added for cache
+> bypass swapin and not the last time. I did many experiments locally to
+> see if the swap cache bypass path can be dropped while keeping the
+> performance still comparable. And it seems doable.
+>
 
+In general, I think that it's a good idea to unify cache bypass swapin
+and normal swapin.  But I haven't dive into the implementation yet.
+
+> This series does the following things:
+> 1. Remove swap cache bypass completely.
+> 2. Apply multiple optimizations after that, these optimizations are
+>    either undoable or very difficult to do without dropping the cache
+>    bypass swapin path.
+> 3. Use swap cache as a synchronization layer, also unify some code
+>    with page cache (filemap).
+>
+> As a result, we have:
+> 1. A comparable performance, some tests are even faster.
+> 2. Multi-index support for swap cache.
+> 3. Removed many hackish workarounds including above long tailing
+>    issue is gone.
+>
+> Sending this as RFC to collect some discussion, suggestion, or rejection
+> early, this seems need to be split into multiple series, but the
+> performance is not good until the last patch so I think start by
+> seperating them may make this approach not very convincing. And there
+> are still some (maybe further) TODO items and optimization space
+> if we are OK with this approach.
+>
+> This is based on my another series, for reusing filemap code for swapcache:
+> [PATCH v2 0/4] mm/filemap: optimize folio adding and splitting
+> https://lore.kernel.org/linux-mm/20240325171405.99971-1-ryncsn@gmail.com/
+>
+> Patch 1/10, introduce a helper from filemap side to be used later.
+> Patch 2/10, 3/10 are clean up and prepare for removing the swap cache
+>   bypass swapin path.
+> Patch 4/10, removed the swap cache bypass swapin path, and the
+>   performance drop heavily (-28%).
+> Patch 5/10, apply the first optimization after the removal, since all
+>   folios goes through swap cache now, there is no need to explicit shadow
+>   clearing any more.
+> Patch 6/10, apply another optimization after clean up shadow clearing
+>   routines. Now swapcache is very alike page cache, so just reuse page
+>   cache code and we will have multi-index support. Shadow memory usage
+>   dropped a lot.
+> Patch 7/10, just rename __read_swap_cache_async, it will be refactored
+>   and a key part of this series, and the naming is very confusing to me.
+> Patch 8/10, make swap cache as a synchronization layer, introduce two
+>   helpers for adding folios to swap cache, caller will either succeed or
+>   get a folio to wait on.
+> Patch 9/10, apply another optimization. With above two helpers, looking
+>   up of swapcache can be optimized and avoid false looking up, which
+>   helped improve the performance.
+> Patch 10/10, apply a major optimization for SWP_SYNCHRONOUS_IO devices,
+>   after this commit, performance for simple swapin/swapout is basically
+>   same as before.
+>
+> Test 1, sequential swapin/out of 30G zero page on ZRAM:
+>
+>                Before (us)        After (us)
+> Swapout:       33619409           33886008
+> Swapin:        32393771           32465441 (- 0.2%)
+> Swapout (THP): 7817909            6899938  (+11.8%)
+> Swapin (THP) : 32452387           33193479 (- 2.2%)
+
+If my understanding were correct, we don't have swapin (THP) support,
+yet.  Right?
+
+> And after swapping out 30G with THP, the radix node usage dropped by a
+> lot:
+>
+> Before: radix_tree_node 73728K
+> After:  radix_tree_node  7056K (-94%)
+
+Good!
+
+> Test 2:
+> Mysql (16g buffer pool, 32G ZRAM SWAP, 4G memcg, Zswap disabled, THP never)
+>   sysbench /usr/share/sysbench/oltp_read_only.lua --mysql-user=root \
+>   --mysql-password=1234 --mysql-db=sb --tables=36 --table-size=2000000 \
+>   --threads=48 --time=300 --report-interval=10 run
+>
+> Before: transactions: 4849.25 per sec
+> After:  transactions: 4849.40 per sec
+>
+> Test 3:
+> Mysql (16g buffer pool, NVME SWAP, 4G memcg, Zswap enabled, THP never)
+>   echo never > /sys/kernel/mm/transparent_hugepage/enabled
+>   echo 100 > /sys/module/zswap/parameters/max_pool_percent
+>   echo 1 > /sys/module/zswap/parameters/enabled
+>   echo y > /sys/module/zswap/parameters/shrinker_enabled
+>
+>   sysbench /usr/share/sysbench/oltp_read_only.lua --mysql-user=root \
+>   --mysql-password=1234 --mysql-db=sb --tables=36 --table-size=2000000 \
+>   --threads=48 --time=600 --report-interval=10 run
+>
+> Before: transactions: 1662.90 per sec
+> After:  transactions: 1726.52 per sec
+
+3.8% improvement.  Good!
+
+> Test 4:
+> Mysql (16g buffer pool, NVME SWAP, 4G memcg, Zswap enabled, THP always)
+>   echo always > /sys/kernel/mm/transparent_hugepage/enabled
+>   echo 100 > /sys/module/zswap/parameters/max_pool_percent
+>   echo 1 > /sys/module/zswap/parameters/enabled
+>   echo y > /sys/module/zswap/parameters/shrinker_enabled
+>
+>   sysbench /usr/share/sysbench/oltp_read_only.lua --mysql-user=root \
+>   --mysql-password=1234 --mysql-db=sb --tables=36 --table-size=2000000 \
+>   --threads=48 --time=600 --report-interval=10 run
+>
+> Before: transactions: 2860.90 per sec.
+> After:  transactions: 2802.55 per sec.
+>
+> Test 5:
+> Memtier / memcached (16G brd SWAP, 8G memcg, THP never):
+>
+>   memcached -u nobody -m 16384 -s /tmp/memcached.socket -a 0766 -t 16 -B binary &
+>
+>   memtier_benchmark -S /tmp/memcached.socket \
+>     -P memcache_binary -n allkeys --key-minimum=1 \
+>     --key-maximum=24000000 --key-pattern=P:P -c 1 -t 16 \
+>     --ratio 1:0 --pipeline 8 -d 1000
+>
+> Before: 106730.31 Ops/sec
+> After:  106360.11 Ops/sec
+>
+> Test 5:
+> Memtier / memcached (16G brd SWAP, 8G memcg, THP always):
+>
+>   memcached -u nobody -m 16384 -s /tmp/memcached.socket -a 0766 -t 16 -B binary &
+>
+>   memtier_benchmark -S /tmp/memcached.socket \
+>     -P memcache_binary -n allkeys --key-minimum=1 \
+>     --key-maximum=24000000 --key-pattern=P:P -c 1 -t 16 \
+>     --ratio 1:0 --pipeline 8 -d 1000
+>
+> Before: 83193.11 Ops/sec
+> After:  82504.89 Ops/sec
+>
+> These tests are tested under heavy memory stress, and the performance
+> seems basically same as before,very slightly better/worse for certain
+> cases, the benefits of multi-index are basically erased by
+> fragmentation and workingset nodes usage is slightly lower.
+>
+> Some (maybe further) TODO items if we are OK with this approach:
+>
+> - I see a slight performance regression for THP tests,
+>   could identify a clear hotspot with perf, my guess is the
+>   content on the xa_lock is an issue (we have a xa_lock for
+>   every 64M swap cache space), THP handling needs to take the lock
+>   longer than usual. splitting the xa_lock to be more
+>   fine-grained seems a good solution. We have
+>   SWAP_ADDRESS_SPACE_SHIFT = 14 which is not an optimal value.
+>   Considering XA_CHUNK_SHIFT is 6, we will have three layer of Xarray
+>   just for 2 extra bits. 12 should be better to always make use of
+>   the whole XA chunk and having two layers at most. But duplicated
+>   address_space struct also wastes more memory and cacheline.
+>   I see an observable performance drop (~3%) after change
+>   SWAP_ADDRESS_SPACE_SHIFT to 12. Might be a good idea to
+>   decouple swap cache xarray from address_space (there are
+>   too many user for swapcache, shouldn't come too dirty).
+>
+> - Actually after patch Patch 4/10, the performance is much better for
+>   tests limited with memory cgroup, until 10/10 applied the direct swap
+>   cache freeing logic for SWP_SYNCHRONOUS_IO swapin. Because if the swap
+>   device is not near full, swapin doesn't clear up the swapcache, so
+>   repeated swapout doesn't need to re-alloc a swap entry, make things
+>   faster. This may indicate that lazy freeing of swap cache could benifit
+>   certain workloads and may worth looking into later.
+>
+> - Now SWP_SYNCHRONOUS_IO swapin will bypass readahead and force drop
+>   swap cache after swapin is done, which can be cleaned up and optimized
+>   further after this patch. Device type will only determine the
+>   readahead logic, and swap cache drop check can be based purely on swap
+>   count.
+>
+> - Recent mTHP swapin/swapout series should have no fundamental
+>   conflict with this.
+>
+> Kairui Song (10):
+>   mm/filemap: split filemap storing logic into a standalone helper
+>   mm/swap: move no readahead swapin code to a stand-alone helper
+>   mm/swap: convert swapin_readahead to return a folio
+>   mm/swap: remove cache bypass swapin
+>   mm/swap: clean shadow only in unmap path
+>   mm/swap: switch to use multi index entries
+>   mm/swap: rename __read_swap_cache_async to swap_cache_alloc_or_get
+>   mm/swap: use swap cache as a synchronization layer
+>   mm/swap: delay the swap cache look up for swapin
+>   mm/swap: optimize synchronous swapin
+>
+>  include/linux/swapops.h |   5 +-
+>  mm/filemap.c            | 161 +++++++++-----
+>  mm/huge_memory.c        |  78 +++----
+>  mm/internal.h           |   2 +
+>  mm/memory.c             | 133 ++++-------
+>  mm/shmem.c              |  44 ++--
+>  mm/swap.h               |  71 ++++--
+>  mm/swap_state.c         | 478 +++++++++++++++++++++-------------------
+>  mm/swapfile.c           |  64 +++---
+>  mm/vmscan.c             |   8 +-
+>  mm/workingset.c         |   2 +-
+>  mm/zswap.c              |   4 +-
+>  12 files changed, 540 insertions(+), 510 deletions(-)
+
+--
+Best Regards,
+Huang, Ying
 
