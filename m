@@ -1,97 +1,86 @@
-Return-Path: <linux-kernel+bounces-121441-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-121440-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 015BF88E7F0
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 16:09:23 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id DAC3888E7EF
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 16:09:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 584512C4799
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 15:08:58 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BD9332E690D
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 15:08:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A0CC8130AED;
-	Wed, 27 Mar 2024 14:32:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3E04714388C;
+	Wed, 27 Mar 2024 14:31:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com header.b="QBVczwqO"
-Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com [67.231.152.168])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qVDYdcZs"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1015212F396
-	for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 14:31:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=67.231.152.168
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 723F912FB37;
+	Wed, 27 Mar 2024 14:31:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711549920; cv=none; b=JZ1mINjz1A2JYcsppfLnNAhNKMkGwcerLufUKAGg117z4Hw0CkDsXbpPQ2psv/vcMXivS0s1uLopqmSlCXRfgqUrqT0IJbzK0GE+pOxmGbfolBmeiKas3uwgGFmtT3r0gTMrSOSDOVWvN5nE0kMpOSucICKG0cOvZW5HPJtJCMw=
+	t=1711549905; cv=none; b=WApmHqIt7n3wlCqPaD9n8I4xM3IOS3IVgPuRTmewEZJDpA0pjwYambvFoXP1Saua3IudEj6RmXwUepqanSTUCjaofR1oPCQonfjF6JJHhyqJCwHKTTvmhOrdcCIrjES8r/LqnScuPKXalZXzK5jdDDAMeV8vueyU/0ucokrQ8p8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711549920; c=relaxed/simple;
-	bh=YKVSTmT3qUBwpqlB7Y//kiJHq4Q11YOqzoKuNm3NEV4=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=p838/ntkshQ6jGg3a2Zzj38qGuSj9Rekv0n6lErgGIi/marJJGxeSq2J56nDoOs1nFzCWr0JgOy+j0NgP4n5HsXaOj7FmdgXua5rtS5g+v9RmJL0fQhfBuKCIeoawbSlCwNf1E+YjdmNDiHf28OofSR3XQmYgQopxeGfhZO4oTM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=opensource.cirrus.com; spf=pass smtp.mailfrom=opensource.cirrus.com; dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com header.b=QBVczwqO; arc=none smtp.client-ip=67.231.152.168
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=opensource.cirrus.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=opensource.cirrus.com
-Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
-	by mx0b-001ae601.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 42R79ddN013715;
-	Wed, 27 Mar 2024 09:31:44 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	PODMain02222019; bh=pe1OiEZ/eODz5fKDp9yxijNPbhXTJ0sYV+MyonGZ+tk=; b=
-	QBVczwqOFBStTWl5gMTxL5+JsR9aZlg56loF2X7EjsNNTw0BAAJJ9BqCPOEpW2oU
-	een1ZcoVrckffhSCvIAMiyixYo9xHHGVQmpWXprPsGcdWyyi5NnFXQa10Wm47MeN
-	BfbaB6J/BBeBnL5EC2NPEE0Yo1cvtOITojyuN3O+R7ayhJL9imU/jNm7jEXZMtTL
-	P8ms1oTv86t6mxXz34l6i3h/2yhlQ1Ub01qg4/yFYUXbYweiSi6ue7X/P6OXi2Ju
-	0nFfeG6ghDqNwMh+qeXTcJM40msjYMxaL7fZlj7xfE+abBRrN6/Zd3yNuduylFHx
-	9VgYmp8QuV6hmo5BXamW3A==
-Received: from ediex02.ad.cirrus.com ([84.19.233.68])
-	by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3x4et80gkb-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 27 Mar 2024 09:31:44 -0500 (CDT)
-Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex02.ad.cirrus.com
- (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.4; Wed, 27 Mar
- 2024 14:31:42 +0000
-Received: from ediswmail9.ad.cirrus.com (198.61.86.93) by
- ediex01.ad.cirrus.com (198.61.84.80) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.4
- via Frontend Transport; Wed, 27 Mar 2024 14:31:42 +0000
-Received: from [198.90.208.18] (ediswws06.ad.cirrus.com [198.90.208.18])
-	by ediswmail9.ad.cirrus.com (Postfix) with ESMTP id 543ED820246;
-	Wed, 27 Mar 2024 14:31:42 +0000 (UTC)
-Message-ID: <8c7c3463-a912-4eb2-9b32-983bb0705386@opensource.cirrus.com>
-Date: Wed, 27 Mar 2024 14:31:42 +0000
+	s=arc-20240116; t=1711549905; c=relaxed/simple;
+	bh=WSfFHYPX7LiFm5Qc/Sh1jixIZvZpfvnCSHlkNIVG6LU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=eqlY4tCxhdfqgI9+m0FFm5Hc51epksvZWsPKj4pzifcdoDV6IaxIT9zbTTc12uaDEwdT8PFgdqueGJKiC+iKIMVbESZQg+UtCaeHCrXekb7d78aI7oGvz0i53F0ahZpXRn2/PxS0olVHJCWouuwuhFE0YrPlp6ZAWoxber+Oz8E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qVDYdcZs; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C8DA6C43390;
+	Wed, 27 Mar 2024 14:31:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1711549905;
+	bh=WSfFHYPX7LiFm5Qc/Sh1jixIZvZpfvnCSHlkNIVG6LU=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=qVDYdcZsMxwev24HHNXmT2hRITCKPMOqWZCGAM/36OnKO0XEnKJd9oU5d3U0LW7kz
+	 LWuhSCveHFa7unOrGwUrabmzR2dCcSQjrFrCDD59rG86bjyEE4oIXWV2cWtWKSaTrK
+	 FdIGFZXefFzxR35etpZUAgWRuXjLY32Aaa52R4qvuLtAukSZ/oBwwZD7x4WVg85J9c
+	 pOprFar3IwmNrjNSBUTflL+cTrKkV5yQ//diOkCJ7mwXs8Jr6h6h8Dhj/59AVgNsXB
+	 OBdWGAOTlrUQ9nhOBKuYvTEVE1Yfg8HQkhIMsg7FShYIRWwY61iaB9MdVhYoAhEt/m
+	 C7uEbjl4EXWWg==
+Date: Wed, 27 Mar 2024 09:31:42 -0500
+From: Rob Herring <robh@kernel.org>
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc: Bjorn Andersson <andersson@kernel.org>,
+	Konrad Dybcio <konrad.dybcio@linaro.org>,
+	Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+	Alim Akhtar <alim.akhtar@samsung.com>,
+	Avri Altman <avri.altman@wdc.com>,
+	Bart Van Assche <bvanassche@acm.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>, Andy Gross <agross@kernel.org>,
+	linux-arm-msm@vger.kernel.org, linux-scsi@vger.kernel.org,
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/3] dt-bindings: ufs: qcom: document SC8180X UFS
+Message-ID: <20240327143142.GA3267090-robh@kernel.org>
+References: <20240326174632.209745-1-krzysztof.kozlowski@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] regmap: maple: Fix cache corruption in
- regcache_maple_drop()
-To: Mark Brown <broonie@kernel.org>
-CC: <linux-kernel@vger.kernel.org>, <patches@opensource.cirrus.com>
-References: <20240327114406.976986-1-rf@opensource.cirrus.com>
- <c83f359d-ae9b-4b09-b00e-ae99fe9eb74b@sirena.org.uk>
-Content-Language: en-GB
-From: Richard Fitzgerald <rf@opensource.cirrus.com>
-In-Reply-To: <c83f359d-ae9b-4b09-b00e-ae99fe9eb74b@sirena.org.uk>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-GUID: grDCCVOc2IBUekP4saexUyRgAdRnPORy
-X-Proofpoint-ORIG-GUID: grDCCVOc2IBUekP4saexUyRgAdRnPORy
-X-Proofpoint-Spam-Reason: safe
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240326174632.209745-1-krzysztof.kozlowski@linaro.org>
 
-On 27/03/2024 14:16, Mark Brown wrote:
-> On Wed, Mar 27, 2024 at 11:44:06AM +0000, Richard Fitzgerald wrote:
+On Tue, Mar 26, 2024 at 06:46:30PM +0100, Krzysztof Kozlowski wrote:
+> Document already upstreamed and used Qualcomm SC8180x UFS host
+> controller to fix dtbs_check warnings like:
 > 
->> This bug was not detected by the regmap KUnit test because it only
->> tests with a block of registers starting at 0, so mas.index == 0.
+>   sc8180x-primus.dtb: ufshc@1d84000: compatible:0: 'qcom,sc8180x-ufshc' is not one of ['qcom,msm8994-ufshc', ... ]
+>   sc8180x-primus.dtb: ufshc@1d84000: Unevaluated properties are not allowed ('compatible' was unexpected)
 > 
-> Can you please add a test for this?
+> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+> 
+> ---
+> 
+> Rob, considering limbo status of this binding, maybe you can take it
+> directly? Would be the fastest.
 
-Later, when I have the time.
-I've already wasted over a day debugging why the values in my registers
-are not correct, so I'm that far behind on the work I should be doing.
+Applied for 6.9, thanks.
 
+Rob
 
