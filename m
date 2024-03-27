@@ -1,70 +1,71 @@
-Return-Path: <linux-kernel+bounces-120311-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-120312-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 05C4388D594
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 05:52:13 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0E28B88D596
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 05:52:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7E5591F26871
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 04:52:12 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2C5AC1C234C8
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 04:52:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 171C725634;
-	Wed, 27 Mar 2024 04:50:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4EB0028DCA;
+	Wed, 27 Mar 2024 04:50:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=sifive.com header.i=@sifive.com header.b="cMSxOfqG"
-Received: from mail-ot1-f54.google.com (mail-ot1-f54.google.com [209.85.210.54])
+	dkim=pass (2048-bit key) header.d=sifive.com header.i=@sifive.com header.b="CjqznVHU"
+Received: from mail-oo1-f47.google.com (mail-oo1-f47.google.com [209.85.161.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C73EB1C68F
-	for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 04:50:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D9D4063B3
+	for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 04:50:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711515056; cv=none; b=or4mIshcemuFySr/OwMEaR7BcZuPwFvJ6w2StSzvHY4qO8kRgYpbnD7Oy2j7gj/om9cQ7maSl2xuqpoadEeGFv29wlYf9OpZFrAiQRktQvGLsLNjZtzydWPq13ZvSaIJXZ2ut5IsjR2mCYlXxRMYff677WyTu0jFJx54Bx/5FzA=
+	t=1711515058; cv=none; b=VA0waLZXC5mDWRt+WzusppGbsZUomczkqGpkArSzwGULAleFGeYEi1ACZOKBecmH0ABKizQfKZS3/c2Nn3DtuvPJipJ0zLkqw0WAm/NdaNcIyv98CivNME7BR3WJyNtRsynom5Gs6vArtqTZ1hY1dTg3c5JQzXc7y1mjEq30WsA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711515056; c=relaxed/simple;
-	bh=Iif7UTJ12URNnNmgEZh/g3vOOkBXUamO89prNktl0Fg=;
+	s=arc-20240116; t=1711515058; c=relaxed/simple;
+	bh=h6ENFi8wwoz/1RsosVsupi85G/Ck90qRb4MFtlbEcLM=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=LU9WZCHXevtNuMOA3/l51sB8m265C2OF1r9/JfEZdtrwUuqTRd9JiQ3m/WOq53rP6iaf1vHMdG44N9gyVHFRoEeSj4MwTjgV8lvKARyaatqQOHTEastSUakSlzGEDkXOH0YuZcAxAphTmcxXL4hlCKn8Cq1lubsOADtuRrz/yro=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=sifive.com; spf=pass smtp.mailfrom=sifive.com; dkim=pass (2048-bit key) header.d=sifive.com header.i=@sifive.com header.b=cMSxOfqG; arc=none smtp.client-ip=209.85.210.54
+	 MIME-Version; b=p0gZ2yHkJxcte5syc9rYvb+uJWH4Ho493j5IX9EiFja6hDpJWA55BdaFBw8oJdqinjR66SA1wiXNHVBTzzJo9BS/tq5RM83wgRAY+JYcoBpQfqdetHW0580rsGwDEG3TVJ4ijPrsnPWYxNb1IgrEzeW24ZIHYaE8znfwFzvNI0Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=sifive.com; spf=pass smtp.mailfrom=sifive.com; dkim=pass (2048-bit key) header.d=sifive.com header.i=@sifive.com header.b=CjqznVHU; arc=none smtp.client-ip=209.85.161.47
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=sifive.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sifive.com
-Received: by mail-ot1-f54.google.com with SMTP id 46e09a7af769-6e6e37d33c5so992083a34.2
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 21:50:54 -0700 (PDT)
+Received: by mail-oo1-f47.google.com with SMTP id 006d021491bc7-5a58009fe88so511981eaf.0
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 21:50:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sifive.com; s=google; t=1711515054; x=1712119854; darn=vger.kernel.org;
+        d=sifive.com; s=google; t=1711515056; x=1712119856; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=4DMxbhiunBS0lKLURYVBJG3nyObzwUO8ZrXza9ckh2c=;
-        b=cMSxOfqGKSsa7JMEOtNfyE0WC1EZgJeCD74yAJ3guvzcHJejioBByzrzpjIwR6n1Y2
-         SkFsT6xh+y9jXXHtWdZSn7xE68jAH7Ou4tybR0KYqnJTiag64Zo1HCORkzOr9dO8f8ZL
-         /QKtDOY1XgdHTieiblQAZqN5G8Xfpbx4vjtTzIw4D04YOzOuJZ6AenRcYK76YF4L6zWw
-         gprcbQG/nufiP0qh6ahE+EW0w2kuOMKBX8BKVnXw2sDoczvlWv+uMf3bkfOcAIjEfAT6
-         7fP/qGcJuVjFhQAIA6M29bGHpIXNoJIrxUaGe/QggZwH2hC5NxP0MvBsXZqtgFPyT23C
-         IPIw==
+        bh=2OOp6ZEyIwMU5OnG6xTEWcirae/pY2nPqfU9WqSousc=;
+        b=CjqznVHUKLdFJUT+AwhDsONLhja7y0P0+BDwOtNIs1xPyrDfT23/l6GTKBsD1Dj2pr
+         VibCA9hZWDThdIbnx/63M9eMII4NBaD0WDRBPXdNVtGZTp6xyxKFInLKPVasxW7+XxqO
+         +ZaEyqWi5yc2IirGZt80XbcJRQvXovpEtmDVMwD0Pt/M17zxsOx1MAwOUwoTxeqniy6+
+         Rq46gw7oF5oVSFo8vmOrvWRbeeuYDerNSbPW6sZiFuTBoCkfh2NST6P6+DkDhjIiBp8P
+         vw1YYcIhjIBGpAKTAe7bjgwBLrIyGsOA9o8fP3yghkcNLQYIZu9wIinrQxKAfqLxb5K8
+         e1Sw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711515054; x=1712119854;
+        d=1e100.net; s=20230601; t=1711515056; x=1712119856;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=4DMxbhiunBS0lKLURYVBJG3nyObzwUO8ZrXza9ckh2c=;
-        b=YB1hvlkDL5fZJ4AeVrfF5GJ6qL2Fd16OQhhwSbeWbBI9UYvbjiXLHg2t3jKIb9rQkU
-         KP4QYcrTagTV8qD72B+PaGhcHU5Iln7a0dLnMUwvoW0VGmcQG+SmEkSKy9K7j1InCW5W
-         moKjMhmBZR+H/Yqmaz2yH8B54hD3gFOs+YkB9j1eO7cysZYrdou+JmQaFnI1X+b83oLY
-         r+mPrSJ9nVTWGAaYpr26EwlKvsQDIzpAR6enouJlZTrkfUeVPxts9RxSac1gzScAjS2/
-         7fSaLCaK20R6MuySg3rkTzRLQhKoQkMbooP/UfWZvNXdwat8uauhwxgdCeR+DAOsFUkm
-         Je6Q==
-X-Gm-Message-State: AOJu0YxPc2OXunFssFZWVfLILlQhlk+HlR2UFGwpx0jznKZz7AX0Xede
-	+d+rYjjNg43afU/zvefo4CPg4BqU8LvJ8ZpZyCHncceCp4ecZGDt92xIH1lqU9Y=
-X-Google-Smtp-Source: AGHT+IEKVJUxYPHGmGQ7jZ/KC0+y46rPbmkW2DQ4LqVeHQ3jmUBdRhZe5PVjdoDThc5iPwQM0jPRUg==
-X-Received: by 2002:a9d:61d8:0:b0:6e6:9af5:752b with SMTP id h24-20020a9d61d8000000b006e69af5752bmr1730488otk.0.1711515053696;
-        Tue, 26 Mar 2024 21:50:53 -0700 (PDT)
+        bh=2OOp6ZEyIwMU5OnG6xTEWcirae/pY2nPqfU9WqSousc=;
+        b=HAFTE2DxBqwe3YifbsLAwTPI4autudNkQWCcszVCir/QzRoZoDb6Z5coY82lz1qJ51
+         cv2wG+kUuxb7FHYtKSYf05v6Fv7UfU/9/b0RDvn5iltJ6bobqe2sYGlZCCyLB8midT4e
+         TLxzJEtAv3LeHgZF5JEFsq+/3Iu0w+xKh0XXZBjlLSjv3PrdNkDO6QTxpGjZ9+2WtjCC
+         dE4sClLV99hn4/hS5ofrTzadhCKzQxKc8dIBtCPQzTlywCntjH9GMEA68fo3STUN7ZJQ
+         X3iSPXoLYyZomn7NN8nsN7re5s/lwIzgFoF/eQq3d/purDO/jeLi6pX+J08LqH1IIvHc
+         mSkg==
+X-Gm-Message-State: AOJu0YzxvpbWL9H/U3E4Mq6UYsxd8X6XsKGbCzvhmhZScVlPppTIZr4y
+	AO6bwXvl02kHqVTTNKGh6rJzJrLWKwjQkcAvwxvxA6CZNnBJohMVAjcGLdZWyp8i1Muk76IDtCT
+	s
+X-Google-Smtp-Source: AGHT+IH2eQoyDSJi6zqBjW5QAslrBjHf9N1FFSb9F+mmhA++Fk/xLCVtnw/qNQbwZOYB8ND1BkvynQ==
+X-Received: by 2002:a05:6358:7584:b0:17c:1e6c:14c0 with SMTP id x4-20020a056358758400b0017c1e6c14c0mr311341rwf.16.1711515055737;
+        Tue, 26 Mar 2024 21:50:55 -0700 (PDT)
 Received: from sw06.internal.sifive.com ([4.53.31.132])
-        by smtp.gmail.com with ESMTPSA id e31-20020a63501f000000b005e4666261besm8351500pgb.50.2024.03.26.21.50.52
+        by smtp.gmail.com with ESMTPSA id e31-20020a63501f000000b005e4666261besm8351500pgb.50.2024.03.26.21.50.54
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Mar 2024 21:50:52 -0700 (PDT)
+        Tue, 26 Mar 2024 21:50:54 -0700 (PDT)
 From: Samuel Holland <samuel.holland@sifive.com>
 To: Palmer Dabbelt <palmer@dabbelt.com>,
 	linux-riscv@lists.infradead.org
@@ -74,9 +75,9 @@ Cc: linux-kernel@vger.kernel.org,
 	Jisheng Zhang <jszhang@kernel.org>,
 	Yunhui Cui <cuiyunhui@bytedance.com>,
 	Samuel Holland <samuel.holland@sifive.com>
-Subject: [PATCH v6 08/13] riscv: Avoid TLB flush loops when affected by SiFive CIP-1200
-Date: Tue, 26 Mar 2024 21:49:49 -0700
-Message-ID: <20240327045035.368512-9-samuel.holland@sifive.com>
+Subject: [PATCH v6 09/13] riscv: mm: Introduce cntx2asid/cntx2version helper macros
+Date: Tue, 26 Mar 2024 21:49:50 -0700
+Message-ID: <20240327045035.368512-10-samuel.holland@sifive.com>
 X-Mailer: git-send-email 2.43.1
 In-Reply-To: <20240327045035.368512-1-samuel.holland@sifive.com>
 References: <20240327045035.368512-1-samuel.holland@sifive.com>
@@ -88,72 +89,106 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Implementations affected by SiFive errata CIP-1200 have a bug which
-forces the kernel to always use the global variant of the sfence.vma
-instruction. When affected by this errata, do not attempt to flush a
-range of addresses; each iteration of the loop would actually flush the
-whole TLB instead. Instead, minimize the overall number of sfence.vma
-instructions.
+When using the ASID allocator, the MM context ID contains two values:
+the ASID in the lower bits, and the allocator version number in the
+remaining bits. Use macros to make this separation more obvious.
 
+Reviewed-by: Alexandre Ghiti <alexghiti@rivosinc.com>
 Signed-off-by: Samuel Holland <samuel.holland@sifive.com>
 ---
 
-Changes in v6:
- - Clarify the commit message for patch 8 based on ML discussion
+(no changes since v1)
 
-Changes in v4:
- - Only set tlb_flush_all_threshold when CONFIG_MMU=y.
+ arch/riscv/include/asm/mmu.h |  3 +++
+ arch/riscv/mm/context.c      | 12 ++++++------
+ arch/riscv/mm/tlbflush.c     |  2 +-
+ 3 files changed, 10 insertions(+), 7 deletions(-)
 
-Changes in v3:
- - New patch for v3
-
- arch/riscv/errata/sifive/errata.c | 5 +++++
- arch/riscv/include/asm/tlbflush.h | 2 ++
- arch/riscv/mm/tlbflush.c          | 2 +-
- 3 files changed, 8 insertions(+), 1 deletion(-)
-
-diff --git a/arch/riscv/errata/sifive/errata.c b/arch/riscv/errata/sifive/errata.c
-index 3d9a32d791f7..716cfedad3a2 100644
---- a/arch/riscv/errata/sifive/errata.c
-+++ b/arch/riscv/errata/sifive/errata.c
-@@ -42,6 +42,11 @@ static bool errata_cip_1200_check_func(unsigned long  arch_id, unsigned long imp
- 		return false;
- 	if ((impid & 0xffffff) > 0x200630 || impid == 0x1200626)
- 		return false;
-+
-+#ifdef CONFIG_MMU
-+	tlb_flush_all_threshold = 0;
-+#endif
-+
- 	return true;
- }
+diff --git a/arch/riscv/include/asm/mmu.h b/arch/riscv/include/asm/mmu.h
+index 355504b37f8e..a550fbf770be 100644
+--- a/arch/riscv/include/asm/mmu.h
++++ b/arch/riscv/include/asm/mmu.h
+@@ -26,6 +26,9 @@ typedef struct {
+ #endif
+ } mm_context_t;
  
-diff --git a/arch/riscv/include/asm/tlbflush.h b/arch/riscv/include/asm/tlbflush.h
-index 463b615d7728..8e329721375b 100644
---- a/arch/riscv/include/asm/tlbflush.h
-+++ b/arch/riscv/include/asm/tlbflush.h
-@@ -66,6 +66,8 @@ void arch_tlbbatch_add_pending(struct arch_tlbflush_unmap_batch *batch,
- 			       unsigned long uaddr);
- void arch_flush_tlb_batched_pending(struct mm_struct *mm);
- void arch_tlbbatch_flush(struct arch_tlbflush_unmap_batch *batch);
++#define cntx2asid(cntx)		((cntx) & asid_mask)
++#define cntx2version(cntx)	((cntx) & ~asid_mask)
 +
-+extern unsigned long tlb_flush_all_threshold;
- #else /* CONFIG_MMU */
- #define local_flush_tlb_all()			do { } while (0)
- #endif /* CONFIG_MMU */
+ void __init create_pgd_mapping(pgd_t *pgdp, uintptr_t va, phys_addr_t pa,
+ 			       phys_addr_t sz, pgprot_t prot);
+ #endif /* __ASSEMBLY__ */
+diff --git a/arch/riscv/mm/context.c b/arch/riscv/mm/context.c
+index ba8eb3944687..b562b3c44487 100644
+--- a/arch/riscv/mm/context.c
++++ b/arch/riscv/mm/context.c
+@@ -81,7 +81,7 @@ static void __flush_context(void)
+ 		if (cntx == 0)
+ 			cntx = per_cpu(reserved_context, i);
+ 
+-		__set_bit(cntx & asid_mask, context_asid_map);
++		__set_bit(cntx2asid(cntx), context_asid_map);
+ 		per_cpu(reserved_context, i) = cntx;
+ 	}
+ 
+@@ -102,7 +102,7 @@ static unsigned long __new_context(struct mm_struct *mm)
+ 	lockdep_assert_held(&context_lock);
+ 
+ 	if (cntx != 0) {
+-		unsigned long newcntx = ver | (cntx & asid_mask);
++		unsigned long newcntx = ver | cntx2asid(cntx);
+ 
+ 		/*
+ 		 * If our current CONTEXT was active during a rollover, we
+@@ -115,7 +115,7 @@ static unsigned long __new_context(struct mm_struct *mm)
+ 		 * We had a valid CONTEXT in a previous life, so try to
+ 		 * re-use it if possible.
+ 		 */
+-		if (!__test_and_set_bit(cntx & asid_mask, context_asid_map))
++		if (!__test_and_set_bit(cntx2asid(cntx), context_asid_map))
+ 			return newcntx;
+ 	}
+ 
+@@ -168,7 +168,7 @@ static void set_mm_asid(struct mm_struct *mm, unsigned int cpu)
+ 	 */
+ 	old_active_cntx = atomic_long_read(&per_cpu(active_context, cpu));
+ 	if (old_active_cntx &&
+-	    ((cntx & ~asid_mask) == atomic_long_read(&current_version)) &&
++	    (cntx2version(cntx) == atomic_long_read(&current_version)) &&
+ 	    atomic_long_cmpxchg_relaxed(&per_cpu(active_context, cpu),
+ 					old_active_cntx, cntx))
+ 		goto switch_mm_fast;
+@@ -177,7 +177,7 @@ static void set_mm_asid(struct mm_struct *mm, unsigned int cpu)
+ 
+ 	/* Check that our ASID belongs to the current_version. */
+ 	cntx = atomic_long_read(&mm->context.id);
+-	if ((cntx & ~asid_mask) != atomic_long_read(&current_version)) {
++	if (cntx2version(cntx) != atomic_long_read(&current_version)) {
+ 		cntx = __new_context(mm);
+ 		atomic_long_set(&mm->context.id, cntx);
+ 	}
+@@ -191,7 +191,7 @@ static void set_mm_asid(struct mm_struct *mm, unsigned int cpu)
+ 
+ switch_mm_fast:
+ 	csr_write(CSR_SATP, virt_to_pfn(mm->pgd) |
+-		  ((cntx & asid_mask) << SATP_ASID_SHIFT) |
++		  (cntx2asid(cntx) << SATP_ASID_SHIFT) |
+ 		  satp_mode);
+ 
+ 	if (need_flush_tlb)
 diff --git a/arch/riscv/mm/tlbflush.c b/arch/riscv/mm/tlbflush.c
-index ad7bdcfcc219..18af7b5053af 100644
+index 18af7b5053af..35266dd9a9a2 100644
 --- a/arch/riscv/mm/tlbflush.c
 +++ b/arch/riscv/mm/tlbflush.c
-@@ -11,7 +11,7 @@
-  * Flush entire TLB if number of entries to be flushed is greater
-  * than the threshold below.
-  */
--static unsigned long tlb_flush_all_threshold __read_mostly = 64;
-+unsigned long tlb_flush_all_threshold __read_mostly = 64;
+@@ -110,7 +110,7 @@ static void __flush_tlb_range(struct cpumask *cmask, unsigned long asid,
+ static inline unsigned long get_mm_asid(struct mm_struct *mm)
+ {
+ 	return static_branch_unlikely(&use_asid_allocator) ?
+-			atomic_long_read(&mm->context.id) & asid_mask : FLUSH_TLB_NO_ASID;
++			cntx2asid(atomic_long_read(&mm->context.id)) : FLUSH_TLB_NO_ASID;
+ }
  
- static void local_flush_tlb_range_threshold_asid(unsigned long start,
- 						 unsigned long size,
+ void flush_tlb_mm(struct mm_struct *mm)
 -- 
 2.43.1
 
