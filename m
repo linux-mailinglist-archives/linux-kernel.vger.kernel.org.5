@@ -1,52 +1,58 @@
-Return-Path: <linux-kernel+bounces-120828-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-120829-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 488E088DE8F
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 13:17:25 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 41D5C88DE9B
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 13:17:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C87F8B26965
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 12:17:22 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B7761B2486B
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 12:17:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CFB13139CF0;
-	Wed, 27 Mar 2024 12:08:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C7DF912DDA6;
+	Wed, 27 Mar 2024 12:08:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lfqeFLmG"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="k6e+ZNC8"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1BD62139CE6;
-	Wed, 27 Mar 2024 12:08:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1489D139D09;
+	Wed, 27 Mar 2024 12:08:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711541319; cv=none; b=jfMCZgn2UdQBmKMIa9RsBva9zcQtI8LIFyZLdyb51LjrWiCBDHJI0ym5XxYwjCLbs0TKA8SUvOJZ27RlEhUDmyAvpRJuwNoSGKLp+av88Nt/8jMYJAiys3qbS5NLI41HLajvMT6YZMncn9f95kusebYBmCxUhnUnPeaijNJTdEQ=
+	t=1711541322; cv=none; b=b8gNBNjZIfsUIyx3aD8ikdc8hop9omJ62fZvgXHrUmt0/uQW0DdTCaKyd676gqPfwYtPgJNfkyffqzxAJEAax6c+JGoQZ0GsZsyH+BDZqBN2leaoVpzDbUbUikrT/d8cTEdjBecFJ771znO1qm8Zo3Gne9SOhBy4Vnbu7GkKNDA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711541319; c=relaxed/simple;
-	bh=roYDUP00NrJKQhKm/2zCamVs+O6dTQ95crQcuk+hEEE=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=ijQAbHoLNjmXFYh9bBpFpfl065hsLpYpPJJmOttDa/EZ9MDSID22vmAkzx1nSju7OWgAIvM072avua2WuUqr9TbTLOTF2NMxCoUk7OHIVg+bsC9GSsPGLHW8DjmGhTE5yRkup4M0Yf0JnutJSenR/b4+i9lsSwGvwh04TE4nHeU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lfqeFLmG; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 62B1CC433C7;
-	Wed, 27 Mar 2024 12:08:38 +0000 (UTC)
+	s=arc-20240116; t=1711541322; c=relaxed/simple;
+	bh=RefdEEQR2WW+1s1RlS40ESTXryb1X0ViQR6Q4wLd6tU=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=fjE5pK15/PM2cuRe4bkA4I7K6coTN9gXHPAfRH3Re2xf86SnW/lk939uJ23lVsS9JB2mK/mvkYdq+Uc680u7Qs+UaOkbNdn8Cxi3A86EG5GP6Wyt5sXsVW41R/31e4eJFx4I3jBk9zUFFWrRCYqJzbZ8XIP+uLo71ixtnj7nNlk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=k6e+ZNC8; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C3A50C433F1;
+	Wed, 27 Mar 2024 12:08:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711541319;
-	bh=roYDUP00NrJKQhKm/2zCamVs+O6dTQ95crQcuk+hEEE=;
+	s=k20201202; t=1711541322;
+	bh=RefdEEQR2WW+1s1RlS40ESTXryb1X0ViQR6Q4wLd6tU=;
 	h=From:To:Cc:Subject:Date:From;
-	b=lfqeFLmGDizQSkEYLeH6lV3k5B6uQqpUL6/A/Mx/BbDwcjHksAl/QwTWmOujQnJ7v
-	 usH75NGubwaXk7GRGKQ+PJ55zNtHivVa0kcNzjOFXYEXf3tXgTDC8LRlb0lhfmbKVw
-	 VCFEF87DpLAUk/OIXrYEuYWXCmXQNQzEkSlIAO2KoqgIp5nibgCM9IUDN5CWMviF2H
-	 oApowrvI14w/PoJc+j3KHNcbXAmw05HgWA4IstvfPaajCNwjV5vDIeQk8Ofhj4TP1K
-	 6tUawjd94Fx9FQ1bfesDbxoNe5xaNEBDTSGVeqCeHZbeFq9fRvtRzrN9IvymbfFTO7
-	 cQ0NaxSqyTTug==
+	b=k6e+ZNC8XEIvWdxoEEe4w+K/b2+p6FAmtRx7QnV15sJpsCmUrZCruYcu0Y1mZtSA0
+	 U2cNouG9Cc/CwqhqmVvsp6NP8FIyzX6Df4DMxL9+KAaDqf9toBHy/6jqpXNoHyzxXu
+	 vaXknoa3jiCp4Rm+nx+oq/UUQNrFnljLwsmpQQR31Ct0Crne9jHfkwFsmhKcYOM495
+	 Y/2PnmHegLPjzfhSj3GYgqBK5/K9J5bO4M9CQHpW739tVz//I0TMQE0GYco0O1Ncj5
+	 B9GhGSUawAefnCegt4kj/t1hzmpervnKy8vYuXtc9aFCYbmWuIH44fqURazwpC3Bop
+	 6x4MBPdADdcXg==
 From: Sasha Levin <sashal@kernel.org>
 To: stable@vger.kernel.org,
-	ardb@kernel.org
-Cc: stable@kernel.org,
+	srinivasan.shanmugam@amd.com
+Cc: Alex Hung <alex.hung@amd.com>,
+	Aurabindo Pillai <aurabindo.pillai@amd.com>,
+	Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>,
+	Hamza Mahfooz <hamza.mahfooz@amd.com>,
+	Alex Deucher <alexander.deucher@amd.com>,
+	amd-gfx@lists.freedesktop.org,
+	dri-devel@lists.freedesktop.org,
 	linux-kernel@vger.kernel.org
-Subject: FAILED: Patch "x86/efistub: Call mixed mode boot services on the firmware's stack" failed to apply to 6.7-stable tree
-Date: Wed, 27 Mar 2024 08:08:37 -0400
-Message-ID: <20240327120837.2826354-1-sashal@kernel.org>
+Subject: FAILED: Patch "drm/amd/display: Drop 'acrtc' and add 'new_crtc_state' NULL check for writeback requests." failed to apply to 6.7-stable tree
+Date: Wed, 27 Mar 2024 08:08:39 -0400
+Message-ID: <20240327120839.2826392-1-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -68,81 +74,52 @@ Sasha
 
 ------------------ original commit in Linus's tree ------------------
 
-From cefcd4fe2e3aaf792c14c9e56dab89e3d7a65d02 Mon Sep 17 00:00:00 2001
-From: Ard Biesheuvel <ardb@kernel.org>
-Date: Fri, 22 Mar 2024 17:03:58 +0200
-Subject: [PATCH] x86/efistub: Call mixed mode boot services on the firmware's
- stack
+From b2f26f49e84bea03dddb5f37ff137c97b165107b Mon Sep 17 00:00:00 2001
+From: Srinivasan Shanmugam <srinivasan.shanmugam@amd.com>
+Date: Sat, 13 Jan 2024 14:32:27 +0530
+Subject: [PATCH] drm/amd/display: Drop 'acrtc' and add 'new_crtc_state' NULL
+ check for writeback requests.
 
-Normally, the EFI stub calls into the EFI boot services using the stack
-that was live when the stub was entered. According to the UEFI spec,
-this stack needs to be at least 128k in size - this might seem large but
-all asynchronous processing and event handling in EFI runs from the same
-stack and so quite a lot of space may be used in practice.
+Return value of 'to_amdgpu_crtc' which is container_of(...) can't be
+null, so it's null check 'acrtc' is dropped.
 
-In mixed mode, the situation is a bit different: the bootloader calls
-the 32-bit EFI stub entry point, which calls the decompressor's 32-bit
-entry point, where the boot stack is set up, using a fixed allocation
-of 16k. This stack is still in use when the EFI stub is started in
-64-bit mode, and so all calls back into the EFI firmware will be using
-the decompressor's limited boot stack.
+Fixing the below:
+drivers/gpu/drm/amd/amdgpu/../display/amdgpu_dm/amdgpu_dm.c:9302 amdgpu_dm_atomic_commit_tail() error: we previously assumed 'acrtc' could be null (see line 9299)
 
-Due to the placement of the boot stack right after the boot heap, any
-stack overruns have gone unnoticed. However, commit
+Added 'new_crtc_state' NULL check for function
+'drm_atomic_get_new_crtc_state' that retrieves the new state for a CRTC,
+while enabling writeback requests.
 
-  5c4feadb0011983b ("x86/decompressor: Move global symbol references to C code")
-
-moved the definition of the boot heap into C code, and now the boot
-stack is placed right at the base of BSS, where any overruns will
-corrupt the end of the .data section.
-
-While it would be possible to work around this by increasing the size of
-the boot stack, doing so would affect all x86 systems, and mixed mode
-systems are a tiny (and shrinking) fraction of the x86 installed base.
-
-So instead, record the firmware stack pointer value when entering from
-the 32-bit firmware, and switch to this stack every time a EFI boot
-service call is made.
-
-Cc: <stable@kernel.org> # v6.1+
-Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
+Cc: stable@vger.kernel.org
+Cc: Alex Hung <alex.hung@amd.com>
+Cc: Aurabindo Pillai <aurabindo.pillai@amd.com>
+Cc: Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>
+Cc: Hamza Mahfooz <hamza.mahfooz@amd.com>
+Signed-off-by: Srinivasan Shanmugam <srinivasan.shanmugam@amd.com>
+Reviewed-by: Alex Hung <alex.hung@amd.com>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 ---
- arch/x86/boot/compressed/efi_mixed.S | 9 +++++++++
- 1 file changed, 9 insertions(+)
+ drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/arch/x86/boot/compressed/efi_mixed.S b/arch/x86/boot/compressed/efi_mixed.S
-index f4e22ef774ab6..719e939050cbf 100644
---- a/arch/x86/boot/compressed/efi_mixed.S
-+++ b/arch/x86/boot/compressed/efi_mixed.S
-@@ -49,6 +49,11 @@ SYM_FUNC_START(startup_64_mixed_mode)
- 	lea	efi32_boot_args(%rip), %rdx
- 	mov	0(%rdx), %edi
- 	mov	4(%rdx), %esi
-+
-+	/* Switch to the firmware's stack */
-+	movl	efi32_boot_sp(%rip), %esp
-+	andl	$~7, %esp
-+
- #ifdef CONFIG_EFI_HANDOVER_PROTOCOL
- 	mov	8(%rdx), %edx		// saved bootparams pointer
- 	test	%edx, %edx
-@@ -254,6 +259,9 @@ SYM_FUNC_START_LOCAL(efi32_entry)
- 	/* Store firmware IDT descriptor */
- 	sidtl	(efi32_boot_idt - 1b)(%ebx)
+diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
+index 36af104e7663c..8623722e954f9 100644
+--- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
++++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
+@@ -9327,10 +9327,10 @@ static void amdgpu_dm_atomic_commit_tail(struct drm_atomic_state *state)
+ 		if (!new_con_state->writeback_job)
+ 			continue;
  
-+	/* Store firmware stack pointer */
-+	movl	%esp, (efi32_boot_sp - 1b)(%ebx)
-+
- 	/* Store boot arguments */
- 	leal	(efi32_boot_args - 1b)(%ebx), %ebx
- 	movl	%ecx, 0(%ebx)
-@@ -318,5 +326,6 @@ SYM_DATA_END(efi32_boot_idt)
+-		new_crtc_state = NULL;
++		new_crtc_state = drm_atomic_get_new_crtc_state(state, &acrtc->base);
  
- SYM_DATA_LOCAL(efi32_boot_cs, .word 0)
- SYM_DATA_LOCAL(efi32_boot_ds, .word 0)
-+SYM_DATA_LOCAL(efi32_boot_sp, .long 0)
- SYM_DATA_LOCAL(efi32_boot_args, .long 0, 0, 0)
- SYM_DATA(efi_is64, .byte 1)
+-		if (acrtc)
+-			new_crtc_state = drm_atomic_get_new_crtc_state(state, &acrtc->base);
++		if (!new_crtc_state)
++			continue;
+ 
+ 		if (acrtc->wb_enabled)
+ 			continue;
 -- 
 2.43.0
 
