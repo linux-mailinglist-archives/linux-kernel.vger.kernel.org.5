@@ -1,58 +1,58 @@
-Return-Path: <linux-kernel+bounces-121250-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-121251-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1910888E45E
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 14:59:54 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5D15D88E59A
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 15:24:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CA5021F2E03D
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 13:59:53 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 25E5BB2E6D7
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 14:00:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AA90A1A0B1F;
-	Wed, 27 Mar 2024 12:27:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A3E5B1A434F;
+	Wed, 27 Mar 2024 12:27:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="orr5+wC+"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="i9o6h1tV"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F050B1A0B16;
-	Wed, 27 Mar 2024 12:27:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BDF7B1A4344;
+	Wed, 27 Mar 2024 12:27:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711542459; cv=none; b=E4Ikrpm0iNKQe6/7PYcYKDfxWGzwxq3+/5yR/v9tj6jki89z/yHEOgniMw12c7Ud+mv1x2osZxloJr86wbBx7u4uSg3Z5kH5j7eSDtP5F2Xkjjuo35LQNmrgRsEexyG1abphw0IYWQ3Ga+T0U2KGW+5h4JJZuJYyl8YcemDUDrQ=
+	t=1711542461; cv=none; b=bDXcU3JehXuGP1qzH/rg88Eox/Zsd4/l8MTS3n5im0T3rR0VWVe/sgQFWeEOVmc+dBKz53d7e8t4oqQhYpBwaH03bTUMB3px3W+gbQYQAYsRHTNm0N2Erzbm2vradwKgQqgTg2eX1cjGq1bsAOP3pefgGFb7GWRKlCMrh5PmJzk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711542459; c=relaxed/simple;
-	bh=fOTqIcdEl0uxEemd1BGjjo9GaFZfDwILduLxt+fXOLc=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=unD+uCLkLum8EVpBYWABECjHuap2sYIcnfVWL0dTUtXbf1pX5wnmbGpHh9QBgxfMQeuOfvpa0e+lFE8HyJgX+QtVrG0BhTWO0Y8o78+96fFVPlWO88EVedynEnvC0/BVkVbt+gh9dfO5V1hlkpnfKffe041OXbHVB3I7b/a0e3E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=orr5+wC+; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C174EC43399;
-	Wed, 27 Mar 2024 12:27:37 +0000 (UTC)
+	s=arc-20240116; t=1711542461; c=relaxed/simple;
+	bh=cTS98JDtdYWAwWJuHBqxfLgQO9ifxJ5kdKpRVvyrirg=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=hPm0OV1Sjl6sGHS4fVnROPuetmR1I061hp4j3602yj62giOGvYocu62n3LzQ124h9O6J0/NuemP449Gslxuse2ADGbjzHSmwhJNN6urKdw3imaPIA6/0j/o++6XHu5CZ78O8h/yjHOPueOPAg2kzDB1N6qQ8YonGVaQmVQtOJEg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=i9o6h1tV; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8E482C43390;
+	Wed, 27 Mar 2024 12:27:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711542458;
-	bh=fOTqIcdEl0uxEemd1BGjjo9GaFZfDwILduLxt+fXOLc=;
+	s=k20201202; t=1711542461;
+	bh=cTS98JDtdYWAwWJuHBqxfLgQO9ifxJ5kdKpRVvyrirg=;
 	h=From:To:Cc:Subject:Date:From;
-	b=orr5+wC+q2UqReab75mW3LQC9BRcrfKzB/fd7VXlBax/tU3cwmYOzHiBHWEYQyuFN
-	 al3ehbTBQMoBjXAciY3JZ73/qj588Z4k7kBl5o9bVEHfo7JYRLYIA5/pYV2zwYaDsz
-	 ES4vMtH3TiUc0U9s8rMVPQjuZZp3Jid+RyOPtMLkWXfacB0Ezc2tluq/V/zWx/0mgu
-	 eWFQ3hI50BU4vO6aU8gC6Rnw37Toq0LTJ/SsiDjb1ZzRvRuSGJBEddxHMIfIJW+ag8
-	 IOu2BXaDcgyGNBtbS7TY2+kFgQQJfEzU3Q3MyZBiywLK7ZTWbzNi50nMvH195UopCN
-	 XLK1de7DeEsIw==
+	b=i9o6h1tVfSUKWmZrw/yvSm3fODGfMTwRMr1KwgZ0u5soliyM0hYhZlw0tzdxe58Ja
+	 EewU3qaa48UvJnWwT83ky+PfqztQXWcoK0xJ5fA/do1fIZjaABr21V8fmOs4ujMkhB
+	 pe2RsrC8tKidBctWP5Pae6fbzIezQc2MIBUuuuJm/EnJHw2qXFFqR9LA/ezzXN2rVl
+	 W76YLzjZzm60dA2NPNEML0St1fMfrHt2lG7+h7/W5qbdlUx/xRVZ5nJDSXOmryhdiJ
+	 HeDfeLYHAXWSN6GQR2odrGNnX1Ei1WJ0wtXUFArvk5NSmt0zg2ndfG7iwsdabuTYJH
+	 ggF4NQ4eZMaOw==
 From: Sasha Levin <sashal@kernel.org>
 To: stable@vger.kernel.org,
-	swapnil.patel@amd.com
+	hanghong.ma@amd.com
 Cc: Mario Limonciello <mario.limonciello@amd.com>,
 	Alex Deucher <alexander.deucher@amd.com>,
-	Chaitanya Dhere <chaitanya.dhere@amd.com>,
-	Alex Hung <alex.hung@amd.com>,
+	Wenjing Liu <wenjing.liu@amd.com>,
+	Wayne Lin <wayne.lin@amd.com>,
 	Daniel Wheeler <daniel.wheeler@amd.com>,
 	amd-gfx@lists.freedesktop.org,
 	dri-devel@lists.freedesktop.org,
 	linux-kernel@vger.kernel.org
-Subject: FAILED: Patch "drm/amd/display: Change default size for dummy plane in DML2" failed to apply to 4.19-stable tree
-Date: Wed, 27 Mar 2024 08:27:36 -0400
-Message-ID: <20240327122736.2842063-1-sashal@kernel.org>
+Subject: FAILED: Patch "drm/amd/display: Fix noise issue on HDMI AV mute" failed to apply to 4.19-stable tree
+Date: Wed, 27 Mar 2024 08:27:39 -0400
+Message-ID: <20240327122739.2842100-1-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -74,70 +74,57 @@ Sasha
 
 ------------------ original commit in Linus's tree ------------------
 
-From 75eb8f7df65c5e6eb22a5aff8deb60ce0b65de1a Mon Sep 17 00:00:00 2001
-From: Swapnil Patel <swapnil.patel@amd.com>
-Date: Tue, 13 Feb 2024 08:09:48 -0500
-Subject: [PATCH] drm/amd/display: Change default size for dummy plane in DML2
+From 69e3be6893a7e668660b05a966bead82bbddb01d Mon Sep 17 00:00:00 2001
+From: Leo Ma <hanghong.ma@amd.com>
+Date: Fri, 28 Jul 2023 08:35:07 -0400
+Subject: [PATCH] drm/amd/display: Fix noise issue on HDMI AV mute
 
-[WHY & HOW]
-Currently, to map dc states into dml_display_cfg,
-We create a dummy plane if the stream doesn't have any planes
-attached to it. This dummy plane uses max addersable width height.
-This results in certain mode validations failing when they shouldn't.
+[Why]
+When mode switching is triggered there is momentary noise visible on
+some HDMI TV or displays.
+
+[How]
+Wait for 2 frames to make sure we have enough time to send out AV mute
+and sink receives a full frame.
 
 Cc: Mario Limonciello <mario.limonciello@amd.com>
 Cc: Alex Deucher <alexander.deucher@amd.com>
 Cc: stable@vger.kernel.org
-Reviewed-by: Chaitanya Dhere <chaitanya.dhere@amd.com>
-Acked-by: Alex Hung <alex.hung@amd.com>
-Signed-off-by: Swapnil Patel <swapnil.patel@amd.com>
+Reviewed-by: Wenjing Liu <wenjing.liu@amd.com>
+Acked-by: Wayne Lin <wayne.lin@amd.com>
+Signed-off-by: Leo Ma <hanghong.ma@amd.com>
 Tested-by: Daniel Wheeler <daniel.wheeler@amd.com>
 Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 ---
- .../display/dc/dml2/dml2_translation_helper.c  | 18 +++++++++++++++---
- 1 file changed, 15 insertions(+), 3 deletions(-)
+ .../gpu/drm/amd/display/dc/hwss/dcn30/dcn30_hwseq.c  | 12 +++++++++++-
+ 1 file changed, 11 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/amd/display/dc/dml2/dml2_translation_helper.c b/drivers/gpu/drm/amd/display/dc/dml2/dml2_translation_helper.c
-index 1ba6933d2b361..17a58f41fc6a8 100644
---- a/drivers/gpu/drm/amd/display/dc/dml2/dml2_translation_helper.c
-+++ b/drivers/gpu/drm/amd/display/dc/dml2/dml2_translation_helper.c
-@@ -824,13 +824,25 @@ static struct scaler_data get_scaler_data_for_plane(const struct dc_plane_state
+diff --git a/drivers/gpu/drm/amd/display/dc/hwss/dcn30/dcn30_hwseq.c b/drivers/gpu/drm/amd/display/dc/hwss/dcn30/dcn30_hwseq.c
+index 7e6b7f2a6dc9e..8bc3d01537bbd 100644
+--- a/drivers/gpu/drm/amd/display/dc/hwss/dcn30/dcn30_hwseq.c
++++ b/drivers/gpu/drm/amd/display/dc/hwss/dcn30/dcn30_hwseq.c
+@@ -812,10 +812,20 @@ void dcn30_set_avmute(struct pipe_ctx *pipe_ctx, bool enable)
+ 	if (pipe_ctx == NULL)
+ 		return;
  
- static void populate_dummy_dml_plane_cfg(struct dml_plane_cfg_st *out, unsigned int location, const struct dc_stream_state *in)
- {
-+	dml_uint_t width, height;
+-	if (dc_is_hdmi_signal(pipe_ctx->stream->signal) && pipe_ctx->stream_res.stream_enc != NULL)
++	if (dc_is_hdmi_signal(pipe_ctx->stream->signal) && pipe_ctx->stream_res.stream_enc != NULL) {
+ 		pipe_ctx->stream_res.stream_enc->funcs->set_avmute(
+ 				pipe_ctx->stream_res.stream_enc,
+ 				enable);
 +
-+	if (in->timing.h_addressable > 3840)
-+		width = 3840;
-+	else
-+		width = in->timing.h_addressable;	// 4K max
-+
-+	if (in->timing.v_addressable > 2160)
-+		height = 2160;
-+	else
-+		height = in->timing.v_addressable;	// 4K max
-+
- 	out->CursorBPP[location] = dml_cur_32bit;
- 	out->CursorWidth[location] = 256;
++		/* Wait for two frame to make sure AV mute is sent out */
++		if (enable) {
++			pipe_ctx->stream_res.tg->funcs->wait_for_state(pipe_ctx->stream_res.tg, CRTC_STATE_VACTIVE);
++			pipe_ctx->stream_res.tg->funcs->wait_for_state(pipe_ctx->stream_res.tg, CRTC_STATE_VBLANK);
++			pipe_ctx->stream_res.tg->funcs->wait_for_state(pipe_ctx->stream_res.tg, CRTC_STATE_VACTIVE);
++			pipe_ctx->stream_res.tg->funcs->wait_for_state(pipe_ctx->stream_res.tg, CRTC_STATE_VBLANK);
++			pipe_ctx->stream_res.tg->funcs->wait_for_state(pipe_ctx->stream_res.tg, CRTC_STATE_VACTIVE);
++		}
++	}
+ }
  
- 	out->GPUVMMinPageSizeKBytes[location] = 256;
- 
--	out->ViewportWidth[location] = in->timing.h_addressable;
--	out->ViewportHeight[location] = in->timing.v_addressable;
-+	out->ViewportWidth[location] = width;
-+	out->ViewportHeight[location] = height;
- 	out->ViewportStationary[location] = false;
- 	out->ViewportWidthChroma[location] = 0;
- 	out->ViewportHeightChroma[location] = 0;
-@@ -849,7 +861,7 @@ static void populate_dummy_dml_plane_cfg(struct dml_plane_cfg_st *out, unsigned
- 	out->HTapsChroma[location] = 0;
- 	out->VTapsChroma[location] = 0;
- 	out->SourceScan[location] = dml_rotation_0;
--	out->ScalerRecoutWidth[location] = in->timing.h_addressable;
-+	out->ScalerRecoutWidth[location] = width;
- 
- 	out->LBBitPerPixel[location] = 57;
- 
+ void dcn30_update_info_frame(struct pipe_ctx *pipe_ctx)
 -- 
 2.43.0
 
