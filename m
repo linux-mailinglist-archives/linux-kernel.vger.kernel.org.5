@@ -1,54 +1,58 @@
-Return-Path: <linux-kernel+bounces-121020-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-121021-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3188988E189
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 14:06:01 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8447B88E18D
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 14:06:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DCB2F282F09
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 13:05:59 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 118F61F2C7B0
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 13:06:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6CAAC15957F;
-	Wed, 27 Mar 2024 12:17:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 535B3139D1E;
+	Wed, 27 Mar 2024 12:17:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="g1TpYYJf"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gJCRdZnV"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 87CC31598EA;
-	Wed, 27 Mar 2024 12:17:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EF267159901;
+	Wed, 27 Mar 2024 12:17:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711541860; cv=none; b=l17TNBdOC5Tyo6JYDrAQ7Hh5x9sF3hvZQyvZECQpzViJpbyc15jUgK6+Yr24GJr/YXTYz8BSkUAsoASH4D4xQ4ARvWDG8YHMhDs9Znud7+w5ENQb0mmwOmH34ipGOYaury5Vo0R6D1bFHgfquRZyaKCZ7Va69lE9s3SppqRpYbk=
+	t=1711541864; cv=none; b=tZ6tYZ8za9S/d3GL5HhDjmOH9aVbvdmBTsKwl+1MDa3D0BbeoqLp5NwVAjljC81faiqQNWSeW05Z1qU6h9wo/YPUXxYXNzHwDxB/UdhogF2khsMO7qoaj1icJHsItRmuDeJj5oFR+6pnBtzyDtRhNtPT5VQJtMr//bRxFeNBnQI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711541860; c=relaxed/simple;
-	bh=ZtDyWzl6vlQGyj4eaqFCotX+i+u9W9h/D1eFqrQAtUY=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=gxRkq+VY9u5qtwQ/jevhpb6LWQYBL59s4lYBgMJIbaUcg6PmKtn7S4ji44QUgA22slJ2m1neRksfVOUUQcx4d9Bq2wg22yfYGNq7UTYjxEbykBriOuuFqgb9oXnFrz/y52m6vsLd4JsMb69hpqbjnYZUfTLtuXO5fjnavfEaLl4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=g1TpYYJf; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 65DFBC433C7;
-	Wed, 27 Mar 2024 12:17:39 +0000 (UTC)
+	s=arc-20240116; t=1711541864; c=relaxed/simple;
+	bh=aOmil3IOFPzmTYA4HMNGCh9C2XXKFTFk9etohITSMmw=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=PaJoUF8pynYjuaEq8/SaBX2lSnMMkPEHvMY87waHgBHdBRM68Td3ftGPyzxPLWGW+6w6/GZX4PnoVytdzVdToUpEGIIUZyACQklGoXu+I8RPRxFp3KNlxLStft3PGeGNSSHulslrBW+qe+Jv35ghSSPwuSM6QSAY2KyRdbFeY3c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=gJCRdZnV; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BBDC5C433F1;
+	Wed, 27 Mar 2024 12:17:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711541860;
-	bh=ZtDyWzl6vlQGyj4eaqFCotX+i+u9W9h/D1eFqrQAtUY=;
+	s=k20201202; t=1711541863;
+	bh=aOmil3IOFPzmTYA4HMNGCh9C2XXKFTFk9etohITSMmw=;
 	h=From:To:Cc:Subject:Date:From;
-	b=g1TpYYJfXSp+UFfMu1YyptxA+KMgE6dfKNJpwXbOatJLlrTba2al9tT8D+M0IU3ib
-	 8YXDl95dEInpIoGKdp6j+GLfjYO+At2pBRohAE1H2TzsHeNbDhw6KCwwCHVhtzxXcT
-	 wjBtVd90sgztHjgrCaYcrbajUitknc5O8q8NJrSfDkZL0QdIeI9EMgGEeeIM5aRkzR
-	 QQcPb6ikoNMGmYiiQqJfNMX2Dva29oofXPpIYoBq001DjCq+NWxOL56Fit0rbIeDU0
-	 nM7UubZqs4kLPzTnJbFQueapkxKOjTxjwpDDCEAZeeXNUj9OOTpOG6HXte4vIzLLu1
-	 IU+Kq6jc/KJXg==
+	b=gJCRdZnVzXLrotp0tBptEk89nJdYyB+QKcmHIt3eadZIxCf6l13d+VidIh6lYNz3h
+	 XtswEDU2tn56Q0cVH7fUxHYdfWBnz4aSnSANynFE/Rr9/a9IB47BQmFwRtakIYG2C+
+	 3gHaM9UyZ6m+2E1pImjnTw/VzS5wUN2kzbCYim8geGszyVlka8eLWspxzacF3qImeX
+	 1TYisnLv1zg5HWUPcxXHIwAnpakM2IVEhghQ5tWmgdBjCBQHwc8pXyaNu9zXwo4pQu
+	 q+uuxmByTuN4h8CJH9jvW+NhFynFz6j00uAFDT7bGw24opsF9nOT540Z8BKfA887Hs
+	 QktJfdLVmIbrA==
 From: Sasha Levin <sashal@kernel.org>
 To: stable@vger.kernel.org,
-	jarredwhite@linux.microsoft.com
-Cc: Easwar Hariharan <eahariha@linux.microsoft.com>,
-	"Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
-	linux-acpi@vger.kernel.org,
+	wenjing.liu@amd.com
+Cc: Mario Limonciello <mario.limonciello@amd.com>,
+	Alex Deucher <alexander.deucher@amd.com>,
+	Alvin Lee <alvin.lee2@amd.com>,
+	Alex Hung <alex.hung@amd.com>,
+	Daniel Wheeler <daniel.wheeler@amd.com>,
+	amd-gfx@lists.freedesktop.org,
+	dri-devel@lists.freedesktop.org,
 	linux-kernel@vger.kernel.org
-Subject: FAILED: Patch "ACPI: CPPC: Use access_width over bit_width for system memory accesses" failed to apply to 5.15-stable tree
-Date: Wed, 27 Mar 2024 08:17:38 -0400
-Message-ID: <20240327121738.2833692-1-sashal@kernel.org>
+Subject: FAILED: Patch "drm/amd/display: Implement wait_for_odm_update_pending_complete" failed to apply to 5.15-stable tree
+Date: Wed, 27 Mar 2024 08:17:40 -0400
+Message-ID: <20240327121741.2833729-1-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -70,186 +74,299 @@ Sasha
 
 ------------------ original commit in Linus's tree ------------------
 
-From 2f4a4d63a193be6fd530d180bb13c3592052904c Mon Sep 17 00:00:00 2001
-From: Jarred White <jarredwhite@linux.microsoft.com>
-Date: Fri, 1 Mar 2024 11:25:59 -0800
-Subject: [PATCH] ACPI: CPPC: Use access_width over bit_width for system memory
- accesses
+From 2d7f3d1a5866705be2393150e1ffdf67030ab88d Mon Sep 17 00:00:00 2001
+From: Wenjing Liu <wenjing.liu@amd.com>
+Date: Fri, 23 Feb 2024 15:38:40 -0500
+Subject: [PATCH] drm/amd/display: Implement
+ wait_for_odm_update_pending_complete
 
-To align with ACPI 6.3+, since bit_width can be any 8-bit value, it
-cannot be depended on to be always on a clean 8b boundary. This was
-uncovered on the Cobalt 100 platform.
+[WHY]
+Odm update is doubled buffered. We need to wait for ODM update to be
+completed before optimizing bandwidth or programming new udpates.
 
-SError Interrupt on CPU26, code 0xbe000011 -- SError
- CPU: 26 PID: 1510 Comm: systemd-udevd Not tainted 5.15.2.1-13 #1
- Hardware name: MICROSOFT CORPORATION, BIOS MICROSOFT CORPORATION
- pstate: 62400009 (nZCv daif +PAN -UAO +TCO -DIT -SSBS BTYPE=--)
- pc : cppc_get_perf_caps+0xec/0x410
- lr : cppc_get_perf_caps+0xe8/0x410
- sp : ffff8000155ab730
- x29: ffff8000155ab730 x28: ffff0080139d0038 x27: ffff0080139d0078
- x26: 0000000000000000 x25: ffff0080139d0058 x24: 00000000ffffffff
- x23: ffff0080139d0298 x22: ffff0080139d0278 x21: 0000000000000000
- x20: ffff00802b251910 x19: ffff0080139d0000 x18: ffffffffffffffff
- x17: 0000000000000000 x16: ffffdc7e111bad04 x15: ffff00802b251008
- x14: ffffffffffffffff x13: ffff013f1fd63300 x12: 0000000000000006
- x11: ffffdc7e128f4420 x10: 0000000000000000 x9 : ffffdc7e111badec
- x8 : ffff00802b251980 x7 : 0000000000000000 x6 : ffff0080139d0028
- x5 : 0000000000000000 x4 : ffff0080139d0018 x3 : 00000000ffffffff
- x2 : 0000000000000008 x1 : ffff8000155ab7a0 x0 : 0000000000000000
- Kernel panic - not syncing: Asynchronous SError Interrupt
- CPU: 26 PID: 1510 Comm: systemd-udevd Not tainted
-5.15.2.1-13 #1
- Hardware name: MICROSOFT CORPORATION, BIOS MICROSOFT CORPORATION
- Call trace:
-  dump_backtrace+0x0/0x1e0
-  show_stack+0x24/0x30
-  dump_stack_lvl+0x8c/0xb8
-  dump_stack+0x18/0x34
-  panic+0x16c/0x384
-  add_taint+0x0/0xc0
-  arm64_serror_panic+0x7c/0x90
-  arm64_is_fatal_ras_serror+0x34/0xa4
-  do_serror+0x50/0x6c
-  el1h_64_error_handler+0x40/0x74
-  el1h_64_error+0x7c/0x80
-  cppc_get_perf_caps+0xec/0x410
-  cppc_cpufreq_cpu_init+0x74/0x400 [cppc_cpufreq]
-  cpufreq_online+0x2dc/0xa30
-  cpufreq_add_dev+0xc0/0xd4
-  subsys_interface_register+0x134/0x14c
-  cpufreq_register_driver+0x1b0/0x354
-  cppc_cpufreq_init+0x1a8/0x1000 [cppc_cpufreq]
-  do_one_initcall+0x50/0x250
-  do_init_module+0x60/0x27c
-  load_module+0x2300/0x2570
-  __do_sys_finit_module+0xa8/0x114
-  __arm64_sys_finit_module+0x2c/0x3c
-  invoke_syscall+0x78/0x100
-  el0_svc_common.constprop.0+0x180/0x1a0
-  do_el0_svc+0x84/0xa0
-  el0_svc+0x2c/0xc0
-  el0t_64_sync_handler+0xa4/0x12c
-  el0t_64_sync+0x1a4/0x1a8
+[HOW]
+implement wait_for_odm_update_pending_complete function to wait for:
+1. odm configuration update is no longer pending in timing generator.
+2. no pending dpg pattern update for each active OPP.
 
-Instead, use access_width to determine the size and use the offset and
-width to shift and mask the bits to read/write out. Make sure to add a
-check for system memory since pcc redefines the access_width to
-subspace id.
-
-If access_width is not set, then fall back to using bit_width.
-
-Signed-off-by: Jarred White <jarredwhite@linux.microsoft.com>
-Reviewed-by: Easwar Hariharan <eahariha@linux.microsoft.com>
-Cc: 5.15+ <stable@vger.kernel.org> # 5.15+
-[ rjw: Subject and changelog edits, comment adjustments ]
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Cc: Mario Limonciello <mario.limonciello@amd.com>
+Cc: Alex Deucher <alexander.deucher@amd.com>
+Cc: stable@vger.kernel.org
+Reviewed-by: Alvin Lee <alvin.lee2@amd.com>
+Acked-by: Alex Hung <alex.hung@amd.com>
+Signed-off-by: Wenjing Liu <wenjing.liu@amd.com>
+Tested-by: Daniel Wheeler <daniel.wheeler@amd.com>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 ---
- drivers/acpi/cppc_acpi.c | 31 ++++++++++++++++++++++++++-----
- 1 file changed, 26 insertions(+), 5 deletions(-)
+ drivers/gpu/drm/amd/display/dc/core/dc.c      | 56 ++++++++++++++++++-
+ .../gpu/drm/amd/display/dc/dcn10/dcn10_opp.c  |  1 +
+ .../gpu/drm/amd/display/dc/dcn20/dcn20_opp.c  | 14 +++++
+ .../gpu/drm/amd/display/dc/dcn20/dcn20_opp.h  |  2 +
+ .../drm/amd/display/dc/dcn201/dcn201_opp.c    |  1 +
+ .../amd/display/dc/hwss/dcn20/dcn20_hwseq.c   |  4 +-
+ drivers/gpu/drm/amd/display/dc/inc/hw/opp.h   |  3 +
+ .../amd/display/dc/inc/hw/timing_generator.h  |  1 +
+ .../amd/display/dc/optc/dcn10/dcn10_optc.h    |  3 +-
+ .../amd/display/dc/optc/dcn32/dcn32_optc.c    |  8 +++
+ .../amd/display/dc/optc/dcn32/dcn32_optc.h    |  1 +
+ 11 files changed, 90 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/acpi/cppc_acpi.c b/drivers/acpi/cppc_acpi.c
-index d155a86a86148..b954ce3638a9c 100644
---- a/drivers/acpi/cppc_acpi.c
-+++ b/drivers/acpi/cppc_acpi.c
-@@ -166,6 +166,13 @@ show_cppc_data(cppc_get_perf_caps, cppc_perf_caps, nominal_freq);
- show_cppc_data(cppc_get_perf_ctrs, cppc_perf_fb_ctrs, reference_perf);
- show_cppc_data(cppc_get_perf_ctrs, cppc_perf_fb_ctrs, wraparound_time);
- 
-+/* Check for valid access_width, otherwise, fallback to using bit_width */
-+#define GET_BIT_WIDTH(reg) ((reg)->access_width ? (8 << ((reg)->access_width - 1)) : (reg)->bit_width)
-+
-+/* Shift and apply the mask for CPC reads/writes */
-+#define MASK_VAL(reg, val) ((val) >> ((reg)->bit_offset & 			\
-+					GENMASK(((reg)->bit_width), 0)))
-+
- static ssize_t show_feedback_ctrs(struct kobject *kobj,
- 		struct kobj_attribute *attr, char *buf)
- {
-@@ -780,6 +787,7 @@ int acpi_cppc_processor_probe(struct acpi_processor *pr)
- 			} else if (gas_t->space_id == ACPI_ADR_SPACE_SYSTEM_MEMORY) {
- 				if (gas_t->address) {
- 					void __iomem *addr;
-+					size_t access_width;
- 
- 					if (!osc_cpc_flexible_adr_space_confirmed) {
- 						pr_debug("Flexible address space capability not supported\n");
-@@ -787,7 +795,8 @@ int acpi_cppc_processor_probe(struct acpi_processor *pr)
- 							goto out_free;
- 					}
- 
--					addr = ioremap(gas_t->address, gas_t->bit_width/8);
-+					access_width = GET_BIT_WIDTH(gas_t) / 8;
-+					addr = ioremap(gas_t->address, access_width);
- 					if (!addr)
- 						goto out_free;
- 					cpc_ptr->cpc_regs[i-2].sys_mem_vaddr = addr;
-@@ -983,6 +992,7 @@ int __weak cpc_write_ffh(int cpunum, struct cpc_reg *reg, u64 val)
- static int cpc_read(int cpu, struct cpc_register_resource *reg_res, u64 *val)
- {
- 	void __iomem *vaddr = NULL;
-+	int size;
- 	int pcc_ss_id = per_cpu(cpu_pcc_subspace_idx, cpu);
- 	struct cpc_reg *reg = &reg_res->cpc_entry.reg;
- 
-@@ -994,7 +1004,7 @@ static int cpc_read(int cpu, struct cpc_register_resource *reg_res, u64 *val)
- 	*val = 0;
- 
- 	if (reg->space_id == ACPI_ADR_SPACE_SYSTEM_IO) {
--		u32 width = 8 << (reg->access_width - 1);
-+		u32 width = GET_BIT_WIDTH(reg);
- 		u32 val_u32;
- 		acpi_status status;
- 
-@@ -1018,7 +1028,9 @@ static int cpc_read(int cpu, struct cpc_register_resource *reg_res, u64 *val)
- 		return acpi_os_read_memory((acpi_physical_address)reg->address,
- 				val, reg->bit_width);
- 
--	switch (reg->bit_width) {
-+	size = GET_BIT_WIDTH(reg);
-+
-+	switch (size) {
- 	case 8:
- 		*val = readb_relaxed(vaddr);
- 		break;
-@@ -1037,18 +1049,22 @@ static int cpc_read(int cpu, struct cpc_register_resource *reg_res, u64 *val)
- 		return -EFAULT;
+diff --git a/drivers/gpu/drm/amd/display/dc/core/dc.c b/drivers/gpu/drm/amd/display/dc/core/dc.c
+index 958552a8605ff..e7dc128f6284b 100644
+--- a/drivers/gpu/drm/amd/display/dc/core/dc.c
++++ b/drivers/gpu/drm/amd/display/dc/core/dc.c
+@@ -1302,6 +1302,54 @@ static void disable_vbios_mode_if_required(
  	}
- 
-+	if (reg->space_id == ACPI_ADR_SPACE_SYSTEM_MEMORY)
-+		*val = MASK_VAL(reg, *val);
-+
- 	return 0;
  }
  
- static int cpc_write(int cpu, struct cpc_register_resource *reg_res, u64 val)
++/**
++ * wait_for_blank_complete - wait for all active OPPs to finish pending blank
++ * pattern updates
++ *
++ * @dc: [in] dc reference
++ * @context: [in] hardware context in use
++ */
++static void wait_for_blank_complete(struct dc *dc,
++		struct dc_state *context)
++{
++	struct pipe_ctx *opp_head;
++	struct dce_hwseq *hws = dc->hwseq;
++	int i;
++
++	if (!hws->funcs.wait_for_blank_complete)
++		return;
++
++	for (i = 0; i < MAX_PIPES; i++) {
++		opp_head = &context->res_ctx.pipe_ctx[i];
++
++		if (!resource_is_pipe_type(opp_head, OPP_HEAD) ||
++				dc_state_get_pipe_subvp_type(context, opp_head) == SUBVP_PHANTOM)
++			continue;
++
++		hws->funcs.wait_for_blank_complete(opp_head->stream_res.opp);
++	}
++}
++
++static void wait_for_odm_update_pending_complete(struct dc *dc, struct dc_state *context)
++{
++	struct pipe_ctx *otg_master;
++	struct timing_generator *tg;
++	int i;
++
++	for (i = 0; i < MAX_PIPES; i++) {
++		otg_master = &context->res_ctx.pipe_ctx[i];
++		if (!resource_is_pipe_type(otg_master, OTG_MASTER) ||
++				dc_state_get_pipe_subvp_type(context, otg_master) == SUBVP_PHANTOM)
++			continue;
++		tg = otg_master->stream_res.tg;
++		if (tg->funcs->wait_odm_doublebuffer_pending_clear)
++			tg->funcs->wait_odm_doublebuffer_pending_clear(tg);
++	}
++
++	/* ODM update may require to reprogram blank pattern for each OPP */
++	wait_for_blank_complete(dc, context);
++}
++
+ static void wait_for_no_pipes_pending(struct dc *dc, struct dc_state *context)
  {
- 	int ret_val = 0;
-+	int size;
- 	void __iomem *vaddr = NULL;
- 	int pcc_ss_id = per_cpu(cpu_pcc_subspace_idx, cpu);
- 	struct cpc_reg *reg = &reg_res->cpc_entry.reg;
+ 	int i;
+@@ -1993,6 +2041,11 @@ static enum dc_status dc_commit_state_no_check(struct dc *dc, struct dc_state *c
+ 		context->stream_count == 0) {
+ 		/* Must wait for no flips to be pending before doing optimize bw */
+ 		wait_for_no_pipes_pending(dc, context);
++		/*
++		 * optimized dispclk depends on ODM setup. Need to wait for ODM
++		 * update pending complete before optimizing bandwidth.
++		 */
++		wait_for_odm_update_pending_complete(dc, context);
+ 		/* pplib is notified if disp_num changed */
+ 		dc->hwss.optimize_bandwidth(dc, context);
+ 		/* Need to do otg sync again as otg could be out of sync due to otg
+@@ -3496,7 +3549,7 @@ static void commit_planes_for_stream_fast(struct dc *dc,
+ 		top_pipe_to_program->stream->update_flags.raw = 0;
+ }
  
- 	if (reg->space_id == ACPI_ADR_SPACE_SYSTEM_IO) {
--		u32 width = 8 << (reg->access_width - 1);
-+		u32 width = GET_BIT_WIDTH(reg);
- 		acpi_status status;
+-static void wait_for_outstanding_hw_updates(struct dc *dc, const struct dc_state *dc_context)
++static void wait_for_outstanding_hw_updates(struct dc *dc, struct dc_state *dc_context)
+ {
+ /*
+  * This function calls HWSS to wait for any potentially double buffered
+@@ -3534,6 +3587,7 @@ static void wait_for_outstanding_hw_updates(struct dc *dc, const struct dc_state
+ 			}
+ 		}
+ 	}
++	wait_for_odm_update_pending_complete(dc, dc_context);
+ }
  
- 		status = acpi_os_write_port((acpi_io_address)reg->address,
-@@ -1070,7 +1086,12 @@ static int cpc_write(int cpu, struct cpc_register_resource *reg_res, u64 val)
- 		return acpi_os_write_memory((acpi_physical_address)reg->address,
- 				val, reg->bit_width);
+ static void commit_planes_for_stream(struct dc *dc,
+diff --git a/drivers/gpu/drm/amd/display/dc/dcn10/dcn10_opp.c b/drivers/gpu/drm/amd/display/dc/dcn10/dcn10_opp.c
+index 48a40dcc7050b..5838a11efd00c 100644
+--- a/drivers/gpu/drm/amd/display/dc/dcn10/dcn10_opp.c
++++ b/drivers/gpu/drm/amd/display/dc/dcn10/dcn10_opp.c
+@@ -384,6 +384,7 @@ static const struct opp_funcs dcn10_opp_funcs = {
+ 		.opp_set_disp_pattern_generator = NULL,
+ 		.opp_program_dpg_dimensions = NULL,
+ 		.dpg_is_blanked = NULL,
++		.dpg_is_pending = NULL,
+ 		.opp_destroy = opp1_destroy
+ };
  
--	switch (reg->bit_width) {
-+	size = GET_BIT_WIDTH(reg);
+diff --git a/drivers/gpu/drm/amd/display/dc/dcn20/dcn20_opp.c b/drivers/gpu/drm/amd/display/dc/dcn20/dcn20_opp.c
+index 0784d01986610..fbf1b6370eb23 100644
+--- a/drivers/gpu/drm/amd/display/dc/dcn20/dcn20_opp.c
++++ b/drivers/gpu/drm/amd/display/dc/dcn20/dcn20_opp.c
+@@ -337,6 +337,19 @@ bool opp2_dpg_is_blanked(struct output_pixel_processor *opp)
+ 		(double_buffer_pending == 0);
+ }
+ 
++bool opp2_dpg_is_pending(struct output_pixel_processor *opp)
++{
++	struct dcn20_opp *oppn20 = TO_DCN20_OPP(opp);
++	uint32_t double_buffer_pending;
++	uint32_t dpg_en;
 +
-+	if (reg->space_id == ACPI_ADR_SPACE_SYSTEM_MEMORY)
-+		val = MASK_VAL(reg, val);
++	REG_GET(DPG_CONTROL, DPG_EN, &dpg_en);
 +
-+	switch (size) {
- 	case 8:
- 		writeb_relaxed(val, vaddr);
- 		break;
++	REG_GET(DPG_STATUS, DPG_DOUBLE_BUFFER_PENDING, &double_buffer_pending);
++
++	return (dpg_en == 1 && double_buffer_pending == 1);
++}
++
+ void opp2_program_left_edge_extra_pixel (
+ 		struct output_pixel_processor *opp,
+ 		bool count)
+@@ -363,6 +376,7 @@ static struct opp_funcs dcn20_opp_funcs = {
+ 		.opp_set_disp_pattern_generator = opp2_set_disp_pattern_generator,
+ 		.opp_program_dpg_dimensions = opp2_program_dpg_dimensions,
+ 		.dpg_is_blanked = opp2_dpg_is_blanked,
++		.dpg_is_pending = opp2_dpg_is_pending,
+ 		.opp_dpg_set_blank_color = opp2_dpg_set_blank_color,
+ 		.opp_destroy = opp1_destroy,
+ 		.opp_program_left_edge_extra_pixel = opp2_program_left_edge_extra_pixel,
+diff --git a/drivers/gpu/drm/amd/display/dc/dcn20/dcn20_opp.h b/drivers/gpu/drm/amd/display/dc/dcn20/dcn20_opp.h
+index 3ab221bdd27dd..8f186abd558db 100644
+--- a/drivers/gpu/drm/amd/display/dc/dcn20/dcn20_opp.h
++++ b/drivers/gpu/drm/amd/display/dc/dcn20/dcn20_opp.h
+@@ -159,6 +159,8 @@ void opp2_program_dpg_dimensions(
+ 
+ bool opp2_dpg_is_blanked(struct output_pixel_processor *opp);
+ 
++bool opp2_dpg_is_pending(struct output_pixel_processor *opp);
++
+ void opp2_dpg_set_blank_color(
+ 		struct output_pixel_processor *opp,
+ 		const struct tg_color *color);
+diff --git a/drivers/gpu/drm/amd/display/dc/dcn201/dcn201_opp.c b/drivers/gpu/drm/amd/display/dc/dcn201/dcn201_opp.c
+index 8e77db46a4090..6a71ba3dfc632 100644
+--- a/drivers/gpu/drm/amd/display/dc/dcn201/dcn201_opp.c
++++ b/drivers/gpu/drm/amd/display/dc/dcn201/dcn201_opp.c
+@@ -50,6 +50,7 @@ static struct opp_funcs dcn201_opp_funcs = {
+ 		.opp_set_disp_pattern_generator = opp2_set_disp_pattern_generator,
+ 		.opp_program_dpg_dimensions = opp2_program_dpg_dimensions,
+ 		.dpg_is_blanked = opp2_dpg_is_blanked,
++		.dpg_is_pending = opp2_dpg_is_pending,
+ 		.opp_dpg_set_blank_color = opp2_dpg_set_blank_color,
+ 		.opp_destroy = opp1_destroy,
+ 		.opp_program_left_edge_extra_pixel = opp2_program_left_edge_extra_pixel,
+diff --git a/drivers/gpu/drm/amd/display/dc/hwss/dcn20/dcn20_hwseq.c b/drivers/gpu/drm/amd/display/dc/hwss/dcn20/dcn20_hwseq.c
+index 40098d9f70cbc..8b3536c380b8d 100644
+--- a/drivers/gpu/drm/amd/display/dc/hwss/dcn20/dcn20_hwseq.c
++++ b/drivers/gpu/drm/amd/display/dc/hwss/dcn20/dcn20_hwseq.c
+@@ -2452,7 +2452,7 @@ bool dcn20_wait_for_blank_complete(
+ 	int counter;
+ 
+ 	for (counter = 0; counter < 1000; counter++) {
+-		if (opp->funcs->dpg_is_blanked(opp))
++		if (!opp->funcs->dpg_is_pending(opp))
+ 			break;
+ 
+ 		udelay(100);
+@@ -2463,7 +2463,7 @@ bool dcn20_wait_for_blank_complete(
+ 		return false;
+ 	}
+ 
+-	return true;
++	return opp->funcs->dpg_is_blanked(opp);
+ }
+ 
+ bool dcn20_dmdata_status_done(struct pipe_ctx *pipe_ctx)
+diff --git a/drivers/gpu/drm/amd/display/dc/inc/hw/opp.h b/drivers/gpu/drm/amd/display/dc/inc/hw/opp.h
+index aee5372e292c5..d89c92370d5b3 100644
+--- a/drivers/gpu/drm/amd/display/dc/inc/hw/opp.h
++++ b/drivers/gpu/drm/amd/display/dc/inc/hw/opp.h
+@@ -337,6 +337,9 @@ struct opp_funcs {
+ 	bool (*dpg_is_blanked)(
+ 			struct output_pixel_processor *opp);
+ 
++	bool (*dpg_is_pending)(struct output_pixel_processor *opp);
++
++
+ 	void (*opp_dpg_set_blank_color)(
+ 			struct output_pixel_processor *opp,
+ 			const struct tg_color *color);
+diff --git a/drivers/gpu/drm/amd/display/dc/inc/hw/timing_generator.h b/drivers/gpu/drm/amd/display/dc/inc/hw/timing_generator.h
+index d98d72f35be5b..ffad8fe16c54d 100644
+--- a/drivers/gpu/drm/amd/display/dc/inc/hw/timing_generator.h
++++ b/drivers/gpu/drm/amd/display/dc/inc/hw/timing_generator.h
+@@ -331,6 +331,7 @@ struct timing_generator_funcs {
+ 
+ 	void (*init_odm)(struct timing_generator *tg);
+ 	void (*wait_drr_doublebuffer_pending_clear)(struct timing_generator *tg);
++	void (*wait_odm_doublebuffer_pending_clear)(struct timing_generator *tg);
+ };
+ 
+ #endif
+diff --git a/drivers/gpu/drm/amd/display/dc/optc/dcn10/dcn10_optc.h b/drivers/gpu/drm/amd/display/dc/optc/dcn10/dcn10_optc.h
+index ab81594a7fadc..6c2e84d3967fc 100644
+--- a/drivers/gpu/drm/amd/display/dc/optc/dcn10/dcn10_optc.h
++++ b/drivers/gpu/drm/amd/display/dc/optc/dcn10/dcn10_optc.h
+@@ -557,7 +557,8 @@ struct dcn_optc_registers {
+ 	type OTG_CRC_DATA_STREAM_SPLIT_MODE;\
+ 	type OTG_CRC_DATA_FORMAT;\
+ 	type OTG_V_TOTAL_LAST_USED_BY_DRR;\
+-	type OTG_DRR_TIMING_DBUF_UPDATE_PENDING;
++	type OTG_DRR_TIMING_DBUF_UPDATE_PENDING;\
++	type OTG_H_TIMING_DIV_MODE_DB_UPDATE_PENDING;
+ 
+ #define TG_REG_FIELD_LIST_DCN3_2(type) \
+ 	type OTG_H_TIMING_DIV_MODE_MANUAL;
+diff --git a/drivers/gpu/drm/amd/display/dc/optc/dcn32/dcn32_optc.c b/drivers/gpu/drm/amd/display/dc/optc/dcn32/dcn32_optc.c
+index 8234935433254..f07a4c7e48bc2 100644
+--- a/drivers/gpu/drm/amd/display/dc/optc/dcn32/dcn32_optc.c
++++ b/drivers/gpu/drm/amd/display/dc/optc/dcn32/dcn32_optc.c
+@@ -122,6 +122,13 @@ void optc32_get_odm_combine_segments(struct timing_generator *tg, int *odm_combi
+ 	}
+ }
+ 
++void optc32_wait_odm_doublebuffer_pending_clear(struct timing_generator *tg)
++{
++	struct optc *optc1 = DCN10TG_FROM_TG(tg);
++
++	REG_WAIT(OTG_DOUBLE_BUFFER_CONTROL, OTG_H_TIMING_DIV_MODE_DB_UPDATE_PENDING, 0, 2, 50000);
++}
++
+ void optc32_set_h_timing_div_manual_mode(struct timing_generator *optc, bool manual_mode)
+ {
+ 	struct optc *optc1 = DCN10TG_FROM_TG(optc);
+@@ -345,6 +352,7 @@ static struct timing_generator_funcs dcn32_tg_funcs = {
+ 		.set_odm_bypass = optc32_set_odm_bypass,
+ 		.set_odm_combine = optc32_set_odm_combine,
+ 		.get_odm_combine_segments = optc32_get_odm_combine_segments,
++		.wait_odm_doublebuffer_pending_clear = optc32_wait_odm_doublebuffer_pending_clear,
+ 		.set_h_timing_div_manual_mode = optc32_set_h_timing_div_manual_mode,
+ 		.get_optc_source = optc2_get_optc_source,
+ 		.set_out_mux = optc3_set_out_mux,
+diff --git a/drivers/gpu/drm/amd/display/dc/optc/dcn32/dcn32_optc.h b/drivers/gpu/drm/amd/display/dc/optc/dcn32/dcn32_optc.h
+index 8ce3b178cab06..0c2c146955619 100644
+--- a/drivers/gpu/drm/amd/display/dc/optc/dcn32/dcn32_optc.h
++++ b/drivers/gpu/drm/amd/display/dc/optc/dcn32/dcn32_optc.h
+@@ -183,5 +183,6 @@ void optc32_set_h_timing_div_manual_mode(struct timing_generator *optc, bool man
+ void optc32_get_odm_combine_segments(struct timing_generator *tg, int *odm_combine_segments);
+ void optc32_set_odm_bypass(struct timing_generator *optc,
+ 		const struct dc_crtc_timing *dc_crtc_timing);
++void optc32_wait_odm_doublebuffer_pending_clear(struct timing_generator *tg);
+ 
+ #endif /* __DC_OPTC_DCN32_H__ */
 -- 
 2.43.0
 
