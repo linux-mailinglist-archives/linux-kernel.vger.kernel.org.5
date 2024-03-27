@@ -1,55 +1,55 @@
-Return-Path: <linux-kernel+bounces-121207-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-121208-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8B00E88E3F0
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 14:50:19 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8CF1088E3F3
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 14:50:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 43C3E1F2EF64
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 13:50:19 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B325E2A460D
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 13:50:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4F8D7187861;
-	Wed, 27 Mar 2024 12:25:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BC76518787C;
+	Wed, 27 Mar 2024 12:25:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="uOa3hXkd"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="cJElV26U"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 90857187672;
-	Wed, 27 Mar 2024 12:25:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E888F187869;
+	Wed, 27 Mar 2024 12:25:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711542347; cv=none; b=ASFdRhmCMMNX97N6QBAqPs4H1F6dqufEiLY1N9UyWVYhASLSN+8BrsHpzM3PC+HY79jJJFrgmvOvoxRgXDQG3NQeLGPRPCa3wxBK4oRIf8RMHbZNvy4GwPpAR3kCyokkBsY0QHf5TqsUKoKDRl/AOujKkpHVTjT15mCJhJHlc7Q=
+	t=1711542350; cv=none; b=umL/smUQ1ewQZ/1lIa4CE6+3QLxfvq4aEwFrvvw7sypEK23EMyPhh1li13KvTmgonO66glGiPBvrZaaMB5yAvRt8D8IglHA0f6XfvTW8e/tdNGyEB52Tlwc14PQPY9yiLkJF1X7+eBdvtkS2HtX2PUgB/0j6OcQFTj4+pffa1dU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711542347; c=relaxed/simple;
-	bh=psvgXbG2gTrRyjCssaHHhVqrC/thkTr/Z9hoJMREg7Q=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=oIRtoBDpAGnGeEe9vIueL88E8X09MebfWH2/K/caukN6Yg9FLzFQtXTj6QmsHdDRzfdS6kcZuBMT9/9jmKDW+qMJ/hfqAHxVlNi+zwYbXT0nbCv/D6sCZ24mDHmddQtd3AjFJ9pbI8Vzkz/a6Cphi5gL4afPxQxhQXVDgny3k9c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=uOa3hXkd; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5D6BFC433C7;
-	Wed, 27 Mar 2024 12:25:46 +0000 (UTC)
+	s=arc-20240116; t=1711542350; c=relaxed/simple;
+	bh=MT4vR3hNJ7n3FM3oLVR/swhbI/4PaOX2ngnGVtr8j/U=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=A4ygS9O1dTpdXwL8rtsffoDY8Io+BWdtjsJeB6R4y3SzRTejH1hYoVpBHb9++j276cYJ6o74MDRuJzHPkPXW0dJY9W5sjedd0wVBNPNHV9nL1bjUWmuuXQyQ26RUtVBQYNIoLwV7VY+GO6B7uZAu4z6aXrOfUx0Pu5A457XI8ZM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=cJElV26U; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 00893C433C7;
+	Wed, 27 Mar 2024 12:25:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711542347;
-	bh=psvgXbG2gTrRyjCssaHHhVqrC/thkTr/Z9hoJMREg7Q=;
+	s=k20201202; t=1711542349;
+	bh=MT4vR3hNJ7n3FM3oLVR/swhbI/4PaOX2ngnGVtr8j/U=;
 	h=From:To:Cc:Subject:Date:From;
-	b=uOa3hXkdc4APegBMdBeyNxYU/nnoaLQwvAcN101uSXHi8pln63BkU2r76zo0QLO1k
-	 Fuv4CU1Ptcj5WyvAHvjSHG8pu5MpONky1QjDqoLwDpk+MnPLY1YBkZJh3bTFeM7Tom
-	 bATkZCkkHK//cdTrqihL601lON7WmCNwRwabgBQ7eHM3j2yUbB/GmVB0q5+o/WyifF
-	 uaZWEuy8vHMkop9ojSCN2JCVLss9/sMLRDM8fSXU2YVZP/zaMadxcoBcNkvEtSrSaz
-	 HlLEqmPaoOOzdSgmsXgrYGnlEH6cIIhFRddyyNs88GYmU2Sgx0fs6/CfP44pDoa6Hs
-	 5oMi7J4EUH+nw==
+	b=cJElV26U1cC5DFBOJ3EeWCtWh5kXCiPGJWANxZGVnjbiIMvZsYUxmPoac8oXkCBWK
+	 sJMy3ntP0SKjm9y4MoufIRJiwZWp4FV+ZkhnxyomHRoF7d8E5GyM065z5AguI5VTSo
+	 DERiKhon/8I4QQqYgG/SZqmup89Q3UfqGMZft5c6FhWCHAS6/iQLE4PoaTMYhYpPul
+	 1HStn4j5mao4h7tpZxO1wV6TpiYTADIe4Ywj+pQCioy4erZEIWr5/yQVAMTwB8kHgO
+	 tcPLTiIdjEi6PyzK5SdlaizH50QkIXf7HJNjeZQWPNSDUVNxQ+cHSFW21/4iRL2X1Z
+	 +i4WucH2Fef7g==
 From: Sasha Levin <sashal@kernel.org>
 To: stable@vger.kernel.org,
-	ville.syrjala@linux.intel.com
-Cc: Jani Nikula <jani.nikula@intel.com>,
-	intel-gfx@lists.freedesktop.org,
-	intel-xe@lists.freedesktop.org,
-	dri-devel@lists.freedesktop.org,
+	waynec@nvidia.com
+Cc: Jon Hunter <jonathanh@nvidia.com>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	linux-phy@lists.infradead.org,
+	linux-tegra@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: FAILED: Patch "Revert "drm/i915/dsi: Do display on sequence later on icl+"" failed to apply to 4.19-stable tree
-Date: Wed, 27 Mar 2024 08:25:45 -0400
-Message-ID: <20240327122545.2840512-1-sashal@kernel.org>
+Subject: FAILED: Patch "phy: tegra: xusb: Add API to retrieve the port number of phy" failed to apply to 4.19-stable tree
+Date: Wed, 27 Mar 2024 08:25:47 -0400
+Message-ID: <20240327122548.2840551-1-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -59,7 +59,6 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-Patchwork-Hint: ignore
 X-stable: review
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
 The patch below does not apply to the 4.19-stable tree.
@@ -72,64 +71,66 @@ Sasha
 
 ------------------ original commit in Linus's tree ------------------
 
-From dc524d05974f615b145404191fcf91b478950499 Mon Sep 17 00:00:00 2001
-From: =?UTF-8?q?Ville=20Syrj=C3=A4l=C3=A4?= <ville.syrjala@linux.intel.com>
-Date: Tue, 16 Jan 2024 23:08:21 +0200
-Subject: [PATCH] Revert "drm/i915/dsi: Do display on sequence later on icl+"
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+From d843f031d9e90462253015bc0bd9e3852d206bf2 Mon Sep 17 00:00:00 2001
+From: Wayne Chang <waynec@nvidia.com>
+Date: Thu, 7 Mar 2024 11:03:27 +0800
+Subject: [PATCH] phy: tegra: xusb: Add API to retrieve the port number of phy
 
-This reverts commit 88b065943cb583e890324d618e8d4b23460d51a3.
+This patch introduces a new API, tegra_xusb_padctl_get_port_number,
+to the Tegra XUSB Pad Controller driver. This API is used to identify
+the USB port that is associated with a given PHY.
 
-Lenovo 82TQ is unhappy if we do the display on sequence this
-late. The display output shows severe corruption.
-
-It's unclear if this is a failure on our part (perhaps
-something to do with sending commands in LP mode after HS
-/video mode transmission has been started? Though the backlight
-on command at least seems to work) or simply that there are
-some commands in the sequence that are needed to be done
-earlier (eg. could be some DSC init stuff?). If the latter
-then I don't think the current Windows code would work
-either, but maybe this was originally tested with an older
-driver, who knows.
-
-Root causing this fully would likely require a lot of
-experimentation which isn't really feasible without direct
-access to the machine, so let's just accept failure and
-go back to the original sequence.
+The function takes a PHY pointer for either a USB2 PHY or USB3 PHY as input
+and returns the corresponding port number. If the PHY pointer is invalid,
+it returns -ENODEV.
 
 Cc: stable@vger.kernel.org
-Closes: https://gitlab.freedesktop.org/drm/intel/-/issues/10071
-Signed-off-by: Ville Syrjälä <ville.syrjala@linux.intel.com>
-Link: https://patchwork.freedesktop.org/patch/msgid/20240116210821.30194-1-ville.syrjala@linux.intel.com
-Acked-by: Jani Nikula <jani.nikula@intel.com>
+Signed-off-by: Wayne Chang <waynec@nvidia.com>
+Reviewed-by: Jon Hunter <jonathanh@nvidia.com>
+Tested-by: Jon Hunter <jonathanh@nvidia.com>
+Link: https://lore.kernel.org/r/20240307030328.1487748-2-waynec@nvidia.com
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/gpu/drm/i915/display/icl_dsi.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ drivers/phy/tegra/xusb.c       | 13 +++++++++++++
+ include/linux/phy/tegra/xusb.h |  1 +
+ 2 files changed, 14 insertions(+)
 
-diff --git a/drivers/gpu/drm/i915/display/icl_dsi.c b/drivers/gpu/drm/i915/display/icl_dsi.c
-index ac456a2275dba..eda4a8b885904 100644
---- a/drivers/gpu/drm/i915/display/icl_dsi.c
-+++ b/drivers/gpu/drm/i915/display/icl_dsi.c
-@@ -1155,6 +1155,7 @@ static void gen11_dsi_powerup_panel(struct intel_encoder *encoder)
- 	}
+diff --git a/drivers/phy/tegra/xusb.c b/drivers/phy/tegra/xusb.c
+index 142ebe0247cc0..983a6e6173bd2 100644
+--- a/drivers/phy/tegra/xusb.c
++++ b/drivers/phy/tegra/xusb.c
+@@ -1531,6 +1531,19 @@ int tegra_xusb_padctl_get_usb3_companion(struct tegra_xusb_padctl *padctl,
+ }
+ EXPORT_SYMBOL_GPL(tegra_xusb_padctl_get_usb3_companion);
  
- 	intel_dsi_vbt_exec_sequence(intel_dsi, MIPI_SEQ_INIT_OTP);
-+	intel_dsi_vbt_exec_sequence(intel_dsi, MIPI_SEQ_DISPLAY_ON);
- 
- 	/* ensure all panel commands dispatched before enabling transcoder */
- 	wait_for_cmds_dispatched_to_panel(encoder);
-@@ -1255,8 +1256,6 @@ static void gen11_dsi_enable(struct intel_atomic_state *state,
- 	/* step6d: enable dsi transcoder */
- 	gen11_dsi_enable_transcoder(encoder);
- 
--	intel_dsi_vbt_exec_sequence(intel_dsi, MIPI_SEQ_DISPLAY_ON);
--
- 	/* step7: enable backlight */
- 	intel_backlight_enable(crtc_state, conn_state);
- 	intel_dsi_vbt_exec_sequence(intel_dsi, MIPI_SEQ_BACKLIGHT_ON);
++int tegra_xusb_padctl_get_port_number(struct phy *phy)
++{
++	struct tegra_xusb_lane *lane;
++
++	if (!phy)
++		return -ENODEV;
++
++	lane = phy_get_drvdata(phy);
++
++	return lane->index;
++}
++EXPORT_SYMBOL_GPL(tegra_xusb_padctl_get_port_number);
++
+ MODULE_AUTHOR("Thierry Reding <treding@nvidia.com>");
+ MODULE_DESCRIPTION("Tegra XUSB Pad Controller driver");
+ MODULE_LICENSE("GPL v2");
+diff --git a/include/linux/phy/tegra/xusb.h b/include/linux/phy/tegra/xusb.h
+index 70998e6dd6fdc..6ca51e0080ec0 100644
+--- a/include/linux/phy/tegra/xusb.h
++++ b/include/linux/phy/tegra/xusb.h
+@@ -26,6 +26,7 @@ void tegra_phy_xusb_utmi_pad_power_down(struct phy *phy);
+ int tegra_phy_xusb_utmi_port_reset(struct phy *phy);
+ int tegra_xusb_padctl_get_usb3_companion(struct tegra_xusb_padctl *padctl,
+ 					 unsigned int port);
++int tegra_xusb_padctl_get_port_number(struct phy *phy);
+ int tegra_xusb_padctl_enable_phy_sleepwalk(struct tegra_xusb_padctl *padctl, struct phy *phy,
+ 					   enum usb_device_speed speed);
+ int tegra_xusb_padctl_disable_phy_sleepwalk(struct tegra_xusb_padctl *padctl, struct phy *phy);
 -- 
 2.43.0
 
