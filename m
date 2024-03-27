@@ -1,108 +1,95 @@
-Return-Path: <linux-kernel+bounces-120242-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-120243-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id D21B988D4C3
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 03:45:42 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id D81DB88D4C4
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 03:46:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E975E1C24C04
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 02:45:41 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 262261F31020
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 02:46:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 89FAD219FD;
-	Wed, 27 Mar 2024 02:45:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="oX5hrtcW"
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0478021A06;
+	Wed, 27 Mar 2024 02:46:20 +0000 (UTC)
+Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E797F21101;
-	Wed, 27 Mar 2024 02:45:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB1C117BA6;
+	Wed, 27 Mar 2024 02:46:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=211.75.126.72
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711507528; cv=none; b=aR13txl6lHbyOQ4JcvNlA5QAl7HpOalRoOk7o3yvb9+AQx7x/aGed7lL/Q7LXDr6azu7/1OWOJVaaqnezy6lahrwm6Ol898zEzgdbje1zz08DpMhPMj9boMyfE6iLV38M5ZkwmU30UeymEOx9zb2sbXFvc8LohNbQbMycyWM0oM=
+	t=1711507579; cv=none; b=rBuFRLkP9Vkjaf3tXkHdlw9nBCjBGPRcl2loHtEGLU0ihYPbbRMMmABYlxZYCybf0WCS75q529j/HNcVbVkI3zjD9F013FXqBuxA1N1+WEOX+hYk6JuuTfP1LrOVcuH+pfrvGPyV7HaxoUktKEmWpVesdBlHZc8ujaPhjMqojKE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711507528; c=relaxed/simple;
-	bh=5MHiWieVQ4gbjFpnZPpz8dKpkqqX+jPNDtx3xM1CSzg=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=EXbEimKnkbf1JENCajgXvvQaBoxn1pdb0ICODwwZ3A83h6wDB21W06N12TXmuCh0E0aszXE47lGha1Sh7FzchQnlKTMBOzzIHxAcp5G+sgxIRa4ppWO44gvx8Y2J8ME7RINnzxMpXN658twXuz41Uh664CbLgFIvsn9U/oeW0lk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au; spf=pass smtp.mailfrom=canb.auug.org.au; dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b=oX5hrtcW; arc=none smtp.client-ip=150.107.74.76
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-	s=201702; t=1711507523;
-	bh=UNyyFnWd5iTHu4DRnwAINrJMJPeoN+TCGrIUZ8pnd9k=;
-	h=Date:From:To:Cc:Subject:From;
-	b=oX5hrtcWDm0CiNoiy4z22mDNXDRLFYt4OuDU/GuDX/BtXQlubZuOEicAeqktVgJDV
-	 DxHclqmzKa7h25/yJQWY+iA1NzFr6UsADhHttCAvOcWw4+0L2XEOaCC7GEx6zAxxhb
-	 tf5tX59KaC9pno3gY40rVJklHXuibi0p8biT6hackfw6x9D0sNFh/MWITA4rWTx0ge
-	 rY2J57Vedla9C3r0LGD315g6ffQII3FgtY2iIfwRIeg1LECVteYhaKyPc7IbY7U1qZ
-	 MxXc86EMIkulx09iOtu4zTCLpy7vXGc+BO0d5J9GDW6VtY1qzbPukPEJZVVaSllBWs
-	 DXd6dmAcwZt6g==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mail.ozlabs.org (Postfix) with ESMTPSA id 4V49yC0yXDz4wd7;
-	Wed, 27 Mar 2024 13:45:23 +1100 (AEDT)
-Date: Wed, 27 Mar 2024 13:45:22 +1100
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-To: "Martin K. Petersen" <martin.petersen@oracle.com>
-Cc: Igor Pylypiv <ipylypiv@google.com>, Linux Kernel Mailing List
- <linux-kernel@vger.kernel.org>, Linux Next Mailing List
- <linux-next@vger.kernel.org>
-Subject: linux-next: build failure after merge of the scsi-mkp tree
-Message-ID: <20240327134522.7ac4cb54@canb.auug.org.au>
+	s=arc-20240116; t=1711507579; c=relaxed/simple;
+	bh=azgjSy85/wUZ8NadfZuqevl4MalJBeHpf6RNHzPsmSo=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type; b=K3VQrN8yev9YcbePnndTlbyj9tB9bevfslrkICq7TdATxR6HNXd799D0IpLAVnNf/p58iT8qV+pOnNOvGoaD2xsCEiZPR+2Kg81P+GyHyB4rJ9hvBKJsisivrpY3ObfHseGK01nSn+QRA8ZK2F63httDUV+WPAmNpA0JPSAogBM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=realtek.com; spf=pass smtp.mailfrom=realtek.com; arc=none smtp.client-ip=211.75.126.72
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=realtek.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=realtek.com
+X-SpamFilter-By: ArmorX SpamTrap 5.78 with qID 42R2jqAP3307072, This message is accepted by code: ctloc85258
+Received: from mail.realtek.com (rtexh36505.realtek.com.tw[172.21.6.25])
+	by rtits2.realtek.com.tw (8.15.2/2.95/5.92) with ESMTPS id 42R2jqAP3307072
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Wed, 27 Mar 2024 10:45:52 +0800
+Received: from RTEXMBS01.realtek.com.tw (172.21.6.94) by
+ RTEXH36505.realtek.com.tw (172.21.6.25) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Wed, 27 Mar 2024 10:45:52 +0800
+Received: from localhost (172.22.81.102) by RTEXMBS01.realtek.com.tw
+ (172.21.6.94) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.35; Wed, 27 Mar
+ 2024 10:45:52 +0800
+From: Ricky Wu <ricky_wu@realtek.com>
+To: <ulf.hansson@linaro.org>, <ricky_wu@realtek.com>,
+        <wenchao.chen@unisoc.com>, <ricardo@marliere.net>, <marex@denx.de>,
+        <linux-mmc@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH] mmc: core: resume not check card exist before powerup
+Date: Wed, 27 Mar 2024 10:45:45 +0800
+Message-ID: <20240327024545.138351-1-ricky_wu@realtek.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/6V+TiWKkVGZQcTnjs349U9o";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: RTEXH36506.realtek.com.tw (172.21.6.27) To
+ RTEXMBS01.realtek.com.tw (172.21.6.94)
+X-KSE-ServerInfo: RTEXMBS01.realtek.com.tw, 9
+X-KSE-AntiSpam-Interceptor-Info: fallback
+X-KSE-Antivirus-Interceptor-Info: fallback
+X-KSE-AntiSpam-Interceptor-Info: fallback
+X-KSE-ServerInfo: RTEXH36505.realtek.com.tw, 9
+X-KSE-AntiSpam-Interceptor-Info: fallback
+X-KSE-Antivirus-Interceptor-Info: fallback
+X-KSE-AntiSpam-Interceptor-Info: fallback
 
---Sig_/6V+TiWKkVGZQcTnjs349U9o
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+_mmc_sd_resume
+add get_cd before call powerup, make sure the card exist
 
-Hi all,
+Signed-off-by: Ricky Wu <ricky_wu@realtek.com>
+---
+ drivers/mmc/core/sd.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-After merging the scsi-mkp tree, today's linux-next build (arm64
-defconfig) failed like this:
+diff --git a/drivers/mmc/core/sd.c b/drivers/mmc/core/sd.c
+index 1c8148cdda50..35e036672cfb 100644
+--- a/drivers/mmc/core/sd.c
++++ b/drivers/mmc/core/sd.c
+@@ -1750,6 +1750,9 @@ static int _mmc_sd_resume(struct mmc_host *host)
+ 	if (!mmc_card_suspended(host->card))
+ 		goto out;
+ 
++	if (host->ops->get_cd && !host->ops->get_cd(host))
++		goto out;
++
+ 	mmc_power_up(host, host->card->ocr);
+ 	err = mmc_sd_init_card(host, host->card->ocr, host->card);
+ 	mmc_card_clr_suspended(host->card);
+-- 
+2.25.1
 
-aarch64-linux-gnu-ld: drivers/ata/libata-sata.o:drivers/ata/libata-sata.c:9=
-00: multiple definition of `dev_attr_ncq_prio_supported'; drivers/scsi/libs=
-as/sas_ata.o:drivers/scsi/libsas/sas_ata.c:984: first defined here
-aarch64-linux-gnu-ld: drivers/ata/libata-sata.o:drivers/ata/libata-sata.c:1=
-026: multiple definition of `dev_attr_ncq_prio_enable'; drivers/scsi/libsas=
-/sas_ata.o:drivers/scsi/libsas/sas_ata.c:1022: first defined here
-
-Caused by commit
-
-  b4d3ddd2df75 ("scsi: libsas: Define NCQ Priority sysfs attributes for SAT=
-A devices")
-
-I have used the scsi-mkp tree from next-20240326 for today.
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/6V+TiWKkVGZQcTnjs349U9o
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmYDiEIACgkQAVBC80lX
-0Gx1kwgAlcy71BSzACqBTfsHwKEMbxPzlaVklXmye8xLbQdKF04NOLbswfh5dxLa
-PrPXZ49DywoSxD83ff9bUFTmCRj74zF6mxoHXxaNYBewI86h8liFJq2DYwpVtd4X
-WT3Y1T5ddMKCugg0qkFe08UTkeHMgtA7FkWEplK0ZRlmf1iLoRwaAwC9MjUV5S37
-IXxRVjyFifcKwFLiY8ldnQp9yv037ucnzY8LyzfYkBOiHEya/rjp6Kv7FIyDKPzp
-5WSd9YpjtgxBK6leUnfbIoBuD0NCMm1eUnN4qz3OXgc8VwMAkhFfSnOLLXzIilP6
-u6KEPm3Vc8X+OqmnMwjxMJAShbNhdA==
-=1FqZ
------END PGP SIGNATURE-----
-
---Sig_/6V+TiWKkVGZQcTnjs349U9o--
 
