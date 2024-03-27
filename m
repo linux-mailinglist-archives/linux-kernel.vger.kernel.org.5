@@ -1,305 +1,173 @@
-Return-Path: <linux-kernel+bounces-120353-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-120350-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id B211788D630
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 06:58:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 8569288D624
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 06:57:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 293101F2A196
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 05:58:36 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id F2B2E1F29BD5
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 05:57:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CD9B428DDC;
-	Wed, 27 Mar 2024 05:57:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4EF0E1DA20;
+	Wed, 27 Mar 2024 05:57:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=mediatek.com header.i=@mediatek.com header.b="oD7iwkEP"
-Received: from mailgw02.mediatek.com (unknown [210.61.82.184])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="YQ7unryc"
+Received: from mail-ed1-f54.google.com (mail-ed1-f54.google.com [209.85.208.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A74C7EAD7;
-	Wed, 27 Mar 2024 05:57:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=210.61.82.184
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C848B175BE
+	for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 05:57:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711519066; cv=none; b=PDGMCcAJy2MZaWM++1fULKJoTVnsvYHynniYhEFvwXzO2wEOyTZ7f12dPvUS86+KZRnxQH/mCCVeso40U4TzpX7yKqt+UbLj7oI3hmplWvxtMuby/PK9opnAR/gAjdf+tS/8PC3aVNKOwJfBYUCJ9Xyhse6tR0jFLIWF4DRXoCo=
+	t=1711519056; cv=none; b=YqEa7kG2bUnY3Qscy+8zyXoL5n3EA6xhl3xi5s6666NaKKI+Q88T/I6PDUcPGxjhC9M0CBjKBr0CJtmebi40XzK2UW2XE6hiSC06Agb/Rga0ZduftiAE0WaQ2K9w3NU8bHgWBIbXnwR6UcQYhn2gSqcLnLyJXp3sGMeZb8YMR6g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711519066; c=relaxed/simple;
-	bh=AZDTzW+hgqFQO8ID7WPWerRy74pzzuTRiWKDiN96uU8=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=L2t9WyKs1DPkSpw+zooNWri2ccRZn+X8w1/O0a40+m3mqxJndpp8sAAans94VTA6Y+HxGqIfteHlEBF+t3sz7XS4SSruj5zgwpqMdWm3+KmDoKw7Ima5G72RI0yFhwVhrxd2Zid3bNc8zguNvTilCVT8IdRFYMQGM3YYih67Qrw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=mediatek.com; spf=pass smtp.mailfrom=mediatek.com; dkim=pass (1024-bit key) header.d=mediatek.com header.i=@mediatek.com header.b=oD7iwkEP; arc=none smtp.client-ip=210.61.82.184
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=mediatek.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mediatek.com
-X-UUID: e92c5c26ebfe11ee935d6952f98a51a9-20240327
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-	h=Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From; bh=C8MsNMAtgJ9u6U5BiH2pMWKJ+kiG/BS7o+mHTXW4has=;
-	b=oD7iwkEPzy8W8qr/UtxGDHsb6Ug01XMViS8vsoH2XQoej4gJ144mWq2JLtfSoK4kK4PlGOpDFJrZz8KSZU94g7FDEGnLOKZ04iA/G+eSf00/2L2219LEBxlrLLO/qcTGDjhssIbJGLr1GmzOVw1mHgiW3gdclParzlT+eg2WwiU=;
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.37,REQID:92a9f0f4-9ee0-49b4-ac70-d27e1d55764a,IP:0,U
-	RL:0,TC:0,Content:0,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION:
-	release,TS:0
-X-CID-META: VersionHash:6f543d0,CLOUDID:dc9ce290-e2c0-40b0-a8fe-7c7e47299109,B
-	ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
-	RL:0,File:nil,RT:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,
-	SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
-X-CID-BVR: 0
-X-CID-BAS: 0,_,0,_
-X-CID-FACTOR: TF_CID_SPAM_SNR
-X-UUID: e92c5c26ebfe11ee935d6952f98a51a9-20240327
-Received: from mtkmbs14n1.mediatek.inc [(172.21.101.75)] by mailgw02.mediatek.com
-	(envelope-from <yu-chang.lee@mediatek.com>)
-	(Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-	with ESMTP id 119168359; Wed, 27 Mar 2024 13:57:36 +0800
-Received: from mtkmbs11n2.mediatek.inc (172.21.101.187) by
- mtkmbs10n2.mediatek.inc (172.21.101.183) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.26; Wed, 27 Mar 2024 13:57:34 +0800
-Received: from mtksdccf07.mediatek.inc (172.21.84.99) by
- mtkmbs11n2.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
- 15.2.1118.26 via Frontend Transport; Wed, 27 Mar 2024 13:57:34 +0800
-From: yu-chang.lee <yu-chang.lee@mediatek.com>
-To: Rob Herring <robh@kernel.org>, Krzysztof Kozlowski
-	<krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, "Ulf
- Hansson" <ulf.hansson@linaro.org>, Matthias Brugger <matthias.bgg@gmail.com>,
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
-	"MandyJH Liu" <mandyjh.liu@mediatek.com>
-CC: <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-	<linux-pm@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
-	<linux-mediatek@lists.infradead.org>,
-	<Project_Global_Chrome_Upstream_Group@mediatek.com>, <fan.chen@mediatek.com>,
-	<xiufeng.li@mediatek.com>, <yu-chang.lee@mediatek.com>
-Subject: [PATCH v2 1/3] pmdomain: mediatek: add smi_larb_reset function when power on
-Date: Wed, 27 Mar 2024 13:57:30 +0800
-Message-ID: <20240327055732.28198-2-yu-chang.lee@mediatek.com>
-X-Mailer: git-send-email 2.18.0
-In-Reply-To: <20240327055732.28198-1-yu-chang.lee@mediatek.com>
-References: <20240327055732.28198-1-yu-chang.lee@mediatek.com>
+	s=arc-20240116; t=1711519056; c=relaxed/simple;
+	bh=A+E6Q8O/+odDiW3CmDioCMgwZfI7X8h9ZMP4WmUHwBE=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=g+kgy3J5ktk2iZWdZv74IsRbgLT2UuMZRqtEjKNN5hIZpYLlW6wlkaX4hXnbzaWjjtfD+2rFssQscQydg532ZM4YQR5uH+HcfAYpc17AEyJ7LCh2j2xUjNkTqRZinpvgJUlz2Bdz7pvr0O6AhHWtDPA+ZiH2r9m/qfHNH43s7Dk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=YQ7unryc; arc=none smtp.client-ip=209.85.208.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ed1-f54.google.com with SMTP id 4fb4d7f45d1cf-56b8e4f38a2so8065430a12.3
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 22:57:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1711519053; x=1712123853; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=vauhzS1zFrSoAno2ebrQWSRp6RiLw20nALTCk+DSh4A=;
+        b=YQ7unrycEQzcL0CpfY7iaq8l+p0vR5BmeT1rDhDj4xbxg2DhKiY1Kf1CgvA1o4geDC
+         zb9ZsQsBKmIrmKceYOpf6HSVIGcPhIQsCbsIdKnovz4uZnJiuMZRzFTwr7TacgYlP9zr
+         FPi1hmr7ifb1dhK5hP4NWXNpr8NL0Pa3ETyumrif0HRQuABgeUoqE7RqpqFI1hn3sm8v
+         BuwQyJCArIgpNbx/fqzwaAINx9dRolmNZovSG+3A5PyoErSPVbP3q2pC2ngr1VL1Fqb4
+         Yk5xBBygI+nz87qnXovPxXIijSJRrS3pvhZr2u6Ouwl/sXzsYjxQto9H9xkXk+6+ZOUi
+         sH8A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711519053; x=1712123853;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=vauhzS1zFrSoAno2ebrQWSRp6RiLw20nALTCk+DSh4A=;
+        b=BUI6KoKK9Cf3ohricT4yOrTvebXmlJ8tm/AS6KRRW6xzHPFOt9/7acTsVeLOvx43SN
+         vdx+li8nfMbOc78L65em9QOB0gCSPrkdKexFt8fYv7LqWqLEV6IdK7o0/dsgNiu+BoxE
+         IEYwdTMLp6gmwO3aO2Ogx2sGwkAVMIcnd5J3fF7mWZsIvxjh7J0gQ0JQXwLEUWccIHj3
+         LjcL5FyxQyUA3b2V2JzXpjyL60EC86cS5m+egohGWKfEeRkoSAJzZ2qS0p86lGNIe2ZE
+         z/0WpDqDvFByLL+hqokCQBBVw6NEWxPA13Yae66XBopekEYANAFscczDXo8X917cm/AQ
+         5B8w==
+X-Gm-Message-State: AOJu0YzK86LWL4VNRxNqJQllzhIHXT7+KjD3v5L6cKip//pKRsd07udy
+	HpEmHqxq0lpwTn6TgbZYYHEMbw/Y7DBpMGPVQax7EFMdBS7vgRZiESDGyt6sJc4=
+X-Google-Smtp-Source: AGHT+IHgkILYmFrhP+1BUm5J8vIOXx7XAe6AnD/e+QIq7e6Sav87TDQXgMfr4F3e8r5OX6uegtkhNg==
+X-Received: by 2002:a17:906:c35a:b0:a47:223f:2285 with SMTP id ci26-20020a170906c35a00b00a47223f2285mr2239743ejb.7.1711519053181;
+        Tue, 26 Mar 2024 22:57:33 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.199.128])
+        by smtp.gmail.com with ESMTPSA id s10-20020a170906354a00b00a47a33b3aa2sm3466993eja.157.2024.03.26.22.57.30
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 26 Mar 2024 22:57:32 -0700 (PDT)
+Message-ID: <f23f2e60-e5c0-4c3c-9722-dba63a6e7ef6@linaro.org>
+Date: Wed, 27 Mar 2024 06:57:30 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-TM-AS-Product-Ver: SMEX-14.0.0.3152-9.1.1006-23728.005
-X-TM-AS-Result: No-10--5.880400-8.000000
-X-TMASE-MatchedRID: l7g8wxsUa9rSuXLpNqOJSR+WEMjoO9WWTJDl9FKHbrkKogmGusPLb9ro
-	EGQiudNyN/7rnrBxoxyzFPg/Y3uT4hHdGMlurS25JmbrB1j4XwoOPDBPSvoRdDuM/8xRTTt71/H
-	hkIjNCSaZ2BL2I+8mdgpVS+XW10LYBLIUC3yGa8rhuXUWQoMQt30tCKdnhB589yM15V5aWpj6C0
-	ePs7A07b4iOwQQ4jNi7Nj4c9lWXYH8ma3saMV3PsZrmPDoYt2pBWYtVDOiGBA=
-X-TM-AS-User-Approved-Sender: No
-X-TM-AS-User-Blocked-Sender: No
-X-TMASE-Result: 10--5.880400-8.000000
-X-TMASE-Version: SMEX-14.0.0.3152-9.1.1006-23728.005
-X-TM-SNTS-SMTP: BD9B2BA20D29EE6E1FA8A379423556C080388F387963D2F58893C5ED1598649F2000:8
-X-MTK: N
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 00/19] amba: store owner from modules with
+ amba_driver_register()
+To: Suzuki K Poulose <suzuki.poulose@arm.com>,
+ Russell King <linux@armlinux.org.uk>, Mike Leach <mike.leach@linaro.org>,
+ James Clark <james.clark@arm.com>,
+ Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+ Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+ Alexandre Torgue <alexandre.torgue@foss.st.com>,
+ Linus Walleij <linus.walleij@linaro.org>, Andi Shyti
+ <andi.shyti@kernel.org>, Olivia Mackall <olivia@selenic.com>,
+ Herbert Xu <herbert@gondor.apana.org.au>, Vinod Koul <vkoul@kernel.org>,
+ Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+ Miquel Raynal <miquel.raynal@bootlin.com>,
+ Michal Simek <michal.simek@amd.com>, Eric Auger <eric.auger@redhat.com>,
+ Alex Williamson <alex.williamson@redhat.com>
+Cc: linux-kernel@vger.kernel.org, coresight@lists.linaro.org,
+ linux-arm-kernel@lists.infradead.org,
+ linux-stm32@st-md-mailman.stormreply.com, linux-i2c@vger.kernel.org,
+ linux-crypto@vger.kernel.org, dmaengine@vger.kernel.org,
+ linux-input@vger.kernel.org, kvm@vger.kernel.org
+References: <20240326-module-owner-amba-v1-0-4517b091385b@linaro.org>
+ <3f61d6d3-a0d6-4c49-b094-6ba62d09ab14@arm.com>
+Content-Language: en-US
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <3f61d6d3-a0d6-4c49-b094-6ba62d09ab14@arm.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-This patch avoid mtcmos power glitch from happening by set and clear
-smi larb reset.
+On 27/03/2024 00:24, Suzuki K Poulose wrote:
+> Hi Krzysztof
+> 
+> On 26/03/2024 20:23, Krzysztof Kozlowski wrote:
+>> Merging
+>> =======
+>> All further patches depend on the first amba patch, therefore please ack
+>> and this should go via one tree.
+> 
+> Are you able to provide a stable branch with these patches once you pull
 
-Signed-off-by: yu-chang.lee <yu-chang.lee@mediatek.com>
----
- drivers/pmdomain/mediatek/mt8188-pm-domains.h | 28 +++++++++
- drivers/pmdomain/mediatek/mtk-pm-domains.c    | 59 +++++++++++++++++++
- drivers/pmdomain/mediatek/mtk-pm-domains.h    | 12 ++++
- 3 files changed, 99 insertions(+)
+I doubt I will be merging this. I think amba code goes through Russell.
 
-diff --git a/drivers/pmdomain/mediatek/mt8188-pm-domains.h b/drivers/pmdomain/mediatek/mt8188-pm-domains.h
-index 06834ab6597c..7bbba4d56a77 100644
---- a/drivers/pmdomain/mediatek/mt8188-pm-domains.h
-+++ b/drivers/pmdomain/mediatek/mt8188-pm-domains.h
-@@ -573,6 +573,18 @@ static const struct scpsys_domain_data scpsys_domain_data_mt8188[] = {
- 		.pwr_sta2nd_offs = 0x170,
- 		.sram_pdn_bits = BIT(8),
- 		.sram_pdn_ack_bits = BIT(12),
-+		.reset_smi = {
-+			SMI_RESET_WR(MT8188_SMI_LARB10_RESET,
-+				     MT8188_SMI_LARB10_RESET_ADDR),
-+			SMI_RESET_WR(MT8188_SMI_LARB11A_RESET,
-+				     MT8188_SMI_LARB11A_RESET_ADDR),
-+			SMI_RESET_WR(MT8188_SMI_LARB11C_RESET,
-+				     MT8188_SMI_LARB11C_RESET_ADDR),
-+			SMI_RESET_WR(MT8188_SMI_LARB11B_RESET,
-+				     MT8188_SMI_LARB11B_RESET_ADDR),
-+			SMI_RESET_WR(MT8188_SMI_LARB15_RESET,
-+				     MT8188_SMI_LARB15_RESET_ADDR),
-+		},
- 		.caps = MTK_SCPD_KEEP_DEFAULT_OFF,
- 	},
- 	[MT8188_POWER_DOMAIN_IPE] = {
-@@ -583,6 +595,10 @@ static const struct scpsys_domain_data scpsys_domain_data_mt8188[] = {
- 		.pwr_sta2nd_offs = 0x170,
- 		.sram_pdn_bits = BIT(8),
- 		.sram_pdn_ack_bits = BIT(12),
-+		.reset_smi = {
-+			SMI_RESET_WR(MT8188_SMI_LARB12_RESET,
-+				     MT8188_SMI_LARB12_RESET_ADDR),
-+		},
- 		.caps = MTK_SCPD_KEEP_DEFAULT_OFF,
- 	},
- 	[MT8188_POWER_DOMAIN_CAM_VCORE] = {
-@@ -660,6 +676,12 @@ static const struct scpsys_domain_data scpsys_domain_data_mt8188[] = {
- 		.pwr_sta2nd_offs = 0x170,
- 		.sram_pdn_bits = BIT(8),
- 		.sram_pdn_ack_bits = BIT(12),
-+		.reset_smi = {
-+			SMI_RESET_WR(MT8188_SMI_LARB16A_RESET,
-+				     MT8188_SMI_LARB16A_RESET_ADDR),
-+			SMI_RESET_WR(MT8188_SMI_LARB17A_RESET,
-+				     MT8188_SMI_LARB17A_RESET_ADDR),
-+		},
- 		.caps = MTK_SCPD_KEEP_DEFAULT_OFF,
- 	},
- 	[MT8188_POWER_DOMAIN_CAM_SUBB] = {
-@@ -670,6 +692,12 @@ static const struct scpsys_domain_data scpsys_domain_data_mt8188[] = {
- 		.pwr_sta2nd_offs = 0x170,
- 		.sram_pdn_bits = BIT(8),
- 		.sram_pdn_ack_bits = BIT(12),
-+		.reset_smi = {
-+			SMI_RESET_WR(MT8188_SMI_LARB16B_RESET,
-+				     MT8188_SMI_LARB16B_RESET_ADDR),
-+			SMI_RESET_WR(MT8188_SMI_LARB17B_RESET,
-+				     MT8188_SMI_LARB17B_RESET_ADDR),
-+		},
- 		.caps = MTK_SCPD_KEEP_DEFAULT_OFF,
- 	},
- };
-diff --git a/drivers/pmdomain/mediatek/mtk-pm-domains.c b/drivers/pmdomain/mediatek/mtk-pm-domains.c
-index e274e3315fe7..9ab6fa105c8c 100644
---- a/drivers/pmdomain/mediatek/mtk-pm-domains.c
-+++ b/drivers/pmdomain/mediatek/mtk-pm-domains.c
-@@ -48,6 +48,8 @@ struct scpsys_domain {
- 	struct regmap *infracfg_nao;
- 	struct regmap *infracfg;
- 	struct regmap *smi;
-+	struct regmap **larb;
-+	int num_larb;
- 	struct regulator *supply;
- };
- 
-@@ -230,6 +232,39 @@ static int scpsys_regulator_disable(struct regulator *supply)
- 	return supply ? regulator_disable(supply) : 0;
- }
- 
-+static int _scpsys_smi_larb_reset(const struct smi_reset_data bpd,
-+				  struct regmap *regmap)
-+{
-+	int ret;
-+	u32 mask = bpd.smi_reset_mask;
-+
-+	if (!mask)
-+		return 0;
-+
-+	ret = regmap_set_bits(regmap, bpd.smi_reset_addr, mask);
-+	if (ret)
-+		return ret;
-+
-+	ret = regmap_clear_bits(regmap, bpd.smi_reset_addr, mask);
-+	if (ret)
-+		return ret;
-+
-+	return 0;
-+}
-+
-+static int scpsys_smi_larb_reset(struct scpsys_domain *pd)
-+{
-+	int ret, i;
-+
-+	for (i = 0; i < pd->num_larb; i++) {
-+		ret = _scpsys_smi_larb_reset(pd->data->reset_smi[i], pd->larb[i]);
-+		if (ret)
-+			return ret;
-+	}
-+
-+	return 0;
-+}
-+
- static int scpsys_power_on(struct generic_pm_domain *genpd)
- {
- 	struct scpsys_domain *pd = container_of(genpd, struct scpsys_domain, genpd);
-@@ -279,6 +314,10 @@ static int scpsys_power_on(struct generic_pm_domain *genpd)
- 	if (ret < 0)
- 		goto err_disable_subsys_clks;
- 
-+	ret = scpsys_smi_larb_reset(pd);
-+	if (ret < 0)
-+		goto err_disable_subsys_clks;
-+
- 	ret = scpsys_bus_protect_disable(pd);
- 	if (ret < 0)
- 		goto err_disable_sram;
-@@ -355,6 +394,7 @@ generic_pm_domain *scpsys_add_one_domain(struct scpsys *scpsys, struct device_no
- 	struct scpsys_domain *pd;
- 	struct device_node *root_node = scpsys->dev->of_node;
- 	struct device_node *smi_node;
-+	struct device_node *larb_node;
- 	struct property *prop;
- 	const char *clk_name;
- 	int i, ret, num_clks;
-@@ -418,6 +458,25 @@ generic_pm_domain *scpsys_add_one_domain(struct scpsys *scpsys, struct device_no
- 			return ERR_CAST(pd->smi);
- 	}
- 
-+	pd->num_larb = of_count_phandle_with_args(node, "mediatek,larb", NULL);
-+	if (pd->num_larb > 0) {
-+		pd->larb = devm_kcalloc(scpsys->dev, pd->num_larb, sizeof(*pd->larb), GFP_KERNEL);
-+		if (!pd->larb)
-+			return ERR_PTR(-ENOMEM);
-+
-+		for (i = 0; i < pd->num_larb; i++) {
-+			larb_node = of_parse_phandle(node, "mediatek,larb", i);
-+			if (!larb_node)
-+				return ERR_PTR(-EINVAL);
-+
-+			pd->larb[i] = device_node_to_regmap(larb_node);
-+			if (IS_ERR(pd->larb[i]))
-+				return ERR_CAST(pd->larb[i]);
-+		}
-+	} else {
-+		pd->num_larb = 0;
-+	}
-+
- 	if (MTK_SCPD_CAPS(pd, MTK_SCPD_HAS_INFRA_NAO)) {
- 		pd->infracfg_nao = syscon_regmap_lookup_by_phandle(node, "mediatek,infracfg-nao");
- 		if (IS_ERR(pd->infracfg_nao))
-diff --git a/drivers/pmdomain/mediatek/mtk-pm-domains.h b/drivers/pmdomain/mediatek/mtk-pm-domains.h
-index aaba5e6b0536..31c2a1bb500f 100644
---- a/drivers/pmdomain/mediatek/mtk-pm-domains.h
-+++ b/drivers/pmdomain/mediatek/mtk-pm-domains.h
-@@ -43,6 +43,7 @@
- #define PWR_STATUS_USB			BIT(25)
- 
- #define SPM_MAX_BUS_PROT_DATA		6
-+#define SPM_MAX_SMI_RESET_DATA		6
- 
- enum scpsys_bus_prot_flags {
- 	BUS_PROT_REG_UPDATE = BIT(1),
-@@ -79,6 +80,16 @@ enum scpsys_bus_prot_flags {
- 				INFRA_TOPAXI_PROTECTEN,		\
- 				INFRA_TOPAXI_PROTECTSTA1)
- 
-+#define SMI_RESET_WR(_mask, _addr) {		\
-+		.smi_reset_mask = (_mask),	\
-+		.smi_reset_addr = _addr,	\
-+	}
-+
-+struct smi_reset_data {
-+	u32 smi_reset_mask;
-+	u32 smi_reset_addr;
-+};
-+
- struct scpsys_bus_prot_data {
- 	u32 bus_prot_set_clr_mask;
- 	u32 bus_prot_set;
-@@ -110,6 +121,7 @@ struct scpsys_domain_data {
- 	u32 ext_buck_iso_mask;
- 	u16 caps;
- 	const struct scpsys_bus_prot_data bp_cfg[SPM_MAX_BUS_PROT_DATA];
-+	const struct smi_reset_data reset_smi[SPM_MAX_SMI_RESET_DATA];
- 	int pwr_sta_offs;
- 	int pwr_sta2nd_offs;
- };
--- 
-2.18.0
+> them in to "one tree" here ? We have changes coming up in the coresight
+> tree, which would conflict with the changes here (horribly).
+> 
+
+You mean conflict with  coresight conversion to platform driver? Worst
+case it is solveable: just drop .owner.
+
+Best regards,
+Krzysztof
 
 
