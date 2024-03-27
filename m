@@ -1,52 +1,58 @@
-Return-Path: <linux-kernel+bounces-120985-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-120986-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 66F9D88E13B
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 13:55:45 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id AF5A088E13D
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 13:56:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1DDF21F2C906
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 12:55:45 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E158F1C2A209
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 12:56:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 31CCE15667A;
-	Wed, 27 Mar 2024 12:16:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EE0BB13848D;
+	Wed, 27 Mar 2024 12:16:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="TyhaN+Lz"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qoM7Xf93"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6250D15666B;
-	Wed, 27 Mar 2024 12:16:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2364F156669;
+	Wed, 27 Mar 2024 12:16:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711541767; cv=none; b=WwSz0gOCQSfypnn5zZXCq4WC011VOsrh+/XqUlMPolFJuUWL8Hak5itUL8ieOALOM53Tog16DzDTbyui+52xc0AXmx+eW9Ong0uudwmJ3qTKefW8MJ56Z7eI5flMapCLxxcVLwRJTAGfvZzQnpS+HNT1RA1+imgiejc91P3lYMg=
+	t=1711541770; cv=none; b=B+qxy8BNJFtPFqY6J6C+pdU5fj5BaVolw6tgtJAr7rw1f9XLYCW745vCN7pEc9obtKKuwaHtRHF7PjBvWTHQwl7XrvGKWBoAdHID+JzjtaC+60mrmkpz2USNddgYKTmWPgwa0HghyDu8SOESVU3JT7w/6DZhYic/NOYDIyCEFNg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711541767; c=relaxed/simple;
-	bh=fe6XZGzRKfy7XqVYnGt6KUez//5L8jzE9WJfPWrvDd4=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=oYOSxe/AC3aW6JZKHXa4K67dyfWnfgMSZ4r6cuEL1FFnotNHquZ5rZXcPw/Fe0e69YL1NFXugTp4hOpoxhLv0yxLPjlT4dTCXHVElIn9fqx/XHuL3vlPbiSjEbySJIn23IZDuwqos2wjLODmNwv06SqdKnAPynqgov7MNvs9lBs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=TyhaN+Lz; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6C081C433C7;
-	Wed, 27 Mar 2024 12:16:06 +0000 (UTC)
+	s=arc-20240116; t=1711541770; c=relaxed/simple;
+	bh=4eeXtnHEzLlp3KZRhr9CCl4o8WKNflKELunwkfEG/Bg=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=V4Wx4OYSdfCh80cs0VYSjYoCatnv+Pc0Cz6EtDOPba7ccxhAbY7yhDo6Yofp3C1XwkZ/hzgPUVjMeZ7tEbgFQ7n4ilsiExHUeL3MLm3dz2YMpIAq6C1wcnwzKSfWWUra7SOi2IE0U/IMRI6K2mvfe5tnvwbhTcmnOsNkk/bMOp4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qoM7Xf93; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CDBA7C43390;
+	Wed, 27 Mar 2024 12:16:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711541767;
-	bh=fe6XZGzRKfy7XqVYnGt6KUez//5L8jzE9WJfPWrvDd4=;
+	s=k20201202; t=1711541770;
+	bh=4eeXtnHEzLlp3KZRhr9CCl4o8WKNflKELunwkfEG/Bg=;
 	h=From:To:Cc:Subject:Date:From;
-	b=TyhaN+Lz2Ohpg3Qvw9JqCt9Z22LdFHeTNSRqXlLa1vUjDYjsqCcddOui3wLVXjEN7
-	 lHnyO1KZNWzE2Or/4/K0vcGk7DIx2/bB40AvFT5wWeGnYK3Z1ezgWnFSCSwtRJusT8
-	 vd2LOshoKmAZFey2jJYR7+6+NR4lMgnXgw76Juf4NWes+fEndQVbFZDAFDc2crj63l
-	 b/MUCIA0eHPK/zZhD7LFLADbPMr4YS7ymGBoIpEvJVGkLI6nN4yiRvKFvkq/8OiBum
-	 H3Uh7JTOncrzNM+Dbb6Jr6YA2QhTOORCT5y5OMv4oduO43tuGUCLz2yl7M0EQqQ7Zc
-	 S9c1loe/Vv0Pg==
+	b=qoM7Xf93ZqCu/DGIFzdsXYcWmXZQj/zlN5gGQ+P1/uynu9Rs5YWrREHjKl9iA88jG
+	 y6Ql14iy/qJ7XWTN3iKljVFvIS671eugQNrmBYv1O0+NFbxxhGoK9G2yKr8yYZYX92
+	 GfSWhJKBzuwpriL1mdvSALHNwBygc2KUxnPz8Z3FUaLYxFzyEy3PDmMce4T48kJYUv
+	 iCRxGnZl14zmELwg/aQK4GB7oOJbVG7AZSqQpwUT9mHX4vTMnqPtP9/0YO/aCVngzo
+	 ZQTnXp+M9f/jTgoYua7s3zw+tFoG249d2Q3JQKHME+1wrV/TCRj6in2Be14/sL2lOO
+	 tU6qp5Z4ApKMA==
 From: Sasha Levin <sashal@kernel.org>
 To: stable@vger.kernel.org,
-	mpe@ellerman.id.au
-Cc: linuxppc-dev@lists.ozlabs.org,
+	ovidiu.bunea@amd.com
+Cc: Mario Limonciello <mario.limonciello@amd.com>,
+	Alex Deucher <alexander.deucher@amd.com>,
+	Charlene Liu <charlene.liu@amd.com>,
+	Alex Hung <alex.hung@amd.com>,
+	Daniel Wheeler <daniel.wheeler@amd.com>,
+	amd-gfx@lists.freedesktop.org,
+	dri-devel@lists.freedesktop.org,
 	linux-kernel@vger.kernel.org
-Subject: FAILED: Patch "powerpc/smp: Adjust nr_cpu_ids to cover all threads of a core" failed to apply to 5.15-stable tree
-Date: Wed, 27 Mar 2024 08:16:05 -0400
-Message-ID: <20240327121605.2832425-1-sashal@kernel.org>
+Subject: FAILED: Patch "drm/amd/display: Fix DML2 watermark calculation" failed to apply to 5.15-stable tree
+Date: Wed, 27 Mar 2024 08:16:07 -0400
+Message-ID: <20240327121607.2832462-1-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -68,39 +74,55 @@ Sasha
 
 ------------------ original commit in Linus's tree ------------------
 
-From 5580e96dad5a439d561d9648ffcbccb739c2a120 Mon Sep 17 00:00:00 2001
-From: Michael Ellerman <mpe@ellerman.id.au>
-Date: Thu, 15 Feb 2024 00:14:04 +1100
-Subject: [PATCH] powerpc/smp: Adjust nr_cpu_ids to cover all threads of a core
+From 2254ab45dab22a18fdd29fe0e471706872c00093 Mon Sep 17 00:00:00 2001
+From: Ovidiu Bunea <ovidiu.bunea@amd.com>
+Date: Mon, 18 Dec 2023 21:40:45 -0500
+Subject: [PATCH] drm/amd/display: Fix DML2 watermark calculation
 
-If nr_cpu_ids is too low to include at least all the threads of a single
-core adjust nr_cpu_ids upwards. This avoids triggering odd bugs in code
-that assumes all threads of a core are available.
+[Why]
+core_mode_programming in DML2 should output watermark calculations
+to locals, but it incorrectly uses mode_lib
 
+[How]
+update code to match HW DML2
+
+Cc: Mario Limonciello <mario.limonciello@amd.com>
+Cc: Alex Deucher <alexander.deucher@amd.com>
 Cc: stable@vger.kernel.org
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://msgid.link/20231229120107.2281153-1-mpe@ellerman.id.au
+Reviewed-by: Charlene Liu <charlene.liu@amd.com>
+Acked-by: Alex Hung <alex.hung@amd.com>
+Signed-off-by: Ovidiu Bunea <ovidiu.bunea@amd.com>
+Tested-by: Daniel Wheeler <daniel.wheeler@amd.com>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 ---
- arch/powerpc/kernel/prom.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+ .../drm/amd/display/dc/dml2/display_mode_core.c    | 14 +++++++-------
+ 1 file changed, 7 insertions(+), 7 deletions(-)
 
-diff --git a/arch/powerpc/kernel/prom.c b/arch/powerpc/kernel/prom.c
-index 0b5878c3125b1..58e80076bed5c 100644
---- a/arch/powerpc/kernel/prom.c
-+++ b/arch/powerpc/kernel/prom.c
-@@ -375,6 +375,12 @@ static int __init early_init_dt_scan_cpus(unsigned long node,
- 	if (IS_ENABLED(CONFIG_PPC64))
- 		boot_cpu_hwid = be32_to_cpu(intserv[found_thread]);
+diff --git a/drivers/gpu/drm/amd/display/dc/dml2/display_mode_core.c b/drivers/gpu/drm/amd/display/dc/dml2/display_mode_core.c
+index a6b938a12de13..9be5ebf3a8c0b 100644
+--- a/drivers/gpu/drm/amd/display/dc/dml2/display_mode_core.c
++++ b/drivers/gpu/drm/amd/display/dc/dml2/display_mode_core.c
+@@ -9446,13 +9446,13 @@ void dml_core_mode_programming(struct display_mode_lib_st *mode_lib, const struc
+ 		CalculateWatermarks_params->CompressedBufferSizeInkByte = locals->CompressedBufferSizeInkByte;
  
-+	if (nr_cpu_ids % nthreads != 0) {
-+		set_nr_cpu_ids(ALIGN(nr_cpu_ids, nthreads));
-+		pr_warn("nr_cpu_ids was not a multiple of threads_per_core, adjusted to %d\n",
-+			nr_cpu_ids);
-+	}
-+
- 	/*
- 	 * PAPR defines "logical" PVR values for cpus that
- 	 * meet various levels of the architecture:
+ 		// Output
+-		CalculateWatermarks_params->Watermark = &s->dummy_watermark; // Watermarks *Watermark
+-		CalculateWatermarks_params->DRAMClockChangeSupport = &mode_lib->ms.support.DRAMClockChangeSupport[0];
+-		CalculateWatermarks_params->MaxActiveDRAMClockChangeLatencySupported = &s->dummy_single_array[0][0]; // dml_float_t *MaxActiveDRAMClockChangeLatencySupported[]
+-		CalculateWatermarks_params->SubViewportLinesNeededInMALL = &mode_lib->ms.SubViewportLinesNeededInMALL[j]; // dml_uint_t SubViewportLinesNeededInMALL[]
+-		CalculateWatermarks_params->FCLKChangeSupport = &mode_lib->ms.support.FCLKChangeSupport[0];
+-		CalculateWatermarks_params->MaxActiveFCLKChangeLatencySupported = &s->dummy_single[0]; // dml_float_t *MaxActiveFCLKChangeLatencySupported
+-		CalculateWatermarks_params->USRRetrainingSupport = &mode_lib->ms.support.USRRetrainingSupport[0];
++		CalculateWatermarks_params->Watermark = &locals->Watermark; // Watermarks *Watermark
++		CalculateWatermarks_params->DRAMClockChangeSupport = &locals->DRAMClockChangeSupport;
++		CalculateWatermarks_params->MaxActiveDRAMClockChangeLatencySupported = locals->MaxActiveDRAMClockChangeLatencySupported; // dml_float_t *MaxActiveDRAMClockChangeLatencySupported[]
++		CalculateWatermarks_params->SubViewportLinesNeededInMALL = locals->SubViewportLinesNeededInMALL; // dml_uint_t SubViewportLinesNeededInMALL[]
++		CalculateWatermarks_params->FCLKChangeSupport = &locals->FCLKChangeSupport;
++		CalculateWatermarks_params->MaxActiveFCLKChangeLatencySupported = &locals->MaxActiveFCLKChangeLatencySupported; // dml_float_t *MaxActiveFCLKChangeLatencySupported
++		CalculateWatermarks_params->USRRetrainingSupport = &locals->USRRetrainingSupport;
+ 
+ 		CalculateWatermarksMALLUseAndDRAMSpeedChangeSupport(
+ 			&mode_lib->scratch,
 -- 
 2.43.0
 
