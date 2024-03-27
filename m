@@ -1,182 +1,78 @@
-Return-Path: <linux-kernel+bounces-121284-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-121285-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id AF65488E4AA
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 15:09:36 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 429A088E4AB
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 15:09:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 243011F295DD
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 14:09:36 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 82F5929CE0A
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 14:09:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 532201311B6;
-	Wed, 27 Mar 2024 12:32:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8566413119A;
+	Wed, 27 Mar 2024 12:32:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b="R/XhVYBz"
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="cJsQBQlG"
+Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E6DAF12E1F6;
-	Wed, 27 Mar 2024 12:32:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.167.242.64
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2A0C412EBC8
+	for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 12:32:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711542738; cv=none; b=rEsCtQjwu0sO5nXfA+x87wWAFLxzIEPRxB7vXbWz1aJ7eI4Y7Pe2vzhMOfz4SmHx1bNc3lCPMGFPTXL7b6y151Q/AOOtNzIQHZu2U5qHr9MAxs9+DrFthab3/848U9SL7CEzw30jR16AN7XmD2fDQDRdadpJQbSmvG4WtI+pI2w=
+	t=1711542771; cv=none; b=TvOUuuwod81dD+xQtA/ObADKj/VCzYXIxXpY9JByrI/AUXb8bQj6zfJuSR1Ax/9Ds38vOX1Oi2wAU6oEruRWDz4yeULN+m/84ecI9v9KwjS8i7aRrR0ZFOBfyDG2USQsfO+MvYf7353cPrN9jR1r6nXc+gpfvUZxjFOqijau5lg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711542738; c=relaxed/simple;
-	bh=eauS07e0uZwR+eZxZshxdp8VELzhQtI+0tJN5Bk/9a0=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=PzacOj07Qk3RzTEqdNeEU/aQRVZgDyEI4z6H89PvGLzVJhMa1rbV3QQ5Kw5MfDDK0M1VWTynokhD/ieQKVwUSvMPgs4isMdU2csm4J+6cpGMMLTchItehfWKk17KvVv5R2Irt8So//So9PKrtlIqpW9nQmvGXDF5eVDzLfja8Ww=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com; spf=pass smtp.mailfrom=ideasonboard.com; dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b=R/XhVYBz; arc=none smtp.client-ip=213.167.242.64
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ideasonboard.com
-Received: from [192.168.88.20] (91-154-34-181.elisa-laajakaista.fi [91.154.34.181])
-	by perceval.ideasonboard.com (Postfix) with ESMTPSA id B27A413AC;
-	Wed, 27 Mar 2024 13:31:42 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-	s=mail; t=1711542703;
-	bh=eauS07e0uZwR+eZxZshxdp8VELzhQtI+0tJN5Bk/9a0=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=R/XhVYBz/Xl8N2++t3nmiSoiRRLe2gh6g7vIBhaJrAckHr4Jx3pFLnMThSu2rUq9W
-	 g8YhfPneQKhc2pONRNzCZW4zWDbhjiRuvy4qU9QnZkYtDCcoq6sQW1Hra530hwGk3U
-	 WuUg5mDqbAQEqx04MMKPZ2lEnFkeHvDrrfrG3LVI=
-Message-ID: <e0c8200f-cf91-466f-8769-10817bc9fb8c@ideasonboard.com>
-Date: Wed, 27 Mar 2024 14:32:12 +0200
+	s=arc-20240116; t=1711542771; c=relaxed/simple;
+	bh=a4o0A6ggKfF3YJK9T/cm1DSZSsKsJAOhYfrZh8H57PE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=F9qhGj5uQc/7g1qWp/2ZEb69/xK50fkwJ6Bwph1YvY7TVHD0xBGGKfCwLqeLbhEWF77Th1fvav9UVWAjahmVHRUBkztPJyXPYCTc0E6lehAX78jmUdna209fLZjuuQuuYpS7zlggbTTgsjq0aWpjcfL9DefQOB1BU7cFfX9xy3c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=cJsQBQlG; arc=none smtp.client-ip=90.155.50.34
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=l6GZOMZ+j81OaJ382d3JAd6zvAL+ZqNG19CFuQDVLPk=; b=cJsQBQlGZHSZtJpD0rZeloENVv
+	4Hten8gDfDu3gEft+8N6tNJ5XuKV3Ex997I4AurtmJAKCZVUCm3oQa6QfB72EeJF1x5jme03dsQIW
+	Df3Y0lBQLaHO2NC//OVnBby6yqo9jRXd00mNR62yqV8898L/1HvQpDXqMaPInBwmrz6XmoMM5OxmZ
+	ac9wwPYAjc2bSJ14DmRRdk6ACRqUUsiM6G8VgUHbW3j80YWP72v8Vo9L/1lc4H+W3gJpjJNfKfmKj
+	e4+dKXmLPCykxbfZE0f2Uy6nVrbGDz3c992MNYsnE/apqBjGf2aLBoisVAiwGvKraufV3fTI27ODb
+	xptM7/hA==;
+Received: from willy by casper.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1rpSSV-00000003qbf-1PIW;
+	Wed, 27 Mar 2024 12:32:47 +0000
+Date: Wed, 27 Mar 2024 12:32:47 +0000
+From: Matthew Wilcox <willy@infradead.org>
+To: "zhaoyang.huang" <zhaoyang.huang@unisoc.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>,
+	Christoph Hellwig <hch@infradead.org>, linux-mm@kvack.org,
+	linux-kernel@vger.kernel.org,
+	Zhaoyang Huang <huangzhaoyang@gmail.com>, steve.kang@unisoc.com
+Subject: Re: [PATCH] mm: fix unproperly folio_put by changing API in
+ read_pages
+Message-ID: <ZgQR77VVaiitIinS@casper.infradead.org>
+References: <20240327055406.1339636-1-zhaoyang.huang@unisoc.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 1/2] dmaengine: xilinx: dpdma: Fix race condition in
- vsync IRQ
-Content-Language: en-US
-To: Vishal Sagar <vishal.sagar@amd.com>
-Cc: michal.simek@amd.com, dmaengine@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
- varunkumar.allagadapa@amd.com, laurent.pinchart@ideasonboard.com,
- vkoul@kernel.org, Sean Anderson <sean.anderson@linux.dev>
-References: <20240228042124.3074044-1-vishal.sagar@amd.com>
- <20240228042124.3074044-2-vishal.sagar@amd.com>
-From: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
-Autocrypt: addr=tomi.valkeinen@ideasonboard.com; keydata=
- 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
-In-Reply-To: <20240228042124.3074044-2-vishal.sagar@amd.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240327055406.1339636-1-zhaoyang.huang@unisoc.com>
 
-On 28/02/2024 06:21, Vishal Sagar wrote:
-> From: Neel Gandhi <neel.gandhi@xilinx.com>
+On Wed, Mar 27, 2024 at 01:54:06PM +0800, zhaoyang.huang wrote:
+> From: Zhaoyang Huang <zhaoyang.huang@unisoc.com>
 > 
-> The vchan_next_desc() function, called from
-> xilinx_dpdma_chan_queue_transfer(), must be called with
-> virt_dma_chan.lock held. This isn't correctly handled in all code paths,
-> resulting in a race condition between the .device_issue_pending()
-> handler and the IRQ handler which causes DMA to randomly stop. Fix it by
-> taking the lock around xilinx_dpdma_chan_queue_transfer() calls that are
-> missing it.
-> 
-> Signed-off-by: Neel Gandhi <neel.gandhi@amd.com>
-> Signed-off-by: Radhey Shyam Pandey <radhey.shyam.pandey@amd.com>
-> Signed-off-by: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
-> Signed-off-by: Vishal Sagar <vishal.sagar@amd.com>
+> According to the comments of readahead_page[3], the refcnt which
+> represents page cache dropped in [1] makes sense for two reasons, '1.
+> The folio is going to do IO and is locked until IO done;2. The refcnt
+> will be added back when found again from the page cache and then serve
+> for PTE or vfs' while it doesn't make sense in [2] as the refcnt of
+> page cache will be dropped in filemap_remove_folio.
 
-Sean posted almost identical, but very slightly better patch, for this, 
-so I think we can pick that one instead.
-
-  Tomi
-
-> 
-> Link: https://lore.kernel.org/all/20220122121407.11467-1-neel.gandhi@xilinx.com
-> ---
->   drivers/dma/xilinx/xilinx_dpdma.c | 10 ++++++++--
->   1 file changed, 8 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/dma/xilinx/xilinx_dpdma.c b/drivers/dma/xilinx/xilinx_dpdma.c
-> index b82815e64d24..28d9af8f00f0 100644
-> --- a/drivers/dma/xilinx/xilinx_dpdma.c
-> +++ b/drivers/dma/xilinx/xilinx_dpdma.c
-> @@ -1097,12 +1097,14 @@ static void xilinx_dpdma_chan_vsync_irq(struct  xilinx_dpdma_chan *chan)
->   	 * Complete the active descriptor, if any, promote the pending
->   	 * descriptor to active, and queue the next transfer, if any.
->   	 */
-> +	spin_lock(&chan->vchan.lock);
->   	if (chan->desc.active)
->   		vchan_cookie_complete(&chan->desc.active->vdesc);
->   	chan->desc.active = pending;
->   	chan->desc.pending = NULL;
->   
->   	xilinx_dpdma_chan_queue_transfer(chan);
-> +	spin_unlock(&chan->vchan.lock);
->   
->   out:
->   	spin_unlock_irqrestore(&chan->lock, flags);
-> @@ -1264,10 +1266,12 @@ static void xilinx_dpdma_issue_pending(struct dma_chan *dchan)
->   	struct xilinx_dpdma_chan *chan = to_xilinx_chan(dchan);
->   	unsigned long flags;
->   
-> -	spin_lock_irqsave(&chan->vchan.lock, flags);
-> +	spin_lock_irqsave(&chan->lock, flags);
-> +	spin_lock(&chan->vchan.lock);
->   	if (vchan_issue_pending(&chan->vchan))
->   		xilinx_dpdma_chan_queue_transfer(chan);
-> -	spin_unlock_irqrestore(&chan->vchan.lock, flags);
-> +	spin_unlock(&chan->vchan.lock);
-> +	spin_unlock_irqrestore(&chan->lock, flags);
->   }
->   
->   static int xilinx_dpdma_config(struct dma_chan *dchan,
-> @@ -1495,7 +1499,9 @@ static void xilinx_dpdma_chan_err_task(struct tasklet_struct *t)
->   		    XILINX_DPDMA_EINTR_CHAN_ERR_MASK << chan->id);
->   
->   	spin_lock_irqsave(&chan->lock, flags);
-> +	spin_lock(&chan->vchan.lock);
->   	xilinx_dpdma_chan_queue_transfer(chan);
-> +	spin_unlock(&chan->vchan.lock);
->   	spin_unlock_irqrestore(&chan->lock, flags);
->   }
->   
-
+NAK, per previous email.
 
