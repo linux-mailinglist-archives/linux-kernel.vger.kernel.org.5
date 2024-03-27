@@ -1,59 +1,58 @@
-Return-Path: <linux-kernel+bounces-120981-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-120982-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0872F88E130
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 13:54:45 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7578688E169
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 14:01:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3A1351C2A20F
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 12:54:44 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C17B6B21100
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 12:54:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DDE3E15622E;
-	Wed, 27 Mar 2024 12:15:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DF1F0156247;
+	Wed, 27 Mar 2024 12:15:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="IRNOKP9g"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qiWn/50H"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 30853155A57;
-	Wed, 27 Mar 2024 12:15:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2724015623F;
+	Wed, 27 Mar 2024 12:15:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711541756; cv=none; b=p78w1eXA72XOp9I3uMzJm2tH9CqFnjLPT/PF/SLhojK6UxLciury8Lb0Mx/vuUOVm+Rd7LnbkSqYq1ohlrpJkSOcOA8j2V2530SuXPOyqVOW0iDeYrW4iaCg63yJmeGV5E5l0v+tPdlUzmabgXtOb1ubtW0WV4T5dOKKgZabTIs=
+	t=1711541759; cv=none; b=PvlV7dw3rtxcomTY6fUkGg9rTcmL6Ijktbi3EKja48cfTCOZK1In33h0eRffOpUHKT01skYz65yM6WPszy1QmjOjjw0vBYmihSTydHv2ldqevCTYoruxG1h7tWhUHonyEiegehqz6TZCzMXF1OhEfSx2CnB6z8zOtxo90rrshRs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711541756; c=relaxed/simple;
-	bh=GVbAqT/rR1pFjitTchTfa2bdsG2pkw40FT45C36jUrc=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=MwyhHUordsE15xmvJvJ/2srB/C4abbZH6lVpE4TuFE6Hg3s0+B4SnIA+xQqpP4v9qL2HIAzv5wBu20t0+/CgIUMFgVtCjsKGC5hQYOOzCn6lt3qprZ7j1ttcP8Ev1E4hrtDX3BNSPFUi5R5kqPtvhFQMzC23HBDSbCscaS9aZOM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=IRNOKP9g; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7CFE4C433C7;
-	Wed, 27 Mar 2024 12:15:54 +0000 (UTC)
+	s=arc-20240116; t=1711541759; c=relaxed/simple;
+	bh=mfbgHbPzTgNHogBsmr1pXkKJqEMKk/914rY6t3Qu7BM=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=DVWixib6lHiPdgl3RIVZaoq5Xxgz4PaWjZoPDYBoT8iSVVUIR7f4Zsje3VPHS86b29Voo9B9zcUEbZhY5d4geL7CcW4TyfbTx1a2UvkDFxlnCxF/WOtl8Ejc2QfFTGN+hiHCe75ZC8DQYPRhH8e1sbve8X4sx88afPgI2OtZIa4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qiWn/50H; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CC1B1C43390;
+	Wed, 27 Mar 2024 12:15:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711541755;
-	bh=GVbAqT/rR1pFjitTchTfa2bdsG2pkw40FT45C36jUrc=;
+	s=k20201202; t=1711541759;
+	bh=mfbgHbPzTgNHogBsmr1pXkKJqEMKk/914rY6t3Qu7BM=;
 	h=From:To:Cc:Subject:Date:From;
-	b=IRNOKP9gcFCcmEkL0TXKDE0Aydjb0KUQf2nCP9sVJcSOj1+v/azDKUoJodUYQ8K+D
-	 4VYwXoW1WhgPDGuLmv6kVpP9/JeM5Bg4Pexn2EpVLbF2VJpscRKnhakdQwjH7n4001
-	 lm5Y5VC1VeCReT16J4NqSj4KvwDTEkCnPWbvtN4/8fsCMId9KHZyYRVjIfIRLqkzKH
-	 MMKKVYil1eyVKNA+KKSZ+/0462Onnz91kTckAF8LoaVHfAcm8dC1jj1ZbDOVXd1Gjv
-	 5sUA0jcER1qGmq5d51gO2MA4th16p8wmePRo7o9ShacsSxvWwpKLGBPCzL1RfFQzcT
-	 BMTZ+rDrg7jig==
+	b=qiWn/50HP6D6MpN+sXBofpRT6h6A8ONnLi08I12V60uwlWGsKPlC9u16M0xIwoFR2
+	 LDVy8l4nVgbMb1eWViVlDFQx4kEycDqFRNFqnf+gmdJnIl9eIUnHdUgmG6ahuIV3Fx
+	 lR9L71WMvXFw3ymY7AnbCtvBvag7YObDXcHJy7Ijtz1sBRJ3xEFri5RiSogLN9QaSP
+	 qbKGQcArM73Rew9jEyRxew52mboZV4eOIVGnR+ETWoyNA7yqJC692eBVmF5fMkEtEA
+	 f673a2NE8UFDvzNQ3ylqNpHd//VjjVg+qWZHxjQzxQu4ORjX5JuNOi+5hTViS0A2kf
+	 K0nNJGuTK0Qgw==
 From: Sasha Levin <sashal@kernel.org>
 To: stable@vger.kernel.org,
-	srinivasan.shanmugam@amd.com
-Cc: Aurabindo Pillai <aurabindo.pillai@amd.com>,
-	Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>,
-	Hamza Mahfooz <hamza.mahfooz@amd.com>,
-	Wenjing Liu <wenjing.liu@amd.com>,
-	Qingqing Zhuo <qingqing.zhuo@amd.com>,
+	wenjing.liu@amd.com
+Cc: Mario Limonciello <mario.limonciello@amd.com>,
 	Alex Deucher <alexander.deucher@amd.com>,
+	Alvin Lee <alvin.lee2@amd.com>,
+	Alex Hung <alex.hung@amd.com>,
+	Daniel Wheeler <daniel.wheeler@amd.com>,
 	amd-gfx@lists.freedesktop.org,
 	dri-devel@lists.freedesktop.org,
 	linux-kernel@vger.kernel.org
-Subject: FAILED: Patch "drm/amd/display: Fix late derefrence 'dsc' check in 'link_set_dsc_pps_packet()'" failed to apply to 5.15-stable tree
-Date: Wed, 27 Mar 2024 08:15:53 -0400
-Message-ID: <20240327121553.2832273-1-sashal@kernel.org>
+Subject: FAILED: Patch "drm/amd/display: Lock all enabled otg pipes even with no planes" failed to apply to 5.15-stable tree
+Date: Wed, 27 Mar 2024 08:15:56 -0400
+Message-ID: <20240327121556.2832310-1-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -75,54 +74,92 @@ Sasha
 
 ------------------ original commit in Linus's tree ------------------
 
-From 166225e79ccc3d02c4c46e1b3c09d03eb91473ca Mon Sep 17 00:00:00 2001
-From: Srinivasan Shanmugam <srinivasan.shanmugam@amd.com>
-Date: Wed, 10 Jan 2024 20:58:35 +0530
-Subject: [PATCH] drm/amd/display: Fix late derefrence 'dsc' check in
- 'link_set_dsc_pps_packet()'
+From 94040c2cbb1a872ff779da06bf034ccfee0f9cba Mon Sep 17 00:00:00 2001
+From: Wenjing Liu <wenjing.liu@amd.com>
+Date: Fri, 23 Feb 2024 15:17:39 -0500
+Subject: [PATCH] drm/amd/display: Lock all enabled otg pipes even with no
+ planes
 
-In link_set_dsc_pps_packet(), 'struct display_stream_compressor *dsc'
-was dereferenced in a DC_LOGGER_INIT(dsc->ctx->logger); before the 'dsc'
-NULL pointer check.
+[WHY]
+On DCN32 we support dynamic ODM even when OTG is blanked. When ODM
+configuration is dynamically changed and the OTG is on blank pattern,
+we will need to reprogram OPP's test pattern based on new ODM
+configuration. Therefore we need to lock the OTG pipe to avoid temporary
+corruption when we are reprogramming OPP blank patterns.
 
-Fixes the below:
-drivers/gpu/drm/amd/amdgpu/../display/dc/link/link_dpms.c:905 link_set_dsc_pps_packet() warn: variable dereferenced before check 'dsc' (see line 903)
+[HOW]
+Add a new interdependent update lock implementation to lock all enabled
+OTG pipes even when there is no plane on the OTG for DCN32.
 
+Cc: Mario Limonciello <mario.limonciello@amd.com>
+Cc: Alex Deucher <alexander.deucher@amd.com>
 Cc: stable@vger.kernel.org
-Cc: Aurabindo Pillai <aurabindo.pillai@amd.com>
-Cc: Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>
-Cc: Hamza Mahfooz <hamza.mahfooz@amd.com>
-Cc: Wenjing Liu <wenjing.liu@amd.com>
-Cc: Qingqing Zhuo <qingqing.zhuo@amd.com>
-Signed-off-by: Srinivasan Shanmugam <srinivasan.shanmugam@amd.com>
-Reviewed-by: Aurabindo Pillai <aurabindo.pillai@amd.com>
+Reviewed-by: Alvin Lee <alvin.lee2@amd.com>
+Acked-by: Alex Hung <alex.hung@amd.com>
+Signed-off-by: Wenjing Liu <wenjing.liu@amd.com>
+Tested-by: Daniel Wheeler <daniel.wheeler@amd.com>
 Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 ---
- drivers/gpu/drm/amd/display/dc/link/link_dpms.c | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+ .../amd/display/dc/hwss/dcn32/dcn32_hwseq.c   | 23 +++++++++++++++++++
+ .../amd/display/dc/hwss/dcn32/dcn32_hwseq.h   |  2 ++
+ .../amd/display/dc/hwss/dcn32/dcn32_init.c    |  2 +-
+ 3 files changed, 26 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/amd/display/dc/link/link_dpms.c b/drivers/gpu/drm/amd/display/dc/link/link_dpms.c
-index 3de148004c066..3cbfbf8d107e9 100644
---- a/drivers/gpu/drm/amd/display/dc/link/link_dpms.c
-+++ b/drivers/gpu/drm/amd/display/dc/link/link_dpms.c
-@@ -900,11 +900,15 @@ bool link_set_dsc_pps_packet(struct pipe_ctx *pipe_ctx, bool enable, bool immedi
- {
- 	struct display_stream_compressor *dsc = pipe_ctx->stream_res.dsc;
- 	struct dc_stream_state *stream = pipe_ctx->stream;
--	DC_LOGGER_INIT(dsc->ctx->logger);
- 
--	if (!pipe_ctx->stream->timing.flags.DSC || !dsc)
-+	if (!pipe_ctx->stream->timing.flags.DSC)
- 		return false;
- 
-+	if (!dsc)
-+		return false;
+diff --git a/drivers/gpu/drm/amd/display/dc/hwss/dcn32/dcn32_hwseq.c b/drivers/gpu/drm/amd/display/dc/hwss/dcn32/dcn32_hwseq.c
+index b890db0bfc46b..c0b526cf17865 100644
+--- a/drivers/gpu/drm/amd/display/dc/hwss/dcn32/dcn32_hwseq.c
++++ b/drivers/gpu/drm/amd/display/dc/hwss/dcn32/dcn32_hwseq.c
+@@ -1785,3 +1785,26 @@ void dcn32_prepare_bandwidth(struct dc *dc,
+ 		context->bw_ctx.bw.dcn.clk.p_state_change_support = p_state_change_support;
+ 	}
+ }
 +
-+	DC_LOGGER_INIT(dsc->ctx->logger);
++void dcn32_interdependent_update_lock(struct dc *dc,
++		struct dc_state *context, bool lock)
++{
++	unsigned int i;
++	struct pipe_ctx *pipe;
++	struct timing_generator *tg;
 +
- 	if (enable) {
- 		struct dsc_config dsc_cfg;
- 		uint8_t dsc_packed_pps[128];
++	for (i = 0; i < dc->res_pool->pipe_count; i++) {
++		pipe = &context->res_ctx.pipe_ctx[i];
++		tg = pipe->stream_res.tg;
++
++		if (!resource_is_pipe_type(pipe, OTG_MASTER) ||
++				!tg->funcs->is_tg_enabled(tg) ||
++				dc_state_get_pipe_subvp_type(context, pipe) == SUBVP_PHANTOM)
++			continue;
++
++		if (lock)
++			dc->hwss.pipe_control_lock(dc, pipe, true);
++		else
++			dc->hwss.pipe_control_lock(dc, pipe, false);
++	}
++}
+diff --git a/drivers/gpu/drm/amd/display/dc/hwss/dcn32/dcn32_hwseq.h b/drivers/gpu/drm/amd/display/dc/hwss/dcn32/dcn32_hwseq.h
+index 069e20bc87c0a..f55c11fc56ec7 100644
+--- a/drivers/gpu/drm/amd/display/dc/hwss/dcn32/dcn32_hwseq.h
++++ b/drivers/gpu/drm/amd/display/dc/hwss/dcn32/dcn32_hwseq.h
+@@ -129,4 +129,6 @@ bool dcn32_is_pipe_topology_transition_seamless(struct dc *dc,
+ void dcn32_prepare_bandwidth(struct dc *dc,
+ 	struct dc_state *context);
+ 
++void dcn32_interdependent_update_lock(struct dc *dc,
++		struct dc_state *context, bool lock);
+ #endif /* __DC_HWSS_DCN32_H__ */
+diff --git a/drivers/gpu/drm/amd/display/dc/hwss/dcn32/dcn32_init.c b/drivers/gpu/drm/amd/display/dc/hwss/dcn32/dcn32_init.c
+index 2b073123d3ede..67d661dbd5b7c 100644
+--- a/drivers/gpu/drm/amd/display/dc/hwss/dcn32/dcn32_init.c
++++ b/drivers/gpu/drm/amd/display/dc/hwss/dcn32/dcn32_init.c
+@@ -58,7 +58,7 @@ static const struct hw_sequencer_funcs dcn32_funcs = {
+ 	.disable_plane = dcn20_disable_plane,
+ 	.disable_pixel_data = dcn20_disable_pixel_data,
+ 	.pipe_control_lock = dcn20_pipe_control_lock,
+-	.interdependent_update_lock = dcn10_lock_all_pipes,
++	.interdependent_update_lock = dcn32_interdependent_update_lock,
+ 	.cursor_lock = dcn10_cursor_lock,
+ 	.prepare_bandwidth = dcn32_prepare_bandwidth,
+ 	.optimize_bandwidth = dcn20_optimize_bandwidth,
 -- 
 2.43.0
 
