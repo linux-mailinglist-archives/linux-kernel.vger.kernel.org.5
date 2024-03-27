@@ -1,58 +1,55 @@
-Return-Path: <linux-kernel+bounces-121130-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-121131-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8D1CD88E498
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 15:07:07 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C9FEE88E2AD
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 14:31:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 69DC1B2E7E0
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 13:31:40 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F3FD31C27DDD
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 13:31:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9EB70174ECD;
-	Wed, 27 Mar 2024 12:22:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1D36A174ECA;
+	Wed, 27 Mar 2024 12:22:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="bhIZ0Y3k"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="OWZ3bJng"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DB56117497F;
-	Wed, 27 Mar 2024 12:22:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 633F7174EE3;
+	Wed, 27 Mar 2024 12:22:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711542154; cv=none; b=QKV70KvXEoxDd+E+Y15c4ZpBfMSBJPFJfiZsAmqCqXgzREe7xsosf/aBnUnAPauq86M8shAUDzA3qcoZisV7zJVmAlUJoxNf5nMz/bvVppBhopIyBEIDTeNAcZwIYLcHSlnRmzV6DNZvVeXzYr8iLbx2Tg/5Hy9nSV5tK4IWY7E=
+	t=1711542156; cv=none; b=e0NnmSEd2vO5a4tg+AB1bZ7zjfYcIlVWgHR6dxgmRR86qt129PCAxDqGRj9VNRxfOcoWjcEOlLWkNZOQNrHEitHlUQN70DcwOKrS/6C1dha7I18MhdyZ9sDXqGRRw/kdCMCVfaMMtC5FwA2BqRecRswdVs4gFyKIF6xNVohLbh0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711542154; c=relaxed/simple;
-	bh=eW8v2rqK+YW7ryQK88To+Q6LwmDjw4ITv8QOonCo04E=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=YxS/LwWWUbMrNNsPxm0bHGMeeg6X5B64kE2k49xvOmZ+PdGLGHboetnfSEyqajWPZq/HxiZ2D17FcVWEla7eBlrO/6dnqLa0LHpQ7rCgAxOjOWGQ6AbUPd1tt7XTSTO/JBwSfdEhm8hrS4YgBG4lEoEa5YQuGSYicogoQfNDzBA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=bhIZ0Y3k; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A6B9AC433F1;
-	Wed, 27 Mar 2024 12:22:32 +0000 (UTC)
+	s=arc-20240116; t=1711542156; c=relaxed/simple;
+	bh=k6Z6dU2jSu+sGmgHhTzAIhynztWLFp7uFdQ0+eIfso0=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=XEfPvapC41P6GItL7qUCTAuF2pkfUExM28g5SCfrLsapZZQaRuTrx+1iGZSxjNVMeIiyyYS8x+C4O7DExp6HvIXNbfzoer05N0Uz7MxRWn4VlIgIQ+jjZf1UXfw3ChAVtFp9eFlF1xg+DQIBlH8qgI+YH2sAZAZL3CdyR4fj2zI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=OWZ3bJng; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 75D90C43390;
+	Wed, 27 Mar 2024 12:22:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711542153;
-	bh=eW8v2rqK+YW7ryQK88To+Q6LwmDjw4ITv8QOonCo04E=;
+	s=k20201202; t=1711542156;
+	bh=k6Z6dU2jSu+sGmgHhTzAIhynztWLFp7uFdQ0+eIfso0=;
 	h=From:To:Cc:Subject:Date:From;
-	b=bhIZ0Y3kWn0YpHSlPHSoVjEDxAcEd0o/ISyzJKcqJdJZPKqKvmSj7hRWkbt7WpseG
-	 IPS5M38H3yc+Q80pixxjSXI/2PJriR6yGB1+ZksDlO00U0WVQ5Nre2La0lV9Kn6uEg
-	 H9Ipl/d29m63A+CDQUbjSXiIL7zzYv9x0T1ETW7lNgf8TKhv2DgohrhJzXr4eWgSaG
-	 G5fEz/kW/twNWJ8o/EtBaLF7jZVZ4g87ku6/wIs3TVuFqnRdA9Cnd0wMiGTEkx9Jul
-	 SiTt+XrrtcVgQpNO8VQ5S6bBykrZFspBVpL1IxDtApgoSGMzLcjpN3iP2qcKBKADp6
-	 3MJo6oDDPtpDQ==
+	b=OWZ3bJng8YJMuYBmzG2djCuFAPlHPEecl6kRPFhGnv7b5qRgJjEzhpBZmth2rHATF
+	 pngoZDRzWOJgVEy9AZMwoRjTN3aO0hPSTv7Ucv2Yxbrbp+i65BDEgJcO/5lCVDzHdM
+	 howjMclAjAbC8QHdR8+ZZsAqRSzLeg3FagVTUx8GVhvdYB79mQBXpQHDpdX65/18D8
+	 o+buCnh5tFxnukIF25UY3Q8QpIXJ9EAbi38yikwIbUCItIxaAwyM08+V/lYKgT5pKi
+	 Xl9gW8KtctygtYJOcXRvpSEtl+4JWkFUvyLhADrBRVzbGoqNlicb0Z+LKivrNg33qD
+	 pcirDvltjazMQ==
 From: Sasha Levin <sashal@kernel.org>
 To: stable@vger.kernel.org,
-	roman.li@amd.com
-Cc: Mario Limonciello <mario.limonciello@amd.com>,
-	Alex Deucher <alexander.deucher@amd.com>,
-	Nicholas Kazlauskas <nicholas.kazlauskas@amd.com>,
-	Aurabindo Pillai <aurabindo.pillai@amd.com>,
-	Daniel Wheeler <daniel.wheeler@amd.com>,
-	amd-gfx@lists.freedesktop.org,
+	ville.syrjala@linux.intel.com
+Cc: Jani Nikula <jani.nikula@intel.com>,
+	intel-gfx@lists.freedesktop.org,
+	intel-xe@lists.freedesktop.org,
 	dri-devel@lists.freedesktop.org,
 	linux-kernel@vger.kernel.org
-Subject: FAILED: Patch "drm/amd/display: Fix array-index-out-of-bounds in dcn35_clkmgr" failed to apply to 5.4-stable tree
-Date: Wed, 27 Mar 2024 08:22:31 -0400
-Message-ID: <20240327122231.2837784-1-sashal@kernel.org>
+Subject: FAILED: Patch "drm/i915/dp: Limit SST link rate to <=8.1Gbps" failed to apply to 5.4-stable tree
+Date: Wed, 27 Mar 2024 08:22:34 -0400
+Message-ID: <20240327122234.2837821-1-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -62,6 +59,7 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-Patchwork-Hint: ignore
 X-stable: review
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
 The patch below does not apply to the 5.4-stable tree.
@@ -74,75 +72,40 @@ Sasha
 
 ------------------ original commit in Linus's tree ------------------
 
-From a8edc9cc0b14e3769bbc9b82d00e5e5fc6b5ff0a Mon Sep 17 00:00:00 2001
-From: Roman Li <roman.li@amd.com>
-Date: Tue, 30 Jan 2024 18:07:24 -0500
-Subject: [PATCH] drm/amd/display: Fix array-index-out-of-bounds in
- dcn35_clkmgr
+From 6061811d72e14f41f71b6a025510920b187bfcca Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Ville=20Syrj=C3=A4l=C3=A4?= <ville.syrjala@linux.intel.com>
+Date: Thu, 8 Feb 2024 17:45:52 +0200
+Subject: [PATCH] drm/i915/dp: Limit SST link rate to <=8.1Gbps
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-[Why]
-There is a potential memory access violation while
-iterating through array of dcn35 clks.
+Limit the link rate to HBR3 or below (<=8.1Gbps) in SST mode.
+UHBR (10Gbps+) link rates require 128b/132b channel encoding
+which we have not yet hooked up into the SST/no-sideband codepaths.
 
-[How]
-Limit iteration per array size.
-
-Cc: Mario Limonciello <mario.limonciello@amd.com>
-Cc: Alex Deucher <alexander.deucher@amd.com>
 Cc: stable@vger.kernel.org
-Reviewed-by: Nicholas Kazlauskas <nicholas.kazlauskas@amd.com>
-Acked-by: Aurabindo Pillai <aurabindo.pillai@amd.com>
-Signed-off-by: Roman Li <roman.li@amd.com>
-Tested-by: Daniel Wheeler <daniel.wheeler@amd.com>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+Signed-off-by: Ville Syrjälä <ville.syrjala@linux.intel.com>
+Link: https://patchwork.freedesktop.org/patch/msgid/20240208154552.14545-1-ville.syrjala@linux.intel.com
+Reviewed-by: Jani Nikula <jani.nikula@intel.com>
 ---
- .../amd/display/dc/clk_mgr/dcn35/dcn35_clk_mgr.c  | 15 +++++++++++----
- 1 file changed, 11 insertions(+), 4 deletions(-)
+ drivers/gpu/drm/i915/display/intel_dp.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/drivers/gpu/drm/amd/display/dc/clk_mgr/dcn35/dcn35_clk_mgr.c b/drivers/gpu/drm/amd/display/dc/clk_mgr/dcn35/dcn35_clk_mgr.c
-index 36e5bb611fb10..c378b879c76d8 100644
---- a/drivers/gpu/drm/amd/display/dc/clk_mgr/dcn35/dcn35_clk_mgr.c
-+++ b/drivers/gpu/drm/amd/display/dc/clk_mgr/dcn35/dcn35_clk_mgr.c
-@@ -658,10 +658,13 @@ static void dcn35_clk_mgr_helper_populate_bw_params(struct clk_mgr_internal *clk
- 	struct clk_limit_table_entry def_max = bw_params->clk_table.entries[bw_params->clk_table.num_entries - 1];
- 	uint32_t max_fclk = 0, min_pstate = 0, max_dispclk = 0, max_dppclk = 0;
- 	uint32_t max_pstate = 0, max_dram_speed_mts = 0, min_dram_speed_mts = 0;
-+	uint32_t num_memps, num_fclk, num_dcfclk;
- 	int i;
+diff --git a/drivers/gpu/drm/i915/display/intel_dp.c b/drivers/gpu/drm/i915/display/intel_dp.c
+index ab415f41924d7..5045c34a16be1 100644
+--- a/drivers/gpu/drm/i915/display/intel_dp.c
++++ b/drivers/gpu/drm/i915/display/intel_dp.c
+@@ -2356,6 +2356,9 @@ intel_dp_compute_config_limits(struct intel_dp *intel_dp,
+ 	limits->min_rate = intel_dp_common_rate(intel_dp, 0);
+ 	limits->max_rate = intel_dp_max_link_rate(intel_dp);
  
- 	/* Determine min/max p-state values. */
--	for (i = 0; i < clock_table->NumMemPstatesEnabled; i++) {
-+	num_memps = (clock_table->NumMemPstatesEnabled > NUM_MEM_PSTATE_LEVELS) ? NUM_MEM_PSTATE_LEVELS :
-+		clock_table->NumMemPstatesEnabled;
-+	for (i = 0; i < num_memps; i++) {
- 		uint32_t dram_speed_mts = calc_dram_speed_mts(&clock_table->MemPstateTable[i]);
++	/* FIXME 128b/132b SST support missing */
++	limits->max_rate = min(limits->max_rate, 810000);
++
+ 	limits->min_lane_count = 1;
+ 	limits->max_lane_count = intel_dp_max_lane_count(intel_dp);
  
- 		if (is_valid_clock_value(dram_speed_mts) && dram_speed_mts > max_dram_speed_mts) {
-@@ -673,7 +676,7 @@ static void dcn35_clk_mgr_helper_populate_bw_params(struct clk_mgr_internal *clk
- 	min_dram_speed_mts = max_dram_speed_mts;
- 	min_pstate = max_pstate;
- 
--	for (i = 0; i < clock_table->NumMemPstatesEnabled; i++) {
-+	for (i = 0; i < num_memps; i++) {
- 		uint32_t dram_speed_mts = calc_dram_speed_mts(&clock_table->MemPstateTable[i]);
- 
- 		if (is_valid_clock_value(dram_speed_mts) && dram_speed_mts < min_dram_speed_mts) {
-@@ -702,9 +705,13 @@ static void dcn35_clk_mgr_helper_populate_bw_params(struct clk_mgr_internal *clk
- 	/* Base the clock table on dcfclk, need at least one entry regardless of pmfw table */
- 	ASSERT(clock_table->NumDcfClkLevelsEnabled > 0);
- 
--	max_fclk = find_max_clk_value(clock_table->FclkClocks_Freq, clock_table->NumFclkLevelsEnabled);
-+	num_fclk = (clock_table->NumFclkLevelsEnabled > NUM_FCLK_DPM_LEVELS) ? NUM_FCLK_DPM_LEVELS :
-+		clock_table->NumFclkLevelsEnabled;
-+	max_fclk = find_max_clk_value(clock_table->FclkClocks_Freq, num_fclk);
- 
--	for (i = 0; i < clock_table->NumDcfClkLevelsEnabled; i++) {
-+	num_dcfclk = (clock_table->NumFclkLevelsEnabled > NUM_DCFCLK_DPM_LEVELS) ? NUM_DCFCLK_DPM_LEVELS :
-+		clock_table->NumDcfClkLevelsEnabled;
-+	for (i = 0; i < num_dcfclk; i++) {
- 		int j;
- 
- 		/* First search defaults for the clocks we don't read using closest lower or equal default dcfclk */
 -- 
 2.43.0
 
