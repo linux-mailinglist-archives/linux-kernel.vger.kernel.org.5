@@ -1,79 +1,75 @@
-Return-Path: <linux-kernel+bounces-121564-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-121565-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9546B88E9C4
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 16:49:02 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8AFFF88E9C8
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 16:49:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B92D31C31418
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 15:49:01 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4004D2962EE
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 15:49:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C03FF12FB2A;
-	Wed, 27 Mar 2024 15:47:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F19C6130A5E;
+	Wed, 27 Mar 2024 15:47:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="SBY91gqt"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="iX0x8GGa"
+Received: from mail-pf1-f173.google.com (mail-pf1-f173.google.com [209.85.210.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6021312F586
-	for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 15:47:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 669BF535D3;
+	Wed, 27 Mar 2024 15:47:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711554463; cv=none; b=LIESxsAgKAtLmGjh5ppGaxmjjJ0xTFZYMMwHX8e3VzaLs5uFUiO7DDoWD+NhhNbOGWmmfKX863AfmFd0sGcBi52bWLbnQ3ES/us+iJTpfSRt1WwQzm2LdX6cW+1XNMmKYculqUCHmLcoaYPR41WTDeISRMAONJXvWPwGMZnhLGg=
+	t=1711554478; cv=none; b=YpTsNe9g9B+TNeaODrzyKzYXNkXAdbkqV1tya2sRpbKpKqEYGMGlW2beE7Q6yPU+HUA+tS+o/gOSncCgYD5GJ9ZQYmFnsbUoehEuc2DApBrMKrsi8Ow6tHffQcXRSbo0KyIfaxUEfZvJHecy4lnCd9Rzm7tS8Gf/QXc9NUDzYR0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711554463; c=relaxed/simple;
-	bh=DVO1rReh4ydB46JorXpL28hCKteSlDiF68Vwr+w5mPE=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=UNoqXesQl1x32HjdZDvk8jaMZhTVrKXj82nQ7Fh6cC+am+nXyfNHQ0QWkAFNearmN1xuPxZohHze6FtI2lwAOfwtGMXvcrz3WQMVpgzwxaTXBgpiSi5jE5MoHwsry/NCqHxCfgx+Q1dRFmXWo792DmLzlaBNyhxTWFKDdxdOdF4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=SBY91gqt; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1711554461;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=nx2RBcEO1zlkXSO8aDJi6Uao1EiV9BqGUI/e60nrr6c=;
-	b=SBY91gqtVcFUzzi4TSoCzeGe9vmp0v24ukKZfzJt7wOw1zr/PfIBXYy9RUizIS09ggbs3a
-	MkVQfC6QTbV3ZUYN7NYQrK+73TU/RXejokfPRtFk0Rk9arlFsQlHfJfFpXTf02LeGM96FV
-	u1a2BhFKKDJrTeLC1ny8ABALMy3802w=
-Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
- [209.85.128.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-617-MN6pIyPuOcOe2GooIL56pg-1; Wed, 27 Mar 2024 11:47:39 -0400
-X-MC-Unique: MN6pIyPuOcOe2GooIL56pg-1
-Received: by mail-wm1-f69.google.com with SMTP id 5b1f17b1804b1-41407fd718dso37361155e9.1
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 08:47:39 -0700 (PDT)
+	s=arc-20240116; t=1711554478; c=relaxed/simple;
+	bh=zEeUmGvjIpzFLBUqfLF7ED2M6P4Ga/OX6J1E7x1Vm84=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=Uzikzm4LckYn+cAptT7edc7c/WJB5WuWB37ZqOoDK8VAjxwv5pllshijIedp/RNka4gjVcEFIvYK7MlmowgIGPkk/1y9gDF+9/fWb5btIgsogrFUsDzEkDJkQWnH1mTqlAU4iciPrJwRszyD+L7EeZEpqlB5KwjBlyeIUkJd/IY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=iX0x8GGa; arc=none smtp.client-ip=209.85.210.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f173.google.com with SMTP id d2e1a72fcca58-6ea80de0e97so3509145b3a.2;
+        Wed, 27 Mar 2024 08:47:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1711554476; x=1712159276; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :sender:from:to:cc:subject:date:message-id:reply-to;
+        bh=eT6RRJ5wM6yBnnPFeWgam/sB5rIgvY6T44XG6PUPlYA=;
+        b=iX0x8GGaV+KDO8J/DMtSbyr4ppismY4A/csl4dXy07bDs2BV6k8nnPBwsB+9EGRsB2
+         uh5AZ8GKybN6nsnM8XS70FomqVwUcfV/b9YBvM6Z4LM5UxNlupFu7P8HGAoQyF/l6pg+
+         79naH2ZXSNy+XV/GTrewQO52tjPXxp/UFXvDc4SA1onGg0MGONjLX30bC/1+C5JAkn3L
+         cykQis8rk7wZiaasDcGWAoIowWnBQy4IYdbAm9qsjGkKL7a5HXNfLIenY3MUHA9Zpewc
+         dGdblpMiB9Rokjk2LmAH5phgkW2+3mxUlSvKMWgreQJx8bkhIW0s2DslLgO9NpnUYVFz
+         deoQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711554458; x=1712159258;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt:from
-         :references:cc:to:content-language:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=nx2RBcEO1zlkXSO8aDJi6Uao1EiV9BqGUI/e60nrr6c=;
-        b=wzMSVb24VFRDrJwkOTKeukZ13J5ldCA0lqGkqA+q4F0zbsBJwcTFledEMm7pdy8NDX
-         0HOGY/VMhup+JKmQlxm47qiFc7aWUBBQbriZmqL9AxKT3+GALFiJRZzkLqyY1q8Qf4K9
-         CA1LsItXZqzh/WISTg6FaDIPD3RCWhruxflzZl5/91zYayANy1Zrv6YUuc8R6q5FsWZ9
-         Njri4d58IYOjL1g0H5cPqjA2LfYx21vtTQiLOfjErw2BtJpCQQJ5IBGzjS1FQOMzrqiN
-         Z/DNqZQ19AKfEdA2TfhSgO5HM72FqHaOyS969BZpFOG5mHpCCvUZUPdgMv7Ow+Mjbo/v
-         4X9A==
-X-Gm-Message-State: AOJu0YyOS3krHynbEmRQJtvgujKL8Sls5vVU+LauDOzywjFaFmbQSU/a
-	vRwOHnTXOz1j0HqMPtm9L29M6RcdYnFerWvhKMXHgY/3iBFR23BjanLrf1KdQMo4UFFqsAudBT8
-	SQNAqMI/OSMNypLpePvytuGCzpxHgZvPX/zLiYnlaZ/O39t0hHfdYm9dFeuvsOw==
-X-Received: by 2002:a05:600c:524d:b0:414:8c04:23d7 with SMTP id fc13-20020a05600c524d00b004148c0423d7mr351322wmb.12.1711554458572;
-        Wed, 27 Mar 2024 08:47:38 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IGMMNr9uPGzoqufs3UzwsuyIJrM6qX29FP7ICBLhhHmRIezXNRoAaLgs2liyRBDuZ/By57oYw==
-X-Received: by 2002:a05:600c:524d:b0:414:8c04:23d7 with SMTP id fc13-20020a05600c524d00b004148c0423d7mr351286wmb.12.1711554458105;
-        Wed, 27 Mar 2024 08:47:38 -0700 (PDT)
-Received: from ?IPV6:2003:cb:c708:8a00:362b:7e34:a3bc:9ddf? (p200300cbc7088a00362b7e34a3bc9ddf.dip0.t-ipconnect.de. [2003:cb:c708:8a00:362b:7e34:a3bc:9ddf])
-        by smtp.gmail.com with ESMTPSA id m31-20020a05600c3b1f00b004146bcdde06sm2534359wms.6.2024.03.27.08.47.36
+        d=1e100.net; s=20230601; t=1711554476; x=1712159276;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :sender:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=eT6RRJ5wM6yBnnPFeWgam/sB5rIgvY6T44XG6PUPlYA=;
+        b=GEkraQ47bZBxQfARB6eUdK+HtIPifIEbl/zV7u/NzCrRqg7PPXUjN7GOWCKRTROvJv
+         g/ghKzYyxjz6hnFMkf3Kh6lXl4QVdnEznciIJZjM6N23oWPLwH0ly4TaOCUCnqWYOYSU
+         qYGiOsubCK+dDmOyGFbf1cg1drKvTuhhXaFqhzXg7zUbzGro01t97LrM95xZUYbl+szF
+         z5F6Xgk7nNfzrACs0edMo2MrkZQL2WBsHZUEj7wLomIIKH/mHFWUPLb/C8dosaycJ7Ok
+         d0m6gntz+ASKFRLme18EuHKYR3IzVz6rELRXXf3Z8854DVBBQ3QZ0L2fTHYBt2qs9M8k
+         a+2g==
+X-Forwarded-Encrypted: i=1; AJvYcCXnsgqGhTELvXrwknpZq3+lBQV6T3lFL72vj6JXYBpaiW/HM467cwf9/gBMGaUkua3Uo+chEDex+uyNh3yxOSLnST+b+sYYclilpTYOt6p4n3wDdB9e1EPtiTGICI4KDOfgXxdM/Cdyz/i0Cl5NjOqoWExOqbVUJGUqbfwSOTKn5l94kkt5LDbN
+X-Gm-Message-State: AOJu0YxOFgcHNbanNrRdeoVHFFU1cbyW3zKssvjsH9CB8szqfRj7e642
+	otGMksoXlx4eQ35+nuUen3TAlkVnVi4iha1LcoAqtN2HW1+pjveH
+X-Google-Smtp-Source: AGHT+IF0Tz/1tZbon8ZyoPuVtBFegqTDyV303CbHZkFrvI4HsOOb4/sHuWZiGA3QE0H8xrr2jlhWTA==
+X-Received: by 2002:a05:6a21:9210:b0:1a3:48c4:10b1 with SMTP id tl16-20020a056a21921000b001a348c410b1mr321165pzb.40.1711554475561;
+        Wed, 27 Mar 2024 08:47:55 -0700 (PDT)
+Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id k3-20020a170902c40300b001def1ad9314sm9210138plk.245.2024.03.27.08.47.53
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 27 Mar 2024 08:47:37 -0700 (PDT)
-Message-ID: <7f9fd647-dd0a-4be0-9e3b-3f0fe5f479cc@redhat.com>
-Date: Wed, 27 Mar 2024 16:47:36 +0100
+        Wed, 27 Mar 2024 08:47:54 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Message-ID: <f0b03c0b-eb54-420e-a4f7-8286e20b9df6@roeck-us.net>
+Date: Wed, 27 Mar 2024 08:47:53 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -81,113 +77,141 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH RFC 0/3] mm/gup: consistently call it GUP-fast
+Subject: Re: [PATCH v4 4/4] drivers: watchdog: ast2500 and ast2600 support
+ bootstatus
 Content-Language: en-US
-To: Ryan Roberts <ryan.roberts@arm.com>, Peter Xu <peterx@redhat.com>
-Cc: linux-kernel@vger.kernel.org, Andrew Morton <akpm@linux-foundation.org>,
- Mike Rapoport <rppt@kernel.org>, Jason Gunthorpe <jgg@nvidia.com>,
- John Hubbard <jhubbard@nvidia.com>, linux-arm-kernel@lists.infradead.org,
- loongarch@lists.linux.dev, linux-mips@vger.kernel.org,
- linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org,
- linux-sh@vger.kernel.org, linux-mm@kvack.org,
- linux-perf-users@vger.kernel.org, linux-fsdevel@vger.kernel.org,
- x86@kernel.org, Arnd Bergmann <arnd@arndb.de>
-References: <20240327130538.680256-1-david@redhat.com> <ZgQ5hNltQ2DHQXps@x1n>
- <3922460a-4d01-4ecb-b8c5-7c57fd46f3fd@redhat.com>
- <8727a618-30c4-4a13-b0e9-eccc3fd67c73@arm.com>
-From: David Hildenbrand <david@redhat.com>
-Autocrypt: addr=david@redhat.com; keydata=
- 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
- WNyWQQ==
-Organization: Red Hat
-In-Reply-To: <8727a618-30c4-4a13-b0e9-eccc3fd67c73@arm.com>
+To: Peter Yin <peteryin.openbmc@gmail.com>, patrick@stwcx.xyz,
+ Wim Van Sebroeck <wim@linux-watchdog.org>, Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>, Joel Stanley <joel@jms.id.au>,
+ Andrew Jeffery <andrew@codeconstruct.com.au>,
+ linux-watchdog@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-aspeed@lists.ozlabs.org,
+ linux-kernel@vger.kernel.org
+References: <20240327085330.3281697-1-peteryin.openbmc@gmail.com>
+ <20240327085330.3281697-5-peteryin.openbmc@gmail.com>
+From: Guenter Roeck <linux@roeck-us.net>
+Autocrypt: addr=linux@roeck-us.net; keydata=
+ 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
+ mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
+In-Reply-To: <20240327085330.3281697-5-peteryin.openbmc@gmail.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 
-On 27.03.24 16:46, Ryan Roberts wrote:
->>
->> Some of them look like mm-unstable issue, For example, arm64 fails with
->>
->>    CC      arch/arm64/mm/extable.o
->> In file included from ./include/linux/hugetlb.h:828,
->>                   from security/commoncap.c:19:
->> ./arch/arm64/include/asm/hugetlb.h:25:34: error: redefinition of
->> 'arch_clear_hugetlb_flags'
->>     25 | #define arch_clear_hugetlb_flags arch_clear_hugetlb_flags
->>        |                                  ^~~~~~~~~~~~~~~~~~~~~~~~
->> ./include/linux/hugetlb.h:840:20: note: in expansion of macro
->> 'arch_clear_hugetlb_flags'
->>    840 | static inline void arch_clear_hugetlb_flags(struct folio *folio) { }
->>        |                    ^~~~~~~~~~~~~~~~~~~~~~~~
->> ./arch/arm64/include/asm/hugetlb.h:21:20: note: previous definition of
->> 'arch_clear_hugetlb_flags' with t
->> ype 'void(struct folio *)'
->>     21 | static inline void arch_clear_hugetlb_flags(struct folio *folio)
->>        |                    ^~~~~~~~~~~~~~~~~~~~~~~~
->> In file included from ./include/linux/hugetlb.h:828,
->>                   from mm/filemap.c:37:
->> ./arch/arm64/include/asm/hugetlb.h:25:34: error: redefinition of
->> 'arch_clear_hugetlb_flags'
->>     25 | #define arch_clear_hugetlb_flags arch_clear_hugetlb_flags
->>        |                                  ^~~~~~~~~~~~~~~~~~~~~~~~
->> ./include/linux/hugetlb.h:840:20: note: in expansion of macro
->> 'arch_clear_hugetlb_flags'
->>    840 | static inline void arch_clear_hugetlb_flags(struct folio *folio) { }
->>        |                    ^~~~~~~~~~~~~~~~~~~~~~~~
->> ./arch/arm64/include/asm/hugetlb.h:21:20: note: previous definition of
->> 'arch_clear_hugetlb_flags' with type 'void(struct folio *)'
->>     21 | static inline void arch_clear_hugetlb_flags(struct folio *folio)
+On 3/27/24 01:53, Peter Yin wrote:
+> Add WDIOF_EXTERN1 and WDIOF_CARDRESET bootstatus in ast2600
 > 
-> see: https://lore.kernel.org/linux-mm/ZgQvNKGdlDkwhQEX@casper.infradead.org/
+> Regarding the AST2600 specification, the WDTn Timeout Status Register
+> (WDT10) has bit 1 reserved. Bit 1 of the status register indicates
+> on ast2500 if the boot was from the second boot source.
+> It does not indicate that the most recent reset was triggered by
+> the watchdog. The code should just be changed to set WDIOF_CARDRESET
+> if bit 0 of the status register is set.
 > 
+> Include SCU register to veriy WDIOF_EXTERN1 in ast2600 SCU74 or
+> ast2500 SCU3C when bit1 is set.
+> 
+> Signed-off-by: Peter Yin <peteryin.openbmc@gmail.com>
+> ---
+>   drivers/watchdog/aspeed_wdt.c | 60 +++++++++++++++++++++++++----------
+>   1 file changed, 44 insertions(+), 16 deletions(-)
+> 
+> diff --git a/drivers/watchdog/aspeed_wdt.c b/drivers/watchdog/aspeed_wdt.c
+> index b4773a6aaf8c..29e9afdee619 100644
+> --- a/drivers/watchdog/aspeed_wdt.c
+> +++ b/drivers/watchdog/aspeed_wdt.c
+> @@ -11,10 +11,12 @@
+>   #include <linux/io.h>
+>   #include <linux/kernel.h>
+>   #include <linux/kstrtox.h>
+> +#include <linux/mfd/syscon.h>
+>   #include <linux/module.h>
+>   #include <linux/of.h>
+>   #include <linux/of_irq.h>
+>   #include <linux/platform_device.h>
+> +#include <linux/regmap.h>
+>   #include <linux/watchdog.h>
+>   
+>   static bool nowayout = WATCHDOG_NOWAYOUT;
+> @@ -65,23 +67,32 @@ MODULE_DEVICE_TABLE(of, aspeed_wdt_of_table);
+>   #define WDT_RELOAD_VALUE	0x04
+>   #define WDT_RESTART		0x08
+>   #define WDT_CTRL		0x0C
+> -#define   WDT_CTRL_BOOT_SECONDARY	BIT(7)
+> -#define   WDT_CTRL_RESET_MODE_SOC	(0x00 << 5)
+> -#define   WDT_CTRL_RESET_MODE_FULL_CHIP	(0x01 << 5)
+> -#define   WDT_CTRL_RESET_MODE_ARM_CPU	(0x10 << 5)
+> -#define   WDT_CTRL_1MHZ_CLK		BIT(4)
+> -#define   WDT_CTRL_WDT_EXT		BIT(3)
+> -#define   WDT_CTRL_WDT_INTR		BIT(2)
+> -#define   WDT_CTRL_RESET_SYSTEM		BIT(1)
+> -#define   WDT_CTRL_ENABLE		BIT(0)
+> +#define WDT_CTRL_BOOT_SECONDARY	BIT(7)
+> +#define WDT_CTRL_RESET_MODE_SOC	(0x00 << 5)
+> +#define WDT_CTRL_RESET_MODE_FULL_CHIP	(0x01 << 5)
+> +#define WDT_CTRL_RESET_MODE_ARM_CPU	(0x10 << 5)
+> +#define WDT_CTRL_1MHZ_CLK		BIT(4)
+> +#define WDT_CTRL_WDT_EXT		BIT(3)
+> +#define WDT_CTRL_WDT_INTR		BIT(2)
+> +#define WDT_CTRL_RESET_SYSTEM		BIT(1)
+> +#define WDT_CTRL_ENABLE		BIT(0)
+>   #define WDT_TIMEOUT_STATUS	0x10
+> -#define   WDT_TIMEOUT_STATUS_IRQ		BIT(2)
+> -#define   WDT_TIMEOUT_STATUS_BOOT_SECONDARY	BIT(1)
+> +#define WDT_TIMEOUT_STATUS_IRQ		BIT(2)
+> +#define WDT_TIMEOUT_STATUS_BOOT_SECONDARY	BIT(1)
+> +#define WDT_TIMEOUT_STATUS_EVENT		BIT(0)
+>   #define WDT_CLEAR_TIMEOUT_STATUS	0x14
+> -#define   WDT_CLEAR_TIMEOUT_AND_BOOT_CODE_SELECTION	BIT(0)
+> +#define WDT_CLEAR_TIMEOUT_AND_BOOT_CODE_SELECTION	BIT(0)
+>   #define WDT_RESET_MASK1		0x1c
+>   #define WDT_RESET_MASK2		0x20
+>   
 
-Yes, besides the other failures I see (odd targets), I was expecting 
-that someone else noticed that already :) thanks!
+The above bit value defines were indented to show what is
+registers and what is register bit values. Why are you
+changing that other than for personal preference ?
 
--- 
-Cheers,
-
-David / dhildenb
+Guenter
 
 
