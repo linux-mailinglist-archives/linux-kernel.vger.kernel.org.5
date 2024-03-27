@@ -1,162 +1,173 @@
-Return-Path: <linux-kernel+bounces-120175-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-120178-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id BCFC188D3BD
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 02:31:29 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8434288D3C5
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 02:36:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 810DE2A8079
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 01:31:28 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 77C351C257F6
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 01:36:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7BB701CFA9;
-	Wed, 27 Mar 2024 01:31:21 +0000 (UTC)
-Received: from smtpbgsg2.qq.com (smtpbgsg2.qq.com [54.254.200.128])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 935581CD2B;
+	Wed, 27 Mar 2024 01:36:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Eu3X/HBi"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9D70A1CF92;
-	Wed, 27 Mar 2024 01:31:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=54.254.200.128
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EA6461862C
+	for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 01:36:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711503081; cv=none; b=HX14UsxjK2jnOuBn3Rv4b0/fYhRc/6w2jccIBDN5xCYUPdO5fAUTfaOpWLLshBqvXB7ihmcIwYVT61zqo4ApBi5wPffibl4SgDN/XzZeyTNUJ4jxngQxwgj/nlw+SB1dfNirTWkT/MQuEhOHzKf1KTD9m9iRqmABY+ZYRscaaEY=
+	t=1711503378; cv=none; b=I+riCUFWfUmXJ2yKCE7JZKuzken1tQ4zTxBTNDj6ohyQ752sAJJI44EPbmSRA/vTUgBuSaMLxkA0Ctz6hFJE0Ds73hLq4NMg9T9dmLujS9lhiRGufRwGGA5wGlCd5HDGQvSTXybZJnTJFTEG+0y2C9vZHRBIXpXdi4Pp42TIYFc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711503081; c=relaxed/simple;
-	bh=PB78qaohyz8M/acpebMaE6FdLWqAdAAntBtk1iJ8u+g=;
-	h=From:To:Cc:References:In-Reply-To:Subject:Date:Message-ID:
-	 MIME-Version:Content-Type; b=GDqNEoYpoh0lj1AzZSwo/gIBAT03vJiyDqD5qL7/9HfudFHV6Jw8JQwFlyNkS/N4rDGg+tVj1vpQkv/a8w87DIWqo4eOJrjkFzevcBvqyLO5AqfzFQ49KU1rYlectb8WXdNmTknVPQtR7j3MlDe6W+k4XemzvKbPVD1GmEFk1W0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=net-swift.com; spf=pass smtp.mailfrom=net-swift.com; arc=none smtp.client-ip=54.254.200.128
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=net-swift.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=net-swift.com
-X-QQ-mid:Yeas8t1711502976t933t54105
-Received: from 73E00E8BC808433CB9DB281092DFBE6B (duanqiangwen@net-swift.com [122.235.142.34])
-X-QQ-SSF:00400000000000F0FH4000000000000
-From: duanqiangwen@net-swift.com
-X-BIZMAIL-ID: 293933216363626304
-To: "'Jiri Pirko'" <jiri@resnulli.us>
-Cc: <netdev@vger.kernel.org>,
-	<jiawenwu@trustnetic.com>,
-	<mengyuanlou@net-swift.com>,
-	<davem@davemloft.net>,
-	<edumazet@google.com>,
-	<kuba@kernel.org>,
-	<pabeni@redhat.com>,
-	<maciej.fijalkowski@intel.com>,
-	<andrew@lunn.ch>,
-	<wangxiongfeng2@huawei.com>,
-	<linux-kernel@vger.kernel.org>,
-	<michal.kubiak@intel.com>
-References: <20240322080416.470517-1-duanqiangwen@net-swift.com> <Zf09VnR2YI_WOchd@nanopsycho>
-In-Reply-To: <Zf09VnR2YI_WOchd@nanopsycho>
-Subject: RE: [PATCH net v5] net: txgbe: fix i2c dev name cannot match clkdev
-Date: Wed, 27 Mar 2024 09:29:35 +0800
-Message-ID: <001201da7fe6$3aa37f10$afea7d30$@net-swift.com>
+	s=arc-20240116; t=1711503378; c=relaxed/simple;
+	bh=ECemb7/KX8BGFyghPRdr8JHojkYBtQzWD/1aRhBEX7Q=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=RwD3Xrcuevf3Uxm4MBRZH1XcNHRMEjby5ZKu+AaAlwVCubdOccMxkHZz0yqcCbJJAsqA9zC/I/VVd0ITZ3tDUb+KUroV/CA/k7645xJyB15eNqGgn1/yrp+9CchXsfJkS8sf5xGKFnyc3bsACcQQK4d5HT7cSWIH40Q3qmyKrKk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Eu3X/HBi; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1711503375;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=iYPTOunHLd/Diy0hNlVVbA0CQwtG77CQYjtLHeiLuNo=;
+	b=Eu3X/HBiPgUwywAvsA2JT5akEyLVjmMinuHQeMfqw4UKePoNiDpOplFI2R5Q7yK/82YLnS
+	958yqbhM1OwKArKeQWrXaOPImlpGrIM1p23AIi+cMv8Su0xlNlZU78+gl7QPOjS+UJ0eme
+	b9ZG7mzxFTIUSwkDYaYhs1So53wJj+0=
+Received: from mail-qv1-f70.google.com (mail-qv1-f70.google.com
+ [209.85.219.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-250-LkaNSJ3YNy2Cx1WJHUkc9w-1; Tue, 26 Mar 2024 21:36:14 -0400
+X-MC-Unique: LkaNSJ3YNy2Cx1WJHUkc9w-1
+Received: by mail-qv1-f70.google.com with SMTP id 6a1803df08f44-696914b6d2dso25566676d6.2
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 18:36:14 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711503374; x=1712108174;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=iYPTOunHLd/Diy0hNlVVbA0CQwtG77CQYjtLHeiLuNo=;
+        b=L+7LzkJVbOhkDUDo9lV01eymSW11RD5uMRjSq37nUEvcHiopwZi+Yv3UPjRoHY2Tv3
+         pulslS0juhNlMv6qeFTJxjN5aY3Gz/LBXcvQtwzfuWUZhWvboPLRl9W7WlB3LtOtmSXH
+         ySbfjAA2ClmvB8Tk3JyR7gcHBpE/MxyrWikz+Fub987eU5ZvjZb0Vq2ChJKArQ2LTL0v
+         0LRzWe/GCPq897OPFoeGfqqVsfRUtGpmXaYckujFQD/cmiQiNM0FOJcSXHx+bpA7SLcU
+         boNsIYqj6h1rXo/KoWG2ZVlFa6AWW0jHCVfkuBOCVQaoKeO4a64xQ7/B1rFmUirGGA89
+         xLHw==
+X-Gm-Message-State: AOJu0YyZID7disobWwW67E56GeyNCkb8XMdqSiidxdzE43mfg6MapSpw
+	wqnrinENkSo7nvg5YzykgClYfmjEZmlfmHsKLbX9hOaplNLCsoOiBKp6kC71Xc09cPvpu0yAZsD
+	xOyfkYQ6lNuqcGfMdXo1F3UfANsFa+kSr0u0pzb0ekYza/jZeekXwkfUjiacIVA==
+X-Received: by 2002:a05:6214:e6c:b0:690:b3a3:2261 with SMTP id jz12-20020a0562140e6c00b00690b3a32261mr2857118qvb.53.1711503374032;
+        Tue, 26 Mar 2024 18:36:14 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IHhUP8icqSJJoJYHIjBdnpMjQxvYXH/YAk6xTmiVd4FaN0LmOOpbpBO3pJH1Xwh2Qag7NMJiA==
+X-Received: by 2002:a05:6214:e6c:b0:690:b3a3:2261 with SMTP id jz12-20020a0562140e6c00b00690b3a32261mr2857103qvb.53.1711503373718;
+        Tue, 26 Mar 2024 18:36:13 -0700 (PDT)
+Received: from LeoBras.redhat.com ([2804:1b3:a801:90ea:8d3f:e47:b819:941d])
+        by smtp.gmail.com with ESMTPSA id x11-20020ad4458b000000b00696a47179a1sm819669qvu.14.2024.03.26.18.36.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 26 Mar 2024 18:36:12 -0700 (PDT)
+From: Leonardo Bras <leobras@redhat.com>
+To: Helen Koike <helen.koike@collabora.com>,
+	Leonardo Bras <leobras@redhat.com>
+Cc: linux-kernel@vger.kernel.org,
+	linux-doc@vger.kernel.org
+Subject: [PATCH v1 1/1] gitlab-ci: Let project define runner using environment variables
+Date: Tue, 26 Mar 2024 22:30:54 -0300
+Message-ID: <20240327013055.139494-2-leobras@redhat.com>
+X-Mailer: git-send-email 2.44.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="gb2312"
-Content-Transfer-Encoding: quoted-printable
-X-Mailer: Microsoft Outlook 16.0
-Thread-Index: AQFwLs5rgYGClTpBePjvbYMXpqMxXgKXsSFcsgqwUFA=
-Content-Language: zh-cn
-X-QQ-SENDSIZE: 520
-Feedback-ID: Yeas:net-swift.com:qybglogicsvrsz:qybglogicsvrsz3a-1
+Content-Transfer-Encoding: 8bit
 
-> -----Original Message-----
-> From: Jiri Pirko <jiri@resnulli.us>
-> Sent: 2024=C4=EA3=D4=C222=C8=D5 16:12
-> To: Duanqiang Wen <duanqiangwen@net-swift.com>
-> Cc: netdev@vger.kernel.org; jiawenwu@trustnetic.com;
-> mengyuanlou@net-swift.com; davem@davemloft.net;
-> edumazet@google.com; kuba@kernel.org; pabeni@redhat.com;
-> maciej.fijalkowski@intel.com; andrew@lunn.ch;
-> wangxiongfeng2@huawei.com; linux-kernel@vger.kernel.org;
-> michal.kubiak@intel.com
-> Subject: Re: [PATCH net v5] net: txgbe: fix i2c dev name cannot match
-clkdev
->=20
-> Fri, Mar 22, 2024 at 09:04:16AM CET, duanqiangwen@net-swift.com wrote:
-> >txgbe clkdev shortened clk_name, so i2c_dev info_name also need to
-> >shorten. Otherwise, i2c_dev cannot initialize clock.
-> >
-> >Change log:
-> >v4-v5: address comments:
-> >	Jiri Pirko:
-> >	Well, since it is used in txgbe_phy.c, it should be probably
-> >	rather defined locally in txgbe_phy.c.
->=20
-> Did you read Florian's comment? Please do.
->=20
-> pw-bot: cr
->=20
+Currently it's not possible to select which runner will handle a pipeline
+without changing the codebase.
 
-I replied to Florian:=20
-" I want to shorten "i2c_desginware" to "i2c_dw" in txgbe driver, so =
-other
-drivers which use "i2c_designware" need another patch to use a define. "
+Add CI_TAGS environment variable, which can be used to select a runner
+either from a commit message, or directly from Gitlab interface.
 
-He hasn't replied to me for several days, what should I do next?
+Also add Documentation for this variable.
 
->=20
-> >v3->v4: address comments:
-> >	Jakub Kicinski:
-> >	No empty lines between Fixes and Signed-off... please.
-> >v2->v3: address comments:
-> >	Jiawen Wu:
-> >	Please add the define in txgbe_type.h
-> >
-> >Fixes: e30cef001da2 ("net: txgbe: fix clk_name exceed MAX_DEV_ID
-> >limits")
-> >Signed-off-by: Duanqiang Wen <duanqiangwen@net-swift.com>
-> >---
-> > drivers/net/ethernet/wangxun/txgbe/txgbe_phy.c | 8 +++++---
-> > 1 file changed, 5 insertions(+), 3 deletions(-)
-> >
-> >diff --git a/drivers/net/ethernet/wangxun/txgbe/txgbe_phy.c
-> >b/drivers/net/ethernet/wangxun/txgbe/txgbe_phy.c
-> >index 5b5d5e4310d1..2fa511227eac 100644
-> >--- a/drivers/net/ethernet/wangxun/txgbe/txgbe_phy.c
-> >+++ b/drivers/net/ethernet/wangxun/txgbe/txgbe_phy.c
-> >@@ -20,6 +20,8 @@
-> > #include "txgbe_phy.h"
-> > #include "txgbe_hw.h"
-> >
-> >+#define TXGBE_I2C_CLK_DEV_NAME "i2c_dw"
-> >+
-> > static int txgbe_swnodes_register(struct txgbe *txgbe)  {
-> > 	struct txgbe_nodes *nodes =3D &txgbe->nodes; @@ -571,8 +573,8
-> @@ static
-> >int txgbe_clock_register(struct txgbe *txgbe)
-> > 	char clk_name[32];
-> > 	struct clk *clk;
-> >
-> >-	snprintf(clk_name, sizeof(clk_name), "i2c_dw.%d",
-> >-		 pci_dev_id(pdev));
-> >+	snprintf(clk_name, sizeof(clk_name), "%s.%d",
-> >+		 TXGBE_I2C_CLK_DEV_NAME, pci_dev_id(pdev));
-> >
-> > 	clk =3D clk_register_fixed_rate(NULL, clk_name, NULL, 0, =
-156250000);
-> > 	if (IS_ERR(clk))
-> >@@ -634,7 +636,7 @@ static int txgbe_i2c_register(struct txgbe =
-*txgbe)
-> >
-> > 	info.parent =3D &pdev->dev;
-> > 	info.fwnode =3D software_node_fwnode(txgbe-
-> >nodes.group[SWNODE_I2C]);
-> >-	info.name =3D "i2c_designware";
-> >+	info.name =3D TXGBE_I2C_CLK_DEV_NAME;
-> > 	info.id =3D pci_dev_id(pdev);
-> >
-> > 	info.res =3D &DEFINE_RES_IRQ(pdev->irq);
-> >--
-> >2.27.0
-> >
-> >
->=20
+Signed-off-by: Leonardo Bras <leobras@redhat.com>
+---
+
+This patch goes on top on a previous patchset sent by Helen:
+https://lore.kernel.org/all/20240228225527.1052240-1-helen.koike@collabora.com/
+
+With this patch I could run CI with gitlab.com runners, by setting
+CI_TAGS=saas-linux-medium-amd64 
+
+The result of this pipeline can be seen in:
+https://gitlab.com/linux-kernel/linux/-/pipelines/1228999646
+
+ Documentation/ci/gitlab-ci/gitlab-ci.rst | 5 +++++
+ ci/gitlab-ci/yml/gitlab-ci.yml           | 2 ++
+ 2 files changed, 7 insertions(+)
+
+diff --git a/Documentation/ci/gitlab-ci/gitlab-ci.rst b/Documentation/ci/gitlab-ci/gitlab-ci.rst
+index 4f7ef03cca95..18360da835bd 100644
+--- a/Documentation/ci/gitlab-ci/gitlab-ci.rst
++++ b/Documentation/ci/gitlab-ci/gitlab-ci.rst
+@@ -304,20 +304,25 @@ Description of Each Variable
+ **KCI_CHECKPATCH_OPTIONS**
+     Used in `checkpatch.pl "$KCI_CHECKPATCH_OPTIONS"` (see checkpatch
+     documentation). It is commonly used with the --ignore flag to suppress
+     specific warnings generated by checkpatch.pl. It can also be defined in the
+     commit message, since it is evaluated in run time.
+ 
+ **KCI_PATCH_SERIES_SIZE**
+     Used to define the size of the patch series, see `job: checkpatch` section
+     above. It is evaluated in run time, and can be set in the commit message.
+ 
++**CI_TAGS**
++    Used to help choose which runner will deal with the current pipeline.
++    If using Gitlab.com runners, set saas-linux-medium-amd64 or a better runner
++    so there is enough resources to build & commit the base image.
++
+ .. _triggering-pipelines-from-command-line:
+ 
+ Triggering Pipelines from Command Line
+ --------------------------------------
+ 
+ Pipelines can be triggered from the command line with custom variables using the
+ `GitLab CLI tool <https://docs.gitlab.com/ee/editor_extensions/gitlab_cli>`_.
+ 
+ Example:
+ 
+diff --git a/ci/gitlab-ci/yml/gitlab-ci.yml b/ci/gitlab-ci/yml/gitlab-ci.yml
+index 57b9c0290471..359b7715e3ab 100644
+--- a/ci/gitlab-ci/yml/gitlab-ci.yml
++++ b/ci/gitlab-ci/yml/gitlab-ci.yml
+@@ -33,20 +33,22 @@ workflow:
+     - if: $FORCE_CI == 'true'
+ 
+ variables:
+   FDO_UPSTREAM_REPO: helen.fornazier/linux   # The repo where to look for cached images
+     # ccache builds in gitlab-runner to speed up builds
+   SMATCH_DB_DIR: /smatch/smatch_data
+   # exit code of bash script on `script` will be the exit code of the job
+   FF_USE_NEW_BASH_EVAL_STRATEGY: "true"
+ 
+ default:
++  tags:
++    - $CI_TAGS
+   artifacts:
+     paths:
+       - artifacts/
+     when: always
+ 
+ include:
+   - remote: 'https://gitlab.freedesktop.org/freedesktop/ci-templates/-/raw/16bc29078de5e0a067ff84a1a199a3760d3b3811/templates/ci-fairy.yml'
+   - remote: 'https://gitlab.freedesktop.org/freedesktop/ci-templates/-/raw/16bc29078de5e0a067ff84a1a199a3760d3b3811/templates/debian.yml'
+ 
+   - ci/gitlab-ci/yml/kernel-combinations.yml
+-- 
+2.44.0
 
 
