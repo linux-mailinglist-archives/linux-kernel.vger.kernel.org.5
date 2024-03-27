@@ -1,77 +1,80 @@
-Return-Path: <linux-kernel+bounces-122025-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-122026-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5985188F0EB
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 22:31:38 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0A29B88F0F0
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 22:31:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7C9101C2CB77
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 21:31:37 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B41C71F28593
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 21:31:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8055E1534F1;
-	Wed, 27 Mar 2024 21:31:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D0FA5153822;
+	Wed, 27 Mar 2024 21:31:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="VJ9tFCuE"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="S4etqny1"
 Received: from mail-yb1-f202.google.com (mail-yb1-f202.google.com [209.85.219.202])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D95B514C5BE
-	for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 21:31:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B7A015359B
+	for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 21:31:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711575090; cv=none; b=eAq6rXRyr7SHU0swPbx41vcaAt8aG2oydiITNYqVsARvYMV+8NDhnE03/G6QbGqOHc+v1HH4yoH6YiWA0AsN6S4d9rgmPuv3SYBQlFNWVgB55+eDrn3m09Pm7CPiAXoJ+q68sfrmOgcMInRJVsm86aJPwq7ahQgDrWdVWaCYLYU=
+	t=1711575094; cv=none; b=e6vcqdBs0h6c+KVsKQZiyhlNKRFK2TsGdIE8XnXgbN7P5NuMLBOSg/c7id54PNTtzYA7pLGaqFhL0C3k6Rs645zSRgWCyKDE5yZsJCbMP0umYmxw5jszXN+OBNAuDFY399BDLYOynjCUdZxKg2q2FfnvHgVXWxZVqqyrc6H4fyU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711575090; c=relaxed/simple;
-	bh=G1xjtCwsE5TyJpVtDYihKDzXG3ZXcnzrS1aBTofQBcw=;
-	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=oYMbiW8vA+pjsMd5iTfa1J6ikZ8/mHRYnCDyL9dX33+F+m4ZpWQE6aiHkQJY72XW56tKLrxXdo6CqXy9phLy11zWUwGUe3fincg5uwa6xYYVviqvbXy5ITndarhm5Ssen/5/gGDLQs7h/tENOeRxAiOfW8kwLRW5q11L55fu8hk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--yuanchu.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=VJ9tFCuE; arc=none smtp.client-ip=209.85.219.202
+	s=arc-20240116; t=1711575094; c=relaxed/simple;
+	bh=NB7Q6As5LCuC5IWAkmAIMr9K7a1mke7uPnTHkJnbklI=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=J7fwZCZM41QwxfC12BMYcy168hu2cpfl6hDTzE1bpRAXiDiXKE007wpBPzhfrk2pvrmOvXTq5PeIPepY9ZNmQX+JgpTf+Ry82HKMlMBSYfzpWUhRGiAhLcE47rSG+4DVoUp5MdEX1nL1zt+KhHopGYT456f6ukd7dqRnDCU4MCI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--yuanchu.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=S4etqny1; arc=none smtp.client-ip=209.85.219.202
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--yuanchu.bounces.google.com
-Received: by mail-yb1-f202.google.com with SMTP id 3f1490d57ef6-dd944567b6cso350958276.2
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 14:31:28 -0700 (PDT)
+Received: by mail-yb1-f202.google.com with SMTP id 3f1490d57ef6-dc743cc50a6so308081276.2
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 14:31:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1711575088; x=1712179888; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=j1WkldVevb55Hs0T4InQAALOIu6zVUWaR4B4A3EAoAg=;
-        b=VJ9tFCuE6SHosieGf6Y797K3Msd0s+1vEvqUMM24r+awggGQWVfpoEP/Kg8EFOy6a1
-         qM4kampCUfCBs7o4XHeVQM9+vUHselrR6QsQo44ReI13NEacHu2cetVN7pLiXr0ru+fq
-         W6na2bw7UmrorRri4Y49lEQf99EsujLOEEcXV1pi7Ju5GdmaRcMIYNpzkOlu1VSxGXWl
-         3EFEA1ie57jR3gICJBVLZK/x1t2xFwrSy3WBYBaRYn2y2/gsTHMS4BJpESsGgiVeJpr0
-         7x2ubR+GpKXSEBSPujU/3R5xP8ClAmcgH++sH+jLy/sp4ZKrdzxFc/adJVxGPtDomZDh
-         WUnA==
+        d=google.com; s=20230601; t=1711575090; x=1712179890; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=J7Eobqr0LFBQ4KWjEX1Ii2cj/j9a00dqkQu19UHFfuM=;
+        b=S4etqny1LdnIfyfzpyk2YSUzXWSmvUC7xsEss2xNipHRbf/fhB/MCe/OMJWvfy+lIS
+         /9QIldAWBdbcSLKYDwoADXt2CnhpwjcJ3h1WxbtY49Sbh97kIb4J9aeMHEJltDGhucQO
+         ijKZcONCUZGSKvajoGqrYL4hh0Cw4lD+h0WsZet/KD514cF7eF/0CNl97pNB9TAkdRKT
+         bJ9LKWeqwVThDGUEI9vuqUpgb+SWx9dJHMRdtcvswfNn7GiUwfzp4U/DyfseM7FYwkBw
+         kzPdPKJ4U+NjoIfEOzZuOjcj7BoPzIPd7pC/aq43X/1lgxtXGGLqmVAfCvZfYD/5kFjR
+         tCyQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711575088; x=1712179888;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=j1WkldVevb55Hs0T4InQAALOIu6zVUWaR4B4A3EAoAg=;
-        b=OYc03hxuuf82JVqVUoBQ3voIjpd6WjJUczxjxVELNbb/KOnDHhd0K2FGHS7rCKJ7wZ
-         VSKkCWsqgOL7oyFD05VTL4Ln2dqTFgUigHENyuqV3sSMmpXMSe/KL1/v9guqzgz+FarS
-         HJ2RKNziRZFgkb+hlrpIso6R8VwkSdIbDsDKEPtCA8A7vY3O66GGNu8ayi0tt3rixfjQ
-         bc9qtFhRcJD1fc+hjltdpcARTrllGt69ajLkfSQt5msjdyLc68/ZsOejxvNkrqvchBSv
-         eGh3S2UbHEfW4yYLsV8iS+vj8J/hWw6BUiKFMCN/HkPlkci2Gwuw/wx0rGnmREScG+V4
-         r2Ew==
-X-Forwarded-Encrypted: i=1; AJvYcCV/aMlfDwqGvSiCAe3ytHOqcgUyhyS3aHI6ryxyGLhRlHCNLOeo4uem4DLvXUItb/UAHc0GmmpyZpU6FcceplTy64ohuG0DnuPHGf9S
-X-Gm-Message-State: AOJu0YwYuGX9UmHgecbUKn+BJTQiNqO7YOOaUKIjqtxtjvnhg9130Kw1
-	DpfOqW3cvXSyuEemt2LxkCBSCfNUeW5wg4NDeHsA5ObvRBrZsBGXYrG16/l/ceXCBFwAAS8GeiT
-	fqijqow==
-X-Google-Smtp-Source: AGHT+IEadIRNrv0swKBdpi8F8A66pEpu8qyXv3IJO389bzVqRmj7ZSDORZJUPOnrxxSqDEOUJMJJc78lWKDl
+        d=1e100.net; s=20230601; t=1711575090; x=1712179890;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=J7Eobqr0LFBQ4KWjEX1Ii2cj/j9a00dqkQu19UHFfuM=;
+        b=TRgQrQxMsYU2vpKQgZVL2nl0Cmv4+xXorcKD5QR/Cf3+Ui1inlcsiiYfHPydR0wlGX
+         aJhWvN/piON/ov3StlSqSDu5rNbcyEmZ4Uys/Kivp+rUeJZAhr5l4eJQ5o9j4tpXIQ+N
+         jzCw90qpadlVPHO7g381VcRYw2UfFvPFi33ZnRK7ohm3gPiBob6/fodxclqgdFibVRwi
+         EXPJKOvhUAFFodFBHg/0IGFx9uv+rrL6eKuMO+pDG+0hdl8DxD6oQJ5HZYSwK8xXXPmG
+         0U0BuZqMwJa/qoqyGlV8Ob3NbHzaWeKUIX1c3JYM1ZxAZUPi3E3oJvk1SGtiyMfbFSci
+         F7Cw==
+X-Forwarded-Encrypted: i=1; AJvYcCUkjeBmFuNAq/PF9h975xoHZOvJD8i8IcVaNVo6UcUf6kg8Mu8LbPgmIHPJqXHttNS+iKvchkg1epN9aABQyLvy5flJGPsxI6B4Shas
+X-Gm-Message-State: AOJu0YyBzbFpzB+GSp6Q8tzaBLDOQjYl/Ginh3t0w3zecxBHjzFlHKeb
+	2Y3+N8B9nlIe4ebIQLLv+pCEyQWSi63KZhnwfEMfrtiBJ9fyDhnfKHQPXuLGLKLf/OPuNvMb/6z
+	bZduU1A==
+X-Google-Smtp-Source: AGHT+IEtjKFm0aB/GkGE7TLyxEpzw6bgXLiicKkfzUR/Ki0/1kiBkWenomFbSpLy63KHaGIYhCLu0OSP/VuU
 X-Received: from yuanchu-desktop.svl.corp.google.com ([2620:15c:2a3:200:6df3:ef42:a58e:a6b1])
- (user=yuanchu job=sendgmr) by 2002:a05:6902:1145:b0:dce:5218:c89b with SMTP
- id p5-20020a056902114500b00dce5218c89bmr119024ybu.5.1711575087927; Wed, 27
- Mar 2024 14:31:27 -0700 (PDT)
-Date: Wed, 27 Mar 2024 14:30:59 -0700
+ (user=yuanchu job=sendgmr) by 2002:a05:6902:2311:b0:dbe:d0a9:2be8 with SMTP
+ id do17-20020a056902231100b00dbed0a92be8mr116972ybb.0.1711575090119; Wed, 27
+ Mar 2024 14:31:30 -0700 (PDT)
+Date: Wed, 27 Mar 2024 14:31:00 -0700
+In-Reply-To: <20240327213108.2384666-1-yuanchu@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
+References: <20240327213108.2384666-1-yuanchu@google.com>
 X-Mailer: git-send-email 2.44.0.396.g6e790dbe36-goog
-Message-ID: <20240327213108.2384666-1-yuanchu@google.com>
-Subject: [RFC PATCH v3 0/8] mm: workingset reporting
+Message-ID: <20240327213108.2384666-2-yuanchu@google.com>
+Subject: [RFC PATCH v3 1/8] mm: multi-gen LRU: ignore non-leaf pmd_young for force_scan=true
 From: Yuanchu Xie <yuanchu@google.com>
 To: David Hildenbrand <david@redhat.com>, "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>, 
 	Khalid Aziz <khalid.aziz@oracle.com>, Henry Huang <henry.hj@antgroup.com>, 
@@ -92,141 +95,37 @@ Cc: Wei Xu <weixugc@google.com>, David Rientjes <rientjes@google.com>,
 	linux-kselftest@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 
-This patch series provides workingset reporting of user pages in
-lruvecs, of which coldness can be tracked by accessed bits and fd
-references. However, the concept of workingset applies generically to
-all types of memory, which could be kernel slab caches, discardable
-userspace caches (databases), or CXL.mem. Therefore, data sources might
-come from slab shrinkers, device drivers, or the userspace. IMO, the
-kernel should provide a set of workingset interfaces that should be
-generic enough to accommodate the various use cases, and be extensible
-to potential future use cases. The current proposed interfaces are not
-sufficient in that regard, but I would like to start somewhere, solicit
-feedback, and iterate.
+When non-leaf pmd accessed bits are available, MGLRU page table walks
+can clear the accessed bit and promptly ignore the accessed bit on the
+pte because it's on a different node, so the walk does not update the
+generation of said page. When the next scan comes around on the right
+node, the non-leaf pmd accessed bit might remain cleared and the pte
+accessed bits won't be checked. While this is sufficient for
+reclaim-driven aging, where the goal is to select a reasonably cold
+page, the access can be missed when aging proactively for measuring the
+working set size of a node/memcg.
 
-Use cases
-==========
-Job scheduling
-For data center machines, workingset information allows the job scheduler
-to right-size each job and land more jobs on the same host or NUMA node,
-and in the case of a job with increasing workingset, policy decisions
-can be made to migrate other jobs off the host/NUMA node, or oom-kill
-the misbehaving job. If the job shape is very different from the machine
-shape, knowing the workingset per-node can also help inform page
-allocation policies.
+Since force_scan disables various other optimizations, we check
+force_scan to ignore the non-leaf pmd accessed bit.
 
-Proactive reclaim
-Workingset information allows the a container manager to proactively
-reclaim memory while not impacting a job's performance. While PSI may
-provide a reactive measure of when a proactive reclaim has reclaimed too
-much, workingset reporting enables the policy to be more accurate and
-flexible.
+Signed-off-by: Yuanchu Xie <yuanchu@google.com>
+---
+ mm/vmscan.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Ballooning (similar to proactive reclaim)
-While this patch series does not extend the virtio-balloon device,
-balloon policies benefit from workingset to more precisely determine
-the size of the memory balloon. On desktops/laptops/mobile devices where
-memory is scarce and overcommitted, the balloon sizing in multiple VMs
-running on the same device can be orchestrated with workingset reports
-from each one.
-
-Promotion/Demotion
-Similar to proactive reclaim, a workingset report enables demotion to a
-slower tier of memory.
-For promotion, the workingset report interfaces need to be extended to
-report hotness and gather hotness information from the devices[1].
-
-[1]
-https://www.opencompute.org/documents/ocp-cms-hotness-tracking-requirements-white-paper-pdf-1
-
-Sysfs and Cgroup Interfaces
-==========
-The interfaces are detailed in the patches that introduce them. The main
-idea here is we break down the workingset per-node per-memcg into time
-intervals (ms), e.g.
-
-1000 anon=137368 file=24530
-20000 anon=34342 file=0
-30000 anon=353232 file=333608
-40000 anon=407198 file=206052
-9223372036854775807 anon=4925624 file=892892
-
-I realize this does not generalize well to hotness information, but I
-lack the intuition for an abstraction that presents hotness in a useful
-way. Based on a recent proposal for move_phys_pages[2], it seems like
-userspace tiering software would like to move specific physical pages,
-instead of informing the kernel "move x number of hot pages to y
-device". Please advise.
-
-[2]
-https://lore.kernel.org/lkml/20240319172609.332900-1-gregory.price@memverge.com/
-
-Implementation
-==========
-Currently, the reporting of user pages is based off of MGLRU, and
-therefore requires CONFIG_LRU_GEN=y. We would benefit from more MGLRU
-generations for a more fine-grained workingset report. I will make the
-generation count configurable in the next version. The workingset
-reporting mechanism is gated behind CONFIG_WORKINGSET_REPORT, and the
-aging thread is behind CONFIG_WORKINGSET_REPORT_AGING.
-
---
-Changes from RFC v2 -> RFC v3:
-- Update to v6.8
-- Added an aging kernel thread (gated behind config)
-- Added basic selftests for sysfs interface files
-- Track swapped out pages for reaccesses
-- Refactoring and cleanup
-- Dropped the virtio-balloon extension to make things manageable
-
-Changes from RFC v1 -> RFC v2:
-- Refactored the patchs into smaller pieces
-- Renamed interfaces and functions from wss to wsr (Working Set Reporting)
-- Fixed build errors when CONFIG_WSR is not set
-- Changed working_set_num_bins to u8 for virtio-balloon
-- Added support for per-NUMA node reporting for virtio-balloon
-
-[rfc v1]
-https://lore.kernel.org/linux-mm/20230509185419.1088297-1-yuanchu@google.com/
-[rfc v2]
-https://lore.kernel.org/linux-mm/20230621180454.973862-1-yuanchu@google.com/
-
-Yuanchu Xie (8):
-  mm: multi-gen LRU: ignore non-leaf pmd_young for force_scan=true
-  mm: aggregate working set information into histograms
-  mm: use refresh interval to rate-limit workingset report aggregation
-  mm: report workingset during memory pressure driven scanning
-  mm: extend working set reporting to memcgs
-  mm: add per-memcg reaccess histogram
-  mm: add kernel aging thread for workingset reporting
-  mm: test system-wide workingset reporting
-
- drivers/base/node.c                           |   3 +
- include/linux/memcontrol.h                    |   5 +
- include/linux/mmzone.h                        |   4 +
- include/linux/workingset_report.h             | 107 +++
- mm/Kconfig                                    |  15 +
- mm/Makefile                                   |   2 +
- mm/internal.h                                 |  45 ++
- mm/memcontrol.c                               | 386 ++++++++-
- mm/mmzone.c                                   |   2 +
- mm/vmscan.c                                   |  95 ++-
- mm/workingset.c                               |   9 +-
- mm/workingset_report.c                        | 757 ++++++++++++++++++
- mm/workingset_report_aging.c                  | 127 +++
- tools/testing/selftests/mm/.gitignore         |   1 +
- tools/testing/selftests/mm/Makefile           |   3 +
- .../testing/selftests/mm/workingset_report.c  | 315 ++++++++
- .../testing/selftests/mm/workingset_report.h  |  37 +
- .../selftests/mm/workingset_report_test.c     | 328 ++++++++
- 18 files changed, 2231 insertions(+), 10 deletions(-)
- create mode 100644 include/linux/workingset_report.h
- create mode 100644 mm/workingset_report.c
- create mode 100644 mm/workingset_report_aging.c
- create mode 100644 tools/testing/selftests/mm/workingset_report.c
- create mode 100644 tools/testing/selftests/mm/workingset_report.h
- create mode 100644 tools/testing/selftests/mm/workingset_report_test.c
-
+diff --git a/mm/vmscan.c b/mm/vmscan.c
+index 4f9c854ce6cc..1a7c7d537db6 100644
+--- a/mm/vmscan.c
++++ b/mm/vmscan.c
+@@ -3522,7 +3522,7 @@ static void walk_pmd_range(pud_t *pud, unsigned long start, unsigned long end,
+ 
+ 		walk->mm_stats[MM_NONLEAF_TOTAL]++;
+ 
+-		if (should_clear_pmd_young()) {
++		if (!walk->force_scan && should_clear_pmd_young()) {
+ 			if (!pmd_young(val))
+ 				continue;
+ 
 -- 
 2.44.0.396.g6e790dbe36-goog
 
