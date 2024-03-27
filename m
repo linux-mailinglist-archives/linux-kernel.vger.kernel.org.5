@@ -1,54 +1,57 @@
-Return-Path: <linux-kernel+bounces-121104-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-121105-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C796588E263
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 14:25:32 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8054388E265
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 14:25:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8066929E902
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 13:25:31 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 222861F2E8B4
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 13:25:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6F6E51703CB;
-	Wed, 27 Mar 2024 12:21:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8027B12FF80;
+	Wed, 27 Mar 2024 12:21:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fFQArmJ2"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="bjYMh4SX"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B2ECF1703B8;
-	Wed, 27 Mar 2024 12:21:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C01761703D9;
+	Wed, 27 Mar 2024 12:21:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711542089; cv=none; b=SuwCj0qoamlZTJu0sltA8SA64icua+v2U9CLvnQz7I+BQJ38Qg9o8q9bn0JYFfbtNsubkU64B1VZxpWAvxrfVeEX1t4Y1CXg4lHrPe9fZiL2/pj8aLSLMUFXE4PBhiD3PG2u7s1JpFk1/G4V+SX0hHpvjXWrkMFw8vCPXkU+Djw=
+	t=1711542092; cv=none; b=i6fd1a+eZ2hGzi6HCmiqS6BPF5gOdke58XxT1yRxmtdlo4GUU5FsuvhLlK6D1/mfzDwfmub6f8DZSVfsFWmdAVG+4Fr45VwDrSUpkXPAvxQ/iSPiPevrowLZQBLbs7xntoFFq15KXiDNbgqwIWF2MJ1on4ulfAZEQ3l8+UMRUKs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711542089; c=relaxed/simple;
-	bh=YK+TQNa3VCnUkbWzMWbaq6Ub2njQY4w4Tm60kop3Yrc=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=QOb43pdVp4x1A7BS4HPbDtRGMVMamTPPUcSeEbGRPJNGECWpxpZRVEooZi9iLw1RJfOwPtqgVZZx+mhgHzBInbp5Z69Ijf9AXHd7Sk2GLY61ObG0c/WdfUZq+HPsRzWHaZN9siM0sk+6xHmvjxWZDOEF3Sc6R2UqopiuiudmmGQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fFQArmJ2; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D7D19C433F1;
-	Wed, 27 Mar 2024 12:21:28 +0000 (UTC)
+	s=arc-20240116; t=1711542092; c=relaxed/simple;
+	bh=WzAts3itri9Y1SLbajroPBQOpKguEKCub9D1jDLTxAs=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=cHo7msYCV9LLwDT+uXKPaRHI3//bGJPC8Darq2x3fZvnKHH+xdUcrsFqQMt0gZVfImKMIIR4FRy/QqHfPb3wAdtYhXQHuoGm+21fp26Mt9hYd5lSCXi3eLi4UZKvCqcY+E9VE1ZOx1ZtfHwnoY4FzlZbj/NHIt0Syiarj+IS080=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=bjYMh4SX; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 51F13C433C7;
+	Wed, 27 Mar 2024 12:21:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711542089;
-	bh=YK+TQNa3VCnUkbWzMWbaq6Ub2njQY4w4Tm60kop3Yrc=;
+	s=k20201202; t=1711542092;
+	bh=WzAts3itri9Y1SLbajroPBQOpKguEKCub9D1jDLTxAs=;
 	h=From:To:Cc:Subject:Date:From;
-	b=fFQArmJ20n5y8etum66PoJxx/+Hb23Gl+gzgCpl2dJXjg5YAwSGPQtWIo6OR2MrXV
-	 ShD1LHyo40qeCcPdbaVcr3aR4RFSFMGF9353faU/cra9jJ+L0o+rs/7IUI/H/YnK1N
-	 f5q2Xuga4/CXAZojE2M5yaYZOK0WVaVuEDzNBJaGfKS1/E0mnh07uIPtjSBssj5Q2s
-	 xh8Ierfr2tT91xbh0IIUNbIEdewk2fz28W6H4ZuUfmHHNrnChqEnF0NTgXtz+7Vtp5
-	 m0mdXirxk+ynOVKsUv8oiP4e+vulmGaZhIbXr7rW/djENC30a06C6/N4EAbMq2VxMa
-	 Uf0Uf+fLxx+yg==
+	b=bjYMh4SXd1o68I9slhavTa9OsBX3obzVJM4M6/4R/7EVPHx1sGs/WXXny4yrnfunL
+	 iiJEyzTNZy1rfuuiDVcfXsYZRVW4FcXGseViTVT3xG3f2BSbQUsxDDeM7Fde4olxY1
+	 YMLUqJhR2t0lQM/dKgm1YqzhbbNPaJX4gKQ9urywCMRq95PtOcl448k2/uyu2XatTx
+	 JNT2eGxoEvocetYoNBX3HPxEXWhubf6POOR823SICBxpcfgiJZjq7Qn4GQGEQRv+OE
+	 GyLFMOMwK2m+LaGI8JWaFZBqRQCqvWOhp7pMP/gMWYjFtYirAZhzGHQFoeJFDcuMnp
+	 CJeakzAZzcfAg==
 From: Sasha Levin <sashal@kernel.org>
 To: stable@vger.kernel.org,
-	ekorenevsky@astralinux.ru
-Cc: Steve French <stfrench@microsoft.com>,
-	linux-cifs@vger.kernel.org,
-	samba-technical@lists.samba.org,
+	Rodrigo.Siqueira@amd.com
+Cc: Mario Limonciello <mario.limonciello@amd.com>,
+	Alex Deucher <alexander.deucher@amd.com>,
+	Alex Hung <alex.hung@amd.com>,
+	Daniel Wheeler <daniel.wheeler@amd.com>,
+	amd-gfx@lists.freedesktop.org,
+	dri-devel@lists.freedesktop.org,
 	linux-kernel@vger.kernel.org
-Subject: FAILED: Patch "cifs: open_cached_dir(): add FILE_READ_EA to desired access" failed to apply to 5.4-stable tree
-Date: Wed, 27 Mar 2024 08:21:27 -0400
-Message-ID: <20240327122128.2836869-1-sashal@kernel.org>
+Subject: FAILED: Patch "drm/amd/display: Return the correct HDCP error code" failed to apply to 5.4-stable tree
+Date: Wed, 27 Mar 2024 08:21:30 -0400
+Message-ID: <20240327122130.2836906-1-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -70,39 +73,40 @@ Sasha
 
 ------------------ original commit in Linus's tree ------------------
 
-From f1b8224b4e6ed59e7e6f5c548673c67410098d8d Mon Sep 17 00:00:00 2001
-From: Eugene Korenevsky <ekorenevsky@astralinux.ru>
-Date: Fri, 1 Mar 2024 17:53:44 +0300
-Subject: [PATCH] cifs: open_cached_dir(): add FILE_READ_EA to desired access
+From e64b3f55e458ce7e2087a0051f47edabf74545e7 Mon Sep 17 00:00:00 2001
+From: Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>
+Date: Wed, 14 Feb 2024 13:29:51 -0700
+Subject: [PATCH] drm/amd/display: Return the correct HDCP error code
 
-Since smb2_query_eas() reads EA and uses cached directory,
-open_cached_dir() should request FILE_READ_EA access.
+[WHY & HOW]
+If the display is null when creating an HDCP session, return a proper
+error code.
 
-Otherwise listxattr() and getxattr() will fail with EACCES
-(0xc0000022 STATUS_ACCESS_DENIED SMB status).
-
-Link: https://bugzilla.kernel.org/show_bug.cgi?id=218543
+Cc: Mario Limonciello <mario.limonciello@amd.com>
+Cc: Alex Deucher <alexander.deucher@amd.com>
 Cc: stable@vger.kernel.org
-Signed-off-by: Eugene Korenevsky <ekorenevsky@astralinux.ru>
-Signed-off-by: Steve French <stfrench@microsoft.com>
+Acked-by: Alex Hung <alex.hung@amd.com>
+Signed-off-by: Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>
+Tested-by: Daniel Wheeler <daniel.wheeler@amd.com>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 ---
- fs/smb/client/cached_dir.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/gpu/drm/amd/display/modules/hdcp/hdcp_psp.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/fs/smb/client/cached_dir.c b/fs/smb/client/cached_dir.c
-index 3de5047a7ff98..a0017724d5239 100644
---- a/fs/smb/client/cached_dir.c
-+++ b/fs/smb/client/cached_dir.c
-@@ -239,7 +239,8 @@ int open_cached_dir(unsigned int xid, struct cifs_tcon *tcon,
- 		.tcon = tcon,
- 		.path = path,
- 		.create_options = cifs_create_options(cifs_sb, CREATE_NOT_FILE),
--		.desired_access =  FILE_READ_DATA | FILE_READ_ATTRIBUTES,
-+		.desired_access =  FILE_READ_DATA | FILE_READ_ATTRIBUTES |
-+				   FILE_READ_EA,
- 		.disposition = FILE_OPEN,
- 		.fid = pfid,
- 		.replay = !!(retries),
+diff --git a/drivers/gpu/drm/amd/display/modules/hdcp/hdcp_psp.c b/drivers/gpu/drm/amd/display/modules/hdcp/hdcp_psp.c
+index 8c137d7c032e1..7c9805705fd38 100644
+--- a/drivers/gpu/drm/amd/display/modules/hdcp/hdcp_psp.c
++++ b/drivers/gpu/drm/amd/display/modules/hdcp/hdcp_psp.c
+@@ -513,6 +513,9 @@ enum mod_hdcp_status mod_hdcp_hdcp2_create_session(struct mod_hdcp *hdcp)
+ 	hdcp_cmd = (struct ta_hdcp_shared_memory *)psp->hdcp_context.context.mem_context.shared_buf;
+ 	memset(hdcp_cmd, 0, sizeof(struct ta_hdcp_shared_memory));
+ 
++	if (!display)
++		return MOD_HDCP_STATUS_DISPLAY_NOT_FOUND;
++
+ 	hdcp_cmd->in_msg.hdcp2_create_session_v2.display_handle = display->index;
+ 
+ 	if (hdcp->connection.link.adjust.hdcp2.force_type == MOD_HDCP_FORCE_TYPE_0)
 -- 
 2.43.0
 
