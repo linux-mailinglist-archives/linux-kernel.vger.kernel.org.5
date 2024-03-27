@@ -1,58 +1,58 @@
-Return-Path: <linux-kernel+bounces-121272-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-121273-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7BB6088E48A
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 15:06:14 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7A4CD88E48F
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 15:06:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9DB521C2BE13
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 14:06:13 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 337E22A2E0B
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 14:06:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6ECCF1BAC28;
-	Wed, 27 Mar 2024 12:28:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B31F1142E9E;
+	Wed, 27 Mar 2024 12:28:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="D9lSnCh5"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="QTL85Jf8"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 932531BAC21;
-	Wed, 27 Mar 2024 12:28:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ED9731BAC35;
+	Wed, 27 Mar 2024 12:28:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711542521; cv=none; b=fz8/b5FoT//rOpJs8p2smTTvMRNRaHGaa23SlJqXigEo9AOPJbYHeZNYzzQQOG0OijPfXedQg439uGLuVC0/keARnDwiTZqodgMSvGelkhh0egCjF/0t2vnS4dJDydbTjGzJT/18wvfxfHMqD9PcGWYEQqFWXwqlGPoaeBeyoBE=
+	t=1711542525; cv=none; b=JvBLMdhXfOePVD+Mc2DiHOtN6nmDINezoeF6QFNuDw6vdY8+jUu0blPdfPYHeXhSzAPkv4+qQi1pkQgTiIfN+ST/S6t4ACve4zfv1eBCzHDD6VNHF3/7XOUdt+wpDnNmtPyGTFum+z85/knX13BCUHpmkui3662S405sgPYEQkY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711542521; c=relaxed/simple;
-	bh=7W1XtM2kBUqktTrSfUPjV5wHeCHmRnaDpmkFG80H1Y0=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Mxg+2hGDcHfBSWgqUV0e3U2MO0K2iE2M/PELWeay7qQ1ZeN8EnVxkh1J4izUo5jqDuEm4QsPuwJv8RUnHnMI23cHVKTtPQMnGNjHHBd3cdBd1kYC+xj4tWHGEziT77BRiD6jEXacJyRQv08J+nJLfgUkptGjyHXzJIoEbRNZSSU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=D9lSnCh5; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4D1EAC433C7;
-	Wed, 27 Mar 2024 12:28:40 +0000 (UTC)
+	s=arc-20240116; t=1711542525; c=relaxed/simple;
+	bh=OJK/2sw6tANYoqSWtbl6AHtOvQzFrs/7Ujds3pyxtHI=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=M2I9eICiAPDjDPADc/AKaraNBvk5HrGsZToAAMFt4k5RptX2OMnJgz05i8Fhuw/D7hcL28s78jXBZ27nQdUjIlMIX4EVSXyh7kAlBl1foYYj6FW9gty7p4b02j3A/XOGsRKR2+sCh+jMJwu+YtZcpdYpXh3rjB9IEqDahPuqX/4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=QTL85Jf8; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5F933C433C7;
+	Wed, 27 Mar 2024 12:28:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711542521;
-	bh=7W1XtM2kBUqktTrSfUPjV5wHeCHmRnaDpmkFG80H1Y0=;
+	s=k20201202; t=1711542524;
+	bh=OJK/2sw6tANYoqSWtbl6AHtOvQzFrs/7Ujds3pyxtHI=;
 	h=From:To:Cc:Subject:Date:From;
-	b=D9lSnCh5y3iaXBnZ7RZNeUY9LtgMNrtCQHkvdxrHJRyoDP4WWwqgMNztU2FGpz7Ta
-	 BktXvv3lq9Buf6zxSoFO9o1PfTqQy1+mvWt7UJUfNpH1vmVC74UWwTYnE7cYlMjONh
-	 zyHaLauN8YGuteQDLcZbflYMO+5TVuQtshZg5ssgv4LsQ838QPr5dyJAgdBth4NAyg
-	 u9wHwZCIje+SXDvv0UyGWs70HAWeViDthuEOQ07nybOTRQFT50664x7Ql4trdTvSQ4
-	 7y5sTNjDNxgUWNrHcNVLt54l6GdSZgTM4lBH3BOtFjDAh8upLF+MzzsQ+/y8v6tS8A
-	 Hgp9PhX7Eomng==
+	b=QTL85Jf8IQQ0ofEmj0T1SbpCyd7ssWhUr1aK13PF+7WRQFTrt/JUG8UKv+tsfkEAg
+	 Vt91dx/akD4ae9PZW0U0FF6tbXh7HOy5wHa/+BUmT0M/vWdQanSKj+EKRbJquN1ZbF
+	 4dSzmKkOtGRxPw9B7N1fIwcFYAnq7od0dMvuonfLZxdewLm3DdFkhbvS6pXZhQpbEV
+	 Ke8X8bMomG0KWYzfVXJatjzYxWX42jXRlz5PvT4R8s7aXvUlIv46IPpR3RFgK8wf+e
+	 oOqRS7jvGmC4M7t05lOL21ZfqmiC5l18RlhqR1BxG/l1NvBOgdpzdbkDu15HR1uqZi
+	 hzA7vpN2IHr/g==
 From: Sasha Levin <sashal@kernel.org>
 To: stable@vger.kernel.org,
-	dillon.varone@amd.com
+	jerry.zuo@amd.com
 Cc: Mario Limonciello <mario.limonciello@amd.com>,
 	Alex Deucher <alexander.deucher@amd.com>,
-	Chaitanya Dhere <chaitanya.dhere@amd.com>,
-	Alex Hung <alex.hung@amd.com>,
+	Charlene Liu <charlene.liu@amd.com>,
+	Tom Chung <chiahsuan.chung@amd.com>,
 	Daniel Wheeler <daniel.wheeler@amd.com>,
 	amd-gfx@lists.freedesktop.org,
 	dri-devel@lists.freedesktop.org,
 	linux-kernel@vger.kernel.org
-Subject: FAILED: Patch "drm/amd/display: Init DPPCLK from SMU on dcn32" failed to apply to 4.19-stable tree
-Date: Wed, 27 Mar 2024 08:28:38 -0400
-Message-ID: <20240327122839.2842942-1-sashal@kernel.org>
+Subject: FAILED: Patch "drm/amd/display: Fix dcn35 8k30 Underflow/Corruption Issue" failed to apply to 4.19-stable tree
+Date: Wed, 27 Mar 2024 08:28:42 -0400
+Message-ID: <20240327122842.2842979-1-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -74,154 +74,103 @@ Sasha
 
 ------------------ original commit in Linus's tree ------------------
 
-From 4f5b8d78ca43fcc695ba16c83ebfabbfe09506d6 Mon Sep 17 00:00:00 2001
-From: Dillon Varone <dillon.varone@amd.com>
-Date: Wed, 21 Feb 2024 13:21:20 -0500
-Subject: [PATCH] drm/amd/display: Init DPPCLK from SMU on dcn32
+From 4ba9ca63e696f7bdc91293aeb70c22203b7089be Mon Sep 17 00:00:00 2001
+From: Fangzhi Zuo <jerry.zuo@amd.com>
+Date: Thu, 11 Jan 2024 14:46:01 -0500
+Subject: [PATCH] drm/amd/display: Fix dcn35 8k30 Underflow/Corruption Issue
 
-[WHY & HOW]
-DPPCLK ranges should be obtained from the SMU when available.
+[why]
+odm calculation is missing for pipe split policy determination
+and cause Underflow/Corruption issue.
+
+[how]
+Add the odm calculation.
 
 Cc: Mario Limonciello <mario.limonciello@amd.com>
 Cc: Alex Deucher <alexander.deucher@amd.com>
 Cc: stable@vger.kernel.org
-Reviewed-by: Chaitanya Dhere <chaitanya.dhere@amd.com>
-Acked-by: Alex Hung <alex.hung@amd.com>
-Signed-off-by: Dillon Varone <dillon.varone@amd.com>
+Reviewed-by: Charlene Liu <charlene.liu@amd.com>
+Acked-by: Tom Chung <chiahsuan.chung@amd.com>
+Signed-off-by: Fangzhi Zuo <jerry.zuo@amd.com>
 Tested-by: Daniel Wheeler <daniel.wheeler@amd.com>
 Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 ---
- .../display/dc/clk_mgr/dcn32/dcn32_clk_mgr.c  | 14 ++++++++++
- .../drm/amd/display/dc/dml2/dml2_wrapper.c    | 28 +++++++++++++------
- .../drm/amd/display/dc/dml2/dml2_wrapper.h    |  3 ++
- .../dc/resource/dcn32/dcn32_resource.c        |  2 ++
- .../dc/resource/dcn321/dcn321_resource.c      |  2 ++
- 5 files changed, 41 insertions(+), 8 deletions(-)
+ .../display/dc/dml2/dml2_translation_helper.c | 29 +++++++------------
+ .../gpu/drm/amd/display/dc/inc/core_types.h   |  2 ++
+ 2 files changed, 13 insertions(+), 18 deletions(-)
 
-diff --git a/drivers/gpu/drm/amd/display/dc/clk_mgr/dcn32/dcn32_clk_mgr.c b/drivers/gpu/drm/amd/display/dc/clk_mgr/dcn32/dcn32_clk_mgr.c
-index 668f05c8654ef..bec252e1dd27a 100644
---- a/drivers/gpu/drm/amd/display/dc/clk_mgr/dcn32/dcn32_clk_mgr.c
-+++ b/drivers/gpu/drm/amd/display/dc/clk_mgr/dcn32/dcn32_clk_mgr.c
-@@ -216,6 +216,16 @@ void dcn32_init_clocks(struct clk_mgr *clk_mgr_base)
- 	if (clk_mgr_base->bw_params->dc_mode_limit.dispclk_mhz > 1950)
- 		clk_mgr_base->bw_params->dc_mode_limit.dispclk_mhz = 1950;
+diff --git a/drivers/gpu/drm/amd/display/dc/dml2/dml2_translation_helper.c b/drivers/gpu/drm/amd/display/dc/dml2/dml2_translation_helper.c
+index 8b0f930be5ae1..23a608274096f 100644
+--- a/drivers/gpu/drm/amd/display/dc/dml2/dml2_translation_helper.c
++++ b/drivers/gpu/drm/amd/display/dc/dml2/dml2_translation_helper.c
+@@ -791,35 +791,28 @@ static void populate_dml_surface_cfg_from_plane_state(enum dml_project_id dml2_p
+ 	}
+ }
  
-+	/* DPPCLK */
-+	dcn32_init_single_clock(clk_mgr, PPCLK_DPPCLK,
-+			&clk_mgr_base->bw_params->clk_table.entries[0].dppclk_mhz,
-+			&num_entries_per_clk->num_dppclk_levels);
-+	num_levels = num_entries_per_clk->num_dppclk_levels;
-+	clk_mgr_base->bw_params->dc_mode_limit.dppclk_mhz = dcn30_smu_get_dc_mode_max_dpm_freq(clk_mgr, PPCLK_DPPCLK);
-+	//HW recommends limit of 1950 MHz in display clock for all DCN3.2.x
-+	if (clk_mgr_base->bw_params->dc_mode_limit.dppclk_mhz > 1950)
-+		clk_mgr_base->bw_params->dc_mode_limit.dppclk_mhz = 1950;
+-/*TODO no support for mpc combine, need rework - should calculate scaling params based on plane+stream*/
+-static struct scaler_data get_scaler_data_for_plane(const struct dc_plane_state *in, const struct dc_state *context)
++static struct scaler_data get_scaler_data_for_plane(const struct dc_plane_state *in, struct dc_state *context)
+ {
+ 	int i;
+-	struct scaler_data data = { 0 };
++	struct pipe_ctx *temp_pipe = &context->res_ctx.temp_pipe;
 +
- 	if (num_entries_per_clk->num_dcfclk_levels &&
- 			num_entries_per_clk->num_dtbclk_levels &&
- 			num_entries_per_clk->num_dispclk_levels)
-@@ -240,6 +250,10 @@ void dcn32_init_clocks(struct clk_mgr *clk_mgr_base)
- 					= khz_to_mhz_ceil(clk_mgr_base->ctx->dc->debug.min_dpp_clk_khz);
++	memset(temp_pipe, 0, sizeof(struct pipe_ctx));
+ 
+ 	for (i = 0; i < MAX_PIPES; i++)	{
+ 		const struct pipe_ctx *pipe = &context->res_ctx.pipe_ctx[i];
+ 
+ 		if (pipe->plane_state == in && !pipe->prev_odm_pipe) {
+-			const struct pipe_ctx *next_pipe = pipe->next_odm_pipe;
+-
+-			data = context->res_ctx.pipe_ctx[i].plane_res.scl_data;
+-			while (next_pipe) {
+-				data.h_active += next_pipe->plane_res.scl_data.h_active;
+-				data.recout.width += next_pipe->plane_res.scl_data.recout.width;
+-				if (in->rotation == ROTATION_ANGLE_0 || in->rotation == ROTATION_ANGLE_180) {
+-					data.viewport.width += next_pipe->plane_res.scl_data.viewport.width;
+-				} else {
+-					data.viewport.height += next_pipe->plane_res.scl_data.viewport.height;
+-				}
+-				next_pipe = next_pipe->next_odm_pipe;
+-			}
++			temp_pipe->stream = pipe->stream;
++			temp_pipe->plane_state = pipe->plane_state;
++			temp_pipe->plane_res.scl_data.taps = pipe->plane_res.scl_data.taps;
++
++			resource_build_scaling_params(temp_pipe);
+ 			break;
+ 		}
  	}
  
-+	for (i = 0; i < num_levels; i++)
-+		if (clk_mgr_base->bw_params->clk_table.entries[i].dppclk_mhz > 1950)
-+			clk_mgr_base->bw_params->clk_table.entries[i].dppclk_mhz = 1950;
-+
- 	/* Get UCLK, update bounding box */
- 	clk_mgr_base->funcs->get_memclk_states_from_smu(clk_mgr_base);
- 
-diff --git a/drivers/gpu/drm/amd/display/dc/dml2/dml2_wrapper.c b/drivers/gpu/drm/amd/display/dc/dml2/dml2_wrapper.c
-index 2a58a7687bdb5..72cca367062e1 100644
---- a/drivers/gpu/drm/amd/display/dc/dml2/dml2_wrapper.c
-+++ b/drivers/gpu/drm/amd/display/dc/dml2/dml2_wrapper.c
-@@ -703,13 +703,8 @@ static inline struct dml2_context *dml2_allocate_memory(void)
- 	return (struct dml2_context *) kzalloc(sizeof(struct dml2_context), GFP_KERNEL);
+ 	ASSERT(i < MAX_PIPES);
+-	return data;
++	return temp_pipe->plane_res.scl_data;
  }
  
--bool dml2_create(const struct dc *in_dc, const struct dml2_configuration_options *config, struct dml2_context **dml2)
-+static void dml2_init(const struct dc *in_dc, const struct dml2_configuration_options *config, struct dml2_context **dml2)
+ static void populate_dummy_dml_plane_cfg(struct dml_plane_cfg_st *out, unsigned int location, const struct dc_stream_state *in)
+@@ -864,7 +857,7 @@ static void populate_dummy_dml_plane_cfg(struct dml_plane_cfg_st *out, unsigned
+ 	out->ScalerEnabled[location] = false;
+ }
+ 
+-static void populate_dml_plane_cfg_from_plane_state(struct dml_plane_cfg_st *out, unsigned int location, const struct dc_plane_state *in, const struct dc_state *context)
++static void populate_dml_plane_cfg_from_plane_state(struct dml_plane_cfg_st *out, unsigned int location, const struct dc_plane_state *in, struct dc_state *context)
  {
--	// Allocate Mode Lib Ctx
--	*dml2 = dml2_allocate_memory();
--
--	if (!(*dml2))
--		return false;
+ 	const struct scaler_data scaler_data = get_scaler_data_for_plane(in, context);
  
- 	// Store config options
- 	(*dml2)->config = *config;
-@@ -737,9 +732,18 @@ bool dml2_create(const struct dc *in_dc, const struct dml2_configuration_options
- 	initialize_dml2_soc_bbox(*dml2, in_dc, &(*dml2)->v20.dml_core_ctx.soc);
+diff --git a/drivers/gpu/drm/amd/display/dc/inc/core_types.h b/drivers/gpu/drm/amd/display/dc/inc/core_types.h
+index f74ae0d41d3c4..3a6bf77a68732 100644
+--- a/drivers/gpu/drm/amd/display/dc/inc/core_types.h
++++ b/drivers/gpu/drm/amd/display/dc/inc/core_types.h
+@@ -469,6 +469,8 @@ struct resource_context {
+ 	unsigned int hpo_dp_link_enc_to_link_idx[MAX_HPO_DP2_LINK_ENCODERS];
+ 	int hpo_dp_link_enc_ref_cnts[MAX_HPO_DP2_LINK_ENCODERS];
+ 	bool is_mpc_3dlut_acquired[MAX_PIPES];
++	/* solely used for build scalar data in dml2 */
++	struct pipe_ctx temp_pipe;
+ };
  
- 	initialize_dml2_soc_states(*dml2, in_dc, &(*dml2)->v20.dml_core_ctx.soc, &(*dml2)->v20.dml_core_ctx.states);
-+}
-+
-+bool dml2_create(const struct dc *in_dc, const struct dml2_configuration_options *config, struct dml2_context **dml2)
-+{
-+	// Allocate Mode Lib Ctx
-+	*dml2 = dml2_allocate_memory();
-+
-+	if (!(*dml2))
-+		return false;
-+
-+	dml2_init(in_dc, config, dml2);
- 
--	/*Initialize DML20 instance which calls dml2_core_create, and core_dcn3_populate_informative*/
--	//dml2_initialize_instance(&(*dml_ctx)->v20.dml_init);
- 	return true;
- }
- 
-@@ -779,3 +783,11 @@ bool dml2_create_copy(struct dml2_context **dst_dml2,
- 
- 	return true;
- }
-+
-+void dml2_reinit(const struct dc *in_dc,
-+				 const struct dml2_configuration_options *config,
-+				 struct dml2_context **dml2)
-+{
-+
-+	dml2_init(in_dc, config, dml2);
-+}
-diff --git a/drivers/gpu/drm/amd/display/dc/dml2/dml2_wrapper.h b/drivers/gpu/drm/amd/display/dc/dml2/dml2_wrapper.h
-index ee0eb184eb6d7..cc662d682fd4d 100644
---- a/drivers/gpu/drm/amd/display/dc/dml2/dml2_wrapper.h
-+++ b/drivers/gpu/drm/amd/display/dc/dml2/dml2_wrapper.h
-@@ -214,6 +214,9 @@ void dml2_copy(struct dml2_context *dst_dml2,
- 	struct dml2_context *src_dml2);
- bool dml2_create_copy(struct dml2_context **dst_dml2,
- 	struct dml2_context *src_dml2);
-+void dml2_reinit(const struct dc *in_dc,
-+				 const struct dml2_configuration_options *config,
-+				 struct dml2_context **dml2);
- 
- /*
-  * dml2_validate - Determines if a display configuration is supported or not.
-diff --git a/drivers/gpu/drm/amd/display/dc/resource/dcn32/dcn32_resource.c b/drivers/gpu/drm/amd/display/dc/resource/dcn32/dcn32_resource.c
-index f844f57ecc49b..ce1754cc1f463 100644
---- a/drivers/gpu/drm/amd/display/dc/resource/dcn32/dcn32_resource.c
-+++ b/drivers/gpu/drm/amd/display/dc/resource/dcn32/dcn32_resource.c
-@@ -1931,6 +1931,8 @@ static void dcn32_update_bw_bounding_box(struct dc *dc, struct clk_bw_params *bw
- {
- 	DC_FP_START();
- 	dcn32_update_bw_bounding_box_fpu(dc, bw_params);
-+	if (dc->debug.using_dml2 && dc->current_state && dc->current_state->bw_ctx.dml2)
-+		dml2_reinit(dc, &dc->dml2_options, &dc->current_state->bw_ctx.dml2);
- 	DC_FP_END();
- }
- 
-diff --git a/drivers/gpu/drm/amd/display/dc/resource/dcn321/dcn321_resource.c b/drivers/gpu/drm/amd/display/dc/resource/dcn321/dcn321_resource.c
-index b356fed1726d9..296a0a8e71459 100644
---- a/drivers/gpu/drm/amd/display/dc/resource/dcn321/dcn321_resource.c
-+++ b/drivers/gpu/drm/amd/display/dc/resource/dcn321/dcn321_resource.c
-@@ -1581,6 +1581,8 @@ static void dcn321_update_bw_bounding_box(struct dc *dc, struct clk_bw_params *b
- {
- 	DC_FP_START();
- 	dcn321_update_bw_bounding_box_fpu(dc, bw_params);
-+	if (dc->debug.using_dml2 && dc->current_state && dc->current_state->bw_ctx.dml2)
-+		dml2_reinit(dc, &dc->dml2_options, &dc->current_state->bw_ctx.dml2);
- 	DC_FP_END();
- }
- 
+ struct dce_bw_output {
 -- 
 2.43.0
 
