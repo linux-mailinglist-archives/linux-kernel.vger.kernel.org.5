@@ -1,515 +1,284 @@
-Return-Path: <linux-kernel+bounces-121728-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-121736-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 22B1788ED0E
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 18:49:02 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 47AAA88ED22
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 18:51:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A616929E064
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 17:49:00 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0224E29F54A
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 17:51:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BF204152524;
-	Wed, 27 Mar 2024 17:45:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8B23515359D;
+	Wed, 27 Mar 2024 17:46:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CUzCy8V7"
-Received: from mail-pf1-f172.google.com (mail-pf1-f172.google.com [209.85.210.172])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="rbewKmZm"
+Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12on2068.outbound.protection.outlook.com [40.107.243.68])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 81930152198;
-	Wed, 27 Mar 2024 17:45:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.172
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711561555; cv=none; b=bhWEgRIr3ciaC+X0onAdWP2QX7shBHpNCPB1E+R2+TwtX9fzIaYdlJWzOh2TcXFxH0ubb6YkLAnEFQUpKZRJ7WVBmCeU2kpODvfedReGtjYgB0KJgdXDFHzD6C+X8nW1zpaX65Mil6he5NzfX/4KNtOG4t99gv5IG4isWQEOxUA=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711561555; c=relaxed/simple;
-	bh=PyM4tBeIlBZcFszC/mwoJM/zBCbQAhbrAosabqlntkA=;
-	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ZOPrcUJyeiLSCzLOZYVVH4VvMSFpMht780bWEUTAYdlD2JR3kB48siXArLdvfUMIMntpCFDR74ShvvbPv69dgSSrTbWJ9Md3NqyxbZJWeaJWbksoa8kTXmaLvF1C9ZIdkLCX3B45H0itKPx2XU+29KZwwmIw1x4D6Oux1zbeR40=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=CUzCy8V7; arc=none smtp.client-ip=209.85.210.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f172.google.com with SMTP id d2e1a72fcca58-6e6c0098328so97155b3a.3;
-        Wed, 27 Mar 2024 10:45:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711561553; x=1712166353; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=6r931QHjCHn5DkdRGStvnYt2CqY3FM3oMtWs+P/U4ls=;
-        b=CUzCy8V7KnyXx/svOvUU5w2f+YoywvNHFxxxwTPUk0LVr3cFYCexTJmWYHCRT466L8
-         RzRtOjM/13eqjK1I3GTZuBGzK1jGlZlFwMxuZazMoSMX9TLPrTkJkiezGRVMzSpG0xf2
-         2Z8FVUJj6zZSHU7oGIe4dwpHLldinLIn4YmP4PbiBvShIzJmpuzufUpemhGyss+uGqlB
-         G6/qX4yVw3CVTKgHKMMVeVxL0DP4NrnTKthE3U1ZSP02fu3gjuxfwtV3iFjExkBUH/qu
-         /WrRI2yMDR3DMLA3v8c6FRxx587QmLiOj2Xq3ofoD3MNNZWy7N0wOo/zUFuEQb8XuMX3
-         zO6Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711561553; x=1712166353;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=6r931QHjCHn5DkdRGStvnYt2CqY3FM3oMtWs+P/U4ls=;
-        b=qMY8Hk2c4KlGlWMw4XbBCkOTztPhxY+ASAIHAnpYOVwqMscQbn4xgKlUIDjc6Rhnft
-         xBOzqJo0oRATGORdc/RlCggszMWFzh2efnl/Lr+c8joaf8OoPTILgFOHfQoJkW18G/wR
-         kVL7Op2ZNW9ZTy+/5YV3Jg/MaZM7DJVXYIaKGI1OINa+spPlTpmpEsawgdVtzwIeNFwc
-         cQJG6BbqQaqVXQ3oXgGZ9fY3j+iNRCj+gRRhlX0iMqQSlyMeS/9iDBwO4JXKxqL5YEyo
-         kCrg+E+WF+/du17vPLXeUy+v5c5i60yi8pJvggwQcPhqdN33wIChYNMHNFnKJQ6TNFh/
-         Hk/A==
-X-Forwarded-Encrypted: i=1; AJvYcCW3iorVXncK1x6Fejry55Nxr46sGh3HnUgIl1FPJCavb749xJz0ZMj7Pvd0jHv7vF+IWtfHfPAx9VrTq5gqLU/voxuHnKdIu/WqcaHoJZsL2gtD+1MFib5V2ncRSL+h1YO9FrVWYuLn4UHwQ1Tl74k88F65VEWXwZlvOP6HdbeYy3rT2dQ=
-X-Gm-Message-State: AOJu0YyOw0FZG5j11SvadqihdGpSsvnYB8XqGZrNRrUo5YzXte9xUpIS
-	wkYedfpzRB3c+SCVk0GGY6mHbJG9DqEB3cLA6iVjReSnLk7deC/k
-X-Google-Smtp-Source: AGHT+IHSVULoZGU4CfYEA6Wm42sbMT5XQvnrHmQhucXgMrc8+Fa/zySqlJSv4wn2CQaayOWxpD4BEQ==
-X-Received: by 2002:a05:6a00:4b16:b0:6e6:8b59:1bad with SMTP id kq22-20020a056a004b1600b006e68b591badmr550591pfb.25.1711561552588;
-        Wed, 27 Mar 2024 10:45:52 -0700 (PDT)
-Received: from debian ([2601:641:300:14de:303a:e988:70bc:e778])
-        by smtp.gmail.com with ESMTPSA id q21-20020a62ae15000000b006ea9108ec12sm8040187pff.115.2024.03.27.10.45.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 27 Mar 2024 10:45:52 -0700 (PDT)
-From: fan <nifan.cxl@gmail.com>
-X-Google-Original-From: fan <fan@debian>
-Date: Wed, 27 Mar 2024 10:45:49 -0700
-To: ira.weiny@intel.com
-Cc: Dave Jiang <dave.jiang@intel.com>, Fan Ni <fan.ni@samsung.com>,
-	Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-	Navneet Singh <navneet.singh@intel.com>,
-	Dan Williams <dan.j.williams@intel.com>,
-	Davidlohr Bueso <dave@stgolabs.net>,
-	Alison Schofield <alison.schofield@intel.com>,
-	Vishal Verma <vishal.l.verma@intel.com>,
-	linux-btrfs@vger.kernel.org, linux-cxl@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 14/26] cxl/region: Read existing extents on region
- creation
-Message-ID: <ZgRbTfmoU3HZPfrf@debian>
-References: <20240324-dcd-type2-upstream-v1-0-b7b00d623625@intel.com>
- <20240324-dcd-type2-upstream-v1-14-b7b00d623625@intel.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6DF18153583;
+	Wed, 27 Mar 2024 17:46:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.243.68
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1711561579; cv=fail; b=Egk+xKB6JfzirHEo/p3kRjw1RTQvWW4jAMweDviWBBu/KSMOmCvo5oJmqtsVIoXylWlXC5pCv8l7JOP3SI89LGEM8ycl9rw/bMgEaltp5RjiMg7i9dMoVpxcQO9yRNapvVMpgcnZa1wGUo/Ln9+gSdSavpddsDY1xRh/ldRgBcM=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1711561579; c=relaxed/simple;
+	bh=pV6C+AdT4qoB5Uy1rd0vFGzkVQxVVuDphINIV1oexIE=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=ncsVhpD9EA9AseSvtdFprcXneLwuBoiMYmqsOAt5nbgQnJgViT0mxOkMp6XOwU/WJdobEz3BhkcNtgEEU2/1qkiGpzRAyO/uhrG9RQBjkpXheXzzVm1EevBotfldlbOziso/oak13/MVRrPqvxWzoArWGq9+CLwmuouqMMLhcCI=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=rbewKmZm; arc=fail smtp.client-ip=40.107.243.68
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=RivqHknfJ72PcNj+1kno9qKMfQQ2tuxWoldBZE9cOJkBphlTh4FuZzbxs5n5Uxns7huuZW2ObiFfJv/BBFOUPqkMfGa8gBWAv3hOt7zH9WFhDIlRxy5+NU+CcxHqnNo21SwaZXAirCluhoJM8P/qU13OO7B88SEhWuC/LZSM9ji+Hb/wJrzJDWLazvhVT0WSU8U+n/ZTXjT1rrK680EIeTc6n0Ze7MKR1LYw+eh9KI/fsGTxOr1G0vM2EFJVFgx3LKtnH+X6Yyd2YfPoKHo85Ezg9n80pwHFzlSkYEB9L7PGmTE7Yayod9H323WZiBIYjIHmQmXczokEwHnuWyLL4g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=G5ujsvk4mUOKOvBaB0dKfSbq07Zs2gK1KfKj4YewCOY=;
+ b=cNuk3ppJpOGbeOYGomX91m52JtDNf3fIgxr6mARUoNOFs+Z1Kv7Ud2Nzg2BAeW+4+RItQALs0uA6WizWMcmnW6OXVhPDIeiVh4Kw0Tda8nWaM5CP8fjHxF9/NZnBUGy/3Yzh4O+aNju+ouboZjan8fBdaosXBahjFknimS33CQcWKNJf/C9Z4nqat04QWYZyiEAwkzZO6cIcv+ci12RY1ydGNV+SyvWKLXwx/7VIW2Yd2oaLsZeJ76nctNfgBDlI8R5RZao2BAF0GKMdg/N8dLgr3zNisSJA2gv3iq9k06LtAcdi7PRvjI5c0fSHCr/m0p2IoEJQYogoupyOHvJABg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=temperror (sender ip
+ is 165.204.84.17) smtp.rcpttodomain=bootlin.com smtp.mailfrom=amd.com;
+ dmarc=temperror action=none header.from=amd.com; dkim=none (message not
+ signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=G5ujsvk4mUOKOvBaB0dKfSbq07Zs2gK1KfKj4YewCOY=;
+ b=rbewKmZmFJtfFKbTx2eHnRYru097MathP0lcC6AQLqCzeLObSZtIuEE3xGMzJIHYXHC4Za4V15KIZ+oWiVlhsyuUMdNUlH+NxKjCdx3lAT+2G1CczFT5oVeSh8sF8eVPq5n75I7iS5il7FUGaSHGLcSlmoDpIldknf9LgIN1qi4=
+Received: from DM5PR08CA0044.namprd08.prod.outlook.com (2603:10b6:4:60::33) by
+ SA3PR12MB9129.namprd12.prod.outlook.com (2603:10b6:806:397::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.31; Wed, 27 Mar
+ 2024 17:46:15 +0000
+Received: from DS1PEPF00017091.namprd03.prod.outlook.com
+ (2603:10b6:4:60:cafe::86) by DM5PR08CA0044.outlook.office365.com
+ (2603:10b6:4:60::33) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.13 via Frontend
+ Transport; Wed, 27 Mar 2024 17:46:15 +0000
+X-MS-Exchange-Authentication-Results: spf=temperror (sender IP is
+ 165.204.84.17) smtp.mailfrom=amd.com; dkim=none (message not signed)
+ header.d=none;dmarc=temperror action=none header.from=amd.com;
+Received-SPF: TempError (protection.outlook.com: error in processing during
+ lookup of amd.com: DNS Timeout)
+Received: from SATLEXMB03.amd.com (165.204.84.17) by
+ DS1PEPF00017091.mail.protection.outlook.com (10.167.17.133) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.7409.10 via Frontend Transport; Wed, 27 Mar 2024 17:46:13 +0000
+Received: from SATLEXMB03.amd.com (10.181.40.144) by SATLEXMB03.amd.com
+ (10.181.40.144) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Wed, 27 Mar
+ 2024 12:46:13 -0500
+Received: from [172.19.74.144] (10.180.168.240) by SATLEXMB03.amd.com
+ (10.181.40.144) with Microsoft SMTP Server id 15.1.2507.35 via Frontend
+ Transport; Wed, 27 Mar 2024 12:46:12 -0500
+Message-ID: <b59dd8cd-fd75-5342-d411-817f33e0ff48@amd.com>
+Date: Wed, 27 Mar 2024 10:46:04 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240324-dcd-type2-upstream-v1-14-b7b00d623625@intel.com>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.11.0
+Subject: Re: [PATCH 2/3] dmaengine: xilinx: xdma: Fix synchronization issue
+Content-Language: en-US
+To: Louis Chauvet <louis.chauvet@bootlin.com>, Brian Xu <brian.xu@amd.com>,
+	Raj Kumar Rampelli <raj.kumar.rampelli@amd.com>, Vinod Koul
+	<vkoul@kernel.org>, Michal Simek <michal.simek@amd.com>, Jan Kuliga
+	<jankul@alatek.krakow.pl>, Miquel Raynal <miquel.raynal@bootlin.com>
+CC: <dmaengine@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
+	<linux-kernel@vger.kernel.org>, <stable@vger.kernel.org>
+References: <20240327-digigram-xdma-fixes-v1-0-45f4a52c0283@bootlin.com>
+ <20240327-digigram-xdma-fixes-v1-2-45f4a52c0283@bootlin.com>
+From: Lizhi Hou <lizhi.hou@amd.com>
+In-Reply-To: <20240327-digigram-xdma-fixes-v1-2-45f4a52c0283@bootlin.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+Received-SPF: None (SATLEXMB03.amd.com: lizhi.hou@amd.com does not designate
+ permitted sender hosts)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DS1PEPF00017091:EE_|SA3PR12MB9129:EE_
+X-MS-Office365-Filtering-Correlation-Id: 1b29a999-b1d1-43c0-cc42-08dc4e85cc08
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	KcYXyXUKSzBIzNhX2iD0m87kulplNnigX5BNU1nOmSFscd35nI20XqsE1V8rdK+3Zw01ruLQez5Wcn7ykwCtZRfbEiGjuqTSgsgAGEjFkJbz9HemTeYeY3L0Wt6Ui/H6QK49Mi4BVqhqNxCsVzytTsUK/m3MpDStDRBvaeIwnRV3d8V+XicscCq+FwqOFPv0RteL398WAs2irrc+if8hU8K/M2H1tfnFgDE8fgdTJh+376XqzGxRu28vgQ1Bqe14S+4UgpeZ4T503bbOoMu8KlrL9lpZRPLF6mxDY+HXLOnc8w85lMfqgKdVCXHThEYZTBGz4v8yDPAP8xl1SEfvSRXxi2M/yc2VFXgMWAHAmBKOdqgJd97wTqsIUBT7soghwKsxHHUInArQLLOHhQkbVYyZvgU0ntiQMgIIGlsVrh6b3qCZIDPaaEUKhQbYOxEymN07b7uQLbQFQ1fevD6rtzuYkXtPXTjvh83I3dBPE8S2Yor2xXsznsHlUk3b3vYq0P0uiYX3IHFhbQ8QV6xZs1x+/e3by3zaFE3CYJufaXHfVEDr1um7FGPnugNZ7gKEFKTS5cvfGWovbW+hzCC8ZAsxZMxQgUKwVt5oQhnW5E9KlMvN4IKM4o3sIswRTyEw9yqQSppvoX/5XTa4kdkaL51KttrI3NHESTKqgMR7y3YIcyTo+lrP6OATcK+UO5tU16hgY4/L3UI3Mtul1SbHCpJfwvmnvtMUQAmMwPYdpVw8TPNGMuWBiRuxviVzSC0E
+X-Forefront-Antispam-Report:
+	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB03.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(36860700004)(82310400014)(376005)(1800799015);DIR:OUT;SFP:1101;
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Mar 2024 17:46:13.9575
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1b29a999-b1d1-43c0-cc42-08dc4e85cc08
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB03.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource:
+	DS1PEPF00017091.namprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA3PR12MB9129
 
-On Sun, Mar 24, 2024 at 04:18:17PM -0700, ira.weiny@intel.com wrote:
-> From: Navneet Singh <navneet.singh@intel.com>
-> 
-> Dynamic capacity device extents may be left in an accepted state on a
-> device due to an unexpected host crash.  In this case creation of a new
-> region on top of the DC partition (region) is expected to expose those
-> extents for continued use.
-> 
-> Once all endpoint decoders are part of a region and the region is being
-> realized read the device extent list.  For ease of review, this patch
-> stops after reading the extent list and leaves realization of the region
-> extents to a future patch.
-> 
-> Signed-off-by: Navneet Singh <navneet.singh@intel.com>
-> Co-developed-by: Ira Weiny <ira.weiny@intel.com>
-> Signed-off-by: Ira Weiny <ira.weiny@intel.com>
-> 
+
+On 3/27/24 02:58, Louis Chauvet wrote:
+> The current xdma_synchronize method does not properly wait for the last
+> transfer to be done. Due to limitations of the XMDA engine, it is not
+> possible to stop a transfer in the middle of a descriptor. Said
+> otherwise, if a stop is requested at the end of descriptor "N" and the OS
+> is fast enough, the DMA controller will effectively stop immediately.
+> However, if the OS is slightly too slow to request the stop and the DMA
+> engine starts descriptor "N+1", the N+1 transfer will be performed until
+> its end. This means that after a terminate_all, the last descriptor must
+> remain valid and the synchronization must wait for this last descriptor to
+> be terminated.
+>
+> Fixes: 855c2e1d1842 ("dmaengine: xilinx: xdma: Rework xdma_terminate_all()")
+> Fixes: f5c392d106e7 ("dmaengine: xilinx: xdma: Add terminate_all/synchronize callbacks")
+> Cc: stable@vger.kernel.org
+> Suggested-by: Miquel Raynal <miquel.raynal@bootlin.com>
+> Signed-off-by: Louis Chauvet <louis.chauvet@bootlin.com>
 > ---
-> Changes for v1:
-> [iweiny: remove extent list xarray]
-> [iweiny: Update spec references to 3.1]
-> [iweiny: use struct range in extents]
-> [iweiny: remove all reference tracking and let regions track extents
-> 	 through the extent devices.]
-> [djbw/Jonathan/Fan: move extent tracking to endpoint decoders]
-> ---
->  drivers/cxl/core/core.h   |   9 +++
->  drivers/cxl/core/mbox.c   | 192 ++++++++++++++++++++++++++++++++++++++++++++++
->  drivers/cxl/core/region.c |  29 +++++++
->  drivers/cxl/cxlmem.h      |  49 ++++++++++++
->  4 files changed, 279 insertions(+)
-> 
-> diff --git a/drivers/cxl/core/core.h b/drivers/cxl/core/core.h
-> index 91abeffbe985..119b12362977 100644
-> --- a/drivers/cxl/core/core.h
-> +++ b/drivers/cxl/core/core.h
-> @@ -4,6 +4,8 @@
->  #ifndef __CXL_CORE_H__
->  #define __CXL_CORE_H__
->  
-> +#include <cxlmem.h>
+>   drivers/dma/xilinx/xdma-regs.h |  3 +++
+>   drivers/dma/xilinx/xdma.c      | 26 ++++++++++++++++++--------
+>   2 files changed, 21 insertions(+), 8 deletions(-)
+>
+> diff --git a/drivers/dma/xilinx/xdma-regs.h b/drivers/dma/xilinx/xdma-regs.h
+> index 98f5f6fb9ff9..6ad08878e938 100644
+> --- a/drivers/dma/xilinx/xdma-regs.h
+> +++ b/drivers/dma/xilinx/xdma-regs.h
+> @@ -117,6 +117,9 @@ struct xdma_hw_desc {
+>   			 CHAN_CTRL_IE_WRITE_ERROR |			\
+>   			 CHAN_CTRL_IE_DESC_ERROR)
+>   
+> +/* bits of the channel status register */
+> +#define XDMA_CHAN_STATUS_BUSY			BIT(0)
 > +
->  extern const struct device_type cxl_nvdimm_bridge_type;
->  extern const struct device_type cxl_nvdimm_type;
->  extern const struct device_type cxl_pmu_type;
-> @@ -28,6 +30,8 @@ void cxl_decoder_kill_region(struct cxl_endpoint_decoder *cxled);
->  int cxl_region_init(void);
->  void cxl_region_exit(void);
->  int cxl_get_poison_by_endpoint(struct cxl_port *port);
-> +int cxl_ed_add_one_extent(struct cxl_endpoint_decoder *cxled,
-> +			  struct cxl_dc_extent *dc_extent);
->  #else
->  static inline int cxl_get_poison_by_endpoint(struct cxl_port *port)
->  {
-> @@ -43,6 +47,11 @@ static inline int cxl_region_init(void)
->  static inline void cxl_region_exit(void)
->  {
->  }
-> +static inline int cxl_ed_add_one_extent(struct cxl_endpoint_decoder *cxled,
-> +					struct cxl_dc_extent *dc_extent)
-> +{
-> +	return 0;
-> +}
->  #define CXL_REGION_ATTR(x) NULL
->  #define CXL_REGION_TYPE(x) NULL
->  #define SET_CXL_REGION_ATTR(x)
-> diff --git a/drivers/cxl/core/mbox.c b/drivers/cxl/core/mbox.c
-> index 58b31fa47b93..9e33a0976828 100644
-> --- a/drivers/cxl/core/mbox.c
-> +++ b/drivers/cxl/core/mbox.c
-> @@ -870,6 +870,53 @@ int cxl_enumerate_cmds(struct cxl_memdev_state *mds)
->  }
->  EXPORT_SYMBOL_NS_GPL(cxl_enumerate_cmds, CXL);
->  
-> +static int cxl_validate_extent(struct cxl_memdev_state *mds,
-> +			       struct cxl_dc_extent *dc_extent)
-> +{
-> +	struct device *dev = mds->cxlds.dev;
-> +	uint64_t start, len;
-> +
-> +	start = le64_to_cpu(dc_extent->start_dpa);
-> +	len = le64_to_cpu(dc_extent->length);
-> +
-> +	/* Extents must not cross region boundary's */
-> +	for (int i = 0; i < mds->nr_dc_region; i++) {
-> +		struct cxl_dc_region_info *dcr = &mds->dc_region[i];
-> +
-> +		if (dcr->base <= start &&
-> +		    (start + len) <= (dcr->base + dcr->decode_len)) {
-> +			dev_dbg(dev, "DC extent DPA %#llx - %#llx (DCR:%d:%#llx)\n",
-> +				start, start + len - 1, i, start - dcr->base);
-> +			return 0;
-> +		}
-> +	}
-> +
-> +	dev_err_ratelimited(dev,
-> +			    "DC extent DPA %#llx - %#llx is not in any DC region\n",
-> +			    start, start + len - 1);
-> +	return -EINVAL;
-> +}
-> +
-> +static bool cxl_dc_extent_in_ed(struct cxl_endpoint_decoder *cxled,
-> +				struct cxl_dc_extent *extent)
-> +{
-> +	uint64_t start = le64_to_cpu(extent->start_dpa);
-> +	uint64_t length = le64_to_cpu(extent->length);
-> +	struct range ext_range = (struct range){
-> +		.start = start,
-> +		.end = start + length - 1,
-> +	};
-> +	struct range ed_range = (struct range) {
-> +		.start = cxled->dpa_res->start,
-> +		.end = cxled->dpa_res->end,
-> +	};
-> +
-> +	dev_dbg(&cxled->cxld.dev, "Checking ED (%pr) for extent DPA:%#llx LEN:%#llx\n",
-> +		cxled->dpa_res, start, length);
-> +
-> +	return range_contains(&ed_range, &ext_range);
-> +}
-> +
->  void cxl_event_trace_record(const struct cxl_memdev *cxlmd,
->  			    enum cxl_event_log_type type,
->  			    enum cxl_event_type event_type,
-> @@ -973,6 +1020,15 @@ static int cxl_clear_event_record(struct cxl_memdev_state *mds,
->  	return rc;
->  }
->  
-> +static struct cxl_memdev_state *
-> +cxled_to_mds(struct cxl_endpoint_decoder *cxled)
-> +{
-> +	struct cxl_memdev *cxlmd = cxled_to_memdev(cxled);
-> +	struct cxl_dev_state *cxlds = cxlmd->cxlds;
-> +
-> +	return container_of(cxlds, struct cxl_memdev_state, cxlds);
-> +}
-> +
->  static void cxl_mem_get_records_log(struct cxl_memdev_state *mds,
->  				    enum cxl_event_log_type type)
->  {
-> @@ -1406,6 +1462,142 @@ int cxl_dev_dynamic_capacity_identify(struct cxl_memdev_state *mds)
->  }
->  EXPORT_SYMBOL_NS_GPL(cxl_dev_dynamic_capacity_identify, CXL);
->  
-> +static int cxl_dev_get_dc_extent_cnt(struct cxl_memdev_state *mds,
-> +				     unsigned int *extent_gen_num)
-> +{
-> +	struct cxl_mbox_get_dc_extent_in get_dc_extent;
-> +	struct cxl_mbox_get_dc_extent_out dc_extents;
-> +	struct cxl_mbox_cmd mbox_cmd;
-> +	unsigned int count;
-> +	int rc;
-> +
-> +	get_dc_extent = (struct cxl_mbox_get_dc_extent_in) {
-> +		.extent_cnt = cpu_to_le32(0),
-> +		.start_extent_index = cpu_to_le32(0),
-> +	};
-> +
-> +	mbox_cmd = (struct cxl_mbox_cmd) {
-> +		.opcode = CXL_MBOX_OP_GET_DC_EXTENT_LIST,
-> +		.payload_in = &get_dc_extent,
-> +		.size_in = sizeof(get_dc_extent),
-> +		.size_out = sizeof(dc_extents),
-> +		.payload_out = &dc_extents,
-> +		.min_out = 1,
-> +	};
-> +
-> +	rc = cxl_internal_send_cmd(mds, &mbox_cmd);
-> +	if (rc < 0)
-> +		return rc;
-> +
-> +	count = le32_to_cpu(dc_extents.total_extent_cnt);
-> +	*extent_gen_num = le32_to_cpu(dc_extents.extent_list_num);
-> +
-> +	return count;
-> +}
-> +
-> +static int cxl_dev_get_dc_extents(struct cxl_endpoint_decoder *cxled,
-> +				  unsigned int start_gen_num,
-> +				  unsigned int exp_cnt)
-> +{
-> +	struct cxl_memdev_state *mds = cxled_to_mds(cxled);
-> +	unsigned int start_index, total_read;
-> +	struct device *dev = mds->cxlds.dev;
-> +	struct cxl_mbox_cmd mbox_cmd;
-> +
-> +	struct cxl_mbox_get_dc_extent_out *dc_extents __free(kfree) =
-> +				kvmalloc(mds->payload_size, GFP_KERNEL);
-> +	if (!dc_extents)
-> +		return -ENOMEM;
-> +
-> +	total_read = 0;
-> +	start_index = 0;
-> +	do {
-> +		unsigned int nr_ext, total_extent_cnt, gen_num;
-> +		struct cxl_mbox_get_dc_extent_in get_dc_extent;
-> +		int rc;
-> +
-> +		get_dc_extent = (struct cxl_mbox_get_dc_extent_in) {
-> +			.extent_cnt = cpu_to_le32(exp_cnt - start_index),
-> +			.start_extent_index = cpu_to_le32(start_index),
-> +		};
-> +
-> +		mbox_cmd = (struct cxl_mbox_cmd) {
-> +			.opcode = CXL_MBOX_OP_GET_DC_EXTENT_LIST,
-> +			.payload_in = &get_dc_extent,
-> +			.size_in = sizeof(get_dc_extent),
-> +			.size_out = mds->payload_size,
-> +			.payload_out = dc_extents,
-> +			.min_out = 1,
-> +		};
-> +
-> +		rc = cxl_internal_send_cmd(mds, &mbox_cmd);
-> +		if (rc < 0)
-> +			return rc;
-> +
-> +		nr_ext = le32_to_cpu(dc_extents->ret_extent_cnt);
-> +		total_read += nr_ext;
-> +		total_extent_cnt = le32_to_cpu(dc_extents->total_extent_cnt);
-> +		gen_num = le32_to_cpu(dc_extents->extent_list_num);
-> +
-> +		dev_dbg(dev, "Get extent list count:%d generation Num:%d\n",
-> +			total_extent_cnt, gen_num);
-> +
-> +		if (gen_num != start_gen_num || exp_cnt != total_extent_cnt) {
-> +			dev_err(dev, "Possible incomplete extent list; gen %u != %u : cnt %u != %u\n",
-> +				gen_num, start_gen_num, exp_cnt, total_extent_cnt);
-> +			return -EIO;
-> +		}
-> +
-> +		for (int i = 0; i < nr_ext ; i++) {
-> +			dev_dbg(dev, "Processing extent %d/%d\n",
-> +				start_index + i, exp_cnt);
-> +			rc = cxl_validate_extent(mds, &dc_extents->extent[i]);
-> +			if (rc)
-> +				continue;
-> +			if (!cxl_dc_extent_in_ed(cxled, &dc_extents->extent[i]))
-> +				continue;
-> +			rc = cxl_ed_add_one_extent(cxled, &dc_extents->extent[i]);
-> +			if (rc)
-> +				return rc;
-> +		}
-> +
-> +		start_index += nr_ext;
-> +	} while (exp_cnt > total_read);
-> +
-> +	return 0;
-> +}
-> +
-> +/**
-> + * cxl_read_dc_extents() - Read any existing extents
-> + * @cxled: Endpoint decoder which is part of a region
-> + *
-> + * Issue the Get Dynamic Capacity Extent List command to the device
-> + * and add any existing extents found which belong to this decoder.
-> + *
-> + * Return: 0 if command was executed successfully, -ERRNO on error.
-> + */
-> +int cxl_read_dc_extents(struct cxl_endpoint_decoder *cxled)
-> +{
-> +	struct cxl_memdev_state *mds = cxled_to_mds(cxled);
-> +	struct device *dev = mds->cxlds.dev;
-> +	unsigned int extent_gen_num;
-> +	int rc;
-> +
-> +	if (!cxl_dcd_supported(mds)) {
-> +		dev_dbg(dev, "DCD unsupported\n");
-> +		return 0;
-> +	}
-> +
-> +	rc = cxl_dev_get_dc_extent_cnt(mds, &extent_gen_num);
-> +	dev_dbg(mds->cxlds.dev, "Extent count: %d Generation Num: %d\n",
-> +		rc, extent_gen_num);
-> +	if (rc <= 0) /* 0 == no records found */
-> +		return rc;
-> +
-> +	return cxl_dev_get_dc_extents(cxled, extent_gen_num, rc);
+>   #define XDMA_CHAN_STATUS_MASK CHAN_CTRL_START
+>   
+>   #define XDMA_CHAN_ERROR_MASK (CHAN_CTRL_IE_DESC_ALIGN_MISMATCH |	\
+> diff --git a/drivers/dma/xilinx/xdma.c b/drivers/dma/xilinx/xdma.c
+> index b9788aa8f6b7..5a3a3293b21b 100644
+> --- a/drivers/dma/xilinx/xdma.c
+> +++ b/drivers/dma/xilinx/xdma.c
+> @@ -71,6 +71,8 @@ struct xdma_chan {
+>   	enum dma_transfer_direction	dir;
+>   	struct dma_slave_config		cfg;
+>   	u32				irq;
+> +	struct completion		last_interrupt;
+> +	bool				stop_requested;
+>   };
+>   
+>   /**
+> @@ -376,6 +378,8 @@ static int xdma_xfer_start(struct xdma_chan *xchan)
+>   		return ret;
+>   
+>   	xchan->busy = true;
+> +	xchan->stop_requested = false;
+> +	reinit_completion(&xchan->last_interrupt);
 
-Not sure about the behaviour here. From the cxl_dev_get_dc_extents
-implementation below, if gen_num changed or the expected extent count
-changed, it will return error. 
-If I understand it correctly, if the above two values change, it means
-the extent list has been updated due to extent add/release since last
-time we read the extent list info (cxl_dev_get_dc_extent_cnt), do we
-need to fail the operation or try again?
+If stop_requested is true, it should not start another transfer. So I 
+would suggest to add
 
-Fan
+      if (xchan->stop_requested)
 
-> +}
-> +EXPORT_SYMBOL_NS_GPL(cxl_read_dc_extents, CXL);
+                 return -ENODEV;
+
+at the beginning of xdma_xfer_start().
+
+xdma_xfer_start() is protected by chan lock.
+
+>   
+>   	return 0;
+>   }
+> @@ -387,7 +391,6 @@ static int xdma_xfer_start(struct xdma_chan *xchan)
+>   static int xdma_xfer_stop(struct xdma_chan *xchan)
+>   {
+>   	int ret;
+> -	u32 val;
+>   	struct xdma_device *xdev = xchan->xdev_hdl;
+>   
+>   	/* clear run stop bit to prevent any further auto-triggering */
+> @@ -395,13 +398,7 @@ static int xdma_xfer_stop(struct xdma_chan *xchan)
+>   			   CHAN_CTRL_RUN_STOP);
+>   	if (ret)
+>   		return ret;
+Above two lines can be removed with your change.
+> -
+> -	/* Clear the channel status register */
+> -	ret = regmap_read(xdev->rmap, xchan->base + XDMA_CHAN_STATUS_RC, &val);
+> -	if (ret)
+> -		return ret;
+> -
+> -	return 0;
+> +	return ret;
+>   }
+>   
+>   /**
+> @@ -474,6 +471,8 @@ static int xdma_alloc_channels(struct xdma_device *xdev,
+>   		xchan->xdev_hdl = xdev;
+>   		xchan->base = base + i * XDMA_CHAN_STRIDE;
+>   		xchan->dir = dir;
+> +		xchan->stop_requested = false;
+> +		init_completion(&xchan->last_interrupt);
+>   
+>   		ret = xdma_channel_init(xchan);
+>   		if (ret)
+> @@ -521,6 +520,7 @@ static int xdma_terminate_all(struct dma_chan *chan)
+>   	spin_lock_irqsave(&xdma_chan->vchan.lock, flags);
+>   
+>   	xdma_chan->busy = false;
+> +	xdma_chan->stop_requested = true;
+>   	vd = vchan_next_desc(&xdma_chan->vchan);
+>   	if (vd) {
+>   		list_del(&vd->node);
+> @@ -542,6 +542,13 @@ static int xdma_terminate_all(struct dma_chan *chan)
+>   static void xdma_synchronize(struct dma_chan *chan)
+>   {
+>   	struct xdma_chan *xdma_chan = to_xdma_chan(chan);
+> +	struct xdma_device *xdev = xdma_chan->xdev_hdl;
+> +	int st = 0;
 > +
->  static int add_dpa_res(struct device *dev, struct resource *parent,
->  		       struct resource *res, resource_size_t start,
->  		       resource_size_t size, const char *type)
-> diff --git a/drivers/cxl/core/region.c b/drivers/cxl/core/region.c
-> index 0d7b09a49dcf..3e563ab29afe 100644
-> --- a/drivers/cxl/core/region.c
-> +++ b/drivers/cxl/core/region.c
-> @@ -1450,6 +1450,13 @@ static int cxl_region_validate_position(struct cxl_region *cxlr,
->  	return 0;
->  }
->  
-> +/* Callers are expected to ensure cxled has been attached to a region */
-> +int cxl_ed_add_one_extent(struct cxl_endpoint_decoder *cxled,
-> +			  struct cxl_dc_extent *dc_extent)
-> +{
-> +	return 0;
-> +}
+> +	/* If the engine continues running, wait for the last interrupt */
+> +	regmap_read(xdev->rmap, xdma_chan->base + XDMA_CHAN_STATUS, &st);
+> +	if (st & XDMA_CHAN_STATUS_BUSY)
+> +		wait_for_completion_timeout(&xdma_chan->last_interrupt, msecs_to_jiffies(1000));
+I suggest to add error message for timeout case.
+>   
+>   	vchan_synchronize(&xdma_chan->vchan);
+>   }
+> @@ -876,6 +883,9 @@ static irqreturn_t xdma_channel_isr(int irq, void *dev_id)
+>   	u32 st;
+>   	bool repeat_tx;
+>   
+> +	if (xchan->stop_requested)
+> +		complete(&xchan->last_interrupt);
 > +
->  static int cxl_region_attach_position(struct cxl_region *cxlr,
->  				      struct cxl_root_decoder *cxlrd,
->  				      struct cxl_endpoint_decoder *cxled,
-> @@ -2773,6 +2780,22 @@ static int devm_cxl_add_pmem_region(struct cxl_region *cxlr)
->  	return rc;
->  }
->  
-> +static int cxl_region_read_extents(struct cxl_region *cxlr)
-> +{
-> +	struct cxl_region_params *p = &cxlr->params;
-> +	int i;
-> +
-> +	for (i = 0; i < p->nr_targets; i++) {
-> +		int rc;
-> +
-> +		rc = cxl_read_dc_extents(p->targets[i]);
-> +		if (rc)
-> +			return rc;
-> +	}
-> +
-> +	return 0;
-> +}
-> +
->  static void cxlr_dax_unregister(void *_cxlr_dax)
->  {
->  	struct cxl_dax_region *cxlr_dax = _cxlr_dax;
-> @@ -2807,6 +2830,12 @@ static int devm_cxl_add_dax_region(struct cxl_region *cxlr)
->  	dev_dbg(&cxlr->dev, "%s: register %s\n", dev_name(dev->parent),
->  		dev_name(dev));
->  
-> +	if (cxlr->mode == CXL_REGION_DC) {
-> +		rc = cxl_region_read_extents(cxlr);
-> +		if (rc)
-> +			goto err;
-> +	}
-> +
->  	return devm_add_action_or_reset(&cxlr->dev, cxlr_dax_unregister,
->  					cxlr_dax);
->  err:
-> diff --git a/drivers/cxl/cxlmem.h b/drivers/cxl/cxlmem.h
-> index 01bee6eedff3..8f2d8944d334 100644
-> --- a/drivers/cxl/cxlmem.h
-> +++ b/drivers/cxl/cxlmem.h
-> @@ -604,6 +604,54 @@ enum cxl_opcode {
->  	UUID_INIT(0xe1819d9, 0x11a9, 0x400c, 0x81, 0x1f, 0xd6, 0x07, 0x19,     \
->  		  0x40, 0x3d, 0x86)
->  
-> +/*
-> + * Add Dynamic Capacity Response
-> + * CXL rev 3.1 section 8.2.9.9.9.3; Table 8-168 & Table 8-169
-> + */
-> +struct cxl_mbox_dc_response {
-> +	__le32 extent_list_size;
-> +	u8 flags;
-> +	u8 reserved[3];
-> +	struct updated_extent_list {
-> +		__le64 dpa_start;
-> +		__le64 length;
-> +		u8 reserved[8];
-> +	} __packed extent_list[];
-> +} __packed;
-> +
-> +/*
-> + * CXL rev 3.1 section 8.2.9.2.1.6; Table 8-51
-> + */
-> +#define CXL_DC_EXTENT_TAG_LEN 0x10
-> +struct cxl_dc_extent {
-> +	__le64 start_dpa;
-> +	__le64 length;
-> +	u8 tag[CXL_DC_EXTENT_TAG_LEN];
-> +	__le16 shared_extn_seq;
-> +	u8 reserved[6];
-> +} __packed;
-> +
-> +/*
-> + * Get Dynamic Capacity Extent List; Input Payload
-> + * CXL rev 3.1 section 8.2.9.9.9.2; Table 8-166
-> + */
-> +struct cxl_mbox_get_dc_extent_in {
-> +	__le32 extent_cnt;
-> +	__le32 start_extent_index;
-> +} __packed;
-> +
-> +/*
-> + * Get Dynamic Capacity Extent List; Output Payload
-> + * CXL rev 3.1 section 8.2.9.9.9.2; Table 8-167
-> + */
-> +struct cxl_mbox_get_dc_extent_out {
-> +	__le32 ret_extent_cnt;
-> +	__le32 total_extent_cnt;
-> +	__le32 extent_list_num;
-> +	u8 rsvd[4];
-> +	struct cxl_dc_extent extent[];
-> +} __packed;
-> +
->  struct cxl_mbox_get_supported_logs {
->  	__le16 entries;
->  	u8 rsvd[6];
-> @@ -879,6 +927,7 @@ int cxl_internal_send_cmd(struct cxl_memdev_state *mds,
->  			  struct cxl_mbox_cmd *cmd);
->  int cxl_dev_state_identify(struct cxl_memdev_state *mds);
->  int cxl_dev_dynamic_capacity_identify(struct cxl_memdev_state *mds);
-> +int cxl_read_dc_extents(struct cxl_endpoint_decoder *cxled);
->  int cxl_await_media_ready(struct cxl_dev_state *cxlds);
->  int cxl_enumerate_cmds(struct cxl_memdev_state *mds);
->  int cxl_mem_create_range_info(struct cxl_memdev_state *mds);
-> 
-> -- 
-> 2.44.0
-> 
+
+This should be moved to the end of function to make sure processing 
+previous transfer is completed.
+
+out:
+
+     if (xchan->stop_requested) {
+
+             xchan->busy = false;
+
+             complete(&xchan->last_interrupt);
+
+     }
+
+     spin_unlock(&xchan->vchan.lock);
+
+     return IRQ_HANDLED;
+
+
+Thanks,
+
+Lizhi
+
+>   	spin_lock(&xchan->vchan.lock);
+>   
+>   	/* get submitted request */
+>
 
