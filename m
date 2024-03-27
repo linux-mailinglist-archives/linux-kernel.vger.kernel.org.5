@@ -1,172 +1,1306 @@
-Return-Path: <linux-kernel+bounces-122084-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-122085-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 85F1D88F1BA
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 23:18:53 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4879188F1BC
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 23:19:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A3E201C2B81B
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 22:18:52 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B006C1F2C122
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 22:19:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9A037153575;
-	Wed, 27 Mar 2024 22:18:46 +0000 (UTC)
-Received: from mail-io1-f69.google.com (mail-io1-f69.google.com [209.85.166.69])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 396ED153808;
+	Wed, 27 Mar 2024 22:19:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=riseup.net header.i=@riseup.net header.b="CMvEJldP"
+Received: from mx0.riseup.net (mx0.riseup.net [198.252.153.6])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9CDE5152E03
-	for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 22:18:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.69
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6D8AF152DEF;
+	Wed, 27 Mar 2024 22:19:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.252.153.6
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711577926; cv=none; b=PxgZEd32wVSIjLjCEB8izSY37XKDY5blDoIQCOQ2fpgZGjgZZFj0EjoSp8zWLQWfUzr/ttO/sU3B09e1HeAIKFpE3euJqoGXDZMo3CxJFhEzzAjE6RqhCXrZBOwp42DN1OyYE1TFp/xIKWawLO85K94oyf3a3CjgVoe8316haek=
+	t=1711577959; cv=none; b=Pk0XvaWuxCle9qrfiHbBMJ02XZa4EPkCK4cL1nj8kC3CeYm5HG0JXHo0XqjPZt9ZNBXNx//UtNJGShl3y0MVD1sbi5f3wuZxVr55/gDhbunxm58Lqg5hXmKT0oXdJxZPk2up4i+4M32pZ3eDEkCY4ZX4cwSOgtygKg9PP12USgk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711577926; c=relaxed/simple;
-	bh=GEVd/ZHs22Oo1fsjgBg0d3C+YaEbF9o9uCOPozoSIpw=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=b4L7WrlQlxYT8pUVUj6MayaHgvjTImCP0+68RcbRI7ZiccWGazYe+OzFB/n1GgBgWS+SETVA2jD9+yIYV98VDDMKyfcYPC94bss5s2C5OKhPiLa5z1tbmFl30QtJUYyUpzCI5qUptkAfhB20Y1REEUlzkUnB2sxdyNraxnSmdVo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.69
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f69.google.com with SMTP id ca18e2360f4ac-7cbef888187so25902939f.2
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 15:18:44 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711577924; x=1712182724;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=BXJswU0jfXaplFI+x0DV+weneotNUeY/bMnz2lIVJHY=;
-        b=BqBK9aeQXTt9ZO7+nCxp6K5hDAXbNQ3xXiD15Wf3jWsye8hnJpOHhY/R9POU7vLp4x
-         k4Ymx/yrkLGZadaWfHLWokoCJKlgF/oDgpPga4n44TymxhXXY2B1iK7kEXRofaWQc1Wf
-         adWXEzubLQa3DJTeudEgKyqxRJr1hdTeha0g5OFmM3YoUGdIMRIZfuVPQOmJ3LPWvDfr
-         gzLhp0rEh2eLaBwySb6aJJa3HBqBC1JwOP5jPwkAd6LWppzo/VuvVokFWx1U4T+3V0m2
-         vDfjl4TNVD7tBNO5T/xWZh7DMxUBXGDZ8fvo95rKCAQ6/9vzKo1/vgpxN31YvfyJXQYF
-         uxhg==
-X-Gm-Message-State: AOJu0YwdThLl+rAWmaICdqg13orFve22M/fyIpvo0X4Q4xB263D3fWl0
-	JfByEVTl/EwoRJ63tQlyL94DrVJ9R4vXmd4pX8FLqzjqSfJoEMnr3pb+e/SWkZ82U6XWMcqGvHW
-	dsWD1IVQsygHZQlaB/UO0hOfxdgmFIT6uz7Y0u9MMBBXlxsWtEs+GqdRnFw==
-X-Google-Smtp-Source: AGHT+IFD7kKa5WHCwUn6h2vhVU3D7bbKHjWW+K/lo+/4Lxr+lvUFKFA/TNgrGFp3hVUhmTowsQxPtWClsDNgb9V6DkYmItH4k1S6
+	s=arc-20240116; t=1711577959; c=relaxed/simple;
+	bh=LXCTDaQE3pwCOFllM7gMu3vIwWKsK+T7XQuv4yBePnM=;
+	h=MIME-Version:Date:From:To:Subject:In-Reply-To:References:
+	 Message-ID:Content-Type; b=kqd+NLRhSzcQdDSN0Zzq/ZoS4v21LlSkiMR3CLTUShG2dUUjm4uTJMHH0IRmo5ajmL+kxYlcle360d1BEVm0x/ZnQoaIYqhNwr7PrFpDnR1s5ronhX8q2iRBs03jcGAaAYhOGTPyyQ/0x4ja8Ap9vW9pJPkHTKdeiZGuTgqdLHU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=riseup.net; spf=pass smtp.mailfrom=riseup.net; dkim=pass (1024-bit key) header.d=riseup.net header.i=@riseup.net header.b=CMvEJldP; arc=none smtp.client-ip=198.252.153.6
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=riseup.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=riseup.net
+Received: from fews02-sea.riseup.net (fews02-sea-pn.riseup.net [10.0.1.112])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mx0.riseup.net (Postfix) with ESMTPS id 4V4h0Y6Lbzz9xDf;
+	Wed, 27 Mar 2024 22:19:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=riseup.net; s=squak;
+	t=1711577950; bh=LXCTDaQE3pwCOFllM7gMu3vIwWKsK+T7XQuv4yBePnM=;
+	h=Date:From:To:Subject:In-Reply-To:References:From;
+	b=CMvEJldPTLW8o0OvTH730wO654NhRAM4cOUm38tz5dC+KLoEgO1NB7DUw7dLBpzpV
+	 52HrRvEnC8ywIZGs6rvtTv7wpvzEFdq92o4ztr2Ck4Ybtmfu5rp7ussDMxjLOeX0UT
+	 cEIGb5pEykTiiHRgJo2BslzyObjyjYdNlGaJ5pm8=
+X-Riseup-User-ID: C56A6B954CDF2A014F67917C05BDD10915E49D086BAF36F0EC706D78E13F66C7
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+	 by fews02-sea.riseup.net (Postfix) with ESMTPSA id 4V4h0Y53SPzFtNy;
+	Wed, 27 Mar 2024 22:19:09 +0000 (UTC)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:12ca:b0:47c:14bd:41aa with SMTP id
- v10-20020a05663812ca00b0047c14bd41aamr34400jas.0.1711577923889; Wed, 27 Mar
- 2024 15:18:43 -0700 (PDT)
-Date: Wed, 27 Mar 2024 15:18:43 -0700
-In-Reply-To: <0000000000006f876b061478e878@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000028c0be0614abcafb@google.com>
-Subject: Re: [syzbot] Re: [syzbot] [bpf?] [net?] KMSAN: uninit-value in dev_map_lookup_elem
-From: syzbot <syzbot+1a3cf6f08d68868f9db3@syzkaller.appspotmail.com>
-To: linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Date: Wed, 27 Mar 2024 22:19:09 +0000
+From: friederhannenheim@riseup.net
+To: dmitry.torokhov@gmail.com, linux-input@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] input/touchscreen: synaptics_tcm_oncell: add driver
+In-Reply-To: <20240327214643.7055-1-friederhannenheim@riseup.net>
+References: <20240327214643.7055-1-friederhannenheim@riseup.net>
+Message-ID: <cf3983d140e17fd3475c94cff65e5432@riseup.net>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-For archival purposes, forwarding an incoming command email to
-linux-kernel@vger.kernel.org.
+Looks like I forgot the most important thing: What is this actually used for. The Synaptics TCM Oncell Touchscreen is built into multiple smartphones: The OnePlus 8T (my device), Realme GT2 Pro, OnePlus 9 Pro, and more. I'm currently trying to get the OnePlus 8T working on mainline Linux that's why I wrote this driver. 
 
-***
-
-Subject: Re: [syzbot] [bpf?] [net?] KMSAN: uninit-value in dev_map_lookup_elem
-Author: martin.lau@linux.dev
-
-On 3/25/24 2:36 AM, syzbot wrote:
-> Hello,
+On 2024-03-27 22:39, Frieder Hannenheim wrote:
+> This is a bit of a stripped down and partially reworked driver for the
+> synaptics_tcm_oncell touchscreen. I based my work off the driver in the
+> LineageOS kernel found at
+> https://github.com/LineageOS/android_kernel_oneplus_sm8250 branch
+> lineage-20. The code was originally written by OnePlus developers but
+> I'm not sure how to credit them correctly.
 > 
-> syzbot found the following issue on:
+> Currently the driver is in a pretty good shape, the only thing that is
+> not working is setting a report config. To me it looks like some data is
+> sent by the touchscreen firmware after setting the report config that is
+> making the irq handler crash. Sadly I haven't been able to test out why.
+> The driver works fine also with the default touch report config so maybe
+> we can just use that and not set our own. 
 > 
-> HEAD commit:    5e74df2f8f15 Merge tag 'x86-urgent-2024-03-24' of git://gi..
-> git tree:       upstream
-> console+strace: https://syzkaller.appspot.com/x/log.txt?x=148872a5180000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=e6bd769cb793b98a
-> dashboard link: https://syzkaller.appspot.com/bug?extid=1a3cf6f08d68868f9db3
-> compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=15921a6e180000
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=12e081f1180000
-> 
-> Downloadable assets:
-> disk image: https://storage.googleapis.com/syzbot-assets/1a82880723a7/disk-5e74df2f.raw.xz
-> vmlinux: https://storage.googleapis.com/syzbot-assets/fd3046ac43b9/vmlinux-5e74df2f.xz
-> kernel image: https://storage.googleapis.com/syzbot-assets/2097be59cbc1/bzImage-5e74df2f.xz
-> 
-> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> Reported-by: syzbot+1a3cf6f08d68868f9db3@syzkaller.appspotmail.com
-> 
-> =====================================================
-> BUG: KMSAN: uninit-value in __dev_map_lookup_elem kernel/bpf/devmap.c:441 [inline]
-> BUG: KMSAN: uninit-value in dev_map_lookup_elem+0xf3/0x170 kernel/bpf/devmap.c:796
->   __dev_map_lookup_elem kernel/bpf/devmap.c:441 [inline]
->   dev_map_lookup_elem+0xf3/0x170 kernel/bpf/devmap.c:796
->   ____bpf_map_lookup_elem kernel/bpf/helpers.c:42 [inline]
->   bpf_map_lookup_elem+0x5c/0x80 kernel/bpf/helpers.c:38
->   ___bpf_prog_run+0x13fe/0xe0f0 kernel/bpf/core.c:1997
->   __bpf_prog_run256+0xb5/0xe0 kernel/bpf/core.c:2237
->   bpf_dispatcher_nop_func include/linux/bpf.h:1234 [inline]
->   __bpf_prog_run include/linux/filter.h:657 [inline]
->   bpf_prog_run include/linux/filter.h:664 [inline]
->   __bpf_trace_run kernel/trace/bpf_trace.c:2381 [inline]
->   bpf_trace_run5+0x16f/0x350 kernel/trace/bpf_trace.c:2423
->   __bpf_trace_ext4_remove_blocks+0x45/0x60 include/trace/events/ext4.h:1984
->   __traceiter_ext4_remove_blocks+0xb5/0x170 include/trace/events/ext4.h:1984
->   trace_ext4_remove_blocks include/trace/events/ext4.h:1984 [inline]
->   ext4_remove_blocks fs/ext4/extents.c:2463 [inline]
->   ext4_ext_rm_leaf fs/ext4/extents.c:2686 [inline]
->   ext4_ext_remove_space+0x4e30/0x7e00 fs/ext4/extents.c:2934
->   ext4_ext_truncate+0x1e3/0x390 fs/ext4/extents.c:4440
->   ext4_truncate+0x14c6/0x1e10 fs/ext4/inode.c:4146
->   ext4_evict_inode+0x1886/0x24d0 fs/ext4/inode.c:258
->   evict+0x3ae/0xa60 fs/inode.c:667
->   iput_final fs/inode.c:1741 [inline]
->   iput+0x9ca/0xe10 fs/inode.c:1767
->   d_delete_notify include/linux/fsnotify.h:307 [inline]
->   vfs_rmdir+0x53c/0x790 fs/namei.c:4222
->   do_rmdir+0x630/0x8b0 fs/namei.c:4268
->   __do_sys_rmdir fs/namei.c:4287 [inline]
->   __se_sys_rmdir fs/namei.c:4285 [inline]
->   __x64_sys_rmdir+0x78/0xb0 fs/namei.c:4285
->   do_syscall_64+0xd5/0x1f0
->   entry_SYSCALL_64_after_hwframe+0x6d/0x75
-> 
-> Local variable stack created at:
->   __bpf_prog_run256+0x45/0xe0 kernel/bpf/core.c:2237
->   bpf_dispatcher_nop_func include/linux/bpf.h:1234 [inline]
->   __bpf_prog_run include/linux/filter.h:657 [inline]
->   bpf_prog_run include/linux/filter.h:664 [inline]
->   __bpf_trace_run kernel/trace/bpf_trace.c:2381 [inline]
->   bpf_trace_run5+0x16f/0x350 kernel/trace/bpf_trace.c:2423
-> 
-> CPU: 0 PID: 5017 Comm: syz-executor365 Not tainted 6.8.0-syzkaller-13236-g5e74df2f8f15 #0
-> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 02/29/2024
-> =====================================================
-> 
-> 
+> Signed-off-by: Frieder Hannenheim <friederhannenheim@riseup.net>
 > ---
-> This report is generated by a bot. It may contain errors.
-> See https://goo.gl/tpsmEJ for more information about syzbot.
-> syzbot engineers can be reached at syzkaller@googlegroups.com.
+>  .../input/touchscreen/syna,s3908.yaml         |   63 +
+>  drivers/input/touchscreen/Kconfig             |   11 +
+>  drivers/input/touchscreen/Makefile            |    1 +
+>  .../input/touchscreen/synaptics_tcm_oncell.c  | 1104 +++++++++++++++++
+>  4 files changed, 1179 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/input/touchscreen/syna,s3908.yaml
+>  create mode 100644 drivers/input/touchscreen/synaptics_tcm_oncell.c
 > 
-> syzbot will keep track of this issue. See:
-> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-> 
-> If the report is already addressed, let syzbot know by replying with:
-> #syz fix: exact-commit-title
-> 
-> If you want syzbot to run the reproducer, reply with:
-> #syz test: git://repo/address.git branch-or-commit-hash
-> If you attach or paste a git patch, syzbot will apply it before testing.
-> 
-> If you want to overwrite report's subsystems, reply with:
-> #syz set subsystems: new-subsystem
-> (See the list of subsystem names on the web dashboard)
-> 
-> If the report is a duplicate of another one, reply with:
-> #syz dup: exact-subject-of-another-report
-> 
-> If you want to undo deduplication, reply with:
-> #syz undup
-> 
-
-#syz test: git://git.kernel.org/pub/scm/linux/kernel/git/martin.lau/bpf-next.git interpreter.kmsan
+> diff --git a/Documentation/devicetree/bindings/input/touchscreen/syna,s3908.yaml b/Documentation/devicetree/bindings/input/touchscreen/syna,s3908.yaml
+> new file mode 100644
+> index 000000000000..1a85747e2f52
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/input/touchscreen/syna,s3908.yaml
+> @@ -0,0 +1,63 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/input/touchscreen/synaptics,s3908.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Synaptics s3908 touchscreen controller
+> +
+> +maintainers:
+> +  - Frieder Hannenheim <frieder.hannenheim@riseup.net>
+> +
+> +allOf:
+> +  - $ref: touchscreen.yaml#
+> +
+> +properties:
+> +  compatible:
+> +    const: syna,s3908
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  interrupts:
+> +    maxItems: 1
+> +
+> +  reset-gpios:
+> +    maxItems: 1
+> +    description: reset gpio the chip is connected to.
+> +
+> +  vdd-supply: true
+> +  vcc-supply: true
+> +
+> +  max-objects: true
+> +
+> +unevaluatedProperties: false
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - interrupts
+> +  - reset-gpios
+> +  - vdd-supply
+> +  - vcc-supply
+> +  - max-objects
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/interrupt-controller/irq.h>
+> +    i2c {
+> +        #address-cells = <1>;
+> +        #size-cells = <0>;
+> +
+> +        touchscreen@48 {
+> +            compatible = "syna,s3908";
+> +            reg = <0x48>;
+> +            interrupt-parent = <&gpa1>;
+> +            interrupts = <1 IRQ_TYPE_LEVEL_HIGH>;
+> +            reset-gpios = <38 0>;
+> +            vdd-supply = <&ldo30_reg>;
+> +            vcc-supply = <&ldo31_reg>;
+> +
+> +            max-objects = <10>;
+> +        };
+> +    };
+> diff --git a/drivers/input/touchscreen/Kconfig b/drivers/input/touchscreen/Kconfig
+> index 1f8b33c2b03d..eba31ae27391 100644
+> --- a/drivers/input/touchscreen/Kconfig
+> +++ b/drivers/input/touchscreen/Kconfig
+> @@ -502,6 +502,17 @@ config TOUCHSCREEN_S6SY761
+>  
+>  	  To compile this driver as module, choose M here: the
+>  	  module will be called s6sy761.
+> +	  
+> +config TOUCHSCREEN_SYNA_TCM_ONCELL
+> +	tristate "Synaptics TCM Oncell Touchscreen driver"
+> +	depends on I2C
+> +	help
+> +	  Say Y if you have the Synaptics TCM Oncell driver
+> +
+> +	  If unsure, say N
+> +
+> +	  To compile this driver as module, choose M here: the
+> +	  module will be called synaptics_tcm_oncell.
+>  
+>  config TOUCHSCREEN_GUNZE
+>  	tristate "Gunze AHL-51S touchscreen"
+> diff --git a/drivers/input/touchscreen/Makefile b/drivers/input/touchscreen/Makefile
+> index 7d52592f4290..f5395ccf09d5 100644
+> --- a/drivers/input/touchscreen/Makefile
+> +++ b/drivers/input/touchscreen/Makefile
+> @@ -86,6 +86,7 @@ obj-$(CONFIG_TOUCHSCREEN_STMPE)		+= stmpe-ts.o
+>  obj-$(CONFIG_TOUCHSCREEN_SUN4I)		+= sun4i-ts.o
+>  obj-$(CONFIG_TOUCHSCREEN_SUR40)		+= sur40.o
+>  obj-$(CONFIG_TOUCHSCREEN_SURFACE3_SPI)	+= surface3_spi.o
+> +obj-$(CONFIG_TOUCHSCREEN_SYNA_TCM_ONCELL)	+= synaptics_tcm_oncell.o
+>  obj-$(CONFIG_TOUCHSCREEN_TI_AM335X_TSC)	+= ti_am335x_tsc.o
+>  obj-$(CONFIG_TOUCHSCREEN_TOUCHIT213)	+= touchit213.o
+>  obj-$(CONFIG_TOUCHSCREEN_TOUCHRIGHT)	+= touchright.o
+> diff --git a/drivers/input/touchscreen/synaptics_tcm_oncell.c b/drivers/input/touchscreen/synaptics_tcm_oncell.c
+> new file mode 100644
+> index 000000000000..b874287f37af
+> --- /dev/null
+> +++ b/drivers/input/touchscreen/synaptics_tcm_oncell.c
+> @@ -0,0 +1,1104 @@
+> +// SPDX-License-Identifier: GPL-2.0-only
+> +/*
+> + *  Driver for Synaptics TCM Oncell Touchscreens
+> + *
+> + *  Copyright (c) 2024 Frieder Hannenheim <friederhannenheim@riseup.net>
+> + */
+> +
+> +#include <linux/i2c.h>
+> +#include <linux/input.h>
+> +#include <linux/input/touchscreen.h>
+> +#include <linux/mod_devicetable.h>
+> +#include <linux/module.h>
+> +#include <linux/property.h>
+> +#include <asm/unaligned.h>
+> +#include <linux/delay.h>
+> +#include <linux/input/mt.h>
+> +#include <linux/input/touchscreen.h>
+> +#include <linux/interrupt.h>
+> +#include <linux/irq.h>
+> +#include <linux/of_gpio.h>
+> +#include <linux/module.h>
+> +#include <linux/pm_runtime.h>
+> +#include <linux/regulator/consumer.h>
+> +
+> +/* Meta Information */
+> +MODULE_LICENSE("GPL");
+> +MODULE_AUTHOR("Frieder Hannenheim");
+> +MODULE_DESCRIPTION("A driver for Synaptics TCM Oncell Touchpanels");
+> +
+> +#define TOUCHPANEL_DEVICE "syna-tcm"
+> +
+> +#define POWERUP_TO_RESET_TIME 10
+> +#define RESET_TO_NORMAL_TIME 80
+> +
+> +#define RESPONSE_TIMEOUT_MS 1000
+> +
+> +#define MESSAGE_HEADER_SIZE 4
+> +#define MESSAGE_MARKER 0xA5
+> +#define MESSAGE_PADDING 0x5A
+> +
+> +#define READ_LENGTH 9
+> +#define MAX_I2C_RETRY_TIME 4
+> +
+> +#define RD_CHUNK_SIZE 0 /* read length limit in bytes, 0 = unlimited */
+> +#define WR_CHUNK_SIZE 0 /* write length limit in bytes, 0 = unlimited */
+> +
+> +#define APP_STATUS_POLL_MS 100
+> +#define TOUCH_REPORT_CONFIG_SIZE 128
+> +
+> +enum command {
+> +	CMD_NONE = 0x00,
+> +	CMD_CONTINUE_WRITE = 0x01,
+> +	CMD_IDENTIFY = 0x02,
+> +	CMD_RESET = 0x04,
+> +	CMD_ENABLE_REPORT = 0x05,
+> +	CMD_DISABLE_REPORT = 0x06,
+> +	CMD_GET_BOOT_INFO = 0x10,
+> +	CMD_ERASE_FLASH = 0x11,
+> +	CMD_WRITE_FLASH = 0x12,
+> +	CMD_READ_FLASH = 0x13,
+> +	CMD_RUN_APPLICATION_FIRMWARE = 0x14,
+> +	CMD_SPI_MASTER_WRITE_THEN_READ = 0x15,
+> +	CMD_REBOOT_TO_ROM_BOOTLOADER = 0x16,
+> +	CMD_RUN_BOOTLOADER_FIRMWARE = 0x1f,
+> +	CMD_GET_APPLICATION_INFO = 0x20,
+> +	CMD_GET_STATIC_CONFIG = 0x21,
+> +	CMD_SET_STATIC_CONFIG = 0x22,
+> +	CMD_GET_DYNAMIC_CONFIG = 0x23,
+> +	CMD_SET_DYNAMIC_CONFIG = 0x24,
+> +	CMD_GET_TOUCH_REPORT_CONFIG = 0x25,
+> +	CMD_SET_TOUCH_REPORT_CONFIG = 0x26,
+> +	CMD_REZERO = 0x27,
+> +	CMD_COMMIT_CONFIG = 0x28,
+> +	CMD_DESCRIBE_DYNAMIC_CONFIG = 0x29,
+> +	CMD_PRODUCTION_TEST = 0x2a,
+> +	CMD_SET_CONFIG_ID = 0x2b,
+> +	CMD_ENTER_DEEP_SLEEP = 0x2c,
+> +	CMD_EXIT_DEEP_SLEEP = 0x2d,
+> +	CMD_GET_TOUCH_INFO = 0x2e,
+> +	CMD_GET_DATA_LOCATION = 0x2f,
+> +	CMD_DOWNLOAD_CONFIG = 0xc0,
+> +	CMD_GET_NSM_INFO = 0xc3,
+> +	CMD_EXIT_ESD = 0xc4,
+> +};
+> +
+> +enum touch_report_code {
+> +	TOUCH_END = 0,
+> +	TOUCH_FOREACH_ACTIVE_OBJECT = 1,
+> +	TOUCH_FOREACH_OBJECT = 2,
+> +	TOUCH_FOREACH_END = 3,
+> +	TOUCH_PAD_TO_NEXT_BYTE = 4,
+> +	TOUCH_TIMESTAMP = 5,
+> +	TOUCH_OBJECT_N_INDEX = 6,
+> +	TOUCH_OBJECT_N_CLASSIFICATION = 7,
+> +	TOUCH_OBJECT_N_X_POSITION = 8,
+> +	TOUCH_OBJECT_N_Y_POSITION = 9,
+> +	TOUCH_OBJECT_N_Z = 10,
+> +	TOUCH_OBJECT_N_X_WIDTH = 11,
+> +	TOUCH_OBJECT_N_Y_WIDTH = 12,
+> +	TOUCH_OBJECT_N_TX_POSITION_TIXELS = 13,
+> +	TOUCH_OBJECT_N_RX_POSITION_TIXELS = 14,
+> +	TOUCH_0D_BUTTONS_STATE = 15,
+> +	TOUCH_GESTURE_DOUBLE_TAP = 16,
+> +	TOUCH_FRAME_RATE = 17,
+> +	TOUCH_POWER_IM = 18,
+> +	TOUCH_CID_IM = 19,
+> +	TOUCH_RAIL_IM = 20,
+> +	TOUCH_CID_VARIANCE_IM = 21,
+> +	TOUCH_NSM_FREQUENCY = 22,
+> +	TOUCH_NSM_STATE = 23,
+> +	TOUCH_NUM_OF_ACTIVE_OBJECTS = 23,
+> +	TOUCH_NUM_OF_CPU_CYCLES_USED_SINCE_LAST_FRAME = 24,
+> +	TOUCH_TUNING_GAUSSIAN_WIDTHS = 0x80,
+> +	TOUCH_TUNING_SMALL_OBJECT_PARAMS = 0x81,
+> +	TOUCH_TUNING_0D_BUTTONS_VARIANCE = 0x82,
+> +	TOUCH_REPORT_GESTURE_SWIPE = 193,
+> +	TOUCH_REPORT_GESTURE_CIRCLE = 194,
+> +	TOUCH_REPORT_GESTURE_UNICODE = 195,
+> +	TOUCH_REPORT_GESTURE_VEE = 196,
+> +	TOUCH_REPORT_GESTURE_TRIANGLE = 197,
+> +	TOUCH_REPORT_GESTURE_INFO = 198,
+> +	TOUCH_REPORT_GESTURE_COORDINATE = 199,
+> +	TOUCH_REPORT_CUSTOMER_GRIP_INFO = 203,
+> +};
+> +
+> +enum touch_status {
+> +	LIFT = 0,
+> +	FINGER = 1,
+> +	GLOVED_FINGER = 2,
+> +	NOP = -1,
+> +};
+> +
+> +enum status_code {
+> +	STATUS_IDLE = 0x00,
+> +	STATUS_OK = 0x01,
+> +	STATUS_BUSY = 0x02,
+> +	STATUS_CONTINUED_READ = 0x03,
+> +	STATUS_RECEIVE_BUFFER_OVERFLOW = 0x0c,
+> +	STATUS_PREVIOUS_COMMAND_PENDING = 0x0d,
+> +	STATUS_NOT_IMPLEMENTED = 0x0e,
+> +	STATUS_ERROR = 0x0f,
+> +	STATUS_INVALID = 0xff,
+> +};
+> +
+> +enum report_type {
+> +	REPORT_IDENTIFY = 0x10,
+> +	REPORT_TOUCH = 0x11,
+> +	REPORT_DELTA = 0x12,
+> +	REPORT_RAW = 0x13,
+> +	REPORT_DEBUG = 0x14,
+> +	REPORT_LOG = 0x1d,
+> +	REPORT_TOUCH_HOLD = 0x20,
+> +};
+> +
+> +enum syna_tcm_oncell_regulators {
+> +	SYNA_TCM_ONCELL_REGULATOR_VDD,
+> +	SYNA_TCM_ONCELL_REGULATOR_VCC,
+> +};
+> +
+> +enum boot_mode {
+> +	MODE_APPLICATION = 0x01,
+> +	MODE_HOST_DOWNLOAD = 0x02,
+> +	MODE_BOOTLOADER = 0x0b,
+> +	MODE_TDDI_BOOTLOADER = 0x0c,
+> +};
+> +
+> +enum app_status {
+> +	APP_STATUS_OK = 0x00,
+> +	APP_STATUS_BOOTING = 0x01,
+> +	APP_STATUS_UPDATING = 0x02,
+> +	APP_STATUS_BAD_APP_CONFIG = 0xff,
+> +};
+> +
+> +struct syna_tcm_app_info {
+> +	unsigned char version[2];
+> +	unsigned char status[2];
+> +	unsigned char static_config_size[2];
+> +	unsigned char dynamic_config_size[2];
+> +	unsigned char app_config_start_write_block[2];
+> +	unsigned char app_config_size[2];
+> +	unsigned char max_touch_report_config_size[2];
+> +	unsigned char max_touch_report_payload_size[2];
+> +	unsigned char customer_config_id[16];
+> +	unsigned char max_x[2];
+> +	unsigned char max_y[2];
+> +	unsigned char max_objects[2];
+> +	unsigned char num_of_buttons[2];
+> +	unsigned char num_of_image_rows[2];
+> +	unsigned char num_of_image_cols[2];
+> +	unsigned char has_hybrid_data[2];
+> +};
+> +
+> +struct syna_tcm_identification {
+> +	unsigned char version;
+> +	unsigned char mode;
+> +	unsigned char part_number[16];
+> +	unsigned char build_id[4];
+> +	unsigned char max_write_size[2];
+> +};
+> +
+> +struct syna_tcm_message_header {
+> +	unsigned char marker;
+> +	unsigned char code;
+> +	unsigned char length[2];
+> +};
+> +
+> +struct touch_data {
+> +	unsigned char status;
+> +	unsigned int x_pos;
+> +	unsigned int y_pos;
+> +	unsigned int x_width;
+> +	unsigned int y_width;
+> +	unsigned int z;
+> +};
+> +
+> +struct syna_tcm_data {
+> +	struct i2c_client *client;
+> +	struct regulator_bulk_data regulators[2];
+> +	struct input_dev *input;
+> +	struct gpio_desc *reset_gpio;
+> +	struct touchscreen_properties prop;
+> +	struct syna_tcm_identification id_info;
+> +	struct syna_tcm_app_info app_info;
+> +
+> +	unsigned char *response_buf;
+> +	unsigned int response_length; // Response length including header
+> +
+> +	unsigned int app_status;
+> +
+> +	unsigned char *report_config;
+> +	unsigned int report_size;
+> +
+> +	bool initialize_done;
+> +
+> +	unsigned int touchpanel_max_objects;
+> +};
+> +
+> +DECLARE_COMPLETION(response_complete);
+> +
+> +static inline unsigned int le2_to_uint(const unsigned char *src)
+> +{
+> +	return (unsigned int)src[0] + (unsigned int)src[1] * 0x100;
+> +}
+> +
+> +static inline unsigned int ceil_div(unsigned int dividend, unsigned int divisor)
+> +{
+> +	return (dividend + divisor - 1) / divisor;
+> +}
+> +
+> +static int touch_i2c_continue_read(struct i2c_client *client,
+> +				   unsigned char *data, unsigned short length)
+> +{
+> +	int retval;
+> +	unsigned char retry;
+> +	struct i2c_msg msg;
+> +
+> +	msg.addr = client->addr;
+> +	msg.flags = I2C_M_RD;
+> +	msg.len = length;
+> +	msg.buf = data;
+> +
+> +	for (retry = 0; retry < MAX_I2C_RETRY_TIME; retry++) {
+> +		if (i2c_transfer(client->adapter, &msg, 1) == 1) {
+> +			retval = length;
+> +			break;
+> +		}
+> +		msleep(20);
+> +	}
+> +	if (retry == MAX_I2C_RETRY_TIME) {
+> +		pr_warn("%s: I2C read over retry limit\n", __func__);
+> +		retval = -EIO;
+> +	}
+> +	return retval;
+> +}
+> +
+> +static int touch_i2c_continue_write(struct i2c_client *client,
+> +				    unsigned char *data, unsigned short length)
+> +{
+> +	int retval;
+> +	unsigned char retry;
+> +	struct i2c_msg msg;
+> +
+> +	msg.addr = client->addr;
+> +	msg.flags = 0;
+> +	msg.buf = data;
+> +	msg.len = length;
+> +
+> +	for (retry = 0; retry < MAX_I2C_RETRY_TIME; retry++) {
+> +		if (i2c_transfer(client->adapter, &msg, 1) == 1) {
+> +			retval = length;
+> +			break;
+> +		}
+> +		msleep(20);
+> +	}
+> +	if (retry == MAX_I2C_RETRY_TIME) {
+> +		pr_warn("%s: I2C write over retry limit\n", __func__);
+> +		retval = -EIO;
+> +	}
+> +	return retval;
+> +}
+> +
+> +static int syna_tcm_continued_read(struct syna_tcm_data *tcm_info,
+> +				   unsigned int payload_length,
+> +				   unsigned char *message_buffer)
+> +{
+> +	int retval = 0;
+> +	unsigned char marker = 0, code = 0;
+> +	unsigned int total_length = 0, remaining_length = 0;
+> +	unsigned char *temp_buffer;
+> +
+> +	total_length = MESSAGE_HEADER_SIZE + payload_length + 1;
+> +	remaining_length = total_length - READ_LENGTH;
+> +
+> +	temp_buffer = kmalloc(remaining_length + 2, GFP_KERNEL);
+> +	if (!temp_buffer)
+> +		return -ENOMEM;
+> +
+> +	retval = touch_i2c_continue_read(tcm_info->client, temp_buffer,
+> +					 remaining_length + 2);
+> +	if (retval < 0) {
+> +		pr_warn("touch_i2c_continue_read failed");
+> +		return retval;
+> +	}
+> +
+> +	marker = temp_buffer[0];
+> +	code = temp_buffer[1];
+> +
+> +	if (marker != MESSAGE_MARKER) {
+> +		pr_warn("incorrect header marker (0x%02x)\n", marker);
+> +		return -EIO;
+> +	}
+> +
+> +	if (code != STATUS_CONTINUED_READ) {
+> +		pr_warn("incorrect header code (0x%02x)\n", code);
+> +		return -EIO;
+> +	}
+> +
+> +	memcpy(&message_buffer[READ_LENGTH], &temp_buffer[2], remaining_length);
+> +	message_buffer[total_length - 1] = MESSAGE_PADDING;
+> +	kfree(temp_buffer);
+> +
+> +	return 0;
+> +}
+> +
+> +/**
+> + * syna_tcm_raw_write() - write command/data to device without receiving
+> + * response
+> + *
+> + * @tcm_info: handle of core module
+> + * @command: command to send to device
+> + * @data: data to send to device
+> + * @length: length of data in bytes
+> + * @add_length: wether the length of the message should be added after the command
+> + *
+> + * A command and its data, if any, are sent to the device.
+> + */
+> +static int syna_tcm_raw_write(struct syna_tcm_data *tcm_info,
+> +			      unsigned char command, unsigned char *data,
+> +			      unsigned int length, bool add_length)
+> +{
+> +	int retval = 0;
+> +	unsigned char *out_buf;
+> +
+> +	unsigned int header_size = add_length && length ? 3 : 1;
+> +
+> +	out_buf = kmalloc(length + header_size, GFP_KERNEL);
+> +	if (retval < 0)
+> +		return retval;
+> +
+> +	out_buf[0] = command;
+> +	if (add_length && length) {
+> +		out_buf[1] = (unsigned char)length;
+> +		out_buf[2] = (unsigned char)(length >> 8);
+> +	}
+> +
+> +	if (length)
+> +		memcpy(&out_buf[header_size], data, length);
+> +
+> +	retval = touch_i2c_continue_write(tcm_info->client, out_buf,
+> +					  length + header_size);
+> +	if (retval < 0) {
+> +		kfree(out_buf);
+> +		return retval;
+> +	}
+> +
+> +	kfree(out_buf);
+> +	return 0;
+> +}
+> +
+> +/**
+> + * syna_tcm_read_message() - read message from device
+> + *
+> + * @tcm_info: handle of core module
+> + * @length: length of data in bytes in raw read mode
+> + */
+> +static int syna_tcm_read_message(struct syna_tcm_data *tcm_info,
+> +				 unsigned int length)
+> +{
+> +	int retval = 0;
+> +	unsigned int total_length = 0, payload_length = 0;
+> +	unsigned char *message_buffer;
+> +	struct syna_tcm_message_header *header = NULL;
+> +
+> +	message_buffer = kmalloc(READ_LENGTH, GFP_KERNEL);
+> +	if (!message_buffer)
+> +		return -ENOMEM;
+> +
+> +	retval = touch_i2c_continue_read(tcm_info->client, message_buffer,
+> +					 READ_LENGTH);
+> +	if (retval < 0)
+> +		return retval;
+> +
+> +	header = (struct syna_tcm_message_header *)message_buffer;
+> +	if (header->marker != MESSAGE_MARKER) {
+> +		pr_warn("wrong header marker:0x%02x\n", header->marker);
+> +		return -ENXIO;
+> +	}
+> +
+> +	unsigned char report_code = header->code;
+> +
+> +	payload_length = le2_to_uint(header->length);
+> +
+> +	if (report_code <= STATUS_ERROR || report_code == STATUS_INVALID) {
+> +		switch (report_code) {
+> +		case STATUS_OK:
+> +			break;
+> +		case STATUS_CONTINUED_READ:
+> +		case STATUS_IDLE:
+> +		case STATUS_BUSY:
+> +			payload_length = 0;
+> +			kfree(message_buffer);
+> +			return 0;
+> +		default:
+> +			if (report_code != STATUS_ERROR) {
+> +				pr_warn("IO ERROR");
+> +				kfree(message_buffer);
+> +				return -EIO;
+> +			}
+> +		}
+> +	}
+> +
+> +	total_length = MESSAGE_HEADER_SIZE + payload_length + 1;
+> +
+> +	unsigned char *temp_buffer = message_buffer;
+> +
+> +	message_buffer = kmalloc(total_length, GFP_KERNEL);
+> +	if (!message_buffer)
+> +		return -ENOMEM;
+> +
+> +	// Copy data already read to message_buffer
+> +	memcpy(message_buffer, temp_buffer, READ_LENGTH);
+> +	kfree(temp_buffer);
+> +
+> +	if (payload_length == 0) {
+> +		message_buffer[total_length - 1] = MESSAGE_PADDING;
+> +		goto check_padding;
+> +	}
+> +
+> +	if (MESSAGE_HEADER_SIZE + payload_length > READ_LENGTH) {
+> +		retval = syna_tcm_continued_read(tcm_info, payload_length,
+> +						 message_buffer);
+> +		if (retval < 0) {
+> +			pr_warn("failed to do continued read\n");
+> +			return retval;
+> +		};
+> +	}
+> +
+> +check_padding:
+> +	if (message_buffer[total_length - 1] != MESSAGE_PADDING) {
+> +		pr_warn("missing message padding");
+> +		return -EIO;
+> +	}
+> +
+> +	if (tcm_info->response_buf != NULL)
+> +		kfree(tcm_info->response_buf);
+> +
+> +	tcm_info->response_buf = message_buffer;
+> +	tcm_info->response_length = total_length;
+> +
+> +	return 0;
+> +}
+> +
+> +static int syna_tcm_write_message(struct syna_tcm_data *tcm_info,
+> +				  unsigned char command, unsigned char *payload,
+> +				  unsigned int length, unsigned char **resp_buf,
+> +				  unsigned int *resp_length)
+> +{
+> +	int retval = 0;
+> +
+> +	if (resp_buf == NULL) {
+> +		retval = syna_tcm_raw_write(tcm_info, command, payload, length,
+> +					    false);
+> +		goto exit;
+> +	}
+> +	reinit_completion(&response_complete);
+> +
+> +	tcm_info->response_buf = *resp_buf;
+> +	tcm_info->response_length = *resp_length;
+> +
+> +	// Here write command to device
+> +	retval = syna_tcm_raw_write(tcm_info, command, payload, length, true);
+> +	if (retval != 0)
+> +		goto exit;
+> +
+> +	retval = wait_for_completion_timeout(&response_complete,
+> +					     RESPONSE_TIMEOUT_MS);
+> +	if (retval == 0) {
+> +		pr_warn("timed out waiting for response (command 0x%02x)\n",
+> +			command);
+> +		retval = -EIO;
+> +	}
+> +
+> +exit:
+> +	if (tcm_info->response_length < 0)
+> +		return -1;
+> +	if (resp_buf != NULL) {
+> +		*resp_buf = tcm_info->response_buf;
+> +		*resp_length = tcm_info->response_length;
+> +	}
+> +
+> +	return retval;
+> +}
+> +
+> +static int syna_tcm_set_normal_report_config(struct syna_tcm_data *tcm_info)
+> +{
+> +	int retval;
+> +	unsigned int idx = 0;
+> +	unsigned int length;
+> +
+> +	length = le2_to_uint(tcm_info->app_info.max_touch_report_config_size);
+> +
+> +	if (length < TOUCH_REPORT_CONFIG_SIZE) {
+> +		pr_warn("invalid maximum touch report config size: %d\n",
+> +			length);
+> +		return -EINVAL;
+> +	}
+> +
+> +	unsigned char *report_buf = kmalloc(length, GFP_KERNEL);
+> +
+> +	if (!report_buf)
+> +		return -ENOMEM;
+> +
+> +	report_buf[idx++] = TOUCH_FOREACH_ACTIVE_OBJECT;
+> +	report_buf[idx++] = TOUCH_OBJECT_N_INDEX;
+> +	report_buf[idx++] = 4;
+> +	report_buf[idx++] = TOUCH_OBJECT_N_CLASSIFICATION;
+> +	report_buf[idx++] = 4;
+> +	report_buf[idx++] = TOUCH_OBJECT_N_X_POSITION;
+> +	report_buf[idx++] = 16;
+> +	report_buf[idx++] = TOUCH_OBJECT_N_Y_POSITION;
+> +	report_buf[idx++] = 16;
+> +	report_buf[idx++] = TOUCH_OBJECT_N_X_WIDTH;
+> +	report_buf[idx++] = 12;
+> +	report_buf[idx++] = TOUCH_OBJECT_N_Y_WIDTH;
+> +	report_buf[idx++] = 12;
+> +	report_buf[idx++] = TOUCH_FOREACH_END;
+> +	report_buf[idx++] = TOUCH_END;
+> +
+> +	unsigned char *resp_buf = NULL;
+> +	unsigned int resp_length = 0;
+> +
+> +	retval = syna_tcm_write_message(tcm_info, CMD_SET_TOUCH_REPORT_CONFIG,
+> +					report_buf, length, &resp_buf,
+> +					&resp_length);
+> +	if (retval < 0) {
+> +		pr_warn("failed to set report config");
+> +		return retval;
+> +	}
+> +
+> +	kfree(resp_buf);
+> +
+> +	return retval;
+> +}
+> +
+> +static int syna_tcm_get_report_config(struct syna_tcm_data *tcm_info)
+> +{
+> +	int retval;
+> +	unsigned char *resp_buf = NULL;
+> +	unsigned int resp_length = 0;
+> +
+> +	retval = syna_tcm_write_message(tcm_info, CMD_GET_TOUCH_REPORT_CONFIG,
+> +					NULL, 0, &resp_buf, &resp_length);
+> +	if (retval < 0) {
+> +		pr_warn("failed to write command 0x%02x\n",
+> +			CMD_GET_TOUCH_REPORT_CONFIG);
+> +		return retval;
+> +	}
+> +
+> +	tcm_info->report_size = resp_length - MESSAGE_HEADER_SIZE - 1;
+> +
+> +	kfree(tcm_info->report_config);
+> +	tcm_info->report_config = kmalloc(tcm_info->report_size, GFP_KERNEL);
+> +
+> +	memcpy(tcm_info->report_config, &resp_buf[MESSAGE_HEADER_SIZE],
+> +	       tcm_info->report_size);
+> +
+> +	return 0;
+> +}
+> +
+> +static int syna_tcm_get_app_info(struct syna_tcm_data *tcm_info)
+> +{
+> +	int retval = 0;
+> +	unsigned char *resp_buf = NULL;
+> +	unsigned int resp_length = 0;
+> +	unsigned int timeout = RESPONSE_TIMEOUT_MS;
+> +
+> +get_app_info:
+> +	retval = syna_tcm_write_message(tcm_info, CMD_GET_APPLICATION_INFO,
+> +					NULL, 0, &resp_buf, &resp_length);
+> +	if (retval < 0) {
+> +		pr_warn("failed to write command 0x%02x\n",
+> +			CMD_GET_APPLICATION_INFO);
+> +		goto exit;
+> +	}
+> +
+> +	memcpy(&tcm_info->app_info, &resp_buf[MESSAGE_HEADER_SIZE],
+> +	       sizeof(tcm_info->app_info));
+> +
+> +	tcm_info->app_status = le2_to_uint(tcm_info->app_info.status);
+> +
+> +	if (tcm_info->app_status == APP_STATUS_BOOTING ||
+> +	    tcm_info->app_status == APP_STATUS_UPDATING) {
+> +		if (timeout > 0) {
+> +			msleep(APP_STATUS_POLL_MS);
+> +			timeout -= APP_STATUS_POLL_MS;
+> +			goto get_app_info;
+> +		}
+> +	}
+> +
+> +	retval = 0;
+> +
+> +exit:
+> +	kfree(resp_buf);
+> +
+> +	return retval;
+> +}
+> +
+> +static int syna_tcm_identify(struct syna_tcm_data *tcm_info)
+> +{
+> +	int retval = 0;
+> +	unsigned char *resp_buf = NULL;
+> +	unsigned int resp_length = 0;
+> +
+> +	retval = syna_tcm_write_message(tcm_info, CMD_IDENTIFY, NULL, 0,
+> +					&resp_buf, &resp_length);
+> +	if (retval < 0)
+> +		goto exit;
+> +
+> +	memcpy(&tcm_info->id_info, &resp_buf[MESSAGE_HEADER_SIZE],
+> +	       sizeof(tcm_info->id_info));
+> +
+> +	if (tcm_info->id_info.mode == MODE_APPLICATION)
+> +		retval = syna_tcm_get_app_info(tcm_info);
+> +
+> +exit:
+> +	kfree(resp_buf);
+> +
+> +	return retval;
+> +}
+> +
+> +static int syna_tcm_run_application_firmware(struct syna_tcm_data *tcm_info)
+> +{
+> +	int retval = 0;
+> +	unsigned int retry = 3;
+> +	unsigned char *resp_buf = NULL;
+> +	unsigned int resp_length = 0;
+> +
+> +retry:
+> +	retval = syna_tcm_write_message(tcm_info, CMD_RUN_APPLICATION_FIRMWARE,
+> +					NULL, 0, &resp_buf, &resp_length);
+> +
+> +	if (retval < 0) {
+> +		if (retry--)
+> +			goto retry;
+> +		goto exit;
+> +	}
+> +
+> +	retval = syna_tcm_identify(tcm_info);
+> +	if (retval < 0) {
+> +		if (retry--)
+> +			goto retry;
+> +		goto exit;
+> +	}
+> +
+> +	pr_info("syna_tcm: boot_mode: 0x%02x", tcm_info->id_info.mode);
+> +
+> +	if (tcm_info->id_info.mode != MODE_APPLICATION) {
+> +		if (retry--)
+> +			goto retry;
+> +		retval = -EINVAL;
+> +		goto exit;
+> +	} else if (tcm_info->app_status != APP_STATUS_OK) {
+> +		pr_warn("syna_tcm: application status = 0x%02x\n",
+> +			tcm_info->app_status);
+> +		if (retry--)
+> +			goto retry;
+> +	}
+> +
+> +	retval = 0;
+> +
+> +exit:
+> +	kfree(resp_buf);
+> +
+> +	return retval;
+> +}
+> +
+> +/*
+> + * syna_get_report_data - Retrieve data from touch report
+> + *
+> + * @tcm_info: handle of tcm module
+> + * @offset: start bit of retrieved data
+> + * @bits: total bits of retrieved data
+> + * @data: pointer of data, at most 4 byte
+> + * Retrieve data from the touch report based on the bit offset and bit length
+> + * information from the touch report configuration.
+> + */
+> +static int syna_tcm_get_report_data(unsigned char *report_buf,
+> +				    unsigned int report_buf_length,
+> +				    unsigned int offset, unsigned int num_bits,
+> +				    unsigned int *data)
+> +{
+> +	unsigned char mask = 0;
+> +	unsigned char byte_data = 0;
+> +	unsigned int output_data = 0;
+> +	unsigned int bit_offset = offset % 8;
+> +	unsigned int byte_offset = offset / 8;
+> +	unsigned int data_bits = 0;
+> +	unsigned int available_bits = 0;
+> +	unsigned int remaining_bits = num_bits;
+> +
+> +	if (num_bits == 0 || num_bits > 32) {
+> +		pr_warn("report value larger than 32 bits: %d\n", num_bits);
+> +		memcpy(data, &report_buf[byte_offset], num_bits / 8);
+> +		return 0;
+> +	}
+> +
+> +	if ((offset + num_bits) > report_buf_length * 8) {
+> +		pr_warn("report: offset and bits beyond total read length: %d vs %d bits",
+> +			offset + num_bits, report_buf_length * 8);
+> +		*data = 0;
+> +		return -1;
+> +	}
+> +
+> +	while (remaining_bits) {
+> +		byte_data = report_buf[byte_offset];
+> +		byte_data >>= bit_offset;
+> +
+> +		available_bits = 8 - bit_offset;
+> +		data_bits = available_bits < remaining_bits ? available_bits :
+> +							      remaining_bits;
+> +		mask = 0xff >> (8 - data_bits);
+> +
+> +		byte_data &= mask;
+> +
+> +		output_data |= byte_data << (num_bits - remaining_bits);
+> +
+> +		bit_offset = 0;
+> +		byte_offset += 1;
+> +		remaining_bits -= data_bits;
+> +	}
+> +
+> +	*data = output_data;
+> +
+> +	return 0;
+> +}
+> +
+> +static int syna_tcm_parse_touch_report(struct syna_tcm_data *tcm_info)
+> +{
+> +	int config_data_pointer = 0, obj = 0, foreach_start = 0, foreach_end,
+> +	    retval;
+> +	unsigned int offset = 0, num_bits, data = 0;
+> +	unsigned char *report_config = tcm_info->report_config;
+> +	unsigned int config_size = tcm_info->report_size;
+> +
+> +	unsigned char *report = &tcm_info->response_buf[MESSAGE_HEADER_SIZE];
+> +	unsigned int report_size =
+> +		tcm_info->response_length - MESSAGE_HEADER_SIZE - 1;
+> +	unsigned char code;
+> +
+> +	struct touch_data *touch_data =
+> +		kmalloc(sizeof(touch_data) * tcm_info->touchpanel_max_objects,
+> +			GFP_KERNEL);
+> +	memset(touch_data, 0,
+> +	       sizeof(touch_data) * tcm_info->touchpanel_max_objects);
+> +
+> +	while (config_data_pointer < config_size) {
+> +		code = report_config[config_data_pointer++];
+> +		switch (code) {
+> +		case TOUCH_END:
+> +			goto exit;
+> +		case TOUCH_FOREACH_ACTIVE_OBJECT:
+> +			obj = 0;
+> +			foreach_start = config_data_pointer;
+> +			if (offset >= report_size * 8)
+> +				goto exit;
+> +			break;
+> +		case TOUCH_FOREACH_END:
+> +			foreach_end = config_data_pointer;
+> +			if (offset < report_size * 8)
+> +				config_data_pointer = foreach_start;
+> +			break;
+> +		// Ignored
+> +		case TOUCH_OBJECT_N_TX_POSITION_TIXELS:
+> +		case TOUCH_OBJECT_N_RX_POSITION_TIXELS:
+> +		case TOUCH_FRAME_RATE:
+> +		case TOUCH_0D_BUTTONS_STATE:
+> +		case 30: // I don't know what command 30 is and it isn't in the downstream driver. After it comes a length of 8 bits and this is ignored
+> +			num_bits = report_config[config_data_pointer++];
+> +			offset += num_bits;
+> +			break;
+> +		case TOUCH_PAD_TO_NEXT_BYTE:
+> +			offset = ceil_div(offset, 8) * 8;
+> +			break;
+> +		case TOUCH_OBJECT_N_INDEX:
+> +			num_bits = report_config[config_data_pointer++];
+> +			retval = syna_tcm_get_report_data(
+> +				report, report_size, offset, num_bits, &obj);
+> +			if (retval < 0) {
+> +				pr_warn("failed to get object index\n");
+> +				return retval;
+> +			}
+> +			offset += num_bits;
+> +			break;
+> +		case TOUCH_OBJECT_N_CLASSIFICATION:
+> +			num_bits = report_config[config_data_pointer++];
+> +			retval = syna_tcm_get_report_data(
+> +				report, report_size, offset, num_bits, &data);
+> +			if (retval < 0) {
+> +				pr_warn("failed to get object classification\n");
+> +				return retval;
+> +			}
+> +			if (obj >= tcm_info->touchpanel_max_objects) {
+> +				pr_warn("too many objects\n");
+> +				return -1;
+> +			}
+> +			touch_data[obj].status = data;
+> +			offset += num_bits;
+> +			break;
+> +		case TOUCH_OBJECT_N_X_POSITION:
+> +			num_bits = report_config[config_data_pointer++];
+> +			retval = syna_tcm_get_report_data(
+> +				report, report_size, offset, num_bits, &data);
+> +			if (retval < 0) {
+> +				pr_warn("failed to get object x position\n");
+> +				return retval;
+> +			}
+> +			touch_data[obj].x_pos = data;
+> +			offset += num_bits;
+> +			break;
+> +		case TOUCH_OBJECT_N_Y_POSITION:
+> +			num_bits = report_config[config_data_pointer++];
+> +			retval = syna_tcm_get_report_data(
+> +				report, report_size, offset, num_bits, &data);
+> +			if (retval < 0) {
+> +				pr_warn("failed to get object y position\n");
+> +				return retval;
+> +			}
+> +			touch_data[obj].y_pos = data;
+> +			offset += num_bits;
+> +			break;
+> +		case TOUCH_OBJECT_N_Z:
+> +			num_bits = report_config[config_data_pointer++];
+> +			retval = syna_tcm_get_report_data(
+> +				report, report_size, offset, num_bits, &data);
+> +			if (retval < 0) {
+> +				pr_warn("failed to get object z\n");
+> +				return retval;
+> +			}
+> +			touch_data[obj].z = data;
+> +			offset += num_bits;
+> +			break;
+> +		case TOUCH_OBJECT_N_X_WIDTH:
+> +			num_bits = report_config[config_data_pointer++];
+> +			retval = syna_tcm_get_report_data(
+> +				report, report_size, offset, num_bits, &data);
+> +			if (retval < 0) {
+> +				pr_warn("failed to get object x width\n");
+> +				return retval;
+> +			}
+> +			touch_data[obj].x_width = data;
+> +			offset += num_bits;
+> +			break;
+> +		case TOUCH_OBJECT_N_Y_WIDTH:
+> +			num_bits = report_config[config_data_pointer++];
+> +			retval = syna_tcm_get_report_data(
+> +				report, report_size, offset, num_bits, &data);
+> +			if (retval < 0) {
+> +				pr_warn("failed to get object y width\n");
+> +				return retval;
+> +			}
+> +			touch_data[obj].y_width = data;
+> +			offset += num_bits;
+> +			break;
+> +		default:
+> +			pr_notice("unrecognized touch report config code: %d",
+> +				  code);
+> +		}
+> +	}
+> +
+> +exit:
+> +	for (int i = 0; i < tcm_info->touchpanel_max_objects; i++) {
+> +		if (touch_data[i].status == NOP)
+> +			continue;
+> +
+> +		bool lift = touch_data[i].status == LIFT ? true : false;
+> +
+> +		input_mt_slot(tcm_info->input, i);
+> +		input_mt_report_slot_state(tcm_info->input, MT_TOOL_FINGER,
+> +					   !lift);
+> +
+> +		int x_width = touch_data[i].x_width;
+> +		int y_width = touch_data[i].y_width;
+> +		int major_width = x_width > y_width ? x_width : y_width;
+> +		int minor_width = x_width > y_width ? y_width : x_width;
+> +		int x_is_major = x_width > y_width ? true : false;
+> +
+> +		if (!lift) {
+> +			input_report_abs(tcm_info->input, ABS_MT_POSITION_X,
+> +					 touch_data[i].x_pos);
+> +			input_report_abs(tcm_info->input, ABS_MT_POSITION_Y,
+> +					 touch_data[i].y_pos);
+> +			input_report_abs(tcm_info->input, ABS_MT_TOUCH_MAJOR,
+> +					 major_width);
+> +			input_report_abs(tcm_info->input, ABS_MT_TOUCH_MINOR,
+> +					 minor_width);
+> +			input_report_abs(tcm_info->input, ABS_MT_ORIENTATION,
+> +					 x_is_major);
+> +			input_report_abs(tcm_info->input, ABS_MT_PRESSURE,
+> +					 touch_data[i].z);
+> +		}
+> +
+> +		input_sync(tcm_info->input);
+> +	}
+> +
+> +	kfree(touch_data);
+> +	return 0;
+> +}
+> +
+> +static irqreturn_t syna_irq_handler(int irq, void *dev)
+> +{
+> +	int retval;
+> +	struct syna_tcm_data *tcm_info = dev;
+> +
+> +	retval = syna_tcm_read_message(tcm_info, 0);
+> +	if (retval < 0) {
+> +		tcm_info->response_length = -1;
+> +		goto exit;
+> +	}
+> +
+> +	if (tcm_info->response_buf[1] == REPORT_TOUCH)
+> +		syna_tcm_parse_touch_report(tcm_info);
+> +
+> +exit:
+> +	if (tcm_info->response_buf[1] <= REPORT_IDENTIFY)
+> +		complete(&response_complete);
+> +
+> +	return IRQ_HANDLED;
+> +}
+> +
+> +static int syna_tcm_power_on(struct syna_tcm_data *tcm_info)
+> +{
+> +	int ret;
+> +
+> +	ret = regulator_bulk_enable(ARRAY_SIZE(tcm_info->regulators),
+> +				    tcm_info->regulators);
+> +	if (ret)
+> +		return ret;
+> +
+> +	gpiod_set_value(tcm_info->reset_gpio, false);
+> +	msleep(POWERUP_TO_RESET_TIME);
+> +	gpiod_set_value(tcm_info->reset_gpio, true);
+> +	msleep(RESET_TO_NORMAL_TIME);
+> +
+> +	return 0;
+> +}
+> +
+> +static int syna_tcm_probe(struct i2c_client *client)
+> +{
+> +	struct syna_tcm_data *tcm_info;
+> +	int err;
+> +
+> +	pr_info("starting probe for syna_tcm_oncell touchscreen");
+> +
+> +	if (!i2c_check_functionality(client->adapter,
+> +				     I2C_FUNC_I2C | I2C_FUNC_SMBUS_BYTE_DATA |
+> +					     I2C_FUNC_SMBUS_I2C_BLOCK))
+> +		return -ENODEV;
+> +
+> +	tcm_info = devm_kzalloc(&client->dev, sizeof(*tcm_info), GFP_KERNEL);
+> +	if (!tcm_info)
+> +		return -ENOMEM;
+> +
+> +	i2c_set_clientdata(client, tcm_info);
+> +	tcm_info->client = client;
+> +	tcm_info->response_buf = NULL;
+> +
+> +	of_property_read_u32(client->dev.of_node, "max-objects",
+> +			     &tcm_info->touchpanel_max_objects);
+> +
+> +	tcm_info->reset_gpio =
+> +		gpiod_get_index(&client->dev, "reset", 0, GPIOD_OUT_HIGH);
+> +
+> +	tcm_info->regulators[SYNA_TCM_ONCELL_REGULATOR_VDD].supply = "vdd";
+> +	tcm_info->regulators[SYNA_TCM_ONCELL_REGULATOR_VCC].supply = "vcc";
+> +	err = devm_regulator_bulk_get(&client->dev,
+> +				      ARRAY_SIZE(tcm_info->regulators),
+> +				      tcm_info->regulators);
+> +	if (err)
+> +		return err;
+> +
+> +	// TODO: uncomment once syna_tcm_power_off is implemented
+> +	// err = devm_add_action_or_reset(&client->dev, syna_tcm_oncell_power_off, tcm_info);
+> +	// if (err)
+> +	//     return err;
+> +
+> +	err = syna_tcm_power_on(tcm_info);
+> +	if (err < 0)
+> +		return err;
+> +
+> +	// This needs to happen before the first write to the device
+> +	err = devm_request_threaded_irq(&client->dev, client->irq, NULL,
+> +					syna_irq_handler,
+> +					IRQF_TRIGGER_LOW | IRQF_ONESHOT,
+> +					"syna_tcm_oncell_irq", tcm_info);
+> +	if (err)
+> +		return err;
+> +
+> +	err = syna_tcm_run_application_firmware(tcm_info);
+> +	if (err < 0)
+> +		return err;
+> +
+> +	// err = syna_tcm_set_normal_report_config(tcm_info);
+> +	// if (err < 0)
+> +		// pr_err("syna_tcm: failed to set normal touch report config")
+> +
+> +	err = syna_tcm_get_report_config(tcm_info);
+> +	if (err < 0)
+> +		return err;
+> +
+> +	tcm_info->input = devm_input_allocate_device(&client->dev);
+> +	if (!tcm_info->input)
+> +		return -ENOMEM;
+> +
+> +	tcm_info->input->name = TOUCHPANEL_DEVICE;
+> +	tcm_info->input->id.bustype = BUS_I2C;
+> +
+> +	input_set_abs_params(tcm_info->input, ABS_MT_POSITION_X, 0,
+> +			     le2_to_uint(tcm_info->app_info.max_x), 0, 0);
+> +	input_set_abs_params(tcm_info->input, ABS_MT_POSITION_Y, 0,
+> +			     le2_to_uint(tcm_info->app_info.max_y), 0, 0);
+> +	input_set_abs_params(tcm_info->input, ABS_MT_TOUCH_MAJOR, 0, 255, 0, 0);
+> +	input_set_abs_params(tcm_info->input, ABS_MT_TOUCH_MINOR, 0, 255, 0, 0);
+> +	input_set_abs_params(tcm_info->input, ABS_MT_PRESSURE, 0, 255, 0, 0);
+> +
+> +	touchscreen_parse_properties(tcm_info->input, true, &tcm_info->prop);
+> +
+> +	err = input_mt_init_slots(tcm_info->input,
+> +				  tcm_info->touchpanel_max_objects,
+> +				  INPUT_MT_DIRECT);
+> +	if (err)
+> +		return err;
+> +
+> +	input_set_drvdata(tcm_info->input, tcm_info);
+> +
+> +	err = input_register_device(tcm_info->input);
+> +	if (err)
+> +		return err;
+> +
+> +	pr_info("syna_tcm: probe done");
+> +	tcm_info->initialize_done = true;
+> +
+> +	return 0;
+> +}
+> +
+> +static const struct of_device_id syna_driver_ids[] = {
+> +	{
+> +		.compatible = "syna,s3908",
+> +	},
+> +	{}
+> +};
+> +MODULE_DEVICE_TABLE(of, syna_driver_ids);
+> +
+> +static const struct i2c_device_id syna_i2c_ids[] = { { TOUCHPANEL_DEVICE, 0 },
+> +						     {} };
+> +MODULE_DEVICE_TABLE(i2c, syna_i2c_ids);
+> +
+> +// static const struct dev_pm_ops syna_pm_ops = {
+> +//     .suspend = syna_i2c_suspend,
+> +//     .resume = syna_i2c_resume,
+> +// };
+> +
+> +static struct i2c_driver syna_i2c_driver = {
+> +	.probe	= syna_tcm_probe,
+> +	// .remove	   = syna_i2c_remove,
+> +	// .shutdown   = syna_tp_shutdown,
+> +	.id_table	= syna_i2c_ids,
+> +	.driver	= {
+> +	.name	= TOUCHPANEL_DEVICE,
+> +	.of_match_table = syna_driver_ids,
+> +		// .pm = &syna_pm_ops,
+> +	},
+> +};
+> +
+> +module_i2c_driver(syna_i2c_driver);
 
