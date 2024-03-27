@@ -1,104 +1,109 @@
-Return-Path: <linux-kernel+bounces-121331-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-121332-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AC2E288E617
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 15:32:21 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id DD9B388E78B
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 15:58:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 612EF29A0C6
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 14:32:20 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 162E3B32B1C
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 14:32:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BDF541386B3;
-	Wed, 27 Mar 2024 13:00:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C16C7130E53;
+	Wed, 27 Mar 2024 13:04:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="AuE7BYnN"
-Received: from mail-lj1-f179.google.com (mail-lj1-f179.google.com [209.85.208.179])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b="kiXNd6Ei"
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5600D127B74
-	for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 13:00:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 96B6A26296
+	for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 13:03:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.167.242.64
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711544405; cv=none; b=gUJ46IJPOWo0rmdw5uA6D+i2LMbR8WT3idEUO0dvAc0r7Nw3oFQIRNgJCcWCf4oGHlp4KG2FzzPfmduxnTMcuNqx/GQqVusProUAyc0fBeQzbYyK8ljAeO8tIXKqykcKPupl3rrIE+aZjXURIp/dsbK5Aipnzh9vLmFy24wmGQA=
+	t=1711544642; cv=none; b=iFJhQazrfFZqOYneBpUAgGm3ay2/szZZ3Y/xe5jdMO7xngOkbx293aJh7vA5lqXo1Rsvi0x263LJRTeZ6a3nes9y5tqBBG6PtfJLjut5mUBitWbl/KKZawvPeZiv/xy5yhA20We/ScHyhGrhfYCs06+zdiyZBmFpuShPaLfiSzk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711544405; c=relaxed/simple;
-	bh=4HVEa/HFe7JX/HhqqfzC9fsfq8bO473vqm9Cz9tqeHE=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=BnlJ2qMsrUVSV3mj95EtvfzBShIkeKUNJWQZiZe5Nq9bS9uTsXFTyFIk83vDFCAzz3UGtJp98UoT5o4RBK8bJhnGY8LDP8LVwBqPg2649Fz/34Rfq11iB97HYODBYKhAmcy4McDX56pHJJEQEIU2L0amU/jvon2/TZ9ZHWD2PgI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=AuE7BYnN; arc=none smtp.client-ip=209.85.208.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f179.google.com with SMTP id 38308e7fff4ca-2d52e65d4a8so89174401fa.0
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 06:00:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711544401; x=1712149201; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=4HVEa/HFe7JX/HhqqfzC9fsfq8bO473vqm9Cz9tqeHE=;
-        b=AuE7BYnN4IJX35/2w2jhwGbLEMSjyHLOWP3OiWvBPtRyHDG/fmkEqclaEF4zF3hTz3
-         Rq2Xc6nzELh7i/Mg+ninYPz2x9OxS8vBBc6W45UycknB74x0JN4BntrrWM3TZYHq2Gz+
-         k/bBmDX/6GN5dXnLfZQA9ty27ht1/vh01G8JhloI5RLOntXbfqnwtvEqXGRVJiK14VdL
-         D0qERiEQYEgd+ijkpWfHPPCJ3fuZKUQ7cfYBiT2X0p8hZupQSnDaK/m/GcGNOvEa+Spu
-         O5HOUp74czJzEw9HaS2B4imMG2rVzp6rsKO9RrtvshKlGzZl/5yB+XmBNtuLOOr6X4FU
-         kO3g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711544401; x=1712149201;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=4HVEa/HFe7JX/HhqqfzC9fsfq8bO473vqm9Cz9tqeHE=;
-        b=Fj9EAb5Xd+aFUy+iQ6khz4vwuzaQ4zykw64PMU3lMWw6IZneZkMR6+xol1um5gbs1J
-         GvRv85RxwBet9BDvf/Kx8u2luNL1m2xtZj2qSfGC95zuRw7CTJ0RuFJA3f4KbQJCnCdT
-         WwmrtTHvcjdl+zQpDjgH8UAV9aoQkS8+x/aC/b5RQ8PEWSUIwkerKo7/bfCw4ydilihW
-         MmGGhh3YWz0oKnj/KxcOLmr8TKMyBrm4i/u8uRynPrUVXTqeE+ispuoRYj+o4wZLBaUn
-         BFm5wEOkdewKY8y1G+ePKD9Am9U/rA8ac/KfDZXxPPy8zEgpM5KsM/E2jYXd0eFfiPtX
-         AmRQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVvcblXhBPsSCEmoCDnzehVwKNtNq2V5NK+WhYWQaWrk3RNd9lNePu7eSQWeU+4HNp2jKRFHLM2ISEeivFZn5SKc4HH2Jqmto0lZ7yk
-X-Gm-Message-State: AOJu0YxL2/nyvoSSG3XVvOrng2MS0PGtmV2gKU01AoSyDFJZyOFQZ6dk
-	SWFUAy70nQ4wzs6Jrdx5NZ2COFeVF2yt5ne5KFXpBG3migoWNbIS
-X-Google-Smtp-Source: AGHT+IFouCRNYkYRV67WQAcwc9OED5iUKbO3r0hO9D8ZlgmVAFEp4RjujTC7cKTS7untWOjRuN2gSA==
-X-Received: by 2002:a05:651c:1037:b0:2d6:cb82:24e6 with SMTP id w23-20020a05651c103700b002d6cb8224e6mr820276ljm.37.1711544401122;
-        Wed, 27 Mar 2024 06:00:01 -0700 (PDT)
-Received: from gmail.com ([104.28.160.248])
-        by smtp.gmail.com with ESMTPSA id c21-20020a05600c0a5500b004140c161e8dsm2096164wmq.43.2024.03.27.05.59.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 27 Mar 2024 06:00:00 -0700 (PDT)
-From: Qingfang Deng <dqfext@gmail.com>
-To: christoph.muellner@vrull.eu
-Cc: ajones@ventanamicro.com,
-	alistair.francis@wdc.com,
-	aou@eecs.berkeley.edu,
-	bjorn@kernel.org,
-	conor@kernel.org,
-	cooper.qu@linux.alibaba.com,
-	dbarboza@ventanamicro.com,
-	eric.huang@linux.alibaba.com,
-	heiko@sntech.de,
-	linux-kernel@vger.kernel.org,
-	linux-riscv@lists.infradead.org,
-	palmer@dabbelt.com,
-	paul.walmsley@sifive.com,
-	philipp.tomsich@vrull.eu,
-	zhiwei_liu@linux.alibaba.com
-Subject: Re: [PATCH 0/2] RISC-V: Test th.mxstatus.MAEE bit before enabling MAEE
-Date: Wed, 27 Mar 2024 20:59:54 +0800
-Message-Id: <20240327125954.1809-1-dqfext@gmail.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240327103130.3651950-1-christoph.muellner@vrull.eu>
-References: <20240327103130.3651950-1-christoph.muellner@vrull.eu>
+	s=arc-20240116; t=1711544642; c=relaxed/simple;
+	bh=fBckXIMsHbe2+Au1I+FoaYupzsY+KA/9pDk1D4J+lrA=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=omUf5RUsm9v+wkjiEdScgnu+uh0ui0TBakx+4S6IfnnnbKULejFISWIdpkNIcuk67II9Nb0Pr3oTVdS7PvclnRjPNE8nTssOZv6hN8DZQ2xNzKer5be5pEHS6lMLPBLW2wemQSiYHro607tdTDKee+LYucKxrnTULACvXVhSyRQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com; spf=pass smtp.mailfrom=ideasonboard.com; dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b=kiXNd6Ei; arc=none smtp.client-ip=213.167.242.64
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ideasonboard.com
+Received: from [127.0.1.1] (91-154-34-181.elisa-laajakaista.fi [91.154.34.181])
+	by perceval.ideasonboard.com (Postfix) with ESMTPSA id CAB38675;
+	Wed, 27 Mar 2024 14:03:25 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+	s=mail; t=1711544606;
+	bh=fBckXIMsHbe2+Au1I+FoaYupzsY+KA/9pDk1D4J+lrA=;
+	h=From:Date:Subject:To:Cc:From;
+	b=kiXNd6EiywZInrxTUGsPmXI5/cxcIGs1SsCgdnoqpj4m2xvfWUY1qjHPvvmQjjhMP
+	 pJSHyxHrKlteTkg4YYv6jGlIpdf/5fFaOkgh6vLlynUiHKDL3wicN1Dfl6KqL1hPZq
+	 Dmr/aIfJ0k9aSYwMmQVValoI3FXd4CNWdJyfkdjs=
+From: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+Date: Wed, 27 Mar 2024 15:03:33 +0200
+Subject: [PATCH] MAINTAINERS: Add myself as maintainer for Xilinx DRM
+ drivers
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20240327-xilinx-maintainer-v1-1-c5fdc115f448@ideasonboard.com>
+X-B4-Tracking: v=1; b=H4sIACQZBGYC/x2MQQqAIBAAvyJ7TjATg74SHUzXWigLjRDEvycd5
+ jCHmQIJI2GCiRWI+FKiKzTpOwZ2N2FDTq45SCGVGOTIMx0UMj8NhaeBkXstpPDarkY5aN0d0VP
+ +n/NS6weR6D87YwAAAA==
+To: Laurent Pinchart <laurent.pinchart@ideasonboard.com>, 
+ dri-devel@lists.freedesktop.org
+Cc: linux-kernel@vger.kernel.org, 
+ Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+X-Mailer: b4 0.13.0
+X-Developer-Signature: v=1; a=openpgp-sha256; l=795;
+ i=tomi.valkeinen@ideasonboard.com; h=from:subject:message-id;
+ bh=fBckXIMsHbe2+Au1I+FoaYupzsY+KA/9pDk1D4J+lrA=;
+ b=owEBbQKS/ZANAwAIAfo9qoy8lh71AcsmYgBmBBk6L8A9Xw88l1g2tAOprbKEqvM/FkgDFMvRy
+ GIXq1PQrL6JAjMEAAEIAB0WIQTEOAw+ll79gQef86f6PaqMvJYe9QUCZgQZOgAKCRD6PaqMvJYe
+ 9Tk8D/4nlr7//mnEaXjY4VB+nbvdiZd8PrY7w/u4Bj0G4sg3+mXp2amK74xzBx6IN4/tWjBfmmx
+ dngDQ6Mt3s9XE3hO9vZbNmK5IFRNBSwPZxkofpRWa/18QE0TNNyk9smJcTGeeZ1HTcMDTke146G
+ blrMJfukfPO6n7AIZHetyDMebRpd7tTqL/9HvgLV7zAWj+Hr4+0JeQh5x6cFOhBBg/hzpS1ftdZ
+ pmWthypWIyZP9hP/vdOZ0A3T/XJlLpPrmwd9VE2Q31/rMPNOffC0jWHJnmHywkhL/0KJGT/RraK
+ 7SHZ+9mtfIoXIRMAMxi3KaNgg3G/qbksQG0brjLPmdjdq2FuNz+oj1ZPDcUmoX7sTwt7rjUczgL
+ RxQL9rSSpsi+R40OHHDUd2qXNpTryfdpnKvUdUxh0G5GyzNHDp49dYKbNoM3EQX0XRbfzI7yQ01
+ ZNLl7j8SLEO0ecEQQQke31bsKmvwvFu29Ie9Su+qrXWZ+ynFw4fdNXTipD0/5nUNn/d2lzCiJIY
+ GdYsEwSWrW20EYQbI4OanhZlY2OcX0BcNomPWHNVVvoldRqPYolALIfbyHA9LJ44Xgn9Pgr5vS3
+ SpXGML1TFLsRCHsvqU379BX/AYOf/LTO5IBZYxgfQCu2/KvR3F2toeFPFZ0nBuq9oQ/gi9QOcVR
+ ZF7zNBREqcXB6DA==
+X-Developer-Key: i=tomi.valkeinen@ideasonboard.com; a=openpgp;
+ fpr=C4380C3E965EFD81079FF3A7FA3DAA8CBC961EF5
 
-Hi Christoph,
+Add myself as a co-maintainer for Xilinx DRM drivers to help Laurent.
 
-You don't need the access to MXSTATUS. There is SXSTATUS which is a
-read-only mirror of MXSTATUS in S-mode.
+Signed-off-by: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+---
+ MAINTAINERS | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 1aabf1c15bb3..79ef5a6bf21b 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -7306,6 +7306,7 @@ F:	drivers/gpu/drm/xen/
+ 
+ DRM DRIVERS FOR XILINX
+ M:	Laurent Pinchart <laurent.pinchart@ideasonboard.com>
++M:	Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+ L:	dri-devel@lists.freedesktop.org
+ S:	Maintained
+ T:	git git://anongit.freedesktop.org/drm/drm-misc
+
+---
+base-commit: e8f897f4afef0031fe618a8e94127a0934896aba
+change-id: 20240327-xilinx-maintainer-f6020f6cba4d
+
+Best regards,
+-- 
+Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+
 
