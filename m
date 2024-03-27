@@ -1,58 +1,55 @@
-Return-Path: <linux-kernel+bounces-121154-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-121155-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C68FA88E2EB
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 14:37:38 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3A2CE88E2EE
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 14:37:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6D2292A6AFF
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 13:37:37 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E85272A7B93
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 13:37:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1786713CF9A;
-	Wed, 27 Mar 2024 12:23:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0CAF713DDAE;
+	Wed, 27 Mar 2024 12:23:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="H7AE7kjG"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="LeYyS/zE"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 432BB178899;
-	Wed, 27 Mar 2024 12:23:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3FB921788B3;
+	Wed, 27 Mar 2024 12:23:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711542221; cv=none; b=FSZGwb9GE154qKP8M4ISAd0YbvWuwmPExNR/nfq2zDAJY3jnrSzoEHarNF1tW0DMKlN/MfqrUHOMFmNg5s9Kz6NQNN+wjFp3hytUaa8KiG7rQajXT7h0gyZ7FHotA6RLpVG+uqYr5m0pztSBqgf61gwxM2l7ZL6zNcu828oKopI=
+	t=1711542224; cv=none; b=Uf3IsFVknCIlzCMU2K98J2aiWZfcEc1NzbTRL0xUaIT66JYAtkRdDgpz5En2gyIRknhNRZ1gdWZFbZ2sk1teFJ2qr4f37AKhLOpG38KxlJkaZITHRclrFq1eHjUoYw2HpWBnZvYnd8rEz8VV4ho1KZSkVUKZMtqwgMcmXWtB/cU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711542221; c=relaxed/simple;
-	bh=XFNAeo3AkuK8SN3HkbethpwW9ZmzC6zrGgwTTJFpSgM=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=jImzaqiJXJCDV2lni0ml32RHx85Y7uaQT0d3CSIlBkOjnZyV9Ag2atN4nwHfkXmj+Qxb8WnxdRAV+bo28rluYzLHJPfTpZMFNUAbnS+qp2ElbFz0zaKvT8c56rRagwO6WpBBDY/km7zoGdtOoYVtxVaBrszdmQiMH2t1Py2CS24=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=H7AE7kjG; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0E767C433C7;
-	Wed, 27 Mar 2024 12:23:39 +0000 (UTC)
+	s=arc-20240116; t=1711542224; c=relaxed/simple;
+	bh=xm8T28oIDHMvWTt9NSn1dlKeEuIotCmc790ci7Yspc8=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=c5VWP8hf/QoaA1BHEkYb90oTOPp4B7fah3tDNOQHmzJFNWZZ8+rtcQUCDOpDR6pFWs90zu/Y+f/AVD2TIMuoX0jaa222uOe2NC+yF5otkvnOYJc6Kkm/gDx+jkHLRt0DHpB+PK1CqTldajp9foc1zVMYoGvnZRUrrwwSOiGAvl0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=LeYyS/zE; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F3FB5C433F1;
+	Wed, 27 Mar 2024 12:23:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711542221;
-	bh=XFNAeo3AkuK8SN3HkbethpwW9ZmzC6zrGgwTTJFpSgM=;
+	s=k20201202; t=1711542223;
+	bh=xm8T28oIDHMvWTt9NSn1dlKeEuIotCmc790ci7Yspc8=;
 	h=From:To:Cc:Subject:Date:From;
-	b=H7AE7kjGhid2riVVKf7QIpn8GjTSuZY6gON9libiGzVqeO4wZlhoi6Ou1OugMGOfq
-	 wmNYhyIE2216hkyn47BCY5mOeoThoOHPc0fm4UkFc3f8Cka1XrXU8EaUhwJapy2SOj
-	 WNTeO8s6TvjHtuaV6uyA5upuxAlO5A6ub5/aFKYgWCvYhmFklR7N/fVmfXd/yr6zh+
-	 c1bPjPPhRXLLZVdDPNVWnff5iZzUQPzP085vujT6QOT+ZDW8DiwfXnl5UMW1yuMHaF
-	 RdcLZITss/hPrWH1WYo2fomSfLZI6s+xYfhCtUBhrBmJ58/HRXlsIFBFcN+UGEMeu4
-	 S2VGl8k2pfzwQ==
+	b=LeYyS/zEK2UIH9T1zR5TcMXEhhcqZdxS9Itq6y7s66ux9uCI3/sxpK2TTmcYat6nP
+	 9bobyi/48zKXfpxzfFRRBcNuETqsCuIzgeZG1dJGAdrZcPPtnsi1a0aTWEFZhs5gbW
+	 T+iIjUWk33s7UHTzF0RIcvFk7VKVpyrBW5d7o2px2PisZCVd6PM/vQvMb66WtV0u+P
+	 Okjzw8jrCwmzPDzCX/gLCFjPAy9Gtow07pzZiwniVQi0bsSvFeDkBxfdxtAxNazKeo
+	 L68c/tNUGE/l1rFF5y5VKQWv+sMUlY3RaJiIwD3UN4n9zPpK5UqxKtmojHt67fzOne
+	 slGoDzHF8WYug==
 From: Sasha Levin <sashal@kernel.org>
 To: stable@vger.kernel.org,
-	wenjing.liu@amd.com
-Cc: Mario Limonciello <mario.limonciello@amd.com>,
-	Alex Deucher <alexander.deucher@amd.com>,
-	Dillon Varone <dillon.varone@amd.com>,
-	Alex Hung <alex.hung@amd.com>,
-	Daniel Wheeler <daniel.wheeler@amd.com>,
-	amd-gfx@lists.freedesktop.org,
-	dri-devel@lists.freedesktop.org,
+	ryan.roberts@arm.com
+Cc: David Hildenbrand <david@redhat.com>,
+	"Huang, Ying" <ying.huang@intel.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	linux-mm@kvack.org,
 	linux-kernel@vger.kernel.org
-Subject: FAILED: Patch "drm/amd/display: Update odm when ODM combine is changed on an otg master pipe with no plane" failed to apply to 5.4-stable tree
-Date: Wed, 27 Mar 2024 08:23:38 -0400
-Message-ID: <20240327122339.2838726-1-sashal@kernel.org>
+Subject: FAILED: Patch "mm: swap: fix race between free_swap_and_cache() and swapoff()" failed to apply to 5.4-stable tree
+Date: Wed, 27 Mar 2024 08:23:41 -0400
+Message-ID: <20240327122342.2838763-1-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -74,152 +71,118 @@ Sasha
 
 ------------------ original commit in Linus's tree ------------------
 
-From 86e9523fb0efce27095d3086473c739cce720d01 Mon Sep 17 00:00:00 2001
-From: Wenjing Liu <wenjing.liu@amd.com>
-Date: Wed, 21 Feb 2024 16:55:04 -0500
-Subject: [PATCH] drm/amd/display: Update odm when ODM combine is changed on an
- otg master pipe with no plane
+From 82b1c07a0af603e3c47b906c8e991dc96f01688e Mon Sep 17 00:00:00 2001
+From: Ryan Roberts <ryan.roberts@arm.com>
+Date: Wed, 6 Mar 2024 14:03:56 +0000
+Subject: [PATCH] mm: swap: fix race between free_swap_and_cache() and
+ swapoff()
 
-[WHY]
-When committing an update with ODM combine change when the plane is
-removing or already removed, we fail to detect odm change in pipe
-update flags. This has caused mismatch between new dc state and the
-actual hardware state, because we missed odm programming.
+There was previously a theoretical window where swapoff() could run and
+teardown a swap_info_struct while a call to free_swap_and_cache() was
+running in another thread.  This could cause, amongst other bad
+possibilities, swap_page_trans_huge_swapped() (called by
+free_swap_and_cache()) to access the freed memory for swap_map.
 
-[HOW]
-- Detect odm change even for otg master pipe without a plane.
-- Update odm config before calling program pipes for pipe with planes.
+This is a theoretical problem and I haven't been able to provoke it from a
+test case.  But there has been agreement based on code review that this is
+possible (see link below).
 
-The commit also updates blank pattern programming when odm is changed
-without plane. This is because number of OPP is changed when ODM
-combine is changed. Blank pattern is per OPP so we will need to
-reprogram OPP based on the new pipe topology.
+Fix it by using get_swap_device()/put_swap_device(), which will stall
+swapoff().  There was an extra check in _swap_info_get() to confirm that
+the swap entry was not free.  This isn't present in get_swap_device()
+because it doesn't make sense in general due to the race between getting
+the reference and swapoff.  So I've added an equivalent check directly in
+free_swap_and_cache().
 
-Cc: Mario Limonciello <mario.limonciello@amd.com>
-Cc: Alex Deucher <alexander.deucher@amd.com>
-Cc: stable@vger.kernel.org
-Reviewed-by: Dillon Varone <dillon.varone@amd.com>
-Acked-by: Alex Hung <alex.hung@amd.com>
-Signed-off-by: Wenjing Liu <wenjing.liu@amd.com>
-Tested-by: Daniel Wheeler <daniel.wheeler@amd.com>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+Details of how to provoke one possible issue (thanks to David Hildenbrand
+for deriving this):
+
+--8<-----
+
+__swap_entry_free() might be the last user and result in
+"count == SWAP_HAS_CACHE".
+
+swapoff->try_to_unuse() will stop as soon as soon as si->inuse_pages==0.
+
+So the question is: could someone reclaim the folio and turn
+si->inuse_pages==0, before we completed swap_page_trans_huge_swapped().
+
+Imagine the following: 2 MiB folio in the swapcache. Only 2 subpages are
+still references by swap entries.
+
+Process 1 still references subpage 0 via swap entry.
+Process 2 still references subpage 1 via swap entry.
+
+Process 1 quits. Calls free_swap_and_cache().
+-> count == SWAP_HAS_CACHE
+[then, preempted in the hypervisor etc.]
+
+Process 2 quits. Calls free_swap_and_cache().
+-> count == SWAP_HAS_CACHE
+
+Process 2 goes ahead, passes swap_page_trans_huge_swapped(), and calls
+__try_to_reclaim_swap().
+
+__try_to_reclaim_swap()->folio_free_swap()->delete_from_swap_cache()->
+put_swap_folio()->free_swap_slot()->swapcache_free_entries()->
+swap_entry_free()->swap_range_free()->
+..
+WRITE_ONCE(si->inuse_pages, si->inuse_pages - nr_entries);
+
+What stops swapoff to succeed after process 2 reclaimed the swap cache
+but before process1 finished its call to swap_page_trans_huge_swapped()?
+
+--8<-----
+
+Link: https://lkml.kernel.org/r/20240306140356.3974886-1-ryan.roberts@arm.com
+Fixes: 7c00bafee87c ("mm/swap: free swap slots in batch")
+Closes: https://lore.kernel.org/linux-mm/65a66eb9-41f8-4790-8db2-0c70ea15979f@redhat.com/
+Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
+Cc: David Hildenbrand <david@redhat.com>
+Cc: "Huang, Ying" <ying.huang@intel.com>
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 ---
- .../amd/display/dc/hwss/dcn20/dcn20_hwseq.c   | 41 ++++++++++---------
- .../amd/display/dc/hwss/dcn32/dcn32_hwseq.c   |  7 ++++
- 2 files changed, 28 insertions(+), 20 deletions(-)
+ mm/swapfile.c | 13 ++++++++++++-
+ 1 file changed, 12 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/amd/display/dc/hwss/dcn20/dcn20_hwseq.c b/drivers/gpu/drm/amd/display/dc/hwss/dcn20/dcn20_hwseq.c
-index c55d5155ecb9c..40098d9f70cbc 100644
---- a/drivers/gpu/drm/amd/display/dc/hwss/dcn20/dcn20_hwseq.c
-+++ b/drivers/gpu/drm/amd/display/dc/hwss/dcn20/dcn20_hwseq.c
-@@ -1498,6 +1498,11 @@ static void dcn20_detect_pipe_changes(struct dc_state *old_state,
- 		return;
- 	}
+diff --git a/mm/swapfile.c b/mm/swapfile.c
+index 2b3a2d85e350b..1155a63041192 100644
+--- a/mm/swapfile.c
++++ b/mm/swapfile.c
+@@ -1232,6 +1232,11 @@ static unsigned char __swap_entry_free_locked(struct swap_info_struct *p,
+  * with get_swap_device() and put_swap_device(), unless the swap
+  * functions call get/put_swap_device() by themselves.
+  *
++ * Note that when only holding the PTL, swapoff might succeed immediately
++ * after freeing a swap entry. Therefore, immediately after
++ * __swap_entry_free(), the swap info might become stale and should not
++ * be touched without a prior get_swap_device().
++ *
+  * Check whether swap entry is valid in the swap device.  If so,
+  * return pointer to swap_info_struct, and keep the swap entry valid
+  * via preventing the swap device from being swapoff, until
+@@ -1609,13 +1614,19 @@ int free_swap_and_cache(swp_entry_t entry)
+ 	if (non_swap_entry(entry))
+ 		return 1;
  
-+	if (resource_is_pipe_type(new_pipe, OTG_MASTER) &&
-+			resource_is_odm_topology_changed(new_pipe, old_pipe))
-+		/* Detect odm changes */
-+		new_pipe->update_flags.bits.odm = 1;
+-	p = _swap_info_get(entry);
++	p = get_swap_device(entry);
+ 	if (p) {
++		if (WARN_ON(data_race(!p->swap_map[swp_offset(entry)]))) {
++			put_swap_device(p);
++			return 0;
++		}
 +
- 	/* Exit on unchanged, unused pipe */
- 	if (!old_pipe->plane_state && !new_pipe->plane_state)
- 		return;
-@@ -1551,10 +1556,6 @@ static void dcn20_detect_pipe_changes(struct dc_state *old_state,
- 
- 	/* Detect top pipe only changes */
- 	if (resource_is_pipe_type(new_pipe, OTG_MASTER)) {
--		/* Detect odm changes */
--		if (resource_is_odm_topology_changed(new_pipe, old_pipe))
--			new_pipe->update_flags.bits.odm = 1;
--
- 		/* Detect global sync changes */
- 		if (old_pipe->pipe_dlg_param.vready_offset != new_pipe->pipe_dlg_param.vready_offset
- 				|| old_pipe->pipe_dlg_param.vstartup_start != new_pipe->pipe_dlg_param.vstartup_start
-@@ -1999,19 +2000,20 @@ void dcn20_program_front_end_for_ctx(
- 	DC_LOGGER_INIT(dc->ctx->logger);
- 	unsigned int prev_hubp_count = 0;
- 	unsigned int hubp_count = 0;
-+	struct pipe_ctx *pipe;
- 
- 	if (resource_is_pipe_topology_changed(dc->current_state, context))
- 		resource_log_pipe_topology_update(dc, context);
- 
- 	if (dc->hwss.program_triplebuffer != NULL && dc->debug.enable_tri_buf) {
- 		for (i = 0; i < dc->res_pool->pipe_count; i++) {
--			struct pipe_ctx *pipe_ctx = &context->res_ctx.pipe_ctx[i];
-+			pipe = &context->res_ctx.pipe_ctx[i];
- 
--			if (!pipe_ctx->top_pipe && !pipe_ctx->prev_odm_pipe && pipe_ctx->plane_state) {
--				ASSERT(!pipe_ctx->plane_state->triplebuffer_flips);
-+			if (!pipe->top_pipe && !pipe->prev_odm_pipe && pipe->plane_state) {
-+				ASSERT(!pipe->plane_state->triplebuffer_flips);
- 				/*turn off triple buffer for full update*/
- 				dc->hwss.program_triplebuffer(
--						dc, pipe_ctx, pipe_ctx->plane_state->triplebuffer_flips);
-+						dc, pipe, pipe->plane_state->triplebuffer_flips);
- 			}
- 		}
+ 		count = __swap_entry_free(p, entry);
+ 		if (count == SWAP_HAS_CACHE &&
+ 		    !swap_page_trans_huge_swapped(p, entry))
+ 			__try_to_reclaim_swap(p, swp_offset(entry),
+ 					      TTRS_UNMAPPED | TTRS_FULL);
++		put_swap_device(p);
  	}
-@@ -2085,12 +2087,22 @@ void dcn20_program_front_end_for_ctx(
- 			DC_LOG_DC("Reset mpcc for pipe %d\n", dc->current_state->res_ctx.pipe_ctx[i].pipe_idx);
- 		}
- 
-+	/* update ODM for blanked OTG master pipes */
-+	for (i = 0; i < dc->res_pool->pipe_count; i++) {
-+		pipe = &context->res_ctx.pipe_ctx[i];
-+		if (resource_is_pipe_type(pipe, OTG_MASTER) &&
-+				!resource_is_pipe_type(pipe, DPP_PIPE) &&
-+				pipe->update_flags.bits.odm &&
-+				hws->funcs.update_odm)
-+			hws->funcs.update_odm(dc, context, pipe);
-+	}
-+
- 	/*
- 	 * Program all updated pipes, order matters for mpcc setup. Start with
- 	 * top pipe and program all pipes that follow in order
- 	 */
- 	for (i = 0; i < dc->res_pool->pipe_count; i++) {
--		struct pipe_ctx *pipe = &context->res_ctx.pipe_ctx[i];
-+		pipe = &context->res_ctx.pipe_ctx[i];
- 
- 		if (pipe->plane_state && !pipe->top_pipe) {
- 			while (pipe) {
-@@ -2129,17 +2141,6 @@ void dcn20_program_front_end_for_ctx(
- 			context->stream_status[0].plane_count > 1) {
- 			pipe->plane_res.hubp->funcs->hubp_wait_pipe_read_start(pipe->plane_res.hubp);
- 		}
--
--		/* when dynamic ODM is active, pipes must be reconfigured when all planes are
--		 * disabled, as some transitions will leave software and hardware state
--		 * mismatched.
--		 */
--		if (dc->debug.enable_single_display_2to1_odm_policy &&
--			pipe->stream &&
--			pipe->update_flags.bits.disable &&
--			!pipe->prev_odm_pipe &&
--			hws->funcs.update_odm)
--			hws->funcs.update_odm(dc, context, pipe);
- 	}
+ 	return p != NULL;
  }
- 
-diff --git a/drivers/gpu/drm/amd/display/dc/hwss/dcn32/dcn32_hwseq.c b/drivers/gpu/drm/amd/display/dc/hwss/dcn32/dcn32_hwseq.c
-index aa36d7a56ca8c..b890db0bfc46b 100644
---- a/drivers/gpu/drm/amd/display/dc/hwss/dcn32/dcn32_hwseq.c
-+++ b/drivers/gpu/drm/amd/display/dc/hwss/dcn32/dcn32_hwseq.c
-@@ -1156,6 +1156,13 @@ void dcn32_update_odm(struct dc *dc, struct dc_state *context, struct pipe_ctx *
- 			dsc->funcs->dsc_disconnect(dsc);
- 		}
- 	}
-+
-+	if (!resource_is_pipe_type(pipe_ctx, DPP_PIPE))
-+		/*
-+		 * blank pattern is generated by OPP, reprogram blank pattern
-+		 * due to OPP count change
-+		 */
-+		dc->hwseq->funcs.blank_pixel_data(dc, pipe_ctx, true);
- }
- 
- unsigned int dcn32_calculate_dccg_k1_k2_values(struct pipe_ctx *pipe_ctx, unsigned int *k1_div, unsigned int *k2_div)
 -- 
 2.43.0
 
