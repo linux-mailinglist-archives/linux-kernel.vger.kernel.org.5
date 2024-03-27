@@ -1,48 +1,48 @@
-Return-Path: <linux-kernel+bounces-120714-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-120716-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9ACBF88DBD7
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 12:03:35 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 66CF688DBEC
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 12:04:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 512F91F2C805
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 11:03:35 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D929B1F2CA74
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 11:04:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 96E46374C6;
-	Wed, 27 Mar 2024 11:03:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A212B535AD;
+	Wed, 27 Mar 2024 11:04:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=atomide.com header.i=@atomide.com header.b="bjPfJkNR"
+	dkim=pass (2048-bit key) header.d=atomide.com header.i=@atomide.com header.b="or3UZQaQ"
 Received: from mail5.25mail.st (mail5.25mail.st [74.50.62.9])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6D38454760;
-	Wed, 27 Mar 2024 11:03:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3E9B93A1DF;
+	Wed, 27 Mar 2024 11:04:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.50.62.9
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711537404; cv=none; b=fLZRzo+h1qY6HL8X+9GN1OGOnc/iTzq3lxjTwkggfQrYzMGgQqlp4ha5LnqF0mweg8C34r6DVeNfi5L7GgB9e48iEoKQeP+LAxB+g9SGXXtEb27oZ4/sUhwFU1gMsElQh4zboD+uofQu//gGTc9GC6soZI4oh2T9/9xI+1GoPL0=
+	t=1711537448; cv=none; b=NbquMz/i6e8bxbqXuoA/JlfQvBNeARi0NZT1ki6jnroasFTEpBh3M3X+iOiMn3gWIPOId/HeKjn0A8MWlPX80II/MtFSjU6sG9ltFY3ASdABwsoTNkgNAfcS5JVh+hq4i2DXKhdZtSjetS33s6NlH214YMjC4YlhWxnCYGjcfPI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711537404; c=relaxed/simple;
-	bh=vUly8NV1gJ6HwWIMN43IuZorZ85oWvydp9mvQMeOnUs=;
+	s=arc-20240116; t=1711537448; c=relaxed/simple;
+	bh=Nq4W15qk5Qscu+9QrbTPKtZJVzvCRtdBGJRUbYT6ECg=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=YwbeGGBsgfGBJ8S8AgGzpWMVZ/6JwDKOzlKoxTkKEzswcHXQiyFAIy/Nn9277r9IKdGgZVJsTUeac2ZFcDOMi58L93u8Aj8lo+hb/vxfifIWalkKW085DTstnvTvbdSoWqmJHvfuADN30Th1wb0cedyNYjVnhQ6VmHhE3izqb9I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=atomide.com; spf=fail smtp.mailfrom=atomide.com; dkim=pass (2048-bit key) header.d=atomide.com header.i=@atomide.com header.b=bjPfJkNR; arc=none smtp.client-ip=74.50.62.9
+	 MIME-Version; b=kYNrSdUEfs2LHrTi4HO0BluDT64W4vpjsb3zkgw2e0U3LiHyJV8vgTYUbhTSBFkV3m+GemKO9aDkBqgF3DJ+zwWAb67pqOYrKY0mQgvZ1rieztRahiwlLgLjzF+Cj+lwQed75HT4Vo0wQfL5NMbEftLLaIgpIqwmt6w3nr3CKnc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=atomide.com; spf=fail smtp.mailfrom=atomide.com; dkim=pass (2048-bit key) header.d=atomide.com header.i=@atomide.com header.b=or3UZQaQ; arc=none smtp.client-ip=74.50.62.9
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=atomide.com
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=atomide.com
 Received: from localhost (91-158-86-216.elisa-laajakaista.fi [91.158.86.216])
-	by mail5.25mail.st (Postfix) with ESMTPSA id BF050604C8;
-	Wed, 27 Mar 2024 11:02:45 +0000 (UTC)
+	by mail5.25mail.st (Postfix) with ESMTPSA id 2EF22604C8;
+	Wed, 27 Mar 2024 11:03:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=atomide.com;
-	s=25mailst; t=1711537402;
-	bh=vUly8NV1gJ6HwWIMN43IuZorZ85oWvydp9mvQMeOnUs=;
+	s=25mailst; t=1711537446;
+	bh=Nq4W15qk5Qscu+9QrbTPKtZJVzvCRtdBGJRUbYT6ECg=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=bjPfJkNRpv5ngZ2eGer1lsoLomOM7dTQfZAUJ8L6WksEX0Pzjoh2tIVyXQZ56QrLd
-	 BMBBV6TOSf1ouheIxqZp2smMRTkEXoezDnOd0lexQk4MxtK1gy3n0d4PoHffrdYl2p
-	 Lo2eX71v4VtFoOHwUGPpoQXp66UtzhNG7oeg84QVvfkBSKxAV/kZaWOdluIQjgKkUs
-	 ZpuVuk+gvVQpjV6gr+AlWGAYF77u42YTgzEHB3+vWFw1K36hg3Dfkuk+vSP+24sUNP
-	 XKurHZtVnH3K2FiyHqdw0k9urpYRaaLnELZmCJM5WCXtDG7N6nnch9OFdwdxIlzqz0
-	 aAs0Mmem5STYA==
+	b=or3UZQaQXCTSAg6itVzTcpMshcMzB8BNvzp+ZmgWm79XL4ofyGmqIYS6bJN54lro+
+	 McWe4f+Up+SXk5sPlHcHFyMgCEzGe8G7XJjsofCAz9eptD7YFoBIpevTAiuu5hP40F
+	 O+hO7NLcuCR+gMXxRGes+CLpy/0yOiemXB7LR90xDhxma9MCM9r6wb7yh2miK6pgbo
+	 claRmahXaoZ637jWpPHEdTaKU0fhQKc8QAB9K4c6lJwHBJqYskPCGfSgh+QPEwdeO/
+	 YzINE8UylyoTRZRuTvwzQFN11aKO/YPgYz/vOFbP1gtTm6k4KI4rC42vubrBIB8N8n
+	 TXbYrhaHZS1HA==
 From: Tony Lindgren <tony@atomide.com>
 To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
 	Jiri Slaby <jirislaby@kernel.org>,
@@ -62,9 +62,9 @@ Cc: "David S . Miller" <davem@davemloft.net>,
 	linux-serial@vger.kernel.org,
 	Sebastian Reichel <sre@kernel.org>,
 	linux-doc@vger.kernel.org
-Subject: [PATCH v7 3/7] printk: Flag register_console() if console is set on command line
-Date: Wed, 27 Mar 2024 12:59:37 +0200
-Message-ID: <20240327110021.59793-4-tony@atomide.com>
+Subject: [PATCH v7 4/7] serial: core: Add support for DEVNAME:0.0 style naming for kernel console
+Date: Wed, 27 Mar 2024 12:59:38 +0200
+Message-ID: <20240327110021.59793-5-tony@atomide.com>
 X-Mailer: git-send-email 2.44.0
 In-Reply-To: <20240327110021.59793-1-tony@atomide.com>
 References: <20240327110021.59793-1-tony@atomide.com>
@@ -76,40 +76,170 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-If add_preferred_console() is not called early in setup_console(), we can
-end up having register_console() call try_enable_default_console() before a
-console device has called add_preferred_console().
+We can now add hardware based addressing for serial ports. Starting with
+commit 84a9582fd203 ("serial: core: Start managing serial controllers to
+enable runtime PM"), and all the related fixes to this commit, the serial
+core now knows to which serial port controller the ports are connected.
 
-Let's set console_set_on_cmdline flag in console_setup() to prevent this
-from happening.
+The serial ports can be addressed with DEVNAME:0.0 style naming. The names
+are something like 00:04:0.0 for a serial port on qemu, and something like
+2800000.serial:0.0 on platform device using systems like ARM64 for example.
+
+The DEVNAME is the unique serial port hardware controller device name, AKA
+the name for port->dev. The 0.0 are the serial core controller id and port
+id.
+
+Typically 0.0 are used for each controller and port instance unless the
+serial port hardware controller has multiple controllers or ports.
+
+Using DEVNAME:0.0 style naming actually solves two long term issues for
+addressing the serial ports:
+
+1. According to Andy Shevchenko, using DEVNAME:0.0 style naming fixes an
+   issue where depending on the BIOS settings, the kernel serial port ttyS
+   instance number may change if HSUART is enabled
+
+2. Device tree using architectures no longer necessarily need to specify
+   aliases to find a specific serial port, and we can just allocate the
+   ttyS instance numbers dynamically in whatever probe order
+
+To do this, let's match the hardware addressing style console name to
+the character device name used, and add a preferred console using the
+character device name.
+
+Note that when using console=DEVNAME:0.0 style kernel command line, the
+8250 serial console gets enabled later compared to using console=ttyS
+naming for ISA ports. This is because the serial port DEVNAME to character
+device mapping is not known until the serial driver probe time. If used
+together with earlycon, this issue is avoided.
 
 Signed-off-by: Tony Lindgren <tony@atomide.com>
 ---
- kernel/printk/printk.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ drivers/tty/serial/serial_base.h     | 16 +++++++
+ drivers/tty/serial/serial_base_bus.c | 66 ++++++++++++++++++++++++++++
+ drivers/tty/serial/serial_core.c     |  4 ++
+ 3 files changed, 86 insertions(+)
 
-diff --git a/kernel/printk/printk.c b/kernel/printk/printk.c
---- a/kernel/printk/printk.c
-+++ b/kernel/printk/printk.c
-@@ -2498,6 +2498,9 @@ static int __init console_setup(char *str)
- 	if (console_opt_save(str, brl_options))
- 		return 1;
+diff --git a/drivers/tty/serial/serial_base.h b/drivers/tty/serial/serial_base.h
+--- a/drivers/tty/serial/serial_base.h
++++ b/drivers/tty/serial/serial_base.h
+@@ -45,3 +45,19 @@ void serial_ctrl_unregister_port(struct uart_driver *drv, struct uart_port *port
  
-+	/* Flag register_console() to not call try_enable_default_console() */
-+	console_set_on_cmdline = 1;
+ int serial_core_register_port(struct uart_driver *drv, struct uart_port *port);
+ void serial_core_unregister_port(struct uart_driver *drv, struct uart_port *port);
 +
- 	/* Don't attempt to parse a DEVNAME:0.0 style console */
- 	if (strchr(str, ':'))
- 		return 1;
-@@ -3501,7 +3504,7 @@ void register_console(struct console *newcon)
- 	 * Note that a console with tty binding will have CON_CONSDEV
- 	 * flag set and will be first in the list.
- 	 */
--	if (preferred_console < 0) {
-+	if (preferred_console < 0 && !console_set_on_cmdline) {
- 		if (hlist_empty(&console_list) || !console_first()->device ||
- 		    console_first()->flags & CON_BOOT) {
- 			try_enable_default_console(newcon);
++#ifdef CONFIG_SERIAL_CORE_CONSOLE
++
++int serial_base_add_preferred_console(struct uart_driver *drv,
++				      struct uart_port *port);
++
++#else
++
++static inline
++int serial_base_add_preferred_console(struct uart_driver *drv,
++				      struct uart_port *port)
++{
++	return 0;
++}
++
++#endif
+diff --git a/drivers/tty/serial/serial_base_bus.c b/drivers/tty/serial/serial_base_bus.c
+--- a/drivers/tty/serial/serial_base_bus.c
++++ b/drivers/tty/serial/serial_base_bus.c
+@@ -8,6 +8,7 @@
+  * The serial core bus manages the serial core controller instances.
+  */
+ 
++#include <linux/cleanup.h>
+ #include <linux/container_of.h>
+ #include <linux/device.h>
+ #include <linux/idr.h>
+@@ -204,6 +205,71 @@ void serial_base_port_device_remove(struct serial_port_device *port_dev)
+ 	put_device(&port_dev->dev);
+ }
+ 
++#ifdef CONFIG_SERIAL_CORE_CONSOLE
++
++static int serial_base_add_one_prefcon(const char *match, const char *dev_name,
++				       int port_id)
++{
++	int ret;
++
++	ret = add_preferred_console_match(match, dev_name, port_id);
++	if (ret == -ENOENT)
++		return 0;
++
++	return ret;
++}
++
++static int serial_base_add_prefcon(const char *name, int idx)
++{
++	const char *char_match __free(kfree) = NULL;
++
++	/* Handle the traditional character device name style console=ttyS0 */
++	char_match = kasprintf(GFP_KERNEL, "%s%i", name, idx);
++	if (!char_match)
++		return -ENOMEM;
++
++	return serial_base_add_one_prefcon(char_match, name, idx);
++}
++
++/**
++ * serial_base_add_preferred_console - Adds a preferred console
++ * @drv: Serial port device driver
++ * @port: Serial port instance
++ *
++ * Tries to add a preferred console for a serial port if specified in the
++ * kernel command line. Supports both the traditional character device such
++ * as console=ttyS0, and a hardware addressing based console=DEVNAME:0.0
++ * style name.
++ *
++ * Translates the kernel command line option using a hardware based addressing
++ * console=DEVNAME:0.0 to the serial port character device such as ttyS0.
++ * Cannot be called early for ISA ports, depends on struct device.
++ *
++ * Note that duplicates are ignored by add_preferred_console().
++ *
++ * Return: 0 on success, negative error code on failure.
++ */
++int serial_base_add_preferred_console(struct uart_driver *drv,
++				      struct uart_port *port)
++{
++	const char *port_match __free(kfree) = NULL;
++	int ret;
++
++	ret = serial_base_add_prefcon(drv->dev_name, port->line);
++	if (ret)
++		return ret;
++
++	port_match = kasprintf(GFP_KERNEL, "%s:%i.%i", dev_name(port->dev),
++			       port->ctrl_id, port->port_id);
++	if (!port_match)
++		return -ENOMEM;
++
++	/* Translate a hardware addressing style console=DEVNAME:0.0 */
++	return serial_base_add_one_prefcon(port_match, drv->dev_name, port->line);
++}
++
++#endif
++
+ static int serial_base_init(void)
+ {
+ 	int ret;
+diff --git a/drivers/tty/serial/serial_core.c b/drivers/tty/serial/serial_core.c
+--- a/drivers/tty/serial/serial_core.c
++++ b/drivers/tty/serial/serial_core.c
+@@ -3407,6 +3407,10 @@ int serial_core_register_port(struct uart_driver *drv, struct uart_port *port)
+ 	if (ret)
+ 		goto err_unregister_ctrl_dev;
+ 
++	ret = serial_base_add_preferred_console(drv, port);
++	if (ret)
++		goto err_unregister_port_dev;
++
+ 	ret = serial_core_add_one_port(drv, port);
+ 	if (ret)
+ 		goto err_unregister_port_dev;
 -- 
 2.44.0
 
