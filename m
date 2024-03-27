@@ -1,294 +1,197 @@
-Return-Path: <linux-kernel+bounces-120769-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-120775-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8B4DD88DCCF
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 12:48:32 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 832AF88DCDC
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 12:50:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AE5631C25BB3
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 11:48:31 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B1D19297A84
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 11:50:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 314E012AAF5;
-	Wed, 27 Mar 2024 11:48:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 52BEA12BE94;
+	Wed, 27 Mar 2024 11:50:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="qiNKtOaS"
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b="BQBpcsby"
+Received: from mail-qk1-f171.google.com (mail-qk1-f171.google.com [209.85.222.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 86CE72C1A4
-	for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 11:48:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E140912BEAA
+	for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 11:50:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711540107; cv=none; b=KUREwSiQFRQR13LduSVVBYW7aQkmWyF9HjkT7WZWEtN9cqj65Ac2uWxZZqsBPrbdwTkb8/BftDd8vnw9WNMvMiPle9kvPzM/GFSVj/5fIq4PNQzjLtEMgd/dpd8FDC437GarS6RhCbj9j1h6gDfawXxxHeF2ra3JGPdMU99R1ZM=
+	t=1711540203; cv=none; b=W+ksuWxVD6pvR9jiRrhwxBK1dPLXbKL89bBJP6R3E2XAnDM0PwRYclbAwvlCBznjA1iYTVA8+sVTFHe9kdogLpLms3urNCkKUEpx/BQrYtlyTeRCEIydio4mRI8r6zWHk0WrOZ3OaAfadMr67GkIO7HY2mXF09+ThSHBktLD+vU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711540107; c=relaxed/simple;
-	bh=3sk4zjCCtDc6KYaI3PqLEnSxJKrj4tSQGn57GgNp1w8=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=K847MHamUS1kNDDdZe6XRbTNzvAmbAR3TtKnzruXKyVT4CdOaKJaCu9NuiXl/XZAu6vdGV2hHE3vR0fpLm/ROdGEKRHlpz2+BbWPO7N6PDvpHQORQ/1Z+KJiWElUp7bzUkXFNLZ5CCAV1ZZeHLVAoW45L1P+8ycWseh+o0aGM68=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=qiNKtOaS; arc=none smtp.client-ip=46.235.227.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1711540103;
-	bh=3sk4zjCCtDc6KYaI3PqLEnSxJKrj4tSQGn57GgNp1w8=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=qiNKtOaSMVISNNx7awmHbCzBRer/z5ZGzimoNJtP06jfd2mag5u/wnqSL5RNYklHb
-	 2Oxrc2Xekejo0nug3C/DCaZEeJfDaq8/Fr15J9laf2pAqkQLs/Xie0HBg7aMo/UR/j
-	 yQ542h2hKMztTMiAQdgGo/EtsF0Lt85EhnOEH8GtrrYazLKO14ks+Hg9RgdSiSyhmU
-	 VHxAuKd+e7549XcLnL0ENyVIwwQ0Kwk0nlXe4gTfOB4Z9s9rG35HcJPtoEV9vI32wx
-	 AqwHIaeH7mkvi8EsyqUoCksT9OJaL8x5qz7imr7qRYo/9C/J/z6CY0JjYbk33JV64M
-	 xNej8qfVyk+LA==
-Received: from eldfell (cola.collaboradmins.com [195.201.22.229])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: pq)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 8DB8837820E4;
-	Wed, 27 Mar 2024 11:48:22 +0000 (UTC)
-Date: Wed, 27 Mar 2024 13:48:21 +0200
-From: Pekka Paalanen <pekka.paalanen@collabora.com>
-To: Louis Chauvet <louis.chauvet@bootlin.com>
-Cc: Rodrigo Siqueira <rodrigosiqueiramelo@gmail.com>, Melissa Wen
- <melissa.srw@gmail.com>, =?UTF-8?B?TWHDrXJh?= Canal
- <mairacanal@riseup.net>, Haneen Mohammed <hamohammed.sa@gmail.com>, Daniel
- Vetter <daniel@ffwll.ch>, Maarten Lankhorst
- <maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>,
- Thomas Zimmermann <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>,
- arthurgrillo@riseup.net, Jonathan Corbet <corbet@lwn.net>,
- dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
- jeremie.dautheribes@bootlin.com, miquel.raynal@bootlin.com,
- thomas.petazzoni@bootlin.com, seanpaul@google.com, marcheu@google.com,
- nicolejadeyee@google.com
-Subject: Re: [PATCH v5 08/16] drm/vkms: Avoid computing blending limits
- inside pre_mul_alpha_blend
-Message-ID: <20240327134821.3a985ab5.pekka.paalanen@collabora.com>
-In-Reply-To: <ZgLwTNsehDG4z6Bo@localhost.localdomain>
-References: <20240313-yuv-v5-0-e610cbd03f52@bootlin.com>
-	<20240313-yuv-v5-8-e610cbd03f52@bootlin.com>
-	<20240325144101.6d9fcf7e.pekka.paalanen@collabora.com>
-	<ZgLwTNsehDG4z6Bo@localhost.localdomain>
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1711540203; c=relaxed/simple;
+	bh=jUGLMXfJA53XClr/yZYHyekFyse0uCD0AkZBZQ9HFPg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=VMAVG3qiTPU3iBko1WmW/RCg9O16cDInbH2c+ggKRojr51NNd3GOl3K2kBQDQSAQqQcDQo7oDX++Kd756RvyRSwg7z0EWyx4Bvd+1CF3kXGA3OF2d1HH9PLXY5u6czhuq9C9L37r/X0mf+ds5TryIibekVH+3WGRFckPUqDkd04=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca; spf=pass smtp.mailfrom=ziepe.ca; dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b=BQBpcsby; arc=none smtp.client-ip=209.85.222.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ziepe.ca
+Received: by mail-qk1-f171.google.com with SMTP id af79cd13be357-789e2bf854dso388859385a.3
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 04:50:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google; t=1711540200; x=1712145000; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=cRCwxUtywPyv/sfMfB7vDdhGhWd2UBJnlU1eKR4NMmg=;
+        b=BQBpcsbyXCy0ANtozaTBatHeafDnspgjIEG2xp6GBwPgOxoUijzM9jeUsUmXP6fAvL
+         5VWSwAUiIyjShgj/OP2Q3356zJ7kL0fwkz42TM4jCBA0EwG6zofcfW16DZ4uTLhbaQIc
+         J45x64Z+Vwav2A+pKQRPuMThDY4lrOGgKnUQT14O3nu4dxTMiVZ+MiWgllzJ3GDk8psw
+         XQsHkKLz+1B7nRJaqkeqiPURhksE4fgkipKmNxMBM3Da7+oruXvhLwhrXSSDe5F/tX0c
+         6qrxMk4OD5x82v83ndu2aqnRGpYOHBfB943qmPcTj+ZgoYju4PxwLyihCgSMCnDtxqUZ
+         c6GQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711540200; x=1712145000;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=cRCwxUtywPyv/sfMfB7vDdhGhWd2UBJnlU1eKR4NMmg=;
+        b=B+g09JthKA33AvFdsVBW/xj9T2fDmkwBJvFRlEAcaodPOEDkQLVonkg8QQIm8e59YE
+         xKsiVplt1rr6X92A+krz6sbjXHfxeQUARxgJVhvxbfeGIo8ka5I8qD50566RlOaQ8YDG
+         0St97FX45EeVWvS84VraQYexQisHCaudJLSZbTgU6xTSvHmAstPi2YHfjyuCVlgcScWU
+         1Mt2DtAPlm4SFnPeZB+CTbkCT9eCpfJYTVc7oVn/GjM2jSNc/768FOgnjrh9JSHjY5cG
+         gSP5sZkBtsc0P9GxbllBJUwTvsjH7I5TEgeCjOUKWIX9nmmqExvshUOoOoGLdTi2E8nR
+         c3FQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUxJVHZYZIYAJge+GuToKjEEy7ziYCD+07tLESdKpi6/ACBZSQQJIi+v2ndJB4kAztcZ2Xp7k435irRex0gRxfSDrNCdT3qeFAcLGu1
+X-Gm-Message-State: AOJu0Yw+oT7bjDCpyzNdVpeaqhJN0FkdxJF1YiJDP7FohRp0W2Lm4avZ
+	UXjdN4Timef+Wkjg9XCe5xgoe/K2f1LcLV8Le9vrsbeDI7CTVC8m+vUcD31U62Q=
+X-Google-Smtp-Source: AGHT+IHwk5sSFKdm6Uh7Tlt4FGOA8xWOgg7e771JOsFUfYRAlXL6Y42sG4BEWKBvccGOUUtZiQb1mA==
+X-Received: by 2002:ae9:f407:0:b0:78a:5feb:d3aa with SMTP id y7-20020ae9f407000000b0078a5febd3aamr995720qkl.15.1711540199785;
+        Wed, 27 Mar 2024 04:49:59 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-142-68-80-239.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.80.239])
+        by smtp.gmail.com with ESMTPSA id k26-20020a05620a0b9a00b00789e2961225sm3808233qkh.61.2024.03.27.04.49.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 27 Mar 2024 04:49:59 -0700 (PDT)
+Received: from jgg by wakko with local (Exim 4.95)
+	(envelope-from <jgg@ziepe.ca>)
+	id 1rpRn4-0051gL-Np;
+	Wed, 27 Mar 2024 08:49:58 -0300
+Date: Wed, 27 Mar 2024 08:49:58 -0300
+From: Jason Gunthorpe <jgg@ziepe.ca>
+To: Muhammad Usama Anjum <usama.anjum@collabora.com>,
+	Joao Martins <joao.m.martins@oracle.com>,
+	Nicolin Chen <nicolinc@nvidia.com>
+Cc: kernel@collabora.com, iommu@lists.linux.dev,
+	linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Kevin Tian <kevin.tian@intel.com>, Shuah Khan <shuah@kernel.org>
+Subject: Re: [PATCH] selftests: iommu: add config needed for iommufd_fail_nth
+Message-ID: <20240327114958.GG8419@ziepe.ca>
+References: <20240325090048.1423908-1-usama.anjum@collabora.com>
+ <31fcc276-acd6-4277-bd6c-4a871c7fb28a@collabora.com>
+ <20240326150340.GE8419@ziepe.ca>
+ <56cc8b9e-c1cf-4520-ba45-b1237e8b7b64@collabora.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/BpgFWwG.B4zFeuVTStC0wqj";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <56cc8b9e-c1cf-4520-ba45-b1237e8b7b64@collabora.com>
 
---Sig_/BpgFWwG.B4zFeuVTStC0wqj
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+On Wed, Mar 27, 2024 at 03:14:25PM +0500, Muhammad Usama Anjum wrote:
+> On 3/26/24 8:03 PM, Jason Gunthorpe wrote:
+> > On Tue, Mar 26, 2024 at 06:09:34PM +0500, Muhammad Usama Anjum wrote:
+> >> Even after applying this config patch and following snippet (which doesn't
+> >> terminate the program if mmap doesn't allocate exactly as the hint), I'm
+> >> finding failed tests.
+> >>
+> >> @@ -1746,7 +1748,7 @@ FIXTURE_SETUP(iommufd_dirty_tracking)
+> >>         assert((uintptr_t)self->buffer % HUGEPAGE_SIZE == 0);
+> >>         vrc = mmap(self->buffer, variant->buffer_size, PROT_READ | PROT_WRITE,
+> >>                    mmap_flags, -1, 0);
+> >> -       assert(vrc == self->buffer);
+> >> +       assert(vrc == self->buffer);// ???
+> >>
+> >> On x86:
+> >> # Totals: pass:176 fail:4 xfail:0 xpass:0 skip:0 error:0
+> >> On ARM64:
+> >> # Totals: pass:166 fail:14 xfail:0 xpass:0 skip:0 error:0
+> >>
+> >> The log files are attached.
+> > 
+> > You probably don't have enough transparent huge pages available to the process
+> > 
+> >       echo 1024 > /proc/sys/vm/nr_hugepages
+> After making huge pages available, the iommufd test always passed on x86.
+> But there are still failures on arm64. I'm looking into the failures.
 
-On Tue, 26 Mar 2024 16:57:00 +0100
-Louis Chauvet <louis.chauvet@bootlin.com> wrote:
+Oh that is really strange. Joao? Nicolin?
 
-> Le 25/03/24 - 14:41, Pekka Paalanen a =C3=A9crit :
-> > On Wed, 13 Mar 2024 18:45:02 +0100
-> > Louis Chauvet <louis.chauvet@bootlin.com> wrote:
-> >  =20
-> > > The pre_mul_alpha_blend is dedicated to blending, so to avoid mixing
-> > > different concepts (coordinate calculation and color management), ext=
-ract
-> > > the x_limit and x_dst computation outside of this helper.
-> > > It also increases the maintainability by grouping the computation rel=
-ated
-> > > to coordinates in the same place: the loop in `blend`.
-> > >=20
-> > > Signed-off-by: Louis Chauvet <louis.chauvet@bootlin.com>
-> > > ---
-> > >  drivers/gpu/drm/vkms/vkms_composer.c | 40 +++++++++++++++++---------=
-----------
-> > >  1 file changed, 19 insertions(+), 21 deletions(-)
-> > >=20
-> > > diff --git a/drivers/gpu/drm/vkms/vkms_composer.c b/drivers/gpu/drm/v=
-kms/vkms_composer.c
-> > > index da0651a94c9b..9254086f23ff 100644
-> > > --- a/drivers/gpu/drm/vkms/vkms_composer.c
-> > > +++ b/drivers/gpu/drm/vkms/vkms_composer.c
-> > > @@ -24,34 +24,30 @@ static u16 pre_mul_blend_channel(u16 src, u16 dst=
-, u16 alpha)
-> > > =20
-> > >  /**
-> > >   * pre_mul_alpha_blend - alpha blending equation
-> > > - * @frame_info: Source framebuffer's metadata
-> > >   * @stage_buffer: The line with the pixels from src_plane
-> > >   * @output_buffer: A line buffer that receives all the blends output
-> > > + * @x_start: The start offset to avoid useless copy =20
-> >=20
-> > I'd say just:
-> >=20
-> > + * @x_start: The start offset
-> >=20
-> > It describes the parameter, and the paragraph below explains the why.
-> >=20
-> > It would be explaining, that x_start applies to output_buffer, but
-> > input_buffer is always read starting from 0. =20
->=20
-> I will change it to:
->=20
->  * Using @x_start and @count information, only few pixel can be blended i=
-nstead of the whole line
->  * each time. @x_start is only used for the output buffer. The staging bu=
-ffer is always read from
->  * the start (0..@count in stage_buffer is blended at @x_start..@x_start+=
-@count in output_buffer).
+> #  RUN           iommufd_dirty_tracking.domain_dirty128k.get_dirty_bitmap ...
+> # iommufd_utils.h:374:get_dirty_bitmap:Expected j < npte (1) == test_bit(i + j, (unsigned long *)bitmap) (0)
+> # get_dirty_bitmap: Test terminated by assertion
+> #          FAIL  iommufd_dirty_tracking.domain_dirty128k.get_dirty_bitmap
+> not ok 139 iommufd_dirty_tracking.domain_dirty128k.get_dirty_bitmap
 
-The important part is
+> #  RUN           iommufd_dirty_tracking.domain_dirty128k.get_dirty_bitmap_no_clear ...
+> # iommufd_utils.h:374:get_dirty_bitmap_no_clear:Expected j < npte (1) == test_bit(i + j, (unsigned long *)bitmap) (0)
+> # get_dirty_bitmap_no_clear: Test terminated by assertion
+> #          FAIL  iommufd_dirty_tracking.domain_dirty128k.get_dirty_bitmap_no_clear
+> not ok 140 iommufd_dirty_tracking.domain_dirty128k.get_dirty_bitmap_no_clear
 
-0..@count in stage_buffer is blended at @x_start..@x_start+@count in output=
-_buffer
+> #  RUN           iommufd_dirty_tracking.domain_dirty256k.get_dirty_bitmap ...
+> # iommufd_utils.h:374:get_dirty_bitmap:Expected j < npte (1) == test_bit(i + j, (unsigned long *)bitmap) (0)
+> # get_dirty_bitmap: Test terminated by assertion
+> #          FAIL  iommufd_dirty_tracking.domain_dirty256k.get_dirty_bitmap
+> not ok 144 iommufd_dirty_tracking.domain_dirty256k.get_dirty_bitmap
 
-and everything else from that paragraph is not really adding much.
+> #  RUN           iommufd_dirty_tracking.domain_dirty256k.get_dirty_bitmap_no_clear ...
+> # iommufd_utils.h:374:get_dirty_bitmap_no_clear:Expected j < npte (1) == test_bit(i + j, (unsigned long *)bitmap) (0)
+> # get_dirty_bitmap_no_clear: Test terminated by assertion
+> #          FAIL  iommufd_dirty_tracking.domain_dirty256k.get_dirty_bitmap_no_clear
+> not ok 145 iommufd_dirty_tracking.domain_dirty256k.get_dirty_bitmap_no_clear
 
-Remember to update the doc in "drm/vkms: Re-introduce line-per-line
-composition  algorithm" to follow the changes.
+> #  RUN           iommufd_dirty_tracking.domain_dirty640k.get_dirty_bitmap ...
+> # iommufd_utils.h:374:get_dirty_bitmap:Expected j < npte (1) == test_bit(i + j, (unsigned long *)bitmap) (0)
+> # get_dirty_bitmap: Test terminated by assertion
+> #          FAIL  iommufd_dirty_tracking.domain_dirty640k.get_dirty_bitmap
+> not ok 149 iommufd_dirty_tracking.domain_dirty640k.get_dirty_bitmap
 
+> #  RUN           iommufd_dirty_tracking.domain_dirty640k.get_dirty_bitmap_no_clear ...
+> # iommufd_utils.h:374:get_dirty_bitmap_no_clear:Expected j < npte (1) == test_bit(i + j, (unsigned long *)bitmap) (0)
+> # get_dirty_bitmap_no_clear: Test terminated by assertion
+> #          FAIL  iommufd_dirty_tracking.domain_dirty640k.get_dirty_bitmap_no_clear
+> not ok 150 iommufd_dirty_tracking.domain_dirty640k.get_dirty_bitmap_no_clear
 
-> > > + * @count: The number of byte to copy =20
-> >=20
-> > You named it pixel_count, and it counts pixels, not bytes. It's not a
-> > copy but a blend into output_buffer. =20
->=20
-> Oops, fixed in v6.
-> =20
-> > >   *
-> > > - * Using the information from the `frame_info`, this blends only the
-> > > - * necessary pixels from the `stage_buffer` to the `output_buffer`
-> > > - * using premultiplied blend formula.
-> > > + * Using @x_start and @count information, only few pixel can be blen=
-ded instead of the whole line
-> > > + * each time.
-> > >   *
-> > >   * The current DRM assumption is that pixel color values have been a=
-lready
-> > >   * pre-multiplied with the alpha channel values. See more
-> > >   * drm_plane_create_blend_mode_property(). Also, this formula assume=
-s a
-> > >   * completely opaque background.
-> > >   */
-> > > -static void pre_mul_alpha_blend(struct vkms_frame_info *frame_info,
-> > > -				struct line_buffer *stage_buffer,
-> > > -				struct line_buffer *output_buffer)
-> > > +static void pre_mul_alpha_blend(const struct line_buffer *stage_buff=
-er,
-> > > +				struct line_buffer *output_buffer, int x_start, int pixel_count)
-> > >  {
-> > > -	int x_dst =3D frame_info->dst.x1;
-> > > -	struct pixel_argb_u16 *out =3D output_buffer->pixels + x_dst;
-> > > -	struct pixel_argb_u16 *in =3D stage_buffer->pixels;
-> > > -	int x_limit =3D min_t(size_t, drm_rect_width(&frame_info->dst),
-> > > -			    stage_buffer->n_pixels);
-> > > -
-> > > -	for (int x =3D 0; x < x_limit; x++) {
-> > > -		out[x].a =3D (u16)0xffff;
-> > > -		out[x].r =3D pre_mul_blend_channel(in[x].r, out[x].r, in[x].a);
-> > > -		out[x].g =3D pre_mul_blend_channel(in[x].g, out[x].g, in[x].a);
-> > > -		out[x].b =3D pre_mul_blend_channel(in[x].b, out[x].b, in[x].a);
-> > > +	struct pixel_argb_u16 *out =3D &output_buffer->pixels[x_start];
-> > > +	const struct pixel_argb_u16 *in =3D stage_buffer->pixels;
-> > > +
-> > > +	for (int i =3D 0; i < pixel_count; i++) {
-> > > +		out[i].a =3D (u16)0xffff;
-> > > +		out[i].r =3D pre_mul_blend_channel(in[i].r, out[i].r, in[i].a);
-> > > +		out[i].g =3D pre_mul_blend_channel(in[i].g, out[i].g, in[i].a);
-> > > +		out[i].b =3D pre_mul_blend_channel(in[i].b, out[i].b, in[i].a);
-> > >  	}
-> > >  }
-> > > =20
-> > > @@ -183,7 +179,7 @@ static void blend(struct vkms_writeback_job *wb,
-> > >  {
-> > >  	struct vkms_plane_state **plane =3D crtc_state->active_planes;
-> > >  	u32 n_active_planes =3D crtc_state->num_active_planes;
-> > > -	int y_pos;
-> > > +	int y_pos, x_dst, x_limit;
-> > > =20
-> > >  	const struct pixel_argb_u16 background_color =3D { .a =3D 0xffff };
-> > > =20
-> > > @@ -201,14 +197,16 @@ static void blend(struct vkms_writeback_job *wb,
-> > > =20
-> > >  		/* The active planes are composed associatively in z-order. */
-> > >  		for (size_t i =3D 0; i < n_active_planes; i++) {
-> > > +			x_dst =3D plane[i]->frame_info->dst.x1;
-> > > +			x_limit =3D min_t(size_t, drm_rect_width(&plane[i]->frame_info->d=
-st),
-> > > +					stage_buffer->n_pixels); =20
-> >=20
-> > Are those input values to min_t() really of type size_t? Or why is
-> > size_t here? =20
->=20
-> n_pixel is size_t, drm_rect_width is int. I will change everything to int=
-=20
-> Is there a way to ask the compiler "please don't do implicit conversion=20
-> and report them as warn/errors"?
+> #  RUN           iommufd_dirty_tracking.domain_dirty128M_huge.get_dirty_bitmap ...
+> # iommufd_utils.h:374:get_dirty_bitmap:Expected j < npte (1) == test_bit(i + j, (unsigned long *)bitmap) (0)
+> # get_dirty_bitmap: Test terminated by assertion
+> #          FAIL  iommufd_dirty_tracking.domain_dirty128M_huge.get_dirty_bitmap
+> not ok 159 iommufd_dirty_tracking.domain_dirty128M_huge.get_dirty_bitmap
 
-There probably is, you can find it in the gcc manual. However, I suspect
-you would drown in warnings for cases where the implicit conversion is
-wanted and an explicit cast is unwanted.
+> #  RUN           iommufd_dirty_tracking.domain_dirty128M_huge.get_dirty_bitmap_no_clear ...
+> # iommufd_utils.h:374:get_dirty_bitmap_no_clear:Expected j < npte (1) == test_bit(i + j, (unsigned long *)bitmap) (0)
+> # get_dirty_bitmap_no_clear: Test terminated by assertion
+> #          FAIL  iommufd_dirty_tracking.domain_dirty128M_huge.get_dirty_bitmap_no_clear
+> not ok 160 iommufd_dirty_tracking.domain_dirty128M_huge.get_dirty_bitmap_no_clear
 
+> #  RUN           iommufd_dirty_tracking.domain_dirty256M.get_dirty_bitmap ...
+> # iommufd_utils.h:374:get_dirty_bitmap:Expected j < npte (1) == test_bit(i + j, (unsigned long *)bitmap) (0)
+> # get_dirty_bitmap: Test terminated by assertion
+> #          FAIL  iommufd_dirty_tracking.domain_dirty256M.get_dirty_bitmap
+> not ok 164 iommufd_dirty_tracking.domain_dirty256M.get_dirty_bitmap
 
-Thanks,
-pq
+> #  RUN           iommufd_dirty_tracking.domain_dirty256M.get_dirty_bitmap_no_clear ...
+> # iommufd_utils.h:374:get_dirty_bitmap_no_clear:Expected j < npte (1) == test_bit(i + j, (unsigned long *)bitmap) (0)
+> # get_dirty_bitmap_no_clear: Test terminated by assertion
+> #          FAIL  iommufd_dirty_tracking.domain_dirty256M.get_dirty_bitmap_no_clear
+> not ok 165 iommufd_dirty_tracking.domain_dirty256M.get_dirty_bitmap_no_clear
 
-> > >  			y_pos =3D get_y_pos(plane[i]->frame_info, y);
-> > > =20
-> > >  			if (!check_limit(plane[i]->frame_info, y_pos))
-> > >  				continue;
-> > > =20
-> > >  			vkms_compose_row(stage_buffer, plane[i], y_pos);
-> > > -			pre_mul_alpha_blend(plane[i]->frame_info, stage_buffer,
-> > > -					    output_buffer);
-> > > +			pre_mul_alpha_blend(stage_buffer, output_buffer, x_dst, x_limit);=
- =20
-> >=20
-> > I thought it was a count, not a limit?
-> >=20
-> > "Limit" sounds to me like "end", and end - start =3D count. =20
->=20
-> It is effectively a pixel count. I just took those naming from the=20
-> original pre_mul_alpha_blend. I will change it to pixel_count.
->=20
-> Thanks,
-> Louis Chauvet
->=20
-> > >  		}
-> > > =20
-> > >  		apply_lut(crtc_state, output_buffer);
-> > >  =20
-> >=20
-> > The details aside, this is a good move.
-> >=20
-> >=20
-> > Thanks,
-> > pq =20
->=20
->=20
->=20
+> #  RUN           iommufd_dirty_tracking.domain_dirty256M_huge.get_dirty_bitmap ...
+> # iommufd_utils.h:374:get_dirty_bitmap:Expected j < npte (1) == test_bit(i + j, (unsigned long *)bitmap) (0)
+> # get_dirty_bitmap: Test terminated by assertion
+> #          FAIL  iommufd_dirty_tracking.domain_dirty256M_huge.get_dirty_bitmap
+> not ok 169 iommufd_dirty_tracking.domain_dirty256M_huge.get_dirty_bitmap
 
+> #  RUN           iommufd_dirty_tracking.domain_dirty256M_huge.get_dirty_bitmap_no_clear ...
+> # iommufd_utils.h:374:get_dirty_bitmap_no_clear:Expected j < npte (1) == test_bit(i + j, (unsigned long *)bitmap) (0)
+> # get_dirty_bitmap_no_clear: Test terminated by assertion
+> #          FAIL  iommufd_dirty_tracking.domain_dirty256M_huge.get_dirty_bitmap_no_clear
+> not ok 170 iommufd_dirty_tracking.domain_dirty256M_huge.get_dirty_bitmap_no_clear
 
---Sig_/BpgFWwG.B4zFeuVTStC0wqj
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCAAdFiEEJQjwWQChkWOYOIONI1/ltBGqqqcFAmYEB4UACgkQI1/ltBGq
-qqdORBAAnCedEcvQbA5YNgvJhMd6M7Ee8pjqvxsC+9jBy0MYwfosnYIB1E9jbDcl
-2QZNb8/bH9Cuv7muJWqeCGTwyygMmyNltMqBUE81gDXKOETkr7EVWhfItch5vuQV
-W5OtRnave1L6X8qm9vJGAKTAaX5gcWEppogMyhRQ9ujhx57W+aF19aqS8Y2NmqKq
-+X2C46O5fU9a9dVTvp2aQkmxG5fOUxoHls4TL/wsyXvgzMyPVGPgf7DvI364GdWu
-twYXhUMH0XWlLgVd8Ka1RCJGc1FgLU2/l9wNcnoLbaa6OGiFr7Gl8/4vHiaXuUDi
-l4ukf0J6cb2UfGXr2w3MY8ODsZWxHu6XLuqRXcTunefooAZYwSmB/Q3B26TdmEgB
-1NMTJpLvKf2MnLcu2Lz9/6qPc7GmGmO/a+q5o3Kj7J7Uo+s6Dlx5WxOmii4d/hxi
-ig6PQQLIpchBI8ytsPavQmsYyMm4SY5z8gIluNH39cSMw4RbQ8XBQ+62dZlaG9xk
-Oohg7DS5ag8+OSGmb9fOANhOYtIb7UY4RXYivROJDg6B3RJMkwPViiTphV8Cqw0c
-JbGIzyLQCeJv9po/9vjNMXS2ObZRaM/lZlH/3i8BlMrQkG7bDC2YE6qIsPgIRMSb
-9nnpHOrSujO8eH8WljdqnosopA5s/Y4sOG06AsUUvjKV4Klyvvw=
-=LoLO
------END PGP SIGNATURE-----
-
---Sig_/BpgFWwG.B4zFeuVTStC0wqj--
 
