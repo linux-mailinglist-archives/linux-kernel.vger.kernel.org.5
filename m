@@ -1,130 +1,115 @@
-Return-Path: <linux-kernel+bounces-121863-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-121864-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1811288EEB8
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 19:56:56 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2C80488EEB9
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 19:57:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2EC0B1C2A39E
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 18:56:55 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 537D61C34176
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 18:57:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 39D8A152186;
-	Wed, 27 Mar 2024 18:56:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD2B714E2FB;
+	Wed, 27 Mar 2024 18:57:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b="k+GzYoMN"
-Received: from mail-lf1-f52.google.com (mail-lf1-f52.google.com [209.85.167.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="VCCFm4Ab"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B1CD214F13E
-	for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 18:56:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 38A8F12EBEF
+	for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 18:57:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711565785; cv=none; b=WkwxCe76tQ6q87kaAc7JYyQ3BanY2YzwS0ch7u/UMBuaqDDcIzURjtKdWxk9kKx3S2mbeCD1hzK+/+gApNv+utTglfhGniTElDn9QFHoZtC8WmEjamUNJj82ojbvhdmRO7Mrri33b1FMZkv12undEWHiSDDWE2XhwPYH26w4apc=
+	t=1711565828; cv=none; b=eNx+bCJUqTg9a626MPfIStPPqBr3aeySdx+ySHTbVvQnBoVoUmiRrr4vuZtn3WWjxB//2IwuWvM+bgZMLiM/WrPLePED6CQaLSTmHe0i+X2OGGjS44SWVnZaaPYoaBJUYfUrL7Tv+SGJLaWuQ9GONNIyE3PDprPgBiz7/fNs+RA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711565785; c=relaxed/simple;
-	bh=4NcW9kjQzz+4rxkmVWvO3SDYc5HCNpy2e5LNejNHhtg=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=epJyuUZ1W0O7n7bb/miU3QpsrusEQH/kJoivxiZ0f7JvqCmWvA7DSlTDCp5G+QrS4iEuEuBMpZzw+CMn7WRXlJo+59E8HOA5PK2xJ2PdM9XmLq4LgE0lclqnBHsWBCyEl37bTH4SrwFTgmLn5UbIcw2cMDzXMXyahLgKBPtCyyc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl; spf=none smtp.mailfrom=bgdev.pl; dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b=k+GzYoMN; arc=none smtp.client-ip=209.85.167.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bgdev.pl
-Received: by mail-lf1-f52.google.com with SMTP id 2adb3069b0e04-515b69e8f38so69223e87.1
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 11:56:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1711565782; x=1712170582; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=l22hpajQYrTCvXSZPoe2VYkKnBi8J9PfZ646Pjp2W30=;
-        b=k+GzYoMNF+LcVXBmiHcmrFB4dZFJNgouhgKcpQvZW0IdaI7TRkIBxVVfis7Xf6/YgV
-         i+cxoTNndWJGoWXc8oNFRXMWAxQJ/skQNhUIvkHYB1NHmCBgDN+yxTad5sBUPb+4uWUR
-         98y1M0cJGM+XwXEkKF8reiwDzWclpLd5qDXD64sgPy0URIHowh3ALJy4fgAYb56FmxX6
-         Xlpg74waxdIpybanX+ddeb25ROMy1YHi2KDtqerIB1Rok6jFWGgieaoXtCUUBGAYpEeb
-         gDIo45RdX2dT1mltKpiLiyWloSc6W5lUBq2LXZ/LjbwvpONUK2yw+ZH5jG0SimlbiNtv
-         HoZw==
+	s=arc-20240116; t=1711565828; c=relaxed/simple;
+	bh=ODLp4kP0ztBb4uqhFI47CKqUmFGO3U9j0BAO0PTKgIM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=PHNGiI4g8YtOFBjbbf07WnnWIAbdDuqjZtfSvhjm2ozR2HwDQnHQl12r1RnjtqhVMxlA2RY5YZ9KXftWkoCzrQPkFcJQeaIuikv2a6r1VADTFUqseGl4w8cQW99pMtugrz2zXwBPSx61TcCcXlPt7A1PCYWf6e0F0NdXh0UJBjE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=VCCFm4Ab; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1711565825;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=R2uV3fcPM6D/HTQQaQNr9EXbWv5n0KKEQ28+lh++mlU=;
+	b=VCCFm4AbBNI4AvJgLfZduol71nERf+Ly4JtbyyMq4OxXT9kN3YXfe4AOwLzi8tam3kcH/1
+	PxnNUmRke7tkWyI0tGRcJSPnIsEd6a8L9D8yfU5TZuVGZbMX0JS0sCWrT0SgSZOLqsPqQ6
+	Jfow9BmqISIpwWYqvbmTkeWTmYe2sMw=
+Received: from mail-oo1-f69.google.com (mail-oo1-f69.google.com
+ [209.85.161.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-677-VtwvtTlnO1KffZKvnvMxFg-1; Wed, 27 Mar 2024 14:57:03 -0400
+X-MC-Unique: VtwvtTlnO1KffZKvnvMxFg-1
+Received: by mail-oo1-f69.google.com with SMTP id 006d021491bc7-5a4d25f4795so22729eaf.0
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 11:57:03 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711565782; x=1712170582;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=l22hpajQYrTCvXSZPoe2VYkKnBi8J9PfZ646Pjp2W30=;
-        b=BfFVkGP/KkCKzSCN7Tkq8Ha0vZQXMxXJv5Kd+QkhBoEGxa07JzLJOPFkRAjtweJgNn
-         Ik5klzCeiy2BRdbrsOKDyCCzpY9nEY1+NqWxQclL9EDmHWmbixRnlG3sqzI057Ng9Ggq
-         lYfYiHhbWLezTWohILVNHqcuoNnLI/vKsZQHLlcJqPoALtC7WNOVP9XF88ysMe5swyCp
-         LxyKkqAFW/etTyUI/m61KMyErrbpvipIJkI2BA+Nhxi4Ez90kfGxbzV9Tj1yibpYqErU
-         dhvm2D+159eWrtCcmhsjRV6ch6+46j3/yqfnPml+a8LNMlWBWt3vfg3HMBQhx4xkcyOM
-         BmgA==
-X-Forwarded-Encrypted: i=1; AJvYcCXjOy41yj9uH25njCGu4RMPFItKYQ1HCS6fCXp0m1IEuyjUL+X3uzBxVBC2a4QBBNgYhlLCakTQ6vvj2uOYthxnoG6CIp9hucR82nl3
-X-Gm-Message-State: AOJu0YxRt3EhAEwOikDacdOP9n3xsJs4N/+pHfunWYHD3UMGCQU8q9Vj
-	PugPvkhZiezYpSlYQMTzRhDf4gCr8FNrngoEUZIM1paU5i80IXpo/xR4GgkmZq0xYZOfCb+wNaP
-	hcXIwz2SJkhi+q5YukrTuBOTnb+D8b+N9PctQLg==
-X-Google-Smtp-Source: AGHT+IHKydle8I12XQm1CXJCoOY/EXeZTUxgXyi6L8xBSnmh4cSMTwhyhLVJE5IgeGuedARFVJZKgD+gbga9ggLr/Og=
-X-Received: by 2002:a05:6512:60a:b0:513:9b96:a954 with SMTP id
- b10-20020a056512060a00b005139b96a954mr200564lfe.68.1711565781942; Wed, 27 Mar
- 2024 11:56:21 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1711565823; x=1712170623;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=R2uV3fcPM6D/HTQQaQNr9EXbWv5n0KKEQ28+lh++mlU=;
+        b=vVE0gPnm+wWccNBPk+Mo0g238Qf7E8z/X7dcOXFmZVR7Jpx63Fr9q99hGWVlwGuN71
+         bPHhRKf3YXWvJpWOeL6+X+/aX0DVh01cv6o3wAk+jNUOFbR7H66oOKhGzwhSzT8kMt7W
+         bTEczVTibH0U7uboks+OKFM/kVarARn9ERKMVcSfEB8OsJvSbnuXB84jPNQ5kCnE3phC
+         YMvR/J2sTyLRii88fFgOtp9xojnmow/YqRJM58TnfzJh/6oUm9WVsdd2QwPTvZ9zYksE
+         mqGYSaTKDfrigiZWq5UkVTpT8d9eIHcGO/bH76/cOyZLmeX99h5Ou3S8jY2YuWpvzU3r
+         xHZg==
+X-Forwarded-Encrypted: i=1; AJvYcCXLv5KzNlJkR+BXrUuLySlTh0dk6HO09pCL4mlNRVzKVQavitY17BVrIFCSOQynMA5gLgtgjqOdeLEPYXyZ06Wn1+yscwf3dITEWxyl
+X-Gm-Message-State: AOJu0YxKGZPoVLRxVw/QowTFzr165sVdNAadpdbB2hWkoVSxJfN7sOn/
+	f2TVxeDHTOyLL9mt60p+AJuNDOgvdq8D/cWxKWeBC8tq8ohdrW0u7/YUVTSsaLXXfbs4HS9dun1
+	V2gRUzO9h/LJ6teBzogxEgf6RVnks8RCpNSeQffzHzX47tI2vKipyxJlhHpbyvg==
+X-Received: by 2002:a05:6820:e0f:b0:5a5:5ed9:b246 with SMTP id el15-20020a0568200e0f00b005a55ed9b246mr998444oob.0.1711565822860;
+        Wed, 27 Mar 2024 11:57:02 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IH8ZLok88R0OgZXibxpbpVWGqPZ88QA+3LjCUsYCfI3W3udUs2WL1Xfomla6duh8BwZ8ZRucA==
+X-Received: by 2002:a05:6820:e0f:b0:5a5:5ed9:b246 with SMTP id el15-20020a0568200e0f00b005a55ed9b246mr998422oob.0.1711565822369;
+        Wed, 27 Mar 2024 11:57:02 -0700 (PDT)
+Received: from x1n ([99.254.121.117])
+        by smtp.gmail.com with ESMTPSA id eq17-20020a05622a5e1100b004313f54aaa9sm4895159qtb.5.2024.03.27.11.57.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 27 Mar 2024 11:57:02 -0700 (PDT)
+Date: Wed, 27 Mar 2024 14:56:59 -0400
+From: Peter Xu <peterx@redhat.com>
+To: Peng Zhang <zhangpeng362@huawei.com>
+Cc: linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+	akpm@linux-foundation.org, david@redhat.com,
+	axelrasmussen@google.com, surenb@google.com, lokeshgidra@google.com,
+	Liam.Howlett@oracle.com, wangkefeng.wang@huawei.com,
+	sunnanyong@huawei.com
+Subject: Re: [PATCH] userfaultfd: early return in dup_userfaultfd()
+Message-ID: <ZgRr-8PX2Jdk6VKz@x1n>
+References: <20240327090835.3232629-1-zhangpeng362@huawei.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240325131624.26023-1-brgl@bgdev.pl> <20240325131624.26023-3-brgl@bgdev.pl>
- <1614af1c-330d-49ee-aa22-a19de866862e@linaro.org>
-In-Reply-To: <1614af1c-330d-49ee-aa22-a19de866862e@linaro.org>
-From: Bartosz Golaszewski <brgl@bgdev.pl>
-Date: Wed, 27 Mar 2024 19:56:10 +0100
-Message-ID: <CAMRc=Mf3eVc2iJxdkSMgeLFU0rCVnwOQ_mg=fj=uOxj01e5yNQ@mail.gmail.com>
-Subject: Re: [PATCH v6 02/16] regulator: dt-bindings: describe the PMU module
- of the WCN7850 package
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc: Marcel Holtmann <marcel@holtmann.org>, Luiz Augusto von Dentz <luiz.dentz@gmail.com>, 
-	"David S . Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Rob Herring <robh@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Kalle Valo <kvalo@kernel.org>, Bjorn Andersson <andersson@kernel.org>, 
-	Konrad Dybcio <konrad.dybcio@linaro.org>, Liam Girdwood <lgirdwood@gmail.com>, 
-	Mark Brown <broonie@kernel.org>, Catalin Marinas <catalin.marinas@arm.com>, 
-	Will Deacon <will@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>, 
-	Saravana Kannan <saravanak@google.com>, Geert Uytterhoeven <geert+renesas@glider.be>, 
-	Arnd Bergmann <arnd@arndb.de>, Neil Armstrong <neil.armstrong@linaro.org>, 
-	Marek Szyprowski <m.szyprowski@samsung.com>, Alex Elder <elder@linaro.org>, 
-	Srini Kandagatla <srinivas.kandagatla@linaro.org>, 
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Abel Vesa <abel.vesa@linaro.org>, 
-	Manivannan Sadhasivam <mani@kernel.org>, Lukas Wunner <lukas@wunner.de>, 
-	Dmitry Baryshkov <dmitry.baryshkov@linaro.org>, linux-bluetooth@vger.kernel.org, 
-	netdev@vger.kernel.org, devicetree@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org, 
-	linux-arm-msm@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
-	linux-pci@vger.kernel.org, linux-pm@vger.kernel.org, 
-	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20240327090835.3232629-1-zhangpeng362@huawei.com>
 
-On Wed, Mar 27, 2024 at 7:19=E2=80=AFPM Krzysztof Kozlowski
-<krzysztof.kozlowski@linaro.org> wrote:
->
-> On 25/03/2024 14:16, Bartosz Golaszewski wrote:
-> > +    then:
-> > +      required:
-> > +        - vdd-supply
-> > +        - vddio-supply
-> > +        - vddaon-supply
-> > +        - vdddig-supply
-> > +        - vddrfa1p2-supply
-> > +        - vddrfa1p8-supply
->
-> I assume vddio1p2 is not required on purpose.
->
+On Wed, Mar 27, 2024 at 05:08:35PM +0800, Peng Zhang wrote:
+> From: ZhangPeng <zhangpeng362@huawei.com>
+> 
+> When vma->vm_userfaultfd_ctx.ctx is NULL, vma->vm_flags should have
+> cleared __VM_UFFD_FLAGS. Therefore, there is no need to down_write or
+> clear the flag, which will affect fork performance. Fix this by
+> returning early if octx is NULL in dup_userfaultfd().
+> 
+> By applying this patch we can get a 1.3% performance improvement for
+> lmbench fork_prot. Results are as follows:
+>                    base      early return
+> Process fork+exit: 419.1106  413.4804
+> 
+> Signed-off-by: ZhangPeng <zhangpeng362@huawei.com>
 
-Correct.
+Reviewed-by: Peter Xu <peterx@redhat.com>
 
-Bart
+-- 
+Peter Xu
 
-> Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
->
-> Best regards,
-> Krzysztof
->
 
