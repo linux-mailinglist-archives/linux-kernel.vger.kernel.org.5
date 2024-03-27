@@ -1,54 +1,58 @@
-Return-Path: <linux-kernel+bounces-120819-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-120820-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9FB8888DE40
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 13:14:58 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0615D88DE4E
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 13:15:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1C43E1F2B12A
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 12:14:58 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 980E1B25C6F
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 12:15:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C9EEA136E33;
-	Wed, 27 Mar 2024 12:08:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AB874137917;
+	Wed, 27 Mar 2024 12:08:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ty2EuCwg"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="HorGSGkg"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B99D2137743;
-	Wed, 27 Mar 2024 12:08:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EEF10137759;
+	Wed, 27 Mar 2024 12:08:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711541292; cv=none; b=cm1IGF0PK5e9MquAg46Oc3QLTKnxHoYD/AuJe1CmUR//YGAOkHpWx5xr8QUhRaiurbpKhyLKH/e+p9FgJa9PzAxm9BD2EV1S5cCkPRlPayXS50+lyv8bZpWTNIiACzbbbmGybVYVjuz9jVeCIg18nc+PNj5aMuYCDDXqEWEspZM=
+	t=1711541296; cv=none; b=nrsXRhNnC9qFuAerbuBIuB8j0UlmeAciGbjHqN9QdJUKBOWiZ9Tq+bRJ+GEtcZ/KYBuSB4DnpJPStQj9+QkbOkTjj74CqCb1fS0gvDdocfvU+mOqZ91nETvdG9aIE3+QKVVyBH0BqqGWl5OJKFB9QlczXbxuZWovt0/dXG93U+I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711541292; c=relaxed/simple;
-	bh=rqb+hV38sRL8zt1yXlQkMtyG4OEk8LqWrZzawIlCgrQ=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=PHKoyOjZtJDsfz12FpU+Je+q+fty7wMMCqgMpSI8q+tVKpRKFFwdBlk6uPKl7dAwUFB8iYqzGNZ0TrE0YpA9SW81rkkspWEaNz0GejgMqL/hBFmCusiDaNHnCsmuIGInHZpw9M9m9VObzGYI6ZIcf7445vUsmduqmPWkXnCnTK4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ty2EuCwg; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C9CCEC433B1;
-	Wed, 27 Mar 2024 12:08:11 +0000 (UTC)
+	s=arc-20240116; t=1711541296; c=relaxed/simple;
+	bh=qPO9mbpce+BNGpnGhjrqZJHlmZ2LNJpqP9j1dM+AKJ0=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=VWxWDnxzwjR0Qnq9m1iegAmkpYy9cbPpqIzkRDSLTHojZfLHfMz+66HvKXiy4bPipAzFxcOyNWmUnldPXh1otjpvlH9RGH32uPPWwEzLqDpsB9ekxiRJ6b82DNYjnMgXw6S4v3O1p2zsGD7f8jHZDtzm8QB7m/jR8n8gKVwxrD4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=HorGSGkg; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6C58AC433F1;
+	Wed, 27 Mar 2024 12:08:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711541292;
-	bh=rqb+hV38sRL8zt1yXlQkMtyG4OEk8LqWrZzawIlCgrQ=;
+	s=k20201202; t=1711541295;
+	bh=qPO9mbpce+BNGpnGhjrqZJHlmZ2LNJpqP9j1dM+AKJ0=;
 	h=From:To:Cc:Subject:Date:From;
-	b=ty2EuCwgO4aRHLD28/g6LRk5gJhbaY08rAravBtZoAy9tdJVHdvjPR7R1T27o6vCt
-	 xECpNehGcecTUQK3KiTbH3vc5789grv9zvhJqPdzJGehBZRDwaADdxdKi6T+JjF5Bi
-	 sHnXs9ORi4HSWIMpDeuJqiHPccc1WWZpDJ5jYDL24+5+tgmUVXEEoBaPZsFfwsdYJv
-	 bznnttCdFfD9SGurVbJpWCA9E/GVZB1RektBN5MCBc9uXy7Qa7SKb01Zp8aXzk7p0P
-	 358NAm/z8Fw3yH1Dq9Uh+SfHKO371yWDWPU/YSLBg09jXCBiqtXU11Ts6ohYTAU8MH
-	 n00D2zyMa1NlA==
+	b=HorGSGkgsfvE/QcthLbXaCLXeNe+uGFWfRrEUPHSEFFRO+gO0/hOeDost5D14DDVy
+	 iTNrgRa4JMHSKuVH/P5Ifb0AOXc6xUX6+Fl69lo8fMxcSs7PpjWvUkpnMllQTaFOZp
+	 c1NyKt4Ajnqa+MukAduMRY38tZwW50mhpnvSMJ3yAtoSePRIEnJDuOTogTjoqLlti4
+	 lKKYe01+XwGfZznY5O1lD/RBL8WP5oJ5sU/5hBjot/nFeSUSs4Uo4qyOfw24gagAEG
+	 gIARag5h1iJEw7YwLpp0cPPloPzhP4U4eykYic8QHU1xNM6Lg+4z45SQ9l1KHydi82
+	 blOERHciy9hOA==
 From: Sasha Levin <sashal@kernel.org>
 To: stable@vger.kernel.org,
-	ardb@kernel.org
-Cc: Kevin Loughlin <kevinloughlin@google.com>,
-	Borislav Petkov <bp@alien8.de>,
-	stable@kernel.org,
+	zhikai.zhai@amd.com
+Cc: Mario Limonciello <mario.limonciello@amd.com>,
+	Alex Deucher <alexander.deucher@amd.com>,
+	Wenjing Liu <wenjing.liu@amd.com>,
+	Aurabindo Pillai <aurabindo.pillai@amd.com>,
+	Daniel Wheeler <daniel.wheeler@amd.com>,
+	amd-gfx@lists.freedesktop.org,
+	dri-devel@lists.freedesktop.org,
 	linux-kernel@vger.kernel.org
-Subject: FAILED: Patch "x86/sev: Fix position dependent variable references in startup code" failed to apply to 6.8-stable tree
-Date: Wed, 27 Mar 2024 08:08:10 -0400
-Message-ID: <20240327120810.2825990-1-sashal@kernel.org>
+Subject: FAILED: Patch "drm/amd/display: Add align done check" failed to apply to 6.8-stable tree
+Date: Wed, 27 Mar 2024 08:08:13 -0400
+Message-ID: <20240327120813.2826028-1-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -70,295 +74,56 @@ Sasha
 
 ------------------ original commit in Linus's tree ------------------
 
-From 1c811d403afd73f04bde82b83b24c754011bd0e8 Mon Sep 17 00:00:00 2001
-From: Ard Biesheuvel <ardb@kernel.org>
-Date: Sat, 3 Feb 2024 13:53:06 +0100
-Subject: [PATCH] x86/sev: Fix position dependent variable references in
- startup code
+From 1b5078f01b953a43d6198180ca5b110017315672 Mon Sep 17 00:00:00 2001
+From: Zhikai Zhai <zhikai.zhai@amd.com>
+Date: Mon, 29 Jan 2024 17:02:18 +0800
+Subject: [PATCH] drm/amd/display: Add align done check
 
-The early startup code executes from a 1:1 mapping of memory, which
-differs from the mapping that the code was linked and/or relocated to
-run at. The latter mapping is not active yet at this point, and so
-symbol references that rely on it will fault.
+[WHY]
+We Double-check link status if training successful,
+but miss the lane align status.
 
-Given that the core kernel is built without -fPIC, symbol references are
-typically emitted as absolute, and so any such references occuring in
-the early startup code will therefore crash the kernel.
+[HOW]
+Add the lane align status check
 
-While an attempt was made to work around this for the early SEV/SME
-startup code, by forcing RIP-relative addressing for certain global
-SEV/SME variables via inline assembly (see snp_cpuid_get_table() for
-example), RIP-relative addressing must be pervasively enforced for
-SEV/SME global variables when accessed prior to page table fixups.
-
-__startup_64() already handles this issue for select non-SEV/SME global
-variables using fixup_pointer(), which adjusts the pointer relative to a
-`physaddr` argument. To avoid having to pass around this `physaddr`
-argument across all functions needing to apply pointer fixups, introduce
-a macro RIP_RELATIVE_REF() which generates a RIP-relative reference to
-a given global variable. It is used where necessary to force
-RIP-relative accesses to global variables.
-
-For backporting purposes, this patch makes no attempt at cleaning up
-other occurrences of this pattern, involving either inline asm or
-fixup_pointer(). Those will be addressed later.
-
-  [ bp: Call it "rip_rel_ref" everywhere like other code shortens
-    "rIP-relative reference" and make the asm wrapper __always_inline. ]
-
-Co-developed-by: Kevin Loughlin <kevinloughlin@google.com>
-Signed-off-by: Kevin Loughlin <kevinloughlin@google.com>
-Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
-Signed-off-by: Borislav Petkov (AMD) <bp@alien8.de>
-Cc: <stable@kernel.org>
-Link: https://lore.kernel.org/all/20240130220845.1978329-1-kevinloughlin@google.com
+Cc: Mario Limonciello <mario.limonciello@amd.com>
+Cc: Alex Deucher <alexander.deucher@amd.com>
+Cc: stable@vger.kernel.org
+Reviewed-by: Wenjing Liu <wenjing.liu@amd.com>
+Acked-by: Aurabindo Pillai <aurabindo.pillai@amd.com>
+Signed-off-by: Zhikai Zhai <zhikai.zhai@amd.com>
+Tested-by: Daniel Wheeler <daniel.wheeler@amd.com>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 ---
- arch/x86/coco/core.c               |  7 +------
- arch/x86/include/asm/asm.h         | 14 ++++++++++++++
- arch/x86/include/asm/coco.h        |  8 +++++++-
- arch/x86/include/asm/mem_encrypt.h | 15 +++++++++------
- arch/x86/kernel/sev-shared.c       | 12 ++++++------
- arch/x86/kernel/sev.c              |  4 ++--
- arch/x86/mm/mem_encrypt_identity.c | 27 ++++++++++++---------------
- 7 files changed, 51 insertions(+), 36 deletions(-)
+ .../gpu/drm/amd/display/dc/link/protocols/link_dp_training.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/arch/x86/coco/core.c b/arch/x86/coco/core.c
-index eeec9986570ed..d07be9d05cd03 100644
---- a/arch/x86/coco/core.c
-+++ b/arch/x86/coco/core.c
-@@ -14,7 +14,7 @@
- #include <asm/processor.h>
- 
- enum cc_vendor cc_vendor __ro_after_init = CC_VENDOR_NONE;
--static u64 cc_mask __ro_after_init;
-+u64 cc_mask __ro_after_init;
- 
- static bool noinstr intel_cc_platform_has(enum cc_attr attr)
+diff --git a/drivers/gpu/drm/amd/display/dc/link/protocols/link_dp_training.c b/drivers/gpu/drm/amd/display/dc/link/protocols/link_dp_training.c
+index e06d3c2d89102..e538c67d3ed91 100644
+--- a/drivers/gpu/drm/amd/display/dc/link/protocols/link_dp_training.c
++++ b/drivers/gpu/drm/amd/display/dc/link/protocols/link_dp_training.c
+@@ -517,6 +517,7 @@ enum link_training_result dp_check_link_loss_status(
  {
-@@ -148,8 +148,3 @@ u64 cc_mkdec(u64 val)
- 	}
- }
- EXPORT_SYMBOL_GPL(cc_mkdec);
--
--__init void cc_set_mask(u64 mask)
--{
--	cc_mask = mask;
--}
-diff --git a/arch/x86/include/asm/asm.h b/arch/x86/include/asm/asm.h
-index fbcfec4dc4ccd..ca8eed1d496ab 100644
---- a/arch/x86/include/asm/asm.h
-+++ b/arch/x86/include/asm/asm.h
-@@ -113,6 +113,20 @@
+ 	enum link_training_result status = LINK_TRAINING_SUCCESS;
+ 	union lane_status lane_status;
++	union lane_align_status_updated dpcd_lane_status_updated;
+ 	uint8_t dpcd_buf[6] = {0};
+ 	uint32_t lane;
  
- #endif
+@@ -532,10 +533,12 @@ enum link_training_result dp_check_link_loss_status(
+ 		 * check lanes status
+ 		 */
+ 		lane_status.raw = dp_get_nibble_at_index(&dpcd_buf[2], lane);
++		dpcd_lane_status_updated.raw = dpcd_buf[4];
  
-+#ifndef __ASSEMBLY__
-+#ifndef __pic__
-+static __always_inline __pure void *rip_rel_ptr(void *p)
-+{
-+	asm("leaq %c1(%%rip), %0" : "=r"(p) : "i"(p));
-+
-+	return p;
-+}
-+#define RIP_REL_REF(var)	(*(typeof(&(var)))rip_rel_ptr(&(var)))
-+#else
-+#define RIP_REL_REF(var)	(var)
-+#endif
-+#endif
-+
- /*
-  * Macros to generate condition code outputs from inline assembly,
-  * The output operand must be type "bool".
-diff --git a/arch/x86/include/asm/coco.h b/arch/x86/include/asm/coco.h
-index 6ae2d16a7613b..21940ef8d2904 100644
---- a/arch/x86/include/asm/coco.h
-+++ b/arch/x86/include/asm/coco.h
-@@ -2,6 +2,7 @@
- #ifndef _ASM_X86_COCO_H
- #define _ASM_X86_COCO_H
- 
-+#include <asm/asm.h>
- #include <asm/types.h>
- 
- enum cc_vendor {
-@@ -11,9 +12,14 @@ enum cc_vendor {
- };
- 
- extern enum cc_vendor cc_vendor;
-+extern u64 cc_mask;
- 
- #ifdef CONFIG_ARCH_HAS_CC_PLATFORM
--void cc_set_mask(u64 mask);
-+static inline void cc_set_mask(u64 mask)
-+{
-+	RIP_REL_REF(cc_mask) = mask;
-+}
-+
- u64 cc_mkenc(u64 val);
- u64 cc_mkdec(u64 val);
- #else
-diff --git a/arch/x86/include/asm/mem_encrypt.h b/arch/x86/include/asm/mem_encrypt.h
-index 359ada486fa92..b31eb9fd59544 100644
---- a/arch/x86/include/asm/mem_encrypt.h
-+++ b/arch/x86/include/asm/mem_encrypt.h
-@@ -15,7 +15,8 @@
- #include <linux/init.h>
- #include <linux/cc_platform.h>
- 
--#include <asm/bootparam.h>
-+#include <asm/asm.h>
-+struct boot_params;
- 
- #ifdef CONFIG_X86_MEM_ENCRYPT
- void __init mem_encrypt_init(void);
-@@ -58,6 +59,11 @@ void __init mem_encrypt_free_decrypted_mem(void);
- 
- void __init sev_es_init_vc_handling(void);
- 
-+static inline u64 sme_get_me_mask(void)
-+{
-+	return RIP_REL_REF(sme_me_mask);
-+}
-+
- #define __bss_decrypted __section(".bss..decrypted")
- 
- #else	/* !CONFIG_AMD_MEM_ENCRYPT */
-@@ -89,6 +95,8 @@ early_set_mem_enc_dec_hypercall(unsigned long vaddr, unsigned long size, bool en
- 
- static inline void mem_encrypt_free_decrypted_mem(void) { }
- 
-+static inline u64 sme_get_me_mask(void) { return 0; }
-+
- #define __bss_decrypted
- 
- #endif	/* CONFIG_AMD_MEM_ENCRYPT */
-@@ -106,11 +114,6 @@ void add_encrypt_protection_map(void);
- 
- extern char __start_bss_decrypted[], __end_bss_decrypted[], __start_bss_decrypted_unused[];
- 
--static inline u64 sme_get_me_mask(void)
--{
--	return sme_me_mask;
--}
--
- #endif	/* __ASSEMBLY__ */
- 
- #endif	/* __X86_MEM_ENCRYPT_H__ */
-diff --git a/arch/x86/kernel/sev-shared.c b/arch/x86/kernel/sev-shared.c
-index 5db24d0fc557c..ae79f9505298d 100644
---- a/arch/x86/kernel/sev-shared.c
-+++ b/arch/x86/kernel/sev-shared.c
-@@ -560,9 +560,9 @@ static int snp_cpuid(struct ghcb *ghcb, struct es_em_ctxt *ctxt, struct cpuid_le
- 		leaf->eax = leaf->ebx = leaf->ecx = leaf->edx = 0;
- 
- 		/* Skip post-processing for out-of-range zero leafs. */
--		if (!(leaf->fn <= cpuid_std_range_max ||
--		      (leaf->fn >= 0x40000000 && leaf->fn <= cpuid_hyp_range_max) ||
--		      (leaf->fn >= 0x80000000 && leaf->fn <= cpuid_ext_range_max)))
-+		if (!(leaf->fn <= RIP_REL_REF(cpuid_std_range_max) ||
-+		      (leaf->fn >= 0x40000000 && leaf->fn <= RIP_REL_REF(cpuid_hyp_range_max)) ||
-+		      (leaf->fn >= 0x80000000 && leaf->fn <= RIP_REL_REF(cpuid_ext_range_max))))
- 			return 0;
- 	}
- 
-@@ -1072,11 +1072,11 @@ static void __init setup_cpuid_table(const struct cc_blob_sev_info *cc_info)
- 		const struct snp_cpuid_fn *fn = &cpuid_table->fn[i];
- 
- 		if (fn->eax_in == 0x0)
--			cpuid_std_range_max = fn->eax;
-+			RIP_REL_REF(cpuid_std_range_max) = fn->eax;
- 		else if (fn->eax_in == 0x40000000)
--			cpuid_hyp_range_max = fn->eax;
-+			RIP_REL_REF(cpuid_hyp_range_max) = fn->eax;
- 		else if (fn->eax_in == 0x80000000)
--			cpuid_ext_range_max = fn->eax;
-+			RIP_REL_REF(cpuid_ext_range_max) = fn->eax;
- 	}
- }
- 
-diff --git a/arch/x86/kernel/sev.c b/arch/x86/kernel/sev.c
-index 002af6c30601b..1ef7ae806a01b 100644
---- a/arch/x86/kernel/sev.c
-+++ b/arch/x86/kernel/sev.c
-@@ -748,7 +748,7 @@ void __init early_snp_set_memory_private(unsigned long vaddr, unsigned long padd
- 	 * This eliminates worries about jump tables or checking boot_cpu_data
- 	 * in the cc_platform_has() function.
- 	 */
--	if (!(sev_status & MSR_AMD64_SEV_SNP_ENABLED))
-+	if (!(RIP_REL_REF(sev_status) & MSR_AMD64_SEV_SNP_ENABLED))
- 		return;
- 
- 	 /*
-@@ -767,7 +767,7 @@ void __init early_snp_set_memory_shared(unsigned long vaddr, unsigned long paddr
- 	 * This eliminates worries about jump tables or checking boot_cpu_data
- 	 * in the cc_platform_has() function.
- 	 */
--	if (!(sev_status & MSR_AMD64_SEV_SNP_ENABLED))
-+	if (!(RIP_REL_REF(sev_status) & MSR_AMD64_SEV_SNP_ENABLED))
- 		return;
- 
- 	 /* Ask hypervisor to mark the memory pages shared in the RMP table. */
-diff --git a/arch/x86/mm/mem_encrypt_identity.c b/arch/x86/mm/mem_encrypt_identity.c
-index efe9f217fcf99..0166ab1780ccb 100644
---- a/arch/x86/mm/mem_encrypt_identity.c
-+++ b/arch/x86/mm/mem_encrypt_identity.c
-@@ -304,7 +304,8 @@ void __init sme_encrypt_kernel(struct boot_params *bp)
- 	 * instrumentation or checking boot_cpu_data in the cc_platform_has()
- 	 * function.
- 	 */
--	if (!sme_get_me_mask() || sev_status & MSR_AMD64_SEV_ENABLED)
-+	if (!sme_get_me_mask() ||
-+	    RIP_REL_REF(sev_status) & MSR_AMD64_SEV_ENABLED)
- 		return;
- 
- 	/*
-@@ -541,11 +542,11 @@ void __init sme_enable(struct boot_params *bp)
- 	me_mask = 1UL << (ebx & 0x3f);
- 
- 	/* Check the SEV MSR whether SEV or SME is enabled */
--	sev_status   = __rdmsr(MSR_AMD64_SEV);
--	feature_mask = (sev_status & MSR_AMD64_SEV_ENABLED) ? AMD_SEV_BIT : AMD_SME_BIT;
-+	RIP_REL_REF(sev_status) = msr = __rdmsr(MSR_AMD64_SEV);
-+	feature_mask = (msr & MSR_AMD64_SEV_ENABLED) ? AMD_SEV_BIT : AMD_SME_BIT;
- 
- 	/* The SEV-SNP CC blob should never be present unless SEV-SNP is enabled. */
--	if (snp && !(sev_status & MSR_AMD64_SEV_SNP_ENABLED))
-+	if (snp && !(msr & MSR_AMD64_SEV_SNP_ENABLED))
- 		snp_abort();
- 
- 	/* Check if memory encryption is enabled */
-@@ -571,7 +572,6 @@ void __init sme_enable(struct boot_params *bp)
- 			return;
- 	} else {
- 		/* SEV state cannot be controlled by a command line option */
--		sme_me_mask = me_mask;
- 		goto out;
- 	}
- 
-@@ -590,16 +590,13 @@ void __init sme_enable(struct boot_params *bp)
- 	cmdline_ptr = (const char *)((u64)bp->hdr.cmd_line_ptr |
- 				     ((u64)bp->ext_cmd_line_ptr << 32));
- 
--	if (cmdline_find_option(cmdline_ptr, cmdline_arg, buffer, sizeof(buffer)) < 0)
--		goto out;
--
--	if (!strncmp(buffer, cmdline_on, sizeof(buffer)))
--		sme_me_mask = me_mask;
-+	if (cmdline_find_option(cmdline_ptr, cmdline_arg, buffer, sizeof(buffer)) < 0 ||
-+	    strncmp(buffer, cmdline_on, sizeof(buffer)))
-+		return;
- 
- out:
--	if (sme_me_mask) {
--		physical_mask &= ~sme_me_mask;
--		cc_vendor = CC_VENDOR_AMD;
--		cc_set_mask(sme_me_mask);
--	}
-+	RIP_REL_REF(sme_me_mask) = me_mask;
-+	physical_mask &= ~me_mask;
-+	cc_vendor = CC_VENDOR_AMD;
-+	cc_set_mask(me_mask);
- }
+ 		if (!lane_status.bits.CHANNEL_EQ_DONE_0 ||
+ 			!lane_status.bits.CR_DONE_0 ||
+-			!lane_status.bits.SYMBOL_LOCKED_0) {
++			!lane_status.bits.SYMBOL_LOCKED_0 ||
++			!dp_is_interlane_aligned(dpcd_lane_status_updated)) {
+ 			/* if one of the channel equalization, clock
+ 			 * recovery or symbol lock is dropped
+ 			 * consider it as (link has been
 -- 
 2.43.0
 
