@@ -1,127 +1,92 @@
-Return-Path: <linux-kernel+bounces-121394-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-121436-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4FD6188E762
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 15:56:01 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 64FC888E7DE
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 16:07:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 07D14301FD6
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 14:56:00 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E208B1F326BE
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 15:07:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C533B15DBDD;
-	Wed, 27 Mar 2024 13:53:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 75B1112F5B9;
+	Wed, 27 Mar 2024 14:27:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=proton.me header.i=@proton.me header.b="grTOPeG+"
-Received: from mail-4316.protonmail.ch (mail-4316.protonmail.ch [185.70.43.16])
+	dkim=pass (1024-bit key) header.d=cybernetics.com header.i=@cybernetics.com header.b="J26IBcLP"
+Received: from mail.cybernetics.com (mail.cybernetics.com [72.215.153.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6AA3F15DBC5;
-	Wed, 27 Mar 2024 13:53:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.70.43.16
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4AB46148FE2
+	for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 14:27:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=72.215.153.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711547634; cv=none; b=RIJM9NUBEQKFqGJjm/cu/Z41wWTxN+RYUeGuFHzBxSXaC1i4nhhcIbGj176GEYFbbabMxJ25qL0x9xcH3rD0PW340ZTJyxRcRXSkH5jsLSmJcYuiWCTUtUQdS7TzQ3rNiUo6kqXl2Sx3qEvh/U6SllR4DnAUm2b+GQvGBJORVeY=
+	t=1711549632; cv=none; b=aSaxPCDwL/cWFtLF5cwLRf6tcUNIAEGeJcb/Ar1dJSK1K8CxFf2P3yzqRk2irbPLC63lnytgJjnB/j6fGy2LVJ5bb5IebQZgEVVP9VFGUKZaOaXE1NeOUub4O57GYmrwqI4oorLKB1hJYrknHC32i4F1xOJNh8uV/pdbS/eBSnk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711547634; c=relaxed/simple;
-	bh=PYKcrln81x8z3Qo4vIUuoUg+0Pyz3VOd7xpWYi5tU+M=;
-	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=GY+pBBBoG1BJXCBfItFf/6uJGrBobDpIByYAKEsypbErresS+Nz7SEh/RvLDcy0r53qBt8oFjymUqkNS1386xIcQ7zpgCzBI7EdU74cEAjb9rI0ZzcdTZABnU1ULgwRddQ8+80mlEUky0qVJnOI47shTQaJ0o/GxlweWrBzxpSY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=proton.me; spf=pass smtp.mailfrom=proton.me; dkim=pass (2048-bit key) header.d=proton.me header.i=@proton.me header.b=grTOPeG+; arc=none smtp.client-ip=185.70.43.16
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=proton.me
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=proton.me
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=proton.me;
-	s=qk3erv7bpnda7fik5nay6uxary.protonmail; t=1711547630; x=1711806830;
-	bh=/KrGQPoa4XBEU6DDwx50UKASQ/ZJLt8f1jEe0AMQoto=;
-	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
-	 Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
-	 Message-ID:BIMI-Selector;
-	b=grTOPeG+dT+t1VUrin8lKlmqwqEh2CM2cMGUNXFKyoPDxAuUvQXnRIELS5cWaW5ZL
-	 7xzwXPbq553XTsmrbIqVbQ1wasodBvZvUdIwflXHcOEJl/SgTarU0Gi1m1c/UHpyO1
-	 Pf2BZ9DJcDM5Mqr5KUNbWstdoGhZaBfqP8Nnb2AcD1z3C7wFjreX5Wc+eih5aMtNXE
-	 eSqAjNsaZDvmIKI/8vzJCGhgwbox1nm2C3YPvNE9EUM2kbBvUBYu6cvFu20gvFOlSB
-	 souYPudMxHxIe/gvfGegN0IJKEyADxSdXoYb3w4fx9i82mzwCnMLzCKLbLk6koEoqx
-	 OIbQsdAgyb9sA==
-Date: Wed, 27 Mar 2024 13:53:33 +0000
-To: Wedson Almeida Filho <wedsonaf@gmail.com>
-From: Benno Lossin <benno.lossin@proton.me>
-Cc: rust-for-linux@vger.kernel.org, Miguel Ojeda <ojeda@kernel.org>, Alex Gaynor <alex.gaynor@gmail.com>, Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>, =?utf-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, Andreas Hindborg <a.hindborg@samsung.com>, Alice Ryhl <aliceryhl@google.com>, linux-kernel@vger.kernel.org, Wedson Almeida Filho <walmeida@microsoft.com>
-Subject: Re: [PATCH 2/2] samples: rust: add in-place initialisation sample
-Message-ID: <ffuYV4VQCfRoM7Fws9Z7TOVXS_dJp89q9--Sv9fipzWpOUqkjad5EfXsZPcBZ8ciGzrPo-U-2rEy5CUOitXNp4e4hAJHwZ0uH_u3zDxr0zE=@proton.me>
-In-Reply-To: <20240327032337.188938-3-wedsonaf@gmail.com>
-References: <20240327032337.188938-1-wedsonaf@gmail.com> <20240327032337.188938-3-wedsonaf@gmail.com>
-Feedback-ID: 71780778:user:proton
+	s=arc-20240116; t=1711549632; c=relaxed/simple;
+	bh=x6PxAa5ZVZWjP6xCYO2J744lJgOyCSGeKhHH3KX3svQ=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=VG/Vcgu43zw0yxMe13PlEenHHxNRksbiMJ0EMAl0HgWYAiv2Z899DU9ioLG07mIpRzMVwbwm9vHk457lou0ta+ymzOfKyddQIOQF0Y08WJJrihajQpBidICQDOSLHW6Nc+WOSm+nL+h9Rdo3h+7fQwPrDlkidlgZlVzU4sAyWUU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cybernetics.com; spf=pass smtp.mailfrom=cybernetics.com; dkim=pass (1024-bit key) header.d=cybernetics.com header.i=@cybernetics.com header.b=J26IBcLP; arc=none smtp.client-ip=72.215.153.18
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cybernetics.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cybernetics.com
+X-ASG-Debug-ID: 1711547641-1cf4391b1c11fc0001-xx1T2L
+Received: from cybernetics.com ([10.10.4.126]) by mail.cybernetics.com with ESMTP id JgvhKPqniD8w60fx; Wed, 27 Mar 2024 09:54:24 -0400 (EDT)
+X-Barracuda-Envelope-From: tonyb@cybernetics.com
+X-Barracuda-RBL-Trusted-Forwarder: 10.10.4.126
+X-ASG-Whitelist: Client
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=cybernetics.com; s=mail;
+	bh=x6PxAa5ZVZWjP6xCYO2J744lJgOyCSGeKhHH3KX3svQ=;
+	h=Content-Transfer-Encoding:Content-Type:In-Reply-To:From:Content-Language:
+	References:Cc:To:Subject:MIME-Version:Date:Message-ID; b=J26IBcLPfnIsTxmoBkyo
+	iOb3zgZp/wymAwuWuQ8k4KWEn42h/uEuJ1IgFu2IALsQWGNDCD8xcuOfrueizMEwoFSzu2rp+YjVE
+	thSU7E6XWG9IhsOjYaJvDg+0IQluGugak86DefUGL0CCYETo9IB36vdT9R26csfYcVHZio7suQ=
+Received: from [10.157.2.224] (HELO [192.168.200.1])
+  by cybernetics.com (CommuniGate Pro SMTP 7.1.1)
+  with ESMTPS id 13149216; Wed, 27 Mar 2024 09:54:01 -0400
+Message-ID: <45ea3c6a-18d3-469a-b368-d657b739edd2@cybernetics.com>
+X-Barracuda-RBL-Trusted-Forwarder: 10.157.2.224
+Date: Wed, 27 Mar 2024 09:54:01 -0400
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: FAILED: Patch "block: Fix page refcounts for unaligned buffers in
+ __bio_release_pages()" failed to apply to 6.1-stable tree
+To: Sasha Levin <sashal@kernel.org>, stable@vger.kernel.org
+X-ASG-Orig-Subj: Re: FAILED: Patch "block: Fix page refcounts for unaligned buffers in
+ __bio_release_pages()" failed to apply to 6.1-stable tree
+Cc: Greg Edwards <gedwards@ddn.com>, Jens Axboe <axboe@kernel.dk>,
+ linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20240327121329.2830355-1-sashal@kernel.org>
+Content-Language: en-US
+From: Tony Battersby <tonyb@cybernetics.com>
+In-Reply-To: <20240327121329.2830355-1-sashal@kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Barracuda-Connect: UNKNOWN[10.10.4.126]
+X-Barracuda-Start-Time: 1711547664
+X-Barracuda-URL: https://10.10.4.122:443/cgi-mod/mark.cgi
+X-Virus-Scanned: by bsmtpd at cybernetics.com
+X-Barracuda-Scan-Msg-Size: 497
+X-Barracuda-BRTS-Status: 1
 
-On 27.03.24 04:23, Wedson Almeida Filho wrote:
-> diff --git a/samples/rust/rust_inplace.rs b/samples/rust/rust_inplace.rs
-> new file mode 100644
-> index 000000000000..ba8d051cac56
-> --- /dev/null
-> +++ b/samples/rust/rust_inplace.rs
-> @@ -0,0 +1,42 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +
-> +//! Rust minimal in-place sample.
-> +
-> +use kernel::prelude::*;
-> +
-> +module! {
-> +    type: RustInPlace,
-> +    name: "rust_inplace",
-> +    author: "Rust for Linux Contributors",
-> +    description: "Rust minimal in-place sample",
-> +    license: "GPL",
-> +}
-> +
-> +#[pin_data(PinnedDrop)]
-> +struct RustInPlace {
-> +    numbers: Vec<i32>,
-> +}
-> +
-> +impl kernel::InPlaceModule for RustInPlace {
-> +    fn init(_module: &'static ThisModule) -> impl PinInit<Self, Error> {
-> +        pr_info!("Rust minimal sample (init)\n");
+On 3/27/24 08:13, Sasha Levin wrote:
+> The patch below does not apply to the 6.1-stable tree.
+> If someone wants it applied there, or to any other stable or longterm
+> tree, then please email the backport, including the original git commit
+> id to <stable@vger.kernel.org>.
+>
+> Thanks,
+> Sasha
 
-This text needs updating.
+I already sent a backport for 6.1 on March 13.  5.15 and older kernels
+do not need the patch.
 
-> +        pr_info!("Am I built-in? {}\n", !cfg!(MODULE));
-> +        try_pin_init!(Self {
-> +            numbers: {
-> +                let mut numbers =3D Vec::new();
-> +                numbers.push(72, GFP_KERNEL)?;
-> +                numbers.push(108, GFP_KERNEL)?;
-> +                numbers.push(200, GFP_KERNEL)?;
-> +                numbers
-> +            },
-> +        })
+https://lore.kernel.org/stable/a764cc80-5b7c-4186-a66d-5957de5beee4@cybernetics.com/
 
-I think it might be useful to also have a field that needs pin-init, eg
-a `Mutex` or similar. What about placing the `Vec` inside of a mutex?
-
---=20
-Cheers,
-Benno
-
-> +    }
-> +}
-> +
-> +#[pinned_drop]
-> +impl PinnedDrop for RustInPlace {
-> +    fn drop(self: Pin<&mut Self>) {
-> +        pr_info!("My numbers are {:?}\n", self.numbers);
-> +        pr_info!("Rust minimal inplace sample (exit)\n");
-> +    }
-> +}
-> --
-> 2.34.1
->=20
-
+Tony
 
