@@ -1,97 +1,135 @@
-Return-Path: <linux-kernel+bounces-120667-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-120668-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id E737088DB43
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 11:30:36 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6139388DB45
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 11:31:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 23E4A1C25F3A
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 10:30:36 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 17B971F2A110
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 10:31:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 868684F1FC;
-	Wed, 27 Mar 2024 10:30:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AA2E91A702;
+	Wed, 27 Mar 2024 10:31:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="sdUJk/6X"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=vrull.eu header.i=@vrull.eu header.b="rX574iRW"
+Received: from mail-ej1-f41.google.com (mail-ej1-f41.google.com [209.85.218.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B53994DA00;
-	Wed, 27 Mar 2024 10:30:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4F0CB3DABF0
+	for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 10:31:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711535429; cv=none; b=APSvtf8H4Ynq1stNYzLR/dO3Es6W9BcXudDMzMDBRgjT0iZNqfuMKCyiAwnMVzVRA77LEAt1vdYkM+MzEEvRZJP3FgJyYPwRF01qX2h8UdeFc81v+f8hXg6Q2WzMKueqx8p7mpm+tpPm1xr6fnmIy8aV97Oja0zSVbqRBj1aIKs=
+	t=1711535497; cv=none; b=YB/9tteI/womq0Te3/mQFYdQvZITAxCzuxNuX+SiT5oCTedSVYf0sin9LaN9Sq6rZk0qzPWiUBlnu8Eg+NSzaoKKNTdojJ3AEB7znkSDyLhs25wrFqTG7TVQIl0U4txFDzuIckwtCdKsjoQHjk9/Ks4ucKFNF5pvh7WetfDA19s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711535429; c=relaxed/simple;
-	bh=bzSjKLAxq1T4vYKTzzoKb+f7Ma4B9HNjOz2UfsLO85k=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=K9xbojhY+B9IrD4b2H/8oXWLMQQtuRztHOB/uvXE6lfw34KUC2v+t0NQ4RlXux5YEhoKl9x/UaNMccCyL6PZRErKu2RRkYPl5D6EcjCIcLjOq8ytM1GhQgt8EAC6+zt5q0lqs6tInGt2uewb1qFrkurgraL95HcCYjQzPJzayGo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=sdUJk/6X; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 19C93C43390;
-	Wed, 27 Mar 2024 10:30:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711535429;
-	bh=bzSjKLAxq1T4vYKTzzoKb+f7Ma4B9HNjOz2UfsLO85k=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=sdUJk/6Xu+P3/aylX33dpTbS42FVBksPVx8qVuArBVcXtn+xfjzh9arFShRkyVqq8
-	 /IwNTwcpnrpPx9FzsUue4BE4Q4MMAT6Oqlr0lDUeApDBuuPFD545w0MlHDT9EMp+gz
-	 nd+8oZg0xMN+WDV4ReJpJpl9ic9I6bosWWIq5y9kgeBo7g518ZHsqrjNAj/Mc+nIXP
-	 HB5i6RZfLeJ27r0dgckaZV/bc3Pt2XeIDxe25NhIESztAjEx3NvEi3xZZ3wpGreFzF
-	 D49rtGnNUWM4viGV2r6G2E28D1KTAi3ewk9wr3qSSc/4g875R6vY9D3P4F7igtizx6
-	 +Gogjeu5ZP65Q==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 089E4D2D0EE;
-	Wed, 27 Mar 2024 10:30:29 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=arc-20240116; t=1711535497; c=relaxed/simple;
+	bh=xtpVMt94GrSHCZiPADIb9HDF3vKnlwc2ZyBzsAFK3ac=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=Njic9C8Iv9m6HWkojgBHjR1oyw8FzoTkHtM3rZHvm0awjbMkJEBtCex7as8boX9yNXaDdaR2qnEKaDDXoKLjZEa83ijje8fH+5dx66s8nNrEd297Kl0uoUiK3Y8D8k8ukAivyjvdonjonspLTmqHsr7Z1dFKyAKzH32zqKG4pgE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=vrull.eu; spf=pass smtp.mailfrom=vrull.eu; dkim=pass (2048-bit key) header.d=vrull.eu header.i=@vrull.eu header.b=rX574iRW; arc=none smtp.client-ip=209.85.218.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=vrull.eu
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=vrull.eu
+Received: by mail-ej1-f41.google.com with SMTP id a640c23a62f3a-a4a393b699fso115762566b.0
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 03:31:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=vrull.eu; s=google; t=1711535493; x=1712140293; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=KabXKG7QzV07xEnqAZlFM9GzBMwE9AX8NiZo1iI6OCQ=;
+        b=rX574iRWsEV6iwDYtDnLgHge+4BJYVnKv0f5NxGQka7ULtYboOvdpM1UhYvsVPrcHj
+         sPRbkrjA6zcomUTkEsn1hnW4HobcV/FULzhezxzvfy5bmp5DgMvquKz7f7a2qW50hs9j
+         oPmxCK0GNPi1rY0DsRD8Q0jsUxfDdlHn4zAKl6fS+/DKBrAkMKWTNGScXa2yXkS6mFWk
+         cC9tT/xaRdaMrEPLO12HvA6LW6nK2idOprp/2nxBHgIqwVOb5EAHFjij/C7TOqwyUlCQ
+         Cey5f6LjHu3Hvz8bveUgCMwjlWKJoOZqTxXf6FvVBrrfQCFFHNwlu+x2IxSwcXwonozN
+         ozBg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711535493; x=1712140293;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=KabXKG7QzV07xEnqAZlFM9GzBMwE9AX8NiZo1iI6OCQ=;
+        b=Ds2qF0R6S3AQZD5mCiOBv1m0x/yxbbhO8cV59KdsnQRFI+yuSYj8tjuIA8QY/cT5gb
+         gdi149nC8PKm1TIuMMdmljqb/TP/XfXUgsplqCVsgLaygVq/l5Co+fWjF/7ZwsDjbx8N
+         KTDnEEMXljLBBRXhw6+csGoO8GHh2soN9nXDY8tqVsjqhy/NKMCqsEPZQs6H9ECq8qp/
+         MyEwtjTUYTXujqL2WZieT7YCEWdX+JVjlpTzMVUUPr9YXGemAzG5/ru8pN/Ge30VqApV
+         C2gPL8sxFCZRs9mdz2mOdH+OVBrsIVmFPD/zV3EnTPpMttED5rKjqely+QX/EUet0eE6
+         hq/w==
+X-Forwarded-Encrypted: i=1; AJvYcCXKJ5CpzoUmC+1myVo8euVmLwnZ+Cd96XktWpRZp+Mz8Y7VuNl6g4Z2lLK3tGR4MTtEeoYUF9bY91ouZDnuth1zvEyctwF5e0JBUfiC
+X-Gm-Message-State: AOJu0Yw/jXCNXaCV/KKTSlClKLZbvv8U9PuG6Boekk3M3jC8GYZUkH7F
+	wTsDRi4lXfwZuSp5wcQRg9QFlJXbX8/fzJzhsfFnOD8CGjsTBBBreDx8em9hrgQ=
+X-Google-Smtp-Source: AGHT+IF70lDcd+7mVT/V5sDOo51cv+JWRqcD4/cE8DYPzR0glhB/3uBYMYV3tk23Xj1H5yHPw4Xtaw==
+X-Received: by 2002:a17:907:31cd:b0:a45:f9c5:3024 with SMTP id xf13-20020a17090731cd00b00a45f9c53024mr4156607ejb.11.1711535493584;
+        Wed, 27 Mar 2024 03:31:33 -0700 (PDT)
+Received: from antares.fritz.box (62-178-148-172.cable.dynamic.surfer.at. [62.178.148.172])
+        by smtp.gmail.com with ESMTPSA id z15-20020a170906270f00b00a46b8cd9b51sm5294078ejc.185.2024.03.27.03.31.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 27 Mar 2024 03:31:32 -0700 (PDT)
+From: =?UTF-8?q?Christoph=20M=C3=BCllner?= <christoph.muellner@vrull.eu>
+To: linux-riscv@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Paul Walmsley <paul.walmsley@sifive.com>,
+	Albert Ou <aou@eecs.berkeley.edu>,
+	Philipp Tomsich <philipp.tomsich@vrull.eu>,
+	=?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn@kernel.org>,
+	Daniel Henrique Barboza <dbarboza@ventanamicro.com>,
+	Heiko Stuebner <heiko@sntech.de>,
+	Cooper Qu <cooper.qu@linux.alibaba.com>,
+	Zhiwei Liu <zhiwei_liu@linux.alibaba.com>,
+	Huang Tao <eric.huang@linux.alibaba.com>,
+	Alistair Francis <alistair.francis@wdc.com>,
+	Andrew Jones <ajones@ventanamicro.com>,
+	Conor Dooley <conor@kernel.org>
+Cc: =?UTF-8?q?Christoph=20M=C3=BCllner?= <christoph.muellner@vrull.eu>
+Subject: [PATCH 0/2] RISC-V: Test th.mxstatus.MAEE bit before enabling MAEE
+Date: Wed, 27 Mar 2024 11:31:28 +0100
+Message-ID: <20240327103130.3651950-1-christoph.muellner@vrull.eu>
+X-Mailer: git-send-email 2.44.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH] net: wan: framer: Add missing static inline qualifiers
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <171153542903.20945.16861388246431708832.git-patchwork-notify@kernel.org>
-Date: Wed, 27 Mar 2024 10:30:29 +0000
-References: <20240325082505.29385-1-herve.codina@bootlin.com>
-In-Reply-To: <20240325082505.29385-1-herve.codina@bootlin.com>
-To: Herve Codina <herve.codina@bootlin.com>
-Cc: davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
- pabeni@redhat.com, linus.walleij@linaro.org, christophe.leroy@csgroup.eu,
- netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
- andriy.shevchenko@linux.intel.com, thomas.petazzoni@bootlin.com,
- lkp@intel.com, stable@vger.kernel.org
 
-Hello:
+Currently, the Linux kernel suffers from a boot regression when running
+on the c906 QEMU emulation. Details have been reported here by Björn Töpel:
+  https://lists.gnu.org/archive/html/qemu-devel/2024-01/msg04766.html
 
-This patch was applied to netdev/net.git (main)
-by David S. Miller <davem@davemloft.net>:
+The main issue is, that Linux enables MAEE for CPUs that have a T-Head
+mvendorid but QEMU maintainers don't want to emulate a CPU that uses
+reserved bits in PTEs. See also the following discussion for more
+context:
+  https://lists.gnu.org/archive/html/qemu-devel/2024-02/msg00775.html
 
-On Mon, 25 Mar 2024 09:25:05 +0100 you wrote:
-> Compilation with CONFIG_GENERIC_FRAMER disabled lead to the following
-> warnings:
->   framer.h:184:16: warning: no previous prototype for function 'framer_get' [-Wmissing-prototypes]
->   184 | struct framer *framer_get(struct device *dev, const char *con_id)
->   framer.h:184:1: note: declare 'static' if the function is not intended to be used outside of this translation unit
->   184 | struct framer *framer_get(struct device *dev, const char *con_id)
->   framer.h:189:6: warning: no previous prototype for function 'framer_put' [-Wmissing-prototypes]
->   189 | void framer_put(struct device *dev, struct framer *framer)
->   framer.h:189:1: note: declare 'static' if the function is not intended to be used outside of this translation unit
->   189 | void framer_put(struct device *dev, struct framer *framer)
-> 
-> [...]
+This series renames "T-Head PBMT" to "MAEE" and only enables it if
+the th.mxstatus.MAEE bit is set.
 
-Here is the summary with links:
-  - net: wan: framer: Add missing static inline qualifiers
-    https://git.kernel.org/netdev/net/c/ea2c09283b44
+Since th.mxstatus is only accessible in M-mode, this patch depends on
+the following OpenSBI series:
+  http://lists.infradead.org/pipermail/opensbi/2024-March/006718.html
 
-You are awesome, thank you!
+The th.mxstatus CSR is documented here:
+  https://github.com/T-head-Semi/thead-extension-spec/pull/45
+
+The QEMU patch to emulate th.mxstatus with MAEE not set is here:
+  https://lists.gnu.org/archive/html/qemu-devel/2024-03/msg06368.html
+
+After applying all referenced patchsets, this patchset allows to
+successfully boot a C906 QEMU system emulation ("-cpu thead-c906").
+
+Christoph Müllner (2):
+  riscv: thead: Rename T-Head PBMT to MAEE
+  riscv: T-Head: Test availability bit before enabling MAEE errata
+
+ arch/riscv/Kconfig.errata            |  8 ++++----
+ arch/riscv/errata/thead/errata.c     | 22 ++++++++++++++--------
+ arch/riscv/include/asm/errata_list.h | 20 ++++++++++----------
+ 3 files changed, 28 insertions(+), 22 deletions(-)
+
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
+2.44.0
 
 
