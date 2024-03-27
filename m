@@ -1,58 +1,56 @@
-Return-Path: <linux-kernel+bounces-121261-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-121262-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 86C7488E47A
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 15:03:12 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3775388E509
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 15:17:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 392402A480B
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 14:03:11 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5FAC1B2BC94
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 14:03:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CE1541B530F;
-	Wed, 27 Mar 2024 12:28:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D0F521B5DA5;
+	Wed, 27 Mar 2024 12:28:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qea+K034"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="DxYuM/uO"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0FE22142902;
-	Wed, 27 Mar 2024 12:28:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 01ED712FF90;
+	Wed, 27 Mar 2024 12:28:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711542489; cv=none; b=SgmDjyzs1lyk8I3OBGyRTK3Jf1Dy/JHJjChMxfzteBCz5M80NiPVhvFqSt+KQYf/onRmCsGKU/v1vymKVj28N+AKrpX/r8wXjCGRo+AmqlCNVy+PNja7XOtAV7DAAoakTdyKk90SIzC2e198Xhcjc2tzRUnJGiqw2FqHNhJgJ3w=
+	t=1711542492; cv=none; b=QObnJ5FVZluR0ZE+ZagpbkHJKx8QUr7Bz+Fb2U73sqCHJFW2f3ULM1l1qFp5jlMyr4DrdVL5fZOuhyiXa5BbNa6rvMWUMfq8/BFNdeCVEGKAYk1T27uFdM3h9QgEjb2i/wUpWUhsDRNpWxt9Y7cHS64IrYk1uxWb34hhLsivNYQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711542489; c=relaxed/simple;
-	bh=8rHkXgsNXtISc0+6xFhktGiHJ0cO+8sY0nyEZ1IjZdQ=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=BsTDS3rf+esnLVbtO+I+cEOQ1RP/ssI27VxkYZ+GEhLKvAZd9Wm6U6Cdidy9TFQII6PlR9b5C6ZN3IqNCs5PaLEEMkgZQSjSKwvLlcqWI9YSr6hjj10JpSKkNW2lzNllWCfJjrDGR2/EFthTTrAeoWuuMJSdzJDVBwkuMuVLic8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qea+K034; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C04F2C433C7;
-	Wed, 27 Mar 2024 12:28:07 +0000 (UTC)
+	s=arc-20240116; t=1711542492; c=relaxed/simple;
+	bh=KjUPHk5TMnLbi7J1LA4Mk+gyMYXkhcoH0vmVhoCTkvM=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=NvvRBIux3dUASFKqSbY6Ae6zA3EC7F9vzkO45dF0xSyWjW1k4LOVRpiC5LWmOHqHVAk4L1ZLO/f0paeXkywn+RSXBC3+NLkdAQmuZOCKdRS2q1jZE0dbq1JbDvcpPdhDPtpRU97c035xtxV2bDKAnJXVxhGyY6BHKoMe5IQy59Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=DxYuM/uO; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0103EC43390;
+	Wed, 27 Mar 2024 12:28:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711542488;
-	bh=8rHkXgsNXtISc0+6xFhktGiHJ0cO+8sY0nyEZ1IjZdQ=;
+	s=k20201202; t=1711542491;
+	bh=KjUPHk5TMnLbi7J1LA4Mk+gyMYXkhcoH0vmVhoCTkvM=;
 	h=From:To:Cc:Subject:Date:From;
-	b=qea+K034Ofey84Kuwbni/D+h6Q+wE5pDtxiI736++iHFxUAqLpQgPsrQun5hy642C
-	 J5tEvFL0364z7lUXUvouYjSUOSuempDNk0p/w/ymAxuoKus3OGQ0fcMQjrrCOj6mDM
-	 9IQqwHR22PBL5eTxYgY9C9Lh2a0o6U4IeNGyqw6LkNiw/JpkHuR4Bvr5doGgSsy3ZP
-	 JQezNHomK/gTBu/FrVsdrErGAxPWh0Zf4uhZpgTJhoCU+ZsZe5I6OfVx0WDI5d77Va
-	 0VNIfakXRX5aLN45oYBi0iUtlY71edqDv1jU4RHYqonOnYLSs0UY+aY4UTbVrtsK0C
-	 kJpobKxdaGvxA==
+	b=DxYuM/uOovaaxBchzLw5KHVKxDO4BQ44m85iuFPSCyQQtlVQykYwG4LE68p/Ry1cI
+	 2nFJfXmbaqqPA4TxV2ieLtRVgNFNV0hfl3nvdnwe/9XZiXHtupZZVikfzJVpOq+T47
+	 gQn+pQ8KPdNiGLDLOrwJSA3mMny20LQ5vnPPJFwQ9oLRkwhmLVPiMmfosvyPKQHXCC
+	 PbhrvfbRaNvpOV7+/lqG/RfRXLUDhTQzm3heipJTHxjTsS8aoGI+b/s+u92rXRHFqc
+	 RW4VsDyiZr7leW7HdUTwAni8vkmOS+V1KEiDVFucOnG4d8rGuerBsYOYWlMNxeQP7f
+	 LXRhbTh2ztWJA==
 From: Sasha Levin <sashal@kernel.org>
 To: stable@vger.kernel.org,
-	jani.nikula@intel.com
-Cc: Inki Dae <inki.dae@samsung.com>,
-	Seung-Woo Kim <sw0312.kim@samsung.com>,
-	Kyungmin Park <kyungmin.park@samsung.com>,
-	Thomas Zimmermann <tzimmermann@suse.de>,
-	dri-devel@lists.freedesktop.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-samsung-soc@vger.kernel.org,
+	sprasad@microsoft.com
+Cc: =?UTF-8?q?Jan=20=C4=8Cerm=C3=A1k?= <sairon@sairon.cz>,
+	Paulo Alcantara <pc@manguebit.com>,
+	Steve French <stfrench@microsoft.com>,
+	linux-cifs@vger.kernel.org,
+	samba-technical@lists.samba.org,
 	linux-kernel@vger.kernel.org
-Subject: FAILED: Patch "drm/exynos: do not return negative values from .get_modes()" failed to apply to 4.19-stable tree
-Date: Wed, 27 Mar 2024 08:28:06 -0400
-Message-ID: <20240327122806.2842495-1-sashal@kernel.org>
+Subject: FAILED: Patch "cifs: make sure server interfaces are requested only for SMB3+" failed to apply to 4.19-stable tree
+Date: Wed, 27 Mar 2024 08:28:09 -0400
+Message-ID: <20240327122810.2842532-1-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -62,6 +60,7 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-Patchwork-Hint: ignore
 X-stable: review
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
 The patch below does not apply to the 4.19-stable tree.
@@ -74,65 +73,114 @@ Sasha
 
 ------------------ original commit in Linus's tree ------------------
 
-From 13d5b040363c7ec0ac29c2de9cf661a24a8aa531 Mon Sep 17 00:00:00 2001
-From: Jani Nikula <jani.nikula@intel.com>
-Date: Fri, 8 Mar 2024 18:03:41 +0200
-Subject: [PATCH] drm/exynos: do not return negative values from .get_modes()
+From 13c0a74747cb7fdadf58c5d3a7d52cfca2d51736 Mon Sep 17 00:00:00 2001
+From: Shyam Prasad N <sprasad@microsoft.com>
+Date: Wed, 13 Mar 2024 10:40:41 +0000
+Subject: [PATCH] cifs: make sure server interfaces are requested only for
+ SMB3+
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-The .get_modes() hooks aren't supposed to return negative error
-codes. Return 0 for no modes, whatever the reason.
+Some code paths for querying server interfaces make a false
+assumption that it will only get called for SMB3+. Since this
+function now can get called from a generic code paths, the correct
+thing to do is to have specific handler for this functionality
+per SMB dialect, and call this handler.
 
-Cc: Inki Dae <inki.dae@samsung.com>
-Cc: Seung-Woo Kim <sw0312.kim@samsung.com>
-Cc: Kyungmin Park <kyungmin.park@samsung.com>
+This change adds such a handler and implements this handler only
+for SMB 3.0 and 3.1.1.
+
 Cc: stable@vger.kernel.org
-Acked-by: Thomas Zimmermann <tzimmermann@suse.de>
-Link: https://patchwork.freedesktop.org/patch/msgid/d8665f620d9c252aa7d5a4811ff6b16e773903a2.1709913674.git.jani.nikula@intel.com
-Signed-off-by: Jani Nikula <jani.nikula@intel.com>
+Cc: Jan Čermák <sairon@sairon.cz>
+Reported-by: Paulo Alcantara <pc@manguebit.com>
+Signed-off-by: Shyam Prasad N <sprasad@microsoft.com>
+Signed-off-by: Steve French <stfrench@microsoft.com>
 ---
- drivers/gpu/drm/exynos/exynos_drm_vidi.c | 4 ++--
- drivers/gpu/drm/exynos/exynos_hdmi.c     | 4 ++--
- 2 files changed, 4 insertions(+), 4 deletions(-)
+ fs/smb/client/cifsglob.h | 3 +++
+ fs/smb/client/connect.c  | 6 +++++-
+ fs/smb/client/smb2ops.c  | 2 ++
+ fs/smb/client/smb2pdu.c  | 5 +++--
+ 4 files changed, 13 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/gpu/drm/exynos/exynos_drm_vidi.c b/drivers/gpu/drm/exynos/exynos_drm_vidi.c
-index 00382f28748ac..f5bbba9ad2252 100644
---- a/drivers/gpu/drm/exynos/exynos_drm_vidi.c
-+++ b/drivers/gpu/drm/exynos/exynos_drm_vidi.c
-@@ -316,14 +316,14 @@ static int vidi_get_modes(struct drm_connector *connector)
+diff --git a/fs/smb/client/cifsglob.h b/fs/smb/client/cifsglob.h
+index 8be62ed053a25..3da625d532359 100644
+--- a/fs/smb/client/cifsglob.h
++++ b/fs/smb/client/cifsglob.h
+@@ -355,6 +355,9 @@ struct smb_version_operations {
+ 	/* informational QFS call */
+ 	void (*qfs_tcon)(const unsigned int, struct cifs_tcon *,
+ 			 struct cifs_sb_info *);
++	/* query for server interfaces */
++	int (*query_server_interfaces)(const unsigned int, struct cifs_tcon *,
++				       bool);
+ 	/* check if a path is accessible or not */
+ 	int (*is_path_accessible)(const unsigned int, struct cifs_tcon *,
+ 				  struct cifs_sb_info *, const char *);
+diff --git a/fs/smb/client/connect.c b/fs/smb/client/connect.c
+index 86ae578904a26..4cbb79418e506 100644
+--- a/fs/smb/client/connect.c
++++ b/fs/smb/client/connect.c
+@@ -123,12 +123,16 @@ static void smb2_query_server_interfaces(struct work_struct *work)
+ 	struct cifs_tcon *tcon = container_of(work,
+ 					struct cifs_tcon,
+ 					query_interfaces.work);
++	struct TCP_Server_Info *server = tcon->ses->server;
+ 
+ 	/*
+ 	 * query server network interfaces, in case they change
  	 */
- 	if (!ctx->raw_edid) {
- 		DRM_DEV_DEBUG_KMS(ctx->dev, "raw_edid is null.\n");
--		return -EFAULT;
-+		return 0;
- 	}
++	if (!server->ops->query_server_interfaces)
++		return;
++
+ 	xid = get_xid();
+-	rc = SMB3_request_interfaces(xid, tcon, false);
++	rc = server->ops->query_server_interfaces(xid, tcon, false);
+ 	free_xid(xid);
  
- 	edid_len = (1 + ctx->raw_edid->extensions) * EDID_LENGTH;
- 	edid = kmemdup(ctx->raw_edid, edid_len, GFP_KERNEL);
- 	if (!edid) {
- 		DRM_DEV_DEBUG_KMS(ctx->dev, "failed to allocate edid\n");
--		return -ENOMEM;
-+		return 0;
- 	}
+ 	if (rc) {
+diff --git a/fs/smb/client/smb2ops.c b/fs/smb/client/smb2ops.c
+index 6ee22d0dbc006..2ed456948f34c 100644
+--- a/fs/smb/client/smb2ops.c
++++ b/fs/smb/client/smb2ops.c
+@@ -5290,6 +5290,7 @@ struct smb_version_operations smb30_operations = {
+ 	.tree_connect = SMB2_tcon,
+ 	.tree_disconnect = SMB2_tdis,
+ 	.qfs_tcon = smb3_qfs_tcon,
++	.query_server_interfaces = SMB3_request_interfaces,
+ 	.is_path_accessible = smb2_is_path_accessible,
+ 	.can_echo = smb2_can_echo,
+ 	.echo = SMB2_echo,
+@@ -5405,6 +5406,7 @@ struct smb_version_operations smb311_operations = {
+ 	.tree_connect = SMB2_tcon,
+ 	.tree_disconnect = SMB2_tdis,
+ 	.qfs_tcon = smb3_qfs_tcon,
++	.query_server_interfaces = SMB3_request_interfaces,
+ 	.is_path_accessible = smb2_is_path_accessible,
+ 	.can_echo = smb2_can_echo,
+ 	.echo = SMB2_echo,
+diff --git a/fs/smb/client/smb2pdu.c b/fs/smb/client/smb2pdu.c
+index e5e6b14f8cae3..3ea688558e6c9 100644
+--- a/fs/smb/client/smb2pdu.c
++++ b/fs/smb/client/smb2pdu.c
+@@ -409,14 +409,15 @@ smb2_reconnect(__le16 smb2_command, struct cifs_tcon *tcon,
+ 	spin_unlock(&ses->ses_lock);
  
- 	drm_connector_update_edid_property(connector, edid);
-diff --git a/drivers/gpu/drm/exynos/exynos_hdmi.c b/drivers/gpu/drm/exynos/exynos_hdmi.c
-index 43bed6cbaaea0..b1d02dec3774d 100644
---- a/drivers/gpu/drm/exynos/exynos_hdmi.c
-+++ b/drivers/gpu/drm/exynos/exynos_hdmi.c
-@@ -887,11 +887,11 @@ static int hdmi_get_modes(struct drm_connector *connector)
- 	int ret;
+ 	if (!rc &&
+-	    (server->capabilities & SMB2_GLOBAL_CAP_MULTI_CHANNEL)) {
++	    (server->capabilities & SMB2_GLOBAL_CAP_MULTI_CHANNEL) &&
++	    server->ops->query_server_interfaces) {
+ 		mutex_unlock(&ses->session_mutex);
  
- 	if (!hdata->ddc_adpt)
--		return -ENODEV;
-+		return 0;
+ 		/*
+ 		 * query server network interfaces, in case they change
+ 		 */
+ 		xid = get_xid();
+-		rc = SMB3_request_interfaces(xid, tcon, false);
++		rc = server->ops->query_server_interfaces(xid, tcon, false);
+ 		free_xid(xid);
  
- 	edid = drm_get_edid(connector, hdata->ddc_adpt);
- 	if (!edid)
--		return -ENODEV;
-+		return 0;
- 
- 	hdata->dvi_mode = !connector->display_info.is_hdmi;
- 	DRM_DEV_DEBUG_KMS(hdata->dev, "%s : width[%d] x height[%d]\n",
+ 		if (rc == -EOPNOTSUPP && ses->chan_count > 1) {
 -- 
 2.43.0
 
