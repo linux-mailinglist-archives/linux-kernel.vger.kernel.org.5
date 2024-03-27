@@ -1,224 +1,164 @@
-Return-Path: <linux-kernel+bounces-120204-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-120202-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5293788D466
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 03:07:08 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id A825688D45E
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 03:06:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 768521C244C6
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 02:07:07 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 46D551F3B497
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 02:06:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B48E320323;
-	Wed, 27 Mar 2024 02:06:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 92F28208BB;
+	Wed, 27 Mar 2024 02:05:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="FlR9Uo3h"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="ioBubraX"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.12])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3583821345
-	for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 02:06:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.8
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7FA132033A
+	for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 02:05:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.12
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711505211; cv=none; b=ETy8gLg2IyKNOtK4CYU9GfFLNypHbuP/6TATmbHdwb5zlm6zRI1RpUusHF6KSk1uz4sa4yYgOxuFPzgM5vlj+ypigvFgxPCYovcWqcAEIE7CCXO5kamuVtrVUbVrEeMgJnyzbQrsS1n/lXTmRvuEjB/Z1XqcQGARGXSOtj0mHZo=
+	t=1711505116; cv=none; b=oxSD19C4LiSaJcBwR4heOZvSNoF/eMYCgyP00EBO9YYn2XXIR3/ooZ+cVx6Vc3wKTX7ysC5uIuPNMl9s9J2KaqcEPcEuVzsC/NLIrvU5yjIzkJC74rxmQcvjrun6fzaUsdkdX+C/WmNhsCYAM6a6CuLLoGe6oOxyEpSNc1nnE84=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711505211; c=relaxed/simple;
-	bh=3gnnr3PK6ah6ZPYmN8IAeDIVM2VGJfLz3txD1AY2Uiw=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=OkP5FNQXHmvCCZh1IT1jYQLK/QLhsa6NowtdnD9baxHl57/y+pPyzqKIhoqubb+kTBeuA9jCb/tfmOPSUHZaY/Uen1pPUljTzkv7P2IVjlRcrvbc6dGViEZG6K2//7SjjIwm8Cr4iQOoQglihM0vl2TQILRc+EA/0B3WDBFyM9Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=FlR9Uo3h; arc=none smtp.client-ip=192.198.163.8
+	s=arc-20240116; t=1711505116; c=relaxed/simple;
+	bh=KNmTlJTRGy6Bojm7LfbS2Dlqybz3qxOHveKiVBO4lDA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=JiNNf0bLDHmYz4u+9Hc49LGXQJh4Hzjt4YzBrvSef+t47bU810fzoBnfsR2JmsnF1ijnkdysJ9OzORhyeWTNq5zAX/GS3jRirhwfmaXXpqmhl3IOsRrdV1WGxhj8Oa00jDzQZ/OhpOOIn2/77Do8prNFYeCkOjADQDcVTv5VFL0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=ioBubraX; arc=none smtp.client-ip=198.175.65.12
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1711505210; x=1743041210;
-  h=from:to:cc:subject:in-reply-to:references:date:
-   message-id:mime-version;
-  bh=3gnnr3PK6ah6ZPYmN8IAeDIVM2VGJfLz3txD1AY2Uiw=;
-  b=FlR9Uo3hRCbr72zeOOXbX5UsibIodcohjg9Hk5jv6NdtXyFAcggCkyF/
-   eFvFweMtrKfMmxh0V4SF1HzknI7ISUWe7Q89IaNqpkxygvabmCHPkce7A
-   ubSVXpXyrHCftxNZneUf3oT0O1OQk6Aa4NmfgopxsJ7oYRVbwas6Gb5Ky
-   2E8rHluZ3Fks9UxqhGuNqP4b9hrVK3YGtHTb7lRAPYh0YsjwKjZXHVANc
-   moBmA4oaG0Xv9H9SokVwXab9oHG89Cjytj9DhtTSfNttIqVDq/vB5VRtn
-   TQlboCvePUwjEpybm4yU/XPziKcNPujRtib/TjbLRRnRndjscA6cfvuwJ
-   A==;
-X-CSE-ConnectionGUID: iSjTBqPsQkOjhtsI/IUOAw==
-X-CSE-MsgGUID: ua6QyllJQy+wPkhEYN9EMg==
-X-IronPort-AV: E=McAfee;i="6600,9927,11025"; a="24077170"
+  t=1711505115; x=1743041115;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=KNmTlJTRGy6Bojm7LfbS2Dlqybz3qxOHveKiVBO4lDA=;
+  b=ioBubraXYpthJKrHlxBjpAHQUuZYlFocartKlaslOPKGrF4ShY1VsDBL
+   ufl+Djis+izmY/OVQzd1ZNb4VmjS1ty4RWyNLrSqpRYGQaQ7QbBDfQ5tV
+   TSUMwptEJoCaVPI8L3/aZstAEuKWE8JfoFfK3hPa8KCWFJ/ORnIItQnN7
+   /4POZtUxD7k4Ru7EMYUSvOFsCm5UQfWFG5UOZyAOG2HXGPIsZGKSwkzWy
+   Tp4+Ffcwc3FMmz5a5L/0TPWX2vI8H4z32Xc3i96QcBwK44m81VrJZpUpI
+   /YMMl4tBvhADEJoW5kCjkbWZFBpWobgotPFijL/d8PkozdiMF+vlX6je/
+   Q==;
+X-CSE-ConnectionGUID: AJ7n7UlgTz6O6xqEWfOmmg==
+X-CSE-MsgGUID: dJlYVp7WS5y4/UXYM+ExRQ==
+X-IronPort-AV: E=McAfee;i="6600,9927,11025"; a="18017529"
 X-IronPort-AV: E=Sophos;i="6.07,157,1708416000"; 
-   d="scan'208";a="24077170"
-Received: from orviesa008.jf.intel.com ([10.64.159.148])
-  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Mar 2024 19:06:49 -0700
+   d="scan'208";a="18017529"
+Received: from fmviesa002.fm.intel.com ([10.60.135.142])
+  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Mar 2024 19:05:13 -0700
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.07,157,1708416000"; 
-   d="scan'208";a="16797573"
-Received: from yhuang6-desk2.sh.intel.com (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.238.208.55])
-  by orviesa008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Mar 2024 19:06:46 -0700
-From: "Huang, Ying" <ying.huang@intel.com>
-To: Baolin Wang <baolin.wang@linux.alibaba.com>
-Cc: akpm@linux-foundation.org,  <david@redhat.com>,
-  <mgorman@techsingularity.net>,  <wangkefeng.wang@huawei.com>,
-  <jhubbard@nvidia.com>,  <21cnbao@gmail.com>,  <ryan.roberts@arm.com>,
-  <linux-mm@kvack.org>,  <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 2/2] mm: support multi-size THP numa balancing
-In-Reply-To: <dee4268f1797f31c6bb6bdab30f8ad3df9053d3d.1711453317.git.baolin.wang@linux.alibaba.com>
-	(Baolin Wang's message of "Tue, 26 Mar 2024 19:51:25 +0800")
-References: <cover.1711453317.git.baolin.wang@linux.alibaba.com>
-	<dee4268f1797f31c6bb6bdab30f8ad3df9053d3d.1711453317.git.baolin.wang@linux.alibaba.com>
-Date: Wed, 27 Mar 2024 10:04:52 +0800
-Message-ID: <87cyrgo2ez.fsf@yhuang6-desk2.ccr.corp.intel.com>
-User-Agent: Gnus/5.13 (Gnus v5.13)
+   d="scan'208";a="39245072"
+Received: from lkp-server01.sh.intel.com (HELO be39aa325d23) ([10.239.97.150])
+  by fmviesa002.fm.intel.com with ESMTP; 26 Mar 2024 19:05:09 -0700
+Received: from kbuild by be39aa325d23 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rpIf5-0000do-2S;
+	Wed, 27 Mar 2024 02:05:07 +0000
+Date: Wed, 27 Mar 2024 10:05:04 +0800
+From: kernel test robot <lkp@intel.com>
+To: Ryan Roberts <ryan.roberts@arm.com>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Will Deacon <will@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
+	Ard Biesheuvel <ardb@kernel.org>,
+	David Hildenbrand <david@redhat.com>,
+	Donald Dutile <ddutile@redhat.com>,
+	Eric Chanudet <echanude@redhat.com>
+Cc: oe-kbuild-all@lists.linux.dev, Ryan Roberts <ryan.roberts@arm.com>,
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1 2/3] arm64: mm: Don't remap pgtables for allocate vs
+ populate
+Message-ID: <202403270906.zFGZ2FXl-lkp@intel.com>
+References: <20240326101448.3453626-3-ryan.roberts@arm.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ascii
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240326101448.3453626-3-ryan.roberts@arm.com>
 
-Baolin Wang <baolin.wang@linux.alibaba.com> writes:
+Hi Ryan,
 
-> Now the anonymous page allocation already supports multi-size THP (mTHP),
-> but the numa balancing still prohibits mTHP migration even though it is an
-> exclusive mapping, which is unreasonable.
->
-> Allow scanning mTHP:
-> Commit 859d4adc3415 ("mm: numa: do not trap faults on shared data section
-> pages") skips shared CoW pages' NUMA page migration to avoid shared data
-> segment migration. In addition, commit 80d47f5de5e3 ("mm: don't try to
-> NUMA-migrate COW pages that have other uses") change to use page_count()
-> to avoid GUP pages migration, that will also skip the mTHP numa scaning.
-> Theoretically, we can use folio_maybe_dma_pinned() to detect the GUP
-> issue, although there is still a GUP race, the issue seems to have been
-> resolved by commit 80d47f5de5e3. Meanwhile, use the folio_likely_mapped_shared()
-> to skip shared CoW pages though this is not a precise sharers count. To
-> check if the folio is shared, ideally we want to make sure every page is
-> mapped to the same process, but doing that seems expensive and using
-> the estimated mapcount seems can work when running autonuma benchmark.
+kernel test robot noticed the following build errors:
 
-Because now we can deal with shared mTHP, it appears even possible to
-remove folio_likely_mapped_shared() check?
+[auto build test ERROR on linus/master]
+[also build test ERROR on v6.9-rc1 next-20240326]
+[cannot apply to arm64/for-next/core arm-perf/for-next/perf arm/for-next arm/fixes kvmarm/next soc/for-next]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-> Allow migrating mTHP:
-> As mentioned in the previous thread[1], large folios (including THP) are
-> more susceptible to false sharing issues among threads than 4K base page,
-> leading to pages ping-pong back and forth during numa balancing, which is
-> currently not easy to resolve. Therefore, as a start to support mTHP numa
-> balancing, we can follow the PMD mapped THP's strategy, that means we can
-> reuse the 2-stage filter in should_numa_migrate_memory() to check if the
-> mTHP is being heavily contended among threads (through checking the CPU id
-> and pid of the last access) to avoid false sharing at some degree. Thus,
-> we can restore all PTE maps upon the first hint page fault of a large folio
-> to follow the PMD mapped THP's strategy. In the future, we can continue to
-> optimize the NUMA balancing algorithm to avoid the false sharing issue with
-> large folios as much as possible.
->
-> Performance data:
-> Machine environment: 2 nodes, 128 cores Intel(R) Xeon(R) Platinum
-> Base: 2024-03-25 mm-unstable branch
-> Enable mTHP to run autonuma-benchmark
->
-> mTHP:16K
-> Base				Patched
-> numa01				numa01
-> 224.70				137.23
-> numa01_THREAD_ALLOC		numa01_THREAD_ALLOC
-> 118.05				50.57
-> numa02				numa02
-> 13.45				9.30
-> numa02_SMT			numa02_SMT
-> 14.80				7.43
->
-> mTHP:64K
-> Base				Patched
-> numa01				numa01
-> 216.15				135.20
-> numa01_THREAD_ALLOC		numa01_THREAD_ALLOC
-> 115.35				46.93
-> numa02				numa02
-> 13.24				9.24
-> numa02_SMT			numa02_SMT
-> 14.67				7.31
->
-> mTHP:128K
-> Base				Patched
-> numa01				numa01
-> 205.13				140.41
-> numa01_THREAD_ALLOC		numa01_THREAD_ALLOC
-> 112.93				44.78
-> numa02				numa02
-> 13.16				9.19
-> numa02_SMT			numa02_SMT
-> 14.81				7.39
->
-> [1] https://lore.kernel.org/all/20231117100745.fnpijbk4xgmals3k@techsingularity.net/
-> Signed-off-by: Baolin Wang <baolin.wang@linux.alibaba.com>
-> ---
->  mm/memory.c   | 56 +++++++++++++++++++++++++++++++++++++++++++--------
->  mm/mprotect.c |  3 ++-
->  2 files changed, 50 insertions(+), 9 deletions(-)
->
-> diff --git a/mm/memory.c b/mm/memory.c
-> index c30fb4b95e15..36191a9c799c 100644
-> --- a/mm/memory.c
-> +++ b/mm/memory.c
-> @@ -5068,16 +5068,55 @@ static void numa_rebuild_single_mapping(struct vm_fault *vmf, struct vm_area_str
->  	update_mmu_cache_range(vmf, vma, vmf->address, vmf->pte, 1);
->  }
->  
-> +static void numa_rebuild_large_mapping(struct vm_fault *vmf, struct vm_area_struct *vma,
-> +				       struct folio *folio, pte_t fault_pte, bool ignore_writable)
-> +{
-> +	int nr = pte_pfn(fault_pte) - folio_pfn(folio);
-> +	unsigned long start = max(vmf->address - nr * PAGE_SIZE, vma->vm_start);
-> +	unsigned long end = min(start + folio_nr_pages(folio) * PAGE_SIZE, vma->vm_end);
+url:    https://github.com/intel-lab-lkp/linux/commits/Ryan-Roberts/arm64-mm-Don-t-remap-pgtables-per-cont-pte-pmd-block/20240326-181754
+base:   linus/master
+patch link:    https://lore.kernel.org/r/20240326101448.3453626-3-ryan.roberts%40arm.com
+patch subject: [PATCH v1 2/3] arm64: mm: Don't remap pgtables for allocate vs populate
+config: x86_64-rhel-8.3 (https://download.01.org/0day-ci/archive/20240327/202403270906.zFGZ2FXl-lkp@intel.com/config)
+compiler: gcc-12 (Ubuntu 12.3.0-9ubuntu2) 12.3.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240327/202403270906.zFGZ2FXl-lkp@intel.com/reproduce)
 
-If start is in the middle of folio, it's possible for end to go beyond
-the end of folio.  So, should be something like below?
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202403270906.zFGZ2FXl-lkp@intel.com/
 
-	unsigned long end = min(vmf->address + (folio_nr_pages(folio) - nr) * PAGE_SIZE, vma->vm_end);
+All errors (new ones prefixed by >>):
 
-> +	pte_t *start_ptep = vmf->pte - (vmf->address - start) / PAGE_SIZE;
-> +	bool pte_write_upgrade = vma_wants_manual_pte_write_upgrade(vma);
-> +	unsigned long addr;
-> +
-> +	/* Restore all PTEs' mapping of the large folio */
-> +	for (addr = start; addr != end; start_ptep++, addr += PAGE_SIZE) {
-> +		pte_t pte, old_pte;
-> +		pte_t ptent = ptep_get(start_ptep);
-> +		bool writable = false;
-> +
-> +		if (!pte_present(ptent) || !pte_protnone(ptent))
-> +			continue;
-> +
-> +		if (vm_normal_folio(vma, addr, ptent) != folio)
-> +			continue;
-> +
-> +		if (!ignore_writable) {
-> +			writable = pte_write(pte);
-> +			if (!writable && pte_write_upgrade &&
-> +			    can_change_pte_writable(vma, addr, pte))
-> +				writable = true;
-> +		}
-> +
-> +		old_pte = ptep_modify_prot_start(vma, addr, start_ptep);
-> +		pte = pte_modify(old_pte, vma->vm_page_prot);
-> +		pte = pte_mkyoung(pte);
-> +		if (writable)
-> +			pte = pte_mkwrite(pte, vma);
-> +		ptep_modify_prot_commit(vma, addr, start_ptep, old_pte, pte);
-> +		update_mmu_cache_range(vmf, vma, addr, start_ptep, 1);
+   In file included from include/linux/mm.h:29,
+                    from include/linux/memcontrol.h:21,
+                    from include/linux/swap.h:9,
+                    from include/linux/suspend.h:5,
+                    from arch/x86/kernel/asm-offsets.c:14:
+>> include/linux/pgtable.h:87:29: error: redefinition of 'p4d_index'
+      87 | static inline unsigned long p4d_index(unsigned long address)
+         |                             ^~~~~~~~~
+   In file included from arch/x86/include/asm/tlbflush.h:16,
+                    from arch/x86/include/asm/uaccess.h:17,
+                    from include/linux/uaccess.h:11,
+                    from include/linux/sched/task.h:13,
+                    from include/linux/sched/signal.h:9,
+                    from include/linux/rcuwait.h:6,
+                    from include/linux/percpu-rwsem.h:7,
+                    from include/linux/fs.h:33,
+                    from include/linux/compat.h:17,
+                    from arch/x86/include/asm/ia32.h:7,
+                    from arch/x86/include/asm/elf.h:10,
+                    from include/linux/elf.h:6,
+                    from include/linux/module.h:19,
+                    from include/crypto/aria.h:22,
+                    from arch/x86/kernel/asm-offsets.c:10:
+   arch/x86/include/asm/pgtable.h:1134:29: note: previous definition of 'p4d_index' with type 'long unsigned int(long unsigned int)'
+    1134 | static inline unsigned long p4d_index(unsigned long address)
+         |                             ^~~~~~~~~
+   make[3]: *** [scripts/Makefile.build:117: arch/x86/kernel/asm-offsets.s] Error 1
+   make[3]: Target 'prepare' not remade because of errors.
+   make[2]: *** [Makefile:1197: prepare0] Error 2
+   make[2]: Target 'prepare' not remade because of errors.
+   make[1]: *** [Makefile:240: __sub-make] Error 2
+   make[1]: Target 'prepare' not remade because of errors.
+   make: *** [Makefile:240: __sub-make] Error 2
+   make: Target 'prepare' not remade because of errors.
 
-Can this be batched for the whole folio?
 
-> +	}
-> +}
-> +
+vim +/p4d_index +87 include/linux/pgtable.h
 
-[snip]
+    85	
+    86	#ifndef p4d_index
+  > 87	static inline unsigned long p4d_index(unsigned long address)
+    88	{
+    89		return (address >> P4D_SHIFT) & (PTRS_PER_P4D - 1);
+    90	}
+    91	#define p4d_index p4d_index
+    92	#endif
+    93	
 
---
-Best Regards,
-Huang, Ying
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
