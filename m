@@ -1,222 +1,110 @@
-Return-Path: <linux-kernel+bounces-120575-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-120581-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id A65BD88D99E
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 09:54:47 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D5CDB88D9A8
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 09:56:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0FC37B21C6E
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 08:54:45 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EBC22B245E9
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 08:56:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 27FE245BE9;
-	Wed, 27 Mar 2024 08:53:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Tl2/c4cz"
-Received: from mail-pl1-f179.google.com (mail-pl1-f179.google.com [209.85.214.179])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E6FF38F83;
+	Wed, 27 Mar 2024 08:54:38 +0000 (UTC)
+Received: from SHSQR01.spreadtrum.com (unknown [222.66.158.135])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C899D40849;
-	Wed, 27 Mar 2024 08:53:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 09C2F4DA11
+	for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 08:54:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=222.66.158.135
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711529635; cv=none; b=R4UgTZ3lcwzS6Bw5s7wwcXdpJCtUNTx4CFgyyZrJZLEbC4Wqv43BSvcZg9hBC1Qbmzu3nz6nA0e61AOZ4dLLaPSUdKiRTFd2ky/3VlqHhMCDHc2Y8qo8w2GbNY5taNzYxF8unWhVJRQk/GIhpS632o0G6GZKWE5OizOfOAD7cLM=
+	t=1711529678; cv=none; b=uxMykUqZtN2kyrJD4MXHYJEdH765Qk2ahWnH6E6lLM9WDv8eW8zrnYeYdQmYTl/j3iAvJeVXo73I9koZVOig3AXJ6bTelhj1Uz6TfDu3rUToh7sCYKBEHX7NVrA/kNICc9lnSnMMck79bN+M+/mrpW+bEKn5uoW5i+JB9Ote6OM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711529635; c=relaxed/simple;
-	bh=mEMpsvf/Lu9Dlvkkk/Qka3rYdQiTY2A48dn0KD6WLwI=;
-	h=From:To:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=d1fvikrLkQLJ/WbuoHi5raTQvhiVnjPdbH7Pzb+bSCx9LPTwzL8qMMZr8Ma/NDyUUOFw1pVcpCOzqSESDAkij6RputY7iIF/4o2vksqzLVWsmTMZkTCFYZI6Zb9w0WgXfNHKMLzgQ34DgV7MIMVk+8AetzV4qiPqzH5SUVHWLIQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Tl2/c4cz; arc=none smtp.client-ip=209.85.214.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f179.google.com with SMTP id d9443c01a7336-1e0f0398553so14861615ad.3;
-        Wed, 27 Mar 2024 01:53:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711529633; x=1712134433; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:to:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=QZEbTSOw9EjuXuuOhzMwhOK0HhVADXjRmiePaMQf/CY=;
-        b=Tl2/c4czTvOoLPfdZIzFxIQ1bi11G3C7p7fv+Vv7AnXVjXr5opULz/A1e8g3TDnoV5
-         K1iooePHEwRugKpFkwsdRn+PN1qgnK9voZxlXZd32q2+iV0p6wOJrVQYux+q1jqff1qx
-         /qL36//STvQKPjnmdoVHtDRwoItqX8fkZdKtyEIORxMH8CqQy0B/XfKOvkT6XKtsM22A
-         e/5m85dv2ICzDoYaqBrWVgPrFcvZKIx4+DYogb19cZZrUIOedgmNdgnVE+h1NGwybxFs
-         oF4HLgoLggsUBky4QT+Lv4MXfMRHzQLJicNrkbt2LlvBQrUkV+jZYXVIRd50jKTG3t+0
-         rVDg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711529633; x=1712134433;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=QZEbTSOw9EjuXuuOhzMwhOK0HhVADXjRmiePaMQf/CY=;
-        b=d0Xai2EF0QjKCC8osRwVQLjKkjHrQ4+l/0qjxXLIPKBGhNkXvk7S6apqhk+kalVnPt
-         V8z0FH15Hw1QG1SBJORut/sPhyNHXlDsbMnIN2iVzVETjsw4AHUTepo52AkOK4IL3cmh
-         f+Qu/cG/eaDhZIkD67J1HvM5NMzCZkQ820kiDOitosBocpMrCTL+z/0PSQ3/A6U4fHO8
-         uAh6s5Ge99ph+EZIQFJNSXSWpo0S/Ewt6oYSwSG3fzGeMw//MoPP49Bl+AEThMsGo37J
-         qaezi1tACqfPokvwEjdPg4PGpIFQPdAl8WIjC0nHlse5q5QLs76KN6n1vvukwaa1NGlL
-         U/CQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWLGubckVlm+g6C/OXvEDXMgRSmV7BbhcUpU4jCSfNkaJUfynAy51ubMT4LNRDVYBGllrqUdddhH/QxrzkQbcvGsWm2IovWNF/M79LZWQzni1uJ3ftw6apLID077No53Pef1s226do1gdG/5kR2oDeDdBDEh3zO/RGo6ctZwc0EE3Gs0M1NWqek
-X-Gm-Message-State: AOJu0YxVR+z1nWWgMHTSp7E2fEmaFOpBv298V6Cx0oulXfDWKHA2VTmk
-	hIQ5rULOAMRDpvIm0+QGJNxUH8kBM825GTNwQMHrcp05meqmU5bh
-X-Google-Smtp-Source: AGHT+IFlw6rOiGuhTJ4vNythc7vqhRqSyiMQo9PeosfY33Phf1K75pTfq+88EaBWSjn9tJXb1tX3pQ==
-X-Received: by 2002:a17:902:c94a:b0:1e0:acb1:7977 with SMTP id i10-20020a170902c94a00b001e0acb17977mr785333pla.49.1711529633261;
-        Wed, 27 Mar 2024 01:53:53 -0700 (PDT)
-Received: from peter-bmc.dhcpserver.bu9bmc.local (2001-b400-e383-3566-013c-5a87-9abc-381e.emome-ip6.hinet.net. [2001:b400:e383:3566:13c:5a87:9abc:381e])
-        by smtp.gmail.com with ESMTPSA id h12-20020a170902eecc00b001e0501d3058sm8356848plb.63.2024.03.27.01.53.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 27 Mar 2024 01:53:52 -0700 (PDT)
-From: Peter Yin <peteryin.openbmc@gmail.com>
-To: patrick@stwcx.xyz,
-	Wim Van Sebroeck <wim@linux-watchdog.org>,
-	Guenter Roeck <linux@roeck-us.net>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Joel Stanley <joel@jms.id.au>,
-	Andrew Jeffery <andrew@codeconstruct.com.au>,
-	linux-watchdog@vger.kernel.org,
-	devicetree@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-aspeed@lists.ozlabs.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH v4 4/4] drivers: watchdog: ast2500 and ast2600 support bootstatus
-Date: Wed, 27 Mar 2024 16:53:30 +0800
-Message-Id: <20240327085330.3281697-5-peteryin.openbmc@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20240327085330.3281697-1-peteryin.openbmc@gmail.com>
-References: <20240327085330.3281697-1-peteryin.openbmc@gmail.com>
+	s=arc-20240116; t=1711529678; c=relaxed/simple;
+	bh=8qeOhLgDp4B6NSdcFUTzjGxs/APrSCobmWoiOp9La28=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=Gsx7MKawyPs1PtQ+nX37c9H0YuHJ0bv4kDFhjZ7ilIZwCAAVGywzmhlCyq2m/i1PMj271QeupD66BTjTMSSZeQSbTQwHYHbA6G7dapuGDrXfwIxelEAfAo+0fxyZeBK7rwqEUJw75++wuSmMo89l9VSdwFTnNjRaEpVoPr3YL/A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=unisoc.com; spf=pass smtp.mailfrom=unisoc.com; arc=none smtp.client-ip=222.66.158.135
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=unisoc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=unisoc.com
+Received: from dlp.unisoc.com ([10.29.3.86])
+	by SHSQR01.spreadtrum.com with ESMTP id 42R8rtpk037904;
+	Wed, 27 Mar 2024 16:53:55 +0800 (+08)
+	(envelope-from Zhiguo.Niu@unisoc.com)
+Received: from SHDLP.spreadtrum.com (bjmbx02.spreadtrum.com [10.0.64.8])
+	by dlp.unisoc.com (SkyGuard) with ESMTPS id 4V4L5S56V1z2Lt7c3;
+	Wed, 27 Mar 2024 16:52:12 +0800 (CST)
+Received: from bj08434pcu.spreadtrum.com (10.0.73.87) by
+ BJMBX02.spreadtrum.com (10.0.64.8) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.23; Wed, 27 Mar 2024 16:53:53 +0800
+From: Zhiguo Niu <zhiguo.niu@unisoc.com>
+To: <jaegeuk@kernel.org>, <chao@kernel.org>
+CC: <linux-f2fs-devel@lists.sourceforge.net>, <linux-kernel@vger.kernel.org>,
+        <niuzhiguo84@gmail.com>, <zhiguo.niu@unisoc.com>, <ke.wang@unisoc.com>,
+        <hongyu.jin@unisoc.com>
+Subject: [PATCH V3] f2fs: fix to adjust appropirate defragment pg_end
+Date: Wed, 27 Mar 2024 16:53:40 +0800
+Message-ID: <1711529620-17576-1-git-send-email-zhiguo.niu@unisoc.com>
+X-Mailer: git-send-email 1.9.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: SHCAS03.spreadtrum.com (10.0.1.207) To
+ BJMBX02.spreadtrum.com (10.0.64.8)
+X-MAIL:SHSQR01.spreadtrum.com 42R8rtpk037904
 
-Add WDIOF_EXTERN1 and WDIOF_CARDRESET bootstatus in ast2600
+A length that exceeds the real size of the inode may be
+specified from user, although these out-of-range areas
+are not mapped, but they still need to be check in
+while loop, which is unnecessary.
 
-Regarding the AST2600 specification, the WDTn Timeout Status Register
-(WDT10) has bit 1 reserved. Bit 1 of the status register indicates
-on ast2500 if the boot was from the second boot source.
-It does not indicate that the most recent reset was triggered by
-the watchdog. The code should just be changed to set WDIOF_CARDRESET
-if bit 0 of the status register is set.
-
-Include SCU register to veriy WDIOF_EXTERN1 in ast2600 SCU74 or
-ast2500 SCU3C when bit1 is set.
-
-Signed-off-by: Peter Yin <peteryin.openbmc@gmail.com>
+Signed-off-by: Zhiguo Niu <zhiguo.niu@unisoc.com>
 ---
- drivers/watchdog/aspeed_wdt.c | 60 +++++++++++++++++++++++++----------
- 1 file changed, 44 insertions(+), 16 deletions(-)
+v3: adjust code positions according to Chao's suggestions
+v2: check i_size within inode lock according to Chao's suggestions
+---
+---
+ fs/f2fs/file.c | 12 +++++++-----
+ 1 file changed, 7 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/watchdog/aspeed_wdt.c b/drivers/watchdog/aspeed_wdt.c
-index b4773a6aaf8c..29e9afdee619 100644
---- a/drivers/watchdog/aspeed_wdt.c
-+++ b/drivers/watchdog/aspeed_wdt.c
-@@ -11,10 +11,12 @@
- #include <linux/io.h>
- #include <linux/kernel.h>
- #include <linux/kstrtox.h>
-+#include <linux/mfd/syscon.h>
- #include <linux/module.h>
- #include <linux/of.h>
- #include <linux/of_irq.h>
- #include <linux/platform_device.h>
-+#include <linux/regmap.h>
- #include <linux/watchdog.h>
+diff --git a/fs/f2fs/file.c b/fs/f2fs/file.c
+index bc190d5..9908017 100644
+--- a/fs/f2fs/file.c
++++ b/fs/f2fs/file.c
+@@ -2627,12 +2627,13 @@ static int f2fs_defragment_range(struct f2fs_sb_info *sbi,
+ 	bool fragmented = false;
+ 	int err;
  
- static bool nowayout = WATCHDOG_NOWAYOUT;
-@@ -65,23 +67,32 @@ MODULE_DEVICE_TABLE(of, aspeed_wdt_of_table);
- #define WDT_RELOAD_VALUE	0x04
- #define WDT_RESTART		0x08
- #define WDT_CTRL		0x0C
--#define   WDT_CTRL_BOOT_SECONDARY	BIT(7)
--#define   WDT_CTRL_RESET_MODE_SOC	(0x00 << 5)
--#define   WDT_CTRL_RESET_MODE_FULL_CHIP	(0x01 << 5)
--#define   WDT_CTRL_RESET_MODE_ARM_CPU	(0x10 << 5)
--#define   WDT_CTRL_1MHZ_CLK		BIT(4)
--#define   WDT_CTRL_WDT_EXT		BIT(3)
--#define   WDT_CTRL_WDT_INTR		BIT(2)
--#define   WDT_CTRL_RESET_SYSTEM		BIT(1)
--#define   WDT_CTRL_ENABLE		BIT(0)
-+#define WDT_CTRL_BOOT_SECONDARY	BIT(7)
-+#define WDT_CTRL_RESET_MODE_SOC	(0x00 << 5)
-+#define WDT_CTRL_RESET_MODE_FULL_CHIP	(0x01 << 5)
-+#define WDT_CTRL_RESET_MODE_ARM_CPU	(0x10 << 5)
-+#define WDT_CTRL_1MHZ_CLK		BIT(4)
-+#define WDT_CTRL_WDT_EXT		BIT(3)
-+#define WDT_CTRL_WDT_INTR		BIT(2)
-+#define WDT_CTRL_RESET_SYSTEM		BIT(1)
-+#define WDT_CTRL_ENABLE		BIT(0)
- #define WDT_TIMEOUT_STATUS	0x10
--#define   WDT_TIMEOUT_STATUS_IRQ		BIT(2)
--#define   WDT_TIMEOUT_STATUS_BOOT_SECONDARY	BIT(1)
-+#define WDT_TIMEOUT_STATUS_IRQ		BIT(2)
-+#define WDT_TIMEOUT_STATUS_BOOT_SECONDARY	BIT(1)
-+#define WDT_TIMEOUT_STATUS_EVENT		BIT(0)
- #define WDT_CLEAR_TIMEOUT_STATUS	0x14
--#define   WDT_CLEAR_TIMEOUT_AND_BOOT_CODE_SELECTION	BIT(0)
-+#define WDT_CLEAR_TIMEOUT_AND_BOOT_CODE_SELECTION	BIT(0)
- #define WDT_RESET_MASK1		0x1c
- #define WDT_RESET_MASK2		0x20
+-	pg_start = range->start >> PAGE_SHIFT;
+-	pg_end = (range->start + range->len) >> PAGE_SHIFT;
+-
+ 	f2fs_balance_fs(sbi, true);
  
-+/*
-+ * Ast2600 SCU74 bit1 is External reset flag
-+ * Ast2500 SCU3C bit1 is External reset flag
-+ */
-+#define EXTERN_RESET_FLAG		BIT(1)
-+#define AST2500_SYSTEM_RESET_EVENT	0x3C
-+#define AST2600_SYSTEM_RESET_EVENT	0x74
-+
- /*
-  * WDT_RESET_WIDTH controls the characteristics of the external pulse (if
-  * enabled), specifically:
-@@ -330,6 +341,11 @@ static int aspeed_wdt_probe(struct platform_device *pdev)
- 	if (IS_ERR(wdt->base))
- 		return PTR_ERR(wdt->base);
+ 	inode_lock(inode);
++	pg_start = range->start >> PAGE_SHIFT;
++	pg_end = min_t(pgoff_t,
++				(range->start + range->len) >> PAGE_SHIFT,
++				DIV_ROUND_UP(i_size_read(inode), PAGE_SIZE));
  
-+	struct regmap *scu_base = syscon_regmap_lookup_by_phandle(dev->of_node,
-+							     "aspeed,scu");
-+	if (IS_ERR(scu_base))
-+		return PTR_ERR(scu_base);
-+
- 	wdt->wdd.info = &aspeed_wdt_info;
- 
- 	if (wdt->cfg->irq_mask) {
-@@ -459,14 +475,26 @@ static int aspeed_wdt_probe(struct platform_device *pdev)
+ 	if (is_inode_flag_set(inode, FI_COMPRESS_RELEASED)) {
+ 		err = -EINVAL;
+@@ -2647,8 +2648,9 @@ static int f2fs_defragment_range(struct f2fs_sb_info *sbi,
  	}
  
- 	status = readl(wdt->base + WDT_TIMEOUT_STATUS);
--	if (status & WDT_TIMEOUT_STATUS_BOOT_SECONDARY) {
-+	if (status & WDT_TIMEOUT_STATUS_EVENT)
- 		wdt->wdd.bootstatus = WDIOF_CARDRESET;
+ 	/* writeback all dirty pages in the range */
+-	err = filemap_write_and_wait_range(inode->i_mapping, range->start,
+-						range->start + range->len - 1);
++	err = filemap_write_and_wait_range(inode->i_mapping,
++						pg_start << PAGE_SHIFT,
++						pg_end << PAGE_SHIFT - 1);
+ 	if (err)
+ 		goto out;
  
--		if (of_device_is_compatible(np, "aspeed,ast2400-wdt") ||
--		    of_device_is_compatible(np, "aspeed,ast2500-wdt"))
--			wdt->wdd.groups = bswitch_groups;
-+	if (of_device_is_compatible(np, "aspeed,ast2600-wdt")) {
-+		ret = regmap_read(scu_base,
-+				  AST2600_SYSTEM_RESET_EVENT,
-+				  &status);
-+	} else {
-+		ret = regmap_read(scu_base,
-+				  AST2500_SYSTEM_RESET_EVENT,
-+				  &status);
-+		wdt->wdd.groups = bswitch_groups;
- 	}
- 
-+	/*
-+	 * Reset cause by Extern Reset
-+	 */
-+	if (status & EXTERN_RESET_FLAG && !ret)
-+		wdt->wdd.bootstatus |= WDIOF_EXTERN1;
-+
- 	dev_set_drvdata(dev, wdt);
- 
- 	return devm_watchdog_register_device(dev, &wdt->wdd);
 -- 
-2.25.1
+1.9.1
 
 
