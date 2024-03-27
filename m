@@ -1,58 +1,57 @@
-Return-Path: <linux-kernel+bounces-121092-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-121093-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id BBB6188E242
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 14:23:03 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5776688E244
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 14:23:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5EE1A1F23780
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 13:23:03 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0A331285FB8
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 13:23:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD2DD16F0D2;
-	Wed, 27 Mar 2024 12:20:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3BAD016F0CB;
+	Wed, 27 Mar 2024 12:21:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="smOi56py"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qGoLJVnZ"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E1C1316F0CB;
-	Wed, 27 Mar 2024 12:20:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 804A416F0DE;
+	Wed, 27 Mar 2024 12:20:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711542057; cv=none; b=RosExpm8tcKXyFS1ZGX4fuibFSGT3euteOSctdnQZohJwGykA1PhdgIgDuZDIm7Pp/6wWkyGL+SL9WsPr/JW/ZDwNNxtj59+2T4Dx6NCEBuyoJ5tMW8KNoOPJ5O/CqlT4OzaUigG5s2e/HuA/gUxaqS7IJYAQ/lJ6QvqwPdhN48=
+	t=1711542059; cv=none; b=CSGLCa0jBa4cdvvGrEVIfWGZ/5Txs1KXIJJ6Dg9kaBfSFSRhLJrwGWwwpavFXVFFz+xoGhaBRI6aIwdZGwHR0BeOrc3RClqhAiyo5lG4oWpxUJtvOCmpH0h/msQVeCS9vBwvwedMmbGLe0kRAsY9Wc0sxpf7W8Q6eTAuF5X9WgM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711542057; c=relaxed/simple;
-	bh=gnvmsPavMo4KxPjSpmSE7yD+a795W3KnJlNQVdbBwdU=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=u1oaCfibjNTnAv/AXdHyOTo548sntChciB6JIIiMtcUJhvrb2cwg1dRvHNxCHmQojMm3uaCR3ih1dlBL3bE4dy1sB9SuQnhz8w4IbCRKG3gJ1BC0uVjZDgP9dw68nBzhJpnAyLhmVT86WbyDudgWu+eBe5VUFcopU55Qagm+B3E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=smOi56py; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 61909C433F1;
-	Wed, 27 Mar 2024 12:20:55 +0000 (UTC)
+	s=arc-20240116; t=1711542059; c=relaxed/simple;
+	bh=OVBJBu+CcgpOegW7hGoEq/EmfAecQDFcileKKuKbLaY=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=ESZxUEf83z84hRLDKeiB5drSOw46B+Sz4x/RA2oEqF+NoK+vAj0jGaWoeggysi8guxy7Zv7jk/fXl6q4wJxZv/9GQBjZXqx901ySIvRA6nloJNRVSup5S3syXiNkp4O4O4F+EREy/o5GeV8mu5tVoHVkHxp9q/m6zcXFUxxDKaY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qGoLJVnZ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 30C35C43390;
+	Wed, 27 Mar 2024 12:20:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711542056;
-	bh=gnvmsPavMo4KxPjSpmSE7yD+a795W3KnJlNQVdbBwdU=;
+	s=k20201202; t=1711542059;
+	bh=OVBJBu+CcgpOegW7hGoEq/EmfAecQDFcileKKuKbLaY=;
 	h=From:To:Cc:Subject:Date:From;
-	b=smOi56pyN8cGVIsRPvGjwhKhSCiyI+wxX7aP30SqminNVq+3Cqa+oYBrftSpMU4QO
-	 g4MM/XsGGeSootYoKIaDgRA8kMjXp+19/bRTo3fI4vBe+l3Q+XaWnRBGALCJrxcrnt
-	 EgbChHDlM+WD/Jep4kZKjB356EkPsw3TQchG9BbV+nGKCKkpfkokFuhsSjNBbqlClj
-	 d1KfhMd7Wqg+jIfdz9++pao0T6H/vKNgTlNxFn/0fADxGwzVnpUfbonkT34y9hhSHf
-	 GzsMDqDju7a0lcycmaos1NCrE8aWJCzVFDcwvQYUVId11jm8RbARSbgu1BZ89zNsgP
-	 J90CEt9mjly4g==
+	b=qGoLJVnZq+DdBhrSQErnDAboIPrZ5yg1gr6SeLbtJ4MR8pkU44fAT8sXY2MHaLs6m
+	 N53Sb65aZL530sgktaK1OWHpNibAotsE55Pg8umErOVG6YFQQPBRiF3iCIwmlHat0F
+	 6KKuMEnSog4lHm4b7qqPLFtwmtaawi8KGDTvpp+XS28P6KcWAAhtin0lu4cak7Jalx
+	 EmtDrJONa2gzMVay+nlOSfKVf0iDzMol5e2o51kLs/kkKmVh2a3CDiXMahdpkebcws
+	 8KQWS7NBxIrQLmqJfsiOw6FTllcKA2XbxaAZBezjtgmo60gY5611TN7lVOBhgsqJl8
+	 2eg+nkpPROsFg==
 From: Sasha Levin <sashal@kernel.org>
 To: stable@vger.kernel.org,
-	nicholas.kazlauskas@amd.com
+	Wayne.Lin@amd.com
 Cc: Mario Limonciello <mario.limonciello@amd.com>,
 	Alex Deucher <alexander.deucher@amd.com>,
-	Duncan Ma <duncan.ma@amd.com>,
 	Alex Hung <alex.hung@amd.com>,
 	Daniel Wheeler <daniel.wheeler@amd.com>,
 	amd-gfx@lists.freedesktop.org,
 	dri-devel@lists.freedesktop.org,
 	linux-kernel@vger.kernel.org
-Subject: FAILED: Patch "drm/amd/display: Fix idle check for shared firmware state" failed to apply to 5.10-stable tree
-Date: Wed, 27 Mar 2024 08:20:54 -0400
-Message-ID: <20240327122054.2836417-1-sashal@kernel.org>
+Subject: FAILED: Patch "drm/amd/display: Align the returned error code with legacy DP" failed to apply to 5.10-stable tree
+Date: Wed, 27 Mar 2024 08:20:57 -0400
+Message-ID: <20240327122057.2836454-1-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -74,61 +73,47 @@ Sasha
 
 ------------------ original commit in Linus's tree ------------------
 
-From 3d066f9547dd58329b526db44f42c487a7974703 Mon Sep 17 00:00:00 2001
-From: Nicholas Kazlauskas <nicholas.kazlauskas@amd.com>
-Date: Wed, 21 Feb 2024 12:27:31 -0500
-Subject: [PATCH] drm/amd/display: Fix idle check for shared firmware state
+From 3b84525544be4ca0481110263a6d73eb00741cf3 Mon Sep 17 00:00:00 2001
+From: Wayne Lin <Wayne.Lin@amd.com>
+Date: Tue, 2 Jan 2024 14:20:37 +0800
+Subject: [PATCH] drm/amd/display: Align the returned error code with legacy DP
 
-[WHY]
-We still had an instance of get_idle_state checking the PMFW scratch
-register instead of the actual idle allow signal.
+[Why]
+For usb4 connector, AUX transaction is handled by dmub utilizing a differnt
+code path comparing to legacy DP connector. If the usb4 DP connector is
+disconnected, AUX access will report EBUSY and cause igt@kms_dp_aux_dev
+fail.
 
-[HOW]
-Replace it with the SW state check for whether we had allowed idle
-through notify_idle.
+[How]
+Align the error code with the one reported by legacy DP as EIO.
 
 Cc: Mario Limonciello <mario.limonciello@amd.com>
 Cc: Alex Deucher <alexander.deucher@amd.com>
 Cc: stable@vger.kernel.org
-Reviewed-by: Duncan Ma <duncan.ma@amd.com>
 Acked-by: Alex Hung <alex.hung@amd.com>
-Signed-off-by: Nicholas Kazlauskas <nicholas.kazlauskas@amd.com>
+Signed-off-by: Wayne Lin <Wayne.Lin@amd.com>
 Tested-by: Daniel Wheeler <daniel.wheeler@amd.com>
 Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 ---
- drivers/gpu/drm/amd/display/dc/core/dc.c | 12 +++---------
- 1 file changed, 3 insertions(+), 9 deletions(-)
+ drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_helpers.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/drivers/gpu/drm/amd/display/dc/core/dc.c b/drivers/gpu/drm/amd/display/dc/core/dc.c
-index 613d09c42f3b9..958552a8605ff 100644
---- a/drivers/gpu/drm/amd/display/dc/core/dc.c
-+++ b/drivers/gpu/drm/amd/display/dc/core/dc.c
-@@ -4847,22 +4847,16 @@ void dc_exit_ips_for_hw_access(struct dc *dc)
- 
- bool dc_dmub_is_ips_idle_state(struct dc *dc)
+diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_helpers.c b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_helpers.c
+index eaf8d9f482446..85b7f58a7f35a 100644
+--- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_helpers.c
++++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_helpers.c
+@@ -979,6 +979,11 @@ int dm_helper_dmub_aux_transfer_sync(
+ 		struct aux_payload *payload,
+ 		enum aux_return_code_type *operation_result)
  {
--	uint32_t idle_state = 0;
--
- 	if (dc->debug.disable_idle_power_optimizations)
- 		return false;
- 
- 	if (!dc->caps.ips_support || (dc->config.disable_ips == DMUB_IPS_DISABLE_ALL))
- 		return false;
- 
--	if (dc->hwss.get_idle_state)
--		idle_state = dc->hwss.get_idle_state(dc);
--
--	if (!(idle_state & DMUB_IPS1_ALLOW_MASK) ||
--		!(idle_state & DMUB_IPS2_ALLOW_MASK))
--		return true;
-+	if (!dc->ctx->dmub_srv)
-+		return false;
- 
--	return false;
-+	return dc->ctx->dmub_srv->idle_allowed;
++	if (!link->hpd_status) {
++		*operation_result = AUX_RET_ERROR_HPD_DISCON;
++		return -1;
++	}
++
+ 	return amdgpu_dm_process_dmub_aux_transfer_sync(ctx, link->link_index, payload,
+ 			operation_result);
  }
- 
- /* set min and max memory clock to lowest and highest DPM level, respectively */
 -- 
 2.43.0
 
