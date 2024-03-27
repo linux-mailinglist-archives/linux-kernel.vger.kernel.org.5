@@ -1,128 +1,264 @@
-Return-Path: <linux-kernel+bounces-121414-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-121415-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DFFAD88E7AE
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 16:01:43 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8512688E7B0
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 16:01:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 983DF2E69F5
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 15:01:42 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2521B1F2F7CE
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 15:01:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E63C513699E;
-	Wed, 27 Mar 2024 14:19:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 728C21369B9;
+	Wed, 27 Mar 2024 14:21:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="R0FYxpx1"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=dabbelt-com.20230601.gappssmtp.com header.i=@dabbelt-com.20230601.gappssmtp.com header.b="LTb6BA2Z"
+Received: from mail-pl1-f177.google.com (mail-pl1-f177.google.com [209.85.214.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B9F4E135A50
-	for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 14:19:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 02599135A50
+	for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 14:21:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711549154; cv=none; b=hoyN7W6yUMCxqTPcv4xraCR7T0fm7hM/wcCbcYPJLnFhboLi6cDMhczJbJ5ViG80ZYZ6AI921Mz3l29Ws92A0VzXV6JNOI+YYsgXCFgZ1A+LJ6E99OpXHHqyjeSCMwanlrXRG+JhVzWf8S02NGhic30heK2zmF6toOBdigdepPg=
+	t=1711549266; cv=none; b=bRlnML1Lhp3RQFJacg+nyICJrYuHo+8tdwwGZUPpFOa+GLp/0gJPvy1aTgpFmDhIPGUf48OODmV8NKlegDLTb3HF7fJOihEUyIw0ROszUnFLY83sMb1zfY0SDhFfaOMs1IH+bPHXz0HgputaTtp88B76E/iXbcpx4z+jH/k65sA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711549154; c=relaxed/simple;
-	bh=0kLLmMw4/O3TBBKUsgSTgaWCMt15z0cmnYLnE3Bkir0=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=VA4QoSkLbIAvLMZdIqdLxfeNEkUrZG4TdlMBBVGkHQzxJtT1Skjbc70qs7/ftwbtT6ak58+6d/zfj7f7CNXwgRGNCloQ12xl3YYpKsXMQHT55zXx7YCAXeKPMp3hLdB3S1wOiJFtxtDblLDNVCK4M8xpbu/XaF/nGZ7OXeG7ifE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=R0FYxpx1; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1711549151;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=/hvGCD2+uFOob7s7i2B6yFil+RKwQBprVcC67jRXTkM=;
-	b=R0FYxpx1aaOps9Opd8tBvM4BBd6zHXCJJt/5a4MAW4Jh6YWVO//vmiQdUiC7MSVB7ThjuZ
-	EiP5xBBj2FWmHUEEnkIh2WBp1zIbloWNQ/3zXy7nVjnLwe8/fhgTdCmpcO0IJPpF/0gNUs
-	uNp7NeS2ISsrejzaPjJH7gT0yt7uVB4=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-292-Ympw0WwQMLuE7hsl_qTVGw-1; Wed,
- 27 Mar 2024 10:19:07 -0400
-X-MC-Unique: Ympw0WwQMLuE7hsl_qTVGw-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.rdu2.redhat.com [10.11.54.3])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id A2C8928B6982;
-	Wed, 27 Mar 2024 14:19:06 +0000 (UTC)
-Received: from fedora.redhat.com (unknown [10.39.193.90])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id ACF1D1121312;
-	Wed, 27 Mar 2024 14:19:04 +0000 (UTC)
-From: Jose Ignacio Tornos Martinez <jtornosm@redhat.com>
-To: lucas.demarchi@intel.com,
-	mcgrof@kernel.org
-Cc: emil.velikov@collabora.com,
-	gustavo.sousa@intel.com,
-	jtornosm@redhat.com,
-	linux-modules@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	md@linux.it
-Subject: [PATCH] module: create weak dependecies
-Date: Wed, 27 Mar 2024 15:18:57 +0100
-Message-ID: <20240327141857.98026-1-jtornosm@redhat.com>
-In-Reply-To: <7vowjj4oo64a2vquvqaszmzcdvbrlkntcze2btnogvkwwtuddv@uz72wpi2t55s>
-References: <7vowjj4oo64a2vquvqaszmzcdvbrlkntcze2btnogvkwwtuddv@uz72wpi2t55s>
+	s=arc-20240116; t=1711549266; c=relaxed/simple;
+	bh=avwi6p1nMqz6vUlRbJ6D8sCm976YDo+h6wiNCfOlhEE=;
+	h=Date:Subject:In-Reply-To:CC:From:To:Message-ID:Mime-Version:
+	 Content-Type; b=r6pBeUTc+k9x0SBbjuXBMqAv+VL+JLY4wcm/IRNlg5Haos8pzVcif9ovtKNGjAqd25SsC6L08ZY5BJTkdiLdi5JRRGJwX6yK2fjqosS3KGt53Hiy//4SPTiz6dAqtliOIyY0zjSmbx5emPRVZqn5grT5aUuYb8egmbPHleagrJc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dabbelt.com; spf=pass smtp.mailfrom=dabbelt.com; dkim=pass (2048-bit key) header.d=dabbelt-com.20230601.gappssmtp.com header.i=@dabbelt-com.20230601.gappssmtp.com header.b=LTb6BA2Z; arc=none smtp.client-ip=209.85.214.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dabbelt.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dabbelt.com
+Received: by mail-pl1-f177.google.com with SMTP id d9443c01a7336-1def89f0cfdso7677865ad.0
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 07:21:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=dabbelt-com.20230601.gappssmtp.com; s=20230601; t=1711549263; x=1712154063; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:to:from:cc
+         :in-reply-to:subject:date:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=9OkgKPAxyfJOPfckAh4fQ9ROWymFhlRPpwnWkiLvmDg=;
+        b=LTb6BA2ZxmLkJef8NVM3IWikH5pcVVeZ8nhh68Dyg/whdz9JUFqjeOkKXyvnHHgx5E
+         PlHwz2/hEDdOWwEFkbjw5x85F+hDXG8xA/Xwud5XzfUxm8tIJ1JlnxYCe69eiEUUUc9U
+         17bnqD4Pu2OiurmCYkuVU3j4ox2r59fiFm2KkBKCMH4jsmgRzJ8g5bYv4sKQVTMtJH4c
+         +xqpO50mbelPXoAN08RjuYxkQuqI/dwdXFhSpK7twfi1zRqNV8GX/os9kVpW57PE7A4S
+         OvZt1q42ZGw60RkXXPIEUJ8A4AWSoxQNTwSvLLu3sT7MpvPahPx/rOgQwGsICXOs6NzP
+         /lxg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711549263; x=1712154063;
+        h=content-transfer-encoding:mime-version:message-id:to:from:cc
+         :in-reply-to:subject:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=9OkgKPAxyfJOPfckAh4fQ9ROWymFhlRPpwnWkiLvmDg=;
+        b=ECcatgjz5Ao/kkzCG72tgbeqNARljX6YoSr6e2CVjhKuQzy8vag4QTYUoEqSfwJUPR
+         kMzvYqwE43yaOeX6lTd/wXIpH5phbA8HORyafSCZq841YCLGX8hCCnCtI3RZZorC0D2j
+         oH23LhoXAXAgfApdoY6ncB5ioF6b3v9MWGg5TAUtiPvTOIy7k/Mx636HF6LciC6ux7aP
+         mJCZpa65gxFG9lbjrLFh6YUGMdxYfzdzKARL2sbA+auVkihIVxRgbWPcqTZtM9Qz+D8S
+         oYDcRfU/bc5LbfnN86FUVGOwAPJPnWtDdp2tM6y0+yR1oA1zPJOUQE3321Ty1+pWxb4b
+         uJEA==
+X-Forwarded-Encrypted: i=1; AJvYcCUT6mc2ZE0zPnRAtQzsOkBXpgX9QdcCx0Kvf1Yse7xUuTZGbwh9oQWxZMsTmq8Igq6oRgrI1yeJLjZ9AHHct31PmleGsuV8Oq0LiVKC
+X-Gm-Message-State: AOJu0Yy5wG2Lda2E1Dl3AsmP58JXPL+p3SUoVsItKIbrQfJgnwWDlSA4
+	QKgxrIc2YAeBNQZy8HeStH+K0EQYIqpYMvkM1KXaJqgZ8jYWlH83fJVKF2pQFddsd50k01BvI0o
+	U
+X-Google-Smtp-Source: AGHT+IGj0H8wddyVpJYathwsKQ01aXo/mhOioGyXZjPvlpsI1o++lQ02DxLCeo2ElOxEmY/tL8qzyg==
+X-Received: by 2002:a17:902:db08:b0:1e0:b677:293b with SMTP id m8-20020a170902db0800b001e0b677293bmr7337175plx.29.1711549262937;
+        Wed, 27 Mar 2024 07:21:02 -0700 (PDT)
+Received: from localhost ([192.184.165.199])
+        by smtp.gmail.com with ESMTPSA id i10-20020a1709026aca00b001e03b2f7ab1sm4715467plt.92.2024.03.27.07.21.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 27 Mar 2024 07:21:02 -0700 (PDT)
+Date: Wed, 27 Mar 2024 07:21:02 -0700 (PDT)
+X-Google-Original-Date: Wed, 27 Mar 2024 07:21:00 PDT (-0700)
+Subject:     Re: [PATCH] riscv: lib: Implement optimized memchr function
+In-Reply-To: <8002710f-66f4-32aa-df45-fb8901773a26@codethink.co.uk>
+CC: ajones@ventanamicro.com, Paul Walmsley <paul.walmsley@sifive.com>,
+  aou@eecs.berkeley.edu, Conor Dooley <conor.dooley@microchip.com>, Heiko Stuebner <heiko@sntech.de>,
+  Bjorn Topel <bjorn@rivosinc.com>, linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
+From: Palmer Dabbelt <palmer@dabbelt.com>
+To: ivan.orlov@codethink.co.uk
+Message-ID: <mhng-36b05ed9-dd1c-45ad-aeec-921b30a75f7a@palmer-ri-x1c9>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
+Mime-Version: 1.0 (MHng)
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.3
 
-It has been seen that for some network mac drivers (i.e. lan78xx) the
-related module for the phy is loaded dynamically depending on the current
-hardware. In this case, the associated phy is read using mdio bus and then
-the associated phy module is loaded during runtime (kernel function
-phy_request_driver_module). However, no software dependency is defined, so
-the user tools will no be able to get this dependency. For example, if
-dracut is used and the hardware is present, lan78xx will be included but no
-phy module will be added, and in the next restart the device will not work
-from boot because no related phy will be found during initramfs stage.
+On Mon, 11 Dec 2023 07:25:15 PST (-0800), ivan.orlov@codethink.co.uk wrote:
+> On 11/12/2023 15:08, Andrew Jones wrote:
+>>> As you can see, the new function shows much better results even for
+>>> the small arrays of 256 elements, therefore I believe it could be a
+>>> useful addition to the existing riscv-specific string functions.
+>>
+>> Looks good, but do we want to maintain both this version and a zbb
+>> version? I'd expect a zbb version to be even better.
+>>
+>
+> Hi Andrew,
+>
+> Yes, ZBB analog would be much better, and if we use ZBB operations we
+> could avoid the most part of bit magic happening there.
+>
+>>> +	add t1, x0, a2
+>>
+>> move t1, a2
+>>
+>> and for the remainder of the function s/x0/zero/
+>>
+>
+> Alright, will be fixed in the next version.
+>>> +	sltiu t2, a2, MIN_BORDER
+>>> +	bnez t2, 6f
+>>> +
+>>> +	// get the number of bytes we should iterate before alignment
+>>
+>> I'm not sure, but I think even in assembly we prefer the /* */ comment
+>> format.
+>>
+>>> +	andi t0, a0, SZREG - 1
+>>> +	beqz t0, 4f
+>>> +
+>>> +	# get the SZREG - t0
+>>
+>> I'm 99% sure we don't want to use the # comment syntax.
+>>
+>>> +	xor t0, t0, SZREG - 1
+>>
+>> xori?
+>>
+>
+> Hmm, I'm surprised that it is actually compilable... Yeah, should be fixed
+>>> +	addi t0, t0, 1
+>>> +
+>>> +	sub a2, a2, t0
+>>
+>> nit: Looks a bit odd to put a blank line above the sub line above,
+>> instead of above the below comment.
+>>
+>>> +	// iterate before alignment
+>>> +1:
+>>> +	beq t0, x0, 4f
+>>> +	lbu t2, 0(a0)
+>>> +	beq t2, a1, 3f
+>>> +	addi t0, t0, -1
+>>
+>> This addi t0... isn't necessary if we do
+>>
+>
+> Yeah, sounds reasonable, we can make it faster
+>> 	add t0, a0, t0
+>> 1:
+>> 	beq a0, t0, 4f
+>> 	...
+>> 	...
+>> 	addi a0, a0, 1
+>> 	j 1b
+>>
+>>> +	addi a0, a0, 1
+>>> +	j 1b
+>>> +
+>>> +2:
+>>> +	// found a word. Iterate it until we find the target byte
+>>> +	li t1, SZREG
+>>> +	j 6f
+>>
+>> These instructions seem oddly placed among the rest.
+>>
+>>> +3:
+>>> +	ret
+>>
+>> And this is an odd place to put this ret (after unconditional jump and
+>> in the middle of the function). We can just put a label at the bottom ret.
+>>
+>
+> I agree, thanks!
+>>> +
+>>> +4:
+>>> +	// get the count remainder
+>>> +	andi t1, a2, SZREG - 1
+>>> +
+>>> +	// align the count
+>>> +	sub a2, a2, t1
+>>> +
+>>> +	// if we have no words to iterate, iterate the remainder
+>>> +	beqz a2, 6f
+>>> +
+>>> +	// from 0xBA we will get 0xBABABABABABABABA
+>>> +	li t3, REP_01
+>>> +	mul t3, t3, a1
+>>
+>> I don't think we want to implement an optimized assembly function with
+>> mul. We can just use a few shifts and ors.
+>>
+>> 	slli	t3, a1, 8
+>> 	or	t3, t3, a1
+>> 	slli	t4, t3, 16
+>> 	or	t3, t4, t3
+>> #if __riscv_xlen == 64
+>> 	slli	t4, t3, 32
+>> 	or	t3, t4, t3
+>> #endif
+>>
+>
+> Nice point, thanks! Will be optimized :)
+>>> +
+>>> +	add a2, a2, a0
+>>> +
+>>> +	li t4, REP_01
+>>> +	li t5, REP_80
+>>> +
+>>> +5:
+>>> +	REG_L t2, 0(a0)
+>>> +
+>>> +	// after this xor we will get one zero byte in the word if it contains the target byte
+>>> +	xor t2, t2, t3
+>>> +
+>>> +	// word v contains the target byte if (v - 0x01010101) & (~v) & 0x80808080 is positive
+>>
+>> s/is positive/is not zero/
+>>
+>>> +	sub t0, t2, t4
+>>> +
+>>> +	not t2, t2
+>>> +
+>>> +	and t0, t0, t2
+>>> +	and t0, t0, t5
+>>> +
+>>> +	bnez t0, 2b
+>>> +	addi a0, a0, SZREG
+>>> +	bne a0, a2, 5b
+>>> +
+>>> +6:
+>>> +	// iterate the remainder
+>>> +	beq t1, x0, 7f
+>>> +	lbu t4, 0(a0)
+>>> +	beq t4, a1, 3b
+>>> +	addi a0, a0, 1
+>>> +	addi t1, t1, -1
+>>
+>> Same comment as above about being able to drop the addi t1...
+>>
+>>> +	j 6b
+>>> +
+>>> +7:
+>>> +	addi a0, x0, 0
+>>
+>> li a0, 0
+>>
+>>> +	ret
+>>> +SYM_FUNC_END(memchr)
+>>> +SYM_FUNC_ALIAS(__pi_memchr, memchr)
+>>> --
+>>> 2.34.1
+>>>
+>>
+>> Thanks,
+>> drew
+>>
+>
+> Thanks a lot for the review!
 
-In order to solve this, we could define a normal 'pre' software dependency
-in lan78xx module with all the possible phy modules (there may be some),
-but proceeding in that way, all the possible phy modules would be loaded
-while only one is necessary.
-
-The idea is to create a new type of dependency, that we are going to call
-'weak' to be used only by the user tools that need to detect this situation.
-In that way, for example, dracut could check the 'weak' dependency of the
-modules involved in order to install these dependencies in initramfs too.
-That is, for the commented lan78xx module, defining the 'weak' dependency
-with the possible phy modules list, only the necessary phy would be loaded
-on demand keeping the same behavior, but all the possible phy modules would
-be available from initramfs.
-
-Signed-off-by: Jose Ignacio Tornos Martinez <jtornosm@redhat.com>
----
- include/linux/module.h | 5 +++++
- 1 file changed, 5 insertions(+)
-
-diff --git a/include/linux/module.h b/include/linux/module.h
-index 1153b0d99a80..231e710d8736 100644
---- a/include/linux/module.h
-+++ b/include/linux/module.h
-@@ -173,6 +173,11 @@ extern void cleanup_module(void);
-  */
- #define MODULE_SOFTDEP(_softdep) MODULE_INFO(softdep, _softdep)
- 
-+/* Weak module dependencies. See man modprobe.d for details.
-+ * Example: MODULE_WEAKDEP("module-foo")
-+ */
-+#define MODULE_WEAKDEP(_weakdep) MODULE_INFO(weakdep, _weakdep)
-+
- /*
-  * MODULE_FILE is used for generating modules.builtin
-  * So, make it no-op when this is being built as a module
--- 
-2.44.0
-
+Do you have a v2?  Sorry if I lost it.
 
