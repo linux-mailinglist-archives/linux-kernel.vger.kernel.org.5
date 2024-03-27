@@ -1,53 +1,54 @@
-Return-Path: <linux-kernel+bounces-121218-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-121219-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 802AA88E40D
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 14:52:25 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1FE3388E412
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 14:52:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 31D9C29E7C1
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 13:52:24 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 517F91C23DD1
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 13:52:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 01A58189A3B;
-	Wed, 27 Mar 2024 12:26:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4FB27189A5F;
+	Wed, 27 Mar 2024 12:26:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="o1jqvU3n"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Za59L1WK"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 25D5F189A30;
-	Wed, 27 Mar 2024 12:26:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 90658189A4F;
+	Wed, 27 Mar 2024 12:26:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711542376; cv=none; b=q+sc3fViRRPJ55FUuArTcN0ctWqDpssd/2Vat6Tj8rWeTSqxtEJv8H7CsRzvemLHSj4vBFGIN2+MsXqTwW/IoXU7RZWfh+KQo2Q7MU5P2bKO6wEWtIRiL4yR82o4BrnJwd2952BHReG2nxr/wCoipVZMmzdk0bSJToXYv89z/QM=
+	t=1711542378; cv=none; b=TS3W3jijLGkr6P5gBCZVspICxSRXa6C6PmNnc89WCkOq0Co/rRikxlIbD+aTaKGetl481561xnjbgwFYNl9vfvaZwKbJqAUQd/PRA4AfIjs5iQhtGPbTKPPjA2d5DrX80eQKHU4z2o8KjiwAhOollw5Xay6yKpovlSaAhuQOwEM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711542376; c=relaxed/simple;
-	bh=UIUVtFINdH3eUksiZ9PclKYgDSi96KexMtB5LC2tHnQ=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=ShboK0AQUcYWOv5k4SVzSN5Y8rhpSVyRUFQEfEn8A3BpZKaQ+LskYiwEhCAc+Nn8ZTppqzrCsQEwrrxSBzAM7seNg7KUO9tczZdIU6qUNH/ehtoEw7V9/WaIpNcolmDVF4rBtyJVFS9C9AAjE2w2sqm9fvBPri81fn6uKRzeq2M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=o1jqvU3n; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1B567C433C7;
-	Wed, 27 Mar 2024 12:26:15 +0000 (UTC)
+	s=arc-20240116; t=1711542378; c=relaxed/simple;
+	bh=bCv7py3lRftPtDyq/ZDX+YLBPgBiyPm374SoRXPG5fw=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Y7CWQuWiWFi333Y2eB8It6+7tGt215rDL8vaefa3Qiput+qsDtP7Ib/scdb+2qbIWhGlDx87gM4JhSpWi+JKeFxUiWL9tkeZohx0cBLwn6PLmDfnUXsQdIvzCoS3r7JKql/bqVJxitj8yhUNx7lSck6319GxlOZLf5sjtF+ZSp8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Za59L1WK; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 64E5CC433C7;
+	Wed, 27 Mar 2024 12:26:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711542375;
-	bh=UIUVtFINdH3eUksiZ9PclKYgDSi96KexMtB5LC2tHnQ=;
+	s=k20201202; t=1711542378;
+	bh=bCv7py3lRftPtDyq/ZDX+YLBPgBiyPm374SoRXPG5fw=;
 	h=From:To:Cc:Subject:Date:From;
-	b=o1jqvU3nbG9u9XxrlrQWrHjfk0FS9kvtDjGuLRK0qPQmufEadnWS8JtxOLU9sg82U
-	 bD3RKZYJoiFlUer9eWrt9X9iEQqYQcnbVQ2KqM0BmWbI/9YjG2o3xVOin7Aidddkom
-	 dY9N/heClOFGhmsvxLF7kwChocxxuhzjAhUBuJZtzPH51KVClnnppug1zCDEo9rAHA
-	 n7gwUX9pHOW9RLmU1pGG0JtHTSGmrhhfQ/12b47fxn2Ll39SVUp7Ln5WYv6lDRYgSE
-	 vOs/+DTVDZeuSUpfxl5Ru9AD5Rty0G9B6TPL5EMpMiOF11xKoNZCtYP1egwUYrvhBi
-	 NryaKlugwBGyQ==
+	b=Za59L1WKRvEWIWy56qicqwXsihPDVmxJZkBMXBSADsdW5oLsmuREa0SzQ5cQfPZSw
+	 Vanp70mxPFshKC6BdrNmT2/4BVSMYjyXbqO6eKXF5uOMbeP4chBxxxhCyPeQz/PgGa
+	 EhDD5b517uOVe1zeEYt0mQeD8PAiLn8laCod47cFYl6rA+X6bCXcBKkkg0MKZXWJm9
+	 m+y3r5r0BVnklom98wK3tW6jq7tBzbEchRwdtFQ9Fk4F6itxBzbL00K6ALykG2De62
+	 ofnl73fqD+Rva4HWuvz7HfusTzYMvZlOWoukCmBohyip2dfKjk/rOmZ46zepIU+cui
+	 0VmSF2/VvhAaA==
 From: Sasha Levin <sashal@kernel.org>
 To: stable@vger.kernel.org,
-	stfrench@microsoft.com
-Cc: linux-cifs@vger.kernel.org,
-	samba-technical@lists.samba.org,
+	ardb@kernel.org
+Cc: stable@kernel.org,
+	Radek Podgorny <radek@podgorny.cz>,
+	linux-efi@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: FAILED: Patch "cifs: allow changing password during remount" failed to apply to 4.19-stable tree
-Date: Wed, 27 Mar 2024 08:26:13 -0400
-Message-ID: <20240327122614.2840926-1-sashal@kernel.org>
+Subject: FAILED: Patch "x86/efistub: Clear decompressor BSS in native EFI entrypoint" failed to apply to 4.19-stable tree
+Date: Wed, 27 Mar 2024 08:26:16 -0400
+Message-ID: <20240327122616.2840963-1-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -69,136 +70,68 @@ Sasha
 
 ------------------ original commit in Linus's tree ------------------
 
-From c1eb537bf4560b3ad4df606c266c665624f3b502 Mon Sep 17 00:00:00 2001
-From: Steve French <stfrench@microsoft.com>
-Date: Tue, 13 Feb 2024 00:40:01 -0600
-Subject: [PATCH] cifs: allow changing password during remount
+From b3810c5a2cc4a6665f7a65bed5393c75ce3f3aa2 Mon Sep 17 00:00:00 2001
+From: Ard Biesheuvel <ardb@kernel.org>
+Date: Fri, 15 Mar 2024 16:26:16 +0100
+Subject: [PATCH] x86/efistub: Clear decompressor BSS in native EFI entrypoint
 
-There are cases where a session is disconnected and password has changed
-on the server (or expired) for this user and this currently can not
-be fixed without unmount and mounting again.  This patch allows
-remount to change the password (for the non Kerberos case, Kerberos
-ticket refresh is handled differently) when the session is disconnected
-and the user can not reconnect due to still using old password.
+The EFI stub on x86 no longer invokes the decompressor as a subsequent
+boot stage, but calls into the decompression code directly while running
+in the context of the EFI boot services.
 
-Future patches should also allow us to setup the keyring (cifscreds)
-to have an "alternate password" so we would be able to change
-the password before the session drops (without the risk of races
-between when the password changes and the disconnect occurs -
-ie cases where the old password is still needed because the new
-password has not fully rolled out to all servers yet).
+This means that when using the native EFI entrypoint (as opposed to the
+EFI handover protocol, which clears BSS explicitly), the firmware PE
+image loader is being relied upon to ensure that BSS is zeroed before
+the EFI stub is entered from the firmware.
 
-Cc: stable@vger.kernel.org
-Signed-off-by: Steve French <stfrench@microsoft.com>
+As Radek's report proves, this is a bad idea. Not all loaders do this
+correctly, which means some global variables that should be statically
+initialized to 0x0 may have junk in them.
+
+So clear BSS explicitly when entering via efi_pe_entry(). Note that
+zeroing BSS from C code is not generally safe, but in this case, the
+following assignment and dereference of a global pointer variable
+ensures that the memset() cannot be deferred or reordered.
+
+Cc: <stable@kernel.org> # v6.1+
+Reported-by: Radek Podgorny <radek@podgorny.cz>
+Closes: https://lore.kernel.org/all/a99a831a-8ad5-4cb0-bff9-be637311f771@podgorny.cz
+Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
 ---
- fs/smb/client/cifs_debug.c |  2 ++
- fs/smb/client/cifsglob.h   |  1 +
- fs/smb/client/fs_context.c | 27 ++++++++++++++++++++++-----
- fs/smb/client/smb2pdu.c    |  5 +++++
- 4 files changed, 30 insertions(+), 5 deletions(-)
+ drivers/firmware/efi/libstub/x86-stub.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/fs/smb/client/cifs_debug.c b/fs/smb/client/cifs_debug.c
-index 3e4209f41c18f..23d2622b969f0 100644
---- a/fs/smb/client/cifs_debug.c
-+++ b/fs/smb/client/cifs_debug.c
-@@ -488,6 +488,8 @@ static int cifs_debug_data_proc_show(struct seq_file *m, void *v)
- 				ses->ses_count, ses->serverOS, ses->serverNOS,
- 				ses->capabilities, ses->ses_status);
- 			}
-+			if (ses->expired_pwd)
-+				seq_puts(m, "password no longer valid ");
- 			spin_unlock(&ses->ses_lock);
+diff --git a/drivers/firmware/efi/libstub/x86-stub.c b/drivers/firmware/efi/libstub/x86-stub.c
+index 35413c8dfc251..2096ae09438e4 100644
+--- a/drivers/firmware/efi/libstub/x86-stub.c
++++ b/drivers/firmware/efi/libstub/x86-stub.c
+@@ -21,6 +21,8 @@
+ #include "efistub.h"
+ #include "x86-stub.h"
  
- 			seq_printf(m, "\n\tSecurity type: %s ",
-diff --git a/fs/smb/client/cifsglob.h b/fs/smb/client/cifsglob.h
-index 53c75cfb33ab9..ec9a26bd05a12 100644
---- a/fs/smb/client/cifsglob.h
-+++ b/fs/smb/client/cifsglob.h
-@@ -1066,6 +1066,7 @@ struct cifs_ses {
- 	enum securityEnum sectype; /* what security flavor was specified? */
- 	bool sign;		/* is signing required? */
- 	bool domainAuto:1;
-+	bool expired_pwd;  /* track if access denied or expired pwd so can know if need to update */
- 	unsigned int flags;
- 	__u16 session_flags;
- 	__u8 smb3signingkey[SMB3_SIGN_KEY_SIZE];
-diff --git a/fs/smb/client/fs_context.c b/fs/smb/client/fs_context.c
-index 4b2f5aa2ea0e1..415e87635d5aa 100644
---- a/fs/smb/client/fs_context.c
-+++ b/fs/smb/client/fs_context.c
-@@ -772,7 +772,7 @@ static void smb3_fs_context_free(struct fs_context *fc)
-  */
- static int smb3_verify_reconfigure_ctx(struct fs_context *fc,
- 				       struct smb3_fs_context *new_ctx,
--				       struct smb3_fs_context *old_ctx)
-+				       struct smb3_fs_context *old_ctx, bool need_recon)
++extern char _bss[], _ebss[];
++
+ const efi_system_table_t *efi_system_table;
+ const efi_dxe_services_table_t *efi_dxe_table;
+ static efi_loaded_image_t *image = NULL;
+@@ -474,6 +476,8 @@ efi_status_t __efiapi efi_pe_entry(efi_handle_t handle,
+ 	efi_status_t status;
+ 	char *cmdline_ptr;
+ 
++	memset(_bss, 0, _ebss - _bss);
++
+ 	efi_system_table = sys_table_arg;
+ 
+ 	/* Check if we were booted by the EFI firmware */
+@@ -967,8 +971,6 @@ void __noreturn efi_stub_entry(efi_handle_t handle,
+ void efi_handover_entry(efi_handle_t handle, efi_system_table_t *sys_table_arg,
+ 			struct boot_params *boot_params)
  {
- 	if (new_ctx->posix_paths != old_ctx->posix_paths) {
- 		cifs_errorf(fc, "can not change posixpaths during remount\n");
-@@ -798,8 +798,15 @@ static int smb3_verify_reconfigure_ctx(struct fs_context *fc,
- 	}
- 	if (new_ctx->password &&
- 	    (!old_ctx->password || strcmp(new_ctx->password, old_ctx->password))) {
--		cifs_errorf(fc, "can not change password during remount\n");
--		return -EINVAL;
-+		if (need_recon == false) {
-+			cifs_errorf(fc,
-+				    "can not change password of active session during remount\n");
-+			return -EINVAL;
-+		} else if (old_ctx->sectype == Kerberos) {
-+			cifs_errorf(fc,
-+				    "can not change password for Kerberos via remount\n");
-+			return -EINVAL;
-+		}
- 	}
- 	if (new_ctx->domainname &&
- 	    (!old_ctx->domainname || strcmp(new_ctx->domainname, old_ctx->domainname))) {
-@@ -843,9 +850,14 @@ static int smb3_reconfigure(struct fs_context *fc)
- 	struct smb3_fs_context *ctx = smb3_fc2context(fc);
- 	struct dentry *root = fc->root;
- 	struct cifs_sb_info *cifs_sb = CIFS_SB(root->d_sb);
-+	struct cifs_ses *ses = cifs_sb_master_tcon(cifs_sb)->ses;
-+	bool need_recon = false;
- 	int rc;
- 
--	rc = smb3_verify_reconfigure_ctx(fc, ctx, cifs_sb->ctx);
-+	if (ses->expired_pwd)
-+		need_recon = true;
-+
-+	rc = smb3_verify_reconfigure_ctx(fc, ctx, cifs_sb->ctx, need_recon);
- 	if (rc)
- 		return rc;
- 
-@@ -858,7 +870,12 @@ static int smb3_reconfigure(struct fs_context *fc)
- 	STEAL_STRING(cifs_sb, ctx, UNC);
- 	STEAL_STRING(cifs_sb, ctx, source);
- 	STEAL_STRING(cifs_sb, ctx, username);
--	STEAL_STRING_SENSITIVE(cifs_sb, ctx, password);
-+	if (need_recon == false)
-+		STEAL_STRING_SENSITIVE(cifs_sb, ctx, password);
-+	else  {
-+		kfree_sensitive(ses->password);
-+		ses->password = kstrdup(ctx->password, GFP_KERNEL);
-+	}
- 	STEAL_STRING(cifs_sb, ctx, domainname);
- 	STEAL_STRING(cifs_sb, ctx, nodename);
- 	STEAL_STRING(cifs_sb, ctx, iocharset);
-diff --git a/fs/smb/client/smb2pdu.c b/fs/smb/client/smb2pdu.c
-index 608ee05491e26..a500380d1b2e9 100644
---- a/fs/smb/client/smb2pdu.c
-+++ b/fs/smb/client/smb2pdu.c
-@@ -1536,6 +1536,11 @@ SMB2_sess_sendreceive(struct SMB2_sess_data *sess_data)
- 			    &sess_data->buf0_type,
- 			    CIFS_LOG_ERROR | CIFS_SESS_OP, &rsp_iov);
- 	cifs_small_buf_release(sess_data->iov[0].iov_base);
-+	if (rc == 0)
-+		sess_data->ses->expired_pwd = false;
-+	else if ((rc == -EACCES) || (rc == -EKEYEXPIRED) || (rc == -EKEYREVOKED))
-+		sess_data->ses->expired_pwd = true;
-+
- 	memcpy(&sess_data->iov[0], &rsp_iov, sizeof(struct kvec));
- 
- 	return rc;
+-	extern char _bss[], _ebss[];
+-
+ 	memset(_bss, 0, _ebss - _bss);
+ 	efi_stub_entry(handle, sys_table_arg, boot_params);
+ }
 -- 
 2.43.0
 
