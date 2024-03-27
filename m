@@ -1,113 +1,84 @@
-Return-Path: <linux-kernel+bounces-121542-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-121566-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 19E8D88EA87
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 17:07:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 79A0188EAFE
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 17:21:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7933BB2DEFB
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 15:41:31 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 820FAB2D690
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 15:49:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6AB451384BC;
-	Wed, 27 Mar 2024 15:35:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DFD4B130E3C;
+	Wed, 27 Mar 2024 15:48:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Pwfkdvz/"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Yg8dExgq"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AFABF12FF74;
-	Wed, 27 Mar 2024 15:35:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D4C3130AF0
+	for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 15:48:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711553707; cv=none; b=tsQ74LYvIwLvPUoaeZn0HXGma23kFD/hT2K/5cmiPecipf8xsv4z9OqDLj2gT0C9pgxYZIdO+OSNhZJ6xVJAtrpHw+CABezH0R1IL2a3ONGdog5GpkLVud/UZDgRgtVn6GgWxF7qmcejRn8MJ4usKEpo7GLwojyZKCpDmXqKc9A=
+	t=1711554499; cv=none; b=IH04Nbrg/iLNvsJliD8cvR2+ASi1InZu5OnFzY6RStANOpB+UTSMmPUTpb8IlYVHfpPlY/mDvnNjy77lt8RiB3Culk/g3mz4cajfwswyI+l5x791sKueqIQgbKTyLiDLoEMYkRnzyzm3NrAH6htOXt7GpID9a9G10SI3MbZXG/o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711553707; c=relaxed/simple;
-	bh=OKOBRjWUmEBgIQQoauzyn2lJtxsFxD/jNHsmS6fQ4YE=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=rMw3F4Zkr7Cwb7WUf0z7kjSv798Aw+wlyx8ZcGAqlFIWb98zEgzyNeNULdYnDeIJfoNt8UcZyXTnTWrs0hCNn7tIaCfA+Oi8MEZdcib68QH7qtvT+dVS7ToHBmj/TtXwjLF+n9zGv22Ha98r8GTkElzPKow526gCvbnYy6LHT8M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Pwfkdvz/; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 39A80C43394;
-	Wed, 27 Mar 2024 15:35:07 +0000 (UTC)
+	s=arc-20240116; t=1711554499; c=relaxed/simple;
+	bh=go4I6kAm2xNWlWjSFNfYVEqDcGhAdyxTeUu+DcP2luQ=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=SDihs6yzTFxHsoKLBwLvdW86GfCk0kzj4tnpaqjZl/T3CzGUL/5hze3qU6g4L9blkZ9HsgVE02+GXOfxu6AblNzjDIuHBKCyixDGAl6yIl4QdB1zM6qS3v1I+J3NOP2MfVq4Sh2m1Fd7DjYJEMwaHIwhz/PpI2Khz5Idw4EyXFs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Yg8dExgq; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F0039C433F1;
+	Wed, 27 Mar 2024 15:48:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711553707;
-	bh=OKOBRjWUmEBgIQQoauzyn2lJtxsFxD/jNHsmS6fQ4YE=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=Pwfkdvz/X7rr2mAqpGmZvB0B8ecBq9LHLmAmpa00j0QbemDCmmS0o68hVnoPkJ9Gk
-	 YPpwqZg/c+2xzVZcp2YJasyjcwOmFSmUNyKAFf4wzn6TwKGSx0+0cA/f2W8USgjkMR
-	 7CVqMA4M/IcqiLyAD8vS+2ezbkmezvMF1CFZ3Ir50RXjc+lH1an5NtCUdR0YfFaNLI
-	 jSrF662YW7otBMatSWokKC+8H7ORA+qaxSPEt4RgOhnNL+9xU54Ew1OPnQb3vzzh2G
-	 IWICpt93yvvr+u/vDtdUdoF43nng3X+9t01NeWfmZ5KT9wvfrG7/OcuFYn5lgAfJ4e
-	 K9fb39sNUn9gQ==
-Received: by mail-oo1-f54.google.com with SMTP id 006d021491bc7-5a46b30857bso1715306eaf.1;
-        Wed, 27 Mar 2024 08:35:07 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCXxsm5TrY2rETOHYftjK3buFSPc+oVJp3jJtAaoT24A0wwS7ySFQXEI0q5Bw090mbBQAR8oOay2mN4Y8ix5ZcbF0cyLCfVUWhX4Qoqv3sJLsDeBXlcsgKtkZpREkpNzCB5ejuuWRX6scg==
-X-Gm-Message-State: AOJu0YyGM2PCVbrD7R7g++N3ChbwiT/4rhq1ZjKy/9ZKj2J8556qww/e
-	tIteKM4TApMHJj5/NjoRWgh66IT4ycNEW2cKPXG0tRptgD4r043jVP6feaR1Y45qTynKKzfk8eQ
-	fwdwsdLpIchzz5k0W0NqH6EUrg/8=
-X-Google-Smtp-Source: AGHT+IFBVjTHKN2OSbd29nBi1LmoTNb/CDz2t7Lc0cIWDApE6Zrrwq/1vp73kdOXVecYtj2lL221LJZ21VkZUIVKeyk=
-X-Received: by 2002:a05:6871:b0a:b0:221:399e:959a with SMTP id
- fq10-20020a0568710b0a00b00221399e959amr24851oab.0.1711553706522; Wed, 27 Mar
- 2024 08:35:06 -0700 (PDT)
+	s=k20201202; t=1711554498;
+	bh=go4I6kAm2xNWlWjSFNfYVEqDcGhAdyxTeUu+DcP2luQ=;
+	h=From:To:Cc:Subject:Date:From;
+	b=Yg8dExgqMQWKS9zGTfLXFKZ44ip7t4QXO9iQH59tWPRZms7ITLpIJsRb1geCP/n4F
+	 cR1xEdgmToPdqBB/rg//HuSUJt34947vliqgVJS5YvK7cpK1nhHwV5zk2nhli/p29F
+	 fXytaasWJ5e+EHkfcLxtGfXO7ugCUYe8/qUyiU8oNefgH/fNYroPBHDtyiJJunJD/7
+	 iM08xMFKfPfFKPVNBqzHTjHI2tOLjtiAQMTAbb3StbkapKBaGwKBMS3YQgmccGZ+KP
+	 d/C6Z14x7IEF4b673oMwBn2vcGIBa6DjztuC4DOJ2vRBaMLM5UM0wv3OB64SZNn+yD
+	 u9DVh1GR835iQ==
+From: Jisheng Zhang <jszhang@kernel.org>
+To: Paul Walmsley <paul.walmsley@sifive.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Albert Ou <aou@eecs.berkeley.edu>,
+	Daniel Lezcano <daniel.lezcano@linaro.org>,
+	Thomas Gleixner <tglx@linutronix.de>
+Cc: linux-riscv@lists.infradead.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH 0/3] clocksouce/timer-clint|riscv: some improvements
+Date: Wed, 27 Mar 2024 23:34:59 +0800
+Message-ID: <20240327153502.2133-1-jszhang@kernel.org>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <SY4P282MB3063EE2CC37BD0EF2318B746C5362@SY4P282MB3063.AUSP282.PROD.OUTLOOK.COM>
-In-Reply-To: <SY4P282MB3063EE2CC37BD0EF2318B746C5362@SY4P282MB3063.AUSP282.PROD.OUTLOOK.COM>
-From: "Rafael J. Wysocki" <rafael@kernel.org>
-Date: Wed, 27 Mar 2024 16:34:55 +0100
-X-Gmail-Original-Message-ID: <CAJZ5v0iogogd+AxL5ZPU-80Nj-nQz4avkymaPRPa4SiJdvBfjg@mail.gmail.com>
-Message-ID: <CAJZ5v0iogogd+AxL5ZPU-80Nj-nQz4avkymaPRPa4SiJdvBfjg@mail.gmail.com>
-Subject: Re: [PATCH] ACPI: thermal_lib: Continue registering thermal zones
- even if trip points fail validation
-To: Stephen Horvath <s.horvath@outlook.com.au>
-Cc: "Rafael J. Wysocki" <rafael@kernel.org>, Zhang Rui <rui.zhang@intel.com>, Len Brown <lenb@kernel.org>, 
-	linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Mon, Mar 25, 2024 at 5:44=E2=80=AFAM Stephen Horvath
-<s.horvath@outlook.com.au> wrote:
->
-> Some laptops where the thermal control is handled by the EC may
-> provide trip points that fail the kernels new validation, but still have
-> working temperature sensors. An example of this is the Framework 13 AMD.
+This series is a simple improvement for timer-clint and timer-riscv:
 
-I believe that this is a regression introduced recently, so would it
-be possible to provide a pointer to the commit that introduced it?
+Add set_state_shutdown for timer-clint, this hook is used when
+switching clockevent from timer-clint to another timer.
 
-> This patch allows the thermal zone to still be registered without trip
-> points if the trip points fail validation, allowing the temperature
-> sensor to be viewed and used by the user.
->
-> Signed-off-by: Stephen Horvath <s.horvath@outlook.com.au>
-> ---
->  drivers/acpi/thermal.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
->
-> diff --git a/drivers/acpi/thermal.c b/drivers/acpi/thermal.c
-> index 302dce0b2b50..fd59e41037ec 100644
-> --- a/drivers/acpi/thermal.c
-> +++ b/drivers/acpi/thermal.c
-> @@ -903,8 +903,8 @@ static int acpi_thermal_add(struct acpi_device *devic=
-e)
->
->         if (trip =3D=3D trip_table) {
->                 pr_warn(FW_BUG "No valid trip points!\n");
-> -               result =3D -ENODEV;
-> -               goto free_memory;
-> +               /* Effectively disable polling since it is not needed */
-> +               tz->polling_frequency =3D 0;
+Add set_state_oneshot_stopped for both timer-clint and timer-riscv,
+this hook is to avoid spurious timer interrupts when KTIME_MAX is
+usd. Check commit 8fff52fd5093 ("clockevents: Introduce
+CLOCK_EVT_STATE_ONESHOT_STOPPED state") for more information.
 
-Because the thermal zone becomes effectively tripless, it should be
-registered with thermal_tripless_zone_device_register().
+Jisheng Zhang (3):
+  clocksource/drivers/timer-riscv: Add set_state_oneshot_stopped
+  clocksource/drivers/timer-clint: Add set_state_shutdown
+  clocksource/drivers/timer-clint: Add set_state_oneshot_stopped
 
->         }
->
->         result =3D acpi_thermal_register_thermal_zone(tz, trip_table,
-> --
+ drivers/clocksource/timer-clint.c | 19 +++++++++++++++----
+ drivers/clocksource/timer-riscv.c | 11 ++++++-----
+ 2 files changed, 21 insertions(+), 9 deletions(-)
+
+-- 
+2.43.0
+
 
