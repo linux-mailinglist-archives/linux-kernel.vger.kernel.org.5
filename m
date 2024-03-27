@@ -1,57 +1,58 @@
-Return-Path: <linux-kernel+bounces-121271-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-121272-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id EA48E88E489
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 15:05:58 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7BB6088E48A
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 15:06:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A05DB1F2F527
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 14:05:58 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9DB521C2BE13
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 14:06:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 19C6A1B8856;
-	Wed, 27 Mar 2024 12:28:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6ECCF1BAC28;
+	Wed, 27 Mar 2024 12:28:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="M7v+qloP"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="D9lSnCh5"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3DF63130AF3;
-	Wed, 27 Mar 2024 12:28:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 932531BAC21;
+	Wed, 27 Mar 2024 12:28:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711542518; cv=none; b=LIAvrKRpZWisc16wX0sXiZe45b0bJC1aqQXxef+R5VjUfvbNjIC9Ra4xyk52TCe05GgXW899lJ43L36iSlYSz1P2v8ujx15Rg8sVr6KrOEBjUkcWApuWEy+9aOVrTCgt1fA2iwfHi9yndlsRXvPDN4RqHhCriOnCmJNQ3R1TmTA=
+	t=1711542521; cv=none; b=fz8/b5FoT//rOpJs8p2smTTvMRNRaHGaa23SlJqXigEo9AOPJbYHeZNYzzQQOG0OijPfXedQg439uGLuVC0/keARnDwiTZqodgMSvGelkhh0egCjF/0t2vnS4dJDydbTjGzJT/18wvfxfHMqD9PcGWYEQqFWXwqlGPoaeBeyoBE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711542518; c=relaxed/simple;
-	bh=myDVq6Ecyu1kDt857GRSaya/9nojDIL7DWhZExsuCac=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=LMmUEQbH7iP7/E2yX1lJsXmEAg0mZCcuugO90TXmKDxVAW4RqwFMwtWfI5ZSYmMKMMmGF3XEtw22IzgcTW6l6ChhQRJPVCVP3PZdwhF5da/mcArA7Adal38pXONoxFx8mbHh6crJBOzugevYL+nBdQ+WoAWXOt5t8TJmUYbPrHQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=M7v+qloP; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 08D1DC43390;
-	Wed, 27 Mar 2024 12:28:36 +0000 (UTC)
+	s=arc-20240116; t=1711542521; c=relaxed/simple;
+	bh=7W1XtM2kBUqktTrSfUPjV5wHeCHmRnaDpmkFG80H1Y0=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Mxg+2hGDcHfBSWgqUV0e3U2MO0K2iE2M/PELWeay7qQ1ZeN8EnVxkh1J4izUo5jqDuEm4QsPuwJv8RUnHnMI23cHVKTtPQMnGNjHHBd3cdBd1kYC+xj4tWHGEziT77BRiD6jEXacJyRQv08J+nJLfgUkptGjyHXzJIoEbRNZSSU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=D9lSnCh5; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4D1EAC433C7;
+	Wed, 27 Mar 2024 12:28:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711542518;
-	bh=myDVq6Ecyu1kDt857GRSaya/9nojDIL7DWhZExsuCac=;
+	s=k20201202; t=1711542521;
+	bh=7W1XtM2kBUqktTrSfUPjV5wHeCHmRnaDpmkFG80H1Y0=;
 	h=From:To:Cc:Subject:Date:From;
-	b=M7v+qloPAhgKqbDGJTrRPQrPpOqqpjA3dKt6s8qPGPCXprRWjkTNdW9wIwwmr5Qw8
-	 dl1PUqIkUb6r1cyrLRo2+6dNm6kc64ir3zkwzOEsmtITG2YZdmYPmvFkEU0wboLAk+
-	 0VPgNQvd+zib5g9lOb8ViuHiflMOm0vd4MzKxY7+8JuMm81qfwAi/dCh4ZYG+gGlKs
-	 b2TZoUT9SZwViL+TuhGng1jzdT6AcuiuDPyR0pMLB6rzCjCqazfbVfQE5x/m2FYm8t
-	 ti4K1GUrYkjgrQ4NVE1qGJYRZJyryGa5GCz+y77ek8jyfCQ757nn2GcGkgYeZVsXiQ
-	 1WpcMr1UB2s7Q==
+	b=D9lSnCh5y3iaXBnZ7RZNeUY9LtgMNrtCQHkvdxrHJRyoDP4WWwqgMNztU2FGpz7Ta
+	 BktXvv3lq9Buf6zxSoFO9o1PfTqQy1+mvWt7UJUfNpH1vmVC74UWwTYnE7cYlMjONh
+	 zyHaLauN8YGuteQDLcZbflYMO+5TVuQtshZg5ssgv4LsQ838QPr5dyJAgdBth4NAyg
+	 u9wHwZCIje+SXDvv0UyGWs70HAWeViDthuEOQ07nybOTRQFT50664x7Ql4trdTvSQ4
+	 7y5sTNjDNxgUWNrHcNVLt54l6GdSZgTM4lBH3BOtFjDAh8upLF+MzzsQ+/y8v6tS8A
+	 Hgp9PhX7Eomng==
 From: Sasha Levin <sashal@kernel.org>
 To: stable@vger.kernel.org,
-	libaokun1@huawei.com
-Cc: stable@kernel.org,
-	yangerkun <yangerkun@huawei.com>,
-	Jan Kara <jack@suse.cz>,
-	Ojaswin Mujoo <ojaswin@linux.ibm.com>,
-	Theodore Ts'o <tytso@mit.edu>,
-	linux-ext4@vger.kernel.org,
+	dillon.varone@amd.com
+Cc: Mario Limonciello <mario.limonciello@amd.com>,
+	Alex Deucher <alexander.deucher@amd.com>,
+	Chaitanya Dhere <chaitanya.dhere@amd.com>,
+	Alex Hung <alex.hung@amd.com>,
+	Daniel Wheeler <daniel.wheeler@amd.com>,
+	amd-gfx@lists.freedesktop.org,
+	dri-devel@lists.freedesktop.org,
 	linux-kernel@vger.kernel.org
-Subject: FAILED: Patch "ext4: correct best extent lstart adjustment logic" failed to apply to 4.19-stable tree
-Date: Wed, 27 Mar 2024 08:28:35 -0400
-Message-ID: <20240327122836.2842901-1-sashal@kernel.org>
+Subject: FAILED: Patch "drm/amd/display: Init DPPCLK from SMU on dcn32" failed to apply to 4.19-stable tree
+Date: Wed, 27 Mar 2024 08:28:38 -0400
+Message-ID: <20240327122839.2842942-1-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -73,92 +74,153 @@ Sasha
 
 ------------------ original commit in Linus's tree ------------------
 
-From 4fbf8bc733d14bceb16dda46a3f5e19c6a9621c5 Mon Sep 17 00:00:00 2001
-From: Baokun Li <libaokun1@huawei.com>
-Date: Thu, 1 Feb 2024 22:18:45 +0800
-Subject: [PATCH] ext4: correct best extent lstart adjustment logic
+From 4f5b8d78ca43fcc695ba16c83ebfabbfe09506d6 Mon Sep 17 00:00:00 2001
+From: Dillon Varone <dillon.varone@amd.com>
+Date: Wed, 21 Feb 2024 13:21:20 -0500
+Subject: [PATCH] drm/amd/display: Init DPPCLK from SMU on dcn32
 
-When yangerkun review commit 93cdf49f6eca ("ext4: Fix best extent lstart
-adjustment logic in ext4_mb_new_inode_pa()"), it was found that the best
-extent did not completely cover the original request after adjusting the
-best extent lstart in ext4_mb_new_inode_pa() as follows:
+[WHY & HOW]
+DPPCLK ranges should be obtained from the SMU when available.
 
-  original request: 2/10(8)
-  normalized request: 0/64(64)
-  best extent: 0/9(9)
-
-When we check if best ex can be kept at start of goal, ac_o_ex.fe_logical
-is 2 less than the adjusted best extent logical end 9, so we think the
-adjustment is done. But obviously 0/9(9) doesn't cover 2/10(8), so we
-should determine here if the original request logical end is less than or
-equal to the adjusted best extent logical end.
-
-In addition, add a comment stating when adjusted best_ex will not cover
-the original request, and remove the duplicate assertion because adjusting
-lstart makes no change to b_ex.fe_len.
-
-Link: https://lore.kernel.org/r/3630fa7f-b432-7afd-5f79-781bc3b2c5ea@huawei.com
-Fixes: 93cdf49f6eca ("ext4: Fix best extent lstart adjustment logic in ext4_mb_new_inode_pa()")
-Cc:  <stable@kernel.org>
-Signed-off-by: yangerkun <yangerkun@huawei.com>
-Signed-off-by: Baokun Li <libaokun1@huawei.com>
-Reviewed-by: Jan Kara <jack@suse.cz>
-Reviewed-by: Ojaswin Mujoo <ojaswin@linux.ibm.com>
-Link: https://lore.kernel.org/r/20240201141845.1879253-1-libaokun1@huawei.com
-Signed-off-by: Theodore Ts'o <tytso@mit.edu>
+Cc: Mario Limonciello <mario.limonciello@amd.com>
+Cc: Alex Deucher <alexander.deucher@amd.com>
+Cc: stable@vger.kernel.org
+Reviewed-by: Chaitanya Dhere <chaitanya.dhere@amd.com>
+Acked-by: Alex Hung <alex.hung@amd.com>
+Signed-off-by: Dillon Varone <dillon.varone@amd.com>
+Tested-by: Daniel Wheeler <daniel.wheeler@amd.com>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 ---
- fs/ext4/mballoc.c | 17 +++++++++++------
- 1 file changed, 11 insertions(+), 6 deletions(-)
+ .../display/dc/clk_mgr/dcn32/dcn32_clk_mgr.c  | 14 ++++++++++
+ .../drm/amd/display/dc/dml2/dml2_wrapper.c    | 28 +++++++++++++------
+ .../drm/amd/display/dc/dml2/dml2_wrapper.h    |  3 ++
+ .../dc/resource/dcn32/dcn32_resource.c        |  2 ++
+ .../dc/resource/dcn321/dcn321_resource.c      |  2 ++
+ 5 files changed, 41 insertions(+), 8 deletions(-)
 
-diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
-index bce82e1e792fd..bd26f2a907512 100644
---- a/fs/ext4/mballoc.c
-+++ b/fs/ext4/mballoc.c
-@@ -5172,10 +5172,16 @@ ext4_mb_new_inode_pa(struct ext4_allocation_context *ac)
- 			.fe_len = ac->ac_orig_goal_len,
- 		};
- 		loff_t orig_goal_end = extent_logical_end(sbi, &ex);
-+		loff_t o_ex_end = extent_logical_end(sbi, &ac->ac_o_ex);
+diff --git a/drivers/gpu/drm/amd/display/dc/clk_mgr/dcn32/dcn32_clk_mgr.c b/drivers/gpu/drm/amd/display/dc/clk_mgr/dcn32/dcn32_clk_mgr.c
+index 668f05c8654ef..bec252e1dd27a 100644
+--- a/drivers/gpu/drm/amd/display/dc/clk_mgr/dcn32/dcn32_clk_mgr.c
++++ b/drivers/gpu/drm/amd/display/dc/clk_mgr/dcn32/dcn32_clk_mgr.c
+@@ -216,6 +216,16 @@ void dcn32_init_clocks(struct clk_mgr *clk_mgr_base)
+ 	if (clk_mgr_base->bw_params->dc_mode_limit.dispclk_mhz > 1950)
+ 		clk_mgr_base->bw_params->dc_mode_limit.dispclk_mhz = 1950;
  
--		/* we can't allocate as much as normalizer wants.
--		 * so, found space must get proper lstart
--		 * to cover original request */
-+		/*
-+		 * We can't allocate as much as normalizer wants, so we try
-+		 * to get proper lstart to cover the original request, except
-+		 * when the goal doesn't cover the original request as below:
-+		 *
-+		 * orig_ex:2045/2055(10), isize:8417280 -> normalized:0/2048
-+		 * best_ex:0/200(200) -> adjusted: 1848/2048(200)
-+		 */
- 		BUG_ON(ac->ac_g_ex.fe_logical > ac->ac_o_ex.fe_logical);
- 		BUG_ON(ac->ac_g_ex.fe_len < ac->ac_o_ex.fe_len);
- 
-@@ -5187,7 +5193,7 @@ ext4_mb_new_inode_pa(struct ext4_allocation_context *ac)
- 		 * 1. Check if best ex can be kept at end of goal (before
- 		 *    cr_best_avail trimmed it) and still cover original start
- 		 * 2. Else, check if best ex can be kept at start of goal and
--		 *    still cover original start
-+		 *    still cover original end
- 		 * 3. Else, keep the best ex at start of original request.
- 		 */
- 		ex.fe_len = ac->ac_b_ex.fe_len;
-@@ -5197,7 +5203,7 @@ ext4_mb_new_inode_pa(struct ext4_allocation_context *ac)
- 			goto adjust_bex;
- 
- 		ex.fe_logical = ac->ac_g_ex.fe_logical;
--		if (ac->ac_o_ex.fe_logical < extent_logical_end(sbi, &ex))
-+		if (o_ex_end <= extent_logical_end(sbi, &ex))
- 			goto adjust_bex;
- 
- 		ex.fe_logical = ac->ac_o_ex.fe_logical;
-@@ -5205,7 +5211,6 @@ ext4_mb_new_inode_pa(struct ext4_allocation_context *ac)
- 		ac->ac_b_ex.fe_logical = ex.fe_logical;
- 
- 		BUG_ON(ac->ac_o_ex.fe_logical < ac->ac_b_ex.fe_logical);
--		BUG_ON(ac->ac_o_ex.fe_len > ac->ac_b_ex.fe_len);
- 		BUG_ON(extent_logical_end(sbi, &ex) > orig_goal_end);
++	/* DPPCLK */
++	dcn32_init_single_clock(clk_mgr, PPCLK_DPPCLK,
++			&clk_mgr_base->bw_params->clk_table.entries[0].dppclk_mhz,
++			&num_entries_per_clk->num_dppclk_levels);
++	num_levels = num_entries_per_clk->num_dppclk_levels;
++	clk_mgr_base->bw_params->dc_mode_limit.dppclk_mhz = dcn30_smu_get_dc_mode_max_dpm_freq(clk_mgr, PPCLK_DPPCLK);
++	//HW recommends limit of 1950 MHz in display clock for all DCN3.2.x
++	if (clk_mgr_base->bw_params->dc_mode_limit.dppclk_mhz > 1950)
++		clk_mgr_base->bw_params->dc_mode_limit.dppclk_mhz = 1950;
++
+ 	if (num_entries_per_clk->num_dcfclk_levels &&
+ 			num_entries_per_clk->num_dtbclk_levels &&
+ 			num_entries_per_clk->num_dispclk_levels)
+@@ -240,6 +250,10 @@ void dcn32_init_clocks(struct clk_mgr *clk_mgr_base)
+ 					= khz_to_mhz_ceil(clk_mgr_base->ctx->dc->debug.min_dpp_clk_khz);
  	}
+ 
++	for (i = 0; i < num_levels; i++)
++		if (clk_mgr_base->bw_params->clk_table.entries[i].dppclk_mhz > 1950)
++			clk_mgr_base->bw_params->clk_table.entries[i].dppclk_mhz = 1950;
++
+ 	/* Get UCLK, update bounding box */
+ 	clk_mgr_base->funcs->get_memclk_states_from_smu(clk_mgr_base);
+ 
+diff --git a/drivers/gpu/drm/amd/display/dc/dml2/dml2_wrapper.c b/drivers/gpu/drm/amd/display/dc/dml2/dml2_wrapper.c
+index 2a58a7687bdb5..72cca367062e1 100644
+--- a/drivers/gpu/drm/amd/display/dc/dml2/dml2_wrapper.c
++++ b/drivers/gpu/drm/amd/display/dc/dml2/dml2_wrapper.c
+@@ -703,13 +703,8 @@ static inline struct dml2_context *dml2_allocate_memory(void)
+ 	return (struct dml2_context *) kzalloc(sizeof(struct dml2_context), GFP_KERNEL);
+ }
+ 
+-bool dml2_create(const struct dc *in_dc, const struct dml2_configuration_options *config, struct dml2_context **dml2)
++static void dml2_init(const struct dc *in_dc, const struct dml2_configuration_options *config, struct dml2_context **dml2)
+ {
+-	// Allocate Mode Lib Ctx
+-	*dml2 = dml2_allocate_memory();
+-
+-	if (!(*dml2))
+-		return false;
+ 
+ 	// Store config options
+ 	(*dml2)->config = *config;
+@@ -737,9 +732,18 @@ bool dml2_create(const struct dc *in_dc, const struct dml2_configuration_options
+ 	initialize_dml2_soc_bbox(*dml2, in_dc, &(*dml2)->v20.dml_core_ctx.soc);
+ 
+ 	initialize_dml2_soc_states(*dml2, in_dc, &(*dml2)->v20.dml_core_ctx.soc, &(*dml2)->v20.dml_core_ctx.states);
++}
++
++bool dml2_create(const struct dc *in_dc, const struct dml2_configuration_options *config, struct dml2_context **dml2)
++{
++	// Allocate Mode Lib Ctx
++	*dml2 = dml2_allocate_memory();
++
++	if (!(*dml2))
++		return false;
++
++	dml2_init(in_dc, config, dml2);
+ 
+-	/*Initialize DML20 instance which calls dml2_core_create, and core_dcn3_populate_informative*/
+-	//dml2_initialize_instance(&(*dml_ctx)->v20.dml_init);
+ 	return true;
+ }
+ 
+@@ -779,3 +783,11 @@ bool dml2_create_copy(struct dml2_context **dst_dml2,
+ 
+ 	return true;
+ }
++
++void dml2_reinit(const struct dc *in_dc,
++				 const struct dml2_configuration_options *config,
++				 struct dml2_context **dml2)
++{
++
++	dml2_init(in_dc, config, dml2);
++}
+diff --git a/drivers/gpu/drm/amd/display/dc/dml2/dml2_wrapper.h b/drivers/gpu/drm/amd/display/dc/dml2/dml2_wrapper.h
+index ee0eb184eb6d7..cc662d682fd4d 100644
+--- a/drivers/gpu/drm/amd/display/dc/dml2/dml2_wrapper.h
++++ b/drivers/gpu/drm/amd/display/dc/dml2/dml2_wrapper.h
+@@ -214,6 +214,9 @@ void dml2_copy(struct dml2_context *dst_dml2,
+ 	struct dml2_context *src_dml2);
+ bool dml2_create_copy(struct dml2_context **dst_dml2,
+ 	struct dml2_context *src_dml2);
++void dml2_reinit(const struct dc *in_dc,
++				 const struct dml2_configuration_options *config,
++				 struct dml2_context **dml2);
+ 
+ /*
+  * dml2_validate - Determines if a display configuration is supported or not.
+diff --git a/drivers/gpu/drm/amd/display/dc/resource/dcn32/dcn32_resource.c b/drivers/gpu/drm/amd/display/dc/resource/dcn32/dcn32_resource.c
+index f844f57ecc49b..ce1754cc1f463 100644
+--- a/drivers/gpu/drm/amd/display/dc/resource/dcn32/dcn32_resource.c
++++ b/drivers/gpu/drm/amd/display/dc/resource/dcn32/dcn32_resource.c
+@@ -1931,6 +1931,8 @@ static void dcn32_update_bw_bounding_box(struct dc *dc, struct clk_bw_params *bw
+ {
+ 	DC_FP_START();
+ 	dcn32_update_bw_bounding_box_fpu(dc, bw_params);
++	if (dc->debug.using_dml2 && dc->current_state && dc->current_state->bw_ctx.dml2)
++		dml2_reinit(dc, &dc->dml2_options, &dc->current_state->bw_ctx.dml2);
+ 	DC_FP_END();
+ }
+ 
+diff --git a/drivers/gpu/drm/amd/display/dc/resource/dcn321/dcn321_resource.c b/drivers/gpu/drm/amd/display/dc/resource/dcn321/dcn321_resource.c
+index b356fed1726d9..296a0a8e71459 100644
+--- a/drivers/gpu/drm/amd/display/dc/resource/dcn321/dcn321_resource.c
++++ b/drivers/gpu/drm/amd/display/dc/resource/dcn321/dcn321_resource.c
+@@ -1581,6 +1581,8 @@ static void dcn321_update_bw_bounding_box(struct dc *dc, struct clk_bw_params *b
+ {
+ 	DC_FP_START();
+ 	dcn321_update_bw_bounding_box_fpu(dc, bw_params);
++	if (dc->debug.using_dml2 && dc->current_state && dc->current_state->bw_ctx.dml2)
++		dml2_reinit(dc, &dc->dml2_options, &dc->current_state->bw_ctx.dml2);
+ 	DC_FP_END();
+ }
  
 -- 
 2.43.0
