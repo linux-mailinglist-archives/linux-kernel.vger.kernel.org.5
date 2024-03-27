@@ -1,70 +1,70 @@
-Return-Path: <linux-kernel+bounces-120307-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-120308-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4488988D58F
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 05:51:26 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8E32D88D590
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 05:51:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 564A3B2307A
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 04:51:23 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4E2552C217D
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 04:51:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5886C175AA;
-	Wed, 27 Mar 2024 04:50:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4DC051BF35;
+	Wed, 27 Mar 2024 04:50:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=sifive.com header.i=@sifive.com header.b="ivDqwdIa"
-Received: from mail-pf1-f182.google.com (mail-pf1-f182.google.com [209.85.210.182])
+	dkim=pass (2048-bit key) header.d=sifive.com header.i=@sifive.com header.b="nwXZug69"
+Received: from mail-ot1-f44.google.com (mail-ot1-f44.google.com [209.85.210.44])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 193DD1172C
-	for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 04:50:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 30CDD17565
+	for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 04:50:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711515048; cv=none; b=KctcYKumxOnH+084tZ1DneRkJ258XFsnWeqmC94kHJMBtKoDahgk9xdbYgNU9nN7DNp/kZiMxqVK5bPkT4+1XzTWqPwBnb8n4dsOaMzR0aJk9SeSEYy1PKkU1EN0CZF8/SdUxrkBH5DIegadf6gMNK+4AjKE9jrIXodaDlBx0PE=
+	t=1711515050; cv=none; b=mRpoa/do7sKCb5cgvitWt/RuTpU7xvubwqyW7zz9IQ4yd50T4L02GoL6g7NJXEQv0/zm67LjPojrYG4e/E1IA3qAYv3+9N6GCjB1pHjo4IT33k0m9/eZWM6uHQUJu/ZJUXwY+q2attUCS0QFD8cqfTE/FmuuYS14Ql+Ly+6ghZU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711515048; c=relaxed/simple;
-	bh=R5LG+o542v8AgH1AF2U8/WvJmQDWsmGeEqymqdAXiWA=;
+	s=arc-20240116; t=1711515050; c=relaxed/simple;
+	bh=ya97YfXpoRK/xYSjnVMkP8sXm9+Mh9TCgaVbVD32L2Y=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=egTOt/aKAoRKlrbK9wrIXMBppY+J1cKNHZvsDLmGL11t8Ar8RWyKdWv1anPk1NeZsd92p/jgoe6YR6CXkIi5mm0pkB93fYL2IwzU8Hj1X4vGe/yE7XcbRwvmmHOt/aJP+CXK9kJ6L8GS701DzpJBypG3sN+BGYW4UFzBQQySfkE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=sifive.com; spf=pass smtp.mailfrom=sifive.com; dkim=pass (2048-bit key) header.d=sifive.com header.i=@sifive.com header.b=ivDqwdIa; arc=none smtp.client-ip=209.85.210.182
+	 MIME-Version; b=Jxmp1W/fJrYjummRNqhLBMiZ6AmMwLtdtBrbyhZCm5NNA+LJaeaN2SsNk+WU38JWDNgHwJTOfkQ72zansm4XAk5Q1ij6L44bIDbOTGXSeKkM5JghDVkgKMvyOKK/gkMi+q+YsQo/Ki2NP7reihJeKQzEYSDPPNsMM9/7LAlDStA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=sifive.com; spf=pass smtp.mailfrom=sifive.com; dkim=pass (2048-bit key) header.d=sifive.com header.i=@sifive.com header.b=nwXZug69; arc=none smtp.client-ip=209.85.210.44
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=sifive.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sifive.com
-Received: by mail-pf1-f182.google.com with SMTP id d2e1a72fcca58-6ea9a605ca7so381411b3a.0
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 21:50:46 -0700 (PDT)
+Received: by mail-ot1-f44.google.com with SMTP id 46e09a7af769-6e67b5d6dd8so3499275a34.2
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 21:50:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sifive.com; s=google; t=1711515046; x=1712119846; darn=vger.kernel.org;
+        d=sifive.com; s=google; t=1711515048; x=1712119848; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=2fwmOl0CxtBfQxlaR9NQyd7IGBnsfsK+MLDyKM1aSvU=;
-        b=ivDqwdIaeIS4u4I3npdDBQdffMhJJQeh20WWT6pm0Q4PdS9Cs0oJ48UhUZlmj7Rd3P
-         fKN8HAdCH7xJAl7EqUivq5maekwcBzMV1CRmt0h9/A2i694iV6m6i59gotVv+LZQerJ+
-         8fGlwFvAm0JuGVnzxRsF57Bunob2b5RhdAdQyvyat2qcU1pfgsc6tFdMaYkp5Tg7JyiC
-         6QFK+X+qzhSF+8KQa998g8UCBymSwfGaDUw3zK2kVJQHsmE3nc9yeY5EAfeVhGPIFV/6
-         pjxqFhY4fCy1HOd5HBduDHIbFGROdvqKjb6dt4YN5KxgBbLv9Yz3qTsKM2HdmOGvdeV3
-         h9Vw==
+        bh=8r90DmKfTzo12+b9oHF/xBbsXVRSBOTytxxA308aMe8=;
+        b=nwXZug69+IWYGlBdBnH+/S0tnz8xTjrFivzLBhkfZu916ZIO7k8frGmvIrXU6F2BEB
+         TP7b3LdkOt7LhwjHG88NAsgbK7Eg4byv2iaCrOM2j1gXbiXT5d/hjq0oeG3+n8ySCUcw
+         PRaMjJSsIolgo1DuhZI/p0RG+VCfaEe75TVpuBTJkDEDdQ5vl8sN60j3rDaCEtCq1sph
+         IHM7ajqVmrmigUnMAkt88+9F/xhu1vul6dUp5Rjl5Pqgdt0Z3rtyZArpNT25fqDX6gI7
+         pVP2hDuBBSvnOobpHnjkORXkP7mSMiiqXLV7e9JMw46t0B4ou0VarDBYl53xrACdz2X5
+         Dy8w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711515046; x=1712119846;
+        d=1e100.net; s=20230601; t=1711515048; x=1712119848;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=2fwmOl0CxtBfQxlaR9NQyd7IGBnsfsK+MLDyKM1aSvU=;
-        b=HnBirnpU2Xf2gTZC6udruUNWc36K2zI3M646JOIYn82hF0oVLPECJDQrBX56/+Xyfb
-         ZK07Ck9qfAkRZI9llM42jdnE+/s6L7YQBPLWf0R3ktRyajqRXfAjX5Tu1DXdDxhtXY4s
-         zE0s4JYIkTId3Uhq/pK5G3jzzy+AsFlu1mYCS3laCeYu3j9jfjLI1n+IMNTrttvTisUF
-         B+V648mebULeznRKw9iKXea8NYt6GbazCZ3CWTgOLaITVQ/aVrCxlvPTstoSzOe3FV1S
-         oPz3dEjF1IpQlDPEQl9tgB1sDSKivPw+4z/MKYHQ3WEWCdocn5MAUxOFVXjaVax+S20a
-         Dhqw==
-X-Gm-Message-State: AOJu0Yzd2Tej93u/CjKWksCgy5neNBh6FE8eS3m3DJ61vx/4QwpeohZA
-	gb1R9NU5f+TEV49N8Y/OmwL8HDQ24OYMigQqUJ89/sxZQ0+HIEk48lc70nnMhTA=
-X-Google-Smtp-Source: AGHT+IGHAmpkwghveoQCxqBYVJp1RVR15SSZ2ypXvD8LXUp94lm0FkTd5l29fFm2kWdFZwCld1auyw==
-X-Received: by 2002:a05:6a20:3d11:b0:1a3:6a11:4898 with SMTP id y17-20020a056a203d1100b001a36a114898mr4924839pzi.3.1711515046438;
-        Tue, 26 Mar 2024 21:50:46 -0700 (PDT)
+        bh=8r90DmKfTzo12+b9oHF/xBbsXVRSBOTytxxA308aMe8=;
+        b=g7gai5jqF5m4sEJiabBU8umyFK2lWIOAVudSkl+5OYq2kuo/8AuQIPBsQNFxwUrOXg
+         rZQ9IX33CdPw0/zzPnM3uB1OEm75cfNWzCujxeB36uRSwyDBIPXzuJN6Om7I9BOyrEiT
+         /db/YzvNRjJ1F+4UlRZCN4yMO7nFRRmrcnWoV8ED0oMou9g00EwGJYnUmd97qsOK4TAf
+         O/ultPR+4hKeBAbKyyrc64plDkV/0Lc7MkcY9nO7BPdQLGpvVzYEbmu/ebo6xtMg36Xh
+         zPdFJFd95LPy1OOv2gbKZSVtuQcyYBhQV2aku7YYNQhIfqJ0Vag+N6Ymwhq7hqiuWGYZ
+         9o1w==
+X-Gm-Message-State: AOJu0YyCS/D762bV8UEOsSi/metpt5jPv4msbVWf0mt911In6SNBfdW7
+	27L73H041F8LHMxt8fRIl4T6Q5i6/1WbEjmLMagjhGnlA9R7y2wnxLlf/zEOSEs=
+X-Google-Smtp-Source: AGHT+IE/gtW/a2EQvN+qhLpDTcQ1EZrF+9VNRUlZn60iPj1iarim6P+gGyjDapgmLmO07m/XYQ3rgg==
+X-Received: by 2002:a05:6830:1e72:b0:6e6:7db1:b444 with SMTP id m18-20020a0568301e7200b006e67db1b444mr154078otr.36.1711515048291;
+        Tue, 26 Mar 2024 21:50:48 -0700 (PDT)
 Received: from sw06.internal.sifive.com ([4.53.31.132])
-        by smtp.gmail.com with ESMTPSA id e31-20020a63501f000000b005e4666261besm8351500pgb.50.2024.03.26.21.50.45
+        by smtp.gmail.com with ESMTPSA id e31-20020a63501f000000b005e4666261besm8351500pgb.50.2024.03.26.21.50.46
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Mar 2024 21:50:45 -0700 (PDT)
+        Tue, 26 Mar 2024 21:50:47 -0700 (PDT)
 From: Samuel Holland <samuel.holland@sifive.com>
 To: Palmer Dabbelt <palmer@dabbelt.com>,
 	linux-riscv@lists.infradead.org
@@ -74,9 +74,9 @@ Cc: linux-kernel@vger.kernel.org,
 	Jisheng Zhang <jszhang@kernel.org>,
 	Yunhui Cui <cuiyunhui@bytedance.com>,
 	Samuel Holland <samuel.holland@sifive.com>
-Subject: [PATCH v6 04/13] riscv: mm: Broadcast kernel TLB flushes only when needed
-Date: Tue, 26 Mar 2024 21:49:45 -0700
-Message-ID: <20240327045035.368512-5-samuel.holland@sifive.com>
+Subject: [PATCH v6 05/13] riscv: Only send remote fences when some other CPU is online
+Date: Tue, 26 Mar 2024 21:49:46 -0700
+Message-ID: <20240327045035.368512-6-samuel.holland@sifive.com>
 X-Mailer: git-send-email 2.43.1
 In-Reply-To: <20240327045035.368512-1-samuel.holland@sifive.com>
 References: <20240327045035.368512-1-samuel.holland@sifive.com>
@@ -88,12 +88,9 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-__flush_tlb_range() avoids broadcasting TLB flushes when an mm context
-is only active on the local CPU. Apply this same optimization to TLB
-flushes of kernel memory when only one CPU is online. This check can be
-constant-folded when SMP is disabled.
+If no other CPU is online, a local cache or TLB flush is sufficient.
+These checks can be constant-folded when SMP is disabled.
 
-Reviewed-by: Alexandre Ghiti <alexghiti@rivosinc.com>
 Signed-off-by: Samuel Holland <samuel.holland@sifive.com>
 ---
 
@@ -102,50 +99,40 @@ Signed-off-by: Samuel Holland <samuel.holland@sifive.com>
 Changes in v4:
  - New patch for v4
 
- arch/riscv/mm/tlbflush.c | 18 +++++-------------
- 1 file changed, 5 insertions(+), 13 deletions(-)
+ arch/riscv/mm/cacheflush.c | 4 +++-
+ arch/riscv/mm/tlbflush.c   | 4 +++-
+ 2 files changed, 6 insertions(+), 2 deletions(-)
 
+diff --git a/arch/riscv/mm/cacheflush.c b/arch/riscv/mm/cacheflush.c
+index d76fc73e594b..f5be1fec8191 100644
+--- a/arch/riscv/mm/cacheflush.c
++++ b/arch/riscv/mm/cacheflush.c
+@@ -21,7 +21,9 @@ void flush_icache_all(void)
+ {
+ 	local_flush_icache_all();
+ 
+-	if (riscv_use_sbi_for_rfence())
++	if (num_online_cpus() < 2)
++		return;
++	else if (riscv_use_sbi_for_rfence())
+ 		sbi_remote_fence_i(NULL);
+ 	else
+ 		on_each_cpu(ipi_remote_fence_i, NULL, 1);
 diff --git a/arch/riscv/mm/tlbflush.c b/arch/riscv/mm/tlbflush.c
-index 0435605b07d0..da821315d43e 100644
+index da821315d43e..0901aa47b58f 100644
 --- a/arch/riscv/mm/tlbflush.c
 +++ b/arch/riscv/mm/tlbflush.c
-@@ -103,22 +103,15 @@ static void __flush_tlb_range(struct cpumask *cmask, unsigned long asid,
- 			      unsigned long start, unsigned long size,
- 			      unsigned long stride)
+@@ -79,7 +79,9 @@ static void __ipi_flush_tlb_all(void *info)
+ 
+ void flush_tlb_all(void)
  {
--	bool broadcast;
-+	unsigned int cpu;
- 
- 	if (cpumask_empty(cmask))
- 		return;
- 
--	if (cmask != cpu_online_mask) {
--		unsigned int cpuid;
-+	cpu = get_cpu();
- 
--		cpuid = get_cpu();
--		/* check if the tlbflush needs to be sent to other CPUs */
--		broadcast = cpumask_any_but(cmask, cpuid) < nr_cpu_ids;
--	} else {
--		broadcast = true;
--	}
--
--	if (!broadcast) {
-+	/* Check if the TLB flush needs to be sent to other CPUs. */
-+	if (cpumask_any_but(cmask, cpu) >= nr_cpu_ids) {
- 		local_flush_tlb_range_asid(start, size, stride, asid);
- 	} else if (riscv_use_sbi_for_rfence()) {
- 		sbi_remote_sfence_vma_asid(cmask, start, size, asid);
-@@ -132,8 +125,7 @@ static void __flush_tlb_range(struct cpumask *cmask, unsigned long asid,
- 		on_each_cpu_mask(cmask, __ipi_flush_tlb_range_asid, &ftd, 1);
- 	}
- 
--	if (cmask != cpu_online_mask)
--		put_cpu();
-+	put_cpu();
- }
- 
- static inline unsigned long get_mm_asid(struct mm_struct *mm)
+-	if (riscv_use_sbi_for_rfence())
++	if (num_online_cpus() < 2)
++		local_flush_tlb_all();
++	else if (riscv_use_sbi_for_rfence())
+ 		sbi_remote_sfence_vma_asid(NULL, 0, FLUSH_TLB_MAX_SIZE, FLUSH_TLB_NO_ASID);
+ 	else
+ 		on_each_cpu(__ipi_flush_tlb_all, NULL, 1);
 -- 
 2.43.1
 
