@@ -1,122 +1,204 @@
-Return-Path: <linux-kernel+bounces-121085-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-121089-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 23AD288E233
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 14:21:39 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7D86F88E23A
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 14:22:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CC109287104
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 13:21:37 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AD1F61C2A921
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 13:22:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B591416D9B4;
-	Wed, 27 Mar 2024 12:20:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="oYf7irH6"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0443616D9A8;
-	Wed, 27 Mar 2024 12:20:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 26A8E16E885;
+	Wed, 27 Mar 2024 12:20:50 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0334E16E87B;
+	Wed, 27 Mar 2024 12:20:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711542040; cv=none; b=ZdMdgqEefyclgo6ur/R7FnT/KuZykRvzWlvTfPnmdAx/yORJPlwmuoagD9w0kVN2dFTabPg0T3ZcMNzMnQmJsrRIa7chhGWkbgsbI1aG64uDlUF3FAr3QnYv9LiEKHCA25lgsM+9ahZNMXS62tiyo9t9Fpu0zvYloFWyzbWTqAM=
+	t=1711542049; cv=none; b=g43wlYWsVa41qP6oixOzfaHofFO8dcswXvdcHns4bWuoh5jj9db4Fs3qe5bbu96SY20R9nB6369ZcoBrETuzLCbOtO8vrHOtR72byNxOQTwa3VWpz9KQRjIzhu14KvlQQxWre6W98OxGyJYKCYKxY5Z0mP4u9qvHavnWgCWEhkY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711542040; c=relaxed/simple;
-	bh=YjlmFgL1wRu2w2PgjIIiHqNf7JbJuwD/bCtZgF1EcoE=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=s1Rz9xbmLzNkzHIZ9WUa8CHCvJzqxkpNqvABWh2m+1/So5Kjx6AsT0ynu/2yhZwoDJ0qNey3ikacprvxLGUgjy8zpFwmRDT6fTHIDoMocTQ/geaB9qMNzY7MfTW3MG2aqyG5SFjAK5AifdRsBzESSiJF8IddqsFAAPBSJpaQJVs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=oYf7irH6; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CC613C433C7;
-	Wed, 27 Mar 2024 12:20:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711542039;
-	bh=YjlmFgL1wRu2w2PgjIIiHqNf7JbJuwD/bCtZgF1EcoE=;
-	h=From:To:Cc:Subject:Date:From;
-	b=oYf7irH6hprsBTv8v0l3s+0n+PhuHzp+BOcYjNskZujO2OHS0I3VkOvyZvFMmMsbH
-	 5cDtiSTDD/GW+laD14uXOV69I3sRYlyrobTNX46adBA9vnbx76I2L6iO3orlFMCfQD
-	 SGJzC0m5/xXTkbkPG9ZmeMJpaL0+c7aS/B+E0uVZVcs/tskJl4TD0yn2C4Ooza1sjo
-	 UrpRGy8syPDN4hobJUTzzIR8rkCmAsmy6uXxPAILc06aXcjaJxHNjqTySbZcwscUcP
-	 NKJm5XXUYCr3e+sLf3I0e7pujEEHZg3mwU+0bu/aMsd9XnQIJ5T7YpWsAy/Mn4DN6o
-	 by6G2+I0v/pMg==
-From: Sasha Levin <sashal@kernel.org>
-To: stable@vger.kernel.org,
-	josip.pavic@amd.com
-Cc: Mario Limonciello <mario.limonciello@amd.com>,
-	Alex Deucher <alexander.deucher@amd.com>,
-	Anthony Koo <anthony.koo@amd.com>,
-	Alex Hung <alex.hung@amd.com>,
-	Daniel Wheeler <daniel.wheeler@amd.com>,
-	amd-gfx@lists.freedesktop.org,
-	dri-devel@lists.freedesktop.org,
-	linux-kernel@vger.kernel.org
-Subject: FAILED: Patch "drm/amd/display: Allow dirty rects to be sent to dmub when abm is active" failed to apply to 5.10-stable tree
-Date: Wed, 27 Mar 2024 08:20:37 -0400
-Message-ID: <20240327122038.2836192-1-sashal@kernel.org>
-X-Mailer: git-send-email 2.43.0
+	s=arc-20240116; t=1711542049; c=relaxed/simple;
+	bh=LRqKiwGQKW7zOHKPcIfgNzsz56fEdVAyupC8tElZlts=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=qgq3Jkm/ol3l6iZYTvNjPTm0jfHCGI4DfBepHpgje4rZfkEmoBiTeH0+BbDeGSrWZ/G7xRFg3dfHSE8XwqkRaPJLmNhHlBFNPdq1weeeL1aM+V+uEFlZfWZJ5QmSb7U8gFUp35GMZcseULLRi6gyzkQQn/woEec88oXbTbW8KU8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 8463E2F4;
+	Wed, 27 Mar 2024 05:21:21 -0700 (PDT)
+Received: from pluto (unknown [172.31.20.19])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 934533F694;
+	Wed, 27 Mar 2024 05:20:45 -0700 (PDT)
+Date: Wed, 27 Mar 2024 12:20:39 +0000
+From: Cristian Marussi <cristian.marussi@arm.com>
+To: Dan Carpenter <dan.carpenter@linaro.org>
+Cc: "Peng Fan (OSS)" <peng.fan@oss.nxp.com>,
+	Sudeep Holla <sudeep.holla@arm.com>, Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Linus Walleij <linus.walleij@linaro.org>,
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+	devicetree@vger.kernel.org, linux-gpio@vger.kernel.org,
+	Peng Fan <peng.fan@nxp.com>,
+	Oleksii Moisieiev <oleksii_moisieiev@epam.com>
+Subject: Re: [PATCH v6 3/4] firmware: arm_scmi: Add SCMI v3.2 pincontrol
+ protocol basic support
+Message-ID: <ZgQPF_jT07hudU1H@pluto>
+References: <20240323-pinctrl-scmi-v6-0-a895243257c0@nxp.com>
+ <20240323-pinctrl-scmi-v6-3-a895243257c0@nxp.com>
+ <4879ad5d-165c-4118-81f7-8f6348a5a5d4@moroto.mountain>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Patchwork-Hint: ignore
-X-stable: review
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <4879ad5d-165c-4118-81f7-8f6348a5a5d4@moroto.mountain>
 
-The patch below does not apply to the 5.10-stable tree.
-If someone wants it applied there, or to any other stable or longterm
-tree, then please email the backport, including the original git commit
-id to <stable@vger.kernel.org>.
+On Wed, Mar 27, 2024 at 01:46:11PM +0300, Dan Carpenter wrote:
+> Looks really nice.  Just a few small comments below.
+> 
+
+Hi,
+
+I aa having a look at this today (and try to retest it), just a quick remark
+down below...
+
+> On Sat, Mar 23, 2024 at 08:15:16PM +0800, Peng Fan (OSS) wrote:
+> > +
+> > +struct scmi_msg_func_set {
+> > +	__le32 identifier;
+> > +	__le32 function_id;
+> > +	__le32 flags;
+> > +};
+> 
+> This scmi_msg_func_set struct is unused.  Delete.
+> 
+> > +static void
+> > +iter_pinctrl_settings_get_prepare_message(void *message, u32 desc_index,
+> > +					  const void *priv)
+> > +{
+> > +	struct scmi_msg_settings_get *msg = message;
+> > +	const struct scmi_settings_get_ipriv *p = priv;
+> > +	u32 attributes;
+> > +
+> > +	attributes = FIELD_PREP(CONFIG_FLAG_MASK, p->flag) |
+> > +		     FIELD_PREP(SELECTOR_MASK, p->type);
+> > +
+> > +	if (p->flag == 1)
+> > +		attributes |= FIELD_PREP(SKIP_CONFIGS_MASK, desc_index);
+> > +	else if (!p->flag)
+> 
+> This is a nit-pick but could you change these !p->flag conditions to
+> p->flag == 0?  It's a number zero, not a bool.
+> 
+> > +		attributes |= FIELD_PREP(CONFIG_TYPE_MASK, p->config_types[0]);
+> > +
+> > +	msg->attributes = cpu_to_le32(attributes);
+> > +	msg->identifier = cpu_to_le32(p->selector);
+> > +}
+> > +
+> > +static int
+> > +iter_pinctrl_settings_get_update_state(struct scmi_iterator_state *st,
+> > +				       const void *response, void *priv)
+> > +{
+> > +	const struct scmi_resp_settings_get *r = response;
+> > +	struct scmi_settings_get_ipriv *p = priv;
+> > +
+> > +	if (p->flag == 1) {
+> > +		st->num_returned = le32_get_bits(r->num_configs, GENMASK(7, 0));
+> > +		st->num_remaining = le32_get_bits(r->num_configs,
+> > +						  GENMASK(31, 24));
+> > +	} else {
+> > +		st->num_returned = 1;
+> > +		st->num_remaining = 0;
+> > +	}
+> > +
+> > +	return 0;
+> > +}
+> > +
+> > +static int
+> > +iter_pinctrl_settings_get_process_response(const struct scmi_protocol_handle *ph,
+> > +				       const void *response,
+> > +				       struct scmi_iterator_state *st,
+> > +				       void *priv)
+> > +{
+> > +	const struct scmi_resp_settings_get *r = response;
+> > +	struct scmi_settings_get_ipriv *p = priv;
+> > +
+> > +	if (!p->flag) {
+> 
+> 
+> if (p->flag == 0) {
+> 
+> > +		if (p->config_types[0] !=
+> > +		    le32_get_bits(r->configs[st->loop_idx * 2], GENMASK(7, 0)))
+> > +			return -EINVAL;
+> > +	} else if (p->flag == 1) {
+> > +		p->config_types[st->desc_index + st->loop_idx] =
+> > +			le32_get_bits(r->configs[st->loop_idx * 2],
+> > +				      GENMASK(7, 0));
+> > +	} else if (p->flag == 2) {
+> > +		return 0;
+> > +	}
+> > +
+> > +	p->config_values[st->desc_index + st->loop_idx] =
+> > +		le32_to_cpu(r->configs[st->loop_idx * 2 + 1]);
+> > +
+> > +	return 0;
+> > +}
+> > +
+> > +static int
+> > +scmi_pinctrl_settings_get(const struct scmi_protocol_handle *ph, u32 selector,
+> > +			  enum scmi_pinctrl_selector_type type,
+> > +			  enum scmi_pinctrl_conf_type config_type,
+> > +			  u32 *config_value)
+> > +{
+> > +	int ret;
+> > +	void *iter;
+> > +	struct scmi_iterator_ops ops = {
+> > +		.prepare_message = iter_pinctrl_settings_get_prepare_message,
+> > +		.update_state = iter_pinctrl_settings_get_update_state,
+> > +		.process_response = iter_pinctrl_settings_get_process_response,
+> > +	};
+> > +	struct scmi_settings_get_ipriv ipriv = {
+> > +		.selector = selector,
+> > +		.type = type,
+> > +		.flag = 0,
+> 
+> ->flag should be 0-2.
+> 
+
+The .flag in this priv structure is for 'configuring' the iterators in
+the SCMI core to parse a multi-part response, so (looking at how the
+iterators functs are implemented above) setting it here to zero
+means issuing a SETTINGS_GET with attributes.config_flag[19:18] == 0,
+that in turn means requesting just a single config_value to be read...
+
+..if you want to support the other 'flavours' of SETTINGS_GET
+(multiple configs & selected_func) you will have to extend the signature
+of this function to optionally select to readback multiple configs (and to
+allow the return of such multiple config_values) and/or optionally request
+to return the selected function....
+
+..or maybe add distinct wrapper protocol_ops just for these flavours...
+
+Anyway, till now in this series it was avoided to add such 'flavours'
+support (e.g. for multiple configs) since there are no users for the
+multi-config and function selected in the pinctrl driver...so no way to test..
+
+Will the Linux GPIO driver need these ? Should we delay anyway the
+addition of the support of such variants of SETTING_GET for when a real
+user like GPIO driveer appears ?
+
+..anyway @Peng please add a comment somewhere explaining how p->flag is
+used to configure the type of SETTINGS_GET
 
 Thanks,
-Sasha
-
------------------- original commit in Linus's tree ------------------
-
-From 7fb19d9510937121a1f285894cffd30bc96572e3 Mon Sep 17 00:00:00 2001
-From: Josip Pavic <josip.pavic@amd.com>
-Date: Fri, 9 Feb 2024 16:05:18 -0500
-Subject: [PATCH] drm/amd/display: Allow dirty rects to be sent to dmub when
- abm is active
-
-[WHY]
-It's beneficial for ABM to know when new frame data are available.
-
-[HOW]
-Add new condition to allow dirty rects to be sent to DMUB when ABM is
-active. ABM will use this as a signal that a new frame has arrived.
-
-Cc: Mario Limonciello <mario.limonciello@amd.com>
-Cc: Alex Deucher <alexander.deucher@amd.com>
-Cc: stable@vger.kernel.org
-Reviewed-by: Anthony Koo <anthony.koo@amd.com>
-Acked-by: Alex Hung <alex.hung@amd.com>
-Signed-off-by: Josip Pavic <josip.pavic@amd.com>
-Tested-by: Daniel Wheeler <daniel.wheeler@amd.com>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
----
- drivers/gpu/drm/amd/display/dc/core/dc.c | 3 +++
- 1 file changed, 3 insertions(+)
-
-diff --git a/drivers/gpu/drm/amd/display/dc/core/dc.c b/drivers/gpu/drm/amd/display/dc/core/dc.c
-index 5211c1c0f3c0c..613d09c42f3b9 100644
---- a/drivers/gpu/drm/amd/display/dc/core/dc.c
-+++ b/drivers/gpu/drm/amd/display/dc/core/dc.c
-@@ -3270,6 +3270,9 @@ static bool dc_dmub_should_send_dirty_rect_cmd(struct dc *dc, struct dc_stream_s
- 	if (stream->link->replay_settings.config.replay_supported)
- 		return true;
- 
-+	if (stream->ctx->dce_version >= DCN_VERSION_3_5 && stream->abm_level)
-+		return true;
-+
- 	return false;
- }
- 
--- 
-2.43.0
-
-
-
-
+Cristian
 
