@@ -1,55 +1,52 @@
-Return-Path: <linux-kernel+bounces-120787-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-120788-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 58CB888DD41
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 13:07:41 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id C38C888DD46
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 13:07:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A09EBB24F82
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 12:07:38 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 650961F23D9E
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 12:07:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 910CC12EBCF;
-	Wed, 27 Mar 2024 12:06:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5746112EBEB;
+	Wed, 27 Mar 2024 12:06:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Ehs0SS4W"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="KbDVjegV"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C04D12D74B;
-	Wed, 27 Mar 2024 12:06:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9BA0012D750;
+	Wed, 27 Mar 2024 12:06:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711541202; cv=none; b=rf7IU6bQM0Yz/GL96UnL5XPqnqRMh4sDnanFIC2yitrNEM8bZuXRhqH8mWu/AbS44MsXFX2DKdRAuZ/trB1HC5kgdrLc+TuOeacNOm+VeIFEhGegF/gl6XOCngrfTCoCh6vqv+Pr5YFkHDTzpuAVNioLXJslaHvGSXDjr8436g0=
+	t=1711541204; cv=none; b=MdY+6wx/wfkg4AwES/C4Q7t9iPkRBp7v5qHScFaCznJXKRAMFJf3ho9+SMC1uMHc4JqW5PqT0aabBpK1AXC/TDsFaTER2GdtaHLbX051QZbFwfx9lKb10b30zAgtM6/ZSCy9p6juLnQGbPFOUmtJaBmJwRuM5/FIVgBgrhz3+5s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711541202; c=relaxed/simple;
-	bh=0OQ336bep++kKIQyJEzYmRY4+v8R19DmwIPkk0OSlWM=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=ULhCZO3mko1X3ibBW5mjFRr1mKaU5m6rXQfsF+sfGrb0HV3zu8NQyqK9YXBzH4I6ECYeLmcB0Vl9NNesBgSZcTO0HP66utmD31Eit/l4+72mgRhcpfyBzObR98xOZDLvsfXrq8FDo0PKLGEkW1QYEimBXMgNqRe1exFaU/kaG/s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Ehs0SS4W; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4D840C433C7;
-	Wed, 27 Mar 2024 12:06:41 +0000 (UTC)
+	s=arc-20240116; t=1711541204; c=relaxed/simple;
+	bh=67pWlMHnTIzMM6BCgS6lJkEdPJSjtmWrZMzJIY09MQw=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=B9YFgvPHSEjF/ZsIrlxODgeOd20NMepTPaIqagmRb/VD6MZZa3NpdFHQbdTNNTo1hlmikVg1Oio5uMmrJD+otaveWBWsoId2TH8Qrf+TkJgS9pZrGXM0BDdp6gaquHbQ2aK6tU/Y6e/6JSI8Sxez8zU9UiIu5kWCwlv8R7jzRBw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=KbDVjegV; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E3888C433F1;
+	Wed, 27 Mar 2024 12:06:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711541202;
-	bh=0OQ336bep++kKIQyJEzYmRY4+v8R19DmwIPkk0OSlWM=;
+	s=k20201202; t=1711541204;
+	bh=67pWlMHnTIzMM6BCgS6lJkEdPJSjtmWrZMzJIY09MQw=;
 	h=From:To:Cc:Subject:Date:From;
-	b=Ehs0SS4WJVsNiav/efY2vPwPpCygEZHBOYHh9j0lgntf0/5WVw7gaKwSAI8Jjp44b
-	 pZGaDvogUHa5uIiBct+RNq126XRl6TVzQkNg6PYlLk+DpfvHMXtzR4cemepm0N4S46
-	 QQaz/s68bJ2Rpqx9n/iSznxZCITt76CeV700wwZdiOn8WmV9wJiz6KyQ/XEaMi8M1M
-	 O8Az2ywnMVoOhngsKflcK6CwasKojtJNwCYsLxNJf1syWCquZdLSmL1IEkNBa5bZF/
-	 VnnsfHkPLweE3Q5Xj1ssnikML6F/p5EPejjMGq2TSrVZ4xP1+osEVyS44TNjQmpLGv
-	 vZZQRmAyDCCDQ==
+	b=KbDVjegVNvNba189XAxwZ3MHbtTUYLFwYGoTonxyBOMHR1W2HRQluvhLbZzeWJxzP
+	 wxFFvNfA9Hi2AvoN59Uy91MGNypeidYNvn4+8j8lXowEZEVgCMAESpDKQhCZRvZjYM
+	 zif+lC4kEI7rtb+8sIR7RojvVG23kRMio0Q7Jpp6XzLL4796g+ekd8ZSRYv7ZxCRnW
+	 AnZGhhpH5gPz5w5fqCLfqmwfSmkJorWuC2vcj2Xe0ztWBRkXpzXL5bNSfIHSPsVXhr
+	 aobmOPQ2hxwCmnsW+Q0/keR3hJhdiXBVcYW3UTbfP+GWx1fD7umeH0A3vvjPAQlxNP
+	 hGNIHZjrTcT1w==
 From: Sasha Levin <sashal@kernel.org>
 To: stable@vger.kernel.org,
-	anand.jain@oracle.com
-Cc: Alex Romosan <aromosan@gmail.com>,
-	CHECK_1234543212345@protonmail.com,
-	David Sterba <dsterba@suse.com>,
-	linux-btrfs@vger.kernel.org,
+	ardb@kernel.org
+Cc: stable@kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: FAILED: Patch "btrfs: do not skip re-registration for the mounted device" failed to apply to 6.8-stable tree
-Date: Wed, 27 Mar 2024 08:06:40 -0400
-Message-ID: <20240327120640.2824671-1-sashal@kernel.org>
+Subject: FAILED: Patch "x86/efistub: Call mixed mode boot services on the firmware's stack" failed to apply to 6.8-stable tree
+Date: Wed, 27 Mar 2024 08:06:42 -0400
+Message-ID: <20240327120643.2824712-1-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -71,171 +68,81 @@ Sasha
 
 ------------------ original commit in Linus's tree ------------------
 
-From d565fffa68560ac540bf3d62cc79719da50d5e7a Mon Sep 17 00:00:00 2001
-From: Anand Jain <anand.jain@oracle.com>
-Date: Tue, 13 Feb 2024 09:13:56 +0800
-Subject: [PATCH] btrfs: do not skip re-registration for the mounted device
+From cefcd4fe2e3aaf792c14c9e56dab89e3d7a65d02 Mon Sep 17 00:00:00 2001
+From: Ard Biesheuvel <ardb@kernel.org>
+Date: Fri, 22 Mar 2024 17:03:58 +0200
+Subject: [PATCH] x86/efistub: Call mixed mode boot services on the firmware's
+ stack
 
-There are reports that since version 6.7 update-grub fails to find the
-device of the root on systems without initrd and on a single device.
+Normally, the EFI stub calls into the EFI boot services using the stack
+that was live when the stub was entered. According to the UEFI spec,
+this stack needs to be at least 128k in size - this might seem large but
+all asynchronous processing and event handling in EFI runs from the same
+stack and so quite a lot of space may be used in practice.
 
-This looks like the device name changed in the output of
-/proc/self/mountinfo:
+In mixed mode, the situation is a bit different: the bootloader calls
+the 32-bit EFI stub entry point, which calls the decompressor's 32-bit
+entry point, where the boot stack is set up, using a fixed allocation
+of 16k. This stack is still in use when the EFI stub is started in
+64-bit mode, and so all calls back into the EFI firmware will be using
+the decompressor's limited boot stack.
 
-6.5-rc5 working
+Due to the placement of the boot stack right after the boot heap, any
+stack overruns have gone unnoticed. However, commit
 
-  18 1 0:16 / / rw,noatime - btrfs /dev/sda8 ...
+  5c4feadb0011983b ("x86/decompressor: Move global symbol references to C code")
 
-6.7 not working:
+moved the definition of the boot heap into C code, and now the boot
+stack is placed right at the base of BSS, where any overruns will
+corrupt the end of the .data section.
 
-  17 1 0:15 / / rw,noatime - btrfs /dev/root ...
+While it would be possible to work around this by increasing the size of
+the boot stack, doing so would affect all x86 systems, and mixed mode
+systems are a tiny (and shrinking) fraction of the x86 installed base.
 
-and "update-grub" shows this error:
+So instead, record the firmware stack pointer value when entering from
+the 32-bit firmware, and switch to this stack every time a EFI boot
+service call is made.
 
-  /usr/sbin/grub-probe: error: cannot find a device for / (is /dev mounted?)
-
-This looks like it's related to the device name, but grub-probe
-recognizes the "/dev/root" path and tries to find the underlying device.
-However there's a special case for some filesystems, for btrfs in
-particular.
-
-The generic root device detection heuristic is not done and it all
-relies on reading the device infos by a btrfs specific ioctl. This ioctl
-returns the device name as it was saved at the time of device scan (in
-this case it's /dev/root).
-
-The change in 6.7 for temp_fsid to allow several single device
-filesystem to exist with the same fsid (and transparently generate a new
-UUID at mount time) was to skip caching/registering such devices.
-
-This also skipped mounted device. One step of scanning is to check if
-the device name hasn't changed, and if yes then update the cached value.
-
-This broke the grub-probe as it always read the device /dev/root and
-couldn't find it in the system. A temporary workaround is to create a
-symlink but this does not survive reboot.
-
-The right fix is to allow updating the device path of a mounted
-filesystem even if this is a single device one.
-
-In the fix, check if the device's major:minor number matches with the
-cached device. If they do, then we can allow the scan to happen so that
-device_list_add() can take care of updating the device path. The file
-descriptor remains unchanged.
-
-This does not affect the temp_fsid feature, the UUID of the mounted
-filesystem remains the same and the matching is based on device major:minor
-which is unique per mounted filesystem.
-
-This covers the path when the device (that exists for all mounted
-devices) name changes, updating /dev/root to /dev/sdx. Any other single
-device with filesystem and is not mounted is still skipped.
-
-Note that if a system is booted and initial mount is done on the
-/dev/root device, this will be the cached name of the device. Only after
-the command "btrfs device scan" it will change as it triggers the
-rename.
-
-The fix was verified by users whose systems were affected.
-
-Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=218353
-Link: https://lore.kernel.org/lkml/CAKLYgeJ1tUuqLcsquwuFqjDXPSJpEiokrWK2gisPKDZLs8Y2TQ@mail.gmail.com/
-Fixes: bc27d6f0aa0e ("btrfs: scan but don't register device on single device filesystem")
-CC: stable@vger.kernel.org # 6.7+
-Tested-by: Alex Romosan <aromosan@gmail.com>
-Tested-by: CHECK_1234543212345@protonmail.com
-Signed-off-by: Anand Jain <anand.jain@oracle.com>
-Reviewed-by: David Sterba <dsterba@suse.com>
-Signed-off-by: David Sterba <dsterba@suse.com>
+Cc: <stable@kernel.org> # v6.1+
+Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
 ---
- fs/btrfs/volumes.c | 58 +++++++++++++++++++++++++++++++++++++---------
- 1 file changed, 47 insertions(+), 11 deletions(-)
+ arch/x86/boot/compressed/efi_mixed.S | 9 +++++++++
+ 1 file changed, 9 insertions(+)
 
-diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-index a2d07fa3cfdff..1dc1f1946ae0e 100644
---- a/fs/btrfs/volumes.c
-+++ b/fs/btrfs/volumes.c
-@@ -1303,6 +1303,47 @@ int btrfs_forget_devices(dev_t devt)
- 	return ret;
- }
+diff --git a/arch/x86/boot/compressed/efi_mixed.S b/arch/x86/boot/compressed/efi_mixed.S
+index f4e22ef774ab6..719e939050cbf 100644
+--- a/arch/x86/boot/compressed/efi_mixed.S
++++ b/arch/x86/boot/compressed/efi_mixed.S
+@@ -49,6 +49,11 @@ SYM_FUNC_START(startup_64_mixed_mode)
+ 	lea	efi32_boot_args(%rip), %rdx
+ 	mov	0(%rdx), %edi
+ 	mov	4(%rdx), %esi
++
++	/* Switch to the firmware's stack */
++	movl	efi32_boot_sp(%rip), %esp
++	andl	$~7, %esp
++
+ #ifdef CONFIG_EFI_HANDOVER_PROTOCOL
+ 	mov	8(%rdx), %edx		// saved bootparams pointer
+ 	test	%edx, %edx
+@@ -254,6 +259,9 @@ SYM_FUNC_START_LOCAL(efi32_entry)
+ 	/* Store firmware IDT descriptor */
+ 	sidtl	(efi32_boot_idt - 1b)(%ebx)
  
-+static bool btrfs_skip_registration(struct btrfs_super_block *disk_super,
-+				    const char *path, dev_t devt,
-+				    bool mount_arg_dev)
-+{
-+	struct btrfs_fs_devices *fs_devices;
++	/* Store firmware stack pointer */
++	movl	%esp, (efi32_boot_sp - 1b)(%ebx)
 +
-+	/*
-+	 * Do not skip device registration for mounted devices with matching
-+	 * maj:min but different paths. Booting without initrd relies on
-+	 * /dev/root initially, later replaced with the actual root device.
-+	 * A successful scan ensures grub2-probe selects the correct device.
-+	 */
-+	list_for_each_entry(fs_devices, &fs_uuids, fs_list) {
-+		struct btrfs_device *device;
-+
-+		mutex_lock(&fs_devices->device_list_mutex);
-+
-+		if (!fs_devices->opened) {
-+			mutex_unlock(&fs_devices->device_list_mutex);
-+			continue;
-+		}
-+
-+		list_for_each_entry(device, &fs_devices->devices, dev_list) {
-+			if (device->bdev && (device->bdev->bd_dev == devt) &&
-+			    strcmp(device->name->str, path) != 0) {
-+				mutex_unlock(&fs_devices->device_list_mutex);
-+
-+				/* Do not skip registration. */
-+				return false;
-+			}
-+		}
-+		mutex_unlock(&fs_devices->device_list_mutex);
-+	}
-+
-+	if (!mount_arg_dev && btrfs_super_num_devices(disk_super) == 1 &&
-+	    !(btrfs_super_flags(disk_super) & BTRFS_SUPER_FLAG_SEEDING))
-+		return true;
-+
-+	return false;
-+}
-+
- /*
-  * Look for a btrfs signature on a device. This may be called out of the mount path
-  * and we are not allowed to call set_blocksize during the scan. The superblock
-@@ -1320,6 +1361,7 @@ struct btrfs_device *btrfs_scan_one_device(const char *path, blk_mode_t flags,
- 	struct btrfs_device *device = NULL;
- 	struct file *bdev_file;
- 	u64 bytenr, bytenr_orig;
-+	dev_t devt;
- 	int ret;
+ 	/* Store boot arguments */
+ 	leal	(efi32_boot_args - 1b)(%ebx), %ebx
+ 	movl	%ecx, 0(%ebx)
+@@ -318,5 +326,6 @@ SYM_DATA_END(efi32_boot_idt)
  
- 	lockdep_assert_held(&uuid_mutex);
-@@ -1359,19 +1401,13 @@ struct btrfs_device *btrfs_scan_one_device(const char *path, blk_mode_t flags,
- 		goto error_bdev_put;
- 	}
- 
--	if (!mount_arg_dev && btrfs_super_num_devices(disk_super) == 1 &&
--	    !(btrfs_super_flags(disk_super) & BTRFS_SUPER_FLAG_SEEDING)) {
--		dev_t devt;
-+	devt = file_bdev(bdev_file)->bd_dev;
-+	if (btrfs_skip_registration(disk_super, path, devt, mount_arg_dev)) {
-+		pr_debug("BTRFS: skip registering single non-seed device %s (%d:%d)\n",
-+			  path, MAJOR(devt), MINOR(devt));
- 
--		ret = lookup_bdev(path, &devt);
--		if (ret)
--			btrfs_warn(NULL, "lookup bdev failed for path %s: %d",
--				   path, ret);
--		else
--			btrfs_free_stale_devices(devt, NULL);
-+		btrfs_free_stale_devices(devt, NULL);
- 
--	pr_debug("BTRFS: skip registering single non-seed device %s (%d:%d)\n",
--			path, MAJOR(devt), MINOR(devt));
- 		device = NULL;
- 		goto free_disk_super;
- 	}
+ SYM_DATA_LOCAL(efi32_boot_cs, .word 0)
+ SYM_DATA_LOCAL(efi32_boot_ds, .word 0)
++SYM_DATA_LOCAL(efi32_boot_sp, .long 0)
+ SYM_DATA_LOCAL(efi32_boot_args, .long 0, 0, 0)
+ SYM_DATA(efi_is64, .byte 1)
 -- 
 2.43.0
 
